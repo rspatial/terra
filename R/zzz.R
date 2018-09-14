@@ -1,0 +1,2 @@
+
+loadModule("spat", TRUE)

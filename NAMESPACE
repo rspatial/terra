@@ -1,0 +1,4 @@
+import(Rcpp)
+importFrom("methods", "new", "validObject")
+useDynLib(terra, .registration = TRUE)
+exportPattern("^[[:alpha:]]+")

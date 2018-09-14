@@ -1,0 +1,42 @@
+\name{mask}
+
+\docType{methods}
+
+\alias{mask}
+\alias{mask,SpatRaster,SpatRaster-method}
+
+\title{Mask values in a SpatRaster object}
+
+\description{
+Create a new SpatRaster* object that has the same values as \code{x}, except for the cells that are \code{NA} in another SpatRaster (the 'mask'). These cells become \code{NA}.
+} 
+
+\usage{
+\S4method{mask}{SpatRaster,SpatRaster}(x, mask, filename="", ...)
+}
+
+\arguments{
+\item{x}{SpatRaster object}
+\item{mask}{SpatRaster object}
+\item{filename}{character. Optional output filename}
+\item{...}{additional arguments as in \code{\link{writeRaster}}}
+}
+
+\value{SpatRaster object}
+
+\seealso{\link{crop}}
+
+
+\examples{
+r <- georst(ncol=10, nrow=10)
+m <- georst(ncol=10, nrow=10)
+values(r) <- 1:100
+x <- runif(ncell(r))
+x[x < 0.5] <- NA
+values(m) <- x
+mr <- mask(r, m)
+}
+
+\keyword{methods}
+\keyword{spatial}
+
