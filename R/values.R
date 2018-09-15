@@ -18,13 +18,18 @@ function(x, ...) {
 setMethod('values<-', signature(x='SpatRaster', 'numeric'), 
 	function(x, value) {
 	if (is.matrix(value)) { 
-		if (nlayer(value) == ncol(x) & ncell(value) == nrow(x)) {
+		if (nlayer(value) == ncol(x) && ncell(value) == nrow(x)) {
 			value <- as.vector(value) 
+		} else if (nrow(value) == nrow(x) && ncol(value) == ncol(x)) {
+			value <- as.vector(t(value))
 		} else if (ncol(value)==1 | nrow(value)==1) {
 			value <- as.vector(value)
 		} else {
 			stop('cannot use a matrix with these dimensions')
 		}
+	} else if (is.array(value)) { 
+		stopifnot(length(dim(value)) == 3)
+		value <- as.vector(aperm(value, c(2,1,3)))
 	}
 	
 	if (!(is.numeric(value) | is.integer(value) | is.logical(value))) {

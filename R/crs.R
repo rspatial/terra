@@ -14,9 +14,21 @@ setMethod("crs", signature('SpatRaster'),
 
 setMethod("crs<-", signature('SpatRaster', 'character'), 
 	function(x, ..., value) {
-	# requires deep copy
-	#	x@ptr$crs <- value
-	#	return(x)
+		x@ptr$crs <- trimws(value)
+		return(x)
 	}
 )
 
+
+setMethod("crs", signature('SpatPolygons'), 
+	function(x) {
+		x@ptr$crs
+	}
+)
+
+setMethod("crs<-", signature('SpatPolygons', 'character'), 
+	function(x, ..., value) {
+		x@ptr$crs <- trimws(value)
+		return(x)
+	}
+)

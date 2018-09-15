@@ -9,7 +9,7 @@ if (!isGeneric("image")) {
 }	
 
 setMethod("image", signature(x='SpatRaster'), 
-	function(x, maxpixels=500000, useRaster=TRUE, ...)  {
+	function(x, maxpixels=500000, xlab='', ylab='', useRaster=TRUE, ...)  {
 #		x <- sampleRegular(x, maxpixels, asRaster=TRUE, useGDAL=TRUE)
 		X <- xFromCol(x, 1:ncol(x))
 		Y <- yFromRow(x, nrow(x):1)

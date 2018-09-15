@@ -71,20 +71,33 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 
 
-SpatRaster SpatRaster::focal(std::vector<unsigned> w, double fillvalue, bool narm, unsigned fun, std::string filename, bool overwrite) {
+SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename, bool overwrite) {
     
 	bool wmat = false;
 	int ww;
-	if (w.size() > 3) {
+	std::vector<unsigned> window;
+	unsigned size = w.size();
+	if (size > 3) {
 		wmat = true;
 		ww = w.size();
-	} else {
+		unsigned wsize = sqrt(ww);
+		window.push_back(wsize);
+		window.push_back(wsize);
+	} else if (size == 2) {
 		ww = w[0] * w[1];
+		window.push_back(w[0]);
+		window.push_back(w[1]);
+	} else {
+		w.push_back(w[0]);
+		ww = w[0] * w[1];
+		window.push_back(w[0]);
+		window.push_back(w[1]);
 	}
 	
 	SpatRaster out = *this;
 	if (!hasValues) { return(out); }
-	std::vector<unsigned> dim = {nrow, ncol};
+	std::vector<unsigned> dim = {0, ncol};
+	
  	out.writeStart(filename, overwrite);
 	readStart();
 	std::vector<double> v, f, d;
@@ -94,7 +107,8 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, double fillvalue, bool nar
 	
 	for (size_t i = 0; i < out.bs.n; i++) {
 		d = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);	
-		f = focal_get(d, w, dim, fillvalue);
+		dim[0] = out.bs.nrows[i];
+		f = focal_get(d, dim, window, fillvalue);
 		v.resize(out.bs.nrows[i] * ncol);
 		for (size_t j = 0; j < v.size(); j++) {
 			double z = 0;

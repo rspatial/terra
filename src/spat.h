@@ -267,7 +267,7 @@ class SpatRaster {
 		SpatRaster crop(SpatExtent e, string filename="", string snap="near", bool overwrite=false);
 		SpatRaster trim(unsigned padding=0, std::string filename="", bool overwrite=false);
 		SpatRaster mask(SpatRaster mask, string filename="", bool overwrite=false);
-		SpatRaster focal(std::vector<unsigned> w, double fillvalue, bool narm, unsigned fun, std::string filename, bool overwrite);
+		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename, bool overwrite);
 		SpatRaster rasterizePolygons(SpatPolygons p, double background, string filename, bool overwrite);
 		
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);

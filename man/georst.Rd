@@ -6,6 +6,8 @@
 \alias{georst,missing-method}
 \alias{georst,character-method}
 \alias{georst,SpatRaster-method}
+\alias{georst,matrix-method}
+\alias{georst,array-method}
 
 \title{Create a SpatRaster object}
 
@@ -28,7 +30,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 }
 
 \arguments{
-\item{x}{filename (character), Extent, SpatRaster object. Or character (filename)}
+\item{x}{filename (character), Extent, SpatRaster, matrix, or array}
 \item{...}{Additional arguments, see Details }  
 \item{nrow}{positive integer. Number of rows}
 \item{ncol}{postive integer. Number of columns}
@@ -37,7 +39,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 \item{xmax}{maximum x coordinate (right border)}
 \item{ymin}{minimum y coordinate (bottom border)}
 \item{ymax}{maximum y coordinate (top border)}
-\item{extent}{object of class Extent. If present, the arguments xmn, xmx, ymn and ynx are ignored}
+\item{extent}{object of class SpatExtent. If present, the arguments xmn, xmx, ymn and ynx are ignored}
 \item{crs}{character. PROJ.4 type description of a Coordinate Reference System (map projection). If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, "+proj=longlat +datum=WGS84" is used. Also see under Details if \code{x} is a character (filename)}
 \item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncol} and \code{nrow} are ignored }
 }

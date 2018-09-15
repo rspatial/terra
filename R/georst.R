@@ -65,3 +65,28 @@ setMethod('georst', signature(x='SpatRaster'),
 	}
 )
 
+
+setMethod('georst', signature(x='matrix'), 
+	function(x, ...) {
+		r <- methods::new('SpatRaster')
+		r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), "")
+		values(r) <- x
+		return(r)
+	}
+)
+
+
+setMethod('georst', signature(x='array'), 
+	function(x, ...) {
+		dims <- dim(x)
+		if (length(dims) > 3) {
+			stop("cannot handle an array with more than 3 dimensions")		
+		}
+		r <- methods::new('SpatRaster')
+		r@ptr <- SpatRaster$new(dims, c(0, dims[2], 0, dims[1]), "")
+		values(r) <- x
+		return(r)
+	}
+)
+
+

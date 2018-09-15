@@ -56,11 +56,6 @@ setMethod('ext', signature(x='SpatPolygons'),
 )	
 
 
-setMethod("crs", signature('SpatPolygons'), 
-	function(x) {
-		x@ptr$crs
-	}
-)
 
 setMethod ('show' , 'SpatPolygons', 
 	function(object) {

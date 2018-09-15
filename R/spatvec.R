@@ -10,10 +10,17 @@ setMethod("spatPolygons", signature(x='missing'),
 	}
 )
 
+
+setMethod("spatPolygons", signature(x='matrix'), 
+	function(x, attr=NULL, crs=NA, ...) {
+		spatPolygons( data.frame(x), attr=attr, crs=crs, ...)
+	}
+)
+	
+	
 setMethod("spatPolygons", signature(x='data.frame'), 
 	function(x, attr=NULL, crs=NA, ...) {
 
-		if (is.matrix(x)) x <- data.frame(x)
 		if (is.null(x$part)) x$part <- 1L
 		if (is.null(x$object)) x$object <- 1
 

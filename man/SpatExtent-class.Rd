@@ -1,21 +1,21 @@
-\name{GeoExtent-class}
+\name{SpatExtent-class}
 
 \docType{class}
 
-\alias{GeoExtent}
-\alias{GeoExtent-class}
-\alias{Rcpp_GeoExtent-class}
+\alias{SpatExtent}
+\alias{SpatExtent-class}
+\alias{Rcpp_SpatExtent-class}
 
-\alias{show,GeoExtent-method}
+\alias{show,SpatExtent-method}
 
-\title{Class "GeoExtent" }
+\title{Class "SpatExtent" }
 
 \description{
-Objects of class GeoExtent are used to define the spatial extent (extremes) of objects of the SpatRaster class. 
+Objects of class SpatExtent are used to define the spatial extent (extremes) of objects of the SpatRaster class. 
 }
 
 \section{Objects from the Class}{
-You can use the \code{\link{ext}} function to create GeoExtent objects, or to extract them from SpatRaster objects.
+You can use the \code{\link{ext}} function to create SpatExtent objects, or to extract them from SpatRaster objects.
 }
 
 \section{Slots}{
@@ -26,7 +26,7 @@ You can use the \code{\link{ext}} function to create GeoExtent objects, or to ex
 
 \section{Methods}{
   \describe{
- \item{show}{display values of a GeoExtent object }
+ \item{show}{display values of a SpatExtent object }
  }
 }
 

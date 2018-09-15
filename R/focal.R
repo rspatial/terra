@@ -5,7 +5,7 @@
 
 
 setMethod('focal', signature(x='SpatRaster'), 
-function(x, w=3, na.rm=TRUE, fillvalue=NA, fun=NULL, filename="", overwrite=FALSE, ...)  {
+function(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename="", overwrite=FALSE, ...)  {
 
 	if (is.matrix(w)) {
 		stopifnot(ncol(w) == nrow(w))	
@@ -17,7 +17,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, fun=NULL, filename="", overwrite=FALS
 		if (class(fun) == 'character') { 
 			op <- as.integer(match(fun, c('mean', 'min', 'max', 'sum')) - 1)
 		} else {
-			op <- NA
+			stop()
 		}
 		domat <- FALSE		
 	}
@@ -51,4 +51,3 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, fun=NULL, filename="", overwrite=FALS
 	}
 }	
 )
-

@@ -5,9 +5,10 @@
 
 \alias{ext}
 \alias{ext<-}
-\alias{ext,GeoExtent-method}
+\alias{ext,SpatExtent-method}
 \alias{ext,SpatRaster-method}
-\alias{ext<-,SpatRaster,GeoExtent-method}
+\alias{ext,SpatPolygons-method}
+\alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext,numeric-method}
 \alias{ext,missing-method}
 
@@ -15,22 +16,22 @@
 \title{ext}
 
 \description{
-Get a GeoExtent object of a SpatRaster object, or coordinates from such an object. Or create a GeoExtent object from a vector (length=4; order= xmin, xmax, ymin, ymax)
+Get a SpatExtent object of a SpatRaster object, or coordinates from such an object. Or create a SpatExtent object from a vector (length=4; order= xmin, xmax, ymin, ymax)
 }
 
 \usage{
 \S4method{ext}{SpatRaster}(x, ...)
-\S4method{ext}{SpatRaster,GeoExtent}(x)<-value
+\S4method{ext}{SpatRaster,SpatExtent}(x)<-value
 }
 
 \arguments{
   \item{x}{SpatRaster object}
-  \item{value}{GeoExtent object}  
+  \item{value}{SpatExtent object}  
   \item{...}{Additional arguments. None implemented }
 }
  
 \value{
-GeoExtent object or numeric coordinate
+SpatExtent object or numeric coordinate
 }
   
 \author{Robert J. Hijmans}

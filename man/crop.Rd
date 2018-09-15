@@ -8,7 +8,7 @@
 \title{Crop}
 
 \description{
-crop returns a new SpatRaster that is the geographic subset of an object as specified by a GeoExtent object.
+crop returns a new SpatRaster that is the geographic subset of an object as specified by a SpatExtent object.
 }
 
 \usage{

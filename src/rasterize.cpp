@@ -38,7 +38,7 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, std::
 				if (nCol[i+1] > ncols) nCol[i+1] = ncols;
 				int ncell = ncols * row;
 				//for (size_t col = nCol[i]; col < nCol[i+1]; col++) {
-				for (size_t col = nCol[i]; col <= nCol[i+1]; col++) {
+				for (size_t col = nCol[i]; col < nCol[i+1]; col++) {
 					r[col + ncell] = value;
 				}
 			}
