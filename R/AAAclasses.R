@@ -7,7 +7,7 @@
 
 setClass('SpatPolygons',
 	representation (
-		ptr = "Rcpp_SpatPolygons"
+		ptr = "C++Object"
 	),	
 	prototype (	
 		ptr = NULL
@@ -20,7 +20,7 @@ setClass('SpatPolygons',
 
 setClass('SpatExtent',
 	representation (
-		ptr = "Rcpp_SpatExtent"
+		ptr = "C++Object"
 	),	
 	prototype (	
 		ptr = NULL
@@ -34,7 +34,7 @@ setClass('SpatExtent',
 
 setClass('SpatRaster',
 	representation (
-		ptr = "Rcpp_SpatRaster"
+		ptr = "C++Object"
 	),	
 	prototype (	
 		ptr = NULL

@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Classes and Methods for Raster Data
-Version: 0.0-5
-Date: 2017-09-13
+Version: 0.0-6
+Date: 2017-09-15
 Depends: methods
 LinkingTo: Rcpp
 Imports: Rcpp
