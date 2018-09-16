@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{rasterize}
-\alias{rasterize,SpatPolygons,SpatRaster-method}
+\alias{rasterize,SpatVector,SpatRaster-method}
 
 \title{rasterize}
 
@@ -12,12 +12,12 @@ rasterize polygons
 }
 
 \usage{
-\S4method{rasterize}{SpatPolygons,SpatRaster}(x, y, background=NA, filename="", ...)
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, background=NA, filename="", ...)
 
 }
 
 \arguments{
-  \item{x}{SpatPolygons object}
+  \item{x}{SpatVector object}
   \item{y}{SpatRaster object}
   \item{background}{numeric. Value for cells that are not covered by a polygon}
   \item{filename}{Character, output filename. Optional}
@@ -43,7 +43,7 @@ z <- data.frame(z)
 z$hole <- 0
 z$hole[z$object==3 & z$part==2] <- 1
 
-p <- spatPolygons(z)
+p <- SpatPolygon(z)
 r <- georst()
 a <- rasterize(p, r)
 

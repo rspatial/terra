@@ -20,7 +20,7 @@
 \alias{dim,SpatRaster-method}
 \alias{dim<-,SpatRaster-method}
 \alias{length,SpatRaster-method}
-\alias{length,SpatPolygons-method}
+\alias{length,SpatVector-method}
 
 \alias{res}
 \alias{xres}

@@ -1,30 +1,30 @@
 
 
-if (!isGeneric("spatPolygons") ) { setGeneric("spatPolygons", function(x, ...) standardGeneric("spatPolygons")) }
+if (!isGeneric("SpatPolygon") ) { setGeneric("SpatPolygon", function(x, ...) standardGeneric("SpatPolygon")) }
 
-setMethod("spatPolygons", signature(x='missing'), 
+setMethod("SpatPolygon", signature(x='missing'), 
 	function(...) {
-		p <- methods::new('SpatPolygons')
+		p <- methods::new('SpatVector')
 		p@ptr <- SpatRaster$new()
 		return(p)
 	}
 )
 
 
-setMethod("spatPolygons", signature(x='matrix'), 
+setMethod("SpatPolygon", signature(x='matrix'), 
 	function(x, attr=NULL, crs=NA, ...) {
-		spatPolygons( data.frame(x), attr=attr, crs=crs, ...)
+		SpatPolygon( data.frame(x), attr=attr, crs=crs, ...)
 	}
 )
 	
 	
-setMethod("spatPolygons", signature(x='data.frame'), 
+setMethod("SpatPolygon", signature(x='data.frame'), 
 	function(x, attr=NULL, crs=NA, ...) {
 
 		if (is.null(x$part)) x$part <- 1L
 		if (is.null(x$object)) x$object <- 1
 
-		ppp <-  SpatPolygons$new()
+		ppp <- SpatPolygons$new()
 		x <- split(x, x$object)
 		for (i in 1:length(x)) {
 			y <- x[[i]]
@@ -62,7 +62,7 @@ setMethod("spatPolygons", signature(x='data.frame'),
 			ppp$crs <- crs
 		}
 
-		x <- methods::new("SpatPolygons")
+		x <- methods::new("SpatVector")
 		x@ptr <- ppp
 		x
 	}

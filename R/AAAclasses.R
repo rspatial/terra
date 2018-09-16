@@ -5,7 +5,7 @@
 
 
 
-setClass('SpatPolygons',
+setClass('SpatVector',
 	representation (
 		ptr = "C++Object"
 	),	

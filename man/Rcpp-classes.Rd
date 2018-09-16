@@ -2,7 +2,6 @@
 
 \docType{class}
 
-
 \alias{SpatPoly}
 \alias{SpatPolyPart}
 \alias{SpatPolygons}

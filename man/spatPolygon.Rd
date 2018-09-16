@@ -1,20 +1,20 @@
-\name{spatVector}
+\name{SpatPolygon}
 
 \docType{methods}
 
-\alias{spatPolygons}
-\alias{spatPolygons,data.frame-method}
-\alias{spatPolygons,matrix-method}
-\alias{spatPolygons,missing-method}
+\alias{SpatPolygon}
+\alias{SpatPolygon,data.frame-method}
+\alias{SpatPolygon,matrix-method}
+\alias{SpatPolygon,missing-method}
 
 \title{Create SpatVector objects}
 
 \description{
-Create a new SpatPolygons object
+Create a new SpatVector object
 } 
 
 \usage{
-\S4method{spatPolygons}{data.frame}(x, attr=NULL, crs="", ...)
+\S4method{SpatPolygon}{data.frame}(x, attr=NULL, crs="", ...)
 }
 
 \arguments{
@@ -25,7 +25,7 @@ Create a new SpatPolygons object
 }
 
 
-\value{SpatPolygons object}
+\value{SpatVector object}
 
 
 \examples{
@@ -41,7 +41,7 @@ z <- data.frame(z)
 z$hole <- 0
 z$hole[z$object==3 & z$part==2] <- 1
 
-p <- spatPolygons(z)
+p <- SpatPolygon(z)
 }
 
 \keyword{methods}

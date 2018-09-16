@@ -4,7 +4,7 @@
 # Licence GPL v3
 
 
-setMethod('rasterize', signature(x='SpatPolygons', y='SpatRaster'), 
+setMethod('rasterize', signature(x='SpatVector', y='SpatRaster'), 
 function(x, y, background=NA, filename="", ...) { 
 	overwrite <- .overwrite(...)
 	r <- methods::new('SpatRaster')
