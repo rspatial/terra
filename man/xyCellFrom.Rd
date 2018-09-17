@@ -83,7 +83,7 @@ rowColFromCell: matrix of row and column numbers
 
 
 \examples{
-r <- georst()
+r <- rast()
 
 xFromCol(r, c(1, 120, 180))
 yFromRow(r, 90)

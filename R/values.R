@@ -41,7 +41,7 @@ setMethod('values<-', signature(x='SpatRaster', 'numeric'),
 	}
 
 	# new pointer
-	y <- georst(x)
+	y <- rast(x)
 	y@ptr$setValues(value)
 	y
 }

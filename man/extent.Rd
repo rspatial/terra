@@ -38,7 +38,7 @@ SpatExtent object or numeric coordinate
 
 
 \examples{
-r <- georst()
+r <- rast()
 ext(r)
 ext(c(0, 20, 0, 20))
 

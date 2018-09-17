@@ -36,7 +36,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename="", overwrite=FAL
 			if (class(ptr) == 'try-error') { stop("focal error") } else { r@ptr <- ptr }
 			return(r)
 		} else {
-			out <- georst(x)
+			out <- rast(x)
 			readStart(x)
 			b <- writeStart(out, filename)
 			for (i in 1:b$n) {

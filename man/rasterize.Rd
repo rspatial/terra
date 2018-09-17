@@ -44,7 +44,7 @@ z$hole <- 0
 z$hole[z$object==3 & z$part==2] <- 1
 
 p <- SpatPolygon(z)
-r <- georst()
+r <- rast()
 a <- rasterize(p, r)
 
 

@@ -3,10 +3,10 @@
 # Version 0.9
 # Licence GPL v3
 
-if (!isGeneric("georst") ) { setGeneric("georst", function(x, ...) standardGeneric("georst")) }
+if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 
-setMethod('georst', signature(x='missing'), 
-	function(nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...) {
+setMethod('rast', signature(x='missing'), 
+	function(x, nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...) {
 
 		if (missing(extent)) {	extent <- ext(xmin, xmax, ymin, ymax) }
 		e <- as.vector(extent)
@@ -46,7 +46,7 @@ setMethod('georst', signature(x='missing'),
 	return(x)
 }
 
-setMethod('georst', signature(x='character'), 
+setMethod('rast', signature(x='character'), 
 	function(x, ...) {
 		f <- .fullFilename(x)
 		r <- methods::new('SpatRaster')
@@ -56,7 +56,7 @@ setMethod('georst', signature(x='character'),
 )
 
 
-setMethod('georst', signature(x='SpatRaster'), 
+setMethod('rast', signature(x='SpatRaster'), 
 	function(x, ...) {
 		r <- methods::new('SpatRaster')
 		r@ptr <- SpatRaster$new(dim(x), as.vector(ext(x)), crs(x))
@@ -66,7 +66,7 @@ setMethod('georst', signature(x='SpatRaster'),
 )
 
 
-setMethod('georst', signature(x='matrix'), 
+setMethod('rast', signature(x='matrix'), 
 	function(x, ...) {
 		r <- methods::new('SpatRaster')
 		r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), "")
@@ -76,7 +76,7 @@ setMethod('georst', signature(x='matrix'),
 )
 
 
-setMethod('georst', signature(x='array'), 
+setMethod('rast', signature(x='array'), 
 	function(x, ...) {
 		dims <- dim(x)
 		if (length(dims) > 3) {

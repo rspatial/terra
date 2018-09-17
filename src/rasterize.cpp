@@ -20,8 +20,9 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, std::
 		for (size_t i=0; i<n; i++) {
 			if (((pY[i] < y) && (pY[j] >= y)) || ((pY[j] < y) && (pY[i] >= y))) {
 			//	nCol[nodes++]=(int)  (((pX[i] - xmin + (y-pY[i])/(pY[j]-pY[i]) * (pX[j]-pX[i])) + 0.5 * rx ) / rx); 
-				double nds = (((pX[i] - xmin + (y-pY[i])/(pY[j]-pY[i]) * (pX[j]-pX[i])) + 0.5 * rx ) / rx); 
+				double nds = ((pX[i] - xmin + (y-pY[i])/(pY[j]-pY[i]) * (pX[j]-pX[i])) + 0.5 * rx ) / rx; 
 				nds = nds < 0 ? 0 : nds;
+		        nds = nds > ncols ? ncols : nds;			
 				nCol[nodes] = (unsigned) nds;
 				nodes++;
 			}
@@ -29,15 +30,11 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, std::
 		}
 		
 		std::sort(nCol.begin(), nCol.begin()+nodes);
+		unsigned ncell = ncols * row;
 		
-		//  Fill the pixels between node pairs.
+		//  Fill the cells between node pairs.
 		for (size_t i=0; i < nodes; i+=2) {
-			if (nCol[i] >= ncols) break;
-			if (nCol[i+1] > 0) {
-				if (nCol[i] < 0) nCol[i] = 0 ;
-				if (nCol[i+1] > ncols) nCol[i+1] = ncols;
-				int ncell = ncols * row;
-				//for (size_t col = nCol[i]; col < nCol[i+1]; col++) {
+			if (nCol[i+1] > 0 && nCol[i] < ncols) {
 				for (size_t col = nCol[i]; col < nCol[i+1]; col++) {
 					r[col + ncell] = value;
 				}

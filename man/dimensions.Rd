@@ -65,7 +65,7 @@ integer
 
 
 \examples{
-r <- georst()
+r <- rast()
 ncell(r)
 ncol(r)
 nrow(r)

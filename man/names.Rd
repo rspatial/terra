@@ -28,7 +28,7 @@ Character
 
 
 \examples{
-s <- georst(ncols=5, nrows=5, nlayer=3)
+s <- rast(ncols=5, nrows=5, nlayer=3)
 nlayer(s)
 names(s)
 names(s) <- c('a', 'b', 'c')

@@ -51,7 +51,7 @@ Sobel filter: \code{filter=matrix(c(1,2,1,0,0,0,-1,-2,-1) / 4, nrow=3)}
 
 
 \examples{
-r <- georst(ncols=36, nrows=18, xmn=0)
+r <- rast(ncols=36, nrows=18, xmn=0)
 values(r) <- runif(ncell(r)) 
 
 # 3x3 mean filter

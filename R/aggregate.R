@@ -68,7 +68,7 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", ...)  {
 		rs <- res(x)
 		e[2] <- e[1] + dims[4] * rs[2];
 		e[3] <- e[4] - dims[5] * rs[1];
-		out <- georst(nrow=dims[4], ncol=dims[4], nlyr=dims[6],  crs=crs(x), ext=e)
+		out <- rast(nrow=dims[4], ncol=dims[4], nlyr=dims[6],  crs=crs(x), ext=e)
 		nc <- ncol(x)
 		
 		readStart(x)

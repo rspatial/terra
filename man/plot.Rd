@@ -32,7 +32,7 @@ Plot (that is, make a map of) the values of a SpatRaster object
 
 \examples{ 
 f <- system.file("external/test.grd", package="terra") 
-r <- georst(f)
+r <- rast(f)
 plot(r)
 }
 

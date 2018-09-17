@@ -28,8 +28,8 @@ Create a new SpatRaster* object that has the same values as \code{x}, except for
 
 
 \examples{
-r <- georst(ncol=10, nrow=10)
-m <- georst(ncol=10, nrow=10)
+r <- rast(ncol=10, nrow=10)
+m <- rast(ncol=10, nrow=10)
 values(r) <- 1:100
 x <- runif(ncell(r))
 x[x < 0.5] <- NA

@@ -21,14 +21,14 @@ A raster is a database organized as a rectangular grid that is sub-divided into 
 
 An object of the \code{SpatRaster} class can point to one or more files on disk that holds the values of the raster cells, or hold these values in memory. Or it can not have any associated values at all.
 
-Objects can be created with the \code{\link{georst}} function.
+Objects can be created with the \code{\link{rast}} function.
  
 This package defines the SpatRaster "S4 class" to manipulate such data. The R object only contains a pointer to the C++ class "Rcpp_SpatRaster". 
 }
 
 
 \section{Objects from the Class}{
-Objects can be created with the \code{georst} function.
+Objects can be created with the \code{rast} function.
 }
 
 \section{Slots}{
@@ -40,7 +40,7 @@ Slots for SpatRaster objects
 
 
 \examples{
-georst()
+rast()
 }
 
 \keyword{classes}

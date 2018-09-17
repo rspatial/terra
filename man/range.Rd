@@ -30,7 +30,7 @@ range: numeric matrix of min and max values
 
 
 \examples{ 
-r <- georst(system.file("external/test.grd", package="terra"))
+r <- rast(system.file("external/test.grd", package="terra"))
 range(r)
 }
 

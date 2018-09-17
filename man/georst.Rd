@@ -1,13 +1,13 @@
-\name{georst}
+\name{rast}
 
 \docType{methods}
 
-\alias{georst}
-\alias{georst,missing-method}
-\alias{georst,character-method}
-\alias{georst,SpatRaster-method}
-\alias{georst,matrix-method}
-\alias{georst,array-method}
+\alias{rast}
+\alias{rast,missing-method}
+\alias{rast,character-method}
+\alias{rast,SpatRaster-method}
+\alias{rast,matrix-method}
+\alias{rast,array-method}
 
 \title{Create a SpatRaster object}
 
@@ -22,11 +22,11 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \usage{
 
-\S4method{georst}{missing}(nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...)
+\S4method{rast}{missing}(nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...)
 
-\S4method{georst}{character}(x, ...)
+\S4method{rast}{character}(x, ...)
 
-\S4method{georst}{SpatRaster}(x, ...) 
+\S4method{rast}{SpatRaster}(x, ...) 
 }
 
 \arguments{
@@ -52,7 +52,7 @@ SpatRaster
 
 \examples{
 # Create a SpatRaster object from scratch
-r1 <- georst(nrow=108, ncol=21, xmin=0, xmax=10)
+r1 <- rast(nrow=108, ncol=21, xmin=0, xmax=10)
 
 # Create a SpatRaster object from a file
 #   N.B.: For your own files, omit the 'system.file' and 'package="terra"' bits
@@ -60,9 +60,9 @@ r1 <- georst(nrow=108, ncol=21, xmin=0, xmax=10)
 
 f <- system.file("external/test.grd", package="terra")
 f
-r <- georst(f)
+r <- rast(f)
 
-logo <- georst(system.file("external/rlogo.grd", package="raster"))   
+logo <- rast(system.file("external/rlogo.grd", package="raster"))   
 }
 
 

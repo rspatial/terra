@@ -27,7 +27,7 @@ SpatRaster
 
 
 \examples{
-r <- georst(ncol=18,nrow=18)
+r <- rast(ncol=18,nrow=18)
 v <- rep(NA, ncell(r))
 v[39:40] <- 1
 v[205] <- 2

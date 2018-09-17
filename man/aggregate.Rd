@@ -39,7 +39,7 @@ SpatRaster object
 
 
 \examples{
-r <- georst()
+r <- rast()
 # a new aggregated raster, no values
 ra <- aggregate(r, fact=10)
 

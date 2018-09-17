@@ -29,7 +29,7 @@ setMethod('dim<-', signature(x='SpatRaster'),
 			value <- value[1:3]
 		}		
 		value <- as.integer(pmax(round(value), c(1,1,1)))
-		georst(value, as.vector(extent(x)), crs(x))
+		rast(nrow=value[1], ncol=value[2], nlayer=value[3], extent=ext(x), crs=crs(x))
 	}
 )
 
