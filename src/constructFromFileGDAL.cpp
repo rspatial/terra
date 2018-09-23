@@ -17,7 +17,6 @@ double roundn(double x, int n){
 
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
-
     GDALDataset  *poDataset;
     GDALAllRegister();
 	const char* pszFilename =  fname.c_str();
@@ -34,6 +33,9 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	
 	double adfGeoTransform[6];
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
+		// the rounding below is to address a design flaw in GDAL
+		// GDAL provides the coordinates of one corner and the resolution, instead of the coordinates of all (two opposite) corners.
+		// computation of the opposite corder coordinates is only approximate for large rasters with a high resolution.
 		double xmin = adfGeoTransform[0]; /* top left x */
 		xmin = roundn(xmin, 9);
 		double xmax = xmin + adfGeoTransform[1] * ncol; /* w-e pixel resolution */
@@ -47,11 +49,8 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	}
 		
 	source.memory.push_back(false);
-	source.filename.push_back( fname );
-			
+	source.filename.push_back( fname );	
 	source.driver = {"gdal"};
-	
-
 	
 	string crs;
 	if( poDataset->GetProjectionRef()  != NULL ) {
