@@ -13,13 +13,6 @@ double roundn(double x, int n){
     return x;
 }
 
-std::vector<double> roundn(std::vector<double> x, int n) { 
-	std::vector<double> d (x.size());
-	std::transform(x.begin(), x.end(), d.begin(),
-			[](double i) { return roundn(i, n); }
-	);
-	return d;
-}
 
 
 std::string concatenate(std::vector<string> v, std::string delim) {	
