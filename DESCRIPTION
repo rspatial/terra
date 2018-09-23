@@ -3,7 +3,7 @@ Type: Package
 Title: Classes and Methods for Raster Data
 Version: 0.0-6
 Date: 2017-09-15
-Depends: methods
+Depends: methods, R (>= 3.3.0)
 LinkingTo: Rcpp
 Imports: Rcpp
 SystemRequirements: C++11

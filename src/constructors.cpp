@@ -1,8 +1,9 @@
 using namespace std;
 #include "spat.h"
 
+
 SpatRaster::SpatRaster(std::string fname) {
-	constructFromFile(fname);
+	constructFromFile(fname);	
 }
 		
 SpatRaster::SpatRaster() {

@@ -219,6 +219,7 @@ class SpatRaster {
 
 
 		bool constructFromFile(std::string fname);
+		bool constructFromFileGDAL(std::string fname);
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
 		double cellFromXY(double x, double y);

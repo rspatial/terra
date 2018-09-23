@@ -10,7 +10,11 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	
 	string ext = getFileExt(fname);
 	
-	if (ext == ".grd") {
+	if (ext != ".grd") {
+		
+		return constructFromFileGDAL(fname);		
+		
+	} else {
 		CSimpleIniA ini(TRUE, FALSE, FALSE);
 		char ss[fname.length()];
 		strcpy(ss, fname.c_str());
@@ -89,11 +93,6 @@ bool SpatRaster::constructFromFile(std::string fname) {
             
 			return true;
 		}
-	} else {
-	 /// gdal files
-
-	 
-		return false;
    }
    return true;
 }

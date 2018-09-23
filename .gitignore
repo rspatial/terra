@@ -8,3 +8,7 @@
 *.dll
 *.zip
 .Rproj.user
+
+windows/
+inst/gdal/
+inst/proj/
