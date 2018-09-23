@@ -22,7 +22,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \usage{
 
-\S4method{rast}{missing}(nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...)
+\S4method{rast}{missing}(x, nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...)
 
 \S4method{rast}{character}(x, ...)
 
@@ -30,8 +30,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 }
 
 \arguments{
-\item{x}{filename (character), Extent, SpatRaster, matrix, or array}
-\item{...}{Additional arguments, see Details }  
+\item{x}{filename (character), Extent, SpatRaster, matrix, or array. Can also be missing}
 \item{nrow}{positive integer. Number of rows}
 \item{ncol}{postive integer. Number of columns}
 \item{nlayer}{postive integer. Number of layers}
@@ -42,6 +41,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 \item{extent}{object of class SpatExtent. If present, the arguments xmn, xmx, ymn and ynx are ignored}
 \item{crs}{character. PROJ.4 type description of a Coordinate Reference System (map projection). If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, "+proj=longlat +datum=WGS84" is used. Also see under Details if \code{x} is a character (filename)}
 \item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncol} and \code{nrow} are ignored }
+\item{...}{Additional arguments. None implemented }  
 }
 
 

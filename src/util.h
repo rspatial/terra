@@ -1,3 +1,4 @@
+double roundn(double x, int n);
 std::string concatenate(std::vector<string> v, std::string delim);
 bool is_equal(double a, double b, double error_factor=1.0);
 bool is_equal_range(double x, double y, double range, double tolerance);

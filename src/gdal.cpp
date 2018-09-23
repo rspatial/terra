@@ -1,18 +1,10 @@
 using namespace std;
-#include <string>
-#include <vector>
 #include "spat.h"
+#include "util.h"
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include "ogr_spatialref.h"
-
-double roundn(double x, int n){
-    int d = 0;
-    if((x * pow(10, n + 1)) - (floor(x * pow(10, n))) > 4) d = 1;
-    x = (floor(x * pow(10, n)) + d) / pow(10, n);
-    return x;
-}
 
 
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
@@ -61,6 +53,9 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	} else {
 		crs = "";
 	}
+	
+	GDALClose( (GDALDatasetH) poDataset );
+	
 	setCRS(crs);
 	setnlyr();	
 	hasValues = true; 

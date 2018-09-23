@@ -6,6 +6,21 @@ using namespace std;
 #include <string>
 
 
+double roundn(double x, int n){
+    int d = 0;
+    if((x * pow(10, n + 1)) - (floor(x * pow(10, n))) > 4) d = 1;
+    x = (floor(x * pow(10, n)) + d) / pow(10, n);
+    return x;
+}
+
+std::vector<double> roundn(std::vector<double> x, int n) { 
+	std::vector<double> d (x.size());
+	std::transform(x.begin(), x.end(), d.begin(),
+			[](double i) { return roundn(i, n); }
+	);
+	return d;
+}
+
 
 std::string concatenate(std::vector<string> v, std::string delim) {	
 	for (size_t i=0; i<(v.size()-1); i++) {
