@@ -66,7 +66,7 @@ setMethod('writeValues', signature(x='SpatRaster', v='vector'),
 
 setMethod('writeRaster', signature(x='SpatRaster', filename='character'), 
 function(x, filename, ...) {
-	if (!hasValues(x)) {
+	if (!.hasValues(x)) {
 		warning('all cell values are NA')
 	}
 	success <- try(x@ptr$writeRaster(filename), silent=TRUE)

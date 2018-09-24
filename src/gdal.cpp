@@ -58,7 +58,9 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	
 	setCRS(crs);
 	setnlyr();	
-	hasValues = true; 
+	// for now
+	hasValues = false;
+	//hasValues = true; 
 	
 	return true;
  

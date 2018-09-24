@@ -11,7 +11,9 @@ if (!isGeneric("plot")) {
 
 setMethod("plot", signature(x='SpatRaster', y='missing'), 
 	function(x, y, maxpixels=500000, xlab="", ylab="", ...)  {
+		stopifnot(.hasValues(x));
 		require(lattice)
+		
 		m <- matrix(values(x), nrow=nrow(x), byrow=TRUE)
 		lattice::levelplot(t(m[nrow(m):1, , drop=FALSE]), xlab=xlab, ylab=ylab, ...)
 	}

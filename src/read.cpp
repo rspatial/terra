@@ -50,11 +50,15 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 		}
 	} else {
 		// read from file
-		string file = source.filename[0];
-		if (source.datatype[0] == "FLT8S") {
-			out = readFLT8(file, 0, ncell());
+		if (source.driver[0] == "raster") {
+			string file = source.filename[0];
+			if (source.datatype[0] == "FLT8S") {
+				out = readFLT8(file, 0, ncell());
+			} else {
+				out = readFLT4(file, 0, ncell());
+			}
 		} else {
-			out = readFLT4(file, 0, ncell());
+			// read GDAL
 		}
 	}
 	return(out);	
