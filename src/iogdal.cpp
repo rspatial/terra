@@ -92,23 +92,25 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
     GDALDataset  *poDataset;
 	GDALRasterBand  *poBand;
-	
     GDALAllRegister();
+	std::vector<double> out;
+
 	const char* pszFilename = source.filename[0].c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 	poBand = poDataset->GetRasterBand(1);
-	int nXSize = 10;
-	int nYSize = 10;
-
+	unsigned ncell = ncols*nrows;
 	double *pafScanline;
-	pafScanline = (double *) CPLMalloc(sizeof(double)*nXSize);
-	poBand->RasterIO( GF_Read, 0, 0, nXSize, nYSize, pafScanline, nXSize, nYSize, GDT_Float32, 0, 0 );
+	pafScanline = (double *) CPLMalloc(sizeof(double)*ncell);
+	CPLErr err = poBand->RasterIO( GF_Read, row, col, ncols, nrows, pafScanline, ncols, nrows, GDT_Float64, 0, 0 );
 	
-	std::vector<double> out;
-	out.insert(out.end(), &pafScanline[0], &pafScanline[nXSize * nYSize]);
+	if (err == 4) {
+		return out;
+	}
+	
+	out.insert(out.end(), &pafScanline[0], &pafScanline[ncell]);
 
 	GDALClose( (GDALDatasetH) poDataset );
-	//CPLFree(poBand);
+	CPLFree(pafScanline);
 	return(out);
 }
 
