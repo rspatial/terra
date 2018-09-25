@@ -93,7 +93,7 @@ std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, uns
     GDALDataset  *poDataset;
 	GDALRasterBand  *poBand;
     GDALAllRegister();
-	std::vector<double> out;
+	
 
 	const char* pszFilename = source.filename[0].c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
@@ -104,13 +104,14 @@ std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, uns
 	CPLErr err = poBand->RasterIO( GF_Read, row, col, ncols, nrows, pafScanline, ncols, nrows, GDT_Float64, 0, 0 );
 	
 	if (err == 4) {
-		return out;
+		std::vector<double> errout;
+		return  errout;
 	}
 	
-	out.insert(out.end(), &pafScanline[0], &pafScanline[ncell]);
+    std::vector<double> out(&pafScanline[0], &pafScanline[ncell]);
 
-	GDALClose( (GDALDatasetH) poDataset );
 	CPLFree(pafScanline);
+	GDALClose( (GDALDatasetH) poDataset );
 	return(out);
 }
 
