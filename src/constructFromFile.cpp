@@ -15,6 +15,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		return constructFromFileGDAL(fname);		
 		
 	} else {
+		
 		CSimpleIniA ini(TRUE, FALSE, FALSE);
 		char ss[fname.length()];
 		strcpy(ss, fname.c_str());

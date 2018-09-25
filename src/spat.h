@@ -249,6 +249,7 @@ class SpatRaster {
 		bool readStart();
 		bool readStop();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		std::vector<double> readGDALvalues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		
 		bool writeStart(std::string filename, bool overwrite);
 		bool writeStartFs(std::string filename, bool overwrite, fstream& f);
