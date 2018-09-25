@@ -46,7 +46,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	source.driver = {"gdal"};
 	
 	string crs;
-	if( poDataset->GetProjectionRef()  != NULL ) {
+	if( poDataset->GetProjectionRef() != NULL ) {
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
 		char *pszPRJ = NULL;
 		oSRS.exportToProj4(&pszPRJ);
@@ -63,23 +63,32 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	int bGotMin, bGotMax;
 	
 	// need to loop over bands here
-	poBand = poDataset->GetRasterBand(1);
-	//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
-	//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
-	std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
-	
-	adfMinMax[0] = poBand->GetMinimum( &bGotMin );
-	adfMinMax[1] = poBand->GetMaximum( &bGotMax );
-	if( (bGotMin && bGotMax) ) {
-		hasRange.push_back(true);
-		range_min.push_back( adfMinMax[0] );
-		range_max.push_back( adfMinMax[1] );
+	for (size_t i = 0; i < nlyrs; i++) {
+		poBand = poDataset->GetRasterBand(i+1);
+		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
+		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
+		
+		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
+		
+		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
+		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
+		if( (bGotMin && bGotMax) ) {
+			hasRange.push_back(true);
+			range_min.push_back( adfMinMax[0] );
+			range_max.push_back( adfMinMax[1] );
+		} else {
+			hasRange.push_back(false);
+			range_min.push_back( NAN );
+			range_max.push_back( NAN );		
+			// GDALComputeRasterMinMax((GDALRasterBandH)poBand, TRUE, adfMinMax);
+		}
+			
+		//	
+		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
+		//if( poBand->GetColorTable() != NULL )	printf( "Band has a color table with %d entries.\n", 
+		//         poBand->GetColorTable()->GetColorEntryCount() );	
+		names.push_back( "lyr" + to_string(i+1) ) ;
 	}
-    //	else GDALComputeRasterMinMax((GDALRasterBandH)poBand, TRUE, adfMinMax);
-	//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
-	//if( poBand->GetColorTable() != NULL )	printf( "Band has a color table with %d entries.\n", 
-    //         poBand->GetColorTable()->GetColorEntryCount() );	
-
 
 	GDALClose( (GDALDatasetH) poDataset );
 
@@ -88,13 +97,12 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
  
 }
 
-
+// only for band 1 right now.
 std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
     GDALDataset  *poDataset;
 	GDALRasterBand  *poBand;
     GDALAllRegister();
 	
-
 	const char* pszFilename = source.filename[0].c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 	poBand = poDataset->GetRasterBand(1);
@@ -109,7 +117,6 @@ std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, uns
 	}
 	
     std::vector<double> out(&pafScanline[0], &pafScanline[ncell]);
-
 	CPLFree(pafScanline);
 	GDALClose( (GDALDatasetH) poDataset );
 	return(out);
