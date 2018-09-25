@@ -118,7 +118,6 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 		(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
 	} else if (source.driver[0] == "gdal") {
 		// write with gdal
-
 	} else {
 		setValues(vals);
 	}

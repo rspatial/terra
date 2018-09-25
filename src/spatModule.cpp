@@ -135,6 +135,8 @@ RCPP_MODULE(spat){
 	
 		.field_readonly("hasValues", &SpatRaster::hasValues )
 		.field_readonly("hasRange", &SpatRaster::hasRange )
+		.field_readonly("hasRAT", &SpatRaster::hasRAT )
+		.field_readonly("hasCT", &SpatRaster::hasCT )
 		.field_readonly("range_min", &SpatRaster::range_min )
 		.field_readonly("range_max", &SpatRaster::range_max )
 

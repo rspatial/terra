@@ -7,10 +7,16 @@ if (!isGeneric("setRange")) {setGeneric("setRange", function(x) standardGeneric(
 
 
 setMethod("values", signature(x='SpatRaster'), 
-function(x, ...) {
+function(x, matrix=TRUE, ...) {
 	if (.hasValues(x)) {
-		x@ptr$getValues()
-	} 
+		v <- x@ptr$getValues()
+		if (matrix) {
+			v <- matrix(v, ncol=nlayer(x))
+		}
+	} else {
+		v <- NULL
+	}
+	return(v)	
 }
 )
 

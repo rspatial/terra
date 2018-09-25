@@ -173,6 +173,8 @@ class SpatRaster {
 		std::vector<double> values;
 		
 		std::vector<bool> hasRange;
+		std::vector<bool> hasRAT;
+		std::vector<bool> hasCT;
 		std::vector<double> range_min;
 		std::vector<double> range_max;
 		std::vector<string> names;
@@ -247,16 +249,16 @@ class SpatRaster {
 		
 		
 		bool readStart();
-		bool readStop();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
-		std::vector<double> readGDALvalues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
-		
+		bool readStop();
 		bool writeStart(std::string filename, bool overwrite);
-		bool writeStartFs(std::string filename, bool overwrite, fstream& f);
-		
+		bool writeStartFs(std::string filename, bool overwrite, fstream& f);		
 		bool writeValues(std::vector<double> vals, unsigned row);
 		bool writeStop();
 		bool writeHDR();
+		
+		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		bool writeValuesGDAL(std::string filename, std::vector<double> values, std::string format="GTiff");
 		
 		
 		void openFS(string const &filename);

@@ -4,9 +4,13 @@ using namespace std;
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
+#include "cpl_string.h"
 #include "ogr_spatialref.h"
 
 
+// void SpatRaster::setMinMaxGDAL() {
+// GDALComputeRasterMinMax((GDALRasterBandH)poBand, TRUE, adfMinMax);
+// }
 
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
@@ -65,7 +69,6 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		poBand = poDataset->GetRasterBand(i+1);
 		source.layers[0].push_back(i+1);
 		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
-		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
 		
 		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
 		
@@ -79,13 +82,27 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 			hasRange.push_back(false);
 			range_min.push_back( NAN );
 			range_max.push_back( NAN );		
-			// GDALComputeRasterMinMax((GDALRasterBandH)poBand, TRUE, adfMinMax);
 		}
 			
-		//	
 		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
-		//if( poBand->GetColorTable() != NULL )	printf( "Band has a color table with %d entries.\n", 
-		//         poBand->GetColorTable()->GetColorEntryCount() );	
+		
+		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
+		
+		GDALColorTable *ct;
+		ct = poBand->GetColorTable(); 
+		if( ct != NULL )	{
+			hasCT.push_back(true);
+		} else {
+			hasCT.push_back(false);
+		}
+		
+		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT(); 	
+		if( rat != NULL )	{  // does not appear to work
+			hasRAT.push_back(true);
+		} else {
+			hasRAT.push_back(false);
+		}
+		
 		names.push_back( "lyr" + to_string(i+1) ) ;
 	}
 
@@ -96,7 +113,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
  
 }
 
-std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
+std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
     GDALDataset  *poDataset;
 	GDALRasterBand  *poBand;
     GDALAllRegister();
@@ -123,4 +140,46 @@ std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, uns
 	GDALClose( (GDALDatasetH) poDataset );
 	return(out);
 }
+
+
+
+bool SpatRaster::writeValuesGDAL(std::string filename, std::vector<double> values, std::string format) {
+
+    const char *pszFormat = format.c_str();
+	const char *pszDstFilename = filename.c_str();
+    GDALDriver *poDriver;
+    char **papszMetadata;
+	GDALAllRegister();
+	
+    poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
+    if( poDriver == NULL ) return (false);
+    papszMetadata = poDriver->GetMetadata();
+    if(! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )  return (false);
+ 
+	GDALDataset *poDstDS;
+	char **papszOptions = NULL;
+	poDstDS = poDriver->Create( pszDstFilename, 512, 512, 1, GDT_Byte, papszOptions );
+
+	double adfGeoTransform[6] = { 444720, 30, 0, 3751320, 0, -30 };
+	OGRSpatialReference oSRS;
+	char *pszSRS_WKT = NULL;
+	GDALRasterBand *poBand;
+	GByte abyRaster[512*512];
+	poDstDS->SetGeoTransform( adfGeoTransform );
+	oSRS.SetUTM( 11, TRUE );
+	oSRS.SetWellKnownGeogCS( "NAD27" );
+	oSRS.exportToWkt( &pszSRS_WKT );
+	poDstDS->SetProjection( pszSRS_WKT );
+	CPLFree( pszSRS_WKT );
+	poBand = poDstDS->GetRasterBand(1);
+	CPLErr err = poBand->RasterIO( GF_Write, 0, 0, 512, 512, abyRaster, 512, 512, GDT_Byte, 0, 0 );
+	
+	GDALClose( (GDALDatasetH) poDstDS );
+	
+	if (err == 4) {
+		return false;
+	}	
+	return true;
+}
+
 
