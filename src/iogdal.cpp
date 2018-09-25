@@ -8,8 +8,6 @@ using namespace std;
 
 
 
-
-
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
     GDALDataset  *poDataset;
@@ -62,9 +60,10 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	double adfMinMax[2];
 	int bGotMin, bGotMax;
 	
-	// need to loop over bands here
+	source.layers.resize(1);
 	for (size_t i = 0; i < nlyrs; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
+		source.layers[0].push_back(i+1);
 		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
 		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
 		
@@ -97,7 +96,6 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
  
 }
 
-// only for band 1 right now.
 std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
     GDALDataset  *poDataset;
 	GDALRasterBand  *poBand;
@@ -105,18 +103,22 @@ std::vector<double> SpatRaster::readGDALvalues(unsigned row, unsigned nrows, uns
 	
 	const char* pszFilename = source.filename[0].c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
-	poBand = poDataset->GetRasterBand(1);
+	std::vector<double> out;
 	unsigned ncell = ncols*nrows;
 	double *pafScanline;
 	pafScanline = (double *) CPLMalloc(sizeof(double)*ncell);
-	CPLErr err = poBand->RasterIO( GF_Read, row, col, ncols, nrows, pafScanline, ncols, nrows, GDT_Float64, 0, 0 );
 	
-	if (err == 4) {
-		std::vector<double> errout;
-		return  errout;
+	for (size_t i=0; i < source.layers[0].size(); i++) {
+	
+		poBand = poDataset->GetRasterBand(i+1);
+		CPLErr err = poBand->RasterIO( GF_Read, row, col, ncols, nrows, pafScanline, ncols, nrows, GDT_Float64, 0, 0 );	
+		if (err == 4) {
+			std::vector<double> errout;
+			return  errout;
+		}
+		out.insert(out.end(), &pafScanline[0], &pafScanline[ncell]);
 	}
 	
-    std::vector<double> out(&pafScanline[0], &pafScanline[ncell]);
 	CPLFree(pafScanline);
 	GDALClose( (GDALDatasetH) poDataset );
 	return(out);

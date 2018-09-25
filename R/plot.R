@@ -13,8 +13,20 @@ setMethod("plot", signature(x='SpatRaster', y='missing'),
 	function(x, y, maxpixels=500000, xlab="", ylab="", ...)  {
 		stopifnot(.hasValues(x));
 		require(lattice)
-		
-		m <- matrix(values(x), nrow=nrow(x), byrow=TRUE)
+		m <- values(x)[1:ncell(x)]
+		m <- matrix(m, nrow=nrow(x), byrow=TRUE)
+		lattice::levelplot(t(m[nrow(m):1, , drop=FALSE]), xlab=xlab, ylab=ylab, ...)
+	}
+)
+
+
+setMethod("plot", signature(x='SpatRaster', y='numeric'), 
+	function(x, y, maxpixels=500000, xlab="", ylab="", ...)  {
+		stopifnot(.hasValues(x));
+		require(lattice)
+		start <- 1 + (y-1) * ncell(x)
+		m <- values(x)[start:(start+ncell(x)-1)]
+		m <- matrix(m, nrow=nrow(x), byrow=TRUE)
 		lattice::levelplot(t(m[nrow(m):1, , drop=FALSE]), xlab=xlab, ylab=ylab, ...)
 	}
 )
