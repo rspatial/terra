@@ -6,6 +6,7 @@ Date: 2018-09-25
 Depends: methods, R (>= 3.3.0)
 LinkingTo: Rcpp
 Imports: Rcpp
+Suggests: lattice
 SystemRequirements: C++11
 Author: Robert J. Hijmans
 Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
