@@ -42,7 +42,9 @@ setMethod(cellFromRowCol, signature(object="SpatRaster", row="numeric", col="num
 setMethod(xyFromCell, signature(object="SpatRaster", cell="numeric"), 		
 	function(object, cell, ...) {
 		xy <- object@ptr$xyFromCell(cell-1)
-		do.call(cbind, xy)
+		xy <- do.call(cbind, xy)
+		colnames(xy) <- c('x', 'y')
+		xy
 	}
 )
 

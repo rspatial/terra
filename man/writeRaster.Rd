@@ -11,12 +11,13 @@ Write a SpatRaster object to a file.
 }
 
 \usage{
-\S4method{writeRaster}{SpatRaster,character}(x, filename, ...)
+\S4method{writeRaster}{SpatRaster,character}(x, filename, overwrite=FALSE, ...)
 }
 
 \arguments{
 \item{x}{Raster* object}
 \item{filename}{Output filename}
+\item{overwrite}{logical}
 \item{...}{Additional arguments (to be done) }
 }
 

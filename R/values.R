@@ -12,6 +12,7 @@ function(x, matrix=TRUE, ...) {
 		v <- x@ptr$getValues()
 		if (matrix) {
 			v <- matrix(v, ncol=nlayer(x))
+			colnames(v) <- names(x)
 		}
 	} else {
 		v <- NULL
@@ -21,7 +22,7 @@ function(x, matrix=TRUE, ...) {
 )
 
 
-setMethod('values<-', signature(x='SpatRaster', 'numeric'), 
+setMethod('values<-', signature(x='SpatRaster', 'ANY'), 
 	function(x, value) {
 	if (is.matrix(value)) { 
 		if (nlayer(value) == ncol(x) && ncell(value) == nrow(x)) {
@@ -38,7 +39,7 @@ setMethod('values<-', signature(x='SpatRaster', 'numeric'),
 		value <- as.vector(aperm(value, c(2,1,3)))
 	}
 	
-	if (!(is.numeric(value) | is.integer(value) | is.logical(value))) {
+	if (!(is.numeric(value) || is.integer(value) || is.logical(value))) {
 		stop('value must be numeric, integer, or logical')
 	}
 

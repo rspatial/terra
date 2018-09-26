@@ -22,7 +22,8 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \usage{
 
-\S4method{rast}{missing}(x, nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...)
+\S4method{rast}{missing}(x, nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, 
+                                      ymin=-90, ymax=90, crs, extent, resolution, ...)
 
 \S4method{rast}{character}(x, ...)
 

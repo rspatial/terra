@@ -27,10 +27,9 @@ SpatRaster
 
 
 \examples{
-r <- rast(ncol=18,nrow=18)
+r <- rast(ncol=10, nrow=10, xmin=0,xmax=10,ymin=0,ymax=10)
 v <- rep(NA, ncell(r))
-v[39:40] <- 1
-v[205] <- 2
+v[c(12,34,69)] <- 1:3
 values(r) <- v
 s <- trim(r) 
 }

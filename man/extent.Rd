@@ -11,6 +11,7 @@
 \alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext,numeric-method}
 \alias{ext,missing-method}
+\alias{as.character,SpatExtent-method}
 
   
 \title{ext}
@@ -22,6 +23,7 @@ Get a SpatExtent object of a SpatRaster object, or coordinates from such an obje
 \usage{
 \S4method{ext}{SpatRaster}(x, ...)
 \S4method{ext}{SpatRaster,SpatExtent}(x)<-value
+\S4method{as.character}{SpatExtent}(x, ...)
 }
 
 \arguments{

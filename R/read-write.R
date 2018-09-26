@@ -65,11 +65,11 @@ setMethod('writeValues', signature(x='SpatRaster', v='vector'),
 
 
 setMethod('writeRaster', signature(x='SpatRaster', filename='character'), 
-function(x, filename, ...) {
+function(x, filename, overwrite=FALSE, ...) {
 	if (!.hasValues(x)) {
 		warning('all cell values are NA')
 	}
-	success <- try(x@ptr$writeRaster(filename), silent=TRUE)
+	success <- try(x@ptr$writeRaster(filename, overwrite=overwrite), silent=TRUE)
 	if (!isTRUE(success)) {
 		stop("Cannot write to the output file")
 	}

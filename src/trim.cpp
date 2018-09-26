@@ -17,7 +17,7 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwri
 	
 	if ( r == nrow) { //stop('only NA values found')
 	}
-	unsigned firstrow = std::min(std::max(r - padding, unsigned(1)), nrow);
+	unsigned firstrow = std::min(std::max(r - padding, unsigned(0)), nrow);
 
 	for (r=nrow-1; r>firstrow; r--) {
 		v = readValues(r, 1, 0, ncol);
@@ -26,7 +26,7 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwri
 		}
 	}
 	
-	unsigned lastrow = max(min(r+padding, nrow), unsigned(1));
+	unsigned lastrow = std::max(std::min(r+padding, nrow), unsigned(0));
 	
 	unsigned tmp;
 	if (lastrow < firstrow) { 
@@ -41,15 +41,16 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwri
 			break;
 		}
 	}
-	unsigned firstcol = min(max(c-padding, unsigned(1)), ncol);
+	unsigned firstcol = min(max(c-padding, unsigned(0)), ncol);
 	
-	for (size_t c=ncol-1; c>firstcol; c--) {
+	
+	for (c=ncol-1; c>firstcol; c--) {
 		v = readValues(0, nrow, c, 1);
 		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
 			break;
 		}
 	}
-	unsigned lastcol = std::max(std::min(c+padding, ncol), unsigned(1));
+	unsigned lastcol = std::max(std::min(c+padding, ncol), unsigned(0));
 	
 	if (lastcol < firstcol) { 
 		tmp = firstcol;

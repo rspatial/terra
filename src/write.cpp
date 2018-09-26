@@ -2,6 +2,7 @@
 #include "SimpleIni.h"
 #include "util.h"
 //#include <fstream>
+# include <cstdio> // remove
 using namespace std;
 
 
@@ -38,6 +39,14 @@ SpatRaster SpatRaster::writeRaster(std::string filename, bool overwrite) {
 	return SpatRaster(filename);
 }
 
+
+bool file_exists(const std::string& name) {
+	ifstream f(name.c_str());
+	return f.good(); 
+}
+
+
+
 bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 	
 	lrtrim(filename);
@@ -50,44 +59,20 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 	if (filename == "") {
 		source.driver = {"memory"};
 	} else {
-		// if (!overwrite) check if file exists
+
 		string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
-			source.driver = {"native"};
-			string fname = setFileExt(filename, ".gri");
-		} else {
-			source.driver = {"gdal"} ;			
-			// open GDAL filestream		
-		}
-	}
-	
-	source.filename = {filename};
-	bs = getBlockSize();
-	return true;
-}
-
-bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f) {
-	
-	lrtrim(filename);
-	if (filename == "") {
-		if (!canProcessInMemory()) {
-			filename = "random_file_name.grd";
-		}
-	}
-	
-	if (filename == "") {
-		source.driver = {"memory"};
-
-	} else {
-		// if (!overwrite) check if file exists
-		string ext = getFileExt(filename);
-		lowercase(ext);
-		if (ext == ".grd") {
-			source.driver = {"native"};
-			string fname = setFileExt(filename, ".gri");
-			f.open(fname, ios::out | ios::binary);
-			fs = &f;
+			source.driver = {"raster"};				
+			bool exists = file_exists(filename);
+			if (exists) {
+				if (overwrite) {
+					remove(filename.c_str());
+				} else {
+					// stop()
+				}
+			} 			
+			//(*fs).open(fname, ios::out | ios::binary);
 		} else {
 			source.driver = {"gdal"} ;			
 			// open GDAL filestream		
@@ -102,8 +87,8 @@ bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f)
 
 bool SpatRaster::writeStop(){
 
-	if (source.driver[0] == "native") {
-		(*fs).close();
+	if (source.driver[0] == "raster") {
+		//(*fs).close();
 		writeHDR();
 	} else if (source.driver[0] == "gdal") {
 	
@@ -113,9 +98,14 @@ bool SpatRaster::writeStop(){
 
 bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 	
-	if (source.driver[0] == "native") {
-		size_t size = vals.size();
-		(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
+	if (source.driver[0] == "raster") {
+		unsigned size = vals.size();
+		//(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
+		string fname = setFileExt(source.filename[0], ".gri");
+		ofstream fs(fname, ios::ate | ios::binary);
+		fs.write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
+		fs.close();
+		
 	} else if (source.driver[0] == "gdal") {
 		// write with gdal
 	} else {
@@ -206,3 +196,41 @@ bool SpatRaster::writeHDR() {
 	}	
 }
 
+
+
+
+
+/*
+bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f) {
+	
+	lrtrim(filename);
+	if (filename == "") {
+		if (!canProcessInMemory()) {
+			filename = "random_file_name.grd";
+		}
+	}
+	
+	if (filename == "") {
+		source.driver = {"memory"};
+
+	} else {
+		// if (!overwrite) check if file exists
+		string ext = getFileExt(filename);
+		lowercase(ext);
+		if (ext == ".grd") {
+			source.driver = {"raster"};
+			string fname = setFileExt(filename, ".gri");
+			f.open(fname, ios::out | ios::binary);
+			(*fs).open(fname, ios::out | ios::binary);
+			fs = &f;
+		} else {
+			source.driver = {"gdal"} ;			
+			// open GDAL filestream		
+		}
+	}
+	
+	source.filename = {filename};
+	bs = getBlockSize();
+	return true;
+}
+*/

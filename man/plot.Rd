@@ -4,6 +4,7 @@
 
 \alias{plot}
 \alias{plot,SpatRaster,missing-method}
+\alias{plot,SpatRaster,numeric-method}
 \alias{image}
 \alias{image,SpatRaster-method}
 
@@ -21,7 +22,7 @@ Plot (that is, make a map of) the values of a SpatRaster object
 
 \arguments{
   \item{x}{Raster* object}
-  \item{y}{missing}
+  \item{y}{missing or integer indicating the layer(s) to be plotted}
   \item{maxpixels}{integer > 0. Maximum number of cells to use for the plot}
   \item{xlab}{character}
   \item{ylab}{character}

@@ -1,15 +1,14 @@
 Package: terra
 Type: Package
-Title: Classes and Methods for Raster Data
-Version: 0.0-6
-Date: 2017-09-15
+Title: Classes and Methods for Spatial Data
+Version: 0.1-0
+Date: 2018-09-25
 Depends: methods, R (>= 3.3.0)
 LinkingTo: Rcpp
 Imports: Rcpp
 SystemRequirements: C++11
 Author: Robert J. Hijmans
 Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
-Description: Classes and basic methods for geographic data, notably raster data. This package is to replace the raster package.
+Description: Classes and basic methods for spatial data, notably raster data. This package has been designed to replace the raster package.
 License: GPL (>=3)
 LazyLoad: yes
-RoxygenNote: 6.0.1

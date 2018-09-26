@@ -22,46 +22,53 @@ bool SpatRaster::readStop() {
 
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols){
 	
-//	unsigned nlayers = nlyr();
-	unsigned  r = std::min(std::max(unsigned(0), row), nrow-1);
-	unsigned  c = std::min(std::max(unsigned(0), col), ncol-1);
-	unsigned nr = std::max(unsigned(1), std::min(nrows, nrow-r));
-	unsigned nc = std::max(unsigned(1), std::min(ncols, ncol-c));
-	if ((r != row) || (c != col) || (nr != nrows) || (nc != ncols)) {
-		// message
-		row = r;
-		col = c;
-		nrows = nr;
-		ncols = nc;
-	}
-	unsigned endrow = row + nrows;
-	unsigned endcol = col + ncols;
+	row = std::min(std::max(unsigned(0), row), nrow-1);
+	col = std::min(std::max(unsigned(0), col), ncol-1);
+	nrows = std::max(unsigned(1), std::min(nrows, nrow-row));
+	ncols = std::max(unsigned(1), std::min(ncols, ncol-col));
+	std::vector<double> out;
 	
-	std::vector<double> out(nrows*ncols);
 	if (source.memory[0]) {
-		size_t k = 0;
-		size_t ij;
-		for (size_t i = row; i < endrow; i++) {
-			for (size_t j = col; j < endcol; j++) {
-				ij = i * ncol + j;
-				out[k] = values[ij];
-				k++;
+
+		if (row==0 && nrows==nrow && col==0 && ncols==ncol) {
+			out.insert(out.end(), values.begin(), values.end());
+		} else { 
+			unsigned i, j;
+			unsigned ncells = ncell();
+			if (col==0 && ncols==ncol) {
+				for (size_t lyr=0; lyr < nlyr; lyr++) {
+					unsigned add = ncells * lyr;
+					i = add + row * ncol;
+					j = i + nrows * ncol;
+					out.insert(out.end(), values.begin()+i, values.begin()+j);
+				}				
+			} else {
+				unsigned endrow = row + nrows;
+				unsigned endcol = col + ncols;
+				for (size_t lyr=0; lyr < nlyr; lyr++) {
+					unsigned add = ncells * lyr;
+					for (size_t r = row; r < endrow; r++) {
+						i = add + r * ncol;
+						out.insert(out.end(), values.begin()+i+col, values.begin()+i+endcol);
+					}
+				}
 			}
-		}
+		} 
 	} else {
 		// read from file
 		if (source.driver[0] == "raster") {
 			string file = source.filename[0];
 			if (source.datatype[0] == "FLT8S") {
-				out = readFLT8(file, 0, ncell());
+				return readFLT8(file, 0, ncell());
 			} else {
-				out = readFLT4(file, 0, ncell());
+				return readFLT4(file, 0, ncell());
 			}
+
 		} else {
 			return readValuesGDAL(row, nrows, col, ncols);			
 		}
 	}
-	return(out);	
+	return out;
 }
 
 

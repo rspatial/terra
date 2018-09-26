@@ -12,8 +12,8 @@ function(x, mode='any') {
 })
 
 setMethod('as.character', signature(x='SpatExtent'), 
-function(x, mode='any') {
-	paste("'", x@ptr$vector, collapse="', '", "'")
+function(x, ...) {
+	paste( x@ptr$vector, collapse=", ")
 })
 
 
@@ -23,22 +23,41 @@ function(x, mode='any') {
 })
 
 
-
 setMethod('as.matrix', signature(x='SpatRaster'), 
-function(x, mode='any') {
-	matrix( values(x, FALSE), nrow=nrow(x), byrow=TRUE)
+function(x, wide=FALSE, ...) {
+	if (wide) {
+		m <- matrix( values(x, FALSE), nrow=nrow(x), byrow=TRUE)
+	} else {
+		m <- values(x, matrix=TRUE)
+	}
+	m
 })
 
 
+setMethod('as.data.frame', signature(x='SpatRaster'), 
+function(x, xy=FALSE, cells=FALSE, ...) {
+	d <- NULL
+	if (xy) {
+		d <- xyFromCell(x, 1:ncell(x))
+	} 
+	if (cells) {
+		d <- cbind(cell=1:ncell(x), d)
+	}
+	d <- cbind(d, values(x, matrix=TRUE))
+	data.frame(d)
+})
+
+
+
 setMethod('as.array', signature(x='SpatRaster'), 
-function(x, mode='any') {
+function(x, ...) {
 	dm <- dim(x)
 	x <- values(x, TRUE)
-	ar <- array(NA, dm)
+	a <- array(NA, dm)
 	for (i in 1:dm[3]) {
-		ar[,,i] <- matrix(x[,i], nrow=dm[1], byrow=TRUE)
+		a[,,i] <- matrix(x[,i], nrow=dm[1], byrow=TRUE)
 	}
-	ar		
+	a	
 })
 
 

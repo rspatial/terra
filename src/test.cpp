@@ -17,8 +17,8 @@ SpatRaster SpatRaster::test(string filename) {
 	// for now for minmax
 	out.setValues(v);
 
-	fstream f;
-	out.writeStartFs(filename, true, f);
+//	fstream f;
+	out.writeStart(filename, true);
 	out.writeValues(v, 0);
 	out.writeStop(); 
     

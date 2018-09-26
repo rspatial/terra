@@ -147,7 +147,7 @@ class SpatRaster {
 	
 	private:
 		std::string msg;
-		fstream* fs;
+		//fstream* fs;
 		
 	protected:
 		SpatExtent extent;
@@ -252,7 +252,7 @@ class SpatRaster {
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		bool readStop();
 		bool writeStart(std::string filename, bool overwrite);
-		bool writeStartFs(std::string filename, bool overwrite, fstream& f);		
+		//bool writeStartFs(std::string filename, bool overwrite, fstream& f);		
 		bool writeValues(std::vector<double> vals, unsigned row);
 		bool writeStop();
 		bool writeHDR();
