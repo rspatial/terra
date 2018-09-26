@@ -25,15 +25,11 @@ function(x, matrix=TRUE, ...) {
 setMethod('values<-', signature(x='SpatRaster', 'ANY'), 
 	function(x, value) {
 	if (is.matrix(value)) { 
-		if (nlayer(value) == ncol(x) && ncell(value) == nrow(x)) {
-			value <- as.vector(value) 
-		} else if (nrow(value) == nrow(x) && ncol(value) == ncol(x)) {
+		if (nrow(value) == nrow(x)) {
 			value <- as.vector(t(value))
-		} else if (ncol(value)==1 | nrow(value)==1) {
-			value <- as.vector(value)
 		} else {
-			stop('cannot use a matrix with these dimensions')
-		}
+			value <- as.vector(value)
+		} 
 	} else if (is.array(value)) { 
 		stopifnot(length(dim(value)) == 3)
 		value <- as.vector(aperm(value, c(2,1,3)))
@@ -45,7 +41,8 @@ setMethod('values<-', signature(x='SpatRaster', 'ANY'),
 
 	if (length(value) == 1) {	
 		value <- rep(value, ncell(x))
-	}
+	} 
+	stopifnot((length(value) %% ncell(x)) == 0)
 
 	# new pointer
 	y <- rast(x)
