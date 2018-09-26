@@ -6,7 +6,7 @@
 \alias{values}
 \alias{values,SpatRaster-method}
 \alias{values<-}
-\alias{values<-,SpatRaster,numeric-method}
+\alias{values<-,SpatRaster-method}
   
 \title{Get cell values}
 
@@ -16,13 +16,13 @@ values returns all cell values of a SpatRaster object.
 
 \usage{
 \S4method{values}{SpatRaster}(x, matrix=TRUE, ...)
-\S4method{values}{SpatRaster,numeric}(x,...)<-value
+\S4method{values}{SpatRaster}(x,...)<-value
 }
 
 \arguments{
  \item{x}{SpatRaster object}
  \item{matrix}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector}
-  \item{value}{numeric}
+ \item{value}{matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value}
  \item{...}{additional arguments. none implemented}
 }
 
@@ -34,7 +34,7 @@ If \code{matrix=FALSE}, the values are returned as a vector. In cell-order by la
 
 
 \value{
-matrix
+matrix or vector
 }
 
 
