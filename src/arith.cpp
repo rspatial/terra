@@ -58,8 +58,65 @@ std::vector<T> operator%(const std::vector<T>& a, const std::vector<T>& b) {
 */
 
 
-SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
+// the comparisons do not return what I want
+// for NAN == NAN (or x > NAN, etc). Should be NAN, not false
+template <typename T>
+std::vector<T> operator==(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::equal_to<T>());
+    return result;
+}
 
+template <typename T>
+std::vector<T> operator!=(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::not_equal_to<T>());
+    return result;
+}
+
+template <typename T>
+std::vector<T> operator>=(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater<T>());
+    return result;
+}
+
+template <typename T>
+std::vector<T> operator<=(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less<T>());
+    return result;
+}
+
+
+template <typename T>
+std::vector<T> operator>(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater<T>());
+    return result;
+}
+
+template <typename T>
+std::vector<T> operator<(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less<T>());
+    return result;
+}
+
+
+SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
 	SpatRaster out = *this;
 	out.values.resize(0);
   	out.writeStart(filename, overwrite);
@@ -79,6 +136,18 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 			a = a / b; 
 		} else if (oper == "%") {
 			// a = a % b; 
+		} else if (oper == "==") {
+			a = a == b; 
+		} else if (oper == "!=") {
+			a = a == b; 
+		} else if (oper == ">=") {
+			a = a >= b; 
+		} else if (oper == "<=") {
+			a = a <= b; 
+		} else if (oper == ">") {
+			a = a > b; 
+		} else if (oper == "<") {
+			a = a < b; 
 		} else {
 			// stop
 		}
@@ -111,6 +180,18 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 			for(double& d : a)  d /= x;
 		} else if (oper == "%") {
 			for(double& d : a) std::fmod(d,x);
+		} else if (oper == "==") {
+			for(double& d : a) d = d == x;
+		} else if (oper == "!=") {
+			for(double& d : a) d = d != x;
+		} else if (oper == ">=") {
+			for(double& d : a) d = d >= x;
+		} else if (oper == "<=") {
+			for(double& d : a) d = d <= x;
+		} else if (oper == ">") {
+			for(double& d : a) d = d > x;
+		} else if (oper == "<") {
+			for(double& d : a) d = d < x;
 		} else {
 			// stop
 		}
@@ -141,6 +222,14 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 			for(double& d : a)  d = x / d;
 		} else if (oper == "%") {
 			for(double& d : a)  std::fmod(x,d);
+		} else if (oper == "==") {
+			for(double& d : a) d = d == x;
+		} else if (oper == "!=") {
+			for(double& d : a) d = d != x;
+		} else if (oper == ">") {
+			for(double& d : a)  d = x > d;
+		} else if (oper == "<") {
+			for(double& d : a)  d = x < d;
 		} else {
 			// stop
 		}

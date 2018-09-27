@@ -46,7 +46,7 @@ setMethod("Arith", signature(e1='numeric', e2='SpatRaster'),
 setMethod("Compare", signature(e1='SpatRaster', e2='SpatRaster'),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$compare_rast(e2@ptr, oper, "", FALSE)
+		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, "", FALSE)
 		e1
 	}	
 )
@@ -55,8 +55,18 @@ setMethod("Compare", signature(e1='SpatRaster', e2='SpatRaster'),
 setMethod("Compare", signature(e1='SpatRaster', e2='numeric'),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$compare_numb(e2, oper, "", FALSE)
+		e1@ptr <- e1@ptr$arith_numb(e2, oper, "", FALSE)
 		e1
+	}
+)
+
+
+setMethod("Compare", signature(e1='numeric', e2='SpatRaster'),
+    function(e1, e2){ 
+		oper <- as.vector(.Generic)[1]
+		e2@ptr <- e2@ptr$arith_numb(e1, oper, "", FALSE)
+		e2
 	}	
 )
+
 
