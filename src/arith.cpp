@@ -46,6 +46,18 @@ std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
+/*
+template <typename T>
+std::vector<T> operator%(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::modulus<T>());
+    return result;
+}
+*/
+
+
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
 
 	SpatRaster out = *this;
@@ -65,6 +77,8 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 			a = a * b; 
 		} else if (oper == "/") {
 			a = a / b; 
+		} else if (oper == "%") {
+			// a = a % b; 
 		} else {
 			// stop
 		}
@@ -95,6 +109,8 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 			for(double& d : a)  d *= x;
 		} else if (oper == "/") {
 			for(double& d : a)  d /= x;
+		} else if (oper == "%") {
+			for(double& d : a) std::fmod(d,x);
 		} else {
 			// stop
 		}
@@ -105,6 +121,35 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 	return(out);
 }
 
+
+SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filename, bool overwrite) {
+
+	SpatRaster out = *this;
+	out.values.resize(0);
+  	out.writeStart(filename, overwrite);
+	readStart();
+	std::vector<double> v, m;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		if (oper == "+") {
+			for(double& d : a)  d = x + d;
+		} else if (oper == "-") {
+			for(double& d : a)  d = x - d;
+		} else if (oper == "*") {
+			for(double& d : a)  d = x * d;
+		} else if (oper == "/") {
+			for(double& d : a)  d = x / d;
+		} else if (oper == "%") {
+			for(double& d : a)  std::fmod(x,d);
+		} else {
+			// stop
+		}
+		out.writeValues(a, out.bs.row[i]);
+	}
+	out.writeStop();
+	readStop();		
+	return(out);
+}
 
 
 /*

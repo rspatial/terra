@@ -189,7 +189,8 @@ class SpatRaster {
 
 		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", bool overwrite=false);
 		SpatRaster arith(double x, std::string oper, std:: string filename="", bool overwrite=false);
-
+		SpatRaster arith_rev(double x, std::string oper, std::string filename, bool overwrite);
+		
 		SpatRaster operator + (SpatRaster x) { return arith(x, "+", "", false); }
 
 		
