@@ -1,6 +1,5 @@
 using namespace std;
 #include <vector>
-#include <iostream>
 #include "spat.h"
 
 

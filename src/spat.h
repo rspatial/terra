@@ -185,6 +185,10 @@ class SpatRaster {
 		SpatRaster();
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string _crs);
 		SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs);
+
+		SpatRaster arith(SpatRaster x, std::string oper, std:: string filename="", bool overwrite=false);
+		SpatRaster operator + (SpatRaster x) { return arith(x, "+", "", false); }
+
 		
 		double ncell() { return nrow * ncol; }
 

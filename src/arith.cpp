@@ -1,0 +1,102 @@
+using namespace std;
+#include <vector>
+#include "spat.h"
+
+#include <algorithm>
+#include <functional>
+#include <cassert>
+
+
+template <typename T>
+std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::plus<T>());
+    return result;
+}
+
+
+template <typename T>
+std::vector<T> operator-(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::minus<T>());
+    return result;
+}
+
+
+template <typename T>
+std::vector<T> operator/(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::divides<T>());
+    return result;
+}
+
+template <typename T>
+std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b) {
+    assert(a.size() == b.size());
+    std::vector<T> result;
+    result.reserve(a.size());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::multiplies<T>());
+    return result;
+}
+
+
+SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, string filename, bool overwrite) {
+
+	SpatRaster out = *this;
+	out.values.resize(0);
+  	out.writeStart(filename, overwrite);
+	readStart();
+	x.readStart();
+	std::vector<double> v, m;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		std::vector<double> b = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		if (oper == "+") {
+			a = a + b; 
+		} else if (oper == "-") {
+			a = a - b; 
+		} else if (oper == "*") {
+			a = a * b; 
+		} else if (oper == "/") {
+			a = a / b; 
+		} else {
+			// stop
+		}
+		out.writeValues(a, out.bs.row[i]);
+	}
+	out.writeStop();
+	readStop();	
+	x.readStop();	
+	return(out);
+}
+
+
+/*
+
+std::vector<std::vector<double> > matrix(int nrow, int ncol) {
+	std::vector<std::vector<double> > m (nrow, std::vector<double>(ncol));
+	return(m);
+}
+
+
+int main() {
+	std::vector<vector<double> > d = matrix(10, 2);
+	std::vector<double> m (10);
+	m[1] = 1;
+	m[5] = 1;
+	d = mask(d, m, 1, 9, false);
+	for (int i=0; i < d.size(); i++) {
+		for (int j=0; j < d[0].size(); j++) {
+			std::cout << ' ' << d[i][j];
+		}
+		std::cout << '\n';
+	}
+	std::cout << '\n';
+}
+*/
