@@ -279,26 +279,3 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 }
 
 
-/*
-
-std::vector<std::vector<double> > matrix(int nrow, int ncol) {
-	std::vector<std::vector<double> > m (nrow, std::vector<double>(ncol));
-	return(m);
-}
-
-
-int main() {
-	std::vector<vector<double> > d = matrix(10, 2);
-	std::vector<double> m (10);
-	m[1] = 1;
-	m[5] = 1;
-	d = mask(d, m, 1, 9, false);
-	for (int i=0; i < d.size(); i++) {
-		for (int j=0; j < d[0].size(); j++) {
-			std::cout << ' ' << d[i][j];
-		}
-		std::cout << '\n';
-	}
-	std::cout << '\n';
-}
-*/
