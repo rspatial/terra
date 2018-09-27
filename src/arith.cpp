@@ -46,26 +46,33 @@ std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
-/*
+
 template <typename T>
 std::vector<T> operator%(const std::vector<T>& a, const std::vector<T>& b) {
     assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
-    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::modulus<T>());
+//    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::modulus<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		result[i] = std::fmod(a[i], b[i]);
+	}
     return result;
 }
-*/
 
 
-// the comparisons do not return what I want
-// for NAN == NAN (or x > NAN, etc). Should be NAN, not false
+
+
 template <typename T>
 std::vector<T> operator==(const std::vector<T>& a, const std::vector<T>& b) {
     assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::equal_to<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			result[i] = NAN;
+		} 
+	}
     return result;
 }
 
@@ -75,6 +82,11 @@ std::vector<T> operator!=(const std::vector<T>& a, const std::vector<T>& b) {
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::not_equal_to<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			result[i] = NAN;
+		} 
+	}
     return result;
 }
 
@@ -84,6 +96,11 @@ std::vector<T> operator>=(const std::vector<T>& a, const std::vector<T>& b) {
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			result[i] = NAN;
+		} 
+	}
     return result;
 }
 
@@ -93,6 +110,11 @@ std::vector<T> operator<=(const std::vector<T>& a, const std::vector<T>& b) {
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			result[i] = NAN;
+		} 
+	}
     return result;
 }
 
@@ -103,6 +125,11 @@ std::vector<T> operator>(const std::vector<T>& a, const std::vector<T>& b) {
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			result[i] = NAN;
+		} 
+	}
     return result;
 }
 
@@ -112,6 +139,11 @@ std::vector<T> operator<(const std::vector<T>& a, const std::vector<T>& b) {
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less<T>());
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			result[i] = NAN;
+		} 
+	}
     return result;
 }
 
@@ -135,7 +167,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 		} else if (oper == "/") {
 			a = a / b; 
 		} else if (oper == "%") {
-			// a = a % b; 
+			 a = a % b; 
 		} else if (oper == "==") {
 			a = a == b; 
 		} else if (oper == "!=") {
@@ -170,7 +202,9 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
-		if (oper == "+") {
+		if (std::isnan(x)) {
+			for(double& d : a)  d = NAN;
+		} else if (oper == "+") {
 			for(double& d : a)  d += x;
 		} else if (oper == "-") {
 			for(double& d : a)  d -= x;
@@ -181,17 +215,17 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 		} else if (oper == "%") {
 			for(double& d : a) std::fmod(d,x);
 		} else if (oper == "==") {
-			for(double& d : a) d = d == x;
+			for(double& d : a) if (!std::isnan(d)) d = d == x;
 		} else if (oper == "!=") {
-			for(double& d : a) d = d != x;
+			for(double& d : a) if (!std::isnan(d)) d = d != x;
 		} else if (oper == ">=") {
-			for(double& d : a) d = d >= x;
+			for(double& d : a) if (!std::isnan(d)) d = d >= x;
 		} else if (oper == "<=") {
-			for(double& d : a) d = d <= x;
+			for(double& d : a) if (!std::isnan(d)) d = d <= x;
 		} else if (oper == ">") {
-			for(double& d : a) d = d > x;
+			for(double& d : a) if (!std::isnan(d)) d = d > x;
 		} else if (oper == "<") {
-			for(double& d : a) d = d < x;
+			for(double& d : a) if (!std::isnan(d)) d = d < x;
 		} else {
 			// stop
 		}
@@ -226,6 +260,10 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 			for(double& d : a) d = d == x;
 		} else if (oper == "!=") {
 			for(double& d : a) d = d != x;
+		} else if (oper == ">=") {
+			for(double& d : a) d = x >= d;
+		} else if (oper == "<=") {
+			for(double& d : a) d = x <= d;			
 		} else if (oper == ">") {
 			for(double& d : a)  d = x > d;
 		} else if (oper == "<") {
