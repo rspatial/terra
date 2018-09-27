@@ -152,7 +152,13 @@ RCPP_MODULE(spat){
 		.method("aggregate", &SpatRaster::aggregate, "aggregate")
 		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims, "get_aggregate_dims")
-			
-	;	
 		
+//		.method("cellFromRowCol", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>,std::vector<unsigned>) )( &SpatRaster::cellFromRowCol ))
+//		std::vector<double> cellFromRowCol(std::vector<unsigned> rownr, std::vector<unsigned> colnr);
+
+		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool) )( &SpatRaster::arith ))
+		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, std::string, bool) )( &SpatRaster::arith ))
+
+
+	;
 }

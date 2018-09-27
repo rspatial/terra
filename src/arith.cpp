@@ -46,7 +46,7 @@ std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
-SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, string filename, bool overwrite) {
+SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
 
 	SpatRaster out = *this;
 	out.values.resize(0);
@@ -75,6 +75,36 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, string filename, bo
 	x.readStop();	
 	return(out);
 }
+
+
+
+SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, bool overwrite) {
+
+	SpatRaster out = *this;
+	out.values.resize(0);
+  	out.writeStart(filename, overwrite);
+	readStart();
+	std::vector<double> v, m;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		if (oper == "+") {
+			for(double& d : a)  d += x;
+		} else if (oper == "-") {
+			for(double& d : a)  d -= x;
+		} else if (oper == "*") {
+			for(double& d : a)  d *= x;
+		} else if (oper == "/") {
+			for(double& d : a)  d /= x;
+		} else {
+			// stop
+		}
+		out.writeValues(a, out.bs.row[i]);
+	}
+	out.writeStop();
+	readStop();		
+	return(out);
+}
+
 
 
 /*
