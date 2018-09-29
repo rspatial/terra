@@ -59,9 +59,9 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 		if (source.driver[0] == "raster") {
 			string file = source.filename[0];
 			if (source.datatype[0] == "FLT8S") {
-				return readFLT8(file, 0, ncell());
+				return readFLT8(file, 0, nlyr * ncell());
 			} else {
-				return readFLT4(file, 0, ncell());
+				return readFLT4(file, 0, nlyr * ncell());
 			}
 
 		} else {
