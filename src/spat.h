@@ -5,6 +5,7 @@ using namespace std;
 #include <algorithm>
 #include <fstream>
 #include <numeric>
+#include <cmath>
 
 class SpatExtent {
 	public:

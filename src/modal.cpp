@@ -1,6 +1,7 @@
 using namespace std;
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 double modal_value(std::vector<double> values, int ties) {
 	int n = values.size();

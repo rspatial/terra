@@ -5,6 +5,7 @@ using namespace std;
 #include <algorithm>
 #include <math.h>
 #include "distance.h"
+#include <string>
 
 double get_TRI (double v[], int n, double x) {
 	double s = 0;

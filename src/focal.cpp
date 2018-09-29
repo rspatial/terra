@@ -4,7 +4,7 @@
 
 #include <vector>
 #include "spat.h"
-#include <alorithm>
+#include <algorithm>
 
 // todo: three dimensional focal
 

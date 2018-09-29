@@ -4,7 +4,8 @@ using namespace std;
 #include <locale>
 #include <set>
 #include <string>
-
+#include <cmath>
+#include <vector>
 
 double roundn(double x, int n){
     int d = 0;

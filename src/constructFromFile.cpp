@@ -16,7 +16,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		
 	} else {
 		
-		CSimpleIniA ini(TRUE, FALSE, FALSE);
+		CSimpleIniA ini(true, false, false);
 		char ss[fname.length()];
 		strcpy(ss, fname.c_str());
 		SI_Error rc = ini.LoadFile(ss);
