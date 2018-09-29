@@ -4,7 +4,7 @@ using namespace std;
 #include <vector>
 #include <algorithm>
 #include <fstream>
-
+#include <numeric>
 
 class SpatExtent {
 	public:
