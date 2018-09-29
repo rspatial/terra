@@ -1,8 +1,7 @@
 //source http://alienryderflex.com/polygon/
 
 using namespace std;
-#include <vector>
-#include "spat.h"
+#include "spatvector.h"
   
 std::vector<bool> points_in_polygon(std::vector<double> polX, std::vector<double> polY, std::vector<double> pX, std::vector<double> pY) {
 
@@ -49,11 +48,11 @@ std::vector<int> pointsInPolygons(SpatPolygons pol, std::vector<double> pX, std:
 	
 	for (size_t j = 0; j < n; j++) {
 			
-		SpatPoly poly = pol.getPoly(j);
+		SpatGeomRings poly = pol.getGeometry(j);
 		unsigned np = poly.size();
 		std::vector<bool> inside;	
 		for (size_t k = 0; k < np; k++) {
-			SpatPolyPart part = poly.getPart(k);
+			SpatGeomRing part = poly.getGeom(k);
 			if (part.hasHoles()) {
 				inside = points_in_polygon(part.x, part.y, pX, pY);
 				for (size_t h=0; h < part.nHoles(); h++) {

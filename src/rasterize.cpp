@@ -56,8 +56,8 @@ SpatRaster SpatRaster::rasterizePolygons(SpatPolygons p, double background, stri
 	double resx = xres();
 	double resy = yres();
 	
-	SpatPoly poly;
-	SpatPolyPart part;
+	SpatGeomRings poly;
+	SpatGeomRing part;
 	
 	unsigned n = p.size();
 	
@@ -66,7 +66,7 @@ SpatRaster SpatRaster::rasterizePolygons(SpatPolygons p, double background, stri
 		
 		for (size_t j = 0; j < n; j++) {
 			
-			poly = p.getPoly(j);
+			poly = p.getGeometry(j);
 			
 			//value = p.getAtt(j);
 			//if (std::isnan(value)) { value = j;}
@@ -75,7 +75,7 @@ SpatRaster SpatRaster::rasterizePolygons(SpatPolygons p, double background, stri
 			unsigned np = poly.size();
 			
 			for (size_t k = 0; k < np; k++) {
-				part = poly.getPart(k);
+				part = poly.getGeom(k);
 				if (part.hasHoles()) {
 					std::vector<double> vv = rasterize_polygon(v, value, part.x, part.y, nrow, ncol, extent.xmin, extent.ymax, resx, resy);
 					for (size_t h=0; h < part.nHoles(); h++) {
