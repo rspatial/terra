@@ -2,7 +2,6 @@ using namespace std;
 
 #include <fstream>
 #include <numeric>
-#include <cmath>
 #include "spatvector.h"
 
 
