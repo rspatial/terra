@@ -2,17 +2,17 @@
 
 \docType{class}
 
-\alias{SpatPoly}
-\alias{SpatPolyPart}
+\alias{SpatGeomRing}
+\alias{SpatGeomRings}
 \alias{SpatPolygons}
 
-\alias{SpatPoly-class}
-\alias{SpatPolyPart-class}
+\alias{SpatGeomRing-class}
+\alias{SpatGeomRings-class}
 \alias{SpatPolygons-class}
 
+\alias{Rcpp_SpatGeomRing-class}
+\alias{Rcpp_SpatGeomRings-class}
 \alias{Rcpp_SpatPolygons-class}
-\alias{Rcpp_SpatPoly-class}
-\alias{Rcpp_SpatPolyPart-class}
 
 \title{ Rcpp classes}
 

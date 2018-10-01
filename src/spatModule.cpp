@@ -81,7 +81,11 @@ RCPP_MODULE(spat){
 		.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
 		.field_readonly("driver", &RasterSource::driver)
+		.field_readonly("nrow", &RasterSource::nrow)
+		.field_readonly("ncol", &RasterSource::ncol)
 		.field_readonly("nlyr", &RasterSource::nlyr)
+		.field_readonly("crs", &RasterSource::crs)
+		.field_readonly("extent", &RasterSource::extent)
 		.field_readonly("datatype", &RasterSource::datatype)
 		.field_readonly("NAflag", &RasterSource::NAflag)
 		//std::vector<std::vector<int> > layers;		
@@ -125,6 +129,7 @@ RCPP_MODULE(spat){
 		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
 
 		.property("names", &SpatRaster::getNames, &SpatRaster::setNames )
+
 		.property("res", &SpatRaster::resolution)
 		.property("origin", &SpatRaster::origin)
 		//.property("layers", &SpatRaster::getnlayers)

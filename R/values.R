@@ -61,7 +61,7 @@ setMethod('values<-', signature(x='SpatRaster', 'ANY'),
 }
 
 .filenames <- function(x) {
-	x@ptr$source$filename
+	x@ptr$filenames
 }
 
 .hasRange <- function(x) {

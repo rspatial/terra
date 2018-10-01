@@ -28,7 +28,7 @@ class RasterSource {
 		unsigned nlyrfile;
 		string driver;
 		string bandorder;
-		string endian;
+		string byteorder;
 		string datatype;
 		double NAflag;
 };

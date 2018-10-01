@@ -28,12 +28,12 @@ setMethod("SpatPolygon", signature(x='data.frame'),
 		x <- split(x, x$object)
 		for (i in 1:length(x)) {
 			y <- x[[i]]
-			pp <- SpatPoly$new()
+			pp <- SpatGeomRings$new()
 			if ( any(y$hole > 0) ) {
 				ym <- y[y$hole < 1, ]
 				z <- split(ym, ym$part)
 				for (j in 1:length(z)) {
-					p <- SpatPolyPart$new()
+					p <- SpatGeomRing$new()
 					p$set(z[[j]]$x, z[[j]]$y)
 					z[[j]] <- p
 				}
@@ -50,7 +50,7 @@ setMethod("SpatPolygon", signature(x='data.frame'),
 			} else {
 				z <- split(y, y$part)
 				for (j in 1:length(z)) {
-					p <- SpatPolyPart$new()
+					p <- SpatGeomRing$new()
 					p$set(z[[j]]$x, z[[j]]$y)
 					pp$addPart(p)
 				}
