@@ -121,7 +121,7 @@ void SpatRaster::setValues(std::vector<double> _values) {
 	//bool result = false;
 	//if (_values.size() == size()) {
 		values = _values;
-		hasValues = true;
+		source[0].hasValues = true;
 		source[0].memory = true;
 		
 		// todo clear source...
@@ -181,7 +181,7 @@ bool SpatRaster::writeHDR() {
 	ini.SetValue("georeference", "crs", crs.c_str());
 	ini.SetValue("dimensions", "nrow", to_string(nrow).c_str());
 	ini.SetValue("dimensions", "ncol", to_string(ncol).c_str());
-	ini.SetValue("dimensions", "nlyr", to_string(nlyr).c_str());
+	ini.SetValue("dimensions", "nlyr", to_string(nlyr()).c_str());
 	ini.SetValue("dimensions", "names", concatenate(source[0].names, std::string(":|:")).c_str());		
 	ini.SetValue("data", NULL, NULL);
 	ini.SetValue("data", "datatype", "FLT8S"); // double

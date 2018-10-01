@@ -18,7 +18,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string filename, std::string snap
 	
 	out.setExtent(e, true, snap);
 	
-	if (!hasValues ) {
+	if (!source[0].hasValues ) {
 		return(out);
 	}
 

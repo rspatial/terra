@@ -3,8 +3,8 @@ using namespace std;
 
 SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwrite) {
 
-	unsigned nrl = nrow * nlyr;
-	unsigned ncl = ncol * nlyr;
+	unsigned nrl = nrow * nlyr();
+	unsigned ncl = ncol * nlyr();
 	
 	std::vector<double> v;
 	unsigned r;

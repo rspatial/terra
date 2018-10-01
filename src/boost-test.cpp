@@ -45,7 +45,7 @@ array3D SpatRaster::readValues3D(unsigned row, unsigned nrows, unsigned col, uns
 	// and not more than once ..
 	
 	// for now
-	unsigned nlyrs = nlyr;
+	unsigned nlyrs = nlyr();
 	
 	unsigned nr = std::min(nrows, nrow-row);
 	unsigned nc = std::min(ncols, ncol-col);

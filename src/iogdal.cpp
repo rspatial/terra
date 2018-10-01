@@ -21,12 +21,10 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	
     if( poDataset == NULL )  {	return false;}	
 		
-	ncol = poDataset->GetRasterXSize();
-	nrow = poDataset->GetRasterYSize();
-	unsigned nlyrs = poDataset->GetRasterCount();
-
 	RasterSource s;
-	s.nlyr = nlyrs;	
+	s.ncol = poDataset->GetRasterXSize();
+	s.nrow = poDataset->GetRasterYSize();
+	s.nlyr = poDataset->GetRasterCount();
 	
 	double adfGeoTransform[6];
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
@@ -35,31 +33,30 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		// computation of the opposite corder coordinates is only approximate for large rasters with a high resolution.
 		double xmin = adfGeoTransform[0]; /* top left x */
 		xmin = roundn(xmin, 9);
-		double xmax = xmin + adfGeoTransform[1] * ncol; /* w-e pixel resolution */
+		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
 		xmax = roundn(xmax, 9);
 		double ymax = adfGeoTransform[3]; /* top left y */
 		ymax = roundn(ymax, 9);
-		double ymin = ymax + nrow * adfGeoTransform[5]; /* n-s pixel resolution (negative value) */
+		double ymin = ymax + s.nrow * adfGeoTransform[5]; /* n-s pixel resolution (negative value) */
 		ymin = roundn(ymin, 9);
 		SpatExtent e(xmin, xmax, ymin, ymax);
-		setExtent(e, false);
+		s.extent = e;
 	}
 		
 	s.memory = false;
 	s.filename = fname;	
 	s.driver = "gdal";
 	
-	string crs;
+
 	if( poDataset->GetProjectionRef() != NULL ) {
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
 		char *pszPRJ = NULL;
 		oSRS.exportToProj4(&pszPRJ);
-		crs = pszPRJ;
+		s.crs = pszPRJ;
 	} else {
-		crs = "";
+		s.crs = "";
 	}
-	s.crs = crs;
-	setnlyr();	
+
 
 	GDALRasterBand  *poBand;
 	//int nBlockXSize, nBlockYSize;
@@ -67,7 +64,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	int bGotMin, bGotMax;
 	
 //	s.layers.resize(1);
-	for (size_t i = 0; i < nlyrs; i++) {
+	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 //		source.layers[0].push_back(i+1);
 		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );

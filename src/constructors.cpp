@@ -8,31 +8,28 @@ SpatRaster::SpatRaster(std::string fname) {
 
 
 SpatRaster::SpatRaster(RasterSource s) {
-source = { s };
-	nrow = s.nrow;
-	ncol = s.ncol;
-	nlyr = s.nlyr;
-	extent = s.extent;
-	crs = s.crs;
+	setSource(s);
 }
 
 		
 SpatRaster::SpatRaster() {
-	nrow=10; 
-	ncol=10; 
-	extent = SpatExtent();
+
 	RasterSource s;
+	s.nrow=10; 
+	s.ncol=10; 
+	s.extent = SpatExtent();
 	s.memory = true;
 	s.filename = "";
 	s.driver = "";
-	s.nlyr = 0;
+	s.nlyr = 1;
 	s.hasRange = { false };
 	s.hasValues = false; 
 	s.layers.resize(1,1);
 	s.datatype = "";
 	s.names = {"lyr.1"};
-	source = { s };
-	setnlyr();
+	s.crs = "+proj=longlat +datum=WGS84";
+	
+	setSource(s);
 }
 
 
@@ -56,17 +53,20 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.datatype = "";
 	s.crs =_crs;
 	for (unsigned i=0; i < rcl[2]; i++) { s.names.push_back("lyr." + std::to_string(i+1)) ; }
-	source = { s };
 
-	setnlyr();	
+	setSource(s);
+
+
 }
 
 
 SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs) {
-	nrow=_nrow; ncol=_ncol;
-	extent = ext;
-	hasValues = false; 
+
 	RasterSource s;
+	s.ncol = _ncol;
+	s.nrow = _nrow;
+	s.extent = ext;
+	s.hasValues = false; 
 	s.memory = true;
 	s.filename = "";
 	s.driver = "";
@@ -76,8 +76,6 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 	s.datatype = "";
 	s.crs=_crs;
 	for (unsigned i=0; i < _nlyr; i++) {	s.names.push_back("lyr." + std::to_string(i+1)) ; }
-	source = {s};
-	setnlyr();	
+
+	setSource(s);
 }
-
-

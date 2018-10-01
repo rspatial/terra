@@ -36,7 +36,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			unsigned i, j;
 			unsigned ncells = ncell();
 			if (col==0 && ncols==ncol) {
-				for (size_t lyr=0; lyr < nlyr; lyr++) {
+				for (size_t lyr=0; lyr < nlyr(); lyr++) {
 					unsigned add = ncells * lyr;
 					i = add + row * ncol;
 					j = i + nrows * ncol;
@@ -45,7 +45,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			} else {
 				unsigned endrow = row + nrows;
 				unsigned endcol = col + ncols;
-				for (size_t lyr=0; lyr < nlyr; lyr++) {
+				for (size_t lyr=0; lyr < nlyr(); lyr++) {
 					unsigned add = ncells * lyr;
 					for (size_t r = row; r < endrow; r++) {
 						i = add + r * ncol;
@@ -60,7 +60,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			string file = source[0].filename;
 			std::vector<unsigned> lyrs = {1};
 			if (source[0].datatype == "FLT8S") {
-				//return readFLT8(file, 0, ncell(), nlyr, order="BIL");
+				//return readFLT8(file, 0, ncell(), nlyr(), order="BIL");
 			} else {
 				return readFLT4(file, "BIL", 0, ncell(), lyrs);
 			}

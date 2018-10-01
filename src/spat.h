@@ -50,14 +50,8 @@ class SpatRaster {
 	protected:
 		SpatExtent extent;
 		SpatExtent window;
-		std::string crs ="+proj=longlat +datum=WGS84";
+		std::string crs; 
 
-		void setnlyr() { 
-			nlyr=0;
-			for (size_t i=0; i < source.size(); i++) {
-				nlyr += source[i].layers.size();
-			}
-		}
 		BlockSize getBlockSize();
 		
 	public:
@@ -67,23 +61,35 @@ class SpatRaster {
 		
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 		std::vector<RasterSource> source;
-	
-		//unsigned getnlayers() { return nlyr; }
-		
-		unsigned nrow, ncol, nlyr;
-		unsigned long size() { return ncol * nrow * nlyr ; }
-		bool hasValues;
-		
+		void setSource(RasterSource s) {
+			source = {s};
+			nrow = s.nrow; 
+			ncol = s.ncol; 
+			extent = s.extent;
+			crs = s.crs;
+		}
+
 		BlockSize bs;
+	
+	
+	
+		unsigned nrow, ncol;
+		unsigned long size() { return ncol * nrow * nlyr() ; }
+			
+		bool hasValues() { return source[0].hasValues ; };
 		
 		std::vector<double> values;
 		
 		std::vector<string> filenames() { 
-			std::vector<string> f(source.size()); 
-			for (size_t i=0; i<f.size(); i++) {
-				f[i] = source[i].filename; 
-			} 
-			return(f);
+			std::vector<string> x(source.size()); 
+			for (size_t i=0; i<source.size(); i++) { x[i] = source[i].filename; } 
+			return(x);
+		}
+
+		unsigned nlyr() { 
+			unsigned x = 0;
+			for (size_t i=0; i<source.size(); i++) { x += source[i].nlyr; } 
+			return(x);
 		}
 
 		

@@ -95,7 +95,7 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 	}
 	
 	SpatRaster out = *this;
-	if (!hasValues) { return(out); }
+	if (!source[0].hasValues) { return(out); }
 	std::vector<unsigned> dim = {0, ncol};
 	
  	out.writeStart(filename, overwrite);

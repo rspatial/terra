@@ -5,7 +5,7 @@ using namespace Rcpp;
 
 
 NumericMatrix getValuesM(SpatRaster* r) {
-	NumericMatrix x(r->ncell(), r->nlyr);
+	NumericMatrix x(r->ncell(), r->nlyr() );
 	std::vector<double> v;
 	v = r->getValues();
 	std::copy(v.begin(), v.end(), x.begin());
@@ -118,22 +118,22 @@ RCPP_MODULE(spat){
 
 		.method("writeRaster", &SpatRaster::writeRaster, "writeRaster")
 		
-		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
+		.field_readonly("nrow", &SpatRaster::nrow )
+		.field_readonly("ncol", &SpatRaster::ncol )
+		.property("nlyr", &SpatRaster::nlyr )
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
+		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
+
 		.property("names", &SpatRaster::getNames, &SpatRaster::setNames )
 		.property("res", &SpatRaster::resolution)
 		.property("origin", &SpatRaster::origin)
 		//.property("layers", &SpatRaster::getnlayers)
 
-
 		.property("inMemory", &SpatRaster::inMemory )
 		.property("filenames", &SpatRaster::filenames )
+		.property("hasValues", &SpatRaster::hasValues )
 		
-		.field_readonly("nrow", &SpatRaster::nrow )
-		.field_readonly("ncol", &SpatRaster::ncol )
-		.field_readonly("nlyr", &SpatRaster::nlyr )
 	
-		.field_readonly("hasValues", &SpatRaster::hasValues )
 		//.field_readonly("hasRAT", &SpatRaster::hasRAT )
 		//.field_readonly("hasCT", &SpatRaster::hasCT )
 		.property("hasRange", &SpatRaster::hasRange )

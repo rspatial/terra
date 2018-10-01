@@ -8,7 +8,7 @@ using namespace std;
 SpatRaster SpatRaster::test(string filename) {
 
 	//SpatRaster out = *this;
-	SpatRaster out(nrow, ncol, nlyr, extent, crs);
+	SpatRaster out(nrow, ncol, nlyr(), extent, crs);
 
 	std::vector<double> v = getValues();
 	for (size_t i = 0; i < v.size(); i++) {

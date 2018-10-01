@@ -97,7 +97,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			s.crs = crs;
 			s.names = nms;
 			
-			source = { s };
+			setSource(s);
 			
 			//setnlyr();
 			return true;

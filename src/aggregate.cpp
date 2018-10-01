@@ -47,11 +47,11 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims( std::vector<unsigned> fact
 	// int dy = dim[0], dx = dim[1], dz = dim[2];
 	fact[0] = std::max(unsigned(1), std::min(fact[0], nrow));
 	fact[1] = std::max(unsigned(1), std::min(fact[1], ncol));
-	fact[2] = std::max(unsigned(1), std::min(fact[2], nlyr));
+	fact[2] = std::max(unsigned(1), std::min(fact[2], nlyr()));
 	// new dimensions: rows, cols, lays
 	fact[3] = std::ceil(double(nrow) / fact[0]);
 	fact[4] = std::ceil(double(ncol) / fact[1]);
-	fact[5] = std::ceil(double(nlyr) / fact[2]);
+	fact[5] = std::ceil(double(nlyr()) / fact[2]);
 	return fact;
 }
 
@@ -85,7 +85,7 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigne
 		unsigned rstart = (dy * (b / bpR)) % adjnr;
 		unsigned cstart = dx * (b % bpR);
 
-		unsigned lmax   = std::min(nlyr, (lstart + dz));
+		unsigned lmax   = std::min(nlyr(), (lstart + dz));
 		unsigned rmax   = std::min(nrow, (rstart + dy));
 		unsigned cmax   = std::min(ncol, (cstart + dx));
 
@@ -128,7 +128,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, string fun, bool na
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
 	SpatRaster r = SpatRaster(fact[3], fact[4], fact[5], e, crs);
 
-	if (!hasValues) { return r; }
+	if (!source[0].hasValues) { return r; }
 	
 	// output: each row is a new cell 
 	std::vector< std::vector<double> > v(fact[5], std::vector<double>(fact[3]*fact[4]));
