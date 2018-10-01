@@ -1,7 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
-
+#include <cmath>
 
 class SpatExtent {
 	public:
