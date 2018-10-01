@@ -24,7 +24,9 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	ncol = poDataset->GetRasterXSize();
 	nrow = poDataset->GetRasterYSize();
 	unsigned nlyrs = poDataset->GetRasterCount();
-	source.nlayers = { nlyrs };	
+
+	RasterSource s;
+	s.nlyr = nlyrs;	
 	
 	double adfGeoTransform[6];
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
@@ -43,9 +45,9 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		setExtent(e, false);
 	}
 		
-	source.memory.push_back(false);
-	source.filename.push_back( fname );	
-	source.driver = {"gdal"};
+	s.memory = false;
+	s.filename = fname;	
+	s.driver = "gdal";
 	
 	string crs;
 	if( poDataset->GetProjectionRef() != NULL ) {
@@ -56,7 +58,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	} else {
 		crs = "";
 	}
-	setCRS(crs);
+	s.crs = crs;
 	setnlyr();	
 
 	GDALRasterBand  *poBand;
@@ -64,10 +66,10 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	double adfMinMax[2];
 	int bGotMin, bGotMax;
 	
-	source.layers.resize(1);
+//	s.layers.resize(1);
 	for (size_t i = 0; i < nlyrs; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
-		source.layers[0].push_back(i+1);
+//		source.layers[0].push_back(i+1);
 		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
 		
 		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
@@ -75,13 +77,13 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
 		if( (bGotMin && bGotMax) ) {
-			hasRange.push_back(true);
-			range_min.push_back( adfMinMax[0] );
-			range_max.push_back( adfMinMax[1] );
+			s.hasRange.push_back(true);
+			s.range_min.push_back( adfMinMax[0] );
+			s.range_max.push_back( adfMinMax[1] );
 		} else {
-			hasRange.push_back(false);
-			range_min.push_back( NAN );
-			range_max.push_back( NAN );		
+			s.hasRange.push_back(false);
+			s.range_min.push_back( NAN );
+			s.range_max.push_back( NAN );		
 		}
 			
 		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
@@ -91,24 +93,25 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		GDALColorTable *ct;
 		ct = poBand->GetColorTable(); 
 		if( ct != NULL )	{
-			hasCT.push_back(true);
+			s.hasCT.push_back(true);
 		} else {
-			hasCT.push_back(false);
+			s.hasCT.push_back(false);
 		}
 		
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT(); 	
 		if( rat != NULL )	{  // does not appear to work
-			hasRAT.push_back(true);
+			s.hasRAT.push_back(true);
 		} else {
-			hasRAT.push_back(false);
+			s.hasRAT.push_back(false);
 		}
 		
-		names.push_back( "lyr" + to_string(i+1) ) ;
+		s.names.push_back( "lyr" + to_string(i+1) ) ;
 	}
 
 	GDALClose( (GDALDatasetH) poDataset );
 
-	hasValues = true; 
+	s.hasValues = true;
+	source = { s };
 	return true;
  
 }
@@ -118,14 +121,14 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 	GDALRasterBand  *poBand;
     GDALAllRegister();
 	
-	const char* pszFilename = source.filename[0].c_str();
+	const char* pszFilename = source[0].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 	std::vector<double> out;
 	unsigned ncell = ncols*nrows;
 	double *pafScanline;
 	pafScanline = (double *) CPLMalloc(sizeof(double)*ncell);
 	
-	for (size_t i=0; i < source.layers[0].size(); i++) {
+	for (size_t i=0; i < source[0].nlyr; i++) {
 	
 		poBand = poDataset->GetRasterBand(i+1);
 		CPLErr err = poBand->RasterIO( GF_Read, row, col, ncols, nrows, pafScanline, ncols, nrows, GDT_Float64, 0, 0 );	

@@ -81,7 +81,7 @@ RCPP_MODULE(spat){
 		.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
 		.field_readonly("driver", &RasterSource::driver)
-		.field_readonly("nlayers", &RasterSource::nlayers)
+		.field_readonly("nlyr", &RasterSource::nlyr)
 		.field_readonly("datatype", &RasterSource::datatype)
 		.field_readonly("NAflag", &RasterSource::NAflag)
 		//std::vector<std::vector<int> > layers;		
@@ -127,20 +127,20 @@ RCPP_MODULE(spat){
 
 
 		.property("inMemory", &SpatRaster::inMemory )
-//		.property("filenames", &SpatRaster::filenames )
+		.property("filenames", &SpatRaster::filenames )
 		
 		.field_readonly("nrow", &SpatRaster::nrow )
 		.field_readonly("ncol", &SpatRaster::ncol )
 		.field_readonly("nlyr", &SpatRaster::nlyr )
 	
 		.field_readonly("hasValues", &SpatRaster::hasValues )
-		.field_readonly("hasRange", &SpatRaster::hasRange )
-		.field_readonly("hasRAT", &SpatRaster::hasRAT )
-		.field_readonly("hasCT", &SpatRaster::hasCT )
-		.field_readonly("range_min", &SpatRaster::range_min )
-		.field_readonly("range_max", &SpatRaster::range_max )
+		//.field_readonly("hasRAT", &SpatRaster::hasRAT )
+		//.field_readonly("hasCT", &SpatRaster::hasCT )
+		.property("hasRange", &SpatRaster::hasRange )
+		.property("range_min", &SpatRaster::range_min )
+		.property("range_max", &SpatRaster::range_max )
 
-		.method("test", &SpatRaster::test, "test")
+		//.method("test", &SpatRaster::test, "test")
 		
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")

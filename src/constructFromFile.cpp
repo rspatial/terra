@@ -33,7 +33,8 @@ bool SpatRaster::constructFromFile(std::string fname) {
 
 			unsigned nlyrs;
 			double vna;
-			string dtp, crs, smin, smax;
+			string dtp, crs, smin, smax, bandorder, byteorder;
+			std::vector<string> nms;
 			std::vector<double> dmin, dmax; 			
 
 			string version = ini.GetValue("version", "version", "1");
@@ -48,12 +49,14 @@ bool SpatRaster::constructFromFile(std::string fname) {
 				dtp = ini.GetValue("data", "datatype");
 				nlyrs = atoi(ini.GetValue("data", "nbands"));
 				vna  = atof(ini.GetValue("data", "nodatavalue"));
+				bandorder = ini.GetValue("data", "bandorder");
+				byteorder = ini.GetValue("data", "byteorder");
 				smin = ini.GetValue("data", "minvalue");
 				smax = ini.GetValue("data", "maxvalue");
 				dmin = str2dbl(strsplit(smin, ":"));
 				dmax = str2dbl(strsplit(smax, ":"));	
 				string snames = ini.GetValue("description", "layername");
-				names = { strsplit(snames, ":") }; 
+				nms = { strsplit(snames, ":") }; 
 				
 			} else {  // version 2
 			
@@ -64,9 +67,11 @@ bool SpatRaster::constructFromFile(std::string fname) {
 				nrow = nrows;
 				nlyrs = atoi(ini.GetValue("dimensions", "nlyr"));
 				string snames = ini.GetValue("dimensions", "names");
-				names = { strsplit(snames, ":|:") }; 
+				nms = { strsplit(snames, ":|:") }; 
 				crs = ini.GetValue("georeference", "crs");
 				dtp = ini.GetValue("data", "datatype");
+				bandorder = ini.GetValue("data", "bandorder");
+				byteorder = ini.GetValue("data", "byteorder");
 				smin = ini.GetValue("data", "range_min");
 				smax = ini.GetValue("data", "range_max");		
 				dmin = str2dbl(strsplit(smin, ":|:"));
@@ -74,24 +79,27 @@ bool SpatRaster::constructFromFile(std::string fname) {
 				vna = atof(ini.GetValue("data", "nodata"));
 			}
 
-			source.datatype = { dtp };
-			source.nlayers = { nlyrs };		
+			RasterSource s;
+			s.datatype =  dtp ;
+			s.nlyr =  nlyrs ;		
+	    	s.bandorder =  bandorder ;
+	    	s.endian =  byteorder ;
+
+			s.hasValues = true; 
+			s.NAflag =  vna ;
+			s.hasRange = { true };
+			s.range_min = dmin;
+			s.range_max = dmax;		
+			s.filename = setFileExt(fname, ".gri");
+			s.memory = false;
 			
-			hasValues = true; 
-			source.NAflag = { vna };
-			hasRange = {true};
-			range_min = {dmin};
-			range_max = {dmax};		
+			s.driver = "raster";
+			s.crs = crs;
+			s.names = nms;
 			
-			//range[0].insert(range[0].end(), dmin.begin(), dmin.end());
-			//range[1].insert(range[1].end(), dmax.begin(), dmax.end());
-			source.memory.push_back(false);
-			source.filename.push_back( setFileExt(fname, ".gri") );
+			source = { s };
 			
-			source.driver = {"raster"};
-			setCRS(crs);
-			setnlyr();
-            
+			//setnlyr();
 			return true;
 		}
    }

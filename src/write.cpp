@@ -13,7 +13,7 @@ bool canProcessInMemory() {
 BlockSize SpatRaster::getBlockSize() {
 	BlockSize bs;
 		
-	if (source.filename[0] == "") {
+	if (source[0].filename == "") {
 	// in memory
 		bs.row = {0};
 		bs.nrows = {nrow};
@@ -49,6 +49,8 @@ bool file_exists(const std::string& name) {
 
 bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 	
+	RasterSource s;
+	source = { s };
 	lrtrim(filename);
 	if (filename == "") {
 		if (!canProcessInMemory()) {
@@ -57,13 +59,13 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 	}
 	
 	if (filename == "") {
-		source.driver = {"memory"};
+		source[0].driver = "memory";
 	} else {
 
 		string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
-			source.driver = {"raster"};				
+			source[0].driver = {"raster"};				
 			bool exists = file_exists(filename);
 			if (exists) {
 				if (overwrite) {
@@ -74,12 +76,12 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 			} 			
 			//(*fs).open(fname, ios::out | ios::binary);
 		} else {
-			source.driver = {"gdal"} ;			
+			source[0].driver = {"gdal"} ;			
 			// open GDAL filestream		
 		}
 	}
 	
-	source.filename = {filename};
+	source[0].filename = {filename};
 	bs = getBlockSize();
 	return true;
 }
@@ -87,10 +89,10 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 
 bool SpatRaster::writeStop(){
 
-	if (source.driver[0] == "raster") {
+	if (source[0].driver == "raster") {
 		//(*fs).close();
 		writeHDR();
-	} else if (source.driver[0] == "gdal") {
+	} else if (source[0].driver == "gdal") {
 	
 	}
 	return true;
@@ -98,15 +100,15 @@ bool SpatRaster::writeStop(){
 
 bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 	
-	if (source.driver[0] == "raster") {
+	if (source[0].driver == "raster") {
 		unsigned size = vals.size();
 		//(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
-		string fname = setFileExt(source.filename[0], ".gri");
+		string fname = setFileExt(source[0].filename, ".gri");
 		ofstream fs(fname, ios::ate | ios::binary);
 		fs.write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
 		fs.close();
 		
-	} else if (source.driver[0] == "gdal") {
+	} else if (source[0].driver == "gdal") {
 		// write with gdal
 	} else {
 		setValues(vals);
@@ -120,12 +122,12 @@ void SpatRaster::setValues(std::vector<double> _values) {
 	//if (_values.size() == size()) {
 		values = _values;
 		hasValues = true;
-		source.memory = {true};
+		source[0].memory = true;
 		
 		// todo clear source...
 		setRange();
 
-		names = std::vector<string> {"layer"};
+		source[0].names = std::vector<string> {"layer"};
 		//result = true;
 	//} 
 	//return (result);
@@ -159,9 +161,9 @@ void SpatRaster::setRange() {
 	int imin, imax;
 	// for each layer {
 		vector_minmax(values, vmin, imin, vmax, imax); 
-		range_min = std::vector<double> {vmin};
-		range_max = std::vector<double> {vmax};
-		hasRange = std::vector<bool> {true};
+		source[0].range_min = std::vector<double> {vmin};
+		source[0].range_max = std::vector<double> {vmax};
+		source[0].hasRange = std::vector<bool> {true};
 	//}
 }
 
@@ -180,14 +182,14 @@ bool SpatRaster::writeHDR() {
 	ini.SetValue("dimensions", "nrow", to_string(nrow).c_str());
 	ini.SetValue("dimensions", "ncol", to_string(ncol).c_str());
 	ini.SetValue("dimensions", "nlyr", to_string(nlyr).c_str());
-	ini.SetValue("dimensions", "names", concatenate(names, std::string(":|:")).c_str());		
+	ini.SetValue("dimensions", "names", concatenate(source[0].names, std::string(":|:")).c_str());		
 	ini.SetValue("data", NULL, NULL);
 	ini.SetValue("data", "datatype", "FLT8S"); // double
 	ini.SetValue("data", "nodata", to_string(-1 * numeric_limits<double>::max()).c_str());
-	ini.SetValue("data", "range_min", concatenate(dbl2str(range_min), std::string(":|:")).c_str());
-	ini.SetValue("data", "range_max", concatenate(dbl2str(range_max), std::string(":|:")).c_str());
+	ini.SetValue("data", "range_min", concatenate(dbl2str(source[0].range_min), std::string(":|:")).c_str());
+	ini.SetValue("data", "range_max", concatenate(dbl2str(source[0].range_max), std::string(":|:")).c_str());
 
-	string f = setFileExt(source.filename[0], ".grd");
+	string f = setFileExt(source[0].filename, ".grd");
 	SI_Error rc = ini.SaveFile(f.c_str());
 	if (rc < 0) {
 		return false;

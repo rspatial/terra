@@ -6,14 +6,14 @@ using namespace std;
 bool SpatRaster::readStart() {
 // for now assuming a single source
 // will have to become a loop over sources
-	if (!source.memory[0]) {
+	if (!source[0].memory) {
 		// open filestream
 	}
 	return true;
 }
 
 bool SpatRaster::readStop() {
-	if (!source.memory[0]) {
+	if (!source[0].memory) {
 		// close filestream
 	}
 	return true;
@@ -28,7 +28,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 	ncols = std::max(unsigned(1), std::min(ncols, ncol-col));
 	std::vector<double> out;
 	
-	if (source.memory[0]) {
+	if (source[0].memory) {
 
 		if (row==0 && nrows==nrow && col==0 && ncols==ncol) {
 			out.insert(out.end(), values.begin(), values.end());
@@ -56,12 +56,13 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 		} 
 	} else {
 		// read from file
-		if (source.driver[0] == "raster") {
-			string file = source.filename[0];
-			if (source.datatype[0] == "FLT8S") {
-				return readFLT8(file, 0, nlyr * ncell());
+		if (source[0].driver == "raster") {
+			string file = source[0].filename;
+			std::vector<unsigned> lyrs = {1};
+			if (source[0].datatype == "FLT8S") {
+				//return readFLT8(file, 0, ncell(), nlyr, order="BIL");
 			} else {
-				return readFLT4(file, 0, nlyr * ncell());
+				return readFLT4(file, "BIL", 0, ncell(), lyrs);
 			}
 
 		} else {
@@ -75,10 +76,10 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 
 
 std::vector<double>  SpatRaster::getValues() { 
-	if (source.memory[0]) {
+	if (source[0].memory) {
 		return values; 
 	} else {
-		if (source.driver[0] == "raster") {
+		if (source[0].driver == "raster") {
 			return readValues(0, nrow, 0, ncol);
 		} else {
 			return readValuesGDAL(0, nrow, 0, ncol);			

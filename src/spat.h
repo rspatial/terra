@@ -6,16 +6,31 @@ using namespace std;
 #include "spatvector.h"
 
 
-
 class RasterSource {
 	public:
-		std::vector<bool> memory;
-		std::vector<string> filename;
-		std::vector<string> driver;
-		std::vector<unsigned> nlayers;		
-		std::vector<std::vector<int> > layers;		
-		std::vector<string> datatype;
-		std::vector<double> NAflag;
+		unsigned ncol;
+		unsigned nrow;
+		SpatExtent extent;
+		unsigned nlyr;
+		string crs;
+		std::vector<unsigned> layers;
+		std::vector<string> names;
+
+		bool hasValues;
+		std::vector<bool> hasRange;
+		std::vector<double> range_min;
+		std::vector<double> range_max;
+		std::vector<bool> hasCT;
+		std::vector<bool> hasRAT;
+		
+		bool memory;
+		string filename;
+		unsigned nlyrfile;
+		string driver;
+		string bandorder;
+		string endian;
+		string datatype;
+		double NAflag;
 };
 
 
@@ -27,49 +42,80 @@ class BlockSize {
 };
 
 
-
-
 class SpatRaster {
 	
 	private:
-		std::string msg;
 		//fstream* fs;
 		
 	protected:
 		SpatExtent extent;
+		SpatExtent window;
 		std::string crs ="+proj=longlat +datum=WGS84";
+
 		void setnlyr() { 
-			nlyr = std::accumulate(source.nlayers.begin(), source.nlayers.end(), 0); 
+			nlyr=0;
+			for (size_t i=0; i < source.size(); i++) {
+				nlyr += source[i].layers.size();
+			}
 		}
 		BlockSize getBlockSize();
 		
 	public:
+		std::vector<string> msg;
+		bool error;
+		bool warning;
+		
 		//double NA = std::numeric_limits<double>::quiet_NaN();
-		RasterSource source;
-		SpatExtent window;
+		std::vector<RasterSource> source;
 	
-	    std::vector<unsigned> getnlayers() {
-			return source.nlayers;
-		}		
+		//unsigned getnlayers() { return nlyr; }
+		
 		unsigned nrow, ncol, nlyr;
-		unsigned size() { return ncol * nrow * nlyr ; }
+		unsigned long size() { return ncol * nrow * nlyr ; }
 		bool hasValues;
 		
 		BlockSize bs;
 		
 		std::vector<double> values;
 		
-		std::vector<bool> hasRange;
-		std::vector<bool> hasRAT;
-		std::vector<bool> hasCT;
-		std::vector<double> range_min;
-		std::vector<double> range_max;
-		std::vector<string> names;
-		std::vector<bool> inMemory() { return source.memory; }
+		std::vector<string> filenames() { 
+			std::vector<string> f(source.size()); 
+			for (size_t i=0; i<f.size(); i++) {
+				f[i] = source[i].filename; 
+			} 
+			return(f);
+		}
 
+		
+		std::vector<bool> hasRange() {
+			return source[0].hasRange;
+		}
+		std::vector<double> range_min(){
+			return source[0].range_min;	
+		}
+		std::vector<double> range_max(){
+			return source[0].range_max;	
+		}
+//		std::vector<string> names() {
+//			return source[0].names;
+//		}
+		std::vector<bool> inMemory() { 
+			std::vector<bool> m(source.size()); 
+			for (size_t i=0; i<m.size(); i++) {
+				m[i] = source[i].memory; 
+			} 
+			return(m); 
+		}
+		
+		std::vector<string> getNames()	{ 
+			return source[0].names;
+		}
+		void setNames(std::vector<string> _names) { source[0].names = _names; }
+	
 		// constructors
 		SpatRaster(std::string fname);
 		SpatRaster();
+		SpatRaster(RasterSource s);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string _crs);
 		SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs);
 
@@ -91,13 +137,6 @@ class SpatRaster {
 		
 		std::string getCRS()	{ return(crs); }
 		void setCRS(std::string _crs) { crs = _crs; }
-		std::vector<string> getNames()	{ 
-			if (names.size() < 1) {
-				return std::vector<string> {"layer"}; // rep for each layer
-			}
-			return(names); 
-		}
-		void setNames(std::vector<string> _names) { names = _names; }
 	
 		std::vector<double> resolution() { return std::vector<double> { (extent.xmax - extent.xmin) / ncol, (extent.ymax - extent.ymin) / nrow };}
 		double xres() { return (extent.xmax - extent.xmin) / ncol ;}
@@ -105,8 +144,6 @@ class SpatRaster {
 
 		std::vector<double> origin();	
 		
-		//std::vector<string> filenames() { return source.filename; }
-
 		
 		bool compare(unsigned nrows, unsigned ncols, SpatExtent e );
 	
