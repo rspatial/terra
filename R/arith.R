@@ -11,8 +11,7 @@ setMethod("Arith", signature(e1='SpatRaster', e2='SpatRaster'),
 		operator <- ifelse(operator == "%%", "%", operator)
 		e1@ptr <- e1@ptr$arith_rast(e2@ptr, operator, "", FALSE)		
 		if (e1@ptr$warning) { warning(e1@ptr$warning_message)}
-		if (e1@ptr$error) {	stop(e1@ptr$error_message)	}		
-		
+		if (e1@ptr$error) {	stop(e1@ptr$error_message)	}			
 		e1
 	}	
 )

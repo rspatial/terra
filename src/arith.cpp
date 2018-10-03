@@ -136,7 +136,7 @@ std::vector<T> operator<(const std::vector<T>& a, const std::vector<T>& b) {
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
 	
-	SpatRaster out = SpatRaster(x);
+	SpatRaster out = *this;
 	out.values.resize(0);
 
 	if (!compare_geom(x, true, false)) {
