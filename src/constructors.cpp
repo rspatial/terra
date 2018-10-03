@@ -7,6 +7,16 @@ SpatRaster::SpatRaster(std::string fname) {
 }
 
 
+
+void SpatRaster::setSource(RasterSource s) {
+	source = {s};
+	nrow = s.nrow; 
+	ncol = s.ncol; 
+	extent = s.extent;
+	crs = s.crs;
+}
+			
+
 SpatRaster::SpatRaster(RasterSource s) {
 	setSource(s);
 }
@@ -55,8 +65,6 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	for (unsigned i=0; i < rcl[2]; i++) { s.names.push_back("lyr." + std::to_string(i+1)) ; }
 
 	setSource(s);
-
-
 }
 
 
@@ -76,6 +84,24 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 	s.datatype = "";
 	s.crs=_crs;
 	for (unsigned i=0; i < _nlyr; i++) {	s.names.push_back("lyr." + std::to_string(i+1)) ; }
-
 	setSource(s);
 }
+
+
+SpatRaster::SpatRaster(const SpatRaster& x) {
+	RasterSource s;
+	s.nrow = x.nrow; 
+	s.ncol = x.ncol; 
+	s.extent = x.extent;
+	s.crs = x.crs;
+	unsigned a = 0;
+	for (size_t i=0; i < x.source.size(); i++) { a += x.source[i].nlyr; } 
+	s.nlyr = a;
+	s.memory = true;
+	std::vector<string> nms(s.nlyr);
+	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); } 
+	s.names = nms;
+	setSource(s);	
+}
+
+

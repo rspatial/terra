@@ -8,10 +8,8 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	
 	string ext = getFileExt(fname);
 	
-	if (ext != ".grd") {
-		
+	if (ext != ".grd") {		
 		return constructFromFileGDAL(fname);		
-		
 	} else {
 		
 		CSimpleIniA ini(true, false, false);
@@ -22,7 +20,6 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			return false;
 			
 		} else {
-
 			RasterSource s;
 			double xmin = atof(ini.GetValue("georeference", "xmin"));
 			double xmax = atof(ini.GetValue("georeference", "xmax"));
@@ -39,34 +36,32 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			if (version == "1") {
 				s.nrow = atoi(ini.GetValue("georeference", "nrows"));
 				s.ncol = atoi(ini.GetValue("georeference", "ncols"));
-				s.crs = ini.GetValue("georeference", "projection");
 				s.nlyr = atoi(ini.GetValue("data", "nbands"));
-				s.NAflag  = atof(ini.GetValue("data", "nodatavalue"));
+				s.crs = ini.GetValue("georeference", "projection");
+				s.NAflag = atof(ini.GetValue("data", "nodatavalue"));
 				smin = ini.GetValue("data", "minvalue");
 				smax = ini.GetValue("data", "maxvalue");
 				snames = ini.GetValue("description", "layername");
+				s.names = strsplit(snames, ":"); 
 			} else {  // version 2			
 				s.nrow = atoi(ini.GetValue("dimensions", "nrow"));
 				s.ncol = atoi(ini.GetValue("dimensions", "ncol"));
 				s.nlyr = atoi(ini.GetValue("dimensions", "nlyr"));
-				snames = ini.GetValue("dimensions", "names");
 				s.crs = ini.GetValue("georeference", "crs");
+				s.NAflag = atof(ini.GetValue("data", "nodata"));
 				smin = ini.GetValue("data", "range_min");
 				smax = ini.GetValue("data", "range_max");		
-				s.NAflag = atof(ini.GetValue("data", "nodata"));
+				snames = ini.GetValue("dimensions", "names");
+				s.names = strsplit(snames, ":|:"); 
 			}
-
-			s.names = { strsplit(snames, ":|:") }; 
 			s.range_min = str2dbl(strsplit(smin, ":"));
 			s.range_max = str2dbl(strsplit(smax, ":"));	
-			s.hasValues = true; 
-			s.hasRange = { true };
 			s.filename = setFileExt(fname, ".gri");
+			s.hasRange = std::vector<bool> (s.nlyr, true);
+			s.hasValues = true; 
 			s.memory = false;		
 			s.driver = "raster";
-			
 			setSource(s);
-			
 			return true;
 		}
    }

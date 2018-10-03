@@ -4,12 +4,10 @@ using namespace std;
 
 #include <algorithm>
 #include <functional>
-#include <cassert>
 
 
 template <typename T>
 std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::plus<T>());
@@ -19,7 +17,6 @@ std::vector<T> operator+(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator-(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::minus<T>());
@@ -29,7 +26,6 @@ std::vector<T> operator-(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator/(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::divides<T>());
@@ -38,7 +34,6 @@ std::vector<T> operator/(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::multiplies<T>());
@@ -46,10 +41,8 @@ std::vector<T> operator*(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
-
 template <typename T>
 std::vector<T> operator%(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
 //    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::modulus<T>());
@@ -60,11 +53,8 @@ std::vector<T> operator%(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
-
-
 template <typename T>
 std::vector<T> operator==(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::equal_to<T>());
@@ -78,7 +68,6 @@ std::vector<T> operator==(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator!=(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::not_equal_to<T>());
@@ -92,7 +81,6 @@ std::vector<T> operator!=(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator>=(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater<T>());
@@ -106,7 +94,6 @@ std::vector<T> operator>=(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator<=(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less<T>());
@@ -121,7 +108,6 @@ std::vector<T> operator<=(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator>(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater<T>());
@@ -135,7 +121,6 @@ std::vector<T> operator>(const std::vector<T>& a, const std::vector<T>& b) {
 
 template <typename T>
 std::vector<T> operator<(const std::vector<T>& a, const std::vector<T>& b) {
-    assert(a.size() == b.size());
     std::vector<T> result;
     result.reserve(a.size());
     std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less<T>());
@@ -148,9 +133,18 @@ std::vector<T> operator<(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
+
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
-	SpatRaster out = *this;
+	
+	SpatRaster out = SpatRaster(x);
 	out.values.resize(0);
+
+	if (!compare_geom(x, true, false)) {
+		out.error = true;
+		out.error_message = "dimensions and/or extent do not match";
+		return(out);
+	}
+	
   	out.writeStart(filename, overwrite);
 	readStart();
 	x.readStart();
@@ -197,6 +191,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 
 	SpatRaster out = *this;
 	out.values.resize(0);
+	
   	out.writeStart(filename, overwrite);
 	readStart();
 	std::vector<double> v, m;
@@ -241,6 +236,7 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 
 	SpatRaster out = *this;
 	out.values.resize(0);
+	
   	out.writeStart(filename, overwrite);
 	readStart();
 	std::vector<double> v, m;

@@ -43,7 +43,19 @@ setMethod ('show' , 'SpatRaster',
 			f <- .filenames(object)
 			sources <- rep('memory', length(m))
 			sources[!m] <- f[!m] 
-			cat('data source :', sources, '\n')
+			sl <- length(sources)
+			if (sl > 1) {
+				cat('data sources:', sources[1], '\n')
+				for (i in 2:(min(10, sl))) {
+					cat('             ', sources[i], '\n')
+				}			
+				
+				if (sl > 10) {
+					cat('             ', '... and', sl-10, 'more sources\n')				
+				}
+			} else {
+				cat('data source :', sources[1], '\n')
+			}
 			
 			ln <- names(object)
 			

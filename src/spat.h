@@ -40,6 +40,17 @@ class BlockSize {
 		unsigned n;
 };
 
+class AttributeTable {
+	public:
+		std::vector<unsigned> code;
+		std::vector<string> value;
+};
+
+class ColorTable {
+	public:
+		std::vector<unsigned> code;
+		std::vector<string> value;
+};
 
 class SpatRaster {
 	
@@ -50,115 +61,127 @@ class SpatRaster {
 		SpatExtent extent;
 		SpatExtent window;
 		std::string crs; 
-
 		BlockSize getBlockSize();
+		std::vector<double> values;
 		
 	public:
-		std::vector<string> msg;
-		bool error;
-		bool warning;
 		
 		//double NA = std::numeric_limits<double>::quiet_NaN();
-		std::vector<RasterSource> source;
-		void setSource(RasterSource s) {
-			source = {s};
-			nrow = s.nrow; 
-			ncol = s.ncol; 
-			extent = s.extent;
-			crs = s.crs;
-		}
 
+////////////////////////////////////////////////////	
+// properties and property-like methods for entire object
+////////////////////////////////////////////////////		
+		bool error = false;
+		bool warning = false;
+		string error_message = "";
+		string warning_message = "";
+
+		std::vector<RasterSource> source;
 		BlockSize bs;
-	
-	
 	
 		unsigned nrow, ncol;
 		unsigned long size() { return ncol * nrow * nlyr() ; }
-			
-		bool hasValues() { return source[0].hasValues ; };
-		
-		std::vector<double> values;
-		
-		std::vector<string> filenames() { 
-			std::vector<string> x(source.size()); 
-			for (size_t i=0; i<source.size(); i++) { x[i] = source[i].filename; } 
-			return(x);
-		}
-
+		SpatExtent getExtent() { return extent; }
+		void setExtent(SpatExtent e) { extent = e ; }
+		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
+		std::string getCRS() { return(crs); }
+		void setCRS(std::string _crs) { crs = _crs; } // also set it for sources?
+		std::vector<double> resolution() { return std::vector<double> { (extent.xmax - extent.xmin) / ncol, (extent.ymax - extent.ymin) / nrow };}
+		double ncell() { return nrow * ncol; }
+		double xres() { return (extent.xmax - extent.xmin) / ncol ;}
+		double yres() { return (extent.ymax - extent.ymin) / nrow ;}
+		std::vector<double> origin();	
 		unsigned nlyr() { 
 			unsigned x = 0;
 			for (size_t i=0; i<source.size(); i++) { x += source[i].nlyr; } 
 			return(x);
 		}
-
 		
-		std::vector<bool> hasRange() {
-			return source[0].hasRange;
-		}
-		std::vector<double> range_min(){
-			return source[0].range_min;	
-		}
-		std::vector<double> range_max(){
-			return source[0].range_max;	
-		}
-//		std::vector<string> names() {
-//			return source[0].names;
-//		}
-		std::vector<bool> inMemory() { 
-			std::vector<bool> m(source.size()); 
-			for (size_t i=0; i<m.size(); i++) {
-				m[i] = source[i].memory; 
-			} 
-			return(m); 
-		}
-		
-		std::vector<string> getNames()	{ 
-			return source[0].names;
-		}
-		void setNames(std::vector<string> _names) { source[0].names = _names; }
-	
-		// constructors
-		SpatRaster(std::string fname);
-		SpatRaster();
-		SpatRaster(RasterSource s);
-		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string _crs);
-		SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs);
-
-		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", bool overwrite=false);
-		SpatRaster arith(double x, std::string oper, std:: string filename="", bool overwrite=false);
-		SpatRaster arith_rev(double x, std::string oper, std::string filename, bool overwrite);
-		
-		SpatRaster operator + (SpatRaster x) { return arith(x, "+", "", false); }
-
-		
-		double ncell() { return nrow * ncol; }
-
-//	void setExtent(std::vector<double> e) {	extent.xmin = e[0]; extent.xmax = e[1]; extent.ymin = e[2]; extent.ymax = e[3]; }
-		SpatExtent getExtent() { return extent; }
-		void setExtent(SpatExtent e) { extent = e ; }
-
-		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");
-
-		
-		std::string getCRS()	{ return(crs); }
-		void setCRS(std::string _crs) { crs = _crs; }
-	
-		std::vector<double> resolution() { return std::vector<double> { (extent.xmax - extent.xmin) / ncol, (extent.ymax - extent.ymin) / nrow };}
-		double xres() { return (extent.xmax - extent.xmin) / ncol ;}
-		double yres() { return (extent.ymax - extent.ymin) / nrow ;}
-
-		std::vector<double> origin();	
-		
-		
-		bool compare(unsigned nrows, unsigned ncols, SpatExtent e );
-	
+		// only no values allowed with a single RasterSource
+		bool hasValues() { return source[0].hasValues ; };
 		std::vector<double> getValues();
 		void setValues(std::vector<double> _values);
 
+////////////////////////////////////////////////////
+// property like methods for RasterSources
+////////////////////////////////////////////////////
+		std::vector<string> filenames() { 
+			std::vector<string> x(source.size()); 
+			for (size_t i=0; i<x.size(); i++) { x[i] = source[i].filename; } 
+			return(x);
+		}
+		std::vector<bool> inMemory() { 
+			std::vector<bool> m(source.size()); 
+			for (size_t i=0; i<m.size(); i++) { m[i] = source[i].memory; } 
+			return(m); 
+		}
+		
 
+////////////////////////////////////////////////////	
+// property like methods for Layers
+////////////////////////////////////////////////////		
+
+		std::vector<bool> hasRange() {
+			std::vector<bool> x; 
+			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].hasRange.begin(), source[i].hasRange.end()); }
+			return(x);
+		}
+
+		std::vector<double> range_min() { 
+			std::vector<double> x; 
+			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].range_min.begin(),source[i].range_min.end()); }
+			return(x);
+		}
+
+		std::vector<double> range_max() { 
+			std::vector<double> x; 
+			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].range_max.begin(), source[i].range_max.end()); }
+			return(x);
+		}
+
+		std::vector<string> getNames() { 
+			std::vector<string> x; 
+			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].names.begin(), source[i].names.end()); }
+			return(x);
+		}
+
+		void setNames(std::vector<string> _names) {
+			size_t begin=0;
+			size_t end;
+			for (size_t i=0; i<source.size(); i++)	{
+				end = begin + source[i].nlyr-1;	
+				source[i].names = std::vector<string> (_names.begin() + begin, _names.end() + end) ;
+				begin = end + 1;
+			}
+		}
+		
+
+
+////////////////////////////////////////////////////		
+// constructors 
+////////////////////////////////////////////////////		
+
+		SpatRaster();
+		SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs);
+		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string _crs);
+
+		SpatRaster(std::string fname);
+		SpatRaster(RasterSource s);
+		void setSource(RasterSource s);
+		SpatRaster(const SpatRaster& x);
+				
 		bool constructFromFile(std::string fname);
 		bool constructFromFileGDAL(std::string fname);
+		
+		SpatRaster addSource(SpatRaster x);
+		//SpatRaster shallowCopy();
 
+////////////////////////////////////////////////////		
+// helper methods
+////////////////////////////////////////////////////		
+
+		bool compare_geom(SpatRaster x, bool lyrs, bool crs);
+		
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
 		double cellFromXY(double x, double y);
 		std::vector<double> cellFromRowCol(std::vector<unsigned> rownr, std::vector<unsigned> colnr);
@@ -183,6 +206,9 @@ class SpatRaster {
 
 		void setRange();
 		
+////////////////////////////////////////////////////		
+// read and write
+////////////////////////////////////////////////////		
 		
 		bool readStart();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
@@ -196,27 +222,32 @@ class SpatRaster {
 		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		bool writeValuesGDAL(std::string filename, std::vector<double> values, std::string format="GTiff");
 		
-		
 		void openFS(string const &filename);
 
-		
 		SpatRaster writeRaster(std::string filename, bool overwrite);
-		SpatExtent align(SpatExtent e, string snap="near");
+	
+////////////////////////////////////////////////////		
+// main methods
+////////////////////////////////////////////////////		
+
+		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", bool overwrite=false);
+		SpatRaster arith(double x, std::string oper, std:: string filename="", bool overwrite=false);
+		SpatRaster arith_rev(double x, std::string oper, std::string filename, bool overwrite);
 		
+		SpatRaster operator + (SpatRaster x) { return arith(x, "+", "", false); }
 		SpatRaster test(string filename);
+
+		SpatRaster aggregate(std::vector<unsigned> fact, string fun, bool narm, string filename="", bool overwrite=false);
+		std::vector<unsigned> get_aggregate_dims( std::vector<unsigned> fact );
+		std::vector<std::vector<double> > get_aggregates(std::vector<unsigned> dim);
+
+		SpatExtent align(SpatExtent e, string snap="near");
 		SpatRaster crop(SpatExtent e, string filename="", string snap="near", bool overwrite=false);
 		SpatRaster trim(unsigned padding=0, std::string filename="", bool overwrite=false);
 		SpatRaster mask(SpatRaster mask, string filename="", bool overwrite=false);
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename, bool overwrite);
-		SpatRaster rasterizePolygons(SpatPolygons p, double background, string filename, bool overwrite);
-		
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
-
-		SpatRaster aggregate(std::vector<unsigned> fact, string fun, bool narm, string filename="", bool overwrite=false);
-		//std::vector<double> aggregate(std::vector<unsigned> fact, bool narm, string fun, string filename="");
-
-		std::vector<unsigned> get_aggregate_dims( std::vector<unsigned> fact );
-		std::vector<std::vector<double> > get_aggregates(std::vector<unsigned> dim);
+		SpatRaster rasterizePolygons(SpatPolygons p, double background, string filename, bool overwrite);	
 		
 		std::vector<double> sampleRegular(unsigned size, bool cells, bool asRaster);
 };

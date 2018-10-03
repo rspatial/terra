@@ -95,6 +95,8 @@ RCPP_MODULE(spat){
 		.constructor()
 	    .constructor<std::string>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
+		
+		.method("addSource", &SpatRaster::addSource, "addSource")
 
 		.field_readonly("source", &SpatRaster::source )
 		
@@ -123,8 +125,8 @@ RCPP_MODULE(spat){
 		.method("writeRaster", &SpatRaster::writeRaster, "writeRaster")
 		
 		.field_readonly("nrow", &SpatRaster::nrow )
-		.field_readonly("ncol", &SpatRaster::ncol )
-		.property("nlyr", &SpatRaster::nlyr )
+		.field_readonly("ncol", &SpatRaster::ncol )		
+		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
 
@@ -147,6 +149,10 @@ RCPP_MODULE(spat){
 
 		//.method("test", &SpatRaster::test, "test")
 		
+		.field_readonly("error", &SpatRaster::error )
+		.field_readonly("warning", &SpatRaster::warning )
+		.field_readonly("error_message", &SpatRaster::error_message )
+		.field_readonly("warning_message", &SpatRaster::warning_message )
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
 		.method("crop", &SpatRaster::crop, "crop")

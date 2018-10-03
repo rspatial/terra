@@ -50,6 +50,9 @@ bool file_exists(const std::string& name) {
 bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 	
 	RasterSource s;
+//	double inf = std::numeric_limits<double>::infinity();
+//	s.min_range = inf;
+//	s.max_range = -inf;
 	source = { s };
 	lrtrim(filename);
 	if (filename == "") {
@@ -95,6 +98,8 @@ bool SpatRaster::writeStop(){
 	} else if (source[0].driver == "gdal") {
 	
 	}
+	source[0].hasValues = true;
+	
 	return true;
 }
 

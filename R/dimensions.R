@@ -64,7 +64,7 @@ if (!isGeneric("nlayer")) {
 
 setMethod('nlayer', signature(x='SpatRaster'), 
 	function(x){
-		return(x@ptr$nlyr) 
+		return(x@ptr$nlyr() ) 
     }
 )
 
