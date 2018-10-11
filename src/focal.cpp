@@ -94,7 +94,7 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 		window.push_back(w[1]);
 	}
 	
-	SpatRaster out = *this;
+	SpatRaster out = geometry();
 	if (!source[0].hasValues) { return(out); }
 	std::vector<unsigned> dim = {0, ncol};
 	

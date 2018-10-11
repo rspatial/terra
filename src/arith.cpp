@@ -136,8 +136,7 @@ std::vector<T> operator<(const std::vector<T>& a, const std::vector<T>& b) {
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
 	
-	SpatRaster out = *this;
-	out.values.resize(0);
+	SpatRaster out = geometry();
 
 	if (!compare_geom(x, true, false)) {
 		out.error = true;
@@ -189,8 +188,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 
 SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, bool overwrite) {
 
-	SpatRaster out = *this;
-	out.values.resize(0);
+	SpatRaster out = geometry();
 	
   	out.writeStart(filename, overwrite);
 	readStart();
@@ -234,8 +232,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 
 SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filename, bool overwrite) {
 
-	SpatRaster out = *this;
-	out.values.resize(0);
+	SpatRaster out = geometry();
 	
   	out.writeStart(filename, overwrite);
 	readStart();

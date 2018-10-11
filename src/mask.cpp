@@ -3,29 +3,36 @@ using namespace std;
 #include "spat.h"
 
 
-SpatRaster SpatRaster::mask(SpatRaster mask, string filename, bool overwrite) {
 
-// check for size; need for recycling 
-	SpatRaster out = *this;
-	out.values.resize(0);
+
+
+
+SpatRaster SpatRaster::mask(SpatRaster x, string filename, bool overwrite) {
+
+// check for size; need for recycling
+	//SpatRaster out = *this;
+	SpatRaster out = geometry();
+
+//	out.source.resize(1);
+ //   our.source[0].nlyr = 1;
+//	out.values.resize(0);
   	out.writeStart(filename, overwrite);
 	readStart();
-	mask.readStart();
+	x.readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
-		m = mask.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
 		for (size_t i=0; i < v.size(); i++) {
 			if (std::isnan(m[i])) {
 				v[i] = NAN;
-			} 
+			}
 		}
 		out.writeValues(v, out.bs.row[i]);
 	}
 	out.writeStop();
-	readStop();	
-	mask.readStop();	
-	
+	readStop();
+	x.readStop();
 	return(out);
 }
 

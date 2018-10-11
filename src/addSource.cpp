@@ -4,7 +4,7 @@ using namespace std;
 
 
 SpatRaster SpatRaster::addSource(SpatRaster x) {
-	SpatRaster out = *this;
+	SpatRaster out = deepCopy();
 	out.error = false;
 	out.warning = false;
 	if (compare_geom(x, false, false)) {

@@ -12,15 +12,15 @@ bool canProcessInMemory() {
 
 BlockSize SpatRaster::getBlockSize() {
 	BlockSize bs;
-		
+
 	if (source[0].filename == "") {
 	// in memory
 		bs.row = {0};
 		bs.nrows = {nrow};
 		bs.n = 1;
-		
+
 	} else {
-	
+
 	// to be improved, see raster::blockSize
 		bs.row = {0, unsigned(floor(nrow/2))};
 		bs.nrows = {bs.row[1], nrow-bs.row[1]};
@@ -42,33 +42,32 @@ SpatRaster SpatRaster::writeRaster(std::string filename, bool overwrite) {
 
 bool file_exists(const std::string& name) {
 	ifstream f(name.c_str());
-	return f.good(); 
+	return f.good();
 }
 
 
 
 bool SpatRaster::writeStart(std::string filename, bool overwrite) {
-	
-	RasterSource s;
+
 //	double inf = std::numeric_limits<double>::infinity();
 //	s.min_range = inf;
 //	s.max_range = -inf;
-	source = { s };
 	lrtrim(filename);
 	if (filename == "") {
 		if (!canProcessInMemory()) {
 			filename = "random_file_name.grd";
 		}
 	}
-	
+
 	if (filename == "") {
 		source[0].driver = "memory";
+
 	} else {
 
 		string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
-			source[0].driver = {"raster"};				
+			source[0].driver = {"raster"};
 			bool exists = file_exists(filename);
 			if (exists) {
 				if (overwrite) {
@@ -76,14 +75,14 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 				} else {
 					// stop()
 				}
-			} 			
+			}
 			//(*fs).open(fname, ios::out | ios::binary);
 		} else {
-			source[0].driver = {"gdal"} ;			
-			// open GDAL filestream		
+			source[0].driver = {"gdal"} ;
+			// open GDAL filestream
 		}
 	}
-	
+
 	source[0].filename = {filename};
 	bs = getBlockSize();
 	return true;
@@ -96,15 +95,15 @@ bool SpatRaster::writeStop(){
 		//(*fs).close();
 		writeHDR();
 	} else if (source[0].driver == "gdal") {
-	
+
 	}
 	source[0].hasValues = true;
-	
+
 	return true;
 }
 
 bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
-	
+
 	if (source[0].driver == "raster") {
 		unsigned size = vals.size();
 		//(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
@@ -112,7 +111,7 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 		ofstream fs(fname, ios::ate | ios::binary);
 		fs.write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
 		fs.close();
-		
+
 	} else if (source[0].driver == "gdal") {
 		// write with gdal
 	} else {
@@ -128,13 +127,13 @@ void SpatRaster::setValues(std::vector<double> _values) {
 		values = _values;
 		source[0].hasValues = true;
 		source[0].memory = true;
-		
+
 		// todo clear source...
 		setRange();
 
 		source[0].names = std::vector<string> {"layer"};
 		//result = true;
-	//} 
+	//}
 	//return (result);
 }
 
@@ -165,7 +164,7 @@ void SpatRaster::setRange() {
 	double vmin, vmax;
 	int imin, imax;
 	// for each layer {
-		vector_minmax(values, vmin, imin, vmax, imax); 
+		vector_minmax(values, vmin, imin, vmax, imax);
 		source[0].range_min = std::vector<double> {vmin};
 		source[0].range_max = std::vector<double> {vmax};
 		source[0].hasRange = std::vector<bool> {true};
@@ -174,8 +173,8 @@ void SpatRaster::setRange() {
 
 
 
-bool SpatRaster::writeHDR() { 
-	CSimpleIniA ini;	
+bool SpatRaster::writeHDR() {
+	CSimpleIniA ini;
 	ini.SetValue("version", NULL, NULL);
 	ini.SetValue("version", "version", "2");
 	ini.SetValue("georeference", NULL, NULL);
@@ -187,7 +186,7 @@ bool SpatRaster::writeHDR() {
 	ini.SetValue("dimensions", "nrow", to_string(nrow).c_str());
 	ini.SetValue("dimensions", "ncol", to_string(ncol).c_str());
 	ini.SetValue("dimensions", "nlyr", to_string(nlyr()).c_str());
-	ini.SetValue("dimensions", "names", concatenate(source[0].names, std::string(":|:")).c_str());		
+	ini.SetValue("dimensions", "names", concatenate(source[0].names, std::string(":|:")).c_str());
 	ini.SetValue("data", NULL, NULL);
 	ini.SetValue("data", "datatype", "FLT8S"); // double
 	ini.SetValue("data", "nodata", to_string(-1 * numeric_limits<double>::max()).c_str());
@@ -200,7 +199,7 @@ bool SpatRaster::writeHDR() {
 		return false;
 	} else {
 		return true;
-	}	
+	}
 }
 
 
@@ -209,14 +208,14 @@ bool SpatRaster::writeHDR() {
 
 /*
 bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f) {
-	
+
 	lrtrim(filename);
 	if (filename == "") {
 		if (!canProcessInMemory()) {
 			filename = "random_file_name.grd";
 		}
 	}
-	
+
 	if (filename == "") {
 		source.driver = {"memory"};
 
@@ -231,11 +230,11 @@ bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f)
 			(*fs).open(fname, ios::out | ios::binary);
 			fs = &f;
 		} else {
-			source.driver = {"gdal"} ;			
-			// open GDAL filestream		
+			source.driver = {"gdal"} ;
+			// open GDAL filestream
 		}
 	}
-	
+
 	source.filename = {filename};
 	bs = getBlockSize();
 	return true;

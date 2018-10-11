@@ -7,7 +7,7 @@ using namespace std;
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string filename, std::string snap, bool overwrite) {
 
-	SpatRaster out = *this;
+	SpatRaster out = geometry();
 	
 	e.intersect(out.getExtent());
 	

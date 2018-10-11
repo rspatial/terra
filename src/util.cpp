@@ -1,11 +1,13 @@
 using namespace std;
-#include <algorithm> 
+#include <algorithm>
 #include <cctype>
 #include <locale>
 #include <set>
 #include <string>
 #include <cmath>
 #include <vector>
+
+
 
 double roundn(double x, int n){
     int d = 0;
@@ -16,7 +18,7 @@ double roundn(double x, int n){
 
 
 
-std::string concatenate(std::vector<string> v, std::string delim) {	
+std::string concatenate(std::vector<string> v, std::string delim) {
 	for (size_t i=0; i<(v.size()-1); i++) {
 		v[i] = v[i] + delim;
 	}
@@ -39,7 +41,7 @@ void lowercase(std::string &s) {
 
 bool is_in_set(string s, std::vector<string> ss) {
 	std::set<std::string> sset (ss.begin(), ss.end());
-	return sset.find(s) != sset.end();	
+	return sset.find(s) != sset.end();
 }
 
 std::string is_in_set_default(string s, std::vector<string> ss, string defvalue, bool tolower) {
@@ -47,7 +49,7 @@ std::string is_in_set_default(string s, std::vector<string> ss, string defvalue,
 	std::set<std::string> sset (ss.begin(), ss.end());
 	if (sset.find(s) == sset.end() ) {
 		s = defvalue;
-	} 
+	}
 	return s;
 }
 
@@ -67,7 +69,7 @@ std::vector<std::string> strsplit(std::string s, std::string delimiter){
 }
 
 
-std::vector<double> str2dbl(std::vector<string> s) { 
+std::vector<double> str2dbl(std::vector<string> s) {
 	std::vector<double> d (s.size());
 	std::transform(s.begin(), s.end(), d.begin(), [](const std::string& val) {
 		return std::stod(val);
@@ -75,7 +77,7 @@ std::vector<double> str2dbl(std::vector<string> s) {
 	return d;
 }
 
-std::vector<string> dbl2str(std::vector<double> d) { 
+std::vector<string> dbl2str(std::vector<double> d) {
 	std::vector<string> s (d.size());
 	std::transform(d.begin(), d.end(), s.begin(),
 			[](double i) { return std::to_string(i); }
