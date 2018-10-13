@@ -124,7 +124,7 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 void SpatRaster::setValues(std::vector<double> _values) {
 	//bool result = false;
 	//if (_values.size() == size()) {
-		values = _values;
+		source[0].values = _values;
 		source[0].hasValues = true;
 		source[0].memory = true;
 
@@ -164,7 +164,7 @@ void SpatRaster::setRange() {
 	double vmin, vmax;
 	int imin, imax;
 	// for each layer {
-		vector_minmax(values, vmin, imin, vmax, imax);
+		vector_minmax(source[0].values, vmin, imin, vmax, imax);
 		source[0].range_min = std::vector<double> {vmin};
 		source[0].range_max = std::vector<double> {vmax};
 		source[0].hasRange = std::vector<bool> {true};

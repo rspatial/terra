@@ -97,6 +97,7 @@ RCPP_MODULE(spat){
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 		
 		.method("addSource", &SpatRaster::addSource, "addSource")
+		.method("subset", &SpatRaster::subset, "subset")
 
 		.field_readonly("source", &SpatRaster::source )
 		

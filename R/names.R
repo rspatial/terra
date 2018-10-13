@@ -61,7 +61,7 @@ setMethod('names<-', signature(x='SpatRaster'),
 		}
 		v <- .validNames(value)
 		if (!all(v == value)) {
-			warning('names changed to make the valid')
+			warning('one or more names were changed to make them valid')
 		}
 		x@ptr$names <- v
 		return(x)

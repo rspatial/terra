@@ -5,15 +5,28 @@ using namespace std;
 #include "spatvector.h"
 
 
+class RasterAttributeTable {
+	public:
+		std::vector<unsigned> code;
+		std::vector<string> value;
+};
+
+class ColorTable {
+	public:
+		std::vector<unsigned> code;
+		std::vector<string> value;
+};
+
 class RasterSource {
 	public:
-		unsigned ncol;
-		unsigned nrow;
+		unsigned ncol, nrow, nlyr;
 		SpatExtent extent;
-		unsigned nlyr;
 		string crs;
 		std::vector<unsigned> layers;
 		std::vector<string> names;
+
+		//std::vector< std::vector<double> values;
+        std::vector<double> values;
 
 		bool hasValues;
 		std::vector<bool> hasRange;
@@ -21,6 +34,9 @@ class RasterSource {
 		std::vector<double> range_max;
 		std::vector<bool> hasCT;
 		std::vector<bool> hasRAT;
+
+		std::vector<RasterAttributeTable> RAT;
+		std::vector<ColorTable> CT;
 
 		bool memory;
 		string filename;
@@ -40,18 +56,6 @@ class BlockSize {
 		unsigned n;
 };
 
-class AttributeTable {
-	public:
-		std::vector<unsigned> code;
-		std::vector<string> value;
-};
-
-class ColorTable {
-	public:
-		std::vector<unsigned> code;
-		std::vector<string> value;
-};
-
 class SpatRaster {
 
 	private:
@@ -62,24 +66,24 @@ class SpatRaster {
 		SpatExtent window;
 		std::string crs;
 		BlockSize getBlockSize();
-		std::vector<double> values;
 
 	public:
-
-		//double NA = std::numeric_limits<double>::quiet_NaN();
 
 ////////////////////////////////////////////////////
 // properties and property-like methods for entire object
 ////////////////////////////////////////////////////
-		bool error = false;
-		bool warning = false;
-		string error_message = "";
-		string warning_message = "";
-
+		unsigned nrow, ncol;
 		std::vector<RasterSource> source;
 		BlockSize bs;
 
-		unsigned nrow, ncol;
+		bool error = false;
+		bool warning = false;
+		string error_message;
+		std::vector<string> warning_message;
+
+
+		//double NA = std::numeric_limits<double>::quiet_NaN();
+
 		unsigned long size() { return ncol * nrow * nlyr() ; }
 		SpatExtent getExtent() { return extent; }
 		void setExtent(SpatExtent e) { extent = e ; }
@@ -150,9 +154,10 @@ class SpatRaster {
 			size_t end;
 			for (size_t i=0; i<source.size(); i++)	{
 				end = begin + source[i].nlyr;
-                std::vector<string> ::const_iterator first = _names.begin() + begin;
-                std::vector<string> ::const_iterator last = _names.begin() + end;
-				source[i].names = std::vector<string> (first, last) ;
+                //std::vector<string> ::const_iterator first = _names.begin() + begin;
+                //std::vector<string> ::const_iterator last = _names.begin() + end;
+				//source[i].names = std::vector<string> (first, last) ;
+				source[i].names = std::vector<string> (_names.begin() + begin, _names.begin() + end);
 				begin = end;
 			}
 		}
@@ -179,7 +184,8 @@ class SpatRaster {
 		bool constructFromFileGDAL(std::string fname);
 
 		SpatRaster addSource(SpatRaster x);
-		//SpatRaster shallowCopy();
+		SpatRaster subset(std::vector<unsigned> i);
+
 
 ////////////////////////////////////////////////////
 // helper methods
@@ -202,7 +208,11 @@ class SpatRaster {
 		std::vector< std::vector<double> > xyFromCell( std::vector<double> cell );
 		std::vector< std::vector<double> > xyFromCell( double cell );
 		std::vector< std::vector<double> > rowColFromCell(std::vector<double> cell);
+        std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 
+		unsigned sourceFromLyr(unsigned lyr);
+        std::vector<unsigned> nlyrBySource();
+        std::vector<unsigned> lyrsBySource();
 
 		double valuesCell(double);
 		double valuesCell(int, int);

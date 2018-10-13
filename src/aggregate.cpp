@@ -22,7 +22,7 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
 std::vector<double> flat(std::vector<std::vector<double>> v) {
     unsigned s1 = v.size();
     unsigned s2 = v[0].size();
-	
+
 	std::size_t s = s1 * s2;
     std::vector<double> result(s);
     for (size_t i=0; i<s1; i++) {
@@ -40,9 +40,9 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims( std::vector<unsigned> fact
 	fact.resize(6);
 	if (fs == 1) {
 		fact[1] = fact[0];
-		fact[2] = 1;		
+		fact[2] = 1;
 	} else if (fs == 2) {
-		fact[2] = 1;		
+		fact[2] = 1;
 	}
 	// int dy = dim[0], dx = dim[1], dz = dim[2];
 	fact[0] = std::max(unsigned(1), std::min(fact[0], nrow));
@@ -57,10 +57,10 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims( std::vector<unsigned> fact
 
 
 std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigned> dim) {
-	// blocks per row (=ncol), col (=nrow) 
-	
+	// blocks per row (=ncol), col (=nrow)
+
 //	dim = get_aggregate_dims(dim);
-	
+
 	unsigned dy = dim[0], dx = dim[1], dz = dim[2];
 	unsigned bpC = dim[3];
 	unsigned bpR = dim[4];
@@ -76,8 +76,8 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigne
 	unsigned nblocks = (bpR * bpC * newNL);
 	// cells per aggregate
 	unsigned blockcells = dx * dy * dz;
-  
-	// output: each row is a block 
+
+	// output: each row is a block
 	std::vector< std::vector<double> > a(nblocks, std::vector<double>(blockcells, std::numeric_limits<double>::quiet_NaN()));
 
 	for (unsigned b = 0; b < nblocks; b++) {
@@ -96,7 +96,7 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigne
 			for (unsigned r = rstart; r < rmax; r++) {
 				unsigned cell = lj + r * ncol;
 				for (unsigned c = cstart; c < cmax; c++) {
-					a[b][f] = values[cell + c];
+					a[b][f] = source[0].values[cell + c];
 					f++;
 				}
 			}
@@ -111,7 +111,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, string fun, bool na
 //std::vector<double> SpatRaster::aggregate(std::vector<unsigned> fact, bool narm, string fun, string filename) {
 
 //	fact = get_aggregate_dims(fact);
-	
+
 	unsigned f = 1, mean = 0; // sum
 	if (fun == "mean") {
 		f = 1;
@@ -119,7 +119,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, string fun, bool na
 	} else if (fun == "min") {
 		f = 2;
 	} else if (fun == "max") {
-		f = 3;	
+		f = 3;
 	}
 
 
@@ -129,30 +129,30 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, string fun, bool na
 	SpatRaster r = SpatRaster(fact[3], fact[4], fact[5], e, crs);
 
 	if (!source[0].hasValues) { return r; }
-	
-	// output: each row is a new cell 
+
+	// output: each row is a new cell
 	std::vector< std::vector<double> > v(fact[5], std::vector<double>(fact[3]*fact[4]));
 
-	// get the aggregates	
+	// get the aggregates
 	std::vector<std::vector< double > > a = get_aggregates(fact);
 
 	int nblocks = a.size();
 	int naggs = a[0].size();
 
 	for (int i = 0; i < nblocks; i++) {
-		unsigned row = (i / ncol) % nrow; 
+		unsigned row = (i / ncol) % nrow;
 		unsigned col = i % ncol;
 		unsigned cell = row * ncol + col;
 		unsigned lyr = std::floor(i / (nrow * ncol));
-	
+
 		double x = 0;
 		if (f==2) { // min
 			x = std::numeric_limits<double>::infinity();
 		} else if (f==3) { // max
-			x = - std::numeric_limits<double>::infinity() ; 
-		} 
-		
-		double cnt = 0;	
+			x = - std::numeric_limits<double>::infinity() ;
+		}
+
+		double cnt = 0;
 		for (int j = 0; j < naggs; j++) {
 			if (std::isnan(a[i][j])) {
 				if (!narm) {
@@ -164,7 +164,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, string fun, bool na
 					x = std::min(x, a[i][j]);
 				} else if (f==3) { // max
 					x = std::max(x, a[i][j]);
-				} else { // sum or mean	
+				} else { // sum or mean
 					x += a[i][j];
 				}
 				cnt++;
@@ -173,16 +173,16 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, string fun, bool na
 		if (cnt > 0) {
 			if (mean) {
 				x = x / cnt;
-			} 
+			}
 		} else {
 			x = NAN;
 		}
 		breakout:
 		v[lyr][cell] = x;
 	}
-	
 
-	r.setValues( flat(v) ); 
+
+	r.setValues( flat(v) );
 
 	return(r);
 

@@ -99,14 +99,19 @@ SpatRaster SpatRaster::geometry() {
 	std::vector<string> nms(s.nlyr);
 	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
 	s.names = nms;
+
 	SpatRaster out;
 	out.setSource(s);
+	out.error = false;
+	out.warning = false;
 	return out;
 }
 
 SpatRaster SpatRaster::deepCopy() {
 
 	SpatRaster out = *this;
+	out.error = false;
+	out.warning = false;
 	out.nrow = nrow;
 	out.ncol = ncol;
 	out.extent = extent;

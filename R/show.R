@@ -36,8 +36,15 @@ setMethod ('show' , 'SpatRaster',
 		cat('coord. ref. :' , crs(object), '\n')
 		
 		mnr <- 15
+
+		ln <- names(object)
+		nl <- nlayer(object)
+			
+		if (nl > mnr) {
+			ln <- c(ln[1:mnr], '...')
+		}
+
 		if (.hasValues(object)) {
-			nl <- nlayer(object)
 		
 			m <- .inMemory(object)
 			f <- .filenames(object)
@@ -57,11 +64,6 @@ setMethod ('show' , 'SpatRaster',
 				cat('data source :', sources[1], '\n')
 			}
 			
-			ln <- names(object)
-			
-			if (nl > mnr) {
-				ln <- c(ln[1:mnr], '...')
-			}
 
 			if (any(.hasRange(object))) {
 				r <- range(object)
@@ -97,6 +99,9 @@ setMethod ('show' , 'SpatRaster',
 			} else {
 				cat('names       :', paste(ln, collapse=', '), '\n')
 			}			
+		} else {
+			cat('data sources:', 'no data\n')
+			cat('names       :', paste(ln, collapse=', '), '\n')
 		}
 		
 	}
