@@ -56,6 +56,9 @@ std::vector<unsigned> SpatRaster::lyrsBySource() {
     return lyrs;
 }
 
+
+
+
 /*
 RasterSource SpatRaster::subsetSource(RasterSource s, std::vector<unsigned> lyrs) {
     RasterSource out;
