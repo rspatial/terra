@@ -60,7 +60,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			string file = source[0].filename;
 			std::vector<unsigned> lyrs = {1};
 			if (source[0].datatype == "FLT8S") {
-				return readFLT8(file, 0, ncell(), nlyr(), order="BIL");
+				//return readFLT8(file, 0, ncell(), nlyr(), order="BIL");
 			} else {
 				return readFLT4(file, "BIL", 0, ncell(), lyrs);
 			}
