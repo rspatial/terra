@@ -5,6 +5,7 @@ using namespace std;
 #include "spatvector.h"
 
 
+
 class RasterAttributeTable {
 	public:
 		std::vector<unsigned> code;
@@ -27,25 +28,33 @@ class RasterSource {
 
 		//std::vector< std::vector<double> values;
         std::vector<double> values;
+        std::vector<int64_t> ivalues;
+        std::vector<bool> bvalues;
 
-		bool hasValues;
 		std::vector<bool> hasRange;
 		std::vector<double> range_min;
 		std::vector<double> range_max;
+		std::vector<double> time;
 		std::vector<bool> hasCT;
 		std::vector<bool> hasRAT;
-
 		std::vector<RasterAttributeTable> RAT;
 		std::vector<ColorTable> CT;
 
 		bool memory;
+		bool hasValues;
 		string filename;
-		unsigned nlyrfile;
+		//unsigned nlyrfile;
+
+		// for native files
 		string driver;
 		string bandorder;
 		string byteorder;
 		string datatype;
 		double NAflag;
+
+
+		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
+		std::vector<double> getValues(unsigned lyr);
 };
 
 
@@ -175,6 +184,7 @@ class SpatRaster {
 		SpatRaster(std::string fname);
 		SpatRaster(RasterSource s);
 		void setSource(RasterSource s);
+		void setSources(std::vector<RasterSource> s);
 		//SpatRaster(const SpatRaster& x);
 
         SpatRaster deepCopy();
@@ -183,9 +193,9 @@ class SpatRaster {
 		bool constructFromFile(std::string fname);
 		bool constructFromFileGDAL(std::string fname);
 
-		SpatRaster addSource(SpatRaster x);
-		SpatRaster subset(std::vector<unsigned> i);
 
+		SpatRaster addSources(SpatRaster x);
+		SpatRaster subset(std::vector<unsigned> lyrs, string filename, bool overwrite);
 
 ////////////////////////////////////////////////////
 // helper methods
@@ -210,9 +220,11 @@ class SpatRaster {
 		std::vector< std::vector<double> > rowColFromCell(std::vector<double> cell);
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 
-		unsigned sourceFromLyr(unsigned lyr);
+		int sourceFromLyr(unsigned lyr);
         std::vector<unsigned> nlyrBySource();
         std::vector<unsigned> lyrsBySource();
+        unsigned nsrc();
+
 
 		double valuesCell(double);
 		double valuesCell(int, int);

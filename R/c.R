@@ -8,7 +8,7 @@ setMethod('c', signature(x='SpatRaster'),
 	function(x, ...) {
 		for (i in list(...)) {
 			if (class(i) == 'SpatRaster') {
-				x@ptr <- x@ptr$addSource(i@ptr)
+				x@ptr <- x@ptr$addSources(i@ptr)
 			}
 		}
 		if (x@ptr$warning) { warning(x@ptr$warning_message) }

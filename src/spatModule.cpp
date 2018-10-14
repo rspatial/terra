@@ -96,7 +96,8 @@ RCPP_MODULE(spat){
 	    .constructor<std::string>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 		
-		.method("addSource", &SpatRaster::addSource, "addSource")
+		//.method("addSources", ( std::SpatRaster (SpatRaster::*)(std::SpatRaster) )( &SpatRaster::addSources), "addSources")
+		.method("addSources", &SpatRaster::addSources, "addSources")
 		.method("subset", &SpatRaster::subset, "subset")
 
 		.field_readonly("source", &SpatRaster::source )
@@ -127,6 +128,10 @@ RCPP_MODULE(spat){
 		
 		.field_readonly("nrow", &SpatRaster::nrow )
 		.field_readonly("ncol", &SpatRaster::ncol )		
+		.method("nsrc", &SpatRaster::nsrc, "nsrc" )	
+		
+		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )		
+				
 		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )

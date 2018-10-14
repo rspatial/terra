@@ -1,15 +1,15 @@
 # Author: Robert J. Hijmans
-# Date : November 2009
+# Date : October 2018
 # Version 1.0
 # Licence GPL v3
 
 
 setMethod('mask', signature(x='SpatRaster', mask='SpatRaster'), 
-function(x, mask, filename="", ...) { 
-    overwrite <- .overwrite(...)
-    r <- methods::new("SpatRaster")
-    r@ptr <- x@ptr$mask(mask@ptr, filename[1], overwrite)
-    return(r)
+function(x, mask, filename="", overwrite=FALSE, ...) { 
+    x@ptr <- x@ptr$mask(mask@ptr, filename[1], overwrite[1])
+	if (x@ptr$warning) { warning(x@ptr$warning_message)}
+	if (x@ptr$error) {	stop(x@ptr$error_message)	}			
+	x	
 }
 )
 

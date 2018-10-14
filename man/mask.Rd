@@ -12,13 +12,14 @@ Create a new SpatRaster* object that has the same values as \code{x}, except for
 } 
 
 \usage{
-\S4method{mask}{SpatRaster,SpatRaster}(x, mask, filename="", ...)
+\S4method{mask}{SpatRaster,SpatRaster}(x, mask, filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
 \item{x}{SpatRaster object}
 \item{mask}{SpatRaster object}
 \item{filename}{character. Optional output filename}
+\item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
 \item{...}{additional arguments as in \code{\link{writeRaster}}}
 }
 

@@ -5,7 +5,7 @@
 
 
 setMethod('dim', signature(x='SpatRaster'), 
-	function(x){ return(c(nrow(x), ncol(x), nlayer(x))) }
+	function(x){ return(c(nrow(x), ncol(x), nlyr(x))) }
 )
 
 setMethod('nrow', signature(x='SpatRaster'), 
@@ -17,19 +17,20 @@ setMethod('ncol', signature(x='SpatRaster'),
 )
 
 
+
 setMethod('dim<-', signature(x='SpatRaster'), 
 	function(x, value) {
 	
 		if (length(value) == 1) {
-			value <- c(value, ncol(x), nlayer(x))
+			value <- c(value, ncol(x), nlyr(x))
 		} else if (length(value) == 2) {
-			value <- c(value, nlayer(x))
+			value <- c(value, nlyr(x))
 		} else if (length(value) > 3) {
 			warning('value should have length 1, 2, or 3. Additional values ignored')
 			value <- value[1:3]
 		}		
 		value <- as.integer(pmax(round(value), c(1,1,1)))
-		rast(nrow=value[1], ncol=value[2], nlayer=value[3], extent=ext(x), crs=crs(x))
+		rast(nrow=value[1], ncol=value[2], nlyr=value[3], extent=ext(x), crs=crs(x))
 	}
 )
 
@@ -53,22 +54,36 @@ setMethod('ncell', signature(x='ANY'),
 
 setMethod('length', signature(x='SpatRaster'), 
 	function(x) {
-		ncell(x) * nlayer(x)
+		ncell(x) * nlyr(x)
 	}
 )
 
-if (!isGeneric("nlayer")) {
-	setGeneric("nlayer", function(x)
-		standardGeneric("nlayer"))
+if (!isGeneric("nlyr")) {
+	setGeneric("nlyr", function(x)
+		standardGeneric("nlyr"))
 }	
 
-setMethod('nlayer', signature(x='SpatRaster'), 
+setMethod('nlyr', signature(x='SpatRaster'), 
 	function(x){
 		return(x@ptr$nlyr() ) 
     }
 )
 
 
+if (!isGeneric("nsrc")) {
+	setGeneric("nsrc", function(x)
+		standardGeneric("nsrc"))
+}	
+
+setMethod('nsrc', signature(x='SpatRaster'), 
+	function(x){
+		return(x@ptr$nsrc() ) 
+    }
+)
+
+.nlyrBySource <- function(x) {
+	x@ptr$nlyrBySource();
+}
 
 'ncol<-' <- function(x, value) {
 	dim(x) <- c(nrow(x), value)

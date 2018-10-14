@@ -5,14 +5,16 @@
 \alias{ncol}
 \alias{nrow}
 \alias{ncell}
-\alias{nlayer}
+\alias{nlyr}
+\alias{nsrc}
 \alias{dim}
 \alias{ncol<-}
 \alias{nrow<-}
 \alias{ncell,ANY-method}
 \alias{nrow,SpatRaster-method}
 \alias{ncol,SpatRaster-method}
-\alias{nlayer,SpatRaster-method}
+\alias{nlyr,SpatRaster-method}
+\alias{nsrc,SpatRaster-method}
 \alias{ncell,SpatRaster-method}
 \alias{length,SpatRaster-method}
 \alias{nrow<-,SpatRaster-method}
@@ -33,16 +35,18 @@
 \title{Dimensions of a SpatRaster object}
 
 \description{
-Get or set the dimensions (number of rows, columns, cells, layers, length) of a SpatRaster object.
-When setting dimensions, raster values are lost.
+Get the number of rows (nrow), columns (ncol), cells (ncell), layers (nlyr), sources (nsrc) or the spatial resolution of a SpatRaster.
+Set the number of rows or columns or layers. When setting dimensions, all sources and values are dropped.
 }
 
 \usage{
 \S4method{ncol}{SpatRaster}(x)
 \S4method{nrow}{SpatRaster}(x)
 \S4method{ncell}{SpatRaster}(x)
-\S4method{nlayer}{SpatRaster}(x)
+\S4method{nlyr}{SpatRaster}(x)
+\S4method{nsrc}{SpatRaster}(x)
 \S4method{res}{SpatRaster}(x)
+
 \S4method{xres}{SpatRaster}(x)
 \S4method{yres}{SpatRaster}(x)
 
@@ -70,6 +74,7 @@ ncell(r)
 ncol(r)
 nrow(r)
 dim(r)
+nsrc(r)
 
 # nrow(r) <- 18
 # ncol(r) <- 36

@@ -11,7 +11,7 @@ function(x, matrix=TRUE, ...) {
 	if (.hasValues(x)) {
 		v <- x@ptr$getValues()
 		if (matrix) {
-			v <- matrix(v, ncol=nlayer(x))
+			v <- matrix(v, ncol=nlyr(x))
 			colnames(v) <- names(x)
 		}
 	} else {

@@ -6,7 +6,7 @@
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 
 setMethod('rast', signature(x='missing'), 
-	function(x, nrow=180, ncol=360, nlayer=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...) {
+	function(x, nrow=180, ncol=360, nlyr=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...) {
 
 		if (missing(extent)) {	extent <- ext(xmin, xmax, ymin, ymax) }
 		e <- as.vector(extent)
@@ -23,7 +23,7 @@ setMethod('rast', signature(x='missing'),
 		
 
 		r <- methods::new('SpatRaster')
-		r@ptr <- SpatRaster$new(c(nrow, ncol, nlayer), e, crs)
+		r@ptr <- SpatRaster$new(c(nrow, ncol, nlyr), e, crs)
 		
 		if (!missing(resolution)) {
 		#	res(r) <- resolution

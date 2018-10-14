@@ -23,7 +23,7 @@ setMethod ('show' , 'SpatRaster',
 		cat('class       :' , class(object), '\n')
 
 		d <- dim(object)
-		cat('dimensions  : ', d[1], ', ', d[2], ', ', d[3], '  (nrow, ncol, nlayer)\n', sep="" ) 
+		cat('dimensions  : ', d[1], ', ', d[2], ', ', d[3], '  (nrow, ncol, nlyr)\n', sep="" ) 
 		#cat ('ncell       :' , ncell(object), '\n')
 
 		xyres <- res(object)
@@ -38,27 +38,27 @@ setMethod ('show' , 'SpatRaster',
 		mnr <- 15
 
 		ln <- names(object)
-		nl <- nlayer(object)
+		nl <- nlyr(object)
 			
 		if (nl > mnr) {
 			ln <- c(ln[1:mnr], '...')
 		}
 
 		if (.hasValues(object)) {
-		
+			nsr <- nsrc(object)	
 			m <- .inMemory(object)
 			f <- .filenames(object)
 			sources <- rep('memory', length(m))
 			sources[!m] <- f[!m] 
-			sl <- length(sources)
-			if (sl > 1) {
-				cat('data sources:', sources[1], '\n')
-				for (i in 2:(min(10, sl))) {
-					cat('             ', sources[i], '\n')
+			if (nsr > 1) {
+				lbs <- .nlyrBySource(object)
+				cat('data sources:', sources[1], paste0('(', lbs[1] , ifelse(lbs[i]>1, ' layers)', ' layer)')), '\n')
+				for (i in 2:(min(10, nsr))) {
+					cat('             ', sources[i], paste0('(', lbs[i] , ifelse(lbs[i]>1, ' layers)', ' layer)')), '\n')
 				}			
 				
-				if (sl > 10) {
-					cat('             ', '... and', sl-10, 'more sources\n')				
+				if (nsr > 10) {
+					cat('             ', '... and', nsr-10, 'more sources\n')				
 				}
 			} else {
 				cat('data source :', sources[1], '\n')

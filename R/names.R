@@ -55,7 +55,7 @@ setMethod('names', signature(x='SpatRaster'),
 
 setMethod('names<-', signature(x='SpatRaster'), 
 	function(x, value)  {
-		nl <- nlayer(x)
+		nl <- nlyr(x)
 		if (length(value) != nl) {
 			stop('incorrect number of layer names')
 		}

@@ -28,8 +28,8 @@ Character
 
 
 \examples{
-s <- rast(ncols=5, nrows=5, nlayer=3)
-nlayer(s)
+s <- rast(ncols=5, nrows=5, nlyr=3)
+nlyr(s)
 names(s)
 names(s) <- c('a', 'b', 'c')
 # space is not valid
