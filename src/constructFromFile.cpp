@@ -9,7 +9,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	string ext = getFileExt(fname);
 
 	if (ext != ".grd") {
-//		return constructFromFileGDAL(fname);
+		return constructFromFileGDAL(fname);
 	} else {
 
 		CSimpleIniA ini(true, false, false);
