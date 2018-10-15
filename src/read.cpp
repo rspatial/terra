@@ -81,7 +81,7 @@ std::vector<double>  SpatRaster::getValues() {
 	} else if (source[0].driver == "raster") {
 		return readValues(0, nrow, 0, ncol);
 	} else {
-//		return readValuesGDAL(0, nrow, 0, ncol);
+		return readValuesGDAL(0, nrow, 0, ncol);
 	}
 }
 
