@@ -2,6 +2,13 @@ using namespace std;
 #include <vector>
 #include "spat.h"
 
+
+//void SpatRaster::validNames() {
+//	std::string n = names();
+//}
+
+
+
 SpatRaster SpatRaster::addSources(SpatRaster x) {
 	SpatRaster out = deepCopy();
 	out.error = false;
@@ -18,6 +25,8 @@ SpatRaster SpatRaster::addSources(SpatRaster x) {
 	}
 	return(out);
 }
+
+
 
 unsigned SpatRaster::nsrc() {
     return source.size();

@@ -29,21 +29,38 @@ BlockSize SpatRaster::getBlockSize() {
 	return bs;
 }
 
-
-SpatRaster SpatRaster::writeRaster(std::string filename, bool overwrite) {
-//	if ((filename == "") { stop}
-//	if ((!hasValues) {stop }
-	writeStart(filename, overwrite);
-	writeValues(getValues(), 0);
-	writeStop();
-	return SpatRaster(filename);
-}
-
-
 bool file_exists(const std::string& name) {
 	ifstream f(name.c_str());
 	return f.good();
 }
+
+
+bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
+	lrtrim(filename);
+	if (filename == "") {
+		filename = "random_file_name.grd";
+	}
+	string ext = getFileExt(filename);
+	lowercase(ext);
+	if (ext == ".grd") {
+		if (file_exists(filename)) {
+            if (overwrite) {
+				remove(filename.c_str());
+			} else {
+			    return false;
+			}
+		}
+		ofstream fs(filename, ios::ate | ios::binary);
+		std::vector<double> v = getValues();
+		fs.write((char*)&v[0], v.size() * sizeof(double));
+		fs.close();
+
+        return writeHDR(filename);
+	} else {
+        return writeRasterGDAL(filename, overwrite);
+	}
+}
+
 
 
 
@@ -93,7 +110,7 @@ bool SpatRaster::writeStop(){
 
 	if (source[0].driver == "raster") {
 		//(*fs).close();
-		writeHDR();
+		writeHDR(source[0].filename);
 	} else if (source[0].driver == "gdal") {
 
 	}
@@ -113,7 +130,7 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 		fs.close();
 
 	} else if (source[0].driver == "gdal") {
-		// write with gdal
+//		writeValuesGDAL(source[0].filename, "GTiff");
 	} else {
 		setValues(vals);
 	}
@@ -173,7 +190,7 @@ void SpatRaster::setRange() {
 
 
 
-bool SpatRaster::writeHDR() {
+bool SpatRaster::writeHDR(string filename) {
 	CSimpleIniA ini;
 	ini.SetValue("version", NULL, NULL);
 	ini.SetValue("version", "version", "2");
@@ -186,20 +203,16 @@ bool SpatRaster::writeHDR() {
 	ini.SetValue("dimensions", "nrow", to_string(nrow).c_str());
 	ini.SetValue("dimensions", "ncol", to_string(ncol).c_str());
 	ini.SetValue("dimensions", "nlyr", to_string(nlyr()).c_str());
-	ini.SetValue("dimensions", "names", concatenate(source[0].names, std::string(":|:")).c_str());
+	ini.SetValue("dimensions", "names", concatenate(getNames(), std::string(":|:")).c_str());
 	ini.SetValue("data", NULL, NULL);
 	ini.SetValue("data", "datatype", "FLT8S"); // double
 	ini.SetValue("data", "nodata", to_string(-1 * numeric_limits<double>::max()).c_str());
-	ini.SetValue("data", "range_min", concatenate(dbl2str(source[0].range_min), std::string(":|:")).c_str());
-	ini.SetValue("data", "range_max", concatenate(dbl2str(source[0].range_max), std::string(":|:")).c_str());
+	ini.SetValue("data", "range_min", concatenate(dbl2str(range_min()), std::string(":|:")).c_str());
+	ini.SetValue("data", "range_max", concatenate(dbl2str(range_max()), std::string(":|:")).c_str());
 
-	string f = setFileExt(source[0].filename, ".grd");
-	SI_Error rc = ini.SaveFile(f.c_str());
-	if (rc < 0) {
-		return false;
-	} else {
-		return true;
-	}
+	//string f = setFileExt(filename, ".grd");
+	SI_Error rc = ini.SaveFile(filename.c_str());
+	return rc >= 0 ;
 }
 
 

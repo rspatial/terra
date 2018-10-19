@@ -28,8 +28,8 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			SpatExtent e(xmin, xmax, ymin, ymax);
 			s.extent = e;
 			s.datatype = ini.GetValue("data", "datatype");
-			s.bandorder = ini.GetValue("data", "bandorder");
-			s.byteorder = ini.GetValue("data", "byteorder");
+			s.bandorder = ini.GetValue("data", "bandorder", "");
+			s.byteorder = ini.GetValue("data", "byteorder", "");
 
 			string smin, smax, snames;
 			string version = ini.GetValue("version", "version", "1");

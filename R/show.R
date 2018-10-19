@@ -52,7 +52,7 @@ setMethod ('show' , 'SpatRaster',
 			sources[!m] <- f[!m] 
 			if (nsr > 1) {
 				lbs <- .nlyrBySource(object)
-				cat('data sources:', sources[1], paste0('(', lbs[1] , ifelse(lbs[i]>1, ' layers)', ' layer)')), '\n')
+				cat('data sources:', sources[1], paste0('(', lbs[1] , ifelse(lbs[1]>1, ' layers)', ' layer)')), '\n')
 				for (i in 2:(min(10, nsr))) {
 					cat('             ', sources[i], paste0('(', lbs[i] , ifelse(lbs[i]>1, ' layers)', ' layer)')), '\n')
 				}			

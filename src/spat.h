@@ -98,7 +98,12 @@ class SpatRaster {
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
 		std::string getCRS() { return(crs); }
-		void setCRS(std::string _crs) { crs = _crs; } // also set it for sources?
+		void setCRS(std::string _crs) {
+			for (size_t i = 0; i < nsrc(); i++) { source[i].crs = _crs; }
+			crs = _crs;
+		}
+
+
 		std::vector<double> resolution() { return std::vector<double> { (extent.xmax - extent.xmin) / ncol, (extent.ymax - extent.ymin) / nrow };}
 		double ncell() { return nrow * ncol; }
 		double xres() { return (extent.xmax - extent.xmin) / ncol ;}
@@ -243,15 +248,16 @@ class SpatRaster {
 		bool writeStart(std::string filename, bool overwrite);
 		//bool writeStartFs(std::string filename, bool overwrite, fstream& f);
 		bool writeValues(std::vector<double> vals, unsigned row);
+		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
 		bool writeStop();
-		bool writeHDR();
+		bool writeHDR(string filename);
 
 		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
-		bool writeValuesGDAL(std::string filename, std::vector<double> values, std::string format="GTiff");
 
 		void openFS(string const &filename);
 
-		SpatRaster writeRaster(std::string filename, bool overwrite);
+		bool writeRaster(std::string filename, bool overwrite);
+		bool writeRasterGDAL(std::string filename, bool overwrite);
 
 ////////////////////////////////////////////////////
 // main methods

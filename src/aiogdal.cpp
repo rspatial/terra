@@ -143,13 +143,17 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 
 
 
-bool SpatRaster::writeValuesGDAL(std::string filename, std::vector<double> values, std::string format) {
+bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
 
-    const char *pszFormat = format.c_str();
+	std::string format = "GTiff"; 
+    
+	const char *pszFormat = format.c_str();
 	const char *pszDstFilename = filename.c_str();
     GDALDriver *poDriver;
     char **papszMetadata;
 	GDALAllRegister();
+	
+//	std::vector<double> values, 
 	
     poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
     if( poDriver == NULL ) return (false);
@@ -158,27 +162,35 @@ bool SpatRaster::writeValuesGDAL(std::string filename, std::vector<double> value
  
 	GDALDataset *poDstDS;
 	char **papszOptions = NULL;
-	poDstDS = poDriver->Create( pszDstFilename, 512, 512, 1, GDT_Byte, papszOptions );
+	poDstDS = poDriver->Create( pszDstFilename, ncol, nrow, 1, GDT_Float32, papszOptions );
 
-	double adfGeoTransform[6] = { 444720, 30, 0, 3751320, 0, -30 };
-	OGRSpatialReference oSRS;
-	char *pszSRS_WKT = NULL;
+	std::vector<double> rs = resolution();
+	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -rs[1] };
+	
 	GDALRasterBand *poBand;
-	GByte abyRaster[512*512];
-	poDstDS->SetGeoTransform( adfGeoTransform );
-	oSRS.SetUTM( 11, TRUE );
-	oSRS.SetWellKnownGeogCS( "NAD27" );
+
+	OGRSpatialReference oSRS;
+	const char *pszProj4 = getCRS().c_str();
+	OGRErr erro = oSRS.importFromProj4( pszProj4); 
+	if (erro == 4) { return false ; }	// ??
+	
+	char *pszSRS_WKT = NULL;	
 	oSRS.exportToWkt( &pszSRS_WKT );
+
+	poDstDS->SetGeoTransform( adfGeoTransform );
 	poDstDS->SetProjection( pszSRS_WKT );
+
 	CPLFree( pszSRS_WKT );
 	poBand = poDstDS->GetRasterBand(1);
-	CPLErr err = poBand->RasterIO( GF_Write, 0, 0, 512, 512, abyRaster, 512, 512, GDT_Byte, 0, 0 );
+
+	std::vector<double> vals = getValues();
+	double* v = &vals[0];
+
+	CPLErr err = poBand->RasterIO( GF_Write, 0, 0, ncol, nrow, v, ncol, nrow, GDT_Float32, 0, 0 );
 	
 	GDALClose( (GDALDatasetH) poDstDS );
 	
-	if (err == 4) {
-		return false;
-	}	
+	if (err == 4) { return false ; }	
 	return true;
 }
 
