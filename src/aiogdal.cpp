@@ -108,7 +108,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	GDALClose( (GDALDatasetH) poDataset );
 
 	s.hasValues = true;
-	source = { s };
+	setSource(s);
 	return true;
  
 }
