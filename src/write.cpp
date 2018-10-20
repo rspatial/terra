@@ -6,28 +6,6 @@
 using namespace std;
 
 
-bool canProcessInMemory() {
-	return true;
-}
-
-BlockSize SpatRaster::getBlockSize() {
-	BlockSize bs;
-
-	if (source[0].filename == "") {
-	// in memory
-		bs.row = {0};
-		bs.nrows = {nrow};
-		bs.n = 1;
-
-	} else {
-
-	// to be improved, see raster::blockSize
-		bs.row = {0, unsigned(floor(nrow/2))};
-		bs.nrows = {bs.row[1], nrow-bs.row[1]};
-		bs.n = 2;
-	}
-	return bs;
-}
 
 bool file_exists(const std::string& name) {
 	ifstream f(name.c_str());
