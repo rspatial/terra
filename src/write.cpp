@@ -49,7 +49,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 //	s.max_range = -inf;
 	lrtrim(filename);
 	if (filename == "") {
-		if (!canProcessInMemory()) {
+		if (!canProcessInMemory(4)) {
 			filename = "random_file_name.grd";
 		}
 	}
@@ -202,7 +202,7 @@ bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f)
 
 	lrtrim(filename);
 	if (filename == "") {
-		if (!canProcessInMemory()) {
+		if (!canProcessInMemory(4)) {
 			filename = "random_file_name.grd";
 		}
 	}

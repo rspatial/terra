@@ -31,17 +31,15 @@ double availableRAM() {
 }
 
 
-bool SpatRaster::canProcessInMemory() {
-	unsigned ncopies = 4;
+bool SpatRaster::canProcessInMemory(unsigned n) {
 	double f = 0.5;
-	return (ncopies * size()) < (availableRAM() * f);
+	return (n * size()) < (availableRAM() * f);
 }
 
-unsigned SpatRaster::chunkSize() {
-	unsigned ncopies = 4;
+unsigned SpatRaster::chunkSize(unsigned n) {
 	double f = 0.5;
-	unsigned rows = (availableRAM() * f / (ncopies)) / ncol;
-	return rows;
+	unsigned rows = availableRAM() * f / n / ncol;
+	return min(rows, nrow);
 }
 
 BlockSize SpatRaster::getBlockSize() {

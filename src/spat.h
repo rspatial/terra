@@ -259,8 +259,8 @@ class SpatRaster {
 		bool writeRaster(std::string filename, bool overwrite);
 		bool writeRasterGDAL(std::string filename, bool overwrite);
 
-		bool canProcessInMemory();
-		unsigned chunkSize();
+		bool canProcessInMemory(unsigned n);
+		unsigned chunkSize(unsigned n);
 		
 		
 ////////////////////////////////////////////////////
