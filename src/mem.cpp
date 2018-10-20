@@ -2,9 +2,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#endif
-
-#ifdef linux
+#else
 #include "sys/types.h"
 #include "sys/sysinfo.h"
 #include <unistd.h>
