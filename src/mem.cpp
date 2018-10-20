@@ -11,7 +11,6 @@
 
 double availableRAM() {
 	// return available RAM in number of double (8 byte) cells.
-
 	double ram;
 	#ifdef _WIN32
 		MEMORYSTATUSEX statex;
@@ -25,7 +24,6 @@ double availableRAM() {
 	#endif
 	
 	return ram;
-
 }
 
 
@@ -34,29 +32,39 @@ bool SpatRaster::canProcessInMemory(unsigned n) {
 	return (n * size()) < (availableRAM() * f);
 }
 
+
+
 unsigned SpatRaster::chunkSize(unsigned n) {
-	double f = 0.5;
-	unsigned rows = availableRAM() * f / n / ncol;
-	return min(rows, nrow);
+	double f = 0.25;
+	unsigned cells_in_row = n * ncol * nlyr();
+	unsigned rows = availableRAM() * f / cells_in_row;
+	return rows == 0 ? 1 : min(rows, nrow);
 }
 
-BlockSize SpatRaster::getBlockSize() {
+BlockSize SpatRaster::getBlockSize(unsigned n) {
 	BlockSize bs;
 
-	if (source[0].filename == "") {
+//	if (source[0].filename == "") {
 	// in memory
-		bs.row = {0};
-		bs.nrows = {nrow};
-		bs.n = 1;
+//		bs.row = {0};
+//		bs.nrows = {nrow};
+//		bs.n = 1;
 
-	} else {
+//	} else {
 
-//		unsigned rowsperchunk = chunkSize();
+		unsigned cs = chunkSize(n);
+		unsigned chunks = ceil(nrow / double(cs));
+		bs.n = chunks;
+		bs.row = vector<unsigned>(chunks, 0);
+		bs.nrows = vector<unsigned>(chunks, cs);
 
-	// to be improved
-		bs.row = {0, unsigned(floor(nrow/2))};
-		bs.nrows = {bs.row[1], nrow-bs.row[1]};
-		bs.n = 2;
-	}
+		unsigned r = 0;
+		for (size_t i =0; i<chunks; i++) {
+			bs.row[i] = r;
+			r += cs;
+		}	
+		bs.nrows[chunks-1] = cs - ((chunks * cs) - nrow);	
+
+//	}
 	return bs;
 }

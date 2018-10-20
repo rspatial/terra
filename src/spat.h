@@ -74,7 +74,6 @@ class SpatRaster {
 		SpatExtent extent;
 		SpatExtent window;
 		std::string crs;
-		BlockSize getBlockSize();
 
 	public:
 
@@ -84,6 +83,7 @@ class SpatRaster {
 		unsigned nrow, ncol;
 		std::vector<RasterSource> source;
 		BlockSize bs;
+		BlockSize getBlockSize(unsigned n);
 
 		bool error = false;
 		bool warning = false;

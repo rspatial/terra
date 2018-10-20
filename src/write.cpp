@@ -79,7 +79,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 	}
 
 	source[0].filename = {filename};
-	bs = getBlockSize();
+	bs = getBlockSize(4);
 	return true;
 }
 
@@ -227,7 +227,7 @@ bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f)
 	}
 
 	source.filename = {filename};
-	bs = getBlockSize();
+	bs = getBlockSize(4);
 	return true;
 }
 */

@@ -34,7 +34,7 @@ setMethod('writeStart', signature(x='SpatRaster', filename='character'),
 		if (inherits(success, "try-error")) {
 			stop("Cannot open file for writing")
 		} 
-		b <- x@ptr$getBlockSize()
+		b <- x@ptr$getBlockSize(4)
 		b$row <- b$row + 1
 		b		
 	}

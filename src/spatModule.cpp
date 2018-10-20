@@ -12,8 +12,10 @@ NumericMatrix getValuesM(SpatRaster* r) {
 	return(x);
 }
 
-List getBlockSizeR(SpatRaster* r) {              //+1 for R
-	List L = List::create(Named("row") = r->bs.row, Named("nrows") = r->bs.nrows, Named("n") = r->bs.n);
+
+List getBlockSizeR(SpatRaster* r, unsigned n) {              //+1 for R
+    BlockSize bs = r->getBlockSize(n);
+	List L = List::create(Named("row") = bs.row, Named("nrows") = bs.nrows, Named("n") = bs.n);
 	return(L);
 }
 
@@ -54,6 +56,7 @@ RCPP_MODULE(spat){
 		.method("size", &SpatGeomRings::size, "size")
 		
 	;	
+	
     class_<SpatPolygons>("SpatPolygons")
 //		.field("polygons", &SpatPolygons::polys )
 		.field_readonly("extent", &SpatPolygons::extent )
@@ -125,9 +128,11 @@ RCPP_MODULE(spat){
 		.method("writeValues", &SpatRaster::writeValues, "writeValues") 
 
 		.method("writeRaster", &SpatRaster::writeRaster, "writeRaster")
+		.method("canProcessInMemory", &SpatRaster::canProcessInMemory, "canProcessInMemory")
+		.method("chunkSize", &SpatRaster::chunkSize, "chunkSize")
 		
-		.field_readonly("nrow", &SpatRaster::nrow )
-		.field_readonly("ncol", &SpatRaster::ncol )		
+		.field_readonly("nrow", &SpatRaster::nrow, "nrow")
+		.field_readonly("ncol", &SpatRaster::ncol, "ncol")		
 		.method("nsrc", &SpatRaster::nsrc, "nsrc" )	
 		
 		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )		
@@ -176,3 +181,5 @@ RCPP_MODULE(spat){
 
 	;
 }
+
+
