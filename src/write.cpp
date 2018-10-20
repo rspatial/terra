@@ -35,7 +35,9 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 
         return writeHDR(filename);
 	} else {
+        #ifdef useGDAL
         return writeRasterGDAL(filename, overwrite);
+        #endif // useGDAL
 	}
 }
 

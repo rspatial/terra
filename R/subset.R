@@ -4,7 +4,6 @@
 # Licence GPL v3
 
 
-
 if (!isGeneric('subset')) {
 	setGeneric('subset', function(x, ...)
 		standardGeneric('subset')) 
@@ -21,15 +20,9 @@ function(x, subset, filename='', overwrite=FALSE, ...) {
 		}
 		subset <- i
 	}
-	subset <- as.integer(subset)
-	if (! all(subset %in% 1:nlyr(x))) {
-		stop('not a valid subset')
-	}
-	subset <- subset - 1;
+	subset <- as.integer(subset) - 1
 	x@ptr <- x@ptr$subset(subset, filename, overwrite)
-
-	if (x@ptr$warning) { warning(x@ptr$warning_message)}
-	if (x@ptr$error) {	stop(x@ptr$error_message)	}			
+	.messages(x, "subset")
 	return(x)	
 } )
 

@@ -4,6 +4,7 @@ using namespace std;
 #include <numeric>
 #include "spatvector.h"
 
+#define useGDAL
 
 
 class RasterAttributeTable {
@@ -51,7 +52,6 @@ class RasterSource {
 		string byteorder;
 		string datatype;
 		double NAflag;
-
 
 		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
@@ -261,8 +261,8 @@ class SpatRaster {
 
 		bool canProcessInMemory(unsigned n);
 		unsigned chunkSize(unsigned n);
-		
-		
+
+
 ////////////////////////////////////////////////////
 // main methods
 ////////////////////////////////////////////////////

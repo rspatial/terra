@@ -66,7 +66,9 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			}
 
 		} else {
+            #ifdef useGDAL
 			return readValuesGDAL(row, nrows, col, ncols);
+            #endif // useGDAL
 		}
 	}
 	return out;
@@ -81,7 +83,9 @@ std::vector<double>  SpatRaster::getValues() {
 	} else if (source[0].driver == "raster") {
 		return readValues(0, nrow, 0, ncol);
 	} else {
+        #ifdef useGDAL
 		return readValuesGDAL(0, nrow, 0, ncol);
+        #endif // useGDAL
 	}
 }
 

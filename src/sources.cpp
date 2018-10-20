@@ -89,11 +89,14 @@ std::vector<double> RasterSource::getValues(unsigned lyr) {
     return out;
 }
 
+
+
 std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
-    std::vector<RasterSource> out;
+	std::vector<RasterSource> out;
+
     unsigned nl = lyrs.size();
     bool all = true;
-    if (lyrs.size() == nl) {
+    if (lyrs.size() == nlyr) {
         for (size_t i=0; i<nl; i++) {
             if (lyrs[i] != i) {
                 all = false;
@@ -111,10 +114,15 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
         rs.hasRange.resize(0);
         rs.range_min.resize(0);
         rs.range_max.resize(0);
+        rs.hasCT.resize(0);
+		rs.CT.resize(0);
+        rs.hasRAT.resize(0);
+		rs.RAT.resize(0);
+
 
         if (memory) {
-            rs.values.resize(0);
             if (hasValues) {
+                rs.values.resize(0);
                 for (size_t i=0; i<nl; i++) {
                     unsigned j = lyrs[i];
                     std::vector<double> x = getValues(j);
@@ -123,6 +131,8 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                     rs.hasRange.push_back(hasRange[j]);
                     rs.range_min.push_back(range_min[j]);
                     rs.range_max.push_back(range_max[j]);
+                    rs.hasCT.push_back(hasCT[j]);
+                    rs.hasRAT.push_back(hasRAT[j]);
                 }
             }
         } else {
@@ -133,6 +143,8 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                 rs.hasRange.push_back(hasRange[j]);
                 rs.range_min.push_back(range_min[j]);
                 rs.range_max.push_back(range_max[j]);
+                rs.hasCT.push_back(hasCT[j]);
+                rs.hasRAT.push_back(hasRAT[j]);
             }
         }
         rs.nlyr = nl;
@@ -141,11 +153,46 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
     return out;
 }
 
+std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
+    unsigned s = lyrs.size();
+    for (size_t i=0; i<s; i++) {
+        unsigned j = s - i - 1;
+        if ((lyrs[j] < 0) | (lyrs[j] >= nl)) {
+			lyrs.erase(lyrs.begin() + j);
+		}
+	}
+
+	/* or
+    unsigned s = lyrs.size() - 1;
+    for (long i=s; i>=0; i--) {
+        if ((lyrs[i] < 0) | (lyrs[i] >= nl)) {
+			lyrs.erase(lyrs.begin() + i);
+		}
+	}
+	*/
+
+	return lyrs;
+
+
+}
+
 
 SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, string filename, bool overwrite) {
 
     SpatRaster out = geometry();
     out.source.resize(0);
+
+    unsigned oldsize = lyrs.size();
+    lyrs = validLayers(lyrs, nlyr());
+
+	if (lyrs.size() == 0) {
+		out.error = true;
+		out.error_message = "no (valid) layer references";
+		return(out);
+	} else if (lyrs.size() != oldsize) {
+        out.warning = true;
+        out.warning_message.push_back("ignored " + to_string(oldsize - lyrs.size()) + " invalid layer references");
+	}
 
     std::vector<unsigned> srcs = sourcesFromLyrs(lyrs);
 

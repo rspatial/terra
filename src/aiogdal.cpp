@@ -185,7 +185,7 @@ bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
 
 	std::vector<double> vals = getValues();
 	double* v = &vals[0];
-
+	
 	CPLErr err = poBand->RasterIO( GF_Write, 0, 0, ncol, nrow, v, ncol, nrow, GDT_Float32, 0, 0 );
 	
 	GDALClose( (GDALDatasetH) poDstDS );

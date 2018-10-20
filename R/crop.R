@@ -14,8 +14,7 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 	}
 	
 	x@ptr <- x@ptr$crop(y@ptr, filename, snap, overwrite)
-	if (x@ptr$warning) { warning(x@ptr$warning_message)}
-	if (x@ptr$error) {	stop(x@ptr$error_message)	}			
+	.messages(x, "crop")		
 	x	
 }
 )
