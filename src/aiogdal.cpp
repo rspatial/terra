@@ -29,16 +29,16 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	double adfGeoTransform[6];
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
 		// the rounding below is to address a design flaw in GDAL
-		// GDAL provides the coordinates of one corner and the resolution, instead of the coordinates of all (two opposite) corners.
-		// computation of the opposite corder coordinates is only approximate for large rasters with a high resolution.
-		double xmin = adfGeoTransform[0]; /* top left x */
-		xmin = roundn(xmin, 9);
+		// GDAL provides the coordinates of one corner and the resolution, 
+		// instead of the coordinates of all (two opposite) corners.
+		// This makes computation of the opposite corner coordinates only 
+		// approximate for large rasters with a high resolution.
+		double xmin = adfGeoTransform[0]; /* left x */
 		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
-		xmax = roundn(xmax, 9);
-		double ymax = adfGeoTransform[3]; /* top left y */
-		ymax = roundn(ymax, 9);
+		//xmax = roundn(xmax, 9);
+		double ymax = adfGeoTransform[3]; /* top y */
 		double ymin = ymax + s.nrow * adfGeoTransform[5]; /* n-s pixel resolution (negative value) */
-		ymin = roundn(ymin, 9);
+		//ymin = roundn(ymin, 9);
 		SpatExtent e(xmin, xmax, ymin, ymax);
 		s.extent = e;
 	}
@@ -113,7 +113,8 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
  
 }
 
-std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
+std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs) {
+	
     GDALDataset  *poDataset;
 	GDALRasterBand  *poBand;
     GDALAllRegister();
@@ -125,9 +126,9 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 	double *pafScanline;
 	pafScanline = (double *) CPLMalloc(sizeof(double)*ncell);
 	
-	for (size_t i=0; i < source[0].nlyr; i++) {
-	
-		poBand = poDataset->GetRasterBand(i+1);
+	for (size_t i=0; i < nlyrs; i++) {
+		
+		poBand = poDataset->GetRasterBand(lyr + i + 1);
 		CPLErr err = poBand->RasterIO( GF_Read, row, col, ncols, nrows, pafScanline, ncols, nrows, GDT_Float64, 0, 0 );	
 		if (err == 4) {
 			std::vector<double> errout;
@@ -153,8 +154,6 @@ bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
     char **papszMetadata;
 	GDALAllRegister();
 	
-//	std::vector<double> values, 
-	
     poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
     if( poDriver == NULL ) return (false);
     papszMetadata = poDriver->GetMetadata();
@@ -162,10 +161,10 @@ bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
  
 	GDALDataset *poDstDS;
 	char **papszOptions = NULL;
-	poDstDS = poDriver->Create( pszDstFilename, ncol, nrow, 1, GDT_Float32, papszOptions );
+	poDstDS = poDriver->Create( pszDstFilename, ncol, nrow, nlyr(), GDT_Float64, papszOptions );
 
 	std::vector<double> rs = resolution();
-	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -rs[1] };
+	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	
 	GDALRasterBand *poBand;
 
@@ -179,14 +178,25 @@ bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
 
 	poDstDS->SetGeoTransform( adfGeoTransform );
 	poDstDS->SetProjection( pszSRS_WKT );
-
 	CPLFree( pszSRS_WKT );
-	poBand = poDstDS->GetRasterBand(1);
 
-	std::vector<double> vals = getValues();
-	double* v = &vals[0];
+	std::vector<double> rmin = range_min();
+	std::vector<double> rmax = range_max();
+	CPLErr err;
 	
-	CPLErr err = poBand->RasterIO( GF_Write, 0, 0, ncol, nrow, v, ncol, nrow, GDT_Float32, 0, 0 );
+	for (size_t i=0; i < nlyr(); i++) {
+
+		poBand = poDstDS->GetRasterBand(i+1);
+	
+		std::vector<double> vals = getValues();
+		double* v = ( double* ) CPLMalloc( sizeof(double) * vals.size() );
+		v = &vals[0];
+		
+		err = poBand->RasterIO( GF_Write, 0, 0, ncol, nrow, v, ncol, nrow, GDT_Float64, 0, 0 );
+		if (err == 4) break;
+		
+		poBand->SetStatistics(rmin[i], rmax[i], -9999., -9999.);
+	}
 	
 	GDALClose( (GDALDatasetH) poDstDS );
 	

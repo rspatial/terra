@@ -13,8 +13,7 @@ setMethod('names', signature(x='SpatRaster'),
 
 setMethod('names<-', signature(x='SpatRaster'), 
 	function(x, value)  {
-		nl <- nlyr(x)
-		if (length(value) != nl) {
+		if (length(value) != nlyr(x)) {
 			stop('incorrect number names')
 		}
 		if (! x@ptr$setNames(value)) {

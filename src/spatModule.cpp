@@ -146,25 +146,22 @@ RCPP_MODULE(spat){
 
 		.property("res", &SpatRaster::resolution)
 		.property("origin", &SpatRaster::origin)
-		//.property("layers", &SpatRaster::getnlayers)
 
 		.property("inMemory", &SpatRaster::inMemory )
 		.property("filenames", &SpatRaster::filenames )
 		.property("hasValues", &SpatRaster::hasValues )
-		
-	
+			
 		//.field_readonly("hasRAT", &SpatRaster::hasRAT )
 		//.field_readonly("hasCT", &SpatRaster::hasCT )
 		.property("hasRange", &SpatRaster::hasRange )
 		.property("range_min", &SpatRaster::range_min )
 		.property("range_max", &SpatRaster::range_max )
 
-		//.method("test", &SpatRaster::test, "test")
 		
-		.field_readonly("error", &SpatRaster::error )
-		.field_readonly("warning", &SpatRaster::warning )
-		.field_readonly("error_message", &SpatRaster::error_message )
-		.field_readonly("warning_message", &SpatRaster::warning_message )
+		.field("error", &SpatRaster::error )
+		.field("warning", &SpatRaster::warning )
+		.field("error_message", &SpatRaster::error_message )
+		.field("warning_message", &SpatRaster::warning_message )
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
 		.method("crop", &SpatRaster::crop, "crop")

@@ -46,10 +46,11 @@ std::vector<double> readINT4(string file, unsigned long cell, unsigned n) {
 
 
  
-std::vector<double> readFLT4(string file, string order, unsigned long start, unsigned n, std::vector<unsigned> lyrs) {
+std::vector<double> readFLT4(string file, string order, unsigned long start, unsigned n) {
 
 	const int dsize = 4;
-	size_t nlyr = lyrs.size();
+	size_t nlyr = 1;
+	unsigned lyr = 0;
 	std::vector<float> v(n * nlyr);
 	float* value = &v[0];
 
@@ -58,7 +59,7 @@ std::vector<double> readFLT4(string file, string order, unsigned long start, uns
 	ifstream f (file, ios::in | ios::binary);
 //	if (order == "BSQ") {
 		for (size_t i = 0; i < nlyr; i++) { 
-			f.seekg (start * lyrs[i], ios::beg);
+			f.seekg (start * lyr, ios::beg);
 			f.read ((char*)value, n); 
 		}
 
@@ -69,10 +70,11 @@ std::vector<double> readFLT4(string file, string order, unsigned long start, uns
 }
 
 
-std::vector<double> readFLT8(string file, string order, unsigned long start, unsigned n, std::vector<unsigned> lyrs) {
+std::vector<double> readFLT8(string file, string order, unsigned long start, unsigned n) {
 
 	const int dsize = 8;
-	size_t nlyr = lyrs.size();
+	size_t nlyr = 1;
+	unsigned lyr = 0;
 	std::vector<double> v(n * nlyr);
 	double* value = &v[0];
 
@@ -81,7 +83,7 @@ std::vector<double> readFLT8(string file, string order, unsigned long start, uns
 	ifstream f (file, ios::in | ios::binary);
 //	if (order == "BSQ") {
 		for (size_t i = 0; i < nlyr; i++) { 
-			f.seekg (start * lyrs[i], ios::beg);
+			f.seekg (start * lyr, ios::beg);
 			f.read ((char*)value, n); 
 		}
 

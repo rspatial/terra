@@ -225,7 +225,7 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 
 		bool readStart();
-		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
 		bool readStop();
 		bool writeStart(std::string filename, bool overwrite);
 		//bool writeStartFs(std::string filename, bool overwrite, fstream& f);
@@ -234,7 +234,7 @@ class SpatRaster {
 		bool writeStop();
 		bool writeHDR(string filename);
 
-		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
 
 		void openFS(string const &filename);
 

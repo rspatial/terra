@@ -149,8 +149,8 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 	x.readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
-		std::vector<double> b = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
+		std::vector<double> b = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
 		if (oper == "+") {
 			a = a + b; 
 		} else if (oper == "-") {
@@ -194,7 +194,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 	readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
 		if (std::isnan(x)) {
 			for(double& d : a)  d = NAN;
 		} else if (oper == "+") {
@@ -238,7 +238,7 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 	readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
 		if (oper == "+") {
 			for(double& d : a)  d = x + d;
 		} else if (oper == "-") {

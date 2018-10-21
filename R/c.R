@@ -11,8 +11,8 @@ setMethod('c', signature(x='SpatRaster'),
 				x@ptr <- x@ptr$addSources(i@ptr)
 			}
 		}
-		if (x@ptr$warning) { warning(x@ptr$warning_message) }
-		if (x@ptr$error) { stop(x@ptr$error_message) }
+		x@ptr$setNames(x@ptr$names)
+		.messages(x, "c")		
 		return(x)
 	}
 )
