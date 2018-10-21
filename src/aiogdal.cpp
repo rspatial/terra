@@ -183,15 +183,14 @@ bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
 	std::vector<double> rmin = range_min();
 	std::vector<double> rmax = range_max();
 	CPLErr err;
-	
+	std::vector<double> vals;
+	double* v = ( double* ) CPLMalloc( sizeof(double) * ncell() );
 	for (size_t i=0; i < nlyr(); i++) {
-
-		poBand = poDstDS->GetRasterBand(i+1);
 	
-		std::vector<double> vals = getValues();
-		double* v = ( double* ) CPLMalloc( sizeof(double) * vals.size() );
+		vals = readValues(0,nrow,0,ncol,i,1);
 		v = &vals[0];
 		
+		poBand = poDstDS->GetRasterBand(i+1);
 		err = poBand->RasterIO( GF_Write, 0, 0, ncol, nrow, v, ncol, nrow, GDT_Float64, 0, 0 );
 		if (err == 4) break;
 		
