@@ -141,7 +141,8 @@ RCPP_MODULE(spat){
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
 
-		.property("names", &SpatRaster::getNames, &SpatRaster::setNames )
+		.property("names", &SpatRaster::getNames)
+		.method("setNames", &SpatRaster::setNames, "setNames" )
 
 		.property("res", &SpatRaster::resolution)
 		.property("origin", &SpatRaster::origin)

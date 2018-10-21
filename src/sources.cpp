@@ -156,7 +156,7 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
 std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
     unsigned s = lyrs.size();
     for (size_t i=0; i<s; i++) {
-        unsigned j = s - i - 1;
+        unsigned j = s - i - 1; // start from the back
         if ((lyrs[j] < 0) | (lyrs[j] >= nl)) {
 			lyrs.erase(lyrs.begin() + j);
 		}

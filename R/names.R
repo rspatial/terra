@@ -1,51 +1,9 @@
 # Author: Robert J. Hijmans
-# Date:  October 2008
-# Version 0.9
+# Date:  October 2018
+# Version 1.0
 # Licence GPL v3
 
 
-.uniqueNames <- function(x, sep='.') {
-	y <- as.matrix(table(x))
-	y <- y[y[,1] > 1, ,drop=F]
-	if (nrow(y) > 0) {
-		y <- rownames(y)
-		for (i in 1:length(y)) {
-			j <- which(x==y[i])
-			x[j] <- paste(x[j], sep, 1:length(j), sep='')
-		}
-	}
-	x
-}
-
-
-
-.uniqueNames <- function(x, sep='.') {
-	y <- as.matrix(table(x))
-	y <- y[y[,1] > 1, ,drop=F]
-	if (nrow(y) > 0) {
-		y <- rownames(y)
-		for (i in 1:length(y)) {
-			j <- which(x==y[i])
-			x[j] <- paste(x[j], sep, 1:length(j), sep='')
-		}
-	}
-	x
-}
-
-
-.validNames <- function(x, prefix='lyr') {
-	x <- trimws(as.character(x))
-	x[is.na(x)] <- ""
-#	if (.standardnames()) {
-		x[x==''] <- prefix
-		x <- make.names(x, unique=FALSE)
-#	}
-	.uniqueNames(x)
-}
-
-
-
-	
 setMethod('names', signature(x='SpatRaster'), 
 	function(x) { 
 		x@ptr$names
@@ -57,13 +15,14 @@ setMethod('names<-', signature(x='SpatRaster'),
 	function(x, value)  {
 		nl <- nlyr(x)
 		if (length(value) != nl) {
-			stop('incorrect number of layer names')
+			stop('incorrect number names')
 		}
-		v <- .validNames(value)
-		if (!all(v == value)) {
-			warning('one or more names were changed to make them valid')
+		if (! x@ptr$setNames(value)) {
+			stop("cannot set these names")
 		}
-		x@ptr$names <- v
+		if (any(names(x) != value)) {
+			warning("some names were changed to make them valid and/or unique")
+		}
 		return(x)
 	}
 )

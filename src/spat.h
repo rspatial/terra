@@ -157,26 +157,8 @@ class SpatRaster {
 			return(x);
 		}
 
-		std::vector<string> getNames() {
-			std::vector<string> x;
-			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].names.begin(), source[i].names.end()); }
-			return(x);
-		}
-
-		void setNames(std::vector<string> _names) {
-			size_t begin=0;
-			size_t end;
-			for (size_t i=0; i<source.size(); i++)	{
-				end = begin + source[i].nlyr;
-                //std::vector<string> ::const_iterator first = _names.begin() + begin;
-                //std::vector<string> ::const_iterator last = _names.begin() + end;
-				//source[i].names = std::vector<string> (first, last) ;
-				source[i].names = std::vector<string> (_names.begin() + begin, _names.begin() + end);
-				begin = end;
-			}
-		}
-
-
+		std::vector<string> getNames();
+		bool setNames(std::vector<string> names);
 
 ////////////////////////////////////////////////////
 // constructors
