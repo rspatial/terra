@@ -1,16 +1,7 @@
 #include "spat.h"
 #include "SimpleIni.h"
 #include "util.h"
-//#include <fstream>
-# include <cstdio> // remove
 using namespace std;
-
-
-
-bool file_exists(const std::string& name) {
-	ifstream f(name.c_str());
-	return f.good();
-}
 
 
 bool SpatRaster::writeRaster(std::string filename, bool overwrite) {

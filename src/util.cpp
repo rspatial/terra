@@ -6,7 +6,12 @@ using namespace std;
 #include <string>
 #include <cmath>
 #include <vector>
+#include <fstream>
 
+bool file_exists(const std::string& name) {
+	ifstream f(name.c_str());
+	return f.good();
+}
 
 
 double roundn(double x, int n){

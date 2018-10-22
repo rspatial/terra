@@ -6,6 +6,12 @@ using namespace std;
 
 bool SpatRaster::constructFromFile(std::string fname) {
 
+	if (!file_exists(fname)){
+		error = true;
+		error_message = "file does not exist";
+		return false;
+	}
+	
 	string ext = getFileExt(fname);
 
 	if (ext != ".grd") {
