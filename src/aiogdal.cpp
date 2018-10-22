@@ -169,13 +169,14 @@ bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
 	GDALRasterBand *poBand;
 
 	OGRSpatialReference oSRS;
-	const char *pszProj4 = getCRS().c_str();
+	string prj = getCRS();
+	std::vector<char> chars(prj.c_str(), prj.c_str() + prj.size() + 1u);
+	char *pszProj4 = &chars[0];
 	OGRErr erro = oSRS.importFromProj4( pszProj4); 
 	if (erro == 4) { return false ; }	// ??
 	
 	char *pszSRS_WKT = NULL;	
 	oSRS.exportToWkt( &pszSRS_WKT );
-
 	poDstDS->SetGeoTransform( adfGeoTransform );
 	poDstDS->SetProjection( pszSRS_WKT );
 	CPLFree( pszSRS_WKT );
