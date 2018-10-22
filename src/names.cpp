@@ -4,15 +4,15 @@ using namespace std;
 
 
 template <typename T>
-vector<size_t> sort_indexes(const vector<T> &v) {
+vector<long unsigned> sort_indexes(const vector<T> &v) {
 
   // initialize original index locations
-  vector<size_t> idx(v.size());
+  vector<long unsigned> idx(v.size());
   iota(idx.begin(), idx.end(), 0);
 
   // sort indexes based on comparing values in v
   std::sort(idx.begin(), idx.end(),
-       [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
+       [&v](long unsigned i1, long unsigned i2) {return v[i1] < v[i2];});
 
   return idx;
 }

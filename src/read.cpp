@@ -21,7 +21,7 @@ bool SpatRaster::readStop() {
 
 
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs){
-	
+
 	unsigned nl = nlyr();
 	row = std::min(std::max(unsigned(0), row), nrow-1);
 	col = std::min(std::max(unsigned(0), col), ncol-1);
@@ -30,23 +30,23 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 	ncols = std::max(unsigned(1), std::min(ncols, ncol-col));
 	nlyrs = std::max(unsigned(1), std::min(nl, nl-lyr));
 
-	std::vector<double> out;	
+	std::vector<double> out;
 	unsigned n = nsrc();
-	
+
 	for (size_t i=0; i<n; i++) {
 		if (source[i].memory) {
 
 			if (row==0 && nrows==nrow && col==0 && ncols==ncol) {
 				out.insert(out.end(), source[i].values.begin(), source[i].values.end());
 			} else {
-				unsigned i, j;
+				unsigned a, b;
 				unsigned ncells = ncell();
 				if (col==0 && ncols==ncol) {
 					for (size_t y=0; y < nlyrs; y++) {
 						unsigned add = ncells * (lyr + y);
-						i = add + row * ncol;
-						j = i + nrows * ncol;
-						out.insert(out.end(), source[i].values.begin()+i, source[i].values.begin()+j);
+						a = add + row * ncol;
+						b = a + nrows * ncol;
+						out.insert(out.end(), source[i].values.begin()+a, source[i].values.begin()+b);
 					}
 				} else {
 					unsigned endrow = row + nrows;
@@ -54,8 +54,8 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 					for (size_t y=0; y < nlyrs; y++) {
 						unsigned add = ncells * (lyr + y);
 						for (size_t r = row; r < endrow; r++) {
-							i = add + r * ncol;
-							out.insert(out.end(), source[i].values.begin()+i+col, source[i].values.begin()+i+endcol);
+							a = add + r * ncol;
+							out.insert(out.end(), source[i].values.begin()+a+col, source[i].values.begin()+a+endcol);
 						}
 					}
 				}
@@ -65,17 +65,17 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			if (source[i].driver == "raster") {
 				string file = source[i].filename;
 				if (source[i].datatype == "FLT8S") {
-					std::vector<double> fvals = readFLT8(file, "BIL", 0, ncell());				
-					out.insert(out.end(), fvals.begin(), fvals.end());				
+					std::vector<double> fvals = readFLT8(file, "BIL", 0, ncell());
+					out.insert(out.end(), fvals.begin(), fvals.end());
 				} else {
-					std::vector<double> fvals = readFLT4(file, "BIL", 0, ncell());				
-					out.insert(out.end(), fvals.begin(), fvals.end());				
+					std::vector<double> fvals = readFLT4(file, "BIL", 0, ncell());
+					out.insert(out.end(), fvals.begin(), fvals.end());
 				}
 
 			} else {
 				#ifdef useGDAL
 				std::vector<double> fvals = readValuesGDAL(row, nrows, col, ncols, 0, source[i].nlyr);
-				out.insert(out.end(), fvals.begin(), fvals.end());				
+				out.insert(out.end(), fvals.begin(), fvals.end());
 				#endif // useGDAL
 			}
 		}
@@ -87,18 +87,18 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 
 
 std::vector<double>  SpatRaster::getValues() {
-	std::vector<double> out;	
-	unsigned n = nsrc();	
+	std::vector<double> out;
+	unsigned n = nsrc();
 	for (size_t i=0; i<n; i++) {
 		if (source[i].memory) {
 			out.insert(out.end(), source[i].values.begin(), source[i].values.end());
 		} else if (source[0].driver == "raster") {
 			std::vector<double> fvals = readValues(0, nrow, 0, ncol, 0, nlyr());
-			out.insert(out.end(), fvals.begin(), fvals.end());				
+			out.insert(out.end(), fvals.begin(), fvals.end());
 		} else {
 			#ifdef useGDAL
 			std::vector<double> fvals = readValuesGDAL(0, nrow, 0, ncol, 0, source[i].nlyr);
-			out.insert(out.end(), fvals.begin(), fvals.end());				
+			out.insert(out.end(), fvals.begin(), fvals.end());
 			#endif // useGDAL
 		}
 	}
