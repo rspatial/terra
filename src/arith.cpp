@@ -83,7 +83,7 @@ template <typename T>
 std::vector<T> operator>=(const std::vector<T>& a, const std::vector<T>& b) {
     std::vector<T> result;
     result.reserve(a.size());
-    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater<T>());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::greater_equal<T>());
 	for (size_t i=0; i<a.size(); i++) {
 		if (std::isnan(a[i]) || std::isnan(b[i])) {
 			result[i] = NAN;
@@ -96,7 +96,7 @@ template <typename T>
 std::vector<T> operator<=(const std::vector<T>& a, const std::vector<T>& b) {
     std::vector<T> result;
     result.reserve(a.size());
-    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less<T>());
+    std::transform(a.begin(), a.end(), b.begin(), std::back_inserter(result), std::less_equal<T>());
 	for (size_t i=0; i<a.size(); i++) {
 		if (std::isnan(a[i]) || std::isnan(b[i])) {
 			result[i] = NAN;

@@ -16,7 +16,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 
 	if (ext != ".grd") {
         #ifdef useGDAL
-		   return constructFromFileGDAL(fname);
+		return constructFromFileGDAL(fname);
         #endif // useGDAL
 	} else {
 

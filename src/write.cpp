@@ -101,7 +101,9 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 		fs.close();
 
 	} else if (source[0].driver == "gdal") {
-//		writeValuesGDAL(source[0].filename, "GTiff");
+		#ifdef useGDAL
+//		writeValuesGDAL(vals, row);
+		#endif
 	} else {
 		setValues(vals);
 	}
@@ -125,27 +127,6 @@ void SpatRaster::setValues(std::vector<double> _values) {
 	//return (result);
 }
 
-
-
-void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, int &imax) {
-    std::vector<double>::size_type p=0;
-    imax = -1; imin=-1;
-    min = std::numeric_limits<double>::max();
-    max = std::numeric_limits<double>::lowest();
-    for (auto &val : v) {
-		if (!std::isnan(val)) {
-			if (val > max) {
-				imax = p;
-				max = val;
-			}
-			if (val < min) {
-				imin = p;
-				min = val;
-			}
-		}
-        p++;
-    }
-}
 
 
 void SpatRaster::setRange() {

@@ -6,6 +6,9 @@ using namespace std;
 
 #define useGDAL
 
+#ifdef useGDAL
+#include "gdal_priv.h"
+#endif
 
 class RasterAttributeTable {
 	public:
@@ -69,7 +72,9 @@ class SpatRaster {
 
 	private:
 		//fstream* fs;
-
+#ifdef useGDAL
+		GDALDataset* gdalconnection;
+#endif
 	protected:
 		SpatExtent extent;
 		SpatExtent window;
@@ -227,15 +232,17 @@ class SpatRaster {
 		bool readStart();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
 		bool readStop();
+		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
+
 		bool writeStart(std::string filename, bool overwrite);
-		//bool writeStartFs(std::string filename, bool overwrite, fstream& f);
 		bool writeValues(std::vector<double> vals, unsigned row);
-		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
 		bool writeStop();
 		bool writeHDR(string filename);
 
-		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
-
+		bool writeStopGDAL();
+		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
+		bool writeStartGDAL(std::string filename, bool overwrite);
+		
 		void openFS(string const &filename);
 
 		bool writeRaster(std::string filename, bool overwrite);
