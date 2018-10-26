@@ -3,36 +3,54 @@
 #include "util.h"
 using namespace std;
 
+bool SpatRaster::isSource(std::string filename) {
+	std::vector<string> ff = filenames();
+	for (size_t i=0; i<ff.size(); i++) {
+		if (ff[i] == filename) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 	lrtrim(filename);
 	if (filename == "") {
 		filename = "random_file_name.grd";
+	} else if (file_exists(filename)) {
+		if (overwrite) {
+			if (isSource(filename)) {
+				error = true;
+				error_message = "cannot overwrite object to itself";				
+			}
+			remove(filename.c_str());
+		} else {
+			error = true;
+			error_message = "file exists";
+		    return false;
+		}
 	}
+
 	string ext = getFileExt(filename);
 	lowercase(ext);
+	
 	if (ext == ".grd") {
-		if (file_exists(filename)) {
-            if (overwrite) {
-				remove(filename.c_str());
-			} else {
-			    return false;
-			}
-		}
 		ofstream fs(filename, ios::ate | ios::binary);
 		std::vector<double> v = getValues();
 		fs.write((char*)&v[0], v.size() * sizeof(double));
 		fs.close();
-
         return writeHDR(filename);
 	} else {
         #ifdef useGDAL
         return writeRasterGDAL(filename, overwrite);
+		#else
+		error = true;
+		error_message = "gdal is not available";
+	    return false;			
         #endif // useGDAL
 	}
 }
-
-
 
 
 bool SpatRaster::writeStart(std::string filename, bool overwrite) {
@@ -40,6 +58,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 //	double inf = std::numeric_limits<double>::infinity();
 //	s.min_range = inf;
 //	s.max_range = -inf;
+	bool success = true;
 	lrtrim(filename);
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
@@ -51,12 +70,11 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 		source[0].driver = "memory";
 
 	} else {
-
+		bool exists = file_exists(filename);
 		string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
 			source[0].driver = {"raster"};
-			bool exists = file_exists(filename);
 			if (exists) {
 				if (overwrite) {
 					remove(filename.c_str());
@@ -66,32 +84,36 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 			}
 			//(*fs).open(fname, ios::out | ios::binary);
 		} else {
-			source[0].driver = {"gdal"} ;
 			// open GDAL filestream
+			#ifdef useGDAL
+			source[0].driver = {"gdal"} ;
+			success = writeStartGDAL(filename, overwrite);
+			#else 
+			error = true;
+			error_message = "gdal is not available";	
+			return false;
+			#endif
 		}
 	}
-
 	source[0].filename = {filename};
 	bs = getBlockSize(4);
-	return true;
-}
-
-
-bool SpatRaster::writeStop(){
-
-	if (source[0].driver == "raster") {
-		//(*fs).close();
-		writeHDR(source[0].filename);
-	} else if (source[0].driver == "gdal") {
-
+	if (open) {
+		warning = true;
+		warning_message = "file was already open")
 	}
-	source[0].hasValues = true;
-
-	return true;
+	open = true;
+	return success;
 }
+
+
 
 bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
-
+	if (!open) {
+		error = true;
+		error_message = "cannot write (no open file)")
+		return false;
+	}
+	bool success = true;
 	if (source[0].driver == "raster") {
 		unsigned size = vals.size();
 		//(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
@@ -102,12 +124,42 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
-//		writeValuesGDAL(vals, row);
+		success = writeValuesGDAL(vals, row);
+		#else
+		error = true;
+		error_message = "gdal is not available";	
+		return false;
 		#endif
 	} else {
 		setValues(vals);
 	}
-	return true;
+	return success;
+}
+
+bool SpatRaster::writeStop(){
+	if (!open) {
+		error = true;
+		error_message = "cannot close a file that is not open")
+		return false;
+	}
+	open = false;
+	bool success = true;
+
+	if (source[0].driver == "raster") {
+		//(*fs).close();
+		writeHDR(source[0].filename);
+	} else if (source[0].driver == "gdal") {
+		#ifdef useGDAL
+		success = writeStopGDAL();
+		#else
+		error = true;
+		error_message = "gdal is not available";	
+		return false;
+		#endif
+	}
+	source[0].hasValues = true;
+	// return this new raster instead?
+	return success;
 }
 
 

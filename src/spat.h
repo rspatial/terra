@@ -75,6 +75,7 @@ class SpatRaster {
 #ifdef useGDAL
 		GDALDataset* gdalconnection;
 #endif
+		bool open;
 	protected:
 		SpatExtent extent;
 		SpatExtent window;
@@ -133,6 +134,8 @@ class SpatRaster {
 			for (size_t i=0; i<x.size(); i++) { x[i] = source[i].filename; }
 			return(x);
 		}
+		bool isSource(std::string filename);
+
 		std::vector<bool> inMemory() {
 			std::vector<bool> m(source.size());
 			for (size_t i=0; i<m.size(); i++) { m[i] = source[i].memory; }

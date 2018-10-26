@@ -1,12 +1,17 @@
 #include "spat.h"
 
-#ifdef _WIN32
+#ifdef _WIN32 
 #include <windows.h>
-#else
+#elif __linux__
 #include "sys/types.h"
 #include "sys/sysinfo.h"
 #include <unistd.h>
+#elif __APPLE__
+//#include mac hdr	
+#else
+#error Unknown OS
 #endif
+
 
 
 double availableRAM() {
@@ -17,10 +22,15 @@ double availableRAM() {
 		statex.dwLength = sizeof(statex);
 		GlobalMemoryStatusEx(&statex);
 		ram = statex.ullAvailPhys / 8.;
-	#else
+	#elif __linux__
 		struct sysinfo memInfo;
 		sysinfo (&memInfo);
 		ram = memInfo.freeram / 8.;
+	#else
+		ram = 1e+08;
+		// mac
+	    // perhaps use this
+		// https://stackoverflow.com/questions/38490320/how-to-query-amount-of-allocated-memory-on-linux-and-osx
 	#endif
 	
 	return ram;

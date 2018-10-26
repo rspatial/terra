@@ -60,9 +60,9 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", ...)  {
 	if (!is.na(op)) {	
 		r <- methods::new('SpatRaster')
 		#	fun='mean', expand=TRUE, na.rm=TRUE, filename=""
-		ptr <- try(x@ptr$aggregate(dims, fun, na.rm, filename, overwrite));
-		if (class(ptr) == 'try-error') { stop("aggregate error") } else { r@ptr <- ptr }
-		return(r)
+		x@ptr <- x@ptr$aggregate(dims, fun, na.rm, filename, overwrite)
+		.messages(x, "aggregate")		
+		return(x)
 	} else {
 		e <- as.vector(ext(x))
 		rs <- res(x)
