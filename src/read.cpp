@@ -20,6 +20,13 @@ bool SpatRaster::readStop() {
 }
 
 
+std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
+	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol, 0, nlyr());
+	return(x);
+}
+
+
+
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs){
 
 	unsigned nl = nlyr();

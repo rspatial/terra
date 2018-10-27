@@ -75,7 +75,8 @@ class SpatRaster {
 #ifdef useGDAL
 		GDALDataset* gdalconnection;
 #endif
-		bool open;
+		bool open_read;
+		bool open_write;
 	protected:
 		SpatExtent extent;
 		SpatExtent window;
@@ -234,9 +235,16 @@ class SpatRaster {
 
 		bool readStart();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
+		std::vector<double> readBlock(BlockSize bs, unsigned i);
+
 		bool readStop();
 		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
 
+		bool readStartGDAL();
+		bool readStopGDAL();
+		std::vector<double> readChunkGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
+		
+		
 		bool writeStart(std::string filename, bool overwrite);
 		bool writeValues(std::vector<double> vals, unsigned row);
 		bool writeStop();
@@ -262,6 +270,8 @@ class SpatRaster {
 		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", bool overwrite=false);
 		SpatRaster arith(double x, std::string oper, std:: string filename="", bool overwrite=false);
 		SpatRaster arith_rev(double x, std::string oper, std::string filename, bool overwrite);
+		SpatRaster math(std::string fun, std::string filename, bool overwrite);
+		SpatRaster trig(std::string fun, std::string filename, bool overwrite);
 
 		SpatRaster operator + (SpatRaster x) { return arith(x, "+", "", false); }
 		SpatRaster test(string filename);

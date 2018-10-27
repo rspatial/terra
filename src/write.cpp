@@ -94,23 +94,24 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 			return false;
 			#endif
 		}
+		
+		if (open_write) {
+			warning = true;
+			warning_message.push_back("file was already open");
+		}
+		open_write = true;		
 	}
 	source[0].filename = {filename};
 	bs = getBlockSize(4);
-	if (open) {
-		warning = true;
-		warning_message = "file was already open")
-	}
-	open = true;
 	return success;
 }
 
 
 
 bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
-	if (!open) {
+	if (!open_write) {
 		error = true;
-		error_message = "cannot write (no open file)")
+		error_message = "cannot write (no open file)";
 		return false;
 	}
 	bool success = true;
@@ -137,12 +138,12 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 }
 
 bool SpatRaster::writeStop(){
-	if (!open) {
+	if (!open_write) {
 		error = true;
-		error_message = "cannot close a file that is not open")
+		error_message = "cannot close a file that is not open";
 		return false;
 	}
-	open = false;
+	open_write = false;
 	bool success = true;
 
 	if (source[0].driver == "raster") {

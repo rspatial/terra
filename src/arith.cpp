@@ -174,6 +174,9 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 		} else if (oper == "<") {
 			a = a < b; 
 		} else {
+			// check is too late, should be done before opening files.
+			out.error = true;
+			out.error_message = "unknown mathematical function";			
 			// stop
 		}
 		out.writeValues(a, out.bs.row[i]);

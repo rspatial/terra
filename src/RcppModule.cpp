@@ -176,7 +176,8 @@ RCPP_MODULE(spat){
 		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool) )( &SpatRaster::arith ))
 		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, std::string, bool) )( &SpatRaster::arith ))
 		.method("arith_rev", &SpatRaster::arith_rev, "arith_rev")
-
+		.method("math", &SpatRaster::math, "math")
+		.method("trig", &SpatRaster::trig, "trig")
 	;
 }
 
