@@ -65,8 +65,8 @@ setMethod ('show' , 'SpatRaster',
 			}
 			
 
-			if (any(.hasRange(object))) {
-				r <- range(object)
+			if (any(.hasMinMax(object))) {
+				r <- minmax(object)
 				minv <- format(r[1,])
 				maxv <- format(r[2,])
 				minv <- gsub('Inf', '?', minv)

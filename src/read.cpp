@@ -9,6 +9,7 @@ bool SpatRaster::readStart() {
 	if (!source[0].memory) {
 		// open filestream
 	}
+    open_read = true;
 	return true;
 }
 
@@ -16,6 +17,7 @@ bool SpatRaster::readStop() {
 	if (!source[0].memory) {
 		// close filestream
 	}
+    open_read = false;
 	return true;
 }
 

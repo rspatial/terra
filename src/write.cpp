@@ -22,7 +22,7 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 		if (overwrite) {
 			if (isSource(filename)) {
 				error = true;
-				error_message = "cannot overwrite object to itself";				
+				error_message = "cannot overwrite object to itself";
 			}
 			remove(filename.c_str());
 		} else {
@@ -34,7 +34,7 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 
 	string ext = getFileExt(filename);
 	lowercase(ext);
-	
+
 	if (ext == ".grd") {
 		ofstream fs(filename, ios::ate | ios::binary);
 		std::vector<double> v = getValues();
@@ -47,7 +47,7 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 		#else
 		error = true;
 		error_message = "gdal is not available";
-	    return false;			
+	    return false;
         #endif // useGDAL
 	}
 }
@@ -88,19 +88,19 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 			#ifdef useGDAL
 			source[0].driver = {"gdal"} ;
 			success = writeStartGDAL(filename, overwrite);
-			#else 
+			#else
 			error = true;
-			error_message = "gdal is not available";	
+			error_message = "gdal is not available";
 			return false;
 			#endif
 		}
-		
-		if (open_write) {
-			warning = true;
-			warning_message.push_back("file was already open");
-		}
-		open_write = true;		
+
 	}
+	if (open_write) {
+		warning = true;
+		warning_message.push_back("file was already open");
+	}
+	open_write = true;
 	source[0].filename = {filename};
 	bs = getBlockSize(4);
 	return success;
@@ -128,11 +128,14 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 		success = writeValuesGDAL(vals, row);
 		#else
 		error = true;
-		error_message = "gdal is not available";	
+		error_message = "gdal is not available";
 		return false;
 		#endif
 	} else {
-		setValues(vals);
+        source[0].values = vals;
+        source[0].hasValues = true;
+        source[0].memory = true;
+        setRange();
 	}
 	return success;
 }
@@ -154,7 +157,7 @@ bool SpatRaster::writeStop(){
 		success = writeStopGDAL();
 		#else
 		error = true;
-		error_message = "gdal is not available";	
+		error_message = "gdal is not available";
 		return false;
 		#endif
 	}
@@ -164,33 +167,49 @@ bool SpatRaster::writeStop(){
 }
 
 
-void SpatRaster::setValues(std::vector<double> _values) {
-	//bool result = false;
-	//if (_values.size() == size()) {
-		source[0].values = _values;
-		source[0].hasValues = true;
-		source[0].memory = true;
+bool SpatRaster::setValues(std::vector<double> _values) {
+	bool result = false;
+	SpatRaster g = geometry();
 
-		// todo clear source...
+	if (_values.size() == g.size()) {
+
+		RasterSource s = g.source[0];
+		s.values = _values;
+		s.hasValues = true;
+		s.memory = true;
+		s.names = getNames();
+		setSource(s);
 		setRange();
-
-		source[0].names = std::vector<string> {"layer"};
-		//result = true;
-	//}
-	//return (result);
+		result = true;
+	} else {
+		error = true;
+		error_message = "incorrect number of values";
+	}
+	return (result);
 }
 
 
 
 void SpatRaster::setRange() {
+
 	double vmin, vmax;
-	int imin, imax;
-	// for each layer {
-		vector_minmax(source[0].values, vmin, imin, vmax, imax);
-		source[0].range_min = std::vector<double> {vmin};
-		source[0].range_max = std::vector<double> {vmax};
-		source[0].hasRange = std::vector<bool> {true};
-	//}
+	unsigned nsources = nsrc();
+	unsigned nc = ncell();
+	unsigned start;
+
+	for (size_t i=0; i<nsources; i++) {
+		unsigned nlyrs = source[i].nlyr;
+		source[i].range_min.resize(0);
+		source[i].range_max.resize(0);
+		source[i].hasRange.resize(0);
+		for (size_t j=0; j<nlyrs; j++) {
+			start = nc * j;
+			minmax(source[i].values.begin()+start, source[i].values.begin()+start+nc, vmin, vmax);
+			source[i].range_min.push_back(vmin);
+			source[i].range_max.push_back(vmax);
+			source[i].hasRange.push_back(true);
+		}
+	}
 }
 
 

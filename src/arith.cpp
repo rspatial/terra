@@ -1,8 +1,5 @@
 using namespace std;
-#include <vector>
 #include "spat.h"
-
-#include <algorithm>
 #include <functional>
 
 
@@ -133,11 +130,22 @@ std::vector<T> operator<(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
+bool smooth_operator(string oper) {
+	std::vector<string> f {"+", "-", "*", "/", "%", "==", "!=", ">", ",", ">=", "<="}; 
+	return (std::find(f.begin(), f.end(), oper) != f.end());
+}
+
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
 	
 	SpatRaster out = geometry();
 
+	if (!smooth_operator(oper)) {
+		out.error = true;
+		out.error_message = "unknown arith function";
+		return out;
+	}
+	
 	if (!compare_geom(x, true, false)) {
 		out.error = true;
 		out.error_message = "dimensions and/or extent do not match";
@@ -147,10 +155,9 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
   	out.writeStart(filename, overwrite);
 	readStart();
 	x.readStart();
-	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
-		std::vector<double> b = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
+		std::vector<double> a = readBlock(out.bs, i);
+		std::vector<double> b = x.readBlock(out.bs, i);
 		if (oper == "+") {
 			a = a + b; 
 		} else if (oper == "-") {
@@ -173,12 +180,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 			a = a > b; 
 		} else if (oper == "<") {
 			a = a < b; 
-		} else {
-			// check is too late, should be done before opening files.
-			out.error = true;
-			out.error_message = "unknown mathematical function";			
-			// stop
-		}
+		} 
 		out.writeValues(a, out.bs.row[i]);
 	}
 	out.writeStop();
@@ -192,12 +194,16 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, bool overwrite) {
 
 	SpatRaster out = geometry();
+	if (!smooth_operator(oper)) {
+		out.error = true;
+		out.error_message = "unknown arith function";
+		return out;
+	}
 	
   	out.writeStart(filename, overwrite);
 	readStart();
-	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
+		std::vector<double> a = readBlock(out.bs, i);
 		if (std::isnan(x)) {
 			for(double& d : a)  d = NAN;
 		} else if (oper == "+") {
@@ -236,12 +242,16 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filename, bool overwrite) {
 
 	SpatRaster out = geometry();
+	if (!smooth_operator(oper)) {
+		out.error = true;
+		out.error_message = "unknown arith function";
+		return out;
+	}
 	
   	out.writeStart(filename, overwrite);
 	readStart();
-	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
+		std::vector<double> a = readBlock(out.bs, i);
 		if (oper == "+") {
 			for(double& d : a)  d = x + d;
 		} else if (oper == "-") {

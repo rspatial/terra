@@ -178,6 +178,12 @@ RCPP_MODULE(spat){
 		.method("arith_rev", &SpatRaster::arith_rev, "arith_rev")
 		.method("math", &SpatRaster::math, "math")
 		.method("trig", &SpatRaster::trig, "trig")
+		.method("cum", &SpatRaster::cum, "cum")
+		.method("summary", &SpatRaster::summary, "summary")
+		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
+		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool) )( &SpatRaster::logic ))
+		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, std::string, bool) )( &SpatRaster::logic ))
+		
 	;
 }
 

@@ -7,6 +7,12 @@ using namespace std;
 #include "distance.h"
 #include <string>
 
+
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
+
+
 double get_TRI (double v[], int n, double x) {
 	double s = 0;
 	for (int i=0; i<n; i++) {
@@ -107,7 +113,6 @@ std::vector<std::vector<double> > slope4lonlat(std::vector<std::vector<double> >
 
 	double a = 6378137;
 	double f = 1/298.257223563;
-    double PI = 3.14159265358979323846;
 	double ddy = distance_lonlat(0, -dy, 0, dy, a, f) / 2 ;
 	double yw = 1 / (2 * ddy);
 	double xw;
@@ -132,7 +137,7 @@ std::vector<std::vector<double> > slope4lonlat(std::vector<std::vector<double> >
 	}
 
 	if (unit == 0) {  // degrees
-		double adj = 180 / PI;
+		double adj = 180 / M_PI;
 		for (int row = 1; row < (nrow-2); row++) {
 			for (int col = 1; col < (ncol-2); col++) {
 				v[row][col] = atan(v[row][col]) * adj;
@@ -154,7 +159,6 @@ std::vector<std::vector<double> > slope4plane(std::vector<std::vector<double> > 
 
 	double xw = 1 / (-2 * dx);
 	double yw = 1 / (2 * dy);
-    double PI = 3.14159265358979323846;
 
 	int nrow = d.size();
 	int ncol = d[0].size();
@@ -170,7 +174,7 @@ std::vector<std::vector<double> > slope4plane(std::vector<std::vector<double> > 
 	}
 
 	if (unit == 0) {
-		double adj = 180 / PI;
+		double adj = 180 / M_PI;
 		for (int row = 1; row < (nrow-2); row++) {
 			for (int col = 1; col < (ncol-2); col++) {
 				v[row][col] = atan(v[row][col]) * adj;

@@ -36,7 +36,7 @@ setMethod('writeStart', signature(x='SpatRaster', filename='character'),
 
 setMethod('writeStop', signature(x='SpatRaster'), 
 	function(x) {
-		succes <- x@ptr$writeStop()
+		success <- x@ptr$writeStop()
 		.messages(x, "writeStop")		
 		invisible(success)
 	} 

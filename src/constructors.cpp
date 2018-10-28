@@ -13,6 +13,8 @@ void SpatRaster::setSources(std::vector<RasterSource> s) {
 	ncol = s[0].ncol;
 	extent = s[0].extent;
 	crs = s[0].crs;
+	open_write = false;
+	open_read = false;
 }
 
 
@@ -92,24 +94,28 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 }
 
 
-SpatRaster SpatRaster::geometry() {
+SpatRaster SpatRaster::geometry(long nlyrs) {
 	RasterSource s;
 	s.nrow = nrow;
 	s.ncol = ncol;
 	s.extent = extent;
 	s.crs = crs;
-	s.nlyr = nlyr();
 	s.memory = true;
+	if (nlyrs < 1) {
+		s.nlyr = nlyr();
+	} else {
+		s.nlyr = nlyrs;
+	}
 	std::vector<string> nms(s.nlyr);
 	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
 	s.names = nms;
-
 	SpatRaster out;
 	out.setSource(s);
 	out.error = false;
 	out.warning = false;
 	return out;
 }
+
 
 SpatRaster SpatRaster::deepCopy() {
 

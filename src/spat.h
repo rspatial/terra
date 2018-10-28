@@ -125,7 +125,7 @@ class SpatRaster {
 		// only no values allowed with a single RasterSource
 		bool hasValues() { return source[0].hasValues ; };
 		std::vector<double> getValues();
-		void setValues(std::vector<double> _values);
+		bool setValues(std::vector<double> _values);
 
 ////////////////////////////////////////////////////
 // property like methods for RasterSources
@@ -184,7 +184,7 @@ class SpatRaster {
 		//SpatRaster(const SpatRaster& x);
 
         SpatRaster deepCopy();
-        SpatRaster geometry();
+        SpatRaster geometry(long nlyrs=-1);
 
 		bool constructFromFile(std::string fname);
 		bool constructFromFileGDAL(std::string fname);
@@ -243,8 +243,8 @@ class SpatRaster {
 		bool readStartGDAL();
 		bool readStopGDAL();
 		std::vector<double> readChunkGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
-		
-		
+
+
 		bool writeStart(std::string filename, bool overwrite);
 		bool writeValues(std::vector<double> vals, unsigned row);
 		bool writeStop();
@@ -253,7 +253,7 @@ class SpatRaster {
 		bool writeStopGDAL();
 		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
 		bool writeStartGDAL(std::string filename, bool overwrite);
-		
+
 		void openFS(string const &filename);
 
 		bool writeRaster(std::string filename, bool overwrite);
@@ -267,11 +267,17 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
-		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", bool overwrite=false);
-		SpatRaster arith(double x, std::string oper, std:: string filename="", bool overwrite=false);
+		SpatRaster arith(SpatRaster x, std::string oper, std::string filename, bool overwrite=false);
+		SpatRaster arith(double x, std::string oper, std::string filename, bool overwrite=false);
 		SpatRaster arith_rev(double x, std::string oper, std::string filename, bool overwrite);
 		SpatRaster math(std::string fun, std::string filename, bool overwrite);
 		SpatRaster trig(std::string fun, std::string filename, bool overwrite);
+		SpatRaster logic(SpatRaster x, std::string oper, std::string filename, bool overwrite=false);
+		SpatRaster logic(bool x, std::string oper, std::string filename, bool overwrite=false);
+		SpatRaster isnot(std::string filename, bool overwrite);
+		SpatRaster cum(std::string fun, bool narm, std::string filename, bool overwrite);
+		SpatRaster summary(std::string fun, bool narm, std::string filename, bool overwrite);
+		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, std::string filename, bool overwrite);
 
 		SpatRaster operator + (SpatRaster x) { return arith(x, "+", "", false); }
 		SpatRaster test(string filename);
