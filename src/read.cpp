@@ -1,6 +1,6 @@
 using namespace std;
 #include "spat.h"
-#include "rst_read.h"
+#include "read_rst.h"
 
 
 bool SpatRaster::readStart() {

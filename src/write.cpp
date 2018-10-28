@@ -68,8 +68,10 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 
 	if (filename == "") {
 		source[0].driver = "memory";
+		source[0].memory = true;
 
 	} else {
+		source[0].memory = false;
 		bool exists = file_exists(filename);
 		string ext = getFileExt(filename);
 		lowercase(ext);
@@ -140,6 +142,7 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 	return success;
 }
 
+
 bool SpatRaster::writeStop(){
 	if (!open_write) {
 		error = true;
@@ -162,7 +165,6 @@ bool SpatRaster::writeStop(){
 		#endif
 	}
 	source[0].hasValues = true;
-	// return this new raster instead?
 	return success;
 }
 
@@ -199,15 +201,15 @@ void SpatRaster::setRange() {
 
 	for (size_t i=0; i<nsources; i++) {
 		unsigned nlyrs = source[i].nlyr;
-		source[i].range_min.resize(0);
-		source[i].range_max.resize(0);
-		source[i].hasRange.resize(0);
+		source[i].range_min.resize(nlyrs);
+		source[i].range_max.resize(nlyrs);
+		source[i].hasRange.resize(nlyrs);
 		for (size_t j=0; j<nlyrs; j++) {
 			start = nc * j;
 			minmax(source[i].values.begin()+start, source[i].values.begin()+start+nc, vmin, vmax);
-			source[i].range_min.push_back(vmin);
-			source[i].range_max.push_back(vmax);
-			source[i].hasRange.push_back(true);
+			source[i].range_min[i] = vmin;
+			source[i].range_max[i] = vmax;
+			source[i].hasRange[i] = true;
 		}
 	}
 }

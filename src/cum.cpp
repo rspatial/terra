@@ -409,7 +409,6 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 			for (size_t k=0; k<nl; k++) {
 				v[k] = a[j+k*nc];
 			}
-
 			if (fun == "sum") {
 				b[j] = vsum(v, narm);
 			} else if (fun == "mean") {
@@ -425,7 +424,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 			} else if (fun == "all") {
 				b[j] = vall(v, narm);
 			} else if (fun == "range") {
-                std:vector<double> rng = vrange(v, narm);
+                std::vector<double> rng = vrange(v, narm);
 				b[j] = rng[0];
 				b[j+nc] = rng[1];
 			}
