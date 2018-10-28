@@ -14,19 +14,40 @@ string getFileExt(const string& s);
 string setFileExt(const string& s, const string& ext);
 void lrtrim(std::string &s);
 
+template <class T> class NA {
+public:
+    static constexpr T value = std::is_floating_point<T>::value ? NAN : std::numeric_limits<T>::min();
+};
+
+template <typename T>
+bool is_NA(const T v) {
+    if (std::is_floating_point<T>::value) {
+        return std::isnan(v);
+    } else {
+        bool b = v == NA<T>::value;
+        return b;
+    }
+}
+
 template <typename Iterator>
 void minmax(Iterator start, Iterator end, double &min, double &max) {
     min = std::numeric_limits<double>::max();
     max = std::numeric_limits<double>::lowest();
+    bool none = true;
 	for (Iterator v = start; v !=end; ++v) {
 		if (!std::isnan(*v)) {
 			if (*v > max) {
 				max = *v;
+                none = false;
 			}
 			if (*v < min) {
 				min = *v;
 			}
 		}
+    }
+    if (none) {
+        min = NAN;
+        max = NAN;
     }
 }
 

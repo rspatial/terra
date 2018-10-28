@@ -4,6 +4,18 @@
 # Licence GPL v3
 
 
+setClass('SpatRaster',
+	representation (
+		ptr = "C++Object"
+	),	
+	prototype (	
+		ptr = NULL
+	),
+	validity = function(object)	{
+		return(TRUE)
+	}
+)
+
 
 setClass('SpatVector',
 	representation (
@@ -13,6 +25,7 @@ setClass('SpatVector',
 		ptr = NULL
 	),
 	validity = function(object)	{
+		return(TRUE)
 #		object@ptr$valid
 	}
 )
@@ -29,20 +42,4 @@ setClass('SpatExtent',
 		object@ptr$valid
 	}
 )
-
-
-
-setClass('SpatRaster',
-	representation (
-		ptr = "C++Object"
-	),	
-	prototype (	
-		ptr = NULL
-	),
-	validity = function(object)	{
-		return(TRUE)
-	}
-)
-
-
 

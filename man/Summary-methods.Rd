@@ -27,12 +27,10 @@ set.seed(0)
 r <- rast(nrow=10, ncol=10, nlyr=3)
 values(r) <- runif(length(r))
 
-x <- max(r)
 x <- mean(r)
-#r <- range(r, 1.2)
-
-#s <- sum(r, r[[2]], 3)
-
+x <- sum(r, r[[2]], 3)
+max(r)
+max(r, 0.5)
 }
 
 \keyword{methods}

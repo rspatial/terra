@@ -26,10 +26,10 @@ void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, i
 		}
         p++;
     }
-//	if (imax == -1) {
-//		max = NAN;
-//		min = NAN;
-//	}
+	if (imax == -1) {
+		max = NAN;
+		min = NAN;
+	}
 }
 
 
