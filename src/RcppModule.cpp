@@ -3,7 +3,7 @@
 
 using namespace Rcpp;
 
-
+/*
 NumericMatrix getValuesM(SpatRaster* r) {
 	NumericMatrix x(r->ncell(), r->nlyr() );
 	std::vector<double> v;
@@ -11,7 +11,7 @@ NumericMatrix getValuesM(SpatRaster* r) {
 	std::copy(v.begin(), v.end(), x.begin());
 	return(x);
 }
-
+*/
 
 List getBlockSizeR(SpatRaster* r, unsigned n) {              //+1 for R
     BlockSize bs = r->getBlockSize(n);
@@ -24,17 +24,34 @@ RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 
+//RCPP_EXPOSED_CLASS(SpatDataFrame)
 RCPP_EXPOSED_CLASS(SpatGeomRing)
 RCPP_EXPOSED_CLASS(SpatGeomRings)
 RCPP_EXPOSED_CLASS(SpatPolygons)
-
+//RCPP_EXPOSED_CLASS(SpatGeomSegment)
+//RCPP_EXPOSED_CLASS(SpatGeomSegments)
+//RCPP_EXPOSED_CLASS(SpatLines)
+//RCPP_EXPOSED_CLASS(SpatPoints)
+//RCPP_EXPOSED_CLASS(SpatVector)
 
 	
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
 
-
+/*	
+    class_<SpatDataFrame>("SpatDataFrame")
+		.constructor()	
+//		.field("dv", &SpatDataFrame::dv)
+//		.field("iv", &SpatDataFrame::iv)
+//		.field("sv", &SpatDataFrame::sv)
+		.field("itype", &SpatDataFrame::itype)
+		.field("iplace", &SpatDataFrame::iplace)
+		.field("names", &SpatDataFrame::names)
+//		.field_readonly("NAS", &SpatDataFrame::NAS)
+	;	
+*/
+	
     class_<SpatGeomRing>("SpatGeomRing")
 		.constructor()
 		.field_readonly("x", &SpatGeomRing::x )
@@ -49,26 +66,25 @@ RCPP_MODULE(spat){
 		
 	;	
     class_<SpatGeomRings>("SpatGeomRings")
-		.constructor()
+		.constructor()	
 		.field_readonly("extent", &SpatGeomRings::extent )
 		.method("getPart", &SpatGeomRings::getGeom, "getPart")
 		.method("addPart", &SpatGeomRings::addGeom, "addPart")
 		.method("size", &SpatGeomRings::size, "size")
-		
 	;	
 	
     class_<SpatPolygons>("SpatPolygons")
 //		.field("polygons", &SpatPolygons::polys )
 		.field_readonly("extent", &SpatPolygons::extent )
-		.field("attr", &SpatPolygons::attr )
+//		.field("df", &SpatPolygons::df )
 		.field("crs", &SpatPolygons::crs )
 		.constructor()
 		.method("getPoly", &SpatPolygons::getGeometry, "getPoly")
 		.method("addPoly", &SpatPolygons::addGeometry, "addPoly")
 		.method("size", &SpatPolygons::size, "size")
 
-		.method("getAtt", &SpatPolygons::getAtt, "getAtt")
-		.method("setAtt", &SpatPolygons::setAtt, "setAtt")
+//		.method("getAtt", &SpatPolygons::getAtt, "getAtt")
+//		.method("setAtt", &SpatPolygons::setAtt, "setAtt")
 	;	
 
 	

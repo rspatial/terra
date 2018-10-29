@@ -12,6 +12,7 @@ std::vector<double> str2dbl(std::vector<string> s);
 std::vector<string> dbl2str(std::vector<double> d);
 string getFileExt(const string& s);
 string setFileExt(const string& s, const string& ext);
+string basename(string filename);
 void lrtrim(std::string &s);
 
 template <class T> class NA {
@@ -26,7 +27,7 @@ bool is_NA(const T v) {
     } else {
         bool b = v == NA<T>::value;
         return b;
-    }
+	}
 }
 
 template <typename Iterator>

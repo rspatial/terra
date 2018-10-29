@@ -133,6 +133,18 @@ string setFileExt(const string& s, const string& ext) {
 	return(s + ext);
 }
 
+string basename(string filename) {
+	const size_t i = filename.find_last_of("\\/");
+	if (std::string::npos != i) {
+		filename.erase(0, i + 1);
+	}
+	const size_t p = filename.rfind('.');
+	if (std::string::npos != p) {
+		filename.erase(p);
+	}
+	return filename;
+}
+
 
 
 // trim from start (in place)

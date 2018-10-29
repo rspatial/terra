@@ -189,7 +189,6 @@ class SpatRaster {
 		bool constructFromFile(std::string fname);
 		bool constructFromFileGDAL(std::string fname);
 
-
 		SpatRaster addSources(SpatRaster x);
 		SpatRaster subset(std::vector<unsigned> lyrs, string filename, bool overwrite);
 

@@ -42,8 +42,6 @@ bool SpatRaster::canProcessInMemory(unsigned n) {
 	return (n * size()) < (availableRAM() * f);
 }
 
-
-
 unsigned SpatRaster::chunkSize(unsigned n) {
 	double f = 0.25;
 	unsigned cells_in_row = n * ncol * nlyr();
