@@ -5,7 +5,7 @@ if (!isGeneric("SpatPolygon") ) { setGeneric("SpatPolygon", function(x, ...) sta
 setMethod("SpatPolygon", signature(x='missing'), 
 	function(...) {
 		p <- methods::new('SpatVector')
-		p@ptr <- SpatRaster$new()
+		p@ptr <- SpatVector$new()
 		return(p)
 	}
 )

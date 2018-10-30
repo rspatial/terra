@@ -1,8 +1,7 @@
 using namespace std;
 #include "spatvector.h"
 
-
-SpatVector::SpatVector() {
+/*SpatVector::SpatVector() {
 	df.names.push_back("test1");
 	df.names.push_back("test2");
 	std::vector<double> v = {10,11.5,12.5,13.5,15.5};
@@ -17,7 +16,7 @@ SpatVector::SpatVector() {
 	df.itype.push_back(0);
 	df.iplace.push_back(1);
 }
-
+*/
 
 std::vector<double> SpatVector::getDv(unsigned i) {
 	unsigned j = df.iplace[i];

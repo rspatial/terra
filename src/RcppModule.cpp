@@ -2,52 +2,12 @@
 #include "spat.h"
 
 using namespace Rcpp;
-
-/*
-NumericMatrix getValuesM(SpatRaster* r) {
-	NumericMatrix x(r->ncell(), r->nlyr() );
-	std::vector<double> v;
-	v = r->getValues();
-	std::copy(v.begin(), v.end(), x.begin());
-	return(x);
-}
-*/
-
-List getBlockSizeR(SpatRaster* r, unsigned n) { 
-    BlockSize bs = r->getBlockSize(n);
-	List L = List::create(Named("row") = bs.row, Named("nrows") = bs.nrows, Named("n") = bs.n);
-	return(L);
-}
-
-
-Rcpp::DataFrame getDataFrame(SpatVector* v) {
-	std::vector<unsigned> itype = v->getItype();
-	std::vector<unsigned> iplace = v->getIplace();
-	unsigned n = v->ncol();
-	List out(n);	
-	for (size_t i=0; i < n; i++) {
-		if (itype[i] == 0) {
-			out[i] = v->getDv(iplace[i]);
-		} else if (itype[i] == 1) {
-			out[i] = v->getIv(iplace[i]);
-		} else {
-			out[i] = v->getSv(iplace[i]);
-		}
-	}	
-	// todo: deal with NAs
-	Rcpp::DataFrame result(out);
-	result.attr("names") = v->names();
-	return result;
-}
-
-
+#include "RcppFunctions.h"
 
 RCPP_EXPOSED_CLASS(SpatExtent)
-
 RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 
-//RCPP_EXPOSED_CLASS(SpatDataFrame)
 RCPP_EXPOSED_CLASS(SpatGeomRing)
 RCPP_EXPOSED_CLASS(SpatGeomRings)
 RCPP_EXPOSED_CLASS(SpatPolygons)
@@ -112,11 +72,13 @@ RCPP_MODULE(spat){
 		.method("names", &SpatVector::names, "names")		
 		.method("nrow", &SpatVector::nrow, "nrow")		
 		.method("ncol", &SpatVector::ncol, "ncol")		
-		.method("getDataFrame", &getDataFrame, "getDataFrame")
-//		.method("getItype", &SpatVector::getItype, "getItype")
-//		.method("getIplace", &SpatVector::getIplace, "getIplace")
-//		.method("getDv", &SpatVector::getDv, "getDv")
-//		.method("getIv", &SpatVector::getIv, "getIv")	
+		.method("read", &SpatVector::read, "read")		
+		.method("getAttributes", &getAttributes, "getAttributes")
+		.method("getGeometry", &getGeometry, "getGeometry")
+		.field("error", &SpatVector::error )
+		.field("warning", &SpatVector::warning )
+		.field("error_message", &SpatVector::error_message )
+		.field("warning_message", &SpatVector::warning_message )
 	;
 
 	
@@ -231,7 +193,6 @@ RCPP_MODULE(spat){
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, std::string, bool) )( &SpatRaster::logic ))
-		
 	;
 }
 

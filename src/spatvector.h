@@ -172,7 +172,7 @@ class SpatPoints {
 
 class SpatVector {
 	public:
-		SpatVector();
+		//SpatVector();
 
 		SpatPoints pts;
 		SpatLines lns;
@@ -186,9 +186,10 @@ class SpatVector {
 		
 		bool read(std::string fname);
 		bool write(std::string filename, bool overwrite);
-		std::vector<string> names();
 
 		SpatDataFrame df;
+
+		std::vector<string> names();
 		unsigned nrow();
 		unsigned ncol();
 		

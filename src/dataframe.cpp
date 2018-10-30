@@ -30,29 +30,27 @@ SpatDataFrame SpatDataFrame::subsetrows(std::vector<unsigned> range) {
 
 SpatDataFrame SpatDataFrame::subsetcols(std::vector<unsigned> range) { 
 	SpatDataFrame out;
-	out.dv.resize(0);
-	out.iv.resize(0);
-	out.sv.resize(0);
 	unsigned dcnt=0;
 	unsigned icnt=0;
 	unsigned scnt=0;
-	unsigned t, p;
 	for (size_t i=0; i < range.size(); i++) {
 		unsigned j = range[i];
-		t = itype[j];
-		p = iplace[j];
+		unsigned p = iplace[j];
 		out.names.push_back(names[j]);
 		if (itype[j] == 0) {
 			out.dv.push_back(dv[p]);
 			out.iplace.push_back(dcnt);
+			out.itype.push_back(0);
 			dcnt++;
 		} else if (itype[j] == 1) {
 			out.iv.push_back(iv[p]);
 			out.iplace.push_back(icnt);
+			out.itype.push_back(1);
 			icnt++;				
 		} else {
 			out.sv.push_back(sv[p]);
 			out.iplace.push_back(scnt);
+			out.itype.push_back(2);
 			scnt++;				
 		}
 	}
