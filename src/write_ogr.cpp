@@ -54,5 +54,7 @@ bool SpatVector::write(std::string filename, bool overwrite) {
         OGRFeature::DestroyFeature( poFeature );
     }
     GDALClose( poDS );
+	return true;
 }
+
 

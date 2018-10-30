@@ -1,21 +1,6 @@
 using namespace std;
 #include "extent.h"
-/*
-class SpatDataFrame {
-	public:
-		std::vector<string> names;
-		std::vector<unsigned> itype;
-		std::vector<unsigned> iplace;
-		std::vector< std::vector<double>> dv;
-		std::vector< std::vector<long>> iv;
-		std::vector< std::vector<string>> sv;
-		string NAS = "____NA_+";
-		
-	SpatDataFrame subsetrows(std::vector<unsigned> range);
-	SpatDataFrame subsetcols(std::vector<unsigned> range);
-	void addRow();
-};
-*/
+#include "dataframe.h"
 
 class SpatGeomRing {
 	public:
@@ -75,7 +60,6 @@ class SpatPolygons {
 		std::vector<SpatGeomRings> geometries; 
 
 	public:
-	//	SpatDataFrame df;
 		SpatExtent extent;		
 		std::string crs;
 
@@ -88,17 +72,13 @@ class SpatPolygons {
 			} else {
 				extent = p.extent;
 			}
-			//df.addRow();
 			return true; 
 		}
-		//double getAtt(unsigned i) {	return attr[i]; };
-		//bool setAtt(unsigned i, double a) { attr[i] = a; return true; };
 		
 		SpatPolygons subset(std::vector<unsigned> range) { 
 			SpatPolygons out;
 			for (size_t i=0; i < range.size(); i++) {
 				out.addGeometry( geometries[range[i]] ); 
-				//out.attr.push_back(attr[i]);
 			}
 			out.crs = crs;
 			return out;	
@@ -146,7 +126,6 @@ class SpatLines {
 		std::vector<SpatGeomSegments> geometries; 
 
 	public:
-	//	SpatDataFrame df;
 		SpatExtent extent;		
 		std::string crs;
 
@@ -159,17 +138,13 @@ class SpatLines {
 			} else {
 				extent = p.extent;
 			}
-		//	df.addRow();
 			return true; 
 		}
-		//double getAtt(unsigned i) {	return attr[i]; };
-		//bool setAtt(unsigned i, double a) { attr[i] = a; return true; };
 		
 		SpatLines subset(std::vector<unsigned> range) { 
 			SpatLines out;
 			for (size_t i=0; i < range.size(); i++) {
 				out.addGeometry( geometries[range[i]] ); 
-			//	out.attr.push_back(attr[i]);
 			}
 			out.crs = crs;
 			return out;	
@@ -183,7 +158,6 @@ class SpatLines {
 class SpatPoints {
 	public:
 		std::vector<double> x, y; 
-	//	SpatDataFrame df;
 		SpatExtent extent;
 		bool set(std::vector<double> X, std::vector<double> Y) { 
 			x = X; y = Y;  
@@ -198,6 +172,8 @@ class SpatPoints {
 
 class SpatVector {
 	public:
+		SpatVector();
+
 		SpatPoints pts;
 		SpatLines lns;
 		SpatPolygons pos;
@@ -206,9 +182,21 @@ class SpatVector {
 		bool warning = false;
 		string error_message;
 		std::vector<string> warning_message;
+		string gtype;
 		
-	bool read(std::string fname);
-	bool write(std::string filename, bool overwrite);
+		bool read(std::string fname);
+		bool write(std::string filename, bool overwrite);
+		std::vector<string> names();
+
+		SpatDataFrame df;
+		unsigned nrow();
+		unsigned ncol();
+		
+		std::vector<double> getDv(unsigned i);
+		std::vector<long> getIv(unsigned i);
+		std::vector<string> getSv(unsigned i);
+		std::vector<unsigned> getItype();
+		std::vector<unsigned> getIplace();
 	
 };
 

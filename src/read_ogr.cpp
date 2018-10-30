@@ -46,7 +46,7 @@ bool SpatVector::read(std::string fname) {
             OGRPoint *poPoint = (OGRPoint *) poGeometry;
             printf( "%.3f, %.3f\n", poPoint->getX(), poPoint->getY() );
         } else {
-            printf( "no point geometry\n" );
+            //printf( "no point geometry\n" );
         }
         OGRFeature::DestroyFeature( poFeature );
     }

@@ -13,11 +13,34 @@ NumericMatrix getValuesM(SpatRaster* r) {
 }
 */
 
-List getBlockSizeR(SpatRaster* r, unsigned n) {              //+1 for R
+List getBlockSizeR(SpatRaster* r, unsigned n) { 
     BlockSize bs = r->getBlockSize(n);
 	List L = List::create(Named("row") = bs.row, Named("nrows") = bs.nrows, Named("n") = bs.n);
 	return(L);
 }
+
+
+Rcpp::DataFrame getDataFrame(SpatVector* v) {
+	std::vector<unsigned> itype = v->getItype();
+	std::vector<unsigned> iplace = v->getIplace();
+	unsigned n = v->ncol();
+	List out(n);	
+	for (size_t i=0; i < n; i++) {
+		if (itype[i] == 0) {
+			out[i] = v->getDv(iplace[i]);
+		} else if (itype[i] == 1) {
+			out[i] = v->getIv(iplace[i]);
+		} else {
+			out[i] = v->getSv(iplace[i]);
+		}
+	}	
+	// todo: deal with NAs
+	Rcpp::DataFrame result(out);
+	result.attr("names") = v->names();
+	return result;
+}
+
+
 
 RCPP_EXPOSED_CLASS(SpatExtent)
 
@@ -32,7 +55,7 @@ RCPP_EXPOSED_CLASS(SpatPolygons)
 //RCPP_EXPOSED_CLASS(SpatGeomSegments)
 //RCPP_EXPOSED_CLASS(SpatLines)
 //RCPP_EXPOSED_CLASS(SpatPoints)
-//RCPP_EXPOSED_CLASS(SpatVector)
+RCPP_EXPOSED_CLASS(SpatVector)
 
 	
 RCPP_MODULE(spat){
@@ -74,18 +97,27 @@ RCPP_MODULE(spat){
 	;	
 	
     class_<SpatPolygons>("SpatPolygons")
+		.constructor()	
 //		.field("polygons", &SpatPolygons::polys )
 		.field_readonly("extent", &SpatPolygons::extent )
-//		.field("df", &SpatPolygons::df )
 		.field("crs", &SpatPolygons::crs )
 		.constructor()
 		.method("getPoly", &SpatPolygons::getGeometry, "getPoly")
 		.method("addPoly", &SpatPolygons::addGeometry, "addPoly")
 		.method("size", &SpatPolygons::size, "size")
-
-//		.method("getAtt", &SpatPolygons::getAtt, "getAtt")
-//		.method("setAtt", &SpatPolygons::setAtt, "setAtt")
 	;	
+
+    class_<SpatVector>("SpatVector")
+		.constructor()	
+		.method("names", &SpatVector::names, "names")		
+		.method("nrow", &SpatVector::nrow, "nrow")		
+		.method("ncol", &SpatVector::ncol, "ncol")		
+		.method("getDataFrame", &getDataFrame, "getDataFrame")
+//		.method("getItype", &SpatVector::getItype, "getItype")
+//		.method("getIplace", &SpatVector::getIplace, "getIplace")
+//		.method("getDv", &SpatVector::getDv, "getDv")
+//		.method("getIv", &SpatVector::getIv, "getIv")	
+	;
 
 	
     class_<SpatExtent>("SpatExtent")
