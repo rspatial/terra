@@ -197,6 +197,7 @@ class SpatVector {
 		string getCRS();
 		void setCRS(std::string crs);
 		SpatExtent extent();
+		string type();
 		
 		std::vector<double> getDv(unsigned i);
 		std::vector<long> getIv(unsigned i);

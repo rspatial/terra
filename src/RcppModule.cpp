@@ -12,29 +12,12 @@ RCPP_EXPOSED_CLASS(SpatVector)
 //RCPP_EXPOSED_CLASS(SpatGeomRing)
 //RCPP_EXPOSED_CLASS(SpatGeomRings)
 //RCPP_EXPOSED_CLASS(SpatPolygons)
-//RCPP_EXPOSED_CLASS(SpatGeomSegment)
-//RCPP_EXPOSED_CLASS(SpatGeomSegments)
-//RCPP_EXPOSED_CLASS(SpatLines)
-//RCPP_EXPOSED_CLASS(SpatPoints)
 
 	
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
 
-/*	
-    class_<SpatDataFrame>("SpatDataFrame")
-		.constructor()	
-//		.field("dv", &SpatDataFrame::dv)
-//		.field("iv", &SpatDataFrame::iv)
-//		.field("sv", &SpatDataFrame::sv)
-		.field("itype", &SpatDataFrame::itype)
-		.field("iplace", &SpatDataFrame::iplace)
-		.field("names", &SpatDataFrame::names)
-//		.field_readonly("NAS", &SpatDataFrame::NAS)
-	;	
-*/
-	
 /*    class_<SpatGeomRing>("SpatGeomRing")
 		.constructor()
 		.field_readonly("x", &SpatGeomRing::x )
@@ -73,7 +56,7 @@ RCPP_MODULE(spat){
 		.method("nrow", &SpatVector::nrow, "nrow")		
 		.method("ncol", &SpatVector::ncol, "ncol")		
 		.property("crs", &SpatVector::getCRS, &SpatVector::setCRS, "crs")		
-		.method("getCRS", &SpatVector::getCRS, "getCRS")		
+		.method("type", &SpatVector::type, "type")		
 		.method("extent", &SpatVector::extent, "extent")		
 		.method("read", &SpatVector::read, "read")		
 		.method("getAttributes", &getAttributes, "getAttributes")

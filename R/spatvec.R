@@ -1,4 +1,34 @@
 
+if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
+if (!isGeneric("geometry")) {setGeneric("geometry", function(x,...) standardGeneric("geometry"))}	
+
+
+setMethod ('length' , 'SpatVector', 
+	function(x) {
+		x@ptr$nrow()
+	}
+)
+
+setMethod('geomtype', signature(x='SpatVector'), 
+	function(x, ...){ 
+		x@ptr$type()
+	}
+)	
+
+setMethod('geometry', signature(x='SpatVector'), 
+	function(x, ...){ 
+		x@ptr$getGeometry()
+	}
+)	
+
+setMethod('as.data.frame', signature(x='SpatVector'), 
+	function(x, ...) {
+		d <- data.frame(x@ptr$getAttributes(), stringsAsFactors=FALSE)
+		names(d) <- x@ptr$names()
+		d
+	}
+)
+
 
 if (!isGeneric("SpatPolygon") ) { setGeneric("SpatPolygon", function(x, ...) standardGeneric("SpatPolygon")) }
 

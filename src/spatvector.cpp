@@ -51,6 +51,7 @@ unsigned SpatVector::ncol() {
 }
 
 unsigned SpatVector::nrow() {
+// should use the geoms instead for when there are no atts
 	return df.nrow();
 }
 
@@ -60,9 +61,10 @@ SpatExtent SpatVector::extent(){
 		return pos.extent;
 	} else if (gtype == 1) {
 		return pts.extent;
+	} else if (gtype == 2) {
+		return lns.extent;		
 	} else {
 		printf("gtype?");
-		return lns.extent;		
 	}
 }
 
@@ -71,9 +73,10 @@ std::string SpatVector::getCRS(){
 		return pos.crs;
 	} else if (gtype == 1) {
 		return pts.crs;
+	} else if (gtype == 2) {
+		return lns.crs;		
 	} else {
 		printf("gtype?");
-		return lns.crs;		
 	}
 }
 
@@ -83,8 +86,23 @@ void SpatVector::setCRS(std::string crs){
 		pos.crs = crs;
 	} else if (gtype == 1) {
 		pts.crs = crs;
+	} else if (gtype == 2) {
+		lns.crs = crs;
 	} else {
 		printf("gtype?");
-		lns.crs = crs;
 	}
 }
+
+
+string SpatVector::type(){
+	if (gtype == 0) {
+		return "polygons";
+	} else if (gtype == 1) {
+		return "points";
+	} else if (gtype == 2) {
+		return "lines";		
+	} else {
+		printf("gtype?");
+	}
+}
+
