@@ -1,4 +1,4 @@
-#include "spat.h"
+#include "spatraster.h"
 #include "SimpleIni.h"
 #include "util.h"
 using namespace std;

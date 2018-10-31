@@ -159,6 +159,7 @@ class SpatPoints {
 	public:
 		std::vector<double> x, y; 
 		SpatExtent extent;
+		string crs;
 		bool set(std::vector<double> X, std::vector<double> Y) { 
 			x = X; y = Y;  
 			extent.xmin = *std::min_element(X.begin(), X.end());
@@ -171,6 +172,7 @@ class SpatPoints {
 
 
 class SpatVector {
+
 	public:
 		//SpatVector();
 
@@ -182,7 +184,7 @@ class SpatVector {
 		bool warning = false;
 		string error_message;
 		std::vector<string> warning_message;
-		string gtype;
+		unsigned gtype;
 		
 		bool read(std::string fname);
 		bool write(std::string filename, bool overwrite);
@@ -192,6 +194,9 @@ class SpatVector {
 		std::vector<string> names();
 		unsigned nrow();
 		unsigned ncol();
+		string getCRS();
+		void setCRS(std::string crs);
+		SpatExtent extent();
 		
 		std::vector<double> getDv(unsigned i);
 		std::vector<long> getIv(unsigned i);

@@ -4,6 +4,19 @@
 # Licence GPL v3
 
 
+setMethod("crs", signature('SpatRaster'), 
+	function(x) {
+		x@ptr$crs
+	}
+)
+
+setMethod("crs<-", signature('SpatRaster', 'character'), 
+	function(x, ..., value) {
+		x@ptr$crs <- value
+		return(x)
+	}
+)
+
 
 setMethod("crs", signature('SpatRaster'), 
 	function(x) {
@@ -14,7 +27,7 @@ setMethod("crs", signature('SpatRaster'),
 
 setMethod("crs<-", signature('SpatRaster', 'character'), 
 	function(x, ..., value) {
-		x@ptr$crs <- trimws(value)
+		x@ptr$crs <- value
 		return(x)
 	}
 )

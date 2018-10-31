@@ -1,4 +1,4 @@
-#include "spat.h"
+#include "spatraster.h"
 
 #ifdef _WIN32 
 #include <windows.h>

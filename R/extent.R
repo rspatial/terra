@@ -40,11 +40,19 @@ setMethod('ext', signature(x='SpatRaster'),
 
 setMethod("ext<-", signature('SpatRaster', 'SpatExtent'), 
 	function(x, value) {
-	    stop()
-		# requires a deep copy
-		# y <- deepcopy(x)
-		#y@ptr$extent <- as.vector(value)
+	    stop("not yet implemented")
+		#y@ptr <- y@ptr$extent(value)
+		#.messages(y)
 		#return(y)
 	}
 )
 
+
+
+setMethod('ext', signature(x='SpatVector'), 
+	function(x, ...){ 
+		e <- methods::new('SpatExtent')
+		e@ptr <- x@ptr$extent()
+		return(e)
+	}
+)	

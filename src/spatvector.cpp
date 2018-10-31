@@ -1,5 +1,6 @@
 using namespace std;
 #include "spatvector.h"
+#include "util.h"
 
 /*SpatVector::SpatVector() {
 	df.names.push_back("test1");
@@ -53,3 +54,37 @@ unsigned SpatVector::nrow() {
 	return df.nrow();
 }
 
+
+SpatExtent SpatVector::extent(){
+	if (gtype == 0) {
+		return pos.extent;
+	} else if (gtype == 1) {
+		return pts.extent;
+	} else {
+		printf("gtype?");
+		return lns.extent;		
+	}
+}
+
+std::string SpatVector::getCRS(){
+	if (gtype == 0) {
+		return pos.crs;
+	} else if (gtype == 1) {
+		return pts.crs;
+	} else {
+		printf("gtype?");
+		return lns.crs;		
+	}
+}
+
+void SpatVector::setCRS(std::string crs){
+	lrtrim(crs);
+	if (gtype == 0) {
+		pos.crs = crs;
+	} else if (gtype == 1) {
+		pts.crs = crs;
+	} else {
+		printf("gtype?");
+		lns.crs = crs;
+	}
+}

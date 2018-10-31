@@ -1,6 +1,6 @@
 using namespace std;
 #include <vector>
-#include "spat.h"
+#include "spatraster.h"
 
 #include <algorithm>
 #include <functional>

@@ -3,7 +3,7 @@
 
 using namespace std;
 #include <vector>
-#include "spat.h"
+#include "spatraster.h"
 
 std::vector<double> rasterize_polygon(std::vector<double> r, double value, std::vector<double> pX, std::vector<double> pY, unsigned nrows, unsigned ncols, double xmin, double ymax, double rx, double ry) {
 

@@ -1,5 +1,5 @@
 using namespace std;
-#include "spat.h"
+#include "spatraster.h"
 #include "util.h"
 
 

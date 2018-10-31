@@ -8,7 +8,7 @@
 
 using namespace std;
 
-#include "spat.h"
+#include "spatraster.h"
 #include <vector>
 #include <fstream>
 #include <iostream>

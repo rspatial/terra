@@ -12,10 +12,17 @@ setMethod('nrow', signature(x='SpatRaster'),
 	function(x){ return(x@ptr$nrow)}
 )
 
+setMethod('nrow', signature(x='SpatVector'), 
+	function(x){ return(x@ptr$nrow())}
+)
+
 setMethod('ncol', signature(x='SpatRaster'), 
 	function(x){ return(x@ptr$ncol) }
 )
 
+setMethod('ncol', signature(x='SpatVector'), 
+	function(x){ return(x@ptr$ncol())}
+)
 
 
 setMethod('dim<-', signature(x='SpatRaster'), 

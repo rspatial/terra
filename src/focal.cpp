@@ -3,7 +3,7 @@
 */
 
 #include <vector>
-#include "spat.h"
+#include "spatraster.h"
 #include <algorithm>
 
 // todo: three dimensional focal

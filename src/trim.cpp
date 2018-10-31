@@ -1,5 +1,5 @@
 using namespace std;
-#include "spat.h"
+#include "spatraster.h"
 
 SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwrite) {
 

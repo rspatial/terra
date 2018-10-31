@@ -6,33 +6,38 @@ using namespace std;
 #include "ogr_spatialref.h"
 
 
-bool SpatVector::read(std::string fname) {
-
-    GDALAllRegister();
-    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
-    if( poDS == NULL ) {
-        error_message = "Cannot open file";
-		error = true;
-		return false;
-    }
-    OGRLayer  *poLayer = poDS->GetLayerByName( basename(fname).c_str() );
-    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+std::string geomType(OGRLayer *poLayer) {
+	std:string s = "";
     poLayer->ResetReading();
     OGRFeature *poFeature;
+    while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		const char* gname = poGeometry->getGeometryName();
+		s = gname;
+		break;
+	}
+	OGRFeature::DestroyFeature( poFeature );
+	return s;
+}	
+
+SpatDataFrame readAttributes(OGRLayer *poLayer) {
+	OGRFieldType ft;
+    poLayer->ResetReading();
+    OGRFeature *poFeature;
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
 	unsigned nfields = poFDefn->GetFieldCount();
+	OGRFieldDefn *poFieldDefn;
+	SpatDataFrame df;
 	df.itype.resize(nfields);
 	df.iplace.resize(nfields);
 	unsigned dcnt = 0;
 	unsigned icnt = 0; 
 	unsigned scnt = 0;
-	OGRFieldType ft;
-	std::vector<double> X, Y;
 	bool first = true;
-
     while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		if (first) {
 			for (int i = 0; i < nfields; i++ ) {
-				OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn(i);
+				poFieldDefn = poFDefn->GetFieldDefn(i);
 				df.names.push_back(poFieldDefn->GetNameRef());
 				ft = poFieldDefn->GetType();
 				if (ft == OFTReal) {
@@ -48,49 +53,93 @@ bool SpatVector::read(std::string fname) {
 					df.iplace[i] = scnt;
 					scnt++;
 				}
-            }
-			first = false;
-			
+			}
 			df.dv.resize(dcnt);
 			df.iv.resize(icnt);
 			df.sv.resize(scnt);	
+			first = false;
 		} 
-			
-			
+
 		for (int i = 0; i < nfields; i++ ) {
-            OGRFieldDefn *poFieldDefn = poFDefn->GetFieldDefn( i );
-            unsigned j = df.iplace[i];
-   			switch( poFieldDefn->GetType() ) {
-                case OFTReal:
+			poFieldDefn = poFDefn->GetFieldDefn( i );
+			unsigned j = df.iplace[i];
+			switch( poFieldDefn->GetType() ) {
+				case OFTReal:
 					df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
-                    break;
-                case OFTInteger:
+					break;
+				case OFTInteger:
 					df.iv[j].push_back(poFeature->GetFieldAsInteger( i ));
-                    break;
-                case OFTInteger64:
+					break;
+				case OFTInteger64:
 					df.iv[j].push_back(poFeature->GetFieldAsInteger64( i ));
-                    break;
-//                case OFTString:
-                default:
+					break;
+	//          case OFTString:
+				default:
 					df.sv[j].push_back(poFeature->GetFieldAsString( i ));
-                    break;
-            }
-        }
+					break;
+			}
+		}
+	}
+    OGRFeature::DestroyFeature( poFeature );
+	return df;
+}	
 
-        OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-        if( poGeometry != NULL && wkbFlatten(poGeometry->getGeometryType()) == wkbPoint ) {
+
+
+void readPoints (OGRLayer *poLayer, std::vector<double> &x, std::vector<double> &y) {
+	OGRFeature *poFeature;
+    poLayer->ResetReading();
+	size_t i=0;
+    while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+        OGRGeometry *poGeometry = poFeature->GetGeometryRef();     
+        if( poGeometry != NULL) { // && wkbFlatten(poGeometry->getGeometryType()) == wkbPoint ) {
 			OGRPoint *poPoint = (OGRPoint *) poGeometry;
-            X.push_back( poPoint->getX() );
-			Y.push_back( poPoint->getY() );
+            x[i] = poPoint->getX();
+			y[i] = poPoint->getY();
         } else {
-            //printf( "no point geometry\n" );
+            x[i] = NAN;
+			y[i] = NAN;
         }
-        OGRFeature::DestroyFeature( poFeature );
+		i++;
     }
-	
+    OGRFeature::DestroyFeature( poFeature );
+}
 
+
+
+bool SpatVector::read(std::string fname) {
+
+    GDALAllRegister();
+    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+    if( poDS == NULL ) {
+        error_message = "Cannot open file";
+		error = true;
+		return false;
+    }
+	string crs = "";
+	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
+	if (poSRS) {
+		char *pszPRJ = NULL;
+		poSRS->exportToProj4(&pszPRJ);
+		crs = pszPRJ;
+	}
+	
+	OGRLayer  *poLayer = poDS->GetLayerByName( basename(fname).c_str() );
+	df = readAttributes(poLayer);
+
+	string geomtype = geomType(poLayer);
+	if (geomtype == "POINT") {
+		gtype = 1;
+		std::vector<double> X(df.nrow());
+		std::vector<double> Y(df.nrow());
+		readPoints (poLayer, X, Y);
+		pts.set(X, Y);
+	} else {
+		printf("unknown geomtype");		
+	}
+	
     GDALClose( poDS );
-	pts.set(X, Y);
+	setCRS(crs);
 	return true;
 }
 

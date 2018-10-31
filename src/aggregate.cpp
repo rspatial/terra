@@ -4,7 +4,7 @@ using namespace std;
 #include <vector>
 #include <limits>
 #include <cmath>
-#include "spat.h"
+#include "spatraster.h"
 
 
 template <typename T>

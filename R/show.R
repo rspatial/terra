@@ -22,7 +22,7 @@ setMethod ('show' , 'SpatVector',
 		e <- as.vector(ext(object))
 		cat('class       :', class(object), '\n')
 		cat('geometry    :', subClass(object), '\n')
-		cat('elements    : ', length(object), '\n', sep="" ) 
+		cat('elements    : ', nrow(object), '\n', sep="" ) 
 		cat('extent      : ', e[1], ', ', e[2], ', ', e[3], ', ', e[4], '  (xmin, xmax, ymin, ymax)\n', sep="")
 		cat('coord. ref. :', crs(object), '\n')
 	}

@@ -2,19 +2,13 @@
 
 \docType{class}
 
-\alias{SpatGeomRing}
-\alias{SpatGeomRings}
-\alias{SpatPolygons}
+\alias{SpatVector}
 
-\alias{SpatGeomRing-class}
-\alias{SpatGeomRings-class}
-\alias{SpatPolygons-class}
+\alias{SpatVector-class}
 
-\alias{Rcpp_SpatGeomRing-class}
-\alias{Rcpp_SpatGeomRings-class}
-\alias{Rcpp_SpatPolygons-class}
+\alias{Rcpp_SpatVector-class}
 
-\title{ Rcpp classes}
+\title{Rcpp classes}
 
 \description{
 These classes are for internal use only

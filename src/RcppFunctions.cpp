@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include "spat.h"
+#include "spatraster.h"
 
 using namespace Rcpp;
 

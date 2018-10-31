@@ -105,22 +105,14 @@ class SpatRaster {
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
 		std::string getCRS() { return(crs); }
-		void setCRS(std::string _crs) {
-			for (size_t i = 0; i < nsrc(); i++) { source[i].crs = _crs; }
-			crs = _crs;
-		}
+		void setCRS(std::string _crs); 
 
-
-		std::vector<double> resolution() { return std::vector<double> { (extent.xmax - extent.xmin) / ncol, (extent.ymax - extent.ymin) / nrow };}
+		std::vector<double> resolution();
 		double ncell() { return nrow * ncol; }
 		double xres() { return (extent.xmax - extent.xmin) / ncol ;}
 		double yres() { return (extent.ymax - extent.ymin) / nrow ;}
 		std::vector<double> origin();
-		unsigned nlyr() {
-			unsigned x = 0;
-			for (size_t i=0; i<source.size(); i++) { x += source[i].nlyr; }
-			return(x);
-		}
+		unsigned nlyr();
 
 		// only no values allowed with a single RasterSource
 		bool hasValues() { return source[0].hasValues ; };
@@ -130,18 +122,9 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 // property like methods for RasterSources
 ////////////////////////////////////////////////////
-		std::vector<string> filenames() {
-			std::vector<string> x(source.size());
-			for (size_t i=0; i<x.size(); i++) { x[i] = source[i].filename; }
-			return(x);
-		}
+		std::vector<string> filenames();
 		bool isSource(std::string filename);
-
-		std::vector<bool> inMemory() {
-			std::vector<bool> m(source.size());
-			for (size_t i=0; i<m.size(); i++) { m[i] = source[i].memory; }
-			return(m);
-		}
+		std::vector<bool> inMemory();
 
 
 ////////////////////////////////////////////////////
