@@ -5,13 +5,11 @@
   r.hijmans@gmail.com
 */
 
-
-using namespace std;
-
-#include "spatraster.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include "spatraster.h"
+using namespace std;
 
 
 std::vector<double> readINT2(string file, unsigned long cell, unsigned n) {

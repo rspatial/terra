@@ -69,12 +69,12 @@ void lowercase(std::string &s) {
 	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
 
-bool is_in_set(string s, std::vector<string> ss) {
+bool is_in_set(std::string s, std::vector<std::string> ss) {
 	std::set<std::string> sset (ss.begin(), ss.end());
 	return sset.find(s) != sset.end();
 }
 
-std::string is_in_set_default(string s, std::vector<string> ss, string defvalue, bool tolower) {
+std::string is_in_set_default(std::string s, std::vector<std::string> ss, std::string defvalue, bool tolower) {
 	if (tolower) lowercase(s);
 	std::set<std::string> sset (ss.begin(), ss.end());
 	if (sset.find(s) == sset.end() ) {
@@ -117,7 +117,7 @@ std::vector<string> dbl2str(std::vector<double> d) {
 
 
 
-string getFileExt(const string& s) {
+std::string getFileExt(const std::string& s) {
 	size_t i = s.rfind('.', s.length());
 	if (i != string::npos) {
 		return(s.substr(i, s.length() - i));
@@ -125,7 +125,7 @@ string getFileExt(const string& s) {
 	return("");
 }
 
-string setFileExt(const string& s, const string& ext) {
+std::string setFileExt(const std::string& s, const std::string& ext) {
 	size_t i = s.rfind('.', s.length());
 	if (i != string::npos) {
 		return(s.substr(0, i) + ext);
@@ -133,7 +133,7 @@ string setFileExt(const string& s, const string& ext) {
 	return(s + ext);
 }
 
-string basename(string filename) {
+std::string basename(std::string filename) {
 	const size_t i = filename.find_last_of("\\/");
 	if (std::string::npos != i) {
 		filename.erase(0, i + 1);

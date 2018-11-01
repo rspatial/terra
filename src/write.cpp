@@ -76,7 +76,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 		string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
-			source[0].driver = {"raster"};
+			source[0].driver = "raster";
 			if (exists) {
 				if (overwrite) {
 					remove(filename.c_str());
@@ -88,7 +88,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 		} else {
 			// open GDAL filestream
 			#ifdef useGDAL
-			source[0].driver = {"gdal"} ;
+			source[0].driver = "gdal" ;
 			success = writeStartGDAL(filename, overwrite);
 			#else
 			error = true;
