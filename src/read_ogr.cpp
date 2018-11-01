@@ -6,8 +6,8 @@
 using namespace std;
 
 
-std::string geomType(OGRLayer *poLayer) {
-	std:string s = "";
+string geomType(OGRLayer *poLayer) {
+	string s = "";
     poLayer->ResetReading();
     OGRFeature *poFeature;
     while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
@@ -36,7 +36,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 	bool first = true;
     while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		if (first) {
-			for (int i = 0; i < nfields; i++ ) {
+			for (size_t i = 0; i < nfields; i++ ) {
 				poFieldDefn = poFDefn->GetFieldDefn(i);
 				df.names.push_back(poFieldDefn->GetNameRef());
 				ft = poFieldDefn->GetType();
@@ -60,7 +60,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 			first = false;
 		} 
 
-		for (int i = 0; i < nfields; i++ ) {
+		for (size_t i = 0; i < nfields; i++ ) {
 			poFieldDefn = poFDefn->GetFieldDefn( i );
 			unsigned j = df.iplace[i];
 			switch( poFieldDefn->GetType() ) {

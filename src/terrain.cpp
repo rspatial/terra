@@ -1,11 +1,11 @@
 /* Robert Hijmans, October 2011 */
 
-using namespace std;
 #include <vector>
 #include <algorithm>
 #include <math.h>
 #include "distance.h"
 #include <string>
+using namespace std;
 
 
 #ifndef M_PI

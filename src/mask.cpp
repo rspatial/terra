@@ -1,10 +1,6 @@
-using namespace std;
 #include <vector>
 #include "spatraster.h"
-
-
-
-
+using namespace std;
 
 
 SpatRaster SpatRaster::mask(SpatRaster x, string filename, bool overwrite) {

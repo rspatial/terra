@@ -1,4 +1,4 @@
-using namespace std;
+//using namespace std;
 #include "spatvector.h"
 #include "util.h"
 

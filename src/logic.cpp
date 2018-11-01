@@ -1,9 +1,9 @@
-using namespace std;
 #include <vector>
-#include "spatraster.h"
-
 #include <algorithm>
 #include <functional>
+#include "spatraster.h"
+using namespace std;
+
 
 
 template <typename T>
