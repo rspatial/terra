@@ -28,6 +28,12 @@ setMethod("Arith", signature(e1='SpatRaster', e2='numeric'),
 )
 
 
+setMethod("Arith", signature(e1='SpatRaster', e2='missing'),
+    function(e1, e2){ 
+		methods::callGeneric(0, e1)
+	}
+)
+
 setMethod("Arith", signature(e1='numeric', e2='SpatRaster'),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
