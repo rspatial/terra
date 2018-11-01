@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 #include <fstream>
-using namespace std;
+//using namespace std;
 
 void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, int &imax) {
     std::vector<double>::size_type p=0;
@@ -34,7 +34,7 @@ void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, i
 
 
 bool file_exists(const std::string& name) {
-	ifstream f(name.c_str());
+	std::ifstream f(name.c_str());
 	return f.good();
 }
 
@@ -48,7 +48,7 @@ double roundn(double x, int n){
 
 
 
-std::string concatenate(std::vector<string> v, std::string delim) {
+std::string concatenate(std::vector<std::string> v, std::string delim) {
 	for (size_t i=0; i<(v.size()-1); i++) {
 		v[i] = v[i] + delim;
 	}
@@ -99,7 +99,7 @@ std::vector<std::string> strsplit(std::string s, std::string delimiter){
 }
 
 
-std::vector<double> str2dbl(std::vector<string> s) {
+std::vector<double> str2dbl(std::vector<std::string> s) {
 	std::vector<double> d (s.size());
 	std::transform(s.begin(), s.end(), d.begin(), [](const std::string& val) {
 		return std::stod(val);
@@ -107,8 +107,8 @@ std::vector<double> str2dbl(std::vector<string> s) {
 	return d;
 }
 
-std::vector<string> dbl2str(std::vector<double> d) {
-	std::vector<string> s (d.size());
+std::vector<std::string> dbl2str(std::vector<double> d) {
+	std::vector<std::string> s (d.size());
 	std::transform(d.begin(), d.end(), s.begin(),
 			[](double i) { return std::to_string(i); }
 	);
@@ -119,7 +119,7 @@ std::vector<string> dbl2str(std::vector<double> d) {
 
 std::string getFileExt(const std::string& s) {
 	size_t i = s.rfind('.', s.length());
-	if (i != string::npos) {
+	if (i != std::string::npos) {
 		return(s.substr(i, s.length() - i));
 	}
 	return("");
@@ -127,7 +127,7 @@ std::string getFileExt(const std::string& s) {
 
 std::string setFileExt(const std::string& s, const std::string& ext) {
 	size_t i = s.rfind('.', s.length());
-	if (i != string::npos) {
+	if (i != std::string::npos) {
 		return(s.substr(0, i) + ext);
 	}
 	return(s + ext);

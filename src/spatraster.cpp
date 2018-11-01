@@ -17,8 +17,8 @@ unsigned SpatRaster::nlyr() {
 	return(x);
 }
 
-std::vector<string> SpatRaster::filenames() {
-	std::vector<string> x(source.size());
+std::vector<std::string> SpatRaster::filenames() {
+	std::vector<std::string> x(source.size());
 	for (size_t i=0; i<x.size(); i++) { x[i] = source[i].filename; }
 	return(x);
 }
