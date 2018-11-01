@@ -29,7 +29,7 @@ std::vector<long> SpatVector::getIv(unsigned i){
 	return df.iv[j];
 }
 
-std::vector<string> SpatVector::getSv(unsigned i){
+std::vector<std::string> SpatVector::getSv(unsigned i){
 	unsigned j = df.iplace[i];
 	return df.sv[j];
 }
@@ -42,7 +42,7 @@ std::vector<unsigned> SpatVector::getIplace(){
 	return df.iplace;
 }
 
-std::vector<string> SpatVector::names(){
+std::vector<std::string> SpatVector::names(){
 	return df.names;
 }
 
@@ -97,7 +97,7 @@ void SpatVector::setCRS(std::string crs){
 }
 
 
-string SpatVector::type(){
+std::string SpatVector::type(){
 	if (gtype == 0) {
 		return "polygons";
 	} else if (gtype == 1) {

@@ -1,4 +1,4 @@
-using namespace std;
+//using namespace std;
 #include "extent.h"
 #include "dataframe.h"
 
@@ -159,7 +159,7 @@ class SpatPoints {
 	public:
 		std::vector<double> x, y; 
 		SpatExtent extent;
-		string crs;
+		std::string crs;
 		bool set(std::vector<double> X, std::vector<double> Y) { 
 			x = X; y = Y;  
 			extent.xmin = *std::min_element(X.begin(), X.end());
@@ -182,8 +182,8 @@ class SpatVector {
 
 		bool error = false;
 		bool warning = false;
-		string error_message;
-		std::vector<string> warning_message;
+		std::string error_message;
+		std::vector<std::string> warning_message;
 		unsigned gtype;
 		
 		bool read(std::string fname);
@@ -191,17 +191,17 @@ class SpatVector {
 
 		SpatDataFrame df;
 
-		std::vector<string> names();
+		std::vector<std::string> names();
 		unsigned nrow();
 		unsigned ncol();
-		string getCRS();
+		std::string getCRS();
 		void setCRS(std::string crs);
 		SpatExtent extent();
-		string type();
+		std::string type();
 		
 		std::vector<double> getDv(unsigned i);
 		std::vector<long> getIv(unsigned i);
-		std::vector<string> getSv(unsigned i);
+		std::vector<std::string> getSv(unsigned i);
 		std::vector<unsigned> getItype();
 		std::vector<unsigned> getIplace();
 	

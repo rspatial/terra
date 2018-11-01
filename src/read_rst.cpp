@@ -12,7 +12,7 @@
 using namespace std;
 
 
-std::vector<double> readINT2(string file, unsigned long cell, unsigned n) {
+std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {
 	const int dsize = 2;
 	std::vector<short> v(n);
 	short* value = &v[0];
@@ -28,7 +28,7 @@ std::vector<double> readINT2(string file, unsigned long cell, unsigned n) {
 
 
 
-std::vector<double> readINT4(string file, unsigned long cell, unsigned n) {
+std::vector<double> readINT4(std::string file, unsigned long cell, unsigned n) {
 	const int dsize = 4;
 	std::vector<long> v(n);
 	long* value = &v[0];
@@ -44,7 +44,7 @@ std::vector<double> readINT4(string file, unsigned long cell, unsigned n) {
 
 
  
-std::vector<double> readFLT4(string file, string order, unsigned long start, unsigned n) {
+std::vector<double> readFLT4(std::string file, std::string order, unsigned long start, unsigned n) {
 
 	const int dsize = 4;
 	size_t nlyr = 1;
@@ -68,7 +68,7 @@ std::vector<double> readFLT4(string file, string order, unsigned long start, uns
 }
 
 
-std::vector<double> readFLT8(string file, string order, unsigned long start, unsigned n) {
+std::vector<double> readFLT8(std::string file, std::string order, unsigned long start, unsigned n) {
 
 	const int dsize = 8;
 	size_t nlyr = 1;
@@ -91,7 +91,7 @@ std::vector<double> readFLT8(string file, string order, unsigned long start, uns
 	return vv;
 }
 
-/*std::vector<double> readFLT8(string file, unsigned long cell, unsigned n, unsigned nlyr, string order) {
+/*std::vector<double> readFLT8(std::string file, unsigned long cell, unsigned n, unsigned nlyr, string order) {
 	const int dsize = 8;
 	std::vector<double> v(n);
 	double* value = &v[0];
