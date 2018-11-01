@@ -1,9 +1,9 @@
 // Based on  public-domain code by Darel Rex Finley, 2007
 // http://alienryderflex.com/polygon_fill/
 
-using namespace std;
 #include <vector>
 #include "spatraster.h"
+using namespace std;
 
 std::vector<double> rasterize_polygon(std::vector<double> r, double value, std::vector<double> pX, std::vector<double> pY, unsigned nrows, unsigned ncols, double xmin, double ymax, double rx, double ry) {
 
