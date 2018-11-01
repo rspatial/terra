@@ -1,7 +1,7 @@
-using namespace std;
-#include "spatraster.h"
 #include <type_traits>
 #include <vector>
+using namespace std;
+#include "spatraster.h"
 #include "util.h"
 
 

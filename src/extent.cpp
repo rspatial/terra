@@ -1,6 +1,6 @@
-using namespace std;
 #include "spatraster.h"
 #include "util.h"
+using namespace std;
 
 void SpatRaster::setExtent(SpatExtent ext, bool keepRes, string snap) {
 

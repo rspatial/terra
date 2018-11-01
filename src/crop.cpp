@@ -1,8 +1,8 @@
+#include <set>
 using namespace std;
 
 #include "spatraster.h"
 #include "util.h"
-#include <set>
 
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string filename, std::string snap, bool overwrite) {

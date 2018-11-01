@@ -1,4 +1,3 @@
-using namespace std;
 #include <algorithm>
 #include <cctype>
 #include <locale>
@@ -7,6 +6,7 @@ using namespace std;
 #include <cmath>
 #include <vector>
 #include <fstream>
+using namespace std;
 
 void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, int &imax) {
     std::vector<double>::size_type p=0;

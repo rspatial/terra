@@ -1,6 +1,6 @@
-using namespace std;
 #include <vector>
 #include "spatraster.h"
+using namespace std;
 
 
 //void SpatRaster::validNames() {

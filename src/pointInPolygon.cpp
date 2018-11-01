@@ -1,7 +1,7 @@
-//source http://alienryderflex.com/polygon/
-
-using namespace std;
 #include "spatvector.h"
+using namespace std;
+
+//see http://alienryderflex.com/polygon/
   
 std::vector<bool> points_in_polygon(std::vector<double> polX, std::vector<double> polY, std::vector<double> pX, std::vector<double> pY) {
 

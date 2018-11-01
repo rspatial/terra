@@ -1,9 +1,9 @@
-using namespace std;
 #include "spatvector.h"
 #include "util.h"
 
 #include "ogrsf_frmts.h"
 #include "ogr_spatialref.h"
+using namespace std;
 
 
 std::string geomType(OGRLayer *poLayer) {
@@ -135,7 +135,7 @@ bool SpatVector::read(std::string fname) {
 		readPoints (poLayer, X, Y);
 		pts.set(X, Y);
 	} else {
-		printf("unknown geomtype");		
+		//printf("unknown geomtype");		
 	}
 	
     GDALClose( poDS );

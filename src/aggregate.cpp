@@ -1,9 +1,9 @@
 /* Robert Hijmans, October 2014 */
 
-using namespace std;
 #include <vector>
 #include <limits>
 #include <cmath>
+using namespace std;
 #include "spatraster.h"
 
 

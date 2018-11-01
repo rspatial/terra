@@ -1,7 +1,7 @@
-using namespace std;
 #include "spatraster.h"
 #include "SimpleIni.h"
 #include "util.h"
+using namespace std;
 
 
 bool SpatRaster::constructFromFile(std::string fname) {

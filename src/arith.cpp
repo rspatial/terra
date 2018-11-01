@@ -1,6 +1,6 @@
-using namespace std;
-#include "spatraster.h"
 #include <functional>
+#include "spatraster.h"
+using namespace std;
 
 
 template <typename T>

@@ -1,4 +1,3 @@
-using namespace std;
 #include "spatraster.h"
 #include "util.h"
 

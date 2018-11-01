@@ -1,5 +1,5 @@
-using namespace std;
 #include "spatraster.h"
+using namespace std;
 
 
 SpatRaster::SpatRaster(std::string fname) {

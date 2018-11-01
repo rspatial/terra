@@ -1,6 +1,6 @@
-using namespace std;
 #include "spatraster.h"
 #include "util.h"
+using namespace std;
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()

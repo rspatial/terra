@@ -1,7 +1,6 @@
-using namespace std;
-
 #include <vector>
 #include <fstream>
+using namespace std;
 
 
 bool writeINT2(string filename, std::vector<double> v) {

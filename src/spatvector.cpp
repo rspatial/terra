@@ -52,6 +52,7 @@ unsigned SpatVector::ncol() {
 
 unsigned SpatVector::nrow() {
 // should use the geoms instead for when there are no atts
+//	return size();
 	return df.nrow();
 }
 
@@ -64,7 +65,8 @@ SpatExtent SpatVector::extent(){
 	} else if (gtype == 2) {
 		return lns.extent;		
 	} else {
-		printf("gtype?");
+		SpatExtent e;
+		return e;
 	}
 }
 
@@ -76,7 +78,7 @@ std::string SpatVector::getCRS(){
 	} else if (gtype == 2) {
 		return lns.crs;		
 	} else {
-		printf("gtype?");
+		return "?";
 	}
 }
 
@@ -89,7 +91,8 @@ void SpatVector::setCRS(std::string crs){
 	} else if (gtype == 2) {
 		lns.crs = crs;
 	} else {
-		printf("gtype?");
+		error=true;
+		error_message = "unknown geometry type";
 	}
 }
 
@@ -102,7 +105,7 @@ string SpatVector::type(){
 	} else if (gtype == 2) {
 		return "lines";		
 	} else {
-		printf("gtype?");
+		return("?");
 	}
 }
 

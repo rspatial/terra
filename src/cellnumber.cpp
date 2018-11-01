@@ -1,7 +1,6 @@
-using namespace std;
-
-#include "spatraster.h"
 #include <cmath>
+#include "spatraster.h"
+using namespace std;
 
 
 

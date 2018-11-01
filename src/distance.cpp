@@ -9,10 +9,10 @@
 #define M_2PI (6.28318530717958647692)
 #endif
 
-using namespace std;
 #include <vector>
-#include "geodesic.h"
 #include <math.h>
+#include "geodesic.h"
+using namespace std;
 
 
 double distance_lonlat(double lon1, double lat1, double lon2, double lat2, double a, double f) {

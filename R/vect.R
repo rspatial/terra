@@ -21,10 +21,3 @@ setMethod("vect", signature(x='character'),
 	}
 )
 
-setMethod('ext', signature(x='SpatVector'), 
-	function(x, ...){ 
-		e <- methods::new('SpatExtent')
-		e@ptr <- x@ptr$extent()
-		return(e)
-	}
-)	

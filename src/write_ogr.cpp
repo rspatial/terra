@@ -1,7 +1,7 @@
-using namespace std;
 #include "spatraster.h"
 #include "util.h"
 #include "ogrsf_frmts.h"
+using namespace std;
 
 
 bool SpatVector::write(std::string filename, bool overwrite) {
