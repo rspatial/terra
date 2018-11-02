@@ -1,13 +1,12 @@
 #include "spatraster.h"
 #include "util.h"
-using namespace std;
 
 
 template <typename T>
-vector<long unsigned> sort_indexes(const vector<T> &v) {
+std::vector<long unsigned> sort_indexes(const std::vector<T> &v) {
 
   // initialize original index locations
-  vector<long unsigned> idx(v.size());
+  std::vector<long unsigned> idx(v.size());
   iota(idx.begin(), idx.end(), 0);
 
   // sort indexes based on comparing values in v
@@ -17,7 +16,7 @@ vector<long unsigned> sort_indexes(const vector<T> &v) {
   return idx;
 }
 
-void make_valid(std::vector<string> &s) {
+void make_valid(std::vector<std::string> &s) {
     for (size_t i=0; i<s.size(); i++) {
         lrtrim(s[i]);
         if (s[i] == "") s[i] = "X";
@@ -29,15 +28,15 @@ void make_valid(std::vector<string> &s) {
     }
 }
 
-void make_unique(std::vector<string> &s) {
+void make_unique(std::vector<std::string> &s) {
     std::vector<long unsigned> x = sort_indexes(s);
     std::sort(s.begin(), s.end());
-    std::vector<string> ss = s;
+    std::vector<std::string> ss = s;
     unsigned j = 1;
     for (size_t i=1; i<s.size(); i++) {
         if (s[i] == s[i-1]) {
-            ss[i-1] = s[i-1] + "_" + to_string(j);
-            ss[i] = s[i] + "_" + to_string(j + 1);
+            ss[i-1] = s[i-1] + "_" + std::to_string(j);
+            ss[i] = s[i] + "_" + std::to_string(j + 1);
             j++;
         } else {
             j = 1;
@@ -49,8 +48,8 @@ void make_unique(std::vector<string> &s) {
 }
 
 
-std::vector<string> SpatRaster::getNames() {
-	std::vector<string> x;
+std::vector<std::string> SpatRaster::getNames() {
+	std::vector<std::string> x;
 	for (size_t i=0; i<source.size(); i++) {
 		x.insert(x.end(), source[i].names.begin(), source[i].names.end());
 	}
@@ -58,7 +57,7 @@ std::vector<string> SpatRaster::getNames() {
 }
 
 
-bool SpatRaster::setNames(std::vector<string> names) {
+bool SpatRaster::setNames(std::vector<std::string> names) {
 	if (names.size() != nlyr()) {
 		return false;
 	} else {
@@ -68,7 +67,7 @@ bool SpatRaster::setNames(std::vector<string> names) {
         size_t end;
         for (size_t i=0; i<source.size(); i++)	{
             end = begin + source[i].nlyr;
-            source[i].names = std::vector<string> (names.begin() + begin, names.begin() + end);
+            source[i].names = std::vector<std::string> (names.begin() + begin, names.begin() + end);
             begin = end;
         }
         return true;

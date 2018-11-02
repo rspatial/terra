@@ -1,5 +1,4 @@
 #include "spatraster.h"
-using namespace std;
 
 SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwrite) {
 
@@ -41,7 +40,7 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwri
 			break;
 		}
 	}
-	unsigned firstcol = min(max(c-padding, unsigned(0)), ncol);
+	unsigned firstcol = std::min(std::max(c-padding, unsigned(0)), ncol);
 	
 	
 	for (c=ncol-1; c>firstcol; c--) {

@@ -2,7 +2,6 @@
 #include <vector>
 #include <math.h>
 #include "geodesic.h"
-using namespace std;
 
 double area_polygon_lonlat(std::vector<double> lon, std::vector<double> lat, double a, double f) {
 	struct geod_geodesic g;

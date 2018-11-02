@@ -331,7 +331,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, std::string filename, boo
 
 	SpatRaster out = geometry();
 
-	std::vector<string> f {"sum", "prod", "min", "max"};
+	std::vector<std::string> f {"sum", "prod", "min", "max"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.error = true;
 		out.error_message = "unknown cum function";
@@ -376,7 +376,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 
 	SpatRaster out = geometry(1);
 
-	std::vector<string> f {"sum", "mean", "min", "max", "range", "prod", "any", "all"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "prod", "any", "all"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.error = true;
 		out.error_message = "unknown summary function";

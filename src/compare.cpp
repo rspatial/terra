@@ -1,6 +1,5 @@
 #include "spatraster.h"
 #include "util.h"
-using namespace std;
 
 
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs) {

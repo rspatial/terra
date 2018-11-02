@@ -1,7 +1,6 @@
 #include "spatraster.h"
 #include "SimpleIni.h"
 #include "util.h"
-using namespace std;
 
 
 bool SpatRaster::constructFromFile(std::string fname) {
@@ -12,7 +11,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		return false;
 	}
 	
-	string ext = getFileExt(fname);
+	std::string ext = getFileExt(fname);
 
 	if (ext != ".grd") {
         #ifdef useGDAL
@@ -39,8 +38,8 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			s.bandorder = ini.GetValue("data", "bandorder", "");
 			s.byteorder = ini.GetValue("data", "byteorder", "");
 
-			string smin, smax, snames;
-			string version = ini.GetValue("version", "version", "1");
+			std::string smin, smax, snames;
+			std::string version = ini.GetValue("version", "version", "1");
 			if (version == "1") {
 				s.nrow = atoi(ini.GetValue("georeference", "nrows"));
 				s.ncol = atoi(ini.GetValue("georeference", "ncols"));

@@ -1,8 +1,5 @@
 #include <cmath>
 #include "spatraster.h"
-using namespace std;
-
-
 
 std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<double> y) {
 

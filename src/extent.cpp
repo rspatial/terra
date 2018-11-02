@@ -1,8 +1,7 @@
 #include "spatraster.h"
 #include "util.h"
-using namespace std;
 
-void SpatRaster::setExtent(SpatExtent ext, bool keepRes, string snap) {
+void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	if (snap != "") {
 		ext = align(ext, snap);
@@ -12,8 +11,8 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, string snap) {
 		std::vector<double> res = resolution();
 		double xrs = res[0];
 		double yrs = res[1];
-		ncol = max(1.0, round( (ext.xmax - ext.xmin) / xrs ));
-		nrow = max(1.0, round( (ext.ymax - ext.ymin) / yrs ));
+		ncol = std::max(1.0, round( (ext.xmax - ext.xmin) / xrs ));
+		nrow = std::max(1.0, round( (ext.ymax - ext.ymin) / yrs ));
 		ext.xmax = ext.xmin + ncol * xrs;
 		ext.ymax = ext.ymin + nrow * yrs;
 	}
@@ -22,9 +21,9 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, string snap) {
 }
 
 
-SpatExtent SpatRaster::align(SpatExtent e, string snap) {
+SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 
-	snap = is_in_set_default(snap, std::vector<string> {"near", "in", "out"}, "near", true);
+	snap = is_in_set_default(snap, std::vector<std::string> {"near", "in", "out"}, "near", true);
 	std::vector<double> res = resolution();
 	std::vector<double> orig = origin(); 
 	
