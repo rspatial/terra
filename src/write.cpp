@@ -1,10 +1,9 @@
 #include "spatraster.h"
 #include "SimpleIni.h"
 #include "util.h"
-using namespace std;
 
 bool SpatRaster::isSource(std::string filename) {
-	std::vector<string> ff = filenames();
+	std::vector<std::string> ff = filenames();
 	for (size_t i=0; i<ff.size(); i++) {
 		if (ff[i] == filename) {
 			return true;
@@ -32,11 +31,11 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 		}
 	}
 
-	string ext = getFileExt(filename);
+	std::string ext = getFileExt(filename);
 	lowercase(ext);
 
 	if (ext == ".grd") {
-		ofstream fs(filename, ios::ate | ios::binary);
+		std::ofstream fs(filename, std::ios::ate | std::ios::binary);
 		std::vector<double> v = getValues();
 		fs.write((char*)&v[0], v.size() * sizeof(double));
 		fs.close();
@@ -73,7 +72,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 	} else {
 		source[0].memory = false;
 		bool exists = file_exists(filename);
-		string ext = getFileExt(filename);
+		std::string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
 			source[0].driver = "raster";
@@ -120,8 +119,8 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 	if (source[0].driver == "raster") {
 		unsigned size = vals.size();
 		//(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
-		string fname = setFileExt(source[0].filename, ".gri");
-		ofstream fs(fname, ios::ate | ios::binary);
+		std::string fname = setFileExt(source[0].filename, ".gri");
+		std::ofstream fs(fname, std::ios::ate | std::ios::binary);
 		fs.write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
 		fs.close();
 
@@ -216,23 +215,23 @@ void SpatRaster::setRange() {
 
 
 
-bool SpatRaster::writeHDR(string filename) {
+bool SpatRaster::writeHDR(std::string filename) {
 	CSimpleIniA ini;
 	ini.SetValue("version", NULL, NULL);
 	ini.SetValue("version", "version", "2");
 	ini.SetValue("georeference", NULL, NULL);
-	ini.SetValue("georeference", "xmin", to_string(extent.xmin).c_str());
-	ini.SetValue("georeference", "xmax", to_string(extent.xmax).c_str());
-	ini.SetValue("georeference", "ymin", to_string(extent.ymin).c_str());
-	ini.SetValue("georeference", "ymax", to_string(extent.ymax).c_str());
+	ini.SetValue("georeference", "xmin", std::to_string(extent.xmin).c_str());
+	ini.SetValue("georeference", "xmax", std::to_string(extent.xmax).c_str());
+	ini.SetValue("georeference", "ymin", std::to_string(extent.ymin).c_str());
+	ini.SetValue("georeference", "ymax", std::to_string(extent.ymax).c_str());
 	ini.SetValue("georeference", "crs", crs.c_str());
-	ini.SetValue("dimensions", "nrow", to_string(nrow).c_str());
-	ini.SetValue("dimensions", "ncol", to_string(ncol).c_str());
-	ini.SetValue("dimensions", "nlyr", to_string(nlyr()).c_str());
+	ini.SetValue("dimensions", "nrow", std::to_string(nrow).c_str());
+	ini.SetValue("dimensions", "ncol", std::to_string(ncol).c_str());
+	ini.SetValue("dimensions", "nlyr", std::to_string(nlyr()).c_str());
 	ini.SetValue("dimensions", "names", concatenate(getNames(), std::string(":|:")).c_str());
 	ini.SetValue("data", NULL, NULL);
 	ini.SetValue("data", "datatype", "FLT8S"); // double
-	ini.SetValue("data", "nodata", to_string(-1 * numeric_limits<double>::max()).c_str());
+	ini.SetValue("data", "nodata", std::to_string(-1 * std::numeric_limits<double>::max()).c_str());
 	ini.SetValue("data", "range_min", concatenate(dbl2str(range_min()), std::string(":|:")).c_str());
 	ini.SetValue("data", "range_max", concatenate(dbl2str(range_max()), std::string(":|:")).c_str());
 
