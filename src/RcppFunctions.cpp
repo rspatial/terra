@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 #include "spatraster.h"
 
-using namespace Rcpp;
 
 /*
 NumericMatrix getValuesM(SpatRaster* r) {
@@ -15,15 +14,15 @@ NumericMatrix getValuesM(SpatRaster* r) {
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) { 
     BlockSize bs = r->getBlockSize(n);
-	List L = List::create(Named("row") = bs.row, Named("nrows") = bs.nrows, Named("n") = bs.n);
+	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }
 
 
-//Rcpp::DataFrame getDataFrame(SpatVector* v) {
-Rcpp::List getAttributes(SpatVector* v) {
+
+Rcpp::List getAttributes(SpatLayer* v) {
 	unsigned n = v->ncol();
-	List out(n);	
+	Rcpp::List out(n);	
 	std::vector<unsigned> itype = v->getItype();
 	for (size_t i=0; i < n; i++) {
 		if (itype[i] == 0) {
@@ -42,12 +41,17 @@ Rcpp::List getAttributes(SpatVector* v) {
 //	return result;
 }
 
-Rcpp::NumericVector getGeometry(SpatVector* v) {
-	// for points only
-	std::vector<double> xy = v->pts.x;
-	xy.insert( xy.end(), v->pts.y.begin(), v->pts.y.end() );
-	NumericVector out = wrap(xy);	
-	out.attr("dim") = Dimension(v->pts.x.size(), 2);
+
+Rcpp::DataFrame getGeometry(SpatLayer* v) {
+	SpatDataFrame df = v->getGeometryDF();
+	Rcpp::DataFrame out = Rcpp::DataFrame::create(
+			Rcpp::Named("id") = df.iv[0], 
+			Rcpp::Named("part") = df.iv[1], 
+			Rcpp::Named("x") = df.dv[0],
+			Rcpp::Named("y") = df.dv[1],
+			Rcpp::Named("hole") = df.iv[2]
+	);
 	return out;
 }
+
 

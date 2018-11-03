@@ -41,18 +41,18 @@ std::vector<bool> points_in_polygon(std::vector<double> polX, std::vector<double
 
 
 
-std::vector<int> pointsInPolygons(SpatPolygons pol, std::vector<double> pX, std::vector<double> pY) {
+std::vector<int> pointsInPolygons(SpatLayer pol, std::vector<double> pX, std::vector<double> pY) {
 
 	unsigned n = pol.size();	
 	std::vector<int> result(n, -1);
 	
 	for (size_t j = 0; j < n; j++) {
 			
-		SpatGeomRings poly = pol.getGeometry(j);
-		unsigned np = poly.size();
+		SpatGeom geom = pol.getGeom(j);
+		unsigned np = geom.size();
 		std::vector<bool> inside;	
 		for (size_t k = 0; k < np; k++) {
-			SpatGeomRing part = poly.getGeom(k);
+			SpatPart part = geom.getPart(k);
 			if (part.hasHoles()) {
 				inside = points_in_polygon(part.x, part.y, pX, pY);
 				for (size_t h=0; h < part.nHoles(); h++) {

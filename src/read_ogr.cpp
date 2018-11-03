@@ -1,4 +1,4 @@
-#include "spatvector.h"
+#include "spatVector.h"
 #include "util.h"
 
 #include "ogrsf_frmts.h"
@@ -107,7 +107,7 @@ void readPoints (OGRLayer *poLayer, std::vector<double> &x, std::vector<double> 
 
 
 
-bool SpatVector::read(std::string fname) {
+bool SpatLayer::read(std::string fname) {
 
     GDALAllRegister();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
@@ -129,11 +129,11 @@ bool SpatVector::read(std::string fname) {
 
 	string geomtype = geomType(poLayer);
 	if (geomtype == "POINT") {
-		gtype = 1;
+	//	gtype = 1;
 		std::vector<double> X(df.nrow());
 		std::vector<double> Y(df.nrow());
 		readPoints (poLayer, X, Y);
-		pts.set(X, Y);
+	//	pts.set(X, Y);
 	} else {
 		//printf("unknown geomtype");		
 	}

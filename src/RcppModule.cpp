@@ -1,79 +1,43 @@
 #include <Rcpp.h>
 #include "spatraster.h"
 
-using namespace Rcpp;
 #include "RcppFunctions.h"
 
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
-RCPP_EXPOSED_CLASS(SpatVector)
-
-//RCPP_EXPOSED_CLASS(SpatGeomRing)
-//RCPP_EXPOSED_CLASS(SpatGeomRings)
-//RCPP_EXPOSED_CLASS(SpatPolygons)
+RCPP_EXPOSED_CLASS(SpatLayer)
 
 	
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
 
-/*    class_<SpatGeomRing>("SpatGeomRing")
-		.constructor()
-		.field_readonly("x", &SpatGeomRing::x )
-		.field_readonly("y", &SpatGeomRing::y )
-		.field_readonly("extent", &SpatGeomRing::extent )
-		.method("set", &SpatGeomRing::set, "set")
-		.method("setHole", &SpatGeomRing::setHole, "setHole")
-		.method("getHoleX", &SpatGeomRing::getHoleX, "getHoleX")
-		.method("getHoleY", &SpatGeomRing::getHoleY, "getHoleY")
-		.method("nHoles", &SpatGeomRing::nHoles, "nHoles")
-		.method("hasHoles", &SpatGeomRing::hasHoles, "hasHoles")
-		
-	;	
-    class_<SpatGeomRings>("SpatGeomRings")
-		.constructor()	
-		.field_readonly("extent", &SpatGeomRings::extent )
-		.method("getPart", &SpatGeomRings::getGeom, "getPart")
-		.method("addPart", &SpatGeomRings::addGeom, "addPart")
-		.method("size", &SpatGeomRings::size, "size")
-	;	
-	
-    class_<SpatPolygons>("SpatPolygons")
-		.constructor()	
-//		.field("polygons", &SpatPolygons::polys )
-		.field_readonly("extent", &SpatPolygons::extent )
-		.field("crs", &SpatPolygons::crs )
-		.constructor()
-		.method("getPoly", &SpatPolygons::getGeometry, "getPoly")
-		.method("addPoly", &SpatPolygons::addGeometry, "addPoly")
-		.method("size", &SpatPolygons::size, "size")
-	;	
-*/
-    class_<SpatVector>("SpatVector")
-		.constructor()	
-		.method("names", &SpatVector::names, "names")		
-		.method("nrow", &SpatVector::nrow, "nrow")		
-		.method("ncol", &SpatVector::ncol, "ncol")		
-		.property("crs", &SpatVector::getCRS, &SpatVector::setCRS, "crs")		
-		.method("type", &SpatVector::type, "type")		
-		.method("extent", &SpatVector::extent, "extent")		
-		.method("read", &SpatVector::read, "read")		
-		.method("getAttributes", &getAttributes, "getAttributes")
-		.method("getGeometry", &getGeometry, "getGeometry")
-		.field("error", &SpatVector::error )
-		.field("warning", &SpatVector::warning )
-		.field("error_message", &SpatVector::error_message )
-		.field("warning_message", &SpatVector::warning_message )
-	;
-
-	
     class_<SpatExtent>("SpatExtent")
 		.constructor()
 		.constructor<double, double, double, double>()
 		.property("vector", &SpatExtent::asVector)		
 		.property("valid", &SpatExtent::valid)		
 	;	
+
+    class_<SpatLayer>("SpatLayer")
+		.constructor()	
+	//	.method("names", &SpatLayer::names, "names")		
+	//	.method("nrow", &SpatLayer::nrow, "nrow")		
+	//	.method("ncol", &SpatLayer::ncol, "ncol")		
+	//	.property("crs", &SpatLayer::getCRS, &SpatLayer::setCRS, "crs")		
+	//	.method("type", &SpatLayer::type, "type")		
+	//	.method("extent", &SpatLayer::extent, "extent")		
+	//	.method("read", &SpatLayer::read, "read")		
+	//	.method("getAttributes", &getAttributes, "getAttributes")
+	//	.method("getGeometry", &getGeometry, "getGeometry")
+	//	.field("error", &SpatLayer::error )
+	//	.field("warning", &SpatLayer::warning )
+	//	.field("error_message", &SpatLayer::error_message )
+	//	.field("warning_message", &SpatLayer::warning_message )
+	;
+
+	
 
     class_<RasterSource>("RasterSource")
 	

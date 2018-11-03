@@ -4,7 +4,7 @@
 using namespace std;
 
 
-bool SpatVector::write(std::string filename, bool overwrite) {
+bool SpatLayer::write(std::string filename, bool overwrite) {
 
     const char *pszDriverName = "ESRI Shapefile";
     GDALDriver *poDriver;

@@ -6,7 +6,7 @@
 #include "util.h"
 
 
-SpatDataFrame SpatDataFrame::subsetrows(std::vector<unsigned> range) { 
+SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) { 
 	SpatDataFrame out;
 	out.names = names;
 	out.itype = itype;
@@ -28,7 +28,7 @@ SpatDataFrame SpatDataFrame::subsetrows(std::vector<unsigned> range) {
 	return out;	
 }	
 
-SpatDataFrame SpatDataFrame::subsetcols(std::vector<unsigned> range) { 
+SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) { 
 	SpatDataFrame out;
 	unsigned dcnt=0;
 	unsigned icnt=0;
@@ -96,4 +96,32 @@ void SpatDataFrame::add_row() {
 }
 
 	
-	
+void SpatDataFrame::add_column(unsigned dtype, unsigned n) {
+	unsigned nr = nrow();
+	// nr should be zero! else insert vector NAs
+	if (dtype == 0) {
+		std::vector<double> dins(nr, NAN);
+		for (size_t i=0; i<n; i++) {
+			itype.push_back(dtype);
+			iplace.push_back(dv.size());
+			dv.push_back(dins);
+		}
+	} else if (dtype == 1) {
+		long longNA = NA<long>::value;
+		std::vector<long> iins(nr, longNA);
+		for (size_t i=0; i<n; i++) {
+			itype.push_back(dtype);
+			iplace.push_back(iv.size());
+			iv.push_back(iins);
+		}
+	} else {
+		std::vector<std::string> sins(nr, NAS);
+		for (size_t i=0; i<n; i++) {				
+			itype.push_back(dtype);
+			iplace.push_back(sv.size());
+			sv.push_back(sins);
+		}
+	}
+}
+
+

@@ -1,6 +1,6 @@
 #include <fstream>
 #include <numeric>
-#include "spatvector.h"
+#include "spatVector.h"
 
 #define useGDAL
 
@@ -272,7 +272,7 @@ class SpatRaster {
 		SpatRaster mask(SpatRaster x, std::string filename="", bool overwrite=false);
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename, bool overwrite);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
-		SpatRaster rasterizePolygons(SpatPolygons p, double background, std::string filename, bool overwrite);
+		SpatRaster rasterizePolygons(SpatLayer p, double background, std::string filename, bool overwrite);
 
 		std::vector<double> sampleRegular(unsigned size, bool cells, bool asRaster);
 };
