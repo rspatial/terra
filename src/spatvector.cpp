@@ -113,14 +113,16 @@ void SpatLayer::setCRS(std::string CRS){
 
 
 std::string SpatLayer::type(){
-	if (gtype == 0) {
+	if (size() == 0) {
+		return "none";
+	} else if (geoms[0].gtype == 0) {
 		return "points";
-	} else if (gtype == 1) {
+	} else if (geoms[0].gtype == 1) {
 		return "lines";
-	} else if (gtype == 2) {
+	} else if (geoms[0].gtype == 2) {
 		return "polygons";		
 	} else {
-		return("?");
+		return("unknown");
 	}
 }
 
