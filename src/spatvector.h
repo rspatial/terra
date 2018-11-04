@@ -16,9 +16,11 @@ class SpatPart {
 		SpatExtent extent;
 		SpatPart();
 		SpatPart(std::vector<double> X, std::vector<double> Y);
+		SpatPart(double X, double Y);
 		// for POLYGONS only
 		std::vector< SpatHole > holes; 
-		bool setHole(std::vector<double> X, std::vector<double> Y);
+		bool addHole(std::vector<double> X, std::vector<double> Y);
+		bool addHole(SpatHole h);
 		SpatHole getHole(unsigned i) { return( holes[i] ) ; }
 		bool hasHoles() { return holes.size() > 0;}
 		unsigned nHoles() { return holes.size();}
@@ -50,6 +52,7 @@ class SpatLayer {
 		std::vector<std::string> names();
 		unsigned nrow();
 		unsigned ncol();
+		unsigned nxy();
 		
 		SpatExtent getExtent();
 		GeomType gtype;

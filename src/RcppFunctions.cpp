@@ -44,6 +44,7 @@ Rcpp::List getAttributes(SpatLayer* v) {
 
 Rcpp::DataFrame getGeometry(SpatLayer* v) {
 	SpatDataFrame df = v->getGeometryDF();
+
 	Rcpp::DataFrame out = Rcpp::DataFrame::create(
 			Rcpp::Named("id") = df.iv[0], 
 			Rcpp::Named("part") = df.iv[1], 

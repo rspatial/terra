@@ -20,9 +20,20 @@ class SpatDataFrame {
 		std::vector<std::string> getS(unsigned i);
 	
 		void add_row();
-		void add_column(unsigned dtype, unsigned n);
+		void add_column(unsigned dtype, std::string name);
+		bool add_column(std::vector<double> x, std::string name);
+		bool add_column(std::vector<long> x, std::string name);
+		bool add_column(std::vector<std::string> x, std::string name);
+		
 		void insert_column(std::vector<double>);
 		void insert_column(std::vector<long>);		
 		void insert_column(std::vector<std::string>);
+
+		void resize(unsigned n);
+		void reserve(unsigned n);
+		
+		bool rbind();
+		bool cbind();
+		
 };
 

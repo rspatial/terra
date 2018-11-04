@@ -17,7 +17,7 @@ setMethod ('show' , 'SpatExtent',
 )	
 	
 
-setMethod ('show' , 'SpatVector', 
+setMethod ('show' , 'SpatLayer', 
 	function(object) {
 		e <- as.vector(ext(object))
 		cat('class       :', class(object), '\n')

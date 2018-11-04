@@ -3,25 +3,25 @@ if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGene
 if (!isGeneric("geometry")) {setGeneric("geometry", function(x,...) standardGeneric("geometry"))}	
 
 
-setMethod ('length' , 'SpatVector', 
+setMethod ('length' , 'SpatLayer', 
 	function(x) {
-		x@ptr$nrow()
+		x@ptr$size()
 	}
 )
 
-setMethod('geomtype', signature(x='SpatVector'), 
+setMethod('geomtype', signature(x='SpatLayer'), 
 	function(x, ...){ 
 		x@ptr$type()
 	}
 )	
 
-setMethod('geometry', signature(x='SpatVector'), 
+setMethod('geometry', signature(x='SpatLayer'), 
 	function(x, ...){ 
 		x@ptr$getGeometry()
 	}
 )	
 
-setMethod('as.data.frame', signature(x='SpatVector'), 
+setMethod('as.data.frame', signature(x='SpatLayer'), 
 	function(x, ...) {
 		d <- data.frame(x@ptr$getAttributes(), stringsAsFactors=FALSE)
 		names(d) <- x@ptr$names()
@@ -34,8 +34,8 @@ if (!isGeneric("SpatPolygon") ) { setGeneric("SpatPolygon", function(x, ...) sta
 
 setMethod("SpatPolygon", signature(x='missing'), 
 	function(...) {
-		p <- methods::new('SpatVector')
-		p@ptr <- SpatVector$new()
+		p <- methods::new('SpatLayer')
+		p@ptr <- SpatLayer$new()
 		return(p)
 	}
 )
@@ -92,7 +92,7 @@ setMethod("SpatPolygon", signature(x='data.frame'),
 			ppp$crs <- crs
 		}
 
-		x <- methods::new("SpatVector")
+		x <- methods::new("SpatLayer")
 		x@ptr <- ppp
 		x
 	}

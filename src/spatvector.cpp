@@ -1,7 +1,6 @@
 #include "spatVector.h"
 
-SpatHole::SpatHole() {
-}
+SpatHole::SpatHole() {}
 
 SpatHole::SpatHole(std::vector<double> X, std::vector<double> Y) {	
 	x = X; y = Y;  
@@ -11,7 +10,27 @@ SpatHole::SpatHole(std::vector<double> X, std::vector<double> Y) {
 	extent.ymax = *std::max_element(Y.begin(), Y.end());
 }
 
-SpatPart::SpatPart() {};
+bool SpatPart::addHole(std::vector<double> X, std::vector<double> Y) { 
+	SpatHole s(X, Y);	
+	holes.push_back(s);
+	// check if inside pol?
+	return true;
+}
+
+
+bool SpatPart::addHole(SpatHole h) { 
+	holes.push_back(h);
+	// check if inside pol?
+	return true;
+}
+
+
+SpatPart::SpatPart() {}
+
+SpatPart::SpatPart(double X, double Y) {
+	x.push_back(X); 
+	y.push_back(Y);  
+}
 
 SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) { 
 	x = X; y = Y;  
@@ -19,13 +38,6 @@ SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) {
 	extent.xmax = *std::max_element(X.begin(), X.end());
 	extent.ymin = *std::min_element(Y.begin(), Y.end());
 	extent.ymax = *std::max_element(Y.begin(), Y.end());
-}
-
-bool SpatPart::setHole(std::vector<double> X, std::vector<double> Y) { 
-	SpatHole s(X, Y);	
-	holes.push_back(s);
-	// check if inside pol?
-	return true;
 }
 
 
@@ -102,11 +114,11 @@ void SpatLayer::setCRS(std::string CRS){
 
 std::string SpatLayer::type(){
 	if (gtype == 0) {
-		return "polygons";
-	} else if (gtype == 1) {
 		return "points";
+	} else if (gtype == 1) {
+		return "lines";
 	} else if (gtype == 2) {
-		return "lines";		
+		return "polygons";		
 	} else {
 		return("?");
 	}
@@ -159,36 +171,62 @@ bool SpatLayer::addGeom(SpatGeom p) {
 }
 
 
+unsigned SpatLayer::nxy() {
+	unsigned n = 0;
+	for (size_t i=0; i < size(); i++) {
+		SpatGeom g = getGeom(i);
+		for (size_t j=0; j < g.size(); j++) {
+			SpatPart p = g.getPart(j);
+			n += p.x.size();
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					SpatHole h = p.getHole(k);
+					n += h.x.size();
+				}
+			}
+		}
+	}
+	return n;
+}
+
 SpatDataFrame SpatLayer::getGeometryDF() {
-	unsigned n = size();
+	unsigned n = nxy();
+
 	SpatGeom g;
 	SpatPart p;
 	SpatHole h;
 	SpatDataFrame out;
-	out.add_column(1, 2);
-	out.add_column(2, 2);
-	out.add_column(1, 1);
-	for (size_t i=0; i < n; i++) {
+	
+	out.add_column(1, "geom");
+	out.add_column(1, "part");
+	out.add_column(0, "x");
+	out.add_column(0, "y");
+	out.add_column(1, "hole");
+	out.resize(n);
+	
+	size_t idx = 0;
+	for (size_t i=0; i < size(); i++) {
 		g = getGeom(i);
-		unsigned ng = g.size();
-		for (size_t j=0; j < ng; j++) {
+		for (size_t j=0; j < g.size(); j++) {
 			p = g.getPart(j);
 			for (size_t q=0; q < p.x.size(); q++) {
-				out.iv[0].push_back(i);
-				out.iv[1].push_back(j);
-				out.dv[0].push_back(p.x[q]);
-				out.dv[1].push_back(p.y[q]);
-				out.iv[2].push_back(0);
+				out.iv[0][idx] = i;
+				out.iv[1][idx] = j;
+				out.dv[0][idx] = p.x[q];
+				out.dv[1][idx] = p.y[q];
+				out.iv[2][idx] = 0;
+				idx++;
 			}
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
 					h = p.getHole(k);
 					for (size_t q=0; q < h.x.size(); q++) {
-						out.iv[0].push_back(i);
-						out.iv[1].push_back(j);
-						out.dv[0].push_back(h.x[q]);
-						out.dv[1].push_back(h.y[q]);
-						out.iv[2].push_back(1);
+						out.iv[0][idx] = i;
+						out.iv[1][idx] = j;
+						out.dv[0][idx] = h.x[q];
+						out.dv[1][idx] = h.y[q];
+						out.iv[2][idx] = 0;
+						idx++;
 					}
 				}
 			}

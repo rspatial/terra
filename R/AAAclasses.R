@@ -17,7 +17,7 @@ setClass('SpatRaster',
 )
 
 
-setClass('SpatVector',
+setClass('SpatLayer',
 	representation (
 		ptr = "C++Object"
 	),	

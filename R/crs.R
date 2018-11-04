@@ -33,13 +33,13 @@ setMethod("crs<-", signature('SpatRaster', 'character'),
 )
 
 
-setMethod("crs", signature('SpatVector'), 
+setMethod("crs", signature('SpatLayer'), 
 	function(x) {
 		x@ptr$crs
 	}
 )
 
-setMethod("crs<-", signature('SpatVector', 'character'), 
+setMethod("crs<-", signature('SpatLayer', 'character'), 
 	function(x, ..., value) {
 		x@ptr$crs <- trimws(value)
 		return(x)
