@@ -5,7 +5,7 @@ enum SpatGeomType { points, lines, polygons, unknown };
 
 class SpatHole {
 	public:
-		std::vector<double> x, y; 
+		std::vector<double> x, y;  
 		SpatExtent extent;
 		SpatHole();
 		SpatHole(std::vector<double> X, std::vector<double> Y);
@@ -13,7 +13,7 @@ class SpatHole {
 
 class SpatPart {
 	public:		
-		std::vector<double> x, y; 
+		std::vector<double> x, y; //, z;
 		SpatExtent extent;
 		SpatPart();
 		SpatPart(std::vector<double> X, std::vector<double> Y);
@@ -88,26 +88,17 @@ class SpatLayer {
 		std::vector<unsigned> getItype();
 		std::vector<unsigned> getIplace();
 
-		bool error = false;
-		bool warning = false;
-		std::string error_message;
-		std::vector<std::string> warning_message;
+
+		SpatMessages msg;
 	
 };
 
 
-/*
-class SpatVector {
 
+class SpatVector {
 	public:
 		std::vector<SpatLayer> lyrs;
 		unsigned layertypes();
-
-		bool error = false;
-		bool warning = false;
-		std::string error_message;
-		std::vector<std::string> warning_message;
-
+		SpatMessages msg;
 };
 
-*/

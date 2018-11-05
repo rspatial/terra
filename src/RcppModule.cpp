@@ -4,11 +4,11 @@
 #include "RcppFunctions.h"
 
 RCPP_EXPOSED_CLASS(SpatExtent)
+RCPP_EXPOSED_CLASS(SpatMessages)
 RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatLayer)
 
-	
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
@@ -19,6 +19,15 @@ RCPP_MODULE(spat){
 		.property("vector", &SpatExtent::asVector)		
 		.property("valid", &SpatExtent::valid)		
 	;	
+
+    class_<SpatMessages>("SpatMessages")
+		.constructor()
+		.field("error", &SpatExtent::error)		
+		.field("warning", &SpatExtent::warning)		
+		.field("error_message", &SpatExtent::error_message)		
+		.field("warning_messages", &SpatExtent::warning_messages)		
+	;	
+
 
     class_<SpatLayer>("SpatLayer")
 		.constructor()	
@@ -41,8 +50,7 @@ RCPP_MODULE(spat){
 
 	
 
-    class_<RasterSource>("RasterSource")
-	
+    class_<RasterSource>("RasterSource")	
 		.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
 		.field_readonly("driver", &RasterSource::driver)
@@ -98,17 +106,13 @@ RCPP_MODULE(spat){
 		.method("nsrc", &SpatRaster::nsrc, "nsrc" )	
 		
 		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )		
-				
 		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
-
 		.property("names", &SpatRaster::getNames)
 		.method("setNames", &SpatRaster::setNames, "setNames" )
-
 		.property("res", &SpatRaster::resolution)
 		.property("origin", &SpatRaster::origin)
-
 		.property("inMemory", &SpatRaster::inMemory )
 		.property("filenames", &SpatRaster::filenames )
 		.property("hasValues", &SpatRaster::hasValues )
