@@ -1,18 +1,18 @@
-\name{geometry}
+\name{geom}
 
 \docType{methods}
 
-\alias{geometry}
-\alias{geometry,SpatLayer-method}
+\alias{geom}
+\alias{geom,SpatLayer-method}
 
-\title{geometry}
+\title{geom}
 
 \description{
-Get the geometry of a SpatLayer
+Get the geom of a SpatLayer
 }
 
 \usage{
-\S4method{geometry}{SpatLayer}(x, ...)
+\S4method{geom}{SpatLayer}(x, ...)
 
 }
 
@@ -40,11 +40,11 @@ z$hole <- 0
 z$hole[z$object==2 & z$part==1] <- 1
 
 p <- vect(z)
-geometry(p)
+geom(p)
 
 f <- system.file("exdata/lux.shp", package="terra")
 v <- vect(f)
-g <- geometry(v)
+g <- geom(v)
 head(g)
 }
 

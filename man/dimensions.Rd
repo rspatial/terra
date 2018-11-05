@@ -13,12 +13,13 @@
 \alias{ncell,ANY-method}
 \alias{nrow,SpatRaster-method}
 \alias{ncol,SpatRaster-method}
+\alias{nrow<-,SpatRaster,numeric-method}
+\alias{ncol<-,SpatRaster,numeric-method}
+
 \alias{nlyr,SpatRaster-method}
 \alias{nsrc,SpatRaster-method}
 \alias{ncell,SpatRaster-method}
 \alias{length,SpatRaster-method}
-\alias{nrow<-,SpatRaster-method}
-\alias{ncol<-,SpatRaster-method}
 \alias{dim,SpatRaster-method}
 \alias{dim<-,SpatRaster-method}
 \alias{length,SpatRaster-method}
@@ -44,6 +45,9 @@ Set the number of rows or columns or layers. When setting dimensions, all source
 \usage{
 \S4method{ncol}{SpatRaster}(x)
 \S4method{nrow}{SpatRaster}(x)
+ncol(x, ...) <- value
+nrow(x, ...) <- value
+
 \S4method{ncell}{SpatRaster}(x)
 \S4method{nlyr}{SpatRaster}(x)
 \S4method{nsrc}{SpatRaster}(x)
@@ -52,17 +56,16 @@ Set the number of rows or columns or layers. When setting dimensions, all source
 \S4method{xres}{SpatRaster}(x)
 \S4method{yres}{SpatRaster}(x)
 
-\S4method{ncol}{SpatRaster}(x)<-value
-\S4method{nrow}{SpatRaster}(x)<-value
-
 \S4method{ncol}{SpatLayer}(x)
 \S4method{nrow}{SpatLayer}(x)
+
 }
 
 
 \arguments{
-\item{x}{SpatRaster object}
-\item{value}{For ncol and nrow: postive integer. For res: one or two postive numbers }  
+\item{x}{SpatRaster or SpatVector}
+\item{value}{For ncol and nrow: positive integer. For res: one or two positive numbers }  
+\item{...}{additional arguments. None implemented}
 }
 
 \value{

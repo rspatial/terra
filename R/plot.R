@@ -4,10 +4,6 @@
 # Licence GPL v3
 
 
-if (!isGeneric("plot")) {
-	setGeneric("plot", function(x,y,...)
-		standardGeneric("plot"))
-}	
 
 setMethod("plot", signature(x='SpatRaster', y='missing'), 
 	function(x, y, maxpixels=500000, xlab="", ylab="", ...)  {
@@ -36,7 +32,7 @@ setMethod("plot", signature(x='SpatRaster', y='numeric'),
 
 setMethod("plot", signature(x='SpatLayer', y='missing'), 
 	function(x, y, xlab="", ylab="", ...)  {
-		g <- geometry(x)
+		g <- geom(x)
 		gtype <- geomtype(x)
 		if (gtype == "points") {
 			plot(g[,3], g[,4], xlab=xlab, ylab=ylab, ...)
@@ -53,7 +49,7 @@ setMethod("plot", signature(x='SpatLayer', y='missing'),
 
 setMethod("lines", signature(x='SpatLayer'), 
 	function(x, ...)  {
-		g <- geometry(x)
+		g <- geom(x)
 		gtype <- geomtype(x)
 		if (gtype == "points") {
 			points(g[,3:4], ...)
@@ -68,7 +64,7 @@ setMethod("lines", signature(x='SpatLayer'),
 
 setMethod("points", signature(x='SpatLayer'), 
 	function(x, ...)  {
-		g <- geometry(x)
+		g <- geom(x)
 		gtype <- geomtype(x)
 		points(g[,3:4], ...)
 	}

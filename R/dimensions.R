@@ -92,15 +92,30 @@ setMethod('nsrc', signature(x='SpatRaster'),
 	x@ptr$nlyrBySource();
 }
 
-'ncol<-' <- function(x, value) {
-	dim(x) <- c(nrow(x), value)
-	return(x)
-}	
 
-'nrow<-' <- function(x, value) {
-	dim(x) <- c(value, ncol(x))
-	return(x)
-}	
+setMethod("ncol<-", signature('SpatRaster', 'numeric'), 
+	function(x, ..., value) {
+		dim(x) <- c(nrow(x), value)
+		return(x)
+	}
+)
+
+setMethod("nrow<-", signature('SpatRaster', 'numeric'), 
+	function(x, ..., value) {
+		dim(x) <- c(value, ncol(x))
+		return(x)
+	}
+)
+
+#'ncol<-' <- function(x, value) {
+#	dim(x) <- c(nrow(x), value)
+#	return(x)
+#}	
+
+#'nrow<-' <- function(x, value) {
+#	dim(x) <- c(value, ncol(x))
+#	return(x)
+#}	
 
 
 

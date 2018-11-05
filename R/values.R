@@ -3,9 +3,6 @@
 # Version 0.9
 # Licence GPL v3
 
-if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
-if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
-
 
 setMethod("values", signature(x='SpatRaster'), 
 function(x, matrix=TRUE, ...) {
