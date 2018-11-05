@@ -1,6 +1,5 @@
 #include <type_traits>
 #include <vector>
-using namespace std;
 #include "spatraster.h"
 #include "util.h"
 
@@ -55,7 +54,7 @@ void cummax(std::vector<T>& v, bool narm) {
             if (is_NA(v[i])) {
                 v[i] = v[i-1];
             } else if (!is_NA(v[i-1])){
-                v[i] = max(v[i], v[i-1]);
+                v[i] = std::max(v[i], v[i-1]);
             }
         }
     } else {
@@ -63,7 +62,7 @@ void cummax(std::vector<T>& v, bool narm) {
             if (is_NA(v[i]) | is_NA(v[i-1])) {
                 v[i] = NA<T>::value;
             } else {
-                v[i] = max(v[i], v[i-1]);
+                v[i] = std::max(v[i], v[i-1]);
             }
         }
     }
@@ -77,7 +76,7 @@ void cummin(std::vector<T>& v, bool narm) {
             if (is_NA(v[i])) {
                 v[i] = v[i-1];
             } else if (!is_NA(v[i-1])){
-                v[i] = min(v[i], v[i-1]);
+                v[i] = std::min(v[i], v[i-1]);
             }
         }
     } else {
@@ -85,7 +84,7 @@ void cummin(std::vector<T>& v, bool narm) {
             if (is_NA(v[i]) | is_NA(v[i-1])) {
                 v[i] = NA<T>::value;
             } else {
-                v[i] = min(v[i], v[i-1]);
+                v[i] = std::min(v[i], v[i-1]);
             }
         }
     }
@@ -190,7 +189,7 @@ T vmin(std::vector<T>& v, bool narm) {
 				if (is_NA(x)) {
 					x = v[i];
 				} else {
-					x = min(x, v[i]);
+					x = std::min(x, v[i]);
 				}
 			}
 		}
@@ -200,7 +199,7 @@ T vmin(std::vector<T>& v, bool narm) {
 				if (is_NA(v[i])) {
 					x = NA<T>::value;
 				} else {
-					x = min(x, v[i]);
+					x = std::min(x, v[i]);
 				}
 			}
 		}
@@ -218,7 +217,7 @@ T vmax(std::vector<T>& v, bool narm) {
 				if (is_NA(x)) {
 					x = v[i];
 				} else {
-					x = max(x, v[i]);
+					x = std::max(x, v[i]);
 				}
 			}
 		}
@@ -228,7 +227,7 @@ T vmax(std::vector<T>& v, bool narm) {
 				if (is_NA(v[i])) {
 					x = NA<T>::value;
 				} else {
-					x = max(x, v[i]);
+					x = std::max(x, v[i]);
 				}
 			}
 		}
@@ -303,8 +302,8 @@ std::vector<T> vrange(std::vector<T>& v, bool narm) {
 					x[0] = v[i];
 					x[1] = v[i];
 				} else {
-					x[0] = min(x[0], v[i]);
-					x[1] = max(x[1], v[i]);
+					x[0] = std::min(x[0], v[i]);
+					x[1] = std::max(x[1], v[i]);
 				}
 			}
 		}
@@ -315,8 +314,8 @@ std::vector<T> vrange(std::vector<T>& v, bool narm) {
 					x[0] = NA<T>::value;
 					x[1] = NA<T>::value;
 				} else {
-					x[0] = min(x[0], v[i]);
-					x[1] = max(x[1], v[i]);
+					x[0] = std::min(x[0], v[i]);
+					x[1] = std::max(x[1], v[i]);
 				}
 			}
 		}

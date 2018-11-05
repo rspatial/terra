@@ -87,7 +87,7 @@ std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double
 					if (r==0 && c==0 && opt != 2) {
 						continue;
 					}
-					if (! isnan(m[r][c]) ) {
+					if (! std::isnan(m[r][c]) ) {
 						va[n] = m[r][c];
 						n++;
 					}

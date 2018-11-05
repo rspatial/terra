@@ -5,7 +5,6 @@
 #include "cpl_conv.h" // for CPLMalloc()
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
-using namespace std;
 
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
@@ -97,7 +96,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 			s.hasRAT.push_back(false);
 		}
 		
-		s.names.push_back( "lyr" + to_string(i+1) ) ;
+		s.names.push_back( "lyr" + std::to_string(i+1) ) ;
 	}
 	GDALClose( (GDALDatasetH) poDataset );
 
