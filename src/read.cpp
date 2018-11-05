@@ -1,6 +1,5 @@
 #include "spatraster.h"
 #include "read_rst.h"
-using namespace std;
 
 
 bool SpatRaster::readStart() {
@@ -72,7 +71,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 		} else {
 			// read from file
 			if (source[i].driver == "raster") {
-				string file = source[i].filename;
+				std::string file = source[i].filename;
 				if (source[i].datatype == "FLT8S") {
 					std::vector<double> fvals = readFLT8(file, "BIL", 0, ncell());
 					out.insert(out.end(), fvals.begin(), fvals.end());

@@ -1,12 +1,5 @@
 #include <vector>
 #include "spatraster.h"
-using namespace std;
-
-
-//void SpatRaster::validNames() {
-//	std::string n = names();
-//}
-
 
 
 SpatRaster SpatRaster::addSources(SpatRaster x) {
@@ -174,7 +167,7 @@ std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
 }
 
 
-SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, string filename, bool overwrite) {
+SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, std::string filename, bool overwrite) {
 
     SpatRaster out = geometry();
     out.source.resize(0);
@@ -186,7 +179,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, string filename, bool 
 		out.setError("no (valid) layer references");
 		return(out);
 	} else if (lyrs.size() != oldsize) {
-        out.addWarning("ignored " + to_string(oldsize - lyrs.size()) + " invalid layer references");
+        out.addWarning("ignored " + std::to_string(oldsize - lyrs.size()) + " invalid layer reference(s)");
 	}
 
     std::vector<unsigned> srcs = sourcesFromLyrs(lyrs);

@@ -12,7 +12,6 @@
 #include <vector>
 #include <math.h>
 #include "geodesic.h"
-using namespace std;
 
 
 double distance_lonlat(double lon1, double lat1, double lon2, double lat2, double a, double f) {

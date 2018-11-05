@@ -9,7 +9,6 @@
 #include <fstream>
 #include <iostream>
 #include "spatraster.h"
-using namespace std;
 
 
 std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {
@@ -17,8 +16,8 @@ std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {
 	std::vector<short> v(n);
 	short* value = &v[0];
 
-	ifstream f (file, ios::in | ios::binary);
-	f.seekg ( cell * dsize, ios::beg);
+	std::ifstream f (file, std::ios::in | std::ios::binary);
+	f.seekg ( cell * dsize, std::ios::beg);
 	f.read ((char*)value, dsize*n); 
 	f.close();
 
@@ -33,8 +32,8 @@ std::vector<double> readINT4(std::string file, unsigned long cell, unsigned n) {
 	std::vector<long> v(n);
 	long* value = &v[0];
 
-	ifstream f (file, ios::in | ios::binary);
-	f.seekg ( cell * dsize, ios::beg);
+	std::ifstream f (file, std::ios::in | std::ios::binary);
+	f.seekg ( cell * dsize, std::ios::beg);
 	f.read ((char*)value, dsize*n); 
 	f.close();
 
@@ -54,10 +53,10 @@ std::vector<double> readFLT4(std::string file, std::string order, unsigned long 
 
 	start = start * dsize;
 	n = dsize * n;
-	ifstream f (file, ios::in | ios::binary);
+	std::ifstream f (file, std::ios::in | std::ios::binary);
 //	if (order == "BSQ") {
 		for (size_t i = 0; i < nlyr; i++) { 
-			f.seekg (start * lyr, ios::beg);
+			f.seekg (start * lyr, std::ios::beg);
 			f.read ((char*)value, n); 
 		}
 
@@ -78,10 +77,10 @@ std::vector<double> readFLT8(std::string file, std::string order, unsigned long 
 
 	start = start * dsize;
 	n = dsize * n;
-	ifstream f (file, ios::in | ios::binary);
+	std::ifstream f (file, std::ios::in | std::ios::binary);
 //	if (order == "BSQ") {
 		for (size_t i = 0; i < nlyr; i++) { 
-			f.seekg (start * lyr, ios::beg);
+			f.seekg (start * lyr, std::ios::beg);
 			f.read ((char*)value, n); 
 		}
 
@@ -96,8 +95,8 @@ std::vector<double> readFLT8(std::string file, std::string order, unsigned long 
 	std::vector<double> v(n);
 	double* value = &v[0];
 
-	ifstream f (file, ios::in | ios::binary);
-	f.seekg ( cell * dsize, ios::beg);
+	ifstream f (file, std::ios::in | std::ios::binary);
+	f.seekg ( cell * dsize, std::ios/::beg);
 	f.read ((char*)value, dsize*n); 
 	f.close();
 

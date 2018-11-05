@@ -4,8 +4,7 @@
 #include <vector>
 #include "spatraster.h"
 
-
-std::vector<double> rasterize_polygon(std::vector<double> r, double value, std::vector<double> pX, std::vector<double> pY, unsigned nrows, unsigned ncols, double xmin, double ymax, double rx, double ry) {
+std::vector<double> rasterize_polygon(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
 
 	unsigned n = pX.size();
 	std::vector<unsigned> nCol(n);
@@ -44,7 +43,6 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, std::
 	return(r);
 }
 
-#include <iostream>
 
 
 SpatRaster SpatRaster::rasterizePolygons(SpatLayer p, double background, std::string filename, bool overwrite) {

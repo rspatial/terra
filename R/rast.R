@@ -48,8 +48,8 @@ setMethod('rast', signature(x='SpatExtent'),
 )
 
 setMethod('rast', signature(x='SpatLayer'), 
-	function(x, nrow=10, ncol=10, nlyr=1, crs="", ...) {
-		rast(ext(x), nrow=nrow, ncol=ncol, nlyr=nlyr, crs=crs, ...)
+	function(x, nrow=10, ncol=10, nlyr=1, ...) {
+		rast(ext(x), nrow=nrow, ncol=ncol, nlyr=nlyr, crs=crs(x), ...)
 	}
 )
 

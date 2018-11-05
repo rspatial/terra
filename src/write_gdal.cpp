@@ -1,6 +1,5 @@
 #include "spatraster.h"
 #include "util.h"
-using namespace std;
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
@@ -57,7 +56,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, bool overwrite) {
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	poDstDS->SetGeoTransform(adfGeoTransform);
 	
-	string prj = getCRS();
+	std::string prj = getCRS();
 	OGRSpatialReference oSRS;
 	OGRErr erro = oSRS.importFromProj4(&prj[0]); 
 	if (erro == 4) { return false ; }	// ??

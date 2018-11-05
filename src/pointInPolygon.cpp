@@ -1,9 +1,8 @@
 #include "spatVector.h"
-using namespace std;
 
 //see http://alienryderflex.com/polygon/
   
-std::vector<bool> points_in_polygon(std::vector<double> polX, std::vector<double> polY, std::vector<double> pX, std::vector<double> pY) {
+std::vector<bool> points_in_polygon(const std::vector<double> &polX, const std::vector<double> &polY, const std::vector<double> &pX, const std::vector<double> &pY) {
 
 	unsigned nodes = polX.size();
 	std::vector<double> constant(nodes);

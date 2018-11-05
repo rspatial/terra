@@ -5,7 +5,6 @@
 #include <math.h>
 #include "distance.h"
 #include <string>
-using namespace std;
 
 
 #ifndef M_PI
