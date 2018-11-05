@@ -12,7 +12,6 @@
 \alias{as.data.frame,SpatRaster-method}
 
 
-
 \title{Coercion to other object types}
 
 \description{

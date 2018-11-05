@@ -13,10 +13,10 @@
 #include <mach/mach_host.h>
 #endif
 
-//https://stackoverflow.com/questions/38490320/how-to-query-amount-of-allocated-memory-on-linux-and-osx
-//https://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 
 double availableRAM() {
+//https://stackoverflow.com/questions/38490320/how-to-query-amount-of-allocated-memory-on-linux-and-osx
+//https://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 	double ram = 1e+9;
 	// return available RAM in number of double (8 byte) cells.
 	#ifdef _WIN32
