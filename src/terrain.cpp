@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <algorithm>
-#include <math.h>
 #include "distance.h"
+#include <cmath>
 #include <string>
 
 

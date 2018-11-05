@@ -1,4 +1,3 @@
-#include <cmath>
 #include "spatraster.h"
 
 SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwrite) {
