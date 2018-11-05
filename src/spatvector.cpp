@@ -11,8 +11,8 @@ SpatHole::SpatHole(std::vector<double> X, std::vector<double> Y) {
 }
 
 bool SpatPart::addHole(std::vector<double> X, std::vector<double> Y) { 
-	SpatHole s(X, Y);	
-	holes.push_back(s);
+	SpatHole h(X, Y);	
+	holes.push_back(h);
 	// check if inside pol?
 	return true;
 }
@@ -30,6 +30,10 @@ SpatPart::SpatPart() {}
 SpatPart::SpatPart(double X, double Y) {
 	x.push_back(X); 
 	y.push_back(Y);  
+	extent.xmin = X;
+	extent.xmax = X;
+	extent.ymin = Y;
+	extent.ymax = Y;
 }
 
 SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) { 
@@ -58,6 +62,30 @@ bool SpatGeom::addPart(SpatPart p) {
 	return true; 
 }
 
+bool SpatGeom::addHole(SpatHole h) { 
+	long i = parts.size()-1;
+	if (i > -1) {
+		parts[i].addHole(h);
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+bool SpatGeom::setPart(SpatPart p, unsigned i) { 
+	parts[i] = p; 
+	if (parts.size() > 1) {
+		extent.unite(p.extent);
+	} else {
+		extent = p.extent;
+	}
+	return true; 
+}
+
+SpatPart SpatGeom::getPart(unsigned i) { 
+	return parts[i]; 
+}
 
 std::vector<double> SpatLayer::getDv(unsigned i) {
 	unsigned j = df.iplace[i];
@@ -227,7 +255,7 @@ SpatDataFrame SpatLayer::getGeometryDF() {
 						out.iv[1][idx] = j;
 						out.dv[0][idx] = h.x[q];
 						out.dv[1][idx] = h.y[q];
-						out.iv[2][idx] = 0;
+						out.iv[2][idx] = 1;
 						idx++;
 					}
 				}
@@ -236,6 +264,61 @@ SpatDataFrame SpatLayer::getGeometryDF() {
 	}
 	return out;
 }
+
+SpatGeomType SpatLayer::getGType(std::string &type) {
+	if (type == "points") { return points; }
+	else if (type == "lines") { return lines; }
+	else if (type == "polygons") { return polygons; }
+	else { return unknown; }
+}
+	
+
+void SpatLayer::setGeometry(std::string type, std::vector<unsigned> geom, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<bool> hole) {
+
+// it is assumed that values are sorted by geom, part, hole
+	
+	unsigned lastgeom = geom[0];
+	unsigned lastpart = part[0];
+	std::vector<double> X, Y;
+	X.push_back(x[0]);
+	Y.push_back(y[0]);
+	bool isHole = hole[0];
+
+	SpatGeom g;
+	g.gtype = getGType(type);
+	
+	for (size_t i=0; i<geom.size(); i++) {
+		if ((lastgeom != geom[i]) | (lastpart != part[i])) {
+			if (isHole) {
+				SpatHole h(X, Y);
+				g.addHole(h);
+			} else {
+				SpatPart p(X, Y);
+				g.addPart(p);
+			}
+			lastpart = part[i];
+			isHole = hole[i];
+			X.resize(0);
+			Y.resize(0);	
+			if (lastgeom != geom[i]) {
+				addGeom(g);
+				g.parts.resize(0);
+				lastgeom = geom[i];
+			}
+		}
+		X.push_back(x[i]);
+		Y.push_back(y[i]);
+	}
+	if (isHole) {
+		SpatHole h(X, Y);
+		g.addHole(h);
+	} else {
+		SpatPart p(X, Y);
+		g.addPart(p);
+	}
+	addGeom(g);	
+}
+
 
 
 SpatLayer SpatLayer::subset(std::vector<unsigned> range) { 

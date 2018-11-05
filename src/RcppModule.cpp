@@ -32,6 +32,7 @@ RCPP_MODULE(spat){
 		.method("read", &SpatLayer::read, "read")		
 		.method("getAttributes", &getAttributes, "getAttributes")
 		.method("getGeometry", &getGeometry, "getGeometry")
+		.method("setGeometry", &SpatLayer::setGeometry, "setGeometry")
 		.field("error", &SpatLayer::error )
 		.field("warning", &SpatLayer::warning )
 		.field("error_message", &SpatLayer::error_message )
@@ -124,7 +125,7 @@ RCPP_MODULE(spat){
 		.field("error_message", &SpatRaster::error_message )
 		.field("warning_message", &SpatRaster::warning_message )
 		
-	//	.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
+		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")

@@ -8,6 +8,9 @@
 \alias{rast,SpatRaster-method}
 \alias{rast,matrix-method}
 \alias{rast,array-method}
+\alias{rast,SpatExtent-method}
+\alias{rast,SpatLayer-method}
+
 
 \title{Create a SpatRaster object}
 
@@ -21,11 +24,14 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 
 \usage{
+\S4method{rast}{character}(x, ...)
 
 \S4method{rast}{missing}(x, nrow=180, ncol=360, nlyr=1, xmin=-180, xmax=180, 
                                       ymin=-90, ymax=90, crs, extent, resolution, ...)
 
-\S4method{rast}{character}(x, ...)
+									  
+\S4method{rast}{SpatExtent}(x, nrow=10, ncol=10, nlyr=1, crs="", ...)
+\S4method{rast}{SpatLayer}(x, nrow=10, ncol=10, nlyr=1, crs="", ...)
 
 \S4method{rast}{SpatRaster}(x, ...) 
 }
@@ -56,10 +62,10 @@ SpatRaster
 x <- rast(nrow=108, ncol=21, xmin=0, xmax=10)
 
 # Create a SpatRaster object from a file
-f <- system.file("external/test.grd", package="terra")
+f <- system.file("exdata/test.tif", package="terra")
 r <- rast(f)
 
-s <- rast(system.file("external/rlogo.grd", package="raster"))   
+s <- rast(system.file("exdata/logo.grd", package="terra"))   
 }
 
 

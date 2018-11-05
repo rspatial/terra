@@ -22,7 +22,7 @@
 \alias{dim,SpatRaster-method}
 \alias{dim<-,SpatRaster-method}
 \alias{length,SpatRaster-method}
-\alias{length,SpatVector-method}
+\alias{length,SpatLayer-method}
 
 \alias{res}
 \alias{xres}
@@ -31,8 +31,10 @@
 \alias{xres,SpatRaster-method}
 \alias{yres,SpatRaster-method}
 
+\alias{nrow,SpatLayer-method}
+\alias{ncol,SpatLayer-method}
 
-\title{Dimensions of a SpatRaster object}
+\title{Dimensions of a SpatRaster or SpatLayer object}
 
 \description{
 Get the number of rows (nrow), columns (ncol), cells (ncell), layers (nlyr), sources (nsrc) or the spatial resolution of a SpatRaster.
@@ -53,6 +55,8 @@ Set the number of rows or columns or layers. When setting dimensions, all source
 \S4method{ncol}{SpatRaster}(x)<-value
 \S4method{nrow}{SpatRaster}(x)<-value
 
+\S4method{ncol}{SpatLayer}(x)
+\S4method{nrow}{SpatLayer}(x)
 }
 
 

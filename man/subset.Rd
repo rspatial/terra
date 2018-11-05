@@ -27,7 +27,7 @@ Raster* object
 }
 
 \examples{
-s <- rast(system.file("external/rlogo.grd", package="raster"))   
+s <- rast(system.file("exdata/logo.grd", package="terra"))   
 subset(s, 2:3)
 subset(s, c(3,2,3,1))
 #equivalent to 

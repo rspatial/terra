@@ -4,20 +4,27 @@
 
 \alias{plot}
 \alias{plot,SpatRaster,missing-method}
+\alias{plot,SpatLayer,missing-method}
 \alias{plot,SpatRaster,numeric-method}
 \alias{image}
 \alias{image,SpatRaster-method}
+\alias{points,SpatLayer-method}
+\alias{lines,SpatLayer-method}
 
 
 \title{Plot a SpatRaster object}
 
 \description{
-Plot (that is, make a map of) the values of a SpatRaster object
+Plot (that is, make a map of) the values of a SpatRaster or SpatLayer object
 }
 
 \usage{
 \S4method{plot}{SpatRaster,missing}(x, y, maxpixels=500000, xlab="", ylab="", ...)
+\S4method{plot}{SpatRaster,numeric}(x, y, maxpixels=500000, xlab="", ylab="", ...)
+\S4method{plot}{SpatLayer,missing}(x, y, xlab="", ylab="", ...)
 \S4method{image}{SpatRaster}(x, maxpixels=500000, xlab="", ylab="", useRaster=TRUE, ...)
+\S4method{points}{SpatLayer}(x, ...)
+\S4method{lines}{SpatLayer}(x, ...)
 }
 
 \arguments{
@@ -32,9 +39,17 @@ Plot (that is, make a map of) the values of a SpatRaster object
 
 
 \examples{ 
-f <- system.file("external/test.grd", package="terra") 
+f <- system.file("exdata/test.tif", package="terra") 
 r <- rast(f)
 plot(r)
+
+f <- system.file("exdata/lux.shp", package="terra")
+v <- vect(f)
+r <- rast(v)
+values(r) <- 1:ncell(r)
+image(r)
+lines(v)
+points(v)
 }
 
 \keyword{methods}

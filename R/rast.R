@@ -37,6 +37,24 @@ setMethod('rast', signature(x='missing'),
 )
 
 
+setMethod('rast', signature(x='SpatExtent'), 
+	function(x, nrow=10, ncol=10, nlyr=1, crs="", ...) {
+		e <- as.vector(x)		
+		r <- methods::new('SpatRaster')
+		r@ptr <- SpatRaster$new(c(nrow, ncol, nlyr), e, crs)
+		.messages(r, "rast")		
+		return(r)
+	}
+)
+
+setMethod('rast', signature(x='SpatLayer'), 
+	function(x, nrow=10, ncol=10, nlyr=1, crs="", ...) {
+		rast(ext(x), nrow=nrow, ncol=ncol, nlyr=nlyr, crs=crs, ...)
+	}
+)
+
+
+
 .fullFilename <- function(x, expand=FALSE) {
 	x <- trimws(x)
 	if (identical(basename(x), x)) {
@@ -68,6 +86,7 @@ setMethod('rast', signature(x='SpatRaster'),
 		return(r)
 	}
 )
+
 
 
 setMethod('rast', signature(x='matrix'), 

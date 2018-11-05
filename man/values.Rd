@@ -39,7 +39,7 @@ matrix or vector
 
 
 \examples{
-r <- rast(system.file("external/test.grd", package="terra"))
+r <- rast(system.file("exdata/test.tif", package="terra"))
 r
 v <- values(r)
 values(r) <- v * 10

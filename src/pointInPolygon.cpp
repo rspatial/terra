@@ -1,4 +1,4 @@
-#include "spatvector.h"
+#include "spatVector.h"
 using namespace std;
 
 //see http://alienryderflex.com/polygon/

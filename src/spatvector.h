@@ -1,7 +1,7 @@
 #include "extent.h"
 #include "dataframe.h"
 
-enum SpatGeomType { points, lines, polygons };
+enum SpatGeomType { points, lines, polygons, unknown };
 
 class SpatHole {
 	public:
@@ -31,15 +31,15 @@ class SpatPart {
 
 class SpatGeom {
 	public:
-	
 		SpatGeomType gtype;
 		std::vector<SpatPart> parts; 
 		SpatExtent extent;	
 		SpatGeom();
 		SpatGeom(SpatPart p);
 		bool addPart(SpatPart p);
+		bool addHole(SpatHole h);
 		bool setPart(SpatPart p, unsigned i);
-		SpatPart getPart(unsigned i) { return parts[i]; }
+		SpatPart getPart(unsigned i);
 		double area();
 		double length();
 		unsigned size() { return parts.size(); };
@@ -60,6 +60,8 @@ class SpatLayer {
 		SpatExtent getExtent();
 		
 		std::string type();
+		SpatGeomType getGType(std::string &type);
+
 		std::string getCRS();
 		void setCRS(std::string CRS);
 
@@ -70,7 +72,8 @@ class SpatLayer {
 		SpatDataFrame getGeometryDF();
 		
 		SpatLayer subset(std::vector<unsigned> range);
-
+		void setGeometry(std::string type, std::vector<unsigned> id, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<bool> hole);
+		
 		std::vector<double> area();
 		std::vector<double> length();
 		unsigned size();
