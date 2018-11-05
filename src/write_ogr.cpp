@@ -6,34 +6,32 @@ using namespace std;
 
 bool SpatLayer::write(std::string filename, bool overwrite) {
 
+	msg.success = true;
+
     const char *pszDriverName = "ESRI Shapefile";
     GDALDriver *poDriver;
     GDALAllRegister();
     poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName );
     if( poDriver == NULL ) {
-        error_message = "driver not available";
-        error = true;
+        setError("driver not available");
 		return false; 
     }
     GDALDataset *poDS;
     poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
     if( poDS == NULL ) {
-        error_message = "cannot write file";
-        error = true;
+        setError("cannot write file");
 		return false; 
     }
     OGRLayer *poLayer;
     poLayer = poDS->CreateLayer(basename(filename).c_str(), NULL, wkbPoint, NULL );
     if( poLayer == NULL ) {
-        error_message = "Layer creation failed";
-        error = true;
+        setError("Layer creation failed");
 		return false; 
     }
     OGRFieldDefn oField( "Name", OFTString );
     oField.SetWidth(32);
     if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
-        error_message = "Field creation failed";
-        error = true;
+        setError("Field creation failed");
 		return false; 
     }
     double x, y;
@@ -47,8 +45,7 @@ bool SpatLayer::write(std::string filename, bool overwrite) {
         pt.setY( y );
         poFeature->SetGeometry( &pt );
         if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
-			error_message = "Failed to create feature in shapefile";
-			error = true;
+			setError("Failed to create feature in shapefile");
 			return false; 			
         }
         OGRFeature::DestroyFeature( poFeature );

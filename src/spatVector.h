@@ -90,6 +90,8 @@ class SpatLayer {
 
 
 		SpatMessages msg;
+		void setError(std::string s) { msg.setError(s); }
+		void addWarning(std::string s) { msg.addWarning(s); }
 	
 };
 
@@ -100,5 +102,8 @@ class SpatVector {
 		std::vector<SpatLayer> lyrs;
 		unsigned layertypes();
 		SpatMessages msg;
+		void setError(std::string s) { msg.setError(s); }
+		void addWarning(std::string s) { msg.addWarning(s); }
+		
 };
 

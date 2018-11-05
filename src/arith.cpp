@@ -140,14 +140,12 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 	SpatRaster out = geometry();
 
 	if (!smooth_operator(oper)) {
-		out.error = true;
-		out.error_message = "unknown arith function";
+		out.setError("unknown arith function");
 		return out;
 	}
 	
 	if (!compare_geom(x, true, false)) {
-		out.error = true;
-		out.error_message = "dimensions and/or extent do not match";
+		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
 	
@@ -194,8 +192,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
-		out.error = true;
-		out.error_message = "unknown arith function";
+		out.setError("unknown arith function");
 		return out;
 	}
 	
@@ -242,8 +239,7 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
-		out.error = true;
-		out.error_message = "unknown arith function";
+		out.setError("unknown arith function");
 		return out;
 	}
 	

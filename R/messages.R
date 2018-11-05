@@ -4,14 +4,14 @@
 # Licence GPL v3
 
 .messages <- function(x, f="") {
-	if (x@ptr$warning) { 
-		messages <- paste0(f, ": ", paste(x@ptr$warning_message, collapse="\n"))
-		x@ptr$warning_message <- ""
-		x@ptr$warning <- FALSE
+	if (x@ptr$messages$has_warning) { 
+		messages <- paste0(f, ": ", paste(x@ptr$messages$warnings, collapse="\n"))
+		x@ptr$messages$warnings <- ""
+		x@ptr$messages$has_warning <- FALSE
 		warning(messages, call.=FALSE)
 	}
-	if (x@ptr$error) {	
-		stop(paste0(f, ": ", x@ptr$error_message), call.=FALSE)
+	if (x@ptr$messages$has_error) {	
+		stop(paste0(f, ": ", x@ptr$messages$error), call.=FALSE)
 	}			
 }
 

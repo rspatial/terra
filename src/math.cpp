@@ -11,8 +11,7 @@ SpatRaster SpatRaster::math(std::string fun, std::string filename, bool overwrit
 	SpatRaster out = geometry();
 	std::vector<std::string> f {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"}; 
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.error = true;
-		out.error_message = "unknown math function";
+		out.setError("unknown math function");
 		return out;
 	}
 
@@ -59,8 +58,7 @@ SpatRaster SpatRaster::trig(std::string fun, std::string filename, bool overwrit
 
 	std::vector<std::string> f {"acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh", "cosh", "cospi", "sinh", "sinpi", "tanh", "tanpi"}; 
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.error = true;
-		out.error_message = "unknown trig function";
+		out.setError("unknown trig function");
 		return out;
 	}
 	

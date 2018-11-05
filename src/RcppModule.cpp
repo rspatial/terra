@@ -22,10 +22,11 @@ RCPP_MODULE(spat){
 
     class_<SpatMessages>("SpatMessages")
 		.constructor()
-		.field("error", &SpatExtent::error)		
-		.field("warning", &SpatExtent::warning)		
-		.field("error_message", &SpatExtent::error_message)		
-		.field("warning_messages", &SpatExtent::warning_messages)		
+		.field("success", &SpatMessages::success)		
+		.field("has_error", &SpatMessages::has_error)		
+		.field("has_warning", &SpatMessages::has_warning)		
+		.field("error", &SpatMessages::error)		
+		.field("warnings", &SpatMessages::warnings)		
 	;	
 
 
@@ -42,10 +43,7 @@ RCPP_MODULE(spat){
 		.method("getAttributes", &getAttributes, "getAttributes")
 		.method("getGeometry", &getGeometry, "getGeometry")
 		.method("setGeometry", &SpatLayer::setGeometry, "setGeometry")
-		.field("error", &SpatLayer::error )
-		.field("warning", &SpatLayer::warning )
-		.field("error_message", &SpatLayer::error_message )
-		.field("warning_message", &SpatLayer::warning_message )
+		.field("messages", &SpatLayer::msg, "messages")
 	;
 
 	
@@ -123,11 +121,8 @@ RCPP_MODULE(spat){
 		.property("range_min", &SpatRaster::range_min )
 		.property("range_max", &SpatRaster::range_max )
 
+		.field("messages", &SpatRaster::msg, "messages")
 		
-		.field("error", &SpatRaster::error )
-		.field("warning", &SpatRaster::warning )
-		.field("error_message", &SpatRaster::error_message )
-		.field("warning_message", &SpatRaster::warning_message )
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
 		.method("crop", &SpatRaster::crop, "crop")

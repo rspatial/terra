@@ -119,7 +119,7 @@ unsigned SpatLayer::ncol() {
 }
 
 unsigned SpatLayer::nrow() {
-	return df.nrow();
+	return geoms.size();
 }
 
 unsigned SpatLayer::size() {

@@ -13,25 +13,21 @@ bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
 	SpatRaster r = geometry();
 	
 	if (!hasValues()) {
-		warning = true;
-		warning_message.push_back("none of the cells have values");
+		addWarning("none of the cells have values");
 	}
 	success = r.writeStartGDAL(filename, overwrite);
 	if (!success) {
-		error = true;
-		error_message = "cannot open file";
+		setError("cannot open file");
 		return false;
 	}
 	success = r.writeValuesGDAL(getValues(), 0);
 	if (!success) {
-		error = true;
-		error_message = "cannot write values to file";
+		setError("cannot write values to file");
 		return false;
 	}
 	success = r.writeStopGDAL();
 	if (!success) {
-		error = true;
-		error_message = "cannot close file";
+		setError("cannot close file");
 		return false;
 	}
 	return success;

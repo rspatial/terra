@@ -19,7 +19,6 @@ std::string geomType(OGRLayer *poLayer) {
 }	
 
 
-
 SpatDataFrame readAttributes(OGRLayer *poLayer) {
 	OGRFieldType ft;
     poLayer->ResetReading();
@@ -89,11 +88,12 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 
 bool SpatLayer::read(std::string fname) {
 
+	msg.success = true;
+
     GDALAllRegister();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
-        error_message = "Cannot open file";
-		error = true;
+        setError("Cannot open file");
 		return false;
     }
 	std::string crs = "";
@@ -263,6 +263,7 @@ bool SpatLayer::read(std::string fname) {
 			}
 		}
 	} else {
+        setError("Cannot open file");
 		std::string gt = geomType(poLayer);		
 		printf("unknown geomtype: %s \n", gt.c_str());
 	} 
@@ -270,7 +271,7 @@ bool SpatLayer::read(std::string fname) {
 	OGRFeature::DestroyFeature( poFeature );
     GDALClose( poDS );
 	setCRS(crs);
-	return true;
+	return msg.success;
 }
 
 

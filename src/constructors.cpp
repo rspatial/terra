@@ -110,8 +110,6 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.names = nms;
 	SpatRaster out;
 	out.setSource(s);
-	out.error = false;
-	out.warning = false;
 	return out;
 }
 
@@ -119,8 +117,6 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 SpatRaster SpatRaster::deepCopy() {
 
 	SpatRaster out = *this;
-	out.error = false;
-	out.warning = false;
 	out.nrow = nrow;
 	out.ncol = ncol;
 	out.extent = extent;

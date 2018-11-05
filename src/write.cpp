@@ -20,14 +20,11 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 	} else if (file_exists(filename)) {
 		if (overwrite) {
 			if (isSource(filename)) {
-				error = true;
-				error_message = "cannot overwrite object to itself";
+				setError("cannot overwrite object to itself");
 			}
 			remove(filename.c_str());
 		} else {
-			error = true;
-			error_message = "file exists";
-		    return false;
+			setError("file exists");
 		}
 	}
 
@@ -44,8 +41,7 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
         #ifdef useGDAL
         return writeRasterGDAL(filename, overwrite);
 		#else
-		error = true;
-		error_message = "gdal is not available";
+		setError("GDAL is not available");
 	    return false;
         #endif // useGDAL
 	}
@@ -90,16 +86,14 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 			source[0].driver = "gdal" ;
 			success = writeStartGDAL(filename, overwrite);
 			#else
-			error = true;
-			error_message = "gdal is not available";
+			setError("GDAL is not available");
 			return false;
 			#endif
 		}
 
 	}
 	if (open_write) {
-		warning = true;
-		warning_message.push_back("file was already open");
+		addWarning("file was already open");
 	}
 	open_write = true;
 	source[0].filename = {filename};
@@ -111,8 +105,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 
 bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 	if (!open_write) {
-		error = true;
-		error_message = "cannot write (no open file)";
+		setError("cannot write (no open file)");
 		return false;
 	}
 	bool success = true;
@@ -128,8 +121,7 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 		#ifdef useGDAL
 		success = writeValuesGDAL(vals, row);
 		#else
-		error = true;
-		error_message = "gdal is not available";
+		setError("GDAL is not available");
 		return false;
 		#endif
 	} else {
@@ -144,8 +136,7 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
 
 bool SpatRaster::writeStop(){
 	if (!open_write) {
-		error = true;
-		error_message = "cannot close a file that is not open";
+		setError("cannot close a file that is not open");
 		return false;
 	}
 	open_write = false;
@@ -158,8 +149,7 @@ bool SpatRaster::writeStop(){
 		#ifdef useGDAL
 		success = writeStopGDAL();
 		#else
-		error = true;
-		error_message = "gdal is not available";
+		setError("GDAL is not available");
 		return false;
 		#endif
 	}
@@ -183,8 +173,7 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 		setRange();
 		result = true;
 	} else {
-		error = true;
-		error_message = "incorrect number of values";
+		setError("incorrect number of values");
 	}
 	return (result);
 }

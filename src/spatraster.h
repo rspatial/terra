@@ -90,11 +90,9 @@ class SpatRaster {
 		BlockSize bs;
 		BlockSize getBlockSize(unsigned n);
 
-		bool error = false;
-		bool warning = false;
-		std::string error_message;
-		std::vector<std::string> warning_message;
-
+		SpatMessages msg;
+		void setError(std::string s) { msg.setError(s); }
+		void addWarning(std::string s) { msg.addWarning(s); }
 
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 

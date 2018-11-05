@@ -56,14 +56,12 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, std::string filenam
 	
 	std::vector<std::string> f {"&", "|"}; 
 	if (std::find(f.begin(), f.end(), oper) == f.end()) {
-		out.error = true;
-		out.error_message = "unknown logic function";
+		out.setError("unknown logic function");
 		return out;
 	}
 
 	if (!compare_geom(x, true, false)) {
-		out.error = true;
-		out.error_message = "dimensions and/or extent do not match";
+		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
 	

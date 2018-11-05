@@ -11,8 +11,6 @@ using namespace std;
 
 SpatRaster SpatRaster::addSources(SpatRaster x) {
 	SpatRaster out = deepCopy();
-	out.error = false;
-	out.warning = false;
 	if (compare_geom(x, false, false)) {
         if (!hasValues()) {
             out.source = x.source;
@@ -20,8 +18,7 @@ SpatRaster SpatRaster::addSources(SpatRaster x) {
             out.source.insert(out.source.end(), x.source.begin(), x.source.end());
         }
 	} else {
-		out.error = true;
-		out.error_message = "dimensions and/or extent do not match";
+		out.setError("dimensions and/or extent do not match");
 	}
 	return(out);
 }
@@ -186,12 +183,10 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, string filename, bool 
     lyrs = validLayers(lyrs, nlyr());
 
 	if (lyrs.size() == 0) {
-		out.error = true;
-		out.error_message = "no (valid) layer references";
+		out.setError("no (valid) layer references");
 		return(out);
 	} else if (lyrs.size() != oldsize) {
-        out.warning = true;
-        out.warning_message.push_back("ignored " + to_string(oldsize - lyrs.size()) + " invalid layer references");
+        out.addWarning("ignored " + to_string(oldsize - lyrs.size()) + " invalid layer references");
 	}
 
     std::vector<unsigned> srcs = sourcesFromLyrs(lyrs);
