@@ -17,6 +17,8 @@ if (!isGeneric("focal")) { setGeneric("focal", function(x, ...) standardGeneric(
 if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("geom"))}	
 if (!isGeneric("mask")) { setGeneric("mask", function(x, mask, ...) standardGeneric("mask")) }	
 if (!isGeneric("ncell")) { setGeneric("ncell", function(x) standardGeneric("ncell")) }	
+if (!isGeneric("nrow")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	
+if (!isGeneric("ncol")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	
 if (!isGeneric("ncol<-")) { setGeneric("ncol<-", function(x, ..., value) standardGeneric("ncol<-")) }	
 if (!isGeneric("nrow<-")) { setGeneric("nrow<-", function(x, ..., value) standardGeneric("nrow<-")) }	
 if (!isGeneric("rasterize")) {setGeneric("rasterize", function(x, y, ...) standardGeneric("rasterize"))}	

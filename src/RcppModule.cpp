@@ -35,7 +35,7 @@ RCPP_MODULE(spat){
 		.method("names", &SpatLayer::names, "names")		
 		.method("nrow", &SpatLayer::nrow, "nrow")		
 		.method("ncol", &SpatLayer::ncol, "ncol")		
-		.method("length", &SpatLayer::size, "length")		
+		.method("size", &SpatLayer::size, "size")		
 		.property("crs", &SpatLayer::getCRS, &SpatLayer::setCRS, "crs")		
 		.method("type", &SpatLayer::type, "type")		
 		.method("extent", &SpatLayer::getExtent, "extent")		
