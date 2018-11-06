@@ -4,10 +4,6 @@
 # Licence GPL v3
 
 
-if (!isGeneric('subset')) {
-	setGeneric('subset', function(x, ...)
-		standardGeneric('subset')) 
-}
 
 setMethod('subset', signature(x='SpatRaster'), 
 function(x, subset, filename='', overwrite=FALSE, ...) {

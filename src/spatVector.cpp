@@ -88,18 +88,15 @@ SpatPart SpatGeom::getPart(unsigned i) {
 }
 
 std::vector<double> SpatLayer::getDv(unsigned i) {
-	unsigned j = df.iplace[i];
-	return df.dv[j];
+	return df.getD(i);
 }
 
 std::vector<long> SpatLayer::getIv(unsigned i){
-	unsigned j = df.iplace[i];
-	return df.iv[j];
+	return df.getI(i);
 }
 
 std::vector<std::string> SpatLayer::getSv(unsigned i){
-	unsigned j = df.iplace[i];
-	return df.sv[j];
+	return df.getS(i);
 }
 
 std::vector<unsigned> SpatLayer::getItype(){

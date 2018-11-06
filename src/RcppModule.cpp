@@ -67,11 +67,36 @@ RCPP_MODULE(spat){
 	    .constructor<std::string>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 		
+		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
+		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
+		.property("names", &SpatRaster::getNames)
+		.property("res", &SpatRaster::resolution)
+		.property("origin", &SpatRaster::origin)
+		.property("inMemory", &SpatRaster::inMemory )
+		.property("filenames", &SpatRaster::filenames )
+		.property("hasValues", &SpatRaster::hasValues )
+
+			
+		//.field_readonly("hasRAT", &SpatRaster::hasRAT )
+		//.field_readonly("hasCT", &SpatRaster::hasCT )
+		.property("hasRange", &SpatRaster::hasRange )
+		.property("range_min", &SpatRaster::range_min )
+		.property("range_max", &SpatRaster::range_max )
+
+		.field_readonly("nrow", &SpatRaster::nrow, "nrow")
+		.field_readonly("ncol", &SpatRaster::ncol, "ncol")		
+		.method("nsrc", &SpatRaster::nsrc, "nsrc" )	
+		.field("messages", &SpatRaster::msg, "messages")
+		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )		
+		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
+		.method("setNames", &SpatRaster::setNames, "setNames" )
+		.field_readonly("source", &SpatRaster::source )
+
+		
 		//.method("addSources", ( std::SpatRaster (SpatRaster::*)(std::SpatRaster) )( &SpatRaster::addSources), "addSources")
 		.method("addSources", &SpatRaster::addSources, "addSources")
 		.method("subset", &SpatRaster::subset, "subset")
 
-		.field_readonly("source", &SpatRaster::source )
 		
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>) )( &SpatRaster::cellFromXY ))
 		.method("cellFromRowCol", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>,std::vector<unsigned>) )( &SpatRaster::cellFromRowCol ))
@@ -87,7 +112,6 @@ RCPP_MODULE(spat){
 		.method("readValues", &SpatRaster::readValues, "readValues")	
 		.method("getValues", &SpatRaster::getValues)
 		.method("getBlockSize", &getBlockSizeR)
-//		.property("values", &SpatRaster::getValues, &SpatRaster::setValues )	
 		.method("setValues", &SpatRaster::setValues)
 
 		.method("setRange", &SpatRaster::setRange, "setRange")
@@ -99,30 +123,7 @@ RCPP_MODULE(spat){
 		.method("canProcessInMemory", &SpatRaster::canProcessInMemory, "canProcessInMemory")
 		.method("chunkSize", &SpatRaster::chunkSize, "chunkSize")
 		
-		.field_readonly("nrow", &SpatRaster::nrow, "nrow")
-		.field_readonly("ncol", &SpatRaster::ncol, "ncol")		
-		.method("nsrc", &SpatRaster::nsrc, "nsrc" )	
-		
-		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )		
-		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
-		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
-		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
-		.property("names", &SpatRaster::getNames)
-		.method("setNames", &SpatRaster::setNames, "setNames" )
-		.property("res", &SpatRaster::resolution)
-		.property("origin", &SpatRaster::origin)
-		.property("inMemory", &SpatRaster::inMemory )
-		.property("filenames", &SpatRaster::filenames )
-		.property("hasValues", &SpatRaster::hasValues )
-			
-		//.field_readonly("hasRAT", &SpatRaster::hasRAT )
-		//.field_readonly("hasCT", &SpatRaster::hasCT )
-		.property("hasRange", &SpatRaster::hasRange )
-		.property("range_min", &SpatRaster::range_min )
-		.property("range_max", &SpatRaster::range_max )
-
-		.field("messages", &SpatRaster::msg, "messages")
-		
+		.method("extract", &SpatRaster::extract, "extract")
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
 		.method("crop", &SpatRaster::crop, "crop")

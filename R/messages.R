@@ -12,6 +12,7 @@
 	}
 	if (x@ptr$messages$has_error) {	
 		stop(paste0(f, ": ", x@ptr$messages$error), call.=FALSE)
-	}			
+	}
+	x
 }
 

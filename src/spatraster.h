@@ -245,34 +245,31 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
-		SpatRaster arith(SpatRaster x, std::string oper, std::string filename, bool overwrite=false);
-		SpatRaster arith(double x, std::string oper, std::string filename, bool overwrite=false);
-		SpatRaster arith_rev(double x, std::string oper, std::string filename, bool overwrite);
-		SpatRaster math(std::string fun, std::string filename, bool overwrite);
-		SpatRaster trig(std::string fun, std::string filename, bool overwrite);
-		SpatRaster logic(SpatRaster x, std::string oper, std::string filename, bool overwrite=false);
-		SpatRaster logic(bool x, std::string oper, std::string filename, bool overwrite=false);
-		SpatRaster isnot(std::string filename, bool overwrite);
-		SpatRaster cum(std::string fun, bool narm, std::string filename, bool overwrite);
-		SpatRaster summary(std::string fun, bool narm, std::string filename, bool overwrite);
-		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, std::string filename, bool overwrite);
-
-		SpatRaster operator + (SpatRaster x) { return arith(x, "+", "", false); }
-		//SpatRaster test(std::string filename);
-
 		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, std::string filename="", bool overwrite=false);
+		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", bool overwrite=false);
+		SpatRaster arith(double x, std::string oper, std::string filename="", bool overwrite=false);
+		SpatRaster arith_rev(double x, std::string oper, std::string filename="", bool overwrite=false);
 		std::vector<unsigned> get_aggregate_dims( std::vector<unsigned> fact );
 		std::vector<std::vector<double> > get_aggregates(std::vector<unsigned> dim);
-
 		SpatExtent align(SpatExtent e, std::string snap="near");
 		SpatRaster crop(SpatExtent e, std::string filename="", std::string snap="near", bool overwrite=false);
-		SpatRaster trim(unsigned padding=0, std::string filename="", bool overwrite=false);
-		SpatRaster mask(SpatRaster x, std::string filename="", bool overwrite=false);
-		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename, bool overwrite);
+		SpatRaster cum(std::string fun, bool narm, std::string filename="", bool overwrite=false);
+		std::vector<double> extract(SpatLayer v, std::string fun=""); 
+		std::vector<double> readPointsGDAL(const std::vector<double> &x, const std::vector<double> &y);
+				
+		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename="", bool overwrite=false);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
-		SpatRaster rasterizePolygons(SpatLayer p, double background, std::string filename, bool overwrite);
-
+		SpatRaster isnot(std::string filename="", bool overwrite=false);
+		SpatRaster logic(SpatRaster x, std::string oper, std::string filename="", bool overwrite=false);
+		SpatRaster logic(bool x, std::string oper, std::string filename="", bool overwrite=false);
+		SpatRaster mask(SpatRaster x, std::string filename="", bool overwrite=false);
+		SpatRaster math(std::string fun, std::string filename="", bool overwrite=false);
+		SpatRaster trig(std::string fun, std::string filename="", bool overwrite=false);
+		SpatRaster rasterizePolygons(SpatLayer p, double background, std::string filename="", bool overwrite=false);
 		std::vector<double> sampleRegular(unsigned size, bool cells, bool asRaster);
+		SpatRaster summary(std::string fun, bool narm, std::string filename="", bool overwrite=false);
+		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, std::string filename="", bool overwrite=false);
+		SpatRaster trim(unsigned padding=0, std::string filename="", bool overwrite=false);
 };
 
 

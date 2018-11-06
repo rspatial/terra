@@ -88,13 +88,10 @@ class SpatLayer {
 		std::vector<unsigned> getItype();
 		std::vector<unsigned> getIplace();
 
-
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
-	
 };
-
 
 
 class SpatVector {
@@ -104,6 +101,5 @@ class SpatVector {
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
-		
 };
 

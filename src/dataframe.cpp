@@ -6,6 +6,28 @@
 #include "util.h"
 
 
+std::vector<double> SpatDataFrame::getD(unsigned i) {
+	unsigned j = iplace[i];
+	return dv[j];
+}
+
+std::vector<long> SpatDataFrame::getI(unsigned i) {
+	unsigned j = iplace[i];
+	return iv[j];
+}
+
+std::vector<std::string> SpatDataFrame::getS(unsigned i) {
+	unsigned j = iplace[i];
+	return sv[j];
+}
+
+
+SpatDataFrame SpatDataFrame::subset_rows(unsigned i) {
+	std::vector<unsigned> r = { i }; 
+	return subset_rows(r);
+}
+
+
 SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) { 
 	SpatDataFrame out;
 	out.names = names;
@@ -27,6 +49,12 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 	}
 	return out;	
 }	
+
+
+SpatDataFrame SpatDataFrame::subset_cols(unsigned i) {
+	std::vector<unsigned> c = { i }; 
+	return subset_cols(c);
+}
 
 SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) { 
 	SpatDataFrame out;
@@ -170,6 +198,24 @@ bool SpatDataFrame::add_column(std::vector<std::string> x, std::string name) {
 	iplace.push_back(sv.size());
 	itype.push_back(2);	
 	names.push_back(name);
+	return true;
+}
+
+bool SpatDataFrame::cbind(SpatDataFrame &x) {
+	unsigned nc = x.ncol();
+	std::vector<std::string> nms = x.names;
+	for (size_t i=0; i<nc; i++) {
+		if (x.itype[i] == 0) {
+			std::vector<double> d = getD(i);
+			add_column(d, nms[i]);
+		} else if (x.itype[i] == 1) {
+			std::vector<long> d = getI(i);
+			add_column(d, nms[i]);
+		} else {
+			std::vector<std::string> d = getS(i);
+			add_column(d, nms[i]);			
+		}
+	}
 	return true;
 }
 

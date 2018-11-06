@@ -43,7 +43,6 @@ setMethod("ext<-", signature('SpatRaster', 'SpatExtent'),
 	    stop("not yet implemented")
 		#y@ptr <- y@ptr$extent(value)
 		#.messages(y)
-		#return(y)
 	}
 )
 

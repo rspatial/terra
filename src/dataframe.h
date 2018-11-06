@@ -15,6 +15,8 @@ class SpatDataFrame {
 		unsigned ncol();
 		SpatDataFrame subset_rows(std::vector<unsigned> range);
 		SpatDataFrame subset_cols(std::vector<unsigned> range);
+		SpatDataFrame subset_rows(unsigned i);
+		SpatDataFrame subset_cols(unsigned i);
 		std::vector<double> getD(unsigned i);
 		std::vector<long> getI(unsigned i);
 		std::vector<std::string> getS(unsigned i);
@@ -32,8 +34,8 @@ class SpatDataFrame {
 		void resize(unsigned n);
 		void reserve(unsigned n);
 		
-		bool rbind();
-		bool cbind();
+		bool rbind(SpatDataFrame &x);
+		bool cbind(SpatDataFrame &x);
 		
 };
 

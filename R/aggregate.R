@@ -61,8 +61,7 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", ...)  {
 		r <- methods::new('SpatRaster')
 		#	fun='mean', expand=TRUE, na.rm=TRUE, filename=""
 		x@ptr <- x@ptr$aggregate(dims, fun, na.rm, filename, overwrite)
-		.messages(x, "aggregate")		
-		return(x)
+		return (.messages(x, "aggregate"))
 	} else {
 		e <- as.vector(ext(x))
 		rs <- res(x)
