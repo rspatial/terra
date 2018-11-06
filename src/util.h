@@ -30,6 +30,15 @@ bool is_NA(const T v) {
 	}
 }
 
+template <typename T>
+void setNAN(std::vector<T> &v, double naflag) {
+	if (!isnan(naflag)) {
+		T flag = naflag;
+		T navalue = NA<T>::value;
+		std::replace(v.begin(), v.end(), flag, navalue);
+	}
+}
+
 template <typename Iterator>
 void minmax(Iterator start, Iterator end, double &min, double &max) {
     min = std::numeric_limits<double>::max();
