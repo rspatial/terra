@@ -216,11 +216,11 @@ class SpatRaster {
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 
 		bool readStop();
-		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs, double NAflag);
+		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
 
 		bool readStartGDAL();
 		bool readStopGDAL();
-		std::vector<double> readChunkGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs, double NAflag);
+		std::vector<double> readChunkGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
 
 
 		bool writeStart(std::string filename, bool overwrite);

@@ -126,23 +126,32 @@ bool SpatRaster::readStartGDAL() {
 }
 
 
-std::vector<double> SpatRaster::readChunkGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs, double NAflag) {	
+std::vector<double> SpatRaster::readChunkGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs) {	
 	GDALRasterBand  *poBand;		
 	unsigned ncell = ncols * nrows;
 	unsigned cell;
 	std::vector<double> errout;
-
+	int hasNA;
 	std::vector<double> out(ncell * nlyrs);
 	for (size_t i=0; i < nlyrs; i++) {		
 		cell = ncell * i;
 		poBand = gdalconnection->GetRasterBand(lyr + i + 1);
-		CPLErr err = poBand->RasterIO(GF_Read, row, col, ncols, nrows, &out[cell], ncols, nrows, GDT_Float64, 0, 0);
-		if (err == 4) {
-			setError("cannot read values");
-			return errout;
+		GDALDataType gdtype = poBand->GetRasterDataType();
+		if (gdtype == GDT_Float64) {
+			double naflag = poBand->GetNoDataValue(&hasNA);
+			CPLErr err = poBand->RasterIO(GF_Read, row, col, ncols, nrows, &out[cell], ncols, nrows, GDT_Float64, 0, 0);
+			if (err == 4) {
+				setError("cannot read values");
+				return errout;
+			}
+			if (hasNA) {
+				double navalue = NA<double>::value;
+				std::replace(out.begin()+cell, out.end()+cell+ncell, naflag, navalue);
+			}
+		} else {
+			
 		}
-	}
-	setNAN(out, NAflag);
+	
 	return(out);
 }
 
@@ -155,7 +164,7 @@ bool SpatRaster::readStopGDAL() {
 
 
 
-std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs, double NAflag) {
+std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs) {
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
     GDALAllRegister();
@@ -165,11 +174,14 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 	unsigned cell;
 	std::vector<double> errout;
 	std::vector<double> out(ncell*nlyrs);
+	int hasNA;
 	
 	for (size_t i=0; i < nlyrs; i++) {		
 		cell = ncell * i;
 		poBand = poDataset->GetRasterBand(lyr + i + 1);
 		GDALDataType gdtype = poBand->GetRasterDataType();
+		double naflag = poBand->GetNoDataValue(&hasNA);
+		if (!hasNA) { naflag = NAN; }
 		if (gdtype == GDT_Float64) {
 			CPLErr err = poBand->RasterIO(GF_Read, row, col, ncols, nrows, &out[cell], ncols, nrows, gdtype, 0, 0);
 			if (err == 4) {
@@ -177,7 +189,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 				GDALClose((GDALDatasetH) poDataset);	
 				return errout;
 			} 
-			setNAN(out, NAflag);
+			setNAN(out, naflag);
 		} else if (gdtype == GDT_Float32) {
 			std::vector<float> lyrout(ncell);
 			CPLErr err = poBand->RasterIO(GF_Read, row, col, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
@@ -186,7 +198,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 				GDALClose((GDALDatasetH) poDataset);	
 				return errout;
 			}
-			setNAN(lyrout, NAflag);
+			setNAN(lyrout, naflag);
 			for (size_t j=0; j<ncell; j++) {
 				out[cell+j] = lyrout[j];
 			}

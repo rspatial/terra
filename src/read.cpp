@@ -82,7 +82,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 
 			} else {
 				#ifdef useGDAL
-				std::vector<double> fvals = readValuesGDAL(row, nrows, col, ncols, 0, source[i].nlyr, source[i].NAflag);
+				std::vector<double> fvals = readValuesGDAL(row, nrows, col, ncols, 0, source[i].nlyr);
 				out.insert(out.end(), fvals.begin(), fvals.end());
 				#endif // useGDAL
 			}
@@ -105,7 +105,7 @@ std::vector<double>  SpatRaster::getValues() {
 			out.insert(out.end(), fvals.begin(), fvals.end());
 		} else {
 			#ifdef useGDAL
-			std::vector<double> fvals = readValuesGDAL(0, nrow, 0, ncol, 0, source[i].nlyr, source[i].NAflag);
+			std::vector<double> fvals = readValuesGDAL(0, nrow, 0, ncol, 0, source[i].nlyr);
 			out.insert(out.end(), fvals.begin(), fvals.end());
 			#endif // useGDAL
 		}

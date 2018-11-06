@@ -39,6 +39,8 @@ void setNAN(std::vector<T> &v, double naflag) {
 	}
 }
 
+
+
 template <typename Iterator>
 void minmax(Iterator start, Iterator end, double &min, double &max) {
     min = std::numeric_limits<double>::max();
