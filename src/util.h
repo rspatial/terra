@@ -32,7 +32,7 @@ bool is_NA(const T v) {
 
 template <typename T>
 void setNAN(std::vector<T> &v, double naflag) {
-	if (!isnan(naflag)) {
+	if (!std::isnan(naflag)) {
 		T flag = naflag;
 		T navalue = NA<T>::value;
 		std::replace(v.begin(), v.end(), flag, navalue);

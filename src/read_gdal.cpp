@@ -142,10 +142,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned row, unsigned nrows, unsi
 			return errout;
 		}
 	}
-	if (!isnan(NAflag)) {
-		double navalue = NAN;
-		std::replace(out.begin(), out.end(), NAflag, navalue);
-	}
+	setNAN(out, NAflag);
 	return(out);
 }
 
