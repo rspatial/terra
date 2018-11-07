@@ -106,8 +106,7 @@ std::vector<unsigned> SpatRaster::colFromX(std::vector<double> &x) {
 	size_t size = x.size();
 	unsigned navalue = NA<unsigned>::value; 
 
-	std::vector<unsigned> result;
-	result.reserve(size);
+	std::vector<unsigned> result(size, navalue);
 	double xmin = extent.xmin;
 	double xmax = extent.xmax;
 	double xr = xres();
@@ -115,8 +114,8 @@ std::vector<unsigned> SpatRaster::colFromX(std::vector<double> &x) {
 	for (size_t i = 0; i < size; i++) {
 		if (x[i] == xmax) {  
 			result[i] = ncol ;
-		} else {
-			result[i] = (x[i] < xmin || x[i] > xmax ) ? navalue : trunc((x[i] - xmin) / xr);
+		} else if (x[i] >= xmin || x[i] < xmax ) {
+			result[i] =  trunc((x[i] - xmin) / xr);
 		}
 	}
 	return result;
@@ -130,20 +129,19 @@ unsigned SpatRaster::colFromX(double x) {
 
 
 std::vector<unsigned> SpatRaster::rowFromY(std::vector<double> &y) {
-	size_t size = y.size();
+	size_t ysize = y.size();
 	unsigned navalue = NA<unsigned>::value; 
 	
-	std::vector<unsigned> result;
-	result.reserve(size);
+	std::vector<unsigned> result(ysize, navalue);
 	double ymin = extent.ymin;
 	double ymax = extent.ymax;
 	double yr = yres();
 	
-	for (size_t i = 0; i < size; i++) {
+	for (size_t i = 0; i < ysize; i++) {
 		if (y[i] == ymin) {  
 			result[i] = nrow ;
-		} else {
-			result[i] = (y[i] < ymin || y[i] > ymax ) ? navalue : trunc((ymax - y[i]) / yr);
+		} else if (y[i] > ymin || y[i] <= ymax ) {
+			result[i] = trunc((ymax - y[i]) / yr);
 		}
 	}
 	return result;

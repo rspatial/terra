@@ -256,7 +256,9 @@ class SpatRaster {
 		SpatExtent align(SpatExtent e, std::string snap="near");
 		SpatRaster crop(SpatExtent e, std::string filename="", std::string snap="near", bool overwrite=false);
 		SpatRaster cum(std::string fun, bool narm, std::string filename="", bool overwrite=false);
-		std::vector<double> extract(SpatLayer v, std::string fun=""); 
+		std::vector<double> extractLayer(SpatLayer v, std::string fun=""); 
+		std::vector<double> extractCell(std::vector<double> &cell);
+
 		std::vector<double> readRowColGDAL(const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
 				
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename="", bool overwrite=false);

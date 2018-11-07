@@ -29,14 +29,6 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 }
 )
 
-setMethod("extract", signature(x="SpatRaster", y="SpatLayer"), 
-function(x, y, fun="", ...) { 
-    r <- x@ptr$extract(y@ptr, fun)
-	x <- show_messages(x, "extract")		
-	r
-}
-)
-
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 function(x, mask, filename="", overwrite=FALSE, ...) { 
