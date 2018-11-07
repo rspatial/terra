@@ -4,9 +4,9 @@
 \alias{names<-}
 \alias{names,SpatRaster-method}
 \alias{names<-,SpatRaster-method}
-
+\alias{names,SpatLayer-method}
   
-\title{Names of SpatRaster objects}
+\title{Names of Spat* objects}
 
 \description{
 Get or set the names of the layers of a SpatRaster object.

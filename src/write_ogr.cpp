@@ -1,5 +1,5 @@
 #include "spatraster.h"
-#include "util.h"
+#include "string_utils.h"
 #include "ogrsf_frmts.h"
 
 

@@ -25,7 +25,7 @@
 	} else {
 		x@ptr <- x@ptr$summary_numb(fun, add, na.rm, "", TRUE)			
 	}
-	.messages(x, fun)
+	show_messages(x, fun)
 	x		
 }
 

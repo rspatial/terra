@@ -8,7 +8,7 @@
 \title{Mask values in a SpatRaster object}
 
 \description{
-Create a new SpatRaster* object that has the same values as \code{x}, except for the cells that are \code{NA} in another SpatRaster (the 'mask'). These cells become \code{NA}.
+Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} in another SpatRaster (the 'mask'). These cells become \code{NA}.
 } 
 
 \usage{

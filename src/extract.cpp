@@ -17,7 +17,9 @@ std::vector<double> SpatRaster::extract(SpatLayer v, std::string fun) {
 		} else {
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
-			out = readPointsGDAL(x, y);
+			std::vector<unsigned> cols = colFromX(x);
+			std::vector<unsigned> rows = rowFromY(y);
+			out = readRowColGDAL(rows, cols);
 		}
 //		vd.cbind(df);
 //		return vd;

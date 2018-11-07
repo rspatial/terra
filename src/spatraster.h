@@ -179,19 +179,21 @@ class SpatRaster {
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
 		double cellFromXY(double x, double y);
-		std::vector<double> cellFromRowCol(std::vector<unsigned> rownr, std::vector<unsigned> colnr);
-		double cellFromRowCol(unsigned rownr, unsigned colnr);
-		std::vector<double> yFromRow(std::vector<unsigned> rownr);
-		double yFromRow(unsigned rownr);
-		std::vector<double> xFromCol(std::vector<unsigned> colnr);
-		double xFromCol(unsigned colnr);
-		std::vector<double> colFromX(std::vector<double> x);
-		double colFromX(double x);
-		std::vector<double> rowFromY(std::vector<double> y);
-		double rowFromY(double y);
-		std::vector< std::vector<double> > xyFromCell( std::vector<double> cell );
+		std::vector<double> cellFromRowCol(std::vector<unsigned> row, std::vector<unsigned> col);
+		double cellFromRowCol(unsigned row, unsigned col);
+		std::vector<double> yFromRow(std::vector<unsigned> &row);
+		double yFromRow(unsigned row);
+		std::vector<double> xFromCol(std::vector<unsigned> &col);
+		double xFromCol(unsigned col);
+
+		std::vector<unsigned> colFromX(std::vector<double> &x);
+		unsigned colFromX(double x);
+		std::vector<unsigned> rowFromY(std::vector<double> &y);
+		unsigned rowFromY(double y);
+		std::vector< std::vector<double> > xyFromCell( std::vector<double> &cell );
 		std::vector< std::vector<double> > xyFromCell( double cell );
-		std::vector< std::vector<double> > rowColFromCell(std::vector<double> cell);
+			
+		std::vector< std::vector<unsigned> > rowColFromCell(std::vector<double> &cell);
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 
 		int sourceFromLyr(unsigned lyr);
@@ -255,7 +257,7 @@ class SpatRaster {
 		SpatRaster crop(SpatExtent e, std::string filename="", std::string snap="near", bool overwrite=false);
 		SpatRaster cum(std::string fun, bool narm, std::string filename="", bool overwrite=false);
 		std::vector<double> extract(SpatLayer v, std::string fun=""); 
-		std::vector<double> readPointsGDAL(const std::vector<double> &x, const std::vector<double> &y);
+		std::vector<double> readRowColGDAL(const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
 				
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename="", bool overwrite=false);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
@@ -286,5 +288,4 @@ SpatRaster SQRTfree(SpatRaster* g) {
 	return r;
 }
 */
-
 

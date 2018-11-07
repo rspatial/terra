@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
-#include "util.h"
+#include "NA.h"
 
 
 std::vector<double> SpatDataFrame::getD(unsigned i) {

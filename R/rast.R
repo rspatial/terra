@@ -30,7 +30,7 @@ setMethod('rast', signature(x='missing'),
 			stop()
 		}
 		
-		.messages(r, "rast")		
+		show_messages(r, "rast")		
 	}
 )
 
@@ -40,7 +40,7 @@ setMethod('rast', signature(x='SpatExtent'),
 		e <- as.vector(x)		
 		r <- methods::new('SpatRaster')
 		r@ptr <- SpatRaster$new(c(nrow, ncol, nlyr), e, crs)
-		.messages(r, "rast")		
+		show_messages(r, "rast")		
 	}
 )
 
@@ -68,7 +68,7 @@ setMethod('rast', signature(x='character'),
 		f <- .fullFilename(x)
 		r <- methods::new('SpatRaster')
 		r@ptr <- SpatRaster$new(f)
-		.messages(r, "rast")		
+		show_messages(r, "rast")		
 	}
 )
 
@@ -78,7 +78,7 @@ setMethod('rast', signature(x='SpatRaster'),
 		r <- methods::new('SpatRaster')
 		r@ptr <- SpatRaster$new(dim(x), as.vector(ext(x)), crs(x))
 		# also need the keep the names ?
-		.messages(r, "rast")		
+		show_messages(r, "rast")		
 	}
 )
 
@@ -89,7 +89,7 @@ setMethod('rast', signature(x='matrix'),
 		r <- methods::new('SpatRaster')
 		r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), "")
 		values(r) <- x
-		.messages(r, "rast")		
+		show_messages(r, "rast")		
 	}
 )
 
@@ -103,7 +103,7 @@ setMethod('rast', signature(x='array'),
 		r <- methods::new('SpatRaster')
 		r@ptr <- SpatRaster$new(dims, c(0, dims[2], 0, dims[1]), "")
 		values(r) <- x
-		.messages(r, "rast")		
+		show_messages(r, "rast")		
 	}
 )
 

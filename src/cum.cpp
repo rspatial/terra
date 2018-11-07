@@ -1,7 +1,7 @@
 #include <type_traits>
 #include <vector>
 #include "spatraster.h"
-#include "util.h"
+#include "NA.h"
 
 
 template <typename T>

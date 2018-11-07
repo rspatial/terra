@@ -42,7 +42,7 @@ setMethod("ext<-", signature('SpatRaster', 'SpatExtent'),
 	function(x, value) {
 	    stop("not yet implemented")
 		#y@ptr <- y@ptr$extent(value)
-		#.messages(y)
+		#show_messages(y)
 	}
 )
 

@@ -6,7 +6,7 @@ setMethod("vect", signature(x='missing'),
 	function(...) {
 		p <- methods::new('SpatLayer')
 		p@ptr <- SpatLayer$new()
-		.messages(p)
+		show_messages(p)
 		return(p)
 	}
 )
@@ -16,7 +16,7 @@ setMethod("vect", signature(x='character'),
 		p <- methods::new('SpatLayer')
 		p@ptr <- SpatLayer$new()
 		p@ptr$read(x)
-		.messages(p)
+		show_messages(p)
 		p
 	}
 )
@@ -50,7 +50,7 @@ setMethod("vect", signature(x='matrix'),
 		if (!is.na(crs)) {
 			p@ptr$setCrs(crs)
 		}
-		.messages(p)
+		show_messages(p)
 		p
 	}
 )

@@ -92,20 +92,18 @@ RCPP_MODULE(spat){
 		.method("setNames", &SpatRaster::setNames, "setNames" )
 		.field_readonly("source", &SpatRaster::source )
 
-		
 		//.method("addSources", ( std::SpatRaster (SpatRaster::*)(std::SpatRaster) )( &SpatRaster::addSources), "addSources")
 		.method("addSources", &SpatRaster::addSources, "addSources")
 		.method("subset", &SpatRaster::subset, "subset")
-
 		
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>) )( &SpatRaster::cellFromXY ))
 		.method("cellFromRowCol", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>,std::vector<unsigned>) )( &SpatRaster::cellFromRowCol ))
-		.method("yFromRow", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>) )( &SpatRaster::yFromRow ))
-		.method("xFromCol", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>) )( &SpatRaster::xFromCol ))
-		.method("colFromX", ( std::vector<double> (SpatRaster::*)(std::vector<double>) )( &SpatRaster::colFromX ))
-		.method("rowFromY", ( std::vector<double> (SpatRaster::*)(std::vector<double>) )( &SpatRaster::rowFromY ))
-		.method("xyFromCell", ( std::vector< std::vector<double> > (SpatRaster::*)(std::vector<double>) )( &SpatRaster::xyFromCell ))
-		.method("rowColFromCell", ( std::vector< std::vector<double> > (SpatRaster::*)(std::vector<double>) )( &SpatRaster::rowColFromCell ))
+		.method("yFromRow", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>&) )( &SpatRaster::yFromRow ))
+		.method("xFromCol", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>&) )( &SpatRaster::xFromCol ))
+		.method("colFromX", ( std::vector<unsigned> (SpatRaster::*)(std::vector<double>&) )( &SpatRaster::colFromX ))
+		.method("rowFromY", ( std::vector<unsigned> (SpatRaster::*)(std::vector<double>&) )( &SpatRaster::rowFromY ))
+		.method("xyFromCell", ( std::vector< std::vector<double> > (SpatRaster::*)(std::vector<double>&) )( &SpatRaster::xyFromCell ))
+		.method("rowColFromCell", ( std::vector< std::vector<unsigned> > (SpatRaster::*)(std::vector<double>) )( &SpatRaster::rowColFromCell ))
 
 		.method("readStart", &SpatRaster::readStart, "readStart") 
 		.method("readStop", &SpatRaster::readStop, "readStop") 

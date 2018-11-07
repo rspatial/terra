@@ -80,5 +80,3 @@ setMethod(colFromCell, signature(object="SpatRaster", cell="numeric"),
 	}
 )
 
-
-

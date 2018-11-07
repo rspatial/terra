@@ -1,5 +1,6 @@
 #include "spatraster.h"
-#include "util.h"
+#include "string_utils.h"
+#include "math_utils.h"
 
 void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 

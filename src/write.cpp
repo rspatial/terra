@@ -1,6 +1,7 @@
 #include "spatraster.h"
 #include "SimpleIni.h"
-#include "util.h"
+#include "string_utils.h"
+#include "math_utils.h"
 
 bool SpatRaster::isSource(std::string filename) {
 	std::vector<std::string> ff = filenames();

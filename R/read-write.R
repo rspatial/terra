@@ -8,7 +8,7 @@
 setMethod('readStart', signature(x='SpatRaster'), 
 	function(x, ...) {
 		success <- x@ptr$readStart()
-		.messages(x, "readStart")		
+		show_messages(x, "readStart")		
 		invisible(success)
 	}
 )
@@ -17,7 +17,7 @@ setMethod('readStart', signature(x='SpatRaster'),
 setMethod('readStop', signature(x='SpatRaster'), 
 	function(x) {
 		success <- x@ptr$readStop()
-		.messages(x, "readStop")		
+		show_messages(x, "readStop")		
 		invisible(success)
 	}
 )
@@ -26,7 +26,7 @@ setMethod('readStop', signature(x='SpatRaster'),
 setMethod('writeStart', signature(x='SpatRaster', filename='character'), 
 	function(x, filename, overwrite=FALSE, ...) {
 		x@ptr$writeStart(filename, overwrite)
-		.messages(x, "writeStart")		
+		show_messages(x, "writeStart")		
 		b <- x@ptr$getBlockSize(4)
 		b$row <- b$row + 1
 		b		
@@ -37,7 +37,7 @@ setMethod('writeStart', signature(x='SpatRaster', filename='character'),
 setMethod('writeStop', signature(x='SpatRaster'), 
 	function(x) {
 		success <- x@ptr$writeStop()
-		.messages(x, "writeStop")		
+		show_messages(x, "writeStop")		
 		invisible(success)
 	} 
 )
@@ -46,7 +46,7 @@ setMethod('writeStop', signature(x='SpatRaster'),
 setMethod('writeValues', signature(x='SpatRaster', v='vector'), 
 	function(x, v, start) {
 		success <- x@ptr$writeValues(v, start-1)
-		.messages(x, "writeValues")
+		show_messages(x, "writeValues")
 		invisible(success)
 	}
 )
@@ -56,7 +56,7 @@ setMethod('writeValues', signature(x='SpatRaster', v='vector'),
 setMethod('writeRaster', signature(x='SpatRaster', filename='character'), 
 function(x, filename, overwrite=FALSE, ...) {
 	success <- x@ptr$writeRaster(filename, overwrite=overwrite)
-	.messages(x, "writeRaster")
+	show_messages(x, "writeRaster")
 	invisible(rast(filename))
 }
 )

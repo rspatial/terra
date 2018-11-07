@@ -1,5 +1,5 @@
 #include "spatraster.h"
-#include "util.h"
+#include "string_utils.h"
 
 void SpatRaster::setCRS(std::string _crs) {
 	lrtrim(_crs);

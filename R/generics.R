@@ -12,7 +12,7 @@ setMethod('c', signature(x='SpatRaster'),
 			}
 		}
 		x@ptr$setNames(x@ptr$names)
-		.messages(x, "c")		
+		show_messages(x, "c")		
 	}
 )
 
@@ -25,14 +25,14 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 		if (class(y) == "try-error") { stop("cannot get an extent from y") }
 	}
 	x@ptr <- x@ptr$crop(y@ptr, filename, snap, overwrite)
-	.messages(x, "crop")		
+	show_messages(x, "crop")		
 }
 )
 
 setMethod("extract", signature(x="SpatRaster", y="SpatLayer"), 
 function(x, y, fun="", ...) { 
     r <- x@ptr$extract(y@ptr, fun)
-	x <- .messages(x, "extract")		
+	x <- show_messages(x, "extract")		
 	r
 }
 )
@@ -41,7 +41,7 @@ function(x, y, fun="", ...) {
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 function(x, mask, filename="", overwrite=FALSE, ...) { 
     x@ptr <- x@ptr$mask(mask@ptr, filename[1], overwrite[1])
-	.messages(x, "mask")		
+	show_messages(x, "mask")		
 }
 )
 
@@ -49,7 +49,7 @@ setMethod("rasterize", signature(x="SpatLayer", y="SpatRaster"),
 function(x, y, background=NA, filename="", ...) { 
 	overwrite <- .overwrite(...)
 	y@ptr <- y@ptr$rasterizePolygons(x@ptr, background, filename[1], overwrite)
-	.messages(y, "rasterize")
+	show_messages(y, "rasterize")
 }
 )
 
@@ -57,7 +57,7 @@ setMethod('trim', signature(x='SpatRaster'),
 function(x, padding=0, filename='', ...) {
 	overwrite <- .overwrite(...)
 	x@ptr <- x@ptr$trim(padding, filename, overwrite)
-	.messages(x, "rasterize")
+	show_messages(x, "rasterize")
 }
 )
 

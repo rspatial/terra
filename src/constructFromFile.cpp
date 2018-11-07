@@ -1,6 +1,6 @@
 #include "spatraster.h"
 #include "SimpleIni.h"
-#include "util.h"
+#include "string_utils.h"
 
 
 bool SpatRaster::constructFromFile(std::string fname) {

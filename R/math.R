@@ -17,7 +17,7 @@ setMethod("Math", signature(x='SpatRaster'),
 		} else {
 			x@ptr <- x@ptr$math(oper, "", FALSE)
 		}
-		.messages(x, oper)
+		show_messages(x, oper)
 	}	
 )
 

@@ -1,5 +1,5 @@
 #include "spatraster.h"
-#include "util.h"
+#include "math_utils.h"
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()

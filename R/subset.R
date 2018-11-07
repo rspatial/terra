@@ -18,7 +18,7 @@ function(x, subset, filename='', overwrite=FALSE, ...) {
 	}
 	subset <- as.integer(subset) - 1
 	x@ptr <- x@ptr$subset(subset, filename, overwrite)
-	.messages(x, "subset")
+	show_messages(x, "subset")
 	return(x)	
 } )
 

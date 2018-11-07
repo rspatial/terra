@@ -1,5 +1,5 @@
 #include "spatraster.h"
-#include "util.h"
+#include "NA.h"
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
@@ -188,7 +188,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 				GDALClose((GDALDatasetH) poDataset);	
 				return errout;
 			} 
-			setNAN(out, naflag);
+			set_NA(out, naflag);
 		} else if (gdtype == GDT_Float32) {
 			std::vector<float> lyrout(ncell);
 			CPLErr err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
@@ -197,7 +197,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 				GDALClose((GDALDatasetH) poDataset);	
 				return errout;
 			}
-			setNAN(lyrout, naflag);
+			set_NA(lyrout, naflag);
 			for (size_t j=0; j<ncell; j++) {
 				out[cell+j] = lyrout[j];
 			}
@@ -211,15 +211,12 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned row, unsigned nrows, uns
 
 
 
-std::vector<double> SpatRaster::readPointsGDAL(const std::vector<double> &x, const std::vector<double> &y) {
+std::vector<double> SpatRaster::readRowColGDAL(const std::vector<unsigned> &rows, const std::vector<unsigned> &cols) {
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
     GDALAllRegister();
 	const char* pszFilename = source[0].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
-
-	std::vector<double> cols = colFromX(x);
-	std::vector<double> rows = rowFromY(y);
 
 	unsigned n = rows.size();
 	std::vector<double> errout;
@@ -241,7 +238,7 @@ std::vector<double> SpatRaster::readPointsGDAL(const std::vector<double> &x, con
 					return errout;
 				} 
 			}
-			setNAN(out, naflag);
+			set_NA(out, naflag);
 		} else if (gdtype == GDT_Float32) {
 			std::vector<float> lyrout(n);
 			for (size_t j=0; j < n; j++) {		
@@ -252,7 +249,7 @@ std::vector<double> SpatRaster::readPointsGDAL(const std::vector<double> &x, con
 					return errout;
 				}
 			}
-			setNAN(lyrout, naflag);
+			set_NA(lyrout, naflag);
 			for (size_t j=0; j<out.size(); j++) {
 				out[offset+j] = lyrout[j];
 			}
