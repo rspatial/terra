@@ -38,7 +38,7 @@ function(x, i, j, ... ,drop=TRUE) {
 	if (nargs() == 3) {
 		i <- cellFromRowCol(x, i, 1:ncol(x))
 	} 
-	r <- x@ptr$extractCell(i)
+	r <- x@ptr$extractCell(i-1)
 	show_messages(x)
 	matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
 })
@@ -47,7 +47,7 @@ setMethod("[", c("SpatRaster", "missing", "numeric"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- cellFromRowCol(x, 1:nrow(x), j)
 	if (any(i > 2^.Machine$double.digits)) .big_number_warning()
-	r <- x@ptr$extractCell(i)
+	r <- x@ptr$extractCell(i-1)
 	show_messages(x)
 	matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
 })
@@ -57,7 +57,7 @@ setMethod("[", c("SpatRaster", "numeric", "numeric"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- cellFromRowCol(x, i, j)
 	if (any(i > 2^.Machine$double.digits)) .big_number_warning()
-	r <- x@ptr$extractCell(i)
+	r <- x@ptr$extractCell(i-1)
 	show_messages(x)
 	matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
 })

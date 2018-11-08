@@ -5,6 +5,13 @@
 \alias{extract}
 \alias{extract,SpatRaster,SpatLayer-method}
 
+\alias{[,SpatRaster,SpatLayer,missing-method}
+\alias{[,SpatRaster,missing,missing-method}
+\alias{[,SpatRaster,numeric,missing-method}
+\alias{[,SpatRaster,missing,numeric-method}
+
+
+
 \title{Extract values from a SpatRaster}
 
 \description{
@@ -31,6 +38,10 @@ r <- rast(ncol=10, nrow=10)
 values(r) <- 1:100
 p <- vect(cbind(0,0))
 extract(r, p)
+
+r[1,]
+r[5]
+r[,5]
 }
 
 \keyword{methods}

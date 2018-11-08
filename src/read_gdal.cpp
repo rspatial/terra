@@ -115,7 +115,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 }
 
 
-bool SpatRaster::readStartGDAL(unsigned src) {
+bool SpatRaster::readStartGDAL(unsigned src) {	
     GDALDataset *poDataset;
     GDALAllRegister();	
 	const char* pszFilename = source[src].filename.c_str();

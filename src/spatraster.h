@@ -103,7 +103,7 @@ class SpatRaster {
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
 		std::string getCRS() { return(crs); }
-		void setCRS(std::string _crs); 
+		void setCRS(std::string _crs);
 
 		std::vector<double> resolution();
 		double ncell() { return nrow * ncol; }
@@ -195,7 +195,7 @@ class SpatRaster {
 		unsigned rowFromY(double y);
 		std::vector< std::vector<double> > xyFromCell( std::vector<double> &cell );
 		std::vector< std::vector<double> > xyFromCell( double cell );
-			
+
 		std::vector< std::vector<unsigned> > rowColFromCell(std::vector<double> &cell);
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 
@@ -231,7 +231,7 @@ class SpatRaster {
 		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
 		bool writeStopGDAL();
 
-		
+
 		// for a specific gdal source
 		std::vector<double> readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		std::vector<double> readRowColGDAL(unsigned src, const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
@@ -262,10 +262,10 @@ class SpatRaster {
 		SpatExtent align(SpatExtent e, std::string snap="near");
 		SpatRaster crop(SpatExtent e, std::string filename="", std::string snap="near", bool overwrite=false);
 		SpatRaster cum(std::string fun, bool narm, std::string filename="", bool overwrite=false);
-		std::vector<double> extractLayer(SpatLayer v, std::string fun=""); 
+		std::vector<double> extractLayer(SpatLayer v, std::string fun="");
 		std::vector<double> extractCell(std::vector<double> &cell);
 
-				
+
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename="", bool overwrite=false);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
 		SpatRaster isnot(std::string filename="", bool overwrite=false);

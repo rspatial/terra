@@ -51,7 +51,7 @@ RCPP_MODULE(spat){
     class_<RasterSource>("RasterSource")	
 //		.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
-//		.field_readonly("driver", &RasterSource::driver)
+		.field_readonly("driver", &RasterSource::driver)
 //		.field_readonly("nrow", &RasterSource::nrow)
 //		.field_readonly("ncol", &RasterSource::ncol)
 		.field_readonly("nlyr", &RasterSource::nlyr)
@@ -65,6 +65,7 @@ RCPP_MODULE(spat){
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	    .constructor<std::string>()
+//	    .constructor<std::vector<std::string> >()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 		
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
