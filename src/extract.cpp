@@ -1,8 +1,6 @@
 #include "spatraster.h"
 #include "NA.h"
 
-#include <iostream>
-
 std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 
 	unsigned n = cell.size();
@@ -22,7 +20,7 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 			for (size_t i=0; i<slyrs; i++) {
 				size_t j = i * nc;
 				for (size_t k=0; k<n; k++) {
-					if (!is_NA(cell[k]) || cell[k] < 0 || cell[k] > nc) {
+					if (!is_NA(cell[k]) && cell[k] >= 0 && cell[k] < nc) {
 						out[offset + k] = source[src].values[j + cell[k]];
 					}
 				}
