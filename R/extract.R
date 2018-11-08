@@ -25,6 +25,7 @@ function(x, y, fun="", ...) {
 	x[i]
 })
 
+
 setMethod("[", c("SpatRaster", "missing", "missing"),
 function(x, i, j, ... , drop=TRUE) {
 	values(x)
