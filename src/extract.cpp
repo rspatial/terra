@@ -42,26 +42,30 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 std::vector<double> SpatRaster::extractLayer(SpatLayer v, std::string fun) {
 
 	std::vector<double> out;
+	std::vector<double> srcout;
+
 	std::string gtype = v.type();
 	if (gtype == "points") {
-		//for (size_t src=0; src<nsrc(); src++) {
-		size_t src = 0;
 		SpatDataFrame vd = v.getGeometryDF();
 		std::vector<double> x = vd.getD(0);
 		std::vector<double> y = vd.getD(1);
-		if (source[src].driver == "memory") {
-			std::vector<double> cell = cellFromXY(x, y);
-			out = extractCell(cell);
-		} else {
-			std::vector<double> x = vd.getD(2);
-			std::vector<double> y = vd.getD(3);
-			std::vector<unsigned> rows = rowFromY(y);
-			std::vector<unsigned> cols = colFromX(x);
-			#ifdef useGDAL
-			out = readRowColGDAL(src, rows, cols);
-			#endif
-
+		unsigned n = x.size();
+		for (size_t src=0; src<nsrc(); src++) {
+			if (source[src].driver == "memory") {
+				std::vector<double> cell = cellFromXY(x, y);
+				srcout = extractCell(cell);
+			} else {
+				std::vector<double> x = vd.getD(2);
+				std::vector<double> y = vd.getD(3);
+				std::vector<unsigned> rows = rowFromY(y);
+				std::vector<unsigned> cols = colFromX(x);
+				#ifdef useGDAL
+				srcout = readRowColGDAL(src, rows, cols);
+				#endif
+			}
 		}
+		out.insert(out.end(), srcout.begin(), srcout.end());
+		
 	} else if (gtype == "lines") {
 
 

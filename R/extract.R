@@ -13,8 +13,14 @@ setMethod("extract", signature(x="SpatRaster", y="SpatLayer"),
 function(x, y, fun="", ...) { 
     r <- x@ptr$extractLayer(y@ptr, fun)
 	x <- show_messages(x, "extract")		
-	r
+	matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
 })
+
+setMethod("[", c("SpatRaster", "SpatLayer", "missing"),
+function(x, i, j, ... , drop=TRUE) {
+	extract(x, i)
+})
+
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, fun="", ...) { 
@@ -54,7 +60,7 @@ function(x, i, j, ... ,drop=TRUE) {
 
 
 setMethod("[", c("SpatRaster", "numeric", "numeric"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, ..., drop=TRUE) {
 	i <- cellFromRowCol(x, i, j)
 	if (any(na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	r <- x@ptr$extractCell(i-1)
