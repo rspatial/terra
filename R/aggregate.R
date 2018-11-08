@@ -32,10 +32,9 @@
 }
 
 setMethod('aggregate', signature(x='SpatRaster'), 
-function(x, fact=2, fun='mean', na.rm=TRUE, filename="", ...)  {
+function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, ...)  {
 
 	#expand=TRUE, 
-	overwrite <- .overwrite(...)
 	
 	fact <- round(fact)
 	lf <- length(fact)

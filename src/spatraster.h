@@ -166,6 +166,7 @@ class SpatRaster {
         SpatRaster geometry(long nlyrs=-1);
 
 		bool constructFromFile(std::string fname);
+		bool constructFromFiles(std::vector<std::string> fnames);
 		bool constructFromFileGDAL(std::string fname);
 
 		SpatRaster addSources(SpatRaster x);
@@ -175,7 +176,7 @@ class SpatRaster {
 // helper methods
 ////////////////////////////////////////////////////
 
-		bool compare_geom(SpatRaster x, bool lyrs, bool crs);
+		bool compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs=false);
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
 		double cellFromXY(double x, double y);

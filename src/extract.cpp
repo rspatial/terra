@@ -20,8 +20,8 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 			}
 		} else {
 			std::vector<std::vector<unsigned> > rc = rowColFromCell(cell);
-			std::vector<unsigned> rows = rc[1];
-			std::vector<unsigned> cols = rc[0];
+			std::vector<unsigned> rows = rc[0];
+			std::vector<unsigned> cols = rc[1];
 			out = readRowColGDAL(rows, cols);
 		}
 	//}

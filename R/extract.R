@@ -4,20 +4,33 @@ function(x, y, fun="", ...) {
     r <- x@ptr$extractLayer(y@ptr, fun)
 	x <- show_messages(x, "extract")		
 	r
-}
-)
+})
+
+
+setMethod("[", c("SpatRaster", "missing", "missing"),
+function(x, i, j, ... , drop=TRUE) {
+	values(x)
+})
 
 
 setMethod("[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	theCall <- sys.call(-1)
-	narg <- length(theCall) - length(match.call(call=sys.call(-1)))
-	if (narg > 0) {
-		i <- cellFromRow(x, i)
+#	if (any(i) > 2^.Machine$double.digits) { warning() }
+	if (nargs() == 3) {
+		i <- cellFromRowCol(x, i, 1:ncol(x))
 	} 
 	r <- x@ptr$extractCell(i)
 	show_messages(x)
 	r
 })
 
+
+setMethod("[", c("SpatRaster", "numeric", "numeric"),
+function(x, i, j, ... ,drop=TRUE) {
+	i <- cellFromRowCol(x, i, j)
+#	if (any(i) > 2^.Machine$double.digits) { warning() }
+	r <- x@ptr$extractCell(i)
+	show_messages(x)
+	r
+})
 

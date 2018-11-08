@@ -13,7 +13,7 @@ Aggregation groups rectangular areas to create larger cells. The value for the r
 }
 
 \usage{
-\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", na.rm=TRUE, filename='', ...)
+\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -21,8 +21,9 @@ Aggregation groups rectangular areas to create larger cells. The value for the r
   \item{fact}{integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers)}  
   \item{fun}{function used to aggregate values }  
   \item{na.rm}{logical. If \code{TRUE}, NA cells are removed from calculations }
-  \item{filename}{character. Output filename (optional)}
-  \item{...}{if \code{x} is a Raster* object, additional arguments as for \code{\link{writeRaster}}}
+  \item{filename}{Character. Output filename. Optional}
+  \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{...}{Additional arguments. None implemented}  
 }
 
 

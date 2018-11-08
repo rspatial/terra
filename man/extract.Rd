@@ -30,7 +30,7 @@ Extract values from a SpatRaster for the locations of a SpatVector
 r <- rast(ncol=10, nrow=10)
 values(r) <- 1:100
 p <- vect(cbind(0,0))
-#extract(r, p)
+extract(r, p)
 }
 
 \keyword{methods}

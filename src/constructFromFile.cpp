@@ -75,3 +75,20 @@ bool SpatRaster::constructFromFile(std::string fname) {
 }
 
 
+
+bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
+
+	SpatRaster r = SpatRaster(fnames[1]);
+	setSource(r.source[0]);
+	for (size_t i=1; i<fnames.size(); i++) {
+		r = SpatRaster(fnames[i]);
+		if (!compare_geom(r, false, true, true)) {
+			setError(fnames[i] = " does not match previous sources");
+			return false;
+		} else {
+			addSources(r);
+		}
+	}
+	return true;
+}
+

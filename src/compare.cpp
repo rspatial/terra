@@ -2,7 +2,7 @@
 #include "math_utils.h"
 
 
-bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs) {
+bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs) {
 	bool e1 = is_equal(x.extent.xmax, extent.xmax, 1);
 	bool e2 = is_equal(x.extent.xmin, extent.xmin, 1);
 	bool e3 = is_equal(x.extent.ymax, extent.ymax, 1);
@@ -16,6 +16,10 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs) {
 	bool crsOK = true;
 	if (crs) {
 		crsOK = getCRS() == x.getCRS();
+		if ((!crsOK) & warncrs) {
+			crsOK = true;
+			addWarning("not matching crs");
+		}
 	}
 	return (rcOK && eOK && lyrOK && crsOK);
 }
