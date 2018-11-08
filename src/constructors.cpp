@@ -1,6 +1,12 @@
 #include "spatraster.h"
 
 
+RasterSource::RasterSource() {
+	open_write = false;
+	open_read = false;
+}
+
+
 SpatRaster::SpatRaster(std::string fname) {
 	constructFromFile(fname);
 }
@@ -12,8 +18,6 @@ void SpatRaster::setSources(std::vector<RasterSource> s) {
 	ncol = s[0].ncol;
 	extent = s[0].extent;
 	crs = s[0].crs;
-	open_write = false;
-	open_read = false;
 }
 
 

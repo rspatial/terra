@@ -66,7 +66,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, bool overwrite) {
 	poDstDS->SetProjection(pszSRS_WKT);
 	CPLFree(pszSRS_WKT);
 
-	gdalconnection = poDstDS;
+	source[0].gdalconnection = poDstDS;
 
 	source[0].range_min.resize(nlyr());
 	source[0].range_max.resize(nlyr());
@@ -88,7 +88,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> vals, unsigned row){
 	unsigned nc = nrows * ncol;
 	for (size_t i=0; i < nlyr(); i++) {
 		start = nc * i;
-		poBand = gdalconnection->GetRasterBand(i+1);
+		poBand = source[0].gdalconnection->GetRasterBand(i+1);
 		err = poBand->RasterIO( GF_Write, 0, row, ncol, nrows, &vals[start], ncol, nrows, GDT_Float64, 0, 0 );
 		if (err == 4) break;
 		minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
@@ -104,11 +104,11 @@ bool SpatRaster::writeStopGDAL() {
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
 	for (size_t i=0; i < nlyr(); i++) {
-		poBand = gdalconnection->GetRasterBand(i+1);
+		poBand = source[0].gdalconnection->GetRasterBand(i+1);
 		poBand->SetStatistics(source[0].range_min[i], source[0].range_max[i], -9999., -9999.);
 		source[0].hasRange[i] = true;
 	}
-	GDALClose( (GDALDatasetH) gdalconnection );
+	GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	return true;
 }
 

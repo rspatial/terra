@@ -22,6 +22,15 @@ class ColorTable {
 
 class RasterSource {
 	public:
+		//fstream* fs;
+#ifdef useGDAL
+		GDALDataset* gdalconnection;
+#endif
+		bool open_read;
+		bool open_write;
+
+		RasterSource();
+
 		unsigned ncol, nrow, nlyr;
 		SpatExtent extent;
 		std::string crs;
@@ -68,13 +77,6 @@ class BlockSize {
 
 class SpatRaster {
 
-	private:
-		//fstream* fs;
-#ifdef useGDAL
-		GDALDataset* gdalconnection;
-#endif
-		bool open_read;
-		bool open_write;
 	protected:
 		SpatExtent extent;
 		SpatExtent window;
@@ -214,26 +216,29 @@ class SpatRaster {
 // read and write
 ////////////////////////////////////////////////////
 
+		// for all sources
 		bool readStart();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
-
 		bool readStop();
-		std::vector<double> readValuesGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
-
-		bool readStartGDAL();
-		bool readStopGDAL();
-		std::vector<double> readChunkGDAL(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
-
 
 		bool writeStart(std::string filename, bool overwrite);
 		bool writeValues(std::vector<double> vals, unsigned row);
 		bool writeStop();
 		bool writeHDR(std::string filename);
 
-		bool writeStopGDAL();
-		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
 		bool writeStartGDAL(std::string filename, bool overwrite);
+		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
+		bool writeStopGDAL();
+
+		
+		// for a specific gdal source
+		std::vector<double> readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		std::vector<double> readRowColGDAL(unsigned src, const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
+
+		bool readStartGDAL(unsigned src);
+		bool readStopGDAL(unsigned src);
+		std::vector<double> readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 
 		void openFS(std::string const &filename);
 
@@ -260,7 +265,6 @@ class SpatRaster {
 		std::vector<double> extractLayer(SpatLayer v, std::string fun=""); 
 		std::vector<double> extractCell(std::vector<double> &cell);
 
-		std::vector<double> readRowColGDAL(const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
 				
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename="", bool overwrite=false);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
