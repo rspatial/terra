@@ -3,7 +3,6 @@
 
 
 RasterSource::RasterSource() {
-	has_subdatasets = false;
 	open_write = false;
 	open_read = false;
 }

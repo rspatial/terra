@@ -63,8 +63,9 @@ class RasterSource {
 		std::string datatype;
 		double NAflag;
 
-		bool has_subdatasets;
-		std::vector<std::string> subdatasets;
+		std::vector<bool> has_scale_offset;
+		std::vector<double> scale;
+		std::vector<double> offset;
 
 		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
