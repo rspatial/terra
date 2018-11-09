@@ -1,10 +1,56 @@
+#include <algorithm>
 #include "spatraster.h"
+#include "string_utils.h"
 #include "NA.h"
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
+
+
+bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> sds) {
+
+	std::vector<std::string> sd;
+	std::string delim = "NAME=";
+	for (size_t i=0; i<sds.size(); i++) {
+		std::string s = sds[i];
+		size_t pos = s.find(delim);
+		if (pos != std::string::npos) {
+			s.erase(0, pos + delim.length());
+			sd.push_back(s);
+		}
+	}
+
+	constructFromFileGDAL(sd[0]);
+	source[0].filename = filename;
+	source[0].has_subdatasets = true;
+	source[0].subdatasets = sd;
+	source[0].nlyr = sd.size();
+	source[0].names = sd;
+	
+/*	
+// perhaps still loop to see if they all have the same geometry?
+// multiple layers per source?
+	SpatRaster r;
+	bool success;
+    for (size_t i=1; i < sd.size(); i++) {
+		printf( "%s\n", sd[i].c_str() );
+		success = r.constructFromFileGDAL(sd[i]);
+		if (success) {
+			r.source[0].subdataset = true;
+			addSource(r);
+			if (r.msg.has_error) {
+				setError(r.msg.error);
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+*/
+	return true;	
+}
 
 
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
@@ -14,12 +60,29 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	const char* pszFilename = fname.c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 	
-    if( poDataset == NULL )  {	return false;}	
+    if( poDataset == NULL )  {	
+		setError("dataset " + fname + " is empty");
+		//printf("%s\n", pszFilename);
+		return false;
+	}	
 		
+	unsigned nl = poDataset->GetRasterCount();
+
+	if (nl == 0) {
+		std::vector<std::string> meta;
+		char **metadata = poDataset->GetMetadata("SUBDATASETS");
+	    for (size_t i=0; metadata[i] != NULL; i++) {
+			meta.push_back(metadata[i]);
+		}
+		if (meta.size() > 0) {
+			return constructFromSubDataSets(fname, meta);
+		}
+	}
+
 	RasterSource s;
 	s.ncol = poDataset->GetRasterXSize();
 	s.nrow = poDataset->GetRasterYSize();
-	s.nlyr = poDataset->GetRasterCount();
+	s.nlyr = nl;
 	
 	double adfGeoTransform[6];
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
@@ -105,7 +168,11 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 			s.hasRAT.push_back(false);
 		}
 		
-		s.names.push_back( "lyr" + std::to_string(i+1) ) ;
+		if (s.nlyr > 1) {
+			s.names.push_back(basename(fname) + std::to_string(i+1) ) ;
+		} else {
+			s.names.push_back(basename(fname)) ;			
+		}
 	}
 	GDALClose( (GDALDatasetH) poDataset );
 

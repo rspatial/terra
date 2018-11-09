@@ -1,11 +1,13 @@
 #include "spatraster.h"
-#include "SimpleIni.h"
+#include "SimpleIni/SimpleIni.h"
 #include "string_utils.h"
 
 
 bool SpatRaster::constructFromFile(std::string fname) {
 
-	if (!file_exists(fname)){
+//	bool OK = (fname.substr(0, 3) == "HDF") || (file_exists(fname));
+	bool OK = file_exists(fname);
+	if (!OK) {
 		setError("file does not exist");
 		return false;
 	}
@@ -78,7 +80,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 
 bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
 
-	SpatRaster r = SpatRaster(fnames[1]);
+	SpatRaster r = SpatRaster(fnames[0]);
 	setSource(r.source[0]);
 	for (size_t i=1; i<fnames.size(); i++) {
 		r = SpatRaster(fnames[i]);
@@ -86,7 +88,7 @@ bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
 			setError(fnames[i] = " does not match previous sources");
 			return false;
 		} else {
-			addSources(r);
+			addSource(r);
 		}
 	}
 	return true;

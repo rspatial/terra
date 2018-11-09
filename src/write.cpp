@@ -1,5 +1,5 @@
 #include "spatraster.h"
-#include "SimpleIni.h"
+#include "SimpleIni/SimpleIni.h"
 #include "string_utils.h"
 #include "math_utils.h"
 

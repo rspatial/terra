@@ -93,8 +93,7 @@ RCPP_MODULE(spat){
 		.method("setNames", &SpatRaster::setNames, "setNames" )
 		.field_readonly("source", &SpatRaster::source )
 
-		//.method("addSources", ( std::SpatRaster (SpatRaster::*)(std::SpatRaster) )( &SpatRaster::addSources), "addSources")
-		.method("addSources", &SpatRaster::addSources, "addSources")
+		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("subset", &SpatRaster::subset, "subset")
 		
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>) )( &SpatRaster::cellFromXY ))

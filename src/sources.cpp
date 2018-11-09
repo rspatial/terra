@@ -2,7 +2,14 @@
 #include "spatraster.h"
 
 
-SpatRaster SpatRaster::addSources(SpatRaster x) {
+RasterSource::RasterSource() {
+	has_subdatasets = false;
+	open_write = false;
+	open_read = false;
+}
+
+
+SpatRaster SpatRaster::combineSources(SpatRaster x) {
 	SpatRaster out = deepCopy();
 	if (compare_geom(x, false, false)) {
         if (!hasValues()) {
@@ -16,6 +23,17 @@ SpatRaster SpatRaster::addSources(SpatRaster x) {
 	return(out);
 }
 
+void SpatRaster::addSource(SpatRaster x) {
+	if (compare_geom(x, false, false)) {
+        if (!hasValues()) {  //or if n src == 0?
+            source = x.source;
+        } else {
+            source.insert(source.end(), x.source.begin(), x.source.end());
+        }
+	} else {
+		setError("dimensions and/or extent do not match");
+	}
+}
 
 
 unsigned SpatRaster::nsrc() {

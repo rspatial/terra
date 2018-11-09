@@ -63,6 +63,9 @@ class RasterSource {
 		std::string datatype;
 		double NAflag;
 
+		bool has_subdatasets;
+		std::vector<std::string> subdatasets;
+
 		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
 };
@@ -170,8 +173,10 @@ class SpatRaster {
 		bool constructFromFile(std::string fname);
 		bool constructFromFiles(std::vector<std::string> fnames);
 		bool constructFromFileGDAL(std::string fname);
+		bool constructFromSubDataSets(std::string filename, std::vector<std::string> sds);
 
-		SpatRaster addSources(SpatRaster x);
+		void addSource(SpatRaster x);
+		SpatRaster combineSources(SpatRaster x);
 		SpatRaster subset(std::vector<unsigned> lyrs, std::string filename, bool overwrite);
 
 ////////////////////////////////////////////////////

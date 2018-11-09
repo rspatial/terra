@@ -8,7 +8,7 @@ setMethod('c', signature(x='SpatRaster'),
 	function(x, ...) {
 		for (i in list(...)) {
 			if (class(i) == 'SpatRaster') {
-				x@ptr <- x@ptr$addSources(i@ptr)
+				x@ptr <- x@ptr$combineSources(i@ptr)
 			}
 		}
 		x@ptr$setNames(x@ptr$names)
