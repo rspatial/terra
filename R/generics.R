@@ -31,7 +31,8 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 function(x, mask, filename="", overwrite=FALSE, ...) { 
-    show_messages(x@ptr <- x@ptr$mask(mask@ptr, filename[1], overwrite[1]), "mask")		
+    x@ptr <- x@ptr$mask(mask@ptr, filename[1], overwrite[1])
+	show_messages(x, "mask")		
 }
 )
 

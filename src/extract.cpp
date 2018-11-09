@@ -28,7 +28,7 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 			}
 		} else {
 		#ifdef useGDAL
-			std::vector<double> srcout = readRowColGDAL(src, rows, cols);
+			std::vector<double> srcout = readRowColGDAL(src, rows, cols); // 
 			std::copy(srcout.begin(), srcout.end(), out.begin()+offset);
 			offset += n;
         #endif
@@ -49,7 +49,6 @@ std::vector<double> SpatRaster::extractLayer(SpatLayer v, std::string fun) {
 		SpatDataFrame vd = v.getGeometryDF();
 		std::vector<double> x = vd.getD(0);
 		std::vector<double> y = vd.getD(1);
-		unsigned n = x.size();
 		for (size_t src=0; src<nsrc(); src++) {
 			if (source[src].driver == "memory") {
 				std::vector<double> cell = cellFromXY(x, y);

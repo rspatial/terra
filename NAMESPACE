@@ -1,6 +1,6 @@
 import(Rcpp)
 importFrom(methods, new, validObject)
-importFrom(stats, aggregate)
+importFrom(stats, aggregate, na.omit)
 importFrom(graphics, lines, points, image)
 import(raster)
 exportMethods("[", "[[", "==", "!=", "!", aggregate, as.array, as.data.frame, as.matrix, crop, crs, "crs<-", extract, focal, geom, image, lines, mask, ncell, ncol, "ncol<-", nrow, "nrow<-", plot, points, rasterize, res, subset, trim, values, "values<-", xres, yres, yFromRow, xFromCol, colFromX, rowFromY, cellFromXY, cellFromRowCol, xyFromCell, yFromCell, xFromCell, rowColFromCell, rowFromCell, colFromCell, readStart, readStop, writeStart, writeStop, writeValues, writeRaster)
