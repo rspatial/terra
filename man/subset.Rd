@@ -3,6 +3,7 @@
 \alias{subset}
 \alias{subset,SpatRaster-method}
 \alias{[[,SpatRaster,numeric,missing-method}
+\alias{$,SpatRaster-method}
 
 \title{Subset a SpatRaster object}
 

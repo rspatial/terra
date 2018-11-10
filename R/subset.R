@@ -16,11 +16,14 @@ function(x, subset, filename="", format="", datatype="FLT4S", overwrite=FALSE, .
 		}
 		subset <- i
 	}
-	subset <- as.integer(subset) - 1
+	subset <- as.integer(subset - 1)
 	x@ptr <- x@ptr$subset(subset, filename, format, datatype, overwrite)
 	show_messages(x, "subset")
 	return(x)	
 } )
+
+
+setMethod("$", "SpatRaster",  function(x, name) { subset(x, name) } )
 
 
 setMethod("[[", c("SpatRaster", "numeric", "missing"),

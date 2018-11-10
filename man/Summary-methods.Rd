@@ -3,6 +3,8 @@
 \docType{methods}
 
 \alias{Summary-methods}
+
+\alias{Summary,SpatRaster-method}
 \alias{mean,SpatRaster-method}
 
 \title{ Summary methods }

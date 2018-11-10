@@ -125,6 +125,9 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
 		rs.CT.resize(0);
         rs.hasRAT.resize(0);
 		rs.RAT.resize(0);
+		rs.has_scale_offset.resize(0);
+		rs.scale.resize(0);
+		rs.offset.resize(0);
 
 
         if (memory) {
@@ -140,6 +143,10 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                     rs.range_max.push_back(range_max[j]);
                     rs.hasCT.push_back(hasCT[j]);
                     rs.hasRAT.push_back(hasRAT[j]);
+					//rs.RAT.push_back(RAT[j]);
+					rs.has_scale_offset.push_back(has_scale_offset[j]);
+					rs.scale.resize(scale[j]);
+					rs.offset.resize(offset[j]);
                 }
             }
         } else {
@@ -152,6 +159,9 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                 rs.range_max.push_back(range_max[j]);
                 rs.hasCT.push_back(hasCT[j]);
                 rs.hasRAT.push_back(hasRAT[j]);
+				rs.has_scale_offset.push_back(has_scale_offset[j]);
+				rs.scale.resize(scale[j]);
+				rs.offset.resize(offset[j]);
             }
         }
         rs.nlyr = nl;
@@ -189,7 +199,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, std::string filename, 
     SpatRaster out = geometry();
     out.source.resize(0);
 
-    unsigned oldsize = lyrs.size();
+    unsigned oldsize = lyrs.size(); 
     lyrs = validLayers(lyrs, nlyr());
 
 	if (lyrs.size() == 0) {
