@@ -227,7 +227,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell * nl);
 	int hasNA;
-	CPLErr err;
+	CPLErr err = CE_None;
 	for (size_t i=0; i < nl; i++) {		
 		cell = ncell * i;
 		poBand = source[src].gdalconnection->GetRasterBand(i + 1);
@@ -235,14 +235,14 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 		if (!hasNA) { naflag = NAN; }
 		GDALDataType gdtype = poBand->GetRasterDataType();
 		if (gdtype == GDT_Float64) {
-			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &out[cell], ncols, nrows, GDT_Float64, 0, 0);
-			if (err == 4) { break; }
+			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &out[cell], ncols, nrows, gdtype, 0, 0);
+			if (err != CE_None ) { break; }
 			set_NA(out, naflag);
 		} else {
 			
 		}
 	}
-	if (err == 4) {
+	if (err != CE_None ) {
 		setError("cannot read values");
 		return errout;
 	}
@@ -311,7 +311,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell*nl);
 	int hasNA;
-	CPLErr err;
+	CPLErr err = CE_None;
 	for (size_t i=0; i < nl; i++) {		
 		cell = ncell * i;
 		poBand = poDataset->GetRasterBand(i + 1);
@@ -320,45 +320,45 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 		if (!hasNA) { naflag = NAN; }
 		if (gdtype == GDT_Float64) {
 			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &out[cell], ncols, nrows, gdtype, 0, 0);
-			if (err == 4) { break; }
+			if (err != CE_None ) { break; }
 			set_NA(out, naflag);
 			applyScaleOffset(out, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Float32) {
 			std::vector<float> lyrout(ncell);
 			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
-			if (err == 4) { break; }
+			if (err != CE_None ) { break; }
 			set_NA_so(lyrout, naflag, out, cell, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Byte) {
 			std::vector<int8_t> lyrout(ncell);
 			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
-			if (err == 4) { break; }
+			if (err != CE_None ) { break; }
 			set_NA_so(lyrout, naflag, out, cell, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Int16) {
 			std::vector<int16_t> lyrout(ncell);
 			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
-			if (err == 4) { break; }
+			if (err != CE_None ) { break; }
 			set_NA_so(lyrout, naflag, out, cell, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt16) {
 			std::vector<uint16_t> lyrout(ncell);
 			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
-			if (err == 4) { break; }
+			if (err != CE_None ) { break; }
 			set_NA_so(lyrout, naflag, out, cell, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Int32) {
 			std::vector<int32_t> lyrout(ncell);
 			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
-			if (err == 4) { break ;}
+			if (err != CE_None ) { break ;}
 			set_NA_so(lyrout, naflag, out, cell, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt32) {
 			std::vector<uint32_t> lyrout(ncell);
 			err = poBand->RasterIO(GF_Read, col, row, ncols, nrows, &lyrout[cell], ncols, nrows, gdtype, 0, 0);
-			if (err == 4) { break ;}
+			if (err != CE_None ) { break ;}
 			set_NA_so(lyrout, naflag, out, cell, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else {
 			//int tbd
 		}
 	}
 	GDALClose((GDALDatasetH) poDataset);	
-	if (err == 4) {
+	if (err != CE_None ) {
 		setError("cannot read values");
 		return errout;
 	} 	
@@ -379,7 +379,7 @@ std::vector<double> SpatRaster::readRowColGDAL(unsigned src, const std::vector<u
 	std::vector<double> errout;
 	std::vector<double> out(n*nl);
 
-	CPLErr err;
+	CPLErr err = CE_None;
 	int hasNA;
 	unsigned offset;
 	for (size_t i=0; i<nl; i++) {		
@@ -392,7 +392,7 @@ std::vector<double> SpatRaster::readRowColGDAL(unsigned src, const std::vector<u
 		if (gdtype == GDT_Float64) {
 			for (size_t j=0; j < n; j++) {		
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[offset+j], 1, 1, gdtype, 0, 0);
-				if (err == 4) { break ;}
+				if (err != CE_None ) { break ;}
 			}
 			set_NA(out, naflag);
 			applyScaleOffset(out, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
@@ -400,42 +400,42 @@ std::vector<double> SpatRaster::readRowColGDAL(unsigned src, const std::vector<u
 			std::vector<float> lyrout(n);
 			for (size_t j=0; j < n; j++) {		
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[offset+j], 1, 1, gdtype, 0, 0);
-				if (err == 4) { break ;}
+				if (err != CE_None ) { break ;}
 			}
 			set_NA_so(lyrout, naflag, out, offset, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Byte) {
 			std::vector<int8_t> lyrout(n);
 			for (size_t j=0; j < n; j++) {		
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[offset+j], 1, 1, gdtype, 0, 0);
-				if (err == 4) { break ;}
+				if (err != CE_None ) { break ;}
 			}
 			set_NA_so(lyrout, naflag, out, offset, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Int16) {
 			std::vector<int16_t> lyrout(n);
 			for (size_t j=0; j < n; j++) {		
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[offset+j], 1, 1, gdtype, 0, 0);
-				if (err == 4) { break ;}
+				if (err != CE_None ) { break ;}
 			}
 			set_NA_so(lyrout, naflag, out, offset, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt16) {
 			std::vector<uint16_t> lyrout(n);
 			for (size_t j=0; j < n; j++) {		
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[offset+j], 1, 1, gdtype, 0, 0);
-				if (err == 4) { break ;}
+				if (err != CE_None ) { break ;}
 			}
 			set_NA_so(lyrout, naflag, out, offset, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Int32) {
 			std::vector<int32_t> lyrout(n);
 			for (size_t j=0; j < n; j++) {		
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[offset+j], 1, 1, gdtype, 0, 0);
-				if (err == 4) { break ;}
+				if (err != CE_None ) { break ;}
 			}
 			set_NA_so(lyrout, naflag, out, offset, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt32) {
 			std::vector<uint32_t> lyrout(n);
 			for (size_t j=0; j < n; j++) {		
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[offset+j], 1, 1, gdtype, 0, 0);
-				if (err == 4) { break ;}
+				if (err != CE_None ) { break ;}
 			}
 			set_NA_so(lyrout, naflag, out, offset, source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else {
@@ -443,7 +443,7 @@ std::vector<double> SpatRaster::readRowColGDAL(unsigned src, const std::vector<u
 		}
 	}
 	GDALClose((GDALDatasetH) poDataset);	
-	if (err == 4) {
+	if (err != CE_None ) {
 		setError("cannot read values");
 		return errout;
 	} 
