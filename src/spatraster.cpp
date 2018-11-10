@@ -8,6 +8,7 @@ SpatRaster::SpatRaster(std::string fname) {
 
 
 void SpatRaster::setSources(std::vector<RasterSource> s) {
+	
 	source = s;
 	nrow = s[0].nrow;
 	ncol = s[0].ncol;
@@ -17,6 +18,7 @@ void SpatRaster::setSources(std::vector<RasterSource> s) {
 
 
 void SpatRaster::setSource(RasterSource s) {
+	s.resize(s.nlyr);
 	setSources({s});
 }
 
