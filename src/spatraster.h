@@ -70,6 +70,8 @@ class RasterSource {
 
 		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
+		void setRange();
+		
 };
 
 
@@ -121,7 +123,7 @@ class SpatRaster {
 		bool hasValues() { return source[0].hasValues ; };
 		std::vector<double> getValues();
 		bool setValues(std::vector<double> _values);
-
+		void setRange();
 ////////////////////////////////////////////////////
 // property like methods for RasterSources
 ////////////////////////////////////////////////////
@@ -217,7 +219,6 @@ class SpatRaster {
 		std::vector<double> valuesCell(std::vector<double>);
 		std::vector<double> valuesRow(int);
 
-		void setRange();
 
 ////////////////////////////////////////////////////
 // read and write

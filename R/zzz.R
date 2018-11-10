@@ -3,7 +3,7 @@ loadModule("spat", TRUE)
 
 
 .onAttach <- function(libname, pkgname) {
-	min_raster <- "2.8.7"
+	min_raster <- "2.8.8"
 	tv <- utils::packageVersion("terra")
 	m <- paste0("\n\nterra ", tv, "\n\nThis is an early version of the \"terra\" package, for evaluation only\n")
 	e <- try(vv <- utils::packageVersion("raster"), silent=T)

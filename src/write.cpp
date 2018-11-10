@@ -129,7 +129,7 @@ bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
         source[0].values = vals;
         source[0].hasValues = true;
         source[0].memory = true;
-        setRange();
+        source[0].setRange();
 	}
 	return success;
 }
@@ -171,8 +171,8 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 		s.memory = true;
 		s.names = getNames();
 		s.driver = "memory";
+		s.setRange(); 
 		setSource(s);
-		setRange();
 		result = true;
 	} else {
 		setError("incorrect number of values");
@@ -180,27 +180,29 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 	return (result);
 }
 
-
-
-void SpatRaster::setRange() {
-
-	double vmin, vmax;
-	unsigned nsources = nsrc();
-	unsigned nc = ncell();
-	unsigned start;
-
-	for (size_t i=0; i<nsources; i++) {
-		unsigned nlyrs = source[i].nlyr;
-		source[i].range_min.resize(nlyrs);
-		source[i].range_max.resize(nlyrs);
-		source[i].hasRange.resize(nlyrs);
-		for (size_t j=0; j<nlyrs; j++) {
-			start = nc * j;
-			minmax(source[i].values.begin()+start, source[i].values.begin()+start+nc, vmin, vmax);
-			source[i].range_min[i] = vmin;
-			source[i].range_max[i] = vmax;
-			source[i].hasRange[i] = true;
+void SpatRaster::setRange() { 
+	for (size_t i=0; i<nsrc(); i++) {
+		if (source[i].memory) { // for now. should read from files as needed
+			source[i].setRange();
 		}
+	}
+}
+
+
+
+void RasterSource::setRange() {
+	double vmin, vmax;
+	unsigned nc = ncol * nrow;
+	unsigned start;
+	range_min.resize(nlyr);
+	range_max.resize(nlyr);
+	hasRange.resize(nlyr);
+	for (size_t i=0; i<nlyr; i++) {
+		start = nc * i;
+		minmax(values.begin()+start, values.begin()+start+nc, vmin, vmax);
+		range_min[i] = vmin;
+		range_max[i] = vmax;
+		hasRange[i] = true;
 	}
 }
 
