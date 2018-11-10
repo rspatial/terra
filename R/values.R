@@ -65,6 +65,17 @@ setMethod('values<-', signature(x='SpatRaster', 'ANY'),
 	x@ptr$hasRange
 }
 
+
+
+setMethod('sources', signature(x='SpatRaster'), 
+	function(x, ...) {
+		src <- x@ptr$filenames
+		src[src == ""] <= "memory"
+		data.frame(source=src, nlyr=x@ptr$nlyrBySource())
+	}
+)
+
+
 setMethod('minmax', signature(x='SpatRaster'), 
 	function(x) {
 		rmin <- x@ptr$range_min

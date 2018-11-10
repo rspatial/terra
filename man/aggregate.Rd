@@ -13,7 +13,7 @@ Aggregation groups rectangular areas to create larger cells. The value for the r
 }
 
 \usage{
-\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, ...)
+\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", na.rm=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -22,6 +22,8 @@ Aggregation groups rectangular areas to create larger cells. The value for the r
   \item{fun}{function used to aggregate values }  
   \item{na.rm}{logical. If \code{TRUE}, NA cells are removed from calculations }
   \item{filename}{Character. Output filename. Optional}
+  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
+  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
   \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{...}{Additional arguments. None implemented}  
 }

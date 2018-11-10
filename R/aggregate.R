@@ -32,7 +32,7 @@
 }
 
 setMethod('aggregate', signature(x='SpatRaster'), 
-function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, ...)  {
+function(x, fact=2, fun='mean', na.rm=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)  {
 
 	#expand=TRUE, 
 	
@@ -59,7 +59,7 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, ...)  
 	if (!is.na(op)) {	
 		r <- methods::new('SpatRaster')
 		#	fun='mean', expand=TRUE, na.rm=TRUE, filename=""
-		x@ptr <- x@ptr$aggregate(dims, fun, na.rm, filename, overwrite)
+		x@ptr <- x@ptr$aggregate(dims, fun, na.rm, filename[1], format[1], datatype[1], overwrite[1])
 		return (show_messages(x, "aggregate"))
 	} else {
 		e <- as.vector(ext(x))

@@ -26,7 +26,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 			// _DESC=
 			s.erase(0, pos + delim.length());
 			//nms.push_back(s);
-			printf( "%s\n", s.c_str() );
+			//printf( "%s\n", s.c_str() );
 			
 		}
 	}

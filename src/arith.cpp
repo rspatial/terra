@@ -135,7 +135,7 @@ bool smooth_operator(std::string oper) {
 }
 
 
-SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, bool overwrite) {
+SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
 	
 	SpatRaster out = geometry();
 
@@ -149,7 +149,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 		return(out);
 	}
 	
-  	out.writeStart(filename, overwrite);
+  	out.writeStart(filename, format, datatype, overwrite);
 	readStart();
 	x.readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -188,7 +188,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 
 
 
-SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, bool overwrite) {
+SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
@@ -196,7 +196,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 		return out;
 	}
 	
-  	out.writeStart(filename, overwrite);
+  	out.writeStart(filename, format, datatype, overwrite);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -235,7 +235,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, b
 }
 
 
-SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filename, bool overwrite) {
+SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
@@ -243,7 +243,7 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 		return out;
 	}
 	
-  	out.writeStart(filename, overwrite);
+  	out.writeStart(filename, format, datatype, overwrite);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);

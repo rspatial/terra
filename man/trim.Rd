@@ -10,15 +10,17 @@ Trim (shrink) a SpatRaster object by removing outer rows and columns that are \c
 }
 
 \usage{
-\S4method{trim}{SpatRaster}(x, padding=0, filename="", overwrite=FALSE, ...)
+\S4method{trim}{SpatRaster}(x, padding=0, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{padding}{integer. Number of outer rows/columns to keep}
   \item{filename}{Character. Output filename. Optional}
+  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
+  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
   \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{Additional arguments. None implemented}
 }
 
 

@@ -3,7 +3,7 @@
 #include "ogrsf_frmts.h"
 
 
-bool SpatLayer::write(std::string filename, bool overwrite) {
+bool SpatLayer::write(std::string filename, std::string format, bool overwrite) {
 
 	msg.success = true;
 

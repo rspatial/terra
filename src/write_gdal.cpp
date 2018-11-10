@@ -1,5 +1,7 @@
 #include "spatraster.h"
 #include "math_utils.h"
+#include "string_utils.h"
+#include <unordered_map>
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
@@ -7,36 +9,42 @@
 #include "ogr_spatialref.h"
 
 
-bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
-	bool success;
-	SpatRaster r = geometry();
+
+void GDALformat(std::string &filename, std::string &format) {
+
+	lrtrim(format);
+	lrtrim(filename);
+	std::string ext = getFileExt(filename);
+    lowercase(ext);
 	
-	if (!hasValues()) {
-		addWarning("none of the cells have values");
+	std::unordered_map<std::string, std::string>
+	drivers = {
+		{".tif","GTiff"}, {".tiff","GTiff"},
+		{".nc","netCDF"}, {".cdf","netCDF"}, {".ncdf","netCDF"},
+		{".img","HFA"},
+		{".flt","EHdr"},
+		{".grd","RRASTER"},
+		{".sgrd","SAGA"}, {".sdat","SAGA"},
+		{".bil","BIL"},
+		{".bsq","BSQ"},
+		{".bip","BIP"},
+		{".rst","RST"},
+		{".envi","ENVI"},
+		{".asc","AAIGrid"}
+	};
+
+    auto i = drivers.find(ext);
+    if (i == drivers.end()) {
+		format = "GTiff";
+	} else {
+		format = i->second;
 	}
-	success = r.writeStartGDAL(filename, overwrite);
-	if (!success) {
-		setError("cannot open file");
-		return false;
-	}
-	success = r.writeValuesGDAL(getValues(), 0);
-	if (!success) {
-		setError("cannot write values to file");
-		return false;
-	}
-	success = r.writeStopGDAL();
-	if (!success) {
-		setError("cannot close file");
-		return false;
-	}
-	return success;
 }
 
 
+bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite) {
 
-bool SpatRaster::writeStartGDAL(std::string filename, bool overwrite) {
-
-	std::string format = "GTiff";     
+	GDALformat(filename, format);
 	const char *pszFormat = format.c_str();
 	const char *pszDstFilename = filename.c_str();
     GDALDriver *poDriver;
@@ -67,7 +75,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, bool overwrite) {
 	CPLFree(pszSRS_WKT);
 
 	source[0].gdalconnection = poDstDS;
-
+	source[0].datatype = datatype;
 	source[0].range_min.resize(nlyr());
 	source[0].range_max.resize(nlyr());
 	for (size_t i =0; i<nlyr(); i++) {
@@ -82,19 +90,69 @@ bool SpatRaster::writeStartGDAL(std::string filename, bool overwrite) {
 bool SpatRaster::writeValuesGDAL(std::vector<double> vals, unsigned row){
 	unsigned nrows = vals.size() / (nlyr() * ncol);
 	unsigned start;
-	CPLErr err;
+	CPLErr err = CE_None;
 	GDALRasterBand *poBand;
 	double vmin, vmax;
 	unsigned nc = nrows * ncol;
+	GDALDataType gdtype;
 	for (size_t i=0; i < nlyr(); i++) {
 		start = nc * i;
-		poBand = source[0].gdalconnection->GetRasterBand(i+1);
-		err = poBand->RasterIO( GF_Write, 0, row, ncol, nrows, &vals[start], ncol, nrows, GDT_Float64, 0, 0 );
-		if (err == 4) break;
+
+		std::string datatype = source[0].datatype;
+		if (datatype == "FLT8S") {
+			gdtype = GDT_Float64;
+			std::vector<double> vv(vals.begin(), vals.end());
+			poBand = source[0].gdalconnection->GetRasterBand(i+1);
+			err = poBand->RasterIO(GF_Write, 0, row, ncol, nrows, &vv[start], ncol, nrows, gdtype, 0, 0 );
+			if (err == 4) break;
+		} else if (datatype == "FLT4S") {
+			gdtype = GDT_Float32;
+			std::vector<float> vv(vals.begin(), vals.end());
+			poBand = source[0].gdalconnection->GetRasterBand(i+1);
+			err = poBand->RasterIO(GF_Write, 0, row, ncol, nrows, &vv[start], ncol, nrows, gdtype, 0, 0 );
+			if (err == 4) break;
+		} else if (datatype == "INT4S") {
+			gdtype = GDT_Int32;			
+			std::vector<int32_t> vv(vals.begin(), vals.end());
+			poBand = source[0].gdalconnection->GetRasterBand(i+1);
+			err = poBand->RasterIO(GF_Write, 0, row, ncol, nrows, &vv[start], ncol, nrows, gdtype, 0, 0 );
+			if (err == 4) break;
+		} else if (datatype == "INT2S") {
+			gdtype = GDT_Int16;
+			std::vector<int16_t> vv(vals.begin(), vals.end());
+			poBand = source[0].gdalconnection->GetRasterBand(i+1);
+			err = poBand->RasterIO(GF_Write, 0, row, ncol, nrows, &vv[start], ncol, nrows, gdtype, 0, 0 );
+			if (err == 4) break;
+		} else if (datatype == "INT4U") {
+			gdtype = GDT_UInt32;			
+			std::vector<uint32_t> vv(vals.begin(), vals.end());
+			poBand = source[0].gdalconnection->GetRasterBand(i+1);
+			err = poBand->RasterIO(GF_Write, 0, row, ncol, nrows, &vv[start], ncol, nrows, gdtype, 0, 0 );
+			if (err == 4) break;
+		} else if (datatype == "INT2U") {
+			gdtype = GDT_UInt16;			
+			std::vector<uint16_t> vv(vals.begin(), vals.end());
+			poBand = source[0].gdalconnection->GetRasterBand(i+1);
+			err = poBand->RasterIO(GF_Write, 0, row, ncol, nrows, &vv[start], ncol, nrows, gdtype, 0, 0 );
+			if (err == 4) break;
+		} else if (datatype == "INT1U") {
+			gdtype = GDT_Byte;		
+			std::vector<int8_t> vv(vals.begin(), vals.end());
+			poBand = source[0].gdalconnection->GetRasterBand(i+1);
+			err = poBand->RasterIO(GF_Write, 0, row, ncol, nrows, &vv[start], ncol, nrows, gdtype, 0, 0 );
+			if (err == 4) break;
+		}	
+
 		minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
 		source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
 		source[0].range_max[i] = std::max(source[0].range_max[i], vmax); 
+		
 	}
+	
+	if (err != CE_None ) {
+		setError("cannot write values");
+		return false;
+	}	
 	return true;
 }
 
@@ -113,62 +171,30 @@ bool SpatRaster::writeStopGDAL() {
 }
 
 
-/*
-bool SpatRaster::writeRasterGDAL(std::string filename, bool overwrite) {
 
-	std::string format = "GTiff"; 
-    
-	const char *pszFormat = format.c_str();
-	const char *pszDstFilename = filename.c_str();
-    GDALDriver *poDriver;
-    char **papszMetadata;
-	GDALAllRegister();
-	
-    poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-    if( poDriver == NULL ) return (false);
-    papszMetadata = poDriver->GetMetadata();
-    if(! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )  return (false);
- 
-	GDALDataset *poDstDS;
-	char **papszOptions = NULL;
-	poDstDS = poDriver->Create( pszDstFilename, ncol, nrow, nlyr(), GDT_Float64, papszOptions );
 
-	std::vector<double> rs = resolution();
-	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
-	poDstDS->SetGeoTransform( adfGeoTransform );
+bool SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite) {
+	bool success;
+	SpatRaster r = geometry();
 	
-
-	string prj = getCRS();
-	OGRSpatialReference oSRS;
-	OGRErr erro = oSRS.importFromProj4( &prj[0] ); 
-	if (erro == 4) { return false ; }	// ??
-	
-	char *pszSRS_WKT = NULL;	
-	oSRS.exportToWkt( &pszSRS_WKT );
-	poDstDS->SetProjection( pszSRS_WKT );
-	CPLFree( pszSRS_WKT );
-
-	std::vector<double> rmin = range_min();
-	std::vector<double> rmax = range_max();
-	CPLErr err;
-	bool result = true;
-	std::vector<double> vals;
-	GDALRasterBand *poBand;
-	for (size_t i=0; i < nlyr(); i++) {
-	
-		vals = readValues(0,nrow,0,ncol,i,1);
-		poBand = poDstDS->GetRasterBand(i+1);
-		err = poBand->RasterIO( GF_Write, 0, 0, ncol, nrow, &vals[0], ncol, nrow, GDT_Float64, 0, 0 );
-		if (err == 4) {
-			result = false;
-			break;
-		}
-		poBand->SetStatistics(rmin[i], rmax[i], -9999., -9999.);
+	if (!hasValues()) {
+		addWarning("none of the cells have values");
 	}
-	
-	GDALClose( (GDALDatasetH) poDstDS );
-	
-	return result;
+	success = r.writeStartGDAL(filename, format, datatype, overwrite);
+	if (!success) {
+		setError("cannot open file");
+		return false;
+	}
+	success = r.writeValuesGDAL(getValues(), 0);
+	if (!success) {
+		setError("cannot write values to file");
+		return false;
+	}
+	success = r.writeStopGDAL();
+	if (!success) {
+		setError("cannot close file");
+		return false;
+	}
+	return true;
 }
-*/
 

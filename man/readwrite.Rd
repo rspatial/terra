@@ -29,16 +29,18 @@ If you want to write all values of a Raster* object at once, you can also use \c
 \usage{
 \S4method{readStart}{SpatRaster}(x, ...)
 \S4method{readStop}{SpatRaster}(x)
-\S4method{writeStart}{SpatRaster,character}(x, filename="", overwrite=FALSE, ...)
+\S4method{writeStart}{SpatRaster,character}(x, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
 \S4method{writeStop}{SpatRaster}(x)
 \S4method{writeValues}{SpatRaster,vector}(x, v, start)
 }
 
 \arguments{
   \item{x}{SpatRaster object}
-  \item{filename}{character. Output file name}
-  \item{overwrite}{logical. If \code{TRUE} an existing file with the same name will be overwritten}
-  \item{...}{additional arguments as for \code{\link{writeRaster}}}
+  \item{filename}{Character. Output filename. Optional}
+  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
+  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
+  \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{...}{Additional arguments. None implemented}
   \item{v}{vector with cell values to be written}
   \item{start}{integer. Row number (counting starts at 1) from where to start writing \code{v}}
 

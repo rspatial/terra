@@ -13,9 +13,9 @@ setMethod("Math", signature(x='SpatRaster'),
 		if (substr(oper, 1, 3) == "cum") {
 			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, "", FALSE)
 		} else if (oper %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
-			x@ptr <- x@ptr$trig(oper, "", FALSE)
+			x@ptr <- x@ptr$trig(oper, "", "", "FLT4S", FALSE)
 		} else {
-			x@ptr <- x@ptr$math(oper, "", FALSE)
+			x@ptr <- x@ptr$math(oper, "", "", "FLT4S", FALSE)
 		}
 		show_messages(x, oper)
 	}	

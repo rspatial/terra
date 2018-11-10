@@ -265,7 +265,7 @@ bool SpatLayer::read(std::string fname) {
 	} else {
         setError("Cannot open file");
 		std::string gt = geomType(poLayer);		
-		printf("unknown geomtype: %s \n", gt.c_str());
+		//printf("unknown geomtype: %s \n", gt.c_str());
 	} 
 	
 	OGRFeature::DestroyFeature( poFeature );

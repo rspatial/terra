@@ -12,15 +12,17 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 } 
 
 \usage{
-\S4method{mask}{SpatRaster,SpatRaster}(x, mask, filename="", overwrite=FALSE, ...)
+\S4method{mask}{SpatRaster,SpatRaster}(x, mask, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
 }
 
 \arguments{
 \item{x}{SpatRaster object}
 \item{mask}{SpatRaster object}
-\item{filename}{character. Optional output filename}
+\item{filename}{Character. Output filename. Optional}
+\item{format}{Character. Output file format. See \code{\link{writeRaster}}}
+\item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
 \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
-\item{...}{additional arguments as in \code{\link{writeRaster}}}
+\item{...}{Additional arguments. None implemented}
 }
 
 \value{SpatRaster object}

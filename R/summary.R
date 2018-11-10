@@ -21,9 +21,9 @@
 	}
 		
 	if (is.null(add)) {
-		x@ptr <- x@ptr$summary(fun, na.rm, "", TRUE)
+		x@ptr <- x@ptr$summary(fun, na.rm, "", "", "FLT4S", TRUE)
 	} else {
-		x@ptr <- x@ptr$summary_numb(fun, add, na.rm, "", TRUE)			
+		x@ptr <- x@ptr$summary_numb(fun, add, na.rm, "", "", "FLT4S", TRUE)			
 	}
 	show_messages(x, fun)
 	x		

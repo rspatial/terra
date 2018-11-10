@@ -12,7 +12,7 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
 }
 
 \usage{
-\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, ...)
+\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
 
 }
 
@@ -21,6 +21,8 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
   \item{y}{SpatExtent object}
   \item{snap}{Character. One of "near", "in", or "out"}  
   \item{filename}{Character. Output filename. Optional}
+  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
+  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
   \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{...}{Additional arguments. None implemented}  
 }

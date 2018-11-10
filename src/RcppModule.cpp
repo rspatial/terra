@@ -134,16 +134,16 @@ RCPP_MODULE(spat){
 		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims, "get_aggregate_dims")
 		
-		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool) )( &SpatRaster::arith ))
-		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, std::string, bool) )( &SpatRaster::arith ))
+		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::arith ))
+		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::arith ))
 		.method("arith_rev", &SpatRaster::arith_rev, "arith_rev")
 		.method("math", &SpatRaster::math, "math")
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("cum", &SpatRaster::cum, "cum")
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
-		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, bool) )( &SpatRaster::logic ))
-		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, std::string, bool) )( &SpatRaster::logic ))
+		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))
+		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))
 	;
 }
 

@@ -79,7 +79,7 @@ class SpatLayer {
 		unsigned size();
 	
 		bool read(std::string fname);
-		bool write(std::string filename, bool overwrite);
+		bool write(std::string filename, std::string format, bool overwrite);
 
 // attributes		
 		std::vector<double> getDv(unsigned i);

@@ -1,6 +1,6 @@
 #include "spatraster.h"
 
-SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwrite) {
+SpatRaster SpatRaster::trim(unsigned padding, std::string filename, std::string format, std::string datatype, bool overwrite) {
 
 	long nrl = nrow * nlyr();
 	long ncl = ncol * nlyr();
@@ -62,6 +62,6 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, bool overwri
 	double yr = res[1];
 	SpatExtent e = SpatExtent(xFromCol(firstcol)-0.5*xr, xFromCol(lastcol)+0.5*xr, yFromRow(lastrow)-0.5*yr, yFromRow(firstrow)+0.5*yr);
 	
-	return( crop(e, filename, "near", overwrite) ) ;
+	return( crop(e, "near", filename, format, datatype, overwrite) ) ;
 }
 

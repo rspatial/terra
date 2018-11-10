@@ -11,15 +11,17 @@ Subset a set of layers from a SpatRaster object.
 }
 
 \usage{
-\S4method{subset}{SpatRaster}(x, subset, filename='', overwrite=FALSE, ...)
+\S4method{subset}{SpatRaster}(x, subset, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{subset}{integer or character. Should indicate the layers (represented as integer or by their names)}
-  \item{filename}{character. Output filename (optional)}
+  \item{filename}{Character. Output filename. Optional}
+  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
+  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
   \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments as for \code{\link{writeRaster}}}
+  \item{...}{Additional arguments. None implemented}
 }
 
 \value{

@@ -11,7 +11,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 }
 
 \usage{
-\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename='', overwrite=FALSE, ...) 
+\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", format="", datatype="FLT4S", overwrite=FALSE, ...) 
 }
 
 \arguments{
@@ -26,11 +26,11 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
   
 \item{fun}{function (optional). The function fun should take multiple numbers, and return a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument (or ignore it, e.g. as one of the 'dots' arguments. For example, \code{length} will fail, but \code{function(x, ...){na.omit(length(x))}} works. }
 
-\item{filename}{character. Filename for a new raster (optional)}
- 
-\item{overwrite}{logical. If \code{TRUE} filename is overwritten}
- 
-\item{...}{Additional arguments as for \code{\link{writeRaster}}}
+\item{filename}{Character. Output filename. Optional}
+\item{format}{Character. Output file format. See \code{\link{writeRaster}}}
+\item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
+\item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
+\item{...}{Additional arguments. None implemented}
 }
 
 \details{

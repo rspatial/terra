@@ -14,7 +14,7 @@ bool SpatRaster::isSource(std::string filename) {
 }
 
 
-bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
+bool SpatRaster::writeRaster(std::string filename, std::string format, std::string datatype, bool overwrite) {
 	lrtrim(filename);
 	if (filename == "") {
 		filename = "random_file_name.grd";
@@ -40,7 +40,7 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
         return writeHDR(filename);
 	} else {
         #ifdef useGDAL
-        return writeRasterGDAL(filename, overwrite);
+        return writeRasterGDAL(filename, format, datatype, overwrite);
 		#else
 		setError("GDAL is not available");
 	    return false;
@@ -49,7 +49,7 @@ bool SpatRaster::writeRaster(std::string filename, bool overwrite) {
 }
 
 
-bool SpatRaster::writeStart(std::string filename, bool overwrite) {
+bool SpatRaster::writeStart(std::string filename, std::string format, std::string datatype, bool overwrite) {
 
 //	double inf = std::numeric_limits<double>::infinity();
 //	s.min_range = inf;
@@ -85,7 +85,7 @@ bool SpatRaster::writeStart(std::string filename, bool overwrite) {
 			// open GDAL filestream
 			#ifdef useGDAL
 			source[0].driver = "gdal" ;
-			success = writeStartGDAL(filename, overwrite);
+			success = writeStartGDAL(filename, format, datatype, overwrite);
 			#else
 			setError("GDAL is not available");
 			return false;
@@ -236,7 +236,7 @@ bool SpatRaster::writeHDR(std::string filename) {
 
 
 /*
-bool SpatRaster::writeStartFs(std::string filename, bool overwrite,  fstream& f) {
+bool SpatRaster::writeStartFs(std::string filename, std::string format, std::string datatype, bool overwrite,  fstream& f) {
 
 	lrtrim(filename);
 	if (filename == "") {

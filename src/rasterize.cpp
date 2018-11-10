@@ -45,10 +45,10 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, const
 
 
 
-SpatRaster SpatRaster::rasterizePolygons(SpatLayer p, double background, std::string filename, bool overwrite) {
+SpatRaster SpatRaster::rasterizePolygons(SpatLayer p, double background, std::string filename, std::string format, std::string datatype, bool overwrite) {
 
 	SpatRaster out = geometry();
-  	out.writeStart(filename, overwrite);
+  	out.writeStart(filename, format, datatype, overwrite);
 	double value = 1;
 	double resx = xres();
 	double resy = yres();

@@ -16,7 +16,7 @@ Get the geometry type (points, lines, or polygons) of a SpatLayer
 }
 
 \arguments{
-\item{x}{SpatialVector}
+\item{x}{SpatLayer}
 \item{...}{additional arguments. None implemented }  
 }
 
