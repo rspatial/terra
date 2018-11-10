@@ -11,7 +11,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		setError("file does not exist");
 		return false;
 	}
-	
+
 	std::string ext = getFileExt(fname);
 
 	if (ext != ".grd") {
@@ -66,6 +66,11 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			s.range_max = str2dbl(strsplit(smax, ":"));
 			s.filename = setFileExt(fname, ".gri");
 			s.hasRange = std::vector<bool> (s.nlyr, true);
+
+			s.scale.resize(s.nlyr, 1);
+			s.offset.resize(s.nlyr, 0);
+			s.has_scale_offset = std::vector<bool> (s.nlyr, false);
+
 			s.hasValues = true;
 			s.memory = false;
 			s.driver = "raster";
