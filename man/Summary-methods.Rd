@@ -20,7 +20,11 @@ Because generic functions are used, the method applied is chosen based on the fi
 To summarize the values of all cells by layer see \code{layerStats}.
 }
 
+
 \value{SpatRaster}
+
+\seealso{ \code{\link[raster]{Math-methods}} }
+
 
 \examples{
 set.seed(0)
