@@ -171,6 +171,7 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 		s.memory = true;
 		s.names = getNames();
 		s.driver = "memory";
+		
 		s.setRange(); 
 		setSource(s);
 		result = true;

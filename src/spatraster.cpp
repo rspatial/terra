@@ -35,7 +35,7 @@ SpatRaster::SpatRaster() {
 	s.memory = true;
 	s.filename = "";
 	s.driver = "";
-	s.nlyr = 1;
+	s.nlyr = 1; // or 0?
 	s.hasRange = { false };
 	s.hasValues = false;
 	s.layers.resize(1,1);
@@ -99,11 +99,15 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.extent = extent;
 	s.crs = crs;
 	s.memory = true;
-	if (nlyrs < 1) {
-		s.nlyr = nlyr();
-	} else {
-		s.nlyr = nlyrs;
-	}
+	s.nlyr = (nlyrs < 1) ? nlyr(): nlyrs;
+	s.has_scale_offset.resize(s.nlyr);
+	s.scale.resize(s.nlyr);
+	s.offset.resize(s.nlyr);
+	s.hasRange.resize(s.nlyr);
+	s.range_min.resize(s.nlyr);
+	s.range_max.resize(s.nlyr);
+
+
 	std::vector<std::string> nms(s.nlyr);
 	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
 	s.names = nms;
@@ -130,7 +134,7 @@ void SpatRaster::setCRS(std::string _crs) {
 	crs = _crs;
 }
 
-std::vector<double> SpatRaster::resolution() { 
+std::vector<double> SpatRaster::resolution() {
 	return std::vector<double> { (extent.xmax - extent.xmin) / ncol, (extent.ymax - extent.ymin) / nrow };
 }
 

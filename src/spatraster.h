@@ -56,7 +56,7 @@ class RasterSource {
 		std::string filename;
 		//unsigned nlyrfile;
 
-		// for native files 
+		// for native files
 		std::string datatype; // also for writing gdal
 		std::string driver;
 		std::string bandorder;
@@ -71,7 +71,7 @@ class RasterSource {
 		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
 		void setRange();
-		
+
 };
 
 
@@ -181,7 +181,7 @@ class SpatRaster {
 
 		void addSource(SpatRaster x);
 		SpatRaster combineSources(SpatRaster x);
-		SpatRaster subset(std::vector<unsigned> lyrs, std::string filename, std::string format, std::string datatype, bool overwrite);
+		SpatRaster subset(std::vector<unsigned> lyrs, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 
 ////////////////////////////////////////////////////
 // helper methods
