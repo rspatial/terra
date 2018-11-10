@@ -99,15 +99,9 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.extent = extent;
 	s.crs = crs;
 	s.memory = true;
-	s.nlyr = (nlyrs < 1) ? nlyr(): nlyrs;
-	s.has_scale_offset.resize(s.nlyr);
-	s.scale.resize(s.nlyr);
-	s.offset.resize(s.nlyr);
-	s.hasRange.resize(s.nlyr);
-	s.range_min.resize(s.nlyr);
-	s.range_max.resize(s.nlyr);
-
-
+	nlyrs = (nlyrs < 1) ? nlyr(): nlyrs;
+	s.resize(nlyrs);
+	
 	std::vector<std::string> nms(s.nlyr);
 	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
 	s.names = nms;

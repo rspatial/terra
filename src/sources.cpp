@@ -97,6 +97,21 @@ std::vector<double> RasterSource::getValues(unsigned lyr) {
 }
 
 
+void RasterSource::resize(unsigned n) {
+	names.resize(n);
+    hasRange.resize(n);
+    range_min.resize(n);
+    range_max.resize(n);
+	has_scale_offset.resize(n);
+	scale.resize(n);
+	offset.resize(n);
+    hasCT.resize(n);
+	CT.resize(n);
+    hasRAT.resize(n);
+	RAT.resize(n);
+	nlyr = n;
+}
+
 
 std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
 	std::vector<RasterSource> out;
@@ -117,18 +132,7 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
         out = { *this };
     } else {
         RasterSource rs = *this;
-        rs.names.resize(0);
-        rs.hasRange.resize(0);
-        rs.range_min.resize(0);
-        rs.range_max.resize(0);
-        rs.hasCT.resize(0);
-		rs.CT.resize(0);
-        rs.hasRAT.resize(0);
-		rs.RAT.resize(0);
-		rs.has_scale_offset.resize(0);
-		rs.scale.resize(0);
-		rs.offset.resize(0);
-
+        rs.resize(0);
 
         if (memory) {
             if (hasValues) {
@@ -145,8 +149,8 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                     rs.hasRAT.push_back(hasRAT[j]);
 					//rs.RAT.push_back(RAT[j]);
 					rs.has_scale_offset.push_back(has_scale_offset[j]);
-					rs.scale.resize(scale[j]);
-					rs.offset.resize(offset[j]);
+					rs.scale.push_back(scale[j]);
+					rs.offset.push_back(offset[j]);
                 }
             }
         } else {
@@ -160,8 +164,8 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                 rs.hasCT.push_back(hasCT[j]);
                 rs.hasRAT.push_back(hasRAT[j]);
 				rs.has_scale_offset.push_back(has_scale_offset[j]);
-				rs.scale.resize(scale[j]);
-				rs.offset.resize(offset[j]);
+				rs.scale.push_back(scale[j]);
+				rs.offset.push_back(offset[j]);
             }
         }
         rs.nlyr = nl;

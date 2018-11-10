@@ -71,7 +71,7 @@ class RasterSource {
 		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
 		void setRange();
-
+		void resize(unsigned n);
 };
 
 

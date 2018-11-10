@@ -74,10 +74,9 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	poDstDS->SetProjection(pszSRS_WKT);
 	CPLFree(pszSRS_WKT);
 
+	source[0].resize(nlyr());
 	source[0].gdalconnection = poDstDS;
 	source[0].datatype = datatype;
-	source[0].range_min.resize(nlyr());
-	source[0].range_max.resize(nlyr());
 	for (size_t i =0; i<nlyr(); i++) {
 		source[0].range_min[i] = std::numeric_limits<double>::max();
 		source[0].range_max[i] = std::numeric_limits<double>::lowest();
