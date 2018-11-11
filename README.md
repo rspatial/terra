@@ -1,8 +1,12 @@
 # terra
 
-This R package is a replacement of the (https://github.com/rspatial/raster)[raster] package. It has a very similar, but simpler, interface, and it is much faster.
+This R package is a replacement of the [raster](https://github.com/rspatial/raster) package.
+It has a very similar, but simpler, interface, and it is much faster.
 
-All native computations are done in C++. Classes, methods and properties are exposed via a Rcpp module. The R side has three S4 classes (SpatRaster, SpatVector and SpatExtent) that hold a reference to a C++ object. These classes provide a "normal" "S4" R user-interface as in the raster package.
+All native computations are done in C++.
+Classes, methods and properties are exposed via a Rcpp module.
+The R side has three S4 classes (SpatRaster, SpatVector and SpatExtent) that hold a reference to a C++ object. 
+These classes provide a "normal" "S4" R user-interface as in the raster package.
 
 The first (alpha) release is expected by January 2019.
 
@@ -10,7 +14,8 @@ The first (alpha) release is expected by January 2019.
 
 ### Windows
 
-If you are on Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. After that, you need the first install development version of "raster" for "terra" to work. 
+If you are on Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use.
+After that, you need the first install development version of "raster" for "terra" to work. 
 
 Then, in R, install the packages.
 
@@ -22,9 +27,9 @@ devtools::install_github("rspatial/terra")
 
 ### Mac - OSX
 
-The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [https://github.com/r-spatial/sf](sf) )
+The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [sf](https://github.com/r-spatial/sf))
 
-With Homebrew you can do
+With Homebrew you can do:
 
 ```
 brew unlink gdal
@@ -44,7 +49,7 @@ devtools::install_github("rspatial/terra")
 
 ### Linux
 
-The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [https://github.com/r-spatial/sf](sf) )
+The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [sf](https://github.com/r-spatial/sf))
 
 
 To install these on Ubuntu you can do:
@@ -61,5 +66,5 @@ devtools::install_github("rspatial/raster")
 devtools::install_github("rspatial/terra")
 ```
 
-See the sf [https://github.com/r-spatial/sf](instructions) for installation on other linux systems.
+See the sf [instructions](https://github.com/r-spatial/sf) for installation on other linux systems.
 
