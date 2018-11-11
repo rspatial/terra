@@ -9,8 +9,10 @@ if (!isGeneric("image")) {
 }	
 
 setMethod("image", signature(x='SpatRaster'), 
-	function(x, maxpixels=100000, xlab='', ylab='', useRaster=TRUE, ...)  {
-		x <- sampleRegular(x[[1]], maxpixels)
+	function(x, y=1, maxpixels=100000, xlab='', ylab='', useRaster=TRUE, ...)  {
+		y <- as.integer(y[1])
+		stopifnot(y>0 && y<=nlyr(x))
+		x <- sampleRegular(x[[y]], maxpixels)
 		X <- xFromCol(x, 1:ncol(x))
 		Y <- yFromRow(x, nrow(x):1)
 		value <- matrix(as.vector(x), nrow=nrow(x), byrow=TRUE)

@@ -22,7 +22,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatLayer
 \S4method{plot}{SpatRaster,missing}(x, y, maxpixels=100000, xlab="", ylab="", ...)
 \S4method{plot}{SpatRaster,numeric}(x, y, maxpixels=100000, xlab="", ylab="", ...)
 \S4method{plot}{SpatLayer,missing}(x, y, xlab="", ylab="", ...)
-\S4method{image}{SpatRaster}(x, maxpixels=100000, xlab="", ylab="", useRaster=TRUE, ...)
+\S4method{image}{SpatRaster}(x, y, maxpixels=100000, xlab="", ylab="", useRaster=TRUE, ...)
 \S4method{points}{SpatLayer}(x, ...)
 \S4method{lines}{SpatLayer}(x, ...)
 }
