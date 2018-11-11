@@ -6,103 +6,58 @@
 #include <vector>
 #include "spatraster.h"
 
+std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigned scols) {
 
-// std::vector<double> SpatRaster::sampleRegular(unsigned size, bool cells, bool asRaster) {
-
-
-//	stopifnot(hasValues(x) | isTRUE(xy))
-//  stopifnot(size > 0)
-
-/*
-	bool allx = false;
-	if (size >= rcut.ncell()) {
-		if (asRaster) {
-			SpatRaster r = *this;
-			return(r);
-		} 
-		unsigned n = ncell();
-		std::vector<unsigned> cells(n);
-		for (size_t i=0; i<n; i++){ cell[i] = i; }
-		
-	} else {
-		double f = nrow/(nrow+ncol) 
-		double nrd = f * size;
-		double ncd = (1-f) * size;
-		f = sqrt(size/(nr*nc));
-		nrd = nrd * f;
-		ncd = ncd * f;
-		unsigned nr = round(nrd);
-		unsigned nc = round(ncd);
-		std::vector<unsigned> rows(nr);
-		std::vector<unsigned> cols(nc);
-		nrd = nrd + 1;
-		ncd = ncd + 1;
-		for (size_t i=0; i<nr; i++){ rows[i] = round((i+1) * nrow/(nrd)); }
-		for (size_t i=0; i<nc; i++){ cols[i] = round((i+1) * ncol/(ncd)); }		
-		std::vector<unsigned> cells = cellFromRowCol(rows, cols);		
+	double oldrow, oldcol;
+	size_t oldcell, newcell, oldnc, newnc;
+	std::vector<double>	out(srows * scols);
+	double rf = srows / nrow;
+	double cf = scols / ncol;
+	oldnc = ncell();
+	newnc = srows * scols;
+	size_t nl = source[src].nlyr;
+	
+	for (size_t r=0; r<srows; r++) {
+		oldrow = r + rf;
+		for (size_t c=0; c<scols; c++) {
+			oldcol = c + cf;	
+			oldcell = oldrow * nrow + oldcol;
+			newcell = r * scols + c;
+			for (size_t lyr=0; lyr<nl; lyr++) {
+				size_t old_offset = lyr * oldnc;
+				size_t new_offset = lyr * newnc;
+				out[new_offset + newcell] = source[src].values[old_offset + oldcell];
+			}
+		}
 	}
-	
-
-	
-	if (asRaster) {			
-			if (allx) {
-				if (!is.null(ext)) {
-					return(crop(x, ext))
-				} else {
-					return(x)
-				}
-			} 
-			
-			
-			cell = cellFromRowCol(x, rep(rows, each=nc), rep(cols, times=nr))
-			if (hv) {
-				m = .cellValues(x, cell)
-			} else {
-				m = NA
-			}
-
-			if (is.null(ext))  {
-				outras = raster(x)
-			} else {
-				outras = raster(ext) 
-				crs(outras) = crs(x)
-			}
-			nrow(outras) = nr
-			ncol(outras) = nc
-			
-//		outras = brick(outras, nlyr=nlyr)
-		
-		outras = setValues(outras, m)
-		names(outras) = names(x)
-		if (any(is.factor(x))) {
-			levels(outras) = levels(x)
-		}
-		return(outras)
-		
-	} else {
-		
-		if (allx) {
-			cell <= 1:ncell(rcut)
-		} else {
-			cell = cellFromRowCol(x, rep(rows, each=nc), rep(cols, times=nr))
-		}
-		m = NULL
-		nstart = 1
-		if (xy) {
-			m = xyFromCell(x, cell)
-			nstart = 3
-		}
-		if (cells) {
-			m = cbind(m, cell=cell)
-			nstart = nstart + 1
-		} 
-		if (hv) {
-			m = cbind(m, .cellValues(x, cell))
-			colnames(m)[nstart:(nstart+nlyr-1)] = names(x)
-		} 
-			
-		return(m)
-	}	
+	return out;	
 }
 
-*/
+
+SpatRaster SpatRaster::sampleRegular(unsigned size) {
+
+	if (size >= ncell()) return( *this );
+	
+	double f = size / ncell();
+	unsigned nr = ceil(nrow * f); 
+	unsigned nc = ceil(ncol * f); 
+	if ((nc == ncol) && (nr == nrow)) return( *this );
+
+	SpatRaster out = geometry(); 
+	out.source[0].nrow=nr;
+	out.source[0].ncol=nc;
+
+	if (!source[0].hasValues) return (out);
+
+	std::vector<double> v;	
+	for (size_t src=0; src<nsrc(); src++) {
+		if (source[src].memory) {
+			v = readSample(src, nr, nc);			
+		} else {
+			v = readGDALsample(src, nr, nc);
+		}
+		out.source[0].values.insert(out.source[0].values.end(), v.begin(), v.end());
+	}
+	return out;
+}
+

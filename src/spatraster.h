@@ -136,24 +136,9 @@ class SpatRaster {
 // property like methods for Layers
 ////////////////////////////////////////////////////
 
-		std::vector<bool> hasRange() {
-			std::vector<bool> x;
-			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].hasRange.begin(), source[i].hasRange.end()); }
-			return(x);
-		}
-
-		std::vector<double> range_min() {
-			std::vector<double> x;
-			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].range_min.begin(),source[i].range_min.end()); }
-			return(x);
-		}
-
-		std::vector<double> range_max() {
-			std::vector<double> x;
-			for (size_t i=0; i<source.size(); i++) { x.insert(x.end(), source[i].range_max.begin(), source[i].range_max.end()); }
-			return(x);
-		}
-
+		std::vector<bool> hasRange();
+		std::vector<double> range_min();
+		std::vector<double> range_max();
 		std::vector<std::string> getNames();
 		bool setNames(std::vector<std::string> names);
 
@@ -165,6 +150,7 @@ class SpatRaster {
 		SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string _crs);
 
+		SpatRaster(std::vector<std::string> fname);
 		SpatRaster(std::string fname);
 		SpatRaster(RasterSource s);
 		void setSource(RasterSource s);
@@ -242,8 +228,10 @@ class SpatRaster {
 
 		// for a specific gdal source
 		std::vector<double> readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		std::vector<double> readGDALsample(unsigned src, unsigned srows, unsigned scols);
 		std::vector<double> readRowColGDAL(unsigned src, const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
 
+	
 		bool readStartGDAL(unsigned src);
 		bool readStopGDAL(unsigned src);
 		std::vector<double> readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
@@ -283,7 +271,8 @@ class SpatRaster {
 		SpatRaster math(std::string fun, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster trig(std::string fun, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster rasterizePolygons(SpatLayer p, double background, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		std::vector<double> sampleRegular(unsigned size, bool cells, bool asRaster);
+		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
+		SpatRaster sampleRegular(unsigned size);
 		SpatRaster summary(std::string fun, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster trim(unsigned padding=0, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);

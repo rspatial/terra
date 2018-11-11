@@ -5,6 +5,20 @@
 
 
 
+.hidden <- function(pkg = "terra") {
+# helper to make hidden function starting with a dot visible. For debugging
+	x <- unclass(utils::lsf.str(envir = asNamespace(pkg), all = TRUE))
+	x <- x[grep("^\\.", x)]
+	i <- grep("._", x)
+	i <- c(i, grep("onAttach", x))
+	i <- c(i, grep("\\.\\.", x))
+	if (length(i) > 0) x <- x[-i]
+	x <- paste0(x, " <<- ", pkg, ":::", x)
+	for (cmd in x) eval(parse(text = cmd))
+}
+	
+
+
 setMethod ("show" , "SpatExtent", 
 	function(object) {
 		e <- as.vector(object)
@@ -66,9 +80,11 @@ setMethod ("show" , "SpatRaster",
 			sources[!m] <- f[!m] 
 			if (nsr > 1) {
 				lbs <- .nlyrBySource(object)
-				cat("data sources:", sources[1], paste0("(", lbs[1] , ifelse(lbs[1]>1, " layers)", " layer)")), "\n")
+				lbsprint <- paste0(" (", lbs[1], " layers)")
+				lbsprint[lbs == 1] <- ""
+				cat("data sources:", sources[1], lbsprint, "\n")
 				for (i in 2:(min(mnr, nsr))) {
-					cat("             ", sources[i], paste0("(", lbs[i] , ifelse(lbs[i]>1, " layers)", " layer)")), "\n")
+					cat("             ", sources[i], lbsprint[i], "\n")
 				}			
 				
 				if (nsr > mnr) {

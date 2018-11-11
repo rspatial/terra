@@ -6,9 +6,29 @@ SpatRaster::SpatRaster(std::string fname) {
 	constructFromFile(fname);
 }
 
+SpatRaster::SpatRaster(std::vector<std::string> fname) {
+	constructFromFile(fname[0]);
+	SpatRaster r;
+	bool success;
+	for (size_t i=1; i<fname.size(); i++) {
+		success = r.constructFromFile(fname[i]);
+		if (success) {
+			addSource(r);
+			if (r.msg.has_error) {
+				setError(r.msg.error);
+				return;
+			}
+		} else {
+			if (r.msg.has_error) {
+				setError(r.msg.error);
+			}
+			return;
+		}	
+	}
+}
+
 
 void SpatRaster::setSources(std::vector<RasterSource> s) {
-	
 	source = s;
 	nrow = s[0].nrow;
 	ncol = s[0].ncol;
@@ -150,5 +170,29 @@ std::vector<bool> SpatRaster::inMemory() {
 	std::vector<bool> m(source.size());
 	for (size_t i=0; i<m.size(); i++) { m[i] = source[i].memory; }
 	return(m);
+}
+
+std::vector<bool> SpatRaster::hasRange() {
+	std::vector<bool> x;
+	for (size_t i=0; i<source.size(); i++) { 
+		x.insert(x.end(), source[i].hasRange.begin(), source[i].hasRange.end()); 
+	}
+	return(x);
+}
+
+std::vector<double> SpatRaster::range_min() {
+	std::vector<double> x;
+	for (size_t i=0; i<source.size(); i++) { 
+		x.insert(x.end(), source[i].range_min.begin(),source[i].range_min.end()); 
+	}
+	return(x);
+}
+
+std::vector<double> SpatRaster::range_max() {
+	std::vector<double> x;
+	for (size_t i=0; i<source.size(); i++) { 
+		x.insert(x.end(), source[i].range_max.begin(), source[i].range_max.end()); 
+	}
+	return(x);
 }
 
