@@ -12,10 +12,10 @@
 \alias{rast,SpatLayer-method}
 
 
-\title{Create a SpatRaster object}
+\title{Create a SpatRaster}
 
 \description{
-Methods to create a SpatRaster object. These objects can be created from scratch or from a file.
+Methods to create a SpatRaster. These objects can be created from scratch or from a file.
 
 A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers).
 

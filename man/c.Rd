@@ -17,7 +17,7 @@ Combine SpatRaster objects (similar to raster::stack).
 }
 
 \arguments{
-  \item{x}{SpatRaster object}
+  \item{x}{SpatRaster}
   \item{...}{SpatRaster objects to be combined with \code{x}}
 }
 

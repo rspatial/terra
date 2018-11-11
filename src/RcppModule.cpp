@@ -140,6 +140,8 @@ RCPP_MODULE(spat){
 		.method("math", &SpatRaster::math, "math")
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("cum", &SpatRaster::cum, "cum")
+		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")
+		
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))

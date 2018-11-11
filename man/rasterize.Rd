@@ -17,8 +17,8 @@ rasterize polygons
 }
 
 \arguments{
-  \item{x}{SpatLayer object}
-  \item{y}{SpatRaster object}
+  \item{x}{SpatLayer}
+  \item{y}{SpatRaster}
   \item{background}{numeric. Value for cells that are not covered by a polygon}
   \item{filename}{Character. Output filename. Optional}
   \item{format}{Character. Output file format. See \code{\link{writeRaster}}}

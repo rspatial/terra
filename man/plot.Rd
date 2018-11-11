@@ -12,23 +12,23 @@
 \alias{lines,SpatLayer-method}
 
 
-\title{Plot a SpatRaster object}
+\title{Plot a SpatRaster or SpatLayer}
 
 \description{
-Plot (that is, make a map of) the values of a SpatRaster or SpatLayer object
+Plot (that is, make a map of) the values of a SpatRaster or SpatLayer
 }
 
 \usage{
-\S4method{plot}{SpatRaster,missing}(x, y, maxpixels=500000, xlab="", ylab="", ...)
-\S4method{plot}{SpatRaster,numeric}(x, y, maxpixels=500000, xlab="", ylab="", ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxpixels=100000, xlab="", ylab="", ...)
+\S4method{plot}{SpatRaster,numeric}(x, y, maxpixels=100000, xlab="", ylab="", ...)
 \S4method{plot}{SpatLayer,missing}(x, y, xlab="", ylab="", ...)
-\S4method{image}{SpatRaster}(x, maxpixels=500000, xlab="", ylab="", useRaster=TRUE, ...)
+\S4method{image}{SpatRaster}(x, maxpixels=100000, xlab="", ylab="", useRaster=TRUE, ...)
 \S4method{points}{SpatLayer}(x, ...)
 \S4method{lines}{SpatLayer}(x, ...)
 }
 
 \arguments{
-  \item{x}{Raster* object}
+  \item{x}{SpatRaster or SpatLayer}
   \item{y}{missing or integer indicating the layer(s) to be plotted}
   \item{maxpixels}{integer > 0. Maximum number of cells to use for the plot}
   \item{xlab}{character}

@@ -27,7 +27,7 @@ Coercion to other object types
 
 
 \arguments{
-\item{x}{SpatRaster object}
+\item{x}{SpatRaster}
 \item{wide}{Logical}
 \item{xy}{Logical}
 \item{cells}{Logical}

@@ -11,7 +11,7 @@
 \title{Get cell values}
 
 \description{
-values returns all cell values of a SpatRaster object.
+values returns all cell values of a SpatRaster.
 }
 
 \usage{
@@ -20,7 +20,7 @@ values returns all cell values of a SpatRaster object.
 }
 
 \arguments{
- \item{x}{SpatRaster object}
+ \item{x}{SpatRaster}
  \item{matrix}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector}
  \item{value}{matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value}
  \item{...}{additional arguments. none implemented}

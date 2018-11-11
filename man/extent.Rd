@@ -17,7 +17,7 @@
 \title{ext}
 
 \description{
-Get a SpatExtent object of a SpatRaster object, or coordinates from such an object. Or create a SpatExtent object from a vector (length=4; order= xmin, xmax, ymin, ymax)
+Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create a SpatExtent from a vector (length=4; order= xmin, xmax, ymin, ymax)
 }
 
 \usage{
@@ -27,13 +27,13 @@ Get a SpatExtent object of a SpatRaster object, or coordinates from such an obje
 }
 
 \arguments{
-  \item{x}{SpatRaster object}
-  \item{value}{SpatExtent object}  
+  \item{x}{SpatRaster}
+  \item{value}{SpatExtent}  
   \item{...}{Additional arguments. None implemented }
 }
  
 \value{
-SpatExtent object or numeric coordinate
+SpatExtent or numeric coordinate
 }
   
 \author{Robert J. Hijmans}

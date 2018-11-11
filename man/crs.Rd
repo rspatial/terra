@@ -27,7 +27,7 @@ Get or set the coordinate reference system (CRS) of a SpatRaster object.
 }
 
 \arguments{
-  \item{x}{SpatRaster object }
+  \item{x}{SpatRaster}
   \item{value}{character string describing a coordinate reference system in the PROJ.4 "+" format }
   \item{...}{additional arguments (none implemented)}
 }

@@ -7,7 +7,7 @@
 \title{Write raster data to a file}
 
 \description{
-Write a SpatRaster object to a file. 
+Write a SpatRaster to a file. 
 }
 
 \usage{
@@ -15,7 +15,7 @@ Write a SpatRaster object to a file.
 }
 
 \arguments{
-\item{x}{Raster* object}
+\item{x}{Raster*}
 \item{filename}{Character. Output filename. Optional}
 \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
 \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 

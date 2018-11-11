@@ -17,8 +17,8 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
 }
 
 \arguments{
-  \item{x}{SpatRaster object}
-  \item{y}{SpatExtent object}
+  \item{x}{SpatRaster}
+  \item{y}{SpatExtent}
   \item{snap}{Character. One of "near", "in", or "out"}  
   \item{filename}{Character. Output filename. Optional}
   \item{format}{Character. Output file format. See \code{\link{writeRaster}}}

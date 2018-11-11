@@ -6,7 +6,7 @@
 \title{Trim a SpatRaster}
 
 \description{
-Trim (shrink) a SpatRaster object by removing outer rows and columns that are \code{NA}.
+Trim (shrink) a SpatRaster by removing outer rows and columns that are \code{NA}.
 }
 
 \usage{

@@ -13,7 +13,7 @@
 
 Summary method compute cell (pixel) level statistics across layers, and most return a single layer (the exception is \code{range}). 
 
-The following summary methods are available for SpatRaster objects: \code{mean, max, min, range, prod, sum, any, all}
+The following summary methods are available for SpatRaster: \code{mean, max, min, range, prod, sum, any, all}
 
 See \code{reduce} to compute statistics that are not included here (e.g. median) or any other custom functions.
  

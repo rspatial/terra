@@ -43,6 +43,14 @@ function(x, y, background=NA, filename="", format="", datatype="FLT4S", overwrit
 }
 )
 
+setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"), 
+function(x, size, ...) { 
+    x@ptr <- x@ptr$sampleRegular(size)
+	show_messages(x, "sampleRegular")		
+}
+)
+
+
 setMethod('trim', signature(x='SpatRaster'), 
 function(x, padding=0, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...) {
 	x@ptr <- x@ptr$trim(padding[1], filename[1], format[1], datatype[1], overwrite[1])

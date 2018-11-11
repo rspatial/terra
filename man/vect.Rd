@@ -11,7 +11,7 @@
 \title{Create SpatLayer objects}
 
 \description{
-Create a new SpatLayer object
+Create a new SpatLayer
 } 
 
 \usage{

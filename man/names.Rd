@@ -9,7 +9,7 @@
 \title{Names of Spat* objects}
 
 \description{
-Get or set the names of the layers of a SpatRaster object.
+Get or set the names of the layers of a SpatRaster.
 }
 
 \usage{
@@ -18,7 +18,7 @@ Get or set the names of the layers of a SpatRaster object.
 }
 
 \arguments{
-  \item{x}{For names: SpatRaster object. For validNames: character}
+  \item{x}{For names: SpatRaster. For validNames: character}
   \item{value}{character (vector)}
 }
 

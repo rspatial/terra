@@ -35,7 +35,7 @@ If you want to write all values of a Raster* object at once, you can also use \c
 }
 
 \arguments{
-  \item{x}{SpatRaster object}
+  \item{x}{SpatRaster}
   \item{filename}{Character. Output filename. Optional}
   \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
   \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 

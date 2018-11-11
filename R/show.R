@@ -12,6 +12,7 @@
 	i <- grep("._", x)
 	i <- c(i, grep("onAttach", x))
 	i <- c(i, grep("\\.\\.", x))
+	i <- c(i, grep("\\.filenames", x))
 	if (length(i) > 0) x <- x[-i]
 	x <- paste0(x, " <<- ", pkg, ":::", x)
 	for (cmd in x) eval(parse(text = cmd))

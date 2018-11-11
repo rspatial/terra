@@ -35,7 +35,7 @@
 \alias{nrow,SpatLayer-method}
 \alias{ncol,SpatLayer-method}
 
-\title{Dimensions of a SpatRaster or SpatLayer object}
+\title{Dimensions of a SpatRaster or SpatLayer}
 
 \description{
 Get the number of rows (nrow), columns (ncol), cells (ncell), layers (nlyr), sources (nsrc) or the spatial resolution of a SpatRaster.

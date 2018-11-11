@@ -5,10 +5,10 @@
 \alias{[[,SpatRaster,numeric,missing-method}
 \alias{$,SpatRaster-method}
 
-\title{Subset a SpatRaster object}
+\title{Subset a SpatRaster}
 
 \description{
-Subset a set of layers from a SpatRaster object.  
+Subset a set of layers from a SpatRaster.  
 }
 
 \usage{
@@ -26,7 +26,7 @@ Subset a set of layers from a SpatRaster object.
 }
 
 \value{
-Raster* object
+SpatRaster
 }
 
 \examples{

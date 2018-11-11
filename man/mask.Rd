@@ -5,7 +5,7 @@
 \alias{mask}
 \alias{mask,SpatRaster,SpatRaster-method}
 
-\title{Mask values in a SpatRaster object}
+\title{Mask values in a SpatRaster}
 
 \description{
 Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} in another SpatRaster (the 'mask'). These cells become \code{NA}.
@@ -16,8 +16,8 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 }
 
 \arguments{
-\item{x}{SpatRaster object}
-\item{mask}{SpatRaster object}
+\item{x}{SpatRaster}
+\item{mask}{SpatRaster}
 \item{filename}{Character. Output filename. Optional}
 \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
 \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
