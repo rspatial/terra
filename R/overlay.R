@@ -14,43 +14,29 @@ function(x, ...)  {
 
 
 setMethod("overlay", signature(x="SpatRaster", y="SpatRaster"), 
-function(x, y, ..., fun, na.rm=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE)  {
-
-	out <- rast(x)
-	readStart(x)
-	b <- writeStart(out, filename, format, datatype, overwrite)
-	for (i in 1:b$n) {
-		v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
-		vv <- as.list(data.frame(v))
-		names(vv) <- NULL
-		r <- do.call(fun, vv, na.rm=na.rm)
-		# if i==1, check size of output and ajust layers
-		writeValues(out, r, b$row[i])
-	}
-	writeStop(out)
-	readStop(x)
-	return(out)
-}
-)
-
-
-setMethod("reduce", signature(x="SpatRaster"), 
-function(x, fun, na.rm=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)  {
+function(x, y, fun, ..., filename="", format="", datatype="FLT4S", overwrite=FALSE)  {
 	
-	txtfun <- .makeTextFun(match.fun(fun))
-	if (class(txtfun) == 'character') { 
-		if (txtfun %in% c("max", "min", "range", "prod", "sum", "any", "all"))
-		x@ptr <- x@ptr$summary(txtfun, na.rm, filename, format, datatype, overwrite)	
-		return(x)
-	} 
-		
-	out <- rast(x)
+	stopifnot(!missing(fun))
+	x@ptr$compare_geom(y@ptr, FALSE, TRUE, TRUE)
+	x <- show_messages(x)
+	
+	nl <- max(nlyr(x), nlyr(y))
+	out <- rast(x,nlyr=nl)
+
 	readStart(x)
+	readStart(y)
 	b <- writeStart(out, filename, format, datatype, overwrite)
+#	b <- writeStart(out, "", "", "", FALSE)
+	nc <- ncol(x)
+	nl <- nlyr(x)
+
+#	fnames <- names(formals(fun))
+#	if (length(fnames) != nl) {	dnames <- NULL 	} else { dnames <- list(list(), fnames)	}
+
 	for (i in 1:b$n) {
-		v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
-		r <- apply(v, 1, fun, na.rm=na.rm)
-		# if i==1, check size of output and ajust layers
+		vx <- x@ptr$readValues(b$row[i]-1, b$nrows[i], 0, nc)
+		vy <- y@ptr$readValues(b$row[i]-1, b$nrows[i], 0, nc)
+		r <- fun(vx, vy)
 		writeValues(out, r, b$row[i])
 	}
 	writeStop(out)
@@ -58,3 +44,4 @@ function(x, fun, na.rm=TRUE, filename="", format="", datatype="FLT4S", overwrite
 	return(out)
 }
 )
+

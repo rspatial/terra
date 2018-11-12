@@ -95,7 +95,8 @@ RCPP_MODULE(spat){
 
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("subset", &SpatRaster::subset, "subset")
-		
+		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
+				
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>) )( &SpatRaster::cellFromXY ))
 		.method("cellFromRowCol", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>,std::vector<unsigned>) )( &SpatRaster::cellFromRowCol ))
 		.method("yFromRow", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>&) )( &SpatRaster::yFromRow ))

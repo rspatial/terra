@@ -26,21 +26,21 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 \usage{
 \S4method{rast}{character}(x, ...)
 
-\S4method{rast}{missing}(x, nrow=180, ncol=360, nlyr=1, xmin=-180, xmax=180, 
+\S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
                                       ymin=-90, ymax=90, crs, extent, resolution, ...)
 
-\S4method{rast}{SpatRaster}(x, ...) 
+\S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), ...) 
 
-\S4method{rast}{SpatLayer}(x, nrow=10, ncol=10, nlyr=1, ...)
+\S4method{rast}{SpatLayer}(x, nrows=10, ncols=10, nlyrs=1, ...)
 									  
-\S4method{rast}{SpatExtent}(x, nrow=10, ncol=10, nlyr=1, crs="", ...)
+\S4method{rast}{SpatExtent}(x, nrows=10, ncols=10, nlyrs=1, crs="", ...)
 }
 
 \arguments{
 \item{x}{filename (character), Extent, SpatRaster, matrix, or array. Can also be missing}
-\item{nrow}{positive integer. Number of rows}
-\item{ncol}{positive integer. Number of columns}
-\item{nlyr}{positive integer. Number of layers}
+\item{nrows}{positive integer. Number of rows}
+\item{ncols}{positive integer. Number of columns}
+\item{nlyrs}{positive integer. Number of layers}
 \item{xmin}{minimum x coordinate (left border)}
 \item{xmax}{maximum x coordinate (right border)}
 \item{ymin}{minimum y coordinate (bottom border)}

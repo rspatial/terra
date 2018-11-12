@@ -229,7 +229,7 @@ class SpatRaster {
 
 		// for all sources
 		bool readStart();
-		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols, unsigned lyr, unsigned nlyrs);
+		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 		bool readStop();
 

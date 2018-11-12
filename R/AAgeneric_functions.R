@@ -6,7 +6,7 @@ if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneri
 if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
 if (!isGeneric("plot")) { setGeneric("plot", function(x, y,...) standardGeneric("plot"))}	
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}	
-if (!isGeneric("reduce")) { setGeneric("reduce", function(x, y, ...) standardGeneric("reduce"))}
+if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardGeneric("reduce"))}
 
 ## shared with "raster"
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names=NULL, optional=FALSE, ...) standardGeneric("as.data.frame"))}	

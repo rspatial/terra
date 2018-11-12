@@ -82,7 +82,7 @@ SpatRaster SpatRaster::trig(std::string fun, std::string filename, std::string f
   	out.writeStart(filename, format, datatype, overwrite);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol, 0, nlyr());
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
 		if (fun == "sin") {
 			for(double& d : a) if (!std::isnan(d)) d = sin(d);
 		} else if (fun == "cos") {

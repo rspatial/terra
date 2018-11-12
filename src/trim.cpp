@@ -25,7 +25,7 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, std::string 
 	std::vector<double> v;
 	unsigned r;
 	for (r=0; r<nrow; r++) {
-		v = readValues(r, 1, 0, ncol, 0, nlyr());
+		v = readValues(r, 1, 0, ncol);
 		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < ncl) {
 			break;
 		}
@@ -36,7 +36,7 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, std::string 
 	unsigned firstrow = std::min(std::max(r - padding, unsigned(0)), nrow);
 
 	for (r=nrow-1; r>firstrow; r--) {
-		v = readValues(r, 1, 0, ncol, 0, nlyr());
+		v = readValues(r, 1, 0, ncol);
 		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < ncl) {
 			break;
 		}
@@ -52,7 +52,7 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, std::string 
 	}
 	unsigned c;
 	for (c=0; c<ncol; c++) {
-		v = readValues(0, nrow, c, 1, 0, nlyr());
+		v = readValues(0, nrow, c, 1);
 		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
 			break;
 		}
@@ -61,7 +61,7 @@ SpatRaster SpatRaster::trim(unsigned padding, std::string filename, std::string 
 	
 	
 	for (c=ncol-1; c>firstcol; c--) {
-		v = readValues(0, nrow, c, 1, 0, nlyr());
+		v = readValues(0, nrow, c, 1);
 		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
 			break;
 		}
