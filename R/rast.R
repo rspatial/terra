@@ -74,9 +74,12 @@ setMethod('rast', signature(x='character'),
 
 
 setMethod('rast', signature(x='SpatRaster'), 
-	function(x, ...) {
+	function(x, nlyrs=nlyr(x), ...) {
 		r <- methods::new('SpatRaster')
-		r@ptr <- SpatRaster$new(dim(x), as.vector(ext(x)), crs(x))
+		dims <- dim(x)
+		stopifnot(nlyrs > 0)
+		dims[3] <- nlyrs
+		r@ptr <- SpatRaster$new(dims, as.vector(ext(x)), crs(x))
 		# also need the keep the names ?
 		show_messages(r, "rast")		
 	}

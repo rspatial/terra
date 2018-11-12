@@ -23,13 +23,6 @@
 	return(fun)
 }
 
-.overwrite <- function(...) {
-	overwrite <- list(...)$overwrite
-	if (is.null(overwrite)) { 
-		overwrite <- FALSE 
-	}
-	overwrite
-}
 
 setMethod('aggregate', signature(x='SpatRaster'), 
 function(x, fact=2, fun='mean', na.rm=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)  {
@@ -70,7 +63,7 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", format="", datatype="FL
 		nc <- ncol(x)
 		
 		readStart(x)
-		b <- writeStart(out, filename)
+		b <- writeStart(out, filename, format, datatype, overwrite)
 		for (i in 1:b$n) {
 			#v <- x@ptr$get_aggregates(dims, b$row[i], b$nrows[i], 1, nc)
 			v <- x@ptr$get_aggregates(dims)

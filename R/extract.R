@@ -48,6 +48,7 @@ function(x, i, j, ... ,drop=FALSE) {
 	if (any(na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	if (nargs() > 2) {
 		i <- cellFromRowCol(x, i, 1:ncol(x))
+		# probably better to do return( readValues(x, i-1) )
 	} 
 	r <- x@ptr$extractCell(i-1)
 	show_messages(x)

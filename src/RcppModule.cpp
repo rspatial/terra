@@ -108,7 +108,7 @@ RCPP_MODULE(spat){
 		.method("readStart", &SpatRaster::readStart, "readStart") 
 		.method("readStop", &SpatRaster::readStop, "readStop") 
 		.method("readValues", &SpatRaster::readValues, "readValues")	
-		.method("getValues", &SpatRaster::getValues)
+		.method("getValues", &SpatRaster::getValues, "getValues")
 		.method("getBlockSize", &getBlockSizeR)
 		.method("setValues", &SpatRaster::setValues)
 
