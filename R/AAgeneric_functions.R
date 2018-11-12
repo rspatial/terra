@@ -54,9 +54,10 @@ if (!isGeneric("readStop")) { setGeneric("readStop", function(x, ...) standardGe
 if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneric("values")) }	
 if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standardGeneric("values<-"))}	
 if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, ...)	standardGeneric("writeStart")) }
-if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x) standardGeneric("writeStop")) }
+if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }
 if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, start) standardGeneric("writeValues")) }
 if (!isGeneric("writeRaster")) {setGeneric("writeRaster", function(x, filename, ...) standardGeneric("writeRaster"))}
+
 
 # graphics
 if (!isGeneric("image")) {setGeneric("image", function(x,...) standardGeneric("image"))}	

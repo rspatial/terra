@@ -4,8 +4,8 @@
 # Licence GPL v3
 
 setMethod("readValues", signature(x='SpatRaster'), 
-function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), lyr=1, nlyrs=nlyr(x), ...) {
-	x@ptr$readValues(row-1, nrows-1, col-1, ncols-1, lyr-1, nlyrs-1)
+function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...) {
+	x@ptr$readValues(row-1, nrows-1, col-1, ncols-1)
 }
 )
 

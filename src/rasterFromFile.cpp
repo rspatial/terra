@@ -82,12 +82,12 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			s.range_min = str2dbl(strsplit(smin, ":"));
 			s.range_max = str2dbl(strsplit(smax, ":"));
 			s.filename = setFileExt(fname, ".gri");
-			
+
 			s.hasRange = std::vector<bool> (s.nlyr, true);
 			s.has_scale_offset = std::vector<bool> (s.nlyr, false);
 			s.scale = std::vector<double>(s.nlyr, 1);
 			s.offset = std::vector<double>(s.nlyr, 0);
-			
+
 			s.hasValues = true;
 			s.memory = false;
 			s.driver = "raster";

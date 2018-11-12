@@ -21,9 +21,12 @@
 
 #define useGDAL
 
+
 #ifdef useGDAL
 #include "gdal_priv.h"
 #endif
+
+
 
 class RasterAttributeTable {
 	public:
@@ -288,6 +291,7 @@ class SpatRaster {
 		SpatRaster math(std::string fun, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster trig(std::string fun, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster rasterizePolygons(SpatLayer p, double background, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);
 		SpatRaster summary(std::string fun, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);

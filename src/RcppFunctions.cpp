@@ -73,3 +73,20 @@ Rcpp::DataFrame getGeometry(SpatLayer* v) {
 }
 
 
+SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, std::string filename, std::string format, std::string datatype, bool overwrite) {
+	
+	unsigned nc = rcl.ncol();
+	unsigned nr = rcl.nrow();
+	printf("nc %u nr %u \n", nr, nr);
+	std::vector< std::vector<double>> rc(nc);
+	for (size_t c=0; c<nc; c++) {
+		for (size_t r=0; r<nr; r++) {
+			rc[c].push_back(rcl(r,c));
+		}
+	}
+
+	SpatRaster out = x->reclassify(rc, right, lowest, filename, format, datatype, overwrite);
+	return out;
+}
+
+

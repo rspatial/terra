@@ -80,3 +80,14 @@ class SpatMessages {
 		}
 };
 
+
+
+class SpatOptions {
+	public:
+		std::string datatype = "FLT4S";
+		std::string filetype; 
+		double memfrac=0.6;
+		std::vector<std::string> gdaloptions;
+};
+
+

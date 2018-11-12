@@ -147,6 +147,9 @@ RCPP_MODULE(spat){
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))
+		
+		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
+		
 	;
 }
 
