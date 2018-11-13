@@ -121,7 +121,7 @@ bool SpatRaster::writeStart(std::string filename, std::string format, std::strin
 
 
 
-bool SpatRaster::writeValues(std::vector<double> vals, unsigned row){
+bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
 	if (!source[0].open_write) {
 		setError("cannot write (no open file)");
 		return false;

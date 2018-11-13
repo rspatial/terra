@@ -237,7 +237,7 @@ class SpatRaster {
 		bool readStop();
 
 		bool writeStart(std::string filename, std::string format, std::string datatype, bool overwrite);
-		bool writeValues(std::vector<double> vals, unsigned row);
+		bool writeValues(std::vector<double> &vals, unsigned row);
 		bool writeStop();
 		bool writeHDR(std::string filename);
 
@@ -273,9 +273,14 @@ class SpatRaster {
 		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster arith(double x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster arith_rev(double x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		
+		SpatRaster broomDistance(std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster broomCostDistance(SpatRaster cost, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		
 		std::vector<unsigned> get_aggregate_dims( std::vector<unsigned> fact );
 		std::vector<std::vector<double> > get_aggregates(std::vector<unsigned> dim);
 		SpatExtent align(SpatExtent e, std::string snap="near");
+		SpatRaster clamp(double low, double high, bool usevalue, std::string filename, std::string format, std::string datatype, bool overwrite);
 		SpatRaster crop(SpatExtent e, std::string snap="near", std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster cum(std::string fun, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		std::vector<double> extractLayer(SpatLayer v, std::string fun="");
