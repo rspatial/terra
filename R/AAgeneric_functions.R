@@ -10,6 +10,7 @@ if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardG
 
 ## shared with "raster"
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names=NULL, optional=FALSE, ...) standardGeneric("as.data.frame"))}	
+if (!isGeneric("clamp")) { setGeneric("clamp", function(x, ...) standardGeneric("clamp")) }	
 if (!isGeneric("crop")) { setGeneric("crop", function(x, y, ...) standardGeneric("crop")) }	
 if (!isGeneric("crs")) { setGeneric("crs", function(x, ...)	standardGeneric("crs")) }	
 if (!isGeneric("crs<-")) { setGeneric("crs<-", function(x, ..., value) standardGeneric("crs<-")) }	
@@ -24,6 +25,8 @@ if (!isGeneric("ncol")) { setGeneric("nrow", function(x) standardGeneric("nrow")
 if (!isGeneric("ncol<-")) { setGeneric("ncol<-", function(x, ..., value) standardGeneric("ncol<-")) }	
 if (!isGeneric("nrow<-")) { setGeneric("nrow<-", function(x, ..., value) standardGeneric("nrow<-")) }	
 if (!isGeneric("overlay")) { setGeneric("overlay", function(x, y, ...) standardGeneric("overlay"))}
+
+if (!isGeneric("predict")) {setGeneric("predict", function(object, ...) standardGeneric("predict"))}
 
 if (!isGeneric("rasterize")) {setGeneric("rasterize", function(x, y, ...) standardGeneric("rasterize"))}
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }

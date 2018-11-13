@@ -44,18 +44,18 @@ SpatRaster
 
 \examples{
 r <- rast()
-# a new aggregated raster, no values
+# aggregated raster, no values
 ra <- aggregate(r, fact=10)
 
 values(r) <- runif(ncell(r))
-
-# a new aggregated raster, max of the values
+# aggregated raster, max of the values
 ra <- aggregate(r, fact=10, fun=max)
 
 \dontrun{
 # multiple layers
-s <- stack(r, r*2)
-x <- aggregate(s,2)
+s <- c(r, r*2)
+# fails  
+# x <- aggregate(s,2)
 }
 }
 

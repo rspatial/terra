@@ -126,6 +126,7 @@ RCPP_MODULE(spat){
 		.method("extractLayer", &SpatRaster::extractLayer, "extractLayer")
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
+		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
