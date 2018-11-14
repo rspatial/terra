@@ -273,10 +273,10 @@ class SpatRaster {
 		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster arith(double x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
 		SpatRaster arith_rev(double x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		
-		SpatRaster broomDistance(std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster broomCostDistance(SpatRaster cost, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		
+
+		SpatRaster gridDistance(std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster gridCostDistance(SpatRaster cost, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+
 		std::vector<unsigned> get_aggregate_dims( std::vector<unsigned> fact );
 		std::vector<std::vector<double> > get_aggregates(std::vector<unsigned> dim);
 		SpatExtent align(SpatExtent e, std::string snap="near");

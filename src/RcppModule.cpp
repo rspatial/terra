@@ -29,6 +29,20 @@ RCPP_MODULE(spat){
 		.field("warnings", &SpatMessages::warnings)		
 	;	
 
+	
+    class_<SpatOptions>("SpatOptions")
+		.constructor()
+		.field("tempdir", &SpatOptions::tempdir)		
+
+		.field("filename", &SpatOptions::filename)		
+		.field("filetype", &SpatOptions::filetype)		
+		.field("datatype", &SpatOptions::datatype)		
+		.field("overwrite", &SpatOptions::overwrite)		
+
+		.field("memfrac", &SpatOptions::memfrac)	
+		.field("gdaloptions", &SpatOptions::gdaloptions)		
+	;
+	
 
     class_<SpatLayer>("SpatLayer")
 		.constructor()	
@@ -126,6 +140,8 @@ RCPP_MODULE(spat){
 		.method("extractLayer", &SpatRaster::extractLayer, "extractLayer")
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
+
+		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("focal", &SpatRaster::focal, "focal")
@@ -150,6 +166,7 @@ RCPP_MODULE(spat){
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))
 		
 		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
+		
 		
 	;
 }

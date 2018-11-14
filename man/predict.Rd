@@ -19,7 +19,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 
 \arguments{
   \item{object}{SpatRaster}
-  \item{model}{fitted model of any class that has a }predict" method (or for which you can supply a similar method as \code{fun} argument. E.g. glm, gam, or randomForest}
+  \item{model}{fitted model of any class that has a "predict" method (or for which you can supply a similar method as \code{fun} argument. E.g. glm, gam, or randomForest}
   \item{fun}{function. Default value is \code{predict}, but can be replaced with e.g. predict.se (depending on the type of model), or your own custom function}
   \item{...}{Additional arguments for \code{fun}}    
 

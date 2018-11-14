@@ -19,7 +19,6 @@ setMethod("c", signature(x="SpatRaster"),
 
 setMethod("clamp", signature(x="SpatRaster"), 
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...) {
-		stopifnot(lower <= upper)
 		x@ptr <- x@ptr$clamp(lower, upper, values[1], filename[1], format[1], datatype[1], overwrite[1])
 		show_messages(x, "clamp")
 	}
@@ -33,6 +32,14 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 		}
 		x@ptr <- x@ptr$crop(y@ptr, snap[1], filename[1], format[1], datatype[1], overwrite[1])
 		show_messages(x, "crop")		
+	}
+)
+
+
+setMethod("gridDistance", signature(x="SpatRaster"), 
+	function(x, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...) {
+		x@ptr <- x@ptr$gridDistance(filename[1], format[1], datatype[1], overwrite[1])
+		show_messages(x, "gridDistance")
 	}
 )
 

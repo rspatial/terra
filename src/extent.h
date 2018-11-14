@@ -84,9 +84,12 @@ class SpatMessages {
 
 class SpatOptions {
 	public:
+		std::string tempdir = "";
+		std::string filename = "";		
 		std::string datatype = "FLT4S";
-		std::string filetype; 
-		double memfrac=0.6;
+		std::string filetype = "GTiff"; 
+		bool overwrite = false; 
+		double memfrac = 0.6;
 		std::vector<std::string> gdaloptions;
 };
 

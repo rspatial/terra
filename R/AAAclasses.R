@@ -43,3 +43,16 @@ setClass('SpatExtent',
 	}
 )
 
+
+setClass('SpatOptions',
+	representation (
+		ptr = "C++Object"
+	),	
+	prototype (	
+		ptr = NULL
+	),
+	validity = function(object)	{
+		return (true)
+	}
+)
+

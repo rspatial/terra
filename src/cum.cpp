@@ -352,6 +352,10 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, std::string filename, std
 		out.setError("unknown cum function");
 		return out;
 	}
+	if (!hasValues()) {
+		out.setError("raster has no values");
+		return out;
+	}	
 
   	out.writeStart(filename, format, datatype, overwrite);
 	readStart();

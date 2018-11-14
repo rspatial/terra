@@ -59,6 +59,15 @@ void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue
 SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, std::string filename, std::string format, std::string datatype, bool overwrite) {
 
 	SpatRaster out = geometry();
+	if (low > high) {
+		out.setError("lower clamp value cannot be larger than the higher clamp value");
+		return out;
+	}
+	if (!hasValues()) {
+		out.setError("cannot clamp a raster with no values");
+		return out;
+	}
+	
   	out.writeStart(filename, format, datatype, overwrite);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {

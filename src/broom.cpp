@@ -32,149 +32,121 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-// Robert Hijmans, October 2011 
+// Robert Hijmans, October 2011
 // This is an implementation of J. Ronald Eastman's pushbroom algorithm
 
 
-#include "spatraster.h"	
+#include "spatraster.h"
 #include <limits>
 #include <cmath>
 
-std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<unsigned> dim, bool down) {
-	
+std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<unsigned> dim) {
+
 	double dx = res[0];
 	double dy = res[1];
-	double dxy = sqrt(dx * dx + dy *dy);	
+	double dxy = sqrt(dx * dx + dy *dy);
 
 	size_t n = v.size();
 	unsigned nr = n / dim[0]; // must get entire rows
 	unsigned nc = dim[1];
 
-	double inf = std::numeric_limits<double>::infinity();
 	std::vector<double> dist(n, 0);
-	
-	if (down) {	
-		//left to right	
-		if ( isnan(v[0])) { //first cell, no cell left of it
-			dist[0] = above[0] + dy;
-		} 
-		for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
-			if (isnan(v[i])) {
-				dist[i] = std::min(std::min(above[i] + dy, above[i-1] + dxy), dist[i-1] + dx);
-			} 
-		}	
-		for (size_t r=1; r<nr; r++) { //other rows
-			size_t i=r*nc;
-			if (isnan(v[i])) {
-				dist[i] = dist[i-nc] + dy;
-			} 
-			for (size_t i=r*nc+1; i<((r+1)*nc); i++) {
-				if (isnan(v[i])) {
-					dist[i] = std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), dist[i-nc-1] + dxy);
-				}
+
+	//top to bottom
+    //left to right
+
+	if ( std::isnan(v[0]) ) { //first cell, no cell left of it
+		dist[0] = above[0] + dy;
+	}
+	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
+		if (std::isnan(v[i])) {
+			dist[i] = std::min(std::min(above[i] + dy, above[i-1] + dxy), dist[i-1] + dx);
+		}
+	}
+	for (size_t r=1; r<nr; r++) { //other rows
+		size_t i=r*nc;
+		if (std::isnan(v[i])) {
+			dist[i] = dist[i-nc] + dy;
+		}
+		for (size_t i=r*nc+1; i<((r+1)*nc); i++) {
+			if (std::isnan(v[i])) {
+				dist[i] = std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), dist[i-nc-1] + dxy);
 			}
 		}
-
+	}
 		//right to left
-		if ( isnan(v[nc-1])) { //first cell
-			dist[nc-1] = std::min(dist[nc-1], above[nc-1] + dy);
-		} 				
-		for (size_t i=(nc-2); i > -1; i--) { // other cells on first row
-			if (isnan(v[i])) {
-				dist[i] = std::min(std::min(std::min(dist[i], above[i] + dy), above[i+1] + dxy), dist[i+1] + dx);
-			} 
+	if ( std::isnan(v[nc-1])) { //first cell
+		dist[nc-1] = std::min(dist[nc-1], above[nc-1] + dy);
+	}
+	for (size_t i=(nc-1); i > 0; i--) { // other cells on first row
+		if (std::isnan(v[i-1])) {
+			dist[i] = std::min(std::min(std::min(dist[i-1], above[i-1] + dy), above[i] + dxy), dist[i] + dx);
 		}
-		for (size_t r=1; r<nr; r++) { // other rows
-			size_t i=(r+1)*nc-1;
-			if (isnan(v[i])) {
-				dist[i] = std::min(dist[i], dist[i-nc] + dy);
-			} 
-			for (size_t i=(r+1)*nc-2; i>(r*nc-1); i--) {
-				if (isnan(v[i])) {
-					dist[i] = std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i-nc] + dy), dist[i-nc+1] + dxy);		
-				} 
+	}
+	for (size_t r=1; r<nr; r++) { // other rows
+		size_t i=(r+1)*nc-1;
+		if (std::isnan(v[i])) {
+			dist[i] = std::min(dist[i], dist[i-nc] + dy);
+		}
+		for (size_t i=(r+1)*nc-2; i>(r*nc-1); i--) {
+			if (std::isnan(v[i])) {
+				dist[i] = std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i-nc] + dy), dist[i-nc+1] + dxy);
 			}
 		}
-
-	} else {  // bottom to top
-		// left to right
-		size_t r = nr-1; // first (=last) row
-		size_t i = r*nc; // first cell
-		if (isnan(v[i])) {
-			dist[i] = std::min(dist[i], above[0] + dy);
-		} 
-		for (size_t i=(r*nc+1); i<n; i++) { // other cells on first row
-			if (isnan(v[i])) {
-				size_t j = i - r*nc;
-				dist[i] = std::min(std::min(std::min(dist[i], above[j] + dy), above[j-1] + dxy),  dist[i-1] + dx);
-			} 
-		}
-		for (size_t r=nr-2; r >= 0; r--) { // other rows
-			size_t i=r*nc;
-			if (isnan(v[i])) {
-				dist[i] = std::min(dist[i], dist[i+nc] + dy);
-			}  
-			for (size_t i=(r*nc+1); i<((r+1)*nc); i++) {
-				if (isnan(v[i])) {
-					dist[i] = std::min(std::min(std::min(dist[i], dist[i-1] + dx), dist[i+nc] + dy), dist[i+nc-1] + dxy);
-				} 
-			}
-		}
-		
-		// right to left
-		if (isnan(v[n-1])) { // first cell
-			dist[n-1] = std::min(dist[n-1], above[nc-1] + dy);
-		} 
-		r = nr-1; // other cells on first row
-		for (size_t i=n-2; i > (r*nc-1); i--) {
-			if (isnan(v[i])) {
-				size_t j = i - r*nc;
-				dist[i] = std::min(std::min(std::min(dist[i], above[j] + dx), above[j+1] + dxy), dist[i+1] + dx);
-			} 
-		}
-		for (size_t r=nr-2; r >= 0; r--) { // other rows
-			size_t i=(r+1)*nc-1;
-			if (isnan(v[i])) {
-				dist[i] = std::min(dist[i], dist[i+nc] + dy);
-			} 
-			for (size_t i=(r+1)*nc-2; i>(r*nc-1); i--) {
-				if (isnan(v[i])) {
-					dist[i] = std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i+nc] + dy), dist[i+nc+1] + dxy);
-				} 
-			}
-		}
-	}		
+	}
 	return dist;
 }
+
+/*
+
 
 //std::vector<double> broom_dist_geo(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<unsigned> dim, bool down) {
 //
 //}
+*/
 
-/*
-SpatRaster SpatRaster::broomDistance(std::string filename, std::string format, std::string datatype, bool overwrite) {
+
+SpatRaster SpatRaster::gridDistance(std::string filename, std::string format, std::string datatype, bool overwrite) {
 
 	SpatRaster out = geometry();
-	bool isgeo = out.islonlat
-	std::vector<double> res = resolution();
-	std::vector<double> dim = {nrow, ncol};
-
-  	out.writeStart(filename, format, datatype, overwrite);
-	readStart();
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v = readBlock(out.bs, i);
-		broom down
-		out.writeValues(v, out.bs.row[i]);
+	if (!hasValues()) {
+		out.setError("cannot compute distance for a raster with no values");
+		return out;
 	}
-	readStop();
+	
+	//bool isgeo = out.islonlat
+
+	std::vector<double> res = resolution();
+	std::vector<unsigned> dim = {nrow, ncol};
+
+	SpatRaster first = out.geometry();
+
+	std::string tempfile = "";
+	std::vector<double> above(ncol, std::numeric_limits<double>::infinity());
+    std::vector<double> d, v, vv;
+	readStart();
+  	first.writeStart(tempfile, format, "FLT4S", true);
+	for (size_t i = 0; i < first.bs.n; i++) {
+        v = readBlock(first.bs, i);
+        d = broom_dist_planar(v, above, res, dim);
+		first.writeValues(d, first.bs.row[i]);
+	}
+	first.writeStop();
+  	first.readStart();
+
+  	out.writeStart(filename, format, format, overwrite);
+	for (size_t i = out.bs.n; i>0; i--) {
+        v = readBlock(out.bs, i-1);
+		std::reverse(v.begin(), v.end());
+        d = broom_dist_planar(v, above, res, dim);
+		vv = first.readBlock(first.bs, i-1);
+	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
+		out.writeValues(vv, out.bs.row[i-1]);
+	}
 	out.writeStop();
-	
-	// broom up 
-	
-	// combine 
+	readStop();
 	return(out);
 }
 
-SpatRaster SpatRaster::broomCostDistance(std::string filename, std::string format, std::string datatype, bool overwrite) {
 
-*/
+//SpatRaster SpatRaster::broomCostDistance(std::string filename, std::string format, std::string datatype, bool overwrite) {
