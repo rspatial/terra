@@ -18,7 +18,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
-#include "spatraster.h"
+#include "spatRaster.h"
 
 
 template <typename T>

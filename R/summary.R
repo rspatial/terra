@@ -21,9 +21,9 @@
 	}
 		
 	if (is.null(add)) {
-		x@ptr <- x@ptr$summary(fun, na.rm, "", "", "FLT4S", TRUE)
+		x@ptr <- x@ptr$summary(fun, na.rm, .terra_environment$options@ptr)
 	} else {
-		x@ptr <- x@ptr$summary_numb(fun, add, na.rm, "", "", "FLT4S", TRUE)			
+		x@ptr <- x@ptr$summary_numb(fun, add, na.rm, .terra_environment$options@ptr)			
 	}
 	show_messages(x, fun)
 	x		

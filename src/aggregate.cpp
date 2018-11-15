@@ -19,7 +19,7 @@
 #include <vector>
 #include <limits>
 #include <cmath>
-#include "spatraster.h"
+#include "spatRaster.h"
 
 
 template <typename T>

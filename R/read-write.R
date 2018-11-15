@@ -24,8 +24,9 @@ setMethod('readStop', signature(x='SpatRaster'),
 
 
 setMethod('writeStart', signature(x='SpatRaster', filename='character'), 
-	function(x, filename, format="", datatype="FLT4S", overwrite=FALSE, ...) {
-		x@ptr$writeStart(filename, format, datatype, overwrite)
+	function(x, filename, overwrite=FALSE, writeopt, ...) {
+		opt <- .runOptions(filename[1], overwrite[1], writeopt)
+		x@ptr$writeStart(opt)
 		show_messages(x, "writeStart")		
 		b <- x@ptr$getBlockSize(4)
 		b$row <- b$row + 1
@@ -54,8 +55,9 @@ setMethod('writeValues', signature(x='SpatRaster', v='vector'),
 
 
 setMethod('writeRaster', signature(x='SpatRaster', filename='character'), 
-function(x, filename, format="", datatype="FLT4S", overwrite=FALSE, ...) {
-	success <- x@ptr$writeRaster(filename, format, datatype, overwrite)
+function(x, filename, overwrite=FALSE, writeopt, ...) {
+	opt <- .runOptions(filename[1], overwrite[1], writeopt)
+	success <- x@ptr$writeRaster(opt)
 	show_messages(x, "writeRaster")
 	invisible(rast(filename))
 }

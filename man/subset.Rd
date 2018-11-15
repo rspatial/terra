@@ -3,26 +3,27 @@
 \alias{subset}
 \alias{subset,SpatRaster-method}
 \alias{[[,SpatRaster,numeric,missing-method}
+\alias{[[,SpatRaster,character,missing-method}
 \alias{$,SpatRaster-method}
 
-\title{Subset a SpatRaster}
+\title{Subset of a SpatRaster}
 
 \description{
-Subset a set of layers from a SpatRaster.  
+Select a subset of layers from a SpatRaster.  
 }
 
 \usage{
-\S4method{subset}{SpatRaster}(x, subset, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
+\S4method{subset}{SpatRaster}(x, subset, filename="", overwrite=FALSE, writeopt, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{subset}{integer or character. Should indicate the layers (represented as integer or by their names)}
-  \item{filename}{Character. Output filename. Optional}
-  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
-  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
-  \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{Additional arguments. None implemented}
+  \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{Additional arguments. None implemented}    \item{...}{Additional arguments. None implemented}  
+
 }
 
 \value{

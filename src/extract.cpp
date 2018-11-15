@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include "spatraster.h"
+#include "spatRaster.h"
 #include "NA.h"
 
 std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {

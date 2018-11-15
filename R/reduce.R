@@ -1,6 +1,6 @@
 
 setMethod("reduce", signature(x="SpatRaster", fun="function"), 
-function(x, fun, ..., filename="", format="", datatype="FLT4S", overwrite=FALSE)  {
+function(x, fun, ..., filename="", overwrite=FALSE, writeopt)  {
 
 	txtfun <- terra:::.makeTextFun(match.fun(fun))
 	if (class(txtfun) == 'character') { 
@@ -9,11 +9,13 @@ function(x, fun, ..., filename="", format="", datatype="FLT4S", overwrite=FALSE)
 		x@ptr <- x@ptr$summary(txtfun, na.rm, filename, format, datatype, overwrite)	
 		return(x)
 	} 
-		
+	
+	opt <- .runOptions(filename[1], overwrite[1], writeopt)
+
 	out <- rast(x)
 	readStart(x)
 	nc <- ncol(x)
-	b <- writeStart(out, filename, format, datatype, overwrite)
+	b <- writeStart(out, opt)
 	for (i in 1:b$n) {
 		v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
 		r <- apply(v, 1, fun, ...)

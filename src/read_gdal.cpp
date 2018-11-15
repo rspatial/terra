@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <stdint.h>
 
-#include "spatraster.h"
+#include "spatRaster.h"
 #include "string_utils.h"
 #include "NA.h"
 

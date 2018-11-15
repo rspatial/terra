@@ -17,7 +17,7 @@ Note that the function must work for vectors (not only for single numbers). That
 }
 
 \usage{
-\S4method{overlay}{SpatRaster,SpatRaster}(x, y, fun, ..., filename="", format="", datatype="FLT4S", overwrite=FALSE)
+\S4method{overlay}{SpatRaster,SpatRaster}(x, y, fun, ..., filename="", overwrite=FALSE, writeopt)
 }
 
 \arguments{
@@ -25,10 +25,10 @@ Note that the function must work for vectors (not only for single numbers). That
   \item{y}{SpatRaster}
   \item{fun}{Function to be applied. The number of arguments of the function should match the number of objects, or it should take any number of arguments. When using multi-layer objects the function should match the number of layers of the object (unless unstack=FALSE) }
   \item{...}{Additional arguments to \code{fun}} 
-  \item{filename}{Character. Output filename. Optional}
-  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
-  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
-  \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten} 
+   \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+
 }
 
 

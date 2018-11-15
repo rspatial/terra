@@ -5,7 +5,7 @@
 
 
 setMethod('focal', signature(x='SpatRaster'), 
-function(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)  {
+function(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename="", overwrite=FALSE, writeopt, ...)  {
 
 	if (is.matrix(w)) {
 		stopifnot(ncol(w) == nrow(w))	

@@ -36,7 +36,7 @@
 // This is an implementation of J. Ronald Eastman's pushbroom algorithm
 
 
-#include "spatraster.h"
+#include "spatRaster.h"
 #include <limits>
 #include <cmath>
 

@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <cmath>
-#include "spatraster.h"
+#include "spatRaster.h"
 #include "recycle.h"
 #include "NA.h"
 

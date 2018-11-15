@@ -11,7 +11,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 }
 
 \usage{
-\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", format="", datatype="FLT4S", overwrite=FALSE, ...) 
+\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", overwrite=FALSE, writeopt, ...) 
 }
 
 \arguments{
@@ -21,16 +21,15 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \item{na.rm}{logical. If \code{TRUE}, \code{NA} will be removed from focal computations. The result will only be \code{NA} if all focal cells are \code{NA}. Except for some special cases (weights of 1, functions like min, max, mean), using \code{na.rm=TRUE} is generally not a good idea in this function because it will unbalance the effect of the weights }
 
-\item{fillvalue}{numeric. The value of the cells of the padded rows and columns}
+  \item{fillvalue}{numeric. The value of the cells of the padded rows and columns}
 
   
-\item{fun}{function (optional). The function fun should take multiple numbers, and return a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument (or ignore it, e.g. as one of the 'dots' arguments. For example, \code{length} will fail, but \code{function(x, ...){na.omit(length(x))}} works. }
+  \item{fun}{function (optional). The function fun should take multiple numbers, and return a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument (or ignore it, e.g. as one of the 'dots' arguments. For example, \code{length} will fail, but \code{function(x, ...){na.omit(length(x))}} works. }
 
-\item{filename}{Character. Output filename. Optional}
-\item{format}{Character. Output file format. See \code{\link{writeRaster}}}
-\item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
-\item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
-\item{...}{Additional arguments. None implemented}
+  \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{Additional arguments. None implemented}  
 }
 
 \details{

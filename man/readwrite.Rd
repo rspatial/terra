@@ -31,7 +31,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 \S4method{readStop}{SpatRaster}(x)
 \S4method{readValues}{SpatRaster}(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...)
 
-\S4method{writeStart}{SpatRaster,character}(x, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
+\S4method{writeStart}{SpatRaster,character}(x, filename="", overwrite=FALSE, writeopt, ...)
 \S4method{writeStop}{SpatRaster}(x)
 \S4method{writeValues}{SpatRaster,vector}(x, v, start)
 }
@@ -48,9 +48,8 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
  \item{col}{positive integer. Column number to start from, should be between 1 and ncol(x)}
  \item{ncols}{positive integer. How many columns? Default is the number of columns left after the start column}
   
-  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
-  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
-  \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{Additional arguments. None implemented}
 
 }

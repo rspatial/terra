@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <functional>
-#include "spatraster.h"
+#include "spatRaster.h"
 
 template <typename T> int sign(T value) {
     return (T(0) < value) - (value < T(0));

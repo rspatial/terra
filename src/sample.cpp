@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
-#include "spatraster.h"
+#include "spatRaster.h"
 
 
 void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldcol, unsigned nrow, unsigned ncol, unsigned snrow, unsigned sncol) {

@@ -9,12 +9,30 @@
 	.terra_environment$options <- opt
 }
  
-.runOptions <- function(filename="", filetype="", datatype="", overwrite=FALSE) {
-	opt <- SpatOptions$new(.terra_environment$options@ptr)
-	opt$filename = filename;
-	opt$filetype = filetype;
-	opt$datatype = datatype;
-	opt$overwrite = overwrite;
+.setOptions <- function(x, opt) {
+	nms <- names(opt)
+	s <- nms %in% c("tempdir", "memfrac", "datatype", "filetype")
+	
+	if (any(!s)) {
+		warning(paste(nms[!s], collapse = ", "), " is/are not valid or cannot be set")
+	}
+		
+	if (any(s)) {
+		i <- nms %in% c("datatype", "filetype")
+		nms[i] <- paste0("def_", nms[i])
+		for (i in which(s)) {
+			opt[[nms[i]]] <- opt[[i]]
+		}
+	}
+	opt
+} 
+ 
+.runOptions <- function(filename="", overwrite=FALSE, writeopt=list()) {
+	writeopt$x = SpatOptions$copy(.terra_environment$options@ptr)
+	writeopt$filename = filename
+	writeopt$overwrite = overwrite
+	opt <- do.call(.setOptions, writeopt)
+	#show_messages(opt)
 	opt
 }
 
@@ -33,22 +51,10 @@ terraOptions <- function(...) {
 		cat("filetype    :" , opt$filetype, "\n")
 		
 	} else {
-	
-		nms <- names(dots)
-		s <- nms %in% c("tempdir", "memfrac", "datatype", "filetype")
-		
-		if (any(!s)) {
-			warning(paste(nms[!s], collapse = ", "), " is/are not valid or cannot be set")
-		}
-		
-		if (any(s)) {
-			i <- nms %in% c("datatype", "filetype")
-			nms[i] <- paste0("def_", nms[i])
-			for (i in which(s)) {
-				opt[[nms[i]]] <- dots[[i]]
-			}
-			.terra_environment$options@ptr <- opt
-		}
+
+		opt <- .setOptions(opt, dots)			
+		.terra_environment$options@ptr <- opt
+
 	}
 }
 

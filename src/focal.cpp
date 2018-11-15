@@ -18,7 +18,7 @@
 
 
 #include <vector>
-#include "spatraster.h"
+#include "spatRaster.h"
 #include <algorithm>
 
 // todo: three dimensional focal

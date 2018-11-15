@@ -14,7 +14,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 }
 
 \usage{
-\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., filename="", format="", datatype="FLT4S", overwrite=FALSE)
+\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., filename="", overwrite=FALSE, writeopt)
 }
 
 \arguments{
@@ -23,10 +23,9 @@ This approach of using model predictions is commonly used in remote sensing (for
   \item{fun}{function. Default value is \code{predict}, but can be replaced with e.g. predict.se (depending on the type of model), or your own custom function}
   \item{...}{Additional arguments for \code{fun}}    
 
-  \item{filename}{Character. Output filename. Optional}
-  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
-  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
-  \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
  }
 
 

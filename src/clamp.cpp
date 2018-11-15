@@ -32,7 +32,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include "spatraster.h"
+#include "spatRaster.h"
 #include <cmath>
 
 void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue) {

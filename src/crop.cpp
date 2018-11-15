@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include "spatraster.h"
+#include "spatRaster.h"
 
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions opt) {

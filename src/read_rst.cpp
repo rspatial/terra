@@ -25,7 +25,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include "spatraster.h"
+#include "spatRaster.h"
 
 
 std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {

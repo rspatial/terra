@@ -17,7 +17,7 @@
 
 #include <random>
 #include <chrono>
-#include "spatraster.h"
+#include "spatRaster.h"
 #include "SimpleIni/SimpleIni.h"
 #include "string_utils.h"
 #include "math_utils.h"

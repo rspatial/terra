@@ -14,7 +14,7 @@ function(x, ...)  {
 
 
 setMethod("overlay", signature(x="SpatRaster", y="SpatRaster"), 
-function(x, y, fun, ..., filename="", format="", datatype="FLT4S", overwrite=FALSE)  {
+function(x, y, fun, ..., filename="", overwrite=FALSE, writeopt)  {
 	
 	stopifnot(!missing(fun))
 	x@ptr$compare_geom(y@ptr, FALSE, TRUE, TRUE)
@@ -25,11 +25,10 @@ function(x, y, fun, ..., filename="", format="", datatype="FLT4S", overwrite=FAL
 
 	readStart(x)
 	readStart(y)
-	b <- writeStart(out, filename, format, datatype, overwrite)
-#	b <- writeStart(out, "", "", "", FALSE)
+	opt <- .runOptions(filename[1], overwrite[1], writeopt)
+	b <- writeStart(out, opt)
 	nc <- ncol(x)
 	nl <- nlyr(x)
-
 #	fnames <- names(formals(fun))
 #	if (length(fnames) != nl) {	dnames <- NULL 	} else { dnames <- list(list(), fnames)	}
 

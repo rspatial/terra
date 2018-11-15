@@ -6,7 +6,7 @@
 	
 
 setMethod('predict', signature(object='SpatRaster'), 
-	function(object, model, fun=predict, ..., filename="", format="", datatype="FLT4S", overwrite=FALSE) {
+	function(object, model, fun=predict, ..., filename="", overwrite=FALSE, writeopt) {
 		out <- rast(object)
 		readStart(object)
 		nc <- ncol(object)

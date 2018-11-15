@@ -16,7 +16,7 @@ Reclassification is done with matrix \code{rcl}, in the row order of the reclass
 }
 
 \usage{
-\S4method{reclassify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...)
+\S4method{reclassify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE, writeopt, ...)
 }
 
 \arguments{
@@ -26,10 +26,10 @@ Reclassification is done with matrix \code{rcl}, in the row order of the reclass
  \item{include.lowest}{logical, indicating if a value equal to the lowest value in rcl (or highest value in the second column, for right = FALSE) should be included. The default is \code{FALSE}}
  \item{right}{logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa. The default is \code{TRUE}. A special case is to use right=NA. In this case both the left and right intervals are open}
 
- \item{filename}{Character. Output filename. Optional}
-  \item{format}{Character. Output file format. See \code{\link{writeRaster}}}
-  \item{datatype}{Character. Output file data type. See \code{\link{writeRaster}}} 
-  \item{overwrite}{Logical. If \code{TRUE}, \code{filename} is overwritten} 
+   \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+
  \item{...}{additional arguments. None implemented}  
 }
 

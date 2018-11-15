@@ -19,7 +19,7 @@
 // http://alienryderflex.com/polygon_fill/
 
 #include <vector>
-#include "spatraster.h"
+#include "spatRaster.h"
 
 std::vector<double> rasterize_polygon(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
 

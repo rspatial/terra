@@ -17,7 +17,7 @@
 
 #include <type_traits>
 #include <vector>
-#include "spatraster.h"
+#include "spatRaster.h"
 #include "NA.h"
 
 

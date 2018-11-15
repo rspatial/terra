@@ -25,8 +25,8 @@ terraOptions(...)
 
 \examples{
 terraOptions()
-terraOptions(memfrac=0.5, tempdir = "c:/temp")
-terraOptions()
+#terraOptions(memfrac=0.5, tempdir = "c:/temp")
+#terraOptions()
 }
 
 

@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
-#include "spatraster.h"
+#include "spatRaster.h"
 
 
 SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions opt) {
