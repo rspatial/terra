@@ -11,14 +11,14 @@ Write a SpatRaster to a file.
 }
 
 \usage{
-\S4method{writeRaster}{SpatRaster,character}(x, filename, overwrite=FALSE, writeopt, ...)
+\S4method{writeRaster}{SpatRaster,character}(x, filename, overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files. See Details }
+  \item{wopt}{list. Options for writing files. See Details }
   \item{...}{Additional arguments. None implemented}
 }
 
@@ -27,7 +27,7 @@ SpatRaster (invisibly). This function is used for the side-effect of writing val
 }
 
 \details{
-In many methods, options for writing raster files to disk can be provided with the \code{writeopt} argument. \code{writeopt} should be a named list. The following names are valid: \code{filetype} and \code{datatype}. 
+In many methods, options for writing raster files to disk can be provided with the \code{wopt} argument. \code{wopt} should be a named list. The following names are valid: \code{filetype} and \code{datatype}. 
 
 Values for \code{filetype} are GDAL driver names. If this argument is not supplied, the driver is derived from the filename.
 

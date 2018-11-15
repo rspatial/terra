@@ -17,7 +17,7 @@ Note that the function must work for vectors (not only for single numbers). That
 }
 
 \usage{
-\S4method{overlay}{SpatRaster,SpatRaster}(x, y, fun, ..., filename="", overwrite=FALSE, writeopt)
+\S4method{overlay}{SpatRaster,SpatRaster}(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -27,7 +27,7 @@ Note that the function must work for vectors (not only for single numbers). That
   \item{...}{Additional arguments to \code{fun}} 
    \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 
 }
 

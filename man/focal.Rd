@@ -11,7 +11,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 }
 
 \usage{
-\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", overwrite=FALSE, writeopt, ...) 
+\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", overwrite=FALSE, wopt=list(), ...) 
 }
 
 \arguments{
@@ -28,7 +28,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{Additional arguments. None implemented}  
 }
 

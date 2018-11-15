@@ -12,7 +12,7 @@ reduce values of a SpatRaster, using a formula.
 }
 
 \usage{
-\S4method{reduce}{SpatRaster,function}(x, fun, ..., filename="", overwrite=FALSE, writeopt)
+\S4method{reduce}{SpatRaster,function}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -21,7 +21,7 @@ reduce values of a SpatRaster, using a formula.
   \item{...}{Additional arguments for \code{fun}}  
    \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 
 }
 

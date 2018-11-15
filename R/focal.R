@@ -5,7 +5,7 @@
 
 
 setMethod('focal', signature(x='SpatRaster'), 
-function(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename="", overwrite=FALSE, writeopt, ...)  {
+function(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename="", overwrite=FALSE, wopt=list(), ...)  {
 
 	if (is.matrix(w)) {
 		stopifnot(ncol(w) == nrow(w))	
@@ -38,7 +38,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, fun='sum', filename="", overwrite=FAL
 		} else {
 			out <- rast(x)
 			readStart(x)
-			b <- writeStart(out, filename, format, datatype, overwrite)
+			b <- writeStart(out, filename, overwrite, wopt)
 			for (i in 1:b$n) {
 				v <- matrix(x@ptr$focalValues(b$row[i], b$nrows[i], w), ncol=prod(w), byrow=TRUE)
 				v <- apply(v, 1, fun, na.rm=na.rm)

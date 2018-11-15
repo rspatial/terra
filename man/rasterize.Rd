@@ -12,7 +12,7 @@ rasterize polygons
 }
 
 \usage{
-\S4method{rasterize}{SpatLayer,SpatRaster}(x, y, background=NA, filename="", overwrite=FALSE, writeopt, ...)
+\S4method{rasterize}{SpatLayer,SpatRaster}(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...)
 
 }
 
@@ -22,7 +22,7 @@ rasterize polygons
   \item{background}{numeric. Value for cells that are not covered by a polygon}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{Additional arguments. None implemented}  
 }
 

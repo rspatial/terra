@@ -1,16 +1,17 @@
 
 setMethod("reduce", signature(x="SpatRaster", fun="function"), 
-function(x, fun, ..., filename="", overwrite=FALSE, writeopt)  {
+function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
+
+	opt <- .runOptions(filename[1], overwrite[1],wopt)
 
 	txtfun <- terra:::.makeTextFun(match.fun(fun))
 	if (class(txtfun) == 'character') { 
 		if (txtfun %in% c("max", "min", "range", "prod", "sum", "any", "all"))
 		na.rm = ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
-		x@ptr <- x@ptr$summary(txtfun, na.rm, filename, format, datatype, overwrite)	
+		x@ptr <- x@ptr$summary(txtfun, na.rm, opt)	
 		return(x)
 	} 
 	
-	opt <- .runOptions(filename[1], overwrite[1], writeopt)
 
 	out <- rast(x)
 	readStart(x)

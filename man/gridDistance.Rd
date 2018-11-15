@@ -14,14 +14,14 @@ In future versions, the distance is expressed in meters if the coordinate refere
 }
 
 \usage{
-\S4method{gridDistance}{SpatRaster}(x, filename="", overwrite=FALSE, writeopt, ...) 
+\S4method{gridDistance}{SpatRaster}(x, filename="", overwrite=FALSE, wopt=list(), ...) 
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{Additional arguments. None implemented}  
 
 }

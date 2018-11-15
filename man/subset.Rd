@@ -13,7 +13,7 @@ Select a subset of layers from a SpatRaster.
 }
 
 \usage{
-\S4method{subset}{SpatRaster}(x, subset, filename="", overwrite=FALSE, writeopt, ...)
+\S4method{subset}{SpatRaster}(x, subset, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -21,9 +21,8 @@ Select a subset of layers from a SpatRaster.
   \item{subset}{integer or character. Should indicate the layers (represented as integer or by their names)}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}    \item{...}{Additional arguments. None implemented}  
-
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{Additional arguments. None implemented}  
 }
 
 \value{

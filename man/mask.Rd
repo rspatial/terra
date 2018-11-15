@@ -12,7 +12,7 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 } 
 
 \usage{
-\S4method{mask}{SpatRaster,SpatRaster}(x, mask, filename="", overwrite=FALSE, writeopt, ...)
+\S4method{mask}{SpatRaster,SpatRaster}(x, mask, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -20,7 +20,7 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 \item{mask}{SpatRaster}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{Additional arguments. None implemented}  
 
 }

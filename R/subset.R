@@ -6,7 +6,7 @@
 
 
 setMethod('subset', signature(x='SpatRaster'), 
-function(x, subset, filename="", overwrite=FALSE, writeopt, ...) {
+function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 	if (is.character(subset)) {
 		i <- stats::na.omit(match(subset, names(x)))
 		if (length(i)==0) {
@@ -18,7 +18,8 @@ function(x, subset, filename="", overwrite=FALSE, writeopt, ...) {
 	}
 
 	subset <- as.integer(subset - 1)
-	opt <- .runOptions(filename[1], overwrite[1], writeopt)
+	
+	opt <- .runOptions(filename[1], overwrite[1], wopt)
 	x@ptr <- x@ptr$subset(subset, opt)
 	show_messages(x, "subset")
 	return(x)	

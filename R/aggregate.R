@@ -25,7 +25,7 @@
 
 
 setMethod('aggregate', signature(x='SpatRaster'), 
-function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, writeopt, ...)  {
+function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)  {
 
 	#expand=TRUE, 
 	
@@ -49,10 +49,11 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, writeo
 		op <- NA
 	}
 
+	
 	if (!is.na(op)) {	
-		r <- methods::new('SpatRaster')
+		opt <- .runOptions(filename[1], overwrite[1], wopt)
 		#	fun='mean', expand=TRUE, na.rm=TRUE, filename=""
-		x@ptr <- x@ptr$aggregate(dims, fun, na.rm, filename[1], format[1], datatype[1], overwrite[1])
+		x@ptr <- x@ptr$aggregate(dims, fun, na.rm, opt)
 		return (show_messages(x, "aggregate"))
 	} else {
 		e <- as.vector(ext(x))
@@ -62,9 +63,8 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, writeo
 		out <- rast(nrow=dims[4], ncol=dims[4], nlyr=dims[6],  crs=crs(x), ext=e)
 		nc <- ncol(x)
 		
-		opt <- .runOptions(filename[1], overwrite[1], writeopt)
 		readStart(x)
-		b <- writeStart(out, opt)
+		b <- writeStart(out, filename[1], overwrite[1], wopt)
 		for (i in 1:b$n) {
 			#v <- x@ptr$get_aggregates(dims, b$row[i], b$nrows[i], 1, nc)
 			v <- x@ptr$get_aggregates(dims)

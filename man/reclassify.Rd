@@ -16,7 +16,7 @@ Reclassification is done with matrix \code{rcl}, in the row order of the reclass
 }
 
 \usage{
-\S4method{reclassify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE, writeopt, ...)
+\S4method{reclassify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -28,7 +28,7 @@ Reclassification is done with matrix \code{rcl}, in the row order of the reclass
 
    \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 
  \item{...}{additional arguments. None implemented}  
 }

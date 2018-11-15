@@ -14,7 +14,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 }
 
 \usage{
-\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., filename="", overwrite=FALSE, writeopt)
+\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -25,7 +25,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{writeopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
  }
 
 
