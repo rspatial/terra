@@ -49,9 +49,9 @@ std::vector<T> operator|(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
-SpatRaster SpatRaster::isnot(std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::isnot(SpatOptions opt) {
 	SpatRaster out = geometry();
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -67,7 +67,7 @@ SpatRaster SpatRaster::isnot(std::string filename, std::string format, std::stri
 
 
 
-SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions opt) {
 	
 	SpatRaster out = geometry();
 	
@@ -82,7 +82,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, std::string filenam
 		return(out);
 	}
 	
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	x.readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -105,11 +105,11 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, std::string filenam
 
 
 
-SpatRaster SpatRaster::logic(bool x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 	
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {

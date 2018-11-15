@@ -19,4 +19,4 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n);
 Rcpp::List getAttributes(SpatLayer* v);
 Rcpp::NumericVector getGeometry(SpatLayer* v);
 
-SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, std::string filename, std::string format, std::string datatype, bool overwrite);
+SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, SpatOptions opt);

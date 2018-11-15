@@ -23,7 +23,7 @@ template <typename T> int sign(T value) {
 }
 
 
-SpatRaster SpatRaster::math(std::string fun, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::math(std::string fun, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 	std::vector<std::string> f {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"}; 
@@ -32,7 +32,7 @@ SpatRaster SpatRaster::math(std::string fun, std::string filename, std::string f
 		return out;
 	}
 
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -69,7 +69,7 @@ SpatRaster SpatRaster::math(std::string fun, std::string filename, std::string f
 }
 
 
-SpatRaster SpatRaster::trig(std::string fun, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::trig(std::string fun, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 
@@ -79,7 +79,7 @@ SpatRaster SpatRaster::trig(std::string fun, std::string filename, std::string f
 		return out;
 	}
 	
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);

@@ -18,7 +18,7 @@
 #include "spatraster.h"
 
 
-SpatRaster SpatRaster::crop(SpatExtent e, std::string filename, std::string snap, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 
@@ -48,7 +48,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string filename, std::string snap
 
 	unsigned ncols = out.ncol;
 
- 	out.writeStart(filename, format, datatype, overwrite);
+ 	out.writeStart(opt);
 	readStart();
 	std::vector<double> v;
 	for (size_t i = 0; i < out.bs.n; i++) {

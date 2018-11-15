@@ -187,7 +187,7 @@ class SpatRaster {
 
 		void addSource(SpatRaster x);
 		SpatRaster combineSources(SpatRaster x);
-		SpatRaster subset(std::vector<unsigned> lyrs, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions opt);
 
 ////////////////////////////////////////////////////
 // helper methods
@@ -236,7 +236,7 @@ class SpatRaster {
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 		bool readStop();
 
-		bool writeStart(std::string filename, std::string format, std::string datatype, bool overwrite);
+		bool writeStart(SpatOptions opt);
 		bool writeValues(std::vector<double> &vals, unsigned row);
 		bool writeStop();
 		bool writeHDR(std::string filename);
@@ -258,7 +258,7 @@ class SpatRaster {
 
 		void openFS(std::string const &filename);
 
-		bool writeRaster(std::string filename, std::string format, std::string datatype, bool overwrite);
+		bool writeRaster(SpatOptions opt);
 		bool writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite);
 
 		bool canProcessInMemory(unsigned n);
@@ -269,39 +269,38 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
-		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster arith(SpatRaster x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster arith(double x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster arith_rev(double x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt);
+		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions opt);
+		SpatRaster arith(double x, std::string oper, SpatOptions opt);
+		SpatRaster arith_rev(double x, std::string oper, SpatOptions opt);
 
-		SpatRaster gridDistance(std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster gridCostDistance(SpatRaster cost, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster gridDistance(SpatOptions opt);
+		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions opt);
 
 		std::vector<unsigned> get_aggregate_dims( std::vector<unsigned> fact );
 		std::vector<std::vector<double> > get_aggregates(std::vector<unsigned> dim);
-		SpatExtent align(SpatExtent e, std::string snap="near");
-		SpatRaster clamp(double low, double high, bool usevalue, std::string filename, std::string format, std::string datatype, bool overwrite);
-		SpatRaster crop(SpatExtent e, std::string snap="near", std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster cum(std::string fun, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatExtent align(SpatExtent e, std::string snap);
+		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions opt);
+		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions opt);
+		SpatRaster cum(std::string fun, bool narm, SpatOptions opt);
 		std::vector<double> extractLayer(SpatLayer v, std::string fun="");
 		std::vector<double> extractCell(std::vector<double> &cell);
 
-
-		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, SpatOptions opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
-		SpatRaster isnot(std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster logic(SpatRaster x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster logic(bool x, std::string oper, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster mask(SpatRaster x, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster math(std::string fun, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster trig(std::string fun, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster rasterizePolygons(SpatLayer p, double background, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster isnot(SpatOptions opt);
+		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions opt);
+		SpatRaster logic(bool x, std::string oper, SpatOptions opt);
+		SpatRaster mask(SpatRaster x, SpatOptions opt);
+		SpatRaster math(std::string fun, SpatOptions opt);
+		SpatRaster trig(std::string fun, SpatOptions opt);
+		SpatRaster rasterizePolygons(SpatLayer p, double background, SpatOptions opt);
+		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, SpatOptions opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);
-		SpatRaster summary(std::string fun, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
-		SpatRaster trim(unsigned padding=0, std::string filename="", std::string format="", std::string datatype="FLT4S", bool overwrite=false);
+		SpatRaster summary(std::string fun, bool narm, SpatOptions opt);
+		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions opt);
+		SpatRaster trim(unsigned padding, SpatOptions opt);
 };
 
 

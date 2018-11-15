@@ -19,7 +19,8 @@ setMethod("c", signature(x="SpatRaster"),
 
 setMethod("clamp", signature(x="SpatRaster"), 
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", format="", datatype="FLT4S", overwrite=FALSE, ...) {
-		x@ptr <- x@ptr$clamp(lower, upper, values[1], filename[1], format[1], datatype[1], overwrite[1])
+		opt <- .runOptions(format=format, datatype=datatype, filename[1], overwrite[1])
+		x@ptr <- x@ptr$clamp(lower, upper, values[1], op)
 		show_messages(x, "clamp")
 	}
 )
@@ -30,7 +31,8 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 			y <- try(ext(y))
 			if (class(y) == "try-error") { stop("cannot get an extent from y") }
 		}
-		x@ptr <- x@ptr$crop(y@ptr, snap[1], filename[1], format[1], datatype[1], overwrite[1])
+		opt <- .runOptions(format=format[i], datatype=datatype[i], filename[1], overwrite[1])
+		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
 		show_messages(x, "crop")		
 	}
 )

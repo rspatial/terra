@@ -3,9 +3,10 @@
 
 #include "RcppFunctions.h"
 
-RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatMessages)
-RCPP_EXPOSED_CLASS(RasterSource)
+RCPP_EXPOSED_CLASS(SpatOptions)
+RCPP_EXPOSED_CLASS(SpatExtent)
+//RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatLayer)
 
@@ -32,15 +33,16 @@ RCPP_MODULE(spat){
 	
     class_<SpatOptions>("SpatOptions")
 		.constructor()
-		.field("tempdir", &SpatOptions::tempdir)		
-
-		.field("filename", &SpatOptions::filename)		
-		.field("filetype", &SpatOptions::filetype)		
-		.field("datatype", &SpatOptions::datatype)		
-		.field("overwrite", &SpatOptions::overwrite)		
-
-		.field("memfrac", &SpatOptions::memfrac)	
-		.field("gdaloptions", &SpatOptions::gdaloptions)		
+		.method("copy", &SpatOptions::deepcopy)
+		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
+		.property("memfrac", &SpatOptions::get_memfrac, &SpatOptions::set_memfrac )
+		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
+		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
+		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
+		.field("overwrite", &SpatOptions::overwrite)
+		.field("messages", &SpatOptions::msg, "messages")
+	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )
+		//.field("gdaloptions", &SpatOptions::gdaloptions)		
 	;
 	
 
@@ -61,7 +63,7 @@ RCPP_MODULE(spat){
 	;
 
 	
-
+/*
     class_<RasterSource>("RasterSource")	
 //		.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
@@ -75,7 +77,7 @@ RCPP_MODULE(spat){
 		.field_readonly("NAflag", &RasterSource::NAflag)
 		//std::vector<std::vector<int> > layers;		
 	;	
-
+*/
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	    //.constructor<std::string>()
@@ -105,7 +107,8 @@ RCPP_MODULE(spat){
 		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )		
 		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.method("setNames", &SpatRaster::setNames, "setNames" )
-		.field_readonly("source", &SpatRaster::source )
+// only of RasterSource is exposed
+//		.field_readonly("source", &SpatRaster::source )
 
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("subset", &SpatRaster::subset, "subset")
@@ -152,8 +155,8 @@ RCPP_MODULE(spat){
 		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims, "get_aggregate_dims")
 		
-		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::arith ))
-		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::arith ))
+		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions) )( &SpatRaster::arith ))
+		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, SpatOptions) )( &SpatRaster::arith ))
 		.method("arith_rev", &SpatRaster::arith_rev, "arith_rev")
 		.method("math", &SpatRaster::math, "math")
 		.method("trig", &SpatRaster::trig, "trig")
@@ -162,8 +165,8 @@ RCPP_MODULE(spat){
 		
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
-		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))
-		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, std::string, std::string, std::string, bool) )( &SpatRaster::logic ))
+		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions) )( &SpatRaster::logic ))
+		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions) )( &SpatRaster::logic ))
 		
 		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
 		

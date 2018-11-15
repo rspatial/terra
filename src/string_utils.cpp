@@ -21,6 +21,8 @@
 #include <vector>
 #include <fstream>
 
+
+
 bool file_exists(const std::string& name) {
 	std::ifstream f(name.c_str());
 	return f.good();
@@ -154,5 +156,6 @@ std::string lrtrim_copy(std::string s) {
     lrtrim(s);
     return s;
 }
+
 
 

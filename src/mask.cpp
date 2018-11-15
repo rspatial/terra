@@ -19,7 +19,7 @@
 #include "spatraster.h"
 
 
-SpatRaster SpatRaster::mask(SpatRaster x, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions opt) {
 
 // check for size; need for recycling
 	//SpatRaster out = *this;
@@ -28,7 +28,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, std::string filename, std::string form
 //	out.source.resize(1);
  //   our.source[0].nlyr = 1;
 //	out.values.resize(0);
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	x.readStart();
 	std::vector<double> v, m;

@@ -215,7 +215,7 @@ std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
 }
 
 
-SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions opt) {
 
     SpatRaster out = geometry();
     out.source.resize(0);
@@ -256,8 +256,8 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, std::string filename, 
     vrs = source[ss].subset(slyr);
     out.source.insert(out.source.end(), vrs.begin(), vrs.end());
 
-    if (filename != "") {
-        out.writeRaster(filename, format, datatype, overwrite);
+    if (opt.get_filename() != "") {
+        out.writeRaster(opt);
     }
     return out;
 }

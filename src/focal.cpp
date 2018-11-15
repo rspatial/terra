@@ -86,7 +86,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 
 
-SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, SpatOptions opt) {
     
 	bool wmat = false;
 	int ww;
@@ -113,7 +113,7 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 	if (!source[0].hasValues) { return(out); }
 	std::vector<unsigned> dim = {0, ncol};
 	
- 	out.writeStart(filename, format, datatype, overwrite);
+ 	out.writeStart(opt);
 	readStart();
 	std::vector<double> v, f, d;
 	

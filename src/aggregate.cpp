@@ -121,7 +121,7 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigne
 }
 
 
-SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt) {
 
 //std::vector<double> SpatRaster::aggregate(std::vector<unsigned> fact, bool narm, string fun, string filename) {
 

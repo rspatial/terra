@@ -135,7 +135,7 @@ bool smooth_operator(std::string oper) {
 }
 
 
-SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 
@@ -153,7 +153,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	x.readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -192,7 +192,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, std::string filenam
 
 
 
-SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
@@ -200,7 +200,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, s
 		return out;
 	}
 
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -239,7 +239,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, std::string filename, s
 }
 
 
-SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
@@ -247,7 +247,7 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, std::string filenam
 		return out;
 	}
 
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);

@@ -343,7 +343,7 @@ std::vector<T> vrange(std::vector<T>& v, bool narm) {
 
 
 
-SpatRaster SpatRaster::cum(std::string fun, bool narm, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 
@@ -357,7 +357,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, std::string filename, std
 		return out;
 	}	
 
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	unsigned nl = out.nlyr();
 	std::vector<double> v(nl);
@@ -391,7 +391,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, std::string filename, std
 
 
 
-SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bool narm, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions opt) {
 
 	SpatRaster out = geometry(1);
 
@@ -410,7 +410,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		out.source[0].names[0] = fun;
 	}
 
-  	out.writeStart(filename, format, datatype, overwrite);
+  	out.writeStart(opt);
 	readStart();
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
@@ -455,8 +455,8 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 }
 
 
-SpatRaster SpatRaster::summary(std::string fun, bool narm, std::string filename, std::string format, std::string datatype, bool overwrite) {
+SpatRaster SpatRaster::summary(std::string fun, bool narm, SpatOptions opt) {
 	std::vector<double> add;
-	return summary_numb(fun, add, narm, filename, format, datatype, overwrite);
+	return summary_numb(fun, add, narm, opt);
 }
 

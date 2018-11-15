@@ -15,10 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#include <random>
+#include <chrono>
 #include "spatraster.h"
 #include "SimpleIni/SimpleIni.h"
 #include "string_utils.h"
 #include "math_utils.h"
+
+
+std::string tempFile(std::string tmpdir, std::string extension, double seed) {
+    std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
+    'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
+    'n','o','p','q','r','s','t','u','v','w','x','y','z' };
+    std::default_random_engine generator(std::random_device{}());
+    generator.seed(seed);
+    std::uniform_int_distribution<> distrib(0, characters.size()-1);
+    auto draw = [ characters, &distrib, &generator ]() {
+		return characters[ distrib(generator) ];
+	};
+    std::string filename(15, 0);
+    std::generate_n(filename.begin(), 15, draw);
+	filename = tmpdir + "/terra_" + filename + extension;
+	return filename;
+}
+
 
 bool SpatRaster::isSource(std::string filename) {
 	std::vector<std::string> ff = filenames();
@@ -31,10 +51,15 @@ bool SpatRaster::isSource(std::string filename) {
 }
 
 
-bool SpatRaster::writeRaster(std::string filename, std::string format, std::string datatype, bool overwrite) {
+bool SpatRaster::writeRaster(SpatOptions opt) {
+	
+	std::string filename = opt.get_filename();
+	std::string datatype = opt.get_datatype();
+	bool overwrite = opt.overwrite;
 	lrtrim(filename);
 	if (filename == "") {
-		filename = "random_file_name.grd";
+		double seed = std::chrono::system_clock::now().time_since_epoch().count();
+		filename = tempFile(".", ".tif", seed);
 	} else if (file_exists(filename)) {
 		if (overwrite) {
 			if (isSource(filename)) {
@@ -56,6 +81,7 @@ bool SpatRaster::writeRaster(std::string filename, std::string format, std::stri
 		fs.close();
         return writeHDR(filename);
 	} else {
+		std::string format = opt.get_filetype();
         #ifdef useGDAL
         return writeRasterGDAL(filename, format, datatype, overwrite);
 		#else
@@ -66,16 +92,19 @@ bool SpatRaster::writeRaster(std::string filename, std::string format, std::stri
 }
 
 
-bool SpatRaster::writeStart(std::string filename, std::string format, std::string datatype, bool overwrite) {
+bool SpatRaster::writeStart(SpatOptions opt) {
 
 //	double inf = std::numeric_limits<double>::infinity();
 //	s.min_range = inf;
 //	s.max_range = -inf;
 	bool success = true;
+	std::string filename = opt.get_filename();
+	std::string datatype = opt.get_datatype();
 	lrtrim(filename);
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
-			filename = "random_file_name.grd";
+			double seed = std::chrono::system_clock::now().time_since_epoch().count();
+			filename = tempFile(".", ".tif", seed);
 		}
 	}
 
@@ -91,7 +120,7 @@ bool SpatRaster::writeStart(std::string filename, std::string format, std::strin
 		if (ext == ".grd") {
 			source[0].driver = "raster";
 			if (exists) {
-				if (overwrite) {
+				if (opt.overwrite) {
 					remove(filename.c_str());
 				} else {
 					// stop()
@@ -102,7 +131,8 @@ bool SpatRaster::writeStart(std::string filename, std::string format, std::strin
 			// open GDAL filestream
 			#ifdef useGDAL
 			source[0].driver = "gdal" ;
-			success = writeStartGDAL(filename, format, datatype, overwrite);
+			std::string format = opt.get_filetype();
+			success = writeStartGDAL(filename, format, datatype, opt.overwrite);
 			#else
 			setError("GDAL is not available");
 			return false;

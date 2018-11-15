@@ -20,10 +20,62 @@
 #include <string>
 #include <cmath>
 
-
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
+
+
+class SpatMessages {
+	public:
+		bool success = true;
+		bool has_error = false;
+		bool has_warning = false;
+		std::string error;
+		std::vector<std::string> warnings;
+		
+		void setError(std::string s) {
+			has_error = true;
+			error = s;
+			success = false;
+		}
+		void addWarning(std::string s) {
+			has_warning = true;
+			warnings.push_back(s);
+		}
+};
+
+
+
+class SpatOptions {
+	private:
+		std::string temp_dir = "";
+		std::string file_name = "";
+		std::string data_type = "FLT4S";
+		std::string file_type = "GTiff"; 
+		bool over_write = false;
+		double mem_frac = 0.6;
+		std::vector<std::string> gdal_options;
+	public:
+		bool overwrite = false;
+		SpatOptions();
+		SpatOptions(const SpatOptions &opt);
+		SpatOptions deepcopy(const SpatOptions &opt);
+		std::string get_filename();
+		std::string get_datatype();
+		std::string get_filetype();
+		std::string get_tempdir();
+		bool get_overwrite();
+		void set_filename(std::string d);
+		void set_datatype(std::string d);
+		void set_filetype(std::string d);
+		void set_tempdir(std::string d);
+		void set_overwrite(bool d);
+
+		void set_memfrac(double d);
+		double get_memfrac();
+		SpatMessages msg;
+};
+
 
 
 class SpatExtent {
@@ -61,36 +113,6 @@ class SpatExtent {
 };
 
 
-class SpatMessages {
-	public:
-		bool success = true;
-		bool has_error = false;
-		bool has_warning = false;
-		std::string error;
-		std::vector<std::string> warnings;
-		
-		void setError(std::string s) {
-			has_error = true;
-			error = s;
-			success = false;
-		}
-		void addWarning(std::string s) {
-			has_warning = true;
-			warnings.push_back(s);
-		}
-};
 
-
-
-class SpatOptions {
-	public:
-		std::string tempdir = "";
-		std::string filename = "";		
-		std::string datatype = "FLT4S";
-		std::string filetype = "GTiff"; 
-		bool overwrite = false; 
-		double memfrac = 0.6;
-		std::vector<std::string> gdaloptions;
-};
 
 

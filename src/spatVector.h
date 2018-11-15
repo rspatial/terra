@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include "extent.h"
+#include "spatBase.h"
 #include "dataframe.h"
 
 enum SpatGeomType { points, lines, polygons, unknown };
