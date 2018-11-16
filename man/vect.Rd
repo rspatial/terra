@@ -8,10 +8,10 @@
 \alias{vect,matrix-method}
 \alias{vect,missing-method}
 
-\title{Create SpatLayer objects}
+\title{Create SpatVector objects}
 
 \description{
-Create a new SpatLayer
+Create a new SpatVector
 } 
 
 \usage{
@@ -27,7 +27,7 @@ Create a new SpatLayer
 }
 
 
-\value{SpatLayer object}
+\value{SpatVector object}
 
 
 \examples{

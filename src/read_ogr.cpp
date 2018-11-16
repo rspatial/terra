@@ -103,7 +103,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 
 
 
-bool SpatLayer::read(std::string fname) {
+bool SpatVector::read(std::string fname) {
 
 	msg.success = true;
 
@@ -122,7 +122,7 @@ bool SpatLayer::read(std::string fname) {
 	}
 	OGRLayer *poLayer = poDS->GetLayerByName( basename(fname).c_str() );
 
-	df = readAttributes(poLayer);
+	lyr.df = readAttributes(poLayer);
 	
 
 	OGRwkbGeometryType wkbgeom = wkbFlatten( poLayer ->GetGeomType());

@@ -44,7 +44,7 @@ setMethod('rast', signature(x='SpatExtent'),
 	}
 )
 
-setMethod('rast', signature(x='SpatLayer'), 
+setMethod('rast', signature(x='SpatVector'), 
 	function(x, nrows=10, ncols=10, nlyrs=1, ...) {
 		rast(ext(x), nrows=nrows, ncols=ncols, nlyrs=nlyrs, crs=crs(x), ...)
 	}

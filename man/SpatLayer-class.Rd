@@ -1,21 +1,21 @@
-\name{SpatLayer-class}
+\name{SpatVector-class}
 
 \docType{class}
 
-\alias{SpatLayer}
-\alias{SpatLayer-class}
-\alias{Rcpp_SpatLayer-class}
+\alias{SpatVector}
+\alias{SpatVector-class}
+\alias{Rcpp_SpatVector-class}
 
-\alias{show,SpatLayer-method}
+\alias{show,SpatVector-method}
 
-\title{Class "SpatLayer" }
+\title{Class "SpatVector" }
 
 \description{
-Objects of class SpatLayer. 
+Objects of class SpatVector. 
 }
 
 \section{Objects from the Class}{
-You can use the \code{\link{vect}} method to create SpatLayer objects.
+You can use the \code{\link{vect}} method to create SpatVector objects.
 }
 
 \section{Slots}{
@@ -26,7 +26,7 @@ You can use the \code{\link{vect}} method to create SpatLayer objects.
 
 \section{Methods}{
   \describe{
-  \item{show}{display values of a SpatLayer}
+  \item{show}{display values of a SpatVector}
  }
 }
 

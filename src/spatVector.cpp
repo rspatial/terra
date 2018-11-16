@@ -104,64 +104,64 @@ SpatPart SpatGeom::getPart(unsigned i) {
 	return parts[i]; 
 }
 
-std::vector<double> SpatLayer::getDv(unsigned i) {
-	return df.getD(i);
+std::vector<double> SpatVector::getDv(unsigned i) {
+	return lyr.df.getD(i);
 }
 
-std::vector<long> SpatLayer::getIv(unsigned i){
-	return df.getI(i);
+std::vector<long> SpatVector::getIv(unsigned i){
+	return lyr.df.getI(i);
 }
 
-std::vector<std::string> SpatLayer::getSv(unsigned i){
-	return df.getS(i);
+std::vector<std::string> SpatVector::getSv(unsigned i){
+	return lyr.df.getS(i);
 }
 
-std::vector<unsigned> SpatLayer::getItype(){
-	return df.itype;
+std::vector<unsigned> SpatVector::getItype(){
+	return lyr.df.itype;
 }
 
-std::vector<unsigned> SpatLayer::getIplace(){
-	return df.iplace;
+std::vector<unsigned> SpatVector::getIplace(){
+	return lyr.df.iplace;
 }
 
-std::vector<std::string> SpatLayer::names(){
-	return df.names;
+std::vector<std::string> SpatVector::names(){
+	return lyr.df.names;
 }
 
-unsigned SpatLayer::ncol() {
-	return df.ncol();
+unsigned SpatVector::ncol() {
+	return lyr.df.ncol();
 }
 
-unsigned SpatLayer::nrow() {
-	return geoms.size();
+unsigned SpatVector::nrow() {
+	return lyr.geoms.size();
 }
 
-unsigned SpatLayer::size() {
-	return geoms.size();
-}
-
-
-SpatExtent SpatLayer::getExtent(){
-	return extent;
-}
-
-std::string SpatLayer::getCRS(){
-	return crs;
-}
-
-void SpatLayer::setCRS(std::string CRS){
-	crs = CRS;
+unsigned SpatVector::size() {
+	return lyr.geoms.size();
 }
 
 
-std::string SpatLayer::type(){
+SpatExtent SpatVector::getExtent(){
+	return lyr.extent;
+}
+
+std::string SpatVector::getCRS(){
+	return lyr.crs;
+}
+
+void SpatVector::setCRS(std::string CRS){
+	lyr.crs = CRS;
+}
+
+
+std::string SpatVector::type(){
 	if (size() == 0) {
 		return "none";
-	} else if (geoms[0].gtype == 0) {
+	} else if (lyr.geoms[0].gtype == 0) {
 		return "points";
-	} else if (geoms[0].gtype == 1) {
+	} else if (lyr.geoms[0].gtype == 1) {
 		return "lines";
-	} else if (geoms[0].gtype == 2) {
+	} else if (lyr.geoms[0].gtype == 2) {
 		return "polygons";		
 	} else {
 		return("unknown");
@@ -172,7 +172,7 @@ double SpatGeom::area(){
 	return 0;
 }
 
-std::vector<double> SpatLayer::area(){
+std::vector<double> SpatVector::area(){
 	unsigned n = size();
 	std::vector<double> out(n);
 	SpatGeom g;
@@ -187,7 +187,7 @@ double SpatGeom::length(){
 	return 0;
 }
 
-std::vector<double> SpatLayer::length() {
+std::vector<double> SpatVector::length() {
 	unsigned n = size();
 	std::vector<double> out(n);
 	SpatGeom g;
@@ -200,22 +200,22 @@ std::vector<double> SpatLayer::length() {
 
 
 
-SpatGeom SpatLayer::getGeom(unsigned i) { 
-	return geoms[i]; 
+SpatGeom SpatVector::getGeom(unsigned i) { 
+	return lyr.geoms[i]; 
 }
 
-bool SpatLayer::addGeom(SpatGeom p) { 
-	geoms.push_back(p); 
-	if (geoms.size() > 1) {
-		extent.unite(p.extent);
+bool SpatVector::addGeom(SpatGeom p) { 
+	lyr.geoms.push_back(p); 
+	if (lyr.geoms.size() > 1) {
+		lyr.extent.unite(p.extent);
 	} else {
-		extent = p.extent;
+		lyr.extent = p.extent;
 	}
 	return true; 
 }
 
 
-unsigned SpatLayer::nxy() {
+unsigned SpatVector::nxy() {
 	unsigned n = 0;
 	for (size_t i=0; i < size(); i++) {
 		SpatGeom g = getGeom(i);
@@ -233,7 +233,7 @@ unsigned SpatLayer::nxy() {
 	return n;
 }
 
-SpatDataFrame SpatLayer::getGeometryDF() {
+SpatDataFrame SpatVector::getGeometryDF() {
 	unsigned n = nxy();
 
 	SpatGeom g;
@@ -279,7 +279,7 @@ SpatDataFrame SpatLayer::getGeometryDF() {
 	return out;
 }
 
-SpatGeomType SpatLayer::getGType(std::string &type) {
+SpatGeomType SpatVector::getGType(std::string &type) {
 	if (type == "points") { return points; }
 	else if (type == "lines") { return lines; }
 	else if (type == "polygons") { return polygons; }
@@ -287,7 +287,7 @@ SpatGeomType SpatLayer::getGType(std::string &type) {
 }
 	
 
-void SpatLayer::setGeometry(std::string type, std::vector<unsigned> geom, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<bool> hole) {
+void SpatVector::setGeometry(std::string type, std::vector<unsigned> geom, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<bool> hole) {
 
 // it is assumed that values are sorted by geom, part, hole
 	
@@ -335,12 +335,13 @@ void SpatLayer::setGeometry(std::string type, std::vector<unsigned> geom, std::v
 
 
 
-SpatLayer SpatLayer::subset(std::vector<unsigned> range) { 
-	SpatLayer out;
+SpatVector SpatVector::subset(std::vector<unsigned> range) { 
+	SpatVector out;
 	for (size_t i=0; i < range.size(); i++) {
-		out.addGeom( geoms[range[i]] ); 
+		out.addGeom( lyr.geoms[range[i]] ); 
 	}
-	out.crs = crs;
+	out.lyr.crs = lyr.crs;
+	//df ?
 	return out;	
 };
 

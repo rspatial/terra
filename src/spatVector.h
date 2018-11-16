@@ -64,11 +64,19 @@ class SpatGeom {
 
 
 class SpatLayer {
-	private:
+	public:
 		std::vector<SpatGeom> geoms; 
 		SpatExtent extent;		
-	public:
+		SpatDataFrame df;
 		std::string crs;
+};
+		
+class SpatVector {
+		
+	public:
+		SpatLayer lyr;
+		std::vector<SpatLayer> lyrs; 
+
 		std::vector<std::string> names();
 		unsigned nrow();
 		unsigned ncol();
@@ -82,13 +90,12 @@ class SpatLayer {
 		std::string getCRS();
 		void setCRS(std::string CRS);
 
-		SpatDataFrame df;
 
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
 		SpatDataFrame getGeometryDF();
 		
-		SpatLayer subset(std::vector<unsigned> range);
+		SpatVector subset(std::vector<unsigned> range);
 		void setGeometry(std::string type, std::vector<unsigned> id, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<bool> hole);
 		
 		std::vector<double> area();
@@ -110,6 +117,7 @@ class SpatLayer {
 		void addWarning(std::string s) { msg.addWarning(s); }
 };
 
+/*
 
 class SpatVector {
 	public:
@@ -120,3 +128,4 @@ class SpatVector {
 		void addWarning(std::string s) { msg.addWarning(s); }
 };
 
+*/

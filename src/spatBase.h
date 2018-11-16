@@ -48,31 +48,47 @@ class SpatMessages {
 
 class SpatOptions {
 	private:
-		std::string temp_dir = "";
-		std::string file_name = "";
-		std::string data_type = "FLT4S";
-		std::string file_type = "GTiff"; 
-		bool over_write = false;
-		double mem_frac = 0.6;
+		std::string tempdir = "";
+		bool todisk = false;
+		double memfrac = 0.6;
+
+		std::string def_datatype = "FLT4S";
+		std::string def_filetype = "GTiff"; 
+		bool overwrite = false;
+		
+		std::string datatype = "";
+		std::string filetype = ""; 
+		std::string filename = "";
 		std::vector<std::string> gdal_options;
 	public:
-		bool overwrite = false;
+		
 		SpatOptions();
 		SpatOptions(const SpatOptions &opt);
 		SpatOptions deepcopy(const SpatOptions &opt);
-		std::string get_filename();
-		std::string get_datatype();
-		std::string get_filetype();
-		std::string get_tempdir();
-		bool get_overwrite();
-		void set_filename(std::string d);
-		void set_datatype(std::string d);
-		void set_filetype(std::string d);
-		void set_tempdir(std::string d);
-		void set_overwrite(bool d);
 
-		void set_memfrac(double d);
+		// permanent
+		bool get_todisk();
+		void set_todisk(bool b);
 		double get_memfrac();
+		void set_memfrac(double d);
+		std::string get_tempdir();	
+		void set_tempdir(std::string d);
+		
+		std::string get_def_datatype();
+		std::string get_def_filetype();
+		void set_def_datatype(std::string d);
+		void set_def_filetype(std::string d);
+
+		// single use
+		void set_filename(std::string d);
+		void set_filetype(std::string d);
+		void set_datatype(std::string d);
+		void set_overwrite(bool b);
+		std::string get_filename();
+		std::string get_filetype();
+		std::string get_datatype();
+		bool get_overwrite();
+
 		SpatMessages msg;
 };
 

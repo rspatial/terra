@@ -9,14 +9,14 @@
 	warning("cell numbers larger than ", 2^.Machine$double.digits, " are approximate")
 }
 
-setMethod("extract", signature(x="SpatRaster", y="SpatLayer"), 
+setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun="", ...) { 
     r <- x@ptr$extractLayer(y@ptr, fun)
 	x <- show_messages(x, "extract")		
 	matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
 })
 
-setMethod("[", c("SpatRaster", "SpatLayer", "missing"),
+setMethod("[", c("SpatRaster", "SpatVector", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	v <- extract(x, i)
 	if (drop) {

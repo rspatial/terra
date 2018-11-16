@@ -283,7 +283,7 @@ class SpatRaster {
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions opt);
-		std::vector<double> extractLayer(SpatLayer v, std::string fun="");
+		std::vector<double> extractLayer(SpatVector v, std::string fun="");
 		std::vector<double> extractCell(std::vector<double> &cell);
 
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, SpatOptions opt);
@@ -294,7 +294,7 @@ class SpatRaster {
 		SpatRaster mask(SpatRaster x, SpatOptions opt);
 		SpatRaster math(std::string fun, SpatOptions opt);
 		SpatRaster trig(std::string fun, SpatOptions opt);
-		SpatRaster rasterizePolygons(SpatLayer p, double background, SpatOptions opt);
+		SpatRaster rasterizePolygons(SpatVector p, double background, SpatOptions opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, SpatOptions opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);

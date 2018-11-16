@@ -8,7 +8,7 @@ RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatExtent)
 //RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
-RCPP_EXPOSED_CLASS(SpatLayer)
+RCPP_EXPOSED_CLASS(SpatVector)
 
 RCPP_MODULE(spat){
 
@@ -39,27 +39,32 @@ RCPP_MODULE(spat){
 		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
-		.field("overwrite", &SpatOptions::overwrite)
+		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
+
+		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
+		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )
+
+		.property("todisk", &SpatOptions::get_todisk, &SpatOptions::set_todisk)
 		.field("messages", &SpatOptions::msg, "messages")
 	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )
 		//.field("gdaloptions", &SpatOptions::gdaloptions)		
 	;
 	
 
-    class_<SpatLayer>("SpatLayer")
+    class_<SpatVector>("SpatVector")
 		.constructor()	
-		.method("names", &SpatLayer::names, "names")		
-		.method("nrow", &SpatLayer::nrow, "nrow")		
-		.method("ncol", &SpatLayer::ncol, "ncol")		
-		.method("size", &SpatLayer::size, "size")		
-		.property("crs", &SpatLayer::getCRS, &SpatLayer::setCRS, "crs")		
-		.method("type", &SpatLayer::type, "type")		
-		.method("extent", &SpatLayer::getExtent, "extent")		
-		.method("read", &SpatLayer::read, "read")		
+		.method("names", &SpatVector::names, "names")		
+		.method("nrow", &SpatVector::nrow, "nrow")		
+		.method("ncol", &SpatVector::ncol, "ncol")		
+		.method("size", &SpatVector::size, "size")		
+		.property("crs", &SpatVector::getCRS, &SpatVector::setCRS, "crs")		
+		.method("type", &SpatVector::type, "type")		
+		.method("extent", &SpatVector::getExtent, "extent")		
+		.method("read", &SpatVector::read, "read")		
 		.method("getAttributes", &getAttributes, "getAttributes")
 		.method("getGeometry", &getGeometry, "getGeometry")
-		.method("setGeometry", &SpatLayer::setGeometry, "setGeometry")
-		.field("messages", &SpatLayer::msg, "messages")
+		.method("setGeometry", &SpatVector::setGeometry, "setGeometry")
+		.field("messages", &SpatVector::msg, "messages")
 	;
 
 	

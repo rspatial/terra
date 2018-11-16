@@ -48,7 +48,7 @@ setMethod("ext<-", signature('SpatRaster', 'SpatExtent'),
 
 
 
-setMethod('ext', signature(x='SpatLayer'), 
+setMethod('ext', signature(x='SpatVector'), 
 	function(x, ...){ 
 		e <- methods::new('SpatExtent')
 		e@ptr <- x@ptr$extent()

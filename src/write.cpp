@@ -55,7 +55,7 @@ bool SpatRaster::writeRaster(SpatOptions opt) {
 	
 	std::string filename = opt.get_filename();
 	std::string datatype = opt.get_datatype();
-	bool overwrite = opt.overwrite;
+	bool overwrite = opt.get_overwrite();
 	lrtrim(filename);
 	if (filename == "") {
 		double seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -100,7 +100,7 @@ bool SpatRaster::writeStart(SpatOptions opt) {
 	bool success = true;
 	std::string filename = opt.get_filename();
 	std::string datatype = opt.get_datatype();
-	lrtrim(filename);
+	
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
 			double seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -120,7 +120,7 @@ bool SpatRaster::writeStart(SpatOptions opt) {
 		if (ext == ".grd") {
 			source[0].driver = "raster";
 			if (exists) {
-				if (opt.overwrite) {
+				if (opt.get_overwrite()) {
 					remove(filename.c_str());
 				} else {
 					// stop()
@@ -132,7 +132,7 @@ bool SpatRaster::writeStart(SpatOptions opt) {
 			#ifdef useGDAL
 			source[0].driver = "gdal" ;
 			std::string format = opt.get_filetype();
-			success = writeStartGDAL(filename, format, datatype, opt.overwrite);
+			success = writeStartGDAL(filename, format, datatype, opt.get_overwrite());
 			#else
 			setError("GDAL is not available");
 			return false;

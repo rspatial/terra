@@ -4,7 +4,7 @@
 \alias{names<-}
 \alias{names,SpatRaster-method}
 \alias{names<-,SpatRaster-method}
-\alias{names,SpatLayer-method}
+\alias{names,SpatVector-method}
   
 \title{Names of Spat* objects}
 

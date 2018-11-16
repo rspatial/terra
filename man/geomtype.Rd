@@ -3,20 +3,20 @@
 \docType{methods}
 
 \alias{geomtype}
-\alias{geomtype,SpatLayer-method}
+\alias{geomtype,SpatVector-method}
 
-\title{Geometry type of a SpatLayer}
+\title{Geometry type of a SpatVector}
 
 \description{
-Get the geometry type (points, lines, or polygons) of a SpatLayer
+Get the geometry type (points, lines, or polygons) of a SpatVector
 } 
 
 \usage{
-\S4method{geomtype}{SpatLayer}(x, ...)
+\S4method{geomtype}{SpatVector}(x, ...)
 }
 
 \arguments{
-\item{x}{SpatLayer}
+\item{x}{SpatVector}
 \item{...}{additional arguments. None implemented }  
 }
 

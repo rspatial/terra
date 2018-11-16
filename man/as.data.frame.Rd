@@ -1,21 +1,21 @@
 \name{as.data.frame}
 
 \alias{as.data.frame}
-\alias{as.data.frame,SpatLayer-method}
+\alias{as.data.frame,SpatVector-method}
   
 
-\title{Get the attributes of a  SpatLayer}
+\title{Get the attributes of a  SpatVector}
 
 \description{
-Get a data.frame with the attribute values of a SpatLayer
+Get a data.frame with the attribute values of a SpatVector
 }
 
 \usage{
-\S4method{as.data.frame}{SpatLayer}(x, row.names=NULL, optional=FALSE, ...)
+\S4method{as.data.frame}{SpatVector}(x, row.names=NULL, optional=FALSE, ...)
 }
 
 \arguments{
- \item{x}{SpatLayer}
+ \item{x}{SpatVector}
  \item{row.names}{ignored} 
  \item{optional}{ignored}
  \item{...}{Additional arguments (none)} 

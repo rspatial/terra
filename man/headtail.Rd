@@ -4,15 +4,15 @@
 
 \alias{head}
 \alias{head,SpatRaster-method}
-\alias{head,SpatLayer-method}
+\alias{head,SpatVector-method}
 \alias{tail}
 \alias{tail,SpatRaster-method}
-\alias{tail,SpatLayer-method}
+\alias{tail,SpatVector-method}
 
 \title{Show the head or tail of a Spat* object}
 
 \description{
-Show the head (first values) or tail (last values) of a SpatRaster or of the attributes of a SpatLayer. 
+Show the head (first values) or tail (last values) of a SpatRaster or of the attributes of a SpatVector. 
 }
 
 \usage{
@@ -21,12 +21,12 @@ tail(x, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatLayer}
+  \item{x}{SpatRaster or SpatVector}
   \item{...}{Additional arguments passed on to other methods}
 }
 
 \value{
-matrix (SpatRaster) or data.frame (SpatLayer)
+matrix (SpatRaster) or data.frame (SpatVector)
 }
 
 \seealso{

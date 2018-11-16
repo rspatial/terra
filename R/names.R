@@ -27,7 +27,7 @@ setMethod('names<-', signature(x='SpatRaster'),
 )
 
 
-setMethod('names', signature(x='SpatLayer'), 
+setMethod('names', signature(x='SpatVector'), 
 	function(x) { 
 		x@ptr$names()
 	}

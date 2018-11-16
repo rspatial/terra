@@ -16,16 +16,20 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatBase.h"
+#include "string_utils.h"
+
 
 SpatOptions::SpatOptions() {}
 
 
 SpatOptions::SpatOptions(const SpatOptions &opt) {
-	data_type = opt.data_type;
-	file_type = opt.data_type; 
-	file_name = "";
-	temp_dir = opt.temp_dir;
-	mem_frac = opt.mem_frac;
+	tempdir = opt.tempdir;
+	memfrac = opt.memfrac;
+	todisk = opt.todisk;
+	def_datatype = opt.def_datatype;
+	def_filetype = opt.def_datatype; 
+	filename = "";
+	overwrite = false;	
 }
 
 
@@ -33,42 +37,36 @@ SpatOptions SpatOptions::deepcopy(const SpatOptions &opt) {
 	return SpatOptions(opt);
 }
 
-std::string SpatOptions::get_datatype() {
-	return data_type;
-}
+std::string SpatOptions::get_datatype() { return datatype;}
+std::string SpatOptions::get_def_datatype() { return def_datatype; }
+void SpatOptions::set_datatype(std::string d) { datatype = d; }
+void SpatOptions::set_def_datatype(std::string d) { def_filetype = d; }
 
-std::string SpatOptions::get_filetype() {
-	return file_type;
-}
+std::string SpatOptions::get_filetype() { return filetype;}
+void SpatOptions::set_filetype(std::string d) { filetype = d; }
+std::string SpatOptions::get_def_filetype() { return filetype;}
+void SpatOptions::set_def_filetype(std::string d) { def_filetype = d; }
 
-bool SpatOptions::get_overwrite() { return over_write; }
+bool SpatOptions::get_overwrite() { return overwrite; }
+void SpatOptions::set_overwrite(bool b) { overwrite = b; }
 
-		
-// check if valid datatype`	
-void SpatOptions::set_overwrite(bool d) { over_write = d; }
+void SpatOptions::set_filename(std::string d) { lrtrim(d); filename = d; }
+std::string SpatOptions::get_filename() { return filename; }
 
-void SpatOptions::set_datatype(std::string d) { data_type = d; }
-
-void SpatOptions::set_filetype(std::string d) { file_type = d; }
-
-void SpatOptions::set_filename(std::string d) { file_name = d; }
-
+std::string SpatOptions::get_tempdir() { return tempdir; }
 void SpatOptions::set_tempdir(std::string d) {
 	// check if exists
-	temp_dir = d;
+	tempdir = d;
 }
 
-
-std::string SpatOptions::get_tempdir() { return temp_dir; }
-std::string SpatOptions::get_filename() { return file_name; }
-
+double SpatOptions::get_memfrac() { return memfrac; }
 void SpatOptions::set_memfrac(double d) {
 	if ((d >= 0.1) && (d < 0.9)) { 
-		mem_frac = d;
+		memfrac = d;
 		return;
 	} 
 	//setError;
 }
 
-double SpatOptions::get_memfrac() { return mem_frac; }
-		
+bool SpatOptions::get_todisk() { return todisk; }
+void SpatOptions::set_todisk(bool b) { todisk = b; }

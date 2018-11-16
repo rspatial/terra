@@ -57,7 +57,7 @@ std::vector<bool> points_in_polygon(const std::vector<double> &polX, const std::
 
 
 
-std::vector<int> pointsInPolygons(SpatLayer pol, std::vector<double> pX, std::vector<double> pY) {
+std::vector<int> pointsInPolygons(SpatVector pol, std::vector<double> pX, std::vector<double> pY) {
 
 	unsigned n = pol.size();	
 	std::vector<int> result(n, -1);

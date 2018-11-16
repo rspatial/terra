@@ -9,9 +9,9 @@
 \alias{crs<-,SpatRaster-method}
 \alias{crs<-,SpatRaster,character-method}
 
-\alias{crs,SpatLayer-method}
-\alias{crs<-,SpatLayer-method}
-\alias{crs<-,SpatLayer,character-method}
+\alias{crs,SpatVector-method}
+\alias{crs<-,SpatVector-method}
+\alias{crs<-,SpatVector,character-method}
 
 \title{ Get or set a coordinate reference system (projection) }
 
@@ -21,9 +21,9 @@ Get or set the coordinate reference system (CRS) of a SpatRaster object.
 
 \usage{
 \S4method{crs}{SpatRaster}(x)
-\S4method{crs}{SpatLayer}(x)
+\S4method{crs}{SpatVector}(x)
 \S4method{crs}{SpatRaster}(x, ...)<-value
-\S4method{crs}{SpatLayer}(x, ...)<-value
+\S4method{crs}{SpatVector}(x, ...)<-value
 }
 
 \arguments{

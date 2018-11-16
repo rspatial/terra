@@ -9,7 +9,7 @@
 \alias{rast,matrix-method}
 \alias{rast,array-method}
 \alias{rast,SpatExtent-method}
-\alias{rast,SpatLayer-method}
+\alias{rast,SpatVector-method}
 
 
 \title{Create a SpatRaster}
@@ -31,7 +31,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), ...) 
 
-\S4method{rast}{SpatLayer}(x, nrows=10, ncols=10, nlyrs=1, ...)
+\S4method{rast}{SpatVector}(x, nrows=10, ncols=10, nlyrs=1, ...)
 									  
 \S4method{rast}{SpatExtent}(x, nrows=10, ncols=10, nlyrs=1, crs="", ...)
 }

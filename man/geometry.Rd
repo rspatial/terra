@@ -3,21 +3,21 @@
 \docType{methods}
 
 \alias{geom}
-\alias{geom,SpatLayer-method}
+\alias{geom,SpatVector-method}
 
 \title{geom}
 
 \description{
-Get the geom of a SpatLayer
+Get the geom of a SpatVector
 }
 
 \usage{
-\S4method{geom}{SpatLayer}(x, ...)
+\S4method{geom}{SpatVector}(x, ...)
 
 }
 
 \arguments{
-  \item{x}{SpatLayer}
+  \item{x}{SpatVector}
   \item{...}{Additional arguments. None implemented}  
 }
 

@@ -3,10 +3,10 @@
 \docType{methods}
 
 \alias{extract}
-\alias{extract,SpatRaster,SpatLayer-method}
+\alias{extract,SpatRaster,SpatVector-method}
 \alias{extract,SpatRaster,matrix-method}
 
-\alias{[,SpatRaster,SpatLayer,missing-method}
+\alias{[,SpatRaster,SpatVector,missing-method}
 \alias{[,SpatRaster,missing,missing-method}
 \alias{[,SpatRaster,numeric,missing-method}
 \alias{[,SpatRaster,missing,numeric-method}
@@ -20,7 +20,7 @@ Extract values from a SpatRaster for the locations of a SpatVector
 } 
 
 \usage{
-\S4method{extract}{SpatRaster,SpatLayer}(x, y, fun="", ...)
+\S4method{extract}{SpatRaster,SpatVector}(x, y, fun="", ...)
 \S4method{extract}{SpatRaster,matrix}(x, y, fun="", ...)
 }
 

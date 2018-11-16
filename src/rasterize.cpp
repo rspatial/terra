@@ -62,7 +62,7 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, const
 
 
 
-SpatRaster SpatRaster::rasterizePolygons(SpatLayer p, double background, SpatOptions opt) {
+SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOptions opt) {
 
 	SpatRaster out = geometry();
   	out.writeStart(opt);

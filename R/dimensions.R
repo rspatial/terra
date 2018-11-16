@@ -12,7 +12,7 @@ setMethod('nrow', signature(x='SpatRaster'),
 	function(x){ return(x@ptr$nrow)}
 )
 
-setMethod('nrow', signature(x='SpatLayer'), 
+setMethod('nrow', signature(x='SpatVector'), 
 	function(x){ return(x@ptr$nrow())}
 )
 
@@ -20,7 +20,7 @@ setMethod('ncol', signature(x='SpatRaster'),
 	function(x){ return(x@ptr$ncol) }
 )
 
-setMethod('ncol', signature(x='SpatLayer'), 
+setMethod('ncol', signature(x='SpatVector'), 
 	function(x){ return(x@ptr$ncol())}
 )
 

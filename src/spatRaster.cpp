@@ -131,6 +131,24 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 }
 
 
+/*
+SpatRaster::SpatRaster(const SpatRaster &r) {
+	source.nrow = r.nrow;
+	source.ncol = r.ncol;
+	source.extent = r.extent;
+	source.crs = r.crs;
+	source.memory = true;
+	nlyrs = (nlyrs < 1) ? nlyr(): nlyrs;
+	source.resize(nlyrs);
+	source.values.resize(0);
+	
+	std::vector<std::string> nms(s.nlyr);
+	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
+	source.names = nms;
+	// would still need "setSource" to set 
+}
+*/
+
 SpatRaster SpatRaster::geometry(long nlyrs) {
 	RasterSource s;
 	s.nrow = nrow;

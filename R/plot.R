@@ -24,7 +24,7 @@ setMethod("plot", signature(x='SpatRaster', y='missing'),
 	}
 )
 
-setMethod("plot", signature(x='SpatLayer', y='missing'), 
+setMethod("plot", signature(x='SpatVector', y='missing'), 
 	function(x, y, xlab="", ylab="", ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)
@@ -41,7 +41,7 @@ setMethod("plot", signature(x='SpatLayer', y='missing'),
 )
 
 
-setMethod("lines", signature(x='SpatLayer'), 
+setMethod("lines", signature(x='SpatVector'), 
 	function(x, ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)
@@ -56,7 +56,7 @@ setMethod("lines", signature(x='SpatLayer'),
 	}
 )
 
-setMethod("points", signature(x='SpatLayer'), 
+setMethod("points", signature(x='SpatVector'), 
 	function(x, ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)

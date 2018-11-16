@@ -4,8 +4,8 @@ if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("
 
 setMethod("vect", signature(x='missing'), 
 	function(...) {
-		p <- methods::new('SpatLayer')
-		p@ptr <- SpatLayer$new()
+		p <- methods::new('SpatVector')
+		p@ptr <- SpatVector$new()
 		show_messages(p)
 		return(p)
 	}
@@ -13,8 +13,8 @@ setMethod("vect", signature(x='missing'),
 
 setMethod("vect", signature(x='character'), 
 	function(x, ...) {
-		p <- methods::new('SpatLayer')
-		p@ptr <- SpatLayer$new()
+		p <- methods::new('SpatVector')
+		p@ptr <- SpatVector$new()
 		p@ptr$read(x)
 		show_messages(p)
 		p
@@ -28,8 +28,8 @@ setMethod("vect", signature(x='matrix'),
 		type <- tolower(type)
 		stopifnot(type %in% c("points", "lines", "polygons"))
 		
-		p <- methods::new('SpatLayer')
-		p@ptr <- SpatLayer$new()
+		p <- methods::new('SpatVector')
+		p@ptr <- SpatVector$new()
 		nr <- nrow(x)
 		if (nr == 0) {
 			return(p)

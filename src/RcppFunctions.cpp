@@ -37,7 +37,7 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) {
 
 
 
-Rcpp::List getAttributes(SpatLayer* v) {
+Rcpp::List getAttributes(SpatVector* v) {
 	unsigned n = v->ncol();
 	Rcpp::List out(n);	
 	std::vector<unsigned> itype = v->getItype();
@@ -59,7 +59,7 @@ Rcpp::List getAttributes(SpatLayer* v) {
 }
 
 
-Rcpp::DataFrame getGeometry(SpatLayer* v) {
+Rcpp::DataFrame getGeometry(SpatVector* v) {
 	SpatDataFrame df = v->getGeometryDF();
 
 	Rcpp::DataFrame out = Rcpp::DataFrame::create(

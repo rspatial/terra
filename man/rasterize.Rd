@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{rasterize}
-\alias{rasterize,SpatLayer,SpatRaster-method}
+\alias{rasterize,SpatVector,SpatRaster-method}
 
 \title{rasterize}
 
@@ -12,12 +12,12 @@ rasterize polygons
 }
 
 \usage{
-\S4method{rasterize}{SpatLayer,SpatRaster}(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...)
 
 }
 
 \arguments{
-  \item{x}{SpatLayer}
+  \item{x}{SpatVector}
   \item{y}{SpatRaster}
   \item{background}{numeric. Value for cells that are not covered by a polygon}
   \item{filename}{character. Output filename. Optional}

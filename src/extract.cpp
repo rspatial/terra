@@ -56,7 +56,7 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 
 
 
-std::vector<double> SpatRaster::extractLayer(SpatLayer v, std::string fun) {
+std::vector<double> SpatRaster::extractLayer(SpatVector v, std::string fun) {
 
 	std::vector<double> out;
 	std::vector<double> srcout;
