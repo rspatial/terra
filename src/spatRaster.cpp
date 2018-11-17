@@ -18,6 +18,35 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 
+SpatVector SpatRaster::makePolygons() {
+	SpatVector v;
+	SpatGeom g;
+	g.gtype = polygons;
+	double xr = xres()/2;
+	double yr = yres()/2;
+	std::vector<double> x(5);
+	std::vector<double> y(5);
+	std::vector< std::vector<double> > xy;
+	for (size_t i=0; i<ncell(); i++) {
+		xy = xyFromCell(i);
+		x[0] = xy[0][0] - xr;
+		y[0] = xy[1][0] - yr;
+		x[1] = xy[0][0] - xr;
+		y[1] = xy[1][0] + yr;
+		x[2] = xy[0][0] + xr;
+		y[2] = xy[1][0] + yr;
+		x[3] = xy[0][0] + xr;
+		y[3] = xy[1][0] - yr;
+		x[4] = x[0];
+		y[4] = y[0];
+		SpatPart p(x, y);
+		g.addPart(p);
+	}
+	v.addGeom(g);
+	v.setCRS(getCRS());
+	return(v);
+}
+
 
 SpatRaster::SpatRaster(std::string fname) {
 	constructFromFile(fname);

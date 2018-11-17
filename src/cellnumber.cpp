@@ -184,6 +184,9 @@ std::vector< std::vector<double> > SpatRaster::xyFromCell( std::vector<double> &
 		unsigned row = (cell[i] / ncol);
 		unsigned col = fmod(cell[i], ncol);
 		if ((row == navalue) | (col == navalue)) {
+			result[0][i] = NAN;
+			result[1][i] = NAN;	
+		} else {
 			result[0][i] = xmin + (col + 0.5) * xr;
 			result[1][i] = ymax - (row + 0.5) * yr;
 		}

@@ -4,6 +4,13 @@
 # Licence GPL v3
 
 
+.pols <- function(x, ...) {
+	p <- methods::new('SpatVector')
+	p@ptr <- x@ptr$makePolygons()
+	show_messages(p)
+	p
+}
+
 
 # mode argument is ignored as mode=mode gave an error on R-devel
 setMethod('as.vector', signature(x='SpatExtent'), 

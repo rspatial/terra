@@ -17,15 +17,17 @@
 
 #include <vector>
 #include <math.h>
-#include "geodesic.h"
+#include "GeographicLib_geodesic.h"
+#include "spatVector.h"
+#include "distance.h"
 
 double area_polygon_lonlat(std::vector<double> lon, std::vector<double> lat, double a, double f) {
 	struct geod_geodesic g;
 	struct geod_polygon p;
 	geod_init(&g, a, f);
 	geod_polygon_init(&p, 0);
-	int n = lat.size();
-	for (int i=0; i < n; i++) {
+	size_t n = lat.size();
+	for (size_t i=0; i < n; i++) {
 		geod_polygon_addpoint(&g, &p, lat[i], lon[i]);
 	}
 	double area, P;
@@ -33,49 +35,14 @@ double area_polygon_lonlat(std::vector<double> lon, std::vector<double> lat, dou
 	return(area < 0 ? -area : area);
 }
 
-std::vector<double> area_polygon_lonlat(std::vector<double> lon, std::vector<double> lat, std::vector<int> pols, std::vector<int> parts, std::vector<int> holes, double a, double f) {
-
-	std::vector<double> out;
-	struct geod_geodesic g;
-	struct geod_polygon p;
-	geod_init(&g, a, f);
-	geod_polygon_init(&p, 0);
-    
-	double area, P, pa, tota;
-	int pol = 1;
-	int part = 1;
-	int n = lon.size();
-	tota = 0;
-	for (int i=0; i < n; i++) {
-		if (parts[i] != part || pols[i] != pol) {
-			geod_polygon_compute(&g, &p, 0, 1, &area, &P);
-			pa = fabs(area);
-			tota += (holes[i-1] > 0 ? -pa : pa); // hole
-			part = parts[i]; 
-			if (pols[i] != pol) {
-				out.push_back(tota);
-				tota = 0;
-				pol = pols[i];
-			}
-			geod_polygon_init(&p, 0);
-		} 
-		geod_polygon_addpoint(&g, &p, lat[i], lon[i]);		
-	}
-	geod_polygon_compute(&g, &p, 0, 1, &area, &P);
-	pa = fabs(area);
-	tota += (holes[n-1] > 0 ? -pa : pa); // hole
-	out.push_back(tota);
-	return(out);
-}
-
 
 
 double area_polygon_plane(std::vector<double> x, std::vector<double> y) {
 // based on http://paulbourke.net/geometry/polygonmesh/source1.c
-	int n = x.size();
+	size_t n = x.size();
 	double area = x[n-1] * y[0];
 	area -= y[n-1] * x[0];
-	for (int i=0; i < (n-1); i++) {
+	for (size_t i=0; i < (n-1); i++) {
 		area += x[i] * y[i+1];
 		area -= x[i+1] * y[i];
 	}
@@ -84,30 +51,122 @@ double area_polygon_plane(std::vector<double> x, std::vector<double> y) {
 }
 
 
-std::vector<double> area_polygon_plane(std::vector<double> x, std::vector<double> y, std::vector<int> pols, std::vector<int> parts, std::vector<int> holes) {
 
-	std::vector<double> out;
-	int pol = 1;
-	int part = 1;
-	int n = x.size();
-	double tota = 0;
-	double pa;
-	int ps = 0;
-	for (int i=0; i < n; i++) {
-		if (parts[i] != part || pols[i] != pol) {
-			pa = area_polygon_plane(std::vector<double> (x.begin() + ps, x.begin() + i - 1), std::vector<double> (y.begin() + ps, y.begin() + i - 1));
-			tota += (holes[i-1] > 0 ? -pa : pa);
-			part = parts[i];
-			ps = i;
-			if (pols[i] != pol) {
-				out.push_back(tota);
-				tota = 0;
-				pol = pols[i];
-			}
-		} 
+double SpatGeom::area_lonlat(double a, double f) {
+	double area = 0;
+	if (gtype != polygons) return area;
+	for (size_t i=0; i<parts.size(); i++) {
+		area += area_polygon_lonlat(parts[i].x, parts[i].y, a, f);
+		for (size_t j=0; j<parts[i].holes.size(); j++) {
+			area -= area_polygon_lonlat(parts[i].holes[j].x, parts[i].holes[j].y, a, f);
+		}
 	}
-	pa = area_polygon_plane(std::vector<double> (x.begin() + ps, x.end()), std::vector<double> (y.begin() + ps, y.end()));
-	tota += (holes[n-1] > 0 ? -pa : pa);
-	out.push_back(tota);
-	return(out);
+	return area;
 }
+
+
+double SpatGeom::area_plane() {
+	double area = 0;
+	if (gtype != polygons) return area;
+	for (size_t i=0; i<parts.size(); i++) {
+		area += area_polygon_plane(parts[i].x, parts[i].y);
+		for (size_t j=0; j<parts[i].holes.size(); j++) {
+			area -= area_polygon_plane(parts[i].holes[j].x, parts[i].holes[j].y);
+		}
+	}
+	return area;
+}
+
+
+std::vector<double> SpatVector::area() {
+
+	size_t s = size();
+	std::vector<double> ar;
+	ar.reserve(s);
+	if (could_be_lonlat()) {
+		double a = 6378137;
+		double f = 1 / 298.257223563;
+		for (size_t i=0; i<s; i++) {
+			ar.push_back(lyr.geoms[i].area_lonlat(a, f));
+		}
+	} else {
+		for (size_t i=0; i<s; i++) {
+			ar.push_back(lyr.geoms[i].area_plane());
+		}
+	}
+	return ar;
+}
+
+
+
+
+double length_line_lonlat(std::vector<double> lon, std::vector<double> lat, double a, double f) {
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+	size_t n = lat.size();
+	double length = 0;
+	for (size_t i=1; i < n; i++) {
+		length += distance_lonlat(lon[i-1], lat[i-1], lon[i], lat[i], a, f);
+	}
+	return(length);
+}
+
+
+
+double length_line_plane(std::vector<double> x, std::vector<double> y) {
+	size_t n = x.size();
+	double length = 0;
+	for (size_t i=1; i<n; i++) {
+		length += sqrt(pow(x[i-1] - x[i], 2) + pow(y[i-1] - y[i], 2));
+	}
+	return(length);
+}
+
+
+
+double SpatGeom::length_lonlat(double a, double f) {
+	double length = 0;
+	if (gtype == points) return length;
+	for (size_t i=0; i<parts.size(); i++) {
+		length += length_line_lonlat(parts[i].x, parts[i].y, a, f);
+		for (size_t j=0; j<parts[i].holes.size(); j++) {
+			length += length_line_lonlat(parts[i].holes[j].x, parts[i].holes[j].y, a, f);
+		}
+	}
+	return length;
+}
+
+
+double SpatGeom::length_plane() {
+	double length = 0;
+	if (gtype == points) return length;
+	for (size_t i=0; i<parts.size(); i++) {
+		length += length_line_plane(parts[i].x, parts[i].y);
+		for (size_t j=0; j<parts[i].holes.size(); j++) {
+			length += length_line_plane(parts[i].holes[j].x, parts[i].holes[j].y);
+		}
+	}
+	return length;
+}
+
+
+std::vector<double> SpatVector::length() {
+
+	size_t s = size();
+	std::vector<double> r;
+	r.reserve(s);
+	
+	if (could_be_lonlat()) {
+		double a = 6378137;
+		double f = 1 / 298.257223563;
+		for (size_t i=0; i<s; i++) {
+			r.push_back(lyr.geoms[i].length_lonlat(a, f));
+		}
+	} else {
+		for (size_t i=0; i<s; i++) {
+			r.push_back(lyr.geoms[i].length_plane());
+		}
+	}
+	return r;
+}
+

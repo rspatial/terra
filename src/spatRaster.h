@@ -269,6 +269,7 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
+		SpatVector makePolygons();
 		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt);
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions opt);
 		SpatRaster arith(double x, std::string oper, SpatOptions opt);

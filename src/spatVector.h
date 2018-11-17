@@ -22,14 +22,14 @@ enum SpatGeomType { points, lines, polygons, unknown };
 
 class SpatHole {
 	public:
-		std::vector<double> x, y;  
+		std::vector<double> x, y;
 		SpatExtent extent;
 		SpatHole();
 		SpatHole(std::vector<double> X, std::vector<double> Y);
 };
 
 class SpatPart {
-	public:		
+	public:
 		std::vector<double> x, y; //, z;
 		SpatExtent extent;
 		SpatPart();
@@ -37,7 +37,7 @@ class SpatPart {
 		SpatPart(double X, double Y);
 
 		// for POLYGONS only
-		std::vector< SpatHole > holes; 
+		std::vector< SpatHole > holes;
 		bool addHole(std::vector<double> X, std::vector<double> Y);
 		bool addHole(SpatHole h);
 		SpatHole getHole(unsigned i) { return( holes[i] ) ; }
@@ -49,63 +49,65 @@ class SpatPart {
 class SpatGeom {
 	public:
 		SpatGeomType gtype;
-		std::vector<SpatPart> parts; 
-		SpatExtent extent;	
+		std::vector<SpatPart> parts;
+		SpatExtent extent;
 		SpatGeom();
 		SpatGeom(SpatPart p);
 		bool addPart(SpatPart p);
 		bool addHole(SpatHole h);
 		bool setPart(SpatPart p, unsigned i);
 		SpatPart getPart(unsigned i);
-		double area();
-		double length();
+		double area_plane();
+		double area_lonlat(double a, double f);
+		double length_plane();
+		double length_lonlat(double a, double f);
 		unsigned size() { return parts.size(); };
 };
 
 
 class SpatLayer {
 	public:
-		std::vector<SpatGeom> geoms; 
-		SpatExtent extent;		
+		std::vector<SpatGeom> geoms;
+		SpatExtent extent;
 		SpatDataFrame df;
 		std::string crs;
 };
-		
+
 class SpatVector {
-		
+
 	public:
 		SpatLayer lyr;
-		std::vector<SpatLayer> lyrs; 
+		std::vector<SpatLayer> lyrs;
 
 		std::vector<std::string> names();
 		unsigned nrow();
 		unsigned ncol();
 		unsigned nxy();
-		
+
 		SpatExtent getExtent();
-		
+		bool could_be_lonlat();
 		std::string type();
 		SpatGeomType getGType(std::string &type);
 
 		std::string getCRS();
 		void setCRS(std::string CRS);
-
+		bool isLonLat();
 
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
 		SpatDataFrame getGeometryDF();
-		
+
 		SpatVector subset(std::vector<unsigned> range);
 		void setGeometry(std::string type, std::vector<unsigned> id, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<bool> hole);
-		
+
 		std::vector<double> area();
 		std::vector<double> length();
 		unsigned size();
-	
+
 		bool read(std::string fname);
 		bool write(std::string filename, std::string format, bool overwrite);
 
-// attributes		
+// attributes
 		std::vector<double> getDv(unsigned i);
 		std::vector<long> getIv(unsigned i);
 		std::vector<std::string> getSv(unsigned i);
@@ -129,3 +131,4 @@ class SpatVector {
 };
 
 */
+

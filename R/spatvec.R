@@ -1,7 +1,7 @@
 
 
-setMethod ("length" , "SpatVector", 
-	function(x) {
+setMethod ("size" , "SpatVector", 
+	function(x, ...) {
 		x@ptr$size()
 	}
 )
@@ -26,4 +26,19 @@ setMethod("as.data.frame", signature(x="SpatVector"),
 	}
 )
 	
-	
+
+setMethod("area", signature(x="SpatVector"), 
+	function(x, ...) {
+		a <- x@ptr$area();
+		x <- show_messages(x, "area");
+		return(a)
+	}
+)	
+
+setMethod("length", signature(x="SpatVector"), 
+	function(x) {
+		a <- x@ptr$length();
+		x <- show_messages(x, "length");
+		return(a)
+	}
+)	

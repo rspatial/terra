@@ -27,3 +27,4 @@ std::string getFileExt(const std::string& s);
 std::string setFileExt(const std::string& s, const std::string& ext);
 std::string basename(std::string filename);
 void lrtrim(std::string &s);
+bool in_string(const std::string &x, std::string part);

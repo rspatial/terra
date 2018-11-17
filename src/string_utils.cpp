@@ -37,6 +37,16 @@ std::string concatenate(std::vector<std::string> v, std::string delim) {
 	return s;
 }
 
+bool in_string(const std::string &x, std::string part) {
+	size_t f = x.find(part);
+	if (f == std::string::npos) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+
 void lowercase(std::string &s) {
 	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }

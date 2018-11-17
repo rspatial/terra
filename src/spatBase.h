@@ -102,7 +102,7 @@ class SpatExtent {
 		SpatExtent() {xmin = -180; xmax = 180; ymin = -90; ymax = 90;}
 		SpatExtent(double _xmin, double _xmax, double _ymin, double _ymax) {xmin = _xmin; xmax = _xmax; ymin = _ymin; ymax = _ymax;}
 		
-		void intersect(SpatExtent e) { 
+		void intersect(SpatExtent e) { // check first if intersects
 			xmin = std::max(xmin, e.xmin);
 			xmax = std::min(xmax, e.xmax);
 			ymin = std::max(ymin, e.ymin);
@@ -117,10 +117,21 @@ class SpatExtent {
 		}
 
 		std::vector<double> asVector() { 
-			std::vector<double> e(4);
-			e[0] = xmin; e[1] = xmax; e[2] = ymin; e[3] = ymax; 
+			std::vector<double> e = { xmin, xmax, ymin, ymax }; 
 			return(e);
 		}
+			
+			
+		bool could_be_lonlat(std::string crs) {
+			bool b = crs.find("longlat") != std::string::npos;
+			if ((!b) & (crs=="")) {
+				if ((xmin >=-180.1) & (xmax <= 180.1) & (ymin >= -90.1) & (ymax <= 90.1)) {
+					b = true;
+				}
+			}
+			return b;
+		}
+
 			
 		bool valid() {
 			return ((xmax > xmin) && (ymax > ymin));

@@ -64,6 +64,8 @@ RCPP_MODULE(spat){
 		.method("getAttributes", &getAttributes, "getAttributes")
 		.method("getGeometry", &getGeometry, "getGeometry")
 		.method("setGeometry", &SpatVector::setGeometry, "setGeometry")
+		.method("area", &SpatVector::area, "area")		
+		.method("length", &SpatVector::length, "length")		
 		.field("messages", &SpatVector::msg, "messages")
 	;
 
@@ -148,7 +150,7 @@ RCPP_MODULE(spat){
 		.method("extractLayer", &SpatRaster::extractLayer, "extractLayer")
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
-
+		.method("makePolygons", &SpatRaster::makePolygons, "makePolygons")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("crop", &SpatRaster::crop, "crop")

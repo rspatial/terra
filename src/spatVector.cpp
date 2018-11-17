@@ -140,6 +140,11 @@ unsigned SpatVector::size() {
 	return lyr.geoms.size();
 }
 
+bool SpatVector::could_be_lonlat() {
+	SpatExtent e = getExtent();
+	return e.could_be_lonlat(getCRS());
+};
+
 
 SpatExtent SpatVector::getExtent(){
 	return lyr.extent;
@@ -167,36 +172,6 @@ std::string SpatVector::type(){
 		return("unknown");
 	}
 }
-
-double SpatGeom::area(){
-	return 0;
-}
-
-std::vector<double> SpatVector::area(){
-	unsigned n = size();
-	std::vector<double> out(n);
-	SpatGeom g;
-	for (size_t i=0; i<n; i++) {
-		g = getGeom(i);
-		out[i] = g.area();
-	}
-	return(out);
-};
-
-double SpatGeom::length(){
-	return 0;
-}
-
-std::vector<double> SpatVector::length() {
-	unsigned n = size();
-	std::vector<double> out(n);
-	SpatGeom g;
-	for (size_t i=0; i<n; i++) {
-		g = getGeom(i);
-		out[i] = g.length();
-	}
-	return(out);	
-};
 
 
 
