@@ -18,7 +18,7 @@
 #include <random>
 #include <chrono>
 #include "spatRaster.h"
-#include "SimpleIni/SimpleIni.h"
+#include "SimpleIni.h"
 #include "string_utils.h"
 #include "math_utils.h"
 
@@ -173,10 +173,20 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
 		return false;
 		#endif
 	} else {
-        source[0].values = vals;
-        source[0].hasValues = true;
-        source[0].memory = true;
-        source[0].setRange();
+		size_t sz = source[0].values.size();
+		size_t start = row * ncol * nlyr();
+		if (sz == 0) { // first or all
+			source[0].values = vals;
+		} else if (sz == start) { // in chunks
+			source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());			
+		} else { // async	
+			if (start+vals.size() > sz) {
+				source[0].values.resize(start+vals.size());
+			}
+			for (size_t i=0; i<vals.size(); i++) {
+				source[0].values[start+i] = vals[i];
+			}
+		}	
 	}
 	return success;
 }
@@ -200,6 +210,9 @@ bool SpatRaster::writeStop(){
 		setError("GDAL is not available");
 		return false;
 		#endif
+	} else {
+		source[0].setRange();
+        source[0].hasValues = true;
 	}
 	source[0].hasValues = true;
 	return success;

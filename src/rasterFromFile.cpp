@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
-#include "SimpleIni/SimpleIni.h"
+#include "SimpleIni.h"
 #include "string_utils.h"
 
 
