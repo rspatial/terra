@@ -5,11 +5,13 @@
 \alias{as.vector}
 \alias{as.matrix}
 \alias{as.array}
+\alias{as.polygons}
 
 \alias{as.vector,SpatRaster-method}
 \alias{as.matrix,SpatRaster-method}
 \alias{as.array,SpatRaster-method}
 \alias{as.data.frame,SpatRaster-method}
+\alias{as.polygons,SpatRaster-method}
 
 
 \title{Coercion to other object types}
@@ -23,20 +25,23 @@ Coercion to other object types
 \S4method{as.matrix}{SpatRaster}(x, wide=FALSE, ...)
 \S4method{as.data.frame}{SpatRaster}(x, xy=FALSE, cells=FALSE, ...)
 \S4method{as.array}{SpatRaster}(x, ...)
+\S4method{as.polygons}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
 }
 
 
 \arguments{
 \item{x}{SpatRaster}
-\item{wide}{Logical}
-\item{xy}{Logical}
-\item{cells}{Logical}
+\item{wide}{logical}
+\item{xy}{logical}
+\item{cells}{logical}
 \item{mode}{this argument is ignored}
+\item{values}{logical; include cell values as attributes?}
+\item{na.rm}{logical; exclude cells with NAs?}
 \item{...}{Additional arguments. None implemented}
 }
 
 \value{
-vector, matrix, array or data.frame
+vector, matrix, array, data.frame or SpatVector
 }
 
 \examples{

@@ -7,6 +7,7 @@
 \alias{ncell}
 \alias{nlyr}
 \alias{nsrc}
+\alias{size}
 \alias{dim}
 \alias{ncol<-}
 \alias{nrow<-}

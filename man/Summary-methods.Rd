@@ -31,7 +31,7 @@ To summarize the values of all cells by layer see \code{layerStats}.
 \examples{
 set.seed(0)
 r <- rast(nrow=10, ncol=10, nlyr=3)
-values(r) <- runif(length(r))
+values(r) <- runif(size(r))
 
 x <- mean(r)
 x <- sum(r, r[[2]], 3)
