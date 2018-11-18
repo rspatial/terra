@@ -20,13 +20,13 @@
 #include <limits>
 #include <cmath>
 #include "spatRaster.h"
-
+#include "vecmath.h"
 
 template <typename T>
 std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
     std::size_t total_size = 0;
     for (const auto& sub : v)
-        total_size += sub.size(); // I wish there was a transform_accumulate
+        total_size += sub.size(); 
     std::vector<T> result;
     result.reserve(total_size);
     for (const auto& sub : v)
@@ -49,9 +49,24 @@ std::vector<double> flat(std::vector<std::vector<double>> v) {
 }
 
 
-std::vector<unsigned> SpatRaster::get_aggregate_dims( std::vector<unsigned> fact ) {
-	// fact has aggregation factors in the three dimensions
+bool SpatRaster::get_aggregate_dims(std::vector<unsigned> &fact, std::string &message ) {
+
 	unsigned fs = fact.size();
+	if ((fs > 3) | (fs == 0)) {
+		message = "argument 'fact' should have length 1, 2, or 3";
+		return false;
+	}
+	auto min_value = *std::min_element(fact.begin(),fact.end());
+	if (min_value < 1) {
+		message = "values in argument'fact' should be > 0";
+		return false;
+	}
+	auto max_value = *std::min_element(fact.begin(),fact.end());
+	if (max_value == 1) {
+		message = "all values in argument 'fact' are 1, nothing to aggregate";
+		return false;
+	}
+
 	fact.resize(6);
 	if (fs == 1) {
 		fact[1] = fact[0];
@@ -67,51 +82,60 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims( std::vector<unsigned> fact
 	fact[3] = std::ceil(double(nrow()) / fact[0]);
 	fact[4] = std::ceil(double(ncol()) / fact[1]);
 	fact[5] = std::ceil(double(nlyr()) / fact[2]);
-	return fact;
+	return true;
 }
 
 
-std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigned> dim) {
-	// blocks per row (=ncol), col (=nrow)
+std::vector<unsigned> SpatRaster::get_aggregate_dims2(std::vector<unsigned> fact) {
+	std::string message = "";
+	get_aggregate_dims(fact, message);
+	return(fact);
+}
 
-//	dim = get_aggregate_dims(dim);
+std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim) {
 
-	unsigned dy = dim[0], dx = dim[1], dz = dim[2];
-	unsigned bpC = dim[3];
-	unsigned bpR = dim[4];
-	unsigned bpL = bpR * bpC;
+// adjust for chunk
+	//dim[3] = std::ceil(double(nr) / dim[0]);
+
+	size_t dy = dim[0], dx = dim[1], dz = dim[2];
+	size_t bpC = dim[3];
+	size_t bpR = dim[4];
+	size_t bpL = bpR * bpC;
 
 	// new number of layers
-	unsigned newNL = dim[5];
+	size_t newNL = dim[5];
 
 	// new number of rows, adjusted for additional (expansion) rows
-	unsigned adjnr = bpC * dy;
+	size_t adjnr = bpC * dy;
 
 	// number of aggregates
-	unsigned nblocks = (bpR * bpC * newNL);
+	size_t nblocks = (bpR * bpC * newNL);
 	// cells per aggregate
-	unsigned blockcells = dx * dy * dz;
+	size_t blockcells = dx * dy * dz;
 
 	// output: each row is a block
 	std::vector< std::vector<double> > a(nblocks, std::vector<double>(blockcells, std::numeric_limits<double>::quiet_NaN()));
+    size_t ncells = ncell();
+    size_t nl = nlyr();
+    size_t nc = ncol();
+    size_t lstart, rstart, cstart, lmax, rmax, cmax, f, lj, cell;
 
-	for (unsigned b = 0; b < nblocks; b++) {
-		unsigned lstart = dz * (b / bpL);
-		unsigned rstart = (dy * (b / bpR)) % adjnr;
-		unsigned cstart = dx * (b % bpR);
+	for (size_t b = 0; b < nblocks; b++) {
+		lstart = dz * (b / bpL);
+		rstart = (dy * (b / bpR)) % adjnr;
+		cstart = dx * (b % bpR);
 
-		unsigned lmax   = std::min(nlyr(), (lstart + dz));
-		unsigned rmax   = std::min(nrow(), (rstart + dy));
-		unsigned cmax   = std::min(ncol(), (cstart + dx));
+		lmax = std::min(nl, (lstart + dz));
+		rmax = std::min(nr, (rstart + dy));  // nrow -> nr
+		cmax = std::min(nc, (cstart + dx));
 
-		unsigned f = 0;
-		unsigned nc = ncell();
-		for (unsigned j = lstart; j < lmax; j++) {
-			unsigned lj = j * nc;
-			for (unsigned r = rstart; r < rmax; r++) {
-				unsigned cell = lj + r * ncol();
-				for (unsigned c = cstart; c < cmax; c++) {
-					a[b][f] = source[0].values[cell + c];
+		f = 0;
+		for (size_t j = lstart; j < lmax; j++) {
+			lj = j * ncells;
+			for (size_t r = rstart; r < rmax; r++) {
+				cell = lj + r * nc;
+				for (size_t c = cstart; c < cmax; c++) {
+					a[b][f] = in[cell + c];
 					f++;
 				}
 			}
@@ -121,86 +145,100 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigne
 }
 
 
+void get_lyrcell(const size_t &i, const size_t &nc, const size_t &nr, const size_t &ncells, size_t &lyrcell) {
+	size_t row = (i / nc) % nr;
+	size_t col = i % nc;
+	size_t cell = row * nc + col;
+	lyrcell = std::floor(i / (ncells)) * ncells + cell;	
+}
+
+
+
 SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt) {
 
-//std::vector<double> SpatRaster::aggregate(std::vector<unsigned> fact, bool narm, string fun, string filename) {
-
-//	fact = get_aggregate_dims(fact);
-
-	unsigned f = 1, mean = 0; // sum
-	if (fun == "mean") {
-		f = 1;
-		mean = 1;
-	} else if (fun == "min") {
-		f = 2;
-	} else if (fun == "max") {
-		f = 3;
+	std::string message = "";
+	bool success = get_aggregate_dims(fact, message);
+	if (!success) {
+		SpatRaster er = geometry();
+		er.setError(message);
+		return er;
 	}
 
-
-	double xmax = extent.xmin + fact[4] * yres();
-	double ymin = extent.ymax - fact[5] * xres();
+	double xmax = extent.xmin + fact[4] * fact[1] * xres();
+	double ymin = extent.ymax - fact[3] * fact[0] * yres();
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
-	SpatRaster r = SpatRaster(fact[3], fact[4], fact[5], e, crs);
+	SpatRaster out = SpatRaster(fact[3], fact[4], fact[5], e, crs);
 
-	if (!source[0].hasValues) { return r; }
-
-	// output: each row is a new cell
-	std::vector< std::vector<double> > v(fact[5], std::vector<double>(fact[3]*fact[4]));
-
-	// get the aggregates
-	std::vector<std::vector< double > > a = get_aggregates(fact);
-
-	int nblocks = a.size();
-	int naggs = a[0].size();
-
-	for (int i = 0; i < nblocks; i++) {
-		unsigned row = (i / ncol()) % nrow();
-		unsigned col = i % ncol();
-		unsigned cell = row * ncol() + col;
-		unsigned lyr = std::floor(i / (nrow() * ncol()));
-
-		double x = 0;
-		if (f==2) { // min
-			x = std::numeric_limits<double>::infinity();
-		} else if (f==3) { // max
-			x = - std::numeric_limits<double>::infinity() ;
+	if (!source[0].hasValues) { return out; }
+	if (!out.writeStart(opt)) { return out ;}
+	
+	
+	std::vector<std::string> f {"sum", "mean", "min", "max"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("unknown function argument");
+		return out;
+	}
+	
+	BlockSize bs = getBlockSize(4);
+	if (bs.n > 1) {
+		unsigned nr = floor(bs.nrows[0] / fact[1]) * fact[1];
+		for (size_t i =0; i<bs.n; i++) {
+			bs.row[i] = i * nr;
+			bs.nrows[i] = nr;
 		}
-
-		double cnt = 0;
-		for (int j = 0; j < naggs; j++) {
-			if (std::isnan(a[i][j])) {
-				if (!narm) {
-					x = NAN;
-					goto breakout;
-				}
-			} else {
-				if (f==2) { // min
-					x = std::min(x, a[i][j]);
-				} else if (f==3) { // max
-					x = std::max(x, a[i][j]);
-				} else { // sum or mean
-					x += a[i][j];
-				}
-				cnt++;
+		while (true) {
+			unsigned lastrow = bs.row[bs.n] + bs.nrows[bs.n] + 1;
+			if (lastrow < nrow()) {
+				bs.row.push_back(lastrow);
+				bs.nrows.push_back(std::min(bs.nrows[bs.n], nrow()-lastrow));
+				bs.n += 1;
 			}
 		}
-		if (cnt > 0) {
-			if (mean) {
-				x = x / cnt;
-			}
-		} else {
-			x = NAN;
-		}
-		breakout:
-		v[lyr][cell] = x;
 	}
 
+	size_t row, col, lyrcell, nr, nc, ncells;
+	nr = nrow();
+	nc = ncol();
+	ncells = nc * nr;
+	readStart();
+	for (size_t b = 0; b < out.bs.n; b++) {
+		std::vector<double> in = readBlock(bs, b);
+	// output: each row is a new cell
+		std::vector<double > v(fact[3] * fact[4] * fact[5]);
+		std::vector<std::vector< double > > a = get_aggregates(in, bs.nrows[b], fact);
+		size_t nblocks = a.size();
+		if (fun == "mean") {
+			//auto agfun = vmean<double>;
+			for (size_t i = 0; i < nblocks; i++) {
+				get_lyrcell(i, nc, nr, ncells, lyrcell);
+				v[lyrcell] = vmean(a[i], narm);
+			} 
+		} else if (fun == "sum") {
+			for (size_t i = 0; i < nblocks; i++) {
+				get_lyrcell(i, nc, nr, ncells, lyrcell);
+				v[lyrcell] = vsum(a[i], narm);
+			} 
+		} else if (fun == "min") {
+			for (size_t i = 0; i < nblocks; i++) {
+				get_lyrcell(i, nc, nr, ncells, lyrcell);
+				v[lyrcell] = vmin(a[i], narm);
+			} 
+		} else if (fun == "max") {
+			for (size_t i = 0; i < nblocks; i++) {
+				get_lyrcell(i, nc, nr, ncells, lyrcell);
+				v[lyrcell] = vmax(a[i], narm);
+			} 
+		} else {
+			for (size_t i = 0; i < nblocks; i++) {
+				get_lyrcell(i, nc, nr, ncells, lyrcell);
+				v[lyrcell] = vmean(a[i], narm);
+			} 
+		}
 
-	r.setValues( flat(v) );
-
-	return(r);
-
+		out.writeValues( v, bs.row[b] );
+	}
+	out.writeStop();
+	return(out);
 }
 
 

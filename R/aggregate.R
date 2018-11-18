@@ -28,48 +28,32 @@ setMethod('aggregate', signature(x='SpatRaster'),
 function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)  {
 
 	#expand=TRUE, 
-	
-	fact <- round(fact)
-	lf <- length(fact)
-	if (lf > 3) {
-		stop('fact should have length 1, 2, or 3')
-	}
-	if (any(fact < 1)) {
-		stop('fact should be > 0')
-	}
-	if (! any(fact > 1)) {
-		warning('all fact(s) were 1, nothing to aggregate')
-		return(x)
-	}
-	dims <- x@ptr$get_aggregate_dims(fact)
 	fun <- .makeTextFun(match.fun(fun))
-	if (class(fun) == 'character') { 
-		op <- as.integer(match(fun, c('sum', 'mean', 'min', 'max')) - 1)
-	} else {
-		op <- NA
+	toc <- FALSE
+	if (class(fun) == "character") { 
+		if (fun %in% c('sum', 'mean', 'min', 'max')) {
+			toc <- TRUE
+		}
 	}
 
-	
-	if (!is.na(op)) {	
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+	opt <- .runOptions(filename[1], overwrite[1], wopt)	
+	if (toc) {	
 		#	fun='mean', expand=TRUE, na.rm=TRUE, filename=""
-		x@ptr <- x@ptr$aggregate(dims, fun, na.rm, opt)
+		x@ptr <- x@ptr$aggregate(fact, fun, na.rm, opt)
 		return (show_messages(x, "aggregate"))
 	} else {
-		e <- as.vector(ext(x))
-		rs <- res(x)
-		e[2] <- e[1] + dims[4] * rs[2];
-		e[3] <- e[4] - dims[5] * rs[1];
-		out <- rast(nrow=dims[4], ncol=dims[4], nlyr=dims[6],  crs=crs(x), ext=e)
-		nc <- ncol(x)
-		
+		out <- rast(x)
+		out@ptr <- out@ptr$aggregate(fact, "sum", na.rm, opt)
+		out <- show_messages(out, "aggregate")
+		dims <- x@ptr$get_aggregate_dims(fact)
+		b <- x@ptr$getBlockSize(4)		
+		nc <- ncol(x)	
 		readStart(x)
-		b <- writeStart(out, filename[1], overwrite[1], wopt)
+		ignore <- writeStart(out, filename[1], overwrite[1], opt)
 		for (i in 1:b$n) {
-			#v <- x@ptr$get_aggregates(dims, b$row[i], b$nrows[i], 1, nc)
-			v <- x@ptr$get_aggregates(dims)
-			v <- do.call(rbind, v)
-			v <- apply(v, 1, fun, na.rm=na.rm)
+			v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
+			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
+			v <- sapply(v, fun, na.rm=na.rm)
 			writeValues(out, v, b$row[i])
 		}
 		writeStop(out)

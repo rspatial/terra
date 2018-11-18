@@ -283,8 +283,10 @@ class SpatRaster {
 		SpatRaster gridDistance(SpatOptions opt);
 		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions opt);
 
-		std::vector<unsigned> get_aggregate_dims( std::vector<unsigned> fact );
-		std::vector<std::vector<double> > get_aggregates(std::vector<unsigned> dim);
+		bool get_aggregate_dims(std::vector<unsigned> &fact, std::string &message);
+		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);
+		std::vector<std::vector<double> > get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim);
+
 		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions opt);

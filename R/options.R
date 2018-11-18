@@ -45,15 +45,14 @@
 }
 
 .showOptions <- function(opt) {
-	cat("options for package terra\n")
+	cat("Options for package 'terra'\n")
 	cat("memfrac     :" , opt$memfrac, "\n")
 	cat("tempdir     :" , opt$tempdir, "\n")
-	cat("datatype    :" , opt$datatype, "\n")
-	cat("filetype    :" , opt$filetype, "\n")
+	cat("datatype    :" , opt$def_datatype, "\n")
+	cat("filetype    :" , opt$def_filetype, "\n")
 }
  
 terraOptions <- function(...) {
-
 	dots <- list(...)
 	opt <- .terra_environment$options@ptr
 	if (length(dots) == 0) {

@@ -37,6 +37,7 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) {
 
 
 
+
 Rcpp::List getAttributes(SpatVector* v) {
 	unsigned n = v->ncol();
 	Rcpp::List out(n);	

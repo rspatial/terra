@@ -62,7 +62,6 @@ SpatVector SpatRaster::makePolygons(bool values, bool narm) {
 		std::vector<double> atts(nl);
 		for (size_t i=0; i<out.bs.n; i++) {
 			std::vector<double> vals = readBlock(out.bs, i);		
-			unsigned cbase=out.bs.row[i] * ncol();
 			unsigned nc=out.bs.nrows[i] * ncol();
 			for (size_t j=0; j<nc; j++) {
 				for (size_t k=0; k<nl; k++) {

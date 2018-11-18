@@ -159,7 +159,7 @@ RCPP_MODULE(spat){
 		.method("mask", &SpatRaster::mask, "mask")
 		.method("aggregate", &SpatRaster::aggregate, "aggregate")
 		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
-		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims, "get_aggregate_dims")
+		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2, "get_aggregate_dims")
 		
 		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions) )( &SpatRaster::arith ))
 		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, SpatOptions) )( &SpatRaster::arith ))
