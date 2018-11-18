@@ -18,7 +18,22 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 
-SpatVector SpatRaster::makePolygons() {
+
+void getCorners(std::vector<double> &x,  std::vector<double> &y, const double &X, const double &Y, const double &xr, const double &yr) {
+	x[0] = X - xr;
+	y[0] = Y - yr;
+	x[1] = X - xr;
+	y[1] = Y + yr;
+	x[2] = X + xr;
+	y[2] = Y + yr;
+	x[3] = X + xr;
+	y[3] = Y - yr;
+	x[4] = x[0];
+	y[4] = y[0];
+}	
+
+SpatVector SpatRaster::makePolygons(bool values, bool narm) {
+	if (!values) narm=false;
 	SpatVector v;
 	SpatGeom g;
 	g.gtype = polygons;
@@ -26,23 +41,49 @@ SpatVector SpatRaster::makePolygons() {
 	double yr = yres()/2;
 	std::vector<double> x(5);
 	std::vector<double> y(5);
-	std::vector< std::vector<double> > xy;
-	for (size_t i=0; i<ncell(); i++) {
-		xy = xyFromCell(i);
-		x[0] = xy[0][0] - xr;
-		y[0] = xy[1][0] - yr;
-		x[1] = xy[0][0] - xr;
-		y[1] = xy[1][0] + yr;
-		x[2] = xy[0][0] + xr;
-		y[2] = xy[1][0] + yr;
-		x[3] = xy[0][0] + xr;
-		y[3] = xy[1][0] - yr;
-		x[4] = x[0];
-		y[4] = y[0];
-		SpatPart p(x, y);
-		g.addPart(p);
+	if (!values) {
+		std::vector<double> cells(ncell()) ; 
+		std::iota (std::begin(cells), std::end(cells), 0); 
+		std::vector< std::vector<double> > xy = xyFromCell(cells);
+		for (size_t i=0; i<ncell(); i++) {
+			getCorners(x, y, xy[0][i], xy[1][i], xr, yr);
+			SpatPart p(x, y);
+			g.addPart(p);
+			v.addGeom(g);
+			g.parts.resize(0);
+		}
+	} else {
+		SpatRaster out = geometry();
+		unsigned nl = nlyr();
+		std::vector<std::vector<double> > att(ncell(), std::vector<double> (nl));
+	
+		BlockSize bs = getBlockSize(4);
+		std::vector< std::vector<double> > xy;
+		std::vector<double> atts(nl);
+		for (size_t i=0; i<out.bs.n; i++) {
+			std::vector<double> vals = readBlock(out.bs, i);		
+			unsigned cbase=out.bs.row[i] * ncol();
+			unsigned nc=out.bs.nrows[i] * ncol();
+			for (size_t j=0; j<nc; j++) {
+				for (size_t k=0; k<nl; k++) {
+					size_t kk = j + k * nl;
+					att[nc+j][k] = vals[kk];
+				}
+				xy = xyFromCell(nc+j);
+				getCorners(x, y, xy[0][0], xy[1][0], xr, yr);
+				SpatPart p(x, y);
+				g.addPart(p);
+				v.addGeom(g);
+				g.parts.resize(0);
+				
+			}
+		}
+		SpatDataFrame df;
+		std::vector<std::string> nms = getNames();
+		for (size_t i=0; i<att.size(); i++) {
+			df.add_column(att[i], nms[i]);
+		}
 	}
-	v.addGeom(g);
 	v.setCRS(getCRS());
 	return(v);
 }
@@ -69,15 +110,15 @@ SpatRaster::SpatRaster(std::vector<std::string> fname) {
 				setError(r.msg.error);
 			}
 			return;
-		}	
+		}
 	}
 }
 
 
 void SpatRaster::setSources(std::vector<RasterSource> s) {
 	source = s;
-	nrow = s[0].nrow;
-	ncol = s[0].ncol;
+//	nrow = s[0].nrow;
+//	ncol = s[0].ncol;
 	extent = s[0].extent;
 	crs = s[0].crs;
 }
@@ -170,25 +211,25 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 	nlyrs = (nlyrs < 1) ? nlyr(): nlyrs;
 	source.resize(nlyrs);
 	source.values.resize(0);
-	
+
 	std::vector<std::string> nms(s.nlyr);
 	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
 	source.names = nms;
-	// would still need "setSource" to set 
+	// would still need "setSource" to set
 }
 */
 
 SpatRaster SpatRaster::geometry(long nlyrs) {
 	RasterSource s;
-	s.nrow = nrow;
-	s.ncol = ncol;
+	s.nrow = nrow();
+	s.ncol = ncol();
 	s.extent = extent;
 	s.crs = crs;
 	s.memory = true;
 	nlyrs = (nlyrs < 1) ? nlyr(): nlyrs;
 	s.resize(nlyrs);
 	s.values.resize(0);
-	
+
 	std::vector<std::string> nms(s.nlyr);
 	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
 	s.names = nms;
@@ -201,10 +242,8 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 SpatRaster SpatRaster::deepCopy() {
 
 	SpatRaster out = *this;
-	out.nrow = nrow;
-	out.ncol = ncol;
-	out.extent = extent;
-	out.crs = crs;
+//	out.extent = extent;
+//	out.crs = crs;
 	return out;
 }
 
@@ -216,8 +255,25 @@ void SpatRaster::setCRS(std::string _crs) {
 }
 
 std::vector<double> SpatRaster::resolution() {
-	return std::vector<double> { (extent.xmax - extent.xmin) / ncol, (extent.ymax - extent.ymin) / nrow };
+	return std::vector<double> { (extent.xmax - extent.xmin) / ncol(), (extent.ymax - extent.ymin) / nrow() };
 }
+
+unsigned SpatRaster::ncol() {
+	if (source.size() > 0) {
+		return source[0].ncol;
+	} else {
+		return 0;
+	}
+}
+
+unsigned SpatRaster::nrow() {
+	if (source.size() > 0) {
+		return source[0].nrow;
+	} else {
+		return 0;
+	}
+}
+
 
 unsigned SpatRaster::nlyr() {
 	unsigned x = 0;
@@ -239,25 +295,30 @@ std::vector<bool> SpatRaster::inMemory() {
 
 std::vector<bool> SpatRaster::hasRange() {
 	std::vector<bool> x;
-	for (size_t i=0; i<source.size(); i++) { 
-		x.insert(x.end(), source[i].hasRange.begin(), source[i].hasRange.end()); 
+	for (size_t i=0; i<source.size(); i++) {
+		x.insert(x.end(), source[i].hasRange.begin(), source[i].hasRange.end());
 	}
 	return(x);
 }
 
 std::vector<double> SpatRaster::range_min() {
 	std::vector<double> x;
-	for (size_t i=0; i<source.size(); i++) { 
-		x.insert(x.end(), source[i].range_min.begin(),source[i].range_min.end()); 
+	for (size_t i=0; i<source.size(); i++) {
+		x.insert(x.end(), source[i].range_min.begin(),source[i].range_min.end());
 	}
 	return(x);
 }
 
 std::vector<double> SpatRaster::range_max() {
 	std::vector<double> x;
-	for (size_t i=0; i<source.size(); i++) { 
-		x.insert(x.end(), source[i].range_max.begin(), source[i].range_max.end()); 
+	for (size_t i=0; i<source.size(); i++) {
+		x.insert(x.end(), source[i].range_max.begin(), source[i].range_max.end());
 	}
 	return(x);
 }
+
+bool SpatRaster::could_be_lonlat() {
+	SpatExtent e = getExtent();
+	return e.could_be_lonlat(getCRS());
+};
 

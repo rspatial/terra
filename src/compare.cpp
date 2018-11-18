@@ -29,26 +29,26 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs) {
 		setError("extents do not match");
 		return false;
 	}
-	
-	if (! ((nrow == x.nrow) && (ncol == x.ncol)) ) {
+
+	if (! ((nrow() == x.nrow()) && (ncol() == x.ncol())) ) {
 		setError("resolutions do not match");
 		return false;
 	}
-	
-	if (lyrs) {	
+
+	if (lyrs) {
 		if (!(nlyr() == x.nlyr())) {
 			setError("number of layers does not match");
 			return false;
 		}
 	}
-	
+
 	if (crs) {
-		if (!(getCRS() == x.getCRS())) { 
+		if (!(getCRS() == x.getCRS())) {
 			if (warncrs) {
 				addWarning("CRS do not match");
 			} else {
 				setError("CRS do not match");
-				return false;			
+				return false;
 			}
 		}
 	}

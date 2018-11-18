@@ -42,11 +42,11 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions opt) {
 	unsigned col2 = colFromX(out.extent.xmax - 0.5 * xr);
 	unsigned row1 = rowFromY(out.extent.ymax - 0.5 * yr);
 	unsigned row2 = rowFromY(out.extent.ymin + 0.5 * yr);
-	if ((row1==0) && (row2==nrow-1) && (col1==0) && (col2==ncol-1)) {
+	if ((row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1)) {
 		return(out);
 	}
 
-	unsigned ncols = out.ncol;
+	unsigned ncols = out.ncol();
 
  	out.writeStart(opt);
 	readStart();

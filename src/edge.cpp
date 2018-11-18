@@ -14,7 +14,7 @@ SEXP _edge(SEXP d, SEXP dim, SEXP classes, SEXP type, SEXP directions) {
 
 	R_len_t i, j;
 	SEXP val;
-	int nrow, ncol, n, cell, k;
+	int nrows, ncols, n, cell, k;
 	int *xd, *xval;
 
 	int class = INTEGER(classes)[0];
@@ -22,9 +22,9 @@ SEXP _edge(SEXP d, SEXP dim, SEXP classes, SEXP type, SEXP directions) {
 	int dirs = INTEGER(directions)[0];
 	int falseval = 0;
 	
-	nrow = INTEGER(dim)[0];
-	ncol = INTEGER(dim)[1];
-	n = nrow * ncol;
+	nrows = INTEGER(dim)[0];
+	ncols = INTEGER(dim)[1];
+	n = nrows * ncols;
 	
 	
 	PROTECT(d = coerceVector(d, INTSXP));
@@ -38,9 +38,9 @@ SEXP _edge(SEXP d, SEXP dim, SEXP classes, SEXP type, SEXP directions) {
 	
 	if (class == 0) {
 		if (edgetype == 0) { // inner
-			for (i = 1; i < (nrow-1); i++) {
-				for (j = 1; j < (ncol-1); j++) {
-					cell = i*ncol+j;
+			for (i = 1; i < (nrows-1); i++) {
+				for (j = 1; j < (ncols-1); j++) {
+					cell = i*ncols+j;
 					xval[cell] = R_NaInt;
 					if ( xd[cell] != R_NaInt ) {
 						xval[cell] = falseval;
@@ -55,14 +55,14 @@ SEXP _edge(SEXP d, SEXP dim, SEXP classes, SEXP type, SEXP directions) {
 			}
 		
 		} else if (edgetype == 1) { //outer
-			for (i = 1; i < (nrow-1); i++) {
-				for (j = 1; j < (ncol-1); j++) {
-					cell = i*ncol+j;
+			for (i = 1; i < (nrows-1); i++) {
+				for (j = 1; j < (ncols-1); j++) {
+					cell = i*ncols+j;
 					xval[cell] = falseval;
 					if ( xd[cell] == R_NaInt ) {
 						xval[cell] = R_NaInt;
 						for (k=0; k < dirs; k++) {			
-							if ( xd[cell+ r[k] * ncol + c[k] ] != R_NaInt ) {
+							if ( xd[cell+ r[k] * ncols + c[k] ] != R_NaInt ) {
 								xval[cell] = 1;
 								break;
 							}
@@ -73,17 +73,17 @@ SEXP _edge(SEXP d, SEXP dim, SEXP classes, SEXP type, SEXP directions) {
 		} 
 	} else { // by class
 		int test;
-		for (i = 1; i < (nrow-1); i++) {
-			for (j = 1; j < (ncol-1); j++) {
-				cell = i*ncol+j;
-				test = xd[ cell+r[0]*ncol+c[0] ];
+		for (i = 1; i < (nrows-1); i++) {
+			for (j = 1; j < (ncols-1); j++) {
+				cell = i*ncols+j;
+				test = xd[ cell+r[0]*ncols+c[0] ];
 				if (test == R_NaInt) {
 					xval[cell] = R_NaInt;			
 				} else {
 					xval[cell] = falseval;
 				}
 				for (k=1; k < dirs; k++) {
-					if (test != xd[ cell+r[k]*ncol +c[k] ]) {
+					if (test != xd[ cell+r[k]*ncols +c[k] ]) {
 						xval[cell] = 1;
 						break;
 					}

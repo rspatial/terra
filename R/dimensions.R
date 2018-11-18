@@ -9,7 +9,7 @@ setMethod("dim", signature(x="SpatRaster"),
 )
 
 setMethod("nrow", signature(x="SpatRaster"), 
-	function(x){ return(x@ptr$nrow)}
+	function(x){ return(x@ptr$nrow())}
 )
 
 setMethod("nrow", signature(x="SpatVector"), 
@@ -17,7 +17,7 @@ setMethod("nrow", signature(x="SpatVector"),
 )
 
 setMethod("ncol", signature(x="SpatRaster"), 
-	function(x){ return(x@ptr$ncol) }
+	function(x){ return(x@ptr$ncol()) }
 )
 
 setMethod("ncol", signature(x="SpatVector"), 

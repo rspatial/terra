@@ -52,7 +52,7 @@ bool SpatRaster::isSource(std::string filename) {
 
 
 bool SpatRaster::writeRaster(SpatOptions opt) {
-	
+
 	std::string filename = opt.get_filename();
 	std::string datatype = opt.get_datatype();
 	bool overwrite = opt.get_overwrite();
@@ -100,7 +100,7 @@ bool SpatRaster::writeStart(SpatOptions opt) {
 	bool success = true;
 	std::string filename = opt.get_filename();
 	std::string datatype = opt.get_datatype();
-	
+
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
 			double seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -174,19 +174,19 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
 		#endif
 	} else {
 		size_t sz = source[0].values.size();
-		size_t start = row * ncol * nlyr();
+		size_t start = row * ncol() * nlyr();
 		if (sz == 0) { // first or all
 			source[0].values = vals;
 		} else if (sz == start) { // in chunks
-			source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());			
-		} else { // async	
+			source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());
+		} else { // async
 			if (start+vals.size() > sz) {
 				source[0].values.resize(start+vals.size());
 			}
 			for (size_t i=0; i<vals.size(); i++) {
 				source[0].values[start+i] = vals[i];
 			}
-		}	
+		}
 	}
 	return success;
 }
@@ -231,8 +231,8 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 		s.memory = true;
 		s.names = getNames();
 		s.driver = "memory";
-		
-		s.setRange(); 
+
+		s.setRange();
 		setSource(s);
 		result = true;
 	} else {
@@ -241,7 +241,7 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 	return (result);
 }
 
-void SpatRaster::setRange() { 
+void SpatRaster::setRange() {
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].memory) { // for now. should read from files as needed
 			source[i].setRange();
@@ -253,8 +253,8 @@ void SpatRaster::setRange() {
 
 void RasterSource::setRange() {
 	double vmin, vmax;
-	unsigned nc = ncol * nrow;
-	unsigned start;
+	size_t nc = ncol * nrow;
+	size_t start;
 	range_min.resize(nlyr);
 	range_max.resize(nlyr);
 	hasRange.resize(nlyr);
@@ -279,8 +279,8 @@ bool SpatRaster::writeHDR(std::string filename) {
 	ini.SetValue("georeference", "ymin", std::to_string(extent.ymin).c_str());
 	ini.SetValue("georeference", "ymax", std::to_string(extent.ymax).c_str());
 	ini.SetValue("georeference", "crs", crs.c_str());
-	ini.SetValue("dimensions", "nrow", std::to_string(nrow).c_str());
-	ini.SetValue("dimensions", "ncol", std::to_string(ncol).c_str());
+	ini.SetValue("dimensions", "nrow", std::to_string(nrow()).c_str());
+	ini.SetValue("dimensions", "ncol", std::to_string(ncol()).c_str());
 	ini.SetValue("dimensions", "nlyr", std::to_string(nlyr()).c_str());
 	ini.SetValue("dimensions", "names", concatenate(getNames(), std::string(":|:")).c_str());
 	ini.SetValue("data", NULL, NULL);

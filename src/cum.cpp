@@ -355,7 +355,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions opt) {
 	if (!hasValues()) {
 		out.setError("raster has no values");
 		return out;
-	}	
+	}
 
   	out.writeStart(opt);
 	readStart();
@@ -364,7 +364,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions opt) {
 	unsigned nc;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
-		nc = out.bs.nrows[i] * out.ncol;
+		nc = out.bs.nrows[i] * out.ncol();
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {
 				v[k] = a[j+k*nc];
@@ -421,7 +421,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
-		nc = out.bs.nrows[i] * out.ncol;
+		nc = out.bs.nrows[i] * out.ncol();
 		std::vector<double> b(nc * nlout);
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {

@@ -66,9 +66,9 @@ double get_roughness (double v[], int n) {
 
 std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double> > &m, std::vector<std::vector<bool> > f, std::string option) {
 
-	int nrow = m.size();
-	int ncol = m[0].size();
-	std::vector<std::vector<double>> v (nrow, std::vector<double>(ncol, NAN));
+	int nrows = m.size();
+	int ncols = m[0].size();
+	std::vector<std::vector<double>> v (nrows, std::vector<double>(ncols, NAN));
 
 	int opt;
 	if (option == "TPI") {
@@ -87,17 +87,17 @@ std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double
 
 	int r, c, n;
 	double va[9];
-	for (int row = 0; row < (nrow-1); row++) {
-		for (int col = 0; col < (ncol-1); col++) {
+	for (int row = 0; row < (nrows-1); row++) {
+		for (int col = 0; col < (ncols-1); col++) {
 			n = 0;
 			for(int i = -2; i < 3; i++) {
 				r = i + row;
-				if (r < 0 || r > (nrow-1)) {
+				if (r < 0 || r > (nrows-1)) {
 					continue;
 				}
 				for(int j = -2; j < 3; j++) {
 					c = j + col;
-					if (c < 0 || c > (ncol-1)) {
+					if (c < 0 || c > (ncols-1)) {
 						continue;
 					}
 					// center not included for TPI and TRI
@@ -134,18 +134,18 @@ std::vector<std::vector<double> > slope4lonlat(std::vector<std::vector<double> >
 	double xw;
 	double ddx;
 
-	int nrow = d.size();
-	int ncol = d[0].size();
-	std::vector<std::vector<double>> v (nrow, std::vector<double>(ncol, NAN));
+	int nrows = d.size();
+	int ncols = d[0].size();
+	std::vector<std::vector<double>> v (nrows, std::vector<double>(ncols, NAN));
 
 	double y, zx, zy;
 
-	for (int row = 1; row < (nrow-2); row++) {
+	for (int row = 1; row < (nrows-2); row++) {
 		y = ymax - row * dy;
 		ddx = distance_lonlat(-dx, y, dx, y, a, f) / 2 ;
 		xw = 1 / (-2 * ddx);
 
-		for (int col = 1; col < (ncol-2); col++) {
+		for (int col = 1; col < (ncols-2); col++) {
 			zx = -xw * d[row][col-1] + d[row][col+1] * xw;
 			zy = -yw * d[row-1][col] + d[row+1][col] * yw;
 			v[row][col] = sqrt( pow(zy, 2) + pow(zx, 2) ) ;
@@ -154,14 +154,14 @@ std::vector<std::vector<double> > slope4lonlat(std::vector<std::vector<double> >
 
 	if (unit == 0) {  // degrees
 		double adj = 180 / M_PI;
-		for (int row = 1; row < (nrow-2); row++) {
-			for (int col = 1; col < (ncol-2); col++) {
+		for (int row = 1; row < (nrows-2); row++) {
+			for (int col = 1; col < (ncols-2); col++) {
 				v[row][col] = atan(v[row][col]) * adj;
 			}
 		}
 	} else if (unit == 1) { // radians
-		for (int row = 1; row < (nrow-2); row++) {
-			for (int col = 1; col < (ncol-2); col++) {
+		for (int row = 1; row < (nrows-2); row++) {
+			for (int col = 1; col < (ncols-2); col++) {
 				v[row][col] = atan(v[row][col]);
 			}
 		}
@@ -176,13 +176,13 @@ std::vector<std::vector<double> > slope4plane(std::vector<std::vector<double> > 
 	double xw = 1 / (-2 * dx);
 	double yw = 1 / (2 * dy);
 
-	int nrow = d.size();
-	int ncol = d[0].size();
-	std::vector<std::vector<double>> v (nrow, std::vector<double>(ncol, NAN));
+	int nrows = d.size();
+	int ncols = d[0].size();
+	std::vector<std::vector<double>> v (nrows, std::vector<double>(ncols, NAN));
 
 	double zx, zy;
-	for (int row = 1; row < (nrow-2); row++) {
-		for (int col = 1; col < (ncol-2); col++) {
+	for (int row = 1; row < (nrows-2); row++) {
+		for (int col = 1; col < (ncols-2); col++) {
 			zx = -xw * d[row][col-1] + d[row][col+1] * xw;
 			zy = -yw * d[row-1][col] + d[row+1][col] * yw;
 			v[row][col] = sqrt( pow(zy, 2) + pow(zx, 2) ) ;
@@ -191,14 +191,14 @@ std::vector<std::vector<double> > slope4plane(std::vector<std::vector<double> > 
 
 	if (unit == 0) {
 		double adj = 180 / M_PI;
-		for (int row = 1; row < (nrow-2); row++) {
-			for (int col = 1; col < (ncol-2); col++) {
+		for (int row = 1; row < (nrows-2); row++) {
+			for (int col = 1; col < (ncols-2); col++) {
 				v[row][col] = atan(v[row][col]) * adj;
 			}
 		}
 	} else if (unit == 1) {
-		for (int row = 1; row < (nrow-2); row++) {
-			for (int col = 1; col < (ncol-2); col++) {
+		for (int row = 1; row < (nrows-2); row++) {
+			for (int col = 1; col < (ncols-2); col++) {
 				v[row][col] = atan(v[row][col]);
 			}
 		}

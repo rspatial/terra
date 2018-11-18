@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include "dataframe.h"
+#include "spatDataframe.h"
 #include <vector>
 #include <algorithm>
 #include <string>

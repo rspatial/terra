@@ -78,7 +78,7 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v(out.bs.nrows[i] * ncol, background);
+		std::vector<double> v(out.bs.nrows[i] * ncol(), background);
 
 		for (size_t j = 0; j < n; j++) {
 
@@ -92,10 +92,10 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 			for (size_t k = 0; k < np; k++) {
 				part = poly.getPart(k);
 				if (part.hasHoles()) {
-					std::vector<double> vv = rasterize_polygon(v, value, part.x, part.y, nrow, ncol, extent.xmin, extent.ymax, resx, resy);
+					std::vector<double> vv = rasterize_polygon(v, value, part.x, part.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
 					for (size_t h=0; h < part.nHoles(); h++) {
 						hole = part.getHole(h);
-						vv = rasterize_polygon(vv, background, hole.x, hole.y, nrow, ncol, extent.xmin, extent.ymax, resx, resy);
+						vv = rasterize_polygon(vv, background, hole.x, hole.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
 					}
 					for (size_t q=0; q < vv.size(); q++) {
 						if (vv[q] != background) {
@@ -103,7 +103,7 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 						}
 					}
 				} else {
-					v = rasterize_polygon(v, value, part.x, part.y, nrow, ncol, extent.xmin, extent.ymax, resx, resy);
+					v = rasterize_polygon(v, value, part.x, part.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
 				}
 			}
 		}

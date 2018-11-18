@@ -29,10 +29,12 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 		std::vector<double> res = resolution();
 		double xrs = res[0];
 		double yrs = res[1];
-		ncol = std::max(1.0, round( (ext.xmax - ext.xmin) / xrs ));
-		nrow = std::max(1.0, round( (ext.ymax - ext.ymin) / yrs ));
-		ext.xmax = ext.xmin + ncol * xrs;
-		ext.ymax = ext.ymin + nrow * yrs;
+		unsigned nc = std::max(1.0, round( (ext.xmax - ext.xmin) / xrs ));
+		unsigned nr = std::max(1.0, round( (ext.ymax - ext.ymin) / yrs ));
+		source[0].ncol = nc;
+		source[0].nrow = nr;
+		ext.xmax = ext.xmin + nc * xrs;
+		ext.ymax = ext.ymin + nr * yrs;
 	}
 	
 	extent = ext;

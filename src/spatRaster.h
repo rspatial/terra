@@ -114,8 +114,9 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 // properties and property-like methods for entire object
 ////////////////////////////////////////////////////
-		unsigned nrow, ncol;
+		//unsigned nrow, ncol;
 		std::vector<RasterSource> source;
+
 		BlockSize bs;
 		BlockSize getBlockSize(unsigned n);
 
@@ -125,17 +126,20 @@ class SpatRaster {
 
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 
-		unsigned long size() { return ncol * nrow * nlyr() ; }
+		unsigned ncol();
+		unsigned nrow();
+		unsigned long size() { return ncol() * nrow() * nlyr() ; }
 		SpatExtent getExtent() { return extent; }
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
 		std::string getCRS() { return(crs); }
 		void setCRS(std::string _crs);
+		bool could_be_lonlat();
 
 		std::vector<double> resolution();
-		double ncell() { return nrow * ncol; }
-		double xres() { return (extent.xmax - extent.xmin) / ncol ;}
-		double yres() { return (extent.ymax - extent.ymin) / nrow ;}
+		double ncell() { return nrow() * ncol(); }
+		double xres() { return (extent.xmax - extent.xmin) / ncol() ;}
+		double yres() { return (extent.ymax - extent.ymin) / nrow() ;}
 		std::vector<double> origin();
 		unsigned nlyr();
 
@@ -269,8 +273,9 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
-		SpatVector makePolygons();
+		SpatVector makePolygons(bool values, bool narm);
 		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt);
+		SpatRaster area(SpatOptions opt);
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions opt);
 		SpatRaster arith(double x, std::string oper, SpatOptions opt);
 		SpatRaster arith_rev(double x, std::string oper, SpatOptions opt);

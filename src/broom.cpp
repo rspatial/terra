@@ -113,16 +113,16 @@ SpatRaster SpatRaster::gridDistance(SpatOptions opt) {
 		out.setError("cannot compute distance for a raster with no values");
 		return out;
 	}
-	
+
 	//bool isgeo = out.islonlat
 
 	std::vector<double> res = resolution();
-	std::vector<unsigned> dim = {nrow, ncol};
+	std::vector<unsigned> dim = {nrow(), ncol()};
 
 	SpatRaster first = out.geometry();
 
 	std::string tempfile = "";
-	std::vector<double> above(ncol, std::numeric_limits<double>::infinity());
+	std::vector<double> above(ncol(), std::numeric_limits<double>::infinity());
     std::vector<double> d, v, vv;
 	readStart();
 	std::string filename = opt.get_filename();

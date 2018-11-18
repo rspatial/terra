@@ -19,9 +19,9 @@
 #include "spatRaster.h"
 
 
-void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldcol, unsigned nrow, unsigned ncol, unsigned snrow, unsigned sncol) {
-	double rf = nrow / (double)(snrow);
-	double cf = ncol / (double)(sncol);
+void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldcol, unsigned nrows, unsigned ncols, unsigned snrow, unsigned sncol) {
+	double rf = nrows / (double)(snrow);
+	double cf = ncols / (double)(sncol);
 	double rstart = floor(0.5 * rf);
 	double cstart = floor(0.5 * cf);
 	oldcol.reserve(sncol);
@@ -42,14 +42,14 @@ std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigne
 	unsigned newnc = srows * scols;
 	unsigned nl = source[src].nlyr;
 	std::vector<unsigned> oldcol, oldrow;
-	getSampleRowCol(oldrow, oldcol, nrow, ncol, srows, scols);
+	getSampleRowCol(oldrow, oldcol, nrow(), ncol(), srows, scols);
 	std::vector<double>	out(srows * scols);
 
     for (size_t lyr=0; lyr<nl; lyr++) {
         unsigned old_offset = lyr * oldnc;
         unsigned new_offset = lyr * newnc;
         for (size_t r=0; r<srows; r++) {
- 			oldc = old_offset + oldrow[r] * ncol;
+ 			oldc = old_offset + oldrow[r] * ncol();
 			newc = new_offset + r * scols;
             for (size_t c=0; c<scols; c++) {
 				oldcell = oldc + oldcol[c];
@@ -67,15 +67,13 @@ SpatRaster SpatRaster::sampleRegular(unsigned size) {
 	if (size >= ncell()) return( *this );
 
 	double f = sqrt(size / ncell());
-	unsigned nr = ceil(nrow * f);
-	unsigned nc = ceil(ncol * f);
-	if ((nc == ncol) && (nr == nrow)) return( *this );
+	unsigned nr = ceil(nrow() * f);
+	unsigned nc = ceil(ncol() * f);
+	if ((nc == ncol()) && (nr == nrow())) return( *this );
 
 	SpatRaster out = geometry();
 	out.source[0].nrow=nr;
 	out.source[0].ncol=nc;
-	out.nrow=nr;
-	out.ncol=nc;
 
 	if (!source[0].hasValues) return (out);
 

@@ -60,12 +60,12 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims( std::vector<unsigned> fact
 		fact[2] = 1;
 	}
 	// int dy = dim[0], dx = dim[1], dz = dim[2];
-	fact[0] = std::max(unsigned(1), std::min(fact[0], nrow));
-	fact[1] = std::max(unsigned(1), std::min(fact[1], ncol));
+	fact[0] = std::max(unsigned(1), std::min(fact[0], nrow()));
+	fact[1] = std::max(unsigned(1), std::min(fact[1], ncol()));
 	fact[2] = std::max(unsigned(1), std::min(fact[2], nlyr()));
 	// new dimensions: rows, cols, lays
-	fact[3] = std::ceil(double(nrow) / fact[0]);
-	fact[4] = std::ceil(double(ncol) / fact[1]);
+	fact[3] = std::ceil(double(nrow()) / fact[0]);
+	fact[4] = std::ceil(double(ncol()) / fact[1]);
 	fact[5] = std::ceil(double(nlyr()) / fact[2]);
 	return fact;
 }
@@ -101,15 +101,15 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<unsigne
 		unsigned cstart = dx * (b % bpR);
 
 		unsigned lmax   = std::min(nlyr(), (lstart + dz));
-		unsigned rmax   = std::min(nrow, (rstart + dy));
-		unsigned cmax   = std::min(ncol, (cstart + dx));
+		unsigned rmax   = std::min(nrow(), (rstart + dy));
+		unsigned cmax   = std::min(ncol(), (cstart + dx));
 
 		unsigned f = 0;
 		unsigned nc = ncell();
 		for (unsigned j = lstart; j < lmax; j++) {
 			unsigned lj = j * nc;
 			for (unsigned r = rstart; r < rmax; r++) {
-				unsigned cell = lj + r * ncol;
+				unsigned cell = lj + r * ncol();
 				for (unsigned c = cstart; c < cmax; c++) {
 					a[b][f] = source[0].values[cell + c];
 					f++;
@@ -155,10 +155,10 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	int naggs = a[0].size();
 
 	for (int i = 0; i < nblocks; i++) {
-		unsigned row = (i / ncol) % nrow;
-		unsigned col = i % ncol;
-		unsigned cell = row * ncol + col;
-		unsigned lyr = std::floor(i / (nrow * ncol));
+		unsigned row = (i / ncol()) % nrow();
+		unsigned col = i % ncol();
+		unsigned cell = row * ncol() + col;
+		unsigned lyr = std::floor(i / (nrow() * ncol()));
 
 		double x = 0;
 		if (f==2) { // min

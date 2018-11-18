@@ -26,7 +26,7 @@ template <typename T> int sign(T value) {
 SpatRaster SpatRaster::math(std::string fun, SpatOptions opt) {
 
 	SpatRaster out = geometry();
-	std::vector<std::string> f {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"}; 
+	std::vector<std::string> f {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown math function");
 		return out;
@@ -51,7 +51,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions opt) {
 		} else if (fun == "exp") {
 			for(double& d : a) if (!std::isnan(d)) d = exp(d);
 		} else if (fun == "expm1") {
-			for(double& d : a) if (!std::isnan(d)) d = expm1(d);			
+			for(double& d : a) if (!std::isnan(d)) d = expm1(d);
 		} else if (fun == "sign") {
 			for(double& d : a) if (!std::isnan(d)) d = sign(d);
 		} else if (fun == "ceiling") {
@@ -60,11 +60,11 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions opt) {
 			for(double& d : a) if (!std::isnan(d)) d = floor(d);
 		} else if (fun == "trunc") {
 			for(double& d : a) if (!std::isnan(d)) d = trunc(d);
-		} 
+		}
 		out.writeValues(a, out.bs.row[i]);
 	}
 	out.writeStop();
-	readStop();		
+	readStop();
 	return(out);
 }
 
@@ -73,16 +73,16 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions opt) {
 
 	SpatRaster out = geometry();
 
-	std::vector<std::string> f {"acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh", "cosh", "cospi", "sinh", "sinpi", "tanh", "tanpi"}; 
+	std::vector<std::string> f {"acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh", "cosh", "cospi", "sinh", "sinpi", "tanh", "tanpi"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown trig function");
 		return out;
 	}
-	
+
   	out.writeStart(opt);
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		if (fun == "sin") {
 			for(double& d : a) if (!std::isnan(d)) d = sin(d);
 		} else if (fun == "cos") {
@@ -113,11 +113,11 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions opt) {
 			for(double& d : a) if (!std::isnan(d)) d = cos(d * M_PI);
 		} else if (fun == "tanpi") {
 			for(double& d : a) if (!std::isnan(d)) d = tan(d * M_PI);
-		} 
+		}
 		out.writeValues(a, out.bs.row[i]);
 	}
 	out.writeStop();
-	readStop();		
+	readStop();
 	return(out);
 }
 

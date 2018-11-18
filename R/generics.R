@@ -21,7 +21,7 @@ setMethod("area", signature(x="SpatRaster"),
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 	# not available yet
 		opt <- .runOptions(filename[1], overwrite[1], wopt)
-		x@ptr <- x$ptr$area(opt);
+		x@ptr <- x@ptr$area(opt);
 		show_messages(x, "area");
 	}
 )

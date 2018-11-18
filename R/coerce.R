@@ -3,10 +3,10 @@
 # Version 1.0
 # Licence GPL v3
 
-
-.pols <- function(x, ...) {
+ 
+as.polygons <- function(x, ...) {
 	p <- methods::new('SpatVector')
-	p@ptr <- x@ptr$makePolygons()
+	p@ptr <- x@ptr$makePolygons(FALSE, FALSE)
 	show_messages(p)
 	p
 }

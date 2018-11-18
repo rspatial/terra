@@ -33,8 +33,8 @@ SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions opt) {
 	x.readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
-		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol);
+		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		for (size_t i=0; i < v.size(); i++) {
 			if (std::isnan(m[i])) {
 				v[i] = NAN;

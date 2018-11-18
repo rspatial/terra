@@ -18,7 +18,7 @@
 #include <vector>
 #include <math.h>
 #include "GeographicLib_geodesic.h"
-#include "spatVector.h"
+#include "spatRaster.h"
 #include "distance.h"
 
 double area_polygon_lonlat(std::vector<double> lon, std::vector<double> lat, double a, double f) {
@@ -155,7 +155,7 @@ std::vector<double> SpatVector::length() {
 	size_t s = size();
 	std::vector<double> r;
 	r.reserve(s);
-	
+
 	if (could_be_lonlat()) {
 		double a = 6378137;
 		double f = 1 / 298.257223563;
@@ -168,5 +168,35 @@ std::vector<double> SpatVector::length() {
 		}
 	}
 	return r;
+}
+
+SpatRaster SpatRaster::area(SpatOptions opt) {
+
+	SpatRaster out = geometry(1);
+  	out.writeStart(opt);
+	if (could_be_lonlat()) {
+		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
+		SpatOptions optint(opt);
+		SpatRaster onecol = out.crop(e, "near", optint);
+		SpatVector p = onecol.makePolygons(false, false);
+		std::vector<double> a = p.area();
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v;
+			for (size_t j=0; j<out.bs.nrows[i]; j++) {
+				size_t r = out.bs.row[i] + j;
+				v.insert(v.end(), ncol(), a[r]);
+			}
+			out.writeValues(v, out.bs.row[i]);
+		}
+		out.writeStop();
+	} else {
+		double a = xres() * yres();
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v(out.bs.nrows[i]*ncol(), a);
+			out.writeValues(v, out.bs.row[i]);
+		}
+		out.writeStop();
+	}
+	return(out);
 }
 
