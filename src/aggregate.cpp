@@ -19,6 +19,7 @@
 #include <vector>
 #include <limits>
 #include <cmath>
+#include <functional>
 #include "spatRaster.h"
 #include "vecmath.h"
 
@@ -146,15 +147,6 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<double>
 }
 
 
-void get_lyrcell(const size_t &i, const size_t &nc, const size_t &nr, const size_t &ncells, size_t &lyrcell) {
-	size_t row = (i / nc) % nr;
-	size_t col = i % nc;
-	size_t cell = row * nc + col;
-	lyrcell = std::floor(i / (ncells)) * ncells + cell;	
-}
-
-
-
 SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt) {
 
 	std::string message = "";
@@ -174,9 +166,9 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	if (!out.writeStart(opt)) { return out ;}
 	
 	
-	std::vector<std::string> f {"sum", "mean", "min", "max"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "median"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.setError("unknown function argument");
+		out.setError("unknown function argument: ");
 		return out;
 	}
 	
@@ -197,44 +189,38 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		}
 	}
 
-	size_t row, col, lyrcell, nr, nc, ncells;
+	std::function<double(std::vector<double>&, bool)> agFun;
+	if (fun == "mean") {
+		agFun = vmean<double>;
+	} else if (fun == "sum") {
+		agFun = vsum<double>;
+	} else if (fun == "min") {
+		agFun = vmin<double>;
+	} else if (fun == "max") {
+		agFun = vmax<double>;
+	} else if (fun == "median") {
+		agFun = vmedian<double>;
+	} else {
+		agFun = vmean<double>;		
+	}
+	
+	size_t row, col, cell, lyrcell, nr, nc, ncells;
 	nr = nrow();
 	nc = ncol();
 	ncells = nc * nr;
 	readStart();
 	for (size_t b = 0; b < out.bs.n; b++) {
 		std::vector<double> in = readBlock(bs, b);
-	// output: each row is a new cell
 		std::vector<double > v(fact[3] * fact[4] * fact[5]);
 		std::vector<std::vector< double > > a = get_aggregates(in, bs.nrows[b], fact);
 		size_t nblocks = a.size();
-		if (fun == "mean") {
-			//auto agfun = vmean<double>;
-			for (size_t i = 0; i < nblocks; i++) {
-				get_lyrcell(i, nc, nr, ncells, lyrcell);
-				v[lyrcell] = vmean(a[i], narm);
-			} 
-		} else if (fun == "sum") {
-			for (size_t i = 0; i < nblocks; i++) {
-				get_lyrcell(i, nc, nr, ncells, lyrcell);
-				v[lyrcell] = vsum(a[i], narm);
-			} 
-		} else if (fun == "min") {
-			for (size_t i = 0; i < nblocks; i++) {
-				get_lyrcell(i, nc, nr, ncells, lyrcell);
-				v[lyrcell] = vmin(a[i], narm);
-			} 
-		} else if (fun == "max") {
-			for (size_t i = 0; i < nblocks; i++) {
-				get_lyrcell(i, nc, nr, ncells, lyrcell);
-				v[lyrcell] = vmax(a[i], narm);
-			} 
-		} else {
-			for (size_t i = 0; i < nblocks; i++) {
-				get_lyrcell(i, nc, nr, ncells, lyrcell);
-				v[lyrcell] = vmean(a[i], narm);
-			} 
-		}
+		for (size_t i = 0; i < nblocks; i++) {
+			row = (i / nc) % nr;
+			col = i % nc;
+			cell = row * nc + col;
+			lyrcell = std::floor(i / (ncells)) * ncells + cell;	
+			v[lyrcell] = agFun(a[i], narm);
+		} 
 
 		out.writeValues( v, bs.row[b] );
 	}

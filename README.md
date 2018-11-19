@@ -3,10 +3,9 @@
 This R package is a replacement of the [raster](https://github.com/rspatial/raster) package.
 It has a very similar, but simpler, interface, and it is much faster.
 
-All native computations are done in C++.
+All native computations are done in C++. 
 Classes, methods and properties are exposed via a Rcpp module.
-The R side has three S4 classes (SpatRaster, SpatVector and SpatExtent) that hold a reference to a C++ object. 
-These classes provide a "normal" "S4" R user-interface as in the raster package.
+The R side has two main S4 classes (SpatRaster and SpatVector) that represent spatial data. These classes have only slot, a reference to a C++ object. They are used to provide a "normal" "S4" R user-interface as in the raster package.
 
 The first (alpha) release is expected by January 2019.
 
