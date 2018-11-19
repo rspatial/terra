@@ -87,6 +87,7 @@ bool SpatRaster::get_aggregate_dims(std::vector<unsigned> &fact, std::string &me
 
 
 std::vector<unsigned> SpatRaster::get_aggregate_dims2(std::vector<unsigned> fact) {
+	// for use with R
 	std::string message = "";
 	get_aggregate_dims(fact, message);
 	return(fact);

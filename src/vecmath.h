@@ -134,32 +134,6 @@ T vsum(std::vector<T>& v, bool narm) {
 }
 
 
-double dsum(std::vector<double>& v, bool narm) {
-	double x = v[0];
-	if (narm) {		
-		for (size_t i=1; i<v.size(); i++) {
-			if (isnan(x)) {
-				x = v[i];
-			} else if (!isnan(v[i])) {
-				x += v[i];
-			}
-		}
-
-	} else {
-		for (size_t i=1; i<v.size(); i++) {
-			if (!isnan(x)) {
-				if (is_NA(v[i])) {
-					x = NAN;
-					break;
-				} else {
-					x += v[i];
-				}
-			}
-		}
-	}
-	return x;
-}
-
 
 
 template <typename T>
