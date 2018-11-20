@@ -166,9 +166,9 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	if (!out.writeStart(opt)) { return out ;}
 	
 	
-	std::vector<std::string> f {"sum", "mean", "min", "max", "median"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "median", "modal"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.setError("unknown function argument: ");
+		out.setError("unknown function argument");
 		return out;
 	}
 	
@@ -200,6 +200,8 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		agFun = vmax<double>;
 	} else if (fun == "median") {
 		agFun = vmedian<double>;
+	} else if (fun == "modal") {
+		agFun = vmodal<double>;
 	} else {
 		agFun = vmean<double>;		
 	}

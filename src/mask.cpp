@@ -17,24 +17,27 @@
 
 #include <vector>
 #include "spatRaster.h"
+#include "recycle.h"
 
 
 SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions opt) {
 
-// check for size; need for recycling
-	//SpatRaster out = *this;
-	SpatRaster out = geometry();
+	unsigned nl = std::max(nlyr(), x.nlyr());
+	SpatRaster out = geometry(nl);
 
-//	out.source.resize(1);
- //   our.source[0].nlyr = 1;
-//	out.values.resize(0);
-  	out.writeStart(opt);
+	if (!compare_geom(x, true, true)) {
+		out.setError("dimensions and/or extent do not match");
+		return(out);
+	}
+
 	readStart();
 	x.readStart();
+  	out.writeStart(opt);
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		recycle(v, m);
 		for (size_t i=0; i < v.size(); i++) {
 			if (std::isnan(m[i])) {
 				v[i] = NAN;

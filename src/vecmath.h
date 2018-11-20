@@ -247,7 +247,7 @@ T vany(std::vector<T>& v, bool narm) {
 		}
 	}
 	if (hasnd & (x == 0) & (!narm)) {
-		x = NAN;
+		x = NA<T>::value;;
 	}
 	return x;
 }
@@ -284,5 +284,34 @@ std::vector<T> vrange(std::vector<T>& v, bool narm) {
 		}
 	}
 	return x;
+}
+
+
+
+template <typename T>
+T vmodal(std::vector<T>& v, bool narm) {
+
+	size_t n = v.size();
+    std::vector<unsigned> counts(n, 0);
+
+	std::sort(v.begin(), v.end());
+
+    for (size_t i = 0; i < n; ++i) {
+        counts[i] = 0;
+        size_t j = 0;
+        while ((j < i) && (v[i] != v[j])) {
+            ++j;
+        }
+        ++(counts[j]);
+    }
+	
+    size_t maxCount = 0;
+	for (size_t i = 1; i < n; ++i) {
+		if (counts[i] > counts[maxCount]) {
+			maxCount = i;
+		}
+	}
+	
+    return v[maxCount];
 }
 

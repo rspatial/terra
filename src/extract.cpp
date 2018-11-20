@@ -15,8 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#include <functional>
+
 #include "spatRaster.h"
 #include "NA.h"
+#include "distance.h"
 
 std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 
@@ -45,7 +48,7 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 			}
 		} else {
 		#ifdef useGDAL
-			std::vector<double> srcout = readRowColGDAL(src, rows, cols); // 
+			std::vector<double> srcout = readRowColGDAL(src, rows, cols); //
 			std::copy(srcout.begin(), srcout.end(), out.begin()+offset);
 			offset += n;
         #endif
@@ -55,8 +58,110 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 }
 
 
+std::vector<double> SpatRaster::extractXY(std::vector<double> &x, std::vector<double> &y, std::string method) {
+	std::vector<double> out, srcout;
+	if (method == "bilinear") {
 
-std::vector<double> SpatRaster::extractLayer(SpatVector v, std::string fun) {
+        size_t nr = nrow();
+        size_t nc = ncol();
+        bool lonlat = could_be_lonlat();
+
+        std::vector<double> distance_plane(std::vector<double> &x1, std::vector<double> &y1, std::vector<double> &x2, std::vector<double> &y2);
+
+        std::function<std::vector<double>(std::vector<double>&,std::vector<double>&,double,double)> distFun;
+        if (lonlat) {
+            distFun = distance_lonlat_vd;
+        } else {
+            distFun = distance_plane_vd;
+        }
+
+        bool isGlobalLonLat = extent.is_global_lonlat(getCRS());
+        size_t n = x.size();
+        double ymax = extent.ymax;
+        double xmin = extent.xmin;
+
+        double yres_inv = nr / (extent.ymax - extent.ymin);
+        double xres_inv = nc / (extent.xmax - extent.xmin);
+
+        out.resize(n, NAN);
+        std::vector<double> v, d, cells(4);
+        std::vector<std::vector<double> > cxy;
+
+        for (size_t i=0; i<n; i++) {
+            double row = (ymax - y[i]) * yres_inv - 0.5;
+            double col = (x[i] - xmin) * xres_inv - 0.5;
+            double roundRow = round(row);
+            double roundCol = round(col);
+            // Check for out-of-bounds.
+            if (roundRow < 0 || roundRow > (nr-1) || roundCol < 0 || roundCol > (nc-1)) {
+                continue;
+            }
+// roundRow and roundCol are now the nearest row/col to x/y. That gives us one corner. We will find the other corner by starting
+// at roundRow/roundCol and moving in the direction of row/col, stopping at the next integral values.
+// >0 if row is greater than the nearest round row, 0 if equal
+            double vertDir = row - roundRow;
+// >0 if col is greater than the nearest round col, 0 if equal
+            double horizDir = col - roundCol;
+// roundRow and roundCol will be one corner; posRow and posCol will be the other corner. Start out by moving left/right or up/down relative to roundRow/roundCol.
+            double posRow = roundRow + (vertDir > 0 ? 1 : vertDir < 0 ? -1 : 0);
+            double posCol = roundCol + (horizDir > 0 ? 1 : horizDir < 0 ? -1 : 0);
+// Now, some fixups in case posCol/posRow go off the edge of the raster.
+            if (isGlobalLonLat) {
+                if (posCol < 0) {
+                    posCol = nc-1;
+                } else if (posCol > (nc-1)) {
+                    posCol = 0;
+                }
+            } else {
+                if (posCol < 0) {
+                    posCol = 1;
+                } else if (posCol > (nc-1)) {
+                    posCol = nc - 2;
+                }
+            }
+            if (posRow < 0) {
+                posRow = 1;
+            } else if (posRow > (nr-1)) {
+                posRow = nr - 2;
+            }
+
+            cells[0] = nc * roundRow + roundCol;
+            cells[1] = nc * posRow + roundCol;
+            cells[2] = nc * posRow + posCol;
+            cells[3] = nc * roundRow + posCol;
+            cxy = xyFromCell(cells);
+            d = distFun(cxy[0], cxy[1], x[i], y[i]);
+            v = extractCell(cells);
+
+            double a, b;
+            for (size_t j=0; j<4; j++) {
+                a += v[j] * d[j];
+                b += d[j];
+            }
+            out[i] = a / b;
+        }
+	} else {
+        for (size_t src=0; src<nsrc(); src++) {
+            if (source[src].driver == "memory") {
+               std::vector<double> cell = cellFromXY(x, y);
+               srcout = extractCell(cell);
+            } else {
+               std::vector<unsigned> rows = rowFromY(y);
+               std::vector<unsigned> cols = colFromX(x);
+               #ifdef useGDAL
+               srcout = readRowColGDAL(src, rows, cols);
+               #endif
+                std::vector<double> srcout(x.size());
+            }
+            out.insert(out.end(), srcout.begin(), srcout.end());
+        }
+	}
+    return out;
+}
+
+
+
+std::vector<double> SpatRaster::extractVector(SpatVector v, std::string fun) {
 
 	std::vector<double> out;
 	std::vector<double> srcout;
@@ -81,7 +186,7 @@ std::vector<double> SpatRaster::extractLayer(SpatVector v, std::string fun) {
 			}
 		}
 		out.insert(out.end(), srcout.begin(), srcout.end());
-		
+
 	} else if (gtype == "lines") {
 
 

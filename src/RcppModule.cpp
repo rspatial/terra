@@ -146,7 +146,7 @@ RCPP_MODULE(spat){
 		.method("chunkSize", &SpatRaster::chunkSize, "chunkSize")
 		
 		.method("extractCell", &SpatRaster::extractCell, "extractCell")
-		.method("extractLayer", &SpatRaster::extractLayer, "extractLayer")
+		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
 		.method("makePolygons", &SpatRaster::makePolygons, "makePolygons")

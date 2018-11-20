@@ -291,8 +291,10 @@ class SpatRaster {
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions opt);
-		std::vector<double> extractLayer(SpatVector v, std::string fun="");
+		std::vector<double> extractVector(SpatVector v, std::string fun="");
 		std::vector<double> extractCell(std::vector<double> &cell);
+        std::vector<double> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
+
 
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, SpatOptions opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
@@ -309,6 +311,7 @@ class SpatRaster {
 		SpatRaster summary(std::string fun, bool narm, SpatOptions opt);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions opt);
 		SpatRaster trim(unsigned padding, SpatOptions opt);
+		SpatRaster warp(SpatRaster x, std::string method, SpatOptions opt);
 };
 
 

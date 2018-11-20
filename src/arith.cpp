@@ -19,6 +19,7 @@
 #include "spatRaster.h"
 
 
+// need to take care of NAs here. OK for NAN, but not for int types
 template <typename T>
 void operator+(std::vector<T>& a, const std::vector<T>& b) {
     std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::plus<T>());
@@ -144,7 +145,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions opt) {
 		return out;
 	}
 
-	if (!compare_geom(x, true, false)) {
+	if (!compare_geom(x, true, true)) {
 		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}

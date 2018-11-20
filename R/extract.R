@@ -11,7 +11,7 @@
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun="", ...) { 
-    r <- x@ptr$extractLayer(y@ptr, fun)
+    r <- x@ptr$extractVector(y@ptr, fun)
 	x <- show_messages(x, "extract")		
 	matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
 })

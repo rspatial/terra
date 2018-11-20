@@ -75,7 +75,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 )
 
 
-setMethod('reclassify', signature(x='SpatRaster', rcl='ANY'), 
+setMethod("reclassify", signature(x="SpatRaster", rcl="ANY"), 
 function(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
 	
 	
@@ -112,4 +112,12 @@ setMethod("trim", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
+	function(x, y, method="bilinear", filename="", overwrite=FALSE, ...)  {
+		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		x@ptr <- x@ptr$warp(y@ptr, method, opt)
+		show_messages(x, "warp")
+	}
+)
 

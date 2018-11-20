@@ -67,6 +67,7 @@ if (!isGeneric("readValues")) { setGeneric("readValues", function(x, ...) standa
 if (!isGeneric("readStop")) { setGeneric("readStop", function(x, ...) standardGeneric("readStop")) }	
 if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneric("values")) }	
 if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standardGeneric("values<-"))}	
+if (!isGeneric("warp")) { setGeneric("warp", function(x, y, ...) standardGeneric("warp")) }
 if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, ...)	standardGeneric("writeStart")) }
 if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }
 if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, start) standardGeneric("writeValues")) }
