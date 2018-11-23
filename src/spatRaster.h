@@ -128,13 +128,14 @@ class SpatRaster {
 
 		unsigned ncol();
 		unsigned nrow();
-		unsigned long size() { return ncol() * nrow() * nlyr() ; }
+		size_t size() { return ncol() * nrow() * nlyr() ; }
 		SpatExtent getExtent() { return extent; }
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
 		std::string getCRS() { return(crs); }
 		void setCRS(std::string _crs);
 		bool could_be_lonlat();
+		bool is_global_lonlat();
 
 		std::vector<double> resolution();
 		double ncell() { return nrow() * ncol(); }
@@ -273,8 +274,10 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
-		SpatVector makePolygons(bool values, bool narm);
 		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt);
+		SpatVector as_polygons(bool values, bool narm);
+		SpatVector as_points(bool values, bool narm);
+        SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions opt);
 		SpatRaster area(SpatOptions opt);
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions opt);
 		SpatRaster arith(double x, std::string oper, SpatOptions opt);
@@ -291,7 +294,7 @@ class SpatRaster {
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions opt);
-		std::vector<double> extractVector(SpatVector v, std::string fun="");
+		std::vector<std::vector<double>> extractVector(SpatVector v, std::string fun="");
 		std::vector<double> extractCell(std::vector<double> &cell);
         std::vector<double> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
 
@@ -305,6 +308,7 @@ class SpatRaster {
 		SpatRaster math(std::string fun, SpatOptions opt);
 		SpatRaster trig(std::string fun, SpatOptions opt);
 		SpatRaster rasterizePolygons(SpatVector p, double background, SpatOptions opt);
+		SpatRaster rasterizeLines(SpatVector p, double background, SpatOptions opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, SpatOptions opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);

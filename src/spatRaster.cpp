@@ -30,9 +30,9 @@ void getCorners(std::vector<double> &x,  std::vector<double> &y, const double &X
 	y[3] = Y - yr;
 	x[4] = x[0];
 	y[4] = y[0];
-}	
+}
 
-SpatVector SpatRaster::makePolygons(bool values, bool narm) {
+SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 	if (!values) narm=false;
 	SpatVector v;
 	SpatGeom g;
@@ -42,8 +42,8 @@ SpatVector SpatRaster::makePolygons(bool values, bool narm) {
 	std::vector<double> x(5);
 	std::vector<double> y(5);
 	if (!values) {
-		std::vector<double> cells(ncell()) ; 
-		std::iota (std::begin(cells), std::end(cells), 0); 
+		std::vector<double> cells(ncell()) ;
+		std::iota (std::begin(cells), std::end(cells), 0);
 		std::vector< std::vector<double> > xy = xyFromCell(cells);
 		for (size_t i=0; i<ncell(); i++) {
 			getCorners(x, y, xy[0][i], xy[1][i], xr, yr);
@@ -56,12 +56,12 @@ SpatVector SpatRaster::makePolygons(bool values, bool narm) {
 		SpatRaster out = geometry();
 		unsigned nl = nlyr();
 		std::vector<std::vector<double> > att(ncell(), std::vector<double> (nl));
-	
+
 		BlockSize bs = getBlockSize(4);
 		std::vector< std::vector<double> > xy;
 		std::vector<double> atts(nl);
 		for (size_t i=0; i<out.bs.n; i++) {
-			std::vector<double> vals = readBlock(out.bs, i);		
+			std::vector<double> vals = readBlock(out.bs, i);
 			unsigned nc=out.bs.nrows[i] * ncol();
 			for (size_t j=0; j<nc; j++) {
 				for (size_t k=0; k<nl; k++) {
@@ -74,7 +74,7 @@ SpatVector SpatRaster::makePolygons(bool values, bool narm) {
 				g.addPart(p);
 				v.addGeom(g);
 				g.parts.resize(0);
-				
+
 			}
 		}
 		SpatDataFrame df;
@@ -319,5 +319,11 @@ std::vector<double> SpatRaster::range_max() {
 bool SpatRaster::could_be_lonlat() {
 	SpatExtent e = getExtent();
 	return e.could_be_lonlat(getCRS());
+};
+
+
+bool SpatRaster::is_global_lonlat() {
+	SpatExtent e = getExtent();
+	return e.is_global_lonlat(getCRS());
 };
 

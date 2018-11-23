@@ -21,24 +21,24 @@ void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, i
 double roundn(double x, int n);
 
 template <typename Iterator>
-void minmax(Iterator start, Iterator end, double &min, double &max) {
-    min = std::numeric_limits<double>::max();
-    max = std::numeric_limits<double>::lowest();
+void minmax(Iterator start, Iterator end, double &vmin, double &vmax) {
+    vmin = std::numeric_limits<double>::max();
+    vmax = std::numeric_limits<double>::lowest();
     bool none = true;
 	for (Iterator v = start; v !=end; ++v) {
 		if (!std::isnan(*v)) {
-			if (*v > max) {
-				max = *v;
+			if (*v > vmax) {
+				vmax = *v;
                 none = false;
 			}
-			if (*v < min) {
-				min = *v;
+			if (*v < vmin) {
+				vmin = *v;
 			}
 		}
     }
     if (none) {
-        min = NAN;
-        max = NAN;
+        vmin = NAN;
+        vmax = NAN;
     }
 }
 

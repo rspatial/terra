@@ -49,6 +49,14 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 )
 
 
+setMethod("disaggregate", signature(x="SpatRaster"), 
+	function(x, fact, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		x@ptr <- x@ptr$disaggregate(fact, opt)
+		show_messages(x, "disaggregate")
+	}
+)
+
 setMethod("gridDistance", signature(x="SpatRaster"), 
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename[1], overwrite[1],wopt)
@@ -114,7 +122,7 @@ setMethod("trim", signature(x="SpatRaster"),
 
 
 setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, method="bilinear", filename="", overwrite=FALSE, ...)  {
+	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename[1], overwrite[1], wopt)
 		x@ptr <- x@ptr$warp(y@ptr, method, opt)
 		show_messages(x, "warp")

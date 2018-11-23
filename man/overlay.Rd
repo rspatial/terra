@@ -37,7 +37,7 @@ Note that the function must work for vectors (not only for single numbers). That
 SpatRaster
 }
 
-\seealso{\code{ \link[terra]{reduce},  \link[terra]{Arith-methods}} }
+\seealso{\code{ \link[terra]{reduce},  \link[terra]{math}} }
 
 \examples{
 r1  <- rast(ncol=10, nrow=10)

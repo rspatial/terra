@@ -27,7 +27,7 @@ template <typename T>
 std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
     std::size_t total_size = 0;
     for (const auto& sub : v)
-        total_size += sub.size(); 
+        total_size += sub.size();
     std::vector<T> result;
     result.reserve(total_size);
     for (const auto& sub : v)
@@ -59,7 +59,7 @@ bool SpatRaster::get_aggregate_dims(std::vector<unsigned> &fact, std::string &me
 	}
 	auto min_value = *std::min_element(fact.begin(),fact.end());
 	if (min_value < 1) {
-		message = "values in argument'fact' should be > 0";
+		message = "values in argument 'fact' should be > 0";
 		return false;
 	}
 	auto max_value = *std::min_element(fact.begin(),fact.end());
@@ -164,14 +164,14 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 
 	if (!source[0].hasValues) { return out; }
 	if (!out.writeStart(opt)) { return out ;}
-	
-	
+
+
 	std::vector<std::string> f {"sum", "mean", "min", "max", "median", "modal"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown function argument");
 		return out;
 	}
-	
+
 	BlockSize bs = getBlockSize(4);
 	if (bs.n > 1) {
 		unsigned nr = floor(bs.nrows[0] / fact[1]) * fact[1];
@@ -203,9 +203,9 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	} else if (fun == "modal") {
 		agFun = vmodal<double>;
 	} else {
-		agFun = vmean<double>;		
+		agFun = vmean<double>;
 	}
-	
+
 	size_t row, col, cell, lyrcell, nr, nc, ncells;
 	nr = nrow();
 	nc = ncol();
@@ -220,9 +220,9 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 			row = (i / nc) % nr;
 			col = i % nc;
 			cell = row * nc + col;
-			lyrcell = std::floor(i / (ncells)) * ncells + cell;	
+			lyrcell = std::floor(i / (ncells)) * ncells + cell;
 			v[lyrcell] = agFun(a[i], narm);
-		} 
+		}
 
 		out.writeValues( v, bs.row[b] );
 	}

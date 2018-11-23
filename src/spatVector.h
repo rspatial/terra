@@ -95,6 +95,7 @@ class SpatVector {
 
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
+		bool setGeom(SpatGeom p);
 		SpatDataFrame getGeometryDF();
 
 		SpatVector subset(std::vector<unsigned> range);
@@ -102,7 +103,7 @@ class SpatVector {
 
 		std::vector<double> area();
 		std::vector<double> length();
-		unsigned size();
+		size_t size();
 
 		bool read(std::string fname);
 		bool write(std::string filename, std::string format, bool overwrite);

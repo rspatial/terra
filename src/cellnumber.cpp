@@ -172,26 +172,22 @@ unsigned SpatRaster::rowFromY(double y) {
 
 
 std::vector< std::vector<double> > SpatRaster::xyFromCell( std::vector<double> &cell ) {
-	size_t size = cell.size();
+	size_t n = cell.size();
 	double xmin = extent.xmin;
 	double ymax = extent.ymax;
 	double yr = yres();
 	double xr = xres();
-	unsigned navalue = NA<unsigned>::value;
-
-	std::vector< std::vector<double> > result(2, std::vector<double> (size, navalue) );
-	for (size_t i = 0; i < size; i++) {
-		unsigned row = (cell[i] / ncol());
-		unsigned col = fmod(cell[i], ncol());
-		if ((row == navalue) | (col == navalue)) {
-			result[0][i] = NAN;
-			result[1][i] = NAN;
-		} else {
-			result[0][i] = xmin + (col + 0.5) * xr;
-			result[1][i] = ymax - (row + 0.5) * yr;
-		}
+    double ncells = ncell();
+    unsigned nc = ncol();
+	std::vector< std::vector<double> > out(2, std::vector<double> (n, NAN) );
+	for (size_t i = 0; i<n; i++) {
+        if ((cell[i] < 0) | (cell[i] > ncells)) { continue; }
+        unsigned row = cell[i] / nc;
+        unsigned col = cell[i] - (row * nc);
+        out[0][i] = xmin + (col + 0.5) * xr;
+        out[1][i] = ymax - (row + 0.5) * yr;
 	}
-	return result;
+	return out;
 }
 
 

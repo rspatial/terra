@@ -29,13 +29,13 @@ reduce values of a SpatRaster, using a formula.
 SpatRaster
 }
 
-\seealso{ \code{ \link[terra]{overlay}}, \link[terra]{Arith-methods}, \link[terra]{Math-methods}}
+\seealso{ \code{ \link[terra]{overlay}}, \link[terra]{math} }
 
 
 \examples{
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
-x <- c(r,r,r)
+x <- c(r, r, r)
 s <- reduce(x, fun=sum)
 }
 

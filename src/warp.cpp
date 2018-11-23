@@ -49,7 +49,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
         firstcell = out.cellFromRowCol(out.bs.row[i], 0);
 		lastcell =  out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, out.ncol()-1);
-		std::vector<double> cells(lastcell-firstcell);
+		std::vector<double> cells(1+lastcell-firstcell);
 		std::iota (std::begin(cells), std::end(cells), firstcell);
 		xy = out.xyFromCell(cells);
 		v = extractXY(xy[0], xy[1], method);

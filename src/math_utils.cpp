@@ -46,7 +46,6 @@ void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, i
 
 
 
-
 double roundn(double x, int n){
     int d = 0;
     if((x * pow(10, n + 1)) - (floor(x * pow(10, n))) > 4) d = 1;

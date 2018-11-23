@@ -7,9 +7,18 @@
 setMethod("as.polygons", signature(x="SpatRaster"), 
 	function(x, values=FALSE, na.rm=FALSE, ...) {
 		p <- methods::new("SpatVector")
-		p@ptr <- x@ptr$makePolygons(values, na.rm)
+		p@ptr <- x@ptr$as_polygons(values, na.rm)
+		x <- show_messages(x)
 		show_messages(p)
-		p
+	}
+)
+
+setMethod("as.points", signature(x="SpatRaster"), 
+	function(x, values=FALSE, na.rm=FALSE, ...) {
+		p <- methods::new("SpatVector")
+		p@ptr <- x@ptr$as_points(values, na.rm)
+		x <- show_messages(x)
+		show_messages(p)
 	}
 )
 

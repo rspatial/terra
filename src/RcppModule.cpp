@@ -149,10 +149,12 @@ RCPP_MODULE(spat){
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
-		.method("makePolygons", &SpatRaster::makePolygons, "makePolygons")
+		.method("as_points", &SpatRaster::as_points, "as_points")
+		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("crop", &SpatRaster::crop, "crop")
+		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
 		.method("trim", &SpatRaster::trim, "trim")
@@ -165,17 +167,18 @@ RCPP_MODULE(spat){
 		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, SpatOptions) )( &SpatRaster::arith ))
 		.method("arith_rev", &SpatRaster::arith_rev, "arith_rev")
 		.method("area", &SpatRaster::area, "area")
+		.method("cum", &SpatRaster::cum, "cum")
+		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions) )( &SpatRaster::logic ))
+		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions) )( &SpatRaster::logic ))
 		.method("math", &SpatRaster::math, "math")
 		.method("trig", &SpatRaster::trig, "trig")
-		.method("cum", &SpatRaster::cum, "cum")
 		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")
 		
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
-		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions) )( &SpatRaster::logic ))
-		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions) )( &SpatRaster::logic ))
 		
 		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
+		.method("warp", &SpatRaster::warp, "warp")
 		
 		
 	;
