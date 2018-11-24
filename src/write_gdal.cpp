@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+
 #include "spatRaster.h"
 #include "math_utils.h"
 #include "string_utils.h"
@@ -213,4 +214,5 @@ bool SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::
 	}
 	return true;
 }
+
 

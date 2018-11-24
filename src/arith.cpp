@@ -136,7 +136,7 @@ bool smooth_operator(std::string oper) {
 }
 
 
-SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions opt) {
+SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 
@@ -154,7 +154,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions opt) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}
-  	out.writeStart(opt);
+ 	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	x.readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -193,7 +193,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions opt) {
 
 
 
-SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions opt) {
+SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
@@ -201,7 +201,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions opt) {
 		return out;
 	}
 
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -240,7 +240,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions opt) {
 }
 
 
-SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions opt) {
+SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
@@ -248,7 +248,7 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions opt) {
 		return out;
 	}
 
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);

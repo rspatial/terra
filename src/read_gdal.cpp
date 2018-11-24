@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+
+
 #include <algorithm>
 #include <stdint.h>
 
@@ -541,4 +543,5 @@ std::vector<double> SpatRaster::readRowColGDAL(unsigned src, const std::vector<u
 	} 
 	return out;
 }
+
 

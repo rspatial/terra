@@ -147,7 +147,7 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<double>
 }
 
 
-SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions opt) {
+SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt) {
 
 	std::string message = "";
 	bool success = get_aggregate_dims(fact, message);

@@ -108,7 +108,7 @@ void cummin(std::vector<T>& v, bool narm) {
 }
 
 
-SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions opt) {
+SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 
@@ -122,7 +122,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions opt) {
 		return out;
 	}
 
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	unsigned nl = out.nlyr();
 	std::vector<double> v(nl);
@@ -156,7 +156,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions opt) {
 
 
 
-SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions opt) {
+SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 
@@ -175,7 +175,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		out.source[0].names[0] = fun;
 	}
 
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
@@ -220,7 +220,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 }
 
 
-SpatRaster SpatRaster::summary(std::string fun, bool narm, SpatOptions opt) {
+SpatRaster SpatRaster::summary(std::string fun, bool narm, SpatOptions &opt) {
 	std::vector<double> add;
 	return summary_numb(fun, add, narm, opt);
 }

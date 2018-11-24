@@ -17,7 +17,7 @@
 
 #include "spatRaster.h"
 
-SpatRaster SpatRaster::trim(unsigned padding, SpatOptions opt) {
+SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 
 	long nrl = nrow() * nlyr();
 	long ncl = ncol() * nlyr();

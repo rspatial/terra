@@ -74,7 +74,7 @@ Rcpp::DataFrame getGeometry(SpatVector* v) {
 }
 
 
-SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, SpatOptions opt) {
+SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, SpatOptions &opt) {
 	
 	unsigned nc = rcl.ncol();
 	unsigned nr = rcl.nrow();

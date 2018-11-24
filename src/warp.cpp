@@ -4,7 +4,7 @@
 
 
 
-SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions opt) {
+SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) {
 
 	unsigned nl = nlyr();
 	SpatRaster out = x.geometry(nl);
@@ -45,7 +45,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions opt) {
 	}
 	unsigned nc = out.ncol();
 	readStart();
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
         unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
 		unsigned lastcell =  out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);

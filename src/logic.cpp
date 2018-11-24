@@ -49,9 +49,9 @@ std::vector<T> operator|(const std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
-SpatRaster SpatRaster::isnot(SpatOptions opt) {
+SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 	SpatRaster out = geometry();
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -67,7 +67,7 @@ SpatRaster SpatRaster::isnot(SpatOptions opt) {
 
 
 
-SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions opt) {
+SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 	
 	SpatRaster out = geometry();
 	
@@ -82,7 +82,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions opt) {
 		return(out);
 	}
 	
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	x.readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -105,11 +105,11 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions opt) {
 
 
 
-SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions opt) {
+SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {

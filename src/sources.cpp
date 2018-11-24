@@ -18,6 +18,26 @@
 #include <vector>
 #include "spatRaster.h"
 
+/*
+#include "string_utils.h"
+
+void RasterSource::fsopen(std::string filename) {
+    std::string grifile = setFileExt(filename, ".gri");
+ 	std::ofstream fstr(grifile, std::ios::out | std::ios::binary);
+    *ofs = &fstr;
+}
+
+bool RasterSource::fswrite(std::vector<double> &v) {
+	unsigned sz = v.size() * sizeof(double);
+	bool result = (*ofs).write(reinterpret_cast<const char*>(&v[0]), sz);
+ 	return result;
+}
+
+void RasterSource::fsclose() {
+	(*ofs).close();
+}
+*/
+
 
 RasterSource::RasterSource() {
 	open_write = false;
@@ -216,12 +236,12 @@ std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
 }
 
 
-SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions opt) {
+SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
     SpatRaster out = geometry();
     out.source.resize(0);
 
-    unsigned oldsize = lyrs.size(); 
+    unsigned oldsize = lyrs.size();
     lyrs = validLayers(lyrs, nlyr());
 
 	if (lyrs.size() == 0) {

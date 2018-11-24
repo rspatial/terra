@@ -170,10 +170,10 @@ std::vector<double> SpatVector::length() {
 	return r;
 }
 
-SpatRaster SpatRaster::area(SpatOptions opt) {
+SpatRaster SpatRaster::area(SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	if (could_be_lonlat()) {
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions optint(opt);

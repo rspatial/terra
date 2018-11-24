@@ -19,4 +19,4 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n);
 Rcpp::List getAttributes(SpatVector* v);
 Rcpp::NumericVector getGeometry(SpatVector* v);
 
-SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, SpatOptions opt);
+SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, SpatOptions &opt);

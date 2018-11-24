@@ -18,7 +18,7 @@
 #include <vector>
 #include "spatRaster.h"
 
-SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions opt) {
+SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
 
     SpatRaster out = geometry();
 	std::string message = "";
@@ -45,7 +45,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions opt)
 	double nc=ncol();
 	std::vector<double> newrow(nc*fact[1]);
   	readStart();
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
 		for (size_t row=0; row<bs.nrows[i]; row++) {

@@ -20,7 +20,7 @@
 #include "recycle.h"
 
 
-SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions opt) {
+SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
@@ -32,7 +32,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions opt) {
 
 	readStart();
 	x.readStart();
-  	out.writeStart(opt);
+  	if (!out.writeStart(opt)) { return out; }
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());

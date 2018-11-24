@@ -35,7 +35,7 @@ std::string tempFile(std::string tmpdir, std::string extension, double seed) {
 	};
     std::string filename(15, 0);
     std::generate_n(filename.begin(), 15, draw);
-	filename = tmpdir + "/terra_" + filename + extension;
+	filename = tmpdir + "/spat_" + filename + extension;
 	return filename;
 }
 
@@ -50,13 +50,11 @@ bool SpatRaster::isSource(std::string filename) {
 	return false;
 }
 
-
-bool SpatRaster::writeRaster(SpatOptions opt) {
+bool SpatRaster::writeRaster(SpatOptions &opt) {
 
 	std::string filename = opt.get_filename();
 	std::string datatype = opt.get_datatype();
 	bool overwrite = opt.get_overwrite();
-	lrtrim(filename);
 	if (filename == "") {
 		double seed = std::chrono::system_clock::now().time_since_epoch().count();
 		filename = tempFile(".", ".tif", seed);
@@ -75,10 +73,19 @@ bool SpatRaster::writeRaster(SpatOptions opt) {
 	lowercase(ext);
 
 	if (ext == ".grd") {
-		std::ofstream fs(filename, std::ios::ate | std::ios::binary);
 		std::vector<double> v = getValues();
-		fs.write((char*)&v[0], v.size() * sizeof(double));
-		fs.close();
+		//source[0].fsopen(filename);
+		//source[0].fswrite(v);
+		//source[0].fsclose();
+
+//	    std::string grifile = setFileExt(filename, ".gri");
+//		std::ofstream fs(grifile, std::ios::out | std::ios::binary);
+//		fs.write((char*)&v[0], v.size() * sizeof(double));
+//		fs.close();
+
+        writeStart(opt);
+        writeValues(v, 0);
+        writeStop();
         return writeHDR(filename);
 	} else {
 		std::string format = opt.get_filetype();
@@ -92,7 +99,7 @@ bool SpatRaster::writeRaster(SpatOptions opt) {
 }
 
 
-bool SpatRaster::writeStart(SpatOptions opt) {
+bool SpatRaster::writeStart(SpatOptions &opt) {
 
 //	double inf = std::numeric_limits<double>::infinity();
 //	s.min_range = inf;
@@ -123,10 +130,15 @@ bool SpatRaster::writeStart(SpatOptions opt) {
 				if (opt.get_overwrite()) {
 					remove(filename.c_str());
 				} else {
-					// stop()
+					setError("file exists");
+					return false;
 				}
 			}
-			//(*fs).open(fname, ios::out | ios::binary);
+//			source[0].fsopen(filename);
+            // create file and close it
+            std::string griname = setFileExt(source[0].filename, ".gri");
+            std::ofstream fs(griname, std::ios::out | std::ios::binary);
+            fs.close();
 		} else {
 			// open GDAL filestream
 			#ifdef useGDAL
@@ -144,11 +156,13 @@ bool SpatRaster::writeStart(SpatOptions opt) {
 		addWarning("file was already open");
 	}
 	source[0].open_write = true;
-	source[0].filename = {filename};
+	source[0].filename = filename;
 	bs = getBlockSize(4);
 	return success;
 }
 
+
+#include <iostream>
 
 
 bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
@@ -158,11 +172,19 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
 	}
 	bool success = true;
 	if (source[0].driver == "raster") {
-		unsigned size = vals.size();
-		//(*fs).write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
+		//source[0].fswrite(vals);
+
+		unsigned sz = vals.size();
 		std::string fname = setFileExt(source[0].filename, ".gri");
+
+		// make sure we write at the right place if not in order.
+		// also deal with BIL/BIP/BSQ
 		std::ofstream fs(fname, std::ios::ate | std::ios::binary);
-		fs.write(reinterpret_cast<const char*>(&vals[0]), size*sizeof(double));
+		long cursize = fs.tellp() / sizeof(double);
+        long needpos = row * ncol();
+        std::cout << cursize << " " << needpos << "\n";
+
+		fs.write(reinterpret_cast<const char*>(&vals[0]), sz*sizeof(double));
 		fs.close();
 
 	} else if (source[0].driver == "gdal") {
@@ -201,7 +223,7 @@ bool SpatRaster::writeStop(){
 	bool success = true;
 
 	if (source[0].driver == "raster") {
-		//(*fs).close();
+		//source[0].fsclose();
 		writeHDR(source[0].filename);
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL

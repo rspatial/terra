@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+
 #include "spatVector.h"
 #include "string_utils.h"
 
@@ -296,3 +297,6 @@ bool SpatVector::read(std::string fname) {
  //       OGREnvelope oExt;
  //       if( poLayer->GetExtent( &oExt, TRUE ) == OGRERR_NONE ){
  //           cout << "Extent: (" << oExt.MinX << ", " << oExt.MinY << ") - (" << oExt.MaxX << ", " << oExt.MaxY << ")" << endl;
+
+
+

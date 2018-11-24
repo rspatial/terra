@@ -15,6 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#ifdef useGDAL
+
+
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "ogrsf_frmts.h"
@@ -61,7 +64,7 @@ bool SpatVector::write(std::string filename, std::string format, bool overwrite)
         pt.setY( y );
         poFeature->SetGeometry( &pt );
         if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
-			setError("Failed to create feature in shapefile");
+			setError("Failed to create feature");
 			return false; 			
         }
         OGRFeature::DestroyFeature( poFeature );
@@ -71,3 +74,4 @@ bool SpatVector::write(std::string filename, std::string format, bool overwrite)
 }
 
 
+#endif

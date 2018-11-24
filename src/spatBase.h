@@ -20,6 +20,9 @@
 #include <string>
 #include <cmath>
 
+#define useGDAL
+
+
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
@@ -51,6 +54,7 @@ class SpatOptions {
 		bool todisk = false;
 		double memfrac = 0.6;
 
+	public:
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
 		bool overwrite = false;
@@ -59,7 +63,6 @@ class SpatOptions {
 		std::string filetype = "";
 		std::string filename = "";
 		std::vector<std::string> gdal_options;
-	public:
 
 		SpatOptions();
 		SpatOptions(const SpatOptions &opt);
