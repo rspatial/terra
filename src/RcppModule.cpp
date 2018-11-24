@@ -179,8 +179,7 @@ RCPP_MODULE(spat){
 		
 		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
 		.method("warp", &SpatRaster::warp, "warp")
-		
-		
+	
 	;
 }
 

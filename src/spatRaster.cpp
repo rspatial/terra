@@ -144,13 +144,18 @@ SpatRaster::SpatRaster() {
 	s.filename = "";
 	s.driver = "";
 	s.nlyr = 1; // or 0?
+	s.resize(1);
+
 	s.hasRange = { false };
 	s.hasValues = false;
-	s.layers.resize(1,1);
+	s.layers.resize(1,1); //?
 	s.datatype = "";
 	s.names = {"lyr.1"};
 	s.crs = "+proj=longlat +datum=WGS84";
+	
+	
 
+	
 	setSource(s);
 }
 
@@ -225,6 +230,7 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.extent = extent;
 	s.crs = crs;
 	s.memory = true;
+	s.hasValues = false;
 	nlyrs = (nlyrs < 1) ? nlyr(): nlyrs;
 	s.resize(nlyrs);
 	s.values.resize(0);

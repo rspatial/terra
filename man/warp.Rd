@@ -38,10 +38,11 @@ SpatRaster
 
 
 \examples{
-r <- rast(nrow=3, ncol=3)
+
+r <- rast(nrow=3, ncol=3, xmin=0, xmax=10, ymin=0, ymax=10)
 values(r) <- 1:ncell(r)
-s <- rast(nrow=10, ncol=10)
-s <- warp(r, s, method='bilinear')
+s <- rast(nrow=25, ncol=30, xmin=1, xmax=11, ymin=-1, ymax=11)
+x <- warp(r, s, method='bilinear')
 #par(mfrow=c(1,2))
 #plot(r)
 #plot(s)

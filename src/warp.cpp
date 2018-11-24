@@ -20,9 +20,11 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions opt) {
 	if (compare_geom(x, true, false)) {
 		return(*this); // but should be deep copy
 	}
-	out.extent.intersect(extent);
-    if (!out.extent.valid()) {
-        setError("No spatial overlap");
+	
+	SpatExtent e = out.extent;
+	e.intersect(extent);
+    if (!e.valid()) {
+        out.setError("No spatial overlap");
         return out;
     }
 
@@ -41,22 +43,21 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions opt) {
 		}
 		source = a.source;
 	}
+	unsigned nc = out.ncol();
 	readStart();
   	out.writeStart(opt);
-	std::vector<double> v;
-	unsigned firstcell, lastcell;
-	std::vector<std::vector<double> > xy;
 	for (size_t i = 0; i < out.bs.n; i++) {
-        firstcell = out.cellFromRowCol(out.bs.row[i], 0);
-		lastcell =  out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, out.ncol()-1);
+        unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
+		unsigned lastcell =  out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
 		std::vector<double> cells(1+lastcell-firstcell);
 		std::iota (std::begin(cells), std::end(cells), firstcell);
-		xy = out.xyFromCell(cells);
-		v = extractXY(xy[0], xy[1], method);
+        std::vector<std::vector<double>> xy = out.xyFromCell(cells);
+		std::vector<double> v = extractXY(xy[0], xy[1], method);
 		out.writeValues(v, out.bs.row[i]);
 	}
 	out.writeStop();
 	readStop();
+	
 	return(out);
 }
 

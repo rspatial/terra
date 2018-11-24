@@ -18,7 +18,6 @@
 #include <vector>
 #include "spatRaster.h"
 
-
 SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions opt) {
 
     SpatRaster out = geometry();
@@ -28,11 +27,14 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions opt)
 		out.setError(message);
 		return out;
 	}
+
 	fact.resize(3);
-    fact[3] = 1; // at least for now
-    out.source[0].nrow = out.source[0].nrow  * fact[0];
-    out.source[0].ncol = out.source[0].ncol  * fact[1];
-    out.source[0].nlyr = out.source[0].nlyr  * fact[2];
+    fact[2] = 1; // at least for now
+
+    out.source[0].nrow = out.source[0].nrow * fact[0];
+    out.source[0].ncol = out.source[0].ncol * fact[1];
+    out.source[0].nlyr = out.source[0].nlyr * fact[2];
+
 
     if (!hasValues()) {
         return out;

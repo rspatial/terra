@@ -127,6 +127,7 @@ void RasterSource::resize(unsigned n) {
     hasRAT.resize(n);
 	RAT.resize(n);
 	nlyr = n;
+	layers.resize(n);
 }
 
 

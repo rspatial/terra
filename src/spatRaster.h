@@ -123,6 +123,7 @@ class SpatRaster {
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
+		bool hasError() { return msg.has_error; }
 
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 

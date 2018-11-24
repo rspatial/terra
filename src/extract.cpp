@@ -22,14 +22,15 @@
 #include "distance.h"
 
 
-double bilinear(std::vector<double> v, std::vector<double> e, double dxdy, double x, double y) {
+double bilinear(const std::vector<double> &v, const  std::vector<double> &e, const double &dxdy, const double &x, const double &y) {
     double dx1, dx2, dy1, dy2;
-    dx1 = e[1] - x;
-    dx2 = x - e[0];
+    dx1 = x - e[0];
+    dx2 = e[1] - x;
     dy1 = y - e[2];
     dy2 = e[3] - y;
-    return (v[2] * dx2 * dy2 + v[3] * dx1 * dy2 +  v[0] * dx2 * dy1 + v[1] * dx1 * dy1) / dxdy;
+    return (v[2] * dx2 * dy2 + v[3] * dx1 * dy2 + v[0] * dx2 * dy1 + v[1] * dx1 * dy1) / dxdy;
 }
+
 
 
 std::vector<double> SpatRaster::extractXY(std::vector<double> &x, std::vector<double> &y, std::string method) {
@@ -40,8 +41,6 @@ std::vector<double> SpatRaster::extractXY(std::vector<double> &x, std::vector<do
 
 // if nrow or nocl =1 disaggregate first
 
-        size_t nr = nrow();
-        size_t nc = ncol();
         bool lonlat = could_be_lonlat();
         bool globalLonLat = is_global_lonlat();
         size_t n = x.size();
@@ -71,33 +70,37 @@ std::vector<double> SpatRaster::extractXY(std::vector<double> &x, std::vector<do
                 out[i] = a / b;
 */
         } else if (method == "bilinear") {
-            double ymax = extent.ymax;
+
+
+		double ymax = extent.ymax;
             double xmin = extent.xmin;
             double yrs = yres();
             double xrs = xres();
 
             SpatOptions opt;
-            SpatRaster g = geometry(1);
-            SpatRaster gd = g.disaggregate(std::vector<unsigned>{2,2}, opt);
+            SpatRaster g = geometry();
+			std::vector<unsigned> f = {2,2};
+            SpatRaster gd = g.disaggregate(f, opt);
+
             double dyrs = gd.yres();
             double dxrs =  gd.xres();
             std::vector<double> v, d, cells(4);
             std::vector<std::vector<double> > cxy;
 
             std::vector<double> rc(4);
+			unsigned nr = nrow();
+			unsigned nc = ncol();
             unsigned mnr = nr-1;
             unsigned mnc = nc-1;
 
             // needs row-wise adjustment for lonlat
             double dxdy = xres() * yres();
 
-
             for (size_t i=0; i<n; i++) {
                 long row_d = ((ymax - y[i]) / dyrs);
                 long col_d = ((x[i] - xmin) / dxrs);
                 unsigned rq = row_d % 2;
                 unsigned cq = col_d % 2;
-
 
                 double row1 = floor((ymax - y[i]) / yrs);
                 double col1 = floor((x[i] - xmin) / xrs);
@@ -106,26 +109,26 @@ std::vector<double> SpatRaster::extractXY(std::vector<double> &x, std::vector<do
                 double row2 = (rq == 0) ? row1-1 : row1+1;
                 row2 = row2 < 0 ? row1+1 : row2==nr ? row1-1 : row2;
                 double col2;
-                  if (globalLonLat) {
+                if (globalLonLat) {
                     if ((col1 < -1) | (col1 > nc)) { continue; }
-                    col1 = col1 < 0 ? nc+col1 : col1 > mnc ? col1-nc : col1;
+                    col1 = col1 < 0 ? mnc : col1 > mnc ? 0 : col1;
                     col2 = (cq == 0) ? col1-1 : col1 + 1;
-                    col2 = col2 < 0 ? nc+col2 : col2 > mnc ? col2-nc : col2;
+                    col2 = col2 < 0 ? mnc : col2 > mnc ? 0 : col2;
                 } else {
-                     if ((col1 < 0) | (col1 > mnc)) { continue; }
-                     col2 = (cq == 0) ? col1-1 : col1 + 1;
-                     col2 = col2 < 0 ? col1+1 : col2 == nc ? col1-1 : col2;
+                    if ((col1 < 0) | (col1 > mnc)) { continue; }
+                    col2 = (cq == 0) ? col1-1 : col1 + 1;
+                    col2 = col2 < 0 ? col1+1 : col2 == nc ? col1-1 : col2;
                 }
                 cells[0] = nc * row1 + col1;
                 cells[1] = nc * row1 + col2;
                 cells[2] = nc * row2 + col1;
                 cells[3] = nc * row2 + col2;
                 std::sort(cells.begin(), cells.end());
-                std::vector<std::vector<double> > xy = xyFromCell(cells);
+                std::vector<std::vector<double>> xy = xyFromCell(cells);
                 v = extractCell(cells);
-//                std::vector<double> e = extent.asVector();
                 std::vector<double> e = {xy[0][0], xy[0][1], xy[1][2], xy[1][0]};
                 out[i] = bilinear(v, e, dxdy, x[i], y[i]);
+
             }
         }
 	} else {
