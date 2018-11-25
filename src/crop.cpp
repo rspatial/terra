@@ -53,7 +53,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	std::vector<double> v;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		v = readValues(row1+out.bs.row[i], out.bs.nrows[i], col1, ncols);
-		out.writeValues(v, out.bs.row[i]);
+		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();

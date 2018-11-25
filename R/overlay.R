@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date : December 2017
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 setMethod("as.list", signature(x="SpatRaster"), 
 function(x, ...)  {

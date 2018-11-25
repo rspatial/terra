@@ -58,7 +58,7 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 		for (size_t j=0; j<a.size(); j++) {
 			a[i] = !a[i];
 		}
-		out.writeValues(a, out.bs.row[i]);
+		if (!out.writeValues(a, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();	
@@ -95,7 +95,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		} else {
 			// stop
 		}
-		out.writeValues(a, out.bs.row[i]);
+		if (!out.writeValues(a, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();	
@@ -123,7 +123,7 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 		} else {
 			// stop
 		}
-		out.writeValues(a, out.bs.row[i]);
+		if (!out.writeValues(a, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();		

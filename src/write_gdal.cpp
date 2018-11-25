@@ -103,6 +103,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	return true;
 }
 
+#include <iostream>
 
 bool SpatRaster::writeValuesGDAL(std::vector<double> vals, unsigned row){
 	unsigned nrows = vals.size() / (nlyr() * ncol());
@@ -128,6 +129,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> vals, unsigned row){
 			poBand = source[0].gdalconnection->GetRasterBand(i+1);
 			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
 			if (err == 4) break;
+			std::cout <<  "\n" << vv[0] << "\n";
 		} else if (datatype == "INT4S") {
 			gdtype = GDT_Int32;			
 			std::vector<int32_t> vv(vals.begin(), vals.end());

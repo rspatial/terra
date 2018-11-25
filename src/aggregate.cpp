@@ -224,7 +224,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 			v[lyrcell] = agFun(a[i], narm);
 		}
 
-		out.writeValues( v, bs.row[b] );
+		if (!out.writeValues(v, bs.row[b])) return out;
 	}
 	out.writeStop();
 	return(out);

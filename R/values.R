@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  June 2008
 # Version 0.9
-# Licence GPL v3
+# License GPL v3
 
 setMethod("readValues", signature(x='SpatRaster'), 
 function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...) {

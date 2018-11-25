@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  April 2009
 # Version 0.9
-# Licence GPL v3
+# License GPL v3
 
 if (!isGeneric("image")) {
 	setGeneric("image", function(x,...)

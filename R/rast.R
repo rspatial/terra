@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  October 2017
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 

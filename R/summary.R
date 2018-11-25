@@ -1,7 +1,7 @@
 # Authors: Robert J. Hijmans
 # Date : October 2018
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 
 .summarize <- function(x, ..., fun, na.rm=FALSE) {

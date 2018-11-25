@@ -43,7 +43,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 				v[i] = NAN;
 			}
 		}
-		out.writeValues(v, out.bs.row[i]);
+		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();

@@ -107,7 +107,7 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 				}
 			}
 		}
-		out.writeValues(v, out.bs.row[i]);
+		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 

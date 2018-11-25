@@ -37,15 +37,16 @@ SpatOptions SpatOptions::deepcopy(const SpatOptions &opt) {
 	return SpatOptions(opt);
 }
 
-std::string SpatOptions::get_datatype() { return datatype;}
-void SpatOptions::set_datatype(std::string d) { datatype = d; }
-std::string SpatOptions::get_def_datatype() { return def_datatype; }
 void SpatOptions::set_def_datatype(std::string d) { def_filetype = d; }
+std::string SpatOptions::get_def_datatype() { return def_datatype; }
 
-std::string SpatOptions::get_filetype() { return filetype;}
-void SpatOptions::set_filetype(std::string d) { filetype = d; }
-std::string SpatOptions::get_def_filetype() { return def_filetype;}
+void SpatOptions::set_datatype(std::string d) { datatype = d; }
+std::string SpatOptions::get_datatype() {if (datatype != "") {return datatype;} else {return def_datatype;}}
+
 void SpatOptions::set_def_filetype(std::string d) { def_filetype = d; }
+std::string SpatOptions::get_def_filetype() { return def_filetype;}
+void SpatOptions::set_filetype(std::string d) { filetype = d; }
+std::string SpatOptions::get_filetype() { return filetype;}
 
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }

@@ -24,7 +24,7 @@
 
 #include <vector>
 #include <fstream>
-#include <iostream>
+//#include <iostream>
 #include "spatRaster.h"
 
 

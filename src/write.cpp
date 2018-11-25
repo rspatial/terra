@@ -23,7 +23,7 @@
 #include "math_utils.h"
 
 
-std::string tempFile(std::string tmpdir, std::string extension, double seed) {
+std::string tempFile(SpatOptions &opt, double seed) {
     std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
     'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
     'n','o','p','q','r','s','t','u','v','w','x','y','z' };
@@ -35,6 +35,8 @@ std::string tempFile(std::string tmpdir, std::string extension, double seed) {
 	};
     std::string filename(15, 0);
     std::generate_n(filename.begin(), 15, draw);
+	std::string tmpdir = opt.get_tempdir();
+	std::string extension = ".tif"; 
 	filename = tmpdir + "/spat_" + filename + extension;
 	return filename;
 }
@@ -50,14 +52,18 @@ bool SpatRaster::isSource(std::string filename) {
 	return false;
 }
 
+
 bool SpatRaster::writeRaster(SpatOptions &opt) {
 
 	std::string filename = opt.get_filename();
 	std::string datatype = opt.get_datatype();
 	bool overwrite = opt.get_overwrite();
+	//if (overwrite) {std::cout << "overwrite true\n";} else {std::cout << "overwrite false\n";}
+	//std::cout << "datatype " << datatype << "\n";
+		
 	if (filename == "") {
 		double seed = std::chrono::system_clock::now().time_since_epoch().count();
-		filename = tempFile(".", ".tif", seed);
+		filename = tempFile(opt, seed);
 	} else if (file_exists(filename)) {
 		if (overwrite) {
 			if (isSource(filename)) {
@@ -111,7 +117,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
 			double seed = std::chrono::system_clock::now().time_since_epoch().count();
-			filename = tempFile(".", ".tif", seed);
+			filename = tempFile(opt, seed);
 		}
 	}
 
@@ -162,8 +168,6 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 }
 
 
-#include <iostream>
-
 
 bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
 	if (!source[0].open_write) {
@@ -182,7 +186,7 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
 		std::ofstream fs(fname, std::ios::ate | std::ios::binary);
 		long cursize = fs.tellp() / sizeof(double);
         long needpos = row * ncol();
-        std::cout << cursize << " " << needpos << "\n";
+        //std::cout << cursize << " " << needpos << "\n";
 
 		fs.write(reinterpret_cast<const char*>(&vals[0]), sz*sizeof(double));
 		fs.close();
@@ -221,7 +225,6 @@ bool SpatRaster::writeStop(){
 	}
 	source[0].open_write = false;
 	bool success = true;
-
 	if (source[0].driver == "raster") {
 		//source[0].fsclose();
 		writeHDR(source[0].filename);
@@ -234,7 +237,6 @@ bool SpatRaster::writeStop(){
 		#endif
 	} else {
 		source[0].setRange();
-        source[0].hasValues = true;
 	}
 	source[0].hasValues = true;
 	return success;
@@ -270,8 +272,6 @@ void SpatRaster::setRange() {
 		}
 	}
 }
-
-
 
 void RasterSource::setRange() {
 	double vmin, vmax;

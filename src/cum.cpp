@@ -147,7 +147,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 				a[j+k*nc] = v[k];
 			}
 		}
-		out.writeValues(a, out.bs.row[i]);
+		if (!out.writeValues(a, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();

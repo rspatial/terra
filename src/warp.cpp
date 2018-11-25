@@ -53,7 +53,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 		std::iota (std::begin(cells), std::end(cells), firstcell);
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
 		std::vector<double> v = extractXY(xy[0], xy[1], method);
-		out.writeValues(v, out.bs.row[i]);
+		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();

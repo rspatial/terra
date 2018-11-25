@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  October 2017
 # Version 0.9
-# Licence GPL v3
+# License GPL v3
 	
 
 setMethod('ext', signature(x='missing'), 

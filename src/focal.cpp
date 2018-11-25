@@ -166,7 +166,7 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 				v[j] = NAN;
 			}
 		}
-		out.writeValues(v, out.bs.row[i]);
+		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	readStop();
 	out.writeStop();

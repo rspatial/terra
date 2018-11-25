@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans 
 # Date : October 2018
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
  
 setMethod("as.polygons", signature(x="SpatRaster"), 

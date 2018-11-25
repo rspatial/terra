@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  October 2017
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 setMethod("yFromRow", signature(object="SpatRaster", row="numeric"), 
 	function(object, row) {

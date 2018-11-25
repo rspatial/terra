@@ -34,9 +34,9 @@ SpatRaster
 
 
 \examples{
-r <- rast(nrows=45, ncols=90)
+r <- rast(xmin=0, xmax=10, ymin=0, ymax=10, nrows=25, ncols=25)
 values(r) <- 1:ncell(r)
-e <- ext(-160, 10, 30, 60)
+e <- ext(-5, 5, -5, 5)
 rc <- crop(r, e)
 }
 
