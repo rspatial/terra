@@ -18,20 +18,20 @@ setMethod("c", signature(x="SpatRaster"),
 
 
 setMethod("adjacent", signature(x="SpatRaster"), 
-	function(x, cells, directions, include, ...) {
-		v <- x@ptr$adjacent(cells, directions, include);
-		show_messages(x, "adjacent");
-		return(v)
+	function(x, cells, directions="rook", include=FALSE, ...) {
+		v <- x@ptr$adjacent(cells-1, directions, include)
+		show_messages(x, "adjacent")
+		v <- do.call(rbind, v)
+		return(v+1)
 	}
 )
 
 
 setMethod("area", signature(x="SpatRaster"), 
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
-	# not available yet
 		opt <- .runOptions(filename[1], overwrite[1], wopt)
-		x@ptr <- x@ptr$area(opt);
-		show_messages(x, "area");
+		x@ptr <- x@ptr$area(opt)
+		show_messages(x, "area")
 	}
 )
 

@@ -22,7 +22,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
 	unsigned n = cells.size();
 	std::vector<std::vector<double>> out(n);
 
-	std::vector<std::string> f {"rook", "king", "bishop", "16"};
+	std::vector<std::string> f {"rook", "queen", "bishop", "16"};
 	if (std::find(f.begin(), f.end(), directions) == f.end()) {
         setError("argument directions is not valid");
         return(out);
@@ -53,7 +53,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
 			out[i] = cellFromRowCol(rows, cols);
 			std::sort(out[i].begin(), out[i].end());
 		}
-	} else if (directions == "king") {
+	} else if (directions == "queen") {
 		for (size_t i=0; i<n; i++) {
             rows = {r[i]-1, r[i]-1, r[i]-1, r[i], r[i], r[i]+1, r[i]+1, r[i]+1};
             cols = {c[i]-1, c[i], c[i]+1, c[i]-1, c[i]+1, c[i]-1, c[i], c[i]+1};
@@ -94,7 +94,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
             rows = {r[i]-2, r[i]-2, r[i]-1, r[i]-1, r[i]-1, r[i]-1, r[i]-1, r[i]  , r[i]  , r[i]+1, r[i]+1, r[i]+1, r[i]+1, r[i]+1, r[i]+2, r[i]+2};
             cols = {c[i]-1, c[i]+1, c[i]-2, c[i]-1, c[i],   c[i]+1, c[i]+2, c[i]-1, c[i]+1, c[i]-2, c[i]-1, c[i]  , c[i]+1, c[i]+2, c[i]-1, c[i]+1};
             if (globlatlon) {
-                if (c[i]==0 | c[i]==1) {
+                if ((c[i]==0) | (c[i]==1)) {
                     for (size_t j=0; j<16; j++) {
                         cols[j] = (cols[j] < 0) ? nc-cols[j] : cols[j];
                     }

@@ -43,10 +43,10 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 			for (size_t i = 1; i < (nrows-1); i++) {
 				for (size_t j = 1; j < (ncols-1); j++) {
 					size_t cell = i*ncols+j;
-					if (!isnan(xd[cell])) {
+					if (!std::isnan(xd[cell])) {
 						xval[cell] = falseval;
 						for (size_t k=0; k< dirs; k++) {
-							if ( isnan (xd[cell + r[k] * ncols + c[k]])) {
+							if (std::isnan (xd[cell + r[k] * ncols + c[k]])) {
 								xval[cell] = 1;
 								break;
 							}
@@ -60,9 +60,9 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 				for (size_t j = 1; j < (ncols-1); j++) {
 					size_t cell = i*ncols+j;
 					xval[cell] = falseval;
-					if (isnan(xd[cell])) {
+					if (std::isnan(xd[cell])) {
 						for (size_t k=0; k < dirs; k++) {			
-							if (isnan(xd[cell+ r[k] * ncols + c[k] ])) {
+							if (std::isnan(xd[cell+ r[k] * ncols + c[k] ])) {
 								xval[cell] = 1;
 								break;
 							}
@@ -72,12 +72,11 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 			}
 		} 
 	} else { // by class
-		int test;
 		for (size_t i = 1; i < (nrows-1); i++) {
 			for (size_t j = 1; j < (ncols-1); j++) {
 				size_t cell = i*ncols+j;
 				double test = xd[ cell+r[0]*ncols+c[0] ];
-				if (!isnan(test)) {
+				if (!std::isnan(test)) {
 					xval[cell] = falseval;
 				}
 				for (size_t k=1; k < dirs; k++) {
