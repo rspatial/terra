@@ -78,7 +78,7 @@ SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right
 	
 	unsigned nc = rcl.ncol();
 	unsigned nr = rcl.nrow();
-	printf("nc %u nr %u \n", nr, nr);
+	//printf("nc %u nr %u \n", nr, nr);
 	std::vector< std::vector<double>> rc(nc);
 	for (size_t c=0; c<nc; c++) {
 		for (size_t r=0; r<nr; r++) {
@@ -89,5 +89,22 @@ SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right
 	SpatRaster out = x->reclassify(rc, right, lowest, opt);
 	return out;
 }
+
+
+Rcpp::NumericMatrix rcppAdjacent(SpatRaster* x, std::vector<double> cells, std::string directions, bool include) {
+	
+	std::vector<std::vector<double>> a = x->adjacent(cells, directions, include);
+
+	unsigned nr = a.size();
+	unsigned nc = a[0].size();
+	Rcpp::NumericMatrix m(nr, nc);
+	for (size_t i=0; i<nr; i++) {
+		for (size_t j=0; j<nc; j++) {
+			m(i,j) = a[i][j];
+		}
+	}
+	return m;
+}
+
 
 

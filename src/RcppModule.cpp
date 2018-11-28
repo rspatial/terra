@@ -149,25 +149,27 @@ RCPP_MODULE(spat){
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
+
+		.method("adjacent", &SpatRaster::adjacent, "adjacent")
+		.method("aggregate", &SpatRaster::aggregate, "aggregate")
+		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
+		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2, "get_aggregate_dims")
+		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::arith ))
+		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, SpatOptions&) )( &SpatRaster::arith ))
+		.method("arith_rev", &SpatRaster::arith_rev, "arith_rev")
+		.method("area", &SpatRaster::area, "area")
 		.method("as_points", &SpatRaster::as_points, "as_points")
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("crop", &SpatRaster::crop, "crop")
+		.method("cum", &SpatRaster::cum, "cum")
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
 		.method("trim", &SpatRaster::trim, "trim")
 		.method("mask", &SpatRaster::mask, "mask")
-		.method("aggregate", &SpatRaster::aggregate, "aggregate")
-		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
-		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2, "get_aggregate_dims")
 		
-		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::arith ))
-		.method("arith_numb", ( SpatRaster (SpatRaster::*)(double, std::string, SpatOptions&) )( &SpatRaster::arith ))
-		.method("arith_rev", &SpatRaster::arith_rev, "arith_rev")
-		.method("area", &SpatRaster::area, "area")
-		.method("cum", &SpatRaster::cum, "cum")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("math", &SpatRaster::math, "math")
@@ -176,9 +178,10 @@ RCPP_MODULE(spat){
 		
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
-		
-		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
 		.method("warp", &SpatRaster::warp, "warp")
+		
+		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")
+		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
 	
 	;
 }

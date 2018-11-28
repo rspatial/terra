@@ -17,6 +17,15 @@ setMethod("c", signature(x="SpatRaster"),
 )
 
 
+setMethod("adjacent", signature(x="SpatRaster"), 
+	function(x, cells, directions, include, ...) {
+		v <- x@ptr$adjacent(cells, directions, include);
+		show_messages(x, "adjacent");
+		return(v)
+	}
+)
+
+
 setMethod("area", signature(x="SpatRaster"), 
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 	# not available yet

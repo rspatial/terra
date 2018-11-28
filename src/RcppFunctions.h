@@ -20,3 +20,4 @@ Rcpp::List getAttributes(SpatVector* v);
 Rcpp::NumericVector getGeometry(SpatVector* v);
 
 SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, SpatOptions &opt);
+//Rcpp::NumericMatrix rcppAdjacent(SpatRaster* x, std::vector<double> cells, std::string directions, bool include);

@@ -277,7 +277,8 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
-		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
+        std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
+ 		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatVector as_polygons(bool values, bool narm);
 		SpatVector as_points(bool values, bool narm);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
@@ -318,7 +319,7 @@ class SpatRaster {
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
-		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);		
+		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);
 };
 
