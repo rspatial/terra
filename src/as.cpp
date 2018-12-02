@@ -27,43 +27,79 @@ SpatVector SpatRaster::as_points(bool values, bool narm) {
 	std::vector<double> v, vout;
 	vout.reserve(v.size());
 	SpatVector pv;
-	if (!values && !narm) {
+	SpatGeom g;
+	g.gtype = points;
 
+
+    std::vector<std::vector<double>> xy;
+	if ((!values) && (!narm)) {
+        double nc = ncell();
+        for (size_t i=0; i<nc; i++) {
+            xy = xyFromCell(i);
+			SpatPart p(xy[0], xy[1]);
+			g.addPart(p);
+			pv.addGeom(g);
+			g.parts.resize(0);
+        }
+		return pv;
 	}
 
+	if (values) {
+        std::vector<std::string> nms = getNames();
+        for (size_t i=0; i<nlyr(); i++) {
+            pv.lyr.df.add_column(0, nms[i]);
+        }
+	}
 	readStart();
 	unsigned nc = ncol();
-	unsigned lyr;
+	unsigned nl = nlyr();
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-		unsigned ncells = bs.nrows[i] * nc;
-		std::vector<double> cells;
-		cells.reserve(ncells);
+        unsigned off1 = (bs.row[i] * nc);
+ 		unsigned vnc = bs.nrows[i] * nc;
 		if (narm) {
-			unsigned off1 = bs.row[i] + nc;
-			std::vector<double> boolcells(ncells, false);
-			for (size_t j=0; j<v.size(); j++) {
-				lyr = j / ncells;
-				unsigned off2 = off1 - lyr*nc;
-				if (!std::isnan(v[j])) {
-					boolcells[off2 + j] = true;
-				}
+            bool foundna = false;
+			for (size_t j=0; j<vnc; j++) {
+				for (size_t lyr=0; lyr<nl; lyr++) {
+                    unsigned off2 = lyr*nc;
+                    foundna = false;
+                    if (std::isnan(v[off2+j])) {
+                        foundna = true;
+                        continue;
+                    }
+                }
+                if (foundna) continue;
+                xy = xyFromCell(off1+j);
+                SpatPart p(xy[0], xy[1]);
+                g.addPart(p);
+                pv.addGeom(g);
+                g.parts.resize(0);
+                if (values) {
+                    for (size_t lyr=0; lyr<nl; lyr++) {
+                        unsigned off2 = lyr*nc;
+                        pv.lyr.df.dv[lyr].push_back(v[off2+j]);
+                    }
+                }
 			}
-			for (size_t j=0; j<cells.size(); j++) {
-				if (boolcells[j]) {
-					cells.push_back(j+off1);
-				}
+		} else { // if (values) {
+			for (size_t j=0; j<vnc; j++) {
+                xy = xyFromCell(off1+j);
+                SpatPart p(xy[0], xy[1]);
+                g.addPart(p);
+                pv.addGeom(g);
+                g.parts.resize(0);
+                for (size_t lyr=0; lyr<nl; lyr++) {
+                    unsigned off2 = lyr*nc;
+                    pv.lyr.df.dv[lyr].push_back(v[off2+j]);
+                }
 			}
-		} else {
-	   		std::iota(cells.begin(), cells.end(), 0);
 		}
-
-		std::vector<std::vector<double>> xy = xyFromCell(cells);
-		std::vector<double> vals = extractCell(cells);
 	}
 	readStop();
 	return(pv);
 }
+
+
 
 
 

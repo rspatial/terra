@@ -25,12 +25,10 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, const
 
 	unsigned n = pX.size();
 	std::vector<unsigned> nCol(n);
-
 	for (size_t row=0; row<nrows; row++) {
-
 		double y = ymax - (row+0.5) * ry;
 
-		//  Build a list of nodes.
+		// find nodes.
 		unsigned nodes = 0;
 		size_t j = n-1;
 		for (size_t i=0; i<n; i++) {
@@ -62,31 +60,28 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, const
 
 
 
+
 SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
   	if (!out.writeStart(opt)) { return out; }
-	double value = 1;
+	double value = 0;
 	double resx = xres();
 	double resy = yres();
 
 	SpatGeom poly;
 	SpatPart part;
 	SpatHole hole;
-
 	unsigned n = p.size();
-
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v(out.bs.nrows[i] * ncol(), background);
 
 		for (size_t j = 0; j < n; j++) {
-
 			poly = p.getGeom(j);
 			//value = p.getAtt(j);
 			//if (std::isnan(value)) { value = j;}
 			value = j+1;
-
 			unsigned np = poly.size();
 
 			for (size_t k = 0; k < np; k++) {
@@ -110,7 +105,61 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();
-
 	return(out);
-
 }
+
+
+
+
+std::vector<double> rasterize_line(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
+	unsigned n = pX.size();
+	for (size_t row=0; row<nrows; row++) {
+		double y = ymax - (row+0.5) * ry;
+		unsigned ncell = ncols * row;
+		for (size_t i=1; i<n; i++) {
+            size_t j = i-1;
+			if (((pY[i] < y) && (pY[j] >= y)) || ((pY[j] < y) && (pY[i] >= y))) {
+				double col = ((pX[i] - xmin + (y-pY[i])/(pY[j]-pY[i]) * (pX[j]-pX[i])) + 0.5 * rx ) / rx;
+				if ((col >= 0) & (col < ncols)) {
+                    r[ncell + col] = value;
+				}
+			}
+		}
+	}
+	return(r);
+}
+
+
+
+SpatRaster SpatRaster::rasterizeLines(SpatVector p, double background, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+  	if (!out.writeStart(opt)) { return out; }
+	double value = 0;
+	double resx = xres();
+	double resy = yres();
+	SpatGeom line;
+	SpatPart part;
+	unsigned n = p.size();
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v(out.bs.nrows[i] * ncol(), background);
+		for (size_t j = 0; j < n; j++) {
+			line = p.getGeom(j);
+			//value = p.getAtt(j);
+			//if (std::isnan(value)) { value = j;}
+			value = j+1;
+			unsigned nln = line.size();
+			for (size_t k = 0; k < nln; k++) {
+				part = line.getPart(k);
+				v = rasterize_line(v, value, part.x, part.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
+			}
+		}
+		if (!out.writeValues(v, out.bs.row[i])) return out;
+	}
+	out.writeStop();
+	return(out);
+}
+
+
+

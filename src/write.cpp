@@ -36,7 +36,7 @@ std::string tempFile(SpatOptions &opt, double seed) {
     std::string filename(15, 0);
     std::generate_n(filename.begin(), 15, draw);
 	std::string tmpdir = opt.get_tempdir();
-	std::string extension = ".tif"; 
+	std::string extension = ".tif";
 	filename = tmpdir + "/spat_" + filename + extension;
 	return filename;
 }
@@ -60,7 +60,7 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	bool overwrite = opt.get_overwrite();
 	//if (overwrite) {std::cout << "overwrite true\n";} else {std::cout << "overwrite false\n";}
 	//std::cout << "datatype " << datatype << "\n";
-		
+
 	if (filename == "") {
 		double seed = std::chrono::system_clock::now().time_since_epoch().count();
 		filename = tempFile(opt, seed);
@@ -217,6 +217,22 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row){
 	return success;
 }
 
+template <typename T>
+std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
+    std::size_t total_size = 0;
+    for (const auto& sub : v)
+        total_size += sub.size();
+    std::vector<T> result;
+    result.reserve(total_size);
+    for (const auto& sub : v)
+        result.insert(result.end(), sub.begin(), sub.end());
+    return result;
+}
+
+bool SpatRaster::writeValues2(std::vector<std::vector<double>> &vals, unsigned row){
+    std::vector<double> vv = flatten(vals);
+    return writeValues(vv, row);
+}
 
 bool SpatRaster::writeStop(){
 	if (!source[0].open_write) {

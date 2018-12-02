@@ -20,7 +20,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 	if (compare_geom(x, true, false)) {
 		return(*this); // but should be deep copy
 	}
-	
+
 	SpatExtent e = out.extent;
 	e.intersect(extent);
     if (!e.valid()) {
@@ -52,12 +52,12 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 		std::vector<double> cells(1+lastcell-firstcell);
 		std::iota (std::begin(cells), std::end(cells), firstcell);
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
-		std::vector<double> v = extractXY(xy[0], xy[1], method);
-		if (!out.writeValues(v, out.bs.row[i])) return out;
+		std::vector<std::vector<double>> v = extractXY(xy[0], xy[1], method);
+		if (!out.writeValues2(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();
-	
+
 	return(out);
 }
 

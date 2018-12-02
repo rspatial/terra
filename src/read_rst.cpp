@@ -28,6 +28,28 @@
 #include "spatRaster.h"
 
 
+/*
+https://stackoverflow.com/questions/105252/how-do-i-convert-between-big-endian-and-little-endian-values-in-c
+#include <climits>
+template <typename T>
+T swap_endian(T u) {
+    static_assert (CHAR_BIT == 8, "CHAR_BIT != 8");
+    union {
+        T u;
+        unsigned char u8[sizeof(T)];
+    } source, dest;
+
+    source.u = u;
+    for (size_t k = 0; k < sizeof(T); k++) {
+        dest.u8[k] = source.u8[sizeof(T) - k - 1];
+    }
+    return dest.u;
+}
+swap_endian<double>(42).
+*/
+
+
+
 std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {
 	const int dsize = 2;
 	std::vector<short> v(n);
@@ -35,7 +57,7 @@ std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {
 
 	std::ifstream f (file, std::ios::in | std::ios::binary);
 	f.seekg ( cell * dsize, std::ios::beg);
-	f.read ((char*)value, dsize*n); 
+	f.read ((char*)value, dsize*n);
 	f.close();
 
 	std::vector<double> vv(v.begin(), v.end());
@@ -51,7 +73,7 @@ std::vector<double> readINT4(std::string file, unsigned long cell, unsigned n) {
 
 	std::ifstream f (file, std::ios::in | std::ios::binary);
 	f.seekg ( cell * dsize, std::ios::beg);
-	f.read ((char*)value, dsize*n); 
+	f.read ((char*)value, dsize*n);
 	f.close();
 
 	std::vector<double> vv(v.begin(), v.end());
@@ -59,7 +81,7 @@ std::vector<double> readINT4(std::string file, unsigned long cell, unsigned n) {
 }
 
 
- 
+
 std::vector<double> readFLT4(std::string file, std::string order, unsigned long start, unsigned n) {
 
 	const int dsize = 4;
@@ -72,12 +94,12 @@ std::vector<double> readFLT4(std::string file, std::string order, unsigned long 
 	n = dsize * n;
 	std::ifstream f (file, std::ios::in | std::ios::binary);
 //	if (order == "BSQ") {
-		for (size_t i = 0; i < nlyr; i++) { 
+		for (size_t i = 0; i < nlyr; i++) {
 			f.seekg (start * lyr, std::ios::beg);
-			f.read ((char*)value, n); 
+			f.read ((char*)value, n);
 		}
 
-	
+
 	f.close();
 	std::vector<double> vv(v.begin(), v.end());
 	return vv;
@@ -96,12 +118,12 @@ std::vector<double> readFLT8(std::string file, std::string order, unsigned long 
 	n = dsize * n;
 	std::ifstream f (file, std::ios::in | std::ios::binary);
 //	if (order == "BSQ") {
-		for (size_t i = 0; i < nlyr; i++) { 
+		for (size_t i = 0; i < nlyr; i++) {
 			f.seekg (start * lyr, std::ios::beg);
-			f.read ((char*)value, n); 
+			f.read ((char*)value, n);
 		}
 
-	
+
 	f.close();
 	std::vector<double> vv(v.begin(), v.end());
 	return vv;
@@ -114,7 +136,7 @@ std::vector<double> readFLT8(std::string file, std::string order, unsigned long 
 
 	ifstream f (file, std::ios::in | std::ios::binary);
 	f.seekg ( cell * dsize, std::ios/::beg);
-	f.read ((char*)value, dsize*n); 
+	f.read ((char*)value, dsize*n);
 	f.close();
 
 	return v;

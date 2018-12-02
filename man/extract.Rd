@@ -36,9 +36,9 @@ Extract values from a SpatRaster for the locations of a SpatVector
 \seealso{\link{values}}
 
 \examples{
-r <- rast(ncol=5, nrow=5)
+r <- rast(ncol=5, nrow=5, xmin=0, xmax=5, ymin=0, ymax=5)
 values(r) <- 1:25
-xy <- rbind(c(0,0), c(1,1))
+xy <- rbind(c(0.5,0.5), c(2.5,2.5))
 p <- vect(xy)
 
 extract(r, xy)
@@ -72,6 +72,13 @@ r[i]
 
 y <- c(x,x*2,x*3)
 y[i]
+
+# extract with a polygon
+f <- system.file("exdata/lux.shp", package="terra")
+v <- vect(f)
+z <- rast(v)
+values(z) <- 1:100
+extract(z, v)
 
 }
 

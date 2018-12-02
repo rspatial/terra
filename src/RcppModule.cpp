@@ -1,6 +1,5 @@
 #include <Rcpp.h>
 #include "spatRaster.h"
-
 #include "RcppFunctions.h"
 
 RCPP_EXPOSED_CLASS(SpatMessages)
@@ -72,15 +71,15 @@ RCPP_MODULE(spat){
 	
 /*
     class_<RasterSource>("RasterSource")	
-//		.field_readonly("memory", &RasterSource::memory)
+		.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
 		.field_readonly("driver", &RasterSource::driver)
-//		.field_readonly("nrow", &RasterSource::nrow)
-//		.field_readonly("ncol", &RasterSource::ncol)
+		.field_readonly("nrow", &RasterSource::nrow)
+		.field_readonly("ncol", &RasterSource::ncol)
 		.field_readonly("nlyr", &RasterSource::nlyr)
-//		.field_readonly("crs", &RasterSource::crs)
-//		.field_readonly("extent", &RasterSource::extent)
-//		.field_readonly("datatype", &RasterSource::datatype)
+		.field_readonly("crs", &RasterSource::crs)
+		.field_readonly("extent", &RasterSource::extent)
+		.field_readonly("datatype", &RasterSource::datatype)
 		.field_readonly("NAflag", &RasterSource::NAflag)
 		//std::vector<std::vector<int> > layers;		
 	;	
@@ -145,11 +144,6 @@ RCPP_MODULE(spat){
 		.method("canProcessInMemory", &SpatRaster::canProcessInMemory, "canProcessInMemory")
 		.method("chunkSize", &SpatRaster::chunkSize, "chunkSize")
 		
-		.method("extractCell", &SpatRaster::extractCell, "extractCell")
-		.method("extractVector", &SpatRaster::extractVector, "extractVector")
-		
-		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
-
 		.method("adjacent", &SpatRaster::adjacent, "adjacent")
 		.method("aggregate", &SpatRaster::aggregate, "aggregate")
 		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
@@ -165,19 +159,22 @@ RCPP_MODULE(spat){
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("cum", &SpatRaster::cum, "cum")
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
+		.method("extractCell", &SpatRaster::extractCell, "extractCell")
+		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
-		.method("trim", &SpatRaster::trim, "trim")
-		.method("mask", &SpatRaster::mask, "mask")
 		
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
+		.method("mask", &SpatRaster::mask, "mask")
 		.method("math", &SpatRaster::math, "math")
+		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")
 		
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
+		.method("trim", &SpatRaster::trim, "trim")
 		.method("warp", &SpatRaster::warp, "warp")
 		
 		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")
@@ -185,5 +182,4 @@ RCPP_MODULE(spat){
 	
 	;
 }
-
 

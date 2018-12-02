@@ -12,8 +12,8 @@
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun="", ...) { 
     r <- x@ptr$extractVector(y@ptr, fun)
-	x <- show_messages(x, "extract")		
-	matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
+	x <- show_messages(x, "extract")
+	r
 })
 
 setMethod("[", c("SpatRaster", "SpatVector", "missing"),
@@ -55,7 +55,9 @@ function(x, i, j, ... ,drop=FALSE) {
 	if (drop) {
 		r
 	} else {
-		matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
+		r <- do.call(cbind, r)
+		colnames(r) = names(x)
+		r
 	}
 })
 
@@ -68,7 +70,9 @@ function(x, i, j, ... ,drop=FALSE) {
 	if (drop) {
 		r
 	} else {
-		matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
+		r <- do.call(cbind, r)
+		colnames(r) = names(x)
+		r
 	}
 })
 
@@ -82,7 +86,9 @@ function(x, i, j, ..., drop=FALSE) {
 	if (drop) {
 		r
 	} else {
-		matrix(r, ncol=nlyr(x), dimnames=list(NULL, names(x)))
+		r <- do.call(cbind, r)
+		colnames(r) = names(x)
+		r
 	}
 })
 

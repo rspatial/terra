@@ -51,7 +51,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
                 cols.push_back(c[i]);
             }
 			out[i] = cellFromRowCol(rows, cols);
-			std::sort(out[i].begin(), out[i].end());
+			//std::sort(out[i].begin(), out[i].end());
 		}
 	} else if (directions == "queen") {
 		for (size_t i=0; i<n; i++) {
@@ -69,7 +69,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
                 cols.push_back(c[i]);
             }
 			out[i] = cellFromRowCol(rows, cols);
-			std::sort(out[i].begin(), out[i].end());
+			//std::sort(out[i].begin(), out[i].end());
 		}
 	} else if (directions == "bishop") {
 		for (size_t i=0; i<n; i++) {
@@ -87,7 +87,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
                 cols.push_back(c[i]);
             }
 			out[i] = cellFromRowCol(rows, cols);
-			std::sort(out[i].begin(), out[i].end());
+			//std::sort(out[i].begin(), out[i].end());
 		}
 	} else if (directions == "16") {
 		for (size_t i=0; i<n; i++) {
@@ -109,7 +109,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
                 cols.push_back(c[i]);
             }
 			out[i] = cellFromRowCol(rows, cols);
-			std::sort(out[i].begin(), out[i].end());
+			//std::sort(out[i].begin(), out[i].end());
 		}
 	}
 	return(out);

@@ -246,6 +246,7 @@ class SpatRaster {
 
 		bool writeStart(SpatOptions &opt);
 		bool writeValues(std::vector<double> &vals, unsigned row);
+		bool writeValues2(std::vector<std::vector<double>> &vals, unsigned row);
 		bool writeStop();
 		bool writeHDR(std::string filename);
 
@@ -253,12 +254,10 @@ class SpatRaster {
 		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
 		bool writeStopGDAL();
 
-
 		// for a specific gdal source
 		std::vector<double> readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		std::vector<double> readGDALsample(unsigned src, unsigned srows, unsigned scols);
-		std::vector<double> readRowColGDAL(unsigned src, const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
-
+		std::vector<std::vector<double>> readRowColGDAL(unsigned src, const std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
 
 		bool readStartGDAL(unsigned src);
 		bool readStopGDAL(unsigned src);
@@ -298,9 +297,11 @@ class SpatRaster {
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions &opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
-		std::vector<std::vector<double>> extractVector(SpatVector v, std::string fun="");
-		std::vector<double> extractCell(std::vector<double> &cell);
-        std::vector<double> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
+		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, std::string fun="");
+		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
+        std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
+        std::vector<double> line_cells(SpatGeom& g);
+        std::vector<double> polygon_cells(SpatGeom& g);
 
 
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, SpatOptions &opt);

@@ -1,6 +1,6 @@
 # Author: Robert J. Hijmans
 # Date :  June 2017
-# Version 0.9
+# Version 1.0
 # License GPL v3
 
 
@@ -80,6 +80,8 @@ setMethod ("show" , "SpatRaster",
 			nsr <- nsrc(object)	
 			m <- .inMemory(object)
 			f <- .filenames(object)
+			f <- gsub("\\", "/", f, fixed=TRUE)
+
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m] 
 			if (nsr > 1) {
