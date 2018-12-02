@@ -91,7 +91,7 @@ std::vector<double> SpatRaster::line_cells(SpatGeom& g) {
 
 std::vector<double> SpatRaster::polygon_cells(SpatGeom& g) {
 
-// needs to get geom instead of x, y to deal with holes.
+// does not deal with holes yet.
 
 	unsigned nrows = nrow();
 	unsigned ncols = ncol();
