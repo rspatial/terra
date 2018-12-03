@@ -29,13 +29,29 @@ setMethod("plot", signature(x='SpatVector', y='missing'),
 		g <- geom(x)
 		gtype <- geomtype(x)
 		if (gtype == "points") {
-			plot(g[,3], g[,4], xlab=xlab, ylab=ylab, ...)
+			plot(g[,3], g[,4], xlab=xlab, ylab=ylab, col=col, ...)
 		} else {
-			g <- split(g, g[,1])
-			g <- lapply(g, function(x) split(x, x[,2]))
 			e <- matrix(as.vector(ext(x)), 2)
 			plot(e, type='n', xlab=xlab, ylab=ylab, ...)
-			p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4])))
+			g <- split(g, g[,1])
+			if (gtype == "polygons") {
+				g <- lapply(g, function(x) split(x, x[,2]))
+				for (i in 1:length(g)) {
+					a <- g[[i]][[1]]
+					if (any(a[,5] > 0)) {
+						a <- split(a,a[,5]) 
+						a <- lapply(a, function(i) rbind(i, NA))
+						a <- do.call(rbind, a )
+						a <- a[-nrow(a), ]
+						g[[i]][[1]] <- a
+					}
+					polypath(a[,3:4], rule = "evenodd", ...)
+				}
+
+			} else {
+				g <- lapply(g, function(x) split(x, x[,2]))
+				p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...)))			
+			}
 		}
 	}
 )
@@ -50,8 +66,7 @@ setMethod("lines", signature(x='SpatVector'),
 		} else {
 			g <- split(g, g[,1])
 			g <- lapply(g, function(x) split(x, x[,2]))
-			e <- matrix(as.vector(ext(x)), 2)
-			p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4])))
+			p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...)))
 		}
 	}
 )

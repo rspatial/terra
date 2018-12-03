@@ -18,9 +18,7 @@
 #include <functional>
 
 #include "spatRaster.h"
-//#include "NA.h"
 #include "distance.h"
-
 #include "vecmath.h"
 
 

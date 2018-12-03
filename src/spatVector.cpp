@@ -236,8 +236,8 @@ SpatDataFrame SpatVector::getGeometryDF() {
 		for (size_t j=0; j < g.size(); j++) {
 			p = g.getPart(j);
 			for (size_t q=0; q < p.x.size(); q++) {
-				out.iv[0][idx] = i;
-				out.iv[1][idx] = j;
+				out.iv[0][idx] = i+1;
+				out.iv[1][idx] = j+1;
 				out.dv[0][idx] = p.x[q];
 				out.dv[1][idx] = p.y[q];
 				out.iv[2][idx] = 0;
@@ -247,11 +247,11 @@ SpatDataFrame SpatVector::getGeometryDF() {
 				for (size_t k=0; k < p.nHoles(); k++) {
 					h = p.getHole(k);
 					for (size_t q=0; q < h.x.size(); q++) {
-						out.iv[0][idx] = i;
-						out.iv[1][idx] = j;
+						out.iv[0][idx] = i+1;
+						out.iv[1][idx] = j+1;
 						out.dv[0][idx] = h.x[q];
 						out.dv[1][idx] = h.y[q];
-						out.iv[2][idx] = 1;
+						out.iv[2][idx] = k+1;
 						idx++;
 					}
 				}
@@ -269,45 +269,63 @@ SpatGeomType SpatVector::getGType(std::string &type) {
 }
 
 
-void SpatVector::setGeometry(std::string type, std::vector<unsigned> geom, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<bool> hole) {
+void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<unsigned> hole) {
 
-// it is assumed that values are sorted by geom, part, hole
-
-	unsigned lastgeom = geom[0];
+// it is assumed that values are sorted by gid, part, hole
+	unsigned lastgeom = gid[0];
 	unsigned lastpart = part[0];
-	std::vector<double> X, Y;
-//	X.push_back(x[0]);
-//	Y.push_back(y[0]);
-	bool isHole = hole[0];
+	unsigned lasthole = hole[0];
+	bool isHole = lasthole > 0;
 
+	std::vector<double> X, Y;
 	SpatGeom g;
 	g.gtype = getGType(type);
 
-	for (size_t i=0; i<geom.size(); i++) {
-		if ((lastgeom != geom[i]) || (lastpart != part[i])) {
-			if (isHole) {
-				SpatHole h(X, Y);
-				g.addHole(h);
-			} else {
-				SpatPart p(X, Y);
-				g.addPart(p);
-			}
+	for (size_t i=0; i<gid.size(); i++) {
+		if ((lastgeom != gid[i]) || (lastpart != part[i]) || (lasthole != hole[i])) {
+            if (g.gtype == polygons) {
+                if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
+                    X.push_back(X[0]);
+                    Y.push_back(Y[0]);
+                }
+                if (isHole) {
+                    SpatHole h(X, Y);
+                    g.addHole(h);
+                } else {
+                    SpatPart p(X, Y);
+                    g.addPart(p);
+                }
+            } else {
+                SpatPart p(X, Y);
+                g.addPart(p);
+            }
 			lastpart = part[i];
-			isHole = hole[i];
+            lasthole = hole[i];
+            isHole = lasthole > 0;
 			X.resize(0);
 			Y.resize(0);
-			if (lastgeom != geom[i]) {
+			if (lastgeom != gid[i]) {
 				addGeom(g);
 				g.parts.resize(0);
-				lastgeom = geom[i];
+				lastgeom = gid[i];
 			}
 		}
 		X.push_back(x[i]);
 		Y.push_back(y[i]);
 	}
-	if (isHole) {
-		SpatHole h(X, Y);
-		g.addHole(h);
+
+	if (g.gtype == polygons) {
+        if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
+            X.push_back(X[0]);
+            Y.push_back(Y[0]);
+        }
+        if (isHole) {
+            SpatHole h(X, Y);
+            g.addHole(h);
+        } else {
+            SpatPart p(X, Y);
+            g.addPart(p);
+        }
 	} else {
 		SpatPart p(X, Y);
 		g.addPart(p);
