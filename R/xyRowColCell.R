@@ -34,7 +34,7 @@ setMethod(cellFromXY, signature(object="SpatRaster", xy="matrix"),
 )
 
 setMethod(cellFromRowCol, signature(object="SpatRaster", row="numeric", col="numeric"), 
-	function(object, row, col) {
+	function(object, row, col, ...) {
 		object@ptr$cellFromRowCol(row-1, col-1) + 1
 	}
 )

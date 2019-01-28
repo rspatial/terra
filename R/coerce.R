@@ -13,6 +13,13 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("as.lines", signature(x="SpatVector"), 
+	function(x, ...) {
+		x@ptr <- x@ptr$as_lines()
+		show_messages(x)
+	}
+)
+
 setMethod("as.points", signature(x="SpatRaster"), 
 	function(x, values=FALSE, na.rm=FALSE, ...) {
 		p <- methods::new("SpatVector")

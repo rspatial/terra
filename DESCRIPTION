@@ -5,7 +5,7 @@ Version: 0.1-6
 Date: 2018-11-24
 Depends: R (>= 3.3.0)
 LinkingTo: Rcpp
-Imports: methods, Rcpp, raster (>= 2.8-5)
+Imports: methods, Rcpp, raster (>= 2.8-17)
 Suggests: lattice
 SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>= 4.8.0)
 Authors@R: person("Robert J.", "Hijmans", role = c("cre", "aut"), email = "r.hijmans@gmail.com", comment = c(ORCID = "0000-0001-5872-2872"))

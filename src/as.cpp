@@ -172,3 +172,18 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 	return(v);
 }
 
+
+
+
+SpatVector SpatVector::as_lines() {
+	SpatVector v = *this;
+	if (lyr.geoms[0].gtype != polygons) {
+		v.setError("this only works for polygons");
+		return v;
+	}
+	for (size_t i=0; i<size(); i++) {
+		v.lyr.geoms[i].gtype = lines;
+	}
+	return(v);
+}
+

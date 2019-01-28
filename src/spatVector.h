@@ -104,6 +104,7 @@ class SpatVector {
 		std::vector<double> area();
 		std::vector<double> length();
 		size_t size();
+		SpatVector as_lines();
 
 		bool read(std::string fname);
 		bool write(std::string filename, std::string format, bool overwrite);
@@ -118,6 +119,7 @@ class SpatVector {
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
+		
 };
 
 /*

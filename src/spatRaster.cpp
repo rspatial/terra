@@ -84,9 +84,6 @@ SpatRaster::SpatRaster() {
 	s.names = {"lyr.1"};
 	s.crs = "+proj=longlat +datum=WGS84";
 
-
-
-
 	setSource(s);
 }
 

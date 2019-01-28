@@ -65,6 +65,7 @@ RCPP_MODULE(spat){
 		.method("setGeometry", &SpatVector::setGeometry, "setGeometry")
 		.method("area", &SpatVector::area, "area")		
 		.method("length", &SpatVector::length, "length")		
+		.method("as_lines", &SpatVector::as_lines, "as_lines")
 		.field("messages", &SpatVector::msg, "messages")
 	;
 
@@ -168,12 +169,12 @@ RCPP_MODULE(spat){
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("mask", &SpatRaster::mask, "mask")
 		.method("math", &SpatRaster::math, "math")
+		.method("rasterizeLines", &SpatRaster::rasterizeLines, "rasterizeLines")
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
-		.method("trig", &SpatRaster::trig, "trig")
-		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")
-		
+		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")		
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
+		.method("trig", &SpatRaster::trig, "trig")
 		.method("trim", &SpatRaster::trim, "trim")
 		.method("warp", &SpatRaster::warp, "warp")
 		

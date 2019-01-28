@@ -86,7 +86,14 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"),
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
 	function(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename[1], overwrite[1],wopt)
-		y@ptr <- y@ptr$rasterizePolygons(x@ptr, background[1], opt)
+		gtype <- geomtype(x)
+		if (gtype == "polygons") {
+			y@ptr <- y@ptr$rasterizePolygons(x@ptr, background[1], opt)
+		} else if (gtype == "lines") {
+			y@ptr <- y@ptr$rasterizeLines(x@ptr, background[1], opt)
+		} else {
+			stop("not implemented yet")
+		}
 		show_messages(y, "rasterize")
 	}
 )

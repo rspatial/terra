@@ -125,8 +125,14 @@ class SpatExtent {
 		}
 
 
+		bool is_lonlat(std::string crs) {
+			bool b1 = crs.find("longlat") != std::string::npos;
+			bool b2 = crs.find("epsg:4326") != std::string::npos;
+			return (b1 | b2);
+		}
+		
 		bool could_be_lonlat(std::string crs) {
-			bool b = crs.find("longlat") != std::string::npos;
+			bool b = is_lonlat(crs);
 			if ((!b) & (crs=="")) {
 				if ((xmin >=-180.1) & (xmax <= 180.1) & (ymin >= -90.1) & (ymax <= 90.1)) {
 					b = true;
