@@ -47,7 +47,7 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 \S4method{yFromCell}{SpatRaster,numeric}(object, cell)
 \S4method{colFromX}{SpatRaster,numeric}(object, x)
 \S4method{rowFromY}{SpatRaster,numeric}(object, y)
-\S4method{cellFromRowCol}{SpatRaster,numeric,numeric}(object, row, col)
+\S4method{cellFromRowCol}{SpatRaster,numeric,numeric}(object, row, col, ...)
 \S4method{rowFromCell}{SpatRaster,numeric}(object, cell)
 \S4method{colFromCell}{SpatRaster,numeric}(object, cell)
 \S4method{rowColFromCell}{SpatRaster,numeric}(object, cell)

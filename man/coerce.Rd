@@ -6,6 +6,7 @@
 \alias{as.matrix}
 \alias{as.array}
 \alias{as.polygons}
+\alias{as.lines}
 \alias{as.points}
 
 \alias{as.vector,SpatRaster-method}
@@ -14,6 +15,7 @@
 \alias{as.data.frame,SpatRaster-method}
 \alias{as.polygons,SpatRaster-method}
 \alias{as.points,SpatRaster-method}
+\alias{as.lines,SpatVector-method}
 
 
 \title{Coercion to other object types}
@@ -29,6 +31,7 @@ Coercion to other object types
 \S4method{as.array}{SpatRaster}(x, ...)
 \S4method{as.polygons}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
 \S4method{as.points}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
+\S4method{as.lines}{SpatVector}(x, ...)
 }
 
 

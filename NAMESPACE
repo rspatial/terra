@@ -1,5 +1,5 @@
 import(Rcpp)
-importFrom(methods, new, validObject)
+importFrom(methods, new, as, validObject)
 importFrom(stats, aggregate, na.omit, predict, quantile)
 importFrom(graphics, lines, points, image, polypath)
 importFrom(utils, head, tail)
