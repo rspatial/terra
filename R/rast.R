@@ -5,7 +5,7 @@
 
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 
-setMethod('rast', signature(x='missing'), 
+setMethod("rast", signature(x="missing"), 
 	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...) {
 
 		if (missing(extent)) {	extent <- ext(xmin, xmax, ymin, ymax) }
@@ -22,7 +22,7 @@ setMethod('rast', signature(x='missing'),
 		}
 		
 
-		r <- methods::new('SpatRaster')
+		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
 		
 		if (!missing(resolution)) {
@@ -35,16 +35,16 @@ setMethod('rast', signature(x='missing'),
 )
 
 
-setMethod('rast', signature(x='SpatExtent'), 
+setMethod("rast", signature(x="SpatExtent"), 
 	function(x, nrows=10, ncols=10, nlyrs=1, crs="", ...) {
 		e <- as.vector(x)		
-		r <- methods::new('SpatRaster')
+		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
 		show_messages(r, "rast")		
 	}
 )
 
-setMethod('rast', signature(x='SpatVector'), 
+setMethod("rast", signature(x="SpatVector"), 
 	function(x, nrows=10, ncols=10, nlyrs=1, ...) {
 		rast(ext(x), nrows=nrows, ncols=ncols, nlyrs=nlyrs, crs=crs(x), ...)
 	}
@@ -63,19 +63,19 @@ setMethod('rast', signature(x='SpatVector'),
 	return(x)
 }
 
-setMethod('rast', signature(x='character'), 
+setMethod("rast", signature(x="character"), 
 	function(x, ...) {
 		f <- .fullFilename(x)
-		r <- methods::new('SpatRaster')
+		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(f)
 		show_messages(r, "rast")		
 	}
 )
 
 
-setMethod('rast', signature(x='SpatRaster'), 
+setMethod("rast", signature(x="SpatRaster"), 
 	function(x, nlyrs=nlyr(x), ...) {
-		r <- methods::new('SpatRaster')
+		r <- methods::new("SpatRaster")
 		dims <- dim(x)
 		stopifnot(nlyrs > 0)
 		dims[3] <- nlyrs
@@ -87,9 +87,9 @@ setMethod('rast', signature(x='SpatRaster'),
 
 
 
-setMethod('rast', signature(x='matrix'), 
+setMethod("rast", signature(x="matrix"), 
 	function(x, ...) {
-		r <- methods::new('SpatRaster')
+		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), "")
 		values(r) <- x
 		show_messages(r, "rast")		
@@ -97,13 +97,13 @@ setMethod('rast', signature(x='matrix'),
 )
 
 
-setMethod('rast', signature(x='array'), 
+setMethod("rast", signature(x="array"), 
 	function(x, ...) {
 		dims <- dim(x)
 		if (length(dims) > 3) {
 			stop("cannot handle an array with more than 3 dimensions")		
 		}
-		r <- methods::new('SpatRaster')
+		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(dims, c(0, dims[2], 0, dims[1]), "")
 		values(r) <- x
 		show_messages(r, "rast")		
@@ -111,3 +111,9 @@ setMethod('rast', signature(x='array'),
 )
 
 
+
+setMethod("rast", signature(x="Raster"), 
+	function(x, ...) {
+		as(x, "SpatRaster")
+	}
+)
