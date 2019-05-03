@@ -86,7 +86,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 
 
-SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm, unsigned fun, SpatOptions &opt) {
+SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm, std::string fun, SpatOptions &opt) {
 
 	bool wmat = false;
 	int ww;
@@ -152,11 +152,11 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 				} else {
 					if (fv.size() == 0) {
 						v[j] = NAN;
-					} else  if (fun == 0) { //mean
+					} else if (fun == "mean") { //mean
 						v[j] = std::accumulate(fv.begin(), fv.end(), 0.0) / fv.size();
-					} else if (fun == 1) { //min
+					} else if (fun == "min") { //min
 						v[j] = *std::min_element(fv.begin(), fv.end());
-					} else if (fun == 2) { //max
+					} else if (fun == "max") { //max
 						v[j] = *std::max_element(fv.begin(), fv.end());
 					} else { // sum
 						v[j] = std::accumulate(fv.begin(), fv.end(), 0.0);
