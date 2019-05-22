@@ -201,7 +201,7 @@ class SpatRaster {
 // helper methods
 ////////////////////////////////////////////////////
 
-		bool compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs=false);
+		bool compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
 		double cellFromXY(double x, double y);
@@ -311,7 +311,9 @@ class SpatRaster {
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
-		SpatRaster trig(std::string fun, SpatOptions &opt);
+		SpatRaster merge(SpatRaster x, SpatOptions &opt);
+		SpatRaster rotate(SpatOptions &opt);
+
 		SpatRaster rasterizePolygons(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster rasterizeLines(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, SpatOptions &opt);
@@ -319,6 +321,7 @@ class SpatRaster {
 		SpatRaster sampleRegular(unsigned size);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
+		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);

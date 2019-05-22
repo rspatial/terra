@@ -83,6 +83,17 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"),
 	}
 )
 
+
+setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
+	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 
+		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		x@ptr <- x@ptr$merge(y, opt)
+		show_messages(x, "merge")		
+	}
+)
+
+
+
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
 	function(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename[1], overwrite[1],wopt)
@@ -117,6 +128,16 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE,
     x@ptr <- x@ptr$rcppReclassify(rcl, right, include.lowest, opt)
 	show_messages(x, "reclassify")	
 }
+)
+
+
+
+setMethod("rotate", signature(x="SpatRaster"), 
+	function(x, filename="", overwrite=FALSE, wopt=list(), ...) { 
+		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		x@ptr <- x@ptr$rotate(opt)
+		show_messages(x, "rotate")		
+	}
 )
 
 

@@ -19,20 +19,30 @@
 #include "math_utils.h"
 
 
-bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs) {
-
-	bool e1 = is_equal(x.extent.xmax, extent.xmax, 1);
-	bool e2 = is_equal(x.extent.xmin, extent.xmin, 1);
-	bool e3 = is_equal(x.extent.ymax, extent.ymax, 1);
-	bool e4 = is_equal(x.extent.ymin, extent.ymin, 1);
-	if (!(e1 && e2 && e3 && e4)) {
-		setError("extents do not match");
-		return false;
+bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
+	
+	
+	if (ext) {
+		bool e1 = is_equal(x.extent.xmax, extent.xmax, 1);
+		bool e2 = is_equal(x.extent.xmin, extent.xmin, 1);
+		bool e3 = is_equal(x.extent.ymax, extent.ymax, 1);
+		bool e4 = is_equal(x.extent.ymin, extent.ymin, 1);
+		if (!(e1 && e2 && e3 && e4)) {
+			setError("extents do not match");
+			return false;
+		}
 	}
-
-	if (! ((nrow() == x.nrow()) && (ncol() == x.ncol())) ) {
-		setError("resolutions do not match");
-		return false;
+	if (rowcol) {
+		if (! ((nrow() == x.nrow()) && (ncol() == x.ncol())) ) {
+			setError("number of rows and/or columns do not match");
+			return false;
+		}
+	}
+	if (res) {
+		if (! ((x.xres() == xres()) & (x.yres() == yres()))) {
+			setError("resolution does not match");
+			return false;
+		}
 	}
 
 	if (lyrs) {
