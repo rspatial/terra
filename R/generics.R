@@ -133,9 +133,9 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE,
 
 
 setMethod("rotate", signature(x="SpatRaster"), 
-	function(x, filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, left=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename[1], overwrite[1], wopt)
-		x@ptr <- x@ptr$rotate(opt)
+		x@ptr <- x@ptr$rotate(left, opt)
 		show_messages(x, "rotate")		
 	}
 )

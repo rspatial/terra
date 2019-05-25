@@ -312,7 +312,7 @@ class SpatRaster {
 		SpatRaster mask(SpatRaster x, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster merge(SpatRaster x, SpatOptions &opt);
-		SpatRaster rotate(SpatOptions &opt);
+		SpatRaster rotate(bool left, SpatOptions &opt);
 
 		SpatRaster rasterizePolygons(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster rasterizeLines(SpatVector p, double background, SpatOptions &opt);

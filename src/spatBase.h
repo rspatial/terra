@@ -130,7 +130,7 @@ class SpatExtent {
 			bool b2 = crs.find("epsg:4326") != std::string::npos;
 			return (b1 | b2);
 		}
-		
+
 		bool could_be_lonlat(std::string crs) {
 			bool b = is_lonlat(crs);
 			if ((!b) & (crs=="")) {

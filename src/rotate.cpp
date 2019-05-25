@@ -17,20 +17,39 @@
 
 #include <vector>
 #include "spatRaster.h"
-#include "recycle.h"
 
+SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 
-SpatRaster SpatRaster::rotate(SpatOptions &opt) {
+	unsigned nc = ncol();
+	unsigned hnc = (nc / 2);
+	double addx = hnc * xres();
+	if (left) {
+		addx = -addx;
+	}
+	SpatRaster out = geometry();
+	out.extent.xmin = out.extent.xmin + addx;
+	out.extent.xmax = out.extent.xmax + addx;
 
-	SpatOptions optint(opt);
-	double xhalf = (extent.xmax - extent.xmin) / 2;
-	SpatExtent ext1 = SpatExtent(extent.xmin, extent.xmin + xhalf, extent.ymin, extent.ymax);
-	SpatExtent ext2 = SpatExtent(extent.xmin + xhalf, extent.xmax, extent.ymin, extent.ymax);
-	SpatRaster r1 = crop(ext1, "", optint);
-	SpatRaster r2 = crop(ext2, "", optint);
-	// change extents
-	SpatRaster out = r1.merge(r2, opt);
-	
+ 	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i=0; i < out.bs.n; i++) {
+		std::vector<double> a = readBlock(out.bs, i);
+		std::vector<double> b;
+		for (size_t r=0; r < out.bs.nrows[i]; r++) {
+			unsigned s1 = r * nc;
+			unsigned e1 = s1 + hnc;
+			unsigned s2 = e1;
+			unsigned e2 = s1 + nc;
+			b.insert(b.end(), a.begin()+s2, a.begin()+e2);
+			b.insert(b.end(), a.begin()+s1, a.begin()+e1);
+		}
+		if (!out.writeValues(b, out.bs.row[i])) return out;
+	}
+	out.writeStop();
+	readStop();
 	return(out);
 }
+
+
+
 

@@ -17,7 +17,7 @@ setMethod("overlay", signature(x="SpatRaster", y="SpatRaster"),
 function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	
 	stopifnot(!missing(fun))
-	x@ptr$compare_geom(y@ptr, FALSE, TRUE, TRUE)
+	x@ptr$compare_geom(y@ptr, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE)
 	x <- show_messages(x)
 	
 	nl <- max(nlyr(x), nlyr(y))
