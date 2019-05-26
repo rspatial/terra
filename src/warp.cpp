@@ -2,6 +2,9 @@
 #include "spatRaster.h"
 #include "recycle.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
 
 
 SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) {
@@ -54,6 +57,10 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
 		std::vector<std::vector<double>> v = extractXY(xy[0], xy[1], method);
 		if (!out.writeValues2(v, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	readStop();

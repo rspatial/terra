@@ -19,6 +19,10 @@
 #include "spatRaster.h"
 #include "recycle.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
 
 SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 
@@ -44,6 +48,10 @@ SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	readStop();

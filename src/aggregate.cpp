@@ -23,6 +23,10 @@
 #include "spatRaster.h"
 #include "vecmath.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
 template <typename T>
 std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
     std::size_t total_size = 0;
@@ -62,7 +66,7 @@ bool SpatRaster::get_aggregate_dims(std::vector<unsigned> &fact, std::string &me
 		message = "values in argument 'fact' should be > 0";
 		return false;
 	}
-	auto max_value = *std::min_element(fact.begin(),fact.end());
+	auto max_value = *std::max_element(fact.begin(),fact.end());
 	if (max_value == 1) {
 		message = "all values in argument 'fact' are 1, nothing to aggregate";
 		return false;
@@ -225,6 +229,10 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		}
 
 		if (!out.writeValues(v, bs.row[b])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+
 	}
 	out.writeStop();
 	return(out);

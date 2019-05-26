@@ -19,6 +19,9 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
 
 
 std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim, bool classes, std::string edgetype, unsigned dirs) {
@@ -108,6 +111,9 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
 		std::vector<double> vv = get_border(v, dim, classes, type, directions);
 		if (!out.writeValues(vv, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif		
 	}
 	out.writeStop();
 	readStop();

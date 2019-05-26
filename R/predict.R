@@ -10,7 +10,7 @@ setMethod('predict', signature(object='SpatRaster'),
 		out <- rast(object)
 		readStart(object)
 		nc <- ncol(object)
-		b <- writeStart(out, filename[1], overwrite[1], wopt)
+		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
 			d <- object@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
 			d <- data.frame(matrix(d, ncol = ncol(object)))

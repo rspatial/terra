@@ -18,6 +18,10 @@
 #include <vector>
 #include "spatRaster.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 
 	unsigned nc = ncol();
@@ -44,6 +48,10 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 			b.insert(b.end(), a.begin()+s1, a.begin()+e1);
 		}
 		if (!out.writeValues(b, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	readStop();

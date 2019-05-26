@@ -40,6 +40,10 @@
 #include <limits>
 #include <cmath>
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
 std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<unsigned> dim) {
 
 	double dx = res[0];
@@ -134,6 +138,9 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
         v = readBlock(first.bs, i);
         d = broom_dist_planar(v, above, res, dim);
 		first.writeValues(d, first.bs.row[i]);
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif		
 	}
 	first.writeStop();
   	first.readStart();
@@ -146,6 +153,9 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		vv = first.readBlock(first.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		out.writeValues(vv, out.bs.row[i-1]);
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif		
 	}
 	out.writeStop();
 	readStop();

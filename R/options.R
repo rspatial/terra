@@ -11,18 +11,18 @@
  
 .setOptions <- function(x, opt) {
 	nms <- names(opt)
-	s <- nms %in% c("tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite")
+	s <- nms %in% c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite")
 	
 	if (any(!s)) {
-		warning(paste(nms[!s], collapse = ", "), " is/are not valid or cannot be set")
+		warning(paste(nms[!s], collapse = ", "), " invalid option(s)")
 	}
 		
 	if (any(s)) {
 		for (i in which(s)) {
-			opt[[nms[i]]] <- opt[[i]]
+			x[[nms[i]]] <- opt[[i]]
 		}
 	}
-	opt
+	x
 } 
  
 .runOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
@@ -33,12 +33,12 @@
 	opt <- ptr$copy(ptr)
 	
 	if (!is.null(unlist(wopt))) {
-		wopt$filename <- filename
-		wopt$overwrite <- overwrite
+		wopt$filename <- filename[1]
+		wopt$overwrite <- overwrite[1]
 		opt <- .setOptions(opt, wopt)
 	} else {
-		opt$filename <- filename
-		opt$overwrite <- overwrite
+		opt$filename <- filename[1]
+		opt$overwrite <- overwrite[1]
 	}
 	#show_messages(opt)
 	opt

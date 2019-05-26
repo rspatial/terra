@@ -19,7 +19,7 @@ function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	subset <- as.integer(subset - 1)
 	
-	opt <- .runOptions(filename[1], overwrite[1], wopt)
+	opt <- .runOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$subset(subset, opt)
 	show_messages(x, "subset")
 	return(x)	

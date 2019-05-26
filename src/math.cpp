@@ -18,6 +18,11 @@
 #include <functional>
 #include "spatRaster.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
+
 template <typename T> int sign(T value) {
     return (T(0) < value) - (value < T(0));
 }
@@ -62,6 +67,10 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 			for(double& d : a) if (!std::isnan(d)) d = trunc(d);
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	readStop();
@@ -115,6 +124,10 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 			for(double& d : a) if (!std::isnan(d)) d = tan(d * M_PI);
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	readStop();

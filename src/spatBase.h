@@ -20,7 +20,11 @@
 #include <string>
 #include <cmath>
 
+// comment out if GDAL not available
 #define useGDAL
+// comment out if this is not for R (no Rcpp)
+#define useRcpp
+
 
 
 #ifndef M_PI
@@ -58,6 +62,7 @@ class SpatOptions {
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
 		bool overwrite = false;
+		int progress = 2;
 
 		std::string datatype = "";
 		std::string filetype = "";
@@ -86,10 +91,12 @@ class SpatOptions {
 		void set_filetype(std::string d);
 		void set_datatype(std::string d);
 		void set_overwrite(bool b);
+		void set_progress(int p);
 		std::string get_filename();
 		std::string get_filetype();
 		std::string get_datatype();
 		bool get_overwrite();
+		int get_progress();
 
 		SpatMessages msg;
 };

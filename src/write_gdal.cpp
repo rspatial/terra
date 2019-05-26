@@ -60,7 +60,7 @@ void GDALformat(std::string &filename, std::string &format) {
 }
 
 
-bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite) {
+bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype) {
 
 	GDALformat(filename, format);
 	const char *pszFormat = format.c_str();
@@ -198,7 +198,7 @@ bool SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::
 	if (!hasValues()) {
 		addWarning("none of the cells have values");
 	}
-	success = r.writeStartGDAL(filename, format, datatype, overwrite);
+	success = r.writeStartGDAL(filename, format, datatype);
 	if (!success) {
 		setError("cannot open file");
 		return false;

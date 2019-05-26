@@ -26,7 +26,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", overwrite=FAL
 
 	if (cpp) {
 		
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$focal(w, fillvalue, na.rm, fun, opt);
 		show_messages(x, "focal")
 		return(x)

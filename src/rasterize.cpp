@@ -21,6 +21,11 @@
 #include <vector>
 #include "spatRaster.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
+
 std::vector<double> rasterize_polygon(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
 
 	unsigned n = pX.size();
@@ -103,6 +108,10 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	return(out);
@@ -156,6 +165,10 @@ SpatRaster SpatRaster::rasterizeLines(SpatVector p, double background, SpatOptio
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	return(out);

@@ -2,7 +2,7 @@
 setMethod("reduce", signature(x="SpatRaster", fun="function"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
-	opt <- .runOptions(filename[1], overwrite[1],wopt)
+	opt <- .runOptions(filename, overwrite,wopt)
 
 	txtfun <- terra:::.makeTextFun(match.fun(fun))
 	if (class(txtfun) == 'character') { 

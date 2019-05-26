@@ -36,7 +36,7 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, wopt=l
 		}
 	}
 
-	opt <- .runOptions(filename[1], overwrite[1], wopt)	
+	opt <- .runOptions(filename, overwrite, wopt)	
 	if (toc) {	
 		#	fun='mean', expand=TRUE, na.rm=TRUE, filename=""
 		x@ptr <- x@ptr$aggregate(fact, fun, na.rm, opt)
@@ -49,7 +49,7 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, wopt=l
 		b <- x@ptr$getBlockSize(4)		
 		nc <- ncol(x)	
 		readStart(x)
-		ignore <- writeStart(out, filename[1], overwrite[1], opt)
+		ignore <- writeStart(out, filename, overwrite, opt)
 		for (i in 1:b$n) {
 			v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
 			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)

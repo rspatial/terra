@@ -19,6 +19,9 @@
 #include "spatRaster.h"
 #include "vecmath.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
 
 
 template <typename T>
@@ -148,6 +151,10 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 			}
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	readStop();
@@ -212,7 +219,11 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 				b[j+nc] = rng[1];
 			}
 		}
-		out.writeValues(b, out.bs.row[i]);
+		if (!out.writeValues(b, bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	out.writeStop();
 	readStop();

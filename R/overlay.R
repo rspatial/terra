@@ -25,7 +25,7 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	readStart(x)
 	readStart(y)
-	b <- writeStart(out, filename[1], overwrite[1], wopt)
+	b <- writeStart(out, filename, overwrite, wopt)
 	nc <- ncol(x)
 	nl <- nlyr(x)
 #	fnames <- names(formals(fun))

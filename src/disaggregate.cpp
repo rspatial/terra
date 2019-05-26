@@ -18,6 +18,13 @@
 #include <vector>
 #include "spatRaster.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+// [[Rcpp::depends(RcppProgress)]]
+#include <progress.hpp>
+#include <progress_bar.hpp>
+#endif
+
 SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
 
     SpatRaster out = geometry();
@@ -42,24 +49,38 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 
 	BlockSize bs = getBlockSize(4*fact[0]*fact[1]*fact[2]);
 	std::vector<double> v, vout;
-	double nc=ncol();
+	double nc = ncol();
 	std::vector<double> newrow(nc*fact[1]);
   	readStart();
   	if (!out.writeStart(opt)) { return out; }
+    #ifdef useRcpp
+	bool show_progress = opt.get_progress() <= bs.n;
+	Progress p(bs.n, show_progress);
+	#endif
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
 		for (size_t row=0; row<bs.nrows[i]; row++) {
-            double off = row*nc;
+            unsigned off = row*nc;
+			// for each new column
             for (size_t j=0; j<nc; j++) {
+				unsigned jfact = j * fact[1];
+				unsigned joff = j + off;
                 for (size_t k=0; k<fact[1]; k++) {
-                    newrow[j*fact[1]+k] = v[off+j];
+                    newrow[jfact+k] = v[joff];
                 }
             }
-            for (size_t col=0; col<fact[0]; col++) {
+			// for each new row
+            for (size_t j=0; j<fact[0]; j++) {
                 vout.insert(vout.end(), newrow.begin(), newrow.end());
             }
 		}
-		out.writeValues(vout, bs.row[i]);
+		if (!out.writeValues(vout, bs.row[i]*fact[0])) return out;
+		vout.resize(0);
+        #ifdef useRcpp
+		p.increment();
+		Progress::check_abort();
+		//Rcpp::checkUserInterrupt();
+        #endif		
 	}
 	out.writeStop();
 	readStop();

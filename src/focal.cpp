@@ -21,6 +21,10 @@
 #include "spatRaster.h"
 #include <algorithm>
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
 // todo: three dimensional focal
 
 std::vector<double> focal_get(std::vector<double> d, std::vector<unsigned> dim, std::vector<unsigned> ngb, double fillvalue) {
@@ -167,6 +171,10 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+
 	}
 	readStop();
 	out.writeStop();

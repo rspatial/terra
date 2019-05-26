@@ -250,7 +250,7 @@ class SpatRaster {
 		bool writeStop();
 		bool writeHDR(std::string filename);
 
-		bool writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite);
+		bool writeStartGDAL(std::string filename, std::string format, std::string datatype);
 		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
 		bool writeStopGDAL();
 

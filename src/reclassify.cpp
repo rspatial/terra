@@ -18,6 +18,10 @@
 #include "spatRaster.h"
 #include <cmath>
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
 void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, unsigned doright, bool lowest) {
 
 	size_t nc = rcl.size(); // should be 2 or 3
@@ -193,6 +197,10 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		std::vector<double> v = readBlock(out.bs, i);
 		reclass_vector(v, rcl, right, lowest);
 		if (!out.writeValues(v, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif
+		
 	}
 	readStop();
 	out.writeStop();

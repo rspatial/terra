@@ -30,6 +30,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	def_filetype = opt.def_datatype; 
 	filename = "";
 	overwrite = false;	
+	progress = 2;
 }
 
 
@@ -50,6 +51,12 @@ std::string SpatOptions::get_filetype() { return filetype;}
 
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }
+
+int SpatOptions::get_progress() { return progress; }
+void SpatOptions::set_progress(int p) { 
+	progress = p < 0  ? 0 : p; 
+}
+
 
 void SpatOptions::set_filename(std::string d) { lrtrim(d); filename = d; }
 std::string SpatOptions::get_filename() { return filename; }

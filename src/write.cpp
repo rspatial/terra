@@ -127,19 +127,19 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 
 	} else {
 		source[0].memory = false;
-		bool exists = file_exists(filename);
+		if (file_exists(filename)) {
+			if (opt.get_overwrite()) {
+				remove(filename.c_str());
+			} else {
+				setError("file exists");
+				return false;
+			}
+		}
+
 		std::string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
 			source[0].driver = "raster";
-			if (exists) {
-				if (opt.get_overwrite()) {
-					remove(filename.c_str());
-				} else {
-					setError("file exists");
-					return false;
-				}
-			}
 //			source[0].fsopen(filename);
             // create file and close it
             std::string griname = setFileExt(source[0].filename, ".gri");
@@ -150,7 +150,11 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 			#ifdef useGDAL
 			source[0].driver = "gdal" ;
 			std::string format = opt.get_filetype();
-			success = writeStartGDAL(filename, format, datatype, opt.get_overwrite());
+			success = writeStartGDAL(filename, format, datatype);
+			if (!success) {
+				setError("file exists");
+				return false;
+			}
 			#else
 			setError("GDAL is not available");
 			return false;

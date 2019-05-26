@@ -29,7 +29,7 @@ setMethod("adjacent", signature(x="SpatRaster"),
 
 setMethod("area", signature(x="SpatRaster"), 
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$area(opt)
 		show_messages(x, "area")
 	}
@@ -39,7 +39,7 @@ setMethod("area", signature(x="SpatRaster"),
 
 setMethod("clamp", signature(x="SpatRaster"), 
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename[1], overwrite[1],wopt)
+		opt <- .runOptions(filename, overwrite,wopt)
 		x@ptr <- x@ptr$clamp(lower, upper, values[1], opt)
 		show_messages(x, "clamp")
 	}
@@ -51,7 +51,7 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 			y <- try(ext(y))
 			if (class(y) == "try-error") { stop("cannot get an extent from y") }
 		}
-		opt <- .runOptions(filename[1], overwrite[1],wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
 		show_messages(x, "crop")		
 	}
@@ -60,7 +60,7 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 
 setMethod("disaggregate", signature(x="SpatRaster"), 
 	function(x, fact, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$disaggregate(fact, opt)
 		show_messages(x, "disaggregate")
 	}
@@ -68,7 +68,7 @@ setMethod("disaggregate", signature(x="SpatRaster"),
 
 setMethod("gridDistance", signature(x="SpatRaster"), 
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename[1], overwrite[1],wopt)
+		opt <- .runOptions(filename, overwrite,wopt)
 		x@ptr <- x@ptr$gridDistance(opt)
 		show_messages(x, "gridDistance")
 	}
@@ -77,7 +77,7 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 	function(x, mask, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- .runOptions(filename[1], overwrite[1],wopt)
+		opt <- .runOptions(filename, overwrite,wopt)
 		x@ptr <- x@ptr$mask(mask@ptr, opt)
 		show_messages(x, "mask")		
 	}
@@ -86,7 +86,7 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"),
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$merge(y, opt)
 		show_messages(x, "merge")		
 	}
@@ -96,7 +96,7 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
 	function(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- .runOptions(filename[1], overwrite[1],wopt)
+		opt <- .runOptions(filename, overwrite,wopt)
 		gtype <- geomtype(x)
 		if (gtype == "polygons") {
 			y@ptr <- y@ptr$rasterizePolygons(x@ptr, background[1], opt)
@@ -124,7 +124,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE,
 	right <- ifelse(is.na(right), 2, ifelse(right, 0, 1))
 	include.lowest <- as.logical(include.lowest[1])
 
-	opt <- .runOptions(filename[1], overwrite[1],wopt)
+	opt <- .runOptions(filename, overwrite, wopt)
     x@ptr <- x@ptr$rcppReclassify(rcl, right, include.lowest, opt)
 	show_messages(x, "reclassify")	
 }
@@ -134,7 +134,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE,
 
 setMethod("rotate", signature(x="SpatRaster"), 
 	function(x, left=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$rotate(left, opt)
 		show_messages(x, "rotate")		
 	}
@@ -151,7 +151,7 @@ setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"),
 
 setMethod("trim", signature(x="SpatRaster"), 
 	function(x, padding=0, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$trim(padding[1], opt)
 		show_messages(x, "rasterize")
 	}
@@ -160,7 +160,7 @@ setMethod("trim", signature(x="SpatRaster"),
 
 setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
-		opt <- .runOptions(filename[1], overwrite[1], wopt)
+		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$warp(y@ptr, method, opt)
 		show_messages(x, "warp")
 	}

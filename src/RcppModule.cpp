@@ -39,6 +39,7 @@ RCPP_MODULE(spat){
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
+		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
 		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )

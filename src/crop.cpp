@@ -17,6 +17,10 @@
 
 #include "spatRaster.h"
 
+#ifdef useRcpp
+#include <Rcpp.h>
+#endif
+
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
@@ -54,6 +58,9 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		v = readValues(row1+out.bs.row[i], out.bs.nrows[i], col1, ncols);
 		if (!out.writeValues(v, out.bs.row[i])) return out;
+        #ifdef useRcpp
+		Rcpp::checkUserInterrupt();
+        #endif		
 	}
 	out.writeStop();
 	readStop();
