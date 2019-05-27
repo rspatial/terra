@@ -19,7 +19,7 @@
 #include "spatRaster.h"
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
@@ -49,7 +49,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		}
 		if (!out.writeValues(b, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}

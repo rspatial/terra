@@ -21,7 +21,7 @@
 #include "spatRaster.h"
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 
@@ -64,7 +64,7 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}
@@ -105,7 +105,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}
@@ -137,7 +137,7 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}

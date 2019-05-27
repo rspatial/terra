@@ -30,7 +30,8 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	def_filetype = opt.def_datatype; 
 	filename = "";
 	overwrite = false;	
-	progress = 2;
+	progress = opt.progress;
+	blocksizemp = opt.blocksizemp;
 }
 
 
@@ -52,9 +53,17 @@ std::string SpatOptions::get_filetype() { return filetype;}
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }
 
-int SpatOptions::get_progress() { return progress; }
-void SpatOptions::set_progress(int p) { 
-	progress = p < 0  ? 0 : p; 
+unsigned SpatOptions::get_progress() { return progress; }
+void SpatOptions::set_progress(unsigned p) { 
+	progress = p; 
+}
+bool SpatOptions::do_progress(unsigned n) { 
+	return ((progress > 0) & (progress <= n));
+}
+
+unsigned SpatOptions::get_blocksizemp() { return blocksizemp; }
+void SpatOptions::set_blocksizemp(unsigned x) { 
+	blocksizemp = x; 
 }
 
 

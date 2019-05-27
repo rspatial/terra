@@ -22,7 +22,7 @@
 #include "spatRaster.h"
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 
@@ -109,7 +109,7 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}
@@ -166,7 +166,7 @@ SpatRaster SpatRaster::rasterizeLines(SpatVector p, double background, SpatOptio
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}

@@ -25,6 +25,7 @@
 #include <progress_bar.hpp>
 #endif
 
+
 SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
 
     SpatRaster out = geometry();
@@ -47,16 +48,19 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
         return out;
     }
 
-	BlockSize bs = getBlockSize(4*fact[0]*fact[1]*fact[2]);
+	unsigned bsmp = opt.get_blocksizemp()*fact[0]*fact[1]*fact[2];
+	BlockSize bs = getBlockSize(bsmp);
+	opt.set_blocksizemp(bsmp);
 	std::vector<double> v, vout;
 	double nc = ncol();
 	std::vector<double> newrow(nc*fact[1]);
   	readStart();
-  	if (!out.writeStart(opt)) { return out; }
+
     #ifdef useRcpp
-	bool show_progress = opt.get_progress() <= bs.n;
-	Progress p(bs.n, show_progress);
+	Progress p(bs.n, opt.do_progress(bs.n));
 	#endif
+	
+  	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
 		for (size_t row=0; row<bs.nrows[i]; row++) {
@@ -76,11 +80,11 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 		}
 		if (!out.writeValues(vout, bs.row[i]*fact[0])) return out;
 		vout.resize(0);
-        #ifdef useRcpp
+
+		#ifdef useRcpp
 		p.increment();
-		Progress::check_abort();
-		//Rcpp::checkUserInterrupt();
-        #endif		
+		#endif		
+				
 	}
 	out.writeStop();
 	readStop();

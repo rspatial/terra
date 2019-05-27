@@ -19,7 +19,7 @@
 #include "spatRaster.h"
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 // need to take care of NAs here. OK for NAN, but not for int types
@@ -188,7 +188,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 
 	}

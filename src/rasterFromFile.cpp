@@ -16,8 +16,8 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
-#include "SimpleIni.h"
 #include "string_utils.h"
+#include "readIniFile.h"
 
 
 bool SpatRaster::constructFromFile(std::string fname) {
@@ -36,66 +36,45 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		return constructFromFileGDAL(fname);
         #endif // useGDAL
 	} else {
-
-		CSimpleIniA ini(true, false, false);
-		char ss[fname.length()];
-		strcpy(ss, fname.c_str());
-		SI_Error rc = ini.LoadFile(ss);
-		if (rc < 0) {
+		std::vector<std::string> ini = readIni(fname);
+		if (ini[15] == "false") {
 			return false;
-
-		} else {
-			RasterSource s;
-			double xmin = atof(ini.GetValue("georeference", "xmin"));
-			double xmax = atof(ini.GetValue("georeference", "xmax"));
-			double ymin = atof(ini.GetValue("georeference", "ymin"));
-			double ymax = atof(ini.GetValue("georeference", "ymax"));
-			SpatExtent e(xmin, xmax, ymin, ymax);
-			s.extent = e;
-			s.datatype = ini.GetValue("data", "datatype");
-			s.bandorder = ini.GetValue("data", "bandorder", "");
-			s.byteorder = ini.GetValue("data", "byteorder", "");
-
-			std::string smin, smax, snames;
-			std::string version = ini.GetValue("version", "version", "1");
-			if (version == "1") {
-				s.nrow = atoi(ini.GetValue("georeference", "nrows"));
-				s.ncol = atoi(ini.GetValue("georeference", "ncols"));
-				s.nlyr = atoi(ini.GetValue("data", "nbands"));
-				s.crs = ini.GetValue("georeference", "projection");
-				s.NAflag = atof(ini.GetValue("data", "nodatavalue"));
-				smin = ini.GetValue("data", "minvalue");
-				smax = ini.GetValue("data", "maxvalue");
-				snames = ini.GetValue("description", "layername");
-				s.names = strsplit(snames, ":");
-			} else {  // version 2
-				s.nrow = atoi(ini.GetValue("dimensions", "nrow"));
-				s.ncol = atoi(ini.GetValue("dimensions", "ncol"));
-				s.nlyr = atoi(ini.GetValue("dimensions", "nlyr"));
-				s.crs = ini.GetValue("georeference", "crs");
-				s.NAflag = atof(ini.GetValue("data", "nodata"));
-				smin = ini.GetValue("data", "range_min");
-				smax = ini.GetValue("data", "range_max");
-				snames = ini.GetValue("dimensions", "names");
-				s.names = strsplit(snames, ":|:");
-			}
-			s.range_min = str2dbl(strsplit(smin, ":"));
-			s.range_max = str2dbl(strsplit(smax, ":"));
-			s.filename = setFileExt(fname, ".gri");
-
-			s.hasRange = std::vector<bool> (s.nlyr, true);
-			s.has_scale_offset = std::vector<bool> (s.nlyr, false);
-			s.scale = std::vector<double>(s.nlyr, 1);
-			s.offset = std::vector<double>(s.nlyr, 0);
-
-			s.hasValues = true;
-			s.memory = false;
-			s.driver = "raster";
-			setSource(s);
-			return true;
 		}
-   }
-   return true;
+		RasterSource s;
+		double xmin = std::stod(ini[0]);
+		double xmax = std::stod(ini[1]);
+		double ymin = std::stod(ini[2]);
+		double ymax = std::stod(ini[3]);
+		SpatExtent e(xmin, xmax, ymin, ymax);
+		s.extent = e;
+		s.datatype = ini[4];
+		s.bandorder = ini[5];
+		s.byteorder = ini[6];
+
+		s.nrow = std::stoi(ini[8]);
+		s.ncol = std::stoi(ini[9]);
+		s.nlyr = std::stoi(ini[10]);
+		s.crs = ini[11];
+		s.NAflag = std::stod(ini[12]);
+		s.range_min = str2dbl(strsplit(ini[13], ":"));
+		s.range_max = str2dbl(strsplit(ini[14], ":"));
+		if (ini[7] == "1") {
+			s.names = strsplit(ini[15], ":");
+		} else {
+			s.names = strsplit(ini[15], ":|:");				
+		}
+		s.filename = setFileExt(fname, ".gri");
+		s.hasRange = std::vector<bool> (s.nlyr, true);
+		s.has_scale_offset = std::vector<bool> (s.nlyr, false);
+		s.scale = std::vector<double>(s.nlyr, 1);
+		s.offset = std::vector<double>(s.nlyr, 0);
+
+		s.hasValues = true;
+		s.memory = false;
+		s.driver = "raster";
+		setSource(s);
+	}
+	return true;
 }
 
 

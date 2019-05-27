@@ -20,7 +20,7 @@
 #include "recycle.h"
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 
@@ -49,7 +49,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}

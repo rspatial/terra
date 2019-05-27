@@ -20,7 +20,7 @@
 
 #include "spatRaster.h"
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 
@@ -112,7 +112,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		std::vector<double> vv = get_border(v, dim, classes, type, directions);
 		if (!out.writeValues(vv, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif		
 	}
 	out.writeStop();

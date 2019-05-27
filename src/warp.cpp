@@ -3,7 +3,7 @@
 #include "recycle.h"
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 
@@ -58,7 +58,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 		std::vector<std::vector<double>> v = extractXY(xy[0], xy[1], method);
 		if (!out.writeValues2(v, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}

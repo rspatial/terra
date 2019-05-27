@@ -36,7 +36,7 @@
 #include <cmath>
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue) {
@@ -79,7 +79,7 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 		clamp_vector(v, low, high, usevalue);
 		if (!out.writeValues(v, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif		
 	}
 	readStop();

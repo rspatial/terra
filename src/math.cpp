@@ -19,7 +19,7 @@
 #include "spatRaster.h"
 
 #ifdef useRcpp
-#include <Rcpp.h>
+//#include <Rcpp.h>
 #endif
 
 
@@ -68,7 +68,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}
@@ -125,7 +125,7 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
         #ifdef useRcpp
-		Rcpp::checkUserInterrupt();
+		//Rcpp::checkUserInterrupt();
         #endif
 		
 	}
