@@ -9,21 +9,29 @@ if test -z "${R_HOME}"; then
 fi
 
 RBIN="${R_HOME}/bin/R"
+# https://github.com/r-spatial/sf/issues/1054:
+# RVER=`"${RBIN}" --version | head -1 | cut -f3 -d" "`
+RSCRIPT="${R_HOME}/bin/Rscript"
+RVER=`"${RSCRIPT}" -e 'writeLines(paste(sep=".", base::version$major, base::version$minor))'`
 
-RVER=`"${RBIN}" --version | head -1 | cut -f3 -d" "`
 RVER_MAJOR=`echo ${RVER} | cut  -f1 -d"."`
 RVER_MINOR=`echo ${RVER} | cut  -f2 -d"."`
 RVER_PATCH=`echo ${RVER} | cut  -f3 -d"."`
 
-if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
-    AC_MSG_ERROR([sf is not compatible with R versions before 3.3.0])
+if test [$RVER_MAJOR = "development"]; then
+    CXX11=`"${RBIN}" CMD config CXX11`
+    CXX11STD=`"${RBIN}" CMD config CXX11STD`
 else
-    if test [$RVER_MINOR -eq 3]; then
-        CXX11=`"${RBIN}" CMD config CXX1X`
-        CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
+    if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
+        AC_MSG_ERROR([sf is not compatible with R versions before 3.3.0])
     else
-        CXX11=`"${RBIN}" CMD config CXX11`
-        CXX11STD=`"${RBIN}" CMD config CXX11STD`
+        if test [$RVER_MINOR -eq 3]; then
+            CXX11=`"${RBIN}" CMD config CXX1X`
+            CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
+        else
+            CXX11=`"${RBIN}" CMD config CXX11`
+            CXX11STD=`"${RBIN}" CMD config CXX11STD`
+        fi
     fi
 fi
 
@@ -106,12 +114,12 @@ else
 fi
 
 AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
-AC_MSG_CHECKING([GDAL version >= 2.0.0])
+AC_MSG_CHECKING([GDAL version >= 2.0.1])
 
 GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([sf is not compatible with GDAL versions below 2.0.0])
+  AC_MSG_ERROR([sf is not compatible with GDAL versions below 2.0.1])
 else
    AC_MSG_RESULT(yes)
 fi
@@ -183,6 +191,18 @@ fi
 
 rm -f gdal_test errors.txt gdal_test.cpp
 
+GDAL_GE_250="no"
+GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
+GDAL_MOD_VER=`echo $GDAL_VERSION | cut -d "." -f2`
+if test "${GDAL_MAJ_VER}" = 2 ; then
+  if test "${GDAL_MOD_VER}" -ge 5 ; then
+    GDAL_GE_250="yes" 
+  fi
+else 
+  if test "${GDAL_MAJ_VER}" -ge 3 ; then
+    GDAL_GE_250="yes" 
+  fi
+fi
 
 GDAL_DATA_TEST_FILE="${GDAL_DATADIR}/pcs.csv"
 AC_MSG_CHECKING(GDAL: ${GDAL_DATADIR}/pcs.csv readable)
@@ -190,7 +210,9 @@ if test -r "${GDAL_DATA_TEST_FILE}" ; then
   AC_MSG_RESULT(yes)
 else
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
+  if test "${GDAL_GE_250}" = "no" ; then
+    AC_MSG_ERROR([pcs.csv not found in GDAL data directory.])
+  fi
 fi
 
 # Optional local copy of GDAL datadir and PROJ_LIB
@@ -310,12 +332,40 @@ fi
 # honor PKG_xx overrides
 # for CPPFLAGS we will superfluously double R's flags
 # since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
+
+AC_ARG_WITH([proj-api],
+    AC_HELP_STRING([--with-proj-api=yes/no],
+               [use the deprecated proj_api.h even when PROJ 6 is available; default no]),
+               [proj_api=$withval])
+PROJ6="no"
+PROJH="no"
+if test "${proj_config_ok}" = yes; then
+  PROJ_VERSION=`${PROJ_CONFIG} --modversion`
+  PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
+  if test "${PROJV1}" = "6"; then
+    PROJ6="yes"
+    if test "${proj_api}" = yes; then
+        AC_MSG_NOTICE([using proj_api.h even with PROJ 6])
+        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+    else
+        AC_CHECK_HEADERS(proj.h,PROJH=yes,PROJH=no)
+        if test "${PROJH}" = no; then
+           AC_MSG_ERROR([proj.h not found in standard or given locations.])
+        fi
+        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
+    fi
+  fi
+fi
+
 CPPFLAGS="${INCPPFLAGS} ${PKG_CPPFLAGS} ${PROJ_CPPFLAGS}"
 
-proj4ok=yes
-AC_CHECK_HEADERS(proj_api.h,,proj4ok=no)
-if test "${proj4ok}" = no; then
-   AC_MSG_ERROR([proj_api.h not found in standard or given locations.])
+if test "${PROJH}" = no
+then
+  proj4ok=yes
+  AC_CHECK_HEADERS(proj_api.h,,proj4ok=no)
+  if test "${proj4ok}" = no; then
+     AC_MSG_ERROR([proj_api.h not found in standard or given locations.])
+  fi
 fi
 
 # dnl ditto for a library path
@@ -338,14 +388,15 @@ fi
 
 LIBS="${PROJ_LIBS} ${INLIBS} ${PKG_LIBS}"
 
-proj4ok=yes
-AC_CHECK_LIB(proj,pj_init_plus,,proj4ok=no)
-if test "${proj4ok}" = no; then
-   AC_MSG_ERROR([libproj not found in standard or given locations.])
-fi
-
+if test "${PROJH}" = no; then
+  proj4ok=yes
+  AC_CHECK_LIB(proj,pj_init_plus,,proj4ok=no)
+  if test "${proj4ok}" = no; then
+     AC_MSG_ERROR([libproj not found in standard or given locations.])
+  fi
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
+#include <stdlib.h>
 #include <proj_api.h>
 
 int main() {
@@ -353,6 +404,22 @@ int main() {
     exit(0);
 }
 _EOCONF]
+else
+  AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
+  if test "${proj6ok}" = no; then
+     AC_MSG_ERROR([libproj not found in standard or given locations.])
+  fi
+[cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj.h>
+
+int main() {
+    printf("%d.%d.%d\n", PROJ_VERSION_MAJOR, PROJ_VERSION_MINOR, PROJ_VERSION_PATCH);
+    exit(0);
+}
+_EOCONF]
+fi
 
 #AC_MSG_NOTICE([PKG_LIBS: ${PKG_LIBS}])
 
@@ -368,6 +435,7 @@ if test [ -n "$proj_share_path" ] ; then
     AC_MSG_NOTICE([PROJ_LIB: ${proj_share_path}])
 fi
 
+if test ${PROJ6} = "no"; then
 
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
@@ -424,6 +492,51 @@ if test "$STOP" = "stop" ; then
     exit 1
 fi
 
+else # proj >= 6
+
+if test "${PROJH}" = no; then
+
+[cat > proj_conf_test.c <<_EOCONF
+#include <stdio.h>
+#include <proj_api.h>
+
+int main() {
+    PAFile fp;
+    projCtx ctx;
+    ctx = pj_get_default_ctx();
+    fp = pj_open_lib(ctx, "proj.db", "rb");
+    if (fp == NULL) exit(1);
+    pj_ctx_fclose(ctx, fp);
+    exit(0);
+}
+_EOCONF]
+
+${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
+if test [ -n "$proj_share_path" ] ; then
+  PROJ_LIB="${proj_share_path}" ./proj_conf_test
+  proj_share=`echo $?`
+else
+  ./proj_conf_test
+  proj_share=`echo $?`
+fi
+
+AC_MSG_CHECKING(PROJ: proj.db found and readable)
+if test ${proj_share} -eq 1 ; then
+    AC_MSG_RESULT(no)
+    STOP="stop"
+else
+    AC_MSG_RESULT(yes)
+fi
+
+rm -f proj_conf_test.c proj_conf_test
+
+if test "$STOP" = "stop" ; then
+    echo "Error: proj/proj.db not found"
+    echo "Either install missing proj support files, set PROJ_LIB to the"
+    echo "correct path, and if need be use the --with-proj-share="
+    echo "configure argument."
+    exit 1
+fi
 
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
@@ -476,6 +589,13 @@ if test "$WARN" = "warn" ; then
     echo "If required, consider re-installing from source with the contents"
     echo "of proj-datumgrid-1.<latest>.zip from http://download.osgeo.org/proj/ in nad/."
 fi
+
+fi # PROJH = no
+
+fi # proj >= 6
+
+
+
 
 #
 # GEOS:
