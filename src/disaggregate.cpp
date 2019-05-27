@@ -18,13 +18,6 @@
 #include <vector>
 #include "spatRaster.h"
 
-#ifdef useRcpp
-#include <Rcpp.h>
-// [[Rcpp::depends(RcppProgress)]]
-#include <progress.hpp>
-#include <progress_bar.hpp>
-#endif
-
 
 SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
 
@@ -83,8 +76,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 
 		#ifdef useRcpp
 		p.increment();
-		#endif		
-				
+		#endif	
 	}
 	out.writeStop();
 	readStop();

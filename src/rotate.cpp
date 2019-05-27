@@ -18,9 +18,6 @@
 #include <vector>
 #include "spatRaster.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
 
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 

@@ -20,10 +20,6 @@
 #include <functional>
 #include "spatRaster.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 
 template <typename T>
 std::vector<T> operator&(const std::vector<T>& a, const std::vector<T>& b) {

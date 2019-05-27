@@ -18,10 +18,6 @@
 #include "spatRaster.h"
 #include <cmath>
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, unsigned doright, bool lowest) {
 
 	size_t nc = rcl.size(); // should be 2 or 3

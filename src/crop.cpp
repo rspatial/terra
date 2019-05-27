@@ -17,10 +17,6 @@
 
 #include "spatRaster.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 

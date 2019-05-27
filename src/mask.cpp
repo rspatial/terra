@@ -19,10 +19,6 @@
 #include "spatRaster.h"
 #include "recycle.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 
 SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 

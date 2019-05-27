@@ -19,10 +19,6 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 
 std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim, bool classes, std::string edgetype, unsigned dirs) {
 

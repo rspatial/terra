@@ -17,7 +17,7 @@
 
 #include "spatRaster.h"
 #include "string_utils.h"
-#include "hdr_read.h"
+#include "hdr.h"
 
 
 bool SpatRaster::constructFromFile(std::string fname) {

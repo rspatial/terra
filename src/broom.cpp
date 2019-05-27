@@ -40,10 +40,6 @@
 #include <limits>
 #include <cmath>
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<unsigned> dim) {
 
 	double dx = res[0];

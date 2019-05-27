@@ -19,10 +19,6 @@
 #include "spatRaster.h"
 #include "vecmath.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 
 template <typename T>
 void cumsum(std::vector<T>& v, bool narm) {

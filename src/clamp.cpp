@@ -35,9 +35,6 @@
 #include "spatRaster.h"
 #include <cmath>
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
 
 void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue) {
 	size_t n = v.size();

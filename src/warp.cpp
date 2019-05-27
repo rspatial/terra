@@ -2,10 +2,6 @@
 #include "spatRaster.h"
 #include "recycle.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 
 SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) {
 

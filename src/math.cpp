@@ -18,10 +18,6 @@
 #include <functional>
 #include "spatRaster.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
-
 
 template <typename T> int sign(T value) {
     return (T(0) < value) - (value < T(0));

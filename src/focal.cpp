@@ -15,15 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
-
 #include <vector>
 #include "spatRaster.h"
 #include <algorithm>
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
 
 // todo: three dimensional focal
 

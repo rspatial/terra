@@ -18,9 +18,6 @@
 #include <functional>
 #include "spatRaster.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
 
 // need to take care of NAs here. OK for NAN, but not for int types
 template <typename T>

@@ -23,9 +23,6 @@
 #include "spatRaster.h"
 #include "vecmath.h"
 
-#ifdef useRcpp
-//#include <Rcpp.h>
-#endif
 
 template <typename T>
 std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
