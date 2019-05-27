@@ -2,7 +2,7 @@
 #include <string>
 #include "SimpleIni.h"
 
-bool writeIni(std::vector<std::string> s) {
+bool hdr_write(std::vector<std::string> s) {
 	CSimpleIniA ini;
 	ini.SetValue("version", NULL, NULL);
 	ini.SetValue("version", "version", "2");

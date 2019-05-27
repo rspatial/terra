@@ -4,7 +4,7 @@
 #include "string_utils.h"
 #include "SimpleIni.h"
 
-std::vector<std::string> readIni(std::string filename) {
+std::vector<std::string> hdr_read(std::string filename) {
 	CSimpleIniA ini(true, false, false);
 	char ss[filename.length()];
 	strcpy(ss, filename.c_str());

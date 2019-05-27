@@ -17,7 +17,7 @@
 
 #include "spatRaster.h"
 #include "string_utils.h"
-#include "readIniFile.h"
+#include "hdr_read.h"
 
 
 bool SpatRaster::constructFromFile(std::string fname) {
@@ -36,7 +36,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		return constructFromFileGDAL(fname);
         #endif // useGDAL
 	} else {
-		std::vector<std::string> ini = readIni(fname);
+		std::vector<std::string> ini = hdr_read(fname);
 		if (ini[15] == "false") {
 			return false;
 		}

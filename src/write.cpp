@@ -20,7 +20,7 @@
 #include "string_utils.h"
 #include "math_utils.h"
 #include "spatRaster.h"
-#include "writeIni.h"
+#include "hdr_write.h"
 
 std::string tempFile(SpatOptions &opt, double seed) {
     std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
@@ -166,8 +166,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 	source[0].open_write = true;
 	source[0].filename = filename;
-	bs = getBlockSize(opt.get_blocksizemp());
-
+	//bs = getBlockSize(opt.get_blocksizemp());
+	bs = getBlockSize(4);
 	return success;
 }
 
@@ -333,7 +333,7 @@ bool SpatRaster::writeHDR(std::string filename) {
 	s[11] = concatenate(dbl2str(range_min()), std::string(":|:"));
 	s[12] = concatenate(dbl2str(range_max()), std::string(":|:"));
 	s[13] = filename;
-	return writeIni(s);
+	return hdr_write(s);
 }
 
 
