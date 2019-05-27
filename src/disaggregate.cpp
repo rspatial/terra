@@ -75,6 +75,11 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 		vout.resize(0);
 
 		#ifdef useRcpp
+		if (Progress::check_abort()) {
+			p.cleanup();
+			out.setError("aborted");
+			return(out);
+		}
 		p.increment();
 		#endif	
 	}
