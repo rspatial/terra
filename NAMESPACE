@@ -1,4 +1,5 @@
 import(Rcpp)
+import(RcppProgress)
 importFrom(methods, new, as, validObject)
 importFrom(stats, aggregate, na.omit, predict, quantile)
 importFrom(graphics, lines, points, image, polypath)
