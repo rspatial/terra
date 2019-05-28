@@ -106,6 +106,13 @@ setMethod("nrow<-", signature("SpatRaster", "numeric"),
 	}
 )
 
+setMethod("nlyr<-", signature("SpatRaster", "numeric"), 
+	function(x, ..., value) {
+		dim(x) <- c(nrow(x), ncol(x), value)
+		return(x)
+	}
+)
+
 #"ncol<-" <- function(x, value) {
 #	dim(x) <- c(nrow(x), value)
 #	return(x)

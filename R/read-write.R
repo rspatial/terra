@@ -29,7 +29,7 @@ setMethod('writeStart', signature(x='SpatRaster', filename='character'),
 		ok <- x@ptr$writeStart(opt)
 		show_messages(x, "writeStart")		
 		b <- x@ptr$getBlockSize(4)
-		b$row <- b$row + 1
+		#b$row <- b$row + 1
 		b		
 	}
 )

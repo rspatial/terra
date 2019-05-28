@@ -2,9 +2,9 @@
 setMethod("reduce", signature(x="SpatRaster", fun="function"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
-	opt <- .runOptions(filename, overwrite,wopt)
+	opt <- .runOptions(filename, overwrite, wopt)
 
-	txtfun <- terra:::.makeTextFun(match.fun(fun))
+	txtfun <- .makeTextFun(match.fun(fun))
 	if (class(txtfun) == 'character') { 
 		if (txtfun %in% c("max", "min", "range", "prod", "sum", "any", "all"))
 		na.rm = ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
@@ -14,13 +14,23 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	
 
 	out <- rast(x)
+	nlyr(out) <- 1
 	readStart(x)
 	nc <- ncol(x)
-	b <- writeStart(out, opt)
+	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {
 		v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
+		v <- matrix(v, ncol=nlyr(x))
 		r <- apply(v, 1, fun, ...)
 		# if i==1, check size of output and adjust layers
+		if (is.matrix(r)) {
+			r <- t(r)
+			if (i==1) {
+				nlyr(out) <- ncol(r)
+				bb <- writeStart(out, filename, overwrite=TRUE, wopt)
+			}	
+			r <- as.vector(r)
+		}
 		writeValues(out, r, b$row[i])
 	}
 	writeStop(out)
