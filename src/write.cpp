@@ -66,7 +66,7 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	} else if (file_exists(filename)) {
 		if (overwrite) {
 			if (isSource(filename)) {
-				setError("cannot overwrite object to itself");
+				setError("cannot overwrite object to its own file source");
 			}
 			remove(filename.c_str());
 		} else {
@@ -168,6 +168,10 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	source[0].filename = filename;
 	bs = getBlockSize(opt.get_blocksizemp());
 	//bs = getBlockSize(4);
+
+    #ifdef useRcpp
+	pbar = new Progress(bs.n, opt.do_progress(bs.n));
+	#endif
 	
 	return success;
 }
@@ -220,6 +224,16 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row) {
 		}
 	}
 		
+
+#ifdef useRcpp
+	if (Progress::check_abort()) {
+		pbar->cleanup();
+		setError("aborted");
+		return(false);
+	}
+	pbar->increment();
+#endif	
+		
 	return success;
 }
 
@@ -261,7 +275,11 @@ bool SpatRaster::writeStop(){
 		source[0].setRange();
 	}
 	source[0].hasValues = true;
-	
+
+#ifdef useRcpp
+	//pbar->cleanup();
+	delete pbar;
+#endif	
 
 	return success;
 }

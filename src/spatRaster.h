@@ -118,6 +118,9 @@ class SpatRaster {
 
 	public:
 
+#ifdef useRcpp
+		Progress* pbar;
+#endif
 
 ////////////////////////////////////////////////////
 // properties and property-like methods for entire object

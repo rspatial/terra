@@ -45,15 +45,11 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 
 	unsigned bsmp = opt.get_blocksizemp()*fact[0]*fact[1]*fact[2];
 	BlockSize bs = getBlockSize(bsmp);
-	opt.set_blocksizemp(bsmp);
+	//opt.set_blocksizemp();
 	std::vector<double> v, vout;
 	double nc = ncol();
 	std::vector<double> newrow(nc*fact[1]);
   	readStart();
-
-    #ifdef useRcpp
-	Progress p(bs.n, opt.do_progress(bs.n));
-	#endif
 	
   	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < bs.n; i++) {
@@ -75,15 +71,6 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 		}
 		if (!out.writeValues(vout, bs.row[i]*fact[0])) return out;
 		vout.resize(0);
-
-		#ifdef useRcpp
-		if (Progress::check_abort()) {
-			p.cleanup();
-			out.setError("aborted");
-			return(out);
-		}
-		p.increment();
-		#endif	
 	}
 	out.writeStop();
 	readStop();
