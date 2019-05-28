@@ -11,6 +11,7 @@
 \alias{dim}
 \alias{ncol<-}
 \alias{nrow<-}
+\alias{nlyr<-}
 \alias{ncell,ANY-method}
 \alias{nrow,SpatRaster-method}
 \alias{ncol,SpatRaster-method}
@@ -18,6 +19,7 @@
 \alias{ncol<-,SpatRaster,numeric-method}
 
 \alias{nlyr,SpatRaster-method}
+\alias{nlyr<-,SpatRaster,numeric-method}
 \alias{nsrc,SpatRaster-method}
 \alias{ncell,SpatRaster-method}
 \alias{size,SpatRaster-method}
@@ -53,6 +55,7 @@ Set the number of rows or columns or layers. When setting dimensions, all source
 
 ncol(x, ...) <- value
 nrow(x, ...) <- value
+nlyr(x, ...) <- value
 
 \S4method{xres}{SpatRaster}(x)
 \S4method{yres}{SpatRaster}(x)

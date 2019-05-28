@@ -13,7 +13,7 @@ Replace \code{NA} values (or another value) in SpatRaster (\code{x}) with the va
 }
 
 \usage{
-\S4method{cover}{SpatRaster,SpatRaster}(x, y, value=NA, filename="", wopt=list(), ...)
+\S4method{cover}{SpatRaster,SpatRaster}(x, y, value=NA, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

@@ -4,7 +4,7 @@
 # Licence GPL v3
 
 setMethod("ifel", signature(test="SpatRaster", yes="ANY", no="ANY"), 
-	function(test, yes, no, filename="", ...) {
+	function(test, yes, no, filename="", overwrite=FALSE, wopt=list(), ...) {
 		if (!inherits(no, "SpatRaster")) {
 			stopifnot(is.numeric(no))
 			if (length(no) > 1) warning('only the first element of "no" is used')
@@ -17,6 +17,6 @@ setMethod("ifel", signature(test="SpatRaster", yes="ANY", no="ANY"),
 			if (length(yes) > 1) warning('only the first element of "yes" is used')
 			yes <- reclassify(test, rbind(c(1,yes[1]), c(0,NA)))	
 		}
-		cover(no, yes, filename=filename)
+		cover(no, yes, value=NA, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 	}
 )

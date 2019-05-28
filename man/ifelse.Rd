@@ -8,11 +8,11 @@
 \description{
 This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster objects. This is "syntactic sugar", that is, it can be easier to express what is desired; but there is no real need for it, as you can achieve the same things with combinations of \code{\link{reduce}}, \code{\link{reclassify}}, \code{\link{mask}}, and \code{\link{cover}}. 
 
-In ArcMap (arcpy), \code{ifel} is called \code{Con}. 
+\code{ifel} is \code{R} equivalent to the \code{Con} method in ArcGIS (arcpy). 
 }
 
 \usage{
-\S4method{ifel}{SpatRaster}(test, yes, no, filename, ...)
+\S4method{ifel}{SpatRaster}(test, yes, no, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -44,8 +44,6 @@ y <- ifel(r > 1, 1, ifel(r < -1, -1, r))
 z <- ifel(r > -2 & r < 2, 100, 0)
 
 k <- ifel(r > 0, r+10, ifel(r < 0, r-10, 3))
-plot(k)
-text(k)
 }
 
 \keyword{spatial}
