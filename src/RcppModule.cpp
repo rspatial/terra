@@ -158,6 +158,7 @@ RCPP_MODULE(spat){
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
+		.method("cover", &SpatRaster::cover, "cover")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("cum", &SpatRaster::cum, "cum")
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")

@@ -17,46 +17,48 @@
 
 #include <vector>
 #include "spatRaster.h"
+#include "recycle.h"
 
-SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 
-	unsigned nc = ncol();
-	unsigned nl = nlyr();
-	unsigned hnc = (nc / 2);
-	double addx = hnc * xres();
-	if (left) {
-		addx = -addx;
+SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
+
+	unsigned nl = std::max(nlyr(), x.nlyr());
+	SpatRaster out = geometry(nl);
+
+	if (!compare_geom(x, true, true)) {
+		out.setError("dimensions and/or extent do not match");
+		return(out);
 	}
-	SpatRaster out = geometry();
-	out.extent.xmin = out.extent.xmin + addx;
-	out.extent.xmax = out.extent.xmax + addx;
 
- 	if (!out.writeStart(opt)) { return out; }
 	readStart();
-	std::vector<double> b;
-	for (size_t i=0; i < out.bs.n; i++) {
-		std::vector<double> a = readBlock(out.bs, i);
-		for (size_t j=0; j < nl; j++) {
-			for (size_t r=0; r < out.bs.nrows[i]; r++) {
-				unsigned s1 = j * out.bs.nrows[i] * nc + r * nc;
-				unsigned e1 = s1 + hnc;
-				unsigned s2 = e1;
-				unsigned e2 = s1 + nc;
-				b.insert(b.end(), a.begin()+s2, a.begin()+e2);
-				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
+	x.readStart();
+  	if (!out.writeStart(opt)) { return out; }
+	std::vector<double> v, m;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		recycle(v, m);
+		if (std::isnan(value)) {
+			for (size_t i=0; i < v.size(); i++) {
+				if (std::isnan(v[i])) {
+					v[i] = m[i];
+				}
+			}			
+		} else {
+			for (size_t i=0; i < v.size(); i++) {
+				if (v[i] == value) {
+					v[i] = m[i];
+				}
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i])) return out;
-		b.resize(0);
+		if (!out.writeValues(v, out.bs.row[i])) return out;
         #ifdef useRcpp
 		//Rcpp::checkUserInterrupt();
         #endif
 	}
 	out.writeStop();
 	readStop();
+	x.readStop();
 	return(out);
 }
-
-
-
 

@@ -30,7 +30,6 @@
 #include <progress_bar.hpp>
 #endif
 
-
 class RasterAttributeTable {
 	public:
 		std::vector<unsigned> code;
@@ -302,6 +301,7 @@ class SpatRaster {
 
 		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions &opt);
+		SpatRaster cover(SpatRaster x, double value, SpatOptions &opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, std::string fun="");
@@ -316,7 +316,7 @@ class SpatRaster {
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
-		SpatRaster mask(SpatRaster x, SpatOptions &opt);
+		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster merge(SpatRaster x, SpatOptions &opt);
 		SpatRaster rotate(bool left, SpatOptions &opt);

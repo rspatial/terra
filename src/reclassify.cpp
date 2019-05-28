@@ -178,7 +178,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 	}
 	if (nc == 3) {
 		for (size_t i=0; i<nr; i++) {
-			if (rcl[i][0] > rcl[i][1]) {
+			if (rcl[0][i] > rcl[1][i]) {
 				out.setError("'from' smaller than 'to' in reclassification matrix");
 				return out;
 			}

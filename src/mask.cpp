@@ -19,8 +19,7 @@
 #include "spatRaster.h"
 #include "recycle.h"
 
-
-SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
+SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
@@ -38,9 +37,33 @@ SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		recycle(v, m);
-		for (size_t i=0; i < v.size(); i++) {
-			if (std::isnan(m[i])) {
-				v[i] = NAN;
+		if (inverse) {
+			if (std::isnan(maskvalue)) {
+				for (size_t i=0; i < v.size(); i++) {
+					if (!std::isnan(m[i])) {
+						v[i] = updatevalue;
+					}
+				}
+			} else {
+				for (size_t i=0; i < v.size(); i++) {
+					if (m[i] != maskvalue) {
+						v[i] = updatevalue;
+					}
+				}
+			}		
+		} else {
+			if (std::isnan(maskvalue)) {
+				for (size_t i=0; i < v.size(); i++) {
+					if (std::isnan(m[i])) {
+						v[i] = updatevalue;
+					}
+				}
+			} else {
+				for (size_t i=0; i < v.size(); i++) {
+					if (m[i] == maskvalue) {
+						v[i] = updatevalue;
+					}
+				}
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
@@ -56,26 +79,3 @@ SpatRaster SpatRaster::mask(SpatRaster x, SpatOptions &opt) {
 }
 
 
-/*
-
-std::vector<std::vector<double> > matrix(int nrow, int ncol) {
-	std::vector<std::vector<double> > m (nrow, std::vector<double>(ncol));
-	return(m);
-}
-
-
-int main() {
-	std::vector<vector<double> > d = matrix(10, 2);
-	std::vector<double> m (10);
-	m[1] = 1;
-	m[5] = 1;
-	d = mask(d, m, 1, 9, false);
-	for (int i=0; i < d.size(); i++) {
-		for (int j=0; j < d[0].size(); j++) {
-			std::cout << ' ' << d[i][j];
-		}
-		std::cout << '\n';
-	}
-	std::cout << '\n';
-}
-*/

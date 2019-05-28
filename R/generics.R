@@ -57,6 +57,13 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 	}
 )
 
+setMethod("cover", signature(x="SpatRaster", y="SpatRaster"), 
+	function(x, y, value=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$cover(y@ptr, value[1], opt)
+		show_messages(x, "cover")		
+	}
+)
 
 setMethod("disaggregate", signature(x="SpatRaster"), 
 	function(x, fact, filename="", overwrite=FALSE, wopt=list(), ...) {
@@ -76,9 +83,9 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
-	function(x, mask, filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite,wopt)
-		x@ptr <- x@ptr$mask(mask@ptr, opt)
+		x@ptr <- x@ptr$mask(mask@ptr, inverse[1], maskvalue[1], updatevalue[1], opt)
 		show_messages(x, "mask")		
 	}
 )

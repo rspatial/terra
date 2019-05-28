@@ -29,8 +29,8 @@ SpatRaster
 }
 
 \examples{
-x <- rast(nrow=9, ncol=18, xmin=0, xmax=360)
-v <- as.vector(t(matrix(1:ncell(x), nrow=9, ncol=18)))
+x <- rast(nrow=9, ncol=18, nl=3, xmin=0, xmax=360)
+v <- rep(as.vector(t(matrix(1:ncell(x), nrow=9, ncol=18))), 3)
 values(x) <- v
 z <- rotate(x)
 }

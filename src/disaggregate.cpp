@@ -19,7 +19,9 @@
 #include "spatRaster.h"
 
 
+
 SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
+
 
     SpatRaster out = geometry();
 	std::string message = "";

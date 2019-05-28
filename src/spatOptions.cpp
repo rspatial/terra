@@ -27,7 +27,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	memfrac = opt.memfrac;
 	todisk = opt.todisk;
 	def_datatype = opt.def_datatype;
-	def_filetype = opt.def_datatype; 
+	def_filetype = opt.def_filetype; 
 	filename = "";
 	overwrite = false;	
 	progress = opt.progress;

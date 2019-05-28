@@ -43,6 +43,7 @@ void operator*(std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
+
 template <typename T>
 void operator%(std::vector<T>& a, const std::vector<T>& b) {
 //    std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::modulus<T>());
@@ -130,10 +131,23 @@ void operator<(std::vector<T>& a, const std::vector<T>& b) {
 }
 
 
+template <typename T>
+void power(std::vector<T>& a, const std::vector<T>& b) {
+	for (size_t i=0; i<a.size(); i++) {
+		if (std::isnan(a[i]) || std::isnan(b[i])) {
+			a[i] = NAN;
+		} else {
+			a[i] = std::pow(a[i], b[i]);
+		}
+	}
+}
+
+
 bool smooth_operator(std::string oper) {
-	std::vector<std::string> f {"+", "-", "*", "/", "%", "==", "!=", ">", ",", ">=", "<="};
+	std::vector<std::string> f {"+", "-", "*", "^", "/", "%", "==", "!=", ">", "<", ">=", "<="};
 	return (std::find(f.begin(), f.end(), oper) != f.end());
 }
+
 
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
@@ -168,6 +182,8 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 			a * b;
 		} else if (oper == "/") {
 			a / b;
+		} else if (oper == "^") {
+			power(a, b);
 		} else if (oper == "%") {
 			 a % b;
 		} else if (oper == "==") {
@@ -204,6 +220,10 @@ SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions &opt) {
 		out.setError("unknown arith function");
 		return out;
 	}
+	if (!hasValues()) {
+		out.setError("raster has no values"); // or warn and treat as NA?
+		return out;
+	}
 
   	if (!out.writeStart(opt)) { return out; }
 	readStart();
@@ -219,6 +239,10 @@ SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions &opt) {
 			for(double& d : a)  d *= x;
 		} else if (oper == "/") {
 			for(double& d : a)  d /= x;
+		} else if (oper == "^") {
+			for(size_t j=0; j<a.size(); j++) {
+				a[j] = std::pow(a[j], x);
+			}
 		} else if (oper == "%") {
 			for(double& d : a) std::fmod(d,x);
 		} else if (oper == "==") {
@@ -264,6 +288,10 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions &opt) {
 			for(double& d : a)  d = x * d;
 		} else if (oper == "/") {
 			for(double& d : a)  d = x / d;
+		} else if (oper == "^") {
+			for(size_t j=0; j<a.size(); j++) {
+				a[j] = std::pow(x, a[j]);
+			}
 		} else if (oper == "%") {
 			for(double& d : a)  std::fmod(x,d);
 		} else if (oper == "==") {
