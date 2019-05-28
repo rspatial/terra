@@ -43,11 +43,17 @@ setMethod('values<-', signature(x='SpatRaster', 'ANY'),
 		stop('value must be numeric, integer, or logical')
 	}
 
-	if (length(value) == 1) {	
-		value <- rep(value, ncell(x))
-	} 
-	stopifnot((length(value) %% ncell(x)) == 0)
-
+	lv <- length(value)
+	nc <- ncell(x)
+	nl <- nlyr(x)
+	if (lv == 1) {	
+		value <- rep(value, nl * nc)
+	} else {
+		stopifnot((lv %% nc) == 0)
+		if (lv < (nc * nl)) {
+			value <- rep(value, length.out=nc*nl)
+		}
+	}
 	y <- rast(x)
 	y@ptr$setValues(value)
 	y

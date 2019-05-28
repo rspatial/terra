@@ -31,6 +31,8 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 	out.extent.xmin = out.extent.xmin + addx;
 	out.extent.xmax = out.extent.xmax + addx;
 
+	if (!hasValues()) return out;
+	
  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	std::vector<double> b;
