@@ -54,15 +54,15 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 
   \tabular{ll}{
     \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
-    \code{\link{mosaic}} \tab Combine SpatRasters with different extents and a function for overlap areas \cr
+    \code{\link{mosaic}} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
     \code{\link{extend}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
     \code{\link{resample}} \tab Warp values to a SpatRaster with a different origin or resolution \cr	
-    \code{\link{warp}} \tab project values to a raster with a different coordinate reference system \cr	
-    \code{\link{shift}} \tab Move the location of Raster \cr
+    \code{\link{warp}} \tab project values to a SpatRaster with a different coordinate reference system \cr	
+    \code{\link{shift}} \tab Adjust the location of SpatRaster \cr
     \code{\link{flip}} \tab  Flip values horizontally or vertically \cr
     \code{\link{rotate}} \tab Rotate values around the date-line (for lon/lat data) \cr
     \code{\link{t}} \tab Transpose a SpatRaster\cr
@@ -86,16 +86,16 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 \section{IV. Cell based computation}{
 
   \tabular{ll}{
-    \code{\link{reduce}} \tab Computations on a single SpatRaster ("calc" in the "raster" package) \cr
-    \code{\link{overlay}} \tab Computations on multiple RasterLayer objects \cr
+    \code{\link{reduce}} \tab Computations on a single SpatRaster (similar to "calc" in the "raster" package) \cr
+    \code{\link{overlay}} \tab Computations on multiple SpatRaster objects \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
-    \code{\link{mask}} \tab Use values from first Raster except where cells of the mask Raster are \code{NA}\cr
+    \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
     \code{\link{cut}} \tab Reclassify values using ranges \cr
     \code{\link{subs}} \tab Reclassify values using an 'is-becomes' matrix \cr	
     \code{\link{reclassify}} \tab Reclassify using a 'from-to-becomes' matrix \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{\link{rastApply}} \tab Computations on groups of layers in SpatRaster \cr
-    \code{\link{rastSelect}} \tab Select cell values from different layers using an index RasterLayer\cr
+    \code{\link{rastSelect}} \tab Select cell values from different layers using an index SpatRaster\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -112,7 +112,7 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
     \code{\link{localFun}} \tab Local association (using neighborhoods) functions \cr
     \code{\link{boundaries}} \tab Detection of boundaries (edges)\cr
     \code{\link{clump}} \tab Find clumps (patches) \cr
-    \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells on a raster \cr
+    \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
     \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
     \code{\link{terrain}} \tab Compute slope, aspect and other characteristics from elevation data \cr	
     \code{\link{Moran}} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
@@ -124,8 +124,8 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 \section{VI. Model predictions}{
 
   \tabular{ll}{
-    \code{\link{predict}} \tab Predict a non-spatial model to a RasterLayer \cr
-    \code{\link{interpolate}} \tab Predict a spatial model to a RasterLayer \cr
+    \code{\link{predict}} \tab Predict a non-spatial model to a SpatRaster \cr
+    \code{\link{interpolate}} \tab Predict a spatial model to a SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
@@ -136,13 +136,13 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(object, 'SpatialGridDataFrame')}  
 
   \tabular{ll}{
-    \code{\link{raster}} \tab RasterLayer from SpatialGrid*, image, or matrix objects\cr
+    \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr
     \code{\link{rasterize}} \tab Rasterizing points, lines or polygons\cr
-    \code{\link{rasterToPoints}} \tab Create points from a RasterLayer \cr
-    \code{\link{rasterToPolygons}} \tab Create polygons from a RasterLayer \cr
-    \code{\link{rasterToContour}} \tab Contour lines from a RasterLayer \cr
-    \code{\link{rasterFromXYZ}} \tab RasterLayer from regularly spaces points\cr
-    \code{\link{rasterFromCells}} \tab RasterLayer from a Raster object and cell numbers\cr
+    \code{\link{rasterToPoints}} \tab Create points from a SpatRaster \cr
+    \code{\link{rasterToPolygons}} \tab Create polygons from a SpatRaster \cr
+    \code{\link{rasterToContour}} \tab Contour lines from a SpatRaster \cr
+    \code{\link{rasterFromXYZ}} \tab Createa a SpatRaster from regularly spaces points\cr
+    \code{\link{rasterFromCells}} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -151,12 +151,12 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
 \section{VIII. Summarizing}{
 
   \tabular{ll}{
-    \code{\link{cellStats}} \tab Summarize a Raster cell values with a function \cr
+    \code{\link{cellStats}} \tab Summarize SpatRaster cell values with a function \cr
     \code{\link{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
-    \code{\link{freq}} \tab Frequency table of Raster cell values \cr
+    \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
     \code{\link{crosstab}} \tab Cross-tabulate two SpatRasters\cr
     \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in a RasterLayer \cr
+    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -183,17 +183,15 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
 
 \section{X. Plotting}{
 
-See the rasterVis package for additional plotting methods for SpatRasters using methods from 'lattice' and other packages.
-
   \tabular{ll}{
     \bold{Maps} \tab \cr
     \code{\link{plot}} \tab Plot a SpatRaster. The main method to create a map \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single 'real color' image \cr
     \code{\link{image}} \tab Plot a SpatRaster with the image function \cr
-    \code{\link{persp}} \tab Perspective plot of a RasterLayer \cr
-    \code{\link{contour}} \tab Contour plot of a RasterLayer \cr
-    \code{\link{filledContour}} \tab Filled contour plot of a RasterLayer \cr
-    \code{\link{text}} \tab Plot the values of a RasterLayer on top of a map \cr
+    \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
+    \code{\link{contour}} \tab Contour plot of a SpatRaster \cr
+    \code{\link{filledContour}} \tab Filled contour plot of a SpatRaster \cr
+    \code{\link{text}} \tab Plot the values of a SpatRaster on top of a map \cr
     .\cr
     \bold{Interacting with a map} \tab \cr
     \code{\link{zoom}} \tab Zoom in to a part of a map \cr
@@ -204,11 +202,11 @@ See the rasterVis package for additional plotting methods for SpatRasters using 
     \code{\link{drawExtent}} \tab Create an Extent object by drawing it \cr	
     .\cr
 	\bold{Other plots} \tab \cr
-    \code{\link{plot}} \tab x-y scatter plot of the values of two RasterLayer objects\cr
+    \code{\link{plot}} \tab x-y scatter plot of the values of two SpatRaster objects\cr
     \code{\link{hist}} \tab Histogram of SpatRaster values \cr
-    \code{\link{barplot}} \tab barplot of a RasterLayer \cr
+    \code{\link{barplot}} \tab barplot of a SpatRaster \cr
     \code{\link{density}} \tab Density plot of SpatRaster values \cr
-    \code{\link{pairs}} \tab Pairs plot for layers in a RasterStack or RasterBrick \cr
+    \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
     \code{\link{boxplot}} \tab Box plot of the values of one or multiple layers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -216,7 +214,7 @@ See the rasterVis package for additional plotting methods for SpatRasters using 
 
 \section{XI. Getting and setting SpatRaster dimensions }{
 
-Basic parameters of existing SpatRasters can be obtained, and in most cases changed. If there are values associated with a RasterLayer object (either in memory or via a link to a file) these are lost when you change the number of columns or rows or the resolution. This is not the case when the extent is changed (as the number of columns and rows will not be affected). Similarly, with \bold{projection} you can set the projection, but this does not transform the data (see \link{projectRaster} for that).   
+Basic parameters of existing SpatRasters can be obtained, and in most cases changed. If there are values associated with a SpatRaster object (either in memory or via a link to a file) these are lost when you change the number of columns or rows or the resolution. This is not the case when the extent is changed (as the number of columns and rows will not be affected). Similarly, with \bold{projection} you can set the projection, but this does not transform the data (see \link{warp} for that).   
 
   \tabular{ll}{
     \code{\link{ncol}}\tab The number of columns \cr
@@ -300,7 +298,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{terraOptions}} \tab Show, set, save or get session options \cr
     \code{\link{pointDistance}} \tab Distance between points \cr
     \code{\link{hdr}} \tab Write header file for a number of raster formats \cr
-    \code{\link{extension}} \tab Get or set the extentsion of a filename \cr
+    \code{\link{extension}} \tab Get or set the extension of a filename \cr
     \code{\link{cv}} \tab Coefficient of variation  \cr
     \code{\link{modal}} \tab Modal value  \cr
     \code{\link{sampleInt}} \tab Random sample of (possibly very large) range of integer values \cr

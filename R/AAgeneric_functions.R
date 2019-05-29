@@ -10,6 +10,9 @@ if (!isGeneric("plot")) { setGeneric("plot", function(x, y,...) standardGeneric(
 if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardGeneric("reduce"))}
 if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	
+if (!isGeneric("shift")) {setGeneric("shift", function(x, ...)
+standardGeneric("shift"))}	
+
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}	
 if (!isGeneric("transpose")) { setGeneric("transpose", function(x, ...) standardGeneric("transpose"))}	
 

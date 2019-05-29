@@ -30,6 +30,7 @@
 #include <progress_bar.hpp>
 #endif
 
+
 class RasterAttributeTable {
 	public:
 		std::vector<unsigned> code;
@@ -329,6 +330,9 @@ class SpatRaster {
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, SpatOptions &opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);
+		SpatRaster shift(double x, double y, SpatOptions &opt);
+
+
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster transpose(SpatOptions &opt);

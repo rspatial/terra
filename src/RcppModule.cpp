@@ -175,8 +175,9 @@ RCPP_MODULE(spat){
 		.method("merge", &SpatRaster::merge, "merge")
 		.method("rasterizeLines", &SpatRaster::rasterizeLines, "rasterizeLines")
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
-		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	.method("rotate", &SpatRaster::rotate, "rotate")
-		
+		.method("rotate", &SpatRaster::rotate, "rotate")
+		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	
+		.method("shift", &SpatRaster::shift, "shift")
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
 		.method("transpose", &SpatRaster::transpose, "transpose")
