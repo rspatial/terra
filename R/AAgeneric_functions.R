@@ -52,7 +52,9 @@ if (!isGeneric("readStop")) {setGeneric("readStop", function(x)	standardGeneric(
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }
 if (!isGeneric("sampleRegular")) { setGeneric("sampleRegular", function(x, size, ...) standardGeneric("sampleRegular"))}
 if (!isGeneric("subset")) {setGeneric("subset", function(x, ...) standardGeneric("subset")) }
-if (!isGeneric("t")) { setGeneric("t", function(x) standardGeneric("t"))}	
+
+if (!isGeneric("t")) { setGeneric("t", function(x) standardGeneric("t"))}
+	
 if (!isGeneric("tail")) { setGeneric("tail", function(x, ...) standardGeneric("tail"))}	
 if (!isGeneric("trim")) { setGeneric("trim", function(x, ...) standardGeneric("trim")) }	
 if (!isGeneric("xres")) { setGeneric("xres", function(x) standardGeneric("xres")) }

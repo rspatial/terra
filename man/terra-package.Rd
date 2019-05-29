@@ -42,8 +42,8 @@ Below is a list of some of the most important functions grouped by theme.
 
 SpatRasterobjects can be created, from scratch, files, or from objects of other classes, with the following functions:
   \tabular{ll}{
-    \code{\link{rast}}\tab To create a SpatRaster \cr
-    \code{\link{c}} \tab To combine SpatRaster objects (multiple layers)\cr
+    \code{\link{rast}}\tab Create a SpatRaster from scratch, file, or another object\cr
+    \code{\link{c}} \tab Combine SpatRasters (multiple layers) (like raster::stack)\cr
     \code{\link{subset}} \tab Select layers of a SpatRaster\cr
   --------------------------- \tab --------------------------------------------------------------------------------------------------- \cr  
 }
@@ -53,11 +53,11 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 \section{II. Changing the spatial extent and/or resolution of a SpatRaster}{
 
   \tabular{ll}{
-    \code{\link{merge}} \tab Combine SpatRaster objects with different extents (but same origin and resolution) \cr
-    \code{\link{mosaic}} \tab Combine SpatRaster objects with different extents and a function for overlap areas \cr
+    \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
+    \code{\link{mosaic}} \tab Combine SpatRasters with different extents and a function for overlap areas \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
     \code{\link{extend}} \tab Enlarge a SpatRaster \cr
-    \code{\link{trim}} \tab Trim a SpatRaster object by removing exterior rows and/or columns that only have NAs\cr
+    \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
     \code{\link{resample}} \tab Warp values to a SpatRaster with a different origin or resolution \cr	

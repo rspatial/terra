@@ -34,7 +34,7 @@ SpatRaster SpatRaster::transpose(SpatOptions &opt) {
  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i=0; i < out.bs.n; i++) {
-		std::vector<double> v = readValues(0, nrow(), bs.row[i], bs.nrows[i]);
+		std::vector<double> v = readValues(0, nrow(), out.bs.row[i], out.bs.nrows[i]);
 		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();

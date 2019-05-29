@@ -37,7 +37,7 @@ SpatRaster
 
 
 \examples{
-r <- raster(nrow=18, ncol=36)
+r <- rast(nrow=18, ncol=36)
 values(r) <- 1:ncell(r)
 tr1 <- t(r)
 tr2 <- transpose(r)
