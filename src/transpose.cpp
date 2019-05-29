@@ -18,44 +18,27 @@
 #include <vector>
 #include "spatRaster.h"
 
-SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
+SpatRaster SpatRaster::transpose(SpatOptions &opt) {
 
-	unsigned nc = ncol();
-	unsigned nl = nlyr();
-	unsigned hnc = (nc / 2);
-	double addx = hnc * xres();
-	if (left) {
-		addx = -addx;
-	}
 	SpatRaster out = geometry();
-	out.extent.xmin = out.extent.xmin + addx;
-	out.extent.xmax = out.extent.xmax + addx;
-
+	SpatExtent eold = getExtent(); 
+	SpatExtent enew = getExtent(); 
+	enew.xmin = eold.ymin;
+	enew.xmax = eold.ymax;
+	enew.ymin = eold.xmin;
+	enew.ymax = eold.xmax;
+	out.setExtent(enew, false, "");
+	out.source[0].ncol = nrow();
+	out.source[0].nrow = ncol();
 	if (!hasValues()) return out;
-	
  	if (!out.writeStart(opt)) { return out; }
 	readStart();
-	std::vector<double> b;
 	for (size_t i=0; i < out.bs.n; i++) {
-		std::vector<double> a = readBlock(out.bs, i);
-		for (size_t j=0; j < nl; j++) {
-			for (size_t r=0; r < out.bs.nrows[i]; r++) {
-				unsigned s1 = j * out.bs.nrows[i] * nc + r * nc;
-				unsigned e1 = s1 + hnc;
-				unsigned s2 = e1;
-				unsigned e2 = s1 + nc;
-				b.insert(b.end(), a.begin()+s2, a.begin()+e2);
-				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
-			}
-		}
-		if (!out.writeValues(b, out.bs.row[i])) return out;
-		b.resize(0);
+		std::vector<double> v = readValues(0, nrow(), bs.row[i], bs.nrows[i]);
+		if (!out.writeValues(v, out.bs.row[i])) return out;
 	}
 	out.writeStop();
 	readStop();
 	return(out);
 }
-
-
-
 

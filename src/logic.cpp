@@ -59,9 +59,6 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 			a[i] = !a[i];
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();
@@ -100,9 +97,6 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 			// stop
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();
@@ -132,9 +126,6 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 			// stop
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();

@@ -18,39 +18,42 @@
 #include <vector>
 #include "spatRaster.h"
 
-SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
+SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
-	unsigned nc = ncol();
-	unsigned nl = nlyr();
-	unsigned hnc = (nc / 2);
-	double addx = hnc * xres();
-	if (left) {
-		addx = -addx;
-	}
 	SpatRaster out = geometry();
-	out.extent.xmin = out.extent.xmin + addx;
-	out.extent.xmax = out.extent.xmax + addx;
-
 	if (!hasValues()) return out;
-	
  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	std::vector<double> b;
-	for (size_t i=0; i < out.bs.n; i++) {
-		std::vector<double> a = readBlock(out.bs, i);
-		for (size_t j=0; j < nl; j++) {
-			for (size_t r=0; r < out.bs.nrows[i]; r++) {
-				unsigned s1 = j * out.bs.nrows[i] * nc + r * nc;
-				unsigned e1 = s1 + hnc;
-				unsigned s2 = e1;
-				unsigned e2 = s1 + nc;
-				b.insert(b.end(), a.begin()+s2, a.begin()+e2);
-				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
+	unsigned nc = ncol();
+	unsigned nl = nlyr();
+	
+	if (vertical) {
+		for (size_t i=0; i < out.bs.n; i++) {
+			size_t ii = out.bs.n - 1 - i;
+			std::vector<double> a = readBlock(out.bs, ii);
+			unsigned lyrrows = nl * out.bs.nrows[ii];
+			for (size_t j=0; j < lyrrows; j++) {
+				unsigned start = (lyrrows - 1 - j) * nc;
+				unsigned end = start + nc;
+				b.insert(b.end(), a.begin()+start, a.begin()+end);
 			}
+			if (!out.writeValues(b, out.bs.row[i])) return out;
+			b.resize(0);
+		}		
+	} else {	
+		for (size_t i=0; i < out.bs.n; i++) {
+			std::vector<double> a = readBlock(out.bs, i);
+			unsigned lyrrows = nl * out.bs.nrows[i];
+			for (size_t j=0; j < lyrrows; j++) {
+				unsigned start = j * nc;
+				unsigned end = start + nc;
+				b.insert(b.end(), a.begin()+start, a.begin()+end);
+			}
+			if (!out.writeValues(b, out.bs.row[i])) return out;
+			b.resize(0);
 		}
-		if (!out.writeValues(b, out.bs.row[i])) return out;
-		b.resize(0);
-	}
+	}	
 	out.writeStop();
 	readStop();
 	return(out);

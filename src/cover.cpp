@@ -52,9 +52,6 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 	}
 	out.writeStop();
 	readStop();

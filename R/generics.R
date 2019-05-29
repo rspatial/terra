@@ -81,6 +81,14 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("flip", signature(x="SpatRaster"), 
+	function(x, vertical, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$flip(vertical, opt)
+		show_messages(x, "flip")
+	}
+)
+
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
@@ -164,6 +172,21 @@ setMethod("trim", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("transpose", signature(x="SpatRaster"), 
+	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$transpose(opt)
+		show_messages(x, "transpose")
+	}
+)
+
+setMethod("t", signature(x="SpatRaster"), 
+	function(x) {
+		opt <- .runOptions(filename="", overwrite=TRUE, wopt=list())
+		x@ptr <- x@ptr$transpose(opt)
+		show_messages(x, "t")
+	}
+)
 
 setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {

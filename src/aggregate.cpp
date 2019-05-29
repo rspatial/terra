@@ -226,9 +226,6 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		}
 
 		if (!out.writeValues(v, bs.row[b])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 
 	}
 	out.writeStop();

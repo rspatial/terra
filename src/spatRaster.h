@@ -313,7 +313,7 @@ class SpatRaster {
         std::vector<double> line_cells(SpatGeom& g);
         std::vector<double> polygon_cells(SpatGeom& g);
 
-
+		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, std::string fun, SpatOptions &opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
 		SpatRaster isnot(SpatOptions &opt);
@@ -331,6 +331,7 @@ class SpatRaster {
 		SpatRaster sampleRegular(unsigned size);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
+		SpatRaster transpose(SpatOptions &opt);
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);

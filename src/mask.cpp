@@ -67,9 +67,6 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();

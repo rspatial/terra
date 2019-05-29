@@ -164,6 +164,7 @@ RCPP_MODULE(spat){
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
 		.method("extractCell", &SpatRaster::extractCell, "extractCell")
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
+		.method("flip", &SpatRaster::flip, "flip")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
 		
@@ -178,6 +179,7 @@ RCPP_MODULE(spat){
 		
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
+		.method("transpose", &SpatRaster::transpose, "transpose")
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("trim", &SpatRaster::trim, "trim")
 		.method("warp", &SpatRaster::warp, "warp")

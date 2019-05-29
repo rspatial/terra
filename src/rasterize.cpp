@@ -104,9 +104,6 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();
@@ -161,9 +158,6 @@ SpatRaster SpatRaster::rasterizeLines(SpatVector p, double background, SpatOptio
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();

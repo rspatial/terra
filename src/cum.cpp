@@ -147,9 +147,6 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 			}
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 
 	}
 	out.writeStop();

@@ -63,9 +63,6 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 			for(double& d : a) if (!std::isnan(d)) d = trunc(d);
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();
@@ -120,9 +117,6 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 			for(double& d : a) if (!std::isnan(d)) d = tan(d * M_PI);
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 		
 	}
 	out.writeStop();

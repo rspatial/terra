@@ -200,9 +200,6 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 			a < b;
 		}
 		if (!out.writeValues(a, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif
 
 	}
 	out.writeStop();
