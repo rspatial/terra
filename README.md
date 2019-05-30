@@ -7,9 +7,11 @@ All native computations are done in C++.
 Classes, methods and properties are exposed via a Rcpp module.
 The R side has two main S4 classes (SpatRaster and SpatVector) that represent spatial data. These classes have only slot, a reference to a C++ object. They are used to provide a "normal" "S4" R user-interface as in the raster package.
 
-The first (alpha) release is expected by January 2019.
+The first (alpha) release is expected by July 2019.
 
 ## Installation
+
+You need to first install the [development version of "raster"](https://github.com/rspatial/raster).
 
 ### Windows
 
