@@ -34,9 +34,8 @@ if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("ge
 if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}	
 if (!isGeneric("head")) { setGeneric("head", function(x, ...) standardGeneric("head"))}	
 if (!isGeneric("ifel")) {setGeneric("ifel", function(test, yes, no, ...) standardGeneric("ifel"))}	
-
+if (!isGeneric("init")) {setGeneric("init", function(x, ...) standardGeneric("init"))}	
 if (!isGeneric("isLonLat")) { setGeneric("isLonLat", function(x) standardGeneric("isLonLat"))}	
-
 if (!isGeneric("mask")) { setGeneric("mask", function(x, mask, ...) standardGeneric("mask")) }	
 if (!isGeneric("ncell")) { setGeneric("ncell", function(x) standardGeneric("ncell")) }	
 if (!isGeneric("nrow")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	

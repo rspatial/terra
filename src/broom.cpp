@@ -1,4 +1,4 @@
-// Copyright (c) 2018  Robert J. Hijmans
+// Copyright (c) 2018-2019  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-// Copyright (c) 2018  Robert J. Hijmans
+// Copyright (c) 2018-2019  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -134,9 +134,6 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
         v = readBlock(first.bs, i);
         d = broom_dist_planar(v, above, res, dim);
 		first.writeValues(d, first.bs.row[i]);
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif		
 	}
 	first.writeStop();
   	first.readStart();
@@ -149,9 +146,6 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		vv = first.readBlock(first.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		out.writeValues(vv, out.bs.row[i-1]);
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif		
 	}
 	out.writeStop();
 	readStop();

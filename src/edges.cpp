@@ -1,7 +1,7 @@
 // Robert Hijmans, November 2011 
 
 
-// Copyright (c) 2018  Robert J. Hijmans
+// Copyright (c) 2018-2019  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -107,9 +107,6 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
 		std::vector<double> vv = get_border(v, dim, classes, type, directions);
 		if (!out.writeValues(vv, out.bs.row[i])) return out;
-        #ifdef useRcpp
-		//Rcpp::checkUserInterrupt();
-        #endif		
 	}
 	out.writeStop();
 	readStop();
