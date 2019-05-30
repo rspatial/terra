@@ -166,7 +166,8 @@ setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"),
 
 setMethod("shift", signature(x="SpatRaster"), 
 	function(x, dx=0, dy=0, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		x@ptr <- x@ptr$shift(dx, dy)
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$shift(dx, dy, opt)
 		show_messages(x, "shift")		
 	}
 )
