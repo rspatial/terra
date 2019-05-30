@@ -237,10 +237,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions &opt) {
 		} else if (oper == "/") {
 			for(double& d : a)  d /= x;
 		} else if (oper == "^") {
-			for(double& d : a)  d = d^x;
-		//	for(size_t j=0; j<a.size(); j++) {
-		//		a[j] = std::pow(a[j], x);
-		//	}
+			for(double& d : a)  d = std::pow(d, x);
 		} else if (oper == "%") {
 			for(double& d : a) std::fmod(d, x);
 		} else if (oper == "==") {
@@ -279,20 +276,17 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		if (oper == "+") {
-			for(double& d : a)  d = x + d;
+			for(double& d : a)  d += x;
 		} else if (oper == "-") {
-			for(double& d : a)  d = x - d;
+			for(double& d : a)  d -= x;
 		} else if (oper == "*") {
-			for(double& d : a)  d = x * d;
+			for(double& d : a)  d *= x;
 		} else if (oper == "/") {
-			for(double& d : a)  d = x / d;
+			for(double& d : a)  d /= x;
 		} else if (oper == "^") {
-			for(double& d : a)  d = x^d;
-		//	for(size_t j=0; j<a.size(); j++) {
-		//		a[j] = std::pow(x, a[j]);
-		//	}
+			for(double& d : a)  d = std::pow(x, d);
 		} else if (oper == "%") {
-			for(double& d : a)  std::fmod(x,d);
+			for(double& d : a)  std::fmod(x, d);
 		} else if (oper == "==") {
 			for(double& d : a) d = d == x;
 		} else if (oper == "!=") {
