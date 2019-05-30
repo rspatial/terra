@@ -17,7 +17,7 @@
 
 #include "spatRaster.h"
 
-SpatRaster SpatRaster::init(std::string value, SpatOptions &opt) {
+SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	
@@ -33,12 +33,13 @@ SpatRaster SpatRaster::init(std::string value, SpatOptions &opt) {
 		std::vector<double> v(ncol());
 		size_t nr = nrow();
 		for (size_t i = 0; i < nr; i++) {
-			std::fill(v.begin(), v.end(), i+1);				
+			std::fill(v.begin(), v.end(), i+plusone);				
 			if (!out.writeValues(v, i)) return out;
 		}
 	} else if (value == "col") {
 		std::vector<double> col(ncol());
-		std::iota(col.begin(), col.end(), 0);
+		double start = plusone ? 1 : 0;
+		std::iota(col.begin(), col.end(), start);
 		unsigned nr = nrow();
 		for (unsigned i = 0; i < nr; i++) {
 			if (!out.writeValues(col, i)) return out;
@@ -51,6 +52,7 @@ SpatRaster SpatRaster::init(std::string value, SpatOptions &opt) {
 		for (unsigned i = 0; i < nr; i++) {
 			row[0] = i;
 			std::vector<double> v = cellFromRowCol(row, col);
+			if (plusone) for(double& d : v) d=d+1;
 			if (!out.writeValues(v, i)) return out;
 		}
 	} else if (value == "x") {
@@ -83,7 +85,7 @@ SpatRaster SpatRaster::init(std::string value, SpatOptions &opt) {
 		}		
 		for (unsigned i=0; i<(nr-1); i=i+2) {
 			if (!out.writeValues(a, i)) return out;
-			if (!out.writeValues(b, i)) return out;
+			if (!out.writeValues(b, i+1)) return out;
 		}
 		if (nr%2 == 0) {
 			if (!out.writeValues(a, nr-2)) return out;			

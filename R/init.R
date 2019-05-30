@@ -7,11 +7,15 @@
 setMethod("init", signature(x="SpatRaster"), 
 	function(x, fun, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
-		if ((is.character(fun)) & (fun %in% c("x", "y", "row", "col", "cell", "chess"))) {
-			x@ptr <- x@ptr$init(value, opt)
-			show_messages(x, "init")
+		if (is.character(fun)) {
+			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
+				x@ptr <- x@ptr$init(fun, TRUE, opt)
+				show_messages(x, "init")
+			} else {
+				stop("unknown function")
+			}
 		} else {
-			out <- rast(object)
+			out <- rast(x)
 			nc <- ncol(out)
 			b <- writeStart(out, filename, overwrite, wopt)
 			for (i in 1:b$n) {
@@ -20,9 +24,7 @@ setMethod("init", signature(x="SpatRaster"),
 				writeValues(out, r, b$row[i])
 			}
 			writeStop(out)
-			readStop(object)
-			return(out)
-		
+			return(out)		
 		}
 	}
 )

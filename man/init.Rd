@@ -29,23 +29,13 @@ For backwards compatibility, the character values valid for \code{fun} can also 
 }
 
 \examples{
-r <- raster(ncols=36, nrows=18)
-
-x <- init(r, fun='cell')
-
+r <- rast(ncol=10, nrow=5, xmn=0, xmx=10, ymn=0, ymx=5)
+x <- init(r, fun="cell")
 y <- init(r, fun=runif)
 
-# there are different ways to set all values to 1 
-# for large rasters:
-set1f <- function(x){rep(1, x)}
-z1 <- init(r, fun=set1f, filename='test.grd', overwrite=TRUE)
+# initialize with a single value 
+z <- init(r, fun=function(n){rep(3, n)})
 
-# This is equivalent to (but not memory safe):
-z2 <- setValues(r, rep(1, ncell(r)))
-# or  
-r[] <- rep(1, ncell(r))
-# or  
-values(r) <- 1
 }
 
 \keyword{spatial}
