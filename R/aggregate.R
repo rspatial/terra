@@ -50,13 +50,13 @@ function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, wopt=l
 		nc <- ncol(x)	
 		readStart(x)
 		ignore <- writeStart(out, filename, overwrite, opt)
+		on.exit(writeStop(out))		
 		for (i in 1:b$n) {
 			v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
 			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
 			v <- sapply(v, fun, na.rm=na.rm)
 			writeValues(out, v, b$row[i])
 		}
-		writeStop(out)
 		readStop(x)
 		return(out)
 	}

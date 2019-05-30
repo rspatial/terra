@@ -1,6 +1,7 @@
 \name{initialize}
 
 \alias{init}
+\alias{init,SpatRaster-method}
 
 \title{Initialize a SpatRaster with values}
 
@@ -9,11 +10,11 @@ Create a SpatRaster with values reflecting a cell property: 'x', 'y', 'col', 'ro
 }
 
 \usage{
-\S4method{init}{Raster}(x, fun, filename="", ...)
+\S4method{init}{SpatRaster}(x, fun, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
-  \item{x}{Raster* object}
+  \item{x}{SpatRaster}
   \item{fun}{function to be applied. This must be a function that can take the number of cells as a single argument to return a vector of values with a length equal to the number of cells, such as \code{fun=runif}. You can also supply one of the following character values: 'x', 'y', 'row', 'col', or 'cell' to get the x or coordinate, row, col or cell number; you can also use 'chess', to get a chessboard pattern}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

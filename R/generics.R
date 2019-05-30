@@ -82,7 +82,7 @@ setMethod("gridDistance", signature(x="SpatRaster"),
 )
 
 setMethod("flip", signature(x="SpatRaster"), 
-	function(x, vertical, filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, vertical=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$flip(vertical, opt)
 		show_messages(x, "flip")

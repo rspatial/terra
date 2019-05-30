@@ -127,17 +127,18 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	readStart();
 	std::string filename = opt.get_filename();
 	opt.set_filename("");
-  	first.writeStart(opt);
  	if (!first.writeStart(opt)) { return first; }
 
 	for (size_t i = 0; i < first.bs.n; i++) {
         v = readBlock(first.bs, i);
         d = broom_dist_planar(v, above, res, dim);
-		first.writeValues(d, first.bs.row[i]);
+		if (!first.writeValues(d, first.bs.row[i])) return out;
 	}
 	first.writeStop();
+	
   	first.readStart();
 	opt.set_filename(filename);
+	
   	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = out.bs.n; i>0; i--) {
         v = readBlock(out.bs, i-1);
@@ -145,10 +146,11 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
         d = broom_dist_planar(v, above, res, dim);
 		vv = first.readBlock(first.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
-		out.writeValues(vv, out.bs.row[i-1]);
+		if (!out.writeValues(vv, out.bs.row[i-1])) return out;
 	}
 	out.writeStop();
 	readStop();
+	first.readStop();
 	return(out);
 }
 

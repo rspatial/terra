@@ -26,6 +26,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 		if (is.matrix(r)) {
 			r <- t(r)
 			if (i==1) {
+				writeStop(out)
 				nlyr(out) <- ncol(r)
 				bb <- writeStart(out, filename, overwrite=TRUE, wopt)
 			}	

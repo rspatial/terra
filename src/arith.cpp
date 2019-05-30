@@ -237,11 +237,12 @@ SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions &opt) {
 		} else if (oper == "/") {
 			for(double& d : a)  d /= x;
 		} else if (oper == "^") {
-			for(size_t j=0; j<a.size(); j++) {
-				a[j] = std::pow(a[j], x);
-			}
+			for(double& d : a)  d = d^x;
+		//	for(size_t j=0; j<a.size(); j++) {
+		//		a[j] = std::pow(a[j], x);
+		//	}
 		} else if (oper == "%") {
-			for(double& d : a) std::fmod(d,x);
+			for(double& d : a) std::fmod(d, x);
 		} else if (oper == "==") {
 			for(double& d : a) if (!std::isnan(d)) d = d == x;
 		} else if (oper == "!=") {
@@ -286,9 +287,10 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions &opt) {
 		} else if (oper == "/") {
 			for(double& d : a)  d = x / d;
 		} else if (oper == "^") {
-			for(size_t j=0; j<a.size(); j++) {
-				a[j] = std::pow(x, a[j]);
-			}
+			for(double& d : a)  d = x^d;
+		//	for(size_t j=0; j<a.size(); j++) {
+		//		a[j] = std::pow(x, a[j]);
+		//	}
 		} else if (oper == "%") {
 			for(double& d : a)  std::fmod(x,d);
 		} else if (oper == "==") {

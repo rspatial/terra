@@ -35,12 +35,12 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", overwrite=FAL
 		out <- rast(x)
 		readStart(x)
 		b <- writeStart(out, filename, overwrite, wopt)
+		on.exit(writeStop(out))		
 		for (i in 1:b$n) {
 			v <- matrix(x@ptr$focalValues(b$row[i], b$nrows[i], w), ncol=prod(w), byrow=TRUE)
 			v <- apply(v, 1, fun, na.rm=na.rm)
 			writeValues(out, v, b$row[i])
 		}
-		writeStop(out)
 		readStop(x)
 		return(out)
 	}

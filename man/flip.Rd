@@ -5,7 +5,7 @@
 \alias{flip}
 \alias{flip,SpatRaster-method}
   
-\title{Flip}
+\title{Flip a raster}
 
 \description{
 Flip the values of a SpatRaster by inverting the order of the rows (\code{vertical=TRUE}) or the columns (\code{vertical=FALSE}).

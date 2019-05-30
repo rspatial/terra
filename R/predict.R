@@ -11,6 +11,7 @@ setMethod('predict', signature(object='SpatRaster'),
 		readStart(object)
 		nc <- ncol(object)
 		b <- writeStart(out, filename, overwrite, wopt)
+		on.exit(writeStop(out))		
 		for (i in 1:b$n) {
 			d <- object@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
 			d <- data.frame(matrix(d, ncol = ncol(object)))
@@ -18,7 +19,6 @@ setMethod('predict', signature(object='SpatRaster'),
 			r <- predict(model, d, ...)
 			writeValues(out, r, b$row[i])
 		}
-		writeStop(out)
 		readStop(object)
 		return(out)
 	}

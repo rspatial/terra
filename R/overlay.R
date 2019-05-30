@@ -26,6 +26,7 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	readStart(x)
 	readStart(y)
 	b <- writeStart(out, filename, overwrite, wopt)
+	on.exit(writeStop(out))
 	nc <- ncol(x)
 	nl <- nlyr(x)
 #	fnames <- names(formals(fun))
@@ -37,7 +38,6 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 		r <- fun(vx, vy)
 		writeValues(out, r, b$row[i])
 	}
-	writeStop(out)
 	readStop(x)
 	return(out)
 }

@@ -18,12 +18,12 @@ setMethod("init", signature(x="SpatRaster"),
 			out <- rast(x)
 			nc <- ncol(out)
 			b <- writeStart(out, filename, overwrite, wopt)
+			on.exit(writeStop(out))
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n)
 				writeValues(out, r, b$row[i])
 			}
-			writeStop(out)
 			return(out)		
 		}
 	}
