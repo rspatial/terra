@@ -15,17 +15,15 @@ Create a SpatRaster with values reflecting a cell property: 'x', 'y', 'col', 'ro
 \arguments{
   \item{x}{Raster* object}
   \item{fun}{function to be applied. This must be a function that can take the number of cells as a single argument to return a vector of values with a length equal to the number of cells, such as \code{fun=runif}. You can also supply one of the following character values: 'x', 'y', 'row', 'col', or 'cell' to get the x or coordinate, row, col or cell number; you can also use 'chess', to get a chessboard pattern}
-  \item{filename}{character. Optional output filename}
-  \item{...}{Additional arguments as for \code{\link{writeRaster}}}  
+  \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{Additional arguments. None implemented}  
 }
 
 
 \value{
-RasterLayer
-}
-
-\note{
-For backwards compatibility, the character values valid for \code{fun} can also be passed as named argument \code{v}
+SpatRaster
 }
 
 \examples{
