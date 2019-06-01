@@ -5,7 +5,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	opt <- .runOptions(filename, overwrite, wopt)
 
 	txtfun <- .makeTextFun(match.fun(fun))
-	if (class(txtfun) == 'character') { 
+	if (class(txtfun) == "character") { 
 		if (txtfun %in% c("max", "min", "range", "prod", "sum", "any", "all"))
 		na.rm = ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
 		x@ptr <- x@ptr$summary(txtfun, na.rm, opt)	

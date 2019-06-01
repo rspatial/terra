@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{c}
-\alias{c,SpatRaster-method}
+\alias{c, SpatRaster-method}
 
 \title{Combine}
 
@@ -31,7 +31,7 @@ SpatRaster
 \examples{
 r <- rast(nrow=5, ncol=9)
 values(r) <- 1:ncell(r)
-x <- c(r, r)
+x <- c(r, r*2, r*3)
 }
 
 \keyword{spatial}

@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-setClass('SpatRaster',
+setClass("SpatRaster",
 	representation (
 		ptr = "C++Object"
 	),	
@@ -17,7 +17,7 @@ setClass('SpatRaster',
 )
 
 
-setClass('SpatVector',
+setClass("SpatVector",
 	representation (
 		ptr = "C++Object"
 	),	
@@ -31,7 +31,7 @@ setClass('SpatVector',
 )
 
 
-setClass('SpatExtent',
+setClass("SpatExtent",
 	representation (
 		ptr = "C++Object"
 	),	
@@ -44,7 +44,7 @@ setClass('SpatExtent',
 )
 
 
-setClass('SpatOptions',
+setClass("SpatOptions",
 	representation (
 		ptr = "C++Object"
 	),	

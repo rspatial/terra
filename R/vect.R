@@ -2,18 +2,18 @@
 
 if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("vect")) }
 
-setMethod("vect", signature(x='missing'), 
+setMethod("vect", signature(x="missing"), 
 	function(...) {
-		p <- methods::new('SpatVector')
+		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		show_messages(p)
 		return(p)
 	}
 )
 
-setMethod("vect", signature(x='character'), 
+setMethod("vect", signature(x="character"), 
 	function(x, ...) {
-		p <- methods::new('SpatVector')
+		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		p@ptr$read(x)
 		show_messages(p)
@@ -23,12 +23,12 @@ setMethod("vect", signature(x='character'),
 
 
 
-setMethod("vect", signature(x='matrix'), 
-	function(x, type='points', atts=NULL, crs=NA, ...) {
+setMethod("vect", signature(x="matrix"), 
+	function(x, type="points", atts=NULL, crs=NA, ...) {
 		type <- tolower(type)
 		stopifnot(type %in% c("points", "lines", "polygons"))
 		
-		p <- methods::new('SpatVector')
+		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		nr <- nrow(x)
 		if (nr == 0) {
@@ -56,8 +56,8 @@ setMethod("vect", signature(x='matrix'),
 )
 
 
-setMethod("vect", signature(x='data.frame'), 
-	function(x, type='points', atts=NULL, crs=NA, ...) {
+setMethod("vect", signature(x="data.frame"), 
+	function(x, type="points", atts=NULL, crs=NA, ...) {
 		x <- as.matrix(x)
 		vect(x, type=type, atts=atts, crs=crs, ...)
 	}

@@ -173,6 +173,7 @@ RCPP_MODULE(spat){
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("mask", &SpatRaster::mask, "mask")
 		.method("math", &SpatRaster::math, "math")
+		.method("math2", &SpatRaster::math2, "math2")
 		.method("merge", &SpatRaster::merge, "merge")
 		.method("rasterizeLines", &SpatRaster::rasterizeLines, "rasterizeLines")
 		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
@@ -184,6 +185,7 @@ RCPP_MODULE(spat){
 		.method("transpose", &SpatRaster::transpose, "transpose")
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("trim", &SpatRaster::trim, "trim")
+		.method("unique", &SpatRaster::unique, "unique")
 		.method("warp", &SpatRaster::warp, "warp")
 		
 		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")

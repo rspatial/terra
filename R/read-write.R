@@ -5,7 +5,7 @@
 
 
 
-setMethod('readStart', signature(x='SpatRaster'), 
+setMethod("readStart", signature(x="SpatRaster"), 
 	function(x, ...) {
 		success <- x@ptr$readStart()
 		show_messages(x, "readStart")		
@@ -14,7 +14,7 @@ setMethod('readStart', signature(x='SpatRaster'),
 )
 
 
-setMethod('readStop', signature(x='SpatRaster'), 
+setMethod("readStop", signature(x="SpatRaster"), 
 	function(x) {
 		success <- x@ptr$readStop()
 		show_messages(x, "readStop")		
@@ -23,7 +23,7 @@ setMethod('readStop', signature(x='SpatRaster'),
 )
 
 
-setMethod('writeStart', signature(x='SpatRaster', filename='character'), 
+setMethod("writeStart", signature(x="SpatRaster", filename="character"), 
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
 		ok <- x@ptr$writeStart(opt)
@@ -35,7 +35,7 @@ setMethod('writeStart', signature(x='SpatRaster', filename='character'),
 )
 
 
-setMethod('writeStop', signature(x='SpatRaster'), 
+setMethod("writeStop", signature(x="SpatRaster"), 
 	function(x) {
 		success <- x@ptr$writeStop()
 		show_messages(x, "writeStop")		
@@ -44,7 +44,7 @@ setMethod('writeStop', signature(x='SpatRaster'),
 )
 
 
-setMethod('writeValues', signature(x='SpatRaster', v='vector'), 
+setMethod("writeValues", signature(x="SpatRaster", v="vector"), 
 	function(x, v, start) {
 		success <- x@ptr$writeValues(v, start-1)
 		show_messages(x, "writeValues")
@@ -54,7 +54,7 @@ setMethod('writeValues', signature(x='SpatRaster', v='vector'),
 
 
 
-setMethod('writeRaster', signature(x='SpatRaster', filename='character'), 
+setMethod("writeRaster", signature(x="SpatRaster", filename="character"), 
 function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 	opt <- .runOptions(filename, overwrite,wopt)
 	success <- x@ptr$writeRaster(opt)

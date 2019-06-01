@@ -19,6 +19,8 @@ bool is_equal(double a, double b, double error_factor=1.0);
 bool is_equal_range(double x, double y, double range, double tolerance);
 void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, int &imax);
 double roundn(double x, int n);
+double signif(double x, unsigned n);
+
 
 template <typename Iterator>
 void minmax(Iterator start, Iterator end, double &vmin, double &vmax) {

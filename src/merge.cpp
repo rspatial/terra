@@ -17,7 +17,6 @@
 
 #include <vector>
 #include "spatRaster.h"
-#include "recycle.h"
 
 
 SpatRaster SpatRaster::merge(SpatRaster x, SpatOptions &opt) {
@@ -31,6 +30,17 @@ SpatRaster SpatRaster::merge(SpatRaster x, SpatOptions &opt) {
 	SpatExtent e = extent;
 	e.unite(x.extent);
 	out.setExtent(e, true);
-	
+	std::vector<double> v;
+
+ 	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i = 0; i < out.bs.n; i++) {
+		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		if (!out.writeValues(v, out.bs.row[i])) return out;
+	}
+	readStop();
+
+	out.writeStop();
 	return(out);
 }
+

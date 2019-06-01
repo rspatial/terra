@@ -91,3 +91,59 @@ setMethod("as.array", signature(x="SpatRaster"),
 )
 
 
+setAs("SpatRaster", "RasterLayer", 
+	function(from) { 
+		f <- filename(from)
+		if (f != "") {
+			# a bit more tricky with ncdf...
+			return(rast(f))
+		} else {
+			e <- extent(from)
+			nl <- nlayers(b)
+			r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
+			          xmin=e.xmin, xmax=e.xmax, ymin=e.ymin, ymax=e.ymax)				
+		}
+		if (hasValues(from)) {
+			values(r) <- values(from)
+		}
+		return(r)
+	}
+)
+
+
+setAs("SpatRaster", "RasterBrick", 
+	function(from) { 
+		f <- filename(from)
+		if (f != "") {
+			# a bit more tricky with ncdf...
+			return(rast(f))
+		} else {
+			e <- extent(from)
+			nl <- nlayers(b)
+			r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
+			          xmin=e.xmin, xmax=e.xmax, ymin=e.ymin, ymax=e.ymax,
+					  nlyr=nl)
+		} 
+		if (hasValues(from)) {
+			values(r) <- values(from)
+		}
+		return(r)
+	}
+)
+
+
+
+setAs("SpatRaster", "RasterStack", 
+	function(from) { 
+		nl <- nlayer(from)
+		rr <- as("SpatRaster", from[[i]])
+		if (nl > 1) {
+			for (i in 2:nl) {
+				r <- as("SpatRaster", from[[i]])
+				rr <- c(rr, r)
+			}
+		}
+		rr
+	}
+)
+

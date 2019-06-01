@@ -323,6 +323,7 @@ class SpatRaster {
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
+		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 		SpatRaster merge(SpatRaster x, SpatOptions &opt);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
@@ -340,6 +341,7 @@ class SpatRaster {
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
+		std::vector<std::vector<double>> unique(unsigned decimals);
 		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);
 };
 

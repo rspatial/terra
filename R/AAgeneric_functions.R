@@ -79,6 +79,8 @@ if (!isGeneric("colFromCell")) { setGeneric("colFromCell", function(object, cell
 if (!isGeneric("readStart")) { setGeneric("readStart", function(x, ...) standardGeneric("readStart")) }	
 if (!isGeneric("readValues")) { setGeneric("readValues", function(x, ...) standardGeneric("readValues")) }	
 if (!isGeneric("readStop")) { setGeneric("readStop", function(x, ...) standardGeneric("readStop")) }	
+if (!isGeneric("unique")) { setGeneric("unique", function(x, incomparables=FALSE, ...) standardGeneric("unique")) }	
+
 if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneric("values")) }	
 if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standardGeneric("values<-"))}	
 if (!isGeneric("warp")) { setGeneric("warp", function(x, y, ...) standardGeneric("warp")) }

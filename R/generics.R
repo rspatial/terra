@@ -197,6 +197,13 @@ setMethod("t", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("unique", signature(x="SpatRaster", incomparables="missing"), 
+	function(x, incomparables=FALSE, decimals=0, ...) {
+		x@ptr$unique(decimals)	
+	}
+)
+
 setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename, overwrite, wopt)

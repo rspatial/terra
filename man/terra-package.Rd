@@ -53,10 +53,10 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 \section{II. Changing the spatial extent and/or resolution of a SpatRaster}{
 
   \tabular{ll}{
-    \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
-    \code{\link{mosaic}} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
+    \code{merge} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
+    \code{mosaic} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
-    \code{\link{extend}} \tab Enlarge a SpatRaster \cr
+    \code{extend} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
@@ -90,12 +90,12 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
     \code{\link{overlay}} \tab Computations on multiple SpatRaster objects \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
-    \code{\link{cut}} \tab Reclassify values using ranges \cr
-    \code{\link{subs}} \tab Reclassify values using an 'is-becomes' matrix \cr	
+    \code{cut} \tab Reclassify values using ranges \cr
+    \code{subs} \tab Reclassify values using an 'is-becomes' matrix \cr	
     \code{\link{reclassify}} \tab Reclassify using a 'from-to-becomes' matrix \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
-    \code{\link{rastApply}} \tab Computations on groups of layers in SpatRaster \cr
-    \code{\link{rastSelect}} \tab Select cell values from different layers using an index SpatRaster\cr
+    \code{rastApply} \tab Computations on groups of layers in SpatRaster \cr
+    \code{rastSelect} \tab Select cell values from different layers using an index SpatRaster\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -106,16 +106,16 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
   \tabular{ll}{
     \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA}\cr
     \code{\link{gridDistance}} \tab Distance when traversing grid cells that are not \code{NA} \cr
-    \code{\link{distanceFromPoints}} \tab Shortest distance to any point in a set of points \cr
-    \code{\link{direction}} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
+    \code{distanceFromPoints} \tab Shortest distance to any point in a set of points \cr
+    \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
-    \code{\link{localFun}} \tab Local association (using neighborhoods) functions \cr
-    \code{\link{boundaries}} \tab Detection of boundaries (edges)\cr
+    \code{localFun} \tab Local association (using neighborhoods) functions \cr
+    \code{boundaries} \tab Detection of boundaries (edges)\cr
     \code{\link{clump}} \tab Find clumps (patches) \cr
     \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
     \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
     \code{\link{terrain}} \tab Compute slope, aspect and other characteristics from elevation data \cr	
-    \code{\link{Moran}} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
+    \code{Moran} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -140,9 +140,9 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
     \code{\link{rasterize}} \tab Rasterizing points, lines or polygons\cr
     \code{\link{rasterToPoints}} \tab Create points from a SpatRaster \cr
     \code{\link{rasterToPolygons}} \tab Create polygons from a SpatRaster \cr
-    \code{\link{rasterToContour}} \tab Contour lines from a SpatRaster \cr
-    \code{\link{rasterFromXYZ}} \tab Createa a SpatRaster from regularly spaces points\cr
-    \code{\link{rasterFromCells}} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
+    \code{rasterToContour} \tab Contour lines from a SpatRaster \cr
+    \code{rasterFromXYZ} \tab Createa a SpatRaster from regularly spaces points\cr
+    \code{rasterFromCells} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -326,8 +326,6 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 \section{Acknowledgments}{
 to do
 }
-
-
 
 \keyword{ package }
 \keyword{ spatial }

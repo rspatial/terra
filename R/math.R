@@ -7,7 +7,7 @@
 #"gamma", "lgamma", "digamma", "trigamma")
 
 
-setMethod("Math", signature(x='SpatRaster'),
+setMethod("Math", signature(x="SpatRaster"),
     function(x){ 
 		oper <- as.vector(.Generic)[1]
 		if (substr(oper, 1, 3) == "cum") {
@@ -21,3 +21,11 @@ setMethod("Math", signature(x='SpatRaster'),
 	}	
 )
 
+
+setMethod("Math2", signature(x="SpatRaster"),
+    function(x, digits=0){ 
+		oper <- as.vector(.Generic)[1]
+		x@ptr <- x@ptr$math2(oper, digits, .terra_environment$options@ptr)
+		show_messages(x, oper)
+	}	
+)

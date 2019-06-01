@@ -5,7 +5,7 @@
 
 
 .makeTextFun <- function(fun) {
-	if (class(fun) != 'character') {
+	if (class(fun) != "character") {
 		if (is.primitive(fun)) {
 			test <- try(deparse(fun)[[1]], silent=TRUE)
 			if (test == '.Primitive(\"sum\")') { fun <- 'sum' 
@@ -14,9 +14,9 @@
 			}
 		} else {
 			test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
-			test2 <- isTRUE(try( fun@generic == 'mean', silent=TRUE))
+			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
 			if (test1 | test2) { 
-				fun <- 'mean' 
+				fun <- "mean" 
 			}
 		} 
 	}
@@ -24,21 +24,21 @@
 }
 
 
-setMethod('aggregate', signature(x='SpatRaster'), 
-function(x, fact=2, fun='mean', na.rm=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)  {
+setMethod("aggregate", signature(x="SpatRaster"), 
+function(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)  {
 
 	#expand=TRUE, 
 	fun <- .makeTextFun(match.fun(fun))
 	toc <- FALSE
 	if (class(fun) == "character") { 
-		if (fun %in% c('sum', 'mean', 'min', 'max')) {
+		if (fun %in% c("sum", "mean", "min", "max")) {
 			toc <- TRUE
 		}
 	}
 
 	opt <- .runOptions(filename, overwrite, wopt)	
 	if (toc) {	
-		#	fun='mean', expand=TRUE, na.rm=TRUE, filename=""
+		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		x@ptr <- x@ptr$aggregate(fact, fun, na.rm, opt)
 		return (show_messages(x, "aggregate"))
 	} else {

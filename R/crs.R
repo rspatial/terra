@@ -4,13 +4,13 @@
 # License GPL v3
 
 
-setMethod("crs", signature('SpatRaster'), 
+setMethod("crs", signature("SpatRaster"), 
 	function(x) {
 		x@ptr$crs
 	}
 )
 
-setMethod("crs<-", signature('SpatRaster', 'character'), 
+setMethod("crs<-", signature("SpatRaster", "character"), 
 	function(x, ..., value) {
 		x@ptr$crs <- value
 		return(x)
@@ -18,14 +18,14 @@ setMethod("crs<-", signature('SpatRaster', 'character'),
 )
 
 
-setMethod("crs", signature('SpatRaster'), 
+setMethod("crs", signature("SpatRaster"), 
 	function(x) {
 		x@ptr$crs
 	}
 )
 
 
-setMethod("crs<-", signature('SpatRaster', 'character'), 
+setMethod("crs<-", signature("SpatRaster", "character"), 
 	function(x, ..., value) {
 		x@ptr$crs <- value
 		return(x)
@@ -33,13 +33,13 @@ setMethod("crs<-", signature('SpatRaster', 'character'),
 )
 
 
-setMethod("crs", signature('SpatVector'), 
+setMethod("crs", signature("SpatVector"), 
 	function(x) {
 		x@ptr$crs
 	}
 )
 
-setMethod("crs<-", signature('SpatVector', 'character'), 
+setMethod("crs<-", signature("SpatVector", "character"), 
 	function(x, ..., value) {
 		x@ptr$crs <- trimws(value)
 		return(x)

@@ -3,14 +3,14 @@
 # Version 0.9
 # License GPL v3
 
-setMethod("readValues", signature(x='SpatRaster'), 
+setMethod("readValues", signature(x="SpatRaster"), 
 function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...) {
 	x@ptr$readValues(row-1, nrows-1, col-1, ncols-1)
 }
 )
 
 
-setMethod("values", signature(x='SpatRaster'), 
+setMethod("values", signature(x="SpatRaster"), 
 function(x, matrix=TRUE, ...) {
 	if (.hasValues(x)) {
 		v <- x@ptr$getValues()
@@ -26,7 +26,7 @@ function(x, matrix=TRUE, ...) {
 )
 
 
-setMethod('values<-', signature(x='SpatRaster', 'ANY'), 
+setMethod("values<-", signature(x="SpatRaster", "ANY"), 
 	function(x, value) {
 	if (is.matrix(value)) { 
 		if (nrow(value) == nrow(x)) {
@@ -40,7 +40,7 @@ setMethod('values<-', signature(x='SpatRaster', 'ANY'),
 	}
 	
 	if (!(is.numeric(value) || is.integer(value) || is.logical(value))) {
-		stop('value must be numeric, integer, or logical')
+		stop("value must be numeric, integer, or logical")
 	}
 
 	lv <- length(value)
@@ -79,7 +79,7 @@ setMethod('values<-', signature(x='SpatRaster', 'ANY'),
 
 
 
-setMethod('sources', signature(x='SpatRaster'), 
+setMethod("sources", signature(x="SpatRaster"), 
 	function(x, ...) {
 		src <- x@ptr$filenames
 		src[src == ""] <= "memory"
@@ -88,7 +88,7 @@ setMethod('sources', signature(x='SpatRaster'),
 )
 
 
-setMethod('minmax', signature(x='SpatRaster'), 
+setMethod("minmax", signature(x="SpatRaster"), 
 	function(x) {
 		rmin <- x@ptr$range_min
 		rmax <- x@ptr$range_max
@@ -97,7 +97,7 @@ setMethod('minmax', signature(x='SpatRaster'),
 )
 
 
-setMethod('setMinMax', signature(x='SpatRaster'), 
+setMethod("setMinMax", signature(x="SpatRaster"), 
 	function(x) {
 		if (!.hasMinMax(x)) {
 			x@ptr$setRange

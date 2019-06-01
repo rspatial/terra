@@ -5,14 +5,14 @@
 
 
 
-setMethod('subset', signature(x='SpatRaster'), 
+setMethod("subset", signature(x="SpatRaster"), 
 function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 	if (is.character(subset)) {
 		i <- stats::na.omit(match(subset, names(x)))
 		if (length(i)==0) {
-			stop('invalid layer names')
+			stop("invalid layer names")
 		} else if (length(i) < length(subset)) {
-			warning('invalid layer names omitted')
+			warning("invalid layer names omitted")
 		}
 		subset <- i
 	}

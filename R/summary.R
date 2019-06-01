@@ -15,7 +15,7 @@
 		}
 		if (!all(cls)) {
 			dots <- dots[!cls]
-			i <- sapply(dots, function(x) class(x) %in% c('logical', 'integer', 'numeric'))
+			i <- sapply(dots, function(x) class(x) %in% c("logical", "integer", "numeric"))
 			add <- unlist(dots[i], use.names = FALSE)
 		}
 	}
@@ -29,7 +29,7 @@
 	x		
 }
 
-setMethod("Summary", signature(x='SpatRaster'),
+setMethod("Summary", signature(x="SpatRaster"),
 	function(x, ..., na.rm=FALSE){
 		fun <- as.character(sys.call()[[1L]])
 		.summarize(x, ..., fun=fun, na.rm=na.rm)
@@ -37,7 +37,7 @@ setMethod("Summary", signature(x='SpatRaster'),
 )
 
 
-setMethod("mean", signature(x='SpatRaster'),
+setMethod("mean", signature(x="SpatRaster"),
 	function(x, ..., trim=NA, na.rm=FALSE){
 		if (!is.na(trim)) {	warning("argument 'trim' is ignored") }
 		.summarize(x, ..., fun="mean", na.rm=na.rm)

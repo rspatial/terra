@@ -5,7 +5,7 @@
 
 	
 
-setMethod('predict', signature(object='SpatRaster'), 
+setMethod("predict", signature(object="SpatRaster"), 
 	function(object, model, fun=predict, ..., filename="", overwrite=FALSE, wopt=list()) {
 		out <- rast(object)
 		readStart(object)

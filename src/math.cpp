@@ -17,6 +17,7 @@
 
 #include <functional>
 #include "spatRaster.h"
+#include "math_utils.h"
 
 
 template <typename T> int sign(T value) {
@@ -69,6 +70,34 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	readStop();
 	return(out);
 }
+
+
+
+SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	std::vector<std::string> f {"round", "signif"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("unknown math2 function");
+		return out;
+	}
+
+  	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a = readBlock(out.bs, i);
+		if (fun == "round") {
+			for(double& d : a) d = roundn(d, digits);
+		} else if (fun == "signif") {
+			for(double& d : a) if (!std::isnan(d)) d = signif(d, digits);
+		} 
+		if (!out.writeValues(a, out.bs.row[i])) return out;
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+}
+
 
 
 SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {

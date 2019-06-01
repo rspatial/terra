@@ -45,13 +45,21 @@ void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, i
 }
 
 
-
 double roundn(double x, int n){
-    int d = 0;
-    if((x * pow(10, n + 1)) - (floor(x * pow(10, n))) > 4) d = 1;
-    x = (floor(x * pow(10, n)) + d) / pow(10, n);
-    return x;
+  double d = pow(10, n);
+  return std::round(x * d) / d;
 }
+
+double signif(double x, unsigned n) {
+  double b = x;
+  unsigned i;
+  for (i = 0; b >= 1; ++i) {
+    b = b / 10;
+  }
+  int d = n-i;
+  return roundn(x, d); 
+}
+
 
 bool is_equal(double a, double b, double error_factor=1.0) {
 	return a==b || std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon()*error_factor;

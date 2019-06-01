@@ -5,7 +5,7 @@
 
 
 
-setMethod("plot", signature(x='SpatRaster', y='numeric'), 
+setMethod("plot", signature(x="SpatRaster", y="numeric"), 
 	function(x, y, maxpixels=100000, xlab="", ylab="", ...)  {
 		y <- as.integer(y[1])
 		stopifnot(y>0 && y<=nlyr(x))
@@ -18,13 +18,13 @@ setMethod("plot", signature(x='SpatRaster', y='numeric'),
 	}
 )
 
-setMethod("plot", signature(x='SpatRaster', y='missing'), 
+setMethod("plot", signature(x="SpatRaster", y="missing"), 
 	function(x, y, maxpixels=100000, xlab="", ylab="", ...)  {
 		plot(x, 1, maxpixels=maxpixels, xlab=xlab, ylab=ylab, ...)
 	}
 )
 
-setMethod("plot", signature(x='SpatVector', y='missing'), 
+setMethod("plot", signature(x="SpatVector", y="missing"), 
 	function(x, y, xlab="", ylab="", ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)
@@ -32,7 +32,7 @@ setMethod("plot", signature(x='SpatVector', y='missing'),
 			plot(g[,3], g[,4], xlab=xlab, ylab=ylab, col=col, ...)
 		} else {
 			e <- matrix(as.vector(ext(x)), 2)
-			plot(e, type='n', xlab=xlab, ylab=ylab, ...)
+			plot(e, type="n", xlab=xlab, ylab=ylab, ...)
 			g <- split(g, g[,1])
 			if (gtype == "polygons") {
 				g <- lapply(g, function(x) split(x, x[,2]))
@@ -57,7 +57,7 @@ setMethod("plot", signature(x='SpatVector', y='missing'),
 )
 
 
-setMethod("lines", signature(x='SpatVector'), 
+setMethod("lines", signature(x="SpatVector"), 
 	function(x, ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)
@@ -71,7 +71,7 @@ setMethod("lines", signature(x='SpatVector'),
 	}
 )
 
-setMethod("points", signature(x='SpatVector'), 
+setMethod("points", signature(x="SpatVector"), 
 	function(x, ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)

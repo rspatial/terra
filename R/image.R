@@ -8,8 +8,8 @@ if (!isGeneric("image")) {
 		standardGeneric("image"))
 }	
 
-setMethod("image", signature(x='SpatRaster'), 
-	function(x, y=1, maxpixels=100000, xlab='', ylab='', useRaster=TRUE, ...)  {
+setMethod("image", signature(x="SpatRaster"), 
+	function(x, y=1, maxpixels=100000, xlab="", ylab="", useRaster=TRUE, ...)  {
 		y <- as.integer(y[1])
 		stopifnot(y>0 && y<=nlyr(x))
 		x <- sampleRegular(x[[y]], maxpixels)
