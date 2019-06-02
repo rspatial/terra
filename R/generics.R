@@ -198,9 +198,14 @@ setMethod("t", signature(x="SpatRaster"),
 )
 
 
-setMethod("unique", signature(x="SpatRaster", incomparables="missing"), 
-	function(x, incomparables=FALSE, decimals=0, ...) {
-		x@ptr$unique(decimals)	
+setMethod("unique", signature(x="SpatRaster", incomparables="ANY"), 
+	function(x, incomparables=FALSE, ...) {
+		u <- x@ptr$unique(incomparables)
+		if (!incomparables) {
+			u <- t(do.call(cbind, u))
+			colnames(u) = names(x)
+		}
+		u
 	}
 )
 

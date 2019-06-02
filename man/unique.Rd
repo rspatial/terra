@@ -12,12 +12,12 @@ This function returns the unique values in a SpatRaster.
 }
 
 \usage{
-\S4method{unique}{SpatRaster,missing}(x, incomparables=0, ...) 
+\S4method{unique}{SpatRaster}(x, incomparables=FALSE, ...) 
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{incomparables}{the number of decimals to use in rounding the values before evaluating their uniquecess}
+  \item{incomparables}{logical. If \code{TRUE}, the unique values are determined for all layers together, and the result is a matrix. If \code{FALSE}, each layer is evaluated separately, and a list is returned.}
   \item{...}{additional arguments. none implemented}  
 }
 
@@ -27,15 +27,13 @@ vector or matrix
 }
 
 
-
 \examples{
 r <- rast(ncol=5, nrow=5)
-values(r) <- c(1:10, 1:10, 1:5)
+values(r) <- rep(1:5, each=5)
 unique(r)
-s <- c(r, r/2)
-u <- unique(s)
-#do.call(rbind, u)
-#lapply(u, unique)
+s <- c(r, round(r/3))
+unique(s)
 }
 
 \keyword{spatial}
+

@@ -341,7 +341,7 @@ class SpatRaster {
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
-		std::vector<std::vector<double>> unique(unsigned decimals);
+		std::vector<std::vector<double>> unique(bool bylayer);
 		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);
 };
 
