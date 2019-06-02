@@ -12,6 +12,8 @@
 \alias{yFromCell,SpatRaster,numeric-method}
 \alias{cellFromRowCol}
 \alias{cellFromRowCol,SpatRaster,numeric,numeric-method}
+\alias{cellFromRowColCombine}
+\alias{cellFromRowColCombine,SpatRaster,numeric,numeric-method}
 \alias{colFromX}
 \alias{colFromX,SpatRaster,numeric-method}
 \alias{rowFromY}
@@ -48,6 +50,7 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 \S4method{colFromX}{SpatRaster,numeric}(object, x)
 \S4method{rowFromY}{SpatRaster,numeric}(object, y)
 \S4method{cellFromRowCol}{SpatRaster,numeric,numeric}(object, row, col, ...)
+\S4method{cellFromRowColCombine}{SpatRaster,numeric,numeric}(object, row, col, ...)
 \S4method{rowFromCell}{SpatRaster,numeric}(object, cell)
 \S4method{colFromCell}{SpatRaster,numeric}(object, cell)
 \S4method{rowColFromCell}{SpatRaster,numeric}(object, cell)
@@ -56,7 +59,7 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 
 
 \arguments{
-  \item{object}{SpatRaster objectect}
+  \item{object}{SpatRaster}
   \item{cell}{integer. cell number(s)}
   \item{col}{integer. column number(s)}
   \item{row}{integer row number(s)}
@@ -93,6 +96,9 @@ xyFromCell(r, c(0, 1, 32581, ncell(r), ncell(r)+1))
 cellFromRowCol(r, 5, 5)
 cellFromRowCol(r, 1:2, 1:2)
 cellFromRowCol(r, 1, 1:3)
+
+# all combinations 
+cellFromRowColCombine(r, 1:2, 1:2)
 
 colFromX(r, 10)
 rowFromY(r, 10)

@@ -217,6 +217,8 @@ class SpatRaster {
 		double cellFromXY(double x, double y);
 		std::vector<double> cellFromRowCol(std::vector<unsigned> row, std::vector<unsigned> col);
 		double cellFromRowCol(unsigned row, unsigned col);
+		std::vector<double> cellFromRowColCombine(std::vector<unsigned> row, std::vector<unsigned> col);
+		double cellFromRowColCombine(unsigned row, unsigned col);
 		std::vector<double> yFromRow(std::vector<unsigned> &row);
 		double yFromRow(unsigned row);
 		std::vector<double> xFromCol(std::vector<unsigned> &col);

@@ -83,7 +83,7 @@ setMethod("sources", signature(x="SpatRaster"),
 	function(x, ...) {
 		src <- x@ptr$filenames
 		src[src == ""] <= "memory"
-		data.frame(source=src, nlyr=x@ptr$nlyrBySource())
+		data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
 	}
 )
 

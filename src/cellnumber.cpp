@@ -82,6 +82,26 @@ double SpatRaster::cellFromRowCol (unsigned row, unsigned col) {
 	return  cell[0];
 }
 
+std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<unsigned> row, std::vector<unsigned> col) {
+	recycle(row, col);
+	size_t n = row.size();
+	size_t nc = ncol();
+	size_t nr = nrow();
+	
+	std::vector<double> result(n * n);
+	for (size_t i=0; i<n; i++) {
+		for (size_t j=0; j<n; j++) {
+			result[i*n+j] = (row[i]<0 || row[i] >= nr || col[j]<0 || col[j] >= nc) ? NAN : row[i] * nc + col[j];
+		}
+	}
+	return result;
+}
+
+
+double SpatRaster::cellFromRowColCombine(unsigned row, unsigned col) {
+	return cellFromRowCol(row, col);
+}
+
 
 std::vector<double> SpatRaster::yFromRow(std::vector<unsigned> &row) {
 	size_t size = row.size();
