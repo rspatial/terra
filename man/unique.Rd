@@ -3,6 +3,7 @@
 \docType{methods}
 
 \alias{unique}
+\alias{unique,SpatRaster-method}
 \alias{unique,SpatRaster,ANY-method}
 
 \title{Unique values}
@@ -33,6 +34,7 @@ values(r) <- rep(1:5, each=5)
 unique(r)
 s <- c(r, round(r/3))
 unique(s)
+unique(s,TRUE)
 }
 
 \keyword{spatial}

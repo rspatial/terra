@@ -3,12 +3,12 @@
 \docType{methods}
 
 \alias{c}
-\alias{c, SpatRaster-method}
+\alias{c,SpatRaster-method}
 
 \title{Combine}
 
 \description{
-Combine SpatRaster objects (similar to raster::stack).
+Combine SpatRaster objects (similar to \code{raster::} \code{\link[raster]{stack}})
 }
 
 \usage{

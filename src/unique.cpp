@@ -16,35 +16,39 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
-#include "math_utils.h"
 
 
 std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
+
+	std::vector<std::vector<double>> out;
+	if (!hasValues()) return out;
+	
 	readStart();
 	BlockSize bs = getBlockSize(4);
-	std::vector<double> v, x;
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
-	std::vector<std::vector<double>> out;
 	
 	if (bylayer) {
+		out.resize(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
-			std::vector<std::vector<double>> out(nl);
-			v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
-				std::vector<double> m(v.begin()+off, v.begin()+off+n);
-				std::sort(m.begin(), m.end());
-				m.erase(std::unique(m.begin(), m.end()), m.end());
-				out.insert(out.end(), m);
+				out[lyr] = std::vector<double>(v.begin()+off, v.begin()+off+n);
+				std::sort(out[lyr].begin(), out[lyr].end());
+				out[lyr].erase(std::unique(out[lyr].begin(), out[lyr].end()), out[lyr].end());
 			}
+		}
+		for (size_t lyr=0; lyr<nl; lyr++) {
+			std::sort(out[lyr].begin(), out[lyr].end());
+			out[lyr].erase(std::unique(out[lyr].begin(), out[lyr].end()), out[lyr].end());
 		}
 	} else {
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
 			std::vector<std::vector<double>> m(n, std::vector<double>(nl));
-			v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
 				for (size_t j=0; j<n; j++) {
@@ -57,10 +61,10 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 				out.insert(out.end(), m[j]);
 			}
 		}
+		std::sort(out.begin(), out.end());
+		out.erase(std::unique(out.begin(), out.end()), out.end());
 	}
 	readStop();
-	std::sort(out.begin(), out.end());
-	out.erase(std::unique(out.begin(), out.end()), out.end());	
 	return(out);
 }
 

@@ -99,9 +99,9 @@ setAs("SpatRaster", "RasterLayer",
 			return(rast(f))
 		} else {
 			e <- extent(from)
-			nl <- nlayers(b)
 			r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
-			          xmin=e.xmin, xmax=e.xmax, ymin=e.ymin, ymax=e.ymax)				
+			          xmin=e@xmin, xmax=e@xmax, ymin=e@ymin, ymax=e@ymax,
+					  nlyr=1)				
 		}
 		if (hasValues(from)) {
 			values(r) <- values(from)
@@ -119,9 +119,9 @@ setAs("SpatRaster", "RasterBrick",
 			return(rast(f))
 		} else {
 			e <- extent(from)
-			nl <- nlayers(b)
+			nl <- nlayers(from)
 			r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
-			          xmin=e.xmin, xmax=e.xmax, ymin=e.ymin, ymax=e.ymax,
+			          xmin=e@xmin, xmax=e@xmax, ymin=e@ymin, ymax=e@ymax,
 					  nlyr=nl)
 		} 
 		if (hasValues(from)) {
@@ -135,8 +135,8 @@ setAs("SpatRaster", "RasterBrick",
 
 setAs("SpatRaster", "RasterStack", 
 	function(from) { 
-		nl <- nlayer(from)
-		rr <- as("SpatRaster", from[[i]])
+		nl <- nlayers(from)
+		rr <- as("SpatRaster", from[[1]])
 		if (nl > 1) {
 			for (i in 2:nl) {
 				r <- as("SpatRaster", from[[i]])

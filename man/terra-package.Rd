@@ -15,7 +15,7 @@ Like the raster package, "terra" provides classes and functions to manipulate ge
 The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. To speed up computations, all native computations are done in C++, exposed via a Rcpp module. Methods that heavily interact with native R functions (e.g. "predict") are written in R, calling C++ functions for reading/writing.
 
 
-Below is a list of some of the most important functions grouped by theme.
+Below is a list of some of the most important functions grouped by theme. Some of these have not been implemented yet.
 }
 
 \details{
@@ -111,10 +111,10 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
     \code{boundaries} \tab Detection of boundaries (edges)\cr
-    \code{\link{clump}} \tab Find clumps (patches) \cr
+    \code{clump} \tab Find clumps (patches) \cr
     \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
     \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
-    \code{\link{terrain}} \tab Compute slope, aspect and other characteristics from elevation data \cr	
+    \code{terrain} \tab Compute slope, aspect and other characteristics from elevation data \cr	
     \code{Moran} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -125,7 +125,7 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 
   \tabular{ll}{
     \code{\link{predict}} \tab Predict a non-spatial model to a SpatRaster \cr
-    \code{\link{interpolate}} \tab Predict a spatial model to a SpatRaster \cr
+    \code{interpolate} \tab Predict a spatial model to a SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
@@ -138,8 +138,8 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
   \tabular{ll}{
     \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr
     \code{\link{rasterize}} \tab Rasterizing points, lines or polygons\cr
-    \code{\link{rasterToPoints}} \tab Create points from a SpatRaster \cr
-    \code{\link{rasterToPolygons}} \tab Create polygons from a SpatRaster \cr
+    \code{rasterToPoints} \tab Create points from a SpatRaster \cr
+    \code{rasterToPolygons} \tab Create polygons from a SpatRaster \cr
     \code{rasterToContour} \tab Contour lines from a SpatRaster \cr
     \code{rasterFromXYZ} \tab Createa a SpatRaster from regularly spaces points\cr
     \code{rasterFromCells} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
@@ -151,12 +151,12 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
 \section{VIII. Summarizing}{
 
   \tabular{ll}{
-    \code{\link{cellStats}} \tab Summarize SpatRaster cell values with a function \cr
-    \code{\link{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
-    \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
-    \code{\link{crosstab}} \tab Cross-tabulate two SpatRasters\cr
-    \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
+    \code{cellStats} \tab Summarize SpatRaster cell values with a function \cr
+    \code{summary} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
+    \code{freq} \tab Frequency table of SpatRaster cell values \cr
+    \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
+    \code{unique} \tab Get the unique values in a SpatRaster \cr
+    \code{zonal} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -171,10 +171,9 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \code{\link{as.matrix}} \tab Get cell values as a matrix \cr
     \code{\link{as.array}} \tab Get cell values as an array \cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (e.g., by cell, coordinates, polygon)\cr
-    \code{\link{sampleRandom}} \tab Random sample \cr
-    \code{\link{sampleRegular}} \tab Regular sample \cr
-    \code{\link{minValue}} \tab Get the minimum value of the cells of a SpatRaster (not always known) \cr
-    \code{\link{maxValue}} \tab Get the maximum value of the cells of a SpatRaster (not always known) \cr
+    \code{sampleRandom} \tab Random sample \cr
+    \code{sampleRegular} \tab Regular sample \cr
+    \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -186,28 +185,28 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
   \tabular{ll}{
     \bold{Maps} \tab \cr
     \code{\link{plot}} \tab Plot a SpatRaster. The main method to create a map \cr
-    \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single 'real color' image \cr
+    \code{plotRGB} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
     \code{\link{image}} \tab Plot a SpatRaster with the image function \cr
-    \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
-    \code{\link{contour}} \tab Contour plot of a SpatRaster \cr
-    \code{\link{filledContour}} \tab Filled contour plot of a SpatRaster \cr
-    \code{\link{text}} \tab Plot the values of a SpatRaster on top of a map \cr
+    \code{persp} \tab Perspective plot of a SpatRaster \cr
+    \code{contour} \tab Contour plot of a SpatRaster \cr
+    \code{filledContour} \tab Filled contour plot of a SpatRaster \cr
+    \code{text} \tab Plot the values of a SpatRaster on top of a map \cr
     .\cr
     \bold{Interacting with a map} \tab \cr
-    \code{\link{zoom}} \tab Zoom in to a part of a map \cr
-    \code{\link{click}} \tab Query values of SpatRaster or Spatial* objects by clicking on a map \cr
-    \code{\link{select}} \tab Select a geometric subset of a SpatRaster or Spatial* object \cr
-    \code{\link{drawPoly}} \tab Create a SpatialPolygons object by drawing it \cr
-    \code{\link{drawLine}} \tab Create a SpatialLines object by drawing it \cr
-    \code{\link{drawExtent}} \tab Create an Extent object by drawing it \cr	
+    \code{zoom} \tab Zoom in to a part of a map \cr
+    \code{click} \tab Query values of SpatRaster or Spatial* objects by clicking on a map \cr
+    \code{select} \tab Select a geometric subset of a SpatRaster or Spatial* object \cr
+    \code{drawPoly} \tab Create a SpatialPolygons object by drawing it \cr
+    \code{drawLine} \tab Create a SpatialLines object by drawing it \cr
+    \code{drawExtent} \tab Create an Extent object by drawing it \cr	
     .\cr
 	\bold{Other plots} \tab \cr
     \code{\link{plot}} \tab x-y scatter plot of the values of two SpatRaster objects\cr
-    \code{\link{hist}} \tab Histogram of SpatRaster values \cr
-    \code{\link{barplot}} \tab barplot of a SpatRaster \cr
-    \code{\link{density}} \tab Density plot of SpatRaster values \cr
-    \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
-    \code{\link{boxplot}} \tab Box plot of the values of one or multiple layers\cr
+    \code{hist} \tab Histogram of SpatRaster values \cr
+    \code{barplot} \tab barplot of a SpatRaster \cr
+    \code{density} \tab Density plot of SpatRaster values \cr
+    \code{pairs} \tab Pairs plot for layers in a SpatRaster \cr
+    \code{boxplot} \tab Box plot of the values of one or multiple layers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -234,8 +233,8 @@ Basic parameters of existing SpatRasters can be obtained, and in most cases chan
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
     \code{\link{isLonLat}} \tab Test if an object has a longitude/latitude coordinate reference system \cr
     \code{\link{filename}} \tab Filename(s) to which a SpatRaster is linked \cr	
-    \code{\link{compareRaster}} \tab Compare the geometry of SpatRasters \cr		
-    \code{\link{NAvalue}} \tab Get or set the \code{NA} value (for reading from a file) \cr
+    \code{compareRaster} \tab Compare the geometry of SpatRasters \cr		
+    \code{NAvalue} \tab Get or set the \code{NA} value (for reading from a file) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	
 }
@@ -256,8 +255,8 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{rowFromY}} \tab Row numbers from y-coordinates (or latitude) \cr
     \code{\link{rowColFromCell}} \tab Row and column numbers from cell numbers\cr
     \code{\link{cellFromXY}} \tab Cell numbers from x and y coordinates \cr
-    \code{\link{cellFromRowCol}} \tab Cell numbers from row and column numbers \cr
-    \code{\link{cellsFromExtent}} \tab Cell numbers from extent object \cr
+    \code{cellFromRowCol} \tab Cell numbers from row and column numbers \cr
+    \code{cellsFromExtent} \tab Cell numbers from extent object \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -266,9 +265,8 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
   \tabular{ll}{
    \bold{Basic}\cr
-    \code{\link{setValues}} \tab Put new values in a SpatRaster \cr
+    \code{setValues} \tab Put new values in a SpatRaster \cr
     \code{\link{writeRaster}} \tab Write all values of SpatRaster to disk \cr
-    \code{\link{KML}} \tab Save raster as KML file \cr	
    .\cr
    \bold{Advanced}\cr
    \code{\link{blockSize}} \tab Get suggested block size for reading and writing \cr
@@ -285,9 +283,9 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{extent}} \tab Create an extent object \cr
     \code{\link{intersect}} \tab Intersect two extent objects  \cr
     \code{\link{union}} \tab Combine two extent objects \cr
-    \code{\link{round}} \tab round/floor/ceiling of the coordinates of an Extent object \cr			
-    \code{\link{alignExtent}} \tab Align an extent with a SpatRaster \cr
-    \code{\link{drawExtent}} \tab Create an Extent object by drawing it on top of a map (see plot) \cr		
+    \code{round} \tab round/floor/ceiling of the coordinates of an Extent object \cr			
+    \code{alignExtent} \tab Align an extent with a SpatRaster \cr
+    \code{drawExtent} \tab Create an Extent object by drawing it on top of a map (see plot) \cr		
     --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
