@@ -277,6 +277,30 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 }	
 
+
+\section{XIV. Manipulation of SpatVector objects}{
+The name in \bold{bold} is the equivalent command in ArcGIS. 
+
+\tabular{ll}{
+  \code{c} \tab \bold{append} combine "rbind" vector data of the same (vector) type \cr
+  \code{erase} or "-" \tab \bold{erase} parts of a polygons\cr
+  \code{intersect} or "*"  \tab \bold{intersect} polygons\cr
+  \code{union} or "+" \tab \bold{union} polygons\cr
+  \code{cover} \tab \bold{update} and \bold{identity} a polygons\cr
+  \code{symdif} \tab\bold{symmetrical difference} of two polygons \cr 
+  \code{aggregate} \tab \bold{dissolve} smaller polygons into larger ones \cr
+  \code{disaggregate} \tab \bold{explode}: turn polygon parts into separate polygons \cr
+  \code{crop} \tab \bold{clip} vector data using a rectangle (SpatExtent )\cr
+  \code{select} \tab \bold{select} - interactively select spatial features\cr
+  \code{click} \tab \bold{identify} attributes by clicking on a map\cr
+  \code{merge} \tab \bold{Join table} \cr
+  \code{extract} \tab spatial queries between SpatVector and SpatRaster objects \cr
+  \code{as.data.frame} \tab coerce coordinates into a data.frame\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
+}
+}
+
+
 \section{XV. SpatExtent objects}{
 
   \tabular{ll}{

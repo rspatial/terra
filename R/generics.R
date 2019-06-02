@@ -202,6 +202,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 	function(x, incomparables=FALSE, ...) {
 		u <- x@ptr$unique(incomparables)
 		if (!incomparables) {
+			if (!length(u)) return(u)
 			u <- t(do.call(cbind, u))
 			colnames(u) = names(x)
 		}

@@ -23,10 +23,10 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
 	
-	readStart();
 	BlockSize bs = getBlockSize(4);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
+	readStart();
 	
 	if (bylayer) {
 		out.resize(nl);
