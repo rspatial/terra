@@ -198,7 +198,7 @@ setAs("SpatRaster", "Raster",
 			}
 			names(r) <- names(from)
 		} else {
-			if (nrow(s) == 1) {
+			if (nrow(s) == 1 & s$source[1] != "") {
 				r <- brick(s$source)			
 			} else if (all(s$source=="")) {
 				r <- brick(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
@@ -223,3 +223,4 @@ setAs("SpatRaster", "Raster",
 		return(r)		
 	}
 )
+
