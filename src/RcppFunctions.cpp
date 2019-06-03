@@ -74,7 +74,7 @@ Rcpp::DataFrame getGeometry(SpatVector* v) {
 }
 
 
-SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, SpatOptions &opt) {
+SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
 	unsigned nc = rcl.ncol();
 	unsigned nr = rcl.nrow();
 	//printf("nc %u nr %u \n", nr, nr);
@@ -84,7 +84,7 @@ SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right
 			rc[c].push_back(rcl(r,c));
 		}
 	}
-	SpatRaster out = x->reclassify(rc, right, lowest, opt);
+	SpatRaster out = x->reclassify(rc, right, lowest, othersNA, opt);
 	return out;
 }
 

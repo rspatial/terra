@@ -18,7 +18,7 @@
 #include "spatRaster.h"
 #include <cmath>
 
-void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, unsigned doright, bool lowest) {
+void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, unsigned doright, bool lowest, bool othNA) {
 
 	size_t nc = rcl.size(); // should be 2 or 3
 	if (nc == 2) {
@@ -47,11 +47,16 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 			if (std::isnan(v[i])) {
 				v[i] = NAval;
 			} else {
+				bool found = false;
 				for (size_t j=0; j<nc; j++) {
 					if (v[i] == rcl[0][j]) {
 						v[i] = rcl[1][j];
+						found = true;
 						break;
 					}
+				}
+				if ((othNA) & (!found)) {
+					v[i] = NAval;
 				}
 			}
 		}
@@ -63,12 +68,17 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 			if (std::isnan(v[i])) {
 				v[i] = NAval;
 			} else {
+				bool found = false;
 				for (size_t j=0; j<nc; j++) {
 					if ((v[i] >= rcl[0][j]) & (v[i] <= rcl[1][j])) {
 						v[i] = rcl[1][j];
+						found = true;
 						break;
 					}
 				}
+				if ((othNA) & (!found))  {
+					v[i] = NAval;
+				}				
 			}
 		}
 		} else if (right) {  // interval closed at right
@@ -83,18 +93,22 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				}
 			}
 
-
 			for (size_t i=0; i<n; i++) {
 				if (std::isnan(v[i])) {
 					v[i] = NAval;
 				} else if (v[i] == lowval) {
 					v[i] = lowres;
 				} else {
+					bool found = false;
 					for (size_t j=0; j<nc; j++) {
 						if ((v[i] > rcl[0][j]) & (v[i] <= rcl[1][j])) {
 							v[i] = rcl[2][j];
+							found = true;
 							break;
 						}
+					}
+					if  ((othNA) & (!found))  {
+						v[i] = NAval;
 					}
 				}
 			}
@@ -104,11 +118,16 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				if (std::isnan(v[i])) {
 					v[i] = NAval;
 				} else {
+					bool found = false;
 					for (size_t j=0; j<nc; j++) {
 						if ((v[i] > rcl[0][j]) & (v[i] <= rcl[1][j])) {
 							v[i] = rcl[2][j];
+							found = true;
 							break;
 						}
+					}
+					if  ((othNA) & (!found))  {
+						v[i] = NAval;
 					}
 				}
 			}
@@ -133,11 +152,16 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				} else if (v[i] == lowval) {
 					v[i] = lowres;
 				} else {
+					bool found = false;
 					for (size_t j=0; j<nc; j++) {
 						if ((v[i] >= rcl[0][j]) & (v[i] < rcl[1][j])) {
 							v[i] = rcl[2][j];
+							found = true;
 							break;
 						}
+					}
+					if  ((othNA) & (!found))  {
+						v[i] = NAval;
 					}
 				}
 			}
@@ -148,11 +172,16 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				if (std::isnan(v[i])) {
 					v[i] = NAval;
 				} else {
+					bool found = false;
 					for (size_t j=0; j<nc; j++) {
 						if ((v[i] >= rcl[0][j]) & (v[i] < rcl[1][j])) {
 							v[i] = rcl[2][j];
+							found = true;
 							break;
 						}
+					}
+					if  ((othNA) & (!found))  {
+						v[i] = NAval;
 					}
 				}
 			}
@@ -161,7 +190,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 }
 
 
-SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	size_t nc = rcl.size();
@@ -185,13 +214,11 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		}
 	}
 
-
-
   	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
-		reclass_vector(v, rcl, right, lowest);
+		reclass_vector(v, rcl, right, lowest, othersNA);
 		if (!out.writeValues(v, out.bs.row[i])) return out;		
 	}
 	readStop();

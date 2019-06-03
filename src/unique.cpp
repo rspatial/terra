@@ -16,12 +16,15 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
+#include <limits>
 
 
 std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
+
+	constexpr double lowest_double = std::numeric_limits<double>::lowest();
 	
 	BlockSize bs = getBlockSize(4);
 	unsigned nc = ncol();
@@ -33,6 +36,11 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
 			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+
+			for (size_t j = 0; j < v.size(); j++) {
+				if (std::isnan(v[j])) v[j] = lowest_double;
+			}
+			
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
 				out[lyr] = std::vector<double>(v.begin()+off, v.begin()+off+n);
@@ -49,6 +57,10 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 			unsigned n = bs.nrows[i] * nc;
 			std::vector<std::vector<double>> m(n, std::vector<double>(nl));
 			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			for (size_t j = 0; j < v.size(); j++) {
+				if (std::isnan(v[j])) v[j] = lowest_double;
+			}
+
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
 				for (size_t j=0; j<n; j++) {
@@ -65,6 +77,14 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 		out.erase(std::unique(out.begin(), out.end()), out.end());
 	}
 	readStop();
+
+	for (size_t i = 0; i < out.size(); i++) {
+		for (size_t j = 0; j < out[0].size(); j++) {
+			if (out[i][j] == lowest_double) {
+				out[i][j] = NAN;
+			}
+		}
+	}
 	return(out);
 }
 

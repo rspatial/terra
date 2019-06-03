@@ -126,7 +126,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 
 setMethod("reclassify", signature(x="SpatRaster", rcl="ANY"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
+function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 	
 	
 	if ( is.null(dim(rcl)) ) { 
@@ -140,7 +140,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, filename="", overwrite=FALSE,
 	include.lowest <- as.logical(include.lowest[1])
 
 	opt <- .runOptions(filename, overwrite, wopt)
-    x@ptr <- x@ptr$rcppReclassify(rcl, right, include.lowest, opt)
+    x@ptr <- x@ptr$rcppReclassify(rcl, right, include.lowest, othersNA, opt)
 	show_messages(x, "reclassify")	
 }
 )

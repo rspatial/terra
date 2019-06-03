@@ -152,17 +152,20 @@ setMethod("as.array", signature(x="SpatRaster"),
 	
 	if ((nb > 1) & (nb == nl)) {
 		ff <- lapply(1:nlayers(from), function(i) { filename(from[[i]]) })
-		if (length(unique(ff)) == 1) {
-			rr <- rast(filename(x))
+		ff <- unique(ff)
+		if ((length(ff) == 1) & (ff != "")) {
+			rr <- rast(ff)
 		}
 		names(rr) <- names(from)
 		return(rr)
-	}	
+	}
+	
 	if (nl > 1) {
 		for (i in 2:nl) {
 			rr <- c(rr, as("SpatRaster", from[[i]]))
 		}
 	}
+	names(rr) <- names(from)	
 	rr
 }
 

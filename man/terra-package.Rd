@@ -90,8 +90,6 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
     \code{\link{overlay}} \tab Computations on multiple SpatRaster objects \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
-    \code{cut} \tab Reclassify values using ranges \cr
-    \code{subs} \tab Reclassify values using an 'is-becomes' matrix \cr	
     \code{\link{reclassify}} \tab Reclassify using a 'from-to-becomes' matrix \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{rastApply} \tab Computations on groups of layers in SpatRaster \cr
@@ -141,7 +139,7 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
     \code{rasterToPoints} \tab Create points from a SpatRaster \cr
     \code{rasterToPolygons} \tab Create polygons from a SpatRaster \cr
     \code{rasterToContour} \tab Contour lines from a SpatRaster \cr
-    \code{rasterFromXYZ} \tab Createa a SpatRaster from regularly spaces points\cr
+    \code{rasterFromXYZ} \tab Create a SpatRaster from regularly spaced points\cr
     \code{rasterFromCells} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
