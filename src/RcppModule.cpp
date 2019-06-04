@@ -62,8 +62,16 @@ RCPP_MODULE(spat){
 		.method("extent", &SpatVector::getExtent, "extent")		
 		.method("read", &SpatVector::read, "read")		
 		.method("getAttributes", &getAttributes, "getAttributes")
+		//.method("setAttributes", &setAttributes, "setAttributes")
+		
 		.method("getGeometry", &getGeometry, "getGeometry")
 		.method("setGeometry", &SpatVector::setGeometry, "setGeometry")
+
+		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
+		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
+		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
+		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
+		
 		.method("area", &SpatVector::area, "area")		
 		.method("length", &SpatVector::length, "length")		
 		.method("as_lines", &SpatVector::as_lines, "as_lines")

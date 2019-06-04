@@ -7,6 +7,7 @@
 \alias{vect,data.frame-method}
 \alias{vect,matrix-method}
 \alias{vect,missing-method}
+\alias{vect,Spatial-method}
 
 \title{Create SpatVector objects}
 

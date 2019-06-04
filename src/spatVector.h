@@ -116,6 +116,19 @@ class SpatVector {
 		std::vector<unsigned> getItype();
 		std::vector<unsigned> getIplace();
 
+		void add_column(unsigned dtype, std::string name) {
+			lyr.df.add_column(dtype, name);
+		};
+		bool add_column(std::vector<double> x, std::string name) {
+			return lyr.df.add_column(x, name);
+		}
+		bool add_column(std::vector<long> x, std::string name) {
+			return lyr.df.add_column(x, name);
+		}
+		bool add_column(std::vector<std::string> x, std::string name) {
+			return lyr.df.add_column(x, name);
+		}
+
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }

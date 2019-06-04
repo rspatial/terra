@@ -29,7 +29,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 		g <- geom(x)
 		gtype <- geomtype(x)
 		if (gtype == "points") {
-			plot(g[,3], g[,4], xlab=xlab, ylab=ylab, col=col, ...)
+			plot(g[,3], g[,4], xlab=xlab, ylab=ylab, ...)
 		} else {
 			e <- matrix(as.vector(ext(x)), 2)
 			plot(e, type="n", xlab=xlab, ylab=ylab, ...)

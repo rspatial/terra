@@ -162,11 +162,11 @@ void SpatVector::setCRS(std::string CRS){
 std::string SpatVector::type(){
 	if (size() == 0) {
 		return "none";
-	} else if (lyr.geoms[0].gtype == 0) {
+	} else if (lyr.geoms[0].gtype == points) {
 		return "points";
-	} else if (lyr.geoms[0].gtype == 1) {
+	} else if (lyr.geoms[0].gtype == lines) {
 		return "lines";
-	} else if (lyr.geoms[0].gtype == 2) {
+	} else if (lyr.geoms[0].gtype == polygons) {
 		return "polygons";
 	} else {
 		return("unknown");

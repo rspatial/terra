@@ -8,35 +8,15 @@
 \title{terra}
 
 \description{
-This package is conceived as a replacement of the raster package. It has a very similar, but simpler, interface, and it is faster.
 
-Like the raster package, "terra" provides classes and functions to manipulate geographic (spatial) data in "raster" format. Raster data divides space into cells (rectangles; pixels) of equal size (in units of the coordinate reference system). Such continuous spatial data are also referred to as "grid" data, and be contrasted with discrete (object based) spatial data such as points, lines, polygons (for which there is also support). An important difference is that "terra" has a single main class, "SpatRaster", as opposed to the three classes in the "raster" package (RasterLayer, RasterStack, RasterBrick). 
+The "terra" package implements classes for spatial data (see \link{SpatRaster-class}) and supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polylygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
 
-The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. To speed up computations, all native computations are done in C++, exposed via a Rcpp module. Methods that heavily interact with native R functions (e.g. "predict") are written in R, calling C++ functions for reading/writing.
+The package is conceived as a replacement of the raster package. It has a very similar, but simpler, interface, and it is faster. Like the "raster" package, "terra" provides classes and functions to manipulate geographic (spatial) data in "raster" format. Raster data divides space into cells (rectangles; pixels) of equal size (in units of the coordinate reference system). Such continuous spatial data are also referred to as "grid" data, and be contrasted with discrete (object based) spatial data such as points, lines, polygons (for which there is also support). An important difference is that "terra" has a single main class, "SpatRaster", as opposed to the three classes in the "raster" package (RasterLayer, RasterStack, RasterBrick). 
 
+The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
 Below is a list of some of the most important functions grouped by theme. Some of these have not been implemented yet.
 }
-
-\details{
- The package implements classes for spatial data (see \link{SpatRaster-class}) and supports
-  \itemize{
-    \item Creation of SpatRaster objects from scratch or from file
-    \item Handling extremely large raster files
-    \item Raster algebra and overlay functions
-    \item Distance, neighborhood (focal) and patch functions
-    \item Polygon, line and point to raster conversion
-    \item Model predictions
-    \item Summarizing raster values
-    \item Easy access to raster cell-values
-    \item Plotting (making maps)
-    \item Manipulation of raster extent, resolution and origin
-    \item Computation of row, col and cell numbers to coordinates and vice versa
-    \item Reading and writing various raster file types
-  }
-. 
-}
-
 
 \section{I. Creating SpatRaster objects}{
 
@@ -341,7 +321,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 }
 }
 
-\author{Except where indicated otherwise, the methods and functions in this package were written by Robert J. Hijmans}
+\author{Except where indicated otherwise, the methods and functions in this package were written by Robert J. Hijmans; standing on the shoulders of giants (notably for GDAL, GEOS, GeographicLib)}
 
 \section{Acknowledgments}{
 to do

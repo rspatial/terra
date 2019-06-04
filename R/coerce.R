@@ -173,14 +173,15 @@ setMethod("as.array", signature(x="SpatRaster"),
 setAs("Raster", "SpatRaster", 
 	function(from) { 
 		if (inherits(from, "RasterLayer")) {
-			return (.RasterLayertoSpatRaster(from))
+			r <- .RasterLayertoSpatRaster(from)
 		}
 		if (inherits(from, "RasterStack")) {
-			return (.RasterStracktoSpatRaster(from))
+			r <- .RasterStracktoSpatRaster(from)
 		}
 		if (inherits(from, "RasterBrick")) {
-			return (.RasterBricktoSpatRaster(from))
+			r <- .RasterBricktoSpatRaster(from)
 		}
+		show_messages(r, "coerce")
 	}
 )
 
@@ -233,17 +234,17 @@ setAs("SpatVector", "Spatial",
 	function(from) {
 		g <- geom(from)
 		colnames(g)[1] <- "object"
-		gt <- geomtype(v)
+		gt <- geomtype(from)
 		d <- as.data.frame(from)
 		if (gt == "polygons") {
 			sp <- as(g, "SpatialPolygons")
-			sp <- SpatialPolygonsDataFrame(sp, d)
+			sp <- sp::SpatialPolygonsDataFrame(sp, d)
 		} else if (gt == "lines") {
 			sp <- as(g, "SpatialLines")		
-			sp <- SpatialLinesDataFrame(sp, d)
+			sp <- sp::SpatialLinesDataFrame(sp, d)
 		} else {
 			sp <- as(g, "SpatialPoints")
-			sp <- SpatialPointsDataFrame(sp, d)
+			sp <- sp::SpatialPointsDataFrame(sp, d)
 		}
 		crs(sp)<- crs(from)
 		return(sp)		
@@ -256,7 +257,7 @@ setAs("Spatial", "SpatVector",
 		g <- geom(from)
 		colnames(g)[1] <- "id"
 		if ("cump" %in% colnames(g)) {
-			g <- g[,-3]
+			g <- g[,c(1,2,5,6,4)]
 		}
 		if (inherits(from, "SpatialPolygons")) {
 			vtype <- "polygons"
@@ -265,7 +266,7 @@ setAs("Spatial", "SpatVector",
 		} else {
 			vtype <- "points"
 		}
-		if (.hasSlot(from, "data")) {
+		if (methods::.hasSlot(from, "data")) {
 			v <- vect(g, vtype, from@data, crs(from))
 		} else {
 			v <- vect(g, vtype, crs=crs(from))

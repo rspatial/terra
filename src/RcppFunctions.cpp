@@ -36,8 +36,6 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) {
 }
 
 
-
-
 Rcpp::List getAttributes(SpatVector* v) {
 	unsigned n = v->ncol();
 	Rcpp::List out(n);	
@@ -53,12 +51,35 @@ Rcpp::List getAttributes(SpatVector* v) {
 	}	
 	// todo: deal with NAs in int and str
 	return out;
-// df is nice, but no no of variables is <= 20, and no "stringsAsFactors"=false
+// df is nice, but no of variables is <= 20, and no "stringsAsFactors"=false
 //	Rcpp::DataFrame result(out);
 //	result.attr("names") = v->names();
 //	return result;
 }
 
+/*
+bool setAttributes(SpatVector* v, Rcpp::List x, std::vector<std::string> names, std::vector<std::string> types) {
+	unsigned n = x.size();
+	std::vector<double> vd;
+	std::vector<long> vi;
+	std::vector<std::string> vs;
+	
+	for (size_t i=0; i < n; i++) {
+		Rcpp::NumericVector nv = x[i];
+		if (types[i] == "numeric") {
+			vd = Rcpp::as<std::vector<double> >(nv);
+			v->lyr.df.add_column(vd, names[i]);
+		} else if (types[i] == "integer") {
+			vi = Rcpp::as<std::vector<long> >(nv);
+			v->lyr.df.add_column(vi, names[i]);
+		} else {
+			vs = Rcpp::as<std::vector<std::string> >(nv);
+			v->lyr.df.add_column(vs, names[i]);
+		}
+	}
+	return true;
+}
+*/
 
 Rcpp::DataFrame getGeometry(SpatVector* v) {
 	SpatDataFrame df = v->getGeometryDF();
