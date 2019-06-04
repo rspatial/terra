@@ -45,10 +45,11 @@ setMethod("vect", signature(x="matrix"),
 			stop("not an appropriate matrix")
 		}
 		if (!is.null(atts)) {
-			p@ptr$setAttributes(p)
+			# to do
+			# p@ptr$setAttributes(p)
 		}
 		if (!is.na(crs)) {
-			p@ptr$setCrs(crs)
+			p@ptr$crs <- crs
 		}
 		show_messages(p)
 		p

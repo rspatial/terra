@@ -227,3 +227,50 @@ setAs("SpatRaster", "Raster",
 	}
 )
 
+
+
+setAs("SpatVector", "Spatial", 
+	function(from) {
+		g <- geom(from)
+		colnames(g)[1] <- "object"
+		gt <- geomtype(v)
+		d <- as.data.frame(from)
+		if (gt == "polygons") {
+			sp <- as(g, "SpatialPolygons")
+			sp <- SpatialPolygonsDataFrame(sp, d)
+		} else if (gt == "lines") {
+			sp <- as(g, "SpatialLines")		
+			sp <- SpatialLinesDataFrame(sp, d)
+		} else {
+			sp <- as(g, "SpatialPoints")
+			sp <- SpatialPointsDataFrame(sp, d)
+		}
+		crs(sp)<- crs(from)
+		return(sp)		
+	}
+)
+
+
+setAs("Spatial", "SpatVector", 
+	function(from) {
+		g <- geom(from)
+		colnames(g)[1] <- "id"
+		if ("cump" %in% colnames(g)) {
+			g <- g[,-3]
+		}
+		if (inherits(from, "SpatialPolygons")) {
+			vtype <- "polygons"
+		} else if (inherits(from, "SpatialLines")) {
+			vtype <- "lines"
+		} else {
+			vtype <- "points"
+		}
+		if (.hasSlot(from, "data")) {
+			v <- vect(g, vtype, from@data, crs(from))
+		} else {
+			v <- vect(g, vtype, crs=crs(from))
+		}
+		return(v)
+	}
+)
+
