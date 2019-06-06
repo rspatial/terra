@@ -33,12 +33,7 @@ The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are require
 With Homebrew you can do:
 
 ```
-brew unlink gdal
-brew tap osgeo/osgeo4mac && brew tap --repair
-brew install proj
-brew install geos
-brew install gdal2 --with-armadillo --with-complete --with-libkml --with-unsupported
-brew link --force gdal2
+brew install gdal
 ```
 
 And now, in R, install the packages.
