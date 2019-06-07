@@ -15,7 +15,7 @@ Create a SpatRaster with values reflecting a cell property: 'x', 'y', 'col', 'ro
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{fun}{function to be applied. This must be a function that can take the number of cells as a single argument to return a vector of values with a length equal to the number of cells, such as \code{fun=runif}. You can also supply one of the following character values: 'x', 'y', 'row', 'col', or 'cell' to get the x or coordinate, row, col or cell number; you can also use 'chess', to get a chessboard pattern}
+  \item{fun}{function to be applied. This must be a either a single number, a function, or one of a set of character values. A function must take the number of cells as a single argument to return a vector of values with a length equal to the number of cells, such as \code{fun=runif}. Allowed character values are 'x', 'y', 'row', 'col', 'cell', and 'chess' to get the x or y coordinate, row, col or cell number or a chessboard pattern (alternating 0 and 1 values)}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

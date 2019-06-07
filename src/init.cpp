@@ -99,3 +99,20 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 	return(out);
 }
 
+
+
+SpatRaster SpatRaster::init(double value, SpatOptions &opt) {
+	SpatRaster out = geometry();
+ 	if (!out.writeStart(opt)) { return out; }
+	unsigned nc = ncol();
+	std::vector<double> v(out.bs.nrows[0]*nc, value);	
+	for (size_t i = 0; i < out.bs.n; i++) {
+		if (i > 0 && i == (out.bs.n-1)) {
+			v.resize(bs.nrows[i]*nc);
+		}
+		if (!out.writeValues(v, i)) return out;
+	}
+	out.writeStop();
+	return(out);
+}
+

@@ -176,8 +176,8 @@ RCPP_MODULE(spat){
 		.method("flip", &SpatRaster::flip, "flip")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
-		.method("init", &SpatRaster::init, "init")
-		
+		.method("initf", ( SpatRaster (SpatRaster::*)(std::string, bool, SpatOptions&) )( &SpatRaster::init ), "init fun")
+		.method("initv", ( SpatRaster (SpatRaster::*)(double, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("mask", &SpatRaster::mask, "mask")

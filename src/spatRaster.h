@@ -320,6 +320,8 @@ class SpatRaster {
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, std::string fun, SpatOptions &opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
+		SpatRaster init(double value, SpatOptions &opt);
+		
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
