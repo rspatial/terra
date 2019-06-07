@@ -63,22 +63,22 @@ std::vector<double> focal_get(std::vector<double> d, std::vector<unsigned> dim, 
 
 std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows) {
 
-	std::vector<unsigned> dim = {nrow(), ncol()};
 
 	int wr = std::floor(w[0]/2);
 	unsigned row2 = std::max(unsigned(0), row-wr);
-	unsigned nrows2 = std::min(nrows, nrows+wr);
+	unsigned nrows2 = std::min(nrow(), nrows+wr);
 
 	readStart();
 	std::vector<double> d = readValues(row2, nrows2, 0, ncol());
 	readStop();
 
+	std::vector<unsigned> dim = {nrows2, ncol()};
 	std::vector<double> f = focal_get(d, dim, w, fillvalue);
+
 	if ((row2 < row) | (nrows2 > nrows)) {
-		int start = (row2-row) * ncol();
-		int end = f.size() - (nrows2-nrows) * ncol();
-		return std::vector<double> (&f[start], &f[end]);
-//		f = f[start:end];
+		unsigned start = (row-row2) * dim[1] * w[0] * w[1];
+		unsigned end = start + nrows * dim[1] * w[0] * w[1];
+		return std::vector<double> (f.begin()+start, f.begin()+end);
 	}
 	return(f);
 }
@@ -92,6 +92,7 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 	std::vector<unsigned> window;
 	unsigned size = w.size();
 	if (size > 3) {
+		// this does not look correct (only for square matrices)
 		wmat = true;
 		ww = w.size();
 		unsigned wsize = sqrt(ww);
@@ -115,8 +116,6 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	std::vector<double> v, f, d;
-
-
 	std::vector<double> fv;
 
 	for (size_t i = 0; i < out.bs.n; i++) {
