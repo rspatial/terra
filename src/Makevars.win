@@ -18,9 +18,9 @@ PKG_LIBS = \
 	-lopenjp2 -ljasper -lpng16 -ljpeg -ltiff -lgeotiff -lgif -lxml2 -llzma -lszip -lz \
 	-lodbc32 -lodbccp32 -liconv -lpsapi -lws2_32 -lcrypt32 -lwldap32 -lsecur32 -lgdi32
 
-all: clean winlibs
-
 CXX_STD = CXX11
+
+#all: clean winlibs
 
 winlibs:
 	mkdir -p ../inst
@@ -28,7 +28,7 @@ winlibs:
 	cp -r $(RWINLIB)/share/gdal ../inst/
 	cp -r $(RWINLIB)/share/proj ../inst/
 
-clean:
-	rm -f $(SHLIB) $(OBJECTS)
+#clean:
+#	rm -f $(SHLIB) $(OBJECTS)
 
-.PHONY: all winlibs clean
+#.PHONY: all winlibs clean

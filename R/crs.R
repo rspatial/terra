@@ -45,3 +45,22 @@ setMethod("crs<-", signature("SpatVector", "character"),
 		return(x)
 	}
 )
+
+
+setMethod("isLonLat", signature("SpatRaster"), 
+	function(x, ...) {
+		x@ptr$isLonLat()
+	}
+)
+
+setMethod("couldBeLonLat", signature("SpatRaster"), 
+	function(x, ...) {
+		x@ptr$couldBeLonLat()
+	}
+)
+
+setMethod("isGlobalLonLat", signature("SpatRaster"), 
+	function(x, ...) {
+		x@ptr$isGlobalLonLat()
+	}
+)

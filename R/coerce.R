@@ -32,7 +32,12 @@ setMethod("as.points", signature(x="SpatRaster"),
 # mode argument is ignored as mode=mode gave an error on R-devel
 setMethod("as.vector", signature(x="SpatExtent"), 
 	function(x, mode="any") {
-		x@ptr$vector
+		v <- x@ptr$vector
+		names(v) <- c("xmin", "xmax", "ymin", "ymax")
+		if (mode == "list") {
+			v <- as.list(v)
+		}
+		v
 	}
 )
 

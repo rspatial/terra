@@ -3,20 +3,18 @@
 # Version 1.0
 # License GPL v3
 
-
-
-setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y, maxpixels=100000, xlab="", ylab="", ...)  {
-		y <- as.integer(y[1])
-		stopifnot(y>0 && y<=nlyr(x))
-		x <- x[[y]]
-		stopifnot(.hasValues(x));
-		x <- sampleRegular(x, maxpixels)
-		m <- matrix(values(x), nrow=nrow(x), byrow=TRUE)	
-		require(lattice)
-		lattice::levelplot(t(m[nrow(m):1, , drop=FALSE]), xlab=xlab, ylab=ylab, ...)
-	}
-)
+#setMethod("plot", signature(x="SpatRaster", y="numeric"), 
+#	function(x, y, maxpixels=100000, xlab="", ylab="", ...)  {
+#		y <- as.integer(y[1])
+#		stopifnot(y>0 && y<=nlyr(x))
+#		x <- x[[y]]
+#		stopifnot(.hasValues(x));
+#		x <- sampleRegular(x, maxpixels)
+#		m <- matrix(values(x), nrow=nrow(x), byrow=TRUE)	
+#		require(lattice)
+#		lattice::levelplot(t(m[nrow(m):1, , drop=FALSE]), xlab=xlab, ylab=ylab, ...)
+#	}
+#)
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
 	function(x, y, maxpixels=100000, xlab="", ylab="", ...)  {
@@ -76,6 +74,15 @@ setMethod("points", signature(x="SpatVector"),
 		g <- geom(x)
 		gtype <- geomtype(x)
 		points(g[,3:4], ...)
+	}
+)
+
+
+setMethod("lines", signature(x="SpatExtent"), 
+	function(x, ...)  {
+		e <- as.vector(x)
+		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
+		lines(p, ...)		
 	}
 )
 

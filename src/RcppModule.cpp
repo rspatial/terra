@@ -139,6 +139,10 @@ RCPP_MODULE(spat){
 		.method("xyFromCell", ( std::vector< std::vector<double> > (SpatRaster::*)(std::vector<double>&) )( &SpatRaster::xyFromCell ))
 		.method("rowColFromCell", ( std::vector< std::vector<unsigned> > (SpatRaster::*)(std::vector<double>) )( &SpatRaster::rowColFromCell ))
 
+		.method("isLonLat", &SpatRaster::isLonLat, "isLonLat")
+		.method("couldBeLonLat", &SpatRaster::couldBeLonLat, "couldBeLonLat") 
+		.method("isGlobalLonLat", &SpatRaster::couldBeLonLat, "couldBeLonLat") 
+
 		.method("readStart", &SpatRaster::readStart, "readStart") 
 		.method("readStop", &SpatRaster::readStop, "readStop") 
 		.method("readValues", &SpatRaster::readValues, "readValues")	
@@ -199,6 +203,7 @@ RCPP_MODULE(spat){
 		
 		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")
 		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
+		.method("modisqc", &SpatRaster::modisqc, "modisqc")
 	
 	;
 }
