@@ -33,8 +33,7 @@ x <- init(r, fun="cell")
 y <- init(r, fun=runif)
 
 # initialize with a single value 
-z <- init(r, fun=function(n){rep(3, n)})
-
+z <- init(r, fun=8)
 }
 
 \keyword{spatial}

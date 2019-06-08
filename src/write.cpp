@@ -22,6 +22,14 @@
 #include "hdr.h"
 #include "spatRaster.h"
 
+bool canWrite(std::string filename) {
+	FILE *fp = fopen(filename.c_str(), "w");
+	if (fp == NULL) {
+		return false;				
+	}
+	fclose(fp);
+	return true;
+}
 
 
 std::string tempFile(SpatOptions &opt, double seed) {
@@ -59,8 +67,6 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	std::string filename = opt.get_filename();
 	std::string datatype = opt.get_datatype();
 	bool overwrite = opt.get_overwrite();
-	//if (overwrite) {std::cout << "overwrite true\n";} else {std::cout << "overwrite false\n";}
-	//std::cout << "datatype " << datatype << "\n";
 
 	if (filename == "") {
 		double seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -69,11 +75,17 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 		if (overwrite) {
 			if (isSource(filename)) {
 				setError("cannot overwrite object to its own file source");
+				return false;
 			}
 			remove(filename.c_str());
 		} else {
 			setError("file exists");
+			return false;
 		}
+	}
+	if (!canWrite(filename)) {
+		setError("cannot write file");
+		return false;				
 	}
 
 	std::string ext = getFileExt(filename);
@@ -136,7 +148,11 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 				return false;
 			}
 		}
-
+		if (!canWrite(filename)) {
+			setError("cannot write file");
+			return false;				
+		}
+		
 		std::string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
