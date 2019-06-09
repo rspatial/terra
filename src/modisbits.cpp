@@ -46,7 +46,7 @@ std::vector<int> matchbits(std::vector<unsigned> values, int nbits, std::vector<
 
 
 
-SpatRaster SpatRaster::modisqc(int nbits, std::vector<unsigned> idx, std::vector<std::string> match, unsigned maxint, SpatOptions &opt) {
+SpatRaster SpatRaster::modisqc(int nbits, std::vector<unsigned> idx, std::vector<std::string> match, SpatOptions &opt) {
 	SpatRaster out = geometry();
 	if (!hasValues()) {
 		out.setError("qc layer has no values");
