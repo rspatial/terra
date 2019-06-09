@@ -239,19 +239,9 @@ setAs("SpatVector", "Spatial",
 	function(from) {
 		g <- geom(from)
 		colnames(g)[1] <- "object"
-		gt <- geomtype(from)
 		d <- as.data.frame(from)
-		if (gt == "polygons") {
-			sp <- as(g, "SpatialPolygons")
-			sp <- sp::SpatialPolygonsDataFrame(sp, d)
-		} else if (gt == "lines") {
-			sp <- as(g, "SpatialLines")		
-			sp <- sp::SpatialLinesDataFrame(sp, d)
-		} else {
-			sp <- as(g, "SpatialPoints")
-			sp <- sp::SpatialPointsDataFrame(sp, d)
-		}
-		crs(sp)<- crs(from)
+		gt <- geomtype(from)
+		sp <- raster::geom(g, d, gt, crs(from))
 		return(sp)		
 	}
 )

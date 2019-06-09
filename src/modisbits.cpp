@@ -23,22 +23,22 @@ std::vector<std::string> unpack(unsigned value, int nbits, std::vector<unsigned>
   return s;  
 } 
   
-std::vector<int> matchbits(std::vector<unsigned> values, int nbits, std::vector<unsigned> idx, std::vector<std::string> match, 	std::vector<int>& hash) {
+std::vector<int> matchbits(std::vector<unsigned> values, int nbits, std::vector<unsigned> idx, std::vector<std::string> match, std::unordered_map<unsigned, bool> &umap) {
 	std::vector<int> matches(values.size());
 	for (size_t i=0; i<values.size(); i++) {
 		unsigned v = values[i];
-		if (hash[v] != -1) {
-			matches[i] = hash[v];
-		} else {
-			hash[v] = 0;
+		if (umap.find(v) == umap.end()) {
 			std::vector<std::string> s = unpack(v, nbits, idx);
 			for (size_t j=0; j<s.size(); j++) {
+				umap[v] = 0;
 				if (s[j] == match[j]) {
 					matches[i] = 1; 
-					hash[v] = 1;
+					umap[v] = 1;
 					break;
 				}
-			}		  
+			}	
+		} else {
+			matches[i] = umap[v];
 		}
 	}  
 	return matches; 
@@ -56,13 +56,14 @@ SpatRaster SpatRaster::modisqc(int nbits, std::vector<unsigned> idx, std::vector
 		out.setError("qc object has multiple layers");
 		return out;		
 	}
-	std::vector<int> hash(maxint, -1);
+	
+	std::unordered_map<unsigned, bool> umap; 
 	readStart();
  	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<unsigned> vv(v.begin(), v.end());
-		std::vector<int> m = matchbits(vv, nbits, idx, match, hash);
+		std::vector<int> m = matchbits(vv, nbits, idx, match, umap);
 		std::vector<double> mm(m.begin(), m.end());
 		if (!out.writeValues(mm, i)) return out;
 	}

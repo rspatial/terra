@@ -140,6 +140,11 @@ size_t SpatVector::size() {
 	return lyr.geoms.size();
 }
 
+bool SpatVector::is_lonlat() {
+	SpatExtent e = getExtent();
+	return e.is_lonlat(getCRS());
+};
+
 bool SpatVector::could_be_lonlat() {
 	SpatExtent e = getExtent();
 	return e.could_be_lonlat(getCRS());

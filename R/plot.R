@@ -16,12 +16,6 @@
 #	}
 #)
 
-setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxpixels=100000, xlab="", ylab="", ...)  {
-		plot(x, 1, maxpixels=maxpixels, xlab=xlab, ylab=ylab, ...)
-	}
-)
-
 setMethod("plot", signature(x="SpatVector", y="missing"), 
 	function(x, y, xlab="", ylab="", ...)  {
 		g <- geom(x)

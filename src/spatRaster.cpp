@@ -250,6 +250,11 @@ std::vector<double> SpatRaster::range_max() {
 	return(x);
 }
 
+bool SpatRaster::is_lonlat() {
+	SpatExtent e = getExtent();
+	return e.is_lonlat(getCRS());
+};
+
 bool SpatRaster::could_be_lonlat() {
 	SpatExtent e = getExtent();
 	return e.could_be_lonlat(getCRS());

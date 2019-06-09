@@ -36,7 +36,6 @@ setMethod("area", signature(x="SpatRaster"),
 )
 
 
-
 setMethod("clamp", signature(x="SpatRaster"), 
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite,wopt)

@@ -53,11 +53,28 @@ setMethod("isLonLat", signature("SpatRaster"),
 	}
 )
 
-setMethod("couldBeLonLat", signature("SpatRaster"), 
+setMethod("isLonLat", signature("SpatVector"), 
 	function(x, ...) {
-		x@ptr$couldBeLonLat()
+		x@ptr$isLonLat()
 	}
 )
+
+setMethod("couldBeLonLat", signature("SpatRaster"), 
+	function(x, warn=TRUE, ...) {
+		b <- x@ptr$couldBeLonLat()
+		show_messages(x, "couldBeLonLat")
+		b
+	}
+)
+
+setMethod("couldBeLonLat", signature("SpatVector"), 
+	function(x, warn=TRUE, ...) {
+		b <- x@ptr$couldBeLonLat()
+		show_messages(x, "couldBeLonLat")
+		b
+	}
+)
+
 
 setMethod("isGlobalLonLat", signature("SpatRaster"), 
 	function(x, ...) {

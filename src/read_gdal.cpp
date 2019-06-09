@@ -15,21 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
-
 #include <algorithm>
 #include <stdint.h>
+#include <regex>
 
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "NA.h"
 
 #include "gdal_priv.h"
-
 #include "cpl_conv.h" // for CPLMalloc()
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
 
+
+std::string basename_sds(std::string f) {
+  const size_t i = f.find_last_of("\\/");
+  if (std::string::npos != i) {
+    f.erase(0, i + 1);
+  }
+  f = std::regex_replace(f, std::regex(".hdf"), "");
+  f = std::regex_replace(f, std::regex("\""), "");
+  return f;
+}
 
 bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> sds) {
 
@@ -71,6 +79,10 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 			return false;
 		}
 	}
+
+	std::vector<std::string> names = filenames();
+	for (std::string& s : names) s = basename_sds(s);
+	success = setNames(names);
 
 	return true;
 }

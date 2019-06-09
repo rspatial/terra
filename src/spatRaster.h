@@ -147,6 +147,7 @@ class SpatRaster {
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
 		std::string getCRS() { return(crs); }
 		void setCRS(std::string _crs);
+		bool is_lonlat();
 		bool could_be_lonlat();
 		bool is_global_lonlat();
 
@@ -352,7 +353,7 @@ class SpatRaster {
 		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);
 		
 		
-		SpatRaster modisqc(int nbits, std::vector<unsigned> idx, std::vector<std::string> match, unsigned maxint, SpatOptions &opt);
+		SpatRaster modisqc(int nbits, std::vector<unsigned> idx, std::vector<std::string> match, SpatOptions &opt);
 };
 
 
