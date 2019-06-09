@@ -91,4 +91,3 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 	}
 )
 
-plot(x, leg.main=c("hell", "fellow", "citizens"))
