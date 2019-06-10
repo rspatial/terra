@@ -164,7 +164,8 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.crs = crs;
 	s.memory = true;
 	s.hasValues = false;
-	bool keepnlyr = ((nlyrs == nlyr()) | (nlyrs < 1));
+	long nl = nlyr();
+	bool keepnlyr = ((nlyrs == nl) | (nlyrs < 1));
 	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
 	s.resize(nlyrs);
 	std::vector<std::string> nms;

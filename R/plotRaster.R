@@ -109,7 +109,15 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			Z[Z < zlim[1]] <- zlim[1]
 			Z[Z > zlim[2]] <- zlim[2]
 		}
-		graphics::plot.new()
+		dv <- dev.list()
+		if (!is.null(dv)) {
+			# excluding pdf, png, ....
+			# what are other others ones to include beside windows?
+			if (names(dv[length(dv)]) %in% c("windows")){
+				graphics::plot.new()
+			}
+		}
+#		graphics::plot.new()
 		mars <- graphics::par("mar")
 
 		if (missing(digits)) {
