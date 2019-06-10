@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Classes and Methods for Spatial Data
-Version: 0.2-0
-Date: 2019-05-30
+Version: 0.2-1
+Date: 2019-06-09
 Depends: R (>= 3.3.0)
 LinkingTo: Rcpp, RcppProgress
 Imports: methods, Rcpp, RcppProgress, raster (>= 2.9-5)

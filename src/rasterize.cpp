@@ -62,21 +62,23 @@ std::vector<double> rasterize_polygon(std::vector<double> r, double value, const
 
 
 
-SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOptions &opt) {
+SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, double background, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = r.geometry(1);
+
   	if (!out.writeStart(opt)) { return out; }
 	double value = 0;
-	double resx = xres();
-	double resy = yres();
-
+	double resx = out.xres();
+	double resy = out.yres();
 	SpatGeom poly;
 	SpatPart part;
 	SpatHole hole;
 	unsigned n = p.size();
-
+	unsigned nc = out.ncol();
+	SpatExtent extent = out.getExtent();
+	
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v(out.bs.nrows[i] * ncol(), background);
+		std::vector<double> v(out.bs.nrows[i] * nc, background);
 
 		for (size_t j = 0; j < n; j++) {
 			poly = p.getGeom(j);
@@ -88,10 +90,10 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 			for (size_t k = 0; k < np; k++) {
 				part = poly.getPart(k);
 				if (part.hasHoles()) {
-					std::vector<double> vv = rasterize_polygon(v, value, part.x, part.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
+					std::vector<double> vv = rasterize_polygon(v, value, part.x, part.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
 					for (size_t h=0; h < part.nHoles(); h++) {
 						hole = part.getHole(h);
-						vv = rasterize_polygon(vv, background, hole.x, hole.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
+						vv = rasterize_polygon(vv, background, hole.x, hole.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
 					}
 					for (size_t q=0; q < vv.size(); q++) {
 						if (vv[q] != background) {
@@ -99,7 +101,7 @@ SpatRaster SpatRaster::rasterizePolygons(SpatVector p, double background, SpatOp
 						}
 					}
 				} else {
-					v = rasterize_polygon(v, value, part.x, part.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
+					v = rasterize_polygon(v, value, part.x, part.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
 				}
 			}
 		}
@@ -133,19 +135,20 @@ std::vector<double> rasterize_line(std::vector<double> r, double value, const st
 
 
 
-SpatRaster SpatRaster::rasterizeLines(SpatVector p, double background, SpatOptions &opt) {
+SpatRaster rasterizeLines(SpatVector p, SpatRaster r, double background, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = r.geometry(1);
   	if (!out.writeStart(opt)) { return out; }
 	double value = 0;
-	double resx = xres();
-	double resy = yres();
+	double resx = out.xres();
+	double resy = out.yres();
 	SpatGeom line;
 	SpatPart part;
 	unsigned n = p.size();
+	SpatExtent extent = out.getExtent();
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v(out.bs.nrows[i] * ncol(), background);
+		std::vector<double> v(out.bs.nrows[i] * out.ncol(), background);
 		for (size_t j = 0; j < n; j++) {
 			line = p.getGeom(j);
 			//value = p.getAtt(j);
@@ -154,7 +157,7 @@ SpatRaster SpatRaster::rasterizeLines(SpatVector p, double background, SpatOptio
 			unsigned nln = line.size();
 			for (size_t k = 0; k < nln; k++) {
 				part = line.getPart(k);
-				v = rasterize_line(v, value, part.x, part.y, nrow(), ncol(), extent.xmin, extent.ymax, resx, resy);
+				v = rasterize_line(v, value, part.x, part.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i])) return out;
@@ -165,4 +168,22 @@ SpatRaster SpatRaster::rasterizeLines(SpatVector p, double background, SpatOptio
 }
 
 
+SpatRaster rasterizePoints(SpatVector p, SpatRaster r, double background, SpatOptions &opt) {
+	r.setError("not implented yet");
+	return(r);
+}
 
+
+
+SpatRaster SpatRaster::rasterize(SpatVector p, double background, SpatOptions &opt) {
+	std::string gtype = p.type();
+	SpatRaster out = geometry(1);
+	if (gtype == "polygons") {
+		out = rasterizePolygons(p, out, background, opt);
+	} else if (gtype == "lines") {
+		out = rasterizeLines(p, out, background, opt);		
+	}  else {
+		out = rasterizePoints(p, out, background, opt);		
+	}
+	return out;
+}

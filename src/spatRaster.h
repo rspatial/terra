@@ -330,13 +330,14 @@ class SpatRaster {
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
+		SpatRaster mask(SpatVector x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
+ 
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 		SpatRaster merge(SpatRaster x, SpatOptions &opt);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
-		SpatRaster rasterizePolygons(SpatVector p, double background, SpatOptions &opt);
-		SpatRaster rasterizeLines(SpatVector p, double background, SpatOptions &opt);
+		SpatRaster rasterize(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);

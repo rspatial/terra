@@ -24,7 +24,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
 
-	if (!compare_geom(x, true, true)) {
+	if (!compare_geom(x, false, true, false, true, true, false)) {
 		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
@@ -76,3 +76,13 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 }
 
 
+SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
+	std::string filename = opt.get_filename();
+	opt.set_filename("");	
+	SpatRaster m = rasterize(x, 0, opt);
+	opt.set_filename(filename);
+	SpatRaster out = mask(m, inverse, 0, updatevalue, opt);
+	return(out);
+}
+
+	

@@ -92,11 +92,18 @@ setMethod("flip", signature(x="SpatRaster"),
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite,wopt)
-		x@ptr <- x@ptr$mask(mask@ptr, inverse[1], maskvalue[1], updatevalue[1], opt)
+		x@ptr <- x@ptr$mask_raster(mask@ptr, inverse[1], maskvalue[1], updatevalue[1], opt)
 		show_messages(x, "mask")		
 	}
 )
 
+setMethod("mask", signature(x="SpatRaster", mask="SpatVector"), 
+	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
+		opt <- .runOptions(filename, overwrite,wopt)
+		x@ptr <- x@ptr$mask_vector(mask@ptr, inverse[1], maskvalue[1], updatevalue[1], opt)
+		show_messages(x, "mask")		
+	}
+)
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 
@@ -110,15 +117,8 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
 	function(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- .runOptions(filename, overwrite,wopt)
-		gtype <- geomtype(x)
-		if (gtype == "polygons") {
-			y@ptr <- y@ptr$rasterizePolygons(x@ptr, background[1], opt)
-		} else if (gtype == "lines") {
-			y@ptr <- y@ptr$rasterizeLines(x@ptr, background[1], opt)
-		} else {
-			stop("not implemented yet")
-		}
+		opt <- .runOptions(filename, overwrite, wopt)
+		y@ptr <- y@ptr$rasterize(x@ptr, background[1], opt)
 		show_messages(y, "rasterize")
 	}
 )
@@ -126,7 +126,6 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 setMethod("reclassify", signature(x="SpatRaster", rcl="ANY"), 
 function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
-	
 	
 	if ( is.null(dim(rcl)) ) { 
 		stopifnot((length(rcl) %% 3 == 0))

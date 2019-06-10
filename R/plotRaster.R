@@ -48,7 +48,7 @@
 	.plotLegMain(leg.main, e$xmax, e$ymax, e$dy, leg.main.cex)
 }
 
-sampleColors <- function(cols, n) {
+.sampleColors <- function(cols, n) {
 	if (length(cols) != n) {
 		if (n==1) {
 			cols <- cols[round(length(cols)/2)]
@@ -75,7 +75,7 @@ sampleColors <- function(cols, n) {
 	#mid <- Y[trunc((length(Y)+1)/2)]
 	#shift <- max(0, mid - ((e$ymax - e$ymin) / 2))
 	#Y <- Y - shift
-	(diff(range(Y)) / (e$ymax - e$ymin))/2
+	
 	for (i in 1:n) {
 		graphics::rect(e$xmin, Y[i], e$xmax, Y[i]-step, col=cols[i], border="black", xpd=TRUE)
 	}
@@ -87,7 +87,7 @@ sampleColors <- function(cols, n) {
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
 	function (x, y, cols, maxpixels = 100000, leg.mar=3, 
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1,
-		useRaster = TRUE, zlim, xlab="", ylab="", ...) {
+		digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
 		
 		asp <- 1
 		if (couldBeLonLat(x, warn=FALSE)) {
@@ -105,15 +105,24 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		if (missing(zlim)) {
 			zlim <- range(Z, na.rm=TRUE)
 		} else {
+			zlim <- sort(zlim)
 			Z[Z < zlim[1]] <- zlim[1]
 			Z[Z > zlim[2]] <- zlim[2]
 		}
 		graphics::plot.new()
 		mars <- graphics::par("mar")
 
-		u <- unique(as.vector(Z), na.rm=TRUE)
+		if (missing(digits)) {
+			dif <- diff(zlim)
+			if (dif == 0) {
+				digits = 0;
+			} else {
+				digits <- max(0, -floor(log10(dif/10)))
+			}
+		}
+		u <- unique(na.omit(as.vector(Z)))
 		if (length(u) < 10) {
-			cols <- sampleColors(cols, length(u))
+			cols <- .sampleColors(cols, length(u))
 		}
 		
 		graphics::par(mar = mars + c(0, 0, 0, leg.mar))

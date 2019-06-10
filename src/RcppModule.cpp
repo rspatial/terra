@@ -184,12 +184,14 @@ RCPP_MODULE(spat){
 		.method("initv", ( SpatRaster (SpatRaster::*)(double, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
 		.method("logic_numb", ( SpatRaster (SpatRaster::*)(bool, std::string, SpatOptions&) )( &SpatRaster::logic ))
-		.method("mask", &SpatRaster::mask, "mask")
+
+		.method("mask_raster", ( SpatRaster (SpatRaster::*)(SpatRaster, bool, double, double, SpatOptions&) )( &SpatRaster::mask), "mask raster")
+		.method("mask_vector", ( SpatRaster (SpatRaster::*)(SpatVector, bool, double, double, SpatOptions&) )( &SpatRaster::mask), "mask vector")
+		
 		.method("math", &SpatRaster::math, "math")
 		.method("math2", &SpatRaster::math2, "math2")
 		.method("merge", &SpatRaster::merge, "merge")
-		.method("rasterizeLines", &SpatRaster::rasterizeLines, "rasterizeLines")
-		.method("rasterizePolygons", &SpatRaster::rasterizePolygons, "rasterizePolygons")
+		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	
 		.method("shift", &SpatRaster::shift, "shift")
