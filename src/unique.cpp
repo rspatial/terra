@@ -19,6 +19,24 @@
 #include <limits>
 
 
+
+void unique_values_alt(std::vector<double> &d) {
+	d.erase(std::remove_if(d.begin(), d.end(),
+            [](const double& value) { return std::isnan(value); }), d.end());
+	std::sort(d.begin(), d.end());
+	d.erase(std::unique(d.begin(), d.end()), d.end());
+}
+
+
+void unique_values(std::vector<double> &d) {
+	d.erase(std::remove_if(d.begin(), d.end(),
+            [](const double& value) { return std::isnan(value); }), d.end());
+	std::set<double> u { d.begin(), d.end()};
+	std::copy(u.begin(), u.end(), d.begin()); 
+	d.erase(d.begin()+u.size(), d.end());
+}
+
+
 std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 
 	std::vector<std::vector<double>> out;
@@ -30,29 +48,21 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	readStart();
+	out.resize(nl);
 	
+	if (nl == 1) bylayer = true;
 	if (bylayer) {
-		out.resize(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-
-			for (size_t j = 0; j < v.size(); j++) {
-				if (std::isnan(v[j])) v[j] = lowest_double;
-			}
-			
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);	
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
-				out[lyr] = std::vector<double>(v.begin()+off, v.begin()+off+n);
-				std::sort(out[lyr].begin(), out[lyr].end());
-				out[lyr].erase(std::unique(out[lyr].begin(), out[lyr].end()), out[lyr].end());
+				out[lyr].insert(out[lyr].end(), v.begin()+off, v.begin()+off+n);
+				unique_values(out[lyr]);
 			}
 		}
-		for (size_t lyr=0; lyr<nl; lyr++) {
-			std::sort(out[lyr].begin(), out[lyr].end());
-			out[lyr].erase(std::unique(out[lyr].begin(), out[lyr].end()), out[lyr].end());
-		}
 	} else {
+		std::vector<std::vector<double>> temp;
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
 			std::vector<std::vector<double>> m(n, std::vector<double>(nl));
@@ -70,21 +80,24 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 			std::sort(m.begin(), m.end());
 			m.erase(std::unique(m.begin(), m.end()), m.end());
 			for (size_t j=0; j<m.size(); j++) {
-				out.insert(out.end(), m[j]);
+				temp.insert(temp.end(), m[j]);
 			}
 		}
-		std::sort(out.begin(), out.end());
-		out.erase(std::unique(out.begin(), out.end()), out.end());
+		std::sort(temp.begin(), temp.end());
+		temp.erase(std::unique(temp.begin(), temp.end()), temp.end());
+		for (size_t i = 0; i < temp.size(); i++) {
+			for (size_t j = 0; j < temp[0].size(); j++) {
+				out[j].resize(temp.size());
+				if (temp[i][j] == lowest_double) {
+					out[j][i] = NAN;
+				} else {
+					out[j][i] = temp[i][j];
+				}
+			}
+		}		
 	}
 	readStop();
 
-	for (size_t i = 0; i < out.size(); i++) {
-		for (size_t j = 0; j < out[0].size(); j++) {
-			if (out[i][j] == lowest_double) {
-				out[i][j] = NAN;
-			}
-		}
-	}
 	return(out);
 }
-
+ 

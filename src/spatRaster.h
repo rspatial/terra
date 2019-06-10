@@ -338,6 +338,7 @@ class SpatRaster {
 		SpatRaster rasterizePolygons(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster rasterizeLines(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
+		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);
 		SpatRaster shift(double x, double y, SpatOptions &opt);

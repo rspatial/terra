@@ -35,11 +35,11 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 		right = false;
 	}
 
-
 //	bool hasNA = false;
 	double NAval = NAN;
 
 	size_t n = v.size();
+	unsigned nr = rcl[0].size();
 
 	// "is - becomes"
 	if (nc == 2) {
@@ -48,7 +48,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				v[i] = NAval;
 			} else {
 				bool found = false;
-				for (size_t j=0; j<nc; j++) {
+				for (size_t j=0; j<nr; j++) {
 					if (v[i] == rcl[0][j]) {
 						v[i] = rcl[1][j];
 						found = true;
@@ -69,7 +69,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				v[i] = NAval;
 			} else {
 				bool found = false;
-				for (size_t j=0; j<nc; j++) {
+				for (size_t j=0; j<nr; j++) {
 					if ((v[i] >= rcl[0][j]) & (v[i] <= rcl[1][j])) {
 						v[i] = rcl[1][j];
 						found = true;
@@ -86,7 +86,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 
 			double lowval = rcl[0][0];
 			double lowres = rcl[2][0];
-			for (size_t i=1; i<nc; i++) {
+			for (size_t i=1; i<nr; i++) {
 				if (rcl[0][i] < lowval) {
 					lowval = rcl[0][i];
 					lowres = rcl[2][i];
@@ -100,7 +100,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					v[i] = lowres;
 				} else {
 					bool found = false;
-					for (size_t j=0; j<nc; j++) {
+					for (size_t j=0; j<nr; j++) {
 						if ((v[i] > rcl[0][j]) & (v[i] <= rcl[1][j])) {
 							v[i] = rcl[2][j];
 							found = true;
@@ -119,7 +119,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					v[i] = NAval;
 				} else {
 					bool found = false;
-					for (size_t j=0; j<nc; j++) {
+					for (size_t j=0; j<nr; j++) {
 						if ((v[i] > rcl[0][j]) & (v[i] <= rcl[1][j])) {
 							v[i] = rcl[2][j];
 							found = true;
@@ -139,7 +139,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 
 			double lowval = rcl[1][0];
 			double lowres = rcl[2][0];
-			for (size_t i=0; i<nc; i++) {
+			for (size_t i=0; i<nr; i++) {
 				if (rcl[1][i] > lowval) {
 					lowval = rcl[1][i];
 					lowres = rcl[2][i];
@@ -153,7 +153,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					v[i] = lowres;
 				} else {
 					bool found = false;
-					for (size_t j=0; j<nc; j++) {
+					for (size_t j=0; j<nr; j++) {
 						if ((v[i] >= rcl[0][j]) & (v[i] < rcl[1][j])) {
 							v[i] = rcl[2][j];
 							found = true;
@@ -173,7 +173,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					v[i] = NAval;
 				} else {
 					bool found = false;
-					for (size_t j=0; j<nc; j++) {
+					for (size_t j=0; j<nr; j++) {
 						if ((v[i] >= rcl[0][j]) & (v[i] < rcl[1][j])) {
 							v[i] = rcl[2][j];
 							found = true;
@@ -228,3 +228,29 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 }
 
 
+SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
+	
+	SpatRaster out;
+	std::vector< std::vector<double>> rc(nc);
+	if ((rcl.size() % nc) != 0) {
+		out.setError("incorrect length of reclassify matrix");
+		return(out);
+	}
+	unsigned i  = rcl.size() / nc;
+	
+	if (nc == 1) {
+		rc[0] = rcl;
+	} else if (nc==2) {
+		rc[0] = std::vector<double>(rcl.begin(), rcl.begin()+i);
+		rc[1] = std::vector<double>(rcl.begin()+i, rcl.end());
+	} else if (nc==3) {
+		rc[0] = std::vector<double>(rcl.begin(), rcl.begin()+i);
+		rc[1] = std::vector<double>(rcl.begin()+i, rcl.begin()+2*i);
+		rc[2] = std::vector<double>(rcl.begin()+2*1, rcl.end());
+	} else {
+		out.setError("incorrect number of columns in reclassify matrix");
+		return(out);
+	}
+	out = reclassify(rc, right, lowest, othersNA, opt);
+	return out;
+}

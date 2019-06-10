@@ -157,6 +157,7 @@ setMethod("rotate", signature(x="SpatRaster"),
 
 setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"), 
 	function(x, size, ...) { 
+		size <- max(1, min(size(x), size))
 		x@ptr <- x@ptr$sampleRegular(size)
 		show_messages(x, "sampleRegular")		
 	}
@@ -202,7 +203,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		u <- x@ptr$unique(incomparables)
 		if (!incomparables) {
 			if (!length(u)) return(u)
-			u <- t(do.call(cbind, u))
+			u <- do.call(cbind, u)
 			colnames(u) = names(x)
 		}
 		u

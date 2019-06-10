@@ -1,12 +1,19 @@
 
 
-.contLegend <- function(p, cols, zlim,  
-    digits=0, leg.levels=5, leg.shrink=c(0.1, 0.1), 
-	leg.main = NULL, leg.main.cex = 1, ...) {
+.plotLegMain <- function(leg.main, xmax, ymax, dy, leg.main.cex) {
+    if (!is.null(leg.main)) {
+		n <- length(leg.main)
+		ymax <- ymax + 0.05 * dy
+		for (i in 1:n) {
+			text(x=xmax, y=ymax+(n-i)*0.05*dy,
+				labels = leg.main[i], cex = leg.main.cex, xpd=TRUE)
+		}
+	}
+}
 
-    nc <- length(cols)
-	xmin = p[1]
-	xmax = p[2]
+.getLegCoords <- function(p, ext, leg.shrink, leg.main) {
+	xmin <- p[1]
+	xmax <- p[2]
 	shrk <- (p[4]-p[3])
 	leg.shrink <- rep_len(leg.shrink,2)
 	if (!is.null(leg.main)) {
@@ -15,30 +22,65 @@
 	}
 	ymin = p[3] + shrk * leg.shrink[1]
 	ymax = p[4] - shrk * leg.shrink[2]
-
-    Y <- seq(ymin, ymax, length.out = nc + 1)
-    graphics::rect(xmin, Y[-(nc + 1)], xmax, Y[-1], col = rev(cols), border = NA, xpd=TRUE)
-    graphics::rect(xmin, ymin, xmax, ymax, border ="black", xpd=TRUE)
-	
+	ymin <- max(ymin, ext["ymin"])
+	ymax <- min(ymax, ext["ymax"])
     dx <- xmax - xmin
 	dy <- ymax - ymin
-	zz <- pretty(zlim, n = (leg.levels + 1))	
+
+	data.frame(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dx=dx, dy=dy)
+}
+
+
+.contLegend <- function(p, ext, cols, zlim, digits, leg.levels, leg.shrink, leg.main, leg.main.cex, ...) {
+
+	e <- .getLegCoords(p, ext, leg.shrink, leg.main)
+    nc <- length(cols)
+
+    Y <- seq(e$ymin, e$ymax, length.out=nc+1)
+    graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=TRUE)
+    graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=TRUE)
+	
+	zz <- pretty(zlim, n =(leg.levels+1))	
 	zz <- zz[zz >= zlim[1] & zz <= zlim[2]]
-    ypos <- ymin + (zz - zlim[1])/(zlim[2] - zlim[1]) * dy
-    graphics::segments(xmin, ypos, xmax + dx * 0.25, ypos, xpd=TRUE)
-    text(xmax, ypos, formatC(zz, digits = digits, format = "f"), pos=4, xpd=TRUE, ...)
-    if (!is.null(leg.main)) {
-		n <- length(leg.main)
-		ymax = ymax + 0.05 * dy
-        for (i in 1:n) {
-			text(x = xmax,
-				y = ymax + (n-i) * 0.05 * dy,
-				labels = leg.main[i], 
-				#adj = c(0.5, 0.5), 
-				cex = leg.main.cex,
-				xpd=TRUE)
+    ypos <- e$ymin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dy
+    graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=TRUE)
+    text(e$xmax, ypos, formatC(zz, digits=digits, format = "f"), pos=4, xpd=TRUE, ...)
+	.plotLegMain(leg.main, e$xmax, e$ymax, e$dy, leg.main.cex)
+}
+
+sampleColors <- function(cols, n) {
+	if (length(cols) != n) {
+		if (n==1) {
+			cols <- cols[round(length(cols)/2)]
+		} else if (n==2) {
+			cols <- c(cols[1], cols[length(cols)])
+		} else {
+			colstep <- (length(cols)-1) / (n-1)
+			i <- round(seq(1, length(cols), colstep))
+			cols <- cols[i]
 		}
-    } 	 	
+	}
+	cols
+}
+
+
+
+.fewClassLegend <- function(p, ext, u, cols, digits, leg.shrink, leg.main, leg.main.cex, ...) {
+	u <- sort(u)
+	n <- length(u)
+	e <- .getLegCoords(p, ext, leg.shrink, leg.main)
+	step <- e$dy/20
+    Y <- e$ymax - 0:(n-1) * (step *1.5)
+	#to put in the middle
+	#mid <- Y[trunc((length(Y)+1)/2)]
+	#shift <- max(0, mid - ((e$ymax - e$ymin) / 2))
+	#Y <- Y - shift
+	(diff(range(Y)) / (e$ymax - e$ymin))/2
+	for (i in 1:n) {
+		graphics::rect(e$xmin, Y[i], e$xmax, Y[i]-step, col=cols[i], border="black", xpd=TRUE)
+	}
+    text(e$xmax, Y-0.5*step, formatC(u, digits=digits, format = "f"), pos=4, xpd=TRUE, ...)
+	.plotLegMain(leg.main, e$xmax, e$ymax, e$dy, leg.main.cex)	
 }
 
 
@@ -54,6 +96,8 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		
 		if (missing(cols)) cols = rev(grDevices::terrain.colors(25))
 		object <- sampleRegular(x[[y]], maxpixels)
+		xex <- as.vector(ext(object))
+		
 		Y <- yFromRow(object, nrow(object):1)
 		Z <- t(as.matrix(object, TRUE)[nrow(object):1, , drop = FALSE])
 		X <- xFromCol(object, 1:ncol(object))
@@ -66,15 +110,25 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 		graphics::plot.new()
 		mars <- graphics::par("mar")
+
+		u <- unique(as.vector(Z), na.rm=TRUE)
+		if (length(u) < 10) {
+			cols <- sampleColors(cols, length(u))
+		}
+		
 		graphics::par(mar = mars + c(0, 0, 0, leg.mar))
 		image(X, Y, Z, col = cols, useRaster = useRaster, asp=asp, xlab=xlab, ylab=ylab, ...)
+
 		usr <- graphics::par()$usr
 		dx <- graphics::par()$cxy[1] * graphics::par("cex")
 		p <- c(usr[2] + 1 * dx, usr[2] + 2 * dx, usr[3], usr[4])
-		
-		.contLegend(p, cols, zlim, leg.levels=leg.levels, leg.shrink=leg.shrink,
-		leg.main=leg.main, leg.main.cex=leg.main.cex)
-		
+	
+		u <- unique(as.vector(Z), na.rm=TRUE)
+		if (length(u) < 10) {
+			.fewClassLegend(p, xex, u, cols, digits, leg.shrink, leg.main, leg.main.cex)		
+		} else {
+			.contLegend(p, xex, cols, zlim, digits, leg.levels, leg.shrink, leg.main, leg.main.cex)
+		}
 		setHook("before.plot.new", 
 			function(...) {
 				m <- graphics::par()$mar
