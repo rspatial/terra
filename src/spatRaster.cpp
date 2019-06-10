@@ -107,7 +107,9 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.layers.resize(1, 1);
 	s.datatype = "";
 	s.crs =_crs;
-	for (unsigned i=0; i < rcl[2]; i++) { s.names.push_back("lyr." + std::to_string(i+1)) ; }
+	for (unsigned i=0; i < rcl[2]; i++) { 
+		s.names.push_back("lyr." + std::to_string(i+1)) ; 
+	}
 
 	setSource(s);
 }
@@ -128,7 +130,9 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 	s.layers.resize(1, 1);
 	s.datatype = "";
 	s.crs=_crs;
-	for (unsigned i=0; i < _nlyr; i++) {	s.names.push_back("lyr." + std::to_string(i+1)) ; }
+	for (unsigned i=0; i < _nlyr; i++) {	
+		s.names.push_back("lyr." + std::to_string(i+1)) ; 
+	}
 	setSource(s);
 }
 
@@ -153,18 +157,24 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 SpatRaster SpatRaster::geometry(long nlyrs) {
 	RasterSource s;
+	s.values.resize(0);
 	s.nrow = nrow();
 	s.ncol = ncol();
 	s.extent = extent;
 	s.crs = crs;
 	s.memory = true;
 	s.hasValues = false;
-	nlyrs = (nlyrs < 1) ? nlyr(): nlyrs;
+	bool keepnlyr = ((nlyrs == nlyr()) | (nlyrs < 1));
+	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
 	s.resize(nlyrs);
-	s.values.resize(0);
-
-	std::vector<std::string> nms(s.nlyr);
-	for (size_t i=0; i < s.nlyr; i++) { nms[i] = "lyr" + std::to_string(i+1); }
+	std::vector<std::string> nms;
+	if (keepnlyr) {
+		nms = getNames();
+	} else {
+		for (size_t i=0; i < s.nlyr; i++) { 
+			nms.push_back("lyr" + std::to_string(i+1)); 
+		}
+	}	
 	s.names = nms;
 	SpatRaster out;
 	out.setSource(s);
