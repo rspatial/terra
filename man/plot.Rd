@@ -24,7 +24,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y, cols, maxpixels=100000, leg.mar=3, 
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1,
-		digits=1, useRaster=TRUE, zlim, xlab="", ylab="", ...)
+		digits, useRaster=TRUE, zlim, xlab="", ylab="", ...)
 \S4method{plot}{SpatRaster,missing}(x, y, maxpixels=100000, nc, nr, main, maxnl=16, ...)
 \S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", ...)
 \S4method{image}{SpatRaster}(x, y, maxpixels=100000, xlab="", ylab="", useRaster=TRUE, ...)

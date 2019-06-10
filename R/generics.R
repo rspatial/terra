@@ -98,9 +98,9 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"),
 )
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatVector"), 
-	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, mask, inverse=FALSE, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite,wopt)
-		x@ptr <- x@ptr$mask_vector(mask@ptr, inverse[1], maskvalue[1], updatevalue[1], opt)
+		x@ptr <- x@ptr$mask_vector(mask@ptr, inverse[1], NA, updatevalue[1], opt)
 		show_messages(x, "mask")		
 	}
 )
