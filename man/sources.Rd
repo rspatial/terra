@@ -5,7 +5,7 @@
 \alias{sources}
 \alias{sources,SpatRaster-method}
 \alias{hasValues}
-\alias{hasValues,BasicRaster-method}
+\alias{hasValues,SpatRaster-method}
 
 
 \title{Data sources of a SpatRaster}
