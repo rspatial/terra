@@ -61,6 +61,11 @@ f <- system.file("exdata/test.tif", package="terra")
 r <- rast(f)
 plot(r)
 
+d <- (r > 400) + (r > 600)
+plot(d, leg.main="Title")
+plot(d, leg.ext=c(178000,178200,332800,333250),
+		leg.main=c("Title     \n\n"))
+
 f <- system.file("exdata/lux.shp", package="terra")
 v <- vect(f)
 r <- rast(v)

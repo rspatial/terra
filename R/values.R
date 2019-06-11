@@ -3,6 +3,12 @@
 # Version 0.9
 # License GPL v3
 
+setMethod("hasValues", signature(x="SpatRaster"), 
+function(x, ...) {
+	x@ptr$hasValues
+}
+)
+
 setMethod("readValues", signature(x="SpatRaster"), 
 function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...) {
 	x@ptr$readValues(row-1, nrows-1, col-1, ncols-1)
