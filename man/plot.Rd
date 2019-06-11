@@ -22,8 +22,8 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y, cols, maxpixels=100000, leg.mar=3, 
-		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1,
+\S4method{plot}{SpatRaster,numeric}(x, y, cols, maxpixels=100000, leg.mar, 
+		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext,
 		digits, useRaster=TRUE, zlim, xlab="", ylab="", ...)
 \S4method{plot}{SpatRaster,missing}(x, y, maxpixels=100000, nc, nr, main, maxnl=16, ...)
 \S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", ...)
@@ -43,6 +43,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{leg.shrink}{numeric. relative shrinkage of legend from top and bottom}
   \item{leg.main}{character. legend title}
   \item{leg.main.cex}{character. legend title size}
+  \item{leg.ext}{SpatExtent or numeric vector indicating the area where to plot the legend. The vector should have a lenght of 4 (xmin, xmax, ymin, ymax)}
   \item{digits}{integer >= 0}
   \item{zlim}{range of allowed values}
   \item{xlab}{character}

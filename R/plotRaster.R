@@ -1,7 +1,7 @@
 
 
-getMar <- function(dmar) {
-	mar <- par()$mar
+.getMar <- function(dmar) {
+	mar <- graphics::par()$mar
 	if (!is.null(.terra_environment$mar)) {
 		if (all(mar == (.terra_environment$mar + .terra_environment$dmar))) {
 			mar <- .terra_environment$mar
@@ -145,9 +145,9 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 		leg.hor <- FALSE
 		if (leg.hor) {
-			graphics::par(mar=getMar(c(leg.mar, 0, 0, 0)))
+			graphics::par(mar=.getMar(c(leg.mar, 0, 0, 0)))
 		} else {
-			graphics::par(mar=getMar(c(0, 0, 0, leg.mar)))
+			graphics::par(mar=.getMar(c(0, 0, 0, leg.mar)))
 		}		
 		image(X, Y, Z, col=cols, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, ...)
 

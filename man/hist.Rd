@@ -12,7 +12,7 @@ Create a histogram of the values of a SpatRaster. For large datasets a sample is
 }
 
 \usage{
-\S4method{hist}{Raster}(x, layer, maxpixels=100000, plot=TRUE, main, ...)
+\S4method{hist}{SpatRaster}(x, layer, maxpixels=100000, plot=TRUE, main, ...)
 }
 
 \arguments{
