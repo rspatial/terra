@@ -172,19 +172,21 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     .\cr
     \bold{Interacting with a map} \tab \cr
     \code{zoom} \tab Zoom in to a part of a map \cr
-    \code{click} \tab Query values of SpatRaster or Spatial* objects by clicking on a map \cr
+    \code{click} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
     \code{select} \tab Select a geometric subset of a SpatRaster or Spatial* object \cr
-    \code{drawPoly} \tab Create a SpatialPolygons object by drawing it \cr
-    \code{drawLine} \tab Create a SpatialLines object by drawing it \cr
-    \code{drawExtent} \tab Create an Extent object by drawing it \cr	
+    \code{\link{drawPol}} \tab Create a polygons SpatVector by drawing it \cr
+    \code{\link{drawLin}} \tab Create a lines SpatVector by drawing it \cr
+    \code{\link{drawPts}} \tab Create a points SpatVector by drawing it \cr
+    \code{\link{drawExt}} \tab Create a SpatExtent by drawing it \cr	
     .\cr
+	
 	\bold{Other plots} \tab \cr
     \code{\link{plot}} \tab x-y scatter plot of the values of two SpatRaster objects\cr
-    \code{hist} \tab Histogram of SpatRaster values \cr
-    \code{barplot} \tab barplot of a SpatRaster \cr
+    \code{\link{hist}} \tab Histogram of SpatRaster values \cr
+    \code{\link{barplot}} \tab barplot of a SpatRaster \cr
     \code{density} \tab Density plot of SpatRaster values \cr
     \code{pairs} \tab Pairs plot for layers in a SpatRaster \cr
-    \code{boxplot} \tab Box plot of the values of one or multiple layers\cr
+    \code{\link{boxplot}} \tab Box plot of the values of a SpatRaster\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }

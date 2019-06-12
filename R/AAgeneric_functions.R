@@ -5,8 +5,9 @@ if (!isGeneric("as.points")) {setGeneric("as.points", function(x,...) standardGe
 if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGeneric("as.lines"))}	
 if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standardGeneric("as.polygons"))}	
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
+if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
 
-if (!isGeneric("hasValues")) { setGeneric("hasValues", function(x, ...) standardGeneric("hasValues"))}	
+if (!isGeneric("hasValues")) {setGeneric("hasValues", function(x, ...) standardGeneric("hasValues")) }	
 
 if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
 if (!isGeneric("plot")) { setGeneric("plot", function(x, y,...) standardGeneric("plot"))}	
@@ -85,7 +86,11 @@ if (!isGeneric("colFromCell")) { setGeneric("colFromCell", function(object, cell
 
 if (!isGeneric("readStart")) { setGeneric("readStart", function(x, ...) standardGeneric("readStart")) }	
 if (!isGeneric("readValues")) { setGeneric("readValues", function(x, ...) standardGeneric("readValues")) }	
-if (!isGeneric("readStop")) { setGeneric("readStop", function(x, ...) standardGeneric("readStop")) }	
+if (!isGeneric("readStop")) { setGeneric("readStop", function(x, ...) standardGeneric("readStop")) }
+
+if (!isGeneric('setMinMax')) {setGeneric('setMinMax', function(x, ...) standardGeneric('setMinMax')) }	
+
+
 if (!isGeneric("unique")) { setGeneric("unique", function(x, incomparables=FALSE, ...) standardGeneric("unique")) }	
 
 if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneric("values")) }	

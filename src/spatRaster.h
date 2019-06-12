@@ -352,10 +352,7 @@ class SpatRaster {
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		std::vector<std::vector<double>> unique(bool bylayer);
-		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);
-		
-		
-		SpatRaster modisqc(int nbits, std::vector<unsigned> idx, std::vector<std::string> match, SpatOptions &opt);
+		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);		
 };
 
 

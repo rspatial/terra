@@ -170,21 +170,15 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		dx <- graphics::par()$cxy[1] * graphics::par("cex")	
 
 		if (!missing(leg.ext)) {
-			if (inherits(leg.ext, "SpatExtent")) {
-				xex <- as.vector(ext(object))
-				leg.ext <- .getLegCoords(NULL, xex, leg.shrink, leg.main)
-			} else if (is.vector(leg.ext)) {
-				leg.ext <- .getLegCoords(NULL, leg.ext, leg.shrink, leg.main)
-			} 
+			xex <- as.vector(leg.ext)
+			leg.ext <- .getLegCoords(NULL, xex, leg.shrink, leg.main)
 			leg.ext.set <- TRUE
-		}
-		if (missing(leg.ext)) {
-			leg.ext.set <- FALSE
+		} else {
 			p <- c(usr[2]+dx, usr[2]+2*dx, usr[3], usr[4])
 			xex <- as.vector(ext(object))
 			leg.ext <- .getLegCoords(p, xex, leg.shrink, leg.main)
+			leg.ext.set <- FALSE
 		} 
-
 
 		u <- unique(na.omit(as.vector(Z)))
 		if (length(u) < 10) {
@@ -194,8 +188,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			.contLegend(leg.ext, cols, zlim, digits, leg.levels)
 		}
 		.legMain(leg.main, leg.ext$xmax, leg.ext$ymax, leg.ext$dy, leg.main.cex)
-		
-		
+			
 #		setHook("before.plot.new", 
 #			function(...) {
 #				m <- graphics::par()$mar

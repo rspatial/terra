@@ -204,9 +204,7 @@ RCPP_MODULE(spat){
 		.method("warp", &SpatRaster::warp, "warp")
 		
 		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")
-		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")
-		.method("modisqc", &SpatRaster::modisqc, "modisqc")
-	
+		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")	
 	;
 }
 

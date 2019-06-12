@@ -6,6 +6,7 @@
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatVector,missing-method}
 \alias{plot,SpatRaster,numeric-method}
+\alias{plot,SpatRaster,SpatRaster-method}
 \alias{image}
 \alias{image,SpatRaster-method}
 \alias{points,SpatVector-method}
@@ -25,9 +26,16 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{plot}{SpatRaster,numeric}(x, y, cols, maxpixels=100000, leg.mar, 
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext,
 		digits, useRaster=TRUE, zlim, xlab="", ylab="", ...)
+
 \S4method{plot}{SpatRaster,missing}(x, y, maxpixels=100000, nc, nr, main, maxnl=16, ...)
-\S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", ...)
+
+\S4method{plot}{SpatRaster,SpatRaster}(x, y, maxpixels=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
+
+
 \S4method{image}{SpatRaster}(x, y, maxpixels=100000, xlab="", ylab="", useRaster=TRUE, ...)
+
+
+\S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", ...)
 \S4method{points}{SpatVector}(x, ...)
 \S4method{lines}{SpatVector}(x, ...)
 \S4method{lines}{SpatExtent}(x, ...)
@@ -49,10 +57,14 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{xlab}{character}
   \item{ylab}{character}
   \item{useRaster}{logical; if \code{TRUE} plotting is faster because a bitmap raster is used to plot the image instead of polygons. See \code{\link[graphics]{image}}}
-  \item{nc}{integer > 0}
-  \item{nr}{integer > 0}
-  \item{main}{character}
-  \item{maxnl}{integer > 0}
+  \item{nc}{integer > 0. Optional. The number of columns to divide the plotting device in (when plotting multiple layers in a RasterLayer or RasterBrick object)}
+  \item{nr}{integer > 0. Optional. The number of rows to divide the plotting device in (when plotting multiple layers in a RasterLayer or RasterBrick object)}
+  \item{maxnl}{integer > 0. Maximum number of layers to plot (for a multi-layer object)}
+  \item{main}{character. Main plot title}
+  \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
+  \item{ncol}{integer. Number of columns for gridding}
+  \item{nrow}{integer. Number of rows for gridding}
+ 
   \item{...}{additional graphical arguments}  
 }
 
