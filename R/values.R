@@ -117,7 +117,7 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 		dots <- list(...)
 		bool <- x@ptr$compare_geom(y@ptr, lyrs, crs, warncrs, ext, rowcol, res)
 		show_messages(x, "compareGeom")
-		if (!is.null(dots)) {
+		if (length(dots)>1) {
 			for (i in 1:length(dots)) {
 				bool <- x@ptr$compare_geom(dots[[i]]@ptr, lyrs, crs, warncrs, ext, rowcol, res)
 				show_messages(x, "compareGeom")
