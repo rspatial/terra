@@ -47,6 +47,20 @@ std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
 	return(x);
 }
 
+void bil_to_bsq(std::vector<double> &v, unsigned nrows, unsigned ncols, unsigned nlyrs) {
+	std::vector<std::vector<double>> x(nlyrs);
+	for (size_t r=0; r<nrows; r++) {
+		unsigned off = r*nlyrs;
+		for (size_t i=0; i<nlyrs; i++) {
+			unsigned start = (off+i)*ncols;
+			x[i].insert(x[i].end(), v.begin()+start, v.begin()+start+ncols);
+		}	
+	}
+	v.resize(0);
+	for (size_t i=0; i<nlyrs; i++) {
+		v.insert(v.end(), x[i].begin(), x[i].end());
+	}
+}
 
 
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols){
@@ -91,9 +105,11 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 				std::string file = source[src].filename;
 				if (source[src].datatype == "FLT8S") {
 					std::vector<double> fvals = readFLT8(file, "BIL", 0, ncell());
+					bil_to_bsq(fvals, ncols, nrows, nl);
 					out.insert(out.end(), fvals.begin(), fvals.end());
 				} else {
 					std::vector<double> fvals = readFLT4(file, "BIL", 0, ncell());
+					bil_to_bsq(fvals, ncols, nrows, nl);
 					out.insert(out.end(), fvals.begin(), fvals.end());
 				}
 

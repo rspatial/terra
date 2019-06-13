@@ -200,7 +200,7 @@ Basic parameters of existing SpatRasters can be obtained, and in most cases chan
     \code{\link{nrow}} \tab The number of rows \cr
     \code{\link{ncell}} \tab The number of cells (can not be set directly, only via ncol or nrow) \cr
     \code{\link{res}} \tab The resolution (x and y) \cr
-    \code{\link{nlyr}} \tab How many layers does the object have? \cr	
+    \code{\link{nlyr}} \tab Get or set the number of layers \cr	
     \code{\link{names}} \tab Get or set the layer names \cr	
     \code{\link{xres}} \tab The x resolution (can be set with res) \cr
     \code{\link{yres}} \tab The y resolution (can be set with res)\cr
@@ -208,7 +208,7 @@ Basic parameters of existing SpatRasters can be obtained, and in most cases chan
     \code{\link{xmax}} \tab The maximum x coordinate (or longitude) \cr
     \code{\link{ymin}} \tab The minimum y coordinate (or latitude) \cr
     \code{\link{ymax}} \tab The maximum y coordinate (or latitude) \cr
-	\code{\link{extent}} \tab The extent (minimum and maximum x and y coordinates) \cr
+	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates (a.k.a. "bounding box") \cr
 	\code{\link{origin}} \tab The origin of a SpatRaster\cr
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
     \code{\link{isLonLat}} \tab Test if an object has a longitude/latitude coordinate reference system \cr
