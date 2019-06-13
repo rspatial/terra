@@ -15,7 +15,11 @@ The package is conceived as a replacement of the raster package. It has a very s
 
 The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
-Below is a list of some of the most important functions grouped by theme. Some of these have not been implemented yet.
+Below is a list of some of the most important functions grouped by theme. Some of these have not been implemented yet. Note the following differences with the raster package:
+
+"extent" (raster) is "ext" (terra)
+"raster", "stack", "brick" (raster) is "rast" (terra), or "c" instead of "stack" when combining objects 
+
 }
 
 \section{I. Creating SpatRaster objects}{
