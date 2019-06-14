@@ -18,7 +18,6 @@
 #include "spatRaster.h"
 #include "read_rst.h"
 
-
 bool SpatRaster::readStart() {
 // for now assuming a single source
 // will have to become a loop over sources
@@ -47,24 +46,21 @@ std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
 	return(x);
 }
 
-void bil_to_bsq(std::vector<double> &v, unsigned nrows, unsigned ncols, unsigned nlyrs) {
-	std::vector<std::vector<double>> x(nlyrs);
-	for (size_t r=0; r<nrows; r++) {
-		unsigned off = r*nlyrs;
-		for (size_t i=0; i<nlyrs; i++) {
-			unsigned start = (off+i)*ncols;
-			x[i].insert(x[i].end(), v.begin()+start, v.begin()+start+ncols);
-		}	
-	}
-	v.resize(0);
+
+template <typename T>
+std::vector<T> bil_to_bsq(const std::vector<T> &v, unsigned nrows, unsigned ncols, unsigned nlyrs) {
+	std::vector<T> x;
 	for (size_t i=0; i<nlyrs; i++) {
-		v.insert(v.end(), x[i].begin(), x[i].end());
+		for (size_t r=0; r<nrows; r++) {
+			unsigned step = (r * nlyrs + i) * ncols;
+			x.insert(x.end(), v.begin()+step, v.begin()+step+ncols);
+		}
 	}
+	return x;
 }
 
 
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols){
-
 	unsigned nl = nlyr();
 	row = std::min(std::max(unsigned(0), row), nrow()-1);
 	col = std::min(std::max(unsigned(0), col), ncol()-1);
@@ -102,14 +98,16 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 		} else {
 			// read from file
 			if (source[src].driver == "raster") {
+
 				std::string file = source[src].filename;
+				unsigned nls = source[src].nlyr;
 				if (source[src].datatype == "FLT8S") {
-					std::vector<double> fvals = readFLT8(file, "BIL", 0, ncell());
-					bil_to_bsq(fvals, ncols, nrows, nl);
+					std::vector<double> fvals = readFLT8(file, "BIL", nls, 0, ncell());
+					fvals = bil_to_bsq(fvals, ncols, nrows, nl);
 					out.insert(out.end(), fvals.begin(), fvals.end());
 				} else {
-					std::vector<double> fvals = readFLT4(file, "BIL", 0, ncell());
-					bil_to_bsq(fvals, ncols, nrows, nl);
+					std::vector<double> fvals = readFLT4(file, "BIL", nls, 0, ncell());
+					fvals = bil_to_bsq(fvals, ncols, nrows, nl);
 					out.insert(out.end(), fvals.begin(), fvals.end());
 				}
 

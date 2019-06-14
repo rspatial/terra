@@ -50,7 +50,7 @@ swap_endian<double>(42).
 
 
 
-std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {
+std::vector<double> readINT2(std::string file, unsigned nlyr, unsigned long cell, unsigned n) {
 	const int dsize = 2;
 	std::vector<short> v(n);
 	short* value = &v[0];
@@ -66,7 +66,7 @@ std::vector<double> readINT2(std::string file, unsigned long cell, unsigned n) {
 
 
 
-std::vector<double> readINT4(std::string file, unsigned long cell, unsigned n) {
+std::vector<double> readINT4(std::string file, unsigned nlyr, unsigned long cell, unsigned n) {
 	const int dsize = 4;
 	std::vector<long> v(n);
 	long* value = &v[0];
@@ -82,11 +82,9 @@ std::vector<double> readINT4(std::string file, unsigned long cell, unsigned n) {
 
 
 
-std::vector<double> readFLT4(std::string file, std::string order, unsigned long start, unsigned n) {
+std::vector<double> readFLT4(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n) {
 
 	const int dsize = 4;
-	size_t nlyr = 1;
-//	unsigned lyr = 0;
 	std::vector<float> v(n * nlyr);
 	float* value = &v[0];
 
@@ -96,9 +94,9 @@ std::vector<double> readFLT4(std::string file, std::string order, unsigned long 
 	if (order == "BIL") {
 		f.seekg (start, std::ios::beg);
 		f.read ((char*)value, n*nlyr);
-	} 
-	
-	
+	}
+
+
 //	if (order == "BSQ") {
 //		for (size_t i = 0; i < nlyr; i++) {
 //			f.seekg (start * lyr, std::ios::beg);
@@ -112,10 +110,10 @@ std::vector<double> readFLT4(std::string file, std::string order, unsigned long 
 }
 
 
-std::vector<double> readFLT8(std::string file, std::string order, unsigned long start, unsigned n) {
+std::vector<double> readFLT8(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n) {
 
 	const int dsize = 8;
-	size_t nlyr = 1;
+//	size_t nlyr = 1;
 //	unsigned lyr = 0;
 	std::vector<double> v(n * nlyr);
 	double* value = &v[0];
@@ -126,7 +124,7 @@ std::vector<double> readFLT8(std::string file, std::string order, unsigned long 
 	if (order == "BIL") {
 		f.seekg (start, std::ios::beg);
 		f.read ((char*)value, n*nlyr);
-	} 
+	}
 	f.close();
 	std::vector<double> vv(v.begin(), v.end());
 	return vv;

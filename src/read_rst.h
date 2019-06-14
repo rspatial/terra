@@ -16,5 +16,5 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 
-std::vector<double> readFLT4(std::string file, std::string order, unsigned long start, unsigned n);
-std::vector<double> readFLT8(std::string file, std::string order, unsigned long start, unsigned n);
+std::vector<double> readFLT4(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n);
+std::vector<double> readFLT8(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n);
