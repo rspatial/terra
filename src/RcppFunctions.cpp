@@ -36,22 +36,39 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) {
 }
 
 
-Rcpp::List getAttributes(SpatVector* v) {
-	unsigned n = v->ncol();
-	Rcpp::List out(n);	
-	std::vector<unsigned> itype = v->getItype();
-	for (size_t i=0; i < n; i++) {
-		if (itype[i] == 0) {
-			out[i] = v->getDv(i);
-		} else if (itype[i] == 1) {
-			out[i] = v->getIv(i);
-		} else {
-			out[i] = v->getSv(i);
+Rcpp::List getAttributes(SpatVector* v, std::vector<int> s) {
+	int n = v->ncol();
+	std::vector<unsigned> ss;
+	for (size_t i=0; i<s.size(); i++) {
+		if ((s[i] >= 0) & (s[i] < n)) {
+			ss.push_back(s[i]);
 		}
+	}
+	unsigned nn = ss.size();
+	Rcpp::List out(nn);	
+	if (nn == 0) {
+		return(out);
+	} 
+
+	std::vector<std::string> allnms = v->names();
+	std::vector<std::string> nms;
+	std::vector<unsigned> itype = v->getItype();
+	for (size_t i=0; i < nn; i++) {
+		unsigned j = ss[i];
+		if (itype[j] == 0) {
+			out[i] = v->getDv(j);
+		} else if (itype[j] == 1) {
+			out[i] = v->getIv(j);
+		} else {
+			out[i] = v->getSv(j);
+		}
+		nms.push_back(allnms[j]);
 	}	
+	out.names() = nms;
 	// todo: deal with NAs in int and str
 	return out;
-// df is nice, but no of variables is <= 20, and no "stringsAsFactors"=false
+//  Rcpp::df is nice, but no of variables is <= 20, 
+//  and no "stringsAsFactors"=false
 //	Rcpp::DataFrame result(out);
 //	result.attr("names") = v->names();
 //	return result;

@@ -99,7 +99,11 @@ class SpatVector {
 		bool setGeom(SpatGeom p);
 		SpatDataFrame getGeometryDF();
 
-		SpatVector subset(std::vector<unsigned> range);
+		SpatVector subset_cols(int i);
+		SpatVector subset_cols(std::vector<int> range);
+		SpatVector subset_rows(int i);
+		SpatVector subset_rows(std::vector<int> range);
+
 		void setGeometry(std::string type, std::vector<unsigned> gid, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<unsigned> hole);
 
 		std::vector<double> area();

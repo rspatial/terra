@@ -340,13 +340,53 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 
 
 
-SpatVector SpatVector::subset(std::vector<unsigned> range) {
+SpatVector SpatVector::subset_rows(std::vector<int> range) {
+
 	SpatVector out;
-	for (size_t i=0; i < range.size(); i++) {
-		out.addGeom( lyr.geoms[range[i]] );
+	int n = nrow();
+	std::vector<unsigned> r;
+	for (size_t i=0; i<range.size(); i++) {
+	if ((range[i] >= 0) & (range[i] < n)) {
+			r.push_back(range[i]);
+		}
+	}
+	
+	for (size_t i=0; i < r.size(); i++) {
+		out.addGeom( lyr.geoms[r[i]] );
 	}
 	out.lyr.crs = lyr.crs;
-	//df ?
+	out.lyr.df = lyr.df.subset_rows(r); 
+	return out;
+};
+
+
+SpatVector SpatVector::subset_rows(int i) {
+	std::vector<int> range(1, i);
+	SpatVector out = subset_rows(range);
+	return out;
+};
+
+
+SpatVector SpatVector::subset_cols(std::vector<int> range) {
+	SpatVector out;
+	out.lyr.geoms = lyr.geoms;
+	out.lyr.crs = lyr.crs;
+	int nc = ncol();
+	std::vector<unsigned> r;
+	for (size_t i=0; i<range.size(); i++) {
+	if ((range[i] >= 0) & (range[i] < nc)) {
+			r.push_back(range[i]);
+		}
+	}
+
+	out.lyr.df = lyr.df.subset_cols(r); 
+	return out;
+};
+
+
+SpatVector SpatVector::subset_cols(int i) {
+	std::vector<int> range(1, i);
+	SpatVector out = subset_cols(range);
 	return out;
 };
 

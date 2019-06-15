@@ -18,13 +18,21 @@ setMethod("geom", signature(x="SpatVector"),
 	}
 )	
 
+setMethod("dim", signature(x="SpatVector"), 
+	function(x){ 
+		c(nrow(x), ncol(x))
+	}
+)	
+
 setMethod("as.data.frame", signature(x="SpatVector"), 
 	function(x, ...) {
-		d <- data.frame(x@ptr$getAttributes(), stringsAsFactors=FALSE)
-		names(d) <- x@ptr$names()
+		i <- (1:ncol(x))-1
+		d <- data.frame(x@ptr$getAttributes(i), stringsAsFactors=FALSE)
+		colnames(d) <- x@ptr$names()
 		d
 	}
 )
+	
 	
 
 setMethod("area", signature(x="SpatVector"), 

@@ -25,6 +25,7 @@
 \alias{size,SpatRaster-method}
 \alias{dim,SpatRaster-method}
 \alias{dim<-,SpatRaster-method}
+\alias{dim,SpatVector-method}
 \alias{size,SpatVector-method}
 
 \alias{res}
