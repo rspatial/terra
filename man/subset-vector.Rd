@@ -5,7 +5,9 @@
 \alias{[[,SpatVector,character,missing-method}
 \alias{[,SpatVector,numeric,missing-method}
 \alias{[,SpatVector,missing,numeric-method}
+\alias{[,SpatVector,missing,character-method}
 \alias{[,SpatVector,numeric,numeric-method}
+\alias{[,SpatVector,numeric,character-method}
 \alias{$,SpatVector-method}
 
 \title{Subset of a SpatVector}

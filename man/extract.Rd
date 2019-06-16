@@ -84,7 +84,7 @@ rapply(e, mean)
 
 x <- c(z, z*2, z/3)
 e <- extract(x, v)
-matrix(rapply(e, mean), ncol=nlyr(x), byrow=T)
+matrix(rapply(e, mean), ncol=nlyr(x), byrow=TRUE)
 }
 
 \keyword{methods}
