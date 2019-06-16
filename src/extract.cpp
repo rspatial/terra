@@ -334,7 +334,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	unsigned ns = nsrc();
 
     // not useful if all sources are memory
-	std::vector<std::vector<unsigned> > rc = rowColFromCell(cell);
+	std::vector<std::vector<unsigned>> rc = rowColFromCell(cell);
 	std::vector<unsigned> rows = rc[0];
 	std::vector<unsigned> cols = rc[1];
 	unsigned lyr = 0;
@@ -356,6 +356,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 
 		#ifdef useGDAL
 			std::vector<std::vector<double>> srcout = readRowColGDAL(src, rows, cols); //
+			
             for (size_t i=0; i<slyrs; i++) {
 				out[lyr] = srcout[i];
 				lyr++;

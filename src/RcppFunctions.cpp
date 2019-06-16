@@ -36,33 +36,24 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) {
 }
 
 
-Rcpp::List getAttributes(SpatVector* v, std::vector<int> s) {
-	int n = v->ncol();
-	std::vector<unsigned> ss;
-	for (size_t i=0; i<s.size(); i++) {
-		if ((s[i] >= 0) & (s[i] < n)) {
-			ss.push_back(s[i]);
-		}
-	}
-	unsigned nn = ss.size();
-	Rcpp::List out(nn);	
-	if (nn == 0) {
+Rcpp::List getAttributes(SpatVector* v) {
+
+	unsigned n = v->ncol();
+	Rcpp::List out(n);	
+	if (n == 0) {
 		return(out);
 	} 
 
-	std::vector<std::string> allnms = v->names();
-	std::vector<std::string> nms;
+	std::vector<std::string> nms = v->names();
 	std::vector<unsigned> itype = v->getItype();
-	for (size_t i=0; i < nn; i++) {
-		unsigned j = ss[i];
-		if (itype[j] == 0) {
-			out[i] = v->getDv(j);
-		} else if (itype[j] == 1) {
-			out[i] = v->getIv(j);
+	for (size_t i=0; i < n; i++) {
+		if (itype[i] == 0) {
+			out[i] = v->getDv(i);
+		} else if (itype[i] == 1) {
+			out[i] = v->getIv(i);
 		} else {
-			out[i] = v->getSv(j);
+			out[i] = v->getSv(i);
 		}
-		nms.push_back(allnms[j]);
 	}	
 	out.names() = nms;
 	// todo: deal with NAs in int and str
@@ -136,7 +127,7 @@ Rcpp::NumericMatrix rcppAdjacent(SpatRaster* x, std::vector<double> cells, std::
 	Rcpp::NumericMatrix m(nr, nc);
 	for (size_t i=0; i<nr; i++) {
 		for (size_t j=0; j<nc; j++) {
-			m(i,j) = a[i][j];
+			m(i,j) = a[i][i];
 		}
 	}
 	return m;

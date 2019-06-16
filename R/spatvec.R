@@ -26,8 +26,7 @@ setMethod("dim", signature(x="SpatVector"),
 
 setMethod("as.data.frame", signature(x="SpatVector"), 
 	function(x, ...) {
-		i <- (1:ncol(x))-1
-		d <- data.frame(x@ptr$getAttributes(i), stringsAsFactors=FALSE)
+		d <- data.frame(x@ptr$getDF(), stringsAsFactors=FALSE)
 		colnames(d) <- x@ptr$names()
 		d
 	}

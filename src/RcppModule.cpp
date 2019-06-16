@@ -61,7 +61,7 @@ RCPP_MODULE(spat){
 		.method("type", &SpatVector::type, "type")		
 		.method("extent", &SpatVector::getExtent, "extent")		
 		.method("read", &SpatVector::read, "read")		
-		.method("getAttributes", &getAttributes, "getAttributes")
+		.method("getDF", &getAttributes, "get attributes")
 		//.method("setAttributes", &setAttributes, "setAttributes")
 
 		.method("subset_cols", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_cols ))

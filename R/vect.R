@@ -15,9 +15,9 @@ setMethod("vect", signature(x="character"),
 	function(x, ...) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
+		x <- normalizePath(x)
 		p@ptr$read(x)
 		show_messages(p)
-		p
 	}
 )
 
@@ -70,7 +70,6 @@ setMethod("vect", signature(x="matrix"),
 			p@ptr$crs <- ifelse(is.na(crs), "", as.character(crs))
 		}
 		show_messages(p)
-		p
 	}
 )
 

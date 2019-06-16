@@ -1,5 +1,5 @@
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n);
-Rcpp::List getAttributes(SpatVector* v, std::vector<int> s);
+Rcpp::List getAttributes(SpatVector* v);
 
 //bool setAttributes(SpatVector* v, Rcpp::List x, std::vector<std::string> names, std::vector<std::string> types);
 

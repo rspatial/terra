@@ -78,8 +78,13 @@ f <- system.file("exdata/lux.shp", package="terra")
 v <- vect(f)
 z <- rast(v)
 values(z) <- 1:100
-extract(z, v)
+e <- extract(z, v)
+e[1:2]
+rapply(e, mean)
 
+x <- c(z, z*2, z/3)
+e <- extract(x, v)
+matrix(rapply(e, mean), ncol=nlyr(x), byrow=T)
 }
 
 \keyword{methods}

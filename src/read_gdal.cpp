@@ -543,7 +543,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 		if (gdtype == GDT_Float64) {
 			std::vector<double> lyrout(n);
 			for (size_t j=0; j < n; j++) {
-				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[i][j], 1, 1, gdtype, 0, 0);
+				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);

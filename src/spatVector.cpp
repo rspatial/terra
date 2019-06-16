@@ -372,13 +372,13 @@ SpatVector SpatVector::subset_cols(std::vector<int> range) {
 	out.lyr.geoms = lyr.geoms;
 	out.lyr.crs = lyr.crs;
 	int nc = ncol();
+	
 	std::vector<unsigned> r;
 	for (size_t i=0; i<range.size(); i++) {
 	if ((range[i] >= 0) & (range[i] < nc)) {
 			r.push_back(range[i]);
 		}
 	}
-
 	out.lyr.df = lyr.df.subset_cols(r); 
 	return out;
 };
