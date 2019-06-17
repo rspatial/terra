@@ -25,7 +25,7 @@ function(x, r=1, g=2, b=3, scale, maxpixels=500000, stretch=NULL, ext=NULL, inte
 
 	if (missing(scale)) {
 		scale <- 255
-		if ( .hasMinMax(x) ) {
+		if ( all(.hasMinMax(x)) ) {
 			rng <- minmax(x)
 			scale <- max(max(rng[2]), 255)
 		}

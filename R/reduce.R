@@ -2,35 +2,44 @@
 setMethod("reduce", signature(x="SpatRaster", fun="function"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
-	opt <- .runOptions(filename, overwrite, wopt)
+	opt <- terra:::.runOptions(filename, overwrite, wopt)
 
-	txtfun <- .makeTextFun(match.fun(fun))
+	txtfun <- terra:::.makeTextFun(match.fun(fun))
 	if (class(txtfun) == "character") { 
-		if (txtfun %in% c("max", "min", "range", "prod", "sum", "any", "all"))
-		na.rm = ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
-		x@ptr <- x@ptr$summary(txtfun, na.rm, opt)	
-		return(x)
-	} 
-	
+		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
+			narm <- ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
+			x@ptr <- x@ptr$summary(txtfun, narm, opt)	
+			return(show_messages(x))
+		}		
+	}
 
 	out <- rast(x)
 	nlyr(out) <- 1
 	readStart(x)
 	nc <- ncol(x)
+
+# figure out the shape of the output by testing with one row
+	v <- readValues(x, round(0.5*nrow(x)), 1, 1, nc, TRUE)
+	r <- apply(v, 1, fun, ...)
+	trans <- FALSE			
+	if (NCOL(r) > 1) {
+		if (ncol(r) == nc) {
+			nlyr(out) <- nrow(r)
+			trans <- TRUE
+		} else if (nrow(r) == nc) {
+			nlyr(out) <- ncol(r)
+		} else {
+			stop("cannot handle this function")
+		}
+	}
+
 	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {
-		v <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
-		v <- matrix(v, ncol=nlyr(x))
+		v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 		r <- apply(v, 1, fun, ...)
-		# if i==1, check size of output and adjust layers
-		if (is.matrix(r)) {
+		if (trans) {
 			r <- t(r)
-			if (i==1) {
-				writeStop(out)
-				nlyr(out) <- ncol(r)
-				bb <- writeStart(out, filename, overwrite=TRUE, wopt)
-			}	
-			r <- as.vector(r)
+			#r <- as.vector(r)
 		}
 		writeValues(out, r, b$row[i])
 	}

@@ -34,8 +34,8 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 #	if (length(fnames) != nl) {	dnames <- NULL 	} else { dnames <- list(list(), fnames)	}
 
 	for (i in 1:b$n) {
-		vx <- x@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
-		vy <- y@ptr$readValues(b$row[i], b$nrows[i], 0, nc)
+		vx <- readValues(x, b$row[i], b$nrows[i], 1, nc)
+		vy <- readValues(x, b$row[i], b$nrows[i], 1, nc)
 		r <- fun(vx, vy)
 		writeValues(out, r, b$row[i])
 	}

@@ -5,7 +5,7 @@
 \alias{sampleRegular}
 \alias{sampleRegular,SpatRaster,numeric-method}
 
-\title{Combine}
+\title{Take a regular sample}
 
 \description{
 Take a regular sample of a SpatRaster. The returned object has the same extent, but fewer cells. 
@@ -13,7 +13,6 @@ Take a regular sample of a SpatRaster. The returned object has the same extent, 
 
 \usage{
 \S4method{sampleRegular}{SpatRaster,numeric}(x, size, ...)
-
 }
 
 \arguments{

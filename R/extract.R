@@ -39,7 +39,7 @@ function(x, y, fun="", ...) {
 
 setMethod("[", c("SpatRaster", "missing", "missing"),
 function(x, i, j, ... , drop=FALSE) {
-	values(x, matrix=drop)
+	values(x, mat=drop)
 })
 
 
