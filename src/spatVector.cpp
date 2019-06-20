@@ -233,7 +233,7 @@ SpatDataFrame SpatVector::getGeometryDF() {
 	out.add_column(0, "x");
 	out.add_column(0, "y");
 	out.add_column(1, "hole");
-	out.resize(n);
+	out.resize_rows(n);
 
 	size_t idx = 0;
 	for (size_t i=0; i < size(); i++) {

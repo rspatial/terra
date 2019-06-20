@@ -39,6 +39,7 @@ class SpatDataFrame {
 		std::vector<std::string> getS(unsigned i);
 	
 		void add_row();
+		
 		void add_column(unsigned dtype, std::string name);
 		bool add_column(std::vector<double> x, std::string name);
 		bool add_column(std::vector<long> x, std::string name);
@@ -48,7 +49,8 @@ class SpatDataFrame {
 		void insert_column(std::vector<long>);		
 		void insert_column(std::vector<std::string>);
 
-		void resize(unsigned n);
+		void resize_rows(unsigned n);
+		void resize_cols(unsigned n);
 		void reserve(unsigned n);
 		
 		bool rbind(SpatDataFrame &x);

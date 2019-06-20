@@ -55,13 +55,25 @@ RCPP_MODULE(spat){
 
     class_<SpatDataFrame>("SpatDataFrame")
 		.constructor()
+		
+		//.field("names" &SpatDataFrame::names, "names")
+			
+		.method("resize_rows", &SpatDataFrame::resize_rows, "resize_rows")
+		.method("resize_cols", &SpatDataFrame::resize_cols, "resize_cols")
+				
+		.method("add_column_empty", (void (SpatDataFrame::*)(unsigned dtype, std::string name))( &SpatDataFrame::add_column))
+		.method("add_column_double", (bool (SpatDataFrame::*)(std::vector<double>, std::string name))( &SpatDataFrame::add_column))
+		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
+		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
+		
 	;
 
     class_<SpatCategories>("SpatCategories")
 		.constructor()
-		.field("id", &SpatCategories::id, "id")
-		.field("df", &SpatCategories::df, "data frame")
+		.field("levels", &SpatCategories::levels, "levels")
+		.field("labels", &SpatCategories::labels, "labels")
 	;	
+
 
     class_<SpatVector>("SpatVector")
 		.constructor()	
@@ -138,10 +150,15 @@ RCPP_MODULE(spat){
 		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.method("setNames", &SpatRaster::setNames, "setNames" )
 		
+		.method("hasAttributes", &SpatRaster::hasAttributes, "hasAttributes")
+		.method("getAttributes", &SpatRaster::getAttributes, "getAttributes")
+		.method("setAttributes", &SpatRaster::setAttributes, "setAttributes")
+		.method("createAttributes", &SpatRaster::createAttributes, "createAttributes")
+
 		.method("hasCategories", &SpatRaster::hasCategories, "hasCategories")
 		.method("getCategories", &SpatRaster::getCategories, "getCategories")
+		.method("setCategories", SpatRaster::setCategories, "setCategories")
 		.method("createCategories", &SpatRaster::createCategories, "createCategories")
-		.method("setCategoriesDF", SpatRaster::setCategoriesDF, "setCategoriesDF")
 		
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		

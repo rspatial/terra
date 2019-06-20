@@ -36,6 +36,9 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) {
 }
 
 
+
+
+
 Rcpp::List getAttributes(SpatVector* v) {
 
 	unsigned n = v->ncol();
@@ -64,6 +67,7 @@ Rcpp::List getAttributes(SpatVector* v) {
 //	result.attr("names") = v->names();
 //	return result;
 }
+
 
 /*
 bool setAttributes(SpatVector* v, Rcpp::List x, std::vector<std::string> names, std::vector<std::string> types) {

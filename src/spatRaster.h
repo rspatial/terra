@@ -33,9 +33,10 @@
 
 class SpatCategories {
 	public:
-		std::vector<double> id;
-		SpatDataFrame df;
+		std::vector<double> levels;
+		std::vector<std::string> labels;
 };
+
 
 class SpatColors {
 	public:
@@ -74,9 +75,11 @@ class RasterSource {
 		std::vector<double> range_min;
 		std::vector<double> range_max;
 		std::vector<double> time;
-		std::vector<bool> hasColors;
+		std::vector<bool> hasAttributes;
+		std::vector<SpatDataFrame> atts;
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
+		std::vector<bool> hasColors;
 		std::vector<SpatColors> cols;
 
 		bool memory;
@@ -243,9 +246,15 @@ class SpatRaster {
 
 		void createCategories(unsigned layer);
 		std::vector<bool> hasCategories();		
-		void setCategoriesDF(unsigned layer, SpatDataFrame df);
+		void setCategories(unsigned layer, std::vector<std::string> labs);
 		std::vector<SpatCategories> getCategories();
 		SpatCategories getLayerCategories(unsigned layer);
+
+		void createAttributes(unsigned layer);
+		std::vector<bool> hasAttributes();		
+		void setAttributes(unsigned layer, SpatDataFrame df);
+		std::vector<SpatDataFrame> getAttributes();
+		SpatDataFrame getLayerAttributes(unsigned layer);
 
 		double valuesCell(double);
 		double valuesCell(int, int);

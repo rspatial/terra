@@ -45,35 +45,24 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 	unsigned nfields = poFDefn->GetFieldCount();
 	OGRFieldDefn *poFieldDefn;
 	SpatDataFrame df;
-	df.itype.resize(nfields);
-	df.iplace.resize(nfields);
-	unsigned dcnt = 0;
-	unsigned icnt = 0; 
-	unsigned scnt = 0;
+	df.resize_cols(nfields);
 	bool first = true;
+	unsigned dtype;
     while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		if (first) {
 			for (size_t i = 0; i < nfields; i++ ) {
 				poFieldDefn = poFDefn->GetFieldDefn(i);
-				df.names.push_back(poFieldDefn->GetNameRef());
+				std::string fname = poFieldDefn->GetNameRef();
 				ft = poFieldDefn->GetType();
 				if (ft == OFTReal) {
-					df.itype[i] = 0;
-					df.iplace[i] = dcnt;
-					dcnt++;
+					dtype = 0;
 				} else if ((ft == OFTInteger) | (ft == OFTInteger64)) {
-					df.itype[i] = 1;
-					df.iplace[i] = icnt;
-					icnt++;
+					dtype = 1;
 				} else {
-					df.itype[i] = 2;
-					df.iplace[i] = scnt;
-					scnt++;
+					dtype = 2;
 				}
+				df.add_column(dtype, fname);				
 			}
-			df.dv.resize(dcnt);
-			df.iv.resize(icnt);
-			df.sv.resize(scnt);	
 			first = false;
 		} 
 

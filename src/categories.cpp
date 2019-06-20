@@ -27,7 +27,7 @@ void SpatRaster::createCategories(unsigned layer) {
 	SpatRaster r = subset(lyrs, opt);
 	std::vector<std::vector<double>> u = r.unique(false);
     std::vector<unsigned> sl = findLyr(layer);
-	source[sl[0]].cats[sl[1]].id = u[0];
+	source[sl[0]].cats[sl[1]].levels = u[0];
 	source[sl[0]].hasCategories[sl[1]] = true;
 }
 
@@ -47,10 +47,10 @@ std::vector<bool> SpatRaster::hasCategories() {
 
 
 
-void SpatRaster::setCategoriesDF(unsigned layer, SpatDataFrame df) {
+void SpatRaster::setCategories(unsigned layer, std::vector<std::string> labs) {
     std::vector<unsigned> sl = findLyr(layer);
-	if (df.nrow() == source[sl[0]].cats[sl[1]].id.size()) {
-		source[sl[0]].cats[sl[1]].df = df;
+	if (labs.size() == source[sl[0]].cats[sl[1]].levels.size()) {
+		source[sl[0]].cats[sl[1]].labels = labs;
 	} else {
 		setError("nrow(df) does not match number of categories");
 	}
@@ -70,4 +70,59 @@ std::vector<SpatCategories> SpatRaster::getCategories() {
 	}
 	return cats;
 }
+
+
+
+
+void SpatRaster::createAttributes(unsigned layer) {
+	// subset to layer
+	SpatOptions opt;
+	std::vector<unsigned> lyrs(1, layer);
+	SpatRaster r = subset(lyrs, opt);
+	std::vector<std::vector<double>> u = r.unique(false);
+    std::vector<unsigned> sl = findLyr(layer);
+	SpatDataFrame df;
+	std::string name = "ID";
+	df.add_column(u[0], name);				
+
+	source[sl[0]].atts[sl[1]] = df;
+	source[sl[0]].hasAttributes[sl[1]] = true;
+}
+
+
+std::vector<bool> SpatRaster::hasAttributes() {
+	std::vector<bool> b(nlyr());
+	std::vector<unsigned> ns = nlyrBySource();
+	unsigned k = 0;
+	for (size_t i=0; i<source.size(); i++) {
+		for (size_t j=0; j<ns[i]; j++) {
+			b[k] = source[i].hasAttributes[j];
+			k++;
+		}
+	}
+	return b;
+}
+
+
+
+void SpatRaster::setAttributes(unsigned layer, SpatDataFrame df) {
+    std::vector<unsigned> sl = findLyr(layer);
+	source[sl[0]].atts[sl[1]] = df;
+}
+
+
+SpatDataFrame SpatRaster::getLayerAttributes(unsigned layer) {
+    std::vector<unsigned> sl = findLyr(layer);
+	SpatDataFrame att = source[sl[0]].atts[sl[1]];
+	return att;
+}
+
+std::vector<SpatDataFrame> SpatRaster::getAttributes() {
+	std::vector<SpatDataFrame> atts;
+	for (size_t i=0; i<source.size(); i++) {
+		atts.insert(atts.end(), source[i].atts.begin(), source[i].atts.end());
+	}
+	return atts;
+}
+
 
