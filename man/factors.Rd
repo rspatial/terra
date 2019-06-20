@@ -1,0 +1,54 @@
+\name{factors}
+
+\docType{methods}
+
+\alias{is.factor}
+\alias{is.factor,SpatRaster-method}
+\alias{as.factor}
+\alias{as.factor,SpatRaster-method}
+\alias{levels}
+\alias{levels,SpatRaster-method}
+\alias{levels<-}
+\alias{levels<-,SpatRaster-method}
+  
+\title{Factors}
+
+\description{
+
+These functions allow for defining a SpatRaster layer as a categorical variable. The cell values are an index (id), whereas the actual values are stored seperately, in a table (sometimes called "Raster Attribute Table"). This table is a data.frame. The first column in the RAT ("ID") has the unique cell values of the layer; this column should normally not be changed. The other columns can be of any basic type (factor, character, integer, numeric or logical). 
+
+Function 'levels' returns the RAT for inspection. It can be modified and set using \code{levels <- value}.
+
+\code{as.factor} and \code{ratify} create a layer with a RAT table. \code{deratify} creates a single layer for a (or each) variable in the RAT table. 
+}
+
+\usage{
+is.factor(x)
+as.factor(x)
+levels(x)
+}
+
+
+\arguments{
+  \item{x}{SpatRaster}
+}  
+
+
+\value{
+SpatRaster; list (levels); boolean (is.factor)
+}
+
+\examples{
+set.seed(0)
+r <- rast(nrow=10, ncol=10)
+values(r) <- runif(ncell(r)) * 10
+is.factor(r)
+
+r <- round(r)
+f <- as.factor(r)
+is.factor(f)
+}
+
+\keyword{methods}
+\keyword{spatial}
+

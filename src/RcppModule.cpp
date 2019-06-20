@@ -5,9 +5,12 @@
 RCPP_EXPOSED_CLASS(SpatMessages)
 RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatExtent)
+RCPP_EXPOSED_CLASS(SpatCategories)
 //RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatVector)
+RCPP_EXPOSED_CLASS(SpatDataFrame)
+
 
 RCPP_MODULE(spat){
 
@@ -32,7 +35,7 @@ RCPP_MODULE(spat){
 	
     class_<SpatOptions>("SpatOptions")
 		.constructor()
-		.method("copy", &SpatOptions::deepcopy)
+		.method("copy", &SpatOptions::deepCopy, "deepCopy")
 		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
 		.property("memfrac", &SpatOptions::get_memfrac, &SpatOptions::set_memfrac )
 		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
@@ -49,7 +52,16 @@ RCPP_MODULE(spat){
 	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )
 		//.field("gdaloptions", &SpatOptions::gdaloptions)		
 	;
-	
+
+    class_<SpatDataFrame>("SpatDataFrame")
+		.constructor()
+	;
+
+    class_<SpatCategories>("SpatCategories")
+		.constructor()
+		.field("id", &SpatCategories::id, "id")
+		.field("df", &SpatCategories::df, "data frame")
+	;	
 
     class_<SpatVector>("SpatVector")
 		.constructor()	
@@ -125,6 +137,14 @@ RCPP_MODULE(spat){
 		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )		
 		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.method("setNames", &SpatRaster::setNames, "setNames" )
+		
+		.method("hasCategories", &SpatRaster::hasCategories, "hasCategories")
+		.method("getCategories", &SpatRaster::getCategories, "getCategories")
+		.method("createCategories", &SpatRaster::createCategories, "createCategories")
+		.method("setCategoriesDF", SpatRaster::setCategoriesDF, "setCategoriesDF")
+		
+		.method("copy", &SpatRaster::deepCopy, "deepCopy")
+		
 // only of RasterSource is exposed
 //		.field_readonly("source", &SpatRaster::source )
 

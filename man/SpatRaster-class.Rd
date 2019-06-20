@@ -10,6 +10,9 @@
 \alias{RasterSource-class}
 \alias{Rcpp_RasterSource-class}
 
+\alias{SpatCategories}
+\alias{SpatCategories-class}
+\alias{Rcpp_SpatCategories-class}
 
 \alias{show,SpatRaster-method}
 

@@ -114,6 +114,32 @@ std::vector<unsigned> SpatRaster::lyrsBySource() {
     return lyrs;
 }
 
+
+std::vector<unsigned> SpatRaster::findLyr(unsigned lyr) {
+    std::vector<unsigned> sl(2);
+    unsigned nlyrs = 0;
+    unsigned start = 0;
+	bool done = false;
+    for (size_t i=0; i<source.size(); i++) {
+		if ((nlyrs + source[i].nlyr) >= lyr) {	
+			sl[0] = i;
+			for (size_t j=start; j<source[i].nlyr; j++) {
+				if ((nlyrs + j) == lyr) {
+					sl[1] = j;
+					done = true;
+					break;
+				}
+			}
+		}
+		if (done) break;
+        nlyrs += source[i].nlyr;
+    }
+    return sl;
+}
+
+
+
+
 std::vector<unsigned> SpatRaster::sourcesFromLyrs(std::vector<unsigned> lyrs) {
     std::vector<unsigned> s(lyrs.size());
     std::vector<unsigned> slyrs = lyrsBySource();
@@ -142,10 +168,10 @@ void RasterSource::resize(unsigned n) {
 	has_scale_offset.resize(n);
 	scale.resize(n);
 	offset.resize(n);
-    hasCT.resize(n);
-	CT.resize(n);
-    hasRAT.resize(n);
-	RAT.resize(n);
+    hasColors.resize(n);
+	cols.resize(n);
+    hasCategories.resize(n);
+	cats.resize(n);
 	nlyr = n;
 	layers.resize(n);
 }
@@ -183,8 +209,8 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                     rs.hasRange.push_back(hasRange[j]);
                     rs.range_min.push_back(range_min[j]);
                     rs.range_max.push_back(range_max[j]);
-                    rs.hasCT.push_back(hasCT[j]);
-                    rs.hasRAT.push_back(hasRAT[j]);
+                    rs.hasColors.push_back(hasColors[j]);
+                    rs.hasCategories.push_back(hasCategories[j]);
 					//rs.RAT.push_back(RAT[j]);
 					rs.has_scale_offset.push_back(has_scale_offset[j]);
 					rs.scale.push_back(scale[j]);
@@ -199,8 +225,8 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                 rs.hasRange.push_back(hasRange[j]);
                 rs.range_min.push_back(range_min[j]);
                 rs.range_max.push_back(range_max[j]);
-                rs.hasCT.push_back(hasCT[j]);
-                rs.hasRAT.push_back(hasRAT[j]);
+                rs.hasColors.push_back(hasColors[j]);
+                rs.hasCategories.push_back(hasCategories[j]);
 				rs.has_scale_offset.push_back(has_scale_offset[j]);
 				rs.scale.push_back(scale[j]);
 				rs.offset.push_back(offset[j]);

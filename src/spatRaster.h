@@ -31,15 +31,15 @@
 #endif
 
 
-class RasterAttributeTable {
+class SpatCategories {
 	public:
-		std::vector<unsigned> code;
-		std::vector<std::string> value;
+		std::vector<double> id;
+		SpatDataFrame df;
 };
 
-class ColorTable {
+class SpatColors {
 	public:
-		std::vector<unsigned> code;
+		std::vector<unsigned> id;
 		std::vector<std::string> value;
 };
 
@@ -74,10 +74,10 @@ class RasterSource {
 		std::vector<double> range_min;
 		std::vector<double> range_max;
 		std::vector<double> time;
-		std::vector<bool> hasCT;
-		std::vector<bool> hasRAT;
-		std::vector<RasterAttributeTable> RAT;
-		std::vector<ColorTable> CT;
+		std::vector<bool> hasColors;
+		std::vector<bool> hasCategories;
+		std::vector<SpatCategories> cats;
+		std::vector<SpatColors> cols;
 
 		bool memory;
 		bool hasValues;
@@ -234,12 +234,18 @@ class SpatRaster {
 
 		std::vector< std::vector<unsigned> > rowColFromCell(std::vector<double> &cell);
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
-
 		int sourceFromLyr(unsigned lyr);
+		std::vector<unsigned> findLyr(unsigned lyr);
+		
         std::vector<unsigned> nlyrBySource();
         std::vector<unsigned> lyrsBySource();
         unsigned nsrc();
 
+		void createCategories(unsigned layer);
+		std::vector<bool> hasCategories();		
+		void setCategoriesDF(unsigned layer, SpatDataFrame df);
+		std::vector<SpatCategories> getCategories();
+		SpatCategories getLayerCategories(unsigned layer);
 
 		double valuesCell(double);
 		double valuesCell(int, int);

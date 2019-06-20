@@ -3,36 +3,82 @@
 # Version 0.9
 # License GPL v3
 
+.getFactors <- function(m, facts=NULL, lyrnms) {
+
+	if (!is.null(facts)) {
+		stopifnot(is.list(factors))
+		f <- names(factors)
+		if (any(trimws(f) == "")) {
+			stop("all factors must be named")
+		}
+	} else if (inherits(m, "randomForest")) {
+		f <- names(which(sapply(m$forest$xlevels, max) != "0"))
+		if (length(f) > 0) { 
+			factors <- m$forest$xlevels[f]
+		}
+	} else if (inherits(m, "gbm")) {
+		dafr <- m$gbm.call$dataframe 
+		i <- sapply(dafr, is.factor)
+		if (any(i)) {
+			j <- which(i)
+			factors <- list()
+			for (i in 1:length(j)) {
+				factors[[i]] <- levels(dafr[[ j[i] ]])
+			}
+			names(factors) <- colnames(dafr)[j]
+		}
+	} else { #glm and others
+		try(factors <- m$xlevels, silent=TRUE)
+	}
+	if (!all(names(factors) %in% lyrnms)) {
+		ff <- f[!(f %in% lyrnms)]
+		stop(paste("factor name(s):", paste(ff, collapse=", "), " not in layer names"))
+	}
+	factors
+}
 	
 setMethod("predict", signature(object="SpatRaster"), 
-	function(object, model, fun=predict, ..., filename="", overwrite=FALSE, wopt=list()) {
+	function(object, model, fun=predict, ..., factors=NULL, const=NULL, filename="", overwrite=FALSE, wopt=list()) {
+
+		nms <- names(object)
+		if (length(unique(nms)) != length(nms)) {
+			tab <- table(nms)
+			stop('duplicate names in SpatRaster: ', tab[tab>1])
+		}
 		
-		#if (missing(nlyr)) {
-		#	nlyr <- try(NCOL(fun(model, object[1:min(10,ncell(object))])), silent=TRUE)
-		#	if (class(nlyr) == "try-error") {
-		#		nlyr = 1
-		#	} else {
-		#		nlyr = max(1, nlyr)
-		#	}
+		#factors should come with the SpatRaster
+		#haveFactor <- FALSE
+		#if (!is.null(factors)) {
+		#	factors <- .getFactors(model, factors, nms)
+		#	fnames <- names(f)
+		#	haveFactor <- TRUE
 		#}
 		
 		nl <- 1
 		nc <- ncol(object)
 		tomat <- FALSE
-		v <- readValues(object, round(0.5*nrow(object)), 1, 1, nc, TRUE, TRUE)
-		v <- fun(model, v, ...)
-		if (NCOL(v) > 1) {
-			nl <- ncol(v)
-			if (inherits(v, "data.frame")) {
+		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
+		if (! is.null(const)) {
+			d <- cbind(d, const[1])
+		} 
+		
+		r <- fun(model, d, ...)
+		if (NCOL(r) > 1) {
+			nl <- ncol(r)
+			if (inherits(r, "data.frame")) {
 				tomat <- TRUE
 			}
 		}
 		
+			
 		out <- rast(object, nlyr=nl)
 		readStart(object)
 		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
+			if (! is.null(const)) {
+				d <- cbind(d, const[1])
+			} 
 			r <- fun(model, d, ...)
 			if (tomat) {
 				r <- as.matrix(r)

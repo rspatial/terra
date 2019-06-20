@@ -35,7 +35,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 }
 
 
-SpatOptions SpatOptions::deepcopy(const SpatOptions &opt) {
+SpatOptions SpatOptions::deepCopy(const SpatOptions &opt) {
 	return SpatOptions(opt);
 }
 

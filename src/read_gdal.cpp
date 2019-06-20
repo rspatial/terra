@@ -214,16 +214,16 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		GDALColorTable *ct;
 		ct = poBand->GetColorTable();
 		if( ct != NULL )	{
-			s.hasCT.push_back(true);
+			s.hasColors.push_back(true);
 		} else {
-			s.hasCT.push_back(false);
+			s.hasColors.push_back(false);
 		}
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 		if( rat != NULL )	{  // does not appear to work
-			s.hasRAT.push_back(true);
+			s.hasCategories.push_back(true);
 		} else {
-			s.hasRAT.push_back(false);
+			s.hasCategories.push_back(false);
 		}
 
 		if (s.nlyr > 1) {

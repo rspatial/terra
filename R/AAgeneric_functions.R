@@ -15,11 +15,7 @@ if (!isGeneric("plotRGB")) { setGeneric("plotRGB", function(x, ...)standardGener
 
 
 if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardGeneric("reduce"))}
-if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	
-if (!isGeneric("shift")) {setGeneric("shift", function(x, ...)
-standardGeneric("shift"))}	
-
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}	
 if (!isGeneric("transpose")) { setGeneric("transpose", function(x, ...) standardGeneric("transpose"))}	
 
@@ -28,6 +24,10 @@ if (!isGeneric("transpose")) { setGeneric("transpose", function(x, ...) standard
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}	
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}	
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names=NULL, optional=FALSE, ...) standardGeneric("as.data.frame"))}	
+if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneric("as.factor"))}
+
+if (!isGeneric("is.factor")) {setGeneric("is.factor", function(x) standardGeneric("is.factor"))}
+
 if (!isGeneric("atan2")) { setGeneric("atan2", function(y, x) standardGeneric("atan2"))}	
 if (!isGeneric("clamp")) { setGeneric("clamp", function(x, ...) standardGeneric("clamp")) }
 if (!isGeneric("cover")) {setGeneric("cover", function(x, y, ...) standardGeneric("cover"))}			
@@ -62,6 +62,10 @@ if (!isGeneric("readStart")) {setGeneric("readStart", function(x, ...) standardG
 if (!isGeneric("readStop")) {setGeneric("readStop", function(x)	standardGeneric("readStop"))}
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }
 if (!isGeneric("sampleRegular")) { setGeneric("sampleRegular", function(x, size, ...) standardGeneric("sampleRegular"))}
+if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
+if (!isGeneric("shift")) {setGeneric("shift", function(x, ...)
+standardGeneric("shift"))}	
+
 if (!isGeneric("subset")) {setGeneric("subset", function(x, ...) standardGeneric("subset")) }
 
 if (!isGeneric("t")) { setGeneric("t", function(x) standardGeneric("t"))}
