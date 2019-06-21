@@ -72,8 +72,9 @@ RCPP_MODULE(spat){
 
     class_<SpatCategories>("SpatCategories")
 		.constructor()
-		.field("levels", &SpatCategories::levels, "levels")
-		.field("labels", &SpatCategories::labels, "labels")
+		.field_readonly("levels", &SpatCategories::levels, "levels")
+		.field_readonly("labels", &SpatCategories::labels, "labels")
+		
 	;	
 
 

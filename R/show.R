@@ -21,13 +21,14 @@
 
 setMethod ("show" , "Rcpp_SpatCategories", 
 	function(object) {
-		print(cbind(levels=object$levels, labels=object$labels))
+		print(data.frame(value=object$levels, label=object$labels))
 	}
 )
 
 setMethod ("show" , "Rcpp_SpatDataFrame", 
 	function(object) {
-		print(object$names)
+		d <- .getSpatDF(object)
+		head(d)
 	}
 )
 

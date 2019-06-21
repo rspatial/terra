@@ -25,11 +25,12 @@ setMethod("levels", signature(x="SpatRaster"),
 
 
 setMethod("levels<-", signature(x="SpatRaster"), 
-	function(x) {
+	function(x, value) {
 		stopifnot(nlyr(x) == 1)
 		stopifnot(is.factor(x))
 		stopifnot(hasValues(x))
-		stop("not implemented yet")
+		x@ptr$setCategories(0, value)
+		x <- show_messages(x)
 	}
 )
 

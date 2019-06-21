@@ -34,9 +34,14 @@ void SpatRaster::createCategories(unsigned layer) {
 	source[sl[0]].cats[sl[1]].levels = u[0];
 	
 	std::vector<std::string> s(u[0].size());
-	std::transform(u[0].begin(), u[0].end(), s.begin(), [](const double& d) {
-		return std::to_string(d);
-	});	
+	for (size_t i=0; i<s.size(); i++) {
+		s[i] = std::to_string(i+1);
+	}
+	
+	//std::transform(u[0].begin(), u[0].end(), s.begin(), [](const double& d) {
+	//	return std::to_string(d);
+	//});
+	
 	source[sl[0]].cats[sl[1]].labels = s;
 	source[sl[0]].hasCategories[sl[1]] = true;
 }
@@ -62,7 +67,7 @@ void SpatRaster::setCategories(unsigned layer, std::vector<std::string> labs) {
 	if (labs.size() == source[sl[0]].cats[sl[1]].levels.size()) {
 		source[sl[0]].cats[sl[1]].labels = labs;
 	} else {
-		setError("nrow(df) does not match number of categories");
+		setError("length of labels does not match number of categories");
 	}
 }
 

@@ -104,6 +104,18 @@
     text(e$xmax, Y-0.5*step, formatC(u, digits=digits, format = "f"), pos=4, xpd=TRUE, ...)
 }
 
+.factorLegend <- function(e, u, cols, labs, nspaces, ...) {
+	n <- length(u)
+	step <- e$dy / nspaces
+    Y <- e$ymax - 0:(n-1) * (step *1.5)
+	for (i in 1:n) {
+		graphics::rect(e$xmin, Y[i], e$xmax, Y[i]-step, col=cols[i], border="black", xpd=TRUE)
+	}
+    text(e$xmax, Y-0.5*step, labs, pos=4, xpd=TRUE, ...)
+}
+
+
+
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
 	function (x, y, cols, maxpixels = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
@@ -160,11 +172,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				digits <- max(0, -floor(log10(dif/10)))
 			}
 		}
-
-		u <- unique(na.omit(as.vector(Z)))
-		if (length(u) < 10) {
-			cols <- .sampleColors(cols, length(u))
-		}
 		
 		usr <- graphics::par()$usr
 		dx <- graphics::par()$cxy[1] * graphics::par("cex")	
@@ -180,13 +187,23 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			leg.ext.set <- FALSE
 		} 
 
-		u <- unique(na.omit(as.vector(Z)))
-		if (length(u) < 10) {
-			n <- ifelse(leg.ext.set, length(u), 20)
-			.fewClassLegend(leg.ext, u, cols, digits, n)
-		} else {
-			.contLegend(leg.ext, cols, zlim, digits, leg.levels)
-		}
+
+		if (is.factor(x)) {
+			lvs <- levels(x)[[1]]
+			labs <- lvs$labels
+			n <- ifelse(leg.ext.set, length(labs), 20)
+			cols <- .sampleColors(cols, length(labs))
+			.factorLegend(leg.ext, lvs$levels, cols, labs, n)
+		} else {			
+			u <- unique(na.omit(as.vector(Z)))
+			if (length(u) < 10) {
+				cols <- .sampleColors(cols, length(u))
+				n <- ifelse(leg.ext.set, length(u), 20)
+				.fewClassLegend(leg.ext, u, cols, digits, n)
+			} else {
+				.contLegend(leg.ext, cols, zlim, digits, leg.levels)
+			}
+		}	
 		.legMain(leg.main, leg.ext$xmax, leg.ext$ymax, leg.ext$dy, leg.main.cex)
 			
 #		setHook("before.plot.new", 
