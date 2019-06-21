@@ -17,6 +17,10 @@
 
 
 #include <vector>
+#include <algorithm>
+#include <iterator>
+#include <string>
+
 #include "spatRaster.h"
 
 
@@ -28,6 +32,12 @@ void SpatRaster::createCategories(unsigned layer) {
 	std::vector<std::vector<double>> u = r.unique(false);
     std::vector<unsigned> sl = findLyr(layer);
 	source[sl[0]].cats[sl[1]].levels = u[0];
+	
+	std::vector<std::string> s(u[0].size());
+	std::transform(u[0].begin(), u[0].end(), s.begin(), [](const double& d) {
+		return std::to_string(d);
+	});	
+	source[sl[0]].cats[sl[1]].labels = s;
 	source[sl[0]].hasCategories[sl[1]] = true;
 }
 

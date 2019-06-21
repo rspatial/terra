@@ -1,4 +1,4 @@
-// Copyright (c) 2018  Robert J. Hijmans
+// Copyright (c) 2018-2019  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -17,6 +17,7 @@
 
 #include "spatBase.h"
 #include "spatDataframe.h"
+#include "spatMessages.h"
 
 enum SpatGeomType { points, lines, polygons, unknown };
 

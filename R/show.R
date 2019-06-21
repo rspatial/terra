@@ -25,6 +25,13 @@ setMethod ("show" , "Rcpp_SpatCategories",
 	}
 )
 
+setMethod ("show" , "Rcpp_SpatDataFrame", 
+	function(object) {
+		print(object$names)
+	}
+)
+
+
 setMethod ("show" , "SpatExtent", 
 	function(object) {
 		e <- as.vector(object)

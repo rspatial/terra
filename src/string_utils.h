@@ -1,4 +1,4 @@
-// Copyright (c) 2018  Robert J. Hijmans
+// Copyright (c) 2018-2019  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -28,3 +28,6 @@ std::string setFileExt(const std::string& s, const std::string& ext);
 std::string basename(std::string filename);
 void lrtrim(std::string &s);
 bool in_string(const std::string &x, std::string part);
+
+void make_unique_names(std::vector<std::string> &s);
+void make_valid_names(std::vector<std::string> &s);

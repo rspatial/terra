@@ -15,6 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef SPATMESSAGESGUARD
+#define SPATMESSAGESGUARD
 
-std::vector<double> readFLT4(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n);
-std::vector<double> readFLT8(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n);
+class SpatMessages {
+	public:
+		bool success = true;
+		bool has_error = false;
+		bool has_warning = false;
+		std::string error;
+		std::vector<std::string> warnings;
+
+		void setError(std::string s) {
+			has_error = true;
+			error = s;
+			success = false;
+		}
+		void addWarning(std::string s) {
+			has_warning = true;
+			warnings.push_back(s);
+		}
+};
+
+#endif

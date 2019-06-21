@@ -1,4 +1,4 @@
-// Copyright (c) 2018  Robert J. Hijmans
+// Copyright (c) 2018-2019  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
+#include "spatMessages.h"
 
 // comment out if GDAL not available
 #define useGDAL
@@ -26,30 +27,9 @@
 #define useRcpp
 
 
-
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
-
-class SpatMessages {
-	public:
-		bool success = true;
-		bool has_error = false;
-		bool has_warning = false;
-		std::string error;
-		std::vector<std::string> warnings;
-
-		void setError(std::string s) {
-			has_error = true;
-			error = s;
-			success = false;
-		}
-		void addWarning(std::string s) {
-			has_warning = true;
-			warnings.push_back(s);
-		}
-};
-
 
 
 class SpatOptions {

@@ -55,16 +55,18 @@ RCPP_MODULE(spat){
 
     class_<SpatDataFrame>("SpatDataFrame")
 		.constructor()
+
+		.field_readonly("itype", &SpatDataFrame::itype)
+		.field_readonly("iplace", &SpatDataFrame::iplace)
 		
-		//.field("names" &SpatDataFrame::names, "names")
-			
-		.method("resize_rows", &SpatDataFrame::resize_rows, "resize_rows")
-		.method("resize_cols", &SpatDataFrame::resize_cols, "resize_cols")
+		.property("names", &SpatDataFrame::get_names, &SpatDataFrame::set_names)
+		.property("nrow", &SpatDataFrame::nrow, &SpatDataFrame::resize_rows, "nrow")
+		.property("ncol", &SpatDataFrame::ncol, &SpatDataFrame::resize_cols, "ncol")
 				
-		.method("add_column_empty", (void (SpatDataFrame::*)(unsigned dtype, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_double", (bool (SpatDataFrame::*)(std::vector<double>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
+		.method("values", &getDataFrame, "get data.frame")
 		
 	;
 

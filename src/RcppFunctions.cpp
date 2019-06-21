@@ -36,10 +36,7 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) {
 }
 
 
-
-
-
-Rcpp::List getAttributes(SpatVector* v) {
+Rcpp::List getDataFrame(SpatDataFrame* v) {
 
 	unsigned n = v->ncol();
 	Rcpp::List out(n);	
@@ -47,15 +44,15 @@ Rcpp::List getAttributes(SpatVector* v) {
 		return(out);
 	} 
 
-	std::vector<std::string> nms = v->names();
-	std::vector<unsigned> itype = v->getItype();
+	std::vector<std::string> nms = v->names;
+	std::vector<unsigned> itype = v->itype;
 	for (size_t i=0; i < n; i++) {
 		if (itype[i] == 0) {
-			out[i] = v->getDv(i);
+			out[i] = v->getD(i);
 		} else if (itype[i] == 1) {
-			out[i] = v->getIv(i);
+			out[i] = v->getI(i);
 		} else {
-			out[i] = v->getSv(i);
+			out[i] = v->getS(i);
 		}
 	}	
 	out.names() = nms;
@@ -66,6 +63,14 @@ Rcpp::List getAttributes(SpatVector* v) {
 //	Rcpp::DataFrame result(out);
 //	result.attr("names") = v->names();
 //	return result;
+}	
+
+
+
+Rcpp::List getAttributes(SpatVector* v) {
+	SpatDataFrame df = v->lyr.df;
+	Rcpp::List lst = getDataFrame(&df);
+	return lst;
 }
 
 
