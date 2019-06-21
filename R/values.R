@@ -4,9 +4,9 @@
 # License GPL v3
 
 setMethod("hasValues", signature(x="SpatRaster"), 
-function(x, ...) {
-	x@ptr$hasValues
-}
+	function(x, ...) {
+		x@ptr$hasValues
+	}
 )
 
 setMethod("readValues", signature(x="SpatRaster"), 
@@ -18,7 +18,19 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 		v <- matrix(v, ncol = nlyr(x))
 		colnames(v) <- names(x)	
 	}
-	if (dataframe) v <- data.frame(v)
+	if (dataframe) {
+		v <- data.frame(v)	
+		ff <- is.factor(x)
+		if (any(ff)) {
+			ff <- which(ff)
+			levs <- levels(x)
+			for (f in ff) {
+				lev <- levs[[f]]
+				v[[f]] = factor(v[[f]], levels=lev$levels)
+				levels(v[[f]]) = lev$labels
+			}
+		}
+	}
 	v
 }
 )
