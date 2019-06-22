@@ -21,7 +21,7 @@ Extract values from a SpatRaster for the locations of a SpatVector
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun="", ...)
-\S4method{extract}{SpatRaster,matrix}(x, y, fun="", ...)
+\S4method{extract}{SpatRaster,matrix}(x, y, ...)
 }
 
 \arguments{

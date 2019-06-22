@@ -11,7 +11,7 @@ Change the coordinate reference system ("project") of a SpatVector
 
 
 \usage{
-\S4method{project}{SpatVector,character}(x, y, ...)
+\S4method{project}{SpatVector}(x, crs, ...)
 }
 
 \arguments{
