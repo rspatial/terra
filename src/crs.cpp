@@ -15,36 +15,47 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-/*
-#include "spatRaster.h"
+#include "ogr_spatialref.h"
+#include <vector>
+#include "SpatMessages.h"
 
-bool SpatRaster::isLonLat() {
-  return (crs.find("longlat") != std::string::npos);
-}
+SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, 
+std::string fromCRS, std::string toCRS) {
+	
+	SpatMessages m;
+	
+	OGRSpatialReference sourceCRS, targetCRS;
+	OGRErr erro = sourceCRS.importFromProj4(&fromCRS[0]); 
+	if (erro == 4) { 
+		m.setError("crs is not valid");
+		return(m);
+	}
+	erro = targetCRS.importFromProj4(&toCRS[0]); 
+	if (erro == 4) { 
+		m.setError("crs is not valid");
+		return(m);
+	}
+	
+	
+	OGRCoordinateTransformation *poCT;
+	poCT = OGRCreateCoordinateTransformation(&sourceCRS, &targetCRS );
 
-bool SpatRaster::couldBeLonLat() {
-	if (crs != "") return isLonLat();
-	if ((extent.xmin > -181) & (extent.xmax < 181) &
-		(extent.ymin > -91 ) & (extent.ymax < 91 )) {
-		return true;
-	} 
-	return false;
-}
-
-bool equal(double a, double b, double epsilon) {
-    return fabs(a - b) < epsilon;
-}
-
-bool SpatRaster::isGlobalLonLat() {
-	double tolerance = 0.1 * xres();
-	if (equal(extent.xmin, -180, tolerance) & 
-		equal(extent.xmax, 180, tolerance)) {
-		if (couldBeLonLat()) {
-			return true;
+	if( poCT == NULL )	{
+		m.setError( "Transformation failed" );
+		return (m);
+	}
+	
+	unsigned failcount = 0;
+	for (size_t i=0; i < x.size(); i++) {
+		if( !poCT->Transform( 1, &x[i], &y[i] ) ) {
+			x[i] = NAN;
+			y[i] = NAN;
+			failcount++;
 		}
 	}
-	return false;
+	if (failcount > 0) {
+		m.addWarning(std::to_string(failcount) + " failed transformations");
+	}
+	return m;
 }
 
-
-*/

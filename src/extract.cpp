@@ -266,7 +266,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
 
 
 // <geom<layer<values>>>
-std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, std::string fun) {
+std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v) {
 
     unsigned nl = nlyr();
     unsigned ng = v.size();

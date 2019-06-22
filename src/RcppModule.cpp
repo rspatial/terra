@@ -105,10 +105,11 @@ RCPP_MODULE(spat){
 		.method("area", &SpatVector::area, "area")		
 		.method("length", &SpatVector::length, "length")		
 		.method("as_lines", &SpatVector::as_lines, "as_lines")
+		.method("transform_crs", &SpatVector::transform_crs, "transform_crs")
 		.field("messages", &SpatVector::msg, "messages")
-	;
 
-	
+	//	.method("test", &SpatVector::test, "test")				
+	;
 /*
     class_<RasterSource>("RasterSource")	
 		.field_readonly("memory", &RasterSource::memory)
@@ -165,7 +166,7 @@ RCPP_MODULE(spat){
 		
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		
-// only of RasterSource is exposed
+// only if RasterSource is exposed
 //		.field_readonly("source", &SpatRaster::source )
 
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")

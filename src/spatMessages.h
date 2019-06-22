@@ -18,6 +18,8 @@
 #ifndef SPATMESSAGESGUARD
 #define SPATMESSAGESGUARD
 
+#include <string>
+
 class SpatMessages {
 	public:
 		bool success = true;

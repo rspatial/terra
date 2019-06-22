@@ -3,7 +3,7 @@
 \alias{warp}
 \alias{warp,SpatRaster,SpatRaster-method}
 
-\title{warp a SpatRaster object}
+\title{warp a SpatRaster}
 
 \description{
 Warp transfers values between SpatRaster objects that do not align (have a different origin). This is also known as "resample".

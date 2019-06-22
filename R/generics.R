@@ -216,4 +216,3 @@ setMethod("warp", signature(x="SpatRaster", y="SpatRaster"),
 		show_messages(x, "warp")
 	}
 )
-

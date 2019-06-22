@@ -17,6 +17,11 @@
 
 #include "spatVector.h"
 
+#ifdef useGDAL
+	#include "crs.h"
+#endif
+
+
 SpatHole::SpatHole() {}
 
 SpatHole::SpatHole(std::vector<double> X, std::vector<double> Y) {
@@ -339,7 +344,6 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 }
 
 
-
 SpatVector SpatVector::subset_rows(std::vector<int> range) {
 
 	SpatVector out;
@@ -350,12 +354,12 @@ SpatVector SpatVector::subset_rows(std::vector<int> range) {
 			r.push_back(range[i]);
 		}
 	}
-	
+
 	for (size_t i=0; i < r.size(); i++) {
 		out.addGeom( lyr.geoms[r[i]] );
 	}
 	out.lyr.crs = lyr.crs;
-	out.lyr.df = lyr.df.subset_rows(r); 
+	out.lyr.df = lyr.df.subset_rows(r);
 	return out;
 };
 
@@ -372,14 +376,14 @@ SpatVector SpatVector::subset_cols(std::vector<int> range) {
 	out.lyr.geoms = lyr.geoms;
 	out.lyr.crs = lyr.crs;
 	int nc = ncol();
-	
+
 	std::vector<unsigned> r;
 	for (size_t i=0; i<range.size(); i++) {
 	if ((range[i] >= 0) & (range[i] < nc)) {
 			r.push_back(range[i]);
 		}
 	}
-	out.lyr.df = lyr.df.subset_cols(r); 
+	out.lyr.df = lyr.df.subset_cols(r);
 	return out;
 };
 
@@ -389,4 +393,46 @@ SpatVector SpatVector::subset_cols(int i) {
 	SpatVector out = subset_cols(range);
 	return out;
 };
+
+
+SpatVector SpatVector::transform_crs(std::string crs) {
+
+	SpatVector s;
+
+    #ifndef useGDAL
+		s.setError("GDAL is not available");
+		return(s);
+	#else
+	SpatDataFrame d = getGeometryDF();
+
+	std::vector<double> x = d.dv[0];
+	std::vector<double> y = d.dv[1];
+	
+	s.msg = transform_coordinates(x, y, getCRS(), crs);
+
+	if (!s.msg.has_error) {
+		unsigned n = d.iv[0].size();
+		std::vector<unsigned> a, b, c;
+		for (size_t i=0; i<n; i++) {
+			a.push_back(d.iv[0][i]);
+			b.push_back(d.iv[1][i]);
+			c.push_back(d.iv[2][i]);
+		}
+		s.setGeometry(type(), a, b, x, y, c);
+		s.setCRS(crs);
+	}
+	#endif
+	return s;
+}
+
+
+/*
+std::vector<std::vector<double>> SpatVector::test(std::vector<double> x, std::vector<double> y, std::string fromcrs, std::string tocrs) {
+	std::vector<std::vector<double>> xy(2);
+	xy[0] = x;
+	xy[1] = y;
+	SpatMessages msg = transform_coordinates(xy, fromcrs, tocrs);
+	return xy;
+}
+*/
 
