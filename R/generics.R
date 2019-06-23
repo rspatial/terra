@@ -114,6 +114,20 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 )
 
 
+setMethod("project", signature(x="SpatRaster"), 
+	function(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$project(crs, method, opt)
+		show_messages(x, "project")
+	}
+)
+
+setMethod("project", signature(x="SpatVector"), 
+	function(x, crs, ...)  {
+		x@ptr <- x@ptr$project(crs)
+		show_messages(x, "project")
+	}
+)
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
 	function(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 

@@ -120,13 +120,15 @@
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
 	function (x, y, cols, maxpixels = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
 
-		asp <- 1
+		x <- x[[y]]
 		if (couldBeLonLat(x, warn=FALSE)) {
 			asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
-		} 
+		} else {
+			asp <- 1
+		}
 		
 		if (missing(cols)) cols <- rev(grDevices::terrain.colors(25))
-		object <- sampleRegular(x[[y]], maxpixels)
+		object <- sampleRegular(x, maxpixels)
 		
 		Y <- yFromRow(object, nrow(object):1)
 		Z <- t(as.matrix(object, TRUE)[nrow(object):1, , drop = FALSE])

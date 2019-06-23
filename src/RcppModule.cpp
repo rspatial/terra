@@ -21,6 +21,7 @@ RCPP_MODULE(spat){
 		.constructor<double, double, double, double>()
 		.property("vector", &SpatExtent::asVector)		
 		.property("valid", &SpatExtent::valid)		
+		.method("as.points", &SpatExtent::asPoints, "as.points")		
 	;	
 
     class_<SpatMessages>("SpatMessages")
@@ -105,7 +106,9 @@ RCPP_MODULE(spat){
 		.method("area", &SpatVector::area, "area")		
 		.method("length", &SpatVector::length, "length")		
 		.method("as_lines", &SpatVector::as_lines, "as_lines")
-		.method("transform_crs", &SpatVector::transform_crs, "transform_crs")
+		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
+		.method("couldBeLonLat", &SpatVector::could_be_lonlat, "couldBeLonLat") 
+		.method("project", &SpatVector::project, "project")
 		.field("messages", &SpatVector::msg, "messages")
 
 	//	.method("test", &SpatVector::test, "test")				
@@ -245,6 +248,7 @@ RCPP_MODULE(spat){
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("trim", &SpatRaster::trim, "trim")
 		.method("unique", &SpatRaster::unique, "unique")
+		.method("project", &SpatRaster::project, "project")
 		.method("warp", &SpatRaster::warp, "warp")
 		
 		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")

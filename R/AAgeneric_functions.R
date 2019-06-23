@@ -13,6 +13,7 @@ if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("min
 if (!isGeneric("plot")) { setGeneric("plot", function(x, y,...) standardGeneric("plot"))}	
 if (!isGeneric("plotRGB")) { setGeneric("plotRGB", function(x, ...)standardGeneric("plotRGB"))}	
 
+if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
 
 if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardGeneric("reduce"))}
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	

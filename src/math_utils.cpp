@@ -60,9 +60,12 @@ double signif(double x, unsigned n) {
   return roundn(x, d); 
 }
 
-
 bool is_equal(double a, double b, double error_factor=1.0) {
-	return a==b || std::abs(a-b)<std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon()*error_factor;
+	return ((a==b) || (std::abs(a-b) < (std::abs(std::min(a,b))*std::numeric_limits<double>::epsilon()*error_factor)));
+}
+
+bool about_equal(double a, double b, double tolerance) {
+	return ((a==b) || (std::abs(a-b) < tolerance));
 }
 
 bool is_equal_range(double x, double y, double range, double tolerance) {

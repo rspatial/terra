@@ -100,7 +100,7 @@ class SpatVector {
 		bool setGeom(SpatGeom p);
 		SpatDataFrame getGeometryDF();
 
-		SpatVector transform_crs(std::string crs);
+		SpatVector project(std::string crs);
 		//std::vector<std::vector<double>> test(std::vector<double> x, std::vector<double> y, std::string fromcrs, std::string tocrs);
 		
 		SpatVector subset_cols(int i);

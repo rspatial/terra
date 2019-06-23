@@ -395,7 +395,7 @@ SpatVector SpatVector::subset_cols(int i) {
 };
 
 
-SpatVector SpatVector::transform_crs(std::string crs) {
+SpatVector SpatVector::project(std::string crs) {
 
 	SpatVector s;
 
@@ -420,6 +420,7 @@ SpatVector SpatVector::transform_crs(std::string crs) {
 		}
 		s.setGeometry(type(), a, b, x, y, c);
 		s.setCRS(crs);
+		s.lyr.df = lyr.df;
 	}
 	#endif
 	return s;

@@ -115,6 +115,18 @@ class SpatExtent {
 			return(e);
 		}
 
+		std::vector<std::vector<double>> asPoints() {
+			std::vector<std::vector<double>> pts(2, std::vector<double>(4));
+			pts[0][0] = xmin;
+			pts[1][0] = ymin;
+			pts[0][1] = xmin;
+			pts[1][1] = ymax;
+			pts[0][2] = xmax;
+			pts[1][2] = ymax;
+			pts[0][3] = xmax;
+			pts[1][3] = ymin;
+			return(pts);
+		}
 
 		bool is_lonlat(std::string crs) {
 			bool b1 = crs.find("longlat") != std::string::npos;

@@ -19,8 +19,7 @@
 #include <vector>
 #include "SpatMessages.h"
 
-SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, 
-std::string fromCRS, std::string toCRS) {
+SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
 	
 	SpatMessages m;
 	
@@ -35,7 +34,6 @@ std::string fromCRS, std::string toCRS) {
 		m.setError("crs is not valid");
 		return(m);
 	}
-	
 	
 	OGRCoordinateTransformation *poCT;
 	poCT = OGRCreateCoordinateTransformation(&sourceCRS, &targetCRS );

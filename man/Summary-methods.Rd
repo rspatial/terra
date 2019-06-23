@@ -25,7 +25,7 @@ To summarize the values of all cells by layer see \code{layerStats}.
 
 \value{SpatRaster}
 
-\seealso{ \code{\link[raster]{Math-methods}} }
+\seealso{ \code{\link{Math-methods}} }
 
 
 \examples{

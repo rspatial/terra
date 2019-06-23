@@ -32,7 +32,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, margins=FALSE, 
   \item{colNA}{color for the background (\code{NA} values)}
   \item{alpha}{transparency. Integer between 0 (transparent) and 255 (opaque)}
   \item{bgalpha}{Background transparency. Integer between 0 (transparent) and 255 (opaque)}
-  \item{addfun}{Function to add additional items such as points or polygons to the plot (map). See \code{\link[raster]{plot}}}
+  \item{addfun}{Function to add additional items such as points or polygons to the plot (map). See \code{\link{plot}}}
   \item{zlim}{numeric vector of length 2. Range of values to plot (optional)}
   \item{zlimcol}{If \code{NULL} the values outside the range of zlim get the color of the extremes of the range. If zlimcol has any other value, the values outside the zlim range get the color of \code{NA} values (see colNA)}
   \item{axes}{logical. If \code{TRUE} axes are drawn (and arguments such as \code{main="title"} will be honored)}

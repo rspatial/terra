@@ -29,7 +29,7 @@ SpatRaster
 }
 
 
-\seealso{ \code{\link{transpose}}, \code{\link[raster]{rotate}} }
+\seealso{ \code{\link{transpose}}, \code{\link{rotate}} }
 
 
 
