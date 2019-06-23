@@ -237,6 +237,7 @@ RCPP_MODULE(spat){
 		
 		.method("math", &SpatRaster::math, "math")
 		.method("math2", &SpatRaster::math2, "math2")
+		.method("atan2", &SpatRaster::atan_2, "atan2")
 		.method("merge", &SpatRaster::merge, "merge")
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("rotate", &SpatRaster::rotate, "rotate")

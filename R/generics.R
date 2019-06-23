@@ -36,6 +36,15 @@ setMethod("area", signature(x="SpatRaster"),
 )
 
 
+setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
+	function(y, x) { 
+		opt <- .runOptions(filename="", overwrite=TRUE, wopt=list())
+		y@ptr <- y@ptr$atan2(x@ptr, opt)
+		show_messages(y, "atan2")
+	}
+)
+	
+
 setMethod("clamp", signature(x="SpatRaster"), 
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite,wopt)

@@ -18,6 +18,7 @@
 #include <functional>
 #include "spatRaster.h"
 #include "math_utils.h"
+#include "recycle.h"
 
 
 template <typename T> int sign(T value) {
@@ -28,6 +29,8 @@ template <typename T> int sign(T value) {
 SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	if (!hasValues()) return out;
+
 	std::vector<std::string> f {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown math function");
@@ -76,6 +79,8 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	if (!hasValues()) return out;
+
 	std::vector<std::string> f {"round", "signif"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown math2 function");
@@ -103,6 +108,7 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	if (!hasValues()) return out;
 
 	std::vector<std::string> f {"acos", "asin", "atan", "cos", "sin", "tan", "acosh", "asinh", "atanh", "cosh", "cospi", "sinh", "sinpi", "tanh", "tanpi"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
@@ -150,6 +156,33 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 	}
 	out.writeStop();
 	readStop();
+	return(out);
+}
+
+
+SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
+	SpatRaster out = geometry();
+	if (!hasValues()) return out;
+  	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	x.readStart();
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		std::vector<double> b = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		recycle(a, b);
+		std::vector<double> d(a.size());
+		for (size_t i=0; i<a.size(); i++) {
+			if (std::isnan(a[i]) || std::isnan(b[i])) {
+				d[i] = NAN;
+			} else {
+				d[i] = atan2(a[i], b[i]);
+			}
+		}
+		if (!out.writeValues(d, out.bs.row[i])) return out;
+	}
+	out.writeStop();
+	readStop();
+	x.readStop();
 	return(out);
 }
 

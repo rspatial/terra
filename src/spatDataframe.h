@@ -20,6 +20,7 @@
 #include <string>
 #include "spatMessages.h"
 
+
 class SpatDataFrame {
 	public:
 		SpatMessages msg;

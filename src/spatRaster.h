@@ -349,6 +349,8 @@ class SpatRaster {
  
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
+		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
+
 		SpatRaster merge(SpatRaster x, SpatOptions &opt);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
