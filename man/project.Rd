@@ -2,6 +2,7 @@
 
 \alias{project}
 \alias{project,SpatVector-method}
+\alias{project,SpatRaster-method}
 
 \title{Change the coordinate reference system}
 
@@ -12,17 +13,17 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 
 \usage{
 \S4method{project}{SpatVector}(x, crs, ...)
-\S4method{project}{SpatRaster}(x, crs, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{project}{SpatRaster}(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{crs}{character. Description of output coordinate reference system in PROJ.4 notation }
+  \item{method}{character. Method used to compute values. \code{"bilinear"} for bilinear interpolation, or \code{"ngb"} for "nearest neighbor"} 
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{Additional arguments. None implemented}   
-  \item{...}{Additional arguments. None implemented}  
 }
 
 
