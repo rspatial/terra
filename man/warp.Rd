@@ -16,7 +16,7 @@ Warp transfers values between SpatRaster objects that do not align (have a diffe
 \arguments{
   \item{x}{SpatRaster to be warped}
   \item{y}{SpatRaster that \code{x} should be warped to}
-  \item{method}{character. Method used to compute values. \code{"bilinear"} for bilinear interpolation, or \code{"ngb"} for using the nearest neighbor}
+  \item{method}{character. Method used to compute values. \code{"bilinear"} for bilinear interpolation, or \code{"ngb"} for "nearest neighbor"}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

@@ -7,7 +7,7 @@
 \title{Change the coordinate reference system}
 
 \description{
-Change the coordinate reference system ("project") of a SpatVector or SpatRaster
+Change the coordinate reference system ("project") of a SpatVector or SpatRaster. For a SpatRaster, you have more control with the \code{\link{warp}} method.
 }
 
 
@@ -28,8 +28,11 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 
 
 \value{
-SpatVector 
+SpatVector or SpatRaster
 }
+
+\seealso{ \code{\link{warp}}}
+
 
 \examples{
 f <- system.file("exdata/lux.shp", package="terra")
