@@ -12,7 +12,7 @@ See \code{\link{Math-methods}} for other trigonometric and mathematical function
 }
 
 \usage{
-atan2(y, x) 
+\S4method{atan2}{SpatRaster,SpatRaster}(y, x)
 }
 
 \arguments{
@@ -24,7 +24,8 @@ atan2(y, x)
 
 
 \examples{
-r1 <- r2 <- rast(nrow=10, ncol=10)
+r1 <- rast(nrow=10, ncol=10)
+r2 <- rast(nrow=10, ncol=10)
 values(r1) <- (runif(ncell(r1))-0.5) * 10
 values(r2) <- (runif(ncell(r1))-0.5) * 10
 atan2(r1, r2)
