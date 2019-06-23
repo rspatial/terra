@@ -1,19 +1,34 @@
+// Copyright (c) 2018-2019  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef SPATDATE_GUARD
 #define SPATDATE_GUARD
 
 #include <vector>
-#include <string>
+//#include <string>
 
 class SpatDate {
-//  protected:
-//  long v;
   public:
     long v;
     SpatDate() {v = 0;};
     SpatDate(const int& year, const int& month, const int& day);
     SpatDate(int doy, int year);
     SpatDate(const long& d) { v = d; };
-    SpatDate(const std::string& s);
+//    SpatDate(const std::string& s);
 
     std::vector<int> ymd();
     int doy();
@@ -39,7 +54,7 @@ bool operator <= (const SpatDate&, const SpatDate&);
 bool operator >= (const SpatDate&, const SpatDate&);
 
 bool isleapyear(const int& year) {
-  return year % 4 == 0 && ((year % 400 == 0) || (year % 100 != 0 ));
+  return (year % 4 == 0) && ((year % 400 == 0) || (year % 100 != 0 ));
 }
 
 std::vector<int> month_days(int year) {
@@ -53,14 +68,13 @@ std::vector<int> month_days(int year) {
 }
 
 std::vector<int> SpatDate::ymd() {
-  int year=-99;
-  int month=-99;
-  int day=-99;
+  int year, month, day;
   long x = v;
+  
   if (x >= 0) {
     long days = 0;
     year = 1969;
-    while (days < x) {
+    while (days <= x) {
       year++;
       days += (365 + isleapyear(year));
     }
@@ -73,12 +87,25 @@ std::vector<int> SpatDate::ymd() {
       days += mdays[month];
     }
     day = x - days + mdays[month];
-    if (month==12) {
-      month = 1;
-      year++;
-    } else {
-      month++;
+    month++;
+  } else { // (x < 0)
+    long days = 0;
+    year = 1970;
+    while (days > x) {
+      year--;
+      days -= (365 + isleapyear(year));
     }
+    x = x - (days + (365 + isleapyear(year)));
+    x = abs(x);
+    std::vector<int> mdays = month_days(year);
+    days = 0;
+    month = 12;
+    while (days < x) {
+      month--;
+      days += mdays[month];
+    }
+    day = days - x +1;
+    month++;
   }
   std::vector<int> result {year, month, day};
   return result;
@@ -86,9 +113,12 @@ std::vector<int> SpatDate::ymd() {
 
 
 int date_from_ymd(std::vector<int> ymd) {
+
   int year = 1970;
   long day = -1;
+  
   if (ymd[0] > 1970) {
+    
     for (int i=0; i<(ymd[0]-1970); i++) {
       day += 365 + isleapyear(year);
       year++;
@@ -98,6 +128,20 @@ int date_from_ymd(std::vector<int> ymd) {
       day += mdays[i];
     }
     day += ymd[2];
+    
+  } else {
+
+    day = -1;
+    for (int i=0; i<(1970-ymd[0]); i++) {
+      day -= 365 + isleapyear(year);
+      year--;
+    }
+    std::vector<int> mdays = month_days(year);
+    for (int i=0; i<(ymd[1]-1); i++) {
+      day += mdays[i];
+    }
+    day += ymd[2];
+
   }
   return(day);
 }
@@ -136,13 +180,11 @@ SpatDate::SpatDate(int doy, int year) {
 		doy = doy - mdays[month];
 		month++;
 	}
-
 	SpatDate(year, month+1, doy);
 }
 
 
 int SpatDate::doy() {
-
 	std::vector<int> d = ymd();
   std::vector<int> mdays = month_days(d[0]);
 
