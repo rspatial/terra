@@ -13,4 +13,5 @@ Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
 Description: Classes and methods for spatial data.
 License: GPL (>=3)
 URL: https://github.com/rspatial/terra
+BugReports: https://github.com/rspatial/raster/issues/
 LazyLoad: yes

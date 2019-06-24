@@ -16,7 +16,6 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatRaster.h"
-#include "read_rst.h"
 
 bool SpatRaster::readStart() {
 // for now assuming a single source
@@ -44,19 +43,6 @@ bool SpatRaster::readStop() {
 std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
 	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
 	return(x);
-}
-
-
-template <typename T>
-std::vector<T> bil_to_bsq(const std::vector<T> &v, unsigned nrows, unsigned ncols, unsigned nlyrs) {
-	std::vector<T> x;
-	for (size_t i=0; i<nlyrs; i++) {
-		for (size_t r=0; r<nrows; r++) {
-			unsigned step = (r * nlyrs + i) * ncols;
-			x.insert(x.end(), v.begin()+step, v.begin()+step+ncols);
-		}
-	}
-	return x;
 }
 
 
@@ -99,26 +85,15 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			}
 		} else {
 			// read from file
+			std::vector<double> fvals;
 			if (source[src].driver == "raster") {
-
-				std::string file = source[src].filename;
-				unsigned nls = source[src].nlyr;
-				if (source[src].datatype == "FLT8S") {
-					std::vector<double> fvals = readFLT8(file, "BIL", nls, 0, ncell());
-					fvals = bil_to_bsq(fvals, ncols, nrows, nl);
-					out.insert(out.end(), fvals.begin(), fvals.end());
-				} else {
-					std::vector<double> fvals = readFLT4(file, "BIL", nls, 0, ncell());
-					fvals = bil_to_bsq(fvals, ncols, nrows, nl);
-					out.insert(out.end(), fvals.begin(), fvals.end());
-				}
-
+				fvals = readValuesBinary(src, row, nrows, col, ncols);
 			} else {
 				#ifdef useGDAL
-				std::vector<double> fvals = readValuesGDAL(src, row, nrows, col, ncols);
-				out.insert(out.end(), fvals.begin(), fvals.end());
+				fvals = readValuesGDAL(src, row, nrows, col, ncols);
 				#endif // useGDAL
 			}
+			out.insert(out.end(), fvals.begin(), fvals.end());			
 		}
 	}
 	return out;

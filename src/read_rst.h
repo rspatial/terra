@@ -1,20 +1,20 @@
-// Copyright (c) 2018-2019  Robert J. Hijmans
-//
-// This file is part of the "spat" library.
-//
-// spat is free software: you can redistribute it and/or modify it
-// under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 2 of the License, or
-// (at your option) any later version.
-//
-// spat is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with spat. If not, see <http://www.gnu.org/licenses/>.
+std::vector<double> readBinAll(std::string filename, std::string datatype, 
+                               unsigned nr, unsigned nc, unsigned nl,
+                               std::string order);
+							   
+std::vector<double> readBinRows(std::string filename, std::string datatype, 
+                               unsigned row, unsigned nrows,
+                               unsigned nr, unsigned nc, unsigned nl,
+                               std::string order);
+					   
 
-
-std::vector<double> readFLT4(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n);
-std::vector<double> readFLT8(std::string file, std::string order, unsigned nlyr, unsigned long start, unsigned n);
+std::vector<double> readBinBlock(std::string filename, std::string datatype, 
+                                unsigned row, unsigned nrows,
+                                unsigned col, unsigned ncols,
+                                unsigned nr, unsigned nc, unsigned nl,
+                                std::string order);					
+								
+std::vector<double> readBinCell(std::string filename, std::string datatype, 
+                                std::vector<double> cells,
+                                unsigned nr, unsigned nc, unsigned nl,
+                                std::string order);
