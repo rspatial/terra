@@ -72,7 +72,7 @@ setMethod("[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=FALSE) {
 	if (any(na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	if (nargs() > 2) {
-		i <- cellFromRowColCombine(x, i, 1:ncol(x))
+		i <- cellFromRowCol(x, i, 1:ncol(x))
 		# probably better to do return( readValues(x, i-1) )
 	} 
 	r <- x@ptr$extractCell(i-1)
@@ -88,7 +88,7 @@ function(x, i, j, ... ,drop=FALSE) {
 
 setMethod("[", c("SpatRaster", "missing", "numeric"),
 function(x, i, j, ... ,drop=FALSE) {
-	i <- cellFromRowColCombine(x, 1:nrow(x), j)
+	i <- cellFromRowCol(x, 1:nrow(x), j)
 	if (any(na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	r <- x@ptr$extractCell(i-1)
 	show_messages(x)

@@ -71,7 +71,7 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
   
 \details{
 Cell numbers start at 1 in the upper left corner, and increase from left to right, and then from top to bottom.
-The last cell number equals the number of cells of the SpatRaster objectect.
+The last cell number equals the number of cells of the SpatRaster (see \code{\link{ncell}}).
 }
 
 \value{

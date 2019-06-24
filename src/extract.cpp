@@ -160,6 +160,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
     unsigned nl = nlyr();
     unsigned np = x.size();
 	std::vector<std::vector<double>> out(nl, std::vector<double>(np, NAN));
+	if (!hasValues()) return out;
 
 	if ((method == "idw") | (method == "bilinear")) {
 
@@ -272,6 +273,8 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
     unsigned ng = v.size();
     std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl));
 
+	if (!hasValues()) return out;
+
 	std::vector<std::vector<double>> srcout;
 	std::string gtype = v.type();
 	if (gtype == "points") {
@@ -331,6 +334,8 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	unsigned n = cell.size();
 	unsigned nc = ncell();
 	std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
+	if (!hasValues()) return out;
+	
 	unsigned ns = nsrc();
 
     // not useful if all sources are memory

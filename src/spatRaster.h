@@ -232,10 +232,9 @@ class SpatRaster {
 		unsigned colFromX(double x);
 		std::vector<unsigned> rowFromY(std::vector<double> &y);
 		unsigned rowFromY(double y);
-		std::vector< std::vector<double> > xyFromCell( std::vector<double> &cell );
-		std::vector< std::vector<double> > xyFromCell( double cell );
-
-		std::vector< std::vector<unsigned> > rowColFromCell(std::vector<double> &cell);
+		std::vector< std::vector<double>> xyFromCell( std::vector<double> &cell);
+		std::vector< std::vector<double>> xyFromCell( double cell);
+		std::vector< std::vector<unsigned>> rowColFromCell(std::vector<double> &cell);
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 		int sourceFromLyr(unsigned lyr);
 		std::vector<unsigned> findLyr(unsigned lyr);
