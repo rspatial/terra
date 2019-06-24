@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include <numeric>
 
 
 bool file_exists(const std::string& name) {
@@ -187,7 +187,7 @@ template <typename T>
 std::vector<long unsigned> order(const std::vector<T> &v) {
   // initialize original index locations
   std::vector<long unsigned> idx(v.size());
-  iota(idx.begin(), idx.end(), 0);
+  std::iota(idx.begin(), idx.end(), 0);
   // sort indexes based on comparing values in v
   std::sort(idx.begin(), idx.end(),
        [&v](long unsigned i1, long unsigned i2) {return v[i1] < v[i2];});

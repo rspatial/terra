@@ -19,7 +19,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
-//#include <cmath>
+#include <cmath>
 #include "NA.h"
 #include "string_utils.h"
 
