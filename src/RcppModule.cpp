@@ -164,7 +164,7 @@ RCPP_MODULE(spat){
 
 		.method("hasCategories", &SpatRaster::hasCategories, "hasCategories")
 		.method("getCategories", &SpatRaster::getCategories, "getCategories")
-		.method("setCategories", SpatRaster::setCategories, "setCategories")
+		.method("setCategories", &SpatRaster::setCategories, "setCategories")
 		.method("createCategories", &SpatRaster::createCategories, "createCategories")
 		
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
