@@ -100,8 +100,6 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 }
 
 
-
-
 std::vector<double>  SpatRaster::getValues() {
 	std::vector<double> out;
 	unsigned n = nsrc();
