@@ -6,7 +6,7 @@ RCPP_EXPOSED_CLASS(SpatMessages)
 RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatCategories)
-//RCPP_EXPOSED_CLASS(RasterSource)
+RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatVector)
 RCPP_EXPOSED_CLASS(SpatDataFrame)
@@ -113,7 +113,7 @@ RCPP_MODULE(spat){
 
 	//	.method("test", &SpatVector::test, "test")				
 	;
-/*
+
     class_<RasterSource>("RasterSource")	
 		.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
@@ -125,9 +125,9 @@ RCPP_MODULE(spat){
 		.field_readonly("extent", &RasterSource::extent)
 		.field_readonly("datatype", &RasterSource::datatype)
 		.field_readonly("NAflag", &RasterSource::NAflag)
-		//std::vector<std::vector<int> > layers;		
+		.field_readonly("layers", &RasterSource::layers)
 	;	
-*/
+
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	    //.constructor<std::string>()
@@ -170,7 +170,7 @@ RCPP_MODULE(spat){
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		
 // only if RasterSource is exposed
-//		.field_readonly("source", &SpatRaster::source )
+		.field_readonly("source", &SpatRaster::source )
 
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("subset", &SpatRaster::subset, "subset")

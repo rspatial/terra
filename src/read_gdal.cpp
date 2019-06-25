@@ -118,6 +118,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	s.ncol = poDataset->GetRasterXSize();
 	s.nrow = poDataset->GetRasterYSize();
 	s.nlyr = nl;
+	s.nlyrfile = nl;
 	s.layers.resize(nl); 
     std::iota(s.layers.begin(), s.layers.end(), 0);	
 
@@ -524,7 +525,8 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 	const char* pszFilename = source[src].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
 
-	unsigned nl = source[src].nlyr;
+	std::vector<unsigned> lyrs = source[src].layers;
+	unsigned nl = lyrs.size();
 	unsigned n = rows.size();
 	std::vector<std::vector<double>> errout;
 	std::vector<std::vector<double>> out(nl, std::vector<double>(n));
@@ -535,7 +537,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 
 	for (size_t i=0; i<nl; i++) {
 		//offset = n * i;
-		poBand = poDataset->GetRasterBand(i + 1);
+		poBand = poDataset->GetRasterBand(lyrs[i] + 1);
 		GDALDataType gdtype = poBand->GetRasterDataType();
 		double naflag = poBand->GetNoDataValue(&hasNA);
 		if (!hasNA) { naflag = NAN; }

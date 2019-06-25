@@ -54,6 +54,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		s.nrow = std::stoi(ini[8]);
 		s.ncol = std::stoi(ini[9]);
 		s.nlyr = std::stoi(ini[10]);
+		s.nlyrfile = s.nlyr;
 		s.layers.resize(s.nlyr);
 		std::iota(s.layers.begin(), s.layers.end(), 0);	
 		s.crs = ini[11];

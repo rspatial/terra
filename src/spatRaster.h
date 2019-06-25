@@ -60,7 +60,7 @@ class RasterSource {
 //		bool fswrite(std::vector<double> &v);
 //		void fsclose();
 
-		unsigned ncol, nrow, nlyr;
+		unsigned ncol, nrow, nlyr, nlyrfile;
 		SpatExtent extent;
 		std::string crs;
 		std::vector<unsigned> layers;

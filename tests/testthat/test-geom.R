@@ -32,11 +32,12 @@ for (i in 1:4) {
 
 
 	test_that("raster and terra subsets work the same", { 
-		expect_equivalent(r[10], rx[10]) 
-		expect_equivalent(r[2,], rx[2,]) 
-		expect_equivalent(r[,2], rx[,2]) 
-		expect_equivalent(r[3:4, 2:3], rx[3:4, 2:3]) 
-		expect_equivalent(r[[1]][5,6], rx[[1]][5,6]) 
+		a <- ifelse(i<2,20,0)
+		expect_equivalent(r[10+a], rx[10+a]) 
+		expect_equivalent(r[2+a,], rx[2+a,]) 
+		expect_equivalent(r[,2+a], rx[,2+a]) 
+		expect_equivalent(r[(3:4)+a, (2:3)+a], rx[(3:4)+a, (2:3)+a]) 
+		expect_equivalent(r[[1]][5+a,6+a], rx[[1]][5+a,6+a]) 
 	} )
 
 }

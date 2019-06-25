@@ -53,33 +53,32 @@ std::vector<T> bil_to_bsq(const std::vector<T> &v, unsigned nrows, unsigned ncol
 }
 
 
-
 template <typename T>
 std::vector<T> readCellBIL(std::string filename, 
                            std::vector<double> cells, 
                            std::vector<unsigned> lyrs,
                            unsigned nc, unsigned nl){
   
-  size_t size = sizeof(T);
-  std::vector<T> d(1);
-  size_t n = cells.size();
-  size_t nlyrs = lyrs.size();
-  std::vector<T> out(n * nlyrs);
-  std::ifstream ifs(filename, std::ios::in | std::ios::binary);
+	size_t size = sizeof(T);
+	std::vector<T> d(1);
+	size_t n = cells.size();
+	size_t nlyrs = lyrs.size();
+	std::vector<T> out(n * nlyrs);
+	std::ifstream ifs(filename, std::ios::in | std::ios::binary);
   
-  for (size_t i=0; i<n; i++) {
-    size_t row = std::floor(cells[i] / nc);
-    size_t col = cells[i] - (row * nc);
-    size_t basepos = (row * nc * nl + col) * size;
-    for (size_t j=0; j<nlyrs; j++) {
-      size_t pos = basepos + lyrs[j] * nc * size;
-      ifs.seekg(pos, std::ios::beg);
-      ifs.read(reinterpret_cast<char*>(d.data()), size);
-      out[i + n*j] = d[0];
-    }
-  }
-  ifs.close();
-  return out;
+	for (size_t i=0; i<n; i++) {
+		size_t row = std::floor(cells[i] / nc);
+		size_t col = cells[i] - (row * nc);
+		size_t basepos = (row * nc * nl + col) * size;
+		for (size_t j=0; j<nlyrs; j++) {
+			size_t pos = basepos + lyrs[j] * nc * size;
+			ifs.seekg(pos, std::ios::beg);
+			ifs.read(reinterpret_cast<char*>(d.data()), size);
+			out[i + n*j] = d[0];
+		}
+	}
+	ifs.close();
+	return out;
 }
 
 
@@ -345,45 +344,45 @@ std::vector<std::vector<double>> readBinCell(std::string filename,
             std::vector<unsigned> lyrs,
             unsigned nr, unsigned nc, unsigned nl, std::string order) {
 				
-  std::vector<double> d;
-  if (order == "BIL") {
-    
-    if (datatype == "INT2S") {
-      std::vector<short> v = readCellBIL<short>(filename, cells, lyrs, nc, nl); 
-      d = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "INT4S") {
-      std::vector<long> v = readCellBIL<long>(filename, cells, lyrs, nc, nl); 
-      d = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT4S") {
-      std::vector<float> v = readCellBIL<float>(filename, cells, lyrs, nc, nl); 
-      d = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT8S") {
-      d = readCellBIL<double>(filename, cells, lyrs, nc, nl);  
-    }
-  } else if (order == "BSQ") {
-    if (datatype == "INT2S") {
-      std::vector<short> v = readCellBSQ<short>(filename, cells, lyrs, nr, nc, nl); 
-      d = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "INT4S") {
-      std::vector<long> v = readCellBSQ<long>(filename, cells, lyrs, nr, nc, nl); 
-      d = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT4S") {
-      std::vector<float> v = readCellBSQ<float>(filename, cells, lyrs, nr, nc, nl); 
-      d = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT8S") {
-      d = readCellBSQ<double>(filename, cells, lyrs, nr, nc, nl);  
-    }
-  }
+	std::vector<double> d;
+	
+	if (order == "BIL") {    
+		if (datatype == "INT2S") {
+			std::vector<short> v = readCellBIL<short>(filename, cells, lyrs, nc, nl); 
+			d = std::vector<double>(v.begin(), v.end());
+		} else if (datatype == "INT4S") {
+			std::vector<long> v = readCellBIL<long>(filename, cells, lyrs, nc, nl); 
+			d = std::vector<double>(v.begin(), v.end());
+		} else if (datatype == "FLT4S") {
+			std::vector<float> v = readCellBIL<float>(filename, cells, lyrs, nc, nl); 
+			d = std::vector<double>(v.begin(), v.end());
+		} else if (datatype == "FLT8S") {
+			d = readCellBIL<double>(filename, cells, lyrs, nc, nl);  
+		}
+	} else if (order == "BSQ") {
+		if (datatype == "INT2S") {
+			std::vector<short> v = readCellBSQ<short>(filename, cells, lyrs, nr, nc, nl); 
+			d = std::vector<double>(v.begin(), v.end());
+		} else if (datatype == "INT4S") {
+			std::vector<long> v = readCellBSQ<long>(filename, cells, lyrs, nr, nc, nl); 
+			d = std::vector<double>(v.begin(), v.end());
+		} else if (datatype == "FLT4S") {
+			std::vector<float> v = readCellBSQ<float>(filename, cells, lyrs, nr, nc, nl); 
+			d = std::vector<double>(v.begin(), v.end());
+		} else if (datatype == "FLT8S") {
+			d = readCellBSQ<double>(filename, cells, lyrs, nr, nc, nl);  
+		}
+	}
   
-  size_t nlyrs = lyrs.size();
-  size_t n = cells.size();
-  std::vector<std::vector<double>> out(nlyrs, std::vector<double>(n)) ;
+	size_t nlyrs = lyrs.size();
+	size_t n = cells.size();
+
+	std::vector<std::vector<double>> out(nlyrs, std::vector<double>(n)) ;
 	for (size_t i=0; i<nlyrs; i++) {
 		size_t start = i * n;
 		out[i] = std::vector<double>(d.begin()+start, d.begin()+start+n);
 	}
     return out;
 }
-
 
 

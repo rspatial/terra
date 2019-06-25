@@ -69,13 +69,14 @@ std::vector<double> SpatRaster::readSampleBinary(unsigned src, unsigned srows, u
 
 std::vector<std::vector<double>> SpatRaster::readCellsBinary(unsigned src, std::vector<double> cells) {
 	
-	unsigned nl = source[src].nlyr;
+	unsigned nl = source[src].nlyrfile;
 	std::string dtype = source[src].datatype;
 	std::string filename = source[src].filename;
 	std::string bndorder = source[src].bandorder;
 	std::vector<unsigned> lyrs = source[src].layers;
 
 	std::vector<std::vector<double>> out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
+
 	return out;
 	
 }
