@@ -20,7 +20,7 @@
 
 
 std::vector<double> SpatRaster::readValuesBinary(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
-	unsigned nl = source[src].nlyr;
+	unsigned nl = source[src].nlyrfile;
 	std::string dtype = source[src].datatype;
 	std::string filename = source[src].filename;
 	std::string bndorder = source[src].bandorder;
@@ -41,7 +41,7 @@ std::vector<double> SpatRaster::readValuesBinary(unsigned src, unsigned row, uns
 
 std::vector<double> SpatRaster::readSampleBinary(unsigned src, unsigned srows, unsigned scols) {
 
-	unsigned nl = source[src].nlyr;
+	unsigned nl = source[src].nlyrfile;
 	std::string dtype = source[src].datatype;
 	std::string filename = source[src].filename;
 	std::string bndorder = source[src].bandorder;
