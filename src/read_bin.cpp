@@ -47,8 +47,6 @@ std::vector<double> SpatRaster::readSampleBinary(unsigned src, unsigned srows, u
 	std::string bndorder = source[src].bandorder;
 	std::vector<unsigned> lyrs = source[src].layers;
 
-	std::vector<double> out;
-
 	double rowstep = nrow() / (srows+1);
 	std::vector<unsigned> steprows, stepcols;
 	for (size_t i = 0; i < srows; i++) {
@@ -59,13 +57,17 @@ std::vector<double> SpatRaster::readSampleBinary(unsigned src, unsigned srows, u
 		stepcols[i] = round((i+0.5) * colstep);
 	}
 
-	std::vector<double> cells = cellFromRowColCombine(steprows, stepcols);
-	out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
+	std::vector<double> cells = cellFromRowCol(steprows, stepcols);
+	std::vector<std::vector<double>> v = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
+	std::vector<double> out;
+	for (size_t i = 0; i<lyrs.size(); i++) {
+		out.insert(out.end(), v[i].begin(), v[i].end());
+	}
 	return out;
 }
 
 
-std::vector<double> SpatRaster::readCellsBinary(unsigned src, std::vector<double> cells) {
+std::vector<std::vector<double>> SpatRaster::readCellsBinary(unsigned src, std::vector<double> cells) {
 	
 	unsigned nl = source[src].nlyr;
 	std::string dtype = source[src].datatype;
@@ -73,7 +75,7 @@ std::vector<double> SpatRaster::readCellsBinary(unsigned src, std::vector<double
 	std::string bndorder = source[src].bandorder;
 	std::vector<unsigned> lyrs = source[src].layers;
 
-	std::vector<double> out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
+	std::vector<std::vector<double>> out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
 	return out;
 	
 }

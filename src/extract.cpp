@@ -358,15 +358,19 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 				lyr++;
 			}
 		} else {
-
-		#ifdef useGDAL
-			std::vector<std::vector<double>> srcout = readRowColGDAL(src, rows, cols); //
-			
-            for (size_t i=0; i<slyrs; i++) {
+			std::vector<std::vector<double>> srcout;
+			if (source[0].driver == "raster") {
+				std::vector<double> cells = cellFromRowCol(rows, cols);
+				srcout = readCellsBinary(src, cells); 
+			} else {
+			#ifdef useGDAL
+				srcout = readRowColGDAL(src, rows, cols); 
+			#endif
+			}
+			for (size_t i=0; i<slyrs; i++) {
 				out[lyr] = srcout[i];
 				lyr++;
 			}
-        #endif
 		}
 	}
 	return out;

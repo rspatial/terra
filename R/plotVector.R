@@ -77,3 +77,4 @@ setMethod("lines", signature(x="SpatExtent"),
 	}
 )
 
+
