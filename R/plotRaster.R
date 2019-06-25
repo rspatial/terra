@@ -118,7 +118,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function (x, y, cols, maxpixels = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
+	function (x, y, cols, maxcell = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
 
 		x <- x[[y]]
 		if (couldBeLonLat(x, warn=FALSE)) {
@@ -128,7 +128,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 		
 		if (missing(cols)) cols <- rev(grDevices::terrain.colors(25))
-		object <- sampleRegular(x, maxpixels)
+		object <- sampleRegular(x, maxcell)
 		
 		Y <- yFromRow(object, nrow(object):1)
 		Z <- t(as.matrix(object, TRUE)[nrow(object):1, , drop = FALSE])
@@ -221,7 +221,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxpixels=100000, nc, nr, main, maxnl=16, ...)  {
+	function(x, y, maxcell=100000, nc, nr, main, maxnl=16, ...)  {
 		nl <- min(nlyr(x), maxnl)
 		if (nl == 0) {
 			stop('SpatRaster has no cell values')
@@ -246,7 +246,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		on.exit(graphics::par(old.par))
 		graphics::par(mfrow=c(nr, nc), mar=c(2, 2, 2, 4))
 
-		maxpixels=maxpixels/(nl/2)
+		maxcell=maxcell/(nl/2)
 			
 		if (missing(main)) {
 			main <- names(x)
@@ -254,6 +254,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			main <- rep_len(main, nl)
 		}		
 			
+		x <- sampleRegular(x, maxcell)
 		for (i in 1:nl) {
 			image(x[[i]], main=main[i], ...)
 		}

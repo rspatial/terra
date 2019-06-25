@@ -21,7 +21,7 @@
 
 
 setMethod("plotRGB", signature(x="SpatRaster"), 
-function(x, r=1, g=2, b=3, scale, maxpixels=500000, stretch=NULL, ext=NULL, interpolate=FALSE, colNA='white', alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab='', ylab='', asp=NULL, add=FALSE, margins=FALSE, ...) { 
+function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interpolate=FALSE, colNA='white', alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab='', ylab='', asp=NULL, add=FALSE, margins=FALSE, ...) { 
 
 	if (missing(scale)) {
 		scale <- 255
@@ -32,9 +32,9 @@ function(x, r=1, g=2, b=3, scale, maxpixels=500000, stretch=NULL, ext=NULL, inte
 	}
 	scale <- as.vector(scale)[1]
 	
-	r <- sampleRegular(x[[r]], maxpixels, ext=ext)
-	g <- sampleRegular(x[[g]], maxpixels, ext=ext)
-	b <- sampleRegular(x[[b]], maxpixels, ext=ext)
+	r <- sampleRegular(x[[r]], maxcell, ext=ext)
+	g <- sampleRegular(x[[g]], maxcell, ext=ext)
+	b <- sampleRegular(x[[b]], maxcell, ext=ext)
 
 	RGB <- cbind(values(r), values(g), values(b))
 	

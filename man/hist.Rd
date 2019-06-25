@@ -8,17 +8,17 @@
 \title{Histogram}
 
 \description{
-Create a histogram of the values of a SpatRaster. For large datasets a sample is used.
+Create a histogram of the values of a SpatRaster. For large datasets a sample of \code{maxcell} is used.
 }
 
 \usage{
-\S4method{hist}{SpatRaster}(x, layer, maxpixels=100000, plot=TRUE, main, ...)
+\S4method{hist}{SpatRaster}(x, layer, maxcell=1000000, plot=TRUE, main, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{layer}{integer (or character) to indicate layer number (or name). Can be used to subset the layers to plot in a multilayer SpatRaster} 
-  \item{maxpixels}{integer. To regularly sample very large objects}
+  \item{maxcell}{integer. To regularly sample very large objects}
   \item{plot}{logical. Plot the histogram or only return the histogram values}
   \item{main}{character. Main title(s) for the plot. Default is the value of \code{\link{names}}}
   \item{...}{Additional arguments. See \code{\link[graphics]{hist}}}  

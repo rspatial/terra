@@ -4,7 +4,7 @@
 # Licence GPL v3
 
 
-.scatterPlotRaster <- function(x, y, maxpixels=100000, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
+.scatterPlotRaster <- function(x, y, maxcell=100000, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
 
 	compareGeom(x, y, lyrs=TRUE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
 	nlx <- nlyr(x)
@@ -51,15 +51,15 @@
 	if (gridded) {
 #			if ((ncell(x) * (nlx + nly)) < .maxmemory()) {
 		if ((ncell(x) * (nlx + nly)) < 1000000) {
-			maxpixels <- ncell(x)
+			maxcell <- ncell(x)
 		}
 	}
 	
-	x <- values(sampleRegular(x, size=maxpixels))
-	y <- values(sampleRegular(y, size=maxpixels))
+	x <- values(sampleRegular(x, size=maxcell))
+	y <- values(sampleRegular(y, size=maxcell))
 
 	if (NROW(x) < cells) {
-		warning(paste('plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxpixels" to increase the sample)', sep=""))
+		warning(paste('plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxcell" to increase the sample)', sep=""))
 	}
 
 	if (missing(cex)) {
@@ -121,7 +121,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, maxpixels=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...) {
+	function(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...) {
 
 		nl <- max(nlyr(x), nlyr(y))
 		if (missing(nc)) {
@@ -137,7 +137,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 		}
 
 		
-		.scatterPlotRaster(x, y, maxpixels=maxpixels, nc=nc, nr=nr, maxnl=maxnl, gridded=gridded, ncol=ncol, nrow=nrow, ...)
+		.scatterPlotRaster(x, y, maxcell=maxcell, nc=nc, nr=nr, maxnl=maxnl, gridded=gridded, ncol=ncol, nrow=nrow, ...)
 	}
 )
 
@@ -168,7 +168,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 		e <- extent(xlim, ylim)
 		out <- extend(crop(out, e), e, value=0)
 	}
-	plot(out, maxpixels=nc*nr, asp=asp, ...) 	
+	plot(out, maxcell=nc*nr, asp=asp, ...) 	
 }
 
 

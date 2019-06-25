@@ -4,8 +4,8 @@
 # Licence GPL v3
 
 
-setMethod('hist', signature(x='SpatRaster'), 
-	function(x, layer, maxpixels=100000, plot=TRUE, main, ...) {
+setMethod("hist", signature(x="SpatRaster"), 
+	function(x, layer, maxcell=1000000, plot=TRUE, main, ...) {
 		
 		if (missing(layer)) {
 			y <- 1:nlyr(x)
@@ -44,7 +44,7 @@ setMethod('hist', signature(x='SpatRaster'),
 				graphics::par(mfrow=c(nr, nc))
 			}
 			for (i in 1:length(y)) {
-				res[[i]] = .hist1(x[[ y[i] ]], maxpixels=maxpixels, main=main[y[i]], plot=plot, ...) 
+				res[[i]] = .hist1(x[[ y[i] ]], maxcell=maxcell, main=main[y[i]], plot=plot, ...) 
 			}		
 
 		} else if (nl==1) {
@@ -52,7 +52,7 @@ setMethod('hist', signature(x='SpatRaster'),
 				x <- x[[y]]
 				main <- main[y]
 			}
-			res <- .hist1(x, maxpixels=maxpixels, main=main, plot=plot, ...) 	
+			res <- .hist1(x, maxcell=maxcell, main=main, plot=plot, ...) 	
 		}		
 		if (plot) {
 			return(invisible(res))
@@ -64,20 +64,21 @@ setMethod('hist', signature(x='SpatRaster'),
 
 
 
-.hist1 <- function(x, maxpixels, main, plot, ...){
+.hist1 <- function(x, maxcell, main, plot, ...){
 
 	stopifnot(hasValues(x))
 
-	if ( ncell(x) < maxpixels ) {
+	if ( ncell(x) <= maxcell ) {
 		v <- stats::na.omit(values(x))
 	} else {
 		# TO DO: make a function that does this by block and combines  all data into a single histogram
-		v <- sampleRegular(x, maxpixels)
-		msg <- paste(round(100 * maxpixels / ncell(x)), "% of the raster cells were used", sep="")
-		if (maxpixels > length(v)) {
-			msg <- paste(msg, " (of which ", 100 - round(100 * length(v) / maxpixels ), "% were NA)", sep="")
+		v <- values(sampleRegular(x, maxcell))
+		msg <- paste(round(100 * length(v) / ncell(x)), "% of the raster cells were used.", sep="")
+		if (any(is.na(v))) {
+			v <- na.omit(v)
+			msg <- paste(msg, " (of which ", 100 - round(100 * length(v) / maxcell ), "% was NA.)", sep="")
 		}
-		warning( paste(msg, ". ",length(v)," values used.", sep="") )
+		warning(msg)
 	}	
 		
 #	if (.shortDataType(x) == 'LOG') {

@@ -23,16 +23,16 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y, cols, maxpixels=100000, leg.mar, 
+\S4method{plot}{SpatRaster,numeric}(x, y, cols, maxcell=100000, leg.mar, 
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext,
 		digits, useRaster=TRUE, zlim, xlab="", ylab="", ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, maxpixels=100000, nc, nr, main, maxnl=16, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxcell=100000, nc, nr, main, maxnl=16, ...)
 
-\S4method{plot}{SpatRaster,SpatRaster}(x, y, maxpixels=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
+\S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
 
-\S4method{image}{SpatRaster}(x, y, maxpixels=100000, xlab="", ylab="", useRaster=TRUE, ...)
+\S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", useRaster=TRUE, ...)
 
 
 \S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", ...)
@@ -45,7 +45,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{x}{SpatRaster or SpatVector}
   \item{y}{missing or integer indicating the layer(s) to be plotted}
   \item{cols}{character. colors}
-  \item{maxpixels}{integer > 0. Maximum number of cells to use for the plot}
+  \item{maxcell}{integer > 0. Maximum number of cells to use for the plot}
   \item{leg.mar}{integer > 0. size of margin for the legend}
   \item{leg.levels}{integer > 0. number of labels on the legend}
   \item{leg.shrink}{numeric. relative shrinkage of legend from top and bottom}

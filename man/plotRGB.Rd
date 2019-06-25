@@ -14,7 +14,7 @@ Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (so
 
 
 \usage{
-\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxpixels=500000, stretch=NULL, 
+\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, 
 ext=NULL, interpolate=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, 
 zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, margins=FALSE, ...)
 }
@@ -25,7 +25,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, margins=FALSE, 
   \item{g}{integer. Index of the Green channel, between 1 and nlyr(x)}
   \item{b}{integer. Index of the Blue channel, between 1 and nlyr(x)}
   \item{scale}{integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of \code{x} if that is known and larger than 255}
-  \item{maxpixels}{integer > 0. Maximum number of pixels to use}
+  \item{maxcell}{integer > 0. Maximum number of pixels to use}
   \item{stretch}{character. Option to stretch the values to increase the contrast of the image: "lin" or "hist"}
   \item{ext}{An \code{\link{Extent}} object to zoom in to a region of interest (see \code{\link{drawExtent}})}
   \item{interpolate}{logical. If \code{TRUE}, interpolate the image when drawing}

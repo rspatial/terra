@@ -52,16 +52,19 @@ setMethod("lines", signature(x="SpatVector"),
 		} else {
 			g <- split(g, g[,1])
 			g <- lapply(g, function(x) split(x, x[,2]))
+			if (gtype == "polygons") {
+				g <- lapply(g, function(x) split(x, x[,5]))
+			}
 			p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...)))
 		}
 	}
 )
 
+
+
 setMethod("points", signature(x="SpatVector"), 
 	function(x, ...)  {
-		g <- geom(x)
-		gtype <- geomtype(x)
-		points(g[,3:4], ...)
+		points(geom(x)[,3:4], ...)
 	}
 )
 

@@ -9,11 +9,11 @@ if (!isGeneric("boxplot")) {
 }
 
 setMethod("boxplot", signature(x="SpatRaster"), 
-	function(x, maxpixels=100000, ...) {
+	function(x, maxcell=100000, ...) {
 		cn <- names(x)
-		if ( ncell(x) > maxpixels) {
-			warning("taking a sample of ", maxpixels, " cells")
-			x <- sampleRegular(x, maxpixels)
+		if ( ncell(x) > maxcell) {
+			warning("taking a sample of ", maxcell, " cells")
+			x <- sampleRegular(x, maxcell)
 		} 
 		x <- values(x)
 		colnames(x) <- cn
@@ -27,9 +27,9 @@ if (!isGeneric("barplot")) {
 }	
 
 setMethod("barplot", "SpatRaster", 
-	function(height, maxpixels=1000000, digits=0, breaks=NULL, col=grDevices::rainbow, ...) {
+	function(height, maxcell=1000000, digits=0, breaks=NULL, col=grDevices::rainbow, ...) {
 		
-		x <- values(sampleRegular(height[[1]], maxpixels))
+		x <- values(sampleRegular(height[[1]], maxcell))
 		adj <- length(x) / ncell(height)
 		if (adj < 1) {
 			warning('a sample of ', round(100*adj, 1), '% of the raster cells were used to estimate frequencies')
