@@ -24,17 +24,58 @@ std::vector<double> SpatRaster::readValuesBinary(unsigned src, unsigned row, uns
 	std::string dtype = source[src].datatype;
 	std::string filename = source[src].filename;
 	std::string bndorder = source[src].bandorder;
+	std::vector<unsigned> lyrs = source[src].layers;
 	std::vector<double> out;
 	if (ncols == ncol()) {
 		if (nrows == nrow()) {
-			out = readBinAll(filename, dtype, nrow(), ncol(), nl, bndorder);
+			out = readBinAll(filename, dtype, lyrs, nrow(), ncol(), nl, bndorder);
 		} else {
-			out = readBinRows(filename, dtype, row, nrows, nrow(), ncol(), nl, bndorder);
+			out = readBinRows(filename, dtype, row, nrows, lyrs, nrow(), ncol(), nl, bndorder);
 		}
 	} else {
-		out = readBinBlock(filename, dtype, row, nrows, col, ncols, nrow(), ncol(), nl, bndorder);
+		out = readBinBlock(filename, dtype, row, nrows, col, ncols, lyrs, nrow(), ncol(), nl, bndorder);
 	}
 	return out;
+}
+
+
+std::vector<double> SpatRaster::readSampleBinary(unsigned src, unsigned srows, unsigned scols) {
+
+	unsigned nl = source[src].nlyr;
+	std::string dtype = source[src].datatype;
+	std::string filename = source[src].filename;
+	std::string bndorder = source[src].bandorder;
+	std::vector<unsigned> lyrs = source[src].layers;
+
+	std::vector<double> out;
+
+	double rowstep = nrow() / (srows+1);
+	std::vector<unsigned> steprows, stepcols;
+	for (size_t i = 0; i < srows; i++) {
+		steprows[i] = round((i+0.5) * rowstep);
+	}
+	double colstep = ncol() / (scols+1);
+	for (size_t i = 0; i < scols; i++) {
+		stepcols[i] = round((i+0.5) * colstep);
+	}
+
+	std::vector<double> cells = cellFromRowColCombine(steprows, stepcols);
+	out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
+	return out;
+}
+
+
+std::vector<double> SpatRaster::readCellsBinary(unsigned src, std::vector<double> cells) {
+	
+	unsigned nl = source[src].nlyr;
+	std::string dtype = source[src].datatype;
+	std::string filename = source[src].filename;
+	std::string bndorder = source[src].bandorder;
+	std::vector<unsigned> lyrs = source[src].layers;
+
+	std::vector<double> out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
+	return out;
+	
 }
 
 

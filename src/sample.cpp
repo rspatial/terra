@@ -34,6 +34,7 @@ void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldco
 	}
 }
 
+
 std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigned scols) {
 
 	//double newc, oldc;
@@ -82,9 +83,13 @@ SpatRaster SpatRaster::sampleRegular(unsigned size) {
 		if (source[src].memory) {
 			v = readSample(src, nr, nc);
 		} else {
+			if (source[src].driver == "raster") {
+				v = readSampleBinary(src, nr, nc);
+			} else {
 		    #ifdef useGDAL
-			v = readGDALsample(src, nr, nc);
+				v = readGDALsample(src, nr, nc);
 			#endif
+			}
 		}
 		out.source[0].values.insert(out.source[0].values.end(), v.begin(), v.end());
 	}

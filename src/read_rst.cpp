@@ -40,7 +40,6 @@ T swap_endian(T u) {
 swap_endian<double>(42).
 */
 
-
 template <typename T>
 std::vector<T> bil_to_bsq(const std::vector<T> &v, unsigned nrows, unsigned ncols, unsigned nlyrs) {
   std::vector<T> x;
@@ -57,24 +56,29 @@ std::vector<T> bil_to_bsq(const std::vector<T> &v, unsigned nrows, unsigned ncol
 
 template <typename T>
 std::vector<T> readCellBIL(std::string filename, 
-                            std::vector<double> cells, 
-                            unsigned nc, unsigned nl){
+                           std::vector<double> cells, 
+                           std::vector<unsigned> lyrs,
+                           unsigned nc, unsigned nl){
+  
   size_t size = sizeof(T);
   std::vector<T> d(1);
   size_t n = cells.size();
-  std::vector<T> out(n * nl);
+  size_t nlyrs = lyrs.size();
+  std::vector<T> out(n * nlyrs);
   std::ifstream ifs(filename, std::ios::in | std::ios::binary);
+  
   for (size_t i=0; i<n; i++) {
-      size_t row = std::floor(cells[i] / nc);
-      size_t col = cells[i] - (row * nc);
-      size_t basestart = (row * nc * nl + col) * size;
-      for (size_t j=0; j<nl; j++) {
-        size_t start = basestart + (j * nc) * size;
-        ifs.seekg(start, std::ios::beg);
-        ifs.read(reinterpret_cast<char*>(d.data()), size);
-        out[i + n*j] = d[0];
-      }
+    size_t row = std::floor(cells[i] / nc);
+    size_t col = cells[i] - (row * nc);
+    size_t basepos = (row * nc * nl + col) * size;
+    for (size_t j=0; j<nlyrs; j++) {
+      size_t pos = basepos + lyrs[j] * nc * size;
+      ifs.seekg(pos, std::ios::beg);
+      ifs.read(reinterpret_cast<char*>(d.data()), size);
+      out[i + n*j] = d[0];
+    }
   }
+  
   return out;
 }
 
@@ -82,20 +86,22 @@ std::vector<T> readCellBIL(std::string filename,
 template <typename T>
 std::vector<T> readCellBSQ(std::string filename, 
                            std::vector<double> cells, 
+                           std::vector<unsigned> lyrs,
                            unsigned nr, unsigned nc, unsigned nl){
   size_t size = sizeof(T);
   std::vector<T> d(1);
   size_t n = cells.size();
+  size_t nlyrs = lyrs.size();
   size_t offset = nr * nc * size;
-  std::vector<T> out(n * nl);
+  std::vector<T> out(n * nlyrs);
   std::ifstream ifs(filename, std::ios::in | std::ios::binary);
   for (size_t i=0; i<n; i++) {
     size_t row = std::floor(cells[i] / nc);
     size_t col = cells[i] - (row * nc);
-    size_t basestart = (row * nc + col) * size;
-    for (size_t j=0; j<nl; j++) {
-      size_t start = basestart + offset;
-      ifs.seekg(start, std::ios::beg);
+    size_t basepos = (row * nc + col) * size;
+    for (size_t j=0; j<nlyrs; j++) {
+      size_t pos = basepos + offset * j;
+      ifs.seekg(pos, std::ios::beg);
       ifs.read(reinterpret_cast<char*>(d.data()), size);
       out[i + n*j] = d[0];
     }
@@ -103,22 +109,39 @@ std::vector<T> readCellBSQ(std::string filename,
   return out;
 }
 
-
 template <typename T>
-std::vector<T> readAll(std::string filename){
+std::vector<T> readAll(std::string filename, std::vector<unsigned> lyrs, unsigned nr, unsigned nc, unsigned nl, std::string bandorder){
   std::ifstream ifs(filename, std::ios::in | std::ios::binary);
   ifs.seekg(0, std::ios::end);
   std::streampos fileSize = ifs.tellg();
   ifs.seekg(0, std::ios::beg);
-  size_t sizeOfBuffer = fileSize / sizeof(T);
-  std::vector<T> d(sizeOfBuffer);
+  size_t n = fileSize / sizeof(T);
+  std::vector<T> d(n);
   ifs.read(reinterpret_cast<char*>(d.data()), fileSize);    
+  if (bandorder == "BIL") {
+    d = bil_to_bsq(d, nr, nc, nl);
+  }
+  
+  size_t nlyrs = lyrs.size();
+  if (nlyrs != nl) {
+    size_t ncell = nc * nr;
+    std::vector<T> out;
+    for (size_t i=0; i<nlyrs; i++) {
+      size_t start = lyrs[i] * ncell;
+      out.insert(out.end(), d.begin()+start, d.begin()+start+ncell);
+    }	
+    d = out;
+  }
   return d;
 }
 
 
 template <typename T>
-std::vector<T> readRowsBIL(std::string filename, unsigned row, unsigned nrows, unsigned nc, unsigned nl){
+std::vector<T> readRowsBIL(std::string filename, 
+                           unsigned row, unsigned nrows, 
+                           std::vector<unsigned> lyrs, 
+                           unsigned nc, unsigned nl) {
+  
   size_t size = sizeof(T);
   size_t start = row * nc * nl * size;
   size_t n = nrows * nc * nl;
@@ -127,12 +150,29 @@ std::vector<T> readRowsBIL(std::string filename, unsigned row, unsigned nrows, u
   ifs.seekg(start, std::ios::beg);
   std::vector<T> d(n);
   ifs.read(reinterpret_cast<char*>(d.data()), n * size);    
+
+  d = bil_to_bsq(d, nrows, nc, nl);
+  
+  size_t nlyrs = lyrs.size();
+  if (nlyrs != nl) {
+    std::vector<T> out;
+    for (size_t i=0; i<nlyrs; i++) {
+      size_t start = lyrs[i] * nrows * nc;
+      out.insert(out.end(), d.begin()+start, d.begin()+start+nrows*nc);
+    }	
+    return(out);
+  }
+  
   return d;
 }
 
 
 template <typename T>
-std::vector<T> readRowsBSQ(std::string filename, unsigned row, unsigned nrows, unsigned nr, unsigned nc, unsigned nl){
+std::vector<T> readRowsBSQ(std::string filename, 
+                           unsigned row, unsigned nrows, 
+                           std::vector<unsigned> lyrs, 
+                           unsigned nr, unsigned nc, unsigned nl){
+  
   size_t size = sizeof(T);
   size_t n = nrows * nc;
   std::vector<T> d(n);
@@ -151,19 +191,22 @@ template <typename T>
 std::vector<T> readBlockBIL(std::string filename, 
                             unsigned row, unsigned nrows, 
                             unsigned col, unsigned ncols, 
+                            std::vector<unsigned> lyrs, 
                             unsigned nc, unsigned nl){
   size_t size = sizeof(T);
   std::vector<T> d(ncols);
   std::vector<T> out;
+  size_t nlyrs = lyrs.size();
   std::ifstream ifs(filename, std::ios::in | std::ios::binary);
-  for (size_t i=0; i<nl; i++) {
+  for (size_t i=0; i<nlyrs; i++) {
     for (size_t j=0; j<nrows; j++) {
-      size_t start = ((row+j) * nc * nl + i * nc + col) * size;
+      size_t start = ((row+j) * nc * nl + lyrs[i] * nc + col) * size;
       ifs.seekg(start, std::ios::beg);
       ifs.read(reinterpret_cast<char*>(d.data()), ncols * size);
       out.insert(out.end(), d.begin(), d.end());
     }
   }
+  out = bil_to_bsq(out, nrows, ncols, nlyrs);
   return out;
 }
 
@@ -172,14 +215,16 @@ template <typename T>
 std::vector<T> readBlockBSQ(std::string filename, 
                             unsigned row, unsigned nrows, 
                             unsigned col, unsigned ncols, 
+                            std::vector<unsigned> lyrs, 
                             unsigned nc, unsigned nr, unsigned nl){
   size_t size = sizeof(T);
   std::vector<T> d(ncols);
   std::vector<T> out;
+  size_t nlyrs = lyrs.size();
   std::ifstream ifs(filename, std::ios::in | std::ios::binary);
-  for (size_t i=0; i<nl; i++) {
+  for (size_t i=0; i<nlyrs; i++) {
     for (size_t j=0; j<nrows; j++) {
-      size_t start = (nr * nc * i + (row+j) * nc + col) * size;
+      size_t start = (nr * nc * lyrs[i] + (row+j) * nc + col) * size;
       ifs.seekg(start, std::ios::beg);
       ifs.read(reinterpret_cast<char*>(d.data()), ncols * size);
       out.insert(out.end(), d.begin(), d.end());
@@ -190,139 +235,144 @@ std::vector<T> readBlockBSQ(std::string filename,
 
 
 
+// [[Rcpp::export]]
 std::vector<double> readBinRows(std::string filename, std::string datatype, 
-                               unsigned row, unsigned nrows,
-                               unsigned nr, unsigned nc, unsigned nl,
-                               std::string order) {
-  std::vector<double> out;
-  if (order == "BIL") {
-
-    if (datatype == "INT2S") {
-      std::vector<short> v = readRowsBIL<short>(filename, row, nrows, nc, nl); 
-      out = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "INT4S") {
-      std::vector<long> v = readRowsBIL<long>(filename, row, nrows, nc, nl); 
-      out = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT4S") {
-      std::vector<float> v = readRowsBIL<float>(filename, row, nrows, nc, nl); 
-      out = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT8S") {
-      out = readRowsBIL<double>(filename, row, nrows, nc, nl);  
-    }
-    out = bil_to_bsq(out, nrows, nc, nl );
-  } else if (order == "BSQ") {
-    if (datatype == "INT2S") {
-      std::vector<short> v = readRowsBSQ<short>(filename, row, nrows, nr, nc, nl); 
-      out = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "INT4S") {
-      std::vector<long> v = readRowsBSQ<long>(filename, row, nrows, nr, nc, nl); 
-      out = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT4S") {
-      std::vector<float> v = readRowsBSQ<float>(filename, row, nrows, nr, nc, nl); 
-      out = std::vector<double>(v.begin(), v.end());
-    } else if (datatype == "FLT8S") {
-      out = readRowsBSQ<double>(filename, row, nrows, nr, nc, nl);  
-    }
-  }
-  return out;
-}
-
-
-std::vector<double> readBinBlock(std::string filename, std::string datatype, 
                                 unsigned row, unsigned nrows,
-                                unsigned col, unsigned ncols,
+                                std::vector<unsigned> lyrs, 
                                 unsigned nr, unsigned nc, unsigned nl,
                                 std::string order) {
   std::vector<double> out;
   if (order == "BIL") {
     
     if (datatype == "INT2S") {
-      std::vector<short> v = readBlockBIL<short>(filename, row, nrows, col, ncols, nc, nl); 
+      std::vector<short> v = readRowsBIL<short>(filename, row, nrows, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "INT4S") {
-      std::vector<long> v = readBlockBIL<long>(filename, row, nrows, col, ncols, nc, nl); 
+      std::vector<long> v = readRowsBIL<long>(filename, row, nrows, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT4S") {
-      std::vector<float> v = readBlockBIL<float>(filename, row, nrows, col, ncols, nc, nl); 
+      std::vector<float> v = readRowsBIL<float>(filename, row, nrows, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT8S") {
-      out = readBlockBIL<double>(filename, row, nrows, col, ncols, nc, nl);  
+      out = readRowsBIL<double>(filename, row, nrows, lyrs, nc, nl);  
     }
-    out = bil_to_bsq(out, nrows, ncols, nl );
   } else if (order == "BSQ") {
     if (datatype == "INT2S") {
-      std::vector<short> v = readBlockBSQ<short>(filename, row, nrows, col, ncols, nr, nc, nl); 
+      std::vector<short> v = readRowsBSQ<short>(filename, row, nrows, lyrs, nr, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "INT4S") {
-      std::vector<long> v = readBlockBSQ<long>(filename, row, nrows, col, ncols, nr, nc, nl); 
+      std::vector<long> v = readRowsBSQ<long>(filename, row, nrows, lyrs, nr, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT4S") {
-      std::vector<float> v = readBlockBSQ<float>(filename, row, nrows, col, ncols, nr, nc, nl); 
+      std::vector<float> v = readRowsBSQ<float>(filename, row, nrows, lyrs, nr, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT8S") {
-      out = readBlockBSQ<double>(filename, row, nrows, col, ncols, nr, nc, nl);  
+      out = readRowsBSQ<double>(filename, row, nrows, lyrs, nr, nc, nl);  
     }
   }
   return out;
 }
 
 
-std::vector<double> readBinAll(std::string filename, std::string datatype, 
-                               unsigned nr, unsigned nc, unsigned nl,
-                               std::string order) {
-    std::vector<double> out;
+// [[Rcpp::export]]
+std::vector<double> readBinBlock(std::string filename, std::string datatype, 
+                                 unsigned row, unsigned nrows,
+                                 unsigned col, unsigned ncols,
+                                 std::vector<unsigned> lyrs, 
+                                 unsigned nr, unsigned nc, unsigned nl,
+                                 std::string order) {
+  std::vector<double> out;
+  if (order == "BIL") {
+    
     if (datatype == "INT2S") {
-      std::vector<short> v = readAll<short>(filename); 
+      std::vector<short> v = readBlockBIL<short>(filename, row, nrows, col, ncols, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "INT4S") {
-      std::vector<long> v = readAll<long>(filename); 
+      std::vector<long> v = readBlockBIL<long>(filename, row, nrows, col, ncols, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT4S") {
-      std::vector<float> v = readAll<float>(filename); 
+      std::vector<float> v = readBlockBIL<float>(filename, row, nrows, col, ncols, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT8S") {
-      out = readAll<double>(filename);  
+      out = readBlockBIL<double>(filename, row, nrows, col, ncols, lyrs, nc, nl);  
     }
-    if (order == "BIL") {
-      out = bil_to_bsq(out, nr, nc, nl );
+  } else if (order == "BSQ") {
+    if (datatype == "INT2S") {
+      std::vector<short> v = readBlockBSQ<short>(filename, row, nrows, col, ncols, lyrs, nr, nc, nl); 
+      out = std::vector<double>(v.begin(), v.end());
+    } else if (datatype == "INT4S") {
+      std::vector<long> v = readBlockBSQ<long>(filename, row, nrows, col, ncols, lyrs, nr, nc, nl); 
+      out = std::vector<double>(v.begin(), v.end());
+    } else if (datatype == "FLT4S") {
+      std::vector<float> v = readBlockBSQ<float>(filename, row, nrows, col, ncols, lyrs, nr, nc, nl); 
+      out = std::vector<double>(v.begin(), v.end());
+    } else if (datatype == "FLT8S") {
+      out = readBlockBSQ<double>(filename, row, nrows, col, ncols, lyrs, nr, nc, nl);  
     }
-    return out;
+  }
+  return out;
 }
 
 
+// [[Rcpp::export]]
+std::vector<double> readBinAll(std::string filename, std::string datatype, 
+                               std::vector<unsigned> lyrs, 
+                               unsigned nr, unsigned nc, unsigned nl,
+                               std::string order) {
+  std::vector<double> out;
+  if (datatype == "INT2S") {
+    std::vector<short> v = readAll<short>(filename, lyrs, nr, nc, nl, order); 
+    out = std::vector<double>(v.begin(), v.end());
+  } else if (datatype == "INT4S") {
+    std::vector<long> v = readAll<long>(filename, lyrs, nr, nc, nl, order); 
+    out = std::vector<double>(v.begin(), v.end());
+  } else if (datatype == "FLT4S") {
+    std::vector<float> v = readAll<float>(filename, lyrs, nr, nc, nl, order); 
+    out = std::vector<double>(v.begin(), v.end());
+  } else if (datatype == "FLT8S") {
+    out = readAll<double>(filename, lyrs, nr, nc, nl, order);  
+  }
+  return out;
+}
 
+
+// [[Rcpp::export]]
 std::vector<double> readBinCell(std::string filename, std::string datatype, 
                                 std::vector<double> cells,
+                                std::vector<unsigned> lyrs,
                                 unsigned nr, unsigned nc, unsigned nl,
                                 std::string order) {
   std::vector<double> out;
   if (order == "BIL") {
     
     if (datatype == "INT2S") {
-      std::vector<short> v = readCellBIL<short>(filename, cells, nc, nl); 
+      std::vector<short> v = readCellBIL<short>(filename, cells, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "INT4S") {
-      std::vector<long> v = readCellBIL<long>(filename, cells, nc, nl); 
+      std::vector<long> v = readCellBIL<long>(filename, cells, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT4S") {
-      std::vector<float> v = readCellBIL<float>(filename, cells, nc, nl); 
+      std::vector<float> v = readCellBIL<float>(filename, cells, lyrs, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT8S") {
-      out = readCellBIL<double>(filename, cells, nc, nl);  
+      out = readCellBIL<double>(filename, cells, lyrs, nc, nl);  
     }
   } else if (order == "BSQ") {
     if (datatype == "INT2S") {
-      std::vector<short> v = readCellBSQ<short>(filename, cells, nr, nc, nl); 
+      std::vector<short> v = readCellBSQ<short>(filename, cells, lyrs, nr, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "INT4S") {
-      std::vector<long> v = readCellBSQ<long>(filename, cells, nr, nc, nl); 
+      std::vector<long> v = readCellBSQ<long>(filename, cells, lyrs, nr, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT4S") {
-      std::vector<float> v = readCellBSQ<float>(filename, cells, nr, nc, nl); 
+      std::vector<float> v = readCellBSQ<float>(filename, cells, lyrs, nr, nc, nl); 
       out = std::vector<double>(v.begin(), v.end());
     } else if (datatype == "FLT8S") {
-      out = readCellBSQ<double>(filename, cells, nr, nc, nl);  
+      out = readCellBSQ<double>(filename, cells, lyrs, nr, nc, nl);  
     }
   }
   return out;
 }
+
+
+
