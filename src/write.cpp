@@ -65,7 +65,6 @@ bool SpatRaster::isSource(std::string filename) {
 bool SpatRaster::writeRaster(SpatOptions &opt) {
 
 	std::string filename = opt.get_filename();
-	//std::string datatype = opt.get_datatype();
 	bool overwrite = opt.get_overwrite();
 
 	if (filename == "") {
@@ -112,6 +111,7 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 
 	} else {
 		std::string format = opt.get_filetype();
+		std::string datatype = opt.get_datatype();
         #ifdef useGDAL
         return writeRasterGDAL(filename, format, datatype, overwrite);
 		#else
@@ -168,7 +168,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 			#ifdef useGDAL
 			source[0].driver = "gdal" ;
 			std::string format = opt.get_filetype();
-			success = writeStartGDAL(filename, format, datatype);
+			success = writeStartGDAL(filename, format, source[0].datatype);
 			if (!success) {
 				setError("file exists");
 				return false;

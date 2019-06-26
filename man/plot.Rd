@@ -64,8 +64,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
   \item{ncol}{integer. Number of columns for gridding}
   \item{nrow}{integer. Number of rows for gridding}
-  \item{add}{Add points, lines, or polygons to the current plot (as an alternative to the \code{lines} or \code{points) methods}  
- 
+  \item{add}{Add points, lines, or polygons to the current plot (as an alternative to the \code{lines} or \code{points} methods}   
   \item{...}{additional graphical arguments}  
 }
 
