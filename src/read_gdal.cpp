@@ -20,7 +20,7 @@
 #include <regex>
 
 #include "spatRaster.h"
-#include "string_utils.h"
+#include "file_utils.h"
 #include "NA.h"
 
 #include "gdal_priv.h"

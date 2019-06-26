@@ -19,6 +19,8 @@
 #include "spatRaster.h"
 #include "math_utils.h"
 #include "string_utils.h"
+#include "file_utils.h"
+
 #include <unordered_map>
 
 #include "gdal_priv.h"
@@ -60,8 +62,14 @@ void GDALformat(std::string &filename, std::string &format) {
 }
 
 
-bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype) {
+bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite) {
 
+	SpatMessages m = can_write(filename, overwrite);
+	if (m.has_error) {
+		msg = m;
+		return(false);
+	}
+	
 	GDALformat(filename, format);
 	const char *pszFormat = format.c_str();
 	const char *pszDstFilename = filename.c_str();
@@ -70,7 +78,10 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	GDALAllRegister();
 	
     poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
-    if(poDriver == NULL) return (false);
+    if(poDriver == NULL) {
+		setError("driver failure");
+		return (false);
+	}
     papszMetadata = poDriver->GetMetadata();
     if(! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) return (false);
  
@@ -85,8 +96,10 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	std::string prj = getCRS();
 	OGRSpatialReference oSRS;
 	OGRErr erro = oSRS.importFromProj4(&prj[0]); 
-	if (erro == 4) { return false ; }	// ??
-	
+	if (erro == 4) { 
+		setError("CRS failure");
+		return false ;
+	}
 	char *pszSRS_WKT = NULL;	
 	oSRS.exportToWkt(&pszSRS_WKT);
 	poDstDS->SetProjection(pszSRS_WKT);
@@ -99,6 +112,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 		source[0].range_min[i] = std::numeric_limits<double>::max();
 		source[0].range_max[i] = std::numeric_limits<double>::lowest();
 	}
+	source[0].driver = "gdal" ;
 
 	return true;
 }
@@ -194,18 +208,13 @@ bool SpatRaster::writeStopGDAL() {
 bool SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite) {
 	bool success;
 	SpatRaster r = geometry();
-	
 	if (!hasValues()) {
-		addWarning("none of the cells have values");
+		addWarning("there are no cell values");
 	}
-	success = r.writeStartGDAL(filename, format, datatype);
-	if (!success) {
-		setError("cannot open file");
+	if (!r.writeStartGDAL(filename, format, datatype, overwrite)) {
 		return false;
 	}
-	success = r.writeValuesGDAL(getValues(), 0);
-	if (!success) {
-		setError("cannot write values to file");
+	if (!r.writeValuesGDAL(getValues(), 0)) {
 		return false;
 	}
 	success = r.writeStopGDAL();

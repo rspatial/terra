@@ -17,7 +17,7 @@
 
 
 #include "spatVector.h"
-#include "string_utils.h"
+#include "file_utils.h"
 
 #include "ogrsf_frmts.h"
 #include "ogr_spatialref.h"

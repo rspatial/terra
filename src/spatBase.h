@@ -41,11 +41,13 @@ class SpatOptions {
 	public:
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
+		std::string def_bandorder = "BIL";
 		bool overwrite = false;
 		unsigned progress = 4;
 		unsigned blocksizemp = 4;
 
 		std::string datatype = "";
+		std::string bandorder = "";
 		std::string filetype = "";
 		std::string filename = "";
 		std::vector<std::string> gdal_options;
@@ -63,20 +65,24 @@ class SpatOptions {
 		void set_tempdir(std::string d);
 
 		std::string get_def_datatype();
+		std::string get_def_bandorder();
 		std::string get_def_filetype();
 		void set_def_datatype(std::string d);
+		void set_def_bandorder(std::string d);
 		void set_def_filetype(std::string d);
 
 		// single use
 		void set_filename(std::string d);
 		void set_filetype(std::string d);
 		void set_datatype(std::string d);
+		void set_bandorder(std::string d);
 		void set_overwrite(bool b);
 		void set_progress(unsigned p);
 		void set_blocksizemp(unsigned x);
 		std::string get_filename();
 		std::string get_filetype();
 		std::string get_datatype();
+		std::string get_bandorder();
 		bool get_overwrite();
 		unsigned get_progress();
 		bool do_progress(unsigned n);

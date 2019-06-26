@@ -10,17 +10,17 @@ for (i in 1:5) {
 		r <- c(r, r/2, r*2)
 		rx <- stack(rx, rx/2, rx*2)
 	} else if (i == 3) {
-		f <- system.file("exdata/logo.grd", package="terra")
+		f <- system.file("exdata/test.tif", package="terra")
 		r <- rast(f)
-		rx <- brick(f)
+		rx <- raster(f)
 	} else if (i == 4) {
 		f <- system.file("exdata/logo.tif", package="terra")
 		r <- rast(f)
 		rx <- brick(f)
 	} else {
-		f <- system.file("exdata/test.tif", package="terra")
+		f <- system.file("exdata/logo.grd", package="terra")
 		r <- rast(f)
-		rx <- raster(f)
+		rx <- brick(f)
 	}
 	
 	test_that("raster and terra geometries", { 
@@ -35,8 +35,12 @@ for (i in 1:5) {
 	} )
 
 
-	test_that("raster and terra subsets", { 
-		a <- ifelse(i<3,0,20)
+	test_that("raster and terra subsets", {
+		a <- ifelse(i>2,20,0)
+		if (i>3) {
+			j <- 4999
+			expect_equivalent(r[j],	cbind(r[[1]][j], r[[2]][j], r[[3]][j]))
+		}
 		expect_equivalent(r[10+a], rx[10+a]) 
 		expect_equivalent(r[2+a,], rx[2+a,]) 
 		expect_equivalent(r[,2+a], rx[,2+a]) 

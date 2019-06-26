@@ -17,20 +17,17 @@
 
 #include "spatRaster.h"
 #include "string_utils.h"
+#include "file_utils.h"
 #include "hdr.h"
-
 
 bool SpatRaster::constructFromFile(std::string fname) {
 
-//	bool OK = (fname.substr(0, 3) == "HDF") || (file_exists(fname));
-	bool OK = file_exists(fname);
-	if (!OK) {
+	if (!file_exists(fname)) {
 		setError("file does not exist");
 		return false;
 	}
 
 	std::string ext = getFileExt(fname);
-
 	if (ext != ".grd") {
         #ifdef useGDAL
 		return constructFromFileGDAL(fname);
@@ -56,16 +53,17 @@ bool SpatRaster::constructFromFile(std::string fname) {
 		s.nlyr = std::stoi(ini[10]);
 		s.nlyrfile = s.nlyr;
 		s.layers.resize(s.nlyr);
-		std::iota(s.layers.begin(), s.layers.end(), 0);	
+		std::iota(s.layers.begin(), s.layers.end(), 0);
 		s.crs = ini[11];
 		s.NAflag = std::stod(ini[12]);
-		s.range_min = str2dbl(strsplit(ini[13], ":"));
-		s.range_max = str2dbl(strsplit(ini[14], ":"));
-		if (ini[7] == "1") {
-			s.names = strsplit(ini[15], ":");
-		} else {
-			s.names = strsplit(ini[15], ":|:");				
+		unsigned version = std::stoi(ini[7]);
+		std::string sep = ":|:";
+		if (version < 2) {
+            sep = ":";
 		}
+		s.range_min = str2dbl(strsplit(ini[13], sep));
+		s.range_max = str2dbl(strsplit(ini[14], sep));
+		s.names = strsplit(ini[15], sep);
 		s.filename = setFileExt(fname, ".gri");
 		s.hasRange = std::vector<bool> (s.nlyr, true);
 		s.has_scale_offset = std::vector<bool> (s.nlyr, false);
@@ -89,7 +87,7 @@ bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
 	for (size_t i=1; i<fnames.size(); i++) {
 		r = SpatRaster(fnames[i]);
 		if (!compare_geom(r, false, true, true)) {
-			setError(fnames[i] = " does not match previous sources");
+			setError("geometry of " + fnames[i] + " does not match previous sources");
 			return false;
 		} else {
 			addSource(r);

@@ -42,11 +42,13 @@ RCPP_MODULE(spat){
 		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
+		.property("bandorder", &SpatOptions::get_bandorder, &SpatOptions::set_bandorder )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
 		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )
+		.property("def_bandorder", &SpatOptions::get_def_bandorder, &SpatOptions::set_def_bandorder )
 
 		.property("todisk", &SpatOptions::get_todisk, &SpatOptions::set_todisk)
 		.field("messages", &SpatOptions::msg, "messages")
@@ -124,6 +126,7 @@ RCPP_MODULE(spat){
 		.field_readonly("crs", &RasterSource::crs)
 		.field_readonly("extent", &RasterSource::extent)
 		.field_readonly("datatype", &RasterSource::datatype)
+		.field_readonly("bandorder", &RasterSource::bandorder)
 		.field_readonly("NAflag", &RasterSource::NAflag)
 		.field_readonly("layers", &RasterSource::layers)
 	;	

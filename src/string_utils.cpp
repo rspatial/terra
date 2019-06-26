@@ -19,14 +19,8 @@
 #include <set>
 #include <string>
 #include <vector>
-#include <fstream>
 #include <numeric>
 
-
-bool file_exists(const std::string& name) {
-	std::ifstream f(name.c_str());
-	return f.good();
-}
 
 std::string concatenate(std::vector<std::string> v, std::string delim) {
 	for (size_t i=0; i<(v.size()-1); i++) {
@@ -95,36 +89,6 @@ std::vector<std::string> dbl2str(std::vector<double> d) {
 			[](double i) { return std::to_string(i); }
 	);
 	return s;
-}
-
-
-
-std::string getFileExt(const std::string& s) {
-	size_t i = s.rfind('.', s.length());
-	if (i != std::string::npos) {
-		return(s.substr(i, s.length() - i));
-	}
-	return("");
-}
-
-std::string setFileExt(const std::string& s, const std::string& ext) {
-	size_t i = s.rfind('.', s.length());
-	if (i != std::string::npos) {
-		return(s.substr(0, i) + ext);
-	}
-	return(s + ext);
-}
-
-std::string basename(std::string filename) {
-	const size_t i = filename.find_last_of("\\/");
-	if (std::string::npos != i) {
-		filename.erase(0, i + 1);
-	}
-	const size_t p = filename.rfind('.');
-	if (std::string::npos != p) {
-		filename.erase(p);
-	}
-	return filename;
 }
 
 
