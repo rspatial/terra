@@ -4,11 +4,11 @@
 
 \alias{plot}
 \alias{plot,SpatRaster,missing-method}
-\alias{plot,SpatVector,missing-method}
 \alias{plot,SpatRaster,numeric-method}
 \alias{plot,SpatRaster,SpatRaster-method}
 \alias{image}
 \alias{image,SpatRaster-method}
+\alias{plot,SpatVector,missing-method}
 \alias{points,SpatVector-method}
 \alias{lines,SpatVector-method}
 \alias{lines,SpatExtent-method}
@@ -35,7 +35,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", useRaster=TRUE, ...)
 
 
-\S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", ...)
+\S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", add=FALSE, ...)
 \S4method{points}{SpatVector}(x, ...)
 \S4method{lines}{SpatVector}(x, ...)
 \S4method{lines}{SpatExtent}(x, ...)
@@ -64,6 +64,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
   \item{ncol}{integer. Number of columns for gridding}
   \item{nrow}{integer. Number of rows for gridding}
+  \item{add}{Add points, lines, or polygons to the current plot (as an alternative to the \code{lines} or \code{points) methods}  
  
   \item{...}{additional graphical arguments}  
 }

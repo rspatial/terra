@@ -4,7 +4,11 @@
 # License GPL v3
 
 setMethod("plot", signature(x="SpatVector", y="missing"), 
-	function(x, y, xlab="", ylab="", ...)  {
+	function(x, y, xlab="", ylab="", add=FALSE, ...)  {
+		if (add) {
+			lines(x, ...)
+			invisible();
+		}
 		g <- geom(x)
 		gtype <- geomtype(x)
 

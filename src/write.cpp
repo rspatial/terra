@@ -25,7 +25,7 @@
 bool canWrite(std::string filename) {
 	FILE *fp = fopen(filename.c_str(), "w");
 	if (fp == NULL) {
-		return false;				
+		return false;
 	}
 	fclose(fp);
 	return true;
@@ -65,7 +65,7 @@ bool SpatRaster::isSource(std::string filename) {
 bool SpatRaster::writeRaster(SpatOptions &opt) {
 
 	std::string filename = opt.get_filename();
-	std::string datatype = opt.get_datatype();
+	//std::string datatype = opt.get_datatype();
 	bool overwrite = opt.get_overwrite();
 
 	if (filename == "") {
@@ -85,13 +85,15 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	}
 	if (!canWrite(filename)) {
 		setError("cannot write file");
-		return false;				
+		return false;
 	}
 
 	std::string ext = getFileExt(filename);
 	lowercase(ext);
 
+	SpatRaster out = geometry(nlyr());
 	if (ext == ".grd") {
+        if (!out.writeStart(opt)) { msg = out.msg; return(false); }
 		std::vector<double> v = getValues();
 		//source[0].fsopen(filename);
 		//source[0].fswrite(v);
@@ -102,10 +104,12 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 //		fs.write((char*)&v[0], v.size() * sizeof(double));
 //		fs.close();
 
-        writeStart(opt);
-        writeValues(v, 0);
-        writeStop();
-        return writeHDR(filename);
+        if (!out.writeValues(v, 0))  { msg = out.msg; return(false); }
+        if (!out.writeStop())  { msg = out.msg; return(false); }
+        if (!out.writeHDR(filename))  { msg = out.msg; return(false); }
+		setSources(out.source);
+		return true;
+
 	} else {
 		std::string format = opt.get_filetype();
         #ifdef useGDAL
@@ -120,12 +124,8 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 
 bool SpatRaster::writeStart(SpatOptions &opt) {
 
-//	double inf = std::numeric_limits<double>::infinity();
-//	s.min_range = inf;
-//	s.max_range = -inf;
 	bool success = true;
 	std::string filename = opt.get_filename();
-	std::string datatype = opt.get_datatype();
 
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
@@ -134,12 +134,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		}
 	}
 
-	if (filename == "") {
-		source[0].driver = "memory";
-		source[0].memory = true;
-
-	} else {
-		source[0].memory = false;
+	if (filename != "") {
 		if (file_exists(filename)) {
 			if (opt.get_overwrite()) {
 				remove(filename.c_str());
@@ -150,18 +145,24 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		}
 		if (!canWrite(filename)) {
 			setError("cannot write file");
-			return false;				
+			return false;
 		}
-		
+
+		source[0].datatype = opt.get_datatype();
 		std::string ext = getFileExt(filename);
 		lowercase(ext);
 		if (ext == ".grd") {
 			source[0].driver = "raster";
+			for (size_t i =0; i<nlyr(); i++) {
+				source[0].range_min[i] = std::numeric_limits<double>::max();
+				source[0].range_max[i] = std::numeric_limits<double>::lowest();
+			}
+
 //			source[0].fsopen(filename);
             // create file and close it
-            std::string griname = setFileExt(source[0].filename, ".gri");
-            std::ofstream fs(griname, std::ios::out | std::ios::binary);
-            fs.close();
+            //std::string griname = setFileExt(source[0].filename, ".gri");
+            //std::ofstream fs(griname, std::ios::out | std::ios::binary);
+            //fs.close();
 		} else {
 			// open GDAL filestream
 			#ifdef useGDAL
@@ -177,7 +178,6 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 			return false;
 			#endif
 		}
-
 	}
 	if (source[0].open_write) {
 		addWarning("file was already open");
@@ -185,17 +185,42 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	source[0].open_write = true;
 	source[0].filename = filename;
 	bs = getBlockSize(opt.get_blocksizemp());
-	//bs = getBlockSize(4);
-
 
     #ifdef useRcpp
-    //SpatProgressBar pb;
-	//pbar = new Progress(bs.n, opt.do_progress(bs.n), pb);
 	pbar = new Progress(bs.n, opt.do_progress(bs.n));
 	#endif
 	return success;
 }
 
+
+template <typename T>
+bool write_bin(std::string filename, std::vector<double> v, std::vector<double> &range_min, std::vector<double> &range_max, unsigned nlyr, std::string bandorder) {
+
+	std::vector<T> values(v.begin(), v.end());
+	unsigned step = values.size() / nlyr;
+	double vmin, vmax;
+
+	for (size_t i=0; i<nlyr; i++) {
+		size_t start = step * i;
+		minmax(values.begin()+start, values.begin()+start+step, vmin, vmax);
+		range_min[i] = std::min(range_min[i], vmin);
+		range_max[i] = std::max(range_max[i], vmax);
+	}
+
+	std::ofstream fs(filename, std::ios::out | std::ios::binary);
+
+	//make sure we write at the right place if not in order.
+	//also deal with BIL/BIP/BSQ
+	//long cursize = fs.tellp() / sizeof(double);
+    //long needpos = row * ncol();
+    //std::cout << cursize << " " << needpos << "\n";
+
+	//fs.write((char*)&values[0], values.size() * sizeof(T));
+	fs.write(reinterpret_cast<const char*>(&values[0]),
+								values.size()*sizeof(T));
+	fs.close();
+	return(true);
+}
 
 
 bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row) {
@@ -205,20 +230,25 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row) {
 	}
 	bool success = true;
 	if (source[0].driver == "raster") {
-		//source[0].fswrite(vals);
-
-		unsigned sz = vals.size();
+        std::string datatype = source[0].datatype;
 		std::string fname = setFileExt(source[0].filename, ".gri");
+		unsigned nl = source[0].nlyr;
+		std::string bdo = source[0].bandorder;
 
-		// make sure we write at the right place if not in order.
-		// also deal with BIL/BIP/BSQ
-		std::ofstream fs(fname, std::ios::ate | std::ios::binary);
-		long cursize = fs.tellp() / sizeof(double);
-        long needpos = row * ncol();
-        //std::cout << cursize << " " << needpos << "\n";
-
-		fs.write(reinterpret_cast<const char*>(&vals[0]), sz*sizeof(double));
-		fs.close();
+		if (datatype == "INT2S") {
+			success = write_bin<short>(fname, vals, source[0].range_min, source[0].range_max, nl, bdo);
+		} else if (datatype == "INT4S") {
+			success = write_bin<long>(fname, vals, source[0].range_min, source[0].range_max, nl, bdo);
+		} else if (datatype == "INT8S") {
+			success = write_bin<long long int>(fname, vals, source[0].range_min, source[0].range_max, nl, bdo);
+		} else if (datatype == "FLT4S") {
+			success = write_bin<float>(fname, vals, source[0].range_min, source[0].range_max, nl, bdo);
+		} else if (datatype == "FLT8S") {
+			success = write_bin<double>(fname, vals, source[0].range_min, source[0].range_max, nl, bdo);
+		} else {
+			setError("datatype not yet implemented: " + source[0].datatype);
+			return false;
+		}
 
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
@@ -243,7 +273,6 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row) {
 			}
 		}
 	}
-		
 
 #ifdef useRcpp
 	if (Progress::check_abort()) {
@@ -252,8 +281,8 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row) {
 		return(false);
 	}
 	pbar->increment();
-#endif	
-		
+#endif
+
 	return success;
 }
 
@@ -281,9 +310,11 @@ bool SpatRaster::writeStop(){
 	}
 	source[0].open_write = false;
 	bool success = true;
+	source[0].memory = false;
 	if (source[0].driver == "raster") {
 		//source[0].fsclose();
 		writeHDR(source[0].filename);
+		setRange();
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
 		success = writeStopGDAL();
@@ -293,13 +324,15 @@ bool SpatRaster::writeStop(){
 		#endif
 	} else {
 		source[0].setRange();
+		source[0].driver = "memory";
+		source[0].memory = true;
 	}
 	source[0].hasValues = true;
 
 #ifdef useRcpp
 	//pbar->cleanup();
 	delete pbar;
-#endif	
+#endif
 
 	return success;
 }

@@ -182,9 +182,18 @@ SpatVector SpatVector::as_lines() {
 		return v;
 	}
 	for (size_t i=0; i<size(); i++) {
-		// todo
-		// handle polygon holes
-		// by changing hole to new part
+		for (size_t j=0; j < v.lyr.geoms[i].size(); j++) {
+			SpatPart p = v.lyr.geoms[i].parts[j];
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					SpatHole h = p.getHole(k);
+					SpatPart pp(h.x, h.y);
+					v.lyr.geoms[i].addPart(pp);
+				}
+				p.holes.resize(0);
+				v.lyr.geoms[i].parts[j] = p;
+			}
+		}
 		v.lyr.geoms[i].gtype = lines;
 	}
 	return(v);

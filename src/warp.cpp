@@ -1,8 +1,10 @@
 #include <vector>
 #include "spatRaster.h"
-#include "crs.h"
 #include "vecmath.h"
 
+#ifdef useGDAL
+	#include "crs.h"
+#endif
 
 SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) {
 
@@ -66,8 +68,13 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 		std::iota (std::begin(cells), std::end(cells), firstcell);
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
 		if (do_prj) {
-			SpatMessages msg = transform_coordinates(xy[0], xy[1], 
+			#ifdef useGDAL
+			out.msg = transform_coordinates(xy[0], xy[1], 
 			crsout, crsin);
+			#else
+			out.setError("GDAL is not available");
+			return out;
+			#endif
 		}
 		std::vector<std::vector<double>> v = xx.extractXY(xy[0], xy[1], method);
 		if (!out.writeValues2(v, out.bs.row[i])) return out;
@@ -82,6 +89,12 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 SpatRaster SpatRaster::project(std::string crs, std::string method, SpatOptions &opt) {
 
 	SpatRaster temp;
+
+	#ifndef useGDAL
+	temp.setError("GDAL is not available");
+	return temp;
+	#else 
+	
 	std::string crsin = getCRS();
 	if ((crsin == "") || (crs == "")) {
 		temp.setError("insufficient crs info");	
@@ -92,20 +105,20 @@ SpatRaster SpatRaster::project(std::string crs, std::string method, SpatOptions 
 	}
 
 	std::vector<std::vector<double>> p = extent.asPoints();
-	SpatMessages msg = transform_coordinates(p[0], p[1], crsin, crs);
-	if (msg.has_error) {
+	temp.msg = transform_coordinates(p[0], p[1], crsin, crs);
+	if (temp.hasError()) {
 		temp.msg = msg;
 		return temp;
 	}
-	if (msg.has_warning) {
-		msg.setError("cannot do this");
-		temp.msg = msg;
+	if (temp.hasWarning()) {
+		temp.setError("cannot do this");
 		return temp;
 	}
 	SpatExtent e(vmin(p[0], false), vmax(p[0], false), vmin(p[1], false), vmax(p[1], false));
 
 	temp = SpatRaster(nrow(), ncol(), nlyr(), e, crs);
 	return warp(temp, method, opt);
+	#endif	
 }
 
 

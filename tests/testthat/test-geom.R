@@ -1,6 +1,6 @@
 context("test-geom")
 
-for (i in 1:4) {
+for (i in 1:5) {
 	if (i == 1) {
 		r <- rast(ncol = 20, nrow = 10, xmin=-10, xmax=10, ymin=-5, ymax=6)
 		rx <- raster(ncol = 20, nrow = 10, xmn=-10, xmx=10, ymn=-5, ymx=6)
@@ -13,13 +13,17 @@ for (i in 1:4) {
 		f <- system.file("exdata/logo.grd", package="terra")
 		r <- rast(f)
 		rx <- brick(f)
+	} else if (i == 4) {
+		f <- system.file("exdata/logo.tif", package="terra")
+		r <- rast(f)
+		rx <- brick(f)
 	} else {
 		f <- system.file("exdata/test.tif", package="terra")
 		r <- rast(f)
 		rx <- raster(f)
 	}
 	
-	test_that("raster and terra geometries work the same", { 
+	test_that("raster and terra geometries", { 
 		expect_equal(res(r), res(rx)) 
 		expect_equal(dim(r), dim(rx)) 
 		expect_equivalent(as.vector(ext(r)), as.vector(extent(rx))) 
@@ -31,8 +35,8 @@ for (i in 1:4) {
 	} )
 
 
-	test_that("raster and terra subsets work the same", { 
-		a <- ifelse(i<2,20,0)
+	test_that("raster and terra subsets", { 
+		a <- ifelse(i<3,0,20)
 		expect_equivalent(r[10+a], rx[10+a]) 
 		expect_equivalent(r[2+a,], rx[2+a,]) 
 		expect_equivalent(r[,2+a], rx[,2+a]) 
