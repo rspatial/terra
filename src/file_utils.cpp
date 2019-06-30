@@ -1,5 +1,7 @@
 #include "SpatBase.h"
 #include <fstream>
+#include <random>
+#include <chrono>
 
 
 
@@ -66,11 +68,12 @@ SpatMessages can_write(std::string filename, bool overwrite) {
 }
 
 
-std::string tempFile(std::string tmpdir, std::string ext, double seed) {
+std::string tempFile(std::string tmpdir, std::string ext) {
     std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
     'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
     'n','o','p','q','r','s','t','u','v','w','x','y','z' };
     std::default_random_engine generator(std::random_device{}());
+	double seed = std::chrono::system_clock::now().time_since_epoch().count();
     generator.seed(seed);
     std::uniform_int_distribution<> distrib(0, characters.size()-1);
     auto draw = [ characters, &distrib, &generator ]() {

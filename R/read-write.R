@@ -45,8 +45,8 @@ setMethod("writeStop", signature(x="SpatRaster"),
 
 
 setMethod("writeValues", signature(x="SpatRaster", v="vector"), 
-	function(x, v, row) {
-		success <- x@ptr$writeValues(v, row-1, nrow(x), 0, ncol(x))
+	function(x, v, start) {
+		success <- x@ptr$writeValues(v, start-1, nrow(x), 0, ncol(x))
 		show_messages(x, "writeValues")
 		invisible(success)
 	}

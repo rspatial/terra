@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include <random>
-#include <chrono>
 #include "spatRaster.h"
 #include "file_utils.h"
 #include "string_utils.h"
@@ -43,13 +41,12 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 
 	
 	if (filename == "") {
-		double seed = std::chrono::system_clock::now().time_since_epoch().count();
 		#ifdef useGDAL
 		std::string extension = ".tif";
 		#else
 		std::string extension = ".grd";	
 		#endif
-		filename = tempFile(opt.get_tempdir(), extension, seed);
+		filename = tempFile(opt.get_tempdir(), extension);
 	} else if (file_exists(filename)) {
 		SpatMessages m = can_write(filename, overwrite);
 		if (m.has_error) {
@@ -90,13 +87,12 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
-			double seed = std::chrono::system_clock::now().time_since_epoch().count();
 			#ifdef useGDAL
 			std::string extension = ".tif";
 			#else
 			std::string extension = ".grd";	
 			#endif			
-			filename = tempFile(opt.get_tempdir(), extension, seed);
+			filename = tempFile(opt.get_tempdir(), extension);
 		}
 	}
 

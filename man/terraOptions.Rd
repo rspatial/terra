@@ -2,9 +2,6 @@
 
 \docType{class}
 
-\alias{SpatOptions}
-\alias{SpatOptions-class}
-\alias{Rcpp_SpatOptions-class}
 \alias{terraOptions}
 
 
