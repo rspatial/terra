@@ -199,7 +199,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		} else if (oper == "<") {
 			a < b;
 		}
-		if (!out.writeValues(a, out.bs.row[i])) return out;
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 
 	}
 	out.writeStop();
@@ -255,7 +255,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, SpatOptions &opt) {
 		} else {
 			// stop
 		}
-		if (!out.writeValues(a, out.bs.row[i])) return out;
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -302,7 +302,7 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions &opt) {
 		} else {
 			// stop
 		}
-		if (!out.writeValues(a, out.bs.row[i])) return out;
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();

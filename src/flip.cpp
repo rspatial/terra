@@ -38,7 +38,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 				unsigned end = start + nc;
 				b.insert(b.end(), a.begin()+start, a.begin()+end);
 			}
-			if (!out.writeValues(b, out.bs.row[i])) return out;
+			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 			b.resize(0);
 		}		
 	} else {	
@@ -50,7 +50,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 				unsigned end = start + nc;
 				b.insert(b.end(), a.begin()+start, a.begin()+end);
 			}
-			if (!out.writeValues(b, out.bs.row[i])) return out;
+			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 			b.resize(0);
 		}
 	}	

@@ -156,6 +156,7 @@ class SpatRaster {
 		bool is_global_lonlat();
 
 		std::vector<double> resolution();
+		SpatRaster setResolution(double xres, double yres);
 		double ncell() { return nrow() * ncol(); }
 		double xres() { return (extent.xmax - extent.xmin) / ncol() ;}
 		double yres() { return (extent.ymax - extent.ymin) / nrow() ;}
@@ -276,17 +277,19 @@ class SpatRaster {
 		bool readStop();
 
 		bool writeStart(SpatOptions &opt);
-		bool writeValues(std::vector<double> &vals, unsigned row);
-		bool writeValues2(std::vector<std::vector<double>> &vals, unsigned row);
+		bool writeValues(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
+		bool writeValues2(std::vector<std::vector<double>> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 		bool writeStop();
 		bool writeHDR(std::string filename);
 
 		bool writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite);
-		bool writeValuesGDAL(std::vector<double> vals, unsigned row);
+		bool writeValuesGDAL(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 		bool writeStopGDAL();
 
 		bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
-		bool writeValuesBinary(std::vector<double> vals, unsigned row);
+		bool writeValuesBinary(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
+
+		bool writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 
 		// binary (flat) source
 		std::vector<double> readValuesBinary(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
@@ -360,7 +363,8 @@ class SpatRaster {
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
-		SpatRaster merge(SpatRaster x, SpatOptions &opt);
+
+//		SpatRaster merge(SpatRaster x, SpatOptions &opt);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
 		SpatRaster rasterize(SpatVector p, double background, SpatOptions &opt);
@@ -383,6 +387,23 @@ class SpatRaster {
 };
 
 
+class SpatRasterCollection {
+	public:
+		std::vector<SpatRaster> x;
+		SpatRasterCollection() {};
+		SpatRasterCollection(size_t n) { x.resize(n); };
+		size_t size() { return x.size(); }
+		void resize(size_t n) { x.resize(n); }
+		void push_back(SpatRaster r) { x.push_back(r); };
+		
+		SpatRaster merge(SpatOptions &opt);
+		SpatRaster moscaic(SpatOptions &opt);
+	
+};
+
+
+
+
 /*
 SpatRaster SQRT() {
 	SpatRaster r = *this;
@@ -396,4 +417,3 @@ SpatRaster SQRTfree(SpatRaster* g) {
 	return r;
 }
 */
-

@@ -146,7 +146,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 				a[j+k*nc] = v[k];
 			}
 		}
-		if (!out.writeValues(a, out.bs.row[i])) return out;
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 
 	}
 	out.writeStop();
@@ -212,7 +212,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 				b[j+nc] = rng[1];
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i])) return out;
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 
 	}
 	out.writeStop();

@@ -77,7 +77,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 			#endif
 		}
 		std::vector<std::vector<double>> v = xx.extractXY(xy[0], xy[1], method);
-		if (!out.writeValues2(v, out.bs.row[i])) return out;
+		if (!out.writeValues2(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
 	}
 	out.writeStop();
 

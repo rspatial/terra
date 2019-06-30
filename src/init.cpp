@@ -34,7 +34,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		size_t nr = nrow();
 		for (size_t i = 0; i < nr; i++) {
 			std::fill(v.begin(), v.end(), i+plusone);				
-			if (!out.writeValues(v, i)) return out;
+			if (!out.writeValues(v, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "col") {
 		std::vector<double> col(ncol());
@@ -42,7 +42,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		std::iota(col.begin(), col.end(), start);
 		unsigned nr = nrow();
 		for (unsigned i = 0; i < nr; i++) {
-			if (!out.writeValues(col, i)) return out;
+			if (!out.writeValues(col, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "cell") {
 		std::vector<unsigned> col(ncol());
@@ -53,7 +53,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			row[0] = i;
 			std::vector<double> v = cellFromRowCol(row, col);
 			if (plusone) for(double& d : v) d=d+1;
-			if (!out.writeValues(v, i)) return out;
+			if (!out.writeValues(v, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "x") {
 		std::vector<unsigned> col(ncol());
@@ -61,7 +61,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		std::vector<double> x = xFromCol(col);
 		unsigned nr = nrow();
 		for (unsigned i = 0; i < nr; i++) {
-			if (!out.writeValues(x, i)) return out;
+			if (!out.writeValues(x, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "y") {
 		std::vector<double> v(ncol());
@@ -69,7 +69,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		for (unsigned i = 0; i < nr; i++) {
 			double y = yFromRow(i);
 			std::fill(v.begin(), v.end(), y);				
-			if (!out.writeValues(v, i)) return out;
+			if (!out.writeValues(v, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "chess") {
 		std::vector<double> a(ncol());
@@ -84,14 +84,14 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			b[i] = !test;
 		}		
 		for (unsigned i=0; i<(nr-1); i=i+2) {
-			if (!out.writeValues(a, i)) return out;
-			if (!out.writeValues(b, i+1)) return out;
+			if (!out.writeValues(a, i, 1, 0, ncol())) return out;
+			if (!out.writeValues(b, i+1, 1, 0, ncol())) return out;
 		}
 		if (nr%2 == 0) {
-			if (!out.writeValues(a, nr-2)) return out;			
-			if (!out.writeValues(b, nr-1)) return out;			
+			if (!out.writeValues(a, nr-2, 1, 0, ncol())) return out;			
+			if (!out.writeValues(b, nr-1, 1, 0, ncol())) return out;			
 		} else {
-			if (!out.writeValues(a, nr-1)) return out;						
+			if (!out.writeValues(a, nr-1, 1, 0, ncol())) return out;						
 		}
 	}
 
@@ -110,7 +110,7 @@ SpatRaster SpatRaster::init(double value, SpatOptions &opt) {
 		if (i > 0 && i == (out.bs.n-1)) {
 			v.resize(bs.nrows[i]*nc);
 		}
-		if (!out.writeValues(v, i)) return out;
+		if (!out.writeValues(v, i, 1, 0, ncol())) return out;
 	}
 	out.writeStop();
 	return(out);

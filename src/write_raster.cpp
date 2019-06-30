@@ -20,6 +20,7 @@
 #include "string_utils.h"
 #include "math_utils.h"
 #include "file_utils.h"
+#include "hdr.h"
 
 
 template <typename T>
@@ -78,14 +79,15 @@ bool SpatRaster::writeStartBinary(std::string filename, std::string datatype, st
 }
 
 
-bool SpatRaster::writeValuesBinary(std::vector<double> vals, unsigned row){
+bool SpatRaster::writeValuesBinary(std::vector<double>& vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols){
 
 	bool success = true;
     std::string datatype = source[0].datatype;
 	std::string fname = source[0].filename;
 	unsigned nl = source[0].nlyr;
 	std::string bdo = source[0].bandorder;
-	size_t offset = row * ncol();
+// Ojo -- writing by row, ignoring startcol and ncols
+	size_t offset = startrow * ncol();
 	if (datatype == "INT2S") {
 		success = write_bin<short>(fname, vals, offset, source[0].range_min, source[0].range_max, nl, bdo);
 	} else if (datatype == "INT4S") {
@@ -119,10 +121,31 @@ bool SpatRaster::writeRasterBinary(std::string filename, std::string datatype, s
 //		std::ofstream fs(grifile, std::ios::out | std::ios::binary);
 //		fs.write((char*)&v[0], v.size() * sizeof(double));
 //		fs.close();
-    if (!writeValues(v, 0))  { return(false); }
+    if (!writeValues(v, 0, nrow(), 0, ncol()))  { return(false); }
     if (!writeStop())  { return(false); }
     if (!writeHDR(filename))  { return(false); }
 	return success;
 }
 
+
+
+
+bool SpatRaster::writeHDR(std::string filename) {
+	std::vector<std::string> s(14);
+	s[0] = std::to_string(extent.xmin);
+	s[1] = std::to_string(extent.xmax);
+	s[2] = std::to_string(extent.ymin);
+	s[3] = std::to_string(extent.ymax);
+	s[4] = crs;
+	s[5] = std::to_string(nrow());
+	s[6] = std::to_string(ncol());
+	s[7] = std::to_string(nlyr());
+	s[8] = concatenate(getNames(), std::string(":|:"));
+	s[9] = "FLT8S"; // double
+	s[10] = std::to_string(-1 * std::numeric_limits<double>::max());
+	s[11] = concatenate(dbl2str(range_min()), std::string(":|:"));
+	s[12] = concatenate(dbl2str(range_max()), std::string(":|:"));
+	s[13] = filename;
+	return hdr_write(s);
+}
 

@@ -66,7 +66,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 				}
 			}
 		}
-		if (!out.writeValues(v, out.bs.row[i])) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		
 	}
 	out.writeStop();

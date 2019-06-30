@@ -48,7 +48,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i])) return out;
+		if (!out.writeValues(b, out.bs.row[i], nrow(), 0, ncol())) return out;
 		b.resize(0);
 	}
 	out.writeStop();

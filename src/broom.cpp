@@ -132,7 +132,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	for (size_t i = 0; i < first.bs.n; i++) {
         v = readBlock(first.bs, i);
         d = broom_dist_planar(v, above, res, dim);
-		if (!first.writeValues(d, first.bs.row[i])) return first;
+		if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i], 0, ncol())) return first;
 	}
 	first.writeStop();
 	
@@ -146,7 +146,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
         d = broom_dist_planar(v, above, res, dim);
 		vv = first.readBlock(first.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
-		if (!out.writeValues(vv, out.bs.row[i-1])) return out;
+		if (!out.writeValues(vv, out.bs.row[i-1], out.bs.nrows[i-1], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();

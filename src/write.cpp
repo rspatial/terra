@@ -21,29 +21,7 @@
 #include "file_utils.h"
 #include "string_utils.h"
 #include "math_utils.h"
-#include "hdr.h"
 
-std::string tempFile(SpatOptions &opt, double seed) {
-    std::vector<char> characters = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K',
-    'L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m',
-    'n','o','p','q','r','s','t','u','v','w','x','y','z' };
-    std::default_random_engine generator(std::random_device{}());
-    generator.seed(seed);
-    std::uniform_int_distribution<> distrib(0, characters.size()-1);
-    auto draw = [ characters, &distrib, &generator ]() {
-		return characters[ distrib(generator) ];
-	};
-    std::string filename(15, 0);
-    std::generate_n(filename.begin(), 15, draw);
-	std::string tmpdir = opt.get_tempdir();
-	#ifdef useGDAL
-	std::string extension = ".tif";
-	#else
-	std::string extension = ".grd";	
-	#endif
-	filename = tmpdir + "/spat_" + filename + extension;
-	return filename;
-}
 
 
 bool SpatRaster::isSource(std::string filename) {
@@ -66,7 +44,12 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	
 	if (filename == "") {
 		double seed = std::chrono::system_clock::now().time_since_epoch().count();
-		filename = tempFile(opt, seed);
+		#ifdef useGDAL
+		std::string extension = ".tif";
+		#else
+		std::string extension = ".grd";	
+		#endif
+		filename = tempFile(opt.get_tempdir(), extension, seed);
 	} else if (file_exists(filename)) {
 		SpatMessages m = can_write(filename, overwrite);
 		if (m.has_error) {
@@ -108,7 +91,12 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	if (filename == "") {
 		if (!canProcessInMemory(4)) {
 			double seed = std::chrono::system_clock::now().time_since_epoch().count();
-			filename = tempFile(opt, seed);
+			#ifdef useGDAL
+			std::string extension = ".tif";
+			#else
+			std::string extension = ".grd";	
+			#endif			
+			filename = tempFile(opt.get_tempdir(), extension, seed);
 		}
 	}
 
@@ -151,7 +139,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 }
 
 
-bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row) {
+
+bool SpatRaster::writeValues(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
 	bool success = true;
 	
 	if (!source[0].open_write) {
@@ -160,30 +149,17 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned row) {
 	}
 	if (source[0].driver == "raster") {
 
-		success = writeValuesBinary(vals, row);
+		success = writeValuesBinary(vals, startrow, nrows, startcol, ncols);
 
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
-		success = writeValuesGDAL(vals, row);
+		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
 		#else
 		setError("GDAL is not available");
 		return false;
 		#endif
 	} else {
-		size_t sz = source[0].values.size();
-		size_t start = row * ncol() * nlyr();
-		if (sz == 0) { // first or all
-			source[0].values = vals;
-		} else if (sz == start) { // in chunks
-			source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());
-		} else { // async
-			if (start+vals.size() > sz) {
-				source[0].values.resize(start+vals.size());
-			}
-			for (size_t i=0; i<vals.size(); i++) {
-				source[0].values[start+i] = vals[i];
-			}
-		}
+		success = writeValuesMem(vals, startrow, nrows, startcol, ncols);
 	}
 
 #ifdef useRcpp
@@ -210,9 +186,10 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
     return result;
 }
 
-bool SpatRaster::writeValues2(std::vector<std::vector<double>> &vals, unsigned row){
+
+bool SpatRaster::writeValues2(std::vector<std::vector<double>> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
     std::vector<double> vv = flatten(vals);
-    return writeValues(vv, row);
+    return writeValues(vv, startrow, nrows, startcol, ncols);
 }
 
 bool SpatRaster::writeStop(){
@@ -296,26 +273,6 @@ void RasterSource::setRange() {
 	}
 }
 
-
-
-bool SpatRaster::writeHDR(std::string filename) {
-	std::vector<std::string> s(14);
-	s[0] = std::to_string(extent.xmin);
-	s[1] = std::to_string(extent.xmax);
-	s[2] = std::to_string(extent.ymin);
-	s[3] = std::to_string(extent.ymax);
-	s[4] = crs;
-	s[5] = std::to_string(nrow());
-	s[6] = std::to_string(ncol());
-	s[7] = std::to_string(nlyr());
-	s[8] = concatenate(getNames(), std::string(":|:"));
-	s[9] = "FLT8S"; // double
-	s[10] = std::to_string(-1 * std::numeric_limits<double>::max());
-	s[11] = concatenate(dbl2str(range_min()), std::string(":|:"));
-	s[12] = concatenate(dbl2str(range_max()), std::string(":|:"));
-	s[13] = filename;
-	return hdr_write(s);
-}
 
 
 

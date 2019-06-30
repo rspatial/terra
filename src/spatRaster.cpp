@@ -202,6 +202,27 @@ std::vector<double> SpatRaster::resolution() {
 	return std::vector<double> { (extent.xmax - extent.xmin) / ncol(), (extent.ymax - extent.ymin) / nrow() };
 }
 
+
+SpatRaster SpatRaster::setResolution(double xres, double yres) {
+	SpatRaster out;
+
+	if ((xres <= 0) | (yres <= 0)) {
+		out.setError("resolution must be larger than 0");
+		return(out);
+	}
+	SpatExtent e = extent;
+	unsigned nc = round((e.xmax-e.xmin) / xres);
+	unsigned nr = round((e.ymax-e.ymin) / yres);
+	double xmax = e.xmin + nc * xres;
+	double ymax = e.ymin + nr * yres;
+	unsigned nl = nlyr();
+	std::vector<unsigned> rcl = {nr, nc, nl};
+	std::vector<double> ext = {e.xmin, xmax, e.ymin, ymax};
+	
+	return SpatRaster(rcl, ext, crs);
+}
+
+
 unsigned SpatRaster::ncol() {
 	if (source.size() > 0) {
 		return source[0].ncol;

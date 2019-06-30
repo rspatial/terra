@@ -74,7 +74,7 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		clamp_vector(v, low, high, usevalue);
-		if (!out.writeValues(v, out.bs.row[i])) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	readStop();
 	out.writeStop();

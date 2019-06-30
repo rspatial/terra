@@ -6,10 +6,11 @@ RCPP_EXPOSED_CLASS(SpatMessages)
 RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatCategories)
+RCPP_EXPOSED_CLASS(SpatDataFrame)
 RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
+RCPP_EXPOSED_CLASS(SpatRasterCollection)
 RCPP_EXPOSED_CLASS(SpatVector)
-RCPP_EXPOSED_CLASS(SpatDataFrame)
 
 
 RCPP_MODULE(spat){
@@ -178,6 +179,8 @@ RCPP_MODULE(spat){
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("subset", &SpatRaster::subset, "subset")
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
+
+		.method("set_resolution", &SpatRaster::setResolution, "set resolution")
 				
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>) )( &SpatRaster::cellFromXY ))
 		.method("cellFromRowCol", ( std::vector<double> (SpatRaster::*)(std::vector<unsigned>,std::vector<unsigned>) )( &SpatRaster::cellFromRowCol ))
@@ -241,7 +244,6 @@ RCPP_MODULE(spat){
 		.method("math", &SpatRaster::math, "math")
 		.method("math2", &SpatRaster::math2, "math2")
 		.method("atan2", &SpatRaster::atan_2, "atan2")
-		.method("merge", &SpatRaster::merge, "merge")
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	
@@ -258,5 +260,16 @@ RCPP_MODULE(spat){
 		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")
 		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")	
 	;
-}
 
+
+
+    class_<SpatRasterCollection>("SpatRasterCollection")
+		.constructor()
+		.field_readonly("x", &SpatRasterCollection::x)
+		.method("length", &SpatRasterCollection::size, "size")
+		.method("resize", &SpatRasterCollection::resize, "resize")
+		.method("add", &SpatRasterCollection::push_back, "push_back")	
+		.method("merge", &SpatRasterCollection::merge, "merge")
+	;
+	
+}

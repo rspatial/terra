@@ -15,17 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-/*
-#include <vector>
-#include <fstream>
 
-template <typename T>
-bool writeBin(std::string filename, std::vector<double> v) {
-	std::vector<T> values(v.begin(), v.end());
-	std::ofstream file(filename, std::ios::out | std::ios::binary);
-	file.write((char*)&values[0], values.size() * sizeof(T));
-	file.close();
-	return(true);
+#include "SpatRaster.h"
+
+
+bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
+	size_t sz = source[0].values.size();
+	size_t start = startrow * ncol() * nlyr();
+	if (sz == 0) { // first or all
+		source[0].values = vals;
+	} else if (sz == start) { // in chunks
+		source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());
+	} else { // async
+		if (start+vals.size() > sz) {
+			source[0].values.resize(start+vals.size());
+		}
+		for (size_t i=0; i<vals.size(); i++) {
+			source[0].values[start+i] = vals[i];
+		}
+	}
+	return true;
 }
-*/
+
 

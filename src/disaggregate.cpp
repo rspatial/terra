@@ -69,7 +69,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
                 vout.insert(vout.end(), newrow.begin(), newrow.end());
             }
 		}
-		if (!out.writeValues(vout, bs.row[i]*fact[0])) return out;
+		if (!out.writeValues(vout, bs.row[i]*fact[0], bs.nrows[i]*fact[0], 0, out.ncol())) return out;
 		vout.resize(0);
 	}
 	out.writeStop();

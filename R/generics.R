@@ -114,14 +114,6 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 	}
 )
 
-setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$merge(y, opt)
-		show_messages(x, "merge")		
-	}
-)
-
 
 setMethod("project", signature(x="SpatRaster"), 
 	function(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {

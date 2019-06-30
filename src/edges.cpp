@@ -106,7 +106,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 	for (size_t i = 0; i < out.bs.n; i++) {
 		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
 		std::vector<double> vv = get_border(v, dim, classes, type, directions);
-		if (!out.writeValues(vv, out.bs.row[i])) return out;
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();

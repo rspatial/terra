@@ -186,14 +186,14 @@ SpatRaster SpatRaster::area(SpatOptions &opt) {
 				size_t r = out.bs.row[i] + j;
 				v.insert(v.end(), ncol(), a[r]);
 			}
-			if (!out.writeValues(v, out.bs.row[i])) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		}
 		out.writeStop();
 	} else {
 		double a = xres() * yres();
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v(out.bs.nrows[i]*ncol(), a);
-			if (!out.writeValues(v, out.bs.row[i])) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		}
 		out.writeStop();
 	}

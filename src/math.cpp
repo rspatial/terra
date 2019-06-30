@@ -66,7 +66,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		} else if (fun == "trunc") {
 			for(double& d : a) if (!std::isnan(d)) d = trunc(d);
 		}
-		if (!out.writeValues(a, out.bs.row[i])) return out;
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		
 	}
 	out.writeStop();
@@ -96,7 +96,7 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		} else if (fun == "signif") {
 			for(double& d : a) if (!std::isnan(d)) d = signif(d, digits);
 		} 
-		if (!out.writeValues(a, out.bs.row[i])) return out;
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -151,7 +151,7 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		} else if (fun == "tanpi") {
 			for(double& d : a) if (!std::isnan(d)) d = tan(d * M_PI);
 		}
-		if (!out.writeValues(a, out.bs.row[i])) return out;
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		
 	}
 	out.writeStop();
@@ -178,7 +178,7 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 				d[i] = atan2(a[i], b[i]);
 			}
 		}
-		if (!out.writeValues(d, out.bs.row[i])) return out;
+		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();
