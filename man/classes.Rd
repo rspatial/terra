@@ -11,6 +11,8 @@
 \alias{SpatMessages}
 \alias{SpatMessages-class}
 \alias{Rcpp_SpatMessages-class}
+\alias{SpatRasterCollection-class}
+\alias{Rcpp_SpatRasterCollection-class}
 
 \alias{show_messages}
 \alias{show,SpatDataFrame-method}

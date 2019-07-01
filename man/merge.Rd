@@ -44,13 +44,14 @@ y <- setRes(y, res(x))
 values(x) <- 1:ncell(x)
 values(y) <- 1:ncell(y)
 mr <- merge(x, y)
+plot(mr)
 
 # if you have many SpatRaster objects in a list
 # you can use do.call:
-x <- list(r1, r2)
+s <- list(x, y)
 # add arguments such as filename
-# x$filename <- 'test.tif'
-m <- do.call(merge, x)
+# s$filename <- 'test.tif'
+m <- do.call(merge, s)
 }
 
 \keyword{methods}

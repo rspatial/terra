@@ -87,36 +87,6 @@ setMethod('click', signature(x='SpatRaster'),
 
 
 
-	
-setMethod('click', signature(x='SpatialPolygons'),
-	function(x, n=1, id=FALSE, xy=FALSE, type="n", ...) {
-		loc <- graphics::locator(n, type, ...)
-		xyCoords <- cbind(x=loc$x, y=loc$y)
-		if (id) {
-			text(xyCoords, labels=1:n)
-		}
-
-		xyCoords <- SpatialPoints(xyCoords)
-		xyCoords@proj4string <- x@proj4string
-		i <- which(!is.na(over(x, xyCoords)))
-		if (length(i) > 0) {
-			if (.hasSlot(x, 'data')) {
-				x <- x@data[i,]
-			} else {
-				x <- row.names(x)[i]
-			}
-		} else {
-			x <- NULL
-		}
-		
-		if (xy) {
-			x <- cbind(xyCoords, x)
-		}
-		return(x)
-	}
-)
-
-
 setMethod('click', signature(x='SpatVector'), 
 	function(x, ...) {
 		stop("not implemented yet")
