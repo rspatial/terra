@@ -59,7 +59,7 @@ Set the number of rows or columns or layers. When setting dimensions, all source
 ncol(x, ...) <- value
 nrow(x, ...) <- value
 nlyr(x, ...) <- value
-res(x, ...) <- value
+res(x) <- value
 
 \S4method{xres}{SpatRaster}(x)
 \S4method{yres}{SpatRaster}(x)

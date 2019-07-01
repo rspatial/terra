@@ -144,9 +144,7 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned startrow, unsig
 		return false;
 	}
 	if (source[0].driver == "raster") {
-
 		success = writeValuesBinary(vals, startrow, nrows, startcol, ncols);
-
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
 		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);

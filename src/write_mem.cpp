@@ -41,13 +41,14 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, un
 		if (sz == 0) {
 			source[0].values.resize(ncol() * nrow() * nlyr(), NAN);
 		}
-		unsigned nc = nrows*ncols;
+		unsigned nc1 = nrows*ncols;
+		unsigned nc2 = ncell();
 		for (size_t i=0; i<nlyr(); i++) {
-			unsigned off = i*nc;
+			unsigned off = i*nc1;
 			for (size_t r=0; r<nrows; r++) {
 				size_t start = r * ncols + off;
 				std::vector<double> v(vals.begin()+start, vals.begin()+start+ncols);
-				start = (startrow+r) * ncol() + i * ncol() * nrow() + startcol;
+				start = (startrow+r)*ncol() + i*nc2 + startcol;
 				std::copy(v.begin(), v.end(), source[0].values.begin()+start);
 			}
 		}

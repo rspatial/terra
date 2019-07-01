@@ -69,10 +69,9 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
 		if (do_prj) {
 			#ifdef useGDAL
-			out.msg = transform_coordinates(xy[0], xy[1], 
-			crsout, crsin);
+			out.msg = transform_coordinates(xy[0], xy[1], crsout, crsin);
 			#else
-			out.setError("GDAL is not available");
+			out.setError("GDAL is needed for crs transformation, but not available");
 			return out;
 			#endif
 		}
