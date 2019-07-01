@@ -75,6 +75,7 @@ function(x, i, j, ... ,drop=FALSE) {
 		i <- cellFromRowCol(x, i, 1:ncol(x))
 		# probably better to do return( readValues(x, i-1) )
 	} 
+	i[i<1] <- NA
 	r <- x@ptr$extractCell(i-1)
 	show_messages(x)
 	if (drop) {
@@ -90,6 +91,7 @@ setMethod("[", c("SpatRaster", "missing", "numeric"),
 function(x, i, j, ... ,drop=FALSE) {
 	i <- cellFromRowCol(x, 1:nrow(x), j)
 	if (any(na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
+	
 	r <- x@ptr$extractCell(i-1)
 	show_messages(x)
 	if (drop) {

@@ -39,12 +39,12 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	std::string filename = opt.get_filename();
 	bool overwrite = opt.get_overwrite();
 
-	
+
 	if (filename == "") {
 		#ifdef useGDAL
 		std::string extension = ".tif";
 		#else
-		std::string extension = ".grd";	
+		std::string extension = ".grd";
 		#endif
 		filename = tempFile(opt.get_tempdir(), extension);
 	} else if (file_exists(filename)) {
@@ -63,7 +63,7 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	if (ext == ".grd") {
 		std::string bandorder = opt.get_bandorder();
 	    if (!out.writeRasterBinary(filename, datatype, bandorder, overwrite)) {
-			msg = out.msg; 
+			msg = out.msg;
 			return(false);
 		}
 		setSources(out.source);
@@ -90,8 +90,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 			#ifdef useGDAL
 			std::string extension = ".tif";
 			#else
-			std::string extension = ".grd";	
-			#endif			
+			std::string extension = ".grd";
+			#endif
 			filename = tempFile(opt.get_tempdir(), extension);
 		}
 	}
@@ -107,13 +107,13 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		if (ext == ".grd") {
 			std::string bandorder = opt.get_bandorder();
 			if (! writeStartBinary(filename, dtype, bandorder, overwrite) ) {
-				return false; 
+				return false;
 			}
 		} else {
 			// open GDAL filestream
 			#ifdef useGDAL
 			if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite) ) {
-				return false; 
+				return false;
 			}
 			#else
 			setError("GDAL is not available");
@@ -138,7 +138,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 
 bool SpatRaster::writeValues(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
 	bool success = true;
-	
+
 	if (!source[0].open_write) {
 		setError("cannot write (no open file)");
 		return false;
@@ -200,19 +200,23 @@ bool SpatRaster::writeStop(){
 		//source[0].fsclose();
 		writeHDR(source[0].filename);
 		setRange();
+		source[0].hasValues = true;
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
 		success = writeStopGDAL();
+		source[0].hasValues = true;
 		#else
 		setError("GDAL is not available");
 		return false;
 		#endif
 	} else {
-		source[0].setRange();
+   		source[0].setRange();
 		source[0].driver = "memory";
 		source[0].memory = true;
+		if (source[0].values.size() > 0) {
+			source[0].hasValues = true;
+		}
 	}
-	source[0].hasValues = true;
 
 #ifdef useRcpp
 	//pbar->cleanup();
@@ -260,12 +264,14 @@ void RasterSource::setRange() {
 	range_min.resize(nlyr);
 	range_max.resize(nlyr);
 	hasRange.resize(nlyr);
-	for (size_t i=0; i<nlyr; i++) {
-		start = nc * i;
-		minmax(values.begin()+start, values.begin()+start+nc, vmin, vmax);
-		range_min[i] = vmin;
-		range_max[i] = vmax;
-		hasRange[i] = true;
+	if (values.size() > 0) {
+		for (size_t i=0; i<nlyr; i++) {
+			start = nc * i;
+			minmax(values.begin()+start, values.begin()+start+nc, vmin, vmax);
+			range_min[i] = vmin;
+			range_max[i] = vmax;
+			hasRange[i] = true;
+		}
 	}
 }
 

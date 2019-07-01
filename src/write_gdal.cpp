@@ -87,6 +87,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
  
 	GDALDataset *poDstDS;
 	char **papszOptions = NULL;
+	
 	poDstDS = poDriver->Create( pszDstFilename, ncol(), nrow(), nlyr(), GDT_Float64, papszOptions);
 
 	std::vector<double> rs = resolution();
@@ -188,6 +189,21 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> vals, unsigned row){
 	return true;
 }
 */
+
+
+bool SpatRaster::fillValuesGDAL(double fillvalue) {
+	CPLErr err = CE_None;
+	GDALRasterBand *poBand;
+	for (size_t i=0; i < nlyr(); i++) {
+		poBand = source[0].gdalconnection->GetRasterBand(i+1);
+		err = poBand->Fill(fillvalue);
+	}
+	if (err != CE_None ) {
+		setError("cannot fill values");
+		return false;
+	}	
+	return true;
+}
 
 
 

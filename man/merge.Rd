@@ -38,10 +38,10 @@ SpatRaster or SpatExtent
 
 
 \examples{
-x <- rast(xmx=-150, ymn=60, ncols=30, nrows=30)
-values(x) <- 1:ncell(x)
-y <- rast(xmn=-100, xmx=-50, ymx=50, ymn=30)
+x <- rast(xmax=-150, ymin=60, ncols=30, nrows=30)
+y <- rast(xmin=-100, xmax=-50, ymax=50, ymin=30)
 y <- setRes(y, res(x))
+values(x) <- 1:ncell(x)
 values(y) <- 1:ncell(y)
 mr <- merge(x, y)
 
