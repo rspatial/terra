@@ -226,8 +226,13 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		if (nl == 0) {
 			stop('SpatRaster has no cell values')
 		}
+
 		if (nl==1) {
-			plot(x, 1, maxcell=maxcell, main=main, ...)
+			if (missing(main)) {
+				plot(x, 1, maxcell=maxcell, ...)
+			} else {
+				plot(x, 1, maxcell=maxcell, main=main, ...)
+			}
 			return(invisible(NULL))
 		}
 		if (missing(nc)) {
@@ -248,15 +253,15 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 		maxcell=maxcell/(nl/2)
 			
-		if (missing(main)) {
+		if (missing("main")) {
 			main <- names(x)
 		} else {
-			main <- rep_len(main, nl)
-		}		
-			
+			main <- rep_len(main, nl)	
+		}
 		x <- sampleRegular(x, maxcell)
 		for (i in 1:nl) {
-			image(x[[i]], main=main[i], ...)
+		#	image(x[[i]], main=main[i], ...)
+			plot(x, i, main=main[i], ...)
 		}
 	}
 )
