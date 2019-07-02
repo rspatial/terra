@@ -96,7 +96,7 @@ SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, double background, Spat
 						vv = rasterize_polygon(vv, background, hole.x, hole.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
 					}
 					for (size_t q=0; q < vv.size(); q++) {
-						if (vv[q] != background) {
+						if ((vv[q] != background) && (!std::isnan(vv[q]))) {
 							v[q] = vv[q];
 						}
 					}

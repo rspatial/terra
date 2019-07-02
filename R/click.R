@@ -87,9 +87,3 @@ setMethod('click', signature(x='SpatRaster'),
 
 
 
-setMethod('click', signature(x='SpatVector'), 
-	function(x, ...) {
-		stop("not implemented yet")
-}		
-)
-
