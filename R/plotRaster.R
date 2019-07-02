@@ -227,7 +227,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			stop('SpatRaster has no cell values')
 		}
 		if (nl==1) {
-			plot(x, 1, ...)
+			plot(x, 1, maxcell=maxcell, main=main, ...)
 			return(invisible(NULL))
 		}
 		if (missing(nc)) {
