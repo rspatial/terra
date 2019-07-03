@@ -6,20 +6,20 @@
 
 
 setMethod("zoom", signature(x="SpatRaster"), 
-function(x, ext=drawExt(), maxcells=100000, layer=1, new=TRUE, ...) {
-	if (is.function(ext)) {
-		ext <- ext  # force to start with drawing before creating a new graphics device
-	} else {
-		ext <- extent(ext)
+	function(x, ext=drawExt(), maxcell=10000, layer=1, new=TRUE, ...) {
+		if (is.function(ext)) {
+			ext <- ext  # force to start with drawing before creating a new graphics device
+		} else {
+			ext <- extent(ext)
+		}
+		if (new) { 
+			grDevices::dev.new() 
+		}
+		if (nlayers(x) > 1) { 
+			x <- raster(x, layer) 
+		}
+		plot(x, layer, col=col, maxcell=maxcell, ...) 
+		return(invisible(ext))
 	}
-	if (new) { 
-		dev.new() 
-	}
-	if (nlayers(x) > 1) { 
-		x <- raster(x, layer) 
-	}
-	plot(x, layer, col=col, maxcells=maxcells, ...) 
-	return(invisible(ext))
-}
 )
 
