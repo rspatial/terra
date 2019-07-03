@@ -17,7 +17,7 @@
 
 #include "spatRaster.h"
 #include <limits>
-#include <set>
+//#include <set>
 
 
 
@@ -101,4 +101,5 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 
 	return(out);
 }
+ 
  

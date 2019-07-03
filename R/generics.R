@@ -241,20 +241,3 @@ setMethod("warp", signature(x="SpatRaster", y="SpatRaster"),
 	}
 )
 
-
-setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
-	function(x, z, fun="mean", na.rm=TRUE, ...)  {
-		x@ptr <- x@ptr$zonal(z@ptr, fun, na.rm)
-		show_messages(x, "zonal")
-		.getSpatDF(x@ptr)
-	}
-)
-
-
-setMethod("global", signature(x="SpatRaster"), 
-	function(x, fun="mean", na.rm=TRUE, ...)  {
-		x@ptr <- x@ptr$global(fun, na.rm)
-		show_messages(x, "global")
-		.getSpatDF(x@ptr)
-	}
-)

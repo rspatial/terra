@@ -74,7 +74,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm) {
 	if (fun=="mean") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			if (n[lyr] > 0) {
-				stats[lyr] = stats[lyr] / (1+n[lyr]);
+				stats[lyr] = stats[lyr] / n[lyr];
 			} else {
 				stats[lyr] = NAN;
 			}

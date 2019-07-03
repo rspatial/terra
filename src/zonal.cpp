@@ -155,7 +155,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm) {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			for (size_t j=0; j<u.size(); j++) {
 				if (cnt[lyr][j] > 0) {
-					stats[lyr][j] = stats[lyr][j] / (1+cnt[lyr][j]);
+					stats[lyr][j] = stats[lyr][j] / cnt[lyr][j];
 				} else {
 					stats[lyr][j] = NAN;
 				}

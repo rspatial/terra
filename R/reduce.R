@@ -4,7 +4,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	opt <- terra:::.runOptions(filename, overwrite, wopt)
 
-	txtfun <- terra:::.makeTextFun(match.fun(fun))
+	txtfun <- .makeTextFun(match.fun(fun))
 	if (class(txtfun) == "character") { 
 		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
 			narm <- ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)

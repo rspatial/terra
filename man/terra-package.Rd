@@ -11,18 +11,27 @@
 
 The "terra" package implements classes for spatial data (see \link{SpatRaster-class}) and supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polylygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
 
-The package is conceived as a replacement of the raster package. It has a very similar, but simpler, interface, and it is faster. Like the "raster" package, "terra" provides classes and functions to manipulate geographic (spatial) data in "raster" format. Raster data divides space into cells (rectangles; pixels) of equal size (in units of the coordinate reference system). Such continuous spatial data are also referred to as "grid" data, and be contrasted with discrete (object based) spatial data such as points, lines, polygons (for which there is also support). An important difference is that "terra" has a single main class, "SpatRaster", as opposed to the three classes in the "raster" package (RasterLayer, RasterStack, RasterBrick). 
+The package is conceived as a replacement of the "raster" package. It has a very similar, but simpler, interface, and it is faster. Like the "raster" package, "terra" provides classes and functions to manipulate geographic (spatial) data in "raster" and "vector". Raster data divides space into cells (rectangles; pixels) of equal size (in units of the coordinate reference system). Such continuous spatial data are also referred to as "grid" data, and be contrasted with discrete "vector" spatial data such as points, lines, polygons. An important difference is that "terra" has a single main class for raster data, "SpatRaster", as opposed to the three classes in the "raster" package (RasterLayer, RasterStack, RasterBrick). 
+
+Note the following important differences in function names with the raster package
+
+\tabular{ll}{
+raster package \tab terra package\cr
+\code{raster, brick}\tab\code{\link{rast}}\cr
+\code{stack} (when combining Raster* objects)\tab\code{\link{c}}\cr
+\code{stack} (when creating an object from file)\tab\code{\link{rast}}\cr
+\code{extent}\tab\code{\link{ext}}\cr
+\code{calc}\tab\code{\link{reduce}}\cr
+\code{cellStats}\tab\code{\link{global}}\cr
+\code{projectRaster}\tab\code{\link{warp}, \link{project}}\cr
+\code{shapefile}\tab\code{\link{vect}}\cr
+}
 
 The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
-Below is a list of some of the most important functions grouped by theme. Some of these have not been implemented yet. Note the following differences with the raster package:
-
-"extent" (raster) is "ext" (terra)
-"raster", "stack", "brick" (raster) is "rast" (terra), or "c" instead of "stack" when combining objects 
-"calc" (raster) is "reduce" (terra)
-"projectRaster" (raster) is "warp" or "project" (terra)
-
+Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet. 
 }
+
 
 \section{I. Creating SpatRaster objects}{
 
@@ -136,12 +145,12 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
 \section{VIII. Summarizing}{
 
   \tabular{ll}{
-    \code{cellStats} \tab Summarize SpatRaster cell values with a function \cr
+    \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
     \code{summary} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
     \code{freq} \tab Frequency table of SpatRaster cell values \cr
     \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
     \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{zonal} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
+    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
