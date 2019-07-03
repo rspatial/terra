@@ -2,13 +2,13 @@
 setMethod("reduce", signature(x="SpatRaster", fun="function"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
-	opt <- terra:::.runOptions(filename, overwrite, wopt)
+	opt <- .runOptions(filename, overwrite, wopt)
 
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (class(txtfun) == "character") { 
 		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
-			narm <- ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
-			x@ptr <- x@ptr$summary(txtfun, narm, opt)	
+			na.rm <- isTRUE(list(...)$na.rm)
+			x@ptr <- x@ptr$summary(txtfun, na.rm, opt)	
 			return(show_messages(x))
 		}		
 	}
@@ -23,6 +23,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	r <- apply(v, 1, fun, ...)
 	trans <- FALSE			
 	if (NCOL(r) > 1) {
+		#? if ((ncol(r) %% nc) == 0) {
 		if (ncol(r) == nc) {
 			nlyr(out) <- nrow(r)
 			trans <- TRUE

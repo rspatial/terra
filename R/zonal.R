@@ -4,7 +4,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (class(txtfun) == "character") { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
-				na.rm <- ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
+				na.rm <- isTRUE(list(...)$na.rm)
 				x@ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm)
 				show_messages(x, "zonal")
 				.getSpatDF(x@ptr)
@@ -38,7 +38,7 @@ setMethod("global", signature(x="SpatRaster"),
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (class(txtfun) == "character") { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
-				na.rm <- ifelse(isTRUE(list(...)$na.rm), TRUE, FALSE)
+				na.rm <- isTRUE(list(...)$na.rm)
 				x@ptr <- x@ptr$global(txtfun, na.rm)
 				show_messages(x, "global")
 				res <- (.getSpatDF(x@ptr))

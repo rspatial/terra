@@ -21,22 +21,62 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	
 	compareGeom(x, y, lyrs=FALSE, crs=TRUE, warncrs=TRUE, ext=TRUE, rowcol=TRUE, res=FALSE)
 	
-	nl <- max(nlyr(x), nlyr(y))
-	out <- rast(x,nlyr=nl)
+	nc <- ncol(x)
 
 	readStart(x)
 	readStart(y)
+	
+# figure out the shape of the output by testing with one row
+	vx <- readValues(x, round(0.5*nrow(x)), 1, 1, nc, TRUE)
+	vy <- readValues(y, round(0.5*nrow(y)), 1, 1, nc, TRUE)
+	vx <- cbind(vx, vy) # recycling
+	test <- TRUE
+	vtst <- try(fun(vx[,1], vx[,2], ...), silent=TRUE)
+	if (length(vtst) >= nc) {
+		if ((length(vtst) %% nc) == 0) {
+			dofun <- TRUE
+			nl <- length(vtst) / nc
+			test <- FALSE
+		}
+	}
+	if (test) {
+		vtst <- try(apply(vx, 1, fun, ...), silent=TRUE)
+		if (length(vtst) >= nc) {		
+			if ((length(vtst) %% nc) == 0) {
+				dofun <- FALSE
+				nl <- length(vtst) / nc
+				# check for tranpose
+				if (NROW(vtst) > 1) {
+					transpose <- TRUE
+				} else {
+					transpose <- FALSE
+				}
+			} else {
+				stop('overlay cannot use this function "fun"')
+			}
+		}
+	}
+
+
+	out <- rast(x, nlyr=nl)
 	b <- writeStart(out, filename, overwrite, wopt)
 	on.exit(writeStop(out))
 	nc <- ncol(x)
-	nl <- nlyr(x)
+#	nl <- nlyr(x)
 #	fnames <- names(formals(fun))
 #	if (length(fnames) != nl) {	dnames <- NULL 	} else { dnames <- list(list(), fnames)	}
-
 	for (i in 1:b$n) {
 		vx <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-		vy <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-		r <- fun(vx, vy)
+		vy <- readValues(y, b$row[i], b$nrows[i], 1, nc)
+		vx <- cbind(vx, vy) #recycling
+		if (dofun) {
+			r <- fun(vx[,1], vx[,2], ...)
+		} else {
+			r <- apply(vx, 1, fun, ...)
+			if (transpose) {
+				r <- as.vector(t(r))
+			} 
+		}
 		writeValues(out, r, b$row[i])
 	}
 	readStop(x)
