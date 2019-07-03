@@ -43,9 +43,9 @@ set.seed(0)
 values(r) <- values(rx) <- runif(ncell(r))
 
 
-test_that("reclassify", {
+test_that("classify", {
 	rcl <- cbind(from=seq(0,0.9,.1), to=seq(0.1,1,.1), becomes=1:10) 
-	rc  <- reclassify(r, rcl)
+	rc  <- classify(r, rcl)
 	rcx <- reclassify(rx, rcl)
 	expect_equivalent(values(rc), values(rcx)) 
 })

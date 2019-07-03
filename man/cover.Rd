@@ -36,7 +36,7 @@ SpatRaster
 r1 <- r2 <- rast(ncols=36, nrows=18)
 values(r1) <- 1:ncell(r1)
 values(r2) <- runif(ncell(r2))
-r2 <- reclassify(r2, cbind(-Inf, 0.5, NA))
+r2 <- classify(r2, cbind(-Inf, 0.5, NA))
 r3 <- cover(r2, r1)
 }
 

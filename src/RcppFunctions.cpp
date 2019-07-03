@@ -74,6 +74,21 @@ Rcpp::List getAttributes(SpatVector* v) {
 }
 
 
+
+Rcpp::DataFrame getGeometry(SpatVector* v) {
+	SpatDataFrame df = v->getGeometryDF();
+
+	Rcpp::DataFrame out = Rcpp::DataFrame::create(
+			Rcpp::Named("id") = df.iv[0], 
+			Rcpp::Named("part") = df.iv[1], 
+			Rcpp::Named("x") = df.dv[0],
+			Rcpp::Named("y") = df.dv[1],
+			Rcpp::Named("hole") = df.iv[2]
+	);
+	return out;
+}
+
+
 /*
 bool setAttributes(SpatVector* v, Rcpp::List x, std::vector<std::string> names, std::vector<std::string> types) {
 	unsigned n = x.size();
@@ -98,20 +113,7 @@ bool setAttributes(SpatVector* v, Rcpp::List x, std::vector<std::string> names, 
 }
 */
 
-Rcpp::DataFrame getGeometry(SpatVector* v) {
-	SpatDataFrame df = v->getGeometryDF();
-
-	Rcpp::DataFrame out = Rcpp::DataFrame::create(
-			Rcpp::Named("id") = df.iv[0], 
-			Rcpp::Named("part") = df.iv[1], 
-			Rcpp::Named("x") = df.dv[0],
-			Rcpp::Named("y") = df.dv[1],
-			Rcpp::Named("hole") = df.iv[2]
-	);
-	return out;
-}
-
-
+/*
 SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
 	unsigned nc = rcl.ncol();
 	unsigned nr = rcl.nrow();
@@ -125,8 +127,9 @@ SpatRaster rcppReclassify(SpatRaster* x, Rcpp::NumericMatrix rcl, unsigned right
 	SpatRaster out = x->reclassify(rc, right, lowest, othersNA, opt);
 	return out;
 }
+*/
 
-
+/*
 Rcpp::NumericMatrix rcppAdjacent(SpatRaster* x, std::vector<double> cells, std::string directions, bool include) {
 	
 	std::vector<std::vector<double>> a = x->adjacent(cells, directions, include);
@@ -141,6 +144,6 @@ Rcpp::NumericMatrix rcppAdjacent(SpatRaster* x, std::vector<double> cells, std::
 	}
 	return m;
 }
-
+*/
 
 

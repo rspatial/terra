@@ -226,10 +226,12 @@ RCPP_MODULE(spat){
 		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
+		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")		
 		.method("cover", &SpatRaster::cover, "cover")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("cum", &SpatRaster::cum, "cum")
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
+		.method("extend", &SpatRaster::extend, "extend")
 		.method("extractCell", &SpatRaster::extractCell, "extractCell")
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		.method("flip", &SpatRaster::flip, "flip")
@@ -260,9 +262,7 @@ RCPP_MODULE(spat){
 		.method("project", &SpatRaster::project, "project")
 		.method("warp", &SpatRaster::warp, "warp")
 		.method("zonal", &SpatRaster::zonal, "zonal")
-		
-		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")
-		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")	
+			
 	;
 
 

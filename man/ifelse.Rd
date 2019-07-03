@@ -35,7 +35,7 @@ values(r) <- -10:14
 
 x <- ifel(r > 1, 1, r)
 # same as 
-a <- reclassify(r, cbind(1, Inf, 1))
+a <- classify(r, cbind(1, Inf, 1))
 b <- reduce(r, fun=function(i) {i[i > 1] <- 1; i})
 d <- clamp(r, -Inf, 1)
 

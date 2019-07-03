@@ -348,6 +348,8 @@ class SpatRaster {
         std::vector<double> line_cells(SpatGeom& g);
         std::vector<double> polygon_cells(SpatGeom& g);
 
+		SpatRaster extend(SpatExtent e, SpatOptions &opt);
+
 		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, std::string fun, SpatOptions &opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);

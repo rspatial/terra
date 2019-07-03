@@ -35,7 +35,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 						a <- a[-nrow(a), ]
 						g[[i]][[1]] <- a
 					}
-					polypath(a[,3:4], rule = "evenodd", ...)
+					graphics::polypath(a[,3:4], rule = "evenodd", ...)
 				}
 
 			} else {

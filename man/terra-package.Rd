@@ -18,10 +18,11 @@ Note the following important differences in function names with the raster packa
 \tabular{ll}{
 raster package \tab terra package\cr
 \code{raster, brick}\tab\code{\link{rast}}\cr
-\code{stack} (when combining Raster* objects)\tab\code{\link{c}}\cr
-\code{stack} (when creating an object from file)\tab\code{\link{rast}}\cr
+\code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
+\code{stack} (for creating an object from file)\tab\code{\link{rast}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{reduce}}\cr
+\code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
 \code{projectRaster}\tab\code{\link{warp}, \link{project}}\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
@@ -85,7 +86,7 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
     \code{\link{overlay}} \tab Computations on multiple SpatRaster objects \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
-    \code{\link{reclassify}} \tab Reclassify using a 'from-to-becomes' matrix \cr
+    \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{rastApply} \tab Computations on groups of layers in SpatRaster \cr
     \code{rastSelect} \tab Select cell values from different layers using an index SpatRaster\cr
@@ -107,7 +108,7 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
     \code{clump} \tab Find clumps (patches) \cr
     \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
     \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
-    \code{terrain} \tab Compute slope, aspect and other characteristics from elevation data \cr	
+    \code{terrain} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
     \code{Moran} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }

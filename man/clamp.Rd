@@ -29,7 +29,7 @@ SpatRaster
 }
 
 \seealso{
-\code{\link{reclassify}}
+\code{\link{classify}}
 }
 
 \examples{

@@ -62,6 +62,25 @@ setMethod("clamp", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("classify", signature(x="SpatRaster"), 
+function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
+	
+	if (is.data.frame(rcl)) {
+		rcl <- as.matrix(rcl)
+	}
+
+	right <- ifelse(is.na(right), 2, ifelse(right, 0, 1))
+	include.lowest <- as.logical(include.lowest[1])
+
+	opt <- .runOptions(filename, overwrite, wopt)
+    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA, opt)
+	show_messages(x, "classify")	
+}
+)
+
+
+
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
 	function(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...) {
 		if (!inherits(y, "SpatExtent")) {
@@ -147,25 +166,6 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	}
 )
 
-
-setMethod("reclassify", signature(x="SpatRaster", rcl="ANY"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
-	
-	if ( is.null(dim(rcl)) ) { 
-		stopifnot((length(rcl) %% 3 == 0))
-		rcl <- matrix(rcl, ncol=3, byrow=TRUE) 
-	} else if (is.data.frame(rcl)) {
-		rcl <- as.matrix(rcl)
-	}
-
-	right <- ifelse(is.na(right), 2, ifelse(right, 0, 1))
-	include.lowest <- as.logical(include.lowest[1])
-
-	opt <- .runOptions(filename, overwrite, wopt)
-    x@ptr <- x@ptr$rcppReclassify(rcl, right, include.lowest, othersNA, opt)
-	show_messages(x, "reclassify")	
-}
-)
 
 
 
