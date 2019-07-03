@@ -1,4 +1,4 @@
-\name{Summary-methods}
+\name{local}
 
 \docType{methods}
 
@@ -7,11 +7,11 @@
 \alias{Summary,SpatRaster-method}
 \alias{mean,SpatRaster-method}
 
-\title{ Summary methods }
+\title{Local statistics}
 
 \description{
 
-Summary method compute cell (pixel) level statistics across layers, and most return a single layer (the exception is \code{range}). 
+Compute cell (pixel) level "local" statistics across layers, and most return a single layer (the exception is \code{range}). 
 
 The following summary methods are available for SpatRaster: \code{mean, max, min, range, prod, sum, any, all}
 

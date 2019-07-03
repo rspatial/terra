@@ -5,6 +5,7 @@ if (!isGeneric("as.points")) {setGeneric("as.points", function(x,...) standardGe
 if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGeneric("as.lines"))}	
 if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standardGeneric("as.polygons"))}	
 
+if (!isGeneric("boundaries")) {	setGeneric("boundaries", function(x, ...) standardGeneric("boundaries"))}	
 
 if (!isGeneric("click")) {setGeneric("click", function(x, ...)standardGeneric("click"))}	
 
@@ -43,6 +44,7 @@ if (!isGeneric("extract")) { setGeneric("extract", function(x, y, ...) standardG
 if (!isGeneric("flip")) {setGeneric("flip", function(x, direction, ...) standardGeneric("flip")) }
 if (!isGeneric("focal")) { setGeneric("focal", function(x, ...) standardGeneric("focal")) }
 if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("geom"))}	
+if (!isGeneric("global")) {setGeneric("global", function(x, ...) standardGeneric("global"))}	
 if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}	
 if (!isGeneric("head")) { setGeneric("head", function(x, ...) standardGeneric("head"))}	
 if (!isGeneric("ifel")) {setGeneric("ifel", function(test, yes, no, ...) standardGeneric("ifel"))}	
@@ -80,6 +82,7 @@ if (!isGeneric("tail")) { setGeneric("tail", function(x, ...) standardGeneric("t
 if (!isGeneric("trim")) { setGeneric("trim", function(x, ...) standardGeneric("trim")) }	
 if (!isGeneric("xres")) { setGeneric("xres", function(x) standardGeneric("xres")) }
 if (!isGeneric("yres")) { setGeneric("yres", function(x) standardGeneric("yres")) }
+if (!isGeneric("zonal")) {setGeneric("zonal", function(x, z, ...) standardGeneric("zonal"))}	
 
 
 if (!isGeneric("yFromRow")) { setGeneric("yFromRow", function(object, row) standardGeneric("yFromRow")) }

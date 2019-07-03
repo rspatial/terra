@@ -6,7 +6,8 @@
 
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ...) {
-		for (i in list(...)) {
+		dots <- list(...)
+		for (i in dots) {
 			if (class(i) == "SpatRaster") {
 				x@ptr <- x@ptr$combineSources(i@ptr)
 			}
@@ -44,6 +45,14 @@ setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 	}
 )
 	
+
+setMethod("boundaries", signature(x="SpatRaster"), 
+	function(x, classes=FALSE, type="inner", directions=8, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite,wopt)
+		x@ptr <- x@ptr$boundaries(classes[1], type[1], directions[1], opt)
+		show_messages(x, "boundaries")
+	}
+)
 
 setMethod("clamp", signature(x="SpatRaster"), 
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
@@ -187,6 +196,15 @@ setMethod("shift", signature(x="SpatRaster"),
 )
 
 
+setMethod("t", signature(x="SpatRaster"), 
+	function(x) {
+		opt <- .runOptions(filename="", overwrite=TRUE, wopt=list())
+		x@ptr <- x@ptr$transpose(opt)
+		show_messages(x, "t")
+	}
+)
+
+
 setMethod("trim", signature(x="SpatRaster"), 
 	function(x, padding=0, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
@@ -202,15 +220,6 @@ setMethod("transpose", signature(x="SpatRaster"),
 		show_messages(x, "transpose")
 	}
 )
-
-setMethod("t", signature(x="SpatRaster"), 
-	function(x) {
-		opt <- .runOptions(filename="", overwrite=TRUE, wopt=list())
-		x@ptr <- x@ptr$transpose(opt)
-		show_messages(x, "t")
-	}
-)
-
 
 setMethod("unique", signature(x="SpatRaster", incomparables="ANY"), 
 	function(x, incomparables=FALSE, ...) {
@@ -229,5 +238,23 @@ setMethod("warp", signature(x="SpatRaster", y="SpatRaster"),
 		opt <- .runOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$warp(y@ptr, method, opt)
 		show_messages(x, "warp")
+	}
+)
+
+
+setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
+	function(x, z, fun="mean", na.rm=TRUE, ...)  {
+		x@ptr <- x@ptr$zonal(z@ptr, fun, na.rm)
+		show_messages(x, "zonal")
+		.getSpatDF(x@ptr)
+	}
+)
+
+
+setMethod("global", signature(x="SpatRaster"), 
+	function(x, fun="mean", na.rm=TRUE, ...)  {
+		x@ptr <- x@ptr$global(fun, na.rm)
+		show_messages(x, "global")
+		.getSpatDF(x@ptr)
 	}
 )

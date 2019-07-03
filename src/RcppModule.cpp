@@ -72,6 +72,7 @@ RCPP_MODULE(spat){
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
 		.method("values", &getDataFrame, "get data.frame")
 		
+		.field("messages", &SpatDataFrame::msg, "messages")		
 	;
 
     class_<SpatCategories>("SpatCategories")
@@ -222,6 +223,7 @@ RCPP_MODULE(spat){
 		.method("area", &SpatRaster::area, "area")
 		.method("as_points", &SpatRaster::as_points, "as_points")
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
+		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("cover", &SpatRaster::cover, "cover")
@@ -233,6 +235,7 @@ RCPP_MODULE(spat){
 		.method("flip", &SpatRaster::flip, "flip")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
+		.method("global", &SpatRaster::global, "global")
 		.method("initf", ( SpatRaster (SpatRaster::*)(std::string, bool, SpatOptions&) )( &SpatRaster::init ), "init fun")
 		.method("initv", ( SpatRaster (SpatRaster::*)(double, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
@@ -256,6 +259,7 @@ RCPP_MODULE(spat){
 		.method("unique", &SpatRaster::unique, "unique")
 		.method("project", &SpatRaster::project, "project")
 		.method("warp", &SpatRaster::warp, "warp")
+		.method("zonal", &SpatRaster::zonal, "zonal")
 		
 		//.method("rcppAdjacent", &rcppAdjacent, "rcppAdjacent")
 		.method("rcppReclassify", &rcppReclassify, "rcppReclassify")	

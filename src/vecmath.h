@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef VECMATH_GUARD
+#define VECMATH_GUARD
+
+
 #include <type_traits>
 #include <vector>
 #include "NA.h"
@@ -46,6 +50,7 @@ T vmedian(std::vector<T>& v, bool narm) {
 		return 0.5 * (med + vv[n2-1] );
 	}
 }
+
 
 
 template <typename T>
@@ -175,7 +180,7 @@ T vmax(std::vector<T>& v, bool narm) {
 	T x = v[0];
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
-			if (is_NA(v[i])) {
+			if (!is_NA(v[i])) {
 				if (is_NA(x)) {
 					x = v[i];
 				} else {
@@ -314,4 +319,32 @@ T vmodal(std::vector<T>& v, bool narm) {
 	
     return v[maxCount];
 }
+
+
+
+template <typename T>
+std::vector<bool> visna(std::vector<T>& v) {
+	std::vector<bool> x(v.size(), false);
+	for (size_t i=0; i<v.size(); i++) {
+		if (is_NA(v[i])) {
+			x[i] = true;
+		}
+	}
+	return x;
+}
+
+
+template <typename T>
+std::vector<bool> visnotna(std::vector<T>& v) {
+	std::vector<bool> x(v.size(), true);
+	for (size_t i=0; i<v.size(); i++) {
+		if (is_NA(v[i])) {
+			x[i] = false;
+		}
+	}
+	return x;
+}
+
+
+#endif
 

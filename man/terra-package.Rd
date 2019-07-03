@@ -19,6 +19,8 @@ Below is a list of some of the most important functions grouped by theme. Some o
 
 "extent" (raster) is "ext" (terra)
 "raster", "stack", "brick" (raster) is "rast" (terra), or "c" instead of "stack" when combining objects 
+"calc" (raster) is "reduce" (terra)
+"projectRaster" (raster) is "warp" or "project" (terra)
 
 }
 
@@ -37,7 +39,7 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 \section{II. Changing the spatial extent and/or resolution of a SpatRaster}{
 
   \tabular{ll}{
-    \code{merge} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
+    \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
     \code{mosaic} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
     \code{extend} \tab Enlarge a SpatRaster \cr
@@ -92,7 +94,7 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
     \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
-    \code{boundaries} \tab Detection of boundaries (edges)\cr
+    \code{\link{boundaries}} \tab Detection of boundaries (edges)\cr
     \code{clump} \tab Find clumps (patches) \cr
     \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
     \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
@@ -120,8 +122,9 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
   \tabular{ll}{
     \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr
     \code{\link{rasterize}} \tab Rasterizing points, lines or polygons\cr
-    \code{rasterToPoints} \tab Create points from a SpatRaster \cr
-    \code{rasterToPolygons} \tab Create polygons from a SpatRaster \cr
+    \code{\link{as.points}} \tab Create points from a SpatRaster or SpatVector \cr
+    \code{\link{as.lines}} \tab Create points from a SpatRaster or SpatVector\cr
+    \code{\link{as.polygons}} \tab Create polygons from a SpatRaster \cr
     \code{rasterToContour} \tab Contour lines from a SpatRaster \cr
     \code{rasterFromXYZ} \tab Create a SpatRaster from regularly spaced points\cr
     \code{rasterFromCells} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
@@ -137,7 +140,7 @@ You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(o
     \code{summary} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
     \code{freq} \tab Frequency table of SpatRaster cell values \cr
     \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
-    \code{unique} \tab Get the unique values in a SpatRaster \cr
+    \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
     \code{zonal} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -154,7 +157,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \code{\link{as.array}} \tab Get cell values as an array \cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (e.g., by cell, coordinates, polygon)\cr
     \code{sampleRandom} \tab Random sample \cr
-    \code{sampleRegular} \tab Regular sample \cr
+    \code{\link{sampleRegular}} \tab Regular sample \cr
     \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -167,7 +170,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
   \tabular{ll}{
     \bold{Maps} \tab \cr
     \code{\link{plot}} \tab Plot a SpatRaster. The main method to create a map \cr
-    \code{plotRGB} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
+    \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
     \code{\link{image}} \tab Plot a SpatRaster with the image function \cr
     \code{persp} \tab Perspective plot of a SpatRaster \cr
     \code{contour} \tab Contour plot of a SpatRaster \cr
@@ -175,8 +178,8 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \code{text} \tab Plot the values of a SpatRaster on top of a map \cr
     .\cr
     \bold{Interacting with a map} \tab \cr
-    \code{zoom} \tab Zoom in to a part of a map \cr
-    \code{click} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
+    \code{\link{zoom}} \tab Zoom in to a part of a map \cr
+    \code{\link{click}} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
     \code{select} \tab Select a geometric subset of a SpatRaster or Spatial* object \cr
     \code{\link{drawPol}} \tab Create a polygons SpatVector by drawing it \cr
     \code{\link{drawLin}} \tab Create a lines SpatVector by drawing it \cr

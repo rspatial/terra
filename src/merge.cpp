@@ -43,9 +43,11 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	out.setExtent(e, true);
  //   out.setResolution(xres(), yres());
  	if (!out.writeStart(opt)) { return out; }
+    #ifdef useGDAL
 	if (out.source[0].driver == "gdal") {
 		out.fillValuesGDAL(NAN);
 	}
+	#endif
 
 	for (size_t i=0; i<n; i++) {
 		SpatRaster r = x[i];

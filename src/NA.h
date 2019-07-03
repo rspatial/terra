@@ -28,7 +28,14 @@ public:
 };
 
 
-template <typename T> bool is_NA(const T v) {
+//template <> class NA<bool> {
+//public:
+//    static constexpr bool value = false;
+//};
+
+
+template <typename T> 
+bool is_NA(const T v) {
     if (std::is_floating_point<T>::value) {
         return std::isnan(v);
     } else {
