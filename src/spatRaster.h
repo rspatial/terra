@@ -342,6 +342,10 @@ class SpatRaster {
 		SpatRaster cover(SpatRaster x, double value, SpatOptions &opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
+		SpatRaster distance(SpatOptions &opt);
+		SpatRaster point_distance(SpatVector p, SpatOptions &opt);
+		
+
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v);
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
         std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);

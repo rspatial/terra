@@ -85,7 +85,7 @@ RCPP_MODULE(spat){
 
     class_<SpatVector>("SpatVector")
 		.constructor()	
-		.method("names", &SpatVector::names, "names")		
+		.property("names", &SpatVector::get_names, &SpatVector::set_names)
 		.method("nrow", &SpatVector::nrow, "nrow")		
 		.method("ncol", &SpatVector::ncol, "ncol")		
 		.method("size", &SpatVector::size, "size")		
@@ -225,6 +225,8 @@ RCPP_MODULE(spat){
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
+		.method("rastDistance", &SpatRaster::distance, "rastdistance")
+		.method("pointDistance", &SpatRaster::point_distance, "point_distance")
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")		
 		.method("cover", &SpatRaster::cover, "cover")

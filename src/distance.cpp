@@ -63,7 +63,7 @@ std::vector<double> distance_lonlat_vd(std::vector<double> &lon1, std::vector<do
     return distance_lonlat(lon1, lat1, vlon2, vlat2, a, f);
 }
 
-std::vector<double> distanceToNearest_lonlat(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, double a, double f) {
+std::vector<double> distanceToNearest_lonlat(const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, const double &a, const double &f) {
 	double azi1, azi2, s12;
 	size_t n = lon1.size();
 	size_t m = lon2.size();
@@ -106,7 +106,8 @@ std::vector<double> distance_plane_vd(std::vector<double> &x1, std::vector<doubl
   	return distance_plane(x1, y1, vx2, vy2);
 }
 
-std::vector<double> distanceToNearest_plane(std::vector<double> x1, std::vector<double> y1, std::vector<double> x2, std::vector<double> y2) {
+
+std::vector<double> distanceToNearest_plane(const std::vector<double> &x1, const std::vector<double> &y1, const std::vector<double> &x2, const std::vector<double> &y2) {
 	size_t n = x1.size();
 	size_t m = x2.size();
 	std::vector<double> r(n);

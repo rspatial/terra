@@ -17,7 +17,7 @@
 
 #include "spatRaster.h"
 #include <limits>
-//#include <set>
+#include <set>
 
 
 
@@ -33,7 +33,7 @@ void unique_values(std::vector<double> &d) {
 	d.erase(std::remove_if(d.begin(), d.end(),
             [](const double& value) { return std::isnan(value); }), d.end());
 	std::set<double> u { d.begin(), d.end()};
-	std::copy(u.begin(), u.end(), d.begin()); 
+	std::copy(u.begin(), u.end(), d.begin());
 	d.erase(d.begin()+u.size(), d.end());
 }
 
@@ -44,18 +44,18 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 	if (!hasValues()) return out;
 
 	constexpr double lowest_double = std::numeric_limits<double>::lowest();
-	
+
 	BlockSize bs = getBlockSize(4);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	readStart();
 	out.resize(nl);
-	
+
 	if (nl == 1) bylayer = true;
 	if (bylayer) {
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
-			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);	
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
 				out[lyr].insert(out[lyr].end(), v.begin()+off, v.begin()+off+n);
@@ -95,11 +95,10 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 					out[j][i] = temp[i][j];
 				}
 			}
-		}		
+		}
 	}
 	readStop();
 
 	return(out);
 }
- 
- 
+

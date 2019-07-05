@@ -28,7 +28,7 @@ std::vector<double> do_edge(std::vector<double> &d, std::vector<unsigned> dim, b
 	size_t nrow = dim[0];
 	size_t ncol = dim[1];
 	size_t n = nrow * ncol;
-	std::vector<double> val(n);
+	std::vector<double> val(n, NAN);
 	
 	int r[8] = { -1,0,0,1 , -1,-1,1,1};
 	int c[8] = { 0,-1,1,0 , -1,1,-1,1};	
@@ -96,11 +96,6 @@ std::vector<double> do_edge(std::vector<double> &d, std::vector<unsigned> dim, b
 
 
 std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim, bool classes, std::string edgetype, unsigned dirs) {
-
-	//R_len_t i, j;
-	//SEXP val;
-	//int nrows, ncols, n, cell, k;
-	//int *xd, *xval;
 
 	unsigned nrows = dim[0];
 	unsigned ncols = dim[1];

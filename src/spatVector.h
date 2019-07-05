@@ -80,7 +80,8 @@ class SpatVector {
 		SpatLayer lyr;
 		std::vector<SpatLayer> lyrs;
 
-		std::vector<std::string> names();
+		std::vector<std::string> get_names();
+		void set_names(std::vector<std::string> s);
 		unsigned nrow();
 		unsigned ncol();
 		unsigned nxy();
@@ -99,6 +100,7 @@ class SpatVector {
 		bool addGeom(SpatGeom p);
 		bool setGeom(SpatGeom p);
 		SpatDataFrame getGeometryDF();
+		std::vector<std::vector<double>> coordinates();
 
 		SpatVector project(std::string crs);
 		//std::vector<std::vector<double>> test(std::vector<double> x, std::vector<double> y, std::string fromcrs, std::string tocrs);

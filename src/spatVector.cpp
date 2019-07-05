@@ -129,8 +129,13 @@ std::vector<unsigned> SpatVector::getIplace(){
 	return lyr.df.iplace;
 }
 
-std::vector<std::string> SpatVector::names(){
-	return lyr.df.names;
+
+std::vector<std::string> SpatVector::get_names(){
+	return lyr.df.get_names();
+}
+
+void SpatVector::set_names(std::vector<std::string> s){
+	lyr.df.set_names(s);
 }
 
 unsigned SpatVector::ncol() {
@@ -224,6 +229,36 @@ unsigned SpatVector::nxy() {
 	}
 	return n;
 }
+
+
+std::vector<std::vector<double>> SpatVector::coordinates() {
+	SpatGeom g;
+	SpatPart p;
+	SpatHole h;
+	std::vector<std::vector<double>> out(2);
+	for (size_t i=0; i < size(); i++) {
+		g = getGeom(i);
+		for (size_t j=0; j < g.size(); j++) {
+			p = g.getPart(j);
+			for (size_t q=0; q < p.x.size(); q++) {
+				out[0].push_back( p.x[q] );
+				out[1].push_back( p.y[q] );
+			}
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					h = p.getHole(k);
+					for (size_t q=0; q < h.x.size(); q++) {
+						out[0].push_back( h.x[q] );
+						out[1].push_back( h.y[q] );
+					}
+				}
+			}
+		}
+	}
+	return out;
+}
+
+
 
 SpatDataFrame SpatVector::getGeometryDF() {
 	unsigned n = nxy();
@@ -407,7 +442,7 @@ SpatVector SpatVector::project(std::string crs) {
 
 	std::vector<double> x = d.dv[0];
 	std::vector<double> y = d.dv[1];
-	
+
 	s.msg = transform_coordinates(x, y, getCRS(), crs);
 
 	if (!s.msg.has_error) {

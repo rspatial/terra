@@ -57,8 +57,8 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{xlab}{character}
   \item{ylab}{character}
   \item{useRaster}{logical; if \code{TRUE} plotting is faster because a bitmap raster is used to plot the image instead of polygons. See \code{\link[graphics]{image}}}
-  \item{nc}{integer > 0. Optional. The number of columns to divide the plotting device in (when plotting multiple layers in a RasterLayer or RasterBrick object)}
-  \item{nr}{integer > 0. Optional. The number of rows to divide the plotting device in (when plotting multiple layers in a RasterLayer or RasterBrick object)}
+  \item{nc}{integer > 0. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
+  \item{nr}{integer > 0. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{maxnl}{integer > 0. Maximum number of layers to plot (for a multi-layer object)}
   \item{main}{character. Main plot title}
   \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
