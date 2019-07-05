@@ -224,6 +224,7 @@ RCPP_MODULE(spat){
 		.method("as_points", &SpatRaster::as_points, "as_points")
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("boundaries", &SpatRaster::edges, "edges")
+		.method("buffer", &SpatRaster::buffer, "buffer")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
 		.method("rastDistance", &SpatRaster::distance, "rastdistance")
 		.method("pointDistance", &SpatRaster::point_distance, "point_distance")

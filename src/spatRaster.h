@@ -324,11 +324,13 @@ class SpatRaster {
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatVector as_polygons(bool values, bool narm);
 		SpatVector as_points(bool values, bool narm);
+
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
 		SpatRaster area(SpatOptions &opt);
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster arith(double x, std::string oper, SpatOptions &opt);
 		SpatRaster arith_rev(double x, std::string oper, SpatOptions &opt);
+		SpatRaster buffer(double d, SpatOptions &opt);
 
 		SpatRaster gridDistance(SpatOptions &opt);
 		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions &opt);

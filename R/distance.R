@@ -11,9 +11,17 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 	}
 )
 
+setMethod("buffer", signature(x="SpatRaster"), 
+	function(x, width=0, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt=list())
+		x@ptr <- x@ptr$buffer(width, opt)
+		show_messages(x, "buffer")
+	}
+)
+
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
-	function(x, y, wopt=list(), filename="", overwrite=FALSE, ...) {
+	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt=list())
 		x@ptr <- x@ptr$pointDistance(y@ptr, opt)
 		show_messages(x, "distance")

@@ -76,11 +76,12 @@ SpatRaster SpatRaster::point_distance(SpatVector p, SpatOptions &opt) {
 
 SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	SpatRaster out = geometry();
-	if (nlyr() > 1) {
-		out.setError("distance computations can only be done for one layer at a time --- to be improved");
-		return(out);
-	}
 	SpatOptions ops;
+	if (nlyr() > 1) {
+		out.addWarning("distance computations can only be done for one layer at a time --- to be improved");
+		std::vector<unsigned> lyr = {0};
+		subset(lyr, ops);
+	}
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, ops);
 	SpatVector p = e.as_points(false, true);
@@ -88,4 +89,24 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	return out;
 }
 
+
+SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
+	SpatRaster out = geometry();
+	if (d <= 0) {
+		out.setError("buffer size <= 0; nothing to compute");
+		return out;
+	}
+	SpatOptions ops;
+	if (nlyr() > 1) {
+		out.addWarning("buffer computations can only be done for one layer at a time --- to be improved");
+		std::vector<unsigned> lyr = {0};
+		subset(lyr, ops);
+	}
+	std::string etype = "inner";
+	SpatRaster e = edges(false, etype, 8, ops);
+	SpatVector p = e.as_points(false, true);
+	out = out.point_distance(p, ops);
+	out = out.arith(d, "<=", opt);
+	return out;
+}
 
