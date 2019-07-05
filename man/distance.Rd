@@ -2,7 +2,7 @@
 
 \alias{distance}
 \alias{distance,SpatRaster,missing-method}
-\alias{distance,SpatVector-method}
+\alias{distance,SpatRaster,SpatVector-method}
 
 \title{Distance}
 
@@ -16,11 +16,12 @@ The distance unit is in meters if the CRS is (\code{+proj=longlat}) and in map u
 
 \usage{
 \S4method{distance}{SpatRaster,missing}(x, y, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{y}{missing}
+  \item{y}{missing or SpatVector}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

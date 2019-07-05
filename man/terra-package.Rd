@@ -26,7 +26,10 @@ raster package \tab terra package\cr
 \code{cellStats}\tab\code{\link{global}}\cr
 \code{projectRaster}\tab\code{\link{warp}, \link{project}}\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
+\code{distanceFromPoints} \tab \code{distance}\cr
 }
+
+
 
 The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
@@ -98,9 +101,8 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 \section{V. Spatial contextual computation}{
 
   \tabular{ll}{
-    \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA}\cr
+    \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA} or to or from a vector object\cr
     \code{\link{gridDistance}} \tab Distance when traversing grid cells that are not \code{NA} \cr
-    \code{distanceFromPoints} \tab Shortest distance to any point in a set of points \cr
     \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
