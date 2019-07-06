@@ -108,6 +108,10 @@ RCPP_MODULE(spat){
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
 		
 		.method("area", &SpatVector::area, "area")		
+
+		.method("distance_self", (SpatDataFrame (SpatVector::*)())( &SpatVector::distance))
+		.method("distance_other", (SpatDataFrame (SpatVector::*)(SpatVector, bool))( &SpatVector::distance))
+
 		.method("length", &SpatVector::length, "length")		
 		.method("as_lines", &SpatVector::as_lines, "as_lines")
 		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
@@ -226,8 +230,8 @@ RCPP_MODULE(spat){
 		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("buffer", &SpatRaster::buffer, "buffer")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
-		.method("rastDistance", &SpatRaster::distance, "rastdistance")
-		.method("pointDistance", &SpatRaster::point_distance, "point_distance")
+		.method("rastDistance", ( SpatRaster (SpatRaster::*)(SpatOptions&) )( &SpatRaster::distance), "rastDistance")		
+		.method("vectDistance", ( SpatRaster (SpatRaster::*)(SpatVector, SpatOptions&) )( &SpatRaster::distance), "vectDistance")		
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")		
 		.method("cover", &SpatRaster::cover, "cover")

@@ -114,6 +114,9 @@ class SpatVector {
 
 		std::vector<double> area();
 		std::vector<double> length();
+		SpatDataFrame distance(SpatVector x, bool pairwise);
+		SpatDataFrame distance();
+
 		size_t size();
 		SpatVector as_lines();
 
