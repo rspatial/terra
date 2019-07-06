@@ -1,6 +1,3 @@
-// Robert Hijmans, November 2011
-
-
 // Copyright (c) 2018-2019  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
@@ -182,7 +179,6 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 	}
 	size_t n = pairwise ? s : s*sx;
 	std::vector<double> d(n);		
-	
 	std::vector<std::vector<double>> p = coordinates();
 	std::vector<std::vector<double>> px = x.coordinates();
 	
@@ -199,7 +195,6 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 			}			
 		} 
 	} else {		
-		
 		if (lonlat) {
 			double a = 6378137.0;
 			double f = 1/298.257223563;		

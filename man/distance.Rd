@@ -20,7 +20,7 @@ If \code{y} is a SpatVector, the distance to that SpatVector is computed for all
 
 If \code{y} is \code{missing}, a distance matrix between all object in \code{x} is computed. An distance matrix object of class "dist" is returned. 
 
-If \code{y} is a SpatVector the geographic distance between all elements two sets of objects is computed (and a matrix is returned). If both sets have the same number of points, and \code{pairwise=TRUE}, the distance between each pair of objects is computed, and a vector is returned.
+If \code{y} is a SpatVector the geographic distance between all objects is computed (and a matrix is returned). If both sets have the same number of points, and \code{pairwise=TRUE}, the distance between each pair of objects is computed, and a vector is returned.
 }
 
 \usage{
