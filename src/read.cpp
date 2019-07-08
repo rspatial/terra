@@ -47,11 +47,14 @@ std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
 
 
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols){
+
+	std::vector<double> out;
+	if (!hasValues()) return out; // or NAs?
+	
 	row = std::min(std::max(unsigned(0), row), nrow()-1);
 	col = std::min(std::max(unsigned(0), col), ncol()-1);
 	nrows = std::max(unsigned(1), std::min(nrows, nrow()-row));
 	ncols = std::max(unsigned(1), std::min(ncols, ncol()-col));
-	std::vector<double> out;
 	if ((nrows==0) | (ncols==0)) {
 		return out;
 	}

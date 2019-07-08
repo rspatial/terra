@@ -25,8 +25,6 @@ This approach of using model predictions is commonly used in remote sensing (for
 
   \item{const}{data.frame. Can be used to add a constant value as a predictor variable so that you do not need to make a SpatRaster layer for it}
  \item{factors}{list with levels for factor variables. The list elements should be named with names that correspond to names in \code{object} such that they can be matched. This argument may be omitted for standard models such as 'glm' as the predict function will extract the levels from the \code{model} object, but it is necessary in some other cases (e.g. cforest models from the party package)}
-
-
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
@@ -127,22 +125,16 @@ raster::spplot(r4)
 
 # cforest (other Random Forest implementation) example with factors argument
 
-v$red <- as.factor(round(v$red/100))
-logo$red <- round(logo[[1]]/100)
-
 library(party)
 m <- cforest(pa~., control=cforest_unbiased(mtry=3), data=v)
-f <- list(levels(v$red))
-names(f) <- 'red'
 # the second argument in party:::predict.RandomForest
 # is "OOB", and not "newdata" or similar. We need to write a wrapper
 # predict function to deal with this 	
 predfun <- function(m, d, ...) predict(m, newdata=d, ...)
 
-# factors not yet implemented
-# pc <- predict(logo, m, OOB=TRUE, factors=f, fun=predfun)
+pc <- predict(logo, m, OOB=TRUE, fun=predfun)
 
-# knn example, using "reduce" instead of "predict"
+# knn, using "reduce" instead of "predict"
 library(class)
 cl <- factor(c(rep(1, nrow(p)), rep(0, nrow(a))))
 train <- extract(logo, rbind(p, a))

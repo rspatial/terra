@@ -3,6 +3,36 @@
 # Version 0.9
 # License GPL v3
 
+
+.runModel <- function(model, fun, d, nl, const, na.rm, ...) {
+	if (! is.null(const)) {
+		d <- cbind(d, const[1])
+	} 
+	if (na.rm) {
+		n <- nrow(d)
+		i <- rowSums(is.na(d)) == 0
+		d <- d[i,,drop=FALSE]
+		if (ncol(d) > 0) {
+			r <- fun(model, d, ...)
+			r <- as.matrix(r)
+			if (!all(i)) {
+				m <- matrix(NA, nrow=nl*n, ncol=ncol(r))
+				m[i,] <- r
+				colnames(m) <- colnames(r)
+				r <- m
+			}
+		} else {
+			r <- matrix(NA, nrow=nl*n, ncol=1)
+		}
+		return (r)
+	} else {
+		r <- fun(model, d, ...)
+		return( as.matrix(r) )
+	}
+}
+
+
+
 .getFactors <- function(m, facts=NULL, lyrnms) {
 
 	if (!is.null(facts)) {
@@ -38,7 +68,7 @@
 }
 	
 setMethod("predict", signature(object="SpatRaster"), 
-	function(object, model, fun=predict, ..., factors=NULL, const=NULL, filename="", overwrite=FALSE, wopt=list()) {
+	function(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		nms <- names(object)
 		if (length(unique(nms)) != length(nms)) {
@@ -58,31 +88,18 @@ setMethod("predict", signature(object="SpatRaster"),
 		nc <- ncol(object)
 		tomat <- FALSE
 		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
-		if (! is.null(const)) {
-			d <- cbind(d, const[1])
-		} 
-		
-		r <- fun(model, d, ...)
-		if (NCOL(r) > 1) {
-			nl <- ncol(r)
-			if (inherits(r, "data.frame")) {
-				tomat <- TRUE
-			}
-		}
-		
-			
+
+		r <- .runModel(model, fun, d, nl, const, na.rm, ...)
+		nl <- ncol(r)		
 		out <- rast(object, nlyr=nl)
+		cn <- colnames(r)
+		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
+		
 		readStart(object)
 		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
-			if (! is.null(const)) {
-				d <- cbind(d, const[1])
-			} 
-			r <- fun(model, d, ...)
-			if (tomat) {
-				r <- as.matrix(r)
-			}
+			r <- .runModel(model, fun, d, nl, const, na.rm, ...)
 			writeValues(out, r, b$row[i])
 		}
 		readStop(object)

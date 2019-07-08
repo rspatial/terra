@@ -135,12 +135,17 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		X <- xFromCol(object, 1:ncol(object))
 
 		if (missing(zlim)) {
-			zlim <- range(Z, na.rm=TRUE)
+			uvals <- unique(na.omit(as.vector(Z)))
+			if (length(uvals) == 0) { return(invisible(NULL)) }
+			zlim <- range(uvals, na.rm=TRUE)
 		} else {
 			zlim <- sort(zlim)
 			Z[Z < zlim[1]] <- zlim[1]
 			Z[Z > zlim[2]] <- zlim[2]
+			uvals <- unique(na.omit(as.vector(Z)))			
+			if (length(uvals) == 0) { return(invisible(NULL)) }
 		}
+		
 #		dv <- dev.list()
 #		if (!is.null(dv)) {
 #			# excluding pdf, png, ....
@@ -197,11 +202,10 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			cols <- .sampleColors(cols, length(labs))
 			.factorLegend(leg.ext, lvs$levels, cols, labs, n)
 		} else {			
-			u <- unique(na.omit(as.vector(Z)))
-			if (length(u) < 10) {
-				cols <- .sampleColors(cols, length(u))
-				n <- ifelse(leg.ext.set, length(u), 20)
-				.fewClassLegend(leg.ext, u, cols, digits, n)
+			if (length(uvals) < 10) {
+				cols <- .sampleColors(cols, length(uvals))
+				n <- ifelse(leg.ext.set, length(uvals), 20)
+				.fewClassLegend(leg.ext, uvals, cols, digits, n)
 			} else {
 				.contLegend(leg.ext, cols, zlim, digits, leg.levels)
 			}

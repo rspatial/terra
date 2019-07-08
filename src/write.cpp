@@ -262,7 +262,7 @@ void RasterSource::setRange() {
 	range_min.resize(nlyr);
 	range_max.resize(nlyr);
 	hasRange.resize(nlyr);
-	if (values.size() > 0) {
+	if (values.size() == nc * nlyr) {
 		for (size_t i=0; i<nlyr; i++) {
 			start = nc * i;
 			minmax(values.begin()+start, values.begin()+start+nc, vmin, vmax);

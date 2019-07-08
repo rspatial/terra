@@ -121,7 +121,7 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 
   \tabular{ll}{
     \code{\link{predict}} \tab Predict a non-spatial model to a SpatRaster \cr
-    \code{interpolate} \tab Predict a spatial model to a SpatRaster \cr
+    \code{\link{interpolate}} \tab Predict a spatial model to a SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
@@ -129,7 +129,8 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 
 \section{VII. Data type conversion}{
 
-You can coerce SpatRasters to Spatial* objects using \code{as}, as in \code{as(object, 'SpatialGridDataFrame')}  
+You can coerce SpatRasters to Raster* objects after loading the \code{raster} package, using \code{as}, as in \code{as(object, "RasterBrick")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
+  
 
   \tabular{ll}{
     \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr
@@ -232,10 +233,9 @@ Basic parameters of existing SpatRasters can be obtained, and in most cases chan
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
     \code{\link{isLonLat}} \tab Test if an object has a longitude/latitude coordinate reference system \cr
     \code{\link{filename}} \tab Filename(s) to which a SpatRaster is linked \cr	
-    \code{compareRaster} \tab Compare the geometry of SpatRasters \cr		
+    \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr		
     \code{NAvalue} \tab Get or set the \code{NA} value (for reading from a file) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
-	
 }
 }
 
@@ -264,7 +264,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
   \tabular{ll}{
    \bold{Basic}\cr
-    \code{setValues} \tab Put new values in a SpatRaster \cr
+    \code{\link{values}} \tab Assign new values to the cells of a SpatRaster \cr
     \code{\link{writeRaster}} \tab Write all values of SpatRaster to disk \cr
    .\cr
    \bold{Advanced}\cr
