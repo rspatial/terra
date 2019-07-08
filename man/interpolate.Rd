@@ -12,7 +12,7 @@ Make a RasterLayer with interpolated values using a fitted model object of class
 }
 
 \usage{
-\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, filename="", overwrite=FALSE, wopt=list())
+\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -21,7 +21,10 @@ Make a RasterLayer with interpolated values using a fitted model object of class
 \item{fun}{function. Default value is "predict", but can be replaced with e.g. "predict.se" (depending on the class of the model object)}
 \item{...}{additional arguments passed to \code{fun}}
 \item{xyNames}{character. variable names that the model uses for the spatial coordinates. E.g., \code{c("longitude", "latitude")}}
+ \item{factors}{list with levels for factor variables. The list elements should be named with names that correspond to names in \code{object} such that they can be matched. This argument may be omitted for many models as the predict function will extract the levels from the \code{model} object}
 \item{const}{data.frame. Can be used to add a constant for which there is no Raster object for model predictions. This is particulary useful if the constant is a character-like factor value}
+ \item{na.rm}{logical. If \code{TRUE}, cells with \code{NA} values in the predictors are removed from the computation. This option prevents errors with models that cannot handle \code{NA} values. In most other cases this will not affect the output. An exception is when predicting with a model that returns predicted values even if some (or all!) variables are \code{NA} }
+
 \item{filename}{character. Output filename. Optional}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
 \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
