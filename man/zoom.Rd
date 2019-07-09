@@ -14,7 +14,7 @@ Zoom in on a map (plot) by providing a new extent, by default this is done by cl
 }
 
 \usage{
-\S4method{zoom}{SpatRaster}(x, ext=drawExt(), maxcell=10000, layer=1, new=TRUE, ...)
+\S4method{zoom}{SpatRaster}(x, ext=draw(), maxcell=10000, layer=1, new=TRUE, ...)
 }
 
 \arguments{
@@ -31,7 +31,7 @@ SpatExtent (invisibly)
 }
 
 
-\seealso{ \code{\link{drawExt}}, \code{\link{plot}}}
+\seealso{ \code{\link{draw}}, \code{\link{plot}}}
 
 \keyword{spatial}
 

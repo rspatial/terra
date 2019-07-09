@@ -1,5 +1,5 @@
 
-drawPol <- function(col="red", lwd=2, ...) {
+.drawPol <- function(col="red", lwd=2, ...) {
 	xy <- graphics::locator(n=10000, type="l", col=col, lwd=lwd, ...)
 	xy <- cbind(xy$x, xy$y)
 	xy <- rbind(xy, xy[1,])
@@ -9,7 +9,7 @@ drawPol <- function(col="red", lwd=2, ...) {
 }
 
 
-drawLin <- function(col="red", lwd=2, ...) {
+.drawLin <- function(col="red", lwd=2, ...) {
 	xy <- graphics::locator(n=10000, type="l", col=col, lwd=lwd, ...)
 	xy <- cbind(xy$x, xy$y)
 	g <- cbind(1,1,xy)
@@ -17,14 +17,14 @@ drawLin <- function(col="red", lwd=2, ...) {
 }
 
 
-drawPts <- function(col="red", lwd=2, ...) {
+.drawPts <- function(col="red", lwd=2, ...) {
 	xy <- graphics::locator(n=10000, type="p", col=col, lwd=lwd, ...)
 	xy <- cbind(xy$x, xy$y)
 	g <- cbind(1:nrow(xy), 1, xy)
 	vect(g, "points")
 }
 
-drawExt <- function(col="red", lwd=2, ...) {
+.drawExt <- function(col="red", lwd=2, ...) {
 	loc1 <- graphics::locator(n=1, type="p", pch='+', col=col, ...)
 	loc2 <- graphics::locator(n=1, ...)
 	loc <- rbind(unlist(loc1), unlist(loc2))
@@ -41,3 +41,31 @@ drawExt <- function(col="red", lwd=2, ...) {
 	lines(p, col=col)
 	return(ext(e))
 }
+
+setMethod("draw", signature(x="character"),
+    function(x="extent", col="red", lwd=2, ...){ 
+		objtypes <- c("extent", "polygon", "line", "points")
+		i <- pmatch(tolower(x), objtypes)
+		if (is.na(i)) {
+			stop("invalid object type")
+		} else if (i < 1) {
+			stop("ambiguous object type")
+		}
+		x <- objtypes[i]
+		if (x == "extent") {
+			.drawExt(col, lwd, ...)
+		} else if (x == "polygon") {
+			.drawPol(col, lwd, ...)
+		} else if (x == "lines") {
+			.drawLin(col, lwd, ...)
+		} else if (x == "points") {
+			.drawPts(col, lwd, ...)
+		} 
+	}
+)
+
+setMethod("draw", signature(x="missing"),
+    function(x="extent", col="red", lwd=2, ...){ 
+		draw("extent", col, lwd, ...)
+	}
+)

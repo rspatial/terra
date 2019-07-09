@@ -6,6 +6,7 @@ if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGene
 if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standardGeneric("as.polygons"))}	
 if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGeneric("classify")) }
 if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
+if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}	
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
 if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardGeneric("reduce"))}

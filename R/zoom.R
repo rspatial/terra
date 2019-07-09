@@ -6,7 +6,7 @@
 
 
 setMethod("zoom", signature(x="SpatRaster"), 
-	function(x, ext=drawExt(), maxcell=10000, layer=1, new=TRUE, ...) {
+	function(x, ext=draw(), maxcell=10000, layer=1, new=TRUE, ...) {
 		if (is.function(ext)) {
 			ext <- ext  # force to start with drawing before creating a new graphics device
 		} else {

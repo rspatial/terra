@@ -193,11 +193,8 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \bold{Interacting with a map} \tab \cr
     \code{\link{zoom}} \tab Zoom in to a part of a map \cr
     \code{\link{click}} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
-    \code{select} \tab Select a geometric subset of a SpatRaster or Spatial* object \cr
-    \code{\link{drawPol}} \tab Create a polygons SpatVector by drawing it \cr
-    \code{\link{drawLin}} \tab Create a lines SpatVector by drawing it \cr
-    \code{\link{drawPts}} \tab Create a points SpatVector by drawing it \cr
-    \code{\link{drawExt}} \tab Create a SpatExtent by drawing it \cr	
+    \code{select} \tab Select a geometric subset of a SpatRaster or SpatVector \cr
+    \code{\link{draw}} \tab Create a SpatExtent or SpatVector by drawing on a map \cr
     .\cr
 	
 	\bold{Other plots} \tab \cr

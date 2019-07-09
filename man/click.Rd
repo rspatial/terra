@@ -38,7 +38,7 @@ Unless the process is terminated prematurely values at at most \code{n} position
 }
 
 
-\seealso{ \link{drawExt}, \link{drawPol}, \link{drawLin}, \link{drawPts}}
+\seealso{\link{draw}}
 
 
 \examples{

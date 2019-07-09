@@ -1,29 +1,25 @@
 \name{draw}
 
-\alias{drawPol}
-\alias{drawLin}
-\alias{drawPts}
-\alias{drawExt}
+\alias{draw}
+\alias{draw,character-method}
+\alias{draw,missing-method}
 
 
-\title{ Draw a line, polygon, extent, or points }
+\title{ Draw a polygon, line, extent, or points }
 
 \description{
-Draw on a plot (map) to get a SpatVector or SpatExtent object for later use. After calling the function, start clicking on the map. To finish, right-click and select 'stop'.
+Draw on a plot (map) to get a SpatVector or SpatExtent object for later use. After calling the function, start clicking on the map. To finish, right-click and select "stop".
 }
 
 \usage{
-drawPol(col="red", lwd=2, ...)
-drawLin(col="red", lwd=2, ...)
-drawPts(col="red", lwd=2, ...)
-drawExt(col="red", lwd=2, ...) 
-
+\S4method{draw}{character}(x="extent", col="red", lwd=2, ...)
 }
 
 \arguments{
-  \item{col}{the color of the lines to be drawn}
+  \item{x}{character. The type of object to draw. One of "extent", "polygon", "line", or "points"}
+  \item{col}{the color to be used}
   \item{lwd}{the width of the lines to be drawn}
-  \item{...}{additional arguments padded to locator}
+  \item{...}{additional arguments passed to  \code{\link[graphics]{locator}}}
 }
  
 \value{
@@ -34,3 +30,4 @@ SpatVector or SpatExtent
  
 
 \keyword{ spatial }
+
