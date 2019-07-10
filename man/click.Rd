@@ -43,9 +43,9 @@ Unless the process is terminated prematurely values at at most \code{n} position
 
 \examples{
 \dontrun{
- r <- rast(system.file("external/test.grd", package="raster"))
- plot(r)
- click(r)
+r <-rast(system.file("exdata/test.tif", package="terra"))
+plot(r)
+click(r)
  # now click on the plot (map)
 }}
 

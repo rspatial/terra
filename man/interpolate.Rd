@@ -42,7 +42,7 @@ SpatRaster
 \dontrun{
 ## Thin plate spline interpolation with x and y only
 # some example data
-r <- rast(system.file("external/test.grd", package="raster"))
+r <-rast(system.file("exdata/test.tif", package="terra"))
 ra <- aggregate(r, 10)
 xy <- data.frame(xyFromCell(ra, 1:ncell(ra)))
 v <- values(ra)
@@ -91,7 +91,7 @@ library(gstat)
 data(meuse)
 
 ## inverse distance weighted (IDW)
-r <- rast(system.file("external/test.grd", package="raster"))
+r <-rast(system.file("exdata/test.tif", package="terra"))
 mg <- gstat(id = "zinc", formula = zinc~1, locations = ~x+y, data=meuse, 
             nmax=7, set=list(idp = .5))
 f <- function(model, data, ...) predict(model, data, ...)[,3,drop=FALSE]

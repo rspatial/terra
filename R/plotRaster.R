@@ -168,7 +168,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		} else {
 			graphics::par(mar=.getMar(c(0, 0, 0, leg.mar)))
 		}		
-		image(X, Y, Z, col=cols, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, ...)
+		graphics::image(X, Y, Z, col=cols, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, ...)
 
 
 		if (missing(digits)) {

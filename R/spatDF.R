@@ -1,7 +1,7 @@
 
 
 .makeSpatDF <- function(d) {
-	x <- new("Rcpp_SpatDataFrame")
+	x <- methods::new("Rcpp_SpatDataFrame")
 	cls <- sapply(d, class)
 	nms <- colnames(d)
 	for (i in 1:length(cls)) { 

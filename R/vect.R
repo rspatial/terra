@@ -24,7 +24,7 @@ setMethod("vect", signature(x="character"),
 
 setMethod("vect", signature(x="Spatial"), 
 	function(x, ...) {
-		as(x, "SpatVector")
+		methods::as(x, "SpatVector")
 	}
 )
 

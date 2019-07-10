@@ -160,21 +160,21 @@ setMethod ("show" , "SpatRaster",
 
 setMethod ("head" , "SpatVector", 
 	function(x, n=6L, ...) {
-		head(as.data.frame(x), n=n, ...)
+		utils::head(as.data.frame(x), n=n, ...)
 	}
 )
 
 
 setMethod ("tail" , "SpatVector", 
 	function(x, n=6L, ...) {
-		tail(as.data.frame(x), n=n,...)
+		utils::tail(as.data.frame(x), n=n,...)
 	}
 )
 
 
 setMethod ("head" , "SpatRaster", 
 	function(x, n=6L, ...) {
-		head(x[1:n], n=n, ...)
+		utils::head(x[1:n], n=n, ...)
 	}
 )
 
@@ -182,7 +182,7 @@ setMethod ("head" , "SpatRaster",
 setMethod ("tail" , "SpatRaster", 
 	function(x, n=6L, ...) {
 		nc = ncell(x)
-		tail(x[(nc-n+1):nc], n=n, ...)
+		utils::tail(x[(nc-n+1):nc], n=n, ...)
 	}
 )
 

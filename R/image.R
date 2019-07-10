@@ -17,7 +17,7 @@ setMethod("image", signature(x="SpatRaster"),
 		Y <- yFromRow(x, nrow(x):1)
 		value <- matrix(as.vector(x), nrow=nrow(x), byrow=TRUE)
 		value <- t(value[nrow(value):1, ,drop=FALSE])
-		image(x=X, y=Y, z=value, useRaster=useRaster, ...)			
+		graphics::image(x=X, y=Y, z=value, useRaster=useRaster, ...)			
 	}
 )
 

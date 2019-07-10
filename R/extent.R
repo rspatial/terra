@@ -25,7 +25,7 @@ setMethod("ext", signature(x="numeric"),
 		names(x) <- NULL
 		e <- methods::new("SpatExtent")
 		e@ptr <- SpatExtent$new(x[1], x[2], x[3], x[4])
-		if (validObject(e)) return(e)
+		if (methods::validObject(e)) return(e)
 	}	
 )
 

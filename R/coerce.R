@@ -104,7 +104,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 # changed after creation of object from file
 # RAT tables
 
-.RasterLayertoSpatRaster <- function(from) { 
+.RasterLayerToSpatRaster <- function(from) { 
 
 	f <- filename(from)
 	if (f != "") {
@@ -125,7 +125,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 
 
-.RasterBricktoSpatRaster <- function(from) { 
+.RasterBrickToSpatRaster <- function(from) { 
 
 	f <- filename(from)
 	if (f != "") {
@@ -150,9 +150,9 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 
 
-.RasterStacktoSpatRaster <- function(from) { 
+.RasterStackToSpatRaster <- function(from) { 
 	nl <- nlayers(from)
-	rr <- as("SpatRaster", from[[1]])		
+	rr <- methods::as("SpatRaster", from[[1]])		
 	nb <- nbands(from)
 	
 	if ((nb > 1) & (nb == nl)) {
@@ -178,13 +178,13 @@ setMethod("as.array", signature(x="SpatRaster"),
 setAs("Raster", "SpatRaster", 
 	function(from) { 
 		if (inherits(from, "RasterLayer")) {
-			r <- .RasterLayertoSpatRaster(from)
+			r <- .RasterLayerToSpatRaster(from)
 		}
 		if (inherits(from, "RasterStack")) {
-			r <- .RasterStracktoSpatRaster(from)
+			r <- .RasterStackToSpatRaster(from)
 		}
 		if (inherits(from, "RasterBrick")) {
-			r <- .RasterBricktoSpatRaster(from)
+			r <- .RasterBrickToSpatRaster(from)
 		}
 		show_messages(r, "coerce")
 	}

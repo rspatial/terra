@@ -35,7 +35,7 @@ if \code{filled=TRUE}, a new filled contour plot is made. See \code{\link[graphi
 }
 
 \examples{
-r <- rast(system.file("external/test.grd", package="raster"))
+r <- rast(system.file("exdata/test.tif", package="terra"))
 plot(r)
 contour(r, add=TRUE)
 
