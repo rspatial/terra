@@ -109,13 +109,7 @@ setMethod("disaggregate", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("gridDistance", signature(x="SpatRaster"), 
-	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite,wopt)
-		x@ptr <- x@ptr$gridDistance(opt)
-		show_messages(x, "gridDistance")
-	}
-)
+
 
 setMethod("flip", signature(x="SpatRaster"), 
 	function(x, vertical=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {

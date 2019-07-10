@@ -32,7 +32,6 @@ This function is principally used for plotting a histogram, but it also returns 
 \seealso{ \code{\link{pairs}, \link{boxplot}} }
 
 \examples{ 
-library(terra)
 r1 <- r2 <- rast(nrows=50, ncols=50)
 values(r1) <- runif(ncell(r1))
 values(r2) <- runif(ncell(r1))

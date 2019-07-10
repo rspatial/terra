@@ -12,7 +12,7 @@
 
 \bold{If \code{x} is a SpatRaster:}
 
-If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA}.
+If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA}. If argument \code{grid=TRUE}, the distance is computed using a path that goes through the centers of the 8 neighboring cells.
 
 If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization (for now).
 
@@ -24,7 +24,7 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 }
 
 \usage{
-\S4method{distance}{SpatRaster,missing}(x, y, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{distance}{SpatRaster,missing}(x, y, grid=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
 
 \S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", overwrite=FALSE, wopt=list(), ...)
 
@@ -36,6 +36,7 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{y}{missing or SpatVector}
+  \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
@@ -51,12 +52,16 @@ The unit is in meters if the CRS is \code{longlat} and in map units (typically a
 
 
 \examples{
+
 r <- rast(ncol=36,nrow=18)
 v <- rep(NA, ncell(r))
 v[500] <- 1
 values(r) <- v
 d <- distance(r) 
 #plot(d / 100000)
+
+g <- distance(r, grid=TRUE)
+
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
 dp <- distance(r, p1) 

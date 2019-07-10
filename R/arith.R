@@ -43,8 +43,6 @@ setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
 )
 
 
-
-
 setMethod("Compare", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]

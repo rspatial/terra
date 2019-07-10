@@ -26,9 +26,9 @@ raster package \tab terra package\cr
 \code{cellStats}\tab\code{\link{global}}\cr
 \code{projectRaster}\tab\code{\link{warp}, \link{project}}\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
-\code{distanceFromPoints} \tab \code{distance}\cr
+\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
+\code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
 }
-
 
 
 The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
@@ -39,7 +39,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
 \section{I. Creating SpatRaster objects}{
 
-SpatRasterobjects can be created, from scratch, files, or from objects of other classes, with the following functions:
+SpatRaster objects can be created, from scratch, files, or from objects of other classes, with the following functions:
   \tabular{ll}{
     \code{\link{rast}}\tab Create a SpatRaster from scratch, file, or another object\cr
     \code{\link{c}} \tab Combine SpatRasters (multiple layers) (like raster::stack)\cr
@@ -102,7 +102,6 @@ SpatRasterobjects can be created, from scratch, files, or from objects of other 
 
   \tabular{ll}{
     \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA} or to or from a vector object\cr
-    \code{\link{gridDistance}} \tab Distance when traversing grid cells that are not \code{NA} \cr
     \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
@@ -138,7 +137,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{as.points}} \tab Create points from a SpatRaster or SpatVector \cr
     \code{\link{as.lines}} \tab Create points from a SpatRaster or SpatVector\cr
     \code{\link{as.polygons}} \tab Create polygons from a SpatRaster \cr
-    \code{rasterToContour} \tab Contour lines from a SpatRaster \cr
+    \code{\link{as.contour}}  \tab Contour lines from a SpatRaster \cr
     \code{rasterFromXYZ} \tab Create a SpatRaster from regularly spaced points\cr
     \code{rasterFromCells} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -185,10 +184,9 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \code{\link{plot}} \tab Plot a SpatRaster. The main method to create a map \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
     \code{\link{image}} \tab Plot a SpatRaster with the image function \cr
-    \code{persp} \tab Perspective plot of a SpatRaster \cr
-    \code{contour} \tab Contour plot of a SpatRaster \cr
-    \code{filledContour} \tab Filled contour plot of a SpatRaster \cr
-    \code{text} \tab Plot the values of a SpatRaster on top of a map \cr
+    \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
+    \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
+    \code{\link{text}} \tab Plot the values of a SpatRaster or SpatVector on top of a map \cr
     .\cr
     \bold{Interacting with a map} \tab \cr
     \code{\link{zoom}} \tab Zoom in to a part of a map \cr
@@ -200,9 +198,9 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
 	\bold{Other plots} \tab \cr
     \code{\link{plot}} \tab x-y scatter plot of the values of two SpatRaster objects\cr
     \code{\link{hist}} \tab Histogram of SpatRaster values \cr
-    \code{\link{barplot}} \tab barplot of a SpatRaster \cr
-    \code{density} \tab Density plot of SpatRaster values \cr
-    \code{pairs} \tab Pairs plot for layers in a SpatRaster \cr
+    \code{\link{barplot}} \tab Barplot of a SpatRaster \cr
+    \code{\link{density}} \tab Density plot of SpatRaster values \cr
+    \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
     \code{\link{boxplot}} \tab Box plot of the values of a SpatRaster\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -300,12 +298,12 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 \section{XV. SpatExtent objects}{
 
   \tabular{ll}{
-    \code{\link{extent}} \tab Create an extent object \cr
-    \code{\link{intersect}} \tab Intersect two extent objects  \cr
-    \code{\link{union}} \tab Combine two extent objects \cr
-    \code{round} \tab round/floor/ceiling of the coordinates of an Extent object \cr			
-    \code{alignExtent} \tab Align an extent with a SpatRaster \cr
-    \code{drawExtent} \tab Create an Extent object by drawing it on top of a map (see plot) \cr		
+    \code{\link{extent}} \tab Create a SpatExtent object \cr
+    \code{\link{intersect}} \tab Intersect two SpatExtent objects  \cr
+    \code{\link{union}} \tab Combine two SpatExtent objects \cr
+    \code{round} \tab round/floor/ceiling of the coordinates of a SpatExtent object \cr			
+    \code{alignExtent} \tab Align a SpatExtent with a SpatRaster \cr
+    \code{\link{draw}} \tab Create a SpatExtent object by drawing it on top of a map (plot) \cr		
     --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -314,14 +312,13 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 
 \tabular{ll}{
     \code{\link{terraOptions}} \tab Show, set, save or get session options \cr
-    \code{\link{pointDistance}} \tab Distance between points \cr
-    \code{\link{hdr}} \tab Write header file for a number of raster formats \cr
-    \code{\link{extension}} \tab Get or set the extension of a filename \cr
-    \code{\link{cv}} \tab Coefficient of variation  \cr
-    \code{\link{modal}} \tab Modal value  \cr
-    \code{\link{sampleInt}} \tab Random sample of (possibly very large) range of integer values \cr
-    \code{\link{showTmpFiles}} \tab Show temporary files \cr
-    \code{\link{removeTmpFiles}} \tab Remove temporary files \cr
+    \code{hdr} \tab Write header file for a number of raster formats \cr
+    \code{extension} \tab Get or set the extension of a filename \cr
+    \code{cv} \tab Coefficient of variation  \cr
+    \code{modal} \tab Modal value  \cr
+    \code{sampleInt} \tab Random sample of (possibly very large) range of integer values \cr
+    \code{showTmpFiles} \tab Show temporary files \cr
+    \code{removeTmpFiles} \tab Remove temporary files \cr
     --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }

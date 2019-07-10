@@ -152,7 +152,7 @@ bool smooth_operator(std::string oper) {
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr());
 
 	if (!smooth_operator(oper)) {
 		out.setError("unknown arith function");
@@ -278,11 +278,11 @@ SpatRaster SpatRaster::arith_rev(double x, std::string oper, SpatOptions &opt) {
 		if (oper == "+") {
 			for(double& d : a)  d += x;
 		} else if (oper == "-") {
-			for(double& d : a)  d -= x;
+			for(double& d : a)  d = x - d;
 		} else if (oper == "*") {
 			for(double& d : a)  d *= x;
 		} else if (oper == "/") {
-			for(double& d : a)  d /= x;
+			for(double& d : a)  d = x / d;
 		} else if (oper == "^") {
 			for(double& d : a)  d = std::pow(x, d);
 		} else if (oper == "%") {

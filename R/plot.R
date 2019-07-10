@@ -1,17 +1,250 @@
-# Author: Robert J. Hijmans
-# Date :  June 2008
-# Version 1.0
-# License GPL v3
 
-#setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-#	function(x, y, maxcell=100000, xlab="", ylab="", ...)  {
-#		y <- as.integer(y[1])
-#		stopifnot(y>0 && y<=nlyr(x))
-#		x <- x[[y]]
-#		stopifnot(.hasValues(x));
-#		x <- sampleRegular(x, maxcell)
-#		m <- matrix(values(x), nrow=nrow(x), byrow=TRUE)	
-#		require(lattice)
-#		lattice::levelplot(t(m[nrow(m):1, , drop=FALSE]), xlab=xlab, ylab=ylab, ...)
-#	}
-#)
+
+.one.density <- function(x, maxcells=100000, plot=TRUE, ...) {
+	d <- values(x)
+	d <- stats::density(stats::na.omit(d))
+	if (plot) {
+		plot(d, ...)
+		return(invisible(d))
+	} else {
+		return(d)
+	}
+}
+
+
+setMethod("density", signature(x="SpatRaster"), 
+	function(x, maxcells=100000, plot=TRUE, main, ...) {
+		x <- sampleRegular(x, maxcells)
+		res <- list()
+		nl <- nlyr(x)
+		if (nl==1) {
+			res[[1]] <- .one.density(x, plot=plot, ...)
+		} else {
+		
+			if (nl > 16) {
+			warning('only the first 16 layers are plotted')
+				nl <- 16
+				x <- x[[1:16]]
+			}
+			if (missing(main)) {
+				main=names(x) 
+			} else {
+				main <- rep(main, length.out=nl)
+			}
+			nc <- ceiling(sqrt(nl))
+			nr <- ceiling(nl / nc)
+			mfrow <- graphics::par("mfrow")
+			spots <- mfrow[1] * mfrow[2]
+			if (spots < nl) {
+				old.par <- graphics::par(no.readonly = TRUE) 
+				on.exit(graphics::par(old.par))
+				graphics::par(mfrow=c(nr, nc))
+			}
+			for (i in 1:length(x)) {	
+				res[[i]] <- .one.density(x[[i]], maxcells=maxcells, main=main[i], plot=plot, ...)
+			}
+		}
+		if (plot) return(invisible(res))
+		else return(res)
+	}
+)
+
+
+setMethod("persp", signature(x="SpatRaster"), 
+	function(x, maxcells=100000, ...)  {
+		x <- sampleRegular(x, size=maxcells)
+		value <- t(as.matrix(x, wide=TRUE)[nrow(x):1,])
+		y <- yFromRow(x, nrow(x):1)
+		x <- xFromCol(x, 1:ncol(x))
+		graphics::persp(x=x, y=y, z=value, ...)
+	}
+)
+
+
+.plot.filled.contour <- function(x, maxcells=100000, ...) {
+	
+	x <- sampleRegular(x[[1]], maxcells)
+	X <- xFromCol(x, 1:ncol(x))
+	Y <- yFromRow(x, nrow(x):1)
+	Z <- t( matrix( values(x), ncol=ncol(x), byrow=TRUE)[nrow(x):1,] )
+	
+ 	if (is.null(list(...)$asp)) {
+		asp <- ifelse(couldBeLonLat(x, warnings=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
+		graphics::filled.contour(x=X, y=Y, z=Z, asp=asp, ...)
+	} else {
+		graphics::filled.contour(x=X, y=Y, z=Z,...)
+	}
+}
+
+
+setMethod("contour", signature(x="SpatRaster"), 
+	function(x, maxcells=100000, filled=FALSE, ...)  {
+		if (filled) {
+			.plot.filled.contour(x, maxcells=maxcells, ...)
+		} else {
+			x <- sampleRegular(x[[1]], maxcells)
+			if (is.null(list(...)$asp)) {
+				asp <- ifelse(couldBeLonLat(x, warnings=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
+				graphics::contour(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), asp=asp, ...)
+			} else {
+				graphics::contour(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), ...)
+			}
+		}
+	}
+)
+
+
+setMethod("as.contour", signature(x="SpatRaster"), 
+	function(x, maxcells=100000, ...) {
+		x <- sampleRegular(x[[1]], size=maxcells)
+		z <- grDevices::contourLines(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), ...)
+		y <- sapply(1:length(z), function(i) cbind(z[[i]]$level, i, z[[i]]$x, z[[i]]$y))
+		y <- do.call(rbind, y)
+		y[] <- as.numeric(y)
+		u <- unique(y[,1])
+		y[,1] <- match(y[,1], u)
+		vect(y, "lines", atts=data.frame(level=u), crs=crs(x))
+	}
+)
+
+ 
+
+setMethod("pairs", signature(x="SpatRaster"), 
+	function(x, hist=TRUE, cor=TRUE, use="pairwise.complete.obs",  maxcells=100000, ...) {
+	
+		panelhist <- function(x,...)	{
+			usr <- graphics::par("usr"); on.exit(graphics::par(usr))
+			graphics::par(usr = c(usr[1:2], 0, 1.5) )
+			h <- hist(x, plot = FALSE)
+			breaks <- h$breaks
+			nB <- length(breaks)
+			y <- h$counts
+			y <- y/max(y)
+			graphics::rect(breaks[-nB], 0, breaks[-1], y, col="green")
+		}
+		
+		panelcor <- function(x, y,...) {
+			usr <- graphics::par("usr")
+			on.exit(graphics::par(usr))
+			graphics::par(usr = c(0, 1, 0, 1))
+			r <- abs(stats::cor(x, y, use=use))
+			txt <- format(c(r, 0.123456789), digits=2)[1]
+			text(0.5, 0.5, txt, cex = max(0.5, r * 2))
+		}
+	
+		if (hist) {dp <- panelhist} else {dp <- NULL}
+		if (cor) {up <- panelcor} else {up <- NULL}
+	
+	
+		d <- values(sampleRegular(x, maxcells))
+	
+		dots <- list(...) 
+		cex <- dots$cex
+		main <- dots$main
+		if (is.null(cex)) cex <- 0.5
+		if (is.null(main)) main <- ""
+	
+		graphics::pairs(d, main=main, cex=cex, upper.panel=up, diag.panel=dp)
+	}
+)
+
+
+
+.halo <- function(x, y=NULL, labels, col="black", hc="white", hw=0.1, ... ) {
+	xy <- grDevices::xy.coords(x, y)
+	xo <- hw * graphics::strwidth("A")
+	yo <- hw * graphics::strheight("A")
+	theta <- seq(pi/4, 2*pi, length.out=8*hw*10)  
+	for (i in theta) {
+		text( xy$x + cos(i)*xo, xy$y + sin(i)*yo, labels, col=hc, ... )
+	}
+	graphics::text(xy$x, xy$y, labels, col=col, ... )
+}
+
+
+setMethod("text", signature(x="SpatRaster"), 
+	function(x, labels, digits=0, halo=FALSE, ...) {
+		if (missing(labels)) {
+			labels <- 1
+		}
+		if (length(labels) != ncell(x)) {
+			labels <- labels[1]
+			if (is.character(labels)) {
+				i <- which(labels == names(x))
+				if (i == 0) {
+					i <- 1
+				} 
+			}
+			x <- x[[labels]]
+			x <- as.points(x, values=TRUE, na.rm=TRUE)
+			xy <- geom(x)[, c("x", "y")]
+			labels <- as.data.frame(x)[,1]
+			labels <- as.character(round(labels, digits=digits) )
+		}
+		if (halo) {
+			.halo(xy[,1], xy[,2], labels, ...)
+		} else {
+			text(xy[,1], xy[,2], labels, ...)
+		}
+	}
+)
+
+
+setMethod("text", signature(x="SpatVector"), 
+	function(x, labels, halo=FALSE, ...) {
+		if (missing(labels)) {
+			labels <- 1:nrow(x)
+		} else if (nrow(x) > 1 && length(labels) == 1) {
+			labels <- as.data.frame(x)[,labels]
+		} 
+		xy <- coordinates(x)
+		if (halo) {
+			.halo(xy[,1], xy[,2], labels, ...)
+		} else {
+			text(xy[,1], xy[,2], labels, ...)
+		}
+	}
+)
+
+
+
+setMethod("boxplot", signature(x="SpatRaster"), 
+	function(x, maxcell=100000, ...) {
+		cn <- names(x)
+		if ( ncell(x) > maxcell) {
+			warning("taking a sample of ", maxcell, " cells")
+			x <- sampleRegular(x, maxcell)
+		} 
+		x <- values(x)
+		colnames(x) <- cn
+		boxplot(x, ...)
+	}
+)
+
+
+
+setMethod("barplot", "SpatRaster", 
+	function(height, maxcell=1000000, digits=0, breaks=NULL, col=grDevices::rainbow, ...) {
+		
+		x <- values(sampleRegular(height[[1]], maxcell))
+		adj <- length(x) / ncell(height)
+		if (adj < 1) {
+			warning("a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
+		}
+
+		if (!is.null(digits)) {
+			x <- round(x, digits)
+		}
+		
+		if (!is.null(breaks)) {
+			x <- cut(x, breaks)
+		}
+		
+		x <- table(x) / adj
+		if (is.function(col)) {
+			col <- col(length(x))
+		}
+		barplot(x, col=col, ...)
+	}
+)
+

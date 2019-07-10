@@ -36,18 +36,18 @@ void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldco
 
 
 std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigned scols) {
-	unsigned oldcell, oldc;
 	unsigned oldnc = ncell();
 	unsigned nl = source[src].nlyr;
 	std::vector<unsigned> oldcol, oldrow;
 	getSampleRowCol(oldrow, oldcol, nrow(), ncol(), srows, scols);
 	std::vector<double>	out; 
+	out.reserve(srows*scols);
     for (size_t lyr=0; lyr<nl; lyr++) {
         unsigned old_offset = lyr * oldnc;
         for (size_t r=0; r<srows; r++) {
- 			oldc = old_offset + oldrow[r] * ncol();
+ 			unsigned oldc = old_offset + oldrow[r] * ncol();
             for (size_t c=0; c<scols; c++) {
-				oldcell = oldc + oldcol[c];
+				unsigned oldcell = oldc + oldcol[c];
                 out.push_back(source[src].values[oldcell]);
             }
         }
@@ -65,7 +65,7 @@ SpatRaster SpatRaster::sampleRegular(unsigned size) {
 	unsigned nc = ceil(ncol() * f);
 	if ((nc == ncol()) && (nr == nrow())) return( deepCopy() );
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr());
 	out.source[0].nrow=nr;
 	out.source[0].ncol=nc;
 
