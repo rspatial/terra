@@ -1,4 +1,4 @@
-#include "SpatBase.h"
+#include "spatBase.h"
 #include <fstream>
 #include <random>
 #include <chrono>

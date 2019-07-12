@@ -9,7 +9,7 @@
 //
 // spat is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURP0OSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
@@ -22,6 +22,11 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 	SpatRaster out = geometry(nlyr());
 	e = out.align(e, "near");
 	e.unite(extent);
+	if (extent.equal(e, 1)) {
+		out = deepCopy();
+		return out;
+	}
+	
 	out.setExtent(e, true);
 	if (!hasValues()) return(out);
 	
@@ -45,5 +50,4 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 	out.writeStop();
 	return(out);
 }
-
 

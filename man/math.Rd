@@ -4,6 +4,7 @@
 
 \alias{Arith-methods}
 \alias{Compare-methods}
+\alias{Summary-methods}
 \alias{Math-methods}
 \alias{Math2-methods}
 
@@ -18,23 +19,22 @@
 \alias{Compare,SpatRaster,math-method}
 \alias{Math,SpatRaster-method}
 \alias{Math2,SpatRaster-method}
+\alias{Summary,SpatRaster-methods}
 
 \title{Mathematical operations with SpatRaster objects}
 
 \description{
-Standard arithmetic operators for computations with Raster* objects and numeric values. The following operators and methods are available:
+Standard arithmetic operators for computations with SpatRaster objects and numeric values. The following operators and methods are available:
 
-\code{ +, -, *, /, ^, \%\%, \%/\% }
+\bold{Arith}: \code{ +, -, *, /, ^, \%\%, \%/\% }
 
-\code{==, !=, >, <,  <=, >=}
+\bold{Compare}: \code{==, !=, >, <,  <=, >=}
+
+\bold{Summary}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
  
-\code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", }
-
-\code{"cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", }
-
-\code{"asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh"}. 
+\bold{Math}: \code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh"}
  
-\code{"round", "signif"}
+\bold{Math2}: \code{"round", "signif"}
  
 If multiple SpatRaster objects are used, these must have the same extent and resolution. Operators are applied on a cell by cell basis.
 }

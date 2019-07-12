@@ -19,6 +19,16 @@
 #include "string_utils.h"
 #include "math_utils.h"
 
+
+bool SpatExtent::equal(SpatExtent e, double tolerance) {
+	bool e1 = is_equal(xmax, e.xmax, tolerance);
+	bool e2 = is_equal(xmin, e.xmin, tolerance);
+	bool e3 = is_equal(ymax, e.ymax, tolerance);
+	bool e4 = is_equal(ymin, e.ymin, tolerance);
+	return (e1 && e2 && e3 && e4);
+}	
+
+		
 void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	if (snap != "") {

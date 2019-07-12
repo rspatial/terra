@@ -28,6 +28,7 @@ raster package \tab terra package\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
 \code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
+\code{nlayers}\tab\code{\link{nlyr}}\cr
 }
 
 
@@ -55,7 +56,7 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
     \code{mosaic} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
-    \code{extend} \tab Enlarge a SpatRaster \cr
+    \code{\link{extend}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
@@ -82,7 +83,7 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
 }  
   
   
-\section{IV. Cell based computation}{
+\section{IV. Local (cell based) computation}{
 
   \tabular{ll}{
     \code{\link{reduce}} \tab Computations on a single SpatRaster (similar to "calc" in the "raster" package) \cr
@@ -91,7 +92,7 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
-    \code{rastApply} \tab Computations on groups of layers in SpatRaster \cr
+    \code{\link{rastApply}} \tab Apply a function to groups of layers in a SpatRaster \cr
     \code{rastSelect} \tab Select cell values from different layers using an index SpatRaster\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }

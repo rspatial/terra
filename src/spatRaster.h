@@ -322,75 +322,67 @@ class SpatRaster {
 
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
-		SpatVector as_polygons(bool values, bool narm);
-		SpatVector as_points(bool values, bool narm);
-
-        SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
+		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster area(SpatOptions &opt);
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
-		SpatRaster arith(double x, std::string oper, SpatOptions &opt);
-		SpatRaster arith_rev(double x, std::string oper, SpatOptions &opt);
+		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);
+		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);
+		SpatRaster apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt);
+
+		SpatVector as_polygons(bool values, bool narm);
+		SpatVector as_points(bool values, bool narm);
+		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
+
 		SpatRaster buffer(double d, SpatOptions &opt);
-
-		SpatRaster gridDistance(SpatOptions &opt);
-		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions &opt);
-
-		bool get_aggregate_dims(std::vector<unsigned> &fact, std::string &message);
-		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);
-		std::vector<std::vector<double> > get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim);
-
-		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions &opt);
 		SpatRaster cover(SpatRaster x, double value, SpatOptions &opt);
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
+        SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
 		SpatRaster distance(SpatOptions &opt);
 		SpatRaster distance(SpatVector p, SpatOptions &opt);
 
+		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
+		SpatRaster extend(SpatExtent e, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v);
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
         std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
-        std::vector<double> line_cells(SpatGeom& g);
-        std::vector<double> polygon_cells(SpatGeom& g);
-
-		SpatRaster extend(SpatExtent e, SpatOptions &opt);
-
 		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, std::string fun, SpatOptions &opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
+
+		bool get_aggregate_dims(std::vector<unsigned> &fact, std::string &message);
+		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);
+		std::vector<std::vector<double> > get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim);
+		SpatDataFrame global(std::string fun, bool narm);
+		SpatRaster gridDistance(SpatOptions &opt);
+		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions &opt);
+
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
 		SpatRaster init(double value, SpatOptions &opt);
-
 		SpatRaster isnot(SpatOptions &opt);
-		SpatDataFrame global(std::string fun, bool narm);
-		
+        std::vector<double> line_cells(SpatGeom& g);		
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
 		SpatRaster mask(SpatVector x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
-
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
-		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
-
-//		SpatRaster merge(SpatRaster x, SpatOptions &opt);
+        std::vector<double> polygon_cells(SpatGeom& g);
 		SpatRaster rotate(bool left, SpatOptions &opt);
-
 		SpatRaster rasterize(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);
 		SpatRaster shift(double x, double y, SpatOptions &opt);
-
-
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
+
 		SpatRaster transpose(SpatOptions &opt);
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
-		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		std::vector<std::vector<double>> unique(bool bylayer);
 		SpatRaster project(std::string crs, std::string method, SpatOptions &opt);
 		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);

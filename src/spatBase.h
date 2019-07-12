@@ -163,6 +163,9 @@ class SpatExtent {
 		bool valid() {
 			return ((xmax > xmin) && (ymax > ymin));
 		}
+		
+		bool equal(SpatExtent e, double tolerance); 
+			
 };
 
 

@@ -103,7 +103,7 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	SpatRaster e = edges(false, etype, 8, ops);
 	SpatVector p = e.as_points(false, true);
 	out = out.distance(p, ops);
-	out = out.arith(d, "<=", opt);
+	out = out.arith(d, "<=", false, opt);
 	return out;
 }
 

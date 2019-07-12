@@ -10,6 +10,7 @@ if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) stan
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}	
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
+if (!isGeneric("rastApply")) { setGeneric("rastApply", function(x, ...) standardGeneric("rastApply"))}
 if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardGeneric("reduce"))}
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}	

@@ -69,3 +69,4 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	return(out);
 }
 
+

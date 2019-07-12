@@ -19,15 +19,12 @@
 #include "math_utils.h"
 
 
+
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
 	
 	
 	if (ext) {
-		bool e1 = is_equal(x.extent.xmax, extent.xmax, 1);
-		bool e2 = is_equal(x.extent.xmin, extent.xmin, 1);
-		bool e3 = is_equal(x.extent.ymax, extent.ymax, 1);
-		bool e4 = is_equal(x.extent.ymin, extent.ymin, 1);
-		if (!(e1 && e2 && e3 && e4)) {
+		if (!extent.equal(x.extent, 1)) {
 			setError("extents do not match");
 			return false;
 		}

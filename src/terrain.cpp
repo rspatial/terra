@@ -17,11 +17,14 @@
 
 /* Robert Hijmans, October 2011 */
 
-#include <vector>
-#include <algorithm>
+/*
+#include "SpatRaster.h"
+#include "math_utils.h"
 #include "distance.h"
 #include <cmath>
 #include <string>
+//#include <vector>
+#include <algorithm>
 
 
 #ifndef M_PI
@@ -29,38 +32,46 @@
 #endif
 
 
-double get_TRI (double v[], int n, double x) {
+double TRI (std::vector<double> v) {
 	double s = 0;
-	for (int i=0; i<n; i++) {
-		s = s + fabs(v[i] - x);
+	size_t n = 0;
+	if (std::isnan(v[4])) return(NAN);
+	for (size_t i=0; i<9; i++) {
+		if (! (i==4 || std::isnan(v[i]))) {
+			s += fabs(v[i] - v[4]);
+			n++;
+		}
 	}
-	s = s / n;
-	return(s);
-}
-
-double get_TPI (double v[], int n, double x) {
-	double s = 0;
 	if (n > 0) {
-		for (int i=0; i<n; i++) {
-			s = s + v[i];
-		}
 		s = s / n;
-		s = x - s;
+	} else {
+		s = NAN;
 	}
 	return(s);
 }
 
-double get_roughness (double v[], int n) {
-	double min = v[0];
-	double max = v[0];
-	for (int i=1; i < n; i++) {
-		if (v[i] < min) {
-			min = v[i];
-		} else if (v[i] > max) {
-			max = v[i];
+double TPI (std::vector<double> v) {
+	double s = 0;
+	size_t n = 0;
+	for (size_t i=0; i<9; i++) {
+		if (! (i==4 || std::isnan(v[i]))) {
+			s += v[i];
+			n++;
 		}
 	}
-	return(max - min);
+	if (n > 0) {
+		s = s / n;
+		s = v[4] - s;
+	} else {
+		s = NAN;
+	}
+	return(s);
+}
+
+double roughness (std::vector<double> v) {
+	double vmin, vmax;
+	minmax(v.begin(), v.end(), vmin, vmax);
+	return(vmax - vmin);
 }
 
 
@@ -70,7 +81,10 @@ std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double
 	int ncols = m[0].size();
 	std::vector<std::vector<double>> v (nrows, std::vector<double>(ncols, NAN));
 
+
 	int opt;
+	
+	
 	if (option == "TPI") {
 		// TPI (Topographic Position Index)
 		// difference between the value of a cell and the mean value of its 8 surrounding cells.
@@ -86,7 +100,7 @@ std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double
 	}
 
 	int r, c, n;
-	double va[9];
+	std::vector<double> va(9);
 	for (int row = 0; row < (nrows-1); row++) {
 		for (int col = 0; col < (ncols-1); col++) {
 			n = 0;
@@ -111,11 +125,11 @@ std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double
 				}
 			}
 			if (opt==0) {
-				v[row][col] = get_TPI(va, n, m[row][col]);
+				v[row][col] = TPI(va);
 			} else if (opt==1) {
-				v[row][col] = get_TRI(va, n, m[row][col]);
+				v[row][col] = TRI(va);
 			} else { // rough
-				v[row][col] = get_roughness(va, n);
+				v[row][col] = roughness(va);
 			}
 		}
 	}
@@ -206,4 +220,85 @@ std::vector<std::vector<double> > slope4plane(std::vector<std::vector<double> > 
 
 	return(v);
 }
+*/
 
+/*
+
+SpatRaster SpatRaster::terrain(std::string option, std::string unit, SpatOptions &opt) {
+
+	SpatRaster out=geometry();
+    std::function<std::vector<double>(std::vector<double>&, double&)> terrainFun;
+
+	if (option == "TPI") {
+		terrainFun = TPI;
+	} else if (option == "TRI") {
+		terrainFun = TRI;
+	} else { //(option == 'roughness')
+		terrainFun = roughness;
+	}
+
+	std::vector<double> va(9, NAN);
+	unsigned nc = ncol();
+	unsigned nr = nrow();
+ 	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i = 0; i < out.bs.n; i++) {
+		unsigned startrow = std::max(0, bs.row[i]-1);
+		unsigned nrows = std::min(nrow()-startrow, bs.nrows[i]+1);
+		std::vector<double> vv;
+		if (startrow = 0) {
+			vv.insert(vv.begin(), std::vector<double>(nc, NAN))
+		}
+        std::vector<double> v = readValues(startrow, nrows, 0, nc);
+		vv.insert(vv.begin(), v);
+		if ((startrow+nrows) > nr) {
+			vv.insert(vv.begin(), std::vector<double>(nc, NAN))		
+		}
+		
+		std::vector<double> a = readBlock(out.bs, i);
+		for (size_t j=0; j<a.size(); j++) {
+			
+			
+			
+		}
+	}
+	
+	for (int row = 0; row < (nrows-1); row++) {
+		for (int col = 0; col < (ncols-1); col++) {
+			n = 0;
+			for(int i = -2; i < 3; i++) {
+				r = i + row;
+				if (r < 0 || r > (nrows-1)) {
+					continue;
+				}
+				for(int j = -2; j < 3; j++) {
+					c = j + col;
+					if (c < 0 || c > (ncols-1)) {
+						continue;
+					}
+					// center not included for TPI and TRI
+					if (r==0 && c==0 && opt != 2) {
+						continue;
+					}
+					if (! std::isnan(m[r][c]) ) {
+						va[n] = m[r][c];
+						n++;
+					}
+				}
+			}
+			if (opt==0) {
+				v[row][col] = get_TPI(va, n, m[row][col]);
+			} else if (opt==1) {
+				v[row][col] = get_TRI(va, n, m[row][col]);
+			} else { // rough
+				v[row][col] = get_roughness(va, n);
+			}
+		}
+	}
+	return(
+
+	return out;
+}
+
+
+*/
