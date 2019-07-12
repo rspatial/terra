@@ -4,7 +4,6 @@
 
 \alias{Arith-methods}
 \alias{Compare-methods}
-\alias{Summary-methods}
 \alias{Math-methods}
 \alias{Math2-methods}
 
@@ -19,7 +18,6 @@
 \alias{Compare,SpatRaster,math-method}
 \alias{Math,SpatRaster-method}
 \alias{Math2,SpatRaster-method}
-\alias{Summary,SpatRaster-methods}
 
 \title{Mathematical operations with SpatRaster objects}
 
@@ -30,7 +28,7 @@ Standard arithmetic operators for computations with SpatRaster objects and numer
 
 \bold{Compare}: \code{==, !=, >, <,  <=, >=}
 
-\bold{Summary}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
+\bold{\code{\link{Summary}}}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
  
 \bold{Math}: \code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh"}
  

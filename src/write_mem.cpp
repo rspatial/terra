@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 
-#include "SpatRaster.h"
+#include "spatRaster.h"
 
 
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
