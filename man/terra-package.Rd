@@ -99,8 +99,9 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
     \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
     \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{freq} \tab Frequency table of SpatRaster cell values \cr
+    \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
     \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
+    \code{quantile} \tab Quantiles \cr
     \code{summary} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -289,7 +290,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
     \code{\link{extent}} \tab Create a SpatExtent object \cr
     \code{\link{intersect}} \tab Intersect two SpatExtent objects  \cr
     \code{\link{union}} \tab Combine two SpatExtent objects \cr
-    \code{round} \tab round/floor/ceiling of the coordinates of a SpatExtent object \cr			
+    \code{\link{Math-methods}} \tab round/floor/ceiling of the coordinates of a SpatExtent \cr			
     \code{\link{align}} \tab Align a SpatExtent with a SpatRaster \cr
     \code{\link{draw}} \tab Create a SpatExtent object by drawing it on top of a map (plot) \cr		
 --------------------------- \tab ------------------------------------------------------------------------------------------ \cr

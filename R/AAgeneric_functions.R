@@ -43,11 +43,11 @@ if (!isGeneric("extract")) { setGeneric("extract", function(x, y, ...) standardG
 if (!isGeneric("extend")) {setGeneric("extend", function(x, y, ...) standardGeneric("extend"))}	
 if (!isGeneric("flip")) {setGeneric("flip", function(x, direction, ...) standardGeneric("flip")) }
 if (!isGeneric("focal")) { setGeneric("focal", function(x, ...) standardGeneric("focal")) }
+if (!isGeneric("freq")) { setGeneric("freq", function(x, ...) standardGeneric("freq")) }	
 if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("geom"))}	
 if (!isGeneric("global")) {setGeneric("global", function(x, ...) standardGeneric("global"))}	
 #if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}	
 if (!isGeneric("hasValues")) {setGeneric("hasValues", function(x, ...) standardGeneric("hasValues")) }	
-if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
 if (!isGeneric("head")) { setGeneric("head", function(x, ...) standardGeneric("head"))}	
 if (!isGeneric("ifel")) {setGeneric("ifel", function(test, yes, no, ...) standardGeneric("ifel"))}	
 if (!isGeneric("image")) {setGeneric("image", function(x, ...)standardGeneric("image"))}	
@@ -57,6 +57,7 @@ if (!isGeneric("is.factor")) {setGeneric("is.factor", function(x) standardGeneri
 if (!isGeneric("isGlobalLonLat")) { setGeneric("isGlobalLonLat", function(x,...) standardGeneric("isGlobalLonLat"))}	
 if (!isGeneric("isLonLat")) { setGeneric("isLonLat", function(x, ...) standardGeneric("isLonLat"))}	
 if (!isGeneric("mask")) { setGeneric("mask", function(x, mask, ...) standardGeneric("mask")) }	
+if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
 if (!isGeneric("ncell")) { setGeneric("ncell", function(x) standardGeneric("ncell")) }	
 if (!isGeneric("nrow")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	
 if (!isGeneric("ncol")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	

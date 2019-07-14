@@ -29,3 +29,36 @@ setMethod("Math2", signature(x="SpatRaster"),
 		show_messages(x, oper)
 	}	
 )
+
+
+setMethod("Math", signature(x="SpatExtent"),
+    function(x){ 
+		oper <- as.vector(.Generic)[1]
+		if (oper == "floor") {
+			x@ptr <- x@ptr$floor(x@ptr)
+		} else if (oper == "ceil") {
+			x@ptr <- x@ptr$ceil(x@ptr)
+		} else {
+			stop("not implemented for SpatExtent")
+		}
+		if (!x@ptr$valid) {
+			stop("invalid extent")
+		}
+		return(x)		
+	}	
+)
+
+setMethod("Math2", signature(x="SpatExtent"),
+    function(x, digits=0){ 
+		oper <- as.vector(.Generic)[1]
+		if (oper == "round") {
+			x@ptr <- x@ptr$round(x@ptr, digits)
+			if (!x@ptr$valid) {
+				stop("invalid extent")
+			}
+			return(x)
+		} else {
+			stop("not implemented for SpatExtent")
+		}
+	}	
+)

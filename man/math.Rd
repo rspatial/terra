@@ -18,11 +18,15 @@
 \alias{Compare,SpatRaster,math-method}
 \alias{Math,SpatRaster-method}
 \alias{Math2,SpatRaster-method}
+\alias{Math,SpatExtent-method}
+\alias{Math2,SpatExtent-method}
+\alias{Compare,SpatExtent,SpatExtent-method}
 
 \title{Mathematical operations with SpatRaster objects}
 
 \description{
-Standard arithmetic operators for computations with SpatRaster objects and numeric values. The following operators and methods are available:
+
+Standard arithmetic operators for computations with SpatRaster objects and numeric values. The following operators and methods are available for SpatRaster:
 
 \bold{Arith}: \code{ +, -, *, /, ^, \%\%, \%/\% }
 
@@ -35,6 +39,9 @@ Standard arithmetic operators for computations with SpatRaster objects and numer
 \bold{Math2}: \code{"round", "signif"}
  
 If multiple SpatRaster objects are used, these must have the same extent and resolution. Operators are applied on a cell by cell basis.
+
+For \bold{SpatExtent} the following methods have been implemented: \code{"round", "floor", "ceil", "=="}
+
 }
 
 

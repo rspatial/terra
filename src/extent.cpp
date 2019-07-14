@@ -28,7 +28,33 @@ bool SpatExtent::equal(SpatExtent e, double tolerance) {
 	return (e1 && e2 && e3 && e4);
 }	
 
-		
+SpatExtent SpatExtent::round(int n) {
+	double xn = roundn(xmin, n);
+	double xx = roundn(xmax, n);
+	double yn = roundn(ymin, n);
+	double yx = roundn(ymax, n);
+	SpatExtent e(xn, xx, yn, yx);
+	return e;
+}	
+
+SpatExtent SpatExtent::floor() {
+	double xn = std::floor(xmin);
+	double xx = std::floor(xmax);
+	double yn = std::floor(ymin);
+	double yx = std::floor(ymax);
+	SpatExtent e(xn, xx, yn, yx);
+	return e;
+}	
+
+SpatExtent SpatExtent::ceil() {
+	double xn = std::ceil(xmin);
+	double xx = std::ceil(xmax);
+	double yn = std::ceil(ymin);
+	double yx = std::ceil(ymax);
+	SpatExtent e(xn, xx, yn, yx);
+	return e;
+}	
+
 void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	if (snap != "") {

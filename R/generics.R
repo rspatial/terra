@@ -128,6 +128,21 @@ setMethod("flip", signature(x="SpatRaster"),
 )
 
 
+setMethod("freq", signature(x="SpatRaster"), 
+	function(x, bylayer=TRUE, ...) {
+		v <- x@ptr$freq(bylayer[1])
+		if (bylayer) {
+			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
+			v <- do.call(rbind, v)
+			colnames(v) <- c("layer", "value", "count")
+		} else {
+			v <- matrix(v[[1]], ncol=2, dimnames=list(NULL, c("value", "count")))
+		}
+		v
+	}
+)
+
+
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite,wopt)
