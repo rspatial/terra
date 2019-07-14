@@ -23,7 +23,7 @@ Aggregate a SpatRaster to create a new SpatRaster with a lower resolution (large
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 

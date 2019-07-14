@@ -75,7 +75,7 @@ setMethod("hist", signature(x="SpatRaster"),
 		v <- values(sampleRegular(x, maxcell))
 		msg <- paste(round(100 * length(v) / ncell(x)), "% of the raster cells were used.", sep="")
 		if (any(is.na(v))) {
-			v <- na.omit(v)
+			v <- stats::na.omit(v)
 			msg <- paste(msg, " (of which ", 100 - round(100 * length(v) / maxcell ), "% was NA.)", sep="")
 		}
 		warning(msg)

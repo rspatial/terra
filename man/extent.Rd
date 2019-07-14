@@ -14,7 +14,7 @@
 \alias{as.character,SpatExtent-method}
 
   
-\title{ext}
+\title{Create, get or set a SpatExtent}
 
 \description{
 Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create a SpatExtent from a vector (length=4; order= xmin, xmax, ymin, ymax)
@@ -29,7 +29,7 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
 \arguments{
   \item{x}{SpatRaster}
   \item{value}{SpatExtent}  
-  \item{...}{Additional arguments. None implemented }
+  \item{...}{additional arguments. None implemented }
 }
  
 \value{

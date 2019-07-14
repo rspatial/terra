@@ -131,7 +131,7 @@ function(x, i, j, ... , drop=FALSE) {
 setMethod("[", c("SpatVector", "missing", "character"),
 function(x, i, j, ... , drop=FALSE) {
 	m <- match(j, names(x))
-	m <- na.omit(m)
+	m <- stats::na.omit(m)
 	if (length(m) == 0) { 
 		m <- 0
 	}
@@ -141,7 +141,7 @@ function(x, i, j, ... , drop=FALSE) {
 setMethod("[", c("SpatVector", "numeric", "character"),
 function(x, i, j, ... , drop=FALSE) {
 	m <- match(j, names(x))
-	m <- na.omit(m)
+	m <- stats::na.omit(m)
 	if (length(m) == 0) m[,m,drop=drop]
 })
 

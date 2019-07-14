@@ -3,7 +3,7 @@
 	xy <- graphics::locator(n=10000, type="l", col=col, lwd=lwd, ...)
 	xy <- cbind(xy$x, xy$y)
 	xy <- rbind(xy, xy[1,])
-	lines(xy[(length(xy[,1])-1):length(xy[,1]),], col=col, lwd=lwd, ...)
+	graphics::lines(xy[(length(xy[,1])-1):length(xy[,1]),], col=col, lwd=lwd, ...)
 	g <- cbind(1,1,xy,0)
 	vect(g, "polygons")
 }
@@ -38,7 +38,7 @@
 		e[4] <- e[4] + 0.0000001
 	}
 	p <- rbind(c(e[1], e[3]), c(e[1], e[4]), c(e[2], e[4]), c(e[2], e[3]), c(e[1], e[3]) )
-	lines(p, col=col)
+	graphics::lines(p, col=col)
 	return(ext(e))
 }
 

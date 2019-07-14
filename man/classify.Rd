@@ -5,10 +5,10 @@
 \alias{classify}
 \alias{classify,SpatRaster-method}
 
-\title{classify}
+\title{Classify (or reclassify) cell values}
 
 \description{
-Classify values of a SpatRaster. The function (re)classifies groups of values to other values. 
+Classify values of a SpatRaster. The function (re-)classifies groups of values to other values. 
 
 Classification can be based on ranges "from-to-becomes" or on specific values "is-becomes", or on "cuts".
 

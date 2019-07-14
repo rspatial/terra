@@ -43,7 +43,7 @@ Coercion to other object types
 \item{mode}{this argument is ignored}
 \item{values}{logical; include cell values as attributes?}
 \item{na.rm}{logical; exclude cells with NAs?}
-\item{...}{Additional arguments. None implemented}
+\item{...}{additional arguments. None implemented}
 }
 
 \value{

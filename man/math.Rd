@@ -39,7 +39,7 @@ If multiple SpatRaster objects are used, these must have the same extent and res
 
 
 \section{Note}{
-You can use the somewhat more flexible \code{\link{reduce}} method instead of the Math-methods.
+You can use the somewhat more flexible \code{\link{app}} method instead of the Math-methods.
 }
 
 

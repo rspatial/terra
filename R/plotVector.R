@@ -52,7 +52,7 @@ setMethod("lines", signature(x="SpatVector"),
 		g <- geom(x)
 		gtype <- geomtype(x)
 		if (gtype == "points") {
-			points(g[,3:4], ...)
+			graphics::points(g[,3:4], ...)
 		} else {
 			g <- split(g, g[,1])
 			if (gtype == "polygons") {
@@ -60,7 +60,7 @@ setMethod("lines", signature(x="SpatVector"),
 			} else {
 				g <- lapply(g, function(x) split(x, x[,2]))
 			}
-			p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...)))
+			p <- sapply(g, function(x) lapply(x, function(y) graphics::lines(y[,3:4], ...)))
 		}
 	}
 )
@@ -69,7 +69,7 @@ setMethod("lines", signature(x="SpatVector"),
 
 setMethod("points", signature(x="SpatVector"), 
 	function(x, ...)  {
-		points(geom(x)[,3:4], ...)
+		graphics::points(geom(x)[,3:4], ...)
 	}
 )
 
@@ -78,7 +78,7 @@ setMethod("lines", signature(x="SpatExtent"),
 	function(x, ...)  {
 		e <- as.vector(x)
 		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
-		lines(p, ...)		
+		graphics::lines(p, ...)		
 	}
 )
 

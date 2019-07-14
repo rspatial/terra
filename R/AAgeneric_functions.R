@@ -1,20 +1,23 @@
 # (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
 # terra
+if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}
+if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app"))}
 if (!isGeneric("as.contour")) {setGeneric("as.contour", function(x,...) standardGeneric("as.contour"))}	
 if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGeneric("as.lines"))}	
 if (!isGeneric("as.points")) {setGeneric("as.points", function(x,...) standardGeneric("as.points"))}	
 if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standardGeneric("as.polygons"))}	
 if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGeneric("classify")) }
+if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGeneric("collapse"))}
 if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}	
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
-if (!isGeneric("rastApply")) { setGeneric("rastApply", function(x, ...) standardGeneric("rastApply"))}
-if (!isGeneric("reduce")) { setGeneric("reduce", function(x, fun, ...) standardGeneric("reduce"))}
+if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
+if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}	
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}	
-
+if (!isGeneric("tapp")) { setGeneric("tapp", function(x, ...) standardGeneric("tapp"))}
 
 ## shared with "raster"
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}	
@@ -47,6 +50,7 @@ if (!isGeneric("hasValues")) {setGeneric("hasValues", function(x, ...) standardG
 if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
 if (!isGeneric("head")) { setGeneric("head", function(x, ...) standardGeneric("head"))}	
 if (!isGeneric("ifel")) {setGeneric("ifel", function(test, yes, no, ...) standardGeneric("ifel"))}	
+if (!isGeneric("image")) {setGeneric("image", function(x, ...)standardGeneric("image"))}	
 if (!isGeneric("init")) {setGeneric("init", function(x, ...) standardGeneric("init"))}	
 if (!isGeneric("interpolate")) { setGeneric("interpolate", function(object, ...) standardGeneric("interpolate"))}	
 if (!isGeneric("is.factor")) {setGeneric("is.factor", function(x) standardGeneric("is.factor"))}
@@ -71,9 +75,9 @@ if (!isGeneric("readStop")) {setGeneric("readStop", function(x)	standardGeneric(
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }
 if (!isGeneric("res<-")) { setGeneric("res<-", function(x, value) standardGeneric("res<-")) }
 if (!isGeneric("sampleRegular")) { setGeneric("sampleRegular", function(x, size, ...) standardGeneric("sampleRegular"))}
+if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}
 if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
-if (!isGeneric("shift")) {setGeneric("shift", function(x, ...)
-standardGeneric("shift"))}	
+if (!isGeneric("shift")) {setGeneric("shift", function(x, ...) standardGeneric("shift"))}	
 if (!isGeneric("subset")) {setGeneric("subset", function(x, ...) standardGeneric("subset")) }
 if (!isGeneric("t")) { setGeneric("t", function(x) standardGeneric("t"))}	
 if (!isGeneric("tail")) { setGeneric("tail", function(x, ...) standardGeneric("tail"))}	

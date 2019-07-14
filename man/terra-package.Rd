@@ -5,10 +5,9 @@
 
 \docType{package}
 
-\title{terra}
+\title{The "terra" package}
 
 \description{
-
 The "terra" package implements classes for spatial data (see \link{SpatRaster-class}) and supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polylygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
 
 The package is conceived as a replacement of the "raster" package. It has a very similar, but simpler, interface, and it is faster. Like the "raster" package, "terra" provides classes and functions to manipulate geographic (spatial) data in "raster" and "vector". Raster data divides space into cells (rectangles; pixels) of equal size (in units of the coordinate reference system). Such continuous spatial data are also referred to as "grid" data, and be contrasted with discrete "vector" spatial data such as points, lines, polygons. An important difference is that "terra" has a single main class for raster data, "SpatRaster", as opposed to the three classes in the "raster" package (RasterLayer, RasterStack, RasterBrick). 
@@ -18,10 +17,12 @@ Note the following important differences in function names with the raster packa
 \tabular{ll}{
 raster package \tab terra package\cr
 \code{raster, brick}\tab\code{\link{rast}}\cr
-\code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
 \code{stack} (for creating an object from file)\tab\code{\link{rast}}\cr
+\code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
+\code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
 \code{extent}\tab\code{\link{ext}}\cr
-\code{calc}\tab\code{\link{reduce}}\cr
+\code{calc}\tab\code{\link{app}}\cr
+\code{stackApply}\tab\code{\link{tapp}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
 \code{projectRaster}\tab\code{\link{warp}, \link{project}}\cr
@@ -29,6 +30,7 @@ raster package \tab terra package\cr
 \code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
+\code{stackSelect}\tab\code{\link{collapse}}\cr
 }
 
 
@@ -45,7 +47,7 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{rast}}\tab Create a SpatRaster from scratch, file, or another object\cr
     \code{\link{c}} \tab Combine SpatRasters (multiple layers) (like raster::stack)\cr
     \code{\link{subset}} \tab Select layers of a SpatRaster\cr
-  --------------------------- \tab --------------------------------------------------------------------------------------------------- \cr  
+--------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
@@ -61,61 +63,65 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
     \code{\link{resample}} \tab Warp values to a SpatRaster with a different origin or resolution \cr	
-    \code{\link{warp}} \tab project values to a SpatRaster with a different coordinate reference system \cr	
+    \code{\link{warp}} \tab Project values to a SpatRaster with a different coordinate reference system \cr	
     \code{\link{shift}} \tab Adjust the location of SpatRaster \cr
     \code{\link{flip}} \tab  Flip values horizontally or vertically \cr
     \code{\link{rotate}} \tab Rotate values around the date-line (for lon/lat data) \cr
     \code{\link{t}} \tab Transpose a SpatRaster\cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+--------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
+  
+\section{III. Local (cell based) computation}{
 
-\section{III. Raster algebra}{
-	\tabular{ll}{
+  \tabular{ll}{
     \code{\link{Arith-methods}} \tab Arith functions (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
 	\code{\link{Math-methods}} \tab Math functions like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
     \code{\link{Logic-methods}} \tab Logic functions (\code{!, &, |}) \cr
     \code{\link{Summary-methods}} \tab Summary functions (\code{mean, max, min, range, prod, sum, any, all}) \cr
     \code{\link{Compare-methods}} \tab Compare functions (\code{==, !=, >, <, <=, >=}) \cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
-	}
-}  
-  
-  
-\section{IV. Local (cell based) computation}{
-
-  \tabular{ll}{
-    \code{\link{reduce}} \tab Computations on a single SpatRaster (similar to "calc" in the "raster" package) \cr
+    \code{\link{app}} \tab Apply a function to cells of a SpatRaster (as in \code{base::apply}) \cr
+    \code{\link{tapp}} \tab Apply a function to cells of a SpatRaster by groups of layers (as in \code{base::tapply})\cr
     \code{\link{overlay}} \tab Computations on multiple SpatRaster objects \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
-    \code{\link{rastApply}} \tab Apply a function to groups of layers in a SpatRaster \cr
-    \code{rastSelect} \tab Select cell values from different layers using an index SpatRaster\cr
+    \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
+    \code{\link{collapse}} \tab Select cell values from different layers using an index layer\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+  }
+}
+
+\section{IV. Zonal and global computation}{
+  \tabular{ll}{
+    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
+    \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
+    \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
+    \code{freq} \tab Frequency table of SpatRaster cell values \cr
+    \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
+    \code{summary} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
 
-\section{V. Spatial contextual computation}{
+\section{V. Focal and other spatial contextual computation}{
 
   \tabular{ll}{
+    \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
+    \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
+    \code{\link{boundaries}} \tab Detection of boundaries (edges)\cr
     \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA} or to or from a vector object\cr
     \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
-    \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
-    \code{\link{boundaries}} \tab Detection of boundaries (edges)\cr
     \code{clump} \tab Find clumps (patches) \cr
-    \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
-    \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
     \code{terrain} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
-    \code{Moran} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
+    \code{autocor} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
-
 
 \section{VI. Model predictions}{
 
@@ -126,12 +132,10 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
 }
 }
 
-
 \section{VII. Data type conversion}{
 
 You can coerce SpatRasters to Raster* objects after loading the \code{raster} package, using \code{as}, as in \code{as(object, "RasterBrick")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
   
-
   \tabular{ll}{
     \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr
     \code{\link{rasterize}} \tab Rasterizing points, lines or polygons\cr
@@ -139,28 +143,11 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{as.lines}} \tab Create points from a SpatRaster or SpatVector\cr
     \code{\link{as.polygons}} \tab Create polygons from a SpatRaster \cr
     \code{\link{as.contour}}  \tab Contour lines from a SpatRaster \cr
-    \code{rasterFromXYZ} \tab Create a SpatRaster from regularly spaced points\cr
-    \code{rasterFromCells} \tab Create a SpatRaster from anoter Raster object and cell numbers\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
-
-\section{VIII. Summarizing}{
-
-  \tabular{ll}{
-    \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
-    \code{summary} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
-    \code{freq} \tab Frequency table of SpatRaster cell values \cr
-    \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
-    \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
-  }
-}
-
-
-\section{IX. Accessing values of SpatRaster cells}{
+\section{VIII. Accessing values of SpatRaster cells}{
 
 Apart from the function listed below, you can also use indexing with \code{[} for cell numbers, and \code{[[} for row / column number combinations \cr
 
@@ -178,7 +165,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
 }
 
 
-\section{X. Plotting}{
+\section{IX. Plotting}{
 
   \tabular{ll}{
     \bold{Maps} \tab \cr
@@ -192,7 +179,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \bold{Interacting with a map} \tab \cr
     \code{\link{zoom}} \tab Zoom in to a part of a map \cr
     \code{\link{click}} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
-    \code{select} \tab Select a geometric subset of a SpatRaster or SpatVector \cr
+    \code{\link{select}} \tab Select a spatial subset of a SpatRaster or SpatVector \cr
     \code{\link{draw}} \tab Create a SpatExtent or SpatVector by drawing on a map \cr
     .\cr
 	
@@ -207,7 +194,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
   }
 }
 
-\section{XI. Getting and setting SpatRaster dimensions }{
+\section{X. Getting and setting SpatRaster dimensions }{
 
 Basic parameters of existing SpatRasters can be obtained, and in most cases changed. If there are values associated with a SpatRaster object (either in memory or via a link to a file) these are lost when you change the number of columns or rows or the resolution. This is not the case when the extent is changed (as the number of columns and rows will not be affected). Similarly, with \bold{projection} you can set the projection, but this does not transform the data (see \link{warp} for that).   
 
@@ -236,7 +223,7 @@ Basic parameters of existing SpatRasters can be obtained, and in most cases chan
 }
 
 
-\section{XII. Computing row, column, cell numbers and coordinates}{
+\section{XI. Computing row, column, cell numbers and coordinates}{
 
 Cell numbers start at 1 in the upper-left corner. They increase within rows, from left to right, and then row by row from top to bottom. Likewise, row numbers start at 1 at the top of the raster, and column numbers start at 1 at the left side of the raster. 
 
@@ -256,7 +243,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
   }
 }
 
-\section{XIII. Writing files}{
+\section{XII. Writing files}{
 
   \tabular{ll}{
    \bold{Basic}\cr
@@ -273,7 +260,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }	
 
 
-\section{XIV. Manipulation of SpatVector objects}{
+\section{XIII. Manipulation of SpatVector objects}{
 The name in \bold{bold} is the equivalent command in ArcGIS. 
 
 \tabular{ll}{
@@ -296,51 +283,37 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 }
 
 
-\section{XV. SpatExtent objects}{
+\section{XIV. SpatExtent objects}{
 
   \tabular{ll}{
     \code{\link{extent}} \tab Create a SpatExtent object \cr
     \code{\link{intersect}} \tab Intersect two SpatExtent objects  \cr
     \code{\link{union}} \tab Combine two SpatExtent objects \cr
     \code{round} \tab round/floor/ceiling of the coordinates of a SpatExtent object \cr			
-    \code{alignExtent} \tab Align a SpatExtent with a SpatRaster \cr
+    \code{\link{align}} \tab Align a SpatExtent with a SpatRaster \cr
     \code{\link{draw}} \tab Create a SpatExtent object by drawing it on top of a map (plot) \cr		
-    --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+--------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
-\section{XVI. Miscellaneous}{
+\section{XV. Miscellaneous}{
 
 \tabular{ll}{
     \code{\link{terraOptions}} \tab Show, set, save or get session options \cr
-    \code{hdr} \tab Write header file for a number of raster formats \cr
-    \code{extension} \tab Get or set the extension of a filename \cr
-    \code{cv} \tab Coefficient of variation  \cr
-    \code{modal} \tab Modal value  \cr
-    \code{sampleInt} \tab Random sample of (possibly very large) range of integer values \cr
-    \code{showTmpFiles} \tab Show temporary files \cr
-    \code{removeTmpFiles} \tab Remove temporary files \cr
-    --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+    \code{\link{tmpFiles}} \tab Show or remove temporary files \cr
+    \code{\link{canProcessInMemory}} \tab Test whether a file can be created in memory \cr
+    \code{\link{readStart}} \tab Open file connections for efficient multi-chunck reading \cr
+    \code{\link{readStop}} \tab Close file connections \cr
+    \code{\link{inMemory}} \tab Are the cell values in memory? \cr
+    \code{\link{fromDisk}} \tab Are the cell values read from a file? \cr	
+--------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
-\section{XVII. For programmers}{
-
-\tabular{ll}{
-  \code{\link{canProcessInMemory}} \tab Test whether a file can be created in memory \cr
-  \code{\link{readStart}} \tab Open file connections for efficient multi-chunck reading \cr
-  \code{\link{readStop}} \tab Close file connections \cr
-  \code{\link{rasterTmpFile}}  \tab Get a name for a temporary file \cr
-  \code{\link{inMemory}} \tab Are the cell values in memory? \cr
-  \code{\link{fromDisk}} \tab Are the cell values read from a file? \cr	
-    --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
-}
-}
-
-\author{Except where indicated otherwise, the methods and functions in this package were written by Robert J. Hijmans; standing on the shoulders of giants (notably for GDAL, GEOS, GeographicLib)}
+\author{Except where indicated otherwise, the methods and functions in this package were written by Robert J. Hijmans.}
 
 \section{Acknowledgments}{
-to do
+This package stands on the shoulders of giants (notably for GDAL, GEOS, GeographicLib)
 }
 
 \keyword{ package }

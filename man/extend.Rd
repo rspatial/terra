@@ -8,9 +8,9 @@
 \title{Extend}
 
 \description{
-Extend returns an SpatRaster object with a larger spatial extent. See \code{\link[raster]{crop}} if you (also) want to remove rows or columns. 
+Extend returns an SpatRaster object with a larger spatial extent. See \code{\link{crop}} if you (also) want to remove rows or columns. 
 
-There is also an extend method for Extent objects to enlarge (or reduce) an Extent. You can also use algebraic notation to do that (see examples)
+There is also an extend method for Extent objects to enlarge (or app) an Extent. You can also use algebraic notation to do that (see examples)
 }
 
 \usage{
@@ -27,7 +27,7 @@ There is also an extend method for Extent objects to enlarge (or reduce) an Exte
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 
 }
 

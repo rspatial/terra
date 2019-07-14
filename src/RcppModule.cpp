@@ -211,9 +211,13 @@ RCPP_MODULE(spat){
 		
 		.method("adjacent", &SpatRaster::adjacent, "adjacent")
 		.method("aggregate", &SpatRaster::aggregate, "aggregate")
+		.method("align", &SpatRaster::align, "align")
 		.method("apply", &SpatRaster::apply, "apply")
+
 		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2, "get_aggregate_dims")
+
+
 		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::arith ))
 		.method("arith_numb", ( SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, SpatOptions&) )( &SpatRaster::arith ))
 		.method("area", &SpatRaster::area, "area")
@@ -251,6 +255,7 @@ RCPP_MODULE(spat){
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	
+		.method("collapse", &SpatRaster::collapse, "collapse")
 		.method("shift", &SpatRaster::shift, "shift")
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")

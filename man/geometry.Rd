@@ -5,10 +5,10 @@
 \alias{geom}
 \alias{geom,SpatVector-method}
 
-\title{geom}
+\title{Get the geometry (coordinates) of a SpatVector}
 
 \description{
-Get the geom of a SpatVector
+Get the geometry of a SpatVector. This is a five-column matrix: the vector object ID, the IDs for the parts of each object (e.g. five polygons that together are one spatial object), the x (longitude) and y (latitude) coordinates, and a flag indicating whether the part is a "hole" (only relevant for polygons). 
 }
 
 \usage{
@@ -18,12 +18,16 @@ Get the geom of a SpatVector
 
 \arguments{
   \item{x}{SpatVector}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 
 \value{
 matrix
+}
+
+\seealso{
+See \code{\link{xyFromCell}} to get the coordinates of the cells of a SpatRaster
 }
 
 

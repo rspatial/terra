@@ -4,7 +4,7 @@
 \alias{buffer,SpatRaster-method}
 
 
-\title{buffer}
+\title{Create a buffer around patches}
 
 \description{
 Calculate a buffer around all cells that are not \code{NA} in a SpatRaster, or around the objcts in a SpatVector (t.b.d.)
@@ -22,7 +22,7 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 

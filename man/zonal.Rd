@@ -20,14 +20,14 @@ If \code{fun} is a true \code{function}, \code{zonal} may fail for very large Sp
   \item{x}{SpatRaster}
   \item{z}{SpatRaster with values representing zones}
   \item{fun}{function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", or, for relatively small SpatRasters, a proper function}
-  \item{...}{Additional arguments passed to fun}  
+  \item{...}{additional arguments passed to fun}  
 }
 
 \value{
 A \code{data.frame} with a value for each zone (unique value in \code{zones})
 }
 
-\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone),  \code{\link{reduce}} for local statistics, and \code{\link{extract}} for summarizing values for polygons}
+\seealso{ See \code{\link{global}} for "global" statistics (i.e., all of \code{x} is considered a single zone),  \code{\link{app}} for local statistics, and \code{\link{extract}} for summarizing values for polygons}
 
 \examples{
 r <- rast(ncols=10, nrows=10)

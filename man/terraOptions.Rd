@@ -5,7 +5,7 @@
 \alias{terraOptions}
 
 
-\title{options}
+\title{Inspect of set general options for "terra"}
 
 \description{
 Class and methods for showing and setting options.

@@ -22,7 +22,7 @@ tail(x, ...)
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{...}{Additional arguments passed on to other methods}
+  \item{...}{additional arguments passed on to other methods}
 }
 
 \value{

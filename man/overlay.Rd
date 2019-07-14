@@ -16,7 +16,7 @@ Note that the function work for vectors (not only for single numbers). That is, 
 
 The function must take each layer as an argument. 
 
-Use \code{\link{reduce}} for functions such as \code{sum}, that take \code{n} arguments.
+Use \code{\link{app}} for functions such as \code{sum}, that take \code{n} arguments.
 }
 
 \usage{
@@ -37,7 +37,7 @@ Use \code{\link{reduce}} for functions such as \code{sum}, that take \code{n} ar
 SpatRaster
 }
 
-\seealso{\code{ \link[terra]{reduce},  \link[terra]{math}} }
+\seealso{\code{ \link[terra]{app},  \link[terra]{math}} }
 
 \examples{
 r1  <- rast(ncol=10, nrow=10)

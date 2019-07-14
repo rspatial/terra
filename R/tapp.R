@@ -1,13 +1,13 @@
 
-setMethod("rastApply", signature(x="SpatRaster"), 
-function(x, indices, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
+setMethod("tapp", signature(x="SpatRaster"), 
+function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 
-	stopifnot(!any(is.na(indices)))
-	if (!is.factor(indices)) {
-		indices <- as.factor(indices)
+	stopifnot(!any(is.na(index)))
+	if (!is.factor(index)) {
+		index <- as.factor(index)
 	}
-	nms <- as.character(indices)
-	ind <- as.integer(indices)
+	nms <- as.character(index)
+	ind <- as.integer(index)
 	d <- unique(data.frame(nms, ind, stringsAsFactors=FALSE))
 	uin <- d[,2]
 	nms <- make.names(d[,1])
@@ -17,13 +17,13 @@ function(x, indices, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
 			opt <- .runOptions(filename, overwrite, wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
-			x@ptr <- x@ptr$apply(indices, txtfun, na.rm, nms, opt)	
+			x@ptr <- x@ptr$apply(index, txtfun, na.rm, nms, opt)	
 			return(show_messages(x))
 		}		
 	}
 
 	nl <- nlyr(x)
-	ind <- rep_len(indices, nl)
+	ind <- rep_len(index, nl)
 	out <- rast(x)
 	nlyr(out) <- length(uin)
 	names(out) <- nms

@@ -94,7 +94,7 @@
 		if (! gridded) {
 			if (add) {
 				for (i in 1:nl) {
-					points(x[,i], y[,i], cex=cex, ...)			
+					graphics::points(x[,i], y[,i], cex=cex, ...)			
 				}				
 			} else {
 				for (i in 1:nl) {
@@ -109,7 +109,7 @@
 	} else  {
 		if (! gridded) {
 			if (add) {
-				points(x, y, cex=cex, ...)
+				graphics::points(x, y, cex=cex, ...)
 			} else {
 				plot(x, y, cex=cex, xlab=ln1[1], ylab=ln2[1], main=main[1], ...)			
 			}

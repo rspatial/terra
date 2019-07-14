@@ -3,7 +3,7 @@
 \alias{boundaries}
 \alias{boundaries,SpatRaster-method}
   
-\title{boundaries (edges) detection}
+\title{Detect boundaries (edges)}
 
 \description{
 Detect boundaries (edges). boundaries are cells that have more than one class in the 4 or 8 cells surrounding it, or, if \code{classes=FALSE}, cells with values and cells with \code{NA}. 
@@ -21,7 +21,7 @@ Detect boundaries (edges). boundaries are cells that have more than one class in
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 \value{

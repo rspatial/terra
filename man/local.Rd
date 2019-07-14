@@ -15,7 +15,7 @@ Compute cell (pixel) level "local" statistics across layers, and most return a s
 
 The following summary methods are available for SpatRaster: \code{mean, max, min, range, prod, sum, any, all}
 
-See \code{reduce} to compute statistics that are not included here (e.g. median) or any other custom functions.
+See \code{app} to compute statistics that are not included here (e.g. median) or any other custom functions.
  
 Because generic functions are used, the method applied is chosen based on the first argument: '\code{x}'. This means that if \code{r} is a SpatRaster, \code{mean(r, 5)} will work, but \code{mean(5, r)} will not work.
   

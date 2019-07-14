@@ -18,7 +18,7 @@ Take a regular sample of a SpatRaster. The returned object has the same extent, 
 \arguments{
   \item{x}{SpatRaster}
   \item{size}{numeric. The sample size}
-  \item{...}{Additional arguments. None implemented}
+  \item{...}{additional arguments. None implemented}
 }
 
 

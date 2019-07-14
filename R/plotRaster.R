@@ -135,14 +135,14 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		X <- xFromCol(object, 1:ncol(object))
 
 		if (missing(zlim)) {
-			uvals <- unique(na.omit(as.vector(Z)))
+			uvals <- unique(stats::na.omit(as.vector(Z)))
 			if (length(uvals) == 0) { return(invisible(NULL)) }
 			zlim <- range(uvals, na.rm=TRUE)
 		} else {
 			zlim <- sort(zlim)
 			Z[Z < zlim[1]] <- zlim[1]
 			Z[Z > zlim[2]] <- zlim[2]
-			uvals <- unique(na.omit(as.vector(Z)))			
+			uvals <- unique(stats::na.omit(as.vector(Z)))			
 			if (length(uvals) == 0) { return(invisible(NULL)) }
 		}
 		

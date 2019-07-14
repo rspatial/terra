@@ -3,8 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
-
 
 
 setMethod("rast", signature(x="missing"), 
@@ -89,15 +87,6 @@ setMethod("rast", signature(x="SpatRaster"),
 
 
 
-setMethod("rast", signature(x="matrix"), 
-	function(x, ...) {
-		r <- methods::new("SpatRaster")
-		r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), "")
-		values(r) <- x
-		show_messages(r, "rast")		
-	}
-)
-
 
 setMethod("rast", signature(x="array"), 
 	function(x, ...) {
@@ -116,6 +105,83 @@ setMethod("rast", signature(x="array"),
 
 setMethod("rast", signature(x="Raster"), 
 	function(x, ...) {
-		as(x, "SpatRaster")
+		methods::as(x, "SpatRaster")
 	}
 )
+
+
+.rastFromXYZ <- function(xyz, digits=6, ...) {
+
+	ln <- colnames(xyz)
+	if (inherits(xyz, "data.frame")) {
+		xyz <- as.matrix(xyz)
+		xyz <- matrix(as.numeric(xyz), ncol=ncol(xyz), nrow=nrow(xyz))
+	}
+	x <- sort(unique(xyz[,1]))
+	dx <- x[-1] - x[-length(x)]
+
+	rx <- min(dx)
+	for (i in 1:5) {
+		rx <- rx / i
+		q <- sum(round(dx / rx, digits=digits) %% 1)
+		if ( q == 0 ) {
+			break
+		}
+	}
+	if ( q > 0 ) {
+		stop("x cell sizes are not regular")
+	}
+	
+	y <- sort(unique(xyz[,2]))
+	dy <- y[-1] - y[-length(y)]
+	# probably a mistake to use the line below 
+	# Gareth Davies suggested that it be removed 
+	# dy <- round(dy, digits)
+	
+	ry <- min(dy)
+	for (i in 1:5) {
+		ry <- ry / i
+		q <- sum(round(dy / ry, digits=digits) %% 1)
+		if ( q == 0 ) {
+			break
+		}
+	}
+	if ( q > 0 ) {
+		stop("y cell sizes are not regular")
+	}
+	
+	minx <- min(x) - 0.5 * rx
+	maxx <- max(x) + 0.5 * rx
+	miny <- min(y) - 0.5 * ry
+	maxy <- max(y) + 0.5 * ry
+	
+	d <- dim(xyz)
+	r <- rast(xmin=minx, xmax=maxx, ymin=miny, ymax=maxy, crs=crs, nl=d[2]-2)	
+	res(r) <- c(rx, ry)
+	cells <- cellFromXY(r, xyz[,1:2])
+	if (d[2] > 2) {
+		names(r) <- ln[-c(1:2)]
+		v <- rep(NA, ncell(r))
+		v[cells] <- xyz[,3:d[2]]
+		values(r) <- v
+	} 	
+	return(r)
+}	
+	
+
+
+setMethod("rast", signature(x="matrix"), 
+	function(x, crs=NA, type="", ...) {
+		res <- rep_len(res, 2)
+		if (type == "xyz") {
+			r <- .rastFromXYZ(x, ...)
+		} else {
+			r <- methods::new("SpatRaster")
+			r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), "")
+			values(r) <- t(x)
+		}
+		if (!is.na(crs)) crs(r) <- crs
+		show_messages(r, "rast")		
+	}
+)
+

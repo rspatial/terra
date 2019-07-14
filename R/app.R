@@ -1,12 +1,12 @@
 
-setMethod("reduce", signature(x="SpatRaster", fun="function"), 
+setMethod("app", signature(x="SpatRaster"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
-	opt <- .runOptions(filename, overwrite, wopt)
 
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (class(txtfun) == "character") { 
 		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
+			opt <- .runOptions(filename, overwrite, wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$summary(txtfun, na.rm, opt)	
 			return(show_messages(x))

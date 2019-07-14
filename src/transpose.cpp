@@ -34,8 +34,20 @@ SpatRaster SpatRaster::transpose(SpatOptions &opt) {
  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i=0; i < out.bs.n; i++) {
-		std::vector<double> v = readValues(0, nrow(), out.bs.row[i], out.bs.nrows[i]);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+		unsigned nr = nrow();
+		unsigned nc = out.bs.nrows[i];
+		std::vector<double> v = readValues(0, nr, out.bs.row[i], nc);
+		std::vector<double> vv(v.size());
+		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+			size_t off = lyr*ncell();
+			for (size_t r = 0; r < nr; r++) {
+				size_t rnc = off + r * nc;
+				for (size_t c = 0; c < nc; c++) {
+					vv[c*nr+r+off] = v[rnc+c];
+				}
+			}
+		}
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
 	}
 	out.writeStop();
 	readStop();

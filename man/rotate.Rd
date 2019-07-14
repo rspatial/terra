@@ -5,10 +5,10 @@
 \alias{rotate}
 \alias{rotate,SpatRaster-method}
 
-\title{rotate}
+\title{Rotate a SpatRaster along longitude}
 
 \description{
-Rotate a SpatRaster that has x coordinates (longitude) from 0 to 360, to standard coordinates between -180 and 180 degrees (or vice/versa). Longitude between 0 and 360 is frequently used in global climate models.
+Rotate a SpatRaster that has x coordinates (longitude) from 0 to 360, to standard coordinates between -180 and 180 degrees (or vice-versa). Longitude between 0 and 360 is frequently used in global climate models.
 }
 
 \usage{

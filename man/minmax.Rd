@@ -5,7 +5,7 @@
 \alias{minmax,SpatRaster-method}
 \alias{setMinMax,SpatRaster-method}
 
-\title{get or compute min and max values}
+\title{Get or compute the minimum and maximum cell values}
 
 \description{
 The minimum and maximum value of a SpatRaster are returned or computed (from a file on disk if necessary) and stored in the object. 

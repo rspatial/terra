@@ -24,7 +24,7 @@ Select a subset of variables or records from a SpatVector.
   \item{x}{SpatVector}
   \item{subset}{logical expression indicating elements or rows to keep: missing values are taken as false}
   \item{drop}{logical. If \code{TRUE}, the geometries will be dropped, and a data.frame is returned}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 \value{

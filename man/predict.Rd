@@ -21,7 +21,7 @@ This approach of using model predictions is commonly used in remote sensing (for
   \item{object}{SpatRaster}
   \item{model}{fitted model of any class that has a "predict" method (or for which you can supply a similar method as \code{fun} argument. E.g. glm, gam, or randomForest}
   \item{fun}{function. Default value is \code{predict}, but can be replaced with e.g. predict.se (depending on the type of model), or your own custom function}
-  \item{...}{Additional arguments for \code{fun}}    
+  \item{...}{additional arguments for \code{fun}}    
 
   \item{const}{data.frame. Can be used to add a constant value as a predictor variable so that you do not need to make a SpatRaster layer for it}
  \item{factors}{list with levels for factor variables. The list elements should be named with names that correspond to names in \code{object} such that they can be matched. This argument may be omitted for standard models such as "glm" as the predict function will extract the levels from the \code{model} object, but it is necessary in some other cases (e.g. cforest models from the party package)}
@@ -136,11 +136,11 @@ predfun <- function(m, d, ...) predict(m, newdata=d, ...)
 
 pc <- predict(logo, m, OOB=TRUE, fun=predfun)
 
-# knn, using "reduce" instead of "predict"
+# knn, using "app" instead of "predict"
 library(class)
 cl <- factor(c(rep(1, nrow(p)), rep(0, nrow(a))))
 train <- extract(logo, rbind(p, a))
-k <- reduce(logo, function(x) as.integer(as.character(knn(train, x, cl))))
+k <- app(logo, function(x) as.integer(as.character(knn(train, x, cl))))
 
 ## End(Not run)
 }

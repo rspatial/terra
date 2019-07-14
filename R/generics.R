@@ -4,26 +4,21 @@
 # License GPL v3
 
 
-setMethod("c", signature(x="SpatRaster"), 
-	function(x, ...) {
-		dots <- list(...)
-		for (i in dots) {
-			if (class(i) == "SpatRaster") {
-				x@ptr <- x@ptr$combineSources(i@ptr)
-			}
-		}
-		x@ptr$setNames(x@ptr$names)
-		show_messages(x, "c")		
-	}
-)
-
-
 setMethod("adjacent", signature(x="SpatRaster"), 
 	function(x, cells, directions="rook", include=FALSE, ...) {
 		v <- x@ptr$adjacent(cells-1, directions, include)
 		show_messages(x, "adjacent")
 		v <- do.call(rbind, v)
 		return(v+1)
+	}
+)
+
+
+setMethod("align", signature(x="SpatExtent", y="SpatRaster"), 
+	function(x, y, snap="near", ...) {
+		x@ptr <- y@ptr$align(x@ptr, tolower(snap))
+		#show_messages(x, "align")
+		x
 	}
 )
 
@@ -35,7 +30,6 @@ setMethod("area", signature(x="SpatRaster"),
 		show_messages(x, "area")
 	}
 )
-
 
 setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 	function(y, x) { 
@@ -51,6 +45,20 @@ setMethod("boundaries", signature(x="SpatRaster"),
 		opt <- .runOptions(filename, overwrite,wopt)
 		x@ptr <- x@ptr$boundaries(classes[1], type[1], directions[1], opt)
 		show_messages(x, "boundaries")
+	}
+)
+
+
+setMethod("c", signature(x="SpatRaster"), 
+	function(x, ...) {
+		dots <- list(...)
+		for (i in dots) {
+			if (class(i) == "SpatRaster") {
+				x@ptr <- x@ptr$combineSources(i@ptr)
+			}
+		}
+		x@ptr$setNames(x@ptr$names)
+		show_messages(x, "c")		
 	}
 )
 
@@ -161,8 +169,6 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 )
 
 
-
-
 setMethod("rotate", signature(x="SpatRaster"), 
 	function(x, left=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite, wopt)
@@ -177,6 +183,14 @@ setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"),
 		size <- max(1, min(size(x), size))
 		x@ptr <- x@ptr$sampleRegular(size)
 		show_messages(x, "sampleRegular")		
+	}
+)
+
+setMethod("collapse", signature(x="SpatRaster"), 
+	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$collapse(y@ptr, opt)
+		show_messages(x, "collapse")		
 	}
 )
 

@@ -5,7 +5,7 @@
 \alias{crop}
 \alias{crop,SpatRaster-method}
 
-\title{Crop}
+\title{Cut out a geographic subset}
 
 \description{
 Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. You can only extract rectangular areas, but see \code{\link{mask}} for setting cell values within SpatRaster to \code{NA}.
@@ -23,7 +23,7 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 

@@ -27,7 +27,7 @@ The length method works only on SpatVector objects, and computes the length of l
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented} 
+  \item{...}{additional arguments. None implemented} 
 }
 
 \value{

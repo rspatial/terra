@@ -18,7 +18,7 @@ Get a data.frame with the attribute values of a SpatVector
  \item{x}{SpatVector}
  \item{row.names}{ignored} 
  \item{optional}{ignored}
- \item{...}{Additional arguments (none)} 
+ \item{...}{additional arguments (none)} 
 }
   
 \value{

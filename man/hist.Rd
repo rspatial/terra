@@ -21,7 +21,7 @@ Create a histogram of the values of a SpatRaster. For large datasets a sample of
   \item{maxcell}{integer. To regularly sample very large objects}
   \item{plot}{logical. Plot the histogram or only return the histogram values}
   \item{main}{character. Main title(s) for the plot. Default is the value of \code{\link{names}}}
-  \item{...}{Additional arguments. See \code{\link[graphics]{hist}}}  
+  \item{...}{additional arguments. See \code{\link[graphics]{hist}}}  
 }
 
 

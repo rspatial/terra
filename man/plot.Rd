@@ -32,7 +32,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
 
-\S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", useRaster=TRUE, ...)
+\S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", ...)
 
 
 \S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", add=FALSE, ...)

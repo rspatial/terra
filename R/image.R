@@ -3,13 +3,9 @@
 # Version 0.9
 # License GPL v3
 
-if (!isGeneric("image")) {
-	setGeneric("image", function(x,...)
-		standardGeneric("image"))
-}	
 
 setMethod("image", signature(x="SpatRaster"), 
-	function(x, y=1, maxcell=100000, xlab="", ylab="", useRaster=TRUE, ...)  {
+	function(x, y=1, maxcell=100000, xlab="", ylab="", ...)  {
 		y <- as.integer(y[1])
 		stopifnot(y>0 && y<=nlyr(x))
 		x <- sampleRegular(x[[y]], maxcell)
@@ -17,7 +13,13 @@ setMethod("image", signature(x="SpatRaster"),
 		Y <- yFromRow(x, nrow(x):1)
 		value <- matrix(as.vector(x), nrow=nrow(x), byrow=TRUE)
 		value <- t(value[nrow(value):1, ,drop=FALSE])
-		graphics::image(x=X, y=Y, z=value, useRaster=useRaster, ...)			
+		if (is.null(list(...)$asp)) {
+			asp <- ifelse(couldBeLonLat(x, warnings=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
+			graphics::image(x=X, y=Y, z=value, asp=asp, ...)			
+			
+		} else {
+			graphics::image(x=X, y=Y, z=value, ...)			
+		}		
 	}
 )
 

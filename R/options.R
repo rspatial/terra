@@ -63,3 +63,20 @@ terraOptions <- function(...) {
 	}
 }
 
+
+tmpFiles <- function(old=FALSE, remove=FALSE) {
+	d <- .terra_environment$options@ptr$tempdir
+	if (old) {
+		f <- list.files(dirname(d), recursive=TRUE, pattern="^spat_", full.names=TRUE)
+	} else {
+		f <- list.files(d, pattern="^spat", full.names=TRUE)
+	}
+	if (remove) {
+		file.remove(f) 
+		return(invisible(f))
+	} else {
+		return(f)
+	}
+}
+
+

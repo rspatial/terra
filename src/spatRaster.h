@@ -376,6 +376,8 @@ class SpatRaster {
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster sampleRegular(unsigned size);
+		SpatRaster collapse(SpatRaster x, SpatOptions &opt);
+		
 		SpatRaster shift(double x, double y, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
@@ -405,6 +407,16 @@ class SpatRasterCollection {
 
 };
 
+
+class SpatRasterStack {
+	public:
+		std::vector<SpatRaster> x;
+		SpatRasterStack() {};
+		SpatRasterStack(size_t n) { x.resize(n); };
+		size_t size() { return x.size(); }
+		void resize(size_t n) { x.resize(n); }
+		void push_back(SpatRaster r) { x.push_back(r); };
+};
 
 
 

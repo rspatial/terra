@@ -6,7 +6,7 @@
 \title{ifelse for SpatRaster objects}
 
 \description{
-This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster objects. This is "syntactic sugar", that is, it can be easier to express what is desired; but there is no real need for it, as you can achieve the same things with combinations of \code{\link{reduce}}, \code{\link{reclassify}}, \code{\link{mask}}, and \code{\link{cover}}. 
+This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster objects. This is "syntactic sugar", that is, it can be easier to express what is desired; but there is no real need for it, as you can achieve the same things with combinations of \code{\link{app}}, \code{\link{reclassify}}, \code{\link{mask}}, and \code{\link{cover}}. 
 
 \code{ifel} is \code{R} equivalent to the \code{Con} method in ArcGIS (arcpy). 
 }
@@ -22,7 +22,7 @@ This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 \value{
@@ -36,7 +36,7 @@ values(r) <- -10:14
 x <- ifel(r > 1, 1, r)
 # same as 
 a <- classify(r, cbind(1, Inf, 1))
-b <- reduce(r, fun=function(i) {i[i > 1] <- 1; i})
+b <- app(r, fun=function(i) {i[i > 1] <- 1; i})
 d <- clamp(r, -Inf, 1)
 
 y <- ifel(r > 1, 1, ifel(r < -1, -1, r))

@@ -17,7 +17,7 @@
 \alias{writeStop,SpatRaster-method}
 \alias{writeValues,SpatRaster,vector-method}
 
-\title{read from or write to file}
+\title{Read from, or write to, file}
 
 \description{
 Methods to read from or write chunks of values to or from a file. These are low level methods for programmers. Use writeRaster if you want to save an entire SpatRaster to file in one step. It is much easier to use. 
@@ -52,7 +52,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
   
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}
+  \item{...}{additional arguments. None implemented}
 }
 
 \value{

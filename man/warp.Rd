@@ -3,7 +3,7 @@
 \alias{warp}
 \alias{warp,SpatRaster,SpatRaster-method}
 
-\title{warp a SpatRaster}
+\title{Transfer values of a SpatRaster to another one with a different geometry}
 
 \description{
 Warp transfers values between SpatRaster objects that do not align (have a different origin and/or coordinate reference system (crs)). This is also known as "resample" and/or "reproject". If the origin and crs are the same, you should consider using these other functions instead: \code{\link{aggregate}}, \code{\link{disaggregate}}, \code{\link{crop}}.
@@ -20,7 +20,7 @@ Warp transfers values between SpatRaster objects that do not align (have a diffe
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 

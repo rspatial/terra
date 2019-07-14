@@ -164,8 +164,8 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
-	bool hasv = hasValues() & x.hasValues();
-	if (!hasv) {
+	
+	if (!(hasValues() & x.hasValues())) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}

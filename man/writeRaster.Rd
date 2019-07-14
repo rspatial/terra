@@ -19,7 +19,7 @@ Write a SpatRaster to a file.
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files. See Details }
-  \item{...}{Additional arguments. None implemented}
+  \item{...}{additional arguments. None implemented}
 }
 
 \value{

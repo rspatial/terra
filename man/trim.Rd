@@ -20,7 +20,7 @@ Trim (shrink) a SpatRaster by removing outer rows and columns that are \code{NA}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 
-  \item{...}{Additional arguments. None implemented}
+  \item{...}{additional arguments. None implemented}
 }
 
 

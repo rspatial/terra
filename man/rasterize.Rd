@@ -5,10 +5,10 @@
 \alias{rasterize}
 \alias{rasterize,SpatVector,SpatRaster-method}
 
-\title{rasterize}
+\title{Rasterize vector data}
 
 \description{
-rasterize polygons
+Transfer vector data to a raster
 }
 
 \usage{
@@ -23,7 +23,7 @@ rasterize polygons
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{Additional arguments. None implemented}  
+  \item{...}{additional arguments. None implemented}  
 }
 
 
@@ -37,7 +37,7 @@ v <- vect(f)
 r <- rast(v, ncol=75, nrow=100)
 x <- rasterize(v, r)
 
-image(x)
+plot(x)
 lines(v)
 }
 

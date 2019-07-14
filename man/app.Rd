@@ -1,28 +1,27 @@
-\name{reduce}
+\name{app}
 
 \docType{methods}
 
-\alias{reduce}
-\alias{reduce,SpatRaster,function-method}
+\alias{app}
+\alias{app,SpatRaster-method}
 
-\title{reduce}
+\title{Apply a function to the cells of a SpatRaster}
 
 \description{ 
-reduce values of a SpatRaster, using a formula. 
+Apply a function to values of a SpatRaster. Similar to \code{\link[base]{apply}} 
 }
 
 \usage{
-\S4method{reduce}{SpatRaster,function}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{app}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster object}
   \item{fun}{function}
-  \item{...}{Additional arguments for \code{fun}}  
-   \item{filename}{character. Output filename. Optional}
+  \item{...}{additional arguments for \code{fun}}  
+  \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-
 }
 
 \value{
@@ -36,7 +35,7 @@ SpatRaster
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
 x <- c(r, r, r)
-s <- reduce(x, fun=sum)
+s <- app(x, fun=sum)
 }
 
 

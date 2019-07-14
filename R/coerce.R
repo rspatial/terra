@@ -167,7 +167,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 	
 	if (nl > 1) {
 		for (i in 2:nl) {
-			rr <- c(rr, as("SpatRaster", from[[i]]))
+			rr <- c(rr, methods::as("SpatRaster", from[[i]]))
 		}
 	}
 	names(rr) <- names(from)	

@@ -27,7 +27,7 @@ A \code{data.frame} with a row for each layer
 }
 
 
-\seealso{\code{\link{zonal}} for "zonal" statistics, and \code{\link{reduce}} or \code{\link{Summary-methods}} for "local" statistics, and \code{\link{extract}} for summarizing values for polygons. Also see \code{\link{focal}} for "focal" or "moving window" operations.}
+\seealso{\code{\link{zonal}} for "zonal" statistics, and \code{\link{app}} or \code{\link{Summary-methods}} for "local" statistics, and \code{\link{extract}} for summarizing values for polygons. Also see \code{\link{focal}} for "focal" or "moving window" operations.}
 
 
 \examples{

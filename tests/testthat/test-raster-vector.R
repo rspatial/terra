@@ -51,10 +51,10 @@ test_that("classify", {
 })
 
 
-test_that("reduce", {
+test_that("app", {
 	s <- c(r, log(r), sqrt(r))
 	sx <- stack(rx, log(rx), sqrt(rx))
-	rd  <- reduce(s, mean)
+	rd  <- app(s, mean)
 	rdx  <- calc(sx, mean)
 	expect_equivalent(values(rd), values(rdx)) 
 })
