@@ -11,7 +11,7 @@ The first (alpha) release is expected by July 2019.
 
 ## Installation
 
-You need to first install the [development version of "raster"](https://github.com/rspatial/raster).
+You need to have the current version of `raster` from CRAN (>= 2.9-22) or install the [development version of "raster"](https://github.com/rspatial/raster).
 
 ### Windows
 
@@ -22,7 +22,8 @@ Then, in R, install the packages.
 
 ```
 library(devtools)
-devtools::install_github("rspatial/raster")
+install.packages("raster")
+#devtools::install_github("rspatial/raster")
 devtools::install_github("rspatial/terra")
 ```
 
@@ -39,7 +40,8 @@ brew install gdal
 And now, in R, install the packages.
 ```
 library(devtools)
-devtools::install_github("rspatial/raster")
+install.packages("raster")
+#devtools::install_github("rspatial/raster")
 devtools::install_github("rspatial/terra")
 ```
 
@@ -58,7 +60,8 @@ sudo apt-get install libgdal-dev libgeos-dev libproj-dev
 And now, in R, install the packages.
 ```
 library(devtools)
-devtools::install_github("rspatial/raster")
+install.packages("raster")
+#devtools::install_github("rspatial/raster")
 devtools::install_github("rspatial/terra")
 ```
 
