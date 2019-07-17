@@ -118,8 +118,10 @@ RCPP_MODULE(spat){
 		.method("subset_rows", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_rows ))				
 		.method("type", &SpatVector::type, "type")		
 		
-		.method("buffer", &SpatVector::buffer, "buffer")		
+		.method("buffer", &SpatVector::buffer, "buffer")	
+#ifdef useGEOS
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
+#endif
 	;
 
     class_<RasterSource>("RasterSource")	

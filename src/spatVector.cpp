@@ -236,21 +236,18 @@ unsigned SpatVector::nxy() {
 
 
 std::vector<std::vector<double>> SpatVector::coordinates() {
-	SpatGeom g;
-	SpatPart p;
-	SpatHole h;
 	std::vector<std::vector<double>> out(2);
 	for (size_t i=0; i < size(); i++) {
-		g = getGeom(i);
+		SpatGeom g = getGeom(i);
 		for (size_t j=0; j < g.size(); j++) {
-			p = g.getPart(j);
+			SpatPart p = g.getPart(j);
 			for (size_t q=0; q < p.x.size(); q++) {
 				out[0].push_back( p.x[q] );
 				out[1].push_back( p.y[q] );
 			}
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
-					h = p.getHole(k);
+					SpatHole h = p.getHole(k);
 					for (size_t q=0; q < h.x.size(); q++) {
 						out[0].push_back( h.x[q] );
 						out[1].push_back( h.y[q] );
