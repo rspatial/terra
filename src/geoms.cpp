@@ -2,13 +2,15 @@
 
 #ifdef useGEOS
 
-#include <geos/geom/PrecisionModel.h>
+//#include <geos/geom/PrecisionModel.h>
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/Geometry.h>
 #include <geos/geom/Point.h>
 #include <geos/geom/LinearRing.h>
 #include <geos/geom/LineString.h>
+#include <geos/geom/MultiLineString.h>
 #include <geos/geom/Polygon.h>
+#include <geos/geom/MultiPolygon.h>
 #include <geos/geom/GeometryCollection.h>
 #include <geos/geom/Coordinate.h>
 #include <geos/geom/CoordinateSequence.h>
@@ -741,9 +743,10 @@ Polygon* create_rectangle(double llX, double llY, double width, double height, G
 
 
 std::vector<Geometry*>* create_Points(std::vector<double> &x, std::vector<double> &y) {	
-	PrecisionModel* pm = new PrecisionModel();
-	GeometryFactory::unique_ptr gf = GeometryFactory::create(pm, -1);
-	delete pm;
+	//PrecisionModel* pm = new PrecisionModel();
+	//GeometryFactory::unique_ptr gf = GeometryFactory::create(pm, -1);
+	//delete pm;
+	GeometryFactory::unique_ptr gf = GeometryFactory::create();
 	std::vector<Geometry*>* g = new std::vector<Geometry*>;
     for(unsigned int i = 0; i < x.size(); i++) {
 		Coordinate crd(x[i], y[i]);
@@ -764,6 +767,12 @@ LineString* create_linestring(std::vector<double> x, std::vector<double> y, Geom
 }
 
 
+MultiLineString* create_multilinestring(std::vector<Geometry*>* lines, GeometryFactory::unique_ptr gf) {
+ 	MultiLineString* ml = gf->createMultiLineString(lines);
+	return ml;
+}
+
+
 LinearRing* create_linearring(std::vector<double> x, std::vector<double> y, GeometryFactory::unique_ptr gf) {
     CoordinateArraySequence* cl = new CoordinateArraySequence();
 	for (size_t i=0; i<x.size(); i++) {
@@ -772,6 +781,13 @@ LinearRing* create_linearring(std::vector<double> x, std::vector<double> y, Geom
     LinearRing* lr = gf->createLinearRing(cl);
     return lr; 
 }
+
+
+MultiPolygon* create_multipolygon(std::vector<Geometry*>* pols, GeometryFactory::unique_ptr gf) {
+ 	MultiPolygon* mp = gf->createMultiPolygon(pols);
+	return mp;
+}
+
 
 Polygon* create_polygon(std::vector<double> x, std::vector<double> y, 
 				std::vector<std::vector<double>> hx, std::vector<std::vector<double>> hy,
@@ -789,7 +805,6 @@ Polygon* create_polygon(std::vector<double> x, std::vector<double> y,
 }
 
 
-
 // create a GeometryCollection containing copies of all Geometries in given vector.
 GeometryCollection* create_simple_collection(std::vector<Geometry*>* geoms, GeometryFactory::unique_ptr gf) {
     return gf->createGeometryCollection(*geoms);
@@ -802,10 +817,10 @@ GeometryCollection* create_simple_collection(std::vector<Geometry*>* geoms, Geom
 std::vector<Geometry*>* spat2geos(SpatVector* v) {
 
 	std::vector<Geometry*>* geoms = new std::vector<Geometry*>;	
-	PrecisionModel* pm = new PrecisionModel();
-	GeometryFactory::unique_ptr geomfact = GeometryFactory::create(pm, -1);
-	delete pm;
-
+	//PrecisionModel* pm = new PrecisionModel();
+	//GeometryFactory::unique_ptr geomfact = GeometryFactory::create(pm, -1);
+	//delete pm;
+	GeometryFactory::unique_ptr geomfact = GeometryFactory::create();
 	std::string vt = v->type();
 	if (vt == "points") {
 		std::vector<std::vector<double>> xy = v->coordinates();
@@ -815,9 +830,14 @@ std::vector<Geometry*>* spat2geos(SpatVector* v) {
 		size_t n = v->size();
 		for (size_t i=0; i<n; i++) {
 			SpatGeom g = v->getGeom(i);
-			SpatPart p = g.getPart(0);  // ignoring multi-lines for now..
-			LineString* ls = create_linestring(p.x, p.y, geomfact);
-			geoms->push_back(ls);
+			std::vector<Geometry*>* lns = new std::vector<Geometry*>;	
+			for (size_t j=0; j < g.size(); j++) {
+				SpatPart part = g.getPart(j);			
+				LineString* ls = create_linestring(part.x, part.y, geomfact);
+				lns->push_back(ls);
+			}
+			MultiLineString* mls = create_multilinestring(lns, geomfact);
+			geoms->push_back(mls);			
 		}
 	} else if (vt == "polygons") {
 		std::vector<double> x, y;
@@ -825,9 +845,21 @@ std::vector<Geometry*>* spat2geos(SpatVector* v) {
 		size_t n = v->size();
 		for (size_t i=0; i<n; i++) {
 			SpatGeom g = v->getGeom(i);
-			SpatPart p = g.getPart(0);  // ignoring multi-poly and holes for now..
-			Polygon* pol = create_polygon(p.x, p.y, hx, hy, geomfact);
-			geoms->push_back(pol);
+			std::vector<Geometry*>* pols = new std::vector<Geometry*>;	
+			for (size_t j=0; j < g.size(); j++) {
+				SpatPart part = g.getPart(j);			
+				if (part.hasHoles()) {
+					for (size_t k=0; k<part.nHoles(); k++) {
+						SpatHole h = part.getHole(k);
+						hx.push_back(h.x);
+						hy.push_back(h.y);
+					}
+				}
+				Polygon* poly = create_polygon(part.x, part.y, hx, hy, geomfact);
+				pols->push_back(poly);
+			}
+			MultiPolygon* mp = create_multipolygon(pols, geomfact);
+			geoms->push_back(mp);			
 		}
 	}	
 	return geoms;
@@ -836,24 +868,26 @@ std::vector<Geometry*>* spat2geos(SpatVector* v) {
 
 SpatVector geos2spat(std::vector<Geometry*>* geoms) {
 	SpatVector out;
-	size_t n = geoms->size();
-	std::vector<unsigned> gid, part, hole;
+	size_t ng = geoms->size();
+	std::vector<unsigned> gid, gp, hole;
 	std::vector<double> x, y;
-    for(size_t i = 0; i < n; i++) {
+    for(size_t i = 0; i < ng; i++) {
         Geometry* g = (*geoms)[i];
-	    //LinearRing* lr = g->getLinearRing();
-		size_t npts = g->getNumPoints();
-		CoordinateSequence* crds = g->getCoordinates(); 		
-		for (size_t p=0; p < npts; p++) {
-//			const Coordinate* crd = g->getCoordinate();
-			x.push_back(crds->getX(p));
-			y.push_back(crds->getY(p));
-			gid.push_back(i);			
+		size_t np = g->getNumGeometries();
+		for(size_t j = 0; j<np; j++) {
+			const Geometry* part = g->getGeometryN(j);
+			size_t npts = part->getNumPoints();
+			CoordinateSequence* crds = part->getCoordinates(); 		
+			for (size_t p=0; p < npts; p++) {
+				x.push_back(crds->getX(p));
+				y.push_back(crds->getY(p));
+				gid.push_back(i);			
+				gp.push_back(j);			
+			}
 		}
 	}	
-	part.resize(x.size());
 	hole.resize(x.size());
-	out.setGeometry("polygons", gid, part, x, y, hole);
+	out.setGeometry("polygons", gid, gp, x, y, hole);
 	return out;
 }
 
