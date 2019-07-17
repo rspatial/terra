@@ -2,7 +2,9 @@
 
 #ifdef useGEOS
 
-//#include <geos/geom/PrecisionModel.h>
+#define GEOS_USE_ONLY_R_API
+
+#include <geos/geom/PrecisionModel.h>
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/Geometry.h>
 #include <geos/geom/Point.h>
@@ -743,10 +745,9 @@ Polygon* create_rectangle(double llX, double llY, double width, double height, G
 
 
 std::vector<Geometry*>* create_Points(std::vector<double> &x, std::vector<double> &y) {	
-	//PrecisionModel* pm = new PrecisionModel();
-	//GeometryFactory::unique_ptr gf = GeometryFactory::create(pm, -1);
-	//delete pm;
-	GeometryFactory::unique_ptr gf = GeometryFactory::create();
+	PrecisionModel* pm = new PrecisionModel();
+	GeometryFactory::unique_ptr gf = GeometryFactory::create(pm, -1);
+	delete pm;
 	std::vector<Geometry*>* g = new std::vector<Geometry*>;
     for(unsigned int i = 0; i < x.size(); i++) {
 		Coordinate crd(x[i], y[i]);
@@ -817,10 +818,10 @@ GeometryCollection* create_simple_collection(std::vector<Geometry*>* geoms, Geom
 std::vector<Geometry*>* spat2geos(SpatVector* v) {
 
 	std::vector<Geometry*>* geoms = new std::vector<Geometry*>;	
-	//PrecisionModel* pm = new PrecisionModel();
-	//GeometryFactory::unique_ptr geomfact = GeometryFactory::create(pm, -1);
-	//delete pm;
-	GeometryFactory::unique_ptr geomfact = GeometryFactory::create();
+	PrecisionModel* pm = new PrecisionModel();
+	GeometryFactory::unique_ptr geomfact = GeometryFactory::create(pm, -1);
+	delete pm;
+
 	std::string vt = v->type();
 	if (vt == "points") {
 		std::vector<std::vector<double>> xy = v->coordinates();
