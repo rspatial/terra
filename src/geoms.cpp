@@ -51,7 +51,7 @@ std::vector<Geometry*>* gCentroid(std::vector<Geometry*>* geoms) {
 	return newgeoms;
 }
 
-std::vector<Geometry*>* gBuffer(std::vector<Geometry*>* geoms, double d, int segments, int capstyle) {
+std::vector<Geometry*>* gBuffer(std::vector<Geometry*>* geoms, double d, int segments, int capstyle, bool& success) {
 	std::vector<Geometry*>* newgeoms = new std::vector<Geometry*>;
     for(unsigned int i = 0; i < geoms->size(); i++) {
         Geometry* g = (*geoms)[i];
@@ -60,7 +60,8 @@ std::vector<Geometry*>* gBuffer(std::vector<Geometry*>* geoms, double d, int seg
             newgeoms->push_back(g2);
         }
         catch(const GEOSException& exc) {
-            std::cerr << "GEOS Exception: geometry " << i << "->buffer: " << exc.what() << "\n";
+			success = false;
+			return newgeoms;
         }
     }
 	return newgeoms;
@@ -89,7 +90,7 @@ void kill_geoms(std::vector<Geometry*>* geoms) {
 // RELATIONAL OPERATORS
 ////////////////////////////////////////////////////////////////////////
 
-std::vector<bool> disjoint(std::vector<Geometry*>* geoms) {
+std::vector<bool> disjoint(std::vector<Geometry*>* geoms, bool& success) {
 	size_t n = geoms->size();
 	std::vector<bool> out;
     for(size_t i = 0; i < n; i++) {
@@ -105,10 +106,12 @@ std::vector<bool> disjoint(std::vector<Geometry*>* geoms) {
             }
             // Geometry Collection is not a valid argument
             catch(const IllegalArgumentException& exc) {
-                std::cout << " X\t";
+				success = false;
+				return out;
             }
             catch(const std::exception& exc) {
-                std::cerr << exc.what() << std::endl;
+				success = false;
+				return out;
             }
         }
     }
@@ -866,8 +869,13 @@ SpatVector SpatVector::buffer2(double d, unsigned segments, unsigned capstyle){
 	//std::vector<std::vector<double>> xy = coordinates();
 	//std::vector<Geometry*>* points = create_Points(xy[0], xy[1]);
 	std::vector<Geometry*>* geoms = spat2geos(this); 
-	std::vector<Geometry*>* buf   = gBuffer(geoms, d, segments, capstyle);
-	out = geos2spat(buf);
+	bool success = true;
+	std::vector<Geometry*>* buf   = gBuffer(geoms, d, segments, capstyle, success);
+	if (!success) {
+		out.setError("buffer failed");
+	} else {
+		out = geos2spat(buf);
+	}
 	kill_geoms(geoms);
 	kill_geoms(buf);
 	return out;	
