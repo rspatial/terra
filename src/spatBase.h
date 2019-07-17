@@ -23,8 +23,10 @@
 
 // comment out if GDAL not available
 #define useGDAL
+// comment out if GEOS not available
+#define useGEOS
 // comment out if this is not for R (no Rcpp)
-#define useRcpp
+#define useRCPP
 
 
 #ifndef M_PI

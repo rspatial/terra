@@ -127,11 +127,12 @@ std::vector<double> distanceToNearest_plane(const std::vector<double> &x1, const
 
 
 // Convert degrees to radians
-double toRad(double deg) {
+double toRad(double &deg) {
 	return( deg * 0.0174532925199433 );
 }
 
-double toDeg(double rad) {
+
+double toDeg(double &rad) {
 	return( rad * 57.2957795130823 );
 }
 
@@ -286,19 +287,37 @@ std::vector<double> destpoint_lonlat(double longitude, double latitude, double  
 }
 
 
-std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> longitude, std::vector<double> latitude, std::vector<double> bearing, std::vector<double> distance, double a, double f) {
+std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> &longitude, std::vector<double> &latitude, std::vector<double> &bearing, std::vector<double> &distance, double a, double f) {
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
 	size_t n = longitude.size();
-	std::vector<std::vector<double> > out;
-	out.reserve(n);
+	std::vector<std::vector<double> > out(3, std::vector<double>(n));
 	double lat2, lon2, azi2;
 	for (size_t i=0; i < n; i++) {
 		geod_direct(&g, latitude[i], longitude[i], bearing[i], distance[i], &lat2, &lon2, &azi2);
-		out.push_back( {lon2, lat2, azi2 });
+		out[0][i] = lon2;
+		out[1][i] = lat2;
+		out[2][i] = azi2;
 	}
 	return out;
 }
+
+
+std::vector<std::vector<double> > destpoint_lonlat(double &longitude, double &latitude, std::vector<double> &bearing, double& distance, double a, double f) {
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+	size_t n = bearing.size();
+	std::vector<std::vector<double> > out(3, std::vector<double>(n));
+	double lat2, lon2, azi2;
+	for (size_t i=0; i < n; i++) {
+		geod_direct(&g, latitude, longitude, bearing[i], distance, &lat2, &lon2, &azi2);
+		out[0][i] = lon2;
+		out[1][i] = lat2;
+		out[2][i] = azi2;
+	}
+	return out;
+}
+
 
 
 std::vector<double> destpoint_plane(double x, double y, double bearing, double distance) {

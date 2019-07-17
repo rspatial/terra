@@ -1,17 +1,24 @@
 Package: terra
 Type: Package
 Title: Classes and Methods for Spatial Data
-Version: 0.2-10
-Date: 2019-07-13
+Version: 0.2-11
+Date: 2019-07-14
 Depends: R (>= 3.3.0)
 Suggests: testthat
 LinkingTo: Rcpp, RcppProgress
 Imports: methods, Rcpp, RcppProgress, raster (>= 2.9-22)
 SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>= 4.8.0)
-Authors@R: person("Robert J.", "Hijmans", role = c("cre", "aut"), email = "r.hijmans@gmail.com", comment = c(ORCID = "0000-0001-5872-2872"))
 Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
 Description: Classes and methods for spatial data.
 License: GPL (>=3)
 URL: https://github.com/rspatial/terra
 BugReports: https://github.com/rspatial/raster/issues/
 LazyLoad: yes
+Authors@R: c(
+	person("Robert J.", "Hijmans", role = c("cre", "aut"),  
+			email = "r.hijmans@gmail.com", 
+			comment = c(ORCID = "0000-0001-5872-2872")),
+	person("Roger", "Bivand", role = "ctb"),
+	person("Charles", "Karney", role = "ctb")
+	)
+

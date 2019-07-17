@@ -38,7 +38,12 @@ std::vector<double> directionToNearest_plane(std::vector<double> x1, std::vector
 
 // destination
 std::vector<double> destpoint_lonlat(double longitude, double latitude, double  bearing, double distance, double a, double f);
-std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> longitude, std::vector<double> latitude, std::vector<double> bearing, std::vector<double> distance, double a, double f);
+
+std::vector<std::vector<double> > destpoint_lonlat(std::vector<double>& longitude, std::vector<double>& latitude, std::vector<double>& bearing, std::vector<double>& distance, double a, double f);
+
+std::vector<std::vector<double> > destpoint_lonlat(double& longitude, double& latitude, std::vector<double>& bearing, double& distance, double a, double f);
 
 std::vector<double> destpoint_plane(double x, double y, double bearing, double distance);
 std::vector<std::vector<double> > destpoint_plane(std::vector<double>  x, std::vector<double>  y, std::vector<double>  bearing, std::vector<double>  distance);
+
+double toRad(double &deg);

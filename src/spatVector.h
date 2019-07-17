@@ -53,6 +53,7 @@ class SpatGeom {
 		std::vector<SpatPart> parts;
 		SpatExtent extent;
 		SpatGeom();
+		SpatGeom(SpatGeomType g);
 		SpatGeom(SpatPart p);
 		bool addPart(SpatPart p);
 		bool addHole(SpatHole h);
@@ -94,7 +95,6 @@ class SpatVector {
 
 		std::string getCRS();
 		void setCRS(std::string CRS);
-		bool isLonLat();
 
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
@@ -142,7 +142,12 @@ class SpatVector {
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
-		
+
+		SpatVector point_buffer(double d, unsigned quadsegs);
+
+// geos 
+        SpatVector buffer(double d, unsigned segments, unsigned capstyle);
+        SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 };
 
 /*

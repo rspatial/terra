@@ -23,7 +23,7 @@
 #include "gdal_priv.h"
 #endif
 
-#ifdef useRcpp
+#ifdef useRCPP
 #include <Rcpp.h>
 // [[Rcpp::depends(RcppProgress)]]
 #include <progress.hpp>
@@ -122,7 +122,7 @@ class SpatRaster {
 
 	public:
 
-#ifdef useRcpp
+#ifdef useRCPP
 		Progress* pbar;
 #endif
 
