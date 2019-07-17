@@ -54,7 +54,7 @@ To install these on Ubuntu you can do:
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
-sudo apt-get install libgdal-dev libgeos-dev libproj-dev 
+sudo apt-get install libgdal-dev libgeos-dev libgeos++-dev libproj-dev 
 ```
 
 And now, in R, install the packages.
