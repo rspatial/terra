@@ -1,7 +1,7 @@
 # terra
 
 [![Travis build
-status](https://travis-ci.com/wildintellect/terra.svg?branch=master)](https://travis-ci.com/wildintellect/terra)
+status](https://travis-ci.org/wildintellect/terra.svg?branch=master)](https://travis-ci.org/wildintellect/terra)
 
 This R package is a replacement of the [raster](https://github.com/rspatial/raster) package.
 It has a very similar, but simpler, interface, and it is much faster.
