@@ -5,3 +5,5 @@ README.md
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^windows
+^packrat/
+^\.Rprofile$

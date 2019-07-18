@@ -16,3 +16,5 @@ inst/proj/
 src/Makevars
 config.log
 config.status
+packrat/lib*/
+packrat/src/
