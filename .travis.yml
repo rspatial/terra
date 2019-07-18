@@ -3,14 +3,15 @@
 
 language: r
 r: release
-sudo: false
 cache: packages
+r_packages: rgdal #Even though dep=TRUE seems to miss rgdal from raster optional
 
-sudo: required
 dist: xenial
-
-before_install:
-  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-  - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install --yes libproj-dev libgeos-dev libgdal-dev
-#  - tlmgr install hanging
+addons:
+  apt:
+    sources:
+      - ppa:ubuntugis/ubuntugis-unstable
+    packages:
+      - libproj-dev 
+      - libgeos-dev
+      - libgdal-dev
