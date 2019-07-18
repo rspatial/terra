@@ -2,8 +2,6 @@
 
 #ifdef useGEOS
 
-#define GEOS_USE_ONLY_R_API
-
 #include <geos/geom/PrecisionModel.h>
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/Geometry.h>
@@ -704,8 +702,6 @@ main()
 */
 
 
-
-
 Point* create_point(double x, double y, GeometryFactory::unique_ptr gf) {
     Coordinate crd(x, y);
     Point* p = gf->createPoint(crd);
@@ -744,7 +740,7 @@ Polygon* create_rectangle(double llX, double llY, double width, double height, G
 
 
 
-std::vector<Geometry*>* create_Points(std::vector<double> &x, std::vector<double> &y) {	
+std::vector<Geometry*>* create_points(std::vector<double> &x, std::vector<double> &y) {	
 	PrecisionModel* pm = new PrecisionModel();
 	GeometryFactory::unique_ptr gf = GeometryFactory::create(pm, -1);
 	delete pm;
@@ -825,7 +821,7 @@ std::vector<Geometry*>* spat2geos(SpatVector* v) {
 	std::string vt = v->type();
 	if (vt == "points") {
 		std::vector<std::vector<double>> xy = v->coordinates();
-		geoms = create_Points(xy[0], xy[1]);
+		geoms = create_points(xy[0], xy[1]);
 	} else if (vt == "lines") {
 		std::vector<double> x, y;
 		size_t n = v->size();

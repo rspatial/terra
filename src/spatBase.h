@@ -21,9 +21,9 @@
 #include <cmath>
 #include "spatMessages.h"
 
-// comment out if GDAL not available
+// comment out if GDAL is not available
 #define useGDAL
-// comment out if GEOS not available
+// comment out if GEOS is not available
 //#define useGEOS
 // comment out if this is not for R (no Rcpp)
 #define useRCPP
