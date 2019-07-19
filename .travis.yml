@@ -4,13 +4,14 @@
 language: r
 r: release
 cache: packages
-r_packages: rgdal #Even though dep=TRUE seems to miss rgdal from raster optional
+r_packages: rgdal # Might be missing, or test doesn't load
 
 dist: xenial
 addons:
   apt:
-    sources:
-      - ppa:ubuntugis/ubuntugis-unstable
+    #sources:
+    #  - ppa:ubuntugis/ubuntugis-unstable
+    # Need to add key and more details if using unstable, stable is already included
     packages:
       - libproj-dev 
       - libgeos-dev
