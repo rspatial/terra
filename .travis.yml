@@ -4,7 +4,6 @@
 language: r
 r: release
 cache: packages
-r_packages: rgdal # Might be missing, or test doesn't load
 
 dist: xenial
 addons:
@@ -15,3 +14,17 @@ addons:
       - libproj-dev 
       - libgeos-dev
       - libgdal-dev
+      - gdal-bin # shouldn't be needed, but rgdal is being a problem
+
+# Tests are failing to load rgdal
+r_packages: 
+  #- rgdal
+  - covr
+
+# Lets try getting it from ubuntu repos
+r_binary_packages:
+  - rgdal
+  
+
+after_success:
+- Rscript -e 'library(covr); codecov()'
