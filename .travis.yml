@@ -5,8 +5,12 @@ language: r
 r: release
 #cache: packages
 sudo: required
-
 dist: xenial
+
+# Skip tests
+# Tests are failing to load rgdal, known problem getting ubuntugis-unstable installed
+r_check_args: '--no-tests --no-examples --as-cran'
+
 addons:
   apt:
     sources:
@@ -15,17 +19,10 @@ addons:
       - libproj-dev 
       - libgeos-dev
       - libgdal-dev
-      - gdal-bin # shouldn't be needed, but rgdal is being a problem
 
-# Tests are failing to load rgdal
 r_packages: 
-  #- rgdal
-  - covr
-
-# Lets try getting it from ubuntu repos
-r_binary_packages:
   - rgdal
-  
+  - covr
 
 after_success:
 - Rscript -e 'library(covr); codecov()'
