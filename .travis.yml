@@ -9,9 +9,8 @@ r_packages: rgdal # Might be missing, or test doesn't load
 dist: xenial
 addons:
   apt:
-    #sources:
-    #  - ppa:ubuntugis/ubuntugis-unstable
-    # Need to add key and more details if using unstable, stable is already included
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
     packages:
       - libproj-dev 
       - libgeos-dev
