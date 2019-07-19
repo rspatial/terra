@@ -3,7 +3,8 @@
 
 language: r
 r: release
-cache: packages
+#cache: packages
+sudo: required
 
 dist: xenial
 addons:
