@@ -83,7 +83,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 
 	opt <- .runOptions(filename, overwrite, wopt)
     x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA, opt)
-	show_messages(x, "classify")	
+	show_messages(x, "classify")
 }
 )
 
