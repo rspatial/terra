@@ -145,9 +145,9 @@ class SpatVector {
 
 		SpatVector point_buffer(double d, unsigned quadsegs);
 
-// geos 
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
-        SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
+// geos 
+//        SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 };
 
 /*
