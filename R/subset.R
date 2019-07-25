@@ -103,6 +103,17 @@ function(x, i, j, ... , drop=FALSE) {
 	}
 })
 
+setMethod("[", c("SpatVector", "logical", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	i <- which(i)
+	x@ptr <- x@ptr$subset_rows(i-1)
+	x <- show_messages(x)
+	if (drop) {
+		as.data.frame(x)
+	} else {
+		x
+	}
+})
 
 setMethod("[", c("SpatVector", "numeric", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
@@ -140,8 +151,24 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "numeric", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	m <- match(j, names(x))
-	m <- stats::na.omit(m)
-	if (length(m) == 0) m[,m,drop=drop]
+	x <- x[i,]
+	j <- match(j, names(x))
+	j <- stats::na.omit(j)
+	if (length(j) > 0) {
+		x <- x[,j,drop=drop]
+	}
+	x
+})
+
+
+setMethod("[", c("SpatVector", "logical", "character"),
+function(x, i, j, ... , drop=FALSE) {
+	x <- x[i,]
+	j <- match(j, names(x))
+	j <- stats::na.omit(j)
+	if (length(j) > 0) {
+		x <- x[,j,drop=drop]
+	}
+	x
 })
 
