@@ -31,6 +31,7 @@ raster package \tab terra package\cr
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{stackSelect}\tab\code{\link{collapse}}\cr
+\code{compareRaster}\tab\code{\link{compareGeom}}\cr
 }
 
 
