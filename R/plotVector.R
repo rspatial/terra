@@ -5,10 +5,6 @@
 
 setMethod("plot", signature(x="SpatVector", y="missing"), 
 	function(x, y, xlab="", ylab="", add=FALSE, ...)  {
-		if (add) {
-			lines(x, ...)
-			invisible();
-		}
 		g <- geom(x)
 		gtype <- geomtype(x)
 
@@ -19,10 +15,16 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 		}
 		
 		if (gtype == "points") {
-			plot(g[,3], g[,4], xlab=xlab, ylab=ylab, asp=asp, ...)
+			if (add) {
+				points(g[,3], g[,4], ...)			
+			} else {
+				plot(g[,3], g[,4], xlab=xlab, ylab=ylab, asp=asp, ...)
+			}
 		} else {
 			e <- matrix(as.vector(ext(x)), 2)
-			plot(e, type="n", xlab=xlab, ylab=ylab, asp=asp, ...)
+			if (!add) {
+				plot(e, type="n", xlab=xlab, ylab=ylab, asp=asp, ...)
+			}
 			g <- split(g, g[,1])
 			if (gtype == "polygons") {
 				g <- lapply(g, function(x) split(x, x[,2]))

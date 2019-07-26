@@ -120,8 +120,8 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 		
 		plot(NA, NA, xlim=xlim, ylim=ylim, type = "n", xaxs='i', yaxs='i', xlab=xlab, ylab=ylab, asp=asp, axes=FALSE, ...)
 		if (axes) {
-			xticks <- graphics::axTicks(1, c(xmin(r), xmax(r), 4))
-			yticks <- graphics::axTicks(2, c(ymin(r), ymax(r), 4))
+			xticks <- graphics::axTicks(1, c(xlim[1], xlim[2], 4))
+			yticks <- graphics::axTicks(2, c(ylim[1], ylim[2], 4))
 			if (xres(r) %% 1 == 0) xticks = round(xticks)
 			if (yres(r) %% 1 == 0) yticks = round(yticks)
 			graphics::axis(1, at=xticks)
