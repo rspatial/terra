@@ -240,7 +240,13 @@ setAs("SpatVector", "Spatial",
 		g <- geom(from)
 		colnames(g)[1] <- "object"
 		d <- as.data.frame(from)
-		gt <- geomtype(from)
+		if (inherits(from, "SpatialPolygons")) {
+			gt <- "polygons"
+		} else if (inherits(from, "SpatialLines")) {
+			gt <- "lines"
+		} else {
+			gt <- "points"
+		}
 		sp <- raster::geom(g, d, gt, crs(from))
 		return(sp)		
 	}

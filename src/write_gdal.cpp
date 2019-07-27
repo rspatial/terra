@@ -89,6 +89,12 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	char **papszOptions = NULL;
 	
 	poDstDS = poDriver->Create( pszDstFilename, ncol(), nrow(), nlyr(), GDT_Float64, papszOptions);
+	GDALRasterBand *poBand;
+	std::vector<std::string> nms = getNames();
+	for (size_t i=0; i < nlyr(); i++) {
+		poBand = poDstDS->GetRasterBand(i+1);
+		poBand->SetDescription(nms[i].c_str());
+	}
 
 	std::vector<double> rs = resolution();
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };

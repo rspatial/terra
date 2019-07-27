@@ -162,6 +162,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 //	s.layers.resize(1);
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
+		
 //		source.layers[0].push_back(i+1);
 		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
 
@@ -227,10 +228,15 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 			s.hasCategories.push_back(false);
 		}
 
-		if (s.nlyr > 1) {
-			s.names.push_back(basename(fname) + std::to_string(i+1) ) ;
+		std::string bandname = poBand->GetDescription();
+		if (bandname != "") {
+			s.names.push_back(bandname);
 		} else {
-			s.names.push_back(basename(fname)) ;
+			if (s.nlyr > 1) {
+				s.names.push_back(basename(fname) + std::to_string(i+1) ) ;
+			} else {
+				s.names.push_back(basename(fname)) ;
+			}
 		}
 	}
 	GDALClose( (GDALDatasetH) poDataset );
