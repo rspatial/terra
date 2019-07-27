@@ -535,7 +535,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 	unsigned nl = lyrs.size();
 	unsigned n = rows.size();
 	std::vector<std::vector<double>> errout;
-	std::vector<std::vector<double>> out(nl, std::vector<double>(n));
+	std::vector<std::vector<double>> out(nl, std::vector<double>(n, NAN));
 
 	CPLErr err = CE_None;
 	int hasNA;
@@ -549,50 +549,62 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 		if (!hasNA) { naflag = NAN; }
 
 		if (gdtype == GDT_Float64) {
-			std::vector<double> lyrout(n);
+			std::vector<double> lyrout(n, NAN);
 			for (size_t j=0; j < n; j++) {
+				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Float32) {
-			std::vector<float> lyrout(n);
+			std::vector<float> lyrout(n, NAN);
 			for (size_t j=0; j < n; j++) {
+				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Byte) {
-			std::vector<int8_t> lyrout(n);
+			int8_t navalue = NA<int8_t>::value;
+			std::vector<int8_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
+				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Int16) {
-			std::vector<int16_t> lyrout(n);
+			int16_t navalue = NA<int16_t>::value;
+			std::vector<int16_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
+				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt16) {
-			std::vector<uint16_t> lyrout(n);
+			uint16_t navalue = NA<uint16_t>::value;			
+			std::vector<uint16_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
+				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Int32) {
-			std::vector<int32_t> lyrout(n);
+			int32_t navalue = NA<int32_t>::value;			
+			std::vector<int32_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
+				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt32) {
-			std::vector<uint32_t> lyrout(n);
+			uint32_t navalue = NA<uint32_t>::value;			
+			std::vector<uint32_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
+				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
 				err = poBand->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &lyrout[j], 1, 1, gdtype, 0, 0);
 				if (err != CE_None ) { break ;}
 			}
