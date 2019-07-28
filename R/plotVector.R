@@ -11,7 +11,7 @@
 			i <- round(seq(1, ncols, steps))
 			cols <- cols[i]				
 		} else if (ncols < n) {
-			cols <- rep_len(col, n)
+			cols <- rep_len(cols, n)
 		}
 	}
 	cols
@@ -29,6 +29,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 		col <- .getCols(size(x), col)
 		
 		if (gtype == "points") {
+			if (is.null(col)) col = "black"
 			if (add) {
 				points(g[,3], g[,4], col=col, ...)			
 			} else {
