@@ -51,25 +51,31 @@ setMethod("vect", signature(x="matrix"),
 			stop("not an appropriate matrix")
 		}
 		if (!is.null(atts)) {
-			types <- sapply(atts, class)
-			nms <- colnames(atts)
-			for (i in 1:ncol(atts)) {
-				if (types[i] == "numeric") {
-					p@ptr$add_column_double(atts[[i]], nms[i])
-				} else if (types[i] == "integer") {
-					p@ptr$add_column_long(atts[[i]], nms[i])
-				} else if (types[i] == "character") {
-					p@ptr$add_column_string(atts[[i]], nms[i])
-				} else {
-					att <- as.character(atts[[i]])
-					p@ptr$add_column_string(att, nms[i])
-				}
-			}
+			values(p) <- atts
 		}
 		if (!is.na(crs)) {
 			p@ptr$crs <- ifelse(is.na(crs), "", as.character(crs))
 		}
 		show_messages(p)
+	}
+)
+
+
+setMethod("$<-", "SpatVector",  
+	function(x, name, value) { 
+		i <- which(name == names(x))[1]
+		if (is.na(i)) {
+			if (is.numeric(cv)) {
+				x@ptr$add_column_double(value, name)	
+			} else {
+				x@ptr$add_column_string(as.character(value), name)
+			}
+		} else {
+		    d <- values(x)
+			d[[name]] <- value
+			values(x) <- d
+		} 
+		return(x)		
 	}
 )
 

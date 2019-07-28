@@ -154,10 +154,8 @@ function(x, i, j, ... , drop=FALSE) {
 	x <- x[i,]
 	j <- match(j, names(x))
 	j <- stats::na.omit(j)
-	if (length(j) > 0) {
-		x <- x[,j,drop=drop]
-	}
-	x
+	if (length(j) == 0) j <- 0
+	x[,j,drop=drop]
 })
 
 
@@ -166,9 +164,9 @@ function(x, i, j, ... , drop=FALSE) {
 	x <- x[i,]
 	j <- match(j, names(x))
 	j <- stats::na.omit(j)
-	if (length(j) > 0) {
-		x <- x[,j,drop=drop]
-	}
-	x
+	if (length(j) == 0) j <- 0
+	x[,j,drop=drop]
 })
+
+
 

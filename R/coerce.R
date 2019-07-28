@@ -239,8 +239,7 @@ setAs("SpatVector", "Spatial",
 	function(from) {
 		g <- geom(from)
 		colnames(g)[1] <- "object"
-		sp <- raster::geom(g, d, gt, crs(from))
-		return(sp)		
+		raster::geom(g, values(from), geomtype(from), crs(from))
 	}
 )
 

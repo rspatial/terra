@@ -13,6 +13,7 @@
 \alias{ext,missing-method}
 \alias{as.character,SpatExtent-method}
 
+
   
 \title{Create, get or set a SpatExtent}
 

@@ -4,19 +4,23 @@
 
 
 \alias{values}
-\alias{values,SpatRaster-method}
 \alias{values<-}
+\alias{values,SpatRaster-method}
 \alias{values<-,SpatRaster-method}
+\alias{values,SpatVector-method}
+\alias{values<-,SpatVector-method}
   
 \title{Get cell values}
 
 \description{
-values returns all cell values of a SpatRaster.
+values returns all cell values of a SpatRaster, or the attributes of a SpatVector.
 }
 
 \usage{
 \S4method{values}{SpatRaster}(x, mat=TRUE, ...)
 \S4method{values}{SpatRaster}(x,...)<-value
+\S4method{values}{SpatVector}(x, ...)
+\S4method{values}{SpatVector}(x,...)<-value
 }
 
 \arguments{
@@ -28,8 +32,13 @@ values returns all cell values of a SpatRaster.
 
 
 \details{
+If \code{x} is a \code{SpatRaster}:
+
 If \code{matrix=TRUE}, a matrix is returned in which the values of each layer are represented by a column (with \code{ncell(x)} rows). The values per layer are in cell-order, that is, from top-left, to top-right and then down by row. Use \code{\link{as.matrix}} for an alternative matrix representation where the number of rows and columns matches that of \code{x}, if \code{x} has a single layer.
 If \code{matrix=FALSE}, the values are returned as a vector. In cell-order by layer. 
+
+If \code{x} is a \code{SpatVector}: a \code{data.frame}
+
 }
 
 
@@ -44,6 +53,13 @@ r
 v <- values(r)
 values(r) <- v * 10
 r
+
+f <- system.file("exdata/lux.shp", package="terra")
+v <- vect(f)
+x <- values(v)
+x
+values(v) <- x[,1:2]
+v
 }
 
 \keyword{spatial}

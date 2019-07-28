@@ -153,14 +153,16 @@ bool smooth_operator(std::string oper) {
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr());
+	size_t nl = std::max(nlyr(), x.nlyr());
+	SpatRaster out = geometry(nl);
+
 
 	if (!smooth_operator(oper)) {
 		out.setError("unknown arith function");
 		return out;
 	}
 
-	if (!compare_geom(x, true, true)) {
+	if (!compare_geom(x, false, true)) {
 		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
@@ -175,6 +177,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		std::vector<double> b = x.readBlock(out.bs, i);
+		recycle(a,b);
 		if (oper == "+") {
 			a + b;
 		} else if (oper == "-") {
