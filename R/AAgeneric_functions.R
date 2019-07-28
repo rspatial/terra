@@ -119,6 +119,7 @@ if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, .
 if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }
 if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, start) standardGeneric("writeValues")) }
 if (!isGeneric("writeRaster")) {setGeneric("writeRaster", function(x, filename, ...) standardGeneric("writeRaster"))}
+if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, ...) standardGeneric("writeVector"))}
 if (!isGeneric("xmin")) {setGeneric("xmin", function(x) standardGeneric("xmin"))}
 if (!isGeneric("xmax")) {setGeneric("xmax", function(x)	standardGeneric("xmax"))}
 if (!isGeneric("ymin")) {setGeneric("ymin", function(x)	standardGeneric("ymin"))}

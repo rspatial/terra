@@ -14,6 +14,11 @@
 		d <- d[i,,drop=FALSE]
 		if (ncol(d) > 0) {
 			r <- fun(model, d, ...)
+			if (is.factor(r)) {
+				r <- as.integer(r)
+			} else if (is.data.frame(r)) {
+				r <- sapply(r, as.numeric)
+			}
 			r <- as.matrix(r)
 			if (!all(i)) {
 				m <- matrix(NA, nrow=nl*n, ncol=ncol(r))
@@ -27,6 +32,11 @@
 		return (r)
 	} else {
 		r <- fun(model, d, ...)
+		if (is.factor(r)) {
+			r <- as.integer(r)
+		} else if (is.data.frame(r)) {
+			r <- sapply(r, as.numeric)
+		}
 		return( as.matrix(r) )
 	}
 }

@@ -62,3 +62,16 @@ function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 }
 )
 
+
+setMethod("writeVector", signature(x="SpatVector", filename="character"), 
+function(x, filename="", overwrite=FALSE, ...) {
+	filename <- trimws(filename)
+	if (filename == "") {
+		stop("provide a filename")
+	}
+	success <- x@ptr$write(filename, "ESRI Shapefile", overwrite[1])
+	show_messages(x, "writeVector")
+	invisible(TRUE)
+}
+)
+

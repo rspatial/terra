@@ -31,9 +31,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 
 \S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
-
 \S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", ...)
-
 
 \S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", add=FALSE, ...)
 \S4method{points}{SpatVector}(x, ...)
@@ -78,6 +76,13 @@ d <- (r > 400) + (r > 600)
 plot(d, leg.main="Title")
 plot(d, leg.ext=c(178000,178200,332800,333250),
 		leg.main=c("Title     \n\n"))
+
+# character labels
+x <- round(r/1000)
+x <- as.factor(x)
+levels(x) <- c("earth", "wind", "fire")
+plot(x)
+
 
 f <- system.file("exdata/lux.shp", package="terra")
 v <- vect(f)
