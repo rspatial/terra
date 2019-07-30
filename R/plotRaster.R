@@ -118,7 +118,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function (x, y, cols, maxcell = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
+	function (x, y, col, maxcell = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
 
 		x <- x[[y]]
 		if (couldBeLonLat(x, warn=FALSE)) {
@@ -127,7 +127,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			asp <- 1
 		}
 		
-		if (missing(cols)) cols <- rev(grDevices::terrain.colors(25))
+		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
 		object <- sampleRegular(x, maxcell)
 		
 		Y <- yFromRow(object, nrow(object):1)
@@ -168,7 +168,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		} else {
 			graphics::par(mar=.getMar(c(0, 0, 0, leg.mar)))
 		}		
-		graphics::image(X, Y, Z, col=cols, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, ...)
+		graphics::image(X, Y, Z, col=col, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, ...)
 
 
 		if (missing(digits)) {
@@ -199,15 +199,15 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			lvs <- levels(x)[[1]]
 			labs <- lvs$labels
 			n <- ifelse(leg.ext.set, length(labs), 20)
-			cols <- .sampleColors(cols, length(labs))
-			.factorLegend(leg.ext, lvs$levels, cols, labs, n)
+			col <- .sampleColors(col, length(labs))
+			.factorLegend(leg.ext, lvs$levels, col, labs, n)
 		} else {			
 			if (length(uvals) < 10) {
-				cols <- .sampleColors(cols, length(uvals))
+				col <- .sampleColors(col, length(uvals))
 				n <- ifelse(leg.ext.set, length(uvals), 20)
-				.fewClassLegend(leg.ext, uvals, cols, digits, n)
+				.fewClassLegend(leg.ext, uvals, col, digits, n)
 			} else {
-				.contLegend(leg.ext, cols, zlim, digits, leg.levels)
+				.contLegend(leg.ext, col, zlim, digits, leg.levels)
 			}
 		}	
 		.legMain(leg.main, leg.ext$xmax, leg.ext$ymax, leg.ext$dy, leg.main.cex)

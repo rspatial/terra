@@ -77,28 +77,28 @@ setMethod("ymax", signature(x="SpatExtent"),
 )	
 
 
-setMethod("xmin<-", signature(x="SpatExtent"), 
+setMethod("xmin<-", signature("SpatExtent", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(x)
 		v[1] <- value
 		ext(v)
 	}
 )	
-setMethod("xmax<-", signature(x="SpatExtent"), 
+setMethod("xmax<-", signature("SpatExtent", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(x)
 		v[2] <- value
 		ext(v)
 	}
 )	
-setMethod("ymin<-", signature(x="SpatExtent"), 
+setMethod("ymin<-", signature("SpatExtent", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(x)
 		v[3] <- value
 		ext(v)
 	}
 )	
-setMethod("ymax<-", signature(x="SpatExtent"), 
+setMethod("ymax<-", signature("SpatExtent", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(x)
 		v[4] <- value
@@ -129,7 +129,7 @@ setMethod("ymax", signature(x="SpatRaster"),
 )	
 
 
-setMethod("xmin<-", signature(x="SpatRaster"), 
+setMethod("xmin<-", signature("SpatRaster", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[1] <- value
@@ -139,7 +139,7 @@ setMethod("xmin<-", signature(x="SpatRaster"),
 )	
 
 
-setMethod("xmax<-", signature(x="SpatRaster"), 
+setMethod("xmax<-", signature("SpatRaster", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[2] <- value
@@ -147,7 +147,7 @@ setMethod("xmax<-", signature(x="SpatRaster"),
 		x
 	}
 )	
-setMethod("ymin<-", signature(x="SpatRaster"), 
+setMethod("ymin<-", signature("SpatRaster", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[3] <- value
@@ -156,7 +156,7 @@ setMethod("ymin<-", signature(x="SpatRaster"),
 	}
 )	
 
-setMethod("ymax<-", signature(x="SpatRaster"), 
+setMethod("ymax<-", signature("SpatRaster", "numeric"), 
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[4] <- value

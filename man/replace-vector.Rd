@@ -13,14 +13,14 @@ Replace values of a SpatVector.
 }
 
 \usage{
-x$name
-x$name <- value
+\S4method{$}{SpatVector}(x, name)
+\S4method{$}{SpatVector}(x, name)<-value
 }
 
 \arguments{
   \item{x}{SpatVector}
-  \item{name}{a literal character string (not a variable)}
-  \item{value}{a vector}
+  \item{name}{character}
+  \item{value}{vector}
 }
 
 \value{

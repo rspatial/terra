@@ -6,7 +6,7 @@
 \alias{values}
 \alias{values<-}
 \alias{values,SpatRaster-method}
-\alias{values<-,SpatRaster-method}
+\alias{values<-,SpatRaster,ANY-method}
 \alias{values,SpatVector-method}
 \alias{values<-,SpatVector,data.frame-method}
   
@@ -18,9 +18,9 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
 
 \usage{
 \S4method{values}{SpatRaster}(x, mat=TRUE, ...)
-\S4method{values}{SpatRaster}(x,...)<-value
+\S4method{values}{SpatRaster,ANY}(x, ...)<-value
 \S4method{values}{SpatVector}(x, ...)
-\S4method{values}{SpatVector,data.frame}(x,...)<-value
+\S4method{values}{SpatVector,data.frame}(x, ...)<-value
 }
 
 \arguments{

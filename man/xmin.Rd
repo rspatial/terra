@@ -23,14 +23,14 @@
 \alias{ymax,SpatRaster-method}
 \alias{ymax,SpatVector-method}
 
-\alias{xmin<-,SpatExtent-method}
-\alias{xmin<-,SpatRaster-method}
-\alias{xmax<-,SpatExtent-method}
-\alias{xmax<-,SpatRaster-method}
-\alias{ymin<-,SpatExtent-method}
-\alias{ymin<-,SpatRaster-method}
-\alias{ymax<-,SpatExtent-method}
-\alias{ymax<-,SpatRaster-method}
+\alias{xmin<-,SpatExtent,numeric-method}
+\alias{xmin<-,SpatRaster,numeric-method}
+\alias{xmax<-,SpatExtent,numeric-method}
+\alias{xmax<-,SpatRaster,numeric-method}
+\alias{ymin<-,SpatExtent,numeric-method}
+\alias{ymin<-,SpatRaster,numeric-method}
+\alias{ymax<-,SpatExtent,numeric-method}
+\alias{ymax<-,SpatRaster,numeric-method}
 
   
 \title{Get or set single values of an extent}

@@ -12,8 +12,8 @@ setMethod("lines", signature(x="SpatExtent"),
 	}
 )
 
-setMethod("plot", signature(x="SpatExtent"), 
-	function(x, col=NULL, ...)  {
+setMethod("plot", signature(x="SpatExtent", y="missing"), 
+	function(x, y, col=NULL, ...)  {
 		e <- as.vector(x)
 		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
 		plot(p, type="n")

@@ -1,6 +1,6 @@
 # Author: Robert J. Hijmans
-# Date :  June 2008
-# Version 0.9
+# Date :  June 2019
+# Version 1.0
 # Licence GPL v3
 
 
@@ -26,7 +26,7 @@
 		
 		
 	if (missing(main)) {
-		main <- ''
+		main <- ""
 	}
 	
 	if (missing(xlab)) {
@@ -146,7 +146,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 .plotdens <- function(x, y, nc, nr, asp=NULL, xlim=NULL, ylim=NULL, ...) {
 	xy <- stats::na.omit(cbind(x,y))
 	if (nrow(xy) == 0) {
-		stop('only NA values (in this sample?)')
+		stop("only NA values (in this sample?)")
 	}
 	r <- apply(xy, 2, range)
 	rx <- r[,1]
