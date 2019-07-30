@@ -29,21 +29,20 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y, col, maxcell=100000, leg.mar, 
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext,
-		digits, useRaster=TRUE, zlim, xlab="", ylab="", ...)
+		digits, useRaster=TRUE, zlim, xlab="", ylab="", axes=TRUE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=100000, nc, nr, main, maxnl=16, ...)
-
 \S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
+
+\S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
+\S4method{plot}{SpatExtent,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, ...)
 
 \S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", ...)
 
-\S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", add=FALSE, ...)
 \S4method{points}{SpatVector}(x, col=NULL, ...)
 \S4method{lines}{SpatVector}(x, col=NULL, ...)
-
-\S4method{plot}{SpatExtent,missing}(x, y, col=NULL, ...)
-\S4method{lines}{SpatExtent}(x, col=NULL, ...)
 \S4method{points}{SpatExtent}(x, col=NULL, ...)
+\S4method{lines}{SpatExtent}(x, col=NULL, ...)
 }
 
 \arguments{
@@ -61,6 +60,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{zlim}{range of allowed values}
   \item{xlab}{character}
   \item{ylab}{character}
+  \item{axes}{logical}
   \item{useRaster}{logical; if \code{TRUE} plotting is faster because a bitmap raster is used to plot the image instead of polygons. See \code{\link[graphics]{image}}}
   \item{nc}{integer > 0. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{integer > 0. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}

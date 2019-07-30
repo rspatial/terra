@@ -13,10 +13,10 @@ setMethod("lines", signature(x="SpatExtent"),
 )
 
 setMethod("plot", signature(x="SpatExtent", y="missing"), 
-	function(x, y, col=NULL, ...)  {
+	function(x, y, col=NULL, xlab="", ylab="", axes=TRUE, ...)  {
 		e <- as.vector(x)
 		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
-		plot(p, type="n")
+		plot(p, type="n", axes=axes, xlab=xlab, ylab=ylab)
 		if (is.null(col)) col <- "black"
 		graphics::lines(p, col=col[1], ...)		
 	}

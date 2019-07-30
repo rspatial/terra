@@ -118,7 +118,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function (x, y, col, maxcell = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", ...) {
+	function (x, y, col, maxcell = 100000, leg.mar, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext, digits, useRaster = TRUE, zlim, xlab="", ylab="", axes=TRUE, ...) {
 
 		x <- x[[y]]
 		if (couldBeLonLat(x, warn=FALSE)) {
@@ -168,8 +168,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		} else {
 			graphics::par(mar=.getMar(c(0, 0, 0, leg.mar)))
 		}		
-		graphics::image(X, Y, Z, col=col, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, ...)
-
+		graphics::image(X, Y, Z, col=col, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, axes=axes, ...)
 
 		if (missing(digits)) {
 			dif <- diff(zlim)

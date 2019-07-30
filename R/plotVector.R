@@ -18,7 +18,7 @@
 }
 
 setMethod("plot", signature(x="SpatVector", y="missing"), 
-	function(x, y, col=NULL, xlab="", ylab="", add=FALSE, ...)  {
+	function(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)
 		if (couldBeLonLat(x, warn=FALSE)) {
@@ -33,12 +33,12 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 			if (add) {
 				points(g[,3], g[,4], col=col, ...)			
 			} else {
-				plot(g[,3], g[,4], col=col, xlab=xlab, ylab=ylab, asp=asp, ...)
+				plot(g[,3], g[,4], col=col, axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
 			}
 		} else {
 			e <- matrix(as.vector(ext(x)), 2)
 			if (!add) {
-				plot(e, type="n", xlab=xlab, ylab=ylab, asp=asp, ...)
+				plot(e, type="n", axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
 			}
 			g <- split(g, g[,1])
 			if (gtype == "polygons") {

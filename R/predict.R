@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-.runModel <- function(model, fun, d, nl, const, na.rm, ...) {
+.runModel <- function(model, fun, d, nl, const, na.rm, index, ...) {
 	if (! is.null(const)) {
 		d <- cbind(d, const[1])
 	} 
@@ -29,7 +29,6 @@
 		} else {
 			r <- matrix(NA, nrow=nl*n, ncol=1)
 		}
-		return (r)
 	} else {
 		r <- fun(model, d, ...)
 		if (is.factor(r)) {
@@ -37,8 +36,12 @@
 		} else if (is.data.frame(r)) {
 			r <- sapply(r, as.numeric)
 		}
-		return( as.matrix(r) )
+		r <- as.matrix(r)
 	}
+	if (!is.null(index)) {
+		r <- r[, index,drop=FALSE]
+	}
+	r
 }
 
 
@@ -78,7 +81,7 @@
 }
 	
 setMethod("predict", signature(object="SpatRaster"), 
-	function(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+	function(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE, index=NULL, filename="", overwrite=FALSE, wopt=list()) {
 
 		nms <- names(object)
 		if (length(unique(nms)) != length(nms)) {
@@ -99,7 +102,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		tomat <- FALSE
 		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
 
-		r <- .runModel(model, fun, d, nl, const, na.rm, ...)
+		r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
 		nl <- ncol(r)		
 		out <- rast(object, nlyr=nl)
 		cn <- colnames(r)
@@ -109,7 +112,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
-			r <- .runModel(model, fun, d, nl, const, na.rm, ...)
+			r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
 			writeValues(out, r, b$row[i])
 		}
 		readStop(object)
