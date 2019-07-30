@@ -239,10 +239,7 @@ setAs("SpatVector", "Spatial",
 	function(from) {
 		g <- geom(from)
 		colnames(g)[1] <- "object"
-		d <- as.data.frame(from)
-		gt <- geomtype(from)
-		sp <- raster::geom(g, d, gt, crs(from))
-		return(sp)		
+		raster::geom(g, values(from), geomtype(from), crs(from))
 	}
 )
 
@@ -260,6 +257,7 @@ setAs("Spatial", "SpatVector",
 			vtype <- "lines"
 		} else {
 			vtype <- "points"
+			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3])
 		}
 		if (methods::.hasSlot(from, "data")) {
 			v <- vect(g, vtype, from@data, crs(from))

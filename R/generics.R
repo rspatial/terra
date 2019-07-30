@@ -193,13 +193,6 @@ setMethod("rotate", signature(x="SpatRaster"),
 )
 
 
-setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"), 
-	function(x, size, ...) { 
-		size <- max(1, min(size(x), size))
-		x@ptr <- x@ptr$sampleRegular(size)
-		show_messages(x, "sampleRegular")		
-	}
-)
 
 setMethod("collapse", signature(x="SpatRaster"), 
 	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 

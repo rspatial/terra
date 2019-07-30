@@ -65,6 +65,9 @@ setMethod("rast", signature(x="SpatVector"),
 
 setMethod("rast", signature(x="character"), 
 	function(x, ...) {
+		if (length(x) == 0) {
+			stop("provide valid file name(s)")
+		}
 		f <- .fullFilename(x)
 		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(f)

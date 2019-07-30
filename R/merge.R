@@ -27,3 +27,22 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 	}
 )
 
+
+setMethod("merge", signature(x="SpatVector", y="data.frame"), 
+	function(x, y, ...) {
+		v <- values(x)
+		v$unique_nique_ique_que <- 1:nrow(v)
+		m <- merge(v, y, ...)
+		
+		m <- m[order(m$unique_nique_ique_que), ]
+		if (nrow(m) != nrow(v)) {
+			stop("cannot merge these data like this")
+		}
+		m$unique_nique_ique_que <- NULL
+		values(x) <- m
+		x
+	}
+)
+
+
+

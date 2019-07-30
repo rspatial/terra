@@ -197,7 +197,10 @@ setMethod("text", signature(x="SpatVector"),
 		} else if (nrow(x) > 1 && length(labels) == 1) {
 			labels <- as.data.frame(x)[,labels]
 		} 
-		xy <- coordinates(x)
+		if (geomtype(x) != "points") {
+			stop("only implemented for points (so far)")
+		}
+		xy <- geom(x)[,c("x","y")]
 		if (halo) {
 			.halo(xy[,1], xy[,2], labels, ...)
 		} else {

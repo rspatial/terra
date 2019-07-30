@@ -52,7 +52,7 @@ function(x, mat=TRUE, ...) {
 )
 
 
-setMethod("values<-", signature(x="SpatRaster", "ANY"), 
+setMethod("values<-", signature("SpatRaster", "ANY"), 
 	function(x, value) {
 	if (is.matrix(value)) { 
 		if (nrow(value) == nrow(x)) {
@@ -146,3 +146,33 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 		bool
 	}
 )
+
+
+setMethod("values", signature("SpatVector"), 
+	function(x, ...) {
+		as.data.frame(x, ...)
+	}
+)
+
+
+setMethod("values<-", signature("SpatVector", "data.frame"), 
+	function(x, value) {
+		x <- x[,0]
+		types <- sapply(value, class)
+		nms <- colnames(value)
+		for (i in 1:ncol(value)) {
+			if (types[i] == "numeric") {
+				x@ptr$add_column_double(value[[i]], nms[i])
+			} else if (types[i] == "integer") {
+				x@ptr$add_column_long(value[[i]], nms[i])
+			} else if (types[i] == "character") {
+				x@ptr$add_column_string(value[[i]], nms[i])
+			} else {
+				att <- as.character(value[[i]])
+				x@ptr$add_column_string(att, nms[i])
+			}
+		}
+		x
+	}
+)
+

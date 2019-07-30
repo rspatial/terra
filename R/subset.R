@@ -68,16 +68,12 @@ setMethod("subset", signature(x="SpatVector"),
 	x <- show_messages(x, "subset")
 	if (drop) {	# drop geometry
 		d <- x@ptr$getDF()
-		as.data.frame(d)
+		as.data.frame(d, stringsAsFactors=FALSE)
 	} else {
 		x
 	}
 }
 
-setMethod("$", "SpatVector",  function(x, name) { 
-	s <- .subset_cols(x, name, drop=TRUE) 
-	s[,1,drop=TRUE]
-})
 
 
 setMethod("[[", c("SpatVector", "numeric", "missing"),
@@ -97,7 +93,7 @@ function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- show_messages(x)
 	if (drop) {
-		as.data.frame(x)
+		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
 		x
 	}
@@ -109,7 +105,7 @@ function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- show_messages(x)
 	if (drop) {
-		as.data.frame(x)
+		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
 		x
 	}
@@ -121,7 +117,7 @@ function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- p$subset_cols(j-1)	
 	x <- show_messages(x)
 	if (drop) {
-		as.data.frame(x)
+		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
 		x
 	}
@@ -133,7 +129,7 @@ function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_cols(j-1)	
 	x <- show_messages(x)
 	if (drop) {
-		as.data.frame(x)
+		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
 		x
 	}
@@ -154,10 +150,8 @@ function(x, i, j, ... , drop=FALSE) {
 	x <- x[i,]
 	j <- match(j, names(x))
 	j <- stats::na.omit(j)
-	if (length(j) > 0) {
-		x <- x[,j,drop=drop]
-	}
-	x
+	if (length(j) == 0) j <- 0
+	x[,j,drop=drop]
 })
 
 
@@ -166,9 +160,9 @@ function(x, i, j, ... , drop=FALSE) {
 	x <- x[i,]
 	j <- match(j, names(x))
 	j <- stats::na.omit(j)
-	if (length(j) > 0) {
-		x <- x[,j,drop=drop]
-	}
-	x
+	if (length(j) == 0) j <- 0
+	x[,j,drop=drop]
 })
+
+
 

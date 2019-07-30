@@ -405,9 +405,10 @@ SpatVector SpatVector::subset_rows(int i) {
 
 
 SpatVector SpatVector::subset_cols(std::vector<int> range) {
-	SpatVector out;
-	out.lyr.geoms = lyr.geoms;
-	out.lyr.crs = lyr.crs;
+	SpatVector out = *this;
+	//out.lyr.geoms = lyr.geoms;
+	//out.lyr.crs = lyr.crs;
+	//out.lyr.extent = lyr.extent;
 	int nc = ncol();
 
 	std::vector<unsigned> r;

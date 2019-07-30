@@ -6,14 +6,18 @@
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
 \alias{plot,SpatRaster,SpatRaster-method}
+\alias{plot,SpatVector,missing-method}
+\alias{plot,SpatExtent,missing-method}
+
 \alias{image}
 \alias{image,SpatRaster-method}
-\alias{plot,SpatVector,missing-method}
-\alias{points,SpatVector-method}
+
+\alias{lines,SpatRaster-method}
 \alias{lines,SpatVector-method}
 \alias{lines,SpatExtent-method}
-\alias{lines,SpatRaster-method}
 
+\alias{points,SpatVector-method}
+\alias{points,SpatExtent-method}
 
 
 \title{Plot a SpatRaster or SpatVector}
@@ -23,28 +27,28 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y, cols, maxcell=100000, leg.mar, 
+\S4method{plot}{SpatRaster,numeric}(x, y, col, maxcell=100000, leg.mar, 
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext,
-		digits, useRaster=TRUE, zlim, xlab="", ylab="", ...)
+		digits, useRaster=TRUE, zlim, xlab="", ylab="", axes=TRUE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=100000, nc, nr, main, maxnl=16, ...)
-
 \S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
+\S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
+\S4method{plot}{SpatExtent,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, ...)
 
 \S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", ...)
 
-
-\S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", add=FALSE, ...)
-\S4method{points}{SpatVector}(x, ...)
-\S4method{lines}{SpatVector}(x, ...)
-\S4method{lines}{SpatExtent}(x, ...)
+\S4method{points}{SpatVector}(x, col=NULL, ...)
+\S4method{lines}{SpatVector}(x, col=NULL, ...)
+\S4method{points}{SpatExtent}(x, col=NULL, ...)
+\S4method{lines}{SpatExtent}(x, col=NULL, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{y}{missing or integer indicating the layer(s) to be plotted}
-  \item{cols}{character. colors}
+  \item{col}{character. colors}
   \item{maxcell}{integer > 0. Maximum number of cells to use for the plot}
   \item{leg.mar}{integer > 0. size of margin for the legend}
   \item{leg.levels}{integer > 0. number of labels on the legend}
@@ -56,6 +60,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{zlim}{range of allowed values}
   \item{xlab}{character}
   \item{ylab}{character}
+  \item{axes}{logical}
   \item{useRaster}{logical; if \code{TRUE} plotting is faster because a bitmap raster is used to plot the image instead of polygons. See \code{\link[graphics]{image}}}
   \item{nc}{integer > 0. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{integer > 0. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
@@ -78,6 +83,13 @@ d <- (r > 400) + (r > 600)
 plot(d, leg.main="Title")
 plot(d, leg.ext=c(178000,178200,332800,333250),
 		leg.main=c("Title     \n\n"))
+
+# character labels
+x <- round(r/1000)
+x <- as.factor(x)
+levels(x) <- c("earth", "wind", "fire")
+plot(x)
+
 
 f <- system.file("exdata/lux.shp", package="terra")
 v <- vect(f)

@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#ifdef useGDAL
+#include "spatVector.h"
 
+//#ifdef useGDAL
 
-#include "spatRaster.h"
-#include "string_utils.h"
+#include "file_utils.h"
 #include "ogrsf_frmts.h"
 
 
@@ -74,4 +74,4 @@ bool SpatVector::write(std::string filename, std::string format, bool overwrite)
 }
 
 
-#endif
+//#endif

@@ -70,7 +70,7 @@ setMethod(xFromCell, signature(object="SpatRaster", cell="numeric"),
 
 setMethod(rowColFromCell, signature(object="SpatRaster", cell="numeric"), 
 	function(object, cell) {
-		rc <- object@ptr$rowcolFromCell(cell-1)
+		rc <- object@ptr$rowColFromCell(cell-1)
 		do.call(cbind, rc)
 	}	
 )

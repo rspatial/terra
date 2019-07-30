@@ -46,7 +46,8 @@ setMethod("writeStop", signature(x="SpatRaster"),
 
 setMethod("writeValues", signature(x="SpatRaster", v="vector"), 
 	function(x, v, start) {
-		success <- x@ptr$writeValues(v, start-1, nrow(x), 0, ncol(x))
+		nrows <- length(v) / (ncol(x) * nlyr(x))
+		success <- x@ptr$writeValues(v, start-1, nrows, 0, ncol(x))
 		show_messages(x, "writeValues")
 		invisible(success)
 	}
@@ -59,6 +60,19 @@ function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 	success <- x@ptr$writeRaster(opt)
 	show_messages(x, "writeRaster")
 	invisible(rast(filename))
+}
+)
+
+
+setMethod("writeVector", signature(x="SpatVector", filename="character"), 
+function(x, filename="", overwrite=FALSE, ...) {
+	filename <- trimws(filename)
+	if (filename == "") {
+		stop("provide a filename")
+	}
+	success <- x@ptr$write(filename, "ESRI Shapefile", overwrite[1])
+	show_messages(x, "writeVector")
+	invisible(TRUE)
 }
 )
 

@@ -48,6 +48,10 @@ class SpatDataFrame {
 	
 		void add_row();
 		
+		void set_values(std::vector<double> x, std::string name);
+		void set_values(std::vector<long> x, std::string name);
+		void set_values(std::vector<std::string> x, std::string name);
+
 		void add_column(unsigned dtype, std::string name);
 		bool add_column(std::vector<double> x, std::string name);
 		bool add_column(std::vector<long> x, std::string name);

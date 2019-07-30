@@ -76,6 +76,8 @@ if (!isGeneric("readStop")) {setGeneric("readStop", function(x)	standardGeneric(
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }
 if (!isGeneric("res<-")) { setGeneric("res<-", function(x, value) standardGeneric("res<-")) }
 if (!isGeneric("sampleRegular")) { setGeneric("sampleRegular", function(x, size, ...) standardGeneric("sampleRegular"))}
+if (!isGeneric("sampleRandom")) { setGeneric("sampleRandom", function(x, size, ...) standardGeneric("sampleRandom"))}	
+if (!isGeneric("sampleStratified")) {setGeneric("sampleStratified", function(x, size, ...) standardGeneric("sampleStratified"))}
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}
 if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
 if (!isGeneric("shift")) {setGeneric("shift", function(x, ...) standardGeneric("shift"))}	
@@ -117,8 +119,13 @@ if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, .
 if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }
 if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, start) standardGeneric("writeValues")) }
 if (!isGeneric("writeRaster")) {setGeneric("writeRaster", function(x, filename, ...) standardGeneric("writeRaster"))}
-
-
-# graphics
-if (!isGeneric("image")) {setGeneric("image", function(x,...) standardGeneric("image"))}	
+if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, ...) standardGeneric("writeVector"))}
+if (!isGeneric("xmin")) {setGeneric("xmin", function(x) standardGeneric("xmin"))}
+if (!isGeneric("xmax")) {setGeneric("xmax", function(x)	standardGeneric("xmax"))}
+if (!isGeneric("ymin")) {setGeneric("ymin", function(x)	standardGeneric("ymin"))}
+if (!isGeneric("ymax")) {setGeneric("ymax", function(x)	standardGeneric("ymax"))}
+if (!isGeneric("xmin<-")) { setGeneric("xmin<-", function(x, ..., value) standardGeneric("xmin<-"))}	
+if (!isGeneric("xmax<-")) { setGeneric("xmax<-", function(x, ..., value) standardGeneric("xmax<-"))}	
+if (!isGeneric("ymin<-")) { setGeneric("ymin<-", function(x, ..., value) standardGeneric("ymin<-"))}	
+if (!isGeneric("ymax<-")) { setGeneric("ymax<-", function(x, ..., value) standardGeneric("ymax<-"))}	
 
