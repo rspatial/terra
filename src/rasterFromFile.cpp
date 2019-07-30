@@ -22,6 +22,7 @@
 
 bool SpatRaster::constructFromFile(std::string fname) {
 
+
 	if (!file_exists(fname)) {
 		setError("file does not exist");
 		return false;
