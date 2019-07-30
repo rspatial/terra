@@ -61,6 +61,12 @@ setMethod("vect", signature(x="matrix"),
 )
 
 
+setMethod("$", "SpatVector",  function(x, name) { 
+	s <- .subset_cols(x, name, drop=TRUE) 
+	s[,1,drop=TRUE]
+})
+
+
 setMethod("$<-", "SpatVector",  
 	function(x, name, value) { 
 		i <- which(name == names(x))[1]

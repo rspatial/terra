@@ -1,5 +1,5 @@
 # Author: Robert J. Hijmans
-# Date :  June 2008
+# Date :  June 2019
 # Version 1.0
 # License GPL v3
 
@@ -105,14 +105,4 @@ setMethod("points", signature(x="SpatVector"),
 		graphics::points(geom(x)[,3:4], col=col, ...)
 	}
 )
-
-
-setMethod("lines", signature(x="SpatExtent"), 
-	function(x, col=NULL, ...)  {
-		e <- as.vector(x)
-		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
-		graphics::lines(p, col=col[1], ...)		
-	}
-)
-
 

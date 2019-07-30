@@ -124,8 +124,8 @@ if (!isGeneric("xmin")) {setGeneric("xmin", function(x) standardGeneric("xmin"))
 if (!isGeneric("xmax")) {setGeneric("xmax", function(x)	standardGeneric("xmax"))}
 if (!isGeneric("ymin")) {setGeneric("ymin", function(x)	standardGeneric("ymin"))}
 if (!isGeneric("ymax")) {setGeneric("ymax", function(x)	standardGeneric("ymax"))}
-if (!isGeneric("xmin<-")) { setGeneric("xmin<-", function(x, ..., value) standardGeneric("xmin<-")) }	
-if (!isGeneric("xmax<-")) { setGeneric("xmax<-", function(x, ..., value) standardGeneric("xmax<-")) }	
-if (!isGeneric("ymin<-")) { setGeneric("ymin<-", function(x, ..., value) standardGeneric("ymin<-")) }	
-if (!isGeneric("ymax<-")) { setGeneric("ymax<-", function(x, ..., value) standardGeneric("ymax<-")) }	
+if (!isGeneric("xmin<-")) { setGeneric("xmin<-", function(x, ..., value) standardGeneric("xmin<-"))}	
+if (!isGeneric("xmax<-")) { setGeneric("xmax<-", function(x, ..., value) standardGeneric("xmax<-"))}	
+if (!isGeneric("ymin<-")) { setGeneric("ymin<-", function(x, ..., value) standardGeneric("ymin<-"))}	
+if (!isGeneric("ymax<-")) { setGeneric("ymax<-", function(x, ..., value) standardGeneric("ymax<-"))}	
 

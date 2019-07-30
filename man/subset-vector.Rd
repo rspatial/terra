@@ -10,7 +10,6 @@
 \alias{[,SpatVector,numeric,numeric-method}
 \alias{[,SpatVector,numeric,character-method}
 \alias{[,SpatVector,logical,character-method}
-\alias{$,SpatVector-method}
 
 \title{Subset of a SpatVector}
 
@@ -30,7 +29,7 @@ Select a subset of variables or records from a SpatVector.
 }
 
 \value{
-SpatVector or data.frame (if \code{drop=TRUE})
+SpatVector or, if \code{drop=TRUE}, a data.frame.
 }
 
 \examples{

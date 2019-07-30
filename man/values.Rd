@@ -8,7 +8,7 @@
 \alias{values,SpatRaster-method}
 \alias{values<-,SpatRaster-method}
 \alias{values,SpatVector-method}
-\alias{values<-,SpatVector-method}
+\alias{values<-,SpatVector,data.frame-method}
   
 \title{Get cell values}
 

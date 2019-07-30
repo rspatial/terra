@@ -33,10 +33,13 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 
 \S4method{image}{SpatRaster}(x, y, maxcell=100000, xlab="", ylab="", ...)
 
-\S4method{plot}{SpatVector,missing}(x, y, xlab="", ylab="", add=FALSE, ...)
-\S4method{points}{SpatVector}(x, ...)
-\S4method{lines}{SpatVector}(x, ...)
-\S4method{lines}{SpatExtent}(x, ...)
+\S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", add=FALSE, ...)
+\S4method{points}{SpatVector}(x, col=NULL, ...)
+\S4method{lines}{SpatVector}(x, col=NULL, ...)
+
+\S4method{plot}{SpatExtent}(x, col=NULL, ...)
+\S4method{lines}{SpatExtent}(x, col=NULL, ...)
+\S4method{points}{SpatExtent}(x, col=NULL, ...)
 }
 
 \arguments{
