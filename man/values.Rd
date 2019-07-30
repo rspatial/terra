@@ -13,20 +13,20 @@
 \title{Get cell values}
 
 \description{
-values returns all cell values of a SpatRaster, or the attributes of a SpatVector.
+values returns all cell values of a SpatRaster (a matrix), or all the attributes of a SpatVector (a data.frame).
 }
 
 \usage{
 \S4method{values}{SpatRaster}(x, mat=TRUE, ...)
 \S4method{values}{SpatRaster}(x,...)<-value
 \S4method{values}{SpatVector}(x, ...)
-\S4method{values}{SpatVector}(x,...)<-value
+\S4method{values}{SpatVector,data.frame}(x,...)<-value
 }
 
 \arguments{
- \item{x}{SpatRaster}
+ \item{x}{SpatRaster or SpatVector}
  \item{mat}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector}
- \item{value}{matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value}
+ \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame}
  \item{...}{additional arguments. none implemented}
 }
 

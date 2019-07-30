@@ -2,7 +2,6 @@
 
 \docType{methods}
 
-
 \alias{xmin}
 \alias{xmax}
 \alias{ymin}
@@ -24,7 +23,6 @@
 \alias{ymax,SpatRaster-method}
 \alias{ymax,SpatVector-method}
 
-
 \alias{xmin<-,SpatExtent-method}
 \alias{xmin<-,SpatRaster-method}
 \alias{xmax<-,SpatExtent-method}
@@ -35,7 +33,7 @@
 \alias{ymax<-,SpatRaster-method}
 
   
-\title{get or set single values of an extent}
+\title{Get or set single values of an extent}
 
 \description{
 Get or set single values of an extent. Values can be set for a SpatExtent or SpatRaster, but not for a SpatVector)

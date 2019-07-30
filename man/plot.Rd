@@ -6,14 +6,18 @@
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
 \alias{plot,SpatRaster,SpatRaster-method}
+\alias{plot,SpatVector,missing-method}
+\alias{plot,SpatExtent,missing-method}
+
 \alias{image}
 \alias{image,SpatRaster-method}
-\alias{plot,SpatVector,missing-method}
-\alias{points,SpatVector-method}
+
+\alias{lines,SpatRaster-method}
 \alias{lines,SpatVector-method}
 \alias{lines,SpatExtent-method}
-\alias{lines,SpatRaster-method}
 
+\alias{points,SpatVector-method}
+\alias{points,SpatExtent-method}
 
 
 \title{Plot a SpatRaster or SpatVector}
@@ -23,7 +27,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y, cols, maxcell=100000, leg.mar, 
+\S4method{plot}{SpatRaster,numeric}(x, y, col, maxcell=100000, leg.mar, 
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext,
 		digits, useRaster=TRUE, zlim, xlab="", ylab="", ...)
 
@@ -45,7 +49,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{y}{missing or integer indicating the layer(s) to be plotted}
-  \item{cols}{character. colors}
+  \item{col}{character. colors}
   \item{maxcell}{integer > 0. Maximum number of cells to use for the plot}
   \item{leg.mar}{integer > 0. size of margin for the legend}
   \item{leg.levels}{integer > 0. number of labels on the legend}

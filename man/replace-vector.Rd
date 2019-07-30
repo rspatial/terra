@@ -1,5 +1,8 @@
 \name{vector-attributes}
 
+\alias{$}
+\alias{$<-}
+
 \alias{$,SpatVector-method}
 \alias{$<-,SpatVector-method}
 
