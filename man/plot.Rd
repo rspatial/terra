@@ -41,7 +41,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{points}{SpatVector}(x, col=NULL, ...)
 \S4method{lines}{SpatVector}(x, col=NULL, ...)
 
-\S4method{plot}{SpatExtent,missing}(x, col=NULL, ...)
+\S4method{plot}{SpatExtent,missing}(x, y, col=NULL, ...)
 \S4method{lines}{SpatExtent}(x, col=NULL, ...)
 \S4method{points}{SpatExtent}(x, col=NULL, ...)
 }
