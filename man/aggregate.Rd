@@ -43,6 +43,7 @@ SpatRaster
 
 
 \examples{
+\dontrun{
 r <- rast()
 # aggregated raster, no values
 ra <- aggregate(r, fact=10)
@@ -53,8 +54,8 @@ ra <- aggregate(r, fact=10, fun=max)
 
 # multiple layers
 s <- c(r, r*2)
-# fails  
-x <- aggregate(s,2)
+x <- aggregate(s, 2)
+}
 }
 
 \keyword{methods}

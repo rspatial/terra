@@ -55,13 +55,13 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 	out.sv.resize(sv.size());
 	for (size_t i=0; i < range.size(); i++) {
 		for (size_t j=0; j < dv.size(); j++) {
-			out.dv[j].push_back(dv[j][i]);
+			out.dv[j].push_back(dv[j][range[i]]);
 		}
 		for (size_t j=0; j < iv.size(); j++) {
-			out.iv[j].push_back(iv[j][i]);
+			out.iv[j].push_back(iv[j][range[i]]);
 		}
 		for (size_t j=0; j < sv.size(); j++) {
-			out.sv[j].push_back(sv[j][i]);
+			out.sv[j].push_back(sv[j][range[i]]);
 		}
 	}
 	return out;	
