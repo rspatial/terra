@@ -25,7 +25,7 @@
 
 
 setMethod("aggregate", signature(x="SpatRaster"), 
-function(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)  {
+function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	#expand=TRUE, 
 	fun <- .makeTextFun(match.fun(fun))
@@ -37,6 +37,7 @@ function(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, wopt=l
 	}
 
 	if (toc) {	
+		na.rm <- isTRUE(list(...)$na.rm)
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		opt <- .runOptions(filename, overwrite, wopt)	
 		x@ptr <- x@ptr$aggregate(fact, fun, na.rm, opt)
@@ -65,7 +66,7 @@ function(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, wopt=l
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i]+1, b$nrows[i], 1, nc)
 			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-			v <- sapply(v, fun, na.rm=na.rm)
+			v <- sapply(v, fun, ...)
 			writeValues(out, v, c(outrows[i], outnr[i]))
 		}
 		readStop(x)

@@ -164,8 +164,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	SpatRaster out = SpatRaster(fact[3], fact[4], fact[5], e, crs);
 
 	if (!source[0].hasValues) { return out; }
-	if (!out.writeStart(opt)) { return out ;}
-
+	if (!out.writeStart(opt)) { return out; }
 
 	std::vector<std::string> f {"sum", "mean", "min", "max", "median", "modal"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
@@ -173,20 +172,20 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		return out;
 	}
 
+	unsigned outnc = out.ncol();
+	
 	BlockSize bs = getBlockSize(4);
 	if (bs.n > 1) {
-		unsigned nr = floor(bs.nrows[0] / fact[1]) * fact[1];
+		unsigned nr = floor(bs.nrows[0] / fact[0]) * fact[0];
 		for (size_t i =0; i<bs.n; i++) {
 			bs.row[i] = i * nr;
 			bs.nrows[i] = nr;
 		}
-		while (true) {
-			unsigned lastrow = bs.row[bs.n] + bs.nrows[bs.n] + 1;
-			if (lastrow < nrow()) {
-				bs.row.push_back(lastrow);
-				bs.nrows.push_back(std::min(bs.nrows[bs.n], nrow()-lastrow));
-				bs.n += 1;
-			}
+		unsigned lastrow = bs.row[bs.n] + bs.nrows[bs.n] + 1;
+		if (lastrow < nrow()) {
+			bs.row.push_back(lastrow);
+			bs.nrows.push_back(std::min(bs.nrows[bs.n], nrow()-lastrow));
+			bs.n += 1;
 		}
 	}
 
@@ -224,9 +223,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 			lyrcell = std::floor(i / (ncells)) * ncells + cell;
 			v[lyrcell] = agFun(a[i], narm);
 		}
-
-		if (!out.writeValues(v, bs.row[b], bs.nrows[b], 0, out.ncol())) return out;
-
+		if (!out.writeValues(v, floor(bs.row[b]/fact[0]), floor(bs.nrows[b]/fact[0]), 0, outnc)) return out;
 	}
 	out.writeStop();
 	return(out);

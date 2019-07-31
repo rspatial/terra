@@ -52,6 +52,8 @@
 	cat("datatype    :" , opt$def_datatype, "\n")
 	cat("filetype    :" , opt$def_filetype, "\n")
 }
+
+
  
 terraOptions <- function(...) {
 	dots <- list(...)

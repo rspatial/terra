@@ -79,7 +79,7 @@ SpatRaster::SpatRaster() {
 
 	s.hasRange = { false };
 	s.hasValues = false;
-	s.layers.resize(1,1); //?
+	s.layers.resize(1, 0); 
 	s.datatype = "";
 	s.names = {"lyr.1"};
 	s.crs = "+proj=longlat +datum=WGS84";
@@ -104,7 +104,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.filename = "";
 	s.driver = "";
 	s.nlyr = rcl[2];
-	s.layers.resize(1, 1);
+	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.crs =_crs;
 	for (unsigned i=0; i < rcl[2]; i++) { 
@@ -127,7 +127,7 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 	s.driver = "";
 	s.nlyr = _nlyr;
 	s.hasRange = { false };
-	s.layers.resize(1, 1);
+	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.crs=_crs;
 	for (unsigned i=0; i < _nlyr; i++) {	

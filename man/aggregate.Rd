@@ -12,18 +12,17 @@ Aggregate a SpatRaster to create a new SpatRaster with a lower resolution (large
 }
 
 \usage{
-\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers)}  
   \item{fun}{function used to aggregate values }  
-  \item{na.rm}{logical. If \code{TRUE}, NA cells are removed from calculations }
+  \item{...}{additional arguments passed to \code{fun}, such as \code{na.rm=TRUE}}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments. None implemented}  
 }
 
 
@@ -43,7 +42,6 @@ SpatRaster
 
 
 \examples{
-\dontrun{
 r <- rast()
 # aggregated raster, no values
 ra <- aggregate(r, fact=10)
@@ -55,7 +53,6 @@ ra <- aggregate(r, fact=10, fun=max)
 # multiple layers
 s <- c(r, r*2)
 x <- aggregate(s, 2)
-}
 }
 
 \keyword{methods}
