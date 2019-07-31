@@ -32,10 +32,10 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
 		v <- lapply(uin, function(i, ...) apply(v[, ind==uin[i], drop=FALSE], 1, fun, ...))
 		v <- do.call(cbind, v)
-		writeValues(out, v, b$row[i])
+		writeValues(out, v, c(b$row[i], b$nrows[i]))
 	}
-	writeStop(out)
 	readStop(x)
+	out <- writeStop(out)
 	return(out)
 }
 )

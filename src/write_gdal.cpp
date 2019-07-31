@@ -269,6 +269,7 @@ bool SpatRaster::writeStopGDAL() {
 		source[0].hasRange[i] = true;
 	}
 	GDALClose( (GDALDatasetH) source[0].gdalconnection );
+	
 	return true;
 }
 

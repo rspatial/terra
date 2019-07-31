@@ -113,10 +113,10 @@ setMethod("predict", signature(object="SpatRaster"),
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
-			writeValues(out, r, b$row[i])
+			writeValues(out, r, c(b$row[i], b$nrows[i]))
 		}
 		readStop(object)
-		writeStop(out)
+		out <- writeStop(out)
 		return(out)
 	}
 )

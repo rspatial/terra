@@ -9,7 +9,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 			opt <- .runOptions(filename, overwrite, wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$summary(txtfun, na.rm, opt)	
-			return(show_messages(x))
+			return(show_messages(x, "app"))
 		}		
 	}
 
@@ -42,10 +42,10 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 			r <- t(r)
 			#r <- as.vector(r)
 		}
-		writeValues(out, r, b$row[i])
+		writeValues(out, r, c(b$row[i], b$nrows[i]))
 	}
-	writeStop(out)
 	readStop(x)
+	out <- writeStop(out)
 	return(out)
 }
 )

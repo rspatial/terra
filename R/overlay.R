@@ -60,7 +60,6 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	out <- rast(x, nlyr=nl)
 	b <- writeStart(out, filename, overwrite, wopt)
-	on.exit(writeStop(out))
 	nc <- ncol(x)
 #	nl <- nlyr(x)
 #	fnames <- names(formals(fun))
@@ -77,9 +76,10 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 				r <- as.vector(t(r))
 			} 
 		}
-		writeValues(out, r, b$row[i])
+		writeValues(out, r, c(b$row[i], b$nrows[i]))
 	}
 	readStop(x)
+	out <- writeStop(out)
 	return(out)
 }
 )

@@ -11,7 +11,7 @@
  
 .setOptions <- function(x, opt) {
 	nms <- names(opt)
-	s <- nms %in% c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite")
+	s <- nms %in% c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk")
 	
 	if (any(!s)) {
 		warning(paste(nms[!s], collapse = ", "), " invalid option(s)")
@@ -41,6 +41,7 @@
 		opt$overwrite <- overwrite[1]
 	}
 	#show_messages(opt)
+	#opt$todisk <- TRUE
 	opt
 }
 

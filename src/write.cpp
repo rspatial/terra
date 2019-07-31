@@ -86,7 +86,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	std::string filename = opt.get_filename();
 
 	if (filename == "") {
-		if (!canProcessInMemory(4)) {
+		if (!canProcessInMemory(4) || opt.get_todisk()) {
 			#ifdef useGDAL
 			std::string extension = ".tif";
 			#else

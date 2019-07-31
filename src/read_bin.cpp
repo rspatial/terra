@@ -28,7 +28,7 @@ std::vector<double> SpatRaster::readValuesBinary(unsigned src, unsigned row, uns
 	std::vector<double> out;
 	if (ncols == ncol()) {
 		if (nrows == nrow()) {
-			out = readBinAll(filename, dtype, lyrs, nrow(), ncol(), nl, bndorder);
+			out = readBinAll(filename, dtype, lyrs, nrows, ncols, nl, bndorder);
 		} else {
 			out = readBinRows(filename, dtype, row, nrows, lyrs, nrow(), ncol(), nl, bndorder);
 		}
@@ -68,7 +68,7 @@ std::vector<double> SpatRaster::readSampleBinary(unsigned src, unsigned srows, u
 
 
 std::vector<std::vector<double>> SpatRaster::readCellsBinary(unsigned src, std::vector<double> cells) {
-	
+
 	unsigned nl = source[src].nlyrfile;
 	std::string dtype = source[src].datatype;
 	std::string filename = source[src].filename;
@@ -78,7 +78,7 @@ std::vector<std::vector<double>> SpatRaster::readCellsBinary(unsigned src, std::
 	std::vector<std::vector<double>> out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
 
 	return out;
-	
+
 }
 
 

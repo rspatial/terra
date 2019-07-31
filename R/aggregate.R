@@ -66,10 +66,10 @@ function(x, fact=2, fun="mean", na.rm=TRUE, filename="", overwrite=FALSE, wopt=l
 			v <- readValues(x, b$row[i]+1, b$nrows[i], 1, nc)
 			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
 			v <- sapply(v, fun, na.rm=na.rm)
-			writeValues(out, v, outrows[i])
+			writeValues(out, v, c(outrows[i], outnr[i]))
 		}
 		readStop(x)
-		writeStop(out)		
+		out <- writeStop(out)		
 		return(out)
 	}
 }

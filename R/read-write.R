@@ -38,16 +38,21 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 setMethod("writeStop", signature(x="SpatRaster"), 
 	function(x) {
 		success <- x@ptr$writeStop()
-		show_messages(x, "writeStop")		
-		invisible(success)
+		show_messages(x, "writeStop")
+		f <- sources(x)$source
+		if (f != "") {
+			x <- rast(f)
+		}	
+		return(x)
 	} 
 )
 
 
 setMethod("writeValues", signature(x="SpatRaster", v="vector"), 
 	function(x, v, start) {
-		nrows <- length(v) / (ncol(x) * nlyr(x))
-		success <- x@ptr$writeValues(v, start-1, nrows, 0, ncol(x))
+		wstart <- start[1]-1
+		nrows <- start[2]
+		success <- x@ptr$writeValues(v, wstart, nrows, 0, ncol(x))
 		show_messages(x, "writeValues")
 		invisible(success)
 	}

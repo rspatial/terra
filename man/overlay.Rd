@@ -43,8 +43,8 @@ SpatRaster
 r1  <- rast(ncol=10, nrow=10)
 r2  <- rast(ncol=10, nrow=10)
 values(r1) <- 1:ncell(r1)
-values(r2) <- ncell(r1):1
-x <- overlay(r1, r2, fun=function(x,y){return(x+y)})
+values(r2) <- 10
+x <- overlay(r1, r2, fun=function(x,y){return(x/y)})
 }
  
 \keyword{methods}
