@@ -2,6 +2,8 @@
 #include <fstream>
 #include <random>
 #include <chrono>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 
 
@@ -42,6 +44,19 @@ bool file_exists(const std::string& name) {
 }
 
 
+
+
+bool path_exists(std::string path) {
+	struct stat info;
+	stat(path.c_str(), &info );
+	if(info.st_mode & S_IFDIR) {
+		return true;
+	} 
+	return false;
+}
+
+
+
 bool canWrite(std::string filename) {
 	FILE *fp = fopen(filename.c_str(), "w");
 	if (fp == NULL) {
@@ -50,6 +65,14 @@ bool canWrite(std::string filename) {
 	fclose(fp);
 	return true;
 }
+
+
+std::string get_path(const std::string filename) {
+	size_t found = filename.find_last_of("/\\");
+	std::string result = filename.substr(0, found); 
+	return result;
+}
+
 
 SpatMessages can_write(std::string filename, bool overwrite) {
 	SpatMessages msg;
@@ -62,10 +85,16 @@ SpatMessages can_write(std::string filename, bool overwrite) {
 		}
 	}
 	if (!canWrite(filename)) {
-		msg.setError("cannot write file");
+		std::string path = get_path(filename);
+		if (!path_exists(path)) {
+			msg.setError("path does not exist");			
+		} else {
+			msg.setError("cannot write file");
+		}
 	}
 	return msg;
 }
+
 
 
 std::string tempFile(std::string tmpdir, std::string ext) {

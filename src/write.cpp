@@ -47,7 +47,8 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 		std::string extension = ".grd";
 		#endif
 		filename = tempFile(opt.get_tempdir(), extension);
-	} else if (file_exists(filename)) {
+//	} else if (file_exists(filename)) {
+	} else {
 		SpatMessages m = can_write(filename, overwrite);
 		if (m.has_error) {
 			msg = m;
