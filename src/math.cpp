@@ -37,37 +37,39 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		return out;
 	}
 
+	std::function<double(double&)> mathFun;
+	if (fun == "sqrt") {
+		mathFun = sqrt;
+	} else if (fun == "abs") {
+		mathFun = abs;
+	} else if (fun == "log") {
+		mathFun = log;
+	} else if (fun == "log2") {
+		mathFun = log2;
+	} else if (fun == "log10") {
+		mathFun = log10;
+	} else if (fun == "log1p") {
+		mathFun = log1p;
+	} else if (fun == "exp") {
+		mathFun = exp;
+	} else if (fun == "expm1") {
+		mathFun = expm1;
+	} else if (fun == "sign") {
+		mathFun = sign<double>;
+	} else if (fun == "ceiling") {
+		mathFun = ceil;
+	} else if (fun == "floor") {
+		mathFun = floor;
+	} else if (fun == "trunc") {
+		mathFun = trunc;
+	}
+
   	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
-		if (fun == "sqrt") {
-			for(double& d : a) if (!std::isnan(d)) d = sqrt(d);
-		} else if (fun == "abs") {
-			for(double& d : a) if (!std::isnan(d)) d = abs(d);
-		} else if (fun == "log") {
-			for(double& d : a) if (!std::isnan(d)) d = log(d);
-		} else if (fun == "log2") {
-			for(double& d : a) if (!std::isnan(d)) d = log2(d);
-		} else if (fun == "log10") {
-			for(double& d : a) if (!std::isnan(d)) d = log10(d);
-		} else if (fun == "log1p") {
-			for(double& d : a) if (!std::isnan(d)) d = log1p(d);
-		} else if (fun == "exp") {
-			for(double& d : a) if (!std::isnan(d)) d = exp(d);
-		} else if (fun == "expm1") {
-			for(double& d : a) if (!std::isnan(d)) d = expm1(d);
-		} else if (fun == "sign") {
-			for(double& d : a) if (!std::isnan(d)) d = sign(d);
-		} else if (fun == "ceiling") {
-			for(double& d : a) if (!std::isnan(d)) d = ceil(d);
-		} else if (fun == "floor") {
-			for(double& d : a) if (!std::isnan(d)) d = floor(d);
-		} else if (fun == "trunc") {
-			for(double& d : a) if (!std::isnan(d)) d = trunc(d);
-		}
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-		
+		for(double& d : a) if (!std::isnan(d)) d = mathFun(d);
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;		
 	}
 	out.writeStop();
 	readStop();
@@ -105,6 +107,20 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 
 
 
+double sin_pi(double &x) {
+	return sin(x * M_PI);
+}
+
+double cos_pi(double &x) {
+	return sin(x * M_PI);
+}
+
+double tan_pi(double &x) {
+	return sin(x * M_PI);
+}
+
+
+
 SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -116,43 +132,45 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		return out;
 	}
 
+	std::function<double(double&)> trigFun;
+	if (fun == "sin") {
+		trigFun = sin;
+	} else if (fun == "cos") {
+		trigFun = cos;
+	} else if (fun == "tan") {
+		trigFun = tan;
+	} else if (fun == "asin") {
+		trigFun = asin;
+	} else if (fun == "acos") {
+		trigFun = acos;
+	} else if (fun == "atan") {
+		trigFun = atan;
+	} else if (fun == "sinh") {
+		trigFun = sinh;
+	} else if (fun == "cosh") {
+		trigFun = cosh;
+	} else if (fun == "tanh") {
+		trigFun = tanh;
+	} else if (fun == "asinh") {
+		trigFun = asinh;
+	} else if (fun == "acosh") {
+		trigFun = acosh;
+	} else if (fun == "atanh") {
+		trigFun = atanh;
+	} else if (fun == "sinpi") {
+		trigFun = sin_pi;
+	} else if (fun == "cospi") {
+		trigFun = cos_pi;
+	} else if (fun == "tanpi") {
+		trigFun = tan_pi;
+	}
+
   	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		if (fun == "sin") {
-			for(double& d : a) if (!std::isnan(d)) d = sin(d);
-		} else if (fun == "cos") {
-			for(double& d : a) if (!std::isnan(d)) d = cos(d);
-		} else if (fun == "tan") {
-			for(double& d : a) if (!std::isnan(d)) d = tan(d);
-		} else if (fun == "asin") {
-			for(double& d : a) if (!std::isnan(d)) d = asin(d);
-		} else if (fun == "acos") {
-			for(double& d : a) if (!std::isnan(d)) d = acos(d);
-		} else if (fun == "atan") {
-			for(double& d : a) if (!std::isnan(d)) d = atan(d);
-		} else if (fun == "sinh") {
-			for(double& d : a) if (!std::isnan(d)) d = sinh(d);
-		} else if (fun == "cosh") {
-			for(double& d : a) if (!std::isnan(d)) d = cosh(d);
-		} else if (fun == "tanh") {
-			for(double& d : a) if (!std::isnan(d)) d = tanh(d);
-		} else if (fun == "asinh") {
-			for(double& d : a) if (!std::isnan(d)) d = asinh(d);
-		} else if (fun == "acosh") {
-			for(double& d : a) if (!std::isnan(d)) d = acosh(d);
-		} else if (fun == "atanh") {
-			for(double& d : a) if (!std::isnan(d)) d = atanh(d);
-		} else if (fun == "sinpi") {
-			for(double& d : a) if (!std::isnan(d)) d = sin(d * M_PI);
-		} else if (fun == "cospi") {
-			for(double& d : a) if (!std::isnan(d)) d = cos(d * M_PI);
-		} else if (fun == "tanpi") {
-			for(double& d : a) if (!std::isnan(d)) d = tan(d * M_PI);
-		}
+		for (double& d : a) if (!std::isnan(d)) d = trigFun(d);
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-		
 	}
 	out.writeStop();
 	readStop();

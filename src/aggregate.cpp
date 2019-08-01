@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
 #include <vector>
 #include <limits>
 #include <cmath>
@@ -95,6 +94,7 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims2(std::vector<unsigned> fact
 	return(fact);
 }
 
+
 std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim) {
 
 // adjust for chunk
@@ -148,6 +148,7 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<double>
 }
 
 
+
 SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt) {
 
 	std::string message = "";
@@ -188,6 +189,14 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 			bs.n += 1;
 		}
 	}
+	BlockSize aggbs;
+	aggbs.n = bs.n;
+	for (size_t i =0; i<aggbs.n; i++) {
+		aggbs.row.push_back(bs.row[i] / fact[0]);
+		unsigned nrows = ceil(bs.nrows[i] / (double)fact[0]);
+		aggbs.nrows.push_back(nrows);
+	}
+
 
 	std::function<double(std::vector<double>&, bool)> agFun;
 	if (fun == "mean") {
@@ -211,10 +220,10 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	nc = ncol();
 	ncells = nc * nr;
 	readStart();
-	for (size_t b = 0; b < out.bs.n; b++) {
-		std::vector<double> in = readBlock(bs, b);
-		std::vector<double > v(fact[3] * fact[4] * fact[5]);
-		std::vector<std::vector< double > > a = get_aggregates(in, bs.nrows[b], fact);
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> in = readBlock(bs, i);
+		std::vector<double > v(fact[3] * fact[4] * fact[5], NAN);
+		std::vector<std::vector< double > > a = get_aggregates(in, bs.nrows[i], fact);
 		size_t nblocks = a.size();
 		for (size_t i = 0; i < nblocks; i++) {
 			row = (i / nc) % nr;
@@ -223,7 +232,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 			lyrcell = std::floor(i / (ncells)) * ncells + cell;
 			v[lyrcell] = agFun(a[i], narm);
 		}
-		if (!out.writeValues(v, floor(bs.row[b]/fact[0]), floor(bs.nrows[b]/fact[0]), 0, outnc)) return out;
+		if (!out.writeValues(v, aggbs.row[i], aggbs.nrows[i], 0, outnc)) return out;
 	}
 	out.writeStop();
 	return(out);

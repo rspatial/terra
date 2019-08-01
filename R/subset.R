@@ -165,4 +165,12 @@ function(x, i, j, ... , drop=FALSE) {
 })
 
 
+setMethod("[", c("SpatVector", "logical", "numeric"),
+function(x, i, j, ... , drop=FALSE) {
+	x <- x[i,]
+	j <- stats::na.omit(j)
+	if (length(j) == 0) j <- 0
+	x[,j,drop=drop]
+})
+
 

@@ -56,6 +56,6 @@ test_that("app", {
 	sx <- stack(rx, log(rx), sqrt(rx))
 	rd  <- app(s, mean)
 	rdx  <- calc(sx, mean)
-	expect_equivalent(values(rd), values(rdx)) 
+	expect_equivalent(values(rd), values(rdx), tolerance=0.00001) 
 })
 
