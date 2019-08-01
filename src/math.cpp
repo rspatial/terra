@@ -26,6 +26,10 @@ template <typename T> int sign(T value) {
 }
 
 
+double dabs(double x) {
+	return (x < 0 ? -1 * x : x);
+}
+
 SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -37,31 +41,31 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		return out;
 	}
 
-	std::function<double(double&)> mathFun;
+	std::function<double(double)> mathFun;
 	if (fun == "sqrt") {
-		mathFun = sqrt;
+		mathFun = static_cast<double(*)(double)>(sqrt);
 	} else if (fun == "abs") {
-		mathFun = abs;
+		mathFun = dabs;
 	} else if (fun == "log") {
-		mathFun = log;
+		mathFun = static_cast<double(*)(double)>(log);
 	} else if (fun == "log2") {
-		mathFun = log2;
+		mathFun = static_cast<double(*)(double)>(log2);
 	} else if (fun == "log10") {
-		mathFun = log10;
+		mathFun = static_cast<double(*)(double)>(log10);
 	} else if (fun == "log1p") {
-		mathFun = log1p;
+		mathFun = static_cast<double(*)(double)>(log1p);
 	} else if (fun == "exp") {
-		mathFun = exp;
+		mathFun = static_cast<double(*)(double)>(exp);
 	} else if (fun == "expm1") {
-		mathFun = expm1;
+		mathFun = static_cast<double(*)(double)>(expm1);
 	} else if (fun == "sign") {
 		mathFun = sign<double>;
 	} else if (fun == "ceiling") {
-		mathFun = ceil;
+		mathFun = static_cast<double(*)(double)>(ceil);
 	} else if (fun == "floor") {
-		mathFun = floor;
+		mathFun = static_cast<double(*)(double)>(floor);
 	} else if (fun == "trunc") {
-		mathFun = trunc;
+		mathFun = static_cast<double(*)(double)>(trunc);
 	}
 
   	if (!out.writeStart(opt)) { return out; }
@@ -134,29 +138,29 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 
 	std::function<double(double&)> trigFun;
 	if (fun == "sin") {
-		trigFun = sin;
+		trigFun = static_cast<double(*)(double)>(sin);
 	} else if (fun == "cos") {
-		trigFun = cos;
+		trigFun = static_cast<double(*)(double)>(cos);
 	} else if (fun == "tan") {
-		trigFun = tan;
+		trigFun = static_cast<double(*)(double)>(tan);
 	} else if (fun == "asin") {
-		trigFun = asin;
+		trigFun = static_cast<double(*)(double)>(asin);
 	} else if (fun == "acos") {
-		trigFun = acos;
+		trigFun = static_cast<double(*)(double)>(acos);
 	} else if (fun == "atan") {
-		trigFun = atan;
+		trigFun = static_cast<double(*)(double)>(atan);
 	} else if (fun == "sinh") {
-		trigFun = sinh;
+		trigFun = static_cast<double(*)(double)>(sinh);
 	} else if (fun == "cosh") {
-		trigFun = cosh;
+		trigFun = static_cast<double(*)(double)>(cosh);
 	} else if (fun == "tanh") {
-		trigFun = tanh;
+		trigFun = static_cast<double(*)(double)>(tanh);
 	} else if (fun == "asinh") {
-		trigFun = asinh;
+		trigFun = static_cast<double(*)(double)>(asinh);
 	} else if (fun == "acosh") {
-		trigFun = acosh;
+		trigFun = static_cast<double(*)(double)>(acosh);
 	} else if (fun == "atanh") {
-		trigFun = atanh;
+		trigFun = static_cast<double(*)(double)>(atanh);
 	} else if (fun == "sinpi") {
 		trigFun = sin_pi;
 	} else if (fun == "cospi") {

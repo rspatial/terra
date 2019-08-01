@@ -19,12 +19,6 @@
 #include "recycle.h"
 #include "vecmath.h"
 
-template <typename T>
-std::vector<T> vunique(std::vector<T> d) {
-	std::sort(d.begin(), d.end());
-	d.erase(std::unique(d.begin(), d.end()), d.end());
-	return d;
-}
 
 SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt) {
 

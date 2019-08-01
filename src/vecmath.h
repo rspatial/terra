@@ -23,6 +23,24 @@
 #include <vector>
 #include "NA.h"
 
+template <typename T>
+std::vector<T> vunique(std::vector<T> d) {
+	std::sort(d.begin(), d.end());
+	d.erase(std::unique(d.begin(), d.end()), d.end());
+	return d;
+}
+
+template <typename T>
+std::vector<std::string> vtostring(std::vector<T>& v) {
+	std::vector<std::string> s;
+	std::transform(std::begin(v),
+           std::end(v), std::back_inserter(s),
+           [](double d) { return std::to_string(d); } 
+        );
+	return s;
+}
+
+
 
 template <typename T>
 T vmedian(std::vector<T>& v, bool narm) {
