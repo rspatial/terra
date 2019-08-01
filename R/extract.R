@@ -37,9 +37,11 @@ function(x, y, fun=NULL, ...) {
 	if (!is.null(fun)) {
 	  	r <- rapply(r, fun, ...)
 		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
+		colnames(r) <- names(x)
 	}
 	r
 })
+
 
 setMethod("[", c("SpatRaster", "SpatVector", "missing"),
 function(x, i, j, ... , drop=FALSE) {

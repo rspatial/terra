@@ -370,11 +370,13 @@ class SpatRaster {
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 
         std::vector<double> polygon_cells(SpatGeom& g);
-		SpatRaster rotate(bool left, SpatOptions &opt);
+		SpatRaster range(std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster rasterize(SpatVector p, double background, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
+		SpatRaster rotate(bool left, SpatOptions &opt);
+
 		SpatRaster sampleRegular(unsigned size);
 		SpatRaster collapse(SpatRaster x, SpatOptions &opt);
 

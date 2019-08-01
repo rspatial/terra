@@ -129,8 +129,8 @@ T vprod(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vmean(std::vector<T>& v, bool narm) {
-	T x = 0;
+double vmean(std::vector<T>& v, bool narm) {
+	double x = 0;
 	unsigned d = 0;
 	if (narm) {
 		for (size_t i=0; i<v.size(); i++) {
@@ -141,9 +141,9 @@ T vmean(std::vector<T>& v, bool narm) {
 		}
 	} else {
 		for (size_t i=0; i<v.size(); i++) {
-			if (!is_NA(x)) {
+			if (!std::isnan(x)) {
 				if (is_NA(v[i])) {
-					x = NA<T>::value;
+					x = NAN;
 					d = 0;
 					break;
 				} else {
@@ -156,7 +156,7 @@ T vmean(std::vector<T>& v, bool narm) {
 	if (d > 0) {
 		x /= d;
 	} else {
-		x = NA<T>::value;
+		x = NAN;
 	}
 	return x;
 }

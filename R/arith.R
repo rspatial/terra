@@ -169,3 +169,9 @@ setMethod("Compare", signature(e1="SpatExtent", e2="SpatExtent"),
 	}	
 )
 
+
+setMethod("stdev", signature(x="SpatRaster"),
+	function(x, ..., na.rm=FALSE){
+		.summarize(x, ..., fun="stdev", na.rm=na.rm)
+	}
+)
