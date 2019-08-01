@@ -90,7 +90,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
-    GDALDataset  *poDataset;
+    GDALDataset *poDataset;
     GDALAllRegister();
 	const char* pszFilename = fname.c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );

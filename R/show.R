@@ -80,7 +80,7 @@ setMethod ("show" , "SpatRaster",
 		crs <- crs(object)
 		cat("coord. ref. :" , crs(object), "\n")
 		
-		mnr <- 15
+		mnr <- 6
 
 		ln <- names(object)
 		nl <- nlyr(object)
