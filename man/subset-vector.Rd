@@ -2,14 +2,18 @@
 
 \alias{subset,SpatVector-method}
 \alias{[[,SpatVector,numeric,missing-method}
+\alias{[[,SpatVector,logical,missing-method}
 \alias{[[,SpatVector,character,missing-method}
-\alias{[,SpatVector,numeric,missing-method}
-\alias{[,SpatVector,logical,missing-method}
+
+\alias{[,SpatVector,missing,missing-method}
 \alias{[,SpatVector,missing,numeric-method}
 \alias{[,SpatVector,missing,character-method}
+\alias{[,SpatVector,numeric,missing-method}
 \alias{[,SpatVector,numeric,numeric-method}
 \alias{[,SpatVector,numeric,character-method}
+\alias{[,SpatVector,logical,missing-method}
 \alias{[,SpatVector,logical,character-method}
+\alias{[,SpatVector,logical,numeric-method}
 
 \title{Subset of a SpatVector}
 

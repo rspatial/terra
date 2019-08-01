@@ -17,7 +17,7 @@ function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 		subset <- i
 	}
 
-	subset <- as.integer(subset - 1)
+	subset <- as.integer(na.omit(subset) - 1)
 	
 	opt <- .runOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$subset(subset, opt)
@@ -39,6 +39,11 @@ function(x, i, j, ... ,drop=TRUE) {
 setMethod("[[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	subset(x, i, ...)
+})
+
+setMethod("[[", c("SpatRaster", "logical", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	subset(x, which(i), ...)
 })
 
 
@@ -173,4 +178,14 @@ function(x, i, j, ... , drop=FALSE) {
 	x[,j,drop=drop]
 })
 
+
+
+setMethod("[", c("SpatVector", "missing", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	if (drop) {
+		values(x)
+	} else {
+		x
+	}
+})
 
