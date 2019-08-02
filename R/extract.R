@@ -27,7 +27,7 @@
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, ...) { 
+function(x, y, fun=NULL, ..., drop=FALSE) { 
     r <- x@ptr$extractVector(y@ptr)
 	x <- show_messages(x, "extract")
 
@@ -38,6 +38,10 @@ function(x, y, fun=NULL, ...) {
 	  	r <- rapply(r, fun, ...)
 		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
 		colnames(r) <- names(x)
+	} else if (drop) {
+		r <- unlist(r)
+		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
+		colnames(r) <- names(x)	
 	}
 	r
 })

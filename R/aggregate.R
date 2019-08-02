@@ -36,8 +36,8 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 		}
 	}
 
+	na.rm <- isTRUE(list(...)$na.rm)
 	if (toc) {	
-		na.rm <- isTRUE(list(...)$na.rm)
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		opt <- .runOptions(filename, overwrite, wopt)	
 		x@ptr <- x@ptr$aggregate(fact, fun, na.rm, opt)
