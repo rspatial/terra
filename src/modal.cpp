@@ -18,35 +18,57 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <random>
 
-double modal_value(std::vector<double> values, int ties) {
-	int n = values.size();
+#include "math_utils.h"
+
+/*
+unsigned random_value(std::mt19937 &rng, std::uniform_int_distribution<std::mt19937::result_type>& dist) {
+	return dist(rng);
+}
+std::mt19937 rng(seed);
+unsigned rndmax = 10000
+std::uniform_int_distribution<std::mt19937::result_type> dist(0, rndmax);
+double x = random_value(rng, dist);
+*/
+
+
+
+double modal_value(std::vector<double> values, unsigned ties, bool narm, std::default_random_engine rgen, std::uniform_real_distribution<double> dist) {
+	
+	if (narm) {
+		na_omit(values);
+	}
+	size_t n = values.size();
+	if (n == 0) return (NAN);
+	if (n == 1) return (values[0]);		
     std::vector<unsigned> counts(n, 0);
 
 	if (ties < 3) {
 		std::sort(values.begin(), values.end());
 	}
+
 	
-    for (int i = 0; i < n; ++i) {
+    for (size_t i=0; i<n; ++i) {
         counts[i] = 0;
-        int j = 0;
+        size_t j = 0;
         while ((j < i) && (values[i] != values[j])) {
             ++j;
         }
         ++(counts[j]);
     }
 	
-    int maxCount = 0;
+    size_t maxCount = 0;
 	// first (lowest due to sorting)
 	if (ties == 0) {
-		for (int i = 1; i < n; ++i) {
+		for (size_t i = 1; i < n; ++i) {
 			if (counts[i] > counts[maxCount]) {
 				maxCount = i;
 			}
 		}
 	// last	
 	} else if (ties == 1) {
-		for (int i = 1; i < n; ++i) {
+		for (size_t i = 1; i < n; ++i) {
 			if (counts[i] >= counts[maxCount]) {
 				maxCount = i;
 			}
@@ -54,32 +76,30 @@ double modal_value(std::vector<double> values, int ties) {
 
 	// dont care (first, but not sorted)
 	} else if (ties == 2) {
-		for (int i = 1; i < n; ++i) {
+		for (size_t i = 1; i < n; ++i) {
 			if (counts[i] > counts[maxCount]) {
 				maxCount = i;
 			}
 		}
 
 	// random
-	/* } 
-		else if (ties == 3) {
-		int tieCount = 1;
-		for (int i = 1; i < n; ++i) {
+	} else if (ties == 3) {
+		size_t tieCount = 1;
+		for (size_t i = 1; i < n; ++i) {
 			if (counts[i] > counts[maxCount]) {
 				maxCount = i;
 				tieCount = 1;
 			} else if (counts[i] == counts[maxCount]) {
 				tieCount++;
-				if (R::runif(0,1) < (1.0 / tieCount)) {
+				double rand = dist(rgen);
+				if (rand < (1 / tieCount)) {
 					maxCount = i;
 				}			
 			}
-		}
-	*/	
-   // NA		
+		}		
 	} else {
-		int tieCount = 1;
-		for (int i = 1; i < n; ++i) {
+		size_t tieCount = 1;
+		for (size_t i = 1; i < n; ++i) {
 			if (counts[i] > counts[maxCount]) {
 				maxCount = i;
 				tieCount = 1;

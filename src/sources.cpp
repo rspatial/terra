@@ -206,6 +206,7 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
                     std::vector<double> x = getValues(j);
                     rs.values.insert(rs.values.end(), x.begin(), x.end());
                     rs.names.push_back(names[j]);
+					rs.layers.push_back(i);
                     rs.hasRange.push_back(hasRange[j]);
                     rs.range_min.push_back(range_min[j]);
                     rs.range_max.push_back(range_max[j]);

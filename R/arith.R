@@ -175,3 +175,33 @@ setMethod("stdev", signature(x="SpatRaster"),
 		.summarize(x, ..., fun="stdev", na.rm=na.rm)
 	}
 )
+
+
+
+setMethod("modal", signature("SpatRaster"), 
+	function(x, ..., ties=1, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) { 
+		opt <- .runOptions(filename, overwrite,wopt)
+
+		dots <- list(...)
+		add <- NULL	
+		if (length(dots) > 0) {
+			cls <- sapply(dots, function(i) inherits(i, "SpatRaster"))
+			if (any(cls)) {
+				y <- c(dots[cls], x)
+				x <- do.call(c, y)
+			}
+			if (!all(cls)) {
+				dots <- dots[!cls]
+				i <- sapply(dots, function(x) class(x) %in% c("logical", "integer", "numeric"))
+				add <- unlist(dots[i], use.names = FALSE)
+			}
+		}
+		
+		if (is.null(add)) {
+			add <- c(.5)[0]
+		}
+		x@ptr <- x@ptr$modal(add, ties[1], na.rm[1], opt)
+		show_messages(x, "modal")		
+	}
+)
+

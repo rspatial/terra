@@ -23,6 +23,7 @@
 #include <vector>
 #include "NA.h"
 
+
 template <typename T>
 std::vector<T> vunique(std::vector<T> d) {
 	std::sort(d.begin(), d.end());
@@ -362,6 +363,96 @@ std::vector<bool> visnotna(std::vector<T>& v) {
 	}
 	return x;
 }
+
+
+
+
+template <typename T>
+void cumsum(std::vector<T>& v, bool narm) {
+    if (narm) {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i])) {
+                v[i] = v[i-1];
+            } else if (!is_NA(v[i-1])){
+                v[i] += v[i-1];
+            }
+        }
+    } else {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i]) | is_NA(v[i-1])) {
+                v[i] = NA<T>::value;
+            } else {
+                v[i] += v[i-1];
+            }
+        }
+    }
+}
+
+template <typename T>
+void cumprod(std::vector<T>& v, bool narm) {
+    if (narm) {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i])) {
+                v[i] = v[i-1];
+            } else if (!is_NA(v[i-1])){
+                v[i] *= v[i-1];
+            }
+        }
+    } else {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i]) | is_NA(v[i-1])) {
+                v[i] = NA<T>::value;
+            } else {
+                v[i] *= v[i-1];
+            }
+        }
+    }
+}
+
+
+template <typename T>
+void cummax(std::vector<T>& v, bool narm) {
+    if (narm) {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i])) {
+                v[i] = v[i-1];
+            } else if (!is_NA(v[i-1])){
+                v[i] = std::max(v[i], v[i-1]);
+            }
+        }
+    } else {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i]) | is_NA(v[i-1])) {
+                v[i] = NA<T>::value;
+            } else {
+                v[i] = std::max(v[i], v[i-1]);
+            }
+        }
+    }
+}
+
+
+template <typename T>
+void cummin(std::vector<T>& v, bool narm) {
+    if (narm) {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i])) {
+                v[i] = v[i-1];
+            } else if (!is_NA(v[i-1])){
+                v[i] = std::min(v[i], v[i-1]);
+            }
+        }
+    } else {
+        for (size_t i=1; i<v.size(); i++) {
+            if (is_NA(v[i]) | is_NA(v[i-1])) {
+                v[i] = NA<T>::value;
+            } else {
+                v[i] = std::min(v[i], v[i-1]);
+            }
+        }
+    }
+}
+
 
 
 #endif

@@ -18,93 +18,7 @@
 //#include <type_traits>
 #include "spatRaster.h"
 #include "vecmath.h"
-
-
-template <typename T>
-void cumsum(std::vector<T>& v, bool narm) {
-    if (narm) {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i])) {
-                v[i] = v[i-1];
-            } else if (!is_NA(v[i-1])){
-                v[i] += v[i-1];
-            }
-        }
-    } else {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
-                v[i] = NA<T>::value;
-            } else {
-                v[i] += v[i-1];
-            }
-        }
-    }
-}
-
-template <typename T>
-void cumprod(std::vector<T>& v, bool narm) {
-    if (narm) {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i])) {
-                v[i] = v[i-1];
-            } else if (!is_NA(v[i-1])){
-                v[i] *= v[i-1];
-            }
-        }
-    } else {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
-                v[i] = NA<T>::value;
-            } else {
-                v[i] *= v[i-1];
-            }
-        }
-    }
-}
-
-
-template <typename T>
-void cummax(std::vector<T>& v, bool narm) {
-    if (narm) {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i])) {
-                v[i] = v[i-1];
-            } else if (!is_NA(v[i-1])){
-                v[i] = std::max(v[i], v[i-1]);
-            }
-        }
-    } else {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
-                v[i] = NA<T>::value;
-            } else {
-                v[i] = std::max(v[i], v[i-1]);
-            }
-        }
-    }
-}
-
-
-template <typename T>
-void cummin(std::vector<T>& v, bool narm) {
-    if (narm) {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i])) {
-                v[i] = v[i-1];
-            } else if (!is_NA(v[i-1])){
-                v[i] = std::min(v[i], v[i-1]);
-            }
-        }
-    } else {
-        for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
-                v[i] = NA<T>::value;
-            } else {
-                v[i] = std::min(v[i], v[i-1]);
-            }
-        }
-    }
-}
+#include "modal.h"
 
 
 SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
@@ -117,7 +31,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 		return out;
 	}
 	if (!hasValues()) {
-		out.setError("raster has no values");
+	//	out.setError("raster has no values");
 		return out;
 	}
 
@@ -155,42 +69,6 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 }
 
 
-SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &opt) {
-	SpatRaster out = geometry(2);
-	out.source[0].names.resize(2);
-	out.source[0].names[0] = "range_min" ;
-	out.source[0].names[1] = "range_max" ;
-
-  	if (!out.writeStart(opt)) { return out; }
-	readStart();
-	unsigned nl = nlyr();
-	std::vector<double> v(nl);
-	v.insert( v.end(), add.begin(), add.end() );
-
-	//unsigned nc;
-	unsigned nlout = out.nlyr();
-
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> a = readBlock(out.bs, i);
-		unsigned nc = out.bs.nrows[i] * out.ncol();
-		std::vector<double> b(nc * nlout);
-		for (size_t j=0; j<nc; j++) {
-			for (size_t k=0; k<nl; k++) {
-				v[k] = a[j+k*nc];
-			}
-			std::vector<double> rng = vrange(v, narm);
-			b[j] = rng[0];
-			b[j+nc] = rng[1];
-		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-
-	}
-	out.writeStop();
-	readStop();
-	return(out);
-}
-
-
 double vstdev(std::vector<double>& v, bool narm) {
 	double m = vmean(v, narm);
 	for (double& d : v) d = pow(d - m, 2);
@@ -214,7 +92,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		return range(add, narm, opt);
 	} 
 	out.source[0].names[0] = fun;
-
+  	if (!hasValues()) { return out; }
 
 	std::function<double(std::vector<double>&, bool)> sumFun;
 	if (fun == "sum") {
@@ -240,12 +118,10 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	std::vector<double> v(nl);
 	v.insert( v.end(), add.begin(), add.end() );
 
-	unsigned nlout = out.nlyr();
-
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		unsigned nc = out.bs.nrows[i] * out.ncol();
-		std::vector<double> b(nc * nlout);
+		std::vector<double> b(nc);
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {
 				v[k] = a[j+k*nc];
@@ -267,4 +143,73 @@ SpatRaster SpatRaster::summary(std::string fun, bool narm, SpatOptions &opt) {
 }
 
 
+
+SpatRaster SpatRaster::modal(std::vector<double> add, unsigned ties, bool narm, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	out.source[0].names[0] = "modal" ;
+  	if (!hasValues()) { return out; }
+
+  	if (!out.writeStart(opt)) { return out; }
+
+	uint32_t seed = 1;
+	std::default_random_engine rgen(seed);
+	std::uniform_real_distribution<double> dist (0.0,1.0);
+
+	readStart();
+	unsigned nl = nlyr();
+	std::vector<double> v(nl);
+	v.insert( v.end(), add.begin(), add.end() );
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a = readBlock(out.bs, i);
+		unsigned nc = out.bs.nrows[i] * out.ncol();
+		std::vector<double> b(nc);
+		for (size_t j=0; j<nc; j++) {
+			for (size_t k=0; k<nl; k++) {
+				v[k] = a[j+k*nc];
+			}		
+			b[j] = modal_value(v, ties, narm, rgen, dist);
+		}
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+}
+
+
+
+SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &opt) {
+	SpatRaster out = geometry(2);
+	out.source[0].names.resize(2);
+	out.source[0].names[0] = "range_min" ;
+	out.source[0].names[1] = "range_max" ;
+  	if (!hasValues()) { return out; }
+
+  	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	unsigned nl = nlyr();
+	std::vector<double> v(nl);
+	v.insert( v.end(), add.begin(), add.end() );
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a = readBlock(out.bs, i);
+		unsigned nc = out.bs.nrows[i] * out.ncol();
+		std::vector<double> b(nc * 2);
+		for (size_t j=0; j<nc; j++) {
+			for (size_t k=0; k<nl; k++) {
+				v[k] = a[j+k*nc];
+			}
+			std::vector<double> rng = vrange(v, narm);
+			b[j] = rng[0];
+			b[j+nc] = rng[1];
+		}
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+}
 

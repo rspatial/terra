@@ -101,6 +101,16 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 	}
 )
 
+
+
+setMethod("collapse", signature(x="SpatRaster"), 
+	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$collapse(y@ptr, opt)
+		show_messages(x, "collapse")		
+	}
+)
+
 setMethod("cover", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, value=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
@@ -160,6 +170,7 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 )
 
 
+
 setMethod("project", signature(x="SpatRaster"), 
 	function(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename, overwrite, wopt)
@@ -172,6 +183,15 @@ setMethod("project", signature(x="SpatVector"),
 	function(x, crs, ...)  {
 		x@ptr <- x@ptr$project(crs)
 		show_messages(x, "project")
+	}
+)
+
+
+setMethod("quantile", signature(x="SpatRaster"), 
+	function(x, probs=seq(0, 1, 0.25), na.rm=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) { 
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$quantile(probs, na.rm[1], opt)
+		show_messages(x, "quantile")
 	}
 )
 
@@ -192,15 +212,6 @@ setMethod("rotate", signature(x="SpatRaster"),
 	}
 )
 
-
-
-setMethod("collapse", signature(x="SpatRaster"), 
-	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$collapse(y@ptr, opt)
-		show_messages(x, "collapse")		
-	}
-)
 
 
 setMethod("shift", signature(x="SpatRaster"), 
