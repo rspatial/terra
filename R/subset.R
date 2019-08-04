@@ -17,7 +17,7 @@ function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 		subset <- i
 	}
 
-	subset <- as.integer(na.omit(subset) - 1)
+	subset <- as.integer(stats::na.omit(subset) - 1)
 	
 	opt <- .runOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$subset(subset, opt)

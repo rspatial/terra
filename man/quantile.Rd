@@ -19,6 +19,9 @@ Compute quantiles for each cell across the layers of a SpatRaster
   \item{x}{SpatRaster}
   \item{probs}{numeric vector of probabilities with values in [0,1]}  
   \item{na.rm}{logical. If \code{TRUE}, \code{NA}'s are removed from \code{x} before the quantiles are computed}
+  \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}  
   \item{...}{additional arguments, none implemented}
 }
 

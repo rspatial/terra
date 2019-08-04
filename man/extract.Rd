@@ -20,7 +20,7 @@ Extract values from a SpatRaster for the locations of a SpatVector
 } 
 
 \usage{
-\S4method{extract}{SpatRaster,SpatVector}(x, y, fun="", ...)
+\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., drop=FALSE)
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 }
 
@@ -29,6 +29,7 @@ Extract values from a SpatRaster for the locations of a SpatVector
 \item{y}{SpatVector (for points, lines, polygons), or 2-column matrix (x, y; for points)}
 \item{fun}{character. function to summarize the data. Currently ignored}
 \item{...}{additional arguments. None implemented}
+\item{drop}{If \code{TRUE}, the output is simplified}
 }
 
 \value{data.frame}

@@ -10,7 +10,7 @@ Compute the mode for each cell across the layers of a SpatRaster. The mode, or m
 }
 
 \usage{
-\S4method{modal}{SpatRaster}(x, ..., ties="random", na.rm=FALSE)
+\S4method{modal}{SpatRaster}(x, ..., ties="first", na.rm=FALSE)
 }
 
 \arguments{

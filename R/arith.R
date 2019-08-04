@@ -122,7 +122,7 @@ setMethod("Logic", signature(e1="logical", e2="SpatRaster"),
 	if (length(dots) > 0) {
 		cls <- sapply(dots, function(i) inherits(i, "SpatRaster"))
 		if (any(cls)) {
-			y <- c(dots[cls], x)
+			y <- c(list(x), dots[cls])
 			x <- do.call(c, y)
 		}
 		if (!all(cls)) {

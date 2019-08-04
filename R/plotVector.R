@@ -71,7 +71,8 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 
 
 setMethod("lines", signature(x="SpatVector"), 
-	function(x, col="black", ...)  {
+	function(x, col=NULL, ...)  {
+		if (is.null(col)) col <- "black"
 		g <- geom(x)
 		gtype <- geomtype(x)
 		col <- .getCols(size(x), col)
@@ -100,8 +101,9 @@ setMethod("lines", signature(x="SpatVector"),
 
 
 setMethod("points", signature(x="SpatVector"), 
-	function(x, col="black", ...)  {
+	function(x, col=NULL, ...)  {
 		col <- .getCols(size(x), col)
+		if (is.null(col)) col <- "black"
 		graphics::points(geom(x)[,3:4], col=col, ...)
 	}
 )
