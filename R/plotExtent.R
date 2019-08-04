@@ -4,7 +4,7 @@
 # License GPL v3
 
 setMethod("lines", signature(x="SpatExtent"), 
-	function(x, col="black", ...)  {
+	function(x, col=NULL, ...)  {
 		e <- as.vector(x)
 		p <- rbind(c(e[1],e[3]), c(e[1],e[4]), c(e[2],e[4]), c(e[2],e[3]), c(e[1],e[3]))
 		if (is.null(col)) col <- "black"

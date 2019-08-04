@@ -69,7 +69,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 }
 
 
-double vstdev(std::vector<double>& v, bool narm) {
+double vstdev(std::vector<double> v, bool narm) {
 	double m = vmean(v, narm);
 	for (double& d : v) d = pow(d - m, 2);
 	m = vmean(v, narm);
