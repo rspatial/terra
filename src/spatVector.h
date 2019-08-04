@@ -146,9 +146,9 @@ class SpatVector {
 		SpatVector point_buffer(double d, unsigned quadsegs);
 
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
-#ifdef useGEOS
+
+//geos
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
-#endif
 };
 
 /*

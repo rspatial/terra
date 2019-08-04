@@ -29,6 +29,8 @@
 
 #include "spatVector.h"
 
+#include <iostream>
+
 
 static void __errorHandler(const char *fmt, ...) { // #nocov start
 	char buf[BUFSIZ], *p;
@@ -84,10 +86,10 @@ static GeomPtr geos_ptr(GEOSGeometry* g, GEOSContextHandle_t hGEOSctxt) {
 
 std::vector<GeomPtr> make_geos_points(std::vector<double> x, std::vector<double> y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
-	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 1, 2);
 	size_t n = x.size();
 	std::vector<GeomPtr> g(n);
 	for (size_t i = 0; i < n; i++) {
+		pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 1, 2);
 		GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, 0, x[i]);
 		GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, 0, y[i]);
 		GEOSGeometry* pt = GEOSGeom_createPoint_r(hGEOSCtxt, pseq);
@@ -220,31 +222,78 @@ std::vector<GeomPtr> geom_from_spat(SpatVector* v, GEOSContextHandle_t hGEOSCtxt
 
 SpatVector spat_from_geom(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> & geoms, std::string vt) {
 	SpatVector out;
+
 	size_t ng = geoms.size();
 	std::vector<unsigned> gid, gp, hole;
 	std::vector<double> x, y;
-    for(size_t i = 0; i < ng; i++) {
-        GEOSGeometry* g = geoms[i].get();
-		size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
-		for(size_t j = 0; j<np; j++) {
-			const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-			const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, part); 		
-			size_t npts = GEOSGeomGetNumPoints_r(hGEOSCtxt, part);
-			double xvalue = 0;
-			double yvalue = 0;
-			for (size_t p=0; p < npts; p++) {
-				int xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);				
-				int yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);				
-				if (xok & yok) {
-					x.push_back(xvalue);
-					y.push_back(yvalue);
-					gid.push_back(i);			
-					gp.push_back(j);			
+	bool xok, yok;
+
+	if ((vt == "points") | (vt == "lines")) {	
+		for(size_t i = 0; i < ng; i++) {
+			GEOSGeometry* g = geoms[i].get();
+			size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
+			for(size_t j = 0; j<np; j++) {
+				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
+				const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, part); 		
+				int npts = -1;
+//				if (vt == "points") {	
+				npts = GEOSGetNumCoordinates_r(hGEOSCtxt, part);
+//				} else if (vt == "lines") {
+//					npts = GEOSGeomGetNumPoints_r(hGEOSCtxt, part); // for lines
+//				}		
+				if (npts < 0) {
+					out.setError("GEOS exception 9");
+					return out;
+				}
+				double xvalue = 0;
+				double yvalue = 0;
+				for (int p=0; p < npts; p++) {
+					xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);				
+					yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);				
+					if (xok & yok) {
+						x.push_back(xvalue);
+						y.push_back(yvalue);
+						gid.push_back(i);			
+						gp.push_back(j);			
+						hole.push_back(0);
+					}
 				}
 			}
 		}
-	}	
-	hole.resize(x.size());
+	} else { // polygons
+		for(size_t i = 0; i < ng; i++) {
+			GEOSGeometry* g = geoms[i].get();
+			size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
+			for(size_t j = 0; j<np; j++) {
+				
+				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
+				const GEOSGeometry* shell = GEOSGetExteriorRing_r(hGEOSCtxt, part);
+				const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, shell); 		
+				int npts = -1;
+				npts = GEOSGetNumCoordinates_r(hGEOSCtxt, part);
+				if (npts < 0) {
+					out.setError("GEOS exception 99");
+					return out;
+				}
+				double xvalue = 0;
+				double yvalue = 0;
+				for (int p=0; p < npts; p++) {
+					xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);				
+					yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);				
+					if (xok & yok) {
+						x.push_back(xvalue);
+						y.push_back(yvalue);
+						gid.push_back(i);			
+						gp.push_back(j);			
+						hole.push_back(0);
+					}
+				}
+				//int nholes = GEOSGetNumInteriorRings_r(hGEOSCtxt, part);
+				
+
+			}
+		}	
+	}
 	out.setGeometry(vt, gid, gp, x, y, hole);
 	return out;
 }
