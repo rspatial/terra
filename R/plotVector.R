@@ -13,6 +13,8 @@
 		} else if (ncols < n) {
 			cols <- rep_len(cols, n)
 		}
+	} else {
+		cols <- rep("black", n)		
 	}
 	cols
 }
@@ -100,7 +102,7 @@ setMethod("lines", signature(x="SpatVector"),
 
 
 setMethod("points", signature(x="SpatVector"), 
-	function(x, col=NULL, ...)  {
+	function(x, col="black", ...)  {
 		col <- .getCols(size(x), col)
 		graphics::points(geom(x)[,3:4], col=col, ...)
 	}

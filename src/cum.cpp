@@ -144,11 +144,21 @@ SpatRaster SpatRaster::summary(std::string fun, bool narm, SpatOptions &opt) {
 
 
 
-SpatRaster SpatRaster::modal(std::vector<double> add, unsigned ties, bool narm, SpatOptions &opt) {
+SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool narm, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	out.source[0].names[0] = "modal" ;
   	if (!hasValues()) { return out; }
+
+
+	std::vector<std::string> f {"lowest", "highest", "first", "random", "NA"};
+	//std::vector<std::string>::iterator it; 
+	auto it = std::find(f.begin(), f.end(), ties);
+	if (it == f.end()) {
+		out.setError("unknown summary function");
+		return out;
+	} 
+	size_t ities = std::distance(f.begin(), it);
 
   	if (!out.writeStart(opt)) { return out; }
 
@@ -169,7 +179,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, unsigned ties, bool narm, 
 			for (size_t k=0; k<nl; k++) {
 				v[k] = a[j+k*nc];
 			}		
-			b[j] = modal_value(v, ties, narm, rgen, dist);
+			b[j] = modal_value(v, ities, narm, rgen, dist);
 		}
 		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}

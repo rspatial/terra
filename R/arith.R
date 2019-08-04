@@ -179,9 +179,8 @@ setMethod("stdev", signature(x="SpatRaster"),
 
 
 setMethod("modal", signature("SpatRaster"), 
-	function(x, ..., ties=1, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) { 
+	function(x, ..., ties="first", na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) { 
 		opt <- .runOptions(filename, overwrite,wopt)
-
 		dots <- list(...)
 		add <- NULL	
 		if (length(dots) > 0) {

@@ -100,6 +100,7 @@ RCPP_MODULE(spat){
 		
 		.method("distance_self", (SpatDataFrame (SpatVector::*)())( &SpatVector::distance))
 		.method("distance_other", (SpatDataFrame (SpatVector::*)(SpatVector, bool))( &SpatVector::distance))
+//		.method("distance_other2", (SpatDataFrame (SpatVector::*)(SpatVector))( &SpatVector::distance2))
 		.method("extent", &SpatVector::getExtent, "extent")		
 		.method("getDF", &getAttributes, "get attributes")
 		.method("getGeometry", &getGeometry, "getGeometry")
@@ -122,7 +123,7 @@ RCPP_MODULE(spat){
 		
 		.method("buffer", &SpatVector::buffer, "buffer")	
 #ifdef useGEOS
-//		.method("buffer2", &SpatVector::buffer2, "buffer2")		
+		.method("buffer2", &SpatVector::buffer2, "buffer2")		
 #endif
 	;
 

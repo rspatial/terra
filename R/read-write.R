@@ -64,7 +64,7 @@ function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 	opt <- .runOptions(filename, overwrite,wopt)
 	success <- x@ptr$writeRaster(opt)
 	show_messages(x, "writeRaster")
-	invisible(rast(filename))
+	#invisible(rast(filename))
 }
 )
 

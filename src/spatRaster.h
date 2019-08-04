@@ -369,7 +369,7 @@ class SpatRaster {
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 
-		SpatRaster modal(std::vector<double> add, unsigned ties, bool narm, SpatOptions &opt);
+		SpatRaster modal(std::vector<double> add, std::string ties, bool narm, SpatOptions &opt);
 
         std::vector<double> polygon_cells(SpatGeom& g);
 		SpatRaster quantile(std::vector<double> probs, bool narm, SpatOptions &opt);
