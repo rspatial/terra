@@ -13,9 +13,7 @@
 		} else if (ncols < n) {
 			cols <- rep_len(cols, n)
 		}
-	} else {
-		cols <- rep("black", n)		
-	}
+	} 
 	cols
 }
 
@@ -73,7 +71,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 
 
 setMethod("lines", signature(x="SpatVector"), 
-	function(x, col=NULL, ...)  {
+	function(x, col="black", ...)  {
 		g <- geom(x)
 		gtype <- geomtype(x)
 		col <- .getCols(size(x), col)

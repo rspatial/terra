@@ -26,6 +26,7 @@
 #include <cstdarg> 
 #include <cstring> 
 #include <memory>
+#include <functional>
 
 #include "spatVector.h"
 
