@@ -30,7 +30,6 @@
 
 #include "spatVector.h"
 
-#include <iostream>
 
 
 static void __errorHandler(const char *fmt, ...) { // #nocov start
@@ -42,8 +41,8 @@ static void __errorHandler(const char *fmt, ...) { // #nocov start
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
 //	error(buf);
-	return;
-}
+	return; // #nocov end
+} 
 
 static void __warningHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;

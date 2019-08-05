@@ -8,6 +8,9 @@
 \alias{mean,SpatRaster-method}
 \alias{stdev}
 \alias{stdev,SpatRaster-method}
+\alias{min,SpatRaster-method}
+\alias{max,SpatRaster-method}
+\alias{range,SpatRaster-method}
 
 \title{Local statistics}
 
@@ -32,13 +35,13 @@ The \code{stdev} mehtod returns the population standard deviation, computed as s
 This is different than the sample standard deviation retunred by \code{sd} (which uses \code{n-1} as denominator). Function \code{f} above is equivalent to function \code{g} below
 
 \code{g <- function(x) sqrt(sum((x-mean(x))^2) / length(x))}
- 
 }
 
 
 \usage{
 \S4method{min}{SpatRaster}(x, ..., na.rm=FALSE)
 \S4method{max}{SpatRaster}(x, ..., na.rm=FALSE)
+\S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
 \S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
 \S4method{stdev}{SpatRaster}(x, ..., na.rm=FALSE)
 }

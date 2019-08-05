@@ -2,7 +2,7 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
-#include "SpatRaster.h"
+#include "spatRaster.h"
 
 #include "vecmath.h"
 #include "math_utils.h"
