@@ -5,13 +5,13 @@
 
 setMethod("as.list", signature(x="SpatRaster"), 
 function(x, ...)  {
+	out <- list()
 	for (i in 1:nlyr(x)) {
 		out[[i]] <- x[[i]]
 	}
 	out
 }
 )
-
 
 
 setMethod("overlay", signature(x="SpatRaster", y="SpatRaster"), 

@@ -20,19 +20,43 @@
 
 
 
-SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
+bool disaggregate_dims(std::vector<unsigned> &fact, std::string &message ) {
 
+	unsigned fs = fact.size();
+	if ((fs > 3) | (fs == 0)) {
+		message = "argument 'fact' should have length 1, 2, or 3";
+		return false;
+	}
+	auto min_value = *std::min_element(fact.begin(),fact.end());
+	if (min_value < 1) {
+		message = "values in argument 'fact' should be > 0";
+		return false;
+	}
+	auto max_value = *std::max_element(fact.begin(),fact.end());
+	if (max_value == 1) {
+		message = "all values in argument 'fact' are 1, nothing to do";
+		return false;
+	}
+
+	fact.resize(3);
+	if (fs == 1) {
+		fact[1] = fact[0];
+	}
+	fact[2] = 1;
+	return true;
+}
+
+
+
+SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
 
     SpatRaster out = geometry();
 	std::string message = "";
-	bool success = get_aggregate_dims(fact, message);
+	bool success = disaggregate_dims(fact, message);
 	if (!success) {
 		out.setError(message);
 		return out;
 	}
-
-	fact.resize(3);
-    fact[2] = 1; // at least for now
 
     out.source[0].nrow = out.source[0].nrow * fact[0];
     out.source[0].ncol = out.source[0].ncol * fact[1];
@@ -47,31 +71,38 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 	BlockSize bs = getBlockSize(bsmp);
 	//opt.set_blocksizemp();
 	std::vector<double> v, vout;
-	double nc = ncol();
+	unsigned nc = ncol();
+	unsigned nl = nlyr();
 	std::vector<double> newrow(nc*fact[1]);
   	readStart();
 	
   	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-		for (size_t row=0; row<bs.nrows[i]; row++) {
-            unsigned off = row*nc;
-			// for each new column
-            for (size_t j=0; j<nc; j++) {
-				unsigned jfact = j * fact[1];
-				unsigned joff = j + off;
-                for (size_t k=0; k<fact[1]; k++) {
-                    newrow[jfact+k] = v[joff];
-                }
-            }
-			// for each new row
-            for (size_t j=0; j<fact[0]; j++) {
-                vout.insert(vout.end(), newrow.begin(), newrow.end());
-            }
-		}
-		if (!out.writeValues(vout, bs.row[i]*fact[0], bs.nrows[i]*fact[0], 0, out.ncol())) return out;
 		vout.resize(0);
+		vout.reserve(v.size() * fact[0] * fact[1] * fact[2]);
+
+		for (size_t lyr=0; lyr<nl; lyr++) {
+			for (size_t row=0; row<bs.nrows[i]; row++) {
+				unsigned rowoff = row*nc + lyr*nc*bs.nrows[i];
+				// for each new column
+				unsigned jfact = 0;
+				for (size_t j=0; j<nc; j++) {
+					unsigned coloff = rowoff + j;
+					for (size_t k=0; k<fact[1]; k++) {
+						newrow[jfact+k] = v[coloff];
+					}
+					jfact += fact[1];
+				}
+				// for each new row
+				for (size_t j=0; j<fact[0]; j++) {
+					vout.insert(vout.end(), newrow.begin(), newrow.end());
+				}
+			}
+		}	
+		if (!out.writeValues(vout, bs.row[i]*fact[0], bs.nrows[i]*fact[0], 0, out.ncol())) return out;
 	}
+	vout.resize(0);
 	out.writeStop();
 	readStop();
 	return(out);

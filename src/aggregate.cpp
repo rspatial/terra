@@ -64,7 +64,7 @@ bool SpatRaster::get_aggregate_dims(std::vector<unsigned> &fact, std::string &me
 	}
 	auto max_value = *std::max_element(fact.begin(),fact.end());
 	if (max_value == 1) {
-		message = "all values in argument 'fact' are 1, nothing to aggregate";
+		message = "all values in argument 'fact' are 1, nothing to do";
 		return false;
 	}
 

@@ -15,12 +15,18 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	out <- rast(x)
 	nlyr(out) <- 1
-	readStart(x)
 	nc <- ncol(x)
+	readStart(x)
 
 # figure out the shape of the output by testing with one row
-	v <- readValues(x, round(0.5*nrow(x)), 1, 1, nc, TRUE)
-	r <- apply(v, 1, fun, ...)
+	v <- readValues(x, round(0.5*nrow(x)), round(0.5*nc), 1, mat=TRUE)
+	#narg <- sum(sapply(f, as.character) == "", na.rm=TRUE)
+	#if (narg > 1) {
+	#	vv <- as.list(as.data.frame(v))
+	#	r <- do.call(fun, vv, ...)	
+	#} else {
+		r <- apply(v, 1, fun, ...)
+	#}
 	trans <- FALSE			
 	if (NCOL(r) > 1) {
 		#? if ((ncol(r) %% nc) == 0) {

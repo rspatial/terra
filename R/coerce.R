@@ -58,7 +58,15 @@ setMethod("as.vector", signature(x="SpatRaster"),
 setMethod("as.matrix", signature(x="SpatRaster"), 
 	function(x, wide=FALSE, ...) {
 		if (wide) {
-			m <- matrix( values(x, FALSE), nrow=nrow(x), byrow=TRUE)
+			if (nlyr(x) > 1) {
+				m <- values(x, matrix=TRUE)
+				m <- lapply(1:ncol(m), function(i) {
+					matrix(m[,i],nrow=nrow(x),byrow=TRUE)
+					})
+				m <- do.call(cbind, m)
+			} else {
+				m <- matrix(values(x, matrix=FALSE),nrow=nrow(x),byrow=TRUE)
+			}
 		} else {
 			m <- values(x, matrix=TRUE)
 		}
