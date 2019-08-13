@@ -27,8 +27,8 @@
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, ..., drop=FALSE) { 
-    r <- x@ptr$extractVector(y@ptr)
+function(x, y, fun=NULL, ..., method="simple", drop=FALSE) { 
+    r <- x@ptr$extractVector(y@ptr, method[1])
 	x <- show_messages(x, "extract")
 
 	#f <- function(i) if(length(i)==0) { NA } else { i }

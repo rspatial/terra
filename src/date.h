@@ -23,7 +23,7 @@
 
 class SpatDate {
   public:
-    long v;
+    long long v;
     SpatDate() {v = 0;};
     SpatDate(const int& year, const int& month, const int& day);
     SpatDate(int doy, int year);

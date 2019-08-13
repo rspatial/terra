@@ -194,6 +194,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
 */
         } else if (method == "bilinear") {
 
+// this is much too slow
 
 			double ymax = extent.ymax;
             double xmin = extent.xmin;
@@ -267,7 +268,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
 
 
 // <geom<layer<values>>>
-std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v) {
+std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, std::string method) {
 
     unsigned nl = nlyr();
     unsigned ng = v.size();
@@ -278,10 +279,11 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 	std::vector<std::vector<double>> srcout;
 	std::string gtype = v.type();
 	if (gtype == "points") {
+		if (method != "bilinear") method = "simple";
 		SpatDataFrame vd = v.getGeometryDF();
 		std::vector<double> x = vd.getD(0);
 		std::vector<double> y = vd.getD(1);
-		srcout = extractXY(x, y, "simple");
+		srcout = extractXY(x, y, method);
         for (size_t i=0; i<ng; i++) {
             for (size_t j=0; j<nl; j++) {
                 out[i][j].push_back( srcout[j][i] );
