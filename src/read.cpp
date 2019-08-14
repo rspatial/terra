@@ -105,20 +105,23 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 
 std::vector<double>  SpatRaster::getValues() {
 	std::vector<double> out;
-	unsigned n = nsrc();
-	for (size_t src=0; src<n; src++) {
-		if (source[src].memory) {
-			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
-		} else if (source[0].driver == "raster") {
-			std::vector<double> fvals = readValues(0, nrow(), 0, ncol());
-			out.insert(out.end(), fvals.begin(), fvals.end());
-		} else {
-			#ifdef useGDAL
-			std::vector<double> fvals = readValuesGDAL(src, 0, nrow(), 0, ncol());
-			out.insert(out.end(), fvals.begin(), fvals.end());
-			#endif // useGDAL
+
+		unsigned n = nsrc();
+		for (size_t src=0; src<n; src++) {
+			if (source[src].memory) {
+				out.insert(out.end(), source[src].values.begin(), source[src].values.end());
+			} else if (source[0].driver == "raster") {
+				std::vector<double> fvals = readValues(0, nrow(), 0, ncol());
+				out.insert(out.end(), fvals.begin(), fvals.end());
+			} else {
+				#ifdef useGDAL
+				std::vector<double> fvals = readValuesGDAL(src, 0, nrow(), 0, ncol());
+				out.insert(out.end(), fvals.begin(), fvals.end());
+				#endif // useGDAL
+			}
 		}
-	}
+		
+		
 	return out;
 }
 

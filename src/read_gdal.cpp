@@ -96,8 +96,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 
     if( poDataset == NULL )  {
-		setError("dataset " + fname + " is empty");
-		//printf("%s\n", pszFilename);
+		setError("cannot read from " + fname );
 		return false;
 	}
 
@@ -252,6 +251,10 @@ bool SpatRaster::readStartGDAL(unsigned src) {
     GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
 	poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+    if( poDataset == NULL )  {
+		setError("cannot read from " + source[src].filename );
+		return false;
+	}
     source[src].gdalconnection = poDataset;
 	source[src].open_read = true;
 	return(true);
@@ -347,13 +350,16 @@ void applyScaleOffset(std::vector<double> &d, double scale, double offset, bool 
 
 std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
 
+	std::vector<double> errout;
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
     GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
+    if( poDataset == NULL )  {
+		return errout;
+	}
 	unsigned ncell = ncols * nrows;
-	std::vector<double> errout;
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell*nl);
 	int hasNA;
@@ -422,9 +428,12 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
     GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
+	std::vector<double> errout;
+    if( poDataset == NULL )  {
+		return errout;
+	}
 	unsigned ncell = scols * srows;
 	unsigned cell;
-	std::vector<double> errout;
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell*nl);
 	int hasNA;
@@ -529,12 +538,15 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 	GDALRasterBand *poBand;
     GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
+	std::vector<std::vector<double>> errout;
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
+    if( poDataset == NULL )  {
+		return errout;
+	}
 
 	std::vector<unsigned> lyrs = source[src].layers;
 	unsigned nl = lyrs.size();
 	unsigned n = rows.size();
-	std::vector<std::vector<double>> errout;
 	std::vector<std::vector<double>> out(nl, std::vector<double>(n, NAN));
 
 	CPLErr err = CE_None;

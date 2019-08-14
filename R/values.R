@@ -40,6 +40,7 @@ setMethod("values", signature(x="SpatRaster"),
 function(x, mat=TRUE, ...) {
 	if (.hasValues(x)) {
 		v <- x@ptr$getValues()
+		show_messages(x, "values")
 		if (mat) {
 			v <- matrix(v, ncol=nlyr(x))
 			colnames(v) <- names(x)
