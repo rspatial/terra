@@ -27,6 +27,7 @@ RCPP_MODULE(spat){
 		.method("equal", &SpatExtent::equal, "equal")		
 		.method("floor", &SpatExtent::floor, "floor")		
 		.method("round", &SpatExtent::round, "round")		
+		.method("union", &SpatExtent::unite, "union")		
 	;	
 
     class_<SpatMessages>("SpatMessages")

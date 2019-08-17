@@ -35,7 +35,9 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	SpatExtent e = x[0].getExtent();
 	for (size_t i=1; i<n; i++) {
 		// for now, must have same nlyr; but should be easy to recycle.
+								//  lyrs, crs, warncrs, ext, rowcol, res
 		if (!x[0].compare_geom(x[i], true, true, false, false, false, true)) {
+			out.setError(x[0].msg.error);
 			return(out);
 		}
 		e.unite(x[i].getExtent());

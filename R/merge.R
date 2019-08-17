@@ -13,11 +13,11 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 		n <- length(dots)
 		if (n > 0) {
 			for (i in 1:n) {
-				if (inherits(dots[i], "SpatRaster")) {
-					rc$add(dots[i]@ptr)
+				if (inherits(dots[[i]], "SpatRaster")) {
+					rc$add(dots[[i]]@ptr)
 				} else {
-					name <- names(dots[i])
-					cls <- class(dots[i])
+					name <- names(dots[[i]])
+					cls <- class(dots[[i]])
 					stop(paste("additional arguments should be of class 'SpatRaster'\n Found argument", name, "of class: ", cls))
 				}
 			}
