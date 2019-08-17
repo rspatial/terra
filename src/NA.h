@@ -22,7 +22,7 @@
 template <class T> 
 class NA {
   public:
-    static constexpr T value = std::is_floating_point<T>::value ? NAN : std::numeric_limits<T>::max();
+    static constexpr T value = std::is_floating_point<T>::value ? NAN : std::numeric_limits<T>::min();
 };
 
 // bool has no NA
@@ -57,6 +57,11 @@ bool is_NA(const T v) {
         return b;
   	}
 }
+
+template <> class NA<unsigned> {
+public:
+    static constexpr unsigned value = std::numeric_limits<unsigned>::max();
+};
 
 
 template <typename T>
