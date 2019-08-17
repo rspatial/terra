@@ -20,26 +20,26 @@
 
 
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
-	if ((startcol==0) & (ncols==ncol())) {
-		size_t sz = source[0].values.size();
-		size_t start = startrow * ncol() * nlyr();
+	size_t sz = source[0].values.size();
+	size_t start = startrow * ncol() * nlyr();
+	if (((startcol==0) & (ncols==ncol())) & ((sz == start) | (sz ==0))) {
 		if (sz == 0) { // first or all
 			source[0].values = vals;
 		} else if (sz == start) { // in chunks
 			source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());
-		} else { // async
-			if (start+vals.size() > sz) {
-				source[0].values.resize(start+vals.size());
-			}
-			for (size_t i=0; i<vals.size(); i++) {
-				source[0].values[start+i] = vals[i];
-			}
 		}
+//		} else { // async
+//			if (start+vals.size() > sz) {
+//				source[0].values.resize(start+vals.size(), NAN);
+//			}
+//			for (size_t i=0; i<vals.size(); i++) {
+//				source[0].values[start+i] = vals[i];
+//			}
+//		}
 
 	} else { // block writing
-		size_t sz = source[0].values.size();
 		if (sz == 0) {
-			source[0].values.resize(ncol() * nrow() * nlyr(), NAN);
+			source[0].values.resize(size(), NAN);
 		}
 		unsigned nc1 = nrows*ncols;
 		unsigned nc2 = ncell();

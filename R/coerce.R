@@ -57,6 +57,9 @@ setMethod("as.vector", signature(x="SpatRaster"),
 
 setMethod("as.matrix", signature(x="SpatRaster"), 
 	function(x, wide=FALSE, ...) {
+		if (!hasValues(x)) {
+			stop("SpatRaster has no cell values")
+		}
 		if (wide) {
 			if (nlyr(x) > 1) {
 				m <- values(x, matrix=TRUE)

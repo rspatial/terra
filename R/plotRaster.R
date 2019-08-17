@@ -1,9 +1,20 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function (x, y, col, maxcell = 100000, leg.mar=NULL, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL, digits, useRaster = TRUE, zlim, xlab="", ylab="", axes=TRUE, ...) {
+	function (x, y, col, maxcell = 100000, leg.mar=NULL, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL, digits, useRaster = TRUE, zlim, xlab="", ylab="", axes=TRUE, add=FALSE, ...) {
 
 		x <- x[[y[1]]]
+		if (!hasValues(x)) {
+			warning("SpatRaster has no cell values")
+			return()
+		}
+		if (missing(col)) {
+			col <- rev(grDevices::terrain.colors(25))
+		}
+		if (add) {
+			image(x, maxcell=maxcell, col=col, add=TRUE, ...) 
+			return(invisible(NULL))
+		}
 
 		if (couldBeLonLat(x, warn=FALSE)) {
 			asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
@@ -11,7 +22,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			asp <- 1
 		}
 		
-		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
 		object <- sampleRegular(x, maxcell)
 		
 		Y <- yFromRow(object, nrow(object):1)
@@ -46,8 +56,8 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				leg.mar=0
 			}
 		}
-		old.par <- graphics::par(no.readonly = TRUE) 
-		on.exit(graphics::par(old.par))
+		old.mar <- graphics::par()$mar 
+		on.exit(graphics::par(mar=old.mar))
 		leg.hor <- FALSE
 		if (leg.hor) {
 			graphics::par(mar=.getMar(c(leg.mar, 0, 0, 0)))
@@ -110,10 +120,14 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxcell=100000, nc, nr, main, maxnl=16, ...)  {
+	function(x, y, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)  {
 		nl <- min(nlyr(x), maxnl)
 		if (nl == 0) {
-			stop('SpatRaster has no cell values')
+			stop("SpatRaster has no cell values")
+		}
+		if (add) {
+			plot(x, 1, maxcell=maxcell, add=TRUE, ...) 
+			return(invisible(NULL))
 		}
 
 		if (nl==1) {

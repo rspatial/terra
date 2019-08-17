@@ -30,12 +30,6 @@ setMethod("$", "SpatRaster",
 	function(x, name) { subset(x, name) } )
 
 
-setMethod("[[", c("SpatRaster", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	subset(x, i, ...)
-})
-
-
 setMethod("[[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	subset(x, i, ...)
@@ -43,10 +37,15 @@ function(x, i, j, ... ,drop=TRUE) {
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
+	cat("hi there\n")
 	subset(x, which(i), ...)
 })
 
 
+setMethod("[[", c("SpatRaster", "numeric", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	subset(x, i, ...)
+})
 
 
 setMethod("subset", signature(x="SpatVector"), 

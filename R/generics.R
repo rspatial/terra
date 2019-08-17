@@ -174,6 +174,9 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 setMethod("project", signature(x="SpatRaster"), 
 	function(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename, overwrite, wopt)
+		if (!is.character(crs)) {
+			crs <- crs(x)
+		}
 		x@ptr <- x@ptr$project(crs, method, opt)
 		show_messages(x, "project")
 	}
@@ -181,6 +184,9 @@ setMethod("project", signature(x="SpatRaster"),
 
 setMethod("project", signature(x="SpatVector"), 
 	function(x, crs, ...)  {
+		if (!is.character(crs)) {
+			crs <- crs(x)
+		}
 		x@ptr <- x@ptr$project(crs)
 		show_messages(x, "project")
 	}

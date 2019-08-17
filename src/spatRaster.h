@@ -315,6 +315,7 @@ class SpatRaster {
 		bool canProcessInMemory(unsigned n);
 		unsigned chunkSize(unsigned n);
 
+		void fill(double x);
 
 ////////////////////////////////////////////////////
 // main methods

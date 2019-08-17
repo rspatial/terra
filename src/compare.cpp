@@ -19,9 +19,6 @@
 #include "math_utils.h"
 
 
-bool AboutTheSame(double a, double b) {
-    return fabs(a - b) < (std::max(fabs(a), fabs(b)) * 0.001);
-}
 
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
 	
@@ -38,7 +35,7 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, b
 		}
 	}
 	if (res) {
-		if (! (AboutTheSame(x.xres(), xres())) & (AboutTheSame(x.yres(), yres()))) {
+		if (! ((is_equal_relative(x.xres(), xres(), 0.0001)) & (about_equal(x.yres(), yres(), 0.0001)))) {
 			setError("resolution does not match");
 			return false;
 		}

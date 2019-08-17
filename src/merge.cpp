@@ -31,25 +31,26 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 		return(out);
 	}
 
+	bool anyvals = false;
+	if (x[0].hasValues()) anyvals = true;
 	out = x[0].geometry();
 	SpatExtent e = x[0].getExtent();
 	for (size_t i=1; i<n; i++) {
 		// for now, must have same nlyr; but should be easy to recycle.
-								//  lyrs, crs, warncrs, ext, rowcol, res
-		if (!x[0].compare_geom(x[i], true, true, false, false, false, true)) {
+								 //  lyrs, crs, warncrs, ext, rowcol, res
+		if (!x[0].compare_geom(x[i], true, false, false, false, false, true)) {
 			out.setError(x[0].msg.error);
 			return(out);
 		}
 		e.unite(x[i].getExtent());
+		if (x[i].hasValues()) anyvals = true;
 	}
 	out.setExtent(e, true);
+	if (!anyvals) return out;
+	
  //   out.setResolution(xres(), yres());
  	if (!out.writeStart(opt)) { return out; }
-    #ifdef useGDAL
-	if (out.source[0].driver == "gdal") {
-		out.fillValuesGDAL(NAN);
-	}
-	#endif
+	out.fill(NAN);
 
 	for (size_t i=0; i<n; i++) {
 		SpatRaster r = x[i];

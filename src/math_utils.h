@@ -22,6 +22,7 @@ void na_omit(std::vector<double> &x);
 
 bool is_equal(double a, double b, double tolerance=1.0);
 bool about_equal(double a, double b, double tolerance);
+bool is_equal_relative(double a, double b, double tolerance);
 bool is_equal_range(double x, double y, double range, double tolerance);
 void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, int &imax);
 double roundn(double x, int n);

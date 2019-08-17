@@ -76,6 +76,11 @@ bool about_equal(double a, double b, double tolerance) {
 	return ((a==b) || (std::abs(a-b) < tolerance));
 }
 
+bool is_equal_relative(double a, double b, double tolerance) {
+	tolerance = std::max(fabs(a), fabs(b)) * tolerance;
+    return about_equal(a, b, tolerance);
+}
+
 bool is_equal_range(double x, double y, double range, double tolerance) {
 	return (fabs(x - y) / range) < tolerance ;
 }

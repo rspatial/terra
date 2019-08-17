@@ -21,6 +21,16 @@
 #include "math_utils.h"
 
 
+void SpatRaster::fill(double x) {
+ 	if (source[0].driver == "gdal") {
+		#ifdef useGDAL
+		fillValuesGDAL(x);
+		#endif
+	} else if (source[0].driver == "memory") {
+		source[0].values.resize(size(), x);
+	}
+}
+
 
 bool SpatRaster::isSource(std::string filename) {
 	std::vector<std::string> ff = filenames();

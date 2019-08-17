@@ -31,11 +31,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 	if (!hasValues()) return(out);
 	
  	if (!out.writeStart(opt)) { return out; }
-    #ifdef useGDAL
-	if (out.source[0].driver == "gdal") {
-		out.fillValuesGDAL(NAN);
-	}
-	#endif
+	out.fill(NAN);
 	BlockSize bs = getBlockSize(4);
 	readStart();
 	for (size_t i=0; i<bs.n; i++) {

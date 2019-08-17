@@ -277,7 +277,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 	CPLErr err = CE_None;
 	for (size_t i=0; i < nl; i++) {
 		cell = ncell * i;
-		poBand = source[src].gdalconnection->GetRasterBand(i + 1);
+		poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i] + 1);
 		double naflag = poBand->GetNoDataValue(&hasNA);
 		if (!hasNA) { naflag = NAN; }
 		GDALDataType gdtype = poBand->GetRasterDataType();
@@ -440,7 +440,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 	CPLErr err = CE_None;
 	for (size_t i=0; i < nl; i++) {
 		cell = ncell * i;
-		poBand = poDataset->GetRasterBand(i + 1);
+		poBand = poDataset->GetRasterBand(source[src].layers[i] + 1);
 		GDALDataType gdtype = poBand->GetRasterDataType();
 		double naflag = poBand->GetNoDataValue(&hasNA);
 		if (!hasNA) { naflag = NAN; }

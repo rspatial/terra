@@ -269,7 +269,7 @@ std::vector<bool> SpatRaster::hasRange() {
 std::vector<double> SpatRaster::range_min() {
 	std::vector<double> x;
 	for (size_t i=0; i<source.size(); i++) {
-		x.insert(x.end(), source[i].range_min.begin(),source[i].range_min.end());
+		x.insert(x.end(), source[i].range_min.begin(), source[i].range_min.end());
 	}
 	return(x);
 }
