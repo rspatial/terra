@@ -110,9 +110,11 @@ bool SpatRaster::writeValuesBinary(std::vector<double>& vals, unsigned startrow,
 //}
 
 
-bool SpatRaster::writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite) {
-	bool success = true;
-    if (!writeStartBinary(filename, datatype, bandorder, overwrite)) return(false); 
+SpatRaster SpatRaster::writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite) {
+	SpatRaster out = geometry();
+    if (!out.writeStartBinary(filename, datatype, bandorder, overwrite)) {
+		return(out);
+	}
 	std::vector<double> v = getValues();
 		//source[0].fsopen(filename);
 		//source[0].fswrite(v);
@@ -121,10 +123,10 @@ bool SpatRaster::writeRasterBinary(std::string filename, std::string datatype, s
 //		std::ofstream fs(grifile, std::ios::out | std::ios::binary);
 //		fs.write((char*)&v[0], v.size() * sizeof(double));
 //		fs.close();
-    if (!writeValues(v, 0, nrow(), 0, ncol()))  { return(false); }
-    if (!writeStop())  { return(false); }
-    if (!writeHDR(filename))  { return(false); }
-	return success;
+    if (!out.writeValues(v, 0, nrow(), 0, ncol()))  { return(out); }
+    if (!out.writeStop())  { return(out); }
+    if (!out.writeHDR(filename))  { return(out); }
+	return out;
 }
 
 

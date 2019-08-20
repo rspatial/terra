@@ -308,9 +308,9 @@ class SpatRaster {
 
 		void openFS(std::string const &filename);
 
-		bool writeRaster(SpatOptions &opt);
-		bool writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
-		bool writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
+		SpatRaster writeRaster(SpatOptions &opt);
+		SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
+		SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 
 		bool canProcessInMemory(unsigned n);
 		unsigned chunkSize(unsigned n);

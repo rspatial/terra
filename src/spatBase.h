@@ -45,7 +45,7 @@ class SpatOptions {
 		std::string def_filetype = "GTiff";
 		std::string def_bandorder = "BIL";
 		bool overwrite = false;
-		unsigned progress = 4;
+		unsigned progress = 2;
 		unsigned blocksizemp = 4;
 
 		std::string datatype = "";

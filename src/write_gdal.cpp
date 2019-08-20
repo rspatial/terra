@@ -62,6 +62,29 @@ void GDALformat(std::string &filename, std::string &format) {
 }
 
 
+bool getGDALDataType(std::string datatype, GDALDataType &gdt) { 
+	if (datatype=="FLT4S") {
+		gdt = GDT_Float32;
+	} else if (datatype == "INT4S") {
+		gdt = GDT_Int32;
+	} else if (datatype == "INT8S") {
+		gdt = GDT_Float64;
+	} else if (datatype == "INT2S") {
+		gdt = GDT_Int16;
+	} else if (datatype == "INT4U") {
+		gdt = GDT_UInt32;
+	} else if (datatype == "INT2U") {
+		gdt = GDT_UInt16;
+	} else if (datatype == "INT1U") {
+		gdt = GDT_Byte;
+	} else {
+		gdt = GDT_Float32;
+		return false;
+	}
+	return true;
+}
+
+
 bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
 
 	SpatMessages m = can_write(filename, overwrite);
@@ -96,16 +119,10 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	}
 	
 	GDALDataType gdt;
-	if (datatype=="FLT4S") {
-		gdt = GDT_Float32;
-	} else if (datatype == "INT4S") {
-		gdt = GDT_Int32;
-	} else if (datatype == "INT2S") {
-		gdt = GDT_Int16;
-	} else {
-		gdt = GDT_Float64;
+	if (!getGDALDataType(datatype, gdt)) {
+		addWarning("unknown datatype = " + datatype);
 	}
-	
+		
 	poDstDS = poDriver->Create( pszDstFilename, ncol(), nrow(), nlyr(), gdt, papszOptions);
 	
 	CSLDestroy( papszOptions );	
@@ -141,7 +158,8 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 		source[0].range_max[i] = std::numeric_limits<double>::lowest();
 	}
 	source[0].driver = "gdal" ;
-
+	source[0].filename = filename;
+	source[0].memory = false;
 	return true;
 }
 
@@ -290,34 +308,34 @@ bool SpatRaster::writeStopGDAL() {
 		source[0].hasRange[i] = true;
 	}
 	GDALClose( (GDALDatasetH) source[0].gdalconnection );
-	
+	source[0].hasValues = true;	
 	return true;
 }
 
 
 
 
-bool SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
-	SpatRaster r = geometry();
+SpatRaster SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
+	SpatRaster out = geometry();
 	bool values = true;
 	if (!hasValues()) {
 		addWarning("there are no cell values");
 		values = false;
 	}
-	if (!r.writeStartGDAL(filename, format, datatype, overwrite, opt)) {
-		return false;
+	if (!out.writeStartGDAL(filename, format, datatype, overwrite, opt)) {
+		return out;
 	}
 	if (values) {
 		std::vector<double> v = getValues();
-		if (!r.writeValuesGDAL(v, 0, nrow(), 0, ncol())) {
-			return false;
+		if (!out.writeValuesGDAL(v, 0, nrow(), 0, ncol())) {
+			return out;
 		}
 	}
-	if (!r.writeStopGDAL()) {
+	if (!out.writeStopGDAL()) {
 		setError("cannot close file");
-		return false;
+		return out;
 	}
-	return true;
+	return out;
 }
 
 

@@ -65,6 +65,7 @@
 	cat("tempdir     :" , opt$tempdir, "\n")
 	cat("datatype    :" , opt$def_datatype, "\n")
 	cat("filetype    :" , opt$def_filetype, "\n")
+	cat("progress    :" , opt$progress, "\n")
 }
 
 

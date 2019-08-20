@@ -43,12 +43,11 @@ bool SpatRaster::isSource(std::string filename) {
 }
 
 
-bool SpatRaster::writeRaster(SpatOptions &opt) {
+SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
-	bool success = true;
 	std::string filename = opt.get_filename();
 	bool overwrite = opt.get_overwrite();
-
+	SpatRaster out = geometry();
 
 	if (filename == "") {
 		#ifdef useGDAL
@@ -61,8 +60,8 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	} else {
 		SpatMessages m = can_write(filename, overwrite);
 		if (m.has_error) {
-			msg = m;
-			return false;
+			out.msg = m;
+			return out;
 		}
 	}
 
@@ -70,25 +69,20 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	lowercase(ext);
 	std::string datatype = opt.get_datatype();
 
-	SpatRaster out = geometry(nlyr());
 	if (ext == ".grd") {
 		std::string bandorder = opt.get_bandorder();
-	    if (!out.writeRasterBinary(filename, datatype, bandorder, overwrite)) {
-			msg = out.msg;
-			return(false);
-		}
-		setSources(out.source);
-
+	    out = writeRasterBinary(filename, datatype, bandorder, overwrite);
+		
 	} else {
 		std::string format = opt.get_filetype();
         #ifdef useGDAL
-        return writeRasterGDAL(filename, format, datatype, overwrite, opt);
+        out = writeRasterGDAL(filename, format, datatype, overwrite, opt);
 		#else
 		setError("GDAL is not available");
 	    return false;
         #endif
 	}
-	return success;
+	return out;
 }
 
 
@@ -213,7 +207,7 @@ bool SpatRaster::writeStop(){
 	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
 		success = writeStopGDAL();
-		source[0].hasValues = true;
+		//source[0].hasValues = true;
 		#else
 		setError("GDAL is not available");
 		return false;
