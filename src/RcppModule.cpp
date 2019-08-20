@@ -57,6 +57,7 @@ RCPP_MODULE(spat){
 
 		.property("todisk", &SpatOptions::get_todisk, &SpatOptions::set_todisk)
 		.field("messages", &SpatOptions::msg, "messages")
+		.field("gdal_options", &SpatOptions::gdal_options, "gdal_options")
 	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )
 		//.field("gdaloptions", &SpatOptions::gdaloptions)		
 	;

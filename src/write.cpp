@@ -82,7 +82,7 @@ bool SpatRaster::writeRaster(SpatOptions &opt) {
 	} else {
 		std::string format = opt.get_filetype();
         #ifdef useGDAL
-        return writeRasterGDAL(filename, format, datatype, overwrite);
+        return writeRasterGDAL(filename, format, datatype, overwrite, opt);
 		#else
 		setError("GDAL is not available");
 	    return false;
@@ -123,7 +123,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		} else {
 			// open GDAL filestream
 			#ifdef useGDAL
-			if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite) ) {
+			if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite, opt) ) {
 				return false;
 			}
 			#else

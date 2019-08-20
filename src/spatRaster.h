@@ -282,7 +282,7 @@ class SpatRaster {
 		bool writeStop();
 		bool writeHDR(std::string filename);
 
-		bool writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite);
+		bool writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
 		bool fillValuesGDAL(double fillvalue);
 		bool writeValuesGDAL(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 		bool writeStopGDAL();
@@ -309,7 +309,7 @@ class SpatRaster {
 		void openFS(std::string const &filename);
 
 		bool writeRaster(SpatOptions &opt);
-		bool writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite);
+		bool writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
 		bool writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 
 		bool canProcessInMemory(unsigned n);

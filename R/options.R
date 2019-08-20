@@ -9,12 +9,26 @@
 	.terra_environment$options <- opt
 }
  
+ 
 .setOptions <- function(x, opt) {
 	nms <- names(opt)
+	
+	g <- which(nms == "gdal")
+	if (length(g) > 0) {
+		gopt <- unlist(opt[g])
+		opt <- opt[-g]
+		nms <- nms[-g]
+		i <- grep("=", gopt)
+		gopt <- gopt[i]
+		gopt <- gsub(" ", "", gopt)
+		x$gdal_options <- gopt
+	}
+	
 	s <- nms %in% c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk")
 	
 	if (any(!s)) {
-		warning(paste(nms[!s], collapse = ", "), " invalid option(s)")
+		bad <- paste(nms[!s], collapse=",")
+		warning(paste("cannot recognize some options:", bad))
 	}
 		
 	if (any(s)) {

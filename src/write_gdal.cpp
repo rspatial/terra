@@ -62,7 +62,7 @@ void GDALformat(std::string &filename, std::string &format) {
 }
 
 
-bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite) {
+bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
 
 	SpatMessages m = can_write(filename, overwrite);
 	if (m.has_error) {
@@ -87,8 +87,29 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
  
 	GDALDataset *poDstDS;
 	char **papszOptions = NULL;
+
+	for (size_t i=0; i<opt.gdal_options.size(); i++) {
+		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
+		if (gopt.size() == 2) {
+			papszOptions = CSLSetNameValue( papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+		}
+	}
 	
-	poDstDS = poDriver->Create( pszDstFilename, ncol(), nrow(), nlyr(), GDT_Float64, papszOptions);
+	GDALDataType gdt;
+	if (datatype=="FLT4S") {
+		gdt = GDT_Float32;
+	} else if (datatype == "INT4S") {
+		gdt = GDT_Int32;
+	} else if (datatype == "INT2S") {
+		gdt = GDT_Int16;
+	} else {
+		gdt = GDT_Float64;
+	}
+	
+	poDstDS = poDriver->Create( pszDstFilename, ncol(), nrow(), nlyr(), gdt, papszOptions);
+	
+	CSLDestroy( papszOptions );	
+
 	GDALRasterBand *poBand;
 	std::vector<std::string> nms = getNames();
 	for (size_t i=0; i < nlyr(); i++) {
@@ -276,14 +297,14 @@ bool SpatRaster::writeStopGDAL() {
 
 
 
-bool SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite) {
+bool SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
 	SpatRaster r = geometry();
 	bool values = true;
 	if (!hasValues()) {
 		addWarning("there are no cell values");
 		values = false;
 	}
-	if (!r.writeStartGDAL(filename, format, datatype, overwrite)) {
+	if (!r.writeStartGDAL(filename, format, datatype, overwrite, opt)) {
 		return false;
 	}
 	if (values) {

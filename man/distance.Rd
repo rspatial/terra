@@ -60,7 +60,8 @@ values(r) <- v
 d <- distance(r) 
 #plot(d / 100000)
 
-g <- distance(r, grid=TRUE)
+# grid-distance
+# g <- distance(r, grid=TRUE)
 
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
