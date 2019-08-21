@@ -57,20 +57,15 @@ std::string SpatOptions::get_filetype() { return filetype;}
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }
 
-bool SpatOptions::get_progress() { return progress; }
-void SpatOptions::set_progress(bool p) { 
+
+unsigned SpatOptions::get_progress() { return progress; }
+void SpatOptions::set_progress(unsigned p) { 
 	progress = p; 
 }
 
-
-//unsigned SpatOptions::get_progress() { return progress; }
-//void SpatOptions::set_progress(unsigned p) { 
-//	progress = p; 
-//}
-
-//bool SpatOptions::do_progress(unsigned n) { 
-//	return ((progress > 0) & (progress <= n));
-//}
+bool SpatOptions::do_progress(unsigned n) { 
+	return ((progress > 0) & (progress <= n));
+}
 
 
 unsigned SpatOptions::get_blocksizemp() { return blocksizemp; }
@@ -90,7 +85,7 @@ void SpatOptions::set_tempdir(std::string d) {
 
 double SpatOptions::get_memfrac() { return memfrac; }
 void SpatOptions::set_memfrac(double d) {
-	if ((d >= 0.1) && (d < 0.9)) { 
+	if ((d >= 0.1) && (d <= 0.8)) { 
 		memfrac = d;
 		return;
 	} 

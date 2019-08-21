@@ -134,8 +134,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	bs = getBlockSize(opt.get_blocksizemp(), opt.get_steps());
 
     #ifdef useRcpp
-//	pbar = new Progress(bs.n, opt.do_progress(bs.n));
-	pbar = new Progress(bs.n, opt.get_progress());
+	pbar = new Progress(bs.n, opt.do_progress(bs.n));
 	#endif
 	return true;
 }
