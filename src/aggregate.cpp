@@ -95,10 +95,13 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims2(std::vector<unsigned> fact
 }
 
 
-std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim) {
+std::vector<std::vector<double>> SpatRaster::get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim) {
+
+// dim 0, 1, 2, are the aggregations factors dy, dx, dz  
+// and 3, 4, 5 are the new nrow, ncol, nlyr
 
 // adjust for chunk
-	//dim[3] = std::ceil(double(nr) / dim[0]);
+	dim[3] = std::ceil(double(nr) / dim[0]);
 
 	size_t dy = dim[0], dx = dim[1], dz = dim[2];
 	size_t bpC = dim[3];
@@ -148,56 +151,66 @@ std::vector<std::vector<double> > SpatRaster::get_aggregates(std::vector<double>
 }
 
 
+std::vector<double> SpatRaster::compute_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim, std::function<double(std::vector<double>&, bool)> fun, bool narm) {
 
-SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt) {
+// dim 0, 1, 2, are the aggregations factors dy, dx, dz  
+// and 3, 4, 5 are the new nrow, ncol, nlyr
 
-	std::string message = "";
-	bool success = get_aggregate_dims(fact, message);
-	if (!success) {
-		SpatRaster er = geometry();
-		er.setError(message);
-		return er;
-	}
+	size_t dy = dim[0], dx = dim[1], dz = dim[2];
+//	size_t bpC = dim[3];
+// adjust for chunk
+	size_t bpC = std::ceil(double(nr) / dim[0]);
+	size_t bpR = dim[4];
+	size_t bpL = bpR * bpC;
 
-	double xmax = extent.xmin + fact[4] * fact[1] * xres();
-	double ymin = extent.ymax - fact[3] * fact[0] * yres();
-	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
-	SpatRaster out = SpatRaster(fact[3], fact[4], fact[5], e, crs);
+	// new number of layers
+	size_t newNL = dim[5];
 
-	if (!source[0].hasValues) { return out; }
-	if (!out.writeStart(opt)) { return out; }
+	// new number of rows, adjusted for additional (expansion) rows
+	size_t adjnr = bpC * dy;
 
-	std::vector<std::string> f {"sum", "mean", "min", "max", "median", "modal"};
-	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.setError("unknown function argument");
-		return out;
-	}
+	// number of aggregates
+	size_t nblocks = (bpR * bpC * newNL);
+	// cells per aggregate
+	size_t blockcells = dx * dy * dz;
 
-	unsigned outnc = out.ncol();
+	// output: each row is a block
+	std::vector<double> out(nblocks, NAN);
 	
-	BlockSize bs = getBlockSize(4);
-	if (bs.n > 1) {
-		unsigned nr = floor(bs.nrows[0] / fact[0]) * fact[0];
-		for (size_t i =0; i<bs.n; i++) {
-			bs.row[i] = i * nr;
-			bs.nrows[i] = nr;
+    size_t ncells = ncell();
+    size_t nl = nlyr();
+    size_t nc = ncol();
+    size_t lstart, rstart, cstart, lmax, rmax, cmax, f, lj, cell;
+
+	for (size_t b = 0; b < nblocks; b++) {
+		lstart = dz * (b / bpL);
+		rstart = (dy * (b / bpR)) % adjnr;
+		cstart = dx * (b % bpR);
+
+		lmax = std::min(nl, (lstart + dz));
+		rmax = std::min(nr, (rstart + dy));  // nrow -> nr
+		cmax = std::min(nc, (cstart + dx));
+
+		f = 0;
+		std::vector<double> a(blockcells, NAN);
+		for (size_t j = lstart; j < lmax; j++) {
+			lj = j * ncells;
+			for (size_t r = rstart; r < rmax; r++) {
+				cell = lj + r * nc;
+				for (size_t c = cstart; c < cmax; c++) {
+					a[f] = in[cell + c];
+					f++;
+				}
+			}
 		}
-		unsigned lastrow = bs.row[bs.n] + bs.nrows[bs.n] + 1;
-		if (lastrow < nrow()) {
-			bs.row.push_back(lastrow);
-			bs.nrows.push_back(std::min(bs.nrows[bs.n], nrow()-lastrow));
-			bs.n += 1;
-		}
+		out[b] = fun(a, narm);		
 	}
-	BlockSize aggbs;
-	aggbs.n = bs.n;
-	for (size_t i =0; i<aggbs.n; i++) {
-		aggbs.row.push_back(bs.row[i] / fact[0]);
-		unsigned nrows = ceil(bs.nrows[i] / (double)fact[0]);
-		aggbs.nrows.push_back(nrows);
-	}
+	return(out);
+}
 
 
+
+std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 	std::function<double(std::vector<double>&, bool)> agFun;
 	if (fun == "mean") {
 		agFun = vmean<double>;
@@ -214,25 +227,62 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	} else {
 		agFun = vmean<double>;
 	}
+	return agFun;
+}
 
-	size_t row, col, cell, lyrcell, nr, nc, ncells;
-	nr = nrow();
-	nc = ncol();
-	ncells = nc * nr;
+SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt) {
+
+	std::string message = "";
+	bool success = get_aggregate_dims(fact, message);
+	
+// fact 1, 2, 3, are the aggregations factors dy, dx, dz  
+// and 4, 5, 6 are the new nrow, ncol, nlyr
+	
+	if (!success) {
+		SpatRaster er = geometry();
+		er.setError(message);
+		return er;
+	}
+
+	double xmax = extent.xmin + fact[4] * fact[1] * xres();
+	double ymin = extent.ymax - fact[3] * fact[0] * yres();
+	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
+	SpatRaster out = SpatRaster(fact[3], fact[4], fact[5], e, crs);
+
+	if (!source[0].hasValues) { return out; }
+
+	std::vector<std::string> f {"sum", "mean", "min", "max", "median", "modal"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("unknown function argument");
+		return out;
+	}
+	std::function<double(std::vector<double>&, bool)> agFun = getFun(fun);
+
+	unsigned outnc = out.ncol();
+	
+	BlockSize bs = getBlockSize(4);
+	bs.n = floor(nrow() / fact[0]);
+	bs.nrows.resize(bs.n, fact[0]);	
+	bs.row.resize(bs.n);
+	for (size_t i =0; i<bs.n; i++) {
+		bs.row[i] = i * fact[0];
+	}
+	unsigned lastrow = bs.row[bs.n] + bs.nrows[bs.n] + 1;
+	if (lastrow < nrow()) {
+		bs.row.push_back(lastrow);
+		bs.nrows.push_back(std::min(bs.nrows[bs.n], nrow()-lastrow));
+		bs.n += 1;
+	}
+	
+	opt.steps = bs.n;
+	if (!out.writeStart(opt)) { return out; }
+
+	size_t nc = ncol();
 	readStart();
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> in = readBlock(bs, i);
-		std::vector<double > v(fact[3] * fact[4] * fact[5], NAN);
-		std::vector<std::vector< double > > a = get_aggregates(in, bs.nrows[i], fact);
-		size_t nblocks = a.size();
-		for (size_t i = 0; i < nblocks; i++) {
-			row = (i / nc) % nr;
-			col = i % nc;
-			cell = row * nc + col;
-			lyrcell = std::floor(i / (ncells)) * ncells + cell;
-			v[lyrcell] = agFun(a[i], narm);
-		}
-		if (!out.writeValues(v, aggbs.row[i], aggbs.nrows[i], 0, outnc)) return out;
+	for (size_t i = 0; i < bs.n; i++) {
+        std::vector<double> in = readValues(bs.row[i], bs.nrows[i], 0, nc);
+		std::vector<double> v  = compute_aggregates(in, bs.nrows[i], fact, agFun, narm);
+		if (!out.writeValues(v, i, 1, 0, outnc)) return out;
 	}
 	out.writeStop();
 	return(out);
