@@ -26,9 +26,9 @@ memfrac - value between 0.1 and 0.8. The fraction of RAM that may be used by the
 
 tempdir - directory where temporary files are written. The default what is returned by tempdir().
 
-datatype - default data type. See \code\link{writeRaster}
+datatype - default data type. See \code{\link{writeRaster}}
   
-filetype - default file type. See \code\link{writeRaster}
+filetype - default file type. See \code{\link{writeRaster}}
 
 progress - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero
 }
