@@ -16,6 +16,8 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 //#include <type_traits>
+
+#include <functional>
 #include "spatRaster.h"
 #include "vecmath.h"
 #include "modal.h"

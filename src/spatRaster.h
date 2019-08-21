@@ -23,11 +23,13 @@
 #include "gdal_priv.h"
 #endif
 
-#ifdef useRCPP
+#ifdef useRcpp
+
 #include <Rcpp.h>
 // [[Rcpp::depends(RcppProgress)]]
 #include <progress.hpp>
 #include <progress_bar.hpp>
+
 #endif
 
 
@@ -122,7 +124,7 @@ class SpatRaster {
 
 	public:
 
-#ifdef useRCPP
+#ifdef useRcpp
 		Progress* pbar;
 #endif
 
@@ -133,7 +135,7 @@ class SpatRaster {
 		std::vector<RasterSource> source;
 
 		BlockSize bs;
-		BlockSize getBlockSize(unsigned n);
+		BlockSize getBlockSize(unsigned n, unsigned steps=0);
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }

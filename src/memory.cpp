@@ -31,30 +31,26 @@ unsigned SpatRaster::chunkSize(unsigned n) {
 	return rows == 0 ? 1 : std::min(rows, nrow());
 }
 
-BlockSize SpatRaster::getBlockSize(unsigned n) {
+BlockSize SpatRaster::getBlockSize(unsigned n, unsigned steps) {
 	BlockSize bs;
+	unsigned cs;
+	
+	if (steps > 0) {
+		steps = std::min(steps, nrow());
+		bs.n = steps;
+		cs = nrow() / steps;
+	} else {
+		cs = chunkSize(n);
+		bs.n = ceil(nrow() / double(cs));
+	}
 
-//	if (source[0].filename == "") {
-	// in memory
-//		bs.row = {0};
-//		bs.nrows = {nrow};
-//		bs.n = 1;
-
-//	} else {
-
-		unsigned cs = chunkSize(n);
-		unsigned chunks = ceil(nrow() / double(cs));
-		bs.n = chunks;
-		bs.row = std::vector<unsigned>(chunks);
-		bs.nrows = std::vector<unsigned>(chunks, cs);
-
-		unsigned r = 0;
-		for (size_t i =0; i<chunks; i++) {
-			bs.row[i] = r;
-			r += cs;
-		}
-		bs.nrows[chunks-1] = cs - ((chunks * cs) - nrow());
-
-//	}
+	bs.row = std::vector<unsigned>(bs.n);
+	bs.nrows = std::vector<unsigned>(bs.n, cs);
+	unsigned r = 0;
+	for (size_t i =0; i<bs.n; i++) {
+		bs.row[i] = r;
+		r += cs;
+	}
+	bs.nrows[bs.n-1] = cs - ((bs.n * cs) - nrow());
 	return bs;
 }

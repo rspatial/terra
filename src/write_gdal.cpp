@@ -67,7 +67,7 @@ bool getGDALDataType(std::string datatype, GDALDataType &gdt) {
 		gdt = GDT_Float32;
 	} else if (datatype == "INT4S") {
 		gdt = GDT_Int32;
-	} else if (datatype == "INT8S") {
+	} else if (datatype == "FLT8S") {
 		gdt = GDT_Float64;
 	} else if (datatype == "INT2S") {
 		gdt = GDT_Int16;

@@ -131,10 +131,11 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 	source[0].open_write = true;
 	source[0].filename = filename;
-	bs = getBlockSize(opt.get_blocksizemp());
+	bs = getBlockSize(opt.get_blocksizemp(), opt.get_steps());
 
     #ifdef useRcpp
-	pbar = new Progress(bs.n, opt.do_progress(bs.n));
+//	pbar = new Progress(bs.n, opt.do_progress(bs.n));
+	pbar = new Progress(bs.n, opt.get_progress());
 	#endif
 	return true;
 }

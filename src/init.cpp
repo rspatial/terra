@@ -27,11 +27,17 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		out.setError("not a valid init option");
 		return out;
 	}
+
+	size_t nr = nrow();
+	size_t steps = nr; // for the pbar
+	if (value == "chess") {
+		steps = steps / 2;
+	}
+	opt.set_steps(steps);
  	if (!out.writeStart(opt)) { return out; }
 	
 	if (value == "row") {
 		std::vector<double> v(ncol());
-		size_t nr = nrow();
 		for (size_t i = 0; i < nr; i++) {
 			std::fill(v.begin(), v.end(), i+plusone);				
 			if (!out.writeValues(v, i, 1, 0, ncol())) return out;
@@ -40,7 +46,6 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		std::vector<double> col(ncol());
 		double start = plusone ? 1 : 0;
 		std::iota(col.begin(), col.end(), start);
-		unsigned nr = nrow();
 		for (unsigned i = 0; i < nr; i++) {
 			if (!out.writeValues(col, i, 1, 0, ncol())) return out;
 		}
@@ -48,7 +53,6 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		std::vector<unsigned> col(ncol());
 		std::iota(col.begin(), col.end(), 0);
 		std::vector<unsigned> row(1);
-		unsigned nr = nrow();
 		for (unsigned i = 0; i < nr; i++) {
 			row[0] = i;
 			std::vector<double> v = cellFromRowCol(row, col);
@@ -59,13 +63,11 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		std::vector<unsigned> col(ncol());
 		std::iota(col.begin(), col.end(), 0);
 		std::vector<double> x = xFromCol(col);
-		unsigned nr = nrow();
 		for (unsigned i = 0; i < nr; i++) {
 			if (!out.writeValues(x, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "y") {
 		std::vector<double> v(ncol());
-		unsigned nr = nrow();
 		for (unsigned i = 0; i < nr; i++) {
 			double y = yFromRow(i);
 			std::fill(v.begin(), v.end(), y);				
@@ -83,6 +85,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			a[i] = test;
 			b[i] = !test;
 		}		
+		out.bs.n = nr/2; // for the pbar
 		for (unsigned i=0; i<(nr-1); i=i+2) {
 			if (!out.writeValues(a, i, 1, 0, ncol())) return out;
 			if (!out.writeValues(b, i+1, 1, 0, ncol())) return out;
