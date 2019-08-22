@@ -23,6 +23,7 @@
 #include "vecmath.h"
 
 
+
 template <typename T>
 std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
     std::size_t total_size = 0;
@@ -101,10 +102,11 @@ std::vector<std::vector<double>> SpatRaster::get_aggregates(std::vector<double> 
 // and 3, 4, 5 are the new nrow, ncol, nlyr
 
 // adjust for chunk
-	dim[3] = std::ceil(double(nr) / dim[0]);
+	//dim[3] = std::ceil(double(nr) / dim[0]);
+	//size_t bpC = dim[3];
+	size_t bpC = std::ceil(double(nr) / dim[0]);
 
 	size_t dy = dim[0], dx = dim[1], dz = dim[2];
-	size_t bpC = dim[3];
 	size_t bpR = dim[4];
 	size_t bpL = bpR * bpC;
 
@@ -121,7 +123,9 @@ std::vector<std::vector<double>> SpatRaster::get_aggregates(std::vector<double> 
 
 	// output: each row is a block
 	std::vector< std::vector<double> > a(nblocks, std::vector<double>(blockcells, std::numeric_limits<double>::quiet_NaN()));
-    size_t ncells = ncell();
+    // size_t ncells = ncell();
+    size_t ncells = nr * nc;
+
     size_t nl = nlyr();
     size_t nc = ncol();
     size_t lstart, rstart, cstart, lmax, rmax, cmax, f, lj, cell;
@@ -177,9 +181,9 @@ std::vector<double> SpatRaster::compute_aggregates(std::vector<double> &in, size
 	// output: each row is a block
 	std::vector<double> out(nblocks, NAN);
 	
-    size_t ncells = ncell();
     size_t nl = nlyr();
     size_t nc = ncol();
+    size_t ncells = nr * nc;
     size_t lstart, rstart, cstart, lmax, rmax, cmax, f, lj, cell;
 
 	for (size_t b = 0; b < nblocks; b++) {
@@ -280,11 +284,12 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	size_t nc = ncol();
 	readStart();
 	for (size_t i = 0; i < bs.n; i++) {
-        std::vector<double> in = readValues(bs.row[i], bs.nrows[i], 0, nc);
-		std::vector<double> v  = compute_aggregates(in, bs.nrows[i], fact, agFun, narm);
+        std::vector<double> vin = readValues(bs.row[i], bs.nrows[i], 0, nc);
+		std::vector<double> v  = compute_aggregates(vin, bs.nrows[i], fact, agFun, narm);
 		if (!out.writeValues(v, i, 1, 0, outnc)) return out;
 	}
 	out.writeStop();
+	readStop();
 	return(out);
 }
 

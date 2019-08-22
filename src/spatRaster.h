@@ -26,9 +26,9 @@
 #ifdef useRcpp
 
 #include <Rcpp.h>
-// [[Rcpp::depends(RcppProgress)]]
-#include <progress.hpp>
-#include <progress_bar.hpp>
+// Rcpp::depends(RcppProgress)
+#include "progress.hpp"
+#include "progress_bar.hpp"
 #endif
 
 

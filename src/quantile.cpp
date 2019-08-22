@@ -1,13 +1,10 @@
-#include <algorithm>
-#include <cmath>
-#include <vector>
-#include <algorithm>
 #include "spatRaster.h"
-
 #include "vecmath.h"
 #include "math_utils.h"
 #include "string_utils.h"
 
+#include <cmath>
+#include <algorithm>
 
 static inline double interpolate(double x, double y1, double y2, unsigned x1, unsigned x2) {
 	double denom = (x2-x1);
