@@ -12,7 +12,7 @@
 #ifndef _RcppProgress_INTERRUPTABLE_PROGRESS_MONITOR_HPP
 #define _RcppProgress_INTERRUPTABLE_PROGRESS_MONITOR_HPP
 
-#include "interrupts.hpp"
+#include "progress_interrupts.hpp"
 #include "progress_bar.hpp"
 //#include "fetch_raw_gwas_bar.hpp"
 

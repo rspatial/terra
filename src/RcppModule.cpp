@@ -1,6 +1,66 @@
 #include <Rcpp.h>
 #include "spatRaster.h"
-#include "RcppFunctions.h"
+
+
+Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) { 
+    BlockSize bs = r->getBlockSize(n);
+	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
+	return(L);
+}
+
+
+Rcpp::List getDataFrame(SpatDataFrame* v) {
+	unsigned n = v->ncol();
+	Rcpp::List out(n);	
+	if (n == 0) {
+		return(out);
+	} 
+
+	std::vector<std::string> nms = v->names;
+	std::vector<unsigned> itype = v->itype;
+	for (size_t i=0; i < n; i++) {
+		if (itype[i] == 0) {
+			out[i] = v->getD(i);
+		} else if (itype[i] == 1) {
+			out[i] = v->getI(i);
+		} else {
+			out[i] = v->getS(i);
+		}
+	}	
+	out.names() = nms;
+	// todo: deal with NAs in int and str
+	return out;
+//  Rcpp::df is nice, but no of variables is <= 20, 
+//  and no "stringsAsFactors"=false
+//	Rcpp::DataFrame result(out);
+//	result.attr("names") = v->names();
+//	return result;
+}	
+
+
+
+Rcpp::List getAttributes(SpatVector* v) {
+	SpatDataFrame df = v->lyr.df;
+	Rcpp::List lst = getDataFrame(&df);
+	return lst;
+}
+
+
+
+Rcpp::DataFrame getGeometry(SpatVector* v) {
+	SpatDataFrame df = v->getGeometryDF();
+
+	Rcpp::DataFrame out = Rcpp::DataFrame::create(
+			Rcpp::Named("id") = df.iv[0], 
+			Rcpp::Named("part") = df.iv[1], 
+			Rcpp::Named("x") = df.dv[0],
+			Rcpp::Named("y") = df.dv[1],
+			Rcpp::Named("hole") = df.iv[2]
+	);
+	return out;
+}
+
+
 
 RCPP_EXPOSED_CLASS(SpatMessages)
 RCPP_EXPOSED_CLASS(SpatOptions)
@@ -285,3 +345,4 @@ RCPP_MODULE(spat){
 	;
 	
 }
+
