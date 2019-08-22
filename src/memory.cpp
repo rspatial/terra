@@ -20,12 +20,12 @@
 
 
 bool SpatRaster::canProcessInMemory(unsigned n) {
-	double f = 0.5;
+	double f = 0.4;
 	return (n * size()) < (availableRAM() * f);
 }
 
 unsigned SpatRaster::chunkSize(unsigned n) {
-	double f = 0.25;
+	double f = 0.2;
 	unsigned cells_in_row = n * ncol() * nlyr();
 	unsigned rows = availableRAM() * f / cells_in_row;
 	return rows == 0 ? 1 : std::min(rows, nrow());

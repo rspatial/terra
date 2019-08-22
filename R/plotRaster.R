@@ -90,8 +90,14 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		} 
 
 
+		fact = FALSE
 		if (is.factor(x)) {
 			lvs <- levels(x)[[1]]
+			if (nrow(lvs) > 0) {
+				fact = TRUE
+			}
+		}
+		if (fact) {
 			labs <- lvs$labels
 			n <- ifelse(leg.ext.set, length(labs), 20)
 			col <- .sampleColors(col, length(labs))
