@@ -28,6 +28,54 @@
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
 
+#include "gdal_rat.h"
+
+
+SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
+
+	SpatDataFrame out;
+/*
+	const char *GFU_type_string[] = {"GFT_Integer", "GFT_Real","GFT_String"};
+	const char *GFU_usage_string[] = {"GFU_Generic", "GFU_PixelCount", "GFU_Name", "GFU_Min", 
+		"GFU_Max", "GFU_MinMax", "GFU_Red", "GFU_Green", "GFU_Blue", "GFU_Alpha", "GFU_RedMin", 
+		"GFU_GreenMin", "GFU_BlueMin", "GFU_AlphaMin", "GFU_RedMax", "GFU_GreenMax", "GFU_BlueMax", 
+		"GFU_AlphaMax", "GFU_MaxCount"};
+	std::vector<std::string> GFT_type;
+	std::vector<std::string> GFT_usage;
+*/
+	size_t nc = (int) pRAT->GetColumnCount();
+	size_t nr = (int) pRAT->GetRowCount();
+
+	for (size_t i=0; i<nc; i++) {
+		GDALRATFieldType nc_type = pRAT->GetTypeOfCol(i);
+//		GFT_type.push_back(GFU_type_string[nc_types[i]]);
+//		GDALRATFieldUsage nc_usage = pRAT->GetUsageOfCol(i);
+//		GFT_usage.push_back(GFU_usage_string[nc_usages[i]]);
+		std::string name = pRAT->GetNameOfCol(i);
+		if (nc_type == GFT_Integer) {
+			std::vector<long> d(nr);
+			for (size_t j=0; j<nr; j++) {
+				d[j] = (int) pRAT->GetValueAsInt(j, i);
+			}
+			out.add_column(d, name);
+		} else if (nc_type == GFT_Real) {
+			std::vector<double> d(nr);
+			for (size_t j=0; j<nr; j++) {
+				d[j] = (double) pRAT->GetValueAsDouble(j, i);
+			}
+			out.add_column(d, name);
+		} else if (nc_type == GFT_String) {
+			std::vector<std::string> d(nr);
+			for (size_t j=0; j<nr; j++) {
+				d[j] = (std::string) pRAT->GetValueAsString(j, i);
+			}
+			out.add_column(d, name);
+		} 
+	}
+	return(out);
+}
+
+
 
 std::string basename_sds(std::string f) {
   const size_t i = f.find_last_of("\\/");
@@ -221,8 +269,10 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		}
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
-		if( rat != NULL )	{  // does not appear to work
+		if( rat != NULL )	{  
 			s.hasCategories.push_back(true);
+			SpatDataFrame df = GetRATdf(rat);
+			s.atts.push_back(df);
 		} else {
 			s.hasCategories.push_back(false);
 		}

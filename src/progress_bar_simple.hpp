@@ -34,7 +34,7 @@ class SimpleProgressBar: public ProgressBar{
 //      REprintf("0%%   10   20   30   40   50   60   70   80   90   100%%\n");
 //      REprintf("[----|----|----|----|----|----|----|----|----|----|\n");
 //      REprintf("[----|----|----|----|----|----|----|----|----|----|");
-      REprintf("-----|----|----|----|----|----|----|----|----|----");
+      REprintf("=====|====|====|====|====|====|====|====|====|====");
 	  REprintf("\r");
       flush_console();
 
@@ -88,9 +88,7 @@ class SimpleProgressBar: public ProgressBar{
     void _display_ticks(int nb) {
       for (int i = 0; i < nb; ++i) {
       //  REprintf("*");
-	  //  REprintf("=");
-	  //  REprintf("-");
-	    REprintf(" ");
+	    REprintf("-");
         R_FlushConsole();
       }
     }

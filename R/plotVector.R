@@ -28,7 +28,7 @@
 			a <- lapply(a, function(i) rbind(i, NA))
 			a <- do.call(rbind, a )
 			a <- a[-nrow(a), ]
-			g[[i]][[1]] <- a
+			# g[[i]][[1]] <- a 
 		}
 		graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", ...)
 	}

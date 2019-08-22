@@ -93,7 +93,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		fact = FALSE
 		if (is.factor(x)) {
 			lvs <- levels(x)[[1]]
-			if (nrow(lvs) > 0) {
+			if (length(lvs$labels) > 0) {
 				fact = TRUE
 			}
 		}
