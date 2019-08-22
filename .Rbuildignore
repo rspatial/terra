@@ -7,3 +7,4 @@ README.md
 ^windows
 ^packrat/
 ^\.Rprofile$
+.travis.yml

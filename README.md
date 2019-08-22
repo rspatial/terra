@@ -1,5 +1,8 @@
 # terra
 
+[![Travis build
+status](https://travis-ci.org/rspatial/terra.svg?branch=master)](https://travis-ci.org/rspatial/terra)
+
 This R package is a replacement of the [raster](https://github.com/rspatial/raster) package.
 It has a very similar, but simpler, interface, and it is much faster.
 
@@ -54,7 +57,7 @@ To install these on Ubuntu you can do:
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
-sudo apt-get install libgdal-dev libgeos-dev libgeos++-dev libproj-dev 
+sudo apt-get install libgdal-dev libgeos-dev libproj-dev 
 ```
 
 And now, in R, install the packages.
