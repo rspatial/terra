@@ -123,11 +123,11 @@ std::vector<std::vector<double>> SpatRaster::get_aggregates(std::vector<double> 
 
 	// output: each row is a block
 	std::vector< std::vector<double> > a(nblocks, std::vector<double>(blockcells, std::numeric_limits<double>::quiet_NaN()));
+
+    size_t nc = ncol();
     // size_t ncells = ncell();
     size_t ncells = nr * nc;
-
     size_t nl = nlyr();
-    size_t nc = ncol();
     size_t lstart, rstart, cstart, lmax, rmax, cmax, f, lj, cell;
 
 	for (size_t b = 0; b < nblocks; b++) {
