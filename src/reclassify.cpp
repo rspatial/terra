@@ -167,7 +167,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					bool found = false;
 					for (size_t j=0; j<nr; j++) {
 						if ((v[i] >= rcl[0][j]) & (v[i] <= rcl[1][j])) {
-							v[i] = rcl[1][j];
+							v[i] = rcl[2][j];
 							found = true;
 							break;
 						}
@@ -309,7 +309,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 	size_t nc = rcl.size();
 	size_t nr = rcl[0].size();
 	if (nc < 1 || nc > 3 || nr < 1) {
-		out.setError("reclassification matrix must have 2 or 3 columns, and at least one row");
+		out.setError("reclassification matrix must have 1, 2 or 3 columns, and at least one row");
 		return out;
 	}
 	for (size_t i=0; i<nc; i++) {
