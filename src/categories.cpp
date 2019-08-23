@@ -122,7 +122,14 @@ std::vector<bool> SpatRaster::hasAttributes() {
 
 void SpatRaster::setAttributes(unsigned layer, SpatDataFrame df) {
     std::vector<unsigned> sl = findLyr(layer);
+	if (source[sl[0]].atts.size() < sl[1]) {
+		source[sl[0]].atts.resize(sl[1]);
+	}
+	if (source[sl[0]].hasAttributes.size() < sl[1]) {
+		source[sl[0]].hasAttributes.resize(sl[1]);
+	}
 	source[sl[0]].atts[sl[1]] = df;
+	source[sl[0]].hasAttributes[sl[1]] = true;
 }
 
 
@@ -139,5 +146,4 @@ std::vector<SpatDataFrame> SpatRaster::getAttributes() {
 	}
 	return atts;
 }
-
 
