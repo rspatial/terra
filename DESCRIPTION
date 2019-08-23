@@ -18,9 +18,9 @@ Authors@R: c(
 	person("Robert J.", "Hijmans", role = c("cre", "aut"),  
 			email = "r.hijmans@gmail.com", 
 			comment = c(ORCID = "0000-0001-5872-2872")),
-	person("Roger", "Bivand", role = "ctb", comment="configure script, GDAL bindings"),
+	person("Roger", "Bivand", role = "ctb"),
 	person("Karl", "Forner", role = "ctb", comment="progress bar"),
 	person("Charles", "Karney", role = "ctb", comment="GeographicLib"),
-	person("Edzer", "Pebesma", role = "ctb", comment="GEOS bindings")
+	person("Edzer", "Pebesma", role = "ctb")
 	)
 

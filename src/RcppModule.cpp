@@ -39,9 +39,18 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 
 
 
-Rcpp::List getAttributes(SpatVector* v) {
+Rcpp::List getVectorAttributes(SpatVector* v) {
 	SpatDataFrame df = v->lyr.df;
 	Rcpp::List lst = getDataFrame(&df);
+	return lst;
+}
+
+Rcpp::List getRasterAttributes(SpatRaster* x) {
+	Rcpp::List lst;
+	if (x->nlyr() > 0) {
+		SpatDataFrame df = x->source[0].atts[0];
+		lst = getDataFrame(&df);
+	}
 	return lst;
 }
 
@@ -164,7 +173,7 @@ RCPP_MODULE(spat){
 		.method("distance_other", (SpatDataFrame (SpatVector::*)(SpatVector, bool))( &SpatVector::distance))
 //		.method("distance_other2", (SpatDataFrame (SpatVector::*)(SpatVector))( &SpatVector::distance2))
 		.method("extent", &SpatVector::getExtent, "extent")		
-		.method("getDF", &getAttributes, "get attributes")
+		.method("getDF", &getVectorAttributes, "get attributes")
 		.method("getGeometry", &getGeometry, "getGeometry")
 		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
 		.method("length", &SpatVector::length, "length")		
@@ -216,6 +225,7 @@ RCPP_MODULE(spat){
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		.property("crs", &SpatRaster::getCRS, &SpatRaster::setCRS )
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
+		.method("getRasterAtt", &getRasterAttributes, "get attributes")
 			
 		//.field_readonly("hasRAT", &SpatRaster::hasRAT )
 		//.field_readonly("hasCT", &SpatRaster::hasCT )
