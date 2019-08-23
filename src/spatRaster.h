@@ -250,7 +250,7 @@ class SpatRaster {
 
 		void createCategories(unsigned layer);
 		std::vector<bool> hasCategories();
-		void setCategories(unsigned layer, std::vector<std::string> labs);
+		void setCategories(unsigned layer, std::vector<std::string> labs, std::vector<double> levs);
 		std::vector<SpatCategories> getCategories();
 		SpatCategories getLayerCategories(unsigned layer);
 

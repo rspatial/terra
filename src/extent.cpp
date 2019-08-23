@@ -134,3 +134,47 @@ std::vector<double> SpatRaster::origin() {
 	return out;
 }
 
+
+
+bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
+	
+	if (ext) {
+		if (!extent.equal(x.extent, 1)) {
+			setError("extents do not match");
+			return false;
+		}
+	}
+	if (rowcol) {
+		if (! ((nrow() == x.nrow()) && (ncol() == x.ncol())) ) {
+			setError("number of rows and/or columns do not match");
+			return false;
+		}
+	}
+	if (res) {
+		if (! ((is_equal_relative(x.xres(), xres(), 0.0001)) & (about_equal(x.yres(), yres(), 0.0001)))) {
+			setError("resolution does not match");
+			return false;
+		}
+	}
+
+	if (lyrs) {
+		if (!(nlyr() == x.nlyr())) {
+			setError("number of layers does not match");
+			return false;
+		}
+	}
+
+	if (crs) {
+		if (!(getCRS() == x.getCRS())) {
+			if (warncrs) {
+				addWarning("CRS do not match");
+			} else {
+				setError("CRS do not match");
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+

@@ -62,12 +62,24 @@ std::vector<bool> SpatRaster::hasCategories() {
 
 
 
-void SpatRaster::setCategories(unsigned layer, std::vector<std::string> labs) {
+void SpatRaster::setCategories(unsigned layer, std::vector<std::string> labs, std::vector<double> levs) {
     std::vector<unsigned> sl = findLyr(layer);
-	if (labs.size() == source[sl[0]].cats[sl[1]].levels.size()) {
-		source[sl[0]].cats[sl[1]].labels = labs;
+
+	if (levs.size() == 0) {
+		if (labs.size() == source[sl[0]].cats[sl[1]].levels.size()) {
+			source[sl[0]].cats[sl[1]].labels = labs;
+		} else {
+			setError("length of labels does not match number of categories");
+		} 
 	} else {
-		setError("length of labels does not match number of categories");
+		if (source[sl[0]].cats.size() < sl[1]) {
+			source[sl[0]].cats.resize(sl[1]);
+		}
+		SpatCategories s;
+		s.labels = labs;
+		s.levels = levs;
+		source[sl[0]].cats[sl[1]] = s;
+		source[sl[0]].hasCategories[sl[1]] = true;
 	}
 }
 

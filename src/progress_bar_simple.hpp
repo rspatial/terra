@@ -34,10 +34,9 @@ class SimpleProgressBar: public ProgressBar{
 //      REprintf("0%%   10   20   30   40   50   60   70   80   90   100%%\n");
 //      REprintf("[----|----|----|----|----|----|----|----|----|----|\n");
 //      REprintf("[----|----|----|----|----|----|----|----|----|----|");
-      REprintf("=====|====|====|====|====|====|====|====|====|====");
-	  REprintf("\r");
-      flush_console();
-
+		REprintf("=====|====|====|====|====|====|====|====|====|====");
+		REprintf("\r");
+		flush_console();
     }
 
     // will finalize display if needed

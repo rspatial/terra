@@ -114,7 +114,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col=grDevices::topo.colors(25), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext = NULL, ...)  {
+	function(x, y, col=topo.colors(25), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext = NULL, ...)  {
 		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 		uv <- unique(v)
 		if (is.null(col)) {
@@ -130,7 +130,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		plot(x, col=cols, ...)
 		n <- ifelse(is.null(leg.ext), 20, length(uv))
 		leg.ext <- .legCoords(x, ...)
-		terra:::.factorLegend(leg.ext, 1:length(uv), ucols, uv, n)
+		.factorLegend(leg.ext, 1:length(uv), ucols, uv, n)
 	}
 )
 

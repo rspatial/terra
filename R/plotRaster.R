@@ -98,10 +98,14 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 		if (fact) {
+			levs <- lvs$levels
 			labs <- lvs$labels
+			i <- levs %in% uvals
+			levs <- levs[i]
+			labs <- labs[i]
 			n <- ifelse(leg.ext.set, length(labs), 20)
 			col <- .sampleColors(col, length(labs))
-			.factorLegend(leg.ext, lvs$levels, col, labs, n)
+			.factorLegend(leg.ext, levs, col, labs, n)
 		} else {			
 			if (length(uvals) < 10) {
 				col <- .sampleColors(col, length(uvals))

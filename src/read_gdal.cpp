@@ -84,18 +84,32 @@ SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
 
 
 
+SpatCategories GetCategories(char **pCat) {
+	size_t n = CSLCount(pCat);
+	std::vector<std::string> nms(n);
+	for (size_t i = 0; i<n; i++) {
+		const char *field = CSLGetField(pCat, i);
+		nms[i] = field;
+	}
+	SpatCategories scat;
+	scat.labels = nms;
+	scat.levels.resize(nms.size());
+	std::iota(scat.levels.begin(), scat.levels.end(), 0); 
+	return(scat);
+}
+
+
 std::string basename_sds(std::string f) {
-  const size_t i = f.find_last_of("\\/");
-  if (std::string::npos != i) {
-    f.erase(0, i + 1);
-  }
-  f = std::regex_replace(f, std::regex(".hdf"), "");
-  f = std::regex_replace(f, std::regex("\""), "");
-  return f;
+	const size_t i = f.find_last_of("\\/");
+	if (std::string::npos != i) {
+		f.erase(0, i + 1);
+	}
+	f = std::regex_replace(f, std::regex(".hdf"), "");
+	f = std::regex_replace(f, std::regex("\""), "");
+	return f;
 }
 
 bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> sds) {
-
 
 	std::vector<std::string> sd; //, nms;
 	std::string delim = "NAME=";
@@ -283,6 +297,16 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 			s.atts[i] = df;
 		} else {
 			s.hasAttributes.push_back(false);
+		}
+
+		char **cat = poBand->GetCategoryNames();
+		if( cat != NULL )	{  
+			s.hasCategories.push_back(true);
+			SpatCategories scat = GetCategories(cat);
+			s.cats.resize(i+1);
+			s.cats[i] = scat;
+		} else {
+			s.hasCategories.push_back(false);
 		}
 
 		std::string bandname = poBand->GetDescription();

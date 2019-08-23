@@ -134,7 +134,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	bs = getBlockSize(opt.get_blocksizemp(), opt.get_steps());
 
     #ifdef useRcpp
-	pbar = new Progress(bs.n, opt.do_progress(bs.n));
+	pbar = new Progress(bs.n+2, opt.do_progress(bs.n));
+	pbar->increment();
 	#endif
 	return true;
 }
@@ -222,7 +223,12 @@ bool SpatRaster::writeStop(){
 	}
 
 #ifdef useRcpp
-	//pbar->cleanup();
+	if (Progress::check_abort()) {
+		pbar->cleanup();
+		setError("aborted");
+		return(false);
+	}
+	pbar->increment();
 	delete pbar;
 #endif
 
