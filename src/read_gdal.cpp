@@ -272,7 +272,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		if( rat != NULL )	{  
 			s.hasCategories.push_back(true);
 			SpatDataFrame df = GetRATdf(rat);
-			s.atts.push_back(df);
+			s.setAttributes(i, df);
 		} else {
 			s.hasCategories.push_back(false);
 		}
