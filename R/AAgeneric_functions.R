@@ -13,6 +13,9 @@ if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) stan
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}	
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
+
+if (!isGeneric("rats")) { setGeneric("rats", function(x, ...) standardGeneric("rats")) }
+
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}	
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	

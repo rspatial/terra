@@ -1,4 +1,28 @@
 
+
+
+setMethod ("rats" , "SpatRaster", 
+	function(x) {
+		att <- x@ptr$hasAttributes()
+		if (any(att)) {
+			d <- x@ptr$getAttributes()
+			d <- lapply(d, .getSpatDF)
+		} else {
+			d <- vector("list", length(att))
+		}
+		d
+	}
+)
+
+
+setRat <- function(x, layer=0, rat) {
+	stopifnot(layer > 0 & layer <= nlyr(x))
+	rat <- .makeSpatDF(rat)
+	x@ptr$setAttributes(layer, rat)
+}	
+
+	
+
 setMethod("as.factor", signature(x="SpatRaster"), 
 	function(x) {
 		stopifnot(nlyr(x) == 1)
@@ -9,7 +33,7 @@ setMethod("as.factor", signature(x="SpatRaster"),
 	}
 )
 
-setMethod('is.factor', signature(x='SpatRaster'), 
+setMethod("is.factor", signature(x="SpatRaster"), 
 	function(x) {
 		x@ptr$hasCategories()
 	}

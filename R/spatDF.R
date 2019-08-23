@@ -19,7 +19,6 @@
 
 
 .getSpatDF <- function(x) {
-	d <- do.call(cbind, x$values())
-	data.frame(d)
+	data.frame(x$values(), stringsAsFactors=FALSE)
 }
 

@@ -270,11 +270,12 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 		if( rat != NULL )	{  
-			s.hasCategories.push_back(true);
+			s.hasAttributes.push_back(true);
 			SpatDataFrame df = GetRATdf(rat);
-			s.setAttributes(i, df);
+			s.atts.resize(i+1);
+			s.atts[i] = df;
 		} else {
-			s.hasCategories.push_back(false);
+			s.hasAttributes.push_back(false);
 		}
 
 		std::string bandname = poBand->GetDescription();

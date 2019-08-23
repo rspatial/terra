@@ -4,21 +4,6 @@
 # License GPL v3
 
 
-
-.hidden <- function(pkg = "terra") {
-# helper to make hidden function starting with a dot visible. For debugging
-	x <- unclass(utils::lsf.str(envir = asNamespace(pkg), all = TRUE))
-	x <- x[grep("^\\.", x)]
-	i <- grep("._", x)
-	i <- c(i, grep("onAttach", x))
-	i <- c(i, grep("\\.\\.", x))
-	i <- c(i, grep("\\.filenames", x))
-	if (length(i) > 0) x <- x[-i]
-	x <- paste0(x, " <<- ", pkg, ":::", x)
-	for (cmd in x) eval(parse(text = cmd))
-}
-
-
 setMethod ("show" , "Rcpp_SpatCategories", 
 	function(object) {
 		print(data.frame(value=object$levels, label=object$labels))
