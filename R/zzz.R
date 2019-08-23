@@ -18,6 +18,8 @@ loadModule("spat", TRUE)
 	
 ##############################
 	.create_options()
+	x <- SpatRaster$new()
+	x$spatinit()
 }
 
 

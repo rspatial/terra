@@ -31,6 +31,13 @@
 #include "gdal_rat.h"
 
 
+void SpatRaster::spatinit() {
+    GDALAllRegister();
+    OGRRegisterAll();
+}
+
+
+
 SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
 
 	SpatDataFrame out;
@@ -139,7 +146,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
     GDALDataset *poDataset;
-    GDALAllRegister();
+    //GDALAllRegister();
 	const char* pszFilename = fname.c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 
@@ -299,7 +306,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 
 bool SpatRaster::readStartGDAL(unsigned src) {
     GDALDataset *poDataset;
-    GDALAllRegister();
+    //GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
 	poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
     if( poDataset == NULL )  {
@@ -404,7 +411,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 	std::vector<double> errout;
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
-    GDALAllRegister();
+    //GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
     if( poDataset == NULL )  {
@@ -476,7 +483,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
-    GDALAllRegister();
+    //GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
 	std::vector<double> errout;
@@ -587,7 +594,7 @@ void set_NA_so2(const std::vector<T> &lyr, double naflag, std::vector<double> &o
 std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const std::vector<unsigned> &rows, const std::vector<unsigned> &cols) {
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
-    GDALAllRegister();
+    //GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
 	std::vector<std::vector<double>> errout;
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);

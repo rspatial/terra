@@ -97,7 +97,7 @@ bool SpatVector::read(std::string fname) {
 
 	msg.success = true;
 
-    GDALAllRegister();
+    //GDALAllRegister();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
         setError("Cannot open file");

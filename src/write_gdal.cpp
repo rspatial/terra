@@ -98,7 +98,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	const char *pszDstFilename = filename.c_str();
     GDALDriver *poDriver;
     char **papszMetadata;
-	GDALAllRegister();
+	//GDALAllRegister();
 	
     poDriver = GetGDALDriverManager()->GetDriverByName(pszFormat);
     if(poDriver == NULL) {

@@ -1,6 +1,8 @@
 #include <Rcpp.h>
 #include "spatRaster.h"
 
+#include "gdal_priv.h"
+
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) { 
     BlockSize bs = r->getBlockSize(n);
@@ -85,6 +87,7 @@ RCPP_EXPOSED_CLASS(SpatVector)
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
+
 
     class_<SpatExtent>("SpatExtent")
 		.constructor()
@@ -218,6 +221,8 @@ RCPP_MODULE(spat){
 	    //.constructor<std::string>()
 	    .constructor<std::vector<std::string> >()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
+
+		.method("spatinit", &SpatRaster::spatinit, "init")
 		
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")

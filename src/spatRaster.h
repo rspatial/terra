@@ -218,6 +218,8 @@ class SpatRaster {
 // helper methods
 ////////////////////////////////////////////////////
 
+		void spatinit();
+
 		bool compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);

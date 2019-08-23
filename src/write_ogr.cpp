@@ -29,7 +29,7 @@ bool SpatVector::write(std::string filename, std::string format, bool overwrite)
 
     const char *pszDriverName = "ESRI Shapefile";
     GDALDriver *poDriver;
-    GDALAllRegister();
+    //GDALAllRegister();
     poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName );
     if( poDriver == NULL ) {
         setError("driver not available");
