@@ -22,7 +22,7 @@
 #include "spatMessages.h"
 
 // comment out if this is not for R (no Rcpp)
-#define useRcpp
+//#define useRcpp
 // comment out if GDAL is not available
 #define useGDAL
 // comment out if GEOS is not available

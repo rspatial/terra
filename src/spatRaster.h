@@ -358,7 +358,7 @@ class SpatRaster {
 		bool get_aggregate_dims(std::vector<unsigned> &fact, std::string &message);
 		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);
 		std::vector<std::vector<double> > get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim);
-		std::vector<double> compute_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim, std::function<double(std::vector<double>&, bool)> fun, bool narm);
+//		std::vector<double> compute_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim, std::function<double(std::vector<double>&, bool)> fun, bool narm);
 		SpatDataFrame global(std::string fun, bool narm);
 		SpatRaster gridDistance(SpatOptions &opt);
 		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions &opt);

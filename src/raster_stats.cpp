@@ -20,6 +20,7 @@
 #include <set>
 #include <cmath>
 #include <algorithm>
+#include <map>
 
 #include "vecmath.h"
 #include "math_utils.h"
@@ -27,10 +28,10 @@
 
 std::map<double, unsigned> table(std::vector<double> &v) {
 	std::map<double, unsigned> count;
-	for_each( v.begin(), v.end(), [&count]( double val ){ 
-			if(!std::isnan(val)) count[val]++; 
-		} 
-	);	
+	for_each( v.begin(), v.end(), [&count]( double val ){
+			if(!std::isnan(val)) count[val]++;
+		}
+	);
 	return count;
 }
 
@@ -38,7 +39,7 @@ std::map<double, unsigned> table(std::vector<double> &v) {
 std::map<double, unsigned> ctable(std::map<double, unsigned> &x, std::map<double, unsigned> &y) {
 	for(auto p : y) {
 		x[p.first] += p.second;
-	}	
+	}
 	return(x);
 }
 
@@ -48,7 +49,7 @@ std::vector<double> vtable(std::map<double, unsigned> &x) {
 	for( auto p : x ) {
 		out[0].push_back(p.first);
 		out[1].push_back(p.second);
-	}  
+	}
 	out[0].insert(out[0].end(), out[1].begin(), out[1].end());
 	return out[0];
 }
@@ -116,7 +117,7 @@ static inline std::vector<double> vquantile(std::vector<double> v, const std::ve
 
 	size_t pn = probs.size();
 	std::vector<double> q(pn);
-		
+
     for (size_t i = 0; i < pn; ++i) {
 		double x = probs[i] * (n-1);
 		unsigned x1 = floor(x);
@@ -125,7 +126,7 @@ static inline std::vector<double> vquantile(std::vector<double> v, const std::ve
 			q[i] = v[x1];
 		} else {
 			q[i] = interpolate(x, v[x1], v[x2], x1, x2);
-		}	
+		}
     }
     return q;
 }
@@ -143,8 +144,8 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 	if ((std::isnan(pmin)) | (std::isnan(pmax)) | (pmin < 0) | (pmax > 1)) {
 		SpatRaster out = geometry(1);
 		out.setError("intvalid probs");
-		return out;		
-	}	
+		return out;
+	}
 	SpatRaster out = geometry(probs.size());
 	out.source[0].names = double_to_string(probs, "q");
   	if (!hasValues()) { return out; }

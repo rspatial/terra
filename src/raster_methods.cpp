@@ -394,7 +394,6 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 
     SpatRaster out = geometry();
 
-try {
 	
 	std::string message = "";
 	bool success = disaggregate_dims(fact, message);
@@ -452,13 +451,7 @@ try {
 	readStop();
 	return(out);
 }
-catch (...) {
-	if (!out.hasError()) {
-		out.setError("an exception occurred");
-	}
-	return(out);
-}
-}
+
 
 
 

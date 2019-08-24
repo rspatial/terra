@@ -98,7 +98,7 @@ std::vector<unsigned> SpatRaster::get_aggregate_dims2(std::vector<unsigned> fact
 
 std::vector<std::vector<double>> SpatRaster::get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim) {
 
-// dim 0, 1, 2, are the aggregations factors dy, dx, dz  
+// dim 0, 1, 2, are the aggregations factors dy, dx, dz
 // and 3, 4, 5 are the new nrow, ncol, nlyr
 
 // adjust for chunk
@@ -155,9 +155,9 @@ std::vector<std::vector<double>> SpatRaster::get_aggregates(std::vector<double> 
 }
 
 
-std::vector<double> SpatRaster::compute_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim, std::function<double(std::vector<double>&, bool)> fun, bool narm) {
+std::vector<double> compute_aggregates(std::vector<double> &in, size_t nr, size_t nc, size_t nl, std::vector<unsigned> dim, std::function<double(std::vector<double>&, bool)> fun, bool narm) {
 
-// dim 0, 1, 2, are the aggregations factors dy, dx, dz  
+// dim 0, 1, 2, are the aggregations factors dy, dx, dz
 // and 3, 4, 5 are the new nrow, ncol, nlyr
 
 	size_t dy = dim[0], dx = dim[1], dz = dim[2];
@@ -180,9 +180,9 @@ std::vector<double> SpatRaster::compute_aggregates(std::vector<double> &in, size
 
 	// output: each row is a block
 	std::vector<double> out(nblocks, NAN);
-	
-    size_t nl = nlyr();
-    size_t nc = ncol();
+
+//    size_t nl = nlyr();
+//    size_t nc = ncol();
     size_t ncells = nr * nc;
     size_t lstart, rstart, cstart, lmax, rmax, cmax, f, lj, cell;
 
@@ -207,7 +207,7 @@ std::vector<double> SpatRaster::compute_aggregates(std::vector<double> &in, size
 				}
 			}
 		}
-		out[b] = fun(a, narm);		
+		out[b] = fun(a, narm);
 	}
 	return(out);
 }
@@ -238,10 +238,10 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 
 	std::string message = "";
 	bool success = get_aggregate_dims(fact, message);
-	
-// fact 1, 2, 3, are the aggregations factors dy, dx, dz  
+
+// fact 1, 2, 3, are the aggregations factors dy, dx, dz
 // and 4, 5, 6 are the new nrow, ncol, nlyr
-	
+
 	if (!success) {
 		SpatRaster er = geometry();
 		er.setError(message);
@@ -263,10 +263,10 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	std::function<double(std::vector<double>&, bool)> agFun = getFun(fun);
 
 	unsigned outnc = out.ncol();
-	
+
 	BlockSize bs = getBlockSize(4);
 	bs.n = floor(nrow() / fact[0]);
-	bs.nrows.resize(bs.n, fact[0]);	
+	bs.nrows.resize(bs.n, fact[0]);
 	bs.row.resize(bs.n);
 	for (size_t i =0; i<bs.n; i++) {
 		bs.row[i] = i * fact[0];
@@ -277,7 +277,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		bs.nrows.push_back(std::min(bs.nrows[bs.n], nrow()-lastrow));
 		bs.n += 1;
 	}
-	
+
 	opt.steps = bs.n;
 	if (!out.writeStart(opt)) { return out; }
 
@@ -285,7 +285,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	readStart();
 	for (size_t i = 0; i < bs.n; i++) {
         std::vector<double> vin = readValues(bs.row[i], bs.nrows[i], 0, nc);
-		std::vector<double> v  = compute_aggregates(vin, bs.nrows[i], fact, agFun, narm);
+		std::vector<double> v  = compute_aggregates(vin, bs.nrows[i], nc, nlyr(), fact, agFun, narm);
 		if (!out.writeValues(v, i, 1, 0, outnc)) return out;
 	}
 	out.writeStop();
