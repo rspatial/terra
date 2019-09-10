@@ -175,6 +175,7 @@ setMethod("project", signature(x="SpatRaster"),
 	function(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename, overwrite, wopt)
 		if (!is.character(crs)) {
+			warning("crs should be a character value")
 			crs <- as.character(crs(crs))
 		}
 		x@ptr <- x@ptr$project(crs, method, opt)
