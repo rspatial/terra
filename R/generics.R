@@ -175,7 +175,7 @@ setMethod("project", signature(x="SpatRaster"),
 	function(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename, overwrite, wopt)
 		if (!is.character(crs)) {
-			crs <- crs(x)
+			crs <- as.character(crs(crs))
 		}
 		x@ptr <- x@ptr$project(crs, method, opt)
 		show_messages(x, "project")

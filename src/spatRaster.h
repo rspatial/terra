@@ -397,7 +397,7 @@ class SpatRaster {
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
 		std::vector<std::vector<double>> unique(bool bylayer);
-		SpatRaster project(std::string crs, std::string method, SpatOptions &opt);
+		SpatRaster project(std::string newcrs, std::string method, SpatOptions &opt);
 		SpatRaster warp(SpatRaster x, std::string method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm);
 
