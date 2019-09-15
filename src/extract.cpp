@@ -312,7 +312,8 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
             g = v.getGeom(i);
             rc = r.crop(g.extent, "out", opt);
             p.setGeom(g);
-            rcr = rc.rasterize(p, NAN, opt); // rather have a method that returns the cell numbers directly?
+			std::vector<double> feats(p.size(), 1) ;
+            rcr = rc.rasterize(p, feats, NAN, false, opt); // rather have a method that returns the cell numbers directly?
             pts = rcr.as_points(false, true);
             SpatDataFrame vd = pts.getGeometryDF();
             std::vector<double> x = vd.getD(0);

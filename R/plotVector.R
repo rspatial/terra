@@ -20,17 +20,20 @@
 .plotPolygons <- function(x, cols, ...) {
 	g <- geom(x)
 	g <- split(g, g[,1])
-	g <- lapply(g, function(x) split(x, x[,2]))
+	g <- lapply(g, function(y) split(y, y[,2]))
 	for (i in 1:length(g)) {
-		a <- g[[i]][[1]]
-		if (any(a[,5] > 0)) {
-			a <- split(a,a[,5]) 
-			a <- lapply(a, function(i) rbind(i, NA))
-			a <- do.call(rbind, a )
-			a <- a[-nrow(a), ]
-			# g[[i]][[1]] <- a 
+		gg <- g[[i]]
+		for (j in 1:length(gg)) {
+			a <- gg[[j]]
+			if (any(a[,5] > 0)) {
+				a <- split(a, a[,5]) 
+				a <- lapply(a, function(i) rbind(i, NA))
+				a <- do.call(rbind, a )
+				a <- a[-nrow(a), ]
+				# g[[i]][[1]] <- a 
+			}
+			graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", ...)
 		}
-		graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", ...)
 	}
 }
 

@@ -259,13 +259,16 @@ setAs("Spatial", "SpatVector",
 	function(from) {
 		g <- geom(from)
 		colnames(g)[1] <- "id"
-		if ("cump" %in% colnames(g)) {
-			g <- g[,c(1,2,5,6,4)]
-		}
 		if (inherits(from, "SpatialPolygons")) {
 			vtype <- "polygons"
+			if ("cump" %in% colnames(g)) {
+				g <- g[,c(1,2,5,6,4)]
+			}
 		} else if (inherits(from, "SpatialLines")) {
 			vtype <- "lines"
+			if ("cump" %in% colnames(g)) {
+				g <- g[,colnames(g) != "cump"]
+			}
 		} else {
 			vtype <- "points"
 			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3])

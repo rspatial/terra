@@ -44,8 +44,6 @@ bool file_exists(const std::string& name) {
 }
 
 
-
-
 bool path_exists(std::string path) {
 	struct stat info;
 	stat(path.c_str(), &info );
@@ -83,8 +81,7 @@ SpatMessages can_write(std::string filename, bool overwrite) {
 			msg.setError("file exists");
 			return msg;
 		}
-	}
-	if (!canWrite(filename)) {
+	} else if (!canWrite(filename)) {
 		std::string path = get_path(filename);
 		if (!path_exists(path)) {
 			msg.setError("path does not exist");			

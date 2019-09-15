@@ -203,9 +203,15 @@ setMethod("quantile", signature(x="SpatRaster"),
 )
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, background=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, y, field=1:nrow(x), background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite, wopt)
-		y@ptr <- y@ptr$rasterize(x@ptr, background[1], opt)
+		if (is.character(field)) {
+			field <- x[[field, drop=TRUE]]
+			if (!is.numeric(field)) {
+				stop("this is not a numerical variable")
+			}
+		}
+		y@ptr <- y@ptr$rasterize(x@ptr, field, background[1], update[1], opt)
 		show_messages(y, "rasterize")
 	}
 )

@@ -46,7 +46,8 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 	std::string gtype = p.type();
 	if (gtype != "points") {
 		SpatOptions ops;
-		SpatRaster x = rasterize(p, NAN, ops);
+		std::vector<double> feats(p.size(), 1) ;
+		SpatRaster x = rasterize(p, feats, NAN, false, ops);
 		if (gtype == "polygons") {
 			std::string etype = "inner";
 			x = x.edges(false, etype, 8, ops);

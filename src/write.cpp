@@ -57,12 +57,11 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		#endif
 		filename = tempFile(opt.get_tempdir(), extension);
 //	} else if (file_exists(filename)) {
-	} else {
-		SpatMessages m = can_write(filename, overwrite);
-		if (m.has_error) {
-			out.msg = m;
-			return out;
-		}
+	} 
+	SpatMessages m = can_write(filename, overwrite);
+	if (m.has_error) {
+		out.msg = m;
+		return out;
 	}
 
 	std::string ext = getFileExt(filename);
@@ -71,12 +70,12 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	if (ext == ".grd") {
 		std::string bandorder = opt.get_bandorder();
-	    out = writeRasterBinary(filename, datatype, bandorder, overwrite);
+	    out = writeRasterBinary(filename, datatype, bandorder, true);
 		
 	} else {
 		std::string format = opt.get_filetype();
         #ifdef useGDAL
-        out = writeRasterGDAL(filename, format, datatype, overwrite, opt);
+        out = writeRasterGDAL(filename, format, datatype, true, opt);
 		#else
 		setError("GDAL is not available");
 	    return false;

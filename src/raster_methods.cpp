@@ -152,7 +152,8 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
 	std::string filename = opt.get_filename();
 	opt.set_filename("");	
-	SpatRaster m = rasterize(x, 0, opt);
+	std::vector<double> feats(x.size(), 1) ;
+	SpatRaster m = rasterize(x, feats, 0, false, opt);
 	opt.set_filename(filename);
 	SpatRaster out = mask(m, inverse, 0, updatevalue, opt);
 	return(out);
