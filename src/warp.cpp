@@ -11,7 +11,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 	unsigned nl = nlyr();
 	SpatRaster out = x.geometry(nl);
 	out.setNames(getNames());
-	std::vector<std::string> f {"bilinear", "neighbor"};
+	std::vector<std::string> f {"bilinear", "ngb"};
 	if (std::find(f.begin(), f.end(), method) == f.end()) {
 		out.setError("unknown warp method");
 		return out;
