@@ -25,7 +25,7 @@ setClass("PackedSpatRaster",
 
 
 .packVector <- function(x) {
-	vd <- new("PackedSpatVector")
+	vd <- methods::new("PackedSpatVector")
 	vd@type <- geomtype(x)
 	vd@crs <- as.character(crs(x))
 	stopifnot(vd@type %in% c("points", "lines", "polygons"))
@@ -41,7 +41,7 @@ setClass("PackedSpatRaster",
 setMethod("pack", signature(x="Spatial"), 
 	function(x, ...) {
 		pv <- .packVector(x)
-		if (.hasSlot(x, "data")) {
+		if (methods::.hasSlot(x, "data")) {
 			pv@attributes <- x@data	
 		}
 		pv
@@ -73,7 +73,7 @@ setMethod("vect", signature(x="PackedSpatVector"),
 		reps <- diff(c(x@index[,n], nrow(x@coordinates)+1))
 		i <- rep(1:nrow(x@index), reps)
 		if (n == 3) { 
-			p@ptr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nr))		
+			p@ptr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], rep(0, nrow(x@coordinates)))		
 		} else {
 			p@ptr$setGeometry(x@type, x@index[i,1], x@index[i,2], x@coordinates[,1], x@coordinates[,2], x@index[i,3])
 		} 

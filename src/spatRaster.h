@@ -337,6 +337,9 @@ class SpatRaster {
 		SpatVector as_points(bool values, bool narm);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
+		std::vector<std::vector<double>> bilinearValues(std::vector<double> x, std::vector<double> y);
+
+
 		SpatRaster buffer(double d, SpatOptions &opt);
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions &opt);
 		SpatRaster cover(SpatRaster x, double value, SpatOptions &opt);
@@ -387,6 +390,9 @@ class SpatRaster {
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
 		SpatRaster sampleRegular(unsigned size);
+		
+		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
+	
 		SpatRaster collapse(SpatRaster x, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);

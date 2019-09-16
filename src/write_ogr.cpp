@@ -17,7 +17,7 @@
 
 #include "spatVector.h"
 
-//#ifdef useGDAL
+#ifdef useGDAL
 
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
@@ -33,25 +33,25 @@ bool SpatVector::write(std::string filename, std::string format, bool overwrite)
     poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName );
     if( poDriver == NULL ) {
         setError("driver not available");
-		return false; 
+		return false;
     }
     GDALDataset *poDS;
     poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
     if( poDS == NULL ) {
         setError("cannot write file");
-		return false; 
+		return false;
     }
     OGRLayer *poLayer;
     poLayer = poDS->CreateLayer(basename(filename).c_str(), NULL, wkbPoint, NULL );
     if( poLayer == NULL ) {
         setError("Layer creation failed");
-		return false; 
+		return false;
     }
     OGRFieldDefn oField( "Name", OFTString );
     oField.SetWidth(32);
     if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
         setError("Field creation failed");
-		return false; 
+		return false;
     }
     double x, y;
     char szName[33];
@@ -65,7 +65,7 @@ bool SpatVector::write(std::string filename, std::string format, bool overwrite)
         poFeature->SetGeometry( &pt );
         if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
 			setError("Failed to create feature");
-			return false; 			
+			return false;
         }
         OGRFeature::DestroyFeature( poFeature );
     }
@@ -74,4 +74,4 @@ bool SpatVector::write(std::string filename, std::string format, bool overwrite)
 }
 
 
-//#endif
+#endif

@@ -15,26 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+
 #include "ogr_spatialref.h"
 #include <vector>
 #include "spatMessages.h"
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
-	
+
 	SpatMessages m;
-	
+
 	OGRSpatialReference sourceCRS, targetCRS;
-	OGRErr erro = sourceCRS.importFromProj4(&fromCRS[0]); 
-	if (erro == 4) { 
+	OGRErr erro = sourceCRS.importFromProj4(&fromCRS[0]);
+	if (erro == 4) {
 		m.setError("crs is not valid");
 		return(m);
 	}
-	erro = targetCRS.importFromProj4(&toCRS[0]); 
-	if (erro == 4) { 
+	erro = targetCRS.importFromProj4(&toCRS[0]);
+	if (erro == 4) {
 		m.setError("crs is not valid");
 		return(m);
 	}
-	
+
 	OGRCoordinateTransformation *poCT;
 	poCT = OGRCreateCoordinateTransformation(&sourceCRS, &targetCRS );
 
@@ -42,7 +43,7 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 		m.setError( "Transformation failed" );
 		return (m);
 	}
-	
+
 	unsigned failcount = 0;
 	for (size_t i=0; i < x.size(); i++) {
 		if( !poCT->Transform( 1, &x[i], &y[i] ) ) {

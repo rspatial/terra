@@ -56,7 +56,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 			stopifnot(NCOL(value) == 2)
 			x@ptr$setCategories(0, value[,1], value[,2])
 		} else if (is.vector(value)){
-			x@ptr$setCategories(0, 1:length(value), as.character(value))		
+			x@ptr$setCategories(0, as.character(value), 0:(length(value)-1))		
 		}
 		x <- show_messages(x)
 	}

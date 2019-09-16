@@ -149,7 +149,7 @@ std::vector<unsigned> SpatRaster::colFromX(std::vector<double> &x) {
 
 	for (size_t i = 0; i < size; i++) {
 		if (x[i] == xmax) {
-			result[i] = ncol() ;
+			result[i] = ncol()-1;
 		} else if (x[i] >= xmin || x[i] < xmax ) {
 			result[i] =  trunc((x[i] - xmin) / xr);
 		}
@@ -175,7 +175,7 @@ std::vector<unsigned> SpatRaster::rowFromY(std::vector<double> &y) {
 
 	for (size_t i = 0; i < ysize; i++) {
 		if (y[i] == ymin) {
-			result[i] = nrow() ;
+			result[i] = nrow()-1;
 		} else if (y[i] > ymin || y[i] <= ymax ) {
 			result[i] = trunc((ymax - y[i]) / yr);
 		}

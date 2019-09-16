@@ -37,7 +37,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
 \S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
-\S4method{plot}{SpatVector,character}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
+\S4method{plot}{SpatVector,character}(x, y, col=col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext=NULL, ...)
 
 \S4method{plot}{SpatExtent,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, ...)
 

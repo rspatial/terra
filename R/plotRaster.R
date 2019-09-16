@@ -9,7 +9,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			return()
 		}
 		if (missing(col)) {
-			col <- rev(grDevices::terrain.colors(25))
+			col <- rev(grDevices::terrain.colors(100))
 		}
 		if (add) {
 			image(x, maxcell=maxcell, col=col, add=TRUE, ...) 

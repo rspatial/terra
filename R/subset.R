@@ -37,7 +37,6 @@ function(x, i, j, ... ,drop=TRUE) {
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	cat("hi there\n")
 	subset(x, which(i), ...)
 })
 

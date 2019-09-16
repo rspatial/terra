@@ -303,6 +303,9 @@ RCPP_MODULE(spat){
 		.method("as_points", &SpatRaster::as_points, "as_points")
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("atan2", &SpatRaster::atan_2, "atan2")
+
+		.method("bilinearValues", &SpatRaster::bilinearValues, "bilin")
+
 		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("buffer", &SpatRaster::buffer, "buffer")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
@@ -339,6 +342,7 @@ RCPP_MODULE(spat){
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	
 		.method("shift", &SpatRaster::shift, "shift")
+		.method("slope", &SpatRaster::slope, "slope")
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
 		.method("transpose", &SpatRaster::transpose, "transpose")

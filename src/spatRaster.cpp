@@ -79,7 +79,7 @@ SpatRaster::SpatRaster() {
 
 	s.hasRange = { false };
 	s.hasValues = false;
-	s.layers.resize(1, 0); 
+	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.names = {"lyr.1"};
 	s.crs = "+proj=longlat +datum=WGS84";
@@ -107,8 +107,8 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.crs =_crs;
-	for (unsigned i=0; i < rcl[2]; i++) { 
-		s.names.push_back("lyr." + std::to_string(i+1)) ; 
+	for (unsigned i=0; i < rcl[2]; i++) {
+		s.names.push_back("lyr." + std::to_string(i+1)) ;
 	}
 
 	setSource(s);
@@ -130,8 +130,8 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.crs=_crs;
-	for (unsigned i=0; i < _nlyr; i++) {	
-		s.names.push_back("lyr." + std::to_string(i+1)) ; 
+	for (unsigned i=0; i < _nlyr; i++) {
+		s.names.push_back("lyr." + std::to_string(i+1)) ;
 	}
 	setSource(s);
 }
@@ -172,10 +172,10 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	if (keepnlyr) {
 		nms = getNames();
 	} else {
-		for (size_t i=0; i < s.nlyr; i++) { 
-			nms.push_back("lyr" + std::to_string(i+1)); 
+		for (size_t i=0; i < s.nlyr; i++) {
+			nms.push_back("lyr" + std::to_string(i+1));
 		}
-	}	
+	}
 	s.names = nms;
 	SpatRaster out;
 	out.setSource(s);
@@ -218,7 +218,7 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 	unsigned nl = nlyr();
 	std::vector<unsigned> rcl = {nr, nc, nl};
 	std::vector<double> ext = {e.xmin, xmax, e.ymin, ymax};
-	
+
 	return SpatRaster(rcl, ext, crs);
 }
 
@@ -294,7 +294,13 @@ bool SpatRaster::could_be_lonlat() {
 
 
 bool SpatRaster::is_global_lonlat() {
-	SpatExtent e = getExtent();
-	return e.is_global_lonlat(getCRS());
+	if (could_be_lonlat()) {
+		SpatExtent e = getExtent();
+		double halfres = xres()/ 180;
+		if (((e.xmin - halfres) <= -180) && ((e.xmax + halfres) >= 180)) {
+			return true;
+		}
+	}
+	return false;
 };
 

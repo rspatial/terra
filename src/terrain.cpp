@@ -17,7 +17,7 @@
 
 /* Robert Hijmans, October 2011 */
 
-/*
+
 #include "SpatRaster.h"
 #include "math_utils.h"
 #include "distance.h"
@@ -30,6 +30,32 @@
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
+
+
+
+double dmod(double x, double n) {
+	return(x - n * floor(x/n));
+}
+
+
+double distPlane(double x1, double y1, double x2, double y2) {
+	return( sqrt(pow((x2-x1),2) + pow((y2-y1), 2)) );
+}
+
+double distHav(double lon1, double lat1, double lon2, double lat2) {
+	double r = 6378137;
+	double dLat, dLon, a;
+	lon1 = toRad(lon1);
+	lon2 = toRad(lon2);
+	lat1 = toRad(lat1);
+	lat2 = toRad(lat2);
+
+	dLat = lat2-lat1;
+	dLon = lon2-lon1;
+	a = sin(dLat/2.) * sin(dLat/2.) + cos(lat1) * cos(lat2) * sin(dLon/2.) * sin(dLon/2.);
+	return 2. * atan2(sqrt(a), sqrt(1.-a)) * r;
+}
+
 
 
 double TRI (std::vector<double> v) {
@@ -75,6 +101,144 @@ double roughness (std::vector<double> v) {
 }
 
 
+
+std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> gy) {
+	size_t n = nrow * ncol;
+	
+	std::vector<double> ddx;
+	if (geo) {
+		ddx.resize(nrow);	
+		for (size_t i=0; i<nrow; i++) {
+			ddx[i] = distHav(-dx, gy[i], dx, gy[i]) / 2 ;
+		}
+	} 
+
+	double zy, zx; 
+	std::vector<double> val(n);
+
+	
+	if (ngb == 4) {
+		if (geo) {
+			int q;
+			double xwi[2] = {-1,1};
+			double xw[2] = {0,0};
+			double yw[2] = {-1,1};
+
+			for (size_t i=0; i<2; i++) {
+				yw[i] = yw[i] / (2 * dy);
+			}			
+			for (size_t i = ncol; i < (ncol * (nrow-1)-1); i++) {
+				if (i % ncol == 0) {
+					q = i / ncol;
+					for (size_t k=0; k<2; k++) {
+						xw[k] = xwi[k] / (-2 * ddx[q]);
+					}
+				}
+				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
+				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
+				val[i] = sqrt( pow(zy, 2) + pow(zx, 2) ) ;
+			}
+		} else {
+			
+			double xw[2] = {-1,1};
+			double yw[2] = {-1,1};
+			for (size_t i=0; i<2; i++) {
+				xw[i] = xw[i] / (-2 * dx);
+				yw[i] = yw[i] / (2 * dy);
+			}
+			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
+				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
+				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
+				val[i] = sqrt( pow(zy, 2) + pow(zx, 2)  );
+			}
+		}
+	} else {
+		
+		if (geo) {
+			int q;
+			double xwi[6] = {-1,-2,-1,1,2,1};
+			double xw[6] = {0,0,0,0,0,0};
+			double yw[6] = {-1,1,-2,2,-1,1};
+			
+			for (size_t i=0; i<6; i++) {
+				yw[i] = yw[i] / (8 * dy);
+			}
+						
+			for (size_t i = ncol; i < (ncol * (nrow-1)-1); i++) {
+				if (i % ncol == 0) {
+					q = i / ncol;
+					for (size_t k=0; k<6; k++) {
+						xw[k] = xwi[k] / (8 * ddx[q]);
+					}
+				}
+				zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
+						+ d[i+1-ncol] * xw[3] + d[i+1] * xw[4] + d[i+1+ncol] * xw[5];
+				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
+						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
+				val[i] = sqrt( pow(zy, 2) + pow(zx, 2)  );
+								
+			}
+			
+		} else {
+		
+			double xw[6] = {-1,-2,-1,1,2,1};
+			double yw[6] = {-1,1,-2,2,-1,1};
+			for (size_t i=0; i<6; i++) {
+				xw[i] = xw[i] / (-8 * dx);
+				yw[i] = yw[i] / (8 * dy);
+			}
+			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
+				zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
+						+ d[i+1-ncol] * xw[3] + d[i+1] * xw[4] + d[i+1+ncol] * xw[5];
+				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
+						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
+				val[i] = sqrt( pow(zy, 2) + pow(zx, 2) );
+			}
+		}
+	} 	
+				
+	return val;
+}
+
+
+void to_degrees(std::vector<double>& x) { 
+	double adj = 180 / M_PI;
+	for (double& d : x) d = atan(d)*adj;
+}
+
+void to_radians(std::vector<double>& x) { 
+	for (double& d : x) d = atan(d);
+}
+
+SpatRaster SpatRaster::slope(unsigned neighbors, bool degrees, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (nlyr() > 1) {
+		out.setError("provide a single layer object");
+		return out;
+	}
+	std::vector<double> d = getValues();
+	std::vector<double> y;
+	bool lonlat = could_be_lonlat();
+	double yr = yres();
+	if (lonlat) {
+		std::vector<unsigned> rows(nrow());
+		std::iota(rows.begin(), rows.end(), 0);
+		y = yFromRow(rows);
+		yr = distHav(0, 0, 0, yr);
+	}
+	std::vector<double> val = do_slope(d, neighbors, nrow(), ncol(), xres(), yr, lonlat, y);
+	if (degrees) { 
+		to_degrees(val);
+	} else {
+		to_radians(val);
+	}
+	out.setValues(val);
+	return out; 
+}
+
+
+/*
 std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double> > &m, std::vector<std::vector<bool> > f, std::string option) {
 
 	int nrows = m.size();
@@ -220,9 +384,9 @@ std::vector<std::vector<double> > slope4plane(std::vector<std::vector<double> > 
 
 	return(v);
 }
-*/
 
-/*
+
+
 
 SpatRaster SpatRaster::terrain(std::string option, std::string unit, SpatOptions &opt) {
 
@@ -300,5 +464,5 @@ SpatRaster SpatRaster::terrain(std::string option, std::string unit, SpatOptions
 	return out;
 }
 
-
 */
+

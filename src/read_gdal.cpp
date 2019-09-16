@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+
 #include <algorithm>
 #include <stdint.h>
 #include <regex>
@@ -43,9 +44,9 @@ SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
 	SpatDataFrame out;
 /*
 	const char *GFU_type_string[] = {"GFT_Integer", "GFT_Real","GFT_String"};
-	const char *GFU_usage_string[] = {"GFU_Generic", "GFU_PixelCount", "GFU_Name", "GFU_Min", 
-		"GFU_Max", "GFU_MinMax", "GFU_Red", "GFU_Green", "GFU_Blue", "GFU_Alpha", "GFU_RedMin", 
-		"GFU_GreenMin", "GFU_BlueMin", "GFU_AlphaMin", "GFU_RedMax", "GFU_GreenMax", "GFU_BlueMax", 
+	const char *GFU_usage_string[] = {"GFU_Generic", "GFU_PixelCount", "GFU_Name", "GFU_Min",
+		"GFU_Max", "GFU_MinMax", "GFU_Red", "GFU_Green", "GFU_Blue", "GFU_Alpha", "GFU_RedMin",
+		"GFU_GreenMin", "GFU_BlueMin", "GFU_AlphaMin", "GFU_RedMax", "GFU_GreenMax", "GFU_BlueMax",
 		"GFU_AlphaMax", "GFU_MaxCount"};
 	std::vector<std::string> GFT_type;
 	std::vector<std::string> GFT_usage;
@@ -77,7 +78,7 @@ SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
 				d[j] = (std::string) pRAT->GetValueAsString(j, i);
 			}
 			out.add_column(d, name);
-		} 
+		}
 	}
 	return(out);
 }
@@ -94,7 +95,7 @@ SpatCategories GetCategories(char **pCat) {
 	SpatCategories scat;
 	scat.labels = nms;
 	scat.levels.resize(nms.size());
-	std::iota(scat.levels.begin(), scat.levels.end(), 0); 
+	std::iota(scat.levels.begin(), scat.levels.end(), 0);
 	return(scat);
 }
 
@@ -187,8 +188,8 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 	s.nrow = poDataset->GetRasterYSize();
 	s.nlyr = nl;
 	s.nlyrfile = nl;
-	s.layers.resize(nl); 
-    std::iota(s.layers.begin(), s.layers.end(), 0);	
+	s.layers.resize(nl);
+    std::iota(s.layers.begin(), s.layers.end(), 0);
 
 	double adfGeoTransform[6];
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
@@ -230,7 +231,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 //	s.layers.resize(1);
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
-		
+
 //		source.layers[0].push_back(i+1);
 		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
 
@@ -290,7 +291,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		}
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
-		if( rat != NULL )	{  
+		if( rat != NULL )	{
 			s.hasAttributes.push_back(true);
 			SpatDataFrame df = GetRATdf(rat);
 			s.atts.resize(i+1);
@@ -300,7 +301,7 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 		}
 
 		char **cat = poBand->GetCategoryNames();
-		if( cat != NULL )	{  
+		if( cat != NULL )	{
 			s.hasCategories.push_back(true);
 			SpatCategories scat = GetCategories(cat);
 			s.cats.resize(i+1);
@@ -448,7 +449,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 	CPLErr err = CE_None;
 	for (size_t i=0; i < nl; i++) {
 		unsigned cell = ncell * i;
-		unsigned thislayer = source[src].layers[i]; 
+		unsigned thislayer = source[src].layers[i];
 		poBand = poDataset->GetRasterBand(thislayer + 1);
 		GDALDataType gdtype = poBand->GetRasterDataType();
 		double naflag = poBand->GetNoDataValue(&hasNA);
@@ -578,7 +579,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 
 
 
-template <typename T> 
+template <typename T>
 void set_NA_so2(const std::vector<T> &lyr, double naflag, std::vector<double> &out, double scale, double offset, bool haveso){
 	size_t n = lyr.size();
 	if (haveso) {
@@ -586,7 +587,7 @@ void set_NA_so2(const std::vector<T> &lyr, double naflag, std::vector<double> &o
 			T flag = naflag;
 			for (size_t j=0; j<n; j++) {
 				if (lyr[j] == flag) {
-					out[j] = NAN;			
+					out[j] = NAN;
 				} else {
 					out[j] = lyr[j] * scale + offset;
 				}
@@ -594,14 +595,14 @@ void set_NA_so2(const std::vector<T> &lyr, double naflag, std::vector<double> &o
 		} else {
 			for (size_t j=0; j<n; j++) {
 				out[j] = lyr[j] * scale + offset;
-			}	
+			}
 		}
 	} else {
 		if (!std::isnan(naflag)) {
 			T flag = naflag;
 			for (size_t j=0; j<n; j++) {
 				if (lyr[j] == flag) {
-					out[j] = NAN;			
+					out[j] = NAN;
 				} else {
 					out[j] = lyr[j];
 				}
@@ -609,7 +610,7 @@ void set_NA_so2(const std::vector<T> &lyr, double naflag, std::vector<double> &o
 		} else {
 			for (size_t j=0; j<n; j++) {
 				out[j] = lyr[j];
-			}	
+			}
 		}
 	}
 }
@@ -677,7 +678,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt16) {
-			uint16_t navalue = NA<uint16_t>::value;			
+			uint16_t navalue = NA<uint16_t>::value;
 			std::vector<uint16_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
 				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
@@ -686,7 +687,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_Int32) {
-			int32_t navalue = NA<int32_t>::value;			
+			int32_t navalue = NA<int32_t>::value;
 			std::vector<int32_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
 				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
@@ -695,7 +696,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 			}
 			set_NA_so2(lyrout, naflag, out[i], source[src].scale[i], source[src].offset[i], source[src].has_scale_offset[i]);
 		} else if (gdtype == GDT_UInt32) {
-			uint32_t navalue = NA<uint32_t>::value;			
+			uint32_t navalue = NA<uint32_t>::value;
 			std::vector<uint32_t> lyrout(n, navalue);
 			for (size_t j=0; j < n; j++) {
 				if (is_NA(cols[j]) | is_NA(rows[j])) continue;
@@ -714,5 +715,4 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 	}
 	return out;
 }
-
 

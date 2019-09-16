@@ -22,6 +22,214 @@
 #include "vecmath.h"
 
 
+
+//#include <iostream>
+
+double rowColToCell(unsigned ncols, unsigned row, unsigned col) {
+  return row * ncols + col;
+}
+
+
+double getRow(const unsigned& nrow, const double& y, const double& ymin, const double& ymax, const double& invyr) {
+  double result = NAN;
+  if (y == ymin) {
+    result = nrow-0.0000001;
+  } else if ((y > ymin) && (y <= ymax)) {
+    result = (ymax - y) * invyr;
+  }
+  return result;
+}
+
+
+double getCol(const unsigned& ncol, const double& x, const double& xmin, const double& xmax, const double& invxr) {
+    double result = NAN;
+    if (x == xmax) {
+      result = ncol-0.0000001;
+    } else if ((x >= xmin) & (x < xmax)) {
+      result = (x - xmin) * invxr;
+    }
+  return result;
+}
+
+
+std::vector<double> fourCellsFromXY (unsigned ncols, unsigned nrows, double xmin, double xmax, double ymin, double ymax,
+                                     std::vector<double> x, std::vector<double> y, bool duplicates, bool isGlobalLonLat ) {
+
+  size_t n = x.size();
+  double yres_inv = nrows / (ymax - ymin);
+  double xres_inv = ncols / (xmax - xmin);
+  std::vector<double> result(4*n, NAN);
+  unsigned maxrow = nrows-1;
+  unsigned maxcol = ncols-1;
+
+  for (size_t i = 0; i < n; i++) {
+
+    double row = getRow(nrows, y[i], ymin, ymax, yres_inv);
+    double col = getCol(ncols, x[i], xmin, xmax, xres_inv);
+//    std::cout << row << " " << col << "\n";
+    if (std::isnan(row) || std::isnan(col)) {
+      continue;
+    }
+    //double row = (ymax - y[i]) * yres_inv;
+    //double col = (x[i] - xmin) * xres_inv;
+
+    double roundRow = floor(row);
+    double roundCol = floor(col);
+
+    if (roundRow < 0 || roundRow > maxrow || roundCol < 0 || roundCol > maxcol) {
+      continue;
+    }
+
+    // roundRow and roundCol are now the nearest row/col to x/y.
+    // That gives us one corner. We will find the other corner by starting
+    // at roundRow/roundCol and moving in the direction of row/col, stopping
+    // at the next integral values.
+
+    // >0 if row is greater than the nearest round row, 0 if equal
+    double vertDir = row - roundRow  - 0.5;
+    // >0 if col is greater than the nearest round col, 0 if equal
+    double horizDir = col - roundCol - 0.5;
+
+    // If duplicates are not allowed, make sure vertDir and horizDir
+    // are not 0
+    if (!duplicates) {
+      if (vertDir == 0)
+        vertDir = 1;
+      if (horizDir == 0)
+        horizDir = 1;
+    }
+
+    // roundRow and roundCol will be one corner; posRow and posCol will be
+    // the other corner. Start out by moving left/right or up/down relative
+    // to roundRow/roundCol.
+    double posRow = roundRow + (vertDir > 0 ? 1 : vertDir < 0 ? -1 : 0);
+    double posCol = roundCol + (horizDir > 0 ? 1 : horizDir < 0 ? -1 : 0);
+
+    // Now, some fixups in case posCol/posRow go off the edge of the raster.
+    if (isGlobalLonLat) {
+      if (posCol < 0) {
+        posCol = maxcol;
+      } else if (posCol > maxcol) {
+        posCol = 0;
+      }
+    } else {
+      if (posCol < 0) {
+        posCol = 1;
+      } else if (posCol > maxcol) {
+        posCol = maxcol - 1;
+      }
+    }
+
+    if (posRow < 0) {
+      posRow = 1;
+    } else if (posRow > maxrow) {
+      posRow = maxrow - 1;
+    }
+
+    // Fixups done--just store the results.
+
+    std::vector<double> res(4);
+    res[0] = rowColToCell(ncols, roundRow, roundCol);
+    res[1] = rowColToCell(ncols, posRow, roundCol);
+    res[2] = rowColToCell(ncols, posRow, posCol);
+    res[3] = rowColToCell(ncols, roundRow, posCol);
+    std::sort(res.begin(), res.end());
+
+    size_t j = i * 4;
+    result[j]   = res[0];
+    result[j+1] = res[1];
+    result[j+2] = res[2];
+    result[j+3] = res[3];
+  }
+  return result;
+}
+
+
+double linearInt(const double& d, const double& x, const double& x1, const double& x2, const double& v1, const double& v2) {
+  double result = (v2 * (x - x1) + v1 * (x2 - x)) / d;
+  return result;
+}
+
+
+double bilinearInt(const double& x, const double& y, const double& x1, const double& x2, const double& y1, const double& y2, const double& v11, const double& v21, const double& v12, const double& v22) {
+  double d = x2-x1;
+  double h1 =  linearInt(d, x, x1, x2, v11, v21);
+  double h2 =  linearInt(d, x, x1, x2, v12, v22);
+  d = y2-y1;
+  double v =  linearInt(d, y, y1, y2, h1, h2);
+  return v;
+}
+
+double distInt(double d, double pd1, double pd2, double v1, double v2) {
+  double result = (v2 * pd1 + v1 * pd2) / d;
+  return result;
+}
+
+double bilinear_geo(double x, double y, double x1, double x2, double y1, double y2, double halfyres, std::vector<double> vv) {
+
+    double a = 6378137.0;
+    double f = 1/298.257223563;
+	double hy = y1 - halfyres;
+	double d = distance_lonlat(x1, hy, x2, hy, a, f);
+	
+    std::vector<double> dist(4);
+	double pd1 = distance_lonlat(x, hy, x1, hy, a, f);
+	double pd2 = distance_lonlat(x, hy, x2, hy, a, f);
+	double h1 = distInt(d, pd1, pd2, vv[0], vv[1]);
+	double h2 = distInt(d, pd1, pd2, vv[2], vv[3]);
+	d = y2 - y1;
+	double v =  linearInt(d, y, y1, y2, h1, h2);
+
+	return v;
+}
+
+
+
+std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> x, std::vector<double> y) {
+
+    bool glob = is_global_lonlat();
+//    bool lonlat = could_be_lonlat();
+	std::vector<double> four = fourCellsFromXY(ncol(), nrow(), extent.xmin, extent.xmax, extent.ymin, extent.ymax, x, y, false, glob);
+	std::vector<std::vector<double>> xy = xyFromCell(four);
+	std::vector<std::vector<double>> v = extractCell(four);
+	size_t n = x.size();
+	double halfyres = yres()/2;
+	std::vector<std::vector<double>> res(nlyr(), std::vector<double>(n));
+/*	if (lonlat) {
+        for (size_t i=0; i<n; i++) {
+            size_t ii = i * 4;
+            for (size_t j=0; j<nlyr(); j++) {
+                std::vector<double> vv(v[j].begin()+ii, v[j].begin()+ii+4);
+        if (i==0) {
+            std::cout << x[i] << " "<< y[i] << "\n";
+            std::cout << xy[0][ii] << " " << xy[0][ii+1] << " " << xy[1][ii] << " " << xy[1][ii+3] << "\n";
+            std::cout << v[j][ii] << " " << v[j][ii+1] << " " << v[j][ii+2] << " " << v[j][ii+3]  << "\n";
+        }
+                res[j][i] = bilinear_geo(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], halfyres, vv);
+
+            }
+        }
+	} else {
+ */       for (size_t i=0; i<n; i++) {
+            size_t ii = i * 4;
+            for (size_t j=0; j<nlyr(); j++) {
+
+  /*      if (i==0) {
+            std::cout << x[i] << " "<< y[i] << "\n";
+            std::cout << xy[0][ii] << " " << xy[0][ii+1] << " " << xy[1][ii] << " " << xy[1][ii+3] << "\n";
+            std::cout << v[j][ii] << " " << v[j][ii+1] << " " << v[j][ii+2] << " " << v[j][ii+3]  << "\n";
+        }
+*/
+                res[j][i] = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3]);
+            }
+        }
+//	}
+	return res;
+}
+
+
+
+
 double bilinear(const std::vector<double> &v, const  std::vector<double> &e, const double &dxdy, const double &x, const double &y) {
 	// values
 	// v[0] v[1]
@@ -194,6 +402,10 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
 */
         } else if (method == "bilinear") {
 
+			out = bilinearValues(x, y);
+
+        } else if (method == "oldbilinear") {
+
 // this is much too slow
 
 			double ymax = extent.ymax;
@@ -338,7 +550,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	unsigned nc = ncell();
 	std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
 	if (!hasValues()) return out;
-	
+
 	unsigned ns = nsrc();
 
 	unsigned lyr = 0;
@@ -359,11 +571,11 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 		} else {
 			std::vector<std::vector<double>> srcout;
 			if (source[0].driver == "raster") {
-				srcout = readCellsBinary(src, cell); 
+				srcout = readCellsBinary(src, cell);
 			} else {
 			#ifdef useGDAL
 				std::vector<std::vector<unsigned>> rc = rowColFromCell(cell);
-				srcout = readRowColGDAL(src, rc[0], rc[1]); 
+				srcout = readRowColGDAL(src, rc[0], rc[1]);
 			#endif
 			}
 			for (size_t i=0; i<slyrs; i++) {

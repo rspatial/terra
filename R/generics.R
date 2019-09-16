@@ -235,6 +235,18 @@ setMethod("shift", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("slope", signature(x="SpatRaster"), 
+	function(x, neighbors=8, unit="degrees", filename="", overwrite=FALSE, wopt=list(), ...) { 
+		opt <- .runOptions(filename, overwrite, wopt)
+		stopifnot(neighbors %in% c(4,8))
+		stopifnot(unit %in% c("degrees", "radians"))
+		x@ptr <- x@ptr$slope(neighbors, unit=="degrees", opt)
+		show_messages(x, "slope")		
+	}
+)
+
+
+
 
 setMethod("t", signature(x="SpatRaster"), 
 	function(x) {

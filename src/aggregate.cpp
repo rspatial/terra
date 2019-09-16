@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include <vector>
+//#include <vector>
 #include <limits>
 #include <cmath>
 #include <functional>

@@ -19,6 +19,10 @@
 #include "read_rst.h"
 
 
+void putNA(std::vector<double>& x, double flag) {
+	for (double& d : x) d = d > flag ? d : NAN;
+}
+
 std::vector<double> SpatRaster::readValuesBinary(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
 	unsigned nl = source[src].nlyrfile;
 	std::string dtype = source[src].datatype;
@@ -35,6 +39,7 @@ std::vector<double> SpatRaster::readValuesBinary(unsigned src, unsigned row, uns
 	} else {
 		out = readBinBlock(filename, dtype, row, nrows, col, ncols, lyrs, nrow(), ncol(), nl, bndorder);
 	}
+	putNA(out, source[src].NAflag);
 	return out;
 }
 
@@ -63,6 +68,7 @@ std::vector<double> SpatRaster::readSampleBinary(unsigned src, unsigned srows, u
 	for (size_t i = 0; i<lyrs.size(); i++) {
 		out.insert(out.end(), v[i].begin(), v[i].end());
 	}
+	putNA(out, source[src].NAflag);
 	return out;
 }
 
@@ -76,7 +82,9 @@ std::vector<std::vector<double>> SpatRaster::readCellsBinary(unsigned src, std::
 	std::vector<unsigned> lyrs = source[src].layers;
 
 	std::vector<std::vector<double>> out = readBinCell(filename, dtype, cells, lyrs, nrow(), ncol(), nl, bndorder);
-
+	for (size_t i=0; i<lyrs.size(); i++) {
+		putNA(out[i], source[src].NAflag);
+	}
 	return out;
 
 }
