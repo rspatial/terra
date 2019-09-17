@@ -18,7 +18,7 @@
 /* Robert Hijmans, October 2011 */
 
 
-#include "SpatRaster.h"
+#include "spatRaster.h"
 #include "math_utils.h"
 #include "distance.h"
 #include <cmath>
