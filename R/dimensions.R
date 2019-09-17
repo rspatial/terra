@@ -147,13 +147,3 @@ function(x) {
 )
 
 
-if (!isGeneric("ext")) {
-	setGeneric("ext", function(x, ...)
-		standardGeneric("ext"))
-}	
-
-if (!isGeneric("ext<-")) {
-	setGeneric("ext<-", function(x, value)
-		standardGeneric("ext<-"))
-}	
-

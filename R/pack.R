@@ -91,3 +91,59 @@ setMethod("show", signature(object="PackedSpatVector"),
 )
 
 
+
+
+
+setMethod("as.character", signature(x="SpatExtent"), 
+	function(x, ...) {
+		e <- ext(x)
+		paste0("ext(", paste(as.vector(e), collapse=", "), ")")
+	}
+)
+
+
+setMethod("as.character", signature(x="SpatRaster"), 
+	function(x, ...) {
+		e <- ext(x)
+		crs <- crs(x)
+		crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
+		paste0("rast(", 
+				"ncol=", ncol(x),
+				", nrow=", nrow(x),
+				", nlyr=", nlyr(x),
+				", xmin=",e[1],
+				", xmax=",e[2],
+				", ymin=",e[3],
+				", ymax=",e[4],
+				crs, ")" 
+		)
+	}
+)
+#eval(parse(text=as.character(raster())))
+#eval(parse(text=as.character(stack())))
+
+
+setMethod("pack", signature(x="SpatRaster"), 
+	function(x, ...) {
+		r <- methods::new("PackedSpatRaster")
+		r@definition = as.character(x)
+		r@values = values(x)
+		#r@attributes = "data.frame"
+		r
+	}
+)
+
+
+setMethod("rast", signature(x="PackedSpatRaster"), 
+	function(x, ...) {
+		r <- eval(parse(text=x@definition))
+		values(r) <- x@values
+		r
+	}
+)
+
+setMethod("show", signature(object="PackedSpatRaster"), 
+	function(object) {
+		print(paste("This is a", class(object), "object. Use 'rast()' to unpack it"))
+	}
+)

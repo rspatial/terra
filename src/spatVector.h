@@ -149,6 +149,7 @@ class SpatVector {
 
 //geos
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
+		SpatVector intersect(SpatVector v);
 };
 
 /*

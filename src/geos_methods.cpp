@@ -1,5 +1,4 @@
 
-
 #include "geos_spat.h"
 
 /*
@@ -42,3 +41,50 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 	CPL_geos_finish(hGEOSCtxt);
 	return out;	
 }
+
+
+
+
+SpatVector SpatVector::intersect(SpatVector v) {
+
+	SpatVector out;
+
+	GEOSContextHandle_t hGEOSCtxt = CPL_geos_init();
+	std::vector<GeomPtr> x = geom_from_spat(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geom_from_spat(&v, hGEOSCtxt);	
+	std::vector<GeomPtr> result;
+	std::vector<std::vector<unsigned>> atts(2);
+	size_t nx = size();
+	size_t ny = v.size();
+	
+		
+	for (size_t i = 0; i < nx; i++) {
+		for (size_t j = 0; j < ny; j++) {
+			GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[j].get());
+			if (geom == NULL) {
+				out.setError("GEOS exception");
+				CPL_geos_finish(hGEOSCtxt);
+				return(out);
+			} 
+			unsigned check = 0; //GEOSisEmpty_r(hGEOSCtxt, geom);
+			if (check > 1) {
+				out.setError("GEOS exception");
+				CPL_geos_finish(hGEOSCtxt);
+				return(out);			
+			} else if (check == 1) {
+				result.push_back(geos_ptr(geom, hGEOSCtxt));
+				atts[0].push_back(i);
+				atts[1].push_back(j);
+			}
+		}
+	}
+
+	// this should happen in the loop. And different types are possible!
+	out = spat_from_geom(hGEOSCtxt, result, type());
+	// deal with attributes
+	CPL_geos_finish(hGEOSCtxt);
+	return out;	
+}
+
+
+

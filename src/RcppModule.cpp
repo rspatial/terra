@@ -198,6 +198,7 @@ RCPP_MODULE(spat){
 		.method("buffer", &SpatVector::buffer, "buffer")	
 #ifdef useGEOS
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
+		.method("intersect", &SpatVector::intersect, "intersect")		
 #endif
 	;
 

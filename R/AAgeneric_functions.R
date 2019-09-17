@@ -10,7 +10,9 @@ if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standa
 if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGeneric("classify")) }
 if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGeneric("collapse"))}
 if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
-if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}	
+if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}
+if (!isGeneric("ext")) { setGeneric("ext", function(x, ...)	standardGeneric("ext"))}	
+if (!isGeneric("ext<-")) { setGeneric("ext<-", function(x, value) standardGeneric("ext<-")) }		
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}	
@@ -23,6 +25,7 @@ if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGener
 if (!isGeneric("tapp")) { setGeneric("tapp", function(x, ...) standardGeneric("tapp"))}
 if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("vect")) }
 
+
 ## shared with "raster"
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}	
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}	
@@ -30,6 +33,7 @@ if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.n
 if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneric("as.factor"))}
 if (!isGeneric("atan2")) { setGeneric("atan2", function(y, x) standardGeneric("atan2"))}	
 if (!isGeneric("barplot")) {setGeneric("barplot", function(height,...) standardGeneric("barplot"))}	
+if (!isGeneric("bbox")) {setGeneric("bbox", function(obj) standardGeneric("bbox"))}	
 if (!isGeneric("boundaries")) {	setGeneric("boundaries", function(x, ...) standardGeneric("boundaries"))}	
 if (!isGeneric("boxplot")) { setGeneric("boxplot", function(x, ...) standardGeneric("boxplot"))}
 if (!isGeneric("buffer")) {setGeneric("buffer", function(x, ...) standardGeneric("buffer"))}	
