@@ -13,3 +13,35 @@ setMethod("buffer", signature(x="SpatVector"),
 	}
 )
 
+
+## cheating --- using raster/rgeos for now
+
+setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, ...) {
+		x <- as(x, "Spatial")
+		y <- as(y, "Spatial")
+		r <- raster::crop(x, y)
+		vect(r)
+	}
+)
+
+
+setMethod("aggregate", signature(x="SpatVector"),
+	function(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...) {
+		#gt <- geomtype(x)
+		x <- as(x, "Spatial")
+		r <- aggregate(x, by=by, sums=sums, dissolve=dissolve, vars=vars, ...)
+		vect(r)
+	}
+)
+
+
+setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y) {
+		x <- as(x, "Spatial")
+		y <- as(y, "Spatial")
+		r <- raster::intersect(x, y)
+		vect(r)
+	}
+)
+

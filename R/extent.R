@@ -189,7 +189,7 @@ setMethod("ymax", signature(x="SpatVector"),
 )	
 
 .ext2bb <- function(e) {
-	matrix(as.vector(ext(e)), ncol=2, byrow=TRUE)
+	matrix(as.vector(e), ncol=2, byrow=TRUE)
 }
 
 setMethod("bbox", signature(obj="SpatRaster"), 
