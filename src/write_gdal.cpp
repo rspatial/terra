@@ -127,6 +127,9 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 
 	CSLDestroy( papszOptions );
 
+	if (opt.names.size() == nlyr()) {
+		setNames(opt.names);
+	}
 	GDALRasterBand *poBand;
 	std::vector<std::string> nms = getNames();
 	for (size_t i=0; i < nlyr(); i++) {

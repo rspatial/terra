@@ -68,6 +68,9 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	lowercase(ext);
 	std::string datatype = opt.get_datatype();
 
+	if (opt.names.size() == nlyr()) {
+		setNames(opt.names);
+	}
 	if (ext == ".grd") {
 		std::string bandorder = opt.get_bandorder();
 	    out = writeRasterBinary(filename, datatype, bandorder, true);
@@ -88,6 +91,10 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 bool SpatRaster::writeStart(SpatOptions &opt) {
 
 	std::string filename = opt.get_filename();
+
+	if (opt.names.size() == nlyr()) {
+		setNames(opt.names);
+	}
 
 	if (filename == "") {
 		if (!canProcessInMemory(4) || opt.get_todisk()) {

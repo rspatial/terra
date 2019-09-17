@@ -24,7 +24,7 @@
 		x$gdal_options <- gopt
 	}
 	
-	s <- nms %in% c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk")
+	s <- nms %in% c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk", "names")
 	
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
@@ -32,7 +32,16 @@
 	}
 		
 	if (any(s)) {
-		for (i in which(s)) {
+		nms <- nms[s]
+		i <- which(nms == "names")	
+		if (length(i) > 0) {
+			namevs <- trimws(unlist(strsplit(opt[[i]], ",")))
+			x[["names"]] <- namevs
+			opt <- opt[-i]
+			nms <- nms[-i]
+		}
+		
+		for (i in seq_along(nms)) {
 			x[[nms[i]]] <- opt[[i]]
 		}
 	}

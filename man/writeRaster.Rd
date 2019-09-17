@@ -27,7 +27,7 @@ SpatRaster (invisibly). This function is used for the side-effect of writing val
 }
 
 \details{
-In many methods, options for writing raster files to disk can be provided with the \code{wopt} argument. \code{wopt} should be a named list. The following names are valid: \code{datatype}, \code{filetype}, \code{gdal}, \code{tempdir}, \code{progress}, \code{memfrac}. 
+In many methods, options for writing raster files to disk can be provided with the \code{wopt} argument. \code{wopt} should be a named list. The following names are valid: \code{datatype}, \code{filetype}, \code{gdal}, \code{tempdir}, \code{progress}, \code{memfrac} and \code{names}. 
 
 Values for \code{filetype} are GDAL driver names. If this argument is not supplied, the driver is derived from the filename.
 

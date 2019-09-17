@@ -54,6 +54,7 @@ class SpatOptions {
 		std::string filetype = "";
 		std::string filename = "";
 		std::vector<std::string> gdal_options;
+		std::vector<std::string> names;
 
 		SpatOptions();
 		SpatOptions(const SpatOptions &opt);
