@@ -14,7 +14,7 @@ The first (alpha) release is expected by July 2019.
 
 ## Installation
 
-You need to have the current version of `raster` from CRAN (>= 2.9-22) or install the [development version of "raster"](https://github.com/rspatial/raster).
+You need to first install the [development version of "raster"](https://github.com/rspatial/raster).
 
 ### Windows
 
