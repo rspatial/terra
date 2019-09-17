@@ -292,7 +292,7 @@ void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue
 
 SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr());
 	if (low > high) {
 		out.setError("lower clamp value cannot be larger than the higher clamp value");
 		return out;

@@ -219,7 +219,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 
 SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr());
 	if (!smooth_operator(oper)) {
 		out.setError("unknown arith function");
 		return out;
