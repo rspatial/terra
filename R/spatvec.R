@@ -51,10 +51,16 @@ setMethod("area", signature(x="SpatVector"),
 	}
 )	
 
-setMethod("length", signature(x="SpatVector"), 
+setMethod("perimeter", signature(x="SpatVector"), 
 	function(x) {
 		a <- x@ptr$length();
 		x <- show_messages(x, "length");
 		return(a)
+	}
+)	
+
+setMethod("length", signature(x="SpatVector"), 
+	function(x) {
+		size(x)
 	}
 )	

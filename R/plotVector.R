@@ -45,7 +45,7 @@
 	for (i in 1:length(g)) {
 		x <- g[[i]]
 		for (j in 1:length(x)) {
-			lines(x[[j]][,3:4], col=col[i], ...)
+			lines(x[[j]][,3:4], col=cols[i])
 		}
 	}
 }
@@ -77,6 +77,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 			if (gtype == "polygons") {
 				.plotPolygons(x, col, ...)
 			} else {
+				if (is.null(col)) col = rep("black", size(x))
 				.plotLines(x, col, ...)
 			}
 		}
