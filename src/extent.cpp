@@ -139,7 +139,7 @@ std::vector<double> SpatRaster::origin() {
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
 	
 	if (ext) {
-		if (!extent.equal(x.extent, 1)) {
+		if (!extent.equal(x.extent, 10)) {
 			setError("extents do not match");
 			return false;
 		}
