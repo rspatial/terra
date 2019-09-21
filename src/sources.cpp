@@ -174,6 +174,7 @@ void RasterSource::resize(unsigned n) {
 	cats.resize(n);
 	nlyr = n;
 	layers.resize(n);
+	std::iota(layers.begin(), layers.end(), 0);
 }
 
 
