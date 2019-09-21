@@ -85,6 +85,18 @@ bool getGDALDataType(std::string datatype, GDALDataType &gdt) {
 }
 
 
+
+CPLErr setBandCategories(GDALRasterBand *poBand, std::vector<std::string> cats) {
+	char **names = NULL;
+	for (size_t i = 0; i < cats.size(); i++) {
+		names = CSLAddString(names, cats[i].c_str());
+	}
+	CPLErr err = poBand->SetCategoryNames(names);
+	return err;
+}
+
+
+
 bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
 
 	SpatMessages m = can_write(filename, overwrite);
