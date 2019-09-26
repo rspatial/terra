@@ -118,23 +118,48 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext = NULL, ...)  {
-		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
-		uv <- unique(v)
-		if (is.null(col)) {
-			col 
-		}
-		ucols <- .getCols(length(uv), col)
-		i <- match(v, uv)
-		cols <- ucols[i]
+	function(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)  {
 		
 		old.par <- graphics::par(no.readonly = TRUE) 
 		on.exit(graphics::par(old.par))
 		.setPAR(...)
-		plot(x, col=cols, ...)
+		
+		if (is.null(col)) {
+			col <- topo.colors(100)
+		}
+		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
+		uv <- unique(v)
+		if (is.null(leg.type)) {
+			if (!is.numeric(uv) | length(uv) < 10) {
+				leg.type <- "class"
+			} else {
+				leg.type <- "cont"
+			}
+		}
+		if (leg.type == "class") {
+			ucols <- .getCols(length(uv), col)
+			uv <- sort(uv)
+			i <- match(v, uv)
+			col <- ucols[i]
+		} 
+
+		plot(x, col=col, ...)
 		n <- ifelse(is.null(leg.ext), 20, length(uv))
 		leg.ext <- .legCoords(x, ...)
-		.factorLegend(leg.ext, 1:length(uv), ucols, uv, n)
+		if (leg.type == "class") {
+			.factorLegend(leg.ext, 1:length(uv), ucols, uv, n)
+		} else {
+			zlim <- range(uv, na.rm=TRUE)
+			if (missing(digits)) {
+				dif <- diff(zlim)
+				if (dif == 0) {
+					digits = 0;
+				} else {
+					digits <- max(0, -floor(log10(dif/10)))
+				}
+			}
+			.contLegend(leg.ext, col, zlim, digits, leg.levels, ...)	
+		}
 	}
 )
 
