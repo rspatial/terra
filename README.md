@@ -14,7 +14,7 @@ The first (alpha) release is expected by July 2019.
 
 ## Installation
 
-You need to first install the [development version of "raster"](https://github.com/rspatial/raster).
+You need to install the latest version of "raster" from CRAN or [github](https://github.com/rspatial/raster).
 
 ### Windows
 
@@ -44,7 +44,6 @@ And now, in R, install the packages.
 ```
 library(devtools)
 install.packages("raster")
-#devtools::install_github("rspatial/raster")
 devtools::install_github("rspatial/terra")
 ```
 
@@ -64,7 +63,6 @@ And now, in R, install the packages.
 ```
 library(devtools)
 install.packages("raster")
-#devtools::install_github("rspatial/raster")
 devtools::install_github("rspatial/terra")
 ```
 
