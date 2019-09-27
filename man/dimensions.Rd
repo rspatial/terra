@@ -40,6 +40,9 @@
 \alias{nrow,SpatVector-method}
 \alias{ncol,SpatVector-method}
 
+\alias{length,SpatVector-method}
+
+
 \title{Dimensions of a SpatRaster or SpatVector}
 
 \description{
@@ -67,6 +70,7 @@ res(x) <- value
 \S4method{ncol}{SpatVector}(x)
 \S4method{nrow}{SpatVector}(x)
 \S4method{size}{SpatVector}(x, ...)
+\S4method{length}{SpatVector}(x)
 
 }
 

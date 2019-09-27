@@ -18,8 +18,8 @@ setMethod("buffer", signature(x="SpatVector"),
 
 setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, ...) {
-		x <- as(x, "Spatial")
-		y <- as(y, "Spatial")
+		x <- methods::as(x, "Spatial")
+		y <- methods::as(y, "Spatial")
 		r <- raster::crop(x, y)
 		vect(r)
 	}
@@ -29,7 +29,7 @@ setMethod("crop", signature(x="SpatVector", y="SpatVector"),
 setMethod("aggregate", signature(x="SpatVector"),
 	function(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...) {
 		#gt <- geomtype(x)
-		x <- as(x, "Spatial")
+		x <- methods::as(x, "Spatial")
 		r <- aggregate(x, by=by, sums=sums, dissolve=dissolve, vars=vars, ...)
 		vect(r)
 	}
@@ -38,8 +38,8 @@ setMethod("aggregate", signature(x="SpatVector"),
 
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
-		x <- as(x, "Spatial")
-		y <- as(y, "Spatial")
+		x <- methods::as(x, "Spatial")
+		y <- methods::as(y, "Spatial")
 		r <- raster::intersect(x, y)
 		vect(r)
 	}

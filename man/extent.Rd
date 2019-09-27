@@ -12,6 +12,8 @@
 \alias{ext,numeric-method}
 \alias{ext,missing-method}
 \alias{as.character,SpatExtent-method}
+\alias{bbox,SpatRaster-method}
+\alias{bbox,SpatVector-method}
 
 
   

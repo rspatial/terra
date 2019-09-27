@@ -88,14 +88,27 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 )
 
 
+.getExt <- function(x) {
+	return(x)
+}
+
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
 	function(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...) {
-		if (!inherits(y, "SpatExtent")) {
-			y <- try(ext(y))
-			if (class(y) == "try-error") { stop("cannot get an extent from y") }
-		}
 		opt <- .runOptions(filename, overwrite, wopt)
+
+		if (!inherits(y, "SpatExtent")) {
+			e <- try(ext(y), silent=TRUE)
+			if (class(e) == "try-error") { 
+				e <- try(raster::extent(y), silent=TRUE)
+				if (class(e) == "try-error") { 
+					stop("cannot get an extent from y")
+				}
+				e <- ext(as.vector(t(raster::bbox(e))))
+			}
+			y <- e
+		}
+
 		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
 		show_messages(x, "crop")		
 	}

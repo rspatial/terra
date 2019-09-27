@@ -37,7 +37,8 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
 \S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
-\S4method{plot}{SpatVector,character}(x, y, col=col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext=NULL, ...)
+
+\S4method{plot}{SpatVector,character}(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)
 
 \S4method{plot}{SpatExtent,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, ...)
 
@@ -51,28 +52,30 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{y}{missing or integer indicating the layer(s) to be plotted, or the name of the layer to be mapped}
-  \item{col}{character. colors}
-  \item{maxcell}{integer > 0. Maximum number of cells to use for the plot}
-  \item{leg.mar}{integer > 0. size of margin for the legend}
-  \item{leg.levels}{integer > 0. number of labels on the legend}
-  \item{leg.shrink}{numeric. relative shrinkage of legend from top and bottom}
-  \item{leg.main}{character. legend title}
-  \item{leg.main.cex}{character. legend title size}
+  \item{y}{missing or positive integer indicating the layer(s) to be plotted, or the name of the layer to be mapped}
+  \item{col}{character. Colors}
+  \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
+  \item{leg.mar}{positive integer. Size of margin for the legend}
+  \item{leg.levels}{positive integer. Number of labels on the legend}
+  \item{leg.shrink}{numeric. Relative shrinkage of legend from top and bottom}
+  \item{leg.main}{character. Legend title}
+  \item{leg.main.cex}{character. Legend title size}
   \item{leg.ext}{SpatExtent or numeric vector indicating the area where to plot the legend. The vector should have a lenght of 4 (xmin, xmax, ymin, ymax)}
+  \item{leg.type}{character. Legend type}
+
   \item{digits}{integer >= 0}
   \item{zlim}{range of allowed values}
   \item{xlab}{character}
   \item{ylab}{character}
   \item{axes}{logical}
-  \item{useRaster}{logical; if \code{TRUE} plotting is faster because a bitmap raster is used to plot the image instead of polygons. See \code{\link[graphics]{image}}}
-  \item{nc}{integer > 0. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
-  \item{nr}{integer > 0. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
-  \item{maxnl}{integer > 0. Maximum number of layers to plot (for a multi-layer object)}
+  \item{useRaster}{logical; If \code{TRUE} plotting is faster because a bitmap raster is used to plot the image instead of polygons. See \code{\link[graphics]{image}}}
+  \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
+  \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
+  \item{maxnl}{postive integer. Maximum number of layers to plot (for a multi-layer object)}
   \item{main}{character. Main plot title}
   \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
-  \item{ncol}{integer. Number of columns for gridding}
-  \item{nrow}{integer. Number of rows for gridding}
+  \item{ncol}{positive integer. Number of columns for gridding}
+  \item{nrow}{positive integer. Number of rows for gridding}
   \item{add}{logical. If \code{TRUE} add the object to the current plot (for points, lines, and polygons  this is an alternative to the \code{lines} or \code{points} methods}   
   \item{...}{additional graphical arguments}  
 }

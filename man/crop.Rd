@@ -3,7 +3,8 @@
 \docType{methods}
 
 \alias{crop}
-\alias{crop,SpatRaster-method}
+\alias{crop,SpatRaster,ANY-method}
+\alias{crop,SpatVector,SpatVector-method}
 
 \title{Cut out a geographic subset}
 
@@ -12,14 +13,15 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
 }
 
 \usage{
-\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{crop}{SpatRaster,ANY}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{crop}{SpatVector,SpatVector}(x, y, ...)
 
 }
 
 \arguments{
-  \item{x}{SpatRaster}
-  \item{y}{SpatExtent}
-  \item{snap}{Character. One of "near", "in", or "out"}  
+  \item{x}{SpatRaster or SpatVector}
+  \item{y}{SpatExtent or other object that has a SpatExtent; or SpatVector if \code{x} is a SpatVector}
+  \item{snap}{character. One of "near", "in", or "out"}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
@@ -41,3 +43,4 @@ rc <- crop(r, e)
 }
 
 \keyword{spatial}
+
