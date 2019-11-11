@@ -17,7 +17,7 @@
 	cols
 }
 
-.plotPolygons <- function(x, cols, ...) {
+.plotPolygons <- function(x, cols, border=NULL, ...) {
 	g <- geom(x)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(y) split(y, y[,2]))
@@ -32,7 +32,7 @@
 				a <- a[-nrow(a), ]
 				# g[[i]][[1]] <- a 
 			}
-			graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", ...)
+			graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", border=border, ...)
 		}
 	}
 }
@@ -52,7 +52,7 @@
 
 
 setMethod("plot", signature(x="SpatVector", y="missing"), 
-	function(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)  {
+	function(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, border="black", ...)  {
 		gtype <- geomtype(x)
 		if (couldBeLonLat(x, warn=FALSE)) {
 			asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
@@ -75,7 +75,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 				plot(e, type="n", axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
 			}
 			if (gtype == "polygons") {
-				.plotPolygons(x, col, ...)
+				.plotPolygons(x, col, border=border, ...)
 			} else {
 				if (is.null(col)) col = rep("black", size(x))
 				.plotLines(x, col, ...)

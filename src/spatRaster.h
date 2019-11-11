@@ -277,6 +277,7 @@ class SpatRaster {
 		bool readStart();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
+		std::vector<std::vector<double>> readBlock2(BlockSize bs, unsigned i);
 		bool readStop();
 
 		bool writeStart(SpatOptions &opt);
@@ -386,6 +387,9 @@ class SpatRaster {
 		SpatRaster rasterize(SpatVector p, std::vector<double> values, double background, bool update, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
+		SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
+		SpatRaster classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt);
+
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 

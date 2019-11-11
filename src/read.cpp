@@ -46,6 +46,16 @@ std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
 }
 
 
+std::vector<std::vector<double>> SpatRaster::readBlock2(BlockSize bs, unsigned i) {
+	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+	std::vector<std::vector<double>> v(nlyr());
+	size_t off = bs.nrows[i] * ncol();
+	for (size_t i=0; i<nlyr(); i++) {
+		v[i] = std::vector<double>(x.begin()+(i*off), x.begin()+((i+1)*off));
+	}	
+	return(v);
+}
+
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols){
 
 	std::vector<double> out;

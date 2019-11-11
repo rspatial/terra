@@ -303,6 +303,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 }
 
 
+
 SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -368,4 +369,89 @@ SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned
 	return out;
 }
 
+
+
+
+
+std::vector<double> reclass_multiple(std::vector<std::vector<double>> &v, std::vector<std::vector<double>> groups, std::vector<double> id) {
+
+	size_t nc = groups.size(); 
+
+	size_t n = v[0].size();
+	unsigned nr = groups[0].size();
+	std::vector<double> out(n, NAN);
+	size_t cnt = 0;
+	for (size_t i=0; i<n; i++) {
+		nextcell:
+		for (size_t j=0; j<nr; j++) {
+			cnt = 0;
+			for (size_t k=0; k<nc; k++) {
+				if (std::isnan(v[i][k])) goto nextcell;
+				if (v[i][k] != groups[j][k]) cnt++;
+			}
+			if (cnt == nc) {
+				out[i] = id[j];
+				break;
+			}
+		}
+	}
+	return out;
+}
+
+
+
+
+SpatRaster SpatRaster::classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	size_t nc = groups.size();
+	size_t nr = groups[0].size();
+	if (nc < 1 || nr < 1) {
+		out.setError("reclassification matrix must have at least one row and column");
+		return out;
+	}
+	
+	for (size_t i=0; i<nc; i++) {
+		if (groups[i].size() != nr) {
+			out.setError("reclassification matrix is not rectangular");
+			return out;
+		}
+	}
+	if (id.size() != nr) {
+		out.setError("output size does not match classes size");
+		return out;		
+	}
+  	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<std::vector<double>> v = readBlock2(out.bs, i);
+		std::vector<double> vv = reclass_multiple(v, groups, id);
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;		
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+
+}
+
+
+
+SpatRaster SpatRaster::classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt) {
+	
+	SpatRaster out;
+	if ((groups.size() % nc) != 0) {
+		out.setError("incorrect length of reclassify matrix");
+		return(out);
+	}
+	unsigned nr = groups.size() / nc;
+	std::vector< std::vector<double>> rc(nc);
+	
+	for (size_t i=0; i<nc; i++) {
+		rc[i] = std::vector<double>(groups.begin()+(i*nr), groups.begin()+((i+1)*nr));
+	}
+
+	out = classify_layers(rc, id, opt);
+	return out;
+
+}
 
