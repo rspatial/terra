@@ -63,8 +63,7 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
-    \code{\link{resample}} \tab Warp values to a SpatRaster with a different origin or resolution \cr	
-    \code{\link{warp}} \tab Project values to a SpatRaster with a different coordinate reference system \cr	
+    \code{\link{warp}} \tab Warp values to a SpatRaster with a different origin and/or resolution and/or coordinate reference system \cr	
     \code{\link{shift}} \tab Adjust the location of SpatRaster \cr
     \code{\link{flip}} \tab  Flip values horizontally or vertically \cr
     \code{\link{rotate}} \tab Rotate values around the date-line (for lon/lat data) \cr

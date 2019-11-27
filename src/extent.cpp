@@ -21,10 +21,13 @@
 
 
 bool SpatExtent::equal(SpatExtent e, double tolerance) {
-	bool e1 = is_equal(xmax, e.xmax, tolerance);
-	bool e2 = is_equal(xmin, e.xmin, tolerance);
-	bool e3 = is_equal(ymax, e.ymax, tolerance);
-	bool e4 = is_equal(ymin, e.ymin, tolerance);
+	double xr = (xmax - xmin) / tolerance;
+	double yr = (ymax - ymin) / tolerance;
+	
+	bool e1 = fabs(xmax - e.xmax) < xr;
+	bool e2 = fabs(xmin - e.xmin) < xr;
+	bool e3 = fabs(ymax - e.ymax) < yr;
+	bool e4 = fabs(ymin - e.ymin) < yr;
 	return (e1 && e2 && e3 && e4);
 }	
 
@@ -139,7 +142,7 @@ std::vector<double> SpatRaster::origin() {
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
 	
 	if (ext) {
-		if (!extent.equal(x.extent, 10)) {
+		if (!extent.equal(x.extent, 100)) {
 			setError("extents do not match");
 			return false;
 		}
