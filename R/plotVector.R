@@ -140,10 +140,14 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			ucols <- .getCols(length(uv), col)
 			uv <- sort(uv)
 			i <- match(v, uv)
-			col <- ucols[i]
-		} 
+			cols <- ucols[i]
+		} else {
+			brks <- seq(min(v, na.rm=TRUE), max(v, na.rm=TRUE), length.out = length(col))
+			grps <- cut(v, breaks = brks, include.lowest = TRUE)
+			cols=col[grps]
+		}
 
-		plot(x, col=col, ...)
+		plot(x, col=cols, ...)
 		n <- ifelse(is.null(leg.ext), 20, length(uv))
 		leg.ext <- .legCoords(x, ...)
 		if (leg.type == "class") {

@@ -22,16 +22,18 @@ function(x, y, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	compareGeom(x, y, lyrs=FALSE, crs=TRUE, warncrs=TRUE, ext=TRUE, rowcol=TRUE, res=FALSE)
 	
 	nc <- ncol(x)
-
 	readStart(x)
 	readStart(y)
 	
 # figure out the shape of the output by testing with one row
 	vx <- readValues(x, round(0.5*nrow(x)), 1, 1, nc, TRUE)
 	vy <- readValues(y, round(0.5*nrow(y)), 1, 1, nc, TRUE)
-	vx <- cbind(vx, vy) # recycling
+	vxy <- cbind(vx, vy) # recycling
 	test <- TRUE
-	vtst <- try(fun(vx[,1], vx[,2], ...), silent=TRUE)
+	ncvx <- ncol(vx)
+	vtst <- try(fun(vxy[,1:ncvx], vxy[,((ncvx+1):ncol(vxy))], ...), silent=TRUE)
+	nl <- 1
+	
 	if (length(vtst) >= nc) {
 		if ((length(vtst) %% nc) == 0) {
 			dofun <- TRUE
