@@ -4,15 +4,20 @@
 
 \alias{aggregate}
 \alias{aggregate,SpatRaster-method}
+\alias{aggregate,SpatVector-method}
 
 \title{Aggregate raster cells}
 
 \description{
 Aggregate a SpatRaster to create a new SpatRaster with a lower resolution (larger cells). Aggregation groups rectangular areas to create larger cells. The value for the resulting cells is computed with a user-specified function. 
+
+Or aggregate ("dissolve") a SpatVector. 
 }
 
 \usage{
 \S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list())
+
+\S4method{aggregate}{SpatVector}(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...)
 }
 
 \arguments{

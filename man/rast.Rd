@@ -11,6 +11,7 @@
 \alias{rast,SpatExtent-method}
 \alias{rast,SpatVector-method}
 \alias{rast,Raster-method}
+\alias{rast,PackedSpatRaster-method}
 
 
 \title{Create a SpatRaster}

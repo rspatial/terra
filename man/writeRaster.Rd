@@ -7,7 +7,7 @@
 \title{Write raster data to a file}
 
 \description{
-Write a SpatRaster to a file. 
+Write a SpatRaster object to a file. 
 }
 
 \usage{
@@ -16,7 +16,7 @@ Write a SpatRaster to a file.
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{filename}{character. Output filename. Optional}
+  \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files. See Details }
   \item{...}{additional arguments. None implemented}

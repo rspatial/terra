@@ -11,7 +11,6 @@
 \alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext,numeric-method}
 \alias{ext,missing-method}
-\alias{as.character,SpatExtent-method}
 \alias{bbox,SpatRaster-method}
 \alias{bbox,SpatVector-method}
 
@@ -26,7 +25,6 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
 \usage{
 \S4method{ext}{SpatRaster}(x, ...)
 \S4method{ext}{SpatRaster,SpatExtent}(x)<-value
-\S4method{as.character}{SpatExtent}(x, ...)
 }
 
 \arguments{
@@ -39,14 +37,12 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
 SpatExtent or numeric coordinate
 }
   
-\author{Robert J. Hijmans}
 
 
 \examples{
 r <- rast()
-ext(r)
-ext(c(0, 20, 0, 20))
-
+as.character(r)
+as.character(ext(r))
 }
 
 \keyword{spatial}

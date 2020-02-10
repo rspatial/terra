@@ -1,6 +1,8 @@
 \name{tmpFiles}
 
 \alias{tmpFiles}
+\alias{orphanTmpFiles}
+\alias{staleTmpFiles}
 
 \title{Temporary files}
 
@@ -12,6 +14,8 @@ Temporary files are automatically removed at the end of each session that ends n
 
 \usage{
 tmpFiles(old=FALSE, remove=FALSE)
+orphanTmpFiles()
+staleTmpFiles()
 }
 
 \arguments{
