@@ -8,6 +8,7 @@
 \alias{vect,matrix-method}
 \alias{vect,missing-method}
 \alias{vect,Spatial-method}
+\alias{vect,PackedSpatVector-method}
 
 \title{Create SpatVector objects}
 

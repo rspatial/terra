@@ -28,6 +28,12 @@ Or aggregate ("dissolve") a SpatVector.
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  
+  \item{by}{character}
+  \item{sums}{list}
+  \item{dissolve}{logical}
+  \item{vars}{character}
+   
 }
 
 

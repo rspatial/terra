@@ -12,7 +12,8 @@ Make a RasterLayer with interpolated values using a fitted model object of class
 }
 
 \usage{
-\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list())
+\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., xyNames=c("x", "y"),
+      factors=NULL, const=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

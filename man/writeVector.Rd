@@ -11,14 +11,13 @@ Write a SpatVector object to a file.
 }
 
 \usage{
-\S4method{writeVector}{SpatVector,character}(x, filename, overwrite=FALSE, wopt=list(), ...)
+\S4method{writeVector}{SpatVector,character}(x, filename, overwrite=FALSE, ...)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files. See Details }
   \item{...}{additional arguments. None implemented}
 }
 

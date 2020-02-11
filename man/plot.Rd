@@ -33,12 +33,16 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 		leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL,
 		digits, useRaster=TRUE, zlim, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)
-\S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxcell=100000, nc, nr, main, 
+   maxnl=16, add=FALSE, ...)
+\S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, 
+   maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
-\S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
+\S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", 
+   axes=TRUE, add=FALSE, border="black", ...)
 
-\S4method{plot}{SpatVector,character}(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)
+\S4method{plot}{SpatVector,character}(x, y, col=topo.colors(100), xlab="", ylab="", 
+   axes=TRUE, add=FALSE, leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)
 
 \S4method{plot}{SpatExtent,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, ...)
 

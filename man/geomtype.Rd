@@ -4,6 +4,7 @@
 
 \alias{geomtype}
 \alias{geomtype,SpatVector-method}
+\alias{geomtype,Spatial-method}
 
 \title{Geometry type of a SpatVector}
 

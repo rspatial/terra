@@ -10,7 +10,8 @@ Warp transfers values between SpatRaster objects that do not align (have a diffe
 }
 
 \usage{
-\S4method{warp}{SpatRaster,SpatRaster}(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{warp}{SpatRaster,SpatRaster}(x, y, method="bilinear", filename="",
+     overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

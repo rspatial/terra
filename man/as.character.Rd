@@ -24,7 +24,7 @@ Create a text representation of (the skeleton of) an object
 }
  
 \value{
-charater
+character
 }
   
 

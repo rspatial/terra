@@ -11,7 +11,8 @@ Write a SpatRaster object to a file.
 }
 
 \usage{
-\S4method{writeRaster}{SpatRaster,character}(x, filename, overwrite=FALSE, wopt=list(), ...)
+\S4method{writeRaster}{SpatRaster,character}(x, filename, 
+    overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

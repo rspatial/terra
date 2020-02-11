@@ -10,7 +10,8 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
 }
 
 \usage{
-\S4method{clamp}{SpatRaster}(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{clamp}{SpatRaster}(x, lower=-Inf, upper=Inf, values=TRUE,
+             filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

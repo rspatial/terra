@@ -13,8 +13,10 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 } 
 
 \usage{
-\S4method{mask}{SpatRaster,SpatRaster}(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...)
-\S4method{mask}{SpatRaster,SpatVector}(x, mask, inverse=FALSE, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{mask}{SpatRaster,SpatRaster}(x, mask, inverse=FALSE, maskvalue=NA, 
+   updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{mask}{SpatRaster,SpatVector}(x, mask, inverse=FALSE, updatevalue=NA,
+   filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

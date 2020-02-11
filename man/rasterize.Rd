@@ -12,7 +12,8 @@ Transfer vector data to a raster
 }
 
 \usage{
-\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field=1:nrow(x), background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field=1:nrow(x), background=NA, 
+    update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
 
 }
 

@@ -5,6 +5,7 @@
 \alias{SpatVector}
 \alias{SpatVector-class}
 \alias{Rcpp_SpatVector-class}
+\alias{PackedSpatVector}
 
 \alias{show,SpatVector-method}
 
