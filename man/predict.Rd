@@ -88,7 +88,7 @@ r2 <- predict(logo, model, fun=predfun)
 # here using sampling to simulate an object too large
 # to feed all its values to prcomp
 
-sr <- values(spatialSample(logo, 100, as.raster=TRUE))
+sr <- values(spatSample(logo, 100, as.raster=TRUE))
 pca <- prcomp(sr)
 
 x <- predict(logo, pca)

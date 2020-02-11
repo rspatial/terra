@@ -33,9 +33,9 @@ numeric or SpatRaster
 \examples{
 f <- system.file("exdata/test.tif", package="terra")
 r <- rast(f)
-s <- spatialSample(r, 100)
+s <- spatSample(r, 100)
 head(s)
-ss <- spatialSample(r, 100, as.raster=TRUE)
+ss <- spatSample(r, 100, as.raster=TRUE)
 ss
 }
 
