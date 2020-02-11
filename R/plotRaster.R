@@ -22,7 +22,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			asp <- 1
 		}
 		
-		object <- sampleRegular(x, maxcell)
+		object <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		
 		Y <- yFromRow(object, nrow(object):1)
 		Z <- t(as.matrix(object, TRUE)[nrow(object):1, , drop = FALSE])
@@ -171,7 +171,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		} else {
 			main <- rep_len(main, nl)	
 		}
-		x <- sampleRegular(x, maxcell)
+		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		for (i in 1:nl) {
 		#	image(x[[i]], main=main[i], ...)
 			plot(x, i, main=main[i], ...)

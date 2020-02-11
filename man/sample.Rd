@@ -1,37 +1,42 @@
-\name{sampleRegular}
+\name{spatSample}
 
 \docType{methods}
 
-\alias{sampleRegular}
-\alias{sampleRegular,SpatRaster,numeric-method}
+\alias{spatSample}
+\alias{spatSample,SpatRaster-method}
 
 \title{Take a regular sample}
 
 \description{
-Take a regular sample of a SpatRaster. The returned object has the same extent, but fewer cells. 
+Take a regular sample of a SpatRaster. Either get cell values, or a new SpatRaster with the same extent, but fewer cells. 
 }
 
 \usage{
-\S4method{sampleRegular}{SpatRaster,numeric}(x, size, ...)
+\S4method{spatSample}{SpatRaster}(x, size, method="regular", as.raster=FALSE, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{size}{numeric. The sample size}
+  \item{method}{character. Should be "regular" (more to come)}
+  \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
   \item{...}{additional arguments. None implemented}
 }
 
 
 
 \value{
-SpatRaster
+numeric or SpatRaster
 }
 
 
 \examples{
 f <- system.file("exdata/test.tif", package="terra")
 r <- rast(f)
-s <- sampleRegular(r, 1000)
+s <- spatialSample(r, 100)
+head(s)
+ss <- spatialSample(r, 100, as.raster=TRUE)
+ss
 }
 
 \keyword{spatial}

@@ -32,9 +32,9 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 	}
 	scale <- as.vector(scale)[1]
 	
-	r <- sampleRegular(x[[r]], maxcell, ext=ext)
-	g <- sampleRegular(x[[g]], maxcell, ext=ext)
-	b <- sampleRegular(x[[b]], maxcell, ext=ext)
+	r <- spatSample(x[[r]], maxcell, ext=ext, method="regular", as.raster=TRUE)
+	g <- spatSample(x[[g]], maxcell, ext=ext, method="regular", as.raster=TRUE)
+	b <- spatSample(x[[b]], maxcell, ext=ext, method="regular", as.raster=TRUE)
 
 	RGB <- cbind(values(r), values(g), values(b))
 	

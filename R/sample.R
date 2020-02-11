@@ -1,12 +1,29 @@
 
-
-setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"), 
-	function(x, size, ...) { 
+setMethod("spatSample", signature(x="SpatRaster"), 
+	function(x, size, method="regular", as.raster=FALSE, ...) {
+		method <- tolower(method)
+		stopifnot(method %in% "regular")
 		size <- max(1, min(size(x), size))
+		
 		x@ptr <- x@ptr$sampleRegular(size)
-		show_messages(x, "sampleRegular")		
+		x <- show_messages(x, "spatSample")		
+		if (as.raster) {
+			return(x)
+		} else {
+			return(values(x))
+		}
 	}
 )
+
+
+
+#setMethod("spatSample", signature(x="SpatRaster", size="numeric"), 
+#	function(x, size, ...) { 
+#		size <- max(1, min(size(x), size))
+#		x@ptr <- x@ptr$spatSample(size)
+#		show_messages(x, "spatSample")		
+#	}
+#)
 
 
 # setMethod("sampleCells", signature(x="SpatRaster", size="numeric"), 
@@ -15,8 +32,8 @@ setMethod("sampleRegular", signature(x="SpatRaster", size="numeric"),
 		# size <- max(1, min(size(x), size))
 		# if (vect) xy=TRUE
 		# if (type == "regular") {
-			# x@ptr <- x@ptr$sampleRegular(size)
-			# x <- show_messages(x, "sampleRegular")	
+			# x@ptr <- x@ptr$spatSample(size)
+			# x <- show_messages(x, "spatSample")	
 			# if (xy) {
 				# pts <- xyFromCell(x, 1:ncell(x))
 				# if (vect) {

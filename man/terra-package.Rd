@@ -32,6 +32,7 @@ raster package \tab terra package\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{stackSelect}\tab\code{\link{collapse}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
+\code{sampleRegular}\tab\code{\link{spatialSample}}\cr
 }
 
 
@@ -158,7 +159,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \code{\link{as.array}} \tab Get cell values as an array \cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (e.g., by cell, coordinates, polygon)\cr
     \code{sampleRandom} \tab Random sample \cr
-    \code{\link{sampleRegular}} \tab Regular sample \cr
+    \code{\link{spatialSample}} \tab Regular sample \cr
     \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr

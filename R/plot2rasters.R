@@ -55,8 +55,8 @@
 		}
 	}
 	
-	x <- values(sampleRegular(x, size=maxcell))
-	y <- values(sampleRegular(y, size=maxcell))
+	x <- spatSample(x, size=maxcell, method="regular", as.raster=FALSE)
+	y <- spatSample(y, size=maxcell, method="regular", as.raster=FALSE)
 
 	if (NROW(x) < cells) {
 		warning(paste('plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxcell" to increase the sample)', sep=""))

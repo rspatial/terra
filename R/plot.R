@@ -14,7 +14,7 @@
 
 setMethod("density", signature(x="SpatRaster"), 
 	function(x, maxcells=100000, plot=TRUE, main, ...) {
-		x <- sampleRegular(x, maxcells)
+		x <- spatSample(x, maxcells, method="regular", as.raster=TRUE)
 		res <- list()
 		nl <- nlyr(x)
 		if (nl==1) {
@@ -52,7 +52,7 @@ setMethod("density", signature(x="SpatRaster"),
 
 setMethod("persp", signature(x="SpatRaster"), 
 	function(x, maxcells=100000, ...)  {
-		x <- sampleRegular(x, size=maxcells)
+		x <- spatSample(x, size=maxcells, method="regular", as.raster=TRUE)
 		value <- t(as.matrix(x, wide=TRUE)[nrow(x):1,])
 		y <- yFromRow(x, nrow(x):1)
 		x <- xFromCol(x, 1:ncol(x))
@@ -63,7 +63,7 @@ setMethod("persp", signature(x="SpatRaster"),
 
 .plot.filled.contour <- function(x, maxcells=100000, ...) {
 	
-	x <- sampleRegular(x[[1]], maxcells)
+	x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE)
 	X <- xFromCol(x, 1:ncol(x))
 	Y <- yFromRow(x, nrow(x):1)
 	Z <- t( matrix( values(x), ncol=ncol(x), byrow=TRUE)[nrow(x):1,] )
@@ -82,7 +82,7 @@ setMethod("contour", signature(x="SpatRaster"),
 		if (filled) {
 			.plot.filled.contour(x, maxcells=maxcells, ...)
 		} else {
-			x <- sampleRegular(x[[1]], maxcells)
+			x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE)
 			if (is.null(list(...)$asp)) {
 				asp <- ifelse(couldBeLonLat(x, warnings=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
 				graphics::contour(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), asp=asp, ...)
@@ -96,7 +96,7 @@ setMethod("contour", signature(x="SpatRaster"),
 
 setMethod("as.contour", signature(x="SpatRaster"), 
 	function(x, maxcells=100000, ...) {
-		x <- sampleRegular(x[[1]], size=maxcells)
+		x <- spatSample(x[[1]], size=maxcells, method="regular", as.raster=TRUE)
 		z <- grDevices::contourLines(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), ...)
 		y <- sapply(1:length(z), function(i) cbind(z[[i]]$level, i, z[[i]]$x, z[[i]]$y))
 		y <- do.call(rbind, y)
@@ -136,7 +136,7 @@ setMethod("pairs", signature(x="SpatRaster"),
 		if (cor) {up <- panelcor} else {up <- NULL}
 	
 	
-		d <- values(sampleRegular(x, maxcells))
+		d <- spatSample(x, maxcells, method="regular", as.raster=FALSE)
 	
 		dots <- list(...) 
 		cex <- dots$cex
@@ -216,7 +216,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 		cn <- names(x)
 		if ( ncell(x) > maxcell) {
 			warning("taking a sample of ", maxcell, " cells")
-			x <- sampleRegular(x, maxcell)
+			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		} 
 		x <- values(x)
 		colnames(x) <- cn
@@ -229,7 +229,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 setMethod("barplot", "SpatRaster", 
 	function(height, maxcell=1000000, digits=0, breaks=NULL, col=grDevices::rainbow, ...) {
 		
-		x <- values(sampleRegular(height[[1]], maxcell))
+		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE)
 		adj <- length(x) / ncell(height)
 		if (adj < 1) {
 			warning("a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")

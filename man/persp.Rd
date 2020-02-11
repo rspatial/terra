@@ -18,7 +18,7 @@ Perspective plot of a SpatRaster. This is an implementation of a generic functio
 
 \arguments{
   \item{x}{SpatRaster. Only the first layer is used}
-  \item{maxcells}{integer > 0. Maximum number of cells to use for the plot. If \code{maxpixels < ncell(x)}, \code{sampleRegular} is used before plotting}
+  \item{maxcells}{integer > 0. Maximum number of cells to use for the plot. If \code{maxpixels < ncell(x)}, \code{spatialSample(method="regular")} is used before plotting}
   \item{...}{Any argument that can be passed to \code{\link[graphics]{persp}} (graphics package)}  
 }
 
