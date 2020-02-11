@@ -5,7 +5,7 @@
 \alias{SpatRaster}
 \alias{SpatRaster-class}
 \alias{Rcpp_SpatRaster-class}
-\alias{PackedSpatRaster}
+\alias{PackedSpatRaster-class}
 
 \alias{RasterSource}
 \alias{RasterSource-class}

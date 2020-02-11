@@ -10,6 +10,9 @@
 \alias{levels,SpatRaster-method}
 \alias{levels<-}
 \alias{levels<-,SpatRaster-method}
+\alias{rats}
+\alias{rats,SpatRaster-method}
+\alias{setRat}
   
 \title{Factors}
 
@@ -26,11 +29,14 @@ Function 'levels' returns the RAT for inspection. It can be modified and set usi
 is.factor(x)
 as.factor(x)
 levels(x)
+\S4method{rats}{SpatRaster}(x)
+setRat(x, rat)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
+  \item{rat}{list}
 }  
 
 

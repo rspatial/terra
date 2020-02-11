@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Classes and Methods for Spatial Data
-Version: 0.4-1
-Date: 2019-11-27
+Version: 0.4-2
+Date: 2020-02-02
 Depends: R (>= 3.3.0)
 Suggests: testthat
 LinkingTo: Rcpp
@@ -18,9 +18,9 @@ Authors@R: c(
 	person("Robert J.", "Hijmans", role = c("cre", "aut"),  
 			email = "r.hijmans@gmail.com", 
 			comment = c(ORCID = "0000-0001-5872-2872")),
-	person("Roger", "Bivand", role = "ctb"),
+	person("Roger", "Bivand", role = "ctb", comment="install script, GDAL/GEOS code"),
 	person("Karl", "Forner", role = "ctb", comment="progress bar"),
 	person("Charles", "Karney", role = "ctb", comment="GeographicLib"),
-	person("Edzer", "Pebesma", role = "ctb")
+	person("Edzer", "Pebesma", role = "ctb", comment="GDAL/GEOS code from sf")
 	)
 
