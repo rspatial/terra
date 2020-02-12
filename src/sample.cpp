@@ -130,6 +130,8 @@ std::vector<unsigned> sample_without_replacement(int size, int N, unsigned seed)
 
 // need to consider the possibility that ncell() > max_int
 
+// if size is large, use (shuffle(values))[1:size] instead
+
 std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, unsigned seed) {
     std::vector<unsigned> icells = sample_without_replacement(size, ncell(), seed);
 	

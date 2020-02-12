@@ -38,7 +38,6 @@ fi
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}
 : ${CXX=${CXX11} ${CXX11STD}}
-: ${CPP=`"${RBIN}" CMD config CPP`}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
@@ -342,17 +341,24 @@ PROJH="no"
 if test "${proj_config_ok}" = yes; then
   PROJ_VERSION=`${PROJ_CONFIG} --modversion`
   PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
-  if test "${PROJV1}" = "6"; then
+  if test "${PROJV1}" = "6" ; then
     PROJ6="yes"
+    PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
     if test "${proj_api}" = yes; then
-        AC_MSG_NOTICE([using proj_api.h even with PROJ 6])
-        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+        AC_MSG_NOTICE([using proj_api.h even with PROJ 5/6])
+        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
     else
-        AC_CHECK_HEADERS(proj.h,PROJH=yes,PROJH=no)
-        if test "${PROJH}" = no; then
-           AC_MSG_ERROR([proj.h not found in standard or given locations.])
-        fi
-        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
+        AC_MSG_NOTICE([using proj.h.])
+        PROJH="yes"
+    fi
+  fi
+else
+  if test "${PROJH}" = no ; then
+    PROJH=yes
+    AC_CHECK_HEADERS(proj.h,,PROJH=no)
+    if test "${PROJH}" = yes; then
+      PROJ6="yes"
+      PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
     fi
   fi
 fi
@@ -405,10 +411,30 @@ int main() {
 }
 _EOCONF]
 else
-  AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
+[cat > proj_conf_test.cpp <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj.h>
+
+int main() {
+	proj_context_create();
+    exit(0);
+}
+_EOCONF]
+  #AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
+  AC_MSG_CHECKING(PROJ: checking whether PROJ and sqlite3 are available for linking:)
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} -lsqlite3 2> errors.txt
+  if test `echo $?` -ne 0 ; then
+    proj6ok=no
+    AC_MSG_RESULT(no)
+  else
+    proj6ok=yes
+    AC_MSG_RESULT(yes)
+  fi
   if test "${proj6ok}" = no; then
      AC_MSG_ERROR([libproj not found in standard or given locations.])
   fi
+
 [cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <stdlib.h>
@@ -654,7 +680,7 @@ fi
 GEOS_VERSION=`${GEOS_CONFIG} --version`
 AC_MSG_NOTICE([GEOS: ${GEOS_VERSION}])
 AC_MSG_CHECKING([GEOS version >= 3.4.0]) # GDAL 2.0.1 requires GEOS 3.1.0
-GEOS_VER_DOT=`echo $GEOS_VERSION | tr -d "."`
+GEOS_VER_DOT=`echo $GEOS_VERSION | tr -d ".[[:alpha:]]"`
 if test ${GEOS_VER_DOT} -lt 340 ; then
   AC_MSG_RESULT(no)
   AC_MSG_ERROR([upgrade GEOS to 3.4.0 or later])

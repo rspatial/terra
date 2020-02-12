@@ -582,7 +582,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 PACKAGE_URL=
 
-ac_unique_file="src/write_raster.cpp"
+ac_unique_file="src/wkb.cpp"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -2088,7 +2088,6 @@ fi
 # pick all flags for testing from R
 : ${CC=`"${RBIN}" CMD config CC`}
 : ${CXX=${CXX11} ${CXX11STD}}
-: ${CPP=`"${RBIN}" CMD config CPP`}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
@@ -3685,31 +3684,39 @@ PROJH="no"
 if test "${proj_config_ok}" = yes; then
   PROJ_VERSION=`${PROJ_CONFIG} --modversion`
   PROJV1=`echo "${PROJ_VERSION}" | cut -c 1`
-  if test "${PROJV1}" = "6"; then
+  if test "${PROJV1}" = "6" ; then
     PROJ6="yes"
+    PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
     if test "${proj_api}" = yes; then
-        { $as_echo "$as_me:${as_lineno-$LINENO}: using proj_api.h even with PROJ 6" >&5
-$as_echo "$as_me: using proj_api.h even with PROJ 6" >&6;}
-        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
+        { $as_echo "$as_me:${as_lineno-$LINENO}: using proj_api.h even with PROJ 5/6" >&5
+$as_echo "$as_me: using proj_api.h even with PROJ 5/6" >&6;}
+        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
     else
-        for ac_header in proj.h
+        { $as_echo "$as_me:${as_lineno-$LINENO}: using proj.h." >&5
+$as_echo "$as_me: using proj.h." >&6;}
+        PROJH="yes"
+    fi
+  fi
+else
+  if test "${PROJH}" = no ; then
+    PROJH=yes
+    for ac_header in proj.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "proj.h" "ac_cv_header_proj_h" "$ac_includes_default"
 if test "x$ac_cv_header_proj_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_PROJ_H 1
 _ACEOF
- PROJH=yes
+
 else
   PROJH=no
 fi
 
 done
 
-        if test "${PROJH}" = no; then
-           as_fn_error $? "proj.h not found in standard or given locations." "$LINENO" 5
-        fi
-        PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
+    if test "${PROJH}" = yes; then
+      PROJ6="yes"
+      PROJ_CPPFLAGS="${PROJ_CPPFLAGS} -DHAVE_PROJ_H"
     fi
   fi
 fi
@@ -3826,56 +3833,33 @@ int main() {
 }
 _EOCONF
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for proj_context_create in -lproj" >&5
-$as_echo_n "checking for proj_context_create in -lproj... " >&6; }
-if ${ac_cv_lib_proj_proj_context_create+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lproj  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
+cat > proj_conf_test.cpp <<_EOCONF
+#include <stdio.h>
+#include <stdlib.h>
+#include <proj.h>
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char proj_context_create ();
-int
-main ()
-{
-return proj_context_create ();
-  ;
-  return 0;
+int main() {
+	proj_context_create();
+    exit(0);
 }
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_proj_proj_context_create=yes
-else
-  ac_cv_lib_proj_proj_context_create=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_proj_proj_context_create" >&5
-$as_echo "$ac_cv_lib_proj_proj_context_create" >&6; }
-if test "x$ac_cv_lib_proj_proj_context_create" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPROJ 1
-_ACEOF
-
-  LIBS="-lproj $LIBS"
-
-else
-  proj6ok=no
-fi
-
+_EOCONF
+  #AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking PROJ: checking whether PROJ and sqlite3 are available for linking:" >&5
+$as_echo_n "checking PROJ: checking whether PROJ and sqlite3 are available for linking:... " >&6; }
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} -lsqlite3 2> errors.txt
+  if test `echo $?` -ne 0 ; then
+    proj6ok=no
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  else
+    proj6ok=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  fi
   if test "${proj6ok}" = no; then
      as_fn_error $? "libproj not found in standard or given locations." "$LINENO" 5
   fi
+
 cat > proj_conf_test.c <<_EOCONF
 #include <stdio.h>
 #include <stdlib.h>
@@ -4189,7 +4173,7 @@ GEOS_VERSION=`${GEOS_CONFIG} --version`
 $as_echo "$as_me: GEOS: ${GEOS_VERSION}" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking GEOS version >= 3.4.0" >&5
 $as_echo_n "checking GEOS version >= 3.4.0... " >&6; } # GDAL 2.0.1 requires GEOS 3.1.0
-GEOS_VER_DOT=`echo $GEOS_VERSION | tr -d "."`
+GEOS_VER_DOT=`echo $GEOS_VERSION | tr -d ".[:alpha:]"`
 if test ${GEOS_VER_DOT} -lt 340 ; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
