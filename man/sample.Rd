@@ -33,10 +33,9 @@ numeric or SpatRaster
 \examples{
 f <- system.file("exdata/test.tif", package="terra")
 r <- rast(f)
-s <- spatSample(r, 100)
-head(s)
-ss <- spatSample(r, 100, as.raster=TRUE)
-ss
+s <- spatSample(r, 10, as.raster=TRUE)
+spatSample(r, 10)
+spatSample(r, 10, "random")
 }
 
 \keyword{spatial}

@@ -343,6 +343,7 @@ RCPP_MODULE(spat){
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	
+		.method("sampleRandom", &SpatRaster::sampleRandom, "sampleRandom")	
 		.method("shift", &SpatRaster::shift, "shift")
 		.method("slope", &SpatRaster::slope, "slope")
 		.method("summary", &SpatRaster::summary, "summary")
