@@ -12,14 +12,15 @@ Take a regular sample of a SpatRaster. Either get cell values, or a new SpatRast
 }
 
 \usage{
-\S4method{spatSample}{SpatRaster}(x, size, method="regular", as.raster=FALSE, ...)
+\S4method{spatSample}{SpatRaster}(x, size, method="regular", replace=FALSE, as.raster=FALSE, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{size}{numeric. The sample size}
-  \item{method}{character. Should be "regular" (more to come)}
-  \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
+  \item{method}{character. Should be "regular" or "random"}
+  \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"}}
+  \item{as.raster}{logical. If \code{TRUE} and \code{method="regular"}, a SpatRaster is returned}
   \item{...}{additional arguments. None implemented}
 }
 
