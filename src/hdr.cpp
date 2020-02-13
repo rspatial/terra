@@ -11,8 +11,6 @@ std::vector<std::string> hdr_read(std::string filename) {
 	const char *ss = filename.c_str();
 	SI_Error rc = ini.LoadFile(ss);
 	
-	delete[] ss;
-	
 	std::vector<std::string> s(16);
 	s[15] = "false";
 	if (rc < 0) {
