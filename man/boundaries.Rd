@@ -37,9 +37,10 @@ v <- rep(NA, ncell(r))
 v[150:250] <- 1
 v[251:450] <- 2
 values(r) <- v
-plot( boundaries(r, type='inner') )
-plot( boundaries(r, type='outer') )
-plot( boundaries(r, classes=TRUE) )
+bi <- boundaries(r, type="inner")
+bo <- boundaries(r, type="outer")
+bc <- boundaries(r, classes=TRUE)
+plot(bc)
 }
 
 \keyword{methods}

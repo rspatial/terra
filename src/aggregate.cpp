@@ -271,10 +271,10 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	for (size_t i =0; i<bs.n; i++) {
 		bs.row[i] = i * fact[0];
 	}
-	unsigned lastrow = bs.row[bs.n] + bs.nrows[bs.n] + 1;
+	unsigned lastrow = bs.row[bs.n - 1] + bs.nrows[bs.n - 1] + 1;
 	if (lastrow < nrow()) {
 		bs.row.push_back(lastrow);
-		bs.nrows.push_back(std::min(bs.nrows[bs.n], nrow()-lastrow));
+		bs.nrows.push_back(std::min(bs.nrows[bs.n-1], nrow()-lastrow));
 		bs.n += 1;
 	}
 
