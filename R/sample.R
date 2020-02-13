@@ -4,10 +4,12 @@
 }
 
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="regular", as.raster=FALSE, ...) {
+	function(x, size, method="regular", replace=FALSE, as.raster=FALSE, ...) {
 		method <- tolower(method)
 		stopifnot(method %in% c("random", "regular"))
-		size <- max(1, min(size(x), size))
+		size <- round(size)
+		stopifnot(size > 0)
+		size <- min(ncell(x), size)
 		
 		if (method == "regular") {
 			x@ptr <- x@ptr$sampleRegular(size)
@@ -19,7 +21,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 		} else {
 			seed <- .get_seed()
-			r <- x@ptr$sampleRandom(size, seed)
+			r <- x@ptr$sampleRandom(size, replace, seed)
 			show_messages(x, "spatSample")		
 			return(r)
 		}

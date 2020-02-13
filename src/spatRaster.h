@@ -394,7 +394,7 @@ class SpatRaster {
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
 		SpatRaster sampleRegular(unsigned size);
-		std::vector<std::vector<double>> sampleRandom(unsigned size, unsigned seed);
+		std::vector<std::vector<double>> sampleRandom(unsigned size, bool replace, unsigned seed);
 		
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
 	

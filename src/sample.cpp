@@ -108,21 +108,42 @@ std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, unsigne
 #include <unordered_set>
 
 
-std::vector<unsigned> sample_without_replacement(int size, int N, unsigned seed){
+std::vector<double> sample_without_replacement(unsigned size, unsigned N, unsigned seed){
     // Sample "size" elements from [1, N] without replacement
     // see https://stackoverflow.com/questions/4461446/stl-way-to-add-a-constant-value-to-a-stdvector    
 	
-	size = std::min(size, N); // k <= N
+	size = std::max(unsigned(1), std::min(size, N)); // k <= N
 	
     std::default_random_engine gen(seed);   
+	std::uniform_int_distribution<> distribution(1, N);
     std::unordered_set<unsigned> samples;
     
-    for (int r = N - size; r < N; ++r) {
-        int v = std::uniform_int_distribution<>(1, r)(gen);
+    for (size_t r = N - size; r < N; ++r) {
+        int v = distribution(gen) - 1;
         if (!samples.insert(v).second) samples.insert(r);
     } 
-    std::vector<unsigned> result(samples.begin(), samples.end());
+    std::vector<double> result(samples.begin(), samples.end());
     std::shuffle(result.begin(), result.end(), gen);    
+	
+    return result;
+};
+
+
+std::vector<double> sample_with_replacement(unsigned size, unsigned N, unsigned seed){
+    // Sample "size" elements from [1, N] without replacement
+    // see https://stackoverflow.com/questions/4461446/stl-way-to-add-a-constant-value-to-a-stdvector    
+	
+	size = std::max((unsigned)1, std::min(size, N)); // k <= N
+	
+    std::default_random_engine gen(seed);   
+    std::vector<double> samples;
+    std::vector<double> result;
+	result.reserve(size);
+    
+	std::uniform_int_distribution<> distribution(0, N-1);
+    for (size_t i=0; i<size; i++) {
+        result.push_back( distribution(gen) );
+    } 
 	
     return result;
 };
@@ -132,16 +153,32 @@ std::vector<unsigned> sample_without_replacement(int size, int N, unsigned seed)
 
 // if size is large, use (shuffle(values))[1:size] instead
 
-std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, unsigned seed) {
-    std::vector<unsigned> icells = sample_without_replacement(size, ncell(), seed);
+std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, bool replace, unsigned seed) {
+
+	double nc = ncell();
+	std::vector<double> dcells;
+
+	if (replace) {
 	
-    std::vector<double> dcells(size);
-	for (size_t i=0; i<size; i++) {
-		dcells[i] = icells[i]-1;
+		if (size >= .6 * nc) {
+			
+			dcells.resize(nc);
+			std::iota(std::begin(dcells), std::end(dcells), 0);
+			std::default_random_engine gen(seed);  
+			std::shuffle(dcells.begin(), dcells.end(), gen);    
+			if (size < nc) {
+				dcells.erase(dcells.begin()+size, dcells.end());	
+			}
+			
+		} else {
+			dcells = sample_without_replacement(size, nc, seed);
+		}
+	} else {
+		dcells = sample_with_replacement(size, nc, seed);
 	}
+	
 	std::vector<std::vector<double>> d = extractCell(dcells);
-    return d; 
- 
+	return d; 
 }
 
 
