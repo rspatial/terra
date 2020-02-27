@@ -5,9 +5,6 @@
 
 std::vector<std::string> hdr_read(std::string filename) {
 	CSimpleIniA ini(true, false, false);
-////	char ss[filename.length()];
-//	char *ss = new char[filename.length()];
-//  strcpy(ss, filename.c_str());
 	const char *ss = filename.c_str();
 	SI_Error rc = ini.LoadFile(ss);
 	

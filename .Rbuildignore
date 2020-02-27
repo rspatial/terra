@@ -1,10 +1,8 @@
 .gitignore
 .gitattributes
+^windows
+^inst/gdal
+^inst/proj
+.travis.yml
 LICENSE
 README.md
-^.*\.Rproj$
-^\.Rproj\.user$
-^windows
-^packrat/
-^\.Rprofile$
-.travis.yml
