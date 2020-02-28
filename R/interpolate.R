@@ -5,7 +5,7 @@
 
 
 setMethod("interpolate", signature(object="SpatRaster"), 
-	function(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+	function(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, index=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 	
 		out <- rast(object)
 		hv <- hasValues(object)
@@ -22,7 +22,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 			d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
 			xy <- cbind(xy, d)
 		}
-		r <- .runModel(model, fun, xy, 1, const, (na.rm & hv), ...)
+		r <- .runModel(model, fun, xy, 1, const, (na.rm & hv), index, ...)
 		nl <- ncol(r)
 		out <- rast(object, nlyr=nl)
 		cn <- colnames(r)
