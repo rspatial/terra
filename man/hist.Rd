@@ -37,6 +37,8 @@ values(r1) <- runif(ncell(r1))
 values(r2) <- runif(ncell(r1))
 rs <- r1 + r2
 rp <- r1 * r2
+
+opar <- par(no.readonly =TRUE)
 par(mfrow=c(2,2))
 plot(rs, main='sum')
 plot(rp, main='product')
@@ -45,6 +47,7 @@ a <- hist(rp)
 a
 x <- c(rs, rp, sqrt(rs))
 hist(x)
+par(opar)
 }
 
 \keyword{methods}

@@ -42,7 +42,7 @@ Unless the process is terminated prematurely values at at most \code{n} position
 
 
 \examples{
-\dontrun{
+\donttest{
 r <-rast(system.file("exdata/test.tif", package="terra"))
 plot(r)
 click(r)

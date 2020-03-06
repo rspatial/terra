@@ -94,7 +94,7 @@ pca <- prcomp(sr)
 x <- predict(logo, pca)
 plot(x)
 
-\dontrun{
+\donttest{
 library(pls)
 model <- plsr(formula=pa~., data=v)
 # this returns an array:
@@ -123,8 +123,8 @@ vv <- v
 vv$pa <- as.factor(vv$pa)
 rfmod2 <- randomForest(pa ~., data=vv)
 r4 <- predict(logo, rfmod2, type='prob')
-
-raster::spplot(r4)
+rr4 <- as(r4, "Raster")
+raster::spplot(rr4)
 
 
 # cforest (other Random Forest implementation) example with factors argument
@@ -144,9 +144,9 @@ cl <- factor(c(rep(1, nrow(p)), rep(0, nrow(a))))
 train <- extract(logo, rbind(p, a))
 k <- app(logo, function(x) as.integer(as.character(knn(train, x, cl))))
 
-## End(Not run)
+} # End(donttest)
 }
-}
+
 
 \keyword{methods}
 \keyword{spatial}

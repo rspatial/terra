@@ -12,8 +12,9 @@ Make a RasterLayer with interpolated values using a fitted model object of class
 }
 
 \usage{
-\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., xyNames=c("x", "y"),
-      factors=NULL, const=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list())
+\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., 
+       xyNames=c("x", "y"), factors=NULL, const=NULL, index = NULL, 
+	   na.rm=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -23,7 +24,8 @@ Make a RasterLayer with interpolated values using a fitted model object of class
 \item{...}{additional arguments passed to \code{fun}}
 \item{xyNames}{character. variable names that the model uses for the spatial coordinates. E.g., \code{c("longitude", "latitude")}}
  \item{factors}{list with levels for factor variables. The list elements should be named with names that correspond to names in \code{object} such that they can be matched. This argument may be omitted for many models as the predict function will extract the levels from the \code{model} object}
-\item{const}{data.frame. Can be used to add a constant for which there is no Raster object for model predictions. This is particulary useful if the constant is a character-like factor value}
+\item{const}{data.frame. Can be used to add a constant for which there is no Raster object for model predictions. This is particularly useful if the constant is a character-like factor value}
+  \item{index}{positive integer or NULL. Allows for selecting of the variable returned if the model returns multiple variables}
  \item{na.rm}{logical. If \code{TRUE}, cells with \code{NA} values in the predictors are removed from the computation. This option prevents errors with models that cannot handle \code{NA} values. In most other cases this will not affect the output. An exception is when predicting with a model that returns predicted values even if some (or all!) variables are \code{NA} }
 
 \item{filename}{character. Output filename. Optional}
@@ -40,7 +42,7 @@ SpatRaster
 
 
 \examples{
-\dontrun{
+\donttest{
 ## Thin plate spline interpolation with x and y only
 # some example data
 r <-rast(system.file("exdata/test.tif", package="terra"))
@@ -74,6 +76,7 @@ z <- extract(elevation, vect(xy), fun=function(x)x[1])
 vv <- na.omit(cbind(xy, z, v))
 tps2 <- Tps(vv[,1:3], vv[,4])
 p2 <- interpolate(elevation, tps2)
+plot(p2) 
 
 # as a linear coveriate
 tps3 <- Tps(vv[,1:2], vv[,4], Z=vv[,3])

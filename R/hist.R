@@ -6,7 +6,7 @@
 
 setMethod("hist", signature(x="SpatRaster"), 
 	function(x, layer, maxcell=1000000, plot=TRUE, main, ...) {
-		
+			
 		if (missing(layer)) {
 			y <- 1:nlyr(x)
 		} else if (is.character(layer)) {
@@ -41,6 +41,8 @@ setMethod("hist", signature(x="SpatRaster"),
 			mfrow <- graphics::par("mfrow")
 			spots <- mfrow[1] * mfrow[2]
 			if (spots < nl) {
+				old.par <- graphics::par(no.readonly =TRUE)
+				on.exit(par(old.par))   
 				graphics::par(mfrow=c(nr, nc))
 			}
 			for (i in 1:length(y)) {
