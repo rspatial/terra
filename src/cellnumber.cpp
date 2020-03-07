@@ -30,20 +30,20 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 
 	for (size_t i = 0; i < size; i++) {
 		// cannot use trunc here because trunc(-0.1) == 0
-		unsigned row = std::floor((extent.ymax - y[i]) * yr_inv);
+		long row = std::floor((extent.ymax - y[i]) * yr_inv);
 		// points in between rows go to the row below
 		// except for the last row, when they must go up
 		if (y[i] == extent.ymin) {
 			row = nrow()-1 ;
 		}
 
-		unsigned col = floor((x[i] - extent.xmin) * xr_inv);
+		long col = floor((x[i] - extent.xmin) * xr_inv);
 		// as for rows above. Go right, except for last column
 		if (x[i] == extent.xmax) {
 			col = ncol() - 1 ;
 		}
 
-		if (row < 0 || row >= nrow() || col < 0 || col >= ncol()) {
+		if (row < 0 || (unsigned)row >= nrow() || col < 0 || (unsigned)col >= ncol()) {
 			cells[i] = NAN;
 		} else {
 			// result[i] = static_cast<int>(row) * ncols + static_cast<int>(col) + 1;
@@ -86,7 +86,7 @@ std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<unsigned> row,
 	size_t n = row.size();
 	size_t nc = ncol();
 	size_t nr = nrow();
-	
+
 	std::vector<double> result(n * n);
 	for (size_t i=0; i<n; i++) {
 		for (size_t j=0; j<n; j++) {
@@ -200,7 +200,7 @@ std::vector< std::vector<double> > SpatRaster::xyFromCell( std::vector<double> &
     unsigned nc = ncol();
 	std::vector< std::vector<double> > out(2, std::vector<double> (n, NAN) );
 	for (size_t i = 0; i<n; i++) {
-		if ((cell[i] < 0) || (cell[i] >= ncells)) continue; 
+		if ((cell[i] < 0) || (cell[i] >= ncells)) continue;
         unsigned row = cell[i] / nc;
         unsigned col = cell[i] - (row * nc);
         out[0][i] = xmin + (col + 0.5) * xr;
