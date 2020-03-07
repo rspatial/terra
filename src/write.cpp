@@ -142,12 +142,17 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned startrow, unsig
 		setError("cannot write (no open file)");
 		return false;
 	}
-	#ifdef useGDAL
-	success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
-	#else
-	setError("GDAL is not available");
-	return false;
-	#endif
+
+	if (source[0].driver == "gdal") {
+		#ifdef useGDAL
+		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
+		#else
+		setError("GDAL is not available");
+		return false;
+		#endif
+	} else {
+		success = writeValuesMem(vals, startrow, nrows, startcol, ncols);
+	}
 
 #ifdef useRcpp
 	if (Progress::check_abort()) {
