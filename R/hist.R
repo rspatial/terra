@@ -42,7 +42,7 @@ setMethod("hist", signature(x="SpatRaster"),
 			spots <- mfrow[1] * mfrow[2]
 			if (spots < nl) {
 				old.par <- graphics::par(no.readonly =TRUE)
-				on.exit(par(old.par))   
+				on.exit(graphics::par(old.par))   
 				graphics::par(mfrow=c(nr, nc))
 			}
 			for (i in 1:length(y)) {

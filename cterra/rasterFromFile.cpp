@@ -18,9 +18,10 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
-//#include "hdr.h"
+#include "hdr.h"
 
 bool SpatRaster::constructFromFile(std::string fname) {
+
 
 	if (!file_exists(fname)) {
 		setError("file does not exist");
@@ -28,11 +29,54 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	}
 
 	std::string ext = getFileExt(fname);
-    #ifdef useGDAL
-	return constructFromFileGDAL(fname);
-	#else 		
-	return false;
-    #endif // useGDAL
+	if (ext != ".grd") {
+        #ifdef useGDAL
+		return constructFromFileGDAL(fname);
+        #endif // useGDAL
+	} else {
+		std::vector<std::string> ini = hdr_read(fname);
+		if (ini[15] == "false") {
+			return false;
+		}
+		RasterSource s;
+		double xmin = std::stod(ini[0]);
+		double xmax = std::stod(ini[1]);
+		double ymin = std::stod(ini[2]);
+		double ymax = std::stod(ini[3]);
+		SpatExtent e(xmin, xmax, ymin, ymax);
+		s.extent = e;
+		s.datatype = ini[4];
+		s.bandorder = ini[5];
+		s.byteorder = ini[6];
+
+		s.nrow = std::stoi(ini[8]);
+		s.ncol = std::stoi(ini[9]);
+		s.nlyr = std::stoi(ini[10]);
+		s.nlyrfile = s.nlyr;
+		s.layers.resize(s.nlyr);
+		std::iota(s.layers.begin(), s.layers.end(), 0);
+		s.crs = ini[11];
+		s.NAflag = std::stod(ini[12]);
+		unsigned version = std::stoi(ini[7]);
+		std::string sep = ":|:";
+		if (version < 2) {
+            sep = ":";
+		}
+		s.range_min = str2dbl(strsplit(ini[13], sep));
+		s.range_max = str2dbl(strsplit(ini[14], sep));
+		s.names = strsplit(ini[15], sep);
+		s.filename = setFileExt(fname, ".gri");
+		s.hasRange = std::vector<bool> (s.nlyr, true);
+		s.has_scale_offset = std::vector<bool> (s.nlyr, false);
+		s.scale = std::vector<double>(s.nlyr, 1);
+		s.offset = std::vector<double>(s.nlyr, 0);
+
+		s.hasValues = true;
+		s.memory = false;
+		s.driver = "raster";
+		setSource(s);
+	}
+	return true;
 }
 
 

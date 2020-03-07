@@ -94,57 +94,6 @@ pca <- prcomp(sr)
 x <- predict(logo, pca)
 plot(x)
 
-\donttest{
-library(pls)
-model <- plsr(formula=pa~., data=v)
-# this returns an array:
-predict(model, v[1:5,])
-# write a function to turn that into a matrix
-pfun <- function(x, data) {
-   y <- predict(x, data)
-   d <- dim(y)
-   dim(y) <- c(prod(d[1:2]), d[3])
-   y
-}
-
-pp <- predict(logo, model, fun=pfun)
-
-# Random Forest
-
-library(randomForest)
-rfmod <- randomForest(pa ~., data=v)
-
-## note the additional argument "type='response'" that is 
-## passed to predict.randomForest
-r3 <- predict(logo, rfmod, type='response')
-
-## get class membership probabilities
-vv <- v
-vv$pa <- as.factor(vv$pa)
-rfmod2 <- randomForest(pa ~., data=vv)
-r4 <- predict(logo, rfmod2, type='prob')
-rr4 <- as(r4, "Raster")
-raster::spplot(rr4)
-
-
-# cforest (other Random Forest implementation) example with factors argument
-
-library(party)
-m <- cforest(pa~., control=cforest_unbiased(mtry=3), data=v)
-# the second argument in party:::predict.RandomForest
-# is "OOB", and not "newdata" or similar. We need to write a wrapper
-# predict function to deal with this 	
-predfun <- function(m, d, ...) predict(m, newdata=d, ...)
-
-pc <- predict(logo, m, OOB=TRUE, fun=predfun)
-
-# knn, using "app" instead of "predict"
-library(class)
-cl <- factor(c(rep(1, nrow(p)), rep(0, nrow(a))))
-train <- extract(logo, rbind(p, a))
-k <- app(logo, function(x) as.integer(as.character(knn(train, x, cl))))
-
-} # End(donttest)
 }
 
 

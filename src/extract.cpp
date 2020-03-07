@@ -570,14 +570,14 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			}
 		} else {
 			std::vector<std::vector<double>> srcout;
-			if (source[0].driver == "raster") {
-				srcout = readCellsBinary(src, cell);
-			} else {
+			//if (source[0].driver == "raster") {
+			//	srcout = readCellsBinary(src, cell);
+			//} else {
 			#ifdef useGDAL
-				std::vector<std::vector<unsigned>> rc = rowColFromCell(cell);
-				srcout = readRowColGDAL(src, rc[0], rc[1]);
+			std::vector<std::vector<unsigned>> rc = rowColFromCell(cell);
+			srcout = readRowColGDAL(src, rc[0], rc[1]);
 			#endif
-			}
+			//}
 			for (size_t i=0; i<slyrs; i++) {
 				out[lyr] = srcout[i];
 				lyr++;

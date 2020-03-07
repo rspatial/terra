@@ -99,13 +99,13 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 		} else {
 			// read from file
 			std::vector<double> fvals;
-			if (source[src].driver == "raster") {
-				fvals = readValuesBinary(src, row, nrows, col, ncols);
-			} else {
-				#ifdef useGDAL
-				fvals = readValuesGDAL(src, row, nrows, col, ncols);
-				#endif // useGDAL
-			}
+			//if (source[src].driver == "raster") {
+			//	fvals = readValuesBinary(src, row, nrows, col, ncols);
+			//} else {
+			#ifdef useGDAL
+			fvals = readValuesGDAL(src, row, nrows, col, ncols);
+			#endif // useGDAL
+			//}
 			out.insert(out.end(), fvals.begin(), fvals.end());			
 		}
 	}

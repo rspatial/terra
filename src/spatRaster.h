@@ -291,15 +291,15 @@ class SpatRaster {
 		bool writeValuesGDAL(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 		bool writeStopGDAL();
 
-		bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
-		bool writeValuesBinary(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
+		//bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
+		//bool writeValuesBinary(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 
 		bool writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 
 		// binary (flat) source
-		std::vector<double> readValuesBinary(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
-		std::vector<double> readSampleBinary(unsigned src, unsigned srows, unsigned scols);
-		std::vector<std::vector<double>> readCellsBinary(unsigned src, std::vector<double> cells);
+		//std::vector<double> readValuesBinary(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		//std::vector<double> readSampleBinary(unsigned src, unsigned srows, unsigned scols);
+		//std::vector<std::vector<double>> readCellsBinary(unsigned src, std::vector<double> cells);
 
 		// gdal source
 		std::vector<double> readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
@@ -314,7 +314,7 @@ class SpatRaster {
 
 		SpatRaster writeRaster(SpatOptions &opt);
 		SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
-		SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
+		//SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 
 		bool canProcessInMemory(unsigned n);
 		unsigned chunkSize(unsigned n);

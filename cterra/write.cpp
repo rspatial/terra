@@ -71,13 +71,19 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
 	}
-	std::string format = opt.get_filetype();
-    #ifdef useGDAL
-    out = writeRasterGDAL(filename, format, datatype, true, opt);
-	#else
-	out.setError("GDAL is not available");
-    return out;
-    #endif
+	if (ext == ".grd") {
+		std::string bandorder = opt.get_bandorder();
+	    out = writeRasterBinary(filename, datatype, bandorder, true);
+
+	} else {
+		std::string format = opt.get_filetype();
+        #ifdef useGDAL
+        out = writeRasterGDAL(filename, format, datatype, true, opt);
+		#else
+		out.setError("GDAL is not available");
+	    return out;
+        #endif
+	}
 	return out;
 }
 
@@ -109,15 +115,22 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		bool overwrite = opt.get_overwrite();
 
 		lowercase(ext);
-		// open GDAL filestream
-		#ifdef useGDAL
-		if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite, opt) ) {
+		if (ext == ".grd") {
+			std::string bandorder = opt.get_bandorder();
+			if (! writeStartBinary(filename, dtype, bandorder, overwrite) ) {
+				return false;
+			}
+		} else {
+			// open GDAL filestream
+			#ifdef useGDAL
+			if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite, opt) ) {
+				return false;
+			}
+			#else
+			setError("GDAL is not available");
 			return false;
+			#endif
 		}
-		#else
-		setError("GDAL is not available");
-		return false;
-		#endif
 	}
 	if (source[0].open_write) {
 		addWarning("file was already open");
@@ -142,12 +155,18 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned startrow, unsig
 		setError("cannot write (no open file)");
 		return false;
 	}
-	#ifdef useGDAL
-	success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
-	#else
-	setError("GDAL is not available");
-	return false;
-	#endif
+	if (source[0].driver == "raster") {
+		success = writeValuesBinary(vals, startrow, nrows, startcol, ncols);
+	} else if (source[0].driver == "gdal") {
+		#ifdef useGDAL
+		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
+		#else
+		setError("GDAL is not available");
+		return false;
+		#endif
+	} else {
+		success = writeValuesMem(vals, startrow, nrows, startcol, ncols);
+	}
 
 #ifdef useRcpp
 	if (Progress::check_abort()) {
@@ -187,7 +206,12 @@ bool SpatRaster::writeStop(){
 	source[0].open_write = false;
 	bool success = true;
 	source[0].memory = false;
-	if (source[0].driver == "gdal") {
+	if (source[0].driver == "raster") {
+		//source[0].fsclose();
+		writeHDR(source[0].filename);
+		setRange();
+		source[0].hasValues = true;
+	} else if (source[0].driver == "gdal") {
 		#ifdef useGDAL
 		success = writeStopGDAL();
 		//source[0].hasValues = true;
