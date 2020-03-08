@@ -75,7 +75,7 @@ x <- rast(nrow=108, ncol=21, xmin=0, xmax=10)
 f <- system.file("exdata/test.tif", package="terra")
 r <- rast(f)
 
-s <- rast(system.file("exdata/logo.grd", package="terra"))   
+s <- rast(system.file("exdata/logo.tif", package="terra"))   
 
 # Create a skeleton with no associated cell values
 rast(s)

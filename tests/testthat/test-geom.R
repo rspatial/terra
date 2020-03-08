@@ -1,6 +1,6 @@
 context("test-geom")
 
-for (i in 1:5) {
+for (i in 1:4) {
 	if (i == 1) {
 		r <- rast(ncol = 20, nrow = 10, xmin=-10, xmax=10, ymin=-5, ymax=6)
 		rx <- raster(ncol = 20, nrow = 10, xmn=-10, xmx=10, ymn=-5, ymx=6)
@@ -15,10 +15,6 @@ for (i in 1:5) {
 		rx <- raster(f)
 	} else if (i == 4) {
 		f <- system.file("exdata/logo.tif", package="terra")
-		r <- rast(f)
-		rx <- brick(f)
-	} else {
-		f <- system.file("exdata/logo.grd", package="terra")
 		r <- rast(f)
 		rx <- brick(f)
 	}

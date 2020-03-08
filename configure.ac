@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
-AC_INIT(src/write_raster.cpp)
+AC_INIT(src/write_ogr.cpp)
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
