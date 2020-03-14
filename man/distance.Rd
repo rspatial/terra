@@ -58,15 +58,11 @@ v <- rep(NA, ncell(r))
 v[500] <- 1
 values(r) <- v
 d <- distance(r) 
-#plot(d / 100000)
 
-# grid-distance
-# g <- distance(r, grid=TRUE)
-
+plot(d / 100000)
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
 dp <- distance(r, p1) 
-
 
 d <- distance(p1)
 d
