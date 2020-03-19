@@ -51,8 +51,6 @@ e <- ext(r)
 e
 extend(e, 10)
 extend(e, 10, -10, 0, 20)
-#e + 10
-#e * 2
 }
 
 \keyword{spatial}

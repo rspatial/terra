@@ -33,7 +33,7 @@ r2 <- rast()
 r3 <- rast()
 compareGeom(r1, r2, r3)
 nrow(r3) <- 10
-\dontrun{
+\donttest{
 compareGeom(r1, r3)
 }
 }

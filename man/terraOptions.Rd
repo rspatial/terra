@@ -35,9 +35,9 @@ progress - non-negative integer. A progress bar is shown if the number of chunks
 
 \examples{
 terraOptions()
-#terraOptions(memfrac=0.5, tempdir = "c:/temp")
-#terraOptions(progress=10)
-#terraOptions()
+terraOptions(memfrac=0.5, tempdir = "c:/temp")
+terraOptions(progress=10)
+terraOptions()
 }
 
 

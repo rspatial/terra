@@ -56,7 +56,7 @@ mr <- merge(y, x)
 # you can use do.call:
 s <- list(x, y)
 # add arguments such as filename
-# s$filename <- 'test.tif'
+s$filename <- ""
 m <- do.call(merge, s)
 
 ##

@@ -108,9 +108,9 @@ xres(r)
 yres(r)
 res(r)
 
-#res(r) <- 1/120
+res(r) <- 1/120
 # different xres and yres
-#res(r) <- c(1/120, 1/60)
+res(r) <- c(1/120, 1/60)
 }
 
 \keyword{spatial}

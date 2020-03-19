@@ -22,7 +22,7 @@ Plots labels, that is a textual (rather than color) representation of values, on
   \item{x}{SpatRaster or SpatVector}
   \item{labels}{character. Optional. Vector of labels with \code{length(x)} or a variable name from \code{names(x)}}
   \item{digits}{integer. how many digits should be used?}
-  \item{halo}{logical. If \code{TRUE} a 'halo' is printed around the text. If \code{TRUE}, additional arguments \code{hc='white'} and \code{hw=0.1} can be modified to set the colour and width of the halo}
+  \item{halo}{logical. If \code{TRUE} a "halo" is printed around the text. If \code{TRUE}, additional arguments \code{hc="white"} and \code{hw=0.1} can be modified to set the colour and width of the halo}
   \item{...}{additional arguments to pass to graphics function \code{\link[graphics]{text}} }
 }
 
@@ -39,10 +39,10 @@ plot(r)
 text(r)
 
 plot(r)
-text(r, halo=TRUE, hc='blue', col='white', hw=0.2)
+text(r, halo=TRUE, hc="blue", col="white", hw=0.2)
 
-#plot(r, col=bpy.colors(5))
-#text(r, fun=function(x){x<5 | x>12}, col=c('red', 'white'), vfont=c("sans serif", "bold"), cex=2)
+plot(r, col=rainbow(16))
+text(r, col=c("black", "white"), vfont=c("sans serif", "bold"), cex=2)
 }
 
 \keyword{methods}

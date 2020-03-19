@@ -44,13 +44,5 @@ Ritter, P., 1987. A vector-based slope and aspect generation algorithm. Photogra
 }
 
 
-\examples{
-\donttest{
-#library(geodata) # on github: rspatial/geodata
-#elv <- elevation_30s("Switzerland", path=".")
-#x <- slope(elv, unit="degrees")
-#plot(x)
-}
-}
 
 \keyword{spatial}

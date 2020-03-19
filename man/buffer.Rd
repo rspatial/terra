@@ -43,7 +43,7 @@ v <- rep(NA, ncell(r))
 v[500] <- 1
 values(r) <- v
 b <- buffer(r, width=5000000) 
-#plot(b)
+plot(b)
 
 v <- vect(rbind(c(10,10), c(0,60)))
 b <- buffer(v, 20)

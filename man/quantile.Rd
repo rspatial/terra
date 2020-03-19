@@ -41,7 +41,7 @@ q <- quantile(r)
 q
 
 # same as (but faster than)
-# qa <- app(r, quantile)
+qa <- app(r, quantile)
 }
 
 \keyword{methods}
