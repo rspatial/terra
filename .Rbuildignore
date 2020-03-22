@@ -2,6 +2,7 @@
 .gitattributes
 ^windows
 ^cterra
+^C
 ^inst/gdal
 ^inst/proj
 .travis.yml
