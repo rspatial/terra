@@ -18,3 +18,5 @@ config.log
 config.status
 packrat/lib*/
 packrat/src/
+
+C/terra

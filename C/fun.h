@@ -1,6 +1,4 @@
-#include <iostream>
-#include <sstream>
-#include <iterator>
+#include <string>
 
 SpatRaster make_raster() {
     SpatExtent e(-180,180,-90,90);
@@ -10,16 +8,38 @@ SpatRaster make_raster() {
        v.push_back(i+1);
     }
     r.setValues(v);
-	return r;
+    return r;
 }
 
-SpatRaster aggregate(filename) {
+SpatRaster aggregate(std::vector<std::string> args) {
     SpatOptions opts;
-    std::string sfun = "max";
-    std::vector<unsigned> fact = {10};
-	SpatRaster r(filename);
-    SpatRaster ra = r.aggregate(fact, sfun, false, opts);
-    return(ra);
+    SpatRaster out;
+    if (args.size() < 5) {
+	out.setError("usage: aggregate input output fact fun=mean narm=true");
+	return(out);
+    }
+    SpatRaster input(args[2]);
+    opts.filename = args[3];
+    // need to split the fact arguments
+    // for now assume a single argument
+    std::vector<unsigned> fact(1);
+    fact[0] = stoi(args[4]);
+    std::string fun;
+    if (args.size() < 6) {
+	fun = "mean";
+    } else {
+        fun = args[5];
+    }
+    bool narm;
+    if (args.size() < 7) {
+       narm = true;
+    } else {
+       narm = stoi(args[6]);
+    }
+
+    out = input.aggregate(fact, fun, narm, opts);
+    //std::cout << "out = input.aggregate(" << fact[0] << ", " << fun << "," << narm << ", " << opts.filename << std::endl;
+    return(out);
 }
 
 

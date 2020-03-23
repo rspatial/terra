@@ -13,7 +13,7 @@ std::string join(const std::vector<std::string>& vec, const char* delim) {
 
 
 void show(SpatRaster &r) {
-    std::cout << std::endl;
+    //std::cout << std::endl;
     if (r.msg.has_error) {
         std::cout << "Error: ";
         std::cout << r.msg.error << std::endl;
@@ -43,6 +43,7 @@ void show(SpatRaster &r) {
         for (size_t i=0; i<rmax.size(); i++) { std::cout << rmax[i] << ", "; };
         std::cout << "\n";
     }
+    std::cout << std::endl;
 }
 
 
