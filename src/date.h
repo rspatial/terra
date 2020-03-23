@@ -19,6 +19,7 @@
 #define SPATDATE_GUARD
 
 #include <vector>
+//#include <cstdlib>
 //#include <string>
 
 class SpatDate {
