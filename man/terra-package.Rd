@@ -8,9 +8,9 @@
 \title{The "terra" package}
 
 \description{
-The "terra" package implements classes for spatial data (see \link{SpatRaster-class}) and supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polylygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
+The "terra" package implements classes for spatial data (see \link{SpatRaster-class}) and supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
 
-The package is conceived as a replacement of the "raster" package. It has a very similar, but simpler, interface, and it is faster. Like the "raster" package, "terra" provides classes and functions to manipulate geographic (spatial) data in "raster" and "vector". Raster data divides space into cells (rectangles; pixels) of equal size (in units of the coordinate reference system). Such continuous spatial data are also referred to as "grid" data, and be contrasted with discrete "vector" spatial data such as points, lines, polygons. An important difference is that "terra" has a single main class for raster data, "SpatRaster", as opposed to the three classes in the "raster" package (RasterLayer, RasterStack, RasterBrick). 
+The package is conceived as a replacement of the "raster" package. It has a very similar, but simpler, interface, and it is faster. Like the "raster" package, "terra" provides classes and functions to manipulate geographic (spatial) data in "raster" and "vector" data types. Raster data divides space into cells (rectangles; pixels) of equal size (in units of the coordinate reference system). Such continuous spatial data are also referred to as "grid" data, and be contrasted with discrete "vector" spatial data such as points, lines, polygons. A major simplification is that "terra" has a single class for raster data, "SpatRaster", whereas the "raster" package has three (RasterLayer, RasterStack, RasterBrick). Likewise there is a single class for vector data ("SpatVector"). Like "raster" this package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
 Note the following important differences in function names with the raster package
 
@@ -34,9 +34,6 @@ raster package \tab terra package\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
 \code{sampleRegular}\tab\code{\link{spatSample}}\cr
 }
-
-
-The package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
 Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet. 
 }
