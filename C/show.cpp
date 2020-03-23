@@ -1,6 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include <iterator>
+#include <vector>
+#include <cmath>
+#include "spatRaster.h"
 
 std::string join(const std::vector<std::string>& vec, const char* delim) {
     std::stringstream s;
@@ -117,17 +120,6 @@ void showValues(std::vector<std::vector<double>> v) {
     std::cout << "\n";
 }
 
-template <typename T>
-void showValues(std::vector<T> v) {
-    for (size_t i=0; i<v.size(); i++) {
-       if (std::isnan(v[i])) {
-           std::cout << "NA" << " ";
-       } else {
-          std::cout << v[i] << " ";
-       }
-    }
-    std::cout << "\n";
-}
 
 
 void showValues(std::vector<std::vector<std::vector<double>>> v) {

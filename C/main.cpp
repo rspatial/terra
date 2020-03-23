@@ -1,12 +1,13 @@
 #include <iostream>
 #include "spatRaster.h"
 #include "gdal_frmts.h"
+#include "show.h"
 
 int main(int argc, char *argv[]) {
 
     SpatRaster test;
     std::cout <<  test.nrow() << std::endl;
-
+    show(test);
 
     if(argc < 2) {
         std::string path = (std::string)argv[0];
@@ -18,7 +19,7 @@ int main(int argc, char *argv[]) {
 	GDALAllRegister();
         std::string x = (std::string)argv[1];
         SpatRaster r(x);
-        std::cout << r.ncol() << std::endl;
+        show(r);
         return 0;
     }
 	return 0;
