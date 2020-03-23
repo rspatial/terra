@@ -37,7 +37,7 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 			row = nrow()-1 ;
 		}
 
-		long col = floor((x[i] - extent.xmin) * xr_inv);
+		long col = std::floor((x[i] - extent.xmin) * xr_inv);
 		// as for rows above. Go right, except for last column
 		if (x[i] == extent.xmax) {
 			col = ncol() - 1 ;
@@ -200,7 +200,7 @@ std::vector< std::vector<double> > SpatRaster::xyFromCell( std::vector<double> &
     unsigned nc = ncol();
 	std::vector< std::vector<double> > out(2, std::vector<double> (n, NAN) );
 	for (size_t i = 0; i<n; i++) {
-		if ((cell[i] < 0) || (cell[i] >= ncells)) continue;
+		if (std::isnan(cell[i]) || (cell[i] < 0) || (cell[i] >= ncells)) continue;
         unsigned row = cell[i] / nc;
         unsigned col = cell[i] - (row * nc);
         out[0][i] = xmin + (col + 0.5) * xr;

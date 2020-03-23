@@ -120,8 +120,8 @@ static inline std::vector<double> vquantile(std::vector<double> v, const std::ve
 
     for (size_t i = 0; i < pn; ++i) {
 		double x = probs[i] * (n-1);
-		unsigned x1 = floor(x);
-		unsigned x2 = ceil(x);
+		unsigned x1 = std::floor(x);
+		unsigned x2 = std::ceil(x);
 		if (x1 == x2) {
 			q[i] = v[x1];
 		} else {

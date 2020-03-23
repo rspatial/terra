@@ -94,15 +94,15 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 		ymn = round((e.ymin-orig[1]) / res[1]) * res[1] + orig[1];
 		ymx = round((e.ymax-orig[1]) / res[1]) * res[1] + orig[1];
 	} else if (snap == "out") {
-		xmn = floor((e.xmin-orig[0]) / res[0]) * res[0] + orig[0];
-		xmx = ceil((e.xmax-orig[0]) / res[0]) * res[0] + orig[0];
-		ymn = floor((e.ymin-orig[1]) / res[1]) * res[1] + orig[1];
-		ymx = ceil((e.ymax-orig[1]) / res[1]) * res[1] + orig[1];
+		xmn = std::floor((e.xmin-orig[0]) / res[0]) * res[0] + orig[0];
+		xmx = std::ceil((e.xmax-orig[0]) / res[0]) * res[0] + orig[0];
+		ymn = std::floor((e.ymin-orig[1]) / res[1]) * res[1] + orig[1];
+		ymx = std::ceil((e.ymax-orig[1]) / res[1]) * res[1] + orig[1];
 	} else { //if (snap == "in") {
-		xmn = ceil((e.xmin-orig[0]) / res[0]) * res[0] + orig[0];
-		xmx = floor((e.xmax-orig[0]) / res[0]) * res[0] + orig[0];
-		ymn = ceil((e.ymin-orig[1]) / res[1]) * res[1] + orig[1];
-		ymx = floor((e.ymax-orig[1]) / res[1]) * res[1] + orig[1];
+		xmn = std::ceil((e.xmin-orig[0]) / res[0]) * res[0] + orig[0];
+		xmx = std::floor((e.xmax-orig[0]) / res[0]) * res[0] + orig[0];
+		ymn = std::ceil((e.ymin-orig[1]) / res[1]) * res[1] + orig[1];
+		ymx = std::floor((e.ymax-orig[1]) / res[1]) * res[1] + orig[1];
 	}
 	
 	if (xmn == xmx) {

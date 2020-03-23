@@ -12,11 +12,13 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		size <- min(ncell(x), size)
 		
 		if (method == "regular") {
-			x@ptr <- x@ptr$sampleRegular(size)
-			x <- show_messages(x, "spatSample")		
 			if (as.raster) {
-				return(x)
+				x@ptr <- x@ptr$sampleRegular(size)
+				x <- show_messages(x, "spatSample")		
+				return(x);
 			} else {
+				x@ptr <- x@ptr$sampleRegular(size)
+				x <- show_messages(x, "spatSample")		
 				return(values(x))
 			}
 		} else {

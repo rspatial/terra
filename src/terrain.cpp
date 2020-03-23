@@ -34,7 +34,7 @@
 
 
 double dmod(double x, double n) {
-	return(x - n * floor(x/n));
+	return(x - n * std::floor(x/n));
 }
 
 

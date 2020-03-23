@@ -22,8 +22,8 @@
 void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldcol, unsigned nrows, unsigned ncols, unsigned snrow, unsigned sncol) {
 	double rf = nrows / (double)(snrow);
 	double cf = ncols / (double)(sncol);
-	double rstart = floor(0.5 * rf);
-	double cstart = floor(0.5 * cf);
+	double rstart = std::floor(0.5 * rf);
+	double cstart = std::floor(0.5 * cf);
 	oldcol.reserve(sncol);
 	for (size_t i =0; i<sncol; i++) {
         oldcol.push_back(i * cf + cstart);
