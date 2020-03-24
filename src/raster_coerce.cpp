@@ -287,7 +287,7 @@ void getCorners(std::vector<double> &x,  std::vector<double> &y, const double &X
 	y[4] = y[0];
 }
 
-
+/*
 SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 	if (!values) narm=false;
 	SpatVector v;
@@ -341,6 +341,45 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 	}
 	v.setCRS(getCRS());
 	return(v);
+}
+
+*/
+
+SpatVector SpatRaster::as_polygons(bool values, bool narm) {
+	if (!values) narm=false;
+	SpatVector vect;
+	SpatGeom g;
+	g.gtype = polygons;
+	double xr = xres()/2;
+	double yr = yres()/2;
+	std::vector<double> x(5);
+	std::vector<double> y(5);
+
+	std::vector<double> cells(ncell()) ;
+	std::iota (std::begin(cells), std::end(cells), 0);
+	std::vector< std::vector<double> > xy = xyFromCell(cells);
+	for (size_t i=0; i<ncell(); i++) {
+		getCorners(x, y, xy[0][i], xy[1][i], xr, yr);
+		SpatPart p(x, y);
+		g.addPart(p);
+		vect.addGeom(g);
+		g.parts.resize(0);
+	}
+
+	if (values) {
+		unsigned nl = nlyr();
+		unsigned nc = ncell();
+		std::vector<double> v = getValues();
+		std::vector<std::string> nms = getNames();
+		for (size_t i=0; i<nl; i++) {
+			size_t offset = i * nc;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nc);
+			vect.add_column(vv, nms[i]);
+		}
+		
+	}
+	vect.setCRS(getCRS());
+	return(vect);
 }
 
 

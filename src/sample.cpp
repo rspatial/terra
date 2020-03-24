@@ -22,8 +22,10 @@
 void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldcol, unsigned nrows, unsigned ncols, unsigned snrow, unsigned sncol) {
 	double rf = nrows / (double)(snrow);
 	double cf = ncols / (double)(sncol);
-	double rstart = std::floor(0.5 * rf);
-	double cstart = std::floor(0.5 * cf);
+	//double rstart = std::floor(0.5 * rf);
+	//double cstart = std::floor(0.5 * cf);
+	double rstart = 0.5 * rf;
+	double cstart = 0.5 * cf;
 	oldcol.reserve(sncol);
 	for (size_t i =0; i<sncol; i++) {
         oldcol.push_back(i * cf + cstart);
@@ -56,19 +58,18 @@ std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigne
 }
 
 
-SpatRaster SpatRaster::sampleRegular(unsigned size) {
-
-	if (size >= ncell()) return( *this );
+SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 
 	double f = sqrt(size / ncell());
 	unsigned nr = ceil(nrow() * f);
 	unsigned nc = ceil(ncol() * f);
-	if ((nc == ncol()) && (nr == nrow())) return( deepCopy() );
-
+	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
+		return( *this );
+	}
 	SpatRaster out = geometry(nlyr());
-	out.source[0].nrow=nr;
-	out.source[0].ncol=nc;
-
+	out.source[0].nrow = nr;
+	out.source[0].ncol = nc;
+	
 	if (!source[0].hasValues) return (out);
 
 	std::vector<double> v;
@@ -90,6 +91,51 @@ SpatRaster SpatRaster::sampleRegular(unsigned size) {
 
 	return out;
 }
+
+std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) {
+
+	std::vector<std::vector<double>> out;
+	if (!source[0].hasValues) return (out);
+	
+	unsigned nsize;
+	unsigned nr = nrow();
+	unsigned nc = ncol();
+	if (size < ncell()) {
+		double f = sqrt(size / ncell());
+		nr = std::ceil(nrow() * f);
+		nc = std::ceil(ncol() * f);
+	}
+	nsize = nc * nr;
+	std::vector<double> v;
+	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
+		v = getValues() ;
+		for (size_t i=0; i<nlyr(); i++) {
+			size_t offset = i * nsize;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
+			out.push_back(vv);
+		}
+		return out;
+	}
+
+	for (size_t src=0; src<nsrc(); src++) {
+		if (source[src].memory) {
+			v = readSample(src, nr, nc);
+		//} else if (source[src].driver == "raster") {
+		//	v = readSampleBinary(src, nr, nc);
+		} else {
+		    #ifdef useGDAL
+			v = readGDALsample(src, nr, nc);
+			#endif
+		}
+		for (size_t i=0; i<source[src].nlyr; i++) {
+			size_t offset = i * nsize;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
+			out.push_back(vv);
+		}
+	}	
+	return out;
+}
+
 
 /*
 std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, unsigned seed) {
@@ -153,15 +199,13 @@ std::vector<double> sample_with_replacement(unsigned size, unsigned N, unsigned 
 
 // if size is large, use (shuffle(values))[1:size] instead
 
-std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, bool replace, unsigned seed) {
+std::vector<std::vector<double>> SpatRaster::sampleRandomValues(unsigned size, bool replace, unsigned seed) {
 
 	double nc = ncell();
 	std::vector<double> dcells;
 
 	if (replace) {
-	
 		if (size >= .6 * nc) {
-			
 			dcells.resize(nc);
 			std::iota(std::begin(dcells), std::end(dcells), 0);
 			std::default_random_engine gen(seed);  
@@ -179,6 +223,35 @@ std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, bool re
 	
 	std::vector<std::vector<double>> d = extractCell(dcells);
 	return d; 
+}
+
+
+SpatRaster SpatRaster::sampleRandomRaster(unsigned size, bool replace, unsigned seed) {
+
+	unsigned nsize;
+	unsigned nr = nrow();
+	unsigned nc = ncol();
+	if (size < ncell()) {
+		double f = sqrt(size / ncell());
+		nr = std::ceil(nrow() * f);
+		nc = std::ceil(ncol() * f);
+	}
+	SpatRaster out = geometry(nlyr());
+	out.source[0].nrow = nr;
+	out.source[0].ncol = nc;
+	if (!source[0].hasValues) return (out);
+	
+	nsize = nr * nc;
+	std::vector<std::vector<double>> vv = sampleRandomValues(nsize, replace, seed);
+
+	for (size_t i=0; i<vv.size(); i++) {
+		out.source[0].values.insert(out.source[0].values.end(), vv[i].begin(), vv[i].end());
+	}
+	out.source[0].driver = "memory";
+	out.source[0].hasValues = true;
+	out.source[0].setRange();
+
+	return out;
 }
 
 

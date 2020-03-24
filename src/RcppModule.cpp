@@ -224,6 +224,8 @@ RCPP_MODULE(spat){
 	    .constructor<std::vector<std::string> >()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
+		.method("copy", &SpatRaster::deepCopy, "deepCopy")
+
 		.method("spatinit", &SpatRaster::spatinit, "init")
 		
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
@@ -342,8 +344,10 @@ RCPP_MODULE(spat){
 		.method("quantile", &SpatRaster::quantile, "quantile")
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("rotate", &SpatRaster::rotate, "rotate")
-		.method("sampleRegular", &SpatRaster::sampleRegular, "sampleRegular")	
-		.method("sampleRandom", &SpatRaster::sampleRandom, "sampleRandom")	
+		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster, "sampleRegular")	
+		.method("sampleRegularValues", &SpatRaster::sampleRegularValues, "sampleValues")	
+		.method("sampleRandomRaster", &SpatRaster::sampleRandomRaster, "sampleRandom")	
+		.method("sampleRandomValues", &SpatRaster::sampleRandomValues, "sampleValues")	
 		.method("shift", &SpatRaster::shift, "shift")
 		.method("slope", &SpatRaster::slope, "slope")
 		.method("summary", &SpatRaster::summary, "summary")

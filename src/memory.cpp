@@ -41,7 +41,7 @@ BlockSize SpatRaster::getBlockSize(unsigned n, unsigned steps) {
 		cs = nrow() / steps;
 	} else {
 		cs = chunkSize(n);
-		bs.n = ceil(nrow() / double(cs));
+		bs.n = std::ceil(nrow() / double(cs));
 	}
 
 	bs.row = std::vector<unsigned>(bs.n);

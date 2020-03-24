@@ -68,6 +68,15 @@ function(x, y, ...) {
 })
 
 
+setMethod("extract", signature(x="SpatRaster", y="vector"), 
+function(x, y, ...) { 
+	y <- as.integer(y)
+	y[y < 1] <- NA
+	y[y > ncell(x)] <- NA
+	x[i]
+})
+
+
 setMethod("[", c("SpatRaster", "missing", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	values(x, mat=drop)

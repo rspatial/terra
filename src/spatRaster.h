@@ -393,8 +393,10 @@ class SpatRaster {
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
-		SpatRaster sampleRegular(unsigned size);
-		std::vector<std::vector<double>> sampleRandom(unsigned size, bool replace, unsigned seed);
+		SpatRaster sampleRegularRaster(unsigned size);
+		SpatRaster sampleRandomRaster(unsigned size, bool replace, unsigned seed);
+		std::vector<std::vector<double>> sampleRegularValues(unsigned size);
+		std::vector<std::vector<double>> sampleRandomValues(unsigned size, bool replace, unsigned seed);
 		
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
 	

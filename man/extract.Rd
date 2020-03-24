@@ -5,6 +5,7 @@
 \alias{extract}
 \alias{extract,SpatRaster,SpatVector-method}
 \alias{extract,SpatRaster,matrix-method}
+\alias{extract,SpatRaster,numeric-method}
 
 \alias{[,SpatRaster,SpatVector,missing-method}
 \alias{[,SpatRaster,missing,missing-method}
@@ -16,17 +17,18 @@
 \title{Extract values from a SpatRaster}
 
 \description{
-Extract values from a SpatRaster for the locations of a SpatVector
+Extract values from a SpatRaster for a set of locations. The locations can be a SpatVector (points, lines, polygons), a matrix with (x, y) or (longitude, latitude -- in that order!) coordinates, or a vector with cell numbers.  
 } 
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., method="simple", drop=FALSE)
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
+\S4method{extract}{SpatRaster,numeric}(x, y, ...)
 }
 
 \arguments{
 \item{x}{SpatRaster}
-\item{y}{SpatVector (for points, lines, polygons), or 2-column matrix (x, y; for points)}
+\item{y}{SpatVector (for points, lines, polygons), or 2-column matrix (x, y; for points), or a vector with cell numbers}
 \item{fun}{character. function to summarize the data. Currently ignored}
 \item{...}{additional arguments. None implemented}
 \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}

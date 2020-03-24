@@ -46,16 +46,26 @@ RasterSource::RasterSource() {
 
 
 SpatRaster SpatRaster::combineSources(SpatRaster x) {
-	SpatRaster out = deepCopy();
-	if (compare_geom(x, false, false)) {
-        if (!hasValues()) {
-            out.source = x.source;
-        } else {
-            out.source.insert(out.source.end(), x.source.begin(), x.source.end());
-        }
-	} else {
+
+	SpatRaster out = geometry();	
+
+	if (!compare_geom(x, false, false)) {
 		out.setError("dimensions and/or extent do not match");
+		return out;
 	}
+
+	bool hv = hasValues();
+	if (hv != x.hasValues()) {
+		out.setError("combined sources must all have values; or none should have values");
+		return(out);
+	}
+	
+	out = deepCopy();
+//    if (!hv) {
+//       out.source = x.source;
+//    } else {
+    out.source.insert(out.source.end(), x.source.begin(), x.source.end());
+//	} 
 	return(out);
 }
 
