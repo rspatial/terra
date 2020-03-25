@@ -15,12 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef VECMATHFUN_GUARD
-#define VECMATHFUN_GUARD
+//#ifndef VECMATHFUN_GUARD
+//#define VECMATHFUN_GUARD
 
+#include <functional>
 #include "vecmath.h"
 
 std::function<double(std::vector<double>&, bool)> getFun(std::string fun);
 
-#endif
+//#endif
 
