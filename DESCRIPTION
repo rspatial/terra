@@ -1,7 +1,7 @@
 Package: terra
 Type: Package
 Title: Classes and Methods for Spatial Data
-Version: 0.5-4
+Version: 0.5-5
 Date: 2020-03-24
 Depends: R (>= 3.3.0)
 Suggests: testthat, rgdal

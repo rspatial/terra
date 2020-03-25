@@ -64,10 +64,6 @@ setMethod("size", signature(x="SpatRaster"),
 	}
 )
 
-if (!isGeneric("nlyr")) {
-	setGeneric("nlyr", function(x)
-		standardGeneric("nlyr"))
-}	
 
 setMethod("nlyr", signature(x="SpatRaster"), 
 	function(x){
@@ -76,10 +72,6 @@ setMethod("nlyr", signature(x="SpatRaster"),
 )
 
 
-if (!isGeneric("nsrc")) {
-	setGeneric("nsrc", function(x)
-		standardGeneric("nsrc"))
-}	
 
 setMethod("nsrc", signature(x="SpatRaster"), 
 	function(x){
