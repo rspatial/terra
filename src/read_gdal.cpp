@@ -22,6 +22,7 @@
 
 #include "spatRaster.h"
 #include "file_utils.h"
+#include "string_utils.h"
 #include "NA.h"
 
 #include "gdal_priv.h"
@@ -105,8 +106,14 @@ std::string basename_sds(std::string f) {
 	if (std::string::npos != i) {
 		f.erase(0, i + 1);
 	}
-	f = std::regex_replace(f, std::regex(".hdf"), "");
+	const size_t j = f.find_last_of(":");
+	if (std::string::npos != j) {
+		f.erase(0, j + 1);
+	}
+	f = std::regex_replace(f, std::regex(".hdf$"), "");
+	f = std::regex_replace(f, std::regex(".nc$"), "");
 	f = std::regex_replace(f, std::regex("\""), "");
+	
 	return f;
 }
 
@@ -120,40 +127,40 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 		if (pos != std::string::npos) {
 			s.erase(0, pos + delim.length());
 			sd.push_back(s);
-		} else {
+		} 
+		//else {
 			// _DESC=
-			s.erase(0, pos + delim.length());
+		//	s.erase(0, pos + delim.length());
 			//nms.push_back(s);
 			//printf( "%s\n", s.c_str() );
 
-		}
+		//}
 	}
 
 	constructFromFileGDAL(sd[0]);
-	SpatRaster r;
+	SpatRaster out;
 	bool success;
     for (size_t i=1; i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		success = r.constructFromFileGDAL(sd[i]);
+		success = out.constructFromFileGDAL(sd[i]);
 		if (success) {
-//			r.source[0].subdataset = true;
-			addSource(r);
-			if (r.msg.has_error) {
-				setError(r.msg.error);
+//			out.source[0].subdataset = true;
+			addSource(out);
+			if (out.msg.has_error) {
+				setError(out.msg.error);
 				return false;
 			}
 		} else {
-			if (r.msg.has_error) {
-				setError(r.msg.error);
+			if (out.msg.has_error) {
+				setError(out.msg.error);
 			}
 			return false;
 		}
 	}
 
-	std::vector<std::string> names = filenames();
-	for (std::string& s : names) s = basename_sds(s);
-	success = setNames(names);
-
+	for (std::string& s : sd) s = basename_sds(s);
+	success = setNames(sd);
+	
 	return true;
 }
 
@@ -315,9 +322,9 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
 			s.names.push_back(bandname);
 		} else {
 			if (s.nlyr > 1) {
-				s.names.push_back(basename(fname) + std::to_string(i+1) ) ;
+				s.names.push_back(basename_noext(fname) + std::to_string(i+1) ) ;
 			} else {
-				s.names.push_back(basename(fname)) ;
+				s.names.push_back(basename_noext(fname)) ;
 			}
 		}
 	}

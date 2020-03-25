@@ -23,11 +23,7 @@ std::string setFileExt(const std::string& s, const std::string& ext) {
 	return(s + ext);
 }
 
-std::string basename(std::string filename) {
-	const size_t i = filename.find_last_of("\\/");
-	if (std::string::npos != i) {
-		filename.erase(0, i + 1);
-	}
+std::string noext(std::string filename) {
 	const size_t p = filename.rfind('.');
 	if (std::string::npos != p) {
 		filename.erase(p);
@@ -35,6 +31,20 @@ std::string basename(std::string filename) {
 	return filename;
 }
 
+std::string basename(std::string filename) {
+	const size_t i = filename.find_last_of("\\/");
+	if (std::string::npos != i) {
+		filename.erase(0, i + 1);
+	}
+	return filename;
+}
+
+
+std::string basename_noext(std::string filename) {
+	filename = basename(filename);
+	filename = noext(filename);
+	return filename;
+}
 
 
 

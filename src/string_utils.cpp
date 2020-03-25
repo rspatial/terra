@@ -203,3 +203,23 @@ void make_unique_names(std::vector<std::string> &s) {
     }
 }
 
+
+void str_replace(std::string& s, const std::string& from, const std::string& to) {
+    size_t start_pos = s.find(from);
+    if (start_pos != std::string::npos) {
+		s.replace(start_pos, from.length(), to);
+	}
+}
+
+size_t str_replace_all(std::string& str, const std::string& from, const std::string& to) {
+    size_t count = 0;
+    if (from.empty()) return count;
+    size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length();
+		count++;
+    }
+	return count;
+}
+

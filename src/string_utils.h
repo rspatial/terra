@@ -18,3 +18,7 @@ bool in_string(const std::string &x, std::string part);
 
 void make_unique_names(std::vector<std::string> &s);
 void make_valid_names(std::vector<std::string> &s);
+
+void str_replace(std::string& str, const std::string& from, const std::string& to);
+size_t str_replace_all(std::string& str, const std::string& from, const std::string& to);
+

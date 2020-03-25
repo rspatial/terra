@@ -79,7 +79,6 @@ setMethod ("show" , "SpatRaster",
 			m <- .inMemory(object)
 			f <- .filenames(object)
 			f <- gsub("\\", "/", f, fixed=TRUE)
-
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m] 
 			if (nsr > 1) {
