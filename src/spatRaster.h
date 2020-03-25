@@ -207,7 +207,7 @@ class SpatRaster {
 
 		bool constructFromFile(std::string fname);
 		bool constructFromFiles(std::vector<std::string> fnames);
-		bool constructFromFileGDAL(std::string fname);
+		//bool constructFromFileGDAL(std::string fname);
 		bool constructFromSubDataSets(std::string filename, std::vector<std::string> sds);
 
 		void addSource(SpatRaster x);

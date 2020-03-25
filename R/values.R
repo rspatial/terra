@@ -97,9 +97,7 @@ setMethod("values<-", signature("SpatRaster", "ANY"),
 }
 
 .filenames <- function(x) {
-	f <- x@ptr$filenames
-	f <- gsub("^HDF4_EOS:EOS_GRID:", "", f)
-	f <- gsub("^NETCDF:", "", f)
+	x@ptr$filenames
 }
 
 .hasMinMax <- function(x) {

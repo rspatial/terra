@@ -31,12 +31,34 @@
 #include "ogr_spatialref.h"
 
 #include "gdal_rat.h"
+//#include "hdr.h"
 
 
 void SpatRaster::spatinit() {
     GDALAllRegister();
     OGRRegisterAll();
 }
+
+
+
+
+
+bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
+
+	SpatRaster r = SpatRaster(fnames[0]);
+	setSource(r.source[0]);
+	for (size_t i=1; i<fnames.size(); i++) {
+		r = SpatRaster(fnames[i]);
+		if (!compare_geom(r, false, true, true)) {
+			setError("geometry of " + fnames[i] + " does not match previous sources");
+			return false;
+		} else {
+			addSource(r);
+		}
+	}
+	return true;
+}
+
 
 
 
@@ -137,12 +159,12 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 		//}
 	}
 
-	constructFromFileGDAL(sd[0]);
+	constructFromFile(sd[0]);
 	SpatRaster out;
 	bool success;
     for (size_t i=1; i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		success = out.constructFromFileGDAL(sd[i]);
+		success = out.constructFromFile(sd[i]);
 		if (success) {
 //			out.source[0].subdataset = true;
 			addSource(out);
@@ -165,7 +187,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 }
 
 
-bool SpatRaster::constructFromFileGDAL(std::string fname) {
+bool SpatRaster::constructFromFile(std::string fname) {
 
     GDALDataset *poDataset;
     //GDALAllRegister();
@@ -173,7 +195,11 @@ bool SpatRaster::constructFromFileGDAL(std::string fname) {
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 
     if( poDataset == NULL )  {
-		setError("cannot read from " + fname );
+		if (!file_exists(fname)) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + fname );
+		}
 		return false;
 	}
 

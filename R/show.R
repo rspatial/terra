@@ -81,6 +81,7 @@ setMethod ("show" , "SpatRaster",
 			f <- gsub("\\", "/", f, fixed=TRUE)
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m] 
+
 			if (nsr > 1) {
 				lbs <- .nlyrBySource(object)
 				lbsprint <- paste0(" (", lbs, " layers)")

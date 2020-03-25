@@ -20,10 +20,13 @@
 
 
 SpatRaster::SpatRaster(std::string fname) {
+#ifdef useGDAL
 	constructFromFile(fname);
+#endif
 }
 
 SpatRaster::SpatRaster(std::vector<std::string> fname) {
+#ifdef useGDAL
 	constructFromFile(fname[0]);
 	SpatRaster r;
 	bool success;
@@ -42,6 +45,7 @@ SpatRaster::SpatRaster(std::vector<std::string> fname) {
 			return;
 		}
 	}
+#endif
 }
 
 
