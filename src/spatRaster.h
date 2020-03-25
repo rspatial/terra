@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019  Robert J. Hijmans
+// Copyright (c) 2018-2020  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -356,8 +356,8 @@ class SpatRaster {
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
         std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
 		SpatRaster flip(bool vertical, SpatOptions &opt);
-		SpatRaster focal(std::vector<double> w, double fillvalue, bool narm, std::string fun, SpatOptions &opt);
-		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows);
+		SpatRaster focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, std::string fun, SpatOptions &opt);
+		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows);
 		std::vector<std::vector<double>> freq(bool bylayer);
 		bool get_aggregate_dims(std::vector<unsigned> &fact, std::string &message);
 		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);

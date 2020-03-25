@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019  Robert J. Hijmans
+// Copyright (c) 2018-2020  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -15,120 +15,149 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#include <vector>
 #include "spatRaster.h"
-#include <algorithm>
+#include "vecmathfun.h"
 
+
+std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& ncol, const unsigned& nlyr, const int& row, const int& col) {
+  
+  std::vector<double> out(nlyr, NAN);
+  if ((row < 0) || (row > (nrow -1)) || (col < 0) || (col > (ncol-1))) {
+    return out;
+  } else {
+    unsigned nc = nrow * ncol;
+    unsigned cell = row * ncol + col;
+    for (size_t i=0; i<nlyr; i++) {
+      unsigned lcell = cell + i * nc;
+      out[i] = d[lcell];
+    }
+  }
+  return out;
+}
 
 // todo: three dimensional focal
 
-std::vector<double> focal_get(std::vector<double> d, std::vector<unsigned> dim, std::vector<unsigned> ngb, double fillvalue, unsigned offset) {
+std::vector<double> get_focal(std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int offset, double fill) {
+	int wr = wrows / 2;
+	int wc = wcols / 2;
+	wr = std::min(wr, nrow);
+	wc = std::min(wc, ncol);
 
-  // object
-	unsigned ncols = dim[1];
-	unsigned nrows = dim[0];
-
-
-  // window
-	unsigned wrows = ngb[0];
-	unsigned wcols = ngb[1];
-	unsigned wr = std::floor(wrows / 2);
-	unsigned wc = std::floor(wcols / 2);
-
-  //	if ((wrows % 2 == 0) | (wcols % 2 == 0))
-  //		error("weights matrix must have uneven sides");
-
-	unsigned n = nrows * ncols * wrows * wcols;
-  	std::vector<double> val(n, fillvalue);
-
-	unsigned f = 0;
-	for (size_t i = offset; i < nrows; i++) {
-		for (size_t j = 0; j < ncols; j++) {
-			for (size_t r=-wr; r <= wr ; r++) {
-				unsigned row = i+r;
-				for (size_t c=-wc; c <= wc ; c++) {
-					unsigned col = j+c;
-					if (col >= 0 && col < ncols && row >= 0 && row < nrows) {
-						val[f] = d[row*ncols+col];
+	size_t n = (nrow-offset) * ncol * wrows * wcols;
+	std::vector<double> val(n, fill);
+	int f = 0;
+	
+	for (int r = offset; r < nrow; r++) {
+		for (int c = 0; c < ncol; c++) {
+			for (int i = -wr; i <= wr; i++) {
+				int row = r+i;			
+				if (row < 0 || row > (nrow-1)) {
+					f = f + wcols;
+				} else {
+					unsigned bcell = row * ncol;
+					for (int j = -wc; j <= wc; j++) {
+						int col = c + j;	
+						if ((col >= 0) && (col < ncol)) {
+							val[f] = d[bcell+col];
+						}
+						f++;
 					}
-					f++;
 				}
-			}
+			}	
 		}
-    }
+	}
 	return(val);
 }
 
 
 
-std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, unsigned row, unsigned nrows) {
+std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows) {
 
-	unsigned wr = std::floor(w[0]/2);
-	unsigned row2 = std::max(unsigned(0), row-wr);
-	unsigned nrows2 = std::min(nrow(), nrows+wr);
-	unsigned offset = row - row2;
+	if ((w[0] % 2 == 0) || (w[1] % 2 == 0)) {
+		setError("weights matrix must have uneven sides");
+		std::vector<double> d;
+		return(d);
+	}
+
+	int wr = w[0] / 2;
+	int wc = w[1] / 2;
+	int nr = nrow();
+	int nc = ncol();
+	wr = std::min(wr, nr);
+	wc = std::min(wc, nc);
+
+	int readstart = row-wr;
+	readstart = readstart < 0 ? 0 : readstart;
+	int offset = row-readstart;
+	int readnrows = nrows+(2*wr);
+	readnrows = readnrows > nr ? (nr-readstart) : readnrows;
+	
 	readStart();
-	std::vector<double> d = readValues(row2, nrows2, 0, ncol());
+	std::vector<double> d = readValues(readstart, readnrows, 0, nc);
 	readStop();
 
-	std::vector<unsigned> dim = {nrows, ncol()};
-	std::vector<double> f = focal_get(d, dim, w, fillvalue, offset);
-
-//	if ((row2 < row) | (nrows2 > nrows)) {
-//		unsigned start = (row-row2) * dim[1] * w[0] * w[1];
-//		unsigned end = start + nrows * dim[1] * w[0] * w[1];
-//		return std::vector<double> (f.begin()+start, f.begin()+end);
-//	}
+	std::vector<double> f = get_focal(d, nrows, nc, w[0], w[1], offset, fillvalue);
 	return(f);
 }
 
 
-
-SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm, std::string fun, SpatOptions &opt) {
-
-	bool wmat = false;
-	int ww;
-	std::vector<unsigned> window;
-	unsigned size = w.size();
-	if (size > 3) {
-		// this does not look correct (only for square matrices)
-		wmat = true;
-		ww = w.size();
-		unsigned wsize = sqrt(ww);
-		window.push_back(wsize);
-		window.push_back(wsize);
-	} else if (size == 2) {
-		ww = w[0] * w[1];
-		window.push_back(w[0]);
-		window.push_back(w[1]);
-	} else {
-		w.push_back(w[0]);
-		ww = w[0] * w[1];
-		window.push_back(w[0]);
-		window.push_back(w[1]);
-	}
+SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, std::string fun, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (!source[0].hasValues) { return(out); }
-	std::vector<unsigned> dim = {0, ncol()};
+
+	bool wmat = false;
+	if (m.size() > 1) {
+		wmat = true;
+		
+	} else if (w.size() == 1) {
+		w.push_back(w[0]);
+	} 
+	if (w.size() != 2) {
+		out.setError("size of w is not 1 or 2");
+		return out;
+	}
+	unsigned ww = w[0] * w[1];
+	if (ww < 9) {
+		out.setError("not a meanigful window");
+		return out;
+	}
+	if (wmat && (ww != m.size())) {
+		out.setError("weight matrix error");
+		return out;
+	}
 
  	if (!out.writeStart(opt)) { return out; }
-	readStart();
-	std::vector<double> v, f, d;
-	std::vector<double> fv;
-	
-	unsigned wr = std::floor(w[0]/2);
 
+	std::function<double(std::vector<double>&, bool)> fFun = getFun(fun);
+	std::vector<double> v;
+	
 	for (size_t i = 0; i < out.bs.n; i++) {
 
-		unsigned startrow = std::max(unsigned(0), out.bs.row[i]-wr);
-		unsigned nrows = out.bs.nrows[i] + wr;
-		nrows = (nrows + startrow) > nrow() ? nrow() - startrow : nrows;
-		unsigned offset = out.bs.row[i]-startrow;
+		std::vector<double> fv = focal_values(w, fillvalue, out.bs.row[i], out.bs.nrows[i]);
+		v.resize(out.bs.nrows[i] * ncol());
+		if (wmat) {
+			for (size_t j=0; j<v.size(); j++) {
+				v[j] = 0;
+				for (size_t k=0; k<ww; k++) {
+					v[j] += fv[j*ww+k] * m[k];
+				}
+			}			
+		} else {
+			for (size_t j=0; j<v.size(); j++) {
+				unsigned off = j*ww;
+				std::vector<double> x(fv.begin()+off, fv.begin()+off+ww);
+				v[j] = fFun(x, narm);
+			}
+		}
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	out.writeStop();
+	return(out);
+}
 
-		d = readValues(startrow, nrows, 0, ncol());
-		dim[0] = out.bs.nrows[i];
-		f = focal_get(d, dim, window, fillvalue, offset);
+
+/*	
 		v.resize(out.bs.nrows[i] * ncol());
 		for (size_t j = 0; j < v.size(); j++) {
 			double z = 0;
@@ -179,3 +208,4 @@ SpatRaster SpatRaster::focal(std::vector<double> w, double fillvalue, bool narm,
 	return(out);
 }
 
+*/

@@ -18,29 +18,27 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 \arguments{
 \item{x}{SpatRaster}
   
-\item{w}{matrix of weights (the moving window), e.g. a 3 by 3 matrix with values 1; see Details. The matrix does not need to be square, but the sides must be odd numbers. If you need even sides, you can add a column or row with weights of zero}
+\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized matrix with weights. See Details. If the window is defined as a matrix, \code{na.rm=FALSE} and \code{fun=sum}, and cannot be changed}
 
-\item{na.rm}{logical. If \code{TRUE}, \code{NA} will be removed from focal computations. The result will only be \code{NA} if all focal cells are \code{NA}. Except for some special cases (weights of 1, functions like min, max, mean), using \code{na.rm=TRUE} is generally not a good idea in this function because it will unbalance the effect of the weights }
+\item{na.rm}{logical. Should missing values be removed?}
 
-  \item{fillvalue}{numeric. The value of the cells of the padded rows and columns}
+\item{fillvalue}{numeric. The value of the cells of the padded rows and columns}
 
-  
-  \item{fun}{function (optional). The function fun should take multiple numbers, and return a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument (or ignore it, e.g. as one of the 'dots' arguments. For example, \code{length} will fail, but \code{function(x, ...){na.omit(length(x))}} works. }
+\item{fun}{function. The function fun should take multiple numbers, and return a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument}
 
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments. None implemented}  
+
+\item{filename}{character. Output filename. Optional}
+\item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+\item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+\item{...}{additional arguments. None implemented}  
 }
 
 \details{
-\code{focal} uses a matrix of weights for the neighborhood of the focal cells. The default function is \code{sum}. It is computationally much more efficient to adjust the weights-matrix than to use another function through the \code{fun} argument. Thus while the following two statements are equivalent (if there are no \code{NA} values), the first one is faster than the second one:
+\code{focal} 
 
-\code{a <- focal(x, w=matrix(1/9, nc=3, nr=3))}
+The window used must have odd dimensions. If you need even sides, you can make a matrix add a column or row with weights of zero. 
 
-\code{b <- focal(x, w=matrix(1,3,3), fun=mean)}
-
-There is, however, a difference if \code{NA} values are considered. One can use the \code{na.rm=TRUE} option which may make sense when using a function like \code{mean}. However, the results would be wrong when using a weights matrix.
+Example weight matrices
 
 Laplacian filter: \code{filter=matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3)}
 
@@ -51,10 +49,19 @@ Sobel filter: \code{filter=matrix(c(1,2,1,0,0,0,-1,-2,-1) / 4, nrow=3)}
 
 
 \examples{
-r <- rast(ncols=36, nrows=18, xmn=0)
+r <- rast(ncols=10, nrows=10, ext(0, 10, 0, 10))
 values(r) <- 1:ncell(r)
 
-x <- focal(r, w=3, fun=mean) 
+f <- focal(r, w=3, fun=function(x, ...)quantile(x, .25, ...), na.rm=TRUE) 
+
+f <- focal(r, w=3, fun="mean") 
+
+# the following two statements are equivalent:
+a <- focal(r, w=matrix(1/9, nc=3, nr=3))
+b <- focal(r, w=3, fun=mean, na.rm=FALSE)
+
+# but this is different
+d <- focal(r, w=3, fun=mean, na.rm=TRUE)
 }
 
 

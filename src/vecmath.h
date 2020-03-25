@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019  Robert J. Hijmans
+// Copyright (c) 2018-2020  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -17,7 +17,6 @@
 
 #ifndef VECMATH_GUARD
 #define VECMATH_GUARD
-
 
 #include <type_traits>
 #include <vector>
@@ -452,7 +451,6 @@ void cummin(std::vector<T>& v, bool narm) {
         }
     }
 }
-
 
 
 #endif

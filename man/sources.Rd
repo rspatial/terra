@@ -31,7 +31,7 @@ Get the data sources of a SpatRaster and the number of layers by source. Sources
 f <- system.file("exdata/test.tif", package="terra")
 r <- rast(f)
 s <- rast(r)
-values(s) <= 1:ncell(s)
+values(s) <- 1:ncell(s)
 rs <- c(r,r,s,r)
 sources(rs)
 hasValues(r)

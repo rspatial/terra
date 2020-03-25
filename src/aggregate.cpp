@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019  Robert J. Hijmans
+// Copyright (c) 2018-2020  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -18,9 +18,8 @@
 //#include <vector>
 #include <limits>
 #include <cmath>
-#include <functional>
 #include "spatRaster.h"
-#include "vecmath.h"
+#include "vecmathfun.h"
 
 
 
@@ -213,26 +212,6 @@ std::vector<double> compute_aggregates(std::vector<double> &in, size_t nr, size_
 }
 
 
-
-std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
-	std::function<double(std::vector<double>&, bool)> agFun;
-	if (fun == "mean") {
-		agFun = vmean<double>;
-	} else if (fun == "sum") {
-		agFun = vsum<double>;
-	} else if (fun == "min") {
-		agFun = vmin<double>;
-	} else if (fun == "max") {
-		agFun = vmax<double>;
-	} else if (fun == "median") {
-		agFun = vmedian<double>;
-	} else if (fun == "modal") {
-		agFun = vmodal<double>;
-	} else {
-		agFun = vmean<double>;
-	}
-	return agFun;
-}
 
 SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt) {
 

@@ -68,12 +68,12 @@ function(x, y, ...) {
 })
 
 
-setMethod("extract", signature(x="SpatRaster", y="vector"), 
+setMethod("extract", signature(x="SpatRaster", y="numeric"), 
 function(x, y, ...) { 
 	y <- as.integer(y)
 	y[y < 1] <- NA
 	y[y > ncell(x)] <- NA
-	x[i]
+	x[y]
 })
 
 
