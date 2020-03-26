@@ -3,31 +3,27 @@
 [![Travis build
 status](https://travis-ci.org/rspatial/terra.svg?branch=master)](https://travis-ci.org/rspatial/terra)
 
-This R package is a replacement of the [raster](https://github.com/rspatial/raster) package.
+`terra` is a R package is a replacement of the [raster](https://github.com/rspatial/raster) package.
 It has a very similar, but simpler, interface, and it is much faster.
 
-All native computations are done in C++. 
-Classes, methods and properties are exposed via a Rcpp module.
+All native computations are done in C++.  Classes, methods and properties are exposed via a Rcpp module.
 The R side has two main S4 classes (SpatRaster and SpatVector) that represent spatial data. These classes have only slot, a reference to a C++ object. They are used to provide a "normal" "S4" R user-interface as in the raster package.
 
-The first (alpha) release is expected by July 2019.
 
 ## Installation
 
-You need to install the latest version of "raster" from CRAN or [github](https://github.com/rspatial/raster).
+`terra` is available from CRAN, so you can use `install.packages("terra"). 
+
+See below for instructions on installing the *development version*
 
 ### Windows
 
-If you are on Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use.
-After that, you need the first install development version of "raster" for "terra" to work. 
+If you are on Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. After that, you need the first install development version of "raster" for "terra" to work. 
 
 Then, in R, install the packages.
 
 ```
-library(devtools)
-install.packages("raster")
-#devtools::install_github("rspatial/raster")
-devtools::install_github("rspatial/terra")
+remotes::install_github("rspatial/terra")
 ```
 
 ### Mac - OSX
@@ -42,9 +38,7 @@ brew install gdal
 
 And now, in R, install the packages.
 ```
-library(devtools)
-install.packages("raster")
-devtools::install_github("rspatial/terra")
+remotes::install_github("rspatial/terra")
 ```
 
 ### Linux
@@ -61,10 +55,8 @@ sudo apt-get install libgdal-dev libgeos-dev libproj-dev
 
 And now, in R, install the packages.
 ```
-library(devtools)
-install.packages("raster")
-devtools::install_github("rspatial/terra")
+remotes::install_github("rspatial/terra")
 ```
 
-See the sf [instructions](https://github.com/r-spatial/sf) for installation on other linux systems.
+See the sf [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions.
 
