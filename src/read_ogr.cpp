@@ -97,7 +97,7 @@ bool SpatVector::read(std::string fname) {
 
 	msg.success = true;
 
-    //GDALAllRegister();
+    OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
         setError("Cannot open file");
@@ -110,7 +110,7 @@ bool SpatVector::read(std::string fname) {
 		poSRS->exportToProj4(&pszPRJ);
 		crs = pszPRJ;
 	}
-	OGRLayer *poLayer = poDS->GetLayerByName( basename(fname).c_str() );
+	OGRLayer *poLayer = poDS->GetLayerByName( basename_noext(fname).c_str() );
 
 	lyr.df = readAttributes(poLayer);
 

@@ -123,7 +123,7 @@ class SpatRaster {
 
 	public:
 
-		bool GDALregistred = false;
+	//	bool GDALregistred = false;
 
 #ifdef useRcpp
 		Progress* pbar;
