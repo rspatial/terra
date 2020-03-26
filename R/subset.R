@@ -35,6 +35,11 @@ function(x, i, j, ... ,drop=TRUE) {
 	subset(x, i, ...)
 })
 
+setMethod("[", c("SpatRaster", "character", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	subset(x, i, ...)
+})
+
 setMethod("[[", c("SpatRaster", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	subset(x, which(i), ...)
