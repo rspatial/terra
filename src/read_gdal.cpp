@@ -36,7 +36,8 @@
 
 void SpatRaster::spatinit() {
     GDALAllRegister();
-    OGRRegisterAll();
+    OGRRegisterAll(); // should go to SpatVector
+	GDALregistred = true;
 }
 
 
@@ -190,7 +191,9 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 bool SpatRaster::constructFromFile(std::string fname) {
 
     GDALDataset *poDataset;
-    //GDALAllRegister();
+    
+	if (!GDALregistred) spatinit(); //GDALAllRegister();
+
 	const char* pszFilename = fname.c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 

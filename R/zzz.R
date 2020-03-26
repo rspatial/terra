@@ -1,5 +1,5 @@
 
-#loadModule("spat", TRUE)
+loadModule("spat", TRUE)
 
 
 .onAttach <- function(libname, pkgname) {
@@ -8,13 +8,12 @@
 	packageStartupMessage(m)
 	
 ##############################
-#	.create_options()
-#	SpatRaster$new()$spatinit()
-}
-
-.onLoad <- function(libname, pkgname) {
-	loadModule("spat", TRUE)
 	.create_options()
 	SpatRaster$new()$spatinit()
 }
+
+#.onLoad <- function(libname, pkgname) {
+#	loadModule("spat", TRUE)
+#	SpatRaster$new()$spatinit()
+#}
 
