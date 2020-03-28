@@ -22,9 +22,7 @@
 #ifdef useGDAL
 #include "gdal_priv.h"
 #endif
-
 #ifdef useRcpp
-
 #include <Rcpp.h>
 // Rcpp::depends(RcppProgress)
 #include "progress.hpp"
@@ -376,7 +374,7 @@ class SpatRaster {
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
-		SpatRaster mask(SpatVector x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
+		SpatRaster mask(SpatVector x, bool inverse, double updatevalue, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 
@@ -399,9 +397,9 @@ class SpatRaster {
 		SpatRaster sampleRandomRaster(unsigned size, bool replace, unsigned seed);
 		std::vector<std::vector<double>> sampleRegularValues(unsigned size);
 		std::vector<std::vector<double>> sampleRandomValues(unsigned size, bool replace, unsigned seed);
-		
+
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
-	
+
 		SpatRaster collapse(SpatRaster x, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);

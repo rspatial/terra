@@ -18,6 +18,7 @@
 
 #include "ogr_spatialref.h"
 #include <vector>
+#include <string>
 #include "spatMessages.h"
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {

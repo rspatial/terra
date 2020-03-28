@@ -4,13 +4,13 @@
 # License GPL v3
 
 
-
 setMethod("rast", signature(x="missing"),
 	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...) {
 
 		if (missing(extent)) {	extent <- ext(xmin, xmax, ymin, ymax) }
 		e <- as.vector(extent)
-
+		if ((e[1] >= e[2]) || e[3] >= e[4]) {stop("invalid extent")}
+		
 		if (missing(crs)) {
 			if (e[1] > -360.01 & e[2] < 360.01 & e[3] > -90.01 & e[4] < 90.01) {
 				crs <- "+proj=longlat +datum=WGS84"
@@ -21,14 +21,13 @@ setMethod("rast", signature(x="missing"),
 			crs <- as.character(crs)
 		}
 
+		if (!missing(resolution)) {
+			nrows <- max(1, round((e[4] - e[3]) / resolution))
+			ncols <- max(1, round((e[2] - e[1]) / resolution))
+		}
 
 		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
-
-		if (!missing(resolution)) {
-		#	res(r) <- resolution
-			stop()
-		}
 
 		show_messages(r, "rast")
 	}

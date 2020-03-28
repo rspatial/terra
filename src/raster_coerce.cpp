@@ -75,7 +75,7 @@ SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, std::vector<double> val
 	unsigned n = p.size();
 	unsigned nc = out.ncol();
 	SpatExtent extent = out.getExtent();
-	
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v(out.bs.nrows[i] * nc, background);
 
@@ -102,7 +102,7 @@ SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, std::vector<double> val
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-		
+
 	}
 	out.writeStop();
 	return(out);
@@ -153,7 +153,7 @@ SpatRaster rasterizeLines(SpatVector p, SpatRaster r, std::vector<double> value,
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-		
+
 	}
 	out.writeStop();
 	return(out);
@@ -177,9 +177,9 @@ SpatRaster SpatRaster::rasterize(SpatVector p, std::vector<double> values, doubl
 	if (gtype == "polygons") {
 		out = rasterizePolygons(p, out, values, background, opts);
 	} else if (gtype == "lines") {
-		out = rasterizeLines(p, out, values, background, opts);		
+		out = rasterizeLines(p, out, values, background, opts);
 	}  else {
-		out = rasterizePoints(p, out, values, background, opts);		
+		out = rasterizePoints(p, out, values, background, opts);
 	}
 	if (update) out = cover(out, background, opt);
 	return out;
@@ -376,7 +376,9 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nc);
 			vect.add_column(vv, nms[i]);
 		}
-		
+		if (narm) {
+            // loop over dataframe and remove rows if value is na
+		}
 	}
 	vect.setCRS(getCRS());
 	return(vect);

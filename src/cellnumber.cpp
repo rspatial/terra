@@ -68,7 +68,9 @@ std::vector<double> SpatRaster::cellFromRowCol(std::vector<unsigned> row, std::v
 	size_t n = row.size();
 	std::vector<double> result(n);
 	for (size_t i=0; i<n; i++) {
-		result[i] = (row[i]<0 || row[i] >= nrow() || col[i]<0 || col[i] >= ncol()) ? NAN : row[i] * ncol() + col[i];
+	//	result[i] = (row[i]<0 || row[i] >= nrow() || col[i]<0 || col[i] >= ncol()) ? NAN : row[i] * ncol() + col[i];
+	// < 0 never true for unsigned
+        result[i] = (row[i] >= nrow() || col[i] >= ncol()) ? NAN : row[i] * ncol() + col[i];
 	}
 	return result;
 }
