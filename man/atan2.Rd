@@ -20,7 +20,7 @@ See \code{\link{Math-methods}} for other trigonometric and mathematical function
   \item{x}{SpatRaster}
 }
 
-\seealso{ \code{\link{Math-methods}} }
+\seealso{ \code{\link[terra]{Math-methods}} }
 
 
 \examples{

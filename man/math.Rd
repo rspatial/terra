@@ -52,6 +52,9 @@ For \bold{SpatExtent} the following methods have been implemented: \code{"round"
 \S4method{is.na}{SpatRaster}(x)
 }
 
+\arguments{
+  \item{x}{SpatRaster}
+}
 
 \section{Note}{
 You can use the somewhat more flexible \code{\link{app}} method instead of the Math-methods.
