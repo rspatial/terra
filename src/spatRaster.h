@@ -370,6 +370,8 @@ class SpatRaster {
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
 		SpatRaster init(double value, SpatOptions &opt);
 		SpatRaster isnot(SpatOptions &opt);
+		SpatRaster isnan(SpatOptions &opt);
+		
         std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);

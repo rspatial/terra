@@ -116,6 +116,15 @@ setMethod("Logic", signature(e1="logical", e2="SpatRaster"),
 )
 
 
+setMethod("is.na", signature(x="SpatRaster"),
+	function(x) {
+		x@ptr <- x@ptr$isnan(.terra_environment$options@ptr)
+		show_messages(x, "is.na")
+	}
+)	
+
+
+
 .summarize <- function(x, ..., fun, na.rm=FALSE) {
 	dots <- list(...)
 	add <- NULL	

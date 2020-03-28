@@ -407,7 +407,6 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
     out.source[0].ncol = out.source[0].ncol * fact[1];
     out.source[0].nlyr = out.source[0].nlyr * fact[2];
 
-
     if (!hasValues()) {
         return out;
     }
@@ -557,6 +556,24 @@ SpatRaster SpatRaster::init(double value, SpatOptions &opt) {
 	out.writeStop();
 	return(out);
 }
+
+
+SpatRaster SpatRaster::isnan(SpatOptions &opt) {
+	SpatRaster out = geometry();
+    if (!hasValues()) return out;
+
+	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		for (double &d : v) d = std::isnan(d);
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
 
 
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {

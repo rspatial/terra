@@ -88,11 +88,6 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 )
 
 
-.getExt <- function(x) {
-	return(x)
-}
-
-
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
 	function(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)

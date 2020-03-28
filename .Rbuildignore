@@ -1,8 +1,9 @@
 .gitignore
 .gitattributes
 ^windows
-^cterra
-^C
+^misc
+^cmdapp
+^codeblocks
 ^inst/gdal
 ^inst/proj
 .travis.yml
