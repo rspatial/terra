@@ -809,7 +809,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	readStart();
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
-	v.insert( v.end(), add.begin(), add.end() );
+	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);

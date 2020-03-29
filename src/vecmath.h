@@ -178,14 +178,12 @@ T vmin(std::vector<T>& v, bool narm) {
 			}
 		}
 	} else {
+		if (is_NA(x)) return x;
 		for (size_t i=1; i<v.size(); i++) {
-			if (!is_NA(x)) {
-				if (is_NA(v[i])) {
-					x = NA<T>::value;
-					break;
-				} else {
-					x = std::min(x, v[i]);
-				}
+			if (is_NA(v[i])) {
+				return NA<T>::value;
+			} else {
+				x = std::min(x, v[i]);
 			}
 		}
 	}
@@ -207,14 +205,12 @@ T vmax(std::vector<T>& v, bool narm) {
 			}
 		}
 	} else {
+		if (is_NA(x)) return x;
 		for (size_t i=1; i<v.size(); i++) {
-			if (!is_NA(x)) {
-				if (is_NA(v[i])) {
-					x = NA<T>::value;
-					break;
-				} else {
-					x = std::max(x, v[i]);
-				}
+			if (is_NA(v[i])) {
+				return NA<T>::value;
+			} else {
+				x = std::max(x, v[i]);
 			}
 		}
 	}
@@ -229,7 +225,7 @@ T vwhichmin(std::vector<T>& v, bool narm) {
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
 			if (!is_NA(v[i])) {
-				if (is_NA(x)) {
+				if (is_NA(out)) {
 					x = v[i];
 					out = i;
 				} else if (v[i] < x) {
@@ -239,21 +235,23 @@ T vwhichmin(std::vector<T>& v, bool narm) {
 			}
 		}
 	} else {
+		if (is_NA(x)) { return out; }
 		for (size_t i=1; i<v.size(); i++) {
-			if (!is_NA(x)) {
-				if (is_NA(v[i])) {
-					out = NA<T>::value;
-					break;
-				} else {
-					if (v[i] < x) {
-						x = v[i];
-						out = i;
-					}
+			if (is_NA(v[i])) {
+				return NA<T>::value;
+			} else {
+				if (v[i] < x) {
+					x = v[i];
+					out = i;
 				}
 			}
 		}
 	}
-	return out;
+	if (is_NA(out)) {
+		return out;
+	} else {
+		return (out + 1);  // +1 for R
+	}	
 }
 
 
@@ -264,7 +262,7 @@ T vwhichmax(std::vector<T>& v, bool narm) {
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
 			if (!is_NA(v[i])) {
-				if (is_NA(x)) {
+				if (is_NA(out)) {
 					x = v[i];
 					out = i;
 				} else if (v[i] > x) {
@@ -274,25 +272,24 @@ T vwhichmax(std::vector<T>& v, bool narm) {
 			}
 		}
 	} else {
+		if (is_NA(x)) { return out; }
 		for (size_t i=1; i<v.size(); i++) {
-			if (!is_NA(x)) {
-				if (is_NA(v[i])) {
-					out = NA<T>::value;
-					break;
-				} else {
-					if (v[i] > x) {
-						x = v[i];
-						out = i;
-					}
+			if (is_NA(v[i])) {
+				return NA<T>::value;
+			} else {
+				if (v[i] > x) {
+					x = v[i];
+					out = i;
 				}
 			}
 		}
 	}
-	return out;
+	if (is_NA(out)) {
+		return out;
+	} else {
+		return (out + 1);  // +1 for R
+	}	
 }
-
-
-
 
 
 // problematic; should be ok for int and float but
