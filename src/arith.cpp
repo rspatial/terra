@@ -770,7 +770,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 
 	SpatRaster out = geometry(1);
 
-	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "prod", "any", "all", "stdev"};
+	std::vector<std::string> f {"sum", "mean", "which.min", "which.max", "min", "max", "range", "prod", "any", "all", "stdev"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown summary function");
 		return out;
@@ -781,6 +781,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	} 
 	out.source[0].names[0] = fun;
   	if (!hasValues()) { return out; }
+
 
 	std::function<double(std::vector<double>&, bool)> sumFun;
 	if (fun == "sum") {
@@ -793,6 +794,10 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		sumFun = vmin<double>;
 	} else if (fun == "max") {
 		sumFun = vmax<double>;
+	} else if (fun == "which.min") {
+		sumFun = vwhichmin<double>;
+	} else if (fun == "which.max") {
+		sumFun = vwhichmax<double>;
 	} else if (fun == "any") {
 		sumFun = vany<double>;
 	} else if (fun == "all") {

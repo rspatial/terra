@@ -74,7 +74,7 @@ setMethod ("show" , "SpatRaster",
 			ln <- c(ln[1:mnr], "...")
 		}
 
-		if (.hasValues(object)) {
+		if (hasValues(object)) {
 			nsr <- nsrc(object)	
 			m <- .inMemory(object)
 			f <- .filenames(object)

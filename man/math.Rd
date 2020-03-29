@@ -24,6 +24,11 @@
 
 \alias{is.na}
 \alias{is.na,SpatRaster-method}
+\alias{which.min}
+\alias{which.min,SpatRaster-method}
+\alias{which.max}
+\alias{which.max,SpatRaster-method}
+
 
 \title{Mathematical operations with SpatRaster objects}
 
@@ -35,7 +40,7 @@ Standard arithmetic operators for computations with SpatRaster objects and numer
 
 \bold{Compare}: \code{==, !=, >, <,  <=, >=, is.na}
 
-\bold{\code{\link[base]{Summary}}}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
+\bold{\code{\link[base]{Summary}}}: \code{"max", "min", "range", "prod", "sum", "any", "all", "which.max", "which.min"}
  
 \bold{Math}: \code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh"}
  
@@ -50,6 +55,8 @@ For \bold{SpatExtent} the following methods have been implemented: \code{"round"
 
 \usage{
 \S4method{is.na}{SpatRaster}(x)
+\S4method{which.min}{SpatRaster}(x)
+\S4method{which.max}{SpatRaster}(x)
 }
 
 \arguments{
@@ -82,7 +89,12 @@ b2 <- b * 10
 s <- sqrt(b2)
 round(s, 1)
 
+max(s)
+max(s, na.rm=TRUE)
+
 x <- is.na(s)
+
+y <- which.max(s)
 }
 
 \keyword{methods}

@@ -150,6 +150,23 @@ setMethod("is.na", signature(x="SpatRaster"),
 	x		
 }
 
+
+setMethod("which.max", "SpatRaster",  
+	function(x) { 
+		x@ptr <- x@ptr$summary("which.max", TRUE, .terra_environment$options@ptr)
+		show_messages(x, "which.max")
+	}
+)
+
+setMethod("which.min", "SpatRaster",  
+	function(x) { 
+		x@ptr <- x@ptr$summary("which.min", TRUE, .terra_environment$options@ptr)
+		show_messages(x, "which.min")
+	}
+)
+
+
+
 setMethod("Summary", signature(x="SpatRaster"),
 	function(x, ..., na.rm=FALSE){
 		fun <- as.character(sys.call()[[1L]])

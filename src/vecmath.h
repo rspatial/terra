@@ -222,6 +222,79 @@ T vmax(std::vector<T>& v, bool narm) {
 }
 
 
+template <typename T>
+T vwhichmin(std::vector<T>& v, bool narm) {
+	T x = v[0];
+	T out = NA<T>::value;
+	if (narm) {
+		for (size_t i=1; i<v.size(); i++) {
+			if (!is_NA(v[i])) {
+				if (is_NA(x)) {
+					x = v[i];
+					out = i;
+				} else if (v[i] < x) {
+					x = v[i];
+					out = i;
+				}
+			}
+		}
+	} else {
+		for (size_t i=1; i<v.size(); i++) {
+			if (!is_NA(x)) {
+				if (is_NA(v[i])) {
+					out = NA<T>::value;
+					break;
+				} else {
+					if (v[i] < x) {
+						x = v[i];
+						out = i;
+					}
+				}
+			}
+		}
+	}
+	return out;
+}
+
+
+template <typename T>
+T vwhichmax(std::vector<T>& v, bool narm) {
+	T x = v[0];
+	T out = NA<T>::value;
+	if (narm) {
+		for (size_t i=1; i<v.size(); i++) {
+			if (!is_NA(v[i])) {
+				if (is_NA(x)) {
+					x = v[i];
+					out = i;
+				} else if (v[i] > x) {
+					x = v[i];
+					out = i;
+				}
+			}
+		}
+	} else {
+		for (size_t i=1; i<v.size(); i++) {
+			if (!is_NA(x)) {
+				if (is_NA(v[i])) {
+					out = NA<T>::value;
+					break;
+				} else {
+					if (v[i] > x) {
+						x = v[i];
+						out = i;
+					}
+				}
+			}
+		}
+	}
+	return out;
+}
+
+
+
+
+
 // problematic; should be ok for int and float but
 // won't work with bool values (nodata == 0)
 template <typename T>

@@ -25,8 +25,12 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	#	vv <- as.list(as.data.frame(v))
 	#	r <- do.call(fun, vv, ...)	
 	#} else {
-		r <- apply(v, 1, fun, ...)
+	r <- apply(v, 1, fun, ...)
+	
 	#}
+	if (is.list(r)) {
+		stop("the function returns a list (should be numeric or matrix")
+	}
 	trans <- FALSE			
 	if (NCOL(r) > 1) {
 		#? if ((ncol(r) %% nc) == 0) {

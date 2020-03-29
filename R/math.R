@@ -62,3 +62,5 @@ setMethod("Math2", signature(x="SpatExtent"),
 		}
 	}	
 )
+
+
