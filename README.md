@@ -12,7 +12,7 @@ The R side has two main S4 classes (SpatRaster and SpatVector) that represent sp
 
 ## Installation
 
-`terra` is available from CRAN, so you can use `install.packages("terra"). 
+`terra` is available from CRAN, so you can use `install.packages("terra")`. 
 
 See below for instructions on installing the *development version*
 
