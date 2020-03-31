@@ -220,8 +220,14 @@ T vmax(std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vwhichmin(std::vector<T>& v, bool narm) {
+
 	T x = v[0];
-	T out = NA<T>::value;
+	T out;
+	if (is_NA(x)) {
+		out = NA<T>::value;
+	} else {
+		out = 0;		
+	}
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
 			if (!is_NA(v[i])) {
@@ -257,8 +263,14 @@ T vwhichmin(std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vwhichmax(std::vector<T>& v, bool narm) {
+
 	T x = v[0];
-	T out = NA<T>::value;
+	T out;
+	if (is_NA(x)) {
+		out = NA<T>::value;
+	} else {
+		out = 0;		
+	}
 	if (narm) {
 		for (size_t i=1; i<v.size(); i++) {
 			if (!is_NA(v[i])) {
@@ -273,7 +285,7 @@ T vwhichmax(std::vector<T>& v, bool narm) {
 		}
 	} else {
 		if (is_NA(x)) { return out; }
-		for (size_t i=1; i<v.size(); i++) {
+		for (size_t i=0; i<v.size(); i++) {
 			if (is_NA(v[i])) {
 				return NA<T>::value;
 			} else {

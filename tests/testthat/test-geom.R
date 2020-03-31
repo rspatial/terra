@@ -1,6 +1,6 @@
 context("test-geom")
 
-for (i in 1:4) {
+for (i in 1:2) {
 	if (i == 1) {
 		r <- rast(ncol = 20, nrow = 10, xmin=-10, xmax=10, ymin=-5, ymax=6)
 		rx <- raster(ncol = 20, nrow = 10, xmn=-10, xmx=10, ymn=-5, ymx=6)
@@ -9,15 +9,7 @@ for (i in 1:4) {
 	} else if (i == 2) {
 		r <- c(r, r/2, r*2)
 		rx <- stack(rx, rx/2, rx*2)
-	} else if (i == 3) {
-		f <- system.file("exdata/test.tif", package="terra")
-		r <- rast(f)
-		rx <- raster(f)
-	} else if (i == 4) {
-		f <- system.file("exdata/logo.tif", package="terra")
-		r <- rast(f)
-		rx <- brick(f)
-	}
+	} 
 	
 	test_that("raster and terra geometries", { 
 		expect_equal(res(r), res(rx)) 

@@ -1,10 +1,10 @@
 Package: terra
 Type: Package
 Title: Classes and Methods for Spatial Data
-Version: 0.5-5
-Date: 2020-03-24
+Version: 0.5-6
+Date: 2020-03-31
 Depends: R (>= 3.3.0)
-Suggests: testthat, rgdal
+Suggests: testthat
 LinkingTo: Rcpp
 Imports: methods, Rcpp, raster (>= 3.0-12)
 SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>= 4.8.0)

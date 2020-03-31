@@ -28,7 +28,7 @@
 	
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
-		warning(paste("cannot recognize some options:", bad))
+		warning(paste("unknown options:", bad))
 	}
 		
 	if (any(s)) {
