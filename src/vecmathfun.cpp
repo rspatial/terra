@@ -18,27 +18,36 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
-
 #include "vecmath.h"
 
 
 std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
-	std::function<double(std::vector<double>&, bool)> agFun;
+	std::function<double(std::vector<double>&, bool)> theFun;
 	if (fun == "mean") {
-		agFun = vmean<double>;
+		theFun = vmean<double>;
 	} else if (fun == "sum") {
-		agFun = vsum<double>;
+		theFun = vsum<double>;
 	} else if (fun == "min") {
-		agFun = vmin<double>;
+		theFun = vmin<double>;
 	} else if (fun == "max") {
-		agFun = vmax<double>;
+		theFun = vmax<double>;
 	} else if (fun == "median") {
-		agFun = vmedian<double>;
+		theFun = vmedian<double>;
 	} else if (fun == "modal") {
-		agFun = vmodal<double>;
+		theFun = vmodal<double>;
+	} else if (fun == "prod") {
+		theFun = vprod<double>;
+	} else if (fun == "which.min") {
+		theFun = vwhichmin<double>;
+	} else if (fun == "which.max") {
+		theFun = vwhichmax<double>;
+	} else if (fun == "any") {
+		theFun = vany<double>;
+	} else if (fun == "all") {
+		theFun = vall<double>;
 	} else {
-		agFun = vmean<double>;
+		theFun = vmean<double>;
 	}
-	return agFun;
+	return theFun;
 }
 

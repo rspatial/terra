@@ -57,7 +57,6 @@ setMethod("c", signature(x="SpatRaster"),
 				x@ptr <- x@ptr$combineSources(i@ptr)
 			}
 		}
-		x@ptr$setNames(x@ptr$names)
 		show_messages(x, "c")		
 	}
 )

@@ -19,7 +19,7 @@
 #include "spatRaster.h"
 #include "recycle.h"
 #include "math_utils.h"
-#include "vecmath.h"
+#include "vecmathfun.h"
 #include "modal.h"
 
 
@@ -770,7 +770,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 
 	SpatRaster out = geometry(1);
 
-	std::vector<std::string> f {"sum", "mean", "which.min", "which.max", "min", "max", "range", "prod", "any", "all", "stdev"};
+	std::vector<std::string> f {"sum", "mean", "median" "which.min", "which.max", "min", "max", "range", "prod", "any", "all", "stdev"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown summary function");
 		return out;
@@ -784,26 +784,10 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 
 
 	std::function<double(std::vector<double>&, bool)> sumFun;
-	if (fun == "sum") {
-		sumFun = vsum<double>;
-	} else if (fun == "mean") {
-		sumFun = vmean<double>;
-	} else if (fun == "prod") {
-		sumFun = vprod<double>;
-	} else if (fun == "min") {
-		sumFun = vmin<double>;
-	} else if (fun == "max") {
-		sumFun = vmax<double>;
-	} else if (fun == "which.min") {
-		sumFun = vwhichmin<double>;
-	} else if (fun == "which.max") {
-		sumFun = vwhichmax<double>;
-	} else if (fun == "any") {
-		sumFun = vany<double>;
-	} else if (fun == "all") {
-		sumFun = vall<double>;
-	} else if (fun == "stdev") {
+	if (fun == "stdev") {
 		sumFun = vstdev;
+	} else {
+		sumFun = getFun(fun);
 	}
   	if (!out.writeStart(opt)) { return out; }
 	readStart();

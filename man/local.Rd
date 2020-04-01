@@ -6,21 +6,25 @@
 
 \alias{Summary,SpatRaster-method}
 \alias{mean,SpatRaster-method}
+\alias{median,SpatRaster-method}
 \alias{stdev}
 \alias{stdev,SpatRaster-method}
 \alias{min,SpatRaster-method}
 \alias{max,SpatRaster-method}
 \alias{range,SpatRaster-method}
+\alias{which.min,SpatRaster-method}
+\alias{which.max,SpatRaster-method}
+
 
 \title{Local statistics}
 
 \description{
 
-Compute cell (pixel) level "local" statistics across layers, and most return a single layer (the exception is \code{range}). 
+Compute cell (pixel) level "local" statistics across layers, and return a single "summary" layer (except for \code{range} which returns two layers). 
 
-The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, prod, range, stdev, sum}
+The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}
 
-See \code{app} to compute statistics that are not included here (e.g. median) or any other custom functions.
+See \code{app} to compute statistics that are not included here or any other custom function.
  
 See \code{\link{modal}} to compute the mode.  
  
@@ -28,11 +32,11 @@ Because generic functions are used, the method applied is chosen based on the fi
 
 The \code{mean} method has an argument "trim" that is ignored.
 
-The \code{stdev} mehtod returns the population standard deviation, computed as such:
+The \code{stdev} method returns the population standard deviation, computed as:
 
 \code{f <- function(x) sqrt(sum((x-mean(x))^2) / length(x))}
 
-This is different than the sample standard deviation retunred by \code{sd} (which uses \code{n-1} as denominator). Function \code{f} above is equivalent to function \code{g} below
+This is different than the sample standard deviation returned by \code{sd} (which uses \code{n-1} as denominator). Function \code{f} above is equivalent to function \code{g} below
 
 \code{g <- function(x) sqrt(sum((x-mean(x))^2) / length(x))}
 }
@@ -43,7 +47,10 @@ This is different than the sample standard deviation retunred by \code{sd} (whic
 \S4method{max}{SpatRaster}(x, ..., na.rm=FALSE)
 \S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
 \S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
+\S4method{median}{SpatRaster}(x, na.rm=FALSE, ...)
 \S4method{stdev}{SpatRaster}(x, ..., na.rm=FALSE)
+\S4method{which.min}{SpatRaster}(x)
+\S4method{which.max}{SpatRaster}(x)
 }
 
 

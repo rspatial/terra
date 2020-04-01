@@ -24,10 +24,6 @@
 
 \alias{is.na}
 \alias{is.na,SpatRaster-method}
-\alias{which.min}
-\alias{which.min,SpatRaster-method}
-\alias{which.max}
-\alias{which.max,SpatRaster-method}
 
 
 \title{Mathematical operations with SpatRaster objects}
@@ -40,7 +36,7 @@ Standard arithmetic operators for computations with SpatRaster objects and numer
 
 \bold{Compare}: \code{==, !=, >, <,  <=, >=, is.na}
 
-\bold{\code{\link[base]{Summary}}}: \code{"max", "min", "range", "prod", "sum", "any", "all", "which.max", "which.min"}
+\bold{\code{\link[base]{Summary}}}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
  
 \bold{Math}: \code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh"}
  
@@ -49,14 +45,11 @@ Standard arithmetic operators for computations with SpatRaster objects and numer
 If multiple SpatRaster objects are used, these must have the same extent and resolution. Operators are applied on a cell by cell basis.
 
 For \bold{SpatExtent} the following methods have been implemented: \code{"round", "floor", "ceil", "=="}
-
 }
 
 
 \usage{
 \S4method{is.na}{SpatRaster}(x)
-\S4method{which.min}{SpatRaster}(x)
-\S4method{which.max}{SpatRaster}(x)
 }
 
 \arguments{
@@ -64,7 +57,7 @@ For \bold{SpatExtent} the following methods have been implemented: \code{"round"
 }
 
 \section{Note}{
-You can use the somewhat more flexible \code{\link{app}} method instead of the Math-methods.
+You can also use the somewhat more flexible \code{\link{app}} method instead of the generic methods documented here.
 }
 
 
