@@ -13,11 +13,11 @@ setMethod ("rats" , "SpatRaster",
 )
 
 
-setRat <- function(x, rat) {
-	stopifnot(nlyr(x) == 1)
-	#stopifnot(layer > 0 & layer <= nlyr(x))
+setRat <- function(x, layer, rat) {
+	#stopifnot(nlyr(x) == 1)
+	stopifnot(layer > 0 & layer <= nlyr(x))
 	rat <- .makeSpatDF(rat)
-	x@ptr$setAttributes(0, rat)
+	x@ptr$setAttributes(layer-1, rat)
 }	
 
 	

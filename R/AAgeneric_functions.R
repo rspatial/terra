@@ -130,6 +130,8 @@ if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standard
 if (!isGeneric("warp")) { setGeneric("warp", function(x, y, ...) standardGeneric("warp")) }
 if (!isGeneric("which.max")) {setGeneric("which.max", function(x) standardGeneric("which.max"))}	
 if (!isGeneric("which.min")) {setGeneric("which.min", function(x) standardGeneric("which.min"))}	
+if (!isGeneric("Which")) {setGeneric("Which", function(x) standardGeneric("Which"))}	
+
 if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, ...)	standardGeneric("writeStart")) }
 if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }
 if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, start) standardGeneric("writeValues")) }

@@ -28,16 +28,27 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		Z <- t(as.matrix(object, TRUE)[nrow(object):1, , drop = FALSE])
 		X <- xFromCol(object, 1:ncol(object))
 
+		fact = FALSE
 		if (missing(zlim)) {
 			uvals <- unique(stats::na.omit(as.vector(Z)))
 			if (length(uvals) == 0) { return(invisible(NULL)) }
-			zlim <- range(uvals, na.rm=TRUE)
+			if (length(uvals) < 10 & (!is.factor(x))) {
+				fact = TRUE
+				Z[is.nan(Z)] = NA
+				fz <- as.factor(Z)
+				Z[] = as.numeric(fz)
+				lvs <- list(levels=sort(unique(as.vector(Z))), labels=levels(fz)) 
+				uvals <- lvs$levels
+				zlim <- range(lvs$levels)
+			} else {
+				zlim <- range(uvals, na.rm=TRUE)
+			}
 		} else {
 			zlim <- sort(zlim)
 			Z[Z < zlim[1]] <- zlim[1]
 			Z[Z > zlim[2]] <- zlim[2]
-			uvals <- unique(stats::na.omit(as.vector(Z)))			
-			if (length(uvals) == 0) { return(invisible(NULL)) }
+			uvals <- sort(unique(stats::na.omit(as.vector(Z))))
+			if (length(uvals) == 0) { return(invisible(NULL)) }			
 		}
 		
 #		dv <- dev.list()
@@ -90,7 +101,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		} 
 
 
-		fact = FALSE
 		if (is.factor(x)) {
 			lvs <- levels(x)[[1]]
 			if (length(lvs$labels) > 0) {
@@ -107,7 +117,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			col <- .sampleColors(col, length(labs))
 			.factorLegend(leg.ext, levs, col, labs, n)
 		} else {			
-			if (length(uvals) < 10) {
+			if (fewClasses) {
 				col <- .sampleColors(col, length(uvals))
 				n <- ifelse(leg.ext.set, length(uvals), 20)
 				.fewClassLegend(leg.ext, uvals, col, digits, n)
@@ -130,7 +140,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)  {
+	function(x, y, onelegend=FALSE, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)  {
 		nl <- min(nlyr(x), maxnl)
 		if (nl == 0) {
 			stop("SpatRaster has no cell values")
@@ -172,9 +182,13 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			main <- rep_len(main, nl)	
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
-		for (i in 1:nl) {
-		#	image(x[[i]], main=main[i], ...)
-			plot(x, i, main=main[i], ...)
+		if (onelegend) {
+		
+		} else {
+			for (i in 1:nl) {
+			#	image(x[[i]], main=main[i], ...)
+				plot(x, i, main=main[i], ...)
+			}
 		}
 	}
 )

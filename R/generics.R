@@ -304,3 +304,6 @@ setMethod("warp", signature(x="SpatRaster", y="SpatRaster"),
 	}
 )
 
+
+
+if (!isGeneric("Which")) {setGeneric("Which", function(x) standardGeneric("Which"))}	

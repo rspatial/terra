@@ -30,13 +30,14 @@ is.factor(x)
 as.factor(x)
 levels(x)
 \S4method{rats}{SpatRaster}(x)
-setRat(x, rat)
+setRat(x, layer, rat)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{rat}{list}
+  \item{layer}{layer number}
+  \item{rat}{data.frame}
 }  
 
 
