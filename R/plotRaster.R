@@ -176,13 +176,9 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			main <- rep_len(main, nl)	
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
-		if (onelegend) {
-		
-		} else {
-			for (i in 1:nl) {
+		for (i in 1:nl) {
 			#	image(x[[i]], main=main[i], ...)
-				plot(x, i, main=main[i], ...)
-			}
+			plot(x, i, main=main[i], ...)
 		}
 	}
 )
