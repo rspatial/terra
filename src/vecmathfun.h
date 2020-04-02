@@ -19,6 +19,7 @@
 //#define VECMATHFUN_GUARD
 
 #include <functional>
+#include <string>
 #include "vecmath.h"
 
 std::function<double(std::vector<double>&, bool)> getFun(std::string fun);

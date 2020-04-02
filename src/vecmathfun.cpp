@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <string>
 #include <functional>
 #include "vecmath.h"
 
