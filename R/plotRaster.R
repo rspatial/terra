@@ -117,13 +117,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			col <- .sampleColors(col, length(labs))
 			.factorLegend(leg.ext, levs, col, labs, n)
 		} else {			
-			if (fewClasses) {
-				col <- .sampleColors(col, length(uvals))
-				n <- ifelse(leg.ext.set, length(uvals), 20)
-				.fewClassLegend(leg.ext, uvals, col, digits, n)
-			} else {
-				.contLegend(leg.ext, col, zlim, digits, leg.levels)
-			}
+			.contLegend(leg.ext, col, zlim, digits, leg.levels)
 		}	
 		.legMain(leg.main, leg.ext$xmax, leg.ext$ymax, leg.ext$dy, leg.main.cex)
 			
@@ -140,7 +134,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, onelegend=FALSE, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)  {
+	function(x, y, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)  {
 		nl <- min(nlyr(x), maxnl)
 		if (nl == 0) {
 			stop("SpatRaster has no cell values")
