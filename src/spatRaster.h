@@ -371,8 +371,10 @@ class SpatRaster {
 		SpatRaster init(double value, SpatOptions &opt);
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);
-		
-        std::vector<double> line_cells(SpatGeom& g);
+		SpatRaster isfinite(SpatOptions &opt);
+		SpatRaster isinfinite(SpatOptions &opt);
+        
+		std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);

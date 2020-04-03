@@ -4,12 +4,9 @@
 
 \alias{Arith-methods}
 \alias{Compare-methods}
+\alias{Logic-methods}
 \alias{Math-methods}
 \alias{Math2-methods}
-
-\alias{Logic,SpatRaster,SpatRaster-method}
-\alias{Logic,SpatRaster,numeric-method}
-\alias{Logic,numeric,SpatRaster-method}
 
 \alias{Arith,SpatRaster,SpatRaster-method}
 \alias{Arith,SpatRaster,missing-method}
@@ -20,34 +17,40 @@
 \alias{Compare,numeric,SpatRaster-method}
 \alias{Compare,SpatRaster,numeric-method}
 \alias{Compare,SpatRaster,math-method}
+\alias{Logic,SpatRaster,SpatRaster-method}
+\alias{Logic,SpatRaster,numeric-method}
+\alias{Logic,numeric,SpatRaster-method}
 \alias{Math,SpatRaster-method}
 \alias{Math2,SpatRaster-method}
 \alias{Math,SpatExtent-method}
 \alias{Math2,SpatExtent-method}
 \alias{Compare,SpatExtent,SpatExtent-method}
 
-\alias{is.na}
 \alias{is.na,SpatRaster-method}
+\alias{is.nan,SpatRaster-method}
 \alias{!,SpatRaster-method}
+\alias{is.finite,SpatRaster-method}
+\alias{is.infinite,SpatRaster-method}
 
 
-\title{Mathematical operations with SpatRaster objects}
+\title{Arithmetic, logical and general mathematical methods}
 
 \description{
 
-Standard arithmetic operators for computations with SpatRaster objects and numeric values. The following operators and methods are available for SpatRaster:
+Standard operators and mathematical methods for computations with SpatRaster objects. Computations are local (applied on a cell by cell basis). If multiple SpatRaster objects are used, these must have the same extent and resolution. These have been implemented:
 
 \bold{Arith}: \code{ +, -, *, /, ^, \%\%, \%/\% }
 
-\bold{Compare}: \code{==, !=, >, <,  <=, >=, is.na}
+\bold{Compare}: \code{ ==, !=, >, <,  <=, >=, is.na, is.nan, is.finite, is.infinite}
 
-\bold{\code{\link[base]{Summary}}}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
- 
-\bold{Math}: \code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh"}
- 
-\bold{Math2}: \code{"round", "signif"}
+The terra package does not distunguish between \code{NA} (not available) and \code{NaN} (not a number) and that both are represented as \code{NaN}.  
 
-If multiple SpatRaster objects are used, these must have the same extent and resolution. Operators are applied on a cell by cell basis.
+\bold{Logical}: \code{!, &, |}
+
+\bold{Summary}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
+ 
+\bold{Math}: \code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh", "round", "signif"}
+
 
 For \bold{SpatExtent} the following methods have been implemented: \code{"round", "floor", "ceil", "=="}
 }
@@ -61,8 +64,8 @@ For \bold{SpatExtent} the following methods have been implemented: \code{"round"
   \item{x}{SpatRaster}
 }
 
-\section{Note}{
-You can also use the somewhat more flexible \code{\link{app}} method instead of the generic methods documented here.
+\section{seealso}{
+\code{\link{ifel}} to convieniently combine operations and \code{\link{app}} to use mathematical functions not implemented by the package.
 }
 
 

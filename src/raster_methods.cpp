@@ -575,6 +575,23 @@ SpatRaster SpatRaster::isnan(SpatOptions &opt) {
 }
 
 
+SpatRaster SpatRaster::isfinite(SpatOptions &opt) {
+	SpatRaster out = geometry();
+    if (!hasValues()) return out;
+
+	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		for (double &d : v) d = std::isfinite(d);
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
 
 SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 

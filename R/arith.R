@@ -130,6 +130,28 @@ setMethod("is.na", signature(x="SpatRaster"),
 )	
 
 
+setMethod("is.nan", signature(x="SpatRaster"),
+	function(x) {
+		x@ptr <- x@ptr$isnan(.terra_environment$options@ptr)
+		show_messages(x, "is.nan")
+	}
+)	
+
+
+setMethod("is.finite", signature(x="SpatRaster"),
+	function(x) {
+		x@ptr <- x@ptr$isfinite(.terra_environment$options@ptr)
+		show_messages(x, "is.finite")
+	}
+)	
+
+setMethod("is.infinite", signature(x="SpatRaster"),
+	function(x) {
+		x@ptr <- x@ptr$isinfinite(.terra_environment$options@ptr)
+		show_messages(x, "is.infinite")
+	}
+)	
+
 
 .summarize <- function(x, ..., fun, na.rm=FALSE) {
 	dots <- list(...)
