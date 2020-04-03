@@ -6,9 +6,9 @@
 \title{ifelse for SpatRaster objects}
 
 \description{
-This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster objects. This is "syntactic sugar", that is, it can be easier to express what is desired; but there is no real need for it, as you can achieve the same things with combinations of \code{\link{app}}, \code{\link{reclassify}}, \code{\link{mask}}, and \code{\link{cover}}. 
+This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster objects. This method allows for a concise approach to what can otherwise be achieved with a combination of \code{\link{classify}}, \code{\link{mask}}, and \code{\link{cover}}. 
 
-\code{ifel} is \code{R} equivalent to the \code{Con} method in ArcGIS (arcpy). 
+\code{ifel} is the \code{R} equivalent to the \code{Con} method in ArcGIS (arcpy). 
 }
 
 \usage{

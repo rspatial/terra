@@ -770,7 +770,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 
 	SpatRaster out = geometry(1);
 
-	std::vector<std::string> f {"sum", "mean", "median" "which.min", "which.max", "min", "max", "range", "prod", "any", "all", "stdev"};
+	std::vector<std::string> f {"sum", "mean", "median", "which.min", "which.max", "min", "max", "range", "prod", "any", "all", "stdev"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown summary function");
 		return out;
@@ -832,7 +832,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 	//std::vector<std::string>::iterator it; 
 	auto it = std::find(f.begin(), f.end(), ties);
 	if (it == f.end()) {
-		out.setError("unknown summary function");
+		out.setError("unknown ties choice");
 		return out;
 	} 
 	size_t ities = std::distance(f.begin(), it);

@@ -7,6 +7,10 @@
 \alias{Math-methods}
 \alias{Math2-methods}
 
+\alias{Logic,SpatRaster,SpatRaster-method}
+\alias{Logic,SpatRaster,numeric-method}
+\alias{Logic,numeric,SpatRaster-method}
+
 \alias{Arith,SpatRaster,SpatRaster-method}
 \alias{Arith,SpatRaster,missing-method}
 \alias{Arith,numeric,SpatRaster-method}
@@ -24,6 +28,7 @@
 
 \alias{is.na}
 \alias{is.na,SpatRaster-method}
+\alias{!,SpatRaster-method}
 
 
 \title{Mathematical operations with SpatRaster objects}

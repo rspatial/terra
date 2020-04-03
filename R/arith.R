@@ -70,7 +70,6 @@ setMethod("Compare", signature(e1="numeric", e2="SpatRaster"),
 )
 
 
-
 setMethod("Logic", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
@@ -114,6 +113,13 @@ setMethod("Logic", signature(e1="logical", e2="SpatRaster"),
 		show_messages(e2, oper)
 	}	
 )
+
+
+setMethod("!", signature(x="SpatRaster"),
+	function(x) {
+		x == 0
+	}
+)	
 
 
 setMethod("is.na", signature(x="SpatRaster"),

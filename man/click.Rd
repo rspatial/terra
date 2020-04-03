@@ -19,10 +19,10 @@ Click on a map (plot) to get values of a SpatRaster at that location; and option
 \arguments{
   \item{x}{SpatRaster or SpatVector, or missing}
   \item{n}{number of clicks on the plot (map)}
-  \item{id}{Logical. If \code{TRUE}, a numeric ID is shown on the map that corresponds to the row number of the output}
-  \item{xy}{Logical. If \code{TRUE}, xy coordinates are included in the output}
-  \item{cell}{Logical. If \code{TRUE}, cell numbers are included in the output}
-  \item{type}{One of "n", "p", "l" or "o". If "p" or "o" the points are plotted; if "l" or "o" they are joined by lines. See ?locator}
+  \item{id}{logical. If \code{TRUE}, a numeric ID is shown on the map that corresponds to the row number of the output}
+  \item{xy}{logical. If \code{TRUE}, xy coordinates are included in the output}
+  \item{cell}{logical. If \code{TRUE}, cell numbers are included in the output}
+  \item{type}{one of "n", "p", "l" or "o". If "p" or "o" the points are plotted; if "l" or "o" they are joined by lines. See ?locator}
   \item{show}{logical. Print the values after each click?}
   \item{...}{additional graphics parameters used if type != "n" for plotting the locations. See ?locator}   
  }

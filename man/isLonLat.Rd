@@ -31,7 +31,7 @@ Test whether a SpatRaster or SpatVector has a longitude/latitude coordinate refe
 }
 
 \value{
-Logical
+logical
 }
 
 \examples{
