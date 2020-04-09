@@ -7,7 +7,7 @@
 \alias{readValues}
 \alias{writeStart}
 \alias{writeStop}
-\alias{writeValues}
+\alias{writeVals}
 
 \alias{readStart,SpatRaster-method}
 \alias{readStop,SpatRaster-method}
@@ -15,7 +15,7 @@
 \alias{writeStart,SpatRaster,character-method}
 \alias{writeStop,SpatRaster-method}
 \alias{writeStop,SpatRaster-method}
-\alias{writeValues,SpatRaster,vector-method}
+\alias{writeVals,SpatRaster,vector-method}
 
 \title{Read from, or write to, file}
 
@@ -32,7 +32,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 
 \S4method{writeStart}{SpatRaster,character}(x, filename="", overwrite=FALSE, wopt=list(), ...)
 \S4method{writeStop}{SpatRaster}(x)
-\S4method{writeValues}{SpatRaster,vector}(x, v, start)
+\S4method{writeVals}{SpatRaster,vector}(x, v, start, nrows, ...)
 }
 
 \arguments{
@@ -43,7 +43,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
   \item{start}{integer. Row number (counting starts at 1) from where to start writing \code{v}}
 
  \item{row}{positive integer. Row number to start from, should be between 1 and nrow(x)}
- \item{nrows}{positive integer. How many rows? Default is 1}
+ \item{nrows}{positive integer. How many rows?}
  \item{col}{positive integer. Column number to start from, should be between 1 and ncol(x)}
  \item{ncols}{positive integer. How many columns? Default is the number of columns left after the start column}
 

@@ -52,7 +52,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 			r <- t(r)
 			#r <- as.vector(r)
 		}
-		writeValues(out, r, c(b$row[i], b$nrows[i]))
+		writeVals(out, r, b$row[i], b$nrows[i])
 	}
 	readStop(x)
 	out <- writeStop(out)

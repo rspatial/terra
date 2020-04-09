@@ -48,12 +48,15 @@ setMethod("writeStop", signature(x="SpatRaster"),
 )
 
 
-setMethod("writeValues", signature(x="SpatRaster", v="vector"), 
-	function(x, v, start) {
-		wstart <- start[1]-1
-		nrows <- start[2]
-		success <- x@ptr$writeValues(v, wstart, nrows, 0, ncol(x))
-		show_messages(x, "writeValues")
+setMethod("writeVals", signature(x="SpatRaster", v="vector"), 
+	function(x, v, start, nrows, ...) {
+		#wstart <- start[1]-1
+		#nrows <- start[2]
+		#if (is.na(nrows)) {
+		#	nrows <- length(v) / (ncol(x) * nlyr(x))
+		#}
+		success <- x@ptr$writeValues(v, start[1], nrows[1], 0, ncol(x))
+		show_messages(x, "writeVals")
 		invisible(success)
 	}
 )

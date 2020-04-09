@@ -134,7 +134,10 @@ if (!isGeneric("Which")) {setGeneric("Which", function(x) standardGeneric("Which
 
 if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, ...)	standardGeneric("writeStart")) }
 if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }
-if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, start) standardGeneric("writeValues")) }
+#if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, start) standardGeneric("writeValues")) }
+if (!isGeneric('writeVals')) { setGeneric('writeVals', function(x, v, ...) standardGeneric('writeVals')) }
+
+
 if (!isGeneric("writeRaster")) {setGeneric("writeRaster", function(x, filename, ...) standardGeneric("writeRaster"))}
 if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, ...) standardGeneric("writeVector"))}
 if (!isGeneric("xmin")) {setGeneric("xmin", function(x) standardGeneric("xmin"))}
