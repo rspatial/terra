@@ -30,16 +30,30 @@ remotes::install_github("rspatial/terra")
 
 The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [sf](https://github.com/r-spatial/sf))
 
-With Homebrew you can do:
+Install Homebrew, and then, with Homebrew you can do, from the terminal:
 
 ```
+brew install pkg-config
 brew install gdal
 ```
 
-And now, in R, install the packages.
+And now, in R, install the package
 ```
 remotes::install_github("rspatial/terra")
 ```
+
+If you get `configure: error: libproj not found in standard or given locations.` Then you need to clone the repo and install like this
+
+```
+remotes::install_github("rspatial/terra", configure-args="--with-proj-lib=/usr/local/lib/")
+```
+
+If you get error `unknown type name 'uuid_t'` you first need to install Rcpp > 1.0.4 (currently, the development version from github)
+
+```
+remotes::install_github("RcppCore/Rcpp.git") 
+```
+
 
 ### Linux
 
