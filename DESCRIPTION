@@ -2,7 +2,7 @@ Package: terra
 Type: Package
 Title: Classes and Methods for Spatial Data
 Version: 0.5-8
-Date: 2020-04-00
+Date: 2020-04-09
 Depends: R (>= 3.3.0)
 Suggests: testthat
 LinkingTo: Rcpp
