@@ -16,11 +16,19 @@ The R side has two main S4 classes (SpatRaster and SpatVector) that represent sp
 
 See below for instructions on installing the *development version*
 
+### All OS
+
+First intstall the packages that terra depends on 
+
+```
+install.packages("raster")
+```
+
 ### Windows
 
-If you are on Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. After that, you need the first install development version of "raster" for "terra" to work. 
+If you are on Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. 
 
-Then, in R, install the packages.
+Then, in R, install the package.
 
 ```
 remotes::install_github("rspatial/terra")
@@ -30,7 +38,7 @@ remotes::install_github("rspatial/terra")
 
 The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [sf](https://github.com/r-spatial/sf))
 
-Install Homebrew, and then, with Homebrew you can do, from the terminal:
+Install Homebrew if you have not done so before, and then from the terminal:
 
 ```
 brew install pkg-config
@@ -42,13 +50,13 @@ And now, in R, install the package
 remotes::install_github("rspatial/terra")
 ```
 
-If you get `configure: error: libproj not found in standard or given locations.` Then you need to clone the repo and install like this
+If you get `configure: error: libproj not found in standard or given locations.` Then you need to install like this
 
 ```
 remotes::install_github("rspatial/terra", configure-args="--with-proj-lib=/usr/local/lib/")
 ```
 
-If you get error `unknown type name 'uuid_t'` you first need to install Rcpp > 1.0.4 (currently, the development version from github)
+If you get error `unknown type name 'uuid_t'` you first need to install Rcpp > 1.0.4 (currently, the development version from github), like this
 
 ```
 remotes::install_github("RcppCore/Rcpp.git") 
@@ -67,7 +75,7 @@ sudo apt-get update
 sudo apt-get install libgdal-dev libgeos-dev libproj-dev 
 ```
 
-And now, in R, install the packages.
+And now, in R, install the package
 ```
 remotes::install_github("rspatial/terra")
 ```
