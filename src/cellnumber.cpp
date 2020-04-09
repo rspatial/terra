@@ -199,12 +199,12 @@ std::vector< std::vector<double> > SpatRaster::xyFromCell( std::vector<double> &
 	double yr = yres();
 	double xr = xres();
     double ncells = ncell();
-    unsigned nc = ncol();
+    int nc = ncol();
 	std::vector< std::vector<double> > out(2, std::vector<double> (n, NAN) );
 	for (size_t i = 0; i<n; i++) {
 		if (std::isnan(cell[i]) || (cell[i] < 0) || (cell[i] >= ncells)) continue;
-        unsigned row = cell[i] / nc;
-        unsigned col = cell[i] - (row * nc);
+        int row = cell[i] / nc;
+        int col = cell[i] - (row * nc);
         out[0][i] = xmin + (col + 0.5) * xr;
         out[1][i] = ymax - (row + 0.5) * yr;
 	}

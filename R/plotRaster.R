@@ -31,10 +31,11 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		fact = FALSE
 		if (missing(zlim)) {
 			uvals <- unique(stats::na.omit(as.vector(Z)))
+			uvals <- uvals[is.finite(uvals)]
 			if (length(uvals) == 0) { return(invisible(NULL)) }
 			if (length(uvals) < 10 & (!is.factor(x))) {
 				fact = TRUE
-				Z[is.nan(Z)] = NA
+				Z[is.nan(Z) | is.infinite(Z)] <- NA
 				fz <- as.factor(Z)
 				Z[] = as.numeric(fz)
 				lvs <- list(levels=sort(unique(as.vector(Z))), labels=levels(fz)) 

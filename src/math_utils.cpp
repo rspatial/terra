@@ -54,8 +54,7 @@ void vector_minmax(std::vector<double> v, double &min, int &imin, double &max, i
 
 
 double roundn(double x, int n){
-	int base = 10;
-	double d = pow(base, n);
+	double d = pow(10.0, n);
 	return std::round(x * d) / d;
 }
 
