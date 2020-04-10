@@ -77,8 +77,8 @@ class SimpleProgressBar: public ProgressBar{
   //    REprintf("|\n");
 		REprintf("\r                                                  ");
 		REprintf("\n\r");
-      flush_console();
-      _finalized = true;
+		flush_console();
+		_finalized = true;
     }
 
     int _compute_nb_ticks(float progress) {

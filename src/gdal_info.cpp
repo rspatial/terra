@@ -1,20 +1,16 @@
-// from 'sf'
 #include <vector>
 #include <string>
 
 #include "cpl_port.h"
 #include "cpl_conv.h" // CPLFree()
 #include "gdal_version.h"
-
-#include <ogr_srs_api.h>
-#include <ogr_spatialref.h>
-
 #include "gdal.h" // local
 
-#define NO_GDAL_CPP_HEADERS
+// code adapted from the 'sf' package by Pebesma et al.
 
 #if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
 # include "gdal_utils.h" // requires >= 2.1
+
 
 std::vector<char *> create_options(std::vector<std::string> lco) {
 	std::vector<char *> ret(lco.size() + 1);
@@ -26,11 +22,11 @@ std::vector<char *> create_options(std::vector<std::string> lco) {
 }
 
 
-std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
+std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> openopts) {
 	
 	std::string ret = "";
 	std::vector <char *> options_char = create_options(options);
-	std::vector <char *> oo_char = create_options(oo); // open options
+	std::vector <char *> oo_char = create_options(openopts); // open options
 	GDALInfoOptions* opt = GDALInfoOptionsNew(options_char.data(), NULL);
 	GDALDatasetH ds = GDALOpenEx((const char *) filename.c_str(), GA_ReadOnly, NULL, oo_char.data(), NULL);
 	if (ds == NULL) return ret; // #nocov
@@ -43,13 +39,11 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 }
 
 #else
-#include "Rcpp.h"
 
 std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
 	std::string out = "GDAL version >= 2.1 required for gdalinfo");
 	return out;
 }
-
 
 #endif
 

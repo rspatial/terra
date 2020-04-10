@@ -1,9 +1,13 @@
 
 
-gdal_info <- function(filename, print=TRUE, opt1="", opt2="") {
-	x <- .gdalinfo(f, opt1, opt2)
+gdal_info <- function(filename, options="", print=TRUE, open_opt="") {
+	x <- .gdalinfo(filename, options, open_opt)
 	if (print) {
-		cat(x)
+		if (x == "") {
+			add <- ifelse(file.exists(filename), "\n", "\nThe file does not exist\n")
+			x <- paste0("GDAL cannot open: ", filename, add)
+		}
+		cat(x, "\n")
 		invisible(x)
 	} else {
 		return(x)
