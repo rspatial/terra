@@ -5,10 +5,24 @@
 
 using namespace Rcpp;
 
+// ginfo
+std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo);
+RcppExport SEXP _terra_ginfo(SEXP filenameSEXP, SEXP optionsSEXP, SEXP ooSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type oo(ooSEXP);
+    rcpp_result_gen = Rcpp::wrap(ginfo(filename, options, oo));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_terra_ginfo", (DL_FUNC) &_terra_ginfo, 3},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

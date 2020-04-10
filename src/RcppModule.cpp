@@ -4,6 +4,14 @@
 #include "gdal_priv.h"
 
 
+# include "gdal_info.h"
+// [[Rcpp::export(name = ".gdalinfo")]]
+std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
+	std::string out = gdalinfo(filename, options, oo);
+	return out;
+}
+
+
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) { 
     BlockSize bs = r->getBlockSize(n);
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
@@ -38,7 +46,6 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 //	result.attr("names") = v->names();
 //	return result;
 }	
-
 
 
 Rcpp::List getVectorAttributes(SpatVector* v) {
