@@ -183,23 +183,29 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 
 setMethod("project", signature(x="SpatRaster"), 
-	function(x, crs, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
+	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename, overwrite, wopt)
-		if (!is.character(crs)) {
-			warning("crs should be a character value")
-			crs <- as.character(crs(crs))
+		if (inherits(y, "SpatRaster")) {
+			opt <- .runOptions(filename, overwrite, wopt)
+			x@ptr <- x@ptr$project2(y@ptr, method, opt)
+		} else {
+			if (!is.character(y)) {
+				warning("crs should be a character value")
+				y <- as.character(crs(y))
+			}
+			x@ptr <- x@ptr$project1(y, method, opt)
 		}
-		x@ptr <- x@ptr$project(crs, method, opt)
 		show_messages(x, "project")
 	}
 )
 
+
 setMethod("project", signature(x="SpatVector"), 
-	function(x, crs, ...)  {
-		if (!is.character(crs)) {
-			crs <- crs(x)
+	function(x, y, ...)  {
+		if (!is.character(y)) {
+			y <- crs(y)
 		}
-		x@ptr <- x@ptr$project(crs)
+		x@ptr <- x@ptr$project(y)
 		show_messages(x, "project")
 	}
 )
@@ -296,13 +302,22 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 	}
 )
 
-setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
+setMethod("resample", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$warp(y@ptr, method, opt)
-		show_messages(x, "warp")
+		x@ptr <- x@ptr$resample(y@ptr, method, opt)
+		show_messages(x, "resample")
 	}
 )
+
+#setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
+#	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
+#		opt <- .runOptions(filename, overwrite, wopt)
+#		x@ptr <- x@ptr$warp(y@ptr, method, opt)
+#		show_messages(x, "warp")
+#	}
+#)
+
 
 
 

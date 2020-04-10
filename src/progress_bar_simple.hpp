@@ -75,7 +75,7 @@ class SimpleProgressBar: public ProgressBar{
       if (_finalized) return;
 
   //    REprintf("|\n");
-      REprintf("\n");
+      REprintf("\n\r");
       flush_console();
       _finalized = true;
     }

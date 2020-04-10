@@ -1,3 +1,5 @@
+
+/*
 #include <vector>
 #include "spatRaster.h"
 #include "vecmath.h"
@@ -5,6 +7,9 @@
 #ifdef useGDAL
 	#include "crs.h"
 #endif
+
+
+
 
 SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) {
 
@@ -81,40 +86,4 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 }
 
 
-
-SpatRaster SpatRaster::project(std::string newcrs, std::string method, SpatOptions &opt) {
-
-	SpatRaster temp;
-
-	#ifndef useGDAL
-	temp.setError("GDAL is not available");
-	return temp;
-	#else 
-	
-	std::string oldcrs = getCRS();
-	if ((oldcrs == "") || (newcrs == "")) {
-		temp.setError("insufficient crs info");	
-		return temp;
-	} else if (oldcrs == newcrs) {
-		temp.setError("input and output crs are the same");	
-		return temp;
-	}
-
-	std::vector<std::vector<double>> p = extent.asPoints();
-	temp.msg = transform_coordinates(p[0], p[1], oldcrs, newcrs);
-	if (temp.hasError()) {
-		temp.msg = msg;
-		return temp;
-	}
-	if (temp.hasWarning()) {
-		temp.setError("cannot do this");
-		return temp;
-	}
-	SpatExtent e(vmin(p[0], false), vmax(p[0], false), vmin(p[1], false), vmax(p[1], false));
-
-	temp = SpatRaster(nrow(), ncol(), nlyr(), e, newcrs);
-	return warp(temp, method, opt);
-	#endif	
-}
-
-
+*/

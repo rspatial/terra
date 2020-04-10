@@ -359,8 +359,10 @@ RCPP_MODULE(spat){
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("trim", &SpatRaster::trim, "trim")
 		.method("unique", &SpatRaster::unique, "unique")
-		.method("project", &SpatRaster::project, "project")
-		.method("warp", &SpatRaster::warp, "warp")
+		.method("project1", &SpatRaster::project1, "project1")
+		.method("project2", &SpatRaster::project2, "project2")
+		.method("resample", &SpatRaster::resample1, "resample")
+		//.method("warp", &SpatRaster::warp, "warp")
 		.method("zonal", &SpatRaster::zonal, "zonal")			
 	;
 

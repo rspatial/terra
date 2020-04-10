@@ -89,6 +89,7 @@ if (!isGeneric("readStart")) {setGeneric("readStart", function(x, ...) standardG
 if (!isGeneric("readStop")) {setGeneric("readStop", function(x)	standardGeneric("readStop"))}
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }
 if (!isGeneric("res<-")) { setGeneric("res<-", function(x, value) standardGeneric("res<-")) }
+if (!isGeneric("resample")) { setGeneric("resample", function(x, y, ...) standardGeneric("resample"))}
 if (!isGeneric("spatSample")) { setGeneric("spatSample", function(x, ...) standardGeneric("spatSample"))}
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}
 if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
@@ -127,7 +128,7 @@ if (!isGeneric('setMinMax')) {setGeneric('setMinMax', function(x, ...) standardG
 if (!isGeneric("unique")) { setGeneric("unique", function(x, incomparables=FALSE, ...) standardGeneric("unique")) }	
 if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneric("values")) }	
 if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standardGeneric("values<-"))}	
-if (!isGeneric("warp")) { setGeneric("warp", function(x, y, ...) standardGeneric("warp")) }
+#if (!isGeneric("warp")) { setGeneric("warp", function(x, y, ...) standardGeneric("warp")) }
 if (!isGeneric("which.max")) {setGeneric("which.max", function(x) standardGeneric("which.max"))}	
 if (!isGeneric("which.min")) {setGeneric("which.min", function(x) standardGeneric("which.min"))}	
 if (!isGeneric("Which")) {setGeneric("Which", function(x) standardGeneric("Which"))}	

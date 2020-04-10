@@ -25,7 +25,7 @@ raster package \tab terra package\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
-\code{projectRaster}\tab\code{\link{warp}, \link{project}}\cr
+\code{projectRaster}\tab\code{\link{project}}\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
 \code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
@@ -61,7 +61,8 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
-    \code{\link{warp}} \tab Warp values to a SpatRaster with a different origin and/or resolution and/or coordinate reference system \cr	
+    \code{\link{resample}} \tab Resample (warp) values to a SpatRaster with a different origin and/or resolution \cr 
+	\code{\link{project}} \tab Project (warp) values to a SpatRaster with a different coordinate reference system \cr
     \code{\link{shift}} \tab Adjust the location of SpatRaster \cr
     \code{\link{flip}} \tab  Flip values horizontally or vertically \cr
     \code{\link{rotate}} \tab Rotate values around the date-line (for lon/lat data) \cr
@@ -195,7 +196,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
 
 \section{X. Getting and setting SpatRaster dimensions }{
 
-Basic parameters of existing SpatRasters can be obtained, and in most cases changed. If there are values associated with a SpatRaster object (either in memory or via a link to a file) these are lost when you change the number of columns or rows or the resolution. This is not the case when the extent is changed (as the number of columns and rows will not be affected). Similarly, with \bold{projection} you can set the projection, but this does not transform the data (see \link{warp} for that).   
+Basic parameters of existing SpatRasters can be obtained, and in most cases changed. If there are values associated with a SpatRaster object (either in memory or via a link to a file) these are lost when you change the number of columns or rows or the resolution. This is not the case when the extent is changed (as the number of columns and rows will not be affected). Similarly, with \bold{crs} you can set the projection, but this does not transform the data (see \link{project} for that).   
 
   \tabular{ll}{
     \code{\link{ncol}}\tab The number of columns \cr
