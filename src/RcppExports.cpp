@@ -18,11 +18,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gwarp
+bool gwarp(std::string src, std::string dst, std::vector<std::string> options, std::vector<std::string> oo, std::vector<std::string> doo);
+RcppExport SEXP _terra_gwarp(SEXP srcSEXP, SEXP dstSEXP, SEXP optionsSEXP, SEXP ooSEXP, SEXP dooSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type src(srcSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dst(dstSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type options(optionsSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type oo(ooSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type doo(dooSEXP);
+    rcpp_result_gen = Rcpp::wrap(gwarp(src, dst, options, oo, doo));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_terra_ginfo", (DL_FUNC) &_terra_ginfo, 3},
+    {"_terra_gwarp", (DL_FUNC) &_terra_gwarp, 5},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

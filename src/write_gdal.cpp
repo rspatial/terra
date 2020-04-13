@@ -166,6 +166,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 	CPLFree(pszSRS_WKT);
 
 	source[0].resize(nlyr());
+	source[0].nlyrfile = nlyr();
 	source[0].gdalconnection = poDstDS;
 	source[0].datatype = datatype;
 	for (size_t i =0; i<nlyr(); i++) {

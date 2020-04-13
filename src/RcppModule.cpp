@@ -11,6 +11,14 @@ std::string ginfo(std::string filename, std::vector<std::string> options, std::v
 	return out;
 }
 
+# include "warp.h"
+// [[Rcpp::export(name = ".gdalwarp")]]
+bool gwarp(std::string src, std::string dst, std::vector<std::string> options, std::vector<std::string> oo, std::vector<std::string> doo) {
+	bool ok = gdalwarp(src, dst, options, oo, doo);
+	return ok;
+}
+
+
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) { 
     BlockSize bs = r->getBlockSize(n);
@@ -126,13 +134,13 @@ RCPP_MODULE(spat){
 		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
-		.property("bandorder", &SpatOptions::get_bandorder, &SpatOptions::set_bandorder )
+		//.property("bandorder", &SpatOptions::get_bandorder, &SpatOptions::set_bandorder )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
 		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )
-		.property("def_bandorder", &SpatOptions::get_def_bandorder, &SpatOptions::set_def_bandorder )
+		//.property("def_bandorder", &SpatOptions::get_def_bandorder, &SpatOptions::set_def_bandorder )
 
 		.property("todisk", &SpatOptions::get_todisk, &SpatOptions::set_todisk)
 		.field("messages", &SpatOptions::msg, "messages")
@@ -220,9 +228,10 @@ RCPP_MODULE(spat){
 		.field_readonly("crs", &RasterSource::crs)
 		.field_readonly("extent", &RasterSource::extent)
 		.field_readonly("datatype", &RasterSource::datatype)
-		.field_readonly("bandorder", &RasterSource::bandorder)
-		.field_readonly("NAflag", &RasterSource::NAflag)
+		//.field_readonly("bandorder", &RasterSource::bandorder)
+		//.field_readonly("NAflag", &RasterSource::NAflag)
 		.field_readonly("layers", &RasterSource::layers)
+		.field_readonly("nlyrfile", &RasterSource::nlyrfile)
 	;	
 
     class_<SpatRaster>("SpatRaster")
@@ -232,6 +241,7 @@ RCPP_MODULE(spat){
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
+		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 
 		.method("spatinit", &SpatRaster::spatinit, "init")
 		
@@ -369,7 +379,8 @@ RCPP_MODULE(spat){
 		.method("project1", &SpatRaster::project1, "project1")
 		.method("project2", &SpatRaster::project2, "project2")
 		.method("resample", &SpatRaster::resample1, "resample")
-		//.method("warp", &SpatRaster::warp, "warp")
+		.method("warp", &SpatRaster::warp, "warp")
+		.method("warpcrs", &SpatRaster::warpcrs, "warpcrs")
 		.method("zonal", &SpatRaster::zonal, "zonal")			
 	;
 

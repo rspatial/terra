@@ -51,8 +51,6 @@ SpatRaster::SpatRaster(std::vector<std::string> fname) {
 
 void SpatRaster::setSources(std::vector<RasterSource> s) {
 	source = s;
-//	nrow = s[0].nrow;
-//	ncol = s[0].ncol;
 	extent = s[0].extent;
 	crs = s[0].crs;
 }
@@ -60,12 +58,14 @@ void SpatRaster::setSources(std::vector<RasterSource> s) {
 
 void SpatRaster::setSource(RasterSource s) {
 	s.resize(s.nlyr);
-	setSources({s});
+	std::vector<RasterSource> vs = {s};
+	setSources(vs);
 }
 
 
 SpatRaster::SpatRaster(RasterSource s) {
-	setSources( {s} );
+	std::vector<RasterSource> vs = {s};
+	setSources(vs);
 }
 
 
@@ -109,6 +109,9 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.driver = "";
 	s.nlyr = rcl[2];
 	s.layers.resize(1, 0);
+	//s.layers.resize(1, s.nlyr);
+	//std::iota(s.layers.begin(), s.layers.end(), 0);
+
 	s.datatype = "";
 	s.crs =_crs;
 	for (unsigned i=0; i < rcl[2]; i++) {
@@ -132,6 +135,8 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 	s.nlyr = _nlyr;
 	s.hasRange = { false };
 	s.layers.resize(1, 0);
+	//s.layers.resize(1, _nlyr);
+	//std::iota(s.layers.begin(), s.layers.end(), 0);
 	s.datatype = "";
 	s.crs=_crs;
 	for (unsigned i=0; i < _nlyr; i++) {
@@ -246,7 +251,9 @@ unsigned SpatRaster::nrow() {
 
 unsigned SpatRaster::nlyr() {
 	unsigned x = 0;
-	for (size_t i=0; i<source.size(); i++) { x += source[i].nlyr; }
+	for (size_t i=0; i<source.size(); i++) { 
+		x += source[i].nlyr; 
+	}
 	return(x);
 }
 
@@ -308,3 +315,41 @@ bool SpatRaster::is_global_lonlat() {
 	return false;
 };
 
+
+#include "file_utils.h"
+#include <set>
+SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool unique, SpatOptions &opt) {
+// if a tool needs to read from disk, perhaps from unique filenames
+// use writeRaster to write to a single file.
+	SpatRaster out;
+	size_t nsrc = source.size();
+	std::set<std::string> ufs;
+	size_t ufsize = ufs.size();
+	
+	for (size_t i=0; i<nsrc; i++) {
+		bool write = false;
+		if (!source[i].in_order() || (source[i].driver == "memory")) {
+			write = true;
+		} else if (unique) {
+			ufs.insert(source[i].filename);	
+			if (ufs.size() == ufsize) {
+				write = true;
+			} else {
+				ufsize++;
+			}
+		}
+		SpatRaster rs(source[i]);
+		if (write) {
+			opt.filename = tempFile(opt.get_tempdir(), "_temp.tif") ;
+			tmpfs.push_back(opt.filename);
+			rs = rs.writeRaster(opt);
+		}
+		if (i == 0) {
+			out.setSource(rs.source[0]);
+		} else {
+			out.addSource(rs);
+		}
+	}
+	return out;
+}
+	

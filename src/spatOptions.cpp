@@ -39,10 +39,10 @@ SpatOptions SpatOptions::deepCopy(const SpatOptions &opt) {
 	return SpatOptions(opt);
 }
 
-void SpatOptions::set_def_bandorder(std::string d) { def_bandorder = d; }
-std::string SpatOptions::get_def_bandorder() { return def_bandorder; }
-void SpatOptions::set_bandorder(std::string d) { bandorder = d; }
-std::string SpatOptions::get_bandorder() {if (bandorder != "") {return bandorder;} else {return def_datatype;}}
+//void SpatOptions::set_def_bandorder(std::string d) { def_bandorder = d; }
+//std::string SpatOptions::get_def_bandorder() { return def_bandorder; }
+//void SpatOptions::set_bandorder(std::string d) { bandorder = d; }
+//std::string SpatOptions::get_bandorder() {if (bandorder != "") {return bandorder;} else {return def_datatype;}}
 
 void SpatOptions::set_def_datatype(std::string d) { def_datatype = d; }
 std::string SpatOptions::get_def_datatype() { return def_datatype; }

@@ -29,6 +29,17 @@ std::string double_to_string(double x) {
 }
 
 
+std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
+	size_t n = s.size();
+	std::vector<char *> out(n + 1);
+	for (size_t i = 0; i < n; i++) {
+		out[i] = (char *) (s[i].c_str());
+	}
+	out[n] = NULL;
+	return out;
+}
+
+
 std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep) { 
 	std::vector<std::string> out(x.size());
 	for (size_t i=0; i<x.size(); i++) {

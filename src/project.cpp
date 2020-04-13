@@ -1,13 +1,37 @@
 #include <vector>
 #include "spatRaster.h"
 #include "vecmath.h"
+#include "file_utils.h"
 
 #ifdef useGDAL
 	#include "crs.h"
+	#include "warp.h"
 #endif
 
 
+void SpatRaster::project3(SpatRaster &out, std::string method, SpatOptions &opt) {
 
+	std::string src = source[0].filename;
+	std::string crsout = out.getCRS();
+	std::vector<double> e = out.extent.asVector();
+	std::vector<std::string> warpops = {"-t_srs", crsout, "-overwrite", 
+					"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
+					"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]), "-r", method, "-ovr", "NONE"};
+	std::string dst = opt.filename;
+	if (dst=="") {
+		dst = tempFile(opt.get_tempdir(), ".tif");
+	} else {
+		if (opt.overwrite) {
+			warpops.push_back("-overwrite");
+		}
+	}
+	std::vector<std::string> empty;
+	gdalwarp(src, dst, warpops, empty, empty);
+	out.addWarning(dst);
+	out = SpatRaster(dst);
+}
+
+/*
 void SpatRaster::project3(SpatRaster &out, std::string method, SpatOptions &opt) {
 
 	unsigned nc = out.ncol();
@@ -32,6 +56,8 @@ void SpatRaster::project3(SpatRaster &out, std::string method, SpatOptions &opt)
 	}
 	out.writeStop();
 }
+
+*/
 
 
 

@@ -50,13 +50,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	SpatRaster out = geometry();
 
 	if (filename == "") {
-		#ifdef useGDAL
-		std::string extension = ".tif";
-		#else
-		std::string extension = ".grd";
-		#endif
-		filename = tempFile(opt.get_tempdir(), extension);
-//	} else if (file_exists(filename)) {
+		filename = tempFile(opt.get_tempdir(), ".tif");
 	}
 	SpatMessages m = can_write(filename, overwrite);
 	if (m.has_error) {
@@ -85,11 +79,9 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 bool SpatRaster::writeStart(SpatOptions &opt) {
 
 	std::string filename = opt.get_filename();
-
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
 	}
-
 	if (filename == "") {
 		if (!canProcessInMemory(4) || opt.get_todisk()) {
 			std::string extension = ".tif";
@@ -98,7 +90,6 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 
 	if (filename != "") {
-
 		std::string ext = getFileExt(filename);
 		std::string dtype = opt.get_datatype();
 		source[0].datatype = dtype;

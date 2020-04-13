@@ -169,6 +169,17 @@ std::vector<double> RasterSource::getValues(unsigned lyr) {
     return out;
 }
 
+bool RasterSource::in_order() {
+	if (driver == "memory") return true;
+	if (nlyr != nlyrfile) return false;
+	for (size_t i=0; i<layers.size(); i++) {
+		if (layers[i] != i) {
+			return false;
+		}
+	} 
+	return true;
+}
+
 
 void RasterSource::resize(unsigned n) {
 	names.resize(n);
@@ -188,8 +199,10 @@ void RasterSource::resize(unsigned n) {
 }
 
 
-std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
-	std::vector<RasterSource> out;
+//std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
+RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
+
+	RasterSource out;
 
     unsigned nl = lyrs.size();
     bool all = true;
@@ -204,7 +217,7 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
         all = false;
     }
     if (all) {
-        out = { *this };
+        out = *this ;
     } else {
         RasterSource rs = *this;
         rs.resize(0);
@@ -245,7 +258,7 @@ std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
             }
         }
         rs.nlyr = nl;
-        out = { rs };
+        out = rs;
     }
     return out;
 }
@@ -286,13 +299,13 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
         out.addWarning("ignored " + std::to_string(oldsize - lyrs.size()) + " invalid layer reference(s)");
 	}
 
+
     std::vector<unsigned> srcs = sourcesFromLyrs(lyrs);
 
     unsigned ss = srcs[0];
     std::vector<unsigned> slyr;
     std::vector<unsigned> lyrbys = nlyrBySource();
     RasterSource rs;
-    std::vector<RasterSource> vrs;
     unsigned offset = 0;
     for (size_t i=0; i<ss; i++) { offset += lyrbys[i]; }
 
@@ -300,8 +313,8 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
         if (srcs[i] == ss) {
             slyr.push_back( (lyrs[i] - offset) );
         } else {
-            vrs = source[ss].subset(slyr);
-            out.source.insert(out.source.end(), vrs.begin(), vrs.end());
+            rs = source[ss].subset(slyr);
+            out.source.push_back(rs);
             ss = srcs[i];
             offset = 0;
             for (size_t i=0; i<ss; i++) { offset += lyrbys[i]; }
@@ -309,8 +322,8 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
        }
     }
 
-    vrs = source[ss].subset(slyr);
-    out.source.insert(out.source.end(), vrs.begin(), vrs.end());
+    rs = source[ss].subset(slyr);
+    out.source.push_back(rs);
 
     if (opt.get_filename() != "") {
         out.writeRaster(opt);

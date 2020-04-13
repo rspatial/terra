@@ -5,3 +5,7 @@
     .Call(`_terra_ginfo`, filename, options, oo)
 }
 
+.gdalwarp <- function(src, dst, options, oo, doo) {
+    .Call(`_terra_gwarp`, src, dst, options, oo, doo)
+}
+

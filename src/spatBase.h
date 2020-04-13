@@ -25,9 +25,9 @@
 	#define useRcpp
 #endif
 
-#define useGDAL
-//#define useGEOS
-
+#ifndef nogdal
+	#define useGDAL
+#endif
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
@@ -43,7 +43,7 @@ class SpatOptions {
 	public:
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
-		std::string def_bandorder = "BIL";
+		//std::string def_bandorder = "BIL";
 		bool overwrite = false;
 		unsigned progress = 3;
 		unsigned blocksizemp = 4;

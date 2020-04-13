@@ -9,7 +9,7 @@ show_messages <- function(x, f="") {
 			messages <- paste0(f, ": ", paste(x@ptr$messages$warnings, collapse="\n"))
 			x@ptr$messages$warnings <- ""
 			x@ptr$messages$has_warning <- FALSE
-			warning(messages, call.=FALSE)
+			warning(paste(messages, collapse="\n"), call.=FALSE)
 		}
 		if (x@ptr$messages$has_error) {
 			emsg <- x@ptr$messages$error
@@ -23,7 +23,7 @@ show_messages <- function(x, f="") {
 			messages <- paste0(f, ": ", paste(x$messages$warnings, collapse="\n"))
 			x$messages$warnings <- ""
 			x$messages$has_warning <- FALSE
-			warning(messages, call.=FALSE)
+			warning(paste(messages, collapse="\n"), call.=FALSE)
 		}
 		if (x$messages$has_error) {
 			emsg <- x$messages$error

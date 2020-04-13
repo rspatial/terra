@@ -19,7 +19,21 @@ If the origin and crs are the same, you should consider using these other functi
 \arguments{
   \item{x}{SpatRaster to be resampleed}
   \item{y}{SpatRaster that \code{x} should be resampleed to}
-  \item{method}{character. Method used to compute values. \code{"bilinear"} for bilinear interpolation, or \code{"ngb"} for "nearest neighbor"}
+  \item{method}{character. Method used for estimating the new cell values. One of: 
+  
+	near: nearest neighbour. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values.
+	bilinear: bilinear interpolation. Default.
+	cubic: cubic interpolation.
+	cubicspline: cubic spline interpolation.
+	lanczos: Lanczos windowed sinc resampling.
+	average: the weighted average of all contributing cells excluding \code{NA}.
+	med: the median value of of all contributing cells excluding \code{NA}.
+	mode: the most frequent value.
+	max: the maximum value of all contributing cells excluding \code{NA}.
+	min: the minimum value of all contributing cells excluding \code{NA}.
+	q1: the first quartile of all contributing cells excluding \code{NA}.
+	q3: the third quartile of all contributing cells excluding \code{NA}.
+  }
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
@@ -41,7 +55,7 @@ SpatRaster
 r <- rast(nrow=3, ncol=3, xmin=0, xmax=10, ymin=0, ymax=10)
 values(r) <- 1:ncell(r)
 s <- rast(nrow=25, ncol=30, xmin=1, xmax=11, ymin=-1, ymax=11)
-x <- resample(r, s, method='bilinear')
+x <- resample(r, s, method="bilinear")
 
 opar <- par(no.readonly =TRUE)
 par(mfrow=c(1,2))

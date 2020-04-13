@@ -189,7 +189,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 setMethod("lines", signature(x="SpatRaster"),
 function(x, mx=50000, ...) {
 	if(prod(dim(x)) > mx) {
-		stop('too many lines')
+		stop("too many lines")
 	}
 	v <- as.polygons(x)
 	lines(v, ...)

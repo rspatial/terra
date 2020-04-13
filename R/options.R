@@ -5,7 +5,7 @@
 .create_options <- function() {
 	opt <- methods::new("SpatOptions")
 	opt@ptr <- SpatOptions$new()
-	opt@ptr$tempdir <- tempdir()
+	opt@ptr$tempdir <- normalizePath(tempdir(check = TRUE), winslash="/")
 	.terra_environment$options <- opt
 }
  

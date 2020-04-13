@@ -59,7 +59,8 @@ class RasterSource {
 //		bool fswrite(std::vector<double> &v);
 //		void fsclose();
 
-		unsigned ncol, nrow, nlyr, nlyrfile;
+		unsigned ncol, nrow, nlyr;
+		unsigned nlyrfile = 0;
 		SpatExtent extent;
 		std::string crs;
 		std::vector<unsigned> layers;
@@ -84,24 +85,22 @@ class RasterSource {
 		bool memory;
 		bool hasValues;
 		std::string filename;
-		//unsigned nlyrfile;
+		std::string driver;
 
 		// for native files
 		std::string datatype; // also for writing gdal
-		std::string driver;
-		std::string bandorder;
-		std::string byteorder;
-
 		double NAflag;
 
 		std::vector<bool> has_scale_offset;
 		std::vector<double> scale;
 		std::vector<double> offset;
 
-		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
+//		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
+		RasterSource subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
 		void setRange();
 		void resize(unsigned n);
+		bool in_order();
 };
 
 
@@ -321,6 +320,9 @@ class SpatRaster {
 
 		void fill(double x);
 
+		SpatRaster sources_to_disk(std::vector<std::string> &tmpfs, bool unique, SpatOptions &opt);
+
+
 ////////////////////////////////////////////////////
 // main methods
 ////////////////////////////////////////////////////
@@ -420,7 +422,11 @@ class SpatRaster {
 
 		SpatRaster resample1(SpatRaster &x, const std::string &method, SpatOptions &opt);
 		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
-		
+
+		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
+		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
+		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
+		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm);
 
 };

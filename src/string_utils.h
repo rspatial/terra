@@ -3,6 +3,7 @@
 
 std::string double_to_string(double x);
 std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep);
+std::vector<char *> string_to_charpnt(std::vector<std::string> s);
 
 std::string concatenate(std::vector<std::string> v, std::string delim);
 void lowercase(std::string &s);

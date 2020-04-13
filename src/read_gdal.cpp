@@ -381,7 +381,9 @@ bool SpatRaster::readStartGDAL(unsigned src) {
 }
 
 bool SpatRaster::readStopGDAL(unsigned src) {
-	GDALClose( (GDALDatasetH) source[src].gdalconnection);
+	if (source[src].gdalconnection != NULL) {
+		GDALClose( (GDALDatasetH) source[src].gdalconnection);
+	}
 	source[src].open_read = false;
 	return true;
 }
@@ -752,4 +754,6 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 	}
 	return out;
 }
+
+
 
