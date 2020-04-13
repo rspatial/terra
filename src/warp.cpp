@@ -1,7 +1,8 @@
-
+#include <algorithm>
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
+
 
 //#ifdef useGDAL
 	#include "cpl_port.h"
@@ -36,7 +37,7 @@ std::vector<double> getValuesMEM(GDALDatasetH hDS, unsigned ncol, unsigned nrow,
 			break; 
 		}
 		double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
-		if (hasNA) std::replace(lyrout.begin(), lyrout.end(), naflag, NAN);
+		if (hasNA) std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
 		out.insert(out.end(), lyrout.begin(), lyrout.end());
 	}
 	return out;
@@ -44,16 +45,16 @@ std::vector<double> getValuesMEM(GDALDatasetH hDS, unsigned ncol, unsigned nrow,
 
 
 GDALDatasetH ds_create(SpatRaster &x, std::string format, bool fill, SpatOptions &opt) {
-	
+
 	GDALDatasetH hDS;
-	
+
 	char **papszOptions = NULL;
 	for (size_t i=0; i<opt.gdal_options.size(); i++) {
 		std::vector<std::string> wopt = strsplit(opt.gdal_options[i], "=");
 		if (wopt.size() == 2) {
 			papszOptions = CSLSetNameValue( papszOptions, wopt[0].c_str(), wopt[1].c_str() );
 		}
-	}	
+	}
 	const char *pszFormat = format.c_str();
 	GDALDriverH hDrv = GDALGetDriverByName(pszFormat);
 
