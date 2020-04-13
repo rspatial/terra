@@ -58,7 +58,7 @@ b <- rast(ncol=94, nrow=124, xmin=-944881, xmax=935118, ymin=4664377, ymax=71443
 w <- project(a, b)
 
 # y can also be a crs
-ww <- project(a, crs)
+ww <- project(a, newcrs)
 
 
 # SpatVector
