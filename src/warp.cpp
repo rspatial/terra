@@ -137,20 +137,20 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 	}
 
 	std::vector<double> e = out.extent.asVector();
-	std::vector<std::string> sops = {"-t_srs", out.getCRS(), //"-dstnodata", "NAN", 
-			"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
-			"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]),
-			"-r", method, "-ovr", "NONE"};
-	if (opt.overwrite) {
-		sops.push_back("-overwrite");
-	}
+	//std::vector<std::string> sops = {"-t_srs", out.getCRS(), //"-dstnodata", "NAN", 
+	//		"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
+	//		"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]),
+	//		"-r", method, "-ovr", "NONE"};
+
+	// no point in adding create options. overwrite=T if you have come this far
+	std::vector<std::string> sops = {"-r", method, "-overwrite"};
 	//if (format != "") {
 	//	sops.push_back("-of");
 	//	sops.push_back(format);		
 	//}
 
 	std::vector <char *> options_char = string_to_charpnt(sops);
-	GDALWarpAppOptions* gopts = GDALWarpAppOptionsNew(options_char.data(), NULL);
+	GDALWarpAppOptions* gopts = GDALWarpAppOptionsNew(options_char.data(), nullptr);
 
 	int err = 0;
 	GDALDatasetH result;
