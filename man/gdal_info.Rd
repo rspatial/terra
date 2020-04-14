@@ -31,8 +31,10 @@ character (invisibly, if \code{print=TRUE})
 f <- system.file("exdata/test.tif", package="terra")
 gdal_info(f)
 
+\donttest{
 g <- gdal_info(f, c("json", "nomd", "proj4"), print=FALSE)
 cat(g, "\n")
+}
 }
 
 \keyword{spatial}
