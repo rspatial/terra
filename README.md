@@ -3,7 +3,7 @@
 [![Travis build
 status](https://travis-ci.org/rspatial/terra.svg?branch=master)](https://travis-ci.org/rspatial/terra)
 
-`terra` is a R package is a replacement of the [raster](https://github.com/rspatial/raster) package.
+`terra` is an R package that replaces [raster](https://github.com/rspatial/raster).
 It has a very similar, but simpler, interface, and it is much faster.
 
 All native computations are done in C++.  Classes, methods and properties are exposed via a Rcpp module.
