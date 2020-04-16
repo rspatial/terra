@@ -4,10 +4,9 @@
 status](https://travis-ci.org/rspatial/terra.svg?branch=master)](https://travis-ci.org/rspatial/terra)
 
 `terra` is an R package that replaces [raster](https://github.com/rspatial/raster).
-It has a very similar, but simpler, interface, and it is much faster.
+It has a very similar interface, but it is simpler and much faster.
 
-All native computations are done in C++.  Classes, methods and properties are exposed via a Rcpp module.
-The R side has two main S4 classes (SpatRaster and SpatVector) that represent spatial data. These classes have only slot, a reference to a C++ object. They are used to provide a "normal" "S4" R user-interface as in the raster package.
+`terra` is written in C++.  Classes, methods and properties are exposed via a Rcpp module. The R side has two main S4 classes (SpatRaster and SpatVector) that represent spatial data. These classes have only slot, a reference to a C++ object. They are used to provide a "normal" "S4" R user-interface as in the raster package.
 
 
 ## Installation
