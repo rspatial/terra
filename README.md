@@ -2,6 +2,10 @@
 
 [![Travis build
 status](https://travis-ci.org/rspatial/terra.svg?branch=master)](https://travis-ci.org/rspatial/terra)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
+[![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
+
 
 `terra` is an R package that replaces [raster](https://github.com/rspatial/raster).
 It has a very similar interface, but it is simpler and much faster.
