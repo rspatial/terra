@@ -33,9 +33,26 @@ class SpatMessages {
 			error = s;
 			success = false;
 		}
+		
 		void addWarning(std::string s) {
 			has_warning = true;
 			warnings.push_back(s);
+		}
+		
+		std::vector<std::string> getMessages() {
+			std::string warns = "";
+			if (warnings.size() > 0) {
+				warns = warnings[0];
+				for (size_t i = 1; i<warnings.size(); i++) {
+					warns = warns  + "\n" + warnings[i];
+				}
+			}
+			std::vector<std::string> msg = { error, warns};
+			has_error = false;
+			has_warning = false;
+			error = "";
+			warnings.resize(0);
+			return msg;
 		}
 };
 
