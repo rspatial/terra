@@ -25,7 +25,7 @@ setMethod("init", signature(x="SpatRaster"),
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n)
-				writeVals(out, r, b$row[i], b$nrows[i])
+				writeValues(out, r, b$row[i], b$nrows[i])
 			}
 			out <- writeStop(out)
 			return(out)		

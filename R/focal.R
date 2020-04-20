@@ -36,7 +36,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", filename="", overwrite=FAL
 		for (i in 1:b$n) {
 			v <- matrix(x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=prod(w), byrow=TRUE)
 			v <- apply(v, 1, fun, na.rm=na.rm)
-			writeVals(out, v, b$row[i], b$nrows[i])
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 		out <- writeStop(out)		
 		return(out)

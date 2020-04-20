@@ -15,8 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-// Based on  public-domain code by Darel Rex Finley, 2007
-// http://alienryderflex.com/polygon_fill/
+// inspired by http://alienryderflex.com/polygon_fill/
 
 #include <vector>
 #include "spatRaster.h"

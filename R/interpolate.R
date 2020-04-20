@@ -38,7 +38,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 				xy <- cbind(xy, d)
 			}
 			v <- .runModel(model, fun, xy, nl, const, (na.rm & hv), index, ...)
-			writeVals(out, v, b$row[i], b$nrows[i])
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 		if (hv) readStop(object)
 		out <- writeStop(out)
