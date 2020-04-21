@@ -185,6 +185,52 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 }
 
 
+
+std::string getWKT2(GDALDataset *poDataset) { 
+	std::string wkt = "";
+	char *cp;
+#if GDAL_VERSION_MAJOR >= 3
+	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OGRErr err = srs->exportToWkt(&cp, options);
+	if (err == OGRERR_NONE) {
+		wkt = std::string(cp);
+		CPLFree(cp);
+	} 
+#else
+	if (poDataset->GetProjectionRef() != NULL) { 
+		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
+		OGRErr err = oSRS.exportToPrettyWkt(&cp);
+		if (err == OGRERR_NONE) {
+			wkt = std::string(cp);
+			CPLFree(cp);
+		}
+	}
+#endif 	
+	return wkt;
+}
+
+std::string getPRJ(GDALDataset *poDataset) { 
+	std::string prj = "";
+#if GDAL_VERSION_MAJOR >= 3
+	char *cp;
+	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
+	OGRErr err = srs->exportToProj4(&cp, options);
+	if (err == OGRERR_NONE) {
+		prj = std::string(cp);
+		CPLFree(cp);
+	}
+#else
+	if( poDataset->GetProjectionRef() != NULL ) {
+		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
+		char *pszPRJ = NULL;
+		oSRS.exportToProj4(&pszPRJ);
+		prj = pszPRJ;
+	}
+#endif	
+	return prj;
+}
+
 bool SpatRaster::constructFromFile(std::string fname) {
 
     GDALDataset *poDataset;
@@ -257,40 +303,8 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	}
 */
 
-
-	s.crs = "";
-	s.prj = "";
-
-
-
-
-
-char *cp;
-#if GDAL_VERSION_MAJOR >= 3
-	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
-	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
-	OGRErr err = srs->exportToWkt(&cp, options);
-	if (err == OGRERR_NONE) {
-		s.crs = std::string(cp);
-		CPLFree(cp);
-	}
-	
-#else
-	if (poDataset->GetProjectionRef() != NULL) { // '\0'
-		const char *wkt = poDataset->GetProjectionRef();
-		s.crs = std::string(wkt);
-		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
-		OGRErr err = oSRS.exportToPrettyWkt(&cp);
-		if (err == OGRERR_NONE) {
-			s.crs = std::string(cp);
-			CPLFree(cp);
-		}
-		char *pszPRJ = NULL;
-		oSRS.exportToProj4(&pszPRJ);
-		s.prj = pszPRJ;
-	}
-#endif
-
+	s.crs = getWKT2(poDataset);
+	s.prj = getPRJ(poDataset);
 
 	GDALRasterBand  *poBand;
 	//int nBlockXSize, nBlockYSize;

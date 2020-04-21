@@ -62,8 +62,7 @@ setMethod ("show" , "SpatRaster",
 		e <- as.vector(ext(object))
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 
-		crs <- crs(object)
-		cat("coord. ref. :" , crs(object), "\n")
+		cat("coord. ref. :" , object@ptr$prj, "\n")
 		
 		mnr <- 5
 

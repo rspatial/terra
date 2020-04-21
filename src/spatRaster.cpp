@@ -53,6 +53,7 @@ void SpatRaster::setSources(std::vector<RasterSource> s) {
 	source = s;
 	extent = s[0].extent;
 	crs = s[0].crs;
+	prj = s[0].prj;
 }
 
 
@@ -86,8 +87,8 @@ SpatRaster::SpatRaster() {
 	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.names = {"lyr.1"};
-	s.crs = "+proj=longlat +datum=WGS84";
-
+	s.prj = "+proj=longlat +datum=WGS84";
+	s.crs = "GEOGCS[\"WGS 84\", DATUM[\"WGS_1984\", SPHEROID[\"WGS 84\",6378137,298.257223563]], PRIMEM[\"Greenwich\",0], UNIT[\"degree\",0.0174532925199433]]";
 	setSource(s);
 }
 
@@ -138,7 +139,7 @@ SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExten
 	//s.layers.resize(1, _nlyr);
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
 	s.datatype = "";
-	s.crs=_crs;
+	s.crs = _crs;
 	for (unsigned i=0; i < _nlyr; i++) {
 		s.names.push_back("lyr." + std::to_string(i+1)) ;
 	}
