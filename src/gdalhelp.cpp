@@ -145,10 +145,8 @@ std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) {
 #else
 	OGRErr err = srs->exportToPrettyWkt(&cp);
 #endif
-	std::string out;
-	if (err != OGRERR_NONE) {
-		out = "OGR error: cannot export to WKT"; // #nocov
-	} else {
+	std::string out="";
+	if (err == OGRERR_NONE) {
 		out = std::string(cp);
 	}
 	CPLFree(cp);
@@ -156,13 +154,33 @@ std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) {
 }
 
 std::string prj_from_spatial_reference(const OGRSpatialReference *srs) {
+	std::string out="";
 	char *cp;
 	OGRErr err = srs->exportToProj4(&cp);
-	std::string out;
-	if (err != OGRERR_NONE) {
-		out = "OGR error: cannot export to WKT"; // #nocov
-	} else {
+	if (err == OGRERR_NONE) {
 		out = std::string(cp);
+	}
+	CPLFree(cp);
+	return out;
+}
+
+
+std::string string_from_spatial_reference(const OGRSpatialReference *srs) {
+	std::vector<std::string> out(2, "");
+	char *cp;
+#if GDAL_VERSION_MAJOR >= 3
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OGRErr err = srs->exportToWkt(&cp, options);
+#else
+	OGRErr err = srs->exportToPrettyWkt(&cp);
+#endif
+	if (err == OGRERR_NONE) {
+		out[0] = std::string(cp);
+	}
+
+	err = srs->exportToProj4(&cp);
+	if (err == OGRERR_NONE) {
+		out[01 = std::string(cp);
 	}
 	CPLFree(cp);
 	return out;
@@ -173,6 +191,8 @@ std::vector<std::string> srefs_from_string(std::string input) {
 	const char* s = input.c_str();
 	handle_error(srs->SetFromUserInput(s));
 	std::vector<std::string> out(2);
+	//out = strs_from_spatial_reference(srs);
+
 	out[0] = std::string(wkt_from_spatial_reference(srs));
 	out[1] = std::string(prj_from_spatial_reference(srs));
 	delete srs;

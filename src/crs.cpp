@@ -20,7 +20,7 @@
 #include <vector>
 #include <string>
 //#include "spatMessages.h"
-#include "SpatVector.h"
+#include "spatVector.h"
 #include "gdalhelp.h"
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
