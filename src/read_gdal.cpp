@@ -215,7 +215,7 @@ std::string getPRJ(GDALDataset *poDataset) {
 #if GDAL_VERSION_MAJOR >= 3
 	char *cp;
 	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
-	OGRErr err = srs->exportToProj4(&cp, options);
+	OGRErr err = srs->exportToProj4(&cp);
 	if (err == OGRERR_NONE) {
 		prj = std::string(cp);
 		CPLFree(cp);
