@@ -136,14 +136,16 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 		src[i] = GDALOpen((const char *) inp.source[i].filename.c_str(), GA_ReadOnly);
 	}
 
-	std::vector<double> e = out.extent.asVector();
-	//std::vector<std::string> sops = {"-t_srs", out.getCRS(), //"-dstnodata", "NAN", 
-	//		"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
-	//		"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]),
-	//		"-r", method, "-ovr", "NONE"};
-
-	// no point in adding create options. overwrite=T if you have come this far
-	std::vector<std::string> sops = {"-r", method, "-overwrite"};
+	std::vector<std::string> sops;
+	if (filename != "") {
+		std::vector<double> e = out.extent.asVector();
+		sops = {"-t_srs", out.getCRS(), //"-dstnodata", "NAN", 
+			"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
+			"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]),
+			"-r", method, "-ovr", "NONE", "-r", method, "-overwrite"};
+	} else {
+		sops = {"-r", method, "-overwrite"};
+	}
 	//if (format != "") {
 	//	sops.push_back("-of");
 	//	sops.push_back(format);		

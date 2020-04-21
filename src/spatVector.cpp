@@ -177,6 +177,14 @@ void SpatVector::setCRS(std::string CRS){
 	lyr.crs = CRS;
 }
 
+void SpatVector::setPRJ(std::string PRJ){
+	lyr.prj = PRJ;
+}
+
+std::string SpatVector::getPRJ(){
+	return lyr.prj;
+}
+
 
 std::string SpatVector::type(){
 	if (size() == 0) {
@@ -428,37 +436,6 @@ SpatVector SpatVector::subset_cols(int i) {
 	return out;
 };
 
-
-SpatVector SpatVector::project(std::string crs) {
-
-	SpatVector s;
-
-    #ifndef useGDAL
-		s.setError("GDAL is not available");
-		return(s);
-	#else
-	SpatDataFrame d = getGeometryDF();
-
-	std::vector<double> x = d.dv[0];
-	std::vector<double> y = d.dv[1];
-
-	s.msg = transform_coordinates(x, y, getCRS(), crs);
-
-	if (!s.msg.has_error) {
-		unsigned n = d.iv[0].size();
-		std::vector<unsigned> a, b, c;
-		for (size_t i=0; i<n; i++) {
-			a.push_back(d.iv[0][i]);
-			b.push_back(d.iv[1][i]);
-			c.push_back(d.iv[2][i]);
-		}
-		s.setGeometry(type(), a, b, x, y, c);
-		s.setCRS(crs);
-		s.lyr.df = lyr.df;
-	}
-	#endif
-	return s;
-}
 
 
 /*

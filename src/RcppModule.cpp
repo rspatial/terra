@@ -189,7 +189,7 @@ RCPP_MODULE(spat){
 		.method("as_lines", &SpatVector::as_lines, "as_lines")
 		.method("couldBeLonLat", &SpatVector::could_be_lonlat, "couldBeLonLat") 
 		.property("crs", &SpatVector::getCRS, &SpatVector::setCRS, "crs")		
-		//.field_readonly("prj", &SpatVector::prj)
+		.method("prj", &SpatVector::getPRJ)
 		
 		.method("distance_self", (SpatDataFrame (SpatVector::*)())( &SpatVector::distance))
 		.method("distance_other", (SpatDataFrame (SpatVector::*)(SpatVector, bool))( &SpatVector::distance))

@@ -22,6 +22,9 @@
 #include "ogrsf_frmts.h"
 #include "ogr_spatialref.h"
 
+#include "gdalhelp.h"
+
+
 std::string geomType(OGRLayer *poLayer) {
 	std::string s = "";
     poLayer->ResetReading();
@@ -92,6 +95,52 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 
 
 
+std::string getDs_WKT(GDALDataset *poDataset) { 
+	std::string wkt = "";
+	char *cp;
+#if GDAL_VERSION_MAJOR >= 3
+	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OGRErr err = srs->exportToWkt(&cp, options);
+	if (err == OGRERR_NONE) {
+		wkt = std::string(cp);
+		CPLFree(cp);
+	} 
+#else
+	if (poDataset->GetProjectionRef() != NULL) { 
+		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
+		OGRErr err = oSRS.exportToPrettyWkt(&cp);
+		if (err == OGRERR_NONE) {
+			wkt = std::string(cp);
+			CPLFree(cp);
+		}
+	}
+#endif 	
+	return wkt;
+}
+
+std::string getDs_PRJ(GDALDataset *poDataset) { 
+	std::string prj = "";
+#if GDAL_VERSION_MAJOR >= 3
+	char *cp;
+	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
+	OGRErr err = srs->exportToProj4(&cp);
+	if (err == OGRERR_NONE) {
+		prj = std::string(cp);
+		CPLFree(cp);
+	}
+#else
+	if( poDataset->GetProjectionRef() != NULL ) {
+		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
+		char *pszPRJ = NULL;
+		oSRS.exportToProj4(&pszPRJ);
+		prj = pszPRJ;
+	}
+#endif	
+	return prj;
+}
+
+
 
 bool SpatVector::read(std::string fname) {
 
@@ -103,13 +152,29 @@ bool SpatVector::read(std::string fname) {
         setError("Cannot open file");
 		return false;
     }
-	std::string crs = "";
+	
+
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
+	std::string crs = wkt_from_spatial_reference(poSRS);
+	std::string prj = prj_from_spatial_reference(poSRS);
+	
+//	std::string crs = getDs_WKT(poDS);
+//	std::string prj = getDs_PRJ(poDS);
+/*
+	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
+
 	if (poSRS) {
-		char *pszPRJ = NULL;
-		poSRS->exportToProj4(&pszPRJ);
-		crs = pszPRJ;
+		char *pszCRS = NULL;
+		poSRS->exportToProj4(&pszCRS);
+		crs = pszCRS;
+		prj = pszCRS;
+			
+		//pszCRS = NULL;
+		//poSRS->exportToWKT(&pszCRS);
+		//crs = pszCRS;
 	}
+*/
+	
 	OGRLayer *poLayer = poDS->GetLayerByName( basename_noext(fname).c_str() );
 
 	lyr.df = readAttributes(poLayer);
@@ -278,6 +343,7 @@ bool SpatVector::read(std::string fname) {
 	OGRFeature::DestroyFeature( poFeature );
     GDALClose( poDS );
 	setCRS(crs);
+	lyr.prj = prj;
 	return msg.success;
 }
 

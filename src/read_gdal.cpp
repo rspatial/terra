@@ -33,6 +33,8 @@
 #include "gdal_rat.h"
 //#include "hdr.h"
 
+#include "gdalhelp.h"
+
 
 void SpatRaster::spatinit() {
     GDALAllRegister();
@@ -186,7 +188,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 
 
 
-std::string getWKT2(GDALDataset *poDataset) { 
+std::string getDsWKT(GDALDataset *poDataset) { 
 	std::string wkt = "";
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
@@ -210,7 +212,7 @@ std::string getWKT2(GDALDataset *poDataset) {
 	return wkt;
 }
 
-std::string getPRJ(GDALDataset *poDataset) { 
+std::string getDsPRJ(GDALDataset *poDataset) { 
 	std::string prj = "";
 #if GDAL_VERSION_MAJOR >= 3
 	char *cp;
@@ -230,6 +232,8 @@ std::string getPRJ(GDALDataset *poDataset) {
 #endif	
 	return prj;
 }
+
+
 
 bool SpatRaster::constructFromFile(std::string fname) {
 
@@ -303,8 +307,8 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	}
 */
 
-	s.crs = getWKT2(poDataset);
-	s.prj = getPRJ(poDataset);
+	s.crs = getDsWKT(poDataset);
+	s.prj = getDsPRJ(poDataset);
 
 	GDALRasterBand  *poBand;
 	//int nBlockXSize, nBlockYSize;

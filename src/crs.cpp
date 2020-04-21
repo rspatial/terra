@@ -19,26 +19,29 @@
 #include "ogr_spatialref.h"
 #include <vector>
 #include <string>
-#include "spatMessages.h"
-
+//#include "spatMessages.h"
+#include "SpatVector.h"
+#include "gdalhelp.h"
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
 
 	SpatMessages m;
-	OGRSpatialReference sourceCRS, targetCRS;
-	OGRErr erro = sourceCRS.SetFromUserInput(&fromCRS[0]);
+	OGRSpatialReference source, target;
+	const char *pszDefFrom = fromCRS.c_str();
+	OGRErr erro = source.SetFromUserInput(pszDefFrom);
 	if (erro != OGRERR_NONE) {
 		m.setError("input crs is not valid");
 		return m;
 	}
-	erro = targetCRS.SetFromUserInput(&toCRS[0]);
+	const char *pszDefTo = toCRS.c_str();
+	erro = target.SetFromUserInput(pszDefTo);
 	if (erro != OGRERR_NONE) {
 		m.setError("output crs is not valid");
 		return m;
 	}
 
 	OGRCoordinateTransformation *poCT;
-	poCT = OGRCreateCoordinateTransformation(&sourceCRS, &targetCRS );
+	poCT = OGRCreateCoordinateTransformation(&source, &target);
 
 	if( poCT == NULL )	{
 		m.setError( "Transformation failed" );
@@ -59,3 +62,37 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 	return m;
 }
 
+
+
+SpatVector SpatVector::project(std::string crs) {
+
+	SpatVector s;
+
+    #ifndef useGDAL
+		s.setError("GDAL is not available");
+		return(s);
+	#else
+	SpatDataFrame d = getGeometryDF();
+
+	std::vector<double> x = d.dv[0];
+	std::vector<double> y = d.dv[1];
+
+	s.msg = transform_coordinates(x, y, getCRS(), crs);
+
+	if (!s.msg.has_error) {
+		unsigned n = d.iv[0].size();
+		std::vector<unsigned> a, b, c;
+		for (size_t i=0; i<n; i++) {
+			a.push_back(d.iv[0][i]);
+			b.push_back(d.iv[1][i]);
+			c.push_back(d.iv[2][i]);
+		}
+		s.setGeometry(type(), a, b, x, y, c);
+		std::vector<std::string> refs = srefs_from_string(crs);
+		s.setCRS(refs[0]);
+		s.setPRJ(refs[1]);
+		s.lyr.df = lyr.df;
+	}
+	#endif
+	return s;
+}

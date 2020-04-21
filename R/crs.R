@@ -20,7 +20,7 @@ setMethod("crs<-", signature("SpatRaster", "character"),
 
 setMethod("crs", signature("SpatRaster"), 
 	function(x) {
-		paste0(x@ptr$crs, "\n")
+		x@ptr$crs
 	}
 )
 

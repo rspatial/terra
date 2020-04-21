@@ -14,8 +14,6 @@
 #include <string.h>
 
 #include "gdalhelp.h"
-//#include "wkb.h"
-//#include "gdal_sf_pkg.h"
 
 #if GDAL_VERSION_MAJOR == 2
 # if GDAL_VERSION_MINOR >= 5
@@ -26,6 +24,7 @@
 #  define HAVE250
 # endif
 #endif
+
 
 
 #ifndef standalone
@@ -136,9 +135,9 @@ void handle_error(OGRErr err) {
 	}
 }
 
-/*
 
-std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) { // FIXME: add options?
+
+std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) {
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
 	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
@@ -156,14 +155,31 @@ std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) { // FIXM
 	return out;
 }
 
-std::string CPL_wkt_from_user_input(std::string input) {
+std::string prj_from_spatial_reference(const OGRSpatialReference *srs) {
+	char *cp;
+	OGRErr err = srs->exportToProj4(&cp);
+	std::string out;
+	if (err != OGRERR_NONE) {
+		out = "OGR error: cannot export to WKT"; // #nocov
+	} else {
+		out = std::string(cp);
+	}
+	CPLFree(cp);
+	return out;
+}
+
+std::vector<std::string> srefs_from_string(std::string input) {
 	OGRSpatialReference *srs = new OGRSpatialReference;
-	srs = handle_axis_order(srs);
-	handle_error(srs->SetFromUserInput((const char *) input[0]));
-	std::string out = wkt_from_spatial_reference(srs);
+	const char* s = input.c_str();
+	handle_error(srs->SetFromUserInput(s));
+	std::vector<std::string> out(2);
+	out[0] = std::string(wkt_from_spatial_reference(srs));
+	out[1] = std::string(prj_from_spatial_reference(srs));
 	delete srs;
 	return(out);
 }
+
+/*
 
 Rcpp::List fix_old_style(Rcpp::List crs) {
 	Rcpp::CharacterVector n = crs.attr("names");

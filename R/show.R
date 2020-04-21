@@ -37,7 +37,7 @@ setMethod ("show" , "SpatVector",
 		cat("geometry    :", geomtype(object), "\n")
 		cat("elements    : ", size(object), "\n", sep="" ) 
 		cat("extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		cat("coord. ref. :", crs(object), "\n")
+		cat("coord. ref. :", object@ptr$prj(), "\n")
 		nms <- names(object)
 		if (length(nms) > 0) {
 			cat("names       :", paste(names(object), collapse=", "), "\n")		

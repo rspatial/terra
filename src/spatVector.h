@@ -96,6 +96,8 @@ class SpatVector {
 
 		std::string getCRS();
 		void setCRS(std::string CRS);
+		std::string getPRJ();
+		void setPRJ(std::string PRJ);
 
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
