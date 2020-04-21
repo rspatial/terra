@@ -41,9 +41,6 @@ void SpatRaster::spatinit() {
 }
 
 
-
-
-
 bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
 
 	SpatRaster r = SpatRaster(fnames[0]);
@@ -193,7 +190,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
     GDALDataset *poDataset;
     
 	//if (!GDALregistred) spatinit(); //
-	GDALAllRegister();
+	//GDALAllRegister();
 
 	const char* pszFilename = fname.c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
@@ -249,7 +246,7 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	s.filename = fname;
 	s.driver = "gdal";
 
-
+/*
 	if( poDataset->GetProjectionRef() != NULL ) {
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
 		char *pszPRJ = NULL;
@@ -258,6 +255,41 @@ bool SpatRaster::constructFromFile(std::string fname) {
 	} else {
 		s.crs = "";
 	}
+*/
+
+
+	s.crs = "";
+	s.prj = "";
+
+
+
+
+
+char *cp;
+#if GDAL_VERSION_MAJOR >= 3
+	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OGRErr err = srs->exportToWkt(&cp, options);
+	if (err == OGRERR_NONE) {
+		s.crs = std::string(cp);
+		CPLFree(cp);
+	}
+	
+#else
+	if (poDataset->GetProjectionRef() != NULL) { // '\0'
+		const char *wkt = poDataset->GetProjectionRef();
+		s.crs = std::string(wkt);
+		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
+		OGRErr err = oSRS.exportToPrettyWkt(&cp);
+		if (err == OGRERR_NONE) {
+			s.crs = std::string(cp);
+			CPLFree(cp);
+		}
+		char *pszPRJ = NULL;
+		oSRS.exportToProj4(&pszPRJ);
+		s.prj = pszPRJ;
+	}
+#endif
 
 
 	GDALRasterBand  *poBand;

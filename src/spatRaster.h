@@ -63,6 +63,7 @@ class RasterSource {
 		unsigned nlyrfile = 0;
 		SpatExtent extent;
 		std::string crs;
+		std::string prj;
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
 
@@ -119,6 +120,7 @@ class SpatRaster {
 		std::string crs;
 
 	public:
+		std::string prj;
 
 	//	bool GDALregistred = false;
 

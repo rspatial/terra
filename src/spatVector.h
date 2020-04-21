@@ -72,6 +72,7 @@ class SpatLayer {
 		std::vector<SpatGeom> geoms;
 		SpatExtent extent;
 		SpatDataFrame df;
+		std::string prj;
 		std::string crs;
 };
 
