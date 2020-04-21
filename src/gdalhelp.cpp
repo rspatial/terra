@@ -165,7 +165,7 @@ std::string prj_from_spatial_reference(const OGRSpatialReference *srs) {
 }
 
 
-std::string string_from_spatial_reference(const OGRSpatialReference *srs) {
+std::vector<std::string> string_from_spatial_reference(const OGRSpatialReference *srs) {
 	std::vector<std::string> out(2, "");
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
