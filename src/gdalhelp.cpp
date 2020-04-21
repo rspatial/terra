@@ -180,7 +180,7 @@ std::string string_from_spatial_reference(const OGRSpatialReference *srs) {
 
 	err = srs->exportToProj4(&cp);
 	if (err == OGRERR_NONE) {
-		out[01 = std::string(cp);
+		out[1] = std::string(cp);
 	}
 	CPLFree(cp);
 	return out;
