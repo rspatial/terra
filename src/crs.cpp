@@ -21,20 +21,20 @@
 #include <string>
 #include "spatMessages.h"
 
+
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
 
 	SpatMessages m;
-
 	OGRSpatialReference sourceCRS, targetCRS;
-	OGRErr erro = sourceCRS.importFromProj4(&fromCRS[0]);
-	if (erro == 4) {
-		m.setError("crs is not valid");
-		return(m);
+	OGRErr erro = sourceCRS.SetFromUserInput(&fromCRS[0]);
+	if (erro != OGRERR_NONE) {
+		m.setError("input crs is not valid");
+		return m;
 	}
-	erro = targetCRS.importFromProj4(&toCRS[0]);
-	if (erro == 4) {
-		m.setError("crs is not valid");
-		return(m);
+	erro = targetCRS.SetFromUserInput(&toCRS[0]);
+	if (erro != OGRERR_NONE) {
+		m.setError("output crs is not valid");
+		return m;
 	}
 
 	OGRCoordinateTransformation *poCT;
