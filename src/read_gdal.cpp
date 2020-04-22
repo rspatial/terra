@@ -135,7 +135,7 @@ std::string basename_sds(std::string f) {
 	f = std::regex_replace(f, std::regex(".hdf$"), "");
 	f = std::regex_replace(f, std::regex(".nc$"), "");
 	f = std::regex_replace(f, std::regex("\""), "");
-	
+
 	return f;
 }
 
@@ -182,7 +182,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 
 	for (std::string& s : sd) s = basename_sds(s);
 	success = setNames(sd);
-	
+
 	return true;
 }
 
@@ -190,23 +190,26 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 
 std::string getDsWKT(GDALDataset *poDataset) { 
 	std::string wkt = "";
-	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
 	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
+	if (srs == NULL) return wkt;
+	char *cp;
 	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 	OGRErr err = srs->exportToWkt(&cp, options);
 	if (err == OGRERR_NONE) {
 		wkt = std::string(cp);
-		CPLFree(cp);
 	} 
+	CPLFree(cp);
+
 #else
 	if (poDataset->GetProjectionRef() != NULL) { 
+		char *cp;
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
 		OGRErr err = oSRS.exportToPrettyWkt(&cp);
 		if (err == OGRERR_NONE) {
 			wkt = std::string(cp);
-			CPLFree(cp);
 		}
+	        CPLFree(cp);
 	}
 #endif 	
 	return wkt;
@@ -215,13 +218,14 @@ std::string getDsWKT(GDALDataset *poDataset) {
 std::string getDsPRJ(GDALDataset *poDataset) { 
 	std::string prj = "";
 #if GDAL_VERSION_MAJOR >= 3
-	char *cp;
 	const OGRSpatialReference *srs = poDataset->GetSpatialRef();
+	if (srs == NULL) return prj;
+	char *cp;
 	OGRErr err = srs->exportToProj4(&cp);
 	if (err == OGRERR_NONE) {
 		prj = std::string(cp);
-		CPLFree(cp);
 	}
+        CPLFree(cp);
 #else
 	if( poDataset->GetProjectionRef() != NULL ) {
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
