@@ -1,6 +1,11 @@
 VERSION = 2.2.3
 COMPILED_BY ?= gcc-4.6.3
 RWINLIB = ../windows/gdal2-$(VERSION)
+#VERSION = 3.0.4
+#COMPILED_BY ?= gcc-4.9.3
+#RWINLIB = ../windows/gdal-$(VERSION)
+
+
 TARGET = lib$(subst gcc,,$(COMPILED_BY))$(R_ARCH)
 
 PKG_CPPFLAGS =\

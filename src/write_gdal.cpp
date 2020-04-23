@@ -30,9 +30,11 @@
 
 
 
-void GDALformat(std::string &filename, std::string &format) {
+void getGDALdriver(std::string &filename, std::string &driver) {
 
-	lrtrim(format);
+	lrtrim(driver);
+	if (driver != "") return;
+	
 	lrtrim(filename);
 	std::string ext = getFileExt(filename);
     lowercase(ext);
@@ -54,10 +56,8 @@ void GDALformat(std::string &filename, std::string &format) {
 	};
 
     auto i = drivers.find(ext);
-    if (i == drivers.end()) {
-		format = "GTiff";
-	} else {
-		format = i->second;
+    if (i != drivers.end()) {
+		driver = i->second;
 	}
 }
 
@@ -97,7 +97,7 @@ CPLErr setBandCategories(GDALRasterBand *poBand, std::vector<std::string> cats) 
 
 
 
-bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
+bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::string datatype, bool overwrite, SpatOptions &opt) {
 
 	SpatMessages m = can_write(filename, overwrite);
 	if (m.has_error) {
@@ -105,8 +105,13 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string format, std::s
 		return(false);
 	}
 
-	GDALformat(filename, format);
-	const char *pszFormat = format.c_str();
+	getGDALdriver(filename, driver);
+	if (driver == "") {
+		setError("cannot guess file type from filename");
+		return(false);	
+	}
+	
+	const char *pszFormat = driver.c_str();
 	const char *pszDstFilename = filename.c_str();
     GDALDriver *poDriver;
     char **papszMetadata;
