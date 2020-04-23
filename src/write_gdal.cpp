@@ -158,9 +158,9 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	poDstDS->SetGeoTransform(adfGeoTransform);
 
-	std::string prj = getCRS();
+	std::string crs = getCRS();
 	OGRSpatialReference oSRS;
-	OGRErr erro = oSRS.importFromProj4(&prj[0]);
+	OGRErr erro = oSRS.SetFromUserInput(&crs[0]);
 	if (erro == 4) {
 		setError("CRS failure");
 		return false ;
