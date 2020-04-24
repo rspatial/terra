@@ -8,6 +8,7 @@
 \alias{rast,SpatRaster-method}
 \alias{rast,matrix-method}
 \alias{rast,array-method}
+\alias{rast,list-method}
 \alias{rast,SpatExtent-method}
 \alias{rast,SpatVector-method}
 \alias{rast,Raster-method}
@@ -39,11 +40,13 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 									  
 \S4method{rast}{SpatExtent}(x, nrows=10, ncols=10, nlyrs=1, crs="", ...)
 
+\S4method{rast}{list}(x, ...)
+
 \S4method{rast}{Raster}(x, ...)
 }
 
 \arguments{
-\item{x}{filename (character), Extent, SpatRaster, matrix, array, or Raster* object (from the "raster" package). Can also be missing}
+\item{x}{filename (character), SpatRaster, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

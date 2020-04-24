@@ -173,8 +173,10 @@ std::string SpatVector::getCRS(){
 	return lyr.crs;
 }
 
-void SpatVector::setCRS(std::string CRS){
-	lyr.crs = CRS;
+void SpatVector::setCRS(std::string CRS) {
+	std::vector<std::string> srefs = srefs_from_string(CRS);
+	lyr.crs = srefs[0];
+	lyr.prj = srefs[1];
 }
 
 void SpatVector::setPRJ(std::string PRJ){

@@ -12,7 +12,7 @@
 		n <- nrow(d)
 		i <- rowSums(is.na(d)) == 0
 		d <- d[i,,drop=FALSE]
-		if (ncol(d) > 0) {
+		if (nrow(d) > 0) {
 			r <- fun(model, d, ...)
 			if (is.factor(r)) {
 				r <- as.integer(r)

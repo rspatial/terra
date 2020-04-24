@@ -22,7 +22,7 @@
 #include "ogrsf_frmts.h"
 #include "ogr_spatialref.h"
 
-#include "gdalhelp.h"
+#include "crs.h"
 
 
 std::string geomType(OGRLayer *poLayer) {

@@ -33,7 +33,7 @@
 #include "gdal_rat.h"
 //#include "hdr.h"
 
-#include "gdalhelp.h"
+#include "gdal_errors.h"
 
 
 void SpatRaster::spatinit() {

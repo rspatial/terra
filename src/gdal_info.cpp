@@ -6,7 +6,7 @@
 #include "cpl_conv.h" // CPLFree()
 #include "gdal_version.h"
 
-#include "gdalhelp.h" 
+#include "gdal_errors.h" 
 
 // code adapted from the 'sf' package by Edzer Pebesma et al
 

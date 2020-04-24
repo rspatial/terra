@@ -16,8 +16,7 @@ Note the following important differences in function names with the raster packa
 
 \tabular{ll}{
 raster package \tab terra package\cr
-\code{raster, brick}\tab\code{\link{rast}}\cr
-\code{stack} (for creating an object from file)\tab\code{\link{rast}}\cr
+\code{raster, brick, stack}\tab\code{\link{rast}}\cr
 \code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
 \code{extent}\tab\code{\link{ext}}\cr

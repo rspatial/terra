@@ -2,7 +2,7 @@
 #include "cpl_port.h"
 #include "cpl_conv.h" // CPLFree()
 #include "gdal_version.h"
-#include "gdalhelp.h"
+#include "gdal_errors.h"
 #include "ogr_srs_api.h"
 
 #ifdef GDALutils

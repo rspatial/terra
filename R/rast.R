@@ -34,6 +34,26 @@ setMethod("rast", signature(x="missing"),
 	}
 )
 
+setMethod("rast", signature(x="list"),
+	function(x, ...) {
+		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
+		if (!any(i)) {
+			stop("None of the elements of x are a SpatRaster")
+		}
+		if (!all(i)) {
+			warning(paste(sum(!i), "out of", length(x), "elements of x are a SpatRaster"))
+		}
+		x <- x[i]
+		r <- x[[1]]
+		if (length(x) > 1) {
+			for (i in seq_along(2:length(x))) {
+				r <- c(r, x[[i]])
+			}
+		}
+		r
+	}
+)
+
 
 setMethod("rast", signature(x="SpatExtent"),
 	function(x, nrows=10, ncols=10, nlyrs=1, crs="", ...) {

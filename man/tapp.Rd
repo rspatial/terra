@@ -8,7 +8,7 @@
 \title{Apply a function to subsets of layers of a SpatRaster}
 
 \description{
-Apply a function to subsets of layers of a SpatRaster (similar to \code{\link[base]{tapply}} and \code{link[stats]{aggregate}}). The layers are combined are combind based on the \code{index}. 
+Apply a function to subsets of layers of a SpatRaster (similar to \code{\link[base]{tapply}} and \code{\link[stats]{aggregate}}). The layers are combined are combined based on the \code{index}. 
 
 The function used should return a single value, and the number of layers in the output SpatRaster equals the number of unique values in \code{index}.
 

@@ -18,6 +18,10 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 
+#ifdef useGDAL
+#include "crs.h"
+#endif
+
 
 SpatRaster::SpatRaster(std::string fname) {
 #ifdef useGDAL
@@ -114,7 +118,15 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
 
 	s.datatype = "";
-	s.crs =_crs;
+
+#ifdef useGDAL
+	std::vector<std::string> srefs = srefs_from_string(_crs);
+	s.crs = srefs[0];
+	s.prj = srefs[1];
+#else 
+	s.crs = _crs;
+#endif	
+
 	for (unsigned i=0; i < rcl[2]; i++) {
 		s.names.push_back("lyr." + std::to_string(i+1)) ;
 	}
@@ -172,6 +184,7 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.ncol = ncol();
 	s.extent = extent;
 	s.crs = crs;
+	s.prj = prj;
 	s.memory = true;
 	s.hasValues = false;
 	long nl = nlyr();
@@ -204,8 +217,10 @@ SpatRaster SpatRaster::deepCopy() {
 
 void SpatRaster::setCRS(std::string _crs) {
 	lrtrim(_crs);
-	for (size_t i = 0; i < nsrc(); i++) { source[i].crs = _crs; }
-	crs = _crs;
+	std::vector<std::string> srefs = srefs_from_string(_crs);
+	for (size_t i = 0; i < nsrc(); i++) { source[i].crs = srefs[0]; }
+	crs = srefs[0];
+	prj = srefs[1];
 }
 
 std::vector<double> SpatRaster::resolution() {

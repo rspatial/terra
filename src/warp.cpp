@@ -9,8 +9,6 @@
 	#include "cpl_conv.h" // CPLFree()
 	#include "gdal_version.h"
 	#include "gdalwarper.h"
-
-	#include "gdalhelp.h"
 	#include "ogr_srs_api.h"
 
 //	#if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
@@ -18,6 +16,8 @@
 		#define GDALutils
 //	#endif
 //#endif
+
+	#include "gdal_errors.h"
 
 
 std::vector<double> getValuesMEM(GDALDatasetH hDS, unsigned ncol, unsigned nrow, unsigned nlyr) {

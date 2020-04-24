@@ -15,13 +15,128 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
 #include "ogr_spatialref.h"
+#include <gdal_priv.h> // GDALDriver
+
 #include <vector>
 #include <string>
 //#include "spatMessages.h"
 #include "spatVector.h"
-#include "gdalhelp.h"
+
+#ifdef useRcpp
+#include "Rcpp.h"
+
+void handle_error(OGRErr err) {
+	if (err != OGRERR_NONE) {
+		switch (err) {
+			case OGRERR_NOT_ENOUGH_DATA:
+				Rcpp::Rcout << "OGR: Not enough data " << std::endl;
+				break; 
+			case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+				Rcpp::Rcout << "OGR: Unsupported geometry type" << std::endl;
+				break;
+			case OGRERR_CORRUPT_DATA:
+				Rcpp::Rcout << "OGR: Corrupt data" << std::endl;     
+				break; 
+			case OGRERR_FAILURE:
+				Rcpp::Rcout << "OGR: index invalid?" << std::endl;    
+				break; 
+			default:
+				Rcpp::Rcout << "Error code: " << err << std::endl;    
+				break;
+		}
+		Rcpp::stop("OGR error");
+	}
+}
+#else 
+void handle_error(OGRErr err) {
+	if (err != OGRERR_NONE) {
+		switch (err) {
+			case OGRERR_NOT_ENOUGH_DATA:
+				//std::cout << "OGR: Not enough data " << std::endl; 
+				break; 
+			case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+				//std::cout << "OGR: Unsupported geometry type" << std::endl;
+				break;
+			case OGRERR_CORRUPT_DATA:
+				//std::cout << "OGR: Corrupt data" << std::endl;     
+				break; 
+			case OGRERR_FAILURE:
+				//std::cout << "OGR: index invalid?" << std::endl;    
+				break; 
+			default:
+				//std::cout << "Error code: " << err << std::endl;    
+				break;
+		}
+		//std::cout("OGR error");
+	}
+}
+#endif
+
+
+std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) {
+	char *cp;
+#if GDAL_VERSION_MAJOR >= 3
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OGRErr err = srs->exportToWkt(&cp, options);
+#else
+	OGRErr err = srs->exportToPrettyWkt(&cp);
+#endif
+	std::string out="";
+	if (err == OGRERR_NONE) {
+		out = std::string(cp);
+	}
+	CPLFree(cp);
+	return out;
+}
+
+std::string prj_from_spatial_reference(const OGRSpatialReference *srs) {
+	std::string out="";
+	char *cp;
+	OGRErr err = srs->exportToProj4(&cp);
+	if (err == OGRERR_NONE) {
+		out = std::string(cp);
+	}
+	CPLFree(cp);
+	return out;
+}
+
+
+std::vector<std::string> string_from_spatial_reference(const OGRSpatialReference *srs) {
+	std::vector<std::string> out(2, "");
+	char *cp;
+#if GDAL_VERSION_MAJOR >= 3
+	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	OGRErr err = srs->exportToWkt(&cp, options);
+#else
+	OGRErr err = srs->exportToPrettyWkt(&cp);
+#endif
+	if (err == OGRERR_NONE) {
+		out[0] = std::string(cp);
+	}
+
+	err = srs->exportToProj4(&cp);
+	if (err == OGRERR_NONE) {
+		out[1] = std::string(cp);
+	}
+	CPLFree(cp);
+	return out;
+}
+
+std::vector<std::string> srefs_from_string(std::string input) {
+	OGRSpatialReference *srs = new OGRSpatialReference;
+	const char* s = input.c_str();
+	handle_error(srs->SetFromUserInput(s));
+	std::vector<std::string> out(2);
+	//out = strs_from_spatial_reference(srs);
+
+	out[0] = std::string(wkt_from_spatial_reference(srs));
+	out[1] = std::string(prj_from_spatial_reference(srs));
+	delete srs;
+	return(out);
+}
+
+
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
 
