@@ -8,7 +8,7 @@
 \title{Apply a function to the cells of a SpatRaster}
 
 \description{ 
-Apply a function to values of a SpatRaster. Similar to \code{\link[base]{apply}} 
+Apply a function to values of each cell of a SpatRaster. This is similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix 
 }
 
 \usage{

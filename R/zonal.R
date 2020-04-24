@@ -5,9 +5,9 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		if (class(txtfun) == "character") { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
 				na.rm <- isTRUE(list(...)$na.rm)
-				x@ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm)
-				show_messages(x, "zonal")
-				.getSpatDF(x@ptr)
+				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm)
+				show_messages(ptr, "zonal")
+				.getSpatDF(ptr)
 			}		
 		} else {
 			nl <- nlyr(x)
@@ -35,27 +35,31 @@ setMethod("global", signature(x="SpatRaster"),
 	function(x, fun="mean", ...)  {
 
 		nms <- names(x)
+		nms <- make.unique(nms)
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (class(txtfun) == "character") { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
 				na.rm <- isTRUE(list(...)$na.rm)
-				x@ptr <- x@ptr$global(txtfun, na.rm)
-				show_messages(x, "global")
-				res <- (.getSpatDF(x@ptr))
-			}		
+				ptr <- x@ptr$global(txtfun, na.rm)
+				show_messages(ptr, "global")
+				res <- (.getSpatDF(ptr))
+
+				rownames(res) <- nms
+				return(res)
+			}
+		}
+
+		nl <- nlyr(x)
+		res <- list()
+		for (i in 1:nl) {
+			res[[i]] <- fun(values(x[[i]]))
+		}
+		res <- do.call(rbind,res)
+		res <- data.frame(res)
+		if (ncol(res) > 1) {
+			colnames(res) <- paste0("global_", 1:ncol(res))			
 		} else {
-			nl <- nlyr(x)
-			res <- list()
-			for (i in 1:nl) {
-				res[[i]] <- fun(values(x[[i]]))
-			}
-			res <- do.call(rbind,res)
-			res <- data.frame(res)
-			if (ncol(res) > 1) {
-				colnames(res) <- paste0("global_", 1:ncol(res))			
-			} else {
-				colnames(res) <- "global"
-			}
+			colnames(res) <- "global"
 		}
 		rownames(res) <- nms
 		res
