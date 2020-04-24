@@ -216,9 +216,10 @@ SpatRaster SpatRaster::deepCopy() {
 
 
 void SpatRaster::setCRS(std::string _crs) {
-	lrtrim(_crs);
 	std::vector<std::string> srefs = srefs_from_string(_crs);
-	for (size_t i = 0; i < nsrc(); i++) { source[i].crs = srefs[0]; }
+	for (size_t i = 0; i < nsrc(); i++) { 
+		source[i].crs = srefs[0]; 
+	}
 	crs = srefs[0];
 	prj = srefs[1];
 }

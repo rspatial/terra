@@ -48,6 +48,12 @@ function(x, i, j, ... ,drop=TRUE) {
 
 setMethod("[[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
+	if (!(all(i <= 0) || all(i >= 0))) {
+		stop("you cannot mix postive and negative indices")
+	}
+	i <- (1:nlyr(x))[i] #to account for negative indices
+	i <- na.omit(i)
+	if (all(i==0)) return(rast(x)[[1]])
 	subset(x, i, ...)
 })
 

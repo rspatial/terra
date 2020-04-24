@@ -22,6 +22,7 @@
 #include <string>
 //#include "spatMessages.h"
 #include "spatVector.h"
+#include "string_utils.h"
 
 #ifdef useRcpp
 #include "Rcpp.h"
@@ -124,15 +125,17 @@ std::vector<std::string> string_from_spatial_reference(const OGRSpatialReference
 }
 
 std::vector<std::string> srefs_from_string(std::string input) {
-	OGRSpatialReference *srs = new OGRSpatialReference;
-	const char* s = input.c_str();
-	handle_error(srs->SetFromUserInput(s));
-	std::vector<std::string> out(2);
-	//out = strs_from_spatial_reference(srs);
-
-	out[0] = std::string(wkt_from_spatial_reference(srs));
-	out[1] = std::string(prj_from_spatial_reference(srs));
-	delete srs;
+	lrtrim(input);
+	std::string wkt="", prj="";
+	if (input != "") {
+		OGRSpatialReference *srs = new OGRSpatialReference;
+		const char* s = input.c_str();
+		handle_error(srs->SetFromUserInput(s));
+		wkt = std::string(wkt_from_spatial_reference(srs));
+		prj = std::string(prj_from_spatial_reference(srs));
+		delete srs;
+	}
+	std::vector<std::string> out = {wkt, prj};
 	return(out);
 }
 

@@ -130,6 +130,20 @@ setMethod("cover", signature(x="SpatRaster", y="SpatRaster"),
 	}
 )
 
+
+setMethod("diff", signature(x="SpatRaster"), 
+	function(x, filename="", overwrite=FALSE, wopt=list(), ...) { 
+		n = nlyr(x)
+		if (n<2) return(rast(x))
+		y = x[[-1]]
+		x = x[[-n]]
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$arith_rast(y@ptr, "-", opt)
+		show_messages(x, "diff")
+	}
+)
+
+
 setMethod("disaggregate", signature(x="SpatRaster"), 
 	function(x, fact, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)

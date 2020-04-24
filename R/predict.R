@@ -5,9 +5,14 @@
 
 
 .runModel <- function(model, fun, d, nl, const, na.rm, index, ...) {
+	if (!is.data.frame(d)) {
+		d <- data.frame(d)
+	}
 	if (! is.null(const)) {
-		d <- cbind(d, const[1])
-	} 
+		for (i in 1:ncol(const)) {
+			d <- cbind(d, const[,i,drop=FALSE])
+		}
+	}	 
 	if (na.rm) {
 		n <- nrow(d)
 		i <- rowSums(is.na(d)) == 0
@@ -101,7 +106,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		nc <- ncol(object)
 		tomat <- FALSE
 		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
-
+	
 		r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
 		nl <- ncol(r)		
 		out <- rast(object, nlyr=nl)
