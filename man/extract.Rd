@@ -5,6 +5,7 @@
 \alias{extract}
 \alias{extract,SpatRaster,SpatVector-method}
 \alias{extract,SpatRaster,matrix-method}
+\alias{extract,SpatRaster,data.frame-method}
 \alias{extract,SpatRaster,numeric-method}
 
 \alias{[,SpatRaster,SpatVector,missing-method}
@@ -28,7 +29,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 
 \arguments{
 \item{x}{SpatRaster}
-\item{y}{SpatVector (for points, lines, polygons), or 2-column matrix (x, y; for points), or a vector with cell numbers}
+\item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
 \item{fun}{character. function to summarize the data. Currently ignored}
 \item{...}{additional arguments. None implemented}
 \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}

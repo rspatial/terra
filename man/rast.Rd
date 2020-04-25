@@ -34,7 +34,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), ...) 
 
-\S4method{rast}{matrix}(x, crs=NA, type="", ...)
+\S4method{rast}{matrix}(x, crs="", type="", ...)
 
 \S4method{rast}{SpatVector}(x, nrows=10, ncols=10, nlyrs=1, ...)
 									  
