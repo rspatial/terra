@@ -20,6 +20,15 @@ setMethod("as.lines", signature(x="SpatVector"),
 	}
 )
 
+
+setMethod("as.points", signature(x="SpatVector"), 
+	function(x, ...) {
+		x@ptr <- x@ptr$as_points()
+		show_messages(x)
+	}
+)
+
+
 setMethod("as.points", signature(x="SpatRaster"), 
 	function(x, values=FALSE, na.rm=FALSE, ...) {
 		p <- methods::new("SpatVector")

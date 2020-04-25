@@ -38,7 +38,7 @@ std::vector<double> shortDistPoints(const std::vector<double> &x, const std::vec
 SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (crs == "") {
+	if (srs.wkt == "") {
 		out.setError("CRS not defined");
 		return(out);
 	}
@@ -120,9 +120,9 @@ SpatDataFrame SpatVector::distance() {
 		out.setError("only inmplemented for points --- to be improved");
 		return(out);
 	}
-	std::string crs = getCRS();
-	if (crs == "") {
-		out.setError("CRS not defined");
+	std::vector<std::string> srs = getSRS();
+	if (srs[1] == "") {
+		out.setError("SRS not defined");
 		return(out);
 	}
 	bool lonlat = is_lonlat();
@@ -163,14 +163,15 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 		out.setError("only inmplemented for points --- to be improved");
 		return(out);
 	}
-	std::string crs = getCRS();
-	std::string xcrs = x.getCRS();
-	if (crs == "") {
-		out.setError("CRS not defined");
+	//std::vector<std::string> crs = getSRS();
+	//std::vector<std::string> xcrs = x.getSRS();
+
+	if (lyr.srs.is_empty()) {
+		out.setError("SRS not defined");
 		return(out);
 	}
-	if (crs != xcrs) {
-		out.setError("CRS do not match");
+	if (! lyr.srs.is_equal(x.lyr.srs) ) {
+		out.setError("SRSs do not match");
 		return(out);
 	}
 	bool lonlat = is_lonlat();

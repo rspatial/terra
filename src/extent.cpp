@@ -168,11 +168,11 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, b
 	}
 
 	if (crs) {
-		if (!(getCRS() == x.getCRS())) {
+		if (!srs.is_equal(x.srs)) {
 			if (warncrs) {
-				addWarning("CRS do not match");
+				addWarning("SRS do not match");
 			} else {
-				setError("CRS do not match");
+				setError("SRS do not match");
 				return false;
 			}
 		}

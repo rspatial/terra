@@ -379,7 +379,7 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
             // loop over dataframe and remove rows if value is na
 		}
 	}
-	vect.setCRS(getCRS());
+	vect.lyr.srs = srs;
 	return(vect);
 }
 
@@ -406,6 +406,23 @@ SpatVector SpatVector::as_lines() {
 			}
 		}
 		v.lyr.geoms[i].gtype = lines;
+	}
+	return(v);
+}
+
+
+SpatVector SpatVector::as_points() {
+	SpatVector v = *this;
+	if (lyr.geoms[0].gtype == points) {
+		v.addWarning("returning a copy");
+		return v;
+	}
+	if (lyr.geoms[0].gtype == polygons) {
+		v = v.as_lines();
+	}
+	
+	for (size_t i=0; i<size(); i++) {
+		v.lyr.geoms[i].gtype = points;
 	}
 	return(v);
 }

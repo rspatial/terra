@@ -16,12 +16,13 @@
 \alias{as.polygons,SpatRaster-method}
 \alias{as.points,SpatRaster-method}
 \alias{as.lines,SpatVector-method}
+\alias{as.points,SpatVector-method}
 
 
 \title{Coercion to other object types}
 
 \description{
-Coercion to other object types
+Coercion to other object types or other vector types
 }
 
 \usage{
@@ -32,11 +33,12 @@ Coercion to other object types
 \S4method{as.polygons}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
 \S4method{as.points}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
 \S4method{as.lines}{SpatVector}(x, ...)
+\S4method{as.points}{SpatVector}(x, ...)
 }
 
 
 \arguments{
-\item{x}{SpatRaster}
+\item{x}{SpatRaster or SpatVector}
 \item{wide}{logical}
 \item{xy}{logical}
 \item{cells}{logical}
@@ -59,8 +61,11 @@ as.matrix(r)
 as.matrix(r, wide=TRUE)
 as.data.frame(r, xy=TRUE)
 as.array(r)
-as.polygons(r)
 as.points(r)
+p <- as.polygons(r)
+p
+as.lines(p)
+as.points(p)
 }
 
 \keyword{spatial}

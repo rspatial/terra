@@ -158,7 +158,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	poDstDS->SetGeoTransform(adfGeoTransform);
 
-	std::string crs = getCRS();
+	std::string crs = srs.wkt;
 	OGRSpatialReference oSRS;
 	OGRErr erro = oSRS.SetFromUserInput(&crs[0]);
 	if (erro == 4) {

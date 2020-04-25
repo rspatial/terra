@@ -62,8 +62,8 @@ class RasterSource {
 		unsigned ncol, nrow, nlyr;
 		unsigned nlyrfile = 0;
 		SpatExtent extent;
-		std::string crs;
-		std::string prj;
+		//std::vector<std::string> crs = std::vector<std::string>(2, "");
+		SpatSRS srs;
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
 
@@ -117,10 +117,10 @@ class SpatRaster {
 	protected:
 		SpatExtent extent;
 		SpatExtent window;
-		std::string crs;
+		SpatSRS srs;
 
 	public:
-		std::string prj;
+	//	std::string prj;
 
 	//	bool GDALregistred = false;
 
@@ -151,8 +151,13 @@ class SpatRaster {
 		SpatExtent getExtent() { return extent; }
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
-		std::string getCRS() { return(crs); }
-		void setCRS(std::string _crs);
+		
+		//std::vector<std::string> getCRS();
+		//void setCRS(std::vector<std::string> _crs);
+
+		std::vector<std::string> getSRS();
+		void setSRS(std::vector<std::string> _srs);
+		
 		bool is_lonlat();
 		bool could_be_lonlat();
 		bool is_global_lonlat();
@@ -193,8 +198,8 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 
 		SpatRaster();
-		SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs);
-		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string _crs);
+		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
+		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::vector<std::string> crs);
 
 		SpatRaster(std::vector<std::string> fname);
 		SpatRaster(std::string fname);

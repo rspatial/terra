@@ -12,9 +12,9 @@
 void SpatRaster::project3(SpatRaster &out, std::string method, SpatOptions &opt) {
 
 	std::string src = source[0].filename;
-	std::string crsout = out.getCRS();
+	std::vector<std::string> crsout = out.getSRS();
 	std::vector<double> e = out.extent.asVector();
-	std::vector<std::string> warpops = {"-t_srs", crsout, "-overwrite", 
+	std::vector<std::string> warpops = {"-t_srs", crsout[1], "-overwrite", 
 					"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
 					"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]), "-r", method, "-ovr", "NONE"};
 	std::string dst = opt.filename;
@@ -75,13 +75,11 @@ SpatRaster SpatRaster::project2(SpatRaster &x, std::string method, SpatOptions &
 		return out;
 	}
 	
-	std::string crsin = getCRS();
-	std::string crsout = out.getCRS();
-	if (crsin == crsout)  {
+	if (srs.is_equal(out.srs))  {
 		out.setError("rasters have the same crs");
 		return out;
 	}
-	if ((crsin == "") || (crsout == "")) {
+	if (srs.is_empty() || out.srs.is_empty()) {
 		out.setError("rasters must have a known crs");
 		return out;
 	}
@@ -121,17 +119,17 @@ SpatRaster SpatRaster::project1(std::string newcrs, std::string method, SpatOpti
 	return out;
 	#else 
 	
-	std::string oldcrs = getCRS();
-	if ((oldcrs == "") || (newcrs == "")) {
+	if (srs.is_empty() || (newcrs == "")) {
 		out.setError("insufficient crs info");	
 		return out;
-	} else if (oldcrs == newcrs) {
-		out.setError("input and output crs are the same");	
-		return out;
+//	} else if (oldcrs == newcrs) {
+//		out.setError("input and output crs are the same");	
+//		return out;
 	}
 
+	std::vector<std::string> oldcrs = getSRS();
 	std::vector<std::vector<double>> p = extent.asPoints();
-	out.msg = transform_coordinates(p[0], p[1], oldcrs, newcrs);
+	out.msg = transform_coordinates(p[0], p[1], oldcrs[1], newcrs);
 	if (out.hasError()) {
 		out.msg = msg;
 		return out;

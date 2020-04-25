@@ -155,13 +155,12 @@ size_t SpatVector::size() {
 }
 
 bool SpatVector::is_lonlat() {
-	SpatExtent e = getExtent();
-	return e.is_lonlat(getCRS());
+	return lyr.srs.is_lonlat();
 };
 
 bool SpatVector::could_be_lonlat() {
 	SpatExtent e = getExtent();
-	return e.could_be_lonlat(getCRS());
+	return lyr.srs.could_be_lonlat(e);
 };
 
 
@@ -169,24 +168,16 @@ SpatExtent SpatVector::getExtent(){
 	return lyr.extent;
 }
 
-std::string SpatVector::getCRS(){
-	return lyr.crs;
-}
 
-void SpatVector::setCRS(std::string CRS) {
-	std::vector<std::string> srefs = srefs_from_string(CRS);
-	lyr.crs = srefs[0];
-	lyr.prj = srefs[1];
-}
-
+/*
 void SpatVector::setPRJ(std::string PRJ){
-	lyr.prj = PRJ;
+	lyr.crs[0] = PRJ;
 }
 
 std::string SpatVector::getPRJ(){
-	return lyr.prj;
+	return lyr.crs[0];
 }
-
+*/
 
 std::string SpatVector::type(){
 	if (size() == 0) {
@@ -401,7 +392,7 @@ SpatVector SpatVector::subset_rows(std::vector<int> range) {
 	for (size_t i=0; i < r.size(); i++) {
 		out.addGeom( lyr.geoms[r[i]] );
 	}
-	out.lyr.crs = lyr.crs;
+	out.lyr.srs = lyr.srs;
 	out.lyr.df = lyr.df.subset_rows(r);
 	return out;
 };

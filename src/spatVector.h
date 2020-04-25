@@ -72,8 +72,8 @@ class SpatLayer {
 		std::vector<SpatGeom> geoms;
 		SpatExtent extent;
 		SpatDataFrame df;
-		std::string prj;
-		std::string crs;
+		//std::vector<std::string> crs;
+		SpatSRS srs;
 };
 
 class SpatVector {
@@ -94,10 +94,14 @@ class SpatVector {
 		std::string type();
 		SpatGeomType getGType(std::string &type);
 
-		std::string getCRS();
-		void setCRS(std::string CRS);
-		std::string getPRJ();
-		void setPRJ(std::string PRJ);
+		//std::vector<std::string> getCRS();
+		//void setCRS(std::vector<std::string> _crs);
+		
+		std::vector<std::string> getSRS();
+		void setSRS(std::vector<std::string> _srs);
+
+		//std::string getPRJ();
+		//void setPRJ(std::string PRJ);
 
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
@@ -122,6 +126,7 @@ class SpatVector {
 
 		size_t size();
 		SpatVector as_lines();
+		SpatVector as_points();
 
 		bool read(std::string fname);
 		bool write(std::string filename, std::string format, bool overwrite);

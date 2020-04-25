@@ -21,7 +21,7 @@
 #include <vector>
 #include <string>
 //#include "spatMessages.h"
-#include "spatVector.h"
+#include "spatRaster.h"
 #include "string_utils.h"
 
 #ifdef useRcpp
@@ -124,6 +124,7 @@ std::vector<std::string> string_from_spatial_reference(const OGRSpatialReference
 	return out;
 }
 
+/*
 std::vector<std::string> srefs_from_string(std::string input) {
 	lrtrim(input);
 	std::string wkt="", prj="";
@@ -135,10 +136,71 @@ std::vector<std::string> srefs_from_string(std::string input) {
 		prj = std::string(prj_from_spatial_reference(srs));
 		delete srs;
 	}
-	std::vector<std::string> out = {wkt, prj};
+	std::vector<std::string> out = {prj, wkt};
 	return(out);
 }
 
+*/
+
+bool SpatSRS::set(std::vector<std::string> txt) {
+	if (txt.size() == 3) {
+		proj4 == txt[0];
+		wkt = txt[1];
+		input = txt[2];
+		return true;
+	} else {
+		input=txt[0];
+		wkt="";
+		proj4="";
+		if (input != "") {
+			OGRSpatialReference *srs = new OGRSpatialReference;
+			const char* s = input.c_str();
+			handle_error(srs->SetFromUserInput(s));
+			wkt = std::string(wkt_from_spatial_reference(srs));
+			proj4 = std::string(prj_from_spatial_reference(srs));
+			delete srs;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+void SpatRaster::setSRS(std::vector<std::string> _srs) {
+	srs.set(_srs);
+	for (size_t i = 0; i < nsrc(); i++) { 
+		source[i].srs = srs; 
+	}
+}
+
+void SpatVector::setSRS(std::vector<std::string> _srs) {
+	lyr.srs.set(_srs);
+}
+
+std::vector<std::string> SpatSRS::get() {
+	std::vector<std::string> s = {proj4, wkt, input};
+	return s;
+}
+
+std::vector<std::string>  SpatRaster::getSRS() {
+	return srs.get();
+}
+
+std::vector<std::string>  SpatVector::getSRS() {
+	return lyr.srs.get();
+}
+
+std::string SpatSRS::get_prj() {
+	return proj4;
+}
+
+bool SpatSRS::is_equal(SpatSRS x) {
+	return (proj4 == x.proj4);
+}
+
+bool SpatSRS::is_empty() {
+	return (wkt == "");
+}
 
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
@@ -195,7 +257,8 @@ SpatVector SpatVector::project(std::string crs) {
 	std::vector<double> x = d.dv[0];
 	std::vector<double> y = d.dv[1];
 
-	s.msg = transform_coordinates(x, y, getCRS(), crs);
+	std::vector<std::string> srs = getSRS();
+	s.msg = transform_coordinates(x, y, srs[1], crs);
 
 	if (!s.msg.has_error) {
 		unsigned n = d.iv[0].size();
@@ -206,9 +269,9 @@ SpatVector SpatVector::project(std::string crs) {
 			c.push_back(d.iv[2][i]);
 		}
 		s.setGeometry(type(), a, b, x, y, c);
-		std::vector<std::string> refs = srefs_from_string(crs);
-		s.setCRS(refs[0]);
-		s.setPRJ(refs[1]);
+		//std::vector<std::string> refs = srefs_from_string(crs);
+		s.setSRS({crs});
+		//s.setPRJ(refs[1]);
 		s.lyr.df = lyr.df;
 	}
 	#endif

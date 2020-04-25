@@ -56,8 +56,8 @@ SpatRaster::SpatRaster(std::vector<std::string> fname) {
 void SpatRaster::setSources(std::vector<RasterSource> s) {
 	source = s;
 	extent = s[0].extent;
-	crs = s[0].crs;
-	prj = s[0].prj;
+	srs = s[0].srs;
+	//prj = s[0].prj;
 }
 
 
@@ -91,13 +91,14 @@ SpatRaster::SpatRaster() {
 	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.names = {"lyr.1"};
-	s.prj = "+proj=longlat +datum=WGS84";
-	s.crs = "GEOGCS[\"WGS 84\", DATUM[\"WGS_1984\", SPHEROID[\"WGS 84\",6378137,298.257223563]], PRIMEM[\"Greenwich\",0], UNIT[\"degree\",0.0174532925199433]]";
+	s.srs.proj4 = "+proj=longlat +datum=WGS84";
+	s.srs.wkt = "GEOGCS[\"WGS 84\", DATUM[\"WGS_1984\", SPHEROID[\"WGS 84\",6378137,298.257223563]], PRIMEM[\"Greenwich\",0], UNIT[\"degree\",0.0174532925199433]]";
 	setSource(s);
 }
 
 
-SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string _crs) {
+
+SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::vector<std::string> crs) {
 
 	RasterSource s;
 	s.nrow=rcl[0];
@@ -120,11 +121,9 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.datatype = "";
 
 #ifdef useGDAL
-	std::vector<std::string> srefs = srefs_from_string(_crs);
-	s.crs = srefs[0];
-	s.prj = srefs[1];
+	s.srs.set( crs );
 #else 
-	s.crs = _crs;
+	s.srs.proj4 = trimlw(crs[0]);
 #endif	
 
 	for (unsigned i=0; i < rcl[2]; i++) {
@@ -135,24 +134,29 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 }
 
 
-SpatRaster::SpatRaster(unsigned _nrow, unsigned _ncol, unsigned _nlyr, SpatExtent ext, std::string _crs) {
+
+SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs) {
 
 	RasterSource s;
-	s.nrow = _nrow;
-	s.ncol = _ncol;
+	s.nrow = nr;
+	s.ncol = nc;
 	s.extent = ext;
 	s.hasValues = false;
 	s.memory = true;
 	s.filename = "";
 	s.driver = "";
-	s.nlyr = _nlyr;
+	s.nlyr = nl;
 	s.hasRange = { false };
 	s.layers.resize(1, 0);
 	//s.layers.resize(1, _nlyr);
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
 	s.datatype = "";
-	s.crs = _crs;
-	for (unsigned i=0; i < _nlyr; i++) {
+#ifdef useGDAL
+	s.srs.set( {crs} );
+#else 
+	s.srs.proj4 = trimlw(crs);
+#endif	
+	for (unsigned i=0; i < nl; i++) {
 		s.names.push_back("lyr." + std::to_string(i+1)) ;
 	}
 	setSource(s);
@@ -183,8 +187,8 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.nrow = nrow();
 	s.ncol = ncol();
 	s.extent = extent;
-	s.crs = crs;
-	s.prj = prj;
+	s.srs = srs;
+	//s.prj = prj;
 	s.memory = true;
 	s.hasValues = false;
 	long nl = nlyr();
@@ -215,14 +219,6 @@ SpatRaster SpatRaster::deepCopy() {
 }
 
 
-void SpatRaster::setCRS(std::string _crs) {
-	std::vector<std::string> srefs = srefs_from_string(_crs);
-	for (size_t i = 0; i < nsrc(); i++) { 
-		source[i].crs = srefs[0]; 
-	}
-	crs = srefs[0];
-	prj = srefs[1];
-}
 
 std::vector<double> SpatRaster::resolution() {
 	return std::vector<double> { (extent.xmax - extent.xmin) / ncol(), (extent.ymax - extent.ymin) / nrow() };
@@ -244,8 +240,11 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 	unsigned nl = nlyr();
 	std::vector<unsigned> rcl = {nr, nc, nl};
 	std::vector<double> ext = {e.xmin, xmax, e.ymin, ymax};
-
-	return SpatRaster(rcl, ext, crs);
+	
+	SpatRaster out2(rcl, ext, {""});
+	out2.srs = srs;
+	out2.source[0].srs = srs; 
+	return out2; 
 }
 
 
@@ -311,25 +310,18 @@ std::vector<double> SpatRaster::range_max() {
 }
 
 bool SpatRaster::is_lonlat() {
-	SpatExtent e = getExtent();
-	return e.is_lonlat(getCRS());
+	return srs.is_lonlat();
 };
 
 bool SpatRaster::could_be_lonlat() {
 	SpatExtent e = getExtent();
-	return e.could_be_lonlat(getCRS());
+	return srs.could_be_lonlat(e);
 };
 
 
 bool SpatRaster::is_global_lonlat() {
-	if (could_be_lonlat()) {
-		SpatExtent e = getExtent();
-		double halfres = xres()/ 180;
-		if (((e.xmin - halfres) <= -180) && ((e.xmax + halfres) >= 180)) {
-			return true;
-		}
-	}
-	return false;
+	SpatExtent e = getExtent();
+	return srs.is_global_lonlat(e);
 };
 
 

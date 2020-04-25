@@ -74,12 +74,16 @@ setMethod("rast", signature(x="SpatVector"),
 
 .fullFilename <- function(x, expand=FALSE) {
 	x <- trimws(x)
-	if (identical(basename(x), x)) {
-		x <- file.path(getwd(), x)
+	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
+	if (file.exists(p)) {
+		return(p)
 	}
-	if (expand) {
-		x <- path.expand(x)
-	}
+	#if (identical(basename(x), x)) {
+	#	x <- file.path(getwd(), x)
+	#}
+	#if (expand) {
+	#	x <- path.expand(x)
+	#}
 	return(x)
 }
 
@@ -133,7 +137,7 @@ setMethod("rast", signature(x="Raster"),
 )
 
 
-.rastFromXYZ <- function(xyz, digits=6, crs = NA, ...) {
+.rastFromXYZ <- function(xyz, digits=6, crs="", ...) {
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names
@@ -196,15 +200,14 @@ setMethod("rast", signature(x="Raster"),
 
 
 setMethod("rast", signature(x="matrix"),
-	function(x, crs=NA, type="", ...) {
+	function(x, crs="", type="", ...) {
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs = crs, ...)
 		} else {
 			r <- methods::new("SpatRaster")
-			r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), "")
+			r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), crs)
 			values(r) <- t(x)
 		}
-		if (!is.na(crs)) crs(r) <- crs
 		show_messages(r, "rast")
 	}
 )

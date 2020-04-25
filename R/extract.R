@@ -67,6 +67,15 @@ function(x, y, ...) {
 	x[i]
 })
 
+setMethod("extract", signature(x="SpatRaster", y="data.frame"), 
+function(x, y, ...) { 
+	y <- as.matrix(y)
+	if (ncol(y) != 2) {
+		stop("extract works with a 2 column matrix or data.frame of x and y coordinates")
+	}
+	i <- cellFromXY(x, y)
+	x[i]
+})
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"), 
 function(x, y, ...) { 

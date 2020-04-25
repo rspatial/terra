@@ -24,7 +24,5 @@ test_that("matrix input works", {
 
 
 test_that("matrix input type xyz works", {
-expect_s4_class(rast(cbind(as.matrix(expand.grid(1:3, 1:4)), 1:12),
-                     type = "xyz"), "SpatRaster")
-
+expect_s4_class(rast(cbind(as.matrix(expand.grid(1:3, 1:4)), 1:12), type = "xyz"), "SpatRaster")
 })

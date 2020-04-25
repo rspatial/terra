@@ -36,11 +36,8 @@ SpatRaster SpatRaster::resample1(SpatRaster &x, const std::string &method, SpatO
 		return out;
 	}
 	
-	std::string crsin = getCRS();
-	std::string crsout = out.getCRS();
-
-	if ((crsin != "") || (crsout != "")) {
-		if (crsin != crsout) {
+	if ((!srs.is_empty()) && (!out.srs.is_empty())) {
+		if (!srs.is_equal(out.srs)) {
 			out.addWarning("Rasters have different crs");
 		}
 	}

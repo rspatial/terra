@@ -229,7 +229,8 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	double xmax = extent.xmin + fact[4] * fact[1] * xres();
 	double ymin = extent.ymax - fact[3] * fact[0] * yres();
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
-	SpatRaster out = SpatRaster(fact[3], fact[4], fact[5], e, crs);
+	SpatRaster out = SpatRaster(fact[3], fact[4], fact[5], e, "");
+	out.srs = srs;
 	if (fact[5] == nlyr()) {
 		out.setNames(getNames());
 	}

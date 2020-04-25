@@ -155,8 +155,12 @@ bool SpatVector::read(std::string fname) {
 	
 
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
-	std::string crs = wkt_from_spatial_reference(poSRS);
-	std::string prj = prj_from_spatial_reference(poSRS);
+	std::string wkt = wkt_from_spatial_reference(poSRS);
+	//std::string prj = prj_from_spatial_reference(poSRS);
+	setSRS( {wkt} );
+	//lyr.prj = prj;
+
+
 	
 //	std::string crs = getDs_WKT(poDS);
 //	std::string prj = getDs_PRJ(poDS);
@@ -342,8 +346,6 @@ bool SpatVector::read(std::string fname) {
 
 	OGRFeature::DestroyFeature( poFeature );
     GDALClose( poDS );
-	setCRS(crs);
-	lyr.prj = prj;
 	return msg.success;
 }
 

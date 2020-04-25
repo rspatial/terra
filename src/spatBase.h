@@ -140,31 +140,6 @@ class SpatExtent {
 			return(pts);
 		}
 
-		bool is_lonlat(std::string crs) {
-			bool b1 = crs.find("longlat") != std::string::npos;
-			bool b2 = crs.find("epsg:4326") != std::string::npos;
-			return (b1 | b2);
-		}
-
-		bool could_be_lonlat(std::string crs) {
-			bool b = is_lonlat(crs);
-			if ((!b) & (crs=="")) {
-				if ((xmin >=-180.1) & (xmax <= 180.1) & (ymin >= -90.1) & (ymax <= 90.1)) {
-					b = true;
-				}
-			}
-			return b;
-		}
-
-		bool is_global_lonlat(std::string crs) {
-			if (could_be_lonlat(crs)) {
-                // could be refined
-                if (std::abs(xmax - xmin - 360) < 0.001) {
-                    return true;
-                }
-            }
-			return false;
-		}
 
 		bool valid() {
 			return ((xmax > xmin) && (ymax > ymin));
@@ -179,4 +154,44 @@ class SpatExtent {
 
 
 
+class SpatSRS {
+	public:
+		std::string input, proj4, wkt;
+		bool set(std::vector<std::string> txt);
+		std::vector<std::string> get();
+		std::string get_prj();
+		
+		bool is_empty();
+		bool is_equal(SpatSRS x);
+		
+		bool is_lonlat() {
+			bool b1 = proj4.find("longlat") != std::string::npos;
+			bool b2 = proj4.find("epsg:4326") != std::string::npos;
+			return (b1 | b2);
+		}
 
+		bool could_be_lonlat(SpatExtent e) {
+			bool b = is_lonlat();
+			if ((!b) & is_empty()) {
+				if ((e.xmin >=-180.1) & (e.xmax <= 180.1) & (e.ymin >= -90.1) & (e.ymax <= 90.1)) {
+					b = true;
+				}
+			}
+			return b;
+		}
+
+		bool is_global_lonlat(SpatExtent e) {
+			if (could_be_lonlat(e)) {
+                if (std::abs(e.xmax - e.xmin - 360) < 0.001) {
+                    return true;
+                }
+				//double halfres = xres()/ 180;
+				//if (((e.xmin - halfres) <= -180) && ((e.xmax + halfres) >= 180)) {
+				//	return true;
+				//}
+			}
+			return false;
+		}
+
+		
+};

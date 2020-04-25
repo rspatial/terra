@@ -78,7 +78,8 @@ GDALDatasetH ds_create(SpatRaster &x, std::string format, bool fill, SpatOptions
 	GDALSetGeoTransform( hDS, adfGeoTransform);
 
 	OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
-	std::string prj = x.getCRS();
+	std::vector<std::string> srs = x.getSRS(); 
+	std::string prj = srs[1];
 	OGRErr erro = OSRImportFromProj4(hSRS, &prj[0]);
 	if (erro == 4) {
 		x.setError("CRS failure");
@@ -139,7 +140,8 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 	std::vector<std::string> sops;
 	if (filename != "") {
 		std::vector<double> e = out.extent.asVector();
-		sops = {"-t_srs", out.getCRS(), //"-dstnodata", "NAN", 
+		std::vector<std::string> srs = out.getSRS();
+		sops = {"-t_srs", srs[1], //"-dstnodata", "NAN", 
 			"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
 			"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]),
 			"-r", method, "-ovr", "NONE", "-r", method, "-overwrite"};

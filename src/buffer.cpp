@@ -6,7 +6,7 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 
 	std::vector<std::vector<double>> xy = coordinates();
 	SpatVector out;
-	out.setCRS(getCRS());
+	out.lyr.srs = lyr.srs;
 	size_t n = quadsegs * 4;	
 	std::vector<double> px(n);
 	std::vector<double> py(n);
