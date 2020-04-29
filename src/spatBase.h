@@ -26,7 +26,7 @@
 #endif
 
 #ifndef nogdal
-	#define useGDAL
+  #define useGDAL
 #endif
 
 #ifndef M_PI
@@ -158,12 +158,24 @@ class SpatSRS {
 	public:
 		std::string input, proj4, wkt;
 		bool set(std::vector<std::string> txt);
-		std::vector<std::string> get();
-		std::string get_prj();
-		
-		bool is_empty();
-		bool is_equal(SpatSRS x);
-		
+
+		std::vector<std::string> get() {
+			std::vector<std::string> s = {proj4, wkt, input};
+			return s;
+		}
+
+		std::string get_prj() {
+			return proj4;
+		}
+
+		bool is_equal(SpatSRS x) {
+			return (proj4 == x.proj4);
+		}
+
+		bool is_empty() {
+			return (wkt == "");
+		}
+
 		bool is_lonlat() {
 			bool b1 = proj4.find("longlat") != std::string::npos;
 			bool b2 = proj4.find("epsg:4326") != std::string::npos;
@@ -193,5 +205,5 @@ class SpatSRS {
 			return false;
 		}
 
-		
+
 };

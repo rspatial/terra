@@ -14,12 +14,12 @@ Zoom in on a map (plot) by providing a new extent, by default this is done by cl
 }
 
 \usage{
-\S4method{zoom}{SpatRaster}(x, ext=draw(), maxcell=10000, layer=1, new=TRUE, ...)
+\S4method{zoom}{SpatRaster}(x, e=draw(), maxcell=10000, layer=1, new=TRUE, ...)
 }
 
 \arguments{
 \item{x}{SpatRaster}
-\item{ext}{SpatExtent}
+\item{e}{SpatExtent}
 \item{maxcell}{postive integer. Maximum number of cells used for the map}
 \item{layer}{positive integer to select the layer to be used}
 \item{new}{logical. If \code{TRUE}, the zoomed in map will appear on a new device (window)}

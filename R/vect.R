@@ -40,8 +40,12 @@ setMethod("vect", signature(x="matrix"),
 			return(p)
 		}
 		
-		if (ncol(x) == 2) { # treat as unique points
-			p@ptr$setGeometry(type, 1:nr, rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
+		if (ncol(x) == 2) { 
+			if (type == "points") {	# treat as unique points
+				p@ptr$setGeometry(type, 1:nr, rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
+			} else {
+				p@ptr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
+			}
 		} else if (ncol(x) == 4) {
 			p@ptr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], rep(FALSE, nr))		
 		} else if (ncol(x) == 5) {

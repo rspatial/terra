@@ -21,12 +21,12 @@
 #include "spatRaster.h"
 
 
-std::vector<double> rasterize_polygon(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
+std::vector<double> rasterize_polygon(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned startrow, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
 
 	unsigned n = pX.size();
 	std::vector<unsigned> nCol(n);
-	for (size_t row=0; row<nrows; row++) {
-		double y = ymax - (row+0.5) * ry;
+	for (size_t row=0; row < (nrows); row++) {
+		double y = ymax - (startrow+row+0.5) * ry;
 
 		// find nodes.
 		unsigned nodes = 0;
@@ -85,10 +85,10 @@ SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, std::vector<double> val
 			for (size_t k = 0; k < np; k++) {
 				part = poly.getPart(k);
 				if (part.hasHoles()) {
-					std::vector<double> vv = rasterize_polygon(v, value[j], part.x, part.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
+					std::vector<double> vv = rasterize_polygon(v, value[j], part.x, part.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
 					for (size_t h=0; h < part.nHoles(); h++) {
 						hole = part.getHole(h);
-						vv = rasterize_polygon(vv, background, hole.x, hole.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
+						vv = rasterize_polygon(vv, background, hole.x, hole.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
 					}
 					for (size_t q=0; q < vv.size(); q++) {
 						if ((vv[q] != background) && (!std::isnan(vv[q]))) {
@@ -96,7 +96,7 @@ SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, std::vector<double> val
 						}
 					}
 				} else {
-					v = rasterize_polygon(v, value[j], part.x, part.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
+					v = rasterize_polygon(v, value[j], part.x, part.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
 				}
 			}
 		}
@@ -110,10 +110,10 @@ SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, std::vector<double> val
 
 
 
-std::vector<double> rasterize_line(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
+std::vector<double> rasterize_line(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned startrow, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
 	unsigned n = pX.size();
 	for (size_t row=0; row<nrows; row++) {
-		double y = ymax - (row+0.5) * ry;
+		double y = ymax - (startrow+row+0.5) * ry;
 		unsigned ncell = ncols * row;
 		for (size_t i=1; i<n; i++) {
             size_t j = i-1;
@@ -148,11 +148,10 @@ SpatRaster rasterizeLines(SpatVector p, SpatRaster r, std::vector<double> value,
 			unsigned nln = line.size();
 			for (size_t k = 0; k < nln; k++) {
 				part = line.getPart(k);
-				v = rasterize_line(v, value[j], part.x, part.y, out.nrow(), out.ncol(), extent.xmin, extent.ymax, resx, resy);
+				v = rasterize_line(v, value[j], part.x, part.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-
 	}
 	out.writeStop();
 	return(out);
@@ -160,7 +159,7 @@ SpatRaster rasterizeLines(SpatVector p, SpatRaster r, std::vector<double> value,
 
 
 SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> values, double background, SpatOptions &opt) {
-	r.setError("not implented yet");
+	r.setError("not implemented yet");
 	return(r);
 }
 
@@ -420,7 +419,7 @@ SpatVector SpatVector::as_points() {
 	if (lyr.geoms[0].gtype == polygons) {
 		v = v.as_lines();
 	}
-	
+
 	for (size_t i=0; i<size(); i++) {
 		v.lyr.geoms[i].gtype = points;
 	}

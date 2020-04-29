@@ -14,65 +14,88 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
-
-#include "ogr_spatialref.h"
-#include <gdal_priv.h> // GDALDriver
-
 #include <vector>
 #include <string>
 //#include "spatMessages.h"
 #include "spatRaster.h"
 #include "string_utils.h"
 
+
+#ifndef useGDAL
+
+bool SpatSRS::set(std::vector<std::string> txt) {
+	if (txt.size() == 3) {
+		proj4 == txt[0];
+		wkt = txt[1];
+		input = txt[2];
+	} else {
+		input=txt[0];
+		wkt="";
+		proj4=txt[0];
+	}
+	return true;
+}
+
+
+#else
+
+
+#include "ogr_spatialref.h"
+#include <gdal_priv.h> // GDALDriver
+
+
 #ifdef useRcpp
 #include "Rcpp.h"
-
 void handle_error(OGRErr err) {
 	if (err != OGRERR_NONE) {
 		switch (err) {
 			case OGRERR_NOT_ENOUGH_DATA:
 				Rcpp::Rcout << "OGR: Not enough data " << std::endl;
-				break; 
+				break;
 			case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
 				Rcpp::Rcout << "OGR: Unsupported geometry type" << std::endl;
 				break;
 			case OGRERR_CORRUPT_DATA:
-				Rcpp::Rcout << "OGR: Corrupt data" << std::endl;     
-				break; 
+				Rcpp::Rcout << "OGR: Corrupt data" << std::endl;
+				break;
 			case OGRERR_FAILURE:
-				Rcpp::Rcout << "OGR: index invalid?" << std::endl;    
-				break; 
+				Rcpp::Rcout << "OGR: index invalid?" << std::endl;
+				break;
 			default:
-				Rcpp::Rcout << "Error code: " << err << std::endl;    
+				Rcpp::Rcout << "Error code: " << err << std::endl;
 				break;
 		}
 		Rcpp::stop("OGR error");
 	}
 }
-#else 
+
+#else // no Rcpp
+
 void handle_error(OGRErr err) {
 	if (err != OGRERR_NONE) {
 		switch (err) {
 			case OGRERR_NOT_ENOUGH_DATA:
-				//std::cout << "OGR: Not enough data " << std::endl; 
-				break; 
+				//std::cout << "OGR: Not enough data " << std::endl;
+				break;
 			case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
 				//std::cout << "OGR: Unsupported geometry type" << std::endl;
 				break;
 			case OGRERR_CORRUPT_DATA:
-				//std::cout << "OGR: Corrupt data" << std::endl;     
-				break; 
+				//std::cout << "OGR: Corrupt data" << std::endl;
+				break;
 			case OGRERR_FAILURE:
-				//std::cout << "OGR: index invalid?" << std::endl;    
-				break; 
+				//std::cout << "OGR: index invalid?" << std::endl;
+				break;
 			default:
-				//std::cout << "Error code: " << err << std::endl;    
+				//std::cout << "Error code: " << err << std::endl;
 				break;
 		}
 		//std::cout("OGR error");
 	}
 }
 #endif
+
+
 
 
 std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) {
@@ -124,23 +147,6 @@ std::vector<std::string> string_from_spatial_reference(const OGRSpatialReference
 	return out;
 }
 
-/*
-std::vector<std::string> srefs_from_string(std::string input) {
-	lrtrim(input);
-	std::string wkt="", prj="";
-	if (input != "") {
-		OGRSpatialReference *srs = new OGRSpatialReference;
-		const char* s = input.c_str();
-		handle_error(srs->SetFromUserInput(s));
-		wkt = std::string(wkt_from_spatial_reference(srs));
-		prj = std::string(prj_from_spatial_reference(srs));
-		delete srs;
-	}
-	std::vector<std::string> out = {prj, wkt};
-	return(out);
-}
-
-*/
 
 bool SpatSRS::set(std::vector<std::string> txt) {
 	if (txt.size() == 3) {
@@ -166,42 +172,24 @@ bool SpatSRS::set(std::vector<std::string> txt) {
 }
 
 
-void SpatRaster::setSRS(std::vector<std::string> _srs) {
-	srs.set(_srs);
-	for (size_t i = 0; i < nsrc(); i++) { 
-		source[i].srs = srs; 
+
+/*
+std::vector<std::string> srefs_from_string(std::string input) {
+	lrtrim(input);
+	std::string wkt="", prj="";
+	if (input != "") {
+		OGRSpatialReference *srs = new OGRSpatialReference;
+		const char* s = input.c_str();
+		handle_error(srs->SetFromUserInput(s));
+		wkt = std::string(wkt_from_spatial_reference(srs));
+		prj = std::string(prj_from_spatial_reference(srs));
+		delete srs;
 	}
+	std::vector<std::string> out = {prj, wkt};
+	return(out);
 }
 
-void SpatVector::setSRS(std::vector<std::string> _srs) {
-	lyr.srs.set(_srs);
-}
-
-std::vector<std::string> SpatSRS::get() {
-	std::vector<std::string> s = {proj4, wkt, input};
-	return s;
-}
-
-std::vector<std::string>  SpatRaster::getSRS() {
-	return srs.get();
-}
-
-std::vector<std::string>  SpatVector::getSRS() {
-	return lyr.srs.get();
-}
-
-std::string SpatSRS::get_prj() {
-	return proj4;
-}
-
-bool SpatSRS::is_equal(SpatSRS x) {
-	return (proj4 == x.proj4);
-}
-
-bool SpatSRS::is_empty() {
-	return (wkt == "");
-}
-
+*/
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
 
@@ -277,3 +265,5 @@ SpatVector SpatVector::project(std::string crs) {
 	#endif
 	return s;
 }
+
+#endif

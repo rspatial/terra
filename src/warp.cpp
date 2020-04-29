@@ -4,18 +4,18 @@
 #include "file_utils.h"
 
 
-//#ifdef useGDAL
+#ifdef useGDAL
+
 	#include "cpl_port.h"
 	#include "cpl_conv.h" // CPLFree()
 	#include "gdal_version.h"
 	#include "gdalwarper.h"
 	#include "ogr_srs_api.h"
 
-//	#if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
+	#if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
 		#include "gdal_utils.h"
 		#define GDALutils
-//	#endif
-//#endif
+	#endif
 
 	#include "gdal_errors.h"
 
@@ -31,10 +31,10 @@ std::vector<double> getValuesMEM(GDALDatasetH hDS, unsigned ncol, unsigned nrow,
 		GDALRasterBandH hBand = GDALGetRasterBand(hDS, i+1);
 		std::vector<double> lyrout(ncell);
 		err = GDALRasterIO(hBand, GF_Read, 0, 0, ncol, nrow, &lyrout[0], ncol, nrow, GDT_Float64, 0, 0);
-		if (err != CE_None ) { 
-			return out; 
+		if (err != CE_None ) {
+			return out;
 			//setError("CE_None");
-			break; 
+			break;
 		}
 		double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
 		if (hasNA) std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
@@ -60,7 +60,7 @@ GDALDatasetH ds_create(SpatRaster &x, std::string format, bool fill, SpatOptions
 
 	std::string filename = opt.filename;
 	const char *pszFilename = filename.c_str();
-	hDS = GDALCreate(hDrv, pszFilename, x.ncol(), x.nrow(), x.nlyr(), GDT_Float64, papszOptions );	
+	hDS = GDALCreate(hDrv, pszFilename, x.ncol(), x.nrow(), x.nlyr(), GDT_Float64, papszOptions );
 	CSLDestroy( papszOptions );
 
 	GDALRasterBandH hBand;
@@ -78,7 +78,7 @@ GDALDatasetH ds_create(SpatRaster &x, std::string format, bool fill, SpatOptions
 	GDALSetGeoTransform( hDS, adfGeoTransform);
 
 	OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
-	std::vector<std::string> srs = x.getSRS(); 
+	std::vector<std::string> srs = x.getSRS();
 	std::string prj = srs[1];
 	OGRErr erro = OSRImportFromProj4(hSRS, &prj[0]);
 	if (erro == 4) {
@@ -104,7 +104,7 @@ bool valid_warp_method(std::string method) {
 SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr());
-	
+
 	if (!valid_warp_method(method)) {
 		out.setError("invalid warp method");
 		return out;
@@ -125,7 +125,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 	if (opt.names.size() == out.nlyr()) {
 		out.setNames(opt.names);
 	}
-	
+
 
 #ifdef GDALutils
 	std::vector<std::string> tmpfs;
@@ -141,8 +141,8 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 	if (filename != "") {
 		std::vector<double> e = out.extent.asVector();
 		std::vector<std::string> srs = out.getSRS();
-		sops = {"-t_srs", srs[1], //"-dstnodata", "NAN", 
-			"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()), 
+		sops = {"-t_srs", srs[1], //"-dstnodata", "NAN",
+			"-ts", std::to_string(out.ncol()), std::to_string(out.nrow()),
 			"-te", std::to_string(e[0]), std::to_string(e[2]), std::to_string(e[1]), std::to_string(e[3]),
 			"-r", method, "-ovr", "NONE", "-r", method, "-overwrite"};
 	} else {
@@ -150,7 +150,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 	}
 	//if (format != "") {
 	//	sops.push_back("-of");
-	//	sops.push_back(format);		
+	//	sops.push_back(format);
 	//}
 
 	std::vector <char *> options_char = string_to_charpnt(sops);
@@ -182,11 +182,11 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 	}
 
 	if (err) {
-		out.setError("an error occurred");		
+		out.setError("an error occurred");
 	} else if (result == NULL) {
 		out.setError("no output");
-	} 
-	
+	}
+
 #else
 	// we could use native project and resample
 	out.setError("not implemented for GDAL < 2.1 -- let us know if that is a problem");
@@ -232,14 +232,14 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 	}
 
 	//GDALformat(filename, format);
-	//"-dstnodata", "NAN", 
+	//"-dstnodata", "NAN",
 	std::vector<std::string> sops = {"-t_srs", x, "-r", method, "-ovr", "NONE", "-dstnodata", "NAN"};
 	if (opt.overwrite) {
 		sops.push_back("-overwrite");
 	}
 	//if (format != "") {
 	//	sops.push_back("-of");
-	//	sops.push_back(format);		
+	//	sops.push_back(format);
 	//}
 
 	std::vector <char *> options_char = string_to_charpnt(sops);
@@ -259,10 +259,10 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 	}
 
 	if (err) {
-		out.setError("an error occurred");		
+		out.setError("an error occurred");
 	} else if (result == NULL) {
 		out.setError("no output");
-	} 
+	}
 	for (size_t i=0; i<tmpfs.size(); i++) remove(tmpfs[i].c_str());
 	return out;
 
@@ -270,7 +270,7 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 	// we could use native project and resample
 	out.setError("not implemented for GDAL < 2.1 -- let us know if that is a problem");
 #endif
-	
+
 	return out;
 }
 
@@ -302,6 +302,7 @@ bool gdalwarp(std::string src, std::string dst,	std::vector<std::string> options
 	return (result != NULL) || (!err) ;
 }
 
+#endif
 
 
 
@@ -329,14 +330,14 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 	if (!hasValues()) {
 		return out;
 	}
-	
+
 	std::string crsin = getCRS();
 	std::string crsout = out.getCRS();
-	bool do_prj = true;	
+	bool do_prj = true;
 	if ((crsin == crsout) || (crsin == "") || (crsout == "")) {
-		do_prj = false;	
+		do_prj = false;
 	}
-	
+
 	if (!do_prj) {
 		SpatExtent e = out.extent;
 		e.intersect(extent);
@@ -345,7 +346,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 			return out;
 		}
 	}
-	
+
 	SpatRaster xx;
 	if (do_prj) {
 		xx = *this;
@@ -365,7 +366,7 @@ SpatRaster SpatRaster::warp(SpatRaster x, std::string method, SpatOptions &opt) 
 		} else {
 			xx = *this;
 		}
-	} 
+	}
 	unsigned nc = out.ncol();
 
   	if (!out.writeStart(opt)) { return out; }

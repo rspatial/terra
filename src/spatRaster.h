@@ -151,13 +151,13 @@ class SpatRaster {
 		SpatExtent getExtent() { return extent; }
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
-		
+
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);
 
 		std::vector<std::string> getSRS();
 		void setSRS(std::vector<std::string> _srs);
-		
+
 		bool is_lonlat();
 		bool could_be_lonlat();
 		bool is_global_lonlat();
@@ -382,7 +382,7 @@ class SpatRaster {
 		SpatRaster isnan(SpatOptions &opt);
 		SpatRaster isfinite(SpatOptions &opt);
 		SpatRaster isinfinite(SpatOptions &opt);
-        
+
 		std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);

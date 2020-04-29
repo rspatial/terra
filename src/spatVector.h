@@ -96,9 +96,18 @@ class SpatVector {
 
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);
-		
-		std::vector<std::string> getSRS();
-		void setSRS(std::vector<std::string> _srs);
+
+
+		void setSRS(std::vector<std::string> _srs) {
+			lyr.srs.set(_srs);
+		}
+
+		std::vector<std::string> getSRS() {
+			return lyr.srs.get();
+		}
+
+
+
 
 		//std::string getPRJ();
 		//void setPRJ(std::string PRJ);
@@ -111,7 +120,7 @@ class SpatVector {
 
 		SpatVector project(std::string crs);
 		//std::vector<std::vector<double>> test(std::vector<double> x, std::vector<double> y, std::string fromcrs, std::string tocrs);
-		
+
 		SpatVector subset_cols(int i);
 		SpatVector subset_cols(std::vector<int> range);
 		SpatVector subset_rows(int i);
@@ -141,12 +150,12 @@ class SpatVector {
 		void add_column(unsigned dtype, std::string name) {
 			lyr.df.add_column(dtype, name);
 		};
-		
+
 		template <typename T>
 		bool add_column(std::vector<T> x, std::string name) {
 			return lyr.df.add_column(x, name);
 		}
-		
+
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
