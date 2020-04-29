@@ -3,7 +3,7 @@ Type: Package
 Title: Spatial data analysis
 Version: 0.6-1
 Date: 2020-04-25
-Depends: R (>= 3.3.0)
+Depends: R (>= 3.5.0)
 Suggests: testthat
 LinkingTo: Rcpp
 Imports: methods, Rcpp, raster (>= 3.1-5)

@@ -23,7 +23,7 @@ Zoom in on a map (plot) by providing a new extent, by default this is done by cl
 \item{maxcell}{postive integer. Maximum number of cells used for the map}
 \item{layer}{positive integer to select the layer to be used}
 \item{new}{logical. If \code{TRUE}, the zoomed in map will appear on a new device (window)}
-\item{...}{additional paramters for \code{\link[graphics]{plot}}}
+\item{...}{additional paramters for \code{\link[base]{plot}}}
 }
 
 \value{
