@@ -3,6 +3,7 @@
 #include "string_utils.h"
 #include "file_utils.h"
 
+#include "crs.h"
 
 #ifdef useGDAL
 
@@ -199,6 +200,10 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 
 	SpatRaster out = geometry(nlyr());
 	// always to file
+	
+	std::string wkt = wkt_from_string(x);
+
+	
 	std::string filename = opt.filename;
 	if (filename == "") {
 		filename = tempFile(opt.get_tempdir(), ".tif");
@@ -233,7 +238,7 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 
 	//GDALformat(filename, format);
 	//"-dstnodata", "NAN",
-	std::vector<std::string> sops = {"-t_srs", x, "-r", method, "-ovr", "NONE", "-dstnodata", "NAN"};
+	std::vector<std::string> sops = {"-t_srs", wkt, "-r", method, "-ovr", "NONE", "-dstnodata", "NAN"};
 	if (opt.overwrite) {
 		sops.push_back("-overwrite");
 	}

@@ -173,23 +173,19 @@ bool SpatSRS::set(std::vector<std::string> txt) {
 
 
 
-/*
-std::vector<std::string> srefs_from_string(std::string input) {
+std::string wkt_from_string(std::string input) {
 	lrtrim(input);
-	std::string wkt="", prj="";
+	std::string wkt="";
 	if (input != "") {
 		OGRSpatialReference *srs = new OGRSpatialReference;
 		const char* s = input.c_str();
 		handle_error(srs->SetFromUserInput(s));
 		wkt = std::string(wkt_from_spatial_reference(srs));
-		prj = std::string(prj_from_spatial_reference(srs));
 		delete srs;
 	}
-	std::vector<std::string> out = {prj, wkt};
-	return(out);
+	return wkt;
 }
 
-*/
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
 

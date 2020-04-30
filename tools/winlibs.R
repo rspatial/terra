@@ -16,7 +16,7 @@ if(getRversion() < "3.3.0") {
 # Download gdal-3.* from rwinlib
 VERSION <- commandArgs(TRUE)
 if(!file.exists(sprintf("../windows/gdal3-%s/include/gdal/gdal.h", VERSION))){
-  if(getRversion() < "3.3.0") setInternet2()
+  #if(getRversion() < "3.3.0") setInternet2()
   download.file(sprintf("https://github.com/rwinlib/gdal3/archive/v%s.zip", VERSION), "lib.zip", quiet = TRUE)
   dir.create("../windows", showWarnings = FALSE)
   unzip("lib.zip", exdir = "../windows")
