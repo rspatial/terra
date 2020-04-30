@@ -57,7 +57,7 @@ SpatRaster SpatRaster::resample1(SpatRaster &x, const std::string &method, SpatO
 		}
 		xx.resample2(out, method, opt);
 	} else {
-		if ((x.xres() == xres()) && (x.yres() == yres()) & (extent.equal(x.extent, std::min(xres(), yres())/1000))) {
+		if ((x.xres() == xres()) && (x.yres() == yres()) & (extent.compare(x.extent, "==", std::min(xres(), yres())/1000))) {
 			out = *this;
 			out.extent = x.extent;
 		} else {

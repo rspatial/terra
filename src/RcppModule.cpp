@@ -111,7 +111,7 @@ RCPP_MODULE(spat){
 		.property("valid", &SpatExtent::valid)		
 		.method("as.points", &SpatExtent::asPoints, "as.points")		
 		.method("ceil",  &SpatExtent::ceil,  "ceil")		
-		.method("equal", &SpatExtent::equal, "equal")		
+		.method("compare", &SpatExtent::compare, "compare")		
 		.method("floor", &SpatExtent::floor, "floor")		
 		.method("round", &SpatExtent::round, "round")		
 		.method("union", &SpatExtent::unite, "union")		

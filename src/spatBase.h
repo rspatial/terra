@@ -145,7 +145,8 @@ class SpatExtent {
 			return ((xmax > xmin) && (ymax > ymin));
 		}
 
-		bool equal(SpatExtent e, double tolerance);
+		bool compare(SpatExtent e, std::string oper, double tolerance);
+		
 		SpatExtent round(int n);
 		SpatExtent floor();
 		SpatExtent ceil();

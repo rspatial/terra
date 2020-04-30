@@ -20,15 +20,55 @@
 #include "math_utils.h"
 
 
-bool SpatExtent::equal(SpatExtent e, double tolerance) {
+bool extent_operator(std::string oper) {
+	std::vector<std::string> f {"==", "!=", ">", "<", ">=", "<="};
+	return (std::find(f.begin(), f.end(), oper) != f.end());
+}
+
+bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
+
+	if (!extent_operator(oper)) {
+		return false;  // not very useful!!
+	}
+	
 	double xr = (xmax - xmin) / tolerance;
 	double yr = (ymax - ymin) / tolerance;
-	
+		
 	bool e1 = fabs(xmax - e.xmax) < xr;
 	bool e2 = fabs(xmin - e.xmin) < xr;
 	bool e3 = fabs(ymax - e.ymax) < yr;
 	bool e4 = fabs(ymin - e.ymin) < yr;
-	return (e1 && e2 && e3 && e4);
+	bool equal = (e1 && e2 && e3 && e4);
+	if (oper == "==") {
+		return equal;
+	} else if (oper == "!=") {
+		return (!equal);
+	}
+	if (oper == "<" || oper == "<=") {
+		bool e1 = e.xmax < xmax;
+		bool e2 = e.xmin > xmin;
+		bool e3 = e.ymax < ymax;
+		bool e4 = e.ymin > ymin;
+		bool smaller = (e1 && e2 && e3 && e4);
+		if (oper == "<") {
+			return smaller;
+		} else {
+			return (equal || smaller);
+		}
+	} 
+	if (oper == ">" || oper == ">=") {
+		bool e1 = e.xmax > xmax;
+		bool e2 = e.xmin < xmin;
+		bool e3 = e.ymax > ymax;
+		bool e4 = e.ymin < ymin;
+		bool larger = (e1 && e2 && e3 && e4);
+		if (oper == ">") {
+			return larger;
+		} else {
+			return (equal || larger);
+		}
+	}
+	return false;
 }	
 
 SpatExtent SpatExtent::round(int n) {
@@ -142,7 +182,7 @@ std::vector<double> SpatRaster::origin() {
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
 	
 	if (ext) {
-		if (!extent.equal(x.extent, 100)) {
+		if (extent.compare(x.extent, "!=", 100)) {
 			setError("extents do not match");
 			return false;
 		}

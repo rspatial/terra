@@ -220,12 +220,10 @@ setMethod("median", signature(x="SpatRaster"),
 setMethod("Compare", signature(e1="SpatExtent", e2="SpatExtent"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
-		if (oper == "==") {
-			return( e1@ptr$equal(e2@ptr, 1) )
-			#show_messages(e1, "==")
-		} else {
-			stop("not implemented for SpatExtent")
+		if (!(oper %in% c("==", "!=", ">", "<", ">=", "<="))) {
+			stop(paste(oper, "not implemented for SpatExtent"))
 		}
+		return( e1@ptr$equal(e2@ptr, oper, 1) )
 	}	
 )
 
