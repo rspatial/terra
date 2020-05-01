@@ -20,9 +20,9 @@ PKG_LIBS = \
 	-lodbc32 -lodbccp32 -liconv -lpsapi -lwldap32 -lsecur32 -lgdi32 -lnormaliz \
 	-lcrypto -lcrypt32 -lws2_32
 
-all: clean winlibs
-
 CXX_STD = CXX11
+
+all: clean winlibs
 
 winlibs:
 	mkdir -p ../inst
