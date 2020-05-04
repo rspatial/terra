@@ -62,7 +62,7 @@ ww <- project(a, newcrs)
 
 
 # SpatVector
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 crs <- "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84"
 p <- project(v, crs)

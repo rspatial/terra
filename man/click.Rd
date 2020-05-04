@@ -43,7 +43,7 @@ Unless the process is terminated prematurely values at at most \code{n} position
 
 \examples{
 \donttest{
-r <-rast(system.file("exdata/test.tif", package="terra"))
+r <-rast(system.file("ex/test.tif", package="terra"))
 plot(r)
 click(r)
  # now click on the plot (map)

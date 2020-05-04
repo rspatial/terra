@@ -37,7 +37,7 @@ SpatVector or, if \code{drop=TRUE}, a data.frame.
 }
 
 \examples{
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v[2:3,]
 v[,2:3]

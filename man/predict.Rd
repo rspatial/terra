@@ -41,7 +41,7 @@ SpatRaster
 
 
 \examples{
-logo <- rast(system.file("exdata/logo.tif", package="terra"))   
+logo <- rast(system.file("ex/logo.tif", package="terra"))   
 names(logo) <- c("red", "green", "blue")
 p <- matrix(c(48, 48, 48, 53, 50, 46, 54, 70, 84, 85, 74, 84, 95, 85, 
    66, 42, 26, 4, 19, 17, 7, 14, 26, 29, 39, 45, 51, 56, 46, 38, 31, 

@@ -57,7 +57,6 @@ void SpatRaster::setSources(std::vector<RasterSource> s) {
 	source = s;
 	extent = s[0].extent;
 	srs = s[0].srs;
-	//prj = s[0].prj;
 }
 
 
@@ -121,7 +120,11 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.datatype = "";
 
 #ifdef useGDAL
-	s.srs.set( crs );
+	std::string msg;
+	if (!s.srs.set( crs, msg )) {
+		setError(msg);
+		return;
+	}
 #else
 	s.srs.proj4 = lrtrim_copy(crs[0]);
 #endif
@@ -152,7 +155,11 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
 	s.datatype = "";
 #ifdef useGDAL
-	s.srs.set( {crs} );
+	std::string msg;
+	if (!s.srs.set({crs}, msg )) {
+		setError(msg);
+		return;
+	}
 #else
 	s.srs.proj4 = lrtrim_copy(crs);
 #endif
@@ -204,8 +211,7 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 		}
 	}
 	s.names = nms;
-	SpatRaster out;
-	out.setSource(s);
+	SpatRaster out(s);
 	return out;
 }
 
@@ -335,6 +341,9 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 	std::set<std::string> ufs;
 	size_t ufsize = ufs.size();
 
+	std::string tmpbasename = tempFile(opt.get_tempdir(), "_temp_");
+
+
 	for (size_t i=0; i<nsrc; i++) {
 		bool write = false;
 		if (!source[i].in_order() || (source[i].driver == "memory")) {
@@ -349,7 +358,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 		}
 		SpatRaster rs(source[i]);
 		if (write) {
-			opt.filename = tempFile(opt.get_tempdir(), "_temp.tif") ;
+			opt.filename = tmpbasename + std::to_string(i) + ".tif";
 			tmpfs.push_back(opt.filename);
 			rs = rs.writeRaster(opt);
 		}
@@ -362,11 +371,16 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 	return out;
 }
 
-void SpatRaster::setSRS(std::vector<std::string> _srs) {
-	srs.set(_srs);
+bool SpatRaster::setSRS(std::vector<std::string> _srs) {
+	std::string msg;
+	if (!srs.set(_srs, msg )) {
+		setError(msg);
+		return false;
+	}
 	for (size_t i = 0; i < nsrc(); i++) { 
 		source[i].srs = srs; 
 	}
+	return true;
 }
 
 std::vector<std::string>  SpatRaster::getSRS() {

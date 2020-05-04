@@ -57,7 +57,7 @@ setMethod("vect", signature(x="matrix"),
 			values(p) <- atts
 		}
 		if (!is.na(crs)) {
-			p@ptr$crs <- ifelse(is.na(crs), "", as.character(crs))
+			crs(p) <- ifelse(is.na(crs), "", as.character(crs))
 		}
 		show_messages(p)
 	}

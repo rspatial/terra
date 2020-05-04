@@ -11,13 +11,14 @@ std::string ginfo(std::string filename, std::vector<std::string> options, std::v
 	return out;
 }
 
+/*
 # include "warp.h"
 // [[Rcpp::export(name = ".gdalwarp")]]
 bool gwarp(std::string src, std::string dst, std::vector<std::string> options, std::vector<std::string> oo, std::vector<std::string> doo) {
 	bool ok = gdalwarp(src, dst, options, oo, doo);
 	return ok;
 }
-
+*/
 
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) { 
@@ -189,7 +190,8 @@ RCPP_MODULE(spat){
 		.method("as_lines", &SpatVector::as_lines, "as_lines")
 		.method("as_points", &SpatVector::as_points, "as_points")
 		.method("couldBeLonLat", &SpatVector::could_be_lonlat, "couldBeLonLat") 
-		.property("crs", &SpatVector::getSRS, &SpatVector::setSRS, "srs")		
+		.method("get_crs", &SpatVector::getSRS)
+		.method("set_crs", &SpatVector::setSRS)
 		//.method("p	rj", &SpatVector::getPRJ)
 		
 		.method("distance_self", (SpatDataFrame (SpatVector::*)())( &SpatVector::distance))
@@ -255,7 +257,8 @@ RCPP_MODULE(spat){
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
-		.property("crs", &SpatRaster::getSRS, &SpatRaster::setSRS, "srs")
+		.method("get_crs", &SpatRaster::getSRS)
+		.method("set_crs", &SpatRaster::setSRS)
 		//.field_readonly("prj", &SpatRaster::prj)
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 		.method("getRasterAtt", &getRasterAttributes, "get attributes")
@@ -353,6 +356,8 @@ RCPP_MODULE(spat){
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
 		.method("freq", &SpatRaster::freq, "freq")
+		.method("geometry", &SpatRaster::geometry, "geometry")
+
 		.method("get_aggregates", &SpatRaster::get_aggregates, "get_aggregates")
 		.method("get_aggregate_dims", &SpatRaster::get_aggregate_dims2, "get_aggregate_dims")
 		.method("global", &SpatRaster::global, "global")
@@ -387,6 +392,7 @@ RCPP_MODULE(spat){
 		.method("project2", &SpatRaster::project2, "project2")
 		.method("resample", &SpatRaster::resample1, "resample")
 		.method("warp", &SpatRaster::warp, "warp")
+		.method("warp2", &SpatRaster::warp2, "warp2")
 		.method("warpcrs", &SpatRaster::warpcrs, "warpcrs")
 		.method("zonal", &SpatRaster::zonal, "zonal")			
 	;

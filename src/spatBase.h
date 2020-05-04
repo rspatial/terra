@@ -146,7 +146,7 @@ class SpatExtent {
 		}
 
 		bool compare(SpatExtent e, std::string oper, double tolerance);
-		
+
 		SpatExtent round(int n);
 		SpatExtent floor();
 		SpatExtent ceil();
@@ -158,8 +158,7 @@ class SpatExtent {
 class SpatSRS {
 	public:
 		std::string input, proj4, wkt;
-		bool set(std::vector<std::string> txt);
-
+		bool set(std::vector<std::string> txt, std::string &msg);
 		std::vector<std::string> get() {
 			std::vector<std::string> s = {proj4, wkt, input};
 			return s;

@@ -6,43 +6,43 @@
 
 setMethod("crs", signature("SpatRaster"), 
 	function(x) {
-		x@ptr$crs
+		x@ptr$get_crs()
 	}
 )
 
 setMethod("crs<-", signature("SpatRaster", "character"), 
 	function(x, ..., value) {
-		x@ptr$crs <- value
-		return(x)
+		x@ptr$set_crs(value)
+		show_messages(x, "crs<-")
 	}
 )
 
 
 setMethod("crs", signature("SpatRaster"), 
 	function(x) {
-		x@ptr$crs
+		x@ptr$get_crs()
 	}
 )
 
 
 setMethod("crs<-", signature("SpatRaster", "character"), 
 	function(x, ..., value) {
-		x@ptr$crs <- value
-		return(x)
+		x@ptr$set_crs(value)
+		show_messages(x, "crs<-")
 	}
 )
 
 
 setMethod("crs", signature("SpatVector"), 
 	function(x) {
-		x@ptr$crs
+		x@ptr$get_crs()
 	}
 )
 
 setMethod("crs<-", signature("SpatVector", "character"), 
 	function(x, ..., value) {
-		x@ptr$crs <- trimws(value)
-		return(x)
+		x@ptr$set_crs(value)
+		show_messages(x, "crs<-")
 	}
 )
 

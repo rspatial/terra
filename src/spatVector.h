@@ -98,8 +98,13 @@ class SpatVector {
 		//void setCRS(std::vector<std::string> _crs);
 
 
-		void setSRS(std::vector<std::string> _srs) {
-			lyr.srs.set(_srs);
+		bool setSRS(std::vector<std::string> _srs) {
+			std::string msg;
+			if (!lyr.srs.set(_srs, msg)){
+				addWarning("Cannot set SRS: "+ msg);
+				return false;
+			}
+			return true;	
 		}
 
 		std::vector<std::string> getSRS() {

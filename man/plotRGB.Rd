@@ -48,7 +48,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, margins=FALSE, 
 \seealso{ \code{\link{plot}} }
 
 \examples{
-b <- rast(system.file("exdata/logo.tif", package="terra"))   
+b <- rast(system.file("ex/logo.tif", package="terra"))   
 plotRGB(b)
 plotRGB(b, 3, 2, 1)
 plotRGB(b, 3, 2, 1, stretch='hist')

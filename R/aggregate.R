@@ -36,11 +36,11 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 	fun <- .makeTextFun(match.fun(fun))
 	toc <- FALSE
 	if (class(fun) == "character") { 
-		if (fun %in% c("sum", "mean", "min", "max")) {
+		if (fun %in% c("sum", "mean", "min", "max", "median", "modal")) {
 			toc <- TRUE
 		}
 	}
-
+	if (!hasValues(x)) { toc = TRUE }
 	na.rm <- isTRUE(list(...)$na.rm)
 	if (toc) {	
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
@@ -49,9 +49,11 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 		return (show_messages(x, "aggregate"))
 	} else {
 		out <- rast(x)
+		nl <- nlyr(out)
 		opt <- .runOptions("", TRUE, list())	
 		out@ptr <- out@ptr$aggregate(fact, "sum", na.rm, opt)
 		out <- show_messages(out, "aggregate")
+		
 		dims <- x@ptr$get_aggregate_dims(fact)
 		b <- x@ptr$getBlockSize(4)		
 		
@@ -59,24 +61,26 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 		nrs <- rep(nr, floor(nrow(x)/nr))
 		d <- nrow(x) - sum(nrs) 
 		if (d > 0) nrs <- c(nrs, d)
-		b$row <- cumsum(nrs)-nrs[1]
+		b$row <- c(0, cumsum(nrs))[1:length(nrs)] + 1
 		b$nrows <- nrs
 		b$n <- length(nrs)
-		outnr <- b$nrows / fact[1]
-		outrows  <- 1+cumsum(outnr)-outnr[1]
+		outnr <- ceiling(b$nrows / fact[1])
+		outrows  <- c(0, cumsum(outnr))[1:length(outnr)] + 1
 		
 		nc <- ncol(x)	
 		readStart(x)
 		ignore <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
-			v <- readValues(x, b$row[i]+1, b$nrows[i], 1, nc)
+			v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
 			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
 			v <- sapply(v, fun, ...)
+			if (length(v) != outnr[i] * prod(dims[5:6])) {
+				stop("this function does not return the correct number of values")
+			}
 			writeValues(out, v, outrows[i], outnr[i])
 		}
 		readStop(x)
-		out <- writeStop(out)		
-		return(out)
+		show_messages(out, "aggregate")
 	}
 }
 )

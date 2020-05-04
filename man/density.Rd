@@ -28,7 +28,7 @@ density plot (and a density object, returned invisibly if \code{plot=TRUE)}
 }
 
 \examples{
-logo <- rast(system.file("exdata/logo.tif", package="terra"))
+logo <- rast(system.file("ex/logo.tif", package="terra"))
 density(logo)
 }
 

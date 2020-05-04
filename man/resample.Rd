@@ -26,13 +26,6 @@ If the origin and crs are the same, you should consider using these other functi
 	cubic: cubic interpolation.
 	cubicspline: cubic spline interpolation.
 	lanczos: Lanczos windowed sinc resampling.
-	average: the weighted average of all contributing cells excluding \code{NA}.
-	med: the median value of of all contributing cells excluding \code{NA}.
-	mode: the most frequent value.
-	max: the maximum value of all contributing cells excluding \code{NA}.
-	min: the minimum value of all contributing cells excluding \code{NA}.
-	q1: the first quartile of all contributing cells excluding \code{NA}.
-	q3: the third quartile of all contributing cells excluding \code{NA}.
   }
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

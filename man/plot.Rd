@@ -87,7 +87,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 
 
 \examples{ 
-f <- system.file("exdata/test.tif", package="terra") 
+f <- system.file("ex/test.tif", package="terra") 
 r <- rast(f)
 plot(r)
 
@@ -103,7 +103,7 @@ levels(x) <- c("earth", "wind", "fire")
 plot(x)
 
 
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 r <- rast(v)
 values(r) <- 1:ncell(r)

@@ -75,10 +75,10 @@ SpatRaster
 x <- rast(nrow=108, ncol=21, xmin=0, xmax=10)
 
 # Create a SpatRaster from a file
-f <- system.file("exdata/test.tif", package="terra")
+f <- system.file("ex/test.tif", package="terra")
 r <- rast(f)
 
-s <- rast(system.file("exdata/logo.tif", package="terra"))   
+s <- rast(system.file("ex/logo.tif", package="terra"))   
 
 # Create a skeleton with no associated cell values
 rast(s)

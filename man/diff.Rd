@@ -29,7 +29,7 @@ SpatRaster
 
 
 \examples{
-s <- rast(system.file("exdata/logo.tif", package="terra"))   
+s <- rast(system.file("ex/logo.tif", package="terra"))   
 d <- diff(s)
 }
 

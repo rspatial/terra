@@ -23,7 +23,7 @@
 
 #ifndef useGDAL
 
-bool SpatSRS::set(std::vector<std::string> txt) {
+bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
 	if (txt.size() == 3) {
 		proj4 == txt[0];
 		wkt = txt[1];
@@ -35,8 +35,6 @@ bool SpatSRS::set(std::vector<std::string> txt) {
 	}
 	return true;
 }
-
-
 #else
 
 
@@ -44,61 +42,28 @@ bool SpatSRS::set(std::vector<std::string> txt) {
 #include <gdal_priv.h> // GDALDriver
 
 
-#ifdef useRcpp
-#include "Rcpp.h"
-void handle_error(OGRErr err) {
+bool is_ogr_error(OGRErr err, std::string &msg) {
 	if (err != OGRERR_NONE) {
 		switch (err) {
 			case OGRERR_NOT_ENOUGH_DATA:
-				Rcpp::Rcout << "OGR: Not enough data " << std::endl;
-				break;
+				msg = "OGR: Not enough data";
 			case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
-				Rcpp::Rcout << "OGR: Unsupported geometry type" << std::endl;
-				break;
+				msg = "OGR: Unsupported geometry type";
 			case OGRERR_CORRUPT_DATA:
-				Rcpp::Rcout << "OGR: Corrupt data" << std::endl;
-				break;
+				msg = "OGR: Corrupt data";
 			case OGRERR_FAILURE:
-				Rcpp::Rcout << "OGR: index invalid?" << std::endl;
-				break;
+				msg = "OGR: Invalid index";
 			default:
-				Rcpp::Rcout << "Error code: " << err << std::endl;
-				break;
+				msg = "OGR: Error";
 		}
-		Rcpp::stop("OGR error");
+		return true;
 	}
+	return false;
 }
 
-#else // no Rcpp
-
-void handle_error(OGRErr err) {
-	if (err != OGRERR_NONE) {
-		switch (err) {
-			case OGRERR_NOT_ENOUGH_DATA:
-				//std::cout << "OGR: Not enough data " << std::endl;
-				break;
-			case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
-				//std::cout << "OGR: Unsupported geometry type" << std::endl;
-				break;
-			case OGRERR_CORRUPT_DATA:
-				//std::cout << "OGR: Corrupt data" << std::endl;
-				break;
-			case OGRERR_FAILURE:
-				//std::cout << "OGR: index invalid?" << std::endl;
-				break;
-			default:
-				//std::cout << "Error code: " << err << std::endl;
-				break;
-		}
-		//std::cout("OGR error");
-	}
-}
-#endif
 
 
-
-
-std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) {
+bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt, std::string &msg) {
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
 	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
@@ -106,28 +71,29 @@ std::string wkt_from_spatial_reference(const OGRSpatialReference *srs) {
 #else
 	OGRErr err = srs->exportToPrettyWkt(&cp);
 #endif
-	std::string out="";
-	if (err == OGRERR_NONE) {
-		out = std::string(cp);
+	if (is_ogr_error(err, msg)) {
+		CPLFree(cp);
+		return false;
 	}
-	CPLFree(cp);
-	return out;
+	wkt = std::string(cp);
+	return true;
 }
 
-std::string prj_from_spatial_reference(const OGRSpatialReference *srs) {
-	std::string out="";
+bool prj_from_spatial_reference(const OGRSpatialReference *srs, std::string &prj, std::string &msg) {
 	char *cp;
 	OGRErr err = srs->exportToProj4(&cp);
-	if (err == OGRERR_NONE) {
-		out = std::string(cp);
+	if (is_ogr_error(err, msg)) {
+		CPLFree(cp);
+		return false;
 	}
+	prj = std::string(cp);
 	CPLFree(cp);
-	return out;
+	return true;
 }
 
 
-std::vector<std::string> string_from_spatial_reference(const OGRSpatialReference *srs) {
-	std::vector<std::string> out(2, "");
+bool string_from_spatial_reference(const OGRSpatialReference *srs, std::vector<std::string> &out, std::string &msg) {
+	out = std::vector<std::string>(2, "");
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
 	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
@@ -135,24 +101,38 @@ std::vector<std::string> string_from_spatial_reference(const OGRSpatialReference
 #else
 	OGRErr err = srs->exportToPrettyWkt(&cp);
 #endif
-	if (err == OGRERR_NONE) {
-		out[0] = std::string(cp);
+	if (is_ogr_error(err, msg)) {
+		CPLFree(cp);
+		return false;
 	}
+	out[0] = std::string(cp);
 
 	err = srs->exportToProj4(&cp);
-	if (err == OGRERR_NONE) {
-		out[1] = std::string(cp);
+	if (is_ogr_error(err, msg)) {
+		CPLFree(cp);
+		return false;
 	}
+	out[1] = std::string(cp);
+
 	CPLFree(cp);
-	return out;
+	return true;
 }
 
 
-bool SpatSRS::set(std::vector<std::string> txt) {
-	if (txt.size() == 3) {
+bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
+	if (txt.size() == 1 && txt[0] == "") { 
+		wkt="";
+		proj4="";
+		input="";
+		return true;
+	} else if (txt.size() == 3) {
 		proj4 == txt[0];
 		wkt = txt[1];
 		input = txt[2];
+		return true;
+	} else if (txt.size() == 2) {
+		proj4 == txt[0];
+		wkt = txt[1];
 		return true;
 	} else {
 		input=txt[0];
@@ -161,9 +141,18 @@ bool SpatSRS::set(std::vector<std::string> txt) {
 		if (input != "") {
 			OGRSpatialReference *srs = new OGRSpatialReference;
 			const char* s = input.c_str();
-			handle_error(srs->SetFromUserInput(s));
-			wkt = std::string(wkt_from_spatial_reference(srs));
-			proj4 = std::string(prj_from_spatial_reference(srs));
+			if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
+				delete srs;
+				return false;
+			}
+			if (! wkt_from_spatial_reference(srs, wkt, msg)) {
+				delete srs;
+				return false;
+			};
+			if (! prj_from_spatial_reference(srs, proj4, msg)) {
+				delete srs;
+				return false;
+			};
 			delete srs;
 			return true;
 		}
@@ -173,17 +162,21 @@ bool SpatSRS::set(std::vector<std::string> txt) {
 
 
 
-std::string wkt_from_string(std::string input) {
+bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	lrtrim(input);
-	std::string wkt="";
+	wkt="";
+	bool success = false;
 	if (input != "") {
 		OGRSpatialReference *srs = new OGRSpatialReference;
 		const char* s = input.c_str();
-		handle_error(srs->SetFromUserInput(s));
-		wkt = std::string(wkt_from_spatial_reference(srs));
+		if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
+			delete srs;
+			return false;
+		}
+		success = wkt_from_spatial_reference(srs, wkt, msg);
 		delete srs;
 	}
-	return wkt;
+	return success;
 }
 
 
@@ -254,6 +247,7 @@ SpatVector SpatVector::project(std::string crs) {
 		}
 		s.setGeometry(type(), a, b, x, y, c);
 		//std::vector<std::string> refs = srefs_from_string(crs);
+		std::string msg;
 		s.setSRS({crs});
 		//s.setPRJ(refs[1]);
 		s.lyr.df = lyr.df;

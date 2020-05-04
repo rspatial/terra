@@ -31,7 +31,7 @@ Pair plots of layers in a SpatRaster. This is a wrapper around graphics function
 }
 
 \examples{
-r <-rast(system.file("exdata/test.tif", package="terra"))
+r <-rast(system.file("ex/test.tif", package="terra"))
 s <- c(r*1, 1/r, sqrt(r))
 pairs(s)
 

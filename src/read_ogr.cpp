@@ -153,15 +153,16 @@ bool SpatVector::read(std::string fname) {
 		return false;
     }
 	
-
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
-	std::string wkt = wkt_from_spatial_reference(poSRS);
-	//std::string prj = prj_from_spatial_reference(poSRS);
-	setSRS( {wkt} );
+	std::string wkt, errmsg;
+	if (!wkt_from_spatial_reference(poSRS, wkt, errmsg)){
+		setError(errmsg);
+		return false;	
+	}
+	setSRS( {wkt}) ; 
 	//lyr.prj = prj;
 
 
-	
 //	std::string crs = getDs_WKT(poDS);
 //	std::string prj = getDs_PRJ(poDS);
 /*

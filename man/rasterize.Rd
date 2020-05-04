@@ -35,7 +35,7 @@ SpatRaster
 }
 
 \examples{
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 r <- rast(v, ncol=75, nrow=100)
 x <- rasterize(v, r)

@@ -46,7 +46,7 @@ names(s) <- c("a", "  a  ", "3")
 names(s)
 
 # SpatVector names
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 names(v)
 names(v) <- paste0(substr(names(v), 1, 2), "_", 1:ncol(v))

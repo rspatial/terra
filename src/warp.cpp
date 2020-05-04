@@ -13,10 +13,10 @@
 	#include "gdalwarper.h"
 	#include "ogr_srs_api.h"
 
-	#if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
+//	#if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
 		#include "gdal_utils.h"
 		#define GDALutils
-	#endif
+//	#endif
 
 	#include "gdal_errors.h"
 
@@ -102,6 +102,8 @@ bool valid_warp_method(std::string method) {
 }
 
 
+#include <iostream>
+
 SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr());
@@ -128,10 +130,13 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 	}
 
 
-#ifdef GDALutils
+//#ifdef GDALutils
 	std::vector<std::string> tmpfs;
 	SpatOptions topt(opt);
 	SpatRaster inp = sources_to_disk(tmpfs, true, topt);
+	for (size_t i=0; i<tmpfs.size(); i++) {
+		Rcpp::Rcout << tmpfs[i] << std::endl;
+	}
 	size_t nsrc = inp.source.size();
 	std::vector<GDALDatasetH> src(nsrc);
 	for (size_t i = 0; i < nsrc; i++) {
@@ -188,10 +193,10 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 		out.setError("no output");
 	}
 
-#else
+//#else
 	// we could use native project and resample
-	out.setError("not implemented for GDAL < 2.1 -- let us know if that is a problem");
-#endif
+//	out.setError("not implemented for GDAL < 2.1 -- let us know if that is a problem");
+//#endif
 	return out;
 }
 
@@ -201,8 +206,11 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 	SpatRaster out = geometry(nlyr());
 	// always to file
 	
-	std::string wkt = wkt_from_string(x);
-
+	std::string wkt, msg;
+	if (!wkt_from_string(x, wkt, msg)) {
+		out.setError(msg);
+		return out;
+	}
 	
 	std::string filename = opt.filename;
 	if (filename == "") {
@@ -215,7 +223,7 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 		}
 	}
 
-#ifdef GDALutils
+//#ifdef GDALutils
 	if (!valid_warp_method(method)) {
 		out.setError("invalid warp method");
 		return out;
@@ -224,11 +232,10 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 
 	std::vector<std::string> tmpfs;
 	SpatOptions topt(opt);
+	
+
 	out = sources_to_disk(tmpfs, true, topt);
-
-
 	//std::string format = opt.filetype();
-
 	//GDALDatasetH src = GDALOpen((const char *) source[0].filename.c_str(), GA_ReadOnly);
 	size_t nsrc = out.source.size();
 	std::vector<GDALDatasetH> src(nsrc);
@@ -238,6 +245,8 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 
 	//GDALformat(filename, format);
 	//"-dstnodata", "NAN",
+
+
 	std::vector<std::string> sops = {"-t_srs", wkt, "-r", method, "-ovr", "NONE", "-dstnodata", "NAN"};
 	if (opt.overwrite) {
 		sops.push_back("-overwrite");
@@ -253,7 +262,7 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 	GDALDatasetH result;
 	int err = 0;
 	const char *pszFilename = filename.c_str();
-	result = GDALWarp(pszFilename, NULL, nsrc, &src[0], gopts, &err);
+	result = GDALWarp(pszFilename, NULL, nsrc, src.data(), gopts, &err);
 	if (result != NULL) {
 		GDALClose(result);
 		out = SpatRaster(filename);
@@ -271,13 +280,14 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 	for (size_t i=0; i<tmpfs.size(); i++) remove(tmpfs[i].c_str());
 	return out;
 
-#else
+//#else
 	// we could use native project and resample
-	out.setError("not implemented for GDAL < 2.1 -- let us know if that is a problem");
-#endif
+//	out.setError("not implemented for GDAL < 2.1 -- let us know if that is a problem");
+//#endif
 
 	return out;
 }
+
 
 
 bool gdalwarp(std::string src, std::string dst,	std::vector<std::string> options, std::vector<std::string> oo, std::vector<std::string> doo) {
@@ -307,10 +317,9 @@ bool gdalwarp(std::string src, std::string dst,	std::vector<std::string> options
 	return (result != NULL) || (!err) ;
 }
 
-#endif
 
 
-
+#endif // useGDAL
 
 /*
 #include <vector>

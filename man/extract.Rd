@@ -55,7 +55,7 @@ r[,5]
 
 r[c(0:2, 99:101)]
 
-f <- system.file("exdata/test.tif", package="terra")
+f <- system.file("ex/test.tif", package="terra")
 r <- rast(f)
 
 xy <- cbind(179000, 330000)
@@ -79,7 +79,7 @@ y <- c(x,x*2,x*3)
 y[i]
 
 # extract with a polygon
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 z <- rast(v)
 values(z) <- 1:100

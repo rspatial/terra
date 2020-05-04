@@ -12,7 +12,11 @@ setClass("SpatRaster",
 		ptr = NULL
 	),
 	validity = function(object)	{
-		return(TRUE)
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatRaster")){
+			return(TRUE)
+		} else {
+			return(FALSE)		
+		}
 	}
 )
 
@@ -25,8 +29,11 @@ setClass("SpatVector",
 		ptr = NULL
 	),
 	validity = function(object)	{
-		return(TRUE)
-#		object@ptr$valid
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatVector")){
+			return(TRUE)
+		} else {
+			return(FALSE)		
+		}
 	}
 )
 
@@ -39,7 +46,11 @@ setClass("SpatExtent",
 		ptr = NULL
 	),
 	validity = function(object)	{
-		object@ptr$valid
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatExtent")){
+			return(TRUE)
+		} else {
+			return(FALSE)		
+		}
 	}
 )
 
@@ -52,7 +63,11 @@ setClass("SpatOptions",
 		ptr = NULL
 	),
 	validity = function(object)	{
-		return (true)
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatOptions")){
+			return(TRUE)
+		} else {
+			return(FALSE)		
+		}
 	}
 )
 

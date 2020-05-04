@@ -35,7 +35,7 @@ numeric or SpatRaster
 }
 
 \examples{
-f <- system.file("exdata/test.tif", package="terra")
+f <- system.file("ex/test.tif", package="terra")
 r <- rast(f)
 s <- spatSample(r, 10, as.raster=TRUE)
 spatSample(r, 10)

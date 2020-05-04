@@ -28,7 +28,7 @@ minmax: numeric matrix of minimum and maximum cell values by layer
 
 
 \examples{ 
-r <- rast(system.file("exdata/test.tif", package="terra"))
+r <- rast(system.file("ex/test.tif", package="terra"))
 minmax(r)
 }
 

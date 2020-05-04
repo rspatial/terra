@@ -35,7 +35,7 @@ A vector of quantiles
 
 
 \examples{
-r <- rast(system.file("exdata/logo.tif", package="terra"))   
+r <- rast(system.file("ex/logo.tif", package="terra"))   
 r <- c(r/2, r, r*2)
 q <- quantile(r)
 q

@@ -40,7 +40,7 @@ In other cases, the unit is set by coordinate references system. In most cases i
 
 
 \examples{
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 a <- area(v)
 a

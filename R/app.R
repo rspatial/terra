@@ -55,8 +55,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 		writeValues(out, r, b$row[i], b$nrows[i])
 	}
 	readStop(x)
-	out <- writeStop(out)
-	return(out)
+	writeStop(out)
 }
 )
 

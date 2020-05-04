@@ -156,7 +156,7 @@ class SpatRaster {
 		//void setCRS(std::vector<std::string> _crs);
 
 		std::vector<std::string> getSRS();
-		void setSRS(std::vector<std::string> _srs);
+		bool setSRS(std::vector<std::string> _srs);
 
 		bool is_lonlat();
 		bool could_be_lonlat();
@@ -432,6 +432,8 @@ class SpatRaster {
 
 		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
 		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
+		SpatRaster warp2(const SpatRaster &x, std::string crs, std::string method, SpatOptions &opt);
+
 		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm);

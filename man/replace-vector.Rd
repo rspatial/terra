@@ -34,7 +34,7 @@ vector
 
 
 \examples{
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v$NAME_1
 v$ID_1 <- LETTERS[1:12]

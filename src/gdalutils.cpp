@@ -5,8 +5,10 @@
 #include "gdal_errors.h"
 #include "ogr_srs_api.h"
 
-#ifdef GDALutils
-# include "gdal_utils.h" // requires >= 2.1
+//#ifdef GDALutils
+#include "gdal_utils.h" // requires >= 2.1
+
+#include "string_utils.h"
 
 // code adapted from the 'sf' package by Edzer Pebesma et al
 	
@@ -180,4 +182,4 @@ bool CPL_gdalvectortranslate(std::vector<std::string> src, std::vector<std::stri
 
 */
 
-#endif
+//#endif

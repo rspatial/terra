@@ -48,13 +48,13 @@ matrix or vector
 
 
 \examples{
-r <- rast(system.file("exdata/test.tif", package="terra"))
+r <- rast(system.file("ex/test.tif", package="terra"))
 r
 v <- values(r)
 values(r) <- v * 10
 r
 
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 x <- values(v)
 x

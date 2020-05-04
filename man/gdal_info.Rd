@@ -28,7 +28,7 @@ character (invisibly, if \code{print=TRUE})
 
 
 \examples{
-f <- system.file("exdata/test.tif", package="terra")
+f <- system.file("ex/test.tif", package="terra")
 gdal_info(f)
 
 \donttest{

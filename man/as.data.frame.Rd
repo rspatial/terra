@@ -26,7 +26,7 @@ data.frame
 }
 
 \examples{
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 as.data.frame(v)
 }

@@ -312,7 +312,11 @@ bool SpatRaster::constructFromFile(std::string fname) {
 */
 
 	std::string crs = getDsWKT(poDataset);
-	s.srs.set({crs});
+	std::string msg;
+	if (!s.srs.set({crs}, msg)) {
+		setError(msg);
+		return false;
+	}
 
 	GDALRasterBand  *poBand;
 	//int nBlockXSize, nBlockYSize;

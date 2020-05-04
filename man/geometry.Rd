@@ -46,7 +46,7 @@ z$hole[z$object==2 & z$part==1] <- 1
 p <- vect(z)
 geom(p)
 
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 g <- geom(v)
 head(g)

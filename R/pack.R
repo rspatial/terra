@@ -63,7 +63,7 @@ setMethod("vect", signature(x="PackedSpatVector"),
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		if (!is.na(x@crs)) {
-			p@ptr$crs <- x@crs
+			crs(p) <- x@crs
 		}
 		if (nrow(x@coordinates) == 0) {
 			return(p)

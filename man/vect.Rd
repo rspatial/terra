@@ -34,7 +34,7 @@ Create a new SpatVector
 
 \examples{
 
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 f
 v <- vect(f)
 v
