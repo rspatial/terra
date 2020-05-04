@@ -432,7 +432,10 @@ class SpatRaster {
 
 		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
 		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
-		SpatRaster warp2(const SpatRaster &x, std::string crs, std::string method, SpatOptions &opt);
+
+		SpatRaster warp_crs(std::string crs, std::string method, SpatOptions &opt);
+		SpatRaster warp_rst(const SpatRaster &x, std::string method, SpatOptions &opt);
+
 
 		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
