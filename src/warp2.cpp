@@ -12,27 +12,84 @@ GDALDatasetH open_gdal(const SpatRaster& x) {
 }
 
 
+bool SpatRaster::setValuesMEM(GDALDatasetH hDS, bool set_geometry) {
 
-bool gdal_ds_create(SpatRaster x, GDALDatasetH &hDS, bool fill, SpatOptions &opt, std::string &msg) {
+	if (set_geometry) {
+		RasterSource s;
+		s.ncol = GDALGetRasterXSize( hDS );
+		s.nrow = GDALGetRasterYSize( hDS );
+		s.nlyr = GDALGetRasterCount( hDS );
+
+		double adfGeoTransform[6];
+		if( GDALGetGeoTransform( hDS, adfGeoTransform ) != CE_None ) {
+			setError("Cannot get geotransform");
+			return false;
+		}
+		double xmin = adfGeoTransform[0]; 
+		double xmax = xmin + adfGeoTransform[1] * s.ncol; 
+		double ymax = adfGeoTransform[3]; 
+		double ymin = ymax + s.nrow * adfGeoTransform[5]; 
+		s.extent = SpatExtent(xmin, xmax, ymin, ymax);
+
+		s.driver = "memory";
+		setSource(s);
+		
+		OGRSpatialReferenceH srs = GDALGetSpatialRef( hDS );
+		char *cp;
+		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+		OGRErr err = OSRExportToWktEx(srs, &cp, options);
+		std::string errmsg;
+		if (is_ogr_error(err, errmsg)) {
+			CPLFree(cp);
+			return false;
+		}
+		std::string wkt = std::string(cp);
+		CPLFree(cp);
+		std::string msg;
+		if (!s.srs.set({wkt}, msg)) {
+			setError(msg);
+			return false;
+		}
+	}
+	
+	
+	source[0].values.reserve(ncell() * nlyr());
+	CPLErr err = CE_None;
+	int hasNA;
+	for (size_t i=0; i < nlyr(); i++) {
+		GDALRasterBandH hBand = GDALGetRasterBand(hDS, i+1);
+		std::vector<double> lyrout( ncell() );
+		err = GDALRasterIO(hBand, GF_Read, 0, 0, ncol(), nrow(), &lyrout[0], ncol(), nrow(), GDT_Float64, 0, 0);
+		if (err != CE_None ) {
+			setError("CE_None");
+			return false;
+		}
+		
+		//double naflag = -3.4e+38;
+		double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
+		if (hasNA) std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
+		source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
+	}
+	source[0].hasValues=TRUE;
+	source[0].driver="memory";
+	source[0].setRange();
+	return true;
+}
+
+
+bool gdal_ds_create(SpatRaster x, GDALDatasetH &hDS, std::string filename, std::string driver, std::vector<std::string> foptions, bool fill, std::string &msg) {
 
 	msg = "";
 	
 	char **papszOptions = NULL;
-	for (size_t i=0; i<opt.gdal_options.size(); i++) {
-		std::vector<std::string> wopt = strsplit(opt.gdal_options[i], "=");
+	for (size_t i=0; i < foptions.size(); i++) {
+		std::vector<std::string> wopt = strsplit(foptions[i], "=");
 		if (wopt.size() == 2) {
 			papszOptions = CSLSetNameValue( papszOptions, wopt[0].c_str(), wopt[1].c_str() );
 		}
 	}
-	std::string filename = opt.filename;
-	std::string format;
-	if (filename == "") {
-		format = "MEM";
-	} else {
-		format = "GTiff";
-	}
-		
-	const char *pszFormat = format.c_str();
+
+	const char *pszFormat = driver.c_str();
 	GDALDriverH hDrv = GDALGetDriverByName(pszFormat);
 
 	const char *pszFilename = filename.c_str();
@@ -45,6 +102,7 @@ bool gdal_ds_create(SpatRaster x, GDALDatasetH &hDS, bool fill, SpatOptions &opt
 		hBand = GDALGetRasterBand(hDS, i+1);
 		GDALSetDescription(hBand, nms[i].c_str());
 		GDALSetRasterNoDataValue(hBand, NAN);
+		//GDALSetRasterNoDataValue(hBand, -3.4e+38);
 		if (fill) GDALFillRaster(hBand, NAN, 0);
 	}
 
@@ -55,8 +113,8 @@ bool gdal_ds_create(SpatRaster x, GDALDatasetH &hDS, bool fill, SpatOptions &opt
 
 	OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
 	std::vector<std::string> srs = x.getSRS();
-	std::string prj = srs[1];
-	OGRErr erro = OSRImportFromProj4(hSRS, &prj[0]);
+	std::string wkt = srs[1];
+	OGRErr erro = OSRSetFromUserInput(hSRS, wkt.c_str());
 	if (erro == 4) {
 		msg = "CRS failure";
 		OSRDestroySpatialReference( hSRS );
@@ -74,7 +132,7 @@ bool gdal_ds_create(SpatRaster x, GDALDatasetH &hDS, bool fill, SpatOptions &opt
 
 
 
-bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const std::string crs, std::string filename, std::string &msg) {
+bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const std::string crs, std::string filename, std::string driver, int nlyrs, std::string &msg) {
 
 	msg = "";
 	if ( hSrcDS == NULL ) {
@@ -95,13 +153,10 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 	}
 
 	OGRSpatialReference* oSRS = new OGRSpatialReference;
-	const char* s = crs.c_str();
-	if (is_ogr_error(oSRS->SetFromUserInput(s), msg)) {
+	if (is_ogr_error(oSRS->SetFromUserInput( crs.c_str() ), msg)) {
 		return false;
 	};
 
-	//oSRS.SetWellKnownGeogCS( "WGS84" );
-	
 	char *pszDstWKT = NULL;
 	oSRS->exportToWkt( &pszDstWKT );
 
@@ -111,8 +166,7 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 	// handle (setting it to NULL).
 	void *hTransformArg;
 	hTransformArg =
-		GDALCreateGenImgProjTransformer( hSrcDS, pszSrcWKT, NULL, pszDstWKT,
-										 FALSE, 0, 1 );
+		GDALCreateGenImgProjTransformer( hSrcDS, pszSrcWKT, NULL, pszDstWKT, FALSE, 0, 1 );
 	if (hTransformArg == NULL ) {
 		msg = "cannot create TranformArg";
 		return false;
@@ -121,9 +175,8 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 	// Get approximate output georeferenced bounds and resolution for file.
 	double adfDstGeoTransform[6];
 	int nPixels=0, nLines=0;
-	CPLErr eErr = GDALSuggestedWarpOutput( hSrcDS,
-									GDALGenImgProjTransform, hTransformArg,
-									adfDstGeoTransform, &nPixels, &nLines );
+	CPLErr eErr = GDALSuggestedWarpOutput( hSrcDS, GDALGenImgProjTransform, 
+					hTransformArg, adfDstGeoTransform, &nPixels, &nLines );
 
 	GDALDestroyGenImgProjTransformer( hTransformArg );
 	if ( eErr != CE_None ) {
@@ -132,19 +185,17 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 	}
 
 	// Create the output DS.
-	if (filename != "") {
-		GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
-		CPLAssert( hDriver != NULL );
-		hDstDS = GDALCreate( hDriver, filename.c_str(), nPixels, nLines,
-							GDALGetRasterCount(hSrcDS), eDT, NULL );
-	} else {
-		GDALDriverH hDriver = GDALGetDriverByName( "MEM" );
-		CPLAssert( hDriver != NULL );
 
-		hDstDS = GDALCreate(hDriver, NULL, nPixels, nLines,
-							GDALGetRasterCount(hSrcDS), eDT, NULL );
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		msg = "empty driver";
+		return false;
 	}
-	
+	if (driver == "MEM") {
+		hDstDS = GDALCreate(hDriver, "", nPixels, nLines, nlyrs, eDT, NULL );
+	} else {
+		hDstDS = GDALCreate( hDriver, filename.c_str(), nPixels, nLines, nlyrs, eDT, NULL );
+	}
 	if ( hDstDS == NULL ) {
 		msg = "cannot create output dataset";
 		return false;		
@@ -159,6 +210,7 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 	hCT = GDALGetRasterColorTable( GDALGetRasterBand(hSrcDS,1) );
 	if( hCT != NULL )
 		GDALSetRasterColorTable( GDALGetRasterBand(hDstDS,1), hCT );
+
 	
 	return true;
 }
@@ -181,7 +233,18 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string method,
     psWarpOptions->panDstBands =
         (int *) CPLMalloc(sizeof(int) * psWarpOptions->nBandCount );
     psWarpOptions->panDstBands[0] = 1;
-    psWarpOptions->pfnProgress = GDALTermProgress;
+    //psWarpOptions->pfnProgress = GDALTermProgress;
+
+	psWarpOptions->papszWarpOptions =	
+      CSLSetNameValue( psWarpOptions->papszWarpOptions, "INIT_DEST", "NO_DATA");
+
+	//psWarpOptions->padfSrcNoDataReal =
+	//   (double *) CPLMalloc(sizeof(double) * psWarpOptions->nBandCount );
+    //psWarpOptions->padfSrcNoDataReal[0] = -3.4e+38;
+
+	psWarpOptions->padfDstNoDataReal =
+	    (double *) CPLMalloc(sizeof(double) * psWarpOptions->nBandCount );
+    psWarpOptions->padfDstNoDataReal[0] = NAN;
 
     // Establish reprojection transformer.
     psWarpOptions->pTransformerArg =
@@ -192,19 +255,17 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string method,
                                         FALSE, 0.0, 1 );
     psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
+
     // Initialize and execute the warp operation.
     GDALWarpOperation oOperation;
     oOperation.Initialize( psWarpOptions );
-    oOperation.ChunkAndWarpImage( 0, 0,
-                                GDALGetRasterXSize( hDstDS ),
-                                GDALGetRasterYSize( hDstDS ) );
+    oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) );
     GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
     GDALDestroyWarpOptions( psWarpOptions );
-    GDALClose( hDstDS );
-    GDALClose( hSrcDS );
     
 	return true;
 }	
+
 
 bool is_valid_warp_method(const std::string &method) {
 	std::vector<std::string> m { "near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "max", "min", "med", "q1", "q3", "sum" };
@@ -212,6 +273,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
+/*
 SpatRaster SpatRaster::warp_crs(std::string crs, std::string method, SpatOptions &opt) {
 
 	SpatRaster out;
@@ -223,34 +285,55 @@ SpatRaster SpatRaster::warp_crs(std::string crs, std::string method, SpatOptions
 	GDALDatasetH hSrcDS, hDstDS;
 	hSrcDS = open_gdal(*this);
 
-	std::string errmsg="";
-	std::string filename = opt.get_filename();
-	
 	//test crs first 
-	
-	if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, errmsg)) {
+	std::string filename = opt.filename;
+	std::string driver = filename == "" ? "MEM" : "GTiff";
+	std::string errmsg="";
+
+	if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), errmsg)) {
 		out.setError(errmsg);
 		return out;
 	}
 	
-	std::string msg;
-	bool success = gdal_warper(hSrcDS, hDstDS, method, msg);
-
-	GDALClose( hSrcDS );
-	GDALClose( hDstDS );
-
+	bool success = gdal_warper(hSrcDS, hDstDS, method, errmsg);
 	if (!success) {
-		out.setError(msg);
+		out.setError(errmsg);
+		GDALClose( hSrcDS );
+		GDALClose( hDstDS );
 		return out;
 	}
+
+	GDALClose( hSrcDS );
+
+	if (driver == "MEM") {
+		bool test = out.setValuesMEM(hDstDS, false); 
+		GDALClose( hDstDS );
+		if (!test) {
+			out.setError("wat nu?");
+			return out;
+		}
+	} else {
+		for (size_t i=0; i < nlyr(); i++) {
+			GDALRasterBandH hBand = GDALGetRasterBand(hDstDS, i+1);
+			double adfMinMax[2];
+			GDALComputeRasterMinMax(hBand, true, adfMinMax);
+			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
+		}
+		GDALClose( hDstDS );
+		out = SpatRaster(filename);
+	}
+	
+	// should not be needed (but it is)
+	out.setSRS({crs});
+	
 	return out;
 }
+*/
 
 
-
-SpatRaster SpatRaster::warp_rst(const SpatRaster &x, std::string method, SpatOptions &opt) {
-
-	SpatRaster out;
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
+	
+	SpatRaster out = x.geometry();
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
 		return out;
@@ -259,20 +342,56 @@ SpatRaster SpatRaster::warp_rst(const SpatRaster &x, std::string method, SpatOpt
 	GDALDatasetH hSrcDS, hDstDS;
 	hSrcDS = open_gdal(*this);
 
-	std::string msg="";
-	if (!gdal_ds_create(x, hDstDS, true, opt, msg)) {
-		out.setError(msg);
-		return(out);
+	std::string filename = opt.filename;
+	std::string driver = filename == "" ? "MEM" : "GTiff";
+	std::string errmsg="";
+
+
+	bool use_crs = crs != "";  
+	bool get_geom = false;
+	if (use_crs) {  // use the crs, ignore argument "x"
+		get_geom = true;
+		//test crs first? 
+		if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	} else {
+		if (!gdal_ds_create(out, hDstDS, filename, driver, opt.gdal_options, true, errmsg)) {
+			out.setError(errmsg);
+			return(out);
+		}
 	}
-
-	bool success = gdal_warper(hSrcDS, hDstDS, method, msg);
+	
+	bool success = gdal_warper(hSrcDS, hDstDS, method, errmsg);
 	GDALClose( hSrcDS );
-	GDALClose( hDstDS );
-
 	if (!success) {
-		out.setError(msg);
+		GDALClose( hDstDS );
+		out.setError(errmsg);
 		return out;
 	}
+
+	if (driver == "MEM") {
+		bool test = out.setValuesMEM(hDstDS, get_geom); 
+		GDALClose( hDstDS );
+		if (!test) {
+			out.setError("wat nu?");
+			return out;
+		}
+	} else {
+		for (size_t i=0; i < nlyr(); i++) {
+			GDALRasterBandH hBand = GDALGetRasterBand(hDstDS, i+1);
+			double adfMinMax[2];
+			GDALComputeRasterMinMax(hBand, true, adfMinMax);
+			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
+		}
+		GDALClose( hDstDS );
+		out = SpatRaster(filename);
+	}
+
+	// should not be needed (but it is)
+	if (use_crs) out.setSRS({crs});
+	
 	return out;
 }
 

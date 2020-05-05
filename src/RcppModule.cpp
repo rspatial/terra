@@ -394,9 +394,10 @@ RCPP_MODULE(spat){
 
 		.method("warp", &SpatRaster::warp, "warp")
 		.method("warpcrs", &SpatRaster::warpcrs, "warpcrs")
+		.method("warper", &SpatRaster::warper, "warper")
 
-		.method("warp_crs", &SpatRaster::warp_crs, "warp_crs")
-		.method("warp_rst", &SpatRaster::warp_rst, "warp_rst")
+		//.method("warp_crs", &SpatRaster::warp_crs, "warp_crs")
+		//.method("warp_rst", &SpatRaster::warp_rst, "warp_rst")
 
 		.method("zonal", &SpatRaster::zonal, "zonal")			
 	;

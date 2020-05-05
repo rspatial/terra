@@ -76,6 +76,7 @@ bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt
 		return false;
 	}
 	wkt = std::string(cp);
+	CPLFree(cp);
 	return true;
 }
 

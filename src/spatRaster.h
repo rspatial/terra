@@ -430,12 +430,14 @@ class SpatRaster {
 		SpatRaster resample1(SpatRaster &x, const std::string &method, SpatOptions &opt);
 		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
+#ifdef useGDAL
+		bool setValuesMEM(GDALDatasetH hDS, bool set_geometry);
+#endif
+
 		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
 		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
 
-		SpatRaster warp_crs(std::string crs, std::string method, SpatOptions &opt);
-		SpatRaster warp_rst(const SpatRaster &x, std::string method, SpatOptions &opt);
-
+		SpatRaster warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt);
 
 		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);

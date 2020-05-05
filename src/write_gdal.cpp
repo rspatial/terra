@@ -152,6 +152,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = poDstDS->GetRasterBand(i+1);
 		poBand->SetDescription(nms[i].c_str());
+		poBand->SetNoDataValue(NAN); // need more work for other than real data types
 	}
 
 	std::vector<double> rs = resolution();

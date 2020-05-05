@@ -215,9 +215,10 @@ setAs("SpatRaster", "Raster",
 		s <- sources(from)
 		nl <- nlyr(from)
 		e <- as.vector(ext(from))
+		prj <- crs(from)[1]
 		if (nl == 1) {
 			if (s$source == "") {
-				r <- raster(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
+				r <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
 				if (.hasValues(from)) {
 					values(r) <- values(from)
@@ -230,13 +231,13 @@ setAs("SpatRaster", "Raster",
 			if (nrow(s) == 1 & s$source[1] != "") {
 				r <- brick(s$source)			
 			} else if (all(s$source=="")) {
-				r <- brick(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
+				r <- brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4], nl=nlyr(from))
 				if (.hasValues(from)) {
 					values(r) <- values(from)
 				}
 			} else {
-				x <- raster(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
+				x <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
 				r <- list()
 				for (i in 1:nl) {

@@ -159,6 +159,7 @@ class SpatSRS {
 	public:
 		std::string input, proj4, wkt;
 		bool set(std::vector<std::string> txt, std::string &msg);
+
 		std::vector<std::string> get() {
 			std::vector<std::string> s = {proj4, wkt, input};
 			return s;
