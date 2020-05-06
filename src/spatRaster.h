@@ -431,6 +431,7 @@ class SpatRaster {
 		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
 #ifdef useGDAL
+		bool open_gdal(GDALDatasetH &hDS);
 		bool setValuesMEM(GDALDatasetH hDS, bool set_geometry);
 #endif
 

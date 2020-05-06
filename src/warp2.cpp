@@ -5,10 +5,61 @@
 #include "string_utils.h"
 #include "crs.h"
 
-GDALDatasetH open_gdal(const SpatRaster& x) {
-	std::string f = x.source[0].filename;
-	GDALDatasetH hSrcDS = GDALOpen(f.c_str(), GA_ReadOnly );
-	return hSrcDS;
+
+bool SpatRaster::open_gdal(GDALDatasetH &hDS) {
+	// needs to loop over sources. thus should vector of GDALDatasetH
+	// for now just doing the first
+	if (!source[0].hasValues) {
+		return false;
+	
+	} else if (source[0].driver == "gdal") {
+		std::string f = source[0].filename;
+		hDS = GDALOpen(f.c_str(), GA_ReadOnly);
+		return(hDS != NULL);
+		
+	} else { // in memory
+	
+		size_t nl = nlyr();
+		size_t ncls = nrow() * ncol();
+		GDALDriverH hDrv = GDALGetDriverByName("MEM");
+
+/*https://gis.stackexchange.com/questions/196048/how-to-reuse-memory-pointer-of-gdal-memory-driver
+		char **papszOptions = NULL;
+		hDS = GDALCreate(hDrv, "", ncol(), nrow(), 0, GDT_Float64, papszOptions);
+		if (hDS == NULL) return false;
+		std::vector<double> vals;
+		for(size_t i=0; i<nl; i++)	{
+			size_t off = ncls * i;
+			vals = std::vector<double>(source[0].values.begin() +off, source[0].values.begin() +off+ncls);
+			char szPtrValue[128] = { '\0' };
+			int nRet = CPLPrintPointer( szPtrValue, reinterpret_cast<void*>(&vals[0]), sizeof(szPtrValue) );
+			szPtrValue[nRet] = 0;
+			papszOptions = CSLSetNameValue(papszOptions, "DATAPOINTER", szPtrValue);
+			GDALAddBand(hDS, GDT_Float64, papszOptions);
+		}
+		CSLDestroy(papszOptions);
+*/
+
+		size_t nr = nrow();
+		size_t nc = ncol();
+		hDS = GDALCreate(hDrv, "", nc, nr, nl, GDT_Float64, NULL);
+		if (hDS == NULL) return false;
+
+		CPLErr err = CE_None;
+		std::vector<double> vals;
+		for (size_t i=0; i < nl; i++) {
+			GDALRasterBandH hBand = GDALGetRasterBand(hDS, i+1);
+			GDALSetRasterNoDataValue(hBand, NAN);
+			size_t offset = ncls * i;
+			vals = std::vector<double>(source[0].values.begin() + offset, source[0].values.begin() + offset + ncls);
+			err = GDALRasterIO(hBand, GF_Write, 0, 0, nc, nr, &vals[0], nc, nr, GDT_Float64, 0, 0 );
+			if (err != CE_None) {
+				return false;
+			}
+		}
+	}
+
+	return true;
 }
 
 
@@ -340,7 +391,10 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	GDALDatasetH hSrcDS, hDstDS;
-	hSrcDS = open_gdal(*this);
+	if (!open_gdal(hSrcDS)) {
+		out.setError("cannot create dataset");
+		return out;
+	}
 
 	std::string filename = opt.filename;
 	std::string driver = filename == "" ? "MEM" : "GTiff";
@@ -364,6 +418,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 	
 	bool success = gdal_warper(hSrcDS, hDstDS, method, errmsg);
+	
 	GDALClose( hSrcDS );
 	if (!success) {
 		GDALClose( hDstDS );
