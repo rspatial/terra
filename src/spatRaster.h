@@ -433,12 +433,14 @@ class SpatRaster {
 #ifdef useGDAL
 		bool open_gdal(GDALDatasetH &hDS);
 		bool setValuesMEM(GDALDatasetH hDS, bool set_geometry);
+		bool createDS(GDALDatasetH &hDS, std::string filename, std::string driver, std::vector<std::string> foptions, bool fill);
 #endif
 
 		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
 		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
 
 		SpatRaster warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt);
+		//SpatRaster tester(bool geom);
 
 		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
