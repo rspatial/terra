@@ -91,6 +91,39 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 }
 
 
+GDALResampleAlg getAlgo(std::string m) {
+	GDALResampleAlg alg;
+	if ( m == "near" ) { 
+		alg = GRA_NearestNeighbour;
+	} else if (m=="bilinear") {
+		alg = GRA_Bilinear;
+	} else if (m=="cubic") {		
+		alg = GRA_Cubic;
+	} else if (m=="cubicspline") {
+		alg = GRA_CubicSpline; 	
+	} else if (m=="lanczos") {
+		alg = GRA_Lanczos;
+	} else if (m=="mean") {
+		alg = GRA_Average;	
+//	} else if (m=="sum") {
+//		alg = GRA_Sum;
+	} else if (m=="mode") {
+		alg = GRA_Mode; 	
+	} else if (m=="max") {
+		alg = GRA_Max;
+	} else if (m=="min") {
+		alg = GRA_Min;	
+	} else if (m=="median") {
+		alg = GRA_Med;	
+	} else if (m=="q1") {
+		alg = GRA_Q1;	
+	} else if (m=="q3") {
+		alg = GRA_Q3;
+	} else { 
+		alg = GRA_NearestNeighbour;
+	}	
+	return alg;
+}
 
 
 bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigned> srcbands, std::vector<unsigned> dstbands, std::string method, std::string msg) {
@@ -100,11 +133,15 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 		return false;
 	}
 	int nbands = srcbands.size();
+
+	GDALResampleAlg a = getAlgo(method);
 	
     // Setup warp options.
     GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
     psWarpOptions->hSrcDS = hSrcDS;
     psWarpOptions->hDstDS = hDstDS;
+	
+	psWarpOptions->eResampleAlg = a;
 	
     psWarpOptions->nBandCount = nbands;
     psWarpOptions->panSrcBands =
