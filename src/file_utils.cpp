@@ -82,24 +82,27 @@ std::string get_path(const std::string filename) {
 }
 
 
-SpatMessages can_write(std::string filename, bool overwrite) {
-	SpatMessages msg;
+bool can_write(std::string filename, bool overwrite, std::string &msg) {
 	if (file_exists(filename)) {
 		if (overwrite) {
-			remove(filename.c_str());
+			if (remove(filename.c_str()) != 0) {
+				msg = ("cannot overwrite existing file");
+				return false;
+			}
 		} else {
-			msg.setError("file exists");
-			return msg;
+			msg = "file exists";
+			return false;
 		}
 	} else if (!canWrite(filename)) {
 		std::string path = get_path(filename);
 		if (!path_exists(path)) {
-			msg.setError("path does not exist");			
+			msg = "path does not exist";
 		} else {
-			msg.setError("cannot write file");
+			msg = "cannot write file";
 		}
+		return false;
 	}
-	return msg;
+	return true;
 }
 
 

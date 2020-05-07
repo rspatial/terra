@@ -99,9 +99,9 @@ CPLErr setBandCategories(GDALRasterBand *poBand, std::vector<std::string> cats) 
 
 bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::string datatype, bool overwrite, SpatOptions &opt) {
 
-	SpatMessages m = can_write(filename, overwrite);
-	if (m.has_error) {
-		msg = m;
+	std::string errmsg;
+	if (!can_write(filename, overwrite, errmsg)) {
+		setError(errmsg);
 		return(false);
 	}
 

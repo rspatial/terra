@@ -2,8 +2,9 @@
 #include "ogr_spatialref.h"
 
 #include "spatRaster.h"
-//#include "string_utils.h"
+#include "string_utils.h"
 #include "crs.h"
+#include "file_utils.h"
 
 
 bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const std::string crs, std::string filename, std::string driver, int nlyrs, std::string &msg) {
@@ -92,40 +93,43 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 
 
 
-bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string method, std::string msg) {
+bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigned> srcbands, std::vector<unsigned> dstbands, std::string method, std::string msg) {
 
-	msg="";
-
+	if (srcbands.size() != dstbands.size()) {
+		msg = "number of source bands must match number of dest bands";
+		return false;
+	}
+	int nbands = srcbands.size();
+	
     // Setup warp options.
     GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
     psWarpOptions->hSrcDS = hSrcDS;
     psWarpOptions->hDstDS = hDstDS;
-    psWarpOptions->nBandCount = 1;
+	
+    psWarpOptions->nBandCount = nbands;
     psWarpOptions->panSrcBands =
         (int *) CPLMalloc(sizeof(int) * psWarpOptions->nBandCount );
-    psWarpOptions->panSrcBands[0] = 1;
     psWarpOptions->panDstBands =
         (int *) CPLMalloc(sizeof(int) * psWarpOptions->nBandCount );
-    psWarpOptions->panDstBands[0] = 1;
-    //psWarpOptions->pfnProgress = GDALTermProgress;
+	psWarpOptions->padfDstNoDataReal =
+	    (double *) CPLMalloc(sizeof(double) * psWarpOptions->nBandCount );
+	
+	for (int i=0; i<nbands; i++) {
+		psWarpOptions->panSrcBands[i] = (int) srcbands[i]+1;
+		psWarpOptions->panDstBands[i] = (int) dstbands[i]+1;
+		//psWarpOptions->padfSrcNoDataReal[0] = -3.4e+38;
+		psWarpOptions->padfDstNoDataReal[i] = NAN;
+    }
+	
+	//psWarpOptions->pfnProgress = GDALTermProgress;
 
 	psWarpOptions->papszWarpOptions =	
       CSLSetNameValue( psWarpOptions->papszWarpOptions, "INIT_DEST", "NO_DATA");
 
-	//psWarpOptions->padfSrcNoDataReal =
-	//   (double *) CPLMalloc(sizeof(double) * psWarpOptions->nBandCount );
-    //psWarpOptions->padfSrcNoDataReal[0] = -3.4e+38;
-
-	psWarpOptions->padfDstNoDataReal =
-	    (double *) CPLMalloc(sizeof(double) * psWarpOptions->nBandCount );
-    psWarpOptions->padfDstNoDataReal[0] = NAN;
-
     // Establish reprojection transformer.
     psWarpOptions->pTransformerArg =
-        GDALCreateGenImgProjTransformer( hSrcDS,
-                                        GDALGetProjectionRef(hSrcDS),
-                                        hDstDS,
-                                        GDALGetProjectionRef(hDstDS),
+        GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef(hSrcDS),
+                                        hDstDS, GDALGetProjectionRef(hDstDS),
                                         FALSE, 0.0, 1 );
     psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
@@ -148,39 +152,67 @@ bool is_valid_warp_method(const std::string &method) {
 
 
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
-	
-	SpatRaster out = x.geometry();
+
+	SpatRaster out = x.geometry(nlyr());
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
 		return out;
 	}
+	lrtrim(crs);
+	bool use_crs = crs != "";  
+	if ((!use_crs) & (!hasValues())) {
+		return out;
+	}
+	
+	std::string errmsg;
+	std::string filename = opt.filename;
+	if (filename == "") {
+		if (!canProcessInMemory(4) || opt.get_todisk()) {
+			filename = tempFile(opt.get_tempdir(), ".tif");
+		} 
+	} else {
+		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}
+	}
+	if (opt.names.size() == out.nlyr()) {
+		out.setNames(opt.names);
+	}
+	std::string driver = filename == "" ? "MEM" : "GTiff";
+
 
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS)) {
+	if (!open_gdal(hSrcDS)) { 	// should loop over datasources if > 1
 		out.setError("cannot create dataset");
 		return out;
 	}
 
-	std::string filename = opt.filename;
-	std::string driver = filename == "" ? "MEM" : "GTiff";
-	std::string errmsg="";
-	bool use_crs = crs != "";  
-	bool get_geom = false;
-
-	if (use_crs) {  // use the crs, ignore argument "x"
-		get_geom = true;
+	if (use_crs) { // use the crs, ignore argument "x"
 		//test crs first? 
 		if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), errmsg)) {
 			out.setError(errmsg);
 			return out;
 		}
+		if (!hasValues()) {
+			if (!out.from_gdalMEM(hDstDS, use_crs, false)) {
+				out.setError("cannot get geometry from mem");
+			} 
+			GDALClose( hSrcDS );
+			GDALClose( hDstDS );
+			return out;
+		}
 	} else {
 		if (!out.create_gdalDS(hDstDS, filename, driver, opt.gdal_options)) {
-			return(out);
+			return out;
 		}
 	}
+
+	std::vector<unsigned> srcbands = source[0].layers;
+	std::vector<unsigned> dstbands(srcbands.size()); 
+	std::iota (dstbands.begin(), dstbands.end(), 0); /// or higher if not first source
 	
-	bool success = gdal_warper(hSrcDS, hDstDS, method, errmsg);
+	bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, errmsg);
 	
 	GDALClose( hSrcDS );
 	if (!success) {
@@ -190,7 +222,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	if (driver == "MEM") {
-		bool test = out.setValues_gdalMEM(hDstDS, get_geom); 
+		bool test = out.from_gdalMEM(hDstDS, use_crs, true); 
 		GDALClose( hDstDS );
 		if (!test) {
 			out.setError("wat nu?");
@@ -200,7 +232,8 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		for (size_t i=0; i < nlyr(); i++) {
 			GDALRasterBandH hBand = GDALGetRasterBand(hDstDS, i+1);
 			double adfMinMax[2];
-			GDALComputeRasterMinMax(hBand, true, adfMinMax);
+			bool approx = ncell() > 10e+8;
+			GDALComputeRasterMinMax(hBand, approx, adfMinMax);
 			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
 		}
 		GDALClose( hDstDS );

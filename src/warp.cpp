@@ -111,15 +111,15 @@ SpatRaster SpatRaster::warp(SpatRaster x, const std::string &method, SpatOptions
 		return out;
 	}
 
+	std::string errmsg;
 	std::string filename = opt.filename;
 	if (filename == "") {
 		if (!canProcessInMemory(4) || opt.get_todisk()) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
 		}
 	} else {
-		SpatMessages m = can_write(filename, opt.get_overwrite());
-		if (m.has_error) {
-			out.msg = m;
+		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
 			return out;
 		}
 	}
@@ -206,14 +206,13 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 		out.setError(msg);
 		return out;
 	}
-	
+	std::string errmsg;
 	std::string filename = opt.filename;
 	if (filename == "") {
 		filename = tempFile(opt.get_tempdir(), ".tif");
 	} else {
-		SpatMessages m = can_write(filename, opt.get_overwrite());
-		if (m.has_error) {
-			out.msg = m;
+		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
 			return out;
 		}
 	}
@@ -223,7 +222,6 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 		out.setError("invalid warp method");
 		return out;
 	}
-
 
 	std::vector<std::string> tmpfs;
 	SpatOptions topt(opt);

@@ -46,15 +46,14 @@ bool SpatRaster::isSource(std::string filename) {
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	std::string filename = opt.get_filename();
-	bool overwrite = opt.get_overwrite();
 	SpatRaster out = geometry();
 
 	if (filename == "") {
 		filename = tempFile(opt.get_tempdir(), ".tif");
 	}
-	SpatMessages m = can_write(filename, overwrite);
-	if (m.has_error) {
-		out.msg = m;
+	std::string errmsg;
+	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+		out.setError(errmsg);
 		return out;
 	}
 
