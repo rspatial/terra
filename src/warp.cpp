@@ -1,3 +1,6 @@
+// to be removed
+
+/*
 #include <algorithm>
 #include "spatRaster.h"
 #include "string_utils.h"
@@ -20,6 +23,37 @@
 
 	#include "gdal_errors.h"
 
+
+bool gdalwarp(std::string src, std::string dst,	std::vector<std::string> options, std::vector<std::string> oo, std::vector<std::string> doo) {
+
+	int err = 0;
+
+	std::vector <char *> oo_char = string_to_charpnt(oo); // input open options
+	std::vector <char *> doo_char = string_to_charpnt(doo); // output open options
+
+// to be replaced by SpatRaster::sources
+	std::vector<GDALDatasetH> src_pt(src.size());
+	for (size_t i = 0; i < src.size(); i++) {
+		src_pt[i] = GDALOpenEx((const char *) src.c_str(), GA_ReadOnly, NULL, oo_char.data(), NULL);
+	}
+	GDALDatasetH dst_ds = GDALOpenEx((const char *) dst.c_str(), GDAL_OF_RASTER | GA_Update, NULL, doo_char.data(), NULL);
+
+	std::vector <char *> options_char = string_to_charpnt(options);
+	GDALWarpAppOptions* opt = GDALWarpAppOptionsNew(options_char.data(), NULL);
+
+
+	GDALDatasetH result = GDALWarp(dst_ds == NULL ? (const char *) dst.c_str() : NULL, dst_ds, src.size(), src_pt.data(), opt, &err);
+	GDALWarpAppOptionsFree(opt);
+	for (size_t i = 0; i < src.size(); i++) {
+		if (src_pt[i] != NULL)	GDALClose(src_pt[i]);
+	}
+	if (result != NULL)	GDALClose(result);
+	return (result != NULL) || (!err) ;
+}
+
+*/
+
+/*
 
 std::vector<double> getValuesMEM(GDALDatasetH hDS, unsigned ncol, unsigned nrow, unsigned nlyr) {
 
@@ -280,35 +314,10 @@ SpatRaster SpatRaster::warpcrs(std::string x, const std::string &method, SpatOpt
 	return out;
 }
 
-
-bool gdalwarp(std::string src, std::string dst,	std::vector<std::string> options, std::vector<std::string> oo, std::vector<std::string> doo) {
-
-	int err = 0;
-
-	std::vector <char *> oo_char = string_to_charpnt(oo); // input open options
-	std::vector <char *> doo_char = string_to_charpnt(doo); // output open options
-
-// to be replaced by SpatRaster::sources
-	std::vector<GDALDatasetH> src_pt(src.size());
-	for (size_t i = 0; i < src.size(); i++) {
-		src_pt[i] = GDALOpenEx((const char *) src.c_str(), GA_ReadOnly, NULL, oo_char.data(), NULL);
-	}
-	GDALDatasetH dst_ds = GDALOpenEx((const char *) dst.c_str(), GDAL_OF_RASTER | GA_Update, NULL, doo_char.data(), NULL);
-
-	std::vector <char *> options_char = string_to_charpnt(options);
-	GDALWarpAppOptions* opt = GDALWarpAppOptionsNew(options_char.data(), NULL);
+*/
 
 
-	GDALDatasetH result = GDALWarp(dst_ds == NULL ? (const char *) dst.c_str() : NULL, dst_ds, src.size(), src_pt.data(), opt, &err);
-	GDALWarpAppOptionsFree(opt);
-	for (size_t i = 0; i < src.size(); i++) {
-		if (src_pt[i] != NULL)	GDALClose(src_pt[i]);
-	}
-	if (result != NULL)	GDALClose(result);
-	return (result != NULL) || (!err) ;
-}
-
-#endif
+//#endif
 
 
 

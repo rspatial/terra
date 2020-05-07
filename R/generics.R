@@ -201,13 +201,15 @@ setMethod("project", signature(x="SpatRaster"),
 		method <- ifelse(method == "ngb", "near", method)
 		opt <- .runOptions(filename, overwrite, wopt)
 		if (inherits(y, "SpatRaster")) {
-			x@ptr <- x@ptr$warp(y@ptr, method, opt)
+			#x@ptr <- x@ptr$warp(y@ptr, method, opt)
+			x@ptr <- x@ptr$warper(y@ptr, "", method, opt)
 		} else {
 			if (!is.character(y)) {
 				warning("crs should be a character value")
 				y <- as.character(crs(y))
 			}
-			x@ptr <- x@ptr$warpcrs(y, method, opt)
+			#x@ptr <- x@ptr$warpcrs(y, method, opt)
+			x@ptr <- x@ptr$warper(SpatRaster$new(), y, method, opt)
 		}
 		show_messages(x, "project")
 	}
@@ -321,7 +323,7 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		method <- ifelse(method == "ngb", "near", method)
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$warp(y@ptr, method, opt)
+		x@ptr <- x@ptr$warper(y@ptr, "", method, opt)
 		show_messages(x, "resample")
 	}
 )

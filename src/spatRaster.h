@@ -173,6 +173,7 @@ class SpatRaster {
 		// only no values allowed with a single RasterSource
 		bool hasValues() { return source[0].hasValues ; };
 		std::vector<double> getValues();
+		bool getValuesSource(size_t src, std::vector<double> &out);				
 		bool setValues(std::vector<double> _values);
 		void setRange();
 ////////////////////////////////////////////////////
@@ -431,7 +432,7 @@ class SpatRaster {
 		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
 #ifdef useGDAL
-		bool open_gdal(GDALDatasetH &hDS);
+		bool open_gdal(GDALDatasetH &hDS, int src);
 		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, std::vector<std::string> foptions);
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);
 		bool as_gdalvrt(GDALDatasetH &hVRT);

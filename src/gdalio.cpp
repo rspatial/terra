@@ -41,8 +41,8 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT) {
 	for (size_t i=0; i<nlyr(); i++) {
 		RS = SpatRaster(source[i]);
 		std::string filename = source[i].filename;
-		if (!SpatRaster::open_gdal(DS)) {
-			setError("cannot open datasourc3");
+		if (!SpatRaster::open_gdal(DS, i)) {
+			setError("cannot open datasource");
 			return false;
 		}
 		papszOptions = CSLSetNameValue(papszOptions, "SourceFilename", filename.c_str()); 
@@ -71,18 +71,20 @@ SpatRaster SpatRaster::to_memory_copy() {
 
 
 
-bool SpatRaster::open_gdal(GDALDatasetH &hDS) {
+bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src) {
 	// needs to loop over sources. 
 	// Should be a vector of GDALDatasetH
 	// Or can we combine them here into a VRT?
 	// for now just doing the first
 	
-	bool hasval = source[0].hasValues;
-	bool onfile = source[0].driver == "gdal";
+	size_t isrc = src < 0 ? 0 : src;
+		
+	bool hasval = source[isrc].hasValues;
+	bool fromfile = source[isrc].driver == "gdal";
 
-	if (onfile & (nsrc() > 1)) {
+	if (fromfile & (nsrc() > 1) & (src < 0)) {
 		if (canProcessInMemory(4)) {
-			onfile = false;
+			fromfile = false;
 		} else {
 			// needs to make VRT
 			setError("right now this method can only handle one file source at a time");
@@ -90,19 +92,20 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS) {
 		}
 	}
 	
-	if (onfile) {
-		if (!source[0].in_order()) {
-			// needs to make VRT
-			setError("right now this method can only handle entire files with bands in file order");
-			return false;			
-		}
-		std::string f = source[0].filename;
+	if (fromfile) {
+
+		std::string f = source[src].filename;
 		hDS = GDALOpenShared(f.c_str(), GA_ReadOnly);
 		return(hDS != NULL);
 		
 	} else { // in memory
-	
-		size_t nl = nlyr();
+				
+		size_t nl;
+		if (src < 0) {
+			nl = nlyr();
+		} else {
+			nl = source[src].layers.size();			
+		}
 		size_t ncls = nrow() * ncol();
 		GDALDriverH hDrv = GDALGetDriverByName("MEM");
 
@@ -140,17 +143,31 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS) {
 		CPLErr err = CE_None;
 		
 		if (hasval) {
-			std::vector<double> vals;		
-			std::vector<std::string> nms = getNames();
-			
+			std::vector<std::string> nms;
+			if (src < 0) {
+				nms = getNames();
+			} else {
+				nms = source[src].names;			
+			}
+
+			std::vector<double> vv, vals;		
+			if (src < 0) {
+				vv = getValues();
+			} else {
+				if (!getValuesSource(src, vv)) {
+					setError("cannot read from source");
+					return false;
+				}
+			}
+		
 			for (size_t i=0; i < nl; i++) {
 				GDALRasterBandH hBand = GDALGetRasterBand(hDS, i+1);
 				GDALSetRasterNoDataValue(hBand, NAN);
 				GDALSetDescription(hBand, nms[i].c_str());
 
 				size_t offset = ncls * i;
-				vals = std::vector<double>(source[0].values.begin() + offset, source[0].values.begin() + offset + ncls);
-				err = GDALRasterIO(hBand, GF_Write, 0, 0, nc, nr, &vals[0], nc, nr, GDT_Float64, 0, 0 );
+				vals = std::vector<double>(vv.begin() + offset, vv.begin() + offset+ncls);
+				err = GDALRasterIO(hBand, GF_Write, 0, 0, nc, nr, &vals[0], nc, nr, GDT_Float64, 0, 0);
 				if (err != CE_None) {
 					return false;
 				}

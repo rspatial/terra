@@ -1,3 +1,5 @@
+/*
+
 #include <vector>
 #include "spatRaster.h"
 #include "vecmath.h"
@@ -31,6 +33,8 @@ void SpatRaster::project3(SpatRaster &out, std::string method, SpatOptions &opt)
 	out = SpatRaster(dst);
 }
 
+*/
+
 /*
 void SpatRaster::project3(SpatRaster &out, std::string method, SpatOptions &opt) {
 
@@ -59,7 +63,7 @@ void SpatRaster::project3(SpatRaster &out, std::string method, SpatOptions &opt)
 
 */
 
-
+/*
 
 SpatRaster SpatRaster::project2(SpatRaster &x, std::string method, SpatOptions &opt) {
 
@@ -145,4 +149,6 @@ SpatRaster SpatRaster::project1(std::string newcrs, std::string method, SpatOpti
 	return out;
 	#endif	
 }
+
+*/
 

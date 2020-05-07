@@ -154,18 +154,25 @@ bool is_valid_warp_method(const std::string &method) {
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr());
+
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
 		return out;
 	}
 	lrtrim(crs);
-	bool use_crs = crs != "";  
-	if ((!use_crs) & (!hasValues())) {
-		return out;
-	}
-	
 	std::string errmsg;
 	std::string filename = opt.filename;
+
+	bool use_crs = crs != "";  
+	// should not be needed (need to fix)
+	
+	if ((!use_crs) & (!hasValues())) {
+		if (filename != "") {
+			addWarning("raster has no values, not writing to file");
+		}
+		return out;
+	}
+
 	if (filename == "") {
 		if (!canProcessInMemory(4) || opt.get_todisk()) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
@@ -176,51 +183,65 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return out;
 		}
 	}
+	
 	if (opt.names.size() == out.nlyr()) {
 		out.setNames(opt.names);
 	}
+	
+	if (!hasValues()) filename = ""; // for crs case
 	std::string driver = filename == "" ? "MEM" : "GTiff";
 
-
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS)) { 	// should loop over datasources if > 1
-		out.setError("cannot create dataset");
-		return out;
-	}
+	size_t ns = nsrc();
+	int bandstart = 0;
+	
+	for (size_t i=0; i<ns; i++) {
+		
+		if (!open_gdal(hSrcDS, i)) {
+			out.setError("cannot create dataset from source");
+			return out;
+		}
 
-	if (use_crs) { // use the crs, ignore argument "x"
-		//test crs first? 
-		if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), errmsg)) {
+		// create dest source, only once 
+		if (i==0) {
+			 // use the crs, ignore argument "x"
+			if (use_crs) {
+				if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), errmsg)) {
+					out.setError(errmsg);
+					GDALClose( hSrcDS );
+					return out;
+				}
+				if (!hasValues()) {
+					if (!out.from_gdalMEM(hDstDS, use_crs, false)) {
+						out.setError("cannot get geometry from mem");
+					} 
+					GDALClose( hSrcDS );
+					GDALClose( hDstDS );
+					out.setSRS({crs});	 // fix the need for this
+					return out;
+				}
+			} else {
+				if (!out.create_gdalDS(hDstDS, filename, driver, opt.gdal_options)) {
+					GDALClose( hSrcDS );
+					//GDALClose( hDstDS );
+					return out;
+				}
+			}
+		}
+		std::vector<unsigned> srcbands = source[i].layers;
+		std::vector<unsigned> dstbands(srcbands.size()); 
+		std::iota (dstbands.begin(), dstbands.end(), bandstart); 
+		bandstart += dstbands.size();
+		bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, errmsg);
+	
+		GDALClose( hSrcDS );
+		if (!success) {
+			GDALClose( hDstDS );
 			out.setError(errmsg);
 			return out;
 		}
-		if (!hasValues()) {
-			if (!out.from_gdalMEM(hDstDS, use_crs, false)) {
-				out.setError("cannot get geometry from mem");
-			} 
-			GDALClose( hSrcDS );
-			GDALClose( hDstDS );
-			return out;
-		}
-	} else {
-		if (!out.create_gdalDS(hDstDS, filename, driver, opt.gdal_options)) {
-			return out;
-		}
 	}
-
-	std::vector<unsigned> srcbands = source[0].layers;
-	std::vector<unsigned> dstbands(srcbands.size()); 
-	std::iota (dstbands.begin(), dstbands.end(), 0); /// or higher if not first source
 	
-	bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, errmsg);
-	
-	GDALClose( hSrcDS );
-	if (!success) {
-		GDALClose( hDstDS );
-		out.setError(errmsg);
-		return out;
-	}
-
 	if (driver == "MEM") {
 		bool test = out.from_gdalMEM(hDstDS, use_crs, true); 
 		GDALClose( hDstDS );
@@ -240,8 +261,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out = SpatRaster(filename);
 	}
 
-	// should not be needed (but it is)
-	if (use_crs) out.setSRS({crs});	
+	if (use_crs) out.setSRS({crs});	// fix the need for this
 	return out;
 }
 

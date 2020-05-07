@@ -253,7 +253,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	
 #ifdef useGDAL 
 	if (gstring != "") {
-		out = warp(out, gstring, opt);
+		out = warper(out, "", gstring, opt);
 		return out;
 	}	
 #endif
