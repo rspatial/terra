@@ -147,64 +147,6 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
-/*
-SpatRaster SpatRaster::warp_crs(std::string crs, std::string method, SpatOptions &opt) {
-
-	SpatRaster out;
-	if (!is_valid_warp_method(method)) {
-		out.setError("not a valid warp method");
-		return out;
-	}
-
-	GDALDatasetH hSrcDS, hDstDS;
-	hSrcDS = open_gdal(*this);
-
-	//test crs first 
-	std::string filename = opt.filename;
-	std::string driver = filename == "" ? "MEM" : "GTiff";
-	std::string errmsg="";
-
-	if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), errmsg)) {
-		out.setError(errmsg);
-		return out;
-	}
-	
-	bool success = gdal_warper(hSrcDS, hDstDS, method, errmsg);
-	if (!success) {
-		out.setError(errmsg);
-		GDALClose( hSrcDS );
-		GDALClose( hDstDS );
-		return out;
-	}
-
-	GDALClose( hSrcDS );
-
-	if (driver == "MEM") {
-		bool test = out.setValuesMEM(hDstDS, false); 
-		GDALClose( hDstDS );
-		if (!test) {
-			out.setError("wat nu?");
-			return out;
-		}
-	} else {
-		for (size_t i=0; i < nlyr(); i++) {
-			GDALRasterBandH hBand = GDALGetRasterBand(hDstDS, i+1);
-			double adfMinMax[2];
-			GDALComputeRasterMinMax(hBand, true, adfMinMax);
-			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
-		}
-		GDALClose( hDstDS );
-		out = SpatRaster(filename);
-	}
-	
-	// should not be needed (but it is)
-	out.setSRS({crs});
-	
-	return out;
-}
-*/
-
-
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
 	
 	SpatRaster out = x.geometry();
@@ -233,7 +175,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return out;
 		}
 	} else {
-		if (!out.createDS(hDstDS, filename, driver, opt.gdal_options, true)) {
+		if (!out.create_gdalDS(hDstDS, filename, driver, opt.gdal_options)) {
 			return(out);
 		}
 	}
@@ -248,7 +190,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	if (driver == "MEM") {
-		bool test = out.setValuesMEM(hDstDS, get_geom); 
+		bool test = out.setValues_gdalMEM(hDstDS, get_geom); 
 		GDALClose( hDstDS );
 		if (!test) {
 			out.setError("wat nu?");

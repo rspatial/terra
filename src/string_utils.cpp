@@ -194,7 +194,7 @@ std::vector<long unsigned> order(const std::vector<T> &v) {
   return idx;
 }
 
-
+//does not catch all cases. needs fixing
 void make_unique_names(std::vector<std::string> &s) {
     std::vector<long unsigned> x = order(s);
     std::sort(s.begin(), s.end());
