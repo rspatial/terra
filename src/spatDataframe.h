@@ -70,5 +70,7 @@ class SpatDataFrame {
 		
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> nms);
+		
+		std::vector<std::string> get_datatypes();	
 };
 

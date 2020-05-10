@@ -143,7 +143,7 @@ class SpatVector {
 		SpatVector as_points();
 
 		bool read(std::string fname);
-		bool write(std::string filename, std::string format, bool overwrite);
+		bool write_ogr(std::string filename, std::string lyrname, std::string driver, std::string &msg);
 
 // attributes
 		std::vector<double> getDv(unsigned i);

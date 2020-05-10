@@ -215,7 +215,7 @@ RCPP_MODULE(spat){
 		.method("subset_rows", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_rows ))				
 		.method("type", &SpatVector::type, "type")		
 
-		.method("write", &SpatVector::write, "write")	
+		.method("write", &SpatVector::write_ogr, "write")	
 		
 		.method("buffer", &SpatVector::buffer, "buffer")	
 #ifdef useGEOS

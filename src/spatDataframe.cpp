@@ -262,3 +262,12 @@ void SpatDataFrame::set_names(std::vector<std::string> nms){
 	}
 }
 
+
+std::vector<std::string> SpatDataFrame::get_datatypes() {
+	std::vector<std::string> types = {"double", "long", "string"};
+	std::vector<std::string> stype(itype.size());
+	for (size_t i=0; i<itype.size(); i++) {
+		stype[i] = types[itype[i]]; 
+	}
+	return stype;
+}

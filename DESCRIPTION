@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Spatial data analysis
-Version: 0.6-2
-Date: 2020-04-30
+Version: 0.6-3
+Date: 2020-05-07
 Depends: R (>= 3.5.0)
 Suggests: testthat
 LinkingTo: Rcpp
@@ -23,4 +23,3 @@ Authors@R: c(
 	person("Karl", "Forner", role = "ctb", comment="progress bar"),
 	person("Charles", "Karney", role = "ctb", comment="GeographicLib")
 	)
-

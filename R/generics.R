@@ -61,6 +61,14 @@ setMethod("c", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("rep", signature(x="SpatRaster"), 
+	function(x, ...) {
+		n <- max(1, length(rep(1, ...)), na.rm=TRUE)
+		lapply(1:n, function(i) x)
+	}
+)
+
+
 setMethod("clamp", signature(x="SpatRaster"), 
 	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite,wopt)
@@ -331,7 +339,7 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 #setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
 #	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 #		opt <- .runOptions(filename, overwrite, wopt)
-#		x@ptr <- x@ptr$warp(y@ptr, method, opt)
+#		x@ptr <- x@ptr$warper(y@ptr, "", method, opt)
 #		show_messages(x, "warp")
 #	}
 #)

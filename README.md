@@ -39,7 +39,8 @@ remotes::install_github("rspatial/terra")
 
 ### Mac - OSX
 
-The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [sf](https://github.com/r-spatial/sf))
+The libraries GDAL (>= 3.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 6.0.0) are required 
+
 
 Install Homebrew if you have not done so before, and then from the terminal:
 
@@ -59,19 +60,14 @@ If you get `configure: error: libproj not found in standard or given locations.`
 remotes::install_github("rspatial/terra", configure-args="--with-proj-lib=/usr/local/lib/")
 ```
 
-If you get error `unknown type name 'uuid_t'` you first need to install Rcpp > 1.0.4 (currently, the development version from github), like this
-
-```
-remotes::install_github("RcppCore/Rcpp.git") 
-```
 
 
 ### Linux
 
-The libraries GDAL (>= 2.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 4.8.0) are required (as for [sf](https://github.com/r-spatial/sf))
+The libraries GDAL (>= 3.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 6.0.0) are required 
 
 
-To install these on Ubuntu you can do:
+To install these on Ubuntu version 18.04 (Bionic) you can do:
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
@@ -83,5 +79,5 @@ And now, in R, install the package
 remotes::install_github("rspatial/terra")
 ```
 
-See the sf [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions.
+See the `sf` [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions. But note that `terra` depends on on more recent versions of GDAL and PROJ libraries 
 

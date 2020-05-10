@@ -1,4 +1,5 @@
-# (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
+#if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
+
 
 # terra
 if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}
