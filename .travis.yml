@@ -12,7 +12,7 @@ warnings_are_errors: false
 
 # Skip tests
 # Tests are failing to load rgdal, known problem getting ubuntugis-unstable installed
-r_check_args: '--no-tests --no-examples --as-cran'
+r_check_args: '--no-tests --no-examples'
 
 addons:
   apt:

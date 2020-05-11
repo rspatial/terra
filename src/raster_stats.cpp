@@ -266,34 +266,27 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 void jointstats(const std::vector<double> &u, const std::vector<double> &v, const std::vector<double> &z, std::string fun, bool narm, std::vector<double>& out, std::vector<double> &cnt) {
 
 	std::vector<double> cmp;
-	std::vector<bool> done(z.size(), false);
 	//recycle(v, z);
 
 	for (size_t j=0; j<u.size(); j++) {
 		cmp.resize(0);
+		cmp.reserve(v.size() / u.size());
+
 		for (size_t k=0; k<v.size(); k++) {
-			if (j==0) {
-				if (std::isnan(z[k])) {
-					done[k] = true;
-				}
-			}
-			if (!done[k]) {
-				if (z[k] == u[j]) {
-					if (!(narm & std::isnan(v[k]))) {
-						cmp.push_back(v[k]);
-						done[k]=true;
-					}
+			if (z[k] == u[j]) {
+				if (!(narm & std::isnan(v[k]))) {
+					cmp.push_back(v[k]);
 				}
 			}
 		}
-
+		if (cmp.size() == 0) continue;
 		if (fun=="sum") {
 			double s = vsum(cmp, narm);
 			out[j] = s + out[j];
 		} else if (fun=="mean") {
 			double s = vsum(cmp, narm);
 			if (narm) {
-				for (size_t k=1; k<cmp.size(); k++) {
+				for (size_t k=0; k<cmp.size(); k++) {
 					cnt[j] += !std::isnan(cmp[k]);
 				}
 			} else {
@@ -386,9 +379,9 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm) {
 		unsigned off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			unsigned offset = lyr * off;
-			std::vector<double> vv = {  v.begin()+offset,  v.begin()+offset+off };
-			std::vector<double> zvv = {  zv.begin()+offset,  zv.begin()+offset+off };
-			jointstats(u, vv, zvv, fun, narm, stats[lyr], cnt[lyr]);
+			std::vector<double> vx( v.begin()+offset,  v.begin()+offset+off);
+			std::vector<double> vz(zv.begin()+offset, zv.begin()+offset+off);
+			jointstats(u, vx, vz, fun, narm, stats[lyr], cnt[lyr]);
 		}
 	}
 	readStop();
