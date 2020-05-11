@@ -100,8 +100,8 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 			// read from file
 			#ifdef useGDAL
 			std::vector<double> fvals = readValuesGDAL(src, row, nrows, col, ncols);
-			#endif // useGDAL
 			out.insert(out.end(), fvals.begin(), fvals.end());			
+			#endif // useGDAL
 		}
 	}
 	return out;
