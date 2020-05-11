@@ -287,23 +287,23 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, unsigned startrow, u
 			//std::vector<double> vv(vals.begin(), vals.end());
 			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[start], ncols, nrows, GDT_Float64, 0, 0 );
 		} else if (datatype == "FLT4S") {
-			std::vector<float> vv(vals.begin(), vals.end());
-			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[start], ncols, nrows, GDT_Float32, 0, 0 );
+			std::vector<float> vv(vals.begin()+start, vals.begin()+start+nc);
+			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Float32, 0, 0 );
 		} else if (datatype == "INT4S") {
-			std::vector<int32_t> vv(vals.begin(), vals.end());
-			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[start], ncols, nrows, GDT_Int32, 0, 0 );
+			std::vector<int32_t> vv(vals.begin()+start, vals.begin()+start+nc);
+			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int32, 0, 0 );
 		} else if (datatype == "INT2S") {
-			std::vector<int16_t> vv(vals.begin(), vals.end());
-			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[start], ncols, nrows, GDT_Int16, 0, 0 );
+			std::vector<int16_t> vv(vals.begin()+start, vals.begin()+start+nc);
+			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int16, 0, 0 );
 		} else if (datatype == "INT4U") {
-			std::vector<uint32_t> vv(vals.begin(), vals.end());
-			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[start], ncols, nrows, GDT_UInt32, 0, 0 );
+			std::vector<uint32_t> vv(vals.begin()+start, vals.begin()+start+nc);
+			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt32, 0, 0 );
 		} else if (datatype == "INT2U") {
-			std::vector<uint16_t> vv(vals.begin(), vals.end());
-			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[start], ncols, nrows, GDT_UInt16, 0, 0 );
+			std::vector<uint16_t> vv(vals.begin()+start, vals.begin()+start+nc);
+			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt16, 0, 0 );
 		} else if (datatype == "INT1U") {
-			std::vector<int8_t> vv(vals.begin(), vals.end());
-			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[start], ncols, nrows, GDT_Byte, 0, 0 );
+			std::vector<int8_t> vv(vals.begin()+start, vals.begin()+start+nc);
+			err = poBand->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Byte, 0, 0 );
 		}
 		if (err == 4) break;
 

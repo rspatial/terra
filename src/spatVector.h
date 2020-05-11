@@ -32,6 +32,7 @@ class SpatHole {
 		SpatExtent extent;
 		SpatHole();
 		SpatHole(std::vector<double> X, std::vector<double> Y);
+		size_t size() { return x.size(); }	
 };
 
 class SpatPart {
@@ -41,7 +42,7 @@ class SpatPart {
 		SpatPart();
 		SpatPart(std::vector<double> X, std::vector<double> Y);
 		SpatPart(double X, double Y);
-
+		size_t size() { return x.size(); }
 		// for POLYGONS only
 		std::vector< SpatHole > holes;
 		bool addHole(std::vector<double> X, std::vector<double> Y);
@@ -145,9 +146,10 @@ class SpatVector {
 
 		bool read(std::string fname);
 		
-		bool write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite);
+		bool write(std::string filename, std::string lyrname, std::string driver, bool overwrite);
 #ifdef useGDAL
-		bool write_vrt(GDALDatasetH &hDS);
+	//	bool write_ogr(GDALDataset* poDS, std::string filename, std::string lyrname, std::string driver, bool overwrite);
+	//	bool write_GDAL_ds(GDALDataset* poDS);
 #endif
 
 // attributes

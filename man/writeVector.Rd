@@ -30,9 +30,15 @@ v <- vect(cbind(1:5,1:5))
 crs(v) <- "+proj=lonlat +datum=WGS84"
 v$id <- 1:length(v)
 v$name <- letters[1:length(v)]
-f <- tempfile()
-writeVector(v, f)
-x <- vect(f)
+tmpf1 <- tempfile()
+writeVector(v, tmpf1)
+x <- vect(tmpf1)
+
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+tmpf2 <- tempfile()
+writeVector(v, tmpf2)
+y <- vect(tmpf2)
 }
 
 
