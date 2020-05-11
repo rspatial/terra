@@ -28,14 +28,32 @@ std::vector<double> SpatDataFrame::getD(unsigned i) {
 	return dv[j];
 }
 
+double SpatDataFrame::getDvalue(unsigned i, unsigned j) {
+	j = iplace[j];
+	return dv[j][i];
+}
+
 std::vector<long> SpatDataFrame::getI(unsigned i) {
 	unsigned j = iplace[i];
 	return iv[j];
 }
 
+
+long SpatDataFrame::getIvalue(unsigned i, unsigned j) {
+	j = iplace[j];
+	return iv[j][i];
+}
+
+
 std::vector<std::string> SpatDataFrame::getS(unsigned i) {
 	unsigned j = iplace[i];
 	return sv[j];
+}
+
+
+std::string SpatDataFrame::getSvalue(unsigned i, unsigned j) {
+	j = iplace[j];
+	return sv[j][i];
 }
 
 

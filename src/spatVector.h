@@ -19,6 +19,11 @@
 #include "spatDataframe.h"
 #include "spatMessages.h"
 
+#ifdef useGDAL
+#include "gdal_priv.h"
+#endif
+
+
 enum SpatGeomType { points, lines, polygons, unknown };
 
 class SpatHole {
@@ -110,10 +115,6 @@ class SpatVector {
 		std::vector<std::string> getSRS() {
 			return lyr.srs.get();
 		}
-
-
-
-
 		//std::string getPRJ();
 		//void setPRJ(std::string PRJ);
 
@@ -143,7 +144,11 @@ class SpatVector {
 		SpatVector as_points();
 
 		bool read(std::string fname);
-		bool write_ogr(std::string filename, std::string lyrname, std::string driver, std::string &msg);
+		
+		bool write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite);
+#ifdef useGDAL
+		bool write_vrt(GDALDatasetH &hDS);
+#endif
 
 // attributes
 		std::vector<double> getDv(unsigned i);

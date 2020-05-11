@@ -379,15 +379,16 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm) {
 
 	readStart();
 	z.readStart();
-	BlockSize bs = getBlockSize(8);
+	BlockSize bs = getBlockSize(12);
 	for (size_t i=0; i<bs.n; i++) {
-		std::vector<double> v =   readValues(bs.row[i], bs.nrows[i], 0, ncol());
+		std::vector<double> v =    readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		std::vector<double> zv = z.readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		unsigned off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			unsigned offset = lyr * off;
 			std::vector<double> vv = {  v.begin()+offset,  v.begin()+offset+off };
-			jointstats(u, vv, zv, fun, narm, stats[lyr], cnt[lyr]);
+			std::vector<double> zvv = {  zv.begin()+offset,  zv.begin()+offset+off };
+			jointstats(u, vv, zvv, fun, narm, stats[lyr], cnt[lyr]);
 		}
 	}
 	readStop();

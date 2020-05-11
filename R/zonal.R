@@ -7,26 +7,27 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm)
 				show_messages(ptr, "zonal")
-				.getSpatDF(ptr)
+				return( .getSpatDF(ptr) )
 			}		
-		} else {
-			nl <- nlyr(x)
-			res <- list()
-			z <- values(z)
-			nms <- names(x)
-			for (i in 1:nl) {
-				d <- stats::aggregate(values(x[[i]]), list(zone=z), fun, ...)
-				colnames(d)[2] <- nms[i]
-				res[[i]] <- d
-			}
-			r <- res[[1]]
-			if (nl > 1) {
-				for (i in 2:nl) {
-					r <- merge(r, res[[i]])
-				}
-			}
-			r
+		} 
+		
+		#else 
+		nl <- nlyr(x)
+		res <- list()
+		z <- values(z)
+		nms <- names(x)
+		for (i in 1:nl) {
+			d <- stats::aggregate(values(x[[i]]), list(zone=z), fun, ...)
+			colnames(d)[2] <- nms[i]
+			res[[i]] <- d
 		}
+		r <- res[[1]]
+		if (nl > 1) {
+			for (i in 2:nl) {
+				r <- merge(r, res[[i]])
+			}
+		}
+		r
 	}
 )
 

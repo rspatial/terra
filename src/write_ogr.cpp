@@ -22,15 +22,139 @@
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
 
-bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, std::string &msg) {
+#include "Rcpp.h"
+#include <iostream>
+
+bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
+
+    const char *pszDriverName = driver.c_str(); //"ESRI Shapefile";
+    GDALDriver *poDriver;
+    poDriver = GetGDALDriverManager()->GetDriverByName(pszDriverName );
+    if( poDriver == NULL )  {
+        setError((std::string)pszDriverName + " driver not available");
+        return false;
+    }
+
+    GDALDataset *poDS;
+
+    poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
+    if( poDS == NULL ) {
+        setError("Creation of output file failed" );
+        return false;
+    }
+
+	OGRwkbGeometryType wkb;
+	SpatGeomType geomtype = lyr.geoms[0].gtype;
+	if (geomtype == points) {
+		wkb = wkbPoint;
+	} else if (geomtype == lines) {
+		wkb = wkbMultiLineString;
+	} else if (geomtype == polygons) {
+		wkb = wkbMultiPolygon;
+	} else {
+        setError("this geometry type is not supported");
+        return false;			
+	}
+
+
+	OGRSpatialReference *srs = NULL;
+	std::string s = lyr.srs.wkt;
+	if (s != "") {
+		srs = new OGRSpatialReference;
+		OGRErr err = srs->SetFromUserInput(s.c_str()); 
+		if (err != OGRERR_NONE) {
+			setError("crs error");
+			delete srs;
+			return false;
+		}
+	}
+	
+    OGRLayer *poLayer;
+    poLayer = poDS->CreateLayer(lyrname.c_str(), srs, wkb, NULL );
+    if( poLayer == NULL ) {
+        setError( "Layer creation failed" );
+        return false;
+    }
+	srs->Release();
+
+	std::vector<std::string> nms = get_names();
+	std::vector<std::string> tps = lyr.df.get_datatypes();
+	OGRFieldType otype;
+	int nfields = nms.size();
+	for (int i=0; i<nfields; i++) {
+		if (tps[i] == "double") {
+			otype = OFTReal;
+		} else if (tps[i] == "long") {
+			otype = OFTInteger64;
+		} else {
+			otype = OFTString;
+		}
+
+		OGRFieldDefn oField(nms[i].c_str(), otype);
+		if (otype == OFTString) {
+			oField.SetWidth(32);
+		}
+		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
+			setError( "Creating Name field failed" );
+			return false;
+		}
+	}
+	
+	unsigned r = 0;
+
+	for (size_t i=0; i<size(); i++) {
+		
+		OGRFeature *poFeature;
+        poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
+		for (int j=0; j<nfields; j++) {
+			if (tps[j] == "double") {
+				poFeature->SetField(j, lyr.df.getDvalue(r, j));
+			} else if (tps[j] == "long") {
+				poFeature->SetField(j, (GIntBig)lyr.df.getIvalue(r, j));
+			} else {
+				Rcpp::Rcout << lyr.df.getSvalue(r, j) << std::endl;
+				poFeature->SetField(j, lyr.df.getSvalue(r, j).c_str());
+			}
+		}
+		r++;
+	
+// points	
+		if (wkb == wkbPoint) {
+			SpatGeom g = getGeom(i);
+			double x = g.parts[0].x[0];
+			double y = g.parts[0].y[0];
+
+			OGRPoint pt;
+			pt.setX( x );
+			pt.setY( y );
+			poFeature->SetGeometry( &pt );
+		} else {
+
+			setError("Only points are currently supported");
+			return false;
+		}
+		
+		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+			setError("Failed to create feature");
+			return false;
+        }
+
+        OGRFeature::DestroyFeature( poFeature );
+    }
+    GDALClose( poDS );
+	return true;
+}
+
+
+/*
+bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
 	
     const char *pszDriverName = driver.c_str(); //"ESRI Shapefile";
     GDALDriverH hDriver;
     GDALDatasetH hDS;
     OGRLayerH hLayer;
     OGRFieldDefnH hFieldDefn;
-    double x, y;
-    char szName[33];
+//    double x, y;
 
     GDALAllRegister();
 
@@ -59,11 +183,22 @@ bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::strin
         return false;			
 	}
 	
-	hLayer = GDALDatasetCreateLayer( hDS, lyrname.c_str(), NULL, wkb, NULL );
+	//std::string crs = lyr.srs.proj4;
+	std::string crs = "+proj=longlat +datum=WGS84";
+	OGRSpatialReferenceH hSRS;
+	OGRErr erro = OSRImportFromProj4(hSRS, crs.c_str());
+	if (erro == 4) {
+		setError("CRS failure");
+		return false ;
+	}
+
+
+	hLayer = GDALDatasetCreateLayer( hDS, lyrname.c_str(), hSRS, wkb, NULL );
     if( hLayer == NULL ) {
         setError( "Layer creation failed" );
         return false;
     }
+	OSRRelease(hSRS);
 
 	std::vector<std::string> nms = get_names();
 	std::vector<std::string> tps = lyr.df.get_datatypes();
@@ -94,24 +229,29 @@ bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::strin
 		OGR_Fld_Destroy(hFieldDefn);
 	}
 	
-    while( !feof(stdin) && fscanf( stdin, "%lf,%lf,%32s", &x, &y, szName ) == 3 ) {
+	unsigned r = 0;
+    //while( !feof(stdin) && fscanf( stdin, "%lf,%lf,%32s", &x, &y, szName ) == 3 ) {
+	for (size_t i=0; i<size(); i++) {
         OGRFeatureH hFeature;
         OGRGeometryH hPt;
 
         hFeature = OGR_F_Create( OGR_L_GetLayerDefn( hLayer ) );
 
-/*		for (size_t i=0; i<nms.size(); i++) {
-			if (tps[i] == "double") {
-				OGR_F_SetFieldString( hFeature, OGR_F_GetFieldIndex(hFeature, nms[i]), szName );
-			} else if (tps[i] == "long") {
-				OGR_F_SetFieldString( hFeature, OGR_F_GetFieldIndex(hFeature, nms[i]), szName );
+		for (size_t j=0; j<nms.size(); i++) {
+			if (tps[j] == "double") {
+				OGR_F_SetFieldDouble( hFeature, OGR_F_GetFieldIndex(hFeature, nms[j].c_str()), lyr.df.getDvalue(r, j));
+			} else if (tps[j] == "long") { // not sure if OGR_F_SetFieldInteger64 is supported in shp
+				OGR_F_SetFieldInteger( hFeature, OGR_F_GetFieldIndex(hFeature, nms[j].c_str()), lyr.df.getIvalue(r, j));
 			} else {
-				OGR_F_SetFieldString( hFeature, OGR_F_GetFieldIndex(hFeature, nms[i]), szName );
+				OGR_F_SetFieldString( hFeature, OGR_F_GetFieldIndex(hFeature, nms[j].c_str()), lyr.df.getSvalue(r, j).c_str());
 			}
 		}
-*/		
+		r++;
         hPt = OGR_G_CreateGeometry(wkb);
-        OGR_G_SetPoint_2D(hPt, 0, x, y);
+        SpatGeom g = getGeom(i);
+		double x = g.parts[0].x[0];
+		double y = g.parts[0].y[0];
+		OGR_G_SetPoint_2D(hPt, 0, x, y);
 
         OGR_F_SetGeometry( hFeature, hPt );
         OGR_G_DestroyGeometry(hPt);
@@ -125,6 +265,7 @@ bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::strin
     GDALClose( hDS );
 	return true;
 }
+*/
 
 /*
 bool SpatVector::write(std::string filename, std::string format, bool overwrite) {

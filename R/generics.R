@@ -63,8 +63,8 @@ setMethod("c", signature(x="SpatRaster"),
 
 setMethod("rep", signature(x="SpatRaster"), 
 	function(x, ...) {
-		n <- max(1, length(rep(1, ...)), na.rm=TRUE)
-		lapply(1:n, function(i) x)
+		i <- rep(1:nlyr(x), ...)
+		x[[i]]
 	}
 )
 

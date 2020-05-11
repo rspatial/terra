@@ -728,15 +728,13 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	SpatRaster out = geometry();
 
 	e.intersect(out.getExtent());
-
-/*	if ( !e.valid() ) {
-		return NULL;
-		stop("extents do not overlap")
-	} */
+	if ( !e.valid() ) {
+		out.setError("extents do not overlap");
+		return out;
+	} 
 
 	out.setExtent(e, true, snap);
-
-	if (!source[0].hasValues ) {
+	if (!hasValues() ) {
 		return(out);
 	}
 
@@ -748,12 +746,13 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	unsigned row1 = rowFromY(out.extent.ymax - 0.5 * yr);
 	unsigned row2 = rowFromY(out.extent.ymin + 0.5 * yr);
 	if ((row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1)) {
-		return(out);
+		// same extent
+		return deepCopy();
 	}
 
 	unsigned ncols = out.ncol();
-
  	if (!out.writeStart(opt)) { return out; }
+
 	readStart();
 	std::vector<double> v;
 	for (size_t i = 0; i < out.bs.n; i++) {

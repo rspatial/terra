@@ -192,20 +192,20 @@ bool SpatVector::read(std::string fname) {
 
 	poLayer->ResetReading();
 	if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
-		SpatPart p(0,0);
+		//SpatPart p(0,0);
 		while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			SpatGeom g;
-			g.gtype = points;
-			if (poGeometry != NULL)
+			SpatGeom g(points);
+			if (poGeometry != NULL) {
 				if ( wkbFlatten(poGeometry->getGeometryType()) == wkbPoint ) {
 				#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
 					OGRPoint *poPoint = poGeometry->toPoint();
 				#else
 					OGRPoint *poPoint = (OGRPoint *) poGeometry;
 				#endif
-					p.x[0] = poPoint->getX();
-					p.y[0] = poPoint->getY();
+					double x = poPoint->getX();
+					double y = poPoint->getY();
+					SpatPart p(x, y);
 					g.addPart(p);
 				} else {
 					OGRMultiPoint *poMultipoint = ( OGRMultiPoint * )poGeometry;
@@ -222,11 +222,11 @@ bool SpatVector::read(std::string fname) {
 						X[i] = poPoint->getX();
 						Y[i] = poPoint->getY();
 					}
-					SpatPart pp(X, Y);
-					g.addPart(pp);
+					SpatPart p(X, Y);
+					g.addPart(p);
+				}
 			} else {
-				p.x[0] = NAN;
-				p.y[0] = NAN;
+				SpatPart p(NAN, NAN);
 				g.addPart(p);
 			}
 			addGeom(g);

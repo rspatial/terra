@@ -140,9 +140,8 @@ class SpatExtent {
 			return(pts);
 		}
 
-
 		bool valid() {
-			return ((xmax > xmin) && (ymax > ymin));
+			return ((xmax >= xmin) && (ymax >= ymin));
 		}
 
 		bool compare(SpatExtent e, std::string oper, double tolerance);

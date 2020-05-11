@@ -76,7 +76,8 @@ function(x, filename, overwrite=FALSE, ...) {
 	if (filename == "") {
 		stop("provide a filename")
 	}
-	success <- x@ptr$write(filename, "ESRI Shapefile", overwrite[1])
+	lyrname <- gsub(".shp", "", basename(filename))
+	success <- x@ptr$write(filename, lyrname, "ESRI Shapefile", overwrite[1])
 	show_messages(x, "writeVector")
 	invisible(TRUE)
 }

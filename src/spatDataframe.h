@@ -45,6 +45,10 @@ class SpatDataFrame {
 		std::vector<double> getD(unsigned i);
 		std::vector<long> getI(unsigned i);
 		std::vector<std::string> getS(unsigned i);
+
+		double getDvalue(unsigned i, unsigned j);
+		long getIvalue(unsigned i, unsigned j);
+		std::string getSvalue(unsigned i, unsigned j);
 	
 		void add_row();
 		

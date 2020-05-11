@@ -29,9 +29,9 @@ bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
 		wkt = txt[1];
 		input = txt[2];
 	} else {
-		input=txt[0];
-		wkt="";
-		proj4=txt[0];
+		input = txt[0];
+		wkt =  "";
+		proj4 = txt[0];
 	}
 	return true;
 }

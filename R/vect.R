@@ -74,7 +74,9 @@ setMethod("$<-", "SpatVector",
 	function(x, name, value) { 
 		i <- which(name == names(x))[1]
 		if (is.na(i)) {
-			if (is.numeric(cv)) {
+			if (is.integer(value)) {
+				x@ptr$add_column_long(value, name)	
+			} else if (is.numeric(value)) {
 				x@ptr$add_column_double(value, name)	
 			} else {
 				x@ptr$add_column_string(as.character(value), name)
