@@ -142,17 +142,8 @@ std::string getDs_PRJ(GDALDataset *poDataset) {
 
 
 
-bool SpatVector::read(std::string fname) {
+bool SpatVector::read_ogr(GDALDataset *poDS) {
 
-	msg.success = true;
-
-    OGRRegisterAll();
-    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
-    if( poDS == NULL ) {
-        setError("Cannot open file");
-		return false;
-    }
-	
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
 	std::string wkt, errmsg;
 	if (!wkt_from_spatial_reference(poSRS, wkt, errmsg)){
@@ -180,8 +171,8 @@ bool SpatVector::read(std::string fname) {
 	}
 */
 	
-	OGRLayer *poLayer = poDS->GetLayerByName( basename_noext(fname).c_str() );
-
+	//OGRLayer *poLayer = poDS->GetLayerByName( basename_noext(fname).c_str() );
+	OGRLayer *poLayer = poDS->GetLayer(0);
 	lyr.df = readAttributes(poLayer);
 
 
@@ -346,8 +337,7 @@ bool SpatVector::read(std::string fname) {
 	}
 
 	OGRFeature::DestroyFeature( poFeature );
-    GDALClose( poDS );
-	return msg.success;
+ 	return true;
 }
 
 
@@ -356,4 +346,23 @@ bool SpatVector::read(std::string fname) {
  //       if( poLayer->GetExtent( &oExt, TRUE ) == OGRERR_NONE ){
  //           cout << "Extent: (" << oExt.MinX << ", " << oExt.MinY << ") - (" << oExt.MaxX << ", " << oExt.MaxY << ")" << endl;
 
+
+bool SpatVector::read(std::string fname) {
+
+    //OGRRegisterAll();
+    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+    if( poDS == NULL ) {
+        setError("Cannot open file");
+		return false;
+    }
+	bool success = read_ogr(poDS);
+	if (poDS != NULL) GDALClose( poDS );
+	return success;
+}
+
+SpatVector SpatVector::fromDS(GDALDataset *poDS) {
+	SpatVector out;
+	bool success = out.read_ogr(poDS);
+	return out;
+}
 

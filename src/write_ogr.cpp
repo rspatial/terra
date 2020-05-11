@@ -22,20 +22,23 @@
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
 
+GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
 
-bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
+
+//bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
+
+    GDALDataset *poDS = NULL;
 
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
     if( poDriver == NULL )  {
         setError( driver + " driver not available");
-        return false;
+        return poDS;
     }
 
-    GDALDataset *poDS;
     poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
     if( poDS == NULL ) {
         setError("Creation of output file failed" );
-        return false;
+        return poDS;
     }
 
 	OGRwkbGeometryType wkb;
@@ -48,7 +51,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 		wkb = wkbMultiPolygon;
 	} else {
         setError("this geometry type is not supported");
-        return false;			
+        return poDS;			
 	}
 
 
@@ -60,7 +63,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 		if (err != OGRERR_NONE) {
 			setError("crs error");
 			delete srs;
-			return false;
+			return poDS;
 		}
 	}
 	
@@ -68,7 +71,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
     poLayer = poDS->CreateLayer(lyrname.c_str(), srs, wkb, NULL );
     if( poLayer == NULL ) {
         setError( "Layer creation failed" );
-        return false;
+        return poDS;
     }
 	srs->Release();
 
@@ -93,7 +96,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 		}
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
 			setError( "Creating Name field failed" );
-			return false;
+			return poDS;
 		}
 	}
 	
@@ -136,12 +139,12 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 				}
 				if (poGeom.addGeometry(&poLine) != OGRERR_NONE ) {
 					setError("cannot add line");
-					return false;
+					return poDS;
 				}	
 			}
 			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
 				setError("cannot set geometry");
-				return false;
+				return poDS;
 			}
 			
 // polygons			
@@ -158,7 +161,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 				}
 				if (poGeom.addRing(&poRing) != OGRERR_NONE ) {
 					setError("cannot add ring");
-					return false;
+					return poDS;
 				}
 				
 				if (p.hasHoles()) {
@@ -172,7 +175,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 						}						
 						if (poGeom.addRing(&poHole) != OGRERR_NONE ) {
 							setError("cannot add hole");
-							return false;
+							return poDS;
 						}
 					}
 				}
@@ -180,38 +183,41 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 			}
 			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
 				setError("cannot set geometry");
-				return false;
+				return poDS;
 			}
 		} else {
 			setError("Only points and lines are currently supported");
-			return false;
+			return poDS;
 		}
 		
 		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
 			setError("Failed to create feature");
-			return false;
+			return poDS;
         }
 
         OGRFeature::DestroyFeature( poFeature );
     }
-    GDALClose( poDS );
-	return true;
+    //GDALClose( poDS );
+	//return true;
+	return poDS;
 }
 
 
-/*
+
 bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
-    GDALDataset* poDS=NULL;
-	bool success = write_ogr(poDS, filename, lyrname, driver, overwrite);
-    GDALClose( poDS );
-	return success;
+
+	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite);
+    if (poDS != NULL) GDALClose( poDS );
+	if (hasError()) {
+		return false;
+	} 
+	return true;
+	
 }
 
-
-bool SpatVector::write_GDAL_ds(GDALDataset* poDS) {
-	return write_ogr(poDS, "", "lyr", "Memory", true);
+GDALDataset* SpatVector::GDAL_ds() {
+	return write_ogr("", "layer", "Memory", true);
 }
 
-*/
 
 #endif

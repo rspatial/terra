@@ -20,39 +20,34 @@
 
 
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
-	size_t sz = source[0].values.size();
-	size_t vsz = vals.size();
-	size_t totsz = size();
-	if (vsz == totsz) {
+
+	if (vals.size() == size()) {
 		source[0].values = vals;
 		return true;
 	} 
 
-
-	if (sz == 0) {
-		source[0].values = std::vector<double>(totsz, NAN);
+	if (source[0].values.size() == 0) {
+		source[0].values = std::vector<double>(size(), NAN);
 	}
-	//size_t offset = startrow * ncol();
 	size_t nc = ncell();
 	size_t chunk = nrows * ncols;
 
+	//complete rows
 	if (startcol==0 && ncols==ncol()) {
 		for (size_t i=0; i<nlyr(); i++) {
 			size_t off1 = i * chunk; 
 			size_t off2 = startrow * ncols + i * nc; 
-			//for (size_t j=0; j<chunk; j++) {
-			//	source[0].values[off2+j] <- vals[off1+j];
-			//}
 			std::copy( vals.begin()+off1, vals.begin()+off1+chunk, source[0].values.begin()+off2 );
 		}
-	} else { // block writing
+		
+	 // block writing	
+	} else {
 		for (size_t i=0; i<nlyr(); i++) {
 			unsigned off = i*chunk;
 			for (size_t r=0; r<nrows; r++) {
-				size_t start = r * ncols + off;
-				std::vector<double> v(vals.begin()+start, vals.begin()+start+ncols);
-				start = (startrow+r)*ncol() + i*nc + startcol;
-				std::copy(v.begin(), v.end(), source[0].values.begin()+start);
+				size_t start1 = r * ncols + off;
+				size_t start2 = (startrow+r)*ncol() + i*nc + startcol;
+				std::copy(vals.begin()+start1, vals.begin()+start1+ncols, source[0].values.begin()+start2);
 			}
 		}
 	}

@@ -148,8 +148,10 @@ class SpatVector {
 		
 		bool write(std::string filename, std::string lyrname, std::string driver, bool overwrite);
 #ifdef useGDAL
-	//	bool write_ogr(GDALDataset* poDS, std::string filename, std::string lyrname, std::string driver, bool overwrite);
-	//	bool write_GDAL_ds(GDALDataset* poDS);
+		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite);
+		GDALDataset* GDAL_ds();
+		bool read_ogr(GDALDataset *poDS);
+		SpatVector fromDS(GDALDataset *poDS);
 #endif
 
 // attributes
@@ -171,6 +173,8 @@ class SpatVector {
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
+		bool hasError() { return msg.has_error; }
+		bool hasWarning() { return msg.has_warning; }
 
 		SpatVector point_buffer(double d, unsigned quadsegs);
 
