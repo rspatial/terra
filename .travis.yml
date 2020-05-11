@@ -5,7 +5,7 @@ language: r
 r: release
 #cache: packages
 sudo: required
-dist: xenial
+dist: bionic
 
 # Change this when going to beta/Cran
 warnings_are_errors: false
@@ -24,7 +24,6 @@ addons:
       - libgdal-dev
 
 r_packages: 
-  - rgdal
   - covr
 
 after_success:
