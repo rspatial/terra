@@ -329,7 +329,7 @@ class SpatRaster {
 		void fill(double x);
 
 		SpatRaster sources_to_disk(std::vector<std::string> &tmpfs, bool unique, SpatOptions &opt);
-
+		bool sources_from_file();
 
 ////////////////////////////////////////////////////
 // main methods
@@ -362,7 +362,7 @@ class SpatRaster {
 
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, SpatOptions &opt);
-		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, std::string method="");
+		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method="");
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
         std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
 		SpatRaster flip(bool vertical, SpatOptions &opt);
@@ -399,7 +399,7 @@ class SpatRaster {
 
 		SpatRaster range(std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster rasterize(SpatVector p, std::vector<double> values, double background, bool update, SpatOptions &opt);
-		SpatRaster grasterize(SpatVector x, std::string field, std::vector<double> values, bool touches, bool inverse, SpatOptions &opt);
+		SpatRaster grasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool update, bool touches, bool inverse, SpatOptions &opt);
 
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
@@ -435,7 +435,7 @@ class SpatRaster {
 
 #ifdef useGDAL
 		bool open_gdal(GDALDatasetH &hDS, int src);
-		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, std::vector<std::string> foptions);
+		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, std::vector<std::string> foptions);
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);
 		bool as_gdalvrt(GDALDatasetH &hVRT);
 		//bool as_gdalmem(GDALDatasetH &hVRT);

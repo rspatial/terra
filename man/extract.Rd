@@ -22,7 +22,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 } 
 
 \usage{
-\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., method="simple", drop=FALSE)
+\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", drop=FALSE)
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 \S4method{extract}{SpatRaster,numeric}(x, y, ...)
 }
@@ -31,7 +31,8 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \item{x}{SpatRaster}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
 \item{fun}{character. function to summarize the data. Currently ignored}
-\item{...}{additional arguments. None implemented}
+\item{...}{additional arguments passed to `fun`}
+\item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
 \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}
 \item{drop}{boolean. If \code{TRUE}, the output is simplified}
 }

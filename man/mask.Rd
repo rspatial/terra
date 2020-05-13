@@ -15,8 +15,9 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 \usage{
 \S4method{mask}{SpatRaster,SpatRaster}(x, mask, inverse=FALSE, maskvalue=NA, 
    updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...)
+   
 \S4method{mask}{SpatRaster,SpatVector}(x, mask, inverse=FALSE, updatevalue=NA,
-   filename="", overwrite=FALSE, wopt=list(), ...)
+	touches=is.lines(mask), filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -25,11 +26,11 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 \item{inverse}{logical. If \code{TRUE}, areas on mask that are _not_ the \code{maskvalue} are masked}
 \item{maskvalue}{numeric. The value in \code{mask} that indicates the cells of \code{x} that should become \code{updatevalue} (default = \code{NA})}
 \item{updatevalue}{numeric. The value that cells of \code{x} should become if they are not covered by \code{mask} (and not \code{NA})}
-
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments. None implemented}  
+ \item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons will be masked, not just those on the line render path, or whose center point is within the polygon}
+\item{filename}{character. Output filename. Optional}
+\item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+\item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+\item{...}{additional arguments. None implemented}  
 
 }
 

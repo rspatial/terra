@@ -17,6 +17,8 @@
 
 #include "spatRaster.h"
 #include "string_utils.h"
+#include "file_utils.h"
+#include <set>
 
 #ifdef useGDAL
 #include "crs.h"
@@ -217,10 +219,7 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 
 
 SpatRaster SpatRaster::deepCopy() {
-
 	SpatRaster out = *this;
-//	out.extent = extent;
-//	out.crs = crs;
 	return out;
 }
 
@@ -331,8 +330,16 @@ bool SpatRaster::is_global_lonlat() {
 };
 
 
-#include "file_utils.h"
-#include <set>
+bool SpatRaster::sources_from_file() {
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].driver != "memory") {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool unique, SpatOptions &opt) {
 // if a tool needs to read from disk, perhaps from unique filenames
 // use writeRaster to write to a single file.

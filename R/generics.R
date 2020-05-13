@@ -195,7 +195,7 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"),
 )
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatVector"), 
-	function(x, mask, inverse=FALSE, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, mask, inverse=FALSE, updatevalue=NA, touches=is.lines(mask), filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite,wopt)
 		x@ptr <- x@ptr$mask_vector(mask@ptr, inverse[1], updatevalue[1], opt)
 		show_messages(x, "mask")		
@@ -243,18 +243,18 @@ setMethod("quantile", signature(x="SpatRaster"),
 	}
 )
 
+
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field=1:nrow(x), touches=FALSE, inverse=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) { 
-# background=NA, update=FALSE, 
+	function(x, y, field=1:nrow(x), background=NA, update=FALSE, touches=is.lines(v), filename="", overwrite=FALSE, wopt=list(), ...) { 
+		# , update=FALSE, 
+		inverse=FALSE # use "mask" for TRUE
 		opt <- .runOptions(filename, overwrite, wopt)
+		background <- as.numeric(background[1])
+		#if (is.na(background)) background = 0/0 # NAN
 		if (is.character(field)) {
-			field <- x[[field, drop=TRUE]]
-			if (!is.numeric(field)) {
-				stop("this is not a numerical variable")
-			}
-			y@ptr <- y@ptr$grasterize(x@ptr, field, 0, touches[1], inverse[1], opt)
+			y@ptr <- y@ptr$grasterize(x@ptr, field, 0, background, update[1], touches[1], inverse[1], opt)
 		} else if (is.numeric(field)) {
-			y@ptr <- y@ptr$grasterize(x@ptr, "", field, touches[1], inverse[1], opt)
+			y@ptr <- y@ptr$grasterize(x@ptr, "", field, background, update[1], touches[1], inverse[1], opt)
 		} else {
 			stop("field should be character or numeric")
 		}

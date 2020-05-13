@@ -480,7 +480,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
 
 
 // <geom<layer<values>>>
-std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, std::string method) {
+std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method) {
 
     unsigned nl = nlyr();
     unsigned ng = v.size();
@@ -501,6 +501,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
                 out[i][j] = srcout[j];
             }
         }
+/*
 	} else if (gtype == "lines") {
 	    SpatRaster r = geometry(1);
 	    SpatGeom g;
@@ -513,20 +514,21 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
             }
         }
 	} else { // polys
+*/
 
+	} else {
 	    SpatRaster r = geometry(1);
-	    SpatRaster rc, rcr;
-	    SpatVector p;
-	    SpatGeom g;
-	    SpatVector pts;
 	    SpatOptions opt;
+		std::vector<double> feats(1, 1) ;			
         for (size_t i=0; i<ng; i++) {
-            g = v.getGeom(i);
-            rc = r.crop(g.extent, "out", opt);
-            p.setGeom(g);
-			std::vector<double> feats(p.size(), 1) ;
-            rcr = rc.rasterize(p, feats, NAN, false, opt); // rather have a method that returns the cell numbers directly?
-            pts = rcr.as_points(false, true);
+            SpatGeom g = v.getGeom(i);
+            SpatRaster rc = r.crop(g.extent, "out", opt);
+            SpatVector p(g);
+			//std::vector<double> feats(p.size(), 1) ;			
+            // rcr = rc.rasterize(p, feats, NAN, false, opt); 
+			// rather have a method that returns the cell numbers directly?
+            SpatRaster rcr = rc.grasterize(p, "", feats, NAN, false, touches, false, opt); 
+       	    SpatVector pts = rcr.as_points(false, true);
             SpatDataFrame vd = pts.getGeometryDF();
             std::vector<double> x = vd.getD(0);
             std::vector<double> y = vd.getD(1);

@@ -258,7 +258,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 }
 
 
-bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, std::vector<std::string> foptions) {
+bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, std::vector<std::string> foptions) {
 
 	char **papszOptions = NULL;
 	for (size_t i=0; i < foptions.size(); i++) {
@@ -282,7 +282,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		GDALSetDescription(hBand, nms[i].c_str());
 		GDALSetRasterNoDataValue(hBand, NAN);
 		//GDALSetRasterNoDataValue(hBand, -3.4e+38);
-		if (fill) GDALFillRaster(hBand, NAN, 0);
+		if (fill) GDALFillRaster(hBand, fillvalue, 0);
 	}
 
 	std::vector<double> rs = resolution();
@@ -290,21 +290,22 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	double adfGeoTransform[6] = { e.xmin, rs[0], 0, e.ymax, 0, -1 * rs[1] };
 	GDALSetGeoTransform( hDS, adfGeoTransform);
 
-	OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
 	std::vector<std::string> srs = getSRS();
 	std::string wkt = srs[1];
-	OGRErr erro = OSRSetFromUserInput(hSRS, wkt.c_str());
-	if (erro == 4) {
-		setError("CRS failure");
+	if (wkt != "") {
+		OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
+		OGRErr erro = OSRSetFromUserInput(hSRS, wkt.c_str());
+		if (erro == 4) {
+			setError("CRS failure");
+			OSRDestroySpatialReference( hSRS );
+			return false;
+		}
+		char *pszSRS_WKT = NULL;
+		OSRExportToWkt( hSRS, &pszSRS_WKT );
+		GDALSetProjection( hDS, pszSRS_WKT );
+		CPLFree(pszSRS_WKT);
 		OSRDestroySpatialReference( hSRS );
-		return false;
 	}
-	
-	char *pszSRS_WKT = NULL;
-	OSRExportToWkt( hSRS, &pszSRS_WKT );
-	GDALSetProjection( hDS, pszSRS_WKT );
-	CPLFree(pszSRS_WKT);
-	OSRDestroySpatialReference( hSRS );
 	return true;
 }
 

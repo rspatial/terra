@@ -9,22 +9,35 @@
 #include "gdal_utils.h"
 
 
-SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<double> values, bool touches, bool inverse, SpatOptions &opt) {
+SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
 
-	SpatRaster out = geometry(1);
+	SpatRaster out;
+	if ( !hasValues() ) update = false;
+	
+	if (update) {
+		out = geometry();
+	} else {
+		out = geometry(1);
+		out.setNames({""});
+	}
 
 	std::string errmsg;
-	std::string filename = opt.filename;
+	std::string filename = opt.get_filename();
+	std::string driver = filename == "" ? "MEM" : "GTiff";
 
+	bool canRAM = canProcessInMemory(4);
 	if (filename == "") {
-		if (!canProcessInMemory(4) || opt.get_todisk()) {
+		if (!canRAM || opt.get_todisk()) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
+			opt.set_filename(filename);
+			driver = "GTiff";
 		} 
 	} else {
 		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 			out.setError(errmsg);
 			return out;
 		}
+		//if (canRAM) driver == "MEM";
 	}
 
 
@@ -38,11 +51,10 @@ SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<d
 			out.setError("field " + field + " not found");
 			return out;
 		}
-		out.setNames({field});
+		if (!update) out.setNames({field});
 		options.push_back("-a");
 		options.push_back(field);
 	} else {
-		out.setNames({"rasterized"});
 		if (values.size() == 1) {
 			options.push_back("-burn");
 			options.push_back(std::to_string(values[0]));
@@ -60,12 +72,54 @@ SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<d
 		}
 	}
 
-	std::string driver = filename == "" ? "MEM" : "GTiff";
 	GDALDatasetH rstDS, vecDS;
-	if (!out.create_gdalDS(rstDS, filename, driver, true, opt.gdal_options)) {
-		return out;
-	}
 
+	if (update) {
+		size_t nsrc = source.size();
+		if (driver == "MEM") {
+			// force into single source
+			out.setValues(getValues());
+			if (!out.open_gdal(rstDS, 0)) {
+				out.setError("cannot open dataset");
+				return out;
+			}
+		} else {
+			// make a copy first
+			// including for the odd case that MEM is false but the source in memory
+			if ( (nsrc > 1) || (!sources_from_file()) ) {
+				SpatRaster out = writeRaster(opt);
+			} else {
+				// writeRaster should do the below? copyRaster?
+				GDALDatasetH hSrcDS = GDALOpen(source[0].filename.c_str(), GA_ReadOnly );
+				if(hSrcDS == NULL) {
+					out.setError("cannot open source dataset");
+					return out;
+				}
+				GDALDriverH hDriver = GDALGetDatasetDriver(hSrcDS);
+				GDALDatasetH hDstDS = GDALCreateCopy( hDriver, filename.c_str(), hSrcDS, FALSE, NULL, NULL, NULL );
+				GDALClose(hSrcDS);
+				if(hDstDS == NULL) {
+					out.setError("cannot create dataset");
+					return out;
+				}
+				GDALClose(hDstDS);
+			}
+			
+			rstDS = GDALOpen( filename.c_str(), GA_Update);		
+		}
+		for (size_t i=0; i<nlyr(); i++) {
+			options.push_back("-b");
+			options.push_back(std::to_string(i+1));
+		}
+		
+	} else {
+		if (!out.create_gdalDS(rstDS, filename, driver, true, background, opt.gdal_options)) {
+			out.setError("cannot create dataset");
+			return out;
+		}
+	}
+	
+	
 	GDALDataset *poDS = x.write_ogr("", "lyr", "Memory", true);
 	vecDS = poDS->ToHandle(poDS);
 
@@ -85,6 +139,13 @@ SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<d
 		if (!test) {
 			out.setError("wat nu?");
 			return out;
+		}
+		if (update) {
+			// seems to a bug that the input layers are returned as well
+			out.source[0].values.erase(out.source[0].values.begin(), out.source[0].values.begin()+out.size());
+		}
+		if (filename != "") {
+			writeRaster(opt);
 		}
 	} else {
 		for (size_t i=0; i < nlyr(); i++) { //currently always one band

@@ -114,6 +114,13 @@ SpatPart SpatGeom::getPart(unsigned i) {
 	return parts[i];
 }
 
+SpatVector::SpatVector() {};
+
+SpatVector::SpatVector(SpatGeom g) {
+	addGeom(g);
+};
+
+
 std::vector<double> SpatVector::getDv(unsigned i) {
 	return lyr.df.getD(i);
 }

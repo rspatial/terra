@@ -12,9 +12,12 @@ if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGe
 if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGeneric("collapse"))}
 if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}
-if (!isGeneric("ext")) { setGeneric("ext", function(x, ...)	standardGeneric("ext"))}	
-if (!isGeneric("ext<-")) { setGeneric("ext<-", function(x, value) standardGeneric("ext<-")) }		
-if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}	
+if (!isGeneric("ext")) { setGeneric("ext", function(x, ...)	standardGeneric("ext"))}
+if (!isGeneric("ext<-")) { setGeneric("ext<-", function(x, value) standardGeneric("ext<-")) }	
+if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}
+if (!isGeneric("is.points")) {setGeneric("is.points", function(x,...) standardGeneric("is.points"))}
+if (!isGeneric("is.lines")) {setGeneric("is.lines", function(x,...) standardGeneric("is.lines"))}
+if (!isGeneric("is.polygons")) {setGeneric("is.polygons", function(x,...) standardGeneric("is.polygons"))}
 if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardGeneric("perimeter"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}	

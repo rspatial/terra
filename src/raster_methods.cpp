@@ -150,6 +150,26 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 
 
 SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double updatevalue, SpatOptions &opt) {
+
+//return grasterize(x, "", {updatevalue}, NAN, true, false, !inverse, opt);
+// gdal_rasterize with inverse=true does not work well with overlapping polygons 
+// also can't use NA as update value, it appears
+// looks like GDAL bug
+//	eturn grasterize(x, "", {updatevalue}, NAN, true, false, !inverse, opt);
+// so do it in two steps
+	SpatRaster out;
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
+	std::string filename = opt.get_filename();
+	opt.set_filename("");
+	SpatRaster m = grasterize(x, "", {1}, 0, false, false, false, opt);
+	opt.set_filename(filename);
+	out = mask(m, inverse, 0, updatevalue, opt);
+	return(out);
+
+/*
 	std::string filename = opt.get_filename();
 	opt.set_filename("");
 	std::vector<double> feats(x.size(), 1) ;
@@ -157,6 +177,7 @@ SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double updatevalue, Spat
 	opt.set_filename(filename);
 	SpatRaster out = mask(m, inverse, 0, updatevalue, opt);
 	return(out);
+*/
 }
 
 

@@ -12,6 +12,25 @@ setMethod("geomtype", signature(x="SpatVector"),
 	}
 )	
 
+
+setMethod("is.lines", signature(x="SpatVector"), 
+	function(x, ...) {
+		geomtype(x) == "lines"
+	}
+)
+
+setMethod("is.polygons", signature(x="SpatVector"), 
+	function(x, ...) {
+		geomtype(x) == "polygons"
+	}
+)
+setMethod("is.points", signature(x="SpatVector"), 
+	function(x, ...) {
+		geomtype(x) == "points"
+	}
+)
+
+
 setMethod("geomtype", signature(x="Spatial"), 
 	function(x, ...){ 
 		type <- sub("spatial", "", as.vector(tolower(class(x))))

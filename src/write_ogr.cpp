@@ -73,7 +73,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
         setError( "Layer creation failed" );
         return poDS;
     }
-	srs->Release();
+	if (srs != NULL) srs->Release();
 
 	std::vector<std::string> nms = get_names();
 	std::vector<std::string> tps = lyr.df.get_datatypes();

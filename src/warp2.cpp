@@ -258,7 +258,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 					return out;
 				}
 			} else {
-				if (!out.create_gdalDS(hDstDS, filename, driver, false, opt.gdal_options)) {
+				if (!out.create_gdalDS(hDstDS, filename, driver, false, NAN, opt.gdal_options)) {
 					GDALClose( hSrcDS );
 					//GDALClose( hDstDS );
 					return out;

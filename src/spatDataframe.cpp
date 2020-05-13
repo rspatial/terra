@@ -316,3 +316,4 @@ std::vector<std::string> SpatDataFrame::get_datatypes() {
 	}
 	return stype;
 }
+
