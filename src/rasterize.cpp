@@ -12,8 +12,6 @@
 SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<double> values, bool touches, bool inverse, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
-	std::string m = "rasterized";
-	out.setNames({m});
 
 	std::string errmsg;
 	std::string filename = opt.filename;
@@ -29,8 +27,40 @@ SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<d
 		}
 	}
 
-	std::string driver = filename == "" ? "MEM" : "GTiff";
 
+	std::vector<std::string> options; 
+	if (inverse) options.push_back("-i");
+	if (touches) options.push_back("-at");
+
+	if (field != "") {
+		std::vector<std::string> nms = x.get_names();
+		if (!is_in_vector(field, nms)) {
+			out.setError("field " + field + " not found");
+			return out;
+		}
+		out.setNames({field});
+		options.push_back("-a");
+		options.push_back(field);
+	} else {
+		out.setNames({"rasterized"});
+		if (values.size() == 1) {
+			options.push_back("-burn");
+			options.push_back(std::to_string(values[0]));
+		} else if (values.size() == x.size()) {
+			std::string burnvar = "rst_var";
+			if (!x.lyr.df.add_column(values, burnvar)) {
+				out.setError("this does not work??");
+				return out;
+			}
+			options.push_back("-a");
+			options.push_back(burnvar);
+		} else {
+			out.setError("the length of values must 1 or the number of features");
+			return out;
+		}
+	}
+
+	std::string driver = filename == "" ? "MEM" : "GTiff";
 	GDALDatasetH rstDS, vecDS;
 	if (!out.create_gdalDS(rstDS, filename, driver, true, opt.gdal_options)) {
 		return out;
@@ -38,45 +68,6 @@ SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<d
 
 	GDALDataset *poDS = x.write_ogr("", "lyr", "Memory", true);
 	vecDS = poDS->ToHandle(poDS);
-
-	std::vector<std::string> options; 
-	if (inverse) options.push_back("-i");
-	if (touches) options.push_back("-at");
-
-	bool removeField = false;
-	std::string burnvar;
-	if (field != "") {
-		std::vector<std::string> nms = x.get_names();
-		if (!is_in_vector(field, nms)) {
-			out.setError("field " + field + " not found");
-			return out;
-		}
-		options.push_back("-a");
-		options.push_back(field);
-	} else {
-		size_t s = values.size();
-		if (s == 1) {
-			options.push_back("-burn");
-			options.push_back(std::to_string(values[0]));
-		} else if (s == x.size()) {
-			burnvar = "stempvar";
-			if (!x.add_column(values, burnvar)) {
-				out.setError("this does not work??");
-				return out;
-			}
-			options.push_back("-a");
-			options.push_back(burnvar);
-			removeField = true;
-		} else {
-			out.setError("the length of values must 1 or the number of features");
-			return out;
-		}
-	}
-
-	//if (driver != "MEM"){
-		//std::vector<std::string> add = {"-a_nodata", "NAN", "-init", "NAN", "-ot", "Float64"};
-		//options.insert(options.end(), add.begin(), add.end());
-	//}
 
 	std::vector <char *> options_char = string_to_charpnt(options);
 	GDALRasterizeOptions* ropts = GDALRasterizeOptionsNew(options_char.data(), NULL);
@@ -86,10 +77,6 @@ SpatRaster SpatRaster::grasterize(SpatVector x, std::string field, std::vector<d
 	GDALRasterizeOptionsFree(ropts);
 	if (err != 0) {
 		setError("error "+ std::to_string(err));
-	}
-	
-	if (removeField) {
-	//	x.remove_column(burnvar);
 	}
 	
 	if (driver == "MEM") {
