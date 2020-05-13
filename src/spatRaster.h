@@ -399,6 +399,8 @@ class SpatRaster {
 
 		SpatRaster range(std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster rasterize(SpatVector p, std::vector<double> values, double background, bool update, SpatOptions &opt);
+		SpatRaster grasterize(SpatVector x, std::string field, std::vector<double> values, bool touches, bool inverse, SpatOptions &opt);
+
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
@@ -433,7 +435,7 @@ class SpatRaster {
 
 #ifdef useGDAL
 		bool open_gdal(GDALDatasetH &hDS, int src);
-		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, std::vector<std::string> foptions);
+		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, std::vector<std::string> foptions);
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);
 		bool as_gdalvrt(GDALDatasetH &hVRT);
 		//bool as_gdalmem(GDALDatasetH &hVRT);

@@ -200,7 +200,6 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 
 		s.driver = "memory";
 		s.names = source[0].names;
-		setSource(s);
 		
 		OGRSpatialReferenceH srs = GDALGetSpatialRef( hDS );
 		char *cp;
@@ -212,12 +211,22 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 			return false;
 		}
 		std::string wkt = std::string(cp);
+
+		err = OSRExportToProj4(srs, &cp);
+		if (is_ogr_error(err, errmsg)) {
+			CPLFree(cp);
+			return false;
+		}
+		std::string prj = std::string(cp);
 		CPLFree(cp);
 		std::string msg;
-		if (!s.srs.set({wkt}, msg)) {
+		if (!s.srs.set({prj, wkt, wkt}, msg)) {
 			setError(msg);
 			return false;
 		}
+		
+		setSource(s);
+		
 	}
 	
 	if (get_values) {
@@ -249,7 +258,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 }
 
 
-bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, std::vector<std::string> foptions) {
+bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, std::vector<std::string> foptions) {
 
 	char **papszOptions = NULL;
 	for (size_t i=0; i < foptions.size(); i++) {
@@ -273,7 +282,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		GDALSetDescription(hBand, nms[i].c_str());
 		GDALSetRasterNoDataValue(hBand, NAN);
 		//GDALSetRasterNoDataValue(hBand, -3.4e+38);
-		//if (fill) GDALFillRaster(hBand, NAN, 0);
+		if (fill) GDALFillRaster(hBand, NAN, 0);
 	}
 
 	std::vector<double> rs = resolution();

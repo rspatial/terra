@@ -72,19 +72,23 @@ void lowercase(std::string &s) {
 	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
 
-bool is_in_set(std::string s, std::vector<std::string> ss) {
-	std::set<std::string> sset (ss.begin(), ss.end());
-	return sset.find(s) != sset.end();
+bool is_in_vector(std::string s, std::vector<std::string> ss) {
+	//std::set<std::string> sset (ss.begin(), ss.end());
+	//return sset.find(s) != sset.end();
+	auto it = std::find (ss.begin(), ss.end(), s);
+	return (it != ss.end());
 }
 
 
-/*
-unsigned where_in_set(std::string s, std::vector<std::string> ss) {
-	std::set<std::string> sset (ss.begin(), ss.end());
-	unsigned out = sset.find(s);
-	return out;
+int where_in_vector(std::string s, std::vector<std::string> ss) {
+	int i = -1;
+	auto it = std::find (ss.begin(), ss.end(), s);
+	if (it != ss.end()) {
+		i = std::distance(ss.begin(), it);
+	}
+	return i;
 }
-*/
+
 
 std::string is_in_set_default(std::string s, std::vector<std::string> ss, std::string defvalue, bool tolower) {
 	if (tolower) lowercase(s);

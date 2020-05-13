@@ -375,6 +375,7 @@ RCPP_MODULE(spat){
 		.method("modal", &SpatRaster::modal, "modal")
 		.method("quantile", &SpatRaster::quantile, "quantile")
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
+		.method("grasterize", &SpatRaster::grasterize, "grasterize")
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster, "sampleRegular")	
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues, "sampleValues")	

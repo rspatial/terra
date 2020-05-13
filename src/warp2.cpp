@@ -67,7 +67,7 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 		return false;
 	}
 	if (driver == "MEM") {
-		hDstDS = GDALCreate(hDriver, "", nPixels, nLines, nlyrs, eDT, NULL );
+		hDstDS = GDALCreate( hDriver, "", nPixels, nLines, nlyrs, eDT, NULL );
 	} else {
 		hDstDS = GDALCreate( hDriver, filename.c_str(), nPixels, nLines, nlyrs, eDT, NULL );
 	}
@@ -258,7 +258,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 					return out;
 				}
 			} else {
-				if (!out.create_gdalDS(hDstDS, filename, driver, opt.gdal_options)) {
+				if (!out.create_gdalDS(hDstDS, filename, driver, false, opt.gdal_options)) {
 					GDALClose( hSrcDS );
 					//GDALClose( hDstDS );
 					return out;
@@ -298,7 +298,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out = SpatRaster(filename);
 	}
 
-	if (use_crs) out.setSRS({crs});	// fix the need for this
+	//if (use_crs) out.setSRS({crs});	// fix the need for this
 	return out;
 }
 

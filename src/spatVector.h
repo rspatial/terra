@@ -165,6 +165,14 @@ class SpatVector {
 			lyr.df.add_column(dtype, name);
 		};
 
+		bool remove_column(std::string field) {
+			return lyr.df.remove_column(field);
+		};
+		bool remove_column(int i) {
+			return lyr.df.remove_column(i);
+		};
+
+
 		template <typename T>
 		bool add_column(std::vector<T> x, std::string name) {
 			return lyr.df.add_column(x, name);

@@ -362,7 +362,7 @@ bool SpatVector::read(std::string fname) {
 
 SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 	SpatVector out;
-	bool success = out.read_ogr(poDS);
+	out.read_ogr(poDS);
 	return out;
 }
 

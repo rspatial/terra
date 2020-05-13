@@ -193,6 +193,7 @@ void SpatDataFrame::resize_cols(unsigned n) {
 	}	
 }
 
+
 bool SpatDataFrame::add_column(std::vector<double> x, std::string name) {
 	unsigned nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false; 
@@ -202,6 +203,32 @@ bool SpatDataFrame::add_column(std::vector<double> x, std::string name) {
 	dv.push_back(x);
 	return true;
 }
+
+
+bool SpatDataFrame::remove_column(int i) {
+	
+	if ((i < 0) | ((size_t)i > ncol())) {
+		return false;
+	}
+	size_t dtype = itype[i];
+	size_t place = iplace[i];
+	itype.erase(itype.begin()+i);
+	iplace.erase(itype.begin()+i);
+	if (dtype == 0) {
+		dv.erase(dv.begin()+place);
+	} else if (dtype == 1) {
+		iv.erase(iv.begin()+place);
+	} else {
+		sv.erase(sv.begin()+place);
+	}	
+	return true;
+}
+
+bool SpatDataFrame::remove_column(std::string field) {
+	int i = where_in_vector(field, names);	
+	return remove_column(i);
+}
+
 
 
 bool SpatDataFrame::add_column(std::vector<long> x, std::string name) {

@@ -126,7 +126,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 		return;
 	}
 #else
-	s.srs.proj4 = lrtrim_copy(crs[0]);
+	if (crs.size() == 1) s.srs.proj4 = lrtrim_copy(crs[0]);
 #endif
 
 	for (unsigned i=0; i < rcl[2]; i++) {
@@ -247,10 +247,10 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 	std::vector<unsigned> rcl = {nr, nc, nl};
 	std::vector<double> ext = {e.xmin, xmax, e.ymin, ymax};
 
-	SpatRaster out2(rcl, ext, {""});
-	out2.srs = srs;
-	out2.source[0].srs = srs;
-	return out2;
+	out = SpatRaster(rcl, ext, {""});
+	out.srs = srs;
+	out.source[0].srs = srs;
+	return out;
 }
 
 
