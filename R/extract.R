@@ -27,7 +27,7 @@
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, ..., method="simple", touches=is.lines(y), drop=FALSE) { 
+function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", drop=FALSE) { 
     
 	r <- x@ptr$extractVector(y@ptr, touches[1], method[1])
 	x <- show_messages(x, "extract")

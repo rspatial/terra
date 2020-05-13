@@ -13,8 +13,7 @@ Transfer vector data to a raster
 
 \usage{
 \S4method{rasterize}{SpatVector,SpatRaster}(x, y, field=1:nrow(x), background=NA, update=FALSE,
-                   touches=is.lines(mask), filename="", overwrite=FALSE, wopt=list(), ...)
-
+                   touches=is.lines(x), filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

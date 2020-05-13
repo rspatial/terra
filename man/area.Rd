@@ -19,6 +19,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 \S4method{area}{SpatRaster}(x, filename="", overwrite=FALSE,  wopt=list(), ...)
 
 \S4method{area}{SpatVector}(x, ...)
+
 \S4method{perimeter}{SpatVector}(x)
 }
 

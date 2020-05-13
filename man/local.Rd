@@ -44,12 +44,19 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \usage{
 \S4method{min}{SpatRaster}(x, ..., na.rm=FALSE)
+
 \S4method{max}{SpatRaster}(x, ..., na.rm=FALSE)
+
 \S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
+
 \S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
+
 \S4method{median}{SpatRaster}(x, na.rm=FALSE, ...)
+
 \S4method{stdev}{SpatRaster}(x, ..., na.rm=FALSE)
+
 \S4method{which.min}{SpatRaster}(x)
+
 \S4method{which.max}{SpatRaster}(x)
 }
 

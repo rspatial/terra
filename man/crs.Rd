@@ -21,8 +21,11 @@ Get or set the coordinate reference system (CRS) of a SpatRaster object.
 
 \usage{
 \S4method{crs}{SpatRaster}(x)
+
 \S4method{crs}{SpatVector}(x)
+
 \S4method{crs}{SpatRaster}(x, ...)<-value
+
 \S4method{crs}{SpatVector}(x, ...)<-value
 }
 

@@ -245,7 +245,7 @@ setMethod("quantile", signature(x="SpatRaster"),
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field=1:nrow(x), background=NA, update=FALSE, touches=is.lines(v), filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, y, field=1:nrow(x), background=NA, update=FALSE, touches=is.lines(x), filename="", overwrite=FALSE, wopt=list(), ...) { 
 		# , update=FALSE, 
 		inverse=FALSE # use "mask" for TRUE
 		opt <- .runOptions(filename, overwrite, wopt)

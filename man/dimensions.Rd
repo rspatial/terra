@@ -52,11 +52,17 @@ Set the number of rows or columns or layers. When setting dimensions, all source
 
 \usage{
 \S4method{ncol}{SpatRaster}(x)
+
 \S4method{nrow}{SpatRaster}(x)
+
 \S4method{nlyr}{SpatRaster}(x)
+
 \S4method{ncell}{SpatRaster}(x)
+
 \S4method{size}{SpatRaster}(x)
+
 \S4method{nsrc}{SpatRaster}(x)
+
 \S4method{res}{SpatRaster}(x)
 
 ncol(x, ...) <- value

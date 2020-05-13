@@ -18,9 +18,13 @@ Test whether a SpatRaster or SpatVector has a longitude/latitude coordinate refe
 
 \usage{
 \S4method{isLonLat}{SpatRaster}(x, ...)
+
 \S4method{isLonLat}{SpatVector}(x, ...)
+
 \S4method{isGlobalLonLat}{SpatRaster}(x, ...)
+
 \S4method{couldBeLonLat}{SpatRaster}(x, warn=TRUE, ...)
+
 \S4method{couldBeLonLat}{SpatVector}(x, warn=TRUE, ...)
 }
 

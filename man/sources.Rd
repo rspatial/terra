@@ -16,6 +16,7 @@ Get the data sources of a SpatRaster and the number of layers by source. Sources
 
 \usage{
 \S4method{sources}{SpatRaster}(x, ...)
+
 \S4method{hasValues}{SpatRaster}(x, ...)
 }
 

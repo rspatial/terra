@@ -19,6 +19,7 @@ if \code{filled=TRUE}, a new filled contour plot is made. See \code{\link[graphi
 
 \usage{
 \S4method{contour}{SpatRaster}(x, maxcells=100000, filled=FALSE, ...)
+
 \S4method{as.contour}{SpatRaster}(x, maxcells=100000, ...)
 }
 

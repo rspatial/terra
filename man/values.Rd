@@ -18,8 +18,11 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
 
 \usage{
 \S4method{values}{SpatRaster}(x, mat=TRUE, ...)
+
 \S4method{values}{SpatRaster,ANY}(x, ...)<-value
+
 \S4method{values}{SpatVector}(x, ...)
+
 \S4method{values}{SpatVector,data.frame}(x, ...)<-value
 }
 

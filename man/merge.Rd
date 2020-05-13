@@ -19,6 +19,7 @@ There is a also a method for merging SpatVector with a data.frame.
 
 \usage{
 \S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., filename="", overwrite=FALSE, wopt=list())
+
 \S4method{merge}{SpatExtent,SpatExtent}(x, y, ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)

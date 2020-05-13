@@ -27,12 +27,19 @@ Coercion to other object types or other vector types
 
 \usage{
 \S4method{as.vector}{SpatRaster}(x, mode='any')
+
 \S4method{as.matrix}{SpatRaster}(x, wide=FALSE, ...)
+
 \S4method{as.data.frame}{SpatRaster}(x, xy=FALSE, cells=FALSE, ...)
+
 \S4method{as.array}{SpatRaster}(x, ...)
+
 \S4method{as.polygons}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
+
 \S4method{as.points}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
+
 \S4method{as.lines}{SpatVector}(x, ...)
+
 \S4method{as.points}{SpatVector}(x, ...)
 }
 

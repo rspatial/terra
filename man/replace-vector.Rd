@@ -14,6 +14,7 @@ Replace values of a SpatVector.
 
 \usage{
 \S4method{$}{SpatVector}(x, name)
+
 \S4method{$}{SpatVector}(x, name)<-value
 }
 

@@ -24,6 +24,7 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
 
 \usage{
 \S4method{ext}{SpatRaster}(x, ...)
+
 \S4method{ext}{SpatRaster,SpatExtent}(x)<-value
 }
 

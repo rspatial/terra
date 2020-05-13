@@ -41,16 +41,27 @@ Get or set single values of an extent. Values can be set for a SpatExtent or Spa
 
 \usage{
 \S4method{xmin}{SpatExtent}(x)
+
 \S4method{xmax}{SpatExtent}(x)
+
 \S4method{ymin}{SpatExtent}(x)
+
 \S4method{ymax}{SpatExtent}(x)
+
 \S4method{xmin}{SpatRaster}(x)
+
 \S4method{xmax}{SpatRaster}(x)
+
 \S4method{ymin}{SpatRaster}(x)
+
 \S4method{ymax}{SpatRaster}(x)
+
 \S4method{xmin}{SpatVector}(x)
+
 \S4method{xmax}{SpatVector}(x)
+
 \S4method{ymin}{SpatVector}(x)
+
 \S4method{ymax}{SpatVector}(x)
 
 xmin(x, ...) <- value

@@ -27,11 +27,15 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 
 \usage{
 \S4method{readStart}{SpatRaster}(x, ...)
+
 \S4method{readStop}{SpatRaster}(x)
+
 \S4method{readValues}{SpatRaster}(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...)
 
 \S4method{writeStart}{SpatRaster,character}(x, filename="", overwrite=FALSE, wopt=list(), ...)
+
 \S4method{writeStop}{SpatRaster}(x)
+
 \S4method{writeValues}{SpatRaster,vector}(x, v, start, nrows, ...)
 }
 

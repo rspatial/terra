@@ -14,6 +14,7 @@ Pack a Spat* object so that it can be saved as an R object to disk, or passed ov
 
 \usage{
 \S4method{pack}{SpatRaster}(x, ...)
+
 \S4method{pack}{SpatVector}(x, ...)
 }
 

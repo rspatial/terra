@@ -15,8 +15,11 @@ Get or set the names of the layers of a SpatRaster or the attributes of a SpatVe
 
 \usage{
 \S4method{names}{SpatRaster}(x)
+
 \S4method{names}{SpatRaster}(x)<-value
+
 \S4method{names}{SpatVector}(x)
+
 \S4method{names}{SpatVector}(x)<-value
 }
 
