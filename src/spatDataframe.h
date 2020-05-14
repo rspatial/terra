@@ -74,7 +74,9 @@ class SpatDataFrame {
 		
 		bool rbind(SpatDataFrame &x);
 		bool cbind(SpatDataFrame &x);
-		
+
+		SpatDataFrame unique(int col);
+		std::vector<int> getIndex(int col, SpatDataFrame &x);
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> nms);
 		

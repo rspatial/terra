@@ -175,7 +175,6 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 	OGRLayer *poLayer = poDS->GetLayer(0);
 	lyr.df = readAttributes(poLayer);
 
-
 	OGRwkbGeometryType wkbgeom = wkbFlatten( poLayer ->GetGeomType());
 	OGRFeature *poFeature;
 	OGRPoint ogrPt;

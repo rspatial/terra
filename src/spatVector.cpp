@@ -78,6 +78,17 @@ SpatGeom::SpatGeom(SpatGeomType g) {
 	gtype = g;
 }
 
+bool SpatGeom::unite(SpatGeom g) {
+	if (parts.size() == 0) {
+		parts = g.parts;
+		extent = g.extent;
+	} else {
+		parts.insert(parts.end(), g.parts.begin(), g.parts.end());
+		extent.unite(g.extent);
+	}
+	return true;
+}
+
 
 bool SpatGeom::addPart(SpatPart p) {
 	parts.push_back(p);

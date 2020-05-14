@@ -1,8 +1,38 @@
+
 #include "spatRaster.h"
 
-//#include "gdal_utils.h"
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
+
+
+/*
+std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value) {
+	std::vector<OGRGeometry *> g;
+	OGRLayer *poLayer = src->GetLayer(0);
+	poLayer->ResetReading();
+	OGRFeature *poFeature;
+	
+	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		g.push_back(poGeometry);
+	}
+	return g;
+}
+
+union_cascated
+// create output dataset 
+	GDALDataset* dst;
+// get unique values in field
+// loop over unique values
+	// for value in uvalues
+	std::vector<OGRGeometry *> gvec = geoms_from_ds(src, field, value);
+	OGRGeometry *geom;
+	geom = (OGRGeometry *) gvec.data();
+	OGRGeometry *gout;
+	gout = geom->UnionCascaded();
+// set geometry to output	
+   return dst;
+*/
 
 
 SpatVector SpatRaster::polygonize(bool queen) {
@@ -81,8 +111,13 @@ SpatVector SpatRaster::polygonize(bool queen) {
 		out.setError("polygonize error");
 		return out;
 	}
+	GDALClose(srcDS);
 
 	out.read_ogr(poDS);
+	GDALClose(poDS);
+
+	out = out.aggregate(name, false);
+	
 	return out;
 }
 

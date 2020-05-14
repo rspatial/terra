@@ -24,7 +24,7 @@ CXX_STD = CXX11
 
 all: clean winlibs
 
-#winlibs:
+winlibs:
 	mkdir -p ../inst
 	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" --vanilla "../tools/winlibs.R" $(VERSION)
 	cp -r $(RWINLIB)/share/gdal ../inst/

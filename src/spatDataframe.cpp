@@ -193,7 +193,7 @@ void SpatDataFrame::resize_cols(unsigned n) {
 	}	
 }
 
-
+// use template instead
 bool SpatDataFrame::add_column(std::vector<double> x, std::string name) {
 	unsigned nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false; 
@@ -315,5 +315,60 @@ std::vector<std::string> SpatDataFrame::get_datatypes() {
 		stype[i] = types[itype[i]]; 
 	}
 	return stype;
+}
+
+
+
+// only doing this for one column for now
+SpatDataFrame SpatDataFrame::unique(int col) {
+	SpatDataFrame out = subset_cols(col);
+	if (out.itype[0] == 0) {
+		std::sort(out.dv[0].begin(), out.dv[0].end());
+		out.dv[0].erase(std::unique(out.dv[0].begin(), out.dv[0].end()), out.dv[0].end());	
+	} else if (out.itype[0] == 1) {
+		std::sort(out.iv[0].begin(), out.iv[0].end());
+		out.iv[0].erase(std::unique(out.iv[0].begin(), out.iv[0].end()), out.iv[0].end());	
+	} else {
+		std::sort(out.sv[0].begin(), out.sv[0].end());
+		out.sv[0].erase(std::unique(out.sv[0].begin(), out.sv[0].end()), out.sv[0].end());	
+	}
+	return out;
+}
+
+
+std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
+	size_t nd = nrow();
+	x = unique(col);
+	size_t nu = x.nrow();
+	std::vector<int> idx(nd, -1);
+	if (itype[0] == 0) {
+		for (size_t i=0; i<nd; i++) {
+			for (size_t j=0; j<nu; j++) {
+				if (dv[0][i] == x.dv[0][j]) {
+					idx[i] = j;
+					continue;
+				}
+			}
+		}
+	} else if (itype[0] == 1) {
+		for (size_t i=0; i<nd; i++) {
+			for (size_t j=0; j<nu; j++) {
+				if (iv[0][i] == x.iv[0][j]) {
+					idx[i] = j;
+					continue;
+				}
+			}
+		}
+	} else {
+		for (size_t i=0; i<nd; i++) {
+			for (size_t j=0; j<nu; j++) {
+				if (sv[0][i] == x.sv[0][j]) {
+					idx[i] = j;
+					continue;
+				}
+			}
+		}
+	}
+	return idx;
 }
 

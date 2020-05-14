@@ -61,6 +61,7 @@ class SpatGeom {
 		SpatGeom();
 		SpatGeom(SpatGeomType g);
 		SpatGeom(SpatPart p);
+		bool unite(SpatGeom g);
 		bool addPart(SpatPart p);
 		bool addHole(SpatHole h);
 		bool setPart(SpatPart p, unsigned i);
@@ -190,6 +191,8 @@ class SpatVector {
 		SpatVector point_buffer(double d, unsigned quadsegs);
 
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
+
+		SpatVector aggregate(std::string field, bool dissolve);
 
 //geos
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
