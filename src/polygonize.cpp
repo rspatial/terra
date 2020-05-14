@@ -1,7 +1,6 @@
 #include "spatRaster.h"
 
-
-#include "gdal_utils.h"
+//#include "gdal_utils.h"
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
 
@@ -78,14 +77,10 @@ SpatVector SpatRaster::polygonize(bool queen) {
 	//std::vector <char *> options_char = string_to_charpnt(options);
 
 	CPLErr err = GDALPolygonize(poBand, NULL, poLayer, 0, NULL, NULL, NULL);
-
-//GDALPolygonize( GDALRasterBandH hSrcBand,
-//                GDALRasterBandH hMaskBand,
- //               OGRLayerH hOutLayer, int iPixValField,
-//                char **papszOptions,
-//                GDALProgressFunc pfnProgress,
-//                void * pProgressArg );
-
+	if (err == 4) {
+		out.setError("polygonize error");
+		return out;
+	}
 
 	out.read_ogr(poDS);
 	return out;
