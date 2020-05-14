@@ -333,6 +333,8 @@ RCPP_MODULE(spat){
 		.method("area", &SpatRaster::area, "area")
 		.method("as_points", &SpatRaster::as_points, "as_points")
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
+		.method("polygonize", &SpatRaster::polygonize, "polygonize")
+		
 		.method("atan2", &SpatRaster::atan_2, "atan2")
 
 		.method("bilinearValues", &SpatRaster::bilinearValues, "bilin")

@@ -47,7 +47,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 r <- rast(ncol=5, nrow=5, xmin=0, xmax=5, ymin=0, ymax=5)
 values(r) <- 1:25
 xy <- rbind(c(0.5,0.5), c(2.5,2.5))
-p <- vect(xy)
+p <- vect(xy, crs="+proj=longlat +datum=WGS84")
 
 extract(r, xy)
 extract(r, p)

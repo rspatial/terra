@@ -37,7 +37,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
     poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
     if( poDS == NULL ) {
-        setError("Creation of output file failed" );
+        setError("Creation of output dataset failed" );
         return poDS;
     }
 
@@ -92,10 +92,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 		OGRFieldDefn oField(nms[i].c_str(), otype);
 		if (otype == OFTString) {
-			oField.SetWidth(32);
+			oField.SetWidth(32); // needs to be computed
 		}
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
-			setError( "Creating Name field failed" );
+			setError( "Creating Name field failed");
 			return poDS;
 		}
 	}

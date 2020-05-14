@@ -1,4 +1,3 @@
-#include "gdalwarper.h"
 #include "ogr_spatialref.h"
 
 #include "spatRaster.h"
