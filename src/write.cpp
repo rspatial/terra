@@ -21,6 +21,44 @@
 #include "math_utils.h"
 
 
+
+bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
+
+	if (vals.size() == size()) {
+		source[0].values = vals;
+		return true;
+	} 
+
+	if (source[0].values.size() == 0) {
+		source[0].values = std::vector<double>(size(), NAN);
+	}
+	size_t nc = ncell();
+	size_t chunk = nrows * ncols;
+
+	//complete rows
+	if (startcol==0 && ncols==ncol()) {
+		for (size_t i=0; i<nlyr(); i++) {
+			size_t off1 = i * chunk; 
+			size_t off2 = startrow * ncols + i * nc; 
+			std::copy( vals.begin()+off1, vals.begin()+off1+chunk, source[0].values.begin()+off2 );
+		}
+		
+	 // block writing	
+	} else {
+		for (size_t i=0; i<nlyr(); i++) {
+			unsigned off = i*chunk;
+			for (size_t r=0; r<nrows; r++) {
+				size_t start1 = r * ncols + off;
+				size_t start2 = (startrow+r)*ncol() + i*nc + startcol;
+				std::copy(vals.begin()+start1, vals.begin()+start1+ncols, source[0].values.begin()+start2);
+			}
+		}
+	}
+	return true;
+}
+
+
+
 void SpatRaster::fill(double x) {
  	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
@@ -296,3 +334,5 @@ bool SpatRaster::writeStartFs(std::string filename, std::string format, std::str
 	return true;
 }
 */
+
+

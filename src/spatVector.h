@@ -89,6 +89,7 @@ class SpatVector {
 
 		SpatVector();
 		SpatVector(SpatGeom g);
+		SpatVector(SpatExtent e, std::string crs);
 
 		SpatLayer lyr;
 		std::vector<SpatLayer> lyrs;

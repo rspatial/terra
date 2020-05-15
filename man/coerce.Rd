@@ -14,6 +14,7 @@
 \alias{as.array,SpatRaster-method}
 \alias{as.data.frame,SpatRaster-method}
 \alias{as.polygons,SpatRaster-method}
+\alias{as.polygons,SpatExtent-method}
 \alias{as.points,SpatRaster-method}
 \alias{as.lines,SpatVector-method}
 \alias{as.points,SpatVector-method}
@@ -36,6 +37,8 @@ Coercion to other object types or other vector types
 
 \S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, ...)
 
+\S4method{as.polygons}{SpatExtent}(x, crs="", ...)
+
 \S4method{as.points}{SpatRaster}(x, values=TRUE, ...)
 
 \S4method{as.lines}{SpatVector}(x, ...)
@@ -53,6 +56,7 @@ Coercion to other object types or other vector types
 \item{trunc}{logical; truncate values to integers. If \code{FALSE} the object returned can be very large}
 \item{dissolve}{logical; combine cells with the same values?}
 \item{values}{logical; include cell values as attributes? If \code{FALSE} the cells are not dissolved and the object returned can be very large}
+\item{crs}{character. The coordinate reference system}
 \item{...}{additional arguments. None implemented}
 }
 
