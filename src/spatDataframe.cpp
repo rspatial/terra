@@ -241,6 +241,11 @@ bool SpatDataFrame::add_column(std::vector<long> x, std::string name) {
 	return true;
 }
 
+bool SpatDataFrame::add_column(std::vector<int> x, std::string name) {
+	std::vector<long> v(x.begin(), x.end());	
+	return add_column(v, name);
+}
+
 
 bool SpatDataFrame::add_column(std::vector<std::string> x, std::string name) {
 	unsigned nr = nrow();
@@ -343,6 +348,11 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 	std::vector<int> idx(nd, -1);
 	if (itype[0] == 0) {
 		for (size_t i=0; i<nd; i++) {
+			//for (size_t j=0; j<nu; j++) {
+			//	if ((std::isnan(x.dv[0][j])) && (std::isnan(dv[0][i]))) {
+			//		idx[i] = j;
+			//		continue;						
+			//	} else 
 			for (size_t j=0; j<nu; j++) {
 				if (dv[0][i] == x.dv[0][j]) {
 					idx[i] = j;

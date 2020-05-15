@@ -59,6 +59,7 @@ class SpatDataFrame {
 		void add_column(unsigned dtype, std::string name);
 		bool add_column(std::vector<double> x, std::string name);
 		bool add_column(std::vector<long> x, std::string name);
+		bool add_column(std::vector<int> x, std::string name);
 		bool add_column(std::vector<std::string> x, std::string name);
 		
 		void insert_column(std::vector<double>, size_t i);

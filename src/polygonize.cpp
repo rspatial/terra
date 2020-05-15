@@ -1,5 +1,6 @@
 
 #include "spatRaster.h"
+#include "string_utils.h"
 
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
@@ -35,7 +36,7 @@ union_cascated
 */
 
 
-SpatVector SpatRaster::polygonize(bool queen) {
+SpatVector SpatRaster::polygonize(bool trunc) {
 
 	SpatVector out;
 	SpatOptions opt;
@@ -58,8 +59,6 @@ SpatVector SpatRaster::polygonize(bool queen) {
 	}
     GDALDataset *srcDS;
 	srcDS = srcDS->FromHandle(rstDS);
-
-	std::vector<std::string> options;
 
     GDALDataset *poDS = NULL;
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
@@ -95,7 +94,7 @@ SpatVector SpatRaster::polygonize(bool queen) {
     }
 	if (SRS != NULL) SRS->Release();
 
-	OGRFieldDefn oField(name.c_str(), OFTInteger);
+	OGRFieldDefn oField(name.c_str(), trunc ?  OFTInteger : OFTReal);
 	if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
 		out.setError( "Creating Name field failed");
 		return out;
@@ -104,9 +103,15 @@ SpatVector SpatRaster::polygonize(bool queen) {
 	GDALRasterBand  *poBand;
 	poBand = srcDS->GetRasterBand(1);
 
-	//std::vector <char *> options_char = string_to_charpnt(options);
-
-	CPLErr err = GDALPolygonize(poBand, NULL, poLayer, 0, NULL, NULL, NULL);
+	//char **papszOptions = NULL;
+	//if (queen) papszOptions = CSLSetNameValue(papszOptions, "8CONNECTED", "-8");
+	
+	CPLErr err;	
+	if (trunc) {
+		err = GDALPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+	} else {
+		err = GDALFPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+	}
 	if (err == 4) {
 		out.setError("polygonize error");
 		return out;

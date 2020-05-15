@@ -343,9 +343,43 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 
 */
 
-SpatVector SpatRaster::as_polygons(bool values, bool narm) {
-	if (!values) narm=false;
+SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool narm) {
+
+	if (!hasValues()) {
+		values = false;
+		narm = false;
+		dissolve=false;
+	}
+	
+	if (dissolve) {
+		return polygonize(trunc);
+	}
+
 	SpatVector vect;
+	if (!canProcessInMemory(12)) {
+		vect.setError("the raster is too large");
+		return vect;
+	}
+
+	bool remove_values = false;
+	if (narm) {
+		if (!values) remove_values = true;
+		values=true;
+	}
+
+	unsigned nl = nlyr();
+	unsigned nc = ncell();
+	if (values) {
+		std::vector<double> v = getValues();
+		std::vector<std::string> nms = getNames();
+		for (size_t i=0; i<nl; i++) {
+			size_t offset = i * nc;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nc);
+			vect.add_column(vv, nms[i]);
+		}
+	}
+	
+
 	SpatGeom g;
 	g.gtype = polygons;
 	double xr = xres()/2;
@@ -356,7 +390,22 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 	std::vector<double> cells(ncell()) ;
 	std::iota (std::begin(cells), std::end(cells), 0);
 	std::vector< std::vector<double> > xy = xyFromCell(cells);
-	for (size_t i=0; i<ncell(); i++) {
+	for (int i=nc-1; i>=0; i--) {
+		if (narm) {
+			bool erase = false;
+			for (size_t j=0; j<nl; j++) {
+				if (std::isnan(vect.lyr.df.dv[j][i])) {
+					erase=true;
+					break;
+				}
+			}
+			if (erase) {
+				for (size_t j=0; j<nl; j++) {
+					vect.lyr.df.dv[j].erase (vect.lyr.df.dv[j].begin()+i);
+				}
+				continue; // skip the geom
+			}
+		}
 		getCorners(x, y, xy[0][i], xy[1][i], xr, yr);
 		SpatPart p(x, y);
 		g.addPart(p);
@@ -364,19 +413,10 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 		g.parts.resize(0);
 	}
 
-	if (values) {
-		unsigned nl = nlyr();
-		unsigned nc = ncell();
-		std::vector<double> v = getValues();
-		std::vector<std::string> nms = getNames();
-		for (size_t i=0; i<nl; i++) {
-			size_t offset = i * nc;
-			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nc);
-			vect.add_column(vv, nms[i]);
-		}
-		if (narm) {
-            // loop over dataframe and remove rows if value is na
-		}
+	std::reverse(std::begin(vect.lyr.geoms), std::end(vect.lyr.geoms));			
+
+	if (remove_values) {
+		vect.lyr.df = SpatDataFrame();		
 	}
 	vect.lyr.srs = srs;
 	return(vect);

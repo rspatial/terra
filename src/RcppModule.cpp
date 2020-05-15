@@ -167,7 +167,7 @@ RCPP_MODULE(spat){
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
 		.method("values", &getDataFrame, "get data.frame")
-		
+		.method("unique", &SpatDataFrame::unique)
 		.field("messages", &SpatDataFrame::msg, "messages")		
 	;
 

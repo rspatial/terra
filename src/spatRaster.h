@@ -344,8 +344,8 @@ class SpatRaster {
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);
 		SpatRaster apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt);
 
-		SpatVector as_polygons(bool values, bool narm);
-		SpatVector polygonize(bool queen);
+		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm);
+		SpatVector polygonize(bool trunc);
 		SpatVector as_points(bool values, bool narm);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 

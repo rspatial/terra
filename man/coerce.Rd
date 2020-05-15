@@ -34,9 +34,9 @@ Coercion to other object types or other vector types
 
 \S4method{as.array}{SpatRaster}(x, ...)
 
-\S4method{as.polygons}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
+\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, ...)
 
-\S4method{as.points}{SpatRaster}(x, values=FALSE, na.rm=FALSE, ...)
+\S4method{as.points}{SpatRaster}(x, values=TRUE, ...)
 
 \S4method{as.lines}{SpatVector}(x, ...)
 
@@ -50,8 +50,9 @@ Coercion to other object types or other vector types
 \item{xy}{logical}
 \item{cells}{logical}
 \item{mode}{this argument is ignored}
-\item{values}{logical; include cell values as attributes?}
-\item{na.rm}{logical; exclude cells with NAs?}
+\item{trunc}{logical; truncate values to integers. If \code{FALSE} the object returned can be very large}
+\item{dissolve}{logical; combine cells with the same values?}
+\item{values}{logical; include cell values as attributes? If \code{FALSE} the cells are not dissolved and the object returned can be very large}
 \item{...}{additional arguments. None implemented}
 }
 

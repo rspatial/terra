@@ -31,12 +31,6 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	SpatDataFrame uv;
 	std::vector<int> idx = lyr.df.getIndex(i, uv);
 
-	if (dissolve) {
-		out.setError("cannot dissolve yet");
-		return out;
-	}
-	
-	//size_t ngeoms = size();
 	for (size_t i=0; i<uv.nrow(); i++) {
 		SpatGeom g;
 		g.gtype = lyr.geoms[0].gtype;
@@ -50,6 +44,11 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	
 	out.lyr.srs = lyr.srs;
 	out.lyr.df  = uv; 
+
+	if (dissolve) {
+		out.addWarning("cannot dissolve yet");
+	}
+	
 	return out;
 }
 
