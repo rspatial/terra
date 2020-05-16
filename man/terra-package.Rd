@@ -273,7 +273,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{disaggregate}} \tab \bold{explode}: turn polygon parts into separate polygons \cr
   \code{\link{crop}} \tab \bold{clip} vector data using a rectangle (SpatExtent )\cr
   \code{\link{select}} \tab \bold{select} - interactively select spatial features\cr
-  \code{\link(click} \tab \bold{identify} attributes by clicking on a map\cr
+  \code{\link{click}} \tab \bold{identify} attributes by clicking on a map\cr
   \code{\link{merge}} \tab \bold{Join table} \cr
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatRaster objects \cr
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
