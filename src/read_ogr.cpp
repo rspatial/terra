@@ -41,13 +41,16 @@ std::string geomType(OGRLayer *poLayer) {
 
 
 SpatDataFrame readAttributes(OGRLayer *poLayer) {
+	SpatDataFrame df;
+
+    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
+	size_t nfields = poFDefn->GetFieldCount();
+	if (nfields == 0) return df;
+
 	OGRFieldType ft;
     poLayer->ResetReading();
     OGRFeature *poFeature;
-    OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
-	unsigned nfields = poFDefn->GetFieldCount();
 	OGRFieldDefn *poFieldDefn;
-	SpatDataFrame df;
 	df.resize_cols(nfields);
 	bool first = true;
 	unsigned dtype;
@@ -141,8 +144,8 @@ std::string getDs_PRJ(GDALDataset *poDataset) {
 }
 
 
-
 bool SpatVector::read_ogr(GDALDataset *poDS) {
+
 
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
 	std::string wkt, errmsg;
@@ -176,6 +179,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 	lyr.df = readAttributes(poLayer);
 
 	OGRwkbGeometryType wkbgeom = wkbFlatten( poLayer ->GetGeomType());
+
 	OGRFeature *poFeature;
 	OGRPoint ogrPt;
 	unsigned np, nh, ng;
@@ -260,7 +264,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 			}
 			addGeom(g);
 		}
-	} else if (wkbgeom == wkbPolygon) {
+	} else if (wkbgeom == wkbPolygon || wkbgeom == wkbMultiPolygon ) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = poFeature ->GetGeometryRef();
 			SpatGeom g;
@@ -351,7 +355,7 @@ bool SpatVector::read(std::string fname) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
-        setError("Cannot open file");
+        setError("Cannot open this file");
 		return false;
     }
 	bool success = read_ogr(poDS);

@@ -131,6 +131,13 @@ SpatVector::SpatVector(SpatGeom g) {
 	addGeom(g);
 };
 
+/*
+SpatVector::SpatVector(const SpatVector &x) {
+	lyr.srs = x.lyr.srs;
+	lyr.df = SpatDataFrame(x.lyr.df);	
+}
+*/
+
 SpatVector::SpatVector(SpatExtent e, std::string crs) {
 	SpatPart p;
 	p.x = { e.xmin, e.xmin, e.xmax, e.xmax, e.xmin };

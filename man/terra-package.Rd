@@ -32,6 +32,7 @@ raster package \tab terra package\cr
 \code{stackSelect}\tab\code{\link{collapse}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
 \code{sampleRegular}\tab\code{\link{spatSample}}\cr
+\code{sampleRandom}\tab\code{\link{spatSample}}\cr
 }
 
 Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet. 
@@ -99,7 +100,7 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
     \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
     \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
-    \code{quantile} \tab Quantiles \cr
+    \code{\link{quantile}} \tab Quantiles \cr
     \code{summary} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
@@ -155,8 +156,7 @@ Apart from the function listed below, you can also use indexing with \code{[} fo
     \code{\link{as.matrix}} \tab Get cell values as a matrix \cr
     \code{\link{as.array}} \tab Get cell values as an array \cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (e.g., by cell, coordinates, polygon)\cr
-    \code{sampleRandom} \tab Random sample \cr
-    \code{\link{spatSample}} \tab Regular sample \cr
+    \code{\link{spatSample}} \tab Regular or random sample \cr
     \code{\link{minmax}} \tab Get the minimum and maximum value of the cells of a SpatRaster (if known) \cr
     \code{\link{setMinMax}} \tab Compute the minimum and maximum value of a SpatRaster if these are not known \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -269,14 +269,14 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{union} or "+" \tab \bold{union} polygons\cr
   \code{cover} \tab \bold{update} and \bold{identity} a polygons\cr
   \code{symdif} \tab\bold{symmetrical difference} of two polygons \cr 
-  \code{aggregate} \tab \bold{dissolve} smaller polygons into larger ones \cr
-  \code{disaggregate} \tab \bold{explode}: turn polygon parts into separate polygons \cr
-  \code{crop} \tab \bold{clip} vector data using a rectangle (SpatExtent )\cr
-  \code{select} \tab \bold{select} - interactively select spatial features\cr
-  \code{click} \tab \bold{identify} attributes by clicking on a map\cr
-  \code{merge} \tab \bold{Join table} \cr
-  \code{extract} \tab spatial queries between SpatVector and SpatRaster objects \cr
-  \code{as.data.frame} \tab coerce coordinates into a data.frame\cr
+  \code{\link{aggregate}} \tab \bold{dissolve} smaller polygons into larger ones \cr
+  \code{\link{disaggregate}} \tab \bold{explode}: turn polygon parts into separate polygons \cr
+  \code{\link{crop}} \tab \bold{clip} vector data using a rectangle (SpatExtent )\cr
+  \code{\link{select}} \tab \bold{select} - interactively select spatial features\cr
+  \code{\link(click} \tab \bold{identify} attributes by clicking on a map\cr
+  \code{\link{merge}} \tab \bold{Join table} \cr
+  \code{\link{extract}} \tab spatial queries between SpatVector and SpatRaster objects \cr
+  \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 }

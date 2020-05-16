@@ -152,14 +152,12 @@ setMethod("diff", signature(x="SpatRaster"),
 )
 
 
-setMethod("disaggregate", signature(x="SpatRaster"), 
-	function(x, fact, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$disaggregate(fact, opt)
+setMethod("disaggregate", signature(x="SpatVector"), 
+	function(x, ...) {
+		x@ptr <- x@ptr$disaggregate()
 		show_messages(x, "disaggregate")
 	}
 )
-
 
 
 setMethod("flip", signature(x="SpatRaster"), 
@@ -340,6 +338,13 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 		show_messages(x, "resample")
 	}
 )
+
+setMethod("summary", signature(object="SpatRaster"), 
+	function(object, size=100000, ...)  {
+		summary(spatSample(object, size, method="regular", ...))
+	}
+)
+
 
 #setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
 #	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {

@@ -166,6 +166,8 @@ RCPP_MODULE(spat){
 		.method("add_column_double", (bool (SpatDataFrame::*)(std::vector<double>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
+		.method("cbind", &SpatDataFrame::cbind)
+		.method("rbind", &SpatDataFrame::rbind)
 		.method("values", &getDataFrame, "get data.frame")
 		.method("unique", &SpatDataFrame::unique)
 		.field("messages", &SpatDataFrame::msg, "messages")		
@@ -218,7 +220,11 @@ RCPP_MODULE(spat){
 
 		.method("write", &SpatVector::write, "write")	
 		
+		.method("aggregate", &SpatVector::aggregate, "aggregate")	
+		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")	
 		.method("buffer", &SpatVector::buffer, "buffer")	
+		.method("is_valid", &SpatVector::is_valid, "is_valid")	
+		.method("make_valid", &SpatVector::make_valid, "make_valid")	
 #ifdef useGEOS
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
 		.method("intersect", &SpatVector::intersect, "intersect")		

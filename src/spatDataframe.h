@@ -23,6 +23,9 @@
 
 class SpatDataFrame {
 	public:
+		SpatDataFrame();
+		SpatDataFrame skeleton();
+	
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }

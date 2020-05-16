@@ -95,13 +95,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			oField.SetWidth(32); // needs to be computed
 		}
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
-			setError( "Creating Name field failed");
+			setError( "Field creation failed for: " + nms[i]);
 			return poDS;
 		}
 	}
 	
-	unsigned r = 0;
-	OGRPoint pt;
+	//unsigned r = 0;
 
 	for (size_t i=0; i<ngeoms; i++) {
 		
@@ -109,16 +108,17 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
 			if (tps[j] == "double") {
-				poFeature->SetField(j, lyr.df.getDvalue(r, j));
+				poFeature->SetField(j, lyr.df.getDvalue(i, j));
 			} else if (tps[j] == "long") {
-				poFeature->SetField(j, (GIntBig)lyr.df.getIvalue(r, j));
+				poFeature->SetField(j, (GIntBig)lyr.df.getIvalue(i, j));
 			} else {
-				poFeature->SetField(j, lyr.df.getSvalue(r, j).c_str());
+				poFeature->SetField(j, lyr.df.getSvalue(i, j).c_str());
 			}
 		}
-		r++;
+		//r++;
 	
-// points -- also need to do mutlipoints
+// points -- also need to do multipoints
+		OGRPoint pt;
 		if (wkb == wkbPoint) {
 			SpatGeom g = getGeom(i);
 			pt.setX( g.parts[0].x[0] );
@@ -130,7 +130,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			SpatGeom g = getGeom(i);
 			OGRMultiLineString poGeom;
 			for (size_t j=0; j<g.size(); j++) {
-				OGRLineString poLine;
+				OGRLineString poLine = OGRLineString();
 				SpatPart p = g.getPart(j);
 				for (size_t k=0; k<p.size(); k++) {
 					pt.setX(p.x[k]);
@@ -186,7 +186,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				return poDS;
 			}
 		} else {
-			setError("Only points and lines are currently supported");
+			setError("Only points, lines and polygons are currently supported");
 			return poDS;
 		}
 		

@@ -26,7 +26,7 @@
 
 #include <vector>
 #include <math.h>
-#include "GeographicLib_geodesic.h"
+#include "geodesic.h"
 #include "recycle.h"
 
 

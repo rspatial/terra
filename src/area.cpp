@@ -17,7 +17,8 @@
 
 #include <vector>
 #include <math.h>
-#include "GeographicLib_geodesic.h"
+//#include "GeographicLib_geodesic.h"
+#include "geodesic.h"
 #include "spatRaster.h"
 #include "distance.h"
 

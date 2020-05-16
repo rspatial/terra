@@ -100,6 +100,7 @@ if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneri
 if (!isGeneric("shift")) {setGeneric("shift", function(x, ...) standardGeneric("shift"))}	
 if (!isGeneric("stdev")) { setGeneric("stdev", function(x, ...) standardGeneric("stdev")) }	
 if (!isGeneric("subset")) {setGeneric("subset", function(x, ...) standardGeneric("subset")) }
+if (!isGeneric("summary")) {setGeneric("summary", function(object, ...) standardGeneric("summary")) }
 if (!isGeneric("t")) { setGeneric("t", function(x) standardGeneric("t"))}	
 if (!isGeneric("tail")) { setGeneric("tail", function(x, ...) standardGeneric("tail"))}	
 if (!isGeneric("text")) { setGeneric("text", function(x, ...) standardGeneric("text")) }	

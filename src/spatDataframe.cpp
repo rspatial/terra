@@ -23,6 +23,20 @@
 #include "string_utils.h"
 
 
+SpatDataFrame::SpatDataFrame() {};
+
+SpatDataFrame SpatDataFrame::skeleton() {
+	SpatDataFrame out;
+	out.names  = names;
+	out.itype  = itype;
+	out.iplace = iplace;
+	out.dv = std::vector<std::vector<double>>(dv.size());
+	out.iv = std::vector<std::vector<long>>(iv.size());
+	out.sv = std::vector<std::vector<std::string>>(sv.size());
+	return out;
+}
+
+
 std::vector<double> SpatDataFrame::getD(unsigned i) {
 	unsigned j = iplace[i];
 	return dv[j];
@@ -64,13 +78,28 @@ SpatDataFrame SpatDataFrame::subset_rows(unsigned i) {
 
 
 SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) { 
+
 	SpatDataFrame out;
+
+	unsigned nr = nrow();
+	for (int i = range.size(); i>0; i--) {
+		if (range[i-1] > nr) {
+			range.erase(range.begin() + i-1);
+		}
+	}
+
 	out.names = names;
 	out.itype = itype;
 	out.iplace = iplace;
+
 	out.dv.resize(dv.size());
 	out.iv.resize(iv.size());
 	out.sv.resize(sv.size());
+
+	out.dv.reserve(range.size());
+	out.iv.reserve(range.size());
+	out.sv.reserve(range.size());
+	
 	for (size_t i=0; i < range.size(); i++) {
 		for (size_t j=0; j < dv.size(); j++) {
 			out.dv[j].push_back(dv[j][range[i]]);
@@ -292,6 +321,24 @@ bool SpatDataFrame::cbind(SpatDataFrame &x) {
 			std::vector<std::string> d = getS(i);
 			add_column(d, nms[i]);			
 		}
+	}
+	return true;
+}
+
+
+bool SpatDataFrame::rbind(SpatDataFrame &x) {
+	if ((names != x.names) && (itype == x.itype)) {
+		return false;
+		// could do matching of names instead
+	}
+	for (size_t i=0; i<dv.size(); i++) {
+		dv[i].insert(dv[i].end(), x.dv[i].begin(), x.dv[i].end());
+	}
+	for (size_t i=0; i<iv.size(); i++) {
+		iv[i].insert(iv[i].end(), x.iv[i].begin(), x.iv[i].end());
+	}
+	for (size_t i=0; i<sv.size(); i++) {
+		sv[i].insert(sv[i].end(), x.sv[i].begin(), x.sv[i].end());
 	}
 	return true;
 }

@@ -4,19 +4,24 @@
 
 \alias{disaggregate}
 \alias{disaggregate,SpatRaster-method}
+\alias{disaggregate,SpatVector-method}
 
 \title{Disaggregate raster cells}
 
 \description{
-Disaggregate a SpatRaster to create a new SpatRaster with a higher resolution (smaller cells). The values in the new SpatRaster are the same as in the larger original cells.
+\code{SpatRaster}: Create a SpatRaster with a higher resolution (smaller cells). The values in the new SpatRaster are the same as in the larger original cells.
+
+\code{SpatVector}: Separate multi-objects (points, lines, polygons) into single objects.
 }
 
 \usage{
 \S4method{disaggregate}{SpatRaster}(x, fact, filename="", overwrite=FALSE, wopt=list(), ...)
+
+\S4method{disaggregate}{SpatVector}(x, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
   \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers)}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
@@ -39,6 +44,12 @@ ncol(rd)
 nrow(rd)
 values(r) <- 1:ncell(r)
 rd <- disaggregate(r, fact=c(4, 2))
+
+
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+a <- aggregate(v, "ID_1")
+b <- disaggregate(a)
 }
 
 

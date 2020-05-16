@@ -87,3 +87,4 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 
 
 
+

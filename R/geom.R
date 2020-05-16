@@ -1,4 +1,34 @@
 
+## cheating --- using raster/sp/rgeos for now
+setMethod("aggregate", signature(x="SpatVector"),
+	function(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...) {
+		#gt <- geomtype(x)
+		x <- methods::as(x, "Spatial")
+		r <- aggregate(x, by=by, sums=sums, dissolve=dissolve, vars=vars, ...)
+		vect(r)
+	}
+)
+
+setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y) {
+		x <- methods::as(x, "Spatial")
+		y <- methods::as(y, "Spatial")
+		r <- raster::intersect(x, y)
+		vect(r)
+	}
+)
+
+## cheating --- using raster/sp/rgeos for now
+setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, ...) {
+		x <- methods::as(x, "Spatial")
+		y <- methods::as(y, "Spatial")
+		r <- raster::crop(x, y)
+		vect(r)
+	}
+)
+
+
 setMethod("buffer", signature(x="SpatVector"), 
 	function(x, width, quadsegs=10, capstyle="round", ...) {
 		if (geomtype(x) == "points") {
@@ -14,34 +44,14 @@ setMethod("buffer", signature(x="SpatVector"),
 )
 
 
-## cheating --- using raster/rgeos for now
-
-setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y, ...) {
-		x <- methods::as(x, "Spatial")
-		y <- methods::as(y, "Spatial")
-		r <- raster::crop(x, y)
-		vect(r)
+setMethod("disaggregate", signature(x="SpatRaster"), 
+	function(x, fact, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$disaggregate(fact, opt)
+		show_messages(x, "disaggregate")
 	}
 )
 
 
-setMethod("aggregate", signature(x="SpatVector"),
-	function(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...) {
-		#gt <- geomtype(x)
-		x <- methods::as(x, "Spatial")
-		r <- aggregate(x, by=by, sums=sums, dissolve=dissolve, vars=vars, ...)
-		vect(r)
-	}
-)
 
-
-setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y) {
-		x <- methods::as(x, "Spatial")
-		y <- methods::as(y, "Spatial")
-		r <- raster::intersect(x, y)
-		vect(r)
-	}
-)
 

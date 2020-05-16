@@ -18,35 +18,79 @@
 #include "spatVector.h"
 #include "string_utils.h"
 
+#include "gdal_alg.h"
+#include "ogrsf_frmts.h"
 
-/*
-std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value) {
-	std::vector<OGRGeometry *> g;
-	OGRLayer *poLayer = src->GetLayer(0);
-	poLayer->ResetReading();
-	OGRFeature *poFeature;
-	
-	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-		g.push_back(poGeometry);
+
+std::vector<bool> SpatVector::is_valid() {
+	std::vector<bool> out;
+	out.reserve(nrow());
+	GDALDataset* src = write_ogr("", "layer", "Memory", true);
+	OGRLayer *inLayer = src->GetLayer(0);
+	inLayer->ResetReading();
+	OGRFeature *inFeature;
+	while( (inFeature = inLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = inFeature->GetGeometryRef();
+		out.push_back(poGeometry->IsValid());
+		OGRFeature::DestroyFeature( inFeature );
 	}
-	return g;
+	return out;
 }
 
-union_cascated
-// create output dataset 
-	GDALDataset* dst;
-// get unique values in field
-// loop over unique values
-	// for value in uvalues
-	std::vector<OGRGeometry *> gvec = geoms_from_ds(src, field, value);
-	OGRGeometry *geom;
-	geom = (OGRGeometry *) gvec.data();
-	OGRGeometry *gout;
-	gout = geom->UnionCascaded();
-// set geometry to output	
-   return dst;
-*/
+
+SpatVector SpatVector::make_valid() {
+	SpatVector out;
+	GDALDataset* src = write_ogr("", "layer", "Memory", true);
+	OGRLayer *inLayer = src->GetLayer(0);
+	inLayer->ResetReading();
+	OGRFeature *inFeature;
+	while( (inFeature = inLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = inFeature->GetGeometryRef();
+		OGRGeometry *poGeom = poGeometry->MakeValid();
+		if (inFeature->SetGeometry( poGeom ) != OGRERR_NONE) {
+			out.setError("cannot set geometry");
+			return out;
+		}
+		if (inLayer->SetFeature( inFeature ) != OGRERR_NONE) {
+			out.setError("cannot set feature");
+			return out;
+		}
+		OGRFeature::DestroyFeature( inFeature );
+	}
+	out.read_ogr(src);
+	GDALClose(src);
+	return out;
+}
+
+
+
+
+SpatVector SpatVector::disaggregate() {
+	SpatVector out;
+	out.lyr.srs = lyr.srs;
+	out.lyr.df = lyr.df.skeleton();
+
+	if (nrow() == 0) {
+		return out;
+	}
+	
+	for (size_t i=0; i<nrow(); i++) {
+		SpatGeom g = getGeom(i);
+		SpatDataFrame row = lyr.df.subset_rows(i);
+		for (size_t j=0; j<g.parts.size(); j++) {
+			SpatGeom gg = SpatGeom(g.parts[j]);
+			gg.gtype = g.gtype;
+			out.addGeom(gg);
+			if (!out.lyr.df.rbind(row)) { 
+				out.setError("cannot add row");
+				return out;
+			}
+		}
+	}
+	
+	return out;
+
+}
 
 
 
@@ -62,24 +106,100 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	SpatDataFrame uv;
 	std::vector<int> idx = lyr.df.getIndex(i, uv);
 
-	for (size_t i=0; i<uv.nrow(); i++) {
-		SpatGeom g;
-		g.gtype = lyr.geoms[0].gtype;
-		for (size_t j=0; j<idx.size(); j++) {
-			if (i == (size_t)idx[j]) {
-				g.unite( getGeom(j) );
-			}	
-		}
-		out.addGeom(g);
-	}
-	
 	out.lyr.srs = lyr.srs;
 	out.lyr.df  = uv; 
 
-	if (dissolve) {
-		out.addWarning("cannot dissolve yet");
+	if (!dissolve) {
+		for (size_t i=0; i<uv.nrow(); i++) {
+			SpatGeom g;
+			g.gtype = lyr.geoms[0].gtype;
+			for (size_t j=0; j<idx.size(); j++) {
+				if (i == (size_t)idx[j]) {
+					g.unite( getGeom(j) );
+				}	
+			}
+			out.addGeom(g);
+		}
+	} else {
+
+		GDALDataset* src = out.write_ogr("", "layer", "Memory", true);
+		OGRLayer *inLayer = src->GetLayer(0);
+		inLayer->ResetReading();
+		OGRFeature *inFeature;
+/*
+		const OGRSpatialReference *srs = src->GetSpatialRef();
+		GDALDataset *dst = NULL;
+		GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
+		dst = poDriver->Create("", 0, 0, 0, GDT_Unknown, NULL );
+		OGRLayer *outLayer;
+		outLayer = dst->CreateLayer("lyrname", (OGRSpatialReference *)srs, wkbMultiPolygon, NULL );
+		OGRFieldDefn oField("uid", OFTInteger64);
+		if( outLayer->CreateField( &oField ) != OGRERR_NONE ) {
+			out.setError( "Creating union field failed");
+			return out;
+		}
+		OGRFeature *outFeature;
+		i = 0;
+*/
+
+		while( (inFeature = inLayer->GetNextFeature()) != NULL ) {
+			OGRGeometry *poGeometry = inFeature->GetGeometryRef();
+			//OGRMultiPolygon *poGeom = ( OGRMultiPolygon * )poGeometry;
+			if (!poGeometry->IsValid()) {
+				out.setError("invalid geom");
+				return out;				
+			}
+			OGRGeometry *poGeom = poGeometry->UnionCascaded();	
+			if (poGeom == NULL) {
+				out.setError("union failed");
+				return out;
+			}
+			//outFeature = OGRFeature::CreateFeature( outLayer->GetLayerDefn() );
+			//outFeature->SetField(0, (GIntBig)i); i++;
+			if (inFeature->SetGeometry( poGeom ) != OGRERR_NONE) {
+				out.setError("cannot set geometry");
+				return out;
+			}
+			if (inLayer->SetFeature( inFeature ) != OGRERR_NONE) {
+				out.setError("cannot set feature");
+				return out;
+			}
+			//OGRFeature::DestroyFeature( outFeature );
+			OGRFeature::DestroyFeature( inFeature );
+		}
+		out.read_ogr(src);
+		GDALClose(src);
+//		GDALClose(dst);
 	}
 	
 	return out;
 }
+
+
+/*
+std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value) {
+	std::vector<OGRGeometry *> g;
+	OGRLayer *poLayer = src->GetLayer(0);
+	poLayer->ResetReading();
+	OGRFeature *poFeature;
+	
+	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		g.push_back(poGeometry);
+	}
+	return g;
+}
+// create output dataset 
+	GDALDataset* dst;
+// get unique values in field
+// loop over unique values
+	// for value in uvalues
+	std::vector<OGRGeometry *> gvec = geoms_from_ds(src, field, value);
+	OGRGeometry *geom;
+	geom = (OGRGeometry *) gvec.data();
+	OGRGeometry *gout;
+	gout = geom->UnionCascaded();
+// set geometry to output	
+   return dst;
+*/
 

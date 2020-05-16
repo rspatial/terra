@@ -88,6 +88,7 @@ class SpatVector {
 	public:
 
 		SpatVector();
+		//SpatVector(const SpatVector &x);
 		SpatVector(SpatGeom g);
 		SpatVector(SpatExtent e, std::string crs);
 
@@ -191,10 +192,12 @@ class SpatVector {
 
 		SpatVector point_buffer(double d, unsigned quadsegs);
 
+		std::vector<bool> is_valid();
+		SpatVector make_valid();
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
 
 		SpatVector aggregate(std::string field, bool dissolve);
-
+		SpatVector disaggregate();
 //geos
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 		SpatVector intersect(SpatVector v);
