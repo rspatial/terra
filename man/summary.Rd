@@ -17,6 +17,7 @@ Summarize the values of SpatRaster. A sample is used for very large files.
 \arguments{
   \item{object}{SpatRaster}
   \item{size}{positive integer. Size of a regular sample used for large datasets}
+  \item{...}{additional arguments. None implemented}  
 }
 
 

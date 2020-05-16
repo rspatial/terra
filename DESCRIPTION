@@ -1,6 +1,6 @@
 Package: terra
 Type: Package
-Title: Spatial data analysis
+Title: Spatial Data Analysis
 Version: 0.6-6
 Date: 2020-05-15
 Depends: R (>= 3.5.0)
@@ -16,10 +16,8 @@ BugReports: https://github.com/rspatial/terra/issues/
 LazyLoad: yes
 Authors@R: c(
 	person("Robert J.", "Hijmans", role = c("cre", "aut"),  
-			email = "r.hijmans@gmail.com", 
-			comment = c(ORCID = "0000-0001-5872-2872")),
-	person("Edzer", "Pebesma", role = "ctb", comment="GDAL/GEOS code from sf"),
-	person("Roger", "Bivand", role = "ctb", comment="install script, GDAL/GEOS code"),
-	person("Karl", "Forner", role = "ctb", comment="progress bar"),
-	person("Charles", "Karney", role = "ctb", comment="GeographicLib")
-	)
+			email = "r.hijmans@gmail.com", comment = c(ORCID = "0000-0001-5872-2872")),
+    person("Edzer", "Pebesma", role = "ctb", comment = c("GDAL/GEOS code from sf", ORCID = "0000-0001-8049-7069")),
+    person("Roger", "Bivand",  role = "ctb", comment = c(ORCID = "0000-0003-2392-6140")),
+	person("Karl", "Forner",   role = "ctb", comment = "progress bar"))
+
