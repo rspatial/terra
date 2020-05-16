@@ -524,6 +524,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
             SpatGeom g = v.getGeom(i);
             SpatRaster rc = r.crop(g.extent, "out", opt);
             SpatVector p(g);
+			p.lyr.srs = v.lyr.srs;
 			//std::vector<double> feats(p.size(), 1) ;			
             // rcr = rc.rasterize(p, feats, NAN, false, opt); 
 			// rather have a method that returns the cell numbers directly?
