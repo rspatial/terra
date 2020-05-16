@@ -20,10 +20,10 @@ Zoom in on a map (plot) by providing a new extent, by default this is done by cl
 \arguments{
 \item{x}{SpatRaster}
 \item{e}{SpatExtent}
-\item{maxcell}{postive integer. Maximum number of cells used for the map}
+\item{maxcell}{positive integer. Maximum number of cells used for the map}
 \item{layer}{positive integer to select the layer to be used}
 \item{new}{logical. If \code{TRUE}, the zoomed in map will appear on a new device (window)}
-\item{...}{additional paramters for \code{\link[base]{plot}}}
+\item{...}{additional arguments passed to \code{\link{plot}}}
 }
 
 \value{
