@@ -45,11 +45,6 @@ nrow(rd)
 values(r) <- 1:ncell(r)
 rd <- disaggregate(r, fact=c(4, 2))
 
-
-f <- system.file("ex/lux.shp", package="terra")
-v <- vect(f)
-a <- aggregate(v, "ID_1")
-b <- disaggregate(a)
 }
 
 
