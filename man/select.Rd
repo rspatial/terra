@@ -34,7 +34,7 @@ SpatRaster or SpatVector
 
 
 \examples{
-\donttest{
+\dontrun{
 # select a subset of a RasterLayer
 r <- rast(nrow=10, ncol=10)
 values(r) <- 1:ncell(r)
