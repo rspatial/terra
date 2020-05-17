@@ -25,7 +25,6 @@
 #include "string_utils.h"
 #include "NA.h"
 
-#include "proj.h"
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
@@ -36,6 +35,10 @@
 //#include "hdr.h"
 
 #include "gdal_errors.h"
+
+#if GDAL_VERSION_MAJOR >= 3
+#include "proj.h"
+#endif
 
 
 void SpatRaster::gdalogrproj_init(std::string path) {
