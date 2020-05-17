@@ -200,32 +200,33 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 
 		s.driver = "memory";
 		s.names = source[0].names;
-		char *cp;
+		std::string wkt;
+#if GDAL_VERSION_MAJOR >= 3
 		std::string errmsg;
-
-#if GDAL_VERSION_MAJOR >= 3		
 		OGRSpatialReferenceH srs = GDALGetSpatialRef( hDS );
 		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+		char *cp;
 		OGRErr err = OSRExportToWktEx(srs, &cp, options);
-#else
-		OGRSpatialReferenceH srs = GDALGetProjectionRef( hDS );
-		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
-		OGRErr err = oSRS.exportToPrettyWkt(&cp);
-#endif
 		if (is_ogr_error(err, errmsg)) {
 			CPLFree(cp);
 			return false;
 		}
-		std::string wkt = std::string(cp);
-		err = OSRExportToProj4(srs, &cp);
-		if (is_ogr_error(err, errmsg)) {
-			CPLFree(cp);
-			return false;
-		}
-		std::string prj = std::string(cp);
+		wkt = std::string(cp);
 		CPLFree(cp);
+#else
+		const char *pszSrc = GDALGetProjectionRef( hDS );
+		if (pszSrc != NULL) { 
+			wkt = std::string(pszSrc);
+		} else {
+			return false;
+		}
+
+		//OGRSpatialReferenceH srs = GDALGetProjectionRef( hDS );
+		//OGRSpatialReference oSRS(poDataset->GetProjectionRef());
+		//OGRErr err = oSRS.exportToPrettyWkt(&cp);
+#endif
 		std::string msg;
-		if (!s.srs.set({prj, wkt, wkt}, msg)) {
+		if (!s.srs.set({wkt}, msg)) {
 			setError(msg);
 			return false;
 		}
