@@ -25,6 +25,8 @@
 #include "string_utils.h"
 #include "NA.h"
 
+#include "proj.h"
+
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
 #include "cpl_string.h"
@@ -36,10 +38,14 @@
 #include "gdal_errors.h"
 
 
-void SpatRaster::spatinit() {
+void SpatRaster::gdalogrproj_init(std::string path) {
     GDALAllRegister();
-    OGRRegisterAll(); // should go to SpatVector
+    OGRRegisterAll(); 
 	//GDALregistred = true;
+	if (path != "") {
+		const char *cp = path.c_str();
+		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
+	}
 }
 
 

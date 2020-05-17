@@ -1,7 +1,6 @@
 
 loadModule("spat", TRUE)
 
-
 .onAttach <- function(libname, pkgname) {
 	tv <- utils::packageVersion("terra")
 	m <- paste0("This is version ", tv, " of the \"terra\" package, for evaluation only\n")
@@ -9,11 +8,11 @@ loadModule("spat", TRUE)
 	
 ##############################
 	.create_options()
-	SpatRaster$new()$spatinit()
+	
+	path = ""
+	if (file.exists(system.file("proj/nad.lst", package = "terra")[1])) {
+		path <- system.file("proj", package="terra")
+	} 
+	SpatRaster$new()$spatinit(path)
 }
-
-#.onLoad <- function(libname, pkgname) {
-#	loadModule("spat", TRUE)
-#	SpatRaster$new()$spatinit()
-#}
 

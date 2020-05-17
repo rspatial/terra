@@ -258,7 +258,7 @@ RCPP_MODULE(spat){
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 
-		.method("spatinit", &SpatRaster::spatinit, "init")
+		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
 		
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
