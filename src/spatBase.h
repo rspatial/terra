@@ -156,11 +156,11 @@ class SpatExtent {
 
 class SpatSRS {
 	public:
-		std::string input, proj4, wkt;
+		std::string proj4, wkt;
 		bool set(std::vector<std::string> txt, std::string &msg);
 
 		std::vector<std::string> get() {
-			std::vector<std::string> s = {proj4, wkt, input};
+			std::vector<std::string> s = {proj4, wkt};
 			return s;
 		}
 

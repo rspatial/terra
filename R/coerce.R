@@ -223,7 +223,7 @@ setAs("SpatRaster", "Raster",
 		s <- sources(from)
 		nl <- nlyr(from)
 		e <- as.vector(ext(from))
-		prj <- crs(from)[1]
+		prj <- .proj4(from)
 		if (nl == 1) {
 			if (s$source == "") {
 				r <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
@@ -268,7 +268,7 @@ setAs("SpatVector", "Spatial",
 	function(from) {
 		g <- geom(from)
 		colnames(g)[1] <- "object"
-		raster::geom(g, values(from), geomtype(from), crs(from)[1])
+		raster::geom(g, values(from), geomtype(from), .proj4(from))
 	}
 )
 

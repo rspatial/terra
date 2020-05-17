@@ -3,10 +3,14 @@
 # Version 0.9
 # License GPL v3
 
+.proj4 <- function(x) {
+	x@ptr$get_crs()[1]
+}
+
 
 setMethod("crs", signature("SpatRaster"), 
 	function(x) {
-		x@ptr$get_crs()
+		x@ptr$get_crs()[2]
 	}
 )
 

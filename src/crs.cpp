@@ -25,11 +25,9 @@
 
 bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
 	if (txt.size() == 3) {
-		proj4 == txt[0];
+		proj4 = txt[0];
 		wkt = txt[1];
-		input = txt[2];
 	} else {
-		input = txt[0];
 		wkt =  "";
 		proj4 = txt[0];
 	}
@@ -122,42 +120,32 @@ bool string_from_spatial_reference(const OGRSpatialReference *srs, std::vector<s
 
 
 bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
-	if (txt.size() == 1 && txt[0] == "") { 
-		wkt="";
-		proj4="";
-		input="";
+	wkt="";
+	proj4="";
+	if (txt.size() == 0) { 
 		return true;
-	} else if (txt.size() == 3) {
-		proj4 = txt[0];
-		wkt = txt[1];
-		input = txt[2];
-		return true;
-	} else if (txt.size() == 2) {
-		proj4 = txt[0];
-		wkt = txt[1];
+	} else if (txt[0] == "") {
 		return true;
 	} else {
-		input=txt[0];
-		wkt="";
-		proj4="";
-		if (input != "") {
-			OGRSpatialReference *srs = new OGRSpatialReference;
-			const char* s = input.c_str();
-			if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
-				delete srs;
-				return false;
-			}
-			if (! wkt_from_spatial_reference(srs, wkt, msg)) {
-				delete srs;
-				return false;
-			};
-			if (! prj_from_spatial_reference(srs, proj4, msg)) {
-				delete srs;
-				return false;
-			};
+		OGRSpatialReference *srs = new OGRSpatialReference;
+		const char* s = txt[0].c_str();
+		if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
 			delete srs;
-			return true;
+			msg = "empty srs";
+			return false;
 		}
+		if (! wkt_from_spatial_reference(srs, wkt, msg)) {
+			delete srs;
+			msg = "can't  get wkt from srs";
+			return false;
+		};
+		if (! prj_from_spatial_reference(srs, proj4, msg)) {
+			delete srs;
+			msg = "can't  get proj4 from srs";
+			return false;
+		};
+		delete srs;
+		return true;
 	}
 	return false;
 }

@@ -67,8 +67,9 @@ setMethod("rast", signature(x="SpatExtent"),
 setMethod("rast", signature(x="SpatVector"),
 	function(x, nrows=10, ncols=10, nlyrs=1, ...) {
 		r <- rast(ext(x), nrows=nrows, ncols=ncols, nlyrs=nlyrs, crs=crs(x), ...)
-		#why needed:
-		crs(r) <- crs(x)[1]
+		#why needed?
+		# probably no more
+		#crs(r) <- crs(x)[1]
 		r
 	}
 )

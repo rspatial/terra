@@ -214,13 +214,12 @@ std::vector<double> compute_aggregates(std::vector<double> &in, size_t nr, size_
 
 SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt) {
 
+	SpatRaster out;
 	std::string message = "";
 	bool success = get_aggregate_dims(fact, message);
 
 // fact 1, 2, 3, are the aggregations factors dy, dx, dz
 // and 4, 5, 6 are the new nrow, ncol, nlyr
-
-	SpatRaster out;
 	if (!success) {
 		out.setError(message);
 		return out;
@@ -234,8 +233,10 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	if (fact[5] == nlyr()) {
 		out.setNames(getNames());
 	}
-	if (!source[0].hasValues) { return out; }
-
+	
+	if (!source[0].hasValues) { 
+		return out; 
+	}
 
 	std::vector<std::string> f {"sum", "mean", "min", "max", "median", "modal"};
 	auto it = std::find(f.begin(), f.end(), fun);

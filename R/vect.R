@@ -29,7 +29,7 @@ setMethod("vect", signature(x="Spatial"),
 
 
 setMethod("vect", signature(x="matrix"), 
-	function(x, type="points", atts=NULL, crs=NA, ...) {
+	function(x, type="points", atts=NULL, crs="", ...) {
 		type <- tolower(type)
 		stopifnot(type %in% c("points", "lines", "polygons"))
 		
@@ -56,9 +56,7 @@ setMethod("vect", signature(x="matrix"),
 		if (!is.null(atts)) {
 			values(p) <- atts
 		}
-		if (!is.na(crs)) {
-			crs(p) <- ifelse(is.na(crs), "", as.character(crs))
-		}
+		crs(p) <- ifelse(is.na(crs), "", as.character(crs))
 		show_messages(p)
 	}
 )

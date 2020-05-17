@@ -37,7 +37,7 @@ setMethod ("show" , "SpatVector",
 		cat("geometry    :", geomtype(object), "\n")
 		cat("elements    : ", size(object), "\n", sep="" ) 
 		cat("extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		cat("coord. ref. :", crs(object)[1], "\n")
+		cat("coord. ref. :", .proj4(object), "\n")
 		nms <- names(object)
 		if (length(nms) > 0) {
 			cat("names       :", paste(names(object), collapse=", "), "\n")		
@@ -62,7 +62,7 @@ setMethod ("show" , "SpatRaster",
 		e <- as.vector(ext(object))
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 
-		cat("coord. ref. :" , crs(object)[1], "\n")
+		cat("coord. ref. :" , .proj4(object), "\n")
 		
 		mnr <- 5
 
