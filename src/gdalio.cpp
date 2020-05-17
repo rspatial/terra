@@ -200,18 +200,23 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 
 		s.driver = "memory";
 		s.names = source[0].names;
-		
-		OGRSpatialReferenceH srs = GDALGetSpatialRef( hDS );
 		char *cp;
+		std::string errmsg;
+
+#if GDAL_VERSION_MAJOR >= 3		
+		OGRSpatialReferenceH srs = GDALGetSpatialRef( hDS );
 		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 		OGRErr err = OSRExportToWktEx(srs, &cp, options);
-		std::string errmsg;
+#else
+		OGRSpatialReferenceH srs = GDALGetProjectionRef( hDS );
+		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
+		OGRErr err = oSRS.exportToPrettyWkt(&cp);
+#endif
 		if (is_ogr_error(err, errmsg)) {
 			CPLFree(cp);
 			return false;
 		}
 		std::string wkt = std::string(cp);
-
 		err = OSRExportToProj4(srs, &cp);
 		if (is_ogr_error(err, errmsg)) {
 			CPLFree(cp);
