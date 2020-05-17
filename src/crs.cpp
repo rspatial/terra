@@ -128,12 +128,12 @@ bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
 		input="";
 		return true;
 	} else if (txt.size() == 3) {
-		proj4 == txt[0];
+		proj4 = txt[0];
 		wkt = txt[1];
 		input = txt[2];
 		return true;
 	} else if (txt.size() == 2) {
-		proj4 == txt[0];
+		proj4 = txt[0];
 		wkt = txt[1];
 		return true;
 	} else {

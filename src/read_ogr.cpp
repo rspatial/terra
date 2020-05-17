@@ -335,8 +335,9 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		}
 	} else {
         setError("Cannot open file");
-		std::string gt = geomType(poLayer);
+		//std::string gt = geomType(poLayer);
 		//printf("unknown geomtype: %s \n", gt.c_str());
+		return false;
 	}
 
 	OGRFeature::DestroyFeature( poFeature );

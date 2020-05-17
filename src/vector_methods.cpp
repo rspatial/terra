@@ -46,7 +46,7 @@ SpatVector SpatVector::make_valid() {
 	OGRFeature *inFeature;
 	while( (inFeature = inLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = inFeature->GetGeometryRef();
-		OGRGeometry *poGeom = poGeometry->MakeValid();
+		//OGRGeometry *poGeom = poGeometry->MakeValid();
 		if (inFeature->SetGeometry( poGeom ) != OGRERR_NONE) {
 			out.setError("cannot set geometry");
 			return out;

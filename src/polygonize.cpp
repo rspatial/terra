@@ -27,7 +27,7 @@ SpatVector SpatRaster::polygonize(bool trunc) {
 			return out;			
 		}
 	}
-    GDALDataset *srcDS;
+    GDALDataset *srcDS=NULL;
 	srcDS = srcDS->FromHandle(rstDS);
 
     GDALDataset *poDS = NULL;
