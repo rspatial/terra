@@ -529,7 +529,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
             SpatRaster rcr = rc.rasterize(p, "", feats, NAN, false, touches, false, opt); 
 #else
 			std::vector<double> feats2(p.size(), 1) ;			
-            rcr = rc.rasterize(p, "", feats2, NAN, false, touches, false, opt); 
+            SpatRaster rcr = rc.rasterize(p, "", feats2, NAN, false, touches, false, opt); 
 			// rather have a method that returns the cell numbers directly?	
 #endif
        	    SpatVector pts = rcr.as_points(false, true);
