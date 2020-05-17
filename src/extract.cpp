@@ -525,10 +525,13 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
             SpatRaster rc = r.crop(g.extent, "out", opt);
             SpatVector p(g);
 			p.lyr.srs = v.lyr.srs;
-			//std::vector<double> feats(p.size(), 1) ;			
-            // rcr = rc.rasterize(p, feats, NAN, false, opt); 
-			// rather have a method that returns the cell numbers directly?
-            SpatRaster rcr = rc.grasterize(p, "", feats, NAN, false, touches, false, opt); 
+#if GDAL_VERSION_MAJOR >= 3			
+            SpatRaster rcr = rc.rasterize(p, "", feats, NAN, false, touches, false, opt); 
+#else
+			std::vector<double> feats2(p.size(), 1) ;			
+            rcr = rc.rasterize(p, "", feats2, NAN, false, touches, false, opt); 
+			// rather have a method that returns the cell numbers directly?	
+#endif
        	    SpatVector pts = rcr.as_points(false, true);
             SpatDataFrame vd = pts.getGeometryDF();
             std::vector<double> x = vd.getD(0);

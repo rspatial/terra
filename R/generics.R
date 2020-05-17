@@ -250,9 +250,9 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		background <- as.numeric(background[1])
 		#if (is.na(background)) background = 0/0 # NAN
 		if (is.character(field)) {
-			y@ptr <- y@ptr$grasterize(x@ptr, field, 0, background, update[1], touches[1], inverse[1], opt)
+			y@ptr <- y@ptr$rasterize(x@ptr, field, 0, background, update[1], touches[1], inverse[1], opt)
 		} else if (is.numeric(field)) {
-			y@ptr <- y@ptr$grasterize(x@ptr, "", field, background, update[1], touches[1], inverse[1], opt)
+			y@ptr <- y@ptr$rasterize(x@ptr, "", field, background, update[1], touches[1], inverse[1], opt)
 		} else {
 			stop("field should be character or numeric")
 		}
