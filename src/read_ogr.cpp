@@ -110,6 +110,11 @@ std::string getDs_WKT(GDALDataset *poDataset) {
 		CPLFree(cp);
 	} 
 #else
+	const char *pszSrc = GDALGetProjectionRef( hDS );
+	if (pszSrc != NULL) { 
+		wkt = std::string(pszSrc);
+	}
+/*	
 	if (poDataset->GetProjectionRef() != NULL) { 
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
 		OGRErr err = oSRS.exportToPrettyWkt(&cp);
@@ -118,6 +123,7 @@ std::string getDs_WKT(GDALDataset *poDataset) {
 			CPLFree(cp);
 		}
 	}
+*/	
 #endif 	
 	return wkt;
 }
