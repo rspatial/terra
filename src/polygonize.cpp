@@ -73,7 +73,8 @@ SpatVector SpatRaster::polygonize(bool trunc) {
 
 	GDALRasterBand  *poBand;
 	poBand = srcDS->GetRasterBand(1);
-
+	int hasNA=1;
+	poBand->GetNoDataValue(&hasNA);
 	//char **papszOptions = NULL;
 	//if (queen) papszOptions = CSLSetNameValue(papszOptions, "8CONNECTED", "-8");
 	
