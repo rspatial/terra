@@ -304,38 +304,53 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		GDALClose( hDstDS );
 		out = SpatRaster(filename);
 	}
-
-	//if (use_crs) out.setSRS({crs});	// fix the need for this
 	return out;
 }
-
-
-/*
-SpatRaster SpatRaster::tester(bool geom) {
-
-	SpatRaster out = geometry();
-	GDALDatasetH hDS;
-	if (source[0].driver != "memory") {
-		out.setError("mwaaa");
-		return out;		
-	}
-
-	if (!open_gdal(hDS)) {
-		out.setError("cannot create dataset");
-		return out;
-	}
-	bool test = out.setValuesMEM(hDS, geom); 
-	GDALClose( hDS );
-	if (!test) {
-		out.setError("wat nu?");
-	}
-	return out;
-}
-*/
 
 
 #else 
 	
+
+SpatMessages transform_crds(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
+
+	SpatMessages m;
+	OGRSpatialReference source, target;
+	const char *pszDefFrom = fromCRS.c_str();
+	OGRErr erro = source.SetFromUserInput(pszDefFrom);
+	if (erro != OGRERR_NONE) {
+		m.setError("input crs is not valid");
+		return m;
+	}
+	const char *pszDefTo = toCRS.c_str();
+	erro = target.SetFromUserInput(pszDefTo);
+	if (erro != OGRERR_NONE) {
+		m.setError("output crs is not valid");
+		return m;
+	}
+
+	OGRCoordinateTransformation *poCT;
+	poCT = OGRCreateCoordinateTransformation(&source, &target);
+
+	if( poCT == NULL )	{
+		m.setError( "Transformation failed" );
+		return (m);
+	}
+
+	unsigned failcount = 0;
+	for (size_t i=0; i < x.size(); i++) {
+		if( !poCT->Transform( 1, &x[i], &y[i] ) ) {
+			x[i] = NAN;
+			y[i] = NAN;
+			failcount++;
+		}
+	}
+	if (failcount > 0) {
+		m.addWarning(std::to_string(failcount) + " failed transformations");
+	}
+	return m;
+}
+
+
 
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
 	unsigned nl = nlyr();
@@ -347,7 +362,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	out.setNames(getNames());
-	std::vector<std::string> f {"bilinear", "ngb"};
+	std::vector<std::string> f {"bilinear", "near"};
 	if (std::find(f.begin(), f.end(), method) == f.end()) {
 		out.setError("unknown warp method");
 		return out;
@@ -403,7 +418,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
 		if (do_prj) {
 			#ifdef useGDAL
-			out.msg = transform_coordinates(xy[0], xy[1], crsout, crsin);
+			out.msg = transform_crds(xy[0], xy[1], crsout, crsin);
 			#else
 			out.setError("GDAL is needed for crs transformation, but not available");
 			return out;
