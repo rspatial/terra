@@ -7,9 +7,8 @@ gdal_version <- function() {
 
 .onAttach <- function(libname, pkgname) {
 	#tv <- utils::packageVersion("terra")
-	gdv <- gdal_version()
-	if (gdv < "3.0.0") {
-		m <- paste0("You are using GDAL", gdv, "\n For full functionality you need at least version 3.0.0")
+	if (gdal_version() < "3.0.0") {
+		m <- paste("You are using GDAL version", gdv, "\n For full functionality you need at least version 3.0.0")
 		packageStartupMessage(m)
 	}
 

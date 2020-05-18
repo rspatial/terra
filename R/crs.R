@@ -22,12 +22,6 @@ setMethod("crs<-", signature("SpatRaster", "character"),
 )
 
 
-setMethod("crs", signature("SpatRaster"), 
-	function(x) {
-		x@ptr$get_crs()
-	}
-)
-
 
 setMethod("crs<-", signature("SpatRaster", "character"), 
 	function(x, ..., value) {
