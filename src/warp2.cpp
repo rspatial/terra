@@ -1,13 +1,13 @@
 
-#ifdef useGDAL
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
-#endif
 
-#include "crs.h"
+
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
+
+#include "crs.h"
 
 //#include <vector>
 //#include "vecmath.h"
@@ -311,47 +311,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 #else 
 	
 
-SpatMessages transform_crds(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
-
-	SpatMessages m;
-	OGRSpatialReference source, target;
-	const char *pszDefFrom = fromCRS.c_str();
-	OGRErr erro = source.SetFromUserInput(pszDefFrom);
-	if (erro != OGRERR_NONE) {
-		m.setError("input crs is not valid");
-		return m;
-	}
-	const char *pszDefTo = toCRS.c_str();
-	erro = target.SetFromUserInput(pszDefTo);
-	if (erro != OGRERR_NONE) {
-		m.setError("output crs is not valid");
-		return m;
-	}
-
-	OGRCoordinateTransformation *poCT;
-	poCT = OGRCreateCoordinateTransformation(&source, &target);
-
-	if( poCT == NULL )	{
-		m.setError( "Transformation failed" );
-		return (m);
-	}
-
-	unsigned failcount = 0;
-	for (size_t i=0; i < x.size(); i++) {
-		if( !poCT->Transform( 1, &x[i], &y[i] ) ) {
-			x[i] = NAN;
-			y[i] = NAN;
-			failcount++;
-		}
-	}
-	if (failcount > 0) {
-		m.addWarning(std::to_string(failcount) + " failed transformations");
-	}
-	return m;
-}
-
-
-
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
 	unsigned nl = nlyr();
 	SpatRaster out = x.geometry(nl);
@@ -418,7 +377,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
 		if (do_prj) {
 			#ifdef useGDAL
-			out.msg = transform_crds(xy[0], xy[1], crsout, crsin);
+			out.msg = transform_coordinates(xy[0], xy[1], crsout, crsin);
 			#else
 			out.setError("GDAL is needed for crs transformation, but not available");
 			return out;

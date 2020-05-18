@@ -270,7 +270,7 @@ SpatVector SpatVector::project(std::string crs) {
 		s.setGeometry(type(), a, b, x, y, c);
 		//std::vector<std::string> refs = srefs_from_string(crs);
 		std::string msg;
-		s.setSRS({crs});
+		s.setSRS(crs);
 		//s.setPRJ(refs[1]);
 		s.lyr.df = lyr.df;
 	}
@@ -279,3 +279,4 @@ SpatVector SpatVector::project(std::string crs) {
 }
 
 #endif
+
