@@ -11,6 +11,15 @@ std::string ginfo(std::string filename, std::vector<std::string> options, std::v
 	return out;
 }
 
+// [[Rcpp::export(name = ".gdalversion")]]
+std::string gdal_version() {
+	const char* what = "RELEASE_NAME";
+	const char* x = GDALVersionInfo(what);
+	std::string s = (std::string) x;
+	return s;
+}
+
+
 /*
 # include "warp.h"
 // [[Rcpp::export(name = ".gdalwarp")]]

@@ -1,16 +1,18 @@
 \name{gdal_info}
 
 \alias{gdal_info}
+\alias{gdal_version}
 
 \title{GDALinfo}
 
 \description{
-This function provides a wrapper to the GDALinfo tool that provides the properties of a file with raster data. 
+gdal_info calls the GDALinfo tool that provides the properties of a file with raster data. 
 }
 
 
 \usage{
 gdal_info(filename, options="", print=TRUE, open_opt="", ...)
+gdal_version()
 }
 
 \arguments{

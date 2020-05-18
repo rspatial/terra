@@ -74,10 +74,14 @@ as.matrix(r, wide=TRUE)
 as.data.frame(r, xy=TRUE)
 as.array(r)
 as.points(r)
-p <- as.polygons(r)
-p
-as.lines(p)
-as.points(p)
+
+if  (gdal_version() >= "3.0.0") {
+	p <- as.polygons(r)
+	p
+	as.lines(p)
+	as.points(p)
+}
+
 }
 
 \keyword{spatial}

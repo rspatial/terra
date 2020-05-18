@@ -5,3 +5,7 @@
     .Call(`_terra_ginfo`, filename, options, oo)
 }
 
+.gdalversion <- function() {
+    .Call(`_terra_gdal_version`)
+}
+

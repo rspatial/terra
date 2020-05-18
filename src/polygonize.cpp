@@ -29,8 +29,7 @@ SpatVector SpatRaster::polygonize(bool trunc) {
 		}
 	}
     GDALDataset *srcDS=NULL;
-	//srcDS = srcDS->FromHandle(rstDS);
-	srsDS = (GDALDataset)rstDS;
+	srcDS = srcDS->FromHandle(rstDS);
 	
     GDALDataset *poDS = NULL;
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );

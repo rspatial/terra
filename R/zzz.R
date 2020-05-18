@@ -1,11 +1,18 @@
 
 loadModule("spat", TRUE)
 
+gdal_version <- function() {
+	.gdalversion()
+}
+
 .onAttach <- function(libname, pkgname) {
-	tv <- utils::packageVersion("terra")
-	m <- paste0("This is version ", tv, " of the \"terra\" package, for evaluation only\n")
-	packageStartupMessage(m)
-	
+	#tv <- utils::packageVersion("terra")
+	gdv <- gdal_version()
+	if (gdv < "3.0.0") {
+		m <- paste0("You are using GDAL", gdv, "\n For full functionality you need at least version 3.0.0")
+		packageStartupMessage(m)
+	}
+
 ##############################
 	.create_options()
 	
