@@ -203,7 +203,8 @@ RCPP_MODULE(spat){
 		.method("as_points", &SpatVector::as_points, "as_points")
 		.method("couldBeLonLat", &SpatVector::could_be_lonlat, "couldBeLonLat") 
 		.method("get_crs", &SpatVector::getSRS)
-		.method("set_crs", &SpatVector::setSRS)
+		
+		.method("set_crs", (bool (SpatVector::*)(std::string crs))( &SpatVector::setSRS))
 		//.method("p	rj", &SpatVector::getPRJ)
 		
 		.method("distance_self", (SpatDataFrame (SpatVector::*)())( &SpatVector::distance))
@@ -274,7 +275,8 @@ RCPP_MODULE(spat){
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		.method("get_crs", &SpatRaster::getSRS)
-		.method("set_crs", &SpatRaster::setSRS)
+
+		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
 		//.field_readonly("prj", &SpatRaster::prj)
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 		.method("getRasterAtt", &getRasterAttributes, "get attributes")

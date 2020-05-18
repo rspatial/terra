@@ -29,6 +29,11 @@
   #define useGDAL
 #endif
 
+#ifdef useGDAL
+	#include "gdal_priv.h"
+#endif
+
+
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
@@ -153,12 +158,16 @@ class SpatExtent {
 
 
 
-
 class SpatSRS {
 	public:
 		std::string proj4, wkt;
 		bool set(std::string txt, std::string &msg);
 
+/*
+#ifdef useGDAL	
+		bool set(OGRSpatialReference *poSRS, std::string &msg);
+#endif		
+*/
 		std::string get(std::string x) {
 			return (x == "proj4" ? proj4 : wkt); 
 		}

@@ -22,6 +22,7 @@
 #ifdef useGDAL
 #include "gdal_priv.h"
 #endif
+
 #ifdef useRcpp
 #include <Rcpp.h>
 // Rcpp::depends(RcppProgress)
@@ -157,6 +158,12 @@ class SpatRaster {
 
 		std::string getSRS(std::string x);
 		bool setSRS(std::string crs);
+
+/*
+#ifdef useGDAL	
+		bool setSRS(OGRSpatialReference *poSRS, std::string &msg) {
+#endif 
+*/
 
 		bool is_lonlat();
 		bool could_be_lonlat();

@@ -381,7 +381,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 bool SpatRaster::setSRS(std::string crs) {
 	std::string msg;
 	if (!srs.set(crs, msg )) {
-		setError(msg);
+		addWarning("Cannot set raster SRS: "+ msg);
 		return false;
 	}
 	for (size_t i = 0; i < nsrc(); i++) { 
@@ -389,6 +389,22 @@ bool SpatRaster::setSRS(std::string crs) {
 	}
 	return true;
 }
+
+
+/*
+#ifdef useGDAL	
+bool SpatRaster::setSRS(OGRSpatialReference *poSRS, std::string &msg) {
+	if (!srs.set(poSRS, msg)){
+		addWarning("Cannot set raster SRS: "+ msg);
+		return false;
+	}
+	for (size_t i = 0; i < nsrc(); i++) { 
+		source[i].srs = srs; 
+	}
+	return true;				
+}
+#endif		
+*/
 
 std::string  SpatRaster::getSRS(std::string x) {
 	return srs.get(x);

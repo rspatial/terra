@@ -112,7 +112,23 @@ bool string_from_spatial_reference(const OGRSpatialReference *srs, std::vector<s
 	return true;
 }
 
-
+/*
+bool SpatSRS::set(OGRSpatialReference *poSRS, std::string &msg) {
+	wkt="";
+	proj4="";
+	if (poSRS) {
+		if (! wkt_from_spatial_reference(poSRS, wkt, msg)) {
+			msg = "can't get wkt from srs";
+			return false;
+		};
+		if (! prj_from_spatial_reference(poSRS, proj4, msg)) {
+			msg = "can't get proj4 from srs";
+			return false;
+		};
+	}
+	return true;
+}
+*/
 
 bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt="";
