@@ -110,7 +110,7 @@ std::string getDs_WKT(GDALDataset *poDataset) {
 		CPLFree(cp);
 	} 
 #else
-	const char *pszSrc = GDALGetProjectionRef( hDS );
+	const char *pszSrc = GDALGetProjectionRef( poDataset );
 	if (pszSrc != NULL) { 
 		wkt = std::string(pszSrc);
 	}
