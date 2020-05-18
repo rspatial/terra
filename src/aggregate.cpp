@@ -253,10 +253,12 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	}
 	
 #ifdef useGDAL 
+#if GDAL_VERSION_MAJOR >= 3
 	if (gstring != "") {
 		out = warper(out, "", gstring, opt);
 		return out;
 	}	
+#endif
 #endif
 
 	std::function<double(std::vector<double>&, bool)> agFun = getFun(fun);
