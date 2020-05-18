@@ -58,8 +58,9 @@ b <- rast(ncol=94, nrow=124, xmin=-944881, xmax=935118, ymin=4664377, ymax=71443
 w <- project(a, b)
 
 # y can also be a crs
-ww <- project(a, newcrs)
-
+if  (gdal_version() >= "3.0.0") {
+	ww <- project(a, newcrs)
+}
 
 # SpatVector
 f <- system.file("ex/lux.shp", package="terra")
