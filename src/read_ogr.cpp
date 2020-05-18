@@ -163,9 +163,14 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 	}
 	setSRS(wkt) ; 
 	//lyr.prj = prj;
-#else 
-	
-
+#else
+	if( poDS->GetProjectionRef() != NULL ) {
+		OGRSpatialReference oSRS(poDS->GetProjectionRef());
+		char *pszPRJ = NULL;
+		oSRS.exportToWkt(&pszPRJ);
+		std::string wkt = pszPRJ;
+		setSRS(wkt);
+	}
 #endif
 
 /*
@@ -176,7 +181,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		poSRS->exportToProj4(&pszCRS);
 		crs = pszCRS;
 		prj = pszCRS;
-			
+
 		//pszCRS = NULL;
 		//poSRS->exportToWKT(&pszCRS);
 		//crs = pszCRS;
