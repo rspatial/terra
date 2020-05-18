@@ -6,12 +6,14 @@ gdal_version <- function() {
 }
 
 .onAttach <- function(libname, pkgname) {
-	#tv <- utils::packageVersion("terra")
+	tv <- utils::packageVersion("terra")
+	m <- paste("This is terra version", tv, "(alpha-release)")
 	gdv <- gdal_version()
 	if (gdv < "3.0.0") {
-		m <- paste("You are using GDAL version", gdv, "\n For full functionality you need at least version 3.0.0")
-		packageStartupMessage(m)
+		add <- paste("You are using GDAL version", gdv, "\nFor full functionality you need at least version 3.0.0")
+		m <- c(m, add)
 	}
+	packageStartupMessage(m)
 
 ##############################
 	.create_options()
@@ -20,6 +22,7 @@ gdal_version <- function() {
 	if (file.exists(system.file("proj/nad.lst", package = "terra")[1])) {
 		path <- system.file("proj", package="terra")
 	} 
-	SpatRaster$new()$spatinit(path)
+	s <- SpatRaster$new()
+	s$spatinit(path)
 }
 
