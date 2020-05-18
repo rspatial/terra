@@ -156,7 +156,7 @@ class SpatRaster {
 		//void setCRS(std::vector<std::string> _crs);
 
 		std::vector<std::string> getSRS();
-		bool setSRS(std::vector<std::string> _srs);
+		bool setSRS(std::string crs);
 
 		bool is_lonlat();
 		bool could_be_lonlat();
@@ -200,7 +200,7 @@ class SpatRaster {
 
 		SpatRaster();
 		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
-		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::vector<std::string> crs);
+		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
 
 		SpatRaster(std::vector<std::string> fname);
 		SpatRaster(std::string fname);

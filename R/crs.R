@@ -39,7 +39,7 @@ setMethod("crs<-", signature("SpatRaster", "character"),
 
 setMethod("crs", signature("SpatVector"), 
 	function(x) {
-		x@ptr$get_crs()
+		x@ptr$get_crs()[2]
 	}
 )
 

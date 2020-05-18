@@ -99,7 +99,7 @@ SpatRaster::SpatRaster() {
 
 
 
-SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::vector<std::string> crs) {
+SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs) {
 
 	RasterSource s;
 	s.nrow=rcl[0];
@@ -128,7 +128,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 		return;
 	}
 #else
-	if (crs.size() == 1) s.srs.proj4 = lrtrim_copy(crs[0]);
+	s.srs.proj4 = lrtrim_copy(crs);
 #endif
 
 	for (unsigned i=0; i < rcl[2]; i++) {
@@ -158,7 +158,7 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	s.datatype = "";
 #ifdef useGDAL
 	std::string msg;
-	if (!s.srs.set({crs}, msg )) {
+	if (!s.srs.set(crs, msg )) {
 		setError(msg);
 		return;
 	}
@@ -378,9 +378,9 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 	return out;
 }
 
-bool SpatRaster::setSRS(std::vector<std::string> _srs) {
+bool SpatRaster::setSRS(std::string crs) {
 	std::string msg;
-	if (!srs.set(_srs, msg )) {
+	if (!srs.set(crs, msg )) {
 		setError(msg);
 		return false;
 	}

@@ -252,7 +252,7 @@ RCPP_MODULE(spat){
 		.constructor()
 	    //.constructor<std::string>()
 	    .constructor<std::vector<std::string> >()
-		.constructor<std::vector<unsigned>, std::vector<double>, std::vector<std::string>>()
+		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")

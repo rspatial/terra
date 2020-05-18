@@ -23,14 +23,9 @@
 
 #ifndef useGDAL
 
-bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
-	if (txt.size() == 3) {
-		proj4 = txt[0];
-		wkt = txt[1];
-	} else {
-		wkt =  "";
-		proj4 = txt[0];
-	}
+bool SpatSRS::set(std::string txt, std::string &msg) {
+	proj4 = txt;
+	wkt = "";
 	return true;
 }
 #else
@@ -67,7 +62,7 @@ bool wkt_from_spatial_reference(const OGRSpatialReference *srs, std::string &wkt
 	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 	OGRErr err = srs->exportToWkt(&cp, options);
 #else
-	OGRErr err = srs->exportToPrettyWkt(&cp);
+	OGRErr err = srs->exportToWkt(&cp);
 #endif
 	if (is_ogr_error(err, msg)) {
 		CPLFree(cp);
@@ -119,16 +114,15 @@ bool string_from_spatial_reference(const OGRSpatialReference *srs, std::vector<s
 
 
 
-bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
+bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt="";
 	proj4="";
-	if (txt.size() == 0) { 
-		return true;
-	} else if (txt[0] == "") {
+	lrtrim(txt);
+	if (txt == "") {
 		return true;
 	} else {
 		OGRSpatialReference *srs = new OGRSpatialReference;
-		const char* s = txt[0].c_str();
+		const char* s = txt.c_str();
 		if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
 			delete srs;
 			msg = "empty srs";

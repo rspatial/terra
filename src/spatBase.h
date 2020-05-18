@@ -157,7 +157,7 @@ class SpatExtent {
 class SpatSRS {
 	public:
 		std::string proj4, wkt;
-		bool set(std::vector<std::string> txt, std::string &msg);
+		bool set(std::string txt, std::string &msg);
 
 		std::vector<std::string> get() {
 			std::vector<std::string> s = {proj4, wkt};
