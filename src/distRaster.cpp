@@ -120,8 +120,8 @@ SpatDataFrame SpatVector::distance() {
 		out.setError("only inmplemented for points --- to be improved");
 		return(out);
 	}
-	std::vector<std::string> srs = getSRS();
-	if (srs[1] == "") {
+	std::string srs = getSRS("wkt");
+	if (srs == "") {
 		out.setError("SRS not defined");
 		return(out);
 	}

@@ -120,8 +120,8 @@ class SpatVector {
 			return true;	
 		}
 
-		std::vector<std::string> getSRS() {
-			return lyr.srs.get();
+		std::string getSRS(std::string x) {
+			return lyr.srs.get(x);
 		}
 		//std::string getPRJ();
 		//void setPRJ(std::string PRJ);

@@ -256,8 +256,8 @@ SpatVector SpatVector::project(std::string crs) {
 	std::vector<double> x = d.dv[0];
 	std::vector<double> y = d.dv[1];
 
-	std::vector<std::string> srs = getSRS();
-	s.msg = transform_coordinates(x, y, srs[1], crs);
+	std::string srs = getSRS("wkt");
+	s.msg = transform_coordinates(x, y, srs, crs);
 
 	if (!s.msg.has_error) {
 		unsigned n = d.iv[0].size();

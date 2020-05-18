@@ -159,9 +159,8 @@ class SpatSRS {
 		std::string proj4, wkt;
 		bool set(std::string txt, std::string &msg);
 
-		std::vector<std::string> get() {
-			std::vector<std::string> s = {proj4, wkt};
-			return s;
+		std::string get(std::string x) {
+			return (x == "proj4" ? proj4 : wkt); 
 		}
 
 		std::string get_prj() {

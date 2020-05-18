@@ -155,7 +155,7 @@ class SpatRaster {
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);
 
-		std::vector<std::string> getSRS();
+		std::string getSRS(std::string x);
 		bool setSRS(std::string crs);
 
 		bool is_lonlat();

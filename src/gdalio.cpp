@@ -297,8 +297,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	double adfGeoTransform[6] = { e.xmin, rs[0], 0, e.ymax, 0, -1 * rs[1] };
 	GDALSetGeoTransform( hDS, adfGeoTransform);
 
-	std::vector<std::string> srs = getSRS();
-	std::string wkt = srs[1];
+	std::string wkt = getSRS("wkt");
 	if (wkt != "") {
 		OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
 		OGRErr erro = OSRSetFromUserInput(hSRS, wkt.c_str());

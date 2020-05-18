@@ -390,7 +390,7 @@ bool SpatRaster::setSRS(std::string crs) {
 	return true;
 }
 
-std::vector<std::string>  SpatRaster::getSRS() {
-	return srs.get();
+std::string  SpatRaster::getSRS(std::string x) {
+	return srs.get(x);
 }
 

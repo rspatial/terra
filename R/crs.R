@@ -4,28 +4,19 @@
 # License GPL v3
 
 .proj4 <- function(x) {
-	x@ptr$get_crs()[1]
+	x@ptr$get_crs("prj")
 }
 
 
 setMethod("crs", signature("SpatRaster"), 
 	function(x) {
-		x@ptr$get_crs()[2]
+		x@ptr$get_crs("wkt")
 	}
 )
 
 setMethod("crs<-", signature("SpatRaster", "character"), 
 	function(x, ..., value) {
-		x@ptr$set_crs(value)
-		show_messages(x, "crs<-")
-	}
-)
-
-
-
-setMethod("crs<-", signature("SpatRaster", "character"), 
-	function(x, ..., value) {
-		x@ptr$set_crs(value)
+		x@ptr$set_crs(value[1])
 		show_messages(x, "crs<-")
 	}
 )
@@ -33,13 +24,13 @@ setMethod("crs<-", signature("SpatRaster", "character"),
 
 setMethod("crs", signature("SpatVector"), 
 	function(x) {
-		x@ptr$get_crs()[2]
+		x@ptr$get_crs("wkt")
 	}
 )
 
 setMethod("crs<-", signature("SpatVector", "character"), 
 	function(x, ..., value) {
-		x@ptr$set_crs(value)
+		x@ptr$set_crs(value[1])
 		show_messages(x, "crs<-")
 	}
 )
