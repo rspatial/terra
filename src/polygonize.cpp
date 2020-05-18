@@ -5,6 +5,7 @@
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
 
+#if GDAL_VERSION_MAJOR >= 3
 
 SpatVector SpatRaster::polygonize(bool trunc) {
 
@@ -28,8 +29,9 @@ SpatVector SpatRaster::polygonize(bool trunc) {
 		}
 	}
     GDALDataset *srcDS=NULL;
-	srcDS = srcDS->FromHandle(rstDS);
-
+	//srcDS = srcDS->FromHandle(rstDS);
+	srsDS = (GDALDataset)rstDS;
+	
     GDALDataset *poDS = NULL;
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
     if( poDriver == NULL )  {
@@ -96,3 +98,12 @@ SpatVector SpatRaster::polygonize(bool trunc) {
 	return out;
 }
 
+#else
+	
+SpatVector SpatRaster::polygonize(bool trunc) {
+	SpatVector out;
+	out.setError("not supported with your version of GDAL");
+	return out;
+}
+
+#endif

@@ -86,7 +86,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src) {
 		if (canProcessInMemory(4)) {
 			fromfile = false;
 		} else {
-			// needs to make VRT
+			// make VRT
 			setError("right now this method can only handle one file source at a time");
 			return false;
 		}
