@@ -2,9 +2,9 @@
 #ifdef useGDAL
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
-#include "crs.h"
 #endif
 
+#include "crs.h"
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
@@ -342,7 +342,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	SpatRaster out = x.geometry(nl);
 
 	if (crs != "") {
-		out.setError("This does not work with your version of GDAL")
+		out.setError("This does not work with your version of GDAL");
 		return out;
 	}
 
@@ -356,8 +356,8 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		return out;
 	}
 
-	std::string crsin = getCRS();
-	std::string crsout = out.getCRS();
+	std::string crsin = srs.wkt;
+	std::string crsout = out.srs.wkt;
 	bool do_prj = true;
 	if ((crsin == crsout) || (crsin == "") || (crsout == "")) {
 		do_prj = false;
