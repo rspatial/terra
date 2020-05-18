@@ -182,12 +182,17 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 		narm = false;
 		dissolve=false;
 	}
+	SpatVector vect;
 	
 	if (dissolve) {
+#if GDAL_VERSION_MAJOR >= 3
 		return polygonize(trunc);
+#else 
+		vect.setError("not supported with your version of GDAL");
+		return vect;
+#endif 
 	}
 
-	SpatVector vect;
 	if (!canProcessInMemory(12)) {
 		vect.setError("the raster is too large");
 		return vect;
