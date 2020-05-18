@@ -4,7 +4,7 @@
 # License GPL v3
 
 .proj4 <- function(x) {
-	x@ptr$get_crs("prj")
+	x@ptr$get_crs("proj4")
 }
 
 

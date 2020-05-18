@@ -27,7 +27,7 @@ SpatVector (invisibly). This function is used for the side-effect of writing val
 
 \examples{
 v <- vect(cbind(1:5,1:5))
-crs(v) <- "+proj=lonlat +datum=WGS84"
+crs(v) <- "+proj=longlat +datum=WGS84"
 v$id <- 1:length(v)
 v$name <- letters[1:length(v)]
 tmpf1 <- tempfile()
