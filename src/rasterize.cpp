@@ -319,6 +319,25 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 
 	std::string gtype = x.type();
 	SpatRaster out = geometry(1);
+
+	if (field != "") {
+		std::vector<std::string> nms = x.get_names();
+		if (!is_in_vector(field, nms)) {
+			out.setError("field " + field + " not found");
+			return out;
+		}
+		if (!update) out.setNames({field});
+	} else {
+		if (values.size() == 1) {
+			values = std::vector<double>(x.size(), values[0]);
+		} else if (values.size() != x.size()) {
+			out.setError("the length of values must 1 or the number of features");
+			return out;
+		}
+	}
+
+
+
 	SpatOptions opts(opt);
 	if (!update) {
 		opts = opt;
@@ -331,14 +350,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out = rasterizePoints(x, out, values, background, opts);
 	}
 	if (update) out = cover(out, background, opt);
-	
+
 	if (touches) {
 		out.addWarning("argument touches is not supported with your version of GDAL");	
 	}
 	if (inverse) {
 		out.addWarning("argument inverse is not supported with your version of GDAL");	
 	}
-	
+
 	return out;
 }
 
