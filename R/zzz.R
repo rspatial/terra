@@ -10,7 +10,7 @@ gdal_version <- function() {
 	m <- paste("This is terra version", tv, "(alpha-release)")
 	gdv <- gdal_version()
 	if (gdv < "3.0.0") {
-		a <- paste("\n\nNOTE: You are using GDAL version", gdv, "\nFor full functionality you need at least version 3.0.0\n")
+		a <- paste("\n\nNOTE: You are using GDAL version", gdv, "\nFor full functionality you need at least version 3.0.4\n")
 		m <- c(m, a)
 	}
 	packageStartupMessage(m)
