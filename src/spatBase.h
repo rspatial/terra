@@ -25,14 +25,17 @@
 	#define useRcpp
 #endif
 
+
 #ifndef nogdal
   #define useGDAL
 #endif
 
+
+/*
 #ifdef useGDAL
 	#include "gdal_priv.h"
 #endif
-
+*/
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
