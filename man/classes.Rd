@@ -14,6 +14,11 @@
 \alias{SpatRasterCollection}
 \alias{SpatRasterCollection-class}
 \alias{Rcpp_SpatRasterCollection-class}
+\alias{SpatRasterStack}
+\alias{SpatRasterStack-class}
+\alias{Rcpp_SpatRasterStack-class}
+\alias{show,SpatRasterStack-method}
+
 
 \alias{show_messages}
 \alias{show,SpatDataFrame-method}

@@ -142,6 +142,37 @@ setMethod ("show" , "SpatRaster",
 )
 
 
+
+setMethod ("show" , "SpatRasterStack", 
+	function(object) {
+		
+		cat("class       :" , class(object), "\n")
+		ns <- object@ptr$nsub()
+		cat("subdatasets :", ns, "\n") 
+		if (ns == 0) return()
+		
+		d <- c(object@ptr$nrow(), object@ptr$ncol())
+		cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n") 
+		nss <- sapply(1:ns, function(i) object@ptr$subdataset(i)$nlyr())
+		cat("nlyr        :", paste(nss, collapse=", "), "\n") 
+
+		obj <- rast()
+		obj@ptr <- object@ptr$subdataset(0)
+		
+		xyres <- res(obj)
+		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
+
+		e <- as.vector(ext(obj))
+		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+
+		cat("coord. ref. :" , .proj4(obj), "\n")
+		
+		ln <- object@ptr$names
+		cat("names       :", paste(ln, collapse=", "), "\n")
+	}
+)
+
+
 setMethod ("head" , "SpatVector", 
 	function(x, n=6L, ...) {
 		utils::head(as.data.frame(x), n=n, ...)

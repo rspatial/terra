@@ -2,6 +2,7 @@
 
 
 # terra
+if (!isGeneric("add")) { setGeneric("add", function(x, y, ...) standardGeneric("add"))}
 if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}
 if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app"))}
 if (!isGeneric("as.contour")) {setGeneric("as.contour", function(x,...) standardGeneric("as.contour"))}	

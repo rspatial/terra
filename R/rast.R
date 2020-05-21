@@ -125,7 +125,7 @@ setMethod("rastk", signature(x="character"),
 setMethod("rastk", signature(x="SpatRaster"),
 	function(x, name="sd1", ...) {
 		r <- methods::new("SpatRasterStack")
-		r@ptr <- SpatRasterStack$new(x, name)
+		r@ptr <- SpatRasterStack$new(x@ptr, name)
 		show_messages(r, "rastk")
 	}
 )

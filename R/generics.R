@@ -61,6 +61,13 @@ setMethod("c", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("add", signature(x="SpatRasterStack", y="SpatRaster"), 
+	function(x, y, name="", ...) {
+		ok <- x@ptr$add(y@ptr, name)
+		show_messages(x, "add")		
+	}
+)
+
 setMethod("rep", signature(x="SpatRaster"), 
 	function(x, ...) {
 		i <- rep(1:nlyr(x), ...)

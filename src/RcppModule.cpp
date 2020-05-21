@@ -426,6 +426,7 @@ RCPP_MODULE(spat){
 
     class_<SpatRasterCollection>("SpatRasterCollection")
 		.constructor()
+		.field("messages", &SpatRasterCollection::msg, "messages")		
 		.field_readonly("x", &SpatRasterCollection::x)
 		.method("length", &SpatRasterCollection::size, "size")
 		.method("resize", &SpatRasterCollection::resize, "resize")
@@ -437,6 +438,7 @@ RCPP_MODULE(spat){
 		.constructor()
 	    .constructor<std::string>()
 	    .constructor<SpatRaster, std::string>()
+		.field("messages", &SpatRasterStack::msg, "messages")
 
 		.method("nsub", &SpatRasterStack::nsub , "")
 		.method("ncol", &SpatRasterStack::ncol , "")
