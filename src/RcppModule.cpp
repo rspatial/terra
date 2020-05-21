@@ -106,6 +106,7 @@ RCPP_EXPOSED_CLASS(SpatDataFrame)
 RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatRasterCollection)
+RCPP_EXPOSED_CLASS(SpatRasterStack)
 RCPP_EXPOSED_CLASS(SpatVector)
 
 
@@ -432,5 +433,19 @@ RCPP_MODULE(spat){
 		.method("merge", &SpatRasterCollection::merge, "merge")
 	;
 	
+    class_<SpatRasterStack>("SpatRasterStack")
+		.constructor()
+	    .constructor<std::string>()
+
+		.method("nsub", &SpatRasterStack::nsub , "")
+		.method("ncol", &SpatRasterStack::ncol , "")
+		.method("nrow", &SpatRasterStack::nrow , "")
+		.method("getSRS", &SpatRasterStack::getSRS , "")
+		.property("names", &SpatRasterStack::getnames, &SpatRasterStack::setnames)
+		.method("add", &SpatRasterStack::push_back , "")
+		.method("resize", &SpatRasterStack::resize , "")
+		.method("subdataset", &SpatRasterStack::subdataset , "")
+		.method("collapse", &SpatRasterStack::collapse , "")
+	;
 }
 

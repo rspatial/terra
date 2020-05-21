@@ -25,19 +25,19 @@
 #endif
 
 
-SpatRaster::SpatRaster(std::string fname) {
+SpatRaster::SpatRaster(std::string fname, int subds) {
 #ifdef useGDAL
-	constructFromFile(fname);
+	constructFromFile(fname, subds);
 #endif
 }
 
 SpatRaster::SpatRaster(std::vector<std::string> fname) {
 #ifdef useGDAL
-	constructFromFile(fname[0]);
+	constructFromFile(fname[0], -1);
 	SpatRaster r;
 	bool success;
 	for (size_t i=1; i<fname.size(); i++) {
-		success = r.constructFromFile(fname[i]);
+		success = r.constructFromFile(fname[i], -1);
 		if (success) {
 			addSource(r);
 			if (r.msg.has_error) {

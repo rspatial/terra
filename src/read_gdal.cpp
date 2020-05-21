@@ -56,10 +56,10 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 
 bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
 
-	SpatRaster r = SpatRaster(fnames[0]);
+	SpatRaster r = SpatRaster(fnames[0], -1);
 	setSource(r.source[0]);
 	for (size_t i=1; i<fnames.size(); i++) {
-		r = SpatRaster(fnames[i]);
+		r = SpatRaster(fnames[i], -1);
 		if (!compare_geom(r, false, true, true)) {
 			setError("geometry of " + fnames[i] + " does not match previous sources");
 			return false;
@@ -169,13 +169,14 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 
 		//}
 	}
-
-	constructFromFile(sd[0]);
+	bool success = constructFromFile(sd[0], -1);
+	if (!success) {
+		return(false);
+	}
 	SpatRaster out;
-	bool success;
     for (size_t i=1; i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		success = out.constructFromFile(sd[i]);
+		success = out.constructFromFile(sd[i], -1);
 		if (success) {
 //			out.source[0].subdataset = true;
 			addSource(out);
@@ -249,14 +250,46 @@ std::string getDsPRJ(GDALDataset *poDataset) {
 }
 
 
-
-bool SpatRaster::constructFromFile(std::string fname) {
+SpatRasterStack::SpatRasterStack(std::string fname) {
 
     GDALDataset *poDataset;
-    
-	//if (!GDALregistred) spatinit(); //
-	//GDALAllRegister();
+    poDataset = (GDALDataset *) GDALOpen( fname.c_str(), GA_ReadOnly );
+    if( poDataset == NULL )  {
+		if (!file_exists(fname)) {
+			setError("file does not exist");
+		} else {
+			setError("cannot read from " + fname );
+		}
+		return;
+	}
 
+	unsigned nl = poDataset->GetRasterCount();
+	if (nl == 0) {
+		std::string delim = "NAME=";
+		std::vector<std::string> meta;
+		char **metadata = poDataset->GetMetadata("SUBDATASETS");
+	    for (size_t i=0; metadata[i] != NULL; i++) {
+			std::string s = metadata[i];
+			size_t pos = s.find(delim);
+			if (pos != std::string::npos) {
+				s.erase(0, pos + delim.length());
+				//sd.push_back(s);
+				SpatRaster sub;
+				bool success = sub.constructFromFile(s, -1);
+				if (success) {
+					push_back(sub, basename_sds(s));
+				}
+			}
+		} 
+	} else {
+		setError("file does not consist of subdatasets");
+	}
+}
+
+
+bool SpatRaster::constructFromFile(std::string fname, int subds) {
+
+    GDALDataset *poDataset;
 	const char* pszFilename = fname.c_str();
     poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 
@@ -278,10 +311,12 @@ bool SpatRaster::constructFromFile(std::string fname) {
 			meta.push_back(metadata[i]);
 		}
 		if (meta.size() > 0) {
+			if ((subds >=0) && (subds < (int)meta.size())) {
+				meta = { meta[subds] };
+			}
 			return constructFromSubDataSets(fname, meta);
-		}
+		}// else error??	
 	}
-
 	RasterSource s;
 	s.ncol = poDataset->GetRasterXSize();
 	s.nrow = poDataset->GetRasterYSize();
