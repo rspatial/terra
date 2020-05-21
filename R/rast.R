@@ -93,19 +93,26 @@ setMethod("rast", signature(x="SpatVector"),
 
 setMethod("rast", signature(x="character"),
 	function(x, subds=-1, ...) {
+		x <- trimws(x)
+		x <- x[x!=""]
 		if (length(x) == 0) {
-			stop("provide valid file name(s)")
+			stop("provide a valid filename")
 		}
-		f <- .fullFilename(x)
 		r <- methods::new("SpatRaster")
-		r@ptr <- SpatRaster$new(f, subds)
+		f <- .fullFilename(x)
+		if (length(f) > 1) {
+			r@ptr <- SpatRaster$new(f)		
+		} else {
+			r@ptr <- SpatRaster$new(f, subds)
+		}
 		show_messages(r, "rast")
 	}
 )
 
 setMethod("rastk", signature(x="character"),
 	function(x, ...) {
-		if (length(x) == 0) {
+		x <- trimws(x[1])
+		if (nchar(x) == 0) {
 			stop("provide valid file name(s)")
 		}
 		f <- .fullFilename(x)
@@ -115,6 +122,13 @@ setMethod("rastk", signature(x="character"),
 	}
 )
 
+setMethod("rastk", signature(x="SpatRaster"),
+	function(x, name="sd1", ...) {
+		r <- methods::new("SpatRasterStack")
+		r@ptr <- SpatRasterStack$new(x, name)
+		show_messages(r, "rastk")
+	}
+)
 
 setMethod("rast", signature(x="SpatRaster"),
 	function(x, nlyrs=nlyr(x), ...) {

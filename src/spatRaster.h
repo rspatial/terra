@@ -498,9 +498,11 @@ class SpatRasterStack {
 
 		std::vector<SpatRaster> x;
 		std::vector<std::string> names;
-		SpatRasterStack() {};
 
+		SpatRasterStack() {};
 		SpatRasterStack(std::string fname);
+		SpatRasterStack(SpatRaster r, std::string name) { push_back(r, name); };
+
 		std::vector<std::string> getnames() {
 			return names;
 		};
