@@ -64,7 +64,8 @@ setMethod("c", signature(x="SpatRaster"),
 setMethod("add", signature(x="SpatRasterStack", y="SpatRaster"), 
 	function(x, y, name="", ...) {
 		ok <- x@ptr$add(y@ptr, name)
-		show_messages(x, "add")		
+		show_messages(x, "add")
+		invisible(ok)
 	}
 )
 

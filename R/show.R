@@ -153,7 +153,7 @@ setMethod ("show" , "SpatRasterStack",
 		
 		d <- c(object@ptr$nrow(), object@ptr$ncol())
 		cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n") 
-		nss <- sapply(1:ns, function(i) object@ptr$subdataset(i)$nlyr())
+		nss <- sapply(1:ns, function(i) object@ptr$subdataset(i-1)$nlyr())
 		cat("nlyr        :", paste(nss, collapse=", "), "\n") 
 
 		obj <- rast()

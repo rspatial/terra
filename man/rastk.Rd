@@ -3,8 +3,8 @@
 \docType{methods}
 
 \alias{rastk}
-\alias{rast,character-method}
-\alias{rast,SpatRaster-method}
+\alias{rastk,character-method}
+\alias{rastk,SpatRaster-method}
 
 \title{Create a SpatRasterStack}
 
@@ -31,7 +31,8 @@ SpatRasterStack
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
-rastk(s, "first")
+x <- rastk(s, "first")
+add(x, s, "second")
 }
 
 
