@@ -26,16 +26,17 @@ function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 } )
 
 
-setMethod("$", "SpatRaster",  
-	function(x, name) { subset(x, name) } )
 
-
-setMethod("[[", c("SpatRaster", "character", "missing"),
+setMethod("[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	subset(x, i, ...)
 })
 
-setMethod("[", c("SpatRaster", "character", "missing"),
+
+setMethod("$", "SpatRaster",  
+	function(x, name) { subset(x, name) } )
+
+setMethod("[[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	subset(x, i, ...)
 })

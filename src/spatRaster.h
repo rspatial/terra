@@ -496,7 +496,7 @@ class SpatRasterStack {
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
 
-		std::vector<SpatRaster> x;
+		std::vector<SpatRaster> ds;
 		std::vector<std::string> names;
 
 		SpatRasterStack() {};
@@ -507,67 +507,77 @@ class SpatRasterStack {
 			return names;
 		};
 		void setnames(std::vector<std::string> nms) {
-			if (nms.size() == x.size()) {
+			if (nms.size() == ds.size()) {
 				// make_unique
 				names = nms;
 			}
 		}
 	
-		unsigned nsub() {
-			return x.size();
+		unsigned nsds() {
+			return ds.size();
 		}
 		unsigned nrow() {
-			if (x.size() > 0) {
-				return x[0].nrow();
+			if (ds.size() > 0) {
+				return ds[0].nrow();
 			} else {
 				return 0;
 			}
 		}
 		unsigned ncol() {
-			if (x.size() > 0) {
-				return x[0].ncol();
+			if (ds.size() > 0) {
+				return ds[0].ncol();
 			} else {
 				return 0;
 			}
 		}
 		std::string getSRS(std::string s) {
-			if (x.size() > 0) {
-				return x[0].getSRS(s);
+			if (ds.size() > 0) {
+				return ds[0].getSRS(s);
 			} else {
 				return "";
 			}
 		}
 		
 		bool push_back(SpatRaster r, std::string name) { 
-			if (x.size() > 0) {
-				if (!x[0].compare_geom(r, false, false, true, true, true, false)) {
+			if (ds.size() > 0) {
+				if (!ds[0].compare_geom(r, false, false, true, true, true, false)) {
 					return false;
 				}
 			}
-			x.push_back(r); 
+			ds.push_back(r); 
 			names.push_back(name); 
 			return true;
 		};
 		void resize(size_t n) { 
-			if (n < x.size()) {
-				x.resize(n); 
+			if (n < ds.size()) {
+				ds.resize(n); 
 			}
 		}
-		SpatRaster subdataset(size_t i) {
-			if (i < x.size()) {
-				return(x[i]); 
+		SpatRaster getsds(size_t i) {
+			if (i < ds.size()) {
+				return(ds[i]); 
 			} else {
 				SpatRaster out;
 				out.setError("invalid index");
 				return out;
 			}
 		}
+		SpatRasterStack subset(std::vector<unsigned> x) {
+			SpatRasterStack out;
+			for (size_t i=0; i<x.size(); i++) {
+				if (x[i] < ds.size()) {
+					out.push_back(ds[x[i]], names[x[i]]);
+				} 
+			} 
+			return out;
+		}
+		
 		SpatRaster collapse() {
-			if (x.size() > 0) {
-				SpatRaster out = x[0];
-				for (size_t i=1; i<x.size(); i++) {
-					for (size_t j=0; j<x[i].source.size(); j++) {
-						out.source.push_back(x[i].source[j]);
+			if (ds.size() > 0) {
+				SpatRaster out = ds[0];
+				for (size_t i=1; i<ds.size(); i++) {
+					for (size_t j=0; j<ds[i].source.size(); j++) {
+						out.source.push_back(ds[i].source[j]);
 					}
 				}
 				return out;

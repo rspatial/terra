@@ -6,7 +6,12 @@
 \alias{[[,SpatRaster,logical,missing-method}
 \alias{[[,SpatRaster,character,missing-method}
 \alias{[,SpatRaster,character,missing-method}
+\alias{[,SpatRasterStack,numeric,missing-method}
+\alias{[,SpatRasterStack,numeric,numeric-method}
+\alias{[,SpatRasterStack,logical,missing-method}
+\alias{[,SpatRasterStack,character,missing-method}
 \alias{$,SpatRaster-method}
+\alias{$,SpatRasterStack-method}
 
 \title{Subset of a SpatRaster}
 

@@ -440,14 +440,15 @@ RCPP_MODULE(spat){
 	    .constructor<SpatRaster, std::string>()
 		.field("messages", &SpatRasterStack::msg, "messages")
 
-		.method("nsub", &SpatRasterStack::nsub , "")
-		.method("ncol", &SpatRasterStack::ncol , "")
-		.method("nrow", &SpatRasterStack::nrow , "")
-		.method("getSRS", &SpatRasterStack::getSRS , "")
+		.method("nsds", &SpatRasterStack::nsds, "")
+		.method("ncol", &SpatRasterStack::ncol, "")
+		.method("nrow", &SpatRasterStack::nrow, "")
+		.method("getSRS", &SpatRasterStack::getSRS, "")
 		.property("names", &SpatRasterStack::getnames, &SpatRasterStack::setnames)
-		.method("add", &SpatRasterStack::push_back , "")
-		.method("resize", &SpatRasterStack::resize , "")
-		.method("subdataset", &SpatRasterStack::subdataset , "")
+		.method("add", &SpatRasterStack::push_back, "")
+		.method("resize", &SpatRasterStack::resize, "")
+		.method("getsds", &SpatRasterStack::getsds, "")
+		.method("subset", &SpatRasterStack::subset, "")
 		.method("collapse", &SpatRasterStack::collapse , "")
 	;
 }

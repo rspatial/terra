@@ -21,14 +21,13 @@ This approach of using model predictions is commonly used in remote sensing (for
 \arguments{
   \item{object}{SpatRaster}
   \item{model}{fitted model of any class that has a "predict" method (or for which you can supply a similar method as \code{fun} argument. E.g. glm, gam, or randomForest}
-  \item{fun}{function. Default value is \code{predict}, but can be replaced with e.g. predict.se (depending on the type of model), or your own custom function}
+  \item{fun}{function. The predict function that takes \code{model} as first argument. The default value is \code{predict}, but can be replaced with e.g. predict.se (depending on the type of model), or your own custom function}
   \item{...}{additional arguments for \code{fun}}    
 
   \item{const}{data.frame. Can be used to add a constant value as a predictor variable so that you do not need to make a SpatRaster layer for it}
  \item{factors}{list with levels for factor variables. The list elements should be named with names that correspond to names in \code{object} such that they can be matched. This argument may be omitted for standard models such as "glm" as the predict function will extract the levels from the \code{model} object, but it is necessary in some other cases (e.g. cforest models from the party package)}
   \item{na.rm}{logical. If \code{TRUE}, cells with \code{NA} values in the predictors are removed from the computation. This option prevents errors with models that cannot handle \code{NA} values. In most other cases this will not affect the output. An exception is when predicting with a model that returns predicted values even if some (or all!) variables are \code{NA} }
   \item{index}{integer. To select subset of output variables}
- 
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

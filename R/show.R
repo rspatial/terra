@@ -142,22 +142,21 @@ setMethod ("show" , "SpatRaster",
 )
 
 
-
 setMethod ("show" , "SpatRasterStack", 
 	function(object) {
 		
 		cat("class       :" , class(object), "\n")
-		ns <- object@ptr$nsub()
+		ns <- object@ptr$nsds()
 		cat("subdatasets :", ns, "\n") 
 		if (ns == 0) return()
 		
 		d <- c(object@ptr$nrow(), object@ptr$ncol())
 		cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n") 
-		nss <- sapply(1:ns, function(i) object@ptr$subdataset(i-1)$nlyr())
+		nss <- sapply(1:ns, function(i) object@ptr$getsds(i-1)$nlyr())
 		cat("nlyr        :", paste(nss, collapse=", "), "\n") 
 
 		obj <- rast()
-		obj@ptr <- object@ptr$subdataset(0)
+		obj@ptr <- object@ptr$getsds(0)
 		
 		xyres <- res(obj)
 		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")

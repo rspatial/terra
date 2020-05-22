@@ -53,7 +53,7 @@ setMethod("c", signature(x="SpatRaster"),
 	function(x, ...) {
 		dots <- list(...)
 		for (i in dots) {
-			if (class(i) == "SpatRaster") {
+			if (inherits(i, "SpatRaster")) {
 				x@ptr <- x@ptr$combineSources(i@ptr)
 			}
 		}
@@ -61,13 +61,6 @@ setMethod("c", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("add", signature(x="SpatRasterStack", y="SpatRaster"), 
-	function(x, y, name="", ...) {
-		ok <- x@ptr$add(y@ptr, name)
-		show_messages(x, "add")
-		invisible(ok)
-	}
-)
 
 setMethod("rep", signature(x="SpatRaster"), 
 	function(x, ...) {

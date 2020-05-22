@@ -27,6 +27,19 @@ setMethod("names<-", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("names", signature(x="SpatRasterStack"), 
+	function(x) { 
+		x@ptr$names
+	}
+)
+
+
+setMethod("names<-", signature(x="SpatRasterStack"), 
+	function(x, value) {
+		value <- as.character(value)
+		x@ptr$names <- value
+	}
+)
 
 setMethod("names", signature(x="SpatVector"), 
 	function(x) { 

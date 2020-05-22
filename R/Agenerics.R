@@ -2,7 +2,7 @@
 
 
 # terra
-if (!isGeneric("add")) { setGeneric("add", function(x, y, ...) standardGeneric("add"))}
+#if (!isGeneric("add")) { setGeneric("add", function(x, y, ...) standardGeneric("add"))}
 if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}
 if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app"))}
 if (!isGeneric("as.contour")) {setGeneric("as.contour", function(x,...) standardGeneric("as.contour"))}	
@@ -24,7 +24,7 @@ if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneri
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}	
 if (!isGeneric("rats")) { setGeneric("rats", function(x, ...) standardGeneric("rats")) }
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
-if (!isGeneric("rastk") ) { setGeneric("rastk", function(x, ...) standardGeneric("rastk")) }
+if (!isGeneric("rstk") ) { setGeneric("rstk", function(x, ...) standardGeneric("rstk")) }
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}	
 if (!isGeneric("slope")) {setGeneric("slope", function(x, ...) standardGeneric("slope"))}	
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	
