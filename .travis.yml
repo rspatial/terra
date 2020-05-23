@@ -23,8 +23,8 @@ addons:
       - libgeos-dev
       - libgdal-dev
 
-r_packages: 
-  - covr
+#r_packages: 
+#  - covr
 
-after_success:
-- Rscript -e 'library(covr); codecov()'
+#after_success:
+#- Rscript -e 'library(covr); codecov()'
