@@ -27,6 +27,11 @@ setMethod("vect", signature(x="Spatial"),
 	}
 )
 
+setMethod("vect", signature(x="sf"), 
+	function(x, ...) {
+		methods::as(x, "SpatVector")
+	}
+)
 
 setMethod("vect", signature(x="matrix"), 
 	function(x, type="points", atts=NULL, crs="", ...) {

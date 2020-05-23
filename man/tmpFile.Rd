@@ -29,7 +29,7 @@ character
 }
 
 
-\seealso{ \code{\link{rasterOptions}}, \code{\link[base]{tempfile}} }  
+\seealso{ \code{\link{terraOptions}}, \code{\link[base]{tempfile}} }  
 
 \examples{
 tmpFiles()

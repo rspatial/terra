@@ -263,6 +263,13 @@ setAs("SpatRaster", "Raster",
 )
 
 
+setAs("sf", "SpatVector", 
+	function(from) {
+		from <- as(from, "Spatial")
+		as(from, "SpatVector")
+	}
+)
+
 
 setAs("SpatVector", "Spatial", 
 	function(from) {

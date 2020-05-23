@@ -8,6 +8,7 @@
 \alias{vect,matrix-method}
 \alias{vect,missing-method}
 \alias{vect,Spatial-method}
+\alias{vect,sf-method}
 \alias{vect,PackedSpatVector-method}
 
 \title{Create SpatVector objects}
@@ -17,11 +18,15 @@ Create a new SpatVector
 } 
 
 \usage{
+\S4method{vect}{character}(x, ...)
+
 \S4method{vect}{data.frame}(x, type="points", atts=NULL, crs=NA, ...)
+
+\S4method{vect}{sf}(x, ...)
 }
 
 \arguments{
-\item{x}{character (filename), data.frame, matrix, or missing. If \code{x} is a filename, all other arguments are ignored}
+\item{x}{character (filename), data.frame, matrix, missing, or a vector object defined in packages \code{sf} or \code{sp}. If \code{x} is a filename, all other arguments are ignored}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{the coordinate reference system (PROJ4 notation)}
@@ -29,7 +34,7 @@ Create a new SpatVector
 }
 
 
-\value{SpatVector object}
+\value{SpatVector}
 
 
 \examples{

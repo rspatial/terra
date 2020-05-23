@@ -38,7 +38,7 @@ Or aggregate ("dissolve") a SpatVector.
 
 
 \details{
-Aggregation starts at the upper-left end of a raster. If a division of the number of columns or rows with \code{factor} does not return an integer, the extent of the resulting SpatRaster will be somewhat larger then that of the original SpatRaster. For example, if an input SpatRaster has 100 columns, and \code{fact=12}, the output SpatRaster will have 9 columns and the maximum x coordinate of the output SpatRaster is also adjusted.
+Aggregation starts at the upper-left end of a SpatRaster. If a division of the number of columns or rows with \code{factor} does not return an integer, the extent of the resulting SpatRaster will be somewhat larger then that of the original SpatRaster. For example, if an input SpatRaster has 100 columns, and \code{fact=12}, the output SpatRaster will have 9 columns and the maximum x coordinate of the output SpatRaster is also adjusted.
   
 The function \code{fun} should take multiple numbers, and return a single number. For example \code{mean}, \code{modal}, \code{min} or \code{max}.
 
@@ -54,7 +54,7 @@ SpatRaster
 
 \examples{
 r <- rast()
-# aggregated raster, no values
+# aggregated SpatRaster, no values
 ra <- aggregate(r, fact=10)
 
 values(r) <- runif(ncell(r))
