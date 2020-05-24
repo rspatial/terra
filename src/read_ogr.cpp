@@ -177,7 +177,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		addWarning(errmsg);
          }
 	setSRS(wkt) ; 
-	//lyr.prj = prj;
+	//prj = prj;
 #else
 	if( poDS->GetProjectionRef() != NULL ) {
 		OGRSpatialReference oSRS(poDS->GetProjectionRef());
@@ -214,7 +214,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 	
 	//OGRLayer *poLayer = poDS->GetLayerByName( basename_noext(fname).c_str() );
 	OGRLayer *poLayer = poDS->GetLayer(0);
-	lyr.df = readAttributes(poLayer);
+	df = readAttributes(poLayer);
 
 	OGRwkbGeometryType wkbgeom = wkbFlatten( poLayer ->GetGeomType());
 

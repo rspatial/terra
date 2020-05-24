@@ -265,8 +265,8 @@ setAs("SpatRaster", "Raster",
 
 setAs("sf", "SpatVector", 
 	function(from) {
-		from <- as(from, "Spatial")
-		as(from, "SpatVector")
+		from <- methods::as(from, "Spatial")
+		methods::as(from, "SpatVector")
 	}
 )
 

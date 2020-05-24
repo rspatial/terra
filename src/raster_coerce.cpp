@@ -48,7 +48,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm) {
 	if (values) {
         std::vector<std::string> nms = getNames();
         for (size_t i=0; i<nlyr(); i++) {
-            pv.lyr.df.add_column(0, nms[i]);
+            pv.df.add_column(0, nms[i]);
         }
 	}
 	readStart();
@@ -78,7 +78,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm) {
                 if (values) {
                     for (size_t lyr=0; lyr<nl; lyr++) {
                         unsigned off2 = lyr*nc;
-                        pv.lyr.df.dv[lyr].push_back(v[off2+j]);
+                        pv.df.dv[lyr].push_back(v[off2+j]);
                     }
                 }
 			}
@@ -91,7 +91,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm) {
                 g.parts.resize(0);
                 for (size_t lyr=0; lyr<nl; lyr++) {
                     unsigned off2 = lyr*nc;
-                    pv.lyr.df.dv[lyr].push_back(v[off2+j]);
+                    pv.df.dv[lyr].push_back(v[off2+j]);
                 }
 			}
 		}
@@ -226,14 +226,14 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 		if (narm) {
 			bool erase = false;
 			for (size_t j=0; j<nl; j++) {
-				if (std::isnan(vect.lyr.df.dv[j][i])) {
+				if (std::isnan(vect.df.dv[j][i])) {
 					erase=true;
 					break;
 				}
 			}
 			if (erase) {
 				for (size_t j=0; j<nl; j++) {
-					vect.lyr.df.dv[j].erase (vect.lyr.df.dv[j].begin()+i);
+					vect.df.dv[j].erase (vect.df.dv[j].begin()+i);
 				}
 				continue; // skip the geom
 			}
@@ -245,12 +245,12 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 		g.parts.resize(0);
 	}
 
-	std::reverse(std::begin(vect.lyr.geoms), std::end(vect.lyr.geoms));			
+	std::reverse(std::begin(vect.geoms), std::end(vect.geoms));			
 
 	if (remove_values) {
-		vect.lyr.df = SpatDataFrame();		
+		vect.df = SpatDataFrame();		
 	}
-	vect.lyr.srs = srs;
+	vect.srs = srs;
 	return(vect);
 }
 
@@ -259,24 +259,24 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 
 SpatVector SpatVector::as_lines() {
 	SpatVector v = *this;
-	if (lyr.geoms[0].gtype != polygons) {
+	if (geoms[0].gtype != polygons) {
 		v.setError("this only works for polygons");
 		return v;
 	}
 	for (size_t i=0; i<size(); i++) {
-		for (size_t j=0; j < v.lyr.geoms[i].size(); j++) {
-			SpatPart p = v.lyr.geoms[i].parts[j];
+		for (size_t j=0; j < v.geoms[i].size(); j++) {
+			SpatPart p = v.geoms[i].parts[j];
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
 					SpatHole h = p.getHole(k);
 					SpatPart pp(h.x, h.y);
-					v.lyr.geoms[i].addPart(pp);
+					v.geoms[i].addPart(pp);
 				}
 				p.holes.resize(0);
-				v.lyr.geoms[i].parts[j] = p;
+				v.geoms[i].parts[j] = p;
 			}
 		}
-		v.lyr.geoms[i].gtype = lines;
+		v.geoms[i].gtype = lines;
 	}
 	return(v);
 }
@@ -284,16 +284,16 @@ SpatVector SpatVector::as_lines() {
 
 SpatVector SpatVector::as_points() {
 	SpatVector v = *this;
-	if (lyr.geoms[0].gtype == points) {
+	if (geoms[0].gtype == points) {
 		v.addWarning("returning a copy");
 		return v;
 	}
-	if (lyr.geoms[0].gtype == polygons) {
+	if (geoms[0].gtype == polygons) {
 		v = v.as_lines();
 	}
 
 	for (size_t i=0; i<size(); i++) {
-		v.lyr.geoms[i].gtype = points;
+		v.geoms[i].gtype = points;
 	}
 	return(v);
 }

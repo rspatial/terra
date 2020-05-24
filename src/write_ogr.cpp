@@ -42,7 +42,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
     }
 
 	OGRwkbGeometryType wkb;
-	SpatGeomType geomtype = lyr.geoms[0].gtype;
+	SpatGeomType geomtype = geoms[0].gtype;
 	if (geomtype == points) {
 		wkb = wkbPoint;
 	} else if (geomtype == lines) {
@@ -54,29 +54,29 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
         return poDS;			
 	}
 
+	std::string s = srs.wkt;
 
-	OGRSpatialReference *srs = NULL;
-	std::string s = lyr.srs.wkt;
+	OGRSpatialReference *SRS = NULL;
 	if (s != "") {
-		srs = new OGRSpatialReference;
-		OGRErr err = srs->SetFromUserInput(s.c_str()); 
+		SRS = new OGRSpatialReference;
+		OGRErr err = SRS->SetFromUserInput(s.c_str()); 
 		if (err != OGRERR_NONE) {
 			setError("crs error");
-			delete srs;
+			delete SRS;
 			return poDS;
 		}
 	}
 	
     OGRLayer *poLayer;
-    poLayer = poDS->CreateLayer(lyrname.c_str(), srs, wkb, NULL );
+    poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, NULL );
     if( poLayer == NULL ) {
         setError( "Layer creation failed" );
         return poDS;
     }
-	if (srs != NULL) srs->Release();
+	if (SRS != NULL) SRS->Release();
 
 	std::vector<std::string> nms = get_names();
-	std::vector<std::string> tps = lyr.df.get_datatypes();
+	std::vector<std::string> tps = df.get_datatypes();
 	OGRFieldType otype;
 	int nfields = nms.size();
 	size_t ngeoms = size();
@@ -108,11 +108,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
 			if (tps[j] == "double") {
-				poFeature->SetField(j, lyr.df.getDvalue(i, j));
+				poFeature->SetField(j, df.getDvalue(i, j));
 			} else if (tps[j] == "long") {
-				poFeature->SetField(j, (GIntBig)lyr.df.getIvalue(i, j));
+				poFeature->SetField(j, (GIntBig)df.getIvalue(i, j));
 			} else {
-				poFeature->SetField(j, lyr.df.getSvalue(i, j).c_str());
+				poFeature->SetField(j, df.getSvalue(i, j).c_str());
 			}
 		}
 		//r++;

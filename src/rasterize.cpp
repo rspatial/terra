@@ -69,7 +69,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			options.push_back(std::to_string(values[0]));
 		} else if (values.size() == x.size()) {
 			std::string burnvar = "rst_var";
-			if (!x.lyr.df.add_column(values, burnvar)) {
+			if (!x.df.add_column(values, burnvar)) {
 				out.setError("this does not work??");
 				return out;
 			}

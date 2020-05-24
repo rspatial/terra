@@ -524,7 +524,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
             SpatGeom g = v.getGeom(i);
             SpatRaster rc = r.crop(g.extent, "out", opt);
             SpatVector p(g);
-			p.lyr.srs = v.lyr.srs;
+			p.srs = v.srs;
 #if GDAL_VERSION_MAJOR >= 3			
             SpatRaster rcr = rc.rasterize(p, "", feats, NAN, false, touches, false, opt); 
 #else

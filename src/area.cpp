@@ -88,11 +88,11 @@ std::vector<double> SpatVector::area() {
 		double a = 6378137;
 		double f = 1 / 298.257223563;
 		for (size_t i=0; i<s; i++) {
-			ar.push_back(lyr.geoms[i].area_lonlat(a, f));
+			ar.push_back(geoms[i].area_lonlat(a, f));
 		}
 	} else {
 		for (size_t i=0; i<s; i++) {
-			ar.push_back(lyr.geoms[i].area_plane());
+			ar.push_back(geoms[i].area_plane());
 		}
 	}
 	return ar;
@@ -161,11 +161,11 @@ std::vector<double> SpatVector::length() {
 		double a = 6378137;
 		double f = 1 / 298.257223563;
 		for (size_t i=0; i<s; i++) {
-			r.push_back(lyr.geoms[i].length_lonlat(a, f));
+			r.push_back(geoms[i].length_lonlat(a, f));
 		}
 	} else {
 		for (size_t i=0; i<s; i++) {
-			r.push_back(lyr.geoms[i].length_plane());
+			r.push_back(geoms[i].length_plane());
 		}
 	}
 	return r;

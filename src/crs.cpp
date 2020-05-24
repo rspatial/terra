@@ -294,7 +294,7 @@ SpatVector SpatVector::project(std::string crs) {
 		std::string msg;
 		s.setSRS(crs);
 		//s.setPRJ(refs[1]);
-		s.lyr.df = lyr.df;
+		s.df = df;
 	}
 	#endif
 	return s;

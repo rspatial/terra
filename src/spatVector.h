@@ -74,26 +74,21 @@ class SpatGeom {
 };
 
 
-class SpatLayer {
+class SpatVector {
+
 	public:
 		std::vector<SpatGeom> geoms;
 		SpatExtent extent;
 		SpatDataFrame df;
 		//std::vector<std::string> crs;
 		SpatSRS srs;
-};
-
-class SpatVector {
-
-	public:
 
 		SpatVector();
 		//SpatVector(const SpatVector &x);
 		SpatVector(SpatGeom g);
 		SpatVector(SpatExtent e, std::string crs);
 
-		SpatLayer lyr;
-		std::vector<SpatLayer> lyrs;
+		SpatGeom window;
 
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> s);
@@ -113,7 +108,7 @@ class SpatVector {
 
 		bool setSRS(std::string _srs) {
 			std::string msg;
-			if (!lyr.srs.set(_srs, msg)){
+			if (!srs.set(_srs, msg)){
 				addWarning("Cannot set SRS to vector: "+ msg);
 				return false;
 			}
@@ -123,7 +118,7 @@ class SpatVector {
 /*
 #ifdef useGDAL	
 		bool setSRS(OGRSpatialReference *poSRS, std::string &msg) {
-			if (!lyr.srs.set(poSRS, msg)){
+			if (!srs.set(poSRS, msg)){
 				addWarning("Cannot set SRS to vector: "+ msg);
 				return false;
 			}
@@ -133,7 +128,7 @@ class SpatVector {
 */
 
 		std::string getSRS(std::string x) {
-			return lyr.srs.get(x);
+			return srs.get(x);
 		}
 		//std::string getPRJ();
 		//void setPRJ(std::string PRJ);
@@ -181,18 +176,18 @@ class SpatVector {
 		std::vector<unsigned> getIplace();
 
 		void add_column(unsigned dtype, std::string name) {
-			lyr.df.add_column(dtype, name);
+			df.add_column(dtype, name);
 		};
 		template <typename T>
 		bool add_column(std::vector<T> x, std::string name) {
-			return lyr.df.add_column(x, name);
+			return df.add_column(x, name);
 		}
 
 		bool remove_column(std::string field) {
-			return lyr.df.remove_column(field);
+			return df.remove_column(field);
 		};
 		bool remove_column(int i) {
-			return lyr.df.remove_column(i);
+			return df.remove_column(i);
 		};
 
 
@@ -215,16 +210,12 @@ class SpatVector {
 		SpatVector intersect(SpatVector v);
 };
 
-/*
 
-class SpatVector {
+
+class SpatVectorCollection {
+
 	public:
-		std::vector<SpatLayer> lyrs;
-		unsigned layertypes();
-		SpatMessages msg;
-		void setError(std::string s) { msg.setError(s); }
-		void addWarning(std::string s) { msg.addWarning(s); }
+		std::vector<SpatVector> v;
+		
 };
-
-*/
 

@@ -67,8 +67,8 @@ SpatVector SpatVector::make_valid() {
 
 SpatVector SpatVector::disaggregate() {
 	SpatVector out;
-	out.lyr.srs = lyr.srs;
-	out.lyr.df = lyr.df.skeleton();
+	out.srs = srs;
+	out.df = df.skeleton();
 
 	if (nrow() == 0) {
 		return out;
@@ -76,12 +76,12 @@ SpatVector SpatVector::disaggregate() {
 	
 	for (size_t i=0; i<nrow(); i++) {
 		SpatGeom g = getGeom(i);
-		SpatDataFrame row = lyr.df.subset_rows(i);
+		SpatDataFrame row = df.subset_rows(i);
 		for (size_t j=0; j<g.parts.size(); j++) {
 			SpatGeom gg = SpatGeom(g.parts[j]);
 			gg.gtype = g.gtype;
 			out.addGeom(gg);
-			if (!out.lyr.df.rbind(row)) { 
+			if (!out.df.rbind(row)) { 
 				out.setError("cannot add row");
 				return out;
 			}
@@ -104,15 +104,15 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 		return out;		
 	}
 	SpatDataFrame uv;
-	std::vector<int> idx = lyr.df.getIndex(i, uv);
+	std::vector<int> idx = df.getIndex(i, uv);
 
-	out.lyr.srs = lyr.srs;
-	out.lyr.df  = uv; 
+	out.srs = srs;
+	out.df  = uv; 
 
 	if (!dissolve) {
 		for (size_t i=0; i<uv.nrow(); i++) {
 			SpatGeom g;
-			g.gtype = lyr.geoms[0].gtype;
+			g.gtype = geoms[0].gtype;
 			for (size_t j=0; j<idx.size(); j++) {
 				if (i == (size_t)idx[j]) {
 					g.unite( getGeom(j) );

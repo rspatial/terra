@@ -166,11 +166,11 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 	//std::vector<std::string> crs = getSRS();
 	//std::vector<std::string> xcrs = x.getSRS();
 
-	if (lyr.srs.is_empty()) {
+	if (srs.is_empty()) {
 		out.setError("SRS not defined");
 		return(out);
 	}
-	if (! lyr.srs.is_equal(x.lyr.srs) ) {
+	if (! srs.is_equal(x.srs) ) {
 		out.setError("SRSs do not match");
 		return(out);
 	}

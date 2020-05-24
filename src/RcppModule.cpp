@@ -67,7 +67,7 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 
 
 Rcpp::List getVectorAttributes(SpatVector* v) {
-	SpatDataFrame df = v->lyr.df;
+	SpatDataFrame df = v->df;
 	Rcpp::List lst = getDataFrame(&df);
 	return lst;
 }
