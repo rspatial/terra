@@ -1,5 +1,6 @@
 #include <Rcpp.h>
-#include "spatRaster.h"
+//#include "spatRaster.h"
+#include "spatRasterMultiple.h"
 
 #include "gdal_priv.h"
 
@@ -439,6 +440,7 @@ RCPP_MODULE(spat){
 	    .constructor<std::string>()
 	    .constructor<SpatRaster, std::string>()
 		.field("messages", &SpatRasterStack::msg, "messages")
+		.field_readonly("oneRes", &SpatRasterStack::oneRes, "do all sds have the same resolution?")
 
 		.method("nsds", &SpatRasterStack::nsds, "")
 		.method("ncol", &SpatRasterStack::ncol, "")

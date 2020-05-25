@@ -20,7 +20,9 @@
 #include <stdint.h>
 #include <regex>
 
-#include "spatRaster.h"
+//#include "spatRaster.h"
+#include "spatRasterMultiple.h"
+
 #include "file_utils.h"
 #include "string_utils.h"
 #include "NA.h"
@@ -150,28 +152,42 @@ std::string basename_sds(std::string f) {
 	return f;
 }
 
-bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> sds) {
+bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> meta, int subds) {
+
 
 	std::vector<std::string> sd; //, nms;
-	std::string delim = "NAME=";
-	for (size_t i=0; i<sds.size(); i++) {
-		std::string s = sds[i];
-		size_t pos = s.find(delim);
+	std::vector<std::string> dc; //, nms;
+	std::string ndelim = "NAME=";
+	std::string ddelim = "DESC=";
+	for (size_t i=0; i<meta.size(); i++) {
+		std::string s = meta[i];
+		size_t pos = s.find(ndelim);
 		if (pos != std::string::npos) {
-			s.erase(0, pos + delim.length());
+			s.erase(0, pos + ndelim.length());
 			sd.push_back(s);
-		} 
-		//else {
-			// _DESC=
-		//	s.erase(0, pos + delim.length());
-			//nms.push_back(s);
-			//printf( "%s\n", s.c_str() );
-
-		//}
+		} else {
+			size_t pos = s.find(ddelim);
+			if (pos != std::string::npos) {
+				s.erase(0, pos + ddelim.length());
+				dc.push_back(s);
+			}
+		}
 	}
+	if (sd.size() == 0) {
+		return false;
+	}
+	bool useDC = (dc.size() == sd.size());
+	int sdsize = sd.size();
+	if ((subds >=0) && (subds < sdsize)) {
+	sd = {sd[subds]};
+		if (useDC) {
+			dc = {dc[subds]};
+		}
+	} 
+	
 	bool success = constructFromFile(sd[0], -1);
 	if (!success) {
-		return(false);
+		return false;
 	}
 	SpatRaster out;
     for (size_t i=1; i < sd.size(); i++) {
@@ -181,8 +197,9 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 //			out.source[0].subdataset = true;
 			addSource(out);
 			if (out.msg.has_error) {
-				setError(out.msg.error);
-				return false;
+				//setError(out.msg.error);
+				//return false;
+				addWarning("skipped (different geometry): " + sd[i]);
 			}
 		} else {
 			if (out.msg.has_error) {
@@ -268,16 +285,19 @@ SpatRasterStack::SpatRasterStack(std::string fname) {
 		std::string delim = "NAME=";
 		std::vector<std::string> meta;
 		char **metadata = poDataset->GetMetadata("SUBDATASETS");
+		SpatRaster sub;
 	    for (size_t i=0; metadata[i] != NULL; i++) {
 			std::string s = metadata[i];
 			size_t pos = s.find(delim);
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				//sd.push_back(s);
-				SpatRaster sub;
-				bool success = sub.constructFromFile(s, -1);
-				if (success) {
-					push_back(sub, basename_sds(s));
+				if (sub.constructFromFile(s, -1)) {
+					if (!push_back(sub, basename_sds(s))) {
+						addWarning("skipped (different geometry): " + s);
+					}
+				} else {
+					addWarning("skipped (fail): " + s);
 				}
 			}
 		} 
@@ -311,10 +331,7 @@ bool SpatRaster::constructFromFile(std::string fname, int subds) {
 			meta.push_back(metadata[i]);
 		}
 		if (meta.size() > 0) {
-			if ((subds >=0) && (subds < (int)meta.size())) {
-				meta = { meta[subds] };
-			}
-			return constructFromSubDataSets(fname, meta);
+			return constructFromSubDataSets(fname, meta, subds);
 		}// else error??	
 	}
 	RasterSource s;

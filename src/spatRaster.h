@@ -221,8 +221,7 @@ class SpatRaster {
 
 		bool constructFromFile(std::string fname, int subds);
 		bool constructFromFiles(std::vector<std::string> fnames);
-		//bool constructFromFileGDAL(std::string fname);
-		bool constructFromSubDataSets(std::string filename, std::vector<std::string> sds);
+		bool constructFromSubDataSets(std::string filename, std::vector<std::string> meta, int subds);
 
 		void addSource(SpatRaster x);
 		SpatRaster combineSources(SpatRaster x);
@@ -462,131 +461,6 @@ class SpatRaster {
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm);
 
-};
-
-
-
-// A class for any collection of SpatRasters 
-class SpatRasterCollection {
-	public:
-		SpatMessages msg;
-		void setError(std::string s) { msg.setError(s); }
-		void addWarning(std::string s) { msg.addWarning(s); }
-		bool hasError() { return msg.has_error; }
-		bool hasWarning() { return msg.has_warning; }
-	
-		std::vector<SpatRaster> x;
-		SpatRasterCollection() {};
-		SpatRasterCollection(size_t n) { x.resize(n); };
-		size_t size() { return x.size(); }
-		void resize(size_t n) { x.resize(n); }
-		void push_back(SpatRaster r) { x.push_back(r); };
-
-		SpatRaster merge(SpatOptions &opt);
-		SpatRaster moscaic(SpatOptions &opt);
-
-};
-
-// A class for "sub-data sets" 
-class SpatRasterStack {
-	public:
-		SpatMessages msg;
-		void setError(std::string s) { msg.setError(s); }
-		void addWarning(std::string s) { msg.addWarning(s); }
-		bool hasError() { return msg.has_error; }
-		bool hasWarning() { return msg.has_warning; }
-
-		std::vector<SpatRaster> ds;
-		std::vector<std::string> names;
-
-		SpatRasterStack() {};
-		SpatRasterStack(std::string fname);
-		SpatRasterStack(SpatRaster r, std::string name) { push_back(r, name); };
-
-		std::vector<std::string> getnames() {
-			return names;
-		};
-		void setnames(std::vector<std::string> nms) {
-			if (nms.size() == ds.size()) {
-				// make_unique
-				names = nms;
-			}
-		}
-	
-		unsigned nsds() {
-			return ds.size();
-		}
-		unsigned nrow() {
-			if (ds.size() > 0) {
-				return ds[0].nrow();
-			} else {
-				return 0;
-			}
-		}
-		unsigned ncol() {
-			if (ds.size() > 0) {
-				return ds[0].ncol();
-			} else {
-				return 0;
-			}
-		}
-		std::string getSRS(std::string s) {
-			if (ds.size() > 0) {
-				return ds[0].getSRS(s);
-			} else {
-				return "";
-			}
-		}
-		
-		bool push_back(SpatRaster r, std::string name) { 
-			if (ds.size() > 0) {
-				if (!ds[0].compare_geom(r, false, false, true, true, true, false)) {
-					return false;
-				}
-			}
-			ds.push_back(r); 
-			names.push_back(name); 
-			return true;
-		};
-		void resize(size_t n) { 
-			if (n < ds.size()) {
-				ds.resize(n); 
-			}
-		}
-		SpatRaster getsds(size_t i) {
-			if (i < ds.size()) {
-				return(ds[i]); 
-			} else {
-				SpatRaster out;
-				out.setError("invalid index");
-				return out;
-			}
-		}
-		SpatRasterStack subset(std::vector<unsigned> x) {
-			SpatRasterStack out;
-			for (size_t i=0; i<x.size(); i++) {
-				if (x[i] < ds.size()) {
-					out.push_back(ds[x[i]], names[x[i]]);
-				} 
-			} 
-			return out;
-		}
-		
-		SpatRaster collapse() {
-			if (ds.size() > 0) {
-				SpatRaster out = ds[0];
-				for (size_t i=1; i<ds.size(); i++) {
-					for (size_t j=0; j<ds[i].source.size(); j++) {
-						out.source.push_back(ds[i].source[j]);
-					}
-				}
-				return out;
-			} else {
-				SpatRaster out;
-				out.setError("nothing to collapse");
-				return out;
-			}
-		}
 };
 
 

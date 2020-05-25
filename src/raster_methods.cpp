@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 //#include <vector>
-#include "spatRaster.h"
+#include "spatRasterMultiple.h"
 #include "recycle.h"
 #include "vecmath.h"
 #include <cmath>

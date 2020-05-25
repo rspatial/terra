@@ -103,7 +103,7 @@ setMethod("rast", signature(x="character"),
 		if (length(f) > 1) {
 			r@ptr <- SpatRaster$new(f)		
 		} else {
-			r@ptr <- SpatRaster$new(f, subds)
+			r@ptr <- SpatRaster$new(f, subds-1)
 		}
 		show_messages(r, "rast")
 	}
