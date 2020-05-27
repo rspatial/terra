@@ -40,9 +40,10 @@
 
 \alias{nrow,SpatVector-method}
 \alias{ncol,SpatVector-method}
-\alias{nsds,SpatVector-method}
 
 \alias{length,SpatVector-method}
+
+\alias{nsds,SpatRasterStack-method}
 
 
 \title{Dimensions of a SpatRaster or SpatVector}

@@ -5,6 +5,7 @@
 \alias{rstk}
 \alias{rstk,character-method}
 \alias{rstk,SpatRaster-method}
+\alias{[<-,SpatRasterStack,numeric,missing-method}
 
 \title{Create a SpatRasterStack}
 
