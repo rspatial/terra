@@ -26,7 +26,7 @@ setMethod("rstk", signature(x="SpatRaster"),
 		nms <- names(dots)
 		for (i in seq_along(dots)) {
 			if (inherits(dots[[i]], "SpatRaster")) {
-				r@ptr <- r@ptr$add(i@ptr, nms[i])
+				r@ptr$add(dots[[i]]@ptr, nms[i])
 			}
 		}	
 		show_messages(r, "rstk")

@@ -46,12 +46,12 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	b <- writeStart(out, filename, overwrite, wopt)
 	if (nodes > 1) {
-		cls <- makeCluster(nodes)
-		on.exit(stopCluster(cls))
+		cls <- parallel::makeCluster(nodes)
+		on.exit(parallel::stopCluster(cls))
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
-			icsz <- max(min(100, ceiling(b$nrows[i] / csz)), b$nrows[i])
-			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)	
+			icsz <- max(min(100, ceiling(b$nrows[i] / nodes)), b$nrows[i])
+			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
 			if (trans) {
 				r <- t(r)
 			}
