@@ -190,6 +190,8 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 }
 */
 
+
+
 SpatRaster SpatRaster::geometry(long nlyrs) {
 	RasterSource s;
 	s.values.resize(0);

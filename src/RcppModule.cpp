@@ -450,6 +450,7 @@ RCPP_MODULE(spat){
 		.method("add", &SpatRasterStack::push_back, "")
 		.method("resize", &SpatRasterStack::resize, "")
 		.method("getsds", &SpatRasterStack::getsds, "")
+		.method("replace", &SpatRasterStack::replace, "")
 		.method("subset", &SpatRasterStack::subset, "")
 		.method("collapse", &SpatRasterStack::collapse , "")
 	;

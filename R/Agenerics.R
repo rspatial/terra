@@ -5,6 +5,8 @@
 #if (!isGeneric("add")) { setGeneric("add", function(x, y, ...) standardGeneric("add"))}
 if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}
 if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app"))}
+if (!isGeneric("lapp")) { setGeneric("lapp", function(x, ...) standardGeneric("lapp"))}
+if (!isGeneric("tapp")) { setGeneric("tapp", function(x, ...) standardGeneric("tapp"))}
 if (!isGeneric("as.contour")) {setGeneric("as.contour", function(x,...) standardGeneric("as.contour"))}	
 if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGeneric("as.lines"))}	
 if (!isGeneric("as.points")) {setGeneric("as.points", function(x,...) standardGeneric("as.points"))}	
@@ -29,8 +31,8 @@ if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric
 if (!isGeneric("slope")) {setGeneric("slope", function(x, ...) standardGeneric("slope"))}	
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}	
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}	
-if (!isGeneric("tapp")) { setGeneric("tapp", function(x, ...) standardGeneric("tapp"))}
 if (!isGeneric("nlyr")) { setGeneric("nlyr", function(x) standardGeneric("nlyr")) }	
+if (!isGeneric("nsds")) { setGeneric("nsds", function(x) standardGeneric("nsds")) }	
 if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")) }	
 if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("vect")) }
 
@@ -83,7 +85,6 @@ if (!isGeneric("ncol")) { setGeneric("nrow", function(x) standardGeneric("nrow")
 if (!isGeneric("ncol<-")) { setGeneric("ncol<-", function(x, ..., value) standardGeneric("ncol<-")) }	
 if (!isGeneric("nrow<-")) { setGeneric("nrow<-", function(x, ..., value) standardGeneric("nrow<-")) }	
 if (!isGeneric("nlyr<-")) { setGeneric("nlyr<-", function(x, ..., value) standardGeneric("nlyr<-")) }	
-if (!isGeneric("overlay")) { setGeneric("overlay", function(x, y, ...) standardGeneric("overlay"))}
 if (!isGeneric("pairs")) { setGeneric("pairs", function(x, ...)	standardGeneric("pairs"))}
 if (!isGeneric("persp")) { setGeneric("persp", function(x,...) standardGeneric("persp")) }	
 if (!isGeneric("plot")) { setGeneric("plot", function(x, y,...) standardGeneric("plot"))}	

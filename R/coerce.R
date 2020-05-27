@@ -3,6 +3,16 @@
 # Version 1.0
 # License GPL v3
 
+setMethod("as.list", signature(x="SpatRaster"), 
+	function(x, ...)  {
+		out <- list()
+		for (i in 1:nlyr(x)) {
+			out[[i]] <- x[[i]]
+		}
+		out
+	}
+)
+
  
 setMethod("as.polygons", signature(x="SpatRaster"), 
 	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, ...) {

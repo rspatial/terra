@@ -1,4 +1,10 @@
 
+setMethod("nsds", signature(x="SpatRasterStack"),
+	function(x) {
+		x@ptr$nsds()
+	}
+)
+
 setMethod("rstk", signature(x="character"),
 	function(x, ...) {
 		x <- trimws(x[1])
@@ -57,6 +63,21 @@ function(x, i, j, ... ,drop=TRUE) {
 	}
 	show_messages(x)
 })
+
+
+setReplaceMethod("[", c("SpatRasterStack","numeric","missing"),
+	function(x, i, j, value) {
+		if (any(!is.finite(i)) | any(i<1)) {
+			stop("invalid index")
+		}
+		if (length(i) > 1) {
+			stop("you can only replace one sub-dataset at a time")		
+		}
+		stopifnot(inherits(value, "SpatRaster"))
+		x@ptr$replace(i-1, value@ptr)
+		show_messages(x)
+	}
+)
 
 
 setMethod("[", c("SpatRasterStack", "numeric", "numeric"),

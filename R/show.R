@@ -146,7 +146,7 @@ setMethod ("show" , "SpatRasterStack",
 	function(object) {
 		
 		cat("class       :" , class(object), "\n")
-		ns <- object@ptr$nsds()
+		ns <- nsds(object)
 		cat("subdatasets :", ns, "\n") 
 		if (ns == 0) return()
 		

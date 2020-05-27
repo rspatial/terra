@@ -21,6 +21,7 @@ raster package \tab terra package\cr
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
+\code{overlay}\tab\code{\link{lapp}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
@@ -81,8 +82,8 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{Summary-methods}} \tab Summary functions (\code{mean, max, min, range, prod, sum, any, all}) \cr
     \code{\link{Compare-methods}} \tab Compare functions (\code{==, !=, >, <, <=, >=}) \cr
     \code{\link{app}} \tab Apply a function to cells of a SpatRaster (as in \code{base::apply}) \cr
-    \code{\link{tapp}} \tab Apply a function to cells of a SpatRaster by groups of layers (as in \code{base::tapply})\cr
-    \code{\link{overlay}} \tab Computations on multiple SpatRaster objects \cr
+    \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
+    \code{\link{lapp}} \tab Apply a function to layers of a SpatRaster\cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
     \code{\link{classify}} \tab (Re-)classify values \cr

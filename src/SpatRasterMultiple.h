@@ -136,6 +136,28 @@ class SpatRasterStack {
 			return out;
 		}
 		
+		void replace(unsigned i, SpatRaster x) {
+			if (i > (ds.size()-1)) {
+				setError("invalid index");
+				return;				
+			}
+			if (ds.size() == 0) {
+				setError("cannot replace on empty stack");
+				return;
+			}
+			if (!ds[0].compare_geom(x, false, false, true, true, false, false)) {
+				setError("extent does not match");
+				return;
+			}
+			
+			if (oneRes && ((ds[0].nrow() != x.nrow()) || (ds[0].ncol() != x.ncol()))) {
+				oneRes = false;
+				addWarning("resolution of new data is different from other sub-datasets");
+			}
+
+			ds[i] = x;
+		}
+		
 		SpatRaster collapse() {
 			SpatRaster out;
 
