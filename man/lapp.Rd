@@ -4,6 +4,7 @@
 
 \alias{lapp}
 \alias{lapp,SpatRaster-method}
+\alias{lapp,SpatRasterStack-method}
 
 \title{Apply a function to layers of a SpatRaster, or to sub-datasets of a SpatRasterStack}
 
@@ -20,7 +21,7 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
 \usage{
 \S4method{lapp}{SpatRaster}(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{lapp}{SpatRasterStack}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{lapp}{SpatRasterStack}(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -76,7 +77,7 @@ pairs(c(x1, x2, x3, x4))
 ## SpatRasterStack
 x <- rstk(s, "first")
 x <- c(x, second=s[[1]])
-lapp(x, function(x, y) x/y )
+lapp(x, function(x, y) x/y, recycle=TRUE)
 
 }
  
