@@ -169,6 +169,8 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 
 	psWarpOptions->papszWarpOptions =	
       CSLSetNameValue( psWarpOptions->papszWarpOptions, "INIT_DEST", "NO_DATA");
+	psWarpOptions->papszWarpOptions =	
+      CSLSetNameValue( psWarpOptions->papszWarpOptions, "WRITE_FLUSH", "YES");
 
     // Establish reprojection transformer.
     psWarpOptions->pTransformerArg =

@@ -748,6 +748,10 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 
+	if ( !e.valid() ) {
+		out.setError("invalid extent");
+		return out;
+	} 
 	e.intersect(out.getExtent());
 	if ( !e.valid() ) {
 		out.setError("extents do not overlap");

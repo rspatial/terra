@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Spatial Data Analysis
-Version: 0.6-11
-Date: 2020-05-23
+Version: 0.6-12
+Date: 2020-05-31
 Depends: R (>= 3.5.0)
 Suggests: parallel, testthat
 LinkingTo: Rcpp
