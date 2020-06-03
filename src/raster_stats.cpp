@@ -80,7 +80,6 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer) {
 			out[lyr] = vtable(tabs[lyr]);
 		}
 	} else {
-		std::vector<std::vector<double>> out;
 		out.resize(1);
 		std::map<double, long long unsigned> tabs;
 		for (size_t i = 0; i < bs.n; i++) {

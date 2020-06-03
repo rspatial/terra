@@ -55,8 +55,8 @@ xy <- rbind(cbind(1, p), cbind(0, a))
 # extract predictor values for points
 e <- extract(logo, xy[,2:3])
 
-# combine with response 
-v <- data.frame(cbind(pa=xy[,1], e))
+# combine with response (excluding the ID column)
+v <- data.frame(cbind(pa=xy[,1], e[,-1]))
 
 #build a model, here with glm 
 model <- glm(formula=pa~., data=v)

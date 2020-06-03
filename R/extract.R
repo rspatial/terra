@@ -27,22 +27,20 @@
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", drop=FALSE) { 
+function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE) { 
     
 	r <- x@ptr$extractVector(y@ptr, touches[1], method[1])
 	x <- show_messages(x, "extract")
-
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#r <- rapply(r, f, how="replace")
-
 	if (!is.null(fun)) {
 	  	r <- rapply(r, fun, ...)
 		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
 		colnames(r) <- names(x)
-	} else if (drop) {
-		r <- unlist(r)
-		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
-		colnames(r) <- names(x)	
+	} else if (!list) {
+		r <- lapply(1:length(r), function(i) cbind(ID=i, matrix(unlist(r[[i]]), ncol=length(r[[i]]))))
+		r <- do.call(rbind, r)
+		colnames(r)[-1] <- names(x)	
 	}
 	r
 })
@@ -65,7 +63,7 @@ function(x, y, ...) {
 		stop("extract works with a 2 column matrix of x and y coordinates")
 	}
 	i <- cellFromXY(x, y)
-	x[i]
+	cbind(ID=1:length(i), x[i])
 })
 
 setMethod("extract", signature(x="SpatRaster", y="data.frame"), 
@@ -75,7 +73,7 @@ function(x, y, ...) {
 		stop("extract works with a 2 column matrix or data.frame of x and y coordinates")
 	}
 	i <- cellFromXY(x, y)
-	x[i]
+	cbind(ID=1:length(i), x[i])
 })
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"), 

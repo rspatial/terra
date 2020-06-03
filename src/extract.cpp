@@ -493,14 +493,28 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 	if (gtype == "points") {
 		if (method != "bilinear") method = "simple";
 		SpatDataFrame vd = v.getGeometryDF();
-		std::vector<double> x = vd.getD(0);
-		std::vector<double> y = vd.getD(1);
-		srcout = extractXY(x, y, method);
-        for (size_t i=0; i<ng; i++) {
-            for (size_t j=0; j<nl; j++) {
-                out[i][j].push_back( srcout[j][i] );
-            }
-        }
+		if (vd.nrow() == ng) {  // single point geometry
+			std::vector<double> x = vd.getD(0);
+			std::vector<double> y = vd.getD(1);
+			srcout = extractXY(x, y, method);
+			for (size_t i=0; i<ng; i++) {
+				for (size_t j=0; j<nl; j++) {
+					out[i][j].push_back( srcout[j][i] );
+				}
+			}
+		} else { // multipoint
+			for (size_t i=0; i<ng; i++) {
+				SpatVector vv = v.subset_rows(i);
+				SpatDataFrame vd = vv.getGeometryDF();
+				std::vector<double> x = vd.getD(0);
+				std::vector<double> y = vd.getD(1);
+				srcout = extractXY(x, y, method);
+				for (size_t j=0; j<nl; j++) {
+					out[i][j] = srcout[j];
+				}
+			}
+		}
+		
 /*
 	} else if (gtype == "lines") {
 	    SpatRaster r = geometry(1);

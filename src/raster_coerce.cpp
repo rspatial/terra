@@ -291,9 +291,17 @@ SpatVector SpatVector::as_points() {
 	if (geoms[0].gtype == polygons) {
 		v = v.as_lines();
 	}
-
-	for (size_t i=0; i<size(); i++) {
-		v.geoms[i].gtype = points;
+	
+	for (size_t i=0; i < v.geoms.size(); i++) {
+		SpatGeom g;
+		g.gtype = points;
+		for (size_t j=0; j<geoms[i].parts.size(); j++) {
+			SpatPart p = geoms[i].parts[j];
+			for (size_t k=0; k<p.size(); k++) {
+				g.addPart(SpatPart(p.x[k], p.y[k]));
+			}
+		}
+		v.geoms[i] = g;
 	}
 	return(v);
 }
