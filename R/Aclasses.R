@@ -20,7 +20,7 @@ setClass("SpatRaster",
 	}
 )
 
-setClass("SpatRasterStack",
+setClass("SpatStack",
 	representation (
 		ptr = "C++Object"
 	),	
@@ -28,7 +28,7 @@ setClass("SpatRasterStack",
 		ptr = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatRasterStack")){
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatStack")){
 			return(TRUE)
 		} else {
 			return(FALSE)		

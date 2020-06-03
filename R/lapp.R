@@ -77,7 +77,7 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 
 
-setMethod("lapp", signature(x="SpatRasterStack"), 
+setMethod("lapp", signature(x="SpatStack"), 
 function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 	
 	stopifnot(!missing(fun))

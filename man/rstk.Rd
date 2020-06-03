@@ -5,12 +5,12 @@
 \alias{rstk}
 \alias{rstk,character-method}
 \alias{rstk,SpatRaster-method}
-\alias{[<-,SpatRasterStack,numeric,missing-method}
+\alias{[<-,SpatStack,numeric,missing-method}
 
-\title{Create a SpatRasterStack}
+\title{Create a SpatStack}
 
 \description{
-Methods to create a SpatRasterStack. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
+Methods to create a SpatStack. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
 }
 
 \usage{
@@ -27,7 +27,7 @@ Methods to create a SpatRasterStack. This is an object to hold "sub-datasets", e
 
 
 \value{
-SpatRasterStack
+SpatStack
 }
 
 

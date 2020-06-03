@@ -27,14 +27,14 @@ setMethod("names<-", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("names", signature(x="SpatRasterStack"), 
+setMethod("names", signature(x="SpatStack"), 
 	function(x) { 
 		x@ptr$names
 	}
 )
 
 
-setMethod("names<-", signature(x="SpatRasterStack"), 
+setMethod("names<-", signature(x="SpatStack"), 
 	function(x, value) {
 		value <- as.character(value)
 		x@ptr$names <- value

@@ -196,7 +196,7 @@ class SpatSRS {
 		bool could_be_lonlat(SpatExtent e) {
 			bool b = is_lonlat();
 			if ((!b) & is_empty()) {
-				if ((e.xmin >=-180.1) & (e.xmax <= 180.1) & (e.ymin >= -90.1) & (e.ymax <= 90.1)) {
+				if ((e.xmin >= -180.1) & (e.xmax <= 180.1) & (e.ymin >= -90.1) & (e.ymax <= 90.1)) {
 					b = true;
 				}
 			}

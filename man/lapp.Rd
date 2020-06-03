@@ -4,14 +4,14 @@
 
 \alias{lapp}
 \alias{lapp,SpatRaster-method}
-\alias{lapp,SpatRasterStack-method}
+\alias{lapp,SpatStack-method}
 
-\title{Apply a function to layers of a SpatRaster, or to sub-datasets of a SpatRasterStack}
+\title{Apply a function to layers of a SpatRaster, or to sub-datasets of a SpatStack}
 
 \description{
 Apply a function to layers of a SpatRaster ("overlay"). 
 
-The number of arguments in function \code{fun} must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterStack). For example, if you want to multiply two layers, you could use this function : \code{fun=function(x,y){return(x*y)}} percentage: \code{fun=function(x,y){return(100 * x / y)}}. If you combine three layers you could use \code{fun=function(x,y,z){return((x + y) * z)}}
+The number of arguments in function \code{fun} must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatStack). For example, if you want to multiply two layers, you could use this function : \code{fun=function(x,y){return(x*y)}} percentage: \code{fun=function(x,y){return(100 * x / y)}}. If you combine three layers you could use \code{fun=function(x,y,z){return((x + y) * z)}}
 
 Before you use the function, test it to make sure that it works for vectors (not only for single numbers). That is, it must return the same number of elements as its input vectors, or multiples of that. Make sure it also returns the same number of values when some or all input values are \code{NA}. Also, the function must return a vector or matrix, not a \code{data.frame}.
 
@@ -21,11 +21,11 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
 \usage{
 \S4method{lapp}{SpatRaster}(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{lapp}{SpatRasterStack}(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())
+\S4method{lapp}{SpatStack}(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatRasterStack}
+  \item{x}{SpatRaster or SpatStack}
   \item{fun}{function to be applied}
   \item{...}{additional arguments to be passed to \code{fun}} 
   \item{usenames}{logical. Use the layer names to match the function arguments? If \code{FALSE} matching is by position}
@@ -74,7 +74,7 @@ x4 <- lapp(s, fvi2, usenames=TRUE)
 
 pairs(c(x1, x2, x3, x4))
 
-## SpatRasterStack
+## SpatStack
 x <- rstk(s, "first", second=s[[1]])
 lapp(x, function(x, y) x/y, recycle=TRUE)
 }

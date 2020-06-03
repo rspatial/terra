@@ -498,7 +498,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 		srcout = extractXY(x, y, method);
         for (size_t i=0; i<ng; i++) {
             for (size_t j=0; j<nl; j++) {
-                out[i][j] = srcout[j];
+                out[i][j].push_back( srcout[j][i] );
             }
         }
 /*

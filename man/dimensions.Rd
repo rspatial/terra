@@ -43,13 +43,13 @@
 
 \alias{length,SpatVector-method}
 
-\alias{nsds,SpatRasterStack-method}
+\alias{nsds,SpatStack-method}
 
 
 \title{Dimensions of a SpatRaster or SpatVector}
 
 \description{
-Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; or sub-datasets of a SpatRasterStack (\code{nsds}).
+Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; or sub-datasets of a SpatStack (\code{nsds}).
 
 or set the number of rows or columns or layers. When setting dimensions, all sources and values are dropped.
 }

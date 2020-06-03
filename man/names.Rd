@@ -4,8 +4,8 @@
 \alias{names<-}
 \alias{names,SpatRaster-method}
 \alias{names<-,SpatRaster-method}
-\alias{names,SpatRasterStack-method}
-\alias{names<-,SpatRasterStack-method}
+\alias{names,SpatStack-method}
+\alias{names<-,SpatStack-method}
 \alias{names,SpatVector-method}
 \alias{names<-,SpatVector-method}
   
@@ -20,9 +20,9 @@ Get or set the names of the layers of a SpatRaster or the attributes of a SpatVe
 
 \S4method{names}{SpatRaster}(x)<-value
 
-\S4method{names}{SpatRasterStack}(x)
+\S4method{names}{SpatStack}(x)
 
-\S4method{names}{SpatRasterStack}(x)<-value
+\S4method{names}{SpatStack}(x)<-value
 
 \S4method{names}{SpatVector}(x)
 

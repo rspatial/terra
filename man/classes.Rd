@@ -14,10 +14,10 @@
 \alias{SpatRasterCollection}
 \alias{SpatRasterCollection-class}
 \alias{Rcpp_SpatRasterCollection-class}
-\alias{SpatRasterStack}
-\alias{SpatRasterStack-class}
-\alias{Rcpp_SpatRasterStack-class}
-\alias{show,SpatRasterStack-method}
+\alias{SpatStack}
+\alias{SpatStack-class}
+\alias{Rcpp_SpatStack-class}
+\alias{show,SpatStack-method}
 
 
 \alias{show_messages}

@@ -26,8 +26,8 @@
 #include "math_utils.h"
 #include "string_utils.h"
 
-std::map<double, unsigned> table(std::vector<double> &v) {
-	std::map<double, unsigned> count;
+std::map<double, unsigned long long> table(std::vector<double> &v) {
+	std::map<double, unsigned long long> count;
 	for_each( v.begin(), v.end(), [&count]( double val ){
 			if(!std::isnan(val)) count[val]++;
 		}
@@ -36,7 +36,7 @@ std::map<double, unsigned> table(std::vector<double> &v) {
 }
 
 
-std::map<double, unsigned> ctable(std::map<double, unsigned> &x, std::map<double, unsigned> &y) {
+std::map<double, unsigned long long int> ctable(std::map<double, unsigned long long int> &x, std::map<double, unsigned long long int> &y) {
 	for(auto p : y) {
 		x[p.first] += p.second;
 	}
@@ -44,7 +44,7 @@ std::map<double, unsigned> ctable(std::map<double, unsigned> &x, std::map<double
 }
 
 
-std::vector<double> vtable(std::map<double, unsigned> &x) {
+std::vector<double> vtable(std::map<double, unsigned long long int> &x) {
 	std::vector<std::vector<double>> out(2);
 	for( auto p : x ) {
 		out[0].push_back(p.first);
@@ -65,14 +65,14 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer) {
 	readStart();
 	if (bylayer) {
 		out.resize(nl);
-		std::vector<std::map<double, unsigned>> tabs(nl);
+		std::vector<std::map<double, unsigned long long int>> tabs(nl);
 		for (size_t i = 0; i < bs.n; i++) {
 			unsigned n = bs.nrows[i] * nc;
 			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
 				std::vector<double> vv(v.begin()+off, v.begin()+off+n);
-				std::map<double, unsigned> tab = table(vv);
+				std::map<double, unsigned long long int> tab = table(vv);
 				tabs[lyr] = ctable(tabs[lyr], tab);
 			}
 		}
@@ -80,11 +80,12 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer) {
 			out[lyr] = vtable(tabs[lyr]);
 		}
 	} else {
+		std::vector<std::vector<double>> out;
 		out.resize(1);
-		std::map<double, unsigned> tabs;
+		std::map<double, long long unsigned> tabs;
 		for (size_t i = 0; i < bs.n; i++) {
 			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-			std::map<double, unsigned> tab = table(v);
+			std::map<double, long long unsigned> tab = table(v);
 			tabs = ctable(tabs, tab);
 		}
 		out[0] = vtable(tabs);

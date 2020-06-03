@@ -142,7 +142,7 @@ setMethod ("show" , "SpatRaster",
 )
 
 
-setMethod ("show" , "SpatRasterStack", 
+setMethod ("show" , "SpatStack", 
 	function(object) {
 		
 		cat("class       :" , class(object), "\n")

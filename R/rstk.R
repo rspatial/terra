@@ -1,5 +1,5 @@
 
-setMethod("nsds", signature(x="SpatRasterStack"),
+setMethod("nsds", signature(x="SpatStack"),
 	function(x) {
 		x@ptr$nsds()
 	}
@@ -12,16 +12,16 @@ setMethod("rstk", signature(x="character"),
 			stop("provide valid file name(s)")
 		}
 		f <- .fullFilename(x)
-		r <- methods::new("SpatRasterStack")
-		r@ptr <- SpatRasterStack$new(f)
+		r <- methods::new("SpatStack")
+		r@ptr <- SpatStack$new(f)
 		show_messages(r, "rstk")
 	}
 )
 
 setMethod("rstk", signature(x="SpatRaster"),
 	function(x, name="sd1", ...) {
-		r <- methods::new("SpatRasterStack")
-		r@ptr <- SpatRasterStack$new(x@ptr, name)
+		r <- methods::new("SpatStack")
+		r@ptr <- SpatStack$new(x@ptr, name)
 		dots <- list(...)
 		nms <- names(dots)
 		for (i in seq_along(dots)) {
@@ -34,9 +34,9 @@ setMethod("rstk", signature(x="SpatRaster"),
 )
 
 
-setMethod("c", signature(x="SpatRasterStack"), 
+setMethod("c", signature(x="SpatStack"), 
 	function(x, ...) {
-		r <- methods::new("SpatRasterStack")
+		r <- methods::new("SpatStack")
 		# deep copy of the SRS, but not of the SRs within it
 		# that is bad and must change.
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 )
@@ -51,8 +51,8 @@ setMethod("c", signature(x="SpatRasterStack"),
 	}
 )
 
-# perhaps instead use [[ for return SpatRasterStack
-setMethod("[", c("SpatRasterStack", "numeric", "missing"),
+# perhaps instead use [[ for return SpatStack
+setMethod("[", c("SpatStack", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	if (length(i) == 1) {
 		ptr <- x@ptr$getsds(i-1)
@@ -65,7 +65,7 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setReplaceMethod("[", c("SpatRasterStack","numeric","missing"),
+setReplaceMethod("[", c("SpatStack","numeric","missing"),
 	function(x, i, j, value) {
 		if (any(!is.finite(i)) | any(i<1)) {
 			stop("invalid index")
@@ -80,14 +80,14 @@ setReplaceMethod("[", c("SpatRasterStack","numeric","missing"),
 )
 
 
-setMethod("[", c("SpatRasterStack", "numeric", "numeric"),
+setMethod("[", c("SpatStack", "numeric", "numeric"),
 function(x, i, j, ... ,drop=TRUE) {
 	y <- x[i]
 	if (inherits(y, "SpatRaster")) {
 		return(y[[j]])
 	}
 	nd <- y@ptr$nsds()
-	x@ptr <- SpatRasterStack$new()
+	x@ptr <- SpatStack$new()
 	nms <- y@ptr$names
 	for (k in seq_along(1:nd)) {
 		r <- y[k][[j]]
@@ -97,19 +97,19 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setMethod("[", c("SpatRasterStack", "logical", "missing"),
+setMethod("[", c("SpatStack", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	x[which(i), ..., drop=drop]
 })
 
-setMethod("[", c("SpatRasterStack", "character", "missing"),
+setMethod("[", c("SpatStack", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- match(i, names(x))
 	if (any(is.na(i))) {stop("unknown name(s) provided")}
 	x[i, ..., drop=drop]
 })
 
-setMethod("$", "SpatRasterStack",  
+setMethod("$", "SpatStack",  
 	function(x, name) { 
 		x[name] 
 	}
