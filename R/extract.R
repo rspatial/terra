@@ -28,7 +28,7 @@
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE) { 
-    
+
 	r <- x@ptr$extractVector(y@ptr, touches[1], method[1])
 	x <- show_messages(x, "extract")
 	#f <- function(i) if(length(i)==0) { NA } else { i }
@@ -37,12 +37,14 @@ function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE) 
 	  	r <- rapply(r, fun, ...)
 		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
 		colnames(r) <- names(x)
+		r <- cbind(ID=1:nrow(r), r)
 	} else if (!list) {
 		r <- lapply(1:length(r), function(i) cbind(ID=i, matrix(unlist(r[[i]]), ncol=length(r[[i]]))))
 		r <- do.call(rbind, r)
 		colnames(r)[-1] <- names(x)	
 	}
 	r
+
 })
 
 
