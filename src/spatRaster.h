@@ -67,6 +67,7 @@ class RasterSource {
 		SpatSRS srs;
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
+		std::vector<double> date;
 
 		//std::vector< std::vector<double> values;
         std::vector<double> values;
@@ -200,6 +201,8 @@ class SpatRaster {
 		std::vector<double> range_max();
 		std::vector<std::string> getNames();
 		bool setNames(std::vector<std::string> names);
+		std::vector<double> getDates();
+		bool setDates(std::vector<double> dates);
 
 ////////////////////////////////////////////////////
 // constructors

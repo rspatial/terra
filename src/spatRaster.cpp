@@ -412,3 +412,31 @@ std::string  SpatRaster::getSRS(std::string x) {
 	return srs.get(x);
 }
 
+
+
+std::vector<std::string> SpatRaster::getNames() {
+	std::vector<std::string> x;
+	for (size_t i=0; i<source.size(); i++) {
+		x.insert(x.end(), source[i].names.begin(), source[i].names.end());
+	}
+	return(x);
+}
+
+
+bool SpatRaster::setNames(std::vector<std::string> names) {
+	if (names.size() != nlyr()) {
+		return false;
+	} else {
+        make_valid_names(names);
+        make_unique_names(names);
+        size_t begin=0;
+        size_t end;
+        for (size_t i=0; i<source.size(); i++)	{
+            end = begin + source[i].nlyr;
+            source[i].names = std::vector<std::string> (names.begin() + begin, names.begin() + end);
+            begin = end;
+        }
+        return true;
+	}
+}
+
