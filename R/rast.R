@@ -79,9 +79,13 @@ setMethod("rast", signature(x="SpatVector"),
 .fullFilename <- function(x, expand=FALSE) {
 	x <- trimws(x)
 	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
-	if (file.exists(p)) {
+	i <- file.exists(p)
+	if (all(i)) {
 		return(p)
+	} else {
+		x[i] <- p[i]
 	}
+	
 	#if (identical(basename(x), x)) {
 	#	x <- file.path(getwd(), x)
 	#}
@@ -108,6 +112,8 @@ setMethod("rast", signature(x="character"),
 		show_messages(r, "rast")
 	}
 )
+
+
 setMethod("rast", signature(x="SpatRaster"),
 	function(x, nlyrs=nlyr(x), ...) {
 		r <- methods::new("SpatRaster")
