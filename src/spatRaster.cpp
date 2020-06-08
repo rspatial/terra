@@ -440,3 +440,63 @@ bool SpatRaster::setNames(std::vector<std::string> names) {
 	}
 }
 
+
+
+std::vector<double> SpatRaster::getTime() {
+	std::vector<double> x;
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].time.size() != source[i].nlyr) {
+			std::vector<double> nas(source[i].nlyr, NAN);
+			x.insert(x.end(), nas.begin(), nas.end());			
+		} else {
+			x.insert(x.end(), source[i].time.begin(), source[i].time.end());
+		}
+	}
+	return(x);
+}
+
+
+bool SpatRaster::setTime(std::vector<double> times) {
+	if (times.size() != nlyr()) {
+		return false;
+	} else {
+        size_t begin=0;
+        size_t end;
+        for (size_t i=0; i<source.size(); i++)	{
+            end = begin + source[i].nlyr;
+            source[i].time = std::vector<double> (times.begin() + begin, times.begin() + end);
+            begin = end;
+        }
+        return true;
+	}
+}
+
+std::vector<double> SpatRaster::getDepth() {
+	std::vector<double> x;
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].depth.size() != source[i].nlyr) {
+			std::vector<double> nas(source[i].nlyr, NAN);
+			x.insert(x.end(), nas.begin(), nas.end());			
+		} else {
+			x.insert(x.end(), source[i].depth.begin(), source[i].depth.end());
+		}
+	}
+	return(x);
+}
+
+
+bool SpatRaster::setDepth(std::vector<double> depths) {
+	if (depths.size() != nlyr()) {
+		return false;
+	} else {
+        size_t begin=0;
+        size_t end;
+        for (size_t i=0; i<source.size(); i++)	{
+            end = begin + source[i].nlyr;
+            source[i].depth = std::vector<double> (depths.begin() + begin, depths.begin() + end);
+            begin = end;
+        }
+        return true;
+	}
+}
+

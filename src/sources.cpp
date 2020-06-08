@@ -223,6 +223,7 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
     } else {
         RasterSource rs = *this;
         rs.resize(0);
+		bool hasTime = time.size() == nl;
 
         if (memory) {
             if (hasValues) {
@@ -232,6 +233,7 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
                     std::vector<double> x = getValues(j);
                     rs.values.insert(rs.values.end(), x.begin(), x.end());
                     rs.names.push_back(names[j]);
+					if (hasTime) rs.time.push_back(time[j]);
 					rs.layers.push_back(i);
                     rs.hasRange.push_back(hasRange[j]);
                     rs.range_min.push_back(range_min[j]);
@@ -249,6 +251,7 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
             for (size_t i=0; i<nl; i++) {
                 unsigned j = lyrs[i];
                 rs.names.push_back(names[j]);
+				if (hasTime) rs.time.push_back(time[j]);
                 rs.hasRange.push_back(hasRange[j]);
                 rs.range_min.push_back(range_min[j]);
                 rs.range_max.push_back(range_max[j]);

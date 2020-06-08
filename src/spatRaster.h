@@ -67,7 +67,8 @@ class RasterSource {
 		SpatSRS srs;
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
-		std::vector<double> date;
+		std::vector<double> time;
+		std::vector<double> depth;
 
 		//std::vector< std::vector<double> values;
         std::vector<double> values;
@@ -77,7 +78,6 @@ class RasterSource {
 		std::vector<bool> hasRange;
 		std::vector<double> range_min;
 		std::vector<double> range_max;
-		std::vector<double> time;
 		std::vector<bool> hasAttributes;
 		std::vector<SpatDataFrame> atts;
 		std::vector<bool> hasCategories;
@@ -134,6 +134,9 @@ class SpatRaster {
 // properties and property-like methods for entire object
 ////////////////////////////////////////////////////
 		//unsigned nrow, ncol;
+
+		std::string name;
+		
 		std::vector<RasterSource> source;
 
 		BlockSize bs;
@@ -201,8 +204,10 @@ class SpatRaster {
 		std::vector<double> range_max();
 		std::vector<std::string> getNames();
 		bool setNames(std::vector<std::string> names);
-		std::vector<double> getDates();
-		bool setDates(std::vector<double> dates);
+		std::vector<double> getTime();
+		bool setTime(std::vector<double> times);
+		std::vector<double> getDepth();
+		bool setDepth(std::vector<double> depths);
 
 ////////////////////////////////////////////////////
 // constructors

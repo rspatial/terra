@@ -267,6 +267,8 @@ RCPP_MODULE(spat){
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 
+		.field("name", &SpatRaster::name)
+
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 
@@ -303,6 +305,9 @@ RCPP_MODULE(spat){
 		.method("isGlobalLonLat", &SpatRaster::is_global_lonlat, "isGlobalLonLat") 
 
 		.property("names", &SpatRaster::getNames)
+		.property("time", &SpatRaster::getTime)
+		.property("depth", &SpatRaster::getDepth)
+
 		.method("nrow", &SpatRaster::nrow, "nrow")		
 		.method("ncol", &SpatRaster::ncol, "ncol")		
 		.method("nsrc", &SpatRaster::nsrc, "nsrc" )	
@@ -318,6 +323,8 @@ RCPP_MODULE(spat){
 		.field_readonly("source", &SpatRaster::source )
 
 		.method("setNames", &SpatRaster::setNames, "setNames" )
+		.method("setTime", &SpatRaster::setTime, "setTime" )
+		.method("setDepth", &SpatRaster::setDepth, "setDepth" )
 		.method("set_resolution", &SpatRaster::setResolution, "set resolution")
 		.method("subset", &SpatRaster::subset, "subset")
 				
