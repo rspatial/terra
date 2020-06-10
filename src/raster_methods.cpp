@@ -708,7 +708,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
 
-	if (!compare_geom(x, true, true)) {
+	if (!compare_geom(x, false, false, true)) {
 		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}

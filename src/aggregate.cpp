@@ -245,6 +245,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		return out;
 	}
 
+/*
 	size_t ifun = std::distance(f.begin(), it);
 	std::string gstring = "";
 	if (ifun > 0) {
@@ -260,6 +261,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	}	
 #endif
 #endif
+*/
 
 	std::function<double(std::vector<double>&, bool)> agFun = getFun(fun);
 
