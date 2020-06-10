@@ -37,30 +37,6 @@ Then, in R, install the package.
 remotes::install_github("rspatial/terra")
 ```
 
-### Mac - OSX
-
-The libraries GDAL (>= 3.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 6.0.0) are required 
-
-
-Install Homebrew if you have not done so before, and then from the terminal:
-
-```
-brew install pkg-config
-brew install gdal
-```
-
-And now, in R, install the package
-```
-remotes::install_github("rspatial/terra")
-```
-
-If you get `configure: error: libproj not found in standard or given locations.` Then you need to install like this
-
-```
-remotes::install_github("rspatial/terra", configure-args="--with-proj-lib=/usr/local/lib/")
-```
-
-
 
 ### Linux
 
