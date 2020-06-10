@@ -24,10 +24,14 @@ setMethod("align", signature(x="SpatExtent", y="SpatRaster"),
 
 
 setMethod("area", signature(x="SpatRaster"), 
-	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$area(opt)
-		show_messages(x, "area")
+	function(x, sum=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
+		if (sum) {
+			x@ptr$sum_area()		
+		} else {
+			opt <- .runOptions(filename, overwrite, wopt)
+			x@ptr <- x@ptr$rst_area(opt)
+			show_messages(x, "area")
+		} 
 	}
 )
 

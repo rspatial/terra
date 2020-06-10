@@ -171,7 +171,7 @@ std::vector<double> SpatVector::length() {
 	return r;
 }
 
-SpatRaster SpatRaster::area(SpatOptions &opt) {
+SpatRaster SpatRaster::rst_area(SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
   	if (!out.writeStart(opt)) { return out; }
@@ -198,6 +198,56 @@ SpatRaster SpatRaster::area(SpatOptions &opt) {
 		}
 		out.writeStop();
 	}
+	return(out);
+}
+
+
+std::vector<double> SpatRaster::sum_area() {
+
+	std::vector<double> out(nlyr(), 0);
+	BlockSize bs = getBlockSize(2);
+	readStart();
+	if (could_be_lonlat()) {
+		SpatRaster x = geometry(1);
+		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
+		SpatOptions opt;
+		SpatRaster onecol = x.crop(e, "near", opt);
+		SpatVector p = onecol.as_polygons(false, false, false, false);
+		std::vector<double> ar = p.area();
+		size_t nc = ncol();
+		for (size_t i=0; i<bs.n; i++) {
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+			size_t blockoff = bs.nrows[i] * nc;
+			for (size_t lyr=0; lyr<nlyr(); lyr++) {
+				size_t lyroff = lyr * blockoff;
+				for (size_t j=0; j<bs.nrows[i]; j++) {
+					size_t row = bs.row[i] + j;
+					size_t offset = lyroff + row * nc;
+					size_t n = offset + nc;
+					for (size_t k=offset; k<n; k++) {
+						if (!std::isnan(v[k])) out[lyr] += ar[row];
+					}
+				}
+			}
+		}
+	} else {
+		for (size_t i=0; i<bs.n; i++) {
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+			unsigned off = bs.nrows[i] * ncol() ;
+			for (size_t lyr=0; lyr<nlyr(); lyr++) {
+				unsigned offset = lyr * off;
+				unsigned n = offset + off;
+				for (size_t j=offset; j<n; j++) {
+					if (!std::isnan(v[j])) out[lyr]++;
+				}
+			}
+		}
+		double ar = xres() * yres();
+		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+			out[lyr] = out[lyr] * ar;
+		}
+	}
+	readStop();
 	return(out);
 }
 

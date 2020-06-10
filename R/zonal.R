@@ -53,7 +53,7 @@ setMethod("global", signature(x="SpatRaster"),
 		nl <- nlyr(x)
 		res <- list()
 		for (i in 1:nl) {
-			res[[i]] <- fun(values(x[[i]]))
+			res[[i]] <- fun(values(x[[i]]), ...)
 		}
 		res <- do.call(rbind,res)
 		res <- data.frame(res)

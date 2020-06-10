@@ -352,7 +352,8 @@ class SpatRaster {
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
-		SpatRaster area(SpatOptions &opt);
+		SpatRaster rst_area(SpatOptions &opt);
+		std::vector<double> sum_area();
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);
