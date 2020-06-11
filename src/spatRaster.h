@@ -216,7 +216,7 @@ class SpatRaster {
 		SpatRaster();
 		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
-		SpatRaster(std::vector<std::string> fname, int subds, std::string subdsname);
+		SpatRaster(std::vector<std::string> fname, int subds, std::string subdsname, std::string x);
 		SpatRaster(std::string fname, int subds, std::string subdsname);
 		SpatRaster(RasterSource s);
 		void setSource(RasterSource s);

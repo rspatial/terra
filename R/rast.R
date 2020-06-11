@@ -106,9 +106,9 @@ setMethod("rast", signature(x="character"),
 		f <- .fullFilename(x)
 		subds <- subds[1]
 		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds)		
+			r@ptr <- SpatRaster$new(f, -1, subds, "")		
 		} else {
-			r@ptr <- SpatRaster$new(f, subds-1, "")
+			r@ptr <- SpatRaster$new(f, subds-1, "", "")
 		}
 		show_messages(r, "rast")
 	}
