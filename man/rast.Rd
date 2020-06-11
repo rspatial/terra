@@ -46,7 +46,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \arguments{
 \item{x}{filename (character), SpatRaster, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
-\item{subds}{positive integer. Subdataset identifier. If zero, all subdatasets are returned (if possible)}
+\item{subds}{positive integer or character to select a subdataset. If zero or "", all subdatasets are returned (if possible)}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

@@ -304,7 +304,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
 		}
 		GDALClose( hDstDS );
-		out = SpatRaster(filename, -1);
+		out = SpatRaster(filename, -1, "");
 	}
 	return out;
 }

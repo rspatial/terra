@@ -244,7 +244,7 @@ RCPP_MODULE(spat){
 	;
 
     class_<RasterSource>("RasterSource")	
-		.field_readonly("memory", &RasterSource::memory)
+		//.field_readonly("memory", &RasterSource::memory)
 		.field_readonly("filename", &RasterSource::filename)
 		//.field_readonly("driver", &RasterSource::driver)
 		//.field_readonly("nrow", &RasterSource::nrow)
@@ -256,14 +256,14 @@ RCPP_MODULE(spat){
 		//.field_readonly("datatype", &RasterSource::datatype)
 		//.field_readonly("bandorder", &RasterSource::bandorder)
 		//.field_readonly("NAflag", &RasterSource::NAflag)
-		.field_readonly("layers", &RasterSource::layers)
-		.field_readonly("nlyrfile", &RasterSource::nlyrfile)
+		//.field_readonly("layers", &RasterSource::layers)
+		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
 	;	
 
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-	    .constructor<std::vector<std::string>, int>()
+	    .constructor<std::vector<std::string>, int, std::string>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 

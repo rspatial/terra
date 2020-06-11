@@ -55,7 +55,7 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 #endif
 }
 
-
+/*
 bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
 
 	SpatRaster r = SpatRaster(fnames[0], -1);
@@ -71,7 +71,7 @@ bool SpatRaster::constructFromFiles(std::vector<std::string> fnames) {
 	}
 	return true;
 }
-
+*/
 
 
 
@@ -152,7 +152,8 @@ std::string basename_sds(std::string f) {
 	return f;
 }
 
-bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> meta, int subds) {
+
+bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> meta, int subds, std::string subdsname) {
 
 
 	std::vector<std::string> sd; //, nms;
@@ -178,21 +179,41 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 	}
 	bool useDC = (dc.size() == sd.size());
 	int sdsize = sd.size();
-	if ((subds >=0) && (subds < sdsize)) {
-	sd = {sd[subds]};
-		if (useDC) {
-			dc = {dc[subds]};
+	if (subds >=0) {
+		if (subds < sdsize) {
+			sd = {sd[subds]};
+			if (useDC) {
+				dc = {dc[subds]};
+			}
+		} else {
+			std::string emsg = std::to_string(subds) + " is not valid. There are " + std::to_string(sd.size()) + " subdatasets\n";
+			setError(emsg);
+			return false;
 		}
-	} 
+	} else if (subdsname != "") {
+		std::vector<std::string> shortnames = getlastpart(sd, ":");
+		int w = where_in_vector(subdsname, shortnames);
+		if (w >= 0) {
+			sd = {sd[w]};
+			if (useDC) {
+				dc = {dc[w]};
+			}			
+		} else {
+			std::string emsg = concatenate(shortnames, ", ");
+			emsg = subdsname + " not found. Choose one of:\n" + emsg;
+			setError(emsg);
+			return false;
+		}
+	}
 	
-	bool success = constructFromFile(sd[0], -1);
+	bool success = constructFromFile(sd[0], -1, "");
 	if (!success) {
 		return false;
 	}
 	SpatRaster out;
     for (size_t i=1; i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
-		success = out.constructFromFile(sd[i], -1);
+		success = out.constructFromFile(sd[i], -1, "");
 		if (success) {
 //			out.source[0].subdataset = true;
 			addSource(out);
@@ -292,7 +313,7 @@ SpatRasterStack::SpatRasterStack(std::string fname) {
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				//sd.push_back(s);
-				if (sub.constructFromFile(s, -1)) {
+				if (sub.constructFromFile(s, -1, "")) {
 					if (!push_back(sub, basename_sds(s))) {
 						addWarning("skipped (different geometry): " + s);
 					}
@@ -307,7 +328,7 @@ SpatRasterStack::SpatRasterStack(std::string fname) {
 }
 
 
-bool SpatRaster::constructFromFile(std::string fname, int subds) {
+bool SpatRaster::constructFromFile(std::string fname, int subds, std::string subdsname) {
 
     GDALDataset *poDataset;
 	const char* pszFilename = fname.c_str();
@@ -331,7 +352,7 @@ bool SpatRaster::constructFromFile(std::string fname, int subds) {
 			meta.push_back(metadata[i]);
 		}
 		if (meta.size() > 0) {
-			return constructFromSubDataSets(fname, meta, subds);
+			return constructFromSubDataSets(fname, meta, subds, subdsname);
 		}// else error??	
 	}
 	RasterSource s;

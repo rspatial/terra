@@ -216,8 +216,8 @@ class SpatRaster {
 		SpatRaster();
 		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
-		SpatRaster(std::vector<std::string> fname, int subds);
-		SpatRaster(std::string fname, int subds);
+		SpatRaster(std::vector<std::string> fname, int subds, std::string subdsname);
+		SpatRaster(std::string fname, int subds, std::string subdsname);
 		SpatRaster(RasterSource s);
 		void setSource(RasterSource s);
 		void setSources(std::vector<RasterSource> s);
@@ -226,9 +226,9 @@ class SpatRaster {
         SpatRaster deepCopy();
         SpatRaster geometry(long nlyrs=-1);
 
-		bool constructFromFile(std::string fname, int subds);
+		bool constructFromFile(std::string fname, int subds, std::string subdsname);
 		bool constructFromFiles(std::vector<std::string> fnames);
-		bool constructFromSubDataSets(std::string filename, std::vector<std::string> meta, int subds);
+		bool constructFromSubDataSets(std::string filename, std::vector<std::string> meta, int subds, std::string subdsname);
 
 		void addSource(SpatRaster x);
 		SpatRaster combineSources(SpatRaster x);

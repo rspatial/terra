@@ -10,6 +10,7 @@ void lowercase(std::string &s);
 std::string is_in_set_default(std::string s, std::vector<std::string> ss, std::string defvalue, bool tolower);
 bool is_in_vector(std::string s, std::vector<std::string> ss);
 int where_in_vector(std::string s, std::vector<std::string> ss);
+std::vector<std::string> getlastpart (std::vector<std::string> s, std::string delim);
 
 std::vector<std::string> strsplit(std::string s, std::string delimiter);
 std::vector<double> str2dbl(std::vector<std::string> s);

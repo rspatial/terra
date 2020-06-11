@@ -165,7 +165,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
 		}
 		GDALClose( hDst );
-		out = SpatRaster(filename, -1);
+		out = SpatRaster(filename, -1, "");
 	}
 
 	return out;

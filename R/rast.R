@@ -104,8 +104,12 @@ setMethod("rast", signature(x="character"),
 		}
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
-		#if (is.character(subds)) { } else 
-		r@ptr <- SpatRaster$new(f, subds-1)
+		subds <- subds[1]
+		if (is.character(subds)) { 
+			r@ptr <- SpatRaster$new(f, -1, subds)		
+		} else {
+			r@ptr <- SpatRaster$new(f, subds-1, "")
+		}
 		show_messages(r, "rast")
 	}
 )
