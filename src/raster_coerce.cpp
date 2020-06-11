@@ -175,7 +175,7 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 
 */
 
-SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool narm) {
+SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt) {
 
 	if (!hasValues()) {
 		values = false;
@@ -184,7 +184,7 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	}
 	
 	if (dissolve) {
-		return polygonize(trunc);
+		return polygonize(trunc, opt);
 	}
 
 	SpatVector vect;

@@ -17,7 +17,7 @@ setMethod("as.list", signature(x="SpatRaster"),
 setMethod("as.polygons", signature(x="SpatRaster"), 
 	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, ...) {
 		p <- methods::new("SpatVector")
-		p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE)
+		p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE, .terra_environment$options@ptr)
 		#x <- show_messages(x)
 		show_messages(p, "as.polygons")
 	}

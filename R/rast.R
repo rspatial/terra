@@ -105,7 +105,7 @@ setMethod("rast", signature(x="character"),
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
 		if (length(f) > 1) {
-			r@ptr <- SpatRaster$new(f)		
+			r@ptr <- SpatRaster$new(f, subds-1)		
 		} else {
 			r@ptr <- SpatRaster$new(f, subds-1)
 		}

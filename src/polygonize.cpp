@@ -7,13 +7,23 @@
 
 #if GDAL_VERSION_MAJOR >= 3
 
-SpatVector SpatRaster::polygonize(bool trunc) {
+SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 
 	SpatVector out;
-	SpatOptions opt;
+	SpatOptions topt(opt);
+	SpatRaster tmp = subset({0}, topt);
 
-	SpatRaster tmp = subset({0}, opt);
-
+	// to vectorize all values that are not NAN (or Inf)
+	// we could skip this if we know that min(tmp) > 0
+	bool usemask;
+	std::vector<double> rmin = tmp.range_min();
+	SpatRaster mask;
+	if (std::isnan(rmin[0]) || rmin[0] > 0) {
+		usemask = false;
+	} else {
+		usemask = true;
+		mask = tmp.isfinite(opt);		
+	}
 	GDALDatasetH rstDS;
 	if (! tmp.sources_from_file() ) {
 		if (!tmp.open_gdal(rstDS, 0)) {
@@ -30,6 +40,26 @@ SpatVector SpatRaster::polygonize(bool trunc) {
 	}
     GDALDataset *srcDS=NULL;
 	srcDS = srcDS->FromHandle(rstDS);
+
+
+	GDALDatasetH rstMask;
+	GDALDataset *maskDS=NULL;
+	if (usemask) {
+		if (! mask.sources_from_file() ) {
+			if (!mask.open_gdal(rstMask, 0)) {
+				out.setError("cannot open dataset");
+				return out;
+			}
+		} else {
+			std::string filename = mask.source[0].filename;
+			rstMask = GDALOpen( filename.c_str(), GA_ReadOnly);
+			if (rstMask == NULL) {
+				out.setError("cannot open dataset from file");
+				return out;			
+			}
+		}
+		maskDS = srcDS->FromHandle(rstMask);
+	}
 	
     GDALDataset *poDS = NULL;
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
@@ -73,16 +103,25 @@ SpatVector SpatRaster::polygonize(bool trunc) {
 
 	GDALRasterBand  *poBand;
 	poBand = srcDS->GetRasterBand(1);
-	int hasNA=1;
-	poBand->GetNoDataValue(&hasNA);
-	//char **papszOptions = NULL;
-	//if (queen) papszOptions = CSLSetNameValue(papszOptions, "8CONNECTED", "-8");
-	
+	//int hasNA=1;
+	//poBand->GetNoDataValue(&hasNA);
+
 	CPLErr err;	
-	if (trunc) {
-		err = GDALPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+	if (usemask) {
+		GDALRasterBand  *maskBand;
+		maskBand = maskDS->GetRasterBand(1);
+		if (trunc) {
+			err = GDALPolygonize(poBand, maskBand, poLayer, 0, NULL, NULL, NULL);
+		} else {
+			err = GDALFPolygonize(poBand, maskBand, poLayer, 0, NULL, NULL, NULL);
+		}
+		GDALClose(maskDS);
 	} else {
-		err = GDALFPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+		if (trunc) {
+			err = GDALPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+		} else {
+			err = GDALFPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+		}
 	}
 	if (err == 4) {
 		out.setError("polygonize error");

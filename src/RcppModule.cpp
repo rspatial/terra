@@ -262,8 +262,8 @@ RCPP_MODULE(spat){
 
     class_<SpatRaster>("SpatRaster")
 		.constructor()
-	    .constructor<std::string, int>()
-	    .constructor<std::vector<std::string> >()
+	 // .constructor<std::string, int>()
+	    .constructor<std::vector<std::string>, int>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 

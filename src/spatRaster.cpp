@@ -31,14 +31,14 @@ SpatRaster::SpatRaster(std::string fname, int subds) {
 #endif
 }
 
-SpatRaster::SpatRaster(std::vector<std::string> fname) {
+
+SpatRaster::SpatRaster(std::vector<std::string> fname, int subds) {
 #ifdef useGDAL
-	constructFromFile(fname[0], -1);
-	SpatRaster r;
-	bool success;
+	constructFromFile(fname[0], subds);
 	for (size_t i=1; i<fname.size(); i++) {
-		success = r.constructFromFile(fname[i], -1);
-		if (success) {
+		SpatRaster r;
+		bool ok = r.constructFromFile(fname[i], subds);
+		if (ok) {
 			addSource(r);
 			if (r.msg.has_error) {
 				setError(r.msg.error);

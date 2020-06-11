@@ -34,7 +34,22 @@ raster package \tab terra package\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
 \code{sampleRegular}\tab\code{\link{spatSample}}\cr
 \code{sampleRandom}\tab\code{\link{spatSample}}\cr
+\code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
 }
+
+Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the donwstream code that uses them). Here are some examples:
+
+\tabular{ll}{
+\code{area}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
+
+\code{as.polygons}\tab By default, \code{terra} returns dissolved vectors\cr
+
+\code{extract}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID column. You can use \code{list=TRUE} to get the results as a list\cr
+
+\code{values}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
+
+}
+
 
 Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet. 
 }

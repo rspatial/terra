@@ -216,8 +216,7 @@ class SpatRaster {
 		SpatRaster();
 		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
-
-		SpatRaster(std::vector<std::string> fname);
+		SpatRaster(std::vector<std::string> fname, int subds);
 		SpatRaster(std::string fname, int subds);
 		SpatRaster(RasterSource s);
 		void setSource(RasterSource s);
@@ -359,8 +358,8 @@ class SpatRaster {
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);
 		SpatRaster apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt);
 
-		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm);
-		SpatVector polygonize(bool trunc);
+		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt);
+		SpatVector polygonize(bool trunc, SpatOptions &opt);
 		SpatVector as_points(bool values, bool narm);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
@@ -397,6 +396,7 @@ class SpatRaster {
 		SpatRaster init(double value, SpatOptions &opt);
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);
+		SpatRaster isnotnan(SpatOptions &opt);
 		SpatRaster isfinite(SpatOptions &opt);
 		SpatRaster isinfinite(SpatOptions &opt);
 

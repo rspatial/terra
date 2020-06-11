@@ -179,7 +179,8 @@ SpatRaster SpatRaster::rst_area(SpatOptions &opt) {
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions optint(opt);
 		SpatRaster onecol = out.crop(e, "near", optint);
-		SpatVector p = onecol.as_polygons(false, false, false, false);
+		SpatOptions popt(opt);
+		SpatVector p = onecol.as_polygons(false, false, false, false, popt);
 		std::vector<double> a = p.area();
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
@@ -212,7 +213,7 @@ std::vector<double> SpatRaster::sum_area() {
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions opt;
 		SpatRaster onecol = x.crop(e, "near", opt);
-		SpatVector p = onecol.as_polygons(false, false, false, false);
+		SpatVector p = onecol.as_polygons(false, false, false, false, opt);
 		std::vector<double> ar = p.area();
 		size_t nc = ncol();
 		for (size_t i=0; i<bs.n; i++) {
