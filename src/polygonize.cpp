@@ -139,7 +139,7 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 
 #else
 	
-SpatVector SpatRaster::polygonize(bool trunc) {
+SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 	SpatVector out;
 	out.setError("not supported with your version of GDAL");
 	return out;
