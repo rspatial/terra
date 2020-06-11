@@ -26,7 +26,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 
 \usage{
-\S4method{rast}{character}(x, subds=-1, ...)
+\S4method{rast}{character}(x, subds=0, ...)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
                                       ymin=-90, ymax=90, crs, extent, resolution, ...)
@@ -46,7 +46,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \arguments{
 \item{x}{filename (character), SpatRaster, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
-\item{subds}{positive integer. Subdataset identifier}
+\item{subds}{positive integer. Subdataset identifier. If zero, all subdatasets are returned (if possible)}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

@@ -96,7 +96,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=-1, ...) {
+	function(x, subds=0, ...) {
 		x <- trimws(x)
 		x <- x[x!=""]
 		if (length(x) == 0) {
@@ -104,6 +104,7 @@ setMethod("rast", signature(x="character"),
 		}
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
+		#if (is.character(subds)) { } else 
 		r@ptr <- SpatRaster$new(f, subds-1)
 		show_messages(r, "rast")
 	}
