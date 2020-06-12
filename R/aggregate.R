@@ -50,7 +50,7 @@ function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt
 	} else {
 		out <- rast(x)
 		nl <- nlyr(out)
-		opt <- terra:::.runOptions("", TRUE, list())	
+		opt <- .runOptions("", TRUE, list())	
 		out@ptr <- out@ptr$aggregate(fact, "sum", TRUE, opt)
 		out <- show_messages(out, "aggregate")
 		
@@ -68,31 +68,29 @@ function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt
 		outrows  <- c(0, cumsum(outnr))[1:length(outnr)] + 1
 		
 		nc <- ncol(x)	
-		readStart(x)
-		ignore <- writeStart(out, filename, overwrite, wopt)
 		if (nodes > 1) {
+			doPar <- TRUE
 			cls <- parallel::makeCluster(nodes)
 			on.exit(parallel::stopCluster(cls))
-			for (i in 1:b$n) {
-				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-				v <- parallel::parSapply(cls, v, fun, ...)
-				if (length(v) != outnr[i] * prod(dims[5:6])) {
-					stop("this function does not return the correct number of values")
-				}
-				writeValues(out, v, outrows[i], outnr[i])
-			}	
 		} else {
-			for (i in 1:b$n) {
-				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-				v <- sapply(v, fun, ...)
-				if (length(v) != outnr[i] * prod(dims[5:6])) {
-					stop("this function does not return the correct number of values")
-				}
-				writeValues(out, v, outrows[i], outnr[i])
-			}
+			doPar <- FALSE
 		}
+
+		readStart(x)
+		ignore <- writeStart(out, filename, overwrite, wopt)
+		for (i in 1:b$n) {
+			v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
+			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
+			if (doPar) {
+				v <- parallel::parSapply(cls, v, fun, ...)
+			} else {
+				v <- sapply(v, fun, ...)			
+			}
+			if (length(v) != outnr[i] * prod(dims[5:6])) {
+				stop("this function does not return the correct number of values")
+			}
+			writeValues(out, v, outrows[i], outnr[i])
+		}	
 		readStop(x)
 		out <- writeStop(out)
 		show_messages(out, "aggregate")

@@ -43,14 +43,7 @@ setMethod("rast", signature(x="list"),
 		if (!all(i)) {
 			warning(paste(sum(!i), "out of", length(x), "elements of x are a SpatRaster"))
 		}
-		x <- x[i]
-		r <- x[[1]]
-		if (length(x) > 1) {
-			for (i in seq_along(2:length(x))) {
-				r <- c(r, x[[i]])
-			}
-		}
-		r
+		do.call(c, x[i])
 	}
 )
 

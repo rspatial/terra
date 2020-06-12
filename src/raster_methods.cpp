@@ -18,7 +18,8 @@
 //#include <vector>
 #include "spatRasterMultiple.h"
 #include "recycle.h"
-#include "vecmath.h"
+#include "vecmathfun.h"
+//#include "vecmath.h"
 #include <cmath>
 
 
@@ -40,7 +41,12 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 
 	if (!hasValues()) return(out);
  	if (!out.writeStart(opt)) { return out; }
-	BlockSize bs = getBlockSize(8);
+	out.bs = getBlockSize(opt.get_blocksizemp(), opt.get_steps());
+    #ifdef useRcpp
+	out.pbar = new Progress(out.bs.n+2, opt.do_progress(bs.n));
+	out.pbar->increment();
+	#endif
+	
 	readStart();
 	std::vector<std::vector<double>> v(nl);
 	std::vector<unsigned> ird(ind.size());
@@ -55,33 +61,21 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 		}
 	}
 
-	for (size_t i=0; i<bs.n; i++) {
-        std::vector<double> a = readBlock(bs, i);
-		unsigned nc = out.bs.nrows[i] * out.ncol();
+	std::function<double(std::vector<double>&, bool)> theFun;
+	theFun = getFun(fun);
+
+	for (size_t i=0; i<out.bs.n; i++) {
+        std::vector<double> a = readBlock(out.bs, i);
+		unsigned nc = out.bs.nrows[i] * ncol();
 		std::vector<double> b(nc * nl);
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<ird.size(); k++) {
 				v[ird[k]][jrd[k]] = a[j+k*nc];
 			}
 			for (size_t k=0; k<ui.size(); k++) {
-				size_t off = k * nc;
-				if (fun == "sum") {
-					b[off+j] = vsum(v[k], narm);
-				} else if (fun == "mean") {
-					b[off+j] = vmean(v[k], narm);
-				} else if (fun == "prod") {
-					b[off+j] = vprod(v[k], narm);
-				} else if (fun == "min") {
-					b[off+j] = vmin(v[k], narm);
-				} else if (fun == "max") {
-					b[off+j] = vmax(v[k], narm);
-				} else if (fun == "any") {
-					b[off+j] = vany(v[k], narm);
-				} else if (fun == "all") {
-					b[off+j] = vall(v[k], narm);
-				}
+				size_t off = k * nc + j;
+				b[off] = theFun(v[k], narm);
 			}
-
 		}
 		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}

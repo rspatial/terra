@@ -15,7 +15,7 @@ Or aggregate ("dissolve") a SpatVector.
 }
 
 \usage{
-\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{aggregate}{SpatVector}(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...)
 }
