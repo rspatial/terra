@@ -355,6 +355,16 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 			return constructFromSubDataSets(fname, meta, subds, subdsname);
 		}// else error??	
 	}
+
+	//char **metadata = poDataset->GetMetadata("time");
+	//time#standard_name=time
+	//time#long_name=time
+	//time#units=days since 2001-1-1
+	//time#axis=T
+	//time#calendar=360_day
+	//time#bounds=time_bnds
+	//time#original_units=seconds since 2001-1-1	
+	
 	RasterSource s;
 	s.ncol = poDataset->GetRasterXSize();
 	s.nrow = poDataset->GetRasterYSize();

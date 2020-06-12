@@ -41,16 +41,16 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 		}
 	}
 	if (!hasValues(x)) { toc = TRUE }
-	na.rm <- isTRUE(list(...)$na.rm)
 	if (toc) {	
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
+		narm <- isTRUE(list(...)$na.rm)
 		opt <- .runOptions(filename, overwrite, wopt)	
-		x@ptr <- x@ptr$aggregate(fact, fun, na.rm, opt)
+		x@ptr <- x@ptr$aggregate(fact, fun, narm, opt)
 		return (show_messages(x, "aggregate"))
 	} else {
 		out <- rast(x)
 		nl <- nlyr(out)
-		opt <- .runOptions("", TRUE, list())	
+		opt <- terra:::.runOptions("", TRUE, list())	
 		out@ptr <- out@ptr$aggregate(fact, "sum", na.rm, opt)
 		out <- show_messages(out, "aggregate")
 		
@@ -80,6 +80,7 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 			writeValues(out, v, outrows[i], outnr[i])
 		}
 		readStop(x)
+		out <- writeStop(out)
 		show_messages(out, "aggregate")
 	}
 }
