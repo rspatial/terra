@@ -51,7 +51,7 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 		out <- rast(x)
 		nl <- nlyr(out)
 		opt <- terra:::.runOptions("", TRUE, list())	
-		out@ptr <- out@ptr$aggregate(fact, "sum", na.rm, opt)
+		out@ptr <- out@ptr$aggregate(fact, "sum", TRUE, opt)
 		out <- show_messages(out, "aggregate")
 		
 		dims <- x@ptr$get_aggregate_dims(fact)
