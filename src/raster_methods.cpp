@@ -25,7 +25,6 @@
 
 SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt) {
 
-
 	recycle(ind, nlyr());
 	std::vector<unsigned> ui = vunique(ind);
 	unsigned nl = ui.size();

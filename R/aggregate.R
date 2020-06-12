@@ -72,25 +72,35 @@ function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt
 			doPar <- TRUE
 			cls <- parallel::makeCluster(nodes)
 			on.exit(parallel::stopCluster(cls))
+			#f <- function(v, ...) parallel::parSapply(cls, v, fun, ...)
 		} else {
 			doPar <- FALSE
+			#f <- function(v, ...) sapply(v, fun, ...)
 		}
 
 		readStart(x)
 		ignore <- writeStart(out, filename, overwrite, wopt)
-		for (i in 1:b$n) {
-			v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-			if (doPar) {
+		if (doPar) {
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
+				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
 				v <- parallel::parSapply(cls, v, fun, ...)
-			} else {
+				if (length(v) != outnr[i] * prod(dims[5:6])) {
+					stop("this function does not return the correct number of values")
+				}
+				writeValues(out, v, outrows[i], outnr[i])
+			}	
+		} else {
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
+				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
 				v <- sapply(v, fun, ...)			
-			}
-			if (length(v) != outnr[i] * prod(dims[5:6])) {
-				stop("this function does not return the correct number of values")
-			}
-			writeValues(out, v, outrows[i], outnr[i])
-		}	
+				if (length(v) != outnr[i] * prod(dims[5:6])) {
+					stop("this function does not return the correct number of values")
+				}
+				writeValues(out, v, outrows[i], outnr[i])
+			}	
+		}
 		readStop(x)
 		out <- writeStop(out)
 		show_messages(out, "aggregate")

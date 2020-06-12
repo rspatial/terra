@@ -55,12 +55,13 @@
 	ptr <- .terra_environment$options@ptr
 	opt <- ptr$copy(ptr)
 	
+	filename <- .fullFilename(filename[1])
 	if (!is.null(unlist(wopt))) {
-		wopt$filename <- filename[1]
+		wopt$filename <- filename
 		wopt$overwrite <- overwrite[1]
 		opt <- .setOptions(opt, wopt)
 	} else {
-		opt$filename <- filename[1]
+		opt$filename <- filename
 		opt$overwrite <- overwrite[1]
 	}
 	#show_messages(opt)
