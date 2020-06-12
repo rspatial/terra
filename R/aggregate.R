@@ -30,7 +30,7 @@
 
 
 setMethod("aggregate", signature(x="SpatRaster"), 
-function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list())  {
+function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	#expand=TRUE, 
 	fun <- .makeTextFun(match.fun(fun))
@@ -70,14 +70,28 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 		nc <- ncol(x)	
 		readStart(x)
 		ignore <- writeStart(out, filename, overwrite, wopt)
-		for (i in 1:b$n) {
-			v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
-			v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-			v <- sapply(v, fun, ...)
-			if (length(v) != outnr[i] * prod(dims[5:6])) {
-				stop("this function does not return the correct number of values")
+		if (nodes > 1) {
+			cls <- parallel::makeCluster(nodes)
+			on.exit(parallel::stopCluster(cls))
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
+				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
+				v <- parallel::parSapply(cls, v, fun, ...)
+				if (length(v) != outnr[i] * prod(dims[5:6])) {
+					stop("this function does not return the correct number of values")
+				}
+				writeValues(out, v, outrows[i], outnr[i])
+			}	
+		} else {
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
+				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
+				v <- sapply(v, fun, ...)
+				if (length(v) != outnr[i] * prod(dims[5:6])) {
+					stop("this function does not return the correct number of values")
+				}
+				writeValues(out, v, outrows[i], outnr[i])
 			}
-			writeValues(out, v, outrows[i], outnr[i])
 		}
 		readStop(x)
 		out <- writeStop(out)
@@ -85,7 +99,4 @@ function(x, fact=2, fun="mean", ..., filename="", overwrite=FALSE, wopt=list()) 
 	}
 }
 )
-
-
-
 
