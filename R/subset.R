@@ -107,7 +107,7 @@ function(x, i, j, ... ,drop=FALSE) {
 setMethod("[", c("SpatVector", "numeric", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_rows(i-1)
-	x <- show_messages(x)
+	x <- show_messages(x, "[")
 	if (drop) {
 		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
@@ -119,7 +119,7 @@ setMethod("[", c("SpatVector", "logical", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	i <- which(i)
 	x@ptr <- x@ptr$subset_rows(i-1)
-	x <- show_messages(x)
+	x <- show_messages(x, "[")
 	if (drop) {
 		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
@@ -131,7 +131,7 @@ setMethod("[", c("SpatVector", "numeric", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
 	p <- x@ptr$subset_rows(i-1)
 	x@ptr <- p$subset_cols(j-1)	
-	x <- show_messages(x)
+	x <- show_messages(x, "[")
 	if (drop) {
 		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
@@ -143,7 +143,7 @@ function(x, i, j, ... , drop=FALSE) {
 setMethod("[", c("SpatVector", "missing", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_cols(j-1)	
-	x <- show_messages(x)
+	x <- show_messages(x, "[")
 	if (drop) {
 		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {

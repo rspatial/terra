@@ -376,6 +376,103 @@ SpatRaster SpatRaster::collapse(SpatRaster x, SpatOptions &opt) {
 
 
 
+SpatRaster SpatRaster::rapply(SpatRaster x, std::string fun, bool narm, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (!out.compare_geom(x, false, false)) {
+		out.setError("dimensions and/or extent do not match");
+		return(out);
+	}
+	if (!hasValues()) return(out);
+	if (!x.hasValues()) {
+		out.setError("index raster has no values");
+		return out;
+	}
+	if (x.nlyr() != 2) {
+		out.setError("index raster must have two layers");
+		return out;
+	}
+	
+	std::vector<std::string> f {"sum", "mean", "min", "max", "prod", "any", "all"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("unknown apply function");
+		return out;
+	}
+	std::function<double(std::vector<double>&, bool)> theFun;
+	theFun = getFun(fun);
+
+	int nl = nlyr();
+ 	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	x.readStart();
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		std::vector<double> idx = x.readBlock(out.bs, i);
+		size_t is = idx.size() / 2;
+		std::vector<double> vv(is, NAN);
+		size_t ncell = out.bs.nrows[i] * ncol();
+		for (size_t j=0; j<is; j++) {
+			int start = idx[j] - 1;
+			int end   = idx[j+is];
+			if ((start >= 0) && (end < nl) && (end >= start)) {
+				std::vector<double> se;
+				se.reserve(end-start+1);
+				for (int i = start; i<end; i++){
+					size_t off = i * ncell + j;
+					se.push_back(v[off]);   
+					vv[j] = theFun(se, narm);
+				}
+			}
+		}
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	readStop();
+	x.readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, size_t startrow, size_t nrows) {
+
+	std::vector<std::vector<double>> r;
+	if (!compare_geom(x, false, false)) {
+		return(r);
+	}
+	if (!hasValues()) {
+		return r;
+	}
+	if (!x.hasValues()) {
+		return r;
+	}
+	if (x.nlyr() != 2) {
+		return r;
+	}
+	
+	int nl = nlyr();
+	readStart();
+	x.readStart();
+	std::vector<double> v = readValues(startrow, nrows, 0, ncol());
+	std::vector<double> idx = x.readValues(startrow, nrows, 0, ncol());
+	size_t is = idx.size() / 2;
+	size_t ncell = nrows * ncol();
+	r.resize(is);
+	for (size_t j=0; j<is; j++) {
+		int start = idx[j] - 1;
+		int end   = idx[j+is];
+		if ((start >= 0) && (end < nl) && (end >= start)) {
+			r[j].reserve(end-start+1);
+			for (int i = start; i<end; i++){
+				size_t off = i * ncell + j;
+				r[j].push_back(v[off]);   
+			}
+		}
+	}
+	readStop();
+	x.readStop();
+	return(r);
+}
+
 
 bool disaggregate_dims(std::vector<unsigned> &fact, std::string &message ) {
 

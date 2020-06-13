@@ -80,7 +80,7 @@ setMethod("vect", signature(x="PackedSpatVector"),
 		if (nrow(x@attributes) > 0) {
 			values(p) <- x@attributes
 		}
-		show_messages(p)
+		show_messages(p, "pack")
 	}
 )
 

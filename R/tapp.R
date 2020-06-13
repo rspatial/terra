@@ -13,12 +13,12 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	nms <- make.names(d[,1])
 
 	txtfun <- .makeTextFun(match.fun(fun))
-	if (class(txtfun) == "character") { 
+	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
 			opt <- .runOptions(filename, overwrite, wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$apply(index, txtfun, na.rm, nms, opt)	
-			return(show_messages(x))
+			return(show_messages(x, "tapp"))
 		}		
 	}
 

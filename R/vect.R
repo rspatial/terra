@@ -5,7 +5,7 @@ setMethod("vect", signature(x="missing"),
 	function(...) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
-		show_messages(p)
+		show_messages(p, "vect")
 		return(p)
 	}
 )
@@ -16,7 +16,7 @@ setMethod("vect", signature(x="character"),
 		p@ptr <- SpatVector$new()
 		x <- normalizePath(x)
 		p@ptr$read(x)
-		show_messages(p)
+		show_messages(p, "vect")
 	}
 )
 
@@ -62,7 +62,7 @@ setMethod("vect", signature(x="matrix"),
 			values(p) <- atts
 		}
 		crs(p) <- ifelse(is.na(crs), "", as.character(crs))
-		show_messages(p)
+		show_messages(p, "vect")
 	}
 )
 

@@ -2,7 +2,7 @@
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
 	function(x, z, fun="mean", ...)  {
 		txtfun <- .makeTextFun(match.fun(fun))
-		if (class(txtfun) == "character") { 
+		if (inherits(txtfun, "character")) { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm)
@@ -38,7 +38,7 @@ setMethod("global", signature(x="SpatRaster"),
 		nms <- names(x)
 		nms <- make.unique(nms)
 		txtfun <- .makeTextFun(match.fun(fun))
-		if (class(txtfun) == "character") { 
+		if (inherits(txtfun, "character")) { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$global(txtfun, na.rm)

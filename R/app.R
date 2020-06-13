@@ -4,7 +4,7 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
 
 	txtfun <- .makeTextFun(match.fun(fun))
-	if (class(txtfun) == "character") { 
+	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
 			opt <- .runOptions(filename, overwrite, wopt)
 			na.rm <- isTRUE(list(...)$na.rm)

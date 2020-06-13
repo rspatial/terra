@@ -61,7 +61,7 @@ function(x, i, j, ... ,drop=TRUE) {
 	} else {
 		x@ptr <- x@ptr$subset(i-1)
 	}
-	show_messages(x)
+	show_messages(x, "[")
 })
 
 
@@ -75,7 +75,7 @@ setReplaceMethod("[", c("SpatStack","numeric","missing"),
 		}
 		stopifnot(inherits(value, "SpatRaster"))
 		x@ptr$replace(i-1, value@ptr)
-		show_messages(x)
+		show_messages(x, "[")
 	}
 )
 
@@ -93,7 +93,7 @@ function(x, i, j, ... ,drop=TRUE) {
 		r <- y[k][[j]]
 		x@ptr$add(r@ptr, nms[k])
 	}
-	show_messages(x)
+	show_messages(x, "[")
 })
 
 

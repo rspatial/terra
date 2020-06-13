@@ -355,6 +355,8 @@ RCPP_MODULE(spat){
 		.method("aggregate", &SpatRaster::aggregate, "aggregate")
 		.method("align", &SpatRaster::align, "align")
 		.method("apply", &SpatRaster::apply, "apply")
+		.method("rapply", &SpatRaster::rapply, "rapply")
+		.method("rappvals", &SpatRaster::rappvals, "rappvals")
 		.method("arith_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::arith ))
 		.method("arith_numb", ( SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, SpatOptions&) )( &SpatRaster::arith ))
 		.method("rst_area", &SpatRaster::rst_area, "rst_area")

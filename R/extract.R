@@ -114,7 +114,7 @@ function(x, i, j, ... ,drop=FALSE) {
 	} 
 	i[i<1] <- NA
 	r <- x@ptr$extractCell(i-1)
-	show_messages(x)
+	show_messages(x, "[")
 	if (drop) {
 		r
 	} else {
@@ -130,7 +130,7 @@ function(x, i, j, ... ,drop=FALSE) {
 	if (any(stats::na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	
 	r <- x@ptr$extractCell(i-1)
-	show_messages(x)
+	show_messages(x, "[")
 	if (drop) {
 		r
 	} else {
@@ -146,7 +146,7 @@ function(x, i, j, ..., drop=FALSE) {
 	i <- cellFromRowColCombine(x, i, j)
 	if (any(stats::na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	r <- x@ptr$extractCell(i-1)
-	show_messages(x)
+	show_messages(x, "[")
 	if (drop) {
 		r
 	} else {

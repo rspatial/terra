@@ -28,7 +28,7 @@ setMethod("as.factor", signature(x="SpatRaster"),
 		stopifnot(hasValues(x))
 		x@ptr <- x@ptr$copy()
 		x@ptr$createCategories(0)
-		show_messages(x)
+		show_messages(x, "as.factor")
 	}
 )
 
@@ -58,7 +58,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 		} else if (is.vector(value)){
 			x@ptr$setCategories(0, as.character(value), 0:(length(value)-1))		
 		}
-		x <- show_messages(x)
+		x <- show_messages(x, "levels<-")
 	}
 )
 
