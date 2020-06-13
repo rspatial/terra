@@ -421,20 +421,19 @@ SpatRaster SpatRaster::rapply(SpatRaster x, std::string fun, bool narm, SpatOpti
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> idx = x.readBlock(out.bs, i);
-		size_t is = idx.size() / 2;
-		std::vector<double> vv(is, NAN);
 		size_t ncell = out.bs.nrows[i] * ncol();
-		for (size_t j=0; j<is; j++) {
+		std::vector<double> vv(ncell, NAN);
+		for (size_t j=0; j<ncell; j++) {
 			int start = idx[j] - 1;
-			int end   = idx[j+is];
-			if ((start >= 0) && (end < nl) && (end >= start)) {
+			int end   = idx[j+ncell];
+			if ((start >= 0) && (end <= nl) && (end >= start)) {
 				std::vector<double> se;
 				se.reserve(end-start+1);
 				for (int i = start; i<end; i++){
 					size_t off = i * ncell + j;
 					se.push_back(v[off]);   
-					vv[j] = theFun(se, narm);
 				}
+				vv[j] = theFun(se, narm);
 			}
 		}
 		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
@@ -467,13 +466,12 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, size_t start
 	x.readStart();
 	std::vector<double> v = readValues(startrow, nrows, 0, ncol());
 	std::vector<double> idx = x.readValues(startrow, nrows, 0, ncol());
-	size_t is = idx.size() / 2;
 	size_t ncell = nrows * ncol();
-	r.resize(is);
-	for (size_t j=0; j<is; j++) {
+	r.resize(ncell);
+	for (size_t j=0; j<ncell; j++) {
 		int start = idx[j] - 1;
-		int end   = idx[j+is];
-		if ((start >= 0) && (end < nl) && (end >= start)) {
+		int end   = idx[j+ncell];
+		if ((start >= 0) && (end <= nl) && (end >= start)) {
 			r[j].reserve(end-start+1);
 			for (int i = start; i<end; i++){
 				size_t off = i * ncell + j;
