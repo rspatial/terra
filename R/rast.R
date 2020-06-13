@@ -69,16 +69,19 @@ setMethod("rast", signature(x="SpatVector"),
 
 
 
-.fullFilename <- function(x, expand=FALSE) {
+.fullFilename <- function(x, mustExist=TRUE) {
 	x <- trimws(x)
 	p <- normalizePath(x, winslash = "/", mustWork = FALSE)
-	i <- file.exists(p)
-	if (all(i)) {
-		return(p)
+	if (mustExist) {
+		i <- file.exists(p)
+		if (all(i)) {
+			return(p)
+		} else {
+			x[i] <- p[i]
+		}
 	} else {
-		x[i] <- p[i]
+		return(p)
 	}
-	
 	#if (identical(basename(x), x)) {
 	#	x <- file.path(getwd(), x)
 	#}

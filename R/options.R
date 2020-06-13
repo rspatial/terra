@@ -55,7 +55,7 @@
 	ptr <- .terra_environment$options@ptr
 	opt <- ptr$copy(ptr)
 	
-	filename <- .fullFilename(filename[1])
+	filename <- .fullFilename(filename[1], mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {
 		wopt$filename <- filename
 		wopt$overwrite <- overwrite[1]

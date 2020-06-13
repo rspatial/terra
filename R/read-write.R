@@ -63,7 +63,7 @@ setMethod("writeValues", signature(x="SpatRaster", v="vector"),
 
 setMethod("writeRaster", signature(x="SpatRaster", filename="character"), 
 function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
-	opt <- .runOptions(filename, overwrite,wopt)
+	opt <- .runOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$writeRaster(opt)
 	show_messages(x, "writeRaster")
 }
