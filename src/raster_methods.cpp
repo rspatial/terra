@@ -331,26 +331,26 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 
 
 
-SpatRaster SpatRaster::collapse(SpatRaster x, SpatOptions &opt) {
+SpatRaster SpatRaster::collapse(SpatRaster x, int z, SpatOptions &opt) {
 
-	SpatRaster out = geometry(1);
-	if (!out.compare_geom(x, true, true)) {
+	int nl = nlyr();
+	z = std::max(1, std::min(z, nl));
+	SpatRaster out = geometry(z);
+	if (!out.compare_geom(x, false, false)) {
 		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
 	if (!hasValues()) return(out);
+
+	if (x.nlyr() > 1) {
+		out.setError("index raster must have only one layer");
+		return out;
+	}
 	if (!x.hasValues()) {
 		out.setError("index raster has no values");
 		return out;
 	}
 
-	if (x.nlyr() > 1) {
-		SpatOptions ops;
-		std::vector<unsigned> lyr = {0};
-		x = x.subset(lyr, ops);
-	}
-
-	int nl = nlyr();
  	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	x.readStart();
@@ -358,14 +358,27 @@ SpatRaster SpatRaster::collapse(SpatRaster x, SpatOptions &opt) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> idx = x.readBlock(out.bs, i);
 		size_t is = idx.size();
-		std::vector<double> vv(is, NAN);
+		std::vector<double> vv(is*z, NAN);
 		size_t ncell = out.bs.nrows[i] * ncol();
+
 		for (size_t j=0; j<is; j++) {
-			int index = idx[j] - 1;
-			if ((index >= 0) && (index < nl)) {
-				vv[j] = v[j + index * ncell];
+			int start = idx[j] - 1;
+			if ((start >= 0) && (start < nl)) {
+				int zz = std::min(nl-start, z);
+				for (int i = 0; i<zz; i++){
+					size_t offin = (start + i) * ncell + j;
+					size_t offout = i * ncell + j;
+					vv[offout] = v[offin];   
+				}
 			}
 		}
+	
+		//for (size_t j=0; j<is; j++) {
+		//	int index = idx[j] - 1;
+		//	if ((index >= 0) && (index < nl)) {
+		//		vv[j] = v[j + index * ncell];
+		//	}
+		//}
 		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	readStop();

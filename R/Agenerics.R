@@ -13,7 +13,7 @@ if (!isGeneric("as.lines")) {setGeneric("as.lines", function(x,...) standardGene
 if (!isGeneric("as.points")) {setGeneric("as.points", function(x,...) standardGeneric("as.points"))}	
 if (!isGeneric("as.polygons")) {setGeneric("as.polygons", function(x,...) standardGeneric("as.polygons"))}	
 if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGeneric("classify")) }
-if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGeneric("collapse"))}
+if (!isGeneric("selectRange")) {setGeneric("selectRange", function(x, ...) standardGeneric("selectRange"))}
 if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
 if (!isGeneric("depth")) {setGeneric("depth", function(x,...) standardGeneric("depth"))}
 if (!isGeneric("depth<-")) {setGeneric("depth<-", function(x, value) standardGeneric("depth<-"))}

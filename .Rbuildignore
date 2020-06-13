@@ -3,6 +3,7 @@
 ^windows
 ^misc
 ^cmdapp
+^docker
 ^codeblocks
 ^inst/gdal
 ^inst/proj

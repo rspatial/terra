@@ -434,7 +434,7 @@ class SpatRaster {
 
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
 
-		SpatRaster collapse(SpatRaster x, SpatOptions &opt);
+		SpatRaster collapse(SpatRaster x, int z, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);

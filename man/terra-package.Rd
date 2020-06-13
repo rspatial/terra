@@ -30,7 +30,7 @@ raster package \tab terra package\cr
 \code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
-\code{stackSelect}\tab\code{\link{collapse}}\cr
+\code{stackSelect}\tab\code{\link{selectRange}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
 \code{sampleRegular}\tab\code{\link{spatSample}}\cr
 \code{sampleRandom}\tab\code{\link{spatSample}}\cr
@@ -104,7 +104,7 @@ SpatRaster objects can be created, from scratch, files, or from objects of other
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{\link{area}} \tab Compute area of cells (for longitude/latitude data) \cr
-    \code{\link{collapse}} \tab Select cell values from different layers using an index layer\cr
+    \code{\link{selectRange}} \tab Select cell values from different layers using an index layer\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
