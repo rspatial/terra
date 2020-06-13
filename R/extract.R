@@ -68,6 +68,7 @@ function(x, y, ...) {
 	cbind(ID=1:length(i), x[i])
 })
 
+
 setMethod("extract", signature(x="SpatRaster", y="data.frame"), 
 function(x, y, ...) { 
 	y <- as.matrix(y)
@@ -77,6 +78,7 @@ function(x, y, ...) {
 	i <- cellFromXY(x, y)
 	cbind(ID=1:length(i), x[i])
 })
+
 
 setMethod("extract", signature(x="SpatRaster", y="numeric"), 
 function(x, y, ...) { 
@@ -89,7 +91,17 @@ function(x, y, ...) {
 
 setMethod("[", c("SpatRaster", "missing", "missing"),
 function(x, i, j, ... , drop=FALSE) {
-	values(x, mat=drop)
+	values(x, mat=!drop)
+})
+
+setMethod("[", c("SpatRaster", "logical", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	v <- values(x)[as.logical(i), ]
+	if (drop) {
+		as.vector(v)
+	} else {
+		v
+	}
 })
 
 

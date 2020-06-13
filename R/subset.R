@@ -4,7 +4,6 @@
 # License GPL v3
 
 
-
 setMethod("subset", signature(x="SpatRaster"), 
 function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 	if (is.character(subset)) {
@@ -26,15 +25,17 @@ function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 } )
 
 
-
 setMethod("[", c("SpatRaster", "character", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	subset(x, i, ...)
-})
-
+	function(x, i, j, ... ,drop=TRUE) {
+		subset(x, i, ...)
+	}
+)
 
 setMethod("$", "SpatRaster",  
-	function(x, name) { subset(x, name) } )
+	function(x, name) { 
+		subset(x, name) 
+	} 
+)
 
 setMethod("[[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
