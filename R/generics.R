@@ -26,7 +26,16 @@ setMethod("align", signature(x="SpatExtent", y="SpatRaster"),
 setMethod("area", signature(x="SpatRaster"), 
 	function(x, sum=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		if (sum) {
-			x@ptr$sum_area()		
+			byvalue = FALSE
+			if (byvalue) {
+				v <- x@ptr$area_by_value()
+				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
+				v <- do.call(rbind, v)
+				colnames(v) <- c("layer", "value", "area")
+				return(v)
+			} else {
+				x@ptr$sum_area()
+			}
 		} else {
 			opt <- .runOptions(filename, overwrite, wopt)
 			x@ptr <- x@ptr$rst_area(opt)
@@ -34,6 +43,8 @@ setMethod("area", signature(x="SpatRaster"),
 		} 
 	}
 )
+
+
 
 setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 	function(y, x) { 

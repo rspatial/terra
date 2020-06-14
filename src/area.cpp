@@ -252,3 +252,25 @@ std::vector<double> SpatRaster::sum_area() {
 	return(out);
 }
 
+
+
+//layer<value-area
+std::vector<std::vector<double>> SpatRaster::area_by_value() {
+	if (!could_be_lonlat()) {
+		double ar = xres() * yres();
+		std::vector<std::vector<double>> f = freq(true);
+		for (size_t i=0; i<f.size(); i++) {
+			size_t fs = f[i].size();
+			for (size_t j=fs/2; j<fs; j++) {
+				f[i][j] *= ar;
+			}
+		}
+		return f;
+	} else {
+		// to do
+		// combine freq and area to get area by latitudes
+		std::vector<std::vector<double>> out(nlyr());
+		return out;
+	}
+}
+

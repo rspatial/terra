@@ -293,11 +293,11 @@ class SpatRaster {
 // read and write
 ////////////////////////////////////////////////////
 
-		// for all sources
 		bool readStart();
 		std::vector<double> readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols);
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 		std::vector<std::vector<double>> readBlock2(BlockSize bs, unsigned i);
+		std::vector<double> readBlockIP(BlockSize bs, unsigned i);		
 		bool readStop();
 
 		bool writeStart(SpatOptions &opt);
@@ -353,6 +353,8 @@ class SpatRaster {
 		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster rst_area(SpatOptions &opt);
 		std::vector<double> sum_area();
+		std::vector<std::vector<double>> area_by_value();
+
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);

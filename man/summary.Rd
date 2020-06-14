@@ -1,4 +1,4 @@
-\name{Summary}
+\name{summary}
 
 \docType{methods}
 

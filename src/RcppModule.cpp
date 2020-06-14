@@ -361,6 +361,8 @@ RCPP_MODULE(spat){
 		.method("arith_numb", ( SpatRaster (SpatRaster::*)(std::vector<double>, std::string, bool, SpatOptions&) )( &SpatRaster::arith ))
 		.method("rst_area", &SpatRaster::rst_area, "rst_area")
 		.method("sum_area", &SpatRaster::sum_area, "sum_area")
+		.method("area_by_value", &SpatRaster::area_by_value, "area_by_value")
+		
 		.method("as_points", &SpatRaster::as_points, "as_points")
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("polygonize", &SpatRaster::polygonize, "polygonize")

@@ -21,25 +21,11 @@
 \title{ SpatRaster class}
 
 \description{
-A raster is a database organized as a rectangular grid that is sub-divided into rectangular cells of equal area (in terms of the units of the coordinate reference system) and layers. 
+A SpatRaster represents a rectangular part of the world that is sub-divided into rectangular cells of equal area (in terms of the units of the coordinate reference system). For each cell can have multiple values ("layers"). 
 
-An object of the \code{SpatRaster} class can point to one or more files on disk that holds the values of the raster cells, or hold these values in memory. Or it can not have any associated values at all.
+An object of the \code{SpatRaster} class can point to one or more files on disk that hold the cell values, and/or it can hold these values in memory. These objects can be created with the \code{\link{rast}} method. 
 
-Objects can be created with the \code{\link{rast}} function.
- 
-This package defines the SpatRaster "S4 class" to manipulate such data. The R object only contains a pointer to the C++ class "Rcpp_SpatRaster". 
-}
-
-
-\section{Objects from the Class}{
-Objects can be created with the \code{rast} function.
-}
-
-\section{Slots}{
-Slots for SpatRaster objects
-	\describe{
-    \item{\code{ptr}:}{pointer to the C++ class} 
-}
+The underlying C++ class "Rcpp_SpatRaster" is not intended for end-users. It is for internal use within this package only.
 }
 
 

@@ -18,12 +18,10 @@
 #include "spatRaster.h"
 
 bool SpatRaster::readStart() {
-// for now assuming a single source
-// will have to become a loop over sources
 	for (size_t i=0; i<nsrc(); i++) {
-		if (!source[i].memory) {
+		//if (!source[i].memory) {
 		// open filestream
-		}
+		//}
 		source[i].open_read = true;
 	}
 	return true;
@@ -31,21 +29,23 @@ bool SpatRaster::readStart() {
 
 bool SpatRaster::readStop() {
 	for (size_t i=0; i<nsrc(); i++) {
-		if (!source[0].memory) {
+		//if (!source[0].memory) {
 		// close filestream
-		}
+		//}
 		source[i].open_read = false;
 	}
 	return true;
 }
 
 
+// BSQ
 std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
 	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
 	return(x);
 }
 
 
+// 2D BSQ
 std::vector<std::vector<double>> SpatRaster::readBlock2(BlockSize bs, unsigned i) {
 	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<std::vector<double>> v(nlyr());
@@ -55,6 +55,24 @@ std::vector<std::vector<double>> SpatRaster::readBlock2(BlockSize bs, unsigned i
 	}	
 	return(v);
 }
+
+// BIP
+std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
+	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+	std::vector<double> v(x.size());
+	size_t off = bs.nrows[i] * ncol();
+	size_t nl = nlyr();
+	for (size_t i=0; i<nl; i++) {
+		std::vector<double> lyr = std::vector<double>(x.begin()+(i*off), x.begin()+((i+1)*off));
+		for (size_t j=0; j<off; j++){
+			size_t jj = j * nl + i;
+			v[jj] = lyr[j];
+		}
+	}	
+	return(v);
+}
+
+
 
 std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigned col, unsigned ncols){
 
