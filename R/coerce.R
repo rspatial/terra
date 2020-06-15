@@ -121,11 +121,11 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 
 
 
-setMethod("as.list", signature(x="SpatRaster"), 
-	function(x, ...) {
-		lapply(1:nlyr(x), function(i) x[[i]])
-	}
-)
+#setMethod("as.list", signature(x="SpatRaster"), 
+#	function(x, ...) {
+#		lapply(1:nlyr(x), function(i) x[[i]])
+#	}
+#)
 
 
 setMethod("as.array", signature(x="SpatRaster"), 

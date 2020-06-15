@@ -9,7 +9,7 @@
 \title{Combine}
 
 \description{
-Combine SpatRaster objects (similar to \code{raster::} \code{\link[raster]{stack}})
+Combine SpatRaster objects
 }
 
 \usage{
