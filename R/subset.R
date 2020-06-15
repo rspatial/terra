@@ -91,19 +91,6 @@ setMethod("subset", signature(x="SpatVector"),
 }
 
 
-
-setMethod("[[", c("SpatVector", "numeric", "missing"),
-function(x, i, j, ... ,drop=FALSE) {
-	.subset_cols(x, i, ..., drop=drop)
-})
-
-
-setMethod("[[", c("SpatVector", "character", "missing"),
-function(x, i, j, ... ,drop=FALSE) {
-	.subset_cols(x, i, ..., drop=drop)
-})
-
-
 setMethod("[", c("SpatVector", "numeric", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_rows(i-1)

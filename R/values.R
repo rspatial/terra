@@ -158,6 +158,7 @@ setMethod("values", signature("SpatVector"),
 
 setMethod("values<-", signature("SpatVector", "data.frame"), 
 	function(x, value) {
+		stopifnot(nrow(x) == nrow(value))
 		x <- x[,0]
 		types <- sapply(value, class)
 		nms <- colnames(value)

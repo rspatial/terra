@@ -59,6 +59,12 @@ setMethod("as.data.frame", signature(x="SpatVector"),
 		d
 	}
 )
+
+setMethod("as.list", signature(x="SpatVector"), 
+	function(x, ...) {
+		as.list(as.data.frame(x))
+	}
+)
 	
 	
 

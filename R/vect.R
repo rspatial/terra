@@ -73,16 +73,35 @@ setMethod("$", "SpatVector",  function(x, name) {
 })
 
 
+setMethod("[[", c("SpatVector", "numeric", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	s <- .subset_cols(x, i, ..., drop=TRUE)
+	s[,,drop=drop]
+})
+
+
+setMethod("[[", c("SpatVector", "character", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	s <- .subset_cols(x, i, ..., drop=TRUE)
+	s[,,drop=drop]
+	s
+})
+
+
+
 setMethod("$<-", "SpatVector",  
 	function(x, name, value) { 
-		i <- which(name == names(x))[1]
-		if (is.na(i)) {
+		value <- rep(value, length.out=nrow(x))
+		if (!(name %in% names(x))) {
 			if (is.integer(value)) {
-				x@ptr$add_column_long(value, name)	
+				ok <- x@ptr$add_column_long(value, name)	
 			} else if (is.numeric(value)) {
-				x@ptr$add_column_double(value, name)	
+				ok <- x@ptr$add_column_double(value, name)	
 			} else {
-				x@ptr$add_column_string(as.character(value), name)
+				ok <- x@ptr$add_column_string(as.character(value), name)
+			}
+			if (!ok) {
+				stop("cannot set these values")
 			}
 		} else {
 		    d <- values(x)
