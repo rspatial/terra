@@ -74,17 +74,16 @@ setMethod("$", "SpatVector",  function(x, name) {
 
 
 setMethod("[[", c("SpatVector", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, ... ,drop=FALSE) {
 	s <- .subset_cols(x, i, ..., drop=TRUE)
 	s[,,drop=drop]
 })
 
 
 setMethod("[[", c("SpatVector", "character", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, ... ,drop=FALSE) {
 	s <- .subset_cols(x, i, ..., drop=TRUE)
 	s[,,drop=drop]
-	s
 })
 
 

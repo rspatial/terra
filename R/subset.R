@@ -75,7 +75,7 @@ setMethod("subset", signature(x="SpatVector"),
 		i <- subset[subset > 0 & subset <= ncol(x)]
 	}
 	if (length(i)==0) {
-		i = 0
+		i <- 0
 	} 
 	if (length(i) < length(subset)) {
 		warning("invalid columns omitted")

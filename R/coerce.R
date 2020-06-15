@@ -3,15 +3,12 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("as.list", signature(x="SpatRaster"), 
-	function(x, ...)  {
-		out <- list()
-		for (i in 1:nlyr(x)) {
-			out[[i]] <- x[[i]]
-		}
-		out
-	}
-)
+
+#setMethod("as.list", signature(x="SpatRaster"), 
+#	function(x, ...) {
+#		lapply(1:nlyr(x), function(i) x[[i]])
+#	}
+#)
 
  
 setMethod("as.polygons", signature(x="SpatRaster"), 
@@ -118,14 +115,6 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 		data.frame(d)
 	}
 )
-
-
-
-#setMethod("as.list", signature(x="SpatRaster"), 
-#	function(x, ...) {
-#		lapply(1:nlyr(x), function(i) x[[i]])
-#	}
-#)
 
 
 setMethod("as.array", signature(x="SpatRaster"), 
