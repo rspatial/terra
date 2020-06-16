@@ -33,10 +33,28 @@ setMethod("vect", signature(x="sf"),
 	}
 )
 
+.checkXYnames <- function(x) {
+	x <- substr(tolower(x)[1:2], 1, 3)
+	y <- substr(x, 1, 1)
+	if ((y[1] == "x") & (y[2] == "y")) return(TRUE)
+	if ((x[1] == "eas") & (x[2] == "nor")) return(TRUE)
+	if ((x[1] == "lon") & (x[2] == "lat")) return(TRUE)
+	if ((x[1] == "lat") | (x[2] == "lon")) {
+		stop("longitude/latitude in the wrong order")
+	} else if ((y[1] == "y") | (y[2] == "x")) {
+		stop("x/y in the wrong order")
+	} else if ((x[1] == "nor") | (x[2] == "eas")) {
+		stop("easting/northing in the wrong order")
+	} else {
+		warning("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
+	}
+}
+
 setMethod("vect", signature(x="matrix"), 
 	function(x, type="points", atts=NULL, crs="", ...) {
 		type <- tolower(type)
 		stopifnot(type %in% c("points", "lines", "polygons"))
+		stopifnot(NCOL(x) > 1)
 		
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
@@ -44,7 +62,8 @@ setMethod("vect", signature(x="matrix"),
 		if (nr == 0) {
 			return(p)
 		}
-		
+		.checkXYnames(colnames(x))	
+
 		if (ncol(x) == 2) { 
 			if (type == "points") {	# treat as unique points
 				p@ptr$setGeometry(type, 1:nr, rep(1, nr), x[,1], x[,2], rep(FALSE, nr))

@@ -62,8 +62,9 @@ function(x, i, j, ... , drop=FALSE) {
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, ...) { 
 	if (ncol(y) != 2) {
-		stop("extract works with a 2 column matrix of x and y coordinates")
+		stop("extract expects a 2 column matrix of x and y coordinates")
 	}
+	.checkXYnames(colnames(y))	
 	i <- cellFromXY(x, y)
 	cbind(ID=1:length(i), x[i])
 })
@@ -71,12 +72,10 @@ function(x, y, ...) {
 
 setMethod("extract", signature(x="SpatRaster", y="data.frame"), 
 function(x, y, ...) { 
-	y <- as.matrix(y)
 	if (ncol(y) != 2) {
-		stop("extract works with a 2 column matrix or data.frame of x and y coordinates")
+		stop("extract expects a 2 column data.frame of x and y coordinates")
 	}
-	i <- cellFromXY(x, y)
-	cbind(ID=1:length(i), x[i])
+	extract(x, as.matrix(y), ...)
 })
 
 
