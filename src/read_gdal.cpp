@@ -580,15 +580,28 @@ bool SpatRaster::readStopGDAL(unsigned src) {
 }
 
 
+//#include <iostream>
+//#include "Rcpp.h"
 
-void NAso(std::vector<double> &d, size_t n, std::vector<double> &flags, std::vector<double> &scale, std::vector<double>  &offset, std::vector<bool> &haveso){
+void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso){
 	size_t nl = flags.size();
+
 	for (size_t i=0; i<nl; i++) {
 		size_t start = i*n;
 		if (!std::isnan(flags[i])) {
-			double nan = NAN;
-			std::replace(d.begin()+start, d.begin()+start+n, flags[i], nan); 
-		}
+			double flag = flags[i];
+			// a hack to avoid problems with float - double comparison
+			if (flag < -3.4e+37) {
+				flag = -3.4e+37;
+				for (size_t j=start; j<(start+n); j++) {
+					if (d[j] < flag) {
+						d[j] = NAN;
+					} 	
+				}
+			} else {
+				std::replace(d.begin()+start, d.begin()+start+n, flag, NAN); 
+			}
+		} 
 		if (haveso[i]) {
 			for (size_t j=start; j<(start+n); j++) {
 				d[j] = d[j] * scale[i] + offset[i];
@@ -596,7 +609,6 @@ void NAso(std::vector<double> &d, size_t n, std::vector<double> &flags, std::vec
 		}
 	}
 }
-
 
 
 std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
@@ -651,6 +663,9 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 }
 
 
+
+
+
 std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
 
 	std::vector<double> errout;
@@ -665,9 +680,6 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 	unsigned ncell = ncols * nrows;
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell*nl);
-	int hasNA;
-	CPLErr err = CE_None;
-	std::vector<double> naflags(nl, NAN);
 
 	int* panBandMap = NULL;
 	if (!source[src].in_order()) {
@@ -677,12 +689,20 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 		}
 	}
 		
+	int hasNA;
+	std::vector<double> naflags(nl, NAN);
+	CPLErr err = CE_None;
+
+	//GDALDataType gdtype = poBand->GetRasterDataType();
+
 	err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, panBandMap, 0, 0, 0, NULL);
+
 	if (err == CE_None ) { 
 		for (size_t i=0; i<nl; i++) {
 			poBand = poDataset->GetRasterBand(source[src].layers[i]+1);
-			double naflag = poBand->GetNoDataValue(&hasNA);
-			if (hasNA)  naflags[i] = naflag;
+			double naf = poBand->GetNoDataValue(&hasNA);
+			if (hasNA)  naflags[i] = naf;
+			//if (i < 10) Rcpp::Rcout << naf << std::endl;
 		}
 		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset);
 	}

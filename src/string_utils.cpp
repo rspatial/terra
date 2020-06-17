@@ -35,7 +35,7 @@ std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
 	for (size_t i = 0; i < n; i++) {
 		out[i] = (char *) (s[i].c_str());
 	}
-	out[n] = nullptr;
+	out[n] = NULL;
 	return out;
 }
 

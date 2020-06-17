@@ -103,6 +103,7 @@ setMethod("as.contour", signature(x="SpatRaster"),
 		y[] <- as.numeric(y)
 		u <- unique(y[,1])
 		y[,1] <- match(y[,1], u)
+		colnames(y)[3:4] <- c("x", "y")
 		vect(y, "lines", atts=data.frame(level=u), crs=crs(x))
 	}
 )
