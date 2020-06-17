@@ -306,6 +306,8 @@ RCPP_MODULE(spat){
 
 		.property("names", &SpatRaster::getNames)
 		.property("time", &SpatRaster::getTime)
+		.property("hasTime", &SpatRaster::hasTime)
+
 		.property("depth", &SpatRaster::getDepth)
 
 		.method("nrow", &SpatRaster::nrow, "nrow")		

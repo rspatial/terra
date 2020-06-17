@@ -77,7 +77,8 @@ setMethod ("show" , "SpatRaster",
 			nsr <- nsrc(object)	
 			m <- .inMemory(object)
 			f <- .filenames(object)
-			f <- gsub("\\", "/", f, fixed=TRUE)
+			#f <- gsub("\\", "/", f, fixed=TRUE)
+			f <- gsub("\"", "", basename(f))
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m] 
 
@@ -134,10 +135,17 @@ setMethod ("show" , "SpatRaster",
 			} else {
 				cat("names       :", paste(ln, collapse=", "), "\n")
 			}			
+			if (nsr==1) {
+				if (object@ptr$hasTime) {
+					cat("time        :", paste(range(time(object)), collapse=" to "), "\n")
+				}
+			}
+			
 		} else {
 			cat("data sources:", "no data\n")
 			cat("names       :", paste(ln, collapse=", "), "\n")
 		}
+		
 	}
 )
 

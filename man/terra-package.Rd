@@ -10,7 +10,7 @@
 \description{
 The 'terra' package implements two main classes for spatial data handling: \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
 
-'terra' provides methods to manipulate geographic (spatial) data in "raster" and "vector" data types. Raster data divides space into rectanuglar cells (pixels). Such data are also referred to as "grid" data are often used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this format. Raster data can be contrasted with discrete "vector" spatial data such as points, lines, polygons. 
+'terra' provides methods to manipulate geographic (spatial) data in "raster" and "vector" data types. Raster data divides space into rectangular cells (pixels). Such data are also referred to as "grid" data are often used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this format. Raster data can be contrasted with discrete "vector" spatial data such as points, lines, polygons. 
 
 The 'terra' package is conceived as a replacement of the 'raster' package. 'terra' has a very similar, but simpler, interface, and it is faster than 'raster'. A major simplification is that 'terra' has a single class "SpatRaster" for which 'raster' has three (RasterLayer, RasterStack, RasterBrick). Likewise there is a single class for vector data ("SpatVector"). Like "raster" this package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
@@ -21,6 +21,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{raster, brick, stack}\tab\code{\link{rast}}\cr
 \code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
+\code{dropLayer}\tab\code{\link{subset}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr

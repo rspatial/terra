@@ -67,6 +67,7 @@ class RasterSource {
 		SpatSRS srs;
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
+		bool hasTime = false;
 		std::vector<double> time;
 		std::vector<double> depth;
 
@@ -204,6 +205,7 @@ class SpatRaster {
 		std::vector<double> range_max();
 		std::vector<std::string> getNames();
 		bool setNames(std::vector<std::string> names);
+		std::vector<bool> hasTime();
 		std::vector<double> getTime();
 		bool setTime(std::vector<double> times);
 		std::vector<double> getDepth();

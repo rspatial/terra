@@ -5,7 +5,7 @@ setMethod("$<-", "SpatRaster",
 		if (inherits(value, "SpatRaster")) {
 			value <- value[[1]]
 			names(value) <- name
-		} else {
+		} else if (!is.null(value)) {
 			stop("the replacement value should be a SpatRaster")
 		}
 	

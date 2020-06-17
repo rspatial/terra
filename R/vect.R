@@ -34,6 +34,7 @@ setMethod("vect", signature(x="sf"),
 )
 
 .checkXYnames <- function(x) {
+	if (is.null(x)) return(TRUE)
 	x <- substr(tolower(x)[1:2], 1, 3)
 	y <- substr(x, 1, 1)
 	if ((y[1] == "x") & (y[2] == "y")) return(TRUE)
@@ -42,11 +43,11 @@ setMethod("vect", signature(x="sf"),
 	if ((x[1] == "lat") | (x[2] == "lon")) {
 		stop("longitude/latitude in the wrong order")
 	} else if ((y[1] == "y") | (y[2] == "x")) {
-		stop("x/y in the wrong order")
+		stop("x/y in the wrong order", call. = FALSE)
 	} else if ((x[1] == "nor") | (x[2] == "eas")) {
-		stop("easting/northing in the wrong order")
+		stop("easting/northing in the wrong order", call. = FALSE)
 	} else {
-		warning("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
+		warning("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing", call. = FALSE)
 	}
 }
 

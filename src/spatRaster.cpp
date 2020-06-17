@@ -443,6 +443,14 @@ bool SpatRaster::setNames(std::vector<std::string> names) {
 }
 
 
+std::vector<bool> SpatRaster::hasTime() {
+	std::vector<bool> x(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		x[i] = source[i].hasTime; 
+	}
+	return(x);
+}
+
 
 std::vector<double> SpatRaster::getTime() {
 	std::vector<double> x;
