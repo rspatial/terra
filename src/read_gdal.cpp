@@ -586,7 +586,8 @@ void NAso(std::vector<double> &d, size_t n, std::vector<double> &flags, std::vec
 	for (size_t i=0; i<nl; i++) {
 		size_t start = i*n;
 		if (!std::isnan(flags[i])) {
-			std::replace(d.begin()+start, d.begin()+start+n, flags[i], NAN); 
+			double nan = NAN;
+			std::replace(d.begin()+start, d.begin()+start+n, flags[i], nan); 
 		}
 		if (haveso[i]) {
 			for (size_t j=start; j<(start+n); j++) {
