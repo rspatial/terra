@@ -168,9 +168,16 @@ setMethod("diff", signature(x="SpatRaster"),
 )
 
 
-setMethod("disaggregate", signature(x="SpatVector"), 
-	function(x, ...) {
-		x@ptr <- x@ptr$disaggregate()
+setMethod("disaggregate", signature(x="SpatRaster"), 
+	function(x, fact, method="near", filename="", overwrite=FALSE, wopt=list(), ...) {
+		stopifnot(method %in% c("near", "bilinear"))
+		if (method == "bilinear") {
+			y <- disaggregate(rast(x), fact)
+			r <- resample(x, y, "bilinear", filename=filename, overwrite=overwrite, wopt=wopt, ...)
+			return(r)
+		}
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$disaggregate(fact, opt)
 		show_messages(x, "disaggregate")
 	}
 )

@@ -44,10 +44,10 @@ setMethod("buffer", signature(x="SpatVector"),
 )
 
 
-setMethod("disaggregate", signature(x="SpatRaster"), 
-	function(x, fact, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$disaggregate(fact, opt)
+
+setMethod("disaggregate", signature(x="SpatVector"), 
+	function(x, ...) {
+		x@ptr <- x@ptr$disaggregate()
 		show_messages(x, "disaggregate")
 	}
 )
