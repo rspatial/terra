@@ -599,7 +599,8 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 					} 	
 				}
 			} else {
-				std::replace(d.begin()+start, d.begin()+start+n, flag, NAN); 
+				double na = NAN;
+				std::replace(d.begin()+start, d.begin()+start+n, flag, na); 
 			}
 		} 
 		if (haveso[i]) {
