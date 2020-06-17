@@ -643,6 +643,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 		}
 	}
 */	
+	delete [] panBandMap;
 	if (err != CE_None ) {
 		setError("cannot read values");
 		return errout;
@@ -747,6 +748,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 	}
 */
 
+	delete [] panBandMap;
 	GDALClose((GDALDatasetH) poDataset);
 	if (err != CE_None ) {
 		setError("cannot read values");
@@ -804,6 +806,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 		NAso(out, n, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset);
 	}
 
+	delete [] panBandMap;
 	GDALClose((GDALDatasetH) poDataset);
 	if (err != CE_None ) {
 		setError("cannot read values");
