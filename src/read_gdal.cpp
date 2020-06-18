@@ -590,7 +590,7 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 		size_t start = i*n;
 		if (!std::isnan(flags[i])) {
 			double flag = flags[i];
-			// a hack to avoid problems with float - double comparison
+			// a hack to avoid problems with double derived from float - double comparison
 			if (flag < -3.4e+37) {
 				flag = -3.4e+37;
 				for (size_t j=start; j<(start+n); j++) {
@@ -623,16 +623,15 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 	std::vector<double> naflags(nl, NAN);
 	CPLErr err = CE_None;
 
-
-	int* panBandMap = NULL;
+	std::vector<int> panBandMap;
 	if (!source[src].in_order()) {
-		panBandMap = (int *) CPLMalloc(sizeof(int) * nl);
+		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
-			panBandMap[i] = source[src].layers[i] + 1;
+			panBandMap.push_back(source[src].layers[i]+1);
 		}
 	}
 		
-	err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, panBandMap, 0, 0, 0, NULL);
+	err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	if (err == CE_None ) { 
 		for (size_t i=0; i<nl; i++) {
 			poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i]+1);
@@ -682,28 +681,32 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell*nl);
 
-	int* panBandMap = NULL;
+/*	int* panBandMap = NULL;
 	if (!source[src].in_order()) {
 		panBandMap = (int *) CPLMalloc(sizeof(int) * nl);
 		for (size_t i=0; i < nl; i++) {
 			panBandMap[i] = source[src].layers[i] + 1;
 		}
 	}
+*/
+	std::vector<int> panBandMap;
+	if (!source[src].in_order()) {
+		panBandMap.reserve(nl);
+		for (size_t i=0; i < nl; i++) {
+			panBandMap.push_back(source[src].layers[i]+1);
+		}
+	}
 		
 	int hasNA;
 	std::vector<double> naflags(nl, NAN);
 	CPLErr err = CE_None;
-
-	//GDALDataType gdtype = poBand->GetRasterDataType();
-
-	err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, panBandMap, 0, 0, 0, NULL);
+	err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 
 	if (err == CE_None ) { 
 		for (size_t i=0; i<nl; i++) {
 			poBand = poDataset->GetRasterBand(source[src].layers[i]+1);
 			double naf = poBand->GetNoDataValue(&hasNA);
 			if (hasNA)  naflags[i] = naf;
-			//if (i < 10) Rcpp::Rcout << naf << std::endl;
 		}
 		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset);
 	}
@@ -739,15 +742,15 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 
 	std::vector<double> naflags(nl, NAN);
 
-	int* panBandMap = NULL;
+	std::vector<int> panBandMap;
 	if (!source[src].in_order()) {
-		panBandMap = (int *) CPLMalloc(sizeof(int) * nl);
+		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
-			panBandMap[i] = source[src].layers[i] + 1;
+			panBandMap.push_back(source[src].layers[i]+1);
 		}
 	}
 		
-	err = poDataset->RasterIO(GF_Read, 0, 0, ncol(), nrow(), &out[0], scols, srows, GDT_Float64, nl, panBandMap, 0, 0, 0, NULL);
+	err = poDataset->RasterIO(GF_Read, 0, 0, ncol(), nrow(), &out[0], scols, srows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	if (err == CE_None ) { 
 		for (size_t i=0; i<nl; i++) {
 			poBand = poDataset->GetRasterBand(source[src].layers[i]+1);
@@ -793,31 +796,28 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 	std::vector<unsigned> lyrs = source[src].layers;
 	unsigned nl = lyrs.size();
 	unsigned n = rows.size();
-	std::vector<double> out(n * nl, NAN);
 
-	CPLErr err = CE_None;
-	int hasNA;
-
-
-	std::vector<double> naflags(nl, NAN);
-
-	int* panBandMap = NULL;
+	std::vector<int> panBandMap;
 	if (!source[src].in_order()) {
-		panBandMap = (int *) CPLMalloc(sizeof(int) * nl);
+		panBandMap.reserve(nl);
 		for (size_t i=0; i < nl; i++) {
-			panBandMap[i] = lyrs[i] + 1;
+			panBandMap.push_back(lyrs[i]+1);
 		}
 	}
 
+	std::vector<double> out(n * nl, NAN);
+	CPLErr err = CE_None;
 	for (size_t j=0; j < n; j++) {
 		if (is_NA(cols[j]) | is_NA(rows[j])) continue;
-		err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, panBandMap, 0, 0, 0, NULL);
+		err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 		if (err != CE_None ) { 
 			break;
 		}
 	}
 	
 	if (err == CE_None ) { 
+		std::vector<double> naflags(nl, NAN);
+		int hasNA;
 		for (size_t i=0; i<nl; i++) {
 			poBand = poDataset->GetRasterBand(lyrs[i]+1);
 			double naflag = poBand->GetNoDataValue(&hasNA);
