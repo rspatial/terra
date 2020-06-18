@@ -7,8 +7,14 @@
 \alias{values<-}
 \alias{values,SpatRaster-method}
 \alias{values<-,SpatRaster,ANY-method}
+
+\alias{setValues}
+\alias{setValues,SpatRaster-method}
+\alias{setValues,SpatRaster,ANY-method}
+
 \alias{values,SpatVector-method}
 \alias{values<-,SpatVector,data.frame-method}
+
   
 \title{Get cell values}
 
@@ -20,6 +26,8 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
 \S4method{values}{SpatRaster}(x, mat=TRUE, ...)
 
 \S4method{values}{SpatRaster,ANY}(x, ...)<-value
+
+\S4method{setValues}{SpatRaster,ANY}(x, value, ...)
 
 \S4method{values}{SpatVector}(x, ...)
 
@@ -46,7 +54,7 @@ If \code{x} is a \code{SpatVector}: a \code{data.frame}
 
 
 \value{
-matrix or vector
+matrix, vector, SpatRaster, or nothing
 }
 
 

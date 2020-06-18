@@ -52,39 +52,49 @@ function(x, mat=TRUE, ...) {
 }
 )
 
-
 setMethod("values<-", signature("SpatRaster", "ANY"), 
 	function(x, value) {
-	if (is.matrix(value)) { 
-		if (nrow(value) == nrow(x)) {
-			value <- as.vector(t(value))
-		} else {
-			value <- as.vector(value)
-		} 
-	} else if (is.array(value)) { 
-		stopifnot(length(dim(value)) == 3)
-		value <- as.vector(aperm(value, c(2,1,3)))
+		setValues(x, value)
 	}
-	
-	if (!(is.numeric(value) || is.integer(value) || is.logical(value))) {
-		stop("value must be numeric, integer, or logical")
-	}
+)
 
-	lv <- length(value)
-	nc <- ncell(x)
-	nl <- nlyr(x)
-	if (lv == 1) {	
-		value <- rep(value, nl * nc)
-	} else {
-		stopifnot((lv %% nc) == 0)
-		if (lv < (nc * nl)) {
-			value <- rep(value, length.out=nc*nl)
+setMethod("setValues", signature("SpatRaster", "ANY"), 
+	function(x, values, ...) {
+
+		if (is.matrix(values)) { 
+			if (nrow(values) == nrow(x)) {
+				values <- as.vector(t(values))
+			} else {
+				values <- as.vector(values)
+			} 
+		} else if (is.array(values)) { 
+			stopifnot(length(dim(values)) == 3)
+			values <- as.vector(aperm(values, c(2,1,3)))
 		}
+		
+		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
+			stop("values must be numeric, integer, or logical")
+		}
+
+		lv <- length(values)
+		nc <- ncell(x)
+		nl <- nlyr(x)
+		if (lv == 1) {	
+			values <- rep(values, nl * nc)
+		} else {
+			if (!((nc %% lv) == 0)) {
+				warning("the length of the values does not match the size of the SpatRaster")
+			}
+			if (lv > (nc * nl)) {
+				values <- values[1:(nc*nl)]
+			} else if (lv < (nc * nl)) {
+				values <- rep(values, length.out=nc*nl)
+			}
+		}
+		y <- rast(x)
+		y@ptr$setValues(values)
+		y
 	}
-	y <- rast(x)
-	y@ptr$setValues(value)
-	y
-}
 )
 	
 

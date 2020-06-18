@@ -20,12 +20,12 @@
 
 \description{
 
-Compute cell (pixel) level "local" statistics across layers, and return a single "summary" layer (except for \code{range} which returns two layers). 
+Compute cell (pixel) level "local" statistics across layers or between layers (parallel summary). 
 
 The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}
 
-See \code{app} to compute statistics that are not included here or any other custom function.
- 
+To compute statistics that are not included here see \code{app} to summarize across layers. 
+
 See \code{\link{modal}} to compute the mode.  
  
 Because generic functions are used, the method applied is chosen based on the first argument: "\code{x}". This means that if \code{r} is a SpatRaster, \code{mean(r, 5)} will work, but \code{mean(5, r)} will not work.
@@ -63,7 +63,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{...}{additional argument of the same type as \code{x} or numeric}
+  \item{...}{additional SpatRaster objects or numeric values}
   \item{trim}{ignored}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
 }
@@ -80,7 +80,12 @@ r <- rast(nrow=10, ncol=10, nlyr=3)
 values(r) <- runif(size(r))
 
 x <- mean(r)
-x <- sum(r, r[[2]], 3)
+# note how this returns one layer
+x <- sum(c(r, r[[2]], 5))
+
+# and this returns three layers
+y <- sum(r, r[[2]], 5)
+
 max(r)
 max(r, 0.5)
 

@@ -4,6 +4,7 @@
 
 \alias{rstk}
 \alias{rstk,character-method}
+\alias{rstk,list-method}
 \alias{rstk,SpatRaster-method}
 \alias{[<-,SpatStack,numeric,missing-method}
 
@@ -20,7 +21,7 @@ Methods to create a SpatStack. This is an object to hold "sub-datasets", each a 
 }
 
 \arguments{
-\item{x}{character (filename) or SpatRaster}
+\item{x}{character (filename) or SpatRaster or list of SpatRaster objects}
 \item{name}{character to name the sub-dataset}
 \item{...}{additional arguments. Can be other \code{SpatRaster} objects if \code{x} is a \code{SpatRaster}}  
 }

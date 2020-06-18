@@ -962,8 +962,6 @@ SpatRaster SpatRaster::shift(double x, double y, SpatOptions &opt) {
 }
 
 
-
-
 SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 
 	SpatRaster out;

@@ -463,6 +463,8 @@ RCPP_MODULE(spat){
 		.property("names", &SpatRasterStack::getnames, &SpatRasterStack::setnames)
 		.method("add", &SpatRasterStack::push_back, "")
 		.method("resize", &SpatRasterStack::resize, "")
+		.method("summary", &SpatRasterStack::summary, "summary")
+		.method("summary_numb", &SpatRasterStack::summary_numb, "summary_numb")
 		.method("getsds", &SpatRasterStack::getsds, "")
 		.method("replace", &SpatRasterStack::replace, "")
 		.method("subset", &SpatRasterStack::subset, "")

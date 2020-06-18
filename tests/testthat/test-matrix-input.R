@@ -18,7 +18,7 @@ test_that("matrix input works", {
 #     (lv%%nc) == 0 is not TRUE
 #
   expect_error(rast(matrix(letters, 13)),
-               "value must be numeric, integer, or logical")
+               "values must be numeric, integer, or logical")
 
 })
 

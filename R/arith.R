@@ -156,26 +156,27 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 .summarize <- function(x, ..., fun, na.rm=FALSE) {
 	dots <- list(...)
 	add <- NULL	
+	cls <- FALSE
 	if (length(dots) > 0) {
 		cls <- sapply(dots, function(i) inherits(i, "SpatRaster"))
-		if (any(cls)) {
-			y <- c(list(x), dots[cls])
-			x <- do.call(c, y)
-		}
 		if (!all(cls)) {
 			dots <- dots[!cls]
 			i <- sapply(dots, function(x) class(x) %in% c("logical", "integer", "numeric"))
 			add <- unlist(dots[i], use.names = FALSE)
 		}
 	}
-		
+	if (any(cls)) {
+		x <- rstk(c(list(x), dots[cls]))
+	} 
+
+	r <- rast()
 	if (is.null(add)) {
-		x@ptr <- x@ptr$summary(fun, na.rm, .terra_environment$options@ptr)
+		r@ptr <- x@ptr$summary(fun, na.rm, .terra_environment$options@ptr)
 	} else {
-		x@ptr <- x@ptr$summary_numb(fun, add, na.rm, .terra_environment$options@ptr)			
+		r@ptr <- x@ptr$summary_numb(fun, add, na.rm, .terra_environment$options@ptr)			
 	}
-	show_messages(x, fun)
-	x		
+	show_messages(r, fun)
+	r
 }
 
 

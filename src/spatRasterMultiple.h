@@ -35,7 +35,7 @@ class SpatRasterCollection {
 		void push_back(SpatRaster r) { x.push_back(r); };
 
 		SpatRaster merge(SpatOptions &opt);
-		SpatRaster moscaic(SpatOptions &opt);
+		SpatRaster mosaic(SpatOptions &opt);
 
 };
 
@@ -82,6 +82,18 @@ class SpatRasterStack {
 				return 0;
 			}
 		}
+
+		std::vector<unsigned> nlyr() {
+			std::vector<unsigned> out;
+			if (ds.size() > 0) {
+				out.reserve(ds.size());
+				for (size_t i=0; i<ds.size(); i++) {
+					out.push_back(ds[i].nlyr());
+				}
+			} 
+			return out;
+		}
+
 		std::string getSRS(std::string s) {
 			if (ds.size() > 0) {
 				return ds[0].getSRS(s);
@@ -177,5 +189,7 @@ class SpatRasterStack {
 				return out;
 			}
 		}
+		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
+		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 };
 

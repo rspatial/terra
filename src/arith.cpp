@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <functional>
-#include "spatRaster.h"
+#include "spatRasterMultiple.h"
 #include "recycle.h"
 #include "math_utils.h"
 #include "vecmathfun.h"
@@ -260,9 +260,13 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			}
 		} else if (oper == "%") {
 			if (reverse) {
-				for(double& d : a) std::fmod(x, d);
+				for (size_t i=0; i<a.size(); i++) {
+					a[i] = std::fmod(x, a[i]);
+				}
 			} else {
-				for(double& d : a) std::fmod(d, x);
+				for (size_t i=0; i<a.size(); i++) {
+					a[i] = std::fmod(a[i], x);
+				}
 			}
 		} else if (oper == "==") {
 			for(double& d : a) if (!std::isnan(d)) d = d == x;
@@ -898,5 +902,70 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 	out.writeStop();
 	readStop();
 	return(out);
+}
+
+
+
+SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt) {
+
+	std::vector<unsigned> vnl = nlyr();
+	unsigned nl = vmax(vnl, false);
+	SpatRaster out = ds[0].geometry(nl);
+	unsigned ns = nsds();
+
+	std::vector<std::string> f {"sum", "mean", "median", "which.min", "which.max", "min", "max", "range", "prod", "any", "all", "stdev"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("unknown summary function");
+		return out;
+	}
+
+	if (fun == "range") {
+		out.setError("parallel range not implemented, use min and max");
+		return out;
+	}
+  	if (!ds[0].hasValues()) { return out; }
+
+	std::function<double(std::vector<double>&, bool)> sumFun;
+	if (fun == "stdev") {
+		sumFun = vstdev;
+	} else {
+		sumFun = getFun(fun);
+	}
+  	if (!out.writeStart(opt)) { return out; }
+	for (size_t i=0; i < ns; i++) {
+		ds[i].readStart();
+	}
+	std::vector<double> v(ns);
+	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
+
+	std::vector<std::vector<double>> a(ns); 
+	for (size_t i=0; i < out.bs.n; i++) {
+		unsigned nc = out.bs.nrows[i] * out.ncol() * nl;
+		for (size_t j=0; j < ns; j++) {
+			a[j] = ds[j].readBlock(out.bs, i);
+			recycle(a[j], nc);
+		}
+		std::vector<double> b(nc);
+		for (size_t j=0; j<nc; j++) {
+			for (size_t k=0; k<ns; k++) {
+				v[k] = a[k][j];
+			}
+			b[j] = sumFun(v, narm);
+		}
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+
+	}
+	for (size_t i=0; i < ns; i++) {
+		ds[i].readStop();
+	}
+	out.writeStop();
+	return(out);
+}
+
+
+
+SpatRaster SpatRasterStack::summary(std::string fun, bool narm, SpatOptions &opt) {
+	std::vector<double> add;
+	return summary_numb(fun, add, narm, opt);
 }
 

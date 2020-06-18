@@ -33,6 +33,20 @@ setMethod("rstk", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("rstk", signature(x="list"),
+	function(x, ...) {
+		r <- methods::new("SpatStack")
+		r@ptr <- SpatStack$new()
+		nms <- names(x)
+		if (is.null(nms)) nms <- rep("", length(x))
+		for (i in seq_along(x)) {
+			if (inherits(x[[i]], "SpatRaster")) {
+				r@ptr$add(x[[i]]@ptr, nms[i])
+			}
+		}	
+		show_messages(r, "rstk")
+	}
+)
 
 setMethod("c", signature(x="SpatStack"), 
 	function(x, ...) {
