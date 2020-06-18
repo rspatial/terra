@@ -44,13 +44,13 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 
 \tabular{ll}{
 \code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
-- - -\tab \cr
+- \tab \cr
 \code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved vectors\cr
-- - -\tab \cr
+- \tab \cr
 \code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID column. You can use \code{list=TRUE} to get the results as a list\cr
-- - -\tab \cr
+- \tab \cr
 \code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
-- - -\tab \cr
+- \tab \cr
 \code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single layer with the mean of all cell values. That is what \code{terra} returns with \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the computation is done layer-wise, and the number of layers in the output is the same as that of \code{x} and \code{y} (or the larger of the two if they are not the same). This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case (you can use \code{min} and \code{max} instead) \cr
 }
 
@@ -182,7 +182,8 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 Apart from the function listed below, you can also use indexing with \code{[} with cell numbers, and row and/or column numbers \cr
 
 \tabular{ll}{
-    \code{\link{values}} \tab Get all cell values (fails with very large rasters), or a row of values (safer) \cr
+    \code{\link{values}} \tab Get or set all cell values (fails with very large rasters)\cr
+    \code{\link{setValues}} \tab Set new values to the cells of a SpatRaster \cr
     \code{\link{as.matrix}} \tab Get cell values as a matrix \cr
     \code{\link{as.array}} \tab Get cell values as an array \cr
     \code{\link{extract}} \tab Extract cell values from a SpatRaster (e.g., by cell, coordinates, polygon)\cr
@@ -272,11 +273,11 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
   }
 }
 
+
 \section{XIII. Writing files}{
 
   \tabular{ll}{
    \bold{Basic}\cr
-    \code{\link{values}} \tab Assign new values to the cells of a SpatRaster \cr
     \code{\link{writeRaster}} \tab Write all values of SpatRaster to disk \cr
    .\cr
    \bold{Advanced}\cr
