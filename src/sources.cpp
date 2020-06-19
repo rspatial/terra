@@ -172,7 +172,7 @@ std::vector<double> RasterSource::getValues(unsigned lyr) {
 }
 
 bool RasterSource::in_order() {
-	if (driver == "memory") return true;
+	if (memory) return true;
 	if (nlyr != nlyrfile) return false;
 	for (size_t i=0; i<layers.size(); i++) {
 		if (layers[i] != i) {

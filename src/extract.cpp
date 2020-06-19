@@ -577,7 +577,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	for (size_t src=0; src<ns; src++) {
 		unsigned slyrs = source[src].layers.size();
 
-		if (source[src].driver == "memory") {
+		if (source[src].memory) {
 			for (size_t i=0; i<slyrs; i++) {
 				size_t j = i * nc;
 				for (size_t k=0; k<n; k++) {

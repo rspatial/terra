@@ -85,7 +85,7 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 		}
 		out.source[0].values.insert(out.source[0].values.end(), v.begin(), v.end());
 	}
-	out.source[0].driver = "memory";
+	out.source[0].memory = true;
 	out.source[0].hasValues = true;
 	out.source[0].setRange();
 
@@ -247,7 +247,7 @@ SpatRaster SpatRaster::sampleRandomRaster(unsigned size, bool replace, unsigned 
 	for (size_t i=0; i<vv.size(); i++) {
 		out.source[0].values.insert(out.source[0].values.end(), vv[i].begin(), vv[i].end());
 	}
-	out.source[0].driver = "memory";
+	out.source[0].memory = true;
 	out.source[0].hasValues = true;
 	out.source[0].setRange();
 
