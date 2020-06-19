@@ -378,15 +378,16 @@ bool RasterSource::combine_sources(const RasterSource &x) {
 
 SpatRaster SpatRaster::collapse_sources() {
 	SpatRaster out;
-	out.source.resize(0);
+	std::vector<RasterSource> src;
 	RasterSource s = source[0];
 	for (size_t i=1; i<nsrc(); i++) {
 		if (! s.combine_sources(source[i])) {
-			out.source.push_back(s);
+			src.push_back(s);
 			s = source[i];
 		}
 	}
-	out.source.push_back(s);
+	src.push_back(s);
+	out.setSources(src);
 	return out;
 }
 

@@ -64,17 +64,32 @@ setMethod("boundaries", signature(x="SpatRaster"),
 )
 
 
+.collapse <- function(x) {
+	x@ptr <- x@ptr$collapse()
+	show_messages(x, "collapse")
+}
+
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ...) {
-		dots <- list(...)
-		for (i in dots) {
-			if (inherits(i, "SpatRaster")) {
-				x@ptr <- x@ptr$combineSources(i@ptr)
-			}
-		}
+		s <- rstk(list(x, ...))
+		x@ptr <- s@ptr$collapse()
+		x <- show_messages(x, "c")		
+		x@ptr <- x@ptr$collapse_sources()
 		show_messages(x, "c")		
 	}
 )
+
+#setMethod("c", signature(x="SpatRaster"), 
+#	function(x, ...) {
+#		dots <- list(...)
+#		for (i in dots) {
+#			if (inherits(i, "SpatRaster")) {
+#				x@ptr <- x@ptr$combineSources(i@ptr)
+#			}
+#		}
+#		show_messages(x, "c")		
+#	}
+#)
 
 
 setMethod("rep", signature(x="SpatRaster"), 
