@@ -247,9 +247,10 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
                 }
             }
         } else {
-            rs.layers = lyrs;
+            //rs.layers = lyrs;
             for (size_t i=0; i<nl; i++) {
                 unsigned j = lyrs[i];
+                rs.layers.push_back(layers[j]);
                 rs.names.push_back(names[j]);
 				if (hasTime) rs.time.push_back(time[j]);
                 rs.hasRange.push_back(hasRange[j]);
@@ -338,3 +339,54 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
 
 
+/*
+bool RasterSource::combine(const RasterSource &x) {
+	if (memory & x.memory) {
+		values.insert(values.end(), x.values.begin(), x.values.end());
+		std::vector<unsigned> lyrs(x.nlyr);
+		std::iota(lyrs.begin(), lyrs.end(), nlyr);
+	} else if (filename == x.filename) {
+		layers.insert(layers.end(), x.layers.begin(), x.layers.end());
+	} else {
+		return false;
+	}	
+	nlyr += x.nlyr;
+	names.insert(names.end(), x.names.begin(), x.names.end());
+	if (hasTime & x.hasTime) {
+		time.insert(time.end(), x.time.begin(), x.time.end());
+	} else {
+		time.resize(0);
+	}
+	// depth.insert(depth.end(), x.depth.begin(), x.depth.end());
+	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
+	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());
+	range_max.insert(range_max.end(), x.range_max.begin(), x.range_max.end());
+	hasAttributes.insert(hasAttributes.end(), x.hasAttributes.begin(), x.hasAttributes.end());
+	atts.insert(atts.end(), x.atts.begin(), x.atts.end());
+	hasCategories.insert(hasCategories.end(), x.hasCategories.begin(), x.hasCategories.end());
+	cats.insert(cats.end(), x.cats.begin(), x.cats.end());
+	hasColors.insert(hasColors.end(), x.hasColors.begin(), x.hasColors.end());
+	cols.insert(cols.end(), x.cols.begin(), x.cols.end());
+	datatype.insert(datatype.end(), x.datatype.begin(), x.datatype.end());
+	has_scale_offset.insert(has_scale_offset.end(), x.has_scale_offset.begin(), x.has_scale_offset.end());
+	scale.insert(scale.end(), x.scale.begin(), x.scale.end());
+	offset.insert(offset.end(), x.offset.begin(), x.offset.end());
+	return true;
+}
+
+
+SpatRaster SpatRaster::collapse() {
+	SpatRaster out;
+	out.source.resize(0);
+	RasterSource s = source[0];
+	for (size_t i=1; i<nsrc(); i++) {
+		if (! s.combine(source[i])) {
+			out.source.push_back(s);
+			s = source[i];
+		}
+	}
+	out.source.push_back(s);
+	return out;
+}
+
+*/

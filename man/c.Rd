@@ -6,7 +6,7 @@
 \alias{c,SpatRaster-method}
 \alias{c,SpatStack-method}
 
-\title{Combine}
+\title{Combine SpatRasters}
 
 \description{
 Combine SpatRaster objects

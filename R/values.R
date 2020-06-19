@@ -82,14 +82,13 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		if (lv == 1) {	
 			values <- rep(values, nl * nc)
 		} else {
-			ncnl <- nc * nl
-			if (!((ncnl %% lv) == 0)) {
+			if (!((nc %% lv) == 0)) {
 				warning("the length of the values does not match the size of the SpatRaster")
 			}
-			if (lv > (ncnl)) {
-				values <- values[1:ncnl]
-			} else if (lv < ncnl) {
-				values <- rep(values, length.out=ncnl)
+			if (lv > (nc * nl)) {
+				values <- values[1:(nc*nl)]
+			} else if (lv < (nc * nl)) {
+				values <- rep(values, length.out=nc*nl)
 			}
 		}
 		y <- rast(x)
