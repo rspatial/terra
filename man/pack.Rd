@@ -28,6 +28,16 @@ Packed* object
 }
 
 
+\examples{
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+p <- pack(v)
+p
+vv <- vect(p)
+vv
+}
+
+
 \keyword{ spatial }
 \keyword{ methods }
 
