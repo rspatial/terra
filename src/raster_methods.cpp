@@ -331,7 +331,7 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 
 
 
-SpatRaster SpatRaster::collapse(SpatRaster x, int z, SpatOptions &opt) {
+SpatRaster SpatRaster::select_range(SpatRaster x, int z, SpatOptions &opt) {
 
 	int nl = nlyr();
 	z = std::max(1, std::min(z, nl));

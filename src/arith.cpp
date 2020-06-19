@@ -260,12 +260,12 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			}
 		} else if (oper == "%") {
 			if (reverse) {
-				for (size_t i=0; i<a.size(); i++) {
-					a[i] = std::fmod(x, a[i]);
+				for (size_t j=0; j<a.size(); j++) {
+					a[j] = std::fmod(x, a[j]);
 				}
 			} else {
-				for (size_t i=0; i<a.size(); i++) {
-					a[i] = std::fmod(a[i], x);
+				for (size_t j=0; j<a.size(); j++) {
+					a[j] = std::fmod(a[j], x);
 				}
 			}
 		} else if (oper == "==") {
@@ -364,9 +364,13 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 				}
 			} else if (oper == "%") {
 				if (reverse) {
-					for(double& d : a) std::fmod(x[j], d);
+					for (size_t k=0; k<a.size(); k++) {
+						a[k] = std::fmod(x[j], a[k]);
+					}
 				} else {
-					for(double& d : a) std::fmod(d, x[j]);
+					for (size_t k=0; k<a.size(); k++) {
+						a[k] = std::fmod(a[k], x[j]);
+					}
 				}
 			} else if (oper == "==") {
 				for(double& d : a) if (!std::isnan(d)) d = d == x[j];

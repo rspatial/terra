@@ -66,12 +66,15 @@ setMethod("boundaries", signature(x="SpatRaster"),
 
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ...) {
-		dots <- list(...)
-		for (i in dots) {
-			if (inherits(i, "SpatRaster")) {
-				x@ptr <- x@ptr$combineSources(i@ptr)
-			}
-		}
+		s <- rstk(list(x, ...))
+		x@ptr <- s@ptr$collapse()
+
+		#dots <- list(...)
+		#for (i in dots) {
+		#	if (inherits(i, "SpatRaster")) {
+		#		x@ptr <- x@ptr$combineSources(i@ptr)
+		#	}
+		#}
 		show_messages(x, "c")		
 	}
 )
@@ -141,7 +144,7 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 setMethod("selectRange", signature(x="SpatRaster"), 
 	function(x, y, z=1, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$collapse(y@ptr, z, opt)
+		x@ptr <- x@ptr$select_range(y@ptr, z, opt)
 		show_messages(x, "selectRange")		
 	}
 )

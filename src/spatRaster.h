@@ -89,11 +89,11 @@ class RasterSource {
 		bool memory;
 		bool hasValues;
 		std::string filename;
-		std::string driver;
+		//std::string driver;
 
 		// for native files
 		std::string datatype; // also for writing gdal
-		double NAflag;
+		//double NAflag;
 
 		std::vector<bool> has_scale_offset;
 		std::vector<double> scale;
@@ -105,6 +105,8 @@ class RasterSource {
 		void setRange();
 		void resize(unsigned n);
 		bool in_order();
+		bool combine(const RasterSource &x);
+		
 };
 
 
@@ -438,7 +440,9 @@ class SpatRaster {
 
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
 
-		SpatRaster collapse(SpatRaster x, int z, SpatOptions &opt);
+		SpatRaster collapse();
+
+		SpatRaster select_range(SpatRaster x, int z, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);

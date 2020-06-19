@@ -275,6 +275,7 @@ RCPP_MODULE(spat){
 		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
 		
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
+		.method("collapse", &SpatRaster::collapse, "collapse")
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
@@ -380,7 +381,7 @@ RCPP_MODULE(spat){
 		.method("vectDistance", ( SpatRaster (SpatRaster::*)(SpatVector, SpatOptions&) )( &SpatRaster::distance), "vectDistance")		
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")		
-		.method("collapse", &SpatRaster::collapse, "collapse")
+		.method("select_range", &SpatRaster::select_range, "select_range")
 		.method("cover", &SpatRaster::cover, "cover")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("cum", &SpatRaster::cum, "cum")
@@ -468,7 +469,7 @@ RCPP_MODULE(spat){
 		.method("getsds", &SpatRasterStack::getsds, "")
 		.method("replace", &SpatRasterStack::replace, "")
 		.method("subset", &SpatRasterStack::subset, "")
-		.method("collapse", &SpatRasterStack::collapse , "")
+		.method("collapse", &SpatRasterStack::collapse , "collapse")
 	;
 }
 
