@@ -385,7 +385,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 
  // get the extent
  //       OGREnvelope oExt;
- //       if( poLayer->GetExtent( &oExt, TRUE ) == OGRERR_NONE ){
+ //       if( poLayer->GetExtent( &oExt, true ) == OGRERR_NONE ){
  //           cout << "Extent: (" << oExt.MinX << ", " << oExt.MinY << ") - (" << oExt.MaxX << ", " << oExt.MaxY << ")" << endl;
 
 

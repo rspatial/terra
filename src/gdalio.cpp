@@ -257,7 +257,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		}
 		source[0].hasValues = true;
 		source[0].memory = true;
-		//source[0].driver = "memory";
+		source[0].driver = "memory";
 		source[0].setRange();
 	}
 	
