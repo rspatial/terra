@@ -81,6 +81,7 @@ r[i]
 y <- c(x,x*2,x*3)
 y[i]
 
+\dontrun{
 # extract with a polygon
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
@@ -103,7 +104,7 @@ aggregate(de[,2:4], de[,1,drop=FALSE], mean)
 
 ee <- extract(x, v, list=TRUE)
 matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
-
+}
 }
 
 \keyword{methods}
