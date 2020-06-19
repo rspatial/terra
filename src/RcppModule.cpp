@@ -324,7 +324,7 @@ RCPP_MODULE(spat){
 // only if RasterSource is exposed
 		.field_readonly("source", &SpatRaster::source )
 
-		//.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
+		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
 
 		.method("setNames", &SpatRaster::setNames, "setNames" )
 		.method("setTime", &SpatRaster::setTime, "setTime" )
