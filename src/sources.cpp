@@ -339,8 +339,8 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
 
 
-/*
-bool RasterSource::combine(const RasterSource &x) {
+
+bool RasterSource::combine_sources(const RasterSource &x) {
 	if (memory & x.memory) {
 		values.insert(values.end(), x.values.begin(), x.values.end());
 		std::vector<unsigned> lyrs(x.nlyr);
@@ -375,12 +375,13 @@ bool RasterSource::combine(const RasterSource &x) {
 }
 
 
-SpatRaster SpatRaster::collapse() {
+
+SpatRaster SpatRaster::collapse_sources() {
 	SpatRaster out;
 	out.source.resize(0);
 	RasterSource s = source[0];
 	for (size_t i=1; i<nsrc(); i++) {
-		if (! s.combine(source[i])) {
+		if (! s.combine_sources(source[i])) {
 			out.source.push_back(s);
 			s = source[i];
 		}
@@ -389,4 +390,4 @@ SpatRaster SpatRaster::collapse() {
 	return out;
 }
 
-*/
+

@@ -324,6 +324,8 @@ RCPP_MODULE(spat){
 // only if RasterSource is exposed
 		.field_readonly("source", &SpatRaster::source )
 
+		//.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
+
 		.method("setNames", &SpatRaster::setNames, "setNames" )
 		.method("setTime", &SpatRaster::setTime, "setTime" )
 		.method("setDepth", &SpatRaster::setDepth, "setDepth" )
@@ -380,7 +382,8 @@ RCPP_MODULE(spat){
 		.method("vectDistance", ( SpatRaster (SpatRaster::*)(SpatVector, SpatOptions&) )( &SpatRaster::distance), "vectDistance")		
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")		
-		.method("collapse", &SpatRaster::collapse, "collapse")
+		//.method("source_collapse", &SpatRaster::collapse, "collapse")
+		.method("selRange", &SpatRaster::selRange, "selRange")
 		.method("cover", &SpatRaster::cover, "cover")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("cum", &SpatRaster::cum, "cum")

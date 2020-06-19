@@ -105,6 +105,8 @@ class RasterSource {
 		void setRange();
 		void resize(unsigned n);
 		bool in_order();
+		bool combine_sources(const RasterSource &x);
+		
 };
 
 
@@ -350,6 +352,8 @@ class SpatRaster {
 // main methods
 ////////////////////////////////////////////////////
 
+		SpatRaster collapse_sources();
+
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
@@ -438,7 +442,7 @@ class SpatRaster {
 
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
 
-		SpatRaster collapse(SpatRaster x, int z, SpatOptions &opt);
+		SpatRaster selRange(SpatRaster x, int z, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
