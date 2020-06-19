@@ -80,7 +80,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src) {
 	size_t isrc = src < 0 ? 0 : src;
 		
 	bool hasval = source[isrc].hasValues;
-	bool fromfile = source[isrc].driver == "gdal";
+	bool fromfile = !source[isrc].memory;
 
 	if (fromfile & (nsrc() > 1) & (src < 0)) {
 		if (canProcessInMemory(4)) {
@@ -198,7 +198,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		double ymin = ymax + s.nrow * adfGeoTransform[5]; 
 		s.extent = SpatExtent(xmin, xmax, ymin, ymax);
 
-		s.driver = "memory";
+		s.memory = true;
 		s.names = source[0].names;
 		std::string wkt;
 
@@ -255,9 +255,9 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 			source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
 			
 		}
-		source[0].hasValues = TRUE;
-		source[0].memory = TRUE;
-		source[0].driver = "memory";
+		source[0].hasValues = true;
+		source[0].memory = true;
+		//source[0].driver = "memory";
 		source[0].setRange();
 	}
 	

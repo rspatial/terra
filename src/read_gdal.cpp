@@ -391,7 +391,7 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 
 	s.memory = false;
 	s.filename = fname;
-	s.driver = "gdal";
+	//s.driver = "gdal";
 
 /*
 	if( poDataset->GetProjectionRef() != NULL ) {

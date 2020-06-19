@@ -172,7 +172,7 @@ std::vector<double> RasterSource::getValues(unsigned lyr) {
 }
 
 bool RasterSource::in_order() {
-	if (driver == "memory") return true;
+	if (memory) return true;
 	if (nlyr != nlyrfile) return false;
 	for (size_t i=0; i<layers.size(); i++) {
 		if (layers[i] != i) {
@@ -343,8 +343,8 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 bool RasterSource::combine_sources(const RasterSource &x) {
 	if (memory & x.memory) {
 		values.insert(values.end(), x.values.begin(), x.values.end());
-		std::vector<unsigned> lyrs(x.nlyr);
-		std::iota(lyrs.begin(), lyrs.end(), nlyr);
+		layers.resize(nlyr + x.nlyr);
+		std::iota(layers.begin(), layers.end(), 0);
 	} else if (filename == x.filename) {
 		layers.insert(layers.end(), x.layers.begin(), x.layers.end());
 	} else {

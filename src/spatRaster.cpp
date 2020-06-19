@@ -85,7 +85,7 @@ SpatRaster::SpatRaster() {
 	s.extent = SpatExtent();
 	s.memory = true;
 	s.filename = "";
-	s.driver = "";
+	//s.driver = "";
 	s.nlyr = 1; // or 0?
 	s.resize(1);
 
@@ -115,7 +115,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 
 	s.memory = true;
 	s.filename = "";
-	s.driver = "";
+	//s.driver = "";
 	s.nlyr = rcl[2];
 	s.layers.resize(1, 0);
 	//s.layers.resize(1, s.nlyr);
@@ -151,7 +151,7 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	s.hasValues = false;
 	s.memory = true;
 	s.filename = "";
-	s.driver = "";
+	//s.driver = "";
 	s.nlyr = nl;
 	s.hasRange = { false };
 	s.layers.resize(1, 0);
@@ -336,7 +336,7 @@ bool SpatRaster::is_global_lonlat() {
 
 bool SpatRaster::sources_from_file() {
 	for (size_t i=0; i<source.size(); i++) {
-		if (source[i].driver != "memory") {
+		if (!source[i].memory) {
 			return true;
 		}
 	}
@@ -357,7 +357,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 
 	for (size_t i=0; i<nsrc; i++) {
 		bool write = false;
-		if (!source[i].in_order() || (source[i].driver == "memory")) {
+		if (!source[i].in_order() || source[i].memory) {
 			write = true;
 		} else if (unique) {
 			ufs.insert(source[i].filename);
