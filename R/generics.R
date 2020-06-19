@@ -73,9 +73,11 @@ setMethod("c", signature(x="SpatRaster"),
 	function(x, ...) {
 		s <- rstk(list(x, ...))
 		x@ptr <- s@ptr$collapse()
-		x <- show_messages(x, "c")		
-		x@ptr <- x@ptr$collapse_sources()
 		show_messages(x, "c")		
+		
+		#x <- show_messages(x, "c")		
+		#x@ptr <- x@ptr$collapse_sources()
+		#show_messages(x, "c")		
 	}
 )
 
