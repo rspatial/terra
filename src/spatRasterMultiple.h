@@ -50,9 +50,9 @@ class SpatRasterStack {
 
 		std::vector<SpatRaster> ds;
 		std::vector<std::string> names;
-		bool oneRes = true;
+		//bool oneRes = true;
 		SpatRasterStack() {};
-		SpatRasterStack(std::string fname);
+		SpatRasterStack(std::string fname, std::vector<int> ids, bool useids);
 		SpatRasterStack(SpatRaster r, std::string name) { push_back(r, name); };
 
 		std::vector<std::string> getnames() {
@@ -104,13 +104,13 @@ class SpatRasterStack {
 		
 		bool push_back(SpatRaster r, std::string name) { 
 			if (ds.size() > 0) {
-//				if (!ds[0].compare_geom(r, false, false, true, true, true, false)) {
-				if (!ds[0].compare_geom(r, false, false, true, true, false, false)) {
+				if (!ds[0].compare_geom(r, false, false, true, true, true, false)) {
+//				if (!ds[0].compare_geom(r, false, false, true, true, false, false)) {
 					return false;
 				}
-				if (oneRes && ((ds[0].nrow() != r.nrow()) || (ds[0].ncol() != r.ncol()))) {
-					oneRes = false;
-				}
+				//if (oneRes && ((ds[0].nrow() != r.nrow()) || (ds[0].ncol() != r.ncol()))) {
+				//	oneRes = false;
+				//}
 			}
 			ds.push_back(r); 
 			names.push_back(name); 
@@ -137,14 +137,14 @@ class SpatRasterStack {
 					out.push_back(ds[x[i]], names[x[i]]);
 				} 				
 			} 
-			if (!oneRes) {
-				for (size_t i=1; i<out.ds.size(); i++) {
-					if ((out.ds[0].nrow() != out.ds[i].nrow()) || (out.ds[0].ncol() != out.ds[i].ncol())) {
-						oneRes = false;
-						break;
-					}
-				}
-			}
+			//if (!oneRes) {
+			//	for (size_t i=1; i<out.ds.size(); i++) {
+			//		if ((out.ds[0].nrow() != out.ds[i].nrow()) || (out.ds[0].ncol() != out.ds[i].ncol())) {
+			//			oneRes = false;
+			//			break;
+			//		}
+			//	}
+			//}
 			return out;
 		}
 		
@@ -162,10 +162,10 @@ class SpatRasterStack {
 				return;
 			}
 			
-			if (oneRes && ((ds[0].nrow() != x.nrow()) || (ds[0].ncol() != x.ncol()))) {
-				oneRes = false;
-				addWarning("resolution of new data is different from other sub-datasets");
-			}
+			//if (oneRes && ((ds[0].nrow() != x.nrow()) || (ds[0].ncol() != x.ncol()))) {
+			//	oneRes = false;
+			//	addWarning("resolution of new data is different from other sub-datasets");
+			//}
 
 			ds[i] = x;
 		}
@@ -173,9 +173,9 @@ class SpatRasterStack {
 		SpatRaster collapse() {
 			SpatRaster out;
 
-			if (!oneRes) {
-				out.setError("cannot collapse sub-datasources with different resolutions");
-			}
+			//if (!oneRes) {
+			//	out.setError("cannot collapse sub-datasources with different resolutions");
+			//}
 			if (ds.size() > 0) {
 				out = ds[0];
 				for (size_t i=1; i<ds.size(); i++) {
@@ -192,4 +192,5 @@ class SpatRasterStack {
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 };
+
 

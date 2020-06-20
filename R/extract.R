@@ -28,12 +28,12 @@
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE) { 
-
 	r <- x@ptr$extractVector(y@ptr, touches[1], method[1])
 	x <- show_messages(x, "extract")
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#r <- rapply(r, f, how="replace")
 	if (!is.null(fun)) {
+		fun <- match.fun(fun) 
 	  	r <- rapply(r, fun, ...)
 		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
 		colnames(r) <- names(x)

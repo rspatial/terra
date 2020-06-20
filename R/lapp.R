@@ -82,9 +82,6 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	
 	stopifnot(!missing(fun))
 	
-	if (! x@ptr$oneRes ) {
-		stop("all sub-data sources must have the same resolution")
-	}
 	for (i in 1:nsds(x)) {
 		readStart(x[i])
 	}

@@ -48,7 +48,7 @@ setMethod("as.points", signature(x="SpatRaster"),
 	function(x, values=TRUE, ...) {
 		p <- methods::new("SpatVector")
 		p@ptr <- x@ptr$as_points(values, TRUE)
-		x <- show_messages(x)
+		x <- show_messages(x, "as.points")
 		show_messages(p, "as.points")
 	}
 )

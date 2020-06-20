@@ -25,7 +25,7 @@ gdal_version()
 
 
 \value{
-character (invisibly, if \code{print=TRUE})
+character (invisibly, if \code{print=FALSE})
 }
 
 

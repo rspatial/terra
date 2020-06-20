@@ -37,6 +37,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
 \code{sampleRegular}\tab\code{\link{spatSample}}\cr
 \code{sampleRandom}\tab\code{\link{spatSample}}\cr
+\code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
 }
 

@@ -6,14 +6,20 @@ setMethod("nsds", signature(x="SpatStack"),
 )
 
 setMethod("rstk", signature(x="character"),
-	function(x, ...) {
+	function(x, ids=0, ...) {
 		x <- trimws(x[1])
 		if (nchar(x) == 0) {
 			stop("provide valid file name(s)")
 		}
 		f <- .fullFilename(x)
 		r <- methods::new("SpatStack")
-		r@ptr <- SpatStack$new(f)
+		ids <- round(ids)-1
+		if (ids[1] < 0) {
+			useids <- FALSE
+		} else {
+			useids <- TRUE
+		}
+		r@ptr <- SpatStack$new(f, ids, useids)
 		show_messages(r, "rstk")
 	}
 )

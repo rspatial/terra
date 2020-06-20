@@ -159,12 +159,7 @@ setMethod("show" , "SpatStack",
 		if (ns == 0) return()
 		
 		d <- c(object@ptr$nrow(), object@ptr$ncol())
-		sameRes <- object@ptr$oneRes;
-		if (sameRes) {
-			cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n") 
-		} else {
-			cat("dimensions  :", "variable, including ", paste(d, collapse=", "), "(nrow, ncol)\n") 
-		}
+		cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n") 
 		nss <- sapply(1:ns, function(i) object@ptr$getsds(i-1)$nlyr())
 		cat("nlyr        :", paste(nss, collapse=", "), "\n") 
 
@@ -172,11 +167,7 @@ setMethod("show" , "SpatStack",
 		obj@ptr <- object@ptr$getsds(0)
 		
 		xyres <- res(obj)
-		if (sameRes){
-			cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
-		} else {
-			cat("resolution  : variable, including " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")		
-		}
+		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
 		e <- as.vector(ext(obj))
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 

@@ -22,3 +22,15 @@ gdal_info <- function(filename, options="", print=TRUE, open_opt="", ...) {
 	}
 }
 
+sds_info <- function(filename, ...) {
+	x <- terra:::.sdinfo(filename)
+	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {
+		stop(x[[1]])
+	}
+	m <- do.call(cbind, x)
+	m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
+	colnames(m) <- c("id", "name", "desc", "nrow", "ncol", "nlyr")
+	for (i in 4:6) m[,i] <- as.integer(m[,i])
+	m
+}
+

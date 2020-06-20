@@ -284,7 +284,7 @@ std::string getDsPRJ(GDALDataset *poDataset) {
 }
 
 
-SpatRasterStack::SpatRasterStack(std::string fname) {
+SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids) {
 
     GDALDataset *poDataset;
     poDataset = (GDALDataset *) GDALOpen( fname.c_str(), GA_ReadOnly );
@@ -296,19 +296,40 @@ SpatRasterStack::SpatRasterStack(std::string fname) {
 		}
 		return;
 	}
+	
+	std::string delim = "NAME=";
+	char **metadata = poDataset->GetMetadata("SUBDATASETS");
 
-	unsigned nl = poDataset->GetRasterCount();
-	if (nl == 0) {
-		std::string delim = "NAME=";
-		std::vector<std::string> meta;
-		char **metadata = poDataset->GetMetadata("SUBDATASETS");
-		SpatRaster sub;
-	    for (size_t i=0; metadata[i] != NULL; i++) {
-			std::string s = metadata[i];
+	if (metadata == NULL) {
+		setError("file has no subdatasets");
+		GDALClose( (GDALDatasetH) poDataset );	
+		return;		
+	}
+
+	std::vector<std::string> meta; 
+    for (size_t i=0; metadata[i] != NULL; i++) {
+		meta.push_back(metadata[i]);
+	}
+
+	if (!useids) {
+		ids.resize(meta.size());
+		std::iota(ids.begin(), ids.end(), 0);
+	}
+	SpatRaster sub;
+	int idssz = ids.size();
+	int metsz = meta.size();
+	
+	if (metsz == 0) {
+		setError("file does not consist of subdatasets");
+	} else {
+		for (int i=0; i<idssz; i++) {
+			if ((ids[i] < 0) || ((2*ids[i]) >= metsz)) {
+				continue;
+			}
+			std::string s = meta[ids[i]*2];
 			size_t pos = s.find(delim);
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
-				//sd.push_back(s);
 				if (sub.constructFromFile(s, -1, "")) {
 					if (!push_back(sub, basename_sds(s))) {
 						addWarning("skipped (different geometry): " + s);
@@ -316,11 +337,10 @@ SpatRasterStack::SpatRasterStack(std::string fname) {
 				} else {
 					addWarning("skipped (fail): " + s);
 				}
-			}
+			} 
 		} 
-	} else {
-		setError("file does not consist of subdatasets");
 	}
+	GDALClose( (GDALDatasetH) poDataset );	
 }
 
 
@@ -354,12 +374,15 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 	if (nl == 0) {
 		std::vector<std::string> meta;
 		char **metadata = poDataset->GetMetadata("SUBDATASETS");
-	    for (size_t i=0; metadata[i] != NULL; i++) {
-			meta.push_back(metadata[i]);
-		}
-		if (meta.size() > 0) {
+		if (metadata != NULL) {
+			for (size_t i=0; metadata[i] != NULL; i++) {
+				meta.push_back(metadata[i]);
+			}
 			return constructFromSubDataSets(fname, meta, subds, subdsname);
-		}// else error??	
+		} else {
+			setError("no data detected in " + fname);
+			return false;
+		}
 	}
 
 	

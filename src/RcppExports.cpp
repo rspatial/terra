@@ -18,6 +18,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sd_info
+std::vector<std::vector<std::string>> sd_info(std::string filename);
+RcppExport SEXP _terra_sd_info(SEXP filenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    rcpp_result_gen = Rcpp::wrap(sd_info(filename));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gdal_version
 std::string gdal_version();
 RcppExport SEXP _terra_gdal_version() {
@@ -33,6 +44,7 @@ RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_terra_ginfo", (DL_FUNC) &_terra_ginfo, 3},
+    {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}

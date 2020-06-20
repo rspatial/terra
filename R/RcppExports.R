@@ -5,6 +5,10 @@
     .Call(`_terra_ginfo`, filename, options, oo)
 }
 
+.sdinfo <- function(filename) {
+    .Call(`_terra_sd_info`, filename)
+}
+
 .gdalversion <- function() {
     .Call(`_terra_gdal_version`)
 }

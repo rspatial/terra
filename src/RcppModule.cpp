@@ -12,6 +12,12 @@ std::string ginfo(std::string filename, std::vector<std::string> options, std::v
 	return out;
 }
 
+// [[Rcpp::export(name = ".sdinfo")]]
+std::vector<std::vector<std::string>> sd_info(std::string filename) {
+	std::vector<std::vector<std::string>> sd = sdinfo(filename);
+	return sd;
+}
+
 // [[Rcpp::export(name = ".gdalversion")]]
 std::string gdal_version() {
 	const char* what = "RELEASE_NAME";
@@ -454,10 +460,10 @@ RCPP_MODULE(spat){
 	
     class_<SpatRasterStack>("SpatStack")
 		.constructor()
-	    .constructor<std::string>()
+	    .constructor<std::string, std::vector<int>, bool>()
 	    .constructor<SpatRaster, std::string>()
 		.field("messages", &SpatRasterStack::msg, "messages")
-		.field_readonly("oneRes", &SpatRasterStack::oneRes, "do all sds have the same resolution?")
+		//.field_readonly("oneRes", &SpatRasterStack::oneRes, "do all sds have the same resolution?")
 
 		.method("nsds", &SpatRasterStack::nsds, "")
 		.method("ncol", &SpatRasterStack::ncol, "")
