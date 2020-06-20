@@ -22,8 +22,9 @@ gdal_info <- function(filename, options="", print=TRUE, open_opt="", ...) {
 	}
 }
 
+
 sds_info <- function(filename, ...) {
-	x <- terra:::.sdinfo(filename)
+	x <- .sdinfo(filename)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {
 		stop(x[[1]])
 	}
