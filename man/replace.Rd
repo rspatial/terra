@@ -9,13 +9,15 @@
 \alias{[<-,SpatRaster,missing,numeric-method}
 \alias{[<-,SpatRaster,numeric,missing-method}
 \alias{[<-,SpatRaster,numeric,numeric-method}
+\alias{[<-,SpatRaster,SpatRaster,missing-method}
+\alias{[<-,SpatRaster,SpatVector,missing-method}
 \alias{[[<-,SpatRaster,character,missing-method}
 \alias{[[<-,SpatRaster,numeric,missing-method}
 
 \title{Replace values of a SpatRaster}
 
 \description{
-Replace values of a SpatRaster. These are convenience functions for smaller objects only
+Replace values of a SpatRaster. These are convenience functions for smaller objects only.
 } 
 
 
@@ -28,6 +30,7 @@ r <- rast(ncol=5, nrow=5, xmin=0, xmax=5, ymin=0, ymax=5)
 r[] <- 1:25
 r[1,] <- 5
 r[,2] <- 10
+r[r>10] <- NA
 }
 
 \keyword{methods}

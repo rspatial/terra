@@ -137,3 +137,30 @@ setReplaceMethod("[", c("SpatRaster", "logical", "missing"),
 	}
 )	
 
+
+
+setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
+	function(x, i, j, value) {
+		theCall <- sys.call(-1)
+		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
+		if (narg > 0) { # row
+			stop("you cannot use a SpatRaster as a row index")
+		}
+		mask(x, i, maskvalue=TRUE, updatevalue=value[1])
+	}
+)
+
+
+setReplaceMethod("[", c("SpatRaster", "SpatVector", "missing"),
+	function(x, i, j, value) {
+		theCall <- sys.call(-1)
+		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
+		if (narg > 0) { # row
+			stop("you cannot use a SpatVector as a row index")
+		}
+		if (length(value) > 1) {
+			value <- rep_len(value, length.out=length(x))
+		} 
+		rasterize(i, x, field=value[1], update=TRUE)
+	}
+)
