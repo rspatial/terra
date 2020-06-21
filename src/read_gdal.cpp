@@ -401,15 +401,19 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 		double xmin = adfGeoTransform[0]; /* left x */
 		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
 		//xmax = roundn(xmax, 9);
-		double ymax = adfGeoTransform[3]; /* top y */
-		double ymin = ymax + s.nrow * adfGeoTransform[5]; /* n-s pixel resolution (negative value) */
+		double ymax = adfGeoTransform[3]; // top y 
+		double ymin = ymax + s.nrow * adfGeoTransform[5]; 
 		//ymin = roundn(ymin, 9);
+
+		if (adfGeoTransform[5] > 0) {
+			s.flipped = true;
+			std::swap(ymin, ymax);
+		}
+
 		SpatExtent e(xmin, xmax, ymin, ymax);
 		s.extent = e;
 		
-		s.obx = adfGeoTransform[2];
-		s.oby = adfGeoTransform[4];
-		if (s.obx != 0 || s.oby != 0) s.rotated = true;
+		if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) s.rotated = true;
 	}
 
 	s.memory = false;
@@ -635,6 +639,21 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 }
 
 
+void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, const size_t &ncols, const size_t &nl) {
+	for (size_t i=0; i<nl; i++) {
+		size_t off = i*ncell;
+		size_t nr = nrows/2;
+		for (size_t j=0; j<nr; j++) {
+			size_t d1 = off + j * ncols;
+			size_t d2 = off + (nrows-j-1) * ncols;
+			std::vector<double> r(v.begin()+d1, v.begin()+d1+ncols);
+			std::copy(v.begin()+d2, v.begin()+d2+ncols, v.begin()+d1);
+			std::copy(r.begin(), r.end(), v.begin()+d2);
+		}
+	}
+}
+
+
 std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
 
 	GDALRasterBand  *poBand;
@@ -652,6 +671,10 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 		for (size_t i=0; i < nl; i++) {
 			panBandMap.push_back(source[src].layers[i]+1);
 		}
+	}
+
+	if (source[src].flipped) {
+		row = nrow() - row - nrows;
 	}
 		
 	err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
@@ -682,6 +705,11 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 		setError("cannot read values");
 		return errout;
 	}
+
+	if (source[src].flipped) {
+		vflip(out, ncell, nrows, ncols, nl);
+	}
+
 	return(out);
 }
 
@@ -739,10 +767,12 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 		setError("cannot read values");
 		return errout;
 	}
+	
+	if (source[src].flipped) {
+		vflip(out, ncell, nrows, ncols, nl);
+	}
 	return out;
 }
-
-
 
 
 
@@ -800,12 +830,17 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 		setError("cannot read values");
 		return errout;
 	}
+	
+	if (source[src].flipped) {
+		vflip(out, ncell, srows, scols, nl);
+	}
+	
 	return out;
 }
 
 
 
-std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const std::vector<unsigned> &rows, const std::vector<unsigned> &cols) {
+std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<unsigned> &rows, const std::vector<unsigned> &cols) {
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
     //GDALAllRegister();
@@ -819,6 +854,13 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 	std::vector<unsigned> lyrs = source[src].layers;
 	unsigned nl = lyrs.size();
 	unsigned n = rows.size();
+
+	size_t fnr = nrow() - 1;
+	if (source[src].flipped) {
+		for (size_t i=0; i<n; i++) {
+			rows[i] = fnr - rows[i];
+		}
+	}
 
 	std::vector<int> panBandMap;
 	if (!source[src].in_order()) {
@@ -854,6 +896,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, const 
 		setError("cannot read values");
 		return errout;
 	}
+
 	
 	std::vector<std::vector<double>> r(nl);
 	for (size_t i=0; i<nl; i++) {
