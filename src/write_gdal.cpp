@@ -189,7 +189,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 		source[0].range_min[i] = std::numeric_limits<double>::max();
 		source[0].range_max[i] = std::numeric_limits<double>::lowest();
 	}
-	//source[0].driver = "gdal" ;
+	source[0].driver = "gdal" ;
 	source[0].filename = filename;
 	source[0].memory = false;
 	return true;

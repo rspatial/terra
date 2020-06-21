@@ -92,7 +92,7 @@ class RasterSource {
 		bool memory;
 		bool hasValues;
 		std::string filename;
-		//std::string driver;
+		std::string driver;
 
 		// for native files
 		std::string datatype; // also for writing gdal

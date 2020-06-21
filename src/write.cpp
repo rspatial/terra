@@ -60,13 +60,14 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, un
 
 
 void SpatRaster::fill(double x) {
-	if (source[0].memory) {
-		source[0].values.resize(size(), x);
-	} else {
+	if (source[0].driver == "gdal") {	
 		#ifdef useGDAL
 		fillValuesGDAL(x);
 		#endif
+	} else {
+		source[0].values.resize(size(), x);
 	}
+		
 }
 
 
@@ -169,15 +170,15 @@ bool SpatRaster::writeValues(std::vector<double> &vals, unsigned startrow, unsig
 	}
 
 	
-	if (source[0].memory) {
-		success = writeValuesMem(vals, startrow, nrows, startcol, ncols);
-	} else {
+	if (source[0].driver == "gdal") {	
 		#ifdef useGDAL
 		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
 		#else
 		setError("GDAL is not available");
 		return false;
 		#endif
+	} else {
+		success = writeValuesMem(vals, startrow, nrows, startcol, ncols);
 	}
 
 #ifdef useRcpp
@@ -218,14 +219,7 @@ bool SpatRaster::writeStop(){
 	source[0].open_write = false;
 	bool success = true;
 	source[0].memory = false;
-	if (source[0].memory) {
-   		source[0].setRange();
-		//source[0].driver = "memory";
-		source[0].memory = true;
-		if (source[0].values.size() > 0) {
-			source[0].hasValues = true;
-		}
-	} else {
+	if (source[0].driver=="gdal") {
 		#ifdef useGDAL
 		success = writeStopGDAL();
 		//source[0].hasValues = true;
@@ -233,6 +227,13 @@ bool SpatRaster::writeStop(){
 		setError("GDAL is not available");
 		return false;
 		#endif
+	} else {
+   		source[0].setRange();
+		//source[0].driver = "memory";
+		source[0].memory = true;
+		if (source[0].values.size() > 0) {
+			source[0].hasValues = true;
+		}
 	}
 
 #ifdef useRcpp
@@ -260,7 +261,7 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 		s.hasValues = true;
 		s.memory = true;
 		s.names = getNames();
-		//s.driver = "memory";
+		s.driver = "memory";
 
 		s.setRange();
 		setSource(s);
