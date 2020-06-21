@@ -161,6 +161,6 @@ setReplaceMethod("[", c("SpatRaster", "SpatVector", "missing"),
 		if (length(value) > 1) {
 			value <- rep_len(value, length.out=length(x))
 		} 
-		rasterize(i, x, field=value[1], update=TRUE)
+		rasterize(i, x, field=value, update=TRUE)
 	}
 )

@@ -4,6 +4,16 @@
 # License GPL v3
 
 
+
+
+setMethod("rectify", signature(x="SpatRaster"), 
+	function(x, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$rectify(method, opt)
+		show_messages(x, "rectify")
+	}
+)
+
 setMethod("adjacent", signature(x="SpatRaster"), 
 	function(x, cells, directions="rook", include=FALSE, ...) {
 		v <- x@ptr$adjacent(cells-1, directions, include)
@@ -246,14 +256,14 @@ setMethod("project", signature(x="SpatRaster"),
 		opt <- .runOptions(filename, overwrite, wopt)
 		if (inherits(y, "SpatRaster")) {
 			#x@ptr <- x@ptr$warp(y@ptr, method, opt)
-			x@ptr <- x@ptr$warper(y@ptr, "", method, opt)
+			x@ptr <- x@ptr$warp(y@ptr, "", method, opt)
 		} else {
 			if (!is.character(y)) {
 				warning("crs should be a character value")
 				y <- as.character(crs(y))
 			}
 			#x@ptr <- x@ptr$warpcrs(y, method, opt)
-			x@ptr <- x@ptr$warper(SpatRaster$new(), y, method, opt)
+			x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, opt)
 		}
 		show_messages(x, "project")
 	}
@@ -282,7 +292,6 @@ setMethod("quantile", signature(x="SpatRaster"),
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
 	function(x, y, field=1:nrow(x), background=NA, update=FALSE, touches=is.lines(x), filename="", overwrite=FALSE, wopt=list(), ...) { 
-		# , update=FALSE, 
 		inverse=FALSE # use "mask" for TRUE
 		opt <- .runOptions(filename, overwrite, wopt)
 		background <- as.numeric(background[1])
@@ -372,7 +381,7 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 		method <- ifelse(method == "ngb", "near", method)
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$warper(y@ptr, "", method, opt)
+		x@ptr <- x@ptr$warp(y@ptr, "", method, opt)
 		show_messages(x, "resample")
 	}
 )
@@ -387,7 +396,7 @@ setMethod("summary", signature(object="SpatRaster"),
 #setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
 #	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
 #		opt <- .runOptions(filename, overwrite, wopt)
-#		x@ptr <- x@ptr$warper(y@ptr, "", method, opt)
+#		x@ptr <- x@ptr$warp(y@ptr, "", method, opt)
 #		show_messages(x, "warp")
 #	}
 #)

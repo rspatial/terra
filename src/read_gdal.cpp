@@ -394,14 +394,10 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 	s.layers.resize(nl);
     std::iota(s.layers.begin(), s.layers.end(), 0);
 
-	double adfGeoTransform[6];
-	
+	s.flipped = false;
+	s.rotated = false;
+	double adfGeoTransform[6];	
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
-		// the rounding below is to address a design flaw in GDAL
-		// GDAL provides the coordinates of one corner and the resolution,
-		// instead of the coordinates of all (two opposite) corners.
-		// This makes computation of the opposite corner coordinates only
-		// approximate for large rasters with a high resolution.
 		double xmin = adfGeoTransform[0]; /* left x */
 		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
 		//xmax = roundn(xmax, 9);
@@ -410,6 +406,10 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 		//ymin = roundn(ymin, 9);
 		SpatExtent e(xmin, xmax, ymin, ymax);
 		s.extent = e;
+		
+		s.obx = adfGeoTransform[2];
+		s.oby = adfGeoTransform[4];
+		if (s.obx != 0 || s.oby != 0) s.rotated = true;
 	}
 
 	s.memory = false;

@@ -63,6 +63,10 @@ class RasterSource {
 		unsigned ncol, nrow, nlyr;
 		unsigned nlyrfile = 0;
 		SpatExtent extent;
+		double obx, oby;
+		bool rotated;
+		bool flipped;
+		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
 		std::vector<unsigned> layers;
@@ -353,7 +357,8 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 
 		SpatRaster collapse_sources();
-
+		SpatRaster rectify(std::string method, SpatOptions &opt);
+		
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
