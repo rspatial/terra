@@ -1,36 +1,59 @@
-FROM ubuntu:16.04
-# minimal docker file for terra on ubunty 16.04 image,
-# using gdal/geos/proj from ppa:ubuntugis/ubuntugis-unstable
-# copied from sf 
+## Emacs, make this -*- mode: sh; -*-
 
-RUN apt-get update && apt-get install -y software-properties-common
-RUN add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+FROM debian:testing
 
-RUN echo "deb http://cran.rstudio.com/bin/linux/ubuntu xenial/  " >> /etc/apt/sources.list
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+LABEL org.label-schema.license="GPL-2.0" \
+      org.label-schema.vcs-url="https://github.com/rocker-org/r-base" \
+      org.label-schema.vendor="Rocker Project" \
+      maintainer="Dirk Eddelbuettel <edd@debian.org>"
 
-RUN apt-get update
-RUN apt-get upgrade -y
+## Set a default user. Available via runtime flag `--user docker`
+## Add user to 'staff' group, granting them write privileges to /usr/local/lib/R/site.library
+## User should also have & own a home directory (for rstudio or linked volumes to work properly).
+RUN useradd docker \
+	&& mkdir /home/docker \
+	&& chown docker:docker /home/docker \
+	&& addgroup docker staff
 
-RUN export DEBIAN_FRONTEND=noninteractive; apt-get -y update \
- && apt-get install -y \
-	libcurl4-openssl-dev \
-	qpdf \
-	pandoc \
-	make \
-	wget \
-	git \
-	libgdal-dev \
-	libgeos-dev \
-	libproj-dev \
-	r-base-dev
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		ed \
+		less \
+		locales \
+		vim-tiny \
+		wget \
+		ca-certificates \
+		fonts-texgyre \
+	&& rm -rf /var/lib/apt/lists/*
 
+## Configure default locale, see https://github.com/rocker-org/rocker/issues/19
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+	&& locale-gen en_US.utf8 \
+	&& /usr/sbin/update-locale LANG=en_US.UTF-8
 
-RUN Rscript -e 'install.packages(c("terra"), dependencies = TRUE, repos = "https://cloud.r-project.org")'
-RUN git clone   https://github.com/rspatial/terra.git
-RUN R CMD build terra
-RUN R CMD INSTALL terra_*tar.gz
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
 
-RUN R CMD check --as-cran terra_*tar.gz
+## Use Debian unstable via pinning -- new style via APT::Default-Release
+RUN echo "deb http://http.debian.net/debian sid main" > /etc/apt/sources.list.d/debian-unstable.list \
+        && echo 'APT::Default-Release "testing";' > /etc/apt/apt.conf.d/default
 
-CMD ["/bin/bash"]
+ENV R_BASE_VERSION 4.0.0
+
+## Now install R and littler, and create a link for littler in /usr/local/bin
+RUN apt-get update \
+	&& apt-get install -t unstable -y --no-install-recommends \
+		littler \
+                r-cran-littler \
+		r-base=${R_BASE_VERSION}-* \
+		r-base-dev=${R_BASE_VERSION}-* \
+		r-recommended=${R_BASE_VERSION}-* \
+	&& ln -s /usr/lib/R/site-library/littler/examples/install.r /usr/local/bin/install.r \
+	&& ln -s /usr/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r \
+	&& ln -s /usr/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
+	&& ln -s /usr/lib/R/site-library/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r \
+	&& install.r docopt \
+	&& rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+	&& rm -rf /var/lib/apt/lists/*
+
+CMD ["R"]

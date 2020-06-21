@@ -1,6 +1,7 @@
 \name{rectify}
 
 \alias{rectify}
+\alias{rectify,SpatRaster-method}
 
 
 \title{rectify a SpatRaster}
@@ -11,7 +12,7 @@ Rectify a rotated SpatRaster into a non-rotated object
 }
 
 \usage{
-rectify(x, method="bilinear",  filename="", overwrite=FALSE, wopt=list())
+rectify(x, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -20,6 +21,7 @@ rectify(x, method="bilinear",  filename="", overwrite=FALSE, wopt=list())
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}    
 }
 
 
