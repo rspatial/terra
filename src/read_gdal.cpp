@@ -656,6 +656,10 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 
 std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
 
+	if (source[src].rotated) {
+		setError("cannot read from rotated files. First use 'rectify'");
+	}
+
 	GDALRasterBand  *poBand;
 	unsigned ncell = ncols * nrows;
 	std::vector<double> errout;
@@ -673,9 +677,6 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 		}
 	}
 
-	if (source[src].flipped) {
-		row = nrow() - row - nrows;
-	}
 		
 	err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	if (err == CE_None ) { 
@@ -718,6 +719,10 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 
 
 std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
+
+	if (source[src].rotated) {
+		setError("cannot read from rotated files. First use 'rectify'");
+	}
 
 	std::vector<double> errout;
     GDALDataset *poDataset;
@@ -777,6 +782,10 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 
 
 std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, unsigned scols) {
+
+	if (source[src].rotated) {
+		setError("cannot read from rotated files. First use 'rectify'");
+	}
 
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
@@ -841,6 +850,11 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 
 
 std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<unsigned> &rows, const std::vector<unsigned> &cols) {
+
+	if (source[src].rotated) {
+		setError("cannot read from rotated files. First use 'rectify'");
+	}
+
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
     //GDALAllRegister();

@@ -20,3 +20,5 @@ packrat/lib*/
 packrat/src/
 
 C/terra
+
+docker/

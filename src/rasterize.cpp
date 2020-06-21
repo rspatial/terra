@@ -137,7 +137,6 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 
 	int err = 0;
 	GDALDatasetH hDst = GDALRasterize(NULL, rstDS, vecDS, ropts, &err);
-	GDALRasterizeOptionsFree(ropts);
 	if (err != 0) {
 		setError("error "+ std::to_string(err));
 	}
@@ -145,6 +144,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	if (driver == "MEM") {
 		bool test = out.from_gdalMEM(hDst, false, true); 
 		GDALClose( hDst );
+		GDALRasterizeOptionsFree(ropts);
 		if (!test) {
 			out.setError("wat nu?");
 			return out;
@@ -165,6 +165,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
 		}
 		GDALClose( hDst );
+		GDALRasterizeOptionsFree(ropts);
 		out = SpatRaster(filename, -1, "");
 	}
 

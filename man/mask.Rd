@@ -9,7 +9,7 @@
 \title{Mask values in a SpatRaster}
 
 \description{
-Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} (or another \code{maskvalue} in another SpatRaster (the 'mask') or not covered by the objects of a SpatVector. These cells become \code{NA} (or another \code{updatevalue}).
+Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} (or another \code{maskvalue}) in another SpatRaster (the 'mask'), or not covered by a SpatVector. These cells become \code{NA} (or another \code{updatevalue}).
 } 
 
 \usage{
