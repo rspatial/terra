@@ -51,8 +51,8 @@ class RasterSource {
 #ifdef useGDAL
 		GDALDataset* gdalconnection;
 #endif
-		bool open_read;
-		bool open_write;
+		bool open_read=false;
+		bool open_write=false;
 
 		RasterSource();
 
@@ -63,8 +63,8 @@ class RasterSource {
 		unsigned ncol, nrow, nlyr;
 		unsigned nlyrfile = 0;
 		SpatExtent extent;
-		bool rotated;
-		bool flipped;
+		bool rotated=false;
+		bool flipped=false;
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
@@ -89,8 +89,8 @@ class RasterSource {
 		std::vector<bool> hasColors;
 		std::vector<SpatColors> cols;
 
-		bool memory;
-		bool hasValues;
+		bool memory=true;
+		bool hasValues=false;
 		std::string filename;
 		std::string driver;
 

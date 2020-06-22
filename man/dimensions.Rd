@@ -123,7 +123,6 @@ ncell(rr)
 length(rr)
 size(rr)
 
-
 nrow(r) <- 18
 ncol(r) <- 36
 # equivalent to

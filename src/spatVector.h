@@ -55,7 +55,7 @@ class SpatPart {
 
 class SpatGeom {
 	public:
-		SpatGeomType gtype;
+		SpatGeomType gtype = unknown;
 		std::vector<SpatPart> parts;
 		SpatExtent extent;
 		SpatGeom();

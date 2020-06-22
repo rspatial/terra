@@ -1,4 +1,9 @@
 
+#setMethod("row.names", signature(x="SpatVector"), 
+#	function(x) {
+#		1:nrow(x)
+#	}
+#)
 
 
 setMethod("vect", signature(x="missing"), 
