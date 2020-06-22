@@ -176,7 +176,7 @@ std::vector<double> sample_without_replacement(unsigned size, unsigned N, unsign
     std::shuffle(result.begin(), result.end(), gen);    
 	
     return result;
-};
+}
 
 
 std::vector<double> sample_with_replacement(unsigned size, unsigned N, unsigned seed){
@@ -196,7 +196,7 @@ std::vector<double> sample_with_replacement(unsigned size, unsigned N, unsigned 
     } 
 	
     return result;
-};
+}
 
 
 // need to consider the possibility that ncell() > max_int

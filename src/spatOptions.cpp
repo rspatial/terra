@@ -96,6 +96,6 @@ bool SpatOptions::get_todisk() { return todisk; }
 void SpatOptions::set_todisk(bool b) { todisk = b; }
 
 
-void SpatOptions::set_steps(size_t n) { steps = n; };
-size_t SpatOptions::get_steps(){ return steps; };
+void SpatOptions::set_steps(size_t n) { steps = n; }
+size_t SpatOptions::get_steps(){ return steps; }
 

@@ -23,7 +23,7 @@
 #include "string_utils.h"
 
 
-SpatDataFrame::SpatDataFrame() {};
+SpatDataFrame::SpatDataFrame() {}
 
 SpatDataFrame SpatDataFrame::skeleton() {
 	SpatDataFrame out;

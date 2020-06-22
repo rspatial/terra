@@ -320,18 +320,18 @@ std::vector<double> SpatRaster::range_max() {
 
 bool SpatRaster::is_lonlat() {
 	return srs.is_lonlat();
-};
+}
 
 bool SpatRaster::could_be_lonlat() {
 	SpatExtent e = getExtent();
 	return srs.could_be_lonlat(e);
-};
+}
 
 
 bool SpatRaster::is_global_lonlat() {
 	SpatExtent e = getExtent();
 	return srs.is_global_lonlat(e);
-};
+}
 
 
 bool SpatRaster::sources_from_file() {

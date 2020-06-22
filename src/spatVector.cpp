@@ -67,7 +67,7 @@ SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) {
 }
 
 
-SpatGeom::SpatGeom() {};
+SpatGeom::SpatGeom() {}
 
 SpatGeom::SpatGeom(SpatPart p) {
 	parts.push_back(p);
@@ -125,11 +125,11 @@ SpatPart SpatGeom::getPart(unsigned i) {
 	return parts[i];
 }
 
-SpatVector::SpatVector() {};
+SpatVector::SpatVector() {}
 
 SpatVector::SpatVector(SpatGeom g) {
 	addGeom(g);
-};
+}
 
 /*
 SpatVector::SpatVector(const SpatVector &x) {
@@ -145,7 +145,7 @@ SpatVector::SpatVector(SpatExtent e, std::string crs) {
 	SpatGeom g(p);
 	setGeom(g);
 	setSRS( {crs});
-};
+}
 
 
 std::vector<double> SpatVector::getDv(unsigned i) {
@@ -191,12 +191,12 @@ size_t SpatVector::size() {
 
 bool SpatVector::is_lonlat() {
 	return srs.is_lonlat();
-};
+}
 
 bool SpatVector::could_be_lonlat() {
 	SpatExtent e = getExtent();
 	return srs.could_be_lonlat(e);
-};
+}
 
 
 SpatExtent SpatVector::getExtent(){
@@ -430,14 +430,14 @@ SpatVector SpatVector::subset_rows(std::vector<int> range) {
 	out.srs = srs;
 	out.df = df.subset_rows(r);
 	return out;
-};
+}
 
 
 SpatVector SpatVector::subset_rows(int i) {
 	std::vector<int> range(1, i);
 	SpatVector out = subset_rows(range);
 	return out;
-};
+}
 
 
 SpatVector SpatVector::subset_cols(std::vector<int> range) {
@@ -455,14 +455,14 @@ SpatVector SpatVector::subset_cols(std::vector<int> range) {
 	}
 	out.df = df.subset_cols(r);
 	return out;
-};
+}
 
 
 SpatVector SpatVector::subset_cols(int i) {
 	std::vector<int> range(1, i);
 	SpatVector out = subset_cols(range);
 	return out;
-};
+}
 
 
 
