@@ -151,7 +151,7 @@ int date_from_ymd(std::vector<int> ymd) {
 bool SpatDate::is_leap_year() {
 	std::vector<int> d = ymd();
 	return isleapyear( d[0] );
-};
+}
 
 
 SpatDate::SpatDate(const int& year, const int& month, const int& day) {
@@ -194,7 +194,7 @@ int SpatDate::doy() {
 		doy = doy + mdays[i];
 	}
 	return( doy + d[2] );
-};
+}
 
 
 bool operator == (const SpatDate& d1,const SpatDate& d2){
@@ -208,12 +208,12 @@ bool operator !=(const SpatDate& d1, const SpatDate& d2){
 inline SpatDate next_date(const SpatDate& d) {
 	SpatDate x(d.v+1);
 	return x;
-};
+}
 
 inline SpatDate previous_date(const SpatDate& d){
 	SpatDate x(d.v-1);
 	return x;
-};
+}
 
 SpatDate SpatDate::operator ++(int){
 	SpatDate d = *this;
@@ -239,7 +239,7 @@ SpatDate SpatDate::operator --(){
 
 bool operator < (const SpatDate& d1, const SpatDate& d2){
 	return (d1.v < d2.v);
-};
+}
 
 bool operator <=(const SpatDate& d1, const SpatDate& d2){
 	return (d1.v <= d2.v);

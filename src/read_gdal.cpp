@@ -345,6 +345,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 }
 
 
+/*
 bool ncdf_time(std::string filename, int &startdate, std::string &calendar) {
     GDALDataset *poDataset;
 	std::string ftime = "NETCDF:\"" + filename + "\":time_bnds" ;
@@ -364,17 +365,11 @@ bool ncdf_time(std::string filename, int &startdate, std::string &calendar) {
 		}
 		s.erase(0, delim.length());
 		if (s.size() > 9) {
-			int y, m, d;
 			try {
-				y = std::stoi(s.substr(0,4));
-				m = std::stoi(s.substr(5,2));
-				d = std::stoi(s.substr(8,2));
-			} catch(std::invalid_argument& e) {
-				return false;
-			}
-			std::vector<int> ymd = {y, m, d};
-
-			try {
+				int y = std::stoi(s.substr(0,4));
+				int m = std::stoi(s.substr(5,2));
+				int d = std::stoi(s.substr(8,2));
+				std::vector<int> ymd = {y, m, d};
 				startdate = date_from_ymd(ymd);
 			} catch (...) {
 				return false;
@@ -419,6 +414,7 @@ bool fixTime(std::vector<double> &time, int &startdate, std::string &calendar) {
 
 //#include <iostream>
 //#include "Rcpp.h"
+*/
 
 bool SpatRaster::constructFromFile(std::string fname, int subds, std::string subdsname) {
 
