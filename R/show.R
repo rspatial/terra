@@ -86,7 +86,7 @@ setMethod ("show" , "SpatRaster",
 				lbs <- .nlyrBySource(object)
 				lbsprint <- paste0(" (", lbs, " layers)")
 				lbsprint[lbs == 1] <- ""
-				cat("data sources:", sources[1], lbsprint[1], "\n")
+				cat("source(s)   :", sources[1], lbsprint[1], "\n")
 				for (i in 2:(min(mnr, nsr))) {
 					cat("             ", sources[i], lbsprint[i], "\n")
 				}			

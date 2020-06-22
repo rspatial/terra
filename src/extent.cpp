@@ -117,6 +117,9 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 	}
 	
 	extent = ext;
+	for (size_t i=0; i<nsrc(); i++) {
+		source[i].extent = ext;
+	}
 }
 
 

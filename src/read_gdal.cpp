@@ -413,7 +413,10 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 		SpatExtent e(xmin, xmax, ymin, ymax);
 		s.extent = e;
 		
-		if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) s.rotated = true;
+		if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) {
+			s.rotated = true;
+			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
+		}
 	}
 
 	s.memory = false;
@@ -656,13 +659,14 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 
 std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
 
+	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
+		return errout;
 	}
 
 	GDALRasterBand  *poBand;
 	unsigned ncell = ncols * nrows;
-	std::vector<double> errout;
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell * nl);
 	int hasNA;
@@ -720,11 +724,12 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 
 std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
 
+	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
+		return errout;
 	}
 
-	std::vector<double> errout;
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
 	const char* pszFilename = source[src].filename.c_str();
@@ -783,8 +788,10 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, unsigned row, unsig
 
 std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, unsigned scols) {
 
+	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
+		return errout;
 	}
 
     GDALDataset *poDataset;
@@ -792,8 +799,8 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
     //GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
-	std::vector<double> errout;
     if( poDataset == NULL )  {
+		setError("no data");
 		return errout;
 	}
 	unsigned ncell = scols * srows;
@@ -851,15 +858,16 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, unsigned srows, uns
 
 std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<unsigned> &rows, const std::vector<unsigned> &cols) {
 
+	std::vector<std::vector<double>> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
+		return errout;
 	}
 
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
     //GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
-	std::vector<std::vector<double>> errout;
     poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
     if( poDataset == NULL )  {
 		return errout;

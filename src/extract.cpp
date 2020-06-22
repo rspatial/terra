@@ -597,6 +597,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			std::vector<std::vector<unsigned>> rc = rowColFromCell(cell);
 			srcout = readRowColGDAL(src, rc[0], rc[1]);
 			#endif
+			if (hasError()) return out;
 			//}
 			for (size_t i=0; i<slyrs; i++) {
 				out[lyr] = srcout[i];

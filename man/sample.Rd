@@ -28,6 +28,8 @@ Take a regular sample of a SpatRaster. Either get cell values, or (when \code{as
 
 \details{
 In some cases you may want to know the location of the sampled cells. In that situation you can take a sample of the cell numbers and use extract. See examples.
+
+In stead of \code{spatSample(x, size, method="random")} you can also use the equivalent base method \code{sample(x, size)}. The base method also works for \code{SpatVector}
 }
 
 \value{
