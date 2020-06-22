@@ -73,6 +73,7 @@ class RasterSource {
 		bool hasTime = false;
 		std::vector<double> time;
 		std::vector<double> depth;
+		std::vector<std::string> unit;
 
 		//std::vector< std::vector<double> values;
         std::vector<double> values;
@@ -215,6 +216,8 @@ class SpatRaster {
 		bool setTime(std::vector<double> times);
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);
+		std::vector<std::string> getUnit();
+		bool setUnit(std::vector<std::string> units);
 
 ////////////////////////////////////////////////////
 // constructors

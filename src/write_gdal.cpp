@@ -163,6 +163,8 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 		} else {
 			poBand->SetNoDataValue(NAN); 
 		}
+		if (driver == "GTiff") break;
+		// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
 	}
 
 	std::vector<double> rs = resolution();

@@ -312,6 +312,7 @@ RCPP_MODULE(spat){
 		.property("hasTime", &SpatRaster::hasTime)
 
 		.property("depth", &SpatRaster::getDepth)
+		.property("unit", &SpatRaster::getUnit)
 
 		.method("nrow", &SpatRaster::nrow, "nrow")		
 		.method("ncol", &SpatRaster::ncol, "ncol")		
@@ -332,6 +333,7 @@ RCPP_MODULE(spat){
 		.method("setNames", &SpatRaster::setNames, "setNames" )
 		.method("setTime", &SpatRaster::setTime, "setTime" )
 		.method("setDepth", &SpatRaster::setDepth, "setDepth" )
+		.method("setUnit", &SpatRaster::setUnit, "setUnit" )
 		.method("set_resolution", &SpatRaster::setResolution, "set resolution")
 		.method("subset", &SpatRaster::subset, "subset")
 				

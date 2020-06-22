@@ -495,6 +495,7 @@ std::vector<double> SpatRaster::getDepth() {
 }
 
 
+
 bool SpatRaster::setDepth(std::vector<double> depths) {
 	if (depths.size() != nlyr()) {
 		return false;
@@ -509,4 +510,45 @@ bool SpatRaster::setDepth(std::vector<double> depths) {
         return true;
 	}
 }
+
+
+
+bool SpatRaster::setUnit(std::vector<std::string> units) {
+	if (units.size() == 1) {
+        size_t begin=0;
+        for (size_t i=0; i<source.size(); i++)	{
+            size_t end = begin + source[i].nlyr;
+			size_t sz =  end - begin + 1;
+            source[i].unit = std::vector<std::string> (sz, units[0]);
+            begin = end;
+        }
+        return true;
+	} else if (units.size() != nlyr()) {
+		return false;
+	} else {
+        size_t begin=0;
+        size_t end;
+        for (size_t i=0; i<source.size(); i++)	{
+            end = begin + source[i].nlyr;
+            source[i].unit = std::vector<std::string> (units.begin() + begin, units.begin() + end);
+            begin = end;
+        }
+        return true;
+	}
+}
+
+
+std::vector<std::string> SpatRaster::getUnit() {
+	std::vector<std::string> x;
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].unit.size() != source[i].nlyr) {
+			std::vector<std::string> nas(source[i].nlyr, "");
+			x.insert(x.end(), nas.begin(), nas.end());			
+		} else {
+			x.insert(x.end(), source[i].unit.begin(), source[i].unit.end());
+		}
+	}
+	return(x);
+}
+
 

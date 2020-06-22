@@ -26,6 +26,7 @@
 #include "file_utils.h"
 #include "string_utils.h"
 #include "NA.h"
+#include "date.h"
 
 
 #include "gdal_priv.h"
@@ -344,14 +345,85 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 }
 
 
+bool ncdf_time(std::string filename, int &startdate, std::string &calendar) {
+    GDALDataset *poDataset;
+	std::string ftime = "NETCDF:\"" + filename + "\":time_bnds" ;
+    poDataset = (GDALDataset *) GDALOpen( ftime.c_str(), GA_ReadOnly );
+    if( poDataset == NULL )  {
+		return false;
+	}
+	GDALRasterBand *poBand;
+	poBand = poDataset->GetRasterBand(1);
+	const char *pszv = nullptr;
+	if (( pszv = poBand->GetMetadataItem("units")) != nullptr ) {			
+		std::string s = pszv;
+		std::string delim = "days since ";
+		size_t pos = s.find(delim);
+		if (pos == std::string::npos) {
+			return false;
+		}
+		s.erase(0, delim.length());
+		if (s.size() > 9) {
+			int y, m, d;
+			try {
+				y = std::stoi(s.substr(0,4));
+				m = std::stoi(s.substr(5,2));
+				d = std::stoi(s.substr(8,2));
+			} catch(std::invalid_argument& e) {
+				return false;
+			}
+			std::vector<int> ymd = {y, m, d};
+
+			try {
+				startdate = date_from_ymd(ymd);
+			} catch (...) {
+				return false;
+			}
+		}
+		const char *calpt = nullptr;
+		if (( calpt = poBand->GetMetadataItem("calendar")) != nullptr ) {			
+			calendar = calpt;
+		}
+	}
+	GDALClose( (GDALDatasetH) poDataset );
+
+	return true;
+}
+
+bool fixTime(std::vector<double> &time, int &startdate, std::string &calendar) {
+	int nday = 0;
+	if (calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard") {
+		nday = 366;
+	} else if ((calendar == "365 day") || (calendar == "365_day")) {
+		nday = 365;
+	} else if (calendar == "noleap") {
+		nday = 360;
+	} else {
+		nday = 360;
+	}
+	if (nday < 366) {
+		return false;
+	//	startyear = as.numeric( format(startDate, "%Y") )
+	//	startmonth = as.numeric( format(startDate, "%m") )
+	//	startday = as.numeric( format(startDate, "%d") )
+	//	year = trunc( as.numeric(time)/nday )
+	//	doy = (time - (year * nday))
+	//	origin = paste(year+startyear, "-", startmonth, "-", startday, sep='')
+	//	time = as.Date(doy, origin=origin)		
+	} else {
+		for (double& d : time) d += startdate;
+		return true;
+	}
+}
+
+
 //#include <iostream>
 //#include "Rcpp.h"
 
 bool SpatRaster::constructFromFile(std::string fname, int subds, std::string subdsname) {
 
     GDALDataset *poDataset;
-	const char* pszFilename = fname.c_str();
-    poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+    poDataset = (GDALDataset *) GDALOpen(fname.c_str(), GA_ReadOnly );
 
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
@@ -453,50 +525,43 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 
 //	s.layers.resize(1);
 
+
+	/*
+	std::string gdrv = poDataset->GetDriver()->GetDescription();
+	Rcpp::Rcout << "driver: " << gdrv << std::endl;
+	int startdate=0;
+	std::string calendar = "";
+	std::string unit = "";
+	if (gdrv == "netCDF") {
+		poBand = poDataset->GetRasterBand(1);
+
+		const char *punit = nullptr;
+		if (( punit = poBand->GetMetadataItem("units")) != nullptr ) {			
+			unit = punit;								
+		}		
+
+		const char *pmeta = nullptr;
+		if ((pmeta = poBand->GetMetadataItem("NETCDF_DIM_time")) != nullptr ) {
+			s.time.resize(s.nlyr, NAN);
+			s.time[0] = CPLAtofM(pmeta);
+			s.hasTime = true;
+
+			ncdf_time(fname, startdate, calendar);
+		}
+	}
+	*/
+
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
-		//char **metadata = poBand->GetMetadata();
-		//for (size_t i=0; metadata[i] != NULL; i++) {
-		//	Rcpp::Rcout << metadata[i] << std::endl;
-		//}
-		if (i == 0) {
-			const char *pszValue = nullptr;
-			if( (pszValue = poBand->GetMetadataItem("NETCDF_DIM_time")) != nullptr ) {
-				s.time.resize(s.nlyr, NAN);
-				s.time[0] = CPLAtofM(pszValue);
-				s.hasTime = true;
-			// more work needed
-				//time#units=days since 2001-1-1
-				//time#axis=T
-				//time#calendar=360_day
-				//time#bounds=time_bnds
-				//time#original_units=seconds since 2001-1-1	
-
-			}
-		} else if (s.hasTime) {
+		/*
+		if (s.hasTime) {
 			const char *pszValue = nullptr;
 			if( (pszValue = poBand->GetMetadataItem("NETCDF_DIM_time")) != nullptr ) {
 				s.time[i] = CPLAtofM(pszValue);
 			}
 		}
-
-		//char **mtime = poBand->GetMetadata("time");
-		//std::vector<std::string> meta;
-		//if (!(mtime == NULL)) {
-		//	for (size_t i=0; mtime[i] != NULL; i++) {
-		//		meta.push_back(mtime[i]);
-		//	} 
-		//	if (meta.size() > 0) {
-		//		std::vector<std::vector<std::string>> mdtime = metatime(meta);
-		//	}
-		//}
-
-//		source.layers[0].push_back(i+1);
-		//poBand->GetBlockSize( &nBlockXSize, &nBlockYSize );
-
-//	double GDALRasterBand::GetOffset 	( 	int *  	pbSuccess = nullptr	)
-//	double GDALRasterBand::GetScale 	( 	int *  	pbSuccess = nullptr	)
+		*/
 
 		int success;
 	//	double naflag = poBand->GetNoDataValue(&success);
@@ -583,6 +648,10 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 
 	s.hasValues = true;
 	setSource(s);
+
+	//if (unit != "") setUnit({unit});
+	//if (s.hasTime) fixTime(s.time, startdate, calendar);
+
 	return true;
 }
 
