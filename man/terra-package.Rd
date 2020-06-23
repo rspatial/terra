@@ -40,9 +40,10 @@ Note the following important differences in methods names with the 'raster' pack
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
 \code{clump}\tab\code{patches}\cr
+\code{cellnumbers}\tab\code{cellFromLine, cellFromPolygon, cellsFromExtent}\cr
 }
 
-Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). Here are some examples:
+Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
 
 \tabular{ll}{
 \code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
@@ -358,7 +359,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 \author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans}
 
 \section{Acknowledgments}{
-This package stands on the shoulders of giants (GDAL, PROJ, GEOS, GeographicLib, Rcpp, R)
+This package is an attempt to stand on the shoulders of giants (GDAL, PROJ, GEOS, GeographicLib, Rcpp, R)
 }
 
 \keyword{ package }
