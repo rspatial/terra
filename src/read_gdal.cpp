@@ -345,7 +345,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 }
 
 
-/*
+
 bool ncdf_time(std::string filename, int &startdate, std::string &calendar) {
     GDALDataset *poDataset;
 	std::string ftime = "NETCDF:\"" + filename + "\":time_bnds" ;
@@ -356,37 +356,39 @@ bool ncdf_time(std::string filename, int &startdate, std::string &calendar) {
 	GDALRasterBand *poBand;
 	poBand = poDataset->GetRasterBand(1);
 	const char *pszv = nullptr;
-	if (( pszv = poBand->GetMetadataItem("units")) != nullptr ) {			
-		std::string s = pszv;
-		std::string delim = "days since ";
-		size_t pos = s.find(delim);
-		if (pos == std::string::npos) {
+	if (( pszv = poBand->GetMetadataItem("units")) == nullptr ) {
+		GDALClose( (GDALDatasetH) poDataset );
+		return false;
+	}
+		
+	std::string s = pszv;
+	std::string delim = "days since ";
+	size_t pos = s.find(delim);
+	if (pos == std::string::npos) {
+		return false;
+	}
+	s.erase(0, delim.length());
+	if (s.size() > 9) {
+		try {
+			int y = std::stoi(s.substr(0,4));
+			int m = std::stoi(s.substr(5,2));
+			int d = std::stoi(s.substr(8,2));
+			std::vector<int> ymd = {y, m, d};
+			startdate = date_from_ymd(ymd);
+		} catch (...) {
 			return false;
 		}
-		s.erase(0, delim.length());
-		if (s.size() > 9) {
-			try {
-				int y = std::stoi(s.substr(0,4));
-				int m = std::stoi(s.substr(5,2));
-				int d = std::stoi(s.substr(8,2));
-				std::vector<int> ymd = {y, m, d};
-				startdate = date_from_ymd(ymd);
-			} catch (...) {
-				return false;
-			}
-		}
-		const char *calpt = nullptr;
-		if (( calpt = poBand->GetMetadataItem("calendar")) != nullptr ) {			
-			calendar = calpt;
-		}
+	}
+	const char *calpt = nullptr;
+	if (( calpt = poBand->GetMetadataItem("calendar")) != nullptr ) {			
+		calendar = calpt;
 	}
 	GDALClose( (GDALDatasetH) poDataset );
-
 	return true;
 }
 
 bool fixTime(std::vector<double> &time, int &startdate, std::string &calendar) {
-	int nday = 0;
+	int nday = 366;
 	if (calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard") {
 		nday = 366;
 	} else if ((calendar == "365 day") || (calendar == "365_day")) {
@@ -414,7 +416,7 @@ bool fixTime(std::vector<double> &time, int &startdate, std::string &calendar) {
 
 //#include <iostream>
 //#include "Rcpp.h"
-*/
+
 
 bool SpatRaster::constructFromFile(std::string fname, int subds, std::string subdsname) {
 

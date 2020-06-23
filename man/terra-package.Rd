@@ -35,12 +35,11 @@ Note the following important differences in methods names with the 'raster' pack
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
-\code{sampleRegular}\tab\code{\link{spatSample}}\cr
-\code{sampleRandom}\tab\code{\link{spatSample}}\cr
+\code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
-\code{clump}\tab\code{patches}\cr
-\code{cellnumbers}\tab\code{cellFromLine, cellFromPolygon, cellsFromExtent}\cr
+\code{clump}\tab\code{}\cr
+\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{cellnumbers}\cr
 }
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
@@ -48,7 +47,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 \tabular{ll}{
 \code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
 - \tab \cr
-\code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved vectors\cr
+\code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
 - \tab \cr
 \code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID column. You can use \code{list=TRUE} to get the results as a list\cr
 - \tab \cr
@@ -271,7 +270,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{rowColFromCell}} \tab Row and column numbers from cell numbers\cr
     \code{\link{cellFromXY}} \tab Cell numbers from x and y coordinates \cr
     \code{\link{cellFromRowCol}} \tab Cell numbers from row and column numbers \cr
-    \code{\link{cellFromRowColCombine}} \tab Cell numbers from all combinations of row and column numbers \cr    \code{cellsFromExtent} \tab Cell numbers from extent object \cr
+    \code{\link{cellFromRowColCombine}} \tab Cell numbers from all combinations of row and column numbers \cr    \code{cellnumbers} \tab Cell numbers from an SpatVector or SpatExtent\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -295,7 +294,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \section{XIV. SpatStack objects}{
 
-A SpatStack contains SpatRaster objects that are sub-datasets for the same area.
+A SpatStack contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
 
 \tabular{ll}{
   \code{\link{rstk}} \tab Create a SpatStack \cr
@@ -346,6 +345,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 
 \tabular{ll}{
     \code{\link{terraOptions}} \tab Show, set, save or get session options \cr
+    \code{\link{sources}} \tab Show the data sources of a SpatRaster \cr
     \code{\link{tmpFiles}} \tab Show or remove temporary files \cr
     \code{\link{canProcessInMemory}} \tab Test whether a file can be created in memory \cr
     \code{\link{readStart}} \tab Open file connections for efficient multi-chunck reading \cr
