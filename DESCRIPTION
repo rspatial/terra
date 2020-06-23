@@ -4,7 +4,7 @@ Title: Spatial Data Analysis
 Version: 0.7-5
 Date: 2020-06-22
 Depends: R (>= 3.5.0)
-Suggests: parallel, testthat
+Suggests: parallel, tinytest
 LinkingTo: Rcpp
 Imports: methods, Rcpp, raster (>= 3.1-5)
 SystemRequirements: C++11, GDAL (>= 3.0.4), GEOS (>= 3.8.0), PROJ (>= 6.3.1)

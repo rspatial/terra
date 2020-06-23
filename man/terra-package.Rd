@@ -39,6 +39,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{sampleRandom}\tab\code{\link{spatSample}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
+\code{clump}\tab\code{patches}\cr
 }
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). Here are some examples:
@@ -147,7 +148,7 @@ Also see the methods in section XI
     \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA} or to or from a vector object\cr
     \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
-    \code{clump} \tab Find clumps (patches) \cr
+    \code{patches} \tab Find patches \cr
     \code{terrain} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
     \code{autocor} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
