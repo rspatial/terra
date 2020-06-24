@@ -609,3 +609,72 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 }
 
 
+
+/*
+
+std::vector<std::vector<double>> SpatRaster::getCells(SpatVector v, bool touches, std::string method) {
+
+    unsigned ng = v.size();
+    std::vector<std::vector<double>> out(ng)
+    SpatRaster r = geometry(1);
+	std::string gtype = v.type();
+	if (gtype == "points") {
+		if (method != "bilinear") method = "simple";
+		SpatDataFrame vd = v.getGeometryDF();
+		if (vd.nrow() == ng) {  // single point geometry
+			std::vector<double> x = vd.getD(0);
+			std::vector<double> y = vd.getD(1);
+			for (size_t i=0; i<ng; i++) {
+				out[i].push_back( srcout[j][i] );
+			
+			srcout = extractXY(x, y, method);
+			for (size_t i=0; i<ng; i++) {
+				for (size_t j=0; j<nl; j++) {
+					out[i][j].push_back( srcout[j][i] );
+				}
+			}
+		} else { // multipoint
+			for (size_t i=0; i<ng; i++) {
+				SpatVector vv = v.subset_rows(i);
+				SpatDataFrame vd = vv.getGeometryDF();
+				std::vector<double> x = vd.getD(0);
+				std::vector<double> y = vd.getD(1);
+				srcout = extractXY(x, y, method);
+				for (size_t j=0; j<nl; j++) {
+					out[i][j] = srcout[j];
+				}
+			}
+		}
+		
+	} else {
+	    SpatOptions opt;
+		std::vector<double> feats(1, 1) ;			
+        for (size_t i=0; i<ng; i++) {
+            SpatGeom g = v.getGeom(i);
+            SpatRaster rc = r.crop(g.extent, "out", opt);
+            SpatVector p(g);
+			p.srs = v.srs;
+#if GDAL_VERSION_MAJOR >= 3			
+            SpatRaster rcr = rc.rasterize(p, "", feats, NAN, false, touches, false, opt); 
+#else
+			std::vector<double> feats2(p.size(), 1) ;			
+            SpatRaster rcr = rc.rasterize(p, "", feats2, NAN, false, touches, false, opt); 
+			// rather have a method that returns the cell numbers directly?	
+#endif
+       	    SpatVector pts = rcr.as_points(false, true);
+            SpatDataFrame vd = pts.getGeometryDF();
+            std::vector<double> x = vd.getD(0);
+            std::vector<double> y = vd.getD(1);
+            srcout = extractXY(x, y, "simple");
+            //unsigned np = x.size();
+            for (size_t j=0; j<nl; j++) {
+               // unsigned off = j * np;
+                out[i][j] = srcout[j];
+//                std::copy(srcout.begin()+off, srcout.begin()+off+np-1, out[i][j].begin());
+            }
+        }
+	}
+	return out;
+}
+
+*/

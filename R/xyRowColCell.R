@@ -29,6 +29,8 @@ setMethod(rowFromY, signature(object="SpatRaster", y="numeric"),
 
 setMethod(cellFromXY, signature(object="SpatRaster", xy="matrix"), 		
 	function(object, xy) {
+		stopifnot(ncol(xy) == 2)
+		#.checkXYnames(colnames(xy))
 		object@ptr$cellFromXY(xy[,1], xy[,2]) + 1
 	}
 )
