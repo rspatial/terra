@@ -38,8 +38,8 @@ Note the following important differences in methods names with the 'raster' pack
 \code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
-\code{clump}\tab\code{}\cr
-\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{cellnumbers}\cr
+\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
+\code{clump}\tab\code{patch}\cr
 }
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
@@ -270,7 +270,8 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{rowColFromCell}} \tab Row and column numbers from cell numbers\cr
     \code{\link{cellFromXY}} \tab Cell numbers from x and y coordinates \cr
     \code{\link{cellFromRowCol}} \tab Cell numbers from row and column numbers \cr
-    \code{\link{cellFromRowColCombine}} \tab Cell numbers from all combinations of row and column numbers \cr    \code{cellnumbers} \tab Cell numbers from an SpatVector or SpatExtent\cr
+    \code{\link{cellFromRowColCombine}} \tab Cell numbers from all combinations of row and column numbers \cr    
+	\code{\link{cells}}\tab Cell numbers from an SpatVector or SpatExtent\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
