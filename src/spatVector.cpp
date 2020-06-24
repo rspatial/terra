@@ -139,10 +139,11 @@ SpatVector::SpatVector(const SpatVector &x) {
 */
 
 SpatVector::SpatVector(SpatExtent e, std::string crs) {
-	SpatPart p;
-	p.x = { e.xmin, e.xmin, e.xmax, e.xmax, e.xmin };
-	p.y = { e.ymin, e.ymax, e.ymax, e.ymin, e.ymin };
+	std::vector<double> x = { e.xmin, e.xmin, e.xmax, e.xmax, e.xmin };
+	std::vector<double> y = { e.ymin, e.ymax, e.ymax, e.ymin, e.ymin };
+	SpatPart p(x, y);
 	SpatGeom g(p);
+	g.gtype = polygons;
 	setGeom(g);
 	setSRS( {crs});
 }

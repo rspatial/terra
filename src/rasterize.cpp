@@ -337,8 +337,6 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 	}
 
-
-
 	SpatOptions opts(opt);
 	if (!update) {
 		opts = opt;
@@ -364,3 +362,31 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 
 
 #endif
+
+
+std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) { 
+// note that this is only for lines and polygons
+    SpatOptions opt;
+	SpatRaster r = geometry(1);
+	SpatExtent e = getExtent();
+	e.intersect(v.getExtent());
+	if ( !e.valid() ) {
+		std::vector<double> out;
+		return out;
+	}
+	SpatRaster rc = r.crop(e, "out", opt);
+#if GDAL_VERSION_MAJOR >= 3			
+	std::vector<double> feats(1, 1) ;			
+    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, false, touches, false, opt); 
+#else
+	std::vector<double> feats(p.size(), 1) ;			
+    SpatRaster rcr = rc.rasterize(v, "", feats2, NAN, false, touches, false, opt); 
+#endif
+	SpatVector pts = rcr.as_points(false, true);
+    SpatDataFrame vd = pts.getGeometryDF();
+    std::vector<double> x = vd.getD(0);
+    std::vector<double> y = vd.getD(1);
+	std::vector<double> cells = r.cellFromXY(x, y);
+	return cells;
+}
+

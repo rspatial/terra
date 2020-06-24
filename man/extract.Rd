@@ -80,6 +80,29 @@ r[i]
 
 y <- c(x,x*2,x*3)
 y[i]
+
+## extract with a polygon
+#f <- system.file("ex/lux.shp", package="terra")
+#v <- vect(f)
+#z <- rast(v)
+#v <- v[1:2,]
+#values(z) <- 1:100
+#e <- extract(z, v)
+#e
+#tapply(e[,2], e[,1], mean)
+
+#ee <- extract(z, v, list=TRUE)
+#rapply(ee, mean)
+
+#x <- c(z, z*2, z/3)
+#names(x) <- letters[1:3]
+
+#e <- extract(x, v)
+#de <- data.frame(e)
+#aggregate(de[,2:4], de[,1,drop=FALSE], mean)
+
+#ee <- extract(x, v, list=TRUE)
+#matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
 }
 
 \keyword{methods}

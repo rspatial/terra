@@ -6,7 +6,6 @@
 \alias{cells,SpatRaster,missing-method}
 \alias{cells,SpatRaster,SpatVector-method}
 \alias{cells,SpatRaster,SpatExtent-method}
-\alias{cells,SpatRaster,matrix-method}
 
 
 \title{Get cell numbers}
@@ -18,9 +17,7 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or all non \code{NA}
 \usage{
 \S4method{cells}{SpatRaster,missing}(x, y, ...)
 
-\S4method{cells}{SpatRaster,SpatVector}(x, y, ...)
-
-\S4method{cells}{SpatRaster,matrix}(x, y, ...)
+\S4method{cells}{SpatRaster,SpatVector}(x, y, touches=is.lines(y), method="simple", ...)
 
 \S4method{cells}{SpatRaster,SpatExtent}(x, y, ...)
 }
@@ -29,11 +26,13 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or all non \code{NA}
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{SpatVector, SpatExtent, 2-column matrix representing points, or missing}
+  \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
+  \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}
   \item{...}{additional arguments. None implemented}  
 }
 
 \value{
-matrix
+matrix if \code{y} is a \code{SpatVector}, otherwise a vector.
 }
 
 
@@ -48,6 +47,17 @@ cellFromXY(r, m)
 
 v <- vect(m)
 cells(r, v)
+
+#f <- system.file("ex/lux.shp", package="terra")
+#v <- vect(f)
+#r <- rast(v)
+#cells(r, v) 
+
+#z  <- cells(r,ext(v))
+#xy <- xyFromCell(r, z)
+#plot(v)
+#points(xy)
+
 }
 
 

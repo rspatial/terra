@@ -12,29 +12,20 @@ setMethod("cells", signature(x="SpatRaster", y="missing"),
 )
 
 
-
 setMethod("cells", signature("SpatRaster", "SpatVector"), 
-#	function(x, y, weights=FALSE, ...) {   # in a next version
-	function(x, y, ...) {
-		gt <- geomtype(y)
-		# will become one C++ method, but for now
-		if (gt == "points") {
-			g <- geom(y)
-			cn <- cellFromXY(x, as.matrix(g[,c("x", "y")]))
-			cbind(id=g[,1], cell=cn)
-		} else {
-			stop("not yet implemented")
-			#x@ptr$cellFromVector(y@ptr, false) 
-			#x[,2] <- x[,2] + 1
-		}
+#	function(x, y, weights=FALSE, touches=false, ...) {   # in a next version
+	function(x, y, touches=is.lines(y), method="simple", ...) {
+		d <- x@ptr$getCells(y@ptr, touches[1], method) 
+		d <- matrix(d + 1, ncol=2)
+		colnames(d) <- c("id", "cell")
+		d
 	}
 )
 
 setMethod("cells", signature("SpatRaster", "SpatExtent"), 
 	function(x, y, ...) {
-		stop("not yet implemented")
-		#x@ptr$cellFromExtent(y@ptr, false) 
-		#x[,2] <- x[,2] + 1
+		p <- as.polygons(y)
+		cells(x, p)[,2]
 	}
 )
 
