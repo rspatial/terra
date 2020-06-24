@@ -117,6 +117,9 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 }
 
 
+# note: add=T is not working
+# signature(x="SpatVector", y="missing"),
+# should be calling this one, and not the other way around? 
 setMethod("plot", signature(x="SpatVector", y="character"), 
 	function(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)  {
 		
