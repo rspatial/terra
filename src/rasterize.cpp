@@ -379,7 +379,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	std::vector<double> feats(1, 1) ;			
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, false, touches, false, opt); 
 #else
-	std::vector<double> feats(p.size(), 1) ;			
+	std::vector<double> feats(v.size(), 1) ;			
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, false, touches, false, opt); 
 #endif
 	SpatVector pts = rcr.as_points(false, true);
