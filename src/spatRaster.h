@@ -332,8 +332,8 @@ class SpatRaster {
 		//std::vector<std::vector<double>> readCellsBinary(unsigned src, std::vector<double> cells);
 
 		// gdal source
-		std::vector<double> readValuesGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
-		std::vector<double> readGDALsample(unsigned src, unsigned srows, unsigned scols);
+		std::vector<double> readValuesGDAL(unsigned src, int row, int nrows, int col, int ncols);
+		std::vector<double> readGDALsample(unsigned src, int srows, int scols);
 		std::vector<std::vector<double>> readRowColGDAL(unsigned src, std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
 
 		bool readStartGDAL(unsigned src);
