@@ -148,6 +148,14 @@ SpatVector::SpatVector(SpatExtent e, std::string crs) {
 	setSRS( {crs});
 }
 
+SpatVector::SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomType g, std::string crs) {
+	SpatPart p(x, y);
+	SpatGeom geom(p);
+	geom.gtype = g;
+	setGeom(geom);
+	setSRS( {crs} );
+}
+
 
 std::vector<double> SpatVector::getDv(unsigned i) {
 	return df.getD(i);

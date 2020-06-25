@@ -1,7 +1,23 @@
+// Copyright (c) 2018-2020  Robert J. Hijmans
+//
+// This file is part of the "spat" library.
+//
+// spat is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+//
+// spat is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with spat. If not, see <http://www.gnu.org/licenses/>.
+
 
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
-
 
 #include "spatRaster.h"
 #include "string_utils.h"
@@ -33,19 +49,16 @@ SpatVector SpatRaster::dense_extent() {
 	x.insert(x.end(), xcol.begin(), xcol.end());
 	y.insert(y.end(), y0.begin(), y0.end());
 	
-	x.insert(x.end(), x1.begin(), x1.end());
 	std::reverse(yrow.begin(), yrow.end());
-	y.insert(y.end(), yrow.begin(), yrow.end() );
-	
 	std::reverse(xcol.begin(), xcol.end());
+
+	x.insert(x.end(), x1.begin(), x1.end());
+	y.insert(y.end(), yrow.begin(), yrow.end() );
 	x.insert(x.end(), xcol.begin(), xcol.end());
 	y.insert(y.end(), y1.begin(), y1.end());
 	
-	SpatPart p(x, y);
-	SpatGeom g(p);
-	g.gtype = polygons;
-	SpatVector v(g);
-	v.setSRS(getSRS("wkt"));
+	SpatVector v(x, y, polygons, getSRS("wkt"));
+
 	return v;
 }
 

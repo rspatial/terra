@@ -87,6 +87,7 @@ class SpatVector {
 		//SpatVector(const SpatVector &x);
 		SpatVector(SpatGeom g);
 		SpatVector(SpatExtent e, std::string crs);
+		SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomType g, std::string crs);
 
 		SpatGeom window;
 
