@@ -67,7 +67,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatOptions &opt) {
 	out.setExtent(en, false, "");
 	out = out.setResolution(gt[1], -gt[5]);
 	
-	out = warper(out, "", method, opt);
+	out = warper(out, "", method, false, opt);
 	return(out);
 }
 	

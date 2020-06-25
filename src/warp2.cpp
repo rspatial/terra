@@ -12,6 +12,44 @@
 //#include <vector>
 //#include "vecmath.h"
 
+
+SpatVector SpatRaster::dense_extent() {
+		
+	std::vector<unsigned> rows(nrow());
+	std::iota(rows.begin(), rows.end(), 0);
+	std::vector<unsigned> cols(ncol());
+	std::iota(cols.begin(), cols.end(), 0);
+
+	std::vector<double> xcol = xFromCol(cols) ;
+	std::vector<double> yrow = yFromRow(rows) ;
+
+	std::vector<double> y0(ncol(), yFromRow(nrow()-1));
+	std::vector<double> y1(ncol(), yFromRow(0));
+	std::vector<double> x0(nrow(), xFromCol(0));
+	std::vector<double> x1(nrow(), xFromCol(ncol()-1));
+
+	std::vector<double> x = x0;
+	std::vector<double> y = yrow;
+	x.insert(x.end(), xcol.begin(), xcol.end());
+	y.insert(y.end(), y0.begin(), y0.end());
+	
+	x.insert(x.end(), x1.begin(), x1.end());
+	std::reverse(yrow.begin(), yrow.end());
+	y.insert(y.end(), yrow.begin(), yrow.end() );
+	
+	std::reverse(xcol.begin(), xcol.end());
+	x.insert(x.end(), xcol.begin(), xcol.end());
+	y.insert(y.end(), y1.begin(), y1.end());
+	
+	SpatPart p(x, y);
+	SpatGeom g(p);
+	g.gtype = polygons;
+	SpatVector v(g);
+	v.setSRS(getSRS("wkt"));
+	return v;
+}
+
+
 #if GDAL_VERSION_MAJOR >= 3
 
 bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const std::string crs, std::string filename, std::string driver, int nlyrs, std::string &msg) {
@@ -197,7 +235,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr());
 
@@ -207,6 +245,11 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 	lrtrim(crs);
 	std::string errmsg;
+	SpatOptions mopt;
+	if (mask) {
+		mopt = opt;
+		opt = SpatOptions(opt);
+	}
 	std::string filename = opt.filename;
 
 	bool use_crs = crs != "";  
@@ -306,6 +349,13 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		GDALClose( hDstDS );
 		out = SpatRaster(filename, -1, "");
 	}
+	
+	if (mask) {
+		SpatVector v = dense_extent();
+		v = v.project(out.getSRS("wkt"));
+		out = out.mask(v, false, NAN, mopt);
+	}
+	
 	return out;
 }
 
@@ -313,12 +363,13 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 #else 
 	
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
+
 	unsigned nl = nlyr();
 	SpatRaster out = x.geometry(nl);
 
 	if (crs != "") {
-		out.setError("This does not work with your version of GDAL");
+		out.setError("You cannot project by specifying a crs with your version of GDAL");
 		return out;
 	}
 

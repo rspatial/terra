@@ -110,7 +110,7 @@ RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatCategories)
 RCPP_EXPOSED_CLASS(SpatDataFrame)
-RCPP_EXPOSED_CLASS(RasterSource)
+//RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatRasterCollection)
 RCPP_EXPOSED_CLASS(SpatRasterStack)
@@ -249,9 +249,9 @@ RCPP_MODULE(spat){
 #endif
 	;
 
-    class_<RasterSource>("RasterSource")	
+//    class_<RasterSource>("RasterSource")	
 		//.field_readonly("memory", &RasterSource::memory)
-		.field_readonly("filename", &RasterSource::filename)
+	//	.field_readonly("filename", &RasterSource::filename)
 		//.field_readonly("driver", &RasterSource::driver)
 		//.field_readonly("nrow", &RasterSource::nrow)
 		//.field_readonly("ncol", &RasterSource::ncol)
@@ -261,7 +261,7 @@ RCPP_MODULE(spat){
 		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
 		//.field_readonly("flipped", &RasterSource::flipped)
 		//.field_readonly("rotated", &RasterSource::rotated)
-	;	
+//	;	
 
     class_<SpatRaster>("SpatRaster")
 		.constructor()
@@ -326,10 +326,11 @@ RCPP_MODULE(spat){
 		.property("res", &SpatRaster::resolution)
 				
 // only if RasterSource is exposed
-		.field_readonly("source", &SpatRaster::source )
+//		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
-
+		
+		.method("dense_extent", &SpatRaster::dense_extent, "dense_extent")
 		.method("setNames", &SpatRaster::setNames, "setNames" )
 		.method("setTime", &SpatRaster::setTime, "setTime" )
 		.method("setDepth", &SpatRaster::setDepth, "setDepth" )

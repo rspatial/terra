@@ -1,4 +1,5 @@
 // Copyright (c) 2018-2020  Robert J. Hijmans
+// Copyright (c) 2018-2020  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -163,6 +164,7 @@ class SpatRaster {
 		SpatExtent getExtent() { return extent; }
 		void setExtent(SpatExtent e) { extent = e ; }
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
+		SpatVector dense_extent();
 
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);
@@ -483,7 +485,7 @@ class SpatRaster {
 		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
 		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
 
-		SpatRaster warper(SpatRaster x, std::string crs, std::string method, SpatOptions &opt);
+		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt);
 		//SpatRaster tester(bool geom);
 
 		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);

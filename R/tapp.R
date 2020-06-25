@@ -32,7 +32,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
 		# like this, na.rm is not passed to FUN
-		#v <- lapply(uin, function(j, ...) apply(v[, ind==uin[j], drop=FALSE], 1, FUN=fun, ...))
+		# v <- lapply(uin, function(j, ...) apply(v[, ind==uin[j], drop=FALSE], 1, FUN=fun, ...))
 		# like this it works
 		v <- lapply(uin, function(j) apply(v[, ind==uin[j], drop=FALSE], 1, FUN=fun, ...))
 		v <- do.call(cbind, v)

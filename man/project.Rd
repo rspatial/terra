@@ -14,7 +14,7 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 \usage{
 \S4method{project}{SpatVector}(x, y, ...)
 
-\S4method{project}{SpatRaster}(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{project}{SpatRaster}(x, y, method="bilinear", mask=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -26,15 +26,9 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 	bilinear: bilinear interpolation. Default.
 	cubic: cubic interpolation.
 	cubicspline: cubic spline interpolation.
-	lanczos: Lanczos windowed sinc resampling.
-	average: the weighted average of all contributing cells excluding \code{NA}.
-	med: the median value of of all contributing cells excluding \code{NA}.
-	mode: the most frequent value.
-	max: the maximum value of all contributing cells excluding \code{NA}.
-	min: the minimum value of all contributing cells excluding \code{NA}.
-	q1: the first quartile of all contributing cells excluding \code{NA}.
-	q3: the third quartile of all contributing cells excluding \code{NA}.
   }
+
+  \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
@@ -58,10 +52,25 @@ newcrs="+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +datum=WGS84"
 b <- rast(ncol=94, nrow=124, xmin=-944881, xmax=935118, ymin=4664377, ymax=7144377, crs=newcrs)
 w <- project(a, b)
 
-# y can also be a crs
 if  (gdal_version() >= "3.0.0") {
+# y can also be a crs
 	ww <- project(a, newcrs)
+
+
+# Global Robinson
+	r <- rast()
+	values(r) <- 1:ncell(r)
+	crs <- "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+	x <- project(r, crs)
+	# the corners should be empty, but are not
+    plot(x)
+	y <- project(r, crs, mask=TRUE)
+    # now they are
+	plot(y)
 }
+
+
+
 
 # SpatVector
 f <- system.file("ex/lux.shp", package="terra")
