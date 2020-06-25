@@ -97,6 +97,12 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (narg > 0) { # row
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
+		if (length(i) != length(value)) {
+			# recycling with warning
+			v <- value
+			value <- i
+			value[] <- v
+		}
 		v <- values(x)
 		v[i,] <- value
 		values(x) <- v
@@ -108,9 +114,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 setReplaceMethod("[", c("SpatRaster", "numeric", "numeric"),
 	function(x, i, j, value) {
 		i <- cellFromRowColCombine(x, i, j)
-		v <- values(x)
-		v[i,] <- value
-		values(x) <- v
+		x[i] <- value
 		x
 	}
 )	
@@ -119,9 +123,7 @@ setReplaceMethod("[", c("SpatRaster", "numeric", "numeric"),
 setReplaceMethod("[", c("SpatRaster","missing", "numeric"),
 	function(x, i, j, value) {
 		i <- cellFromRowColCombine(x, 1:nrow(x), j)
-		v <- values(x)
-		v[i,] <- value
-		values(x) <- v
+		x[i] <- value
 		x
 	}
 )
@@ -130,9 +132,8 @@ setReplaceMethod("[", c("SpatRaster","missing", "numeric"),
 
 setReplaceMethod("[", c("SpatRaster", "logical", "missing"),
 	function(x, i, j, value) {
-		v <- values(x)
-		v[i,] <- value
-		values(x) <- v
+		i <- which(rep_len(i, ncell(x)))
+		x[i] <- value
 		x
 	}
 )	

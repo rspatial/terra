@@ -234,7 +234,7 @@ setAs("SpatRaster", "Raster",
 			if (s$source == "") {
 				r <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
-				if (.hasValues(from)) {
+				if (hasValues(from)) {
 					values(r) <- values(from)
 				}
 			} else {
@@ -247,7 +247,7 @@ setAs("SpatRaster", "Raster",
 			} else if (all(s$source=="")) {
 				r <- brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4], nl=nlyr(from))
-				if (.hasValues(from)) {
+				if (hasValues(from)) {
 					values(r) <- values(from)
 				}
 			} else {

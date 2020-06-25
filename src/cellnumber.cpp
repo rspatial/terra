@@ -89,13 +89,20 @@ std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<unsigned> row,
 	size_t nc = ncol();
 	size_t nr = nrow();
 
-	std::vector<double> result(n * n);
+	std::vector<double> x(n * n);
 	for (size_t i=0; i<n; i++) {
 		for (size_t j=0; j<n; j++) {
-			result[i*n+j] = (row[i]<0 || row[i] >= nr || col[j]<0 || col[j] >= nc) ? NAN : row[i] * nc + col[j];
+			x[i*n+j] = (row[i]<0 || row[i] >= nr || col[j]<0 || col[j] >= nc) ? NAN : row[i] * nc + col[j];
 		}
 	}
-	return result;
+	// duplicates occur if recycling occurs
+	// could be avoided by smarter combination
+	x.erase(std::remove_if(x.begin(), x.end(),
+            [](const double& value) { return std::isnan(value); }), x.end());
+	
+	std::sort(x.begin(), x.end());
+	x.erase(std::unique(x.begin(), x.end()), x.end());
+	return x;
 }
 
 
