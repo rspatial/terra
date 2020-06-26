@@ -84,6 +84,7 @@ void SpatOptions::set_tempdir(std::string d) {
 }
 
 double SpatOptions::get_memfrac() { return memfrac; }
+
 void SpatOptions::set_memfrac(double d) {
 	if ((d >= 0.1) && (d <= 0.8)) { 
 		memfrac = d;

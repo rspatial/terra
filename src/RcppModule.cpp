@@ -37,8 +37,8 @@ bool gwarp(std::string src, std::string dst, std::vector<std::string> options, s
 */
 
 
-Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n) { 
-    BlockSize bs = r->getBlockSize(n);
+Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
+    BlockSize bs = r->getBlockSize(n, frac);
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }
@@ -458,8 +458,9 @@ RCPP_MODULE(spat){
 	    .constructor<std::string, std::vector<int>, bool>()
 	    .constructor<SpatRaster, std::string>()
 		.field("messages", &SpatRasterStack::msg, "messages")
-		//.field_readonly("oneRes", &SpatRasterStack::oneRes, "do all sds have the same resolution?")
 
+		.method("readStart", &SpatRasterStack::readStart, "readStart")
+		.method("readStop", &SpatRasterStack::readStop, "readStop")
 		.method("nsds", &SpatRasterStack::nsds, "")
 		.method("ncol", &SpatRasterStack::ncol, "")
 		.method("nrow", &SpatRasterStack::nrow, "")

@@ -64,6 +64,16 @@ class SpatRasterStack {
 				names = nms;
 			}
 		}
+
+		bool readStart() {
+			for (auto& x : ds) { if (!x.readStart()) return false; }
+			return true;
+		}
+			
+		bool readStop() {
+			for (auto& x : ds) { if (!x.readStop()) return false; }
+			return true;
+		}
 	
 		unsigned nsds() {
 			return ds.size();

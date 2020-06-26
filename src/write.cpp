@@ -122,7 +122,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		setNames(opt.names);
 	}
 	if (filename == "") {
-		if (!canProcessInMemory(4) || opt.get_todisk()) {
+		if (!canProcessInMemory(4, opt.get_memfrac()) || opt.get_todisk()) {
 			std::string extension = ".tif";
 			filename = tempFile(opt.get_tempdir(), extension);
 		}
@@ -150,7 +150,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 	source[0].open_write = true;
 	source[0].filename = filename;
-	bs = getBlockSize(opt.get_blocksizemp(), opt.get_steps());
+	bs = getBlockSize(opt.get_blocksizemp(), opt.get_memfrac(), opt.get_steps());
 
     #ifdef useRcpp
 	pbar = new Progress(bs.n+2, opt.do_progress(bs.n));

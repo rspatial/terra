@@ -58,7 +58,7 @@ SpatRaster SpatRasterCollection::mosaic(SpatOptions &opt) {
 	for (size_t i=0; i<n; i++) {
 		SpatRaster r = x[i];
 		if (!r.hasValues()) continue;
-		BlockSize bs = r.getBlockSize(4);
+		BlockSize bs = r.getBlockSize(4, opt.get_memfrac());
 		r.readStart();
 		for (size_t j=0; j<bs.n; j++) {
             std::vector<double> v = r.readValues(bs.row[j], bs.nrows[j], 0, r.ncol());

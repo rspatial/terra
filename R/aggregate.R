@@ -55,7 +55,7 @@ function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt
 		out <- show_messages(out, "aggregate")
 		
 		dims <- x@ptr$get_aggregate_dims(fact)
-		b <- x@ptr$getBlockSize(4)		
+		b <- x@ptr$getBlockSize(4, opt$memfrac)		
 		
 		nr <- max(1, floor(b$nrows[1] / fact[1])) * fact[1]
 		nrs <- rep(nr, floor(nrow(x)/nr))

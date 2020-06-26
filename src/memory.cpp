@@ -19,23 +19,21 @@
 #include "ram.h"
 
 
-bool SpatRaster::canProcessInMemory(unsigned n) {
-	double f = 0.4;
-	return (n * size()) < (availableRAM() * f);
+bool SpatRaster::canProcessInMemory(unsigned n, double frac) {
+	return (n * size()) < (availableRAM() * frac);
 }
 
 
-unsigned SpatRaster::chunkSize(unsigned n) {
-	double f = 0.2;
+unsigned SpatRaster::chunkSize(unsigned n, double frac) {
 	unsigned cells_in_row = n * ncol() * nlyr();
-	unsigned rows = availableRAM() * f / cells_in_row;
+	unsigned rows = availableRAM() * frac / cells_in_row;
 	unsigned maxrows = 1000;
 	rows = std::min(rows, maxrows);
 	return rows == 0 ? 1 : std::min(rows, nrow());	
 }
 
 
-BlockSize SpatRaster::getBlockSize(unsigned n, unsigned steps) {
+BlockSize SpatRaster::getBlockSize(unsigned n, double frac, unsigned steps) {
 	BlockSize bs;
 	unsigned cs;
 	
@@ -44,7 +42,7 @@ BlockSize SpatRaster::getBlockSize(unsigned n, unsigned steps) {
 		bs.n = steps;
 		cs = nrow() / steps;
 	} else {
-		cs = chunkSize(n);
+		cs = chunkSize(n, frac);
 		bs.n = std::ceil(nrow() / double(cs));
 	}
 

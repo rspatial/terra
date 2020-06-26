@@ -38,6 +38,7 @@ setMethod("names<-", signature(x="SpatStack"),
 	function(x, value) {
 		value <- as.character(value)
 		x@ptr$names <- value
+		x
 	}
 )
 

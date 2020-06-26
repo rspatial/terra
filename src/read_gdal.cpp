@@ -737,7 +737,6 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 		return errout;
 	}
 
-	GDALRasterBand  *poBand;
 	unsigned ncell = ncols * nrows;
 	unsigned nl = source[src].nlyr;
 	std::vector<double> out(ncell * nl);
@@ -759,6 +758,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 	} else {
 		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);		
 	}
+	GDALRasterBand  *poBand;
 	if (err == CE_None ) { 
 		for (size_t i=0; i<nl; i++) {
 			poBand = source[src].gdalconnection->GetRasterBand(source[src].layers[i]+1);

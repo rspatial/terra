@@ -83,7 +83,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src) {
 	bool fromfile = !source[isrc].memory;
 
 	if (fromfile & (nsrc() > 1) & (src < 0)) {
-		if (canProcessInMemory(4)) {
+		if (canProcessInMemory(4, 0.5)) {
 			fromfile = false;
 		} else {
 			// make VRT

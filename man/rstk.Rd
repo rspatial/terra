@@ -32,7 +32,6 @@ sds_info(filename, ...)
 \arguments{
 \item{x}{character (filename) or SpatRaster, or list of SpatRaster objects}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a postive integer}
-\item{name}{character to name the sub-dataset}
 \item{...}{additional arguments. Can be other \code{SpatRaster} objects if \code{x} is a \code{SpatRaster}} 
 \item{filename}{character}
 }
@@ -45,7 +44,8 @@ SpatStack
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
-x <- rstk(s, "first")
+x <- rstk(s)
+names(x) <- "first"
 y <- c(x, second=s)
 
 # extract the second SpatRaster

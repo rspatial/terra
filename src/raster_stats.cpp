@@ -59,7 +59,7 @@ std::vector<double> vtable(std::map<double, unsigned long long int> &x) {
 std::vector<std::vector<double>> SpatRaster::freq(bool bylayer) {
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
-	BlockSize bs = getBlockSize(4);
+	BlockSize bs = getBlockSize(4, 0.5);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	readStart();
@@ -203,7 +203,7 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
 
 	constexpr double lowest_double = std::numeric_limits<double>::lowest();
 
-	BlockSize bs = getBlockSize(4);
+	BlockSize bs = getBlockSize(4, 0.5);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	readStart();
@@ -372,7 +372,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm) {
 
 	readStart();
 	z.readStart();
-	BlockSize bs = getBlockSize(12);
+	BlockSize bs = getBlockSize(12, 0.5);
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v =    readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		std::vector<double> zv = z.readValues(bs.row[i], bs.nrows[i], 0, ncol());

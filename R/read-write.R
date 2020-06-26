@@ -13,8 +13,37 @@ setMethod("readStart", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("readStart", signature(x="SpatStack"), 
+	function(x, ...) {
+		success <- x@ptr$readStart()
+		show_messages(x, "readStart")		
+		invisible(success)
+	}
+)
+
+#setMethod("readStart", signature(x="SpatStack"), 
+#	function(x, ...) {
+#		nsd <- nsds(x)
+#		for (i in 1:nsd) {
+#			y <- x[i]
+#			success <- readStart(y)
+#			x[i] <- y
+#		}
+#		show_messages(x, "readStart")		
+#		invisible(success)
+#	}
+#)
+
 
 setMethod("readStop", signature(x="SpatRaster"), 
+	function(x) {
+		success <- x@ptr$readStop()
+		show_messages(x, "readStop")		
+		invisible(success)
+	}
+)
+
+setMethod("readStop", signature(x="SpatStack"), 
 	function(x) {
 		success <- x@ptr$readStop()
 		show_messages(x, "readStop")		
@@ -28,7 +57,7 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 		opt <- .runOptions(filename, overwrite, wopt)
 		ok <- x@ptr$writeStart(opt)
 		show_messages(x, "writeStart")		
-		b <- x@ptr$getBlockSize(4)
+		b <- x@ptr$getBlockSize(4, opt$memfrac)
 		b$row <- b$row + 1
 		b		
 	}

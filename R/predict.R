@@ -105,6 +105,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		nl <- 1
 		nc <- ncol(object)
 		tomat <- FALSE
+		readStart(object)
 		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
 	
 		r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
@@ -113,7 +114,6 @@ setMethod("predict", signature(object="SpatRaster"),
 		cn <- colnames(r)
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
 		
-		readStart(object)
 		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)

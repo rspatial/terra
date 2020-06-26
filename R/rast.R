@@ -155,6 +155,8 @@ setMethod("rast", signature(x="Raster"),
 
 .rastFromXYZ <- function(xyz, digits=6, crs="", ...) {
 
+	if (length(list(...))>0) warning("additional arguments ignored when x is a SpatStack")
+
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names
 	if (any(nchar(ln) < 1)) ln <- make.names(ln)
@@ -216,9 +218,9 @@ setMethod("rast", signature(x="Raster"),
 
 
 setMethod("rast", signature(x="matrix"),
-	function(x, crs="", type="", ...) {
+	function(x, type="", ...) {
 		if (type == "xyz") {
-			r <- .rastFromXYZ(x, crs = crs, ...)
+			r <- .rastFromXYZ(x, ...)
 		} else {
 			r <- methods::new("SpatRaster")
 			r@ptr <- SpatRaster$new(c(dim(x), 1), c(0, ncol(x), 0, nrow(x)), crs)

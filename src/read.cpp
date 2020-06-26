@@ -36,11 +36,13 @@ bool SpatRaster::readStart() {
 
 bool SpatRaster::readStop() {
 	for (size_t i=0; i<nsrc(); i++) {
-		if (source[i].memory) {
-			source[i].open_read = true;
-		} else {
-			readStopGDAL(i); 
-		}	
+		if (source[i].open_read) {
+			if (source[i].memory) {
+				source[i].open_read = false;
+			} else {
+				readStopGDAL(i); 
+			}	
+		}
 	}
 	return true;
 }

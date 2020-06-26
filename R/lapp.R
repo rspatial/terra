@@ -82,12 +82,9 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	
 	stopifnot(!missing(fun))
 	
-	for (i in 1:nsds(x)) {
-		readStart(x[i])
-	}
-
 	ncx <- ncol(x[1])
 	nrx <- nrow(x[1])
+	readStart(x)
 	v <- lapply(1:nsds(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
 	nl <- .getNLstack(v, fun, recycle, ...)
 	if (nl < 1) stop("lapp does not like 'fun'")
@@ -101,9 +98,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 		v <- do.call(fun, c(v, list(...)))
 		writeValues(out, v, b$row[i], b$nrows[i])
 	}
-	for (i in 1:nsds(x)) {
-		readStop(x[i])
-	}
+	readStop(x)
 	out <- writeStop(out)
 	return(out)
 }

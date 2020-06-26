@@ -75,7 +75,7 @@ x4 <- lapp(s, fvi2, usenames=TRUE)
 pairs(c(x1, x2, x3, x4))
 
 ## SpatStack
-x <- rstk(s, "first", second=s[[1]])
+x <- rstk(s, s[[1]]+50)
 lapp(x, function(x, y) x/y, recycle=TRUE)
 }
  
