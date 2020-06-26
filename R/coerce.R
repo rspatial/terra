@@ -146,9 +146,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 		r <- rast(f)
 	} else {
 		e <- extent(from)
-		crs <- crs(from)
-		crs <- ifelse(is.na(crs), "", crs)
-		r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs,
+		r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
 		          xmin=e@xmin, xmax=e@xmax, ymin=e@ymin, ymax=e@ymax,
 				  nlyr=1)				
 		if (hasValues(from)) {
@@ -173,9 +171,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 	} else {
 		e <- extent(from)
 		nl <- nlayers(from)
-		crs <- crs(from)
-		crs <- ifelse(is.na(crs), "", crs)
-		r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs,
+		r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs(from),
 		          xmin=e@xmin, xmax=e@xmax, ymin=e@ymin, ymax=e@ymax,
 				  nlyr=nl)
 		if (hasValues(from)) {
