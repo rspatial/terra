@@ -25,11 +25,13 @@ setMethod("rstk", signature(x="character"),
 )
 
 setMethod("rstk", signature(x="SpatRaster"),
-	function(x, name="sd1", ...) {
+	function(x, ...) {
 		r <- methods::new("SpatStack")
-		r@ptr <- SpatStack$new(x@ptr, name)
+		r@ptr <- SpatStack$new(x@ptr, "")
 		dots <- list(...)
 		nms <- names(dots)
+		if (is.null(nms)) nms = ""
+		nms <- rep_len(nms, length(dots))
 		for (i in seq_along(dots)) {
 			if (inherits(dots[[i]], "SpatRaster")) {
 				r@ptr$add(dots[[i]]@ptr, nms[i])

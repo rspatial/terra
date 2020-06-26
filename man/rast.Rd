@@ -33,11 +33,11 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), ...) 
 
-\S4method{rast}{matrix}(x, crs="", type="", ...)
+\S4method{rast}{matrix}(x, type="", ...)
 
-\S4method{rast}{SpatVector}(x, nrows=10, ncols=10, nlyrs=1, ...)
+\S4method{rast}{SpatVector}(x, ...)
 									  
-\S4method{rast}{SpatExtent}(x, nrows=10, ncols=10, nlyrs=1, crs="", ...)
+\S4method{rast}{SpatExtent}(x, ...)
 
 \S4method{rast}{list}(x, ...)
 
@@ -57,11 +57,9 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 \item{extent}{object of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored}
 \item{crs}{character. PROJ.4 type description of a Coordinate Reference System (map projection). If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, "+proj=longlat +datum=WGS84" is used}
 \item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncol} and \code{nrow} are ignored }
-\item{type}{character. 
-If the value is not \code{"xyz"}, the raster has the same number of rows and colums as the matrix.
+\item{type}{character. If the value is not \code{"xyz"}, the raster has the same number of rows and colums as the matrix.
 If the value is \code{"xyz"}, the matrix must have at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.}
-
-\item{...}{additional arguments. None implemented }  
+\item{...}{additional arguments passed on to the \code{rast,missing-method}}  
 }
 
 

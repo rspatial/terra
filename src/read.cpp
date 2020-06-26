@@ -19,20 +19,28 @@
 
 bool SpatRaster::readStart() {
 	for (size_t i=0; i<nsrc(); i++) {
-		//if (!source[i].memory) {
-		// open filestream
-		//}
-		source[i].open_read = true;
+		if (source[i].open_read) {
+			addWarning("source already open for reading");
+			continue;
+		}
+		if (source[i].memory) {
+			source[i].open_read = true;
+		} else {
+			if (!readStartGDAL(i)) {
+				return false;
+			}
+		}	
 	}
 	return true;
 }
 
 bool SpatRaster::readStop() {
 	for (size_t i=0; i<nsrc(); i++) {
-		//if (!source[0].memory) {
-		// close filestream
-		//}
-		source[i].open_read = false;
+		if (source[i].memory) {
+			source[i].open_read = true;
+		} else {
+			readStopGDAL(i); 
+		}	
 	}
 	return true;
 }
@@ -117,7 +125,7 @@ std::vector<double> SpatRaster::readValues(unsigned row, unsigned nrows, unsigne
 		} else {
 			// read from file
 			#ifdef useGDAL
-			std::vector<double> fvals = readValuesGDAL(src, row, nrows, col, ncols);
+			std::vector<double> fvals = readChunkGDAL(src, row, nrows, col, ncols);
 			out.insert(out.end(), fvals.begin(), fvals.end());			
 			#endif // useGDAL
 		}

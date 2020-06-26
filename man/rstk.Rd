@@ -22,7 +22,7 @@ sds_info provides information about sub-datasets in a file.
 \usage{
 \S4method{rstk}{character}(x, ids=0, ...)
 
-\S4method{rstk}{SpatRaster}(x, name="sd1", ...) 
+\S4method{rstk}{SpatRaster}(x, ...) 
 
 \S4method{rstk}{list}(x, ...) 
 

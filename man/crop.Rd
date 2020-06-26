@@ -14,6 +14,7 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
 
 \usage{
 \S4method{crop}{SpatRaster,ANY}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
+
 \S4method{crop}{SpatVector,SpatVector}(x, y, ...)
 
 }

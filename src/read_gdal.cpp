@@ -659,7 +659,7 @@ bool SpatRaster::readStartGDAL(unsigned src) {
     //GDALAllRegister();
 	const char* pszFilename = source[src].filename.c_str();
 	poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
-    if( poDataset == NULL )  {
+	if( poDataset == NULL )  {
 		setError("cannot read from " + source[src].filename );
 		return false;
 	}
@@ -732,6 +732,11 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 		return errout;
 	}
 
+	if (!source[src].open_read) {
+		setError("the file is not open for reading");
+		return errout;
+	}
+
 	GDALRasterBand  *poBand;
 	unsigned ncell = ncols * nrows;
 	unsigned nl = source[src].nlyr;
@@ -747,6 +752,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsign
 			panBandMap.push_back(source[src].layers[i]+1);
 		}
 	}
+	
 
 	if (panBandMap.size() > 0) {	
 		err = source[src].gdalconnection->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], ncols, nrows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);

@@ -156,17 +156,17 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = poDstDS->GetRasterBand(i+1);
 		poBand->SetDescription(nms[i].c_str());
-		if (datatype == "INT4S") {
-			poBand->SetNoDataValue(INT32_MIN); //-2147483648; 
-		} else if (datatype == "INT2S") {
-			poBand->SetNoDataValue(INT16_MIN); 
-		} else {
-			poBand->SetNoDataValue(NAN); 
+		if ((i==0) || (driver != "GTiff")) {
+			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
+			if (datatype == "INT4S") {
+				poBand->SetNoDataValue(INT32_MIN); //-2147483648; 
+			} else if (datatype == "INT2S") {
+				poBand->SetNoDataValue(INT16_MIN); 
+			} else {
+				poBand->SetNoDataValue(NAN); 
+			}
 		}
-		if (driver == "GTiff") break;
-		// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
 	}
-
 	std::vector<double> rs = resolution();
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	poDstDS->SetGeoTransform(adfGeoTransform);

@@ -831,6 +831,13 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 		return(out);
 	}
 
+	if (!x.hasValues()) {
+		return *this;
+	}
+	if (!hasValues()) {
+		return x.deepCopy();
+	}
+	
 	readStart();
 	x.readStart();
   	if (!out.writeStart(opt)) { return out; }

@@ -49,21 +49,15 @@ setMethod("rast", signature(x="list"),
 
 
 setMethod("rast", signature(x="SpatExtent"),
-	function(x, nrows=10, ncols=10, nlyrs=1, crs="", ...) {
+	function(x, ...) {
 		e <- as.vector(x)
-		r <- methods::new("SpatRaster")
-		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
-		show_messages(r, "rast")
+		rast(xmin=e[1], xmax=e[2], ymin=e[3], ymax=e[4], ...)
 	}
 )
 
 setMethod("rast", signature(x="SpatVector"),
-	function(x, nrows=10, ncols=10, nlyrs=1, ...) {
-		r <- rast(ext(x), nrows=nrows, ncols=ncols, nlyrs=nlyrs, crs=crs(x), ...)
-		#why needed?
-		# probably no more
-		#crs(r) <- crs(x)[1]
-		r
+	function(x, ...) {
+		rast(ext(x), ...)
 	}
 )
 
@@ -115,16 +109,25 @@ setMethod("rast", signature(x="SpatRaster"),
 	function(x, nlyrs=nlyr(x), ...) {
 		r <- methods::new("SpatRaster")
 		r@ptr <- x@ptr$geometry(nlyrs)
-		
-		#dims <- dim(x)
-		#stopifnot(nlyrs > 0)
-		#dims[3] <- nlyrs
-		#r@ptr <- SpatRaster$new(dims, as.vector(ext(x)), crs(x))
-		# also need the keep the names ?
+		if (length(list(...)) > 0) {
+			warning("additional arguments ignored when x is a SpatRaster")
+		}
 		show_messages(r, "rast")
 	}
 )
 
+
+setMethod("rast", signature(x="SpatStack"),
+	function(x, nlyrs=nlyr(x), ...) {
+		r <- methods::new("SpatRaster")
+		x <- x[1]
+		r@ptr <- x@ptr$geometry(nlyrs)
+		if (length(list(...)) > 0) {
+			warning("additional arguments ignored when x is a SpatStack")
+		}
+		show_messages(r, "rast")
+	}
+)
 
 
 
