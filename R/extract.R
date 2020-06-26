@@ -61,12 +61,16 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, ...) { 
-	if (ncol(y) != 2) {
-		stop("extract expects a 2 column matrix of x and y coordinates")
-	}
 	.checkXYnames(colnames(y))	
-	i <- cellFromXY(x, y)
-	cbind(ID=1:length(i), x[i])
+	if (length(list(...)) == 0) {
+		i <- cellFromXY(x, y)
+		r <- cbind(1:length(i), x[i])
+		colnames(r) <- c("ID", names(x))
+		r
+	} else {
+		y <- vect(y)
+		extract(x, y, ...)
+	}
 })
 
 

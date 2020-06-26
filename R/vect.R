@@ -40,6 +40,10 @@ setMethod("vect", signature(x="sf"),
 
 .checkXYnames <- function(x) {
 	if (is.null(x)) return(TRUE)
+	if (length(x) != 2) {
+		stop("coordinate matrix should have 2 columns")
+	}
+
 	x <- substr(tolower(x)[1:2], 1, 3)
 	y <- substr(x, 1, 1)
 	if ((y[1] == "x") & (y[2] == "y")) return(TRUE)

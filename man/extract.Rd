@@ -33,7 +33,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \item{x}{SpatRaster}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
 \item{fun}{character. function to summarize the data. Currently ignored}
-\item{...}{additional arguments passed to `fun`}
+\item{...}{additional arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix, and passed to `fun` if \code{y} is a SpatVector}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
 \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}
 \item{list}{logical. If \code{TRUE}, the output is simplified}
