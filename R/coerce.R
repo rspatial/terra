@@ -137,96 +137,73 @@ setMethod("as.array", signature(x="SpatRaster"),
 # check z values, other attributes such as NAvalue that may have been
 # changed after creation of object from file
 # RAT tables
+# Author: Robert J. Hijmans 
+# Date : February 2019
+# Version 1.0
+# License GPL v3
 
-.RasterLayerToSpatRaster <- function(from) { 
+# todo:
+# for ncdf files (not yet natively supported in terra)
+# check the variable to be used
+# 
+# check z values, other attributes such as NAvalue that may have been
+# changed after creation of object from file
+# RAT tables
 
+.fromRasterLayerBrick <- function(from) {
 	f <- filename(from)
 	if (f != "") {
-		# a bit more tricky with ncdf...
 		r <- rast(f)
-	} else {
-		e <- extent(from)
-		crs <- crs(from)
-		crs <- ifelse(is.na(crs), "", crs)
-		r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs,
-		          xmin=e@xmin, xmax=e@xmax, ymin=e@ymin, ymax=e@ymax,
-				  nlyr=1)				
-		if (hasValues(from)) {
-			values(r) <- values(from)
-		}
-	}
-	names(r) <- names(from)
-	return(r)
-}
-
-
-
-.RasterBrickToSpatRaster <- function(from) { 
-
-	f <- filename(from)
-	if (f != "") {
-		# a bit more tricky with ncdf...
 		if (from@file@NAchanged) {
-			warning("changed NAvalue ignored")
+			warning("changed NA value ignored")
 		}
-		r <- rast(f)
+		return(r)
 	} else {
-		e <- extent(from)
-		nl <- nlayers(from)
 		crs <- crs(from)
 		crs <- ifelse(is.na(crs), "", crs)
-		r <- rast(ncol=ncol(from), nrow=nrow(from), crs=crs,
-		          xmin=e@xmin, xmax=e@xmax, ymin=e@ymin, ymax=e@ymax,
-				  nlyr=nl)
+		r <- rast(	nrows=nrow(from), 
+					ncols=ncol(from),
+					nlyrs=nlayers(from),
+					crs=crs,
+					extent=extent(from))
 		if (hasValues(from)) {
-			values(r) <- values(from)
-		}
+			values(r) <- values(from)			
+		}	
+		names(r)  <- names(from)
 	}
-	names(r) <- names(from)
 	return(r)
 }
 
-
-
-.RasterStackToSpatRaster <- function(from) { 
-	nl <- nlayers(from)
-	rr <- methods::as("SpatRaster", from[[1]])		
-	nb <- nbands(from)
-	
-	if ((nb > 1) & (nb == nl)) {
+.fromRasterStack <- function(from) {
+	x <- from[[1]]
+	n <- nbands(x)
+	if ((n > 1) & (n == nlayers(from))) {
 		ff <- lapply(1:nlayers(from), function(i) { filename(from[[i]]) })
-		ff <- unique(ff)
-		if ((length(ff) == 1) & (ff != "")) {
-			rr <- rast(ff)
-		}
-		names(rr) <- names(from)
-		return(rr)
-	}
-	
-	if (nl > 1) {
-		for (i in 2:nl) {
-			rr <- c(rr, methods::as("SpatRaster", from[[i]]))
-		}
-	}
-	names(rr) <- names(from)	
-	rr
+		if (length(unique(ff)) == 1) {
+			r <- rast(filename(x))
+			return(r)
+		}	
+	} 
+	s <- lapply(1:nlayers(from), function(i) {
+		x <- from[[i]]
+		.fromRasterLayerBrick(x)[[bandnr(x)]]
+	})
+	do.call(c, s)
 }
 
 
 setAs("Raster", "SpatRaster", 
-	function(from) { 
-		if (inherits(from, "RasterLayer")) {
-			r <- .RasterLayerToSpatRaster(from)
+	function(from) {
+		if (inherits(from, "RasterLayer") | inherits(from, "RasterBrick")) { 
+			.fromRasterLayerBrick(from)			
+		} else {
+			.fromRasterStack(from)
 		}
-		if (inherits(from, "RasterStack")) {
-			r <- .RasterStackToSpatRaster(from)
-		}
-		if (inherits(from, "RasterBrick")) {
-			r <- .RasterBrickToSpatRaster(from)
-		}
-		show_messages(r, "coerce")
 	}
 )
+
+
+
 
 setAs("SpatRaster", "Raster", 
 	function(from) {
