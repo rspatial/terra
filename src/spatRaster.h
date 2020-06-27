@@ -253,6 +253,7 @@ class SpatRaster {
 		void gdalogrproj_init(std::string path);
 
 		bool compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);
+		bool compare_origin(std::vector<double> x, double tol);
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
 		double cellFromXY(double x, double y);

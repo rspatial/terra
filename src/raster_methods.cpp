@@ -968,6 +968,12 @@ SpatRaster SpatRaster::shift(double x, double y, SpatOptions &opt) {
 
 }
 
+bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
+	std::vector<double> y = origin();
+	if ((abs(x[0] - y[0])) > (xres() * tol)) return false;
+	if ((abs(x[1] - y[1])) > (yres() * tol)) return false;
+	return true;
+}
 
 SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 
@@ -983,22 +989,29 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 		return(out);
 	}
 
-	bool anyvals = false;
-	if (x[0].hasValues()) anyvals = true;
+	bool any_hasvals = false;
+	if (x[0].hasValues()) any_hasvals = true;
 	out = x[0].geometry();
+	std::vector<double> orig = x[0].origin(); 
 	SpatExtent e = x[0].getExtent();
+	unsigned nl = x[0].nlyr();
 	for (size_t i=1; i<n; i++) {
-		// for now, must have same nlyr; but should be easy to recycle.
-								 //  lyrs, crs, warncrs, ext, rowcol, res
-		if (!x[0].compare_geom(x[i], true, false, false, false, false, true)) {
+									 //  lyrs, crs, warncrs, ext, rowcol, res
+			if (!x[0].compare_geom(x[i], false, false, false, false, false, true)) {
 			out.setError(x[0].msg.error);
 			return(out);
 		}
+		if (!x[0].compare_origin(x[i].origin(), 0.1)) {
+			out.setError("origin of SpatRaster " + std::to_string(i+1) + " does not match the previous SpatRaster(s)");
+			return(out);			
+		}
 		e.unite(x[i].getExtent());
-		if (x[i].hasValues()) anyvals = true;
+		nl = std::max(nl, x[i].nlyr());
+		if (x[i].hasValues()) any_hasvals = true;
 	}
 	out.setExtent(e, true);
-	if (!anyvals) return out;
+	out = out.geometry(nl);
+	if (!any_hasvals) return out;
 
  //   out.setResolution(xres(), yres());
  	if (!out.writeStart(opt)) { return out; }
@@ -1015,7 +1028,11 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
             unsigned row2 = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
             unsigned col1 = out.colFromX(r.xFromCol(0));
             unsigned col2 = out.colFromX(r.xFromCol(r.ncol()-1));
-            if (!out.writeValues(v, row1, row2-row1+1, col1, col2-col1+1)) return out;
+			unsigned ncols = col2-col1+1;
+			unsigned nrows = row2-row1+1;
+			recycle(v, ncols * nrows * nl);
+			
+            if (!out.writeValues(v, row1, nrows, col1, ncols)) return out;
 		}
 		r.readStop();
 	}

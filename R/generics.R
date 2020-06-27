@@ -12,6 +12,12 @@ setMethod("length", signature(x="SpatRaster"),
 )	
 
 
+setMethod("origin", signature(x="SpatRaster"), 
+	function(x, ...) {
+		x@ptr$origin
+	}
+)	
+
 setMethod("rectify", signature(x="SpatRaster"), 
 	function(x, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
