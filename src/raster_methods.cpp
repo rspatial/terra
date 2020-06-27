@@ -1,4 +1,4 @@
-// Copyrightf (c) 2018-2020  Robert J. Hijmans
+// Copyright (c) 2018-2020  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -905,6 +905,7 @@ bool SpatRaster::shared_basegeom(SpatRaster &x, double tol, bool test_overlap) {
 
 
 
+
 SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
@@ -915,20 +916,20 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 	if (out.compare_geom(x, false, false, true)) {
 		rmatch = true;
 	} else {
-		if (!shared_basegeom(x, 0.1, true)) {
+	//	if (!shared_basegeom(x, 0.1, true)) {
 			out.setError("raster dimensions do not match");
 			return(out);
-		} else {
-			out.msg.has_error = false;
-			out.msg.error = "";
-			SpatExtent e = getExtent();
-			SpatExtent xe = x.getExtent();
-			double prec = std::min(xres(), yres())/1000;
-			if (!xe.compare(e, "<=", prec)) {
-				SpatOptions xopt(opt);
-				x = x.crop(e, "near", xopt);			
-			}
-		}
+	//	} else {
+	//		out.msg.has_error = false;
+	//		out.msg.error = "";
+	//		SpatExtent e = getExtent();
+	//		SpatExtent xe = x.getExtent();
+	//		double prec = std::min(xres(), yres())/1000;
+	//		if (!xe.compare(e, "<=", prec)) {
+	//			SpatOptions xopt(opt);
+	//			x = x.crop(e, "near", xopt);			
+	//		}
+	//	}
 	}
 
 	if (!x.hasValues()) {

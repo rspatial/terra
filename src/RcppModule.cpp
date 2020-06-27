@@ -154,12 +154,15 @@ RCPP_MODULE(spat){
 		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
+		.property("verbose", &SpatOptions::get_verbose, &SpatOptions::set_verbose )
 		//.property("bandorder", &SpatOptions::get_bandorder, &SpatOptions::set_bandorder )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
 		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )
+		.property("def_verbose", &SpatOptions::get_def_verbose, &SpatOptions::set_def_verbose )
+
 		//.property("def_bandorder", &SpatOptions::get_def_bandorder, &SpatOptions::set_def_bandorder )
 
 		.property("todisk", &SpatOptions::get_todisk, &SpatOptions::set_todisk)

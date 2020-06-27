@@ -32,6 +32,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	overwrite = false;	
 	progress = opt.progress;
 	blocksizemp = opt.blocksizemp;
+	verbose = opt.verbose;
 }
 
 
@@ -51,11 +52,17 @@ std::string SpatOptions::get_datatype() {if (datatype != "") {return datatype;} 
 
 void SpatOptions::set_def_filetype(std::string d) { def_filetype = d; }
 std::string SpatOptions::get_def_filetype() { return def_filetype;}
+
 void SpatOptions::set_filetype(std::string d) { filetype = d; }
 std::string SpatOptions::get_filetype() { return filetype;}
 
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }
+
+void SpatOptions::set_def_verbose(bool v) { def_verbose = v; }
+bool SpatOptions::get_def_verbose() { return def_verbose; }
+bool SpatOptions::get_verbose() { return verbose; }
+void SpatOptions::set_verbose(bool v) { verbose = v; }
 
 
 unsigned SpatOptions::get_progress() { return progress; }
@@ -86,7 +93,8 @@ void SpatOptions::set_tempdir(std::string d) {
 double SpatOptions::get_memfrac() { return memfrac; }
 
 void SpatOptions::set_memfrac(double d) {
-	if ((d >= 0.1) && (d <= 0.9)) { 
+	// allowing very high values for testing purposes
+	if ((d >= 0.1) && (d <= 100)) { 
 		memfrac = d;
 		return;
 	} 

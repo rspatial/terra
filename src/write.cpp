@@ -153,6 +153,10 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	bs = getBlockSize(opt.get_blocksizemp(), opt.get_memfrac(), opt.get_steps());
 
     #ifdef useRcpp
+	if (opt.verbose) {
+		Rcpp::Rcout<< "blocks: " << bs.n << std::endl;
+	}
+	
 	pbar = new Progress(bs.n+2, opt.do_progress(bs.n));
 	pbar->increment();
 	#endif

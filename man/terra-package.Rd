@@ -166,7 +166,7 @@ Also see the methods in section XI
 
 \section{VIII. Data type conversion}{
 
-You can coerce SpatRasters to Raster* objects after loading the \code{raster} package, using \code{as}, as in \code{as(object, "RasterBrick")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
+You can coerce SpatRasters to Raster* objects after loading the \code{raster} package with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
   
   \tabular{ll}{
     \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr

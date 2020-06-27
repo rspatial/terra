@@ -9,6 +9,10 @@
 	.terra_environment$options <- opt
 }
  
+.options_names <- function() {
+	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk", "names", "verbose") 
+}
+
  
 .setOptions <- function(x, opt) {
 	nms <- names(opt)
@@ -24,7 +28,7 @@
 		x$gdal_options <- gopt
 	}
 	
-	s <- nms %in% c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk", "names")
+	s <- nms %in% .options_names()
 	
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
@@ -76,6 +80,7 @@
 	cat("datatype    :" , opt$def_datatype, "\n")
 	cat("filetype    :" , opt$def_filetype, "\n")
 	cat("progress    :" , opt$progress, "\n")
+	cat("verbose     :" , opt$verbose, "\n")
 }
 
 
