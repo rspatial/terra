@@ -14,7 +14,8 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 \usage{
 \S4method{project}{SpatVector}(x, y, ...)
 
-\S4method{project}{SpatRaster}(x, y, method="bilinear", mask=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{project}{SpatRaster}(x, y, method="bilinear", mask=FALSE, 
+						filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
