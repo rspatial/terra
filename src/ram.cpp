@@ -55,7 +55,7 @@ double availableRAM() {
 											(host_info64_t)&vm_stats, &count)) {
 			ram = (int64_t)vm_stats.free_count * (int64_t)page_size;
 			
-			ram = ram * 5; // purely emperical. The estimate seemed much too low. Needs work.
+			ram = ram * 5; // purely empirical. The estimate seemed much too low. Needs work.
 		}
 		
 	#endif

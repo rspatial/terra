@@ -1,7 +1,7 @@
 Package: terra
 Type: Package
 Title: Spatial Data Analysis
-Version: 0.7-8
+Version: 0.7-9
 Date: 2020-06-27
 Depends: R (>= 3.5.0)
 Suggests: parallel, tinytest
