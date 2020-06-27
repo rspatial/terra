@@ -73,20 +73,20 @@ void SpatOptions::set_blocksizemp(unsigned x) {
 	blocksizemp = x; 
 }
 
-
 void SpatOptions::set_filename(std::string d) { lrtrim(d); filename = d; }
 std::string SpatOptions::get_filename() { return filename; }
 
 std::string SpatOptions::get_tempdir() { return tempdir; }
+
 void SpatOptions::set_tempdir(std::string d) {
-	// check if exists
+	// check if exists?
 	tempdir = d;
 }
 
 double SpatOptions::get_memfrac() { return memfrac; }
 
 void SpatOptions::set_memfrac(double d) {
-	if ((d >= 0.1) && (d <= 0.8)) { 
+	if ((d >= 0.1) && (d <= 0.9)) { 
 		memfrac = d;
 		return;
 	} 

@@ -148,6 +148,7 @@ class SpatRaster {
 
 		BlockSize bs;
 		BlockSize getBlockSize(unsigned n, double frac, unsigned steps=0);
+		std::vector<double> mem_needs(unsigned n, SpatOptions &opt);
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }

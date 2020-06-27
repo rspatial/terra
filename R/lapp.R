@@ -33,7 +33,7 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 		fnames <- names(formals(fun))
 		x <- x[[names(x) %in% fnames]]
 	}
-	readStart(x)
+	stopifnot(readStart(x))
 	ncx <- ncol(x)
 	v <- readValues(x, round(0.5*nrow(x)), 1, 1, ncx, dataframe=TRUE)
 	nl <- .getNL(v, fun, usenames, ...)
@@ -84,7 +84,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	
 	ncx <- ncol(x[1])
 	nrx <- nrow(x[1])
-	readStart(x)
+	stopifnot(readStart(x))
 	v <- lapply(1:nsds(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
 	nl <- .getNLstack(v, fun, recycle, ...)
 	if (nl < 1) stop("lapp does not like 'fun'")

@@ -223,6 +223,9 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 	psWarpOptions->papszWarpOptions =	
       CSLSetNameValue( psWarpOptions->papszWarpOptions, "WRITE_FLUSH", "YES");
 
+//GDALWarpInitSrcNoDataReal(GDALWarpOptions *psOptionsIn, double dNoDataReal)
+//void GDALWarpInitDstNoDataReal(GDALWarpOptions *psOptionsIn, double dNoDataReal)
+
     // Establish reprojection transformer.
     psWarpOptions->pTransformerArg =
         GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef(hSrcDS),

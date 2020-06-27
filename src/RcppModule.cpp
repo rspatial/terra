@@ -274,6 +274,7 @@ RCPP_MODULE(spat){
 
 		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
+		.method("mem_needs", &SpatRaster::mem_needs, "mem_needs")
 
 		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
 		

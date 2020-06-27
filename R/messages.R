@@ -67,3 +67,24 @@ show_messages <- function(x, f="") {
 	}
 }
 
+
+
+.mem_info <- function(x, n, print=TRUE) {
+	n <- max(0,n)
+	opt <- .runOptions("", TRUE, list())	
+	v <- x@ptr$mem_needs(n, opt)
+	if (print) {
+		gb <- 1073741824 
+		cat("\n----------------------")
+		cat(paste("\navailable (GB):", round(v[2] / gb, 2)))
+		cat(paste0("\nallowed (", round(100* v[3]) , "%) : ", round(v[3] * v[2] / gb, 2)))
+		cat(paste("\nneeded        :", round(v[1] / gb, 2)))
+		cat("\n----------------------")
+		cat(paste("\nnr chunks     :", ceiling(nrow(x)/v[4])))
+		cat("\n")
+	} else {
+		names(v) <- c("needed", "available", "memfrac", "chunksize")
+		v
+	}
+}
+	

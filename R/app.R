@@ -16,7 +16,7 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 	out <- rast(x)
 	nlyr(out) <- 1
 	nc <- ncol(x)
-	readStart(x)
+	stopifnot(readStart(x))
 
 # figure out the shape of the output by testing with one row
 	v <- readValues(x, round(0.5*nrow(x)), 1, 1, nc, mat=TRUE)

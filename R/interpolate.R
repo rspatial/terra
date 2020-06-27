@@ -19,7 +19,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 		xy <- xyFromCell(out, cellFromRowCol(out, testrow, 1):cellFromRowCol(out, testrow, min(nc, 500)))
 		colnames(xy) <- xyNames
 		if (hv) { 
-			readStart(object)
+			stopifnot(readStart(object))
 			d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
 			xy <- cbind(xy, d)
 		}

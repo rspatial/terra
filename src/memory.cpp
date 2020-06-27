@@ -27,9 +27,20 @@ bool SpatRaster::canProcessInMemory(unsigned n, double frac) {
 unsigned SpatRaster::chunkSize(unsigned n, double frac) {
 	unsigned cells_in_row = n * ncol() * nlyr();
 	unsigned rows = availableRAM() * frac / cells_in_row;
-	unsigned maxrows = 1000;
+	unsigned maxrows = 2500;
 	rows = std::min(rows, maxrows);
 	return rows == 0 ? 1 : std::min(rows, nrow());	
+}
+
+
+std::vector<double> SpatRaster::mem_needs(unsigned n, SpatOptions &opt) {
+	//returning bytes
+	double memneed  = ncell() * nlyr() * n; // * 8;
+	double memavail = availableRAM();
+	double frac = opt.get_memfrac();
+	double csize = chunkSize(n, frac);
+	std::vector<double> out = {memneed, memavail*8, frac, csize} ;
+	return out;
 }
 
 
@@ -54,6 +65,7 @@ BlockSize SpatRaster::getBlockSize(unsigned n, double frac, unsigned steps) {
 		r += cs;
 	}
 	bs.nrows[bs.n-1] = cs - ((bs.n * cs) - nrow());
+	
 	return bs;
 }
 

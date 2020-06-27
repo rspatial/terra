@@ -28,7 +28,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	out <- rast(x)
 	nlyr(out) <- length(uin)
 	names(out) <- nms
-	readStart(x)
+	stopifnot(readStart(x))
 	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
