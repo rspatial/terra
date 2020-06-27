@@ -25,7 +25,7 @@
 
 #include "file_utils.h"
 #include "string_utils.h"
-#include "NA.h"
+//#include "NA.h"
 #include "date.h"
 
 
@@ -724,7 +724,7 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 }
 
 
-std::vector<double> SpatRaster::readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols) {
+std::vector<double> SpatRaster::readChunkGDAL(unsigned src, long row, unsigned nrows, long col, unsigned ncols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -932,7 +932,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, int srows, int scol
 
 
 
-std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<unsigned> &rows, const std::vector<unsigned> &cols) {
+std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<long> &rows, const std::vector<long> &cols) {
 
 	std::vector<std::vector<double>> errout;
 	if (source[src].rotated) {
@@ -971,7 +971,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 	std::vector<double> out(n * nl, NAN);
 	CPLErr err = CE_None;
 	for (size_t j=0; j < n; j++) {
-		if (is_NA(cols[j]) | is_NA(rows[j])) continue;
+		if ((cols[j] < 0) || (rows[j] < 0)) continue;
 		if (panBandMap.size() > 0) {
 			err = poDataset->RasterIO(GF_Read, cols[j], rows[j], 1, 1, &out[j*nl], 1, 1, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 		} else {

@@ -31,9 +31,9 @@
 
 SpatVector SpatRaster::dense_extent() {
 		
-	std::vector<unsigned> rows(nrow());
+	std::vector<long> rows(nrow());
 	std::iota(rows.begin(), rows.end(), 0);
-	std::vector<unsigned> cols(ncol());
+	std::vector<long> cols(ncol());
 	std::iota(cols.begin(), cols.end(), 0);
 
 	std::vector<double> xcol = xFromCol(cols) ;

@@ -28,16 +28,16 @@ bool extent_operator(std::string oper) {
 bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
 
 	if (!extent_operator(oper)) {
-		return false;  // not very useful!!
+		return false;  // not very useful
 	}
 	
-	double xr = (xmax - xmin) / tolerance;
-	double yr = (ymax - ymin) / tolerance;
+	//double xr = (xmax - xmin) / tolerance;
+	//double yr = (ymax - ymin) / tolerance;
 		
-	bool e1 = fabs(xmax - e.xmax) < xr;
-	bool e2 = fabs(xmin - e.xmin) < xr;
-	bool e3 = fabs(ymax - e.ymax) < yr;
-	bool e4 = fabs(ymin - e.ymin) < yr;
+	bool e1 = fabs(xmax - e.xmax) <= tolerance;
+	bool e2 = fabs(xmin - e.xmin) <= tolerance;
+	bool e3 = fabs(ymax - e.ymax) <= tolerance;
+	bool e4 = fabs(ymin - e.ymin) <= tolerance;
 	bool equal = (e1 && e2 && e3 && e4);
 	if (oper == "==") {
 		return equal;
@@ -45,11 +45,11 @@ bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
 		return (!equal);
 	}
 	if (oper == "<" || oper == "<=") {
-		bool e1 = e.xmax < xmax;
-		bool e2 = e.xmin > xmin;
-		bool e3 = e.ymax < ymax;
-		bool e4 = e.ymin > ymin;
-		bool smaller = (e1 && e2 && e3 && e4);
+		bool c1 = xmax < e.xmax;
+		bool c2 = xmin > e.xmin;
+		bool c3 = ymax < e.ymax;
+		bool c4 = ymin > e.ymin;
+		bool smaller = (c1 && c2 && c3 && c4);
 		if (oper == "<") {
 			return smaller;
 		} else {
@@ -57,11 +57,11 @@ bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
 		}
 	} 
 	if (oper == ">" || oper == ">=") {
-		bool e1 = e.xmax > xmax;
-		bool e2 = e.xmin < xmin;
-		bool e3 = e.ymax > ymax;
-		bool e4 = e.ymin < ymin;
-		bool larger = (e1 && e2 && e3 && e4);
+		bool c1 = xmax > e.xmax;
+		bool c2 = xmin < e.xmin;
+		bool c3 = ymax > e.ymax;
+		bool c4 = ymin < e.ymin;
+		bool larger = (c1 && c2 && c3 && c4);
 		if (oper == ">") {
 			return larger;
 		} else {
@@ -197,7 +197,7 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, b
 		}
 	}
 	if (res) {
-		if (! ((is_equal_relative(x.xres(), xres(), 0.0001)) & (about_equal(x.yres(), yres(), 0.0001)))) {
+		if (! ((is_equal_relative(x.xres(), xres(), 0.0001)) & (is_equal_relative(x.yres(), yres(), 0.0001)))) {
 			setError("resolution does not match");
 			return false;
 		}

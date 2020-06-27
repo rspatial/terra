@@ -49,8 +49,7 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 
 	SpatRaster out = geometry();
 
-	if (!compare_geom(x, false, false)) {
-		out.setError("dimensions and/or extent do not match");
+	if (!out.compare_geom(x, false, false)) {
 		return out;
 	}
 
@@ -78,8 +77,6 @@ void SpatRaster::addSource(SpatRaster x) {
         } else {
             source.insert(source.end(), x.source.begin(), x.source.end());
         }
-	} else {
-		setError("dimensions and/or extent do not match");
 	}
 }
 

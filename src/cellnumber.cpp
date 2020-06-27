@@ -17,7 +17,7 @@
 
 #include "spatRaster.h"
 #include "recycle.h"
-#include "NA.h"
+//#include "NA.h"
 
 std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<double> y) {
 // size of x and y should be the same
@@ -42,8 +42,9 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 		if (x[i] == extent.xmax) {
 			col = ncol() - 1 ;
 		}
-
-		if (row < 0 || (unsigned)row >= nrow() || col < 0 || (unsigned)col >= ncol()) {
+		long nr = nrow();
+		long nc = ncol();
+		if (row < 0 || row >= nr || col < 0 || col >= nc) {
 			cells[i] = NAN;
 		} else {
 			// result[i] = static_cast<int>(row) * ncols + static_cast<int>(col) + 1;
@@ -63,31 +64,31 @@ double SpatRaster::cellFromXY (double x, double y) {
 }
 
 
-std::vector<double> SpatRaster::cellFromRowCol(std::vector<unsigned> row, std::vector<unsigned> col) {
+std::vector<double> SpatRaster::cellFromRowCol(std::vector<long> row, std::vector<long> col) {
 	recycle(row, col);
 	size_t n = row.size();
 	std::vector<double> result(n);
+	long nr = nrow();
+	long nc = ncol();
 	for (size_t i=0; i<n; i++) {
-	//	result[i] = (row[i]<0 || row[i] >= nrow() || col[i]<0 || col[i] >= ncol()) ? NAN : row[i] * ncol() + col[i];
-	// < 0 never true for unsigned
-        result[i] = (row[i] >= nrow() || col[i] >= ncol()) ? NAN : row[i] * ncol() + col[i];
+		result[i] = (row[i]<0 || row[i] >= nr || col[i]<0 || col[i] >= nc) ? NAN : row[i] * nc + col[i];
 	}
 	return result;
 }
 
 
-double SpatRaster::cellFromRowCol (unsigned row, unsigned col) {
-	std::vector<unsigned> rows = {row};
-	std::vector<unsigned> cols = {col};
+double SpatRaster::cellFromRowCol (long row, long col) {
+	std::vector<long> rows = {row};
+	std::vector<long> cols = {col};
 	std::vector<double> cell = cellFromRowCol(rows, cols);
 	return  cell[0];
 }
 
-std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<unsigned> row, std::vector<unsigned> col) {
+std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<long> row, std::vector<long> col) {
 	recycle(row, col);
 	size_t n = row.size();
-	size_t nc = ncol();
-	size_t nr = nrow();
+	long nc = ncol();
+	long nr = nrow();
 
 	std::vector<double> x(n * n);
 	for (size_t i=0; i<n; i++) {
@@ -106,52 +107,54 @@ std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<unsigned> row,
 }
 
 
-double SpatRaster::cellFromRowColCombine(unsigned row, unsigned col) {
+double SpatRaster::cellFromRowColCombine(long row, long col) {
 	return cellFromRowCol(row, col);
 }
 
 
-std::vector<double> SpatRaster::yFromRow(std::vector<unsigned> &row) {
+std::vector<double> SpatRaster::yFromRow(std::vector<long> &row) {
 	size_t size = row.size();
 	std::vector<double> result( size );
 	double ymax = extent.ymax;
 	double yr = yres();
+	long nr = nrow();
+	
 	for (size_t i = 0; i < size; i++) {
-		result[i] = (row[i] < 0 || row[i] >= nrow() ) ? NAN : ymax - ((row[i]+0.5) * yr);
+		result[i] = (row[i] < 0 || row[i] >= nr ) ? NAN : ymax - ((row[i]+0.5) * yr);
 	}
 	return result;
 }
 
-double SpatRaster::yFromRow (unsigned row) {
-	std::vector<unsigned> rows = {row};
+double SpatRaster::yFromRow (long row) {
+	std::vector<long> rows = {row};
 	std::vector<double> y = yFromRow(rows);
 	return y[0];
 }
 
 
 
-std::vector<double> SpatRaster::xFromCol(std::vector<unsigned> &col) {
+std::vector<double> SpatRaster::xFromCol(std::vector<long> &col) {
 	size_t size = col.size();
 	std::vector<double> result( size );
 	double xmin = extent.xmin;
 	double xr = xres();
+	long nc = ncol();
 	for (size_t i = 0; i < size; i++) {
-		result[i] = (col[i] < 0 || col[i] >= ncol() ) ? NAN : xmin + ((col[i]+0.5) * xr);
+		result[i] = (col[i] < 0 || col[i] >= nc ) ? NAN : xmin + ((col[i]+0.5) * xr);
 	}
 	return result;
 }
 
-double SpatRaster::xFromCol(unsigned col) {
-	std::vector<unsigned> cols = {col};
+double SpatRaster::xFromCol(long col) {
+	std::vector<long> cols = {col};
 	std::vector<double> x = xFromCol(cols);
 	return x[0];
 }
 
-std::vector<unsigned> SpatRaster::colFromX(std::vector<double> &x) {
+std::vector<long> SpatRaster::colFromX(std::vector<double> &x) {
 	size_t size = x.size();
-	unsigned navalue = NA<unsigned>::value;
 
-	std::vector<unsigned> result(size, navalue);
+	std::vector<long> result(size, -1);
 	double xmin = extent.xmin;
 	double xmax = extent.xmax;
 	double xr = xres();
@@ -167,17 +170,17 @@ std::vector<unsigned> SpatRaster::colFromX(std::vector<double> &x) {
 }
 
 
-unsigned SpatRaster::colFromX(double x) {
+long SpatRaster::colFromX(double x) {
 	std::vector<double> X = {x};
 	return colFromX(X)[0];
 }
 
 
-std::vector<unsigned> SpatRaster::rowFromY(std::vector<double> &y) {
+std::vector<long> SpatRaster::rowFromY(std::vector<double> &y) {
 	size_t ysize = y.size();
-	unsigned navalue = NA<unsigned>::value;
+//	unsigned navalue = NA<unsigned>::value;
 
-	std::vector<unsigned> result(ysize, navalue);
+	std::vector<long> result(ysize, -1);
 	double ymin = extent.ymin;
 	double ymax = extent.ymax;
 	double yr = yres();
@@ -193,25 +196,25 @@ std::vector<unsigned> SpatRaster::rowFromY(std::vector<double> &y) {
 }
 
 
-unsigned SpatRaster::rowFromY(double y) {
+long SpatRaster::rowFromY(double y) {
 	std::vector<double> Y = {y};
 	return rowFromY(Y)[0];
 }
 
 
-std::vector< std::vector<double> > SpatRaster::xyFromCell( std::vector<double> &cell) {
+std::vector<std::vector<double>> SpatRaster::xyFromCell( std::vector<double> &cell) {
 	size_t n = cell.size();
 	double xmin = extent.xmin;
 	double ymax = extent.ymax;
 	double yr = yres();
 	double xr = xres();
     double ncells = ncell();
-    int nc = ncol();
+    long nc = ncol();
 	std::vector< std::vector<double> > out(2, std::vector<double> (n, NAN) );
 	for (size_t i = 0; i<n; i++) {
 		if (std::isnan(cell[i]) || (cell[i] < 0) || (cell[i] >= ncells)) continue;
-        int row = cell[i] / nc;
-        int col = cell[i] - (row * nc);
+        long row = cell[i] / nc;
+        long col = cell[i] - (row * nc);
         out[0][i] = xmin + (col + 0.5) * xr;
         out[1][i] = ymax - (row + 0.5) * yr;
 	}
@@ -225,10 +228,10 @@ std::vector< std::vector<double> > SpatRaster::xyFromCell( double cell) {
 }
 
 
-std::vector< std::vector<unsigned> > SpatRaster::rowColFromCell(std::vector<double> &cell) {
+std::vector<std::vector<long>> SpatRaster::rowColFromCell(std::vector<double> &cell) {
 	size_t size = cell.size();
-	unsigned navalue = NA<unsigned>::value;
-	std::vector< std::vector<unsigned> > result(2, std::vector<unsigned> (size, navalue) );
+	//unsigned navalue = NA<unsigned>::value;
+	std::vector< std::vector<long> > result(2, std::vector<long> (size, -1) );
 	double nc = ncell();
 	for (size_t i = 0; i < size; i++) {
 		if ((cell[i] >= 0) || (cell[i] < nc )) {
@@ -239,6 +242,14 @@ std::vector< std::vector<unsigned> > SpatRaster::rowColFromCell(std::vector<doub
 	return result;
 }
 
+
+std::vector<std::vector<long>>  SpatRaster::rowColFromExtent(SpatExtent e) {
+	std::vector<std::vector<double>> xy = e.asPoints();
+	std::vector<long> col = colFromX(xy[0]); 
+	std::vector<long> row = rowFromY(xy[1]); 
+	std::vector<std::vector<long>> out = { row, col };
+	return out;
+}
 
 
 
@@ -253,13 +264,13 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
         return(out);
 	}
 
-	std::vector<std::vector<unsigned>> rc = rowColFromCell(cells);
-	std::vector<unsigned> r = rc[0];
-	std::vector<unsigned> c = rc[1];
+	std::vector<std::vector<long>> rc = rowColFromCell(cells);
+	std::vector<long> r = rc[0];
+	std::vector<long> c = rc[1];
 	bool globlatlon = is_global_lonlat();
-    unsigned nc = ncol();
-    unsigned lc = nc-1;
-    std::vector<unsigned> cols, rows;
+    long nc = ncol();
+    long lc = nc-1;
+    std::vector<long> cols, rows;
 	if (directions == "rook") {
 		for (size_t i=0; i<n; i++) {
 			rows = {r[i]-1, r[i]   , r[i]  , r[i]+1};

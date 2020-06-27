@@ -224,7 +224,7 @@ setMethod("Compare", signature(e1="SpatExtent", e2="SpatExtent"),
 		if (!(oper %in% c("==", "!=", ">", "<", ">=", "<="))) {
 			stop(paste(oper, "not implemented for SpatExtent"))
 		}
-		return( e1@ptr$equal(e2@ptr, oper, 1) )
+		return( e1@ptr$compare(e2@ptr, oper, 0.000001) )
 	}	
 )
 

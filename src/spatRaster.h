@@ -254,25 +254,30 @@ class SpatRaster {
 
 		bool compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs=false, bool ext=true, bool rowcol=true, bool res=false);
 		bool compare_origin(std::vector<double> x, double tol);
+		bool shared_basegeom(SpatRaster &x, double tol, bool test_overlap);
 
 		std::vector<double> cellFromXY (std::vector<double> x, std::vector<double> y);
 		double cellFromXY(double x, double y);
-		std::vector<double> cellFromRowCol(std::vector<unsigned> row, std::vector<unsigned> col);
-		double cellFromRowCol(unsigned row, unsigned col);
-		std::vector<double> cellFromRowColCombine(std::vector<unsigned> row, std::vector<unsigned> col);
-		double cellFromRowColCombine(unsigned row, unsigned col);
-		std::vector<double> yFromRow(std::vector<unsigned> &row);
-		double yFromRow(unsigned row);
-		std::vector<double> xFromCol(std::vector<unsigned> &col);
-		double xFromCol(unsigned col);
+		std::vector<double> cellFromRowCol(std::vector<long> row, std::vector<long> col);
+		double cellFromRowCol(long row, long col);
+		std::vector<double> cellFromRowColCombine(std::vector<long> row, std::vector<long> col);
+		double cellFromRowColCombine(long row, long col);
+		std::vector<double> yFromRow(std::vector<long> &row);
+		double yFromRow(long row);
+		std::vector<double> xFromCol(std::vector<long> &col);
+		double xFromCol(long col);
 
-		std::vector<unsigned> colFromX(std::vector<double> &x);
-		unsigned colFromX(double x);
-		std::vector<unsigned> rowFromY(std::vector<double> &y);
-		unsigned rowFromY(double y);
-		std::vector< std::vector<double>> xyFromCell( std::vector<double> &cell);
-		std::vector< std::vector<double>> xyFromCell( double cell);
-		std::vector< std::vector<unsigned>> rowColFromCell(std::vector<double> &cell);
+		std::vector<long> colFromX(std::vector<double> &x);
+		long colFromX(double x);
+		std::vector<long> rowFromY(std::vector<double> &y);
+		long rowFromY(double y);
+		std::vector<std::vector<double>> xyFromCell( std::vector<double> &cell);
+		std::vector<std::vector<double>> xyFromCell( double cell);
+		std::vector<std::vector<long>> rowColFromCell(std::vector<double> &cell);
+		std::vector<long> rowColFromY(std::vector<double> &y);
+		std::vector<std::vector<long>> rowColFromExtent(SpatExtent e);
+	
+		
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 		int sourceFromLyr(unsigned lyr);
 		std::vector<unsigned> findLyr(unsigned lyr);
@@ -337,11 +342,11 @@ class SpatRaster {
 		// gdal source
 		std::vector<double> readValuesGDAL(unsigned src, int row, int nrows, int col, int ncols);
 		std::vector<double> readGDALsample(unsigned src, int srows, int scols);
-		std::vector<std::vector<double>> readRowColGDAL(unsigned src, std::vector<unsigned> &rows, const std::vector<unsigned> &cols);
+		std::vector<std::vector<double>> readRowColGDAL(unsigned src, std::vector<long> &rows, const std::vector<long> &cols);
 
 		bool readStartGDAL(unsigned src);
 		bool readStopGDAL(unsigned src);
-		std::vector<double> readChunkGDAL(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
+		std::vector<double> readChunkGDAL(unsigned src, long row, unsigned nrows, long col, unsigned ncols);
 
 		void openFS(std::string const &filename);
 
@@ -403,6 +408,8 @@ class SpatRaster {
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
         std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
 		SpatRaster flip(bool vertical, SpatOptions &opt);
+		SpatRaster filler(SpatRaster x, SpatOptions &opt);
+		
 		SpatRaster focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, std::string fun, SpatOptions &opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows);
 		std::vector<std::vector<double>> freq(bool bylayer);

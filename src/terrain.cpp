@@ -222,7 +222,7 @@ SpatRaster SpatRaster::slope(unsigned neighbors, bool degrees, SpatOptions &opt)
 	bool lonlat = could_be_lonlat();
 	double yr = yres();
 	if (lonlat) {
-		std::vector<unsigned> rows(nrow());
+		std::vector<long> rows(nrow());
 		std::iota(rows.begin(), rows.end(), 0);
 		y = yFromRow(rows);
 		yr = distHav(0, 0, 0, yr);

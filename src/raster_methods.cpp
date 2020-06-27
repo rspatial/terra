@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020  Robert J. Hijmans
+// Copyrightf (c) 2018-2020  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -21,6 +21,7 @@
 #include "vecmathfun.h"
 //#include "vecmath.h"
 #include <cmath>
+#include "math_utils.h"
 
 
 SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt) {
@@ -90,8 +91,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
 
-	if (!compare_geom(x, false, true, false, true, true, false)) {
-		out.setError("dimensions and/or extent do not match");
+	if (!out.compare_geom(x, false, true, false, true, true, false)) {
 		return(out);
 	}
 
@@ -337,7 +337,6 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, SpatOptions &opt) {
 	z = std::max(1, std::min(z, nl));
 	SpatRaster out = geometry(z);
 	if (!out.compare_geom(x, false, false)) {
-		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
 	if (!hasValues()) return(out);
@@ -393,7 +392,6 @@ SpatRaster SpatRaster::rapply(SpatRaster x, std::string fun, bool narm, SpatOpti
 
 	SpatRaster out = geometry(1);
 	if (!out.compare_geom(x, false, false)) {
-		out.setError("dimensions and/or extent do not match");
 		return(out);
 	}
 	if (!hasValues()) return(out);
@@ -610,9 +608,9 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			if (!out.writeValues(col, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "cell") {
-		std::vector<unsigned> col(ncol());
+		std::vector<long> col(ncol());
 		std::iota(col.begin(), col.end(), 0);
-		std::vector<unsigned> row(1);
+		std::vector<long> row(1);
 		for (unsigned i = 0; i < nr; i++) {
 			row[0] = i;
 			std::vector<double> v = cellFromRowCol(row, col);
@@ -620,7 +618,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			if (!out.writeValues(v, i, 1, 0, ncol())) return out;
 		}
 	} else if (value == "x") {
-		std::vector<unsigned> col(ncol());
+		std::vector<long> col(ncol());
 		std::iota(col.begin(), col.end(), 0);
 		std::vector<double> x = xFromCol(col);
 		for (unsigned i = 0; i < nr; i++) {
@@ -819,23 +817,130 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 }
 
 
+/*
+SpatRaster SpatRaster::filler(SpatRaster x, SpatOptions &opt) {
+
+	unsigned nl = std::max(nlyr(), x.nlyr());
+	SpatRaster out = geometry(nl);
+	SpatExtent e = getExtent();
+	SpatExtent xe = x.getExtent();
+	
+	e.intersect(xe);
+	if (!e.valid()) {
+		out.setError("SpatRasters do not overlap");
+		return out;
+	}
+
+	if (!shared_basegeom(x, 0.1, true)) {
+		out.setError("raster dimensions do not match");
+		return(out);
+	}
+	// x is larger
+	if (e.compare(xe, "<=")) {
+		return x.crop(e, "near", opt);
+	}
+	// x is not within
+	if (!e.compare(xe, ">=")) {
+		SpatOptions xopt(opt);
+		x = x.crop(e, "near", xopt);
+		xe = x.getExtent();
+	}
+
+	std::vector<unsigned> rc = rowcolFromExtent(e);
+
+
+	if (!x.hasValues()) {
+		return *this;
+	}
+	if (!hasValues()) {
+		if (rmatch) {
+			return x.deepCopy();
+		} else {
+			SpatExtent e = getExtent();
+			return x.extend(e, opt);
+		}
+	}
+	
+	readStart();
+	x.readStart();
+  	if (!out.writeStart(opt)) { return out; }
+	std::vector<double> v, m;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		recycle(v, m);
+		if (std::isnan(value)) {
+			for (size_t i=0; i < v.size(); i++) {
+				if (std::isnan(v[i])) {
+					v[i] = m[i];
+				}
+			}
+		} else {
+			for (size_t i=0; i < v.size(); i++) {
+				if (v[i] == value) {
+					v[i] = m[i];
+				}
+			}
+		}
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	out.writeStop();
+	readStop();
+	x.readStop();
+	return(out);
+}
+*/
+
+bool SpatRaster::shared_basegeom(SpatRaster &x, double tol, bool test_overlap) {
+	if (!compare_origin(x.origin(), tol)) return false;	
+	if (!about_equal(xres(), x.xres(), xres() * tol)) return false; 
+	if (!about_equal(yres(), x.yres(), yres() * tol)) return false; 
+	if (test_overlap) {
+		SpatExtent e = x.getExtent();
+		e.intersect(getExtent());
+		if (!e.valid()) return false;
+	}
+	return true;
+}
+
 
 
 SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
-
-	if (!compare_geom(x, false, false, true)) {
-		out.setError("dimensions and/or extent do not match");
-		return(out);
+	
+	bool rmatch = false;
+					 //  lyrs, crs, warncrs, ext, rowcol, res
+	if (out.compare_geom(x, false, false, true)) {
+		rmatch = true;
+	} else {
+		if (!shared_basegeom(x, 0.1, true)) {
+			out.setError("raster dimensions do not match");
+			return(out);
+		} else {
+			out.msg.has_error = false;
+			out.msg.error = "";
+			SpatExtent e = getExtent();
+			SpatExtent xe = x.getExtent();
+			double prec = std::min(xres(), yres())/1000;
+			if (!xe.compare(e, "<=", prec)) {
+				SpatOptions xopt(opt);
+				x = x.crop(e, "near", xopt);			
+			}
+		}
 	}
 
 	if (!x.hasValues()) {
 		return *this;
 	}
 	if (!hasValues()) {
-		return x.deepCopy();
+		if (rmatch) {
+			return x.deepCopy();
+		} else {
+			SpatExtent e = getExtent();
+			return x.extend(e, opt);
+		}
 	}
 	
 	readStart();
@@ -970,8 +1075,8 @@ SpatRaster SpatRaster::shift(double x, double y, SpatOptions &opt) {
 
 bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
 	std::vector<double> y = origin();
-	if ((abs(x[0] - y[0])) > (xres() * tol)) return false;
-	if ((abs(x[1] - y[1])) > (yres() * tol)) return false;
+	if (!about_equal(x[0], y[0], xres() * tol)) return false; 
+	if (!about_equal(x[1], y[1], yres() * tol)) return false; 
 	return true;
 }
 
@@ -997,11 +1102,10 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	unsigned nl = x[0].nlyr();
 	for (size_t i=1; i<n; i++) {
 									 //  lyrs, crs, warncrs, ext, rowcol, res
-			if (!x[0].compare_geom(x[i], false, false, false, false, false, true)) {
-			out.setError(x[0].msg.error);
+		if (!out.compare_geom(x[i], false, false, false, false, false, true)) {
 			return(out);
 		}
-		if (!x[0].compare_origin(x[i].origin(), 0.1)) {
+		if (!out.compare_origin(x[i].origin(), 0.1)) {
 			out.setError("origin of SpatRaster " + std::to_string(i+1) + " does not match the previous SpatRaster(s)");
 			return(out);			
 		}

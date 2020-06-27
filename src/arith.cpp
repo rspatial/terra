@@ -165,8 +165,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
 
-	if (!compare_geom(x, false, true)) {
-		out.setError("dimensions and/or extent do not match");
+	if (!out.compare_geom(x, false, true)) {
 		return(out);
 	}
 	
@@ -662,8 +661,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
 
-	if (!compare_geom(x, true, false)) {
-		out.setError("dimensions and/or extent do not match");
+	if (!out.compare_geom(x, true, false)) {
 		return(out);
 	}
 	
