@@ -6,7 +6,7 @@ Date: 2020-06-26
 Depends: R (>= 3.5.0)
 Suggests: parallel, tinytest
 LinkingTo: Rcpp
-Imports: methods, Rcpp, raster (>= 3.1-5)
+Imports: methods, Rcpp, raster (>= 3.3-7)
 SystemRequirements: C++11, GDAL (>= 3.0.4), GEOS (>= 3.8.0), PROJ (>= 6.3.1)
 Maintainer: Robert J. Hijmans <r.hijmans@gmail.com>
 Description: Methods for spatial data analysis, especially raster data. Methods allow for low-level data manipulation as well as high-level global, local, zonal, and focal computation. The predict and interpolate methods facilitate the use of regression type (interpolation, machine learning) models for spatial prediction. Processing of very large files is supported. See the manual and tutorials on <https://rspatial.org/terra/> to get started. The package is similar to the 'raster' package; but 'terra' is simpler and faster. 

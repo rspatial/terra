@@ -69,7 +69,7 @@ show_messages <- function(x, f="") {
 
 
 
-.mem_info <- function(x, n, print=TRUE) {
+.mem_info <- function(x, n=1, print=TRUE) {
 	n <- max(0,n)
 	opt <- .runOptions("", TRUE, list())	
 	v <- x@ptr$mem_needs(n, opt)
