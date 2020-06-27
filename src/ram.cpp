@@ -54,7 +54,10 @@ double availableRAM() {
 					KERN_SUCCESS == host_statistics64(mach_port, HOST_VM_INFO,
 											(host_info64_t)&vm_stats, &count)) {
 			ram = (int64_t)vm_stats.free_count * (int64_t)page_size;
+			
+			ram = ram * 5; // purely emperical. The estimate seemed much too low. Needs work.
 		}
+		
 	#endif
 	return ram / 8;
 }
