@@ -11,7 +11,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 }
 
 \usage{
-\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, fillvalue=NA, fun="sum", 
+\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum",
             filename="", overwrite=FALSE, wopt=list(), ...) 
 }
 
@@ -22,9 +22,11 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \item{na.rm}{logical. Should missing values be removed?}
 
-\item{fillvalue}{numeric. The value of the cells of the padded rows and columns}
+\item{na.only}{logical. Should only missing values in \code{x} be changed?}
 
-\item{fun}{function. The function fun should take multiple numbers, and return a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument}
+\item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
+
+\item{fun}{function that takes multiple numbers, and returns a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument, either as actual argument or through use of \code{...}}
 
 
 \item{filename}{character. Output filename. Optional}
@@ -36,7 +38,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 \details{
 \code{focal} 
 
-The window used must have odd dimensions. If you need even sides, you can make a matrix add a column or row with weights of zero. 
+The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero. 
 
 Example weight matrices
 

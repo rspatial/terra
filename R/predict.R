@@ -105,7 +105,8 @@ setMethod("predict", signature(object="SpatRaster"),
 		nl <- 1
 		nc <- ncol(object)
 		tomat <- FALSE
-		stopifnot(readStart(object))
+		readStart(object)
+		on.exit(readStop(object))
 		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
 	
 		r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
@@ -120,8 +121,7 @@ setMethod("predict", signature(object="SpatRaster"),
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
-		readStop(object)
-		out <- writeStop(out)
+		writeStop(out)
 		return(out)
 	}
 )

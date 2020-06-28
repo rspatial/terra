@@ -9,6 +9,7 @@ setMethod("readStart", signature(x="SpatRaster"),
 	function(x, ...) {
 		success <- x@ptr$readStart()
 		show_messages(x, "readStart")		
+		if (!success) stop("cannot open file for reading")
 		invisible(success)
 	}
 )
@@ -17,6 +18,7 @@ setMethod("readStart", signature(x="SpatStack"),
 	function(x, ...) {
 		success <- x@ptr$readStart()
 		show_messages(x, "readStart")		
+		if (!success) stop("cannot open file for reading")
 		invisible(success)
 	}
 )

@@ -917,8 +917,8 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 		rmatch = true;
 	} else {
 	//	if (!shared_basegeom(x, 0.1, true)) {
-			out.setError("raster dimensions do not match");
-			return(out);
+		out.setError("raster dimensions do not match");
+		return(out);
 	//	} else {
 	//		out.msg.has_error = false;
 	//		out.msg.error = "";

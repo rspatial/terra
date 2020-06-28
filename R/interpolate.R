@@ -19,7 +19,8 @@ setMethod("interpolate", signature(object="SpatRaster"),
 		xy <- xyFromCell(out, cellFromRowCol(out, testrow, 1):cellFromRowCol(out, testrow, min(nc, 500)))
 		colnames(xy) <- xyNames
 		if (hv) { 
-			stopifnot(readStart(object))
+			readStart(object)
+			on.exit(readStop(object))
 			d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
 			xy <- cbind(xy, d)
 		}
@@ -40,7 +41,6 @@ setMethod("interpolate", signature(object="SpatRaster"),
 			v <- .runModel(model, fun, xy, nl, const, (na.rm & hv), index, ...)
 			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		if (hv) readStop(object)
 		out <- writeStop(out)
 		return(out)
 	}

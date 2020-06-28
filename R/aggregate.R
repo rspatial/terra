@@ -78,7 +78,7 @@ function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt
 			#f <- function(v, ...) sapply(v, fun, ...)
 		}
 
-		stopifnot(readStart(x))
+		readStart(x)
 		ignore <- writeStart(out, filename, overwrite, wopt)
 		if (doPar) {
 			for (i in 1:b$n) {

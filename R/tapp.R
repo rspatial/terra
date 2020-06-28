@@ -28,7 +28,8 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	out <- rast(x)
 	nlyr(out) <- length(uin)
 	names(out) <- nms
-	stopifnot(readStart(x))
+	readStart(x)
+	on.exit(readStop(x))
 	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
@@ -39,8 +40,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 		v <- do.call(cbind, v)
 		writeValues(out, v, b$row[i], b$nrows[i])
 	}
-	readStop(x)
-	out <- writeStop(out)
+	out <- writeStop(out)	
 	return(out)
 }
 )
