@@ -203,16 +203,27 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 	
     psWarpOptions->nBandCount = nbands;
     psWarpOptions->panSrcBands =
-        (int *) CPLMalloc(sizeof(int) * psWarpOptions->nBandCount );
+        (int *) CPLMalloc(sizeof(int) * nbands );
     psWarpOptions->panDstBands =
-        (int *) CPLMalloc(sizeof(int) * psWarpOptions->nBandCount );
+        (int *) CPLMalloc(sizeof(int) * nbands );
+	psWarpOptions->padfSrcNoDataReal =
+	    (double *) CPLMalloc(sizeof(double) * nbands );
 	psWarpOptions->padfDstNoDataReal =
-	    (double *) CPLMalloc(sizeof(double) * psWarpOptions->nBandCount );
+	    (double *) CPLMalloc(sizeof(double) * nbands );
 	
+	GDALRasterBandH hBand;
+	int hasNA;
 	for (int i=0; i<nbands; i++) {
 		psWarpOptions->panSrcBands[i] = (int) srcbands[i]+1;
 		psWarpOptions->panDstBands[i] = (int) dstbands[i]+1;
-		//psWarpOptions->padfSrcNoDataReal[0] = -3.4e+38;
+
+		hBand = GDALGetRasterBand(hSrcDS, srcbands[i]+1);
+		double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
+		if (hasNA) {
+			psWarpOptions->padfSrcNoDataReal[i] = naflag;
+		} else {
+			psWarpOptions->padfSrcNoDataReal[i] = NAN;			
+		}
 		psWarpOptions->padfDstNoDataReal[i] = NAN;
     }
 	
@@ -337,6 +348,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		std::vector<unsigned> dstbands(srcbands.size()); 
 		std::iota (dstbands.begin(), dstbands.end(), bandstart); 
 		bandstart += dstbands.size();
+		
 		bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, errmsg);
 	
 		GDALClose( hSrcDS );
