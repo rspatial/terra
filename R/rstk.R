@@ -59,8 +59,6 @@ setMethod("rstk", signature(x="list"),
 setMethod("c", signature(x="SpatStack"), 
 	function(x, ...) {
 		r <- methods::new("SpatStack")
-		# deep copy of the SRS, but not of the SRs within it
-		# that is bad and must change.
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 )
 		dots <- list(...)
 		nms <- names(dots)

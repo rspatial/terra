@@ -57,7 +57,7 @@
 		stop("wopt must be a list")
 	}
 	ptr <- .terra_environment$options@ptr
-	opt <- ptr$copy(ptr)
+	opt <- ptr$deepcopy(ptr)
 	
 	filename <- .fullFilename(filename[1], mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {

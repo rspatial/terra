@@ -148,7 +148,7 @@ RCPP_MODULE(spat){
 	
     class_<SpatOptions>("SpatOptions")
 		.constructor()
-		.method("copy", &SpatOptions::deepCopy, "deepCopy")
+		.method("deepcopy", &SpatOptions::deepCopy, "deepCopy")
 		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
 		.property("memfrac", &SpatOptions::get_memfrac, &SpatOptions::set_memfrac )
 		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
@@ -275,7 +275,6 @@ RCPP_MODULE(spat){
 
 		.field("name", &SpatRaster::name)
 
-		.method("copy", &SpatRaster::deepCopy, "deepCopy")
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 		.method("mem_needs", &SpatRaster::mem_needs, "mem_needs")
 
@@ -284,7 +283,7 @@ RCPP_MODULE(spat){
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
-		.method("copy", &SpatRaster::deepCopy, "deepCopy")
+		.method("deepcopy", &SpatRaster::deepCopy, "deepCopy")
 		.method("get_crs", &SpatRaster::getSRS)
 
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))

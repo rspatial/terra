@@ -4,19 +4,24 @@
 
 \alias{app}
 \alias{app,SpatRaster-method}
+\alias{app,SpatStack-method}
 
 \title{Apply a function to the cells of a SpatRaster}
 
 \description{ 
 Apply a function to values of each cell of a SpatRaster. This is similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix.
+
+Use a SpatStack to apply fun by layer.
 }
 
 \usage{
 \S4method{app}{SpatRaster}(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())
+
+\S4method{app}{SpatStack}(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
-  \item{x}{SpatRaster object}
+  \item{x}{SpatRaster or SpatStack}
   \item{fun}{function}
   \item{...}{additional arguments for \code{fun}}  
   \item{nodes}{positive integer. If \code{nodes > 1}, a 'parallel' package cluster with that many nodes is created. Ignored for C++ level implemented functions "max", "min", "mean", "range", "prod", "sum", "any", and "all"}
@@ -46,8 +51,6 @@ library(parallel)
 detectCores()
 cl <- makeCluster(2)
 ss <- app(x, fun=sum, cls=cl)
-
-
 }
 
 

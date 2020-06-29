@@ -52,7 +52,7 @@ setMethod("Math2", signature(x="SpatExtent"),
     function(x, digits=0){ 
 		oper <- as.vector(.Generic)[1]
 		if (oper == "round") {
-			x@ptr <- x@ptr$round(x@ptr, digits)
+			x@ptr <- x@ptr$round(digits)
 			if (!x@ptr$valid) {
 				stop("invalid extent")
 			}

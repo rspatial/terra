@@ -26,7 +26,7 @@ setMethod("as.factor", signature(x="SpatRaster"),
 	function(x) {
 		stopifnot(nlyr(x) == 1)
 		stopifnot(hasValues(x))
-		x@ptr <- x@ptr$copy()
+		x@ptr <- x@ptr$deepcopy()
 		x@ptr$createCategories(0)
 		show_messages(x, "as.factor")
 	}
