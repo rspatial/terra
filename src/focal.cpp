@@ -47,12 +47,12 @@ std::vector<double> get_focal(std::vector<double> &d, int nrow, int ncol, int wr
 	std::vector<double> out(n, fill);
 	int f = 0;
 	
-	//for (int r = offset; r < nrow; r++) {
-	for (int r = 0; r < nrow; r++) {
-		for (int c = 0; c < ncol; c++) {
+	int nrmax = nrow+offset-1;
+	for (int r=0; r < nrow; r++) {
+		for (int c=0; c < ncol; c++) {
 			for (int i = -wr; i <= wr; i++) {
 				int row = r+offset+i;			
-				if (row < 0 || row > (nrow-1)) {
+				if ((row < 0) || (row > nrmax)) {
 					f = f + wcols;
 				} else {
 					unsigned bcell = row * ncol;
@@ -157,7 +157,7 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 						v[j] = fFun(x, narm);
 					} else {
 						v[j] = midv;
-					}
+					}	
 				}
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;

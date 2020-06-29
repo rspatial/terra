@@ -35,9 +35,9 @@ setMethod("Math", signature(x="SpatExtent"),
     function(x){ 
 		oper <- as.vector(.Generic)[1]
 		if (oper == "floor") {
-			x@ptr <- x@ptr$floor(x@ptr)
-		} else if (oper == "ceil") {
-			x@ptr <- x@ptr$ceil(x@ptr)
+			x@ptr <- x@ptr$floor()
+		} else if (oper == "ceiling") {
+			x@ptr <- x@ptr$ceil()
 		} else {
 			stop("not implemented for SpatExtent")
 		}

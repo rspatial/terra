@@ -64,7 +64,7 @@ setMethod ("show" , "SpatRaster",
 
 		cat("coord. ref. :" , .proj4(object), "\n")
 		
-		mnr <- 5
+		mnr <- 6
 
 		ln <- names(object)
 		nl <- nlyr(object)
@@ -83,16 +83,17 @@ setMethod ("show" , "SpatRaster",
 			sources[!m] <- f[!m] 
 
 			if (nsr > 1) {
+				mxsrc <- 3
 				lbs <- .nlyrBySource(object)
 				lbsprint <- paste0(" (", lbs, " layers)")
 				lbsprint[lbs == 1] <- ""
 				cat("source(s)   :", sources[1], lbsprint[1], "\n")
-				for (i in 2:(min(mnr, nsr))) {
+				for (i in 2:(min(mxsrc, nsr))) {
 					cat("             ", sources[i], lbsprint[i], "\n")
 				}			
 				
-				if (nsr > mnr) {
-					cat("             ", "... and", nsr-mnr, "more sources\n")				
+				if (nsr > mxsrc) {
+					cat("             ", "... and", nsr-mxsrc, "more source(s)\n")				
 				}
 			} else {
 				cat("data source :", sources[1], "\n")
@@ -141,10 +142,10 @@ setMethod ("show" , "SpatRaster",
 				}
 			}
 			
-		} else {
-			cat("data sources:", "no data\n")
-			cat("names       :", paste(ln, collapse=", "), "\n")
-		}
+		}# else {
+		#	cat("data sources:", "no data\n")
+		#	cat("names       :", paste(ln, collapse=", "), "\n")
+		#}
 		
 	}
 )

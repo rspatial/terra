@@ -18,7 +18,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 \arguments{
 \item{x}{SpatRaster}
   
-\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized matrix with weights. See Details. If the window is defined as a matrix, \code{na.rm=FALSE} and \code{fun=sum}, and cannot be changed}
+\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix . See Details. If \code{w} is a matrix, \code{na.rm=FALSE} and \code{fun=sum}, and cannot be changed}
 
 \item{na.rm}{logical. Should missing values be removed?}
 

@@ -82,18 +82,18 @@ SpatExtent SpatExtent::round(int n) {
 
 SpatExtent SpatExtent::floor() {
 	double xn = std::floor(xmin);
-	double xx = std::floor(xmax);
+	double xx = std::ceil(xmax);
 	double yn = std::floor(ymin);
-	double yx = std::floor(ymax);
+	double yx = std::ceil(ymax);
 	SpatExtent e(xn, xx, yn, yx);
 	return e;
 }	
 
 SpatExtent SpatExtent::ceil() {
 	double xn = std::ceil(xmin);
-	double xx = std::ceil(xmax);
+	double xx = std::floor(xmax);
 	double yn = std::ceil(ymin);
-	double yx = std::ceil(ymax);
+	double yx = std::floor(ymax);
 	SpatExtent e(xn, xx, yn, yx);
 	return e;
 }	
