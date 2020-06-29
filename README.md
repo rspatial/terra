@@ -24,7 +24,7 @@ See below for instructions on installing the *development version*
 First intstall the packages that terra depends on 
 
 ```
-install.packages("raster")
+install.packages(c("raster", "Rcpp"))
 ```
 
 ### Windows
@@ -37,6 +37,22 @@ Then, in R, install the package.
 remotes::install_github("rspatial/terra")
 ```
 
+
+### MacOS
+
+First install gdal and proj with homebrew
+
+```
+brew install pkg-config
+brew install gdal
+```
+
+Installation may require additional configuration, that you can pass on with `devtools::install_github`
+
+```
+library(devtools)
+devtools::install_github("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
+```
 
 ### Linux
 
