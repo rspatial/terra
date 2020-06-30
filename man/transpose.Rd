@@ -15,8 +15,8 @@ Transpose a SpatRaster
 
 \usage{
 \S4method{t}{SpatRaster}(x)
-\S4method{transpose}{SpatRaster}(x, filename="", overwrite=FALSE, wopt=list(), ...)
 
+\S4method{transpose}{SpatRaster}(x, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

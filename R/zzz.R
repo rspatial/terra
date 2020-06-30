@@ -5,6 +5,7 @@ gdal_version <- function() {
 	.gdalversion()
 }
 
+
 .onAttach <- function(libname, pkgname) {
 	tv <- utils::packageVersion("terra")
 	m <- paste("This is terra version", tv, "(alpha-release)")
@@ -15,7 +16,6 @@ gdal_version <- function() {
 	}
 	packageStartupMessage(m)
 
-##############################
 	.create_options()
 	
 	path = ""
@@ -24,5 +24,6 @@ gdal_version <- function() {
 	} 
 	s <- SpatRaster$new()
 	s$spatinit(path)
+
 }
 

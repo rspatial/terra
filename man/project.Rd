@@ -45,7 +45,7 @@ SpatVector or SpatRaster
 
 
 \examples{
-# SpatRaster
+## SpatRaster
 a <- rast(ncol=40, nrow=40, xmin=-110, xmax=-90, ymin=40, ymax=60, 
           crs="+proj=longlat +datum=WGS84")
 values(a) <- 1:ncell(a)
@@ -53,23 +53,6 @@ newcrs="+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +datum=WGS84"
 b <- rast(ncol=94, nrow=124, xmin=-944881, xmax=935118, ymin=4664377, ymax=7144377, crs=newcrs)
 w <- project(a, b)
 
-if  (gdal_version() >= "3.0.0") {
-## y can also be a crs
-  ww <- project(a, newcrs)
-
-## use of mask argument with global Robinson projection
-  r <- rast()
-  values(r) <- 1:ncell(r)
-  crs <- "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
-  
-  # the corners should be empty, but are not
-  x <- project(r, crs)
-  plot(x)
-  
-  # now they are
-  y <- project(r, crs, mask=TRUE)
-  plot(y)
-}
 
 ## SpatVector
 f <- system.file("ex/lux.shp", package="terra")
