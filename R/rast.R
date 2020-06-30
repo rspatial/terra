@@ -100,6 +100,13 @@ setMethod("rast", signature(x="character"),
 		} else {
 			r@ptr <- SpatRaster$new(f, subds-1, "", "")
 		}
+		
+		if (crs(r) == "") {
+			if (couldBeLonLat(r)) {
+				crs(r) <- "+proj=longlat +datum=WGS84"
+			}
+		}
+
 		show_messages(r, "rast")
 	}
 )
