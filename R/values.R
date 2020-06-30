@@ -129,7 +129,9 @@ setMethod("minmax", signature(x="SpatRaster"),
 	function(x) {
 		rmin <- x@ptr$range_min
 		rmax <- x@ptr$range_max
-		rbind(rmin, rmax)
+		r <- rbind(rmin, rmax)
+		colnames(r) <- names(x)
+		r
 	}
 )
 

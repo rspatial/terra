@@ -21,18 +21,18 @@
 
 std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& ncol, const unsigned& nlyr, const int& row, const int& col) {
   
-  std::vector<double> out(nlyr, NAN);
-  if ((row < 0) || (row > (nrow -1)) || (col < 0) || (col > (ncol-1))) {
-    return out;
-  } else {
-    unsigned nc = nrow * ncol;
-    unsigned cell = row * ncol + col;
-    for (size_t i=0; i<nlyr; i++) {
-      unsigned lcell = cell + i * nc;
-      out[i] = d[lcell];
-    }
-  }
-  return out;
+	std::vector<double> out(nlyr, NAN);
+	if ((row < 0) || (row > (nrow -1)) || (col < 0) || (col > (ncol-1))) {
+		return out;
+	} else {
+		unsigned nc = nrow * ncol;
+		unsigned cell = row * ncol + col;
+		for (size_t i=0; i<nlyr; i++) {
+			unsigned lcell = cell + i * nc;
+			out[i] = d[lcell];
+		}
+	}
+	return out;
 }
 
 // todo: three dimensional focal
