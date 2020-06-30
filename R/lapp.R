@@ -87,7 +87,7 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 
 
-setMethod("lapp", signature(x="SpatStack"), 
+setMethod("lapp", signature(x="SpatDataSet"), 
 function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 	
 	stopifnot(!missing(fun))
@@ -97,7 +97,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	readStart(x)
 	on.exit(readStop(x))
 	
-	v <- lapply(1:nsds(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
+	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .lapp_test_stack(v, fun, recycle, ...)
 	if (test$nl < 1) stop("lapp does not like 'fun'")
 	out <- rast(x[1], nlyr=test$nl)
@@ -106,7 +106,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	}
 	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {
-		v <- lapply(1:nsds(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
+		v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
 		if (recycle) {
 			v <- lapply(v, as.vector)
 		}

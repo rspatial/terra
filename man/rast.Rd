@@ -6,7 +6,7 @@
 \alias{rast,missing-method}
 \alias{rast,character-method}
 \alias{rast,SpatRaster-method}
-\alias{rast,SpatStack-method}
+\alias{rast,SpatDataSet-method}
 \alias{rast,matrix-method}
 \alias{rast,array-method}
 \alias{rast,list-method}

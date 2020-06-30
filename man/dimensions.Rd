@@ -2,7 +2,7 @@
 
 \docType{methods}
 
-\alias{nsds}
+\alias{length}
 \alias{ncol}
 \alias{nrow}
 \alias{ncell}
@@ -20,20 +20,28 @@
 \alias{ncell,ANY-method}
 \alias{nrow,SpatRaster-method}
 \alias{ncol,SpatRaster-method}
+\alias{nrow,SpatDataSet-method}
+\alias{ncol,SpatDataSet-method}
 \alias{nrow<-,SpatRaster,numeric-method}
 \alias{ncol<-,SpatRaster,numeric-method}
+\alias{nlyr,SpatDataSet-method}
 
 \alias{nlyr,SpatRaster-method}
 \alias{nlyr<-,SpatRaster,numeric-method}
 \alias{nsrc,SpatRaster-method}
 \alias{ncell,SpatRaster-method}
+\alias{ncell,SpatDataSet-method}
 \alias{length,SpatRaster-method}
+\alias{length,SpatDataSet-method}
 \alias{size,SpatRaster-method}
+\alias{size,SpatDataSet-method}
 \alias{dim,SpatRaster-method}
+\alias{dim,SpatDataSet-method}
 \alias{dim<-,SpatRaster-method}
 \alias{dim,SpatVector-method}
 \alias{size,SpatVector-method}
 
+\alias{res,SpatDataSet-method}
 \alias{res,SpatRaster-method}
 \alias{res<-,SpatRaster-method}
 \alias{xres,SpatRaster-method}
@@ -44,13 +52,12 @@
 
 \alias{length,SpatVector-method}
 
-\alias{nsds,SpatStack-method}
 
 
 \title{Dimensions of a SpatRaster or SpatVector}
 
 \description{
-Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; or sub-datasets of a SpatStack (\code{nsds}).
+Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; or sub-datasets of a SpatDataSet (\code{length}).
 
 The \code{size} of a SpatRaster \code{x} is \code{ncell(x) * nlyr(x)}. For a SpatRaster \code{length(x)} is the same as \code{ncell(x)}, for a SpatVector \code{length(x)} is the same as \code{nrow(x)}.
 

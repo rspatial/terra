@@ -456,7 +456,7 @@ RCPP_MODULE(spat){
 		.method("merge", &SpatRasterCollection::merge, "merge")
 	;
 	
-    class_<SpatRasterStack>("SpatStack")
+    class_<SpatRasterStack>("SpatDataSet")
 		.constructor()
 	    .constructor<std::string, std::vector<int>, bool>()
 	    .constructor<SpatRaster, std::string>()

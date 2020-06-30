@@ -113,7 +113,7 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
 
 
-setMethod("app", signature(x="SpatStack"), 
+setMethod("app", signature(x="SpatDataSet"), 
 function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(match.fun(fun))
@@ -134,7 +134,7 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 	readStart(x)
 	on.exit(readStop(x))
 
-	v <- lapply(1:nsds(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
+	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .app_test_stack(v, fun, ncx, ...)
 	if (test$nl < 1) stop("app is not having 'fun'")
 	out <- rast(x[1], nlyr=test$nl)
@@ -147,7 +147,7 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 		cls <- parallel::makeCluster(nodes)
 		on.exit(parallel::stopCluster(cls))
 		for (i in 1:b$n) {
-			v <- lapply(1:nsds(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
+			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
 			v <- do.call(cbind, v)
 			icsz <- max(min(100, ceiling(b$nrows[i] / nodes)), b$nrows[i])
 			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
@@ -159,7 +159,7 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 		}	
 	} else {
 		for (i in 1:b$n) {
-			v <- lapply(1:nsds(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
+			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
 			r <- apply(do.call(cbind, v), 1, fun, ...) 
 			if (test$trans) {
 				r <- t(r)

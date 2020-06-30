@@ -1,30 +1,30 @@
-\name{rstk}
+\name{sds}
 
 \docType{methods}
 
-\alias{rstk}
-\alias{rstk,character-method}
-\alias{rstk,list-method}
-\alias{rstk,SpatRaster-method}
-\alias{[<-,SpatStack,numeric,missing-method}
+\alias{sds}
+\alias{sds,character-method}
+\alias{sds,list-method}
+\alias{sds,SpatRaster-method}
+\alias{[<-,SpatDataSet,numeric,missing-method}
 \alias{sds_info}
 
 
-\title{Create a SpatStack}
+\title{Create a SpatDataSet}
 
 \description{
-Methods to create a SpatStack. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
+Methods to create a SpatDataSet. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
 
 sds_info provides information about sub-datasets in a file.
 
 }
 
 \usage{
-\S4method{rstk}{character}(x, ids=0, ...)
+\S4method{sds}{character}(x, ids=0, ...)
 
-\S4method{rstk}{SpatRaster}(x, ...) 
+\S4method{sds}{SpatRaster}(x, ...) 
 
-\S4method{rstk}{list}(x, ...) 
+\S4method{sds}{list}(x, ...) 
 
 sds_info(filename, ...)
 }
@@ -38,18 +38,19 @@ sds_info(filename, ...)
 
 
 \value{
-SpatStack
+SpatDataSet
 }
 
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
-x <- rstk(s)
-names(x) <- "first"
-y <- c(x, second=s)
+x <- sds(s, s/2)
+names(x) <- c("first", "second")
+x
+length(x)
 
 # extract the second SpatRaster
-y[2]
+x[2]
 }
 
 

@@ -1,33 +1,33 @@
 
-setMethod("nsds", signature(x="SpatStack"),
+setMethod("length", signature(x="SpatDataSet"),
 	function(x) {
 		x@ptr$nsds()
 	}
 )
 
-setMethod("rstk", signature(x="character"),
+setMethod("sds", signature(x="character"),
 	function(x, ids=0, ...) {
 		x <- trimws(x[1])
 		if (nchar(x) == 0) {
 			stop("provide valid file name(s)")
 		}
 		f <- .fullFilename(x)
-		r <- methods::new("SpatStack")
+		r <- methods::new("SpatDataSet")
 		ids <- round(ids)-1
 		if (ids[1] < 0) {
 			useids <- FALSE
 		} else {
 			useids <- TRUE
 		}
-		r@ptr <- SpatStack$new(f, ids, useids)
-		show_messages(r, "rstk")
+		r@ptr <- SpatDataSet$new(f, ids, useids)
+		show_messages(r, "sds")
 	}
 )
 
-setMethod("rstk", signature(x="SpatRaster"),
+setMethod("sds", signature(x="SpatRaster"),
 	function(x, ...) {
-		r <- methods::new("SpatStack")
-		r@ptr <- SpatStack$new(x@ptr, "")
+		r <- methods::new("SpatDataSet")
+		r@ptr <- SpatDataSet$new(x@ptr, "")
 		dots <- list(...)
 		nms <- names(dots)
 		if (is.null(nms)) nms = ""
@@ -37,14 +37,14 @@ setMethod("rstk", signature(x="SpatRaster"),
 				r@ptr$add(dots[[i]]@ptr, nms[i])
 			}
 		}	
-		show_messages(r, "rstk")
+		show_messages(r, "sds")
 	}
 )
 
-setMethod("rstk", signature(x="list"),
+setMethod("sds", signature(x="list"),
 	function(x, ...) {
-		r <- methods::new("SpatStack")
-		r@ptr <- SpatStack$new()
+		r <- methods::new("SpatDataSet")
+		r@ptr <- SpatDataSet$new()
 		nms <- names(x)
 		if (is.null(nms)) nms <- rep("", length(x))
 		for (i in seq_along(x)) {
@@ -52,13 +52,13 @@ setMethod("rstk", signature(x="list"),
 				r@ptr$add(x[[i]]@ptr, nms[i])
 			}
 		}	
-		show_messages(r, "rstk")
+		show_messages(r, "sds")
 	}
 )
 
-setMethod("c", signature(x="SpatStack"), 
+setMethod("c", signature(x="SpatDataSet"), 
 	function(x, ...) {
-		r <- methods::new("SpatStack")
+		r <- methods::new("SpatDataSet")
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 )
 		dots <- list(...)
 		nms <- names(dots)
@@ -71,8 +71,8 @@ setMethod("c", signature(x="SpatStack"),
 	}
 )
 
-# perhaps instead use [[ for return SpatStack
-setMethod("[", c("SpatStack", "numeric", "missing"),
+# perhaps instead use [[ for return SpatDataSet
+setMethod("[", c("SpatDataSet", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	if (length(i) == 1) {
 		ptr <- x@ptr$getsds(i-1)
@@ -85,7 +85,7 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setReplaceMethod("[", c("SpatStack","numeric","missing"),
+setReplaceMethod("[", c("SpatDataSet","numeric","missing"),
 	function(x, i, j, value) {
 		if (any(!is.finite(i)) | any(i<1)) {
 			stop("invalid index")
@@ -100,14 +100,14 @@ setReplaceMethod("[", c("SpatStack","numeric","missing"),
 )
 
 
-setMethod("[", c("SpatStack", "numeric", "numeric"),
+setMethod("[", c("SpatDataSet", "numeric", "numeric"),
 function(x, i, j, ... ,drop=TRUE) {
 	y <- x[i]
 	if (inherits(y, "SpatRaster")) {
 		return(y[[j]])
 	}
 	nd <- y@ptr$nsds()
-	x@ptr <- SpatStack$new()
+	x@ptr <- SpatDataSet$new()
 	nms <- y@ptr$names
 	for (k in seq_along(1:nd)) {
 		r <- y[k][[j]]
@@ -117,19 +117,19 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setMethod("[", c("SpatStack", "logical", "missing"),
+setMethod("[", c("SpatDataSet", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	x[which(i), ..., drop=drop]
 })
 
-setMethod("[", c("SpatStack", "character", "missing"),
+setMethod("[", c("SpatDataSet", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- match(i, names(x))
 	if (any(is.na(i))) {stop("unknown name(s) provided")}
 	x[i, ..., drop=drop]
 })
 
-setMethod("$", "SpatStack",  
+setMethod("$", "SpatDataSet",  
 	function(x, name) { 
 		x[name] 
 	}

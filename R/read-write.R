@@ -14,7 +14,7 @@ setMethod("readStart", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("readStart", signature(x="SpatStack"), 
+setMethod("readStart", signature(x="SpatDataSet"), 
 	function(x, ...) {
 		success <- x@ptr$readStart()
 		show_messages(x, "readStart")		
@@ -23,9 +23,9 @@ setMethod("readStart", signature(x="SpatStack"),
 	}
 )
 
-#setMethod("readStart", signature(x="SpatStack"), 
+#setMethod("readStart", signature(x="SpatDataSet"), 
 #	function(x, ...) {
-#		nsd <- nsds(x)
+#		nsd <- length(x)
 #		for (i in 1:nsd) {
 #			y <- x[i]
 #			success <- readStart(y)
@@ -45,7 +45,7 @@ setMethod("readStop", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("readStop", signature(x="SpatStack"), 
+setMethod("readStop", signature(x="SpatDataSet"), 
 	function(x) {
 		success <- x@ptr$readStop()
 		show_messages(x, "readStop")		

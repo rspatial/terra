@@ -4,7 +4,7 @@
 
 \alias{c}
 \alias{c,SpatRaster-method}
-\alias{c,SpatStack-method}
+\alias{c,SpatDataSet-method}
 
 \title{Combine SpatRasters}
 
@@ -15,11 +15,11 @@ Combine SpatRaster objects
 \usage{
 \S4method{c}{SpatRaster}(x, ...)
 
-\S4method{c}{SpatStack}(x, ...)
+\S4method{c}{SpatDataSet}(x, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatStack}
+  \item{x}{SpatRaster or SpatDataSet}
   \item{...}{SpatRaster objects to be combined with \code{x}}
 }
 

@@ -166,7 +166,7 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 		}
 	}
 	if (any(cls)) {
-		x <- rstk(c(list(x), dots[cls]))
+		x <- sds(c(list(x), dots[cls]))
 	} 
 
 	r <- rast()

@@ -117,13 +117,13 @@ setMethod("rast", signature(x="SpatRaster"),
 )
 
 
-setMethod("rast", signature(x="SpatStack"),
+setMethod("rast", signature(x="SpatDataSet"),
 	function(x, nlyrs=nlyr(x), ...) {
 		r <- methods::new("SpatRaster")
 		x <- x[1]
 		r@ptr <- x@ptr$geometry(nlyrs)
 		if (length(list(...)) > 0) {
-			warning("additional arguments ignored when x is a SpatStack")
+			warning("additional arguments ignored when x is a SpatDataSet")
 		}
 		show_messages(r, "rast")
 	}
@@ -155,7 +155,7 @@ setMethod("rast", signature(x="Raster"),
 
 .rastFromXYZ <- function(xyz, digits=6, crs="", ...) {
 
-	if (length(list(...))>0) warning("additional arguments ignored when x is a SpatStack")
+	if (length(list(...))>0) warning("additional arguments ignored when x is a SpatDataSet")
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names

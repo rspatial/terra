@@ -151,11 +151,11 @@ setMethod ("show" , "SpatRaster",
 )
 
 
-setMethod("show" , "SpatStack", 
+setMethod("show" , "SpatDataSet", 
 	function(object) {
 		
 		cat("class       :" , class(object), "\n")
-		ns <- nsds(object)
+		ns <- length(object)
 		cat("subdatasets :", ns, "\n") 
 		if (ns == 0) return()
 		
