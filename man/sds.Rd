@@ -16,7 +16,6 @@
 Methods to create a SpatDataSet. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
 
 sds_info provides information about sub-datasets in a file.
-
 }
 
 \usage{
@@ -30,7 +29,7 @@ sds_info(filename, ...)
 }
 
 \arguments{
-\item{x}{character (filename) or SpatRaster, or list of SpatRaster objects}
+\item{x}{character (filename) or SpatRaster, or list of SpatRaster objects. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatDataSet}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a postive integer}
 \item{...}{additional arguments. Can be other \code{SpatRaster} objects if \code{x} is a \code{SpatRaster}} 
 \item{filename}{character}

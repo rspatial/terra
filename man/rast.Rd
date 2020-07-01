@@ -34,7 +34,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), ...) 
 
-\S4method{rast}{matrix}(x, type="", ...)
+\S4method{rast}{matrix}(x, type="", crs="", ...)
 
 \S4method{rast}{SpatVector}(x, ...)
 									  
@@ -42,11 +42,11 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 
 \S4method{rast}{list}(x, ...)
 
-\S4method{rast}{Raster}(x, ...)
+\S4method{rast}{SpatDataSet}(x, ...)
 }
 
 \arguments{
-\item{x}{filename (character), SpatRaster, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
+\item{x}{filename (character), SpatRaster, SpatDataSet, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
 \item{subds}{positive integer or character to select a subdataset. If zero or "", all subdatasets are returned (if possible)}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
@@ -60,7 +60,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 \item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncol} and \code{nrow} are ignored }
 \item{type}{character. If the value is not \code{"xyz"}, the raster has the same number of rows and colums as the matrix.
 If the value is \code{"xyz"}, the matrix must have at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.}
-\item{...}{additional arguments passed on to the \code{rast,missing-method}}  
+\item{...}{additional arguments, in some cases passed on to the \code{rast,missing-method}}  
 }
 
 

@@ -165,7 +165,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 		} else {
 			crscom <- comment(crsobj)
 			if (is.null(crscom)) {
-				prj <- obj@projargs
+				prj <- crsobj@projargs
 			} else {
 				prj <- crscom
 			}

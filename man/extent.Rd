@@ -8,6 +8,7 @@
 \alias{ext,SpatExtent-method}
 \alias{ext,SpatRaster-method}
 \alias{ext,SpatVector-method}
+\alias{ext,SpatDataSet-method}
 \alias{ext<-,SpatRaster,SpatExtent-method}
 \alias{ext,numeric-method}
 \alias{ext,missing-method}
@@ -35,7 +36,7 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
 }
  
 \value{
-SpatExtent or numeric coordinate
+SpatExtent
 }
   
 
