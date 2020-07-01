@@ -159,12 +159,21 @@ setMethod("as.array", signature(x="SpatRaster"),
 		}
 		return(r)
 	} else {
-		crs <- crs(from)
-		crs <- ifelse(is.na(crs), "", crs)
+		crsobj <- crs(from)
+		if (is.na(crsobj)) {
+			prj <- ""
+		} else {
+			crscom <- comment(crsobj)
+			if (is.null(crscom)) {
+				prj <- obj@projargs
+			} else {
+				prj <- crscom
+			}
+		}
 		r <- rast(	nrows=nrow(from), 
 					ncols=ncol(from),
 					nlyrs=nlayers(from),
-					crs=crs,
+					crs=prj,
 					extent=extent(from))
 		if (hasValues(from)) {
 			values(r) <- values(from)			

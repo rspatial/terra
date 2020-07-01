@@ -10,7 +10,7 @@ setMethod("dim", signature(x="SpatRaster"),
 
 setMethod("dim", signature(x="SpatDataSet"), 
 	function(x) {
-		dim(x[1])
+		dim(x[1])[1:2]
 	}
 )
 

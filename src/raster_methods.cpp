@@ -791,7 +791,8 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 	SpatRaster out = geometry(nlyr());
 	e = out.align(e, "near");
 	e.unite(extent);
-	if (extent.compare(e, "==", 1000)) {
+	double tol = std::min(xres(), yres()) / 1000;
+	if (extent.compare(e, "==", tol)) {
 		out = deepCopy();
 		return out;
 	}

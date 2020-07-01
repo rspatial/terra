@@ -362,12 +362,17 @@ bool ncdf_time(std::string filename, int &startdate, std::string &calendar) {
 	}
 		
 	std::string s = pszv;
+
+//	Rcpp::Rcout << "s1: " << s << std::endl;
+
 	std::string delim = "days since ";
 	size_t pos = s.find(delim);
 	if (pos == std::string::npos) {
 		return false;
 	}
 	s.erase(0, delim.length());
+//	Rcpp::Rcout << "s2: " << s << std::endl;
+
 	if (s.size() > 9) {
 		try {
 			int y = std::stoi(s.substr(0,4));
@@ -413,9 +418,6 @@ bool fixTime(std::vector<double> &time, int &startdate, std::string &calendar) {
 	}
 }
 
-
-//#include <iostream>
-//#include "Rcpp.h"
 
 
 bool SpatRaster::constructFromFile(std::string fname, int subds, std::string subdsname) {
@@ -523,10 +525,8 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 
 //	s.layers.resize(1);
 
-
-	/*
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
-	Rcpp::Rcout << "driver: " << gdrv << std::endl;
+	//Rcpp::Rcout << "driver: " << gdrv << std::endl;
 	int startdate=0;
 	std::string calendar = "";
 	std::string unit = "";
@@ -543,23 +543,21 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 			s.time.resize(s.nlyr, NAN);
 			s.time[0] = CPLAtofM(pmeta);
 			s.hasTime = true;
-
+			//Rcpp::Rcout << "start date: " << startdate << std::endl;
 			ncdf_time(fname, startdate, calendar);
 		}
 	}
-	*/
+
 
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
-		/*
 		if (s.hasTime) {
 			const char *pszValue = nullptr;
 			if( (pszValue = poBand->GetMetadataItem("NETCDF_DIM_time")) != nullptr ) {
 				s.time[i] = CPLAtofM(pszValue);
 			}
 		}
-		*/
 
 		int success;
 	//	double naflag = poBand->GetNoDataValue(&success);
@@ -647,8 +645,8 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 	s.hasValues = true;
 	setSource(s);
 
-	//if (unit != "") setUnit({unit});
-	//if (s.hasTime) fixTime(s.time, startdate, calendar);
+	if (unit != "") setUnit({unit});
+	if (s.hasTime) fixTime(s.time, startdate, calendar);
 
 	return true;
 }

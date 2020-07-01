@@ -159,23 +159,27 @@ setMethod("show" , "SpatDataSet",
 		cat("subdatasets :", ns, "\n") 
 		if (ns == 0) return()
 		
-		d <- c(object@ptr$nrow(), object@ptr$ncol())
+		d <- dim(object)
 		cat("dimensions  :", paste(d, collapse=", "), "(nrow, ncol)\n") 
-		nss <- sapply(1:ns, function(i) object@ptr$getsds(i-1)$nlyr())
+		nss <- nlyr(object)
+		if (length(nss) > 10) {
+			nss = c(as.character(nss[1:9], "..."))
+		}
 		cat("nlyr        :", paste(nss, collapse=", "), "\n") 
 
-		obj <- rast()
-		obj@ptr <- object@ptr$getsds(0)
 		
-		xyres <- res(obj)
+		xyres <- res(object)
 		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
-		e <- as.vector(ext(obj))
+		e <- as.vector(ext(object))
 		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 
-		cat("coord. ref. :" , .proj4(obj), "\n")
+
+		cat("coord. ref. :" , .proj4(object[1]), "\n")
 		
-		ln <- object@ptr$names
-		cat("names       :", paste(ln, collapse=", "), "\n")
+		ln <- names(object)
+		if (!all(ln == "")) {
+			cat("names       :", paste(ln, collapse=", "), "\n")
+		}
 	}
 )
 
