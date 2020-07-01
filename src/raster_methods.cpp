@@ -91,7 +91,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
 
-	if (!out.compare_geom(x, false, true, false, true, true, false)) {
+	if (!out.compare_geom(x, false, true, true, true, true, false)) {
 		return(out);
 	}
 
