@@ -7,6 +7,14 @@ setMethod("length", signature(x="SpatDataSet"),
 
 setMethod("sds", signature(x="character"),
 	function(x, ids=0, ...) {
+		
+		if (length(x) > 1) {
+			r <- lapply(x, rast)
+			s <- sds(r)	
+			names(s) <- tools::file_path_sans_ext(basename(x))
+			return(s)
+		}
+		
 		x <- trimws(x[1])
 		if (nchar(x) == 0) {
 			stop("provide valid file name(s)")
