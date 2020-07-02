@@ -87,6 +87,9 @@ setMethod("rast", signature(x="SpatVector"),
 
 setMethod("rast", signature(x="character"),
 	function(x, subds=0, ...) {
+		## work around onLoad problem
+		if (is.null(.terra_environment$options)) .init()
+
 		x <- trimws(x)
 		x <- x[x!=""]
 		if (length(x) == 0) {
@@ -103,7 +106,7 @@ setMethod("rast", signature(x="character"),
 		r <- show_messages(r, "rast")
 		
 		if (crs(r) == "") {
-			if (couldBeLonLat(r)) {
+			if (isLonLat(r, perhaps=TRUE, warn=FALSE)) {
 				crs(r) <- "+proj=longlat +datum=WGS84"
 			}
 		}

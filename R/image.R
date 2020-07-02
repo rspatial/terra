@@ -14,7 +14,7 @@ setMethod("image", signature(x="SpatRaster"),
 		value <- matrix(as.vector(x), nrow=nrow(x), byrow=TRUE)
 		value <- t(value[nrow(value):1, ,drop=FALSE])
 		if (is.null(list(...)$asp)) {
-			asp <- ifelse(couldBeLonLat(x, warnings=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
+			asp <- ifelse(isLonLat(x, perhaps=TRUE, warn=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
 			graphics::image(x=X, y=Y, z=value, asp=asp, ...)			
 			
 		} else {

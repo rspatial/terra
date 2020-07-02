@@ -218,8 +218,8 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	std::string message = "";
 	bool success = get_aggregate_dims(fact, message);
 
-// fact 1, 2, 3, are the aggregations factors dy, dx, dz
-// and 4, 5, 6 are the new nrow, ncol, nlyr
+// fact 0, 1, 2, are the aggregation factors dy, dx, dz
+// and  3, 4, 5 are the new nrow, ncol, nlyr
 	if (!success) {
 		out.setError(message);
 		return out;
@@ -271,7 +271,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	//bs.n = floor(nrow() / fact[0]); # ambiguous on solaris
 	bs.n = std::floor(static_cast <double> (nrow() / fact[0]));
 	
-	bs.nrows.resize(bs.n, fact[0]);
+	bs.nrows = std::vector<unsigned>(bs.n, fact[0]);
 	bs.row.resize(bs.n);
 	for (size_t i =0; i<bs.n; i++) {
 		bs.row[i] = i * fact[0];

@@ -54,7 +54,7 @@
 setMethod("plot", signature(x="SpatVector", y="missing"), 
 	function(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, border="black", ...)  {
 		gtype <- geomtype(x)
-		if (couldBeLonLat(x, warn=FALSE)) {
+		if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
 			asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
 		} else {
 			asp <- 1

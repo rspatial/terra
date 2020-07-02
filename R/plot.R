@@ -69,7 +69,7 @@ setMethod("persp", signature(x="SpatRaster"),
 	Z <- t( matrix( values(x), ncol=ncol(x), byrow=TRUE)[nrow(x):1,] )
 	
  	if (is.null(list(...)$asp)) {
-		asp <- ifelse(couldBeLonLat(x, warnings=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
+		asp <- ifelse(isLonLat(x, perhaps=TRUE, warn=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
 		graphics::filled.contour(x=X, y=Y, z=Z, asp=asp, ...)
 	} else {
 		graphics::filled.contour(x=X, y=Y, z=Z,...)
@@ -84,7 +84,7 @@ setMethod("contour", signature(x="SpatRaster"),
 		} else {
 			x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE)
 			if (is.null(list(...)$asp)) {
-				asp <- ifelse(couldBeLonLat(x, warnings=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
+				asp <- ifelse(isLonLat(x, perhaps=TRUE, warn=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
 				graphics::contour(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), asp=asp, ...)
 			} else {
 				graphics::contour(x=xFromCol(x,1:ncol(x)), y=yFromRow(x, nrow(x):1), z=t(as.matrix(x, wide=TRUE)[nrow(x):1,]), ...)

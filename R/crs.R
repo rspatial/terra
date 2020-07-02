@@ -37,36 +37,32 @@ setMethod("crs<-", signature("SpatVector", "character"),
 
 
 setMethod("isLonLat", signature("SpatRaster"), 
-	function(x, ...) {
-		x@ptr$isLonLat()
+	function(x, perhaps=FALSE, warn=TRUE, global=FALSE, ...) {
+		if (perhaps) {
+			a <- x@ptr$couldBeLonLat()
+			if (a & global) {
+				a <- x@ptr$isGlobalLonLat()
+			}
+			if (warn) show_messages(x, "isLonLat")
+			a			
+		} else if (global) {
+			x@ptr$isGlobalLonLat()
+		} else {
+			x@ptr$isLonLat()
+		}
 	}
 )
+
 
 setMethod("isLonLat", signature("SpatVector"), 
-	function(x, ...) {
-		x@ptr$isLonLat()
+	function(x, perhaps=FALSE, warn=TRUE, ...) {
+		if (perhaps) {
+			a <- x@ptr$couldBeLonLat()
+			if (warn) show_messages(x, "couldBeLonLat")
+			a	
+		} else {
+			x@ptr$isLonLat()
+		}
 	}
 )
 
-setMethod("couldBeLonLat", signature("SpatRaster"), 
-	function(x, warn=TRUE, ...) {
-		b <- x@ptr$couldBeLonLat()
-		show_messages(x, "couldBeLonLat")
-		b
-	}
-)
-
-setMethod("couldBeLonLat", signature("SpatVector"), 
-	function(x, warn=TRUE, ...) {
-		b <- x@ptr$couldBeLonLat()
-		show_messages(x, "couldBeLonLat")
-		b
-	}
-)
-
-
-setMethod("isGlobalLonLat", signature("SpatRaster"), 
-	function(x, ...) {
-		x@ptr$isGlobalLonLat()
-	}
-)

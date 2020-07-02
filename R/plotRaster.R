@@ -16,7 +16,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			return(invisible(NULL))
 		}
 
-		if (couldBeLonLat(x, warn=FALSE)) {
+		if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
 			asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
 		} else {
 			asp <- 1

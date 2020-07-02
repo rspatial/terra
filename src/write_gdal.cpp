@@ -231,12 +231,11 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, unsigned startrow, u
 		source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
 	}
 
-	if (datatype == "FLT8S") {
-			//std::vector<double> vv(vals.begin(), vals.end());
+	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
 		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL );
-	} else if (datatype == "FLT4S") {
-		std::vector<float> vv(vals.begin(), vals.end());
-		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Float32, nl, NULL, 0, 0, 0, NULL );
+	//} else if (datatype == "FLT4S") {
+	//	std::vector<float> vv(vals.begin(), vals.end());
+	//	err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Float32, nl, NULL, 0, 0, 0, NULL );
 	} else if (datatype == "INT4S") {
 		std::transform(vals.begin(), vals.end(), vals.begin(),
 			[](double v) { return (std::isnan(v) ? double(INT32_MIN) : v); } );

@@ -21,4 +21,4 @@ Authors@R: c(
     person("Roger", "Bivand",  role = "ctb", comment = c(ORCID = "0000-0003-2392-6140")),
 	person("Karl", "Forner", role = "ctb"),
 	person("Jeroen", "Ooms", role = "ctb", comment = c(ORCID = "0000-0002-4035-0289")))
-
+RoxygenNote: 7.1.0

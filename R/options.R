@@ -56,7 +56,12 @@
 	if (!is.list(wopt)) {
 		stop("wopt must be a list")
 	}
+	
+	## work around onLoad problem
+	if (is.null(.terra_environment$options)) .init()
+	
 	ptr <- .terra_environment$options@ptr
+
 	opt <- ptr$deepcopy(ptr)
 	
 	filename <- .fullFilename(filename[1], mustExist=FALSE)

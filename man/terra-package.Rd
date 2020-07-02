@@ -22,14 +22,15 @@ Note the following important differences in methods names with the 'raster' pack
 \bold{raster package} \tab \bold{terra package}\cr
 \code{raster, brick, stack}\tab\code{\link{rast}}\cr
 \code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
+\code{extent}\tab\code{\link{ext}}\cr
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
 \code{dropLayer}\tab\code{\link{subset}}\cr
-\code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
+\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{isLonLat}}\cr
 \code{projectRaster}\tab\code{\link{project}}\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
 \code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
@@ -248,7 +249,7 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
 	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates (a.k.a. "bounding box") \cr
 	\code{\link{origin}} \tab The origin of a SpatRaster\cr
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
-    \code{\link{isLonLat}} \tab Test if an object has a longitude/latitude coordinate reference system \cr
+    \code{\link{isLonLat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system; and if it has global coverage \cr
     \code{\link{filename}} \tab Filename(s) to which a SpatRaster is linked \cr	
     \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr		
     \code{NAvalue} \tab Get or set the \code{NA} value (for reading from a file) \cr

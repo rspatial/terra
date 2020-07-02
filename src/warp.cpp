@@ -265,6 +265,7 @@ bool is_valid_warp_method(const std::string &method) {
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr());
+	out.setNames(getNames());
 
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
@@ -395,6 +396,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	unsigned nl = nlyr();
 	SpatRaster out = x.geometry(nl);
+	out.setNames(getNames());
 
 	if (crs != "") {
 		out.setError("You cannot project by specifying a crs with your version of GDAL");

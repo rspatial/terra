@@ -106,7 +106,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 		}
 
 		if (is.null(asp)) {
-			if (couldBeLonLat(x)) {
+			if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
 			    ym <- mean(bb[3:4])
 				asp <- 1/cos((ym * pi)/180)
 				#asp <- min(5, 1/cos((ym * pi)/180))
