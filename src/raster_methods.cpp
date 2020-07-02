@@ -331,11 +331,17 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 
 
 
-SpatRaster SpatRaster::selRange(SpatRaster x, int z, SpatOptions &opt) {
+SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt) {
 
 	int nl = nlyr();
 	z = std::max(1, std::min(z, nl));
-	SpatRaster out = geometry(z);
+	size_t nrecs = 1;
+	if (recycleby > 1 && recycleby < nl) {
+		nrecs = nl / recycleby;
+	} else {
+		recycleby = 0;
+	}
+	SpatRaster out = geometry( z * nrecs );
 	if (!out.compare_geom(x, false, false)) {
 		return(out);
 	}
@@ -357,21 +363,23 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, SpatOptions &opt) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> idx = x.readBlock(out.bs, i);
 		size_t is = idx.size();
-		std::vector<double> vv(is*z, NAN);
-		size_t ncell = out.bs.nrows[i] * ncol();
+		std::vector<double> vv(is*z*nrecs, NAN);
+		size_t ncell = out.bs.nrows[i] * ncol(); // same as is?
 
-		for (size_t j=0; j<is; j++) {
-			int start = idx[j] - 1;
-			if ((start >= 0) && (start < nl)) {
-				int zz = std::min(nl-start, z);
-				for (int i = 0; i<zz; i++){
-					size_t offin = (start + i) * ncell + j;
-					size_t offout = i * ncell + j;
-					vv[offout] = v[offin];   
+		for (size_t j=0; j<is; j++) {  //index.size (each cell)
+			for (size_t k=0; k<nrecs; k++) {
+				int start = idx[j] - 1 + k * recycleby;  // first layer for this cell
+				int offbase = (k*z) * ncell;
+				if ((start >= 0) && (start < nl)) {
+					int zz = std::min(nl-start, z); // do not surpass the last layer
+					for (int i=0; i<zz; i++){
+						size_t offin = (start + i) * ncell + j;
+						size_t offout = offbase + i * ncell + j;
+						vv[offout] = v[offin];   
+					}
 				}
 			}
 		}
-	
 		//for (size_t j=0; j<is; j++) {
 		//	int index = idx[j] - 1;
 		//	if ((index >= 0) && (index < nl)) {

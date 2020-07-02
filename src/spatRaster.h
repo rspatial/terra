@@ -462,7 +462,7 @@ class SpatRaster {
 
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
 
-		SpatRaster selRange(SpatRaster x, int z, SpatOptions &opt);
+		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);

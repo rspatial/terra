@@ -176,9 +176,9 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 
 
 setMethod("selectRange", signature(x="SpatRaster"), 
-	function(x, y, z=1, filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, y, z=1, repint=0, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$selRange(y@ptr, z, opt)
+		x@ptr <- x@ptr$selRange(y@ptr, z, repint, opt)
 		show_messages(x, "selectRange")		
 	}
 )

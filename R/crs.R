@@ -43,7 +43,9 @@ setMethod("isLonLat", signature("SpatRaster"),
 			if (a & global) {
 				a <- x@ptr$isGlobalLonLat()
 			}
-			if (warn) show_messages(x, "isLonLat")
+			if (warn) {
+				if (crs(x) == "") warning("assuming lon/lat crs")
+			}
 			a			
 		} else if (global) {
 			x@ptr$isGlobalLonLat()
@@ -58,7 +60,9 @@ setMethod("isLonLat", signature("SpatVector"),
 	function(x, perhaps=FALSE, warn=TRUE, ...) {
 		if (perhaps) {
 			a <- x@ptr$couldBeLonLat()
-			if (warn) show_messages(x, "couldBeLonLat")
+			if (warn) {
+				if (crs(x) == "") warning("assuming lon/lat crs")
+			}
 			a	
 		} else {
 			x@ptr$isLonLat()

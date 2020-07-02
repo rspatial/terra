@@ -36,7 +36,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=100000, nc, nr, main, 
    maxnl=16, add=FALSE, ...)
 
-\S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, nc, nr, 
+\S4method{plot}{SpatRaster,SpatRaster}(x, y, maxcell=100000, warn=TRUE, nc, nr, 
    maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...)
 
 \S4method{plot}{SpatVector,missing}(x, y, col=NULL, xlab="", ylab="", 
@@ -82,6 +82,8 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{maxnl}{postive integer. Maximum number of layers to plot (for a multi-layer object)}
   \item{main}{character. Main plot title}
   \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
+  \item{warn}{boolean. Show a warning if a sample of the pixels is used (for scatterplot only)}
+
   \item{ncol}{positive integer. Number of columns for gridding}
   \item{nrow}{positive integer. Number of rows for gridding}
   \item{add}{logical. If \code{TRUE} add the object to the current plot (for points, lines, and polygons  this is an alternative to the \code{lines} or \code{points} methods}   

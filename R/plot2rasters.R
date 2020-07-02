@@ -4,7 +4,7 @@
 # Licence GPL v3
 
 
-.scatterPlotRaster <- function(x, y, maxcell=100000, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
+.scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
 
 	compareGeom(x, y, lyrs=TRUE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
 	nlx <- nlyr(x)
@@ -58,7 +58,7 @@
 	x <- spatSample(x, size=maxcell, method="regular", as.raster=FALSE)
 	y <- spatSample(y, size=maxcell, method="regular", as.raster=FALSE)
 
-	if (NROW(x) < cells) {
+	if (warn & (NROW(x) < cells)) {
 		warning(paste('plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxcell" to increase the sample)', sep=""))
 	}
 
@@ -121,7 +121,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, maxcell=100000, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...) {
+	function(x, y, maxcell=100000, warn=TRUE, nc, nr, maxnl=16, gridded=FALSE, ncol=25, nrow=25, ...) {
 
 		nl <- max(nlyr(x), nlyr(y))
 		if (missing(nc)) {
@@ -137,7 +137,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 		}
 
 		
-		.scatterPlotRaster(x, y, maxcell=maxcell, nc=nc, nr=nr, maxnl=maxnl, gridded=gridded, ncol=ncol, nrow=nrow, ...)
+		.scatterPlotRaster(x, y, maxcell=maxcell, warn=warn, nc=nc, nr=nr, maxnl=maxnl, gridded=gridded, ncol=ncol, nrow=nrow, ...)
 	}
 )
 

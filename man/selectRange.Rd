@@ -15,13 +15,14 @@ See \code{\link{extract}} for extraction of values by cell, point, or otherwise.
 }
 
 \usage{
-\S4method{selectRange}{SpatRaster}(x, y, z=1, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{selectRange}{SpatRaster}(x, y, z=1, repint=0, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{SpatRaster. Cell values must be positive integers. They indicate the first layer to select for each cell}
   \item{z}{positive integer. The number of layers to select}
+  \item{repint}{integer > 1 and < nlyr(x) allowing for repeated selection at a fixed interval. For example, if \code{x} has 36 layers, and the value of a cell in \code{y}=2 and \code{repint} = 12, the values for layers 2, 14 and 26 are returned}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
