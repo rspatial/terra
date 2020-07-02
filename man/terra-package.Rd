@@ -303,7 +303,7 @@ A SpatDataSet contains SpatRaster objects that are sub-datasets for the same are
 \tabular{ll}{
   \code{\link{sds}} \tab Create a SpatDataSet \cr
   \code{[[} or \code{$} \tab Extract a SpatRaster \cr
-  \code{names} \tab Get the names of the sub-datasets \cr
+  \code{\link{names}} \tab Get the names of the sub-datasets \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 }

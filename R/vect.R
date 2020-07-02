@@ -134,9 +134,13 @@ setMethod("$<-", "SpatVector",
 				stop("cannot set these values")
 			}
 		} else {
-		    d <- values(x)
-			d[[name]] <- value
-			values(x) <- d
+			if (is.null(value)) {
+				x@ptr$remove_column(name)
+			} else {
+				d <- values(x)
+				d[[name]] <- value
+				values(x) <- d
+			}
 		} 
 		return(x)		
 	}

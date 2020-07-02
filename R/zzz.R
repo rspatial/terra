@@ -18,6 +18,7 @@ gdal_version <- function() {
 
 loadModule("spat", TRUE)
 
+## we need the below, but this gives an error in R CMD check
 #setLoadActions(
 #	function(ns) {
 #		try(.init(), silent=FALSE)

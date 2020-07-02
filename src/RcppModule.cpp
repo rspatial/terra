@@ -186,6 +186,10 @@ RCPP_MODULE(spat){
 		.method("add_column_double", (bool (SpatDataFrame::*)(std::vector<double>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
+
+		.method("remove_column", (bool (SpatDataFrame::*)(std::string field))( &SpatDataFrame::remove_column))
+		.method("remove_column", (bool (SpatDataFrame::*)(int i))( &SpatDataFrame::remove_column))
+				
 		.method("cbind", &SpatDataFrame::cbind)
 		.method("rbind", &SpatDataFrame::rbind)
 		.method("values", &getDataFrame, "get data.frame")
@@ -209,6 +213,9 @@ RCPP_MODULE(spat){
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
+		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
+		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
+
 		.method("area", &SpatVector::area, "area")		
 		.method("as_lines", &SpatVector::as_lines, "as_lines")
 		.method("as_points", &SpatVector::as_points, "as_points")
