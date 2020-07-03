@@ -20,11 +20,17 @@
 \alias{Logic,SpatRaster,SpatRaster-method}
 \alias{Logic,SpatRaster,numeric-method}
 \alias{Logic,numeric,SpatRaster-method}
+\alias{Logic,SpatRaster,logical-method}
+\alias{Logic,logical,SpatRaster-method}
 \alias{Math,SpatRaster-method}
 \alias{Math2,SpatRaster-method}
 \alias{Math,SpatExtent-method}
 \alias{Math2,SpatExtent-method}
 \alias{Compare,SpatExtent,SpatExtent-method}
+
+\alias{isTRUE,SpatRaster-method}
+\alias{isFALSE,SpatRaster-method}
+\alias{as.logical,SpatRaster-method}
 
 \alias{is.na,SpatRaster-method}
 \alias{is.nan,SpatRaster-method}
@@ -43,9 +49,9 @@ Standard operators and mathematical methods for computations with SpatRaster obj
 
 \bold{Compare}: \code{ ==, !=, >, <,  <=, >=, is.na, is.nan, is.finite, is.infinite}
 
-The terra package does not distunguish between \code{NA} (not available) and \code{NaN} (not a number) and that both are represented as \code{NaN}.  
+The terra package does not distinguish between \code{NA} (not available) and \code{NaN} (not a number). In most cases this state is represented by \code{NaN}.  
 
-\bold{Logical}: \code{!, &, |}
+\bold{Logical}: \code{!, &, |, isTRUE, isFALSE}
 
 \bold{Summary}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
  

@@ -121,6 +121,27 @@ setMethod("!", signature(x="SpatRaster"),
 	}
 )	
 
+setMethod("isTRUE", signature(x="SpatRaster"),
+	function(x) {
+		x <- x == 1
+		classify(x, cbind(NA, 0))
+	}
+)	
+
+
+setMethod("isFALSE", signature(x="SpatRaster"),
+	function(x) {
+		x <- x != 1
+		classify(x, cbind(NA, 0))
+	}
+)
+
+setMethod("as.logical", signature(x="SpatRaster"),
+	function(x) {
+		isTRUE(x)
+	}
+)	
+
 
 setMethod("is.na", signature(x="SpatRaster"),
 	function(x) {
