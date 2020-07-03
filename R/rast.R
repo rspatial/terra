@@ -43,6 +43,7 @@ setMethod("rast", signature(x="list"),
 		if (!all(i)) {
 			warning(paste(sum(!i), "out of", length(x), "elements of x are a SpatRaster"))
 		}
+		names(x) <- NULL
 		do.call(c, x[i])
 	}
 )
