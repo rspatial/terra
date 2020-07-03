@@ -530,6 +530,7 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 	int startdate=0;
 	std::string calendar = "";
 	std::string unit = "";
+/*
 	if (gdrv == "netCDF") {
 		poBand = poDataset->GetRasterBand(1);
 
@@ -547,7 +548,7 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 			ncdf_time(fname, startdate, calendar);
 		}
 	}
-
+*/
 
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
@@ -645,8 +646,8 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 	s.hasValues = true;
 	setSource(s);
 
-	if (unit != "") setUnit({unit});
-	if (s.hasTime) fixTime(s.time, startdate, calendar);
+	//if (unit != "") setUnit({unit});
+	//if (s.hasTime) fixTime(s.time, startdate, calendar);
 
 	return true;
 }

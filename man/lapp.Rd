@@ -15,7 +15,8 @@ The number of arguments in function \code{fun} must match the number of layers i
 
 Before you use the function, test it to make sure that it works for vectors (not only for single numbers). That is, it must return the same number of elements as its input vectors, or multiples of that. Make sure it also returns the same number of values when some or all input values are \code{NA}. Also, the function must return a vector or matrix, not a \code{data.frame}.
 
-Use \code{\link{app}} for summarize functions such as \code{sum}, that take any number of arguments.
+Use \code{\link{app}} for summarize functions such as \code{sum}, that take any number of arguments; and \code{\link{tapp}} to so for groups of layers. 
+
 }
 
 \usage{

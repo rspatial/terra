@@ -14,29 +14,29 @@ The 'terra' package implements two main classes for spatial data handling: \code
 
 The 'terra' package is conceived as a replacement of the 'raster' package. 'terra' has a very similar, but simpler, interface, and it is faster than 'raster'. A major simplification is that 'terra' has a single class "SpatRaster" for which 'raster' has three (RasterLayer, RasterStack, RasterBrick). Likewise there is a single class for vector data ("SpatVector"). Like "raster" this package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
-Furthermore, 'terra' has a "SpatDataSet" class that represents different sub-datasets for the same area. Each subdataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables.
+Furthermore, 'terra' has a "SpatDataSet" class that represents a collection of sub-datasets for the same area. Each subdataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables.
 
 Note the following important differences in methods names with the 'raster' package
 
 \tabular{ll}{
 \bold{raster package} \tab \bold{terra package}\cr
 \code{raster, brick, stack}\tab\code{\link{rast}}\cr
+\code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
 \code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
-\code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
-\code{dropLayer}\tab\code{\link{subset}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
+\code{nlayers}\tab\code{\link{nlyr}}\cr
+\code{stackSelect}\tab\code{\link{selectRange}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
-\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{isLonLat}}\cr
 \code{projectRaster}\tab\code{\link{project}}\cr
+\code{dropLayer}\tab\code{\link{subset}}\cr
+\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{isLonLat}}\cr
 \code{shapefile}\tab\code{\link{vect}}\cr
 \code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
-\code{nlayers}\tab\code{\link{nlyr}}\cr
-\code{stackSelect}\tab\code{\link{selectRange}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
 \code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
