@@ -1,18 +1,5 @@
 
-
-.init <- function() {
-	path = ""
-	if (file.exists(system.file("proj/nad.lst", package = "terra")[1])) {
-		path <- system.file("proj", package="terra")
-	} 
-	s <- SpatRaster$new()
-	s$spatinit(path)
-
-	.create_options()
-
-}
-
-.init2 <- function() {
+.gdinit <- function() {
 	path = ""
 	if (file.exists(system.file("proj/nad.lst", package = "terra")[1])) {
 		path <- system.file("proj", package="terra")
@@ -20,18 +7,17 @@
 	.gdalinit(path)
 }
 
-
-
 loadModule("spat", TRUE)
 
-## we need the below, but this gives an error in R CMD check
-setLoadActions(
-	function(ns) {
-#		print(.gdalversion())
-		.init2()
-#		try(.init(), silent=FALSE)
-	}
-) 
+#setLoadActions(
+#	function(ns) {
+#		.gdinit()
+#	}
+#)
+ 
+.onLoad <- function(libname, pkgname) {
+	.gdinit()
+}
 
 
 .onAttach <- function(libname, pkgname) {
@@ -43,7 +29,6 @@ setLoadActions(
 		m <- c(m, a)
 	}
 	packageStartupMessage(m)
-
-	.init()
+	.create_options()
 }
 
