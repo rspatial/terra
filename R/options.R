@@ -58,7 +58,7 @@
 	}
 	
 	## work around onLoad problem
-	if (is.null(.terra_environment$options)) .init()
+	if (is.null(.terra_environment$options)) .create_options()
 	
 	ptr <- .terra_environment$options@ptr
 
