@@ -39,6 +39,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gdal_init
+void gdal_init(std::string path);
+RcppExport SEXP _terra_gdal_init(SEXP pathSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type path(pathSEXP);
+    gdal_init(path);
+    return R_NilValue;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -46,6 +56,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_ginfo", (DL_FUNC) &_terra_ginfo, 3},
     {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
+    {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

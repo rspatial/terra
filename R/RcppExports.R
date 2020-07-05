@@ -13,3 +13,7 @@
     .Call(`_terra_gdal_version`)
 }
 
+.gdalinit <- function(path) {
+    invisible(.Call(`_terra_gdal_init`, path))
+}
+

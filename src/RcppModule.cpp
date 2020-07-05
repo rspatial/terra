@@ -26,6 +26,23 @@ std::string gdal_version() {
 	return s;
 }
 
+#if GDAL_VERSION_MAJOR >= 3
+#include "proj.h"
+#endif
+
+// [[Rcpp::export(name = ".gdalinit")]]
+void gdal_init(std::string path) {
+    GDALAllRegister();
+    OGRRegisterAll(); 
+	//GDALregistred = true;
+#if GDAL_VERSION_MAJOR >= 3
+	if (path != "") {
+		const char *cp = path.c_str();
+		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
+	}
+#endif
+}
+
 
 /*
 # include "warp.h"
