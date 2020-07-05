@@ -8,7 +8,7 @@
 \description{
 resample transfers values between SpatRaster objects that do not align (have a different origin and/or resolution). See \code{\link{project}} to change the coordinate reference system (crs). 
 
-If the origin and crs are the same, you should consider using these other functions instead: \code{\link{aggregate}}, \code{\link{disaggregate}}, \code{\link{extend}} or \code{\link{crop}}.
+If the origin and crs are the same, you should consider using these other functions instead: \code{\link{aggregate}}, \code{\link{disaggregate}}, \code{\link{expand}} or \code{\link{crop}}.
 }
 
 \usage{

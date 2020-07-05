@@ -65,12 +65,13 @@ setMethod("as.vector", signature(x="SpatExtent"),
 	}
 )
 
+
 setMethod("as.character", signature(x="SpatExtent"), 
 	function(x, ...) {
-		paste( x@ptr$vector, collapse=", ")
+		e <- as.vector(x)
+		paste0("ext(", paste(e, collapse=", "), ")")
 	}
 )
-
 
 setMethod("as.vector", signature(x="SpatRaster"), 
 	function(x, mode="any") {

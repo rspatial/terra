@@ -1,8 +1,8 @@
-\name{extend}
+\name{expand}
 
-\alias{extend}
-\alias{extend,SpatRaster-method}
-\alias{extend,SpatExtent-method}
+\alias{expand}
+\alias{expand,SpatRaster-method}
+\alias{expand,SpatExtent-method}
 
 
 \title{Extend}
@@ -10,13 +10,13 @@
 \description{
 Extend returns an SpatRaster object with a larger spatial extent. See \code{\link{crop}} if you (also) want to remove rows or columns. 
 
-There is also an extend method for SpatExtent objects to enlarge a SpatExtent. You can also use algebraic notation to do that (see examples)
+There is also an expand method for SpatExtent objects to enlarge a SpatExtent. You can also use algebraic notation to do that (see examples)
 }
 
 \usage{
-\S4method{extend}{SpatRaster}(x, y, filename="", overwrite=FALSE, wopt=list(), ...) 
+\S4method{expand}{SpatRaster}(x, y, filename="", overwrite=FALSE, wopt=list(), ...) 
 
-\S4method{extend}{SpatExtent}(x, y, ...) 
+\S4method{expand}{SpatExtent}(x, y, ...) 
 }
 
 \arguments{
@@ -41,16 +41,16 @@ SpatRaster or SpatExtent
 r <- rast(xmin=-150, xmax=-120, ymin=30, ymax=60, ncol=36, nrow=18)
 values(r) <- 1:ncell(r)
 e <- ext(-180, -100, 40, 70)
-re <- extend(r, e)
+re <- expand(r, e)
 
-# extend with a number of rows and columns (at each side)
-re2 <- extend(r, c(2,10))
+# expand with a number of rows and columns (at each side)
+re2 <- expand(r, c(2,10))
 
 # SpatExtent object
 e <- ext(r)
 e
-extend(e, 10)
-extend(e, 10, -10, 0, 20)
+expand(e, 10)
+expand(e, 10, -10, 0, 20)
 }
 
 \keyword{spatial}

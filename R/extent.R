@@ -48,13 +48,26 @@ setMethod("ext", signature(x="SpatDataSet"),
 )	
 
 
-
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"), 
 	function(x, value) {
 		x@ptr$extent <- value@ptr
 		show_messages(x)
 	}
 )
+
+
+setMethod("ext<-", signature("SpatRaster", "numeric"), 
+	function(x, value) {
+		stopifnot(length(value) == 4)
+		e <- ext(value[1], value[2], value[3], value[4])
+		if (!e@ptr$valid) {
+			stop("not a valid extent specification")
+		}
+		x@ptr$extent <- e@ptr
+		show_messages(x)
+	}
+)
+
 
 
 setMethod("ext", signature(x="SpatVector"), 

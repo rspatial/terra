@@ -406,7 +406,7 @@ RCPP_MODULE(spat){
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("cum", &SpatRaster::cum, "cum")
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
-		.method("extend", &SpatRaster::extend, "extend")
+		.method("expand", &SpatRaster::extend, "extend")
 		.method("extractCell", &SpatRaster::extractCell, "extractCell")
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		.method("flip", &SpatRaster::flip, "flip")

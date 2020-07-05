@@ -94,19 +94,12 @@ setMethod("show", signature(object="PackedSpatVector"),
 
 
 
-setMethod("as.character", signature(x="SpatExtent"), 
-	function(x, ...) {
-		e <- as.vector(x)
-		paste0("ext(", paste(e, collapse=", "), ")")
-	}
-)
-
-
 setMethod("as.character", signature(x="SpatRaster"), 
 	function(x, ...) {
 		e <- as.vector(ext(x))
 		crs <- crs(x)
 		crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
+		crs <- gsub("\n[ ]+", "", crs)
 		paste0("rast(", 
 				"ncol=", ncol(x),
 				", nrow=", nrow(x),

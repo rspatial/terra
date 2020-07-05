@@ -26,6 +26,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
+\code{extend}\tab\code{\link{expand}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
@@ -91,7 +92,7 @@ Also see the methods in section XI
     \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
     \code{mosaic} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
-    \code{\link{extend}} \tab Enlarge a SpatRaster \cr
+    \code{\link{expand}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
