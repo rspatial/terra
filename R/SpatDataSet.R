@@ -79,19 +79,6 @@ setMethod("c", signature(x="SpatDataSet"),
 	}
 )
 
-# perhaps instead use [[ for return SpatDataSet
-setMethod("[", c("SpatDataSet", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
-	if (length(i) == 1) {
-		ptr <- x@ptr$getsds(i-1)
-		x <- rast()
-		x@ptr <- ptr
-	} else {
-		x@ptr <- x@ptr$subset(i-1)
-	}
-	show_messages(x, "[")
-})
-
 
 setReplaceMethod("[", c("SpatDataSet","numeric","missing"),
 	function(x, i, j, value) {
@@ -108,9 +95,22 @@ setReplaceMethod("[", c("SpatDataSet","numeric","missing"),
 )
 
 
+setMethod("[", c("SpatDataSet", "numeric", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	if (i<0) {i <- (1:length(x))[i]}
+	if (drop && (length(i) == 1)) {
+		ptr <- x@ptr$getsds(i-1)
+		x <- rast()
+		x@ptr <- ptr
+	} else {
+		x@ptr <- x@ptr$subset(i-1)
+	}
+	show_messages(x, "[")
+})
+
 setMethod("[", c("SpatDataSet", "numeric", "numeric"),
 function(x, i, j, ... ,drop=TRUE) {
-	y <- x[i]
+	y <- x[i,drop=drop]
 	if (inherits(y, "SpatRaster")) {
 		return(y[[j]])
 	}
@@ -136,6 +136,23 @@ function(x, i, j, ... ,drop=TRUE) {
 	if (any(is.na(i))) {stop("unknown name(s) provided")}
 	x[i, ..., drop=drop]
 })
+
+setMethod("[[", c("SpatDataSet", "ANY", "ANY"),
+function(x, i, j, ... ,drop=TRUE) {
+	mi <- missing(i)
+	mj <- missing(j)
+	
+	if ((mi) && (mj)) {
+		`[`(x, ..., drop=drop)
+	} else if (mi) {
+		`[`(x, j=j, ..., drop=drop)
+	} else if (mj) {
+		`[`(x, i=i, ..., drop=drop)
+	} else {
+		`[`(x, i=i, j=j, ..., drop=drop)
+	}
+})
+
 
 setMethod("$", "SpatDataSet",  
 	function(x, name) { 

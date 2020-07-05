@@ -43,7 +43,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
 \code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
-\code{clump}\tab\code{patch}\cr
+\code{clump}\tab\code{patches}\cr
 }
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
@@ -303,7 +303,7 @@ A SpatDataSet contains SpatRaster objects that are sub-datasets for the same are
 
 \tabular{ll}{
   \code{\link{sds}} \tab Create a SpatDataSet \cr
-  \code{[[} or \code{$} \tab Extract a SpatRaster \cr
+  \code{[} or \code{$} \tab Extract a SpatRaster \cr
   \code{\link{names}} \tab Get the names of the sub-datasets \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
@@ -326,6 +326,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{select}} \tab \bold{select} - interactively select spatial features\cr
   \code{\link{click}} \tab \bold{identify} attributes by clicking on a map\cr
   \code{\link{merge}} \tab \bold{Join table} \cr
+  \code{\link{fill}}\tab remove holes from polygons\cr
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatRaster objects \cr
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  

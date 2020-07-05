@@ -89,3 +89,12 @@ setMethod("length", signature(x="SpatVector"),
 		size(x)
 	}
 )	
+
+
+
+setMethod("fill", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$remove_holes()
+		x
+	}
+)	

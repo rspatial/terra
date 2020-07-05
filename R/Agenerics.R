@@ -30,6 +30,7 @@ if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneri
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}	
 if (!isGeneric("rats")) { setGeneric("rats", function(x, ...) standardGeneric("rats")) }
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
+if (!isGeneric("fill") ) { setGeneric("fill", function(x, ...) standardGeneric("fill")) }
 if (!isGeneric("sds") ) { setGeneric("sds", function(x, ...) standardGeneric("sds")) }
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}	
 if (!isGeneric("selectRange")) {setGeneric("selectRange", function(x, ...) standardGeneric("selectRange"))}

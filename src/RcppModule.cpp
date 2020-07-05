@@ -232,6 +232,7 @@ RCPP_MODULE(spat){
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
+		.method("remove_holes", &SpatVector::remove_holes, "remove holes")		
 
 		.method("area", &SpatVector::area, "area")		
 		.method("as_lines", &SpatVector::as_lines, "as_lines")

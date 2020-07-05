@@ -176,6 +176,32 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 }
 
 
+SpatVector SpatVector::remove_holes() {
+
+	SpatVector out = *this;
+
+	size_t n = size();
+	if (n == 0) {
+		return out;
+	}
+	if (geoms[0].gtype != polygons) {
+		return out;
+	}
+	
+	for (size_t i=0; i<n; i++) {
+		for (size_t j=0; j < out.geoms[i].size(); j++) {
+			SpatPart p = out.geoms[i].parts[j];
+			if (p.hasHoles()) {
+				p.holes.resize(0);
+				out.geoms[i].parts[j] = p;
+			}
+		}
+	}	
+	return out;
+}
+
+
+
 /*
 std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value) {
 	std::vector<OGRGeometry *> g;
