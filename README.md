@@ -46,13 +46,13 @@ First install gdal and proj with homebrew
 brew install pkg-config
 brew install gdal
 ```
-
-Installation may require additional configuration, that you can pass on with `devtools::install_github`
+Followed by
 
 ```
-library(devtools)
-devtools::install_github("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
+remotes::install_github("rspatial/terra")
 ```
+
+This should work on Catalina.
 
 ### Linux
 
