@@ -10,6 +10,7 @@
 \alias{[,SpatDataSet,numeric,numeric-method}
 \alias{[,SpatDataSet,logical,missing-method}
 \alias{[,SpatDataSet,character,missing-method}
+\alias{[[,SpatDataSet,ANY,ANY-method}
 \alias{$,SpatRaster-method}
 \alias{$,SpatDataSet-method}
 
