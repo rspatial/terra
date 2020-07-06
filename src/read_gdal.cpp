@@ -527,10 +527,11 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 	//Rcpp::Rcout << "driver: " << gdrv << std::endl;
+/*
 	int startdate=0;
 	std::string calendar = "";
 	std::string unit = "";
-/*
+
 	if (gdrv == "netCDF") {
 		poBand = poDataset->GetRasterBand(1);
 

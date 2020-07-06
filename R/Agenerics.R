@@ -24,6 +24,9 @@ if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGene
 if (!isGeneric("is.points")) {setGeneric("is.points", function(x,...) standardGeneric("is.points"))}
 if (!isGeneric("is.lines")) {setGeneric("is.lines", function(x,...) standardGeneric("is.lines"))}
 if (!isGeneric("is.polygons")) {setGeneric("is.polygons", function(x,...) standardGeneric("is.polygons"))}
+
+if (!isGeneric("isTRUE")) { setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
+if (!isGeneric("isFALSE")) { setGeneric("isFALSE", function(x) standardGeneric("isFALSE"))}
 if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")) }	
 if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardGeneric("perimeter"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	

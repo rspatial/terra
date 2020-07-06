@@ -5,12 +5,12 @@
 \alias{expand,SpatExtent-method}
 
 
-\title{Extend}
+\title{Expand}
 
 \description{
-Extend returns an SpatRaster object with a larger spatial extent. See \code{\link{crop}} if you (also) want to remove rows or columns. 
+Expand the extent of a SpatRaster. See \code{\link{crop}} if you (also) want to remove rows or columns. 
 
-There is also an expand method for SpatExtent objects to enlarge a SpatExtent. You can also use algebraic notation to do that (see examples)
+You can also enlarge a SpatExtent with this method, or with algebraic notation (see examples)
 }
 
 \usage{
