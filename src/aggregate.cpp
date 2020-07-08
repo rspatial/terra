@@ -75,8 +75,10 @@ bool SpatRaster::get_aggregate_dims(std::vector<unsigned> &fact, std::string &me
 		fact[2] = 1;
 	}
 	// int dy = dim[0], dx = dim[1], dz = dim[2];
-	fact[0] = std::max(unsigned(1), std::min(fact[0], nrow()));
-	fact[1] = std::max(unsigned(1), std::min(fact[1], ncol()));
+	fact[0] = fact[0] < 1 ? 1 : fact[0];
+	fact[0] = fact[0] > nrow() ? nrow() : fact[0];
+	fact[1] = fact[1] < 1 ? 1 : fact[1];
+	fact[1] = fact[1] > ncol() ? ncol() : fact[1];
 	fact[2] = std::max(unsigned(1), std::min(fact[2], nlyr()));
 	// new dimensions: rows, cols, lays
 	fact[3] = std::ceil(double(nrow()) / fact[0]);
@@ -271,12 +273,12 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	//bs.n = floor(nrow() / fact[0]); # ambiguous on solaris
 	bs.n = std::floor(static_cast <double> (nrow() / fact[0]));
 	
-	bs.nrows = std::vector<unsigned>(bs.n, fact[0]);
+	bs.nrows = std::vector<uint_64>(bs.n, fact[0]);
 	bs.row.resize(bs.n);
 	for (size_t i =0; i<bs.n; i++) {
 		bs.row[i] = i * fact[0];
 	}
-	unsigned lastrow = bs.row[bs.n - 1] + bs.nrows[bs.n - 1] + 1;
+	uint_64 lastrow = bs.row[bs.n - 1] + bs.nrows[bs.n - 1] + 1;
 	if (lastrow < nrow()) {
 		bs.row.push_back(lastrow);
 		bs.nrows.push_back(std::min(bs.nrows[bs.n-1], nrow()-lastrow));

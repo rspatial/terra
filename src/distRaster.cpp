@@ -225,15 +225,15 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 
 
 
-std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<unsigned> dim) {
+std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<uint_64> dim) {
 
 	double dx = res[0];
 	double dy = res[1];
 	double dxy = sqrt(dx * dx + dy *dy);
 
 	size_t n = v.size();
-	unsigned nr = n / dim[0]; // must get entire rows
-	unsigned nc = dim[1];
+	uint_64 nr = n / dim[0]; // must get entire rows
+	uint_64 nc = dim[1];
 
 	std::vector<double> dist(n, 0);
 
@@ -302,7 +302,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	//bool isgeo = out.islonlat
 
 	std::vector<double> res = resolution();
-	std::vector<unsigned> dim = {nrow(), ncol()};
+	std::vector<uint_64> dim = {nrow(), ncol()};
 
 	SpatRaster first = out.geometry();
 
@@ -341,13 +341,13 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 
 
 
-std::vector<double> do_edge(std::vector<double> &d, std::vector<unsigned> dim, bool classes, bool outer, unsigned dirs) {
+std::vector<double> do_edge(std::vector<double> &d, std::vector<uint_64> dim, bool classes, bool outer, unsigned dirs) {
 
 	bool falseval = 0;
 	
-	size_t nrow = dim[0];
-	size_t ncol = dim[1];
-	size_t n = nrow * ncol;
+	uint_64 nrow = dim[0];
+	uint_64 ncol = dim[1];
+	uint_64 n = nrow * ncol;
 	std::vector<double> val(n, NAN);
 	
 	int r[8] = { -1,0,0,1 , -1,-1,1,1};
@@ -502,8 +502,8 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 	}
 	bool do_outer = type == "outer";
 	
-	unsigned nc = ncol();
-	std::vector<unsigned> dim = {nrow(), nc}; 
+	uint_64 nc = ncol();
+	std::vector<uint_64> dim = {nrow(), nc}; 
 
  	if (!out.writeStart(opt)) { return out; }
 	readStart();

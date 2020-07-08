@@ -10,16 +10,19 @@
 Compute global statistics, that is summarized values of an entire SpatRaster. 
 
 If \code{x} is very large \code{global} will fail, except when \code{fun} is one of "mean", "min", "max", or "sum". 
+
+You can compute a weighted mean or sum by providing a SpatRaster with weights.
 }
 
 \usage{
-\S4method{global}{SpatRaster}(x, fun="mean", ...) 
+\S4method{global}{SpatRaster}(x, fun="mean", weights=NULL, ...) 
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{fun}{function to be applied to summarize the values by zone. Either as character:"mean", "min", "max", "sum"; or, for relatively small SpatRasters, a proper function}
   \item{...}{additional arguments passed on to \code{fun}}  
+  \item{weights}{NULL or SpatRaster}  
 }
 
 \value{

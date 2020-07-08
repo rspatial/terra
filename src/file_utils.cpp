@@ -47,6 +47,14 @@ std::string basename_noext(std::string filename) {
 }
 
 
+std::string dirname(std::string filename) {
+	const size_t i = filename.find_last_of("\\/");
+	if (std::string::npos != i) {
+		return( filename.substr(0, i) );
+	} else {
+		return ("");
+	}
+}
 
 bool file_exists(const std::string& name) {
 	std::ifstream f(name.c_str());

@@ -112,7 +112,25 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 		setError("cannot guess file type from filename");
 		return(false);	
 	}
-	
+
+
+	GIntBig diskAvailable;
+	GIntBig diskNeeded = ncell() * nlyr() * 8;
+	std::string dname = dirname(filename);
+	diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
+	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
+		setError("insufficient disk space (perhaps from temporary file)");
+		return(false);			
+	}
+
+    #ifdef useRcpp
+	if (opt.verbose) {
+		Rcpp::Rcout<< "filename       " << filename << std::endl;
+		Rcpp::Rcout<< "disk available " << diskAvailable / 1073741824 << " GB" << std::endl;
+		Rcpp::Rcout<< "disk needed    " << diskNeeded / 1073741824 << " GB" << std::endl;
+	}
+	#endif
+
 	const char *pszFormat = driver.c_str();
 	const char *pszDstFilename = filename.c_str();
     GDALDriver *poDriver;
@@ -213,11 +231,11 @@ bool SpatRaster::fillValuesGDAL(double fillvalue) {
 
 
 
-bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols){
+bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols){
 	CPLErr err = CE_None;
 	//GDALRasterBand *poBand;
 	double vmin, vmax;
-	unsigned nc = nrows * ncols;
+	uint_64 nc = nrows * ncols;
 	size_t nl = nlyr();
 	//for (size_t i=0; i < nl; i++) {
 	//unsigned start = nc * i;
@@ -225,7 +243,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, unsigned startrow, u
 	//poBand = source[0].gdalconnection->GetRasterBand(i+1);
 
 	for (size_t i=0; i < nl; i++) {
-		unsigned start = nc * i;
+		uint_64 start = nc * i;
 		minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
 		source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
 		source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
@@ -300,18 +318,16 @@ SpatRaster SpatRaster::writeRasterGDAL(std::string filename, std::string format,
 		addWarning("there are no cell values");
 		values = false;
 	}
-	if (!out.writeStartGDAL(filename, format, datatype, overwrite, opt)) {
-		return out;
-	}
+	if (!out.writeStart(opt)) { return out; }
 	if (values) {
-		std::vector<double> v = getValues();
-		if (!out.writeValuesGDAL(v, 0, nrow(), 0, ncol())) {
-			return out;
+		readStart();
+		for (size_t i=0; i<out.bs.n; i++) {
+			std::vector<double> v = readBlock(out.bs, i);
+			if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		}
-	}
-	if (!out.writeStopGDAL()) {
-		setError("cannot close file");
-		return out;
+		if (!out.writeStopGDAL()) {
+			setError("cannot close file");
+		}
 	}
 	return out;
 }

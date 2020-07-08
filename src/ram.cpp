@@ -59,7 +59,7 @@ double availableRAM() {
 		}
 		
 	#endif
-	return ram / 8;
+	return ram / 8;  // 8 bytes for each double
 }
 
 

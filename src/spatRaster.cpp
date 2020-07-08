@@ -257,7 +257,7 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 }
 
 
-unsigned SpatRaster::ncol() {
+uint_64 SpatRaster::ncol() {
 	if (source.size() > 0) {
 		return source[0].ncol;
 	} else {
@@ -265,7 +265,7 @@ unsigned SpatRaster::ncol() {
 	}
 }
 
-unsigned SpatRaster::nrow() {
+uint_64 SpatRaster::nrow() {
 	if (source.size() > 0) {
 		return source[0].nrow;
 	} else {

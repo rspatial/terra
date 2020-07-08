@@ -724,7 +724,7 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 }
 
 
-std::vector<double> SpatRaster::readChunkGDAL(unsigned src, long row, unsigned nrows, long col, unsigned ncols) {
+std::vector<double> SpatRaster::readChunkGDAL(unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -798,7 +798,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, long row, unsigned n
 
 
 
-std::vector<double> SpatRaster::readValuesGDAL(unsigned src, int row, int nrows, int col, int ncols) {
+std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -932,7 +932,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, int srows, int scol
 
 
 
-std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<long> &rows, const std::vector<long> &cols) {
+std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols) {
 
 	std::vector<std::vector<double>> errout;
 	if (source[src].rotated) {

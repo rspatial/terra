@@ -30,8 +30,13 @@ class SpatMessages {
 
 		void setError(std::string s) {
 			has_error = true;
-			error = s;
 			success = false;
+			error = s;
+		}
+		std::string getError() {
+			has_error = false;
+			success = true;
+			return error;
 		}
 		
 		void addWarning(std::string s) {

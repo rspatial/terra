@@ -580,7 +580,7 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			//	srcout = readCellsBinary(src, cell);
 			//} else {
 			#ifdef useGDAL
-			std::vector<std::vector<long>> rc = rowColFromCell(cell);
+			std::vector<std::vector<int_64>> rc = rowColFromCell(cell);
 			srcout = readRowColGDAL(src, rc[0], rc[1]);
 			#endif
 			if (hasError()) return out;

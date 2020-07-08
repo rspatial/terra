@@ -22,7 +22,7 @@
 
 
 
-bool SpatRaster::writeValuesMem(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
+bool SpatRaster::writeValuesMem(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols) {
 
 	if (vals.size() == size()) {
 		source[0].values = vals;
@@ -109,7 +109,6 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
     out = writeRasterGDAL(filename, format, datatype, true, opt);
 	#else
 	out.setError("GDAL is not available");
-    return out;
     #endif
 	return out;
 }
@@ -154,7 +153,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 
     #ifdef useRcpp
 	if (opt.verbose) {
-		Rcpp::Rcout<< "blocks: " << bs.n << std::endl;
+		Rcpp::Rcout<< "blocks: "   << bs.n << std::endl;
 	}
 	
 	pbar = new Progress(bs.n+2, opt.do_progress(bs.n));
@@ -165,7 +164,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 
 
 
-bool SpatRaster::writeValues(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
+bool SpatRaster::writeValues(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols) {
 	bool success = true;
 
 	if (!source[0].open_write) {
@@ -210,7 +209,7 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
 }
 
 
-bool SpatRaster::writeValues2(std::vector<std::vector<double>> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols) {
+bool SpatRaster::writeValues2(std::vector<std::vector<double>> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols) {
     std::vector<double> vv = flatten(vals);
     return writeValues(vv, startrow, nrows, startcol, ncols);
 }
