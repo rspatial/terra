@@ -37,11 +37,13 @@ setMethod("global", signature(x="SpatRaster"),
 
 		nms <- names(x)
 		nms <- make.unique(nms)
+		txtfun <- .makeTextFun(match.fun(fun))
 		
 		if (!is.null(weights)) {
 			stopifnot(inherits(weights, "SpatRaster"))
+			stopifnot(txtfun %in% c("mean", "sum"))
 			na.rm <- isTRUE(list(...)$na.rm)
-			ptr <- x@ptr$global_weighted_mean(weights@ptr, fun, na.rm)
+			ptr <- x@ptr$global_weighted_mean(weights@ptr, txtfun, na.rm)
 			show_messages(ptr, "global")
 			res <- (.getSpatDF(ptr))
 			rownames(res) <- nms

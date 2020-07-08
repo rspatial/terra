@@ -1364,9 +1364,11 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 			unsigned offset = lyr * off;
 			std::vector<double> vv = { v.begin()+offset,  v.begin()+offset+off };
 			for (size_t j=0; j<vv.size(); j++) {
-				if (!std::isnan(vv[j])) {
+				if (!std::isnan(vv[j]) && !std::isnan(wv[j])) {
 					vv[j] *= wv[j];
 					wsum += wv[j];
+				} else {
+					vv[j] = NAN;
 				}
 			}
 			do_stats(vv, fun, narm, stats[lyr], n[lyr]);
