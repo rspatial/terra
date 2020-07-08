@@ -1324,7 +1324,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm) {
 
 
 
-SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, bool narm) {
+SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string fun, bool narm) {
 
 	SpatDataFrame out;
 
