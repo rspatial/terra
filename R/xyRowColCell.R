@@ -17,13 +17,17 @@ setMethod(xFromCol, signature(object="SpatRaster", col="numeric"),
 
 setMethod(colFromX, signature(object="SpatRaster", x="numeric"), 
 	function(object, x)	{
-		object@ptr$colFromX(x) + 1
+		cols <- object@ptr$colFromX(x) + 1
+		cols[cols==0] <- NA
+		cols
 	}
 )
 
 setMethod(rowFromY, signature(object="SpatRaster", y="numeric"), 
 	function(object, y)	{
-		object@ptr$rowFromY(y) + 1
+		rows <- object@ptr$rowFromY(y) + 1
+		rows[rows==0] <- NA
+		rows
 	}	
 )
 
@@ -73,7 +77,9 @@ setMethod(xFromCell, signature(object="SpatRaster", cell="numeric"),
 setMethod(rowColFromCell, signature(object="SpatRaster", cell="numeric"), 
 	function(object, cell) {
 		rc <- object@ptr$rowColFromCell(cell-1)
-		do.call(cbind, rc)
+		rc <- do.call(cbind, rc)
+		rc[rc < 0] <- NA
+		rc+1
 	}	
 )
 

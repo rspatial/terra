@@ -16,11 +16,13 @@ setMethod("cells", signature("SpatRaster", "SpatVector"),
 #	function(x, y, weights=FALSE, touches=is.lines(y), method="simple", ...) {   # in a next version
 	function(x, y, touches=is.lines(y), method="simple", ...) {
 		d <- x@ptr$getCells(y@ptr, touches[1], method) 
-		d <- matrix(d + 1, ncol=2)
+		d <- matrix(d, ncol=2)
 		colnames(d) <- c("id", "cell")
+		d[,2] <- d[,2] + 1
 		d
 	}
 )
+
 
 setMethod("cells", signature("SpatRaster", "SpatExtent"), 
 	function(x, y, ...) {

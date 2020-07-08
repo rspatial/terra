@@ -152,18 +152,18 @@ double SpatRaster::xFromCol(int_64 col) {
 }
 
 std::vector<int_64> SpatRaster::colFromX(std::vector<double> &x) {
-	size_t size = x.size();
 
-	std::vector<int_64> result(size, -1);
 	double xmin = extent.xmin;
 	double xmax = extent.xmax;
 	double xr = xres();
+	size_t xs = x.size();
+	std::vector<int_64> result(xs, -1);
 
-	for (size_t i = 0; i < size; i++) {
-		if (x[i] == xmax) {
-			result[i] = ncol()-1;
-		} else if (x[i] >= xmin || x[i] < xmax ) {
+	for (size_t i = 0; i < xs; i++) {
+		if (x[i] >= xmin && x[i] < xmax ) {
 			result[i] =  trunc((x[i] - xmin) / xr);
+		} else if (x[i] == xmax) {
+			result[i] = ncol()-1;
 		}
 	}
 	return result;
@@ -171,26 +171,25 @@ std::vector<int_64> SpatRaster::colFromX(std::vector<double> &x) {
 
 
 int_64 SpatRaster::colFromX(double x) {
-	std::vector<double> X = {x};
-	return colFromX(X)[0];
+	std::vector<double> xv = {x};
+	return colFromX(xv)[0];
 }
 
 
 std::vector<int_64> SpatRaster::rowFromY(std::vector<double> &y) {
-	size_t ysize = y.size();
-//	unsigned navalue = NA<unsigned>::value;
 
-	std::vector<int_64> result(ysize, -1);
 	double ymin = extent.ymin;
 	double ymax = extent.ymax;
 	double yr = yres();
+	size_t ys = y.size();
+	std::vector<int_64> result(ys, -1);
 
-	for (size_t i = 0; i < ysize; i++) {
-		if (y[i] == ymin) {
-			result[i] = nrow()-1;
-		} else if (y[i] > ymin || y[i] <= ymax ) {
+	for (size_t i = 0; i < ys; i++) {
+		if (y[i] > ymin && y[i] <= ymax) {
 			result[i] = trunc((ymax - y[i]) / yr);
-		}
+		} else if (y[i] == ymin) {
+			result[i] = nrow() - 1;
+		}		
 	}
 	return result;
 }
@@ -223,18 +222,17 @@ std::vector<std::vector<double>> SpatRaster::xyFromCell( std::vector<double> &ce
 
 
 std::vector< std::vector<double>> SpatRaster::xyFromCell( double cell) {
-	std::vector<double> Cell = {cell};
-	return xyFromCell(Cell);
+	std::vector<double> vcell = {cell};
+	return xyFromCell(vcell);
 }
 
 
 std::vector<std::vector<int_64>> SpatRaster::rowColFromCell(std::vector<double> &cell) {
-	size_t size = cell.size();
-	//unsigned navalue = NA<unsigned>::value;
-	std::vector< std::vector<int_64> > result(2, std::vector<int_64> (size, -1) );
+	size_t cs = cell.size();
+	std::vector<std::vector<int_64>> result(2, std::vector<int_64> (cs, -1) );
 	double nc = ncell();
-	for (size_t i = 0; i < size; i++) {
-		if ((cell[i] >= 0) || (cell[i] < nc )) {
+	for (size_t i = 0; i < cs; i++) {
+		if ((cell[i] >= 0) && (cell[i] < nc )) {
 			result[0][i] = trunc(cell[i]/ ncol());
 			result[1][i] = (cell[i] - ((result[0][i]) * ncol()));
 		}
