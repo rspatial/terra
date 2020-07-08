@@ -1340,36 +1340,37 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 	}
 
 	if (weights.nlyr() != 1) {
-		out.setError("The weights SpatRaster must have 1 layer");
+		out.setError("The weights raster must have 1 layer");
 		return(out);
 	}
-	if (compare_geom(weights, false, false, true)) {
+	if (!compare_geom(weights, false, false, true)) {
 		out.setError( msg.getError() );
 		return(out);	
 	}
 	
 	std::vector<double> stats(nlyr());
 	std::vector<unsigned> n(nlyr());
+	std::vector<unsigned> w(nlyr());
 	readStart();
 	weights.readStart();
 	BlockSize bs = getBlockSize(2, 0.5);
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
-		std::vector<double> w = weights.readValues(bs.row[i], bs.nrows[i], 0, ncol());
-		double wsum = 0;
-		for (size_t j=0; j<w.size(); j++) {
-			wsum += w[j];
-		}
-
+		std::vector<double> wv = weights.readValues(bs.row[i], bs.nrows[i], 0, ncol());
+		
 		unsigned off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+			double wsum = 0;
 			unsigned offset = lyr * off;
 			std::vector<double> vv = { v.begin()+offset,  v.begin()+offset+off };
 			for (size_t j=0; j<vv.size(); j++) {
-				vv[j] *= w[j];
+				if (!std::isnan(vv[j])) {
+					vv[j] *= wv[j];
+					wsum += wv[j];
+				}
 			}
-			do_stats(vv, "mean", narm, stats[lyr], n[lyr]);
-			stats[lyr] = stats[lyr] / wsum;
+			do_stats(vv, fun, narm, stats[lyr], n[lyr]);
+			w[lyr] += wsum; 
 		}
 	}
 	readStop();
@@ -1377,8 +1378,8 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 
 	if (fun=="mean") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
-			if (n[lyr] > 0) {
-				stats[lyr] = stats[lyr] / n[lyr];
+			if (n[lyr] > 0 && w[lyr] != 0) {
+				stats[lyr] /= w[lyr];
 			} else {
 				stats[lyr] = NAN;
 			}

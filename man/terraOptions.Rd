@@ -1,14 +1,13 @@
-\name{SpatOptions-class}
+\name{options}
 
-\docType{class}
 
 \alias{terraOptions}
 
 
-\title{Inspect of set general options for "terra"}
+\title{Options}
 
 \description{
-Class and methods for showing and setting options.
+Class and methods for showing and setting general options for terra.
 }
 
 \usage{
@@ -31,6 +30,8 @@ datatype - default data type. See \code{\link{writeRaster}}
 filetype - default file type. See \code{\link{writeRaster}}
 
 progress - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero
+
+verbose - logical. If \code{TRUE} debugging info is printed for some functions}
 }
 
 \examples{

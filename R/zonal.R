@@ -41,7 +41,7 @@ setMethod("global", signature(x="SpatRaster"),
 		if (!is.null(weights)) {
 			stopifnot(inherits(weights, "SpatRaster"))
 			na.rm <- isTRUE(list(...)$na.rm)
-			ptr <- x@ptr$global_weighted_mean(weights, na.rm)
+			ptr <- x@ptr$global_weighted_mean(weights@ptr, fun, na.rm)
 			show_messages(ptr, "global")
 			res <- (.getSpatDF(ptr))
 			rownames(res) <- nms
