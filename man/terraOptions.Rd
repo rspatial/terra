@@ -31,7 +31,7 @@ filetype - default file type. See \code{\link{writeRaster}}
 
 progress - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero
 
-verbose - logical. If \code{TRUE} debugging info is printed for some functions}
+verbose - logical. If \code{TRUE} debugging info is printed for some functions
 }
 
 \examples{
