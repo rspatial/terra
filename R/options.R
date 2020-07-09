@@ -86,6 +86,9 @@
 	cat("filetype    :" , opt$def_filetype, "\n")
 	cat("progress    :" , opt$progress, "\n")
 	cat("verbose     :" , opt$verbose, "\n")
+	if (opt$todisk) {
+		cat("todisk      :" , opt$todisk, "\n")
+	}
 }
 
 

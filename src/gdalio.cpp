@@ -21,7 +21,7 @@ bool GDALsetSRS(GDALDatasetH &hDS, const std::string &crs) {
 }
 
 
-bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT) {
+bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt) {
 // all sources should be on disk
 	GDALDriverH hDrv = GDALGetDriverByName("MEM");
 	hVRT = GDALCreate(hDrv, "", ncol(), nrow(), nlyr(), GDT_Float64, NULL);
@@ -41,7 +41,7 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT) {
 	for (size_t i=0; i<nlyr(); i++) {
 		RS = SpatRaster(source[i]);
 		std::string filename = source[i].filename;
-		if (!SpatRaster::open_gdal(DS, i)) {
+		if (!SpatRaster::open_gdal(DS, i, opt)) {
 			setError("cannot open datasource");
 			return false;
 		}
@@ -71,7 +71,7 @@ SpatRaster SpatRaster::to_memory_copy() {
 
 
 
-bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src) {
+bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 	// needs to loop over sources. 
 	// Should be a vector of GDALDatasetH
 	// Or can we combine them here into a VRT?
@@ -83,7 +83,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src) {
 	bool fromfile = !source[isrc].memory;
 
 	if (fromfile & (nsrc() > 1) & (src < 0)) {
-		if (canProcessInMemory(4, 0.5)) {
+		if (canProcessInMemory(4, opt)) {
 			fromfile = false;
 		} else {
 			// make VRT

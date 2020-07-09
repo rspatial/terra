@@ -357,7 +357,7 @@ class SpatRaster {
 		SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
 		//SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 
-		bool canProcessInMemory(unsigned n, double frac);
+		bool canProcessInMemory(unsigned n, SpatOptions &opt);
 		unsigned chunkSize(unsigned n, double frac);
 
 		void fill(double x);
@@ -485,10 +485,10 @@ class SpatRaster {
 		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
 #ifdef useGDAL
-		bool open_gdal(GDALDatasetH &hDS, int src);
+		bool open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt);
 		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, std::vector<std::string> foptions);
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);
-		bool as_gdalvrt(GDALDatasetH &hVRT);
+		bool as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt);
 		//bool as_gdalmem(GDALDatasetH &hVRT);
 #endif
 

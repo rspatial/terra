@@ -34,9 +34,9 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	std::string filename = opt.get_filename();
 	std::string driver = filename == "" ? "MEM" : "GTiff";
 
-	bool canRAM = canProcessInMemory(4, opt.get_memfrac());
+	bool canRAM = canProcessInMemory(4, opt);
 	if (filename == "") {
-		if (!canRAM || opt.get_todisk()) {
+		if (!canRAM) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
 			opt.set_filename(filename);
 			driver = "GTiff";
@@ -88,7 +88,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		if (driver == "MEM") {
 			// force into single source
 			out.setValues(getValues());
-			if (!out.open_gdal(rstDS, 0)) {
+			if (!out.open_gdal(rstDS, 0, opt)) {
 				out.setError("cannot open dataset");
 				return out;
 			}

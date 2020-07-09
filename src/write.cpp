@@ -121,7 +121,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		setNames(opt.names);
 	}
 	if (filename == "") {
-		if (!canProcessInMemory(4, opt.get_memfrac()) || opt.get_todisk()) {
+		if (!canProcessInMemory(4, opt)) {
 			std::string extension = ".tif";
 			filename = tempFile(opt.get_tempdir(), extension);
 		}

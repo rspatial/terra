@@ -35,13 +35,15 @@ show_messages <- function(x, f="") {
 	if (print) {
 		gb <- 1073741824 
 		cat("\n----------------------")
-		cat(paste("\navailable (GB):", round(v[2] / gb, 2)))
+		cat("\nMemory (GB) ")
+		cat("\n----------------------")
+		cat(paste("\navailable     :", round(v[2] / gb, 2)))
 		cat(paste0("\nallowed (", round(100* v[3]) , "%) : ", round(v[3] * v[2] / gb, 2)))
 		cat(paste("\nneeded        :", round(v[1] / gb, 2)))
 		cat("\n----------------------")
 		cat(paste("\nproc in memory:", v[5] == 0))
 		cat(paste("\nnr chunks     :", ceiling(nrow(x)/v[4])))
-		cat("\n")
+		cat("\n----------------------\n")
 	} else {
 		names(v) <- c("needed", "available", "memfrac", "chunksize")
 		v

@@ -42,7 +42,7 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 	}
 	GDALDatasetH rstDS;
 	if (! tmp.sources_from_file() ) {
-		if (!tmp.open_gdal(rstDS, 0)) {
+		if (!tmp.open_gdal(rstDS, 0, opt)) {
 			out.setError("cannot open dataset");
 			return out;
 		}
@@ -62,7 +62,7 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 	GDALDataset *maskDS=NULL;
 	if (usemask) {
 		if (! mask.sources_from_file() ) {
-			if (!mask.open_gdal(rstMask, 0)) {
+			if (!mask.open_gdal(rstMask, 0, opt)) {
 				out.setError("cannot open dataset");
 				return out;
 			}

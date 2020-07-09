@@ -291,7 +291,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	if (filename == "") {
-		if (!canProcessInMemory(4, opt.get_memfrac()) || opt.get_todisk()) {
+		if (!canProcessInMemory(4, opt)) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
 		} 
 	} else {
@@ -314,7 +314,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	
 	for (size_t i=0; i<ns; i++) {
 		
-		if (!open_gdal(hSrcDS, i)) {
+		if (!open_gdal(hSrcDS, i, opt)) {
 			out.setError("cannot create dataset from source");
 			return out;
 		}
@@ -368,12 +368,14 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return out;
 		}
 	} else {
+		std::vector<std::string> nms = getNames();
 		for (size_t i=0; i < nlyr(); i++) {
 			GDALRasterBandH hBand = GDALGetRasterBand(hDstDS, i+1);
 			double adfMinMax[2];
 			bool approx = ncell() > 10e+8;
 			GDALComputeRasterMinMax(hBand, approx, adfMinMax);
-			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
+			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);
+			GDALSetDescription(hBand, nms[i].c_str());
 		}
 		GDALClose( hDstDS );
 		out = SpatRaster(filename, -1, "");
