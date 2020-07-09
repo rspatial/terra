@@ -11,7 +11,7 @@
 \description{ 
 Apply a function to values of each cell of a SpatRaster. This is similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix.
 
-Use a SpatDataSet to apply fun by layer.
+You can also use a SpatDataSet to apply \code{fun} across datasets by layer.
 }
 
 \usage{
@@ -44,13 +44,20 @@ To speed things up, parallelization is supported, but this is often not helpful,
 \examples{
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
-x <- c(r, r, r)
+x <- c(r, sqrt(r), r-50)
 s <- app(x, fun=sum)
+s
+# for a few generic functions like 
+# "sum", "mean", and "max" you can also do
+sum(x)
 
-library(parallel)
-detectCores()
-cl <- makeCluster(2)
-ss <- app(x, fun=sum, cls=cl)
+
+## use a SpatDataSet
+sd <- sds(x, x*2, x/3)
+a <- app(sd, max)
+a
+# same as 
+max(x, x*2, x/3)
 }
 
 
