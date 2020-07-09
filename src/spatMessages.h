@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+/*
 #ifndef SPATMESSAGESGUARD
 #define SPATMESSAGESGUARD
 
@@ -22,7 +23,6 @@
 
 class SpatMessages {
 	public:
-		bool success = true;
 		bool has_error = false;
 		bool has_warning = false;
 		std::string error;
@@ -30,12 +30,11 @@ class SpatMessages {
 
 		void setError(std::string s) {
 			has_error = true;
-			success = false;
 			error = s;
 		}
+
 		std::string getError() {
 			has_error = false;
-			success = true;
 			return error;
 		}
 		
@@ -43,22 +42,26 @@ class SpatMessages {
 			has_warning = true;
 			warnings.push_back(s);
 		}
+
+		std::string getWarnings() {
+			std::string w = "";
+			for (size_t i = 0; i<warnings.size(); i++) {
+				w += warnings[i] + "\n" ;
+			}
+			warnings.resize(0);
+			has_warning = false;
+			return w;
+		}
 		
 		std::vector<std::string> getMessages() {
-			std::string warns = "";
-			if (warnings.size() > 0) {
-				warns = warnings[0];
-				for (size_t i = 1; i<warnings.size(); i++) {
-					warns = warns  + "\n" + warnings[i];
-				}
-			}
+			std::string warns = getWarnings();
+			std::string error = getError();
 			std::vector<std::string> msg = { error, warns};
-			has_error = false;
-			has_warning = false;
-			error = "";
-			warnings.resize(0);
 			return msg;
 		}
 };
 
 #endif
+
+*/
+

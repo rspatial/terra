@@ -18,8 +18,8 @@
 
 #include <vector>
 #include <string>
-#include "spatMessages.h"
-
+//#include "spatMessages.h"
+#include "spatBase.h"
 
 class SpatDataFrame {
 	public:

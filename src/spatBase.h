@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
-#include "spatMessages.h"
+//#include "spatMessages.h"
 
 #ifndef standalone
 	#define useRcpp
@@ -40,6 +40,49 @@
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
+
+
+
+
+class SpatMessages {
+	public:
+		bool has_error = false;
+		bool has_warning = false;
+		std::string error;
+		std::vector<std::string> warnings;
+
+		void setError(std::string s) {
+			has_error = true;
+			error = s;
+		}
+
+		std::string getError() {
+			has_error = false;
+			return error;
+		}
+		
+		void addWarning(std::string s) {
+			has_warning = true;
+			warnings.push_back(s);
+		}
+
+		std::string getWarnings() {
+			std::string w = "";
+			for (size_t i = 0; i<warnings.size(); i++) {
+				w += warnings[i] + "\n" ;
+			}
+			warnings.resize(0);
+			has_warning = false;
+			return w;
+		}
+		
+		std::vector<std::string> getMessages() {
+			std::string warns = getWarnings();
+			std::string error = getError();
+			std::vector<std::string> msg = { error, warns};
+			return msg;
+		}
+};
 
 
 class SpatOptions {
@@ -221,6 +264,5 @@ class SpatSRS {
 			}
 			return false;
 		}
-
-
 };
+

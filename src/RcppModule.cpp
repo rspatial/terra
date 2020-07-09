@@ -154,12 +154,11 @@ RCPP_MODULE(spat){
 
     class_<SpatMessages>("SpatMessages")
 		.constructor()
-		.field("success", &SpatMessages::success)		
+		//.field("success", &SpatMessages::success)		
 		.field("has_error", &SpatMessages::has_error)		
 		.field("has_warning", &SpatMessages::has_warning)		
-		.field("error", &SpatMessages::error)		
-		.field("warnings", &SpatMessages::warnings)	
-		.method("get_the_message", &SpatMessages::getMessages)
+		.method("getError", &SpatMessages::getError)		
+		.method("getWarnings", &SpatMessages::getWarnings)
 		
 	;	
 	
