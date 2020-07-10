@@ -189,6 +189,7 @@ std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> 
 
     bool glob = is_global_lonlat();
 //    bool lonlat = could_be_lonlat();
+	SpatExtent extent = getExtent();
 	std::vector<double> four = fourCellsFromXY(ncol(), nrow(), extent.xmin, extent.xmax, extent.ymin, extent.ymax, x, y, false, glob);
 	std::vector<std::vector<double>> xy = xyFromCell(four);
 	std::vector<std::vector<double>> v = extractCell(four);
@@ -253,6 +254,8 @@ std::vector<double> SpatRaster::line_cells(SpatGeom& g) {
 
 	unsigned nrows = nrow();
 	unsigned ncols = ncol();
+	SpatExtent extent = getExtent();
+	
 	double xmin = extent.xmin;
 	double ymax = extent.ymax;
 	double rx = xres();
@@ -301,6 +304,8 @@ std::vector<double> SpatRaster::polygon_cells(SpatGeom& g) {
 
 	unsigned nrows = nrow();
 	unsigned ncols = ncol();
+	SpatExtent extent = getExtent();
+	
 	double xmin = extent.xmin;
 	double ymax = extent.ymax;
 	double rx = xres();
@@ -407,6 +412,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
         } else if (method == "oldbilinear") {
 
 // this is much too slow
+			SpatExtent extent = getExtent();
 
 			double ymax = extent.ymax;
             double xmin = extent.xmin;

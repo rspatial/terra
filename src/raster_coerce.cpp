@@ -250,7 +250,7 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	if (remove_values) {
 		vect.df = SpatDataFrame();		
 	}
-	vect.srs = srs;
+	vect.srs = source[0].srs;
 	return(vect);
 }
 

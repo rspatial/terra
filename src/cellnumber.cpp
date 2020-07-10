@@ -25,6 +25,7 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 	size_t size = x.size();
 	std::vector<double> cells(size);
 
+	SpatExtent extent = getExtent();
 	double yr_inv = nrow() / (extent.ymax - extent.ymin);
 	double xr_inv = ncol() / (extent.xmax - extent.xmin);
 
@@ -115,6 +116,7 @@ double SpatRaster::cellFromRowColCombine(int_64 row, int_64 col) {
 std::vector<double> SpatRaster::yFromRow(std::vector<int_64> &row) {
 	size_t size = row.size();
 	std::vector<double> result( size );
+	SpatExtent extent = getExtent();
 	double ymax = extent.ymax;
 	double yr = yres();
 	int_64 nr = nrow();
@@ -136,6 +138,7 @@ double SpatRaster::yFromRow (int_64 row) {
 std::vector<double> SpatRaster::xFromCol(std::vector<int_64> &col) {
 	size_t size = col.size();
 	std::vector<double> result( size );
+	SpatExtent extent = getExtent();	
 	double xmin = extent.xmin;
 	double xr = xres();
 	int_64 nc = ncol();
@@ -152,6 +155,8 @@ double SpatRaster::xFromCol(int_64 col) {
 }
 
 std::vector<int_64> SpatRaster::colFromX(std::vector<double> &x) {
+
+	SpatExtent extent = getExtent();
 
 	double xmin = extent.xmin;
 	double xmax = extent.xmax;
@@ -178,6 +183,7 @@ int_64 SpatRaster::colFromX(double x) {
 
 std::vector<int_64> SpatRaster::rowFromY(std::vector<double> &y) {
 
+	SpatExtent extent = getExtent();
 	double ymin = extent.ymin;
 	double ymax = extent.ymax;
 	double yr = yres();
@@ -203,6 +209,8 @@ int_64 SpatRaster::rowFromY(double y) {
 
 std::vector<std::vector<double>> SpatRaster::xyFromCell( std::vector<double> &cell) {
 	size_t n = cell.size();
+	SpatExtent extent = getExtent();
+	
 	double xmin = extent.xmin;
 	double ymax = extent.ymax;
 	double yr = yres();

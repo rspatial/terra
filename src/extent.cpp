@@ -98,6 +98,22 @@ SpatExtent SpatExtent::ceil() {
 	return e;
 }	
 
+SpatExtent SpatRaster::getExtent() { 
+	if (source.size() > 0) {
+		return source[0].extent;
+	} else {
+		SpatExtent e;
+		return e;
+	}
+}
+
+void SpatRaster::setExtent(SpatExtent e) { 
+	for (size_t i=0; i<nsrc(); i++) {
+		source[i].extent = e;
+	}
+}
+
+
 void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	if (snap != "") {
@@ -116,7 +132,6 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 		ext.ymax = ext.ymin + nr * yrs;
 	}
 	
-	extent = ext;
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = ext;
 	}
@@ -168,6 +183,7 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 
 std::vector<double> SpatRaster::origin() {
 	std::vector<double> r = resolution();
+	SpatExtent extent = getExtent();
 	double x = extent.xmin - r[0] * (round(extent.xmin / r[0]));
 	double y = extent.ymax - r[1] * (round(extent.ymax / r[1]));
 	if (is_equal((r[0] + x), abs(x))) {
@@ -183,9 +199,11 @@ std::vector<double> SpatRaster::origin() {
 
 
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
+
 	
 	if (ext) {
-		if (extent.compare(x.extent, "!=", 100)) {
+		SpatExtent extent = getExtent();
+		if (extent.compare(x.getExtent(), "!=", 100)) {
 			setError("extents do not match");
 			return false;
 		}
@@ -211,7 +229,7 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, b
 	}
 
 	if (crs) {
-		if (!srs.is_equal(x.srs)) {
+		if (!source[0].srs.is_equal(x.source[0].srs)) {
 			if (warncrs) {
 				addWarning("SRS do not match");
 			} else {

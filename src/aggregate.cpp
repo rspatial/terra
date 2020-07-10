@@ -226,12 +226,15 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		out.setError(message);
 		return out;
 	}
-
+	
+	SpatExtent extent = getExtent();
 	double xmax = extent.xmin + fact[4] * fact[1] * xres();
 	double ymin = extent.ymax - fact[3] * fact[0] * yres();
 	SpatExtent e = SpatExtent(extent.xmin, xmax, ymin, extent.ymax);
 	out = SpatRaster(fact[3], fact[4], fact[5], e, "");
-	out.srs = srs;
+	out.source[0].srs = source[0].srs;
+	// there is much more. categories, time. should use geometry and then
+	// set extent and row col
 	if (fact[5] == nlyr()) {
 		out.setNames(getNames());
 	}

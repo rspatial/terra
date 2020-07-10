@@ -27,10 +27,12 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt) {
 	hVRT = GDALCreate(hDrv, "", ncol(), nrow(), nlyr(), GDT_Float64, NULL);
 
 	std::vector<double> rs = resolution();
+	SpatExtent extent = getExtent();
+	
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	GDALSetGeoTransform(hVRT, adfGeoTransform);
 
-	if (!GDALsetSRS(hVRT, srs.wkt)) {
+	if (!GDALsetSRS(hVRT, source[0].srs.wkt)) {
 		setError("cannot set SRS");
 		return false;
 	}
@@ -132,10 +134,12 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		if (hDS == NULL) return false;
 
 		std::vector<double> rs = resolution();
+		SpatExtent extent = getExtent();
+		
 		double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 		GDALSetGeoTransform(hDS, adfGeoTransform);
 
-		if (!GDALsetSRS(hDS, srs.wkt)) {
+		if (!GDALsetSRS(hDS, source[0].srs.wkt)) {
 			setError("cannot set SRS");
 			return false;
 		}

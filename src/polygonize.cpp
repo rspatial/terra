@@ -92,7 +92,7 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 	std::string name = nms[0];
 
 	OGRSpatialReference *SRS = NULL;
-	std::string s = srs.wkt;
+	std::string s = source[0].srs.wkt;
 	if (s != "") {
 		SRS = new OGRSpatialReference;
 		OGRErr err = SRS->SetFromUserInput(s.c_str()); 

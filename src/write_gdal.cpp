@@ -186,10 +186,11 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 		}
 	}
 	std::vector<double> rs = resolution();
+	SpatExtent extent = getExtent();
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	poDstDS->SetGeoTransform(adfGeoTransform);
 
-	std::string crs = srs.wkt;
+	std::string crs = source[0].srs.wkt;
 	OGRSpatialReference oSRS;
 	OGRErr erro = oSRS.SetFromUserInput(&crs[0]);
 	if (erro == 4) {

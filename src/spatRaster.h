@@ -127,9 +127,9 @@ class BlockSize {
 class SpatRaster {
 
 	protected:
-		SpatExtent extent;
+		//SpatExtent extent;
 		SpatExtent window;
-		SpatSRS srs;
+		//SpatSRS srs;
 
 	public:
 	//	std::string prj;
@@ -162,8 +162,8 @@ class SpatRaster {
 
 		uint_64 ncol();
 		uint_64 nrow();
-		SpatExtent getExtent() { return extent; }
-		void setExtent(SpatExtent e) { extent = e ; }
+		SpatExtent getExtent();
+		void setExtent(SpatExtent e);
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
 		SpatVector dense_extent();
 
@@ -172,6 +172,7 @@ class SpatRaster {
 
 		std::string getSRS(std::string x);
 		bool setSRS(std::string crs);
+
 
 /*
 #ifdef useGDAL	
@@ -188,8 +189,8 @@ class SpatRaster {
 		double ncell() { return nrow() * ncol(); }
 		double size() { return ncol() * nrow() * nlyr() ; }
 
-		double xres() { return (extent.xmax - extent.xmin) / ncol() ;}
-		double yres() { return (extent.ymax - extent.ymin) / nrow() ;}
+		double xres();
+		double yres();
 		std::vector<double> origin();
 		unsigned nlyr();
 

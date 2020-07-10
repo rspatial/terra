@@ -862,9 +862,11 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 		addx = -addx;
 	}
 	SpatRaster out = geometry();
-	out.extent.xmin = out.extent.xmin + addx;
-	out.extent.xmax = out.extent.xmax + addx;
-
+	SpatExtent outext = out.getExtent();
+	outext.xmin = outext.xmin + addx;
+	outext.xmax = outext.xmax + addx;
+	out.setExtent(outext, true);
+	
 	if (!hasValues()) return out;
 
  	if (!out.writeStart(opt)) { return out; }
@@ -896,6 +898,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 
 	SpatRaster out = geometry(nlyr());
 	e = out.align(e, "near");
+	SpatExtent extent = getExtent();	
 	e.unite(extent);
 	double tol = std::min(xres(), yres()) / 1000;
 	if (extent.compare(e, "==", tol)) {
@@ -1103,11 +1106,11 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 	double xr = xres();
 	double yr = yres();
-
-	unsigned col1 = colFromX(out.extent.xmin + 0.5 * xr);
-	unsigned col2 = colFromX(out.extent.xmax - 0.5 * xr);
-	unsigned row1 = rowFromY(out.extent.ymax - 0.5 * yr);
-	unsigned row2 = rowFromY(out.extent.ymin + 0.5 * yr);
+	SpatExtent outext = out.getExtent();
+	unsigned col1 = colFromX(outext.xmin + 0.5 * xr);
+	unsigned col2 = colFromX(outext.xmax - 0.5 * xr);
+	unsigned row1 = rowFromY(outext.ymax - 0.5 * yr);
+	unsigned row2 = rowFromY(outext.ymin + 0.5 * yr);
 	if ((row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1)) {
 		// same extent
 		return deepCopy();
@@ -1173,12 +1176,13 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
 SpatRaster SpatRaster::shift(double x, double y, SpatOptions &opt) {
 	SpatRaster out = deepCopy();
-	out.extent.xmin = out.extent.xmin + x;
-	out.extent.xmax = out.extent.xmax + x;
-	out.extent.ymin = out.extent.ymin + y;
-	out.extent.ymax = out.extent.ymax + y;
+	SpatExtent outext = out.getExtent();
+	outext.xmin = outext.xmin + x;
+	outext.xmax = outext.xmax + x;
+	outext.ymin = outext.ymin + y;
+	outext.ymax = outext.ymax + y;
+	out.setExtent(outext, true);
 	return out;
-
 }
 
 bool SpatRaster::compare_origin(std::vector<double> x, double tol) {

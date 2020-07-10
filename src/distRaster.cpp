@@ -38,7 +38,7 @@ std::vector<double> shortDistPoints(const std::vector<double> &x, const std::vec
 SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (srs.wkt == "") {
+	if (source[0].srs.wkt == "") {
 		out.setError("CRS not defined");
 		return(out);
 	}

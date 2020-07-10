@@ -176,6 +176,7 @@ SpatRaster SpatRaster::rst_area(SpatOptions &opt) {
 	SpatRaster out = geometry(1);
   	if (!out.writeStart(opt)) { return out; }
 	if (could_be_lonlat()) {
+		SpatExtent extent = getExtent();
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions optint(opt);
 		SpatRaster onecol = out.crop(e, "near", optint);
@@ -210,6 +211,7 @@ std::vector<double> SpatRaster::sum_area() {
 	readStart();
 	if (could_be_lonlat()) {
 		SpatRaster x = geometry(1);
+		SpatExtent extent = getExtent();
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions opt;
 		SpatRaster onecol = x.crop(e, "near", opt);

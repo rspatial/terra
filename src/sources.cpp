@@ -322,7 +322,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
             offset = 0;
             for (size_t i=0; i<ss; i++) { offset += lyrbys[i]; }
             slyr = { lyrs[i] - offset } ;
-       }
+		}
     }
 
     rs = source[ss].subset(slyr);

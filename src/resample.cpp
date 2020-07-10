@@ -36,8 +36,8 @@ SpatRaster SpatRaster::resample1(SpatRaster &x, const std::string &method, SpatO
 		return out;
 	}
 	
-	if ((!srs.is_empty()) && (!out.srs.is_empty())) {
-		if (!srs.is_equal(out.srs)) {
+	if ((!source[0].srs.is_empty()) && (!out.source[0].srs.is_empty())) {
+		if (!source[0].srs.is_equal(out.source[0].srs)) {
 			out.addWarning("Rasters have different crs");
 		}
 	}
@@ -57,12 +57,7 @@ SpatRaster SpatRaster::resample1(SpatRaster &x, const std::string &method, SpatO
 		}
 		xx.resample2(out, method, opt);
 	} else {
-		if ((x.xres() == xres()) && (x.yres() == yres()) & (extent.compare(x.extent, "==", std::min(xres(), yres())/1000))) {
-			out = *this;
-			out.extent = x.extent;
-		} else {
-			resample2(out, method, opt);
-		}
+		resample2(out, method, opt);
 	}
 	return out;
 }

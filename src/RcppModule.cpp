@@ -276,19 +276,19 @@ RCPP_MODULE(spat){
 #endif
 	;
 
-//    class_<RasterSource>("RasterSource")	
+    class_<RasterSource>("RasterSource")	
 		//.field_readonly("memory", &RasterSource::memory)
 	//	.field_readonly("filename", &RasterSource::filename)
 		//.field_readonly("driver", &RasterSource::driver)
 		//.field_readonly("nrow", &RasterSource::nrow)
 		//.field_readonly("ncol", &RasterSource::ncol)
 		//.field_readonly("nlyr", &RasterSource::nlyr)
-		//.field_readonly("extent", &RasterSource::extent)
+		.field_readonly("extent", &RasterSource::extent)
 		//.field_readonly("layers", &RasterSource::layers)
 		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
 		//.field_readonly("flipped", &RasterSource::flipped)
 		//.field_readonly("rotated", &RasterSource::rotated)
-//	;	
+	;	
 
     class_<SpatRaster>("SpatRaster")
 		.constructor()

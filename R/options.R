@@ -10,7 +10,7 @@
 }
  
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk", "names", "verbose") 
+	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk", "names", "verbose", "NAflag") 
 }
 
  
@@ -78,7 +78,7 @@
 	opt
 }
 
-.showOptions <- function(opt) {
+..showOptions <- function(opt) {
 	cat("Options for package 'terra'\n")
 	cat("memfrac     :" , opt$memfrac, "\n")
 	cat("tempdir     :" , opt$tempdir, "\n")
@@ -91,7 +91,13 @@
 	}
 }
 
-
+.showOptions <- function(opt) {
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose") 
+	for (n in nms) {
+		v <- eval(parse(text=paste0("opt$", n)))
+		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))
+	}
+}
  
 terraOptions <- function(...) {
 	dots <- list(...)

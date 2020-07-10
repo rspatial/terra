@@ -59,8 +59,8 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, int subds, std::string su
 
 void SpatRaster::setSources(std::vector<RasterSource> s) {
 	source = s;
-	extent = s[0].extent;
-	srs = s[0].srs;
+//	extent = s[0].extent;
+//	srs = s[0].srs;
 }
 
 
@@ -199,8 +199,8 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	s.values.resize(0);
 	s.nrow = nrow();
 	s.ncol = ncol();
-	s.extent = extent;
-	s.srs = srs;
+	s.extent = getExtent();
+	s.srs = source[0].srs;
 	//s.prj = prj;
 	s.memory = true;
 	s.hasValues = false;
@@ -230,6 +230,7 @@ SpatRaster SpatRaster::deepCopy() {
 
 
 std::vector<double> SpatRaster::resolution() {
+	SpatExtent extent = getExtent();
 	return std::vector<double> { (extent.xmax - extent.xmin) / ncol(), (extent.ymax - extent.ymin) / nrow() };
 }
 
@@ -241,7 +242,7 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 		out.setError("resolution must be larger than 0");
 		return(out);
 	}
-	SpatExtent e = extent;
+	SpatExtent e = getExtent();
 	unsigned nc = round((e.xmax-e.xmin) / xres);
 	unsigned nr = round((e.ymax-e.ymin) / yres);
 	double xmax = e.xmin + nc * xres;
@@ -251,8 +252,7 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 	std::vector<double> ext = {e.xmin, xmax, e.ymin, ymax};
 
 	out = SpatRaster(rcl, ext, {""});
-	out.srs = srs;
-	out.source[0].srs = srs;
+	out.source[0].srs = source[0].srs;
 	return out;
 }
 
@@ -319,18 +319,18 @@ std::vector<double> SpatRaster::range_max() {
 }
 
 bool SpatRaster::is_lonlat() {
-	return srs.is_lonlat();
+	return source[0].srs.is_lonlat();
 }
 
 bool SpatRaster::could_be_lonlat() {
 	SpatExtent e = getExtent();
-	return srs.could_be_lonlat(e);
+	return source[0].srs.could_be_lonlat(e);
 }
 
 
 bool SpatRaster::is_global_lonlat() {
 	SpatExtent e = getExtent();
-	return srs.is_global_lonlat(e);
+	return source[0].srs.is_global_lonlat(e);
 }
 
 
@@ -384,6 +384,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 
 bool SpatRaster::setSRS(std::string crs) {
 	std::string msg;
+	SpatSRS srs;
 	if (!srs.set(crs, msg )) {
 		addWarning("Cannot set raster SRS: "+ msg);
 		return false;
@@ -411,7 +412,7 @@ bool SpatRaster::setSRS(OGRSpatialReference *poSRS, std::string &msg) {
 */
 
 std::string  SpatRaster::getSRS(std::string x) {
-	return srs.get(x);
+	return source[0].srs.get(x);
 }
 
 
@@ -551,4 +552,14 @@ std::vector<std::string> SpatRaster::getUnit() {
 	return(x);
 }
 
+
+double SpatRaster::xres() {
+	SpatExtent extent = getExtent();
+	return (extent.xmax - extent.xmin) / ncol() ;
+}
+
+double SpatRaster::yres() { 
+	SpatExtent extent = getExtent();
+	return (extent.ymax - extent.ymin) / nrow() ;
+}
 
