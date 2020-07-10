@@ -415,16 +415,16 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		return out;
 	}
 
-	std::string crsin = srs.wkt;
-	std::string crsout = out.srs.wkt;
+	std::string crsin = source[0].srs.wkt;
+	std::string crsout = out.source[0].srs.wkt;
 	bool do_prj = true;
 	if ((crsin == crsout) || (crsin == "") || (crsout == "")) {
 		do_prj = false;
 	}
 
 	if (!do_prj) {
-		SpatExtent e = out.extent;
-		e.intersect(extent);
+		SpatExtent e = out.getExtent();
+		e.intersect(getExtent());
 		if (!e.valid()) {
 			out.addWarning("No spatial overlap");
 			return out;
