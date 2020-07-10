@@ -413,7 +413,3 @@ setMethod("summary", signature(object="SpatRaster"),
 #	}
 #)
 
-
-
-
-if (!isGeneric("Which")) {setGeneric("Which", function(x) standardGeneric("Which"))}	

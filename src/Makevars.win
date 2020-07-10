@@ -31,5 +31,6 @@ winlibs:
 	cp -r $(RWINLIB)/share/proj ../inst/
 
 clean:
-rm -f $(SHLIB) $(OBJECTS)
+	rm -f $(SHLIB) $(OBJECTS)
+
 .PHONY: all winlibs clean

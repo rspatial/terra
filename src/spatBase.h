@@ -99,7 +99,7 @@ class SpatOptions {
 		unsigned progress = 3;
 		unsigned blocksizemp = 4;
 		size_t steps = 0;
-
+		double NAflag = NAN;
 		bool def_verbose = false;
 		bool verbose = false;
 		std::string datatype = "";
@@ -132,6 +132,7 @@ class SpatOptions {
 		// single use
 		void set_verbose(bool v);
 		void set_def_verbose(bool v);
+		void set_NAflag(double flag);
 		void set_filename(std::string d);
 		void set_filetype(std::string d);
 		void set_datatype(std::string d);
@@ -144,6 +145,7 @@ class SpatOptions {
 		std::string get_datatype();
 		//std::string get_bandorder();
 		bool get_verbose();
+		double get_NAflag();
 		bool get_overwrite();
 		unsigned get_progress();
 		bool do_progress(unsigned n);

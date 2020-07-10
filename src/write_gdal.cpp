@@ -126,6 +126,7 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
     #ifdef useRcpp
 	if (opt.verbose) {
 		Rcpp::Rcout<< "filename       " << filename << std::endl;
+		Rcpp::Rcout<< "NA flag        " << opt.get_NAflag() << std::endl;
 		Rcpp::Rcout<< "disk available " << diskAvailable / 1073741824 << " GB" << std::endl;
 		Rcpp::Rcout<< "disk needed    " << diskNeeded / 1073741824 << " GB" << std::endl;
 	}
@@ -171,12 +172,16 @@ bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::s
 	}
 	GDALRasterBand *poBand;
 	std::vector<std::string> nms = getNames();
+	double naflag = opt.get_NAflag();
+	
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = poDstDS->GetRasterBand(i+1);
 		poBand->SetDescription(nms[i].c_str());
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
-			if (datatype == "INT4S") {
+			if (!std::isnan(naflag)) {
+				poBand->SetNoDataValue(naflag); 
+			} else if (datatype == "INT4S") {
 				poBand->SetNoDataValue(INT32_MIN); //-2147483648; 
 			} else if (datatype == "INT2S") {
 				poBand->SetNoDataValue(INT16_MIN); 
