@@ -1,5 +1,7 @@
 \name{expand}
 
+\alias{extend}
+\alias{extend,SpatRaster-method}
 \alias{expand}
 \alias{expand,SpatRaster-method}
 \alias{expand,SpatExtent-method}
