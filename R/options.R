@@ -32,11 +32,12 @@
 	
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
-		warning(paste("unknown options:", bad))
+		warning(paste("unknown write option(s):", bad), call. = FALSE)
 	}
 		
 	if (any(s)) {
 		nms <- nms[s]
+		opt <- opt[s]
 		i <- which(nms == "names")	
 		if (length(i) > 0) {
 			namevs <- trimws(unlist(strsplit(opt[[i]], ",")))
@@ -61,7 +62,6 @@
 	if (is.null(.terra_environment$options)) .create_options()
 	
 	ptr <- .terra_environment$options@ptr
-
 	opt <- ptr$deepcopy(ptr)
 	
 	filename <- .fullFilename(filename[1], mustExist=FALSE)
