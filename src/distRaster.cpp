@@ -52,7 +52,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 			std::string etype = "inner";
 			x = x.edges(false, etype, 8, ops);
 		}
-		p = x.as_points(false, true);
+		p = x.as_points(false, true, opt);
 	}
 
 	bool lonlat = is_lonlat();
@@ -84,7 +84,7 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	}
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, ops);
-	SpatVector p = e.as_points(false, true);
+	SpatVector p = e.as_points(false, true, opt);
 	out = out.distance(p, opt);
 	return out;
 }
@@ -104,7 +104,7 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	}
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, ops);
-	SpatVector p = e.as_points(false, true);
+	SpatVector p = e.as_points(false, true, opt);
 	out = out.distance(p, ops);
 	out = out.arith(d, "<=", false, opt);
 	return out;

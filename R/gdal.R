@@ -5,7 +5,7 @@ gdal_version <- function() {
 	.gdalversion()
 }
 
-gdal_info <- function(filename, options="", print=TRUE, open_opt="", ...) {
+describe <- function(filename, options="", print=TRUE, open_opt="", ...) {
 	#if (is.null(.terra_environment$options)) .init()
 
 	options <- unique(trimws(options))
@@ -30,7 +30,7 @@ gdal_info <- function(filename, options="", print=TRUE, open_opt="", ...) {
 }
 
 
-sds_info <- function(filename, ...) {
+describe_sds <- function(filename, ...) {
 	#if (is.null(.terra_environment$options)) .init()
 	x <- .sdinfo(filename)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {

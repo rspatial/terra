@@ -56,7 +56,8 @@ setMethod("area", signature(x="SpatRaster"),
 				colnames(v) <- c("layer", "value", "area")
 				return(v)
 			} else {
-				x@ptr$sum_area()
+				opt <- .getOptions()
+				x@ptr$sum_area(opt)
 			}
 		} else {
 			opt <- .runOptions(filename, overwrite, wopt)
@@ -231,7 +232,8 @@ setMethod("flip", signature(x="SpatRaster"),
 
 setMethod("freq", signature(x="SpatRaster"), 
 	function(x, bylayer=TRUE, ...) {
-		v <- x@ptr$freq(bylayer[1])
+		opt <- .runOptions("", TRUE, list())
+		v <- x@ptr$freq(bylayer[1], opt)
 		if (bylayer) {
 			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
 			v <- do.call(rbind, v)
@@ -378,7 +380,8 @@ setMethod("transpose", signature(x="SpatRaster"),
 
 setMethod("unique", signature(x="SpatRaster", incomparables="ANY"), 
 	function(x, incomparables=FALSE, ...) {
-		u <- x@ptr$unique(incomparables)
+		opt <- .getOptions()
+		u <- x@ptr$unique(incomparables, opt)
 		if (!incomparables) {
 			if (!length(u)) return(u)
 			u <- do.call(cbind, u)

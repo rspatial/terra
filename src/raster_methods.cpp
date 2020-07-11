@@ -41,7 +41,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 
 	if (!hasValues()) return(out);
  	if (!out.writeStart(opt)) { return out; }
-	out.bs = getBlockSize(opt.get_blocksizemp(), opt.get_memfrac(), opt.get_steps());
+	out.bs = getBlockSize(opt);
     #ifdef useRcpp
 	out.pbar = new Progress(out.bs.n+2, opt.do_progress(bs.n));
 	out.pbar->increment();
@@ -547,7 +547,8 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
     }
 
 	unsigned bsmp = opt.get_blocksizemp()*fact[0]*fact[1]*fact[2];
-	BlockSize bs = getBlockSize(bsmp, opt.get_memfrac());
+	opt.set_blocksizemp(bsmp);
+	BlockSize bs = getBlockSize(opt);
 	//opt.set_blocksizemp();
 	std::vector<double> v, vout;
 	unsigned nc = ncol();
@@ -911,7 +912,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 
  	if (!out.writeStart(opt)) { return out; }
 	out.fill(NAN);
-	BlockSize bs = getBlockSize(4, opt.get_memfrac());
+	BlockSize bs = getBlockSize(opt);
 	readStart();
 	for (size_t i=0; i<bs.n; i++) {
         std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
@@ -1236,7 +1237,7 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	for (size_t i=0; i<n; i++) {
 		SpatRaster r = x[i];
 		if (!r.hasValues()) continue;
-		BlockSize bs = r.getBlockSize(4, opt.get_memfrac());
+		BlockSize bs = r.getBlockSize(opt);
 		r.readStart();
 		for (size_t j=0; j<bs.n; j++) {
             std::vector<double> v = r.readValues(bs.row[j], bs.nrows[j], 0, r.ncol());
@@ -1281,7 +1282,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 }
 
 
-SpatDataFrame SpatRaster::global(std::string fun, bool narm) {
+SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
 	std::vector<std::string> f {"sum", "mean", "min", "max"};
@@ -1298,7 +1299,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm) {
 	std::vector<double> stats(nlyr());
 	std::vector<unsigned> n(nlyr());
 	readStart();
-	BlockSize bs = getBlockSize(2, 0.5);
+	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v =   readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		unsigned off = bs.nrows[i] * ncol() ;
@@ -1328,7 +1329,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm) {
 
 
 
-SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string fun, bool narm) {
+SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
 
@@ -1357,7 +1358,7 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 	std::vector<unsigned> w(nlyr());
 	readStart();
 	weights.readStart();
-	BlockSize bs = getBlockSize(2, 0.5);
+	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		std::vector<double> wv = weights.readValues(bs.row[i], bs.nrows[i], 0, ncol());

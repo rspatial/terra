@@ -149,7 +149,8 @@ class SpatRaster {
 		std::vector<RasterSource> source;
 
 		BlockSize bs;
-		BlockSize getBlockSize(unsigned n, double frac, unsigned steps=0);
+		//BlockSize getBlockSize(unsigned n, double frac, unsigned steps=0);
+		BlockSize getBlockSize(SpatOptions &opt);
 		std::vector<double> mem_needs(unsigned n, SpatOptions &opt);
 
 		SpatMessages msg;
@@ -360,7 +361,7 @@ class SpatRaster {
 		//SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 
 		bool canProcessInMemory(unsigned n, SpatOptions &opt);
-		unsigned chunkSize(unsigned n, double frac);
+		uint_64 chunkSize(unsigned n, double frac);
 
 		void fill(double x);
 
@@ -378,8 +379,8 @@ class SpatRaster {
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster rst_area(SpatOptions &opt);
-		std::vector<double> sum_area();
-		std::vector<std::vector<double>> area_by_value();
+		std::vector<double> sum_area(SpatOptions &opt);
+		std::vector<std::vector<double>> area_by_value(SpatOptions &opt);
 
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);
@@ -390,7 +391,7 @@ class SpatRaster {
 
 		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt);
 		SpatVector polygonize(bool trunc, SpatOptions &opt);
-		SpatVector as_points(bool values, bool narm);
+		SpatVector as_points(bool values, bool narm, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
 		std::vector<std::vector<double>> bilinearValues(std::vector<double> x, std::vector<double> y);
@@ -417,13 +418,13 @@ class SpatRaster {
 		
 		SpatRaster focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows);
-		std::vector<std::vector<double>> freq(bool bylayer);
+		std::vector<std::vector<double>> freq(bool bylayer, SpatOptions &opt);
 		bool get_aggregate_dims(std::vector<unsigned> &fact, std::string &message);
 		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);
 		std::vector<std::vector<double> > get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim);
 //		std::vector<double> compute_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim, std::function<double(std::vector<double>&, bool)> fun, bool narm);
-		SpatDataFrame global(std::string fun, bool narm);
-		SpatDataFrame global_weighted_mean(SpatRaster &weights, std::string fun, bool narm);
+		SpatDataFrame global(std::string fun, bool narm, SpatOptions &opt);
+		SpatDataFrame global_weighted_mean(SpatRaster &weights, std::string fun, bool narm, SpatOptions &opt);
 
 		SpatRaster gridDistance(SpatOptions &opt);
 		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions &opt);
@@ -478,7 +479,7 @@ class SpatRaster {
 		SpatRaster transpose(SpatOptions &opt);
 		SpatRaster trig(std::string fun, SpatOptions &opt);
 		SpatRaster trim(unsigned padding, SpatOptions &opt);
-		std::vector<std::vector<double>> unique(bool bylayer);
+		std::vector<std::vector<double>> unique(bool bylayer, SpatOptions &opt);
 		SpatRaster project1(std::string newcrs, std::string method, SpatOptions &opt);
 		SpatRaster project2(SpatRaster &x, std::string method, SpatOptions &opt);
 		void project3(SpatRaster &out, std::string method, SpatOptions &opt);
@@ -505,7 +506,7 @@ class SpatRaster {
 
 		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
-		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm);
+		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 
 };
 

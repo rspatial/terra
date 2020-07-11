@@ -30,7 +30,7 @@ show_messages <- function(x, f="") {
 
 .mem_info <- function(x, n=1, print=TRUE) {
 	n <- max(0,n)
-	opt <- .runOptions("", TRUE, list())	
+	opt <- .getOptions()	
 	v <- x@ptr$mem_needs(n, opt)
 	if (print) {
 		gb <- 1073741824 

@@ -55,7 +55,10 @@ bool gwarp(std::string src, std::string dst, std::vector<std::string> options, s
 
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
-    BlockSize bs = r->getBlockSize(n, frac);
+	SpatOptions opt;
+	opt.set_blocksizemp(n);
+	opt.set_memfrac(frac);
+    BlockSize bs = r->getBlockSize(opt);
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }

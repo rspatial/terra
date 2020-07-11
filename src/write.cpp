@@ -149,11 +149,21 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 	source[0].open_write = true;
 	source[0].filename = filename;
-	bs = getBlockSize(opt.get_blocksizemp(), opt.get_memfrac(), opt.get_steps());
-
+	//bs = getBlockSize(opt.get_blocksizemp(), opt.get_memfrac(), opt.get_steps());
+	bs = getBlockSize(opt);
     #ifdef useRcpp
 	if (opt.verbose) {
-		Rcpp::Rcout<< "blocks: "   << bs.n << std::endl;
+		std::vector<double> mems = mem_needs(opt.get_blocksizemp(), opt); 
+		double gb = 1073741824; 
+		//{memneed, memavail, frac, csize, inmem} ;
+		Rcpp::Rcout<< "memory avail. : " << roundn(mems[1] / gb, 2) << " GB" << std::endl;
+		Rcpp::Rcout<< "memory allow. : " << roundn(mems[2] * mems[1] / gb, 2) << " GB" << std::endl;
+		Rcpp::Rcout<< "memory needed : " << roundn(mems[0] / gb, 3) << " GB" << std::endl;
+		std::string inmem = mems[4] == 1 ? "true" : "false";
+		Rcpp::Rcout<< "in memory     : " << inmem << std::endl;
+		Rcpp::Rcout<< "block size    : " << mems[3] << " rows" << std::endl;
+		Rcpp::Rcout<< "n blocks      : " << bs.n << std::endl;
+		Rcpp::Rcout<< std::endl;
 	}
 	
 	pbar = new Progress(bs.n+2, opt.do_progress(bs.n));

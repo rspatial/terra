@@ -78,6 +78,10 @@
 	opt
 }
 
+.getOptions <- function() {
+	.runOptions("", TRUE, list())
+}
+
 ..showOptions <- function(opt) {
 	cat("Options for package 'terra'\n")
 	cat("memfrac     :" , opt$memfrac, "\n")

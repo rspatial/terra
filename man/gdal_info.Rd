@@ -1,17 +1,17 @@
-\name{gdal_info}
+\name{describe}
 
-\alias{gdal_info}
+\alias{describe}
 \alias{gdal_version}
 
-\title{GDALinfo}
+\title{describe}
 
 \description{
-gdal_info calls the GDALinfo tool that provides the properties of a file with raster data. 
+Describe the properties of a file with raster data. (using the "GDALinfo" tool)
 }
 
 
 \usage{
-gdal_info(filename, options="", print=TRUE, open_opt="", ...)
+describe(filename, options="", print=TRUE, open_opt="", ...)
 gdal_version()
 }
 
@@ -31,9 +31,9 @@ character (invisibly, if \code{print=FALSE})
 
 \examples{
 f <- system.file("ex/test.tif", package="terra")
-gdal_info(f)
+describe(f)
 
-#g <- gdal_info(f, c("json", "nomd", "proj4"), print=FALSE)
+#g <- describe(f, c("json", "nomd", "proj4"), print=FALSE)
 #cat(g, "\n")
 }
 

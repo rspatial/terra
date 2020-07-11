@@ -56,10 +56,10 @@ std::vector<double> vtable(std::map<double, unsigned long long int> &x) {
 
 
 
-std::vector<std::vector<double>> SpatRaster::freq(bool bylayer) {
+std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, SpatOptions &opt) {
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
-	BlockSize bs = getBlockSize(4, 0.5);
+	BlockSize bs = getBlockSize(opt);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	readStart();
@@ -196,14 +196,14 @@ void unique_values(std::vector<double> &d) {
 }
 
 
-std::vector<std::vector<double>> SpatRaster::unique(bool bylayer) {
+std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
 
 	constexpr double lowest_double = std::numeric_limits<double>::lowest();
 
-	BlockSize bs = getBlockSize(4, 0.5);
+	BlockSize bs = getBlockSize(opt);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	readStart();
@@ -338,7 +338,7 @@ void jointstats(const std::vector<double> &u, const std::vector<double> &v, cons
 
 
 
-SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm) {
+SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
 	std::vector<std::string> f {"sum", "mean", "min", "max"};
@@ -365,14 +365,15 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm) {
 		z = z.subset(lyr, opt);
 	}
 
-	std::vector<std::vector<double>> uq = z.unique(true);
+	std::vector<std::vector<double>> uq = z.unique(true, opt);
 	std::vector<double> u = uq[0];
 	std::vector<std::vector<double>> stats(nlyr(), std::vector<double>(u.size()));
 	std::vector<std::vector<double>> cnt(nlyr(), std::vector<double>(u.size()));
 
 	readStart();
 	z.readStart();
-	BlockSize bs = getBlockSize(12, 0.5);
+	opt.set_blocksizemp(12);
+	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v =    readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		std::vector<double> zv = z.readValues(bs.row[i], bs.nrows[i], 0, ncol());

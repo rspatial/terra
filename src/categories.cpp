@@ -29,7 +29,7 @@ void SpatRaster::createCategories(unsigned layer) {
 	SpatOptions opt;
 	std::vector<unsigned> lyrs(1, layer);
 	SpatRaster r = subset(lyrs, opt);
-	std::vector<std::vector<double>> u = r.unique(false);
+	std::vector<std::vector<double>> u = r.unique(false, opt);
     std::vector<unsigned> sl = findLyr(layer);
 	source[sl[0]].cats[sl[1]].levels = u[0];
 	
@@ -106,7 +106,7 @@ void SpatRaster::createAttributes(unsigned layer) {
 	SpatOptions opt;
 	std::vector<unsigned> lyrs(1, layer);
 	SpatRaster r = subset(lyrs, opt);
-	std::vector<std::vector<double>> u = r.unique(false);
+	std::vector<std::vector<double>> u = r.unique(false, opt);
     std::vector<unsigned> sl = findLyr(layer);
 	SpatDataFrame df;
 	std::string name = "ID";

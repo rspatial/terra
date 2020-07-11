@@ -7,7 +7,7 @@
 \alias{sds,list-method}
 \alias{sds,SpatRaster-method}
 \alias{[<-,SpatDataSet,numeric,missing-method}
-\alias{sds_info}
+\alias{describe_sds}
 
 
 \title{Create a SpatDataSet}
@@ -25,7 +25,7 @@ sds_info provides information about sub-datasets in a file.
 
 \S4method{sds}{list}(x, ...) 
 
-sds_info(filename, ...)
+describe_sds(filename, ...)
 }
 
 \arguments{

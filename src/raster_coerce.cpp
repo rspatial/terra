@@ -20,11 +20,11 @@
 
 
 
-SpatVector SpatRaster::as_points(bool values, bool narm) {
+SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 
 // for now assuming one layer
 
-	BlockSize bs = getBlockSize(4, 0.5);
+	BlockSize bs = getBlockSize(opt);
 	std::vector<double> v, vout;
 	vout.reserve(v.size());
 	SpatVector pv;

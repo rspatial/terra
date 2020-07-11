@@ -27,13 +27,13 @@ bool SpatRaster::canProcessInMemory(unsigned n, SpatOptions &opt) {
 }
 
 
-unsigned SpatRaster::chunkSize(unsigned n, double frac) {
+uint_64 SpatRaster::chunkSize(unsigned n, double frac) {
 	double cells_in_row = n * ncol() * nlyr();
 	double rows = availableRAM() * frac / cells_in_row;
-	double maxrows = 10000;
-	rows = std::min(rows, maxrows);
-	unsigned urows = floor(rows);
-	if (rows == 0) return (1);
+	//double maxrows = 10000;
+	//rows = std::min(rows, maxrows);
+	uint_64 urows = floor(rows);
+	if (rows < 1) return (1);
 	if (urows < nrow()){
 		return(urows);
 	} else {
@@ -44,6 +44,7 @@ unsigned SpatRaster::chunkSize(unsigned n, double frac) {
 
 std::vector<double> SpatRaster::mem_needs(unsigned n, SpatOptions &opt) {
 	//returning bytes
+	//unsigned n = opt.get_blocksizemp(); 
 	double memneed  = ncell() * (nlyr() * n * 8);
 	double memavail = availableRAM() * 8; 
 	double frac = opt.get_memfrac();
@@ -53,10 +54,15 @@ std::vector<double> SpatRaster::mem_needs(unsigned n, SpatOptions &opt) {
 	return out;
 }
 
+//BlockSize SpatRaster::getBlockSize(unsigned n, double frac, unsigned steps) {
+BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 
-BlockSize SpatRaster::getBlockSize(unsigned n, double frac, unsigned steps) {
+	unsigned n = opt.get_blocksizemp();
+	double frac = opt.get_memfrac();
+	unsigned steps = opt.get_steps();
+	
 	BlockSize bs;
-	unsigned cs;
+	uint_64 cs;
 	
 	if (steps > 0) {
 		if (steps > nrow()) {

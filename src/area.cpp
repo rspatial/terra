@@ -204,10 +204,10 @@ SpatRaster SpatRaster::rst_area(SpatOptions &opt) {
 }
 
 
-std::vector<double> SpatRaster::sum_area() {
+std::vector<double> SpatRaster::sum_area(SpatOptions &opt) {
 
 	std::vector<double> out(nlyr(), 0);
-	BlockSize bs = getBlockSize(2, 0.5);
+	BlockSize bs = getBlockSize(opt);
 	readStart();
 	if (could_be_lonlat()) {
 		SpatRaster x = geometry(1);
@@ -257,10 +257,10 @@ std::vector<double> SpatRaster::sum_area() {
 
 
 //layer<value-area
-std::vector<std::vector<double>> SpatRaster::area_by_value() {
+std::vector<std::vector<double>> SpatRaster::area_by_value(SpatOptions &opt) {
 	if (!could_be_lonlat()) {
 		double ar = xres() * yres();
-		std::vector<std::vector<double>> f = freq(true);
+		std::vector<std::vector<double>> f = freq(true, opt);
 		for (size_t i=0; i<f.size(); i++) {
 			size_t fs = f[i].size();
 			for (size_t j=fs/2; j<fs; j++) {

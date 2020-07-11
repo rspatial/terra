@@ -38,6 +38,7 @@ setMethod("as.lines", signature(x="SpatVector"),
 
 setMethod("as.points", signature(x="SpatVector"), 
 	function(x, ...) {
+		opt <- .getOptions()
 		x@ptr <- x@ptr$as_points()
 		show_messages(x, "as.points")
 	}
@@ -47,7 +48,8 @@ setMethod("as.points", signature(x="SpatVector"),
 setMethod("as.points", signature(x="SpatRaster"), 
 	function(x, values=TRUE, ...) {
 		p <- methods::new("SpatVector")
-		p@ptr <- x@ptr$as_points(values, TRUE)
+		opt <- .getOptions()		
+		p@ptr <- x@ptr$as_points(values, TRUE, opt)
 		x <- show_messages(x, "as.points")
 		show_messages(p, "as.points")
 	}
