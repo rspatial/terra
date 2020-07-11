@@ -5,6 +5,7 @@
 \alias{crop}
 \alias{crop,SpatRaster,ANY-method}
 \alias{crop,SpatVector,SpatVector-method}
+\alias{crop,SpatVector,SpatExtent-method}
 
 \title{Cut out a geographic subset}
 

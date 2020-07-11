@@ -99,25 +99,33 @@ CPLErr setBandCategories(GDALRasterBand *poBand, std::vector<std::string> cats) 
 //#include <iostream>
 //#include "Rcpp.h"
 
-bool SpatRaster::writeStartGDAL(std::string filename, std::string driver, std::string datatype, bool overwrite, SpatOptions &opt) {
+bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
+	std::string filename = opt.get_filename();
+	if (filename == "") {
+		setError("empty filename");
+		return(false);
+	}
 	std::string errmsg;
-	if (!can_write(filename, overwrite, errmsg)) {
+	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 		setError(errmsg);
 		return(false);
 	}
-
+	std::string driver = opt.get_filetype();
 	getGDALdriver(filename, driver);
 	if (driver == "") {
 		setError("cannot guess file type from filename");
 		return(false);	
 	}
+	//std::string ext = getFileExt(filename);
+	//lowercase(ext);
+	std::string datatype = opt.get_datatype();
+	source[0].datatype = datatype;
+	
 
-
-	GIntBig diskAvailable;
 	GIntBig diskNeeded = ncell() * nlyr() * 8;
 	std::string dname = dirname(filename);
-	diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
+	GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
 	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
 		setError("insufficient disk space (perhaps from temporary file)");
 		return(false);			
@@ -313,31 +321,6 @@ bool SpatRaster::writeStopGDAL() {
 	source[0].hasValues = true;
 	return true;
 }
-
-
-
-
-SpatRaster SpatRaster::writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt) {
-	SpatRaster out = geometry();
-	bool values = true;
-	if (!hasValues()) {
-		addWarning("there are no cell values");
-		values = false;
-	}
-	if (!out.writeStart(opt)) { return out; }
-	if (values) {
-		readStart();
-		for (size_t i=0; i<out.bs.n; i++) {
-			std::vector<double> v = readBlock(out.bs, i);
-			if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-		}
-		if (!out.writeStopGDAL()) {
-			setError("cannot close file");
-		}
-	}
-	return out;
-}
-
 
 
 

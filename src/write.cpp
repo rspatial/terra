@@ -85,58 +85,58 @@ bool SpatRaster::isSource(std::string filename) {
 
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
-	std::string filename = opt.get_filename();
-	SpatRaster out = geometry();
+// here we could check if we can simple make a copy if
+// a) the SpatRaster is backed by a file
+// b) there are no write options 
 
-	if (filename == "") {
-		filename = tempFile(opt.get_tempdir(), ".tif");
-	}
-	std::string errmsg;
-	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
-		out.setError(errmsg);
+	SpatRaster out = geometry();
+	if (!hasValues()) {
+		out.setError("there are no cell values");
 		return out;
 	}
-
-	std::string ext = getFileExt(filename);
-	lowercase(ext);
-	std::string datatype = opt.get_datatype();
-
-	if (opt.names.size() == nlyr()) {
-		setNames(opt.names);
+	std::string filename = opt.get_filename();
+	
+	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
-	std::string format = opt.get_filetype();
-    #ifdef useGDAL
-    out = writeRasterGDAL(filename, format, datatype, true, opt);
-	#else
-	out.setError("GDAL is not available");
-    #endif
+	if (!out.writeStopGDAL()) {
+		out.setError("cannot close file");
+	}
 	return out;
 }
 
 
+
+
 bool SpatRaster::writeStart(SpatOptions &opt) {
 
-	std::string filename = opt.get_filename();
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
 	}
+
+	std::string filename = opt.get_filename();
 	if (filename == "") {
 		if (!canProcessInMemory(4, opt)) {
 			std::string extension = ".tif";
 			filename = tempFile(opt.get_tempdir(), extension);
+			opt.set_filename(filename);
 		}
 	}
 
 	if (filename != "") {
-		std::string ext = getFileExt(filename);
-		std::string dtype = opt.get_datatype();
-		source[0].datatype = dtype;
-		bool overwrite = opt.get_overwrite();
+		//std::string ext = getFileExt(filename);
+		//std::string dtype = opt.get_datatype();
+		//source[0].datatype = dtype;
+		//bool overwrite = opt.get_overwrite();
 
-		lowercase(ext);
+		//lowercase(ext);
 		// open GDAL filestream
 		#ifdef useGDAL
-		if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite, opt) ) {
+		//if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite, opt) ) {
+		if (! writeStartGDAL(opt) ) {
 			return false;
 		}
 		#else

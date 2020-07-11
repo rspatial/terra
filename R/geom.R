@@ -28,6 +28,13 @@ setMethod("crop", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
+setMethod("crop", signature(x="SpatVector", y="SpatExtent"), 
+	function(x, y, ...) {
+		y <- as.polygons(y)
+		crop(x, y, ...)
+	}
+)
+
 
 setMethod("buffer", signature(x="SpatVector"), 
 	function(x, width, quadsegs=10, capstyle="round", ...) {

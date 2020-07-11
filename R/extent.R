@@ -71,12 +71,32 @@ setMethod("ext<-", signature("SpatRaster", "numeric"),
 
 
 setMethod("ext", signature(x="SpatVector"), 
-	function(x, ...){ 
+	function(x, ...) { 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x@ptr$extent()
 		return(e)
 	}
 )	
+
+
+setMethod("ext", signature(x="Extent"), 
+	function(x, ...) {
+		ext(as.vector(x))
+	}
+)	
+
+setMethod("ext", signature(x="Raster"), 
+	function(x, ...) { 	
+		ext(x@extent)
+	}
+)	
+
+setMethod("ext", signature(x="Spatial"), 
+	function(x, ...) { 	
+		ext(as.vector(t(x@bbox)))
+	}
+)	
+
 
 
 setMethod("xmin", signature(x="SpatExtent"), 
