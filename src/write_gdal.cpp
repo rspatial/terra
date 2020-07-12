@@ -133,10 +133,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
     #ifdef useRcpp
 	if (opt.verbose) {
+		double gb = 1073741824;
 		Rcpp::Rcout<< "filename      : " << filename << std::endl;
-		Rcpp::Rcout<< "NA flag       : " << opt.get_NAflag() << std::endl;
-		Rcpp::Rcout<< "disk available: " << diskAvailable / 1073741824 << " GB" << std::endl;
-		Rcpp::Rcout<< "disk needed   : " << diskNeeded / 1073741824 << " GB" << std::endl;
+		//Rcpp::Rcout<< "NA flag       : " << opt.get_NAflag() << std::endl;
+		Rcpp::Rcout<< "disk available: " << roundn(diskAvailable / gb, 1) << " GB" << std::endl;
+		Rcpp::Rcout<< "disk needed   : " << roundn(diskNeeded / gb, 1) << " GB" << std::endl;
 	}
 	#endif
 

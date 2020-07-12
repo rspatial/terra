@@ -49,7 +49,7 @@ std::vector<double> SpatRaster::mem_needs(unsigned n, SpatOptions &opt) {
 	double memavail = availableRAM() * 8; 
 	double frac = opt.get_memfrac();
 	double csize = chunkSize(n, frac);
-	double inmem = !canProcessInMemory(n, opt); 
+	double inmem = canProcessInMemory(n, opt); 
 	std::vector<double> out = {memneed, memavail, frac, csize, inmem} ;
 	return out;
 }
