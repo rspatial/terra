@@ -158,7 +158,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		//{memneed, memavail, frac, csize, inmem} ;
 		Rcpp::Rcout<< "memory avail. : " << roundn(mems[1] / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory allow. : " << roundn(mems[2] * mems[1] / gb, 2) << " GB" << std::endl;
-		Rcpp::Rcout<< "memory needed : " << roundn(mems[0] / gb, 3) << " GB" << std::endl;
+		Rcpp::Rcout<< "memory needed : " << roundn(mems[0] / gb, 3) << " GB" << "  (" << opt.get_blocksizemp() << " copies)" << std::endl;
 		std::string inmem = mems[4] < 0.5 ? "false" : "true";
 		Rcpp::Rcout<< "in memory     : " << inmem << std::endl;
 		Rcpp::Rcout<< "block size    : " << mems[3] << " rows" << std::endl;

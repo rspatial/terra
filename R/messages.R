@@ -41,7 +41,7 @@ show_messages <- function(x, f="") {
 		cat(paste0("\nallowed (", round(100* v[3]) , "%) : ", round(v[3] * v[2] / gb, 2)))
 		cat(paste("\nneeded        :", round(v[1] / gb, 2)))
 		cat("\n----------------------")
-		cat(paste("\nproc in memory:", v[5] != 0))
+		cat(paste("\nproc in memory:", round(v[5]) != 0))
 		cat(paste("\nnr chunks     :", ceiling(nrow(x)/v[4])))
 		cat("\n----------------------\n")
 	} else {
