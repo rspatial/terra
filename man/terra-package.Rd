@@ -124,7 +124,6 @@ Also see the methods in section XI
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{\link{area}} \tab Compute the area of cells \cr
-    \code{stretch} \tab Stretch values (across layers) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -139,6 +138,7 @@ Also see the methods in section XI
     \code{\link{quantile}} \tab Quantiles \cr
     \code{\link[terra]{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
     \code{\link{area}} \tab Compute the total area covered by cells \cr
+    \code{stretch} \tab Stretch values \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }

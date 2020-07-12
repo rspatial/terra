@@ -63,18 +63,21 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 		}
 	}
 
+	std::vector<bool> hR = hasRange();
 	for (size_t i=0; i<nl; i++) {
 		if (!useS[i]) {
-			//if ((minq[i]==0 & maxq[i]==1) & .haveMinMax(x)) {
-			//	q[i] = { minValue(x), maxValue(x) }
-			//} else {
-				
-			std::vector<double> probs = {minq[i], maxq[i]};
-			std::vector<double> v = getValues(i);
-			q[i] = vquantile(v, probs, true);
+			if ((minq[i]==0) && (maxq[i]==1) && hR[i]) {
+				std::vector<double> rmn = range_min(); 
+				std::vector<double> rmx = range_max(); 
+				q[i] = {rmn[i], rmx[i]};
+			} else {
+				std::vector<double> probs = {minq[i], maxq[i]};
+				std::vector<double> v = getValues(i);
+				q[i] = vquantile(v, probs, true);
+			}
 		}
 		mult[i] = maxv[i] / (q[i][1]-q[i][0]);
-		Rcpp::Rcout << q[i][0] << " " << q[i][1] << " " << minv[i] << " " << maxv[i] << " " << mult[i] << std::endl;
+		//Rcpp::Rcout << q[i][0] << " " << q[i][1] << " " << minv[i] << " " << maxv[i] << " " << mult[i] << std::endl;
 	}
 
 	
