@@ -39,7 +39,7 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 setMethod("values", signature(x="SpatRaster"), 
 function(x, mat=TRUE, ...) {
 	if (hasValues(x)) {
-		v <- x@ptr$getValues()
+		v <- x@ptr$getValues(-1)
 		show_messages(x, "values")
 	} else {
 		v <- matrix(NA, nrow=ncell(x), ncol=nlyr(x))
