@@ -24,6 +24,80 @@
 #include "math_utils.h"
 
 
+SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	size_t nl = nlyr();
+	recycle(minv, nl);
+	recycle(maxv, nl);
+	recycle(minq, nl);
+	recycle(maxq, nl);
+	recycle(smin, nl);
+	recycle(smax, nl);
+
+	std::vector<std::vector<double>> q(nl);
+	std::vector<bool> useS(nl, false);
+	std::vector<double> mult(nl);
+	
+	for (size_t i=0; i<nl; i++) {
+		if (minv[i] >= maxv[i]) {
+			out.setError("maxv must be larger than minv");
+			return out;
+		}
+		if ((!std::isnan(smin[i])) && (!std::isnan(smax[i]))) {
+			if (smin[i] >= smax[i]) {
+				out.setError("smax must be larger than smin");
+				return out;
+			}
+			useS[i] = true;
+			q[i] = {smin[i], smax[i]};
+		} else {
+			if (minq[i] >= maxq[i]) {
+				out.setError("maxq must be larger than minq");
+				return out;
+			}
+			if ((minq[i] < 0) || (maxq[i] > 1)) {
+				out.setError("minq and maxq must be between 0 and 1");
+				return out;			
+			}
+		}
+	}
+
+	for (size_t i=0; i<nl; i++) {
+		if (!useS[i]) {
+			//if ((minq[i]==0 & maxq[i]==1) & .haveMinMax(x)) {
+			//	q[i] = { minValue(x), maxValue(x) }
+			//} else {
+				
+			std::vector<double> probs = {minq[i], maxq[i]};
+			std::vector<double> v = getValues(i);
+			q[i] = vquantile(v, probs, true);
+		}
+		mult[i] = maxv[i] / (q[i][1]-q[i][0]);
+		Rcpp::Rcout << q[i][0] << " " << q[i][1] << " " << minv[i] << " " << maxv[i] << " " << mult[i] << std::endl;
+	}
+
+	
+  	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		size_t nc = out.bs.nrows[i] * ncol();
+		for (size_t j=0; j<v.size(); j++) {
+			size_t lyr = j / nc;
+			v[j] = mult[lyr] * (v[j] - q[lyr][0]);
+			if (v[j] < minv[lyr]) v[j] = minv[lyr];
+			if (v[j] > maxv[lyr]) v[j] = maxv[lyr];
+		}
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	readStop();
+	out.writeStop();
+	
+	return(out);
+}
+
+
 SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt) {
 
 	recycle(ind, nlyr());
@@ -1398,4 +1472,6 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 		
 	return(out);
 }
+
+
 

@@ -3,14 +3,11 @@
 # Version 1.0
 # License GPL v3
 
-
-
 setMethod("length", signature(x="SpatRaster"), 
 	function(x) {
 		ncell(x)
 	}
 )	
-
 
 setMethod("origin", signature(x="SpatRaster"), 
 	function(x, ...) {
@@ -406,6 +403,16 @@ setMethod("summary", signature(object="SpatRaster"),
 		summary(spatSample(object, size, method="regular", ...))
 	}
 )
+
+
+setMethod("stretch", signature(x="SpatRaster"), 
+	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$stretch(minv, maxv, minq, maxq, smin, smax, opt)
+		show_messages(x, "stretch")
+	}
+)
+
 
 
 #setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 

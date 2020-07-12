@@ -26,10 +26,10 @@ Note the following important differences in methods names with the 'raster' pack
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
+\code{stackApply}\tab\code{\link{tapp}}\cr
 \code{extend}\tab\code{\link{expand}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
-\code{stackApply}\tab\code{\link{tapp}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
 \code{projectRaster}\tab\code{\link{project}}\cr
@@ -124,6 +124,7 @@ Also see the methods in section XI
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{\link{area}} \tab Compute the area of cells \cr
+    \code{stretch} \tab Stretch values (across layers) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }

@@ -471,7 +471,7 @@ RCPP_MODULE(spat){
 		.method("unique", &SpatRaster::unique, "unique")
 
 		.method("rectify", &SpatRaster::rectify, "rectify")
-		//.method("resample", &SpatRaster::resample1, "resample")
+		.method("stretch", &SpatRaster::stretch, "stretch")
 		.method("warp", &SpatRaster::warper, "warper")
 		.method("zonal", &SpatRaster::zonal, "zonal")			
 	;

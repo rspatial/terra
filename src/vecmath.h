@@ -23,6 +23,52 @@
 #include "NA.h"
 
 
+
+static inline double interpolate(double x, double y1, double y2, unsigned x1, unsigned x2) {
+	double denom = (x2-x1);
+	return y1 + (x-x1) * (y2-y1)/denom;
+}
+
+
+
+static inline std::vector<double> vquantile(std::vector<double> v, const std::vector<double>& probs, bool narm) {
+	size_t n = v.size();
+    if (n==0) {
+        return std::vector<double>(probs.size(), NAN);
+    }
+    if (n == 1) {
+        return std::vector<double>(probs.size(), v[0]);
+    }
+
+	//na_omit(v);
+	v.erase(std::remove_if(std::begin(v), std::end(v),
+        [](const double& value) { return std::isnan(value); }),
+        std::end(v));
+
+	if ((!narm) & (v.size() < n)) {
+        return std::vector<double>(probs.size(), NAN);
+	}
+	n = v.size();
+    std::sort(v.begin(), v.end());
+
+	size_t pn = probs.size();
+	std::vector<double> q(pn);
+
+    for (size_t i = 0; i < pn; ++i) {
+		double x = probs[i] * (n-1);
+		unsigned x1 = std::floor(x);
+		unsigned x2 = std::ceil(x);
+		if (x1 == x2) {
+			q[i] = v[x1];
+		} else {
+			q[i] = interpolate(x, v[x1], v[x2], x1, x2);
+		}
+    }
+    return q;
+}
+
+
+
 template <typename T>
 std::vector<T> vunique(std::vector<T> d) {
 	std::sort(d.begin(), d.end());

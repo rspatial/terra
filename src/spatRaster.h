@@ -197,7 +197,8 @@ class SpatRaster {
 
 		// only no values allowed with a single RasterSource
 		bool hasValues() { return source[0].hasValues ; };
-		std::vector<double> getValues();
+		std::vector<double> getValues(unsigned lyr= -1);
+		
 		bool getValuesSource(size_t src, std::vector<double> &out);				
 		bool setValues(std::vector<double> _values);
 		void setRange();
@@ -346,7 +347,7 @@ class SpatRaster {
 		//std::vector<std::vector<double>> readCellsBinary(unsigned src, std::vector<double> cells);
 
 		// gdal source
-		std::vector<double> readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
+		std::vector<double> readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols, int lyr = -1);
 		std::vector<double> readGDALsample(unsigned src, int srows, int scols);
 		std::vector<std::vector<double>> readRowColGDAL(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
@@ -449,6 +450,7 @@ class SpatRaster {
 
         std::vector<double> polygon_cells(SpatGeom& g);
 		SpatRaster quantile(std::vector<double> probs, bool narm, SpatOptions &opt);
+		SpatRaster stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, SpatOptions &opt);
 
 		SpatRaster range(std::vector<double> add, bool narm, SpatOptions &opt);
 		//SpatRaster rasterize(SpatVector p, std::vector<double> values, double background, bool update, SpatOptions &opt);

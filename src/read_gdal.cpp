@@ -798,7 +798,7 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, uint_64 row, unsigne
 
 
 
-std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols) {
+std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols, int lyr) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
@@ -815,17 +815,22 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_6
 		return errout;
 	}
 	unsigned ncell = ncols * nrows;
-	unsigned nl = source[src].nlyr;
-	std::vector<double> out(ncell*nl);
-
+	unsigned nl;
 	std::vector<int> panBandMap;
-	if (!source[src].in_order()) {
-		panBandMap.reserve(nl);
-		for (size_t i=0; i < nl; i++) {
-			panBandMap.push_back(source[src].layers[i]+1);
+	if (lyr < 0) {
+		nl = source[src].nlyr;
+		if (!source[src].in_order()) {
+			panBandMap.reserve(nl);
+			for (size_t i=0; i < nl; i++) {
+				panBandMap.push_back(source[src].layers[i]+1);
+			}
 		}
+	} else {
+		nl = 1;
+		panBandMap.push_back(lyr+1);
 	}
-		
+	
+	std::vector<double> out(ncell*nl);
 	int hasNA;
 	std::vector<double> naflags(nl, NAN);
 	CPLErr err = CE_None;

@@ -135,16 +135,29 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 }
 
 
-std::vector<double> SpatRaster::getValues() {
+std::vector<double> SpatRaster::getValues(unsigned lyr) {
 	std::vector<double> out;
-	unsigned n = nsrc();
-	for (size_t src=0; src<n; src++) {
+	if (lyr < 0) {
+		unsigned n = nsrc();
+		for (size_t src=0; src<n; src++) {
+			if (source[src].memory) {
+				out.insert(out.end(), source[src].values.begin(), source[src].values.end());
+			} else {
+				#ifdef useGDAL
+				std::vector<double> fvals = readValuesGDAL(src, 0, nrow(), 0, ncol());
+				out.insert(out.end(), fvals.begin(), fvals.end());
+				#endif // useGDAL
+			}
+		}
+	} else {
+		std::vector<unsigned> sl = findLyr(lyr);
+		unsigned src=sl[0];
 		if (source[src].memory) {
-			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
+			size_t start = sl[1] * ncell();
+			out = std::vector<double>(source[src].values.begin()+start, source[src].values.begin()+start+ncell());
 		} else {
 			#ifdef useGDAL
-			std::vector<double> fvals = readValuesGDAL(src, 0, nrow(), 0, ncol());
-			out.insert(out.end(), fvals.begin(), fvals.end());
+			out = readValuesGDAL(src, 0, nrow(), 0, ncol(), sl[1]);
 			#endif // useGDAL
 		}
 	}
