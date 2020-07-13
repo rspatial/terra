@@ -135,9 +135,9 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 }
 
 
-std::vector<double> SpatRaster::getValues(unsigned lyr) {
+std::vector<double> SpatRaster::getValues(long lyr) {
 	std::vector<double> out;
-	if (lyr < 0) {
+	if (lyr < 0) { // default; read all
 		unsigned n = nsrc();
 		for (size_t src=0; src<n; src++) {
 			if (source[src].memory) {
@@ -149,7 +149,7 @@ std::vector<double> SpatRaster::getValues(unsigned lyr) {
 				#endif // useGDAL
 			}
 		}
-	} else {
+	} else { // read one lyr
 		std::vector<unsigned> sl = findLyr(lyr);
 		unsigned src=sl[0];
 		if (source[src].memory) {

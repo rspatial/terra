@@ -64,8 +64,8 @@ fvi2 <- function(red, green){ (red - green ) / (red + green) }
 names(s)
 x1 <- lapp(s[[1:2]], fvi2, usenames=TRUE)
 x2 <- lapp(s[[2:1]], fvi2, usenames=TRUE)
-# x2 is different from x1 as the order of the layers has changed
-# but x3 and x4 are the same as x1 
+# x1 and x2 are the same, despite the change in the order of the layers
+# x4 is also the same, but x3 is not
 x3 <- lapp(s[[2:1]], fvi2, usenames=FALSE)
 x4 <- lapp(s, fvi2, usenames=TRUE)
 
