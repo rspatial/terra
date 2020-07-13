@@ -124,7 +124,6 @@ rr  <- c(r,r)
 nlyr(rr)
 nsrc(rr)
 ncell(rr)
-length(rr)
 size(rr)
 
 nrow(r) <- 18
