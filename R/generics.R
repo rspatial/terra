@@ -3,12 +3,12 @@
 # Version 1.0
 # License GPL v3
 
-setMethod("length", signature(x="SpatRaster"), 
-	function(x) {
-		warning("do not use")
-		ncell(x)
-	}
-)	
+#setMethod("length", signature(x="SpatRaster"), 
+#	function(x) {
+#		warning("do not use")
+#		ncell(x)
+#	}
+#)	
 
 setMethod("origin", signature(x="SpatRaster"), 
 	function(x, ...) {
