@@ -170,7 +170,7 @@ RCPP_MODULE(spat){
 		.method("deepcopy", &SpatOptions::deepCopy, "deepCopy")
 		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
 		.property("memfrac", &SpatOptions::get_memfrac, &SpatOptions::set_memfrac )
-		.property("filename", &SpatOptions::get_filename, &SpatOptions::set_filename )
+		.property("filenames", &SpatOptions::get_filenames, &SpatOptions::set_filenames )
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
 		.property("verbose", &SpatOptions::get_verbose, &SpatOptions::set_verbose )

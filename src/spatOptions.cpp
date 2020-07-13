@@ -28,7 +28,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	todisk = opt.todisk;
 	def_datatype = opt.def_datatype;
 	def_filetype = opt.def_filetype; 
-	filename = "";
+	filenames = {""};
 	overwrite = false;	
 	progress = opt.progress;
 	blocksizemp = opt.blocksizemp;
@@ -82,8 +82,34 @@ void SpatOptions::set_blocksizemp(unsigned x) {
 	blocksizemp = x; 
 }
 
-void SpatOptions::set_filename(std::string d) { lrtrim(d); filename = d; }
-std::string SpatOptions::get_filename() { return filename; }
+//void SpatOptions::set_filename(std::string f) { 
+//	f = lrtrim_copy(f); 
+//	filenames = {f}; 
+//}
+
+void SpatOptions::set_filenames(std::vector<std::string> f) { 
+	for (size_t i=0; i<f.size(); i++) {
+		f[i] = lrtrim_copy(f[i]); 
+	}
+	filenames = f; 
+}
+
+std::string SpatOptions::get_filename() { 
+	if (!filenames.empty() ) {
+		return filenames[0]; 
+	} else {
+		return "";
+	}
+}
+
+
+std::vector<std::string> SpatOptions::get_filenames() { 
+	if (!filenames.empty() ) {
+		return filenames; 
+	} else {
+		return {""};
+	}
+}
 
 std::string SpatOptions::get_tempdir() { return tempdir; }
 

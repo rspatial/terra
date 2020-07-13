@@ -278,7 +278,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		mopt = opt;
 		opt = SpatOptions(opt);
 	}
-	std::string filename = opt.filename;
+	std::string filename = opt.get_filename();
 
 	bool use_crs = crs != "";  
 	// should not be needed (need to fix)

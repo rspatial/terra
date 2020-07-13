@@ -10,7 +10,7 @@
 }
  
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filename", "overwrite", "todisk", "names", "verbose", "NAflag") 
+	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag") 
 }
 
  
@@ -64,13 +64,13 @@
 	ptr <- .terra_environment$options@ptr
 	opt <- ptr$deepcopy(ptr)
 	
-	filename <- .fullFilename(filename[1], mustExist=FALSE)
+	filename <- .fullFilename(filename, mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {
-		wopt$filename <- filename
+		wopt$filenames <- filename
 		wopt$overwrite <- overwrite[1]
 		opt <- .setOptions(opt, wopt)
 	} else {
-		opt$filename <- filename
+		opt$filenames <- filename
 		opt$overwrite <- overwrite[1]
 	}
 	#show_messages(opt)

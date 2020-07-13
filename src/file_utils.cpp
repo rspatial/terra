@@ -79,6 +79,7 @@ bool canWrite(std::string filename) {
 		return false;
 	}
 	fclose(fp);
+	remove(filename.c_str());
 	return true;
 }
 

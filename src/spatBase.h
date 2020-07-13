@@ -105,7 +105,7 @@ class SpatOptions {
 		std::string datatype = "";
 		//std::string bandorder = "";
 		std::string filetype = "";
-		std::string filename = "";
+		std::vector<std::string> filenames = {""};
 		std::vector<std::string> gdal_options;
 		std::vector<std::string> names;
 
@@ -133,7 +133,8 @@ class SpatOptions {
 		void set_verbose(bool v);
 		void set_def_verbose(bool v);
 		void set_NAflag(double flag);
-		void set_filename(std::string d);
+		//void set_filename(std::string f);
+		void set_filenames(std::vector<std::string> f);
 		void set_filetype(std::string d);
 		void set_datatype(std::string d);
 		//void set_bandorder(std::string d);
@@ -141,6 +142,7 @@ class SpatOptions {
 		void set_progress(unsigned p);
 		void set_blocksizemp(unsigned x);
 		std::string get_filename();
+		std::vector<std::string> get_filenames();
 		std::string get_filetype();
 		std::string get_datatype();
 		//std::string get_bandorder();

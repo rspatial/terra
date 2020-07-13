@@ -94,8 +94,37 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		out.setError("there are no cell values");
 		return out;
 	}
-	std::string filename = opt.get_filename();
-	
+
+	std::vector<std::string> fnames = opt.get_filenames();
+	size_t nl = nlyr();
+	if (fnames.size() > 1) {
+		if (fnames.size() != nl) {
+			out.setError("the number of filenames should be 1 or equal to the number of layers");
+			return out;
+		} else {
+			bool overwrite = opt.get_overwrite();
+			if (!overwrite) {
+				std::string errmsg;
+				for (size_t i=0; i<nl; i++) {
+					if (!can_write(fnames[i], overwrite, errmsg)) {
+						out.setError(errmsg + " (" + fnames[i] +")");
+						return(out);
+					}
+				}
+			}
+			for (unsigned i=0; i<nl; i++) {
+				SpatRaster s = subset({i}, opt);
+				opt.set_filenames({fnames[i]});
+				SpatRaster out = s.writeRaster(opt);
+				if (out.hasError()) {
+					return out;
+				}
+			}
+			SpatRaster out(fnames, -1, "", "");
+			return out;
+		}		
+	} 
+
 	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i=0; i<out.bs.n; i++) {
@@ -117,12 +146,16 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		setNames(opt.names);
 	}
 
-	std::string filename = opt.get_filename();
+	std::vector<std::string> fnames = opt.get_filenames();
+	if (fnames.size() > 1) {
+		addWarning("only the first filename supplied is used");
+	}
+	std::string filename = fnames[0];
 	if (filename == "") {
 		if (!canProcessInMemory(4, opt)) {
 			std::string extension = ".tif";
 			filename = tempFile(opt.get_tempdir(), extension);
-			opt.set_filename(filename);
+			opt.set_filenames({filename});
 		}
 	}
 

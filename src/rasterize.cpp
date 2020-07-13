@@ -38,7 +38,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	if (filename == "") {
 		if (!canRAM) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
-			opt.set_filename(filename);
+			opt.set_filenames({filename});
 			driver = "GTiff";
 		} 
 	} else {

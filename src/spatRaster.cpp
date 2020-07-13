@@ -369,8 +369,9 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 		}
 		SpatRaster rs(source[i]);
 		if (write) {
-			opt.filename = tmpbasename + std::to_string(i) + ".tif";
-			tmpfs.push_back(opt.filename);
+			std::string fname = tmpbasename + std::to_string(i) + ".tif";
+			opt.set_filenames({fname});
+			tmpfs.push_back(fname);
 			rs = rs.writeRaster(opt);
 		}
 		if (i == 0) {

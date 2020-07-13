@@ -311,7 +311,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
     std::vector<double> d, v, vv;
 	readStart();
 	std::string filename = opt.get_filename();
-	opt.set_filename("");
+	opt.set_filenames({""});
  	if (!first.writeStart(opt)) { return first; }
 
 	for (size_t i = 0; i < first.bs.n; i++) {
@@ -322,7 +322,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	first.writeStop();
 	
   	first.readStart();
-	opt.set_filename(filename);
+	opt.set_filenames({filename});
 	
   	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = out.bs.n; i>0; i--) {
