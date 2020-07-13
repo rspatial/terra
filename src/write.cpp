@@ -103,19 +103,20 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			return out;
 		} else {
 			bool overwrite = opt.get_overwrite();
-			if (!overwrite) {
-				std::string errmsg;
-				for (size_t i=0; i<nl; i++) {
-					if (!can_write(fnames[i], overwrite, errmsg)) {
-						out.setError(errmsg + " (" + fnames[i] +")");
-						return(out);
-					}
+			std::string errmsg;
+			for (size_t i=0; i<nl; i++) {
+				if (fnames[i] == "") {
+					out.setError("empty filename detected");
+					return(out);					
+				}
+				if (!can_write(fnames[i], overwrite, errmsg)) {
+					out.setError(errmsg + " (" + fnames[i] +")");
+					return(out);
 				}
 			}
 			for (unsigned i=0; i<nl; i++) {
-				SpatRaster s = subset({i}, opt);
 				opt.set_filenames({fnames[i]});
-				SpatRaster out = s.writeRaster(opt);
+				SpatRaster out = subset({i}, opt);
 				if (out.hasError()) {
 					return out;
 				}

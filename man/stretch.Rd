@@ -38,7 +38,7 @@ SpatRaster
 r <- rast(nc=10, nr=10)
 values(r) <- rep(1:25, 4)
 rs <- stretch(r)
-s <- stack(r, r*2)
+s <- c(r, r*2)
 sr <- stretch(s)
 }
 
