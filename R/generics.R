@@ -5,7 +5,7 @@
 
 setMethod("length", signature(x="SpatRaster"), 
 	function(x) {
-		ncell(x)
+		stop("not implemented for SpatRaster")
 	}
 )	
 

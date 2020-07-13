@@ -55,7 +55,6 @@ function(x, i, j, ... ,drop=TRUE) {
 	}
 	i <- (1:nlyr(x))[i] #to account for negative indices
 	i <- stats::na.omit(i)
-	if (all(i==0)) return(rast(x)[[1]])
 	subset(x, i, ...)
 })
 
