@@ -11,7 +11,7 @@ show_messages <- function(x, f="") {
 		}
 		if (x@ptr$messages$has_error) {
 			emsg <- x@ptr$messages$getError()
-			stop(paste0("(", f, ") ", emsg), call.=FALSE)
+			stop(paste0("[", f, "] ", emsg), call.=FALSE)
 		}
 		return(x)
 	} else {
@@ -21,7 +21,7 @@ show_messages <- function(x, f="") {
 		}
 		if (x$messages$has_error) {
 			emsg <- x$messages$getError()
-			stop(paste0("(", f, ") ", emsg), call.=FALSE)
+			stop(paste0("[", f, "] ", emsg), call.=FALSE)
 		}
 		return(x)
 	}

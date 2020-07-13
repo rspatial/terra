@@ -11,7 +11,7 @@ Linear stretch of values in a SpatRaster object. Provide the desired output rang
 
 \usage{
 \S4method{stretch}{SpatRaster}(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
-          filename="", overwrite=TRUE, wopt=list(), ...)
+          filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{

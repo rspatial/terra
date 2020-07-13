@@ -31,7 +31,6 @@
 \alias{nsrc,SpatRaster-method}
 \alias{ncell,SpatRaster-method}
 \alias{ncell,SpatDataSet-method}
-\alias{length,SpatRaster-method}
 \alias{length,SpatDataSet-method}
 \alias{size,SpatRaster-method}
 \alias{size,SpatDataSet-method}
@@ -59,7 +58,7 @@
 \description{
 Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; or sub-datasets of a SpatDataSet (\code{length}).
 
-The \code{size} of a SpatRaster \code{x} is \code{ncell(x) * nlyr(x)}. For a SpatRaster \code{length(x)} is the same as \code{ncell(x)}, for a SpatVector \code{length(x)} is the same as \code{nrow(x)}.
+The \code{size} of a SpatRaster \code{x} is \code{ncell(x) * nlyr(x)}. For a SpatVector \code{length(x)} is the same as \code{nrow(x)}.
 
 You can also set the number of rows or columns or layers. When setting dimensions, all cell values are dropped.
 }
@@ -75,7 +74,6 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 \S4method{size}{SpatRaster}(x)
 
-\S4method{length}{SpatRaster}(x)
 
 \S4method{nsrc}{SpatRaster}(x)
 
@@ -120,7 +118,6 @@ nlyr(r)
 dim(r)
 nsrc(r)
 ncell(r)
-length(r)
 size(r)
 
 rr  <- c(r,r)
