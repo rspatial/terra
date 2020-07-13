@@ -197,7 +197,7 @@ class SpatRaster {
 
 		// only no values allowed with a single RasterSource
 		bool hasValues() { return source[0].hasValues ; };
-		std::vector<double> getValues(unsigned lyr= -1);
+		std::vector<double> getValues(long lyr= -1);
 		
 		bool getValuesSource(size_t src, std::vector<double> &out);				
 		bool setValues(std::vector<double> _values);
