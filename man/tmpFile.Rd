@@ -11,7 +11,7 @@ Temporary files are automatically removed at the end of each R session that ends
 }
 
 \usage{
-tmpFiles(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
+tmpFiles(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE)
 }
 
 \arguments{
