@@ -96,7 +96,10 @@ void SpatOptions::set_filenames(std::vector<std::string> f) {
 
 std::string SpatOptions::get_filename() { 
 	if (!filenames.empty() ) {
-		return filenames[0]; 
+		std::string f = filenames[0];
+		filenames.resize(1);
+		filenames[0] = "";
+		return f; 
 	} else {
 		return "";
 	}
@@ -105,7 +108,10 @@ std::string SpatOptions::get_filename() {
 
 std::vector<std::string> SpatOptions::get_filenames() { 
 	if (!filenames.empty() ) {
-		return filenames; 
+		std::vector<std::string> f = filenames;
+		filenames.resize(1);
+		filenames[0] = "";
+		return f; 
 	} else {
 		return {""};
 	}
