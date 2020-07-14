@@ -106,7 +106,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("empty filename");
 		return(false);
 	} else {
-		// make sure it won't be used again
+		// make sure filename won't be used again
 		opt.set_filenames({""});
 	}
 	std::string errmsg;

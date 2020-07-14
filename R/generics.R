@@ -85,7 +85,7 @@ setMethod("boundaries", signature(x="SpatRaster"),
 )
 
 
-.collapse <- function(x) {
+.collapseSources <- function(x) {
 	x@ptr <- x@ptr$collapse_sources()
 	show_messages(x, "collapse")
 }

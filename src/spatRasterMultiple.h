@@ -183,9 +183,6 @@ class SpatRasterStack {
 		SpatRaster collapse() {
 			SpatRaster out;
 
-			//if (!oneRes) {
-			//	out.setError("cannot collapse sub-datasources with different resolutions");
-			//}
 			if (ds.size() > 0) {
 				out = ds[0];
 				for (size_t i=1; i<ds.size(); i++) {
@@ -193,12 +190,10 @@ class SpatRasterStack {
 						out.source.push_back(ds[i].source[j]);
 					}
 				}
-				return out;
-			} else {
-				out.setError("nothing to collapse");
-				return out;
-			}
+			} 
+			return out;
 		}
+		
 		SpatRaster summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt);
 		SpatRaster summary(std::string fun, bool narm, SpatOptions &opt);
 };
