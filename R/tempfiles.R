@@ -24,7 +24,7 @@
 
 
 
-tmpFiles <- function(current=TRUE, old=FALSE, orphan=FALSE, remove=FALSE) {
+tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 
 	if (!(old | current | orphan)) {
 		stop("at least one of 'orphan', 'current' and 'old' must be set to TRUE")
