@@ -190,6 +190,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		std::vector<double> mems = mem_needs(opt.get_blocksizemp(), opt); 
 		double gb = 1073741824; 
 		//{memneed, memavail, frac, csize, inmem} ;
+		Rcpp::Rcout<< "max size      : " << roundn(mems.max_size() / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory avail. : " << roundn(mems[1] / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory allow. : " << roundn(mems[2] * mems[1] / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory needed : " << roundn(mems[0] / gb, 3) << " GB" << "  (" << opt.get_blocksizemp() << " copies)" << std::endl;

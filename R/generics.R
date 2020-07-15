@@ -95,7 +95,7 @@ setMethod("c", signature(x="SpatRaster"),
 		s <- sds(list(x, ...))
 		x@ptr <- s@ptr$collapse()
 		x <- show_messages(x, "c")		
-		x@ptr <- x@ptr$collapse_sources()
+		try( x@ptr <- x@ptr$collapse_sources() )
 		show_messages(x, "c")		
 	}
 )

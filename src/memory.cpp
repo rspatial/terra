@@ -23,6 +23,9 @@ bool SpatRaster::canProcessInMemory(unsigned n, SpatOptions &opt) {
 	if (opt.get_todisk()) return false;
 	double demand = size() * n;
 	double supply = availableRAM() * opt.get_memfrac();
+	std::vector<double> v;
+	double maxsup = v.max_size(); //for 32 bit systems
+	supply = std::min(supply, maxsup);
 	return (demand < supply);
 }
 

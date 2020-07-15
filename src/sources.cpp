@@ -343,7 +343,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
 bool RasterSource::combine_sources(const RasterSource &x) {
 	if (memory & x.memory) {
-		if ((values.size() + x.values.size()) < values.max_size()) {
+		if ((values.size() + x.values.size()) < (values.max_size()/8) ) {
 			values.insert(values.end(), x.values.begin(), x.values.end());
 			layers.resize(nlyr + x.nlyr);
 			std::iota(layers.begin(), layers.end(), 0);
