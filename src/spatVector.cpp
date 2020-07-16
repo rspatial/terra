@@ -475,13 +475,3 @@ SpatVector SpatVector::subset_cols(int i) {
 
 
 
-/*
-std::vector<std::vector<double>> SpatVector::test(std::vector<double> x, std::vector<double> y, std::string fromcrs, std::string tocrs) {
-	std::vector<std::vector<double>> xy(2);
-	xy[0] = x;
-	xy[1] = y;
-	SpatMessages msg = transform_coordinates(xy, fromcrs, tocrs);
-	return xy;
-}
-*/
-
