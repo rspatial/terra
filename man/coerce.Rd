@@ -35,7 +35,7 @@ Coercion to other object types or other vector types
 
 \S4method{as.array}{SpatRaster}(x, ...)
 
-\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, ...)
+\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE, ...)
 
 \S4method{as.polygons}{SpatExtent}(x, crs="", ...)
 
@@ -56,6 +56,7 @@ Coercion to other object types or other vector types
 \item{trunc}{logical; truncate values to integers. If \code{FALSE} the object returned can be very large}
 \item{dissolve}{logical; combine cells with the same values?}
 \item{values}{logical; include cell values as attributes? If \code{FALSE} the cells are not dissolved and the object returned can be very large}
+\item{extent}{logical. if \code{TRUE}, a polygon for the extent of the SpatRaster is returned. It has vertices for each grid cell, not just the four corners of the raster. This can be useful for more precise projection. In other cases it is better to do \code{as.polygons(ext(x))} to get a much smaller object returned that covers the same extent}
 \item{crs}{character. The coordinate reference system}
 \item{...}{additional arguments. None implemented}
 }
