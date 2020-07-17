@@ -255,9 +255,10 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 			
 			//double naflag = -3.4e+38;
 			double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
-			if (hasNA) std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
+			if (hasNA && (!std::isnan(naflag))) {
+				std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
+			}
 			source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
-			
 		}
 		source[0].hasValues = true;
 		source[0].memory = true;

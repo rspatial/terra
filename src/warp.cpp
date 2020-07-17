@@ -184,7 +184,7 @@ GDALResampleAlg getAlgo(std::string m) {
 }
 
 
-bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigned> srcbands, std::vector<unsigned> dstbands, std::string method, std::string msg) {
+bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigned> srcbands, std::vector<unsigned> dstbands, std::string method, std::string msg, bool verbose) {
 
 	if (srcbands.size() != dstbands.size()) {
 		msg = "number of source bands must match number of dest bands";
@@ -193,7 +193,7 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 	int nbands = srcbands.size();
 
 	GDALResampleAlg a = getAlgo(method);
-	
+
     // Setup warp options.
     GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
     psWarpOptions->hSrcDS = hSrcDS;
@@ -219,18 +219,27 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 
 		hBand = GDALGetRasterBand(hSrcDS, srcbands[i]+1);
 		double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
+		if (verbose && i == 0) {
+			std::string hna = hasNA ? "true" : "false";
+			Rcpp::Rcout << "hasNA         : " << hna << std::endl;
+			Rcpp::Rcout << "NA flag       : " << naflag << std::endl;
+		}
 		if (hasNA) {
 			psWarpOptions->padfSrcNoDataReal[i] = naflag;
+			psWarpOptions->padfDstNoDataReal[i] = naflag;
+			hBand = GDALGetRasterBand(hDstDS, dstbands[i]+1);
+			GDALSetRasterNoDataValue(hBand, naflag);
 		} else {
 			psWarpOptions->padfSrcNoDataReal[i] = NAN;			
+			psWarpOptions->padfDstNoDataReal[i] = NAN;
 		}
-		psWarpOptions->padfDstNoDataReal[i] = NAN;
+		//psWarpOptions->padfDstNoDataReal[i] = NAN;
     }
 	
 	//psWarpOptions->pfnProgress = GDALTermProgress;
 
 	psWarpOptions->papszWarpOptions =	
-      CSLSetNameValue( psWarpOptions->papszWarpOptions, "INIT_DEST", "NO_DATA");
+     CSLSetNameValue( psWarpOptions->papszWarpOptions, "INIT_DEST", "NO_DATA");
 	psWarpOptions->papszWarpOptions =	
       CSLSetNameValue( psWarpOptions->papszWarpOptions, "WRITE_FLUSH", "YES");
 
@@ -350,7 +359,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		std::iota (dstbands.begin(), dstbands.end(), bandstart); 
 		bandstart += dstbands.size();
 		
-		bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, errmsg);
+		bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, errmsg, opt.get_verbose());
 	
 		GDALClose( hSrcDS );
 		if (!success) {
