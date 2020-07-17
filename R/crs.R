@@ -14,12 +14,38 @@ setMethod("crs", signature("SpatRaster"),
 	}
 )
 
-setMethod("crs<-", signature("SpatRaster", "character"), 
+
+.txtCRS <- function(x, warn=TRUE) {
+	if (inherits(x, "CRS")) {
+		if (warn) warning("expected a character string, not a CRS object")
+		y <- attr(x, "comment")
+		if (is.null(y)) {
+			y <- x@projargs				
+			if (is.na(y)) y <- ""
+		}
+		x <- y
+	} else if (is.character(x)) {
+		x <- x[1]
+	} else {
+		stop("I do not know what to do with this argument (expected a character string)")
+	}
+	x
+}
+
+setMethod("crs<-", signature("SpatRaster", "ANY"), 
 	function(x, ..., value) {
-		x@ptr$set_crs(value[1])
+		value <- .txtCRS(value)
+		x@ptr$set_crs(value)
 		show_messages(x, "crs<-")
 	}
 )
+
+#setMethod("crs<-", signature("SpatRaster", "character"), 
+#	function(x, ..., value) {
+#		x@ptr$set_crs(value[1])
+#		show_messages(x, "crs<-")
+#	}
+#)
 
 
 setMethod("crs", signature("SpatVector"), 
@@ -28,12 +54,14 @@ setMethod("crs", signature("SpatVector"),
 	}
 )
 
-setMethod("crs<-", signature("SpatVector", "character"), 
+setMethod("crs<-", signature("SpatVector", "ANY"), 
 	function(x, ..., value) {
+		value <- .txtCRS(value)
 		x@ptr$set_crs(value[1])
 		show_messages(x, "crs<-")
 	}
 )
+
 
 
 setMethod("isLonLat", signature("SpatRaster"), 
