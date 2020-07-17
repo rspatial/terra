@@ -1005,10 +1005,13 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 	}
 
 	
-	std::vector<std::vector<double>> r(nl);
-	for (size_t i=0; i<nl; i++) {
-		size_t off = n * i;
-		r[i] = std::vector<double>(out.begin()+off, out.begin()+off+n);  
+	size_t nr = rows.size();
+	std::vector<std::vector<double>> r(nl, std::vector<double> (nr));
+	for (size_t i=0; i<nr; i++) {
+		for (size_t j=0; j<nl; j++) {
+			size_t k = (i*nl) + j;
+			r[j][i] = out[k];  
+		}
 	}
 	return r;
 }
