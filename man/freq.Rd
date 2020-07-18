@@ -12,12 +12,13 @@ Frequency table of the values of a SpatRaster. \code{NA}s are not counted.
 }
 
 \usage{
-\S4method{freq}{SpatRaster}(x, bylayer=TRUE, ...)
+\S4method{freq}{SpatRaster}(x, bylayer=TRUE, digits=NA, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{bylayer}{logical. If \code{TRUE} tabulation is done by layer}
+  \item{digits}{integer. Used for rounding the values before tabulation. Ignored if \code{NA}}
   \item{...}{additional arguments (none implemented)}
 }
 
@@ -35,11 +36,12 @@ values(r) <- sample(5, ncell(r), replace=TRUE)
 freq(r, FALSE)
 freq(r)
 
-x <- c(r, r/2)
+x <- c(r, r/3)
 freq(x, FALSE)
 freq(x)
+freq(x, digits=1)
+freq(x, digits=-1)
 
-freq(round(x))
 }
 
 \keyword{spatial}
