@@ -229,9 +229,13 @@ setMethod("flip", signature(x="SpatRaster"),
 
 
 setMethod("freq", signature(x="SpatRaster"), 
-	function(x, bylayer=TRUE, ...) {
+	function(x, digits=NA, bylayer=TRUE, ...) {
 		opt <- .runOptions("", TRUE, list())
-		v <- x@ptr$freq(bylayer[1], opt)
+		if (is.na(digits)) {
+			v <- x@ptr$freq(bylayer[1], FALSE, 0, opt)
+		} else {
+			v <- x@ptr$freq(bylayer[1], TRUE, digits, opt)
+		}
 		if (bylayer) {
 			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
 			v <- do.call(rbind, v)

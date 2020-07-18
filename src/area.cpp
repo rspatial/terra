@@ -260,7 +260,7 @@ std::vector<double> SpatRaster::sum_area(SpatOptions &opt) {
 std::vector<std::vector<double>> SpatRaster::area_by_value(SpatOptions &opt) {
 	if (!could_be_lonlat()) {
 		double ar = xres() * yres();
-		std::vector<std::vector<double>> f = freq(true, opt);
+		std::vector<std::vector<double>> f = freq(true, false, 0, opt);
 		for (size_t i=0; i<f.size(); i++) {
 			size_t fs = f[i].size();
 			for (size_t j=fs/2; j<fs; j++) {

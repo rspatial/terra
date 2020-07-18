@@ -56,7 +56,7 @@ std::vector<double> vtable(std::map<double, unsigned long long int> &x) {
 
 
 
-std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int digits, SpatOptions &opt) {
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
 	BlockSize bs = getBlockSize(opt);
@@ -67,11 +67,14 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, SpatOptions &opt
 		out.resize(nl);
 		std::vector<std::map<double, unsigned long long int>> tabs(nl);
 		for (size_t i = 0; i < bs.n; i++) {
-			unsigned n = bs.nrows[i] * nc;
+			unsigned nrc = bs.nrows[i] * nc;
 			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			if (round) {
+				for(double& d : v) d = roundn(d, digits);
+			}
 			for (size_t lyr=0; lyr<nl; lyr++) {
-				unsigned off = lyr*n;
-				std::vector<double> vv(v.begin()+off, v.begin()+off+n);
+				unsigned off = lyr*nrc;
+				std::vector<double> vv(v.begin()+off, v.begin() + off + nrc);
 				std::map<double, unsigned long long int> tab = table(vv);
 				tabs[lyr] = ctable(tabs[lyr], tab);
 			}
@@ -84,6 +87,9 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, SpatOptions &opt
 		std::map<double, long long unsigned> tabs;
 		for (size_t i = 0; i < bs.n; i++) {
 			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			if (round) {
+				for (double& d : v) d = roundn(d, digits);
+			}
 			std::map<double, long long unsigned> tab = table(v);
 			tabs = ctable(tabs, tab);
 		}
