@@ -420,6 +420,8 @@ class SpatRaster {
 		SpatRaster focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows);
 		std::vector<std::vector<double>> freq(bool bylayer, bool round, int digits, SpatOptions &opt);
+		std::vector<size_t> count(double value, bool bylayer, bool round, int digits, SpatOptions &opt);
+		
 		bool get_aggregate_dims(std::vector<unsigned> &fact, std::string &message);
 		std::vector<unsigned> get_aggregate_dims2(std::vector<unsigned> fact);
 		std::vector<std::vector<double> > get_aggregates(std::vector<double> &in, size_t nr, std::vector<unsigned> dim);

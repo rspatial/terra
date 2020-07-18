@@ -100,6 +100,55 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 }
 
 
+std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, int digits, SpatOptions &opt) {
+	std::vector<size_t> out;
+	if (!hasValues()) return out;
+	BlockSize bs = getBlockSize(opt);
+	unsigned nc = ncol();
+	unsigned nl = nlyr();
+	readStart();
+	if (bylayer) {
+		out.resize(nl);
+		for (size_t i = 0; i < bs.n; i++) {
+			unsigned nrc = bs.nrows[i] * nc;
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			if (round) {
+				for(double& d : v) d = roundn(d, digits);
+			}
+			if (std::isnan(value)) {
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					unsigned off = lyr*nrc;
+					out[lyr] += count_if(v.begin()+off, v.begin()+off+nrc, 
+							[](double d){return std::isnan(d);});
+				}
+			} else {
+				for (size_t lyr=0; lyr<nl; lyr++) {
+					unsigned off = lyr*nrc;
+					out[lyr] += std::count(v.begin()+off, v.begin()+off+nrc, value);
+				}
+			}
+		}
+	} else {
+		out.resize(1);
+		for (size_t i = 0; i < bs.n; i++) {
+			std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, nc);
+			if (round) {
+				for (double& d : v) d = roundn(d, digits);
+			}
+			if (std::isnan(value)) {
+				out[0] += count_if(v.begin(), v.end(), 
+								[](double d){return std::isnan(d);});
+			} else {
+				out[0] += std::count(v.begin(), v.end(), value);
+			}
+		}
+	}
+	readStop();
+	return(out);
+}
+
+
+
 SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOptions &opt) {
 	size_t n = probs.size();
 	if (n == 0) {

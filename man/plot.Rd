@@ -29,7 +29,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y, col, maxcell=100000, leg.mar=NULL, 
+\S4method{plot}{SpatRaster,numeric}(x, y, col, maxcell=100000, mar=c(5.1, 4.1, 4.1, 6.6), 
    leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL,
    digits, useRaster=TRUE, zlim, xlab="", ylab="", axes=TRUE, add=FALSE, ...)
 
@@ -43,7 +43,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
    axes=TRUE, add=FALSE, border="black", ...)
 
 \S4method{plot}{SpatVector,character}(x, y, col=topo.colors(100), xlab="", ylab="", 
-   axes=TRUE, add=FALSE, leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)
+   axes=TRUE, add=FALSE, mar=c(5.1, 4.1, 4.1, 7.1), leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)
 
 \S4method{plot}{SpatExtent,missing}(x, y, col=NULL, xlab="", ylab="", axes=TRUE, ...)
 
@@ -63,7 +63,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{y}{missing or positive integer indicating the layer(s) to be plotted, or the name of the layer to be mapped}
   \item{col}{character. Colors}
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
-  \item{leg.mar}{positive integer. Size of margin for the legend}
+  \item{mar}{numeric vector of lenght 4 to set the margins of the plot}
   \item{leg.levels}{positive integer. Number of labels on the legend}
   \item{leg.shrink}{numeric. Relative shrinkage of legend from top and bottom}
   \item{leg.main}{character. Legend title}

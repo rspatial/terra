@@ -433,6 +433,7 @@ RCPP_MODULE(spat){
 		.method("flip", &SpatRaster::flip, "flip")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
+		.method("count", &SpatRaster::count, "count")
 		.method("freq", &SpatRaster::freq, "freq")
 		.method("geometry", &SpatRaster::geometry, "geometry")
 

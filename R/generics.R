@@ -229,19 +229,35 @@ setMethod("flip", signature(x="SpatRaster"),
 
 
 setMethod("freq", signature(x="SpatRaster"), 
-	function(x, digits=NA, bylayer=TRUE, ...) {
+	function(x, digits=0, value=NULL, bylayer=TRUE, ...) {
+
 		opt <- .runOptions("", TRUE, list())
-		if (is.na(digits)) {
-			v <- x@ptr$freq(bylayer[1], FALSE, 0, opt)
+
+		if (!is.null(value)) {
+			if (is.na(digits)) {
+				v <- x@ptr$count(value, bylayer[1], FALSE, 0, opt)		
+			} else {
+				v <- x@ptr$count(value, bylayer[1], TRUE, digits, opt)	
+				value <- round(value, digits)
+			}
+			if (bylayer) {
+				v <- cbind(layer=1:nlyr(x), value=value, count=v)
+			} else {
+				v <- cbind(value=value, count=v)
+			}
 		} else {
-			v <- x@ptr$freq(bylayer[1], TRUE, digits, opt)
-		}
-		if (bylayer) {
-			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
-			v <- do.call(rbind, v)
-			colnames(v) <- c("layer", "value", "count")
-		} else {
-			v <- matrix(v[[1]], ncol=2, dimnames=list(NULL, c("value", "count")))
+			if (is.na(digits)) {
+				v <- x@ptr$freq(bylayer[1], FALSE, 0, opt)
+			} else {
+				v <- x@ptr$freq(bylayer[1], TRUE, digits, opt)
+			}
+			if (bylayer) {
+				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
+				v <- do.call(rbind, v)
+				colnames(v) <- c("layer", "value", "count")
+			} else {
+				v <- matrix(v[[1]], ncol=2, dimnames=list(NULL, c("value", "count")))
+			}
 		}
 		v
 	}

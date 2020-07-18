@@ -60,7 +60,6 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 			asp <- 1
 		}
 		col <- .getCols(size(x), col)
-		
 		if (gtype == "points") {
 			if (is.null(col)) col = "black"
 			g <- geom(x)
@@ -85,21 +84,21 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 )
 
 
-.setPAR <- function(leg.mar=NULL, leg.ext=NULL, leg.hor=NULL, ...) {
-	if (missing(leg.mar)) {
-		if (missing(leg.ext)) {
-			leg.mar=4
-		} else {
-			leg.mar=0
-		}
-	}
-	leg.hor <- FALSE
-	if (leg.hor) {
-		graphics::par(mar=.getMar(c(leg.mar, 0, 0, 0)))
-	} else {
-		graphics::par(mar=.getMar(c(0, 0, 0, leg.mar)))
-	}		
-}
+#.setPAR <- function(leg.mar=NULL, leg.ext=NULL, leg.hor=NULL, ...) {
+#	if (missing(leg.mar)) {
+#		if (missing(leg.ext)) {
+#			leg.mar=4
+#		} else {
+#			leg.mar=0
+#		}
+#	}
+#	leg.hor <- FALSE
+#	if (leg.hor) {
+#		graphics::par(mar=.getMar(c(leg.mar, 0, 0, 0)))
+#	} else {
+#		graphics::par(mar=.getMar(c(0, 0, 0, leg.mar)))
+#	}		
+#}
 
 .legCoords <- function(object, leg.ext=NULL, leg.shrink=c(0,0), leg.main=NULL, ...) {
 	usr <- graphics::par()$usr
@@ -121,15 +120,19 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 # signature(x="SpatVector", y="missing"),
 # should be calling this one, and not the other way around? 
 setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)  {
+	function(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, mar=c(5.1, 4.1, 4.1, 7.1), leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)  {
 		
-		old.par <- graphics::par(no.readonly = TRUE) 
-		on.exit(graphics::par(old.par))
-		.setPAR(...)
+		#old.par <- graphics::par(no.readonly = TRUE) 
+		#on.exit(graphics::par(old.par))
+		#.setPAR(...)
 		
 		if (is.null(col)) {
 			col <- topo.colors(100)
 		}
+
+
+		graphics::par(mar=mar)
+
 		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 		uv <- unique(v)
 		if (is.null(leg.type)) {

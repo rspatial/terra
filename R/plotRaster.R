@@ -1,7 +1,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function (x, y, col, maxcell = 100000, leg.mar=NULL, leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL, digits, useRaster = TRUE, zlim, xlab="", ylab="", axes=TRUE, add=FALSE, ...) {
+	function (x, y, col, maxcell = 100000, mar=c(5.1, 4.1, 4.1, 6.6), leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL, digits, useRaster = TRUE, zlim, xlab="", ylab="", axes=TRUE, add=FALSE, ...) {
 
 		x <- x[[y[1]]]
 		if (!hasValues(x)) {
@@ -61,21 +61,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 #			}
 #		}
 
-		if (is.null(leg.mar)) {
-			if (is.null(leg.ext)) {
-				leg.mar=3
-			} else {
-				leg.mar=0
-			}
-		}
-		old.mar <- graphics::par()$mar 
-		on.exit(graphics::par(mar=old.mar))
-		leg.hor <- FALSE
-		if (leg.hor) {
-			graphics::par(mar=.getMar(c(leg.mar, 0, 0, 0)))
-		} else {
-			graphics::par(mar=.getMar(c(0, 0, 0, leg.mar)))
-		}		
+		graphics::par(mar=mar)
 		graphics::image(X, Y, Z, col=col, useRaster=useRaster, asp=asp, xlab=xlab, ylab=ylab, axes=axes, ...)
 
 		if (missing(digits)) {
