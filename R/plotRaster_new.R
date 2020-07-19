@@ -76,17 +76,17 @@
 }
 
 .line.usr <- function(line, side) {
-	lh <- par("cin")[2] * par("cex") * par("lheight")
-	x_off <- diff(grconvertX(c(0, lh), "inches", "npc"))
-	y_off <- diff(grconvertY(c(0, lh), "inches", "npc"))
+	lh <- graphics::par("cin")[2] * graphics::par("cex") * graphics::par("lheight")
+	x_off <- diff(graphics::grconvertX(c(0, lh), "inches", "npc"))
+	y_off <- diff(graphics::grconvertY(c(0, lh), "inches", "npc"))
 	if (side == 1) {
-		grconvertY(-line * y_off, "npc", "user")
+		graphics::grconvertY(-line * y_off, "npc", "user")
 	} else if (side ==2) {
-		grconvertX(-line * x_off, "npc", "user")
+		graphics::grconvertX(-line * x_off, "npc", "user")
 	} else if (side ==3) {
-		grconvertY(1 + line * y_off, "npc", "user")
+		graphics::grconvertY(1 + line * y_off, "npc", "user")
 	} else {
-		grconvertX(1 + line * x_off, "npc", "user")
+		graphics::grconvertX(1 + line * x_off, "npc", "user")
 	}
 }
 
@@ -99,10 +99,10 @@
 		if (loc == "right") {
 			p <- c(usr[2]+dxy[1], usr[2]+2*dxy[1], usr[3], usr[4])
 		} else if (loc == "left") {
-			s <- .line.usr(trunc(par("mar")[2]), 2)
+			s <- .line.usr(trunc(graphics::par("mar")[2]), 2)
 			p <- c(s+4*dxy[1], s+5*dxy[1], usr[3], usr[4])
 		} else if (loc == "bottom") {
-			s <- .line.usr(trunc(par("mar")[1]), 1)
+			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
 			p <- c(usr[1], usr[2], s+2*dxy[2], s+3*dxy[2])
 		} else if (loc == "top") {
 			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
@@ -137,11 +137,11 @@
 	graphics::par(mar=x$mar)	
 	
 	plot(x$ext[1:2], x$ext[3:4], type = "n", xlab = "", ylab = "", asp=x$asp, ...)
-	rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
+	graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
 		angle = 0, interpolate = x$interpolate)	
 	if (x$leg$legend) {	
 		if (inherits(leg.ext, "SpatExtent")) {
-			leg.ext <- as.data.frame(rbind(as.vector(e)))
+			leg.ext <- as.data.frame(rbind(as.vector(leg.ext)))
 		} else if (is.numeric(leg.ext)) {
 			leg.ext <- data.frame(rbind(leg.ext))
 			if (ncol(leg.ext) != 4) {
@@ -214,9 +214,9 @@
 	out$ext <- as.vector(ext(x))
 
 	if (type=="classes") {
-		ras <- .as.raster.classes(x, cols, ...)
+		#ras <- .as.raster.classes(x, cols, ...)
 	} else if (type=="range") {
-		ras <- .as.raster.range(x, cols, ...)
+		#ras <- .as.raster.range(x, cols, ...)
 	} else {
 		ras <- .as.raster.continuous(x, cols, ...)
 	}
@@ -235,8 +235,9 @@
 
 #setMethod("plot", signature(x="SpatRaster", y="numeric"), 
 
-.plt <- function(x, y=1, maxcell=50000, col=rev(terrain.colors(255)), type="continuous", mar=c(5.1, 4.1, 4.1, 7.1), legend="right", interpolate=FALSE, ...) {
+.plt <- function(x, y=1, col, type="continuous", mar=c(5.1, 4.1, 4.1, 7.1), legend="right", interpolate=FALSE, maxcell=50000, ...) {
 
+		if (missing(col)) col <- rev(grDevices::terrain.colors(255))
 		x <- x[[y]]
 		if (!hasValues(x)) {
 			stop("SpatRaster has no cell values")
@@ -252,4 +253,7 @@
 	}
 #}
 
-#.plt(r, leg="top", mar=c(2,2,2,2), leg.ext=e, leg.levels=3, leg.at=c(666,999), minmax=c(0,2000))
+# Create a SpatRaster from a file
+#r <- rast(system.file("ex/test.tif", package="terra"))
+#e <- c(177963, 179702, 333502, 333650) 
+#.plt(r, leg="top", mar=c(2,2,2,2), leg.ext=e, leg.levels=3, leg.at=c(10, 666,1222), minmax=c(0,2000))
