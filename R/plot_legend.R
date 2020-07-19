@@ -28,16 +28,16 @@
 
 .plot.cont.legend <- function(x, ...) {
 
-	cols <- rev(x$leg$cols)
+	cols <- rev(x$cols)
 	nc <- length(cols)
-	e <- x$leg$ext
+
 	zlim <- x$leg$minmax
 	zz <- x$leg$at
 	if (is.null(zz)) {
 		zz <- pretty(zlim, n =(x$leg$levels+1))	
 		zz <- zz[zz >= zlim[1] & zz <= zlim[2]]
 	}
-	
+	e <- x$leg$ext
 	if (x$leg$loc %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
 		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=TRUE)
@@ -69,6 +69,10 @@
 }	
 
 
+.plot.class.legend <- function(x, ...) {
+	legend(x$leg$xmin, x$leg$ymax, legend=x$leg$labels, col=x$cols, ...)
+	x
+}	
 
 
 .get.leg.coords <- function(x) {
@@ -149,4 +153,19 @@
 }
 
 
+
+
+.plot.legend <- function(x) {
+	if (is.null(x$leg$ext)) {
+		x <- .get.leg.extent(x)
+	} else {
+		x <- .get.leg.coords(x)	
+	}
+	if (x$leg$type == "continuous") {
+		x <- .plot.cont.legend(x)
+	} else if (x$leg$type == "classes") {
+		x <- .plot.class.legend(x)
+	}
+	x
+}
 
