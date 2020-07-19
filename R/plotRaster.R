@@ -122,10 +122,8 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
 	function(x, y, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)  {
-		nl <- min(nlyr(x), maxnl)
-		if (nl == 0) {
-			stop("SpatRaster has no cell values")
-		}
+
+		nl <- max(1, min(nlyr(x), maxnl))
 		if (add) {
 			plot(x, 1, maxcell=maxcell, add=TRUE, ...) 
 			return(invisible(NULL))

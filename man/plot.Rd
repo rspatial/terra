@@ -111,6 +111,9 @@ plot(x)
 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
+plot(v)
+plot(v, "ID_1")
+
 r <- rast(v)
 values(r) <- 1:ncell(r)
 plot(r)

@@ -119,6 +119,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 # note: add=T is not working
 # signature(x="SpatVector", y="missing"),
 # should be calling this one, and not the other way around? 
+
 setMethod("plot", signature(x="SpatVector", y="character"), 
 	function(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, mar=c(5.1, 4.1, 4.1, 7.1), leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)  {
 		
@@ -130,8 +131,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			col <- topo.colors(100)
 		}
 
-
-		graphics::par(mar=mar)
+		if (!add) graphics::par(mar=mar)
 
 		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 		uv <- unique(v)
@@ -153,7 +153,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			cols=col[grps]
 		}
 
-		plot(x, col=cols, ...)
+		plot(x, col=cols, add=add, ...)
 		n <- ifelse(is.null(leg.ext), 20, length(uv))
 		leg.ext <- .legCoords(x, ...)
 		if (leg.type == "class") {

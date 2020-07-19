@@ -1,16 +1,16 @@
 
 
-.getMar <- function(dmar) {
-	mar <- graphics::par()$mar
-	if (!is.null(.terra_environment$mar)) {
-		if (all(mar == (.terra_environment$mar + .terra_environment$dmar))) {
-			mar <- .terra_environment$mar
-		} 
-	}
-	.terra_environment$mar <- mar
-	.terra_environment$dmar <- dmar
-	mar + dmar
-}
+#.getMar <- function(dmar) {
+#	mar <- graphics::par()$mar
+#	if (!is.null(.terra_environment$mar)) {
+#		if (all(mar == (.terra_environment$mar + .terra_environment$dmar))) {
+#			mar <- .terra_environment$mar
+#		} 
+#	}
+#	.terra_environment$mar <- mar
+#	.terra_environment$dmar <- dmar
+#	mar + dmar
+#}
 
 .legMain <- function(leg.main, xmax, ymax, dy, leg.main.cex) {
     if (!is.null(leg.main)) {
