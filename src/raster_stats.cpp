@@ -380,6 +380,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		SpatOptions opt;
 		std::vector<unsigned> lyr = {0};
 		z = z.subset(lyr, opt);
+		out.addWarning("only the first zonal layer is used"); 
 	}
 
 	std::vector<std::vector<double>> uq = z.unique(true, opt);
@@ -398,8 +399,8 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			unsigned offset = lyr * off;
 			std::vector<double> vx( v.begin()+offset,  v.begin()+offset+off);
-			std::vector<double> vz(zv.begin()+offset, zv.begin()+offset+off);
-			jointstats(u, vx, vz, fun, narm, stats[lyr], cnt[lyr]);
+			//std::vector<double> vz(zv.begin()+offset, zv.begin()+offset+off);
+			jointstats(u, vx, zv, fun, narm, stats[lyr], cnt[lyr]);
 		}
 	}
 	readStop();
