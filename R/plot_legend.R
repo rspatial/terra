@@ -1,23 +1,23 @@
 
 
 .leg.main <- function(x) {
-	y <- x$leg
-    if (!is.null(y$main)) {
-		e <- y$ext
-		n <- length(y$main)
+	leg <- x$leg
+    if (!is.null(leg$main$text)) {
+		e <- leg$ext
+		n <- length(leg$main$text)
 		ymax <- e$ymax + 0.05 * e$dy
 			
 		for (i in 1:n) {
 			if (x$leg$loc == "right") {
 				text(x=e$xmax, y=ymax+(n-i)*0.05* e$dy,
-					labels = y$main[i], cex = y$main.cex, xpd=TRUE)
+					labels = leg$main$text[i], cex = leg$main$cex, xpd=TRUE)
 			} else if (x$leg$loc == "left") {
 				text(x=e$xmin, y=ymax+(n-i)*0.05* e$dy,
-					labels = y$main[i], cex = y$main.cex, xpd=TRUE)
+					labels = leg$main$text[i], cex = leg$main$cex, xpd=TRUE)
 			} else {
 				ymax <- e$ymax + 2*e$dy
 				text(x=(e$xmin+e$xmax)/2, y=ymax+(n-i)*0.05* e$dy,
-					labels = y$main[i], cex = y$main.cex, xpd=TRUE)				
+					labels = leg$main$text[i], cex = leg$main$cex, xpd=TRUE)				
 			}
 			
 		}
@@ -55,10 +55,10 @@
 		xpos <- e$xmin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dx
 		if (x$leg$loc == "bottom") {
 			graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=TRUE)
-			text(xpos, e$ymin, formatC(zz, digits=x$leg$digits, format = "f"), pos=1, xpd=TRUE, ...)
+			text(xpos, e$ymin, formatC(zz, digits=x$leg$digits, format = "f"), pos=1, xpd=TRUE)
 		} else {
 			graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=TRUE)
-			text(xpos, e$ymax+e$dy*0.25, formatC(zz, digits=x$leg$digits, format = "f"), pos=3, xpd=TRUE, ...)
+			text(xpos, e$ymax+e$dy*0.25, formatC(zz, digits=x$leg$digits, format = "f"), pos=3, xpd=TRUE)
 		}
 	}	
 	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=TRUE)
@@ -69,8 +69,23 @@
 }	
 
 
-.plot.class.legend <- function(x, ...) {
-	legend(x$leg$xmin, x$leg$ymax, legend=x$leg$labels, col=x$cols, ...)
+
+.plot.class.legend <- function(x, 
+	# catching
+	y, xpd, title, lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, ...) {
+	
+	if (!is.null(x$leg$loc)) {
+		leg <- graphics::legend(x$leg$loc, legend=x$leg$labels, fill=x$cols, title=x$leg$main$text, ...)	
+	} else {
+		if (length(x$leg$ext) == 2) {
+			leg <- graphics::legend(x$leg$ext[1], x$leg$ext[2], legend=x$leg$labels, fill=x$cols, title=x$leg$main$text, xpd=TRUE, ...)
+		} else if (length(x$leg$ext) == 4) {	
+			leg <- graphics::legend(x$leg$ext[1], x$leg$ext[4], legend=x$leg$labels, fill=x$cols, xpd=TRUE, title=x$leg$main$text, ...)
+		} else {
+			stop(x$leg$ext)
+		}
+	}
+	x$leg$legend <- leg
 	x
 }	
 
@@ -153,19 +168,4 @@
 }
 
 
-
-
-.plot.legend <- function(x) {
-	if (is.null(x$leg$ext)) {
-		x <- .get.leg.extent(x)
-	} else {
-		x <- .get.leg.coords(x)	
-	}
-	if (x$leg$type == "continuous") {
-		x <- .plot.cont.legend(x)
-	} else if (x$leg$type == "classes") {
-		x <- .plot.class.legend(x)
-	}
-	x
-}
 
