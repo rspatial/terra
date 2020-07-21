@@ -35,6 +35,13 @@ values(r) <- 1:ncell(r)
 z <- rast(r)
 values(z) <- rep(1:4, each=25)
 zonal(r, z, "sum", na.rm=TRUE)
+
+# multiple layers
+r <- rast(system.file("ex/logo.tif", package = "terra")) 
+# zonal layer 
+z <- rast(r, 1)
+values(z) <- rep(1:4, each=ncell(r)/4, len=ncell(r))
+zonal(r, z, "mean", na.rm = TRUE)
 }
 
 \keyword{spatial}

@@ -31,10 +31,10 @@
 	cols <- rev(x$cols)
 	nc <- length(cols)
 
-	zlim <- x$leg$minmax
+	zlim <- x$leg$range
 	zz <- x$leg$at
 	if (is.null(zz)) {
-		zz <- pretty(zlim, n =(x$leg$levels+1))	
+		zz <- pretty(zlim, n =(x$levels+1))	
 		zz <- zz[zz >= zlim[1] & zz <= zlim[2]]
 	}
 	e <- x$leg$ext
@@ -70,7 +70,7 @@
 
 
 
-.plot.class.legend <- function(x, 
+.old.plot.class.legend <- function(x, 
 	# catching
 	y, xpd, title, lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, ...) {
 	
@@ -87,6 +87,15 @@
 	}
 	x$leg$legend <- leg
 	x
+}	
+
+
+
+.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, 
+	# catching
+	lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, ...) {
+	leg <- legend(x, y, legend, fill, xpd=xpd, ...)	
+	return(leg)
 }	
 
 
@@ -108,7 +117,11 @@
 		#ymax <- min(ymax, ext["ymax"])
 	}
 
-	leg.shrink <- rep_len(x$leg$shrink,2)
+	if (is.null(x$leg$shrink)) {
+		leg.shrink <- c(0,0)
+	} else { 
+		leg.shrink <- rep_len(x$leg$shrink,2)
+	}
 	if (!is.null(x$leg$main)) {
 		n <- length(x$leg$main)		
 		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
