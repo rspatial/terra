@@ -21,10 +21,13 @@
 		}
 		x$axs <- x$axarg
 	} else {
-		graphics::axis(1)
-		graphics::axis(2)
+		x$axs$side <- 1
+		do.call(graphics::axis, x$axs)
+		x$axs$side <- 2
+		do.call(graphics::axis, x$axs)
 		graphics::box()
 	}
+	x$axs$side <- NULL
 	x
 }
 
@@ -37,7 +40,7 @@
 #	text.col = graphics::par("col"), text.font = NULL, ncol = 1, horiz = FALSE, title = NULL,
  #   inset = 0, title.col = text.col, title.adj = 0.5, 
 
-.plotit <- function(x, xlab="", ylab="", type = "n", asp=x$asp, axes, ...) {
+.plotit <- function(x, xlab="", ylab="", type = "n", asp=x$asp, axes=TRUE, ...) {
 	
 	if (!any(is.na(x$mar))) {
 		graphics::par(mar=x$mar)	
@@ -48,16 +51,11 @@
 	graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
 		angle = 0, interpolate = x$interpolate)	
 
-	.plot.axes(x)
+	if (axes) .plot.axes(x)
 	
 	if (x$legend_draw) {	
 	
 		if (x$legend_type == "continuous") {
-			if (is.null(x$legend_ext)) {
-				x <- .get.leg.extent(x)
-			} else {
-				x <- .get.leg.coords(x)	
-			}
 			x <- do.call(.plot.cont.legend, list(x=x))
 			
 		} else if (x$legend_type == "classes") {
@@ -141,7 +139,8 @@
 	
 	#&& is.null(out$leg$ext)) 
 	if (is.null(out$leg$x)) {
-		out$leg$x <- "topright"
+		usr <- graphics::par("usr")
+		out$leg$x <- cbind(usr[c(2,4)])
 	}
 	out
 }
@@ -186,7 +185,10 @@
 	}
 	
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
-		out$leg$x <- "topright"
+		usr <- graphics::par("usr")
+		out$leg$x <- usr[c(2)]
+		out$leg$y <- usr[c(4)]
+		#out$leg$x <- "topright"
 	}
 	out
 }
@@ -194,7 +196,7 @@
 # leg.shrink=c(0,0), leg.main=NULL, leg.main.cex = 1, leg.digits=NULL, leg.loc=NULL, leg.ext=NULL, leg.levels=NULL, leg.labels=NULL, leg.at=NULL, 
 
 .prep.plot.data <- function(x, type, cols, mar, draw=FALSE, interpolate=FALSE,  
-legend=TRUE, pax=list(), plg=list(), ...) {
+legend=TRUE, pax=list(), plg=list(), levels=5, ...) {
 
 	out <- list()
 	out$mar <- mar
@@ -210,7 +212,7 @@ legend=TRUE, pax=list(), plg=list(), ...) {
 	out$cols <- cols
 	out$interpolate <- isTRUE(interpolate)
 	out$legend_draw <- isTRUE(legend)
-
+	out$levels <- levels
 	if (type=="classes") {
 		out <- .as.raster.classes(out, x)
 	} else if (type=="interval") {
@@ -220,7 +222,7 @@ legend=TRUE, pax=list(), plg=list(), ...) {
 	}
 
 	if (draw) {
-		out <- .plotit(out, pax, ...)
+		out <- .plotit(out, ...)
 	}
 	out
 }
@@ -246,18 +248,19 @@ map <- function(x, y=1, col, type="continuous", mar=c(5.1, 4.1, 4.1, 7.1), maxce
 #}
 
 #r <- rast(system.file("ex/test.tif", package="terra"))
-#e <- c(177963, 179702, 333502, 333650) 
 #map(r)
-
-#map(r, mar=c(2,2,4,3), plg=list(loc="top", ext=e, levels=3, at=c(10, 666,1222), range=c(0,2000)))
-
-#.plt(r, type="interval", leg.lev=c(0,500,3000), leg.lab=c("low", "high"), leg.loc="topleft")
-
+#e <- c(177963, 179702, 333502, 333650) 
+#map(r, mar=c(3,3,3,3), plg=list(loc="top", ext=e, levels=3, at=c(10, 666,1222), range=c(0,2000)))
+#map(r, type="interval", levels=c(0,500,3000), plg=list(legend=c("low", "high"), x="topleft"))
 #map(r, type="interval", plg=list(x="topleft"))
+#map(r, type="interval", plg=list(cex=.8, bty="n"), pax=list(cex.axis=.8, las=1))
+#map(r, type="interval", plg=list(cex=.8, bty="n", ncol=2, x=178000, y=335250), pax=list(cex.axis=.8, las=1))
+ 
 
 #par(mfrow=c(1,2))
 #map(r, type="interval", mar=c(2,4,2,0), plg=list(inset=0.05, x="topleft"), pax=list(axes=c(1,2), cex.axis=0.8))
 #map(r, type="interval", mar=c(2,0,2,4), legend=FALSE, pax=list(axes=c(3,4), cex.axis=0.8))
+
 #object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
 #type="classes"; cols=rainbow(25); mar=rep(3,4); draw=TRUE
  

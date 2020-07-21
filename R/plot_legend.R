@@ -28,6 +28,13 @@
 
 .plot.cont.legend <- function(x, ...) {
 
+
+	if (is.null(x$leg$ext)) {
+		x <- .get.leg.extent(x)
+	} else {
+		x <- .get.leg.coords(x)	
+	}
+
 	cols <- rev(x$cols)
 	nc <- length(cols)
 
