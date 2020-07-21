@@ -1,25 +1,24 @@
 
 .plot.axes <- function(x) {
-	if (!is.null(x$axs$axes)) {
+	if (!is.null(x$axs$sides)) {
 		usr <- graphics::par("usr")
-		axarg <- x$axs$axes
-		x$axs$axes <- NULL
-		axarg <- round(unique(axarg))
-		axarg[axarg > 1 & axarg < 5]
-		for (i in axarg) {
-			if (i %in% c(1,3)) {
+		sides <- x$axs$sides
+		x$axs$sides <- NULL
+		sides <- round(unique(sides))
+		sides[sides > 1 & sides < 5]
+		for (s in sides) {
+			if (s %in% c(1,3)) {
 				ur <- usr[2] - usr[1]
-				at = c(usr[1]-10*ur, usr[2]+10*ur)
+				at <- c(usr[1]-10*ur, usr[2]+10*ur)
 			} else {
 				ur <- usr[4] - usr[3]
-				at = c(usr[3]-10*ur, usr[4]+10*ur)
+				at <- c(usr[3]-10*ur, usr[4]+10*ur)
 			}
-			graphics::axis(i, at=at, labels=c("",""), lwd.ticks=0)
-			x$axs$side <- i
+			graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0)
+			x$axs$side <- s
 			do.call(graphics::axis, x$axs)
-			#graphics::axis(i, cex.axis=cex.axis, las=las, ...)
 		}
-		x$axs <- x$axarg
+		x$axs$sides <- x$sides
 	} else {
 		x$axs$side <- 1
 		do.call(graphics::axis, x$axs)
@@ -139,8 +138,7 @@
 	
 	#&& is.null(out$leg$ext)) 
 	if (is.null(out$leg$x)) {
-		usr <- graphics::par("usr")
-		out$leg$x <- cbind(usr[c(2,4)])
+		out$leg$x = "top"
 	}
 	out
 }
@@ -185,10 +183,7 @@
 	}
 	
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
-		usr <- graphics::par("usr")
-		out$leg$x <- usr[c(2)]
-		out$leg$y <- usr[c(4)]
-		#out$leg$x <- "topright"
+		out$leg$x <- "top"
 	}
 	out
 }
@@ -200,15 +195,14 @@ legend=TRUE, pax=list(), plg=list(), levels=5, ...) {
 
 	out <- list()
 	out$mar <- mar
+	out$ext <- as.vector(ext(x))
 	out$axs <- pax 
 	out$leg <- plg
+	out$asp <- 1
 	out$lonlat <- isLonLat(x, perhaps=TRUE, warn=FALSE)
 	if (out$lonlat) {
-		out$asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
-	} else {
-		out$asp <- 1
+		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
 	}
-	out$ext <- as.vector(ext(x))
 	out$cols <- cols
 	out$interpolate <- isTRUE(interpolate)
 	out$legend_draw <- isTRUE(legend)
@@ -256,16 +250,15 @@ map <- function(x, y=1, col, type="continuous", mar=c(5.1, 4.1, 4.1, 7.1), maxce
 #map(r, type="interval", plg=list(cex=.8, bty="n"), pax=list(cex.axis=.8, las=1))
 #map(r, type="interval", plg=list(cex=.8, bty="n", ncol=2, x=178000, y=335250), pax=list(cex.axis=.8, las=1))
  
-
 #par(mfrow=c(1,2))
-#map(r, type="interval", mar=c(2,4,2,0), plg=list(inset=0.05, x="topleft"), pax=list(axes=c(1,2), cex.axis=0.8))
-#map(r, type="interval", mar=c(2,0,2,4), legend=FALSE, pax=list(axes=c(3,4), cex.axis=0.8))
+#map(r, type="interval", mar=c(2,4,2,0), plg=list(inset=0.05, x="topleft"), pax=list(sides=c(1,2), cex.axis=0.8))
+#map(r, type="interval", mar=c(2,0,2,4), legend=FALSE, pax=list(sides=c(3,4), cex.axis=0.8))
 
 #object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
 #type="classes"; cols=rainbow(25); mar=rep(3,4); draw=TRUE
  
 #r <- rast(system.file("ex/test.tif", package="terra"))
-#map(r, type="interval", mar=c(2,4,2,0), plg=list(x="topleft", inset=0.05), pax=list(axes=c(1,2), cex.axis=0.8))
+#map(r, type="interval", mar=c(2,4,2,0), plg=list(x="topleft", inset=0.05), pax=list(sides=c(1,2), cex.axis=0.8))
 #map(r)
 
 

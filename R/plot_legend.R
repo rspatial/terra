@@ -1,4 +1,88 @@
 
+.get.leg.coords <- function(x) {
+
+	if (is.null(x$leg$ext)) {
+		ext <- unlist(x$ext)
+		xmin <- x$ext[1]
+		xmax <- x$ext[2]
+		ymin <- x$ext[3]
+		ymax <- x$ext[4]
+	} else {
+		p <- as.vector(x$leg$ext)
+		xmin <- p[1]
+		xmax <- p[2]
+		ymin <- p[3]
+		ymax <- p[4]
+		#ymin <- max(ymin, ext["ymin"])
+		#ymax <- min(ymax, ext["ymax"])
+	}
+
+	if (is.null(x$leg$shrink)) {
+		leg.shrink <- c(0,0)
+	} else { 
+		leg.shrink <- rep_len(x$leg$shrink,2)
+	}
+	if (!is.null(x$leg$main)) {
+		n <- length(x$leg$main)		
+		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
+	}
+
+	yd <- ymax - ymin
+	ymin <- ymin + yd * leg.shrink[1]
+	ymax <- ymax - yd * leg.shrink[2]
+    dx <- xmax - xmin
+	dy <- ymax - ymin
+
+	x$leg$ext <- data.frame(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dx=dx, dy=dy)
+	x
+}
+
+
+.line.usr <- function(line, side) {
+## https://stackoverflow.com/questions/30765866/get-margin-line-locations-in-log-space/30835971#30835971
+
+	lh <- graphics::par("cin")[2] * graphics::par("cex") * graphics::par("lheight")
+	x_off <- diff(graphics::grconvertX(c(0, lh), "inches", "npc"))
+	y_off <- diff(graphics::grconvertY(c(0, lh), "inches", "npc"))
+	if (side == 1) {
+		graphics::grconvertY(-line * y_off, "npc", "user")
+	} else if (side ==2) {
+		graphics::grconvertX(-line * x_off, "npc", "user")
+	} else if (side ==3) {
+		graphics::grconvertY(1 + line * y_off, "npc", "user")
+	} else {
+		graphics::grconvertX(1 + line * x_off, "npc", "user")
+	}
+}
+
+.get.leg.extent <- function(x) {
+	usr <- graphics::par()$usr
+	dxy <- graphics::par()$cxy * graphics::par("cex")	
+	loc <- x$leg$loc
+	p <- NULL
+	if (is.character(loc)) {
+		if (loc == "right") {
+			p <- c(usr[2]+dxy[1], usr[2]+2*dxy[1], usr[3], usr[4])
+		} else if (loc == "left") {
+			s <- .line.usr(trunc(graphics::par("mar")[2]), 2)
+			p <- c(s+4*dxy[1], s+5*dxy[1], usr[3], usr[4])
+		} else if (loc == "bottom") {
+			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
+			p <- c(usr[1], usr[2], s+2*dxy[2], s+3*dxy[2])
+		} else if (loc == "top") {
+			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
+		} else {
+			stop(loc)
+		}
+	}
+	x$leg$ext <- p
+	x$leg$user <- FALSE
+	.get.leg.coords(x)
+}
+
+
+
+
 
 .leg.main <- function(x) {
 	leg <- x$leg
@@ -101,91 +185,12 @@
 .plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, 
 	# catching
 	lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, ...) {
+	if (x == "top") {
+		usr <- graphics::par("usr")
+		x <- usr[c(2)]
+		y <- usr[c(4)]
+	}
 	leg <- legend(x, y, legend, fill, xpd=xpd, ...)	
 	return(leg)
 }	
-
-
-.get.leg.coords <- function(x) {
-
-	if (is.null(x$leg$ext)) {
-		ext <- unlist(x$ext)
-		xmin <- x$ext[1]
-		xmax <- x$ext[2]
-		ymin <- x$ext[3]
-		ymax <- x$ext[4]
-	} else {
-		p <- unlist(x$leg$ext)
-		xmin <- p[1]
-		xmax <- p[2]
-		ymin <- p[3]
-		ymax <- p[4]
-		#ymin <- max(ymin, ext["ymin"])
-		#ymax <- min(ymax, ext["ymax"])
-	}
-
-	if (is.null(x$leg$shrink)) {
-		leg.shrink <- c(0,0)
-	} else { 
-		leg.shrink <- rep_len(x$leg$shrink,2)
-	}
-	if (!is.null(x$leg$main)) {
-		n <- length(x$leg$main)		
-		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
-	}
-
-	yd <- ymax - ymin
-	ymin <- ymin + yd * leg.shrink[1]
-	ymax <- ymax - yd * leg.shrink[2]
-    dx <- xmax - xmin
-	dy <- ymax - ymin
-
-	x$leg$ext <- data.frame(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dx=dx, dy=dy)
-	x
-}
-
-
-.line.usr <- function(line, side) {
-## https://stackoverflow.com/questions/30765866/get-margin-line-locations-in-log-space/30835971#30835971
-
-	lh <- graphics::par("cin")[2] * graphics::par("cex") * graphics::par("lheight")
-	x_off <- diff(graphics::grconvertX(c(0, lh), "inches", "npc"))
-	y_off <- diff(graphics::grconvertY(c(0, lh), "inches", "npc"))
-	if (side == 1) {
-		graphics::grconvertY(-line * y_off, "npc", "user")
-	} else if (side ==2) {
-		graphics::grconvertX(-line * x_off, "npc", "user")
-	} else if (side ==3) {
-		graphics::grconvertY(1 + line * y_off, "npc", "user")
-	} else {
-		graphics::grconvertX(1 + line * x_off, "npc", "user")
-	}
-}
-
-.get.leg.extent <- function(x) {
-	usr <- graphics::par()$usr
-	dxy <- graphics::par()$cxy * graphics::par("cex")	
-	loc <- x$leg$loc
-	p <- NULL
-	if (is.character(loc)) {
-		if (loc == "right") {
-			p <- c(usr[2]+dxy[1], usr[2]+2*dxy[1], usr[3], usr[4])
-		} else if (loc == "left") {
-			s <- .line.usr(trunc(graphics::par("mar")[2]), 2)
-			p <- c(s+4*dxy[1], s+5*dxy[1], usr[3], usr[4])
-		} else if (loc == "bottom") {
-			s <- .line.usr(trunc(graphics::par("mar")[1]), 1)
-			p <- c(usr[1], usr[2], s+2*dxy[2], s+3*dxy[2])
-		} else if (loc == "top") {
-			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
-		} else {
-			stop(loc)
-		}
-	}
-	x$leg$ext <- p
-	x$leg$user <- FALSE
-	.get.leg.coords(x)
-}
-
-
 
