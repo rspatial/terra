@@ -168,7 +168,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		}
 	}
 
-//	Rcpp::Rcout << datatype << std::endl;
 	
 	GDALDataType gdt;
 	if (!getGDALDataType(datatype, gdt)) {
@@ -227,6 +226,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		source[0].range_min[i] = std::numeric_limits<double>::max();
 		source[0].range_max[i] = std::numeric_limits<double>::lowest();
 	}
+
 	source[0].driver = "gdal" ;
 	source[0].filename = filename;
 	source[0].memory = false;
@@ -259,7 +259,8 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 	//unsigned start = nc * i;
 	std::string datatype = source[0].datatype;
 	//poBand = source[0].gdalconnection->GetRasterBand(i+1);
-
+	//Rcpp::Rcout << datatype << std::endl;
+	
 	for (size_t i=0; i < nl; i++) {
 		uint_64 start = nc * i;
 		minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);

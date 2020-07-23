@@ -86,24 +86,23 @@
 
 .leg.main <- function(x) {
 	leg <- x$leg
-    if (!is.null(leg$main$text)) {
+    if (!is.null(leg$title)) {
 		e <- leg$ext
-		n <- length(leg$main$text)
+		n <- length(leg$title)
 		ymax <- e$ymax + 0.05 * e$dy
 			
 		for (i in 1:n) {
 			if (x$leg$loc == "right") {
 				text(x=e$xmax, y=ymax+(n-i)*0.05* e$dy,
-					labels = leg$main$text[i], cex = leg$main$cex, xpd=TRUE)
+					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			} else if (x$leg$loc == "left") {
 				text(x=e$xmin, y=ymax+(n-i)*0.05* e$dy,
-					labels = leg$main$text[i], cex = leg$main$cex, xpd=TRUE)
+					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			} else {
 				ymax <- e$ymax + 2*e$dy
 				text(x=(e$xmin+e$xmax)/2, y=ymax+(n-i)*0.05* e$dy,
-					labels = leg$main$text[i], cex = leg$main$cex, xpd=TRUE)				
+					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)				
 			}
-			
 		}
 	}
 	x
@@ -125,6 +124,9 @@
 	zlim <- x$leg$range
 	zz <- x$leg$at
 	if (is.null(zz)) {
+		if (is.null(x$levels)){
+			x$levels <- 5
+		}
 		zz <- pretty(zlim, n =(x$levels+1))	
 		zz <- zz[zz >= zlim[1] & zz <= zlim[2]]
 	}

@@ -50,36 +50,42 @@
 	}
 }
 
-
-setMethod("plot", signature(x="SpatVector", y="missing"), 
-	function(x, y, col=NULL, xlab="", ylab="", axes=TRUE, add=FALSE, border="black", ...)  {
-		gtype <- geomtype(x)
+.vplot <- function(x, y, col, axes=TRUE, add=FALSE, border="black", xlab="", ylab="", asp=NULL, ...) {
+	gtype <- geomtype(x)
+	if (is.null(asp)) {
 		if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
 			asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
 		} else {
 			asp <- 1
 		}
-		col <- .getCols(size(x), col)
-		if (gtype == "points") {
-			if (is.null(col)) col = "black"
-			g <- geom(x)
-			if (add) {
-				points(g[,3], g[,4], col=col, ...)			
-			} else {
-				plot(g[,3], g[,4], col=col, axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
-			}
+	}
+	if (gtype == "points") {
+		if (missing(col)) col = "black"
+		g <- geom(x)
+		if (add) {
+			points(g[,3], g[,4], col=col, ...)			
 		} else {
-			e <- matrix(as.vector(ext(x)), 2)
-			if (!add) {
-				plot(e, type="n", axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
-			}
-			if (gtype == "polygons") {
-				.plotPolygons(x, col, border=border, ...)
-			} else {
-				if (is.null(col)) col = rep("black", size(x))
-				.plotLines(x, col, ...)
-			}
+			plot(g[,3], g[,4], col=col, axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
 		}
+	} else {
+		e <- matrix(as.vector(ext(x)), 2)
+		if (!add) {
+			plot(e, type="n", axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
+		}
+		if (gtype == "polygons") {
+			.plotPolygons(x, col, border=border, ...)
+		} else {
+			if (is.null(col)) col = rep("black", size(x))
+			.plotLines(x, col, ...)
+		}
+	}
+}
+
+setMethod("plot", signature(x="SpatVector", y="missing"), 
+	function(x, y, col, axes=TRUE, add=FALSE, ...)  {
+		if (missing(col)) col <- NULL
+		col <- .getCols(size(x), col)
+		.vplot(x, y, col=col, axes=axes, add=add, ...)
 	}
 )
 
@@ -121,13 +127,13 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 # should be calling this one, and not the other way around? 
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col=topo.colors(100), xlab="", ylab="", axes=TRUE, add=FALSE, mar=c(5.1, 4.1, 4.1, 7.1), leg.ext=NULL, leg.type=NULL, leg.levels=5, digits, ...)  {
+	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), axes=TRUE, add=FALSE, ...)  {
 		
 		#old.par <- graphics::par(no.readonly = TRUE) 
 		#on.exit(graphics::par(old.par))
 		#.setPAR(...)
 		
-		if (is.null(col)) {
+		if (missing(col)) {
 			col <- topo.colors(100)
 		}
 
@@ -135,14 +141,14 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 
 		v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 		uv <- unique(v)
-		if (is.null(leg.type)) {
+		if (missing(type)) {
 			if (!is.numeric(uv) | length(uv) < 10) {
-				leg.type <- "class"
+				type <- "classes"
 			} else {
-				leg.type <- "cont"
+				type <- "continuous"
 			}
 		}
-		if (leg.type == "class") {
+		if (type == "classes") {
 			ucols <- .getCols(length(uv), col)
 			uv <- sort(uv)
 			i <- match(v, uv)
@@ -154,9 +160,10 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		}
 
 		plot(x, col=cols, add=add, ...)
+		leg.ext <- NULL
 		n <- ifelse(is.null(leg.ext), 20, length(uv))
 		leg.ext <- .legCoords(x, ...)
-		if (leg.type == "class") {
+		if (type == "classes") {
 			.factorLegend(leg.ext, 1:length(uv), ucols, uv, n)
 		} else {
 			zlim <- range(uv, na.rm=TRUE)
@@ -168,7 +175,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 					digits <- max(0, -floor(log10(dif/10)))
 				}
 			}
-			.contLegend(leg.ext, col, zlim, digits, leg.levels, ...)	
+			.contLegend(leg.ext, col, zlim, digits, leg.levels=5, ...)	
 		}
 	}
 )
@@ -176,10 +183,11 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 
 
 setMethod("lines", signature(x="SpatVector"), 
-	function(x, col=NULL, ...)  {
-		if (is.null(col)) col <- "black"
+	function(x, col, ...)  {
+		if (missing(col)) col <- "black"
 		g <- geom(x)
 		gtype <- geomtype(x)
+		if (missing(col)) col <- NULL
 		col <- .getCols(size(x), col)
 		if (gtype == "points") {
 			graphics::points(g[,3:4], col=col, ...)
@@ -206,9 +214,9 @@ setMethod("lines", signature(x="SpatVector"),
 
 
 setMethod("points", signature(x="SpatVector"), 
-	function(x, col=NULL, ...)  {
+	function(x, col, ...)  {
+		if (missing(col)) col <- "black"
 		col <- .getCols(size(x), col)
-		if (is.null(col)) col <- "black"
 		graphics::points(geom(x)[,3:4], col=col, ...)
 	}
 )

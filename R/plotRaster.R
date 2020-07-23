@@ -1,7 +1,8 @@
 
 
-setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function (x, y, col, maxcell = 100000, mar=c(5.1, 4.1, 4.1, 6.6), leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL, digits, useRaster = TRUE, zlim, xlab="", ylab="", axes=TRUE, add=FALSE, ...) {
+#setMethod("plot", signature(x="SpatRaster", y="numeric"), 
+
+oldplot <- function (x, y, col, maxcell = 100000, mar=c(5.1, 4.1, 4.1, 6.6), leg.levels=5, leg.shrink=c(0,0), leg.main=NULL, leg.main.cex=1, leg.ext=NULL, digits, useRaster = TRUE, zlim, xlab="", ylab="", axes=TRUE, add=FALSE, ...) {
 
 		x <- x[[y[1]]]
 		if (!hasValues(x)) {
@@ -116,18 +117,14 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 #				setHook("before.plot.new", NULL, action="replace")
 #			}, action="replace")		
 	}
-)
+#)
 
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxcell=100000, nc, nr, main, maxnl=16, add=FALSE, ...)  {
+	function(x, y, maxcell=50000, nc, nr, main, maxnl=16, ...)  {
 
 		nl <- max(1, min(nlyr(x), maxnl))
-		if (add) {
-			plot(x, 1, maxcell=maxcell, add=TRUE, ...) 
-			return(invisible(NULL))
-		}
 
 		if (nl==1) {
 			if (missing(main)) {
