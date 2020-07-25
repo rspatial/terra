@@ -1,13 +1,10 @@
-\name{plotRaster}
+\name{plot}
 
 \docType{methods}
 
 \alias{plot}
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
-
-\alias{image}
-\alias{image,SpatRaster-method}
 
 
 \title{Plot a SpatRaster}
@@ -31,26 +28,25 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{col}{character. Colors}
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "internval"}
   \item{mar}{numeric vector of lenght 4 to set the margins of the plot}
-
   \item{legend}{logical. Draw a legend?}
   \item{axes}{logical. Draw axes?}
   \item{pal}{list. Parameters for the legend}
   \item{pax}{list. Parameters for drawing axes}
-  
-   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
-   
+  \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
-
-
   \item{...}{additional graphical arguments}  
 }
 
+\seealso{
+ \code{\link{image}}, \code{\link[terra:plotVector]{plotVector}}, \code{scatter\link[terra:scatter]{plot}}
+}
+
+
 
 \examples{ 
-
 f <- system.file("ex/test.tif", package="terra") 
 r <- rast(f)
 plot(r)
@@ -63,7 +59,6 @@ d <- (r > 400) + (r > 600)
 plot(d)
 plot(d, type="classes")
 
-
 plot(d, type="interval", levels=0:3) 
 plot(d, type="interval", levels=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 
 plot(d, type="classes", pal=list(legend=c("M", "X", "A")))
@@ -72,7 +67,6 @@ x <- trunc(r/600)
 x <- as.factor(x)
 levels(x) <- c("earth", "wind", "fire")
 plot(x)
-
 }
 
 \keyword{methods}

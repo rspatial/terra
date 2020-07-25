@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Spatial Data Analysis
-Version: 0.8-3
-Date: 2020-07-14
+Version: 0.8-4
+Date: 2020-07-25
 Depends: R (>= 3.5.0)
 Suggests: parallel, tinytest
 LinkingTo: Rcpp
@@ -17,8 +17,8 @@ LazyLoad: yes
 Authors@R: c(
 	person("Robert J.", "Hijmans", role = c("cre", "aut"),  
 			email = "r.hijmans@gmail.com", comment = c(ORCID = "0000-0001-5872-2872")),
-    person("Edzer", "Pebesma", role = "ctb", comment = c(ORCID = "0000-0001-8049-7069")),
     person("Roger", "Bivand",  role = "ctb", comment = c(ORCID = "0000-0003-2392-6140")),
 	person("Karl", "Forner", role = "ctb"),
-	person("Jeroen", "Ooms", role = "ctb", comment = c(ORCID = "0000-0002-4035-0289")))
-RoxygenNote: 7.1.0
+	person("Jeroen", "Ooms", role = "ctb", comment = c(ORCID = "0000-0002-4035-0289")),
+    person("Edzer", "Pebesma", role = "ctb", comment = c(ORCID = "0000-0001-8049-7069")))
+

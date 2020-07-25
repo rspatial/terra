@@ -1,4 +1,4 @@
-\name{RasterScatterplot}
+\name{scatterplot}
 
 \docType{methods}
 
