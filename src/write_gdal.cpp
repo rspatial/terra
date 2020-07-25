@@ -28,6 +28,7 @@
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
 
+#include "gdalio.h"
 
 
 void getGDALdriver(std::string &filename, std::string &driver) {
@@ -59,29 +60,6 @@ void getGDALdriver(std::string &filename, std::string &driver) {
     if (i != drivers.end()) {
 		driver = i->second;
 	}
-}
-
-
-bool getGDALDataType(std::string datatype, GDALDataType &gdt) {
-	if (datatype=="FLT4S") {
-		gdt = GDT_Float32;
-	} else if (datatype == "INT4S") {
-		gdt = GDT_Int32;
-	} else if (datatype == "FLT8S") {
-		gdt = GDT_Float64;
-	} else if (datatype == "INT2S") {
-		gdt = GDT_Int16;
-	} else if (datatype == "INT4U") {
-		gdt = GDT_UInt32;
-	} else if (datatype == "INT2U") {
-		gdt = GDT_UInt16;
-	} else if (datatype == "INT1U") {
-		gdt = GDT_Byte;
-	} else {
-		gdt = GDT_Float32;
-		return false;
-	}
-	return true;
 }
 
 

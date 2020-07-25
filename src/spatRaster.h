@@ -493,7 +493,7 @@ class SpatRaster {
 
 #ifdef useGDAL
 		bool open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt);
-		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, std::vector<std::string> foptions);
+		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, SpatOptions& opt);
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);
 		bool as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt);
 		//bool as_gdalmem(GDALDatasetH &hVRT);

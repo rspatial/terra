@@ -18,9 +18,8 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, 
-	type=c("continuous", "classes", "interval"), 
-	mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE,
-	pal=list(), pax=list(), maxcell=50000, ...)
+  type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE,
+  pal=list(), pax=list(), maxcell=50000, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, nc, nr, main, 
    maxnl=16, ...)
@@ -56,12 +55,14 @@ f <- system.file("ex/test.tif", package="terra")
 r <- rast(f)
 plot(r)
 plot(r, type="interval")
-plot(r, type="classes")
+
+e <- c(178200,178400,331600,333600)
+plot(r, pal=list(ext=e, title="Title\n", title.cex=1.5))
 
 d <- (r > 400) + (r > 600)
 plot(d)
-e <- c(178000,178200,332000,333000)
-plot(d, pal=list(ext=e, title="Title\n", title.cex=2))
+plot(d, type="classes")
+
 
 plot(d, type="interval", levels=0:3) 
 plot(d, type="interval", levels=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 

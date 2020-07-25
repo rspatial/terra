@@ -310,19 +310,23 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 	size_t nc = rcl.size();
 	size_t nr = rcl[0].size();
 	if (nc < 1 || nc > 3 || nr < 1) {
-		out.setError("reclassification matrix must have 1, 2 or 3 columns, and at least one row");
+		out.setError("matrix must have 1, 2 or 3 columns, and at least one row");
+		return out;
+	}
+	if (nc == 1 && nr == 1) {
+		out.setError("cannot classify with a single number");
 		return out;
 	}
 	for (size_t i=0; i<nc; i++) {
 		if (rcl[i].size() != nr) {
-			out.setError("reclassification matrix is not rectangular");
+			out.setError("matrix is not rectangular");
 			return out;
 		}
 	}
 	if (nc == 3) {
 		for (size_t i=0; i<nr; i++) {
 			if (rcl[0][i] > rcl[1][i]) {
-				out.setError("'from' smaller than 'to' in reclassification matrix");
+				out.setError("'from' larger than 'to': (" + std::to_string(rcl[0][i]) + " - " + std::to_string(rcl[1][i]) +")");
 				return out;
 			}
 		}

@@ -63,16 +63,26 @@
 
 
 
-.as.raster.continuous <- function(out, x, ...) {
+.as.raster.continuous <- function(out, x, type) {
 		
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 
 	z <- stats::na.omit(as.vector(Z))
-	if (length(z) == 0) stop("no values")
+	n <- length(z)
+	if (n == 0) stop("no values")
+	if (type == "depends") {
+		if (length(unique(z)) < 6) {
+			return (.as.raster.classes(out, x))
+		}
+	} else if (length(unique(z)) == 1) {
+		return (.as.raster.classes(out, x))
+	}
+
 	if (is.null(out$leg$range)) {
 		out$leg$range <- range(z)
 	}
+	
 	interval <- (out$leg$range[2]-out$leg$range[1])/(length(out$cols)-1)
 	breaks <- out$leg$range[1] + interval * (0:(length(out$cols)-1))
 		
@@ -206,12 +216,13 @@ legend=TRUE, pax=list(), pal=list(), levels=NULL, add=FALSE, ...) {
 	out$levels <- levels
 	out$interpolate <- isTRUE(interpolate)
 	out$legend_draw <- isTRUE(legend)
+
 	if (type=="classes") {
 		out <- .as.raster.classes(out, x)
 	} else if (type=="interval") {
 		out <- .as.raster.interval(out, x)
 	} else {
-		out <- .as.raster.continuous(out, x)
+		out <- .as.raster.continuous(out, x, type)
 	}
 
 	if (draw) {
@@ -222,9 +233,13 @@ legend=TRUE, pax=list(), pal=list(), levels=NULL, add=FALSE, ...) {
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type=c("continuous", "classes", "interval"), mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, ...) {
+	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, ...) {
 
-		type <- match.arg(type)
+		if (missing(type)) {
+			type <- "depends"
+		} else {
+			type <- match.arg(type, c("continuous", "classes", "interval"))
+		}
 		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
 		x <- x[[y]]
 		object <- spatSample(x, maxcell, method="regular", as.raster=TRUE)

@@ -122,7 +122,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 		
 	} else {
-		if (!out.create_gdalDS(rstDS, filename, driver, true, background, opt.gdal_options)) {
+		if (!out.create_gdalDS(rstDS, filename, driver, true, background, opt)) {
 			out.setError("cannot create dataset");
 			return out;
 		}
