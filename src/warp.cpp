@@ -24,6 +24,7 @@
 #include "file_utils.h"
 
 #include "crs.h"
+#include "gdalio.h"
 
 //#include <vector>
 //#include "vecmath.h"
@@ -65,7 +66,7 @@ SpatVector SpatRaster::dense_extent() {
 
 #if GDAL_VERSION_MAJOR >= 3
 
-bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const std::string crs, std::string filename, std::string driver, int nlyrs, std::string &msg) {
+bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const std::string crs, std::string filename, std::string driver, int nlyrs, std::string datatype, std::string &msg) {
 
 	msg = "";
 	if ( hSrcDS == NULL ) {
@@ -74,7 +75,9 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 	}
 
 	// Create output with same datatype as first input band.
-	GDALDataType eDT = GDALGetRasterDataType(GDALGetRasterBand(hSrcDS,1));
+	//GDALDataType eDT = GDALGetRasterDataType(GDALGetRasterBand(hSrcDS,1));
+	GDALDataType eDT;
+	getGDALDataType(datatype, eDT);
 
 	// Get output driver (GeoTIFF format)
 
@@ -332,7 +335,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		if (i==0) {
 			 // use the crs, ignore argument "x"
 			if (use_crs) {
-				if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), errmsg)) {
+				if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), opt.get_datatype(), errmsg)) {
 					out.setError(errmsg);
 					GDALClose( hSrcDS );
 					return out;
