@@ -118,10 +118,13 @@
 		x <- .get.leg.coords(x)	
 	}
 
+	cex <- x$leg$cex
+	if (is.null(cex)) cex <- 1
+	
 	cols <- rev(x$cols)
 	nc <- length(cols)
 
-	zlim <- x$leg$range
+	zlim <- x$range
 	zz <- x$leg$at
 	if (is.null(zz)) {
 		if (is.null(x$levels)){
@@ -133,28 +136,28 @@
 	e <- x$leg$ext
 	if (x$leg$loc %in% c("left", "right")) {
 		Y <- seq(e$ymin, e$ymax, length.out=nc+1)
-		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=TRUE)
+		graphics::rect(e$xmin, Y[-(nc + 1)], e$xmax, Y[-1], col=rev(cols), border=NA, xpd=NA)
 		ypos <- e$ymin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dy
 		if (x$leg$loc == "right") {
-			graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=TRUE)
-			text(e$xmax, ypos, formatC(zz, digits=x$leg$digits, format = "f"), pos=4, xpd=TRUE, ...)
+			graphics::segments(e$xmin, ypos, e$xmax+e$dx*0.25, ypos, xpd=NA)
+			text(e$xmax, ypos, formatC(zz, digits=x$leg$digits, format = "f"), pos=4, xpd=NA, cex=cex, ...)
 		} else {
-			graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmax, ypos, xpd=TRUE)
-			text(e$xmin, ypos, formatC(zz, digits=x$leg$digits, format = "f"), pos=2, xpd=TRUE, ...)
+			graphics::segments(e$xmin-e$dx*0.25, ypos, e$xmax, ypos, xpd=NA)
+			text(e$xmin, ypos, formatC(zz, digits=x$leg$digits, format = "f"), pos=2, xpd=NA, cex=cex, ...)
 		}
 	} else {
 		X <- seq(e$xmin, e$xmax, length.out=nc+1)
-		graphics::rect(X[-(nc + 1)], e$ymin, X[-1], e$ymax, col=rev(cols), border=NA, xpd=TRUE)
+		graphics::rect(X[-(nc + 1)], e$ymin, X[-1], e$ymax, col=rev(cols), border=NA, xpd=NA)
 		xpos <- e$xmin + (zz - zlim[1])/(zlim[2] - zlim[1]) * e$dx
 		if (x$leg$loc == "bottom") {
-			graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=TRUE)
-			text(xpos, e$ymin, formatC(zz, digits=x$leg$digits, format = "f"), pos=1, xpd=TRUE)
+			graphics::segments(xpos, e$ymin-e$dy*0.25, xpos, e$ymax, xpd=NA)
+			text(xpos, e$ymin, formatC(zz, digits=x$leg$digits, format = "f"), pos=1, xpd=NA, cex=cex)
 		} else {
-			graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=TRUE)
-			text(xpos, e$ymax+e$dy*0.25, formatC(zz, digits=x$leg$digits, format = "f"), pos=3, xpd=TRUE)
+			graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=NA)
+			text(xpos, e$ymax+e$dy*0.25, formatC(zz, digits=x$leg$digits, format = "f"), pos=3, xpd=NA, cex=cex)
 		}
 	}	
-	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=TRUE)
+	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=NA)
 	
 	x <- .leg.main(x)
 	
@@ -184,9 +187,14 @@
 
 
 
-.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, 
+.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, ext=NULL, 
 	# catching
 	lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, ...) {
+
+	#if (!is.null(ext)) {
+		# do something better
+	#}
+
 	if (x == "top") {
 		usr <- graphics::par("usr")
 		x <- usr[c(2)]

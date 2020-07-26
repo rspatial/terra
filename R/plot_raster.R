@@ -41,15 +41,16 @@
 
 .plotit <- function(x, xlab="", ylab="", type = "n", asp=x$asp, axes=TRUE, ...) {
 	
-	if (!x$add) {
+	if ((!x$add) & (!x$legend_only)) {
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		plot(x$ext[1:2], x$ext[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, axes=FALSE, ...)
-		if (axes) .plot.axes(x)
+		if (axes) x <- .plot.axes(x)
 	}
 	
-	graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
-		angle = 0, interpolate = x$interpolate)	
-	
+	if (!x$legend_only) {
+		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
+			angle = 0, interpolate = x$interpolate)	
+	}
 	if (x$legend_draw) {	
 		if (x$legend_type == "continuous") {
 			x <- do.call(.plot.cont.legend, list(x=x))
@@ -79,12 +80,14 @@
 		return (.as.raster.classes(out, x))
 	}
 
-	if (is.null(out$leg$range)) {
-		out$leg$range <- range(z)
+	if (is.null(out$range)) {
+		out$range <- range(z)
+	} else {
+		stopifnot(length(out$range) == 2)
 	}
 	
-	interval <- (out$leg$range[2]-out$leg$range[1])/(length(out$cols)-1)
-	breaks <- out$leg$range[1] + interval * (0:(length(out$cols)-1))
+	interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
+	breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
 		
 	Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
 	out$r <- as.raster(Z)
@@ -95,7 +98,7 @@
 		out$levels <- 5
 	} 
 	if (is.null(out$leg$digits)) {
-		dif <- diff(out$leg$range)
+		dif <- diff(out$range)
 		if (dif == 0) {
 			out$leg_digits = 0;
 		} else {
@@ -144,10 +147,20 @@
 	out$r <- as.raster(Z)
 	out$legend_type <- "classes"
 	
-	#&& is.null(out$leg$ext)) 
 	if (is.null(out$leg$x)) {
-		out$leg$x = "top"
-	}
+		if (is.null(out$leg$ext)) {
+			out$leg$x = "top"
+			out$leg$y = NULL
+		} else {
+			if (length(out$leg$ext) == 4) {
+				out$leg$x = out$leg$ext[1]
+				out$leg$y = out$leg$ext[4]
+			} else {
+				out$leg$x = "top"
+				out$leg$y = NULL
+			}
+		}	
+	}	
 	out
 }
 
@@ -199,7 +212,7 @@
 # leg.shrink=c(0,0), leg.main=NULL, leg.main.cex = 1, leg.digits=NULL, leg.loc=NULL, leg.ext=NULL, leg.levels=NULL, leg.labels=NULL, leg.at=NULL, 
 
 .prep.plot.data <- function(x, type, cols, mar, draw=FALSE, interpolate=FALSE,  
-legend=TRUE, pax=list(), pal=list(), levels=NULL, add=FALSE, ...) {
+legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE, range=NULL, ...) {
 
 	out <- list()
 	out$add <- isTRUE(add)
@@ -214,8 +227,10 @@ legend=TRUE, pax=list(), pal=list(), levels=NULL, add=FALSE, ...) {
 	}
 	out$cols <- cols
 	out$levels <- levels
+	out$range <- range
 	out$interpolate <- isTRUE(interpolate)
 	out$legend_draw <- isTRUE(legend)
+	out$legend_only <- isTRUE(legend.only)
 
 	if (type=="classes") {
 		out <- .as.raster.classes(out, x)
@@ -255,39 +270,39 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 #x <- .prep.plot.data(object, type="continuous", cols=rainbow(25), mar=rep(3,4), draw=T)
 
 #r <- rast(system.file("ex/test.tif", package="terra"))
-#map(r)
+#plot(r)
 #e <- c(177963, 179702, 333502, 333650) 
-#map(r, mar=c(3,3,3,3), pal=list(loc="top", ext=e, levels=3, at=c(10, 666,1222), range=c(0,2000)))
-#map(r, type="interval", levels=c(0,500,3000), pal=list(legend=c("low", "high"), x="topleft"))
-#map(r, type="interval", pal=list(x="topleft"))
-#map(r, type="interval", pal=list(cex=.8, bty="n"), pax=list(cex.axis=.8, las=1))
-#map(r, type="interval", pal=list(cex=.8, bty="n", ncol=2, x=178000, y=335250), pax=list(cex.axis=.8, las=1))
+#plot(r, mar=c(3,3,3,3), pal=list(loc="top", ext=e, levels=3, at=c(10, 666,1222), range=c(0,2000)))
+#plot(r, type="interval", levels=c(0,500,3000), pal=list(legend=c("low", "high"), x="topleft"))
+#plot(r, type="interval", pal=list(x="topleft"))
+#plot(r, type="interval", pal=list(cex=.8, bty="n"), pax=list(cex.axis=.8, las=1))
+#plot(r, type="interval", pal=list(cex=.8, bty="n", ncol=2, x=178000, y=335250), pax=list(cex.axis=.8, las=1))
  
 #par(mfrow=c(1,2))
-#map(r, type="interval", mar=c(2,4,2,0), pal=list(inset=0.05, x="topleft"), pax=list(sides=c(1,2), cex.axis=0.8))
-#map(r, type="interval", mar=c(2,0,2,4), legend=FALSE, pax=list(sides=c(3,4), cex.axis=0.8))
+#plot(r, type="interval", mar=c(2,4,2,0), pal=list(inset=0.05, x="topleft"), pax=list(sides=c(1,2), cex.axis=0.8))
+#plot(r, type="interval", mar=c(2,0,2,4), legend=FALSE, pax=list(sides=c(3,4), cex.axis=0.8))
 
 #object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
 #type="classes"; cols=rainbow(25); mar=rep(3,4); draw=TRUE
  
 #r <- rast(system.file("ex/test.tif", package="terra"))
-#map(r, type="interval", mar=c(2,4,2,0), pal=list(x="topleft", inset=0.05), pax=list(sides=c(1,2), cex.axis=0.8))
-#map(r)
+#plot(r, type="interval", mar=c(2,4,2,0), pal=list(x="topleft", inset=0.05), pax=list(sides=c(1,2), cex.axis=0.8))
+#plot(r)
 
 # f <- system.file("ex/test.tif", package="terra") 
 # r <- rast(f)
-# map(r)
-# map(r, type="interval")
-# map(r, type="classes")
+# plot(r)
+# plot(r, type="interval")
+# plot(r, type="classes")
 
 # d <- (r > 400) + (r > 600)
-# map(d)
+# plot(d)
 # e <- c(178000,178200,332000,333000)
-# map(d, pal=list(ext=e, title="Title\n", title.cex=2))
+# plot(d, pal=list(ext=e, title="Title\n", title.cex=2))
 
-# map(d, type="interval", levels=0:3) 
-# map(d, type="interval", levels=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 
-# map(d, type="classes", pal=list(legend=c("M", "X", "A")))
+# plot(d, type="interval", levels=0:3) 
+# plot(d, type="interval", levels=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 
+# plot(d, type="classes", pal=list(legend=c("M", "X", "A")))
 
 # r <- rast(f)
 # x <- trunc(r/600)

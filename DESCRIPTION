@@ -22,3 +22,4 @@ Authors@R: c(
 	person("Jeroen", "Ooms", role = "ctb", comment = c(ORCID = "0000-0002-4035-0289")),
     person("Edzer", "Pebesma", role = "ctb", comment = c(ORCID = "0000-0001-8049-7069")))
 
+	

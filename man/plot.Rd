@@ -50,6 +50,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 f <- system.file("ex/test.tif", package="terra") 
 r <- rast(f)
 plot(r)
+
 plot(r, type="interval")
 
 e <- c(178200,178400,331600,333600)
@@ -67,6 +68,19 @@ x <- trunc(r/600)
 x <- as.factor(x)
 levels(x) <- c("earth", "wind", "fire")
 plot(x)
+
+
+# two plots with the same legend
+dev.new(width=6, height=4, noRStudioGD = TRUE)
+par(mfrow=c(1,2))
+plot(r, range=c(100,1800))
+plot(r/2, range=c(100,1800))
+
+# as you only need one legend:
+par(mfrow=c(1,2))
+plot(r, range=c(100,1800), mar=c(4, 3, 4, 3), pal=list(shrink=0.9, cex=.8), pax=list(sides=1:2, cex.axis=.6))
+text(182500, 335000, "Two maps, one plot", xpd=NA)
+plot(r/2, range=c(100,1800), mar=c(4, 2, 4, 4), legend=FALSE, pax=list(sides=c(1,4), cex.axis=.6))
 }
 
 \keyword{methods}
