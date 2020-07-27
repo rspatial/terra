@@ -300,6 +300,7 @@ SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 	uint_64 r;
 	uint_64 nr = nrow();
 	bool rowfound = false;
+	readStart();
 	for (r=0; r<nr; r++) {
 		v = readValues(r, 1, 0, ncol());
 		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < ncl) {
@@ -348,6 +349,7 @@ SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 		}
 	}
 	uint_64 lastcol = std::max(std::min(c+padding, ncol()), uint_64(0));
+	readStop();
 
 	if (lastcol < firstcol) {
 		tmp = firstcol;
@@ -1443,7 +1445,7 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			double wsum = 0;
 			unsigned offset = lyr * off;
-			std::vector<double> vv = { v.begin()+offset,  v.begin()+offset+off };
+			std::vector<double> vv(v.begin()+offset,  v.begin()+offset+off);
 			for (size_t j=0; j<vv.size(); j++) {
 				if (!std::isnan(vv[j]) && !std::isnan(wv[j])) {
 					vv[j] *= wv[j];
