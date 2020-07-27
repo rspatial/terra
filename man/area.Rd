@@ -9,7 +9,7 @@
 \title{Area and perimeter}
 
 \description{
-Compute the area of polygons or for raster cells that are not \code{NA}. Computing the surface area of raster cells is particulary relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. 
+Compute the area of polygons or for raster cells that are not \code{NA}. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. 
 
 The perimeter method works only on SpatVector objects, and computes the length of lines or the perimeter of polygons.
 }
@@ -48,16 +48,16 @@ v <- 1:ncell(r)
 v[200:400] <- NA
 values(r) <- v
 
-# summed area in km2
-area(r) / 1000000
-
 # area for each raster cell
 a <- area(r, sum=FALSE)
 
-# you can use mask to remove the cells in r that are NA
-am <- mask(a, r)
-# and the sum of the cells to get the same result
-global(am, "sum", na.rm=TRUE) / 1000000
+# summed area in km2
+area(r) / 1000000
+
+## you can use mask to remove the cells in r that are NA
+## and compute the global sum to get the same result
+#am <- mask(a, r)
+#global(am, "sum", na.rm=TRUE) / 1000000
 
 ### SpatVector
 f <- system.file("ex/lux.shp", package="terra")
