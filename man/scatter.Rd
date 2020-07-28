@@ -36,7 +36,7 @@ Scatterplot of the values of two SpatRaster layers
 \examples{ 
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 plot(s[[1]], s[[2]])
-plot(s, sqrt(s[[3:1]]), gridded=TRUE)
+plot(s, sqrt(s[[3:1]]))
 }
 
 \keyword{methods}
