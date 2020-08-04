@@ -392,6 +392,9 @@ bool SpatRaster::setSRS(std::string crs) {
 	}
 	for (size_t i = 0; i < nsrc(); i++) { 
 		source[i].srs = srs; 
+		if (!source[i].memory) {
+			source[i].parameters_changed = true;
+		}
 	}
 	return true;
 }

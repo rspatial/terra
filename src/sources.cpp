@@ -45,6 +45,7 @@ RasterSource::RasterSource() {
 }
 
 
+
 SpatRaster SpatRaster::combineSources(SpatRaster x) {
 
 	SpatRaster out = geometry();

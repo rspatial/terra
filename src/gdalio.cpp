@@ -2,6 +2,7 @@
 
 #include "spatRaster.h"
 #include "string_utils.h"
+#include "file_utils.h"
 #include "crs.h"
 
 
@@ -99,10 +100,6 @@ SpatRaster SpatRaster::to_memory_copy() {
 
 
 bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
-	// needs to loop over sources. 
-	// Should be a vector of GDALDatasetH
-	// Or can we combine them here into a VRT?
-	// for now just doing the first
 	
 	size_t isrc = src < 0 ? 0 : src;
 		
@@ -120,8 +117,17 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 	}
 	
 	if (fromfile) {
-
-		std::string f = source[src].filename;
+		std::string f;
+		if (source[src].parameters_changed) {
+			// make a copy to get the write the new crs or extent
+			f = tempFile(opt.get_tempdir(), ".tif");
+			SpatRaster tmp(source[src]);
+			SpatOptions topt(opt);
+			topt.set_filenames({f});
+			tmp.writeRaster(topt);
+		} else {
+			f = source[src].filename;
+		}
 		hDS = GDALOpenShared(f.c_str(), GA_ReadOnly);
 		return(hDS != NULL);
 		

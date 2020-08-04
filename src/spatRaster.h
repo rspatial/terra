@@ -113,6 +113,8 @@ class RasterSource {
 		void resize(unsigned n);
 		bool in_order();
 		bool combine_sources(const RasterSource &x);
+
+		bool parameters_changed = false;		
 		
 };
 
@@ -202,6 +204,7 @@ class SpatRaster {
 		bool getValuesSource(size_t src, std::vector<double> &out);				
 		bool setValues(std::vector<double> _values);
 		void setRange();
+		
 ////////////////////////////////////////////////////
 // property like methods for RasterSources
 ////////////////////////////////////////////////////

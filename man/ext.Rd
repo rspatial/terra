@@ -1,4 +1,4 @@
-\name{extent}
+\name{ext}
 
 \docType{methods}
 

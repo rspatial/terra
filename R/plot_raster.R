@@ -39,17 +39,30 @@
 #	text.col = graphics::par("col"), text.font = NULL, ncol = 1, horiz = FALSE, title = NULL,
  #   inset = 0, title.col = text.col, title.adj = 0.5, 
 
-.plotit <- function(x, xlab="", ylab="", type = "n", asp=x$asp, axes=TRUE, ...) {
+.plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA, ...) {
 	
 	if ((!x$add) & (!x$legend_only)) {
+		
+		#if (!is.na(new)) {
+		#	if (!any(is.na(x$mar))) { marpar=x$mar } else { marpar=graphics::par("mar") }
+		#	marw <- marpar[2] + marpar[4]
+		#	marh <- marpar[1] + marpar[3]
+		#	a <- asp * nrow(x$r) / ncol(x$r)
+		#	if (a > 1) {
+		#		dev.new(width=marw+new, height=marh+new*a, noRStudioGD = TRUE)
+		#	} else {
+		#		dev.new(width=marw+new*a, height=marh+new, noRStudioGD = TRUE)
+		#	}
+		#}
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
-		plot(x$ext[1:2], x$ext[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, axes=FALSE, ...)
-		if (axes) x <- .plot.axes(x)
+		plot(x$ext[1:2], x$ext[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, ...)
 	}
 	
 	if (!x$legend_only) {
 		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
 			angle = 0, interpolate = x$interpolate)	
+
+		if (axes) x <- .plot.axes(x)			
 	}
 	if (x$legend_draw) {	
 		if (x$legend_type == "continuous") {
@@ -212,7 +225,8 @@
 # leg.shrink=c(0,0), leg.main=NULL, leg.main.cex = 1, leg.digits=NULL, leg.loc=NULL, leg.ext=NULL, leg.levels=NULL, leg.labels=NULL, leg.at=NULL, 
 
 .prep.plot.data <- function(x, type, cols, mar, draw=FALSE, interpolate=FALSE,  
-legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE, range=NULL, ...) {
+legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
+ range=NULL, new=NA, ...) {
 
 	out <- list()
 	out$add <- isTRUE(add)
@@ -241,7 +255,7 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE, 
 	}
 
 	if (draw) {
-		out <- .plotit(out, ...)
+		out <- .plotit(out, new=new, ...)
 	}
 	out
 }
