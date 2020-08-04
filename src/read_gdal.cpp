@@ -510,6 +510,7 @@ bool SpatRaster::constructFromFile(std::string fname, int subds, std::string sub
 	if (crs == "") {
 		if (s.extent.xmin >= -180 && s.extent.xmax <= 360 && s.extent.ymin >= -90 && s.extent.ymax <= 90) {
 			crs = "+proj=longlat +datum=WGS84";
+			s.parameters_changed = true;
 		}
 	}
 	std::string msg;

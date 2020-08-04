@@ -120,6 +120,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		std::string f;
 		if (source[src].parameters_changed) {
 			// make a copy to get the write the new crs or extent
+			// can we use a VRT instead?
 			f = tempFile(opt.get_tempdir(), ".tif");
 			SpatRaster tmp(source[src]);
 			SpatOptions topt(opt);
