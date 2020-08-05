@@ -66,7 +66,7 @@ SpatVector SpatRaster::dense_extent() {
 
 #if GDAL_VERSION_MAJOR >= 3
 
-bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const std::string crs, std::string filename, std::string driver, int nlyrs, std::string datatype, std::string &msg) {
+bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string srccrs, const std::string dstcrs, std::string filename, std::string driver, int nlyrs, std::string datatype, std::string &msg) {
 
 	msg = "";
 	if ( hSrcDS == NULL ) {
@@ -82,14 +82,15 @@ bool find_oputput_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, const
 	// Get output driver (GeoTIFF format)
 
 	// Get Source coordinate system.
-	const char *pszSrcWKT = GDALGetProjectionRef( hSrcDS );
+	// const char *pszSrcWKT = GDALGetProjectionRef( hSrcDS );
+	 const char *pszSrcWKT = srccrs.c_str();
 	if ( pszSrcWKT == NULL || strlen(pszSrcWKT) == 0 ) {
 		msg = "data source has no WKT";
 		return false;		
 	}
 
 	OGRSpatialReference* oSRS = new OGRSpatialReference;
-	if (is_ogr_error(oSRS->SetFromUserInput( crs.c_str() ), msg)) {
+	if (is_ogr_error(oSRS->SetFromUserInput( dstcrs.c_str() ), msg)) {
 		return false;
 	};
 
@@ -187,7 +188,7 @@ GDALResampleAlg getAlgo(std::string m) {
 }
 
 
-bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigned> srcbands, std::vector<unsigned> dstbands, std::string method, std::string msg, bool verbose) {
+bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigned> srcbands, std::vector<unsigned> dstbands, std::string method, std::string srccrs, std::string msg, bool verbose) {
 
 	if (srcbands.size() != dstbands.size()) {
 		msg = "number of source bands must match number of dest bands";
@@ -250,10 +251,15 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 //void GDALWarpInitDstNoDataReal(GDALWarpOptions *psOptionsIn, double dNoDataReal)
 
     // Establish reprojection transformer.
+	
     psWarpOptions->pTransformerArg =
-        GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef(hSrcDS),
+        GDALCreateGenImgProjTransformer( hSrcDS, srccrs.c_str(),
                                         hDstDS, GDALGetProjectionRef(hDstDS),
                                         FALSE, 0.0, 1 );
+//    psWarpOptions->pTransformerArg =
+//        GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef(hSrcDS),
+//                                        hDstDS, GDALGetProjectionRef(hDstDS),
+//                                        FALSE, 0.0, 1 );
     psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
 
@@ -292,6 +298,12 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 	std::string filename = opt.get_filename();
 
+	std::string srccrs = getSRS("wkt");
+	if (opt.verbose) {
+		Rcpp::Rcout << "wkt" << std::endl;
+		Rcpp::Rcout << srccrs << std::endl;
+	}
+	
 	bool use_crs = crs != "";  
 	// should not be needed (need to fix)
 	
@@ -335,7 +347,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		if (i==0) {
 			 // use the crs, ignore argument "x"
 			if (use_crs) {
-				if (! find_oputput_bounds(hSrcDS, hDstDS, crs, filename, driver, nlyr(), opt.get_datatype(), errmsg)) {
+				if (! find_output_bounds(hSrcDS, hDstDS, srccrs, crs, filename, driver, nlyr(), opt.get_datatype(), errmsg)) {
 					out.setError(errmsg);
 					GDALClose( hSrcDS );
 					return out;
@@ -362,7 +374,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		std::iota (dstbands.begin(), dstbands.end(), bandstart); 
 		bandstart += dstbands.size();
 		
-		bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, errmsg, opt.get_verbose());
+		bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose());
 	
 		GDALClose( hSrcDS );
 		if (!success) {

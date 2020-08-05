@@ -118,17 +118,17 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 	
 	if (fromfile) {
 		std::string f;
-		if (source[src].parameters_changed) {
+		//if (source[src].parameters_changed) {
 			// make a copy to get the write the new crs or extent
 			// can we use a VRT instead?
-			f = tempFile(opt.get_tempdir(), ".tif");
-			SpatRaster tmp(source[src]);
-			SpatOptions topt(opt);
-			topt.set_filenames({f});
-			tmp.writeRaster(topt);
-		} else {
+		//	f = tempFile(opt.get_tempdir(), ".tif");
+		//	SpatRaster tmp(source[src]);
+		//	SpatOptions topt(opt);
+		//	topt.set_filenames({f});
+		//	tmp.writeRaster(topt);
+		//} else {
 			f = source[src].filename;
-		}
+		//}
 		hDS = GDALOpenShared(f.c_str(), GA_ReadOnly);
 		return(hDS != NULL);
 		
