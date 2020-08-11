@@ -82,6 +82,43 @@ bool SpatRaster::isSource(std::string filename) {
 	return false;
 }
 
+/*
+#include <experimental/filesystem>
+bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
+	std::vector<std::string> inf = filenames();
+	for (size_t i=0; i<inf.size(); i++) {
+		if (inf[i] == "") continue;
+		std::experimental::filesystem::path pin = inf[i];
+		for (size_t j=0; j<outf.size(); j++) {
+			Rcpp::Rcout << inf[i] << std::endl << outf[j] << std::endl;
+			std::experimental::filesystem::path pout = outf[i];
+			if (pin.compare(pout) == 0) return false;
+		}
+	}
+	return true;
+}
+*/
+
+bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
+	std::vector<std::string> inf = filenames();
+	for (size_t i=0; i<inf.size(); i++) {
+		if (inf[i] == "") continue;
+		#ifdef _WIN32
+		lowercase(inf[i]);
+		#endif
+		for (size_t j=0; j<outf.size(); j++) {
+			#ifdef _WIN32
+			lowercase(outf[j]);
+			#endif
+			if (inf[i] == outf[j]) return false;
+		}
+	}
+	return true;
+}
+
+
+
+
 
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
@@ -97,6 +134,12 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	// recursive writing of layers
 	std::vector<std::string> fnames = opt.get_filenames();
+	if (!differentFilenames(fnames)) {
+		out.setError("source and target filename cannot be the same");
+		return(out);
+	}
+
+
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {
 		if (fnames.size() != nl) {
