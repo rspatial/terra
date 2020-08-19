@@ -17,7 +17,7 @@
 
 #include <functional>
 
-#include "spatRaster.h"
+#include "spatRasterMultiple.h"
 #include "distance.h"
 #include "vecmath.h"
 
@@ -679,3 +679,36 @@ std::vector<double> SpatRaster::getCells(SpatVector v, bool touches, std::string
 	return out;
 }
 
+
+
+std::vector<std::vector<std::vector<double>>> SpatRasterStack::extractXY(std::vector<double> &x, std::vector<double> &y, std::string method) {
+	unsigned ns = nsds();
+	std::vector<std::vector<std::vector<double>>> out(ns);
+	for (size_t i=0; i<ns; i++) {
+		SpatRaster r = getsds(i);
+		out[i] = r.extractXY(x, y, method);
+	}
+	return out;
+}
+
+std::vector<std::vector<std::vector<double>>> SpatRasterStack::extractCell(std::vector<double> &cell) {
+	unsigned ns = nsds();
+	std::vector<std::vector<std::vector<double>>> out(ns);
+	for (size_t i=0; i<ns; i++) {
+		SpatRaster r = getsds(i);
+		out[i] = r.extractCell(cell);
+	}
+	return out;
+}
+
+
+// this is rather inefficient (repeated rasterization)
+std::vector<std::vector<std::vector<std::vector<double>>>> SpatRasterStack::extractVector(SpatVector v, bool touches, std::string method) {
+	unsigned ns = nsds();
+	std::vector<std::vector<std::vector<std::vector<double>>>> out(ns);
+	for (size_t i=0; i<ns; i++) {
+		SpatRaster r = getsds(i);
+		out[i] = r.extractVector(v, touches, method);
+	}
+	return out;
+}

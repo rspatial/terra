@@ -421,6 +421,7 @@ class SpatRaster {
 
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
         std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
+		
 		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster filler(SpatRaster x, SpatOptions &opt);
 		

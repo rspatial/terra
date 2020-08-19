@@ -509,6 +509,8 @@ RCPP_MODULE(spat){
 		.method("replace", &SpatRasterStack::replace, "")
 		.method("subset", &SpatRasterStack::subset, "")
 		.method("collapse", &SpatRasterStack::collapse , "")
+		.method("extractCell", &SpatRasterStack::extractCell, "extractCell")
+		.method("extractVector", &SpatRasterStack::extractVector, "extractVector")
 	;
 }
 

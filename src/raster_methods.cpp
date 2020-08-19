@@ -1340,22 +1340,28 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 
 
 
-void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, double &n) {
-	double s;
+void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, double &n, size_t i) {
 	if (fun == "sum") {
-		s = vsum(v, narm);
-		stat += s;
+		stat += vsum(v, narm);
 	} else if (fun == "mean") {
-		stat = vsum(v, narm);
+		stat += vsum(v, narm);
 		for (size_t i=0; i<v.size(); i++) {
 			n += !std::isnan(v[i]);
 		}
 	} else if (fun == "min") {
-		s = vmin(v, narm);
-		stat = std::min(stat, s);
+		double s = vmin(v, narm);
+		if (i > 0) {
+			stat = std::min(stat, s);
+		} else {
+			stat = s;			
+		}
 	} else if (fun == "max") {
-		s = vmax(v, narm);
-		stat = std::max(stat, s);
+		double s = vmax(v, narm);
+		if (i > 0) {
+			stat = std::max(stat, s);
+		} else {
+			stat = s;			
+		}
 	}
 }
 
@@ -1384,7 +1390,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			unsigned offset = lyr * off;
 			std::vector<double> vv = {  v.begin()+offset,  v.begin()+offset+off };
-			do_stats(vv, fun, narm, stats[lyr], n[lyr]);
+			do_stats(vv, fun, narm, stats[lyr], n[lyr], i);
 		}
 	}
 	readStop();
@@ -1454,7 +1460,7 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 					vv[j] = NAN;
 				}
 			}
-			do_stats(vv, fun, narm, stats[lyr], n[lyr]);
+			do_stats(vv, fun, narm, stats[lyr], n[lyr], i);
 			w[lyr] += wsum; 
 		}
 	}

@@ -16,8 +16,8 @@ show_messages <- function(x, f="") {
 		return(x)
 	} else {
 		if (x$messages$has_warning) { 
-			messages <- paste0(f, ": ", paste(x$messages$getWarnings(), collapse="\n"))
-			warning(paste(messages, collapse="\n"), call.=FALSE)
+			warns <- x$messages$getWarnings()
+			warning(paste(warns, collapse="\n"), call.=FALSE)
 		}
 		if (x$messages$has_error) {
 			emsg <- x$messages$getError()
