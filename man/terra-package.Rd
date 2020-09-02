@@ -22,7 +22,7 @@ Note the following important differences in methods names with the 'raster' pack
 \bold{raster package} \tab \bold{terra package}\cr
 \code{raster, brick, stack}\tab\code{\link{rast}}\cr
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
-\code{stack} (for combining Raster* objects)\tab\code{\link{c}}\cr
+\code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
