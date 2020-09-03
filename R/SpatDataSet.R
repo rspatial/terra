@@ -32,6 +32,15 @@ setMethod("sds", signature(x="character"),
 	}
 )
 
+setMethod("sds", signature(x="missing"),
+	function(x, ...) {
+		r <- methods::new("SpatDataSet")
+		r@ptr <- terra:::SpatDataSet$new()
+		r
+	}
+)
+
+
 setMethod("sds", signature(x="SpatRaster"),
 	function(x, ...) {
 		r <- methods::new("SpatDataSet")
@@ -66,14 +75,29 @@ setMethod("sds", signature(x="list"),
 
 setMethod("c", signature(x="SpatDataSet"), 
 	function(x, ...) {
-		r <- methods::new("SpatDataSet")
-		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 )
+		
+		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 ) # why? make a copy?
+	 	
 		dots <- list(...)
 		nms <- names(dots)
+		
 		for (i in seq_along(dots)) {
-			if (inherits(dots[[i]], "SpatRaster")) {
-				x@ptr$add(dots[[i]]@ptr, nms[i])
-			}
+			if (inherits(dots[[i]], "SpatDataSet")) {
+				sdsnms <- names(dots[[i]])
+				for (j in 1:x@ptr$nsds()) {
+					if (!x@ptr$add(dots[[i]][[j]]@ptr, sdsnms[j])) {
+						show_messages(x, "c")		
+					}
+				}
+			
+			} else if (inherits(dots[[i]], "SpatRaster")) {
+				if (is.null(nms)) stop("arguments must be named")
+				if (!x@ptr$add(dots[[i]]@ptr, nms[i])) {
+					show_messages(x, "c")		
+				}
+			} else {
+				stop("arguments must be SpatRaster or SpatDataSet")
+			} 
 		}
 		show_messages(x, "c")		
 	}
