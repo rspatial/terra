@@ -35,7 +35,7 @@ setMethod("sds", signature(x="character"),
 setMethod("sds", signature(x="missing"),
 	function(x, ...) {
 		r <- methods::new("SpatDataSet")
-		r@ptr <- terra:::SpatDataSet$new()
+		r@ptr <- SpatDataSet$new()
 		r
 	}
 )

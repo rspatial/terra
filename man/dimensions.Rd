@@ -74,7 +74,6 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 \S4method{size}{SpatRaster}(x)
 
-
 \S4method{nsrc}{SpatRaster}(x)
 
 \S4method{res}{SpatRaster}(x)
