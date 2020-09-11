@@ -20,7 +20,9 @@ Combine SpatRaster objects into a new object with \code{c} or add to an existing
 
 \usage{
 \S4method{c}{SpatRaster}(x, ...)
+
 \S4method{add}{SpatRaster}(x)<-value
+
 \S4method{collapse}{SpatRaster}(x, ...)
 
 \S4method{c}{SpatDataSet}(x, ...)
@@ -28,7 +30,7 @@ Combine SpatRaster objects into a new object with \code{c} or add to an existing
 
 \arguments{
   \item{x}{SpatRaster or SpatDataSet}
-  \item{...}{For \code{c}: SpatRaster objects to be combined with \code{x}. Not implemented for \code{collapse)}
+  \item{...}{For \code{c}: SpatRaster objects to be combined with \code{x}. Not implemented for \code{collapse)}}
 }
 
 
