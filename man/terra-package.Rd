@@ -23,6 +23,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{raster, brick, stack}\tab\code{\link{rast}}\cr
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
+\code{addLayer} \tab\code{\link{add<-}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
@@ -78,6 +79,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
   \tabular{ll}{
     \code{\link{c}} \tab Combine SpatRasters (multiple layers) (like raster::stack)\cr
+    \code{\link{add<-}} \tab Add a SpatRaster to another one (like raster::addLayer)\cr
     \code{\link{subset}} or \code{[[}, or \code{$} \tab Select layers of a SpatRaster\cr
     \code{\link{selectRange}} \tab Select cell values from different layers using an index layer\cr
 --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -363,7 +365,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 }
 }
 
-\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans}
+\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the underlying C++ code for GDAL/GEOS was written by Edzer Pebesma for `sf`. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libs for installation on windows}
 
 \section{Acknowledgments}{
 This package is an attempt to stand on the shoulders of giants (GDAL, PROJ, GEOS, GeographicLib, Rcpp, R)
