@@ -3,6 +3,7 @@
 \docType{methods}
 
 \alias{sds}
+\alias{sds,missing-method}
 \alias{sds,character-method}
 \alias{sds,list-method}
 \alias{sds,SpatRaster-method}
@@ -19,6 +20,8 @@ sds_info provides information about sub-datasets in a file.
 }
 
 \usage{
+\S4method{sds}{missing}(x, ...) 
+
 \S4method{sds}{character}(x, ids=0, ...)
 
 \S4method{sds}{SpatRaster}(x, ...) 
@@ -29,7 +32,7 @@ describe_sds(filename, ...)
 }
 
 \arguments{
-\item{x}{character (filename) or SpatRaster, or list of SpatRaster objects. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatDataSet}
+\item{x}{character (filename), or SpatRaster, or list of SpatRaster objects, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatDataSet}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a postive integer}
 \item{...}{additional arguments. Can be other \code{SpatRaster} objects if \code{x} is a \code{SpatRaster}} 
 \item{filename}{character}

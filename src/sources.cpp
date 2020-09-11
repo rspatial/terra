@@ -71,7 +71,9 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 	return(out);
 }
 
+
 void SpatRaster::addSource(SpatRaster x) {
+	
 	if (compare_geom(x, false, false)) {
         if (!hasValues()) {  //or if n src == 0?
             source = x.source;

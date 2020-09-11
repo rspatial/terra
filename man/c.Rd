@@ -8,8 +8,9 @@
 \alias{c,SpatDataSet-method}
 
 \alias{add<-}
-\alias{add<-,SpatRaster-method}
+\alias{add<-,SpatRaster,SpatRaster-method}
 
+\alias{collapse}
 \alias{collapse,SpatRaster-method}
 
 \title{Combine SpatRasters}
@@ -31,6 +32,7 @@ Combine SpatRaster objects into a new object with \code{c} or add to an existing
 \arguments{
   \item{x}{SpatRaster or SpatDataSet}
   \item{...}{For \code{c}: SpatRaster objects to be combined with \code{x}. Not implemented for \code{collapse)}}
+  \item{value}{SpatRaster}
 }
 
 

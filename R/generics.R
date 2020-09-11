@@ -93,8 +93,10 @@ setMethod("boundaries", signature(x="SpatRaster"),
 
 setMethod("add<-", signature("SpatRaster", "SpatRaster"), 
 	function(x, value) {
-		sameobject <- x@ptr$same(value@ptr)
-		x@ptr$addSource(value@ptr, sameobject)
+		if (x@ptr$same(value@ptr)) {
+			x@ptr <- x@ptr$deepcopy() 
+		}
+		x@ptr$addSource(value@ptr)
 		show_messages(x, "add")
 	}
 )
