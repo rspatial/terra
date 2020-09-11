@@ -22,7 +22,7 @@ Combine SpatRaster objects into a new object with \code{c} or add to an existing
 \usage{
 \S4method{c}{SpatRaster}(x, ...)
 
-\S4method{add}{SpatRaster}(x)<-value
+\S4method{add}{SpatRaster,SpatRaster}(x)<-value
 
 \S4method{collapse}{SpatRaster}(x, ...)
 
