@@ -2,7 +2,9 @@
 
 
 # terra
-#if (!isGeneric("add")) { setGeneric("add", function(x, y, ...) standardGeneric("add"))}
+if (!isGeneric("add<-")) {setGeneric("add<-", function(x, value) standardGeneric("add<-"))}
+if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGeneric("collapse"))}
+
 if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}
 if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app"))}
 if (!isGeneric("lapp")) { setGeneric("lapp", function(x, ...) standardGeneric("lapp"))}

@@ -180,13 +180,13 @@
 
 .as.raster.interval <- function(out, x, ...) {
 
-	if (is.null(out$levels)) {
-		out$levels <- 5
+	if (is.null(out$breaks)) {
+		out$breaks <- 5
 	} 
 
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
-	fz <- cut(Z, out$levels, include.lowest=TRUE, right=FALSE)
+	fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE)
 
 	levs <- levels(fz)
 	nlevs <- length(levs)
@@ -226,7 +226,7 @@
 
 .prep.plot.data <- function(x, type, cols, mar, draw=FALSE, interpolate=FALSE,  
 legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
- range=NULL, new=NA, ...) {
+ range=NULL, new=NA, breaks=NULL, ...) {
 
 	out <- list()
 	out$add <- isTRUE(add)
@@ -241,6 +241,7 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 	}
 	out$cols <- cols
 	out$levels <- levels
+	out$breaks <- breaks
 	out$range <- range
 	out$interpolate <- isTRUE(interpolate)
 	out$legend_draw <- isTRUE(legend)
@@ -264,10 +265,15 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
 	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, ...) {
 
-		if (missing(type)) {
-			type <- "depends"
+		breaks <- list(...)$breaks
+		if (!is.null(breaks)) {
+			type <- "interval"
 		} else {
-			type <- match.arg(type, c("continuous", "classes", "interval"))
+			if (missing(type)) {
+				type <- "depends"
+			} else {
+				type <- match.arg(type, c("continuous", "classes", "interval"))
+			}
 		}
 		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
 		x <- x[[y]]

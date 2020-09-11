@@ -60,8 +60,8 @@ d <- (r > 400) + (r > 600)
 plot(d)
 plot(d, type="classes")
 
-plot(d, type="interval", levels=0:3) 
-plot(d, type="interval", levels=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 
+plot(d, type="interval", breaks=0:3) 
+plot(d, type="interval", breaks=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 
 plot(d, type="classes", pal=list(legend=c("M", "X", "A")))
 
 x <- trunc(r/600)

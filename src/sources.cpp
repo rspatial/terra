@@ -64,7 +64,7 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 //    if (!hv) {
 //       out.source = x.source;
 //    } else {
-    out.source.insert(out.source.end(), x.source.begin(), x.source.end());
+	out.source.insert(out.source.end(), x.source.begin(), x.source.end());
 //	}
     // to make names unique
 	out.setNames(out.getNames());

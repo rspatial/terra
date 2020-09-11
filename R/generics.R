@@ -90,27 +90,49 @@ setMethod("boundaries", signature(x="SpatRaster"),
 	show_messages(x, "collapse")
 }
 
-setMethod("c", signature(x="SpatRaster"), 
+
+setMethod("add<-", signature("SpatRaster", "SpatRaster"), 
+	function(x, value) {
+		sameobject <- x@ptr$same(value@ptr)
+		x@ptr$addSource(value@ptr, sameobject)
+		show_messages(x, "add")
+	}
+)
+
+setMethod("collapse", signature("SpatRaster"), 
 	function(x, ...) {
-		s <- sds(list(x, ...))
-		x@ptr <- s@ptr$collapse()
-		x <- show_messages(x, "c")		
-		try( x@ptr <- x@ptr$collapse_sources() )
-		show_messages(x, "c")		
+		x@ptr <- x@ptr$collapse_sources()
+		show_messages(x, "collapse")
 	}
 )
 
 #setMethod("c", signature(x="SpatRaster"), 
 #	function(x, ...) {
-#		dots <- list(...)
-#		for (i in dots) {
-#			if (inherits(i, "SpatRaster")) {
-#				x@ptr <- x@ptr$combineSources(i@ptr)
-#			}
-#		}
+#		s <- sds(list(x, ...))
+#		x@ptr <- s@ptr$collapse()
+#		x <- show_messages(x, "c")		
+#		try( x@ptr <- x@ptr$collapse_sources() )
 #		show_messages(x, "c")		
 #	}
 #)
+
+
+
+setMethod("c", signature(x="SpatRaster"), 
+	function(x, ...) {
+		dots <- list(...)
+		for (i in dots) {
+			if (inherits(i, "SpatRaster")) {
+				x@ptr <- x@ptr$combineSources(i@ptr)
+				if (x@ptr$messages$has_error) {
+					show_messages(x, "c")
+					return()
+				}
+			}
+		}
+		show_messages(x, "c")		
+	}
+)
 
 
 setMethod("rep", signature(x="SpatRaster"), 

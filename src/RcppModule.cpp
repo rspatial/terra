@@ -2,6 +2,9 @@
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
 
+#include <memory> //std::addressof
+
+
 #include "gdal_priv.h"
 
 
@@ -64,6 +67,12 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 }
 
 
+bool sameObject(SpatRaster* a, SpatRaster* b) {
+	return a == b;
+}	
+
+
+
 Rcpp::List getDataFrame(SpatDataFrame* v) {
 	unsigned n = v->ncol();
 	Rcpp::List out(n);	
@@ -122,6 +131,9 @@ Rcpp::DataFrame getGeometry(SpatVector* v) {
 	);
 	return out;
 }
+
+
+	
 
 
 
@@ -308,6 +320,7 @@ RCPP_MODULE(spat){
 
 		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
 		
+		.method("addSource", &SpatRaster::addSource, "addSource")
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
@@ -386,6 +399,7 @@ RCPP_MODULE(spat){
 		.method("readValues", &SpatRaster::readValues, "readValues")	
 		.method("getValues", &SpatRaster::getValues, "getValues")
 		.method("getBlockSize", &getBlockSizeR)
+		.method("same", &sameObject)
 		.method("setValues", &SpatRaster::setValues)
 		.method("setRange", &SpatRaster::setRange, "setRange")
 		.method("writeStart", &SpatRaster::writeStart, "writeStart") 
