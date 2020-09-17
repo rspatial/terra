@@ -138,8 +138,9 @@ setMethod("minmax", signature(x="SpatRaster"),
 
 setMethod("setMinMax", signature(x="SpatRaster"), 
 	function(x) {
-		if (!.hasMinMax(x)) {
-			x@ptr$setRange
+		if (any(!.hasMinMax(x))) {
+			x@ptr$setRange()
+			x <- show_messages(x)
 		}
 	}
 )

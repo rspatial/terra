@@ -365,9 +365,19 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 }
 
 void SpatRaster::setRange() {
+	
+	SpatOptions opts;
 	for (size_t i=0; i<nsrc(); i++) {
-		if (source[i].memory) { // for now. should read from files as needed
+		if (source[i].hasRange[0]) continue;
+
+		if (source[i].memory) {
 			source[i].setRange();
+		} else {
+			SpatRaster r(source[i]);
+			SpatDataFrame x = r.global("range", true, opts);
+			source[i].range_min = x.getD(0);
+			source[i].range_max = x.getD(1);
+			source[i].hasRange = std::vector<bool>(source[i].hasRange.size(), true);
 		}
 	}
 }

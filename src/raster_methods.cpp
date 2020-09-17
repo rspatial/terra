@@ -1369,7 +1369,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
-	std::vector<std::string> f {"sum", "mean", "min", "max"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "range"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return(out);
@@ -1380,6 +1380,14 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 		return(out);
 	}
 
+	bool range = false;
+	std::vector<double> stats2;
+	if (fun == "range") {
+		range = true;
+		fun = "min";
+		stats2.resize(nlyr());
+	}
+	
 	std::vector<double> stats(nlyr());
 	std::vector<double> n(nlyr());
 	readStart();
@@ -1391,6 +1399,9 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 			unsigned offset = lyr * off;
 			std::vector<double> vv = {  v.begin()+offset,  v.begin()+offset+off };
 			do_stats(vv, fun, narm, stats[lyr], n[lyr], i);
+			if (range) {
+				do_stats(vv, "max", narm, stats2[lyr], n[lyr], i);
+			}
 		}
 	}
 	readStop();
@@ -1408,6 +1419,9 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
 
 	out.add_column(stats, fun);
+	if (range) {
+		out.add_column(stats2, "max");
+	}
 	return(out);
 }
 
