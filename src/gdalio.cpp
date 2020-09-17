@@ -241,6 +241,9 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 #if GDAL_VERSION_MAJOR >= 3
 		std::string errmsg;
 		OGRSpatialReferenceH srs = GDALGetSpatialRef( hDS );
+		if (srs == NULL) {
+			return false;
+		}
 		const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
 		char *cp;
 		OGRErr err = OSRExportToWktEx(srs, &cp, options);

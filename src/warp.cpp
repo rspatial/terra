@@ -392,7 +392,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		bool test = out.from_gdalMEM(hDstDS, use_crs, true); 
 		GDALClose( hDstDS );
 		if (!test) {
-			out.setError("wat nu?");
+			out.setError("cannot do this transformation");
 			return out;
 		}
 	} else {
