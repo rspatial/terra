@@ -39,7 +39,7 @@ setMethod("global", signature(x="SpatRaster"),
 		nms <- names(x)
 		nms <- make.unique(nms)
 		txtfun <- .makeTextFun(match.fun(fun))
-		if (txtfun == '.Primitive(\"range\")') txtfun <- "range" 
+		#if (txtfun == '.Primitive(\"range\")') txtfun <- "range" 
 
 		opt <- .getOptions()
 		if (!is.null(weights)) {
