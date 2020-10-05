@@ -99,6 +99,7 @@
 		stopifnot(length(out$range) == 2)
 	}
 	
+	
 	interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
 	breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
 		

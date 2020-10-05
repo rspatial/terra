@@ -401,6 +401,7 @@ RCPP_MODULE(spat){
 		.method("getBlockSize", &getBlockSizeR)
 		.method("same", &sameObject)
 		.method("setValues", &SpatRaster::setValues)
+		//.method("replaceValues", &SpatRaster::replace)
 		.method("setRange", &SpatRaster::setRange, "setRange")
 		.method("writeStart", &SpatRaster::writeStart, "writeStart") 
 		.method("writeStop", &SpatRaster::writeStop, "writeStop") 

@@ -341,6 +341,8 @@ bool SpatRaster::writeStop(){
 	return success;
 }
 
+//bool SpatRaster::replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols) {
+//}
 
 bool SpatRaster::setValues(std::vector<double> _values) {
 	bool result = false;

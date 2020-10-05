@@ -203,6 +203,7 @@ class SpatRaster {
 		
 		bool getValuesSource(size_t src, std::vector<double> &out);				
 		bool setValues(std::vector<double> _values);
+		bool replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols);
 		void setRange();
 		
 ////////////////////////////////////////////////////

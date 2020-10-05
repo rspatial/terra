@@ -97,7 +97,11 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (narg > 0) { # row
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
-		if (length(i) != length(value)) {
+		
+		if (!is.null(dim(value))) {
+			#x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
+			stopifnot(ncol(value) == nlyr(x))
+		} else if (length(i) != length(value)) {
 			# recycling with warning
 			v <- value
 			value <- i
