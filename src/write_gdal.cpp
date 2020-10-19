@@ -103,8 +103,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	std::string datatype = opt.get_datatype();
 	source[0].datatype = datatype;
 	
-
-	GIntBig diskNeeded = ncell() * nlyr() * 8;
+	int dsize = std::stoi(datatype.substr(3,1));
+	GIntBig diskNeeded = ncell() * nlyr() * dsize;
 	std::string dname = dirname(filename);
 	GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
 	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
