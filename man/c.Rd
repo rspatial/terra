@@ -12,6 +12,7 @@
 
 \alias{collapse}
 \alias{collapse,SpatRaster-method}
+\alias{collapse,SpatDataSet-method}
 
 \title{Combine SpatRasters}
 
@@ -27,6 +28,8 @@ Combine SpatRaster objects into a new object with \code{c} or add to an existing
 \S4method{collapse}{SpatRaster}(x, ...)
 
 \S4method{c}{SpatDataSet}(x, ...)
+
+\S4method{collapse}{SpatDataSet}(x, ...)
 }
 
 \arguments{
