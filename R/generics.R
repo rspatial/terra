@@ -108,6 +108,15 @@ setMethod("collapse", signature("SpatRaster"),
 	}
 )
 
+setMethod("collapse", signature("SpatDataSet"), 
+	function(x, ...) {
+		y <- new("SpatRaster")
+		y@ptr <- x@ptr$collapse()
+		show_messages(y, "collapse")
+	}
+)
+
+
 #setMethod("c", signature(x="SpatRaster"), 
 #	function(x, ...) {
 #		s <- sds(list(x, ...))
