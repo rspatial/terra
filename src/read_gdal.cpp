@@ -233,10 +233,9 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 		for (size_t i=0; i<skipped.size(); i++) {
 			sdskip.push_back(sd[i]);
 			sd.erase(sd.begin() + skipped[i]);
+			addWarning("skipped (different geometry): " + basename_sds(sd[i]));
 		}
-			
-		addWarning("skipped (different geometry): " + basename_sds(sd[i]));
-		
+
 	}
 	success = setNames(sd);
 

@@ -8,7 +8,7 @@
 \title{apply a local function}
 
 \description{ 
-A "local" function operates on individual cells and layers of a SpatRaster, thus the number of layers returned is the same as the input (unlike for \link{\code{app}})
+A "local" function operates on individual cells and layers of a SpatRaster, thus the number of layers returned is the same as the input (unlike for \code{\link{app}})
 
 The method is not called \code{local} to avoiding hiding the base function with that name.
 }
@@ -30,7 +30,7 @@ The method is not called \code{local} to avoiding hiding the base function with 
 SpatRaster
 }
 
-\seealso{ \code{\link{app}}
+\seealso{ \code{\link{app}} }
 
 
 \examples{
