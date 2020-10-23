@@ -443,6 +443,8 @@ class SpatRaster {
 
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
 		SpatRaster init(double value, SpatOptions &opt);
+		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
+
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);
 		SpatRaster isnotnan(SpatOptions &opt);

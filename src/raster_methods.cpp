@@ -24,9 +24,65 @@
 #include "math_utils.h"
 
 
+SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
+	SpatRaster out = geometry();
+	if (m.size() == 0) {
+		out.setError("no matches supplied");
+		return(out);
+	}
+	bool hasNAN = false;
+	for (size_t i=0; i<m.size(); i++) {
+		if (std::isnan(m[i])) {
+			hasNAN = true;
+			m.erase(m.begin()+i);
+			break;
+		}
+	}
+	bool hasV = m.size() > 0; 
+
+
+	if (!hasValues()) {
+		SpatOptions optinit(opt);
+		out = out. SpatRaster::init(0.0, optinit);
+		return(out);
+	}
+
+  	if (!out.writeStart(opt)) { return out; }
+	readStart();
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		std::vector<double> vv(v.size(), 0);
+		if (hasV) {
+			for (size_t j=0; j<v.size(); j++) {
+				for (size_t k=0; k<m.size(); k++) {
+					if (v[j] == m[k]) {
+						vv[j] = 1;
+						break;
+					}
+				}
+			}
+		} 
+		if (hasNAN) {
+			for (size_t j=0; j<v.size(); j++) {
+				if (std::isnan(v[j])) {
+					vv[j] = 1;
+				}
+			}
+		}
+		
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
 SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	if (!hasValues()) return(out);
+
 	size_t nl = nlyr();
 	recycle(minv, nl);
 	recycle(maxv, nl);

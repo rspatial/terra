@@ -6,16 +6,26 @@
 
 
 
-setMethod("%in%", signature(x='SpatRaster', table='ANY'),
-	function(x, table) {
-		app(x, function(i) i %in% table)
+setMethod("match", signature(x='Raster', table='ANY', nomatch='ANY', incomparables='ANY'),
+	function(x, table, nomatch, incomparables) {
+		app(x, function(i) match(i, table, nomatch, incomparables))
 	}
 )
 
 
-setMethod("match", signature(x='Raster', table='ANY', nomatch='ANY', incomparables='ANY'),
-	function(x, table, nomatch, incomparables) {
-		app(x, function(i) match(i, table, nomatch, incomparables))
+setMethod("%in%", signature(x='SpatRaster', table='ANY'),
+	function(x, table) {
+		out <- rast(x)
+		readStart(x)
+		on.exit(readStop(x))
+		nc <- ncol(out)
+		b <- writeStart(out, filename="", overwrite=FALSE, wopt=list())
+		for (i in 1:b$n) {
+			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
+			v <- v %in% table
+			writeValues(out, v, b$row[i], b$nrows[i])
+		}
+		writeStop(out)
 	}
 )
 

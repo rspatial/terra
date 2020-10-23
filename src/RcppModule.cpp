@@ -460,6 +460,7 @@ RCPP_MODULE(spat){
 				
 		.method("initf", ( SpatRaster (SpatRaster::*)(std::string, bool, SpatOptions&) )( &SpatRaster::init ), "init fun")
 		.method("initv", ( SpatRaster (SpatRaster::*)(double, SpatOptions&) )( &SpatRaster::init ), "init value")
+		.method("is_in", &SpatRaster::is_in, "isin")
 		.method("isnan", &SpatRaster::isnan, "isnan")
 		.method("isfinite", &SpatRaster::isfinite, "isfinite")
 		.method("isinfinite", &SpatRaster::isinfinite, "isinfinite")
