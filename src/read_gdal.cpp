@@ -216,7 +216,6 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 			if (out.compare_geom(*this, false, false)) {
 				addSource(out);
 			} else {
-				addWarning("skipped (different geometry): " + basename_sds(sd[i]));
 				skipped.push_back(i);
 			}
 		} else {
@@ -229,10 +228,15 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 
 	for (std::string& s : sd) s = basename_sds(s);
 	if (skipped.size() > 0) {
+		std::vector<std::string> sdskip;
 		std::reverse(skipped.begin(), skipped.end());
 		for (size_t i=0; i<skipped.size(); i++) {
+			sdskip.push_back(sd[i]);
 			sd.erase(sd.begin() + skipped[i]);
 		}
+			
+		addWarning("skipped (different geometry): " + basename_sds(sd[i]));
+		
 	}
 	success = setNames(sd);
 

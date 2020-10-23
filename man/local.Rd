@@ -1,101 +1,48 @@
-\name{local}
+\name{loca}
 
 \docType{methods}
 
-\alias{Summary-methods}
+\alias{loca}
+\alias{loca,SpatRaster-method}
 
-\alias{Summary,SpatRaster-method}
-\alias{mean,SpatRaster-method}
-\alias{median,SpatRaster-method}
-\alias{stdev}
-\alias{stdev,SpatRaster-method}
-\alias{min,SpatRaster-method}
-\alias{max,SpatRaster-method}
-\alias{range,SpatRaster-method}
-\alias{which.min,SpatRaster-method}
-\alias{which.max,SpatRaster-method}
+\title{apply a local function}
 
+\description{ 
+A "local" function operates on individual cells and layers of a SpatRaster, thus the number of layers returned is the same as the input (unlike for \link{\code{app}})
 
-\title{Local statistics}
-
-\description{
-
-Compute cell (pixel) level "local" statistics across layers or between layers (parallel summary). 
-
-The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}
-
-To compute statistics that are not included here see \code{app} to summarize across layers. 
-
-See \code{\link{modal}} to compute the mode.  
- 
-Because generic functions are used, the method applied is chosen based on the first argument: "\code{x}". This means that if \code{r} is a SpatRaster, \code{mean(r, 5)} will work, but \code{mean(5, r)} will not work.
-
-The \code{mean} method has an argument "trim" that is ignored.
-
-The \code{stdev} method returns the population standard deviation, computed as:
-
-\code{f <- function(x) sqrt(sum((x-mean(x))^2) / length(x))}
-
-This is different than the sample standard deviation returned by \code{sd} (which uses \code{n-1} as denominator). Function \code{f} above is equivalent to function \code{g} below
-
-\code{g <- function(x) sqrt(sum((x-mean(x))^2) / length(x))}
+The method is not called \code{local} to avoiding hiding the base function with that name.
 }
-
 
 \usage{
-\S4method{min}{SpatRaster}(x, ..., na.rm=FALSE)
-
-\S4method{max}{SpatRaster}(x, ..., na.rm=FALSE)
-
-\S4method{range}{SpatRaster}(x, ..., na.rm=FALSE)
-
-\S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
-
-\S4method{median}{SpatRaster}(x, na.rm=FALSE, ...)
-
-\S4method{stdev}{SpatRaster}(x, ..., na.rm=FALSE)
-
-\S4method{which.min}{SpatRaster}(x)
-
-\S4method{which.max}{SpatRaster}(x)
+\S4method{local}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
-
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{...}{additional SpatRaster objects or numeric values}
-  \item{trim}{ignored}
-  \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
+  \item{fun}{function}
+  \item{...}{additional arguments for \code{fun}}  
+  \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 }
 
+\value{
+SpatRaster
+}
 
-\value{SpatRaster}
-
-\seealso{ \code{\link{Math-methods}, \link{modal}} }
+\seealso{ \code{\link{app}}
 
 
 \examples{
-set.seed(0)
-r <- rast(nrow=10, ncol=10, nlyr=3)
-values(r) <- runif(size(r))
+r <- rast(ncols=10, nrows=10)
+values(r) <- 1:ncell(r)
 
-x <- mean(r)
-# note how this returns one layer
-x <- sum(c(r, r[[2]], 5))
+x <- loca(r, sqrt)
 
-# and this returns three layers
-y <- sum(r, r[[2]], 5)
-
-max(r)
-max(r, 0.5)
-
-y <- stdev(r)
-# not the same as 
-yy <- app(r, sd)
-
-z <- stdev(r, r*2)
+# equivalent to 
+y <- sqrt(x)
 }
+
 
 \keyword{methods}
 \keyword{spatial}
-

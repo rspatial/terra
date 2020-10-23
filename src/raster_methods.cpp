@@ -25,35 +25,41 @@
 
 
 SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
+
 	SpatRaster out = geometry();
 	if (m.size() == 0) {
 		out.setError("no matches supplied");
 		return(out);
 	}
-	bool hasNAN = false;
+	if (!hasValues()) {
+		out.setError("input has no values");
+		return(out);
+	}
+
+	int hasNAN = 0;
 	for (size_t i=0; i<m.size(); i++) {
 		if (std::isnan(m[i])) {
-			hasNAN = true;
+			hasNAN = 1;
 			m.erase(m.begin()+i);
 			break;
 		}
+		if (m.size() == 0) { // only NA
+			return isnan(opt);
+		}
 	}
-	bool hasV = m.size() > 0; 
 
 
-	if (!hasValues()) {
-		SpatOptions optinit(opt);
-		out = out. SpatRaster::init(0.0, optinit);
-		return(out);
-	}
+	// if m is very long, perhaps first check if the value is in range?
 
   	if (!out.writeStart(opt)) { return out; }
 	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> vv(v.size(), 0);
-		if (hasV) {
-			for (size_t j=0; j<v.size(); j++) {
+		for (size_t j=0; j<v.size(); j++) {
+			if (std::isnan(v[j])) {
+				vv[j] = hasNAN;
+			} else {
 				for (size_t k=0; k<m.size(); k++) {
 					if (v[j] == m[k]) {
 						vv[j] = 1;
@@ -62,13 +68,6 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 				}
 			}
 		} 
-		if (hasNAN) {
-			for (size_t j=0; j<v.size(); j++) {
-				if (std::isnan(v[j])) {
-					vv[j] = 1;
-				}
-			}
-		}
 		
 		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
