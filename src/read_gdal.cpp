@@ -177,16 +177,20 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 	//bool useDC = (dc.size() == sd.size());
 	int sdsize = sd.size();
 	if (subds[0] >=0) {
-		if (subds[0] < sdsize) {
-			sd = {sd[subds[0]]};
-		//	if (useDC) {
-		//		dc = {dc[subds[0]]};
-		//	}
-		} else {
-			std::string emsg = std::to_string(subds[0]) + " is not valid. There are " + std::to_string(sd.size()) + " subdatasets\n";
-			setError(emsg);
-			return false;
+		std::vector<std::string> tmp;
+		for (size_t i=0; i<subds.size(); i++) {
+			if (subds[i] >=0 && subds[i] < sdsize) {
+				tmp.push_back(sd[subds[i]]);
+			//	if (useDC) {
+			//		dc = {dc[subds[0]]};
+			//	}
+			} else {
+				std::string emsg = std::to_string(subds[i]) + " is not valid. There are " + std::to_string(sd.size()) + " subdatasets\n";
+				setError(emsg);
+				return false;
+			}
 		}
+		sd = tmp;		
 	} else if (subdsname[0] != "") {
 		std::vector<std::string> shortnames = getlastpart(sd, ":");
 		int w = where_in_vector(subdsname[0], shortnames);
