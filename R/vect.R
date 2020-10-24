@@ -90,7 +90,9 @@ setMethod("vect", signature(x="matrix"),
 			stop("not an appropriate matrix")
 		}
 		if (!is.null(atts)) {
-			values(p) <- atts
+			if ((nrow(atts) == nrow(p)) & (ncol(atts) > 0)) {
+				values(p) <- atts
+			}
 		}
 		crs(p) <- ifelse(is.na(crs), "", as.character(crs))
 		show_messages(p, "vect")
