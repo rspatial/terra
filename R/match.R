@@ -1,9 +1,5 @@
 # Author: Robert J. Hijmans
-# Date : October 2011
-# October 2011
-# version 1
 # License GPL v3
-
 
 
 setMethod("match", signature(x="SpatRaster", table="ANY", nomatch="ANY", incomparables="ANY"),

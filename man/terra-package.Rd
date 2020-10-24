@@ -117,7 +117,8 @@ Also see the methods in section XI
     \code{\link{Logic-methods}} \tab Logic functions (\code{!, &, |}) \cr
     \code{\link{Summary-methods}} \tab Summary functions (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
     \code{\link{Compare-methods}} \tab Compare functions (\code{==, !=, >, <, <=, >=}) \cr
-    \code{\link{app}} \tab Apply a function to cells of all layers(as in \code{base::apply}) \cr
+    \code{\link{loca}} \tab Apply a function to cells for each layer) \cr
+    \code{\link{app}} \tab Apply a function to cells, summarizing over layers(as in \code{base::apply}) \cr
     \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
     \code{\link{lapp}} \tab Apply a function using the layers as variables\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
@@ -365,10 +366,10 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 }
 }
 
-\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the underlying C++ code for GDAL/GEOS was written by Edzer Pebesma for `sf`. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libs for installation on windows}
+\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the underlying C++ code for GDAL/GEOS was written by Edzer Pebesma for `sf`. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
 
 \section{Acknowledgments}{
-This package is an attempt to stand on the shoulders of giants (GDAL, PROJ, GEOS, GeographicLib, Rcpp, R)
+This package is an attempt to stand on the shoulders of giants (GDAL, PROJ, GEOS, GeographicLib, Rcpp, R). Many others have contributed by asking questions or filing bug reports. Gerald Nelson's feedback has been especially helpful.
 }
 
 \keyword{ package }
