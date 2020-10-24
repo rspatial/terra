@@ -298,7 +298,7 @@ setAs("Spatial", "SpatVector",
 			}
 		} else {
 			vtype <- "points"
-			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3])
+			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3,drop=FALSE])
 		}
 		if (methods::.hasSlot(from, "data")) {
 			v <- vect(g, vtype, from@data, crs(from))
