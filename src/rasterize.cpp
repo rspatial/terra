@@ -166,7 +166,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 		GDALClose( hDst );
 		GDALRasterizeOptionsFree(ropts);
-		out = SpatRaster(filename, -1, "");
+		out = SpatRaster(filename, {-1}, {""});
 	}
 
 	return out;

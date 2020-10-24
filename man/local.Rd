@@ -14,7 +14,7 @@ The method is not called \code{local} to avoiding hiding the base function with 
 }
 
 \usage{
-\S4method{local}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{loca}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

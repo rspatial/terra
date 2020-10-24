@@ -25,14 +25,14 @@
 #endif
 
 
-SpatRaster::SpatRaster(std::string fname, int subds, std::string subdsname) {
+SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
 #ifdef useGDAL
 	constructFromFile(fname, subds, subdsname);
 #endif
 }
 
 
-SpatRaster::SpatRaster(std::vector<std::string> fname, int subds, std::string subdsname, std::string x) {
+SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::string x) {
 // argument "x" is ignored. It is only there to have four arguments such that the Rcpp module
 // can distinguish this constructor from another with three arguments. 	
 #ifdef useGDAL

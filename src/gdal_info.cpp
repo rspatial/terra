@@ -50,7 +50,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 		if (pos != std::string::npos) {
 			s.erase(0, pos + ndelim.length());
 			name.push_back(s);
-			if (sub.constructFromFile(s, -1, "")) {
+			if (sub.constructFromFile(s, {-1}, {""})) {
 				nr.push_back( std::to_string(sub.nrow()));
 				nc.push_back(std::to_string(sub.ncol()));
 				nl.push_back(std::to_string(sub.nlyr()));
