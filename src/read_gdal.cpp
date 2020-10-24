@@ -236,7 +236,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 
 	for (std::string& s : sd) s = basename_sds(s);
 	if (skipped.size() > 0) {
-		std::string s="skipped (different geometry):";
+		std::string s="skipped subdatasets (different geometry):";
 		for (size_t i=0; i<skipped.size(); i++) {
 			s += "\n   " + sd[skipped[i]];
 		}

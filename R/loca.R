@@ -1,6 +1,6 @@
 
 setMethod("loca", signature(x="SpatRaster"), 
-function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
+function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	out <- rast(x)
 	nc <- ncol(x)
