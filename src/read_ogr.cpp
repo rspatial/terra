@@ -168,6 +168,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		CPLFree(psz);
 	}
 
+
 /*
 #if GDAL_VERSION_MAJOR >= 3
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
@@ -304,11 +305,16 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		}
 	} else if (wkbgeom == wkbPolygon || wkbgeom == wkbMultiPolygon ) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-			OGRGeometry *poGeometry = poFeature ->GetGeometryRef();
+
+			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
 			SpatGeom g;
 			g.gtype = polygons;
+
 			if (poGeometry != NULL) {
-				if ( (poGeometry->getGeometryType() ) == wkbPolygon ) {
+
+				OGRwkbGeometryType geomtype = poGeometry->getGeometryType();
+		
+				if ( geomtype == wkbPolygon ) {
 					OGRPolygon *poGeom = ( OGRPolygon * )poGeometry;
 					OGRLinearRing *poRing = poGeom->getExteriorRing();
 					np = poRing->getNumPoints();
@@ -335,11 +341,15 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 						p.addHole(X, Y);
 					}
 					g.addPart(p);
-				} else { //if ( (poGeometry ->getGeometryType()) == wkbMultiPolygon ) {
+				} else if ( geomtype == wkbMultiPolygon ) {
+
 					OGRMultiPolygon *poGeom = ( OGRMultiPolygon * )poGeometry;
 					ng = poGeom->getNumGeometries();
 					for (size_t i=0; i<ng; i++) {
 						OGRGeometry *poPolygonGeometry = poGeom->getGeometryRef(i);
+						//if( poPolygonGeometry == NULL ) {
+						//	Rcpp::Rcout << "NULL" << std::endl;
+						//} 
 						OGRPolygon *poPolygon = ( OGRPolygon * )poPolygonGeometry;
 						OGRLinearRing *poRing = poPolygon->getExteriorRing();
 						np = poRing->getNumPoints();
@@ -367,7 +377,21 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 						}
 						g.addPart(p);
 					}
-				}
+				} else {					
+					const char *geomtypechar = OGRGeometryTypeToName(geomtype);
+					std::string strgeomtype = geomtypechar;
+					//OGRwkbGeometryType flat = wkbFlatten(geomtype);
+					//const char *flatgeomtypechar = OGRGeometryTypeToName(flat);
+					//std::string flatstrgeomtype = flatgeomtypechar;
+					//Rcpp::Rcout << "type: " << std::to_string((int)geomtype) << std::endl;
+					//Rcpp::Rcout << "text: " << strgeomtype << std::endl;
+					//Rcpp::Rcout << "flat: " << std::to_string((int)flat) << std::endl;
+					//Rcpp::Rcout << "text: " << flatstrgeomtype << std::endl << std::endl;
+
+					std::string s = "cannot read this geometry type: "+ strgeomtype;
+					setError(s);
+					return false;				
+				}	
 				addGeom(g);
 			}
 		}
@@ -377,7 +401,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		//printf("unknown geomtype: %s \n", gt.c_str());
 		return false;
 	}
-
+	
 	OGRFeature::DestroyFeature( poFeature );
  	return true;
 }

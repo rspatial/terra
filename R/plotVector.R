@@ -83,7 +83,13 @@
 
 setMethod("plot", signature(x="SpatVector", y="missing"), 
 	function(x, y, col, axes=TRUE, add=FALSE, ...)  {
-		if (missing(col)) col <- ifelse(geomtype(x) == "points", "black", NULL)
+		if (missing(col)) {
+			if (geomtype(x) == "points") {
+				col <- "black"
+			} else {
+				col <- NULL
+			}
+		}
 		col <- .getCols(size(x), col)
 		.vplot(x, y, col=col, axes=axes, add=add, ...)
 	}
