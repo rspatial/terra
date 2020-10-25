@@ -27,7 +27,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, margins=FALSE, 
   \item{scale}{integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of \code{x} if that is known and larger than 255}
   \item{maxcell}{integer > 0. Maximum number of pixels to use}
   \item{stretch}{character. Option to stretch the values to increase the contrast of the image: "lin" or "hist"}
-  \item{ext}{An \code{\link{Extent}} object to zoom in to a region of interest (see \code{\link{drawExtent}})}
+  \item{ext}{An \code{\link{SpatExtent}} object to zoom in to a region of interest (see \code{\link{draw}})}
   \item{interpolate}{logical. If \code{TRUE}, interpolate the image when drawing}
   \item{colNA}{color for the background (\code{NA} values)}
   \item{alpha}{transparency. Integer between 0 (transparent) and 255 (opaque)}
