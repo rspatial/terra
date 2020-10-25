@@ -382,7 +382,7 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 
 		SpatRaster collapse_sources();
-		SpatRaster rectify(std::string method, SpatOptions &opt);
+		SpatRaster rectify(std::string method, SpatExtent e, SpatOptions &opt);
 		
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);

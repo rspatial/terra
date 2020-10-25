@@ -16,7 +16,7 @@ Rotate a SpatRaster that has x coordinates (longitude) from 0 to 360, to standar
 }
 
 \arguments{
- \item{x}{Raster* object}
+ \item{x}{SpatRaster}
  \item{left}{logical. If \code{TRUE}, rotate to the left, else to the right}
  \item{filename}{character. Output filename. Optional}
  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

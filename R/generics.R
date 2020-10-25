@@ -17,9 +17,10 @@ setMethod("origin", signature(x="SpatRaster"),
 )	
 
 setMethod("rectify", signature(x="SpatRaster"), 
-	function(x, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, method="bilinear", ext=NULL, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$rectify(method, opt)
+		if (is.null(ext)) ext <- ext(rep(as.double(NA), 4))
+		x@ptr <- x@ptr$rectify(method, ext@ptr, opt)
 		show_messages(x, "rectify")
 	}
 )

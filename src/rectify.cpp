@@ -22,7 +22,7 @@
 
 
 
-SpatRaster SpatRaster::rectify(std::string method, SpatOptions &opt) {
+SpatRaster SpatRaster::rectify(std::string method, SpatExtent e, SpatOptions &opt) {
 	SpatRaster out = geometry(0);
 	if (nsrc() > 1) {
 		out.setError("you can transform only one data source at a time");
@@ -63,6 +63,16 @@ SpatRaster SpatRaster::rectify(std::string method, SpatOptions &opt) {
 	double xmax = vmax(xx, TRUE);
 	double ymin = vmin(yy, TRUE);
 	double ymax = vmax(yy, TRUE);
+	if (!std::isnan(e.xmin)) {
+		xmin = std::max(xmin, e.xmin);
+		xmax = std::min(xmax, e.xmax);
+		ymin = std::max(ymin, e.ymin);
+		ymax = std::min(ymax, e.ymax);
+		if ((xmax <= xmin) | (ymax <= ymin)) {
+			out.setError("invalid extent supplied");
+			return out;
+		}
+	}
 	SpatExtent en(xmin, xmax, ymin, ymax);
 	out.setExtent(en, false, "");
 	out = out.setResolution(gt[1], -gt[5]);

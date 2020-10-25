@@ -6,7 +6,7 @@
 \title{Align a SpatExtent with a SpatRaster}
 
 \description{
-Align an SpatExtent object with a SpatRaster. This can be useful to create a new SpatRaster with the same origin and resolution as an existing SpatRaster. Do not use this to force data to match that really does not match (use e.g. \code{\link{resample}} or (dis)aggregate for this).
+Align an SpatExtent with a SpatRaster. This can be useful to create a new SpatRaster with the same origin and resolution as an existing SpatRaster. Do not use this to force data to match that really does not match (use e.g. \code{\link{resample}} or (dis)aggregate for this).
 }
 
 \usage{

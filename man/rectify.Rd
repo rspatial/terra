@@ -12,12 +12,13 @@ Rectify a rotated SpatRaster into a non-rotated object
 }
 
 \usage{
-\S4method{rectify}{SpatRaster}(x, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{rectify}{SpatRaster}(x, method="bilinear", ext=NULL, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
-  \item{x}{Raster* object to be rectified}
+  \item{x}{SpatRaster to be rectified}
   \item{method}{character. Method used to for resampling. See \code{\link{resample}}}
+  \item{ext}{SpatExtent to crop \code{x} to a smaller area of interest}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

@@ -17,7 +17,7 @@
 \title{Combine SpatRasters}
 
 \description{
-Combine SpatRaster objects into a new object with \code{c} or add to an existing object with \code{add}. \code{collapse} combines sources within an object (that are in memory, or from the same file) to allow for faster processing.
+Combine SpatRasters into a new SpatRaster object with \code{c} or add to an existing object with \code{add}. \code{collapse} combines sources within an object (that are in memory, or from the same file) to allow for faster processing.
 }
 
 \usage{

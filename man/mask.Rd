@@ -34,7 +34,7 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 
 }
 
-\value{SpatRaster object}
+\value{SpatRaster}
 
 \seealso{\link{crop}}
 

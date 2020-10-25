@@ -48,7 +48,7 @@ re <- expand(r, e)
 # expand with a number of rows and columns (at each side)
 re2 <- expand(r, c(2,10))
 
-# SpatExtent object
+# SpatExtent
 e <- ext(r)
 e
 expand(e, 10)

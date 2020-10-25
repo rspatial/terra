@@ -3,7 +3,7 @@
 \alias{ifel}
 \alias{ifel,SpatRaster-method}
 
-\title{ifelse for SpatRaster objects}
+\title{ifelse for SpatRasters}
 
 \description{
 This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster objects. This method allows for a concise approach to what can otherwise be achieved with a combination of \code{\link{classify}}, \code{\link{mask}}, and \code{\link{cover}}. 

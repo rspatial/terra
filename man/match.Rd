@@ -7,7 +7,7 @@
 \alias{\%in\%}
 \alias{\%in\%,SpatRaster-method}
 
-\title{Value matching for SpatRaster objects}
+\title{Value matching for SpatRasters}
 
 \description{
 \code{match} returns a SpatRaster with the position of the matched values. The cell values are the index of the table argument. 
@@ -30,7 +30,7 @@ x \%in\% table
 }
 
 \value{
-Raster* obeject
+SpatRaster
 }
 
 \seealso{ \code{\link{calc}, \link[base]{match}} }
