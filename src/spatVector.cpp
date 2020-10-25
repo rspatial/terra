@@ -125,7 +125,10 @@ SpatPart SpatGeom::getPart(unsigned i) {
 	return parts[i];
 }
 
-SpatVector::SpatVector() {}
+SpatVector::SpatVector() {
+	srs.proj4 = "+proj=longlat +datum=WGS84";
+	srs.wkt = "GEOGCS[\"WGS 84\", DATUM[\"WGS_1984\", SPHEROID[\"WGS 84\",6378137,298.257223563]], PRIMEM[\"Greenwich\",0], UNIT[\"degree\",0.0174532925199433]]";
+}
 
 SpatVector::SpatVector(SpatGeom g) {
 	addGeom(g);
