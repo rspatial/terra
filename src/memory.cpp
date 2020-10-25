@@ -22,7 +22,7 @@
 bool SpatRaster::canProcessInMemory(unsigned n, SpatOptions &opt) {
 	if (opt.get_todisk()) return false;
 	double demand = size() * n;
-	double supply = availableRAM() * opt.get_memfrac();
+	double supply = (availableRAM()/8) * opt.get_memfrac();
 	std::vector<double> v;
 	double maxsup = v.max_size(); //for 32 bit systems
 	supply = std::min(supply, maxsup);
@@ -32,7 +32,7 @@ bool SpatRaster::canProcessInMemory(unsigned n, SpatOptions &opt) {
 
 uint_64 SpatRaster::chunkSize(unsigned n, double frac) {
 	double cells_in_row = n * ncol() * nlyr();
-	double rows = availableRAM() * frac / cells_in_row;
+	double rows = (availableRAM() / 8) * frac / cells_in_row;
 	//double maxrows = 10000;
 	//rows = std::min(rows, maxrows);
 	uint_64 urows = floor(rows);
@@ -49,7 +49,7 @@ std::vector<double> SpatRaster::mem_needs(unsigned n, SpatOptions &opt) {
 	//returning bytes
 	//unsigned n = opt.get_blocksizemp(); 
 	double memneed  = ncell() * (nlyr() * n * 8);
-	double memavail = availableRAM() * 8; 
+	double memavail = availableRAM(); 
 	double frac = opt.get_memfrac();
 	double csize = chunkSize(n, frac);
 	double inmem = canProcessInMemory(n, opt); 
