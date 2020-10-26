@@ -1,4 +1,4 @@
-// Robert Hijmans with improvments by Ben Fasoli
+// Robert Hijmans with improvements by Ben Fasoli
 // https://github.com/rspatial/raster/pull/175
 
 #ifdef _WIN32 
