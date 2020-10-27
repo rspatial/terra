@@ -6,9 +6,9 @@
 \title{ifelse for SpatRasters}
 
 \description{
-This functions like \code{\link[base]{ifelse}} but this one works for SpatRaster objects. This method allows for a concise approach to what can otherwise be achieved with a combination of \code{\link{classify}}, \code{\link{mask}}, and \code{\link{cover}}. 
+Implementation of \code{\link[base]{ifelse}} for SpatRasters. This method allows for a concise approach to what can otherwise be achieved with a combination of \code{\link{classify}}, \code{\link{mask}}, and \code{\link{cover}}. 
 
-\code{ifel} is the \code{R} equivalent to the \code{Con} method in ArcGIS (arcpy). 
+\code{ifel} is an \code{R} equivalent to the \code{Con} method in ArcGIS (arcpy). 
 }
 
 \usage{
@@ -36,12 +36,20 @@ values(r) <- -10:14
 x <- ifel(r > 1, 1, r)
 # same as 
 a <- classify(r, cbind(1, Inf, 1))
+# or
 b <- app(r, fun=function(i) {i[i > 1] <- 1; i})
+# or 
 d <- clamp(r, -Inf, 1)
+# or (not recommended for large datasets)
+e <- r
+e[e>1] <- 1
 
-y <- ifel(r > 1, 1, ifel(r < -1, -1, r))
+## other examples
 
 z <- ifel(r > -2 & r < 2, 100, 0)
+
+# nested expressions
+y <- ifel(r > 1, 1, ifel(r < -1, -1, r))
 
 k <- ifel(r > 0, r+10, ifel(r < 0, r-10, 3))
 }
