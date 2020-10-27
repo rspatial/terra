@@ -103,6 +103,31 @@ SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
 
 
 
+SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
+
+	SpatDataFrame out;
+	size_t nc = (int) pCT->GetColorEntryCount();
+
+	out.add_column(0, "red");
+	out.add_column(0, "green");
+	out.add_column(0, "blue");
+	out.add_column(0, "alpha");
+	out.dv[0].reserve(nc);
+	out.dv[1].reserve(nc);
+	out.dv[2].reserve(nc);
+	out.dv[3].reserve(nc);
+
+	for (size_t i=0; i<nc; i++) {		
+		const GDALColorEntry * col = pCT->GetColorEntry(i);
+		out.dv[0].push_back(col->c1);
+		out.dv[1].push_back(col->c2);
+		out.dv[2].push_back(col->c3);
+		out.dv[3].push_back(col->c4);
+	}
+	return(out);
+}
+
+
 SpatCategories GetCategories(char **pCat) {
 	size_t n = CSLCount(pCat);
 	std::vector<std::string> nms(n);
@@ -620,20 +645,26 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
 
-		GDALColorTable *ct;
-		ct = poBand->GetColorTable();
-		if( ct != NULL )	{
+
+
+		GDALColorTable *ct = poBand->GetColorTable();
+		if( ct != NULL ) {
 			s.hasColors.push_back(true);
+			s.cols.resize(i+1);
+			s.cols[i] = GetCOLdf(ct);
 		} else {
 			s.hasColors.push_back(false);
 		}
 
+		Rcpp::Rcout << s.cols[0].dv[0][0] << std::endl;
+		Rcpp::Rcout << s.cols[0].dv[0][1] << std::endl;
+		Rcpp::Rcout << s.cols[0].dv[0][2] << std::endl;
+
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 		if( rat != NULL )	{
 			s.hasAttributes.push_back(true);
-			SpatDataFrame df = GetRATdf(rat);
 			s.atts.resize(i+1);
-			s.atts[i] = df;
+			s.atts[i] = GetRATdf(rat);;
 		} else {
 			s.hasAttributes.push_back(false);
 		}

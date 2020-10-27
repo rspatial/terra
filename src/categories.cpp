@@ -159,3 +159,24 @@ std::vector<SpatDataFrame> SpatRaster::getAttributes() {
 	return atts;
 }
 
+
+std::vector<SpatDataFrame> SpatRaster::getColors() {
+	std::vector<SpatDataFrame> cols;
+	for (size_t i=0; i<source.size(); i++) {
+		cols.insert(cols.end(), source[i].cols.begin(), source[i].cols.end());
+	}
+	return cols;
+}
+
+std::vector<bool> SpatRaster::hasColors() {
+	std::vector<bool> b(nlyr());
+	std::vector<unsigned> ns = nlyrBySource();
+	unsigned k = 0;
+	for (size_t i=0; i<source.size(); i++) {
+		for (size_t j=0; j<ns[i]; j++) {
+			b[k] = source[i].hasColors[j];
+			k++;
+		}
+	}
+	return b;
+}

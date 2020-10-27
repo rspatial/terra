@@ -225,9 +225,25 @@
 
 # leg.shrink=c(0,0), leg.main=NULL, leg.main.cex = 1, leg.digits=NULL, leg.loc=NULL, leg.ext=NULL, leg.levels=NULL, leg.labels=NULL, leg.at=NULL, 
 
+
+.as.raster.colortable <- function(out, x, ...) {
+	z <- round(values(x))
+	z[z<0 | z>255] <- NA
+	z[is.nan(z) | is.infinite(z)] <- NA
+	if (all(is.na(z))) {
+		stop("no values")
+	}
+	out$cols <- rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
+	z <- out$cols[z]
+	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
+	out$r <- as.raster(z)
+	out$legend_draw	 <- FALSE
+	out
+}
+
 .prep.plot.data <- function(x, type, cols, mar, draw=FALSE, interpolate=FALSE,  
 legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
- range=NULL, new=NA, breaks=NULL, ...) {
+ range=NULL, new=NA, breaks=NULL, coltab=NULL, ...) {
 
 	out <- list()
 	out$add <- isTRUE(add)
@@ -248,7 +264,10 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 	out$legend_draw <- isTRUE(legend)
 	out$legend_only <- isTRUE(legend.only)
 
-	if (type=="classes") {
+	if (type=="colortable") {
+		out$coltab <- coltab
+		out <- .as.raster.colortable(out, x)
+	} else if (type=="classes") {
 		out <- .as.raster.classes(out, x)
 	} else if (type=="interval") {
 		out <- .as.raster.interval(out, x)
@@ -276,11 +295,20 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				type <- match.arg(type, c("continuous", "classes", "interval"))
 			}
 		}
+		
 		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
+
 		x <- x[[y]]
+		
+		if (x@ptr$hasColors()) {
+			coltab <- cols(x)[[1]]
+			type <- "colortable"
+		} else {
+			coltab <- NULL
+		}
 		object <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
-		x <- .prep.plot.data(object, type=type, cols=col, mar=mar, draw=TRUE, pal=pal, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), ...)
+		x <- .prep.plot.data(object, type=type, cols=col, mar=mar, draw=TRUE, pal=pal, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, ...)
 		invisible(x)
 	}
 )

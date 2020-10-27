@@ -1,6 +1,8 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
 
+if (!isGeneric("cols")) {setGeneric("cols", function(x, ...) standardGeneric("cols"))}
+
 # terra
 if (!isGeneric("add<-")) {setGeneric("add<-", function(x, value) standardGeneric("add<-"))}
 if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGeneric("collapse"))}

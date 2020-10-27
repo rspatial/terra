@@ -40,11 +40,6 @@ class SpatCategories {
 };
 
 
-class SpatColors {
-	public:
-		std::vector<unsigned> id;
-		std::vector<std::string> value;
-};
 
 class RasterSource {
     private:
@@ -91,7 +86,7 @@ class RasterSource {
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
 		std::vector<bool> hasColors;
-		std::vector<SpatColors> cols;
+		std::vector<SpatDataFrame> cols;
 
 		bool memory=true;
 		bool hasValues=false;
@@ -307,6 +302,8 @@ class SpatRaster {
 		void setAttributes(unsigned layer, SpatDataFrame df);
 		std::vector<SpatDataFrame> getAttributes();
 		SpatDataFrame getLayerAttributes(unsigned layer);
+		std::vector<bool> hasColors();
+		std::vector<SpatDataFrame> getColors();
 
 		double valuesCell(double);
 		double valuesCell(int, int);

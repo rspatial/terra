@@ -231,8 +231,7 @@ RCPP_MODULE(spat){
     class_<SpatCategories>("SpatCategories")
 		.constructor()
 		.field_readonly("levels", &SpatCategories::levels, "levels")
-		.field_readonly("labels", &SpatCategories::labels, "labels")
-		
+		.field_readonly("labels", &SpatCategories::labels, "labels")		
 	;	
 
 
@@ -332,8 +331,6 @@ RCPP_MODULE(spat){
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
 		.method("getRasterAtt", &getRasterAttributes, "get attributes")
 			
-		//.field_readonly("hasRAT", &SpatRaster::hasRAT )
-		//.field_readonly("hasCT", &SpatRaster::hasCT )
 		.property("filenames", &SpatRaster::filenames )
 
 		.method("hasAttributes", &SpatRaster::hasAttributes, "hasAttributes")
@@ -344,6 +341,8 @@ RCPP_MODULE(spat){
 		.method("getCategories", &SpatRaster::getCategories, "getCategories")
 		.method("setCategories", &SpatRaster::setCategories, "setCategories")
 		.method("createCategories", &SpatRaster::createCategories, "createCategories")
+		.method("hasColors", &SpatRaster::hasColors, "hasColors")
+		.method("getColors", &SpatRaster::getColors, "getColors")
 		
 		.property("hasRange", &SpatRaster::hasRange )
 		.property("hasValues", &SpatRaster::hasValues )

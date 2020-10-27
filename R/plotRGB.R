@@ -94,7 +94,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, max=scale)
 	}
 	
-	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=T)
+	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 
 	requireNamespace("grDevices")
 	bb <- as.vector(matrix(as.vector(ext(x)), ncol=2))
