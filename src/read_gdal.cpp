@@ -656,9 +656,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			s.hasColors.push_back(false);
 		}
 
-		Rcpp::Rcout << s.cols[0].dv[0][0] << std::endl;
-		Rcpp::Rcout << s.cols[0].dv[0][1] << std::endl;
-		Rcpp::Rcout << s.cols[0].dv[0][2] << std::endl;
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 		if( rat != NULL )	{
