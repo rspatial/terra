@@ -159,3 +159,10 @@ function(x, i, j, ..., drop=FALSE) {
 	}
 })
 
+
+
+setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
+function(x, i, j, ..., drop=FALSE) {
+	x[which(values(i))]
+})
+
