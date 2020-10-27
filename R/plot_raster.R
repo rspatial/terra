@@ -233,7 +233,7 @@
 	if (all(is.na(z))) {
 		stop("no values")
 	}
-	out$cols <- rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
+	out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
 	z <- out$cols[z]
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 	out$r <- as.raster(z)

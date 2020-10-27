@@ -5,9 +5,9 @@ setMethod ("cols" , "SpatRaster",
 		hascols <- x@ptr$hasColors()
 		if (any(hascols)) {
 			d <- x@ptr$getColors()
-			d <- lapply(d, terra:::.getSpatDF)
+			d <- lapply(d, .getSpatDF)
 		} else {
-			d <- vector("list", length(att))
+			d <- vector("list", length(hascols))
 		}
 		d
 	}
