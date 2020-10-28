@@ -108,21 +108,18 @@ SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
 	SpatDataFrame out;
 	size_t nc = (int) pCT->GetColorEntryCount();
 
-	out.add_column(0, "red");
-	out.add_column(0, "green");
-	out.add_column(0, "blue");
-	out.add_column(0, "alpha");
-	out.dv[0].reserve(nc);
-	out.dv[1].reserve(nc);
-	out.dv[2].reserve(nc);
-	out.dv[3].reserve(nc);
+	out.add_column(1, "red");
+	out.add_column(1, "green");
+	out.add_column(1, "blue");
+	out.add_column(1, "alpha");
+	out.reserve(nc);
 
 	for (size_t i=0; i<nc; i++) {		
 		const GDALColorEntry * col = pCT->GetColorEntry(i);
-		out.dv[0].push_back(col->c1);
-		out.dv[1].push_back(col->c2);
-		out.dv[2].push_back(col->c3);
-		out.dv[3].push_back(col->c4);
+		out.iv[0].push_back(col->c1);
+		out.iv[1].push_back(col->c2);
+		out.iv[2].push_back(col->c3);
+		out.iv[3].push_back(col->c4);
 	}
 	return(out);
 }

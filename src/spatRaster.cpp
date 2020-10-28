@@ -194,7 +194,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs) {
+SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 	RasterSource s;
 	s.values.resize(0);
 	s.nrow = nrow();
@@ -207,6 +207,10 @@ SpatRaster SpatRaster::geometry(long nlyrs) {
 	long nl = nlyr();
 	bool keepnlyr = ((nlyrs == nl) | (nlyrs < 1));
 	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
+	if (properties) {
+		s.hasColors = hasColors();
+		s.cols = getColors();
+	}
 	s.resize(nlyrs);
 	std::vector<std::string> nms;
 	if (keepnlyr) {

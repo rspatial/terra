@@ -64,18 +64,33 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 
 
 
-CPLErr setBandCategories(GDALRasterBand *poBand, std::vector<std::string> cats) {
+bool setBandCategories(GDALRasterBand *poBand, std::vector<std::string> cats) {
 	char **names = NULL;
 	for (size_t i = 0; i < cats.size(); i++) {
 		names = CSLAddString(names, cats[i].c_str());
 	}
 	CPLErr err = poBand->SetCategoryNames(names);
-	return err;
+	return (err == CE_None);
 }
 
 
-//#include <iostream>
-//#include "Rcpp.h"
+bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
+	CPLErr err = poBand->SetColorInterpretation(GCI_PaletteIndex);
+	GDALColorTable *poCT = new GDALColorTable(GPI_RGB);
+	GDALColorEntry col;
+	for (size_t j=0; j< d.nrow(); j++) {
+		col.c1 = (short)d.iv[0][j];
+		col.c2 = (short)d.iv[1][j];
+		col.c3 = (short)d.iv[2][j];
+		col.c4 = (short)d.iv[3][j];
+		poCT->SetColorEntry(j, &col);
+	}
+	err = poBand->SetColorTable(poCT);
+	delete poCT;
+	return (err == CE_None);
+}
+
+
 
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
@@ -101,6 +116,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	//std::string ext = getFileExt(filename);
 	//lowercase(ext);
 	std::string datatype = opt.get_datatype();
+
+	std::vector<bool> hasCT = hasColors();
+	std::vector<SpatDataFrame> ct = getColors();
+	if (hasCT[0]) { 
+		// must be INT1U for color table with gtiff
+		datatype = "INT1U";
+	} else {
+		std::fill(hasCT.begin(), hasCT.end(), false);
+	}
 	source[0].datatype = datatype;
 	
 	int dsize = std::stoi(datatype.substr(3,1));
@@ -147,7 +171,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			papszOptions = CSLSetNameValue( papszOptions, gopt[0].c_str(), gopt[1].c_str() );
 		}
 	}
-
 	
 	GDALDataType gdt;
 	if (!getGDALDataType(datatype, gdt)) {
@@ -164,9 +187,16 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	GDALRasterBand *poBand;
 	std::vector<std::string> nms = getNames();
 	double naflag = opt.get_NAflag();
-	
+		
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = poDstDS->GetRasterBand(i+1);
+
+		if (hasCT[i]) {
+			if (!setCT(poBand, ct[i])) {
+				addWarning("could not write the color table");
+			}
+		}
+
 		poBand->SetDescription(nms[i].c_str());
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
