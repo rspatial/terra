@@ -51,7 +51,11 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
             pv.df.add_column(0, nms[i]);
         }
 	}
-	readStart();
+	if (!readStart()) {
+		pv.setError(getError());
+		return(pv);
+	}
+	
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	for (size_t i = 0; i < bs.n; i++) {

@@ -22,7 +22,7 @@ setMethod("%in%", signature(x="SpatRaster", table="ANY"),
 #setMethod("%in%", signature(x="SpatRaster", table="ANY"),
 #	function(x, table) {
 #		out <- rast(x)
-#		readStart(x)
+#		if (!readStart(x)) { stop(x@ptr$messages$getError()) }
 #		on.exit(readStop(x))
 #		nc <- ncol(out)
 #		b <- writeStart(out, filename="", overwrite=FALSE, wopt=list())

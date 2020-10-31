@@ -332,8 +332,12 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		}
 	}
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		reclass_vector(v, rcl, right, lowest, othersNA);
@@ -425,8 +429,12 @@ SpatRaster SpatRaster::classify_layers(std::vector<std::vector<double>> groups, 
 		out.setError("output size does not match classes size");
 		return out;		
 	}
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<std::vector<double>> v = readBlock2(out.bs, i);
 		std::vector<double> vv = reclass_multiple(v, groups, id);

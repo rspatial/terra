@@ -208,7 +208,9 @@ std::vector<double> SpatRaster::sum_area(SpatOptions &opt) {
 
 	std::vector<double> out(nlyr(), 0);
 	BlockSize bs = getBlockSize(opt);
-	readStart();
+	if (!readStart()) {
+		return(out);
+	}
 	if (could_be_lonlat()) {
 		SpatRaster x = geometry(1);
 		SpatExtent extent = getExtent();

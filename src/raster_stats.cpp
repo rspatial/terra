@@ -62,7 +62,10 @@ std::vector<std::vector<double>> SpatRaster::freq(bool bylayer, bool round, int 
 	BlockSize bs = getBlockSize(opt);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
-	readStart();
+	if (!readStart()) {
+		return(out);
+	}
+
 	if (bylayer) {
 		out.resize(nl);
 		std::vector<std::map<double, unsigned long long int>> tabs(nl);
@@ -106,7 +109,10 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 	BlockSize bs = getBlockSize(opt);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
-	readStart();
+	if (!readStart()) {
+		return(out);
+	}
+
 	if (bylayer) {
 		out.resize(nl);
 		for (size_t i = 0; i < bs.n; i++) {
@@ -167,8 +173,11 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 	out.source[0].names = double_to_string(probs, "q");
   	if (!hasValues()) { return out; }
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
 
@@ -223,7 +232,9 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &o
 	BlockSize bs = getBlockSize(opt);
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
-	readStart();
+	if (!readStart()) {
+		return(out);
+	}
 	out.resize(nl);
 
 	if (nl == 1) bylayer = true;
@@ -387,9 +398,14 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	std::vector<double> u = uq[0];
 	std::vector<std::vector<double>> stats(nlyr(), std::vector<double>(u.size()));
 	std::vector<std::vector<double>> cnt(nlyr(), std::vector<double>(u.size()));
-
-	readStart();
-	z.readStart();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!z.readStart()) {
+		out.setError(z.getError());
+		return(out);
+	}	
 	opt.set_blocksizemp(12);
 	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {

@@ -30,10 +30,8 @@ bool SpatRaster::readStart() {
 		}
 		if (source[i].memory) {
 			source[i].open_read = true;
-		} else {
-			if (!readStartGDAL(i)) {
-				return false;
-			}
+		} else if (!readStartGDAL(i)) {
+			return false;
 		}	
 	}
 	return true;

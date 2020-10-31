@@ -57,8 +57,11 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 
 	bool lonlat = is_lonlat();
 	unsigned nc = ncol();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
  	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		double s = out.bs.row[i] * nc;
 		std::vector<double> cells(out.bs.nrows[i] * nc) ;
@@ -309,7 +312,11 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	std::string tempfile = "";
 	std::vector<double> above(ncol(), std::numeric_limits<double>::infinity());
     std::vector<double> d, v, vv;
-	readStart();
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
 	std::string filename = opt.get_filename();
 	opt.set_filenames({""});
  	if (!first.writeStart(opt)) { return first; }
@@ -320,8 +327,12 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i], 0, ncol())) return first;
 	}
 	first.writeStop();
+
+	if (!first.readStart()) {
+		out.setError(first.getError());
+		return(out);
+	}
 	
-  	first.readStart();
 	opt.set_filenames({filename});
 	
   	if (!out.writeStart(opt)) { return out; }
@@ -505,8 +516,12 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 	uint_64 nc = ncol();
 	std::vector<uint_64> dim = {nrow(), nc}; 
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
  	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
 		std::vector<double> vv = do_edge(v, dim, classes, do_outer, directions);

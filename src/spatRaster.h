@@ -152,6 +152,7 @@ class SpatRaster {
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
+		std::string getError() { return msg.getError(); }
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }

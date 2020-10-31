@@ -170,8 +170,11 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		}		
 	} 
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
 	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;

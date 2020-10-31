@@ -174,8 +174,14 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
  	if (!out.writeStart(opt)) { return out; }
-	readStart();
-	x.readStart();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!x.readStart()) {
+		out.setError(x.getError());
+		return(out);
+	}
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		std::vector<double> b = x.readBlock(out.bs, i);
@@ -228,8 +234,12 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 		return out;
 	}
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
+	
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		if (std::isnan(x)) {
@@ -323,8 +333,11 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		return out;
 	}
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 
 	unsigned nl = nlyr();
 	unsigned nc = ncol();
@@ -462,8 +475,11 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		mathFun = static_cast<double(*)(double)>(trunc);
 	}
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		for(double& d : a) if (!std::isnan(d)) d = mathFun(d);
@@ -487,8 +503,11 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		return out;
 	}
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		if (fun == "round") {
@@ -563,8 +582,11 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		trigFun = tan_pi;
 	}
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		for (double& d : a) if (!std::isnan(d)) d = trigFun(d);
@@ -580,8 +602,14 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 	SpatRaster out = geometry();
 	if (!hasValues()) return out;
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
-	x.readStart();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!x.readStart()) {
+		out.setError(x.getError());
+		return(out);
+	}	
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		std::vector<double> b = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
@@ -634,8 +662,11 @@ std::vector<T> operator|(const std::vector<T>& a, const std::vector<T>& b) {
 
 SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 	SpatRaster out = geometry();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}	
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		for (size_t j=0; j<a.size(); j++) {
@@ -665,9 +696,15 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return(out);
 	}
 	
-  	if (!out.writeStart(opt)) { return out; }
-	readStart();
-	x.readStart();
+ 	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!x.readStart()) {
+		out.setError(x.getError());
+		return(out);
+	}
+ 	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		std::vector<double> b = x.readBlock(out.bs, i);
@@ -693,8 +730,11 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -729,8 +769,11 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 		return out;
 	}
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	unsigned nl = out.nlyr();
 	std::vector<double> v(nl);
 	unsigned nc;
@@ -795,8 +838,11 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	} else {
 		sumFun = getFun(fun);
 	}
-  	if (!out.writeStart(opt)) { return out; }
-	readStart();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!out.writeStart(opt)) { return out; }
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
 	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
@@ -843,13 +889,16 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 	} 
 	size_t ities = std::distance(f.begin(), it);
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
 
 	uint32_t seed = 1;
 	std::default_random_engine rgen(seed);
 	std::uniform_real_distribution<double> dist (0.0,1.0);
 
-	readStart();
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
 	v.insert( v.end(), add.begin(), add.end() );
@@ -880,8 +929,11 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 	out.source[0].names[1] = "range_max" ;
   	if (!hasValues()) { return out; }
 
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
   	if (!out.writeStart(opt)) { return out; }
-	readStart();
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
 	v.insert( v.end(), add.begin(), add.end() );
@@ -933,10 +985,13 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
 	} else {
 		sumFun = getFun(fun);
 	}
-  	if (!out.writeStart(opt)) { return out; }
 	for (size_t i=0; i < ns; i++) {
-		ds[i].readStart();
+		if (!ds[i].readStart()) {
+			out.setError(ds[i].getError());
+			return(out);
+		}
 	}
+  	if (!out.writeStart(opt)) { return out; }
 	std::vector<double> v(ns);
 	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );
 

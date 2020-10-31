@@ -59,7 +59,11 @@ SpatRaster SpatRasterCollection::mosaic(SpatOptions &opt) {
 		SpatRaster r = x[i];
 		if (!r.hasValues()) continue;
 		BlockSize bs = r.getBlockSize(opt);
-		r.readStart();
+		if (!r.readStart()) {
+			out.setError(r.getError());
+			return(out);
+		}
+
 		for (size_t j=0; j<bs.n; j++) {
             std::vector<double> v = r.readValues(bs.row[j], bs.nrows[j], 0, r.ncol());
             unsigned row1 = out.rowFromY(r.yFromRow(bs.row[j]));

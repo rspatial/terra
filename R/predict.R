@@ -105,7 +105,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		nl <- 1
 		nc <- ncol(object)
 		tomat <- FALSE
-		readStart(object)
+		if (!readStart(object)) { stop(object@ptr$messages$getError()) }
 		on.exit(readStop(object))
 		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
 	

@@ -125,12 +125,14 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		out.setError("weight matrix error");
 		return out;
 	}
-
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
  	if (!out.writeStart(opt)) { return out; }
 
 	std::function<double(std::vector<double>&, bool)> fFun = getFun(fun);
 	std::vector<double> v;
-	readStart();
 	if (naonly) {
 		int mid = ww / 2;
 		for (size_t i = 0; i < out.bs.n; i++) {
