@@ -60,6 +60,8 @@ if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("
 ## shared with "raster"
 if (!isGeneric("%in%")) { setGeneric("%in%", function(x, table)	standardGeneric("%in%")) }	
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}	
+if (!isGeneric("animate")) { setGeneric("animate", function(x, ...) standardGeneric("animate")) }	
+
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}	
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names=NULL, optional=FALSE, ...) standardGeneric("as.data.frame"))}	
 if (!isGeneric("as.list")) { setGeneric("as.list", function(x, ...) standardGeneric("as.list"))}	

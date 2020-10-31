@@ -319,6 +319,7 @@ class SpatRaster {
 // read and write
 ////////////////////////////////////////////////////
 
+		bool valid_sources(bool files=true, bool rotated=true);
 		bool readStart();
 		std::vector<double> readValues(uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
 		std::vector<double> readBlock(BlockSize bs, unsigned i);

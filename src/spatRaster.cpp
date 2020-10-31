@@ -571,3 +571,25 @@ double SpatRaster::yres() {
 	return (extent.ymax - extent.ymin) / nrow() ;
 }
 
+
+bool SpatRaster::valid_sources(bool files, bool rotated) {
+	std::vector<std::string> ff;
+	for (size_t i=0; i<source.size(); i++) { 
+		std::string f = source[i].filename; 
+		if (f == "") continue;
+		if (files) {
+			if (!file_exists(f)) {
+				setError("missing source: " + f);
+				return false;
+			}
+		}
+		if (rotated) {
+			if (source[i].rotated) {
+				setError(f + " is rotated");
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
