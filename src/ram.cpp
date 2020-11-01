@@ -56,7 +56,7 @@ double availableRAM() {
 
 			double ram = ((int64_t)vm_stats.free_count +  (int64_t)vm_stats.inactive_count) 
 										* (int64_t)page_size;
-		//ram = ram * 5; // purely empirical. The estimate seemed much too low. Needs work.
+			ram = ram * 5; // purely empirical. The estimate seemed much too low. Needs work.
 		//https://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 		}
 		
