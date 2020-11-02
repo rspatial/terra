@@ -243,7 +243,14 @@
 
 .prep.plot.data <- function(x, type, cols, mar, draw=FALSE, interpolate=FALSE,  
 legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
- range=NULL, new=NA, breaks=NULL, coltab=NULL, ...) {
+ range=NULL, new=NA, breaks=NULL, coltab=NULL, xlim=NULL, ylim=NULL, ...) {
+
+	if (!(is.null(xlim) & is.null(ylim))) {
+		e <- as.vector(ext(x))
+		if (!is.null(xlim)) e[1:2] <- xlim
+		if (!is.null(ylim)) e[3:4] <- ylim
+		x <- crop(x, ext(e))
+	}
 
 	out <- list()
 	out$add <- isTRUE(add)
@@ -307,6 +314,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			coltab <- NULL
 		}
 		object <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+
 		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
 		x <- .prep.plot.data(object, type=type, cols=col, mar=mar, draw=TRUE, pal=pal, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, ...)
 		invisible(x)

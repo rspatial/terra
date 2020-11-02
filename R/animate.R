@@ -1,8 +1,7 @@
 
 
 setMethod("animate", signature(x="SpatRaster"), 
-function(x, pause=0.25, main, range, maxcell=50000, n=10, ...) {
-	nl <- nlyr(x)
+function(x, pause=0.25, main, range, maxcell=50000, n=1, ...) {
 	if (missing(main)) {
 		main <- names(x)
 	}
@@ -14,6 +13,8 @@ function(x, pause=0.25, main, range, maxcell=50000, n=10, ...) {
 		range <- c(min(mnmx[1,]), max(mnmx[2,]))
 	}
 	
+	nl <- nlyr(x)
+	n <- max(1, round(n))
 	i <- 1
 	reps <- 0
     while (reps < n) {

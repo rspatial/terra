@@ -12,7 +12,7 @@ Animate (sequentially plot) the layers of a SpatRaster to create a movie
 }
 
 \usage{
-\S4method{animate}{SpatRaster}(x, pause=0.25, main, range, maxcell=50000, n=10, ...)
+\S4method{animate}{SpatRaster}(x, pause=0.25, main, range, maxcell=50000, n=1, ...)
 }
 
 \arguments{

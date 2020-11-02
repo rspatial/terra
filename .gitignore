@@ -9,6 +9,7 @@
 *.zip
 .Rproj.user
 
+revdep/
 python/
 windows/
 inst/gdal/
