@@ -56,8 +56,8 @@
 }
 
 .get.leg.extent <- function(x) {
-	usr <- graphics::par()$usr
-	dxy <- graphics::par()$cxy * graphics::par("cex")	
+	usr <- graphics::par("usr")
+	dxy <- graphics::par("cxy") * graphics::par("cex")	
 	loc <- x$leg$loc
 	p <- NULL
 	if (is.character(loc)) {
