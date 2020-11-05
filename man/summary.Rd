@@ -2,9 +2,10 @@
 
 \docType{methods}
 
+\alias{summary}
 \alias{summary,SpatRaster-method}
 
-\title{Summary}
+\title{summary}
 
 \description{
 Summarize the values of SpatRaster. A sample is used for very large files. 
@@ -16,7 +17,7 @@ Summarize the values of SpatRaster. A sample is used for very large files.
 
 \arguments{
   \item{object}{SpatRaster}
-  \item{size}{positive integer. Size of a regular sample used for large datasets}
+  \item{size}{positive integer. Size of a regular sample used for large datasets (see \code{\link{spatSample}}}
   \item{...}{additional arguments. None implemented}  
 }
 

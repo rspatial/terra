@@ -1094,117 +1094,6 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 
 
 
-SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
-
-	SpatRaster out = geometry(nlyr());
-	e = out.align(e, "near");
-	SpatExtent extent = getExtent();	
-	e.unite(extent);
-	double tol = std::min(xres(), yres()) / 1000;
-	if (extent.compare(e, "==", tol)) {
-		out = deepCopy();
-		return out;
-	}
-
-	out.setExtent(e, true);
-	if (!hasValues()) return(out);
-
-	if (!readStart()) {
-		out.setError(getError());
-		return(out);
-	}
-
- 	if (!out.writeStart(opt)) { return out; }
-	out.fill(NAN);
-	BlockSize bs = getBlockSize(opt);
-	for (size_t i=0; i<bs.n; i++) {
-        std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
-        unsigned row1 = out.rowFromY(yFromRow(bs.row[i]));
-        unsigned row2 = out.rowFromY(yFromRow(bs.row[i]+bs.nrows[i]-1));
-        unsigned col1 = out.colFromX(xFromCol(0));
-        unsigned col2 = out.colFromX(xFromCol(ncol()-1));
-        if (!out.writeValues(v, row1, row2-row1+1, col1, col2-col1+1)) return out;
-	}
-	readStop();
-	out.writeStop();
-	return(out);
-}
-
-
-/*
-SpatRaster SpatRaster::filler(SpatRaster x, SpatOptions &opt) {
-
-	unsigned nl = std::max(nlyr(), x.nlyr());
-	SpatRaster out = geometry(nl);
-	SpatExtent e = getExtent();
-	SpatExtent xe = x.getExtent();
-	
-	e.intersect(xe);
-	if (!e.valid()) {
-		out.setError("SpatRasters do not overlap");
-		return out;
-	}
-
-	if (!shared_basegeom(x, 0.1, true)) {
-		out.setError("raster dimensions do not match");
-		return(out);
-	}
-	// x is larger
-	if (e.compare(xe, "<=")) {
-		return x.crop(e, "near", opt);
-	}
-	// x is not within
-	if (!e.compare(xe, ">=")) {
-		SpatOptions xopt(opt);
-		x = x.crop(e, "near", xopt);
-		xe = x.getExtent();
-	}
-
-	std::vector<unsigned> rc = rowcolFromExtent(e);
-
-
-	if (!x.hasValues()) {
-		return *this;
-	}
-	if (!hasValues()) {
-		if (rmatch) {
-			return x.deepCopy();
-		} else {
-			SpatExtent e = getExtent();
-			return x.extend(e, opt);
-		}
-	}
-	
-	readStart();
-	x.readStart();
-  	if (!out.writeStart(opt)) { return out; }
-	std::vector<double> v, m;
-	for (size_t i = 0; i < out.bs.n; i++) {
-		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		recycle(v, m);
-		if (std::isnan(value)) {
-			for (size_t i=0; i < v.size(); i++) {
-				if (std::isnan(v[i])) {
-					v[i] = m[i];
-				}
-			}
-		} else {
-			for (size_t i=0; i < v.size(); i++) {
-				if (v[i] == value) {
-					v[i] = m[i];
-				}
-			}
-		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-	}
-	out.writeStop();
-	readStop();
-	x.readStop();
-	return(out);
-}
-*/
-
 bool SpatRaster::shared_basegeom(SpatRaster &x, double tol, bool test_overlap) {
 	if (!compare_origin(x.origin(), tol)) return false;	
 	if (!about_equal(xres(), x.xres(), xres() * tol)) return false; 
@@ -1296,6 +1185,56 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 
 
 
+SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
+
+	SpatRaster out = geometry(nlyr());
+	e = out.align(e, "near");
+	SpatExtent extent = getExtent();	
+	e.unite(extent);
+
+	out.setExtent(e, true);
+	if (!hasValues() ) {
+		if (opt.get_filename() != "") {
+			out.addWarning("ignoring filename argument because there are no cell values");
+		}
+		return(out);
+	}
+
+	double tol = std::min(xres(), yres()) / 1000;
+	if (extent.compare(e, "==", tol)) {
+		// same extent
+		if (opt.get_filename() != "") {
+			out = writeRaster(opt);
+		} else {
+			out = deepCopy();
+		}
+		return out;
+	}
+
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+ 	if (!out.writeStart(opt)) { return out; }
+	out.fill(NAN);
+	BlockSize bs = getBlockSize(opt);
+	for (size_t i=0; i<bs.n; i++) {
+        std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+        unsigned row1 = out.rowFromY(yFromRow(bs.row[i]));
+        unsigned row2 = out.rowFromY(yFromRow(bs.row[i]+bs.nrows[i]-1));
+        unsigned col1 = out.colFromX(xFromCol(0));
+        unsigned col2 = out.colFromX(xFromCol(ncol()-1));
+        if (!out.writeValues(v, row1, row2-row1+1, col1, col2-col1+1)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -1312,6 +1251,9 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 	out.setExtent(e, true, snap);
 	if (!hasValues() ) {
+		if (opt.get_filename() != "") {
+			out.addWarning("ignoring filename argument because there are no cell values");
+		}
 		return(out);
 	}
 
@@ -1322,9 +1264,15 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	unsigned col2 = colFromX(outext.xmax - 0.5 * xr);
 	unsigned row1 = rowFromY(outext.ymax - 0.5 * yr);
 	unsigned row2 = rowFromY(outext.ymin + 0.5 * yr);
+
 	if ((row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1)) {
 		// same extent
-		return deepCopy();
+		if (opt.get_filename() != "") {
+			out = writeRaster(opt);
+		} else {
+			out = deepCopy();
+		}
+		return out;
 	}
 
 	unsigned ncols = out.ncol();

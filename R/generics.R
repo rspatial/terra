@@ -455,6 +455,9 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 
 setMethod("summary", signature(object="SpatRaster"), 
 	function(object, size=100000, ...)  {
+		if (ncell(object) > size) {
+			warning("using a sample")
+		}
 		summary(spatSample(object, size, method="regular", ...))
 	}
 )
