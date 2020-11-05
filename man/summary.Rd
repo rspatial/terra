@@ -12,12 +12,13 @@ Summarize the values of SpatRaster. A sample is used for very large files.
 }
 
 \usage{
-\S4method{summary}{SpatRaster}(object, size=100000, ...)
+\S4method{summary}{SpatRaster}(object, size=100000, warn=TRUE, ...)
 }
 
 \arguments{
   \item{object}{SpatRaster}
   \item{size}{positive integer. Size of a regular sample used for large datasets (see \code{\link{spatSample}}}
+  \item{warn}{logical. If \code{TRUE} a warning is given if a sample is used}  
   \item{...}{additional arguments. None implemented}  
 }
 
