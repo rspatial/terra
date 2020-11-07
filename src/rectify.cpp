@@ -55,7 +55,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatExtent e, SpatOptions &op
 	std::vector<double> y = {0, nr, 0, nr};
 	std::vector<double> xx(4);
 	std::vector<double> yy(4);
-	for (size_t i=0; i<x.size(); i++) {
+	for (size_t i=0; i<4; i++) {
 		xx[i] = gt[0] + x[i]*gt[1] + y[i]*gt[2];
 		yy[i] = gt[3] + x[i]*gt[4] + y[i]*gt[5];
 	}
@@ -63,6 +63,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatExtent e, SpatOptions &op
 	double xmax = vmax(xx, TRUE);
 	double ymin = vmin(yy, TRUE);
 	double ymax = vmax(yy, TRUE);
+
 	if (!std::isnan(e.xmin)) {
 		xmin = std::max(xmin, e.xmin);
 		xmax = std::min(xmax, e.xmax);
@@ -74,10 +75,10 @@ SpatRaster SpatRaster::rectify(std::string method, SpatExtent e, SpatOptions &op
 		}
 	}
 	SpatExtent en(xmin, xmax, ymin, ymax);
-	out.setExtent(en, false, "");
+	out.setExtent(en, false, "out");
 	out = out.setResolution(gt[1], -gt[5]);
-	
 	out = warper(out, "", method, false, opt);
+
 	return(out);
 }
 	

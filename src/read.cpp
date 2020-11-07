@@ -112,7 +112,9 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row,
 				out.insert(out.end(), v1.begin(), v1.end());
 			}
 			
-		} else {
+			
+		} else { // !(source[0].window.expanded) 
+
 
 			for (size_t lyr=0; lyr < nl; lyr++) {
 				unsigned add = ncells * lyr;
@@ -122,8 +124,8 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row,
 				}
 			}
 		}
-	} else {
 
+	} else { //	!hasWindow()
 
 		if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
 			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
@@ -155,11 +157,13 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row,
 
 
 
-
 std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
 
 	std::vector<double> out;
-	if (!hasValues()) return out; // or NAs?
+	if (!hasValues()) {
+		//setError
+		return out; // or NAs?
+	}
 	
 	row = std::min(std::max(uint_64(0), row), nrow()-1);
 	col = std::min(std::max(uint_64(0), col), ncol()-1);
@@ -173,9 +177,7 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 	
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
-
 			readChunkMEM(out, src, row, nrows, col, ncols);
-
 		} else {
 			// read from file
 			#ifdef useGDAL
