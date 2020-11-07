@@ -63,6 +63,12 @@ class RasterSource {
 		SpatExtent extent;
 		bool rotated=false;
 		bool flipped=false;
+		bool windowed=false;
+		bool expanded=false;
+		std::vector<uint_64> window_rc;
+		
+		SpatExtent full_extent;
+		uint_64 full_ncol, full_nrow;
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
@@ -358,6 +364,11 @@ class SpatRaster {
 		bool readStartGDAL(unsigned src);
 		bool readStopGDAL(unsigned src);
 		std::vector<double> readChunkGDAL(unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols);
+
+		bool setWindow(SpatExtent x);
+		bool removeWindow();
+		bool hasWindow();
+		SpatExtent getFullExtent();
 
 		void openFS(std::string const &filename);
 

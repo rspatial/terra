@@ -593,3 +593,72 @@ bool SpatRaster::valid_sources(bool files, bool rotated) {
 	return true;
 }
 
+bool SpatRaster::hasWindow() {
+	return source[0].windowed;
+}
+
+bool SpatRaster::removeWindow() {
+	if (hasWindow()) {
+		SpatExtent e = getFullExtent();
+		setExtent(e, true, "");
+		for (size_t i=0; i<source.size(); i++) {
+			source[i].windowed = false;
+			source[i].nrow = source[i].full_nrow;
+			source[i].ncol = source[i].full_ncol;
+		}
+	} 
+	return true;
+}
+
+
+
+bool SpatRaster::setWindow(SpatExtent x) {
+
+	if ( !x.valid() ) {
+		setError("invalid extent");
+		return false;
+	} 
+
+	x = align(x, "near");
+	SpatExtent e = getFullExtent();
+	if (x.compare(e, "==", 0.1 * xres())) {
+		return true;
+	}
+	
+	e.intersect(x);
+	if ( !e.valid() ) {
+		setError("extents do not overlap");
+		return false;
+	} 
+
+// get read-window
+	double xr = xres();
+	double yr = yres();
+	std::vector<uint_64> rc(4);
+//rows
+	rc[0] = rowFromY(e.ymax - 0.5 * yr);
+	rc[1] = rowFromY(e.ymin + 0.5 * yr);
+//cols
+	rc[2] = colFromX(e.xmin + 0.5 * xr);
+	rc[3] = colFromX(e.xmax - 0.5 * xr);
+
+	bool expand = x.compare(e, ">", 0.1 * xres());
+
+	e = getExtent();
+	bool now = !hasWindow();
+	for (size_t i=0; i<source.size(); i++) {
+		source[i].window_rc = rc;
+		source[i].expanded  = expand;
+		if (now) {
+			source[i].full_extent  = e;
+			source[i].full_nrow    = source[i].nrow;
+			source[i].full_ncol    = source[i].ncol;
+			source[i].windowed     = true;
+		}
+	}
+	setExtent(x, true, "");		
+
+	return true;
+}
+
+

@@ -33,7 +33,7 @@ bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
 	
 	//double xr = (xmax - xmin) / tolerance;
 	//double yr = (ymax - ymin) / tolerance;
-		
+
 	bool e1 = fabs(xmax - e.xmax) <= tolerance;
 	bool e2 = fabs(xmin - e.xmin) <= tolerance;
 	bool e3 = fabs(ymax - e.ymax) <= tolerance;
@@ -107,6 +107,20 @@ SpatExtent SpatRaster::getExtent() {
 	}
 }
 
+SpatExtent SpatRaster::getFullExtent() { 
+	if (source.size() > 0) {
+		if (hasWindow()) {
+			return source[0].full_extent;
+		} else {
+			return source[0].extent;
+		}
+	} else {
+		SpatExtent e;
+		return e;
+	}
+}
+
+
 void SpatRaster::setExtent(SpatExtent e) { 
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = e;
@@ -130,10 +144,13 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 		source[0].nrow = nr;
 		ext.xmax = ext.xmin + nc * xrs;
 		ext.ymax = ext.ymin + nr * yrs;
+		source[0].extent = ext;
 	}
 	
-	for (size_t i=0; i<nsrc(); i++) {
+	for (size_t i=1; i<nsrc(); i++) {
 		source[i].extent = ext;
+		source[i].nrow = source[0].nrow;
+		source[i].ncol = source[0].ncol;
 	}
 }
 

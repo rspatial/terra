@@ -298,6 +298,11 @@ RCPP_MODULE(spat){
 		//.field_readonly("ncol", &RasterSource::ncol)
 		//.field_readonly("nlyr", &RasterSource::nlyr)
 		.field_readonly("extent", &RasterSource::extent)
+		.field_readonly("full_extent", &RasterSource::full_extent)
+		.field_readonly("full_nrow", &RasterSource::full_nrow)
+		.field_readonly("expanded", &RasterSource::expanded)
+		.field_readonly("windowed", &RasterSource::windowed)
+		.field_readonly("window_rc", &RasterSource::window_rc)
 		//.field_readonly("layers", &RasterSource::layers)
 		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
 		//.field_readonly("flipped", &RasterSource::flipped)
@@ -329,6 +334,11 @@ RCPP_MODULE(spat){
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
 		//.field_readonly("prj", &SpatRaster::prj)
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )
+
+		.method("setWindow", &SpatRaster::setWindow, "")
+		.method("removeWindow", &SpatRaster::removeWindow, "")
+		.method("hasWindow", &SpatRaster::hasWindow, "")
+
 		.method("getRasterAtt", &getRasterAttributes, "get attributes")
 			
 		.property("filenames", &SpatRaster::filenames )
@@ -370,7 +380,7 @@ RCPP_MODULE(spat){
 		.property("res", &SpatRaster::resolution)
 				
 // only if RasterSource is exposed
-//		.field_readonly("source", &SpatRaster::source )
+		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
 		

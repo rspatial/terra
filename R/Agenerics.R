@@ -2,6 +2,7 @@
 
 
 if (!isGeneric("cols")) {setGeneric("cols", function(x, ...) standardGeneric("cols"))}
+if (!isGeneric("window<-")) {setGeneric("window<-", function(x, value) standardGeneric("window<-"))}
 
 # terra
 if (!isGeneric("add<-")) {setGeneric("add<-", function(x, value) standardGeneric("add<-"))}
