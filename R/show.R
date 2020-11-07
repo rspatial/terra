@@ -60,8 +60,8 @@ setMethod ("show" , "SpatRaster",
 		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
 
 		e <- as.vector(ext(object))
-		cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-
+		elab <- ifelse(object@ptr$hasWindow(), "window", "extent")
+		cat(elab, "      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		cat("coord. ref. :" , .proj4(object), "\n")
 		
 		mnr <- 6

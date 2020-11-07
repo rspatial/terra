@@ -142,6 +142,7 @@ RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatCategories)
 RCPP_EXPOSED_CLASS(SpatDataFrame)
+RCPP_EXPOSED_CLASS(SpatWindow)
 RCPP_EXPOSED_CLASS(RasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatRasterCollection)
@@ -166,6 +167,16 @@ RCPP_MODULE(spat){
 		.method("round", &SpatExtent::round, "round")		
 		.method("union", &SpatExtent::unite, "union")		
 	;	
+
+
+    class_<SpatWindow>("SpatWindow")
+		.field_readonly("full_extent", &SpatWindow::full_extent)
+		.field_readonly("full_nrow", &SpatWindow::full_nrow)
+		.field_readonly("full_ncol", &SpatWindow::full_ncol)
+		.field_readonly("off_row", &SpatWindow::off_row)
+		.field_readonly("off_col", &SpatWindow::off_col)
+		.field_readonly("expand", &SpatWindow::expand)
+	;
 
     class_<SpatMessages>("SpatMessages")
 		.constructor()
@@ -290,6 +301,7 @@ RCPP_MODULE(spat){
 #endif
 	;
 
+
     class_<RasterSource>("RasterSource")	
 		//.field_readonly("memory", &RasterSource::memory)
 	//	.field_readonly("filename", &RasterSource::filename)
@@ -298,11 +310,8 @@ RCPP_MODULE(spat){
 		//.field_readonly("ncol", &RasterSource::ncol)
 		//.field_readonly("nlyr", &RasterSource::nlyr)
 		.field_readonly("extent", &RasterSource::extent)
-		.field_readonly("full_extent", &RasterSource::full_extent)
-		.field_readonly("full_nrow", &RasterSource::full_nrow)
-		.field_readonly("expanded", &RasterSource::expanded)
 		.field_readonly("windowed", &RasterSource::windowed)
-		.field_readonly("window_rc", &RasterSource::window_rc)
+		.field_readonly("window", &RasterSource::window)
 		//.field_readonly("layers", &RasterSource::layers)
 		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
 		//.field_readonly("flipped", &RasterSource::flipped)

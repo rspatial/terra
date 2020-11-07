@@ -599,16 +599,18 @@ bool SpatRaster::hasWindow() {
 
 bool SpatRaster::removeWindow() {
 	if (hasWindow()) {
-		SpatExtent e = getFullExtent();
+		SpatExtent e = source[0].window.full_extent;
 		setExtent(e, true, "");
 		for (size_t i=0; i<source.size(); i++) {
 			source[i].windowed = false;
-			source[i].nrow = source[i].full_nrow;
-			source[i].ncol = source[i].full_ncol;
+			source[i].nrow = source[0].window.full_nrow;
+			source[i].ncol = source[0].window.full_ncol;
 		}
 	} 
 	return true;
 }
+
+
 
 
 
@@ -619,8 +621,12 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		return false;
 	} 
 
+	if (hasWindow()) {
+		removeWindow();
+	}
+
 	x = align(x, "near");
-	SpatExtent e = getFullExtent();
+	SpatExtent e = getExtent();
 	if (x.compare(e, "==", 0.1 * xres())) {
 		return true;
 	}
@@ -634,27 +640,48 @@ bool SpatRaster::setWindow(SpatExtent x) {
 // get read-window
 	double xr = xres();
 	double yr = yres();
-	std::vector<uint_64> rc(4);
-//rows
-	rc[0] = rowFromY(e.ymax - 0.5 * yr);
-	rc[1] = rowFromY(e.ymin + 0.5 * yr);
-//cols
-	rc[2] = colFromX(e.xmin + 0.5 * xr);
-	rc[3] = colFromX(e.xmax - 0.5 * xr);
 
-	bool expand = x.compare(e, ">", 0.1 * xres());
+	bool expand = false;
+	std::vector<uint_64> rc(2);
+	std::vector<uint_64> exp(4, 0);
 
-	e = getExtent();
-	bool now = !hasWindow();
+	int_64 r = rowFromY(x.ymax - 0.5 * yr);
+	if (r < 0) {
+		rc[0] = 0;
+		expand = true;
+		exp[0] = trunc(abs(e.ymax - x.ymax) / yr);
+	} else {
+		rc[0] = r;
+	}
+	r = rowFromY(x.ymin + 0.5 * yr);
+	if (r < 0) {
+		expand = true;
+		exp[1] = trunc((e.ymax - x.ymin) / yr);
+	}
+
+	r = colFromX(x.xmin + 0.5 * xr);
+	if (r < 0) {
+		rc[1] = 0;
+		expand = true;
+		exp[2] = trunc((x.xmin - e.xmin) / xres());
+	} else {
+		rc[1] = r;
+	}
+	r = colFromX(x.xmax - 0.5 * xr);
+	if (r < 0) {
+		expand = true;
+		exp[3] = trunc(abs(x.xmin - e.xmin) / xres());
+	} 
+
 	for (size_t i=0; i<source.size(); i++) {
-		source[i].window_rc = rc;
-		source[i].expanded  = expand;
-		if (now) {
-			source[i].full_extent  = e;
-			source[i].full_nrow    = source[i].nrow;
-			source[i].full_ncol    = source[i].ncol;
-			source[i].windowed     = true;
-		}
+		source[i].window.off_row = rc[0];
+		source[i].window.off_col = rc[1];
+		source[i].window.expand = exp;
+		source[i].window.expanded  = expand;
+		source[i].window.full_extent  = getExtent();
+		source[i].window.full_nrow    = source[i].nrow;
+		source[i].window.full_ncol    = source[i].ncol;
+		source[i].windowed     = true;
 	}
 	setExtent(x, true, "");		
 

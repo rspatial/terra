@@ -17,9 +17,9 @@ Summarize the values of SpatRaster. A sample is used for very large files.
 
 \arguments{
   \item{object}{SpatRaster}
-  \item{size}{positive integer. Size of a regular sample used for large datasets (see \code{\link{spatSample}}}
+  \item{size}{positive integer. Size of a regular sample used for large datasets (see \code{\link{spatSample}})}
   \item{warn}{logical. If \code{TRUE} a warning is given if a sample is used}  
-  \item{...}{additional arguments. None implemented}  
+  \item{...}{additional arguments passed on to the base \code{\link[base]{summary} method}}  
 }
 
 

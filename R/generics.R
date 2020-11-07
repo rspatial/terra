@@ -458,7 +458,7 @@ setMethod("summary", signature(object="SpatRaster"),
 		if (warn && (ncell(object) > size)) {
 			warning("'summary' used a sample")
 		}
-		summary(spatSample(object, size, method="regular", ...))
+		summary(spatSample(object, size, method="regular"), ...)
 	}
 )
 

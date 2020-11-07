@@ -107,18 +107,6 @@ SpatExtent SpatRaster::getExtent() {
 	}
 }
 
-SpatExtent SpatRaster::getFullExtent() { 
-	if (source.size() > 0) {
-		if (hasWindow()) {
-			return source[0].full_extent;
-		} else {
-			return source[0].extent;
-		}
-	} else {
-		SpatExtent e;
-		return e;
-	}
-}
 
 
 void SpatRaster::setExtent(SpatExtent e) { 

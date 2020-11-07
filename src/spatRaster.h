@@ -40,6 +40,16 @@ class SpatCategories {
 };
 
 
+class SpatWindow {
+	public:
+		SpatExtent full_extent;
+		uint_64 full_ncol, full_nrow, off_row, off_col;
+		bool expanded = false;
+		std::vector<uint_64> expand;
+};
+
+
+
 
 class RasterSource {
     private:
@@ -64,11 +74,7 @@ class RasterSource {
 		bool rotated=false;
 		bool flipped=false;
 		bool windowed=false;
-		bool expanded=false;
-		std::vector<uint_64> window_rc;
-		
-		SpatExtent full_extent;
-		uint_64 full_ncol, full_nrow;
+		SpatWindow window;
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
@@ -329,6 +335,9 @@ class SpatRaster {
 		bool valid_sources(bool files=true, bool rotated=true);
 		bool readStart();
 		std::vector<double> readValues(uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
+		void readChunkMEM(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
+		void readChunkMEMwindow(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
+
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 		std::vector<std::vector<double>> readBlock2(BlockSize bs, unsigned i);
 		std::vector<double> readBlockIP(BlockSize bs, unsigned i);		
@@ -363,12 +372,11 @@ class SpatRaster {
 
 		bool readStartGDAL(unsigned src);
 		bool readStopGDAL(unsigned src);
-		std::vector<double> readChunkGDAL(unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols);
+		void readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols);
 
 		bool setWindow(SpatExtent x);
 		bool removeWindow();
 		bool hasWindow();
-		SpatExtent getFullExtent();
 
 		void openFS(std::string const &filename);
 

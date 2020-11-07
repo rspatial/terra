@@ -766,17 +766,17 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 }
 
 
-std::vector<double> SpatRaster::readChunkGDAL(unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols) {
+void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
-		return errout;
+		return;
 	}
 
 	if (!source[src].open_read) {
 		setError("the file is not open for reading");
-		return errout;
+		return;
 	}
 
 	unsigned ncell = ncols * nrows;
@@ -826,14 +826,13 @@ std::vector<double> SpatRaster::readChunkGDAL(unsigned src, uint_64 row, unsigne
 */	
 	if (err != CE_None ) {
 		setError("cannot read values");
-		return errout;
+		return;
 	}
 
 	if (source[src].flipped) {
 		vflip(out, ncell, nrows, ncols, nl);
 	}
-
-	return(out);
+	data.insert(data.end(), out.begin(), out.end());			
 }
 
 

@@ -84,6 +84,70 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 	return(v);
 }
 
+void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
+	if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
+		out.insert(out.end(), source[src].values.begin(), source[src].values.end());
+	} else {
+		unsigned nl = source[src].nlyr;
+		unsigned ncells = ncell();
+		if (col==0 && ncols==ncol()) {
+			for (size_t lyr=0; lyr < nl; lyr++) {
+				unsigned add = ncells * lyr;
+				unsigned a = add + row * ncol();
+				unsigned b = a + nrows * ncol();
+				out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
+			}
+		} else {
+			unsigned endrow = row + nrows;
+			unsigned endcol = col + ncols;
+			for (size_t lyr=0; lyr < nl; lyr++) {
+				unsigned add = ncells * lyr;
+				for (size_t r = row; r < endrow; r++) {
+					unsigned a = add + r * ncol();
+					out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
+				}
+			}
+		}
+	}
+}
+
+
+void SpatRaster::readChunkMEMwindow(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
+	uint_64 rrow = row + std::max((uint_64)0, source[0].window.off_row);
+	uint_64 rcol = col + std::max((uint_64)0, source[0].window.off_col);
+	unsigned endrow = rrow + nrows;
+	unsigned endcol = rcol + ncols;
+	unsigned ncells = source[0].window.full_nrow * source[0].window.full_ncol;
+	unsigned nl = source[src].nlyr;
+
+	if (source[0].window.expanded) {
+		for (size_t lyr=0; lyr < nl; lyr++) {
+			unsigned add = ncells * lyr;
+			std::vector<double> v1(source[0].window.expand[0] * ncols, NAN);
+			out.insert(out.end(), v1.begin(), v1.end());
+			v1.resize(source[0].window.expand[1], NAN);
+			std::vector<double> v2(source[0].window.expand[2], NAN);
+			for (size_t r = rrow; r < endrow; r++) {
+				unsigned a = add + r * source[0].window.full_ncol;
+				out.insert(out.end(), v1.begin(), v1.end());
+				out.insert(out.end(), source[src].values.begin()+a+rcol, source[src].values.begin()+a+endcol);
+				out.insert(out.end(), v2.begin(), v2.end());
+			}
+			v1.resize(source[0].window.expand[3] * ncols, NAN);
+			out.insert(out.end(), v1.begin(), v1.end());
+		}
+	} else {
+		for (size_t lyr=0; lyr < nl; lyr++) {
+			unsigned add = ncells * lyr;
+			for (size_t r = rrow; r < endrow; r++) {
+				unsigned a = add + r * source[0].window.full_ncol;
+				out.insert(out.end(), source[src].values.begin()+a+rcol, source[src].values.begin()+a+endcol);
+			}
+		}
+	}
+}
+
+
 
 
 std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
@@ -100,37 +164,18 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 	}
 	unsigned n = nsrc();
 	
+	
 	for (size_t src=0; src<n; src++) {
-		unsigned nl = source[src].nlyr;
 		if (source[src].memory) {
-			if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
-				out.insert(out.end(), source[src].values.begin(), source[src].values.end());
+			if (source[0].windowed) {
+				readChunkMEMwindow(out, src, row, col, nrows, ncols);
 			} else {
-				unsigned ncells = ncell();
-				if (col==0 && ncols==ncol()) {
-					for (size_t lyr=0; lyr < nl; lyr++) {
-						unsigned add = ncells * lyr;
-						unsigned a = add + row * ncol();
-						unsigned b = a + nrows * ncol();
-						out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
-					}
-				} else {
-					unsigned endrow = row + nrows;
-					unsigned endcol = col + ncols;
-					for (size_t lyr=0; lyr < nl; lyr++) {
-						unsigned add = ncells * lyr;
-						for (size_t r = row; r < endrow; r++) {
-							unsigned a = add + r * ncol();
-							out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
-						}
-					}
-				}
+				readChunkMEM(out, src, row, col, nrows, ncols);
 			}
 		} else {
 			// read from file
 			#ifdef useGDAL
-			std::vector<double> fvals = readChunkGDAL(src, row, nrows, col, ncols);
-			out.insert(out.end(), fvals.begin(), fvals.end());			
+			readChunkGDAL(out, src, row, nrows, col, ncols);
 			#endif // useGDAL
 		}
 	}
