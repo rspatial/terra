@@ -1,7 +1,7 @@
 
 
 setMethod("window<-", signature(x="SpatRaster"), 
-	function(x, value)  {
+	function(x, ..., value)  {
 		if (inherits(value, "SpatExtent")) {
 			if (!(x@ptr$setWindow(value@ptr))) {
 				stop("could not set window")

@@ -594,7 +594,7 @@ bool SpatRaster::valid_sources(bool files, bool rotated) {
 }
 
 bool SpatRaster::hasWindow() {
-	return source[0].windowed;
+	return source[0].hasWindow;
 }
 
 bool SpatRaster::removeWindow() {
@@ -602,7 +602,7 @@ bool SpatRaster::removeWindow() {
 		SpatExtent e = source[0].window.full_extent;
 		setExtent(e, true, "");
 		for (size_t i=0; i<source.size(); i++) {
-			source[i].windowed = false;
+			source[i].hasWindow = false;
 			source[i].nrow = source[0].window.full_nrow;
 			source[i].ncol = source[0].window.full_ncol;
 		}
@@ -681,7 +681,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		source[i].window.full_extent  = getExtent();
 		source[i].window.full_nrow    = source[i].nrow;
 		source[i].window.full_ncol    = source[i].ncol;
-		source[i].windowed     = true;
+		source[i].hasWindow     = true;
 	}
 	setExtent(x, true, "");		
 

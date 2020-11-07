@@ -73,7 +73,7 @@ class RasterSource {
 		SpatExtent extent;
 		bool rotated=false;
 		bool flipped=false;
-		bool windowed=false;
+		bool hasWindow=false;
 		SpatWindow window;
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
@@ -336,7 +336,6 @@ class SpatRaster {
 		bool readStart();
 		std::vector<double> readValues(uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
 		void readChunkMEM(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
-		void readChunkMEMwindow(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
 
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 		std::vector<std::vector<double>> readBlock2(BlockSize bs, unsigned i);

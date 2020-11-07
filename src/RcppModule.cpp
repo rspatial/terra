@@ -310,7 +310,7 @@ RCPP_MODULE(spat){
 		//.field_readonly("ncol", &RasterSource::ncol)
 		//.field_readonly("nlyr", &RasterSource::nlyr)
 		.field_readonly("extent", &RasterSource::extent)
-		.field_readonly("windowed", &RasterSource::windowed)
+		.field_readonly("hasWindow", &RasterSource::hasWindow)
 		.field_readonly("window", &RasterSource::window)
 		//.field_readonly("layers", &RasterSource::layers)
 		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
