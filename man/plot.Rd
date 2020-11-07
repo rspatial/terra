@@ -14,19 +14,17 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y=1, col, 
-  type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE,
+\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE,
   pal=list(), pax=list(), maxcell=50000, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, nc, nr, main, 
-   maxnl=16, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, nc, nr, main, maxnl=16, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{missing or positive integer indicating the layer(s) to be plotted, or the name of the layer to be mapped}
   \item{col}{character. Colors}
-  \item{type}{character. Type of map/legend. One of "continuous", "classes", or "internval"}
+  \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval"}
   \item{mar}{numeric vector of lenght 4 to set the margins of the plot}
   \item{legend}{logical. Draw a legend?}
   \item{axes}{logical. Draw axes?}

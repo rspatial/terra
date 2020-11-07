@@ -678,9 +678,9 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		source[i].window.off_col = rc[1];
 		source[i].window.expand = exp;
 		source[i].window.expanded  = expand;
-		source[i].window.full_extent  = getExtent();
-		source[i].window.full_nrow    = source[i].nrow;
-		source[i].window.full_ncol    = source[i].ncol;
+		source[i].window.full_extent = getExtent();
+		source[i].window.full_nrow   = source[i].nrow;
+		source[i].window.full_ncol   = source[i].ncol;
 		source[i].hasWindow     = true;
 	}
 	setExtent(x, true, "");		

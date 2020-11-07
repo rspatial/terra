@@ -61,9 +61,9 @@ setMethod ("show" , "SpatRaster",
 
 		if (object@ptr$hasWindow()) {
 			w <- as.vector(ext(object))
-			cat("window      : " , w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")		
-			e <- as.vector(object@ptr$source[[1]]$window$full_extent$vector)
-			cat("orig. extent: " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+			cat("extent (win): " , w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")		
+			#e <- as.vector(object@ptr$source[[1]]$window$full_extent$vector)
+			#cat("full extent : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		} else {
 			e <- as.vector(ext(object))
 			cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
