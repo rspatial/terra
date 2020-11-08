@@ -133,10 +133,6 @@ Rcpp::DataFrame getGeometry(SpatVector* v) {
 }
 
 
-	
-
-
-
 RCPP_EXPOSED_CLASS(SpatMessages)
 RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatExtent)
@@ -168,7 +164,7 @@ RCPP_MODULE(spat){
 		.method("union", &SpatExtent::unite, "union")		
 	;	
 
-
+/*
     class_<SpatWindow>("SpatWindow")
 		.field_readonly("full_extent", &SpatWindow::full_extent)
 		.field_readonly("full_nrow", &SpatWindow::full_nrow)
@@ -177,6 +173,7 @@ RCPP_MODULE(spat){
 		.field_readonly("off_col", &SpatWindow::off_col)
 		.field_readonly("expand", &SpatWindow::expand)
 	;
+*/
 
     class_<SpatMessages>("SpatMessages")
 		.constructor()
@@ -301,7 +298,7 @@ RCPP_MODULE(spat){
 #endif
 	;
 
-
+/*
     class_<RasterSource>("RasterSource")	
 		//.field_readonly("memory", &RasterSource::memory)
 	//	.field_readonly("filename", &RasterSource::filename)
@@ -318,6 +315,7 @@ RCPP_MODULE(spat){
 		//.field_readonly("rotated", &RasterSource::rotated)
 		.field_readonly("parameters_changed", &RasterSource::parameters_changed)
 	;	
+*/
 
     class_<SpatRaster>("SpatRaster")
 		.constructor()
@@ -389,7 +387,7 @@ RCPP_MODULE(spat){
 		.property("res", &SpatRaster::resolution)
 				
 // only if RasterSource is exposed
-		.field_readonly("source", &SpatRaster::source )
+//		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
 		
