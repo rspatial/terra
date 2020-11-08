@@ -1,5 +1,5 @@
 
-f <- system.file("exdata/lux.shp", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 lux <- vect(f)
 
 expect_equal(dim(lux), c(12,5)) 

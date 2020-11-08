@@ -17,15 +17,9 @@ expect_equal(xyFromCell(r, ncell(r)), xyFromCell(rx, ncell(rx)))
 expect_equal(as.vector(is.na(xyFromCell(r, 0))), c(TRUE, TRUE))
 expect_equal(as.vector(is.na(xyFromCell(r, ncell(r)+1))), c(TRUE, TRUE))
 
-# compare raster and terra subsets
-a <- ifelse(i>2,20,0)
-if (i>3) {
-	j <- 4999
-	expect_equivalent(r[j],	cbind(r[[1]][j], r[[2]][j], r[[3]][j]))
-}
-expect_equivalent(r[10+a], rx[10+a]) 
-expect_equivalent(r[2+a,], rx[2+a,]) 
-expect_equivalent(r[,2+a], rx[,2+a]) 
-expect_equivalent(r[(3:4)+a, (2:3)+a], rx[(3:4)+a, (2:3)+a]) 
-expect_equivalent(r[[1]][5+a,6+a][1], rx[[1]][5+a,6+a]) 
+expect_equivalent(r[10], rx[10]) 
+expect_equivalent(r[2,], rx[2,]) 
+expect_equivalent(r[,2], rx[,2]) 
+expect_equivalent(r[(3:4), (2:3)], rx[(3:4), (2:3)]) 
+expect_equivalent(r[[1]][5,6][1], rx[[1]][5,6]) 
 
