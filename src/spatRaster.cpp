@@ -210,6 +210,8 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 	if (properties) {
 		s.hasColors = hasColors();
 		s.cols = getColors();
+		s.hasCategories = hasCategories();
+		s.cats = getCategories();
 	}
 	s.resize(nlyrs);
 	std::vector<std::string> nms;

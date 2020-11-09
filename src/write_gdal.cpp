@@ -64,10 +64,10 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 
 
 
-bool setBandCategories(GDALRasterBand *poBand, std::vector<std::string> cats) {
+bool setCats(GDALRasterBand *poBand, SpatCategories &cats) {
 	char **names = NULL;
-	for (size_t i = 0; i < cats.size(); i++) {
-		names = CSLAddString(names, cats[i].c_str());
+	for (size_t i = 0; i < cats.labels.size(); i++) {
+		names = CSLAddString(names, cats.labels[i].c_str());
 	}
 	CPLErr err = poBand->SetCategoryNames(names);
 	return (err == CE_None);
@@ -117,9 +117,10 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	//lowercase(ext);
 	std::string datatype = opt.get_datatype();
 
+	std::vector<bool> hasCats = hasCategories();
 	std::vector<bool> hasCT = hasColors();
 	std::vector<SpatDataFrame> ct = getColors();
-	if (hasCT[0]) { 
+	if (hasCT[0] || hasCats[0]) { 
 		// must be INT1U for color table with gtiff
 		datatype = "INT1U";
 	} else {
@@ -194,6 +195,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		if (hasCT[i]) {
 			if (!setCT(poBand, ct[i])) {
 				addWarning("could not write the color table");
+			}
+		}
+		if (hasCats[i]) {
+			SpatCategories cats = getLayerCategories(i);
+			if (!setCats(poBand, cats)) {
+				addWarning("could not write categories");
 			}
 		}
 

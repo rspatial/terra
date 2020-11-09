@@ -139,6 +139,27 @@ setMethod ("show" , "SpatRaster",
 				cat("min values  :", paste(m[2,], collapse=", "), "\n")
 				cat("max values  :", paste(m[3,], collapse=", "), "\n")
 
+				isf <- is.factor(object)
+				if (any(isf)) {
+					lv <- levels(object)
+					for (i in 1:length(isf)) {
+						if (isf[i]) {
+							cats <- lv[[i]]
+							m[2,i] <- cats$labels[1]
+							m[3,i] <- cats$labels[length(cats$labels)]						
+						} else {
+							m[2,i] <- ""
+							m[3,i] <- ""
+						}
+					}
+					m <- m[-1, ,drop=FALSE]
+					for (i in 1:ncol(m)) {
+						m[,i] <- ifelse(nchar(m[,i]) > w[i], paste0(substr(m[,i], 1, w[i]-1),"~"), substr(m[,i], 1, w[i]))
+						m[,i] <- format(m[,i], width=w[i], justify="right")
+					}
+					cat("first label :", paste(m[1,], collapse=", "), "\n")
+					cat("last label  :", paste(m[2,], collapse=", "), "\n")				
+				}
 			} else {
 				cat("names       :", paste(ln, collapse=", "), "\n")
 			}			

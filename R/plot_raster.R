@@ -80,24 +80,31 @@
 
 
 .as.raster.classes <- function(out, x, ...) {
+
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 	if (all(is.na(Z))) {
 		stop("no values")
 	}
 
-	if (is.null(out$levels)) {
-		fz <- as.factor(Z)
-		levs <- levels(fz)
-		out$levels <- as.numeric(levs)
-		if (is.null(out$leg$legend)) {
-			out$leg$legend <- levs
-		}
-	} else {
+	fz <- as.factor(Z)
+	levs <- levels(fz)
+	if (!is.null(out$levels)) {
 		if (is.null(out$leg$legend)) {
 			out$leg$legend <- as.character(out$levels)
 		}
 		levs <- out$levels
+	} else if (!is.null(out$facts)) {
+		uz <- as.integer(levels(fz))
+		labs <- out$facts[[1]]$labels[uz+1]
+		labs[is.na(labs)] <- "?"
+		out$leg$legend <- labs
+		out$levels <- uz
+	} else {
+		out$levels <- as.numeric(levs)
+		if (is.null(out$leg$legend)) {
+			out$leg$legend <- levs
+		}
 	}
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
@@ -243,8 +250,10 @@
 
 .prep.plot.data <- function(x, type, maxcell, cols, mar, draw=FALSE, interpolate=FALSE,  
 legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
- range=NULL, new=NA, breaks=NULL, coltab=NULL, xlim=NULL, ylim=NULL, ...) {
+ range=NULL, new=NA, breaks=NULL, coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, ...) {
 
+#mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
+ 
 	out <- list()
 
 	if (!(is.null(xlim) & is.null(ylim))) {
@@ -257,7 +266,7 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 	} else {
 		out$lim <- out$ext <- as.vector(ext(x))
 	}
-		
+
 	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
 	out$add <- isTRUE(add)
@@ -272,6 +281,7 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 	}
 	out$cols <- cols
 	out$levels <- levels
+	out$facts <- facts
 	out$breaks <- breaks
 	out$range <- range
 	out$interpolate <- isTRUE(interpolate)
@@ -304,6 +314,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 		breaks <- list(...)$breaks
 		coltab <- NULL
+		facts <- NULL
 		if (!is.null(breaks)) {
 			type <- "interval"
 		} else {
@@ -311,6 +322,9 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (x@ptr$hasColors()) {
 					coltab <- cols(x)[[1]]
 					type <- "colortable"
+				} else if (is.factor(x)) {
+					type <- "classes"
+					facts <- levels(x)
 				} else {
 					type <- "depends"
 				}
@@ -320,13 +334,13 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 		
 		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
-		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, pal=pal, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, ...)
+		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, pal=pal, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, ...)
 		invisible(x)
 	}
 )
 
 
-
+#mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000
 
 #object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
 #x <- .prep.plot.data(object, type="classes", cols=rainbow(25), mar=rep(3,4), draw=T)
