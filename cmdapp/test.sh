@@ -1,2 +1,2 @@
-./terra show ../inst/exdata/test.tif
-./terra aggregate ../inst/exdata/test.tif  "" 10 mean 1
+./terra show ../inst/ex/test.tif
+./terra aggregate ../inst/ex/test.tif  "" 10 mean 1

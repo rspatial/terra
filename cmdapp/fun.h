@@ -11,6 +11,7 @@ SpatRaster make_raster() {
     return r;
 }
 
+
 SpatRaster aggregate(std::vector<std::string> args) {
     SpatOptions opts;
     SpatRaster out;
@@ -18,8 +19,9 @@ SpatRaster aggregate(std::vector<std::string> args) {
 	out.setError("usage: aggregate input output fact fun=mean narm=true");
 	return(out);
     }
-    SpatRaster input(args[2]);
-    opts.filename = args[3];
+
+    SpatRaster input(args[2], {-1}, {""});
+    opts.set_filenames({args[3]});
     // need to split the fact arguments
     // for now assume a single argument
     std::vector<unsigned> fact(1);
