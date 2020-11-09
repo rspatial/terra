@@ -1,4 +1,6 @@
 
+library(raster)
+
 r <- rast(ncol = 20, nrow = 10, xmin=-10, xmax=10, ymin=-5, ymax=6)
 rx <- raster(ncol = 20, nrow = 10, xmn=-10, xmx=10, ymn=-5, ymx=6)
 values(r) <- ncell(r):1
