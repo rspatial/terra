@@ -11,6 +11,7 @@
 
 revdep/
 python/
+cmdapp/terra
 windows/
 inst/gdal/
 inst/proj/
