@@ -67,7 +67,7 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
 		return( *this );
 	}
-	SpatRaster out = geometry(nlyr());
+	SpatRaster out = geometry(nlyr(), true);
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 	
@@ -240,7 +240,7 @@ SpatRaster SpatRaster::sampleRandomRaster(unsigned size, bool replace, unsigned 
 		nr = std::ceil(nrow() * f);
 		nc = std::ceil(ncol() * f);
 	}
-	SpatRaster out = geometry(nlyr());
+	SpatRaster out = geometry(nlyr(), true);
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 	if (!source[0].hasValues) return (out);

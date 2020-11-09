@@ -232,7 +232,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
-	SpatRaster out = geometry(nl);
+	SpatRaster out = geometry(nl, true);
 
 	if (!out.compare_geom(x, false, true, true, true, true, false)) {
 		return(out);
@@ -326,7 +326,7 @@ SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double updatevalue, Spat
 
 SpatRaster SpatRaster::transpose(SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr(), true);
 	SpatExtent eold = getExtent();
 	SpatExtent enew = getExtent();
 	enew.xmin = eold.ymin;
@@ -471,7 +471,7 @@ void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue
 
 SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr());
+	SpatRaster out = geometry(nlyr(), true);
 	if (low > high) {
 		out.setError("lower clamp value cannot be larger than the higher clamp value");
 		return out;
@@ -709,7 +709,7 @@ bool disaggregate_dims(std::vector<unsigned> &fact, std::string &message ) {
 
 SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
 
-    SpatRaster out = geometry();
+    SpatRaster out = geometry(nlyr(), true);
 
 
 	std::string message = "";
@@ -1058,7 +1058,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 	if (left) {
 		addx = -addx;
 	}
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr(), true);
 	SpatExtent outext = out.getExtent();
 	outext.xmin = outext.xmin + addx;
 	outext.xmax = outext.xmax + addx;
@@ -1112,7 +1112,7 @@ bool SpatRaster::shared_basegeom(SpatRaster &x, double tol, bool test_overlap) {
 SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
-	SpatRaster out = geometry(nl);
+	SpatRaster out = geometry(nl, true);
 	
 	bool rmatch = false;
 					 //  lyrs, crs, warncrs, ext, rowcol, res
@@ -1187,7 +1187,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 
 SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr());
+	SpatRaster out = geometry(nlyr(), true);
 	e = out.align(e, "near");
 	SpatExtent extent = getExtent();	
 	e.unite(extent);
@@ -1237,7 +1237,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr(), true);
 
 	if ( !e.valid() ) {
 		out.setError("invalid extent");
@@ -1296,7 +1296,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(nlyr(), true);
 	if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());
@@ -1375,7 +1375,7 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 
 	bool any_hasvals = false;
 	if (x[0].hasValues()) any_hasvals = true;
-	out = x[0].geometry();
+	out = x[0].geometry(x[0].nlyr(), true);
 	std::vector<double> orig = x[0].origin(); 
 	SpatExtent e = x[0].getExtent();
 	unsigned nl = x[0].nlyr();
@@ -1393,7 +1393,7 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 		if (x[i].hasValues()) any_hasvals = true;
 	}
 	out.setExtent(e, true);
-	out = out.geometry(nl);
+	out = out.geometry(nl, true);
 	if (!any_hasvals) return out;
 
  //   out.setResolution(xres(), yres());
