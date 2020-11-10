@@ -17,7 +17,7 @@ setMethod("names<-", signature(x="SpatRaster"),
 		if (length(value) != nlyr(x)) {
 			stop("incorrect number of names")
 		}
-		if (! x@ptr$setNames(value)) {
+		if (! x@ptr$setNames(value, FALSE)) {
 			stop("cannot set these names")
 		}
 		if (any(names(x) != value)) {
