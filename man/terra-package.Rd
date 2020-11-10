@@ -25,7 +25,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
-\code{calc}\tab\code{\link{app}}\cr
+\code{calc}\tab\code{\link{app}}, \code{\link{capp}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{extend}\tab\code{\link{expand}}\cr
@@ -117,7 +117,7 @@ Also see the methods in section XI
     \code{\link{Logic-methods}} \tab Logic functions (\code{!, &, |}) \cr
     \code{\link{Summary-methods}} \tab Summary functions (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
     \code{\link{Compare-methods}} \tab Compare functions (\code{==, !=, >, <, <=, >=}) \cr
-    \code{\link{loca}} \tab Apply a function to cells for each layer) \cr
+    \code{\link{capp}} \tab Apply a function to cells, not summarizing over layers \cr
     \code{\link{app}} \tab Apply a function to cells, summarizing over layers(as in \code{base::apply}) \cr
     \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
     \code{\link{lapp}} \tab Apply a function using the layers as variables\cr

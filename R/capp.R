@@ -1,5 +1,5 @@
 
-setMethod("loca", signature(x="SpatRaster"), 
+setMethod("capp", signature(x="SpatRaster"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	out <- rast(x)

@@ -5,7 +5,7 @@
 setMethod("match", signature(x="SpatRaster", table="ANY", nomatch="ANY", incomparables="ANY"),
 	function(x, table, nomatch, incomparables) {
 #		app(x, function(i) match(i, table, nomatch, incomparables))
-		loca(x, function(i) match(i, table, nomatch, incomparables))
+		capp(x, function(i) match(i, table, nomatch, incomparables))
 	}
 )
 

@@ -27,10 +27,10 @@ Compute quantiles for each cell across the layers of a SpatRaster
 }
 
 \value{
-A vector of quantiles
+SpatRaster with layers representing quantiles
 }
 
-\seealso{ \code{\link[terra]{app}}, \code{\link[terra]{local}}  }
+\seealso{ \code{\link[terra]{app}}  }
 
 
 

@@ -35,7 +35,8 @@
 		
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
-
+	Z <- round(Z, 10) # avoid missing extreme values due to precision problems
+	
 	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
 	if (n == 0) stop("no values")

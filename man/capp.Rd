@@ -1,20 +1,18 @@
-\name{loca}
+\name{capp}
 
 \docType{methods}
 
-\alias{loca}
-\alias{loca,SpatRaster-method}
+\alias{capp}
+\alias{capp,SpatRaster-method}
 
 \title{apply a local function}
 
 \description{ 
-A "local" function operates on individual cells and layers of a SpatRaster, thus the number of layers returned is the same as the input (unlike for \code{\link{app}})
-
-The method is not called \code{local} to avoiding hiding the base function with that name.
+Apply a function operates to individual cells and layers of a SpatRaster, to return the same number of layers as in the input SpatRaster. That, is unlike with \code{\link{app}}, without summarizing over layers.
 }
 
 \usage{
-\S4method{loca}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{capp}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -37,7 +35,7 @@ SpatRaster
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
 
-x <- loca(r, sqrt)
+x <- capp(r, sqrt)
 
 # equivalent to 
 y <- sqrt(x)

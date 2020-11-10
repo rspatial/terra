@@ -230,7 +230,7 @@ class SpatRaster {
 		std::vector<double> range_min();
 		std::vector<double> range_max();
 		std::vector<std::string> getNames();
-		bool setNames(std::vector<std::string> names);
+		bool setNames(std::vector<std::string> names, bool make_valid=false);
 		std::vector<bool> hasTime();
 		std::vector<double> getTime();
 		bool setTime(std::vector<double> times);

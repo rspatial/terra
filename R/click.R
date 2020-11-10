@@ -34,7 +34,7 @@
 
 
 
-setMethod('click', signature(x='missing'), 
+setMethod("click", signature(x="missing"), 
 	function(x, n=1, type="n", ...) {
 		loc <- graphics::locator(n, type, ...)
 		cbind(x=loc$x, y=loc$y)
@@ -42,7 +42,7 @@ setMethod('click', signature(x='missing'),
 )
 
 	
-setMethod('click', signature(x='SpatRaster'), 
+setMethod("click", signature(x="SpatRaster"), 
 	function(x, n=Inf, id=FALSE, xy=FALSE, cell=FALSE, type="n", show=TRUE, ...) {
 	values <- NULL
 	i <- 0
@@ -64,7 +64,7 @@ setMethod('click', signature(x='SpatRaster'),
 		}
 		if (xy) { 
 			xyCoords <- xyFromCell(x, cells)
-			colnames(xyCoords) <- c('x', 'y')
+			colnames(xyCoords) <- c("x", "y")
 			value <- data.frame(xyCoords, value)
 		} 
 		if (show) {

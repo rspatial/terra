@@ -436,13 +436,15 @@ std::vector<std::string> SpatRaster::getNames() {
 }
 
 
-bool SpatRaster::setNames(std::vector<std::string> names) {
+bool SpatRaster::setNames(std::vector<std::string> names, bool make_valid) {
 	if (names.size() != nlyr()) {
 		return false;
 	} else {
-        make_valid_names(names);
-        make_unique_names(names);
-        size_t begin=0;
+		if (make_valid) {
+			make_valid_names(names);
+			make_unique_names(names);
+        }
+		size_t begin=0;
         size_t end;
         for (size_t i=0; i<source.size(); i++)	{
             end = begin + source[i].nlyr;

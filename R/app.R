@@ -37,10 +37,15 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 		if (ncol(r) == nc) {
 			nlyr(out) <- nrow(r)
 			trans <- TRUE
+			nms <- rownames(r)
 		} else if (nrow(r) == nc) {
 			nlyr(out) <- ncol(r)
+			nms <- colnames(r)
 		} else {
 			stop("cannot handle this function")
+		}
+		if (is.null(wopt$names)) {
+			wopt$names <- nms
 		}
 	}
 
