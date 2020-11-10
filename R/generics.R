@@ -17,12 +17,24 @@ setMethod("origin", signature(x="SpatRaster"),
 )	
 
 setMethod("rectify", signature(x="SpatRaster"), 
-	function(x, method="bilinear", ext=NULL, filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite, wopt)
-		if (!inherits(ext, "SpatExtent")) {
-			ext <- ext(rep(as.double(NA), 4))
+		if (!is.null(aoi)) {
+			if (inherits(aoi, "SpatExtent")) {
+				aoi <- rast(aoi)
+				useaoi <- 1
+			} else if (inherits(aoi, "SpatRaster")) {
+				aoi <- rast(aoi)
+				useaoi <- 2
+			} else {
+				stop("ext must be a SpatExtent or SpatRaster")
+			}
+		} else {
+			aoi <- rast()
+			useaoi <- 0
 		}
-		x@ptr <- x@ptr$rectify(method, ext@ptr, opt)
+		snap <- as.logical(snap)
+		x@ptr <- x@ptr$rectify(method, aoi@ptr, useaoi, snap, opt)
 		show_messages(x, "rectify")
 	}
 )
