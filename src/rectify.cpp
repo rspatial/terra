@@ -64,22 +64,22 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	double xmax = vmax(xx, TRUE);
 	double ymin = vmin(yy, TRUE);
 	double ymax = vmax(yy, TRUE);
+	SpatExtent en(xmin, xmax, ymin, ymax);
+	out = out.setResolution(gt[1], -gt[5]);
+	out.setExtent(en, false, "out");
 
 	if (useaoi == 1) { // use extent
-		SpatExtent en = aoi.getExtent();
+		en = aoi.getExtent();
 		if (snap) {
-			out.setExtent(en, false, "out");
-			out = out.setResolution(gt[1], -gt[5]);
+			en = out.align(en, "near");
+			out.setExtent(en, false, "near");
 		} else {
 			out.setExtent(en, false, "");
 		}
 	} else if (useaoi == 2){  // extent and resolution
 		out = aoi.geometry(0);
-	} else { // if (useaoi == 0) // no aoi
-		SpatExtent en(xmin, xmax, ymin, ymax);
-		out.setExtent(en, false, "out");
-		out = out.setResolution(gt[1], -gt[5]);
-	}
+	} // else { // if (useaoi == 0) // no aoi
+	
 		
 	out = warper(out, "", method, false, opt);
 
