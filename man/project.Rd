@@ -48,9 +48,9 @@ SpatVector or SpatRaster
 \seealso{\code{\link{crs}}, \code{\link{resample}}}
 
 \note{
-User beware. Sadly, the PROJ.4 notation has been partly deprecated in the GDAL/PROJ libary that is used by this function. You can still use it, but *only* with the the WGS84 datum. Other datums are silently ignored. 
+User beware. Sadly, the PROJ.4 notation has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use it, but *only* with the the WGS84 datum. Other datums are silently ignored. 
 
-When printing a Spat* object the PROJ.4 notation is shown because it is the most concise and clear format avaiable. However, internally a WKT representation is used (see \code{\link{crs}}).
+When printing a Spat* object the PROJ.4 notation is shown because it is the most concise and clear format available. However, internally a WKT representation is used (see \code{\link{crs}}).
 
 Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. Each transformation will have to re-estiamte values for the new raster cells. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data. 
 
