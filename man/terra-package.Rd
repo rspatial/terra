@@ -25,7 +25,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
-\code{calc}\tab\code{\link{app}}, \code{\link{capp}}\cr
+\code{calc}\tab\code{\link{app}} and \code{\link{arith}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{extend}\tab\code{\link{expand}}\cr
@@ -112,13 +112,13 @@ Also see the methods in section XI
 \section{IV. Local (cell based) computation}{
 
   \tabular{ll}{
-    \code{\link{Arith-methods}} \tab Arith functions (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
-	\code{\link{Math-methods}} \tab Math functions like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
-    \code{\link{Logic-methods}} \tab Logic functions (\code{!, &, |}) \cr
-    \code{\link{Summary-methods}} \tab Summary functions (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
-    \code{\link{Compare-methods}} \tab Compare functions (\code{==, !=, >, <, <=, >=}) \cr
-    \code{\link{capp}} \tab Apply a function to cells, not summarizing over layers \cr
-    \code{\link{app}} \tab Apply a function to cells, summarizing over layers(as in \code{base::apply}) \cr
+    \code{\link{Arith-methods}} \tab Standard arith methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
+	\code{\link{Math-methods}} \tab Math methods like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
+    \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
+    \code{\link{Summary-methods}} \tab Summary methods (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
+    \code{\link{Compare-methods}} \tab Comparison methods (\code{==, !=, >, <, <=, >=}) \cr
+    \code{\link{arith}} \tab Use a function to compute new values for all cells \cr
+    \code{\link{app}} \tab Apply a function to cells, across layers (as in \code{base::apply}) \cr
     \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
     \code{\link{lapp}} \tab Apply a function using the layers as variables\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr

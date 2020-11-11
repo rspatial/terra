@@ -9,9 +9,9 @@
 \title{Apply a function to the cells of a SpatRaster}
 
 \description{ 
-Apply a function to values of each cell of a SpatRaster. This is similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix.
+Apply a function to values of each cell of a SpatRaster. Similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix. This is generally used to summarize the values of multiple layers into one layer; but this is not required.
 
-You can also use a SpatDataSet to apply \code{fun} across datasets by layer.
+You can also apply a function \code{fun} across datasets by layer of a \code{SpatDataSet}. In that case, summarization is across SpatRasters, not across layers.
 }
 
 \usage{
@@ -51,13 +51,13 @@ s
 # "sum", "mean", and "max" you can also do
 sum(x)
 
-
-## use a SpatDataSet
+## SpatDataSet
 sd <- sds(x, x*2, x/3)
 a <- app(sd, max)
 a
 # same as 
 max(x, x*2, x/3)
+
 }
 
 

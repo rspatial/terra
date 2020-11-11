@@ -1,18 +1,18 @@
-\name{capp}
+\name{arith}
 
 \docType{methods}
 
-\alias{capp}
-\alias{capp,SpatRaster-method}
+\alias{arith}
+\alias{arith,SpatRaster-method}
 
 \title{apply a local function}
 
 \description{ 
-Apply a function operates to individual cells and layers of a SpatRaster, to return the same number of layers as in the input SpatRaster. That, is unlike with \code{\link{app}}, without summarizing over layers.
+Apply a function that (arithmetically) operates to individual cells and layers of a SpatRaster, to return the same number of layers as in the input SpatRaster. That, is unlike with \code{\link{app}}, without summarizing over layers.
 }
 
 \usage{
-\S4method{capp}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{arith}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -28,14 +28,14 @@ Apply a function operates to individual cells and layers of a SpatRaster, to ret
 SpatRaster
 }
 
-\seealso{ \code{\link{app}} }
+\seealso{ \code{\link{arith}} }
 
 
 \examples{
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
 
-x <- capp(r, sqrt)
+x <- arith(r, sqrt)
 
 # equivalent to 
 y <- sqrt(x)

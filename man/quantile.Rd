@@ -30,7 +30,7 @@ Compute quantiles for each cell across the layers of a SpatRaster
 SpatRaster with layers representing quantiles
 }
 
-\seealso{ \code{\link[terra]{app}}  }
+\seealso{ \code{\link{app}}  }
 
 
 

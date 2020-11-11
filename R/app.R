@@ -118,6 +118,45 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
 
 
+.app_test_stack <- function(v, fun, ncols, ...) {
+# figure out the shape of the output
+	nms = ""	
+	nr <- nrow(v[[1]])
+	v <- lapply(v, as.vector)
+	v <- do.call(cbind, v)
+	r <- apply(v, 1, fun, ...) 
+	if (inherits(r, "try-error")) {
+		nl <- -1
+	}
+	
+	trans <- FALSE			
+	if (NCOL(r) > 1) {
+		#? if ((ncol(r) %% nc) == 0) {
+		if (ncol(r) == ncols) {
+			nl <- nrow(r)
+			trans <- TRUE
+		} else if (nrow(r) == ncols) {
+			nl <- ncol(r)
+		} else {
+			stop("cannot handle this function")
+		}
+	} else if (length(r) >= nr) {
+		if ((length(r) %% nr) == 0) {
+			nl <- length(r) / nr
+		} else {	
+			nl <- -1
+		}
+	} else {
+		nl <- -1
+	}
+	if (is.matrix(r)) {
+		nms <- colnames(r)
+	}
+	list(nl=nl, trans=trans, names=nms)
+}
+
+
+
 setMethod("app", signature(x="SpatDataSet"), 
 function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
@@ -177,6 +216,5 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 	return(out)
 }
 )
-
 
 

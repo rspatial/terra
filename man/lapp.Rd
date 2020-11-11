@@ -40,7 +40,7 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
 SpatRaster
 }
 
-\seealso{\code{ \link[terra]{app}, \link[terra]{tapp},  \link[terra]{math}} }
+\seealso{\code{ \link{app}, \link[terra]{tapp},  \link[terra]{math}} }
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   

@@ -1,4 +1,4 @@
-\name{summarize}
+\name{summarize-generics}
 
 \docType{methods}
 
