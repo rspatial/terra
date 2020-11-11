@@ -235,7 +235,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
     #ifdef useRcpp
 	if (opt.verbose) {
 		std::vector<double> mems = mem_needs(opt.get_blocksizemp(), opt); 
-		double gb = 1073741824; 
+		double gb = 1073741824 / 8; 
 		//{memneed, memavail, frac, csize, inmem} ;
 		Rcpp::Rcout<< "max vect size : " << roundn(mems.max_size() / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory avail. : " << roundn(mems[1] / gb, 2) << " GB" << std::endl;
