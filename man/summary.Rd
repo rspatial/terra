@@ -8,7 +8,7 @@
 \title{summary}
 
 \description{
-Summarize the values of SpatRaster. A sample is used for very large files. 
+Compute summary statistics (min, max, mean, and quartiles) for SpatRaster using base \code{\link[base]{summary}} method. A sample is used for very large files. 
 }
 
 \usage{

@@ -22,11 +22,7 @@
 
 Compute cell (pixel) level summary statistics across layers or between layers (parallel summary). 
 
-The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}
-
-To compute statistics that are not included here see \code{app} to summarize across layers. 
-
-See \code{\link{modal}} to compute the mode.  
+The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}. See \code{\link{modal}} to compute the mode and \code{\link{app}} to compute summary statistics that are not included here.
  
 Because generic functions are used, the method applied is chosen based on the first argument: "\code{x}". This means that if \code{r} is a SpatRaster, \code{mean(r, 5)} will work, but \code{mean(5, r)} will not work.
 
@@ -71,7 +67,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \value{SpatRaster}
 
-\seealso{ \code{\link{Math-methods}, \link{modal}} }
+\seealso{\code{\link{app}}, \code{\link{Math-methods}, \link{modal}} }
 
 
 \examples{
