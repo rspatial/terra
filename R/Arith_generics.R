@@ -53,6 +53,26 @@ setMethod("Arith", signature(e1="SpatExtent", e2="numeric"),
 
 
 
+setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
+    function(e1, e2){ 
+		oper <- as.vector(.Generic)[1]
+		e1 = ext(as.vector(e1)) # deep copy
+		if (oper == "+") { 
+			e1@ptr$unite(e2@ptr)
+		} else if (oper == "-") {
+			e1@ptr$intersect(e2@ptr)
+		} else {
+			stop("only + and - are supported")
+		}
+		if (!e1@ptr$valid) {
+			stop("this would create an invalid extent")
+		}
+		e1
+	}	
+)
+
+
+
 setMethod("Arith", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]

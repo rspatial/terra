@@ -8,6 +8,9 @@
 \alias{Math-methods}
 \alias{Math2-methods}
 
+\alias{Arith,SpatExtent,numeric-method}
+\alias{Arith,SpatExtent,SpatExtent-method}
+
 \alias{Arith,SpatRaster,SpatRaster-method}
 \alias{Arith,SpatRaster,missing-method}
 \alias{Arith,numeric,SpatRaster-method}
@@ -53,12 +56,13 @@ The terra package does not distinguish between \code{NA} (not available) and \co
 
 \bold{Logical}: \code{!, &, |, isTRUE, isFALSE}
 
-\bold{Summary}: \code{"max", "min", "range", "prod", "sum", "any", "all"}
+\bold{Summary}: \code{max, min, range, prod, sum, any, all}
  
-\bold{Math}: \code{"abs", "sign", "sqrt", "ceiling", "floor", "trunc",  "cummax", "cummin", "cumprod", "cumsum", "log", "log10", "log2", "log1p", "acos", "acosh", "asin", "asinh", "atan", "atanh", "exp", "expm1", "cos", "cosh", "sin", "sinh", "tan", "tanh", "round", "signif"}
+\bold{Math}: \code{abs, sign, sqrt, ceiling, floor, trunc,  cummax, cummin, cumprod, cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh, exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}
 
-
-For \bold{SpatExtent} the following methods have been implemented: \code{"round", "floor", "ceil", "=="}
+The following methods have been implemented for \bold{SpatExtent}: \code{round, floor, ceil, ==}.
+For \bold{SpatExtent,SpatExtent}: \code{==, +, -}, 
+For \bold{SpatExtent,numeric} : \code{+, -, *, /, \%\%}
 }
 
 
@@ -102,6 +106,19 @@ max(s, na.rm=TRUE)
 x <- is.na(s)
 
 y <- which.max(s)
+
+### SpatExtent methods
+x <- ext(0.1, 2.2, 0, 3)
+y <- ext(-2, 1, -2,2)
+x + y
+x - y
+
+e <- x %% 2
+e
+e * 2
+e / 2
+e + 1
+e - 1
 }
 
 \keyword{methods}
