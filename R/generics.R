@@ -58,12 +58,8 @@ setMethod("align", signature(x="SpatExtent", y="SpatRaster"),
 )
 
 setMethod("align", signature(x="SpatExtent", y="numeric"), 
-	function(x, y, snap="out", ...) {
-		if(snap != "out") {
-			stop("currently this only works for 'snap=out'")
-		}
-		x@ptr <- x@ptr$align(y, snap)
-		#show_messages(x, "align")
+	function(x, y, ...) {
+		x@ptr <- x@ptr$align(y, "")
 		x
 	}
 )
