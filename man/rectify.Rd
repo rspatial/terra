@@ -12,7 +12,8 @@ Rectify a rotated SpatRaster into a non-rotated object
 }
 
 \usage{
-\S4method{rectify}{SpatRaster}(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{rectify}{SpatRaster}(x, method="bilinear", aoi=NULL, snap=TRUE,
+         filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
