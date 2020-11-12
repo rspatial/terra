@@ -4,11 +4,13 @@
 
 \alias{shift}
 \alias{shift,SpatRaster-method}
+\alias{shift,SpatExtent-method}
+\alias{shift,SpatVector-method}
   
 \title{Shift}
 
 \description{
-Shift the location of a SpatRaster or SpatVector object
+Shift the location of a SpatRaster, SpatVector or SpatExtent
 }
 
 \usage{

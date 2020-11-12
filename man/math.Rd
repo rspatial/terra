@@ -60,9 +60,9 @@ The terra package does not distinguish between \code{NA} (not available) and \co
  
 \bold{Math}: \code{abs, sign, sqrt, ceiling, floor, trunc,  cummax, cummin, cumprod, cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh, exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}
 
-The following methods have been implemented for \bold{SpatExtent}: \code{round, floor, ceil, ==}.
-For \bold{SpatExtent,SpatExtent}: \code{==, +, -}, 
-For \bold{SpatExtent,numeric} : \code{+, -, *, /, \%\%}
+The following methods have been implemented for \bold{SpatExtent}: \code{round, floor, ceil, ==},
+for \bold{(SpatExtent, SpatExtent)}: \code{==, +, -}, and 
+for \bold{(SpatExtent, numeric)} : \code{+, -, *, /, \%\%}
 }
 
 

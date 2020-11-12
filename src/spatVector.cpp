@@ -477,4 +477,42 @@ SpatVector SpatVector::subset_cols(int i) {
 }
 
 
+SpatVector SpatVector::shift(double x, double y) {
+
+	SpatVector out = *this;
+
+	for (size_t i=0; i < size(); i++) {
+		for (size_t j=0; j < geoms[i].size(); j++) {
+			for (size_t q=0; q < geoms[i].parts[j].x.size(); q++) {
+				out.geoms[i].parts[j].x[q] = geoms[i].parts[j].x[q] + x;
+				out.geoms[i].parts[j].y[q] = geoms[i].parts[j].y[q] + y;
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					for (size_t q=0; q < geoms[i].parts[j].holes[k].x.size(); q++) {
+						out.geoms[i].parts[j].holes[k].x[q] = geoms[i].parts[j].holes[k].x[q] + x;
+						out.geoms[i].parts[j].holes[k].y[q] = geoms[i].parts[j].holes[k].y[q] + y;
+					}
+					out.geoms[i].parts[j].holes[k].extent.xmin = out.geoms[i].parts[j].holes[k].extent.xmin + x;
+					out.geoms[i].parts[j].holes[k].extent.xmax = out.geoms[i].parts[j].holes[k].extent.xmax + x;
+					out.geoms[i].parts[j].holes[k].extent.ymin = out.geoms[i].parts[j].holes[k].extent.ymin + y;
+					out.geoms[i].parts[j].holes[k].extent.ymax = out.geoms[i].parts[j].holes[k].extent.ymax + y;
+				}
+			}
+			out.geoms[i].parts[j].extent.xmin = out.geoms[i].parts[j].extent.xmin + x;
+			out.geoms[i].parts[j].extent.xmax = out.geoms[i].parts[j].extent.xmax + x;
+			out.geoms[i].parts[j].extent.ymin = out.geoms[i].parts[j].extent.ymin + y;
+			out.geoms[i].parts[j].extent.ymax = out.geoms[i].parts[j].extent.ymax + y;
+		}
+		out.geoms[i].extent.xmin = out.geoms[i].extent.xmin + x;
+		out.geoms[i].extent.xmax = out.geoms[i].extent.xmax + x;
+		out.geoms[i].extent.ymin = out.geoms[i].extent.ymin + y;
+		out.geoms[i].extent.ymax = out.geoms[i].extent.ymax + y;
+	}
+	out.extent.xmin = out.extent.xmin + x;
+	out.extent.xmax = out.extent.xmax + x;
+	out.extent.ymin = out.extent.ymin + y;
+	out.extent.ymax = out.extent.ymax + y;
+	return out;
+}
 

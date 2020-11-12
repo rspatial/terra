@@ -417,6 +417,24 @@ setMethod("shift", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("shift", signature(x="SpatExtent"), 
+	function(x, dx=0, dy=0, ...) { 
+		s <- c(dx[1], dx[1], dy[1], dy[1])
+		ext(as.vector(x) + s)
+	}
+)
+
+
+setMethod("shift", signature(x="SpatVector"), 
+	function(x, dx=0, dy=0, ...) { 
+		x@ptr <- x@ptr$shift(dx, dy)
+		show_messages(x, "shift")		
+	}
+)
+
+
+
 setMethod("slope", signature(x="SpatRaster"), 
 	function(x, neighbors=8, unit="degrees", filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite, wopt)

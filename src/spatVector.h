@@ -207,6 +207,8 @@ class SpatVector {
 
 		SpatVector aggregate(std::string field, bool dissolve);
 		SpatVector disaggregate();
+		SpatVector shift(double x, double y);
+
 //geos
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 		SpatVector intersect(SpatVector v);
