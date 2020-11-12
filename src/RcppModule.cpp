@@ -156,6 +156,7 @@ RCPP_MODULE(spat){
 		.constructor<double, double, double, double>()
 		.property("vector", &SpatExtent::asVector)		
 		.property("valid", &SpatExtent::valid)		
+		.method("align", &SpatExtent::align, "align")		
 		.method("as.points", &SpatExtent::asPoints, "as.points")		
 		.method("ceil",  &SpatExtent::ceil,  "ceil")		
 		.method("compare", &SpatExtent::compare, "compare")		

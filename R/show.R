@@ -21,11 +21,8 @@ setMethod ("show" , "Rcpp_SpatDataFrame",
 setMethod ("show" , "SpatExtent", 
 	function(object) {
 		e <- as.vector(object)
-		cat("class       :" , class(object), "\n")
-		cat("xmin        :" , e[1], "\n")
-		cat("xmax        :" , e[2], "\n")
-		cat("ymin        :" , e[3], "\n")
-		cat("ymax        :" , e[4], "\n")
+		e <- paste(e, collapse=", ")
+		cat("SpatExtent :", e, "(xmin, xmax, ymin, ymax)\n")
 	}
 )	
 	

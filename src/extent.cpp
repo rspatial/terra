@@ -143,6 +143,33 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 }
 
 
+SpatExtent SpatExtent::align(double d, std::string snap) {
+    std::vector<double> e = asVector();
+	if (d == 0) {
+		SpatExtent out = *this;
+		return(out);
+	}
+	d = d < 0 ? -d : d;
+	
+	
+	for (size_t i=0; i<4; i++) {
+		double x = d * trunc(e[i] / d);
+		if ((i == 0) | (i == 2)) {
+			if (x > e[i]) {
+				x -= d;
+			} 
+		} else {
+			if (x < e[i]) {
+				x += d;
+			}
+		}
+		e[i] = x;
+	}
+	SpatExtent out(e[0], e[1], e[2], e[3]);
+	return(out)	;
+}
+
+
 SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 
 	snap = is_in_set_default(snap, std::vector<std::string> {"near", "in", "out"}, "near", true);

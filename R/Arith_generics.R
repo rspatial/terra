@@ -4,6 +4,55 @@
 # License GPL v3
 
 
+setMethod("Arith", signature(e1="SpatExtent", e2="numeric"),
+    function(e1, e2){ 
+		oper <- as.vector(.Generic)[1]
+		if (oper == "%%") { 
+			e1@ptr <- e1@ptr$align(e2[1], "")
+		} else if (oper == "+") {
+			e2 <- rep_len(e2, 4)
+			e2[c(1,3)] <- -e2[c(1,3)]
+			e1 <- ext(as.vector(e1) + e2)
+		} else if (oper == "-") {
+			e2 <- rep_len(e2, 4)
+			e2[c(1,3)] <- -e2[c(1,3)]
+			e1 <- ext(as.vector(e1) - e2)
+		} else if (oper == "*") {
+			e2 <- abs(rep_len(e2, 4))
+			e1 <- as.vector(e1)
+			dx <- (e1[2] - e1[1])
+			dy <- (e1[4] - e1[3]) 
+			mx <- e1[1] + dx/2
+			my <- e1[3] + dy/2
+			e1[1] <- mx - (dx/2)*e2[1]	
+			e1[2] <- mx + (dx/2)*e2[2]		
+			e1[3] <- my - (dy/2)*e2[3]	
+			e1[4] <- my + (dy/2)*e2[4]	
+			e1 <- ext(e1)
+		} else if (oper == "/") {
+			e2 <- abs(rep_len(e2, 4))
+			e1 <- as.vector(e1)
+			dx <- (e1[2] - e1[1])
+			dy <- (e1[4] - e1[3]) 
+			mx <- e1[1] + dx/2
+			my <- e1[3] + dy/2
+			e1[1] <- mx - dx/(2*e2[1])	
+			e1[2] <- mx + dx/(2*e2[2])	
+			e1[3] <- my - dy/(2*e2[3])	
+			e1[4] <- my + dy/(2*e2[4])	
+			e1 <- ext(e1)
+		} else {
+			stop("only +, - and %% are supported")
+		}
+		if (!e1@ptr$valid) {
+			stop("this would create an invalid extent")
+		}
+		e1
+	}	
+)
+
+
+
 setMethod("Arith", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
