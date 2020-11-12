@@ -15,16 +15,16 @@ You can also apply a function \code{fun} across datasets by layer of a \code{Spa
 }
 
 \usage{
-\S4method{app}{SpatRaster}(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())
+\S4method{app}{SpatRaster}(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{app}{SpatDataSet}(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())
+\S4method{app}{SpatDataSet}(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatDataSet}
   \item{fun}{function}
   \item{...}{additional arguments for \code{fun}}  
-  \item{nodes}{positive integer. If \code{nodes > 1}, a 'parallel' package cluster with that many nodes is created. Ignored for C++ level implemented functions "max", "min", "mean", "range", "prod", "sum", "any", and "all"}
+  \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created. Ignored for C++ level implemented functions "max", "min", "mean", "range", "prod", "sum", "any", and "all"}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

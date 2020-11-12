@@ -30,9 +30,8 @@
 
 
 setMethod("aggregate", signature(x="SpatRaster"), 
-function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
+function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
-	#expand=TRUE, 
 	fun <- .makeTextFun(match.fun(fun))
 	toc <- FALSE
 	if (class(fun) == "character") { 
@@ -68,9 +67,9 @@ function(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt
 		outrows  <- c(0, cumsum(outnr))[1:length(outnr)] + 1	
 		nc <- ncol(x)	
 		
-		if (nodes > 1) {
+		if (cores > 1) {
 			doPar <- TRUE
-			cls <- parallel::makeCluster(nodes)
+			cls <- parallel::makeCluster(cores)
 			on.exit(parallel::stopCluster(cls))
 			#f <- function(v, ...) parallel::parSapply(cls, v, fun, ...)
 		} else {

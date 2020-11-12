@@ -56,7 +56,7 @@ This should work on Catalina.
 
 ### Linux
 
-The libraries GDAL (>= 3.0.0), GEOS (>= 3.3.0) and Proj.4 (>= 6.0.0) are required 
+The GDAL (>= 3.0.4), GEOS (>= 3.3.0) and PROJ (>= 6.0.0) libraries are required 
 
 
 To install these on Ubuntu version 18.04 (Bionic) you can do:

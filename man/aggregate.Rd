@@ -15,7 +15,7 @@ Or aggregate ("dissolve") a SpatVector.
 }
 
 \usage{
-\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., nodes=1, filename="", overwrite=FALSE, wopt=list())
+\S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{aggregate}{SpatVector}(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...)
 }
@@ -25,7 +25,7 @@ Or aggregate ("dissolve") a SpatVector.
   \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers)}  
   \item{fun}{function used to aggregate values. Either an actual function, or a character specifying a C++ level implemented function: "mean", "max", "min", "median", "sum" and "modal"}
   \item{...}{additional arguments passed to \code{fun}, such as \code{na.rm=TRUE}}  
-  \item{nodes}{positive integer. If \code{nodes > 1}, a 'parallel' package cluster with that many nodes is created. Ignored for C++ level implemented functions "mean", "max", "min", "median", "sum" and "modal"}  
+  \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created. Ignored for C++ level implemented functions "mean", "max", "min", "median", "sum" and "modal"}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

@@ -1,6 +1,6 @@
 
 setMethod("app", signature(x="SpatRaster"), 
-function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
+function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (inherits(txtfun, "character")) { 
@@ -50,12 +50,12 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 	}
 
 	b <- writeStart(out, filename, overwrite, wopt)
-	if (nodes > 1) {
-		cls <- parallel::makeCluster(nodes)
+	if (cores > 1) {
+		cls <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cls))
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
-			icsz <- max(min(100, ceiling(b$nrows[i] / nodes)), b$nrows[i])
+			icsz <- max(min(100, ceiling(b$nrows[i] / cores)), b$nrows[i])
 			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
 			if (trans) {
 				r <- t(r)
@@ -158,7 +158,7 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 
 
 setMethod("app", signature(x="SpatDataSet"), 
-function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
+function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (inherits(txtfun, "character")) { 
@@ -187,13 +187,13 @@ function(x, fun, ..., nodes=1, filename="", overwrite=FALSE, wopt=list())  {
 	}
 	b <- writeStart(out, filename, overwrite, wopt)
 
-	if (nodes > 1) {
-		cls <- parallel::makeCluster(nodes)
+	if (cores > 1) {
+		cls <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cls))
 		for (i in 1:b$n) {
 			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
 			v <- do.call(cbind, v)
-			icsz <- max(min(100, ceiling(b$nrows[i] / nodes)), b$nrows[i])
+			icsz <- max(min(100, ceiling(b$nrows[i] / cores)), b$nrows[i])
 			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
 			if (test$trans) {
 				r <- t(r)

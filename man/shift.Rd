@@ -10,15 +10,19 @@
 \title{Shift}
 
 \description{
-Shift the location of a SpatRaster, SpatVector or SpatExtent
+Shift the a SpatRaster, SpatVector or SpatExtent to another location.
 }
 
 \usage{
 \S4method{shift}{SpatRaster}(x, dx=0, dy=0, filename="", overwrite=FALSE, wopt=list(), ...)
+
+\S4method{shift}{SpatVector}(x, dx=0, dy=0, ...)
+
+\S4method{shift}{SpatExtent}(x, dx=0, dy=0, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatVector}
+  \item{x}{SpatRaster, SpatVector or SpatExtent}
   \item{dx}{numeric. The shift in horizontal direction}
   \item{dy}{numeric. The shift in vertical direction}
   \item{filename}{character. Output filename. Optional}
@@ -28,7 +32,7 @@ Shift the location of a SpatRaster, SpatVector or SpatExtent
 }
  
 \value{
-Same object type as \code{x}
+Same as \code{x}
 }
 
 
@@ -37,6 +41,9 @@ Same object type as \code{x}
 \examples{
 r <- rast(xmn=0, ymn=0, xmx=1, ymx=1)
 r <- shift(r, dx=1, dy=-1)
+
+e <- ext(r)
+shift(e, 5, 5)
 }
 
 \keyword{spatial}
