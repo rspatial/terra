@@ -192,7 +192,8 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	}
 
 	SpatVector vect;
-	if (!canProcessInMemory(12, opt)) {
+	opt.ncopies = 12;
+	if (!canProcessInMemory(opt)) {
 		vect.setError("the raster is too large");
 		return vect;
 	}

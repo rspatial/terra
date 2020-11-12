@@ -53,24 +53,34 @@ For model-based classification see \code{\link{predict}}
 \examples{
 r <- rast(ncols=10, nrows=10)
 values(r) <- (0:99)/99
+
+## from-to-becomes
 # classify the values into three groups 
 # all values >= 0 and <= 0.25 become 1, etc.
 m <- c(0, 0.25, 1,
        0.25, 0.5, 2,
-	   0.5, 1, 3)
+       0.5, 1, 3)
 rclmat <- matrix(m, ncol=3, byrow=TRUE)
 rc1 <- classify(r, rclmat, include.lowest=TRUE)
 
-# equivalent to
+## cuts
+# equivalent to the above
 rc2 <- classify(r, c(0, 0.25, 0.5, 1), include.lowest=TRUE)
 
-# is becomes 
-x <- round(r*5)
+## is-becomes 
+x <- round(r*3)
 unique(x)
-m <- rbind(c(1,100), c(2,200))
+# replace 0 with NA
+y <- classify(x, cbind(0, NA))
+unique(y)
+
+# multiple replacements
+m <- rbind(c(2, 200), c(3, 300))
 m
+
 rcx1 <- classify(x, m)
 unique(rcx1)
+
 rcx2 <- classify(x, m, othersNA=TRUE)
 unique(rcx2)
 }

@@ -200,7 +200,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 	std::string filename = fnames[0];
 	if (filename == "") {
-		if (!canProcessInMemory(4, opt)) {
+		if (!canProcessInMemory(opt)) {
 			std::string extension = ".tif";
 			filename = tempFile(opt.get_tempdir(), extension);
 			opt.set_filenames({filename});
@@ -230,17 +230,16 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 	source[0].open_write = true;
 	source[0].filename = filename;
-	//bs = getBlockSize(opt.get_blocksizemp(), opt.get_memfrac(), opt.get_steps());
 	bs = getBlockSize(opt);
     #ifdef useRcpp
 	if (opt.verbose) {
-		std::vector<double> mems = mem_needs(opt.get_blocksizemp(), opt); 
+		std::vector<double> mems = mem_needs(opt); 
 		double gb = 1073741824 / 8; 
 		//{memneed, memavail, frac, csize, inmem} ;
 		Rcpp::Rcout<< "max vect size : " << roundn(mems.max_size() / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory avail. : " << roundn(mems[1] / gb, 2) << " GB" << std::endl;
 		Rcpp::Rcout<< "memory allow. : " << roundn(mems[2] * mems[1] / gb, 2) << " GB" << std::endl;
-		Rcpp::Rcout<< "memory needed : " << roundn(mems[0] / gb, 3) << " GB" << "  (" << opt.get_blocksizemp() << " copies)" << std::endl;
+		Rcpp::Rcout<< "memory needed : " << roundn(mems[0] / gb, 3) << " GB" << "  (" << opt.ncopies << " copies)" << std::endl;
 		std::string inmem = mems[4] < 0.5 ? "false" : "true";
 		Rcpp::Rcout<< "in memory     : " << inmem << std::endl;
 		Rcpp::Rcout<< "block size    : " << mems[3] << " rows" << std::endl;

@@ -238,6 +238,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 		out.setError(getError());
 		return(out);
 	}
+	
   	if (!out.writeStart(opt)) { return out; }
 	
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -337,6 +338,8 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		out.setError(getError());
 		return(out);
 	}
+
+		
   	if (!out.writeStart(opt)) { return out; }
 
 	unsigned nl = nlyr();
@@ -479,6 +482,8 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+	
+		
   	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -507,6 +512,8 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		out.setError(getError());
 		return(out);
 	}
+	
+		
   	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -586,6 +593,8 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+	
+		
   	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
@@ -606,6 +615,8 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+	
+		
 	if (!x.readStart()) {
 		out.setError(x.getError());
 		return(out);
@@ -704,6 +715,8 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		out.setError(x.getError());
 		return(out);
 	}
+	
+		
  	if (!out.writeStart(opt)) { return out; }
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
@@ -734,6 +747,8 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+	
+		
   	if (!out.writeStart(opt)) { return out; }
 	std::vector<double> v, m;
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -741,19 +756,20 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 		if (std::isnan(x)) {
 			for(double& d : a)  d = NAN;
 		} else if (oper == "&") {
-//			for(double& d : a)  d & x;
+			for(double& d : a)  d = (d==1) & x;
 		} else if (oper == "|") {
-//			for(double& d : a)  d | x;
+			for(double& d : a)  d = (d==1) | x;
 		} else {
-			// stop
+			out.setError("?");
+			return out;
 		}
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-		
 	}
 	out.writeStop();
 	readStop();		
 	return(out);
 }
+
 
 SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 
@@ -773,6 +789,8 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+
+	
   	if (!out.writeStart(opt)) { return out; }
 	unsigned nl = out.nlyr();
 	std::vector<double> v(nl);
@@ -842,6 +860,8 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		out.setError(getError());
 		return(out);
 	}
+
+	
 	if (!out.writeStart(opt)) { return out; }
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
@@ -893,6 +913,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 		out.setError(getError());
 		return(out);
 	}
+	
   	if (!out.writeStart(opt)) { return out; }
 
 	uint32_t seed = 1;
@@ -933,6 +954,8 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 		out.setError(getError());
 		return(out);
 	}
+
+	
   	if (!out.writeStart(opt)) { return out; }
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
@@ -991,6 +1014,8 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
 			return(out);
 		}
 	}
+
+	
   	if (!out.writeStart(opt)) { return out; }
 	std::vector<double> v(ns);
 	if (add.size() > 0) v.insert( v.end(), add.begin(), add.end() );

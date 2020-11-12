@@ -319,7 +319,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	if (filename == "") {
-		if (!canProcessInMemory(4, opt)) {
+		if (!canProcessInMemory(opt)) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
 		} 
 	} else {

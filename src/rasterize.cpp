@@ -34,7 +34,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	std::string filename = opt.get_filename();
 	std::string driver = filename == "" ? "MEM" : "GTiff";
 
-	bool canRAM = canProcessInMemory(4, opt);
+	bool canRAM = canProcessInMemory(opt);
 	if (filename == "") {
 		if (!canRAM) {
 			filename = tempFile(opt.get_tempdir(), ".tif");

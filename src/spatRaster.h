@@ -160,7 +160,7 @@ class SpatRaster {
 		BlockSize bs;
 		//BlockSize getBlockSize(unsigned n, double frac, unsigned steps=0);
 		BlockSize getBlockSize(SpatOptions &opt);
-		std::vector<double> mem_needs(unsigned n, SpatOptions &opt);
+		std::vector<double> mem_needs(SpatOptions &opt);
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
@@ -383,7 +383,7 @@ class SpatRaster {
 		//SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
 		//SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 
-		bool canProcessInMemory(unsigned n, SpatOptions &opt);
+		bool canProcessInMemory(SpatOptions &opt);
 		uint_64 chunkSize(unsigned n, double frac);
 
 		void fill(double x);

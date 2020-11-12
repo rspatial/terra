@@ -30,8 +30,9 @@ show_messages <- function(x, f="") {
 
 .mem_info <- function(x, n=1, print=TRUE) {
 	n <- max(0,n)
-	opt <- .getOptions()	
-	v <- x@ptr$mem_needs(n, opt)
+	opt <- .getOptions()
+	opt.ncopies = 1;
+	v <- x@ptr$mem_needs(opt)
 	if (print) {
 		gb <- 1024^3 / 8  # 
 		cat("\n----------------------")

@@ -406,7 +406,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		out.setError(z.getError());
 		return(out);
 	}	
-	opt.set_blocksizemp(12);
+	opt.ncopies = 12;
 	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v =    readValues(bs.row[i], bs.nrows[i], 0, ncol());

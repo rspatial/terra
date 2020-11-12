@@ -92,6 +92,7 @@ class SpatOptions {
 		double memfrac = 0.6;
 
 	public:
+		unsigned ncopies = 2;
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
 		//std::string def_bandorder = "BIL";

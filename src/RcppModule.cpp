@@ -197,6 +197,7 @@ RCPP_MODULE(spat){
 		.property("NAflag", &SpatOptions::get_NAflag, &SpatOptions::set_NAflag )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
+		.field("ncopies", &SpatOptions::ncopies, "ncopies")
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
 		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )

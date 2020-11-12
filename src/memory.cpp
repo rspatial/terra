@@ -19,9 +19,9 @@
 #include "ram.h"
 
 
-bool SpatRaster::canProcessInMemory(unsigned n, SpatOptions &opt) {
+bool SpatRaster::canProcessInMemory(SpatOptions &opt) {
 	if (opt.get_todisk()) return false;
-	double demand = size() * n;
+	double demand = size() * opt.ncopies;
 	double supply = (availableRAM()) * opt.get_memfrac();
 	std::vector<double> v;
 	double maxsup = v.max_size(); //for 32 bit systems
@@ -45,14 +45,14 @@ uint_64 SpatRaster::chunkSize(unsigned n, double frac) {
 }
 
 
-std::vector<double> SpatRaster::mem_needs(unsigned n, SpatOptions &opt) {
+std::vector<double> SpatRaster::mem_needs(SpatOptions &opt) {
 	//returning bytes
-	//unsigned n = opt.get_blocksizemp(); 
+	unsigned n = opt.ncopies; 
 	double memneed  = ncell() * (nlyr() * n);
 	double memavail = availableRAM(); 
 	double frac = opt.get_memfrac();
 	double csize = chunkSize(n, frac);
-	double inmem = canProcessInMemory(n, opt); 
+	double inmem = canProcessInMemory(opt); 
 	std::vector<double> out = {memneed, memavail, frac, csize, inmem} ;
 	return out;
 }
