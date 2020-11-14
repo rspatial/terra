@@ -21,6 +21,8 @@ if (!isGeneric("classify")) { setGeneric("classify", function(x, ...) standardGe
 if (!isGeneric("cells")) { setGeneric("cells", function(x, y, ...) standardGeneric("cells")) }
 if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGeneric("collapse"))}
 if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
+if (!isGeneric("crosstab")) { setGeneric("crosstab", function(x, y, ...) standardGeneric("crosstab")) }
+
 if (!isGeneric("depth")) {setGeneric("depth", function(x,...) standardGeneric("depth"))}
 if (!isGeneric("depth<-")) {setGeneric("depth<-", function(x, value) standardGeneric("depth<-"))}
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}

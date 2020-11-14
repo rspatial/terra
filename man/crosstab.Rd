@@ -35,6 +35,7 @@ A table or data.frame
 
 \examples{
 r <- s <- rast(nc=5, nr=5)
+set.seed(1)
 values(r) <- runif(ncell(r)) * 2
 values(s) <- runif(ncell(r)) * 3
 x <- c(r, s)

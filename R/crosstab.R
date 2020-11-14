@@ -5,10 +5,9 @@
 # revised April 2011
 # adapted November 2020
 
-if (!isGeneric("crosstab")) { setGeneric("crosstab", function(x, y, ...) standardGeneric("crosstab")) }
 
 setMethod("crosstab", signature(x="SpatRaster", y="missing"), 
-	function(x, digits=0, long=FALSE, useNA=FALSE, progress="", ...) {
+	function(x, digits=0, long=FALSE, useNA=FALSE, ...) {
 
 		nl <- nlyr(x)
 		if (nl < 2) {
@@ -52,7 +51,9 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 		if (nrow(res) == 0) {
 			res <- data.frame(matrix(nrow=0, ncol=length(nms)+1))
 		} 
+		nms <- make.names(nms, unique=TRUE)
 		colnames(res) <- c(nms, "Freq")	
+
 		if (! useNA ) {
 			i <- apply(res, 1, function(x) any(is.na(x)))
 			res <- res[!i,  ,drop=FALSE]
