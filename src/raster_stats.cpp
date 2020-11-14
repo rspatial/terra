@@ -444,3 +444,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 
 
 
+
+
+
+

@@ -523,6 +523,7 @@ RCPP_MODULE(spat){
 		.method("resize", &SpatRasterCollection::resize, "resize")
 		.method("add", &SpatRasterCollection::push_back, "push_back")	
 		.method("merge", &SpatRasterCollection::merge, "merge")
+		//.method("mosaic", &SpatRasterCollection::mosaic, "mosaic")
 	;
 	
     class_<SpatRasterStack>("SpatDataSet")

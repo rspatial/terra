@@ -100,6 +100,7 @@ if (!isGeneric("isLonLat")) { setGeneric("isLonLat", function(x, ...) standardGe
 if (!isGeneric("mask")) { setGeneric("mask", function(x, mask, ...) standardGeneric("mask")) }	
 if (!isGeneric("match")) { setGeneric("match", function(x, table, nomatch=NA_integer_, incomparables=NULL)		standardGeneric("match"))}
 if (!isGeneric("modal")) {setGeneric("modal", function(x, ...) standardGeneric("modal"))}
+if (!isGeneric("mosaic")) {setGeneric("mosaic", function(x, ...) standardGeneric("mosaic"))}
 
 if (!isGeneric("ncell")) { setGeneric("ncell", function(x) standardGeneric("ncell")) }	
 if (!isGeneric("nrow")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	
