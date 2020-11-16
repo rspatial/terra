@@ -432,11 +432,21 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			main <- rep_len(main, nl)	
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+
+		usefun = 0;
+		if (!is.null(fun)) {
+			usefun = 1;
+			if (!is.null(formals(fun))) {
+				usefun = 2;
+			}
+		}
 		for (i in 1:nl) {
 			#	image(x[[i]], main=main[i], ...)
 			plot(x, i, main=main[i], ...)
-			if (!is.null(fun)) {
+			if (usefun == 1) {
 				fun()
+			} else if (usefun == 2) {
+				fun(i)
 			}
 		}
 	}
