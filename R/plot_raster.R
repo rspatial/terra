@@ -303,12 +303,12 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 	if (draw) {
 		out <- .plotit(out, new=new, ...)
 	}
-	out
+	invisible(out)
 }
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, ...) {
+	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, fun=NULL, ...) {
 
 		x <- x[[y]]
 		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
@@ -337,7 +337,15 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
 		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, pal=pal, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, ...)
 
-		x
+		usefun = 0;
+		if (!is.null(fun)) {
+			if (!is.null(formals(fun))) {
+				fun(1)
+			} else {
+				fun()
+			}
+		}
+		invisible(x)
 	}
 )
 
@@ -396,6 +404,14 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 	function(x, y, maxcell=50000, nc, nr, main, maxnl=16, fun=NULL, ...)  {
 
 		nl <- max(1, min(nlyr(x), maxnl))
+		usefun = 0;
+		if (!is.null(fun)) {
+			if (!is.null(formals(fun))) {
+				usefun = 2;
+			} else {
+				usefun = 1;
+			}
+		}
 
 		if (nl==1) {
 			if (missing(main)) {
@@ -403,8 +419,10 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			} else {
 				out <- plot(x, 1, maxcell=maxcell, main=main, ...)
 			}
-			if (!is.null(fun)) {
+			if (usefun == 1) {
 				fun()
+			} else if (usefun == 2) {
+				fun(1)
 			}
 			return(invisible(out))
 		}
@@ -433,13 +451,6 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
-		usefun = 0;
-		if (!is.null(fun)) {
-			usefun = 1;
-			if (!is.null(formals(fun))) {
-				usefun = 2;
-			}
-		}
 		for (i in 1:nl) {
 			#	image(x[[i]], main=main[i], ...)
 			plot(x, i, main=main[i], ...)

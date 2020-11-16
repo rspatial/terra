@@ -17,7 +17,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE,
   pal=list(), pax=list(), maxcell=50000, fun=NULL, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, nc, nr, main, maxnl=16, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, nc, nr, main, maxnl=16, fun=NULL, ...)
 }
 
 \arguments{
@@ -35,7 +35,7 @@ Plot (that is, make a map of) the values of a SpatRaster or SpatVector
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
-  \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as, text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the the layer that is plotted (1 to the number of layers) }  
+  \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the the layer that is plotted (1 to the number of layers) }  
   \item{...}{additional graphical arguments}  
 }
 
