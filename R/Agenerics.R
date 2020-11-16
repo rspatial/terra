@@ -66,7 +66,6 @@ if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGen
 if (!isGeneric("animate")) { setGeneric("animate", function(x, ...) standardGeneric("animate")) }	
 
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}	
-#if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names=NULL, optional=FALSE, ...) standardGeneric("as.data.frame"))}	
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, ...) standardGeneric("as.data.frame"))}	
 
 if (!isGeneric("as.list")) { setGeneric("as.list", function(x, ...) standardGeneric("as.list"))}	
