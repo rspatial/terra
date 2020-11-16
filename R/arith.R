@@ -4,7 +4,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 
 	out <- rast(x)
 	nc <- ncol(x)
-	if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+	readStart(x)
 	on.exit(readStop(x))
 
 # test the shape of the output by testing with one row

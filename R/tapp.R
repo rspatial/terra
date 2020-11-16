@@ -28,7 +28,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	out <- rast(x)
 	nlyr(out) <- length(uin)
 	names(out) <- nms
-	if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+	readStart(x)
 	on.exit(readStop(x))
 	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {

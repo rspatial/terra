@@ -123,6 +123,17 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 	}
 )
 
+setAs("SpatRaster", "data.frame", 
+	function(from) {
+		as.data.frame(from)
+	}
+)
+
+setAs("SpatVector", "data.frame", 
+	function(from) {
+		as.data.frame(from)
+	}
+)
 
 setMethod("as.array", signature(x="SpatRaster"), 
 	function(x, ...) {

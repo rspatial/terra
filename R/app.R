@@ -15,7 +15,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	out <- rast(x)
 	nlyr(out) <- 1
 	nc <- ncol(x)
-	if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+	readStart(x)
 	on.exit(readStop(x))
 
 # figure out the shape of the output by testing with one row
@@ -175,7 +175,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	
 	ncx <- ncol(x[1])
 	nrx <- nrow(x[1])
-	if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+	readStart(x)
 	on.exit(readStop(x))
 
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))

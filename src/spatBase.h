@@ -164,8 +164,9 @@ class SpatOptions {
 class SpatExtent {
 	public:
 		double xmin, xmax, ymin, ymax;
-		double inf = std::numeric_limits<double>::infinity();
-		double neginf = -std::numeric_limits<double>::infinity();
+		// #include <limits>
+		//double inf = std::numeric_limits<double>::infinity();
+		//double neginf = -std::numeric_limits<double>::infinity();
 //		SpatExtent() {xmin = inf; xmax = neginf; ymin = inf; ymax = neginf;}
 		SpatExtent() {xmin = -180; xmax = 180; ymin = -90; ymax = 90;}
 		SpatExtent(double _xmin, double _xmax, double _ymin, double _ymax) {xmin = _xmin; xmax = _xmax; ymin = _ymin; ymax = _ymax;}

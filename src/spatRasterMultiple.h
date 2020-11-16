@@ -36,7 +36,8 @@ class SpatRasterCollection {
 
 		SpatRaster merge(SpatOptions &opt);
 		SpatRaster mosaic(SpatOptions &opt);
-
+		SpatRaster summary(std::string fun, SpatOptions &opt);
+		
 };
 
 // A class for "sub-datasets" 

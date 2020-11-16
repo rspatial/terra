@@ -1,5 +1,94 @@
-
 #include "spatRasterMultiple.h"
+
+std::vector<double> mean2d(const std::vector<std::vector<double>> &x) {
+	size_t n = x[0].size();
+	size_t nn = x.size();
+	std::vector<double> out(n, NAN);
+	size_t d;
+	double v;
+	for (size_t i=0; i<n; i++) {
+		v = 0;
+		d = 0;
+		for (size_t j=0; i<nn; j++) {
+			if (!isnan(x[i][j])) {
+				v += x[i][j];
+				d++;
+			}
+		}
+		if (d > 0) {
+			out[i] = v / d;		
+		}
+	}
+	return out;
+}	
+
+
+std::vector<double> SpatRaster::readExtent(SpatExtent e) {
+	std::vector<double> out;
+	return out;
+}
+
+
+SpatRaster SpatRasterCollection::summary(std::string fun, SpatOptions &opt) {
+
+	SpatRaster out;
+	unsigned n = size();
+
+	if (n == 0) {
+		out.setError("empty collection");
+		return(out);
+	}
+	if (n == 1) {
+		out = x[0].deepCopy();
+		return(out);
+	}
+	
+	bool anyvals = x[0].hasValues();
+	out = x[0].geometry();
+	SpatExtent e = x[0].getExtent();
+	for (size_t i=n; i>0; i--) {
+		// for now, must have same nlyr; but should be easy to recycle.
+								 //  lyrs, crs, warncrs, ext, rowcol, res
+		if (!x[0].compare_geom(x[i], true, false, false, false, false, true)) {
+			out.setError(x[0].msg.error);
+			return(out);
+		}
+		e.unite(x[i].getExtent());
+		if (x[i].hasValues()) {
+			anyvals = true;
+			x[i].readStart();
+		} else {
+			x.erase(x.begin()+i, x.begin()+i+1);
+			n--;
+		}
+	}
+	out.setExtent(e, true);
+	e = out.getExtent();
+	if (!anyvals) return out;
+
+ 	if (!out.writeStart(opt)) { return out; }
+//	out.fill(NAN);
+    double xmin = e.xmin;
+    double xmax = e.xmax;
+	
+	std::vector<std::vector<double>> v(n);
+	for (size_t i=0; i < out.bs.n; i++) {
+		double ymin = out.yFromRow(out.bs.row[i]);
+		double ymax = out.yFromRow(out.bs.row[i]+out.bs.nrows[i]-1);
+		for (size_t j=0; j<n; j++) {
+			SpatExtent readext = {xmin, xmax, ymin, ymax};
+			v[j] = x[i].readExtent(readext);
+		}
+		// apply method
+	}
+
+
+	out.writeStop();
+	//readStop();
+	return(out);
+}
+
+
 
 /// to be done
 /*

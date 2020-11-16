@@ -274,6 +274,7 @@ RCPP_MODULE(spat){
 		.method("extent", &SpatVector::getExtent, "extent")		
 		.method("getDF", &getVectorAttributes, "get attributes")
 		.method("getGeometry", &getGeometry, "getGeometry")
+		.method("getGeometryWKT", &SpatVector::getGeometryWKT, "getGeometryWKT")
 		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
 		.method("length", &SpatVector::length, "length")		
 

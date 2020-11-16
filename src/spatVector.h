@@ -88,6 +88,7 @@ class SpatVector {
 		SpatVector(SpatGeom g);
 		SpatVector(SpatExtent e, std::string crs);
 		SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomType g, std::string crs);
+		SpatVector(std::vector<std::string> wkt);
 
 		SpatGeom window;
 
@@ -138,6 +139,8 @@ class SpatVector {
 		bool addGeom(SpatGeom p);
 		bool setGeom(SpatGeom p);
 		SpatDataFrame getGeometryDF();
+		std::vector<std::string> getGeometryWKT();
+
 		std::vector<std::vector<double>> coordinates();
 
 		SpatVector project(std::string crs);

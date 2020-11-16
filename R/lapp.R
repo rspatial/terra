@@ -42,7 +42,7 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 		fnames <- names(formals(fun))
 		x <- x[[names(x) %in% fnames]]
 	}
-	if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+	readStart(x)
 	on.exit(readStop(x))
 	ncx <- ncol(x)
 	v <- readValues(x, round(0.5*nrow(x)), 1, 1, ncx, dataframe=TRUE)
@@ -105,7 +105,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	
 	ncx <- ncol(x[1])
 	nrx <- nrow(x[1])
-	if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+	readStart(x)
 	on.exit(readStop(x))
 	
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))

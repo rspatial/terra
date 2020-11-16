@@ -50,7 +50,7 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 	
 	} else {
 		out <- rast(x)
-		if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+		readStart(x)
 		on.exit(readStop(x))
 		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {

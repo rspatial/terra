@@ -75,6 +75,7 @@ class RasterSource {
 		bool flipped=false;
 		bool hasWindow=false;
 		SpatWindow window;
+	
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
@@ -104,10 +105,10 @@ class RasterSource {
 		bool hasValues=false;
 		std::string filename;
 		std::string driver;
-
+		std::string datatype; 
+		
 		// for native files
-		std::string datatype; // also for writing gdal
-		double NAflag;
+		//double NAflag;
 
 		std::vector<bool> has_scale_offset;
 		std::vector<double> scale;
@@ -340,7 +341,9 @@ class SpatRaster {
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 		std::vector<std::vector<double>> readBlock2(BlockSize bs, unsigned i);
 		std::vector<double> readBlockIP(BlockSize bs, unsigned i);		
+		std::vector<double> readExtent(SpatExtent e);
 		bool readStop();
+
 
 		bool writeStart(SpatOptions &opt);
 		bool writeValues(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols);

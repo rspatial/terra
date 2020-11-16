@@ -352,6 +352,72 @@ SpatDataFrame SpatVector::getGeometryDF() {
 	return out;
 }
 
+
+std::vector<std::string> SpatVector::getGeometryWKT() {
+
+	std::vector<std::string> out(size());
+	std::string wkt;
+	for (size_t i=0; i < size(); i++) {
+		SpatGeom g = getGeom(i);
+		size_t n = g.size();
+		if (g.gtype == points) {
+			if (n > 1) {
+				wkt = "MULTIPOINT ";
+			} else {
+				wkt = "POINT ";				
+			}
+		} else if (g.gtype == lines) {
+			if (n > 1) {
+				wkt = "MULTILINESTRING (";
+			} else {
+				wkt = "LINESTRING ";		
+			}
+		} else if (g.gtype == polygons) {
+			if (n > 1) {
+				wkt = "MULTIPOLYGON ((";
+			} else {
+				wkt = "POLYGON (";
+			}
+		}
+		
+		for (size_t j=0; j < g.size(); j++) {
+			SpatPart p = g.getPart(j);
+			if (j > 0) {
+				wkt += ")(";	
+			} else {
+				wkt += "("; 
+			}
+			for (size_t q=0; q < p.x.size(); q++) {
+				if (q > 0) wkt += ", ";
+				wkt += std::to_string(p.x[q]) + " " + std::to_string(p.y[q]);
+			}
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					SpatHole h = p.getHole(k);
+					wkt += "),(";	
+					for (size_t q=0; q < h.x.size(); q++) {
+						if (q > 0) wkt += ", ";
+						wkt += std::to_string(h.x[q]) + " " + std::to_string(h.y[q]);
+					}
+				}
+			}
+			wkt += ")";
+			if (n > 1) {
+				if (g.gtype == polygons) {
+					wkt += "))";	
+				} else {
+					wkt += ")";
+				}
+			} else if (g.gtype == polygons) {
+				wkt += ")";				
+			}
+		}
+		out[i] = wkt;
+	}
+	return out;
+}
+
+
 SpatGeomType SpatVector::getGType(std::string &type) {
 	if (type == "points") { return points; }
 	else if (type == "lines") { return lines; }

@@ -18,7 +18,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 		opt <- .getOptions()	
 		
 		b <- x@ptr$getBlockSize(4, opt$memfrac)		
-		if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+		readStart(x)
 		on.exit(readStop(x))
 		
 		res <- NULL

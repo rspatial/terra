@@ -41,10 +41,15 @@ setMethod("geomtype", signature(x="Spatial"),
 )	
 
 setMethod("geom", signature(x="SpatVector"), 
-	function(x, ...){ 
-		x@ptr$getGeometry()
+	function(x, wkt=FALSE, ...){
+		if (wkt) {
+			x@ptr$getGeometryWKT()
+		} else {
+			x@ptr$getGeometry()
+		}
 	}
 )	
+
 
 setMethod("dim", signature(x="SpatVector"), 
 	function(x){ 

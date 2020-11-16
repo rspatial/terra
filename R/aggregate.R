@@ -77,7 +77,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 			#f <- function(v, ...) sapply(v, fun, ...)
 		}
 
-		if (!readStart(x)) { stop(x@ptr$messages$getError()) }
+		readStart(x)
 		ignore <- writeStart(out, filename, overwrite, wopt)
 		if (doPar) {
 			for (i in 1:b$n) {
