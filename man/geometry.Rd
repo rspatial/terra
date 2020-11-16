@@ -20,6 +20,7 @@ If \code{wkt=TRUE}, the"well-known text" reprentation is returned.
 
 \arguments{
   \item{x}{SpatVector}
+  \item{wkt}{logical. If \code{TRUE} the WKT geometry is returned}  
   \item{...}{additional arguments. None implemented}  
 }
 
@@ -53,7 +54,7 @@ v <- vect(f)
 g <- geom(v)
 head(g)
 
-w <- geom(v, "wkt")
+w <- geom(v, wkt=TRUE)
 head(w)
 }
 

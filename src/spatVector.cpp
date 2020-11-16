@@ -387,17 +387,16 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			} else {
 				wkt += "("; 
 			}
-			for (size_t q=0; q < p.x.size(); q++) {
-				if (q > 0) wkt += ", ";
-				wkt += std::to_string(p.x[q]) + " " + std::to_string(p.y[q]);
+			wkt += std::to_string(p.x[0]) + " " + std::to_string(p.y[0]);
+			for (size_t q=1; q < p.x.size(); q++) {
+				wkt += ", " + std::to_string(p.x[q]) + " " + std::to_string(p.y[q]);
 			}
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
 					SpatHole h = p.getHole(k);
-					wkt += "),(";	
-					for (size_t q=0; q < h.x.size(); q++) {
-						if (q > 0) wkt += ", ";
-						wkt += std::to_string(h.x[q]) + " " + std::to_string(h.y[q]);
+					wkt += "),(" + std::to_string(h.x[0]) + " " + std::to_string(h.y[0]);
+					for (size_t q=1; q < h.x.size(); q++) {
+						wkt += ", " + std::to_string(h.x[q]) + " " + std::to_string(h.y[q]);
 					}
 				}
 			}
