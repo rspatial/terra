@@ -35,7 +35,7 @@ SpatRaster or SpatVector
 
 \examples{
 \dontrun{
-# select a subset of a RasterLayer
+# select a subset of a SpatRaster
 r <- rast(nrow=10, ncol=10)
 values(r) <- 1:ncell(r)
 plot(r)

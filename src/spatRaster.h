@@ -479,6 +479,9 @@ class SpatRaster {
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 
+
+		SpatRaster separate(std::vector<double> classes, double keepvalue, double othervalue, SpatOptions &opt);
+
 		SpatRaster modal(std::vector<double> add, std::string ties, bool narm, SpatOptions &opt);
 
         std::vector<double> polygon_cells(SpatGeom& g);

@@ -460,7 +460,10 @@ RCPP_MODULE(spat){
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")		
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
+		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")	
 		.method("selRange", &SpatRaster::selRange, "selRange")
+		.method("separate", &SpatRaster::separate, "separate")
+		
 		.method("cover", &SpatRaster::cover, "cover")
 		.method("crop", &SpatRaster::crop, "crop")
 		.method("cum", &SpatRaster::cum, "cum")

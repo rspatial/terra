@@ -47,6 +47,8 @@ if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("
 if (!isGeneric("fill") ) { setGeneric("fill", function(x, ...) standardGeneric("fill")) }
 if (!isGeneric("sds") ) { setGeneric("sds", function(x, ...) standardGeneric("sds")) }
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}	
+if (!isGeneric("separate")) {setGeneric("separate", function(x, ...) standardGeneric("separate"))}	
+
 if (!isGeneric("selectRange")) {setGeneric("selectRange", function(x, ...) standardGeneric("selectRange"))}
 if (!isGeneric("setValues")) {setGeneric("setValues", function(x, ...) standardGeneric("setValues"))}	
 if (!isGeneric("slope")) {setGeneric("slope", function(x, ...) standardGeneric("slope"))}	

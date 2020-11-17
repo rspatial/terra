@@ -319,6 +319,7 @@ setMethod("freq", signature(x="SpatRaster"),
 )
 
 
+
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite,wopt)
@@ -403,6 +404,14 @@ setMethod("rotate", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("separate", signature(x="SpatRaster"), 
+	function(x, classes=NULL, keep=FALSE, other=0, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite,wopt)
+		if (is.null(classes)) classes <- 1[0]
+		x@ptr <- x@ptr$separate(classes, keep, other, opt)
+		show_messages(x, "separate")		
+	}
+)
 
 
 setMethod("shift", signature(x="SpatRaster"), 

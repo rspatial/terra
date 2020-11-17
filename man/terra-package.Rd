@@ -44,6 +44,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
 \code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
+\code{layerize}\tab\code{\link{separate}}\cr
 \code{clump}\tab\code{patches}\cr
 }
 
@@ -137,11 +138,11 @@ Also see the methods in section XI
     \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
     \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
     \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
-    \code{crosstab} \tab Cross-tabulate two SpatRasters\cr
+    \code{\link{crosstab}} \tab Cross-tabulate two SpatRasters\cr
     \code{\link{quantile}} \tab Quantiles \cr
     \code{\link[terra]{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
     \code{\link{area}} \tab Compute the total area covered by cells \cr
-    \code{stretch} \tab Stretch values \cr
+    \code{\link{stretch}} \tab Stretch values \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }

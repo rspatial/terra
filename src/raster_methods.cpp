@@ -24,6 +24,73 @@
 #include "math_utils.h"
 
 
+
+SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, double othervalue, SpatOptions &opt) {
+
+	SpatRaster out;
+	if (nlyr() > 1) {
+		out.setError("input may only have one layer");
+		return out;
+	}
+	if (classes.size() == 0) {
+		SpatOptions topt(opt);
+		std::vector<std::vector<double>> rc = unique(false, topt);
+		classes = rc[0];
+	} 
+
+	std::vector<int> uc(classes.size());
+	for (size_t i=0; i<classes.size(); i++) {
+		uc[i] = round(classes[i]);
+	}
+	std::sort(uc.begin(), uc.end());
+	uc.erase(std::unique(uc.begin(), uc.end()), uc.end());
+	
+	size_t n = uc.size();
+	if (n == 0) {
+		out.setError("no valid classes");
+		return out;		
+	}
+	out = geometry(n);
+	std::vector<std::string> snms(n);
+	for (size_t i=0; i<n; i++) {
+		snms[i] = std::to_string(uc[i]);
+	}	
+	out.setNames(snms);
+		
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+  	if (!out.writeStart(opt)) { return out; }
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		size_t nn = v.size();
+		std::vector<double> vv(nn * n, NAN);
+		for (size_t j=0; j<nn; j++) {
+			if (!std::isnan(v[j])) {
+				for (size_t k=0; k<uc.size(); k++) {
+					if (v[j] == uc[k]) {
+						if (keepvalue) {
+							vv[j + k*nn] = uc[k];
+						} else {
+							vv[j + k*nn] = 1;	 // true						
+						}
+					} else {
+						vv[j + k*nn] = othervalue;						
+					}
+				}
+				
+			}
+		} 
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
 SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
