@@ -21,7 +21,7 @@ See below for instructions on installing the *development version*
 
 ### All OS
 
-First intstall the packages that terra depends on 
+First install the packages that terra depends on 
 
 ```
 install.packages(c("raster", "Rcpp"))
