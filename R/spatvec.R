@@ -59,10 +59,10 @@ setMethod("dim", signature(x="SpatVector"),
 
 setMethod("as.data.frame", signature(x="SpatVector"), 
 	function(x, geom=FALSE, ...) {
-		d <- data.frame(x@ptr$getDF(), check.names = FALSE, fix.empty.names = FALSE, stringsAsFactors=FALSE)
+		d <- data.frame(x@ptr$getDF(), check.names=FALSE, fix.empty.names=FALSE, stringsAsFactors=FALSE)
 		colnames(d) <- x@ptr$names
 		if (geom) {
-			d$geom <- geom(x, TRUE)
+			d$geometry <- geom(x, TRUE)
 		}
 		d
 	}

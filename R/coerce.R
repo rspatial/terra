@@ -9,7 +9,6 @@
 #		lapply(1:nlyr(x), function(i) x[[i]])
 #	}
 #)
-
  
 setMethod("as.polygons", signature(x="SpatRaster"), 
 	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE, ...) {
@@ -276,11 +275,24 @@ setAs("SpatRaster", "Raster",
 	}
 )
 
-
+# to spatvector. indirect, via sp
+# should be made direct
 setAs("sf", "SpatVector", 
 	function(from) {
 		from <- methods::as(from, "Spatial")
 		methods::as(from, "SpatVector")
+	}
+)
+
+
+# to sf. direct
+setAs("SpatVector", "sf", 
+	function(from) {
+		g <- as.data.frame(from, geom=TRUE)
+		g$geom <- sf::st_as_sfc(g$geometry)
+		g <- sf::st_as_sf(g)
+		sf::st_crs(g) <- crs(from)
+		g
 	}
 )
 

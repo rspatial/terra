@@ -15,7 +15,7 @@
 \title{Plot a SpatVector}
 
 \description{
-Plot (that is, make a map of) using a SpatVector
+Plot SpatVector data to make a map
 }
 
 \usage{
@@ -46,7 +46,7 @@ Plot (that is, make a map of) using a SpatVector
   \item{axes}{logical. Draw axes?}
   
   \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend)}
-  \item{add}{logical. If \code{TRUE} add the object to the current plot (for points, lines, and polygons  this is an alternative to the \code{lines} or \code{points} methods}   
+  \item{add}{logical. If \code{TRUE} add the object to the current plot (for points, lines, and polygons). This is an alternative to the \code{lines} or \code{points} methods}   
   \item{...}{additional graphical arguments}  
 }
 

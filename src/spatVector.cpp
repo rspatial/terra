@@ -352,6 +352,12 @@ SpatDataFrame SpatVector::getGeometryDF() {
 	return out;
 }
 
+std::string nice_string(const double &x) {
+	std::string s = std::to_string(x);
+	s.erase(s.find_last_not_of('0') + 1, std::string::npos);
+	s.erase(s.find_last_not_of('.') + 1, std::string::npos);
+	return s;
+}
 
 std::vector<std::string> SpatVector::getGeometryWKT() {
 
@@ -368,48 +374,58 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			}
 		} else if (g.gtype == lines) {
 			if (n > 1) {
-				wkt = "MULTILINESTRING (";
+				wkt = "MULTILINESTRING ";
 			} else {
 				wkt = "LINESTRING ";		
 			}
 		} else if (g.gtype == polygons) {
 			if (n > 1) {
-				wkt = "MULTIPOLYGON ((";
+				wkt = "MULTIPOLYGON ";
 			} else {
-				wkt = "POLYGON (";
+				wkt = "POLYGON ";
 			}
 		}
 		
-		for (size_t j=0; j < g.size(); j++) {
+		if (n == 0) {
+			wkt += "EMPTY";
+			out[i] = wkt;
+			continue;
+		}
+
+		if ((g.gtype == polygons) | (n > 1)) { 
+			wkt += "(";
+		}			
+		
+		for (size_t j=0; j < n; j++) {
 			SpatPart p = g.getPart(j);
-			if (j > 0) {
-				wkt += ")(";	
-			} else {
-				wkt += "("; 
-			}
-			wkt += std::to_string(p.x[0]) + " " + std::to_string(p.y[0]);
+			if (j>0) wkt += ",";
+
+			if ((g.gtype == polygons) & (n > 1)) { 
+				wkt += "(";
+			}			
+		
+			wkt += "(" + nice_string(p.x[0]) + " " + nice_string(p.y[0]);
 			for (size_t q=1; q < p.x.size(); q++) {
-				wkt += ", " + std::to_string(p.x[q]) + " " + std::to_string(p.y[q]);
-			}
-			if (p.hasHoles()) {
-				for (size_t k=0; k < p.nHoles(); k++) {
-					SpatHole h = p.getHole(k);
-					wkt += "),(" + std::to_string(h.x[0]) + " " + std::to_string(h.y[0]);
-					for (size_t q=1; q < h.x.size(); q++) {
-						wkt += ", " + std::to_string(h.x[q]) + " " + std::to_string(h.y[q]);
-					}
-				}
+				wkt += ", " + nice_string(p.x[q]) + " " + nice_string(p.y[q]);
 			}
 			wkt += ")";
-			if (n > 1) {
-				if (g.gtype == polygons) {
-					wkt += "))";	
-				} else {
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					if (k>0) wkt += ",";
+					SpatHole h = p.getHole(k);
+					wkt += ",(" + nice_string(h.x[0]) + " " + nice_string(h.y[0]);
+					for (size_t q=1; q < h.x.size(); q++) {
+						wkt += ", " + nice_string(h.x[q]) + " " + nice_string(h.y[q]);
+					}
 					wkt += ")";
 				}
-			} else if (g.gtype == polygons) {
-				wkt += ")";				
 			}
+			if ((g.gtype == polygons) & (n > 1)) { 
+				wkt += ")";
+			}			
+		}
+		if ((g.gtype == polygons) | (n > 1)) {
+			wkt += ")";
 		}
 		out[i] = wkt;
 	}
