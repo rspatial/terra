@@ -285,11 +285,10 @@ setAs("sf", "SpatVector",
 )
 
 
-# to sf. direct
 setAs("SpatVector", "sf", 
 	function(from) {
 		g <- as.data.frame(from, geom=TRUE)
-		g$geom <- sf::st_as_sfc(g$geometry)
+		g$geometry <- sf::st_as_sfc(g$geometry)
 		g <- sf::st_as_sf(g)
 		sf::st_crs(g) <- crs(from)
 		g
