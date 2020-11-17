@@ -173,7 +173,8 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			.factorLegend(leg.ext, 1:length(uv), ucols, uv, n)
 		} else {
 			zlim <- range(uv, na.rm=TRUE)
-			if (missing(digits)) {
+			digits <- list(...)$digits
+			if (is.null(digits)) {
 				dif <- diff(zlim)
 				if (dif == 0) {
 					digits = 0;
