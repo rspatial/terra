@@ -17,7 +17,7 @@ Flip the values of a SpatRaster by inverting the order of the rows (\code{vertic
 }
 
 \usage{
-\S4method{flip}{SpatRaster}(x, vertical=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{flip}{SpatRaster}(x, direction="vertical", filename="", overwrite=FALSE, wopt=list(), ...)
 
 \S4method{rev}{SpatRaster}(x)
 }
