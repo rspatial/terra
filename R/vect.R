@@ -22,6 +22,10 @@ setMethod("vect", signature(x="character"),
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			p@ptr <- SpatVector$new(x)
+			dots <- list(...)
+			if (!is.null(dots$crs)) {
+				crs(p) <- dots$crs
+			}
 		} else {
 			p@ptr <- SpatVector$new()
 			x <- normalizePath(x)

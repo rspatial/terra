@@ -16,29 +16,6 @@ setMethod("origin", signature(x="SpatRaster"),
 	}
 )	
 
-setMethod("rectify", signature(x="SpatRaster"), 
-	function(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt)
-		if (!is.null(aoi)) {
-			if (inherits(aoi, "SpatExtent")) {
-				aoi <- rast(aoi)
-				useaoi <- 1
-			} else if (inherits(aoi, "SpatRaster")) {
-				aoi <- rast(aoi)
-				useaoi <- 2
-			} else {
-				stop("ext must be a SpatExtent or SpatRaster")
-			}
-		} else {
-			aoi <- rast()
-			useaoi <- 0
-		}
-		snap <- as.logical(snap)
-		x@ptr <- x@ptr$rectify(method, aoi@ptr, useaoi, snap, opt)
-		show_messages(x, "rectify")
-	}
-)
-
 setMethod("adjacent", signature(x="SpatRaster"), 
 	function(x, cells, directions="rook", include=FALSE, ...) {
 		v <- x@ptr$adjacent(cells-1, directions, include)
@@ -276,9 +253,9 @@ setMethod("disaggregate", signature(x="SpatRaster"),
 
 setMethod("flip", signature(x="SpatRaster"), 
 	function(x, direction="vertical", filename="", overwrite=FALSE, wopt=list(), ...) {
-		d <- match.arg(direction, c("vertical", "horizontal")) == "vertical"
+		d <- match.arg(direction, c("vertical", "horizontal")) 
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$flip(d, opt)
+		x@ptr <- x@ptr$flip(d == "vertical", opt)
 		show_messages(x, "flip")
 	}
 )
@@ -396,6 +373,40 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	}
 )
 
+setMethod("rectify", signature(x="SpatRaster"), 
+	function(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		if (!is.null(aoi)) {
+			if (inherits(aoi, "SpatExtent")) {
+				aoi <- rast(aoi)
+				useaoi <- 1
+			} else if (inherits(aoi, "SpatRaster")) {
+				aoi <- rast(aoi)
+				useaoi <- 2
+			} else {
+				stop("ext must be a SpatExtent or SpatRaster")
+			}
+		} else {
+			aoi <- rast()
+			useaoi <- 0
+		}
+		snap <- as.logical(snap)
+		x@ptr <- x@ptr$rectify(method, aoi@ptr, useaoi, snap, opt)
+		show_messages(x, "rectify")
+	}
+)
+
+setMethod("resample", signature(x="SpatRaster", y="SpatRaster"), 
+	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
+		method <- ifelse(method == "ngb", "near", method)
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, opt)
+		show_messages(x, "resample")
+	}
+)
+
+
+
 setMethod("rev", signature(x="SpatRaster"), 
 	function(x) { 
 		opt <- .runOptions("", FALSE, list())
@@ -451,10 +462,30 @@ setMethod("shift", signature(x="SpatVector"),
 setMethod("slope", signature(x="SpatRaster"), 
 	function(x, neighbors=8, unit="degrees", filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite, wopt)
-		stopifnot(neighbors %in% c(4,8))
-		stopifnot(unit %in% c("degrees", "radians"))
-		x@ptr <- x@ptr$slope(neighbors, unit=="degrees", opt)
+		unit <- match.arg(unit, c("degrees", "radians"))
+		x@ptr <- x@ptr$slope(neighbors[1], unit=="degrees", opt)
 		show_messages(x, "slope")		
+	}
+)
+
+
+
+setMethod("stretch", signature(x="SpatRaster"), 
+	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- .runOptions(filename, overwrite, wopt)
+		x@ptr <- x@ptr$stretch(minv, maxv, minq, maxq, smin, smax, opt)
+		show_messages(x, "stretch")
+	}
+)
+
+
+
+setMethod("summary", signature(object="SpatRaster"), 
+	function(object, size=100000, warn=TRUE, ...)  {
+		if (warn && (ncell(object) > size)) {
+			warning("'summary' used a sample")
+		}
+		summary(spatSample(object, size, method="regular"), ...)
 	}
 )
 
@@ -498,35 +529,6 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		u
 	}
 )
-
-
-setMethod("resample", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, method="bilinear", filename="", overwrite=FALSE, wopt=list(), ...)  {
-		method <- ifelse(method == "ngb", "near", method)
-		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, opt)
-		show_messages(x, "resample")
-	}
-)
-
-setMethod("summary", signature(object="SpatRaster"), 
-	function(object, size=100000, warn=TRUE, ...)  {
-		if (warn && (ncell(object) > size)) {
-			warning("'summary' used a sample")
-		}
-		summary(spatSample(object, size, method="regular"), ...)
-	}
-)
-
-
-setMethod("stretch", signature(x="SpatRaster"), 
-	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$stretch(minv, maxv, minq, maxq, smin, smax, opt)
-		show_messages(x, "stretch")
-	}
-)
-
 
 
 #setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 

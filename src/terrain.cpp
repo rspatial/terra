@@ -217,6 +217,10 @@ SpatRaster SpatRaster::slope(unsigned neighbors, bool degrees, SpatOptions &opt)
 		out.setError("provide a single layer object");
 		return out;
 	}
+	if ((neighbors != 4) && (neighbors != 8)) {
+		out.setError("neighbors should be 4 or 8");
+		return out;		
+	}
 	std::vector<double> d = getValues();
 	std::vector<double> y;
 	bool lonlat = could_be_lonlat();

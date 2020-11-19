@@ -90,7 +90,7 @@ if (!isGeneric("density")) { setGeneric("density", function(x, ...) standardGene
 if (!isGeneric("distance")) {setGeneric("distance", function(x, y, ...)standardGeneric("distance"))}	
 if (!isGeneric("extract")) { setGeneric("extract", function(x, y, ...) standardGeneric("extract"))}	
 if (!isGeneric("expand")) {setGeneric("expand", function(x, y, ...) standardGeneric("expand"))}	
-if (!isGeneric("flip")) {setGeneric("flip", function(x, direction, ...) standardGeneric("flip")) }
+if (!isGeneric("flip")) {setGeneric("flip", function(x, ...) standardGeneric("flip")) }
 if (!isGeneric("focal")) { setGeneric("focal", function(x, ...) standardGeneric("focal")) }
 if (!isGeneric("freq")) { setGeneric("freq", function(x, ...) standardGeneric("freq")) }	
 if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("geom"))}	

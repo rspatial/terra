@@ -26,12 +26,14 @@ Create a new SpatVector
 }
 
 \arguments{
-\item{x}{character (filename), data.frame, matrix, missing, or a vector object defined in packages \code{sf} or \code{sp}. If \code{x} is a filename, all other arguments are ignored}
+\item{x}{character (filename or "Well Known Text"), data.frame, matrix, missing, or a vector object defined in packages \code{sf} or \code{sp}}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{the coordinate reference system (PROJ4 notation)}
 \item{...}{additional matrices and/or lists with matrices}  
 }
+
+\seealso{\code{\link{geom}}}
 
 
 \value{SpatVector}
@@ -61,6 +63,13 @@ z[z$hole==1, "object"] <- 4
 lns <- vect(z[,1:4], "lines")
 plot(p)
 lines(lns, col='red')
+
+w <- vect("POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
+
+wkt <- c("MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)), 
+	((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20)))", 
+	"POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
+w <- vect(wkt)
 
 }
 
