@@ -275,9 +275,10 @@ setMethod("disaggregate", signature(x="SpatRaster"),
 
 
 setMethod("flip", signature(x="SpatRaster"), 
-	function(x, vertical=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, direction="vertical", filename="", overwrite=FALSE, wopt=list(), ...) {
+		d <- match.arg(direction, c("vertical", "horizontal")) == "vertical"
 		opt <- .runOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$flip(vertical, opt)
+		x@ptr <- x@ptr$flip(d, opt)
 		show_messages(x, "flip")
 	}
 )
@@ -395,6 +396,13 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	}
 )
 
+setMethod("rev", signature(x="SpatRaster"), 
+	function(x) { 
+		opt <- .runOptions("", FALSE, list())
+		x@ptr <- x@ptr$reverse(opt)
+		show_messages(x, "rev")		
+	}
+)
 
 setMethod("rotate", signature(x="SpatRaster"), 
 	function(x, left=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) { 

@@ -268,6 +268,9 @@ unsigned SpatVector::nxy() {
 	unsigned n = 0;
 	for (size_t i=0; i < size(); i++) {
 		SpatGeom g = getGeom(i);
+		if (g.size() == 0) {
+			n++; // empty
+		}
 		for (size_t j=0; j < g.size(); j++) {
 			SpatPart p = g.getPart(j);
 			n += p.x.size();
@@ -308,7 +311,6 @@ std::vector<std::vector<double>> SpatVector::coordinates() {
 }
 
 
-
 SpatDataFrame SpatVector::getGeometryDF() {
 
 	SpatDataFrame out;
@@ -324,6 +326,15 @@ SpatDataFrame SpatVector::getGeometryDF() {
 	size_t idx = 0;
 	for (size_t i=0; i < size(); i++) {
 		SpatGeom g = getGeom(i);
+		if (g.size() == 0) { // empty
+			out.iv[0][idx] = i+1;
+			out.iv[1][idx] = 1;
+			out.dv[0][idx] = NAN;
+			out.dv[1][idx] = NAN;
+			out.iv[2][idx] = 0;
+			idx++;
+		}
+
 		for (size_t j=0; j < g.size(); j++) {
 			SpatPart p = g.getPart(j);
 			for (size_t q=0; q < p.x.size(); q++) {
@@ -411,7 +422,6 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			wkt += ")";
 			if (p.hasHoles()) {
 				for (size_t k=0; k < p.nHoles(); k++) {
-					if (k>0) wkt += ",";
 					SpatHole h = p.getHole(k);
 					wkt += ",(" + nice_string(h.x[0]) + " " + nice_string(h.y[0]);
 					for (size_t q=1; q < h.x.size(); q++) {

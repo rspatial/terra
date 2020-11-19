@@ -28,6 +28,7 @@ if (!isGeneric("depth<-")) {setGeneric("depth<-", function(x, value) standardGen
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}
 if (!isGeneric("ext")) { setGeneric("ext", function(x, ...)	standardGeneric("ext"))}
 if (!isGeneric("ext<-")) { setGeneric("ext<-", function(x, value) standardGeneric("ext<-")) }	
+if (!isGeneric("fill") ) { setGeneric("fill", function(x, ...) standardGeneric("fill")) }
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}
 
 if (!isGeneric("global")) {setGeneric("global", function(x, ...) standardGeneric("global"))}	
@@ -44,7 +45,7 @@ if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneri
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}	
 if (!isGeneric("rats")) { setGeneric("rats", function(x, ...) standardGeneric("rats")) }
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
-if (!isGeneric("fill") ) { setGeneric("fill", function(x, ...) standardGeneric("fill")) }
+if (!isGeneric("rev") ) { setGeneric("rev", function(x) standardGeneric("rev")) }
 if (!isGeneric("sds") ) { setGeneric("sds", function(x, ...) standardGeneric("sds")) }
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}	
 if (!isGeneric("separate")) {setGeneric("separate", function(x, ...) standardGeneric("separate"))}	

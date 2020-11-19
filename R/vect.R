@@ -18,9 +18,15 @@ setMethod("vect", signature(x="missing"),
 setMethod("vect", signature(x="character"), 
 	function(x, ...) {
 		p <- methods::new("SpatVector")
-		p@ptr <- SpatVector$new()
-		x <- normalizePath(x)
-		p@ptr$read(x)
+		s <- substr(x[1], 1, 5)
+		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
+#		if (all(grepl("\\(", x) & grepl("\\)", x))) {
+			p@ptr <- SpatVector$new(x)
+		} else {
+			p@ptr <- SpatVector$new()
+			x <- normalizePath(x)
+			p@ptr$read(x)
+		}
 		show_messages(p, "vect")
 	}
 )

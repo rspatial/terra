@@ -1395,7 +1395,9 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 			for (size_t j=0; j < lyrrows; j++) {
 				unsigned start = j * nc;
 				unsigned end = start + nc;
-				b.insert(b.end(), a.begin()+start, a.begin()+end);
+				std::vector<double> v(a.begin()+start, a.begin()+end);
+				std::reverse(v.begin(), v.end());
+				b.insert(b.end(), v.begin(), v.end());
 			}
 			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 			b.resize(0);
@@ -1406,6 +1408,40 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 	return(out);
 }
 
+
+SpatRaster SpatRaster::reverse(SpatOptions &opt) {
+
+	SpatRaster out = geometry(nlyr(), true);
+	if (!hasValues()) return out;
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+ 
+	if (!out.writeStart(opt)) { return out; }
+	std::vector<double> b;
+	unsigned nc = ncol();
+	unsigned nl = nlyr();
+
+	for (size_t i=0; i < out.bs.n; i++) {
+		size_t ii = out.bs.n - 1 - i;
+		std::vector<double> a = readBlock(out.bs, ii);
+		unsigned lyrrows = nl * out.bs.nrows[ii];
+		for (size_t j=0; j < lyrrows; j++) {
+			unsigned start = (lyrrows - 1 - j) * nc;
+			unsigned end = start + nc;
+			std::vector<double> v(a.begin()+start, a.begin()+end);
+			std::reverse(v.begin(), v.end());
+			b.insert(b.end(), v.begin(), v.end());
+		}
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		b.resize(0);
+	}
+
+	out.writeStop();
+	readStop();
+	return(out);
+}
 
 
 SpatRaster SpatRaster::shift(double x, double y, SpatOptions &opt) {

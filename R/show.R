@@ -43,7 +43,6 @@ setMethod ("show" , "SpatVector",
 )
 
 
-
 setMethod ("show" , "SpatRaster", 
 	function(object) {
 		
@@ -175,6 +174,26 @@ setMethod ("show" , "SpatRaster",
 )
 
 
+
+.sources <- function(x) {
+	m <- .inMemory(x)
+	f <- .filenames(x)
+	f <- gsub("\"", "", basename(f))
+	i <- grep(":", f)
+	if (length(i) > 0) {
+		for (j in i) {
+			ff <- try(basename( strsplit(f[j], ':')[[1]][1]), silent=TRUE)
+			if (!inherits(ff, "try-error")) {
+				f[j] <- ff
+			}
+		}
+	}
+	sources <- rep("memory", length(m))
+	sources[!m] <- f[!m] 
+	unique(sources)
+}
+
+
 setMethod("show" , "SpatDataSet", 
 	function(object) {
 		
@@ -199,9 +218,13 @@ setMethod("show" , "SpatDataSet",
 
 
 		cat("coord. ref. :" , .proj4(object[1]), "\n")
-		
+
+		s <- unlist(lapply(1:ns, function(i) .sources(object[i])))
+		s <- unique(s)
+		cat("source(s)   :", paste(s, collapse=", "), "\n")
+
 		ln <- names(object)
-		if (!all(ln == "")) {
+		if (any(ln != "")) {
 			cat("names       :", paste(ln, collapse=", "), "\n")
 		}
 	}
