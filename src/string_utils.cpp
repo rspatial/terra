@@ -114,14 +114,11 @@ std::string is_in_set_default(std::string s, std::vector<std::string> ss, std::s
 std::vector<std::string> strsplit(std::string s, std::string delimiter){
 	std::vector<std::string> out;
 	size_t pos = 0;
-	std::string token;
 	while ((pos = s.find(delimiter)) != std::string::npos) {
-		token = s.substr(0, pos);
-		out.push_back(token);
+		out.push_back(s.substr(0, pos));
 		s.erase(0, pos + delimiter.length());
 	}
-	token = s.substr(0, pos);
-	out.push_back(token);
+	out.push_back(s.substr(0, pos));
 	return out;
 }
 
@@ -130,6 +127,22 @@ std::vector<double> str2dbl(std::vector<std::string> s) {
 	std::vector<double> d (s.size());
 	std::transform(s.begin(), s.end(), d.begin(), [](const std::string& val) {
 		return std::stod(val);
+	});
+	return d;
+}
+
+std::vector<long> str2long(std::vector<std::string> s) {
+	std::vector<long> d (s.size());
+	std::transform(s.begin(), s.end(), d.begin(), [](const std::string& val) {
+		return std::stol(val);
+	});
+	return d;
+}
+
+std::vector<int> str2int(std::vector<std::string> s) {
+	std::vector<int> d (s.size());
+	std::transform(s.begin(), s.end(), d.begin(), [](const std::string& val) {
+		return std::stoi(val);
 	});
 	return d;
 }

@@ -61,7 +61,7 @@ std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigne
 
 SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 
-	double f = sqrt(size / ncell());
+	double f = std::min(1.0, sqrt(size / ncell()));
 	unsigned nr = ceil(nrow() * f);
 	unsigned nc = ceil(ncol() * f);
 	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {

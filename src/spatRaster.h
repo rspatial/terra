@@ -82,7 +82,7 @@ class RasterSource {
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
 		bool hasTime = false;
-		std::vector<double> time;
+		std::vector<int_64> time;
 		std::vector<double> depth;
 		std::vector<std::string> unit;
 
@@ -214,6 +214,8 @@ class SpatRaster {
 		bool setValues(std::vector<double> _values);
 		bool replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols);
 		void setRange();
+
+
 		
 ////////////////////////////////////////////////////
 // property like methods for RasterSources
@@ -233,8 +235,8 @@ class SpatRaster {
 		std::vector<std::string> getNames();
 		bool setNames(std::vector<std::string> names, bool make_valid=false);
 		std::vector<bool> hasTime();
-		std::vector<double> getTime();
-		bool setTime(std::vector<double> times);
+		std::vector<int_64> getTime();
+		bool setTime(std::vector<int_64> times);
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);
 		std::vector<std::string> getUnit();

@@ -284,7 +284,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			for(double& d : a) if (!std::isnan(d)) d = d != x;
 		} else if (oper == ">=") {
 			if (reverse) {
-				for(double& d : a) if (!std::isnan(d)) d = x >= d;				
+				for(double& d : a) if (!std::isnan(d)) d = x >= d;
 			} else {
 				for(double& d : a) if (!std::isnan(d)) d = d >= x;
 			}

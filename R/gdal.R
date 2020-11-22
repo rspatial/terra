@@ -5,7 +5,7 @@ gdal_version <- function() {
 	.gdalversion()
 }
 
-describe <- function(filename, options="", print=TRUE, open_opt="", ...) {
+describe <- function(x, options="", print=TRUE, open_opt="", ...) {
 	#if (is.null(.terra_environment$options)) .init()
 
 	options <- unique(trimws(options))
@@ -16,23 +16,25 @@ describe <- function(filename, options="", print=TRUE, open_opt="", ...) {
 	}
 	open_opt <- unique(trimws(open_opt))
 	open_opt <- open_opt[open_opt != ""]
-	x <- .gdalinfo(filename, options, open_opt)
+	x <- .gdalinfo(x, options, open_opt)
+
+	if (x == "") {
+		add <- ifelse(file.exists(filename), "\n", "\nThe file does not exist\n")
+		x <- paste0("GDAL cannot open: ", x, add)
+	}
+	y <- unlist(strsplit(x, "\n"))
 	if (print) {
-		if (x == "") {
-			add <- ifelse(file.exists(filename), "\n", "\nThe file does not exist\n")
-			x <- paste0("GDAL cannot open: ", filename, add)
-		}
 		cat(x, "\n")
-		invisible(x)
+		invisible(y)
 	} else {
-		return(x)
+		return(y)
 	}
 }
 
 
-describe_sds <- function(filename, ...) {
+describe_sds <- function(x, ...) {
 	#if (is.null(.terra_environment$options)) .init()
-	x <- .sdinfo(filename)
+	x <- .sdinfo(x)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {
 		stop(x[[1]])
 	}
@@ -42,4 +44,12 @@ describe_sds <- function(filename, ...) {
 	for (i in 4:6) m[,i] <- as.integer(m[,i])
 	m
 }
+
+
+
+setMethod("meta", signature(x="character"), 
+	function(x, ...) {
+		.metadata(x)
+	}
+)
 

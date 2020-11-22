@@ -100,7 +100,7 @@ setMethod ("show" , "SpatRaster",
 			} else {
 				cat("data source :", sources[1], "\n")
 			}
-			
+
 			hMM <- .hasMinMax(object)
 			if (any(hMM)) {
 				r <- minmax(object)

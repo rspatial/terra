@@ -465,8 +465,8 @@ std::vector<bool> SpatRaster::hasTime() {
 }
 
 
-std::vector<double> SpatRaster::getTime() {
-	std::vector<double> x;
+std::vector<int_64> SpatRaster::getTime() {
+	std::vector<int_64> x;
 	for (size_t i=0; i<source.size(); i++) {
 		if (source[i].time.size() != source[i].nlyr) {
 			std::vector<double> nas(source[i].nlyr, NAN);
@@ -479,7 +479,7 @@ std::vector<double> SpatRaster::getTime() {
 }
 
 
-bool SpatRaster::setTime(std::vector<double> times) {
+bool SpatRaster::setTime(std::vector<int_64> times) {
 	if (times.size() != nlyr()) {
 		return false;
 	} else {
@@ -487,7 +487,7 @@ bool SpatRaster::setTime(std::vector<double> times) {
         size_t end;
         for (size_t i=0; i<source.size(); i++)	{
             end = begin + source[i].nlyr;
-            source[i].time = std::vector<double> (times.begin() + begin, times.begin() + end);
+            source[i].time = std::vector<int_64> (times.begin() + begin, times.begin() + end);
             begin = end;
         }
         return true;
@@ -563,6 +563,8 @@ std::vector<std::string> SpatRaster::getUnit() {
 	}
 	return(x);
 }
+
+
 
 
 double SpatRaster::xres() {

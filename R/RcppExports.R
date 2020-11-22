@@ -13,6 +13,10 @@
     .Call(`_terra_gdal_version`)
 }
 
+.metadata <- function(filename) {
+    .Call(`_terra_metatdata`, filename)
+}
+
 .gdalinit <- function(path) {
     invisible(.Call(`_terra_gdal_init`, path))
 }

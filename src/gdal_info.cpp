@@ -10,6 +10,33 @@
 
 #include "gdal_errors.h" 
 
+std::string sectostr(int x) {
+	char buffer[20];
+	time_t now = x;
+	tm *utc = gmtime(&now);
+	strftime (buffer, 20, "%Y-%m-%d %H:%M:%S", utc); 
+	std::string s = buffer;
+	return s;
+}
+
+
+std::vector<std::string> get_metadata(std::string filename) {
+	std::vector<std::string> out;
+    GDALDataset *poDataset;
+    poDataset = (GDALDataset *) GDALOpen(filename.c_str(), GA_ReadOnly );
+    if( poDataset == NULL )  {
+		return out;
+	}
+	
+//	char **m = poDataset->GetMetadataDomainList();
+	char **m = poDataset->GetMetadata();
+	while (*m != nullptr) {
+		out.push_back(*m++);
+	}
+	
+	GDALClose( (GDALDatasetH) poDataset );
+	return out;	
+}
 
 
 std::vector<std::vector<std::string>> sdinfo(std::string fname) {

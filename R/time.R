@@ -7,7 +7,7 @@
 setMethod("time", signature(x="SpatRaster"), 
 	function(x, ...) { 
 		d <- x@ptr$time
-		as.Date("1970-01-01") + d
+		strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 	}
 )
 

@@ -8,7 +8,6 @@
 \alias{sds,list-method}
 \alias{sds,SpatRaster-method}
 \alias{[<-,SpatDataSet,numeric,missing-method}
-\alias{describe_sds}
 
 
 \title{Create a SpatDataSet}
@@ -16,7 +15,7 @@
 \description{
 Methods to create a SpatDataSet. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
 
-sds_info provides information about sub-datasets in a file.
+See \code{\link{describe_sds}} for getting information about sub-datasets in a file.
 }
 
 \usage{
@@ -27,8 +26,6 @@ sds_info provides information about sub-datasets in a file.
 \S4method{sds}{SpatRaster}(x, ...) 
 
 \S4method{sds}{list}(x, ...) 
-
-describe_sds(filename, ...)
 }
 
 \arguments{
@@ -43,6 +40,9 @@ describe_sds(filename, ...)
 SpatDataSet
 }
 
+\seealso{
+\code{\link{describe_sds}}
+}
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   

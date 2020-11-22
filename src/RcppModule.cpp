@@ -29,6 +29,13 @@ std::string gdal_version() {
 	return s;
 }
 
+// [[Rcpp::export(name = ".metadata")]]
+std::vector<std::string> metatdata(std::string filename) {
+	std::vector<std::string> m = get_metadata(filename);
+	return m;
+}
+
+
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
 #endif

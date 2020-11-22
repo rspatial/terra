@@ -5,6 +5,8 @@ if (!isGeneric("cols")) {setGeneric("cols", function(x, ...) standardGeneric("co
 if (!isGeneric("window<-")) {setGeneric("window<-", function(x, ..., value) standardGeneric("window<-"))}
 
 # terra
+if (!isGeneric("meta")) { setGeneric("meta", function(x, ...) standardGeneric("meta"))}	
+
 if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app"))}
 if (!isGeneric("lapp")) { setGeneric("lapp", function(x, ...) standardGeneric("lapp"))}
 if (!isGeneric("rapp")) { setGeneric("rapp", function(x, ...) standardGeneric("rapp"))}
