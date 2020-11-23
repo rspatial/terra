@@ -28,7 +28,7 @@ SpatRaster
 }
 
 \examples{
-r <- rast(ncol=10, nrow=5, xmn=0, xmx=10, ymn=0, ymx=5)
+r <- rast(ncol=10, nrow=5, xmin=0, xmax=10, ymin=0, ymax=5)
 x <- init(r, fun="cell")
 y <- init(r, fun=runif)
 
