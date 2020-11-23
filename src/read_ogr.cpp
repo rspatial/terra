@@ -24,6 +24,7 @@
 
 #include "crs.h"
 
+#include "string_utils.h"
 
 std::string geomType(OGRLayer *poLayer) {
 	std::string s = "";
@@ -402,28 +403,30 @@ SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 
 
 SpatVector::SpatVector(std::vector<std::string> wkt) {
-	
+
 	OGRGeometryFactory ogr;
 	OGRGeometry *poGeometry;
-	
+
 	SpatGeom g;
 	for (size_t i=0; i<wkt.size(); i++) {
-		const char* pszWKT = wkt[i].c_str();
-		
+
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-		OGRErr err = ogr.createFromWkt( &pszWKT, NULL, &poGeometry );
+                char *cstring = &wkt[i][0];
+		std::vector<char*> cstr = { cstring };
+		OGRErr err = ogr.createFromWkt(&cstr[0], NULL, &poGeometry );
 #else
+		const char* pszWKT = wkt[i].c_str();
 		OGRErr err = ogr.createFromWkt( pszWKT, NULL, &poGeometry );
 #endif
-			
+
 		if (err == OGRERR_NONE) {
 			//const char* gname = poGeometry->getGeometryName();
-			if (poGeometry != NULL) {			
+			if (poGeometry != NULL) {
 				OGRwkbGeometryType gtype = wkbFlatten(poGeometry->getGeometryType());
 				if ( gtype == wkbPoint ) {
-					g = getPointGeom(poGeometry);					
+					g = getPointGeom(poGeometry);
 				} else if ( gtype == wkbMultiPoint ) {
-					g = getMultiPointGeom(poGeometry);					
+					g = getMultiPointGeom(poGeometry);
 				} else if (gtype == wkbLineString) {
 					g = getLinesGeom(poGeometry);
 				} else if (gtype == wkbMultiLineString) {
@@ -438,7 +441,7 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 					std::string s = "cannot read geometry type: "+ strgeomtype;
 					setError(s);
 					return;
-				}	
+				}
 				addGeom(g);
 			}
 		} else {
