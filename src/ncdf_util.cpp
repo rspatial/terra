@@ -1,4 +1,4 @@
-#include "SpatRaster.h"
+#include "spatRaster.h"
 #include "time.h"
 
 
@@ -71,8 +71,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 	if ((origin.find("seconds")) != std::string::npos) {
 		//seconds = true;
 	} else if ((origin.find("hours")) != std::string::npos) {
-		//hours = true;
-		for (int_64 &d : out) d = d * 3600;
+		hours = true;
 	} else if ((origin.find("days")) != std::string::npos) {
 		days = true;
 	}
@@ -93,14 +92,20 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 	SpatTime_t offset = 0;
 	if (found) {
 		if (days) {
-			if (calendar == "noleap") { 
+			if (calendar == "noleap" || calendar == "365_day" || calendar == "365 day") { 
 				std::vector<int> ymd = getymd(origin);
 				for (int_64 &d : out) d = time_from_day_noleap(ymd[0], ymd[1], ymd[2], d);
+			} else if (calendar == "360_day" || calendar == "360 day") { 
+				std::vector<int> ymd = getymd(origin);
+				for (int_64 &d : out) d = time_from_day_360(ymd[0], ymd[1], ymd[2], d);
 			} else {
 				std::vector<int> ymd = getymd(origin);
 				for (int_64 &d : out) d = time_from_day(ymd[0], ymd[1], ymd[2], d);
 			}
-		} else {
+		} else if (hours) {
+			std::vector<int> ymd = getymd(origin);
+			for (int_64 &d : out) d = time_from_hour(ymd[0], ymd[1], ymd[2], d);
+		} else { // seconds
 			offset = get_time_string(origin);
 			for (int_64 &d : out) d = d + offset;
 		}		

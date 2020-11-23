@@ -1,21 +1,21 @@
 \name{describe}
 
 \alias{describe}
-\alias{metadata}
+\alias{meta}
 \alias{describe_sds}
 \alias{gdal_version}
 
 \title{describe}
 
 \description{
-Describe the properties of a file with spatial data (\code{describe}, \code{metadata}) or get the properties of the sub-datasets in file (\code{describe_sds}). 
+Describe the properties of a file with spatial data (\code{describe}, \code{meta}) or get the properties of the sub-datasets in file (\code{describe_sds}). 
 }
 
 
 \usage{
 describe(x, options="", print=TRUE, open_opt="", ...)
 describe_sds(x, ...)
-metadata(x, ...)
+meta(x, ...)
 gdal_version()
 }
 

@@ -171,6 +171,13 @@ SpatTime_t get_time_string(std::string s) {
 }
 
 
+SpatTime_t time_from_hour(int syear, int smonth, int sday, int nhours) {
+	SpatTime_t time = get_time(syear, smonth, sday);
+	time += nhours * 3600;
+	return time;
+}
+
+
 
 SpatTime_t time_from_day(int syear, int smonth, int sday, int ndays) {
 	SpatTime_t time = get_time(syear, smonth, sday);
