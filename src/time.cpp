@@ -203,6 +203,23 @@ SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, int ndays) {
 }
 
 
+SpatTime_t time_from_day_360(int syear, int smonth, int sday, int ndays) {
+    static const int md[13] =  {0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360 };
+	int year = ndays / 360;
+	int doy = ndays % 360;
+	int month;
+	for (month=1; month<13; month++) {
+		if (doy < md[month]) {
+			break; 
+		}
+	}
+	month--;
+	int day = doy - md[month];
+	SpatTime_t time = get_time(year+syear, month+smonth, day+sday);
+	return time;
+}
+
+
 #endif
 
 
