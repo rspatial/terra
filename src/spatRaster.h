@@ -124,6 +124,8 @@ class RasterSource {
 
 		bool parameters_changed = false;		
 		
+		void set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta);
+		
 };
 
 
@@ -236,6 +238,9 @@ class SpatRaster {
 		bool setNames(std::vector<std::string> names, bool make_valid=false);
 		std::vector<bool> hasTime();
 		std::vector<int_64> getTime();
+		std::vector<std::string> getTimeStr();
+		std::vector<double> getTimeDbl();
+
 		bool setTime(std::vector<int_64> times);
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);

@@ -26,8 +26,6 @@
 #include "file_utils.h"
 #include "string_utils.h"
 //#include "NA.h"
-#include "time.h"
-
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
@@ -156,25 +154,6 @@ std::string basename_sds(std::string f) {
 	return f;
 }
 
-std::vector<std::vector<std::string>> metatime(std::vector<std::string> meta) {
-	std::vector<std::vector<std::string>> out(meta.size());
-	std::string delim = "=";
-	for (size_t i=0; i<meta.size(); i++) {
-		std::string s = meta[i];
-		size_t pos = s.find(delim);
-		if (pos != std::string::npos) {
-			out[i].push_back(s.erase(pos+1, std::string::npos));
-			out[i].push_back(s.erase(0, pos+1));
-		} else {
-			out[i].push_back(s);
-		}
-	}
-	return out;
-}
-
-
-
-
 
 
 bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname) {
@@ -239,6 +218,7 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 	
 	bool success = constructFromFile(sd[0], {-1}, {""});
 	if (!success) {
+		// should continue to the next one  with while
 		return false;
 	}
 	SpatRaster out;
@@ -254,9 +234,10 @@ bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std:
 			}
 		} else {
 			if (out.msg.has_error) {
-				setError(out.msg.error);
+				//setError(out.msg.error);
+				//addWarning(out.msg.error);
 			}
-			return false;
+			//return false;
 		}
 	}
 
@@ -374,7 +355,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				if (sub.constructFromFile(s, {-1}, {""})) {
-					if (!push_back(sub, basename_sds(s))) {
+					if (!push_back(sub, basename_sds(s), true)) {
 						addWarning("skipped (different geometry): " + s);
 					}
 				} else {
@@ -387,127 +368,6 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 }
 
 
-std::string ncdf_name(const std::vector<std::string> &metadata) {
-	bool wasfound = false;
-	std::string name = "";
-	for (size_t i=0; i<metadata.size(); i++) {
-		std::size_t found = metadata[i].find("NETCDF_DIM_");
-		if (found == std::string::npos) {
-			if (wasfound) {
-				std::size_t pos = metadata[i].find("#");
-				name = metadata[i].substr(0, pos);
-				break;
-			}
-		} else {
-			wasfound = true;
-		}
-	}
-	return name;
-}
-
-
-
-std::vector<int_64> str2int64v(std::string s, std::string delim) {
-	std::vector<int_64> out;
-	size_t pos = 0;
-	while ((pos = s.find(delim)) != std::string::npos) {
-		std::string v = s.substr(0, pos);
-		s.erase(0, pos + 1);
-		out.push_back(std::stoll(v));
-	}
-	out.push_back(std::stoll(s));
-	return out;
-}
-
-
-std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
-
-	bool fu=false;
-	bool fv=false;
-	bool fc=false;
-	std::string origin, values, calendar;
-
-	for (size_t i=0; i<metadata.size(); i++) {
-		if (!fc) {
-			std::string pattern = "time#calendar=";
-			std::size_t found = metadata[i].find(pattern);
-			if (found != std::string::npos) {
-				calendar = metadata[i];
-				calendar.erase(calendar.begin(), calendar.begin()+pattern.size());  
-				fc = true;
-			}
-		}
-		if (!fu) {
-			std::string pattern = "time#units=";
-			std::size_t found = metadata[i].find(pattern);
-			if (found != std::string::npos) {
-				origin = metadata[i];
-				origin.erase(origin.begin(), origin.begin()+pattern.size());  
-				fu = true;
-			}
-		}
-		if (!fv) {
-			std::size_t found = metadata[i].find("NETCDF_DIM_time_VALUES=");
-			if (found != std::string::npos) {
-				values = metadata[i].substr(24, metadata[i].size()-1);  
-				fv = true;
-			}
-		}
-		if (fc & fu & fv) break;
-	}
-
-	std::vector<int_64> out, bad;
-	if (!(fu & fv)) {
-		return out;
-	}
-
-	bool days=false; 
-	//bool hours=false;
-	//bool seconds = false; 
-	out = str2int64v(values, ",");
-	if ((origin.find("seconds")) != std::string::npos) {
-		//seconds = true;
-	} else if ((origin.find("hours")) != std::string::npos) {
-		//hours = true;
-		for (int_64 &d : out) d = d * 3600;
-	} else if ((origin.find("days")) != std::string::npos) {
-		days = true;
-	}
-
-			
-	//if (calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard" || calendar == "") { // ok }
-	//if ((calendar == "noleap") || (calendar == "365 day") || (calendar == "365_day") || (calendar == "360 day") || (calendar == "360_day")) {
-	
-	bool found = false;
-	size_t pos;
-	if ((pos = origin.find("from")) != std::string::npos) {
-		origin.erase(0, pos + 5);
-		found = true;
-	} else if ((pos = origin.find("since")) != std::string::npos) {
-		origin.erase(0, pos + 6);
-		found = true;	
-	}
-	SpatTime_t offset = 0;
-	if (found) {
-		if ((calendar == "noleap") & days) { 
-			std::vector<int> ymd = getymd(origin);
-			for (int_64 &d : out) d = time_from_day_noleap(ymd[0], ymd[1], ymd[2], d);
-		} else {
-			offset = get_time_string(origin);
-			for (int_64 &d : out) d = d + offset;
-		}		
-	}
-	Rcpp::Rcout << calendar << std::endl;
-	Rcpp::Rcout << origin << std::endl;
-	Rcpp::Rcout << offset << std::endl;
-	
-	return out;
-}
-	
-	
-
-
-
 
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
@@ -517,7 +377,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
-			setError("file does not exist");
+			setError("file does not exist: " + fname);
 		} else {
 			setError("cannot read from " + fname );
 		}
@@ -622,30 +482,23 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 //	std::string unit = "";
 
 	std::string varname = basename_noext(fname).substr(0,3);
-	
-	if (gdrv == "netCDF") {
-		char **m = poDataset->GetMetadata();
-		std::vector<std::string> metadata;
-		while (*m != nullptr) {
-			metadata.push_back(*m++);
-		}
-		s.time = ncdf_time(metadata);
-		if (s.time.size() == nl) s.hasTime = true;
-
-		varname = ncdf_name(metadata);
-
-		/*
-		const char *punit = nullptr;
-		if (( punit = poBand->GetMetadataItem("units")) != nullptr ) {			
-			unit = punit;								
-		}		
-		*/
-	}
+	std::vector<std::vector<std::string>> bandmeta(s.nlyr);
 
 
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
+		if (gdrv == "netCDF") {
+			char **m = poBand->GetMetadata();
+			while (*m != nullptr) {
+				bandmeta[i].push_back(*m++);
+			}
+		}
+		//if (i == 0) {
+		//	for (size_t j=0; j<bandmeta[0].size(); j++) {
+		//		Rcpp::Rcout << bandmeta[0][j] << std::endl;
+		//	}
+		//}
 
 		int success;
 	//	double naflag = poBand->GetNoDataValue(&success);
@@ -729,8 +582,19 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		}
 	}
-	GDALClose( (GDALDatasetH) poDataset );
 
+	if (gdrv == "netCDF") {
+		std::vector<std::string> metadata;
+		if (gdrv == "netCDF") {
+			char **m = poDataset->GetMetadata();
+			while (*m != nullptr) {
+				metadata.push_back(*m++);
+			}
+		}
+		s.set_names_time_ncdf(metadata, bandmeta);
+	}
+
+	GDALClose( (GDALDatasetH) poDataset );
 	s.hasValues = true;
 	setSource(s);
 

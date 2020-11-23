@@ -54,7 +54,7 @@ class SpatRasterStack {
 		//bool oneRes = true;
 		SpatRasterStack() {};
 		SpatRasterStack(std::string fname, std::vector<int> ids, bool useids);
-		SpatRasterStack(SpatRaster r, std::string name) { push_back(r, name); };
+		SpatRasterStack(SpatRaster r, std::string name, bool warn=false) { push_back(r, name, warn); };
 
 		std::vector<std::vector<std::vector<double>>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
 		std::vector<std::vector<std::vector<double>>> extractCell(std::vector<double> &cell);
@@ -117,12 +117,16 @@ class SpatRasterStack {
 			}
 		}
 		
-		bool push_back(SpatRaster r, std::string name) { 
+		bool push_back(SpatRaster r, std::string name, bool warn) { 
 			if (ds.size() > 0) {
 				if (!r.compare_geom(ds[0], false, false, true, true, true, false)) {
 //				if (!ds[0].compare_geom(r, false, false, true, true, false, false)) {
-					setError(r.msg.getError() +" (" + name + ")");
-					return false;
+					if (warn) {
+						addWarning(r.msg.getError() +" (" + name + ")");
+					} else {
+						setError(r.msg.getError() +" (" + name + ")");
+						return false;
+					}
 				}
 				//if (oneRes && ((ds[0].nrow() != r.nrow()) || (ds[0].ncol() != r.ncol()))) {
 				//	oneRes = false;
@@ -150,7 +154,7 @@ class SpatRasterStack {
 			SpatRasterStack out;
 			for (size_t i=0; i<x.size(); i++) {
 				if (x[i] < ds.size()) {
-					out.push_back(ds[x[i]], names[x[i]]);
+					out.push_back(ds[x[i]], names[x[i]], true);
 				} 				
 			} 
 			//if (!oneRes) {

@@ -6,7 +6,8 @@
 
 setMethod("time", signature(x="SpatRaster"), 
 	function(x, ...) { 
-		d <- x@ptr$time
+		#d <- x@ptr$time
+		d <- x@ptr$timedbl
 		strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 	}
 )

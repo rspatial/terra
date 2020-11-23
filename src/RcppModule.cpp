@@ -36,6 +36,9 @@ std::vector<std::string> metatdata(std::string filename) {
 }
 
 
+
+
+
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
 #endif
@@ -75,6 +78,11 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 
 
 bool sameObject(SpatRaster* a, SpatRaster* b) {
+//	Rcpp::Rcout << a->source[0].time[0] << std::endl;
+//	size_t n = a->source[0].time.size();
+//	Rcpp::Rcout << n << std::endl;
+//	Rcpp::Rcout << a->nlyr() << std::endl;
+//	Rcpp::Rcout << a->source[0].time[n-1] << std::endl;
 	return a == b;
 }	
 
@@ -312,24 +320,25 @@ RCPP_MODULE(spat){
 #endif
 	;
 
-/*
+
     class_<RasterSource>("RasterSource")	
+		.field_readonly("time", &RasterSource::time)
 		//.field_readonly("memory", &RasterSource::memory)
 	//	.field_readonly("filename", &RasterSource::filename)
 		//.field_readonly("driver", &RasterSource::driver)
 		//.field_readonly("nrow", &RasterSource::nrow)
 		//.field_readonly("ncol", &RasterSource::ncol)
 		//.field_readonly("nlyr", &RasterSource::nlyr)
-		.field_readonly("extent", &RasterSource::extent)
-		.field_readonly("hasWindow", &RasterSource::hasWindow)
-		.field_readonly("window", &RasterSource::window)
+//		.field_readonly("extent", &RasterSource::extent)
+//		.field_readonly("hasWindow", &RasterSource::hasWindow)
+//		.field_readonly("window", &RasterSource::window)
 		//.field_readonly("layers", &RasterSource::layers)
 		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
 		//.field_readonly("flipped", &RasterSource::flipped)
 		//.field_readonly("rotated", &RasterSource::rotated)
-		.field_readonly("parameters_changed", &RasterSource::parameters_changed)
+//		.field_readonly("parameters_changed", &RasterSource::parameters_changed)
 	;	
-*/
+
 
     class_<SpatRaster>("SpatRaster")
 		.constructor()
@@ -383,6 +392,8 @@ RCPP_MODULE(spat){
 
 		.property("names", &SpatRaster::getNames)
 		.property("time", &SpatRaster::getTime)
+		.property("timestr", &SpatRaster::getTimeStr)
+		.property("timedbl", &SpatRaster::getTimeDbl)
 		.property("hasTime", &SpatRaster::hasTime)
 
 		.property("depth", &SpatRaster::getDepth)
@@ -401,7 +412,7 @@ RCPP_MODULE(spat){
 		.property("res", &SpatRaster::resolution)
 				
 // only if RasterSource is exposed
-//		.field_readonly("source", &SpatRaster::source )
+		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
 		

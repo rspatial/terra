@@ -18,6 +18,8 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
+#include "time.h"
+
 #include <set>
 
 #ifdef useGDAL
@@ -464,12 +466,39 @@ std::vector<bool> SpatRaster::hasTime() {
 	return(x);
 }
 
+std::vector<double> SpatRaster::getTimeDbl() {
+	std::vector<int_64> t64 = getTime();
+	std::vector<double> out(t64.size());
+	for (size_t i=0; i < out.size(); i++) {
+		out[i] = t64[i];
+	}
+	return out;
+}
+
+
+std::vector<std::string> SpatRaster::getTimeStr() {
+	std::vector<int_64> t64 = getTime();
+	std::vector<std::string> out(t64.size());
+	for (size_t i=0; i < out.size(); i++) {
+		std::vector<int> x = get_date(t64[i]);
+		if (x.size() > 2) {
+			out[i] = std::to_string(x[0]) + "-" 
+					  + std::to_string(x[1]) + "-"
+					  + std::to_string(x[2]);
+					  
+		} else {
+			out[i] = "";
+		}
+	}
+	return out;
+}
+
 
 std::vector<int_64> SpatRaster::getTime() {
 	std::vector<int_64> x;
 	for (size_t i=0; i<source.size(); i++) {
 		if (source[i].time.size() != source[i].nlyr) {
-			std::vector<double> nas(source[i].nlyr, NAN);
+			std::vector<double> nas(source[i].nlyr, 0);
 			x.insert(x.end(), nas.begin(), nas.end());			
 		} else {
 			x.insert(x.end(), source[i].time.begin(), source[i].time.end());
