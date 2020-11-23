@@ -61,7 +61,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 
 
 	bool days=false; 
-	//bool hours=false;
+	bool hours=false;
 	//bool seconds = false; 
 
 	out = str2int64v(values, ",");
