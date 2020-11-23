@@ -947,8 +947,8 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 	if (value == "row") {
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v(out.bs.nrows[i] * nc );
-			for (size_t j = 0; j < out.bs.nrows[j]; j++) {
-				size_t r = out.bs.row[j] + j + plusone;
+			for (size_t j = 0; j < out.bs.nrows[i]; j++) {
+				size_t r = out.bs.row[i] + j + plusone;
 				for (size_t k = 0; k < nc; k++) {
 					v[j*nc+k] = r;
 				}
@@ -983,8 +983,8 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v(out.bs.nrows[i] * nc );
-			for (size_t j = 0; j < out.bs.nrows[j]; j++) {
-				double y = yFromRow(out.bs.row[j] + j);
+			for (size_t j = 0; j < out.bs.nrows[i]; j++) {
+				double y = yFromRow(out.bs.row[i] + j);
 				for (size_t k = 0; k < nc; k++) {
 					v[j*nc+k] = y;
 				}

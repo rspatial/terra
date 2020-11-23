@@ -39,7 +39,7 @@ Same as \code{x}
 \seealso{ \code{\link{flip}}, \code{\link{rotate}}}
 
 \examples{
-r <- rast(xmn=0, ymn=0, xmx=1, ymx=1)
+r <- rast(xmin=0, xmax=1, ymin=0, ymax=1)
 r <- shift(r, dx=1, dy=-1)
 
 e <- ext(r)
