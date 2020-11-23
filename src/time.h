@@ -1,5 +1,5 @@
 #ifndef SPATTIME_GUARD
-#define SPATIME_GUARD
+#define SPATTIME_GUARD
 
 typedef long long SpatTime_t;
 SpatTime_t get_time(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0);
