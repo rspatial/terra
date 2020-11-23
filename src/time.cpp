@@ -15,10 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
-#ifndef SPATTIME_GUARD
-#define SPATIME_GUARD
-
 #include <algorithm>
 #include <vector>
 #include <string>
@@ -226,7 +222,6 @@ SpatTime_t time_from_day_360(int syear, int smonth, int sday, int ndays) {
 }
 
 
-#endif
 
 
 /*
