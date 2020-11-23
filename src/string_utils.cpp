@@ -39,6 +39,10 @@ std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
 	return out;
 }
 
+//std::vector<char> string_to_char(std::vector<std::string> s) {
+//	std::vector<char> charstr(s.c_str(), s.c_str() + s.size() + 1);
+//	return charstr;
+//}
 
 std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep) { 
 	std::vector<std::string> out(x.size());

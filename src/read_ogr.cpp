@@ -411,7 +411,7 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 	for (size_t i=0; i<wkt.size(); i++) {
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-                char *cstring = &wkt[i][0];
+		char *cstring = &wkt[i][0];
 		std::vector<char*> cstr = { cstring };
 		OGRErr err = ogr.createFromWkt(&cstr[0], NULL, &poGeometry );
 #else
