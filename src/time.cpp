@@ -45,6 +45,12 @@ SpatTime_t get_time(long year, unsigned month, unsigned day=15, unsigned hr=0, u
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
         {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}
     };
+	
+	if (month > 12) {
+		year += month / 12;
+		month = ((month-1) % 12) + 1;
+	}
+	
 	// the first day does not count, we start at 1970-01-01
     // 24 * 3600 = 86400
 	SpatTime_t time = -86400;  

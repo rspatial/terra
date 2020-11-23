@@ -66,7 +66,7 @@ setMethod("sds", signature(x="list"),
 		if (is.null(nms)) nms <- rep("", length(x))
 		for (i in seq_along(x)) {
 			if (inherits(x[[i]], "SpatRaster")) {
-				r@ptr$add(x[[i]]@ptr, nms[i])
+				r@ptr$add(x[[i]]@ptr, nms[i], FALSE)
 			}
 		}	
 		show_messages(r, "sds")
@@ -85,14 +85,14 @@ setMethod("c", signature(x="SpatDataSet"),
 			if (inherits(dots[[i]], "SpatDataSet")) {
 				sdsnms <- names(dots[[i]])
 				for (j in 1:x@ptr$nsds()) {
-					if (!x@ptr$add(dots[[i]][[j]]@ptr, sdsnms[j])) {
+					if (!x@ptr$add(dots[[i]][[j]]@ptr, sdsnms[j], FALSE)) {
 						show_messages(x, "c")		
 					}
 				}
 			
 			} else if (inherits(dots[[i]], "SpatRaster")) {
 				if (is.null(nms)) stop("arguments must be named")
-				if (!x@ptr$add(dots[[i]]@ptr, nms[i])) {
+				if (!x@ptr$add(dots[[i]]@ptr, nms[i], FALSE)) {
 					show_messages(x, "c")		
 				}
 			} else {
@@ -143,7 +143,7 @@ function(x, i, j, ... ,drop=TRUE) {
 	nms <- y@ptr$names
 	for (k in seq_along(1:nd)) {
 		r <- y[k][[j]]
-		x@ptr$add(r@ptr, nms[k])
+		x@ptr$add(r@ptr, nms[k], FALSE)
 	}
 	show_messages(x, "[")
 })

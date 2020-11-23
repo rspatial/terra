@@ -405,11 +405,17 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 	
 	OGRGeometryFactory ogr;
 	OGRGeometry *poGeometry;
-	const char* pszWKT;
+	
 	SpatGeom g;
 	for (size_t i=0; i<wkt.size(); i++) {
-		pszWKT = wkt[i].c_str();
+		const char* pszWKT = wkt[i].c_str();
+		
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
 		OGRErr err = ogr.createFromWkt( &pszWKT, NULL, &poGeometry );
+#else
+		OGRErr err = ogr.createFromWkt( pszWKT, NULL, &poGeometry );
+#endif
+			
 		if (err == OGRERR_NONE) {
 			//const char* gname = poGeometry->getGeometryName();
 			if (poGeometry != NULL) {			

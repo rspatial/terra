@@ -32,7 +32,6 @@ See \code{\link{describe_sds}} for getting information about sub-datasets in a f
 \item{x}{character (filename), or SpatRaster, or list of SpatRaster objects, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatDataSet}
 \item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a postive integer}
 \item{...}{additional arguments. Can be other \code{SpatRaster} objects if \code{x} is a \code{SpatRaster}} 
-\item{filename}{character}
 }
 
 
