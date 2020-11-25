@@ -25,6 +25,10 @@
     .Call(`_terra_sdsmetatdataparsed`, filename)
 }
 
+.set_gdal_warnings <- function(level) {
+    invisible(.Call(`_terra_set_gdal_warnings`, level))
+}
+
 .gdalinit <- function(path) {
     invisible(.Call(`_terra_gdal_init`, path))
 }

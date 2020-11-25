@@ -72,6 +72,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// set_gdal_warnings
+void set_gdal_warnings(int level);
+RcppExport SEXP _terra_set_gdal_warnings(SEXP levelSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type level(levelSEXP);
+    set_gdal_warnings(level);
+    return R_NilValue;
+END_RCPP
+}
 // gdal_init
 void gdal_init(std::string path);
 RcppExport SEXP _terra_gdal_init(SEXP pathSEXP) {
@@ -92,6 +102,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_metatdata", (DL_FUNC) &_terra_metatdata, 1},
     {"_terra_sdsmetatdata", (DL_FUNC) &_terra_sdsmetatdata, 1},
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
+    {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}

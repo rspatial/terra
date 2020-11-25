@@ -1,80 +1,9 @@
 #include <Rcpp.h>
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
-
 #include <memory> //std::addressof
-
-
-#include "gdal_priv.h"
-
-
-# include "gdal_info.h"
-// [[Rcpp::export(name = ".gdalinfo")]]
-std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
-	std::string out = gdalinfo(filename, options, oo);
-	return out;
-}
-
-// [[Rcpp::export(name = ".sdinfo")]]
-std::vector<std::vector<std::string>> sd_info(std::string filename) {
-	std::vector<std::vector<std::string>> sd = sdinfo(filename);
-	return sd;
-}
-
-// [[Rcpp::export(name = ".gdalversion")]]
-std::string gdal_version() {
-	const char* what = "RELEASE_NAME";
-	const char* x = GDALVersionInfo(what);
-	std::string s = (std::string) x;
-	return s;
-}
-
-// [[Rcpp::export(name = ".metadata")]]
-std::vector<std::string> metatdata(std::string filename) {
-	std::vector<std::string> m = get_metadata(filename);
-	return m;
-}
-
-// [[Rcpp::export(name = ".sdsmetadata")]]
-std::vector<std::string> sdsmetatdata(std::string filename) {
-	std::vector<std::string> m = get_metadata_sds(filename);
-	return m;
-}
-
-// [[Rcpp::export(name = ".parsedsdsmetadata")]]
-std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {
-	std::vector<std::string> m = sdsmetatdata(filename);
-	std::vector<std::vector<std::string>> s = parse_metadata_sds(m);
-	return s;
-}
-
-
-#if GDAL_VERSION_MAJOR >= 3
-#include "proj.h"
-#endif
-
-// [[Rcpp::export(name = ".gdalinit")]]
-void gdal_init(std::string path) {
-    GDALAllRegister();
-    OGRRegisterAll(); 
-	//GDALregistred = true;
-#if GDAL_VERSION_MAJOR >= 3
-	if (path != "") {
-		const char *cp = path.c_str();
-		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
-	}
-#endif
-}
-
-
-/*
-# include "warp.h"
-// [[Rcpp::export(name = ".gdalwarp")]]
-bool gwarp(std::string src, std::string dst, std::vector<std::string> options, std::vector<std::string> oo, std::vector<std::string> doo) {
-	bool ok = gdalwarp(src, dst, options, oo, doo);
-	return ok;
-}
-*/
+//#include "gdal_priv.h"
+//# include "gdal_info.h"
 
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
