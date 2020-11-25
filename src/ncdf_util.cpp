@@ -1,5 +1,6 @@
 #include "spatRaster.h"
 #include "time.h"
+#include "recycle.h"
 
 #include "string_utils.h"
 #include "gdal_info.h"
@@ -10,6 +11,12 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 	std::vector<std::string> sd = info[0];
 
 	int n = info[5].size();
+	std::vector<std::string> varname;
+	std::vector<unsigned> varnl;
+	std::vector<size_t> nl(n);
+	for (size_t i=0; i<nl.size(); i++) {
+		nl[i] = stol(info[5][i]);
+	}
 	
 	if (sd.size() == 0) {
 		return false;
@@ -19,6 +26,8 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 		for (size_t i=0; i<subds.size(); i++) {
 			if (subds[i] >=0 && subds[i] < n) {
 				tmp.push_back(sd[subds[i]]);
+				varname.push_back(info[1][i]);
+				varnl.push_back(nl[i]);			
 			} else {
 				std::string emsg = std::to_string(subds[i]+1) + " is not valid. There are " + std::to_string(sd.size()) + " subdatasets\n";
 				setError(emsg);
@@ -33,6 +42,8 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 			int w = where_in_vector(subdsname[i], shortnames);
 			if (w >= 0) {
 				tmp.push_back(sd[w]);
+				varname.push_back(info[1][w]);
+				varnl.push_back(nl[w]);			
 			} else {
 				std::string emsg = concatenate(shortnames, ", ");
 				emsg = subdsname[i] + " not found. Choose one of:\n" + emsg;
@@ -42,22 +53,21 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 		}
 		sd = tmp;
 	} else {
-		std::vector<size_t> nl(n);
-		for (size_t i=0; i<nl.size(); i++) {
-			nl[i] = stol(info[5][i]);
-		}
+		// first get rid of "_bnds"?
 		size_t mxnl = *max_element(nl.begin(), nl.end());
 		sd.resize(0);
-		for (size_t i=0; i<n; i++) {
+		
+		for (size_t i=0; i<nl.size(); i++) {
 			if (nl[i] == mxnl) {
 				sd.push_back(info[0][i]);
+				varname.push_back(info[1][i]);
+				varnl.push_back(nl[i]);			
 			}			
 		}
 	}
 	
 	bool success = constructFromFile(sd[0], {-1}, {""});
 	if (!success) {
-		// should continue to the next one  with while
 		return false;
 	}
 	SpatRaster out;
@@ -80,19 +90,26 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 		}
 	}
 
-	for (std::string& s : sd) s = basename_sds(s);
+	std::vector<std::string> lyrnames;
 	if (skipped.size() > 0) {
 		std::string s="skipped subdatasets (different geometry):";
 		for (size_t i=0; i<skipped.size(); i++) {
-			s += "\n   " + sd[skipped[i]];
+			s += "\n   " + varname[skipped[i]];
 		}
 		s += "\nSee 'describe_sds' for more info";
 		addWarning(s);
-		for (int i=skipped.size()-1; i>0; i--) {
-			sd.erase(sd.begin() + skipped[i]);
-		}
 	}
-	success = setNames(sd);
+	for (size_t i=0; i<varname.size(); i++) {
+		std::vector<std::string> nms = {varname[i]};
+		recycle(nms, std::max((unsigned)1, varnl[i]));
+		make_unique_names(nms);
+		lyrnames.insert(lyrnames.end(), nms.begin(), nms.end());
+	}
+
+	if (lyrnames.size() > 0) {
+		//Rcpp::Rcout << lyrnames[0] << std::endl;
+		success = setNames(lyrnames, false);
+	}
 	return true;
 }
 

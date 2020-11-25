@@ -19,6 +19,7 @@
 #include "string_utils.h"
 #include "file_utils.h"
 #include "time.h"
+#include "recycle.h"
 
 #include <set>
 
@@ -439,6 +440,10 @@ std::vector<std::string> SpatRaster::getNames() {
 
 
 bool SpatRaster::setNames(std::vector<std::string> names, bool make_valid) {
+	if (names.size() == 1) {
+		recycle(names, nlyr());
+	}
+
 	if (names.size() != nlyr()) {
 		return false;
 	} else {

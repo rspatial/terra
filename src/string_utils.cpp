@@ -233,21 +233,19 @@ void make_valid_names(std::vector<std::string> &s) {
 }
 
 
-
 template <typename T>
-std::vector<long unsigned> order(const std::vector<T> &v) {
-  // initialize original index locations
-  std::vector<long unsigned> idx(v.size());
+std::vector<size_t> order(const std::vector<T> &v) {
+  std::vector<size_t> idx(v.size());
   std::iota(idx.begin(), idx.end(), 0);
-  // sort indexes based on comparing values in v
-  std::sort(idx.begin(), idx.end(),
-       [&v](long unsigned i1, long unsigned i2) {return v[i1] < v[i2];});
+  std::stable_sort(idx.begin(), idx.end(),
+            [&v](size_t i1, size_t i2) {return v[i1] < v[i2];});
   return idx;
 }
 
+
 //does not catch all cases. needs fixing
 void make_unique_names(std::vector<std::string> &s) {
-    std::vector<long unsigned> x = order(s);
+    std::vector<size_t> x = order(s);
     std::sort(s.begin(), s.end());
     std::vector<std::string> ss = s;
     unsigned j = 1;

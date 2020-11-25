@@ -53,7 +53,16 @@ setMethod("meta", signature(x="character"),
 	}
 )
 
-meta_sds <- function(x, ...) {
-	.sdsmetadata(x)
+meta_sds <- function(x, parse=FALSE, ...) {
+	if (parse) {
+		m <- .parsedsdsmetadata(x)
+		m <- do.call(cbind, m)
+		m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
+		colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
+		for (i in 5:7) m[,i] <- as.integer(m[,i])	
+	} else {
+		m <- .sdsmetadata(x)
+	}
+	m
 }
 
