@@ -39,8 +39,94 @@ std::vector<std::string> get_metadata(std::string filename) {
 }
 
 
+std::vector<std::string> get_metadata_sds(std::string filename) {
+	std::vector<std::string> meta;
+    GDALDataset *poDataset;
+    poDataset = (GDALDataset *) GDALOpen(filename.c_str(), GA_ReadOnly );
+    if( poDataset == NULL )  {
+		return meta;
+	}
+	char **metadata = poDataset->GetMetadata("SUBDATASETS");
+	if (metadata != NULL) {
+		for (size_t i=0; metadata[i] != NULL; i++) {
+			meta.push_back(metadata[i]);
+		}
+	}
+	GDALClose( (GDALDatasetH) poDataset );	
+	return meta;		
+}
+
+std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string> meta) {
+	
+	std::vector<std::string> name, var, desc, nr, nc, nl;
+	std::string ndelim = "NAME=";
+	std::string ddelim = "DESC=";
+
+    for (size_t i=0; i<meta.size(); i++) {
+		std::string s = meta[i];
+		size_t pos = s.find(ndelim);
+		if (pos != std::string::npos) {
+			s.erase(0, pos + ndelim.length());
+			name.push_back(s);
+			std::string vdelim = "\":";
+			size_t pos = s.find(vdelim);
+
+			if (pos != std::string::npos) {
+				s.erase(0, pos + vdelim.length());
+				var.push_back(s);
+			}
+		} else {
+			size_t pos = s.find(ddelim);
+			if (pos != std::string::npos) {
+				s.erase(0, pos + ddelim.length());
+				pos = s.find("]");
+				std::string dims = s.substr(1, pos-1);
+				
+				std::vector<std::string> d = strsplit(dims, "x");
+				if (d.size() < 2) {
+					nl.push_back("0");	
+					nr.push_back("0");	
+					nc.push_back("0");	
+				} else if (d.size() == 3) {
+					nl.push_back(d[0]);	
+					nr.push_back(d[1]);	
+					nc.push_back(d[2]);	
+				} else {
+					nl.push_back("0");	
+					nr.push_back(d[0]);	
+					nc.push_back(d[1]);	
+				}
+				//desc.push_back(std::string(pos, s.size()));
+				s = s.substr(pos+2, s.size());
+				pos = s.find(" ");
+				s = s.substr(0, pos);
+				desc.push_back(s);
+				
+
+			//	nr.push_back( std::to_string(sub.nrow()));
+			//	nc.push_back(std::to_string(sub.ncol()));
+			//	nl.push_back(std::to_string(sub.nlyr()));
+
+			} else {
+				desc.push_back("");				
+			}
+		}
+	}
+	std::vector<std::vector<std::string>> out(6);
+	out[0] = name;
+	out[1] = var;
+	out[2] = desc;
+	out[3] = nr;
+	out[4] = nc;
+	out[5] = nl;
+	return out;
+}
+
+
+
 std::vector<std::vector<std::string>> sdinfo(std::string fname) {
-	std::vector<std::vector<std::string>> out(5);
+
+	std::vector<std::vector<std::string>> out(6);
 	GDALDataset *poDataset;
     poDataset = (GDALDataset *) GDALOpen( fname.c_str(), GA_ReadOnly );
     if( poDataset == NULL ) {
@@ -67,7 +153,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 		return out;
 	}	
 	SpatRaster sub;
-	std::vector<std::string> name, desc, nr, nc, nl;
+	std::vector<std::string> name, var, desc, nr, nc, nl;
 	std::string ndelim = "NAME=";
 	std::string ddelim = "DESC=";
 
@@ -77,10 +163,16 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 		if (pos != std::string::npos) {
 			s.erase(0, pos + ndelim.length());
 			name.push_back(s);
+			std::string vdelim = "\":";
+			size_t pos = s.find(vdelim);
 			if (sub.constructFromFile(s, {-1}, {""})) {
 				nr.push_back( std::to_string(sub.nrow()));
 				nc.push_back(std::to_string(sub.ncol()));
 				nl.push_back(std::to_string(sub.nlyr()));
+			}
+			if (pos != std::string::npos) {
+				s.erase(0, pos + vdelim.length());
+				var.push_back(s);
 			}
 		} else {
 			size_t pos = s.find(ddelim);
@@ -93,11 +185,13 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 		}
 	}
 	GDALClose( (GDALDatasetH) poDataset );
+	//var.resize(name.size());
 	out[0] = name;
-	out[1] = desc;
-	out[2] = nr;
-	out[3] = nc;
-	out[4] = nl;
+	out[1] = var;
+	out[2] = desc;
+	out[3] = nr;
+	out[4] = nc;
+	out[5] = nl;
 	return out;
 }
 

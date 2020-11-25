@@ -58,7 +58,11 @@ setMethod("rast", signature(x="SpatExtent"),
 
 setMethod("rast", signature(x="SpatVector"),
 	function(x, ...) {
-		rast(ext(x), ...)
+		e <- ext(x)
+		dx <- diff(as.vector(e)[1:2])
+		dy <- diff(as.vector(e)[3:4])
+		res <- min(dx, dy) / 100
+		rast(ext(x), res=res, ...)
 	}
 )
 

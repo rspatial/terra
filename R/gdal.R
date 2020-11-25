@@ -40,8 +40,8 @@ describe_sds <- function(x, ...) {
 	}
 	m <- do.call(cbind, x)
 	m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
-	colnames(m) <- c("id", "name", "desc", "nrow", "ncol", "nlyr")
-	for (i in 4:6) m[,i] <- as.integer(m[,i])
+	colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
+	for (i in 5:7) m[,i] <- as.integer(m[,i])
 	m
 }
 
@@ -52,4 +52,8 @@ setMethod("meta", signature(x="character"),
 		.metadata(x)
 	}
 )
+
+meta_sds <- function(x, ...) {
+	.sdsmetadata(x)
+}
 

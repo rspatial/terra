@@ -18,7 +18,6 @@
 
 #include <algorithm>
 #include <stdint.h>
-#include <regex>
 
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
@@ -138,25 +137,9 @@ SpatCategories GetCategories(char **pCat) {
 }
 
 
-std::string basename_sds(std::string f) {
-	const size_t i = f.find_last_of("\\/");
-	if (std::string::npos != i) {
-		f.erase(0, i + 1);
-	}
-	const size_t j = f.find_last_of(":");
-	if (std::string::npos != j) {
-		f.erase(0, j + 1);
-	}
-	f = std::regex_replace(f, std::regex(".hdf$"), "");
-	f = std::regex_replace(f, std::regex(".nc$"), "");
-	f = std::regex_replace(f, std::regex("\""), "");
-
-	return f;
-}
 
 
-
-bool SpatRaster::constructFromSubDataSets(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname) {
+bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname) {
 
 	std::vector<std::string> sd; //, nms;
 //	std::vector<std::string> dc; //, nms;
@@ -385,6 +368,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 	unsigned nl = poDataset->GetRasterCount();
+	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
 /*
 	char **metadata = poDataset->GetMetadataDomainList();
@@ -400,7 +384,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			for (size_t i=0; metadata[i] != NULL; i++) {
 				meta.push_back(metadata[i]);
 			}
-			return constructFromSubDataSets(fname, meta, subds, subdsname);
+			if (gdrv == "netCDF") {
+				return constructFromNCDFsds(fname, meta, subds, subdsname); 
+			} else {
+				return constructFromSDS(fname, meta, subds, subdsname);
+			}
 		} else {
 			setError("no data detected in " + fname);
 			return false;
@@ -476,7 +464,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 //	s.layers.resize(1);
 
-	std::string gdrv = poDataset->GetDriver()->GetDescription();
 	//Rcpp::Rcout << "driver: " << gdrv << std::endl;
 
 //	std::string unit = "";

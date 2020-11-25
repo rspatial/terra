@@ -2,6 +2,7 @@
 
 \alias{describe}
 \alias{meta}
+\alias{meta_sds}
 \alias{meta,character-method}
 \alias{describe_sds}
 \alias{gdal_version}
@@ -9,7 +10,7 @@
 \title{describe}
 
 \description{
-Describe the properties of a file with spatial data (\code{describe}, \code{meta}) or get the properties of the sub-datasets in file (\code{describe_sds}). 
+Describe the properties of a file with spatial data (\code{describe}, \code{meta}) or the properties of the sub-datasets in file (\code{describe_sds} and \code{meta_sds}). 
 }
 
 
@@ -19,6 +20,8 @@ describe(x, options="", print=TRUE, open_opt="", ...)
 describe_sds(x, ...)
 
 \S4method{meta}{character}(x, ...)
+
+\S4method{meta_sds}{character}(x, ...)
 
 gdal_version()
 }

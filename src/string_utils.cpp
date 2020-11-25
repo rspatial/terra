@@ -20,6 +20,25 @@
 #include <string>
 #include <vector>
 #include <numeric>
+#include <regex>
+
+
+std::string basename_sds(std::string f) {
+	const size_t i = f.find_last_of("\\/");
+	if (std::string::npos != i) {
+		f.erase(0, i + 1);
+	}
+	const size_t j = f.find_last_of(":");
+	if (std::string::npos != j) {
+		f.erase(0, j + 1);
+	}
+	f = std::regex_replace(f, std::regex(".hdf$"), "");
+	f = std::regex_replace(f, std::regex(".nc$"), "");
+	f = std::regex_replace(f, std::regex("\""), "");
+
+	return f;
+}
+
 
 std::string double_to_string(double x) { 
 	std::string s = std::to_string (x);

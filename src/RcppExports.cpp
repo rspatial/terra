@@ -50,6 +50,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sdsmetatdata
+std::vector<std::string> sdsmetatdata(std::string filename);
+RcppExport SEXP _terra_sdsmetatdata(SEXP filenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    rcpp_result_gen = Rcpp::wrap(sdsmetatdata(filename));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sdsmetatdataparsed
+std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename);
+RcppExport SEXP _terra_sdsmetatdataparsed(SEXP filenameSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type filename(filenameSEXP);
+    rcpp_result_gen = Rcpp::wrap(sdsmetatdataparsed(filename));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gdal_init
 void gdal_init(std::string path);
 RcppExport SEXP _terra_gdal_init(SEXP pathSEXP) {
@@ -68,6 +90,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
     {"_terra_metatdata", (DL_FUNC) &_terra_metatdata, 1},
+    {"_terra_sdsmetatdata", (DL_FUNC) &_terra_sdsmetatdata, 1},
+    {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}

@@ -180,6 +180,13 @@ SpatTime_t time_from_hour(int syear, int smonth, int sday, int nhours) {
 }
 
 
+void hours_to_time(std::vector<SpatTime_t> &time, std::string origin) {
+	std::vector<int> ymd = getymd(origin);
+	SpatTime_t otime = get_time(ymd[0], ymd[1], ymd[2]);
+	for (SpatTime_t &d : time) d = otime + d * 3600;
+}
+	
+	
 
 SpatTime_t time_from_day(int syear, int smonth, int sday, int ndays) {
 	SpatTime_t time = get_time(syear, smonth, sday);

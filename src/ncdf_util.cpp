@@ -1,6 +1,102 @@
 #include "spatRaster.h"
 #include "time.h"
 
+#include "string_utils.h"
+#include "gdal_info.h"
+
+bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname) {
+
+	std::vector<std::vector<std::string>> info = parse_metadata_sds(meta);
+	std::vector<std::string> sd = info[0];
+
+	int n = info[5].size();
+	
+	if (sd.size() == 0) {
+		return false;
+	}
+	if (subds[0] >=0) {
+		std::vector<std::string> tmp;
+		for (size_t i=0; i<subds.size(); i++) {
+			if (subds[i] >=0 && subds[i] < n) {
+				tmp.push_back(sd[subds[i]]);
+			} else {
+				std::string emsg = std::to_string(subds[i]+1) + " is not valid. There are " + std::to_string(sd.size()) + " subdatasets\n";
+				setError(emsg);
+				return false;
+			}
+		}
+		sd = tmp;		
+	} else if (subdsname[0] != "") {
+		std::vector<std::string> tmp;
+		std::vector<std::string> shortnames = getlastpart(sd, ":");
+		for (size_t i=0; i<subdsname.size(); i++) {
+			int w = where_in_vector(subdsname[i], shortnames);
+			if (w >= 0) {
+				tmp.push_back(sd[w]);
+			} else {
+				std::string emsg = concatenate(shortnames, ", ");
+				emsg = subdsname[i] + " not found. Choose one of:\n" + emsg;
+				setError(emsg);
+				return false;
+			}
+		}
+		sd = tmp;
+	} else {
+		std::vector<size_t> nl(n);
+		for (size_t i=0; i<nl.size(); i++) {
+			nl[i] = stol(info[5][i]);
+		}
+		size_t mxnl = *max_element(nl.begin(), nl.end());
+		sd.resize(0);
+		for (size_t i=0; i<n; i++) {
+			if (nl[i] == mxnl) {
+				sd.push_back(info[0][i]);
+			}			
+		}
+	}
+	
+	bool success = constructFromFile(sd[0], {-1}, {""});
+	if (!success) {
+		// should continue to the next one  with while
+		return false;
+	}
+	SpatRaster out;
+	std::vector<int> skipped;
+    for (size_t i=1; i < sd.size(); i++) {
+//		printf( "%s\n", sd[i].c_str() );
+		success = out.constructFromFile(sd[i], {-1}, {""});
+		if (success) {
+			if (out.compare_geom(*this, false, false)) {
+				addSource(out);
+			} else {
+				skipped.push_back(i);
+			}
+		} else {
+			if (out.msg.has_error) {
+				//setError(out.msg.error);
+				//addWarning(out.msg.error);
+			}
+			//return false;
+		}
+	}
+
+	for (std::string& s : sd) s = basename_sds(s);
+	if (skipped.size() > 0) {
+		std::string s="skipped subdatasets (different geometry):";
+		for (size_t i=0; i<skipped.size(); i++) {
+			s += "\n   " + sd[skipped[i]];
+		}
+		s += "\nSee 'describe_sds' for more info";
+		addWarning(s);
+		for (int i=skipped.size()-1; i>0; i--) {
+			sd.erase(sd.begin() + skipped[i]);
+		}
+	}
+	success = setNames(sd);
+	return true;
+}
+
+
 
 std::vector<int_64> str2int64v(std::string s, std::string delim) {
 	std::vector<int_64> out;
@@ -103,8 +199,10 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 				for (int_64 &d : out) d = time_from_day(ymd[0], ymd[1], ymd[2], d);
 			}
 		} else if (hours) {
-			std::vector<int> ymd = getymd(origin);
-			for (int_64 &d : out) d = time_from_hour(ymd[0], ymd[1], ymd[2], d);
+			hours_to_time(out, origin);
+
+			//std::vector<int> ymd = getymd(origin);
+			//for (int_64 &d : out) d = time_from_hour(ymd[0], ymd[1], ymd[2], d);
 		} else { // seconds
 			offset = get_time_string(origin);
 			for (int_64 &d : out) d = d + offset;

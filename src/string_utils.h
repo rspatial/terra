@@ -1,6 +1,8 @@
 #include<string>
 #include<vector>
 
+std::string basename_sds(std::string f);
+
 std::string double_to_string(double x);
 std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep);
 std::vector<char *> string_to_charpnt(std::vector<std::string> s);

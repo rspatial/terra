@@ -35,8 +35,18 @@ std::vector<std::string> metatdata(std::string filename) {
 	return m;
 }
 
+// [[Rcpp::export(name = ".sdsmetadata")]]
+std::vector<std::string> sdsmetatdata(std::string filename) {
+	std::vector<std::string> m = get_metadata_sds(filename);
+	return m;
+}
 
-
+// [[Rcpp::export(name = ".parsedsdsmetadata")]]
+std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {
+	std::vector<std::string> m = sdsmetatdata(filename);
+	std::vector<std::vector<std::string>> s = parse_metadata_sds(m);
+	return s;
+}
 
 
 #if GDAL_VERSION_MAJOR >= 3

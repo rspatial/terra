@@ -17,6 +17,14 @@
     .Call(`_terra_metatdata`, filename)
 }
 
+.sdsmetadata <- function(filename) {
+    .Call(`_terra_sdsmetatdata`, filename)
+}
+
+.parsedsdsmetadata <- function(filename) {
+    .Call(`_terra_sdsmetatdataparsed`, filename)
+}
+
 .gdalinit <- function(path) {
     invisible(.Call(`_terra_gdal_init`, path))
 }
