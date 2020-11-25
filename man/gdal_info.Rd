@@ -21,7 +21,7 @@ describe_sds(x, ...)
 
 \S4method{meta}{character}(x, ...)
 
-\S4method{meta_sds}{character}(x, ...)
+meta_sds(x, parse=FALSE, ...)
 
 gdal_version()
 }
@@ -30,6 +30,7 @@ gdal_version()
   \item{x}{character (a filename)}
   \item{options}{character. A vector of valid options including "json", "mm", "stats", "hist", "nogcp", "nomd", "norat", "noct", "nofl", "checksum", "proj4", "listmdd", "mdd <value>" where <value> specifies a domain or 'all', "wkt_format <value>" where value is one of 'WKT1', 'WKT2', 'WKT2_2015', or 'WKT2_2018', "sd <subdataset>" where <subdataset> is the name of a sub-dataset. See \url{https://gdal.org/programs/gdalinfo.html}}  
   \item{print}{logical. If \code{TRUE}, print the results}
+  \item{parse}{logical. If \code{TRUE}, metadata is parsed into components}
   \item{open_opt}{character. Driver specific open options}   
   \item{...}{additional arguments. None implemented}   
 }
