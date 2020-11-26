@@ -15,7 +15,7 @@
 \description{
 Methods to create a SpatDataSet. This is an object to hold "sub-datasets", each a SpatRaster that in most cases will have multiple layers. 
 
-See \code{\link{describe_sds}} for getting information about sub-datasets in a file.
+See \code{\link{desc}} for getting information about sub-datasets in a file.
 }
 
 \usage{
@@ -40,7 +40,7 @@ SpatDataSet
 }
 
 \seealso{
-\code{\link{describe_sds}}
+\code{\link{desc}}
 }
 
 \examples{

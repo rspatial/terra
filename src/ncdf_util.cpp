@@ -14,6 +14,9 @@ bool good_ends(std::string const &s) {
 			}
 		} 
 	}
+	if (s == "x" || s == "y" || s == "northing" || s == "easting") {
+		return false;
+	}
 	return true;
 }
 
@@ -25,10 +28,6 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 
 //	std::vector<unsigned> varnl;
 // for selection based on nlyr
-//	std::vector<size_t> nl(n);
-//	for (size_t i=0; i<nl.size(); i++) {
-//		nl[i] = stol(info[5][i]);
-//	}
 	
 	if (info[0].size() == 0) {
 		return false;
@@ -39,7 +38,6 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 			if (subds[i] >=0 && subds[i] < n) {
 				sd.push_back(info[0][subds[i]]);
 				varname.push_back(info[1][i]);
-				//varnl.push_back(nl[i]);			
 			} else {
 				std::string emsg = std::to_string(subds[i]+1) + " is not valid. There are " + std::to_string(info[0].size()) + " subdatasets\n";
 				setError(emsg);
@@ -53,7 +51,6 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 			if (w >= 0) {
 				sd.push_back(info[0][w]);
 				varname.push_back(info[1][w]);
-				//varnl.push_back(nl[w]);			
 			} else {
 				std::string emsg = concatenate(info[1], ", ");
 				emsg = subdsname[i] + " not found. Choose one of:\n" + emsg;
@@ -70,20 +67,24 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 				varname.push_back(info[1][i]);
 			} 
 		}
-	// perhaps also remove sds with 1 row or col of other sds have more.		
-/*
-// alternatively, eliminate based on nlyr()
-		size_t mxnl = *max_element(nl.begin(), nl.end());
-		for (size_t i=0; i<nl.size(); i++) {
-			if (nl[i] == mxnl) {
-				sd.push_back(info[0][i]);
-				varname.push_back(info[1][i]);
-				varnl.push_back(nl[i]);			
-			}			
+		if (sd.size() == 0) { // all were removed
+			std::vector<size_t> nl(n);
+			for (size_t i=0; i<nl.size(); i++) {
+				nl[i] = stol(info[5][i]);
+			}
+			size_t mxnl = *max_element(nl.begin(), nl.end());
+			for (size_t i=0; i<nl.size(); i++) {
+				if (nl[i] == mxnl) {
+					sd.push_back(info[0][i]);
+					varname.push_back(info[1][i]);
+				}			
+			}
 		}
-*/		
+		// todo: check for different dimensions, and use higher dimensions 
+		// especially 1 dimension. e.g. 50x50 over 1x50
+		
+		
 	}
-	
 	std::vector<size_t> srcnl;
 	bool success = constructFromFile(sd[0], {-1}, {""});
 	if (!success) {

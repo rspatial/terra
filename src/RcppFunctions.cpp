@@ -2,9 +2,14 @@
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
 
-#include <memory> //std::addressof
+//#include <memory> //std::addressof
 #include "gdal_priv.h"
 # include "gdal_info.h"
+
+#if GDAL_VERSION_MAJOR >= 3
+#include "proj.h"
+#endif
+
 
 // [[Rcpp::export(name = ".gdalinfo")]]
 std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
@@ -116,11 +121,6 @@ static void __err_none(CPLErr eErrClass, int err_no, const char *msg) {
     return;
 }
 
-
-
-#if GDAL_VERSION_MAJOR >= 3
-#include "proj.h"
-#endif
 
 
 // [[Rcpp::export(name = ".set_gdal_warnings")]]
