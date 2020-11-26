@@ -82,6 +82,7 @@ class RasterSource {
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
 		bool hasTime = false;
+		std::string timestep = "seconds";
 		std::vector<int_64> time;
 		std::vector<double> depth;
 		std::vector<std::string> unit;
@@ -238,10 +239,12 @@ class SpatRaster {
 		bool setNames(std::vector<std::string> names, bool make_valid=false);
 		std::vector<bool> hasTime();
 		std::vector<int_64> getTime();
+		std::string getTimeStep();
+		
 		std::vector<std::string> getTimeStr();
 		std::vector<double> getTimeDbl();
 
-		bool setTime(std::vector<int_64> times);
+		bool setTime(std::vector<int_64> time, std::string step);
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);
 		std::vector<std::string> getUnit();

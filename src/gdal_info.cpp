@@ -93,7 +93,7 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 					nr.push_back(d[1]);	
 					nc.push_back(d[2]);	
 				} else {
-					nl.push_back("0");	
+					nl.push_back("1");	
 					nr.push_back(d[0]);	
 					nc.push_back(d[1]);	
 				}

@@ -192,7 +192,7 @@
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, ext=NULL, 
 	# catching
-	lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, ...) {
+	lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, bty="n", ...) {
 
 	#if (!is.null(ext)) {
 		# do something better
@@ -203,7 +203,7 @@
 		x <- usr[c(2)]
 		y <- usr[c(4)]
 	}
-	leg <- legend(x, y, legend, fill, xpd=xpd, ...)	
+	leg <- legend(x, y, legend, fill, xpd=xpd, bty=bty, ...)	
 	return(leg)
 }	
 

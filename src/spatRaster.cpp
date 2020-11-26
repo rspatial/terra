@@ -512,21 +512,28 @@ std::vector<int_64> SpatRaster::getTime() {
 	return(x);
 }
 
-
-bool SpatRaster::setTime(std::vector<int_64> times) {
-	if (times.size() != nlyr()) {
-		return false;
-	} else {
-        size_t begin=0;
-        size_t end;
-        for (size_t i=0; i<source.size(); i++)	{
-            end = begin + source[i].nlyr;
-            source[i].time = std::vector<int_64> (times.begin() + begin, times.begin() + end);
-            begin = end;
-        }
-        return true;
-	}
+std::string SpatRaster::getTimeStep() {
+	return source[0].timestep;
 }
+
+bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
+	if (time.size() != nlyr()) {
+		return false;
+	} 
+	if (step != "seconds") {  // "days", "months", "years"
+		return false;
+	} 
+	size_t begin=0;
+    size_t end;
+	for (size_t i=0; i<source.size(); i++)	{
+		end = begin + source[i].nlyr;
+        source[i].time = std::vector<int_64> (time.begin() + begin, time.begin() + end);
+		source[i].timestep = step;
+        begin = end;
+    }
+    return true;
+}
+
 
 std::vector<double> SpatRaster::getDepth() {
 	std::vector<double> x;

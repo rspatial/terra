@@ -35,7 +35,7 @@ gdal_warnings(level)
   \item{print}{logical. If \code{TRUE}, print the results}
   \item{parse}{logical. If \code{TRUE}, metadata is parsed into components}
   \item{open_opt}{character. Driver specific open options}   
-  \item{level}{integer between 1 and 4 representing the type warnings from GDAL that is shown. 1 = warnings and errors; 2 = errors only; 3 = only irrecoverable errors; 4 = no warnings. The default setting is 2}
+  \item{level}{integer between 1 and 4 representing the type warnings from GDAL that is shown. 1 = warnings and errors; 2 = errors only; 3 = only irrecoverable errors; 4 = no warnings. The default setting is 3}
   \item{...}{additional arguments. None implemented}   
 
 }
