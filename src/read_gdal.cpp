@@ -35,8 +35,6 @@
 #include "gdal_rat.h"
 //#include "hdr.h"
 
-#include "gdal_errors.h"
-
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
 #endif

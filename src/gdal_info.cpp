@@ -6,9 +6,8 @@
 
 #include "cpl_port.h"
 #include "cpl_conv.h" // CPLFree()
-#include "gdal_version.h"
+//#include "gdal_version.h"
 
-#include "gdal_errors.h" 
 
 std::string sectostr(int x) {
 	char buffer[20];

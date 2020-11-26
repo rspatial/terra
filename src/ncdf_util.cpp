@@ -205,8 +205,6 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 	//bool seconds = false; 
 
 	out = str2int64v(values, ",");
-	//Rcpp::Rcout << out.size() << std::endl;
-	//Rcpp::Rcout << out[0]<< std::endl;
 
 	if ((origin.find("seconds")) != std::string::npos) {
 		//seconds = true;
@@ -252,10 +250,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 			for (int_64 &d : out) d = d + offset;
 		}		
 	}
-	//Rcpp::Rcout << calendar << std::endl;
-	//Rcpp::Rcout << origin << std::endl;
-	//Rcpp::Rcout << offset << std::endl;
-	
+
 	return out;
 }
 	

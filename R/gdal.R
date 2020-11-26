@@ -7,8 +7,8 @@ gdal_version <- function() {
 
 gdal_warnings <- function(level = 2) {
 	level <- as.integer(level)
-	stopifnot(level %in% c(1:4))
-	.set_gdal_warnings(level - 1)
+	stopifnot(level %in% c(0:3))
+	.set_gdal_warnings(level)
 }
 
 

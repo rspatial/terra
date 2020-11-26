@@ -45,7 +45,15 @@ std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {
 	return s;
 }
 
+template <typename... Args>
+inline void warningNoCall(const char* fmt, Args&&... args ) {
+    Rf_warningcall(R_NilValue, tfm::format(fmt, std::forward<Args>(args)... ).c_str());
+}
 
+template <typename... Args>
+inline void NORET stopNoCall(const char* fmt, Args&&... args) {
+    throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
+}
 
 static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
 	switch ( eErrClass ) {
@@ -53,35 +61,35 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             break; 
         case 1:
         case 2:
-            Rcpp::warning("GDAL Message %d: %s\n", err_no, msg); 
+            warningNoCall("GDAL (%d): %s", err_no, msg); 
             break; 
         case 3:
-            Rcpp::warning("GDAL Error %d: %s\n", err_no, msg);
+            warningNoCall("GDAL error (%d): %s", err_no, msg);
             break;
         case 4:
-            Rcpp::stop("Unrecoverable GDAL Error %d: %s\n", err_no, msg); 
+            stopNoCall("GDAL unrecoverable (%d): %s", err_no, msg); 
             break;
         default:
-            Rcpp::warning("GDAL error %d (errno %d: %s)\n", eErrClass, err_no, msg); 
+            warningNoCall("GDAL error %d (%d: %s)", eErrClass, err_no, msg); 
             break; 
     }
-    return;
+    return;	
 }
 
 static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
 	switch ( eErrClass ) {
         case 0:
-            break; 
         case 1:
         case 2:
+            break; 		
         case 3:
-            Rcpp::warning("GDAL Error %d: %s\n", err_no, msg);
+            warningNoCall("GDAL error (%d): %s", err_no, msg);
             break;
         case 4:
-            Rcpp::stop("Unrecoverable GDAL Error %d: %s\n", err_no, msg); 
+            stopNoCall("GDAL unrecoverable (%d): %s", err_no, msg); 
             break;
         default:
-            Rcpp::warning("GDAL error %d (errno %d: %s)\n", eErrClass, err_no, msg); 
+            warningNoCall("GDAL error %d ((%d): %s)", eErrClass, err_no, msg); 
             break; 
     }
     return;
@@ -96,7 +104,7 @@ static void __err_fatal(CPLErr eErrClass, int err_no, const char *msg) {
         case 3:
             break;
         case 4:
-            Rcpp::stop("Unrecoverable GDAL Error %d: %s\n", err_no, msg); 
+            stopNoCall("GDAL unrecoverable (%d): %s", err_no, msg); 
             break;
         default:
             break; 
