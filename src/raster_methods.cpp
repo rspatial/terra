@@ -110,9 +110,9 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 			m.erase(m.begin()+i);
 			break;
 		}
-		if (m.size() == 0) { // only NA
-			return isnan(opt);
-		}
+	}
+	if (m.size() == 0) { // only NA
+		return isnan(opt);
 	}
 
 
@@ -145,6 +145,60 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 	out.writeStop();
 	return(out);
 }
+
+
+
+std::vector<std::vector<double>> SpatRaster::is_in_cells(std::vector<double> m, SpatOptions &opt) {
+
+	std::vector<std::vector<double>> out(nlyr());
+
+	if (m.size() == 0) {
+		return(out);
+	}
+	if (!hasValues()) {
+		return(out);
+	}
+	bool hasNAN = false;
+	for (size_t i=0; i<m.size(); i++) {
+		if (std::isnan(m[i])) {
+			hasNAN = true;
+			m.erase(m.begin()+i);
+			break;
+		}
+	}
+//	if (m.size() == 0) { // only NA
+		//nanOnly=true;
+//	}
+
+	if (!readStart()) {
+		return(out);
+	}
+
+	BlockSize bs = getBlockSize(opt);
+	size_t nc = ncol();
+	for (size_t i = 0; i < bs.n; i++) {
+		std::vector<double> v = readBlock(bs, i);
+		size_t cellperlayer = bs.nrows[i] * nc; 
+		for (size_t j=0; j<v.size(); j++) {
+			size_t lyr = j / cellperlayer;
+			size_t cell = j % cellperlayer + bs.row[i] * nc;
+			if (std::isnan(v[j])) {
+				if (hasNAN)	out[lyr].push_back(cell);
+			} else {
+				for (size_t k=0; k<m.size(); k++) {
+					if (v[j] == m[k]) {
+						out[lyr].push_back(cell);
+						break;
+					}
+				}
+			}
+		} 
+	}
+	readStop();
+	return(out);
+}
+
+
 
 
 SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> maxv, std::vector<double> minq, std::vector<double> maxq, std::vector<double> smin, std::vector<double> smax, SpatOptions &opt) {

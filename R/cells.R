@@ -11,6 +11,17 @@ setMethod("cells", signature(x="SpatRaster", y="missing"),
 	}
 )
 
+setMethod("cells", signature(x="SpatRaster", y="numeric"), 
+	function(x, y, ...) {
+		opt <- .runOptions("", TRUE, list())
+		v <- x@ptr$is_in_cells(y, opt)
+		x <- show_messages(x, "cells")
+		v <- lapply(v, function(i) i+1)
+		names(v) <- names(x)
+		v
+	}
+)
+
 
 setMethod("cells", signature("SpatRaster", "SpatVector"), 
 #	function(x, y, weights=FALSE, touches=is.lines(y), method="simple", ...) {   # in a next version

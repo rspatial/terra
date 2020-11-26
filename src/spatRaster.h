@@ -473,6 +473,7 @@ class SpatRaster {
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
 		SpatRaster init(double value, SpatOptions &opt);
 		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
+		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, SpatOptions &opt);
 
 		SpatRaster isnot(SpatOptions &opt);
 		SpatRaster isnan(SpatOptions &opt);
