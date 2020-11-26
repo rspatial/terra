@@ -87,15 +87,20 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 				if (d.size() < 2) {
 					nl.push_back("0");	
 					nr.push_back("0");	
-					nc.push_back("0");	
-				} else if (d.size() == 3) {
-					nl.push_back(d[0]);	
-					nr.push_back(d[1]);	
-					nc.push_back(d[2]);	
-				} else {
+					nc.push_back("0");		
+				} else if (d.size() == 2) {
 					nl.push_back("1");	
 					nr.push_back(d[0]);	
 					nc.push_back(d[1]);	
+				} else {
+					size_t ds = d.size()-1;
+					size_t nls = stoi(d[ds-2]);
+					for (size_t i=0; i<(ds-2); i++) {
+						nls *= stoi(d[i]);
+					}
+					nl.push_back(std::to_string(nls));	
+					nr.push_back(d[ds-1]);	
+					nc.push_back(d[ds]);	
 				}
 				//desc.push_back(std::string(pos, s.size()));
 				s = s.substr(pos+2, s.size());

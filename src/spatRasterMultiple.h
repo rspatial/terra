@@ -118,11 +118,13 @@ class SpatRasterStack {
 		}
 		
 		bool push_back(SpatRaster r, std::string name, bool warn) { 
+			bool push = true;
 			if (ds.size() > 0) {
 				if (!r.compare_geom(ds[0], false, false, true, true, true, false)) {
 //				if (!ds[0].compare_geom(r, false, false, true, true, false, false)) {
 					if (warn) {
 						addWarning(r.msg.getError() +" (" + name + ")");
+						push = false;
 					} else {
 						setError(r.msg.getError() +" (" + name + ")");
 						return false;
@@ -132,8 +134,10 @@ class SpatRasterStack {
 				//	oneRes = false;
 				//}
 			}
-			ds.push_back(r); 
-			names.push_back(name); 
+			if (push) {
+				ds.push_back(r); 
+				names.push_back(name); 
+			}
 			return true;
 		};
 		void resize(size_t n) { 

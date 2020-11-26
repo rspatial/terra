@@ -63,7 +63,7 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 		}
 	// select all
 	} else {
-		// eliminate sources based on names like "*_bnds"
+		// eliminate sources based on names like "*_bnds" and "lat"
 		for (size_t i=0; i<info[1].size(); i++) {
 			if (good_ends(info[1][i])) {
 				sd.push_back(info[0][i]);
@@ -72,7 +72,7 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 		}
 	// perhaps also remove sds with 1 row or col of other sds have more.		
 /*
-		// alternatively, eliminate based on nlyr()
+// alternatively, eliminate based on nlyr()
 		size_t mxnl = *max_element(nl.begin(), nl.end());
 		for (size_t i=0; i<nl.size(); i++) {
 			if (nl[i] == mxnl) {
@@ -89,9 +89,10 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 	if (!success) {
 		return false;
 	}
-	srcnl.push_back(nlyr());
-	SpatRaster out;
 	std::vector<std::string> skipped, used;
+	srcnl.push_back(nlyr());
+	used.push_back(varname[0]);				
+	SpatRaster out;
     for (size_t i=1; i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
 		success = out.constructFromFile(sd[i], {-1}, {""});
@@ -108,7 +109,6 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 		}
 	}
 
-	std::vector<std::string> lyrnames;
 	if (skipped.size() > 0) {
 		std::string s="skipped sub-datasets (different geometry, see 'describe_sds'):\n";
 		for (size_t i=0; i<skipped.size(); i++) {
@@ -123,16 +123,17 @@ bool SpatRaster::constructFromNCDFsds(std::string filename, std::vector<std::str
 	}
 
 
+	std::vector<std::string> lyrnames;
 	for (size_t i=0; i<used.size(); i++) {
 		std::vector<std::string> nms = {used[i]};
 		recycle(nms, srcnl[i]);
 		make_unique_names(nms);
 		lyrnames.insert(lyrnames.end(), nms.begin(), nms.end());
+		//Rcpp::Rcout << used[i] << std::endl;
+		//Rcpp::Rcout << nms.size() << std::endl;
+		
 	}
-
-
 	if (lyrnames.size() > 0) {
-		//Rcpp::Rcout << lyrnames[0] << std::endl;
 		success = setNames(lyrnames, false);
 	}
 

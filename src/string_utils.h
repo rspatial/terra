@@ -1,8 +1,6 @@
 #include<string>
 #include<vector>
 
-std::string basename_sds(std::string f);
-
 std::string double_to_string(double x);
 std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep);
 std::vector<char *> string_to_charpnt(std::vector<std::string> s);
@@ -24,6 +22,7 @@ void lrtrim(std::string &s);
 std::string lrtrim_copy(std::string s);
 
 bool in_string(const std::string &x, std::string part);
+bool ends_on(std::string const &s, std::string const &end);
 
 void make_unique_names(std::vector<std::string> &s);
 void make_valid_names(std::vector<std::string> &s);
