@@ -61,16 +61,16 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             break; 
         case 1:
         case 2:
-            warningNoCall("GDAL (%d): %s", err_no, msg); 
+            warningNoCall("%s (GDAL %d)", msg, err_no); 
             break; 
         case 3:
-            warningNoCall("GDAL error (%d): %s", err_no, msg);
+            warningNoCall("%s (GDAL error %d)", msg, err_no); 
             break;
         case 4:
-            stopNoCall("GDAL unrecoverable (%d): %s", err_no, msg); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
             break;
         default:
-            warningNoCall("GDAL error %d (%d: %s)", eErrClass, err_no, msg); 
+            warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no); 
             break; 
     }
     return;	
@@ -83,13 +83,13 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 2:
             break; 		
         case 3:
-            warningNoCall("GDAL error (%d): %s", err_no, msg);
+            warningNoCall("%s (GDAL error %d)", msg, err_no); 
             break;
         case 4:
-            stopNoCall("GDAL unrecoverable (%d): %s", err_no, msg); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
             break;
         default:
-            warningNoCall("GDAL error %d ((%d): %s)", eErrClass, err_no, msg); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
             break; 
     }
     return;
@@ -104,7 +104,7 @@ static void __err_fatal(CPLErr eErrClass, int err_no, const char *msg) {
         case 3:
             break;
         case 4:
-            stopNoCall("GDAL unrecoverable (%d): %s", err_no, msg); 
+            stopNoCall("%s (GDAL unrecoverable error %d)", msg, err_no); 
             break;
         default:
             break; 
@@ -125,21 +125,21 @@ static void __err_none(CPLErr eErrClass, int err_no, const char *msg) {
 
 // [[Rcpp::export(name = ".set_gdal_warnings")]]
 void set_gdal_warnings(int level) {
-	if (level==0) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_warning);			
-	} else if (level==1) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_error);			
-	} else if (level==2) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
-	} else {
+	if (level==4) {
 		CPLSetErrorHandler((CPLErrorHandler)__err_none);
-	}		
+	} else if (level==1) {
+		CPLSetErrorHandler((CPLErrorHandler)__err_warning);			
+	} else if (level==2) {
+		CPLSetErrorHandler((CPLErrorHandler)__err_error);			
+	} else {
+		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
+	} 		
 }
 
 
 // [[Rcpp::export(name = ".gdalinit")]]
 void gdal_init(std::string path) {
-	set_gdal_warnings(2);
+	set_gdal_warnings(3);
     GDALAllRegister();
     OGRRegisterAll(); 
 	//GDALregistred = true;
