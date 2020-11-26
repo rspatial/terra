@@ -109,7 +109,7 @@ setMethod("as.matrix", signature(x="SpatRaster"),
 
 
 setMethod("as.data.frame", signature(x="SpatRaster"), 
-	function(x, xy=FALSE, cells=FALSE, na.rm=FALSE, ...) {
+	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE, ...) {
 		d <- NULL
 		if (xy) {
 			d <- xyFromCell(x, 1:ncell(x))
@@ -118,7 +118,7 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 			d <- cbind(cell=1:ncell(x), d)
 		}
 		d <- cbind(d, values(x, matrix=TRUE))
-		if (na.rm) d <- na.omit(d) 
+		if (na.rm) d <- stats::na.omit(d) 
 		data.frame(d)
 	}
 )

@@ -4,7 +4,7 @@
 
 \alias{cells}
 \alias{cells,SpatRaster,missing-method}
-\alias{cells,SpatRaster,vector-method}
+\alias{cells,SpatRaster,numeric-method}
 \alias{cells,SpatRaster,SpatVector-method}
 \alias{cells,SpatRaster,SpatExtent-method}
 

@@ -16,7 +16,7 @@ Coerce a SpatRaster or SpatVector into a data.frame or a SpatVector into list
 \usage{
 \S4method{as.data.frame}{SpatVector}(x, geom=FALSE, ...)
 
-\S4method{as.data.frame}{SpatRaster}(x, xy=FALSE, cells=FALSE, ...)
+\S4method{as.data.frame}{SpatRaster}(x, xy=FALSE, cells=FALSE, na.rm=TRUE, ...)
 
 \S4method{as.list}{SpatVector}(x, geom=FALSE, ...)
 }
@@ -26,6 +26,7 @@ Coerce a SpatRaster or SpatVector into a data.frame or a SpatVector into list
  \item{geom}{logical. If \code{TRUE} the WKT geometry is included}
  \item{xy}{logical. If \code{TRUE}, the coordinates of each raster cell are included}
  \item{cells}{logical. If \code{TRUE}, the cell numbers of each raster cell are included}
+ \item{na.rm}{logical. If \code{TRUE}, cells that have a NA value in at least one layer are removed}
  \item{...}{additional arguments (none)} 
 }
   
