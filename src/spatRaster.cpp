@@ -463,6 +463,41 @@ bool SpatRaster::setNames(std::vector<std::string> names, bool make_valid) {
 }
 
 
+std::vector<std::string> SpatRaster::getLongNames() {
+	std::vector<std::string> x;
+	for (size_t i=0; i<source.size(); i++) {
+		x.insert(x.end(), source[i].long_names.begin(), source[i].long_names.end());
+	}
+	return(x);
+}
+
+
+bool SpatRaster::setLongNames(std::vector<std::string> nms) {
+	if (nms.size() == 1) {
+        size_t begin=0;
+        for (size_t i=0; i<source.size(); i++)	{
+            size_t end = begin + source[i].nlyr;
+			size_t sz =  end - begin + 1;
+            source[i].long_names = std::vector<std::string> (sz, nms[0]);
+            begin = end;
+        }
+        return true;
+	} else if (nms.size() != nlyr()) {
+		return false;
+	} else {
+        size_t begin=0;
+        size_t end;
+        for (size_t i=0; i<source.size(); i++)	{
+            end = begin + source[i].nlyr;
+            source[i].long_names = std::vector<std::string> (nms.begin() + begin, nms.begin() + end);
+            begin = end;
+        }
+        return true;
+	}
+}
+
+
+
 bool SpatRaster::hasTime() {
 	bool test = true;
 	for (size_t i=0; i<source.size(); i++) {
@@ -471,6 +506,7 @@ bool SpatRaster::hasTime() {
 	return(test);
 }
 
+/*
 std::vector<double> SpatRaster::getTimeDbl() {
 	std::vector<int_64> t64 = getTime();
 	std::vector<double> out(t64.size());
@@ -479,22 +515,25 @@ std::vector<double> SpatRaster::getTimeDbl() {
 	}
 	return out;
 }
-
+*/
 
 std::vector<std::string> SpatRaster::getTimeStr() {
-	std::vector<int_64> t64 = getTime();
-	std::vector<std::string> out(t64.size());
-	for (size_t i=0; i < out.size(); i++) {
-		std::vector<int> x = get_date(t64[i]);
-		if (x.size() > 2) {
-			out[i] = std::to_string(x[0]) + "-" 
-					  + std::to_string(x[1]) + "-"
-					  + std::to_string(x[2]);
-					  
-		} else {
-			out[i] = "";
+	std::vector<std::string> out;
+	if (source[0].timestep == "seconds") {
+		std::vector<int_64> time = getTime();
+		out.reserve(time.size());
+		for (size_t i=0; i < out.size(); i++) {
+			std::vector<int> x = get_date(time[i]);
+			if (x.size() > 2) {
+				out.push_back( std::to_string(x[0]) + "-" 
+						  + std::to_string(x[1]) + "-"
+						  + std::to_string(x[2]) );
+						  
+			} else {
+				out.push_back("");
+			}
 		}
-	}
+	} 
 	return out;
 }
 

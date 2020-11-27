@@ -330,15 +330,19 @@ RCPP_MODULE(spat){
 		.method("isGlobalLonLat", &SpatRaster::is_global_lonlat, "isGlobalLonLat") 
 
 		.property("names", &SpatRaster::getNames)
-		.property("gettime", &SpatRaster::getTime)
-		.property("timestep", &SpatRaster::getTimeStep)
-		.property("timestr", &SpatRaster::getTimeStr)
-		.property("timedbl", &SpatRaster::getTimeDbl)
+		.property("long_names", &SpatRaster::getLongNames)
+		.method("set_long_names", &SpatRaster::setLongNames)
+
 		.property("hasTime", &SpatRaster::hasTime)
+		.property("time", &SpatRaster::getTime)
+		.property("timestep", &SpatRaster::getTimeStep)
+		.method("settime", &SpatRaster::setTime)
+		//.property("timestr", &SpatRaster::getTimeStr)
 
 		.property("depth", &SpatRaster::getDepth)
-		.property("unit", &SpatRaster::getUnit)
-		.method("settime", &SpatRaster::setTime)
+		.method("set_depth", &SpatRaster::setDepth)
+		.property("units", &SpatRaster::getUnit)
+		.method("set_units", &SpatRaster::setUnit)
 
 		.method("size", &SpatRaster::size, "size")		
 		.method("nrow", &SpatRaster::nrow, "nrow")		
@@ -517,4 +521,19 @@ RCPP_MODULE(spat){
 		.method("extractVector", &SpatRasterStack::extractVector, "extractVector")
 	;
 }
+
+
+/*
+SpatRaster SQRT() {
+	SpatRaster r = *this;
+	std::transform(r.values.begin(), r.values.end(), r.values.begin(), (double(*)(double)) sqrt);
+	return r;
+}
+
+SpatRaster SQRTfree(SpatRaster* g) {
+	SpatRaster r = *g;
+	std::transform(r.values.begin(), r.values.end(), r.values.begin(), (double(*)(double)) sqrt);
+	return r;
+}
+*/
 

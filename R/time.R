@@ -6,14 +6,15 @@
 
 setMethod("time", signature(x="SpatRaster"), 
 	function(x, ...) { 
-		#d <- x@ptr$time
-		d <- x@ptr$timedbl
-		if (x@ptr$timestep == "seconds") {
+		d <- x@ptr$time
+		tstep <- x@ptr$timestep 
+		if (tstep == "seconds") {
 			strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
-		} else if (x@ptr$timestep == "days") {
+		} else if (tstep == "days") {
 			as.Date("1970-01-01") + d
-		} else {
-			stop("yikes")
+		#} else if (tstep == "months") {
+		} else { # raw 
+			d
 		}
 	}
 )

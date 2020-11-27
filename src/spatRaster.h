@@ -81,9 +81,10 @@ class RasterSource {
 		SpatSRS srs;
 		std::vector<unsigned> layers;
 		std::vector<std::string> names;
-		bool hasTime = false;
-		std::string timestep = "seconds";
+		std::vector<std::string> long_names;
 		std::vector<int_64> time;
+		std::string timestep = "seconds";
+		bool hasTime = false;
 		std::vector<double> depth;
 		std::vector<std::string> unit;
 
@@ -125,7 +126,7 @@ class RasterSource {
 
 		bool parameters_changed = false;		
 		
-		void set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta);
+		void set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg);
 		
 };
 
@@ -229,20 +230,21 @@ class SpatRaster {
 
 
 ////////////////////////////////////////////////////
-// property like methods for Layers
+// property like methods for layers
 ////////////////////////////////////////////////////
 
 		std::vector<bool> hasRange();
 		std::vector<double> range_min();
 		std::vector<double> range_max();
 		std::vector<std::string> getNames();
+		std::vector<std::string> getLongNames();
+		bool setLongNames(std::vector<std::string> nms);
 		bool setNames(std::vector<std::string> names, bool make_valid=false);
 		bool hasTime();
 		std::vector<int_64> getTime();
 		std::string getTimeStep();
 		
 		std::vector<std::string> getTimeStr();
-		std::vector<double> getTimeDbl();
 
 		bool setTime(std::vector<int_64> time, std::string step);
 		std::vector<double> getDepth();
@@ -562,17 +564,3 @@ class SpatRaster {
 
 };
 
-
-/*
-SpatRaster SQRT() {
-	SpatRaster r = *this;
-	std::transform(r.values.begin(), r.values.end(), r.values.begin(), (double(*)(double)) sqrt);
-	return r;
-}
-
-SpatRaster SQRTfree(SpatRaster* g) {
-	SpatRaster r = *g;
-	std::transform(r.values.begin(), r.values.end(), r.values.begin(), (double(*)(double)) sqrt);
-	return r;
-}
-*/

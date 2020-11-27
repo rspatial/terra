@@ -488,7 +488,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		while (*m != nullptr) {
 			metadata.push_back(*m++);
 		}
-		s.set_names_time_ncdf(metadata, bandmeta);
+		std::string msg;
+		s.set_names_time_ncdf(metadata, bandmeta, msg);
+		if (msg.size() > 1) {
+			addWarning(msg);
+		}
 	}
 
 	GDALClose( (GDALDatasetH) poDataset );
