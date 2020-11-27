@@ -235,7 +235,6 @@ std::vector<size_t> order(const std::vector<T> &v) {
 }
 
 
-//does not catch all cases. needs fixing
 void make_unique_names(std::vector<std::string> &s) {
     std::vector<size_t> x = order(s);
     std::sort(s.begin(), s.end());
@@ -243,9 +242,11 @@ void make_unique_names(std::vector<std::string> &s) {
     unsigned j = 1;
     for (size_t i=1; i<s.size(); i++) {
         if (s[i] == s[i-1]) {
-            ss[i-1] = s[i-1] + "_" + std::to_string(j);
-            ss[i] = s[i] + "_" + std::to_string(j + 1);
-            j++;
+			if (j==1) {
+				ss[i-1] = s[i-1] + "_1";
+			}
+			j++;
+            ss[i] = s[i] + "_" + std::to_string(j);
         } else {
             j = 1;
         }

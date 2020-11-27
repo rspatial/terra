@@ -67,9 +67,13 @@ setMethod("desc", signature(x="character"),
 	if (parse) {
 		m <- .parsedsdsmetadata(x)
 		m <- do.call(cbind, m)
-		m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
-		colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
+		if (nrow(m) > 0) {
+			m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
+		} else {
+			m <- data.frame(0[0], m, stringsAsFactors=FALSE)
+		}
 		for (i in 5:7) m[,i] <- as.integer(m[,i])	
+		colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
 	} else {
 		m <- .sdsmetadata(x)
 	}

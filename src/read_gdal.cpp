@@ -154,108 +154,6 @@ std::string basename_sds(std::string f) {
 
 
 
-bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname) {
-
-	std::vector<std::string> sd; //, nms;
-//	std::vector<std::string> dc; //, nms;
-	std::string ndelim = "NAME=";
-	std::string ddelim = "DESC=";
-	for (size_t i=0; i<meta.size(); i++) {
-		std::string s = meta[i];
-		size_t pos = s.find(ndelim);
-		if (pos != std::string::npos) {
-			s.erase(0, pos + ndelim.length());
-			sd.push_back(s);
-		} //else {
-		//	size_t pos = s.find(ddelim);
-		//	if (pos != std::string::npos) {
-		//		s.erase(0, pos + ddelim.length());
-		//		dc.push_back(s);
-		//	}
-		//}
-	}
-	if (sd.size() == 0) {
-		return false;
-	}
-	//bool useDC = (dc.size() == sd.size());
-	int sdsize = sd.size();
-	if (subds[0] >=0) {
-		std::vector<std::string> tmp;
-		for (size_t i=0; i<subds.size(); i++) {
-			if (subds[i] >=0 && subds[i] < sdsize) {
-				tmp.push_back(sd[subds[i]]);
-			//	if (useDC) {
-			//		dc = {dc[subds[0]]};
-			//	}
-			} else {
-				std::string emsg = std::to_string(subds[i]+1) + " is not valid. There are " + std::to_string(sd.size()) + " subdatasets\n";
-				setError(emsg);
-				return false;
-			}
-		}
-		sd = tmp;		
-	} else if (subdsname[0] != "") {
-		std::vector<std::string> tmp;
-		std::vector<std::string> shortnames = getlastpart(sd, ":");
-		for (size_t i=0; i<subdsname.size(); i++) {
-			int w = where_in_vector(subdsname[i], shortnames);
-			if (w >= 0) {
-				tmp.push_back(sd[w]);
-			//	if (useDC) {
-			//		dc = {dc[w]};
-			//	}			
-			} else {
-				std::string emsg = concatenate(shortnames, ", ");
-				emsg = subdsname[i] + " not found. Choose one of:\n" + emsg;
-				setError(emsg);
-				return false;
-			}
-		}
-		sd = tmp;
-	}
-	
-	bool success = constructFromFile(sd[0], {-1}, {""});
-	if (!success) {
-		// should continue to the next one  with while
-		return false;
-	}
-	SpatRaster out;
-	std::vector<int> skipped;
-    for (size_t i=1; i < sd.size(); i++) {
-//		printf( "%s\n", sd[i].c_str() );
-		success = out.constructFromFile(sd[i], {-1}, {""});
-		if (success) {
-			if (out.compare_geom(*this, false, false)) {
-				addSource(out);
-			} else {
-				skipped.push_back(i);
-			}
-		} else {
-			if (out.msg.has_error) {
-				//setError(out.msg.error);
-				//addWarning(out.msg.error);
-			}
-			//return false;
-		}
-	}
-
-	for (std::string& s : sd) s = basename_sds(s);
-	if (skipped.size() > 0) {
-		std::string s="skipped subdatasets (different geometry):";
-		for (size_t i=0; i<skipped.size(); i++) {
-			s += "\n   " + sd[skipped[i]];
-		}
-		s += "\nSee 'describe_sds' for more info";
-		addWarning(s);
-		for (int i=skipped.size()-1; i>0; i--) {
-			sd.erase(sd.begin() + skipped[i]);
-		}
-	}
-	success = setNames(sd);
-	return true;
-}
-
-
 std::string getDsWKT(GDALDataset *poDataset) { 
 	std::string wkt = "";
 #if GDAL_VERSION_MAJOR >= 3
@@ -399,11 +297,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			for (size_t i=0; metadata[i] != NULL; i++) {
 				meta.push_back(metadata[i]);
 			}
-			if (gdrv == "netCDF") {
-				return constructFromNCDFsds(fname, meta, subds, subdsname); 
-			} else {
-				return constructFromSDS(fname, meta, subds, subdsname);
-			}
+			return constructFromSDS(fname, meta, subds, subdsname); 
 		} else {
 			setError("no data detected in " + fname);
 			return false;
@@ -441,6 +335,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) {
 			s.rotated = true;
 			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
+		}
+	} else {
+		SpatExtent e(0, 1, 0, 1);
+		s.extent = e;
+		if (gdrv=="netCDF") {
+			addWarning("unknown extent. Cells not equally spaced?");
+		} else {
+			addWarning("unknown extent");
 		}
 	}
 
