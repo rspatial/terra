@@ -159,14 +159,12 @@ setMethod ("show" , "SpatRaster",
 			} else {
 				cat("names       :", paste(ln, collapse=", "), "\n")
 			}			
-			if (nsr==1) {
-				if (object@ptr$hasTime) {
-					tim <- time(object)
-					if (length(tim) > 1) {
-						cat("time        :", paste(range(tim), collapse=" to "), "\n")
-					} else {
-						cat("time        :", as.character(tim), "\n")
-					}
+			if (object@ptr$hasTime) {
+				tim <- time(object)
+				if (length(tim) > 1) {
+					cat("time        :", paste(range(tim), collapse=" to "), "\n")
+				} else {
+					cat("time        :", as.character(tim), "\n")
 				}
 			}
 			

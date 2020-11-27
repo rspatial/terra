@@ -297,7 +297,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			for (size_t i=0; metadata[i] != NULL; i++) {
 				meta.push_back(metadata[i]);
 			}
-			return constructFromSDS(fname, meta, subds, subdsname); 
+			return constructFromSDS(fname, meta, subds, subdsname, gdrv=="netCDF"); 
 		} else {
 			setError("no data detected in " + fname);
 			return false;
@@ -398,11 +398,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				bandmeta[i].push_back(*m++);
 			}
 		}
-		//if (i == 0) {
-		//	for (size_t j=0; j<bandmeta[0].size(); j++) {
-		//		Rcpp::Rcout << bandmeta[0][j] << std::endl;
-		//	}
-		//}
 
 		int success;
 	//	double naflag = poBand->GetNoDataValue(&success);
@@ -489,11 +484,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	if (gdrv == "netCDF") {
 		std::vector<std::string> metadata;
-		if (gdrv == "netCDF") {
-			char **m = poDataset->GetMetadata();
-			while (*m != nullptr) {
-				metadata.push_back(*m++);
-			}
+		char **m = poDataset->GetMetadata();
+		while (*m != nullptr) {
+			metadata.push_back(*m++);
 		}
 		s.set_names_time_ncdf(metadata, bandmeta);
 	}

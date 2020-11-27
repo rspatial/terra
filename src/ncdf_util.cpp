@@ -46,13 +46,13 @@ void pickMost(std::vector<std::string> &sd, std::vector<std::string> &name, std:
 }
 
 
-bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname) {
+bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, bool ncdf) {
 
 	std::vector<std::vector<std::string>> info = parse_metadata_sds(meta);
 	int n = info[0].size();
 	std::vector<std::string> sd, varname;
 
-//	std::vector<unsigned> varnl;
+// std::vector<unsigned> varnl;
 // for selection based on nlyr
 	
 	if (info[0].size() == 0) {
@@ -111,9 +111,8 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 				}			
 			}
 		}
-		// pick the ones with most rows 
-		// really to avoid the 1 or 2 "row" datasets
-		// so could check for that too.
+		// pick the ones with most rows and then cols
+		// to avoid picking the 1 or 2 "row" datasets
 		pickMost(sd, varname, rows, cols);
 		pickMost(sd, varname, cols, rows);
 	}
@@ -123,9 +122,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
     for (size_t i=0; i < sd.size(); i++) {
 		cnt++;
 		bool success = constructFromFile(sd[i], {-1}, {""});
-		if (success) {
-			break;
-		}
+		if (success) break;
 	}
 	std::vector<std::string> skipped, used;
 	srcnl.push_back(nlyr());
@@ -156,18 +153,19 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		addWarning(s);
 	}
 
-	std::vector<std::string> lyrnames;
-	for (size_t i=0; i<used.size(); i++) {
-		std::vector<std::string> nms = {basename(used[i])};
-		recycle(nms, srcnl[i]);
-		make_unique_names(nms);
-		lyrnames.insert(lyrnames.end(), nms.begin(), nms.end());
-		//Rcpp::Rcout << used[i] << std::endl;
-		//Rcpp::Rcout << nms.size() << std::endl;
-		
-	}
-	if (lyrnames.size() > 0) {
-		setNames(lyrnames, false);
+	if (!ncdf) {
+		std::vector<std::string> lyrnames;
+		for (size_t i=0; i<used.size(); i++) {
+			std::vector<std::string> nms = {basename(used[i])};
+			recycle(nms, srcnl[i]);
+			make_unique_names(nms);
+			lyrnames.insert(lyrnames.end(), nms.begin(), nms.end());
+			//Rcpp::Rcout << used[i] << std::endl;
+			//Rcpp::Rcout << nms.size() << std::endl;		
+		}
+		if (lyrnames.size() > 0) {
+			setNames(lyrnames, false);
+		}
 	}
 
 	return true;
@@ -188,13 +186,20 @@ std::vector<int_64> str2int64v(std::string s, std::string delim) {
 }
 
 
-std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
+std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vector<std::string> vals) {
 
 	bool fu=false;
 	bool fv=false;
 	bool fc=false;
 	std::string origin, values, calendar;
 
+	std::vector<int_64> out, bad;
+	if (vals.size() > 0) {
+		fv = true;
+		for (size_t i=0; i<vals.size(); i++) {
+			out.push_back(stoll(vals[i]));
+		}
+	}
 	for (size_t i=0; i<metadata.size(); i++) {
 		if (!fc) {
 			std::string pattern = "time#calendar=";
@@ -222,31 +227,27 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 					break;
 				}
 				fv = true;
+				out = str2int64v(values, ",");
 			}
 		}
 		if (fc & fu & fv) break;
 	}
 
-	std::vector<int_64> out, bad;
 	if (!(fu & fv)) {
 		return out;
 	}
-
 
 	bool days=false; 
 	bool hours=false;
 	//bool seconds = false; 
 
-	out = str2int64v(values, ",");
-
-	if ((origin.find("seconds")) != std::string::npos) {
-		//seconds = true;
-	} else if ((origin.find("hours")) != std::string::npos) {
+	if ((origin.find("hours")) != std::string::npos) {
 		hours = true;
 	} else if ((origin.find("days")) != std::string::npos) {
 		days = true;
+	} else {
+		//seconds = true;		
 	}
-
 			
 	//if (calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard" || calendar == "") { // ok }
 	//if ((calendar == "noleap") || (calendar == "365 day") || (calendar == "365_day") || (calendar == "360 day") || (calendar == "360_day")) {
@@ -275,7 +276,6 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 			}
 		} else if (hours) {
 			hours_to_time(out, origin);
-
 			//std::vector<int> ymd = getymd(origin);
 			//for (int_64 &d : out) d = time_from_hour(ymd[0], ymd[1], ymd[2], d);
 		} else { // seconds
@@ -287,43 +287,70 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata) {
 	return out;
 }
 	
+	
+//NETCDF_DIM_k=0
+//NETCDF_DIM_tile=0
+//NETCDF_DIM_time=0
+//NETCDF_VARNAME=NVEL
+
+std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<std::string>> &m) {
+
+	std::vector<std::vector<std::string>> out(2);
+
+	for (size_t i=0; i<m.size(); i++) {
+		std::vector<std::string> b = m[i];
+		std::string vname, dim;
+		for (size_t j=0; j<b.size(); j++) {
+			
+			size_t pos = b[j].find("NETCDF_VARNAME");
+			if (pos != std::string::npos) {
+				vname = b[j].erase(0, pos+15);
+			}
+			
+			pos = b[j].find("NETCDF_DIM_");
+			if (pos != std::string::npos) {
+				size_t pos = b[j].find("NETCDF_DIM_time");
+				if (pos != std::string::npos) {
+					out[1].push_back( b[j].erase(0, pos+16) );
+				} else {
+					dim += b[j].erase(0, pos+11);
+				}
+			}
+		}
+		out[0].push_back(vname + dim); 
+	}
+	return out;
+}
 
 void RasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta) {
 
-	//std::vector<std::string> varname getmeta("NETCDF_VARNAME");
-	//NETCDF_DIM_time=729649.5
-	//NETCDF_VARNAME=pr
 	
-	//varname = ncdf_name(metadata);
-		
-	std::vector<int_64> x = ncdf_time(metadata);
-	if (x.size() == nlyr) {
-		time = x;
-		hasTime = true;
+
+	if (bandmeta.size() == 0) return;
+
+//	for (size_t j=0; j<bandmeta[0].size(); j++) {
+//		Rcpp::Rcout << bandmeta[0][j] << std::endl;
+//	}	
+	
+	std::vector<std::vector<std::string>> nms = ncdf_names(bandmeta);
+
+	if (nms[0].size() > 0) {
+		make_unique_names(nms[0]);
+		names = nms[0];
 	}
-}
 
-	
-
-/*
-
-std::string ncdf_name(const std::vector<std::string> &metadata) {
-	bool wasfound = false;
-	std::string name = "";
-	for (size_t i=0; i<metadata.size(); i++) {
-		std::size_t found = metadata[i].find("NETCDF_DIM_");
-		if (found == std::string::npos) {
-			if (wasfound) {
-				std::size_t pos = metadata[i].find("#");
-				name = metadata[i].substr(0, pos);
-				break;
-			}
-		} else {
-			wasfound = true;
+	if (nms[1].size() > 0) {
+		std::vector<int_64> x = ncdf_time(metadata, nms[1]);
+		if (x.size() == nlyr) {
+			time = x;
+			hasTime = true;
 		}
 	}
-	return name;
+
 }
+
+
+/*
 
 
 std::vector<std::vector<std::string>> metatime(std::vector<std::string> meta) {

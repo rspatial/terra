@@ -463,12 +463,12 @@ bool SpatRaster::setNames(std::vector<std::string> names, bool make_valid) {
 }
 
 
-std::vector<bool> SpatRaster::hasTime() {
-	std::vector<bool> x(source.size());
+bool SpatRaster::hasTime() {
+	bool test = true;
 	for (size_t i=0; i<source.size(); i++) {
-		x[i] = source[i].hasTime; 
+		test = test & source[i].hasTime; 
 	}
-	return(x);
+	return(test);
 }
 
 std::vector<double> SpatRaster::getTimeDbl() {
