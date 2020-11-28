@@ -33,15 +33,15 @@ setMethod("as.polygons", signature(x="SpatExtent"),
 
 setMethod("as.lines", signature(x="SpatExtent"), 
 	function(x, crs="", ...) {
-		p <- as.polygons(x, crs, ...)
-		as.lines(p)
+		as.lines(as.polygons(x, crs, ...))
 	}
 )
 
 
 setMethod("as.points", signature(x="SpatExtent"), 
 	function(x, crs="", ...) {
-		vect(do.call(cbind, e@ptr$as.points()), "points", crs=crs)
+		#vect(do.call(cbind, x@ptr$as.points()), "points", crs=crs)
+		as.points(as.polygons(x, crs, ...))
 	}
 )
 

@@ -2,8 +2,14 @@
 
 \alias{names}
 \alias{names<-}
+\alias{lnames}
+\alias{lnames<-}
+
 \alias{names,SpatRaster-method}
 \alias{names<-,SpatRaster-method}
+\alias{lnames,SpatRaster-method}
+\alias{lnames<-,SpatRaster-method}
+
 \alias{names,SpatDataSet-method}
 \alias{names<-,SpatDataSet-method}
 \alias{names,SpatVector-method}
@@ -12,13 +18,17 @@
 \title{Names of Spat objects}
 
 \description{
-Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector.
+Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. With \code{lnames} you can get or set the "long names" of a SpatRaster. 
 }
 
 \usage{
 \S4method{names}{SpatRaster}(x)
 
 \S4method{names}{SpatRaster}(x)<-value
+
+\S4method{lnames}{SpatRaster}(x)
+
+\S4method{lnames}{SpatRaster}(x)<-value
 
 \S4method{names}{SpatDataSet}(x)
 
