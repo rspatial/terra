@@ -41,6 +41,10 @@ if (!isGeneric("is.polygons")) {setGeneric("is.polygons", function(x,...) standa
 
 if (!isGeneric("isTRUE")) { setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
 if (!isGeneric("isFALSE")) { setGeneric("isFALSE", function(x) standardGeneric("isFALSE"))}
+
+if (!isGeneric("lnames")) {setGeneric("lnames", function(x,...) standardGeneric("lnames"))}
+if (!isGeneric("lnames<-")) {setGeneric("lnames<-", function(x, value) standardGeneric("lnames<-"))}
+
 if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
 if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")) }	
 if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardGeneric("perimeter"))}	
@@ -63,6 +67,9 @@ if (!isGeneric("time")) {setGeneric("time", function(x,...) standardGeneric("tim
 if (!isGeneric("time<-")) {setGeneric("time<-", function(x, value) standardGeneric("time<-"))}
 if (!isGeneric("nlyr")) { setGeneric("nlyr", function(x) standardGeneric("nlyr")) }	
 if (!isGeneric("nlyr<-")) { setGeneric("nlyr<-", function(x, ..., value) standardGeneric("nlyr<-")) }	
+if (!isGeneric("units")) {setGeneric("units", function(x) standardGeneric("units"))}
+if (!isGeneric("units<-")) {setGeneric("units<-", function(x,value) standardGeneric("units<-"))}
+
 if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("vect")) }
 
 

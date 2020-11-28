@@ -259,7 +259,8 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 				std::vector<int> ymd = getymd(origin);
 				for (int_64 &d : out) d = time_from_day_360(ymd[0], ymd[1], ymd[2], d);
 			} else { 
-				if (!(calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard")) {
+				if (!(calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard" || calendar == "julian")) { 
+					// julian is perhaps questionable it can mean different things.
 					msg = "unknown calendar (assuming standard): " + calendar;
 				}
 				std::vector<int> ymd = getymd(origin);

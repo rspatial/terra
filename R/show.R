@@ -101,6 +101,14 @@ setMethod ("show" , "SpatRaster",
 				cat("data source :", sources[1], "\n")
 			}
 
+			uts <- units(object)
+			hasunits <- !all(uts == "")
+			if (hasunits) {
+				if (nl > mnr) {
+					uts <- c(uts[1:mnr], "...")
+				}
+			}
+			
 			hMM <- .hasMinMax(object)
 			if (any(hMM)) {
 				r <- minmax(object)
@@ -114,8 +122,6 @@ setMethod ("show" , "SpatRaster",
 					minv <- c(minv[1:mnr], "...")
 					maxv <- c(maxv[1:mnr], "...")
 				}
-				
-				
 				n <- nchar(ln)
 				if (nl > 5) {
 					b <- n > 20
@@ -125,8 +131,9 @@ setMethod ("show" , "SpatRaster",
 					}
 				}
 				
-				w <- pmax(nchar(ln), nchar(minv), nchar(maxv))
+				w <- pmax(nchar(ln), nchar(minv), nchar(maxv), nchar(uts))
 				m <- rbind(ln, minv, maxv)
+				if (hasunits) m <- rbind(m, uts)
 				# a loop because "width" is not recycled by format
 				for (i in 1:ncol(m)) {
 					m[,i]   <- format(m[,i], width=w[i], justify="right")
@@ -156,9 +163,19 @@ setMethod ("show" , "SpatRaster",
 					cat("first label :", paste(m[1,], collapse=", "), "\n")
 					cat("last label  :", paste(m[2,], collapse=", "), "\n")				
 				}
+				if (hasunits) cat("units       :", paste(m[4,], collapse=", "), "\n")
+
 			} else {
-				cat("names       :", paste(ln, collapse=", "), "\n")
+				w <- pmax(nchar(ln), nchar(uts))
+				m <- rbind(ln, uts)
+				for (i in 1:ncol(m)) {
+					m[,i]   <- format(m[,i], width=w[i], justify="right")
+				}
+				cat("names       :", paste(m[1,], collapse=", "), "\n")
+				if (hasunits) cat("units       :", paste(m[2,], collapse=", "), "\n")
 			}			
+
+
 			if (object@ptr$hasTime) {
 				tim <- time(object)
 				if (length(tim) > 1) {

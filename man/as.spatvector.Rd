@@ -7,11 +7,12 @@
 \alias{as.points}
 
 \alias{as.polygons,SpatRaster-method}
-\alias{as.polygons,SpatExtent-method}
 \alias{as.points,SpatRaster-method}
 \alias{as.lines,SpatVector-method}
 \alias{as.points,SpatVector-method}
-
+\alias{as.polygons,SpatExtent-method}
+\alias{as.lines,SpatExtent-method}
+\alias{as.points,SpatExtent-method}
 
 \title{Coercion to a SpatVector, or to another SpatVector type}
 
@@ -21,13 +22,17 @@ Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to
 \usage{
 \S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE, ...)
 
-\S4method{as.polygons}{SpatExtent}(x, crs="", ...)
-
 \S4method{as.points}{SpatRaster}(x, values=TRUE, ...)
 
 \S4method{as.lines}{SpatVector}(x, ...)
 
 \S4method{as.points}{SpatVector}(x, ...)
+
+\S4method{as.polygons}{SpatExtent}(x, crs="", ...)
+
+\S4method{as.lines}{SpatExtent}(x, crs="", ...)
+
+\S4method{as.points}{SpatExtent}(x, crs="", ...)
 }
 
 
@@ -51,6 +56,7 @@ r <- rast(ncol=2, nrow=2)
 values(r) <- 1:ncell(r)
 
 as.points(r)
+as.lines(ext(r), crs=crs(r))
 
 if  (gdal_version() >= "3.0.0") {
 	p <- as.polygons(r)
@@ -58,7 +64,6 @@ if  (gdal_version() >= "3.0.0") {
 	as.lines(p)
 	as.points(p)
 }
-
 }
 
 \keyword{spatial}

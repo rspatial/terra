@@ -45,7 +45,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 
 setMethod("depth", signature(x="SpatRaster"), 
 	function(x, ...) { 
-		d <- x@ptr$depth
+		x@ptr$depth
 	}
 )
 
@@ -59,11 +59,26 @@ setMethod("depth<-", signature(x="SpatRaster"),
 		if (! x@ptr$setDepth(value)) {
 			stop("cannot set these  values")
 		}
-		#if (any(time(x) != value)) {
-		#	warning("some values were changed to make them valid and/or unique")
-		#}
 		return(x)
 	}
 )
 
 
+setMethod("units", signature(x="SpatRaster"), 
+	function(x) { 
+		x@ptr$units
+	}
+)
+
+setMethod("units<-", signature(x="SpatRaster"), 
+	function(x, value)  {
+		value <- as.character(value)
+		if (length(value) != nlyr(x)) {
+			stop("incorrect number of values")
+		}
+		if (! x@ptr$set_units(value)) {
+			stop("cannot set these  values")
+		}
+		return(x)
+	}
+)
