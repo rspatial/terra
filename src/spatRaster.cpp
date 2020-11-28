@@ -563,9 +563,8 @@ bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
 		return false;
 	} 
 	size_t begin=0;
-    size_t end;
 	for (size_t i=0; i<source.size(); i++)	{
-		end = begin + source[i].nlyr;
+		size_t end = begin + source[i].nlyr;
         source[i].time = std::vector<int_64> (time.begin() + begin, time.begin() + end);
 		source[i].timestep = step;
 		source[i].hasTime = true;
@@ -601,9 +600,8 @@ bool SpatRaster::setDepth(std::vector<double> depths) {
 		return false;
 	} else {
         size_t begin=0;
-        size_t end;
         for (size_t i=0; i<source.size(); i++)	{
-            end = begin + source[i].nlyr;
+            size_t end = begin + source[i].nlyr;
             source[i].depth = std::vector<double> (depths.begin() + begin, depths.begin() + end);
             begin = end;
         }
@@ -623,9 +621,8 @@ bool SpatRaster::setUnit(std::vector<std::string> units) {
 		return false;
 	} else {
         size_t begin=0;
-        size_t end;
         for (size_t i=0; i<source.size(); i++)	{
-            end = begin + source[i].nlyr;
+            size_t end = begin + source[i].nlyr;
             source[i].unit = std::vector<std::string> (units.begin() + begin, units.begin() + end);
             begin = end;
         }

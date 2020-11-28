@@ -13,7 +13,7 @@ Get or set the units of the layers of a SpatRaster.
 }
 
 \usage{
-\S4method{units}{SpatRaster}(x, ...)
+\S4method{units}{SpatRaster}(x)
 
 \S4method{units}{SpatRaster}(x)<-value
 
@@ -21,8 +21,7 @@ Get or set the units of the layers of a SpatRaster.
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{value}{character vector}
-  \item{...}{additional arguments. None implemented}
+  \item{value}{character}
 }
 
 \value{
@@ -34,10 +33,14 @@ character
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 
-units(s) <- rep("m/s", nlyr(s))
+units(s) <- c("m/s", "kg", "ha")
 units(s)
 s
+
+units(s) <- "kg"
+units(s)
 }
+
 
 \keyword{spatial}
 
