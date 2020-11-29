@@ -15,11 +15,11 @@ Plot the values of a SpatRaster to make a map
 
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), 
-pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, ...)
+    pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), 
-pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL,
-nc, nr, main, maxnl=16, ...)
+    pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL,
+    nc, nr, main, maxnl=16, ...)
 }
 
 \arguments{

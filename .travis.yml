@@ -3,7 +3,7 @@
 
 language: r
 r: release
-#cache: packages
+cache: packages
 sudo: required
 dist: bionic
 
@@ -20,5 +20,4 @@ addons:
       - libproj-dev 
       - libgeos-dev
       - libgdal-dev
-
 
