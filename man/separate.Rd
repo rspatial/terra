@@ -12,7 +12,8 @@ Create a SpatRaster with a layer for each class (value, or subset of the values)
 }
 
 \usage{
-\S4method{separate}{SpatRaster}(x, classes=NULL, keep=FALSE, other=0, filename="", overwrite=FALSE, wopt=list(),...)
+\S4method{separate}{SpatRaster}(x, classes=NULL, keep=FALSE, other=0, filename="", 
+overwrite=FALSE, wopt=list(),...)
 }
 
 \arguments{

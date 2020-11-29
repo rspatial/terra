@@ -21,6 +21,7 @@ setMethod("vect", signature(x="character"),
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
+			x <- gsub("\n", "", x)
 			p@ptr <- SpatVector$new(x)
 			dots <- list(...)
 			if (!is.null(dots$crs)) {

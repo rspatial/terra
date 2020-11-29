@@ -4,8 +4,8 @@
 # License GPL v3
 
 
-setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
+#setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
+	.mosaic <- function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
 		opt <- .runOptions(filename, overwrite, wopt)
 		dots <- list(...)
 		rc <- SpatRasterCollection$new()		
@@ -26,7 +26,7 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 		x@ptr <- rc$mosaic(opt)
 		show_messages(x, "mosaic")		
 	}
-)
+#)
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
