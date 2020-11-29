@@ -103,10 +103,8 @@ setMethod ("show" , "SpatRaster",
 
 			uts <- units(object)
 			hasunits <- !all(uts == "")
-			if (hasunits) {
-				if (nl > mnr) {
-					uts <- c(uts[1:mnr], "...")
-				}
+			if (nl > mnr) {
+				uts <- c(uts[1:mnr], "...")
 			}
 			
 			hMM <- .hasMinMax(object)

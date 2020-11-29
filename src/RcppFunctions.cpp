@@ -11,6 +11,29 @@
 #endif
 
 
+
+// [[Rcpp::export(name = ".geotransform")]]
+std::vector<double> geotransform(std::string fname) {
+	std::vector<double> out;
+    GDALDataset *poDataset;
+    poDataset = (GDALDataset *) GDALOpen(fname.c_str(), GA_ReadOnly );
+
+    if( poDataset == NULL )  {
+		Rcpp::Rcout << "cannot read from: " + fname << std::endl;
+		return out;
+	}
+
+	double gt[6];	
+	if( poDataset->GetGeoTransform( gt ) != CE_None ) {
+		Rcpp::Rcout << "bad" << std::endl;
+	}
+	out = std::vector<double>(std::begin(gt), std::end(gt));
+	GDALClose( (GDALDatasetH) poDataset );
+
+	return out;
+}
+
+
 // [[Rcpp::export(name = ".gdalinfo")]]
 std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
 	std::string out = gdalinfo(filename, options, oo);

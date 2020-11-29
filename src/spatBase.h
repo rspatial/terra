@@ -49,6 +49,7 @@ class SpatMessages {
 		bool has_error = false;
 		bool has_warning = false;
 		std::string error;
+		std::string message;
 		std::vector<std::string> warnings;
 
 		void setError(std::string s) {
@@ -58,7 +59,9 @@ class SpatMessages {
 
 		std::string getError() {
 			has_error = false;
-			return error;
+			std::string err = error;
+			error = "";
+			return err;
 		}
 		
 		void addWarning(std::string s) {
@@ -75,12 +78,22 @@ class SpatMessages {
 			has_warning = false;
 			return w;
 		}
+
+		std::string getMessage() {
+			std::string out = message;
+			message = "";
+			return out;
+		}
+		void setMessage(std::string s) {
+			message = s;
+		}
 		
-		std::vector<std::string> getMessages() {
+		std::vector<std::string> getAll() {
 			std::string warns = getWarnings();
 			std::string error = getError();
-			std::vector<std::string> msg = { error, warns};
-			return msg;
+			std::string msg = getMessage();
+			std::vector<std::string> amsgs = { error, warns, msg};
+			return amsgs;
 		}
 };
 

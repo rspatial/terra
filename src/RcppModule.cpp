@@ -139,7 +139,7 @@ RCPP_MODULE(spat){
 		.field("has_warning", &SpatMessages::has_warning)		
 		.method("getError", &SpatMessages::getError)		
 		.method("getWarnings", &SpatMessages::getWarnings)
-		
+		.method("getMessage", &SpatMessages::getMessage)
 	;	
 	
     class_<SpatOptions>("SpatOptions")

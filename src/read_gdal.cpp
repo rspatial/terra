@@ -265,7 +265,6 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 
 
 
-
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
 
     GDALDataset *poDataset;
@@ -340,7 +339,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		SpatExtent e(0, 1, 0, 1);
 		s.extent = e;
 		if (gdrv=="netCDF") {
+			#ifndef standalone
+			setMessage("ncdf extent");
+			#else 
 			addWarning("unknown extent. Cells not equally spaced?");
+			#endif
 		} else {
 			addWarning("unknown extent");
 		}
