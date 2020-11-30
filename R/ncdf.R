@@ -67,17 +67,13 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 
-		varname <- names(x)
-		longname <- longnames(x)
-		if (any(varname == "")) {
-			stop("missing variable names")
-		}
 
 		# loop over subdatasets 
 		# for now:
 		x <- x[1] 
-		longname <- longname[1]
-		varname <- varname[1]
+		longname <- longnames(x)[1]
+		varname <- varnames(x)[1]
+		if (varname == "") varname <- "data"
 		unit <- units(x)[1]
 		
 		filename <- trim(filename)

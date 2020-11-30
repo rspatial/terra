@@ -347,12 +347,11 @@ void RasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::v
 	std::vector<std::vector<std::string>> nms = ncdf_names(bandmeta);
 	
 	if (nms[1].size() > 0) {
-		make_unique_names(nms[1]);
 		names = nms[1];
+		make_unique_names(names);
 	}
 	source_name = nms[2][0];
 	source_name_long = nms[2][1];
-	
 	unit = {nms[2][2]};
 	recycle(unit, nlyr);
 	
@@ -365,7 +364,6 @@ void RasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::v
 			hasTime = true;
 		}
 	}
-
 }
 
 
