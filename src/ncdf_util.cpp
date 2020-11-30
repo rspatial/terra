@@ -289,49 +289,54 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 
 std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<std::string>> &m) {
 
-	std::vector<std::vector<std::string>> out(4);
-	out[2] = out[3] = std::vector<std::string>(m.size(), "");
+	std::vector<std::vector<std::string>> out(3);
+	if (m.size() < 1) return out;
+	
+	std::string vname, lname, units = "";
+	std::vector<std::string> b = m[0];
+	for (size_t j=0; j<b.size(); j++) {
+		size_t pos = b[j].find("NETCDF_VARNAME");
+		if (pos != std::string::npos) {
+			vname = b[j].erase(0, pos+15);
+			continue;
+		} 
+		pos = b[j].find("units=");
+		if (pos != std::string::npos) {
+			units = b[j].erase(0, pos+6);
+			continue;
+		}		
+		pos = b[j].find("long_name=");
+		if (pos != std::string::npos) {
+			lname = b[j].erase(0, pos+10);
+			continue;
+		}		
+		pos = b[j].find("standard_name=");
+		if (pos != std::string::npos) {
+			if (lname == "") {
+				lname = b[j].erase(0, pos+14);
+			}
+		}
+	}
+	out[2] = {vname, lname, units};
 
+// the below could be found analytically, but this is easy and safe
 	for (size_t i=0; i<m.size(); i++) {
-		std::vector<std::string> b = m[i];
-		std::string vname, dim;
+		std::string dim;
+		std::vector<std::string> b = m[0];
 		for (size_t j=0; j<b.size(); j++) {
-			
-			size_t pos = b[j].find("NETCDF_VARNAME");
-			if (pos != std::string::npos) {
-				vname = b[j].erase(0, pos+15);
-				continue;
-			} 
-			
-			pos = b[j].find("NETCDF_DIM_");
+			size_t pos = b[j].find("NETCDF_DIM_");
 			if (pos != std::string::npos) {
 				size_t pos = b[j].find("NETCDF_DIM_time");
 				if (pos != std::string::npos) {
-					out[1].push_back( b[j].erase(0, pos+16) );
+					out[0].push_back( b[j].erase(0, pos+16) );
 				} else {
 					dim += b[j].erase(0, pos+11);
 				}
-				continue;
-			}
-			pos = b[j].find("units=");
-			if (pos != std::string::npos) {
-				out[2][i] = b[j].erase(0, pos+6);
-				continue;
-			}		
-			pos = b[j].find("long_name=");
-			if (pos != std::string::npos) {
-				out[3][i] = b[j].erase(0, pos+10);
-				continue;
-			}		
-			pos = b[j].find("standard_name=");
-			if (pos != std::string::npos) {
-				if (out[3][i] == "") {
-					out[3][i] = b[j].erase(0, pos+14);
-				}
 			}
 		}
-		out[0].push_back(vname + dim); 
+		out[1].push_back(vname + dim);
 	}
+	
 	return out;
 }
 
@@ -340,16 +345,20 @@ void RasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::v
 	if (bandmeta.size() == 0) return;
 
 	std::vector<std::vector<std::string>> nms = ncdf_names(bandmeta);
-
-	if (nms[0].size() > 0) {
-		make_unique_names(nms[0]);
-		names = nms[0];
-	}
-	unit = nms[2];
-	long_names = nms[3];
+	
 	if (nms[1].size() > 0) {
+		make_unique_names(nms[1]);
+		names = nms[1];
+	}
+	source_name = nms[2][0];
+	source_name_long = nms[2][1];
+	
+	unit = {nms[2][2]};
+	recycle(unit, nlyr);
+	
+	if (nms[0].size() > 0) {
 		std::string step;
-		std::vector<int_64> x = ncdf_time(metadata, nms[1], step, msg);
+		std::vector<int_64> x = ncdf_time(metadata, nms[0], step, msg);
 		if (x.size() == nlyr) {
 			time = x;
 			timestep = step;

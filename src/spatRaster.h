@@ -80,8 +80,12 @@ class RasterSource {
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
 		std::vector<unsigned> layers;
+		// layer names 
 		std::vector<std::string> names;
-		std::vector<std::string> long_names;
+		// data source (sds) has one "variable name" / long_name
+		std::string source_name;
+		std::string source_name_long;
+		
 		std::vector<int_64> time;
 		std::string timestep = "seconds";
 		bool hasTime = false;
@@ -237,10 +241,15 @@ class SpatRaster {
 		std::vector<bool> hasRange();
 		std::vector<double> range_min();
 		std::vector<double> range_max();
+
 		std::vector<std::string> getNames();
-		std::vector<std::string> getLongNames();
-		bool setLongNames(std::vector<std::string> nms);
 		bool setNames(std::vector<std::string> names, bool make_valid=false);
+
+		std::vector<std::string> getSourceNames();
+		bool setSourceNames(std::vector<std::string>);
+		std::vector<std::string> getLongSourceNames();
+		bool setLongSourceNames(std::vector<std::string>);
+
 		bool hasTime();
 		std::vector<int_64> getTime();
 		std::string getTimeStep();

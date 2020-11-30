@@ -89,7 +89,7 @@ setMethod ("show" , "SpatRaster",
 				lbs <- .nlyrBySource(object)
 				lbsprint <- paste0(" (", lbs, " layers)")
 				lbsprint[lbs == 1] <- ""
-				cat("source(s)   :", sources[1], lbsprint[1], "\n")
+				cat("sources     :", sources[1], lbsprint[1], "\n")
 				for (i in 2:(min(mxsrc, nsr))) {
 					cat("             ", sources[i], lbsprint[i], "\n")
 				}			
@@ -98,9 +98,28 @@ setMethod ("show" , "SpatRaster",
 					cat("             ", "... and", nsr-mxsrc, "more source(s)\n")				
 				}
 			} else {
-				cat("data source :", sources[1], "\n")
+				cat("source      :", sources[1], "\n")
 			}
-
+			varnms <- varnames(object)
+			i <- varnms != ""
+			if (any(i)) {
+				longnms <- longnames(object)
+				i <- longnms != ""
+				if (any(i)) {
+					varnms[i] <- paste0(varnms[i], " (", longnms[i], ")")
+				}
+				if (nsr == 1) {
+					cat("varname     :", varnms[1], "\n")
+				} else {
+					cat("varnames    :", varnms[1], "\n")
+					for (i in 2:(min(nsr, 3))) {
+						cat("             ", varnms[i], "\n")
+					}
+				}
+				if (nsr > 3) {
+					cat("              ...\n")					
+				}
+			}
 			uts <- units(object)
 			hasunits <- !all(uts == "")
 			if (nl > mnr) {

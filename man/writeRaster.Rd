@@ -27,6 +27,10 @@ Write a SpatRaster object to a file.
 SpatRaster. This function is used for the side-effect of writing values to a file.
 }
 
+\seealso{
+see \code{\link{writeCDF}} for more control over writing NetCDF files.
+}
+
 \details{
 In many methods, options for writing raster files to disk can be provided with the \code{wopt} argument. \code{wopt} should be a named list. The following options are available: 
 

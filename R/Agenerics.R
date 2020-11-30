@@ -42,8 +42,11 @@ if (!isGeneric("is.polygons")) {setGeneric("is.polygons", function(x,...) standa
 if (!isGeneric("isTRUE")) { setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
 if (!isGeneric("isFALSE")) { setGeneric("isFALSE", function(x) standardGeneric("isFALSE"))}
 
-if (!isGeneric("lnames")) {setGeneric("lnames", function(x,...) standardGeneric("lnames"))}
-if (!isGeneric("lnames<-")) {setGeneric("lnames<-", function(x, value) standardGeneric("lnames<-"))}
+if (!isGeneric("varnames")) {setGeneric("varnames", function(x,...) standardGeneric("varnames"))}
+if (!isGeneric("varnames<-")) {setGeneric("varnames<-", function(x, value) standardGeneric("varnames<-"))}
+
+if (!isGeneric("longnames")) {setGeneric("longnames", function(x,...) standardGeneric("longnames"))}
+if (!isGeneric("longnames<-")) {setGeneric("longnames<-", function(x, value) standardGeneric("longnames<-"))}
 
 if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}	
 if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")) }	
@@ -71,16 +74,15 @@ if (!isGeneric("units")) {setGeneric("units", function(x) standardGeneric("units
 if (!isGeneric("units<-")) {setGeneric("units<-", function(x,value) standardGeneric("units<-"))}
 
 if (!isGeneric("vect") ) { setGeneric("vect", function(x, ...) standardGeneric("vect")) }
-
+if (!isGeneric("writeCDF")) {setGeneric("writeCDF", function(x, filename, ...) standardGeneric("writeCDF"))}
+if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, ...) standardGeneric("writeVector"))}
 
 ## shared with "raster"
 if (!isGeneric("%in%")) { setGeneric("%in%", function(x, table)	standardGeneric("%in%")) }	
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}	
 if (!isGeneric("animate")) { setGeneric("animate", function(x, ...) standardGeneric("animate")) }	
-
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}	
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, ...) standardGeneric("as.data.frame"))}	
-
 if (!isGeneric("as.list")) { setGeneric("as.list", function(x, ...) standardGeneric("as.list"))}	
 if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneric("as.factor"))}
 if (!isGeneric("atan2")) { setGeneric("atan2", function(y, x) standardGeneric("atan2"))}	
@@ -92,7 +94,7 @@ if (!isGeneric("buffer")) {setGeneric("buffer", function(x, ...) standardGeneric
 if (!isGeneric("clamp")) { setGeneric("clamp", function(x, ...) standardGeneric("clamp")) }
 if (!isGeneric("click")) {setGeneric("click", function(x, ...)standardGeneric("click"))}	
 if (!isGeneric("contour")) { setGeneric("contour", function(x,...) standardGeneric("contour"))}	
-if (!isGeneric("cover")) {setGeneric("cover", function(x, y, ...) standardGeneric("cover"))}			
+if (!isGeneric("cover")) {setGeneric("cover", function(x, y, ...) standardGeneric("cover"))}	
 if (!isGeneric("crop")) { setGeneric("crop", function(x, y, ...) standardGeneric("crop")) }	
 if (!isGeneric("crs")) { setGeneric("crs", function(x, ...)	standardGeneric("crs")) }	
 if (!isGeneric("crs<-")) { setGeneric("crs<-", function(x, ..., value) standardGeneric("crs<-")) }	
@@ -104,7 +106,6 @@ if (!isGeneric("flip")) {setGeneric("flip", function(x, ...) standardGeneric("fl
 if (!isGeneric("focal")) { setGeneric("focal", function(x, ...) standardGeneric("focal")) }
 if (!isGeneric("freq")) { setGeneric("freq", function(x, ...) standardGeneric("freq")) }	
 if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("geom"))}	
-#if (!isGeneric("gridDistance")) {setGeneric("gridDistance", function(x, ...) standardGeneric("gridDistance"))}	
 if (!isGeneric("hasValues")) {setGeneric("hasValues", function(x, ...) standardGeneric("hasValues")) }	
 if (!isGeneric("head")) { setGeneric("head", function(x, ...) standardGeneric("head"))}	
 if (!isGeneric("ifel")) {setGeneric("ifel", function(test, yes, no, ...) standardGeneric("ifel"))}	
@@ -117,7 +118,6 @@ if (!isGeneric("mask")) { setGeneric("mask", function(x, mask, ...) standardGene
 if (!isGeneric("match")) { setGeneric("match", function(x, table, nomatch=NA_integer_, incomparables=NULL)		standardGeneric("match"))}
 if (!isGeneric("modal")) {setGeneric("modal", function(x, ...) standardGeneric("modal"))}
 if (!isGeneric("mosaic")) {setGeneric("mosaic", function(x, ...) standardGeneric("mosaic"))}
-
 if (!isGeneric("ncell")) { setGeneric("ncell", function(x) standardGeneric("ncell")) }	
 if (!isGeneric("nrow")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	
 if (!isGeneric("ncol")) { setGeneric("nrow", function(x) standardGeneric("nrow")) }	
@@ -184,12 +184,10 @@ if (!isGeneric("which.min")) {setGeneric("which.min", function(x) standardGeneri
 
 if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, ...)	standardGeneric("writeStart")) }
 if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }
-#if (!isGeneric("writeVals")) { setGeneric("writeVals", function(x, v, ...) standardGeneric("writeVals")) }
 if (!isGeneric("writeValues")) { setGeneric("writeValues", function(x, v, ...) standardGeneric("writeValues")) }
 
 
 if (!isGeneric("writeRaster")) {setGeneric("writeRaster", function(x, filename, ...) standardGeneric("writeRaster"))}
-if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, ...) standardGeneric("writeVector"))}
 if (!isGeneric("xmin")) {setGeneric("xmin", function(x) standardGeneric("xmin"))}
 if (!isGeneric("xmax")) {setGeneric("xmax", function(x)	standardGeneric("xmax"))}
 if (!isGeneric("ymin")) {setGeneric("ymin", function(x)	standardGeneric("ymin"))}

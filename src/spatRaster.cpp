@@ -463,39 +463,57 @@ bool SpatRaster::setNames(std::vector<std::string> names, bool make_valid) {
 }
 
 
-std::vector<std::string> SpatRaster::getLongNames() {
+std::vector<std::string> SpatRaster::getLongSourceNames() {
 	std::vector<std::string> x;
+	x.reserve(source.size());
 	for (size_t i=0; i<source.size(); i++) {
-		x.insert(x.end(), source[i].long_names.begin(), source[i].long_names.end());
+		x.push_back(source[i].source_name_long);
 	}
 	return(x);
 }
 
 
-bool SpatRaster::setLongNames(std::vector<std::string> nms) {
-	if (nms.size() == 1) {
-        size_t begin=0;
-        for (size_t i=0; i<source.size(); i++)	{
-            size_t end = begin + source[i].nlyr;
-			size_t sz =  end - begin + 1;
-            source[i].long_names = std::vector<std::string> (sz, nms[0]);
-            begin = end;
-        }
-        return true;
-	} else if (nms.size() != nlyr()) {
-		return false;
+bool SpatRaster::setLongSourceNames(std::vector<std::string> names) {
+	if (names.size() == 0) {
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].source_name_long = names[0];
+		}
+	} else if (names.size() == nlyr()) {
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].source_name_long = names[i];
+		}		
 	} else {
-        size_t begin=0;
-        size_t end;
-        for (size_t i=0; i<source.size(); i++)	{
-            end = begin + source[i].nlyr;
-            source[i].long_names = std::vector<std::string> (nms.begin() + begin, nms.begin() + end);
-            begin = end;
-        }
-        return true;
+		return false;
 	}
+	return true;
 }
 
+
+
+std::vector<std::string> SpatRaster::getSourceNames() {
+	std::vector<std::string> x;
+	x.reserve(source.size());
+	for (size_t i=0; i<source.size(); i++) {
+		x.push_back(source[i].source_name);
+	}
+	return(x);
+}
+
+
+bool SpatRaster::setSourceNames(std::vector<std::string> names) {
+	if (names.size() == 0) {
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].source_name = names[0];
+		}
+	} else if (names.size() == nlyr()) {
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].source_name = names[i];
+		}		
+	} else {
+		return false;
+	}
+	return true;
+}
 
 
 bool SpatRaster::hasTime() {

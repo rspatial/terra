@@ -185,7 +185,10 @@ bool RasterSource::in_order() {
 
 void RasterSource::resize(unsigned n) {
 	names.resize(n);
-	long_names.resize(n);
+	
+//	name.resize(1);
+//	long_name.resize(1);
+	
 	unit.resize(n);	
 	depth.resize(n);	
     hasRange.resize(n);
@@ -239,8 +242,7 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
 					if (hasTime) rs.time.push_back(time[j]);
 					rs.depth.push_back(depth[j]);
 					rs.unit.push_back(unit[j]);
-					rs.long_names.push_back(long_names[j]);
-					
+									
 					rs.layers.push_back(i);
                     rs.hasRange.push_back(hasRange[j]);
                     rs.range_min.push_back(range_min[j]);
@@ -261,7 +263,7 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
                 rs.names.push_back(names[j]);
 				if (hasTime) rs.time.push_back(time[j]);
 				rs.unit.push_back(unit[j]);
-				rs.long_names.push_back(long_names[j]);
+				
 				rs.depth.push_back(depth[j]);
                 rs.hasRange.push_back(hasRange[j]);
                 rs.range_min.push_back(range_min[j]);
@@ -377,7 +379,7 @@ bool RasterSource::combine_sources(const RasterSource &x) {
 		hasTime = false;
 	}
 	unit.insert(unit.end(), x.unit.begin(), x.unit.end());	
-	long_names.insert(long_names.end(), x.long_names.begin(), x.long_names.end());	
+	
 	depth.insert(depth.end(), x.depth.begin(), x.depth.end());
 	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
 	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());

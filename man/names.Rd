@@ -1,24 +1,38 @@
 \name{names}
 
+\alias{name}
+\alias{name<-}
 \alias{names}
 \alias{names<-}
-\alias{lnames}
-\alias{lnames<-}
+\alias{varnames}
+\alias{varnames<-}
+\alias{longnames}
+\alias{longnames<-}
 
 \alias{names,SpatRaster-method}
 \alias{names<-,SpatRaster-method}
-\alias{lnames,SpatRaster-method}
-\alias{lnames<-,SpatRaster-method}
+\alias{varnames,SpatRaster-method}
+\alias{varnames<-,SpatRaster-method}
+
+\alias{longnames,SpatRaster-method}
+\alias{longnames<-,SpatRaster-method}
 
 \alias{names,SpatDataSet-method}
 \alias{names<-,SpatDataSet-method}
+\alias{varnames,SpatDataSet-method}
+\alias{varnames<-,SpatDataSet-method}
+\alias{longnames,SpatDataSet-method}
+\alias{longnames<-,SpatDataSet-method}
+
 \alias{names,SpatVector-method}
 \alias{names<-,SpatVector-method}
   
-\title{Names of Spat objects}
+\title{Names of Spat* objects}
 
 \description{
-Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. With \code{lnames} you can get or set the "long names" of a SpatRaster. 
+Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. With \code{lnames} you can get or set the "long names" of a SpatRaster or SpatDataSet. 
+
+For a SpatRaster, you can also get/set a variable name or long name (one per data source)
 }
 
 \usage{
@@ -26,13 +40,26 @@ Get or set the names of the layers of a SpatRaster or the attributes of a SpatVe
 
 \S4method{names}{SpatRaster}(x)<-value
 
-\S4method{lnames}{SpatRaster}(x)
+\S4method{varnames}{SpatRaster}(x)
 
-\S4method{lnames}{SpatRaster}(x)<-value
+\S4method{varnames}{SpatRaster}(x)<-value
+
+\S4method{longnames}{SpatRaster}(x)
+
+\S4method{longnames}{SpatRaster}(x)<-value
+
 
 \S4method{names}{SpatDataSet}(x)
 
 \S4method{names}{SpatDataSet}(x)<-value
+
+\S4method{varnames}{SpatDataSet}(x)
+
+\S4method{varnames}{SpatDataSet}(x)<-value
+
+\S4method{longnames}{SpatDataSet}(x)
+
+\S4method{longnames}{SpatDataSet}(x)<-value
 
 \S4method{names}{SpatVector}(x)
 
@@ -40,7 +67,7 @@ Get or set the names of the layers of a SpatRaster or the attributes of a SpatVe
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatVector}
+  \item{x}{SpatRaster, SpatDataSet, or SpatVector}
   \item{value}{character (vector)}
 }
 

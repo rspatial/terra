@@ -51,6 +51,7 @@ class SpatRasterStack {
 
 		std::vector<SpatRaster> ds;
 		std::vector<std::string> names;
+		std::vector<std::string> long_names;
 		//bool oneRes = true;
 		SpatRasterStack() {};
 		SpatRasterStack(std::string fname, std::vector<int> ids, bool useids);
@@ -69,6 +70,15 @@ class SpatRasterStack {
 				names = nms;
 			}
 		}
+		std::vector<std::string> get_longnames() {
+			return long_names;
+		};
+		void set_longnames(std::vector<std::string> nms) {
+			if (nms.size() == ds.size()) {
+				long_names = nms;
+			}
+		}
+
 
 		bool readStart() {
 			for (auto& x : ds) { if (!x.readStart()) return false; }

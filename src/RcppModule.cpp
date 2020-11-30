@@ -330,8 +330,10 @@ RCPP_MODULE(spat){
 		.method("isGlobalLonLat", &SpatRaster::is_global_lonlat, "isGlobalLonLat") 
 
 		.property("names", &SpatRaster::getNames)
-		.property("long_names", &SpatRaster::getLongNames)
-		.method("set_long_names", &SpatRaster::setLongNames)
+		.method("get_sourcenames_long", &SpatRaster::getLongSourceNames)
+		.method("set_sourcenames_long", &SpatRaster::setLongSourceNames)
+		.method("get_sourcenames", &SpatRaster::getSourceNames)
+		.method("set_sourcenames", &SpatRaster::setSourceNames)
 
 		.property("hasTime", &SpatRaster::hasTime)
 		.property("time", &SpatRaster::getTime)
@@ -509,6 +511,7 @@ RCPP_MODULE(spat){
 		.method("nrow", &SpatRasterStack::nrow, "")
 		.method("getSRS", &SpatRasterStack::getSRS, "")
 		.property("names", &SpatRasterStack::getnames, &SpatRasterStack::setnames)
+		.property("long_names", &SpatRasterStack::get_longnames, &SpatRasterStack::set_longnames)
 		.method("add", &SpatRasterStack::push_back, "")
 		.method("resize", &SpatRasterStack::resize, "")
 		.method("summary", &SpatRasterStack::summary, "summary")

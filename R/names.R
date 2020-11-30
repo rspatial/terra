@@ -3,6 +3,7 @@
 # Version 1.0
 # License GPL v3
 
+
 setMethod("names", signature(x="SpatRaster"), 
 	function(x) { 
 		x@ptr$names
@@ -44,6 +45,22 @@ setMethod("names<-", signature(x="SpatDataSet"),
 	}
 )
 
+setMethod("varnames", signature(x="SpatDataSet"), 
+	function(x) { 
+		x@ptr$names
+	}
+)
+
+
+setMethod("varnames<-", signature(x="SpatDataSet"), 
+	function(x, value) {
+		value <- as.character(value)
+		x@ptr$names <- value
+		x
+	}
+)
+
+
 setMethod("names", signature(x="SpatVector"), 
 	function(x) { 
 		x@ptr$names
@@ -65,20 +82,32 @@ setMethod("names<-", signature(x="SpatVector"),
 )
 
 
-setMethod("lnames", signature(x="SpatRaster"), 
+setMethod("varnames", signature(x="SpatRaster"), 
 	function(x) { 
-		x@ptr$long_names
+		x@ptr$get_sourcenames()
 	}
 )
 
-
-setMethod("lnames<-", signature(x="SpatRaster"), 
+setMethod("varnames<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		value <- as.character(value)
-		if (length(value) != nlyr(x)) {
-			stop("incorrect number of names")
+		if (!x@ptr$set_sourcenames(as.character(value))) {
+			stop("cannot set these names")
 		}
-		if (! x@ptr$set_long_names(value)) {
+		return(x)
+	}
+)
+
+setMethod("longnames", signature(x="SpatRaster"), 
+	function(x) { 
+		x@ptr$get_sourcenames_long()
+	}
+)
+
+setMethod("longnames<-", signature(x="SpatRaster"), 
+	function(x, value)  {
+		value <- as.character(value)
+		if (!x@ptr$set_sourcenames_long(as.character(value))) {
 			stop("cannot set these names")
 		}
 		return(x)

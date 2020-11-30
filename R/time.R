@@ -6,6 +6,9 @@
 
 setMethod("time", signature(x="SpatRaster"), 
 	function(x, ...) { 
+		if (!x@ptr$hasTime) {
+			return(rep(NA, nlyr(x)))
+		}
 		d <- x@ptr$time
 		tstep <- x@ptr$timestep 
 		if (tstep == "seconds") {
