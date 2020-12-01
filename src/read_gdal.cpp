@@ -532,8 +532,9 @@ bool SpatRaster::readStopGDAL(unsigned src) {
 //#include <iostream>
 //#include "Rcpp.h"
 
-void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso){
+void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso, const bool haveUserNAflag, const double userNAflag){
 	size_t nl = flags.size();
+	double na = NAN;
 
 	for (size_t i=0; i<nl; i++) {
 		size_t start = i*n;
@@ -548,15 +549,17 @@ void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, co
 					} 	
 				}
 			} else {
-				double na = NAN;
 				std::replace(d.begin()+start, d.begin()+start+n, flag, na); 
 			}
-		} 
+		}
 		if (haveso[i]) {
 			for (size_t j=start; j<(start+n); j++) {
 				d[j] = d[j] * scale[i] + offset[i];
 			}
 		}
+	}
+	if (haveUserNAflag) {
+		std::replace(d.begin(), d.end(), userNAflag, na); 			
 	}
 }
 
@@ -617,7 +620,7 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 
 			double naflag = poBand->GetNoDataValue(&hasNA);
 			if (hasNA)  naflags[i] = naflag;
 		}
-		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset);
+		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
 	}
 
 /*
@@ -697,7 +700,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_6
 			double naf = poBand->GetNoDataValue(&hasNA);
 			if (hasNA)  naflags[i] = naf;
 		}
-		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset);
+		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
 	}
 
 	GDALClose((GDALDatasetH) poDataset);
@@ -758,7 +761,7 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, int srows, int scol
 			double naflag = poBand->GetNoDataValue(&hasNA);
 			if (hasNA)  naflags[i] = naflag;
 		}
-		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset);
+		NAso(out, ncell, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
 	}
 
 /*
@@ -846,7 +849,7 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 			double naflag = poBand->GetNoDataValue(&hasNA);
 			if (hasNA)  naflags[i] = naflag;
 		}
-		NAso(out, n, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset);
+		NAso(out, n, naflags, source[src].scale, source[src].offset, source[src].has_scale_offset, source[src].hasNAflag, source[src].NAflag);
 	}
 
 	GDALClose((GDALDatasetH) poDataset);

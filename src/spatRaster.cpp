@@ -516,6 +516,41 @@ bool SpatRaster::setSourceNames(std::vector<std::string> names) {
 }
 
 
+bool SpatRaster::setNAflag(std::vector<double> flag) {
+	size_t sz = source.size();
+	if (flag.size() == 1) recycle(flag, sz); 
+	if (flag.size() != sz) {
+		return false;
+	}
+	for (size_t i=0; i<sz; i++)	{
+		if (std::isnan(flag[i])) {
+			source[i].hasNAflag = false;
+			source[i].NAflag = NAN;
+		} else {
+			if (source[i].memory) {
+				source[i].hasNAflag = false;
+				std::replace(source[i].values.begin(), source[i].values.end(), flag[i], NAN);
+			} else {
+				source[i].hasNAflag = true;
+				source[i].NAflag = flag[i];
+			}
+		}
+	}
+	return true;
+};
+
+
+std::vector<double> SpatRaster::getNAflag() {
+	std::vector<double> out(source.size(), NAN);
+	for (size_t i=0; i<source.size(); i++)	{
+		if (source[i].hasNAflag) {
+			out[i] = source[i].NAflag;
+		}
+	}
+	return out;
+}
+
+
 bool SpatRaster::hasTime() {
 	bool test = true;
 	for (size_t i=0; i<source.size(); i++) {

@@ -244,3 +244,20 @@ setMethod("rast", signature(x="matrix"),
 	}
 )
 
+
+setMethod("NAflag<-", signature(x="SpatRaster"), 
+	function(x, ..., value)  {
+		value <- as.numeric(value)
+		if (!(x@ptr$setNAflag(value))) {
+			stop("cannot set these values")
+		}
+		x
+	}
+)
+
+setMethod("NAflag", signature(x="SpatRaster"), 
+	function(x, ...)  {
+		x@ptr$getNAflag()
+	}
+)
+

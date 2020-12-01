@@ -4,6 +4,9 @@
 if (!isGeneric("cols")) {setGeneric("cols", function(x, ...) standardGeneric("cols"))}
 if (!isGeneric("window<-")) {setGeneric("window<-", function(x, ..., value) standardGeneric("window<-"))}
 
+if (!isGeneric("NAflag")) {setGeneric("NAflag", function(x, ...) standardGeneric("NAflag"))}
+if (!isGeneric("NAflag<-")) {setGeneric("NAflag<-", function(x, ..., value) standardGeneric("NAflag<-"))}
+
 # terra
 if (!isGeneric("meta")) { setGeneric("meta", function(x, ...) standardGeneric("meta"))}	
 

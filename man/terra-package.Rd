@@ -30,6 +30,7 @@ Note the following important differences in methods names with the 'raster' pack
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{extend}\tab\code{\link{expand}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
+\code{NAvalue}\tab\code{\link{NAflag}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
 \code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr

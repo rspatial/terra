@@ -113,8 +113,9 @@ class RasterSource {
 		std::string driver;
 		std::string datatype; 
 		
-		// for native files
-		//double NAflag;
+		// user set:
+		bool hasNAflag = false;
+		double NAflag = NAN;
 
 		std::vector<bool> has_scale_offset;
 		std::vector<double> scale;
@@ -261,6 +262,10 @@ class SpatRaster {
 		bool setDepth(std::vector<double> depths);
 		std::vector<std::string> getUnit();
 		bool setUnit(std::vector<std::string> units);
+
+		bool setNAflag(std::vector<double> flag);
+		std::vector<double> getNAflag();
+
 
 ////////////////////////////////////////////////////
 // constructors

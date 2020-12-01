@@ -335,6 +335,9 @@ RCPP_MODULE(spat){
 		.method("get_sourcenames", &SpatRaster::getSourceNames)
 		.method("set_sourcenames", &SpatRaster::setSourceNames)
 
+		.method("setNAflag", &SpatRaster::setNAflag)
+		.method("getNAflag", &SpatRaster::getNAflag)
+
 		.property("hasTime", &SpatRaster::hasTime)
 		.property("time", &SpatRaster::getTime)
 		.property("timestep", &SpatRaster::getTimeStep)
