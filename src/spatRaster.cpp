@@ -522,14 +522,16 @@ bool SpatRaster::setNAflag(std::vector<double> flag) {
 	if (flag.size() != sz) {
 		return false;
 	}
+	double na = NAN;
 	for (size_t i=0; i<sz; i++)	{
 		if (std::isnan(flag[i])) {
 			source[i].hasNAflag = false;
 			source[i].NAflag = NAN;
 		} else {
+			
 			if (source[i].memory) {
 				source[i].hasNAflag = false;
-				std::replace(source[i].values.begin(), source[i].values.end(), flag[i], NAN);
+				std::replace(source[i].values.begin(), source[i].values.end(), flag[i], na);
 				source[i].setRange();
 			} else {
 				source[i].hasNAflag = true;
