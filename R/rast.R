@@ -5,7 +5,7 @@
 
 
 setMethod("rast", signature(x="missing"),
-	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, ...) {
+	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, ...) {
 
 		if (missing(extent)) {	extent <- ext(xmin, xmax, ymin, ymax) }
 		e <- as.vector(extent)
@@ -29,8 +29,15 @@ setMethod("rast", signature(x="missing"),
 
 		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
-
-		show_messages(r, "rast")
+		r <- show_messages(r, "rast")
+		if (!missing(vals)) {
+			if (length(vals) == ncell(r)) {
+				values(r) <- vals
+			} else {
+				values(r) <- rep_len(vals, ncell(r))
+			}
+		}
+		r
 	}
 )
 

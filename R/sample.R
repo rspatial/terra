@@ -23,8 +23,12 @@
 
 setMethod("spatSample", signature(x="SpatRaster"), 
 	function(x, size, method="regular", replace=FALSE, as.raster=FALSE, cells=FALSE, ...) {
+		
 		if (cells) {
 			return(.sampleCells(x, size, method, replace))
+		}
+		if (!hasValues(x) & !as.raster) {
+			stop("SpatRaster has no values. Use cells=TRUE or as.raster=TRUE")
 		}
 		method <- tolower(method)
 		stopifnot(method %in% c("random", "regular"))
@@ -52,8 +56,10 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		}	
 		# values
 		x <- show_messages(x, "spatSample")		
-		v <- do.call(cbind, v)
-		colnames(v) <- names(x)
+		if (length(v) > 0) {
+			v <- do.call(cbind, v)
+			colnames(v) <- names(x)
+		}
 		return(v)
 	}
 )

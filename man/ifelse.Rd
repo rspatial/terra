@@ -30,8 +30,8 @@ SpatRaster
 }
 
 \examples{
-r <- rast(nrows=5, ncols=5)
-values(r) <- -10:14
+r <- rast(nrows=5, ncols=5, xmin=0, xmax=1, ymin=0, ymax=1)
+values(r) <- c(-10:0, NA, NA, NA, 0:10)
 
 x <- ifel(r > 1, 1, r)
 # same as 
@@ -45,6 +45,7 @@ e <- r
 e[e>1] <- 1
 
 ## other examples
+f <- ifel(is.na(r), 100, r)
 
 z <- ifel(r > -2 & r < 2, 100, 0)
 
