@@ -30,10 +30,11 @@ std::vector<std::string> get_metadata(std::string filename) {
 	}
 	
 	char **m = poDataset->GetMetadata();
-	while (*m != nullptr) {
-		out.push_back(*m++);
-	}
-	
+	if (m != NULL) { // needed
+		while (*m != nullptr) {
+			out.push_back(*m++);
+		}
+	}	
 	GDALClose( (GDALDatasetH) poDataset );
 	return out;	
 }

@@ -9,11 +9,13 @@
 
 \description{
 Create a SpatRaster with a layer for each class (value, or subset of the values) in the input SpatRaster. For example, if the input has vegetation types, this function will create a layer (presence/absence; dummy variable) for each of these classes. Classes and cell values are always truncated to integers.
+
+This is called "one-hot encoding" or "dummy encoding" (for a dummy encoding scheme you can remove (any) one of the output layers as it is redundant).
 }
 
 \usage{
-\S4method{separate}{SpatRaster}(x, classes=NULL, keep=FALSE, other=0, filename="", 
-overwrite=FALSE, wopt=list(),...)
+\S4method{separate}{SpatRaster}(x, classes=NULL, keep=FALSE, other=0, filename="",
+    overwrite=FALSE, wopt=list(),...)
 }
 
 \arguments{
