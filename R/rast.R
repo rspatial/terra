@@ -99,8 +99,6 @@ setMethod("rast", signature(x="SpatVector"),
 
 setMethod("rast", signature(x="character"),
 	function(x, subds=0, ...) {
-		## work around onLoad problem
-		#if (is.null(.terra_environment$options)) .init()
 
 		x <- trimws(x)
 		x <- x[x!=""]

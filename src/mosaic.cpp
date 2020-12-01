@@ -10,7 +10,7 @@ std::vector<double> mean2d(const std::vector<std::vector<double>> &x) {
 		v = 0;
 		d = 0;
 		for (size_t j=0; j<nn; j++) {
-			if (!isnan(x[i][j])) {
+			if (!std::isnan(x[i][j])) {
 				v += x[i][j];
 				d++;
 			}
