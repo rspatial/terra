@@ -66,7 +66,9 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 
 		filename <- trimws(filename)
 		stopifnot(filename != "")
-
+		if (file.exists(filename) & !overwrite) {
+			stop("file exists, use overwrite=TRUE to overwrite it")
+		}
 
 		# loop over subdatasets 
 		# for now:
@@ -76,22 +78,17 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 		if (varname == "") varname <- "data"
 		unit <- units(x)[1]
 		
-		filename <- trim(filename)
-		stopifnot(filename != "")
-		if (file.exists(filename) & !overwrite) {
-			stop("file exists, use overwrite=TRUE to overwrite it")
-		}
 		
 		if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
-			xname = 'longitude'
-			yname = 'latitude'
-			xunit = 'degrees_east'
-			yunit = 'degrees_north'
+			xname = "longitude"
+			yname = "latitude"
+			xunit = "degrees_east"
+			yunit = "degrees_north"
 		} else {
-			xname = 'easting'
-			yname = 'northing'
-			xunit = 'meter' # probably
-			yunit = 'meter' # probably
+			xname = "easting"
+			yname = "northing"
+			xunit = "meter" # probably
+			yunit = "meter" # probably
 		}
 		xdim <- ncdf4::ncdim_def( xname, xunit, xFromCol(x, 1:ncol(x)) )
 		ydim <- ncdf4::ncdim_def( yname, yunit, yFromRow(x, 1:nrow(x)) )
@@ -101,13 +98,13 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 		if (nl > 1) {
 			if (x@ptr$hasTime) {
 				zv <- x@ptr$time
-				zatt <- list('units=seconds since 1970-1-1 00:00:00')		
-				zunit <- 'seconds'
+				zatt <- list("units=seconds since 1970-1-1 00:00:00")		
+				zunit <- "seconds"
 				zname <- "time"
 			} else {
 				zv <- 1:nlyr(x)
 				zatt <- list("units=unknown")		
-				zunit <- 'unknown'
+				zunit <- "unknown"
 				zname <- "layer"
 			}
 			zdim <- ncdf4::ncdim_def( zname, zunit, zv, unlim=TRUE )
@@ -124,15 +121,15 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 
 		prj <- crs(x)
 		if (!is.na(prj)) {
-			ncdf4::ncatt_put(nc, "crs", "wkt", prj, prec='text')
+			ncdf4::ncatt_put(nc, "crs", "wkt", prj, prec="text")
 			ncdf4::ncatt_put(nc, varname, "grid_mapping", "crs")
-			ncdf4::ncatt_put(nc, varname, "wkt", prj, prec='text')
+			ncdf4::ncatt_put(nc, varname, "wkt", prj, prec="text")
 		}
-		ncdf4::ncatt_put(nc, 0, 'Conventions', 'CF-1.4', prec='text')
-
-		pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package='terra'), fields=c("Version")))
-		ncdf4::ncatt_put(nc, 0, 'created_by', paste('R, packages ncdf4 and terra (version ', pkgversion, ')', sep=''), prec='text')
-		ncdf4::ncatt_put(nc, 0, 'date', format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec='text')
+		
+		ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.4", prec="text")
+		pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
+		ncdf4::ncatt_put(nc, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
+		ncdf4::ncatt_put(nc, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
 	#start loop for writing
 	# for now:
@@ -156,4 +153,13 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 		invisible(rast(filename))
 	}
 )
+
+
+
+.vectCDF <- function(filename, varname, polygons=FALSE) {
+# read (irregular) raster netcdf as points or polygons
+# not to be confused with vector netcdf format
+	
+
+}
 

@@ -322,7 +322,7 @@ std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<s
 // the below could be found analytically, but this is easy and safe
 	for (size_t i=0; i<m.size(); i++) {
 		std::string dim;
-		std::vector<std::string> b = m[0];
+		b = m[i];
 		for (size_t j=0; j<b.size(); j++) {
 			size_t pos = b[j].find("NETCDF_DIM_");
 			if (pos != std::string::npos) {
@@ -354,6 +354,7 @@ void RasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::v
 	source_name_long = nms[2][1];
 	unit = {nms[2][2]};
 	recycle(unit, nlyr);
+	
 	
 	if (nms[0].size() > 0) {
 		std::string step;

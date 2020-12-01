@@ -194,19 +194,19 @@ setMethod ("show" , "SpatRaster",
 
 
 			if (object@ptr$hasTime) {
-				tim <- time(object)
-				if (length(tim) > 1) {
-					cat("time        :", paste(range(tim), collapse=" to "), "\n")
+				rtim <- range(time(object))
+				utim <- unique(rtim)
+				if (length(utim) > 1) {
+					cat("time        :", paste(rtim, collapse=" to "), "\n")
 				} else {
-					cat("time        :", as.character(tim), "\n")
+					cat("time        :", as.character(utim), "\n")
 				}
-			}
-			
-		}# else {
+			}		
+		}
+		# else {
 		#	cat("data sources:", "no data\n")
 		#	cat("names       :", paste(ln, collapse=", "), "\n")
-		#}
-		
+		# }
 	}
 )
 
