@@ -252,7 +252,7 @@
 
 .prep.plot.data <- function(x, type, maxcell, cols, mar, draw=FALSE, interpolate=FALSE,  
 legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
- range=NULL, new=NA, breaks=NULL, coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, ...) {
+ range=NULL, new=NA, breaks=NULL, coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
  
@@ -281,6 +281,14 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 	if (out$lonlat) {
 		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
 	}
+	
+	if (!is.null(alpha)) {
+		alpha <- clamp(alpha[1]*255, 0, 255)
+		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
+	} else {
+		alpha <- 255
+	}
+	
 	out$cols <- cols
 	out$facts <- facts
 	out$breaks <- breaks
@@ -302,6 +310,13 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 		out <- .as.raster.continuous(out, x, type)
 	}
 
+	if (!is.null(colNA)) {
+		if (!is.na(colNA)) {
+			out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=alpha, maxColorValue=255)
+			out$r[is.na(out$r)] <- out$colNA
+		}
+	}
+
 	if (draw) {
 		out <- .plotit(out, new=new, ...)
 	}
@@ -310,7 +325,7 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, ...) {
+	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
 
 		x <- x[[y]]
 		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
@@ -401,7 +416,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, nc, nr, main, maxnl=16, ...)  {
+	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)  {
 
 		nl <- max(1, min(nlyr(x), maxnl))
 		usefun = 0;
