@@ -291,23 +291,62 @@ setAs("SpatRaster", "Raster",
 	}
 )
 
-# to spatvector. indirect, via sp
-# should be made direct
+
+# to sf from SpatVector
+.v2sf <- function(from) {
+	sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))
+}
+
+# from sf. first incomplete draft
+.from_sf <- function(from) {
+	i <- attr(from, "sf_column")
+	geom <- from[[i]]
+	crs <- attr(geom, "crs")$wkt
+	attr(geom, "class") <- NULL
+	types <- t(sapply(geom, function(i) attr(i, "class")))
+	v <- list()
+	for (i in 1:length(geom)) {
+		vv <- list()
+		for (j in 1:length(geom[[i]])) {
+			if (class(geom[[1]][[1]]) == "list") {
+				vvv <- list()
+				for (k in 1:length(geom[[i]][[j]])) {
+					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k!=1) 
+				}
+				vv[[j]] <- do.call(rbind, vvv)
+			} else {
+				vv[[j]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=0) 
+			}
+		}
+		v[[i]] <- do.call(rbind, vv)
+	}
+	v <- do.call(rbind, v)
+	colnames(v)[1:4] <- c("id", "part", "x", "y")
+	types <- unique(types[,2])
+	if (any(grepl("POINT", types, fixed=TRUE))) {
+		gt = "points"
+	} else if (any(grepl("LINE", types, fixed=TRUE))) {
+		gt = "lines"
+	} else if (any(grepl("POLY", types, fixed=TRUE))) {
+		gt = "polygons"
+	}
+	if (ncol(from) > 1) {
+		from[[i]] <- NULL
+		d <- as.data.frame(from)
+		vect(v, type=gt, att=d, crs=crs)
+	} else {
+		vect(v, type=gt, crs=crs)
+	}
+}
+
+
 setAs("sf", "SpatVector", 
 	function(from) {
-		from <- methods::as(from, "Spatial")
-		methods::as(from, "SpatVector")
-	}
-)
-
-
-setAs("SpatVector", "sf", 
-	function(from) {
-		g <- as.data.frame(from, geom=TRUE)
-		g$geometry <- sf::st_as_sfc(g$geometry)
-		g <- sf::st_as_sf(g)
-		sf::st_crs(g) <- crs(from)
-		g
+		v <- try(.from_sf(from), silent=TRUE)
+		if (inherits(v, "try-error")) {
+			stop("coercion failed. You can try coercing via a Spatial* (sp) class")
+		} 
+		v
 	}
 )
 

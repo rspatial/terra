@@ -1,5 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
+if (!isGeneric("polys")) {setGeneric("polys", function(x,...) standardGeneric("polys"))}
+
 
 if (!isGeneric("cols")) {setGeneric("cols", function(x, ...) standardGeneric("cols"))}
 if (!isGeneric("window<-")) {setGeneric("window<-", function(x, ..., value) standardGeneric("window<-"))}
@@ -199,6 +201,3 @@ if (!isGeneric("xmin<-")) { setGeneric("xmin<-", function(x, ..., value) standar
 if (!isGeneric("xmax<-")) { setGeneric("xmax<-", function(x, ..., value) standardGeneric("xmax<-"))}	
 if (!isGeneric("ymin<-")) { setGeneric("ymin<-", function(x, ..., value) standardGeneric("ymin<-"))}	
 if (!isGeneric("ymax<-")) { setGeneric("ymax<-", function(x, ..., value) standardGeneric("ymax<-"))}	
-
-
-

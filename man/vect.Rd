@@ -71,6 +71,9 @@ wkt <- c("MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)),
 "POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
 w <- vect(wkt)
 
+
+#SpatVect to sf
+#sf::st_as_sf(as.data.frame(w, geom=TRUE), wkt="geometry", crs=crs(w))
 }
 
 \keyword{methods}

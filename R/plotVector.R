@@ -23,6 +23,8 @@
 	g <- lapply(g, function(y) split(y, y[,2]))
 	if (!is.null(border)) {
 		border <- rep_len(border, length(g))
+	} else {
+		border <- NA
 	}
 	for (i in 1:length(g)) {
 		gg <- g[[i]]
@@ -99,6 +101,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 )
 
 
+
 #.setPAR <- function(leg.mar=NULL, leg.ext=NULL, leg.hor=NULL, ...) {
 #	if (missing(leg.mar)) {
 #		if (missing(leg.ext)) {
@@ -136,7 +139,7 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 # should be calling this one, and not the other way around? 
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), axes=TRUE, add=FALSE, ...)  {
+	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), axes=TRUE, legend=TRUE, add=FALSE, ...)  {
 		
 		#old.par <- graphics::par(no.readonly = TRUE) 
 		#on.exit(graphics::par(old.par))
@@ -172,7 +175,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		leg.ext <- NULL
 		n <- ifelse(is.null(leg.ext), 20, length(uv))
 		leg.ext <- .legCoords(x, ...)
-		if (type == "classes") {
+		if (type == "classes" && legend) {
 			.factorLegend(leg.ext, 1:length(uv), ucols, uv, n)
 		} else {
 			zlim <- range(uv, na.rm=TRUE)
@@ -185,7 +188,9 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 					digits <- max(0, -floor(log10(dif/10)))
 				}
 			}
-			.contLegend(leg.ext, col, zlim, digits, leg.levels=5, ...)	
+			if (legend) {
+				.contLegend(leg.ext, col, zlim, digits, leg.levels=5, ...)	
+			}
 		}
 	}
 )
@@ -222,7 +227,6 @@ setMethod("lines", signature(x="SpatVector"),
 )
 
 
-
 setMethod("points", signature(x="SpatVector"), 
 	function(x, col, ...)  {
 		if (missing(col)) col <- "black"
@@ -231,3 +235,17 @@ setMethod("points", signature(x="SpatVector"),
 	}
 )
 
+setMethod("polys", signature(x="SpatVector"), 
+	function(x, col, border="black", ...)  {
+		gtype <- geomtype(x)
+		if (gtype != "polygons") {
+			stop("expecting polygons")
+		}
+		if (missing(col)) {
+			col <- NULL
+		}
+		cols <- .getCols(size(x), col)
+		.plotPolygons(x, cols=cols, border=border, ...)
+	}
+)
+	

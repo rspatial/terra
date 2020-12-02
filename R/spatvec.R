@@ -62,7 +62,12 @@ setMethod("as.data.frame", signature(x="SpatVector"),
 		d <- data.frame(x@ptr$getDF(), check.names=FALSE, fix.empty.names=FALSE, stringsAsFactors=FALSE)
 		colnames(d) <- x@ptr$names
 		if (geom) {
-			d$geometry <- geom(x, TRUE)
+			g <- geom(x, TRUE)
+			if (nrow(d) > 0) {
+				d$geometry <- g
+			} else {
+				d <- data.frame(geometry=g)
+			}
 		}
 		d
 	}

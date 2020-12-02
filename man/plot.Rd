@@ -15,20 +15,20 @@ Plot the values of a SpatRaster to make a map
 
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), 
-    pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
-	colNA=NULL, alpha=NULL, ...)
+     pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
+     colNA=NULL, alpha=NULL, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), 
-    pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL,
-	colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)
+     pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL,
+     colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{y}{missing or positive integer indicating the layer(s) to be plotted, or the name of the layer to be mapped}
+  \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
   \item{col}{character. Colors}
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval"}
-  \item{mar}{numeric vector of lenght 4 to set the margins of the plot}
+  \item{mar}{numeric vector of length 4 to set the margins of the plot}
   \item{legend}{logical. Draw a legend?}
   \item{axes}{logical. Draw axes?}
   \item{pal}{list. Parameters for the legend}
@@ -39,7 +39,7 @@ Plot the values of a SpatRaster to make a map
   \item{levels}{character. labels to be used for the classes legend }
   \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the the layer that is plotted (1 to the number of layers) }  
   \item{colNA}{character. color for the NA values}
-  \item{alpha}{numeric between 0 and 1 to set the transparancy for all colors (0 is transparant, 1 is opaque)}
+  \item{alpha}{numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque)}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
