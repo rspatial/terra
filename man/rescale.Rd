@@ -9,11 +9,11 @@
 \title{rescale}
 
 \description{
-rescale a SpatVector or SpatRaster. This may be useful to make small inset maps. 
+Rescale a SpatVector or SpatRaster. This may be useful to make small inset maps. 
 }
 
 \usage{
-\S4method{rescale}{SpatRaster}(x, f=0.5, ...)
+\S4method{rescale}{SpatRaster}(x, f=0.5, x0, y0, ...)
 
 \S4method{rescale}{SpatVector}(x, f=0.5, x0, y0, ...)
 }

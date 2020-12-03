@@ -4,31 +4,23 @@
 
 \alias{rotate}
 \alias{rotate,SpatRaster-method}
-\alias{rotate,SpatVector-method}
 
 \title{Rotate a SpatRaster along longitude}
 
 \description{
 Rotate a SpatRaster that has longitude coordinates from 0 to 360, to standard coordinates between -180 and 180 degrees (or vice-versa). Longitude between 0 and 360 is frequently used in global climate models.
-
-Or rotate a SpatVector around the lower-right corner if its extent. 
 }
 
 \usage{
 \S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
-
-\S4method{rotate}{SpatVector}(x, angle, x0=xmin(x), y0=ymin(x), ...)
 }
 
 \arguments{
- \item{x}{SpatRaster}
+ \item{x}{SpatRaster or SpatVector}
  \item{left}{logical. If \code{TRUE}, rotate to the left, else to the right}
  \item{filename}{character. Output filename. Optional}
  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
- \item{angle}{numeric. Angle of rotation in degrees}
- \item{x0}{numeric. x-coordinate of the center of rotation}
- \item{y0}{numeric. y-coordinate of the center of rotation}
  \item{...}{additional arguments. None implemented}  
 }
 
@@ -36,7 +28,7 @@ Or rotate a SpatVector around the lower-right corner if its extent.
 SpatRaster
 }
 
-\seealso{\code{\link{shift}}}
+\seealso{\code{\link{shift}} and \code{\link{spin}}}
 
 \examples{
 x <- rast(nrow=9, ncol=18, nl=3, xmin=0, xmax=360)
