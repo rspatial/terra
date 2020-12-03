@@ -317,6 +317,7 @@ A SpatDataSet contains SpatRaster objects that are sub-datasets for the same are
 
 
 \section{XV. Manipulation of SpatVector objects}{
+
 The name in \bold{bold} is the equivalent command in ArcGIS. 
 
 \tabular{ll}{
@@ -337,15 +338,27 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
+
+Change geometries 
+
+\tabular{ll}{
+  \code{\link{shift}} \tab change the position geometries \cr
+  \code{\link{rotate}}\tab rotate geometries \cr
+  \code{\link{rescale}} \tab shrink (or expand) geometries, for example to make an inset map \cr
+  \code{\link{flip}} \tab flip geometries vertially or horizontally\cr
+  \code{\link{t}} \tab transpose geometries (switch x and y)\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
+}
+
 
 
 \section{XVI. SpatExtent objects}{
 
   \tabular{ll}{
     \code{\link{extent}} \tab Create a SpatExtent object \cr
-    \code{\link{intersect}} \tab Intersect two SpatExtent objects  \cr
-    \code{\link{union}} \tab Combine two SpatExtent objects \cr
+    \code{\link{intersect}} \tab Intersect two SpatExtent objects, same as \code{-}  \cr
+    \code{\link{union}} \tab Combine two SpatExtent objects, same as \code{+} \cr
     \code{\link{Math-methods}} \tab round/floor/ceiling of the coordinates of a SpatExtent \cr			
     \code{\link{align}} \tab Align a SpatExtent with a SpatRaster \cr
     \code{\link{draw}} \tab Create a SpatExtent object by drawing it on top of a map (plot) \cr		

@@ -293,8 +293,10 @@ setAs("SpatRaster", "Raster",
 
 
 # to sf from SpatVector
+# could be in sf
 .v2sf <- function(from) {
-	sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))
+	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))'
+	eval(parse(text = txt))
 }
 
 # from sf. first incomplete draft

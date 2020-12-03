@@ -66,21 +66,13 @@ for \bold{(SpatExtent, numeric)} : \code{+, -, *, /, \%\%}
 }
 
 
-\usage{
-\S4method{is.na}{SpatRaster}(x)
-}
-
-\arguments{
-  \item{x}{SpatRaster}
-}
-
 \section{seealso}{
 \code{\link{ifel}} to convieniently combine operations and \code{\link{app}} to use mathematical functions not implemented by the package.
 }
 
 
 \value{
-SpatRaster
+SpatRaster or SpatExtent
 }
 
 \examples{

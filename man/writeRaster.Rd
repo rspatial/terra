@@ -41,7 +41,7 @@ In many methods, options for writing raster files to disk can be provided with t
 
 \code{filetype}\tab file format expresses as GDAL driver names. If this argument is not supplied, the driver is derived from the filename.\cr
 
-\code{gdal}\tab GDAL driver specific datasource creation options. See the GDAL documentation. For example, with the \href{https://gdal.org/drivers/raster/gtiff.html\#creation-options}{GeoTiff file format} you can use \code{gdal=c("COMPRESS=LZW", "TFW=YES")}.\cr
+\code{gdal}\tab GDAL driver specific datasource creation options. See the GDAL documentation. For example, with the \href{https://gdal.org/drivers/raster/gtiff.html}{GeoTiff file format} you can use \code{gdal=c("COMPRESS=LZW", "TFW=YES")}.\cr
 
 \code{tempdir}\tab the path where temporary files are to be written to.\cr
 
