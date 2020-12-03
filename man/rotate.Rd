@@ -17,7 +17,7 @@ Or rotate a SpatVector around the lower-right corner if its extent.
 \usage{
 \S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{rotate}{SpatVector}(x, angle, ...)
+\S4method{rotate}{SpatVector}(x, angle, x0=xmin(x), y0=ymin(x), ...)
 }
 
 \arguments{
@@ -27,6 +27,8 @@ Or rotate a SpatVector around the lower-right corner if its extent.
  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
  \item{angle}{numeric. Angle of rotation in degrees}
+ \item{x0}{numeric. x-coordinate of the center of rotation}
+ \item{y0}{numeric. y-coordinate of the center of rotation}
  \item{...}{additional arguments. None implemented}  
 }
 

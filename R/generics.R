@@ -416,10 +416,17 @@ setMethod("rotate", signature(x="SpatRaster"),
 )
 
 setMethod("rotate", signature(x="SpatVector"), 
-	function(x, angle, ...) { 
-		angle <- angle[1]
+	function(x, angle, x0, y0, ...) { 
+		e <- as.vector(ext(x))
+		if (missing(x0)) {
+			x0 <- mean(e[1:2])
+		}
+		if (missing(y0)) {
+			y0 <- mean(e[3:4])
+		}
+		angle <- angle[1]	
 		stopifnot(is.numeric(angle) && !is.nan(angle))
-		x@ptr <- x@ptr$rotate(angle)
+		x@ptr <- x@ptr$rotate(angle, x0[1], y0[1])
 		show_messages(x, "rotate")		
 	}
 )
@@ -458,9 +465,24 @@ setMethod("shift", signature(x="SpatVector"),
 	}
 )
 
-setMethod("rescale", signature(x="SpatVector"), 
+setMethod("rescale", signature(x="SpatRaster"), 
 	function(x, f=0.5, ...) { 
-		x@ptr <- x@ptr$rescale(f)
+		x@ptr <- x@ptr$deepcopy()
+		ext(x) <- ext(x) * f
+		show_messages(x, "rescale")		
+	}
+)
+
+setMethod("rescale", signature(x="SpatVector"), 
+	function(x, f=0.5, x0, y0, ...) { 
+		e <- as.vector(ext(x))
+		if (missing(x0)) {
+			x0 <- mean(e[1:2])
+		}
+		if (missing(y0)) {
+			y0 <- mean(e[3:4])
+		}
+		x@ptr <- x@ptr$rescale(f, x0[1], y0[1])
 		show_messages(x, "rescale")		
 	}
 )

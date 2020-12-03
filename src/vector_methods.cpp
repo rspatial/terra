@@ -17,6 +17,7 @@
 
 #include "spatVector.h"
 #include "string_utils.h"
+#include "vecmath.h"
 
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
@@ -229,3 +230,237 @@ std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value)
    return dst;
 */
 
+
+
+
+SpatVector SpatVector::shift(double x, double y) {
+
+	SpatVector out = *this;
+
+	for (size_t i=0; i < size(); i++) {
+		for (size_t j=0; j < geoms[i].size(); j++) {
+			for (size_t q=0; q < geoms[i].parts[j].x.size(); q++) {
+				out.geoms[i].parts[j].x[q] += x;
+				out.geoms[i].parts[j].y[q] += y;
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					for (size_t q=0; q < geoms[i].parts[j].holes[k].x.size(); q++) {
+						out.geoms[i].parts[j].holes[k].x[q] += x;
+						out.geoms[i].parts[j].holes[k].y[q] += y;
+					}
+					out.geoms[i].parts[j].holes[k].extent.xmin += x;
+					out.geoms[i].parts[j].holes[k].extent.xmax += x;
+					out.geoms[i].parts[j].holes[k].extent.ymin += y;
+					out.geoms[i].parts[j].holes[k].extent.ymax += y;
+				}
+			}
+			out.geoms[i].parts[j].extent.xmin += x;
+			out.geoms[i].parts[j].extent.xmax += x;
+			out.geoms[i].parts[j].extent.ymin += y;
+			out.geoms[i].parts[j].extent.ymax += y;
+		}
+		out.geoms[i].extent.xmin += x;
+		out.geoms[i].extent.xmax += x;
+		out.geoms[i].extent.ymin += y;
+		out.geoms[i].extent.ymax += y;
+	}
+	out.extent.xmin += x;
+	out.extent.xmax += x;
+	out.extent.ymin += y;
+	out.extent.ymax += y;
+	return out;
+}
+
+
+void resc(double &value, const double &base, const double &f) {
+	value = base + f * (value - base);
+}
+
+
+SpatVector SpatVector::rescale(double f, double x0, double y0) {
+	
+	SpatVector out = *this;
+	for (size_t i=0; i < size(); i++) {
+		for (size_t j=0; j < geoms[i].size(); j++) {
+			for (size_t q=0; q < geoms[i].parts[j].x.size(); q++) {
+				resc(out.geoms[i].parts[j].x[q], x0, f);
+				resc(out.geoms[i].parts[j].y[q], y0, f);
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					for (size_t q=0; q < geoms[i].parts[j].holes[k].x.size(); q++) {
+						resc(out.geoms[i].parts[j].holes[k].x[q], x0, f);
+						resc(out.geoms[i].parts[j].holes[k].y[q], y0, f);
+					}
+					resc(out.geoms[i].parts[j].holes[k].extent.xmax, x0, f);
+					resc(out.geoms[i].parts[j].holes[k].extent.ymax, y0, f);
+				}
+			}
+			resc(out.geoms[i].parts[j].extent.xmax, x0, f);
+			resc(out.geoms[i].parts[j].extent.ymax, y0, f);
+		}
+		resc(out.geoms[i].extent.xmax, x0, f);
+		resc(out.geoms[i].extent.ymax, y0, f);
+	}
+	resc(out.extent.xmax, x0, f);
+	resc(out.extent.ymax, y0, f);
+	return out;
+}
+
+void dswap(double &a, double&b) {
+	double tmp = a;
+	a = b;
+	b = tmp;
+}
+
+SpatVector SpatVector::transpose() {
+
+	SpatVector out = *this;
+	for (size_t i=0; i < size(); i++) {
+		for (size_t j=0; j < geoms[i].size(); j++) {
+			out.geoms[i].parts[j].x.swap(out.geoms[i].parts[j].y);
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					out.geoms[i].parts[j].holes[k].x.swap(out.geoms[i].parts[j].holes[k].y);
+					
+					dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
+						 out.geoms[i].parts[j].holes[k].extent.ymin);
+					dswap(out.geoms[i].parts[j].holes[k].extent.xmax, 
+						 out.geoms[i].parts[j].holes[k].extent.ymax);
+				}
+			}
+			dswap(out.geoms[i].parts[j].extent.xmin,
+				 out.geoms[i].parts[j].extent.ymin);
+			dswap(out.geoms[i].parts[j].extent.xmax,
+				 out.geoms[i].parts[j].extent.ymax);
+		}
+		dswap(out.geoms[i].extent.xmin, out.geoms[i].extent.ymin);
+		dswap(out.geoms[i].extent.xmax, out.geoms[i].extent.ymax);
+	}
+	dswap(out.extent.xmin, out.extent.ymin);
+	dswap(out.extent.xmax, out.extent.ymax);
+	return out;
+}
+
+
+void flipd(double &value, const double &base) {
+	value = base - (value - base);
+}
+
+void flipv(std::vector<double> &v, const double &base) {
+	for (double &d : v) d = base - (d - base);
+}
+
+SpatVector SpatVector::flip(bool vertical) {
+	double x0 = extent.xmin;
+	double y0 = extent.ymin;
+	SpatVector out = *this;
+	bool horizontal = !vertical;
+	for (size_t i=0; i < size(); i++) {
+		for (size_t j=0; j < geoms[i].size(); j++) {
+			if (horizontal) {
+				flipv(out.geoms[i].parts[j].x, x0);
+				flipd(out.geoms[i].parts[j].extent.xmin, x0);
+				flipd(out.geoms[i].parts[j].extent.xmax, x0);
+				dswap(out.geoms[i].parts[j].extent.xmin, out.geoms[i].parts[j].extent.xmax);
+			} else {
+				flipv(out.geoms[i].parts[j].y, y0);
+				flipd(out.geoms[i].parts[j].extent.ymin, y0);
+				flipd(out.geoms[i].parts[j].extent.ymax, y0);
+				dswap(out.geoms[i].parts[j].extent.ymin, out.geoms[i].parts[j].extent.ymax);
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					if (horizontal) {
+						flipv(out.geoms[i].parts[j].holes[k].x, x0);
+						flipd(out.geoms[i].parts[j].holes[k].extent.xmin, x0);
+						flipd(out.geoms[i].parts[j].holes[k].extent.xmax, x0);
+						dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
+							  out.geoms[i].parts[j].holes[k].extent.xmax);
+					} else {
+						flipv(out.geoms[i].parts[j].holes[k].y, y0);
+						flipd(out.geoms[i].parts[j].holes[k].extent.ymin, y0);
+						flipd(out.geoms[i].parts[j].holes[k].extent.ymax, y0);
+						dswap(out.geoms[i].parts[j].holes[k].extent.ymin, 
+							  out.geoms[i].parts[j].holes[k].extent.ymax);
+					}
+				}
+			}
+		}
+		if (horizontal) {
+			flipd(out.geoms[i].extent.xmin, x0);
+			flipd(out.geoms[i].extent.xmax, x0);
+			dswap(out.geoms[i].extent.xmin, out.geoms[i].extent.xmax);
+		} else {
+			flipd(out.geoms[i].extent.ymin, y0);
+			flipd(out.geoms[i].extent.ymax, y0);
+			dswap(out.geoms[i].extent.ymin, out.geoms[i].extent.ymax);
+		}
+	}
+	if (horizontal) {
+		flipd(out.extent.xmin, x0);
+		flipd(out.extent.xmax, x0);
+		dswap(out.extent.xmin, out.extent.xmax);
+	} else {
+		flipd(out.extent.ymin, y0);
+		flipd(out.extent.ymax, y0);
+		dswap(out.extent.ymin, out.extent.ymax);
+	}
+	return out;
+}
+
+
+
+void rotit(std::vector<double> &x, std::vector<double> &y, const double &x0, const double &y0, const double &cos_angle, const double &sin_angle) {
+	for (size_t i=0; i<x.size(); i++) {
+		double sx = x[i] - x0;
+		double sy = y[i] - y0;
+		x[i] = sx * cos_angle + sy * -sin_angle + x0;
+		y[i] = sx * sin_angle + sy * cos_angle + y0;
+	}
+}
+
+
+
+SpatVector SpatVector::rotate(double angle, double x0, double y0) {
+	angle = -M_PI * angle / 180;
+	double cos_angle = cos(angle);
+	double sin_angle = sin(angle);
+	SpatVector out = *this;
+	for (size_t i=0; i < size(); i++) {
+		for (size_t j=0; j < geoms[i].size(); j++) {
+			rotit(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, x0, y0, cos_angle, sin_angle);
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					rotit(out.geoms[i].parts[j].holes[k].x,
+						  out.geoms[i].parts[j].holes[k].y, x0, y0, cos_angle, sin_angle);
+	
+					out.geoms[i].parts[j].holes[k].extent.xmin = 
+						vmin(out.geoms[i].parts[j].holes[k].x, true); 
+					out.geoms[i].parts[j].holes[k].extent.xmax = 
+						vmax(out.geoms[i].parts[j].holes[k].x, true);
+					out.geoms[i].parts[j].holes[k].extent.ymin = 
+						vmin(out.geoms[i].parts[j].holes[k].y, true);
+					out.geoms[i].parts[j].holes[k].extent.ymax = 
+						vmax(out.geoms[i].parts[j].holes[k].y, true);
+				}
+			}
+			out.geoms[i].parts[j].extent.xmin = vmin(out.geoms[i].parts[j].x, true);
+			out.geoms[i].parts[j].extent.xmax = vmax(out.geoms[i].parts[j].x, true);
+			out.geoms[i].parts[j].extent.ymin = vmin(out.geoms[i].parts[j].y, true);
+			out.geoms[i].parts[j].extent.ymax = vmax(out.geoms[i].parts[j].y, true);
+			if (j==0) {
+				out.geoms[i].extent = out.geoms[i].parts[j].extent;				
+			} else {
+				out.geoms[i].extent.unite(out.geoms[i].parts[j].extent);
+			}
+		}
+		if (i==0) {
+			out.extent = out.geoms[i].extent;				
+		} else {
+			out.extent.unite(out.geoms[i].extent);
+		}
+	}
+	return out;
+}

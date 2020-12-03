@@ -3,26 +3,31 @@
 \docType{methods}
 
 \alias{rescale}
+\alias{rescale,SpatRaster-method}
 \alias{rescale,SpatVector-method}
-  
+
 \title{rescale}
 
 \description{
-rescale a SpatVector
+rescale a SpatVector or SpatRaster. This may be useful to make small inset maps. 
 }
 
 \usage{
-\S4method{rescale}{SpatVector}(x, f, ...)
+\S4method{rescale}{SpatRaster}(x, f=0.5, ...)
+
+\S4method{rescale}{SpatVector}(x, f=0.5, x0, y0, ...)
 }
 
 \arguments{
-  \item{x}{SpatVector}
+  \item{x}{SpatVector or SpatRaster}
   \item{f}{numeric. The scaling factor (a fraction)}
+  \item{x0}{numeric. x-coordinate of the center of rescaling. If missing, the center of the extent of \code{x} is used}
+  \item{y0}{numeric. y-coordinate of the center of rescaling. If missing, the center of the extent of \code{x} is used}
   \item{...}{additional arguments. None implemented}  
 }
  
 \value{
-SpatVector
+Same as \code{x}
 }
 
 

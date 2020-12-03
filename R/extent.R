@@ -247,3 +247,21 @@ setMethod("bbox", signature(obj="SpatVector"),
 		.ext2bb(ext(obj))
 	}
 )	
+
+
+
+setMethod("$", "SpatExtent",  
+	function(x, name) { 
+		as.vector(x)[name] 
+	}
+)
+
+
+setMethod("$<-", "SpatExtent",
+	function(x, name, value) { 
+		e <- as.vector(x)
+		e[name] <- value
+		ext(e)
+	}
+)
+
