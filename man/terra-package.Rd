@@ -343,14 +343,13 @@ Change geometries
 
 \tabular{ll}{
   \code{\link{shift}} \tab change the position geometries \cr
-  \code{\link{rotate}}\tab rotate geometries \cr
+  \code{\link{spin}}\tab rotate geometries around an origin\cr
   \code{\link{rescale}} \tab shrink (or expand) geometries, for example to make an inset map \cr
   \code{\link{flip}} \tab flip geometries vertially or horizontally\cr
   \code{\link{t}} \tab transpose geometries (switch x and y)\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 }
-
 
 
 \section{XVI. SpatExtent objects}{
@@ -381,10 +380,10 @@ Change geometries
 }
 }
 
-\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the underlying C++ code for GDAL/GEOS was written by Edzer Pebesma for `sf`. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
+\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the underlying C++ code for GDAL/GEOS was adapted from code written by Edzer Pebesma for `sf`. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
 
 \section{Acknowledgments}{
-This package is an attempt to stand on the shoulders of giants (GDAL, PROJ, GEOS, GeographicLib, Rcpp, R). Many others have contributed by asking questions or filing bug reports. Gerald Nelson's feedback has been especially helpful.
+This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or filing bug reports. The feedback and suggestsions by Gerald Nelson and Michael Sumner have been especially helpful.
 }
 
 \keyword{ package }
