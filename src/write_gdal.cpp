@@ -281,8 +281,13 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 	for (size_t i=0; i < nl; i++) {
 		uint_64 start = nc * i;
 		minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
-		source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
-		source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
+		if (std::isnan(source[0].range_min[i])) {
+			source[0].range_min[i] = vmin;
+			source[0].range_max[i] = vmax;			
+		} else if (!std::isnan(vmin)) {
+			source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
+			source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
+		}
 	}
 
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {

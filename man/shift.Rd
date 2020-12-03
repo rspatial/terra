@@ -10,7 +10,7 @@
 \title{Shift}
 
 \description{
-Shift the a SpatRaster, SpatVector or SpatExtent to another location.
+Shift a SpatRaster, SpatVector or SpatExtent to another location.
 }
 
 \usage{

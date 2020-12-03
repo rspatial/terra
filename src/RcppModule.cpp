@@ -252,7 +252,11 @@ RCPP_MODULE(spat){
 		.method("buffer", &SpatVector::buffer, "buffer")	
 		.method("is_valid", &SpatVector::is_valid, "is_valid")	
 		.method("make_valid", &SpatVector::make_valid, "make_valid")	
+		.method("flip", &SpatVector::flip, "flip")	
+		.method("transpose", &SpatVector::transpose, "transpose")	
 		.method("shift", &SpatVector::shift, "shift")	
+		.method("rescale", &SpatVector::rescale, "rescale")	
+		.method("rotate", &SpatVector::rotate, "rotate")	
 #ifdef useGEOS
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
 		.method("intersect", &SpatVector::intersect, "intersect")		

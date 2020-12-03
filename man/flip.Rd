@@ -4,6 +4,7 @@
 
 \alias{flip}
 \alias{flip,SpatRaster-method}
+\alias{flip,SpatVector-method}
 
 \alias{rev}
 \alias{rev,SpatRaster-method}
@@ -19,11 +20,13 @@ Flip the values of a SpatRaster by inverting the order of the rows (\code{vertic
 \usage{
 \S4method{flip}{SpatRaster}(x, direction="vertical", filename="", overwrite=FALSE, wopt=list(), ...)
 
+\S4method{flip}{SpatVector}(x, direction="vertical", ...)
+
 \S4method{rev}{SpatRaster}(x)
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
   \item{direction}{character. Should (partially) match "vertical" to flip by rows, or "horizontal" to flip by columns}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
@@ -35,9 +38,7 @@ Flip the values of a SpatRaster by inverting the order of the rows (\code{vertic
 SpatRaster
 }
 
-
 \seealso{ \code{\link{transpose}}, \code{\link{rotate}} }
-
 
 
 \examples{

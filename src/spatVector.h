@@ -213,6 +213,10 @@ class SpatVector {
 		SpatVector aggregate(std::string field, bool dissolve);
 		SpatVector disaggregate();
 		SpatVector shift(double x, double y);
+		SpatVector rescale(double f);
+		SpatVector transpose();
+		SpatVector flip(bool vertical);
+		SpatVector rotate(double angle);
 
 //geos
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);

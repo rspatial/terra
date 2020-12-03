@@ -260,6 +260,14 @@ setMethod("flip", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("flip", signature(x="SpatVector"), 
+	function(x, direction="vertical", ...) {
+		d <- match.arg(direction, c("vertical", "horizontal")) 
+		x@ptr <- x@ptr$flip(d == "vertical")
+		show_messages(x, "flip")
+	}
+)
+
 
 setMethod("freq", signature(x="SpatRaster"), 
 	function(x, digits=0, value=NULL, bylayer=TRUE, ...) {
@@ -407,6 +415,15 @@ setMethod("rotate", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("rotate", signature(x="SpatVector"), 
+	function(x, angle, ...) { 
+		angle <- angle[1]
+		stopifnot(is.numeric(angle) && !is.nan(angle))
+		x@ptr <- x@ptr$rotate(angle)
+		show_messages(x, "rotate")		
+	}
+)
+
 setMethod("separate", signature(x="SpatRaster"), 
 	function(x, classes=NULL, keep=FALSE, other=0, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- .runOptions(filename, overwrite,wopt)
@@ -441,6 +458,12 @@ setMethod("shift", signature(x="SpatVector"),
 	}
 )
 
+setMethod("rescale", signature(x="SpatVector"), 
+	function(x, f=0.5, ...) { 
+		x@ptr <- x@ptr$rescale(f)
+		show_messages(x, "rescale")		
+	}
+)
 
 
 setMethod("slope", signature(x="SpatRaster"), 
@@ -474,12 +497,17 @@ setMethod("summary", signature(object="SpatRaster"),
 )
 
 
-
-
 setMethod("t", signature(x="SpatRaster"), 
 	function(x) {
 		opt <- .runOptions(filename="", overwrite=TRUE, wopt=list())
 		x@ptr <- x@ptr$transpose(opt)
+		show_messages(x, "t")
+	}
+)
+
+setMethod("t", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$transpose()
 		show_messages(x, "t")
 	}
 )

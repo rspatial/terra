@@ -323,11 +323,14 @@ setAs("SpatRaster", "Raster",
 	v <- do.call(rbind, v)
 	colnames(v)[1:4] <- c("id", "part", "x", "y")
 	types <- unique(types[,2])
-	if (any(grepl("POINT", types, fixed=TRUE))) {
+	if (length(types) > 1) {
+		stop("SpatVector currently only accepts one geometry type")
+	}
+	if (grepl("POINT", types, fixed=TRUE)) {
 		gt = "points"
-	} else if (any(grepl("LINE", types, fixed=TRUE))) {
+	} else if (grepl("LINE", types, fixed=TRUE)) {
 		gt = "lines"
-	} else if (any(grepl("POLY", types, fixed=TRUE))) {
+	} else if (grepl("POLY", types, fixed=TRUE)) {
 		gt = "polygons"
 	}
 	if (ncol(from) > 1) {

@@ -4,6 +4,7 @@
 
 \alias{t}
 \alias{t,SpatRaster-method}
+\alias{t,SpatVector-method}
 \alias{transpose}
 \alias{transpose,SpatRaster-method}
   
@@ -15,6 +16,8 @@ Transpose a SpatRaster
 
 \usage{
 \S4method{t}{SpatRaster}(x)
+
+\S4method{t}{SpatVector}(x)
 
 \S4method{transpose}{SpatRaster}(x, filename="", overwrite=FALSE, wopt=list(), ...)
 }
