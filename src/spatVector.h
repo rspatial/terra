@@ -209,6 +209,7 @@ class SpatVector {
 		std::vector<bool> is_valid();
 		SpatVector make_valid();
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
+		SpatVector centroid();
 
 		SpatVector append(SpatVector x);
 

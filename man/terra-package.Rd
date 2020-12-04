@@ -328,6 +328,8 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{cover} \tab \bold{update} and \bold{identity} a polygons\cr
   \code{symdif} \tab\bold{symmetrical difference} of two polygons \cr 
   \code{\link{aggregate}} \tab \bold{dissolve} smaller polygons into larger ones \cr
+  \code{\link{buffer}} \tab \bold{buffer} \cr
+  \code{\link{centroids}} \tab get the centroids of polygons\cr
   \code{\link{disaggregate}} \tab \bold{explode}: turn polygon parts into separate polygons \cr
   \code{\link{crop}} \tab \bold{clip} vector data using a rectangle (SpatExtent )\cr
   \code{\link{select}} \tab \bold{select} - interactively select spatial features\cr

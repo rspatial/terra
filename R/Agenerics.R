@@ -2,6 +2,7 @@
 
 if (!isGeneric("polys")) {setGeneric("polys", function(x,...) standardGeneric("polys"))}
 
+if (!isGeneric("centroids")) {setGeneric("centroids", function(x, ...) standardGeneric("centroids"))}
 
 if (!isGeneric("cols")) {setGeneric("cols", function(x, ...) standardGeneric("cols"))}
 if (!isGeneric("window<-")) {setGeneric("window<-", function(x, ..., value) standardGeneric("window<-"))}

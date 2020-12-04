@@ -8,7 +8,7 @@
 \title{Create a buffer around vector objects or raster patches}
 
 \description{
-Calculate a buffer around all cells that are not \code{NA} in a SpatRaster, or around the objcts in a SpatVector (currently only implemented for points)
+Calculate a buffer around all cells that are not \code{NA} in a SpatRaster, or around the geometries of a SpatVector (currently only implemented for points)
  
 Note that the distance unit of the buffer \code{width} parameter is meters if the CRS is (\code{+proj=longlat}), and in map units (typically also meters) if not. 
 }
@@ -20,7 +20,7 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
 }
 
 \arguments{
-\item{x}{SpatRaster}
+\item{x}{SpatRaster or SpatVector}
 \item{width}{numeric. Unit is meter if \code{x} has a longitude/latitude CRS, or mapunits in other cases. Should be > 0 for SpatRaster}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

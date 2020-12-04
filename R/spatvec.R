@@ -108,6 +108,16 @@ setMethod("length", signature(x="SpatVector"),
 setMethod("fill", signature(x="SpatVector"), 
 	function(x, ...) {
 		x@ptr <- x@ptr$remove_holes()
-		x
+		show_messages(x)
 	}
 )	
+
+
+
+setMethod("centroids", signature(x="SpatVector"), 
+	function(x, ...) {
+		x@ptr <- x@ptr$centroid()
+		show_messages(x)
+	}
+)	
+

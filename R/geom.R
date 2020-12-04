@@ -44,6 +44,7 @@ setMethod("buffer", signature(x="SpatVector"),
 			if (isLonLat(x)) {
 				warning("lon/lat data are treated as planar")
 			}
+			quadsegs <- max(3, quadsegs)
 			x@ptr <- x@ptr$buffer2(width, quadsegs, 1)		
 		}
 		show_messages(x, "buffer")

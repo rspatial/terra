@@ -268,6 +268,7 @@ RCPP_MODULE(spat){
 		.method("aggregate", &SpatVector::aggregate, "aggregate")	
 		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")	
 		.method("buffer", &SpatVector::buffer, "buffer")	
+		.method("centroid", &SpatVector::centroid, "centroid")	
 		.method("is_valid", &SpatVector::is_valid, "is_valid")	
 		.method("make_valid", &SpatVector::make_valid, "make_valid")	
 		.method("flip", &SpatVector::flip, "flip")	
@@ -275,10 +276,8 @@ RCPP_MODULE(spat){
 		.method("shift", &SpatVector::shift, "shift")	
 		.method("rescale", &SpatVector::rescale, "rescale")	
 		.method("rotate", &SpatVector::rotate, "rotate")	
-#ifdef useGEOS
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
 		.method("intersect", &SpatVector::intersect, "intersect")		
-#endif
 	;
 
 
