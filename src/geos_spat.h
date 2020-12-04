@@ -32,7 +32,7 @@
 
 
 
-static void __errorHandler(const char *fmt, ...) { // #nocov start
+static void __errorHandler(const char *fmt, ...) { 
 	char buf[BUFSIZ], *p;
 	va_list ap;
 	va_start(ap, fmt);
@@ -41,7 +41,7 @@ static void __errorHandler(const char *fmt, ...) { // #nocov start
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
 //	error(buf);
-	return; // #nocov end
+	return; 
 } 
 
 static void __warningHandler(const char *fmt, ...) {

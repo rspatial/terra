@@ -164,6 +164,7 @@ class SpatVector {
 		SpatVector as_lines();
 		SpatVector as_points();
 		SpatVector remove_holes();
+		SpatVector get_holes();
 
 		bool read(std::string fname);
 		

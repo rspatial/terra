@@ -202,6 +202,41 @@ SpatVector SpatVector::remove_holes() {
 }
 
 
+SpatVector SpatVector::get_holes() {
+
+	SpatVector out;
+	size_t n = size();
+	if (n == 0) {
+		return out;
+	}
+	if (geoms[0].gtype != polygons) {
+		return out;
+	}
+	std::vector<unsigned> atts;
+
+	for (size_t i=0; i<n; i++) {
+		SpatGeom g;
+		g.gtype = polygons;		
+		bool found = false;
+		for (size_t j=0; j < geoms[i].size(); j++) {
+			SpatPart p = geoms[i].parts[j];
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					SpatPart h(p.holes[k].x, p.holes[k].y);
+					g.addPart(h);
+				}
+				found = true;
+			}
+		}
+		if (found) {
+			out.addGeom(g);
+			atts.push_back(i);
+		}
+	}
+	out.df = df.subset_rows(atts);
+	return out;
+}
+
 
 /*
 std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value) {

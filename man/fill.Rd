@@ -13,11 +13,12 @@ Remove the holes in SpatVector polygons
 } 
 
 \usage{
-\S4method{fill}{SpatVector}(x, ...)
+\S4method{fill}{SpatVector}(x, inverse=FALSE, ...)
 }
 
 \arguments{
 \item{x}{SpatVector}
+\item{inverse}{logical. If \code{TRUE} the holes are returned as polygons}
 \item{...}{additional arguments. None implemented }  
 }
 
@@ -31,13 +32,15 @@ z <- rbind(cbind(object=1, part=1, x, hole=0),
 		   cbind(object=1, part=1, hole, hole=1))
 colnames(z)[3:4] <- c('x', 'y')
 z <- data.frame(z)
-p <- vect(z, "polygons")
+p <- vect(z, "polygons", atts=data.frame(id=1))
 p
 
 f <- fill(p)
+g <- fill(p, inverse=TRUE)
 
-plot(f, col="light blue", lwd=8, border="blue")
-lines(p, lwd=2, col="red")
+plot(p, lwd=16, border="gray")
+polys(f, border="blue", lwd=3, density=4)
+polys(g, col="red", lwd=3)
 }
 
 

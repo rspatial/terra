@@ -331,17 +331,16 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{buffer}} \tab \bold{buffer} \cr
   \code{\link{centroids}} \tab get the centroids of polygons\cr
   \code{\link{disaggregate}} \tab \bold{explode}: turn polygon parts into separate polygons \cr
-  \code{\link{crop}} \tab \bold{clip} vector data using a rectangle (SpatExtent )\cr
+  \code{\link{crop}} \tab \bold{clip} vector data using a rectangle (SpatExtent)\cr
   \code{\link{select}} \tab \bold{select} - interactively select spatial features\cr
   \code{\link{click}} \tab \bold{identify} attributes by clicking on a map\cr
   \code{\link{merge}} \tab \bold{Join table} \cr
   \code{\link{fill}}\tab remove holes from polygons\cr
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatRaster objects \cr
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 
-Change geometries 
+Change geometries (for display, experimentation)
 
 \tabular{ll}{
   \code{\link{shift}} \tab change the position geometries \cr

@@ -24,7 +24,9 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 
 	GEOSContextHandle_t hGEOSCtxt = CPL_geos_init();
 	SpatVector out;
-	std::vector<GeomPtr> g = geom_from_spat(this, hGEOSCtxt);
+	SpatVector f = remove_holes();
+
+	std::vector<GeomPtr> g = geom_from_spat(&f, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {
 		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), dist, nQuadSegs);

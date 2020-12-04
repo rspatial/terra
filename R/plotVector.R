@@ -17,7 +17,7 @@
 	cols
 }
 
-.plotPolygons <- function(x, cols, border=NULL, ...) {
+.plotPolygons <- function(x, cols, border=NULL, density=NULL, ...) {
 	g <- geom(x)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(y) split(y, y[,2]))
@@ -37,7 +37,12 @@
 				a <- a[-nrow(a), ]
 				# g[[i]][[1]] <- a 
 			}
-			graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", border=border[i], ...)
+			if (!is.null(density)) {
+				graphics::polypath(a[,3:4], col=NA, rule = "evenodd", border=border[i], ...)
+				polygon(a[,3:4], col=cols[i], density=density, border=NA, ...)
+			} else {
+				graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", border=border[i], ...)
+			}
 		}
 	}
 }
@@ -55,7 +60,7 @@
 	}
 }
 
-.vplot <- function(x, y, col, axes=TRUE, add=FALSE, border="black", xlab="", ylab="", asp=NULL, ...) {
+.vplot <- function(x, y, col, axes=TRUE, add=FALSE, border="black", xlab="", ylab="", asp=NULL, density=NULL, ...) {
 	gtype <- geomtype(x)
 	if (is.null(asp)) {
 		if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
@@ -78,7 +83,7 @@
 			plot(e, type="n", axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
 		}
 		if (gtype == "polygons") {
-			.plotPolygons(x, col, border=border, ...)
+			.plotPolygons(x, col, border=border, density=density, ...)
 		} else {
 			if (is.null(col)) col = rep("black", size(x))
 			.plotLines(x, col, ...)
