@@ -75,10 +75,11 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 
 setMethod("Arith", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())
 		oper <- as.vector(.Generic)[1]
 		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%")) 
 		oper <- ifelse(oper == "%%", "%", oper)
-		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, .terra_environment$options@ptr)
+		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, opt)
 		show_messages(e1, oper)
 	}	
 )
@@ -86,10 +87,11 @@ setMethod("Arith", signature(e1="SpatRaster", e2="SpatRaster"),
 
 setMethod("Arith", signature(e1="SpatRaster", e2="numeric"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())
 		oper <- as.vector(.Generic)[1]
 		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%")) 
 		oper <- ifelse(oper == "%%", "%", oper)
-		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, .terra_environment$options@ptr)
+		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, opt)
 		show_messages(e1, oper)				
 	}	
 )
@@ -103,10 +105,11 @@ setMethod("Arith", signature(e1="SpatRaster", e2="missing"),
 
 setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())
 		oper <- as.vector(.Generic)[1]
 		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%")) 
 		oper <- ifelse(oper == "%%", "%", oper)
-		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, .terra_environment$options@ptr)
+		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, opt)
 		show_messages(e2, oper)				
 	}	
 )
@@ -114,8 +117,9 @@ setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
 
 setMethod("Compare", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())	
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, .terra_environment$options@ptr)
+		e1@ptr <- e1@ptr$arith_rast(e2@ptr, oper, opt)
 		show_messages(e1, oper)
 	}	
 )
@@ -123,8 +127,9 @@ setMethod("Compare", signature(e1="SpatRaster", e2="SpatRaster"),
 
 setMethod("Compare", signature(e1="SpatRaster", e2="numeric"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, .terra_environment$options@ptr)
+		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, opt)
 		show_messages(e1, oper)
 	}
 )
@@ -132,8 +137,9 @@ setMethod("Compare", signature(e1="SpatRaster", e2="numeric"),
 
 setMethod("Compare", signature(e1="numeric", e2="SpatRaster"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())	
 		oper <- as.vector(.Generic)[1]
-		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, .terra_environment$options@ptr)
+		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, opt)
 		show_messages(e2, oper)
 	}	
 )
@@ -141,17 +147,19 @@ setMethod("Compare", signature(e1="numeric", e2="SpatRaster"),
 
 setMethod("Logic", signature(e1="SpatRaster", e2="SpatRaster"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())	
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$logic_rast(e2@ptr, oper, .terra_environment$options@ptr)
+		e1@ptr <- e1@ptr$logic_rast(e2@ptr, oper, opt)
 		show_messages(e1, oper)
 	}	
 )
 
 setMethod("Logic", signature(e1="SpatRaster", e2="numeric"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())		
 		oper <- as.vector(.Generic)[1]
 		e2 <- as.logical(e2)
-		e1@ptr <- e1@ptr$logic_numb(e2, oper, .terra_environment$options@ptr)
+		e1@ptr <- e1@ptr$logic_numb(e2, oper, opt)
 		show_messages(e1, oper)
 	}
 )
@@ -159,17 +167,19 @@ setMethod("Logic", signature(e1="SpatRaster", e2="numeric"),
 
 setMethod("Logic", signature(e1="numeric", e2="SpatRaster"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())	
 		oper <- as.vector(.Generic)[1]
 		e1 <- as.logical(e1)
-		e2@ptr <- e2@ptr$logic_numb(e1, oper, .terra_environment$options@ptr)
+		e2@ptr <- e2@ptr$logic_numb(e1, oper, opt)
 		show_messages(e2, oper)
 	}	
 )
 
 setMethod("Logic", signature(e1="SpatRaster", e2="logical"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())	
 		oper <- as.vector(.Generic)[1]
-		e1@ptr <- e1@ptr$logic_numb(e2, oper, .terra_environment$options@ptr)
+		e1@ptr <- e1@ptr$logic_numb(e2, oper, opt)
 		show_messages(e1, oper)
 	}
 )
@@ -177,8 +187,9 @@ setMethod("Logic", signature(e1="SpatRaster", e2="logical"),
 
 setMethod("Logic", signature(e1="logical", e2="SpatRaster"),
     function(e1, e2){ 
+		opt <- .runOptions("", TRUE, list())		
 		oper <- as.vector(.Generic)[1]
-		e2@ptr <- e2@ptr$logic_numb(e1, oper, .terra_environment$options@ptr)
+		e2@ptr <- e2@ptr$logic_numb(e1, oper, opt)
 		show_messages(e2, oper)
 	}	
 )
@@ -214,7 +225,8 @@ setMethod("as.logical", signature(x="SpatRaster"),
 
 setMethod("is.na", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr <- x@ptr$isnan(.terra_environment$options@ptr)
+		opt <- .runOptions("", TRUE, list())	
+		x@ptr <- x@ptr$isnan(opt)
 		show_messages(x, "is.na")
 	}
 )	
@@ -222,7 +234,8 @@ setMethod("is.na", signature(x="SpatRaster"),
 
 setMethod("is.nan", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr <- x@ptr$isnan(.terra_environment$options@ptr)
+		opt <- .runOptions("", TRUE, list())	
+		x@ptr <- x@ptr$isnan(opt)
 		show_messages(x, "is.nan")
 	}
 )	
@@ -230,14 +243,16 @@ setMethod("is.nan", signature(x="SpatRaster"),
 
 setMethod("is.finite", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr <- x@ptr$isfinite(.terra_environment$options@ptr)
+		opt <- .runOptions("", TRUE, list())	
+		x@ptr <- x@ptr$isfinite(opt)
 		show_messages(x, "is.finite")
 	}
 )	
 
 setMethod("is.infinite", signature(x="SpatRaster"),
 	function(x) {
-		x@ptr <- x@ptr$isinfinite(.terra_environment$options@ptr)
+		opt <- .runOptions("", TRUE, list())		
+		x@ptr <- x@ptr$isinfinite(opt)
 		show_messages(x, "is.infinite")
 	}
 )	
@@ -259,11 +274,12 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 		x <- sds(c(list(x), dots[cls]))
 	} 
 
+	opt <- .runOptions("", TRUE, list())	
 	r <- rast()
 	if (is.null(add)) {
-		r@ptr <- x@ptr$summary(fun, na.rm, .terra_environment$options@ptr)
+		r@ptr <- x@ptr$summary(fun, na.rm, opt)
 	} else {
-		r@ptr <- x@ptr$summary_numb(fun, add, na.rm, .terra_environment$options@ptr)			
+		r@ptr <- x@ptr$summary_numb(fun, add, na.rm, opt)
 	}
 	show_messages(r, fun)
 	r
@@ -272,14 +288,16 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 
 setMethod("which.max", "SpatRaster",  
 	function(x) { 
-		x@ptr <- x@ptr$summary("which.max", TRUE, .terra_environment$options@ptr)
+		opt <- .runOptions("", TRUE, list())	
+		x@ptr <- x@ptr$summary("which.max", TRUE, opt)
 		show_messages(x, "which.max")
 	}
 )
 
 setMethod("which.min", "SpatRaster",  
 	function(x) { 
-		x@ptr <- x@ptr$summary("which.min", TRUE, .terra_environment$options@ptr)
+		opt <- .runOptions("", TRUE, list())	
+		x@ptr <- x@ptr$summary("which.min", TRUE, opt)
 		show_messages(x, "which.min")
 	}
 )

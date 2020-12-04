@@ -242,6 +242,12 @@ bool SpatDataFrame::remove_column(int i) {
 	size_t dtype = itype[i];
 	size_t place = iplace[i];
 	
+	for (size_t i=(place+1); i<iplace.size(); i++) {
+		if (itype[i] == dtype) {
+			iplace[i]--;
+		}
+	}
+	
 	names.erase(names.begin()+i);
 	itype.erase(itype.begin()+i);
 	iplace.erase(iplace.begin()+i);
@@ -329,19 +335,79 @@ bool SpatDataFrame::cbind(SpatDataFrame &x) {
 
 
 bool SpatDataFrame::rbind(SpatDataFrame &x) {
-	if ((names != x.names) && (itype == x.itype)) {
-		return false;
-		// could do matching of names instead
+	
+	size_t nr1 = nrow();
+	size_t nr2 = x.nrow();
+//	size_t nc1 = ncol();
+	size_t nc2 = x.ncol();
+
+//first add new columns
+	std::vector<std::string> nms = names;
+	for (size_t i=0; i<nc2; i++) {
+		int j = where_in_vector(x.names[i], nms);
+		if (j < 0) { // not in df
+			size_t b = x.iplace[i];
+			add_column(x.itype[i], x.names[i]);
+			if (x.itype[i] == 0) { 
+				size_t a = dv.size()-1;
+				dv[a].insert(dv[a].begin()+nr1, 
+					x.dv[b].begin(), x.dv[b].end());
+			} else if (x.itype[i] == 1) { 
+				size_t a = iv.size()-1;
+				iv[a].insert(iv[a].begin()+nr1, 
+					x.iv[b].begin(), x.iv[b].end());
+			} else {
+				size_t a = sv.size()-1;
+				sv[a].insert(sv[a].begin()+nr1, 
+					x.sv[b].begin(), x.sv[b].end());
+			} 
+		} else {
+			size_t a = iplace[j];
+			size_t b = x.iplace[i];
+			if (itype[j] == x.itype[i]) {
+				if (itype[j] == 0) { 
+					dv[a].insert(dv[a].begin()+nr1, 
+						x.dv[b].begin(), x.dv[b].end());
+				} else if (itype[j] == 1) { 
+					iv[a].insert(iv[a].begin()+nr1, 
+						x.iv[b].begin(), x.iv[b].end());
+				} else {
+					sv[a].insert(sv[a].begin()+nr1, 
+						x.sv[b].begin(), x.sv[b].end());
+				} 
+			} else {
+				if (itype[j] == 2) {
+					sv[a].resize(nr1);
+					if (x.itype[i] == 0) {
+						for (size_t k=0; k<nr2; k++) {
+							sv[a].push_back(std::to_string(x.dv[b][k]));
+						}
+					} else {
+						for (size_t k=0; k<nr2; k++) {
+							sv[a].push_back(std::to_string(x.iv[b][k]));
+						}						
+					}
+				} else if (itype[j] == 0) { 
+					if (x.itype[i] == 1) {
+						dv[a].resize(nr1);
+						for (size_t k=0; k<nr2; k++) {
+							dv[a].push_back(x.iv[b][k]);
+						}
+					}
+				} else if (itype[j] == 1) { 
+					if (x.itype[i] == 0) {
+						iv[a].resize(nr1);
+						for (size_t k=0; k<nr2; k++) {
+							iv[a].push_back(x.dv[b][k]);
+						}
+					}
+				}
+				//degrade types
+			}
+		}
 	}
-	for (size_t i=0; i<dv.size(); i++) {
-		dv[i].insert(dv[i].end(), x.dv[i].begin(), x.dv[i].end());
-	}
-	for (size_t i=0; i<iv.size(); i++) {
-		iv[i].insert(iv[i].end(), x.iv[i].begin(), x.iv[i].end());
-	}
-	for (size_t i=0; i<sv.size(); i++) {
-		sv[i].insert(sv[i].end(), x.sv[i].begin(), x.sv[i].end());
-	}
+		
+	resize_rows(nr1 + nr2);
 	return true;
 }
 

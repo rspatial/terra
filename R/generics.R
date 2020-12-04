@@ -130,6 +130,7 @@ setMethod("collapse", signature("SpatDataSet"),
 
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ...) {
+		skipped <- FALSE
 		dots <- list(...)
 		for (i in dots) {
 			if (inherits(i, "SpatRaster")) {
@@ -138,12 +139,35 @@ setMethod("c", signature(x="SpatRaster"),
 					show_messages(x, "c")
 					return()
 				}
+			} else {
+				skipped = TRUE
 			}
 		}
+		if (skipped) warning("skipped object that are not SpatRaster")
 		show_messages(x, "c")		
 	}
 )
 
+
+setMethod("c", signature(x="SpatVector"), 
+	function(x, ...) {
+		skipped <- FALSE
+		dots <- list(...)
+		for (i in dots) {
+			if (inherits(i, "SpatVector")) {
+				x@ptr <- x@ptr$append(i@ptr)
+				if (x@ptr$messages$has_error) {
+					show_messages(x, "c")
+					return()
+				}
+			} else {
+				skipped = TRUE;
+			}
+		}
+		if (skipped) warning("skipped object that are not SpatVector")
+		show_messages(x, "c")		
+	}
+)
 
 setMethod("rep", signature(x="SpatRaster"), 
 	function(x, ...) {

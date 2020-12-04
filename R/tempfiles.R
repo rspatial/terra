@@ -30,7 +30,8 @@ tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 		stop("at least one of 'orphan', 'current' and 'old' must be set to TRUE")
 	}
 	
-	d <- .terra_environment$options@ptr$tempdir
+	opt <- .runOptions("", TRUE, list())	
+	d <- opt$tempdir
 	f <- NULL
 	if (old) {
 		if (normalizePath(tempdir()) != normalizePath(d)) {

@@ -40,9 +40,22 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 		if (itype[i] == 0) {
 			out[i] = v->getD(i);
 		} else if (itype[i] == 1) {
-			out[i] = v->getI(i);
+			Rcpp::NumericVector iv = Rcpp::wrap(v->getI(i));
+			for (R_xlen_t j=0; j<iv.size(); j++) {
+				if (iv[j] == -2147483648) {
+					iv[j] = NA_REAL;
+				}
+			}
+			out[i] = iv;			
 		} else {
-			out[i] = v->getS(i);
+			Rcpp::CharacterVector s = Rcpp::wrap(v->getS(i));
+			for (R_xlen_t j=0; j<s.size(); j++) {
+				if (s[j] == "____NA_+") {
+					s[j] = NA_STRING;
+				}
+			}
+			out[i] = s;
+
 		}
 	}	
 	out.names() = nms;
@@ -206,6 +219,10 @@ RCPP_MODULE(spat){
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
 
+		.field_readonly("df", &SpatVector::df )
+
+
+
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
@@ -213,6 +230,7 @@ RCPP_MODULE(spat){
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
 		.method("remove_holes", &SpatVector::remove_holes, "remove holes")		
+		.method("append", &SpatVector::append, "append")		
 
 		.method("area", &SpatVector::area, "area")		
 		.method("as_lines", &SpatVector::as_lines, "as_lines")

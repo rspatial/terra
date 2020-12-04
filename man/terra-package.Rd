@@ -321,7 +321,7 @@ A SpatDataSet contains SpatRaster objects that are sub-datasets for the same are
 The name in \bold{bold} is the equivalent command in ArcGIS. 
 
 \tabular{ll}{
-  \code{c} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
+  \code{\link{c}} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
   \code{erase} or "-" \tab \bold{erase} parts of a polygons\cr
   \code{intersect} or "*"  \tab \bold{intersect} polygons\cr
   \code{union} or "+" \tab \bold{union} polygons\cr

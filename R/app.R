@@ -166,7 +166,8 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			opt <- .runOptions(filename, overwrite, wopt)
 			narm <- isTRUE(list(...)$na.rm)	
 			r <- rast()
-			r@ptr <- x@ptr$summary(txtfun, narm, .terra_environment$options@ptr)
+			opt <- .runOptions("", TRUE, list())	
+			r@ptr <- x@ptr$summary(txtfun, narm, opt)
 			return (show_messages(r, "app") )
 		}		
 	}

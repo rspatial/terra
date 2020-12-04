@@ -210,6 +210,8 @@ class SpatVector {
 		SpatVector make_valid();
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
 
+		SpatVector append(SpatVector x);
+
 		SpatVector aggregate(std::string field, bool dissolve);
 		SpatVector disaggregate();
 		SpatVector shift(double x, double y);

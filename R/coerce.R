@@ -16,7 +16,8 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
 		} else {
-			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE, .terra_environment$options@ptr)
+			opt <- .runOptions("", TRUE, list())	
+			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE, opt)
 			#x <- show_messages(x)
 		}
 		show_messages(p, "as.polygons")

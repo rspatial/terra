@@ -567,3 +567,22 @@ SpatVector SpatVector::subset_cols(int i) {
 	return out;
 }
 
+
+SpatVector SpatVector::append(SpatVector x) {
+	SpatVector out;
+	if (type() != x.type()) {
+		out.setError("types do not match");
+		return out;
+	}
+	if (srs.wkt != x.srs.wkt) {
+		out.setError("crs does not match");
+		return out;
+	}
+	out = *this;
+	for (size_t i=0; i<x.size(); i++) {
+		out.addGeom(x.getGeom(i));
+	}
+	out.df.rbind(x.df);
+	return out;
+}
+

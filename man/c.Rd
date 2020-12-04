@@ -6,6 +6,7 @@
 \alias{c}
 \alias{c,SpatRaster-method}
 \alias{c,SpatDataSet-method}
+\alias{c,SpatVector-method}
 
 \alias{add<-}
 \alias{add<-,SpatRaster,SpatRaster-method}
@@ -14,10 +15,11 @@
 \alias{collapse,SpatRaster-method}
 \alias{collapse,SpatDataSet-method}
 
-\title{Combine SpatRasters}
+\title{Combine Spat objects}
 
 \description{
 Combine SpatRasters into a new SpatRaster object with \code{c} or add to an existing object with \code{add}. \code{collapse} combines sources within an object (that are in memory, or from the same file) to allow for faster processing.
+
 }
 
 \usage{
@@ -33,7 +35,7 @@ Combine SpatRasters into a new SpatRaster object with \code{c} or add to an exis
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatDataSet}
+  \item{x}{SpatRaster, SpatDataSet, SpatVector}
   \item{...}{For \code{c}: SpatRaster objects to be combined with \code{x}. Not implemented for \code{collapse)}}
   \item{value}{SpatRaster}
 }

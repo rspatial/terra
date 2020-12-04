@@ -1,7 +1,6 @@
 
 
 gdal_version <- function() {
-	#if (is.null(.terra_environment$options)) .init()
 	.gdalversion()
 }
 
@@ -13,7 +12,6 @@ gdal_warnings <- function(level = 3) {
 
 
 .describe_sds <- function(x, print=FALSE, ...) {
-	#if (is.null(.terra_environment$options)) .init()
 	x <- .sdinfo(x)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {
 		stop(x[[1]])
@@ -33,7 +31,6 @@ gdal_warnings <- function(level = 3) {
 
 setMethod("desc", signature(x="character"), 
 	function(x, sds=FALSE, options="", print=FALSE, open_opt="", ...) {
-		#if (is.null(.terra_environment$options)) .init()
 		if (sds) {
 			return(.describe_sds(x, print=print))
 		}
