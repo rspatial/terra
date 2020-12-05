@@ -155,6 +155,7 @@ setMethod("pairs", signature(x="SpatRaster"),
 	xy <- grDevices::xy.coords(x, y)
 	xo <- hw * graphics::strwidth("A")
 	yo <- hw * graphics::strheight("A")
+	n <- nchar(labels)
 	theta <- seq(pi/4, 2*pi, length.out=8*hw*10)  
 	for (i in theta) {
 		text( xy$x + cos(i)*xo, xy$y + sin(i)*yo, labels, col=hc, ... )
@@ -198,10 +199,7 @@ setMethod("text", signature(x="SpatVector"),
 		} else if (nrow(x) > 1 && length(labels) == 1) {
 			labels <- as.data.frame(x)[,labels]
 		} 
-		if (geomtype(x) != "points") {
-			stop("only implemented for points (so far)")
-		}
-		xy <- geom(x)[,c("x","y")]
+		xy <- geom(centroids(x))[,c("x","y")]
 		if (halo) {
 			.halo(xy[,1], xy[,2], labels, ...)
 		} else {

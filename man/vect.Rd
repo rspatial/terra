@@ -26,7 +26,7 @@ Create a new SpatVector
 }
 
 \arguments{
-\item{x}{character (filename or "Well Known Text"), data.frame, matrix, missing, or a vector object defined in packages \code{sf} or \code{sp}}
+\item{x}{character (filename or "Well Known Text"); or a data.frame or matrix with geometry data (see \code{\link{geom}}; or missing; or a vector object from \code{sf} or \code{sp}}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{the coordinate reference system (PROJ4 notation)}
@@ -70,6 +70,10 @@ wkt <- c("MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)),
 ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20)))", 
 "POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
 w <- vect(wkt)
+
+# data.frame
+g <- geom(w)
+m <- vect(g, atts=data.frame(id=1:2, name=c("a", "b")), crs="+proj=longlat +datum=WGS84")
 
 
 #SpatVect to sf

@@ -84,6 +84,13 @@ void SpatRaster::setCategories(unsigned layer, std::vector<std::string> labs, st
 }
 
 
+void SpatRaster::removeCategories(unsigned layer) {
+    std::vector<unsigned> sl = findLyr(layer);
+	SpatCategories s;
+	source[sl[0]].cats[sl[1]] = s;
+	source[sl[0]].hasCategories[sl[1]] = false;
+}
+
 SpatCategories SpatRaster::getLayerCategories(unsigned layer) {
     std::vector<unsigned> sl = findLyr(layer);
 	SpatCategories cat = source[sl[0]].cats[sl[1]];

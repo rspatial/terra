@@ -94,10 +94,6 @@ SpatVector SpatVector::intersect(SpatVector v) {
 SpatVector SpatVector::centroid() {
 
 	SpatVector out;
-	if (type() != "polygons") {
-		out.setError("Can only compute centroids for polygons");
-		return out;
-	}
 
 	GEOSContextHandle_t hGEOSCtxt = CPL_geos_init();
 	std::vector<GeomPtr> g = geom_from_spat(this, hGEOSCtxt);

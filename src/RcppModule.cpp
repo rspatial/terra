@@ -341,6 +341,8 @@ RCPP_MODULE(spat){
 		.method("hasCategories", &SpatRaster::hasCategories, "hasCategories")
 		.method("getCategories", &SpatRaster::getCategories, "getCategories")
 		.method("setCategories", &SpatRaster::setCategories, "setCategories")
+		.method("removeCategories", &SpatRaster::removeCategories, "removeCategories")
+		
 		.method("createCategories", &SpatRaster::createCategories, "createCategories")
 		.method("hasColors", &SpatRaster::hasColors, "hasColors")
 		.method("getColors", &SpatRaster::getColors, "getColors")

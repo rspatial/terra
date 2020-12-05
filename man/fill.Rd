@@ -9,7 +9,7 @@
 \title{Remove holes from polygons}
 
 \description{
-Remove the holes in SpatVector polygons
+Remove the holes in SpatVector polygons. If \code{inverse=TRUE} the holes are returned (as polygons).
 } 
 
 \usage{

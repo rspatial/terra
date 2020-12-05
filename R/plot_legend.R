@@ -1,4 +1,36 @@
 
+.plot.axes <- function(x) {
+	if (!is.null(x$axs$sides)) {
+		usr <- graphics::par("usr")
+		sides <- x$axs$sides
+		x$axs$sides <- NULL
+		sides <- round(unique(sides))
+		sides[sides > 1 & sides < 5]
+		for (s in sides) {
+			if (s %in% c(1,3)) {
+				ur <- usr[2] - usr[1]
+				at <- c(usr[1]-10*ur, usr[2]+10*ur)
+			} else {
+				ur <- usr[4] - usr[3]
+				at <- c(usr[3]-10*ur, usr[4]+10*ur)
+			}
+			graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0)
+			x$axs$side <- s
+			do.call(graphics::axis, x$axs)
+		}
+		x$axs$sides <- x$sides
+	} else {
+		x$axs$side <- 1
+		do.call(graphics::axis, x$axs)
+		x$axs$side <- 2
+		do.call(graphics::axis, x$axs)
+		graphics::box()
+	}
+	x$axs$side <- NULL
+	x
+}
+
+
 .get.leg.coords <- function(x) {
 
 	if (is.null(x$leg$ext)) {
@@ -167,26 +199,6 @@
 	x
 }	
 
-
-
-.old.plot.class.legend <- function(x, 
-	# catching
-	y, xpd, title, lty, lwd, pch, angle, density, pt.bg, pt.cex, pt.lwd, seg.len, merge, trace, ...) {
-	
-	if (!is.null(x$leg$loc)) {
-		leg <- graphics::legend(x$leg$loc, legend=x$leg$labels, fill=x$cols, title=x$leg$main$text, ...)	
-	} else {
-		if (length(x$leg$ext) == 2) {
-			leg <- graphics::legend(x$leg$ext[1], x$leg$ext[2], legend=x$leg$labels, fill=x$cols, title=x$leg$main$text, xpd=TRUE, ...)
-		} else if (length(x$leg$ext) == 4) {	
-			leg <- graphics::legend(x$leg$ext[1], x$leg$ext[4], legend=x$leg$labels, fill=x$cols, xpd=TRUE, title=x$leg$main$text, ...)
-		} else {
-			stop(x$leg$ext)
-		}
-	}
-	x$leg$legend <- leg
-	x
-}	
 
 
 

@@ -201,6 +201,8 @@ void RasterSource::resize(unsigned n) {
 	cols.resize(n);
     hasCategories.resize(n);
 	cats.resize(n);
+    hasAttributes.resize(n);
+	atts.resize(n);
 	nlyr = n;
 	layers.resize(n);
 	std::iota(layers.begin(), layers.end(), 0);
@@ -248,8 +250,11 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
                     rs.range_min.push_back(range_min[j]);
                     rs.range_max.push_back(range_max[j]);
                     rs.hasColors.push_back(hasColors[j]);
+                    rs.cols.push_back(cols[j]);
                     rs.hasCategories.push_back(hasCategories[j]);
-					//rs.RAT.push_back(RAT[j]);
+                    rs.cats.push_back(cats[j]);
+					rs.hasAttributes.push_back(hasAttributes[j]);
+					rs.atts.push_back(atts[j]);
 					rs.has_scale_offset.push_back(has_scale_offset[j]);
 					rs.scale.push_back(scale[j]);
 					rs.offset.push_back(offset[j]);
@@ -269,7 +274,11 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
                 rs.range_min.push_back(range_min[j]);
                 rs.range_max.push_back(range_max[j]);
                 rs.hasColors.push_back(hasColors[j]);
+                rs.cols.push_back(cols[j]);
                 rs.hasCategories.push_back(hasCategories[j]);
+                rs.cats.push_back(cats[j]);
+				rs.hasAttributes.push_back(hasAttributes[j]);
+				rs.atts.push_back(atts[j]);
 				rs.has_scale_offset.push_back(has_scale_offset[j]);
 				rs.scale.push_back(scale[j]);
 				rs.offset.push_back(offset[j]);

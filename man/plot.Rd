@@ -6,7 +6,6 @@
 \alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
 
-
 \title{Plot a SpatRaster}
 
 \description{
@@ -14,11 +13,11 @@ Plot the values of a SpatRaster to make a map
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), 
+\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), 
      pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
      colNA=NULL, alpha=NULL, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), 
+\S4method{plot}{SpatRaster,missing}(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), 
      pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL,
      colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)
 }
@@ -31,7 +30,7 @@ Plot the values of a SpatRaster to make a map
   \item{mar}{numeric vector of length 4 to set the margins of the plot}
   \item{legend}{logical. Draw a legend?}
   \item{axes}{logical. Draw axes?}
-  \item{pal}{list. Parameters for the legend}
+  \item{plg}{list. Parameters for the legend}
   \item{pax}{list. Parameters for drawing axes}
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (for continuous legend)}
@@ -50,8 +49,6 @@ Plot the values of a SpatRaster to make a map
 \seealso{
  \code{\link{image}}, \code{\link[terra:plotVector]{plotVector}}, \code{scatter\link[terra:scatter]{plot}}
 }
-
-
 
 \examples{ 
 f <- system.file("ex/test.tif", package="terra") 

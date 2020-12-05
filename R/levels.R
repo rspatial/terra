@@ -41,15 +41,21 @@ setMethod("is.factor", signature(x="SpatRaster"),
 
 setMethod("levels", signature(x="SpatRaster"), 
 	function(x) {
+		#if (any(x@ptr$hasCategories())) {
 		x@ptr$getCategories()
+		#} else {
+		#	vector(mode="list", nlyr(x))
+		#}
 	}
 )
-
 
 
 setMethod("levels<-", signature(x="SpatRaster"), 
 	function(x, value) {
 		stopifnot(nlyr(x) == 1)
+		if (is.null(value) | is.na(value)) {
+			x@ptr$removeCategories(0)
+		}
 		#stopifnot(is.factor(x))
 		#stopifnot(hasValues(x))
 		if (is.data.frame(value)) {

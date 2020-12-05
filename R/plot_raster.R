@@ -1,35 +1,4 @@
 
-.plot.axes <- function(x) {
-	if (!is.null(x$axs$sides)) {
-		usr <- graphics::par("usr")
-		sides <- x$axs$sides
-		x$axs$sides <- NULL
-		sides <- round(unique(sides))
-		sides[sides > 1 & sides < 5]
-		for (s in sides) {
-			if (s %in% c(1,3)) {
-				ur <- usr[2] - usr[1]
-				at <- c(usr[1]-10*ur, usr[2]+10*ur)
-			} else {
-				ur <- usr[4] - usr[3]
-				at <- c(usr[3]-10*ur, usr[4]+10*ur)
-			}
-			graphics::axis(s, at=at, labels=c("",""), lwd.ticks=0)
-			x$axs$side <- s
-			do.call(graphics::axis, x$axs)
-		}
-		x$axs$sides <- x$sides
-	} else {
-		x$axs$side <- 1
-		do.call(graphics::axis, x$axs)
-		x$axs$side <- 2
-		do.call(graphics::axis, x$axs)
-		graphics::box()
-	}
-	x$axs$side <- NULL
-	x
-}
-
 
 .as.raster.continuous <- function(out, x, type) {
 		
@@ -215,18 +184,7 @@
 .plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA, ...) {
 	
 	if ((!x$add) & (!x$legend_only)) {
-		
-		#if (!is.na(new)) {
-		#	if (!any(is.na(x$mar))) { marpar=x$mar } else { marpar=graphics::par("mar") }
-		#	marw <- marpar[2] + marpar[4]
-		#	marh <- marpar[1] + marpar[3]
-		#	a <- asp * nrow(x$r) / ncol(x$r)
-		#	if (a > 1) {
-		#		dev.new(width=marw+new, height=marh+new*a, noRStudioGD = TRUE)
-		#	} else {
-		#		dev.new(width=marw+new*a, height=marh+new, noRStudioGD = TRUE)
-		#	}
-		#}
+	
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, ...)
 	}
@@ -242,7 +200,8 @@
 			x <- do.call(.plot.cont.legend, list(x=x))
 #		} else if (x$legend_type == "classes") {
 		} else {
-			y <- do.call(.plot.class.legend, x$leg)
+			#y <- do.call(.plot.class.legend, x$leg)
+			x <- do.call(.plot.class.legend, x$leg)
 		}
 	}
 	x
@@ -251,7 +210,7 @@
 
 
 .prep.plot.data <- function(x, type, maxcell, cols, mar, draw=FALSE, interpolate=FALSE,  
-legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
+legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
  range=NULL, new=NA, breaks=NULL, coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
@@ -275,7 +234,7 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 	out$mar <- mar
 
 	out$axs <- pax 
-	out$leg <- pal
+	out$leg <- plg
 	out$asp <- 1
 	out$lonlat <- isLonLat(x, perhaps=TRUE, warn=FALSE)
 	if (out$lonlat) {
@@ -325,7 +284,7 @@ legend=TRUE, legend.only=FALSE, pax=list(), pal=list(), levels=NULL, add=FALSE,
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
+	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
 
 		x <- x[[y]]
 		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
@@ -352,7 +311,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 		
 		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
-		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, pal=pal, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, ...)
+		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
@@ -366,7 +325,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 )
 
 
-#mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000
+#mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; plg=list(); pax=list(); maxcell=50000
 
 #object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
 #x <- .prep.plot.data(object, type="classes", cols=rainbow(25), mar=rep(3,4), draw=T)
@@ -375,21 +334,21 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 #r <- rast(system.file("ex/test.tif", package="terra"))
 #plot(r)
 #e <- c(177963, 179702, 333502, 333650) 
-#plot(r, mar=c(3,3,3,3), pal=list(loc="top", ext=e, levels=3, at=c(10, 666,1222), range=c(0,2000)))
-#plot(r, type="interval", levels=c(0,500,3000), pal=list(legend=c("low", "high"), x="topleft"))
-#plot(r, type="interval", pal=list(x="topleft"))
-#plot(r, type="interval", pal=list(cex=.8, bty="n"), pax=list(cex.axis=.8, las=1))
-#plot(r, type="interval", pal=list(cex=.8, bty="n", ncol=2, x=178000, y=335250), pax=list(cex.axis=.8, las=1))
+#plot(r, mar=c(3,3,3,3), plg=list(loc="top", ext=e, levels=3, at=c(10, 666,1222), range=c(0,2000)))
+#plot(r, type="interval", levels=c(0,500,3000), plg=list(legend=c("low", "high"), x="topleft"))
+#plot(r, type="interval", plg=list(x="topleft"))
+#plot(r, type="interval", plg=list(cex=.8, bty="n"), pax=list(cex.axis=.8, las=1))
+#plot(r, type="interval", plg=list(cex=.8, bty="n", ncol=2, x=178000, y=335250), pax=list(cex.axis=.8, las=1))
  
 #par(mfrow=c(1,2))
-#plot(r, type="interval", mar=c(2,4,2,0), pal=list(inset=0.05, x="topleft"), pax=list(sides=c(1,2), cex.axis=0.8))
+#plot(r, type="interval", mar=c(2,4,2,0), plg=list(inset=0.05, x="topleft"), pax=list(sides=c(1,2), cex.axis=0.8))
 #plot(r, type="interval", mar=c(2,0,2,4), legend=FALSE, pax=list(sides=c(3,4), cex.axis=0.8))
 
 #object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
 #type="classes"; cols=rainbow(25); mar=rep(3,4); draw=TRUE
  
 #r <- rast(system.file("ex/test.tif", package="terra"))
-#plot(r, type="interval", mar=c(2,4,2,0), pal=list(x="topleft", inset=0.05), pax=list(sides=c(1,2), cex.axis=0.8))
+#plot(r, type="interval", mar=c(2,4,2,0), plg=list(x="topleft", inset=0.05), pax=list(sides=c(1,2), cex.axis=0.8))
 #plot(r)
 
 # f <- system.file("ex/test.tif", package="terra") 
@@ -401,11 +360,11 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 # d <- (r > 400) + (r > 600)
 # plot(d)
 # e <- c(178000,178200,332000,333000)
-# plot(d, pal=list(ext=e, title="Title\n", title.cex=2))
+# plot(d, plg=list(ext=e, title="Title\n", title.cex=2))
 
 # plot(d, type="interval", levels=0:3) 
-# plot(d, type="interval", levels=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 
-# plot(d, type="classes", pal=list(legend=c("M", "X", "A")))
+# plot(d, type="interval", levels=3, plg=list(legend=c("0-1", "1-2", "2-3"))) 
+# plot(d, type="classes", plg=list(legend=c("M", "X", "A")))
 
 # r <- rast(f)
 # x <- trunc(r/600)
@@ -416,7 +375,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, pal=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)  {
+	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)  {
 
 		nl <- max(1, min(nlyr(x), maxnl))
 		usefun = 0;
@@ -430,9 +389,9 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 		if (nl==1) {
 			if (missing(main)) {
-				out <- plot(x, 1, col=col, type=type, mar=mar, legend=legend, axes=axes, pal=pal, pax=pax, maxcell=maxcell, smooth=smooth, levels=levels, range=range, ...)
+				out <- plot(x, 1, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell, smooth=smooth, levels=levels, range=range, ...)
 			} else {
-				out <- plot(x, 1, col=col, type=type, mar=mar, legend=legend, axes=axes, pal=pal, pax=pax, maxcell=maxcell, smooth=smooth, levels=levels, main=main[1], range=range, ...)
+				out <- plot(x, 1, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell, smooth=smooth, levels=levels, main=main[1], range=range, ...)
 			}
 			if (usefun == 1) {
 				fun()
@@ -468,7 +427,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 		for (i in 1:nl) {
 			#	image(x[[i]], main=main[i], ...)
-			plot(x, i, main=main[i], col=col, type=type, mar=mar, legend=legend, axes=axes, pal=pal, pax=pax, smooth=smooth, levels=levels, range=range, ...)
+			plot(x, i, main=main[i], col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, smooth=smooth, levels=levels, range=range, ...)
 			if (usefun == 1) {
 				fun()
 			} else if (usefun == 2) {
@@ -480,12 +439,3 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 
 
-setMethod("lines", signature(x="SpatRaster"),
-function(x, mx=50000, ...) {
-	if(prod(dim(x)) > mx) {
-		stop("too many lines")
-	}
-	v <- as.polygons(x)
-	lines(v, ...)
-}
-)
