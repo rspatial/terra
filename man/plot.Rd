@@ -30,8 +30,8 @@ Plot the values of a SpatRaster to make a map
   \item{mar}{numeric vector of length 4 to set the margins of the plot}
   \item{legend}{logical. Draw a legend?}
   \item{axes}{logical. Draw axes?}
-  \item{plg}{list. Parameters for the legend}
-  \item{pax}{list. Parameters for drawing axes}
+  \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}}
+  \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{smooth}{logical. If \code{TRUE} the cell values are smoothed (for continuous legend)}
   \item{range}{numeric. minimum and maximum values to be used for the continuous legend }

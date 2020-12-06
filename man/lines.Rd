@@ -21,11 +21,11 @@ These are simpler alternatives for \code{plot(x, add=TRUE)}
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, col, ...)
+\S4method{points}{SpatVector}(x, col, cex=1, pch=1, ...)
 
-\S4method{lines}{SpatVector}(x, col, ...)
+\S4method{lines}{SpatVector}(x, col, lwd=1, lty=1, ...)
 
-\S4method{polys}{SpatVector}(x, col, border="black", ...)
+\S4method{polys}{SpatVector}(x, col, border="black", lwd=1, lty=1, ...)
 
 \S4method{points}{SpatExtent}(x, col, ...)
 
@@ -36,6 +36,10 @@ These are simpler alternatives for \code{plot(x, add=TRUE)}
   \item{x}{SpatVector or SpatExtent}
   \item{col}{character. Colors}
   \item{border}{character. color(s) of the polygon borders. Use \code{NULL} or \code{NA} to not draw a border}
+  \item{cex}{numeric. point size magnifier. See \code{\link{par}}}
+  \item{pch}{positive integer, line type. See \code{\link{points}}}
+  \item{lwd}{numeric, line-width. See \code{\link{par}}}
+  \item{lty}{positive integer, line type. See \code{\link{par}}}
   \item{...}{additional graphical arguments such as \code{lwd}, \code{cex} and \code{pch}}  
 }
 

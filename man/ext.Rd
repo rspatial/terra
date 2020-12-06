@@ -2,7 +2,6 @@
 
 \docType{methods}
 
-
 \alias{$,SpatExtent-method}
 \alias{$<-,SpatExtent-method}
 
@@ -21,7 +20,6 @@
 \alias{ext,Extent-method}
 \alias{bbox,SpatRaster-method}
 \alias{bbox,SpatVector-method}
-
 
   
 \title{Create, get or set a SpatExtent}

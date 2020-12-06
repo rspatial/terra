@@ -1,3 +1,4 @@
+
 setMethod("lines", signature(x="SpatRaster"),
 function(x, mx=50000, ...) {
 		if(prod(dim(x)) > mx) {
@@ -9,15 +10,17 @@ function(x, mx=50000, ...) {
 )
 
 setMethod("lines", signature(x="SpatVector"), 
-	function(x, col, ...)  {
-		if (missing(col)) col <- "black"
-		g <- geom(x)
+	function(x, col, lwd=1, lty=1, ...)  {
 		gtype <- geomtype(x)
-		if (missing(col)) col <- NULL
-		col <- .getCols(size(x), col)
 		if (gtype == "points") {
-			graphics::points(g[,3:4], col=col, ...)
+			points(x, col, ...)
 		} else {
+			if (missing(col)) col <- "black"
+			n <- size(x)
+			col <- .getCols(n, col)
+			lwd <- rep_len(lwd, n)
+			lty <- rep_len(lty, n)
+			g <- geom(x)
 			g <- split(g, g[,1])
 			if (gtype == "polygons") {
 				g <- lapply(g, function(x) split(x, x[,c(2,5)]))
@@ -28,26 +31,36 @@ setMethod("lines", signature(x="SpatVector"),
 			for (i in 1:length(g)) {
 				x <- g[[i]]
 				for (j in 1:length(x)) {
-					lines(x[[j]][,3:4], col=col[i], ...)
+					lines(x[[j]][,3:4], col=col[i], lwd=lwd[i], lty=lty[i], ...)
 				}
 			}
-			
-			
 		}
 	}
 )
 
 
 setMethod("points", signature(x="SpatVector"), 
-	function(x, col, ...)  {
+	function(x, col, cex=1, pch=1, ...)  {
 		if (missing(col)) col <- "black"
-		col <- .getCols(size(x), col)
-		graphics::points(geom(x)[,3:4], col=col, ...)
+		n <- size(x)
+		col <- .getCols(n, col)
+		cex <- rep_len(cex, n)
+		pch <- rep_len(pch, n)	
+		g <- geom(x)
+		if (any(table(g$id) > 1)) {
+			g <- geom(x)
+			g <- split(g, g[,1])
+			for (i in 1:n) {
+				graphics::points(g[[i]][,3:4], col=col[i], pch=pch[i], cex=cex[i], ...)
+			}
+		} else {
+			graphics::points(geom(x)[,3:4], col=col,  pch=pch, cex=cex,...)
+		}
 	}
 )
 
 setMethod("polys", signature(x="SpatVector"), 
-	function(x, col, border="black", ...)  {
+	function(x, col, border="black", lwd=1, lty=1, ...)  {
 		gtype <- geomtype(x)
 		if (gtype != "polygons") {
 			stop("expecting polygons")
@@ -56,7 +69,7 @@ setMethod("polys", signature(x="SpatVector"),
 			col <- NULL
 		}
 		cols <- .getCols(size(x), col)
-		.plotPolygons(x, cols=cols, border=border, ...)
+		.plotPolygons(x, cols=cols, border=border, lwd=lwd, lty=lty, ...)
 	}
 )
 	

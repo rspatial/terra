@@ -4,32 +4,46 @@
 # License GPL v3
 
 
-.plotLines <- function(x, cols, ...) {
+.plotLines <- function(x, out, lty=1, lwd=1, ...) {
+	cols <- out$cols
+	if (is.null(cols)) cols = rep("black", size(x))
+
 	g <- geom(x)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(x) split(x, x[,2]))
 	#p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...))	
-	for (i in 1:length(g)) {
+	n <- length(g)
+	lty <- rep_len(lty, n)
+	lwd <- rep_len(lwd, n)
+	for (i in 1:n) {
 		x <- g[[i]]
 		for (j in 1:length(x)) {
-			lines(x[[j]][,3:4], col=cols[i])
+			lines(x[[j]][,3:4], col=cols[i], lwd=lwd[i], lty=lty[i], ...)
 		}
 	}
+	out$leg$lwd <- lwd
+	out$leg$lty <- lty
+	out
 }
 
-.plotPolygons <- function(x, cols, border=NULL, density=NULL, angle=45, ...) {
+.plotPolygons <- function(x, out, lty=1, lwd=1, ...) {
+
 	g <- geom(x)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(y) split(y, y[,2]))
-	if (!is.null(border)) {
-		border <- rep_len(border, length(g))
+	n <- length(g)
+	if (!is.null(out$leg$border)) {
+		out$leg$border <- rep_len(out$leg$border, n)
 	} else {
-		border <- NA
+		out$leg$border <- NA
 	}
-	if (!is.null(density)) {
-		density <- rep_len(density, length(g))
-		angle <- rep_len(angle, length(g))
+	if (!is.null(out$leg$density)) {
+		out$leg$density <- rep_len(out$leg$density, length(g))
+		out$leg$angle <- rep_len(out$leg$angle, n)
 	}
+	out$leg$lty <- rep_len(lty, n)
+	out$leg$lwd <- rep_len(lwd, n)
+
 	for (i in 1:length(g)) {
 		gg <- g[[i]]
 		for (j in 1:length(gg)) {
@@ -41,15 +55,41 @@
 				a <- a[-nrow(a), ]
 				# g[[i]][[1]] <- a 
 			}
-			if (!is.null(density)) {
-				graphics::polypath(a[,3:4], col=NA, rule = "evenodd", border=border[i], ...)
-				graphics::polygon(a[,3:4], col=cols[i], density=density[i], angle=angle[i], border=NA, ...)
+			if (!is.null(out$leg$density)) {
+				graphics::polygon(a[,3:4], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(a[,3:4], col=NA, rule="evenodd", border=out$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			} else {
-				graphics::polypath(a[,3:4], col=cols[i], rule = "evenodd", border=border[i], ...)
+				graphics::polypath(a[,3:4], col=out$main_cols[i], rule = "evenodd", border=out$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
 	}
+	out
 }
+
+
+.vplot <- function(x, out, xlab="", ylab="", cex=1, pch=1, ...) {
+	col <- out$main_cols
+	if (out$leg$geomtype == "points") {
+		#if (is.null(col)) col = "black"
+		if (out$add) {
+			points(x, col=col, cex=cex, pch=pch, ...)			
+		} else {
+			e <- as.vector(ext(x))
+			plot(e[1:2], e[3:4], type="n", axes=FALSE, xlab=xlab, ylab=ylab, asp=out$asp)
+			points(x, col=col, cex=cex, pch=pch, ...)			
+		}
+	} else {
+		e <- matrix(as.vector(ext(x)), 2)
+		if (out$leg$geomtype == "polygons") {
+			out <- .plotPolygons(x, out, ...)
+		} else {
+			out <- .plotLines(x, out, ...)
+		}
+	}
+	out
+}
+
+
 .getCols <- function(n, cols) {
 	if (!is.null(cols)) {
 		ncols <- length(cols)
@@ -65,11 +105,21 @@
 }
 
 
+.vect.legend.none <- function(out) {
+	if (out$leg$geomtype == "points") {
+		out$main_cols <- .getCols(out$ngeom, out$cols)
+	} else {
+		out$cols <- .getCols(out$ngeom, out$cols)
+	}
+	out
+}
+
 .vect.legend.classes <- function(out) {
 	ucols <- .getCols(length(out$uv), out$cols)
 	uv <- sort(out$uv)
 	i <- match(out$v, out$uv)
 	out$cols <- ucols[i]
+	out$main_cols <- out$cols
 
 	out$levels <- out$uv
 	out$leg$legend <- out$uv
@@ -100,12 +150,12 @@
 			}
 		}	
 	}
+	
 	out
 }
 
 
 .vect.legend.continuous <- function(out) {
-
 
 	z <- stats::na.omit(out$v)
 	n <- length(z)
@@ -116,6 +166,12 @@
 		}
 	} else if (length(unique(z)) == 1) {
 		return (.vect.legend.classes(out))
+	}
+	
+	if (!is.numeric(out$v)) {
+		out$v <- as.integer(as.factor(out$v))
+		z <- stats::na.omit(out$v)
+		n <- length(z)
 	}
 	out$range <- range(z)
 	
@@ -136,15 +192,30 @@
 	}
 	
 	if (is.null(out$leg$loc)) out$leg$loc <- "right"
+
+	brks <- seq(min(out$v, na.rm=TRUE), max(out$v, na.rm=TRUE), length.out = length(out$cols))
+	grps <- cut(out$v, breaks = brks, include.lowest = TRUE)
+	out$main_cols <- out$cols[grps]
+
 	out
 }
 
 
 .vect.legend.interval <- function(out, ...) {
 
+	nmx <- length(out$uv)
+	if (nmx <= 1) {
+		return(.vect.legend.classes(out, ...))
+	}
 	if (is.null(out$breaks)) {
 		out$breaks <- 5
 	} 
+	out$breaks <- min(out$breaks, nmx)
+	
+	if (!is.numeric(out$v)) {
+		out$v <- as.integer(as.factor(out$v))
+	}
+	
 	fz <- cut(out$v, out$breaks, include.lowest=TRUE, right=FALSE)
 	out$vcut <- as.integer(fz)
 	levs <- levels(fz)
@@ -176,74 +247,37 @@
 		out$leg$x <- "top"
 	}
 
+	out$main_cols <- out$cols[out$vcut]
 	out
 }
 
 
 
-.vplot <- function(x, col, add=FALSE, border="black", xlab="", ylab="", asp=NULL, density=NULL, angle=45, ...) {
-	
-	axes=FALSE 
-	
-	gtype <- geomtype(x)
-	if (is.null(asp)) {
-		if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
-				asp <- 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180)
-		} else {
-			asp <- 1
-		}
-	}
-	if (gtype == "points") {
-		if (missing(col)) col = "black"
-		g <- geom(x)
-		if (add) {
-			points(g[,3], g[,4], col=col, ...)			
-		} else {
-			plot(g[,3], g[,4], col=col, axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
-		}
-	} else {
-		e <- matrix(as.vector(ext(x)), 2)
-		#if (!add) {
-		#	plot(e, type="n", axes=axes, xlab=xlab, ylab=ylab, asp=asp, ...)
-		#}
-		if (gtype == "polygons") {
-			.plotPolygons(x, col, border=border, density=density, angle=angle, ...)
-		} else {
-			if (is.null(col)) col = rep("black", size(x))
-			.plotLines(x, col, ...)
-		}
-	}
-}
-
-
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, new=NA, ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, new=NA, density=NULL, angle=45, ...) {
 	
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
 		plot(out$lim[1:2], out$lim[3:4], type="n", xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, ...)
 	}
 
-	if (out$legend_draw) {	
-		if (out$legend_type == "classes") {
-			out <- .vect.legend.classes(out)
-			cols <- out$cols
-		} else if (out$legend_type == "interval") {
-			out <- .vect.legend.interval(out)
-			cols <- out$cols[out$vcut]
-		} else {
-			out <- .vect.legend.continuous(out)
-			brks <- seq(min(out$v, na.rm=TRUE), max(out$v, na.rm=TRUE), length.out = length(out$cols))
-			grps <- cut(out$v, breaks = brks, include.lowest = TRUE)
-			cols <- out$cols[grps]
-		}				
-		if (!out$legend_only) {
-			.vplot(x, cols, add=out$add, ...) 
-		}
+	out$leg$density <- density
+	out$leg$angle <- angle
+
+	if (out$legend_type == "none") {
+		out <- .vect.legend.none(out)
+	} else if (out$legend_type == "classes") {
+		out <- .vect.legend.classes(out)
+	} else if (out$legend_type == "interval") {
+		out <- .vect.legend.interval(out)
 	} else {
-		.vplot(x, out$cols, add=out$add, ...) 
+		out <- .vect.legend.continuous(out)
+		out$leg$density <- NULL
+	}				
+	if (!out$legend_only) {
+		out <- .vplot(x, out, ...) 
 	}
 
-	if (out$axes & !out$add) {
+	if (out$axes) {
 		out <- .plot.axes(out)	
 	}
 
@@ -255,50 +289,40 @@
 		}
 	}
 	out
-}	
+}
 
 
-
-.prep.vect.data <- function(x, y, type="depends", cols, mar, draw=FALSE,   
-legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
- range=NULL, new=NA, breaks=NULL, coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, ...) {
+.prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
+	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, 
+	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, border="black",
+	pax=list(), plg=list()) {
 
 	out <- list()
-
+	out$ngeom <- nrow(x)
 	if (!(is.null(xlim) & is.null(ylim))) {
 		e <- as.vector(ext(x))
 		if (!is.null(xlim)) e[1:2] <- xlim
 		if (!is.null(ylim)) e[3:4] <- ylim
 		out$ext <- as.vector(ext(x))
-			out$lim <- e
+		out$lim <- e
 	} else {
 		out$lim <- out$ext <- as.vector(ext(x))
 	}
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
-	out$mar <- mar
 	out$axs <- pax 
 	out$leg <- plg
+	out$leg$geomtype <- geomtype(x)
 	out$asp <- 1
 	out$lonlat <- isLonLat(x, perhaps=TRUE, warn=FALSE)
 	if (out$lonlat) {
 		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
 	}
-	if (!is.null(alpha)) {
-		alpha <- clamp(alpha[1]*255, 0, 255)
-		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
-	} else {
-		alpha <- 255
-	}
-	out$cols <- cols
-	out$facts <- facts
 	out$breaks <- breaks
-
-# we may need to loop over y
-	y = y[1]
 	
 	out$v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
-	out$uv <- unique(out$v)
+	out$uv <- sort(unique(out$v))
+
 	if (missing(type)) {
 		if (!is.numeric(out$uv) | length(out$uv) < 10) {
 			type <- "classes"
@@ -308,19 +332,47 @@ legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
 	} else {
 		type <- match.arg(type, c("continuous", "classes", "interval", "depends", "none"))
 	}
-	out$legend_draw <- isTRUE(legend)
-	out$legend_only <- isTRUE(legend.only)
 	if (type=="none") {
-		out$legend_draw <- FALSE
+		legend <- FALSE
+		legend_only <- FALSE
 	} else if (type=="classes") {
 		out$levels <- levels
-	} else if (type=="interval") {
-		#out <- .as.raster.interval(out, x)
-	} else {
+	} else if (type=="continuous") {
 		out$range <- range
-		#out <- .as.raster.continuous(out, x, type)
 	}
 	out$legend_type <- type
+
+	if (missing(cols)) {
+		if (type == "none") {
+			if (out$leg$geomtype == "points") {
+				cols <- "black"
+			} else {
+				cols <- NULL
+			}
+		} else {
+			cols <- topo.colors(100)			
+		}
+	}
+	if (!is.null(alpha)) {
+		alpha <- clamp(alpha[1]*255, 0, 255)
+		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
+	} else {
+		alpha <- 255
+	}
+	out$cols <- cols
+	out$leg$border <- border
+	out$legend_draw <- isTRUE(legend)
+	out$legend_only <- isTRUE(legend.only)
+
+	if (is.null(mar)) {
+		if (out$legend_draw) {
+			mar=c(3.1, 3.1, 2.1, 7.1)
+		} else {
+			mar=c(3.1, 3.1, 2.1, 2.1)
+		}
+	}
+	out$mar <- mar
+
 	if (!is.null(colNA)) {
 		if (!is.na(colNA)) {
 			out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=alpha, maxColorValue=255)
@@ -332,57 +384,65 @@ legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
 
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), axes=TRUE, legend=TRUE, add=FALSE, plg=list(), pax=list(), ...)  {
+	function(x, y, col, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, main=y, plg=list(), pax=list(), nr, nc, ...) {
 
-		if (is.na(match(y, names(x)))) {
-			stop(paste(y, "is not a name in x"))
+		y <- trimws(y)
+		if (any(is.na(match(y, c("", names(x)))))) {
+			i <- is.na(match(y, names(x)))
+			stop(paste(paste(y[i], collapse=",")), "is not a name in x")
 		}
-		if (missing(col)) {
-			col <- topo.colors(100)
+		nrnc <- c(1,1)
+		if (length(y) > 1) {
+			nrnc <- .get_nrnc(nr, nc, length(y))
+			old.par <- graphics::par(no.readonly =TRUE)
+			on.exit(graphics::par(old.par))   
+			graphics::par(mfrow=nrnc)
 		}
-	
-		out <- .prep.vect.data(x, y, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=axes)
-			
-		out <- .plot.vect.map(x, out)
-		invisible(out)
-		
+
+		for (i in 1:length(y)) {
+			if (length(y) > 1) {
+				newrow <- (i %% nrnc[2]) == 1 
+				lastrow <- i > (prod(nrnc) - nrnc[2])
+				if (lastrow) {
+					if (newrow) {
+						pax$sides <- 1:2
+					} else {
+						pax$sides <- 1				
+					}
+				} else if (newrow) {
+					pax$sides <- 2
+				} else {
+					pax$sides <- 0
+				}
+			}			
+			if (y[i] == "") {
+				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes)
+			} else {
+				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes)
+			}
+			out <- .plot.vect.map(x, out, main=main[i], ...)
+			invisible(out)		
+		}
 	}
 )
 
 
 setMethod("plot", signature(x="SpatVector", y="numeric"), 
-	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), axes=TRUE, legend=TRUE, add=FALSE, plg=list(), pax=list(), ...)  {
-		if (y < 1) {
-			plot(x, col=col, axes=axes, add=add, ...)
-		} else if (y > ncol(x)) {
+	function(x, y, ...)  {
+		y <- round(y)
+		if (any(y > ncol(x))) {
 			stop(paste("x only has", ncol(x), " columns"))
 		}
-		plot(x, y=names(x)[y], cols=col, type=type, mar=mar, axes=axes, legend=legend, add=add, plg = plg, pax=pax, ...)
+		y[y<0] <- 0
+		y <- c("", names(x))[y+1]
+		plot(x, y, ...)
 	}
 )
-
 
 
 setMethod("plot", signature(x="SpatVector", y="missing"), 
-	function(x, y, col, axes=TRUE, add=FALSE, pax=list(), ...)  {
-		if (missing(col)) {
-			if (geomtype(x) == "points") {
-				col <- "black"
-			} else {
-				col <- NULL
-			}
-		}
-		col <- .getCols(size(x), col)
-		out <- .prep.vect.data(x, y="", type="none", cols=col, mar=NULL, draw=TRUE, plg=list(), pax=pax, legend=FALSE, axes=axes)
-
-		
-		out <- .plot.vect.map(x, out)
-		invisible(out)
-	
-
-		#
-		#.vplot(x, NULL, col=col, axes=axes, add=add, ...)
+	function(x, y, ...)  {
+		plot(x, "", ...)
 	}
 )
-
 
