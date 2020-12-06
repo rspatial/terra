@@ -26,7 +26,7 @@
 	out
 }
 
-.plotPolygons <- function(x, out, lty=1, lwd=1, ...) {
+.plotPolygons <- function(x, out, lty=1, lwd=1, density=NULL, angle=45, ...) {
 
 	g <- geom(x)
 	g <- split(g, g[,1])
@@ -37,9 +37,9 @@
 	} else {
 		out$leg$border <- NA
 	}
-	if (!is.null(out$leg$density)) {
-		out$leg$density <- rep_len(out$leg$density, length(g))
-		out$leg$angle <- rep_len(out$leg$angle, n)
+	if (!is.null(density)) {
+		out$leg$density <- rep_len(density, length(g))
+		out$leg$angle <- rep_len(angle, n)
 	}
 	out$leg$lty <- rep_len(lty, n)
 	out$leg$lwd <- rep_len(lwd, n)
@@ -57,13 +57,13 @@
 			}
 			if (!is.null(out$leg$density)) {
 				graphics::polygon(a[,3:4], col=out$main_cols[i], density=out$leg$density[i], angle=out$leg$angle[i], border=NA, lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
-				graphics::polypath(a[,3:4], col=NA, rule="evenodd", border=out$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(a[,3:4], col=NA, rule="evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			} else {
-				graphics::polypath(a[,3:4], col=out$main_cols[i], rule = "evenodd", border=out$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
+				graphics::polypath(a[,3:4], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
 	}
-	out
+	invisible(out)
 }
 
 
@@ -81,7 +81,7 @@
 	} else {
 		e <- matrix(as.vector(ext(x)), 2)
 		if (out$leg$geomtype == "polygons") {
-			out <- .plotPolygons(x, out, ...)
+			out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, ...)
 		} else {
 			out <- .plotLines(x, out, ...)
 		}
@@ -253,7 +253,7 @@
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, new=NA, density=NULL, angle=45, ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, new=NA, density=NULL, angle=45, border="black", ...) {
 	
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
@@ -262,6 +262,7 @@
 
 	out$leg$density <- density
 	out$leg$angle <- angle
+	out$leg$border <- border
 
 	if (out$legend_type == "none") {
 		out <- .vect.legend.none(out)
@@ -294,8 +295,7 @@
 
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, 
-	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, border="black",
-	pax=list(), plg=list()) {
+	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, pax=list(), plg=list()) {
 
 	out <- list()
 	out$ngeom <- nrow(x)
@@ -360,7 +360,6 @@
 		alpha <- 255
 	}
 	out$cols <- cols
-	out$leg$border <- border
 	out$legend_draw <- isTRUE(legend)
 	out$legend_only <- isTRUE(legend.only)
 
