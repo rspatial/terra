@@ -3,8 +3,8 @@
 \docType{methods}
 
 \alias{plot}
-\alias{plot,SpatRaster,missing-method}
 \alias{plot,SpatRaster,numeric-method}
+\alias{plot,SpatRaster,missing-method}
 
 \title{Plot a SpatRaster}
 
@@ -17,9 +17,7 @@ Plot the values of a SpatRaster to make a map
      pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
      colNA=NULL, alpha=NULL, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), 
-     pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL,
-     colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, main, nc, nr, maxnl=16, ...)
 }
 
 \arguments{
@@ -43,7 +41,7 @@ Plot the values of a SpatRaster to make a map
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
-  \item{...}{additional graphical arguments}  
+  \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
 }
 
 \seealso{
@@ -58,15 +56,15 @@ plot(r)
 plot(r, type="interval")
 
 e <- c(178200,178400,331600,333600)
-plot(r, pal=list(ext=e, title="Title\n", title.cex=1.5))
+plot(r, plg=list(ext=e, title="Title\n", title.cex=1.25), pax=list(sides=1:2))
 
 d <- (r > 400) + (r > 600)
 plot(d)
 plot(d, type="classes")
 
 plot(d, type="interval", breaks=0:3) 
-plot(d, type="interval", breaks=3, pal=list(legend=c("0-1", "1-2", "2-3"))) 
-plot(d, type="classes", pal=list(legend=c("M", "X", "A")))
+plot(d, type="interval", breaks=3, plg=list(legend=c("0-1", "1-2", "2-3"))) 
+plot(d, type="classes", plg=list(legend=c("M", "X", "A"), x="bottomright"))
 
 x <- trunc(r/600)
 x <- as.factor(x)
@@ -82,7 +80,7 @@ plot(r/2, range=c(100,1800))
 
 # as you only need one legend:
 par(mfrow=c(1,2))
-plot(r, range=c(100,1800), mar=c(4, 3, 4, 3), pal=list(shrink=0.9, cex=.8), 
+plot(r, range=c(100,1800), mar=c(4, 3, 4, 3), plg=list(shrink=0.9, cex=.8), 
 	pax=list(sides=1:2, cex.axis=.6))
 text(182500, 335000, "Two maps, one plot", xpd=NA)
 plot(r/2, range=c(100,1800), mar=c(4, 2, 4, 4), legend=FALSE, 

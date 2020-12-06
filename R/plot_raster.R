@@ -324,6 +324,41 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 	}
 )
 
+setMethod("plot", signature(x="SpatRaster", y="missing"), 
+	function(x, y, maxcell=50000, main, nc, nr, maxnl=16, ...)  {
+
+		nl <- max(1, min(nlyr(x), maxnl))
+
+		if (nl==1) {
+			if (missing(main)) {
+				out <- plot(x, 1, maxcell=maxcell, ...)
+			} else {
+				out <- plot(x, 1, maxcell=maxcell, main=main[1], ...)
+			}
+			return(invisible(out))
+		}
+
+		nrnc <- .get_nrnc(nr, nc, nl)
+		old.par <- graphics::par(no.readonly = TRUE) 
+		on.exit(graphics::par(old.par))
+		graphics::par(mfrow=nrnc, mar=c(2, 2, 2, 4))
+		maxcell=maxcell/(nl/2)
+			
+		if (missing("main")) {
+			main <- names(x)
+		} else {
+			main <- rep_len(main, nl)	
+		}
+		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+		for (i in 1:nl) {
+			plot(x, i, main=main[i], ...)
+		}
+	}
+)
+
+
+
+
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; plg=list(); pax=list(); maxcell=50000
 
@@ -371,62 +406,4 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 # x <- as.factor(x)
 # levels(x) <- c("earth", "wind", "fire")
 # plot(x)
-
-
-
-
-setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, nc, nr, main, maxnl=16, ...)  {
-
-		nl <- max(1, min(nlyr(x), maxnl))
-		usefun = 0;
-		if (!is.null(fun)) {
-			if (!is.null(formals(fun))) {
-				usefun = 2;
-			} else {
-				usefun = 1;
-			}
-		}
-
-		if (nl==1) {
-			if (missing(main)) {
-				out <- plot(x, 1, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell, smooth=smooth, levels=levels, range=range, ...)
-			} else {
-				out <- plot(x, 1, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell, smooth=smooth, levels=levels, main=main[1], range=range, ...)
-			}
-			if (usefun == 1) {
-				fun()
-			} else if (usefun == 2) {
-				fun(1)
-			}
-			return(invisible(out))
-		}
-		nrnc <- .get_nrnc(nr, nc, nl)
-		
-		old.par <- graphics::par(no.readonly = TRUE) 
-		on.exit(graphics::par(old.par))
-		graphics::par(mfrow=nrnc, mar=c(2, 2, 2, 4))
-
-		maxcell=maxcell/(nl/2)
-			
-		if (missing("main")) {
-			main <- names(x)
-		} else {
-			main <- rep_len(main, nl)	
-		}
-		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
-
-		for (i in 1:nl) {
-			#	image(x[[i]], main=main[i], ...)
-			plot(x, i, main=main[i], col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, smooth=smooth, levels=levels, range=range, ...)
-			if (usefun == 1) {
-				fun()
-			} else if (usefun == 2) {
-				fun(i)
-			}
-		}
-	}
-)
-
-
 

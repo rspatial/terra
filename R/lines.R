@@ -40,7 +40,7 @@ setMethod("lines", signature(x="SpatVector"),
 
 
 setMethod("points", signature(x="SpatVector"), 
-	function(x, col, cex=1, pch=1, ...)  {
+	function(x, col, cex=1, pch=20, ...)  {
 		if (missing(col)) col <- "black"
 		n <- size(x)
 		col <- .getCols(n, col)

@@ -53,7 +53,7 @@ setMethod("levels", signature(x="SpatRaster"),
 setMethod("levels<-", signature(x="SpatRaster"), 
 	function(x, value) {
 		stopifnot(nlyr(x) == 1)
-		if (is.null(value) | is.na(value)) {
+		if (is.null(value) | is.na(value[1])) {
 			x@ptr$removeCategories(0)
 		}
 		#stopifnot(is.factor(x))

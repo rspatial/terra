@@ -67,17 +67,17 @@
 }
 
 
-.vplot <- function(x, out, xlab="", ylab="", cex=1, pch=1, ...) {
-	col <- out$main_cols
+.vplot <- function(x, out, xlab="", ylab="", cex=1, pch=20, ...) {
 	if (out$leg$geomtype == "points") {
-		#if (is.null(col)) col = "black"
 		if (out$add) {
-			points(x, col=col, cex=cex, pch=pch, ...)			
+			points(x, col=out$main_cols, cex=cex, pch=pch, ...)			
 		} else {
 			e <- as.vector(ext(x))
 			plot(e[1:2], e[3:4], type="n", axes=FALSE, xlab=xlab, ylab=ylab, asp=out$asp)
-			points(x, col=col, cex=cex, pch=pch, ...)			
+			points(x, col=out$main_cols, cex=cex, pch=pch, ...)			
 		}
+		out$leg$pch = pch
+		out$leg$pt.cex = cex		
 	} else {
 		e <- matrix(as.vector(ext(x)), 2)
 		if (out$leg$geomtype == "polygons") {
@@ -106,20 +106,22 @@
 
 
 .vect.legend.none <- function(out) {
-	if (out$leg$geomtype == "points") {
+	#if (out$leg$geomtype == "points") {
 		out$main_cols <- .getCols(out$ngeom, out$cols)
-	} else {
-		out$cols <- .getCols(out$ngeom, out$cols)
-	}
+	#} else {
+	#	out$cols <- .getCols(out$ngeom, out$cols)
+	#}
 	out
 }
 
 .vect.legend.classes <- function(out) {
 	ucols <- .getCols(length(out$uv), out$cols)
-	uv <- sort(out$uv)
+	
+	out$uv <- sort(out$uv)
+
 	i <- match(out$v, out$uv)
-	out$cols <- ucols[i]
-	out$main_cols <- out$cols
+	out$cols <- ucols
+	out$main_cols <- ucols[i]
 
 	out$levels <- out$uv
 	out$leg$legend <- out$uv
@@ -207,16 +209,19 @@
 	if (nmx <= 1) {
 		return(.vect.legend.classes(out, ...))
 	}
-	if (is.null(out$breaks)) {
-		out$breaks <- 5
-	} 
-	out$breaks <- min(out$breaks, nmx)
-	
 	if (!is.numeric(out$v)) {
 		out$v <- as.integer(as.factor(out$v))
 	}
-	
-	fz <- cut(out$v, out$breaks, include.lowest=TRUE, right=FALSE)
+
+	if (is.null(out$levels)) {
+		if (is.null(out$breaks)) {
+			out$breaks <- 5
+		} 
+		out$breaks <- min(out$breaks, nmx)
+		fz <- cut(out$v, out$breaks, include.lowest=TRUE, right=FALSE)
+	} else {
+		fz <- cut(out$v, out$levels, include.lowest=TRUE, right=FALSE)	
+	}
 	out$vcut <- as.integer(fz)
 	levs <- levels(fz)
 	nlevs <- length(levs)
@@ -253,7 +258,7 @@
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, new=NA, density=NULL, angle=45, border="black", ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", ...) {
 	
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
@@ -284,9 +289,9 @@
 
 	if (out$legend_draw) {	
 		if (out$legend_type == "continuous") {
-			out <- do.call(.plot.cont.legend, list(x=out))
+			out$legpars <- do.call(.plot.cont.legend, list(x=out))
 		} else {
-			out <- do.call(.plot.class.legend, out$leg)
+			out$legpars <- do.call(.plot.class.legend, out$leg)
 		}
 	}
 	out
@@ -294,8 +299,9 @@
 
 
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
-	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, 
-	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, pax=list(), plg=list()) {
+	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, 
+	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, 
+	pax=list(), plg=list(), ...) {
 
 	out <- list()
 	out$ngeom <- nrow(x)
@@ -321,7 +327,7 @@
 	out$breaks <- breaks
 	
 	out$v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
-	out$uv <- sort(unique(out$v))
+	out$uv <- unique(out$v)
 
 	if (missing(type)) {
 		if (!is.numeric(out$uv) | length(out$uv) < 10) {
@@ -332,27 +338,24 @@
 	} else {
 		type <- match.arg(type, c("continuous", "classes", "interval", "depends", "none"))
 	}
+	out$levels <- levels
+	out$range <- range
+
 	if (type=="none") {
 		legend <- FALSE
 		legend_only <- FALSE
-	} else if (type=="classes") {
-		out$levels <- levels
-	} else if (type=="continuous") {
-		out$range <- range
-	}
+	} 
 	out$legend_type <- type
 
-	if (missing(cols)) {
+	if (is.null(cols)) {
 		if (type == "none") {
 			if (out$leg$geomtype == "points") {
 				cols <- "black"
-			} else {
-				cols <- NULL
-			}
+			} 
 		} else {
-			cols <- topo.colors(100)			
+			cols <- rev(grDevices::rainbow(100, start=.1, end=0.9))		
 		}
-	}
+	} 
 	if (!is.null(alpha)) {
 		alpha <- clamp(alpha[1]*255, 0, 255)
 		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
@@ -378,12 +381,14 @@
 			out$r[is.na(out$r)] <- out$colNA
 		}
 	}
-	out
+
+	.plot.vect.map(x, out, main=main, ...)
 }
 
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
-	function(x, y, col, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, main=y, plg=list(), pax=list(), nr, nc, ...) {
+	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
+	main=y, plg=list(), pax=list(), nr, nc, ...) {
 
 		y <- trimws(y)
 		if (any(is.na(match(y, c("", names(x)))))) {
@@ -413,13 +418,14 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 				} else {
 					pax$sides <- 0
 				}
-			}			
+			}	
+			if (missing(col)) col <- NULL
+			
 			if (y[i] == "") {
-				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes)
+				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], ...)
 			} else {
-				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes)
+				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], ...)
 			}
-			out <- .plot.vect.map(x, out, main=main[i], ...)
 			invisible(out)		
 		}
 	}
@@ -434,14 +440,16 @@ setMethod("plot", signature(x="SpatVector", y="numeric"),
 		}
 		y[y<0] <- 0
 		y <- c("", names(x))[y+1]
-		plot(x, y, ...)
+		out <- plot(x, y, ...)
+		invisible(out)
 	}
 )
 
 
 setMethod("plot", signature(x="SpatVector", y="missing"), 
 	function(x, y, ...)  {
-		plot(x, "", ...)
+		out <- plot(x, "", ...)
+		invisible(out)
 	}
 )
 
