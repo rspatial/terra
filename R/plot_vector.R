@@ -18,7 +18,7 @@
 	for (i in 1:n) {
 		x <- g[[i]]
 		for (j in 1:length(x)) {
-			lines(x[[j]][,3:4], col=cols[i], lwd=lwd[i], lty=lty[i], ...)
+			lines(x[[j]][,3:4], col=out$main_cols[i], lwd=lwd[i], lty=lty[i], ...)
 		}
 	}
 	out$leg$lwd <- lwd

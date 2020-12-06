@@ -21,7 +21,7 @@ These are simpler alternatives for \code{plot(x, add=TRUE)}
 }
 
 \usage{
-\S4method{points}{SpatVector}(x, col, cex=1, pch=1, ...)
+\S4method{points}{SpatVector}(x, col, cex=1, pch=20, ...)
 
 \S4method{lines}{SpatVector}(x, col, lwd=1, lty=1, ...)
 

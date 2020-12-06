@@ -48,7 +48,9 @@ Plot SpatVector data to make a map
 \examples{ 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
+
 plot(v)
+
 plot(v, 2, pax=list(sides=1:2), plg=list(x=6.2, y=50.1, cex=1.2))
 
 plot(v, density=1:12, angle=seq(18, 360, 20), col=rainbow(12))
@@ -60,6 +62,7 @@ plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1), plg=list(x
 plot(v, "AREA", type="interval", levels=c(0,200,250,350), mar=c(2,2,2,2), 
   plg=list(legend=c("<200", "200-250", ">250"), cex=1, 
   bty="o", x=6.4, y=50.125, box.lwd=2, bg="light yellow", title="My Legend"))
+
 }
 
 \keyword{methods}
