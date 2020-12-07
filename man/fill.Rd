@@ -38,9 +38,9 @@ p
 f <- fill(p)
 g <- fill(p, inverse=TRUE)
 
-plot(p, lwd=16, border="gray")
-polys(f, border="blue", lwd=3, density=4)
-polys(g, col="red", lwd=3)
+plot(p, lwd=16, border="gray", col="light yellow")
+polys(f, border="blue", lwd=3, density=4, col="orange")
+polys(g, col="white", lwd=3)
 }
 
 

@@ -23,7 +23,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{index}{factor or numeric (integer). Vector of length \code{nlayers(x)} (shorter vectors are recycled) grouping the input layers}
+  \item{index}{factor or numeric (integer). Vector of length \code{nlyr(x)} (shorter vectors are recycled) grouping the input layers}
   \item{fun}{function to be applied}
   \item{...}{additional arguments passed to \code{fun}}  
   \item{filename}{character. Output filename. Optional}

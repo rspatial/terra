@@ -521,6 +521,28 @@ setMethod("rescale", signature(x="SpatVector"),
 )
 
 
+setMethod("scale", signature(x="SpatRaster"), 
+	function(x, center=TRUE, scale=TRUE) { 
+		opt <- .runOptions("", TRUE, list())
+
+		if (is.logical(center)) {
+			docenter = center[1];
+			center = 1[0]
+		} else {
+			docenter = TRUE
+		}
+		if (is.logical(scale)) {
+			doscale = scale[1]
+			scale = 1[0]
+		} else {
+			doscale = TRUE;
+		}		
+		x@ptr <- x@ptr$scale(center, docenter, scale, doscale, opt)
+		show_messages(x, "scale")		
+	}
+)
+
+
 setMethod("slope", signature(x="SpatRaster"), 
 	function(x, neighbors=8, unit="degrees", filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite, wopt)

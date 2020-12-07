@@ -114,36 +114,37 @@ Also see the methods in section XI
 \section{IV. Local (cell based) computation}{
 
   \tabular{ll}{
+    \code{\link{app}} \tab Apply a function to cells, across layers (as in \code{base::apply}) \cr
+    \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
+    \code{\link{lapp}} \tab Apply a function using the layers as variables\cr
+    \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
+    \code{\link{arith}} \tab Use a function to compute new values for all cells \cr
     \code{\link{Arith-methods}} \tab Standard arith methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
 	\code{\link{Math-methods}} \tab Math methods like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
     \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
     \code{\link{Summary-methods}} \tab Summary methods (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
     \code{\link{Compare-methods}} \tab Comparison methods (\code{==, !=, >, <, <=, >=}) \cr
-    \code{\link{arith}} \tab Use a function to compute new values for all cells \cr
-    \code{\link{app}} \tab Apply a function to cells, across layers (as in \code{base::apply}) \cr
-    \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
-    \code{\link{lapp}} \tab Apply a function using the layers as variables\cr
-    \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
-    \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
-    \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
-    \code{\link{classify}} \tab (Re-)classify values \cr
-    \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{\link{area}} \tab Compute the area of cells \cr
+    \code{\link{classify}} \tab (Re-)classify values \cr
+    \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
+    \code{\link{init}} \tab Initialize cells with new values \cr	
+    \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
 \section{V. Zonal and global computation}{
   \tabular{ll}{
-    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
-    \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
-    \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
-    \code{\link{crosstab}} \tab Cross-tabulate two SpatRasters\cr
-    \code{\link{quantile}} \tab Quantiles \cr
-    \code{\link[terra]{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
     \code{\link{area}} \tab Compute the total area covered by cells \cr
+    \code{\link{crosstab}} \tab Cross-tabulate two SpatRasters\cr
+    \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
+    \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
+    \code{\link{quantile}} \tab Quantiles \cr
     \code{\link{stretch}} \tab Stretch values \cr
+    \code{\link{scale}} \tab Scale values \cr
+    \code{\link[terra]{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
+    \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
+    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }

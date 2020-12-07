@@ -499,6 +499,7 @@ RCPP_MODULE(spat){
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues, "sampleValues")	
 		.method("sampleRandomRaster", &SpatRaster::sampleRandomRaster, "sampleRandom")	
 		.method("sampleRandomValues", &SpatRaster::sampleRandomValues, "sampleValues")	
+		.method("scale", &SpatRaster::scale, "scale")
 		.method("shift", &SpatRaster::shift, "shift")
 		.method("slope", &SpatRaster::slope, "slope")
 		.method("summary", &SpatRaster::summary, "summary")
@@ -525,7 +526,7 @@ RCPP_MODULE(spat){
 		//.method("mosaic", &SpatRasterCollection::mosaic, "mosaic")
 	;
 	
-    class_<SpatRasterStack>("SpatDataSet")
+    class_<SpatRasterStack>("SpatRasterStack")
 		.constructor()
 	    .constructor<std::string, std::vector<int>, bool>()
 	    .constructor<SpatRaster, std::string>()

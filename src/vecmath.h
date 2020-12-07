@@ -143,6 +143,31 @@ T vsum(std::vector<T>& v, bool narm) {
 	return x;
 }
 
+template <typename T>
+T vsum2(std::vector<T>& v, bool narm) {
+	T x = v[0];
+	if (narm) {		
+		for (size_t i=1; i<v.size(); i++) {
+			if (is_NA(x)) {
+				x = v[i] * v[i];
+			} else if (!is_NA(v[i])) {
+				x += v[i] * v[i];
+			}
+		}
+	} else {
+		for (size_t i=1; i<v.size(); i++) {
+			if (!is_NA(x)) {
+				if (is_NA(v[i])) {
+					x = NA<T>::value;
+					break;
+				} else {
+					x += v[i] * v[i];
+				}
+			}
+		}
+	}
+	return x;
+}
 
 
 

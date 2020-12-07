@@ -129,7 +129,8 @@
 		} else if (loc == "top") {
 			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
 		} else {
-			stop(loc)
+			warning("invalid location:", loc)
+			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
 		}
 	}
 	x$leg$ext <- p

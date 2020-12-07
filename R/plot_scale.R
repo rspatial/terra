@@ -15,13 +15,13 @@
 .arrow <- function(d, xy=click(), head=0.1, ...) {
 	graphics::arrows(xy[1], xy[2], xy[1], xy[2]+d, length=head, ...)
 	lines(rbind(xy, rbind(cbind(xy[1], xy[2]-d))), ...)
-	text(xy[1,1], xy[1,2]-(0.25*d), 'N')
+	text(xy[1,1], xy[1,2]-(0.25*d), "N")
 }
 
 
-.scalebar <- function(d, xy=NULL, type='line', divs=2, below='', lonlat=NULL, label, adj=c(0.5, -0.5), lwd=2, ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -0.5), lwd=2, ...){
 
-	stopifnot(type %in% c('line', 'bar'))
+	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
 	if (is.null(lonlat)) {
 		if ( pr$usr[1] > -181 & pr$usr[2] < 181 &  pr$yaxp[1] > -200 &  pr$yaxp[2] < 200  ) {
@@ -34,7 +34,7 @@
 	if (lonlat) {
 		lat <- mean(pr$yaxp[1:2])
 		if (missing(d)) {
-			dx <- (pr$usr[2] - pr$usr[1]) / 10
+			dx <- (pr$usr[2] - pr$usr[1]) / 6
 			d <- pointDistance(cbind(0, lat), cbind(dx, lat), TRUE)
 			d <- signif(d / 1000, 2) 
 			label <- NULL
@@ -57,7 +57,7 @@
 		xy <- c(pr$usr[1]+(padding[1]*parrange[1]), pr$usr[3]+(padding[2]*parrange[2]))
 	}
 
-	if (type == 'line') {
+	if (type == "line") {
 		lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd, ...)
 		if (missing(label)) {
 			label <- paste(d)
@@ -71,7 +71,7 @@
 		text(xy[1]+(0.5*dd), xy[2],labels=label, adj=adj,...)
 		
 		
-	} else if (type == 'bar') {
+	} else if (type == "bar") {
 		stopifnot(divs > 0)
 		
 		if (missing(adj)) {
@@ -81,13 +81,13 @@
 		
 		if (divs==2) {
 			half <- xy[1] + dd / 2
-			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col='white')
-			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col='black')
+			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white")
+			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black")
 			if (missing(label)) {
-				label <- c('0', '', d)
+				label <- c("0", "", d)
 			}
 			if (is.null(label)) {
-				label <- c('0', '', d)
+				label <- c("0", "", d)
 			}
 			
 			text(xy[1], xy[2],labels=label[1], adj=adj,...)
@@ -98,15 +98,15 @@
 			half <- xy[1] + dd / 2
 			q3 <- xy[1] + 3 * dd / 4
 			end <- xy[1] + dd 
-			graphics::polygon(c(xy[1], xy[1], q1, q1), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col='white')
-			graphics::polygon(c(q1, q1, half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col='black')
-			graphics::polygon(c(half, half, q3, q3 ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col='white')
-			graphics::polygon(c(q3, q3, end, end), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col='black')
+			graphics::polygon(c(xy[1], xy[1], q1, q1), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white")
+			graphics::polygon(c(q1, q1, half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black")
+			graphics::polygon(c(half, half, q3, q3 ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white")
+			graphics::polygon(c(q3, q3, end, end), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black")
 			if (missing(label)) {
-				label <- c('0', round(0.5*d), d)
+				label <- c("0", round(0.5*d), d)
 			}
 			if (is.null(label)) {
-				label <- c('0', round(0.5*d), d)
+				label <- c("0", round(0.5*d), d)
 			}
 			text(xy[1], xy[2], labels=label[1], adj=adj,...)
 			text(half, xy[2], labels=label[2], adj=adj,...)

@@ -148,6 +148,8 @@ if (!isGeneric("rotate")) {setGeneric("rotate", function(x, ...) standardGeneric
 if (!isGeneric("rescale")) {setGeneric("rescale", function(x, ...) standardGeneric("rescale"))}	
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}
 if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x) standardGeneric("setMinMax"))}	
+if (!isGeneric("scale")) {setGeneric("scale", function(x) standardGeneric("scale"))}	
+
 if (!isGeneric("shift")) {setGeneric("shift", function(x, ...) standardGeneric("shift"))}	
 if (!isGeneric("stdev")) { setGeneric("stdev", function(x, ...) standardGeneric("stdev")) }	
 if (!isGeneric("subset")) {setGeneric("subset", function(x, ...) standardGeneric("subset")) }

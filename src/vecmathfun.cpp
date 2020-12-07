@@ -28,6 +28,8 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 		theFun = vmean<double>;
 	} else if (fun == "sum") {
 		theFun = vsum<double>;
+	} else if (fun == "sum2") {
+		theFun = vsum2<double>;
 	} else if (fun == "min") {
 		theFun = vmin<double>;
 	} else if (fun == "max") {

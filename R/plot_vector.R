@@ -137,22 +137,11 @@
 	}
 	out$leg$fill <- cols
 	out$legend_type <- "classes"
-		
-	if (is.null(out$leg$x)) {
-		if (is.null(out$leg$ext)) {
-			out$leg$x = "top"
-			out$leg$y = NULL
-		} else {
-			if (length(out$leg$ext) == 4) {
-				out$leg$x = out$leg$ext[1]
-				out$leg$y = out$leg$ext[4]
-			} else {
-				out$leg$x = "top"
-				out$leg$y = NULL
-			}
-		}	
+
+	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
+		out$leg$x <- "top"
 	}
-	
+		
 	out
 }
 
@@ -162,14 +151,6 @@
 	z <- stats::na.omit(out$v)
 	n <- length(z)
 	if (n == 0) stop("no values")
-	if (out$legend_type == "depends") {
-		if (length(unique(z)) < 6) {
-			return (.vect.legend.classes(out))
-		}
-	} else if (length(unique(z)) == 1) {
-		return (.vect.legend.classes(out))
-	}
-	
 	if (!is.numeric(out$v)) {
 		out$v <- as.integer(as.factor(out$v))
 		z <- stats::na.omit(out$v)
@@ -203,25 +184,17 @@
 }
 
 
-.vect.legend.interval <- function(out, ...) {
+.vect.legend.interval <- function(out, dig.lab=3, ...) {
 
 	nmx <- length(out$uv)
-	if (nmx <= 1) {
-		return(.vect.legend.classes(out, ...))
-	}
 	if (!is.numeric(out$v)) {
 		out$v <- as.integer(as.factor(out$v))
 	}
 
-	if (is.null(out$levels)) {
-		if (is.null(out$breaks)) {
-			out$breaks <- 5
-		} 
-		out$breaks <- min(out$breaks, nmx)
-		fz <- cut(out$v, out$breaks, include.lowest=TRUE, right=FALSE)
-	} else {
-		fz <- cut(out$v, out$levels, include.lowest=TRUE, right=FALSE)	
-	}
+	if (is.null(out$breaks)) {
+		out$breaks <- min(5, nmx)
+	} 
+	fz <- cut(out$v, out$breaks, include.lowest=TRUE, right=FALSE, dig.lab=dig.lab)
 	out$vcut <- as.integer(fz)
 	levs <- levels(fz)
 	nlevs <- length(levs)
@@ -239,7 +212,10 @@
 	out$legend_type <- "classes"
 	
 	if (!is.null(out$leg$legend)) {
-		stopifnot(length(out$leg$legend) == nlevs)	
+		if (length(out$leg$legend) != nlevs) {
+			warning("legend does not match number of levels")
+			out$leg$legend <- rep_len(out$leg$legend, nlevs)
+		}
 	} else {
 		levs <- gsub("]", "", gsub(")", "", gsub("\\[", "", levs)))
 		levs <- paste(levs, collapse=",")
@@ -258,7 +234,7 @@
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, ...) {
 	
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
@@ -269,15 +245,34 @@
 	out$leg$angle <- angle
 	out$leg$border <- border
 
+	nuq <- length(out$uv)
 	if (out$legend_type == "none") {
 		out <- .vect.legend.none(out)
 	} else if (out$legend_type == "classes") {
 		out <- .vect.legend.classes(out)
 	} else if (out$legend_type == "interval") {
-		out <- .vect.legend.interval(out)
+		if (nuq < 2) {
+			out <- .vect.legend.classes(out, ...)
+		} else {
+			out <- .vect.legend.interval(out, dig.lab=dig.lab)
+		}
+	} else if (out$legend_type == "depends") {
+		if (nuq < 11) {
+			out <- .vect.legend.classes(out)
+		} else if (!is.numeric(out$uv)) {	
+			if (nuq < 21) {
+				out <- .vect.legend.classes(out)
+			}
+		} else {
+			out <- .vect.legend.interval(out, dig.lab=dig.lab)		
+		}
 	} else {
-		out <- .vect.legend.continuous(out)
-		out$leg$density <- NULL
+		if (nuq == 1) {
+			out <- .vect.legend.classes(out)
+		} else {
+			out <- .vect.legend.continuous(out)
+			out$leg$density <- NULL
+		}
 	}				
 	if (!out$legend_only) {
 		out <- .vplot(x, out, ...) 
@@ -330,11 +325,7 @@
 	out$uv <- unique(out$v)
 
 	if (missing(type)) {
-		if (!is.numeric(out$uv) | length(out$uv) < 10) {
-			type <- "classes"
-		} else {
-			type <- "continuous"
-		}
+		type <- "depends"
 	} else {
 		type <- match.arg(type, c("continuous", "classes", "interval", "depends", "none"))
 	}

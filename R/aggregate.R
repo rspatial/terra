@@ -5,7 +5,8 @@
 
 
 .makeTextFun <- function(fun) {
-	if (class(fun) != "character") {
+	if (!inherits(fun, "character")) {
+		fun <- match.fun(fun)
 		if (is.primitive(fun)) {
 			test <- try(deparse(fun)[[1]], silent=TRUE)
 			if (test == '.Primitive(\"sum\")') { fun <- 'sum' 

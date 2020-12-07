@@ -538,6 +538,7 @@ class SpatRaster {
 		std::vector<std::vector<double>> sampleRegularValues(unsigned size);
 		std::vector<std::vector<double>> sampleRandomValues(unsigned size, bool replace, unsigned seed);
 
+		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);
 		SpatRaster slope(unsigned neighbors, bool degrees, SpatOptions &opt);
 
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);

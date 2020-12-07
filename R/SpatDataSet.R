@@ -27,7 +27,7 @@ setMethod("sds", signature(x="character"),
 		} else {
 			useids <- TRUE
 		}
-		r@ptr <- SpatDataSet$new(f, ids, useids)
+		r@ptr <- SpatRasterStack$new(f, ids, useids)
 		show_messages(r, "sds")
 	}
 )
@@ -35,7 +35,7 @@ setMethod("sds", signature(x="character"),
 setMethod("sds", signature(x="missing"),
 	function(x, ...) {
 		r <- methods::new("SpatDataSet")
-		r@ptr <- SpatDataSet$new()
+		r@ptr <- SpatRasterStack$new()
 		r
 	}
 )
@@ -44,7 +44,7 @@ setMethod("sds", signature(x="missing"),
 setMethod("sds", signature(x="SpatRaster"),
 	function(x, ...) {
 		r <- methods::new("SpatDataSet")
-		r@ptr <- SpatDataSet$new(x@ptr, "")
+		r@ptr <- SpatRasterStack$new(x@ptr, "")
 		dots <- list(...)
 		nms <- names(dots)
 		if (is.null(nms)) nms = ""
@@ -61,7 +61,7 @@ setMethod("sds", signature(x="SpatRaster"),
 setMethod("sds", signature(x="list"),
 	function(x, ...) {
 		r <- methods::new("SpatDataSet")
-		r@ptr <- SpatDataSet$new()
+		r@ptr <- SpatRasterStack$new()
 		nms <- names(x)
 		if (is.null(nms)) nms <- rep("", length(x))
 		for (i in seq_along(x)) {
@@ -139,7 +139,7 @@ function(x, i, j, ... ,drop=TRUE) {
 		return(y[[j]])
 	}
 	nd <- y@ptr$nsds()
-	x@ptr <- SpatDataSet$new()
+	x@ptr <- SpatRasterStack$new()
 	nms <- y@ptr$names
 	for (k in seq_along(1:nd)) {
 		r <- y[k][[j]]

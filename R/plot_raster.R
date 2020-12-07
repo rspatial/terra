@@ -4,7 +4,6 @@
 		
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
-	Z <- round(Z, 10) # avoid missing extreme values due to precision problems
 	
 	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
@@ -23,8 +22,13 @@
 		stopifnot(length(out$range) == 2)
 		stopifnot(out$range[2] > out$range[1])
 	}
-	
-	
+
+	# avoid missing extreme values due to precision problems
+	# this did not do it
+	# Z <- round(Z, 10) 
+	# so let's try this
+	out$range[1] <- 0.9999999999 * out$range[1]
+	out$range[2] <- 1.0000000001 * out$range[2]
 	interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
 	breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
 		

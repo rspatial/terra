@@ -1596,6 +1596,11 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 		for (size_t i=0; i<v.size(); i++) {
 			n += !std::isnan(v[i]);
 		}
+	} else if (fun == "rms") {
+		stat += vsum2(v, narm);
+		for (size_t i=0; i<v.size(); i++) {
+			n += !std::isnan(v[i]);
+		}
 	} else if (fun == "min") {
 		double s = vmin(v, narm);
 		if (i > 0) {
@@ -1617,7 +1622,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
-	std::vector<std::string> f {"sum", "mean", "min", "max", "range"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "rms"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return(out);
@@ -1666,8 +1671,16 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 				stats[lyr] = NAN;
 			}
 		}
+	} else if (fun=="rms") {
+		// rms = sqrt(sum(x^2)/(n-1))
+		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+			if (n[lyr] > 0) {
+				stats[lyr] = sqrt(stats[lyr] / (n[lyr]-1));
+			} else {
+				stats[lyr] = NAN;
+			}
+		}
 	}
-
 
 	out.add_column(stats, fun);
 	if (range) {
@@ -1756,4 +1769,38 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 }
 
 
+SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt) {
+	SpatRaster out;
+	SpatOptions opts(opt);
+	SpatDataFrame df;
+	if (docenter) {
+		if (center.size() == 0) {
+			df = global("mean", true, opts);
+			center = df.getD(0);
+		}
+		if (doscale) {
+			out = arith(center, "-", false, opts);
+		} else {
+			out = arith(center, "-", false, opt);			
+		}
+	} 
+	if (doscale) {
+		if (scale.size() == 0) {
+			// divide by sd if centered, and the root mean square otherwise.
+			// rms = sqrt(sum(x^2)/(n-1)); if centered rms == sd
+			if (docenter) {
+				df = out.global("rms", true, opts);
+			} else {
+				df = global("rms", true, opts);
+			}
+			scale = df.getD(0);			
+		}
+		if (docenter) {
+			out = out.arith(scale, "/", false, opt);
+		} else {
+			out = arith(scale, "/", false, opt);
+		}
+	}
+	return out;
+}
 

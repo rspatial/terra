@@ -28,7 +28,7 @@ setClass("SpatDataSet",
 		ptr = NULL
 	),
 	validity = function(object)	{
-		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatDataSet")){
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatRasterStack")){
 			return(TRUE)
 		} else {
 			return(FALSE)		

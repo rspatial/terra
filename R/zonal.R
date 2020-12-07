@@ -38,7 +38,8 @@ setMethod("global", signature(x="SpatRaster"),
 
 		nms <- names(x)
 		nms <- make.unique(nms)
-		txtfun <- .makeTextFun(match.fun(fun))
+		txtfun <- .makeTextFun(fun)
+
 		#if (txtfun == '.Primitive(\"range\")') txtfun <- "range" 
 
 		opt <- .getOptions()
@@ -53,13 +54,12 @@ setMethod("global", signature(x="SpatRaster"),
 			return(res)
 		}
 		
-		txtfun <- .makeTextFun(match.fun(fun))
 		if (inherits(txtfun, "character")) { 
-			if (txtfun %in% c("max", "min", "mean", "sum", "range")) {
+			if (txtfun %in% c("max", "min", "mean", "sum", "range", "rms")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$global(txtfun, na.rm, opt)
 				show_messages(ptr, "global")
-				res <- (.getSpatDF(ptr))
+				res <- .getSpatDF(ptr)
 
 				rownames(res) <- nms
 				return(res)
