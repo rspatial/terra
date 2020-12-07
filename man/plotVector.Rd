@@ -44,9 +44,7 @@ Plot SpatVector data to make a map
   \item{...}{additional arguments passed to \code{plot("SpatVector", "character")} method, and graphical arguments such as \code{lwd}, \code{cex} and \code{pch}}  
 }
 
-seealso{
-\code{\link{sbar}}
-}
+\seealso{\code{\link{sbar}}}
 
 \examples{ 
 f <- system.file("ex/lux.shp", package="terra")

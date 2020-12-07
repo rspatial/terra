@@ -474,11 +474,11 @@ std::vector<std::string> SpatRaster::getLongSourceNames() {
 
 
 bool SpatRaster::setLongSourceNames(std::vector<std::string> names) {
-	if (names.size() == 0) {
+	if (names.size() == 1) {
 		for (size_t i=0; i<source.size(); i++)	{
 			source[i].source_name_long = names[0];
 		}
-	} else if (names.size() == nlyr()) {
+	} else if (names.size() == nsrc()) {
 		for (size_t i=0; i<source.size(); i++)	{
 			source[i].source_name_long = names[i];
 		}		
@@ -501,11 +501,11 @@ std::vector<std::string> SpatRaster::getSourceNames() {
 
 
 bool SpatRaster::setSourceNames(std::vector<std::string> names) {
-	if (names.size() == 0) {
+	if (names.size() == 1) {
 		for (size_t i=0; i<source.size(); i++)	{
 			source[i].source_name = names[0];
 		}
-	} else if (names.size() == nlyr()) {
+	} else if (names.size() == nsrc()) {
 		for (size_t i=0; i<source.size(); i++)	{
 			source[i].source_name = names[i];
 		}		

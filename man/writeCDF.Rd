@@ -12,7 +12,7 @@ Write a SpatRaster or SpatDataSet to a NetCDF file.
 }
 
 \usage{
-\S4method{writeCDF}{SpatRaster}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...)
+\S4method{writeCDF}{SpatRaster}(x, filename,  varname, longname="", units="", overwrite=FALSE, datatype="double", NAflag=-9999, ...)
 
 \S4method{writeCDF}{SpatDataSet}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...)
 }
@@ -20,6 +20,9 @@ Write a SpatRaster or SpatDataSet to a NetCDF file.
 \arguments{
   \item{x}{SpatRaster or SpatDataSet}
   \item{filename}{character. Output filename}
+  \item{varname}{character)
+  \item{longname}{character)
+  \item{units}{character)
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{datatype}{character. One of "double", "float", "integer", "short", "byte" or "char"}
   \item{NAflag}{numeric}

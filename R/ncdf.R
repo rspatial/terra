@@ -52,7 +52,10 @@
 
 
 setMethod("writeCDF", signature(x="SpatRaster"), 
-	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
+	function(x, filename, varname, longname="", units="", overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
+		units(x) <- units
+		varnames(x) <- varname
+		longnames(x) <- longname
 		x <- sds(x)
 		writeCDF(x, filename=filename, overwrite=overwrite, datatype=datatype, NAflag=NAflag, ...)
 	}
@@ -62,7 +65,8 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 setMethod("writeCDF", signature(x="SpatDataSet"), 
 	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
 
-		force_v4=TRUE
+		force_v4 <- list(...)$force_v4
+		if (is.null(force_v4)) force_v4 <- FALSE
 
 		filename <- trimws(filename)
 		stopifnot(filename != "")
@@ -70,16 +74,14 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 			stop("file exists, use overwrite=TRUE to overwrite it")
 		}
 
-		# loop over subdatasets 
-		# for now:
-		x <- x[1] 
-		longname <- longnames(x)[1]
-		varname <- varnames(x)[1]
-		if (varname == "") varname <- "data"
-		unit <- units(x)[1]
-		
-		
-		if (isLonLat(x, perhaps=TRUE, warn=FALSE)) {
+		n <- length(x)
+#		longnames <- longnames(x)
+		vars <- varnames(x)
+		vars[vars == ""] <- (1:n)[vars == ""] 
+#		units <- units(x)
+		nl <- nlyr(x)
+		y <- x[1]
+		if (isLonLat(y, perhaps=TRUE, warn=FALSE)) {
 			xname = "longitude"
 			yname = "latitude"
 			xunit = "degrees_east"
@@ -90,66 +92,71 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 			xunit = "meter" # probably
 			yunit = "meter" # probably
 		}
-		xdim <- ncdf4::ncdim_def( xname, xunit, xFromCol(x, 1:ncol(x)) )
-		ydim <- ncdf4::ncdim_def( yname, yunit, yFromRow(x, 1:nrow(x)) )
+		xdim <- ncdf4::ncdim_def( xname, xunit, xFromCol(y, 1:ncol(y)) )
+		ydim <- ncdf4::ncdim_def( yname, yunit, yFromRow(y, 1:nrow(y)) )
 
-		nl <- nlyr(x)
-	
-		if (nl > 1) {
-			if (x@ptr$hasTime) {
-				zv <- x@ptr$time
-				zatt <- list("units=seconds since 1970-1-1 00:00:00")		
-				zunit <- "seconds"
-				zname <- "time"
-			} else {
-				zv <- 1:nlyr(x)
-				zatt <- list("units=unknown")		
-				zunit <- "unknown"
-				zname <- "layer"
+		dtype <- rep_len(datatype, n)
+		ncvars <- list()
+
+		for (i in 1:n) {
+			y <- x[i]
+			if (nl[i] > 1) {	
+				unit <- units(y)[1]
+				lvar <- longnames(y)[1]
+				if (y@ptr$hasTime) {
+					zv <- time(y)
+					zatt <- list("units=seconds since 1970-1-1 00:00:00")		
+					zunit <- "seconds"
+					zname <- "time"
+				} else {
+					zv <- 1:nlyr(y)
+					zatt <- list("units=unknown")		
+					zunit <- "unknown"
+					zname <- "layer"
+				} 
+				zdim <- ncdf4::ncdim_def(zname, zunit, zv, unlim=TRUE )
+
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units, list(xdim, ydim, zdim), NAflag, lvar, prec = dtype[i], ...)
+			} else {			
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units, list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
 			}
-			zdim <- ncdf4::ncdim_def( zname, zunit, zv, unlim=TRUE )
-			vardef <- ncdf4::ncvar_def( varname, unit, list(xdim, ydim, zdim), NAflag, longname, prec = datatype, ... )
-		} else {
-			vardef <- ncdf4::ncvar_def( varname, unit, list(xdim, ydim), NAflag, longname, prec = datatype, ... )		
 		}
 		
-		crsdef <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
-		defs <- list(crsdef, vardef)
-
-		nc <- ncdf4::nc_create(filename, defs, force_v4=force_v4)
-		on.exit( ncdf4::nc_close(nc) )		
-
-		prj <- crs(x)
-		if (!is.na(prj)) {
-			ncdf4::ncatt_put(nc, "crs", "wkt", prj, prec="text")
-			ncdf4::ncatt_put(nc, varname, "grid_mapping", "crs")
-			ncdf4::ncatt_put(nc, varname, "wkt", prj, prec="text")
-		}
+		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4)
+		#on.exit( ncdf4::nc_close(ncobj) )
 		
-		ncdf4::ncatt_put(nc, 0, "Conventions", "CF-1.4", prec="text")
+		# writing all at once. need to chunk 
+		nc <- ncol(x)
+		nr <- nrow(x)
+		for (i in 1:n) {
+			y = x[i]
+			if (nl[i] > 1) {
+				v <- values(y)
+				v <- array(v, c(nr, nc, nl[i]))
+
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], values(y), start=c(1,1,1), count=dim(y)[c(2,1,3)])
+			} else {
+				v <- t(as.matrix(y, TRUE))
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], v, start=c(1,1), count=dim(y)[2:1])			
+			}
+		}
+
+		#crsname <- "latitude_longitude"
+		#ncvars[[7]] <- ncdf4::ncvar_def(crsname, "1", NULL, NULL, crsname, prec = "char")
+		#nc <- nc_create(filename, ncvars)
+		#prj <- crs(x[1])
+		#if (!is.na(prj)) {
+		#	ncdf4::ncatt_put(ncobj, "crs", "wkt", prj, prec="text")
+		#	ncdf4::ncatt_put(ncobj, varname, "grid_mapping", "crs")
+		#	ncdf4::ncatt_put(ncobj, varname, "wkt", prj, prec="text")
+		#}
+		
+		ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 		pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
-		ncdf4::ncatt_put(nc, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
-		ncdf4::ncatt_put(nc, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
+		ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
+		ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
-	#start loop for writing
-	# for now:
-		nrows <- nrow(x)
-		ncols <- ncol(x)
-		start <- 1
-		v <- values(x)
-
-		if (nl > 1) {
-			lstart <- 1
-			lend <- nl
-			v <- array(v, c(nrows, ncols, nl))
-			try ( ncdf4::ncvar_put(nc, varname, v, start=c(1, start, lstart), count=c(ncols, nrows, lend) ) )
-		} else {
-			v <- array(v, c(nrows, ncols, nl))
-			try ( ncdf4::ncvar_put(nc, varname, v, start=c(1, start), count=c(ncols, nrows) ) )
-		}
-
-	#end loop	
-
+		ncdf4::nc_close(ncobj)
 		invisible(rast(filename))
 	}
 )

@@ -22,15 +22,6 @@
 		stopifnot(out$range[2] > out$range[1])
 	}
 
-	# avoid missing extreme values due to precision problems
-	# this did not do it
-	# Z <- round(Z, 10) 
-	# so let's try this
-	#out$range[1] <- 0.9999999999 * out$range[1]
-	#out$range[2] <- 1.0000000001 * out$range[2]
-	#interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
-	#breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
-		
 	breaks <- .get_breaks(Z, length(out$cols), "eqint", out$range)
 	Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
 	out$r <- as.raster(Z)
@@ -114,22 +105,16 @@
 	out
 }
 
-
-.as.raster.interval <- function(out, x, ...) {
-
+# to be merged with the vector variant.
+.generic.interval <- function(out, Z) {
 	if (is.null(out$breaks)) {
 		out$breaks <- 5
 	} 
-	
-	Z <- as.matrix(x, TRUE)
-	Z[is.nan(Z) | is.infinite(Z)] <- NA
-
 	if (length(out$breaks) == 1) {
 		out$breaks <- .get_breaks(Z, out$breaks, out$breakby, out$range)
 	}
 	fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE)
-
-
+	out$vcut = as.integer(fz)
 	levs <- levels(fz)
 	nlevs <- length(levs)
 	
@@ -143,8 +128,6 @@
 	}
 	#out$cols <- cols
 	out$leg$fill <- cols
-	Z[] <- cols[as.integer(fz)]
-	out$r <- as.raster(Z)
 	#out$leg$levels <- levels(fz)
 	out$legend_type <- "classes"
 	
@@ -161,6 +144,15 @@
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
 		out$leg$x <- "top"
 	}
+	out
+}
+
+.as.raster.interval <- function(out, x, ...) {
+	Z <- as.matrix(x, TRUE)
+	Z[is.nan(Z) | is.infinite(Z)] <- NA
+	out <- .generic.interval(out, Z)
+	Z[] <- out$leg$fill[out$vcut]
+	out$r <- as.raster(Z)
 	out
 }
 
