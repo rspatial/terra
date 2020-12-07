@@ -20,9 +20,9 @@ Write a SpatRaster or SpatDataSet to a NetCDF file.
 \arguments{
   \item{x}{SpatRaster or SpatDataSet}
   \item{filename}{character. Output filename}
-  \item{varname}{character)
-  \item{longname}{character)
-  \item{units}{character)
+  \item{varname}{character}
+  \item{longname}{character}
+  \item{units}{character}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{datatype}{character. One of "double", "float", "integer", "short", "byte" or "char"}
   \item{NAflag}{numeric}
