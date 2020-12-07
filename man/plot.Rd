@@ -13,7 +13,7 @@ Plot the values of a SpatRaster to make a map
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), 
+\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), 
      pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
      colNA=NULL, alpha=NULL, ...)
 
@@ -25,7 +25,7 @@ Plot the values of a SpatRaster to make a map
   \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
   \item{col}{character. Colors}
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval"}
-  \item{mar}{numeric vector of length 4 to set the margins of the plot}
+  \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is c(3.1, 3.1, 2.1, 7.1) for a plot with a legend. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical. Draw a legend?}
   \item{axes}{logical. Draw axes?}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}}
@@ -45,7 +45,7 @@ Plot the values of a SpatRaster to make a map
 }
 
 \seealso{
- \code{\link{image}}, \code{\link[terra:plotVector]{plotVector}}, \code{scatter\link[terra:scatter]{plot}}
+ \code{\link{image}}, \code{\link[terra:plotVector]{plotVector}}, \code{scatter\link[terra:scatter]{plot}}, \code{\link{sbar}}
 }
 
 \examples{ 

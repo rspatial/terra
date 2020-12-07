@@ -6,7 +6,7 @@
 \alias{aggregate,SpatRaster-method}
 \alias{aggregate,SpatVector-method}
 
-\title{Aggregate raster cells}
+\title{Aggregate raster or vector data}
 
 \description{
 Aggregate a SpatRaster to create a new SpatRaster with a lower resolution (larger cells). Aggregation groups rectangular areas to create larger cells. The value for the resulting cells is computed with a user-specified function. 
@@ -17,24 +17,21 @@ Or aggregate ("dissolve") a SpatVector.
 \usage{
 \S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{aggregate}{SpatVector}(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...)
+\S4method{aggregate}{SpatVector}(x, by=NULL, dissolve=TRUE, fun, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{fact}{positive integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers)}  
-  \item{fun}{function used to aggregate values. Either an actual function, or a character specifying a C++ level implemented function: "mean", "max", "min", "median", "sum" and "modal"}
+  \item{fun}{function used to aggregate values. Either an actual function, or for the following, their name: "mean", "max", "min", "median", "sum" and "modal"}
   \item{...}{additional arguments passed to \code{fun}, such as \code{na.rm=TRUE}}  
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created. Ignored for C++ level implemented functions "mean", "max", "min", "median", "sum" and "modal"}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   
-  \item{by}{character}
-  \item{sums}{list}
-  \item{dissolve}{logical}
-  \item{vars}{character}
-   
+  \item{by}{character. The variable used to aggregate the geometries}
+  \item{dissolve}{logical. Should borders between aggregated geometries be dissolved?} 
 }
 
 

@@ -1,13 +1,4 @@
 
-## cheating --- using raster/sp/rgeos for now
-setMethod("aggregate", signature(x="SpatVector"),
-	function(x, by=NULL, sums=NULL, dissolve=TRUE, vars=NULL, ...) {
-		#gt <- geomtype(x)
-		x <- methods::as(x, "Spatial")
-		r <- aggregate(x, by=by, sums=sums, dissolve=dissolve, vars=vars, ...)
-		vect(r)
-	}
-)
 
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {

@@ -194,6 +194,11 @@
 	if (is.null(out$breaks)) {
 		out$breaks <- min(5, nmx)
 	} 
+
+	if (length(out$breaks) == 1) {
+		out$breaks <- .get_breaks(out$v, out$breaks, out$breakby, out$range)
+	}
+
 	fz <- cut(out$v, out$breaks, include.lowest=TRUE, right=FALSE, dig.lab=dig.lab)
 	out$vcut <- as.integer(fz)
 	levs <- levels(fz)
@@ -294,7 +299,7 @@
 
 
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
-	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, 
+	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, 
 	pax=list(), plg=list(), ...) {
 
@@ -320,6 +325,7 @@
 		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
 	}
 	out$breaks <- breaks
+	out$breakby <- breakby
 	
 	out$v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 	out$uv <- unique(out$v)

@@ -1,4 +1,28 @@
 
+.get_breaks <- function(x, n, method, r=NULL) {
+	if (is.function(method)) {
+		if (!is.null(r)) {
+			x[x<r[1] | x>r[2]] <- NA
+		}
+		breaks <- method(x)
+	} else if (method=="cases") {
+		if (!is.null(r)) {
+			x[x<r[1] | x>r[2]] <- NA
+		}
+		n <- n+1
+		i <- seq(0, 1, length.out=n)
+		breaks <- quantile(x, i, na.rm=TRUE)
+		breaks[1] <- 0.9999999*breaks[1]
+		breaks[n] <- 1.0000001*breaks[n]
+	} else { # if (method=="eqint") {
+		if (is.null(r)) {
+			r <- c(min(x, na.rm=TRUE), max(x, na.rm=TRUE))
+		}
+		breaks <- seq(0.9999999*r[1] , 1.0000001*r[2], length.out=n+1)
+	}
+	breaks
+}
+
 .get_nrnc <- function(nr, nc, nl) {
 	if (missing(nc)) {
 		nc <- ceiling(sqrt(nl))

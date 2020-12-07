@@ -1,5 +1,4 @@
 
-
 .as.raster.continuous <- function(out, x, type) {
 		
 	Z <- as.matrix(x, TRUE)
@@ -27,11 +26,12 @@
 	# this did not do it
 	# Z <- round(Z, 10) 
 	# so let's try this
-	out$range[1] <- 0.9999999999 * out$range[1]
-	out$range[2] <- 1.0000000001 * out$range[2]
-	interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
-	breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
+	#out$range[1] <- 0.9999999999 * out$range[1]
+	#out$range[2] <- 1.0000000001 * out$range[2]
+	#interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
+	#breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
 		
+	breaks <- .get_breaks(Z, length(out$cols), "eqint", out$range)
 	Z[] <- out$cols[as.integer(cut(Z, breaks, include.lowest=TRUE, right=FALSE))]
 	out$r <- as.raster(Z)
 
@@ -120,10 +120,15 @@
 	if (is.null(out$breaks)) {
 		out$breaks <- 5
 	} 
-
+	
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
+
+	if (length(out$breaks) == 1) {
+		out$breaks <- .get_breaks(Z, out$breaks, out$breakby, out$range)
+	}
 	fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE)
+
 
 	levs <- levels(fz)
 	nlevs <- length(levs)
@@ -213,9 +218,9 @@
 
 
 
-.prep.plot.data <- function(x, type, maxcell, cols, mar, draw=FALSE, interpolate=FALSE,  
+.prep.plot.data <- function(x, type, maxcell, cols, mar=NULL, draw=FALSE, interpolate=FALSE,  
 legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
- range=NULL, new=NA, breaks=NULL, coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, ...) {
+ range=NULL, new=NA, breaks=NULL, breakby="eqint", coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
  
@@ -235,8 +240,6 @@ legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
 	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
 	out$add <- isTRUE(add)
-	out$mar <- mar
-
 	out$axs <- pax 
 	out$leg <- plg
 	out$asp <- 1
@@ -255,9 +258,19 @@ legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
 	out$cols <- cols
 	out$facts <- facts
 	out$breaks <- breaks
+	out$breakby <- breakby
 	out$interpolate <- FALSE
 	out$legend_draw <- isTRUE(legend)
 	out$legend_only <- isTRUE(legend.only)
+
+	if (is.null(mar)) {
+		if (out$legend_draw) {
+			mar=c(3.1, 3.1, 2.1, 7.1)
+		} else {
+			mar=c(3.1, 3.1, 2.1, 2.1)
+		}
+	}
+	out$mar <- mar
 
 	if (type=="colortable") {
 		out$coltab <- coltab
@@ -288,10 +301,11 @@ legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), levels=NULL, add=FALSE,
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=c(5.1, 4.1, 4.1, 7.1), legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
+	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
 
 		x <- x[[y]]
 		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
+
 
 		breaks <- list(...)$breaks
 		coltab <- NULL
@@ -314,7 +328,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 		
-		if (missing(col)) col <- rev(grDevices::terrain.colors(25))
+		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
 		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, ...)
 
 		if (!is.null(fun)) {

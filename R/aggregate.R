@@ -108,3 +108,62 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 }
 )
 
+
+.agg_uf <- function(i) {
+	u <- unique(i)
+	if (length(u) == 1) { u } else { NA	}
+}
+
+
+## cheating --- using raster/sp/rgeos for now
+## but improved over raster
+setMethod("aggregate", signature(x="SpatVector"),
+	function(x, by=NULL, dissolve=TRUE, fun="mean", ...) {
+		#gt <- geomtype(x)
+		if (length(by) > 1) {
+			stop("this method can only aggregate by one variable")
+		}
+		x <- methods::as(x, "Spatial")
+		if (is.numeric(by[1])) {
+			i <- round(by)
+			if ((i > 0) & (i <= ncol(x))) {
+				by <- names(x)[i]
+			} else {
+				stop(paste("invalud column number supplied:", by))
+			}
+		}
+		r <- aggregate(x, by=by, dissolve=dissolve, ...)
+		if (!missing(fun) && !missing(by)) {
+			if (.hasSlot(x, "data")) {
+				d <- x@data
+				i <- sapply(d, is.numeric)
+				i[colnames(d) %in% by] <- FALSE
+				j <- 1:length(by)
+				if (any(i)) {
+					if (is.character(fun)) {
+						f <- match.fun(fun)
+						da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], f)				
+						names(da)[-j] <- paste0(fun, "_", names(da)[-j])
+					} else {
+						da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], fun)
+						names(da)[-j] <- paste0("agg_", names(da)[-j])
+					}
+					r <- merge(r, da, by)
+				}
+				i[colnames(d) %in% by] <- TRUE
+				if (any(!i)) {
+					db <- aggregate(d[, !i,drop=FALSE], d[, by, drop=FALSE], .agg_uf)	
+					db <- db[, colSums(is.na(db)) < nrow(db), drop=FALSE]
+					if (ncol(db) > 1) {
+						r <- merge(r, db, by)
+					}
+				}
+				dn <- aggregate(d[, by,drop=FALSE], d[, by, drop=FALSE], length)
+				colnames(dn)[2] = "agg_n"
+				r <- merge(r, dn, by)
+			}
+		}
+		vect(r)
+	}
+)
+

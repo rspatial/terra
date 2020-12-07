@@ -32,7 +32,7 @@ Plot SpatVector data to make a map
   \item{y}{missing or positive integer indicating the layer(s) to be plotted, or the name of the layer}
   \item{col}{character. Colors}
   \item{type}{character. Type of map/legend. One of "none", "continuous", "classes", "interval"} 
-  \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is c(3.1, 3.1, 2.1, 7.1) for a plot with a legend}
+  \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is c(3.1, 3.1, 2.1, 7.1) for a plot with a legend. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical. Draw a legend?}
   \item{add}{logical. If \code{TRUE} add the object to the current plot}
   \item{axes}{logical. Draw axes?}
@@ -44,6 +44,9 @@ Plot SpatVector data to make a map
   \item{...}{additional arguments passed to \code{plot("SpatVector", "character")} method, and graphical arguments such as \code{lwd}, \code{cex} and \code{pch}}  
 }
 
+seealso{
+\code{\link{sbar}}
+}
 
 \examples{ 
 f <- system.file("ex/lux.shp", package="terra")
@@ -57,12 +60,12 @@ plot(v, density=1:12, angle=seq(18, 360, 20), col=rainbow(12))
 
 plot(v, "NAME_2", col=rainbow(12), border=c("gray", "blue"), lwd=3, type="classes")
 
-plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1), plg=list(x="topright"), main="")
+plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1),
+  plg=list(x="topright"), main="")
 
 plot(v, "AREA", type="interval", breaks=c(0,200,250,350), mar=c(2,2,2,2), 
   plg=list(legend=c("<200", "200-250", ">250"), cex=1, 
   bty="o", x=6.4, y=50.125, box.lwd=2, bg="light yellow", title="My Legend"))
-
 }
 
 \keyword{methods}
