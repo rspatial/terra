@@ -44,6 +44,8 @@
 	out$leg$lty <- rep_len(lty, n)
 	out$leg$lwd <- rep_len(lwd, n)
 
+	w <- getOption("warn")
+	on.exit(options("warn" = w))
 	for (i in 1:length(g)) {
 		gg <- g[[i]]
 		for (j in 1:length(gg)) {
@@ -62,6 +64,7 @@
 				graphics::polypath(a[,3:4], col=out$main_cols[i], rule = "evenodd", border=out$leg$border[i], lwd=out$leg$lwd[i], lty=out$leg$lty[i], ...)
 			}
 		}
+		options("warn" = -1) 
 	}
 	invisible(out)
 }
@@ -72,7 +75,7 @@
 		if (out$add) {
 			points(x, col=out$main_cols, cex=cex, pch=pch, ...)			
 		} else {
-			e <- as.vector(ext(x))
+			e <- out$lim
 			plot(e[1:2], e[3:4], type="n", axes=FALSE, xlab=xlab, ylab=ylab, asp=out$asp)
 			points(x, col=out$main_cols, cex=cex, pch=pch, ...)			
 		}
@@ -239,11 +242,11 @@
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", ...) {
 	
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
-		plot(out$lim[1:2], out$lim[3:4], type="n", xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, ...)
+		plot(out$lim[1:2], out$lim[3:4], type="n", xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, main=main)
 	}
 
 	out$leg$density <- density
@@ -305,15 +308,22 @@
 
 	out <- list()
 	out$ngeom <- nrow(x)
+	e <- as.vector(ext(x))
+	out$ext <- e
 	if (!(is.null(xlim) & is.null(ylim))) {
-		e <- as.vector(ext(x))
+		stopifnot(length(xlim) == 2)
+		stopifnot(length(ylim) == 2)
 		if (!is.null(xlim)) e[1:2] <- xlim
 		if (!is.null(ylim)) e[3:4] <- ylim
-		out$ext <- as.vector(ext(x))
 		out$lim <- e
 	} else {
-		out$lim <- out$ext <- as.vector(ext(x))
+		dx <- diff(e[1:2]) / 50
+		dy <- diff(e[3:4]) / 50
+		e <- e + c(-dx, dx, -dy, dy)
+		out$lim <- e
 	}
+
+	
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
 	out$axs <- pax 

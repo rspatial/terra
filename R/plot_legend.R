@@ -249,11 +249,11 @@
 }	
 
 
-.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, ext=NULL, 
-	cex=0.8, geomtype="", lty=1, lwd=1, pch=1, angle=45, density=NULL,
-	pt.cex = 1, bty="n", border="black",
-	# catching
-	 pt.bg, pt.lwd, seg.len, merge, trace,...) {
+.plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="", 
+	lty=1, lwd=1, pch=1, angle=45, density=NULL,
+	pt.cex = 1, pt.bg="black", pt.lwd=1, bty="n", border="black", seg.len=1,
+# catching
+	merge, trace,...) {
 
 	if (x == "top") {
 		usr <- graphics::par("usr")
@@ -261,9 +261,10 @@
 		y <- usr[c(4)]
 	}
 	if (geomtype == "points") {
-		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, pt.cex=pt.cex, ...)	
+		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, 
+		pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)	
 	} else if (geomtype == "lines") {
-		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, ...)	
+		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)	
 	} else {
 		leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, ...)	
 	}

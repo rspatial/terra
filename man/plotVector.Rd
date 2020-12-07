@@ -52,7 +52,11 @@ v <- vect(f)
 
 plot(v)
 
-plot(v, 2, pax=list(sides=1:2), plg=list(x=6.2, y=50.1, cex=1.2))
+plot(v, 2, pax=list(sides=1:2), plg=list(x=6.2, y=50.2, cex=1.2))
+
+plot(v, 4, pax=list(sides=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="")
+ 
+plot(v, 1, plg=list(x=5.9, y=49.37, horiz=TRUE, cex=1.1), main="", mar=c(5,2,0.5,0.5))
 
 plot(v, density=1:12, angle=seq(18, 360, 20), col=rainbow(12))
 
