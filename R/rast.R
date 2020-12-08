@@ -7,8 +7,11 @@
 setMethod("rast", signature(x="missing"),
 	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, ...) {
 
-		if (missing(extent)) {	extent <- ext(xmin, xmax, ymin, ymax) }
-		e <- as.vector(extent)
+		if (missing(extent)) {	
+			e <- c(xmin, xmax, ymin, ymax) 
+		} else {
+			e <- as.vector(extent)
+		}
 		if ((e[1] >= e[2]) || e[3] >= e[4]) {stop("invalid extent")}
 		
 		if (missing(crs)) {
@@ -242,7 +245,7 @@ setMethod("rast", signature(x="matrix"),
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, ...)
 		} else {
-			r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(c(0, ncol(x), 0, nrow(x))), ...)
+			r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(c(0, ncol(x), 0, nrow(x))), crs=crs, ...)
 			values(r) <- t(x)
 		}
 		show_messages(r, "rast")

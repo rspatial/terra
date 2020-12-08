@@ -13,7 +13,7 @@
 		return(m)
 	} else {
 		x <- rast(m, xmin=0, xmax=nx*rs[1], ymin=0, ymax=ny*rs[2], crs="+proj=utm +zone=1 +datum=WGS84")
-		d <- as.matrix(distance(x)) <= d
+		d <- as.matrix(distance(x), wide=TRUE) <= d
 		d / sum(d)
 	}
 }

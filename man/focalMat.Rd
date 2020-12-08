@@ -24,9 +24,13 @@ matrix that can be used with \code{\link{focal}}
 
 
 \examples{
-r <- rast(ncols=36, nrows=18, xmn=0)
+r <- rast(ncol=180, nrow=180, xmin=0)
+focalMat(r, 2, "circle")
+
+focalMat(r, c(2,3), "rect")
+
 # Gaussian filter for square cells
-gf <- focalMat(r, 2, "Gauss")
+gf <- focalMat(r, 1, "Gauss")
 }
 
 
