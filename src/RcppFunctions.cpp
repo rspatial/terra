@@ -22,14 +22,14 @@ double getLinearUnits(std::string s) {
 	const char *pszCRS = s.c_str();
 	OGRErr erro = x.SetFromUserInput(pszCRS);
 	if (erro != OGRERR_NONE) {
-		return -1.0;
+		return NAN;
 	}
 	char *pszPRJ = NULL;
 	x.exportToProj4(&pszPRJ);
 	std::string prj = pszPRJ;
 	size_t f = prj.find("proj=longlat");
 	if (f != std::string::npos) {
-		return 0;
+		return NAN;
 	}
 	out = x.GetLinearUnits();
 	return out;
