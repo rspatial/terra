@@ -52,8 +52,7 @@ Followed by
 remotes::install_github("rspatial/terra")
 ```
 
-This should work on **Catalina**. For the foreseable future, this will **[not work](https://github.com/Homebrew/brew/issues/7857
-) on Apple Silicon with MacOS 11 Big Sur**.
+This should work on **Catalina**. For other versions, especially for **Big Sur**, first see the instructions [for sf](https://github.com/r-spatial/sf)
 
 
 ### Linux
