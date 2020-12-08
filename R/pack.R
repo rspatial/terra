@@ -86,7 +86,7 @@ setMethod("vect", signature(x="PackedSpatVector"),
 
 setMethod("show", signature(object="PackedSpatVector"), 
 	function(object) {
-		print(paste("This is a", class(object), "object. Use 'vect()' to unpack it"))
+		print(paste("This is a", class(object), "object. Use 'terra::vect()' to unpack it"))
 	}
 )
 
@@ -137,6 +137,6 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 
 setMethod("show", signature(object="PackedSpatRaster"), 
 	function(object) {
-		print(paste("This is a", class(object), "object. Use 'rast()' to unpack it"))
+		print(paste("This is a", class(object), "object. Use 'terra::rast()' to unpack it"))
 	}
 )

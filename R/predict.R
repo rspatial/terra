@@ -3,7 +3,7 @@
 # Version 0.9
 # License GPL v3
 
-parfun <- function(cls, data, ...) {
+parfun <- function(cls, data, fun, model, ...) {
 	nr <- nrow(data)
 	nc <- length(cls)
 	s <- split(data, rep(1:nc, each=ceiling(nr/nc), length.out=nr))
@@ -26,7 +26,7 @@ parfun <- function(cls, data, ...) {
 		d <- d[i,,drop=FALSE]
 		if (nrow(d) > 0) {
 			if (cores > 1) {
-				r <- parfun(cls, d, ...)
+				r <- parfun(cls, d, fun, model, ...)
 			} else {
 				r <- fun(model, d, ...)
 			}
@@ -47,7 +47,7 @@ parfun <- function(cls, data, ...) {
 		}
 	} else {
 		if (cores > 1) {
-			r <- parfun(cls, d, ...)
+			r <- parfun(cls, d, fun, model, ...)
 		} else {
 			r <- fun(model, d, ...)
 		}
