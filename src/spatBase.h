@@ -242,6 +242,8 @@ class SpatSRS {
 #endif		
 */
 
+		double to_meter();
+
 		std::string get(std::string x) {
 			return (x == "proj4" ? proj4 : wkt); 
 		}

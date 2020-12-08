@@ -2,17 +2,17 @@
 
 \docType{methods}
 
-\alias{cols}
-\alias{cols,SpatRaster-method}
+\alias{coltab}
+\alias{coltab,SpatRaster-method}
   
 \title{Color table}
 
 \description{
-Get a color table
+Get the color table(s) associated with a SpatRaster if there are any
 }
 
 \usage{
-\S4method{cols}{SpatRaster}(x)
+\S4method{coltab}{SpatRaster}(x)
 }
 
 

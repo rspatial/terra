@@ -4,14 +4,13 @@ if (!isGeneric("polys")) {setGeneric("polys", function(x,...) standardGeneric("p
 
 if (!isGeneric("centroids")) {setGeneric("centroids", function(x, ...) standardGeneric("centroids"))}
 
-if (!isGeneric("cols")) {setGeneric("cols", function(x, ...) standardGeneric("cols"))}
+if (!isGeneric("coltab")) {setGeneric("coltab", function(x, ...) standardGeneric("coltab"))}
 if (!isGeneric("window<-")) {setGeneric("window<-", function(x, ..., value) standardGeneric("window<-"))}
 
 if (!isGeneric("NAflag")) {setGeneric("NAflag", function(x, ...) standardGeneric("NAflag"))}
 if (!isGeneric("NAflag<-")) {setGeneric("NAflag<-", function(x, ..., value) standardGeneric("NAflag<-"))}
 
 # terra
-if (!isGeneric("meta")) { setGeneric("meta", function(x, ...) standardGeneric("meta"))}	
 
 if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app"))}
 if (!isGeneric("lapp")) { setGeneric("lapp", function(x, ...) standardGeneric("lapp"))}
@@ -31,6 +30,7 @@ if (!isGeneric("collapse")) {setGeneric("collapse", function(x, ...) standardGen
 if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) standardGeneric("compareGeom"))}	
 if (!isGeneric("crosstab")) { setGeneric("crosstab", function(x, y, ...) standardGeneric("crosstab")) }
 
+if (!isGeneric("describe")) { setGeneric("describe", function(x, ...) standardGeneric("describe"))}	
 if (!isGeneric("desc")) {setGeneric("desc", function(x,...) standardGeneric("desc"))}
 if (!isGeneric("depth")) {setGeneric("depth", function(x,...) standardGeneric("depth"))}
 if (!isGeneric("depth<-")) {setGeneric("depth<-", function(x, value) standardGeneric("depth<-"))}

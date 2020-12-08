@@ -84,7 +84,11 @@ std::vector<double> SpatVector::area() {
 	size_t s = size();
 	std::vector<double> ar;
 	ar.reserve(s);
-	if (could_be_lonlat()) {
+
+	double m = srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+	// could_be_lonlat() no more
+	if (m == 0) {
 		double a = 6378137;
 		double f = 1 / 298.257223563;
 		for (size_t i=0; i<s; i++) {
@@ -92,7 +96,7 @@ std::vector<double> SpatVector::area() {
 		}
 	} else {
 		for (size_t i=0; i<s; i++) {
-			ar.push_back(geoms[i].area_plane());
+			ar.push_back(geoms[i].area_plane() * m * m);
 		}
 	}
 	return ar;
@@ -157,7 +161,11 @@ std::vector<double> SpatVector::length() {
 	std::vector<double> r;
 	r.reserve(s);
 
-	if (could_be_lonlat()) {
+	double m = srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+
+//	if (could_be_lonlat()) {
+	if (m == 0) {
 		double a = 6378137;
 		double f = 1 / 298.257223563;
 		for (size_t i=0; i<s; i++) {
@@ -165,7 +173,7 @@ std::vector<double> SpatVector::length() {
 		}
 	} else {
 		for (size_t i=0; i<s; i++) {
-			r.push_back(geoms[i].length_plane());
+			r.push_back(geoms[i].length_plane() * m);
 		}
 	}
 	return r;
@@ -175,7 +183,12 @@ SpatRaster SpatRaster::rst_area(SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
   	if (!out.writeStart(opt)) { return out; }
-	if (could_be_lonlat()) {
+
+	double m = source[0].srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+
+//	if (could_be_lonlat()) {
+	if (m == 0) {
 		SpatExtent extent = getExtent();
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions optint(opt);
@@ -193,7 +206,7 @@ SpatRaster SpatRaster::rst_area(SpatOptions &opt) {
 		}
 		out.writeStop();
 	} else {
-		double a = xres() * yres();
+		double a = xres() * yres() * m * m;
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v(out.bs.nrows[i]*ncol(), a);
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
@@ -211,7 +224,12 @@ std::vector<double> SpatRaster::sum_area(SpatOptions &opt) {
 	if (!readStart()) {
 		return(out);
 	}
-	if (could_be_lonlat()) {
+
+	double m = source[0].srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+	
+//	if (could_be_lonlat()) {
+	if (m == 0) {
 		SpatRaster x = geometry(1);
 		SpatExtent extent = getExtent();
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
@@ -247,7 +265,7 @@ std::vector<double> SpatRaster::sum_area(SpatOptions &opt) {
 				}
 			}
 		}
-		double ar = xres() * yres();
+		double ar = xres() * yres() * m * m;
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			out[lyr] = out[lyr] * ar;
 		}
@@ -260,8 +278,12 @@ std::vector<double> SpatRaster::sum_area(SpatOptions &opt) {
 
 //layer<value-area
 std::vector<std::vector<double>> SpatRaster::area_by_value(SpatOptions &opt) {
-	if (!could_be_lonlat()) {
-		double ar = xres() * yres();
+
+	double m = source[0].srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+
+	if (m != 0) {
+		double ar = xres() * yres() * m * m;
 		std::vector<std::vector<double>> f = freq(true, false, 0, opt);
 		for (size_t i=0; i<f.size(); i++) {
 			size_t fs = f[i].size();
@@ -273,6 +295,7 @@ std::vector<std::vector<double>> SpatRaster::area_by_value(SpatOptions &opt) {
 	} else {
 		// to do
 		// combine freq and area to get area by latitudes
+		
 		std::vector<std::vector<double>> out(nlyr());
 		return out;
 	}

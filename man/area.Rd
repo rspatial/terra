@@ -33,11 +33,8 @@ The perimeter method works only on SpatVector objects, and computes the length o
 }
 
 \value{
-If the coordinate reference system is longitude/latitude the values returned are in square meter for area and meter for perimeter.
-
-In other cases, the unit is set by coordinate reference system. In most cases it is meter too. 
+area or perimeter in m2
 }
-
 
 
 \examples{

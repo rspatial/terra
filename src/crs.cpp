@@ -135,6 +135,29 @@ bool SpatSRS::set(OGRSpatialReference *poSRS, std::string &msg) {
 
 
 
+double SpatSRS::to_meter() {
+	double out;
+	OGRSpatialReference x;
+	if (wkt.size() < 2) {
+		return NAN;
+	}
+	const char *pszCRS = wkt.c_str();
+	OGRErr erro = x.SetFromUserInput(pszCRS);
+	if (erro != OGRERR_NONE) {
+		return NAN;
+	}
+	char *pszPRJ = NULL;
+	x.exportToProj4(&pszPRJ);
+	std::string prj = pszPRJ;
+	size_t f = prj.find("longlat");
+	if (f != std::string::npos) {
+		return 0;
+	}
+	out = x.GetLinearUnits();
+	return out;
+}
+
+
 bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt="";
 	proj4="";

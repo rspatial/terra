@@ -1,6 +1,6 @@
 
 
-setMethod ("cols" , "SpatRaster", 
+setMethod ("coltab" , "SpatRaster", 
 	function(x) {
 		hascols <- x@ptr$hasColors()
 		if (any(hascols)) {

@@ -5,7 +5,7 @@
 \alias{linearUnits,SpatVector-method}
 
   
-\title{linear units of the coordinate reference system}
+\title{Linear units of the coordinate reference system}
 
 \description{
 Get the linear units of the coordinate reference system (crs) of a SpatRaster or SpatVector. 

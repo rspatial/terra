@@ -1,14 +1,15 @@
 
 
-gdal_version <- function() {
-	.gdalversion()
+gdal <- function(warn = NA) {
+	if (!is.na(warn)) {
+		warn <- as.integer(warn)
+		stopifnot(warn %in% c(1:4))
+		.set_gdal_warnings(warn)
+	} else {
+		.gdalversion()
+	}
 }
 
-gdal_warnings <- function(level = 3) {
-	level <- as.integer(level)
-	stopifnot(level %in% c(1:4))
-	.set_gdal_warnings(level)
-}
 
 
 .describe_sds <- function(x, print=FALSE, ...) {
@@ -29,8 +30,42 @@ gdal_warnings <- function(level = 3) {
 }
 
 
+
+.meta_sds <- function(x, parse=FALSE, ...) {
+	if (parse) {
+		m <- .parsedsdsmetadata(x)
+		m <- do.call(cbind, m)
+		if (nrow(m) > 0) {
+			m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
+		} else {
+			m <- data.frame(0[0], m, stringsAsFactors=FALSE)
+		}
+		for (i in 5:7) m[,i] <- as.integer(m[,i])	
+		colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
+	} else {
+		m <- .sdsmetadata(x)
+	}
+	m
+}
+
 setMethod("desc", signature(x="character"), 
-	function(x, sds=FALSE, options="", print=FALSE, open_opt="", ...) {
+	function(x, ...) {
+		stop("depracated function. Use 'describe'")
+	}
+)
+
+
+setMethod("describe", signature(x="character"), 
+	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="", ...) {
+
+		if (meta) {
+			if (sds) {
+				return(.meta_sds(x, parse))
+			} else {
+				return(.metadata(x))
+			}
+		}
+
 		if (sds) {
 			return(.describe_sds(x, print=print))
 		}
@@ -57,34 +92,4 @@ setMethod("desc", signature(x="character"),
 		}
 	}
 )
-
-
-
-.meta_sds <- function(x, parse=FALSE, ...) {
-	if (parse) {
-		m <- .parsedsdsmetadata(x)
-		m <- do.call(cbind, m)
-		if (nrow(m) > 0) {
-			m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
-		} else {
-			m <- data.frame(0[0], m, stringsAsFactors=FALSE)
-		}
-		for (i in 5:7) m[,i] <- as.integer(m[,i])	
-		colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
-	} else {
-		m <- .sdsmetadata(x)
-	}
-	m
-}
-
-setMethod("meta", signature(x="character"), 
-	function(x, sds=FALSE, parse=FALSE, ...) {
-		if (sds) {
-			.meta_sds(x, parse)
-		} else {
-			.metadata(x)
-		}
-	}
-)
-
 
