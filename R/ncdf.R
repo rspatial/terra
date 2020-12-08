@@ -52,8 +52,8 @@
 
 
 setMethod("writeCDF", signature(x="SpatRaster"), 
-	function(x, filename, varname, longname="", units="", overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
-		units(x) <- units
+	function(x, filename, varname, longname="", unit="", overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
+		units(x) <- unit
 		varnames(x) <- varname
 		longnames(x) <- longname
 		x <- sds(x)
@@ -115,10 +115,10 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 					zname <- "layer"
 				} 
 				zdim <- ncdf4::ncdim_def(zname, zunit, zv, unlim=TRUE )
-
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units, list(xdim, ydim, zdim), NAflag, lvar, prec = dtype[i], ...)
+				un <- units(y)[1]
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], un, list(xdim, ydim, zdim), NAflag, lvar, prec = dtype[i], ...)
 			} else {			
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units, list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], un, list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
 			}
 		}
 		

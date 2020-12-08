@@ -60,6 +60,17 @@ setMethod("depth<-", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("linearUnits", signature(x="SpatRaster"), 
+	function(x, ...) {
+		.getLinearUnits(crs(x))
+	}
+)
+
+setMethod("linearUnits", signature(x="SpatVector"), 
+	function(x, ...) {
+		.getLinearUnits(crs(x))
+	}
+)
 
 setMethod("units", signature(x="SpatRaster"), 
 	function(x) { 

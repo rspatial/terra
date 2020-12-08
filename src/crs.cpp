@@ -28,11 +28,13 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt = "";
 	return true;
 }
+
 #else
 
 
 #include "ogr_spatialref.h"
 #include <gdal_priv.h> // GDALDriver
+
 
 
 bool is_ogr_error(OGRErr err, std::string &msg) {
@@ -130,6 +132,9 @@ bool SpatSRS::set(OGRSpatialReference *poSRS, std::string &msg) {
 }
 */
 
+
+
+
 bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt="";
 	proj4="";
@@ -216,6 +221,8 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	}
 	return success;
 }
+
+
 
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {

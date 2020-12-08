@@ -76,6 +76,8 @@ if (!isGeneric("time")) {setGeneric("time", function(x,...) standardGeneric("tim
 if (!isGeneric("time<-")) {setGeneric("time<-", function(x, value) standardGeneric("time<-"))}
 if (!isGeneric("nlyr")) { setGeneric("nlyr", function(x) standardGeneric("nlyr")) }	
 if (!isGeneric("nlyr<-")) { setGeneric("nlyr<-", function(x, ..., value) standardGeneric("nlyr<-")) }	
+
+if (!isGeneric("linearUnits")) {setGeneric("linearUnits", function(x, ...) standardGeneric("linearUnits"))}
 if (!isGeneric("units")) {setGeneric("units", function(x) standardGeneric("units"))}
 if (!isGeneric("units<-")) {setGeneric("units<-", function(x,value) standardGeneric("units<-"))}
 
