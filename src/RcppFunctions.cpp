@@ -17,7 +17,7 @@ double getLinearUnits(std::string s) {
 	double out;
 	OGRSpatialReference x;
 	if (s.size() < 2) {
-		return -1.0;
+		return NAN;
 	}
 	const char *pszCRS = s.c_str();
 	OGRErr erro = x.SetFromUserInput(pszCRS);
@@ -29,7 +29,7 @@ double getLinearUnits(std::string s) {
 	std::string prj = pszPRJ;
 	size_t f = prj.find("proj=longlat");
 	if (f != std::string::npos) {
-		return NAN;
+		return 0;
 	}
 	out = x.GetLinearUnits();
 	return out;
