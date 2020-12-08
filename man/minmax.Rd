@@ -13,11 +13,12 @@ The minimum and maximum value of a SpatRaster are returned or computed (from a f
 
 \usage{
 \S4method{minmax}{SpatRaster}(x)
-\S4method{setMinMax}{SpatRaster}(x)
+\S4method{setMinMax}{SpatRaster}(x, force=FALSE)
 }
 
 \arguments{
   \item{x}{ SpatRaster }
+  \item{force}{logical. If \code{TRUE} min and max values are recomputed even if already avaialbe }
 }
 
 \value{

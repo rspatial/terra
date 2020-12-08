@@ -127,9 +127,8 @@ setMethod("sources", signature(x="SpatRaster"),
 
 setMethod("minmax", signature(x="SpatRaster"), 
 	function(x) {
-		rmin <- x@ptr$range_min
-		rmax <- x@ptr$range_max
-		r <- rbind(rmin, rmax)
+		r <- rbind(x@ptr$range_min, x@ptr$range_max)
+		r[,!x@ptr$hasRange] <- c(Inf, -Inf)
 		colnames(r) <- names(x)
 		r
 	}
@@ -137,11 +136,13 @@ setMethod("minmax", signature(x="SpatRaster"),
 
 
 setMethod("setMinMax", signature(x="SpatRaster"), 
-	function(x) {
-		if (any(!.hasMinMax(x))) {
-			x@ptr$setRange()
-			x <- show_messages(x)
+	function(x, force=FALSE) {
+		if (force) {
+			x@ptr$setRange()		
+		} else if (any(!.hasMinMax(x))) {
+			x@ptr$setRange()		
 		}
+		x <- show_messages(x)
 	}
 )
 

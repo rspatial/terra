@@ -65,15 +65,21 @@ setMethod ("show" , "SpatRaster",
 			cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		}
 		cat("coord. ref. :" , .proj4(object), "\n")
-		
-		mnr <- 6
 
+		mnr <- 6
 		ln <- names(object)
 		nl <- nlyr(object)
 			
 		if (nl > mnr) {
 			ln <- c(ln[1:mnr], "...")
 		}
+		lnmx <- 60 / min(mnr, length(ln))
+		b <- nchar(ln) > lnmx
+		if (any(b)) {
+			mid <- floor(lnmx/2)
+			ln[b] <- paste(substr(ln[b], 1, mid), "~", substr(ln[b], nchar(ln[b])-mid, nchar(ln[b])), sep="")
+		}
+
 
 		if (hasValues(object)) {
 			nsr <- nsrc(object)	
@@ -139,14 +145,6 @@ setMethod ("show" , "SpatRaster",
 					minv <- c(minv[1:mnr], "...")
 					maxv <- c(maxv[1:mnr], "...")
 				}
-				n <- nchar(ln)
-				if (nl > 5) {
-					b <- n > 20
-					if (any(b)) {
-						mid <- floor(n/2)
-						ln[b] <- paste(substr(ln[b], 1, 7), "~", substr(ln[b], nchar(ln[b])-7, nchar(ln[b])), sep="")
-					}
-				}
 				
 				w <- pmax(nchar(ln), nchar(minv), nchar(maxv), nchar(uts))
 				m <- rbind(ln, minv, maxv)
@@ -155,10 +153,15 @@ setMethod ("show" , "SpatRaster",
 				for (i in 1:ncol(m)) {
 					m[,i]   <- format(m[,i], width=w[i], justify="right")
 				}
-				cat("names       :", paste(m[1,], collapse=", "), "\n")
-				cat("min values  :", paste(m[2,], collapse=", "), "\n")
-				cat("max values  :", paste(m[3,], collapse=", "), "\n")
-
+				if (ncol(m) == 1) {
+					cat("name        :", paste(m[1,], collapse=", "), "\n")
+					cat("min value   :", paste(m[2,], collapse=", "), "\n")
+					cat("max value   :", paste(m[3,], collapse=", "), "\n")				
+				} else {
+					cat("names       :", paste(m[1,], collapse=", "), "\n")
+					cat("min values  :", paste(m[2,], collapse=", "), "\n")
+					cat("max values  :", paste(m[3,], collapse=", "), "\n")
+				}
 				isf <- is.factor(object)
 				if (any(isf)) {
 					lv <- levels(object)
@@ -180,7 +183,7 @@ setMethod ("show" , "SpatRaster",
 					cat("first label :", paste(m[1,], collapse=", "), "\n")
 					cat("last label  :", paste(m[2,], collapse=", "), "\n")				
 				}
-				if (hasunits) cat("units       :", paste(m[4,], collapse=", "), "\n")
+				if (hasunits) cat("unit        :", paste(m[4,], collapse=", "), "\n")
 
 			} else {
 				w <- pmax(nchar(ln), nchar(uts))
@@ -188,8 +191,12 @@ setMethod ("show" , "SpatRaster",
 				for (i in 1:ncol(m)) {
 					m[,i]   <- format(m[,i], width=w[i], justify="right")
 				}
-				cat("names       :", paste(m[1,], collapse=", "), "\n")
-				if (hasunits) cat("units       :", paste(m[2,], collapse=", "), "\n")
+				if (ncol(m) == 1) {
+					cat("name        :", paste(m[1,], collapse=", "), "\n")
+				} else {
+					cat("names       :", paste(m[1,], collapse=", "), "\n")				
+				}
+				if (hasunits) cat("unit        :", paste(m[2,], collapse=", "), "\n")
 			}			
 
 
