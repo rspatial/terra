@@ -2,7 +2,7 @@
 
 \alias{describe}
 \alias{describe,character-method}
-\alias{meta,character-method}
+\alias{desc}
 
 \title{describe}
 
@@ -12,6 +12,8 @@ Describe the properties of spatial data in a file as generated with the "GDALinf
 
 \usage{
 \S4method{describe}{character}(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="", ...)
+
+desc(x, ...)
 }
 
 \arguments{
@@ -31,8 +33,8 @@ character (invisibly, if \code{print=FALSE})
 
 \examples{
 f <- system.file("ex/test.tif", package="terra")
-desc(f)
-meta(f)
+describe(f)
+describe(f, meta=TRUE)
 #g <- desc(f, options=c("json", "nomd", "proj4"))
 #cat(g, "\n")
 }

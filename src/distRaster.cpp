@@ -21,7 +21,7 @@
 #include <cmath>
 
 
-std::vector<double> shortDistPoints(const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat) {
+std::vector<double> shortDistPoints(const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, double lindist) {
 	std::vector<double> out;
 	if (lonlat) {
 		double a = 6378137.0;
@@ -29,6 +29,9 @@ std::vector<double> shortDistPoints(const std::vector<double> &x, const std::vec
 		out = distanceToNearest_lonlat(x, y, px, py, a, f);
 	} else {
 		out = distanceToNearest_plane(x, y, px, py);
+		if (lindist != 1) {
+			for (double &d : out) d *= lindist;
+		}
 	}
 	return out;
 }
@@ -43,6 +46,9 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		return(out);
 	}
 	
+	double m = source[0].srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+	
 	std::string gtype = p.type();
 	if (gtype != "points") {
 		SpatOptions ops;
@@ -55,7 +61,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		p = x.as_points(false, true, opt);
 	}
 
-	bool lonlat = is_lonlat();
+	bool lonlat = is_lonlat(); // m == 0
 	unsigned nc = ncol();
 	if (!readStart()) {
 		out.setError(getError());
@@ -68,7 +74,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		std::iota (cells.begin(), cells.end(), s);
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
 		std::vector<std::vector<double>> pxy = p.coordinates();
-		std::vector<double> d = shortDistPoints(xy[0], xy[1], pxy[0], pxy[1], lonlat);
+		std::vector<double> d = shortDistPoints(xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
 		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
 	out.writeStop();
@@ -123,12 +129,15 @@ SpatDataFrame SpatVector::distance() {
 		out.setError("only inmplemented for points --- to be improved");
 		return(out);
 	}
-	std::string srs = getSRS("wkt");
-	if (srs == "") {
-		out.setError("SRS not defined");
+	std::string crs = getSRS("wkt");
+	if (crs == "") {
+		out.setError("CRS not defined");
 		return(out);
 	}
-	bool lonlat = is_lonlat();
+	double m = srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+
+	bool lonlat = is_lonlat(); // m == 0
 
 	size_t s = size();
 	size_t n = ((s-1) * s)/2;
@@ -147,7 +156,7 @@ SpatDataFrame SpatVector::distance() {
 	} else {
 		for (size_t i=0; i<(s-1); i++) {
 			for (size_t j=(i+1); j<s; j++) {
-				d[k] = distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]);
+				d[k] = distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]) * m;
 				k++;
 			}
 		}
@@ -177,6 +186,9 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 		out.setError("SRSs do not match");
 		return(out);
 	}
+	double m = srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+
 	bool lonlat = is_lonlat();
 
 	size_t s = size();
@@ -198,7 +210,7 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 			}
 		} else {
 			for (size_t i = 0; i < s; i++) {
-				d[i] = distance_plane(p[0][i], p[1][i], px[0][i], px[1][i]);
+				d[i] = distance_plane(p[0][i], p[1][i], px[0][i], px[1][i]) * m;
 			}			
 		} 
 	} else {		
@@ -215,7 +227,7 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 			for (size_t i=0; i<s; i++) {
 				size_t k = i * sx;
 				for (size_t j=0; j<sx; j++) {
-					d[k+j] = distance_plane(p[0][i], p[1][i], px[0][j], px[1][j]);
+					d[k+j] = distance_plane(p[0][i], p[1][i], px[0][j], px[1][j]) * m;
 				}
 			}
 		} 
@@ -228,11 +240,12 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 
 
 
-std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<uint_64> dim) {
+std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, std::vector<uint_64> dim, double lindist) {
 
-	double dx = res[0];
-	double dy = res[1];
+	double dx = res[0] * lindist;
+	double dy = res[1] * lindist;
 	double dxy = sqrt(dx * dx + dy *dy);
+
 
 	size_t n = v.size();
 	uint_64 nr = n / dim[0]; // must get entire rows
@@ -304,6 +317,9 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 
 	//bool isgeo = out.islonlat
 
+	double m = source[0].srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+
 	std::vector<double> res = resolution();
 	std::vector<uint_64> dim = {nrow(), ncol()};
 
@@ -323,7 +339,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 
 	for (size_t i = 0; i < first.bs.n; i++) {
         v = readBlock(first.bs, i);
-        d = broom_dist_planar(v, above, res, dim);
+        d = broom_dist_planar(v, above, res, dim, m);
 		if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i], 0, ncol())) return first;
 	}
 	first.writeStop();
@@ -339,7 +355,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	for (size_t i = out.bs.n; i>0; i--) {
         v = readBlock(out.bs, i-1);
 		std::reverse(v.begin(), v.end());
-        d = broom_dist_planar(v, above, res, dim);
+        d = broom_dist_planar(v, above, res, dim, m);
 		vv = first.readBlock(first.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		if (!out.writeValues(vv, out.bs.row[i-1], out.bs.nrows[i-1], 0, ncol())) return out;

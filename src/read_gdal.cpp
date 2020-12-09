@@ -251,7 +251,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 			if (pos != std::string::npos) {
 				s.erase(0, pos + delim.length());
 				if (sub.constructFromFile(s, {-1}, {""})) {
-					if (!push_back(sub, basename_sds(s), true)) {
+					if (!push_back(sub, basename_sds(s), "", "", true)) {
 						addWarning("skipped (different geometry): " + s);
 					}
 				} else {

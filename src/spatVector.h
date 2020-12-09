@@ -204,6 +204,8 @@ class SpatVector {
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
+		std::string getWarnings() { return msg.getWarnings();}
+		std::string getError() { return msg.getError();}
 
 		SpatVector point_buffer(double d, unsigned quadsegs);
 

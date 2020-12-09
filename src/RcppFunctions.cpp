@@ -4,7 +4,7 @@
 
 //#include <memory> //std::addressof
 #include "gdal_priv.h"
-# include "gdal_info.h"
+#include "gdalio.h"
 
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"

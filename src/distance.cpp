@@ -30,7 +30,7 @@
 #include "recycle.h"
 
 
-double distance_lonlat(double lon1, double lat1, double lon2, double lat2, double a, double f) {
+double distance_lonlat(double &lon1, double &lat1, double &lon2, double &lat2, double &a, double &f) {
 	double s12, azi1, azi2;
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
@@ -83,7 +83,7 @@ std::vector<double> distanceToNearest_lonlat(const std::vector<double> &lon1, co
 }
 
 
-double distance_plane(double x1, double y1, double x2, double y2) {
+double distance_plane(const double &x1, const double &y1, const double &x2, const double &y2) {
 	return( sqrt(pow((x2-x1),2) + pow((y2-y1), 2)) );
 }
 
@@ -94,7 +94,7 @@ std::vector<double> distance_plane(std::vector<double> &x1, std::vector<double> 
 	std::vector<double> r (x1.size());
 	size_t n = x1.size();
   	for (size_t i=0; i < n; i++) {
-		r[i] = sqrt(pow((x2[i]-x1[i]),2) + pow((y2[i]-y1[i]), 2));
+		r[i] = distance_plane(x1[i], x2[i], y1[i], y2[1]);
 	}
   	return r;
 }
@@ -112,9 +112,9 @@ std::vector<double> distanceToNearest_plane(const std::vector<double> &x1, const
 	std::vector<double> r(n);
 	double d;
   	for (size_t i=0; i < n; i++) {
-		r[i] = sqrt(pow((x2[0]-x1[i]),2) + pow((y2[0]-y1[i]), 2));
+		r[i] = distance_plane(x1[i], x2[i], y1[i], y2[1]);
 		for (size_t j=1; j < m; j++) {
-			d = sqrt(pow((x2[j]-x1[i]),2) + pow((y2[j]-y1[i]), 2));
+			d = distance_plane(x1[i], x2[i], y1[i], y2[1]);
 			if (d < r[i]) {
 				r[i] = d;
 			}

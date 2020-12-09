@@ -307,7 +307,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		} else {
 			if (missing(type)) {
 				if (x@ptr$hasColors()) {
-					coltab <- cols(x)[[1]]
+					coltab <- coltab(x)[[1]]
 					type <- "colortable"
 				} else if (is.factor(x)) {
 					type <- "classes"

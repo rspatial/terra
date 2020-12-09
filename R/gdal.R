@@ -48,11 +48,6 @@ gdal <- function(warn = NA) {
 	m
 }
 
-setMethod("desc", signature(x="character"), 
-	function(x, ...) {
-		stop("depracated function. Use 'describe'")
-	}
-)
 
 
 setMethod("describe", signature(x="character"), 

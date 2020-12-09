@@ -31,7 +31,6 @@ if (!isGeneric("compareGeom")) {setGeneric("compareGeom", function(x,y,...) stan
 if (!isGeneric("crosstab")) { setGeneric("crosstab", function(x, y, ...) standardGeneric("crosstab")) }
 
 if (!isGeneric("describe")) { setGeneric("describe", function(x, ...) standardGeneric("describe"))}	
-if (!isGeneric("desc")) {setGeneric("desc", function(x,...) standardGeneric("desc"))}
 if (!isGeneric("depth")) {setGeneric("depth", function(x,...) standardGeneric("depth"))}
 if (!isGeneric("depth<-")) {setGeneric("depth<-", function(x, value) standardGeneric("depth<-"))}
 if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("draw"))}

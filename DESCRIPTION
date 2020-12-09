@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Spatial Data Analysis
-Version: 0.9-14
-Date: 2020-12-05
+Version: 0.9-15
+Date: 2020-12-08
 Depends: R (>= 3.5.0)
 Suggests: parallel, tinytest, ncdf4
 LinkingTo: Rcpp
@@ -21,5 +21,4 @@ Authors@R: c(
 	person("Karl", "Forner", role = "ctb"),
 	person("Jeroen", "Ooms", role = "ctb", comment = c(ORCID = "0000-0002-4035-0289")),
     person("Edzer", "Pebesma", role = "ctb", comment = c(ORCID = "0000-0001-8049-7069")))
-
-	
+RoxygenNote: 7.1.1

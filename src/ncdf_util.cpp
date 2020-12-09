@@ -4,7 +4,7 @@
 
 #include "file_utils.h"
 #include "string_utils.h"
-#include "gdal_info.h"
+#include "gdalio.h"
 
 bool good_ends(std::string const &s) {
 	std::vector<std::string> end = {"_bnds", "_bounds", "lat", "lon", "longitude", "latitude"};

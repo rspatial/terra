@@ -5,22 +5,22 @@
 
 show_messages <- function(x, f="") {
 	if (methods::.hasSlot(x, "ptr")) {
-		if (x@ptr$messages$has_warning) { 
-			warns <- x@ptr$messages$getWarnings()
+		if (x@ptr$has_warning()) { 
+			warns <- x@ptr$getWarnings()
 			warning(paste(warns, collapse="\n"), call.=FALSE)
 		}
-		if (x@ptr$messages$has_error) {
-			emsg <- x@ptr$messages$getError()
+		if (x@ptr$has_error()) {
+			emsg <- x@ptr$getError()
 			stop(paste0("[", f, "] ", emsg), call.=FALSE)
 		}
 		return(x)
-	} else {
-		if (x$messages$has_warning) { 
-			warns <- x$messages$getWarnings()
+	} else { 
+		if (x$has_warning()) { 
+			warns <- x$getWarnings()
 			warning(paste(warns, collapse="\n"), call.=FALSE)
 		}
-		if (x$messages$has_error) {
-			emsg <- x$messages$getError()
+		if (x$has_error()) {
+			emsg <- x$getError()
 			stop(paste0("[", f, "] ", emsg), call.=FALSE)
 		}
 		return(x)
@@ -46,9 +46,8 @@ show_messages <- function(x, f="") {
 		cat(paste("\nproc in memory  :", round(v[5]) != 0))
 		cat(paste("\nnr chunks       :", ceiling(nrow(x)/v[4])))
 		cat("\n------------------------\n")
-	} else {
-		names(v) <- c("needed", "available", "memfrac", "chunksize")
-		v
-	}
+	} 
+	names(v) <- c("needed", "available", "memfrac", "chunksize")
+	invisible(v)
 }
 

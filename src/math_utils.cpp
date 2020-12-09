@@ -19,6 +19,7 @@
 #include <limits>
 #include <vector>
 #include <algorithm>
+#include <random>
 
 
 void na_omit(std::vector<double> &x) {
@@ -85,5 +86,139 @@ bool is_equal_relative(double a, double b, double tolerance) {
 
 bool is_equal_range(double x, double y, double range, double tolerance) {
 	return (fabs(x - y) / range) < tolerance ;
+}
+
+
+
+double median(const std::vector<double>& v) {
+	size_t n = v.size();
+	std::vector<double> vv;
+	vv.reserve(n);
+	for (size_t i=0; i<n; i++) {
+        if (!std::isnan(v[i])) {
+            vv.push_back(v[i]);
+        }
+	}
+	n = vv.size();
+	if (n == 0) {
+		return(NAN);
+	}
+	size_t n2 = n / 2;
+	std::nth_element(vv.begin(), vv.begin()+n2, vv.end());
+	double med = vv[n2];
+	return med;
+}
+
+
+
+std::vector<double> movingMedian(const std::vector<double> &x, size_t n) {
+	std::vector<double> out(x.size());
+	std::vector<double> d(n, NAN);
+	size_t half = (n/2);
+	size_t half1 = half+1;
+	// fill left side
+	for (size_t i=0; i<half; i++) {
+		for (size_t j=0; j< (half1+i); j++) {
+			d[j] = x[j];
+		}
+		out[i] = median(d);
+	}
+	// middle
+	size_t maxn = out.size() - half;
+	std::vector<double> v;
+	for (size_t i=half; i<maxn; i++) {
+		v = std::vector<double>(x.begin()+i-half, x.begin()+i+half1);
+ 		out[i] = median(v);
+	}
+	// right side
+	int j=0;
+	for (size_t i=maxn; i<out.size(); i++) {
+		v[j++] = NAN;
+		out[i] = median(v);
+	}
+	return(out);
+}
+
+
+
+double modal_value(std::vector<double> values, unsigned ties, bool narm, std::default_random_engine rgen, std::uniform_real_distribution<double> dist) {
+	
+	if (narm) {
+		na_omit(values);
+	}
+	size_t n = values.size();
+	if (n == 0) return (NAN);
+	if (n == 1) return (values[0]);		
+    std::vector<unsigned> counts(n, 0);
+
+	if (ties < 3) {
+		std::sort(values.begin(), values.end());
+	}
+
+	
+    for (size_t i=0; i<n; ++i) {
+        counts[i] = 0;
+        size_t j = 0;
+        while ((j < i) && (values[i] != values[j])) {
+            ++j;
+        }
+        ++(counts[j]);
+    }
+	
+    size_t maxCount = 0;
+	// first (lowest due to sorting)
+	if (ties == 0) {
+		for (size_t i = 1; i < n; ++i) {
+			if (counts[i] > counts[maxCount]) {
+				maxCount = i;
+			}
+		}
+	// last	
+	} else if (ties == 1) {
+		for (size_t i = 1; i < n; ++i) {
+			if (counts[i] >= counts[maxCount]) {
+				maxCount = i;
+			}
+		}
+
+	// dont care (first, but not sorted)
+	} else if (ties == 2) {
+		for (size_t i = 1; i < n; ++i) {
+			if (counts[i] > counts[maxCount]) {
+				maxCount = i;
+			}
+		}
+
+	// random
+	} else if (ties == 3) {
+		size_t tieCount = 1;
+		for (size_t i = 1; i < n; ++i) {
+			if (counts[i] > counts[maxCount]) {
+				maxCount = i;
+				tieCount = 1;
+			} else if (counts[i] == counts[maxCount]) {
+				tieCount++;
+				double rand = dist(rgen);
+				if (rand < (1 / tieCount)) {
+					maxCount = i;
+				}			
+			}
+		}		
+	} else {
+		size_t tieCount = 1;
+		for (size_t i = 1; i < n; ++i) {
+			if (counts[i] > counts[maxCount]) {
+				maxCount = i;
+				tieCount = 1;
+			} else if (counts[i] == counts[maxCount]) {
+				tieCount++;
+			}
+		}
+		if (tieCount > 1 ) {
+			return(NAN);
+		}
+	}
+	
+    return values[maxCount];
 }
 

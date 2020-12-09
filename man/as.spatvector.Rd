@@ -58,7 +58,7 @@ values(r) <- 1:ncell(r)
 as.points(r)
 as.lines(ext(r), crs=crs(r))
 
-if  (gdal_version() >= "3.0.0") {
+if  (gdal() >= "3.0.0") {
 	p <- as.polygons(r)
 	p
 	as.lines(p)

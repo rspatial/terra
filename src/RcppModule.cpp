@@ -2,8 +2,6 @@
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
 #include <memory> //std::addressof
-//#include "gdal_priv.h"
-//# include "gdal_info.h"
 
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
@@ -145,6 +143,7 @@ RCPP_MODULE(spat){
 	;
 */
 
+
     class_<SpatMessages>("SpatMessages")
 		.constructor()
 		//.field("success", &SpatMessages::success)		
@@ -152,7 +151,6 @@ RCPP_MODULE(spat){
 		.field("has_warning", &SpatMessages::has_warning)		
 		.method("getError", &SpatMessages::getError)		
 		.method("getWarnings", &SpatMessages::getWarnings)
-		.method("getMessage", &SpatMessages::getMessage)
 	;	
 	
     class_<SpatOptions>("SpatOptions")
@@ -192,6 +190,11 @@ RCPP_MODULE(spat){
 		.property("names", &SpatDataFrame::get_names, &SpatDataFrame::set_names)
 		.property("nrow", &SpatDataFrame::nrow, &SpatDataFrame::resize_rows, "nrow")
 		.property("ncol", &SpatDataFrame::ncol, &SpatDataFrame::resize_cols, "ncol")
+
+		.method("has_error", &SpatDataFrame::hasError)		
+		.method("has_warning", &SpatDataFrame::hasWarning)		
+		.method("getWarnings", &SpatDataFrame::getWarnings)
+		.method("getError", &SpatDataFrame::getError)
 				
 		.method("add_column_double", (bool (SpatDataFrame::*)(std::vector<double>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
@@ -221,7 +224,10 @@ RCPP_MODULE(spat){
 
 		.field_readonly("df", &SpatVector::df )
 
-
+		.method("has_error", &SpatVector::hasError)		
+		.method("has_warning", &SpatVector::hasWarning)		
+		.method("getError", &SpatVector::getError)		
+		.method("getWarnings", &SpatVector::getWarnings)
 
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
@@ -307,8 +313,13 @@ RCPP_MODULE(spat){
 	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, std::string>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
+		.method("has_error", &SpatRaster::hasError)		
+		.method("has_warning", &SpatRaster::hasWarning)		
+		.method("getError", &SpatRaster::getError)		
+		.method("getWarnings", &SpatRaster::getWarnings)
+		.method("getMessage", &SpatRaster::getMessage)		
 
-		.field("name", &SpatRaster::name)
+		//.field("name", &SpatRaster::name)
 
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 		.method("mem_needs", &SpatRaster::mem_needs, "mem_needs")
@@ -529,8 +540,12 @@ RCPP_MODULE(spat){
     class_<SpatRasterStack>("SpatRasterStack")
 		.constructor()
 	    .constructor<std::string, std::vector<int>, bool>()
-	    .constructor<SpatRaster, std::string>()
-		.field("messages", &SpatRasterStack::msg, "messages")
+	    .constructor<SpatRaster, std::string, std::string, std::string>()
+
+		.method("has_error", &SpatRasterStack::has_error)		
+		.method("has_warning", &SpatRasterStack::has_warning)		
+		.method("getError", &SpatRasterStack::getError)		
+		.method("getWarnings", &SpatRasterStack::getWarnings)
 
 		.method("readStart", &SpatRasterStack::readStart, "readStart")
 		.method("readStop", &SpatRasterStack::readStop, "readStop")
@@ -538,8 +553,9 @@ RCPP_MODULE(spat){
 		.method("ncol", &SpatRasterStack::ncol, "")
 		.method("nrow", &SpatRasterStack::nrow, "")
 		.method("getSRS", &SpatRasterStack::getSRS, "")
-		.property("names", &SpatRasterStack::getnames, &SpatRasterStack::setnames)
+		.property("names", &SpatRasterStack::get_names, &SpatRasterStack::set_names)
 		.property("long_names", &SpatRasterStack::get_longnames, &SpatRasterStack::set_longnames)
+		.property("units", &SpatRasterStack::get_units, &SpatRasterStack::set_units)
 		.method("add", &SpatRasterStack::push_back, "")
 		.method("resize", &SpatRasterStack::resize, "")
 		.method("summary", &SpatRasterStack::summary, "summary")

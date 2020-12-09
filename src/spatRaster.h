@@ -163,7 +163,7 @@ class SpatRaster {
 // properties and property-like methods for entire object
 ////////////////////////////////////////////////////
 
-		std::string name;
+		//std::string name;
 		
 		std::vector<RasterSource> source;
 
@@ -174,11 +174,13 @@ class SpatRaster {
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
-		std::string getError() { return msg.getError(); }
 		void addWarning(std::string s) { msg.addWarning(s); }
 		void setMessage(std::string s) { msg.setMessage(s); }
 		bool hasError() { return msg.has_error; }
 		bool hasWarning() { return msg.has_warning; }
+		std::string getWarnings() { return msg.getWarnings();}
+		std::string getError() { return msg.getError();}
+		std::string getMessage() { return msg.getMessage();}
 
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 
@@ -201,6 +203,7 @@ class SpatRaster {
 		bool setSRS(OGRSpatialReference *poSRS, std::string &msg) {
 #endif 
 */
+
 
 		bool is_lonlat();
 		bool could_be_lonlat();
@@ -527,8 +530,8 @@ class SpatRaster {
 
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
-		SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
-		SpatRaster classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt);
+		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
+		//SpatRaster classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt);
 
 		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
 		SpatRaster rotate(bool left, SpatOptions &opt);
@@ -555,8 +558,8 @@ class SpatRaster {
 		SpatRaster project2(SpatRaster &x, std::string method, SpatOptions &opt);
 		void project3(SpatRaster &out, std::string method, SpatOptions &opt);
 
-		SpatRaster resample1(SpatRaster &x, const std::string &method, SpatOptions &opt);
-		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
+//		SpatRaster resample1(SpatRaster &x, const std::string &method, SpatOptions &opt);
+//		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
 #ifdef useGDAL
 		bool open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt);

@@ -20,7 +20,7 @@
 #include "recycle.h"
 #include "math_utils.h"
 #include "vecmathfun.h"
-#include "modal.h"
+//#include "modal.h"
 
 
 // need to take care of NAs here. OK for NAN, but not for int types

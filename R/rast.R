@@ -116,7 +116,7 @@ setMethod("rast", signature(x="character"),
 		} else {
 			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", "")
 		}
-		if (r@ptr$messages$getMessage() == "ncdf extent") {
+		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)
 			if (inherits(test, "try-error")) {
 				warning("GDAL did not find an extent. Cells not equally spaced?") 
