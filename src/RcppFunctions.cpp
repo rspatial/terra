@@ -5,6 +5,8 @@
 //#include <memory> //std::addressof
 #include "gdal_priv.h"
 #include "gdalio.h"
+#include "ogr_spatialref.h"
+
 
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
