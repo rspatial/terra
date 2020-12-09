@@ -43,22 +43,22 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 
 
 setMethod("area", signature(x="SpatRaster"), 
-	function(x, sum=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		if (sum) {
 			byvalue = FALSE
+			opt <- .getOptions()
 			if (byvalue) {
-				v <- x@ptr$area_by_value()
+				v <- x@ptr$area_by_value(opt)
 				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
 				v <- do.call(rbind, v)
 				colnames(v) <- c("layer", "value", "area")
 				return(v)
 			} else {
-				opt <- .getOptions()
-				x@ptr$sum_area(opt)
+				x@ptr$sum_area(correct, opt)
 			}
 		} else {
 			opt <- .runOptions(filename, overwrite, wopt)
-			x@ptr <- x@ptr$rst_area(opt)
+			x@ptr <- x@ptr$rst_area(correct, opt)
 			show_messages(x, "area")
 		} 
 	}

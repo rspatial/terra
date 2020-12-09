@@ -331,7 +331,13 @@ bool SpatRaster::is_lonlat() {
 	return source[0].srs.is_lonlat();
 }
 
+
+bool SpatRaster::is_geographic() {
+	return source[0].srs.is_geographic();
+}
+
 bool SpatRaster::could_be_lonlat() {
+	if (is_geographic()) return true;
 	SpatExtent e = getExtent();
 	return source[0].srs.could_be_lonlat(e);
 }

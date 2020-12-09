@@ -233,6 +233,8 @@ class SpatExtent {
 
 class SpatSRS {
 	public:
+//		SpatSRS(std::string s);
+
 		std::string proj4, wkt;
 		bool set(std::string txt, std::string &msg);
 
@@ -241,7 +243,7 @@ class SpatSRS {
 		bool set(OGRSpatialReference *poSRS, std::string &msg);
 #endif		
 */
-
+	
 		double to_meter();
 
 		std::string get(std::string x) {
@@ -259,6 +261,8 @@ class SpatSRS {
 		bool is_empty() {
 			return (wkt == "");
 		}
+
+		bool is_geographic(); // as below, but using GDAL
 
 		bool is_lonlat() {
 			bool b1 = proj4.find("longlat") != std::string::npos;

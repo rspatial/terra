@@ -97,10 +97,10 @@ Rcpp::DataFrame getGeometry(SpatVector* v) {
 	return out;
 }
 
-
+RCPP_EXPOSED_CLASS(SpatSRS)
+RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatMessages)
 RCPP_EXPOSED_CLASS(SpatOptions)
-RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatCategories)
 RCPP_EXPOSED_CLASS(SpatDataFrame)
 RCPP_EXPOSED_CLASS(SpatWindow)
@@ -110,11 +110,14 @@ RCPP_EXPOSED_CLASS(SpatRasterCollection)
 RCPP_EXPOSED_CLASS(SpatRasterStack)
 RCPP_EXPOSED_CLASS(SpatVector)
 
-
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
 
+    class_<SpatSRS>("SpatSRS")
+		.method("is_geographic", &SpatSRS::is_geographic, "")		
+		.method("to_meter", &SpatSRS::to_meter, "to_meter")		
+	;
 
     class_<SpatExtent>("SpatExtent")
 		.constructor()
@@ -256,8 +259,10 @@ RCPP_MODULE(spat){
 		.method("getGeometry", &getGeometry, "getGeometry")
 		.method("getGeometryWKT", &SpatVector::getGeometryWKT, "getGeometryWKT")
 		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
+		.method("isGeographic", &SpatVector::is_geographic, "is geographic")
 		.method("length", &SpatVector::length, "length")		
 
+		.field("srs", &SpatVector::srs, "srs")
 		.field("messages", &SpatVector::msg, "messages")
 		.property("names", &SpatVector::get_names, &SpatVector::set_names)
 		.method("nrow", &SpatVector::nrow, "nrow")		
@@ -290,6 +295,8 @@ RCPP_MODULE(spat){
 
     class_<RasterSource>("RasterSource")	
 		.field_readonly("time", &RasterSource::time)
+		.field("srs", &RasterSource::srs, "srs")
+
 		//.field_readonly("memory", &RasterSource::memory)
 	//	.field_readonly("filename", &RasterSource::filename)
 		//.field_readonly("driver", &RasterSource::driver)
@@ -361,6 +368,7 @@ RCPP_MODULE(spat){
 		.property("hasRange", &SpatRaster::hasRange )
 		.property("hasValues", &SpatRaster::hasValues )
 		.property("inMemory", &SpatRaster::inMemory )
+		.method("isGeographic", &SpatRaster::is_geographic, "is_geographic")
 		.method("isLonLat", &SpatRaster::is_lonlat, "isLonLat")
 		.method("isGlobalLonLat", &SpatRaster::is_global_lonlat, "isGlobalLonLat") 
 

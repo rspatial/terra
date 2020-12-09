@@ -67,18 +67,30 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 setMethod("isLonLat", signature("SpatRaster"), 
 	function(x, perhaps=FALSE, warn=TRUE, global=FALSE, ...) {
 		if (perhaps) {
-			a <- x@ptr$couldBeLonLat()
-			if (a & global) {
-				a <- x@ptr$isGlobalLonLat()
+			ok <- x@ptr$isGeographic()
+			if (ok) {
+				if (global) {
+					return(x@ptr$isGlobalLonLat())
+				} else {
+					return(ok)
+				}
 			}
-			if (warn) {
-				if (crs(x) == "") warning("assuming lon/lat crs")
+			ok <- x@ptr$couldBeLonLat()
+			if (ok) {
+				if (global) {
+					ok <- x@ptr$isGlobalLonLat()
+				}
 			}
-			a			
-		} else if (global) {
-			x@ptr$isGlobalLonLat()
+			if (ok && warn) {
+				warning("assuming lon/lat crs")
+			}
+			return(ok)	
 		} else {
-			x@ptr$isLonLat()
+			ok <- x@ptr$isGeographic()
+			if (ok && global) {
+				ok <- x@ptr$isGlobalLonLat()
+			}
+			return(ok)
 		}
 	}
 )
@@ -86,14 +98,14 @@ setMethod("isLonLat", signature("SpatRaster"),
 
 setMethod("isLonLat", signature("SpatVector"), 
 	function(x, perhaps=FALSE, warn=TRUE, ...) {
+		ok <- x@ptr$isGeographic()
+		if (ok) return(ok)
 		if (perhaps) {
-			a <- x@ptr$couldBeLonLat()
-			if (warn) {
+			ok <- x@ptr$couldBeLonLat()
+			if (ok && warn) {
 				if (crs(x) == "") warning("assuming lon/lat crs")
 			}
-			a	
-		} else {
-			x@ptr$isLonLat()
+			ok
 		}
 	}
 )

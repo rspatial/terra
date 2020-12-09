@@ -15,7 +15,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 }
 
 \usage{
-\S4method{area}{SpatRaster}(x, sum=TRUE, filename="", overwrite=FALSE,  wopt=list(), ...)
+\S4method{area}{SpatRaster}(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE,  wopt=list(), ...)
 
 \S4method{area}{SpatVector}(x, ...)
 
@@ -26,6 +26,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{sum}{logical. If \code{TRUE} the summed area of the cells that are not \code{NA} is returned. Otherwise, a SpatRaster with the area for each cell is returned}
+  \item{correct}{logical. If \code{TRUE}, the area is not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. This may be considerbly slower}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}

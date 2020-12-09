@@ -61,7 +61,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		p = x.as_points(false, true, opt);
 	}
 
-	bool lonlat = is_lonlat(); // m == 0
+	bool lonlat = is_geographic(); // m == 0
 	unsigned nc = ncol();
 	if (!readStart()) {
 		out.setError(getError());
@@ -137,7 +137,7 @@ SpatDataFrame SpatVector::distance() {
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
 
-	bool lonlat = is_lonlat(); // m == 0
+	bool lonlat = is_geographic(); // m == 0
 
 	size_t s = size();
 	size_t n = ((s-1) * s)/2;
@@ -189,7 +189,7 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
 
-	bool lonlat = is_lonlat();
+	bool lonlat = is_geographic();
 
 	size_t s = size();
 	size_t sx = x.size();

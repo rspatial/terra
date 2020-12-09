@@ -101,6 +101,7 @@ class SpatVector {
 		unsigned nxy();
 
 		SpatExtent getExtent();
+		bool is_geographic();
 		bool is_lonlat();
 		bool could_be_lonlat();
 		std::string type();

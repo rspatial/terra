@@ -146,15 +146,25 @@ double SpatSRS::to_meter() {
 	if (erro != OGRERR_NONE) {
 		return NAN;
 	}
-	char *pszPRJ = NULL;
-	x.exportToProj4(&pszPRJ);
-	std::string prj = pszPRJ;
-	size_t f = prj.find("longlat");
-	if (f != std::string::npos) {
+	if (x.IsGeographic()) {
 		return 0;
 	}
 	out = x.GetLinearUnits();
 	return out;
+}
+
+
+bool SpatSRS::is_geographic() {
+	OGRSpatialReference x;
+	if (wkt.size() < 2) {
+		return false;
+	}
+	const char *pszCRS = wkt.c_str();
+	OGRErr erro = x.SetFromUserInput(pszCRS);
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+	return x.IsGeographic();
 }
 
 

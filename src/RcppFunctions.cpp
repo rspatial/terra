@@ -16,25 +16,25 @@
 
 // [[Rcpp::export(name = ".getLinearUnits")]]
 double getLinearUnits(std::string s) {
-	double out;
-	OGRSpatialReference x;
-	if (s.size() < 2) {
+	std::string msg;
+	SpatSRS srs;
+	if (!srs.set(s, msg)) return NAN;
+	return srs.to_meter();
+	
+/*	if (s.size() < 2) {
 		return NAN;
 	}
+	OGRSpatialReference x;
 	const char *pszCRS = s.c_str();
 	OGRErr erro = x.SetFromUserInput(pszCRS);
 	if (erro != OGRERR_NONE) {
 		return NAN;
 	}
-	char *pszPRJ = NULL;
-	x.exportToProj4(&pszPRJ);
-	std::string prj = pszPRJ;
-	size_t f = prj.find("proj=longlat");
-	if (f != std::string::npos) {
+	if (x.IsGeographic()) {
 		return 0;
 	}
-	out = x.GetLinearUnits();
-	return out;
+	return x.GetLinearUnits();
+*/	
 }
 
 
