@@ -232,7 +232,10 @@ SpatRaster SpatRaster::rst_area(bool adjust, SpatOptions &opt) {
 std::vector<double> SpatRaster::sum_area(bool adjust, SpatOptions &opt) {
 
 	std::vector<double> out(nlyr(), 0);
-
+	
+	if (adjust) { //avoid very large polygon objects
+		opt.set_memfrac(std::max(0.1, opt.get_memfrac()/2));
+	}
 	BlockSize bs = getBlockSize(opt);
 	if (!readStart()) {
 		std::vector<double> err(nlyr(), -1);

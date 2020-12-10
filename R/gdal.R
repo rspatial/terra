@@ -75,7 +75,7 @@ setMethod("describe", signature(x="character"),
 		x <- .gdalinfo(x, options, open_opt)
 
 		if (x == "") {
-			add <- ifelse(file.exists(filename), "\n", "\nThe file does not exist\n")
+			add <- ifelse(file.exists(x), "\n", "\nThe file does not exist\n")
 			x <- paste0("GDAL cannot open: ", x, add)
 		}
 		y <- unlist(strsplit(x, "\n"))

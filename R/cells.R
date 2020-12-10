@@ -58,6 +58,6 @@ setMethod("cells", signature("SpatRaster", "SpatVector"),
 
 setMethod("cells", signature("SpatRaster", "SpatExtent"), 
 	function(x, y, ...) {
-		r@ptr$extCells(y@ptr) + 1
+		x@ptr$extCells(y@ptr) + 1
 	}
 )
