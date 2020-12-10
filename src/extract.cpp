@@ -647,7 +647,7 @@ std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 */
 
 
-std::vector<double> SpatRaster::getCells(SpatVector v, bool touches, std::string method) {
+std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::string method) {
 
 	std::string gtype = v.type();
 	std::vector<double> out, cells;	
@@ -675,6 +675,36 @@ std::vector<double> SpatRaster::getCells(SpatVector v, bool touches, std::string
         }
 		out.insert(out.end(), cells.begin(), cells.end());
 		return out;
+	}
+	return out;
+}
+
+
+std::vector<double> SpatRaster::extCells(SpatExtent ext) {
+	
+	std::vector<double> out;
+	ext = align(ext, "near");
+	ext.intersect(getExtent());
+	if (!ext.valid()) {
+		return(out);
+	}
+	double resx = xres() / 2;
+	double resy = yres() / 2;
+	std::vector<double> e = ext.asVector();
+	e[0] += resx;
+	e[1] -= resx;
+	e[2] += resy;
+	e[3] -= resy;
+	std::vector<double> ex = {e[0], e[1]};
+	std::vector<double> ey = {e[3], e[2]};
+	std::vector<int_64> r = rowFromY(ey);
+	std::vector<int_64> c = colFromX(ex);
+	int_64 nc = ncol();
+	out.reserve((r[1]-r[0]) * (c[1]-c[0]));
+	for (int_64 i=r[0]; i <= r[1]; i++) {
+		for (int_64 j=c[0]; j <= c[1]; j++) {
+			out.push_back(i*nc+j); 
+		}
 	}
 	return out;
 }

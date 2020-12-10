@@ -418,7 +418,8 @@ RCPP_MODULE(spat){
 		.method("subset", &SpatRaster::subset, "subset")
 				
 		.method("cellFromXY", ( std::vector<double> (SpatRaster::*)(std::vector<double>,std::vector<double>) )( &SpatRaster::cellFromXY ))
-		.method("getCells", &SpatRaster::getCells, "getCells")
+		.method("vectCells", &SpatRaster::vectCells, "vectCells")
+		.method("extCells", &SpatRaster::extCells, "extCells")
 		
 		.method("cellFromRowCol", ( std::vector<double> (SpatRaster::*)(std::vector<int_64>,std::vector<int_64>) )( &SpatRaster::cellFromRowCol ))
 		.method("cellFromRowColCombine", ( std::vector<double> (SpatRaster::*)(std::vector<int_64>,std::vector<int_64>) )( &SpatRaster::cellFromRowColCombine ))
