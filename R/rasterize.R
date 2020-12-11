@@ -1,5 +1,5 @@
 
-rasterize_points <- function(x=x, y=y, field=field, fun="count", background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) {
+rasterize_points <- function(x=x, y=y, field=field, fun="last", background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) {
 
 	if (update) {
 		background <- NA 
@@ -13,20 +13,26 @@ rasterize_points <- function(x=x, y=y, field=field, fun="count", background=back
 	if (missing(field)) {
 		field <- g[,"id"] # consider multi-point
 	} else if (is.character(field)) {
-		field <- x[[field]]
-		field <- field[g[,"id"], ,drop=FALSE]
-	} else {
-		if (length(field) == 1) {
-			field <- rep(field, nrow(g))
-		} else if (length(field) == nrow(x)) {
-			field <- field[g[,"id"]]
-		} else if (length(field) != nrow(g))  {
-			stop("length of field does not match the number of features")
+		if (length(field) > 1) {
+			stop("you can only provide a single field name")
 		}
+		field <- as.vector(unlist(x[[field]]))
+		field <- field[g[,"id"]]
+	} else if (length(field) == 1) {
+		if (field > 0 && field <= ncol(x)) {
+			field <- as.vector(unlist(x[[field]]))
+			field <- field[g[,"id"]]
+		} else {
+			stop("field index outside the value range (1:ncol(x))")
+		}
+	} else if (length(field) == nrow(x)) {
+		field <- field[g[,"id"]]
+	} else if (length(field) != nrow(g))  {
+		stop("length of field does not match the number of features")
 	}
 	g <- cellFromXY(y, as.matrix(g[, c("x", "y")]))
 	
-	if (missing(fun)) fun <- "pa"
+	if (missing(fun)) fun <- "last"
 	if (is.character(fun)) {
 		if (fun == "pa") {
 			b <- unique(g)
@@ -56,7 +62,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="count", background=back
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field=1, fun, background=NA, update=FALSE, touches=is.lines(x), filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), filename="", overwrite=FALSE, wopt=list(), ...) {
 
 		if (geomtype(x) == "points") {
 			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
@@ -90,8 +96,18 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		background <- as.numeric(background[1])
 		#if (is.na(background)) background = 0/0 # NAN
 		if (is.character(field)) {
+			if (length(field) > 1) {
+				stop("you can only provide a single field name")
+			}
 			y@ptr <- y@ptr$rasterize(x@ptr, field, 0, background, update[1], touches[1], inverse[1], opt)
 		} else if (is.numeric(field)) {
+			if (length(field) == 1) {
+				if (field > 0 && field <= ncol(x)) {
+					field <- as.vector(unlist(x[[field]]))
+				} else {
+					stop("field index outside the value range (1:ncol(x))")
+				} 
+			} 
 			y@ptr <- y@ptr$rasterize(x@ptr, "", field, background, update[1], touches[1], inverse[1], opt)
 		} else {
 			stop("field should be character or numeric")
