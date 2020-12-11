@@ -30,7 +30,7 @@
 #include "recycle.h"
 
 
-double distance_lonlat(double &lon1, double &lat1, double &lon2, double &lat2, double &a, double &f) {
+double distance_lonlat(double &lon1, double &lat1, double &lon2, double &lat2, const double &a, const double &f) {
 	double s12, azi1, azi2;
 	struct geod_geodesic g;
 	geod_init(&g, a, f);

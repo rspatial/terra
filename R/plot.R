@@ -211,23 +211,40 @@ setMethod("text", signature(x="SpatVector"),
 
 
 setMethod("boxplot", signature(x="SpatRaster"), 
-	function(x, maxcell=100000, ...) {
-		cn <- names(x)
-		if ( ncell(x) > maxcell) {
-			warning("taking a sample of ", maxcell, " cells")
-			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
-		} 
-		x <- values(x)
-		colnames(x) <- cn
-		boxplot(x, ...)
+	function(x,y=NULL,  maxcell=100000, ...) {
+		if (is.null(y)) {
+			cn <- names(x)
+			if ( ncell(x) > maxcell) {
+				warning("taking a sample of ", maxcell, " cells")
+				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+			} 
+			x <- values(x)
+			colnames(x) <- cn
+			boxplot(x, ...)
+		} else {
+			s <- c(x[[1]], y[[1]])
+			if ( ncell(x) > maxcell) {
+				warning("taking a sample of ", maxcell, " cells")
+				s <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+			} else {
+				s <- values(s)
+			}
+			cn <- colnames(s)
+			cn[cn==""] <- c('layer1', 'layer2')[cn==""]
+			f <- stats::as.formula(paste(cn[1], '~', cn[2]))
+			boxplot(f, data=s, ...)
+		}
 	}
 )
 
 
 
 setMethod("barplot", "SpatRaster", 
-	function(height, maxcell=1000000, digits=0, breaks=NULL, col=grDevices::rainbow, ...) {
+	function(height, maxcell=1000000, digits=0, breaks=NULL, col, ...) {
 		
+		if (missing(col)) {
+			col=grDevices::rainbow
+		}
 		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE)
 		adj <- length(x) / ncell(height)
 		if (adj < 1) {

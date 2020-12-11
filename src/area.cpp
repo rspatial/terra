@@ -213,6 +213,10 @@ SpatRaster SpatRaster::rst_area(bool adjust, SpatOptions &opt) {
 			SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 			SpatRaster onechunk = out.crop(e, "near", popt);
 			SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
+			//std::vector<double> cells(onechunk.ncell());
+			//std::iota (cells.begin(), cells.end(), 0);
+			//onechunk.setValues(cells);
+			//SpatVector p = onechunk.as_polygons(false, true, false, false, popt);
 			p = p.project("+proj=longlat +datum=WGS84");
 			std::vector<double> v = p.area();
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
