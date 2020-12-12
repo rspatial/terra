@@ -182,6 +182,8 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	if (!out.writeStopGDAL()) {
 		out.setError("cannot close file");
 	}
+	readStop();
+
 	return out;
 }
 

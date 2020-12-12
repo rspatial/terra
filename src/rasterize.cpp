@@ -7,16 +7,13 @@
 
 #include "gdal_utils.h"
 
-
 SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> values, double background, SpatOptions &opt) {
 	r.setError("not implemented yet");
 	return(r);
 }
 
 
-
 #if GDAL_VERSION_MAJOR >= 3
-
 
 SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
 

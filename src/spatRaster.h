@@ -113,7 +113,7 @@ class RasterSource {
 		std::string driver;
 		std::string datatype; 
 		
-		// user set:
+		// user set for reading:
 		bool hasNAflag = false;
 		double NAflag = NAN;
 
@@ -196,6 +196,7 @@ class SpatRaster {
 
 		std::string getSRS(std::string x);
 		bool setSRS(std::string crs);
+
 
 
 /*

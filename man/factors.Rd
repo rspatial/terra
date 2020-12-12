@@ -63,11 +63,14 @@ set.seed(0)
 r <- rast(nrow=10, ncol=10)
 values(r) <- sample(3, ncell(r), replace=TRUE) + 2
 is.factor(r)
+
 cls <- c("forest", "water", "urban")
 levels(r) <- cls
+names(r) <- "land cover"
+is.factor(r)
+r
 
 f <- as.factor(r)
-is.factor(f)
 }
 
 \keyword{methods}

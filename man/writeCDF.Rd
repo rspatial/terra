@@ -8,12 +8,14 @@
 \title{Write raster data to a NetCDF file}
 
 \description{
-Write a SpatRaster or SpatDataSet to a NetCDF file.
+Write a SpatRaster or SpatDataSet to a NetCDF file. 
+
 When using a SpatDataSet, the varname, longname, and unit should be set in the object (see examples).
 }
 
 \usage{
-\S4method{writeCDF}{SpatRaster}(x, filename,  varname, longname="", unit="", overwrite=FALSE, datatype="double", NAflag=-9999, ...)
+\S4method{writeCDF}{SpatRaster}(x, filename,  varname, longname="", unit="", overwrite=FALSE,
+ datatype="double", NAflag=-9999, ...)
 
 \S4method{writeCDF}{SpatDataSet}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...)
 }

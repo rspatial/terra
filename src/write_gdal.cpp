@@ -116,6 +116,13 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	//std::string ext = getFileExt(filename);
 	//lowercase(ext);
 	std::string datatype = opt.get_datatype();
+	GDALDataType gdt;
+	if (!getGDALDataType(datatype, gdt)) {
+		setError("invalid datatype");
+		return false;
+		//addWarning("unknown datatype = " + datatype + ". Set to FLT4S");
+		// datatype = "FLT4S"
+	}
 
 	std::vector<bool> hasCats = hasCategories();
 	std::vector<bool> hasCT = hasColors();
@@ -141,7 +148,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	if (opt.verbose) {
 		double gb = 1073741824 / 8;
 		Rcpp::Rcout<< "filename      : " << filename << std::endl;
-		//Rcpp::Rcout<< "NA flag       : " << opt.get_NAflag() << std::endl;
 		if (diskAvailable > 0) {
 			Rcpp::Rcout<< "disk available: " << roundn(diskAvailable / gb, 1) << " GB" << std::endl;
 		}
@@ -173,11 +179,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		}
 	}
 	
-	GDALDataType gdt;
-	if (!getGDALDataType(datatype, gdt)) {
-		addWarning("unknown datatype = " + datatype);
-	}
-
 	poDstDS = poDriver->Create( pszDstFilename, ncol(), nrow(), nlyr(), gdt, papszOptions);
 
 	CSLDestroy( papszOptions );
@@ -187,7 +188,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 	GDALRasterBand *poBand;
 	std::vector<std::string> nms = getNames();
-	double naflag = opt.get_NAflag();
+	double naflag; 
+	bool hasNAflag = opt.get_NAflag(naflag);
 		
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = poDstDS->GetRasterBand(i+1);
@@ -207,12 +209,20 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		poBand->SetDescription(nms[i].c_str());
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
-			if (!std::isnan(naflag)) {
+			if (hasNAflag) {
 				poBand->SetNoDataValue(naflag); 
 			} else if (datatype == "INT4S") {
 				poBand->SetNoDataValue(INT32_MIN); //-2147483648; 
 			} else if (datatype == "INT2S") {
 				poBand->SetNoDataValue(INT16_MIN); 
+			} else if (datatype == "INT4U") {
+				double na = (double)INT32_MAX * 2 - 1;
+				poBand->SetNoDataValue(na); 
+			} else if (datatype == "INT2U") {
+				double na = (double)INT16_MAX * 2 - 1;
+				poBand->SetNoDataValue(na); 
+			} else if (datatype == "INT1U") {
+				poBand->SetNoDataValue(255); 
 			} else {
 				poBand->SetNoDataValue(NAN); 
 			}
@@ -272,11 +282,8 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 	double vmin, vmax;
 	uint_64 nc = nrows * ncols;
 	size_t nl = nlyr();
-	//for (size_t i=0; i < nl; i++) {
-	//unsigned start = nc * i;
 	std::string datatype = source[0].datatype;
-	//poBand = source[0].gdalconnection->GetRasterBand(i+1);
-	//Rcpp::Rcout << datatype << std::endl;
+
 	
 	for (size_t i=0; i < nl; i++) {
 		uint_64 start = nc * i;
@@ -290,34 +297,42 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 		}
 	}
 
+
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
 		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL );
-	//} else if (datatype == "FLT4S") {
-	//	std::vector<float> vv(vals.begin(), vals.end());
-	//	err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Float32, nl, NULL, 0, 0, 0, NULL );
-	} else if (datatype == "INT4S") {
-		std::transform(vals.begin(), vals.end(), vals.begin(),
-			[](double v) { return (std::isnan(v) ? double(INT32_MIN) : v); } );
-		// std::replace(vals.begin(), vals.end(), NAN, (double) -2147483648); //works
-		std::vector<int32_t> vv(vals.begin(), vals.end());
-		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int32, nl, NULL, 0, 0, 0, NULL );
-	} else if (datatype == "INT2S") {
-		std::transform(vals.begin(), vals.end(), vals.begin(),
-			[](double v) { return (std::isnan(v) ? double(INT16_MIN) : v); } );
-		//std::replace(vals.begin(), vals.end(), NAN, -32768); //works not
-		std::vector<int16_t> vv(vals.begin(), vals.end());
-		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int16, nl, NULL, 0, 0, 0, NULL );
-	} else if (datatype == "INT4U") {
-		std::vector<uint32_t> vv(vals.begin(), vals.end());
-		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt32, nl, NULL, 0, 0, 0, NULL );
-	} else if (datatype == "INT2U") {
-		std::vector<uint16_t> vv(vals.begin(), vals.end());
-		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt16, nl, NULL, 0, 0, 0, NULL );
-	} else if (datatype == "INT1U") {
-		std::vector<int8_t> vv(vals.begin(), vals.end());
-		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Byte, nl, NULL, 0, 0, 0, NULL );
+	} else {
+		int hasNA=0;
+		double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
+		if (hasNA) {
+			for (double &v : vals) { v = std::isnan(v) ? na : v; } 
+		}
+		if (datatype == "INT4S") {
+			for (double &v : vals) { v =  v < (double)INT32_MIN ? na : (v > (double)INT32_MAX ? na : v); } 
+			std::vector<int32_t> vv(vals.begin(), vals.end());
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int32, nl, NULL, 0, 0, 0, NULL );
+		} else if (datatype == "INT2S") {					
+			for (double &v : vals) { v =  v < (double)INT16_MIN ? na : (v > (double)INT16_MAX ? na : v); } 
+			std::vector<int16_t> vv(vals.begin(), vals.end());
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int16, nl, NULL, 0, 0, 0, NULL );
+		} else if (datatype == "INT4U") {
+			double maxval = (double)INT32_MAX * 2 - 1;
+			for (double &v : vals) { v =  v < 0 ? na : (v > maxval ? na : v); } 
+			std::vector<uint32_t> vv(vals.begin(), vals.end());
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt32, nl, NULL, 0, 0, 0, NULL );
+		} else if (datatype == "INT2U") {
+			double maxval = (double)INT16_MAX * 2 - 1;
+			for (double &v : vals) { v =  v < 0 ? na : (v > maxval ? na : v); } 
+			std::vector<uint16_t> vv(vals.begin(), vals.end());
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt16, nl, NULL, 0, 0, 0, NULL );
+		} else if (datatype == "INT1U") {
+			for (double &v : vals) { v =  v < 0 ? na : (v > 255 ? na : v); } 
+			std::vector<int8_t> vv(vals.begin(), vals.end());
+			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Byte, nl, NULL, 0, 0, 0, NULL );
+		} else {
+			setError("bad datatype");
+			return false;
+		}
 	}
-	//if (err == 4) break;
 
 	if (err != CE_None ) {
 		setError("cannot write values");

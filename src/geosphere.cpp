@@ -31,11 +31,11 @@ void DegtoRad(double &deg) {
 }
 
 void normalizeLonDeg(double &x) {
-	fmod((x + 180), 360 - 180);
+	x = fmod((x + 180), 360 - 180);
 }
 
 void normalizeLonRad(double &x) {
-	fmod((x + M_PI), (2 * M_PI) - M_PI);
+	x = fmod((x + M_PI), (2 * M_PI) - M_PI);
 }
 
 

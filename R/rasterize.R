@@ -102,8 +102,8 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		
 		opt <- .runOptions(filename, overwrite, wopt)
 					
-		levs <- ""
-		inverse=FALSE # use "mask" for TRUE
+		levs <- ""[0]
+		inverse <- FALSE # use "mask" for TRUE
 		background <- as.numeric(background[1])
 		#if (is.na(background)) background = 0/0 # NAN
 		if (is.character(field)) {

@@ -113,6 +113,7 @@ class SpatOptions {
 		unsigned progress = 3;
 		unsigned blocksizemp = 4;
 		size_t steps = 0;
+		bool hasNAflag = false;
 		double NAflag = NAN;
 		bool def_verbose = false;
 		bool verbose = false;
@@ -161,7 +162,7 @@ class SpatOptions {
 		std::string get_datatype();
 		//std::string get_bandorder();
 		bool get_verbose();
-		double get_NAflag();
+		bool get_NAflag(double &flag);
 		bool get_overwrite();
 		unsigned get_progress();
 		bool do_progress(unsigned n);
