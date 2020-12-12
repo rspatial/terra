@@ -37,8 +37,8 @@ if (!isGeneric("draw")) {setGeneric("draw", function(x,...) standardGeneric("dra
 if (!isGeneric("ext")) { setGeneric("ext", function(x, ...)	standardGeneric("ext"))}
 if (!isGeneric("ext<-")) { setGeneric("ext<-", function(x, value) standardGeneric("ext<-")) }	
 if (!isGeneric("fill") ) { setGeneric("fill", function(x, ...) standardGeneric("fill")) }
-if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x,...) standardGeneric("geomtype"))}
-
+if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x, ...) standardGeneric("geomtype"))}
+if (!isGeneric("datatype")) {setGeneric("datatype", function(x, ...) standardGeneric("datatype"))}
 if (!isGeneric("global")) {setGeneric("global", function(x, ...) standardGeneric("global"))}	
 if (!isGeneric("is.points")) {setGeneric("is.points", function(x,...) standardGeneric("is.points"))}
 if (!isGeneric("is.lines")) {setGeneric("is.lines", function(x,...) standardGeneric("is.lines"))}

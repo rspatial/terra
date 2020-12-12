@@ -205,6 +205,7 @@ RCPP_MODULE(spat){
 
 		.method("remove_column", (bool (SpatDataFrame::*)(std::string field))( &SpatDataFrame::remove_column))
 		.method("remove_column", (bool (SpatDataFrame::*)(int i))( &SpatDataFrame::remove_column))
+		.method("get_datatypes", &SpatDataFrame::get_datatypes, "")
 				
 		.method("cbind", &SpatDataFrame::cbind)
 		.method("rbind", &SpatDataFrame::rbind)
@@ -238,6 +239,8 @@ RCPP_MODULE(spat){
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
+		.method("get_datatypes", &SpatVector::get_datatypes, "")
+
 		.method("get_holes", &SpatVector::get_holes, "get_holes")		
 		.method("remove_holes", &SpatVector::remove_holes, "remove holes")		
 		.method("append", &SpatVector::append, "append")		
@@ -261,8 +264,7 @@ RCPP_MODULE(spat){
 		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
 		.method("isGeographic", &SpatVector::is_geographic, "is geographic")
 		.method("length", &SpatVector::length, "length")		
-
-		.field("srs", &SpatVector::srs, "srs")
+//		.field("srs", &SpatVector::srs, "srs")
 		.field("messages", &SpatVector::msg, "messages")
 		.property("names", &SpatVector::get_names, &SpatVector::set_names)
 		.method("nrow", &SpatVector::nrow, "nrow")		
@@ -295,7 +297,7 @@ RCPP_MODULE(spat){
 
     class_<RasterSource>("RasterSource")	
 		.field_readonly("time", &RasterSource::time)
-		.field("srs", &RasterSource::srs, "srs")
+//		.field("srs", &RasterSource::srs, "srs")
 
 		//.field_readonly("memory", &RasterSource::memory)
 	//	.field_readonly("filename", &RasterSource::filename)

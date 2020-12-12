@@ -18,7 +18,7 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 #if GDAL_VERSION_MAJOR >= 3
 
 
-SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
+SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
 
 	SpatRaster out;
 	if ( !hasValues() ) update = false;
@@ -28,6 +28,11 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	} else {
 		out = geometry(1);
 		out.setNames({""});
+		if (labels.size() > 0) {
+			std::vector<double> levels(labels.size());
+			std::iota(levels.begin(), levels.end(), 0);
+			out.setCategories(0, labels, levels);
+		}
 	}
 
 	std::string errmsg;
@@ -54,13 +59,13 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	if (inverse) options.push_back("-i");
 	if (touches) options.push_back("-at");
 
-	if (field != "") {
+	if (values.size() == 0) {
+//	if (field != "") {
 		std::vector<std::string> nms = x.get_names();
 		if (!is_in_vector(field, nms)) {
 			out.setError("field " + field + " not found");
 			return out;
 		}
-		if (!update) out.setNames({field});
 		options.push_back("-a");
 		options.push_back(field);
 	} else {
@@ -80,6 +85,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			return out;
 		}
 	}
+	if (!update) out.setNames({field});
 
 	GDALDatasetH rstDS, vecDS;
 
@@ -313,7 +319,7 @@ SpatRaster rasterizeLines(SpatVector p, SpatRaster r, std::vector<double> value,
 
 
 
-SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
+SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
 
 //SpatRaster SpatRaster::rasterize(SpatVector x, std::vector<double> values, double background, bool update, SpatOptions &opt) {
 
@@ -377,10 +383,10 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	SpatRaster rc = r.crop(e, "out", opt);
 #if GDAL_VERSION_MAJOR >= 3			
 	std::vector<double> feats(1, 1) ;			
-    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, false, touches, false, opt); 
+    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;			
-    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, false, touches, false, opt); 
+    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
 #endif
 	SpatVector pts = rcr.as_points(false, true, opt);
     SpatDataFrame vd = pts.getGeometryDF();

@@ -439,6 +439,7 @@ std::vector<std::string> SpatDataFrame::get_datatypes() {
 
 
 
+
 // only doing this for one column for now
 SpatDataFrame SpatDataFrame::unique(int col) {
 	SpatDataFrame out = subset_cols(col);

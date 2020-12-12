@@ -12,6 +12,12 @@ setMethod("geomtype", signature(x="SpatVector"),
 	}
 )	
 
+setMethod("datatype", signature(x="SpatVector"), 
+	function(x, ...){ 
+		x@ptr$df$get_datatypes()
+	}
+)	
+
 
 setMethod("is.lines", signature(x="SpatVector"), 
 	function(x, ...) {

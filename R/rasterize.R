@@ -92,23 +92,48 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		
 		opt <- .runOptions(filename, overwrite, wopt)
 					
+		levs <- ""
 		inverse=FALSE # use "mask" for TRUE
 		background <- as.numeric(background[1])
 		#if (is.na(background)) background = 0/0 # NAN
 		if (is.character(field)) {
-			if (length(field) > 1) {
-				stop("you can only provide a single field name")
-			}
-			y@ptr <- y@ptr$rasterize(x@ptr, field, 0, background, update[1], touches[1], inverse[1], opt)
+			if (length(field) == 1) {
+				i <- which(field == names(x)) 
+				if (length(i) == 0) {
+					stop(paste0(field, " is not a valid fieldname"))
+				}
+				dtype <- datatype(x)[i]
+				if (dtype == "string") {
+					v <- x[[field]][,1]
+					f <- as.factor(v)
+					levs <- levels(f)
+					v <- as.integer(f) - 1
+					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)					
+				} else {
+					y@ptr <- y@ptr$rasterize(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
+				}
+			} else {
+				f     <- as.factor(field)
+				levs  <- levels(f)
+				field <- as.integer(f) - 1
+				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], opt)					
+			} 
 		} else if (is.numeric(field)) {
 			if (length(field) == 1) {
 				if (field > 0 && field <= ncol(x)) {
-					field <- as.vector(unlist(x[[field]]))
+					v <- x[[field]][,1]
+					if (inherits(field, "character")) {
+						f <- as.factor(field)
+						levs <- levels(f)
+						v <- as.integer(f) - 1
+					}
+					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)
 				} else {
 					stop("field index outside the value range (1:ncol(x))")
 				} 
+			} else {
+				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], opt)
 			} 
-			y@ptr <- y@ptr$rasterize(x@ptr, "", field, background, update[1], touches[1], inverse[1], opt)
 		} else {
 			stop("field should be character or numeric")
 		}

@@ -198,7 +198,9 @@ class SpatVector {
 		bool remove_column(int i) {
 			return df.remove_column(i);
 		};
-
+		std::vector<std::string> get_datatypes() {
+			return df.get_datatypes();
+		}
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
