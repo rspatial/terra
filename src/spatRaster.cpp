@@ -839,16 +839,92 @@ bool SpatRaster::setWindow(SpatExtent x) {
 	return true;
 }
 
+SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (!out.compare_geom(x, false, true)) {
+		return(out);
+	}
+	SpatOptions fopt(opt);
+	
+	size_t n = nlyr();
+	if (n == 1) {
+		return x;
+	}
+	std::vector<unsigned> lyrs;
+	if (layer == 0) {
+		out = x;
+		lyrs.resize(n-1);
+		std::iota(lyrs.begin(), lyrs.end(), 1);
+		SpatRaster r = subset(lyrs, fopt);
+		out.addSource(r);
+	} else if (layer == n-1) {
+		lyrs.resize(n-1);
+		std::iota(lyrs.begin(), lyrs.end(), 0);
+		out = subset(lyrs, fopt);
+		out.addSource(x);
+	} else {
+		lyrs.resize(layer);
+		std::iota(lyrs.begin(), lyrs.end(), 0);
+		out = subset(lyrs, fopt);
+		out.addSource(x);
+		lyrs.resize(n-layer-1);
+		std::iota(lyrs.begin(), lyrs.end(), layer+1);
+		SpatRaster r = subset(lyrs, fopt);
+		out.addSource(r);
+	}
+	return out;
+}
 
 
-void SpatRaster::createCategories(unsigned layer) {
-	// subset to layer
+SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions opt) {
+
+	if (!hasValues()) {
+		SpatRaster out;
+		out.setError("cannot make categries if the raster has no values");
+		return out;
+	}
+
+	std::vector<unsigned> lyrs = {layer};
+	SpatOptions fopt(opt);
+	SpatRaster r = subset(lyrs, fopt);
+
+	r.math2("round", 0, fopt);
+
+	std::vector<std::vector<double>> u = r.unique(false, fopt);
+	
+	std::vector<double> id(u[0].size());
+	std::iota(id.begin(), id.end(), 0);
+	std::vector<std::vector<double>> rcl(2);
+	rcl[0] = u[0];
+	rcl[1] = id;
+	r = r.reclassify(rcl, true, true, true, fopt);
+	
+	std::vector<std::string> s(id.size());
+	for (size_t i=0; i<s.size(); i++) {
+		s[i] = std::to_string((int)u[0][i]);
+	}
+	r.setCategories(0, id, s);
+	
+	if (nlyr() == 1) {
+		return r;
+	} else {
+		return replace(r, layer, opt);
+	}
+}
+
+
+
+bool SpatRaster::createCategories(unsigned layer) {
+	if (layer > (nlyr()-1)) { 
+		setError("invalid layer number");
+		return(false)}
+	}
 	SpatOptions opt;
 	std::vector<unsigned> lyrs(1, layer);
 	SpatRaster r = subset(lyrs, opt);
 	std::vector<std::vector<double>> u = r.unique(false, opt);
     std::vector<unsigned> sl = findLyr(layer);
-	source[sl[0]].cats[sl[1]].levels = u[0];
 	
 	std::vector<std::string> s(u[0].size());
 	for (size_t i=0; i<s.size(); i++) {
@@ -858,9 +934,10 @@ void SpatRaster::createCategories(unsigned layer) {
 	//std::transform(u[0].begin(), u[0].end(), s.begin(), [](const double& d) {
 	//	return std::to_string(d);
 	//});
-	
+	source[sl[0]].cats[sl[1]].levels = u[0];
 	source[sl[0]].cats[sl[1]].labels = s;
 	source[sl[0]].hasCategories[sl[1]] = true;
+	return true;
 }
 
 
@@ -879,9 +956,20 @@ std::vector<bool> SpatRaster::hasCategories() {
 
 
 
-void SpatRaster::setCategories(unsigned layer, std::vector<double> levels, std::vector<std::string> labels) {
-   
+bool SpatRaster::setCategories(unsigned layer, std::vector<double> levels, std::vector<std::string> labels) {
+
+	if (layer > (nlyr()-1)) { 
+		setError("invalid layer number");
+		return(false)}
+	}
+
     std::vector<unsigned> sl = findLyr(layer);
+	//if (!source[sl[0]].hasCategories[sl[1]]) {
+	//	SpatOptions opt;
+	//	SpatRaster out = makeCategorical(layer, opt);
+	//	source = out.source;
+	//}
+
 	if (levels.size() == 0) {
 		if (labels.size() == source[sl[0]].cats[sl[1]].levels.size()) {
 			source[sl[0]].cats[sl[1]].labels = labels;
@@ -899,14 +987,20 @@ void SpatRaster::setCategories(unsigned layer, std::vector<double> levels, std::
 		source[sl[0]].cats[sl[1]] = s;
 		source[sl[0]].hasCategories[sl[1]] = true;
 	}
+	return true;
 }
 
 
-void SpatRaster::removeCategories(unsigned layer) {
+bool SpatRaster::removeCategories(unsigned layer) {
+	if (layer > (nlyr()-1)) { 
+		setError("invalid layer number");
+		return(false)}
+	}
     std::vector<unsigned> sl = findLyr(layer);
 	SpatCategories s;
 	source[sl[0]].cats[sl[1]] = s;
 	source[sl[0]].hasCategories[sl[1]] = false;
+	return true;
 }
 
 SpatCategories SpatRaster::getLayerCategories(unsigned layer) {

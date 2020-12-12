@@ -297,10 +297,10 @@ class SpatRaster {
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);
 
 
-		void addSource(SpatRaster x);
+		void addSource(SpatRaster x);	
 		SpatRaster combineSources(SpatRaster x);
 		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions &opt);
-
+		SpatRaster replace(SpatRaster x, unsigned layer, SpatOptions &opt);
 ////////////////////////////////////////////////////
 // helper methods
 ////////////////////////////////////////////////////
@@ -341,10 +341,11 @@ class SpatRaster {
         std::vector<unsigned> lyrsBySource();
         unsigned nsrc();
 
-		void createCategories(unsigned layer);
+		SpatRaster makeCategorical(unsigned layer, SpatOptions opt);
+		bool createCategories(unsigned layer);
 		std::vector<bool> hasCategories();
-		void setCategories(unsigned layer, std::vector<double> levels, std::vector<std::string> labels);
-		void removeCategories(unsigned layer);
+		bool setCategories(unsigned layer, std::vector<double> levels, std::vector<std::string> labels);
+		bool removeCategories(unsigned layer);
 		std::vector<SpatCategories> getCategories();
 		SpatCategories getLayerCategories(unsigned layer);
 

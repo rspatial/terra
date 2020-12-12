@@ -336,6 +336,7 @@ RCPP_MODULE(spat){
 		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
 		
 		.method("addSource", &SpatRaster::addSource, "addSource")
+		.method("replace", &SpatRaster::replace, "replace")
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
@@ -363,6 +364,7 @@ RCPP_MODULE(spat){
 		.method("setCategories", &SpatRaster::setCategories, "setCategories")
 		.method("removeCategories", &SpatRaster::removeCategories, "removeCategories")
 		
+		.method("makeCategorical", &SpatRaster::makeCategorical, "makeCategorical")
 		.method("createCategories", &SpatRaster::createCategories, "createCategories")
 		.method("hasColors", &SpatRaster::hasColors, "hasColors")
 		.method("getColors", &SpatRaster::getColors, "getColors")

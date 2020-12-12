@@ -23,8 +23,7 @@
 
 \description{
 
-These functions allow for defining a SpatRaster layer as a categorical variable (factor). These can be inspected and set with \code{levels} and \code{cats}. These methods are the same except that with \code{levels<-} you can only set the categories of the first layer. Like factors in R, categories are stored as indices (integers) that have an associated label. In a SpatRaster, the index starts at 0, and cannot be larger than 255. \code{as.factor} create a layer with a RAT table. \code{deratify} creates a single layer for a (or each) variable in the RAT table. 
-
+These functions allow for defining a SpatRaster layer as a categorical variable (factor). These can be inspected and set with \code{levels} and \code{cats}. These methods are the same except that with \code{levels<-} you can only set the categories of the first layer. Like factors in R, categories are stored as indices (integers) that have an associated label. In a SpatRaster, the index starts at 0, and cannot be larger than 255. \code{as.factor} makes the first layer of a SpatRaster a categorical variable. You can then use \code{levels<-} to replace the lables.
 
 The "Raster Attribute Table" (RAT) is similar in concept. A main difference with categries is that there can be many labels (variables) assocuated with one index. The RAT is a data.frame; the first column ("ID") has the unique cell values of the layer.
 }
@@ -51,12 +50,12 @@ The "Raster Attribute Table" (RAT) is similar in concept. A main difference with
 \arguments{
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
-  \item{value}{data.frame}
+  \item{value}{ With \code{cats<-} and {levels<-} this can be a character vectors with new labels or a two column data.frame. The first column is an integer cell value, and the second column is the character label. With \code{rats<-} this is a data.frame. The first column is an integer cell value, and any number and type of additional columns is allowed}
 }  
 
 
 \value{
-SpatRaster; list (levels); boolean (is.factor)
+SpatRaster; list (e.g., levels); boolean (is.factor)
 }
 
 \examples{

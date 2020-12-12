@@ -39,10 +39,9 @@ setMethod ("rats<-" , "SpatRaster",
 
 setMethod("as.factor", signature(x="SpatRaster"), 
 	function(x) {
-		stopifnot(nlyr(x) == 1)
 		stopifnot(hasValues(x))
-		x@ptr <- x@ptr$deepcopy()
-		x@ptr$createCategories(0)
+		opt <- .runOptions("", TRUE, list())
+		x@ptr <- x@ptr$makeCategorical(0, opt)
 		show_messages(x, "as.factor")
 	}
 )
@@ -56,11 +55,7 @@ setMethod("is.factor", signature(x="SpatRaster"),
 
 setMethod("levels", signature(x="SpatRaster"), 
 	function(x) {
-		#if (any(x@ptr$hasCategories())) {
 		x@ptr$getCategories()
-		#} else {
-		#	vector(mode="list", nlyr(x))
-		#}
 	}
 )
 
@@ -81,6 +76,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 
 setMethod ("cats<-" , "SpatRaster", 
 	function(x, layer=1, value) {
+		stopifnot(hasValues(x))
 		if (missing(value)) {
 			value <- layer
 			layer <- 1
@@ -96,9 +92,13 @@ setMethod ("cats<-" , "SpatRaster",
 		}
 		if (is.null(value) | is.na(value[[1]][1])) {
 			x@ptr$removeCategories(layer-1)
+			return(show_messages(x, "levels<-"))
 		}
-		#stopifnot(is.factor(x))
-		#stopifnot(hasValues(x))
+		if (!is.factor(x)) {	
+			opt <- .runOptions("", TRUE, list())
+			x@ptr <- x@ptr$makeCategorical(layer-1, opt)
+			x <- show_messages(x, "as.factor<-")	
+		}
 		if (is.data.frame(value)) {
 			stopifnot(NCOL(value) == 2)
 			x@ptr$setCategories(layer-1, value[,1], value[,2])
