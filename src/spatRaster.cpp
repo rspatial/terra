@@ -918,7 +918,7 @@ SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions opt) {
 bool SpatRaster::createCategories(unsigned layer) {
 	if (layer > (nlyr()-1)) { 
 		setError("invalid layer number");
-		return(false)}
+		return(false);
 	}
 	SpatOptions opt;
 	std::vector<unsigned> lyrs(1, layer);
@@ -960,7 +960,7 @@ bool SpatRaster::setCategories(unsigned layer, std::vector<double> levels, std::
 
 	if (layer > (nlyr()-1)) { 
 		setError("invalid layer number");
-		return(false)}
+		return(false);
 	}
 
     std::vector<unsigned> sl = findLyr(layer);
@@ -994,7 +994,7 @@ bool SpatRaster::setCategories(unsigned layer, std::vector<double> levels, std::
 bool SpatRaster::removeCategories(unsigned layer) {
 	if (layer > (nlyr()-1)) { 
 		setError("invalid layer number");
-		return(false)}
+		return(false);
 	}
     std::vector<unsigned> sl = findLyr(layer);
 	SpatCategories s;
