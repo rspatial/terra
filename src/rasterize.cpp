@@ -22,16 +22,16 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 
 	SpatRaster out;
 	if ( !hasValues() ) update = false;
-	
+
 	if (update) {
 		out = geometry();
 	} else {
 		out = geometry(1);
 		out.setNames({""});
-		if (labels.size() > 0) {
+		if ((!update) && (labels.size() > 0)) {
 			std::vector<double> levels(labels.size());
 			std::iota(levels.begin(), levels.end(), 0);
-			out.setCategories(0, labels, levels);
+			out.setCategories(0, levels, labels);
 		}
 	}
 

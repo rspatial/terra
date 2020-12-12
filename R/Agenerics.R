@@ -58,7 +58,14 @@ if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")
 if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardGeneric("perimeter"))}	
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}	
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}	
+
 if (!isGeneric("rats")) { setGeneric("rats", function(x, ...) standardGeneric("rats")) }
+if (!isGeneric("rats<-")) { setGeneric("rats<-", function(x, ..., value) standardGeneric("rats<-")) }
+
+if (!isGeneric("cats")) { setGeneric("cats", function(x, ...) standardGeneric("cats")) }
+if (!isGeneric("cats<-")) { setGeneric("cats<-", function(x, ..., value) standardGeneric("cats<-")) }
+
+
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 if (!isGeneric("rev") ) { setGeneric("rev", function(x) standardGeneric("rev")) }
 if (!isGeneric("sds") ) { setGeneric("sds", function(x, ...) standardGeneric("sds")) }

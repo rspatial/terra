@@ -13,12 +13,27 @@ setMethod ("rats" , "SpatRaster",
 )
 
 
-setRat <- function(x, layer, rat) {
-	#stopifnot(nlyr(x) == 1)
-	stopifnot(layer > 0 & layer <= nlyr(x))
-	rat <- .makeSpatDF(rat)
-	x@ptr$setAttributes(layer-1, rat)
-}	
+
+setMethod ("rats<-" , "SpatRaster", 
+	function(x, layer=1, value) {
+		if (missing(value)) {
+			value <- layer
+			layer <- 1
+		}
+		if (is.character(layer)) {
+			i <- match(layer, names(x))[1]
+			if (length(i) == 0) {
+				stop(paste(layer, " is not in names(x)"))
+			}
+			layer <- i
+		} else {
+			stopifnot(layer > 0 && layer <= nlyr(x))	
+		}
+		rat <- .makeSpatDF(rat)
+		x@ptr$setAttributes(layer-1, rat)
+		x
+	}
+)
 
 	
 
@@ -49,22 +64,48 @@ setMethod("levels", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("cats", signature(x="SpatRaster"), 
+	function(x) {
+		levels(x)
+	}
+)
+
 
 setMethod("levels<-", signature(x="SpatRaster"), 
 	function(x, value) {
-		stopifnot(nlyr(x) == 1)
-		if (is.null(value) | is.na(value[1])) {
-			x@ptr$removeCategories(0)
+		cats(x, 1) <- value
+		x
+	}
+)
+
+
+setMethod ("cats<-" , "SpatRaster", 
+	function(x, layer=1, value) {
+		if (missing(value)) {
+			value <- layer
+			layer <- 1
+		}
+		if (is.character(layer)) {
+			i <- match(layer, names(x))[1]
+			if (length(i) == 0) {
+				stop(paste(layer, " is not in names(x)"))
+			}
+			layer <- i
+		} else {
+			stopifnot(layer > 0 && layer <= nlyr(x))	
+		}
+		if (is.null(value) | is.na(value[[1]][1])) {
+			x@ptr$removeCategories(layer-1)
 		}
 		#stopifnot(is.factor(x))
 		#stopifnot(hasValues(x))
 		if (is.data.frame(value)) {
 			stopifnot(NCOL(value) == 2)
-			x@ptr$setCategories(0, value[,1], value[,2])
+			x@ptr$setCategories(layer-1, value[,1], value[,2])
 		} else if (is.vector(value)){
-			x@ptr$setCategories(0, as.character(value), 0:(length(value)-1))		
+			x@ptr$setCategories(layer-1, 0:(length(value)-1), as.character(value))		
 		}
-		x <- show_messages(x, "levels<-")
+		show_messages(x, "levels<-")
 	}
 )
 

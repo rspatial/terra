@@ -8,28 +8,35 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 	values(r) <- background
 
 	g <- geom(x)
-	
 	# also allow for multiple columns to multiple layers
 	if (missing(field)) {
 		field <- g[,"id"] # consider multi-point
 	} else if (is.character(field)) {
-		if (length(field) > 1) {
-			stop("you can only provide a single field name")
+		if (length(field) == 1) {
+			field <- as.vector(unlist(x[[field]]))
+		} else if (length(field) != nrow(x)) {
+			stop("field length should be 1 or nrow(x)")		
 		}
-		field <- as.vector(unlist(x[[field]]))
-		field <- field[g[,"id"]]
 	} else if (length(field) == 1) {
 		if (field > 0 && field <= ncol(x)) {
 			field <- as.vector(unlist(x[[field]]))
-			field <- field[g[,"id"]]
 		} else {
 			stop("field index outside the value range (1:ncol(x))")
 		}
 	} else if (length(field) == nrow(x)) {
-		field <- field[g[,"id"]]
-	} else if (length(field) != nrow(g))  {
+		field <- 1:nrow(x)
+	} else  {
 		stop("length of field does not match the number of features")
 	}
+
+	levs <- NULL
+	if (is.character(field)) {
+		f <- as.factor(field)
+		levs <- levels(f)
+		field <- as.integer(f) - 1
+	} 
+	field <- field[g[,"id"]]
+		
 	g <- cellFromXY(y, as.matrix(g[, c("x", "y")]))
 	
 	if (missing(fun)) fun <- "last"
@@ -55,6 +62,9 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		if (hasValues(y)) {
 			r <- cover(r, y)
 		}
+	} else if (!is.null(levs)) {
+		id <- (1:length(levs))-1
+		cats(r, 1) <- data.frame(level=id, label=levs)
 	}
 	return (r)
 }
