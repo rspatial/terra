@@ -57,7 +57,7 @@ The unit is in meters if the CRS is \code{longlat} and in map units (typically a
 
 \examples{
 #lonlat
-r <- rast(ncol=36,nrow=18, crs="+proj=utm +zone=1 +datum=WGS84")
+r <- rast(ncol=36,nrow=18, crs="+proj=longlat +datum=WGS84")
 v <- rep(NA, ncell(r))
 v[500] <- 1
 values(r) <- v
