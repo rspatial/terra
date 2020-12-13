@@ -94,7 +94,7 @@ std::vector<double> distance_plane(std::vector<double> &x1, std::vector<double> 
 	std::vector<double> r (x1.size());
 	size_t n = x1.size();
   	for (size_t i=0; i < n; i++) {
-		r[i] = distance_plane(x1[i], x2[i], y1[i], y2[1]);
+		r[i] = distance_plane(x1[i], y1[i], x2[i], y2[i]);
 	}
   	return r;
 }
