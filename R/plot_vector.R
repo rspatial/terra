@@ -313,8 +313,8 @@
 	if (!(is.null(xlim) & is.null(ylim))) {
 		stopifnot(length(xlim) == 2)
 		stopifnot(length(ylim) == 2)
-		if (!is.null(xlim)) e[1:2] <- xlim
-		if (!is.null(ylim)) e[3:4] <- ylim
+		if (!is.null(xlim)) e[1:2] <- sort(xlim)
+		if (!is.null(ylim)) e[3:4] <- sort(ylim)
 		out$lim <- e
 	} else {
 		dx <- diff(e[1:2]) / 50

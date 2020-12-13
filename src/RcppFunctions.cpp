@@ -100,6 +100,32 @@ std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {
 	return s;
 }
 
+// [[Rcpp::export(name = ".gdaldrivers")]]
+std::vector<std::vector<std::string>> gdal_drivers() {
+	size_t n = GetGDALDriverManager()->GetDriverCount();
+	std::vector<std::vector<std::string>> s(4);
+	s[0].reserve(n);
+	s[1].reserve(n);
+	s[2].reserve(n);
+	s[3].reserve(n);
+    GDALDriver *poDriver;
+    char **papszMetadata;
+	for (size_t i=0; i<n; i++) {
+	    poDriver = GetGDALDriverManager()->GetDriver(i);
+		s[0].push_back(poDriver->GetDescription());
+		s[3].push_back(poDriver->GetMetadataItem( GDAL_DMD_LONGNAME ) );
+
+		papszMetadata = poDriver->GetMetadata();
+		bool rst = CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE);
+		s[1].push_back(std::to_string(rst));
+		bool create = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE);
+		bool copy = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE);
+		s[2].push_back(std::to_string(create + copy));
+	}
+	return s;
+}
+
+
 template <typename... Args>
 inline void warningNoCall(const char* fmt, Args&&... args ) {
     Rf_warningcall(R_NilValue, tfm::format(fmt, std::forward<Args>(args)... ).c_str());
@@ -189,7 +215,7 @@ void set_gdal_warnings(int level) {
 
 // [[Rcpp::export(name = ".gdalinit")]]
 void gdal_init(std::string path) {
-	set_gdal_warnings(3);
+	set_gdal_warnings(2);
     GDALAllRegister();
     OGRRegisterAll(); 
 	//GDALregistred = true;

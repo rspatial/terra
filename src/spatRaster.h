@@ -145,6 +145,9 @@ class BlockSize {
 
 class SpatRaster {
 
+    private:
+		std::string copy_driver="";
+
 	protected:
 		//SpatExtent extent;
 		SpatExtent window;

@@ -12,13 +12,14 @@
 		n <- n+1
 		i <- seq(0, 1, length.out=n)
 		breaks <- quantile(x, i, na.rm=TRUE)
-		breaks[1] <- 0.9999999*breaks[1]
-		breaks[n] <- 1.0000001*breaks[n]
+		breaks[1] <- breaks[1] - 0.000001
+		breaks[n] <- breaks[n] + 0.000001
 	} else { # if (method=="eqint") {
 		if (is.null(r)) {
 			r <- c(min(x, na.rm=TRUE), max(x, na.rm=TRUE))
 		}
-		breaks <- seq(0.9999999*r[1] , 1.0000001*r[2], length.out=n+1)
+		r <- r + c(-0.000001, 0.000001)
+		breaks <- seq(r[1] , r[2], length.out=n+1)
 	}
 	breaks
 }

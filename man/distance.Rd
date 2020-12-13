@@ -5,6 +5,7 @@
 \alias{distance,SpatRaster,SpatVector-method}
 \alias{distance,SpatVector,missing-method}
 \alias{distance,SpatVector,SpatVector-method}
+\alias{distance,matrix,matrix-method}
 
 \title{Geographic distance}
 
@@ -31,17 +32,20 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 \S4method{distance}{SpatVector,missing}(x, y, ...)
 
 \S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, ...)
+
+\S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatVector}
-  \item{y}{missing or SpatVector}
+  \item{x}{SpatRaster, SpatVector, or two-column matrix (x,y) or (lon,lat)}
+  \item{y}{missing or SpatVector, or two-column matrix}
   \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{additional arguments. None implemented}  
   \item{pairwise}{logical. If \code{TRUE} and if x and y have the same size (number of rows), the pairwise distances are returned instead of the distances between all elements} 
+  \item{lonlat}{logical. If \code{TRUE} the coordinates are interpreted as angular (longitude/latitude). If \code{FALSE} they are interpreted as planar}
 }
 
 \value{
@@ -52,14 +56,20 @@ The unit is in meters if the CRS is \code{longlat} and in map units (typically a
 
 
 \examples{
-
-r <- rast(ncol=36,nrow=18)
+#lonlat
+r <- rast(ncol=36,nrow=18, crs="+proj=utm +zone=1 +datum=WGS84")
 v <- rep(NA, ncell(r))
 v[500] <- 1
 values(r) <- v
 d <- distance(r) 
-
 plot(d / 100000)
+
+#planar
+r <- rast(ncol=36,nrow=18, crs="+proj=utm +zone=1 +datum=WGS84")
+v <- rep(NA, ncell(r))
+v[500] <- 1
+values(r) <- v
+d <- distance(r) 
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
 dp <- distance(r, p1) 

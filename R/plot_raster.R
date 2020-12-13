@@ -221,8 +221,8 @@
 
 	if (!(is.null(xlim) & is.null(ylim))) {
 		e <- as.vector(ext(x))
-		if (!is.null(xlim)) e[1:2] <- xlim
-		if (!is.null(ylim)) e[3:4] <- ylim
+		if (!is.null(xlim)) e[1:2] <- sort(xlim)
+		if (!is.null(ylim)) e[3:4] <- sort(ylim)
 		x <- crop(x, ext(e))
 		out$ext <- as.vector(ext(x))
 		out$lim <- e
@@ -322,7 +322,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 		
 		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
-		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, ...)
+		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, colNA=colNA, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {

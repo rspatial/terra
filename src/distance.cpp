@@ -112,9 +112,9 @@ std::vector<double> distanceToNearest_plane(const std::vector<double> &x1, const
 	std::vector<double> r(n);
 	double d;
   	for (size_t i=0; i < n; i++) {
-		r[i] = distance_plane(x1[i], x2[i], y1[i], y2[1]);
+		r[i] = distance_plane(x1[i], y1[i], x2[0], y2[0]);
 		for (size_t j=1; j < m; j++) {
-			d = distance_plane(x1[i], x2[i], y1[i], y2[1]);
+			d = distance_plane(x1[i], y1[i], x2[j], y2[j]);
 			if (d < r[i]) {
 				r[i] = d;
 			}

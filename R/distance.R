@@ -68,3 +68,17 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
+
+setMethod("distance", signature(x="matrix", y="matrix"), 
+	function(x, y, lonlat, pairwise=FALSE, ...) {
+		if (missing(lonlat)) {
+			stop("you must set lonlat to TRUE or FALSE")
+		}
+		stopifnot(ncol(x) == 2)
+		stopifnot(ncol(y) == 2)
+		crs <- if (lonlat){ "+proj=longlat +datum=WGS84" } else {"+proj=utm +zone=1 +datum=WGS84"}
+		x <- vect(x, crs=crs)
+		y <- vect(y, crs=crs)
+		distance(x, y, pairwise)
+	}
+)

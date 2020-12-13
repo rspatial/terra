@@ -39,7 +39,7 @@ In many methods, options for writing raster files to disk can be provided with t
 
 \code{datatype}\tab values for \code{datatype} are "INT1U", "INT2U", "INT2S", "INT4U", "INT4S", "FLT4S", "FLT8S". The first three letters indicate whether the datatype is integer (whole numbers) of a real number (decimal numbers), the fourth character indicates the number of bytes used (allowing for large numbers and/or more precision), and the  "S" or "U" indicate whether the values are signed (both negative and positive) or unsigned (postive values only).\cr
 
-\code{filetype}\tab file format expresses as GDAL driver names. If this argument is not supplied, the driver is derived from the filename.\cr
+\code{filetype}\tab file format expresses as \href{https://gdal.org/drivers/raster/index.html}{GDAL driver names}. If this argument is not supplied, the driver is derived from the filename.\cr
 
 \code{gdal}\tab GDAL driver specific datasource creation options. See the GDAL documentation. For example, with the \href{https://gdal.org/drivers/raster/gtiff.html}{GeoTiff file format} you can use \code{gdal=c("COMPRESS=LZW", "TFW=YES")}.\cr
 

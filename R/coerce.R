@@ -10,6 +10,16 @@
 #	}
 #)
  
+
+.as.image <- function(x, maxcells=10000) {
+	x <- spatSample(x, size=maxcells, as.raster=TRUE)
+	X <- xFromCol(x, 1:ncol(x))
+	Y <- yFromRow(x, nrow(x):1)
+	Z <- t(as.matrix(x, wide=TRUE)[nrow(x):1,]) 
+	list(x=X, y=Y, z=Z)
+}
+ 
+ 
 setMethod("as.polygons", signature(x="SpatRaster"), 
 	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE, ...) {
 		p <- methods::new("SpatVector")
@@ -353,6 +363,15 @@ setAs("sf", "SpatVector",
 			stop("coercion failed. You can try coercing via a Spatial* (sp) class")
 		} 
 		v
+	}
+)
+
+
+setAs("im", "SpatRaster", 
+	function(from) {
+		r <- rast(nrows=from$dim[1], ncols=from$dim[2], xmin=from$xrange[1], xmax=from$xrange[2], ymin=from$yrange[1], ymax=from$yrange[2], crs="")
+		values(r) <- from$v
+		flip(r, direction="vertical")
 	}
 )
 

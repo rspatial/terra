@@ -66,6 +66,11 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		id <- (1:length(levs))-1
 		cats(r, 1) <- data.frame(level=id, label=levs)
 	}
+	
+	if (filename != "") {
+		writeRaster(r, filename, overwrite=overwrite, wopt=wopt)
+	}
+	
 	return (r)
 }
 

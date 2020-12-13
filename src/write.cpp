@@ -177,7 +177,10 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	if (!out.writeStart(opt)) { return out; }
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
-		if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) {
+			out.writeStopGDAL();
+			return out;
+		}
 	}
 	if (!out.writeStopGDAL()) {
 		out.setError("cannot close file");

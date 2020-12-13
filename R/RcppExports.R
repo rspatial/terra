@@ -33,6 +33,10 @@
     .Call(`_terra_sdsmetatdataparsed`, filename)
 }
 
+.gdaldrivers <- function() {
+    .Call(`_terra_gdal_drivers`)
+}
+
 .set_gdal_warnings <- function(level) {
     invisible(.Call(`_terra_set_gdal_warnings`, level))
 }
