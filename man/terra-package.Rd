@@ -14,7 +14,7 @@ The 'terra' package implements two main classes for spatial data handling: \code
 
 The 'terra' package is conceived as a replacement of the 'raster' package. 'terra' has a very similar, but simpler, interface, and it is faster than 'raster'. A major simplification is that 'terra' has a single class "SpatRaster" for which 'raster' has three (RasterLayer, RasterStack, RasterBrick). Likewise there is a single class for vector data ("SpatVector"). Like "raster" this package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
-Furthermore, 'terra' has a "SpatDataSet" class that represents a collection of sub-datasets for the same area. Each subdataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables.
+Furthermore, 'terra' has a "SpatRasterDataset" class that represents a collection of sub-datasets for the same area. Each subdataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables.
 
 Note the following important differences in methods names with the 'raster' package
 
@@ -307,12 +307,12 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }	
 
 
-\section{XIV. SpatDataSet objects}{
+\section{XIV. SpatRasterDataset objects}{
 
-A SpatDataSet contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
+A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
 
 \tabular{ll}{
-  \code{\link{sds}} \tab Create a SpatDataSet \cr
+  \code{\link{sds}} \tab Create a SpatRasterDataset \cr
   \code{[} or \code{$} \tab Extract a SpatRaster \cr
   \code{\link{names}} \tab Get the names of the sub-datasets \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  

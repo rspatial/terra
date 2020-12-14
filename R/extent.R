@@ -39,7 +39,7 @@ setMethod("ext", signature(x="SpatRaster"),
 )	
 
 
-setMethod("ext", signature(x="SpatDataSet"), 
+setMethod("ext", signature(x="SpatRasterDataset"), 
 	function(x, ...){ 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x[1]@ptr$extent

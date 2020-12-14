@@ -30,14 +30,14 @@ setMethod("names<-", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("names", signature(x="SpatDataSet"), 
+setMethod("names", signature(x="SpatRasterDataset"), 
 	function(x) { 
 		x@ptr$names
 	}
 )
 
 
-setMethod("names<-", signature(x="SpatDataSet"), 
+setMethod("names<-", signature(x="SpatRasterDataset"), 
 	function(x, value) {
 		value <- as.character(value)
 		x@ptr$names <- value
@@ -45,14 +45,14 @@ setMethod("names<-", signature(x="SpatDataSet"),
 	}
 )
 
-setMethod("varnames", signature(x="SpatDataSet"), 
+setMethod("varnames", signature(x="SpatRasterDataset"), 
 	function(x) { 
 		x@ptr$names
 	}
 )
 
 
-setMethod("varnames<-", signature(x="SpatDataSet"), 
+setMethod("varnames<-", signature(x="SpatRasterDataset"), 
 	function(x, value) {
 		value <- as.character(value)
 		x@ptr$names <- value
@@ -101,7 +101,6 @@ setMethod("varnames", signature(x="SpatRaster"),
 
 setMethod("varnames<-", signature(x="SpatRaster"), 
 	function(x, value)  {
-		value <- as.character(value)
 		if (!x@ptr$set_sourcenames(as.character(value))) {
 			stop("cannot set these names")
 		}
@@ -109,15 +108,29 @@ setMethod("varnames<-", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("longnames", signature(x="SpatRasterDataset"), 
+	function(x) { 
+		x@ptr$long_names
+	}
+)
+
+
 setMethod("longnames", signature(x="SpatRaster"), 
 	function(x) { 
 		x@ptr$get_sourcenames_long()
 	}
 )
 
+setMethod("longnames<-", signature(x="SpatRasterDataset"), 
+	function(x, value)  {
+		x@ptr$long_names <- as.character(value)
+		return(x)
+	}
+)
+
+
 setMethod("longnames<-", signature(x="SpatRaster"), 
 	function(x, value)  {
-		value <- as.character(value)
 		if (!x@ptr$set_sourcenames_long(as.character(value))) {
 			stop("cannot set these names")
 		}

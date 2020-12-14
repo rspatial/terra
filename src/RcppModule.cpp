@@ -146,7 +146,6 @@ RCPP_MODULE(spat){
 	;
 */
 
-
     class_<SpatMessages>("SpatMessages")
 		.constructor()
 		//.field("success", &SpatMessages::success)		
@@ -332,9 +331,7 @@ RCPP_MODULE(spat){
 
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 		.method("mem_needs", &SpatRaster::mem_needs, "mem_needs")
-
 		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
-		
 		.method("addSource", &SpatRaster::addSource, "addSource")
 		.method("replace", &SpatRaster::replace, "replace")
 		.method("combineSources", &SpatRaster::combineSources, "combineSources")
@@ -342,7 +339,6 @@ RCPP_MODULE(spat){
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
 		.method("deepcopy", &SpatRaster::deepCopy, "deepCopy")
 		.method("get_crs", &SpatRaster::getSRS)
-
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
 		//.field_readonly("prj", &SpatRaster::prj)
 		.property("extent", &SpatRaster::getExtent, &SpatRaster::setExtent )

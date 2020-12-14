@@ -1,27 +1,26 @@
 \name{writeCDF}
 
 \alias{writeCDF}
-\alias{writeCDF,SpatDataSet-method}
+\alias{writeCDF,SpatRasterDataset-method}
 \alias{writeCDF,SpatRaster-method}
-
 
 \title{Write raster data to a NetCDF file}
 
 \description{
-Write a SpatRaster or SpatDataSet to a NetCDF file. 
+Write a SpatRaster or SpatRasterDataset to a NetCDF file. 
 
-When using a SpatDataSet, the varname, longname, and unit should be set in the object (see examples).
+When using a SpatRasterDataset, the varname, longname, and unit should be set in the object (see examples).
 }
 
 \usage{
-\S4method{writeCDF}{SpatRaster}(x, filename,  varname, longname="", unit="", overwrite=FALSE,
+\S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", overwrite=FALSE,
  datatype="double", NAflag=-9999, ...)
 
-\S4method{writeCDF}{SpatDataSet}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...)
+\S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster or SpatDataSet}
+  \item{x}{SpatRaster or SpatRasterDataset}
   \item{filename}{character. Output filename}
   \item{varname}{character}
   \item{longname}{character}
@@ -40,6 +39,18 @@ SpatRaster (invisibly). This method is used for the side-effect of writing value
 see \code{\link{writeRaster}} for other file formats.
 }
 
+\examples{
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
+fname <- paste0(tempfile(), ".nc")
+x <- writeCDF(r, fname, overwrite=TRUE, varname="alt", longname="elevation in m above sea level", unit="m")
+# file.remove(fname)
+
+a <- rast(ncol=5, nrow=5, nl=1000)
+values(a) <- 1:25000
+time(a) <- as.Date("2021-01-01") + 0:999
+x <- writeCDF(a, fname, overwrite=TRUE, varname="xyz", longname="fake data", unit="U/Pa")
+}
 
 \keyword{ spatial }
 \keyword{ methods }

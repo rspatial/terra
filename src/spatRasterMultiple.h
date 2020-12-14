@@ -18,7 +18,7 @@
 #include "spatRaster.h"
 
 
-// A class for any collection of SpatRasters 
+// A collection of (perhaps non matching) SpatRasters 
 class SpatRasterCollection {
 	public:
 		SpatMessages msg;
@@ -59,7 +59,9 @@ class SpatRasterStack {
 		std::vector<std::string> units;
 		SpatRasterStack() {};
 		SpatRasterStack(std::string fname, std::vector<int> ids, bool useids);
-		SpatRasterStack(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn=false) { push_back(r, name, longname, unit, warn); };
+		SpatRasterStack(SpatRaster r, std::string name, std::string longname, std::string unit, bool warn=false) { 
+			push_back(r, name, longname, unit, warn); 
+		};
 
 		std::vector<std::vector<std::vector<double>>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
 		std::vector<std::vector<std::vector<double>>> extractCell(std::vector<double> &cell);
@@ -150,16 +152,19 @@ class SpatRasterStack {
 					}
 				}
 			}
-			if (name != "") {
-				r.setSourceNames({name});
-			}
-			ds.push_back(r); 
+			ds.push_back(r);
+			names.push_back(name);
+			long_names.push_back(longname);
+			units.push_back(unit);
 			return true;
 		};
 		
 		void resize(size_t n) { 
 			if (n < ds.size()) {
 				ds.resize(n); 
+				names.resize(n);
+				long_names.resize(n);
+				units.resize(n);
 			}
 		}
 		SpatRaster getsds(size_t i) {

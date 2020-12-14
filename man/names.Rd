@@ -17,12 +17,12 @@
 \alias{longnames,SpatRaster-method}
 \alias{longnames<-,SpatRaster-method}
 
-\alias{names,SpatDataSet-method}
-\alias{names<-,SpatDataSet-method}
-\alias{varnames,SpatDataSet-method}
-\alias{varnames<-,SpatDataSet-method}
-\alias{longnames,SpatDataSet-method}
-\alias{longnames<-,SpatDataSet-method}
+\alias{names,SpatRasterDataset-method}
+\alias{names<-,SpatRasterDataset-method}
+\alias{varnames,SpatRasterDataset-method}
+\alias{varnames<-,SpatRasterDataset-method}
+\alias{longnames,SpatRasterDataset-method}
+\alias{longnames<-,SpatRasterDataset-method}
 
 \alias{names,SpatVector-method}
 \alias{names<-,SpatVector-method}
@@ -30,7 +30,7 @@
 \title{Names of Spat* objects}
 
 \description{
-Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. With \code{lnames} you can get or set the "long names" of a SpatRaster or SpatDataSet. 
+Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. With \code{lnames} you can get or set the "long names" of a SpatRaster or SpatRasterDataset. 
 
 For a SpatRaster, you can also get/set a variable name or long name (one per data source)
 }
@@ -49,17 +49,17 @@ For a SpatRaster, you can also get/set a variable name or long name (one per dat
 \S4method{longnames}{SpatRaster}(x)<-value
 
 
-\S4method{names}{SpatDataSet}(x)
+\S4method{names}{SpatRasterDataset}(x)
 
-\S4method{names}{SpatDataSet}(x)<-value
+\S4method{names}{SpatRasterDataset}(x)<-value
 
-\S4method{varnames}{SpatDataSet}(x)
+\S4method{varnames}{SpatRasterDataset}(x)
 
-\S4method{varnames}{SpatDataSet}(x)<-value
+\S4method{varnames}{SpatRasterDataset}(x)<-value
 
-\S4method{longnames}{SpatDataSet}(x)
+\S4method{longnames}{SpatRasterDataset}(x)
 
-\S4method{longnames}{SpatDataSet}(x)<-value
+\S4method{longnames}{SpatRasterDataset}(x)<-value
 
 \S4method{names}{SpatVector}(x)
 
@@ -67,7 +67,7 @@ For a SpatRaster, you can also get/set a variable name or long name (one per dat
 }
 
 \arguments{
-  \item{x}{SpatRaster, SpatDataSet, or SpatVector}
+  \item{x}{SpatRaster, SpatRasterDataset, or SpatVector}
   \item{value}{character (vector)}
 }
 

@@ -20,7 +20,7 @@ setClass("SpatRaster",
 	}
 )
 
-setClass("SpatDataSet",
+setClass("SpatRasterDataset",
 	representation (
 		ptr = "C++Object"
 	),	
@@ -35,6 +35,23 @@ setClass("SpatDataSet",
 		}
 	}
 )
+
+setClass("SpatRasterCollection",
+	representation (
+		ptr = "C++Object"
+	),	
+	prototype (	
+		ptr = NULL
+	),
+	validity = function(object)	{
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatRasterCollection")){
+			return(TRUE)
+		} else {
+			return(FALSE)		
+		}
+	}
+)
+
 
 setClass("SpatVector",
 	representation (

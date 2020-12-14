@@ -146,7 +146,7 @@ setMethod("rast", signature(x="SpatRaster"),
 )
 
 
-setMethod("rast", signature(x="SpatDataSet"),
+setMethod("rast", signature(x="SpatRasterDataset"),
 	function(x, ...) {
 		rast(x[1], ...)
 	}
@@ -178,7 +178,7 @@ setMethod("rast", signature(x="Raster"),
 
 .rastFromXYZ <- function(xyz, digits=6, crs="", ...) {
 
-	if (length(list(...))>0) warning("additional arguments ignored when x is a SpatDataSet")
+	if (length(list(...))>0) warning("additional arguments ignored when x is a SpatRasterDataset")
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names

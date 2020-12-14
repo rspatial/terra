@@ -279,7 +279,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		return false;
 	}
 
-	unsigned nl = poDataset->GetRasterCount();
+	long nl = poDataset->GetRasterCount();
+	Rcpp::Rcout << nl << std::endl;
+	
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
 /*

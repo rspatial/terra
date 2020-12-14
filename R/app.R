@@ -157,7 +157,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 
 
-setMethod("app", signature(x="SpatDataSet"), 
+setMethod("app", signature(x="SpatRasterDataset"), 
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(match.fun(fun))

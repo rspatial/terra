@@ -62,12 +62,10 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 )
 
 
-setMethod("writeCDF", signature(x="SpatDataSet"), 
-	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
+setMethod("writeCDF", signature(x="SpatRasterDataset"), 
+	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, verbose=FALSE, ...) {
 
-		force_v4 <- list(...)$force_v4
-		if (is.null(force_v4)) force_v4 <- FALSE
-
+		force_v4 <- TRUE
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		if (file.exists(filename) & !overwrite) {
@@ -75,10 +73,10 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 		}
 
 		n <- length(x)
-#		longnames <- longnames(x)
+		lvar <- longnames(x)
 		vars <- varnames(x)
 		vars[vars == ""] <- (1:n)[vars == ""] 
-#		units <- units(x)
+		units <- units(x)
 		nl <- nlyr(x)
 		y <- x[1]
 		if (isLonLat(y, perhaps=TRUE, warn=FALSE)) {
@@ -97,33 +95,30 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 
 		dtype <- rep_len(datatype, n)
 		ncvars <- list()
-
 		for (i in 1:n) {
 			y <- x[i]
 			if (nl[i] > 1) {	
-				unit <- units(y)[1]
 				lvar <- longnames(y)[1]
 				if (y@ptr$hasTime) {
-					zv <- time(y)
-					zatt <- list("units=seconds since 1970-1-1 00:00:00")		
-					zunit <- "seconds"
+					zv <- y@ptr$time
+					zunit <- "seconds since 1970-1-1 00:00:00"
 					zname <- "time"
+					cal <- "standard"
 				} else {
 					zv <- 1:nlyr(y)
-					zatt <- list("units=unknown")		
 					zunit <- "unknown"
 					zname <- "layer"
+					cal <- NA
 				} 
-				zdim <- ncdf4::ncdim_def(zname, zunit, zv, unlim=TRUE )
-				un <- units(y)[1]
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], un, list(xdim, ydim, zdim), NAflag, lvar, prec = dtype[i], ...)
+				zdim <- ncdf4::ncdim_def(zname, zunit, zv, unlim=TRUE, calendar=cal)
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), NAflag, lvar, prec = dtype[i], ...)
 			} else {			
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], un, list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
 			}
 		}
 		
-		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4)
-		#on.exit( ncdf4::nc_close(ncobj) )
+		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
+		on.exit( ncdf4::nc_close(ncobj) )
 		
 		# writing all at once. need to chunk 
 		nc <- ncol(x)
@@ -133,11 +128,10 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 			if (nl[i] > 1) {
 				v <- values(y)
 				v <- array(v, c(nr, nc, nl[i]))
-
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], values(y), start=c(1,1,1), count=dim(y)[c(2,1,3)])
 			} else {
 				v <- t(as.matrix(y, TRUE))
-				ncdf4::ncvar_put(ncobj, ncvars[[i]], v, start=c(1,1), count=dim(y)[2:1])			
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], v, start=c(1,1), count=dim(y)[2:1])
 			}
 		}
 
@@ -156,7 +150,6 @@ setMethod("writeCDF", signature(x="SpatDataSet"),
 		ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 		ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
 
-		ncdf4::nc_close(ncobj)
 		invisible(rast(filename))
 	}
 )

@@ -87,3 +87,19 @@ setMethod("units<-", signature(x="SpatRaster"),
 		return(x)
 	}
 )
+
+
+setMethod("units", signature(x="SpatRasterDataset"), 
+	function(x) { 
+		x@ptr$units
+	}
+)
+
+setMethod("units<-", signature(x="SpatRasterDataset"), 
+	function(x, value)  {
+		value <- as.character(value)
+		x@ptr$units <- value
+		return(x)
+	}
+)
+

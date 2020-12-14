@@ -8,7 +8,7 @@ setMethod("dim", signature(x="SpatRaster"),
 	function(x){ return(c(nrow(x), ncol(x), nlyr(x))) }
 )
 
-setMethod("dim", signature(x="SpatDataSet"), 
+setMethod("dim", signature(x="SpatRasterDataset"), 
 	function(x) {
 		dim(x[1])[1:2]
 	}
@@ -18,7 +18,7 @@ setMethod("nrow", signature(x="SpatRaster"),
 	function(x){ return(x@ptr$nrow())}
 )
 
-setMethod("nrow", signature(x="SpatDataSet"), 
+setMethod("nrow", signature(x="SpatRasterDataset"), 
 	function(x){ return(x[1]@ptr$nrow())}
 )
 
@@ -30,7 +30,7 @@ setMethod("ncol", signature(x="SpatRaster"),
 	function(x){ return(x@ptr$ncol()) }
 )
 
-setMethod("ncol", signature(x="SpatDataSet"), 
+setMethod("ncol", signature(x="SpatRasterDataset"), 
 	function(x){ return(x[1]@ptr$ncol())}
 )
 
@@ -63,7 +63,7 @@ setMethod("ncell", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("ncell", signature(x="SpatDataSet"), 
+setMethod("ncell", signature(x="SpatRasterDataset"), 
 	function(x) {
 		ncell(x[1])
 	}
@@ -83,7 +83,7 @@ setMethod("size", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("size", signature(x="SpatDataSet"), 
+setMethod("size", signature(x="SpatRasterDataset"), 
 	function(x){
 		nc <- ncell(x)
 		sapply(1:length(x), function(i) nlyr(x[i]) * nc)
@@ -96,7 +96,7 @@ setMethod("nlyr", signature(x="SpatRaster"),
     }
 )
 
-setMethod("nlyr", signature(x="SpatDataSet"), 
+setMethod("nlyr", signature(x="SpatRasterDataset"), 
 	function(x){
 		sapply(1:length(x), function(i) nlyr(x[i]))
     }
@@ -142,7 +142,7 @@ function(x) {
 	}
 )
 
-setMethod("res", signature(x="SpatDataSet"), 
+setMethod("res", signature(x="SpatRasterDataset"), 
 function(x) {
 		x[1]@ptr$res
 	}

@@ -107,7 +107,7 @@ setMethod("collapse", signature("SpatRaster"),
 	}
 )
 
-setMethod("collapse", signature("SpatDataSet"), 
+setMethod("collapse", signature("SpatRasterDataset"), 
 	function(x, ...) {
 		y <- new("SpatRaster")
 		y@ptr <- x@ptr$collapse()

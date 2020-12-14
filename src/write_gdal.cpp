@@ -258,6 +258,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	OGRErr erro = oSRS.SetFromUserInput(&crs[0]);
 	if (erro == 4) {
 		setError("CRS failure");
+		GDALClose( (GDALDatasetH) poDS );
 		return false ;
 	}
 	char *pszSRS_WKT = NULL;
@@ -375,12 +376,14 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Byte, nl, NULL, 0, 0, 0, NULL );
 		} else {
 			setError("bad datatype");
+			GDALClose( source[0].gdalconnection );
 			return false;
 		}
 	}
 
 	if (err != CE_None ) {
 		setError("cannot write values (err: " + std::to_string(err) +")");
+		GDALClose( source[0].gdalconnection );
 		return false;
 	}
 

@@ -11,8 +11,8 @@
 
 \alias{readStart,SpatRaster-method}
 \alias{readStop,SpatRaster-method}
-\alias{readStart,SpatDataSet-method}
-\alias{readStop,SpatDataSet-method}
+\alias{readStart,SpatRasterDataset-method}
+\alias{readStop,SpatRasterDataset-method}
 \alias{readValues,SpatRaster-method}
 \alias{writeStart,SpatRaster,character-method}
 \alias{writeStop,SpatRaster-method}

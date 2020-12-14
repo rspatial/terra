@@ -93,13 +93,13 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 
 
-setMethod("lapp", signature(x="SpatDataSet"), 
+setMethod("lapp", signature(x="SpatRasterDataset"), 
 function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 	
 	fun <- match.fun(fun)
 	dots <- list(...)
-	if (any(sapply(dots, function(i) inherits(i, "SpatDataSet")))) {
-		stop("Only 'x' can be a SpatDataSet" )
+	if (any(sapply(dots, function(i) inherits(i, "SpatRasterDataset")))) {
+		stop("Only 'x' can be a SpatRasterDataset" )
 		# otherwise .lapp_test_stack fails
 	}
 	

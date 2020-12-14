@@ -6,7 +6,7 @@
 \alias{rast,missing-method}
 \alias{rast,character-method}
 \alias{rast,SpatRaster-method}
-\alias{rast,SpatDataSet-method}
+\alias{rast,SpatRasterDataset-method}
 \alias{rast,matrix-method}
 \alias{rast,array-method}
 \alias{rast,list-method}
@@ -42,11 +42,11 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 \S4method{rast}{list}(x, ...)
 
-\S4method{rast}{SpatDataSet}(x, ...)
+\S4method{rast}{SpatRasterDataset}(x, ...)
 }
 
 \arguments{
-\item{x}{filename (character), SpatRaster, SpatDataSet, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
+\item{x}{filename (character), SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
 \item{subds}{positive integer or character to select a subdataset. If zero or "", all subdatasets are returned (if possible)}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
@@ -75,7 +75,7 @@ SpatRaster
 x <- rast(nrow=108, ncol=21, xmin=0, xmax=10)
 
 # Create a SpatRaster from a file
-f <- system.file("ex/test.tif", package="terra")
+f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 
 s <- rast(system.file("ex/logo.tif", package="terra"))   

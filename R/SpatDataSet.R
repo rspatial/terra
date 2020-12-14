@@ -1,5 +1,5 @@
 
-setMethod("length", signature(x="SpatDataSet"),
+setMethod("length", signature(x="SpatRasterDataset"),
 	function(x) {
 		x@ptr$nsds()
 	}
@@ -20,7 +20,7 @@ setMethod("sds", signature(x="character"),
 			stop("provide valid file name(s)")
 		}
 		f <- .fullFilename(x)
-		r <- methods::new("SpatDataSet")
+		r <- methods::new("SpatRasterDataset")
 		ids <- round(ids)-1
 		if (ids[1] < 0) {
 			useids <- FALSE
@@ -34,7 +34,7 @@ setMethod("sds", signature(x="character"),
 
 setMethod("sds", signature(x="missing"),
 	function(x, ...) {
-		r <- methods::new("SpatDataSet")
+		r <- methods::new("SpatRasterDataset")
 		r@ptr <- SpatRasterStack$new()
 		r
 	}
@@ -43,8 +43,9 @@ setMethod("sds", signature(x="missing"),
 
 setMethod("sds", signature(x="SpatRaster"),
 	function(x, ...) {
-		r <- methods::new("SpatDataSet")
-		r@ptr <- SpatRasterStack$new(x@ptr, "", "", "")
+		r <- methods::new("SpatRasterDataset")
+		r@ptr <- SpatRasterStack$new()
+		r@ptr$add(x@ptr, varnames(x)[1], longnames(x)[1], units(x)[1], FALSE)
 		dots <- list(...)
 		nms <- names(dots)
 		if (is.null(nms)) nms = ""
@@ -60,7 +61,7 @@ setMethod("sds", signature(x="SpatRaster"),
 
 setMethod("sds", signature(x="list"),
 	function(x, ...) {
-		r <- methods::new("SpatDataSet")
+		r <- methods::new("SpatRasterDataset")
 		r@ptr <- SpatRasterStack$new()
 		nms <- names(x)
 		if (is.null(nms)) nms <- rep("", length(x))
@@ -73,7 +74,7 @@ setMethod("sds", signature(x="list"),
 	}
 )
 
-setMethod("c", signature(x="SpatDataSet"), 
+setMethod("c", signature(x="SpatRasterDataset"), 
 	function(x, ...) {
 		
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 ) # why? make a copy?
@@ -82,7 +83,7 @@ setMethod("c", signature(x="SpatDataSet"),
 		nms <- names(dots)
 		
 		for (i in seq_along(dots)) {
-			if (inherits(dots[[i]], "SpatDataSet")) {
+			if (inherits(dots[[i]], "SpatRasterDataset")) {
 				sdsnms <- names(dots[[i]])
 				for (j in 1:x@ptr$nsds()) {
 					if (!x@ptr$add(dots[[i]][[j]]@ptr, sdsnms[j], "", "", FALSE)) {
@@ -96,7 +97,7 @@ setMethod("c", signature(x="SpatDataSet"),
 					show_messages(x, "c")		
 				}
 			} else {
-				stop("arguments must be SpatRaster or SpatDataSet")
+				stop("arguments must be SpatRaster or SpatRasterDataset")
 			} 
 		}
 		show_messages(x, "c")		
@@ -104,7 +105,7 @@ setMethod("c", signature(x="SpatDataSet"),
 )
 
 
-setReplaceMethod("[", c("SpatDataSet","numeric","missing"),
+setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 	function(x, i, j, value) {
 		if (any(!is.finite(i)) | any(i<1)) {
 			stop("invalid index")
@@ -119,7 +120,7 @@ setReplaceMethod("[", c("SpatDataSet","numeric","missing"),
 )
 
 
-setMethod("[", c("SpatDataSet", "numeric", "missing"),
+setMethod("[", c("SpatRasterDataset", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	if (i<0) {i <- (1:length(x))[i]}
 	if (drop && (length(i) == 1)) {
@@ -132,7 +133,7 @@ function(x, i, j, ... ,drop=TRUE) {
 	show_messages(x, "[")
 })
 
-setMethod("[", c("SpatDataSet", "numeric", "numeric"),
+setMethod("[", c("SpatRasterDataset", "numeric", "numeric"),
 function(x, i, j, ... ,drop=TRUE) {
 	y <- x[i,drop=drop]
 	if (inherits(y, "SpatRaster")) {
@@ -149,19 +150,19 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setMethod("[", c("SpatDataSet", "logical", "missing"),
+setMethod("[", c("SpatRasterDataset", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	x[which(i), ..., drop=drop]
 })
 
-setMethod("[", c("SpatDataSet", "character", "missing"),
+setMethod("[", c("SpatRasterDataset", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- match(i, names(x))
 	if (any(is.na(i))) {stop("unknown name(s) provided")}
 	x[i, ..., drop=drop]
 })
 
-setMethod("[[", c("SpatDataSet", "ANY", "ANY"),
+setMethod("[[", c("SpatRasterDataset", "ANY", "ANY"),
 function(x, i, j, ... ,drop=TRUE) {
 	mi <- missing(i)
 	mj <- missing(j)
@@ -178,7 +179,7 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
-setMethod("$", "SpatDataSet",  
+setMethod("$", "SpatRasterDataset",  
 	function(x, name) { 
 		x[name] 
 	}
