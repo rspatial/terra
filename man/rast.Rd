@@ -22,7 +22,7 @@ Methods to create a SpatRaster. These objects can be created from scratch or fro
 
 A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers).
 
-When a SpatRaster is created from a file, it does (initially) not contain any cell (pixel) values in memory (RAM), it only has the parameters that describe the SpatRaster. You can access cell-values with \code{\link{values}}.
+When a SpatRaster is created from a file, it does not load the cell (pixel) values into memory (RAM). It only reads the basic parameters that describe the SpatRaster such as the number of rows and columns and the coordinate reference system. The actual values will be read, perhaps in chunks -- to avoid memory overflows -- as needed.
 }
 
 
@@ -30,7 +30,7 @@ When a SpatRaster is created from a file, it does (initially) not contain any ce
 \S4method{rast}{character}(x, subds=0, ...)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
-                         ymin=-90, ymax=90, crs, extent, resolution, vals, ...)
+          ymin=-90, ymax=90, crs, extent, resolution, vals, ...)
 
 \S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), ...) 
 

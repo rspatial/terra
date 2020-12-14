@@ -8,7 +8,7 @@
 \title{Adjacent cells}
 
 \description{
-Identify cells that are adjacent to a set of cells on a raster. 
+Identify cells that are adjacent to a set of raster cells. 
 }
 
 \usage{
