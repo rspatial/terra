@@ -211,7 +211,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	GDALRasterBand *poBand;
 	std::vector<std::string> nms = getNames();
 	double naflag; 
-	opt.set_NAflag(-99);
 	bool hasNAflag = opt.get_NAflag(naflag);
 
 //	Rcpp::Rcout << hasNAflag << std::endl;	
