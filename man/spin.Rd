@@ -8,7 +8,7 @@
 \title{spin a SpatVector}
 
 \description{
-Spin (rotate) geometry of a SpatVector around an origin. 
+Spin (rotate) the geometry of a SpatVector. 
 }
 
 \usage{
@@ -35,6 +35,10 @@ v <- vect(f)
 w <- spin(v, 180)
 plot(v)
 lines(w, col="red")
+
+# lower-right corner as center
+e <- as.vector(ext(v))
+x <- spin(v, 45, e[1], e[3])
 }
 
 \keyword{spatial}

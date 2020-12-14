@@ -265,3 +265,27 @@ setMethod("$<-", "SpatExtent",
 	}
 )
 
+
+
+setMethod("[", c("SpatExtent", "missing", "missing"),
+	function(x, i, j, ... , drop=FALSE) {
+		as.vector(x)
+	}
+)
+
+setMethod("[", c("SpatExtent", "numeric", "missing"),
+	function(x, i, j, ... , drop=FALSE) {
+		x <- as.vector(x)
+		x[i]
+	}
+)
+
+setReplaceMethod("[", c("SpatExtent", "numeric", "missing"),
+	function(x, i, j, value) {
+		e <- as.vector(x)
+		stopifnot(all(i %in% 1:4))
+		e[i] <- value
+		ext(e)
+	}
+)
+

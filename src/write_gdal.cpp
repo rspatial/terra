@@ -306,9 +306,6 @@ bool SpatRaster::fillValuesGDAL(double fillvalue) {
 
 bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols){
 
-	Rcpp::Rcout<< "values" << std::endl;
-
-
 	CPLErr err = CE_None;
 	//GDALRasterBand *poBand;
 	double vmin, vmax;
@@ -369,7 +366,6 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 		setError("cannot write values (err: " + std::to_string(err) +")");
 		return false;
 	}
-	Rcpp::Rcout<< "values out" << std::endl;
 
 	return true;
 }
@@ -377,8 +373,6 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 
 bool SpatRaster::writeStopGDAL() {
 	
-	Rcpp::Rcout<< "stop in " << std::endl;
-
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
 	std::string datatype = source[0].datatype;

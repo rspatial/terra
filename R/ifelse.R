@@ -3,7 +3,7 @@
 # Version 1.0
 # Licence GPL v3
 
-setMethod("ifel", signature(test="SpatRaster", yes="ANY", no="ANY"), 
+setMethod("ifel", signature(test="SpatRaster"), 
 	function(test, yes, no, filename="", overwrite=FALSE, wopt=list(), ...) {
 		if (!inherits(no, "SpatRaster")) {
 			stopifnot(is.numeric(no) || is.logical(no)) # logical includes default NA 
@@ -20,4 +20,6 @@ setMethod("ifel", signature(test="SpatRaster", yes="ANY", no="ANY"),
 		cover(no, yes, value=NA, filename=filename, overwrite=overwrite, wopt=wopt, ...)
 	}
 )
+
+
 

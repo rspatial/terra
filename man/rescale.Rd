@@ -9,7 +9,7 @@
 \title{rescale}
 
 \description{
-Rescale a SpatVector or SpatRaster. This may be useful to make small inset maps. 
+Rescale a SpatVector or SpatRaster. This may be useful to make small \code{\link{inset}} maps. 
 }
 
 \usage{
@@ -31,7 +31,7 @@ Same as \code{x}
 }
 
 
-\seealso{ \code{\link{t}}, \code{\link{shift}}, \code{\link{flip}}, \code{\link{rotate}}}
+\seealso{\code{\link{t}}, \code{\link{shift}}, \code{\link{flip}}, \code{\link{rotate}}, \code{\link{inset}}}
 
 \examples{
 f <- system.file("ex/lux.shp", package="terra")

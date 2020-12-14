@@ -332,13 +332,19 @@ SpatVector SpatVector::rescale(double f, double x0, double y0) {
 					resc(out.geoms[i].parts[j].holes[k].extent.ymax, y0, f);
 				}
 			}
+			resc(out.geoms[i].parts[j].extent.xmin, x0, f);
 			resc(out.geoms[i].parts[j].extent.xmax, x0, f);
+			resc(out.geoms[i].parts[j].extent.ymin, y0, f);
 			resc(out.geoms[i].parts[j].extent.ymax, y0, f);
 		}
+		resc(out.geoms[i].extent.xmin, x0, f);
 		resc(out.geoms[i].extent.xmax, x0, f);
+		resc(out.geoms[i].extent.ymin, y0, f);
 		resc(out.geoms[i].extent.ymax, y0, f);
 	}
+	resc(out.extent.xmin, x0, f);
 	resc(out.extent.xmax, x0, f);
+	resc(out.extent.ymin, y0, f);
 	resc(out.extent.ymax, y0, f);
 	return out;
 }

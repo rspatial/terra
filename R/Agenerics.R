@@ -122,9 +122,11 @@ if (!isGeneric("freq")) { setGeneric("freq", function(x, ...) standardGeneric("f
 if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("geom"))}	
 if (!isGeneric("hasValues")) {setGeneric("hasValues", function(x, ...) standardGeneric("hasValues")) }	
 if (!isGeneric("head")) { setGeneric("head", function(x, ...) standardGeneric("head"))}	
-if (!isGeneric("ifel")) {setGeneric("ifel", function(test, yes, no, ...) standardGeneric("ifel"))}	
+if (!isGeneric("ifel")) {setGeneric("ifel", function(test, ...) standardGeneric("ifel"))}	
 if (!isGeneric("image")) {setGeneric("image", function(x, ...)standardGeneric("image"))}	
 if (!isGeneric("init")) {setGeneric("init", function(x, ...) standardGeneric("init"))}	
+if (!isGeneric("inset")) {setGeneric("inset", function(x, ...) standardGeneric("inset"))}	
+
 if (!isGeneric("interpolate")) { setGeneric("interpolate", function(object, ...) standardGeneric("interpolate"))}	
 if (!isGeneric("is.factor")) {setGeneric("is.factor", function(x) standardGeneric("is.factor"))}
 if (!isGeneric("isLonLat")) { setGeneric("isLonLat", function(x, ...) standardGeneric("isLonLat"))}	

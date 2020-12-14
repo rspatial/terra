@@ -61,8 +61,12 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 			e1@ptr$unite(e2@ptr)
 		} else if (oper == "-") {
 			e1@ptr$intersect(e2@ptr)
+		} else if (oper == "/") {
+			d <- c(diff(e1[1:2]) / diff(e2[1:2]), diff(e1[3:4]) / diff(e2[3:4])) 
+			names(d) <- c("x", "y")
+			return(d)
 		} else {
-			stop("only + and - are supported")
+			stop("only +, - and / are supported")
 		}
 		if (!e1@ptr$valid) {
 			stop("this would create an invalid extent")
