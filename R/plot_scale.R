@@ -19,7 +19,7 @@
 }
 
 
-sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -0.5), lwd=2, xpd=TRUE, ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...){
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
@@ -49,6 +49,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		}
 		dd <- d
 	}
+
 	
     if(is.null(xy)) {
 		padding=c(5,5) / 100
@@ -68,8 +69,13 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		if (missing(adj)) {
 			adj <- c(0.5, -0.2-lwd/20 )
 		}
-		text(xy[1]+(0.5*dd), xy[2],labels=label, adj=adj, xpd=xpd, ...)
 		
+		if (length(label) == 1) label =c("", label, "")
+		text(xy[1], xy[2],labels=label[1], xpd=xpd, adj=adj,...)
+		text(xy[1]+0.5*dd, xy[2],labels=label[2], xpd=xpd, adj=adj,...)
+		text(xy[1]+dd, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
+
+		xy[2] <- xy[2] - dd/10
 		
 	} else if (type == "bar") {
 		stopifnot(divs > 0)
@@ -111,11 +117,10 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			text(xy[1], xy[2], labels=label[1], xpd=xpd, adj=adj, ...)
 			text(half, xy[2], labels=label[2], xpd=xpd, adj=adj,...)
 			text(end, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
-		}
-			
-		if (below != "") {
-			adj[2] <- -adj[2]
-			text(xy[1]+(0.5*dd), xy[2], xpd=xpd, labels=below, adj=adj,...)
-		}
+		}		
 	}
+	if (below != "") {
+		adj[2] <- -adj[2]
+		text(xy[1]+(0.5*dd), xy[2], xpd=xpd, labels=below, adj=adj,...)
+	}	
 }
