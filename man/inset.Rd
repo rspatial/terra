@@ -42,12 +42,12 @@ x <- v[v$NAME_2 == "Diekirch", ]
 plot(x, density=10, col="blue")
 inset(v)
 
-e <- ext(c(6.2, 6.3, 49.9, 50))
-b <- ext(x)+0.02
-inset(v, e=e, col=cols, box=b)
-
 cols <- rep("light grey", 12)
 cols[2] <- "red"
+e <- ext(c(6.2, 6.3, 49.9, 50))
+b <- ext(x)+0.02
+
+inset(v, e=e, col=cols, box=b)
 
 inset(v, loc="bottomleft", col=cols, box=b, background="light yellow",
 pbx=list(lwd=2, lty=2, col="blue"))

@@ -185,23 +185,21 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
     char **papszMetadata;
     papszMetadata = poDriver->GetMetadata();
-    if(! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
-		if(! CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
-			setError("cannot create this format: "+ driver);
-			return false;
+    if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
+	} else if(CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
+		copy_driver = driver;
+		if (canProcessInMemory(opt)) {
+			poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
+			poDS = poDriver->Create("", ncol(), nrow(), nlyr(), gdt, papszOptions);
 		} else {
-			copy_driver = driver;
-			if (canProcessInMemory(opt)) {
-				poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
-				poDS = poDriver->Create("", ncol(), nrow(), nlyr(), gdt, papszOptions);
-			} else {
-				std::string f = tempFile(opt.get_tempdir(), ".tif");
-				poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
-				poDS = poDriver->Create(f.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
-			}
+			std::string f = tempFile(opt.get_tempdir(), ".tif");
+			poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+			poDS = poDriver->Create(f.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 		}
 	} else {
-		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
+		setError("cannot create this format: "+ driver);
+		return false;
 	}
 	CSLDestroy( papszOptions );
 
@@ -210,12 +208,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 	GDALRasterBand *poBand;
 	std::vector<std::string> nms = getNames();
-	double naflag; 
-	bool hasNAflag = opt.get_NAflag(naflag);
+	double naflag=NAN; 
+	bool hasNAflag = opt.has_NAflag(naflag);
 
-//	Rcpp::Rcout << hasNAflag << std::endl;	
-//	Rcpp::Rcout << naflag << std::endl;	
-		
 	for (size_t i=0; i < nlyr(); i++) {
 
 		poBand = poDS->GetRasterBand(i+1);

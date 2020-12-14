@@ -162,7 +162,8 @@ class SpatOptions {
 		std::string get_datatype();
 		//std::string get_bandorder();
 		bool get_verbose();
-		bool get_NAflag(double &flag);
+		double get_NAflag();
+		bool has_NAflag(double &flag);
 		bool get_overwrite();
 		unsigned get_progress();
 		bool do_progress(unsigned n);

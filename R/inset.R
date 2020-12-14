@@ -5,7 +5,7 @@
 
 .inset <- function(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...) {
 
-	usr <- par("usr")
+	usr <- graphics::par("usr")
 	if (missing(e)) {
 		e <- ext(usr)
 		r <- diff(e[1:2]) / diff(e[3:4])

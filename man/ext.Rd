@@ -4,8 +4,9 @@
 
 \alias{$,SpatExtent-method}
 \alias{$<-,SpatExtent-method}
-\alias{[,SpatExtent-method}
-\alias{[<-,SpatExtent-method}
+\alias{[,SpatExtent-method,missing,missing}
+\alias{[,SpatExtent-method,numeric,missing}
+\alias{[<-,SpatExtent,numeric,missing-method}
 
 \alias{ext}
 \alias{ext<-}

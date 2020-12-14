@@ -64,9 +64,13 @@ bool SpatOptions::get_def_verbose() { return def_verbose; }
 bool SpatOptions::get_verbose() { return verbose; }
 void SpatOptions::set_verbose(bool v) { verbose = v; }
 
-bool SpatOptions::get_NAflag(double &flag) { 
+bool SpatOptions::has_NAflag(double &flag) { 
 	flag = NAflag;
 	return hasNAflag; 
+}
+
+double SpatOptions::get_NAflag() { 
+	return NAflag;
 }
 
 void SpatOptions::set_NAflag(double flag) { 
