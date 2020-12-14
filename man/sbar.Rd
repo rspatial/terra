@@ -10,7 +10,7 @@ Add a scalebar to a plot
 
 \usage{
 sbar(d, xy=NULL, type="line", divs=2, below="", 
-    lonlat=NULL, label, adj=c(0.5, -0.5), lwd=2, xpd=TRUE, ...)
+    lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...)
 }
 
 \arguments{
