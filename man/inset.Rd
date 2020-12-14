@@ -47,14 +47,30 @@ cols <- rep("light grey", 12)
 cols[2] <- "red"
 e <- ext(c(6.2, 6.3, 49.9, 50))
 b <- ext(x)+0.02
-
 inset(v, e=e, col=cols, box=b)
 
-inset(v, loc="bottomleft", col=cols, box=b, background="light yellow",
-pbx=list(lwd=2, lty=2, col="blue"))
+# with a SpatRaster
+ff <- system.file("ex/elev.tif", package="terra")
+r <- rast(ff)
+r <- crop(r, ext(x) + .01)
+plot(r, type="int", mar=c(2,2,2,2), plg=list(x="topright"))
+lines(v, lwd=1.5)
+lines(x, lwd=2.5)
+inset(v, col=cols, loc="topleft", scale=0.15)
 
-s <- inset(v, col=cols, loc="bottomright", scale=0.1)
+# a more complex one
+plot(r, plg=list(title="meter\n", shrink=.2, cex=.8))
+lines(v, lwd=4, col="white")
+lines(v, lwd=1.5)
+lines(x, lwd=2.5)
+text(x, "NAME_2", cex=1.5, halo=TRUE)
+sbar(6, c(6.04, 49.785), type="bar", below="km", label=c(0,3,6), cex=.8)
+s <- inset(v, col=cols, box=b, scale=.2, loc="topright", background="light yellow",
+	pbx=list(lwd=2, lty=5, col="blue"))
+
+# note the returned inset SpatVector
 s
+
 
 }
 

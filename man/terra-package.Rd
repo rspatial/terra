@@ -213,11 +213,14 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
   \tabular{ll}{
     \bold{Maps} \tab \cr
     \code{\link{plot}} \tab Plot a SpatRaster or SpatVector. The main method to create a map \cr
+	\code{\link{polys}} \tab Add polygons to a map (or lines or points) \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
     \code{\link{image}} \tab Alternative way to plot a SpatRaster \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
     \code{\link{text}} \tab Plot the values of a SpatRaster or SpatVector on top of a map \cr
+    \code{\link{inset}} \tab Add a small inset (overview) map\cr
+    \code{\link{sbar}} \tab Add a scalebar\cr
     .\cr
     \bold{Interacting with a map} \tab \cr
     \code{\link{zoom}} \tab Zoom in to a part of a map \cr

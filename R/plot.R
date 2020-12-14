@@ -196,9 +196,19 @@ setMethod("text", signature(x="SpatVector"),
 	function(x, labels, halo=FALSE, ...) {
 		if (missing(labels)) {
 			labels <- 1:nrow(x)
-		} else if (nrow(x) > 1 && length(labels) == 1) {
-			labels <- as.data.frame(x)[,labels]
-		} 
+		} else if (length(labels) == 1) {
+			if (nrow(x) > 1) { 
+				labels <- as.data.frame(x)[,labels]
+			} else {
+				if (is.numeric(labels)) {
+					if (labels %in% 1:ncol(x)) {
+						labels <- x[[labels]][,1]
+					}
+				} else if (labels %in% names(x)) {
+					labels <- x[[labels]][,1]
+				}
+			}
+		}
 		xy <- geom(centroids(x))[,c("x","y")]
 		if (halo) {
 			.halo(xy[,1], xy[,2], labels, ...)

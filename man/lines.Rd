@@ -2,9 +2,12 @@
 
 \docType{methods}
 
+\alias{points}
+\alias{lines}
+\alias{polys}
+
 \alias{lines,SpatVector-method}
 \alias{lines,SpatRaster-method}
-\alias{polys}
 \alias{polys,SpatVector-method}
 \alias{points,SpatVector-method}
 
@@ -17,7 +20,7 @@
 \description{
 Add SpatVector data to a plot (map) with \code{points}, \code{lines}, or \code{polys}. 
 
-These are simpler alternatives for \code{plot(x, add=TRUE)}
+These are simpler alternatives for \code{\link[terra:plotVector]{plot(x, add=TRUE)}}
 }
 
 \usage{

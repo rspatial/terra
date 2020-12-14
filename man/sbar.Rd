@@ -14,7 +14,7 @@ sbar(d, xy = NULL, type = "line", divs = 2, below = "",
 }
 
 \arguments{
-\item{d}{numeric. Distance covered by the scalebar}
+\item{d}{numeric. Distance covered by the scalebar. In the units of the coordinate reference system for planar (projected) data and in km for angular (longitude/latitude) data}
 \item{xy}{x and y coordinate to place the plot. Can be NULL. Use \code{xy=click()} to make this interactive }
 \item{type}{"line" or "bar"}
 \item{divs}{number of divisions for a bar type. 2 or 4}

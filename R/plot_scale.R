@@ -19,7 +19,7 @@
 }
 
 
-sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -0.5), lwd=2, ...){
+sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -0.5), lwd=2, xpd=TRUE, ...){
 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
@@ -58,7 +58,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 	}
 
 	if (type == "line") {
-		lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd, ...)
+		lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd, xpd=xpd, ...)
 		if (missing(label)) {
 			label <- paste(d)
 		}
@@ -68,7 +68,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		if (missing(adj)) {
 			adj <- c(0.5, -0.2-lwd/20 )
 		}
-		text(xy[1]+(0.5*dd), xy[2],labels=label, adj=adj,...)
+		text(xy[1]+(0.5*dd), xy[2],labels=label, adj=adj, xpd=xpd, ...)
 		
 		
 	} else if (type == "bar") {
@@ -81,8 +81,8 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		
 		if (divs==2) {
 			half <- xy[1] + dd / 2
-			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white")
-			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black")
+			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
+			graphics::polygon(c(half, half, xy[1]+dd, xy[1]+dd ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
 			if (missing(label)) {
 				label <- c("0", "", d)
 			}
@@ -90,32 +90,32 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 				label <- c("0", "", d)
 			}
 			
-			text(xy[1], xy[2],labels=label[1], adj=adj,...)
-			text(xy[1]+0.5*dd, xy[2],labels=label[2], adj=adj,...)
-			text(xy[1]+dd, xy[2],labels=label[3], adj=adj,...)
+			text(xy[1], xy[2],labels=label[1], xpd=xpd, adj=adj,...)
+			text(xy[1]+0.5*dd, xy[2],labels=label[2], xpd=xpd, adj=adj,...)
+			text(xy[1]+dd, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
 		} else {
 			q1 <- xy[1] + dd / 4
 			half <- xy[1] + dd / 2
 			q3 <- xy[1] + 3 * dd / 4
 			end <- xy[1] + dd 
-			graphics::polygon(c(xy[1], xy[1], q1, q1), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white")
-			graphics::polygon(c(q1, q1, half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black")
-			graphics::polygon(c(half, half, q3, q3 ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white")
-			graphics::polygon(c(q3, q3, end, end), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black")
+			graphics::polygon(c(xy[1], xy[1], q1, q1), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
+			graphics::polygon(c(q1, q1, half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
+			graphics::polygon(c(half, half, q3, q3 ), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
+			graphics::polygon(c(q3, q3, end, end), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="black", xpd=xpd)
 			if (missing(label)) {
 				label <- c("0", round(0.5*d), d)
 			}
 			if (is.null(label)) {
 				label <- c("0", round(0.5*d), d)
 			}
-			text(xy[1], xy[2], labels=label[1], adj=adj,...)
-			text(half, xy[2], labels=label[2], adj=adj,...)
-			text(end, xy[2],labels=label[3], adj=adj,...)
+			text(xy[1], xy[2], labels=label[1], xpd=xpd, adj=adj, ...)
+			text(half, xy[2], labels=label[2], xpd=xpd, adj=adj,...)
+			text(end, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
 		}
 			
 		if (below != "") {
 			adj[2] <- -adj[2]
-			text(xy[1]+(0.5*dd), xy[2], labels=below, adj=adj,...)
+			text(xy[1]+(0.5*dd), xy[2], xpd=xpd, labels=below, adj=adj,...)
 		}
 	}
 }
