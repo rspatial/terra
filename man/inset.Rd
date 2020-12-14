@@ -2,6 +2,7 @@
 
 \docType{methods}
 
+\alias{inset}
 \alias{inset,SpatVector-method}
 \alias{inset,SpatRaster-method}
 
