@@ -231,12 +231,13 @@ setMethod("rast", signature(x="Raster"),
 	cells <- cellFromXY(r, xyz[,1:2])
 	if (d[2] > 2) {
 		names(r) <- ln[-c(1:2)]
-		v <- rep(NA, ncell(r))
-		v[cells] <- xyz[,3:d[2]]
+		v <- matrix(NA, nrow=ncell(r), ncol= nlyr(r))
+		v[cells, ] <- xyz[, -c(1:2)]
 		values(r) <- v
 	}
 	return(r)
 }
+
 
 
 
