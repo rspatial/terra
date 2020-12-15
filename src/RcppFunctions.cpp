@@ -12,7 +12,22 @@
 #include "proj.h"
 #endif
 
-
+// [[Rcpp::export(name = ".getSRSname")]]
+std::string getCRSname(std::string s) {
+	OGRSpatialReference x;
+	const char *pszCRS = s.c_str();
+	OGRErr erro = x.SetFromUserInput(pszCRS);
+	if (erro != OGRERR_NONE) {
+		return "";
+	}
+	std::string node;
+	if (x.IsGeographic()) {
+		node = "geogcs";
+	} else {
+		node = "projcs";
+	}
+	return x.GetAttrValue(node.c_str());
+}
 
 // [[Rcpp::export(name = ".getLinearUnits")]]
 double getLinearUnits(std::string s) {
@@ -20,21 +35,6 @@ double getLinearUnits(std::string s) {
 	SpatSRS srs;
 	if (!srs.set(s, msg)) return NAN;
 	return srs.to_meter();
-	
-/*	if (s.size() < 2) {
-		return NAN;
-	}
-	OGRSpatialReference x;
-	const char *pszCRS = s.c_str();
-	OGRErr erro = x.SetFromUserInput(pszCRS);
-	if (erro != OGRERR_NONE) {
-		return NAN;
-	}
-	if (x.IsGeographic()) {
-		return 0;
-	}
-	return x.GetLinearUnits();
-*/	
 }
 
 

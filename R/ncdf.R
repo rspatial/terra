@@ -66,7 +66,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
 
 		dots <- list(...)
-		force_v4 <- if (is.null(force_v4)) { TRUE } else {dots$force_v4}
+		force_v4 <- if (is.null(dots$force_v4)) { TRUE } else {dots$force_v4}
 		verbose <- if (is.null(dots$verbose)) { FALSE } else  { dots$verbose }
 		filename <- trimws(filename)
 		stopifnot(filename != "")
@@ -118,10 +118,21 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
 			}
 		}
+		ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
+		
 		
 		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
 		on.exit( ncdf4::nc_close(ncobj) )
-		
+
+
+		prj <- crs(x[1])
+		prj <- gsub("\n", "", prj)
+		if (prj != "") {
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
+		}
+
+		#ncdf4::ncatt_put(ncobj, "crs", "GeoTransform", "wkt", prj, prec="text")
+
 		# writing all at once. need to chunk 
 		nc <- ncol(x)
 		nr <- nrow(x)
@@ -134,6 +145,9 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 			} else {
 				v <- t(as.matrix(y, TRUE))
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], v, start=c(1,1), count=dim(y)[2:1])
+			}
+			if (prj != "") {
+				ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec='text')
 			}
 		}
 

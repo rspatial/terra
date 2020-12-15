@@ -16,7 +16,9 @@ setMethod("crs", signature("SpatRaster"),
 
 
 .txtCRS <- function(x, warn=TRUE) {
-	if (inherits(x, "CRS")) {
+	if (is.na(x)) {
+		x <- ""
+	} else if (inherits(x, "CRS")) {
 		if (warn) warning("expected a character string, not a CRS object")
 		y <- attr(x, "comment")
 		if (is.null(y)) {

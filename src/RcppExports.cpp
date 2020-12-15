@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// getCRSname
+std::string getCRSname(std::string s);
+RcppExport SEXP _terra_getCRSname(SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(getCRSname(s));
+    return rcpp_result_gen;
+END_RCPP
+}
 // getLinearUnits
 double getLinearUnits(std::string s);
 RcppExport SEXP _terra_getLinearUnits(SEXP sSEXP) {
@@ -128,6 +139,7 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_terra_getCRSname", (DL_FUNC) &_terra_getCRSname, 1},
     {"_terra_getLinearUnits", (DL_FUNC) &_terra_getLinearUnits, 1},
     {"_terra_geotransform", (DL_FUNC) &_terra_geotransform, 1},
     {"_terra_ginfo", (DL_FUNC) &_terra_ginfo, 3},
