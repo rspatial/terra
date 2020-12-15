@@ -412,6 +412,88 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 }
 
 
+
+SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt) {
+
+	maskvalues = vunique(maskvalues);
+	if (maskvalues.size() == 1) {
+		return mask(x, inverse, maskvalues[0], updatevalue, opt);
+	}
+
+	unsigned nl = std::max(nlyr(), x.nlyr());
+	SpatRaster out = geometry(nl, true);
+
+	if (!out.compare_geom(x, false, true, true, true, true, false)) {
+		return(out);
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!x.readStart()) {
+		out.setError(x.getError());
+		return(out);
+	}
+	
+	bool maskNA = false;
+	for (int i = maskvalues.size()-1; i>=0; i--) {
+		if (std::isnan(maskvalues[i])) {
+			maskNA = true;
+			maskvalues.erase(maskvalues.begin()+i);
+		}
+	}
+
+
+  	if (!out.writeStart(opt)) { return out; }
+	std::vector<double> v, m;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		recycle(v, m);
+		if (inverse) {
+			if (maskNA) {
+				for (size_t i=0; i < v.size(); i++) {
+					if (!std::isnan(m[i])) {
+						v[i] = updatevalue;
+					}
+				}
+			} 
+			for (size_t i=0; i < v.size(); i++) {
+				for (size_t j=0; j < maskvalues.size(); j++) {
+					if (m[i] != maskvalues[j]) {
+						v[i] = updatevalue;
+						break;
+					}
+				}
+			}
+		} else {
+			if (maskNA) {
+				for (size_t i=0; i < v.size(); i++) {
+					if (std::isnan(m[i])) {
+						v[i] = updatevalue;
+					}
+				}
+			} 
+			for (size_t i=0; i < v.size(); i++) {
+				for (size_t j=0; j < maskvalues.size(); j++) {
+					if (m[i] == maskvalues[j]) {
+						v[i] = updatevalue;
+						break;
+					}
+				}
+			}
+		}
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+
+	}
+	out.writeStop();
+	readStop();
+	x.readStop();
+	return(out);
+}
+
+
 SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double updatevalue, SpatOptions &opt) {
 
 //return grasterize(x, "", {updatevalue}, NAN, true, false, !inverse, opt);

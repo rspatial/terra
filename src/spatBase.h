@@ -269,6 +269,8 @@ class SpatSRS {
 			return (wkt == "");
 		}
 
+		bool is_same(std::string other);
+
 		bool is_geographic(); // as below, but using GDAL
 
 		bool is_lonlat() {

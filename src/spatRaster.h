@@ -394,6 +394,10 @@ class SpatRaster {
 		bool writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols);
 		bool writeStopGDAL();
 
+
+		std::vector<double> readmulti(std::string filename, std::string var);
+
+
 		//bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 		//bool writeValuesBinary(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 
@@ -514,6 +518,9 @@ class SpatRaster {
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
+		SpatRaster mask(SpatRaster x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt);
+
+
 		SpatRaster mask(SpatVector x, bool inverse, double updatevalue, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);

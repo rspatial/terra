@@ -12,11 +12,19 @@
 #include "proj.h"
 #endif
 
+// [[Rcpp::export(name = ".sameSRS")]]
+bool sameSRS(std::string x, std::string y) {
+	std::string msg;
+	SpatSRS srs;
+	if (!srs.set(x, msg)) return false;
+	return srs.is_same(y);
+}
+
+
 // [[Rcpp::export(name = ".getSRSname")]]
 std::string getCRSname(std::string s) {
 	OGRSpatialReference x;
-	const char *pszCRS = s.c_str();
-	OGRErr erro = x.SetFromUserInput(pszCRS);
+	OGRErr erro = x.SetFromUserInput(s.c_str());
 	if (erro != OGRERR_NONE) {
 		return "";
 	}

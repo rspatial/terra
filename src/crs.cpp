@@ -141,8 +141,7 @@ double SpatSRS::to_meter() {
 	if (wkt.size() < 2) {
 		return NAN;
 	}
-	const char *pszCRS = wkt.c_str();
-	OGRErr erro = x.SetFromUserInput(pszCRS);
+	OGRErr erro = x.SetFromUserInput(wkt.c_str());
 	if (erro != OGRERR_NONE) {
 		return NAN;
 	}
@@ -153,14 +152,33 @@ double SpatSRS::to_meter() {
 	return out;
 }
 
+bool SpatSRS::is_same(std::string other) {
+
+	if (wkt == "" && other == "") {
+		return true;
+	} else if (wkt == "" || other == "") {
+		return false;
+	}
+
+	OGRSpatialReference x, y;
+	OGRErr erro = x.SetFromUserInput(wkt.c_str());
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+	erro = y.SetFromUserInput(other.c_str());
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+	return x.IsSame(&y);
+}
+
 
 bool SpatSRS::is_geographic() {
 	OGRSpatialReference x;
 	if (wkt.size() < 2) {
 		return false;
 	}
-	const char *pszCRS = wkt.c_str();
-	OGRErr erro = x.SetFromUserInput(pszCRS);
+	OGRErr erro = x.SetFromUserInput(wkt.c_str());
 	if (erro != OGRERR_NONE) {
 		return false;
 	}

@@ -16,6 +16,7 @@ setMethod("time", signature(x="SpatRaster"),
 		} else if (tstep == "days") {
 			as.Date("1970-01-01") + d
 		#} else if (tstep == "months") {
+		#} else if (tstep == "years") {
 		} else { # raw 
 			d
 		}

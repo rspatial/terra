@@ -135,8 +135,6 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
 
-
-
 		# writing all at once. need to chunk 
 		nc <- ncol(x)
 		nr <- nrow(x)

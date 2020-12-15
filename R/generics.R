@@ -333,7 +333,7 @@ setMethod("freq", signature(x="SpatRaster"),
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
 	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- .runOptions(filename, overwrite,wopt)
-		x@ptr <- x@ptr$mask_raster(mask@ptr, inverse[1], maskvalue[1], updatevalue[1], opt)
+		x@ptr <- x@ptr$mask_raster(mask@ptr, inverse[1], maskvalue, updatevalue[1], opt)
 		show_messages(x, "mask")		
 	}
 )

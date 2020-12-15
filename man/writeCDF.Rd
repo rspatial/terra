@@ -36,7 +36,7 @@ SpatRaster (invisibly). This method is used for the side-effect of writing value
 }
 
 \seealso{
-see \code{\link{writeRaster}} for other file formats.
+see \code{\link{writeRaster}} for other file formats, or for writing netCDF with the GDAL library.
 }
 
 \examples{

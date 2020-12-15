@@ -5,6 +5,18 @@
 
 using namespace Rcpp;
 
+// sameSRS
+bool sameSRS(std::string x, std::string y);
+RcppExport SEXP _terra_sameSRS(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::string >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(sameSRS(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // getCRSname
 std::string getCRSname(std::string s);
 RcppExport SEXP _terra_getCRSname(SEXP sSEXP) {
@@ -139,6 +151,7 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_terra_sameSRS", (DL_FUNC) &_terra_sameSRS, 2},
     {"_terra_getCRSname", (DL_FUNC) &_terra_getCRSname, 1},
     {"_terra_getLinearUnits", (DL_FUNC) &_terra_getLinearUnits, 1},
     {"_terra_geotransform", (DL_FUNC) &_terra_geotransform, 1},
