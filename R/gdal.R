@@ -5,12 +5,11 @@ gdal <- function(warn = NA, drivers=FALSE) {
 		warn <- as.integer(warn)
 		stopifnot(warn %in% c(1:4))
 		.set_gdal_warnings(warn)
-	} 
-	if (drivers) {
+	} else if (drivers) {
 		x <- .gdaldrivers()
 		x <- do.call(cbind, x)
 		x[,2] = c("vector", "raster")[as.integer(x[,2])+1]
-		x[,3] = c("read", "write*", "write")[as.integer(x[,3])+1]
+		x[,3] = c("read", "write", "write+")[as.integer(x[,3])+1]
 		colnames(x) <- c("name", "type", "can", "long.name")
 		x <- data.frame(x)
 		x <- x[order(x$type, x$name), ]

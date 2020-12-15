@@ -185,9 +185,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
     char **papszMetadata;
     papszMetadata = poDriver->GetMetadata();
-    if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+
+	bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
+
+    if (!isncdf && CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
 		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
-	} else if(CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
+	} else if (isncdf || CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
 		copy_driver = driver;
 		if (canProcessInMemory(opt)) {
 			poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
@@ -226,7 +229,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 				addWarning("could not write categories");
 			}
 		}
-		poBand->SetDescription(nms[i].c_str());
+		if (isncdf) {
+			std::string opt = "NETCDF_VARNAME";
+			char ** papszMetadata; 
+			papszMetadata = CSLSetNameValue( papszOptions, opt.c_str(), nms[i].c_str() );
+			poBand->SetMetadata(papszMetadata);
+
+		} else {
+			poBand->SetDescription(nms[i].c_str());
+		}
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
 			if (hasNAflag) {

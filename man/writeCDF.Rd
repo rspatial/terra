@@ -43,13 +43,16 @@ see \code{\link{writeRaster}} for other file formats.
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 fname <- paste0(tempfile(), ".nc")
-x <- writeCDF(r, fname, overwrite=TRUE, varname="alt", longname="elevation in m above sea level", unit="m")
-# file.remove(fname)
 
-a <- rast(ncol=5, nrow=5, nl=1000)
-values(a) <- 1:25000
-time(a) <- as.Date("2021-01-01") + 0:999
-x <- writeCDF(a, fname, overwrite=TRUE, varname="xyz", longname="fake data", unit="U/Pa")
+x <- writeCDF(r, fname, overwrite=TRUE, varname="alt", longname="elevation in m above sea level", unit="m")
+
+a <- rast(ncol=5, nrow=5, nl=50)
+values(a) <- 1:prod(dim(a))
+time(a) <- as.Date("2020-12-31") + 1:nlyr(a)
+x <- writeCDF(a, fname, overwrite=TRUE, varname="power", longname="my nice data", unit="U/Pa")
+
+# for CRAN
+file.remove(fname)
 }
 
 \keyword{ spatial }

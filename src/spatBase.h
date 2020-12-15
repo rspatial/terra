@@ -117,6 +117,9 @@ class SpatOptions {
 		double NAflag = NAN;
 		bool def_verbose = false;
 		bool verbose = false;
+
+		bool ncdfcopy = true;
+
 		std::string datatype = "";
 		//std::string bandorder = "";
 		std::string filetype = "";
@@ -148,6 +151,7 @@ class SpatOptions {
 		void set_verbose(bool v);
 		void set_def_verbose(bool v);
 		void set_NAflag(double flag);
+		void set_ncdfcopy(bool x);
 		//void set_filename(std::string f);
 		void set_filenames(std::vector<std::string> f);
 		void set_filetype(std::string d);
@@ -162,6 +166,7 @@ class SpatOptions {
 		std::string get_datatype();
 		//std::string get_bandorder();
 		bool get_verbose();
+		bool get_ncdfcopy();
 		double get_NAflag();
 		bool has_NAflag(double &flag);
 		bool get_overwrite();

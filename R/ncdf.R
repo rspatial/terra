@@ -63,9 +63,11 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"), 
-	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, verbose=FALSE, ...) {
+	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
 
-		force_v4 <- TRUE
+		dots <- list(...)
+		force_v4 <- if (is.null(force_v4)) { TRUE } else {dots$force_v4}
+		verbose <- if (is.null(dots$verbose)) { FALSE } else  { dots$verbose }
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		if (file.exists(filename) & !overwrite) {

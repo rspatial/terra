@@ -218,6 +218,7 @@ void gdal_init(std::string path) {
 	set_gdal_warnings(2);
     GDALAllRegister();
     OGRRegisterAll(); 
+	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
 	if (path != "") {
