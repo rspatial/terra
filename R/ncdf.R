@@ -63,7 +63,7 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"), 
-	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
+	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, zname="time", ...) {
 
 		dots <- list(...)
 		force_v4 <- if (is.null(dots$force_v4)) { TRUE } else {dots$force_v4}
@@ -109,7 +109,6 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 				} else {
 					zv <- 1:nlyr(y)
 					zunit <- "unknown"
-					zname <- "layer"
 					cal <- NA
 				} 
 				zdim <- ncdf4::ncdim_def(zname, zunit, zv, unlim=TRUE, calendar=cal)
@@ -129,13 +128,19 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		prj <- gsub("\n", "", prj)
 		if (prj != "") {
 			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", .proj4(x[1]), prec='text')
 		}
+		e <- ext(x)
+		rs <- res(x)
+		gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
+		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
 
-		#ncdf4::ncatt_put(ncobj, "crs", "GeoTransform", "wkt", prj, prec="text")
+
 
 		# writing all at once. need to chunk 
 		nc <- ncol(x)
 		nr <- nrow(x)
+
 		for (i in 1:n) {
 			y = x[i]
 			if (nl[i] > 1) {
@@ -147,19 +152,10 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], v, start=c(1,1), count=dim(y)[2:1])
 			}
 			if (prj != "") {
-				ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec='text')
+				ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 			}
 		}
 
-		#crsname <- "latitude_longitude"
-		#ncvars[[7]] <- ncdf4::ncvar_def(crsname, "1", NULL, NULL, crsname, prec = "char")
-		#nc <- nc_create(filename, ncvars)
-		#prj <- crs(x[1])
-		#if (!is.na(prj)) {
-		#	ncdf4::ncatt_put(ncobj, "crs", "wkt", prj, prec="text")
-		#	ncdf4::ncatt_put(ncobj, varname, "grid_mapping", "crs")
-		#	ncdf4::ncatt_put(ncobj, varname, "wkt", prj, prec="text")
-		#}
 		
 		ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 		pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))

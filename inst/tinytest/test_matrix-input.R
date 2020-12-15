@@ -26,4 +26,4 @@
 
 	m <- cbind(x=c(1,1,2,2), y=c(1,2,1,2), z1=1:4, z2=5:8)
 	r <- rast(m, type="xyz")
-	expect_equal(values(r), c(2,3,1,3,6,8,5,7))
+	expect_equal(as.vector(values(r)), c(2,4,1,3,6,8,5,7))

@@ -4,12 +4,14 @@
 \alias{units<-}
 \alias{units,SpatRaster-method}
 \alias{units<-,SpatRaster-method}
+\alias{units,SpatRasterDataSet-method}
+\alias{units<-,SpatRasterDataSet-method}
 
   
-\title{units of SpatRaster layers}
+\title{units of SpatRaster or SpatRasterDataSet}
 
 \description{
-Get or set the units of the layers of a SpatRaster.
+Get or set the units of the layers of a SpatRaster or the datasets in a SpatRasterDataSet.
 }
 
 \usage{
@@ -17,6 +19,9 @@ Get or set the units of the layers of a SpatRaster.
 
 \S4method{units}{SpatRaster}(x)<-value
 
+\S4method{units}{SpatRasterDataSet}(x)
+
+\S4method{units}{SpatRasterDataSet}(x)<-value
 }
 
 \arguments{
