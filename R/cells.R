@@ -13,9 +13,9 @@ setMethod("cells", signature(x="SpatRaster", y="missing"),
 
 setMethod("cells", signature(x="SpatRaster", y="numeric"), 
 	function(x, y, ...) {
-		opt <- .runOptions("", TRUE, list())
+		opt <- spatOptions("", TRUE, list())
 		v <- x@ptr$is_in_cells(y, opt)
-		x <- show_messages(x, "cells")
+		x <- messages(x, "cells")
 		v <- lapply(v, function(i) i+1)
 		names(v) <- names(x)
 		v

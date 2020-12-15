@@ -33,12 +33,12 @@ setMethod("buffer", signature(x="SpatVector"),
 			x@ptr <- x@ptr$buffer(width, quadsegs, 1)
 		} else {
 			if (isLonLat(x)) {
-				warning("lon/lat data are treated as planar")
+				warn("buffer", "lon/lat data are treated as planar")
 			}
 			quadsegs <- max(3, quadsegs)
 			x@ptr <- x@ptr$buffer2(width, quadsegs, 1)		
 		}
-		show_messages(x, "buffer")
+		messages(x, "buffer")
 	}
 )
 
@@ -47,7 +47,7 @@ setMethod("buffer", signature(x="SpatVector"),
 setMethod("disaggregate", signature(x="SpatVector"), 
 	function(x, ...) {
 		x@ptr <- x@ptr$disaggregate()
-		show_messages(x, "disaggregate")
+		messages(x, "disaggregate")
 	}
 )
 

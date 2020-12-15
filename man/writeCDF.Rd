@@ -14,9 +14,9 @@ When using a SpatRasterDataset, the varname, longname, and unit should be set in
 
 \usage{
 \S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", overwrite=FALSE,
- datatype="double", NAflag=-9999, zname="time", ...)
+ datatype="double", NAflag=-9999, ...)
 
-\S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...)
+\S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, zname="time", ...)
 }
 
 \arguments{

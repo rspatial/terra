@@ -14,7 +14,7 @@
 	ncols <- nc$var[[zvar]]$dim[[dims[1]]]$len
 	nrows <- nc$var[[zvar]]$dim[[dims[2]]]$len
 	if (!(ncol(x) == ncols) & (nrow(x) == nrows)) {
-		warning("GDAL did not find an extent. Cells not equally spaced?") 
+		warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
 		return(x)
 	}
 	xx <- try(ncdf4::ncvar_get(nc, nc$var[[zvar]]$dim[[dims[1]]]$name), silent = TRUE)
@@ -23,7 +23,7 @@
 	}
 	rs <- xx[-length(xx)] - xx[-1]
 	if (! isTRUE ( all.equal( min(rs), max(rs), tolerance=0.025, scale= abs(min(rs))) ) ) {
-		warning("cells are not equally spaced; extent is not defined") 
+		warn("rast", "cells are not equally spaced; extent is not defined") 
 		return(x)
 	}
 	xrange <- c(min(xx), max(xx))
@@ -36,7 +36,7 @@
 	
 	rs <- yy[-length(yy)] - yy[-1]
 	if (! isTRUE ( all.equal( min(rs), max(rs), tolerance=0.025, scale= abs(min(rs))) ) ) {
-		warning("cells are not equally spaced; extent is not defined") 
+		warn("rast", "cells are not equally spaced; extent is not defined") 
 		return(x)
 	}
 	yrange <- c(min(yy), max(yy))
@@ -71,7 +71,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		if (file.exists(filename) & !overwrite) {
-			stop("file exists, use overwrite=TRUE to overwrite it")
+			error("writeCDF,SpatRasterDataset", "file exists, use overwrite=TRUE to overwrite it")
 		}
 
 		n <- length(x)

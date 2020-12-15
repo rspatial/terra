@@ -40,7 +40,7 @@ setMethod("values", signature(x="SpatRaster"),
 function(x, mat=TRUE, ...) {
 	if (hasValues(x)) {
 		v <- x@ptr$getValues(-1)
-		show_messages(x, "values")
+		messages(x, "values")
 	} else {
 		v <- matrix(NA, nrow=ncell(x), ncol=nlyr(x))
 	}
@@ -73,7 +73,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		}
 		
 		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
-			stop("values must be numeric, integer, or logical")
+			error("setValues", "values must be numeric, integer, or logical")
 		}
 
 		lv <- length(values)
@@ -83,7 +83,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			values <- rep(values, nl * nc)
 		} else {
 			if (!((lv %% nc) == 0)) {
-				warning("the length of the values does not match the size of the SpatRaster")
+				warn("setValues", "the length of the values does not match the size of the SpatRaster")
 			}
 			if (lv > (nc * nl)) {
 				values <- values[1:(nc*nl)]
@@ -142,7 +142,7 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 		} else if (any(!.hasMinMax(x))) {
 			x@ptr$setRange()		
 		}
-		x <- show_messages(x)
+		x <- messages(x)
 	}
 )
 
@@ -151,11 +151,11 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) {
 		dots <- list(...)
 		bool <- x@ptr$compare_geom(y@ptr, lyrs, crs, warncrs, ext, rowcol, res)
-		show_messages(x, "compareGeom")
+		messages(x, "compareGeom")
 		if (length(dots)>1) {
 			for (i in 1:length(dots)) {
 				bool <- x@ptr$compare_geom(dots[[i]]@ptr, lyrs, crs, warncrs, ext, rowcol, res)
-				show_messages(x, "compareGeom")
+				messages(x, "compareGeom")
 			}
 		}
 		bool

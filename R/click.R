@@ -27,7 +27,7 @@
 	cells <- cellFromXY(x, xyCoords)
 	cells <- unique(stats::na.omit(cells))
 	if (length(cells) == 0 ) { 
-		stop('no valid cells selected') 
+		error("click", "no valid cells selected") 
 	}
 	cells
 }

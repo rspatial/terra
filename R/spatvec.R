@@ -90,7 +90,7 @@ setMethod("as.list", signature(x="SpatVector"),
 setMethod("area", signature(x="SpatVector"), 
 	function(x, ...) {
 		a <- x@ptr$area();
-		x <- show_messages(x, "area");
+		x <- messages(x, "area");
 		return(a)
 	}
 )	
@@ -98,7 +98,7 @@ setMethod("area", signature(x="SpatVector"),
 setMethod("perimeter", signature(x="SpatVector"), 
 	function(x) {
 		a <- x@ptr$length();
-		x <- show_messages(x, "length");
+		x <- messages(x, "length");
 		return(a)
 	}
 )	
@@ -118,7 +118,7 @@ setMethod("fill", signature(x="SpatVector"),
 		} else {
 			x@ptr <- x@ptr$remove_holes()
 		}
-		show_messages(x)
+		messages(x)
 	}
 )
 
@@ -127,7 +127,7 @@ setMethod("fill", signature(x="SpatVector"),
 setMethod("centroids", signature(x="SpatVector"), 
 	function(x, ...) {
 		x@ptr <- x@ptr$centroid()
-		show_messages(x)
+		messages(x)
 	}
 )
 

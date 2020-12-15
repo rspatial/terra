@@ -153,7 +153,7 @@
 
 	z <- stats::na.omit(out$v)
 	n <- length(z)
-	if (n == 0) stop("no values")
+	if (n == 0) error("plot", "no values")
 	if (!is.numeric(out$v)) {
 		out$v <- as.integer(as.factor(out$v))
 		z <- stats::na.omit(out$v)
@@ -221,7 +221,7 @@
 	
 	if (!is.null(out$leg$legend)) {
 		if (length(out$leg$legend) != nlevs) {
-			warning("legend does not match number of levels")
+			warn("plot", "legend does not match number of levels")
 			out$leg$legend <- rep_len(out$leg$legend, nlevs)
 		}
 	} else {
@@ -400,7 +400,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		y <- trimws(y)
 		if (any(is.na(match(y, c("", names(x)))))) {
 			i <- is.na(match(y, names(x)))
-			stop(paste(paste(y[i], collapse=",")), "is not a name in x")
+			error("plot", paste(paste(y[i], collapse=",")), "is not a name in x")
 		}
 		nrnc <- c(1,1)
 		if (length(y) > 1) {
@@ -443,7 +443,7 @@ setMethod("plot", signature(x="SpatVector", y="numeric"),
 	function(x, y, ...)  {
 		y <- round(y)
 		if (any(y > ncol(x))) {
-			stop(paste("x only has", ncol(x), " columns"))
+			error("plot", paste("x only has", ncol(x), " columns"))
 		}
 		y[y<0] <- 0
 		y <- c("", names(x))[y+1]

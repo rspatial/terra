@@ -44,15 +44,15 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 	if (toc) {	
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		narm <- isTRUE(list(...)$na.rm)
-		opt <- .runOptions(filename, overwrite, wopt)	
+		opt <- spatOptions(filename, overwrite, wopt)	
 		x@ptr <- x@ptr$aggregate(fact, fun, narm, opt)
-		return (show_messages(x, "aggregate"))
+		return (messages(x, "aggregate"))
 	} else {
 		out <- rast(x)
 		nl <- nlyr(out)
 		opt <- .getOptions()	
 		out@ptr <- out@ptr$aggregate(fact, "sum", TRUE, opt)
-		out <- show_messages(out, "aggregate")
+		out <- messages(out, "aggregate")
 		
 		dims <- x@ptr$get_aggregate_dims(fact)
 		b <- x@ptr$getBlockSize(4, opt$memfrac)		
@@ -86,7 +86,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
 				v <- parallel::parSapply(cls, v, fun, ...)
 				if (length(v) != outnr[i] * prod(dims[5:6])) {
-					stop("this function does not return the correct number of values")
+					error("aggregate", "this function does not return the correct number of values")
 				}
 				writeValues(out, v, outrows[i], outnr[i])
 			}	
@@ -96,14 +96,14 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
 				v <- sapply(v, fun, ...)	
 				if (length(v) != outnr[i] * prod(dims[5:6])) {
-					stop("this function does not return the correct number of values")
+					error("aggregate", "this function does not return the correct number of values")
 				}
 				writeValues(out, v, outrows[i], outnr[i])
 			}	
 		}
 		readStop(x)
 		out <- writeStop(out)
-		show_messages(out, "aggregate")
+		messages(out, "aggregate")
 	}
 }
 )
@@ -121,7 +121,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 	function(x, by=NULL, dissolve=TRUE, fun="mean", ...) {
 		#gt <- geomtype(x)
 		if (length(by) > 1) {
-			stop("this method can only aggregate by one variable")
+			error("aggregate", "this method can only aggregate by one variable")
 		}
 		x <- methods::as(x, "Spatial")
 		if (is.numeric(by[1])) {
@@ -129,7 +129,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 			if ((i > 0) & (i <= ncol(x))) {
 				by <- names(x)[i]
 			} else {
-				stop(paste("invalud column number supplied:", by))
+				error("aggregate", "invalid column number supplied: ", by)
 			}
 		}
 		r <- aggregate(x, by=by, dissolve=dissolve, ...)

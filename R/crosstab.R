@@ -11,7 +11,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 
 		nl <- nlyr(x)
 		if (nl < 2) {
-			stop("crosstab needs at least 2 layers")
+			error("crosstab", "needs at least 2 layers")
 		}
 		nms <- names(x)
 

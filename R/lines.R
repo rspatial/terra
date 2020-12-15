@@ -2,7 +2,7 @@
 setMethod("lines", signature(x="SpatRaster"),
 function(x, mx=50000, ...) {
 		if(prod(dim(x)) > mx) {
-			stop("too many lines (you can increase the value of mx)")
+			error("lines", "too many lines (you can increase the value of mx)")
 		}
 		v <- as.polygons(x)
 		lines(v, ...)
@@ -63,7 +63,7 @@ setMethod("polys", signature(x="SpatVector"),
 	function(x, col, border="black", lwd=1, lty=1, ...)  {
 		gtype <- geomtype(x)
 		if (gtype != "polygons") {
-			stop("expecting polygons")
+			error("polys", "expecting polygons")
 		}
 		if (missing(col)) {
 			col <- NULL

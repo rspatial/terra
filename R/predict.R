@@ -72,7 +72,7 @@ parfun <- function(cls, data, fun, model, ...) {
 		stopifnot(is.list(factors))
 		f <- names(factors)
 		if (any(trimws(f) == "")) {
-			stop("all factors must be named")
+			error("predict", "all factors must be named")
 		}
 	} else if (inherits(m, "randomForest")) {
 		f <- names(which(sapply(m$forest$xlevels, max) != "0"))
@@ -95,7 +95,7 @@ parfun <- function(cls, data, fun, model, ...) {
 	}
 	if (!all(names(factors) %in% lyrnms)) {
 		ff <- f[!(f %in% lyrnms)]
-		stop(paste("factor name(s):", paste(ff, collapse=", "), " not in layer names"))
+		error("predict", paste("factor name(s):", paste(ff, collapse=", "), " not in layer names"))
 	}
 	factors
 }
@@ -106,7 +106,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		nms <- names(object)
 		if (length(unique(nms)) != length(nms)) {
 			tab <- table(nms)
-			stop('duplicate names in SpatRaster: ', tab[tab>1])
+			error("predict", "duplicate names in SpatRaster: ", tab[tab>1])
 		}
 		
 		#factors should come with the SpatRaster

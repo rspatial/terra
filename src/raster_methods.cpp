@@ -452,14 +452,13 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		recycle(v, m);
 		if (inverse) {
-			if (maskNA) {
-				for (size_t i=0; i < v.size(); i++) {
-					if (!std::isnan(m[i])) {
+			for (size_t i=0; i < v.size(); i++) {
+				if (!std::isnan(m[i])) {
+					if (maskNA) {
 						v[i] = updatevalue;
 					}
-				}
-			} 
-			for (size_t i=0; i < v.size(); i++) {
+					break;
+				}		
 				for (size_t j=0; j < maskvalues.size(); j++) {
 					if (m[i] != maskvalues[j]) {
 						v[i] = updatevalue;
@@ -468,14 +467,13 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 				}
 			}
 		} else {
-			if (maskNA) {
-				for (size_t i=0; i < v.size(); i++) {
-					if (std::isnan(m[i])) {
+			for (size_t i=0; i < v.size(); i++) {
+				if (std::isnan(m[i])) {
+					if (maskNA) {
 						v[i] = updatevalue;
 					}
+					break;
 				}
-			} 
-			for (size_t i=0; i < v.size(); i++) {
 				for (size_t j=0; j < maskvalues.size(); j++) {
 					if (m[i] == maskvalues[j]) {
 						v[i] = updatevalue;

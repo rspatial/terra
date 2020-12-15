@@ -10,7 +10,7 @@ setMethod("vect", signature(x="missing"),
 	function(...) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
-		show_messages(p, "vect")
+		messages(p, "vect")
 		return(p)
 	}
 )
@@ -32,7 +32,7 @@ setMethod("vect", signature(x="character"),
 			x <- normalizePath(x)
 			p@ptr$read(x)
 		}
-		show_messages(p, "vect")
+		messages(p, "vect")
 	}
 )
 
@@ -52,7 +52,7 @@ setMethod("vect", signature(x="sf"),
 .checkXYnames <- function(x) {
 	if (is.null(x)) return(TRUE)
 	if (length(x) != 2) {
-		stop("coordinate matrix should have 2 columns")
+		error("vect", "coordinate matrix should have 2 columns")
 	}
 
 	x <- substr(tolower(x)[1:2], 1, 3)
@@ -61,13 +61,13 @@ setMethod("vect", signature(x="sf"),
 	if ((x[1] == "eas") & (x[2] == "nor")) return(TRUE)
 	if ((x[1] == "lon") & (x[2] == "lat")) return(TRUE)
 	if ((x[1] == "lat") | (x[2] == "lon")) {
-		stop("longitude/latitude in the wrong order")
+		error("vect", "longitude/latitude in the wrong order")
 	} else if ((y[1] == "y") | (y[2] == "x")) {
-		stop("x/y in the wrong order", call. = FALSE)
+		error("vect", "x/y in the wrong order")
 	} else if ((x[1] == "nor") | (x[2] == "eas")) {
-		stop("easting/northing in the wrong order", call. = FALSE)
+		error("vect", "easting/northing in the wrong order")
 	} else {
-		warning("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing", call. = FALSE)
+		warn("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
 	}
 }
 
@@ -98,7 +98,7 @@ setMethod("vect", signature(x="matrix"),
 			#.checkXYnames(colnames(x)[3:4])	
 			p@ptr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], x[,5])
 		} else {
-			stop("not an appropriate matrix")
+			error("vect", "not an appropriate matrix")
 		}
 		if (!is.null(atts)) {
 			if ((nrow(atts) == nrow(p)) & (ncol(atts) > 0)) {
@@ -106,7 +106,7 @@ setMethod("vect", signature(x="matrix"),
 			}
 		}
 		crs(p) <- ifelse(is.na(crs), "", as.character(crs))
-		show_messages(p, "vect")
+		messages(p, "vect")
 	}
 )
 
@@ -156,7 +156,7 @@ setMethod("$<-", "SpatVector",
 				ok <- x@ptr$add_column_string(as.character(value), name)
 			}
 			if (!ok) {
-				stop("cannot set these values")
+				error("$<-,SpatVector", "cannot set these values")
 			}
 		} 
 		return(x)		

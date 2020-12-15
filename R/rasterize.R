@@ -15,18 +15,18 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		if (length(field) == 1) {
 			field <- as.vector(unlist(x[[field]]))
 		} else if (length(field) != nrow(x)) {
-			stop("field length should be 1 or nrow(x)")		
+			error("rasterize", "field length should be 1 or nrow(x)")		
 		}
 	} else if (length(field) == 1) {
 		if (field > 0 && field <= ncol(x)) {
 			field <- as.vector(unlist(x[[field]]))
 		} else {
-			stop("field index outside the value range (1:ncol(x))")
+			error("rasterize", "field index outside the value range (1:ncol(x))")
 		}
 	} else if (length(field) == nrow(x)) {
 		field <- 1:nrow(x)
 	} else  {
-		stop("length of field does not match the number of features")
+		error("rasterize", "length of field does not match the number of features")
 	}
 
 	levs <- NULL
@@ -49,7 +49,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		} else if (fun == "last") {
 			r[g] <- field
 		} else {
-			stop("unknown character function")
+			error("rasterize", "unknown character function")
 		}
 		
 	} else {
@@ -101,11 +101,11 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 					filename <- ""
 				}
 			} else {
-				stop("NA detected in field, but length is not 1 or nrow(x)")
+				error("rasterize", "NA detected in field, but length is not 1 or nrow(x)")
 			}
 		}
 		
-		opt <- .runOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, wopt)
 					
 		levs <- ""[0]
 		inverse <- FALSE # use "mask" for TRUE
@@ -115,7 +115,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			if (length(field) == 1) {
 				i <- which(field == names(x)) 
 				if (length(i) == 0) {
-					stop(paste0(field, " is not a valid fieldname"))
+					error("rasterize", paste0(field, " is not a valid fieldname"))
 				}
 				dtype <- datatype(x)[i]
 				if (dtype == "string") {
@@ -144,13 +144,13 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 					}
 					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)
 				} else {
-					stop("field index outside the value range (1:ncol(x))")
+					error("rasterize", "field index outside the value range (1:ncol(x))")
 				} 
 			} else {
 				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], opt)
 			} 
 		} else {
-			stop("field should be character or numeric")
+			error("rasterize", "field should be character or numeric")
 		}
 		
 		if (domask) {
@@ -158,6 +158,6 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			return (y)	
 		}
 		
-		show_messages(y, "rasterize")
+		messages(y, "rasterize")
 	}
 )

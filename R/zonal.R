@@ -7,7 +7,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				na.rm <- isTRUE(list(...)$na.rm)
 				opt <- .getOptions()
 				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
-				show_messages(ptr, "zonal")
+				messages(ptr, "zonal")
 				return( .getSpatDF(ptr) )
 			}		
 		} 
@@ -48,7 +48,7 @@ setMethod("global", signature(x="SpatRaster"),
 			stopifnot(txtfun %in% c("mean", "sum"))
 			na.rm <- isTRUE(list(...)$na.rm)
 			ptr <- x@ptr$global_weighted_mean(weights@ptr, txtfun, na.rm, opt)
-			show_messages(ptr, "global")
+			messages(ptr, "global")
 			res <- (.getSpatDF(ptr))
 			rownames(res) <- nms
 			return(res)
@@ -58,7 +58,7 @@ setMethod("global", signature(x="SpatRaster"),
 			if (txtfun %in% c("max", "min", "mean", "sum", "range", "rms")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$global(txtfun, na.rm, opt)
-				show_messages(ptr, "global")
+				messages(ptr, "global")
 				res <- .getSpatDF(ptr)
 
 				rownames(res) <- nms

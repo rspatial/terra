@@ -27,15 +27,15 @@
 tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 
 	if (!(old | current | orphan)) {
-		stop("at least one of 'orphan', 'current' and 'old' must be set to TRUE")
+		error("tmpFiles", "at least one of 'orphan', 'current' and 'old' must be set to TRUE")
 	}
 	
-	opt <- .runOptions("", TRUE, list())	
+	opt <- spatOptions("", TRUE, list())	
 	d <- opt$tempdir
 	f <- NULL
 	if (old) {
 		if (normalizePath(tempdir()) != normalizePath(d)) {
-			warning("old files can only be found if terra uses the R tempdir")
+			warn("tmpFiles", "old files can only be found if terra uses the R tempdir")
 		} else {
 			f <- list.files(dirname(d), recursive=TRUE, pattern="^spat_", full.names=TRUE)
 			f <- grep("Rtmp", f, value=TRUE)

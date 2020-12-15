@@ -32,7 +32,7 @@
 	
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
-		warning(paste("unknown write option(s):", bad), call. = FALSE)
+		warn("write options", "unknown option(s):", bad)
 	}
 		
 	if (any(s)) {
@@ -53,9 +53,9 @@
 	x
 } 
  
-.runOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
+spatOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
 	if (!is.list(wopt)) {
-		stop("wopt must be a list")
+		error("spatOptions", "wopt must be a list")
 	}
 	
 	## work around onLoad problem
@@ -73,13 +73,13 @@
 		opt$filenames <- filename
 		opt$overwrite <- overwrite[1]
 	}
-	#show_messages(opt)
+	#messages(opt)
 	#opt$todisk <- TRUE
 	opt
 }
 
 .getOptions <- function() {
-	.runOptions("", TRUE, list())
+	spatOptions("", TRUE, list())
 }
 
 ..showOptions <- function(opt) {

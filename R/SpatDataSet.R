@@ -17,7 +17,7 @@ setMethod("sds", signature(x="character"),
 		
 		x <- trimws(x[1])
 		if (nchar(x) == 0) {
-			stop("provide valid file name(s)")
+			error("sds", "provide valid file name(s)")
 		}
 		f <- .fullFilename(x)
 		r <- methods::new("SpatRasterDataset")
@@ -28,7 +28,7 @@ setMethod("sds", signature(x="character"),
 			useids <- TRUE
 		}
 		r@ptr <- SpatRasterStack$new(f, ids, useids)
-		show_messages(r, "sds")
+		messages(r, "sds")
 	}
 )
 
@@ -55,7 +55,7 @@ setMethod("sds", signature(x="SpatRaster"),
 				r@ptr$add(dots[[i]]@ptr, nms[i], "", "", FALSE)
 			}
 		}	
-		show_messages(r, "sds")
+		messages(r, "sds")
 	}
 )
 
@@ -70,7 +70,7 @@ setMethod("sds", signature(x="list"),
 				r@ptr$add(x[[i]]@ptr, nms[i], "", "", FALSE)
 			}
 		}	
-		show_messages(r, "sds")
+		messages(r, "sds")
 	}
 )
 
@@ -87,20 +87,20 @@ setMethod("c", signature(x="SpatRasterDataset"),
 				sdsnms <- names(dots[[i]])
 				for (j in 1:x@ptr$nsds()) {
 					if (!x@ptr$add(dots[[i]][[j]]@ptr, sdsnms[j], "", "", FALSE)) {
-						show_messages(x, "c")		
+						messages(x, "c")		
 					}
 				}
 			
 			} else if (inherits(dots[[i]], "SpatRaster")) {
-				if (is.null(nms)) stop("arguments must be named")
+				if (is.null(nms)) error("c,SpatRasterDataset", "arguments must be named")
 				if (!x@ptr$add(dots[[i]]@ptr, nms[i], "", "", FALSE)) {
-					show_messages(x, "c")		
+					messages(x, "c")		
 				}
 			} else {
-				stop("arguments must be SpatRaster or SpatRasterDataset")
+				error("c,SpatRasterDataset", "arguments must be SpatRaster or SpatRasterDataset")
 			} 
 		}
-		show_messages(x, "c")		
+		messages(x, "c")		
 	}
 )
 
@@ -108,14 +108,14 @@ setMethod("c", signature(x="SpatRasterDataset"),
 setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 	function(x, i, j, value) {
 		if (any(!is.finite(i)) | any(i<1)) {
-			stop("invalid index")
+			error(" [,SpatRasterDataset", "invalid index")
 		}
 		if (length(i) > 1) {
-			stop("you can only replace one sub-dataset at a time")		
+			error(" [,SpatRasterDataset", "you can only replace one sub-dataset at a time")		
 		}
 		stopifnot(inherits(value, "SpatRaster"))
 		x@ptr$replace(i-1, value@ptr)
-		show_messages(x, "[")
+		messages(x, "[")
 	}
 )
 
@@ -130,7 +130,7 @@ function(x, i, j, ... ,drop=TRUE) {
 	} else {
 		x@ptr <- x@ptr$subset(i-1)
 	}
-	show_messages(x, "[")
+	messages(x, "[")
 })
 
 setMethod("[", c("SpatRasterDataset", "numeric", "numeric"),
@@ -146,7 +146,7 @@ function(x, i, j, ... ,drop=TRUE) {
 		r <- y[k][[j]]
 		x@ptr$add(r@ptr, nms[k], "", "", FALSE)
 	}
-	show_messages(x, "[")
+	messages(x, "[")
 })
 
 
@@ -158,7 +158,9 @@ function(x, i, j, ... ,drop=TRUE) {
 setMethod("[", c("SpatRasterDataset", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- match(i, names(x))
-	if (any(is.na(i))) {stop("unknown name(s) provided")}
+	if (any(is.na(i))) {
+		error(" [.SpatRasterDataset", "unknown name(s) provided")
+	}
 	x[i, ..., drop=drop]
 })
 

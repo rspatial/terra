@@ -59,7 +59,7 @@ focalMat <- function(x, d, type=c('circle', 'Gauss', 'rectangle')) {
 		.circular.weight(x, d[1])
 	} else if (type == 'Gauss') {
 		if (!length(d) %in% 1:2) {
-			stop("If type=Gauss, d should be a vector of length 1 or 2")
+			error("focalMath", "if type=Gauss, d should be a vector of length 1 or 2")
 		}
 		.Gauss.weight(x, d)
 	} else {

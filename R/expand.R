@@ -2,7 +2,7 @@
 if (!isGeneric("extend")) {setGeneric("extend", function(x, y, ...) standardGeneric("extend"))}	
 setMethod("extend", signature(x="SpatRaster"), 
 	function(x, y, ...) {
-		stop("terra::extend has been removed. Use 'expand' instead")
+		error("extend", "terra::extend has been removed. Use 'expand' instead")
 	}
 )
 
@@ -13,7 +13,7 @@ function(x, y, ...) {
 	} else if (length(y) == 2) {
 		y <- rep(y, each=2)
 	} else if (! length(y) == 4 ) {
-		stop('argument "y" should be a vector of 1, 2, or 4 elements')	
+		error("[expand]", 'argument "y" should be a vector of 1, 2, or 4 elements')
 	}
 	e <- as.vector(x)
 	e[1] <- e[1] - y[1]
@@ -26,7 +26,7 @@ function(x, y, ...) {
 
 
 
-setMethod('expand', signature(x='SpatRaster'), 
+setMethod("expand", signature(x="SpatRaster"), 
 function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	if (!inherits(y, "SpatExtent")) {
@@ -44,14 +44,14 @@ function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) {
 		} else {
 			test <- try ( y <- ext(y), silent=TRUE )
 			if (class(test) == "try-error") {
-				stop('Cannot get a SpatExtent object from argument y')
+				error("expand", "cannot get a SpatExtent object from argument y")
 			}
 		}
 	}
 	
-	opt <- .runOptions(filename, overwrite, wopt)
+	opt <- spatOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$expand(y@ptr, opt)
-	show_messages(x, "expand")
+	messages(x, "expand")
 }
 )
 

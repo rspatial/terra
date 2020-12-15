@@ -12,7 +12,9 @@ setMethod("rast", signature(x="missing"),
 		} else {
 			e <- as.vector(extent)
 		}
-		if ((e[1] >= e[2]) || e[3] >= e[4]) {stop("invalid extent")}
+		if ((e[1] >= e[2]) || e[3] >= e[4]) {
+			error("rast,missing", "invalid extent")
+		}
 		
 		if (missing(crs)) {
 			if (e[1] > -360.01 & e[2] < 360.01 & e[3] > -90.01 & e[4] < 90.01) {
@@ -32,7 +34,7 @@ setMethod("rast", signature(x="missing"),
 
 		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
-		r <- show_messages(r, "rast")
+		r <- messages(r, "rast")
 		if (!missing(vals)) {
 			if (length(vals) == ncell(r)) {
 				values(r) <- vals
@@ -48,10 +50,10 @@ setMethod("rast", signature(x="list"),
 	function(x, ...) {
 		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
 		if (!any(i)) {
-			stop("None of the elements of x are a SpatRaster")
+			error("rast,list", "none of the elements of x are a SpatRaster")
 		}
 		if (!all(i)) {
-			warning(paste(sum(!i), "out of", length(x), "elements of x are a SpatRaster"))
+			warn("rast", sum(!i), " out of ", length(x), " elements of x are a SpatRaster")
 		}
 		names(x) <- NULL
 		do.call(c, x[i])
@@ -106,7 +108,7 @@ setMethod("rast", signature(x="character"),
 		x <- trimws(x)
 		x <- x[x!=""]
 		if (length(x) == 0) {
-			stop("provide a valid filename")
+			error("rast,character", "provide a valid filename")
 		}
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
@@ -119,10 +121,10 @@ setMethod("rast", signature(x="character"),
 		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)
 			if (inherits(test, "try-error")) {
-				warning("GDAL did not find an extent. Cells not equally spaced?") 
+				warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
 			}
 		}
-		r <- show_messages(r, "rast")
+		r <- messages(r, "rast")
 		
 		if (crs(r) == "") {
 			if (isLonLat(r, perhaps=TRUE, warn=FALSE)) {
@@ -139,9 +141,9 @@ setMethod("rast", signature(x="SpatRaster"),
 		r <- methods::new("SpatRaster")
 		r@ptr <- x@ptr$geometry(nlyrs, FALSE)
 		if (length(list(...)) > 0) {
-			warning("additional arguments are ignored")
+			warn("rast", "additional arguments are ignored")
 		}
-		show_messages(r, "rast")
+		messages(r, "rast")
 	}
 )
 
@@ -158,12 +160,12 @@ setMethod("rast", signature(x="array"),
 	function(x, ...) {
 		dims <- dim(x)
 		if (length(dims) > 3) {
-			stop("cannot handle an array with more than 3 dimensions")
+			error("rast,array", "cannot handle an array with more than 3 dimensions")
 		}
 		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(dims, c(0, dims[2], 0, dims[1]), "")
 		values(r) <- x
-		show_messages(r, "rast")
+		messages(r, "rast")
 	}
 )
 
@@ -178,7 +180,7 @@ setMethod("rast", signature(x="Raster"),
 
 .rastFromXYZ <- function(xyz, digits=6, crs="", ...) {
 
-	if (length(list(...))>0) warning("additional arguments ignored when x is a SpatRasterDataset")
+	if (length(list(...))>0) warn("rast (xyz)", "additional arguments ignored when x is a SpatRasterDataset")
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names
@@ -199,7 +201,7 @@ setMethod("rast", signature(x="Raster"),
 		}
 	}
 	if ( q > 0 ) {
-		stop("x cell sizes are not regular")
+		error("raster,matrix(xyz)", "x cell sizes are not regular")
 	}
 
 	y <- sort(unique(xyz[,2]))
@@ -217,7 +219,7 @@ setMethod("rast", signature(x="Raster"),
 		}
 	}
 	if ( q > 0 ) {
-		stop("y cell sizes are not regular")
+		error("raster,matrix(xyz)", "y cell sizes are not regular")
 	}
 
 	minx <- min(x) - 0.5 * rx
@@ -249,7 +251,7 @@ setMethod("rast", signature(x="matrix"),
 			r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(c(0, ncol(x), 0, nrow(x))), crs=crs, ...)
 			values(r) <- t(x)
 		}
-		show_messages(r, "rast")
+		messages(r, "rast")
 	}
 )
 
@@ -258,7 +260,7 @@ setMethod("NAflag<-", signature(x="SpatRaster"),
 	function(x, ..., value)  {
 		value <- as.numeric(value)
 		if (!(x@ptr$setNAflag(value))) {
-			stop("cannot set these values")
+			error("NAflag<-", "cannot set this value")
 		}
 		x
 	}

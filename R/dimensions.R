@@ -47,7 +47,7 @@ setMethod("dim<-", signature(x="SpatRaster"),
 		} else if (length(value) == 2) {
 			value <- c(value, nlyr(x))
 		} else if (length(value) > 3) {
-			warning("value should have length 1, 2, or 3. Additional values ignored")
+			warn("dim<-", "value should have length 1, 2, or 3. Additional values ignored")
 			value <- value[1:3]
 		}		
 		value <- as.integer(pmax(round(value), c(1,1,1)))
@@ -153,10 +153,10 @@ setMethod("res<-", signature(x="SpatRaster"),
 		if (length(value) == 1) {
 			value <- c(value, value)
 		} else if (length(value) > 2) {
-			warning("value should have length 1 or 2. Additional values ignored")
+			warn("res<-", "value should have length 1 or 2. Additional values ignored")
 		}		
 		x@ptr <- x@ptr$set_resolution(value[1], value[2])
-		show_messages(x, "resolution")
+		messages(x, "resolution")
 	}
 )
 

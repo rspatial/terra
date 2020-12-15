@@ -22,7 +22,7 @@ setMethod("density", signature(x="SpatRaster"),
 		} else {
 		
 			if (nl > 16) {
-			warning('only the first 16 layers are plotted')
+			warn("density", "only the first 16 layers are plotted")
 				nl <- 16
 				x <- x[[1:16]]
 			}
@@ -225,7 +225,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 		if (is.null(y)) {
 			cn <- names(x)
 			if ( ncell(x) > maxcell) {
-				warning("taking a sample of ", maxcell, " cells")
+				warn("boxplot", "taking a sample of ", maxcell, " cells")
 				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 			} 
 			x <- values(x)
@@ -234,7 +234,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 		} else {
 			s <- c(x[[1]], y[[1]])
 			if ( ncell(x) > maxcell) {
-				warning("taking a sample of ", maxcell, " cells")
+				warning("boxplot", "taking a sample of ", maxcell, " cells")
 				s <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 			} else {
 				s <- values(s)
@@ -258,7 +258,7 @@ setMethod("barplot", "SpatRaster",
 		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE)
 		adj <- length(x) / ncell(height)
 		if (adj < 1) {
-			warning("a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
+			warning("barplot", "a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
 		}
 
 		if (!is.null(digits)) {

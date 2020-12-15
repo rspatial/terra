@@ -17,10 +17,10 @@ setMethod("ext", signature(x="numeric"),
 		dots <- unlist(list(...))
 		x <- c(x, dots)
 		if (length(x) < 4) {
-			stop("insufficient number of elements (should be 4)")
+			error("ext", "insufficient number of elements (should be 4)")
 		}
 		if (length(x) > 4) {
-			warning("more elements than expected (should be 4)")
+			warn("ext", "more elements than expected (should be 4)")
 		}
 		names(x) <- NULL
 		e <- methods::new("SpatExtent")
@@ -51,7 +51,7 @@ setMethod("ext", signature(x="SpatRasterDataset"),
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"), 
 	function(x, value) {
 		x@ptr$extent <- value@ptr
-		show_messages(x)
+		messages(x)
 	}
 )
 
@@ -61,10 +61,10 @@ setMethod("ext<-", signature("SpatRaster", "numeric"),
 		stopifnot(length(value) == 4)
 		e <- ext(value[1], value[2], value[3], value[4])
 		if (!e@ptr$valid) {
-			stop("not a valid extent specification")
+			error("ext<-", "not a valid extent specification")
 		}
 		x@ptr$extent <- e@ptr
-		show_messages(x)
+		messages(x)
 	}
 )
 

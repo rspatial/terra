@@ -31,11 +31,11 @@ setMethod("time<-", signature(x="SpatRaster"),
 		}
 		if (inherits(value, "POSIXt")) {
 			if (!x@ptr$setTime(as.numeric(value), "seconds")) {
-				stop("cannot set these  values")
+				error("time<-", "cannot set these  values")
 			}
 		} else {
 			if (!x@ptr$setTime(as.numeric(value), "raw")) {
-				stop("cannot set these  values")
+				error("time<-", "cannot set these  values")
 			}		
 		}
 		return(x)
@@ -55,7 +55,7 @@ setMethod("depth<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		value <- as.numeric(value)
 		if (! x@ptr$setDepth(value)) {
-			stop("cannot set these  values")
+			error("depth<-", "cannot set these  values")
 		}
 		return(x)
 	}
@@ -83,7 +83,7 @@ setMethod("units<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		value <- as.character(value)
 		if (! x@ptr$set_units(value)) {
-			stop("cannot set these  values")
+			error("units<-", "cannot set these  values")
 		}
 		return(x)
 	}

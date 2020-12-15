@@ -154,7 +154,7 @@
 		} else if (loc == "top") {
 			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
 		} else {
-			warning("invalid location:", loc)
+			warn("plot", "invalid legend location:", loc)
 			p <- c(usr[1], usr[2], usr[4]+dxy[2], usr[4]+2*dxy[2])
 		}
 	}

@@ -12,7 +12,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 		nms <- c(xyNames, names(object))
 		if (length(unique(nms)) != length(nms)) {
 			tab <- table(nms)
-			stop("duplicate names: ", tab[tab>1])
+			error("interpolate", "duplicate names: ", tab[tab>1])
 		}
 		nc <- ncol(out)
 		testrow <- round(0.5*nrow(object))

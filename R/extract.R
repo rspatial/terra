@@ -6,7 +6,7 @@
 
 .big_number_warning <- function() {
 # this warning should be given by C
-	warning("cell numbers larger than ", 2^.Machine$double.digits, " are approximate")
+	warning("big number", "cell numbers larger than ", 2^.Machine$double.digits, " are approximate")
 }
 
 
@@ -29,7 +29,7 @@
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE) { 
 	r <- x@ptr$extractVector(y@ptr, touches[1], method[1])
-	x <- show_messages(x, "extract")
+	x <- messages(x, "extract")
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#r <- rapply(r, f, how="replace")
 	if (!is.null(fun)) {
@@ -77,7 +77,7 @@ function(x, y, ...) {
 setMethod("extract", signature(x="SpatRaster", y="data.frame"), 
 function(x, y, ...) { 
 	if (ncol(y) != 2) {
-		stop("extract expects a 2 column data.frame of x and y coordinates")
+		error("extract", "extract expects a 2 column data.frame of x and y coordinates")
 	}
 	extract(x, as.matrix(y), ...)
 })
@@ -117,7 +117,7 @@ function(x, i, j, ... ,drop=FALSE) {
 	} 
 	i[i<1] <- NA
 	r <- x@ptr$extractCell(i-1)
-	show_messages(x, "[")
+	messages(x, "[")
 	if (drop) {
 		r
 	} else {
@@ -133,7 +133,7 @@ function(x, i, j, ... ,drop=FALSE) {
 	if (any(stats::na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	
 	r <- x@ptr$extractCell(i-1)
-	show_messages(x, "[")
+	messages(x, "[")
 	if (drop) {
 		r
 	} else {
@@ -149,7 +149,7 @@ function(x, i, j, ..., drop=FALSE) {
 	i <- cellFromRowColCombine(x, i, j)
 	if (any(stats::na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	r <- x@ptr$extractCell(i-1)
-	show_messages(x, "[")
+	messages(x, "[")
 	if (drop) {
 		r
 	} else {

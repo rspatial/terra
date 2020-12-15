@@ -26,11 +26,11 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
 		} else {
-			opt <- .runOptions("", TRUE, list())	
+			opt <- spatOptions("", TRUE, list())	
 			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE, opt)
-			#x <- show_messages(x)
+			#x <- messages(x)
 		}
-		show_messages(p, "as.polygons")
+		messages(p, "as.polygons")
 	}
 )
 
@@ -38,7 +38,7 @@ setMethod("as.polygons", signature(x="SpatExtent"),
 	function(x, crs="", ...) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new(x@ptr, crs)
-		show_messages(p, "as.polygons")
+		messages(p, "as.polygons")
 	}
 )
 
@@ -60,7 +60,7 @@ setMethod("as.points", signature(x="SpatExtent"),
 setMethod("as.lines", signature(x="SpatVector"), 
 	function(x, ...) {
 		x@ptr <- x@ptr$as_lines()
-		show_messages(x, "as.lines")
+		messages(x, "as.lines")
 	}
 )
 
@@ -69,7 +69,7 @@ setMethod("as.points", signature(x="SpatVector"),
 	function(x, ...) {
 		opt <- .getOptions()
 		x@ptr <- x@ptr$as_points()
-		show_messages(x, "as.points")
+		messages(x, "as.points")
 	}
 )
 
@@ -79,8 +79,8 @@ setMethod("as.points", signature(x="SpatRaster"),
 		p <- methods::new("SpatVector")
 		opt <- .getOptions()		
 		p@ptr <- x@ptr$as_points(values, TRUE, opt)
-		x <- show_messages(x, "as.points")
-		show_messages(p, "as.points")
+		x <- messages(x, "as.points")
+		messages(p, "as.points")
 	}
 )
 
@@ -114,7 +114,7 @@ setMethod("as.vector", signature(x="SpatRaster"),
 setMethod("as.matrix", signature(x="SpatRaster"), 
 	function(x, wide=FALSE, ...) {
 		if (!hasValues(x)) {
-			stop("SpatRaster has no cell values")
+			error("as.matrix", "SpatRaster has no cell values")
 		}
 		if (wide) {
 			if (nlyr(x) > 1) {
@@ -199,7 +199,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 	if (f != "") {
 		r <- rast(f)
 		if (from@file@NAchanged) {
-			warning("changed NA value ignored")
+			warn("as,Raster", "changed NA value ignored")
 		}
 		return(r)
 	} else {
@@ -337,7 +337,7 @@ setAs("SpatRaster", "Raster",
 	colnames(v)[1:4] <- c("id", "part", "x", "y")
 	types <- unique(types[,2])
 	if (length(types) > 1) {
-		stop("SpatVector currently only accepts one geometry type")
+		error("as,sf", "SpatVector currently only accepts one geometry type")
 	}
 	if (grepl("POINT", types, fixed=TRUE)) {
 		gt = "points"
@@ -360,7 +360,7 @@ setAs("sf", "SpatVector",
 	function(from) {
 		v <- try(.from_sf(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
-			stop("coercion failed. You can try coercing via a Spatial* (sp) class")
+			error("as,sf", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		} 
 		v
 	}

@@ -6,7 +6,7 @@
 	
 	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
-	if (n == 0) stop("no values")
+	if (n == 0) error("plot", "no values")
 	if (type == "depends") {
 		if (length(unique(z)) < 6) {
 			return (.as.raster.classes(out, x))
@@ -50,7 +50,7 @@
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 	if (all(is.na(Z))) {
-		stop("no values")
+		error("plot", "no values")
 	}
 
 	fz <- as.factor(Z)
@@ -164,7 +164,7 @@
 	z[z<0 | z>255] <- NA
 	z[is.nan(z) | is.infinite(z)] <- NA
 	if (all(is.na(z))) {
-		stop("no values")
+		error("plot", "no values")
 	}
 	out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
 	z <- out$cols[z]
@@ -297,7 +297,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
 
 		x <- x[[y]]
-		if (!hasValues(x)) { stop("SpatRaster has no cell values") }
+		if (!hasValues(x)) { error("plot", "SpatRaster has no cell values") }
 
 
 		breaks <- list(...)$breaks

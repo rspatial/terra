@@ -6,18 +6,18 @@
 	
 setMethod("init", signature(x="SpatRaster"), 
 	function(x, fun, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, wopt)
 		if (is.character(fun)) {
 			fun <- fun[1]
 			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
 				x@ptr <- x@ptr$initf(fun, TRUE, opt)
-				show_messages(x, "init")
+				messages(x, "init")
 			} else {
-				stop("unknown function")
+				error("init", "unknown function")
 			}
 		} else if (is.numeric(fun)) {
 			x@ptr <- x@ptr$initv(fun[1], opt)
-			show_messages(x, "init")
+			messages(x, "init")
 		} else {
 			out <- rast(x)
 			nc <- ncol(out)
@@ -32,4 +32,4 @@ setMethod("init", signature(x="SpatRaster"),
 		}
 	}
 )
-	
+

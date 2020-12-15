@@ -3,7 +3,16 @@
 # Version 1.0
 # License GPL v3
 
-show_messages <- function(x, f="") {
+error <- function(f, emsg="", ...) {
+	stop("[", f, "] ", emsg, ..., call.=FALSE)
+}
+
+
+warn <- function(f, wmsg="", ...) {
+	warning("[", f, "] ", wmsg, ..., call.=FALSE)
+}
+
+messages <- function(x, f="") {
 	if (methods::.hasSlot(x, "ptr")) {
 		if (x@ptr$has_warning()) { 
 			warns <- x@ptr$getWarnings()

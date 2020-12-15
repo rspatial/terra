@@ -8,12 +8,12 @@ setMethod("focal", signature(x="SpatRaster"),
 function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename="", overwrite=FALSE, wopt=list(), ...)  {
 
 	if (nlyr(x) > 1) {
-		warning("only the first layer of x is used")
+		warn("focal", "only the first layer of x is used")
 		x <- x[[1]]
 	}
 	if (na.only && (!is.matrix(w))) {
 		if (!na.rm) {
-			warning("na.rm set to TRUE because na.only is TRUE")
+			warning("focal", "na.rm set to TRUE because na.only is TRUE")
 			na.rm <- TRUE
 		}
 	}
@@ -28,7 +28,7 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 			fun <- "bad"
 		}
 		if (fun != "sum") {
-			warning("if 'w' is a matrix, 'fun' must be 'sum'")
+			warning("focal", "if 'w' is a matrix, 'fun' must be 'sum'")
 		}
 		fun <- "sum"
 		cpp <- TRUE
@@ -43,9 +43,9 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 	}
 	
 	if (cpp) {		
-		opt <- .runOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$focal(w, m, fillvalue, na.rm[1], na.only[1], fun, opt)
-		show_messages(x, "focal")
+		messages(x, "focal")
 		return(x)
 	
 	} else {

@@ -6,7 +6,7 @@ setMethod("$<-", "SpatRaster",
 			value <- value[[1]]
 			names(value) <- name
 		} else if (!is.null(value)) {
-			stop("the replacement value should be a SpatRaster")
+			error(" $<-,SpatRaster", "the replacement value should be a SpatRaster")
 		}
 	
 		i <- which(name == names(x))[1]
@@ -29,7 +29,7 @@ setMethod("$<-", "SpatRaster",
 setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 	function(x, i, j, value) {
 		if (nlyr(value) != length(i)) {
-			stop("length of names must be equal to the number of layers")
+			error(" [[,SpatRaster", "length of names must be equal to the number of layers")
 		}
 		names(value) <- i
 		for (k in 1:length(i)) {
@@ -42,10 +42,10 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 setReplaceMethod("[[", c("SpatRaster", "numeric", "missing"),
 	function(x, i, j, value) {
 		if (nlyr(value) != length(i)) {
-			stop("length of indices must be equal to the number of layers")
+			error(" [[,SpatRaster,numeric", "length of indices must be equal to the number of layers")
 		}
 		if (any(i<1) | any(i > nlyr(x))) {
-			stop("indices must be between 1 and the number of layers")
+			error(" [[,SpatRaster,numeric", "indices must be between 1 and the number of layers")
 		}
 		for (k in 1:length(i)) {
 			if (i[k] == 1) {
@@ -72,7 +72,7 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 			if (all(dim(value) == c(ncell(x), nl))) {
 				e <- try( values(x) <- value)
 			} else {
-				stop("dimensions of the matrix do not match the SpatRaster")
+				error(" [,SpatRaster","dimensions of the matrix do not match the SpatRaster")
 			}
 		} else {
 			v <- try( matrix(nrow=ncell(x), ncol=nl) )
@@ -82,7 +82,7 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 			}
 		}
 		if (inherits(e, "try-error")) {
-			stop("cannot set values")
+			error(" [,SpatRaster", "cannot set values")
 		}
 		return(x)
 	}
@@ -148,14 +148,14 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 		theCall <- sys.call(-1)
 		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
 		if (narg > 0) { # row
-			stop("you cannot use a SpatRaster as a row index")
+			error(" [,SpatRaster,SpatRaster", "you cannot use a SpatRaster as a row index")
 		}
 		if (inherits(value, "SpatRaster")) {
 			x <- mask(x, i, maskvalue=TRUE)
 			cover(x, value)
 		} else {
 			if (length(value) > 1) {
-				warning("the first replacement value is used for all cells")
+				warn(" [,SpatRaster,SpatRaster", "the first replacement value is used for all cells")
 			}
 			mask(x, i, maskvalue=TRUE, updatevalue=value[1])
 		}
@@ -168,7 +168,7 @@ setReplaceMethod("[", c("SpatRaster", "SpatVector", "missing"),
 		theCall <- sys.call(-1)
 		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
 		if (narg > 0) { # row
-			stop("you cannot use a SpatVector as a row index")
+			error(" [,SpatRaster,SpatVector", "you cannot use a SpatVector as a row index")
 		}
 		if (length(value) > 1) {
 			value <- rep_len(value, length.out=length(x))

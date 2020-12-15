@@ -24,7 +24,7 @@ gdal <- function(warn = NA, drivers=FALSE) {
 .describe_sds <- function(x, print=FALSE, ...) {
 	x <- .sdinfo(x)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {
-		stop(x[[1]])
+		error("gdal (sds)", "not working for: ", x[[1]])
 	}
 	m <- do.call(cbind, x)
 	m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)

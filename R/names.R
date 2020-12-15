@@ -16,15 +16,15 @@ setMethod("names<-", signature(x="SpatRaster"),
 	function(x, value)  {
 		value <- as.character(value)
 		if (length(value) != nlyr(x)) {
-			stop("incorrect number of names")
+			error("names<-", "incorrect number of names")
 		}
 		if (! x@ptr$setNames(value, FALSE)) {
-			stop("cannot set these names")
+			error("names<-", "cannot set these names")
 		}
 		
 		if (any(names(x) != value)) {
 			# should only be possible with $setNames(value, TRUE)
-			warning("some names were changed to make them valid and/or unique")
+			warn("names<-", "some names were changed to make them valid and/or unique")
 		}
 		return(x)
 	}
@@ -76,11 +76,11 @@ setMethod("colnames", signature(x="SpatVector"),
 setMethod("names<-", signature(x="SpatVector"), 
 	function(x, value)  {
 		if (length(value) != ncol(x)) {
-			stop("incorrect number names")
+			error("names<-,SpatVector", "incorrect number of names")
 		}
 		x@ptr$names <- value
 		if (any(names(x) != value)) {
-			warning("some names were changed to make them valid and/or unique")
+			warn("names<-", "some names were changed to make them valid and/or unique")
 		}
 		return(x)
 	}
@@ -102,7 +102,7 @@ setMethod("varnames", signature(x="SpatRaster"),
 setMethod("varnames<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		if (!x@ptr$set_sourcenames(as.character(value))) {
-			stop("cannot set these names")
+			error("varnames<-,SpatRaster", "cannot set these names")
 		}
 		return(x)
 	}
@@ -132,7 +132,7 @@ setMethod("longnames<-", signature(x="SpatRasterDataset"),
 setMethod("longnames<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		if (!x@ptr$set_sourcenames_long(as.character(value))) {
-			stop("cannot set these names")
+			error("longnames<-,SpatRaster", "cannot set these names")
 		}
 		return(x)
 	}

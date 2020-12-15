@@ -60,7 +60,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 				}
 			}
 		} else {
-			stop('zlim should be a vector of two numbers or a 3x2 matrix (one row for each color)')
+			error('zlim should be a vector of two numbers or a 3x2 matrix (one row for each color)')
 		}
 	}
 	
@@ -79,7 +79,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 			RGB[,3] <- .eqStretch(RGB[,3])
 			scale <- 255
 		} else if (stretch != '') {
-			warning('invalid stretch value')
+			warn("plotRGB", 'invalid stretch value')
 		}
 	}
 

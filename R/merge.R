@@ -6,7 +6,7 @@
 
 #setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
 	.mosaic <- function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
-		opt <- .runOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, wopt)
 		dots <- list(...)
 		rc <- SpatRasterCollection$new()		
 		rc$add(x@ptr)
@@ -19,18 +19,18 @@
 				} else {
 					name <- names(dots[[i]])
 					cls <- class(dots[[i]])
-					stop(paste("additional arguments should be of class 'SpatRaster'\n Found argument", name, "of class: ", cls))
+					error("mosaic", "additional arguments should be 'SpatRaster'\n Found argument", name, "of class: ", cls)
 				}
 			}
 		}
 		x@ptr <- rc$mosaic(opt)
-		show_messages(x, "mosaic")		
+		messages(x, "mosaic")		
 	}
 #)
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
-		opt <- .runOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, wopt)
 		dots <- list(...)
 		rc <- SpatRasterCollection$new()		
 		rc$add(x@ptr)
@@ -43,12 +43,12 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 				} else {
 					name <- names(dots[[i]])
 					cls <- class(dots[[i]])
-					stop(paste("additional arguments should be of class 'SpatRaster'\n Found argument", name, "of class: ", cls))
+					error("merge", "additional arguments should be 'SpatRaster'\n Found argument", name, "of class: ", cls)
 				}
 			}
 		}
 		x@ptr <- rc$merge(opt)
-		show_messages(x, "merge")		
+		messages(x, "merge")		
 	}
 )
 

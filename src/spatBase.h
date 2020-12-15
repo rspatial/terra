@@ -118,7 +118,7 @@ class SpatOptions {
 		bool def_verbose = false;
 		bool verbose = false;
 
-		bool ncdfcopy = true;
+		bool ncdfcopy = false;
 
 		std::string datatype = "";
 		//std::string bandorder = "";

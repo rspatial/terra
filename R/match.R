@@ -12,10 +12,10 @@ setMethod("match", signature(x="SpatRaster", table="ANY", nomatch="ANY", incompa
 
 setMethod("%in%", signature(x="SpatRaster", table="ANY"),
 	function(x, table) {
-		opt <- .runOptions("", FALSE, list())
+		opt <- spatOptions("", FALSE, list())
 		table <- unique(table)
 		x@ptr <- x@ptr$is_in(table, opt)
-		show_messages(x, "%in%")
+		messages(x, "%in%")
 	}
 )
 

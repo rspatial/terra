@@ -5,13 +5,13 @@
 
 setMethod("distance", signature(x="SpatRaster", y="missing"), 
 	function(x, y, grid=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt=list())
+		opt <- spatOptions(filename, overwrite, wopt=list())
 		if (grid) {
 			x@ptr <- x@ptr$gridDistance(opt)
 		} else {
 			x@ptr <- x@ptr$rastDistance(opt)
 		}
-		show_messages(x, "distance")
+		messages(x, "distance")
 	}
 )
 
@@ -19,18 +19,18 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 
 setMethod("buffer", signature(x="SpatRaster"), 
 	function(x, width, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt=list())
+		opt <- spatOptions(filename, overwrite, wopt=list())
 		x@ptr <- x@ptr$buffer(width, opt)
-		show_messages(x, "buffer")
+		messages(x, "buffer")
 	}
 )
 
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
 	function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- .runOptions(filename, overwrite, wopt=list())
+		opt <- spatOptions(filename, overwrite, wopt=list())
 		x@ptr <- x@ptr$vectDistance(y@ptr, opt)
-		show_messages(x, "distance")
+		messages(x, "distance")
 	}
 )
 
@@ -40,7 +40,7 @@ setMethod("distance", signature(x="SpatVector", y="missing"),
 	function(x, y, ...) {
 		nr <- nrow(x)
 		ptr <- x@ptr$distance_self()
-		ptr <- show_messages(ptr, "distance")
+		ptr <- messages(ptr, "distance")
 		d <- ptr$values()[[1]]
 		class(d) <- "dist"
 		attr(d, "Size") <- nr
@@ -57,7 +57,7 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 		nx <- nrow(x)
 		ny <- nrow(y)
 		ptr <- x@ptr$distance_other(y@ptr, pairwise)
-		ptr <- show_messages(ptr, "distance")
+		ptr <- messages(ptr, "distance")
 		d <- ptr$values()[[1]]
 		if ((nx == ny) && pairwise) {
 			return(d) 
@@ -72,7 +72,7 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 setMethod("distance", signature(x="matrix", y="matrix"), 
 	function(x, y, lonlat, pairwise=FALSE, ...) {
 		if (missing(lonlat)) {
-			stop("you must set lonlat to TRUE or FALSE")
+			error("distance", "you must set lonlat to TRUE or FALSE")
 		}
 		stopifnot(ncol(x) == 2)
 		stopifnot(ncol(y) == 2)

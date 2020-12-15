@@ -15,10 +15,10 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	txtfun <- .makeTextFun(fun)
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
-			opt <- .runOptions(filename, overwrite, wopt)
+			opt <- spatOptions(filename, overwrite, wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, opt)	
-			return(show_messages(x, "tapp"))
+			return(messages(x, "tapp"))
 		}		
 	}
 	fun <- match.fun(fun)

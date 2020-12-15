@@ -59,7 +59,7 @@
 	y <- spatSample(y, size=maxcell, method="regular", as.raster=FALSE)
 
 	if (warn & (NROW(x) < cells)) {
-		warning(paste('plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxcell" to increase the sample)', sep=""))
+		warn("plot", 'plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxcell" to increase the sample)')
 	}
 
 	if (missing(cex)) {
@@ -146,7 +146,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 .plotdens <- function(x, y, nc, nr, xlim=NULL, ylim=NULL, asp=NULL, ...) {
 	xy <- stats::na.omit(cbind(x,y))
 	if (nrow(xy) == 0) {
-		stop("only NA values (in this sample?)")
+		error("plot (density)", "only NA values (in this sample?)")
 	}
 	r <- apply(xy, 2, range)
 	rx <- r[,1]
