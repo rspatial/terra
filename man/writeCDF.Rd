@@ -14,7 +14,7 @@ When using a SpatRasterDataset, the varname, longname, and unit should be set in
 
 \usage{
 \S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", overwrite=FALSE,
- datatype="double", NAflag=-9999, ...)
+ datatype="double", NAflag=-9999, zname="time", ...)
 
 \S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, ...)
 }
@@ -22,12 +22,13 @@ When using a SpatRasterDataset, the varname, longname, and unit should be set in
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
   \item{filename}{character. Output filename}
-  \item{varname}{character}
-  \item{longname}{character}
-  \item{unit}{character}
+  \item{varname}{character. Name of the dataset}
+  \item{longname}{character. Long name of the dataset}
+  \item{unit}{character. Unit of the data}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{datatype}{character. One of "double", "float", "integer", "short", "byte" or "char"}
   \item{NAflag}{numeric}
+  \item{zname}{character. The name of the "time" dimension}
   \item{...}{additional arguments passed on to \code{\link[ncdf4]{ncvar_def}}}
 }
 
