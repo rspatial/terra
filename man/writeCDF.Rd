@@ -13,10 +13,9 @@ When using a SpatRasterDataset, the varname, longname, and unit should be set in
 }
 
 \usage{
-\S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", overwrite=FALSE,
- datatype="double", NAflag=-9999, ...)
+\S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", ...)
 
-\S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, zname="time", ...)
+\S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, prec="double", missval=-9999, zname="time", ...)
 }
 
 \arguments{
@@ -26,18 +25,18 @@ When using a SpatRasterDataset, the varname, longname, and unit should be set in
   \item{longname}{character. Long name of the dataset}
   \item{unit}{character. Unit of the data}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{datatype}{character. One of "double", "float", "integer", "short", "byte" or "char"}
-  \item{NAflag}{numeric}
+  \item{prec}{character. One of "double", "float", "integer", "short", "byte" or "char"}
+  \item{missval}{numeric}
   \item{zname}{character. The name of the "time" dimension}
   \item{...}{additional arguments passed on to \code{\link[ncdf4]{ncvar_def}}}
 }
 
 \value{
-SpatRaster (invisibly). This method is used for the side-effect of writing values to a file.
+logical (invisibly) indicating success
 }
 
 \seealso{
-see \code{\link{writeRaster}} for other file formats, or for writing netCDF with the GDAL library.
+see \code{\link{writeRaster}} for writing other file formats
 }
 
 \examples{
@@ -45,12 +44,20 @@ f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 fname <- paste0(tempfile(), ".nc")
 
-x <- writeCDF(r, fname, overwrite=TRUE, varname="alt", longname="elevation in m above sea level", unit="m")
+writeCDF(r, fname, overwrite=TRUE, varname="alt", longname="elevation in m above sea level", unit="m")
 
 a <- rast(ncol=5, nrow=5, nl=50)
 values(a) <- 1:prod(dim(a))
 time(a) <- as.Date("2020-12-31") + 1:nlyr(a)
-x <- writeCDF(a, fname, overwrite=TRUE, varname="power", longname="my nice data", unit="U/Pa")
+writeCDF(a, fname, overwrite=TRUE, varname="power", longname="my nice data", unit="U/Pa")
+
+
+b <- sqrt(a)
+s <- sds(a, b)
+names(s) <- c("temp", "prec")
+longnames(s) <- c("temperature (C)", "precicpiation (mm)")
+units(s) <- c("C", "mm")
+writeCDF(s, fname, overwrite=TRUE)
 
 # for CRAN
 file.remove(fname)

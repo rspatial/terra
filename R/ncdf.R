@@ -120,7 +120,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 				y <- x[i]
 				if (y@ptr$hasTime) {
 					zv <- y@ptr$time
-					tstep <- x@ptr$timestep 
+					tstep <- y@ptr$timestep 
 					cal <- "standard"
 					if (tstep == "seconds") {
 						zunit <- "seconds since 1970-1-1 00:00:00"

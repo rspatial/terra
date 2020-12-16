@@ -28,7 +28,7 @@ SpatRaster. This function is used for the side-effect of writing values to a fil
 }
 
 \seealso{
-see \code{\link{writeCDF}} for more control over writing NetCDF files.
+see \code{\link{writeCDF}} for writing NetCDF files.
 }
 
 \details{
