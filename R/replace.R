@@ -5,8 +5,13 @@ setMethod("$<-", "SpatRaster",
 		if (inherits(value, "SpatRaster")) {
 			value <- value[[1]]
 			names(value) <- name
+		} else if (is.numeric(value)) {
+			y <- rast(x, nlyr=1)
+			values(y) <- value
+			value <- y
+			names(value) <- name
 		} else if (!is.null(value)) {
-			error(" $<-,SpatRaster", "the replacement value should be a SpatRaster")
+			error("$<-,SpatRaster", "the replacement value should be a SpatRaster or numeric")
 		}
 	
 		i <- which(name == names(x))[1]
@@ -28,12 +33,22 @@ setMethod("$<-", "SpatRaster",
 
 setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 	function(x, i, j, value) {
-		if (nlyr(value) != length(i)) {
-			error(" [[,SpatRaster", "length of names must be equal to the number of layers")
+		if (inherits(value, "SpatRaster")) {
+			if (nlyr(value) != length(i)) {
+				error(" [[,SpatRaster", "length of names must be equal to the number of layers")
+			}
+			names(value) <- i
+		} else if (length(i) > 1) {
+			if (NCOL(value) > 1) {
+				value <- as.list(data.frame(value))
+			} else {
+				stopifnot(length(i) == length(value))
+			}
+		} else if (!is.list(value)) {
+			value <- list(value)
 		}
-		names(value) <- i
 		for (k in 1:length(i)) {
-			eval(parse(text = paste("`$`(x, ", i[k], ") <- value[[k]]")))
+			eval(parse(text = paste0("x$", i[k], " <- value[[k]]")))
 		}
 		x
 	}

@@ -83,7 +83,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			values <- rep(values, nl * nc)
 		} else {
 			if (!((lv %% nc) == 0)) {
-				warn("setValues", "the length of the values does not match the size of the SpatRaster")
+				warn("setValues", "length of values does not match the number of cells")
 			}
 			if (lv > (nc * nl)) {
 				values <- values[1:(nc*nl)]
