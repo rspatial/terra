@@ -98,6 +98,7 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
+
 	std::string filename = opt.get_filename();
 	if (filename == "") {
 		setError("empty filename");
@@ -106,13 +107,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		// make sure filename won't be used again
 		opt.set_filenames({""});
 	}
-	std::string errmsg;
-	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
-		setError(errmsg);
-		return(false);
-	}
-	std::string driver = opt.get_filetype();
 
+	std::string driver = opt.get_filetype();
 	getGDALdriver(filename, driver);
 	if (driver == "") {
 		setError("cannot guess file type from filename");
@@ -122,6 +118,17 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("AAIGrid can only have one layer");
 		return false;
 	}	
+	if (driver == "netCDF") {
+		setError("netCDF writing with GDAL not supported yet. But see 'writeCDF'");
+		return false;
+	}	
+
+	std::string errmsg;
+	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+		setError(errmsg);
+		return(false);
+	}
+
 		
 	//std::string ext = getFileExt(filename);
 	//lowercase(ext);
@@ -186,11 +193,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
     char **papszMetadata;
     papszMetadata = poDriver->GetMetadata();
 
-	bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
+	//bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
 
-    if (!isncdf && CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+    if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
 		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
-	} else if (isncdf || CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
+	} else if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
 		copy_driver = driver;
 		if (canProcessInMemory(opt)) {
 			poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
@@ -230,6 +237,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 				addWarning("could not write categories");
 			}
 		}
+		/*
 		if (isncdf) {
 			std::string opt = "NETCDF_VARNAME";
 			char ** papszMetadata; 
@@ -237,8 +245,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			poBand->SetMetadata(papszMetadata);
 
 		} else {
-			poBand->SetDescription(nms[i].c_str());
-		}
+		*/	
+		poBand->SetDescription(nms[i].c_str());
+		
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
 			if (hasNAflag) {
@@ -296,19 +305,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	return true;
 }
 
-bool SpatRaster::fillValuesGDAL(double fillvalue) {
-	CPLErr err = CE_None;
-	GDALRasterBand *poBand;
-	for (size_t i=0; i < nlyr(); i++) {
-		poBand = source[0].gdalconnection->GetRasterBand(i+1);
-		err = poBand->Fill(fillvalue);
-	}
-	if (err != CE_None ) {
-		setError("cannot fill values");
-		return false;
-	}
-	return true;
-}
+
 /*
 void min_max_na(std::vector<double> &vals, const double &na, const double &mn, const double &mx) {
 	for (double &v : vals) { 
@@ -454,75 +451,16 @@ bool SpatRaster::writeStopGDAL() {
 
 
 
-/*
-bool SpatRaster::writeValuesGDAL(std::vector<double> vals, unsigned row){
-	unsigned nrows = vals.size() / (nlyr() * ncol());
-	unsigned start;
+bool SpatRaster::fillValuesGDAL(double fillvalue) {
 	CPLErr err = CE_None;
 	GDALRasterBand *poBand;
-	double vmin, vmax;
-	unsigned nc = nrows * ncol();
-	GDALDataType gdtype;
 	for (size_t i=0; i < nlyr(); i++) {
-		start = nc * i;
-
-		std::string datatype = source[0].datatype;
-		if (datatype == "FLT8S") {
-			gdtype = GDT_Float64;
-			std::vector<double> vv(vals.begin(), vals.end());
-			poBand = source[0].gdalconnection->GetRasterBand(i+1);
-			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
-			if (err == 4) break;
-		} else if (datatype == "FLT4S") {
-			gdtype = GDT_Float32;
-			std::vector<float> vv(vals.begin(), vals.end());
-			poBand = source[0].gdalconnection->GetRasterBand(i+1);
-			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
-			if (err == 4) break;
-			//std::cout <<  "\n" << vv[0] << "\n";
-		} else if (datatype == "INT4S") {
-			gdtype = GDT_Int32;
-			std::vector<int32_t> vv(vals.begin(), vals.end());
-			poBand = source[0].gdalconnection->GetRasterBand(i+1);
-			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
-			if (err == 4) break;
-		} else if (datatype == "INT2S") {
-			gdtype = GDT_Int16;
-			std::vector<int16_t> vv(vals.begin(), vals.end());
-			poBand = source[0].gdalconnection->GetRasterBand(i+1);
-			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
-			if (err == 4) break;
-		} else if (datatype == "INT4U") {
-			gdtype = GDT_UInt32;
-			std::vector<uint32_t> vv(vals.begin(), vals.end());
-			poBand = source[0].gdalconnection->GetRasterBand(i+1);
-			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
-			if (err == 4) break;
-		} else if (datatype == "INT2U") {
-			gdtype = GDT_UInt16;
-			std::vector<uint16_t> vv(vals.begin(), vals.end());
-			poBand = source[0].gdalconnection->GetRasterBand(i+1);
-			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
-			if (err == 4) break;
-		} else if (datatype == "INT1U") {
-			gdtype = GDT_Byte;
-			std::vector<int8_t> vv(vals.begin(), vals.end());
-			poBand = source[0].gdalconnection->GetRasterBand(i+1);
-			err = poBand->RasterIO(GF_Write, 0, row, ncol(), nrows, &vv[start], ncol(), nrows, gdtype, 0, 0 );
-			if (err == 4) break;
-		}
-
-		minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
-		source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
-		source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
-
+		poBand = source[0].gdalconnection->GetRasterBand(i+1);
+		err = poBand->Fill(fillvalue);
 	}
-
 	if (err != CE_None ) {
-		setError("cannot write values");
+		setError("cannot fill values");
 		return false;
 	}
 	return true;
 }
-*/
-

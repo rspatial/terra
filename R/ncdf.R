@@ -55,7 +55,7 @@
 
 
 setMethod("writeCDF", signature(x="SpatRaster"), 
-	function(x, filename, varname, longname="", unit="", overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
+	function(x, filename, varname, longname="", unit="", ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		if (missing(varname)) {
@@ -65,13 +65,13 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 		longnames(x) <- longname
 		units(x) <- unit
 		x <- sds(x)
-		writeCDF(x, filename=filename, overwrite=overwrite, datatype=datatype, NAflag=NAflag, ...)
+		writeCDF(x, filename=filename, ...)
 	}
 )
 
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"), 
-	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, zname="time", ...) {
+	function(x, filename, overwrite=FALSE, zname="time", missval=-9999, prec="float", compression=NA, ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 
@@ -85,11 +85,6 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		}
 
 		n <- length(x)
-		lvar <- longnames(x)
-		vars <- varnames(x)
-		vars[vars == ""] <- paste0("var_", (1:n)[vars == ""])
-		units <- units(x)
-		nl <- nlyr(x)
 		y <- x[1]
 		if (isLonLat(y, perhaps=TRUE, warn=FALSE)) {
 			xname = "longitude"
@@ -105,32 +100,51 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		xdim <- ncdf4::ncdim_def( xname, xunit, xFromCol(y, 1:ncol(y)) )
 		ydim <- ncdf4::ncdim_def( yname, yunit, yFromRow(y, 1:nrow(y)) )
 
-		dtype <- rep_len(datatype, n)
+		vars <- varnames(x)
+		vars[vars == ""] <- paste0("var_", (1:n)[vars == ""])
+		vars <- make.unique(vars)
+
+		lvar <- longnames(x)
+		units <- units(x)
+		zname <- rep_len(zname, n)
+
+		prec <- rep_len(prec, n)
+		compression <- rep_len(compression, n)
+		nc <- ncol(x)
+		nr <- nrow(x)
+		nl <- nlyr(x)
 		ncvars <- list()
+		cal <- NA
 		for (i in 1:n) {
-			y <- x[i]
 			if (nl[i] > 1) {	
-				lvar <- longnames(y)[1]
+				y <- x[i]
 				if (y@ptr$hasTime) {
 					zv <- y@ptr$time
-					zunit <- "seconds since 1970-1-1 00:00:00"
-					zname <- "time"
 					cal <- "standard"
+					if (tstep == "seconds") {
+						zunit <- "seconds since 1970-1-1 00:00:00"
+						cal <- "standard"
+					} else if (tstep == "days") {
+						zunit <- "days since 1970-1-1"
+						cal <- "standard"
+					} else {
+						zunit <- "unknown"					
+					}
 				} else {
 					zv <- 1:nlyr(y)
 					zunit <- "unknown"
-					cal <- NA
 				} 
-				zdim <- ncdf4::ncdim_def(zname, zunit, zv, unlim=TRUE, calendar=cal)
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), NAflag, lvar, prec = dtype[i], ...)
+				zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval, lvar[i], prec = prec[i], compression=compression[i],...)
 			} else {			
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
+				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), missval, lvar[i], prec = prec[i], compression=compression[i], ...)
 			}
 		}
 
 		ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
 		
 		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
+		on.exit(ncdf4::nc_close(ncobj))
 
 		prj <- crs(x[1])
 		prj <- gsub("\n", "", prj)
@@ -143,9 +157,6 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
 
-		nc <- ncol(x)
-		nr <- nrow(x)
-		nl <- nlyr(x)
 
 		opt <- spatOptions("", TRUE, list())
 
@@ -156,8 +167,8 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 			if (nl[i] > 1) {
 				for (j in 1:b$n) {
 					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
-					d <- array(d, c(nc, b$nrows[j], nl))		
-					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl))
+					d <- array(d, c(nc, b$nrows[j], nl[i]))		
+					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl[i]))
 				}
 			} else {
 				for (j in 1:b$n) {
@@ -171,15 +182,12 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 				ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 			}
 		}
-
 		
 		ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 		pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
 		ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 		ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
-		ncdf4::nc_close(ncobj)
-
-		invisible(rast(filename))
+		invisible(TRUE)
 	}
 )
 
