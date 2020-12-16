@@ -118,10 +118,10 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("AAIGrid can only have one layer");
 		return false;
 	}	
-	if (driver == "netCDF") {
-		setError("netCDF writing is only supported through 'writeCDF'");
-		return false;
-	}	
+	//if (driver == "netCDF") {
+	//	setError("netCDF writing is only supported through 'writeCDF'");
+	//	return false;
+	//}	
 
 	std::string errmsg;
 	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
