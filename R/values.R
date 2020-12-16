@@ -127,8 +127,12 @@ setMethod("sources", signature(x="SpatRaster"),
 
 setMethod("minmax", signature(x="SpatRaster"), 
 	function(x) {
+		have <- x@ptr$hasRange
+		if (!any(have)) {
+			warn("minmax", "min and max values not available. See 'setMinMax' or 'global'")
+		}
 		r <- rbind(x@ptr$range_min, x@ptr$range_max)
-		r[,!x@ptr$hasRange] <- c(Inf, -Inf)
+		r[,!have] <- c(Inf, -Inf)
 		colnames(r) <- names(x)
 		r
 	}

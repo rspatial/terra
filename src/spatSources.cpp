@@ -185,10 +185,7 @@ bool RasterSource::in_order() {
 
 void RasterSource::resize(unsigned n) {
 	names.resize(n);
-	
-//	name.resize(1);
-//	long_name.resize(1);
-	
+	time.resize(n);	
 	unit.resize(n);	
 	depth.resize(n);	
     hasRange.resize(n);
@@ -226,66 +223,59 @@ RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
     } else {
         all = false;
     }
-    if (all) {
-        out = *this ;
-    } else {
-        RasterSource rs = *this;
-        rs.resize(0);
-		bool hasTime = time.size() == nl;
-
+	out = *this ;
+    if (!all) {
+        out.resize(0);
         if (memory) {
             if (hasValues) {
-                rs.values.resize(0);
+                out.values.resize(0);
                 for (size_t i=0; i<nl; i++) {
                     unsigned j = lyrs[i];
                     std::vector<double> x = getValues(j);
-                    rs.values.insert(rs.values.end(), x.begin(), x.end());
-                    rs.names.push_back(names[j]);
-					if (hasTime) rs.time.push_back(time[j]);
-					rs.depth.push_back(depth[j]);
-					rs.unit.push_back(unit[j]);
-									
-					rs.layers.push_back(i);
-                    rs.hasRange.push_back(hasRange[j]);
-                    rs.range_min.push_back(range_min[j]);
-                    rs.range_max.push_back(range_max[j]);
-                    rs.hasColors.push_back(hasColors[j]);
-                    rs.cols.push_back(cols[j]);
-                    rs.hasCategories.push_back(hasCategories[j]);
-                    rs.cats.push_back(cats[j]);
-					rs.hasAttributes.push_back(hasAttributes[j]);
-					rs.atts.push_back(atts[j]);
-					rs.has_scale_offset.push_back(has_scale_offset[j]);
-					rs.scale.push_back(scale[j]);
-					rs.offset.push_back(offset[j]);
+                    out.values.insert(out.values.end(), x.begin(), x.end());
+                    out.names.push_back(names[j]);
+					out.time.push_back(time[j]);
+					out.depth.push_back(depth[j]);
+					out.unit.push_back(unit[j]);
+					out.layers.push_back(i);
+                    out.hasRange.push_back(hasRange[j]);
+                    out.range_min.push_back(range_min[j]);
+                    out.range_max.push_back(range_max[j]);
+                    out.hasColors.push_back(hasColors[j]);
+                    out.cols.push_back(cols[j]);
+                    out.hasCategories.push_back(hasCategories[j]);
+                    out.cats.push_back(cats[j]);
+					out.hasAttributes.push_back(hasAttributes[j]);
+					out.atts.push_back(atts[j]);
+					out.has_scale_offset.push_back(has_scale_offset[j]);
+					out.scale.push_back(scale[j]);
+					out.offset.push_back(offset[j]);
                 }
             }
         } else {
-            //rs.layers = lyrs;
+            //out.layers = lyrs;
             for (size_t i=0; i<nl; i++) {
                 unsigned j = lyrs[i];
-                rs.layers.push_back(layers[j]);
-                rs.names.push_back(names[j]);
-				if (hasTime) rs.time.push_back(time[j]);
-				rs.unit.push_back(unit[j]);
-				
-				rs.depth.push_back(depth[j]);
-                rs.hasRange.push_back(hasRange[j]);
-                rs.range_min.push_back(range_min[j]);
-                rs.range_max.push_back(range_max[j]);
-                rs.hasColors.push_back(hasColors[j]);
-                rs.cols.push_back(cols[j]);
-                rs.hasCategories.push_back(hasCategories[j]);
-                rs.cats.push_back(cats[j]);
-				rs.hasAttributes.push_back(hasAttributes[j]);
-				rs.atts.push_back(atts[j]);
-				rs.has_scale_offset.push_back(has_scale_offset[j]);
-				rs.scale.push_back(scale[j]);
-				rs.offset.push_back(offset[j]);
+                out.layers.push_back(layers[j]);
+                out.names.push_back(names[j]);
+				out.time.push_back(time[j]);
+				out.unit.push_back(unit[j]);
+				out.depth.push_back(depth[j]);
+                out.hasRange.push_back(hasRange[j]);
+                out.range_min.push_back(range_min[j]);
+                out.range_max.push_back(range_max[j]);
+                out.hasColors.push_back(hasColors[j]);
+                out.cols.push_back(cols[j]);
+                out.hasCategories.push_back(hasCategories[j]);
+                out.cats.push_back(cats[j]);
+				out.hasAttributes.push_back(hasAttributes[j]);
+				out.atts.push_back(atts[j]);
+				out.has_scale_offset.push_back(has_scale_offset[j]);
+				out.scale.push_back(scale[j]);
+				out.offset.push_back(offset[j]);
             }
         }
-        rs.nlyr = nl;
-        out = rs;
+        out.nlyr = nl;
     }
     return out;
 }
@@ -326,7 +316,6 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
         out.addWarning("ignored " + std::to_string(oldsize - lyrs.size()) + " invalid layer reference(s)");
 	}
 
-
     std::vector<unsigned> srcs = sourcesFromLyrs(lyrs);
 
     unsigned ss = srcs[0];
@@ -352,7 +341,6 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
     rs = source[ss].subset(slyr);
     out.source.push_back(rs);
 	
-
     if (opt.get_filename() != "") {
         out.writeRaster(opt);
     } else {

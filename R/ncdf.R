@@ -128,6 +128,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), NAflag, lvar, prec = dtype[i], ...)
 			}
 		}
+
 		ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
 		
 		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
@@ -152,6 +153,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		for (i in 1:n) {
 			y = x[i]
 			b <- y@ptr$getBlockSize(4, opt$memfrac)
+			readStart(y)
 			if (nl[i] > 1) {
 				for (j in 1:b$n) {
 					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
@@ -165,6 +167,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1), count=c(nc, b$nrows[j]))
 				}
 			}
+			readStop(y)
 			if (prj != "") {
 				ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 			}
