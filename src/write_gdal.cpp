@@ -119,7 +119,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return false;
 	}	
 	if (driver == "netCDF") {
-		setError("netCDF writing with GDAL not supported yet. But see 'writeCDF'");
+		setError("netCDF writing is only supported through 'writeCDF'");
 		return false;
 	}	
 
