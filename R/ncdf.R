@@ -155,7 +155,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 			if (nl[i] > 1) {
 				for (j in 1:b$n) {
 					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
-					d <- array(d, c(nc, nr, nl))		
+					d <- array(d, c(nc, b$nrows[j], nl))		
 					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl))
 				}
 			} else {
