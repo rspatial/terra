@@ -1,9 +1,8 @@
 
 .ncdf_extent <- function(x) {
 
-	if (!("ncdf4" %in% rownames(installed.packages()))) {
-		warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
-		warn("rast", "installing the ncdf4 package may help")
+	if (!("ncdf4" %in% rownames(utils::installed.packages()))) {
+		warn("rast", "GDAL did not find an extent. installing the ncdf4 package may help")
 		return(x)
 	}
 	s <- sources(x)[1,1]
@@ -152,8 +151,8 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 
 		for (i in 1:n) {
 			y = x[i]
-			b <- y@ptr$getBlockSize(4, opt$memfrac)
 			readStart(y)
+			b <- y@ptr$getBlockSize(4, opt$memfrac)
 			if (nl[i] > 1) {
 				for (j in 1:b$n) {
 					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
