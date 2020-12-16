@@ -1,7 +1,11 @@
 
 .ncdf_extent <- function(x) {
 
-#	stopifnot(requireNamespace("ncdf4"))
+	if (!("ncdf4" %in% rownames(installed.packages()))) {
+		warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+		warn("rast", "installing the ncdf4 package may help")
+		return(x)
+	}
 	s <- sources(x)[1,1]
 
 	ss <- unlist(strsplit(s, "\""))
@@ -53,9 +57,14 @@
 
 setMethod("writeCDF", signature(x="SpatRaster"), 
 	function(x, filename, varname, longname="", unit="", overwrite=FALSE, datatype="double", NAflag=-9999, ...) {
-		units(x) <- unit
+		filename <- trimws(filename)
+		stopifnot(filename != "")
+		if (missing(varname)) {
+			varname <- tools::file_path_sans_ext(basename(filename))
+		}
 		varnames(x) <- varname
 		longnames(x) <- longname
+		units(x) <- unit
 		x <- sds(x)
 		writeCDF(x, filename=filename, overwrite=overwrite, datatype=datatype, NAflag=NAflag, ...)
 	}
@@ -64,6 +73,8 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"), 
 	function(x, filename, overwrite=FALSE, datatype="double", NAflag=-9999, zname="time", ...) {
+		filename <- trimws(filename)
+		stopifnot(filename != "")
 
 		dots <- list(...)
 		force_v4 <- if (is.null(dots$force_v4)) { TRUE } else {dots$force_v4}
@@ -71,13 +82,13 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		if (file.exists(filename) & !overwrite) {
-			error("writeCDF,SpatRasterDataset", "file exists, use overwrite=TRUE to overwrite it")
+			error("writeCDF", "file exists, use 'overwrite=TRUE' to overwrite it")
 		}
 
 		n <- length(x)
 		lvar <- longnames(x)
 		vars <- varnames(x)
-		vars[vars == ""] <- (1:n)[vars == ""] 
+		vars[vars == ""] <- paste0("var_", (1:n)[vars == ""])
 		units <- units(x)
 		nl <- nlyr(x)
 		y <- x[1]
@@ -119,35 +130,40 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		}
 		ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
 		
-		
 		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
-		on.exit( ncdf4::nc_close(ncobj) )
-
 
 		prj <- crs(x[1])
 		prj <- gsub("\n", "", prj)
 		if (prj != "") {
 			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
-			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", .proj4(x[1]), prec='text')
+			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", terra:::.proj4(x[1]), prec='text')
 		}
 		e <- ext(x)
 		rs <- res(x)
 		gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
 
-		# writing all at once. need to chunk 
 		nc <- ncol(x)
 		nr <- nrow(x)
+		nl <- nlyr(x)
+
+		opt <- spatOptions("", TRUE, list())
 
 		for (i in 1:n) {
 			y = x[i]
+			b <- y@ptr$getBlockSize(4, opt$memfrac)
 			if (nl[i] > 1) {
-				v <- values(y)
-				v <- array(v, c(nr, nc, nl[i]))
-				ncdf4::ncvar_put(ncobj, ncvars[[i]], values(y), start=c(1,1,1), count=dim(y)[c(2,1,3)])
+				for (j in 1:b$n) {
+					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
+					d <- array(d, c(nc, nr, nl))		
+					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl))
+				}
 			} else {
-				v <- t(as.matrix(y, TRUE))
-				ncdf4::ncvar_put(ncobj, ncvars[[i]], v, start=c(1,1), count=dim(y)[2:1])
+				for (j in 1:b$n) {
+					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
+					d <- matrix(d, ncol=b$nrows[j])
+					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1), count=c(nc, b$nrows[j]))
+				}
 			}
 			if (prj != "") {
 				ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
@@ -159,6 +175,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
 		ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 		ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
+		ncdf4::nc_close(ncobj)
 
 		invisible(rast(filename))
 	}

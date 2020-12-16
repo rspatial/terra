@@ -197,6 +197,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			poDS = poDriver->Create("", ncol(), nrow(), nlyr(), gdt, papszOptions);
 		} else {
 			std::string f = tempFile(opt.get_tempdir(), ".tif");
+			copy_filename = f;
 			poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
 			poDS = poDriver->Create(f.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 		}
@@ -421,15 +422,32 @@ bool SpatRaster::writeStopGDAL() {
 		source[0].hasRange[i] = true;
 	}
 	if (copy_driver != "") {
-	    GDALDriver *poDriver;
-		poDriver = GetGDALDriverManager()->GetDriverByName(copy_driver.c_str());
 		GDALDataset *newDS;
-		newDS = poDriver->CreateCopy(source[0].filename.c_str(),
-				source[0].gdalconnection, FALSE, NULL, NULL, NULL);
-		GDALClose( (GDALDatasetH) newDS );
+		GDALDriver *poDriver;
+		poDriver = GetGDALDriverManager()->GetDriverByName(copy_driver.c_str());
 		copy_driver = "";		
+		if (copy_filename == "") {
+			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
+				source[0].gdalconnection, FALSE, NULL, NULL, NULL);
+			GDALClose( (GDALDatasetH) newDS );
+			GDALClose( (GDALDatasetH) source[0].gdalconnection );
+		} else {
+			GDALClose( (GDALDatasetH) source[0].gdalconnection );
+			GDALDataset *oldDS;
+			oldDS = (GDALDataset *) GDALOpen(copy_filename.c_str(), GA_ReadOnly );
+			if( oldDS == NULL )  {
+				setError("something went terribly wrong");
+				return false;
+			}
+			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
+				oldDS, FALSE, NULL, NULL, NULL);
+			GDALClose( (GDALDatasetH) oldDS );
+			GDALClose( (GDALDatasetH) newDS );
+			copy_filename = "";
+		}
+	} else {
+		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	}
-	GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	source[0].hasValues = true;
 	return true;
 }

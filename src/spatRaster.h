@@ -147,6 +147,7 @@ class SpatRaster {
 
     private:
 		std::string copy_driver="";
+		std::string copy_filename="";
 
 	protected:
 		//SpatExtent extent;

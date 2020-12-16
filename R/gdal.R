@@ -13,7 +13,8 @@ gdal <- function(warn = NA, drivers=FALSE) {
 		colnames(x) <- c("name", "type", "can", "long.name")
 		x <- data.frame(x)
 		x <- x[order(x$type, x$name), ]
-		
+		rownames(x) <- NULL
+		x
 	} else {
 		.gdalversion()
 	}
@@ -81,15 +82,15 @@ setMethod("describe", signature(x="character"),
 		}
 		open_opt <- unique(trimws(open_opt))
 		open_opt <- open_opt[open_opt != ""]
-		x <- .gdalinfo(x, options, open_opt)
+		g <- .gdalinfo(x, options, open_opt)
 
-		if (x == "") {
-			add <- ifelse(file.exists(x), "\n", "\nThe file does not exist\n")
+		if (g == "") {
+			add <- ifelse(!file.exists(x), "\n", "\nThe file does not exist\n")
 			x <- paste0("GDAL cannot open: ", x, add)
 		}
-		y <- unlist(strsplit(x, "\n"))
+		y <- unlist(strsplit(g, "\n"))
 		if (print) {
-			cat(x, "\n")
+			cat(g, "\n")
 			invisible(y)
 		} else {
 			return(y)
