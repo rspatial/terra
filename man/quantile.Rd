@@ -33,15 +33,14 @@ SpatRaster with layers representing quantiles
 \seealso{ \code{\link{app}}  }
 
 
-
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
 r <- c(r/2, r, r*2)
 q <- quantile(r)
 q
 
-# same as (but faster than)
-qa <- app(r, quantile)
+# same but slower
+# qa <- app(r, quantile)
 }
 
 \keyword{methods}

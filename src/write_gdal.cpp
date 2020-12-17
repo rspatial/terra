@@ -134,7 +134,7 @@ bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string 
 			setColors(0, ctab);
 			hasCT[0] = true;
 		}
-		datatype = "INT2U";
+		datatype = "INT1U";
 	} else if (driver == "JPEG2000") {
 		datatype = "INT2U";	
 	} else if (driver == "SAGA") {
@@ -345,8 +345,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	source[0].nlyrfile = nlyr();
 	source[0].datatype = datatype;
 	for (size_t i =0; i<nlyr(); i++) {
-		source[0].range_min[i] = std::numeric_limits<double>::max();
-		source[0].range_max[i] = std::numeric_limits<double>::lowest();
+		source[0].range_min[i] = NAN; //std::numeric_limits<double>::max();
+		source[0].range_max[i] = NAN; //std::numeric_limits<double>::lowest();
 	}
 
 	source[0].driver = "gdal" ;
@@ -383,18 +383,32 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, ui
 	size_t nl = nlyr();
 	std::string datatype = source[0].datatype;
 
-	
 	for (size_t i=0; i < nl; i++) {
 		uint_64 start = nc * i;
-		minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
-		if (std::isnan(source[0].range_min[i])) {
-			source[0].range_min[i] = vmin;
-			source[0].range_max[i] = vmax;			
-		} else if (!std::isnan(vmin)) {
-			source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
-			source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
+		if (datatype == "INT4S") {
+			minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX);
+		} else if (datatype == "INT2S") {
+			minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX);
+		} else if (datatype == "INT4U") {
+			minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)INT32_MAX*2-1);
+		} else if (datatype == "INT2U") {
+			minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)INT16_MAX*2-1);
+		} else if (datatype == "INT1U") {
+			minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0);
+		} else {
+			minmax(vals.begin()+start, vals.begin()+start+nc, vmin, vmax);
+		}
+		if (!std::isnan(vmin)) {
+			if (std::isnan(source[0].range_min[i])) {
+				source[0].range_min[i] = vmin;
+				source[0].range_max[i] = vmax;			
+			} else {
+				source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
+				source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
+			}
 		}
 	}
+	
 
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
 		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL );
