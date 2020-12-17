@@ -70,134 +70,144 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 )
 
 
+.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", missval=-9999, prec="float", compression=NA, ...) {
+
+	dots <- list(...)
+	force_v4 <- if (is.null(dots$force_v4)) { TRUE } else {dots$force_v4}
+	verbose  <- if (is.null(dots$verbose)) { FALSE } else {dots$verbose}
+
+	n <- length(x)
+	y <- x[1]
+	if (isLonLat(y, perhaps=TRUE, warn=FALSE)) {
+		xname = "longitude"
+		yname = "latitude"
+		xunit = "degrees_east"
+		yunit = "degrees_north"
+	} else {
+		xname = "easting"
+		yname = "northing"
+		xunit = "meter" # probably
+		yunit = "meter" # probably
+	}
+	xdim <- ncdf4::ncdim_def( xname, xunit, xFromCol(y, 1:ncol(y)) )
+	ydim <- ncdf4::ncdim_def( yname, yunit, yFromRow(y, 1:nrow(y)) )
+	vars <- varnames(x)
+	vars[vars == ""] <- paste0("var_", (1:n)[vars == ""])
+	vars <- make.unique(vars)
+
+	lvar <- longnames(x)
+	units <- units(x)
+	zname <- rep_len(zname, n)
+
+	prec <- rep_len(prec, n)
+	compression <- rep_len(compression, n)
+	nc <- ncol(x)
+	nr <- nrow(x)
+	nl <- nlyr(x)
+	ncvars <- list()
+	cal <- NA
+	for (i in 1:n) {
+		if (nl[i] > 1) {	
+			y <- x[i]
+			if (y@ptr$hasTime) {
+				zv <- y@ptr$time
+				tstep <- y@ptr$timestep 
+				cal <- "standard"
+				if (tstep == "seconds") {
+					zunit <- "seconds since 1970-1-1 00:00:00"
+					cal <- "standard"
+				} else if (tstep == "days") {
+					zunit <- "days since 1970-1-1"
+					cal <- "standard"
+				} else {
+					zunit <- "unknown"					
+				}
+			} else {
+				zv <- 1:nlyr(y)
+				zunit <- "unknown"
+			} 
+			zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
+			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval, lvar[i], prec = prec[i], compression=compression[i],...)
+		} else {			
+			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), missval, lvar[i], prec = prec[i], compression=compression[i], ...)
+		}
+	}
+
+	ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
+		
+	ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
+	on.exit(ncdf4::nc_close(ncobj))
+
+	prj <- crs(x[1])
+	prj <- gsub("\n", "", prj)
+	if (prj != "") {
+		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
+		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", terra:::.proj4(x[1]), prec='text')
+	}
+	e <- ext(x)
+	rs <- res(x)
+	gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
+	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
+
+
+	opt <- spatOptions("", TRUE, list())
+
+	for (i in 1:n) {
+		y = x[i]
+		readStart(y)
+		b <- y@ptr$getBlockSize(4, opt$memfrac)
+		if (nl[i] > 1) {
+			for (j in 1:b$n) {
+				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
+				d <- array(d, c(nc, b$nrows[j], nl[i]))		
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl[i]))
+			}
+		} else {
+			for (j in 1:b$n) {
+				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
+				d <- matrix(d, ncol=b$nrows[j])
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1), count=c(nc, b$nrows[j]))
+			}
+		}
+		readStop(y)
+		if (prj != "") {
+			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
+		}
+	}
+		
+	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
+	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
+	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
+	ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
+		invisible(TRUE)
+}
+
+
 setMethod("writeCDF", signature(x="SpatRasterDataset"), 
 	function(x, filename, overwrite=FALSE, zname="time", missval=-9999, prec="float", compression=NA, ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 
-		dots <- list(...)
-		force_v4 <- if (is.null(dots$force_v4)) { TRUE } else {dots$force_v4}
-		verbose <- if (is.null(dots$verbose)) { FALSE } else  { dots$verbose }
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		if (file.exists(filename) & !overwrite) {
 			error("writeCDF", "file exists, use 'overwrite=TRUE' to overwrite it")
 		}
-
-		n <- length(x)
-		y <- x[1]
-		if (isLonLat(y, perhaps=TRUE, warn=FALSE)) {
-			xname = "longitude"
-			yname = "latitude"
-			xunit = "degrees_east"
-			yunit = "degrees_north"
-		} else {
-			xname = "easting"
-			yname = "northing"
-			xunit = "meter" # probably
-			yunit = "meter" # probably
-		}
-		xdim <- ncdf4::ncdim_def( xname, xunit, xFromCol(y, 1:ncol(y)) )
-		ydim <- ncdf4::ncdim_def( yname, yunit, yFromRow(y, 1:nrow(y)) )
-
-		vars <- varnames(x)
-		vars[vars == ""] <- paste0("var_", (1:n)[vars == ""])
-		vars <- make.unique(vars)
-
-		lvar <- longnames(x)
-		units <- units(x)
-		zname <- rep_len(zname, n)
-
-		prec <- rep_len(prec, n)
-		compression <- rep_len(compression, n)
-		nc <- ncol(x)
-		nr <- nrow(x)
-		nl <- nlyr(x)
-		ncvars <- list()
-		cal <- NA
-		for (i in 1:n) {
-			if (nl[i] > 1) {	
-				y <- x[i]
-				if (y@ptr$hasTime) {
-					zv <- y@ptr$time
-					tstep <- y@ptr$timestep 
-					cal <- "standard"
-					if (tstep == "seconds") {
-						zunit <- "seconds since 1970-1-1 00:00:00"
-						cal <- "standard"
-					} else if (tstep == "days") {
-						zunit <- "days since 1970-1-1"
-						cal <- "standard"
-					} else {
-						zunit <- "unknown"					
-					}
-				} else {
-					zv <- 1:nlyr(y)
-					zunit <- "unknown"
-				} 
-				zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval, lvar[i], prec = prec[i], compression=compression[i],...)
-			} else {			
-				ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), missval, lvar[i], prec = prec[i], compression=compression[i], ...)
-			}
-		}
-
-		ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
-		
-		ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
-		on.exit(ncdf4::nc_close(ncobj))
-
-		prj <- crs(x[1])
-		prj <- gsub("\n", "", prj)
-		if (prj != "") {
-			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
-			ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", terra:::.proj4(x[1]), prec='text')
-		}
-		e <- ext(x)
-		rs <- res(x)
-		gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
-		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
-
-
-		opt <- spatOptions("", TRUE, list())
-
-		for (i in 1:n) {
-			y = x[i]
-			readStart(y)
-			b <- y@ptr$getBlockSize(4, opt$memfrac)
-			if (nl[i] > 1) {
-				for (j in 1:b$n) {
-					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
-					d <- array(d, c(nc, b$nrows[j], nl[i]))		
-					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl[i]))
-				}
+		ok <- .write_cdf(x, filename, zname=zname, missval=missval, prec=prec, compression=compression, ...)
+		if (ok) {
+			if (length(x) > 1) {
+				sds(filename)
 			} else {
-				for (j in 1:b$n) {
-					d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
-					d <- matrix(d, ncol=b$nrows[j])
-					ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1), count=c(nc, b$nrows[j]))
-				}
-			}
-			readStop(y)
-			if (prj != "") {
-				ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
+				rast(filename)
 			}
 		}
-		
-		ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
-		pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
-		ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
-		ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
-		invisible(TRUE)
 	}
 )
 
 
 
-.vectCDF <- function(filename, varname, polygons=FALSE) {
-# read (irregular) raster netcdf as points or polygons
-# not to be confused with vector netcdf format
-	
-
-}
+#.vectCDF <- function(filename, varname, polygons=FALSE) {
+  # read (irregular) raster netcdf as points or polygons
+  # not to be confused with vector netcdf format
+#}
 

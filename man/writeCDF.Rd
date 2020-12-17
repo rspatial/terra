@@ -28,12 +28,12 @@ When using a SpatRasterDataset, the varname, longname, and unit should be set in
   \item{zname}{character. The name of the "time" dimension}
   \item{missval}{numeric, the number used to indicate missing values}
   \item{prec}{character. One of "double", "float", "integer", "short", "byte" or "char"}
-  \item{compression}{see \code{\link[ncdf4]{ncvar_def}}}
+  \item{compression}{Can be set to an integer between 1 (least compression) and 9 (most compression)}
   \item{...}{additional arguments passed on to \code{\link[ncdf4]{ncvar_def}}}
 }
 
 \value{
-logical (invisibly) indicating success
+SpatRaster or SpatDataSet
 }
 
 \seealso{
@@ -44,21 +44,19 @@ see \code{\link{writeRaster}} for writing other file formats
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 fname <- paste0(tempfile(), ".nc")
-
-writeCDF(r, fname, overwrite=TRUE, varname="alt", longname="elevation in m above sea level", unit="m")
+rr <- writeCDF(r, fname, overwrite=TRUE, varname="alt", longname="elevation in m above sea level", unit="m")
 
 a <- rast(ncol=5, nrow=5, nl=50)
 values(a) <- 1:prod(dim(a))
 time(a) <- as.Date("2020-12-31") + 1:nlyr(a)
-writeCDF(a, fname, overwrite=TRUE, varname="power", longname="my nice data", unit="U/Pa")
-
+aa <- writeCDF(a, fname, overwrite=TRUE, varname="power", longname="my nice data", unit="U/Pa")
 
 b <- sqrt(a)
 s <- sds(a, b)
 names(s) <- c("temp", "prec")
 longnames(s) <- c("temperature (C)", "precicpiation (mm)")
 units(s) <- c("C", "mm")
-writeCDF(s, fname, overwrite=TRUE)
+ss <- writeCDF(s, fname, overwrite=TRUE)
 
 # for CRAN
 file.remove(fname)

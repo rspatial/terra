@@ -1087,6 +1087,32 @@ std::vector<SpatDataFrame> SpatRaster::getColors() {
 	return cols;
 }
 
+
+
+bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
+	if (cols.ncol() < 3 || cols.ncol() > 4) {
+		return false;
+	}
+	if (cols.nrow() > 256) {
+		return false;
+	}
+	if (layer >= nlyr()) {
+		return false;
+	}
+	if (cols.ncol() == 3) {
+		std::vector<long> a(cols.nrow(), 255);
+		cols.add_column(a, "alpha");
+	}
+	
+    std::vector<unsigned> sl = findLyr(layer);
+
+	source[sl[0]].cols[sl[1]] = cols;
+	source[sl[0]].hasColors[sl[1]] = (cols.nrow() > 1);
+	return true;
+}
+
+
+
 std::vector<bool> SpatRaster::hasColors() {
 	std::vector<bool> b(nlyr());
 	std::vector<unsigned> ns = nlyrBySource();

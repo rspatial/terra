@@ -365,6 +365,7 @@ RCPP_MODULE(spat){
 		.method("createCategories", &SpatRaster::createCategories, "createCategories")
 		.method("hasColors", &SpatRaster::hasColors, "hasColors")
 		.method("getColors", &SpatRaster::getColors, "getColors")
+		.method("setColors", &SpatRaster::setColors, "setColors")
 		
 		.property("hasRange", &SpatRaster::hasRange )
 		.property("hasValues", &SpatRaster::hasValues )

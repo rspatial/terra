@@ -52,6 +52,7 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 		{".tif","GTiff"}, {".tiff","GTiff"},
 		{".nc","netCDF"}, {".cdf","netCDF"}, {".ncdf","netCDF"},
 		{".img","HFA"},
+		{".bmp","BMP"},
 		{".flt","EHdr"},
 		{".grd","RRASTER"},
 		{".sgrd","SAGA"}, {".sdat","SAGA"},
@@ -118,6 +119,22 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("AAIGrid can only have one layer");
 		return false;
 	}	
+	if (driver == "BMP") {
+		if (nlyr() != 1) {
+			if (nlyr() == 3) {
+				setError("Only single layer BMP writing is currently supported");
+				return false;
+			} else {
+				setError("For BMP, the SpatRaster must have 1 or 3 layers (3 is not currently supported)");
+				return false;
+			}
+		}
+		std::vector<bool> hasCT = hasColors();
+		if (!hasCT[0]) {
+			setError("For BMP the SpatRaster must have a color-table. See ?coltab");
+			return false;
+		}
+	}
 	//if (driver == "netCDF") {
 	//	setError("netCDF writing is only supported through 'writeCDF'");
 	//	return false;
