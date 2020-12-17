@@ -32,16 +32,17 @@ data.frame
 }
 
 \examples{
-	r <- rast(ncol=3, nrow=2, vals=0:5)
-	coltb <- data.frame(t(col2rgb(rainbow(6, end=.9), alpha=TRUE)))
-	coltb
+r <- rast(ncol=3, nrow=2, vals=0:5)
+coltb <- data.frame(t(col2rgb(rainbow(6, end=.9), alpha=TRUE)))
+coltb
 
-	plot(r)
-	coltab(r) <- coltb
-	plot(r)
-	tb <- coltab(r)
-	class(tb)
-	dim(tb[[1]])
+plot(r)
+coltab(r) <- coltb
+plot(r)
+
+tb <- coltab(r)
+class(tb)
+dim(tb[[1]])
 }
 
 \keyword{methods}

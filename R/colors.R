@@ -21,11 +21,23 @@ setMethod ("coltab<-" , "SpatRaster",
 			value <- layer
 			layer <- 1
 		}
+		layer <- layer[1]-1
+
 		if (inherits(value, "list")) {
 			value <- value[[1]]
 		}
-		layer <- layer[1]-1
+		if (inherits(value, "character")) {
+			value <- t(grDevices::col2rgb(value, alpha=TRUE))
+		}
+		if (inherits(value, "character")) {
+			value <- data.frame(t(grDevices::col2rgb(value, alpha=TRUE)))
+		} else if (inherits(value, "matrix")) {
+			value <- data.frame(value)
+		}
+
 		stopifnot(inherits(value, "data.frame"))
+
+
 		value <- value[1:256,]
 		value[is.na(value)] <- 255
 		value <- data.frame(sapply(value, function(i) as.integer(clamp(i, 0, 255))))

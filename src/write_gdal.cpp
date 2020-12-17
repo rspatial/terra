@@ -96,6 +96,45 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 }
 
 
+bool SpatRaster::checkFormatRequirements(std::string driver) {
+	
+	if (driver == "AAIGrid" && nlyr() > 1) {
+		setError("AAIGrid can only have one layer");
+		return false;
+	} else if (driver == "BMP") {
+		if (nlyr() != 1) {
+			if (nlyr() == 3) {
+				setError("Only single layer BMP writing is currently supported");
+				return false;
+			} else {
+				setError("For BMP, the SpatRaster must have 1 or 3 layers (3 is not currently supported)");
+				return false;
+			}
+		}
+		std::vector<bool> hasCT = hasColors();
+		if (!hasCT[0]) {
+			std::vector<long> col(256);
+			std::iota(col.begin(), col.end(), 0);
+			SpatDataFrame coltab;
+			coltab.add_column(col, "red");
+			coltab.add_column(col, "green");
+			coltab.add_column(col, "blue");
+			std::fill(col.begin(), col.end(), 255);
+			coltab.add_column(col, "alpha");
+			setColors(0, coltab);
+			hasCT[0] = true;
+		}
+	} 
+	
+	//if (driver == "netCDF") {
+	//	setError("netCDF writing is only supported through 'writeCDF'");
+	//	return false;
+	//}	
+
+	return true;
+}
+
+
 
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
@@ -115,31 +154,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("cannot guess file type from filename");
 		return(false);	
 	}
-	if (driver == "AAIGrid" && nlyr() > 1) {
-		setError("AAIGrid can only have one layer");
+	if (!checkFormatRequirements(driver)) {
 		return false;
-	}	
-	if (driver == "BMP") {
-		if (nlyr() != 1) {
-			if (nlyr() == 3) {
-				setError("Only single layer BMP writing is currently supported");
-				return false;
-			} else {
-				setError("For BMP, the SpatRaster must have 1 or 3 layers (3 is not currently supported)");
-				return false;
-			}
-		}
-		std::vector<bool> hasCT = hasColors();
-		if (!hasCT[0]) {
-			setError("For BMP the SpatRaster must have a color-table. See ?coltab");
-			return false;
-		}
 	}
-	//if (driver == "netCDF") {
-	//	setError("netCDF writing is only supported through 'writeCDF'");
-	//	return false;
-	//}	
-
 	std::string errmsg;
 	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 		setError(errmsg);
@@ -150,8 +167,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	//std::string ext = getFileExt(filename);
 	//lowercase(ext);
 	std::string datatype = opt.get_datatype();
-	std::vector<bool> hasCats = hasCategories();
 	std::vector<bool> hasCT = hasColors();
+	std::vector<bool> hasCats = hasCategories();
 	std::vector<SpatDataFrame> ct = getColors();
 	if (hasCT[0] || hasCats[0]) { 
 		// must be INT1U for color table with gtiff
