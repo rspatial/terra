@@ -156,12 +156,18 @@ std::vector<size_t> SpatRaster::count(double value, bool bylayer, bool round, in
 
 
 SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
 	size_t n = probs.size();
+	
 	if (n == 0) {
-		SpatRaster out = geometry(1);
 		out.setError("no probs");
 		return out;
+	} else if (nlyr() < n) {
+		out.setError("more probs than layers");
+		return out;		
 	}
+
 	double pmin = vmin(probs, false);
 	double pmax = vmin(probs, false);
 	if ((std::isnan(pmin)) | (std::isnan(pmax)) | (pmin < 0) | (pmax > 1)) {
@@ -169,7 +175,7 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 		out.setError("intvalid probs");
 		return out;
 	}
-	SpatRaster out = geometry(probs.size());
+	out = geometry(probs.size());
 	out.source[0].names = double_to_string(probs, "q");
   	if (!hasValues()) { return out; }
 

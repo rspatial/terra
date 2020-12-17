@@ -1330,12 +1330,12 @@ std::vector<std::vector<double>> SpatRaster::xyFromCell( std::vector<double> &ce
 	double yr = yres();
 	double xr = xres();
     double ncells = ncell();
-    long nc = ncol();
+    size_t nc = ncol();
 	std::vector< std::vector<double> > out(2, std::vector<double> (n, NAN) );
 	for (size_t i = 0; i<n; i++) {
 		if (std::isnan(cell[i]) || (cell[i] < 0) || (cell[i] >= ncells)) continue;
-        long row = cell[i] / nc;
-        long col = cell[i] - (row * nc);
+        size_t row = cell[i] / nc;
+        size_t col = cell[i] - (row * nc);
         out[0][i] = xmin + (col + 0.5) * xr;
         out[1][i] = ymax - (row + 0.5) * yr;
 	}
@@ -1477,15 +1477,12 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
 
 SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 
-// for now assuming one layer
-
 	BlockSize bs = getBlockSize(opt);
 	std::vector<double> v, vout;
 	vout.reserve(v.size());
 	SpatVector pv;
 	SpatGeom g;
 	g.gtype = points;
-
 
     std::vector<std::vector<double>> xy;
 	if ((!values) && (!narm)) {
@@ -1511,25 +1508,24 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 		return(pv);
 	}
 	
-	unsigned nc = ncol();
+	size_t nc = ncol();
 	unsigned nl = nlyr();
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-        unsigned off1 = (bs.row[i] * nc);
- 		unsigned vnc = bs.nrows[i] * nc;
+        size_t off1 = (bs.row[i] * nc);
+ 		size_t vnc = bs.nrows[i] * nc;
 		if (narm) {
-            bool foundna = false;
 			for (size_t j=0; j<vnc; j++) {
+				bool foundna = false;
 				for (size_t lyr=0; lyr<nl; lyr++) {
-                    unsigned off2 = lyr*nc;
-                    foundna = false;
+                    size_t off2 = lyr*nc;
                     if (std::isnan(v[off2+j])) {
                         foundna = true;
                         continue;
                     }
                 }
                 if (foundna) continue;
-                xy = xyFromCell(off1+j);
+                xy = xyFromCell( off1+j );
                 SpatPart p(xy[0], xy[1]);
                 g.addPart(p);
                 pv.addGeom(g);

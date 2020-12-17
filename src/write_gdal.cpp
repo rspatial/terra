@@ -100,6 +100,19 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 }
 
 
+SpatDataFrame grayColorTable() {
+	SpatDataFrame coltab;
+	std::vector<long> col(256);
+	std::iota(col.begin(), col.end(), 0);
+	coltab.add_column(col, "red");
+	coltab.add_column(col, "green");
+	coltab.add_column(col, "blue");
+	std::fill(col.begin(), col.end(), 255);
+	coltab.add_column(col, "alpha");
+	return coltab;
+}
+
+
 bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string &filename, std::string &datatype) {
 	
 	if (driver == "AAIGrid" && nlyr() > 1) {
@@ -117,15 +130,8 @@ bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string 
 		}
 		std::vector<bool> hasCT = hasColors();
 		if (!hasCT[0]) {
-			std::vector<long> col(256);
-			std::iota(col.begin(), col.end(), 0);
-			SpatDataFrame coltab;
-			coltab.add_column(col, "red");
-			coltab.add_column(col, "green");
-			coltab.add_column(col, "blue");
-			std::fill(col.begin(), col.end(), 255);
-			coltab.add_column(col, "alpha");
-			setColors(0, coltab);
+			SpatDataFrame ctab = grayColorTable();
+			setColors(0, ctab);
 			hasCT[0] = true;
 		}
 		datatype = "INT2U";

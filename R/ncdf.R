@@ -54,21 +54,6 @@
 }
 
 
-setMethod("writeCDF", signature(x="SpatRaster"), 
-	function(x, filename, varname, longname="", unit="", ...) {
-		filename <- trimws(filename)
-		stopifnot(filename != "")
-		if (missing(varname)) {
-			varname <- tools::file_path_sans_ext(basename(filename))
-		}
-		varnames(x) <- varname
-		longnames(x) <- longname
-		units(x) <- unit
-		x <- sds(x)
-		writeCDF(x, filename=filename, ...)
-	}
-)
-
 
 .write_cdf <- function(x, filename, overwrite=FALSE, zname="time", missval=-9999, prec="float", compression=NA, ...) {
 
@@ -142,7 +127,7 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 	prj <- gsub("\n", "", prj)
 	if (prj != "") {
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
-		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", terra:::.proj4(x[1]), prec='text')
+		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", .proj4(x[1]), prec='text')
 	}
 	e <- ext(x)
 	rs <- res(x)
@@ -179,8 +164,26 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
 	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 	ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
-		invisible(TRUE)
+	
+	TRUE
 }
+
+
+
+setMethod("writeCDF", signature(x="SpatRaster"), 
+	function(x, filename, varname, longname="", unit="", ...) {
+		filename <- trimws(filename)
+		stopifnot(filename != "")
+		if (missing(varname)) {
+			varname <- tools::file_path_sans_ext(basename(filename))
+		}
+		varnames(x) <- varname
+		longnames(x) <- longname
+		units(x) <- unit
+		x <- sds(x)
+		invisible( writeCDF(x, filename=filename, ...) )
+	}
+)
 
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"), 
@@ -206,6 +209,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		}
 	}
 )
+
 
 
 
