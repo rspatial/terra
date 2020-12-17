@@ -186,7 +186,6 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		out.setError("cannot close file");
 	}
 	readStop();
-
 	return out;
 }
 

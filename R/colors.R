@@ -37,7 +37,6 @@ setMethod ("coltab<-" , "SpatRaster",
 
 		stopifnot(inherits(value, "data.frame"))
 
-
 		value <- value[1:256,]
 		value[is.na(value)] <- 255
 		value <- data.frame(sapply(value, function(i) as.integer(clamp(i, 0, 255))))

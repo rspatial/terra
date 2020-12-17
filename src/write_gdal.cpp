@@ -58,7 +58,11 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 		{".sgrd","SAGA"}, {".sdat","SAGA"},
 		{".rst","RST"},
 		{".envi","ENVI"},
-		{".asc","AAIGrid"}
+		{".asc","AAIGrid"},
+		{".bmp","BMP"},
+//		{".jpg","JPEG"}, or JPEG2000?
+		{".png","PNG"},
+		{".gif","GIF"},
 	};
 
     auto i = drivers.find(ext);
@@ -96,7 +100,7 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 }
 
 
-bool SpatRaster::checkFormatRequirements(std::string driver) {
+bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string &filename, std::string &datatype) {
 	
 	if (driver == "AAIGrid" && nlyr() > 1) {
 		setError("AAIGrid can only have one layer");
@@ -124,7 +128,16 @@ bool SpatRaster::checkFormatRequirements(std::string driver) {
 			setColors(0, coltab);
 			hasCT[0] = true;
 		}
-	} 
+		datatype = "INT2U";
+	} else if (driver == "JPEG2000") {
+		datatype = "INT2U";	
+	} else if (driver == "SAGA") {
+		std::string ext = getFileExt(filename);
+		if (ext != ".sdat") {
+			setError("SAGA filenames must end on '.sdat'");
+			return false;
+		}
+	}
 	
 	//if (driver == "netCDF") {
 	//	setError("netCDF writing is only supported through 'writeCDF'");
@@ -154,7 +167,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("cannot guess file type from filename");
 		return(false);	
 	}
-	if (!checkFormatRequirements(driver)) {
+	std::string datatype = opt.get_datatype();
+	if (!checkFormatRequirements(driver, filename, datatype)) {
 		return false;
 	}
 	std::string errmsg;
@@ -164,9 +178,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 
 		
-	//std::string ext = getFileExt(filename);
-	//lowercase(ext);
-	std::string datatype = opt.get_datatype();
 	std::vector<bool> hasCT = hasColors();
 	std::vector<bool> hasCats = hasCategories();
 	std::vector<SpatDataFrame> ct = getColors();

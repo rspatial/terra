@@ -196,10 +196,13 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		ok <- .write_cdf(x, filename, zname=zname, missval=missval, prec=prec, compression=compression, ...)
 		if (ok) {
 			if (length(x) > 1) {
-				sds(filename)
+				out <- sds(filename)
 			} else {
-				rast(filename)
+				out <- rast(filename)
 			}
+			invisible(out)
+		} else {
+			error("writeCDF", "?")
 		}
 	}
 )
