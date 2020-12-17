@@ -128,12 +128,12 @@ bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string 
 				return false;
 			}
 		}
-		std::vector<bool> hasCT = hasColors();
-		if (!hasCT[0]) {
-			SpatDataFrame ctab = grayColorTable();
-			setColors(0, ctab);
-			hasCT[0] = true;
-		}
+		//std::vector<bool> hasCT = hasColors();
+		//if (!hasCT[0]) {
+		//	SpatDataFrame ctab = grayColorTable();
+		//	setColors(0, ctab);
+		//	hasCT[0] = true;
+		//}
 		datatype = "INT1U";
 	} else if (driver == "JPEG2000") {
 		datatype = "INT2U";	

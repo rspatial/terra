@@ -4,6 +4,14 @@
 
 \alias{Summary-methods}
 
+\alias{median}
+\alias{mean}
+\alias{min}
+\alias{max}
+\alias{range}
+\alias{which.min}
+\alias{which.max}
+
 \alias{Summary,SpatRaster-method}
 \alias{mean,SpatRaster-method}
 \alias{median,SpatRaster-method}
@@ -20,7 +28,7 @@
 
 \description{
 
-Compute cell (pixel) level summary statistics across layers or between layers (parallel summary). 
+Compute summary statistics for cells, either across layers or between layers (parallel summary). 
 
 The following summary methods are available for SpatRaster: \code{any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max}. See \code{\link{modal}} to compute the mode and \code{\link{app}} to compute summary statistics that are not included here.
  

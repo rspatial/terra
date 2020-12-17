@@ -78,4 +78,3 @@ void minmax(Iterator start, Iterator end, double &vmin, double &vmax) {
         vmax = NAN;
     }
 }
-

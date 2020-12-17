@@ -324,8 +324,8 @@ setMethod("mean", signature(x="SpatRaster"),
 )
 
 setMethod("median", signature(x="SpatRaster"),
-	function(x, na.rm=FALSE, ...){
-		.summarize(x, ..., fun="median", na.rm=na.rm)
+	function(x, na.rm=FALSE){
+		.summarize(x, fun="median", na.rm=na.rm)
 	}
 )
 
