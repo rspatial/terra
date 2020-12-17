@@ -174,10 +174,12 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+	
 	if (!out.writeStart(opt)) { return out; }
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) {
+			readStop();
 			out.writeStopGDAL();
 			return out;
 		}
@@ -212,15 +214,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 
 	if (filename != "") {
-		//std::string ext = getFileExt(filename);
-		//std::string dtype = opt.get_datatype();
-		//source[0].datatype = dtype;
-		//bool overwrite = opt.get_overwrite();
-
-		//lowercase(ext);
 		// open GDAL filestream
 		#ifdef useGDAL
-		//if (! writeStartGDAL(filename, opt.get_filetype(), dtype, overwrite, opt) ) {
 		if (! writeStartGDAL(opt) ) {
 			return false;
 		}

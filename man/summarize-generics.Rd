@@ -55,7 +55,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
 
-\S4method{median}{SpatRaster}(x, na.rm=FALSE, ...)
+\S4method{median}{SpatRaster}(x, na.rm=FALSE)
 
 \S4method{stdev}{SpatRaster}(x, ..., na.rm=FALSE)
 

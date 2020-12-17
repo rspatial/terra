@@ -165,8 +165,10 @@ RCPP_MODULE(spat){
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
 		.property("verbose", &SpatOptions::get_verbose, &SpatOptions::set_verbose )
 		.property("NAflag", &SpatOptions::get_NAflag, &SpatOptions::set_NAflag )
-		.property("ncdfcopy", &SpatOptions::get_ncdfcopy, &SpatOptions::set_ncdfcopy )
+		//.property("ncdfcopy", &SpatOptions::get_ncdfcopy, &SpatOptions::set_ncdfcopy )
+		.property("statistics", &SpatOptions::get_statistics, &SpatOptions::set_statistics )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
+		.field("datatype_set", &SpatOptions::datatype_set)
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 		.field("ncopies", &SpatOptions::ncopies, "ncopies")
 

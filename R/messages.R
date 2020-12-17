@@ -7,7 +7,6 @@ error <- function(f, emsg="", ...) {
 	stop("[", f, "] ", emsg, ..., call.=FALSE)
 }
 
-
 warn <- function(f, wmsg="", ...) {
 	warning("[", f, "] ", wmsg, ..., call.=FALSE)
 }
@@ -15,22 +14,18 @@ warn <- function(f, wmsg="", ...) {
 messages <- function(x, f="") {
 	if (methods::.hasSlot(x, "ptr")) {
 		if (x@ptr$has_warning()) { 
-			warns <- x@ptr$getWarnings()
-			warning(paste(warns, collapse="\n"), call.=FALSE)
+			warn(f, paste(x@ptr$getWarnings(), collapse="\n"))
 		}
 		if (x@ptr$has_error()) {
-			emsg <- x@ptr$getError()
-			stop(paste0("[", f, "] ", emsg), call.=FALSE)
+			error(f, x@ptr$getError())
 		}
 		return(x)
 	} else { 
 		if (x$has_warning()) { 
-			warns <- x$getWarnings()
-			warning(paste(warns, collapse="\n"), call.=FALSE)
+			warn(f, paste(x$getWarnings(), collapse="\n"))
 		}
 		if (x$has_error()) {
-			emsg <- x$getError()
-			stop(paste0("[", f, "] ", emsg), call.=FALSE)
+			error(f, x$getError())
 		}
 		return(x)
 	}

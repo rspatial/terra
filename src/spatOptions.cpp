@@ -33,7 +33,8 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	progress = opt.progress;
 	blocksizemp = opt.blocksizemp;
 	verbose = opt.verbose;
-	ncdfcopy = opt.ncdfcopy;
+	statistics = opt.statistics;
+	//ncdfcopy = opt.ncdfcopy;
 }
 
 
@@ -60,8 +61,11 @@ std::string SpatOptions::get_filetype() { return filetype;}
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }
 
-bool SpatOptions::get_ncdfcopy() { return ncdfcopy;}
-void SpatOptions::set_ncdfcopy(bool x) { ncdfcopy = x; }
+int SpatOptions::get_statistics() { return statistics; }
+void SpatOptions::set_statistics(int s) { if ((s> 0) && (s<7)) statistics = s; }
+
+//bool SpatOptions::get_ncdfcopy() { return ncdfcopy;}
+//void SpatOptions::set_ncdfcopy(bool x) { ncdfcopy = x; }
 
 void SpatOptions::set_def_verbose(bool v) { def_verbose = v; }
 bool SpatOptions::get_def_verbose() { return def_verbose; }

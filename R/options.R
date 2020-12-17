@@ -10,7 +10,7 @@
 }
  
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "ncdfcopy") 
+	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics") 
 }
 
  
@@ -48,6 +48,9 @@
 		
 		for (i in seq_along(nms)) {
 			x[[nms[i]]] <- opt[[i]]
+		}
+		if ("datatype" %in% nms) {
+			x$datatype_set = TRUE;
 		}
 	}
 	x
