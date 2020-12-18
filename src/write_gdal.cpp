@@ -294,7 +294,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			poDS = poDriver->Create(f.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 		}
 	} else {
-		setError("cannot create this format: "+ driver);
+		setError("cannot write this format: "+ driver);
 		return false;
 	}
 	CSLDestroy( papszOptions );

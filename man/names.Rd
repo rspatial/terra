@@ -75,6 +75,9 @@ For a SpatRaster, you can also get/set a variable name or long name (one per dat
 character 
 }
 
+\note{
+terra enforces unique nor valid names. See \code{\link{make.unique}} to create unique names and \code{{make.names}} to make syntactically valid names.
+}
 
 \examples{
 s <- rast(ncols=5, nrows=5, nlyr=3)

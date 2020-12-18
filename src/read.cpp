@@ -221,6 +221,35 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 }
 
 
+
+bool SpatRaster::readAll() {
+	if (!hasValues()) {
+		return true; 
+	}
+	readStart();
+	size_t n = nsrc();
+	for (size_t src=0; src<n; src++) {
+		if (!source[src].memory) {
+			#ifdef useGDAL
+			readChunkGDAL(source[src].values, src, 0, nrow(), 0, ncol());
+			#endif // useGDAL
+			source[src].memory = true;
+			source[src].filename = "";
+		}
+		if (src > 0) {
+			if (!source[0].combine_sources(source[src])) {
+				setError("could not combine sources");
+				return false;
+			}
+			source[src].values.resize(0);
+		}		
+	}
+	readStop();
+	if (n>1) source.resize(1);
+	return true;
+}
+
+
 std::vector<double> SpatRaster::getValues(long lyr) {
 
 	std::vector<double> out;

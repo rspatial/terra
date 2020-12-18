@@ -11,7 +11,6 @@ setMethod("names", signature(x="SpatRaster"),
 )
 
 
-
 setMethod("names<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		value <- as.character(value)

@@ -3,7 +3,11 @@
 # Version 1.0
 # License GPL v3
 
-
+readAll <- function(x) {
+	ok <- x@ptr$readAll()
+	x <- messages(x)
+	invisible(ok)
+}
 
 setMethod("readStart", signature(x="SpatRaster"), 
 	function(x, ...) {

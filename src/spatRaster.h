@@ -94,8 +94,8 @@ class RasterSource {
 
 		//std::vector< std::vector<double> values;
         std::vector<double> values;
-        std::vector<int64_t> ivalues;
-        std::vector<bool> bvalues;
+        //std::vector<int64_t> ivalues;
+        //std::vector<bool> bvalues;
 
 		std::vector<bool> hasRange;
 		std::vector<double> range_min;
@@ -387,6 +387,7 @@ class SpatRaster {
 		std::vector<double> readExtent(SpatExtent e);
 		bool readStop();
 
+		bool readAll();
 
 		bool writeStart(SpatOptions &opt);
 		bool writeValues(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols);

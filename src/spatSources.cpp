@@ -369,10 +369,8 @@ bool RasterSource::combine_sources(const RasterSource &x) {
 	}	
 	nlyr += x.nlyr;
 	names.insert(names.end(), x.names.begin(), x.names.end());
-	if (hasTime & x.hasTime) {
-		time.insert(time.end(), x.time.begin(), x.time.end());
-	} else {
-		time.resize(0);
+	time.insert(time.end(), x.time.begin(), x.time.end());
+	if (!(hasTime & x.hasTime)) {
 		hasTime = false;
 	}
 	unit.insert(unit.end(), x.unit.begin(), x.unit.end());	
