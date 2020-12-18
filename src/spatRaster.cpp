@@ -1171,7 +1171,6 @@ std::vector<double> SpatRaster::cellFromXY (std::vector<double> x, std::vector<d
 		if (row < 0 || row >= nr || col < 0 || col >= nc) {
 			cells[i] = NAN;
 		} else {
-			// result[i] = static_cast<int>(row) * ncols + static_cast<int>(col) + 1;
 			cells[i] = row * ncol() + col;
 		}
 	}

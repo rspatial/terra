@@ -336,7 +336,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 )
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxcell=50000, main, nc, nr, maxnl=16, ...)  {
+	function(x, y, maxcell=50000, main, mar=NULL, nc, nr, maxnl=16, ...)  {
 
 		nl <- max(1, min(nlyr(x), maxnl))
 
@@ -352,7 +352,10 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		nrnc <- .get_nrnc(nr, nc, nl)
 		old.par <- graphics::par(no.readonly = TRUE) 
 		on.exit(graphics::par(old.par))
-		graphics::par(mfrow=nrnc, mar=c(2, 2, 2, 4))
+		if (is.null(mar)) {
+			mar=c(1, 1, 1, 2)
+		}
+		graphics::par(mfrow=nrnc, mar=mar)
 		maxcell=maxcell/(nl/2)
 			
 		if (missing("main")) {

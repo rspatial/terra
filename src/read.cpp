@@ -87,19 +87,27 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 
 void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
 
-	std::vector<bool> win = hasWindow();
 	size_t nl = source[src].nlyr;
+	
+	if (source[src].hasWindow) {
+		Rcpp::Rcout << row << std::endl;
+		row += source[src].window.off_row;
+		col += source[src].window.off_col;
+		size_t endrow = row + nrows;
+		size_t endcol = col + ncols;
+		size_t nc = source[src].window.full_ncol;
+		double ncells = source[src].window.full_nrow * nc;
+		Rcpp::Rcout << row << std::endl;
 
-	for (size_t lyr=0; lyr < nl; lyr++) {
-		if (win[lyr]) {
-			uint_64 wrow, wcol, endrow, endcol;
-			wrow = row + source[0].window.off_row;
-			wcol = col + source[0].window.off_col;
-			endrow = wrow + nrows;
-			endcol = wcol + ncols;
-			double ncells = source[0].window.full_nrow * source[0].window.full_ncol;
-
-			if (source[0].window.expanded) {
+		for (size_t lyr=0; lyr < nl; lyr++) {
+			size_t add = ncells * lyr;
+			for (size_t r = row; r < endrow; r++) {
+				size_t off = add + r * nc;
+				out.insert(out.end(), source[src].values.begin()+off+col, source[src].values.begin()+off+endcol);
+			}
+		}
+			/*
+			else if (source[0].window.expanded) {
 				unsigned add = ncells * lyr;
 				std::vector<double> v1(source[0].window.expand[0] * ncols, NAN);
 				out.insert(out.end(), v1.begin(), v1.end());
@@ -113,38 +121,32 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row,
 				}
 				v1.resize(source[0].window.expand[3] * ncols, NAN);
 				out.insert(out.end(), v1.begin(), v1.end());
-			} else { // !(window.expanded) 
-				unsigned add = ncells * lyr;
-				for (size_t r = wrow; r < endrow; r++) {
-					unsigned a = add + r * source[0].window.full_ncol;
-					out.insert(out.end(), source[src].values.begin()+a+wcol, source[src].values.begin()+a+endcol);
-				}
 			}
-		} else { //	!hasWindow()
-			if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
-				out.insert(out.end(), source[src].values.begin(), source[src].values.end());
+			*/
+		
+	} else { //	no window
+		if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
+			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
+		} else {
+			double ncells = ncell();
+			if (col==0 && ncols==ncol()) {
+				for (size_t lyr=0; lyr < nl; lyr++) {
+					size_t add = ncells * lyr;
+					size_t a = add + row * ncol();
+					size_t b = a + nrows * ncol();
+					out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
+				}
 			} else {
-				double ncells = ncell();
-				if (col==0 && ncols==ncol()) {
-					for (size_t lyr=0; lyr < nl; lyr++) {
-						unsigned add = ncells * lyr;
-						unsigned a = add + row * ncol();
-						unsigned b = a + nrows * ncol();
-						out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
-					}
-				} else {
-					unsigned endrow = row + nrows;
-					unsigned endcol = col + ncols;
-					for (size_t lyr=0; lyr < nl; lyr++) {
-						unsigned add = ncells * lyr;
-						for (size_t r = row; r < endrow; r++) {
-							unsigned a = add + r * ncol();
-							out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
-						}
+				size_t endrow = row + nrows;
+				size_t endcol = col + ncols;
+				for (size_t lyr=0; lyr < nl; lyr++) {
+					size_t add = ncells * lyr;
+					for (size_t r = row; r < endrow; r++) {
+						size_t a = add + r * ncol();
+						out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
 					}
 				}
 			}
-			lyr += (nl-1);
 		}
 	}
 }

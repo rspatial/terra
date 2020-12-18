@@ -7,7 +7,7 @@ setMethod("window<-", signature(x="SpatRaster"),
 			if (!(x@ptr$setWindow(value@ptr))) {
 				error("window<-,SpatRaster", "could not set window")
 			}
-			warn("window<-", "using a window is experimental. User beware")
+			warn("window<-", "using a window is experimental")
 		} else if (is.null(value	)) {
 			x@ptr$removeWindow()
 		} else {

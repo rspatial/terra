@@ -10,8 +10,9 @@
 \title{Set a window}
 
 \description{
+\bold{Experimental}: Assign a window (area of interest) to a SpatRaster with a \code{SpatExtent}, or set it to \code{NULL} to remove the window. This is similar to \code{\link{crop}} without actually creating a new dataset. 
 
-\bold{Experimental}: Assign a window (area of interest) to a SpatRaster with a \code{SpatExtent}, or set it to \code{NULL} to remove the window. This is similar to \code{\link{crop}} and/or \code{\link{expand}}, without actually creating a new dataset.
+Currently, the window will be forced to intersect with the extent of the SpatRaster. It is envisioned that in future versions, the window may also go outside these boundaries.
 }
 
 \usage{
@@ -55,7 +56,6 @@ b
 
 window(r) <- NULL
 r
-
 }
 
 \keyword{methods}

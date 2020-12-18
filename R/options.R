@@ -53,6 +53,7 @@
 			x$datatype_set = TRUE;
 		}
 	}
+
 	x
 } 
  
