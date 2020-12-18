@@ -558,6 +558,10 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 
 std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &cell) {
 
+	std::vector<double> wcell;
+	std::vector<std::vector<int_64>> rc, wrc;
+	rc = rowColFromCell(cell);	
+
 	unsigned n  = cell.size();
 	unsigned nc = ncell();
 	std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
@@ -568,14 +572,30 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	unsigned lyr = 0;
 	for (size_t src=0; src<ns; src++) {
 		unsigned slyrs = source[src].layers.size();
-
+		bool win = source[src].hasWindow;
+		if (win) {
+			wrc = rc;
+			wcell.reserve(cell.size());
+			for (size_t i=0; i<cell.size(); i++) {
+				wrc[0][i] = wrc[0][i] + source[src].window.off_row;
+				wrc[1][i] = wrc[1][i] + source[src].window.off_col;
+				wcell.push_back( wrc[0][i] * source[src].window.full_ncol + wrc[1][i] );
+			}
+		}
 		if (source[src].memory) {
 			for (size_t i=0; i<slyrs; i++) {
 				size_t j = i * nc;
-				for (size_t k=0; k<n; k++) {
-					if (!is_NA(cell[k]) && cell[k] >= 0 && cell[k] < nc) {
-						out[lyr][k] = source[src].values[j + cell[k]];
-						//out[offset + k] = source[src].values[j + cell[k]];
+				if (win) {
+					for (size_t k=0; k<n; k++) {
+						if (!is_NA(wcell[k]) && wcell[k] >= 0 && wcell[k] < nc) {
+							out[lyr][k] = source[src].values[j + wcell[k]];
+						}
+					}					
+				} else {
+					for (size_t k=0; k<n; k++) {
+						if (!is_NA(cell[k]) && cell[k] >= 0 && cell[k] < nc) {
+							out[lyr][k] = source[src].values[j + cell[k]];
+						}
 					}
 				}
 				lyr++;
@@ -586,8 +606,11 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 			//	srcout = readCellsBinary(src, cell);
 			//} else {
 			#ifdef useGDAL
-			std::vector<std::vector<int_64>> rc = rowColFromCell(cell);
-			srcout = readRowColGDAL(src, rc[0], rc[1]);
+			if (win) {
+				srcout = readRowColGDAL(src, wrc[0], wrc[1]);
+			} else {
+				srcout = readRowColGDAL(src, rc[0], rc[1]);				
+			}
 			#endif
 			if (hasError()) return out;
 			//}

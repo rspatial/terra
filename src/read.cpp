@@ -87,73 +87,67 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 
 void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
 
-	if (hasWindow()) {
-		uint_64 rrow = row + source[0].window.off_row;
-		uint_64 rcol = col + source[0].window.off_col;
-		unsigned endrow = rrow + nrows;
-		unsigned endcol = rcol + ncols;
-		unsigned ncells = source[0].window.full_nrow * source[0].window.full_ncol;
-		unsigned nl = source[src].nlyr;
+	std::vector<bool> win = hasWindow();
+	size_t nl = source[src].nlyr;
 
-		if (source[0].window.expanded) {
-			for (size_t lyr=0; lyr < nl; lyr++) {
+	for (size_t lyr=0; lyr < nl; lyr++) {
+		if (win[lyr]) {
+			uint_64 wrow, wcol, endrow, endcol;
+			wrow = row + source[0].window.off_row;
+			wcol = col + source[0].window.off_col;
+			endrow = wrow + nrows;
+			endcol = wcol + ncols;
+			double ncells = source[0].window.full_nrow * source[0].window.full_ncol;
+
+			if (source[0].window.expanded) {
 				unsigned add = ncells * lyr;
 				std::vector<double> v1(source[0].window.expand[0] * ncols, NAN);
 				out.insert(out.end(), v1.begin(), v1.end());
 				v1.resize(source[0].window.expand[1], NAN);
 				std::vector<double> v2(source[0].window.expand[2], NAN);
-				for (size_t r = rrow; r < endrow; r++) {
+				for (size_t r = wrow; r < endrow; r++) {
 					unsigned a = add + r * source[0].window.full_ncol;
 					out.insert(out.end(), v1.begin(), v1.end());
-					out.insert(out.end(), source[src].values.begin()+a+rcol, source[src].values.begin()+a+endcol);
+					out.insert(out.end(), source[src].values.begin()+a+wcol, source[src].values.begin()+a+endcol);
 					out.insert(out.end(), v2.begin(), v2.end());
 				}
 				v1.resize(source[0].window.expand[3] * ncols, NAN);
 				out.insert(out.end(), v1.begin(), v1.end());
-			}
-			
-			
-		} else { // !(source[0].window.expanded) 
-
-
-			for (size_t lyr=0; lyr < nl; lyr++) {
+			} else { // !(window.expanded) 
 				unsigned add = ncells * lyr;
-				for (size_t r = rrow; r < endrow; r++) {
+				for (size_t r = wrow; r < endrow; r++) {
 					unsigned a = add + r * source[0].window.full_ncol;
-					out.insert(out.end(), source[src].values.begin()+a+rcol, source[src].values.begin()+a+endcol);
+					out.insert(out.end(), source[src].values.begin()+a+wcol, source[src].values.begin()+a+endcol);
 				}
 			}
-		}
-
-	} else { //	!hasWindow()
-
-		if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
-			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
-		} else {
-			unsigned nl = source[src].nlyr;
-			unsigned ncells = ncell();
-			if (col==0 && ncols==ncol()) {
-				for (size_t lyr=0; lyr < nl; lyr++) {
-					unsigned add = ncells * lyr;
-					unsigned a = add + row * ncol();
-					unsigned b = a + nrows * ncol();
-					out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
-				}
+		} else { //	!hasWindow()
+			if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
+				out.insert(out.end(), source[src].values.begin(), source[src].values.end());
 			} else {
-				unsigned endrow = row + nrows;
-				unsigned endcol = col + ncols;
-				for (size_t lyr=0; lyr < nl; lyr++) {
-					unsigned add = ncells * lyr;
-					for (size_t r = row; r < endrow; r++) {
-						unsigned a = add + r * ncol();
-						out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
+				double ncells = ncell();
+				if (col==0 && ncols==ncol()) {
+					for (size_t lyr=0; lyr < nl; lyr++) {
+						unsigned add = ncells * lyr;
+						unsigned a = add + row * ncol();
+						unsigned b = a + nrows * ncol();
+						out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
+					}
+				} else {
+					unsigned endrow = row + nrows;
+					unsigned endcol = col + ncols;
+					for (size_t lyr=0; lyr < nl; lyr++) {
+						unsigned add = ncells * lyr;
+						for (size_t r = row; r < endrow; r++) {
+							unsigned a = add + r * ncol();
+							out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
+						}
 					}
 				}
 			}
+			lyr += (nl-1);
 		}
 	}
 }
-
 
 
 
@@ -180,11 +174,9 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 		} else {
 			// read from file
 			#ifdef useGDAL
-			if (hasWindow()) {
 
-				if (!source[0].window.expanded) {
-					readChunkGDAL(out, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
-				} else {
+/* 
+				if (source[0].window.expanded) {
 					std::vector<double> gout;
 					readChunkGDAL(gout, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
 									
@@ -211,9 +203,8 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 						out.insert(out.end(), v1.begin(), v1.end());
 					}
 				}
-			} else {
-				readChunkGDAL(out, src, row, nrows, col, ncols);
-			}
+				*/
+			readChunkGDAL(out, src, row, nrows, col, ncols);
 			#endif // useGDAL
 		}
 	}
@@ -226,13 +217,13 @@ bool SpatRaster::readAll() {
 	if (!hasValues()) {
 		return true; 
 	}
+	
+	size_t row =0, col=0, nrows=nrow(), ncols=ncol();
 	readStart();
 	size_t n = nsrc();
 	for (size_t src=0; src<n; src++) {
 		if (!source[src].memory) {
-			#ifdef useGDAL
-			readChunkGDAL(source[src].values, src, 0, nrow(), 0, ncol());
-			#endif // useGDAL
+			readChunkGDAL(source[src].values, src, row, nrows, col, ncols);
 			source[src].memory = true;
 			source[src].filename = "";
 		}
@@ -254,7 +245,14 @@ std::vector<double> SpatRaster::getValues(long lyr) {
 
 	std::vector<double> out;
 	
-	if (hasWindow()) {
+	bool hw = false;
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].hasWindow) {
+			hw = true;
+			break;
+		}
+	}
+	if (hw) {
 		if (!readStart()) return out;
 		if (lyr < 0) { // default; read all
 			out = readValues(0, nrow(), 0, ncol());
@@ -303,7 +301,14 @@ bool SpatRaster::getValuesSource(size_t src, std::vector<double> &out) {
 		return false;
 	}
 
-	if (hasWindow()) {
+	bool hw = false;
+	for (size_t i=0; i<source.size(); i++) {
+		if (source[i].hasWindow) {
+			hw = true;
+			break;
+		}
+	}
+	if (hw) {
 		SpatRaster sub = SpatRaster(source[src]);
 		if (!readStart()) return false;
 		out = sub.readValues(0, nrow(), 0, ncol());

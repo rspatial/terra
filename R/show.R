@@ -92,10 +92,15 @@ setMethod ("show" , "SpatRaster",
 
 		xyres <- res(object)
 		cat("resolution  : " , xyres[1], ", ", xyres[2], "  (x, y)\n", sep="")
-
-		if (object@ptr$hasWindow()) {
+		hw <- window(object)
+		if (any(hw)) {
 			w <- as.vector(ext(object))
-			cat("extent (win): " , w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")		
+			if (all(hw)) {
+				txt <- "window      : "
+			} else {
+				txt <- "extent (win): "
+			}
+			cat(txt, w[1], ", ", w[2], ", ", w[3], ", ", w[4], "  (xmin, xmax, ymin, ymax)\n", sep="")		
 			#e <- as.vector(object@ptr$source[[1]]$window$full_extent$vector)
 			#cat("full extent : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		} else {
@@ -112,10 +117,10 @@ setMethod ("show" , "SpatRaster",
 			ln <- c(ln[1:mnr], "...")
 		}
 		lnmx <- 60 / min(mnr, length(ln))
-		b <- nchar(ln) > lnmx
+		b <- nchar(ln) > (lnmx+2)
 		if (any(b)) {
 			mid <- floor(lnmx/2)
-			ln[b] <- paste(substr(ln[b], 1, mid), "~", substr(ln[b], nchar(ln[b])-mid, nchar(ln[b])), sep="")
+			ln[b] <- paste(substr(ln[b], 1, mid), "~", substr(ln[b], nchar(ln[b])-mid+1, nchar(ln[b])), sep="")
 		}
 
 
@@ -179,6 +184,8 @@ setMethod ("show" , "SpatRaster",
 				maxv <- gsub("-Inf", "  ? ", maxv)
 				minv[!hMM] <- gsub("NaN", " ? ", minv[!hMM])
 				maxv[!hMM] <- gsub("NaN", " ? ", maxv[!hMM])
+				minv[hw] <- paste0(">", minv[hw])
+				maxv[hw] <- paste0(maxv[hw],"<")
 				if (nl > mnr) {
 					minv <- c(minv[1:mnr], "...")
 					maxv <- c(maxv[1:mnr], "...")

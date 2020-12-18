@@ -19,7 +19,7 @@
 #include "spatRaster.h"
 
 
-void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldcol, unsigned nrows, unsigned ncols, unsigned snrow, unsigned sncol) {
+void getSampleRowCol(std::vector<uint_64> &oldrow, std::vector<uint_64> &oldcol, uint_64 nrows, uint_64 ncols, unsigned snrow, unsigned sncol) {
 	double rf = nrows / (double)(snrow);
 	double cf = ncols / (double)(sncol);
 	//double rstart = std::floor(0.5 * rf);
@@ -40,20 +40,32 @@ void getSampleRowCol(std::vector<unsigned> &oldrow, std::vector<unsigned> &oldco
 std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigned scols) {
 	unsigned oldnc = ncell();
 	unsigned nl = source[src].nlyr;
-	std::vector<unsigned> oldcol, oldrow;
+	std::vector<uint_64> oldcol, oldrow, woldcol, woldrow;
 	std::vector<double>	out; 
 	getSampleRowCol(oldrow, oldcol, nrow(), ncol(), srows, scols);
-	
+
+	std::vector<bool> win = hasWindow();
 	out.reserve(srows*scols);
     for (size_t lyr=0; lyr<nl; lyr++) {
-        unsigned old_offset = lyr * oldnc;
-        for (size_t r=0; r<srows; r++) {
- 			unsigned oldc = old_offset + oldrow[r] * ncol();
-            for (size_t c=0; c<scols; c++) {
-				unsigned oldcell = oldc + oldcol[c];
-                out.push_back(source[src].values[oldcell]);
-            }
-        }
+		unsigned old_offset = lyr * oldnc;
+		if (win[lyr]) {
+		    unsigned src = findLyr(lyr)[0];
+			for (size_t r=0; r<srows; r++) {
+				unsigned oldc = old_offset + oldrow[r]+source[src].window.off_row * source[src].window.full_nrow;
+				for (size_t c=0; c<scols; c++) {
+					unsigned oldcell = oldc + oldcol[c]+source[src].window.off_col;
+					out.push_back(source[src].values[oldcell]);
+				}
+			}
+		} else {
+			for (size_t r=0; r<srows; r++) {
+				unsigned oldc = old_offset + oldrow[r] * ncol();
+				for (size_t c=0; c<scols; c++) {
+					unsigned oldcell = oldc + oldcol[c];
+					out.push_back(source[src].values[oldcell]);
+				}
+			}
+		}
 	}
 	return out;
 }

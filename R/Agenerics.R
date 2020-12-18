@@ -6,6 +6,7 @@ if (!isGeneric("centroids")) {setGeneric("centroids", function(x, ...) standardG
 if (!isGeneric("coltab")) {setGeneric("coltab", function(x, ...) standardGeneric("coltab"))}
 if (!isGeneric("coltab<-")) { setGeneric("coltab<-", function(x, ..., value) standardGeneric("coltab<-")) }
 
+if (!isGeneric("window")) {setGeneric("window", function(x, ...) standardGeneric("window"))}
 if (!isGeneric("window<-")) {setGeneric("window<-", function(x, ..., value) standardGeneric("window<-"))}
 if (!isGeneric("NAflag")) {setGeneric("NAflag", function(x, ...) standardGeneric("NAflag"))}
 if (!isGeneric("NAflag<-")) {setGeneric("NAflag<-", function(x, ..., value) standardGeneric("NAflag<-"))}

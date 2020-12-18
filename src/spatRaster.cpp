@@ -744,25 +744,32 @@ bool SpatRaster::valid_sources(bool files, bool rotated) {
 	return true;
 }
 
-bool SpatRaster::hasWindow() {
-	return source[0].hasWindow;
+std::vector<bool> SpatRaster::hasWindow() {
+	std::vector<bool> out;
+	out.reserve(nlyr());
+	for (size_t i=0; i<nsrc(); i++) {
+		for (size_t j=0; j<source[i].nlyr; j++) {
+			out.push_back(source[i].hasWindow);
+		}
+	}
+	return out;
 }
+
 
 bool SpatRaster::removeWindow() {
-	if (hasWindow()) {
-		SpatExtent e = source[0].window.full_extent;
-		setExtent(e, true, "");
-		for (size_t i=0; i<source.size(); i++) {
-			source[i].hasWindow = false;
-			source[i].nrow = source[0].window.full_nrow;
-			source[i].ncol = source[0].window.full_ncol;
+	for (size_t i=0; i<nsrc(); i++) {
+		if (source[i].hasWindow) {
+			SpatExtent e = source[0].window.full_extent;
+			setExtent(e, true, "");
+			for (size_t i=0; i<source.size(); i++) {
+				source[i].hasWindow = false;
+				source[i].nrow = source[0].window.full_nrow;
+				source[i].ncol = source[0].window.full_ncol;
+			}
 		}
-	} 
+	}
 	return true;
 }
-
-
-
 
 
 bool SpatRaster::setWindow(SpatExtent x) {
@@ -772,10 +779,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		return false;
 	} 
 
-	if (hasWindow()) {
-		removeWindow();
-	}
-
+	removeWindow();
 	x = align(x, "near");
 	SpatExtent e = getExtent();
 	if (x.compare(e, "==", 0.1 * xres())) {
@@ -823,6 +827,11 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		expand = true;
 		exp[3] = trunc(abs(x.xmin - e.xmin) / xres());
 	} 
+
+	if (expand) {
+		setError("expansion is not yet allowed");
+		return false;
+	}
 
 	for (size_t i=0; i<source.size(); i++) {
 		source[i].window.off_row = rc[0];

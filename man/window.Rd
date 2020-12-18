@@ -2,17 +2,22 @@
 
 \docType{methods}
 
+\alias{window}
 \alias{window<-}
+\alias{window,SpatRaster-method}
 \alias{window<-,SpatRaster-method}
 
 \title{Set a window}
 
 \description{
-Assign a window (area of interest) to a SpatRaster with a \code{SpatExtent}, or set it to \code{NULL} to remove the window. This is similar to \code{\link{crop}} and/or \code{\link{expand}}, without actually creating a new dataset.
+
+\bold{Experimental}: Assign a window (area of interest) to a SpatRaster with a \code{SpatExtent}, or set it to \code{NULL} to remove the window. This is similar to \code{\link{crop}} and/or \code{\link{expand}}, without actually creating a new dataset.
 }
 
 \usage{
 \S4method{window}{SpatRaster}(x, ...)<-value
+
+\S4method{window}{SpatRaster}(x, ...)
 }
 
 \arguments{
@@ -26,6 +31,9 @@ Assign a window (area of interest) to a SpatRaster with a \code{SpatExtent}, or 
 }
 
 
+\value{
+none for \code{window<-} and logical for \code{window}
+}
 
 \examples{ 
 f <- system.file("ex/test.tif", package="terra") 
@@ -37,9 +45,16 @@ window(r) <- e
 global(r, "mean", na.rm=TRUE)
 r
 
+x <- rast(f)
+xe <- crop(x, e)
+global(xe, "mean", na.rm=TRUE)
+
+b <- c(xe, r)
+window(b)
+b
+
 window(r) <- NULL
 r
-
 
 }
 

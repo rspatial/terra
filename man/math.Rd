@@ -102,8 +102,10 @@ y <- which.max(s)
 ### SpatExtent methods
 x <- ext(0.1, 2.2, 0, 3)
 y <- ext(-2, 1, -2,2)
+# union
 x + y
-x - y
+# intersection
+x * y
 
 e <- x %% 2
 e

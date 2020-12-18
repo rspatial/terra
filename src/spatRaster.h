@@ -417,7 +417,7 @@ class SpatRaster {
 
 		// gdal source
 		std::vector<double> readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols, int lyr = -1);
-		std::vector<double> readGDALsample(unsigned src, int srows, int scols);
+		std::vector<double> readGDALsample(unsigned src, size_t srows, size_t scols);
 		std::vector<std::vector<double>> readRowColGDAL(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
 		bool readStartGDAL(unsigned src);
@@ -426,7 +426,7 @@ class SpatRaster {
 
 		bool setWindow(SpatExtent x);
 		bool removeWindow();
-		bool hasWindow();
+		std::vector<bool> hasWindow();
 
 		void openFS(std::string const &filename);
 

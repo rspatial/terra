@@ -155,6 +155,30 @@ bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string 
 }
 
 
+void stat_options(int sstat, bool &compute_stats, bool &gdal_stats, bool &gdal_minmax, bool &gdal_approx) {
+	compute_stats = true;
+	gdal_stats  = true;
+	gdal_minmax = false;
+	if (sstat == 1) {
+		gdal_stats = false;
+	} else if (sstat == 2) {
+		gdal_stats = true;
+		gdal_approx = true;
+	} else if (sstat == 3) {
+		gdal_stats = true;
+		gdal_approx = false;
+	} else if (sstat == 4) {
+		gdal_minmax = true;
+		gdal_approx = true;
+	} else if (sstat == 5) {
+		gdal_minmax = true;
+		gdal_approx = false;
+	} else {
+		compute_stats = false;
+	}
+}	
+
+
 
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
@@ -217,28 +241,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return(false);			
 	}
 
-	int sstat = opt.get_statistics();
-	compute_stats = true;
-	gdal_stats  = true;
-	gdal_minmax = false;
-	if (sstat == 1) {
-		gdal_stats = false;
-	} else if (sstat == 2) {
-		gdal_stats = true;
-		gdal_approx = true;
-	} else if (sstat == 3) {
-		gdal_stats = true;
-		gdal_approx = false;
-	} else if (sstat == 4) {
-		gdal_minmax = true;
-		gdal_approx = true;
-	} else if (sstat == 5) {
-		gdal_minmax = true;
-		gdal_approx = false;
-	} else if (sstat == 6) {
-		compute_stats = false;
-	}
-	
+	stat_options(opt.get_statistics(), compute_stats, gdal_stats, gdal_minmax, gdal_approx);
 
     #ifdef useRcpp
 	if (opt.verbose) {

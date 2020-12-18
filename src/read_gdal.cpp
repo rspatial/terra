@@ -581,6 +581,11 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 
 void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols) {
 
+	if (source[src].hasWindow) { // ignoring the expanded case.
+		row = row + source[src].window.off_row;
+		col = col + source[src].window.off_col;
+	}
+
 	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
@@ -654,11 +659,18 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 
 
 std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols, int lyr) {
 
+
 	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
 		return errout;
 	}
+
+	if (source[src].hasWindow) { // ignoring the expanded case.
+		row = row + source[src].window.off_row;
+		col = col + source[src].window.off_col;
+	}
+
 
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
@@ -717,13 +729,23 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_6
 
 
 
-std::vector<double> SpatRaster::readGDALsample(unsigned src, int srows, int scols) {
+std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_t scols) {
 
 	std::vector<double> errout;
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
 		return errout;
 	}
+
+	size_t row =0, col=0, nrows=nrow(), ncols=ncol();
+	if (source[src].hasWindow) {
+		row = row + source[0].window.off_row;
+		col = col + source[0].window.off_col;
+		nrows -= row;
+		ncols -= col;
+		srows = std::min(srows, nrows);
+		scols = std::min(scols, ncols);
+	} 
 
     GDALDataset *poDataset;
 	GDALRasterBand *poBand;
@@ -751,9 +773,9 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, int srows, int scol
 	}
 		
 	if (panBandMap.size() > 0) {
-		err = poDataset->RasterIO(GF_Read, 0, 0, ncol(), nrow(), &out[0], scols, srows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
+		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], scols, srows, GDT_Float64, nl, &panBandMap[0], 0, 0, 0, NULL);
 	} else {
-		err = poDataset->RasterIO(GF_Read, 0, 0, ncol(), nrow(), &out[0], scols, srows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);	
+		err = poDataset->RasterIO(GF_Read, col, row, ncols, nrows, &out[0], scols, srows, GDT_Float64, nl, NULL, 0, 0, 0, NULL);	
 	}
 	if (err == CE_None ) { 
 		for (size_t i=0; i<nl; i++) {

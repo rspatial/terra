@@ -42,7 +42,7 @@ setMethod("Arith", signature(e1="SpatExtent", e2="numeric"),
 			e1[4] <- my + dy/(2*e2[4])	
 			e1 <- ext(e1)
 		} else {
-			error(oper, "only +, - and %% are supported")
+			error(oper, "only +, -, *, / and %% are supported")
 		}
 		if (!e1@ptr$valid) {
 			error(oper, "this would create an invalid extent")
@@ -59,14 +59,14 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 		e1 = ext(as.vector(e1)) # deep copy
 		if (oper == "+") { 
 			e1@ptr$unite(e2@ptr)
-		} else if (oper == "-") {
+		} else if (oper == "*") {
 			e1@ptr$intersect(e2@ptr)
 		} else if (oper == "/") {
 			d <- c(diff(e1[1:2]) / diff(e2[1:2]), diff(e1[3:4]) / diff(e2[3:4])) 
 			names(d) <- c("x", "y")
 			return(d)
 		} else {
-			error(oper, "only +, - and %% are supported")
+			error(oper, "only +, *, and / are supported")
 		}
 		if (!e1@ptr$valid) {
 			error(oper, "this would create an invalid extent")

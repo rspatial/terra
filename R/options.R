@@ -32,7 +32,7 @@
 	
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
-		warn("write options", "unknown option(s):", bad)
+		error("write", "unknown option(s):", bad)
 	}
 		
 	if (any(s)) {
