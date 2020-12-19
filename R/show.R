@@ -25,26 +25,20 @@ printDF <- function(object, n=6, first=FALSE) {
 	if (ncol(h) > 10) {
 		h <- h[, 1:10]
 	}
-	if (first) {
-		fcol <- h[,1,drop=FALSE]
-		h <- h[,-1,drop=FALSE]
-		cls <- cls[-1]
-	}
 	h <- rbind(h[1,,drop=FALSE], h)
 	h[1,] <- cls
 	if (nrow(h) < d[1]) {
 		h <- rbind(h, "...")
 	}
 	if (first) {
-		nrh <- nrow(h)
-		nrf <- nrow(fcol)
-		if (nrf < nrh) {
-			fcol[3:nrh,] <- ""
-		}
-		h <- cbind(fcol, h)
+		h <- cbind("", h)
+		colnames(h)[1] <- "names       :"
+		h[1,1] <- "type        :"
+		h[2,1] <- "values      :"
 	}
 	print(h, row.names = FALSE)
 }
+
 
 setMethod ("show" , "Rcpp_SpatDataFrame", 
 	function(object) {
@@ -82,11 +76,7 @@ setMethod ("show" , "SpatVector",
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		cat(" coord. ref. :", .proj4(object), "\n")
 		if (all(d > 0)) {
-			dd <- as.data.frame(object)[1:3, ]
-			dd <- cbind("", dd)
-			colnames(dd)[1] <- "names       :"
-			dd[[1]][1] <- "type        :"
-			dd[[1]][2] <- "values      :"
+			dd <- as.data.frame(object)
 			printDF(dd, 3, TRUE)
 		}
 	}
