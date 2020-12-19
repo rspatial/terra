@@ -194,15 +194,21 @@ SpatRaster SpatRaster::rst_area(bool adjust, SpatOptions &opt) {
 		SpatRaster onecol = out.crop(e, "near", optint);
 		SpatOptions popt(opt);
 		SpatVector p = onecol.as_polygons(false, false, false, false, popt);
+		if (p.hasError()) {
+			out.setError(p.getError());
+			return out;
+		}
 		std::vector<double> a = p.area();
+		size_t nc = ncol();
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
 			for (size_t j=0; j<out.bs.nrows[i]; j++) {
 				size_t r = out.bs.row[i] + j;
-				v.insert(v.end(), ncol(), a[r]);
+				v.insert(v.end(), nc, a[r]);
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		}
+
 	} else if (adjust) {
 		SpatExtent extent = getExtent();
 		double dy = yres() / 2;

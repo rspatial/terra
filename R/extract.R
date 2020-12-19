@@ -60,7 +60,7 @@ function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE, 
 				if (!list) {
 					v <- e[[i+1]] + 1
 					if (!(is.null(fun))) {
-						if (max(abs(a - trunc(a)), na.rm=T) > 0) {
+						if (max(abs(v - trunc(v)), na.rm=T) > 0) {
 							next
 						}
 					}
@@ -89,15 +89,14 @@ function(x, i, j, ... , drop=FALSE) {
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, ...) { 
 	.checkXYnames(colnames(y))	
-	if (length(list(...)) == 0) {
-		i <- cellFromXY(x, y)
-		r <- cbind(1:length(i), x[i])
-		colnames(r) <- c("ID", names(x))
-		r
-	} else {
-		y <- vect(y)
-		extract(x, y, ...)
-	}
+	#if (length(list(...)) == 0) {
+	#	i <- cellFromXY(x, y)
+	#	r <- cbind(1:length(i), x[i])
+	#	colnames(r) <- c("ID", names(x))
+	#} else {
+	y <- vect(y)
+	extract(x, y)[,-1,drop=FALSE]
+	#}
 })
 
 
@@ -113,8 +112,7 @@ function(x, y, ...) {
 setMethod("extract", signature(x="SpatRaster", y="numeric"), 
 function(x, y, ...) { 
 	y <- as.integer(y)
-	y[y < 1] <- NA
-	y[y > ncell(x)] <- NA
+	y[(y < 1) | (y > ncell(x))] <- NA
 	x[y]
 })
 
@@ -126,66 +124,38 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatRaster", "logical", "missing"),
 function(x, i, j, ... , drop=FALSE) {
-	v <- values(x)[as.logical(i), ]
-	if (drop) {
-		as.vector(v)
-	} else {
-		v
-	}
+	x[which(i),, drop=drop]
 })
 
 
+extract_cell <- function(x, cells, drop=FALSE) {
+	e <- x@ptr$extractCell(cells-1)
+	messages(x, "[")
+	e <- do.call(cbind, e)
+	colnames(e) = names(x)
+	.makeDataFrame(x, e)[,,drop]
+}
+
 setMethod("[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=FALSE) {
-	if (any(stats::na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
 	if (nargs() > 2) {
-		i <- cellFromRowCol(x, i, 1:ncol(x))
-		# probably better to do return( readValues(x, i-1) )
+		i <- cellFromRowColCombine(x, i, 1:ncol(x))
 	} 
-	i[i<1] <- NA
-	r <- x@ptr$extractCell(i-1)
-	messages(x, "[")
-	if (drop) {
-		r
-	} else {
-		r <- do.call(cbind, r)
-		colnames(r) = names(x)
-		r
-	}
+	extract_cell(x, i, drop)
 })
 
 setMethod("[", c("SpatRaster", "missing", "numeric"),
 function(x, i, j, ... ,drop=FALSE) {
-	i <- cellFromRowCol(x, 1:nrow(x), j)
-	if (any(stats::na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
-	
-	r <- x@ptr$extractCell(i-1)
-	messages(x, "[")
-	if (drop) {
-		r
-	} else {
-		r <- do.call(cbind, r)
-		colnames(r) = names(x)
-		r
-	}
+	i <- cellFromRowColCombine(x, 1:nrow(x), j)
+	extract_cell(x, i, drop)
 })
 
 
 setMethod("[", c("SpatRaster", "numeric", "numeric"),
 function(x, i, j, ..., drop=FALSE) {
 	i <- cellFromRowColCombine(x, i, j)
-	if (any(stats::na.omit(i) > 2^.Machine$double.digits)) .big_number_warning()
-	r <- x@ptr$extractCell(i-1)
-	messages(x, "[")
-	if (drop) {
-		r
-	} else {
-		r <- do.call(cbind, r)
-		colnames(r) = names(x)
-		r
-	}
+	extract_cell(x, i, drop)
 })
-
 
 
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),

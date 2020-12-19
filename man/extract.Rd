@@ -23,7 +23,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 } 
 
 \usage{
-\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE, factors=FALSE)
+\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE, factors=TRUE)
 
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 

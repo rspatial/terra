@@ -529,8 +529,6 @@ bool SpatRaster::readStopGDAL(unsigned src) {
 }
 
 
-//#include <iostream>
-//#include "Rcpp.h"
 
 void NAso(std::vector<double> &d, size_t n, const std::vector<double> &flags, const std::vector<double> &scale, const std::vector<double>  &offset, const std::vector<bool> &haveso, const bool haveUserNAflag, const double userNAflag){
 	size_t nl = flags.size();

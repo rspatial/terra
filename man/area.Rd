@@ -39,7 +39,6 @@ The perimeter method works only on SpatVector objects, and computes the length o
 area or perimeter in m2
 }
 
-
 \examples{
 
 ### SpatRaster 

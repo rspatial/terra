@@ -1656,8 +1656,10 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	SpatVector vect;
 	opt.ncopies = 12;
 	if (!canProcessInMemory(opt)) {
-		vect.setError("the raster is too large");
-		return vect;
+		if (ncell() > 1000000) { // for testing with canPIM=false
+			vect.setError("the raster is too large");
+			return vect;
+		}
 	}
 
 	bool remove_values = false;
