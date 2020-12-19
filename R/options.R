@@ -106,6 +106,13 @@ spatOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
 		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))
 	}
 }
+
+
+.default_option_names <- function() {
+	c("datatype", "filetype", "verbose") 
+}
+
+
  
 terraOptions <- function(...) {
 	dots <- list(...)
@@ -113,7 +120,16 @@ terraOptions <- function(...) {
 	if (length(dots) == 0) {
 		.showOptions(opt)
 	} else {
-		opt <- .setOptions(opt, dots)			
+		nms <- names(dots)
+		d <- nms %in% .default_option_names()
+		dnms <- paste0("def_", nms)
+		for (i in 1:length(nms)) {
+			if (d) {
+				opt[[ dnms[i] ]] <- dots[[ i ]]
+			} else {
+				opt[[ nms[i] ]] <- dots[[ i ]]			
+			}
+		}
 		.terra_environment$options@ptr <- opt
 	}
 }

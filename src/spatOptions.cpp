@@ -47,9 +47,16 @@ SpatOptions SpatOptions::deepCopy(const SpatOptions &opt) {
 //void SpatOptions::set_bandorder(std::string d) { bandorder = d; }
 //std::string SpatOptions::get_bandorder() {if (bandorder != "") {return bandorder;} else {return def_datatype;}}
 
-void SpatOptions::set_def_datatype(std::string d) { def_datatype = d; }
+void SpatOptions::set_def_datatype(std::string d) { 
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" } ;
+	if (is_in_vector(d, ss)) def_datatype = d; 
+}
 std::string SpatOptions::get_def_datatype() { return def_datatype; }
-void SpatOptions::set_datatype(std::string d) { datatype = d; }
+
+void SpatOptions::set_datatype(std::string d) { 
+	std::vector<std::string> ss = {"INT1U", "INT2U", "INT4U", "INT2S", "INT4S", "FLT4S", "FLT8S" };
+	if (is_in_vector(d, ss)) datatype = d; 
+}
 std::string SpatOptions::get_datatype() {if (datatype != "") {return datatype;} else {return def_datatype;}}
 
 void SpatOptions::set_def_filetype(std::string d) { def_filetype = d; }
