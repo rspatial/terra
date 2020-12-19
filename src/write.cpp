@@ -118,8 +118,6 @@ bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
 
 
 
-
-
 SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 // here we could check if we can simple make a copy if
@@ -184,9 +182,10 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			return out;
 		}
 	}
-	if (!out.writeStopGDAL()) {
-		out.setError("cannot close file");
-	}
+	out.writeStopGDAL();
+	//if (!out.writeStopGDAL()) {
+	//	out.setError("cannot close file");
+	//}
 	readStop();
 	return out;
 }

@@ -98,6 +98,8 @@ bool can_write(std::string filename, bool overwrite, std::string &msg) {
 				msg = ("cannot overwrite existing file");
 				return false;
 			}
+			std::string aux = filename + ".aux.xml";
+			remove(aux.c_str());
 		} else {
 			msg = "file exists";
 			return false;

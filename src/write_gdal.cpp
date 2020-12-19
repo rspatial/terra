@@ -115,10 +115,7 @@ SpatDataFrame grayColorTable() {
 
 bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string &filename, std::string &datatype) {
 	
-	if (driver == "AAIGrid" && nlyr() > 1) {
-		setError("AAIGrid can only have one layer");
-		return false;
-	} else if (driver == "BMP") {
+	if (driver == "BMP") {
 		if (nlyr() != 1) {
 			if (nlyr() == 3) {
 				setError("Only single layer BMP writing is currently supported");
@@ -207,8 +204,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError(errmsg);
 		return(false);
 	}
-	std::string aux = filename + ".aux.xml";
-	remove(aux.c_str());
 		
 	std::vector<bool> hasCT = hasColors();
 	std::vector<bool> hasCats = hasCategories();
@@ -281,6 +276,10 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
     char **papszMetadata;
     papszMetadata = poDriver->GetMetadata();
 
+    if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE)) {
+		setError(driver + " is not a raster format");
+		return false;
+	}
 	//bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
 
     if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
@@ -298,9 +297,15 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		}
 	} else {
 		setError("cannot write this format: "+ driver);
+		CSLDestroy( papszOptions );
 		return false;
 	}
 	CSLDestroy( papszOptions );
+	if (poDS == NULL) {
+		setError("failed writing "+ driver + " file");
+		GDALClose( (GDALDatasetH) poDS );
+		return false;		
+	}
 
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
@@ -542,10 +547,17 @@ bool SpatRaster::writeStopGDAL() {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;
 		poDriver = GetGDALDriverManager()->GetDriverByName(copy_driver.c_str());
-		copy_driver = "";		
 		if (copy_filename == "") {
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
 				source[0].gdalconnection, FALSE, NULL, NULL, NULL);
+			if( newDS == NULL )  {
+				setError("copy create failed for "+ copy_driver);
+				copy_driver = "";
+				GDALClose( (GDALDatasetH) newDS );
+				GDALClose( (GDALDatasetH) source[0].gdalconnection );
+				return false;		
+			}
+			copy_driver = "";
 			GDALClose( (GDALDatasetH) newDS );
 			GDALClose( (GDALDatasetH) source[0].gdalconnection );
 		} else {
@@ -554,13 +566,23 @@ bool SpatRaster::writeStopGDAL() {
 			oldDS = (GDALDataset *) GDALOpen(copy_filename.c_str(), GA_ReadOnly );
 			if( oldDS == NULL )  {
 				setError("something went terribly wrong");
+				GDALClose( (GDALDatasetH) oldDS );
 				return false;
 			}
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
 				oldDS, FALSE, NULL, NULL, NULL);
+			if( newDS == NULL )  {
+				setError("copy create failed for "+ copy_driver);
+				copy_driver = "";
+				copy_filename = "";
+				GDALClose( (GDALDatasetH) oldDS );
+				GDALClose( (GDALDatasetH) newDS );
+				return false;		
+			}
+			copy_driver = "";
+			copy_filename = "";
 			GDALClose( (GDALDatasetH) oldDS );
 			GDALClose( (GDALDatasetH) newDS );
-			copy_filename = "";
 		}
 	} else {
 		GDALClose( (GDALDatasetH) source[0].gdalconnection );
