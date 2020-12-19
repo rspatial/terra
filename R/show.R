@@ -11,7 +11,7 @@ setMethod ("show" , "Rcpp_SpatCategories",
 )
 
 
-printDF <- function(object, n=6) {
+printDF <- function(object, n=6, first=FALSE) {
 	d <- dim(object)
 	if (d[2] < 1) return()
 	cls <- sapply(object, class)
@@ -25,10 +25,23 @@ printDF <- function(object, n=6) {
 	if (ncol(h) > 10) {
 		h <- h[, 1:10]
 	}
+	if (first) {
+		fcol <- h[,1,drop=FALSE]
+		h <- h[,-1,drop=FALSE]
+		cls <- cls[-1]
+	}
 	h <- rbind(h[1,,drop=FALSE], h)
 	h[1,] <- cls
 	if (nrow(h) < d[1]) {
 		h <- rbind(h, "...")
+	}
+	if (first) {
+		nrh <- nrow(h)
+		nrf <- nrow(fcol)
+		if (nrf < nrh) {
+			fcol[3:nrh,] <- ""
+		}
+		h <- cbind(fcol, h)
 	}
 	print(h, row.names = FALSE)
 }
@@ -62,20 +75,19 @@ setMethod ("show" , "SpatExtent",
 setMethod ("show" , "SpatVector", 
 	function(object) {
 		e <- as.vector(ext(object))
-		cat("class       :", class(object), "\n")
-		cat("geometry    :", geomtype(object), "\n")
+		cat(" class       :", class(object), "\n")
+		cat(" geometry    :", geomtype(object), "\n")
 		d <- dim(object)
-		cat("dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" ) 
-		cat("extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
-		cat("coord. ref. :", .proj4(object), "\n")
+		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" ) 
+		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+		cat(" coord. ref. :", .proj4(object), "\n")
 		if (all(d > 0)) {
-			if (d[1] > 6) {
-				cat("first values:\n") 
-			} else {
-				cat("values      :\n") 		
-			}
-			cat("first values:\n")
-			printDF(as.data.frame(object), 3)
+			dd <- as.data.frame(object)[1:3, ]
+			dd <- cbind("", dd)
+			colnames(dd)[1] <- "names       :"
+			dd[[1]][1] <- "type        :"
+			dd[[1]][2] <- "values      :"
+			printDF(dd, 3, TRUE)
 		}
 	}
 )

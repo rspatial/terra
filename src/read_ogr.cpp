@@ -312,12 +312,9 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		char *psz = NULL;
 		std::string errmsg;
 		OGRErr err = poSRS->exportToWkt(&psz);
-		if (is_ogr_error(err, errmsg)) {
-			setError(errmsg);
-			CPLFree(psz);
-			return false;
+		if (err == OGRERR_NONE) {
+			crs = psz;
 		}
-		crs = psz;
 		setSRS(crs);
 		CPLFree(psz);
 	}
