@@ -114,28 +114,8 @@ SpatDataFrame grayColorTable() {
 
 
 bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string &filename, std::string &datatype) {
-	
-	if (driver == "BMP") {
-		if (nlyr() != 1) {
-			if (nlyr() == 3) {
-				setError("Only single layer BMP writing is currently supported");
-				return false;
-			} else {
-				setError("For BMP, the SpatRaster must have 1 or 3 layers (3 is not currently supported)");
-				return false;
-			}
-		}
-		/*
-		std::vector<bool> hasCT = hasColors();
-		if (!hasCT[0]) {
-			SpatDataFrame ctab = grayColorTable();
-			setColors(0, ctab);
-			hasCT[0] = true;
-		} */
-		datatype = "INT1U";
-	} else if (driver == "JPEG2000") {
-		datatype = "INT2U";	
-	} else if (driver == "SAGA") {
+
+	if (driver == "SAGA") {
 		std::string ext = getFileExt(filename);
 		if (ext != ".sdat") {
 			setError("SAGA filenames must end on '.sdat'");
@@ -200,10 +180,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return false;
 	}
 	std::string errmsg;
-	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
-		setError(errmsg);
+	if (file_exists(filename) & (!opt.get_overwrite())) {
+		setError("file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return(false);
 	}
+//	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+//		setError(errmsg);
+//		return(false);
+//	}
 		
 	std::vector<bool> hasCT = hasColors();
 	std::vector<bool> hasCats = hasCategories();
@@ -232,30 +216,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	std::string dname = dirname(filename);
 	GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
 	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
-		setError("insufficient disk space (perhaps from temporary file)");
+		setError("insufficient disk space (perhaps from temporary files?)");
 		return(false);			
 	}
 
 	stat_options(opt.get_statistics(), compute_stats, gdal_stats, gdal_minmax, gdal_approx);
-
-    #ifdef useRcpp
-	if (opt.verbose) {
-		double gb = 1073741824 / 8;
-		Rcpp::Rcout<< "filename      : " << filename << std::endl;
-		Rcpp::Rcout<< "compute stats : " << compute_stats;
-		if (compute_stats) {
-			Rcpp::Rcout << ", GDAL: "   << gdal_stats << ", minmax: " 
-			<< gdal_minmax << ", approx: " << gdal_approx;
-		} 
-		Rcpp::Rcout << std::endl;
-
-		Rcpp::Rcout<< "driver        : " << driver   << std::endl;
-		if (diskAvailable > 0) {
-			Rcpp::Rcout<< "disk available: " << roundn(diskAvailable / gb, 1) << " GB" << std::endl;
-		}
-		Rcpp::Rcout<< "disk needed   : " << roundn(diskNeeded / gb, 1) << " GB" << std::endl;
-	}
-	#endif
 
     GDALDriver *poDriver;
     poDriver = GetGDALDriverManager()->GetDriverByName(driver.c_str());
@@ -264,7 +229,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return (false);
 	}
 
-	GDALDataset *poDS;
 	char **papszOptions = NULL;
 	for (size_t i=0; i<opt.gdal_options.size(); i++) {
 		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
@@ -282,6 +246,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 	//bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
 
+	GDALDataset *poDS;
     if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
 		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 	} else if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
@@ -300,12 +265,44 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		CSLDestroy( papszOptions );
 		return false;
 	}
+	
 	CSLDestroy( papszOptions );
 	if (poDS == NULL) {
 		setError("failed writing "+ driver + " file");
 		GDALClose( (GDALDatasetH) poDS );
 		return false;		
 	}
+
+    #ifdef useRcpp
+	if (opt.verbose) {
+		double gb = 1073741824 / 8;
+		char **filelist = poDS->GetFileList();
+		std::vector <std::string> files;
+		if (filelist != NULL) {
+			for (size_t i=0; filelist[i] != NULL; i++) {
+				files.push_back(filelist[i]);
+				std::replace( files[i].begin(), files[i].end(), '\\', '/'); 
+			}
+		}
+		CSLDestroy( filelist );
+		for (size_t i=0; i<files.size(); i++) {
+			Rcpp::Rcout<< "filename      : " << files[i] << std::endl;
+		}
+		Rcpp::Rcout<< "compute stats : " << compute_stats;
+		if (compute_stats) {
+			Rcpp::Rcout << ", GDAL: "   << gdal_stats << ", minmax: " 
+			<< gdal_minmax << ", approx: " << gdal_approx;
+		} 
+		Rcpp::Rcout << std::endl;
+
+		Rcpp::Rcout<< "driver        : " << driver   << std::endl;
+		if (diskAvailable > 0) {
+			Rcpp::Rcout<< "disk available: " << roundn(diskAvailable / gb, 1) << " GB" << std::endl;
+		}
+		Rcpp::Rcout<< "disk needed   : " << roundn(diskNeeded / gb, 1) << " GB" << std::endl;
+	}
+	#endif
+
 
 	if (opt.names.size() == nlyr()) {
 		setNames(opt.names);
@@ -551,7 +548,7 @@ bool SpatRaster::writeStopGDAL() {
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
 				source[0].gdalconnection, FALSE, NULL, NULL, NULL);
 			if( newDS == NULL )  {
-				setError("copy create failed for "+ copy_driver);
+				setError("mem copy create failed for "+ copy_driver);
 				copy_driver = "";
 				GDALClose( (GDALDatasetH) newDS );
 				GDALClose( (GDALDatasetH) source[0].gdalconnection );
@@ -565,7 +562,9 @@ bool SpatRaster::writeStopGDAL() {
 			GDALDataset *oldDS;
 			oldDS = (GDALDataset *) GDALOpen(copy_filename.c_str(), GA_ReadOnly );
 			if( oldDS == NULL )  {
-				setError("something went terribly wrong");
+				setError("file copy create failed for "+ copy_driver);
+				copy_driver = "";
+				copy_filename = "";
 				GDALClose( (GDALDatasetH) oldDS );
 				return false;
 			}
