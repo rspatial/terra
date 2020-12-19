@@ -246,7 +246,7 @@ setMethod("rast", signature(x="Raster"),
 setMethod("rast", signature(x="matrix"),
 	function(x, type="", crs="", ...) {
 		if (type == "xyz") {
-			r <- .rastFromXYZ(x, ...)
+			r <- .rastFromXYZ(x, crs=crs, ...)
 		} else {
 			r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(c(0, ncol(x), 0, nrow(x))), crs=crs, ...)
 			values(r) <- t(x)
