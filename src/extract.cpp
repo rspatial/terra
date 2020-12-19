@@ -562,17 +562,18 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 	std::vector<std::vector<int_64>> rc, wrc;
 	rc = rowColFromCell(cell);	
 
-	unsigned n  = cell.size();
-	unsigned nc = ncell();
+	size_t n  = cell.size();
 	std::vector<std::vector<double>> out(nlyr(), std::vector<double>(n, NAN));
 	if (!hasValues()) return out;
 
 	unsigned ns = nsrc();
 	unsigned lyr = 0;
+	size_t nc;
 	for (size_t src=0; src<ns; src++) {
 		unsigned slyrs = source[src].layers.size();
 		bool win = source[src].hasWindow;
 		if (win) {
+			nc = source[src].window.full_ncol * source[src].window.full_nrow;
 			wrc = rc;
 			wcell.reserve(cell.size());
 			for (size_t i=0; i<cell.size(); i++) {
@@ -584,6 +585,8 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 					wcell.push_back( wrc[0][i] * source[src].window.full_ncol + wrc[1][i] );
 				}
 			}
+		} else {
+			nc = ncell();	
 		}
 		if (source[src].memory) {
 			for (size_t i=0; i<slyrs; i++) {

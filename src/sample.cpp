@@ -19,7 +19,8 @@
 #include "spatRaster.h"
 
 
-void getSampleRowCol(std::vector<uint_64> &oldrow, std::vector<uint_64> &oldcol, uint_64 nrows, uint_64 ncols, unsigned snrow, unsigned sncol) {
+void getSampleRowCol(std::vector<size_t> &oldrow, std::vector<size_t> &oldcol, size_t nrows, size_t ncols, size_t snrow, size_t sncol) {
+	
 	double rf = nrows / (double)(snrow);
 	double cf = ncols / (double)(sncol);
 	//double rstart = std::floor(0.5 * rf);
@@ -40,7 +41,7 @@ void getSampleRowCol(std::vector<uint_64> &oldrow, std::vector<uint_64> &oldcol,
 std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigned scols) {
 
 	unsigned nl = source[src].nlyr;
-	std::vector<uint_64> oldcol, oldrow, woldcol, woldrow;
+	std::vector<uint_64> oldcol, oldrow;
 	std::vector<double>	out; 
 	getSampleRowCol(oldrow, oldcol, nrow(), ncol(), srows, scols);
 
@@ -48,24 +49,24 @@ std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigne
 	if (source[src].hasWindow) {
 		size_t offrow = source[src].window.off_row;
 		size_t offcol = source[src].window.off_col;
-		size_t fullnrow = source[src].window.full_nrow;
-		unsigned oldnc = fullnrow * source[src].window.full_ncol;
+		size_t fncol = source[src].window.full_ncol;
+		size_t oldnc = fncol * source[src].window.full_nrow;
 		for (size_t lyr=0; lyr<nl; lyr++) {
-			size_t old_offset = lyr * oldnc;
+			size_t off1 = lyr * oldnc;
 			for (size_t r=0; r<srows; r++) {
-				unsigned oldc = old_offset + (oldrow[r]+ offrow) * fullnrow;
+				size_t off2 = off1 + (oldrow[r]+offrow) * fncol;
 				for (size_t c=0; c<scols; c++) {
-					unsigned oldcell = oldc + oldcol[c]+ offcol;
+					size_t oldcell = off2 + oldcol[c] + offcol;
 					out.push_back(source[src].values[oldcell]);
 				}
 			}
-		}		
+		}
 	} else {
 		unsigned oldnc = ncell();
 		for (size_t lyr=0; lyr<nl; lyr++) {
-			size_t old_offset = lyr * oldnc;
+			size_t off = lyr * oldnc;
 			for (size_t r=0; r<srows; r++) {
-				unsigned oldc = old_offset + oldrow[r] * ncol();
+				unsigned oldc = off + oldrow[r] * ncol();
 				for (size_t c=0; c<scols; c++) {
 					unsigned oldcell = oldc + oldcol[c];
 					out.push_back(source[src].values[oldcell]);

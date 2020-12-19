@@ -199,7 +199,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 	RasterSource s;
-	s.values.resize(0);
+	//s.values.resize(0);
 	s.nrow = nrow();
 	s.ncol = ncol();
 	s.extent = getExtent();
@@ -220,6 +220,9 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 	std::vector<std::string> nms;
 	if (keepnlyr) {
 		nms = getNames();
+		if (hasTime()) {
+			s.time = getTime();
+		}
 	} else {
 		for (size_t i=0; i < s.nlyr; i++) {
 			nms.push_back("lyr" + std::to_string(i+1));

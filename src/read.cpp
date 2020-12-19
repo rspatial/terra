@@ -90,14 +90,12 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row,
 	size_t nl = source[src].nlyr;
 	
 	if (source[src].hasWindow) {
-		Rcpp::Rcout << row << std::endl;
 		row += source[src].window.off_row;
 		col += source[src].window.off_col;
 		size_t endrow = row + nrows;
 		size_t endcol = col + ncols;
 		size_t nc = source[src].window.full_ncol;
 		double ncells = source[src].window.full_nrow * nc;
-		Rcpp::Rcout << row << std::endl;
 
 		for (size_t lyr=0; lyr < nl; lyr++) {
 			size_t add = ncells * lyr;

@@ -17,7 +17,7 @@ Plot the values of a SpatRaster to make a map
      pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
      colNA=NULL, alpha=NULL, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, main, nc, nr, maxnl=16, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, main, mar=NULL, nc, nr, maxnl=16, ...)
 }
 
 \arguments{
@@ -25,7 +25,8 @@ Plot the values of a SpatRaster to make a map
   \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
   \item{col}{character. Colors}
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval"}
-  \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is c(3.1, 3.1, 2.1, 7.1) for a plot with a legend. Use \code{mar=NA} to not set the margins}
+  \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. When multiple layers are plotted, the defaults are 
+  Use \code{mar=NA} to not set the margins}
   \item{legend}{logical. Draw a legend?}
   \item{axes}{logical. Draw axes?}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}}

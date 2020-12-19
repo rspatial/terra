@@ -353,9 +353,9 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		old.par <- graphics::par(no.readonly = TRUE) 
 		on.exit(graphics::par(old.par))
 		if (is.null(mar)) {
-			mar=c(1, 1, 1, 2)
+			mar=c(1.5, 1.5, 1.5, 3)
 		}
-		graphics::par(mfrow=nrnc, mar=mar)
+		graphics::par(mfrow=nrnc)
 		maxcell=maxcell/(nl/2)
 			
 		if (missing("main")) {
@@ -365,7 +365,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		for (i in 1:nl) {
-			plot(x, i, main=main[i], ...)
+			plot(x, i, main=main[i], mar=mar, ...)
 		}
 	}
 )

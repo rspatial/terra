@@ -187,7 +187,7 @@ SpatRaster SpatRaster::rst_area(bool adjust, SpatOptions &opt) {
 	SpatRaster out = geometry(1);
   	if (!out.writeStart(opt)) { return out; }
 
-	if (m == 0) { 
+	if (m == 0) { //lonlat
 		SpatExtent extent = getExtent();
 		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions optint(opt);

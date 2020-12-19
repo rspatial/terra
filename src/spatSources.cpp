@@ -164,11 +164,16 @@ std::vector<unsigned> SpatRaster::sourcesFromLyrs(std::vector<unsigned> lyrs) {
 
 
 std::vector<double> RasterSource::getValues(unsigned lyr) {
-    unsigned nc = nrow * ncol;
-    unsigned start = lyr * nc;
-    unsigned stop = start + nc;
-    std::vector<double> out (values.begin()+start, values.begin()+stop);
-    return out;
+	size_t nc ;
+	if (hasWindow) {
+		nc = window.full_ncol * window.full_nrow;
+	} else {
+		nc = nrow * ncol;
+	}
+	size_t start = lyr * nc;
+	std::vector<double> out(values.begin()+start, values.begin()+start+nc);
+	return out;
+	
 }
 
 bool RasterSource::in_order() {

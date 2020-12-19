@@ -741,8 +741,6 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 	if (source[src].hasWindow) {
 		row = row + source[0].window.off_row;
 		col = col + source[0].window.off_col;
-		nrows -= row;
-		ncols -= col;
 		srows = std::min(srows, nrows);
 		scols = std::min(scols, ncols);
 	} 
