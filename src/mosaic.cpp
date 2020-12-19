@@ -1,3 +1,4 @@
+/*
 #include "spatRasterMultiple.h"
 
 std::vector<double> mean2d(const std::vector<std::vector<double>> &x) {
@@ -88,7 +89,7 @@ SpatRaster SpatRasterCollection::summary(std::string fun, SpatOptions &opt) {
 	return(out);
 }
 
-
+*/
 
 /// to be done
 /*

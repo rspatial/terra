@@ -129,7 +129,10 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
 
 	std::function<double(std::vector<double>&, bool)> fFun = getFun(fun);
 	std::vector<double> v;

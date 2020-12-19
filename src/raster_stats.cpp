@@ -183,7 +183,10 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 		out.setError(getError());
 		return(out);
 	}
-  	if (!out.writeStart(opt)) { return out; }
+  	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
 	unsigned nl = nlyr();
 	std::vector<double> v(nl);
 

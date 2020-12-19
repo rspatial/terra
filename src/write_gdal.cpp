@@ -239,7 +239,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
     char **papszMetadata;
     papszMetadata = poDriver->GetMetadata();
-
     if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE)) {
 		setError(driver + " is not a raster format");
 		return false;

@@ -34,7 +34,16 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
         setError( driver + " driver not available");
         return poDS;
     }
-
+    char **papszMetadata;
+    papszMetadata = poDriver->GetMetadata();
+    if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_VECTOR, FALSE)) {
+		setError(driver + " is not a vector format");
+        return poDS;
+	}
+    if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+		setError("cannot create a "+ driver + " dataset");
+        return poDS;
+	}
     poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
     if( poDS == NULL ) {
         setError("Creation of output dataset failed" );

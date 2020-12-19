@@ -288,15 +288,18 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		bs.nrows.push_back(std::min(bs.nrows[bs.n-1], nrow()-lastrow));
 		bs.n += 1;
 	}
-
-	opt.steps = bs.n;
-	if (!out.writeStart(opt)) { return out; }
-
-	size_t nc = ncol();
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
 	}
+
+	opt.steps = bs.n;
+	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+
+	size_t nc = ncol();
 	for (size_t i = 0; i < bs.n; i++) {
         std::vector<double> vin = readValues(bs.row[i], bs.nrows[i], 0, nc);
 		std::vector<double> v  = compute_aggregates(vin, bs.nrows[i], nc, nlyr(), fact, agFun, narm);

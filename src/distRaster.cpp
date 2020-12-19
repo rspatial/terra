@@ -67,7 +67,11 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
- 	if (!out.writeStart(opt)) { return out; }
+	
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
 	for (size_t i = 0; i < out.bs.n; i++) {
 		double s = out.bs.row[i] * nc;
 		std::vector<double> cells(out.bs.nrows[i] * nc) ;
@@ -351,7 +355,10 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	
 	opt.set_filenames({filename});
 	
-  	if (!out.writeStart(opt)) { return out; }
+  	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
 	for (size_t i = out.bs.n; i>0; i--) {
         v = readBlock(out.bs, i-1);
 		std::reverse(v.begin(), v.end());
@@ -537,7 +544,10 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		return(out);
 	}
 
- 	if (!out.writeStart(opt)) { return out; }
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
 		std::vector<double> vv = do_edge(v, dim, classes, do_outer, directions);
