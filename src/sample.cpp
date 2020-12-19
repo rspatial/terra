@@ -38,10 +38,10 @@ void getSampleRowCol(std::vector<size_t> &oldrow, std::vector<size_t> &oldcol, s
 }
 
 
-std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigned scols) {
+std::vector<double> SpatRaster::readSample(unsigned src, size_t srows, size_t scols) {
 
 	unsigned nl = source[src].nlyr;
-	std::vector<uint_64> oldcol, oldrow;
+	std::vector<size_t> oldcol, oldrow;
 	std::vector<double>	out; 
 	getSampleRowCol(oldrow, oldcol, nrow(), ncol(), srows, scols);
 
@@ -81,8 +81,8 @@ std::vector<double> SpatRaster::readSample(unsigned src, unsigned srows, unsigne
 SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 
 	double f = std::min(1.0, sqrt(size / ncell()));
-	unsigned nr = ceil(nrow() * f);
-	unsigned nc = ceil(ncol() * f);
+	size_t nr = ceil(nrow() * f);
+	size_t nc = ceil(ncol() * f);
 	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
 		return( *this );
 	}
@@ -119,8 +119,8 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 	if (!source[0].hasValues) return (out);
 	
 	unsigned nsize;
-	unsigned nr = nrow();
-	unsigned nc = ncol();
+	size_t nr = nrow();
+	size_t nc = ncol();
 	if (size < ncell()) {
 		double f = sqrt(size / ncell());
 		nr = std::ceil(nrow() * f);

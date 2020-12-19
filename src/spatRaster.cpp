@@ -269,7 +269,7 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 }
 
 
-uint_64 SpatRaster::ncol() {
+size_t SpatRaster::ncol() {
 	if (source.size() > 0) {
 		return source[0].ncol;
 	} else {
@@ -277,7 +277,7 @@ uint_64 SpatRaster::ncol() {
 	}
 }
 
-uint_64 SpatRaster::nrow() {
+size_t SpatRaster::nrow() {
 	if (source.size() > 0) {
 		return source[0].nrow;
 	} else {
@@ -800,8 +800,8 @@ bool SpatRaster::setWindow(SpatExtent x) {
 	double yr = yres();
 
 	bool expand = false;
-	std::vector<uint_64> rc(2);
-	std::vector<uint_64> exp(4, 0);
+	std::vector<size_t> rc(2);
+	std::vector<size_t> exp(4, 0);
 
 	int_64 r = rowFromY(x.ymax - 0.5 * yr);
 	if (r < 0) {

@@ -412,17 +412,17 @@ void tmp_min_max_na(std::vector<T> &out, const std::vector<double> &v, const dou
 }
 
 
-bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols){
+bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
 
 	CPLErr err = CE_None;
 	double vmin, vmax;
-	uint_64 nc = nrows * ncols;
+	size_t nc = nrows * ncols;
 	size_t nl = nlyr();
 	std::string datatype = source[0].datatype;
 
 	if ((compute_stats) && (!gdal_stats)) {
 		for (size_t i=0; i < nl; i++) {
-			uint_64 start = nc * i;
+			size_t start = nc * i;
 			if (datatype == "INT4S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT32_MIN, (double)INT32_MAX);
 			} else if (datatype == "INT2S") {

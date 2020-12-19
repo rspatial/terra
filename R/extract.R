@@ -25,26 +25,53 @@
 	v
 }
 
+setlabs <- function(x, labs) {
+	x[ (x<1) | (x>length(labs))] <- NA
+	factor(labs[x], levels=labs)
+}
+
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE) { 
-	r <- x@ptr$extractVector(y@ptr, touches[1], method[1])
+function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE, factors=TRUE) { 
+	e <- x@ptr$extractVector(y@ptr, touches[1], method[1])
 	x <- messages(x, "extract")
 	#f <- function(i) if(length(i)==0) { NA } else { i }
-	#r <- rapply(r, f, how="replace")
+	#e <- rapply(e, f, how="replace")
 	if (!is.null(fun)) {
 		fun <- match.fun(fun) 
-	  	r <- rapply(r, fun, ...)
-		r <- matrix(r, nrow=nrow(y), byrow=TRUE)
-		colnames(r) <- names(x)
-		r <- cbind(ID=1:nrow(r), r)
+	  	e <- rapply(e, fun, ...)
+		e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+		colnames(e) <- names(x)
+		e <- cbind(ID=1:nrow(e), e)
 	} else if (!list) {
-		r <- lapply(1:length(r), function(i) cbind(ID=i, matrix(unlist(r[[i]]), ncol=length(r[[i]]))))
-		r <- do.call(rbind, r)
-		colnames(r)[-1] <- names(x)	
+		e <- lapply(1:length(e), function(i) cbind(ID=i, matrix(unlist(e[[i]]), ncol=length(e[[i]]))))
+		e <- do.call(rbind, e)
+		colnames(e)[-1] <- names(x)	
+	} 
+	if (factors) {
+		if (is.matrix(e)) {
+			e <- data.frame(e, check.names = FALSE)			
+		}
+		f <- is.factor(x)
+		if (any(f)) {
+			g <- cats(x)
+			for (i in which(f)) {
+				labs <- g[[i]]$labels
+				if (!list) {
+					v <- e[[i+1]] + 1
+					if (!(is.null(fun))) {
+						if (max(abs(a - trunc(a)), na.rm=T) > 0) {
+							next
+						}
+					}
+					e[[i+1]] <- setlabs(v, labs)
+				} else {
+					e[[i]] <- rapply(e[[i]], function(j) setlabs(j+1, labs), how="replace")
+				}
+			}
+		}
 	}
-	r
-
+	e
 })
 
 

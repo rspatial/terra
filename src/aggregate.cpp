@@ -277,12 +277,12 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	//bs.n = floor(nrow() / fact[0]); # ambiguous on solaris
 	bs.n = std::floor(static_cast <double> (nrow() / fact[0]));
 	
-	bs.nrows = std::vector<uint_64>(bs.n, fact[0]);
+	bs.nrows = std::vector<size_t>(bs.n, fact[0]);
 	bs.row.resize(bs.n);
 	for (size_t i =0; i<bs.n; i++) {
 		bs.row[i] = i * fact[0];
 	}
-	uint_64 lastrow = bs.row[bs.n - 1] + bs.nrows[bs.n - 1] + 1;
+	size_t lastrow = bs.row[bs.n - 1] + bs.nrows[bs.n - 1] + 1;
 	if (lastrow < nrow()) {
 		bs.row.push_back(lastrow);
 		bs.nrows.push_back(std::min(bs.nrows[bs.n-1], nrow()-lastrow));

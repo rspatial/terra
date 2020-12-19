@@ -23,7 +23,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 } 
 
 \usage{
-\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE)
+\S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE, factors=FALSE)
 
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 
@@ -33,14 +33,15 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \arguments{
 \item{x}{SpatRaster}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
-\item{fun}{character. function to summarize the data. Currently ignored}
+\item{fun}{function to summarize the data}
 \item{...}{additional arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix, and passed to `fun` if \code{y} is a SpatVector}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
 \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}
-\item{list}{logical. If \code{TRUE}, the output is simplified}
+\item{list}{logical. If \code{FALSE} the output is simplified to a matrix (if \code{fun=NULL})}
+\item{factors}{logical. If \code{TRUE} the categories are returned as factors instead of the numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors}
 }
 
-\value{data.frame}
+\value{matrix, list, or data.frame}
 
 \seealso{\link{values}}
 
@@ -83,11 +84,11 @@ y <- c(x,x*2,x*3)
 y[i]
 
 ## extract with a polygon
-#f <- system.file("ex/lux.shp", package="terra")
-#v <- vect(f)
-#z <- rast(v)
-#v <- v[1:2,]
-#values(z) <- 1:100
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+v <- v[1:2,]
+z <- rast(v, res=.1)
+values(z) <- 1:ncell(z)
 #e <- extract(z, v)
 #e
 #tapply(e[,2], e[,1], mean)

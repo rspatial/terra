@@ -22,7 +22,7 @@
 
 
 
-bool SpatRaster::writeValuesMem(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols) {
+bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols) {
 
 	if (vals.size() == size()) {
 		source[0].values = vals;
@@ -254,7 +254,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 
 
 
-bool SpatRaster::writeValues(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols) {
+bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols) {
 	bool success = true;
 
 	if (!source[0].open_write) {
@@ -299,7 +299,7 @@ std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
 }
 
 
-bool SpatRaster::writeValues2(std::vector<std::vector<double>> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols) {
+bool SpatRaster::writeValues2(std::vector<std::vector<double>> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols) {
     std::vector<double> vv = flatten(vals);
     return writeValues(vv, startrow, nrows, startcol, ncols);
 }

@@ -573,8 +573,8 @@ SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 	long ncl = ncol() * nlyr();
 
 	std::vector<double> v;
-	uint_64 r;
-	uint_64 nr = nrow();
+	size_t r;
+	size_t nr = nrow();
 	bool rowfound = false;
 	if (!readStart()) {
 		SpatRaster out;
@@ -595,7 +595,7 @@ SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 		return out;
 	}
 
-	uint_64 firstrow = std::max(r - padding, uint_64(0));
+	size_t firstrow = std::max(r - padding, size_t(0));
 
 	for (r=nrow()-1; r>firstrow; r--) {
 		v = readValues(r, 1, 0, ncol());
@@ -604,22 +604,22 @@ SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 		}
 	}
 
-	uint_64 lastrow = std::max(std::min(r+padding, nrow()), uint_64(0));
+	size_t lastrow = std::max(std::min(r+padding, nrow()), size_t(0));
 
-	uint_64 tmp;
+	size_t tmp;
 	if (lastrow < firstrow) {
 		tmp = firstrow;
 		firstrow = lastrow;
 		lastrow = tmp;
 	}
-	uint_64 c;
+	size_t c;
 	for (c=0; c<ncol(); c++) {
 		v = readValues(0, nrow(), c, 1);
 		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
 			break;
 		}
 	}
-	uint_64 firstcol = std::min(std::max(c-padding, uint_64(0)), ncol());
+	size_t firstcol = std::min(std::max(c-padding, size_t(0)), ncol());
 
 
 	for (c=ncol()-1; c>firstcol; c--) {
@@ -628,7 +628,7 @@ SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 			break;
 		}
 	}
-	uint_64 lastcol = std::max(std::min(c+padding, ncol()), uint_64(0));
+	size_t lastcol = std::max(std::min(c+padding, ncol()), size_t(0));
 	readStop();
 
 	if (lastcol < firstcol) {

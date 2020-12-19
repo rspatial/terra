@@ -85,7 +85,7 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 }
 
 
-void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
+void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols){
 
 	size_t nl = source[src].nlyr;
 	
@@ -151,7 +151,7 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, uint_64 row,
 
 
 
-std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols){
+std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
 
 	std::vector<double> out;
 	if (!hasValues()) {
@@ -159,10 +159,10 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 		return out; // or NAs?
 	}
 	
-	row = std::min(std::max(uint_64(0), row), nrow()-1);
-	col = std::min(std::max(uint_64(0), col), ncol()-1);
-	nrows = std::max(uint_64(1), std::min(nrows, nrow()-row));
-	ncols = std::max(uint_64(1), std::min(ncols, ncol()-col));
+	row = std::min(std::max(size_t(0), row), nrow()-1);
+	col = std::min(std::max(size_t(0), col), ncol()-1);
+	nrows = std::max(size_t(1), std::min(nrows, nrow()-row));
+	ncols = std::max(size_t(1), std::min(ncols, ncol()-col));
 	if ((nrows==0) | (ncols==0)) {
 		return out;
 	}
@@ -180,8 +180,8 @@ std::vector<double> SpatRaster::readValues(uint_64 row, uint_64 nrows, uint_64 c
 					std::vector<double> gout;
 					readChunkGDAL(gout, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
 									
-					uint_64 rrow = row + source[0].window.off_row;
-					uint_64 rcol = col + source[0].window.off_col;
+					size_t rrow = row + source[0].window.off_row;
+					size_t rcol = col + source[0].window.off_col;
 					unsigned endrow = rrow + nrows;
 					unsigned endcol = rcol + ncols;
 					unsigned ncells = source[0].window.full_nrow * source[0].window.full_ncol;

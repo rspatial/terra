@@ -31,7 +31,6 @@
 #endif
 
 typedef long long int_64;
-typedef unsigned long long uint_64;
 
 class SpatCategories {
 	public:
@@ -43,9 +42,9 @@ class SpatCategories {
 class SpatWindow {
 	public:
 		SpatExtent full_extent;
-		uint_64 full_ncol, full_nrow, off_row, off_col;
+		size_t full_ncol, full_nrow, off_row, off_col;
 		bool expanded = false;
-		std::vector<uint_64> expand;
+		std::vector<size_t> expand;
 };
 
 
@@ -67,7 +66,7 @@ class RasterSource {
 //		bool fswrite(std::vector<double> &v);
 //		void fsclose();
 
-		uint_64 ncol, nrow;
+		size_t ncol, nrow;
 		unsigned nlyr;
 		unsigned nlyrfile = 0;
 		SpatExtent extent;
@@ -138,8 +137,8 @@ class RasterSource {
 
 class BlockSize {
 	public:
-		std::vector<uint_64> row;
-		std::vector<uint_64> nrows;
+		std::vector<size_t> row;
+		std::vector<size_t> nrows;
 		unsigned n;
 };
 
@@ -192,8 +191,8 @@ class SpatRaster {
 
 		//double NA = std::numeric_limits<double>::quiet_NaN();
 
-		uint_64 ncol();
-		uint_64 nrow();
+		size_t ncol();
+		size_t nrow();
 		SpatExtent getExtent();
 		void setExtent(SpatExtent e);
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
@@ -378,8 +377,8 @@ class SpatRaster {
 
 		bool valid_sources(bool files=true, bool rotated=true);
 		bool readStart();
-		std::vector<double> readValues(uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
-		void readChunkMEM(std::vector<double> &out, size_t src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols);
+		std::vector<double> readValues(size_t row, size_t nrows, size_t col, size_t ncols);
+		void readChunkMEM(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
 		std::vector<std::vector<double>> readBlock2(BlockSize bs, unsigned i);
@@ -390,15 +389,15 @@ class SpatRaster {
 		bool readAll();
 
 		bool writeStart(SpatOptions &opt);
-		bool writeValues(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols);
-		bool writeValues2(std::vector<std::vector<double>> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols);
+		bool writeValues(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
+		bool writeValues2(std::vector<std::vector<double>> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
 		bool writeStop();
 		bool writeHDR(std::string filename);
 
 		//bool writeStartGDAL(std::string filename, std::string driver, std::string datatype, bool overwrite, SpatOptions &opt);
 		bool writeStartGDAL(SpatOptions &opt);		
 		bool fillValuesGDAL(double fillvalue);
-		bool writeValuesGDAL(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols);
+		bool writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
 		bool writeStopGDAL();
 
 
@@ -408,7 +407,7 @@ class SpatRaster {
 		//bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 		//bool writeValuesBinary(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 
-		bool writeValuesMem(std::vector<double> &vals, uint_64 startrow, uint_64 nrows, uint_64 startcol, uint_64 ncols);
+		bool writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
 
 		// binary (flat) source
 		//std::vector<double> readValuesBinary(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
@@ -416,13 +415,13 @@ class SpatRaster {
 		//std::vector<std::vector<double>> readCellsBinary(unsigned src, std::vector<double> cells);
 
 		// gdal source
-		std::vector<double> readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols, int lyr = -1);
+		std::vector<double> readValuesGDAL(unsigned src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr = -1);
 		std::vector<double> readGDALsample(unsigned src, size_t srows, size_t scols);
 		std::vector<std::vector<double>> readRowColGDAL(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
 		bool readStartGDAL(unsigned src);
 		bool readStopGDAL(unsigned src);
-		void readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols);
+		void readChunkGDAL(std::vector<double> &data, unsigned src, size_t row, unsigned nrows, size_t col, unsigned ncols);
 
 		bool setWindow(SpatExtent x);
 		bool removeWindow();
@@ -436,7 +435,7 @@ class SpatRaster {
 		bool checkFormatRequirements(const std::string &driver, std::string &filename, std::string &datatype);
 
 		bool canProcessInMemory(SpatOptions &opt);
-		uint_64 chunkSize(unsigned n, double frac);
+		size_t chunkSize(unsigned n, double frac);
 
 		void fill(double x);
 
@@ -553,7 +552,7 @@ class SpatRaster {
 		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt);
 
-		std::vector<double> readSample(unsigned src, unsigned srows, unsigned scols);
+		std::vector<double> readSample(unsigned src, size_t srows, size_t scols);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
 		SpatRaster sampleRegularRaster(unsigned size);

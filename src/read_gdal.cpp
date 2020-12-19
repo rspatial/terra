@@ -579,7 +579,7 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 }
 
 
-void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 row, unsigned nrows, uint_64 col, unsigned ncols) {
+void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t row, unsigned nrows, size_t col, unsigned ncols) {
 
 	if (source[src].hasWindow) { // ignoring the expanded case.
 		row = row + source[src].window.off_row;
@@ -657,7 +657,7 @@ void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, uint_64 
 
 
 
-std::vector<double> SpatRaster::readValuesGDAL(unsigned src, uint_64 row, uint_64 nrows, uint_64 col, uint_64 ncols, int lyr) {
+std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr) {
 
 
 	std::vector<double> errout;
