@@ -11,7 +11,7 @@
 
 
 .makeDataFrame <- function(x, v) {
-	v <- data.frame(v)	
+	v <- data.frame(v, check.names = FALSE)
 	ff <- is.factor(x)
 	if (any(ff)) {
 		ff <- which(ff)
@@ -50,7 +50,7 @@ function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE, 
 	} 
 	if (factors) {
 		if (is.matrix(e)) {
-			e <- data.frame(e, check.names = FALSE)			
+			e <- data.frame(e, check.names = FALSE)
 		}
 		f <- is.factor(x)
 		if (any(f)) {

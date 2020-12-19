@@ -20,7 +20,7 @@ expect_equal(as.vector(is.na(xyFromCell(r, 0))), c(TRUE, TRUE))
 expect_equal(as.vector(is.na(xyFromCell(r, ncell(r)+1))), c(TRUE, TRUE))
 
 expect_equivalent(r[10], data.frame(rx[10]))
-expect_equivalent(r[2,], data.frame(rx[2,])} 
+expect_equivalent(r[2,], data.frame(rx[2,]))
 expect_equivalent(r[,2], data.frame(rx[,2]))
 expect_equivalent(r[(3:4), (2:3)], data.frame(rx[(3:4), (2:3)]))
 expect_equivalent(r[[1]][5,6][1], data.frame(rx[[1]][5,6]))
