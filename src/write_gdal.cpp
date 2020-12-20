@@ -515,7 +515,7 @@ bool SpatRaster::writeStopGDAL() {
 
 		if (compute_stats) {
 			if (gdal_stats) {
-				double mn, mx, av, sd;
+				double mn, mx, av=-9999, sd=-9999;
 				//int approx = gdal_approx;
 				if (gdal_minmax) {
 					double adfMinMax[2];
