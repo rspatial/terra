@@ -12,8 +12,18 @@ setMethod ("show" , "Rcpp_SpatCategories",
 
 
 printDF <- function(object, n=6, first=FALSE) {
+	n <- min(nrow(object), max(n, 0))
+	old <- dim(object)
+	if (old[2] == 0) { return() }
+	h <- object
+	if (old[1] > 0) {
+		h <- h[1:n, ,drop=FALSE]
+	}
+	if (old[2] > 12) {
+		h <- h[, 1:10]
+	}
 	d <- dim(object)
-	if (d[2] < 1) return()
+
 	cls <- sapply(object, class)
 	cls <- gsub("integer", "int", cls)
 	cls <- gsub("numeric", "num", cls)
@@ -21,10 +31,23 @@ printDF <- function(object, n=6, first=FALSE) {
 	cls <- paste0("<", cls, ">")
 	cls <- data.frame(rbind(class=cls))
 	names(cls) <- NULL
-	h <- head(object, n)
-	if (ncol(h) > 10) {
-		h <- h[, 1:10]
+
+	nms <- colnames(h)
+	nc <- nchar(nms)
+	mx <- max(15, 100/d[2])
+	nms[nc > mx] <- paste0(substr(nms[nc > mx], 1, (mx-1)), "~")
+	if (d[1] > 0) {
+		for (i in 1:ncol(h)) {
+			if (is.character(h[[i]])) {
+				n <- nchar(h[[i]])
+				j <- (n > 11 & n > nc[i])
+				h[[i]][j] <- paste0(substr(h[[i]][j], 1, (mx-1)), "~")
+			} else if (is.numeric(h[[i]])) {
+				h[[i]] <- formatC(h[[i]])		
+			}
+		}
 	}
+	
 	h <- rbind(h[1,,drop=FALSE], h)
 	h[1,] <- cls
 	if (nrow(h) < d[1]) {
@@ -34,7 +57,13 @@ printDF <- function(object, n=6, first=FALSE) {
 		h <- cbind("", h)
 		colnames(h)[1] <- "names       :"
 		h[1,1] <- "type        :"
-		h[2,1] <- "values      :"
+		if (d[1] > 0) {
+			h[2,1] <- "values      :"
+		}
+	}
+	if (old[2] > d[2]) {
+		name <- paste0("(and ", old[2] - d[2], " more)")
+		h[[name]] <- ""
 	}
 	print(h, row.names = FALSE)
 }
