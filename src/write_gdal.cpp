@@ -274,7 +274,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
     #ifdef useRcpp
 	if (opt.verbose) {
-		double gb = 1073741824 / 8;
+		double gb = 1073741824;
 		char **filelist = poDS->GetFileList();
 		std::vector <std::string> files;
 		if (filelist != NULL) {

@@ -25,7 +25,7 @@ Get the data sources of a SpatRaster and the number of layers by source. Sources
 \item{...}{additional arguments. None implemented }  
 }
 
-\value{data.frame with the source names and the number of layers by source}
+\value{sources returns a data.frame with the source names (if any) and the number of layers by source}
 
 
 \examples{
