@@ -14,9 +14,8 @@ Make a deep copy of a SpatRaster. This is occaisionaly useful when wanting to us
 }
 
 \usage{
-\S4method{copy,SpatRaster}{copy(x, ...)}
+\S4method{copy}{SpatRaster}(x, ...)
 }
-
 
 \arguments{
   \item{x}{SpatRaster}
