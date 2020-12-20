@@ -10,7 +10,7 @@
 \description{
 The 'terra' package implements two main classes for spatial data handling: \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
 
-'terra' provides methods to manipulate geographic (spatial) data in "raster" and "vector" data types. Raster data divides space into rectangular cells (pixels). Such data are also referred to as "grid" data are often used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this format. Raster data can be contrasted with discrete "vector" spatial data such as points, lines, polygons. 
+'terra' provides methods to manipulate geographic (spatial) data in "raster" and "vector" data types. Raster data divides space into rectangular cells (pixels). Such data are also referred to as "grid" data are often used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. Raster data can be contrasted with discrete "vector" spatial data such as points, lines, polygons. 
 
 The 'terra' package is conceived as a replacement of the 'raster' package. 'terra' has a very similar, but simpler, interface, and it is faster than 'raster'. A major simplification is that 'terra' has a single class "SpatRaster" for which 'raster' has three (RasterLayer, RasterStack, RasterBrick). Likewise there is a single class for vector data ("SpatVector"). Like "raster" this package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
 
@@ -213,7 +213,9 @@ Apart from the function listed below, you can also use indexing with \code{[} wi
   \tabular{ll}{
     \bold{Maps} \tab \cr
     \code{\link{plot}} \tab Plot a SpatRaster or SpatVector. The main method to create a map \cr
-	\code{\link{polys}} \tab Add polygons to a map (or lines or points) \cr
+	\code{\link{points}} \tab Add points to a map\cr
+	\code{\link{lines}} \tab Add lines to a map\cr
+	\code{\link{polys}} \tab Add polygons to a map \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
     \code{\link{image}} \tab Alternative way to plot a SpatRaster \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
@@ -261,9 +263,9 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
 	\code{\link{origin}} \tab The origin of a SpatRaster\cr
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
     \code{\link{isLonLat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system; and if it has global coverage \cr
-    \code{\link{filename}} \tab Filename(s) to which a SpatRaster is linked \cr	
+    \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr	
     \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr		
-    \code{NAvalue} \tab Get or set the \code{NA} value (for reading from a file) \cr
+    \code{\link{NAflag}} \tab Set the \code{NA} value (for reading from a file with insufficient metadata) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
@@ -307,7 +309,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }	
 
 
-\section{XIV. SpatRasterDataset objects}{
+\section{XIV. SpatRasterDataset}{
 
 A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
 
@@ -357,7 +359,7 @@ Change geometries (for display, experimentation)
 }
 
 
-\section{XVI. SpatExtent objects}{
+\section{XVI. SpatExtent}{
 
   \tabular{ll}{
     \code{\link{extent}} \tab Create a SpatExtent object \cr
@@ -365,7 +367,7 @@ Change geometries (for display, experimentation)
     \code{\link{union}} \tab Combine two SpatExtent objects, same as \code{+} \cr
     \code{\link{Math-methods}} \tab round/floor/ceiling of the coordinates of a SpatExtent \cr			
     \code{\link{align}} \tab Align a SpatExtent with a SpatRaster \cr
-    \code{\link{draw}} \tab Create a SpatExtent object by drawing it on top of a map (plot) \cr		
+    \code{\link{draw}} \tab Create a SpatExtent by drawing it on top of a map (plot) \cr		
 --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
