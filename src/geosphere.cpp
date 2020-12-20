@@ -3,6 +3,7 @@
 // version 0.1
 // license GPL
 
+/*
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
@@ -111,3 +112,4 @@ void intermediate_points(double lon1, double lat1, double lon2, double lat2, siz
 
 }
 
+*/

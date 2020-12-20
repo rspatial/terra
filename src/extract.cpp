@@ -365,26 +365,13 @@ std::vector<double> SpatRaster::polygon_cells(SpatGeom& g) {
 }
 
 
-
-
-// <layer<values>>
-std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, std::vector<double> &y, std::string method) {
-
-    unsigned nl = nlyr();
-    unsigned np = x.size();
-	std::vector<std::vector<double>> out(nl, std::vector<double>(np, NAN));
-	if (!hasValues()) return out;
-
-	if ((method == "idw") | (method == "bilinear")) {
-
-// if nrow or nocl =1 disaggregate first
-
+/*
+idw
         bool lonlat = could_be_lonlat();
-        bool globalLonLat = is_global_lonlat();
-        size_t n = x.size();
+        //bool globalLonLat = is_global_lonlat();
+        //size_t n = x.size();
 
         if (method == "idw") {
-
             std::function<std::vector<double>(std::vector<double>&,std::vector<double>&,double,double)> distFun;
  //           std::vector<double> distance_plane(std::vector<double> &x1, std::vector<double> &y1, std::vector<double> &x2, std::vector<double> &y2);
             if (lonlat) {
@@ -392,7 +379,7 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
             } else {
                 distFun = distance_plane_vd;
             }
-
+*/
 /*
                 cxy = xyFromCell(cells);
                 d = distFun(cxy[0], cxy[1], x[i], y[i]);
@@ -405,80 +392,29 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
                 }
                 out[i] = a / b;
 */
-        } else if (method == "bilinear") {
 
+
+// <layer<values>>
+std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, std::vector<double> &y, std::string method, bool cells) {
+
+    unsigned nl = nlyr();
+    unsigned np = x.size();
+	if (!hasValues()) {
+		std::vector<std::vector<double>> out(nl+cells, std::vector<double>(np, NAN));
+		return out;
+	}
+	std::vector<std::vector<double>> out;
+
+    if (method == "bilinear") {
 			out = bilinearValues(x, y);
 
-        } else if (method == "oldbilinear") {
-
-// this is much too slow
-			SpatExtent extent = getExtent();
-
-			double ymax = extent.ymax;
-            double xmin = extent.xmin;
-            double yrs = yres();
-            double xrs = xres();
-
-            SpatOptions opt;
-            SpatRaster g = geometry();
-			std::vector<unsigned> f = {2,2};
-            SpatRaster gd = g.disaggregate(f, opt);
-
-            double dyrs = gd.yres();
-            double dxrs =  gd.xres();
-            std::vector<double> d, cells(4);
-
-            std::vector<std::vector<double> > cxy;
-
-            std::vector<double> rc(4);
-			unsigned nr = nrow();
-			unsigned nc = ncol();
-            unsigned mnr = nr-1;
-            unsigned mnc = nc-1;
-
-            // needs row-wise adjustment for lonlat
-            double dxdy = xres() * yres();
-
-            for (size_t i=0; i<n; i++) {
-                long row_d = ((ymax - y[i]) / dyrs);
-                long col_d = ((x[i] - xmin) / dxrs);
-                unsigned rq = row_d % 2;
-                unsigned cq = col_d % 2;
-
-                double row1 = std::floor((ymax - y[i]) / yrs);
-                double col1 = std::floor((x[i] - xmin) / xrs);
-                if ((row1 < 0) || (row1 > mnr)) { continue; }
-
-                double row2 = (rq == 0) ? row1-1 : row1+1;
-                row2 = row2 < 0 ? row1+1 : row2==nr ? row1-1 : row2;
-                double col2;
-                if (globalLonLat) {
-                    if ((col1 < -1) | (col1 > nc)) { continue; }
-                    col1 = col1 < 0 ? mnc : col1 > mnc ? 0 : col1;
-                    col2 = (cq == 0) ? col1-1 : col1 + 1;
-                    col2 = col2 < 0 ? mnc : col2 > mnc ? 0 : col2;
-                } else {
-                    if ((col1 < 0) | (col1 > mnc)) { continue; }
-                    col2 = (cq == 0) ? col1-1 : col1 + 1;
-                    col2 = col2 < 0 ? col1+1 : col2 == nc ? col1-1 : col2;
-                }
-                cells[0] = nc * row1 + col1;
-                cells[1] = nc * row1 + col2;
-                cells[2] = nc * row2 + col1;
-                cells[3] = nc * row2 + col2;
-                std::sort(cells.begin(), cells.end());
-                std::vector<std::vector<double>> xy = xyFromCell(cells);
-                std::vector<std::vector<double>> v = extractCell(cells);
-                std::vector<double> e = {xy[0][0], xy[0][1], xy[1][2], xy[1][0]};
-                for (size_t j=0; j<nl; j++) {
-                    out[j][i] = bilinear(v[j], e, dxdy, x[i], y[i]);
-                }
-            }
-        }
 	} else {
 
         std::vector<double> cell = cellFromXY(x, y);
         out = extractCell(cell);
+		if (cells) {
+			out.push_back(cell);
+		}
 	}
 
     return out;
@@ -486,26 +422,31 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
 
 
 // <geom<layer<values>>>
-std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method) {
+std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method, bool cells, bool weights) {
 
+	std::string gtype = v.type();
+	if (gtype != "polygons") weights = false;
+	
     unsigned nl = nlyr();
     unsigned ng = v.size();
-    std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl));
+    std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + weights));
 
 	if (!hasValues()) return out;
 
 	std::vector<std::vector<double>> srcout;
-	std::string gtype = v.type();
 	if (gtype == "points") {
 		if (method != "bilinear") method = "simple";
 		SpatDataFrame vd = v.getGeometryDF();
 		if (vd.nrow() == ng) {  // single point geometry
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
-			srcout = extractXY(x, y, method);
+			srcout = extractXY(x, y, method, cells);
 			for (size_t i=0; i<ng; i++) {
 				for (size_t j=0; j<nl; j++) {
 					out[i][j].push_back( srcout[j][i] );
+				}
+				if (cells) {
+					out[i][nl].push_back( srcout[nl][i] );				
 				}
 			}
 		} else { // multipoint
@@ -514,28 +455,15 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 				SpatDataFrame vd = vv.getGeometryDF();
 				std::vector<double> x = vd.getD(0);
 				std::vector<double> y = vd.getD(1);
-				srcout = extractXY(x, y, method);
+				srcout = extractXY(x, y, method, cells);
 				for (size_t j=0; j<nl; j++) {
 					out[i][j] = srcout[j];
 				}
+				if (cells) {
+					out[i][nl] = srcout[nl];				
+				}
 			}
 		}
-		
-/*
-	} else if (gtype == "lines") {
-	    SpatRaster r = geometry(1);
-	    SpatGeom g;
-        for (size_t i=0; i<ng; i++) {
-            g = v.getGeom(i);
-            std::vector<double> cells = line_cells(g);
-            srcout = extractCell(cells);
-            for (size_t j=0; j<nl; j++) {
-                out[i][j] = srcout[j];
-            }
-        }
-	} else { // polys
-*/
-
 	} else {
 	    SpatRaster r = geometry(1);
 	    //SpatOptions opt;
@@ -544,11 +472,24 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
             SpatGeom g = v.getGeom(i);
             SpatVector p(g);
 			p.srs = v.srs;
-			std::vector<double> cells = rasterizeCells(p, touches);
-            srcout = extractCell(cells);
+			std::vector<double> cell, wgt;
+			if (weights) {
+				std::vector<std::vector<double>> cw = rasterizeCellsWeights(p, touches);
+				cell = cw[0];
+				wgt = cw[1];
+			} else {
+				cell = rasterizeCells(p, touches);
+            }
+			srcout = extractCell(cell);
             for (size_t j=0; j<nl; j++) {
                 out[i][j] = srcout[j];
             }
+			if (cells) {
+				out[i][nl] = cell;
+			}
+			if (weights) {
+				out[i][nl+cells] = wgt;
+			}
         }
 	}
 	return out;
@@ -630,56 +571,12 @@ std::vector<std::vector<double>> SpatRaster::extractCell(std::vector<double> &ce
 }
 
 
-/*
-std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
 
-	unsigned n  = cell.size();
-	unsigned nc = ncell();
-
-	std::vector<double> out;
-	if (!hasValues()) {
-		out = std::vector<double>(n * nlyr(), NAN)
-		return out;
-	}
-
-	unsigned ns = nsrc();
-	for (size_t src=0; src<ns; src++) {
-		unsigned slyrs = source[src].layers.size();
-		std::vector<double> srcout;
-		if (source[src].memory) {
-			srcout = std::vector<double>(n * slyrs, NAN)
-			std::vector<size_t> off1(slyrs);
-			std::vector<size_t> off2(slyrs);
-			for (size_t i=0; i<slyrs; i++) {
-				off1[i] = i * n;
-				off2[i] = i * nc;
-			}
-			for (size_t i=0; i<n; i++) {
-				if (!is_NA(cell[i]) && cell[i] >= 0 && cell[i] < nc) {
-					for (size_t j=0; j<slyrs; j++) {
-						out[off1[j]+i] = source[src].values[off2[j] + cell[i]];
-					}
-				}
-			}
-		} else {
-			#ifdef useGDAL
-			std::vector<std::vector<int_64>> rc = rowColFromCell(cell);
-			srcout = readRowColGDAL(src, rc[0], rc[1]);
-			#endif
-			if (hasError()) return out;
-			//}
-		}
-		out.insert(out.end(), srcout.begin(), srcout.end());		
-	}
-	return out;
-}
-*/
-
-
-std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::string method) {
+std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::string method, bool weights) {
 
 	std::string gtype = v.type();
-	std::vector<double> out, cells;	
+	if (gtype != "polygons") weights = false;
+	std::vector<double> out, cells, wghts;	
 	if (gtype == "points") {
 		if (method != "bilinear") method = "simple";
 		SpatDataFrame vd = v.getGeometryDF();
@@ -687,7 +584,6 @@ std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::strin
 		std::vector<long> id = vd.getI(0);
 		out.insert(out.end(), id.begin(), id.end());
 		out.insert(out.end(), cells.begin(), cells.end());
-		return out;
 	} else {
 		unsigned ng = v.size();
 	    SpatOptions opt;
@@ -697,13 +593,27 @@ std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::strin
             SpatGeom g = v.getGeom(i);
             SpatVector p(g);
 			p.srs = v.srs;
-			std::vector<double> geomc = rasterizeCells(p, touches);
-			std::vector<double> id(geomc.size(), i);
-			out.insert(out.end(), id.begin(), id.end());
-			cells.insert(cells.end(), geomc.begin(), geomc.end());
+			if (weights) {
+				std::vector<std::vector<double>> cw = rasterizeCellsWeights(p, touches);				
+				std::vector<double> id(cw[0].size(), i);
+				out.insert(out.end(), id.begin(), id.end());
+				cells.insert(cells.end(), cw[0].begin(), cw[0].end());				
+				wghts.insert(wghts.end(), cw[1].begin(), cw[1].end());				
+			} else {
+				std::vector<double> geomc = rasterizeCells(p, touches);
+				std::vector<double> id(geomc.size(), i);
+				out.insert(out.end(), id.begin(), id.end());
+				cells.insert(cells.end(), geomc.begin(), geomc.end());
+			}
         }
-		out.insert(out.end(), cells.begin(), cells.end());
-		return out;
+		if (weights) {
+			out.insert(out.end(), cells.begin(), cells.end());
+			Rcpp::Rcout << out.size() << std::endl;
+			out.insert(out.end(), wghts.begin(), wghts.end());
+			Rcpp::Rcout << out.size() << std::endl;
+		} else {
+			out.insert(out.end(), cells.begin(), cells.end());
+		}
 	}
 	return out;
 }
@@ -771,3 +681,120 @@ std::vector<std::vector<std::vector<std::vector<double>>>> SpatRasterStack::extr
 	}
 	return out;
 }
+
+
+
+/*
+        } else if (method == "oldbilinear") {
+
+// this is much too slow
+			SpatExtent extent = getExtent();
+
+			double ymax = extent.ymax;
+            double xmin = extent.xmin;
+            double yrs = yres();
+            double xrs = xres();
+
+            SpatOptions opt;
+            SpatRaster g = geometry();
+			std::vector<unsigned> f = {2,2};
+            SpatRaster gd = g.disaggregate(f, opt);
+
+            double dyrs = gd.yres();
+            double dxrs =  gd.xres();
+            std::vector<double> d, cells(4);
+
+            std::vector<std::vector<double> > cxy;
+
+            std::vector<double> rc(4);
+			unsigned nr = nrow();
+			unsigned nc = ncol();
+            unsigned mnr = nr-1;
+            unsigned mnc = nc-1;
+
+            // needs row-wise adjustment for lonlat
+            double dxdy = xres() * yres();
+
+            for (size_t i=0; i<n; i++) {
+                long row_d = ((ymax - y[i]) / dyrs);
+                long col_d = ((x[i] - xmin) / dxrs);
+                unsigned rq = row_d % 2;
+                unsigned cq = col_d % 2;
+
+                double row1 = std::floor((ymax - y[i]) / yrs);
+                double col1 = std::floor((x[i] - xmin) / xrs);
+                if ((row1 < 0) || (row1 > mnr)) { continue; }
+
+                double row2 = (rq == 0) ? row1-1 : row1+1;
+                row2 = row2 < 0 ? row1+1 : row2==nr ? row1-1 : row2;
+                double col2;
+                if (globalLonLat) {
+                    if ((col1 < -1) | (col1 > nc)) { continue; }
+                    col1 = col1 < 0 ? mnc : col1 > mnc ? 0 : col1;
+                    col2 = (cq == 0) ? col1-1 : col1 + 1;
+                    col2 = col2 < 0 ? mnc : col2 > mnc ? 0 : col2;
+                } else {
+                    if ((col1 < 0) | (col1 > mnc)) { continue; }
+                    col2 = (cq == 0) ? col1-1 : col1 + 1;
+                    col2 = col2 < 0 ? col1+1 : col2 == nc ? col1-1 : col2;
+                }
+                cells[0] = nc * row1 + col1;
+                cells[1] = nc * row1 + col2;
+                cells[2] = nc * row2 + col1;
+                cells[3] = nc * row2 + col2;
+                std::sort(cells.begin(), cells.end());
+                std::vector<std::vector<double>> xy = xyFromCell(cells);
+                std::vector<std::vector<double>> v = extractCell(cells);
+                std::vector<double> e = {xy[0][0], xy[0][1], xy[1][2], xy[1][0]};
+                for (size_t j=0; j<nl; j++) {
+                    out[j][i] = bilinear(v[j], e, dxdy, x[i], y[i]);
+                }
+            }
+        }
+		*/
+
+
+/*
+std::vector<double> SpatRaster::extractCell(std::vector<double> &cell) {
+
+	unsigned n  = cell.size();
+	unsigned nc = ncell();
+
+	std::vector<double> out;
+	if (!hasValues()) {
+		out = std::vector<double>(n * nlyr(), NAN)
+		return out;
+	}
+
+	unsigned ns = nsrc();
+	for (size_t src=0; src<ns; src++) {
+		unsigned slyrs = source[src].layers.size();
+		std::vector<double> srcout;
+		if (source[src].memory) {
+			srcout = std::vector<double>(n * slyrs, NAN)
+			std::vector<size_t> off1(slyrs);
+			std::vector<size_t> off2(slyrs);
+			for (size_t i=0; i<slyrs; i++) {
+				off1[i] = i * n;
+				off2[i] = i * nc;
+			}
+			for (size_t i=0; i<n; i++) {
+				if (!is_NA(cell[i]) && cell[i] >= 0 && cell[i] < nc) {
+					for (size_t j=0; j<slyrs; j++) {
+						out[off1[j]+i] = source[src].values[off2[j] + cell[i]];
+					}
+				}
+			}
+		} else {
+			#ifdef useGDAL
+			std::vector<std::vector<int_64>> rc = rowColFromCell(cell);
+			srcout = readRowColGDAL(src, rc[0], rc[1]);
+			#endif
+			if (hasError()) return out;
+			//}
+		}
+		out.insert(out.end(), srcout.begin(), srcout.end());		
+	}
+	return out;
+}
+*/

@@ -393,3 +393,35 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	return cells;
 }
 
+std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v, bool touches) { 
+// note that this is only for polygons
+    SpatOptions opt;
+	opt.progress = nrow()+1;
+	SpatRaster rr = geometry(1);
+	std::vector<unsigned> fact = {10, 10};
+	SpatExtent e = getExtent();
+	e.intersect(v.getExtent());
+	std::vector<std::vector<double>> out(2);
+	if ( !e.valid() ) {
+		return out;
+	}
+	SpatRaster r = rr.crop(v.extent, "out", opt);
+	r = r.disaggregate(fact, opt);
+#if GDAL_VERSION_MAJOR >= 3
+	std::vector<double> feats(1, 1) ;			
+	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
+#else
+	std::vector<double> feats(v.size(), 1) ;			
+	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
+#endif
+	r = r.arith(100.0, "/", false, opt);
+	r = r.aggregate(fact, "sum", true, opt);
+	SpatVector pts = r.as_points(true, true, opt);
+	SpatDataFrame vd = pts.getGeometryDF();
+	std::vector<double> x = vd.getD(0);
+	std::vector<double> y = vd.getD(1);
+	out[0] = rr.cellFromXY(x, y);
+	out[1] = pts.df.dv[0];
+	return out;
+}
+

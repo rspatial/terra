@@ -31,23 +31,54 @@ setlabs <- function(x, labs) {
 }
 
 
+wmean <- function(p) {
+	n <- length(p)
+	w <- p[[n]]
+	p[[n]] <- NULL
+	sapply(p, function(x) {
+		stats::weighted.mean(x, w, na.rm = TRUE)
+	})
+}
+
+
+
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, ..., touches=is.lines(y), method="simple", list=FALSE, factors=TRUE) { 
-	e <- x@ptr$extractVector(y@ptr, touches[1], method[1])
+function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, weights=FALSE, touches=is.lines(y), ...) { 
+	if (!is.null(fun)) {
+		cells <- FALSE
+	}
+	e <- x@ptr$extractVector(y@ptr, touches[1], method[1], isTRUE(cells[1]), isTRUE(weights[1]))
 	x <- messages(x, "extract")
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#e <- rapply(e, f, how="replace")
 	if (!is.null(fun)) {
-		fun <- match.fun(fun) 
-	  	e <- rapply(e, fun, ...)
-		e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+		if (weights) {
+			test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
+			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
+			if (!(test1 | test2)) { warn("extract", "the weighted mean is returned") }
+			e <- t(sapply(e, wmean))
+		} else {
+			fun <- match.fun(fun) 
+			e <- rapply(e, fun, ...)
+			e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+		}
 		colnames(e) <- names(x)
 		e <- cbind(ID=1:nrow(e), e)
 	} else if (!list) {
-		e <- lapply(1:length(e), function(i) cbind(ID=i, matrix(unlist(e[[i]]), ncol=length(e[[i]]))))
+		e <- lapply(1:length(e), function(i) {
+			ee <- unlist(e[[i]])
+			if (length(ee) == 0) ee <- NA
+			cbind(ID=i, matrix(ee, ncol=length(e[[i]])))
+		})
 		e <- do.call(rbind, e)
-		colnames(e)[-1] <- names(x)	
-	} 
+		cn <- names(x)
+		if (cells) cn <- c(cn, "cell")
+		if (weights) cn <- c(cn, "weight")
+		colnames(e)[-1] <- cn
+		if (cells) {
+			e[,"cell"] <- e[,"cell"] + 1
+		}
+	}
 	if (factors) {
 		if (is.matrix(e)) {
 			e <- data.frame(e, check.names = FALSE)

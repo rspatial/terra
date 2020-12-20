@@ -24,12 +24,17 @@ setMethod("cells", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("cells", signature("SpatRaster", "SpatVector"), 
-#	function(x, y, weights=FALSE, touches=is.lines(y), method="simple", ...) {   # in a next version
-	function(x, y, touches=is.lines(y), method="simple", ...) {
-		d <- x@ptr$vectCells(y@ptr, touches[1], method) 
-		d <- matrix(d, ncol=2)
-		colnames(d) <- c("id", "cell")
-		d[,2] <- d[,2] + 1
+	function(x, y, touches=is.lines(y), method="simple", weights=FALSE,...) {
+		d <- x@ptr$vectCells(y@ptr, touches[1], method[1], weights[1] ) 
+		cn <- c("id", "cell")
+		if (weights[1]) {
+			d <- matrix(d, ncol=3)
+			cn <- c(cn, "weights")
+		} else {
+			d <- matrix(d, ncol=2)
+		}
+		d[,1:2] <- d[,1:2] + 1
+		colnames(d) <- cn
 		d
 	}
 )

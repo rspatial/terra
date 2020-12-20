@@ -485,12 +485,12 @@ class SpatRaster {
 
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, SpatOptions &opt);
-		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method="");
-		std::vector<double> vectCells(SpatVector v, bool touches, std::string method);
+		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method="", bool cells=false, bool weights=false);
+		std::vector<double> vectCells(SpatVector v, bool touches, std::string method, bool weights);
 		std::vector<double> extCells(SpatExtent ext);
 
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
-        std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
+        std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method, bool cells=false);
 		
 		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster filler(SpatRaster x, SpatOptions &opt);
@@ -546,6 +546,7 @@ class SpatRaster {
 		//SpatRaster rasterize(SpatVector p, std::vector<double> values, double background, bool update, SpatOptions &opt);
 		SpatRaster rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, SpatOptions &opt);
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches);
+		std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
 
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);

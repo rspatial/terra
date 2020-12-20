@@ -1483,9 +1483,6 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
 }
 
 
-
-
-
 SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 
 	BlockSize bs = getBlockSize(opt);
