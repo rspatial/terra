@@ -177,6 +177,7 @@ setMethod("xmin<-", signature("SpatRaster", "numeric"),
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[1] <- value
+		x@ptr <- x@ptr$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}
@@ -187,6 +188,7 @@ setMethod("xmax<-", signature("SpatRaster", "numeric"),
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[2] <- value
+		x@ptr <- x@ptr$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}
@@ -195,6 +197,7 @@ setMethod("ymin<-", signature("SpatRaster", "numeric"),
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[3] <- value
+		x@ptr <- x@ptr$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}
@@ -204,6 +207,7 @@ setMethod("ymax<-", signature("SpatRaster", "numeric"),
 	function(x, ..., value){ 
 		v <- as.vector(ext(x))
 		v[4] <- value
+		x@ptr <- x@ptr$deepcopy()
 		ext(x) <- ext(v)
 		x
 	}

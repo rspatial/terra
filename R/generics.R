@@ -83,6 +83,13 @@ setMethod("boundaries", signature(x="SpatRaster"),
 	messages(x, "collapse")
 }
 
+setMethod("copy", signature("SpatRaster"), 
+	function(x, value) {
+		x@ptr <- x@ptr$deepcopy() 
+		x
+	}
+)
+
 
 setMethod("add<-", signature("SpatRaster", "SpatRaster"), 
 	function(x, value) {
