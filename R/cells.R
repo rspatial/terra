@@ -24,7 +24,7 @@ setMethod("cells", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("cells", signature("SpatRaster", "SpatVector"), 
-	function(x, y, touches=is.lines(y), method="simple", weights=FALSE,...) {
+	function(x, y, method="simple", weights=FALSE, touches=is.lines(y), ...) {
 		d <- x@ptr$vectCells(y@ptr, touches[1], method[1], weights[1] ) 
 		cn <- c("id", "cell")
 		if (weights[1]) {
