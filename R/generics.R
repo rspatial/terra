@@ -84,7 +84,7 @@ setMethod("boundaries", signature(x="SpatRaster"),
 }
 
 setMethod("copy", signature("SpatRaster"), 
-	function(x, value) {
+	function(x, ...) {
 		x@ptr <- x@ptr$deepcopy() 
 		x
 	}
