@@ -11,8 +11,8 @@
 \title{Data sources of a SpatRaster}
 
 \description{
-Get the data sources of a SpatRaster and the number of layers by source. Sources are either files (or similar resources) or "", meaning that they are in memory. You an use hasValues to check if a in-memory layer these actualy have values. 
-} 
+Get the data sources of a SpatRaster and the number of layers by source. Sources are either files (or similar resources) or "", meaning that they are in memory. You can use \code{hasValues} to check if in-memory layers actualy have values. 
+}
 
 \usage{
 \S4method{sources}{SpatRaster}(x, ...)

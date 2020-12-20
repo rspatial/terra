@@ -388,7 +388,7 @@ Change geometries (for display, experimentation)
 \author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the underlying C++ code for GDAL/GEOS was adapted from code written by Edzer Pebesma for `sf`. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
 
 \section{Acknowledgments}{
-This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or filing bug reports. The feedback and suggestsions by Gerald Nelson and Michael Sumner have been especially helpful.
+This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or filing bug reports. The feedback and suggestsions by Kendon Bell, Gerald Nelson, Michael Sumner and Jean-Luc Dupouey have been especially helpful.
 }
 
 \keyword{ package }
