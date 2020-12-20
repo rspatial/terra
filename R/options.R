@@ -124,7 +124,7 @@ terraOptions <- function(...) {
 		d <- nms %in% .default_option_names()
 		dnms <- paste0("def_", nms)
 		for (i in 1:length(nms)) {
-			if (d) {
+			if (d[i]) {
 				opt[[ dnms[i] ]] <- dots[[ i ]]
 			} else {
 				opt[[ nms[i] ]] <- dots[[ i ]]			
