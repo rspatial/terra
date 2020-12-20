@@ -20,7 +20,7 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or that match values
 
 \S4method{cells}{SpatRaster,numeric}(x, y, ...)
 
-\S4method{cells}{SpatRaster,SpatVector}(x, y, touches=is.lines(y), method="simple", ...)
+\S4method{cells}{SpatRaster,SpatVector}(x, y, method="simple", weights=FALSE, touches=is.lines(y), ...)
 
 \S4method{cells}{SpatRaster,SpatExtent}(x, y, ...)
 }
@@ -29,9 +29,10 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or that match values
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{SpatVector, SpatExtent, 2-column matrix representing points, numeric representing values to match, or missing}
-  \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
   \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}
-  \item{...}{additional arguments. None implemented}  
+  \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the fraction of each cell that is covered is returned as well}
+  \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
+ \item{...}{additional arguments. None implemented}  
 }
 
 \value{

@@ -608,9 +608,7 @@ std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::strin
         }
 		if (weights) {
 			out.insert(out.end(), cells.begin(), cells.end());
-			Rcpp::Rcout << out.size() << std::endl;
 			out.insert(out.end(), wghts.begin(), wghts.end());
-			Rcpp::Rcout << out.size() << std::endl;
 		} else {
 			out.insert(out.end(), cells.begin(), cells.end());
 		}
