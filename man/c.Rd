@@ -22,7 +22,7 @@ With \code{c} you can:
 -- Add a \code{SpatVector} to a \code{SpatVectorCollection}
 }
 
-\seealso{\code{\link{collapse}}, \code{\link{add}}}
+\seealso{\code{\link{collapse}}, \code{\link{add<-}}}
 
 
 \usage{
