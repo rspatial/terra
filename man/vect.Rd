@@ -11,6 +11,7 @@
 \alias{vect,sf-method}
 \alias{vect,PackedSpatVector-method}
 
+
 \title{Create SpatVector objects}
 
 \description{

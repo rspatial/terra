@@ -8,6 +8,10 @@
 \alias{svc,SpatVector-method}
 \alias{[<-,SpatVectorCollection,numeric,missing-method}
 \alias{[,SpatVectorCollection,numeric,missing-method}
+\alias{[[,SpatVectorCollection,numeric,missing-method}
+
+\alias{c}
+\alias{c,SpatVectorCollection-method}
 
 
 \title{Create a SpatVectorCollection}
@@ -42,8 +46,13 @@ x <- svc(v, v[1:3,], as.lines(v[3:5,]), as.points(v))
 length(x)
 x
 
-# extract the thrid SpatVector
+# extract
 x[3]
+
+# replace
+x[2] <- as.lines(v[1,])
+
+
 }
 
 

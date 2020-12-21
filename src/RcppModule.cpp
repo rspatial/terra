@@ -225,6 +225,8 @@ RCPP_MODULE(spat){
 		.method("size", &SpatVectorCollection::size, "size")
 		.method("get", &SpatVectorCollection::get, "get")
 		.method("push_back", &SpatVectorCollection::push_back, "push_back")
+		.method("subset", &SpatVectorCollection::subset, "subset")
+		.method("replace", &SpatVectorCollection::replace, "replace")
 
 		.method("has_error", &SpatVectorCollection::hasError)		
 		.method("has_warning", &SpatVectorCollection::hasWarning)		

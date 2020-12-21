@@ -2,48 +2,47 @@
 
 \docType{methods}
 
-
 \alias{c}
 \alias{c,SpatRaster-method}
 \alias{c,SpatRasterDataset-method}
 \alias{c,SpatVector-method}
+\alias{c,SpatVectorCollection-method}
 
-\alias{add<-}
-\alias{add<-,SpatRaster,SpatRaster-method}
-
-\alias{collapse}
-\alias{collapse,SpatRaster-method}
-\alias{collapse,SpatRasterDataset-method}
-
-\title{Combine Spat objects}
+\title{Combine SpatRaster or SpatVector objects}
 
 \description{
-Combine SpatRasters into a new SpatRaster object with \code{c} or add to an existing object with \code{add}. \code{collapse} combines sources within an object (that are in memory, or from the same file) to allow for faster processing.
+With \code{c} you can:
 
+-- Combine \code{SpatRaster} objects. They must have the same extent and resolution. Also see \code{\link{add}}
+
+-- Add a \code{SpatRaster} to a \code{SpatRasterDataset}
+
+-- Append \code{SpatVector} objects. They must be of the same geometry type. See \code{\link{svc} for combining different geometry type objects in a SpatVectorCollection}
+
+-- Add a \code{SpatVector} to a \code{SpatVectorCollection}
 }
+
+\seealso{\code\link{collapse}, \code\link{add}}
+
 
 \usage{
 \S4method{c}{SpatRaster}(x, ...)
 
-\S4method{add}{SpatRaster,SpatRaster}(x)<-value
-
-\S4method{collapse}{SpatRaster}(x, ...)
-
 \S4method{c}{SpatRasterDataset}(x, ...)
 
-\S4method{collapse}{SpatRasterDataset}(x, ...)
+\S4method{c}{SpatVector}(x, ...)
+
+\S4method{c}{SpatVectorCollection}(x, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster, SpatRasterDataset, SpatVector}
-  \item{...}{For \code{c}: SpatRaster objects to be combined with \code{x}. Not implemented for \code{collapse)}}
-  \item{value}{SpatRaster}
+  \item{x}{SpatRaster, SpatVector, SpatRasterDataset or SpatVectorCollection}
+  \item{...}{as for \code{x} (you can only combine raster with raster data and vector with vector data)}
 }
 
 
-
 \value{
-SpatRaster
+Same class as \code{x}
 }
 
 
@@ -54,3 +53,4 @@ x <- c(r, r*2, r*3)
 }
 
 \keyword{spatial}
+

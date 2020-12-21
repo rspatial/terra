@@ -50,14 +50,18 @@ setMethod("svc", signature(x="list"),
 setReplaceMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 	function(x, i, j, value) {
 		stopifnot(inherits(value, "SpatVector"))
-		if (any(!is.finite(i)) | any(i<1)) {
-			error(" [,SpatVectorCollection", "invalid index")
+		if (any(!is.finite(i)) || any(i<1)) {
+			error("`[<-`", "invalid index")
 		}
-		if (length(i) > 1) {
-			error(" [,SpatVectorCollection", "you can only replace one sub-dataset at a time")		
+		j <- sort(j)
+		for (j in i) {
+			if (j == (lenght(x)+1)) {
+				x@ptr$push_back(value@ptr)			
+			} else {
+				x@ptr$replace(value@ptr, j-1)
+			}
 		}
-		x@ptr$replace(i-1, value@ptr)
-		messages(x, "[")
+		messages(x, "`[<-`")
 	}
 )
 
@@ -72,6 +76,32 @@ function(x, i, j, ... ,drop=TRUE) {
 	} else {
 		x@ptr <- x@ptr$subset(i-1)
 	}
-	messages(x, "[")
+	messages(x, "`[`")
 })
 
+setMethod("[[", c("SpatVectorCollection", "numeric", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	x[i,drop=drop]
+})
+
+
+
+setMethod("c", signature(x="SpatVectorCollection"), 
+	function(x, ...) {
+		
+		x@ptr <- x@ptr$subset(0:(x@ptr$size()-1) ) ## deep copy
+		dots <- list(...)
+		for (i in seq_along(dots)) {
+			if (inherits(dots[[i]], "SpatVectorCollection")) {
+				for (j in 1:length(dots[[i]])) {
+					x@ptr$push_back(dots[[i]][[j]]@ptr)
+				}
+			} else if (inherits(dots[[i]], "SpatVector")) {
+				x@ptr$push_back(dots[[i]]@ptr)
+			} else {
+				error("c", "arguments must be SpatVector or SpatVectorCollection")
+			} 
+		}
+		messages(x, "c")		
+	}
+)

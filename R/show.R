@@ -100,7 +100,11 @@ setMethod ("show" , "SpatVectorCollection",
 		cat(" size        :", length(object), "\n")
 		for (i in 1:length(object)) {
 			v <- object[i]
-			cat("              ", geomtype(v), "\n")
+			if (i==1) {	
+				cat(" geometry    : ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+			} else {
+				cat("               ", geomtype(v), " (", nrow(v) , ")\n", sep="")
+			}
 		}
 	}
 )

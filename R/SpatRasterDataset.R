@@ -85,19 +85,19 @@ setMethod("c", signature(x="SpatRasterDataset"),
 		for (i in seq_along(dots)) {
 			if (inherits(dots[[i]], "SpatRasterDataset")) {
 				sdsnms <- names(dots[[i]])
-				for (j in 1:x@ptr$nsds()) {
+				for (j in 1:(length(dots[[i]]))) {
 					if (!x@ptr$add(dots[[i]][[j]]@ptr, sdsnms[j], "", "", FALSE)) {
 						messages(x, "c")		
 					}
 				}
 			
 			} else if (inherits(dots[[i]], "SpatRaster")) {
-				if (is.null(nms)) error("c,SpatRasterDataset", "arguments must be named")
+				if (is.null(nms)) error("c", "arguments must be named")
 				if (!x@ptr$add(dots[[i]]@ptr, nms[i], "", "", FALSE)) {
 					messages(x, "c")		
 				}
 			} else {
-				error("c,SpatRasterDataset", "arguments must be SpatRaster or SpatRasterDataset")
+				error("c", "arguments must be SpatRaster or SpatRasterDataset")
 			} 
 		}
 		messages(x, "c")		
@@ -107,14 +107,14 @@ setMethod("c", signature(x="SpatRasterDataset"),
 setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 	function(x, i, j, value) {
 		if (any(!is.finite(i)) | any(i<1)) {
-			error(" [,SpatRasterDataset", "invalid index")
+			error("`[`", "invalid index")
 		}
 		if (length(i) > 1) {
-			error(" [,SpatRasterDataset", "you can only replace one sub-dataset at a time")		
+			error("`[`", "you can only replace one sub-dataset at a time")		
 		}
 		stopifnot(inherits(value, "SpatRaster"))
 		x@ptr$replace(i-1, value@ptr)
-		messages(x, "[")
+		messages(x, "`[`")
 	}
 )
 
@@ -129,7 +129,7 @@ function(x, i, j, ... ,drop=TRUE) {
 	} else {
 		x@ptr <- x@ptr$subset(i-1)
 	}
-	messages(x, "[")
+	messages(x, "`[`")
 })
 
 setMethod("[", c("SpatRasterDataset", "numeric", "numeric"),
@@ -145,7 +145,7 @@ function(x, i, j, ... ,drop=TRUE) {
 		r <- y[k][[j]]
 		x@ptr$add(r@ptr, nms[k], "", "", FALSE)
 	}
-	messages(x, "[")
+	messages(x, "`[`")
 })
 
 
@@ -158,7 +158,7 @@ setMethod("[", c("SpatRasterDataset", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	i <- match(i, names(x))
 	if (any(is.na(i))) {
-		error(" [.SpatRasterDataset", "unknown name(s) provided")
+		error("`[`", "unknown name(s) provided")
 	}
 	x[i, ..., drop=drop]
 })
