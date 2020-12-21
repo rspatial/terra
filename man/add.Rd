@@ -20,7 +20,7 @@ Add (in place) a SpatRaster to another SpatRaster object. Comparable with \code{
   \item{value}{SpatRaster}
 }
 
-\seealso{\code\link{c}}
+\seealso{\code{\link{c}}}
 
 \value{
 SpatRaster
