@@ -69,6 +69,9 @@ If the value is \code{"xyz"}, the matrix must have at least two columns, the fir
 SpatRaster
 }
 
+\details{
+The files are opened and read via GDAL. GDAL guesses the file format from the name, and/or else tries reading it with different "drivers" untill it succeeds. In very few cases this may cause a file to be opened with wrong driver, and some information may be lost (for example because of opening a netCDF file with the HDF5 driver. You can avoid that by prepending the driver name to the filename like this: \code{rast('NETCDF:"filename.ncdf"')}
+}
 
 \examples{
 # Create a SpatRaster from scratch

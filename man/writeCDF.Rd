@@ -10,6 +10,8 @@
 Write a SpatRaster or SpatRasterDataset to a NetCDF file. 
 
 When using a SpatRasterDataset, the varname, longname, and unit should be set in the object (see examples).
+
+Always use the ".nc" or ".cdf" file extension to assure that the file can be properly read again by GDAL
 }
 
 \usage{
