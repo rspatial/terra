@@ -5,9 +5,15 @@
 #	}
 #)
 
-roundtrip <- function(x) {
-	x@ptr <- x@ptr$allerretour()
-	x
+roundtrip <- function(x, coll=FALSE) {
+	if (coll) {
+		p <- methods::new("SpatVectorCollection")
+		p@ptr <- x@ptr$bienvenue()	
+		return(p)
+	} else {
+		x@ptr <- x@ptr$allerretour()
+		return(x)
+	}
 }
 
 setMethod("vect", signature(x="missing"), 

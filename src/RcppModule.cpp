@@ -298,6 +298,7 @@ RCPP_MODULE(spat){
 
 		.method("write", &SpatVector::write, "write")	
 		
+		.method("bienvenue", &SpatVector::bienvenue, "bienvenue")	
 		.method("allerretour", &SpatVector::allerretour, "allerretour")	
 		.method("aggregate", &SpatVector::aggregate, "aggregate")	
 		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")	

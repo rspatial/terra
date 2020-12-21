@@ -93,7 +93,17 @@ setMethod ("show" , "SpatExtent",
 		cat("SpatExtent :", e, "(xmin, xmax, ymin, ymax)\n")
 	}
 )	
-	
+
+setMethod ("show" , "SpatVectorCollection", 
+	function(object) {
+		cat(" class       :", class(object), "\n")
+		cat(" size        :", length(object), "\n")
+		for (i in 1:length(object)) {
+			v <- object[i]
+			cat("              ", geomtype(v), "\n")
+		}
+	}
+)
 
 setMethod ("show" , "SpatVector", 
 	function(object) {

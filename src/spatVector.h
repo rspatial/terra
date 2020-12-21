@@ -77,6 +77,8 @@ class SpatGeom {
 };
 
 
+class SpatVectorCollection;
+
 class SpatVector {
 
 	public:
@@ -227,6 +229,7 @@ class SpatVector {
 		std::vector<bool> is_valid();
 		SpatVector make_valid();
 		SpatVector allerretour();
+		SpatVectorCollection bienvenue();
 		SpatVector aggregate(std::string field, bool dissolve);
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 		SpatVector centroid();
@@ -250,8 +253,26 @@ class SpatVectorCollection {
 		std::string getWarnings() { return msg.getWarnings();}
 		std::string getError() { return msg.getError();}
 
-		void push_back(SpatVector x) { v.push_back(x); };
 		size_t size() { return v.size(); }
+		void push_back(SpatVector x) { v.push_back(x); };
+		bool replace(SpatVector x, size_t i) { 
+			if (i < size()) {
+				v[i] = x; 
+				return true;
+			} else {
+				return false;
+			}
+		}
+		SpatVectorCollection subset(std::vector<size_t> i) { 
+			SpatVectorCollection out;
+			for (size_t j=0; j<size(); j++) {
+				if (i[j] < size()) {
+					out.push_back(v[i[j]]); 
+				} 
+			}
+			return out;
+		}
+
 		SpatVector get(size_t i) { 
 			if (i < size()) {
 				return v[i];

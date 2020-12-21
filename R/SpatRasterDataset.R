@@ -104,7 +104,6 @@ setMethod("c", signature(x="SpatRasterDataset"),
 	}
 )
 
-
 setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 	function(x, i, j, value) {
 		if (any(!is.finite(i)) | any(i<1)) {

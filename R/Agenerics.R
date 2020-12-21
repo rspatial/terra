@@ -71,6 +71,8 @@ if (!isGeneric("cats<-")) { setGeneric("cats<-", function(x, ..., value) standar
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 if (!isGeneric("rev") ) { setGeneric("rev", function(x) standardGeneric("rev")) }
 if (!isGeneric("sds") ) { setGeneric("sds", function(x, ...) standardGeneric("sds")) }
+if (!isGeneric("svc") ) { setGeneric("svc", function(x, ...) standardGeneric("svc")) }
+
 if (!isGeneric("select")) {setGeneric("select", function(x, ...) standardGeneric("select"))}	
 if (!isGeneric("separate")) {setGeneric("separate", function(x, ...) standardGeneric("separate"))}	
 
