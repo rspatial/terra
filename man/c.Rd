@@ -13,7 +13,7 @@
 \description{
 With \code{c} you can:
 
--- Combine \code{SpatRaster} objects. They must have the same extent and resolution. Also see \code{\link{add}}
+-- Combine \code{SpatRaster} objects. They must have the same extent and resolution. Also see \code{\link{add<-}}
 
 -- Add a \code{SpatRaster} to a \code{SpatRasterDataset}
 

@@ -201,9 +201,9 @@ class SpatRasterStack {
 			}
 			
 			ds[i] = x;
-			names[i] = x.getNames()[1];
-			long_names[i] = x.getLongSourceNames()[1];
-			units[i] = x.getUnit()[1];
+			names[i] = x.getNames()[0];
+			long_names[i] = x.getLongSourceNames()[0];
+			units[i] = x.getUnit()[0];
 		}
 		
 		SpatRaster collapse() {

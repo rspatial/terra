@@ -109,11 +109,15 @@ setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 		if (any(!is.finite(i)) | any(i<1)) {
 			error("`[`", "invalid index")
 		}
-		if (length(i) > 1) {
-			error("`[`", "you can only replace one sub-dataset at a time")		
-		}
 		stopifnot(inherits(value, "SpatRaster"))
-		x@ptr$replace(i-1, value@ptr)
+		i <- sort(i)
+		for (j in i)
+			if (j == (size(x)+1)) {
+				x@ptr$add(value@ptr, "", "", "", FALSE)
+			} else {
+				x@ptr$replace(j-1, value@ptr)
+			}
+		}
 		messages(x, "`[`")
 	}
 )

@@ -10,8 +10,6 @@
 \alias{[,SpatVectorCollection,numeric,missing-method}
 \alias{[[,SpatVectorCollection,numeric,missing-method}
 
-\alias{c}
-\alias{c,SpatVectorCollection-method}
 
 
 \title{Create a SpatVectorCollection}

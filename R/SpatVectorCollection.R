@@ -53,9 +53,9 @@ setReplaceMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 		if (any(!is.finite(i)) || any(i<1)) {
 			error("`[<-`", "invalid index")
 		}
-		j <- sort(j)
+		i <- sort(i)
 		for (j in i) {
-			if (j == (lenght(x)+1)) {
+			if (j == (length(x)+1)) {
 				x@ptr$push_back(value@ptr)			
 			} else {
 				x@ptr$replace(value@ptr, j-1)
