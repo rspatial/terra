@@ -1,5 +1,5 @@
 
-setMethod("length", signature(x="SpatRasterDataset"),
+setMethod("length", signature(x="SpatVectorCollection"),
 	function(x) {
 		x@ptr$size()
 	}
