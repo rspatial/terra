@@ -50,13 +50,13 @@
 \alias{ncol,SpatVector-method}
 
 \alias{length,SpatVector-method}
+\alias{length,SpatVectorCollection-method}
 
 
-
-\title{Dimensions of a SpatRaster or SpatVector}
+\title{Dimensions of a SpatRaster or SpatVector and related objects}
 
 \description{
-Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; or sub-datasets of a SpatRasterDataset (\code{length}).
+Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; (\code{length}) returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.
 
 The \code{size} of a SpatRaster \code{x} is \code{ncell(x) * nlyr(x)}. For a SpatVector \code{length(x)} is the same as \code{nrow(x)}.
 
@@ -94,11 +94,12 @@ res(x) <- value
 \S4method{size}{SpatVector}(x, ...)
 
 \S4method{length}{SpatVector}(x)
+
 }
 
 
 \arguments{
-\item{x}{SpatRaster or SpatVector}
+\item{x}{SpatRaster or SpatVector or related objecs}
 \item{value}{For ncol and nrow: positive integer. For res: one or two positive numbers }  
 \item{...}{additional arguments. None implemented}
 }

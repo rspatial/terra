@@ -190,9 +190,10 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 	function(x, filename, overwrite=FALSE, zname="time", missval=-9999, prec="float", compression=NA, ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
-
-		filename <- trimws(filename)
-		stopifnot(filename != "")
+		xt  <- file_ext(filename)
+		if (!(xt %in% c(".nc", ".cdf")) {
+			warn("writeCDF", "for better results use file extension '.nc' or '.cdf'\nsee: https://stackoverflow.com/a/65398262/635245")
+		}
 		if (file.exists(filename) & !overwrite) {
 			error("writeCDF", "file exists, use 'overwrite=TRUE' to overwrite it")
 		}

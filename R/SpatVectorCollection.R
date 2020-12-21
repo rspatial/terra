@@ -8,7 +8,7 @@ setMethod("length", signature(x="SpatVectorCollection"),
 setMethod("svc", signature(x="missing"),
 	function(x, ...) {
 		v <- methods::new("SpatVectorCollection")
-		v@ptr <- SpatRasterStack$new()
+		v@ptr <- SpatVectorCollection$new()
 		v
 	}
 )
@@ -37,7 +37,7 @@ setMethod("svc", signature(x="list"),
 )
 
 
-setReplaceMethod("[", c("SpatVectorCollection","numeric","missing"),
+setReplaceMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 	function(x, i, j, value) {
 		stopifnot(inherits(value, "SpatVector"))
 		if (any(!is.finite(i)) | any(i<1)) {
