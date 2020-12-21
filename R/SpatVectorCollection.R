@@ -23,7 +23,7 @@ setMethod("svc", signature(x="SpatVector"),
 	}
 )
 
-setMethod("sds", signature(x="list"),
+setMethod("svc", signature(x="list"),
 	function(x, ...) {
 		r <- methods::new("SpatVectorCollection")
 		r@ptr <- SpatVectorCollection$new()
@@ -32,7 +32,7 @@ setMethod("sds", signature(x="list"),
 				r@ptr$push_back(x[[i]]@ptr)
 			}
 		}	
-		messages(r, "sds")
+		messages(r, "svc")
 	}
 )
 

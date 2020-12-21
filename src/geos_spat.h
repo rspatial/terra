@@ -383,7 +383,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 					}
 				}
 			}
-		} else { // polygons
+		} else if (gt == "Polygon" || gt == "MultiPolygon") {
 			GEOSGeometry* g = geoms[i].get();
 			size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
 			for(size_t j = 0; j<np; j++) {
@@ -436,6 +436,8 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 					}
 				}
 			}
+		} else {
+			out.addWarning("unhandeled collection geom");
 		}	
 	}
 	if (pt_x.size() > 0) {
