@@ -38,11 +38,12 @@ SpatVectorCollection
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 x <- svc()
-x <- svc(v, v)
+x <- svc(v, v[1:3,], as.lines(v[3:5,]), as.points(v))
 length(x)
+x
 
-# extract the second SpatVector
-x[2]
+# extract the thrid SpatVector
+x[3]
 }
 
 

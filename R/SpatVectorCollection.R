@@ -19,6 +19,16 @@ setMethod("svc", signature(x="SpatVector"),
 		r <- methods::new("SpatVectorCollection")
 		r@ptr <- SpatVectorCollection$new()
 		r@ptr$push_back(x@ptr)
+		dots <- list(...) 
+		if (length(dots) > 0) {
+			for (i in 1:length(dots)) {
+				if (inherits(dots[[i]], "SpatVector")) {
+					r@ptr$push_back(dots[[i]]@ptr)
+				} else {
+					warn("svc", "cannot add objects of class: ", class(dots[[i]]))
+				}
+			}
+		}
 		messages(r, "svc")
 	}
 )
