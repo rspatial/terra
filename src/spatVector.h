@@ -23,14 +23,8 @@
 #include "gdal_priv.h"
 #endif
 
-#define GEOS_USE_ONLY_R_API
-#include <geos_c.h>
-#include <functional>
-
 
 enum SpatGeomType { points, lines, polygons, unknown };
-
-using GeomPtr = std::unique_ptr<GEOSGeometry, std::function<void(GEOSGeometry*)> >;
 
 
 class SpatHole {
@@ -229,7 +223,6 @@ class SpatVector {
 		SpatVector rotate(double angle, double x0, double y0);
 
 //geos
-		std::vector<GeomPtr> geos_geoms(GEOSContextHandle_t hGEOSCtxt);
 
 		std::vector<bool> is_valid();
 		SpatVector make_valid();

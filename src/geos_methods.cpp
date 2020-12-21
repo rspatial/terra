@@ -1,5 +1,7 @@
-//#define GEOS_USE_ONLY_R_API
-//#include <geos_c.h>
+#define GEOS_USE_ONLY_R_API
+#include <geos_c.h>
+
+
 
 #if GEOS_VERSION_MAJOR == 3
 # if GEOS_VERSION_MINOR >= 5
@@ -27,14 +29,17 @@
 #include <cstdarg> 
 #include <cstring> 
 #include <memory>
+#include <functional>
 
 #include "Rcpp.h"
 
+using GeomPtr = std::unique_ptr<GEOSGeometry, std::function<void(GEOSGeometry*)> >;
 
 static GeomPtr geos_ptr(GEOSGeometry* g, GEOSContextHandle_t hGEOSctxt) {
 	auto deleter = std::bind(GEOSGeom_destroy_r, hGEOSctxt, std::placeholders::_1);
 	return GeomPtr(g, deleter);
 }
+
 
 
 template <typename... Args>
@@ -81,7 +86,7 @@ void geos_finish(GEOSContextHandle_t ctxt) {
 }
 
 
-GEOSContextHandle_t CPL_geos_init(void) {
+GEOSContextHandle_t geos_init(void) {
 #ifdef HAVE350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
 	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
@@ -126,7 +131,6 @@ GEOSGeometry* geos_linearRing(std::vector<double> x, std::vector<double> y, GEOS
 GEOSGeometry* geos_polygon(std::vector<double> &x, std::vector<double> &y, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSGeometry* shell = geos_linearRing(x, y, hGEOSCtxt);
 	size_t nh = hx.size();
-	Rcpp::Rcout << "holes: "<< nh << std::endl;
 	std::vector<GEOSGeometry*> holes(nh);
 	for (size_t i=0; i<nh; i++) {
 		holes[i] = geos_linearRing(hx[i], hy[i], hGEOSCtxt);
@@ -151,13 +155,13 @@ void getHoles(SpatPart &p, std::vector<std::vector<double>> &hx, std::vector<std
 }
 		
 
-std::vector<GeomPtr> SpatVector::geos_geoms(GEOSContextHandle_t hGEOSCtxt) {
-	size_t n = size();
+std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
+	size_t n = v->size();
 	std::vector<GeomPtr> g;
 	g.reserve(n);
-	std::string vt = type();
+	std::string vt = v->type();
 	if (vt == "points") {
-		std::vector<std::vector<double>> xy = coordinates();
+		std::vector<std::vector<double>> xy = v->coordinates();
 		std::vector<double> x = xy[0];
 		std::vector<double> y = xy[1];
 		GEOSCoordSequence *pseq;
@@ -172,7 +176,7 @@ std::vector<GeomPtr> SpatVector::geos_geoms(GEOSContextHandle_t hGEOSCtxt) {
 	} else if (vt == "lines") {
 		// gp = NULL;
 		for (size_t i=0; i<n; i++) {
-			SpatGeom svg = getGeom(i);
+			SpatGeom svg = v->getGeom(i);
 			size_t np = svg.size();
 			std::vector<GEOSGeometry*> geoms;
 			geoms.reserve(np);
@@ -192,7 +196,7 @@ std::vector<GeomPtr> SpatVector::geos_geoms(GEOSContextHandle_t hGEOSCtxt) {
 
 		std::vector<std::vector<double>> hx, hy;
 		for (size_t i=0; i<n; i++) {
-			SpatGeom svg = getGeom(i);
+			SpatGeom svg = v->getGeom(i);
 			size_t np = svg.size();
 			std::vector<GEOSGeometry*> geoms(np);
 			for (size_t j=0; j < np; j++) {
@@ -281,7 +285,6 @@ SpatVectorCollection vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 					}
 				}
 				int nholes = GEOSGetNumInteriorRings_r(hGEOSCtxt, part);
-				Rcpp::Rcout << "holes: " << nholes << std::endl;
 				for (int h=0; h < nholes; h++) {
 					const GEOSGeometry* ring = GEOSGetInteriorRingN_r(hGEOSCtxt, part, h);
 
@@ -317,8 +320,8 @@ SpatVectorCollection vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 
 
 SpatVector SpatVector::allerretour() {
-	GEOSContextHandle_t hGEOSCtxt = CPL_geos_init();
-	std::vector<GeomPtr> g = geos_geoms(hGEOSCtxt);
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	SpatVectorCollection out = vect_from_geos(g, hGEOSCtxt, type());
 	geos_finish(hGEOSCtxt);
 	return out.get(0);
@@ -332,11 +335,11 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 		dist = -dist;
 	}
 
-	GEOSContextHandle_t hGEOSCtxt = CPL_geos_init();
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector out;
 	SpatVector f = remove_holes();
 
-	std::vector<GeomPtr> g = geos_geoms(hGEOSCtxt);
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {
 		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), dist, nQuadSegs);
@@ -361,9 +364,9 @@ SpatVector SpatVector::intersect(SpatVector v) {
 
 	SpatVector out;
 
-	GEOSContextHandle_t hGEOSCtxt = CPL_geos_init();
-	std::vector<GeomPtr> x = geos_geoms(hGEOSCtxt);
-	std::vector<GeomPtr> y = geos_geoms(hGEOSCtxt);	
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);	
 	std::vector<GeomPtr> result;
 	std::vector<std::vector<unsigned>> atts(2);
 	size_t nx = size();
@@ -405,8 +408,8 @@ SpatVector SpatVector::centroid() {
 
 	SpatVector out;
 
-	GEOSContextHandle_t hGEOSCtxt = CPL_geos_init();
-	std::vector<GeomPtr> g = geos_geoms(hGEOSCtxt);
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {		
 		GEOSGeometry* pt = GEOSGetCentroid_r(hGEOSCtxt, g[i].get());
