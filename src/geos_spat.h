@@ -1,3 +1,5 @@
+/*
+
 #define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
@@ -29,7 +31,18 @@
 #include <functional>
 
 #include "spatVector.h"
+#include "Rcpp.h"
 
+
+template <typename... Args>
+inline void warnNoCall(const char* fmt, Args&&... args ) {
+    Rf_warningcall(R_NilValue, tfm::format(fmt, std::forward<Args>(args)... ).c_str());
+}
+
+template <typename... Args>
+inline void NORET errNoCall(const char* fmt, Args&&... args) {
+    throw Rcpp::exception(tfm::format(fmt, std::forward<Args>(args)... ).c_str(), false);
+}
 
 
 static void __errorHandler(const char *fmt, ...) { 
@@ -40,7 +53,7 @@ static void __errorHandler(const char *fmt, ...) {
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
-//	error(buf);
+    errNoCall(buf); 
 	return; 
 } 
 
@@ -52,7 +65,7 @@ static void __warningHandler(const char *fmt, ...) {
 	va_end(ap);
 	p = buf + strlen(buf) - 1;
 	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
-//	warning(buf);
+    warnNoCall(buf); 
 	return;
 }
 
@@ -77,12 +90,13 @@ GEOSContextHandle_t CPL_geos_init(void) {
 }
 
 
-using GeomPtr = std::unique_ptr<GEOSGeometry, std::function<void(GEOSGeometry*)> >;
+//using GeomPtr = std::unique_ptr<GEOSGeometry, std::function<void(GEOSGeometry*)> >;
 
 static GeomPtr geos_ptr(GEOSGeometry* g, GEOSContextHandle_t hGEOSctxt) {
 	auto deleter = std::bind(GEOSGeom_destroy_r, hGEOSctxt, std::placeholders::_1);
 	return GeomPtr(g, deleter);
 }
+
 
 std::vector<GeomPtr> make_geos_points(std::vector<double> x, std::vector<double> y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
@@ -180,7 +194,6 @@ void getHoles(SpatPart &p, std::vector<std::vector<double>> &hx, std::vector<std
 }
 		
 
-
 std::vector<GeomPtr> make_geos_polygons(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
 	size_t n = v->size();
 	std::vector<GeomPtr> g(n);
@@ -210,7 +223,7 @@ std::vector<GeomPtr> geom_from_spat(SpatVector* v, GEOSContextHandle_t hGEOSCtxt
 		std::vector<std::vector<double>> xy = v->coordinates();
 		g = make_geos_points(xy[0], xy[1], hGEOSCtxt);
 	} else if (vt == "lines") {
-		g = make_geos_polygons(v, hGEOSCtxt);
+		g = make_geos_lines(v, hGEOSCtxt);
 	} else { // polygons
 		g = make_geos_polygons(v, hGEOSCtxt);
 	}
@@ -298,4 +311,6 @@ SpatVector spat_from_geom(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> & 
 	return out;
 }
 
+
+*/
 

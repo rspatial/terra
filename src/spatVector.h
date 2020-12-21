@@ -23,8 +23,15 @@
 #include "gdal_priv.h"
 #endif
 
+#define GEOS_USE_ONLY_R_API
+#include <geos_c.h>
+#include <functional>
+
 
 enum SpatGeomType { points, lines, polygons, unknown };
+
+using GeomPtr = std::unique_ptr<GEOSGeometry, std::function<void(GEOSGeometry*)> >;
+
 
 class SpatHole {
 	public:
@@ -211,15 +218,9 @@ class SpatVector {
 		std::string getError() { return msg.getError();}
 
 		SpatVector point_buffer(double d, unsigned quadsegs);
-
-		std::vector<bool> is_valid();
-		SpatVector make_valid();
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
-		SpatVector centroid();
 
 		SpatVector append(SpatVector x);
-
-		SpatVector aggregate(std::string field, bool dissolve);
 		SpatVector disaggregate();
 		SpatVector shift(double x, double y);
 		SpatVector rescale(double f, double x0, double y0);
@@ -228,16 +229,45 @@ class SpatVector {
 		SpatVector rotate(double angle, double x0, double y0);
 
 //geos
+		std::vector<GeomPtr> geos_geoms(GEOSContextHandle_t hGEOSCtxt);
+
+		std::vector<bool> is_valid();
+		SpatVector make_valid();
+		SpatVector allerretour();
+		SpatVector aggregate(std::string field, bool dissolve);
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
+		SpatVector centroid();
 		SpatVector intersect(SpatVector v);
+
 };
 
 
 
 class SpatVectorCollection {
 
-	public:
+	private:
+		SpatMessages msg;
 		std::vector<SpatVector> v;
+
+	public:
+		void setError(std::string s) { msg.setError(s); }
+		void addWarning(std::string s) { msg.addWarning(s); }
+		bool hasError() { return msg.has_error; }
+		bool hasWarning() { return msg.has_warning; }
+		std::string getWarnings() { return msg.getWarnings();}
+		std::string getError() { return msg.getError();}
+
+		void push_back(SpatVector x) { v.push_back(x); };
+		size_t size() { return v.size(); }
+		SpatVector get(size_t i) { 
+			if (i < size()) {
+				return v[i];
+			} else {
+				SpatVector vv;
+				vv.setError("invalid index");
+				return vv;
+			}
+		}
 		
 };
 

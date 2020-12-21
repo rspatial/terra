@@ -451,7 +451,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values) {
 
 	if (set_geometry) {
-		RasterSource s;
+		SpatRasterSource s;
 		s.ncol = GDALGetRasterXSize( hDS );
 		s.nrow = GDALGetRasterYSize( hDS );
 		s.nlyr = GDALGetRasterCount( hDS );
@@ -602,7 +602,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 bool SpatRaster::setValuesMEM(GDALDatasetH hDS, bool set_geometry) {
 
 	if (set_geometry) {
-		RasterSource s;
+		SpatRasterSource s;
 		s.ncol = GDALGetRasterXSize( hDS );
 		s.nrow = GDALGetRasterYSize( hDS );
 		s.nlyr = GDALGetRasterCount( hDS );

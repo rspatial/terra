@@ -50,7 +50,7 @@ class SpatWindow {
 
 
 
-class RasterSource {
+class SpatRasterSource {
     private:
 //		std::ofstream ofs;
 	public:
@@ -60,7 +60,7 @@ class RasterSource {
 		bool open_read=false;
 		bool open_write=false;
 
-		RasterSource();
+		SpatRasterSource();
 
 //		void fsopen(std::string filename);
 //		bool fswrite(std::vector<double> &v);
@@ -120,13 +120,13 @@ class RasterSource {
 		std::vector<double> scale;
 		std::vector<double> offset;
 
-//		std::vector<RasterSource> subset(std::vector<unsigned> lyrs);
-		RasterSource subset(std::vector<unsigned> lyrs);
+//		std::vector<SpatRasterSource> subset(std::vector<unsigned> lyrs);
+		SpatRasterSource subset(std::vector<unsigned> lyrs);
 		std::vector<double> getValues(unsigned lyr);
 		void setRange();
 		void resize(unsigned n);
 		bool in_order();
-		bool combine_sources(const RasterSource &x);
+		bool combine_sources(const SpatRasterSource &x);
 
 		bool parameters_changed = false;		
 		
@@ -172,7 +172,7 @@ class SpatRaster {
 
 		//std::string name;
 		
-		std::vector<RasterSource> source;
+		std::vector<SpatRasterSource> source;
 
 		BlockSize bs;
 		//BlockSize getBlockSize(unsigned n, double frac, unsigned steps=0);
@@ -231,7 +231,7 @@ class SpatRaster {
 		std::vector<double> origin();
 		unsigned nlyr();
 
-		// only no values allowed with a single RasterSource
+		// only no values allowed with a single SpatRasterSource
 		bool hasValues() { return source[0].hasValues ; };
 		std::vector<double> getValues(long lyr= -1);
 		
@@ -291,9 +291,9 @@ class SpatRaster {
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
 		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::string x);
 		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname);
-		SpatRaster(RasterSource s);
-		void setSource(RasterSource s);
-		void setSources(std::vector<RasterSource> s);
+		SpatRaster(SpatRasterSource s);
+		void setSource(SpatRasterSource s);
+		void setSources(std::vector<SpatRasterSource> s);
 		//SpatRaster(const SpatRaster& x);
 
         SpatRaster deepCopy();

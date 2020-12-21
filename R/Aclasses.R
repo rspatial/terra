@@ -70,6 +70,25 @@ setClass("SpatVector",
 )
 
 
+
+setClass("SpatVectorCollection",
+	representation (
+		ptr = "C++Object"
+	),	
+	prototype (	
+		ptr = NULL
+	),
+	validity = function(object)	{
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatVectorCollection")){
+			return(TRUE)
+		} else {
+			return(FALSE)		
+		}
+	}
+)
+
+
+
 setClass("SpatExtent",
 	representation (
 		ptr = "C++Object"

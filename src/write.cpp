@@ -353,7 +353,7 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 
 	if (_values.size() == g.size()) {
 
-		RasterSource s = g.source[0];
+		SpatRasterSource s = g.source[0];
 		s.values = _values;
 		s.hasValues = true;
 		s.memory = true;
@@ -387,7 +387,7 @@ void SpatRaster::setRange() {
 	}
 }
 
-void RasterSource::setRange() {
+void SpatRasterSource::setRange() {
 	double vmin, vmax;
 	size_t nc = ncol * nrow;
 	size_t start;

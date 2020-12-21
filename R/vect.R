@@ -5,6 +5,10 @@
 #	}
 #)
 
+roundtrip <- function(x) {
+	x@ptr <- x@ptr$allerretour()
+	x
+}
 
 setMethod("vect", signature(x="missing"), 
 	function(...) {

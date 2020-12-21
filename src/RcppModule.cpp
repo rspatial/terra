@@ -104,11 +104,12 @@ RCPP_EXPOSED_CLASS(SpatOptions)
 RCPP_EXPOSED_CLASS(SpatCategories)
 RCPP_EXPOSED_CLASS(SpatDataFrame)
 RCPP_EXPOSED_CLASS(SpatWindow)
-RCPP_EXPOSED_CLASS(RasterSource)
+RCPP_EXPOSED_CLASS(SpatRasterSource)
 RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatRasterCollection)
 RCPP_EXPOSED_CLASS(SpatRasterStack)
 RCPP_EXPOSED_CLASS(SpatVector)
+RCPP_EXPOSED_CLASS(SpatVectorCollection)
 
 RCPP_MODULE(spat){
 
@@ -216,6 +217,22 @@ RCPP_MODULE(spat){
 		.field("messages", &SpatDataFrame::msg, "messages")		
 	;
 
+
+    class_<SpatVectorCollection>("SpatVectorCollection")
+		.constructor()
+
+		//.property("names", &SpatVectorCollection::get_names, &SpatVectorCollection::set_names)
+		.method("size", &SpatVectorCollection::size, "size")
+		.method("get", &SpatVectorCollection::get, "get")
+		.method("push_back", &SpatVectorCollection::push_back, "push_back")
+
+		.method("has_error", &SpatVectorCollection::hasError)		
+		.method("has_warning", &SpatVectorCollection::hasWarning)		
+		.method("getWarnings", &SpatVectorCollection::getWarnings)
+		.method("getError", &SpatVectorCollection::getError)
+	;
+
+
     class_<SpatCategories>("SpatCategories")
 		.constructor()
 		.field_readonly("levels", &SpatCategories::levels, "levels")
@@ -281,6 +298,7 @@ RCPP_MODULE(spat){
 
 		.method("write", &SpatVector::write, "write")	
 		
+		.method("allerretour", &SpatVector::allerretour, "allerretour")	
 		.method("aggregate", &SpatVector::aggregate, "aggregate")	
 		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")	
 		.method("buffer", &SpatVector::buffer, "buffer")	
@@ -297,24 +315,24 @@ RCPP_MODULE(spat){
 	;
 
 
-    class_<RasterSource>("RasterSource")	
-		.field_readonly("time", &RasterSource::time)
-//		.field("srs", &RasterSource::srs, "srs")
+    class_<SpatRasterSource>("SpatRasterSource")	
+		.field_readonly("time", &SpatRasterSource::time)
+//		.field("srs", &SpatRasterSource::srs, "srs")
 
-		//.field_readonly("memory", &RasterSource::memory)
-	//	.field_readonly("filename", &RasterSource::filename)
-		//.field_readonly("driver", &RasterSource::driver)
-		//.field_readonly("nrow", &RasterSource::nrow)
-		//.field_readonly("ncol", &RasterSource::ncol)
-		//.field_readonly("nlyr", &RasterSource::nlyr)
-//		.field_readonly("extent", &RasterSource::extent)
-//		.field_readonly("hasWindow", &RasterSource::hasWindow)
-//		.field_readonly("window", &RasterSource::window)
-		//.field_readonly("layers", &RasterSource::layers)
-		//.field_readonly("nlyrfile", &RasterSource::nlyrfile)
-		//.field_readonly("flipped", &RasterSource::flipped)
-		//.field_readonly("rotated", &RasterSource::rotated)
-//		.field_readonly("parameters_changed", &RasterSource::parameters_changed)
+		//.field_readonly("memory", &SpatRasterSource::memory)
+	//	.field_readonly("filename", &SpatRasterSource::filename)
+		//.field_readonly("driver", &SpatRasterSource::driver)
+		//.field_readonly("nrow", &SpatRasterSource::nrow)
+		//.field_readonly("ncol", &SpatRasterSource::ncol)
+		//.field_readonly("nlyr", &SpatRasterSource::nlyr)
+//		.field_readonly("extent", &SpatRasterSource::extent)
+//		.field_readonly("hasWindow", &SpatRasterSource::hasWindow)
+//		.field_readonly("window", &SpatRasterSource::window)
+		//.field_readonly("layers", &SpatRasterSource::layers)
+		//.field_readonly("nlyrfile", &SpatRasterSource::nlyrfile)
+		//.field_readonly("flipped", &SpatRasterSource::flipped)
+		//.field_readonly("rotated", &SpatRasterSource::rotated)
+//		.field_readonly("parameters_changed", &SpatRasterSource::parameters_changed)
 	;	
 
 
@@ -408,7 +426,7 @@ RCPP_MODULE(spat){
 		.property("range_max", &SpatRaster::range_max )
 		.property("res", &SpatRaster::resolution)
 				
-// only if RasterSource is exposed
+// only if SpatRasterSource is exposed
 		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )

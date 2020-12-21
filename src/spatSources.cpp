@@ -21,25 +21,25 @@
 /*
 #include "string_utils.h"
 
-void RasterSource::fsopen(std::string filename) {
+void SpatRasterSource::fsopen(std::string filename) {
     std::string grifile = setFileExt(filename, ".gri");
  	std::ofstream fstr(grifile, std::ios::out | std::ios::binary);
     *ofs = &fstr;
 }
 
-bool RasterSource::fswrite(std::vector<double> &v) {
+bool SpatRasterSource::fswrite(std::vector<double> &v) {
 	unsigned sz = v.size() * sizeof(double);
 	bool result = (*ofs).write(reinterpret_cast<const char*>(&v[0]), sz);
  	return result;
 }
 
-void RasterSource::fsclose() {
+void SpatRasterSource::fsclose() {
 	(*ofs).close();
 }
 */
 
 
-RasterSource::RasterSource() {
+SpatRasterSource::SpatRasterSource() {
 	open_write = false;
 	open_read = false;
 }
@@ -163,7 +163,7 @@ std::vector<unsigned> SpatRaster::sourcesFromLyrs(std::vector<unsigned> lyrs) {
 
 
 
-std::vector<double> RasterSource::getValues(unsigned lyr) {
+std::vector<double> SpatRasterSource::getValues(unsigned lyr) {
 	size_t nc ;
 	if (hasWindow) {
 		nc = window.full_ncol * window.full_nrow;
@@ -176,7 +176,7 @@ std::vector<double> RasterSource::getValues(unsigned lyr) {
 	
 }
 
-bool RasterSource::in_order() {
+bool SpatRasterSource::in_order() {
 	if (memory) return true;
 	if (nlyr != nlyrfile) return false;
 	for (size_t i=0; i<layers.size(); i++) {
@@ -188,7 +188,7 @@ bool RasterSource::in_order() {
 }
 
 
-void RasterSource::resize(unsigned n) {
+void SpatRasterSource::resize(unsigned n) {
 	names.resize(n);
 	time.resize(n);	
 	unit.resize(n);	
@@ -211,10 +211,10 @@ void RasterSource::resize(unsigned n) {
 }
 
 
-//std::vector<RasterSource> RasterSource::subset(std::vector<unsigned> lyrs) {
-RasterSource RasterSource::subset(std::vector<unsigned> lyrs) {
+//std::vector<SpatRasterSource> SpatRasterSource::subset(std::vector<unsigned> lyrs) {
+SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 
-	RasterSource out;
+	SpatRasterSource out;
 
     unsigned nl = lyrs.size();
     bool all = true;
@@ -326,7 +326,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
     unsigned ss = srcs[0];
     std::vector<unsigned> slyr;
     std::vector<unsigned> lyrbys = nlyrBySource();
-    RasterSource rs;
+    SpatRasterSource rs;
     unsigned offset = 0;
     for (size_t i=0; i<ss; i++) { offset += lyrbys[i]; }
 
@@ -358,7 +358,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
 
 
-bool RasterSource::combine_sources(const RasterSource &x) {
+bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	if (memory & x.memory) {
 		if ((values.size() + x.values.size()) < (values.max_size()/8) ) {
 			values.insert(values.end(), x.values.begin(), x.values.end());
@@ -401,8 +401,8 @@ bool RasterSource::combine_sources(const RasterSource &x) {
 
 SpatRaster SpatRaster::collapse_sources() {
 	SpatRaster out;
-	std::vector<RasterSource> src;
-	RasterSource s = source[0];
+	std::vector<SpatRasterSource> src;
+	SpatRasterSource s = source[0];
 	for (size_t i=1; i<nsrc(); i++) {
 		if (! s.combine_sources(source[i])) {
 			src.push_back(s);

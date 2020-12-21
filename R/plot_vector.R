@@ -356,7 +356,7 @@
 
 	if (is.null(cols)) {
 		if (type == "none") {
-			if (out$leg$geomtype == "points") {
+			if (out$leg$geomtype %in% c("lines", "points")) {
 				cols <- "black"
 			} 
 		} else {

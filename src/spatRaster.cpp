@@ -60,29 +60,29 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 }
 
 
-void SpatRaster::setSources(std::vector<RasterSource> s) {
+void SpatRaster::setSources(std::vector<SpatRasterSource> s) {
 	source = s;
 //	extent = s[0].extent;
 //	srs = s[0].srs;
 }
 
 
-void SpatRaster::setSource(RasterSource s) {
+void SpatRaster::setSource(SpatRasterSource s) {
 	s.resize(s.nlyr);
-	std::vector<RasterSource> vs = {s};
+	std::vector<SpatRasterSource> vs = {s};
 	setSources(vs);
 }
 
 
-SpatRaster::SpatRaster(RasterSource s) {
-	std::vector<RasterSource> vs = {s};
+SpatRaster::SpatRaster(SpatRasterSource s) {
+	std::vector<SpatRasterSource> vs = {s};
 	setSources(vs);
 }
 
 
 SpatRaster::SpatRaster() {
 
-	RasterSource s;
+	SpatRasterSource s;
 	s.nrow = 10;
 	s.ncol = 10;
 	s.extent = SpatExtent();
@@ -106,7 +106,7 @@ SpatRaster::SpatRaster() {
 
 SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs) {
 
-	RasterSource s;
+	SpatRasterSource s;
 	s.nrow=rcl[0];
 	s.ncol=rcl[1];
 	s.extent.xmin = ext[0];
@@ -147,7 +147,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 
 SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs) {
 
-	RasterSource s;
+	SpatRasterSource s;
 	s.nrow = nr;
 	s.ncol = nc;
 	s.extent = ext;
@@ -198,7 +198,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
-	RasterSource s;
+	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
 	s.ncol = ncol();

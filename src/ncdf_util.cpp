@@ -340,7 +340,7 @@ std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<s
 	return out;
 }
 
-void RasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
+void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.size() == 0) return;
 
