@@ -111,7 +111,7 @@ setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 		}
 		stopifnot(inherits(value, "SpatRaster"))
 		i <- sort(i)
-		for (j in i)
+		for (j in i) {
 			if (j == (size(x)+1)) {
 				x@ptr$add(value@ptr, "", "", "", FALSE)
 			} else {
