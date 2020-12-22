@@ -50,13 +50,13 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 	std::unordered_map<std::string, std::string>
 	drivers = {
 		{".tif","GTiff"}, {".tiff","GTiff"},
-		{".nc","netCDF"}, {".cdf","netCDF"}, {".ncdf","netCDF"},
-		{".img","HFA"},
+		{".nc","netCDF"}, {".cdf","netCDF"}, 
+		{".img","HFA"}, {".img","HFA"},
 		{".bmp","BMP"},
 		{".flt","EHdr"},
-		{".grd","RRASTER"},
+		{".grd","RRASTER"}, {".gri","RRASTER"},
 		{".sgrd","SAGA"}, {".sdat","SAGA"},
-		{".rst","RST"},
+		{".rst","RST"}, {".rdc","RST"},
 		{".envi","ENVI"},
 		{".asc","AAIGrid"},
 		{".bmp","BMP"},
