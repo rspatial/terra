@@ -18,6 +18,47 @@ SpatVectorCollection SpatVector::bienvenue() {
 }
 
 
+std::vector<bool> SpatVector::geos_isvalid() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init2();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<bool> out;
+	out.reserve(g.size());
+	for (size_t i = 0; i < g.size(); i++) {		
+		char v = GEOSisValid_r(hGEOSCtxt, g[i].get());
+		out.push_back(v);
+	}
+	geos_finish(hGEOSCtxt);
+	return {out};
+}
+
+std::vector<std::string> SpatVector::geos_isvalid_msg() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init2();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<bool> ok;
+	ok.reserve(g.size());
+	for (size_t i = 0; i < g.size(); i++) {		
+		char v = GEOSisValid_r(hGEOSCtxt, g[i].get());
+		ok.push_back(v);
+	}
+	geos_finish(hGEOSCtxt);
+	std::vector<std::string> out;
+
+	size_t j=0;
+
+	for (size_t i=0; i<ok.size(); i++) {
+		if (!ok[i]) {
+			if (j < msgs.size()) {
+				out.push_back(msgs[j]);
+				j++;
+			} else {
+				out.push_back("?");	
+			}
+		}
+	}
+    msgs.resize(0); 
+	return out;
+}
+  
 
 SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyle) {
 
@@ -47,8 +88,6 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 	geos_finish(hGEOSCtxt);
 	return coll.get(0);	
 }
-
-
 
 
 SpatVector SpatVector::intersect(SpatVector v) {

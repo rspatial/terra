@@ -123,11 +123,6 @@ bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string 
 		}
 	}
 	
-	/*if (driver == "netCDF") {
-		setError("netCDF writing is only supported through 'writeCDF'");
-		return false;
-	}*/	
-
 	return true;
 }
 

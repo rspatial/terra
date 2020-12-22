@@ -16,9 +16,9 @@ Plot SpatVector data to make a map
 
 \usage{
 
-\S4method{plot}{SpatVector,character}(x, y, col, type,
-	mar=NULL, legend=TRUE, add=FALSE, axes=!add, main=y,
-    plg=list(), pax=list(), nr, nc, ...)
+\S4method{plot}{SpatVector,character}(x, y, col, type, mar=NULL, legend=TRUE,
+     add=FALSE, axes=!add, main=y,
+     plg=list(), pax=list(), nr, nc, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
 

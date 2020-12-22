@@ -11,20 +11,19 @@ setMethod ("show" , "Rcpp_SpatCategories",
 )
 
 
-printDF <- function(object, n=6, first=FALSE) {
-	n <- min(nrow(object), max(n, 0))
-	old <- dim(object)
+printDF <- function(x, n=6, first=FALSE) {
+	n <- min(nrow(x), max(n, 0))
+	old <- dim(x)
 	if (old[2] == 0) { return() }
-	h <- object
 	if (old[1] > 0) {
-		h <- h[1:n, ,drop=FALSE]
+		x <- x[1:n, ,drop=FALSE]
 	}
 	if (old[2] > 12) {
-		h <- h[, 1:10]
+		x <- x[, 1:10]
 	}
-	d <- dim(object)
+	d <- dim(x)
 
-	cls <- sapply(object, class)
+	cls <- sapply(x, class)
 	cls <- gsub("integer", "int", cls)
 	cls <- gsub("numeric", "num", cls)
 	cls <- gsub("character", "chr", cls)
@@ -32,41 +31,41 @@ printDF <- function(object, n=6, first=FALSE) {
 	cls <- data.frame(rbind(class=cls))
 	names(cls) <- NULL
 
-	nms <- colnames(h)
+	nms <- colnames(x)
 	nc <- nchar(nms)
 	mx <- max(15, 100/d[2])
 	i <- nc > (mx+2)
 	nms[i] <- paste0(substr(nms[i], 1, (mx-1)), "~")
 	if (d[1] > 0) {
-		for (i in 1:ncol(h)) {
-			if (is.character(h[[i]])) {
-				n <- nchar(h[[i]])
+		for (i in 1:ncol(x)) {
+			if (is.character(x[[i]])) {
+				n <- nchar(x[[i]])
 				j <- n > (mx+2)
-				h[[i]][j] <- paste0(substr(h[[i]][j], 1, (mx-1)), "~")
-			} else if (is.numeric(h[[i]])) {
-				h[[i]] <- formatC(h[[i]])		
+				x[[i]][j] <- paste0(substr(x[[i]][j], 1, (mx-1)), "~")
+			} else if (is.numeric(x[[i]])) {
+				x[[i]] <- formatC(x[[i]])		
 			}
 		}
 	}
 	
-	h <- rbind(h[1,,drop=FALSE], h)
-	h[1,] <- cls
-	if (nrow(h) < d[1]) {
-		h <- rbind(h, "...")
+	x <- rbind(x[1,,drop=FALSE], x)
+	x[1,] <- cls
+	if (nrow(x) < d[1]) {
+		x <- rbind(x, "...")
 	}
 	if (first) {
-		h <- cbind("", h)
-		colnames(h)[1] <- "names       :"
-		h[1,1] <- "type        :"
+		x <- cbind("", x)
+		colnames(x)[1] <- "names       :"
+		x[1,1] <- "type        :"
 		if (d[1] > 0) {
-			h[2,1] <- "values      :"
+			x[2,1] <- "values      :"
 		}
 	}
 	if (old[2] > d[2]) {
 		name <- paste0("(and ", old[2] - d[2], " more)")
-		h[[name]] <- ""
+		x[[name]] <- ""
 	}
-	print(h, row.names = FALSE)
+	print(x, row.names = FALSE)
 }
 
 

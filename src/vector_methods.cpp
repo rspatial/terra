@@ -64,8 +64,6 @@ SpatVector SpatVector::make_valid() {
 }
 
 
-
-
 SpatVector SpatVector::disaggregate() {
 	SpatVector out;
 	out.srs = srs;
@@ -94,7 +92,6 @@ SpatVector SpatVector::disaggregate() {
 }
 
 
-#include "Rcpp.h"
 SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 
 	SpatVector out;
@@ -115,10 +112,12 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 		}
 		out.addGeom(g);
 	}
+
 	out = out.unaryunion();
 	out.df  = uv; 
 	return out;
 }
+
 
 /*
 	} else {
@@ -237,6 +236,39 @@ SpatVector SpatVector::get_holes() {
 	out.df = df.subset_rows(atts);
 	return out;
 }
+
+
+SpatVector SpatVector::set_holes(SpatVector x, size_t i) {
+
+	SpatVector out;
+	if (size() == 0) {
+		out.setError("object has no geometries");
+		return out;
+	}
+	if (i > size()) {
+		out.setError("invalid index");
+		return out;
+	}
+	if (x.type() != "polygons") {
+		out.setError("holes must be polygons");
+		return out;
+	}
+	if (out.geoms[i].size() > 1) {
+		out.setError("selected object has multiple geometries");
+	}
+
+	x = x.unaryunion();
+	SpatPart p  = out.geoms[i].parts[0];
+	SpatGeom g =   x.geoms[0];
+	for (size_t i=0; i<g.size(); i++) {
+		p.addHole(g.parts[i].x, g.parts[i].y);
+	}
+	out = *this;
+	out.geoms[i].parts[0] = p;
+	return out;
+}
+
+
 
 
 /*

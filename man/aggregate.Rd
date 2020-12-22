@@ -69,7 +69,7 @@ f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 va <- aggregate(v, "ID_1")
 
-plot(va, "NAME_1", lwd=5)
+plot(va, "NAME_1", lwd=5, plg=list(x="topright"), mar=rep(2,4))
 lines(v, lwd=3, col="light gray")
 lines(va)
 text(v, "ID_1", halo=TRUE)

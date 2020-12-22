@@ -1,6 +1,7 @@
 #define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
+
 #if GEOS_VERSION_MAJOR == 3
 # if GEOS_VERSION_MINOR >= 5
 #  define HAVE350
@@ -95,6 +96,34 @@ GEOSContextHandle_t geos_init(void) {
 }
 
 
+// send messages to a global vector instead of to R warnings.
+std::vector<std::string> msgs;
+
+static void __msgHandler(const char *fmt, ...) {
+	char buf[BUFSIZ], *p;
+	va_list ap;
+	va_start(ap, fmt);
+	vsprintf(buf, fmt, ap);
+	va_end(ap);
+	p = buf + strlen(buf) - 1;
+	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
+    msgs.push_back(buf); 
+	return;
+}
+
+GEOSContextHandle_t geos_init2(void) {
+    msgs.resize(0); 
+
+#ifdef HAVE350
+	GEOSContextHandle_t ctxt = GEOS_init_r();
+	GEOSContext_setNoticeHandler_r(ctxt, __msgHandler);
+	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
+	return ctxt;
+#else
+	return initGEOS_r((GEOSMessageHandler) __msgHandler, (GEOSMessageHandler) __errorHandler);
+#endif
+}
+
 
 GEOSGeometry* geos_line(std::vector<double> x, std::vector<double> y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
@@ -140,13 +169,15 @@ GEOSGeometry* geos_polygon(std::vector<double> &x, std::vector<double> &y, std::
 
 void getHoles(SpatPart &p, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy) {
 	size_t nh = p.nHoles();
-	hx = std::vector<std::vector<double>>(nh,std::vector<double>(0));	
-	hy = std::vector<std::vector<double>>(nh,std::vector<double>(0));	
+	hx.resize(0);
+	hy.resize(0);
+	hx.reserve(nh);
+	hy.reserve(nh);
 	if (nh == 0) return;	
 	for (size_t i=0; i<nh; i++) {
 		SpatHole h = p.getHole(i);
-		hx[i] = h.x; 
-		hy[i] = h.y;
+		hx.push_back(h.x); 
+		hy.push_back(h.y); 
 	}
 	return;
 }
@@ -257,6 +288,7 @@ SpatVectorCollection vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 		for(size_t i = 0; i < ng; i++) {
 			GEOSGeometry* g = geoms[i].get();
 			size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
+			
 			for(size_t j = 0; j<np; j++) {
 				
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
@@ -295,14 +327,14 @@ SpatVectorCollection vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 					double xvalue = 0;
 					double yvalue = 0;
 					for (int p=0; p < npts; p++) {
-						xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);				
+						xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);			
 						yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);				
 						if (xok & yok) {
 							x.push_back(xvalue);
 							y.push_back(yvalue);
-							gid.push_back(i);			
-							gp.push_back(j);			
-							hole.push_back(1);
+							gid.push_back(i);
+							gp.push_back(j);
+							hole.push_back(h);
 						}
 					}
 				}
@@ -431,7 +463,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 							pl_y.push_back(yvalue);
 							pl_gid.push_back(i);			
 							pl_gp.push_back(j);			
-							pl_hole.push_back(1);
+							pl_hole.push_back(h);
 						}
 					}
 				}

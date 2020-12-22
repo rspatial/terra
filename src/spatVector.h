@@ -159,6 +159,7 @@ class SpatVector {
 		SpatVector as_points();
 		SpatVector remove_holes();
 		SpatVector get_holes();
+		SpatVector set_holes(SpatVector x, size_t i);
 
 		bool read(std::string fname);
 		
@@ -215,10 +216,13 @@ class SpatVector {
 		SpatVector flip(bool vertical);	
 		SpatVector rotate(double angle, double x0, double y0);
 
-//geos
-
+//ogr 
 		std::vector<bool> is_valid();
 		SpatVector make_valid();
+//geos
+		std::vector<bool> geos_isvalid();
+		std::vector<std::string> geos_isvalid_msg();
+
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
 		SpatVector aggregate(std::string field, bool dissolve);

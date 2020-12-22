@@ -22,7 +22,7 @@ Remove the holes in SpatVector polygons. If \code{inverse=TRUE} the holes are re
 \item{...}{additional arguments. None implemented }  
 }
 
-\value{character}
+\value{SpatVector}
 
 \examples{
 x <- rbind(c(-10,0), c(140,60), c(160,0), c(140,-55))

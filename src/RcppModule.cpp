@@ -262,6 +262,7 @@ RCPP_MODULE(spat){
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
 		.method("get_datatypes", &SpatVector::get_datatypes, "")
 
+		.method("set_holes", &SpatVector::set_holes, "set_holes")		
 		.method("get_holes", &SpatVector::get_holes, "get_holes")		
 		.method("remove_holes", &SpatVector::remove_holes, "remove holes")		
 		.method("append", &SpatVector::append, "append")		
@@ -303,6 +304,9 @@ RCPP_MODULE(spat){
 //		.method("unaryunion", &SpatVector::unaryunion, "geosunion")	
 		.method("bienvenue", &SpatVector::bienvenue, "bienvenue")	
 		.method("allerretour", &SpatVector::allerretour, "allerretour")	
+		.method("geos_isvalid", &SpatVector::geos_isvalid, "geos_isvalid")	
+		.method("geos_isvalid_msg", &SpatVector::geos_isvalid_msg, "geos_isvalid_msg")	
+
 		.method("aggregate", &SpatVector::aggregate, "aggregate")	
 		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")	
 		.method("buffer", &SpatVector::buffer, "buffer")	
