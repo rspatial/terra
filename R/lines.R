@@ -12,7 +12,7 @@ function(x, mx=50000, ...) {
 setMethod("lines", signature(x="SpatVector"), 
 	function(x, col, lwd=1, lty=1, ...)  {
 		gtype <- geomtype(x)
-		if (gtype == "points") {
+		if (grepl("points", gtype)) {
 			points(x, col, ...)
 		} else {
 			if (missing(col)) col <- "black"

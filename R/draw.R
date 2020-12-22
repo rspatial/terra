@@ -58,7 +58,7 @@ setMethod("draw", signature(x="character"),
 			.drawPol(col, lwd, ...)
 		} else if (x == "lines") {
 			.drawLin(col, lwd, ...)
-		} else if (x == "points") {
+		} else if (x == "points" || x == "multipoints" ) {
 			.drawPts(col, lwd, ...)
 		} 
 	}

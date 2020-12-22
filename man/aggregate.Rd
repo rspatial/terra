@@ -17,7 +17,7 @@ Or aggregate ("dissolve") a SpatVector.
 \usage{
 \S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{aggregate}{SpatVector}(x, by=NULL, dissolve=TRUE, fun, ...)
+\S4method{aggregate}{SpatVector}(x, by=NULL, dissolve=TRUE, fun="mean", ...)
 }
 
 \arguments{
@@ -62,6 +62,17 @@ ra <- aggregate(r, fact=10, fun=max)
 # multiple layers
 s <- c(r, r*2)
 x <- aggregate(s, 2)
+
+
+## SpatVector 
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+va <- aggregate(v, "ID_1")
+
+plot(va, "NAME_1", lwd=5)
+lines(v, lwd=3, col="light gray")
+lines(va)
+text(v, "ID_1", halo=T)
 }
 
 \keyword{methods}

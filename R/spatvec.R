@@ -32,7 +32,7 @@ setMethod("is.polygons", signature(x="SpatVector"),
 )
 setMethod("is.points", signature(x="SpatVector"), 
 	function(x, ...) {
-		geomtype(x) == "points"
+		grepl("points", geomtype(x))
 	}
 )
 

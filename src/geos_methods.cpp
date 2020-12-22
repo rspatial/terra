@@ -12,7 +12,7 @@ SpatVector SpatVector::allerretour() {
 SpatVectorCollection SpatVector::bienvenue() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
-	SpatVectorCollection out = coll_from_geos(g, hGEOSCtxt, type());
+	SpatVectorCollection out = coll_from_geos(g, hGEOSCtxt);
 	geos_finish(hGEOSCtxt);
 	return out;
 }
@@ -119,6 +119,26 @@ SpatVector SpatVector::centroid() {
 	return out;	
 }
 
+SpatVector SpatVector::unaryunion() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> gout(g.size());
+	SpatVector out;
+	for (size_t i = 0; i < g.size(); i++) {		
+		GEOSGeometry* u = GEOSUnaryUnion_r(hGEOSCtxt, g[i].get());
+		if (u == NULL) {
+			out.setError("NULL geom");
+			geos_finish(hGEOSCtxt);
+			return out;
+		}
+		gout[i] = geos_ptr(u, hGEOSCtxt);
+	}
+	SpatVectorCollection coll = coll_from_geos(gout, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	out = coll.get(0);
+	out.srs = srs;
+	return out;
+}
 
 /*
 bool geos_buffer(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> &g, double dist, unsigned nQuadSegs) {

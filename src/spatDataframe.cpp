@@ -126,6 +126,10 @@ SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) {
 	unsigned icnt=0;
 	unsigned scnt=0;
 	for (size_t i=0; i < range.size(); i++) {
+		if (range[i] < 0 || range[i] >= ncol()) {
+			out.setError("invalid column");
+			return out;
+		}
 		unsigned j = range[i];
 		unsigned p = iplace[j];
 		out.names.push_back(names[j]);
@@ -443,6 +447,7 @@ std::vector<std::string> SpatDataFrame::get_datatypes() {
 // only doing this for one column for now
 SpatDataFrame SpatDataFrame::unique(int col) {
 	SpatDataFrame out = subset_cols(col);
+	if (out.hasError()) return out;
 	if (out.itype[0] == 0) {
 		std::sort(out.dv[0].begin(), out.dv[0].end());
 		out.dv[0].erase(std::unique(out.dv[0].begin(), out.dv[0].end()), out.dv[0].end());	
@@ -462,7 +467,8 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 	x = unique(col);
 	size_t nu = x.nrow();
 	std::vector<int> idx(nd, -1);
-	if (itype[0] == 0) {
+	size_t ccol = iplace[col];
+	if (x.itype[0] == 0) {
 		for (size_t i=0; i<nd; i++) {
 			//for (size_t j=0; j<nu; j++) {
 			//	if ((std::isnan(x.dv[0][j])) && (std::isnan(dv[0][i]))) {
@@ -470,16 +476,16 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 			//		continue;						
 			//	} else 
 			for (size_t j=0; j<nu; j++) {
-				if (dv[0][i] == x.dv[0][j]) {
+				if (dv[ccol][i] == x.dv[0][j]) {
 					idx[i] = j;
 					continue;
 				}
 			}
 		}
-	} else if (itype[0] == 1) {
+	} else if (x.itype[0] == 1) {
 		for (size_t i=0; i<nd; i++) {
 			for (size_t j=0; j<nu; j++) {
-				if (iv[0][i] == x.iv[0][j]) {
+				if (iv[ccol][i] == x.iv[0][j]) {
 					idx[i] = j;
 					continue;
 				}
@@ -488,7 +494,7 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 	} else {
 		for (size_t i=0; i<nd; i++) {
 			for (size_t j=0; j<nu; j++) {
-				if (sv[0][i] == x.sv[0][j]) {
+				if (sv[ccol][i] == x.sv[0][j]) {
 					idx[i] = j;
 					continue;
 				}

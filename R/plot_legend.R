@@ -261,7 +261,7 @@
 		x <- usr[c(2)]
 		y <- usr[c(4)]
 	}
-	if (geomtype == "points") {
+	if (grepl("points", geomtype)) {
 		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, 
 		pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)	
 	} else if (geomtype == "lines") {

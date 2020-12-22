@@ -35,12 +35,13 @@ printDF <- function(object, n=6, first=FALSE) {
 	nms <- colnames(h)
 	nc <- nchar(nms)
 	mx <- max(15, 100/d[2])
-	nms[nc > mx] <- paste0(substr(nms[nc > mx], 1, (mx-1)), "~")
+	i <- nc > (mx+2)
+	nms[i] <- paste0(substr(nms[i], 1, (mx-1)), "~")
 	if (d[1] > 0) {
 		for (i in 1:ncol(h)) {
 			if (is.character(h[[i]])) {
 				n <- nchar(h[[i]])
-				j <- (n > 11 & n > nc[i])
+				j <- n > (mx+2)
 				h[[i]][j] <- paste0(substr(h[[i]][j], 1, (mx-1)), "~")
 			} else if (is.numeric(h[[i]])) {
 				h[[i]] <- formatC(h[[i]])		

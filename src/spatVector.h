@@ -24,30 +24,34 @@
 #endif
 
 
-enum SpatGeomType { points, lines, polygons, unknown };
+enum SpatGeomType { points, multipoints, lines, polygons, unknown };
 
 
 class SpatHole {
 	public:
 		std::vector<double> x, y;
 		SpatExtent extent;
+		//constructors
 		SpatHole();
 		SpatHole(std::vector<double> X, std::vector<double> Y);
+		//methods
 		size_t size() { return x.size(); }	
 };
 
 class SpatPart {
 	public:
 		std::vector<double> x, y; //, z;
-// should be here to support collections; add to constructors
-//		SpatGeomType gtype = unknown;
+		std::vector< SpatHole > holes; // polygons only
 		SpatExtent extent;
+
+		//constructors
 		SpatPart();
 		SpatPart(std::vector<double> X, std::vector<double> Y);
 		SpatPart(double X, double Y);
+
+		//methods
 		size_t size() { return x.size(); }
-		// for POLYGONS only
-		std::vector< SpatHole > holes;
+		//holes, polygons only
 		bool addHole(std::vector<double> X, std::vector<double> Y);
 		bool addHole(SpatHole h);
 		SpatHole getHole(unsigned i) { return( holes[i] ) ; }
@@ -61,9 +65,11 @@ class SpatGeom {
 		SpatGeomType gtype = unknown;
 		std::vector<SpatPart> parts;
 		SpatExtent extent;
+		//constructors
 		SpatGeom();
 		SpatGeom(SpatGeomType g);
 		SpatGeom(SpatPart p);
+		//methods
 		bool unite(SpatGeom g);
 		bool addPart(SpatPart p);
 		bool addHole(SpatHole h);
@@ -95,7 +101,7 @@ class SpatVector {
 		SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomType g, std::string crs);
 		SpatVector(std::vector<std::string> wkt);
 
-		SpatGeom window;
+		SpatGeom window; // for point patterns, must be polygon
 
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> s);
@@ -113,7 +119,6 @@ class SpatVector {
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);
 
-
 		bool setSRS(std::string _srs) {
 			std::string msg;
 			if (!srs.set(_srs, msg)){
@@ -123,23 +128,9 @@ class SpatVector {
 			return true;	
 		}
 
-/*
-#ifdef useGDAL	
-		bool setSRS(OGRSpatialReference *poSRS, std::string &msg) {
-			if (!srs.set(poSRS, msg)){
-				addWarning("Cannot set SRS to vector: "+ msg);
-				return false;
-			}
-			return true;				
-		}
-#endif		
-*/
-
 		std::string getSRS(std::string x) {
 			return srs.get(x);
 		}
-		//std::string getPRJ();
-		//void setPRJ(std::string PRJ);
 
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
@@ -150,7 +141,6 @@ class SpatVector {
 		std::vector<std::vector<double>> coordinates();
 
 		SpatVector project(std::string crs);
-		//std::vector<std::vector<double>> test(std::vector<double> x, std::vector<double> y, std::string fromcrs, std::string tocrs);
 
 		SpatVector subset_cols(int i);
 		SpatVector subset_cols(std::vector<int> range);
@@ -173,6 +163,7 @@ class SpatVector {
 		bool read(std::string fname);
 		
 		bool write(std::string filename, std::string lyrname, std::string driver, bool overwrite);
+		
 #ifdef useGDAL
 		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite);
 		GDALDataset* GDAL_ds();
@@ -234,6 +225,8 @@ class SpatVector {
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 		SpatVector centroid();
 		SpatVector intersect(SpatVector v);
+		
+		SpatVector unaryunion();
 
 };
 

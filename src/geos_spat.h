@@ -316,7 +316,7 @@ SpatVectorCollection vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 
 
 
-SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEOSCtxt, std::string vt) {
+SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEOSCtxt) {
 
 	SpatVectorCollection out;
 
@@ -440,9 +440,10 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 			out.addWarning("unhandeled collection geom");
 		}	
 	}
-	if (pt_x.size() > 0) {
+
+	if (pl_x.size() > 0) {
 		SpatVector v;
-		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole);
+		v.setGeometry("polygons", pl_gid, pl_gp, pl_x, pl_y, pl_hole);
 		out.push_back(v);
 	}
 	if (ln_x.size() > 0) {
@@ -450,9 +451,9 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 		v.setGeometry("lines", ln_gid, ln_gp, ln_x, ln_y, ln_hole);
 		out.push_back(v);
 	}
-	if (pl_x.size() > 0) {
+	if (pt_x.size() > 0) {
 		SpatVector v;
-		v.setGeometry("polygons", pl_gid, pl_gp, pl_x, pl_y, pl_hole);
+		v.setGeometry("points", pt_gid, pt_gp, pt_x, pt_y, pt_hole);
 		out.push_back(v);
 	}
 	return out;

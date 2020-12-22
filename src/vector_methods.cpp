@@ -94,11 +94,10 @@ SpatVector SpatVector::disaggregate() {
 }
 
 
-
+#include "Rcpp.h"
 SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 
 	SpatVector out;
-	
 	int i = where_in_vector(field, get_names());
 	if (i < 0) {
 		out.setError("cannot find field");
@@ -106,27 +105,29 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
-
-	out.srs = srs;
-	out.df  = uv; 
-
-	if (!dissolve) {
-		for (size_t i=0; i<uv.nrow(); i++) {
-			SpatGeom g;
-			g.gtype = geoms[0].gtype;
-			for (size_t j=0; j<idx.size(); j++) {
-				if (i == (size_t)idx[j]) {
-					g.unite( getGeom(j) );
-				}	
-			}
-			out.addGeom(g);
+	for (size_t i=0; i<uv.nrow(); i++) {
+		SpatGeom g;
+		g.gtype = geoms[0].gtype;
+		for (size_t j=0; j<idx.size(); j++) {
+			if (i == (size_t)idx[j]) {
+				g.unite( getGeom(j) );
+			}	
 		}
+		out.addGeom(g);
+	}
+	out = out.unaryunion();
+	out.df  = uv; 
+	return out;
+}
+
+/*
 	} else {
 
 		GDALDataset* src = out.write_ogr("", "layer", "Memory", true);
 		OGRLayer *inLayer = src->GetLayer(0);
 		inLayer->ResetReading();
 		OGRFeature *inFeature;
+*/
 /*
 		const OGRSpatialReference *srs = src->GetSpatialRef();
 		GDALDataset *dst = NULL;
@@ -142,7 +143,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 		OGRFeature *outFeature;
 		i = 0;
 */
-
+/*
 		while( (inFeature = inLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = inFeature->GetGeometryRef();
 			//OGRMultiPolygon *poGeom = ( OGRMultiPolygon * )poGeometry;
@@ -175,7 +176,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	
 	return out;
 }
-
+*/
 
 SpatVector SpatVector::remove_holes() {
 

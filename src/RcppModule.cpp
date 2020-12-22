@@ -300,6 +300,7 @@ RCPP_MODULE(spat){
 
 		.method("write", &SpatVector::write, "write")	
 		
+//		.method("unaryunion", &SpatVector::unaryunion, "geosunion")	
 		.method("bienvenue", &SpatVector::bienvenue, "bienvenue")	
 		.method("allerretour", &SpatVector::allerretour, "allerretour")	
 		.method("aggregate", &SpatVector::aggregate, "aggregate")	

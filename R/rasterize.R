@@ -79,7 +79,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
 	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), filename="", overwrite=FALSE, wopt=list(), ...) {
 
-		if (geomtype(x) == "points") {
+		if (grepl("points", geomtype(x))) {
 			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
 			return (r)
 		}
