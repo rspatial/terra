@@ -51,7 +51,7 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 	drivers = {
 		{".tif","GTiff"}, {".tiff","GTiff"},
 		{".nc","netCDF"}, {".cdf","netCDF"}, 
-		{".img","HFA"}, {".img","HFA"},
+		{".img","HFA"}, {".ige","HFA"},
 		{".bmp","BMP"},
 		{".flt","EHdr"},
 		{".grd","RRASTER"}, {".gri","RRASTER"},
