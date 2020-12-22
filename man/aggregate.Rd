@@ -72,7 +72,7 @@ va <- aggregate(v, "ID_1")
 plot(va, "NAME_1", lwd=5)
 lines(v, lwd=3, col="light gray")
 lines(va)
-text(v, "ID_1", halo=T)
+text(v, "ID_1", halo=TRUE)
 }
 
 \keyword{methods}
