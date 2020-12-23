@@ -1,6 +1,8 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x,...) standardGeneric("voronoi"))}
+if (!isGeneric("intersects")) {setGeneric("intersects", function(x, y, ...) standardGeneric("intersects"))}
+if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y, ...) standardGeneric("intersect"))}
 
 if (!isGeneric("median")) {setGeneric("median", function(x, na.rm) standardGeneric("median"))}
 if (!isGeneric("polys")) {setGeneric("polys", function(x,...) standardGeneric("polys"))}

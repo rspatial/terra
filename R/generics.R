@@ -230,7 +230,6 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 )
 
 
-
 setMethod("selectRange", signature(x="SpatRaster"), 
 	function(x, y, z=1, repint=0, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- spatOptions(filename, overwrite, wopt)

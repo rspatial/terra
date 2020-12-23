@@ -4,8 +4,7 @@
 
 \alias{crop}
 \alias{crop,SpatRaster,ANY-method}
-\alias{crop,SpatVector,SpatVector-method}
-\alias{crop,SpatVector,SpatExtent-method}
+\alias{crop,SpatVector,ANY-method}
 
 \title{Cut out a geographic subset}
 
@@ -16,13 +15,12 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
 \usage{
 \S4method{crop}{SpatRaster,ANY}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{crop}{SpatVector,SpatVector}(x, y, ...)
-
+\S4method{crop}{SpatVector,ANY}(x, y, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{y}{SpatExtent or other object that has a SpatExtent; or SpatVector if \code{x} is a SpatVector}
+  \item{y}{SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a SpatExtent)}
   \item{snap}{character. One of "near", "in", or "out"}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
@@ -42,6 +40,13 @@ r <- rast(xmin=0, xmax=10, ymin=0, ymax=10, nrows=25, ncols=25)
 values(r) <- 1:ncell(r)
 e <- ext(-5, 5, -5, 5)
 rc <- crop(r, e)
+
+# vector
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+e <- ext(6.15, 6.3, 49.7, 49.8)
+x <- crop(v, e)
+#plot(x, "NAME_1")
 }
 
 \keyword{spatial}

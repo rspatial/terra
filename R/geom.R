@@ -1,28 +1,61 @@
 
 
+roundtrip <- function(x, coll=FALSE) {
+	if (coll) {
+		p <- methods::new("SpatVectorCollection")
+		p@ptr <- x@ptr$bienvenue()	
+		return(p)
+	} else {
+		x@ptr <- x@ptr$allerretour()
+		return(x)
+	}
+}
+
+setMethod("is.valid", signature(x="SpatVector"), 
+	function(x, messages=FALSE, ...) {
+		if (messages) {
+			x@ptr$geos_isvalid_msg()
+		} else {
+			x@ptr$geos_isvalid()
+		}
+	}
+)
+
+
+
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
-		x <- methods::as(x, "Spatial")
-		y <- methods::as(y, "Spatial")
-		r <- raster::intersect(x, y)
-		vect(r)
+		x@ptr <- x@ptr$intersect(y@ptr)
+		messages(x)
 	}
 )
 
-## cheating --- using raster/sp/rgeos for now
-setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y, ...) {
-		x <- methods::as(x, "Spatial")
-		y <- methods::as(y, "Spatial")
-		r <- raster::crop(x, y)
-		vect(r)
+setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"), 
+	function(x, y) {
+		x * y
 	}
 )
 
-setMethod("crop", signature(x="SpatVector", y="SpatExtent"), 
-	function(x, y, ...) {
+setMethod("intersect", signature(x="SpatVector", y="SpatExtent"), 
+	function(x, y) {
 		y <- as.polygons(y)
-		crop(x, y, ...)
+		intersect(x, y)
+	}
+)
+
+setMethod("intersect", signature(x="SpatExtent", y="SpatVector"), 
+	function(x, y) {
+		y <- ext(y)
+		x * y
+	}
+)
+
+
+setMethod("intersects", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y) {
+		out <- x@ptr$intersects(y@ptr)
+		x <- messages(x)
+		matrix(out, nrow=nrow(x), byrow=TRUE)
 	}
 )
 
@@ -43,6 +76,19 @@ setMethod("buffer", signature(x="SpatVector"),
 )
 
 
+setMethod("crop", signature(x="SpatVector", y="ANY"), 
+	function(x, y, ...) {
+		if (!inherits(y, "SpatExtent")) {
+			y <- try(ext(y), silent=TRUE)
+			if (inherits(y, "try-error")) {
+				stop("y does not have a SpatExtent")
+			}
+		}
+		x@ptr <- x@ptr$crop(y@ptr)
+		messages(x)
+	}
+)
+
 
 setMethod("disaggregate", signature(x="SpatVector"), 
 	function(x, ...) {
@@ -53,4 +99,16 @@ setMethod("disaggregate", signature(x="SpatVector"),
 
 
 
+setMethod("voronoi", signature(x="SpatVector"), 
+	function(x, bnd=NULL, tolerance=0, as.lines=FALSE, ...) {
+		if (is.null(bnd)) {
+			bnd <- vect()
+		} 
+		if (inherits(bnd, "SpatExtent")) {
+			bnd <- as.polygons(bnd)
+		}
+		x@ptr <- x@ptr$voronoi(bnd@ptr, tolerance, as.lines)
+		messages(x, "voronoi")
+	}
+)
 

@@ -99,6 +99,7 @@ GEOSContextHandle_t geos_init(void) {
 // send messages to a global vector instead of to R warnings.
 std::vector<std::string> msgs;
 
+
 static void __msgHandler(const char *fmt, ...) {
 	char buf[BUFSIZ], *p;
 	va_list ap;

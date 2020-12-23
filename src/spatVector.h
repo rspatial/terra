@@ -229,8 +229,10 @@ class SpatVector {
 		SpatVector aggregate(std::string field, bool dissolve);
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 		SpatVector centroid();
+		SpatVector crop(SpatExtent e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
 		SpatVector intersect(SpatVector v);
+		std::vector<bool> intersects(SpatVector v);
 		
 		SpatVector unaryunion();
 

@@ -35,8 +35,7 @@ x <- vect(wkt)
 v <- voronoi(x)
 v
 
-d <- disaggregate(v)
-plot(d, lwd=2, col=rainbow(15))
+plot(v, lwd=2, col=rainbow(15))
 lines(x, col="gray", lwd=2)
 points(x)
 }

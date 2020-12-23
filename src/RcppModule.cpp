@@ -322,7 +322,9 @@ RCPP_MODULE(spat){
 		.method("rotate", &SpatVector::rotate, "rotate")	
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
 		.method("intersect", &SpatVector::intersect, "intersect")		
+		.method("intersects", &SpatVector::intersects, "intersects")		
 		.method("voronoi", &SpatVector::voronoi, "voronoi")	
+		.method("crop", &SpatVector::crop, "crop")	
 	;
 
 

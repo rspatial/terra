@@ -4,9 +4,10 @@
 
 \alias{select}
 \alias{select,SpatRaster-method}
+\alias{select,SpatVector-method}
 
 \title{
-Geometric subsetting
+Spatial selection
 }
 
 \description{
@@ -16,15 +17,20 @@ Geometrically subset SpatRaster or SpatVector (to be done) by drawing on a plot 
 
 \usage{
 \S4method{select}{SpatRaster}(x, ...)
+
+\S4method{select}{SpatVector}(x, use="rec", draw=TRUE, col="cyan", ...)
 }
 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
-\item{...}{additional arguments passed on to \code{\link{draw}}}
+\item{use}{character indicating what to draw. One of "rec" (rectangle) or "pol" (polygon)}
+\item{draw}{logial. If \code{TRUE} the selection is drawn on the map}
+\item{col}{color to be used for drawing if \code{draw=TRUE}}
+\item{...}{additional graphics arguments for drawing}
 }
 
 \seealso{
-\code{\link{click}, \link{crop}}
+\code{\link{crop}} and \code{\link{intersect}} to make an intersection and \code{\link{click}} and \code{\link{text}} to see cell values or geometry attributes
 }
 
 
@@ -44,6 +50,13 @@ s <- select(r) # now click on the map twice
 # plot the selection on a new canvas:
 x11()
 plot(s)
+
+# vector
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+plot(v)
+x <- select(v) # now click on the map twice
+x
 }
 }
 

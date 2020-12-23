@@ -5,43 +5,6 @@
 #	}
 #)
 
-
-setMethod("voronoi", signature(x="SpatVector"), 
-	function(x, bnd=NULL, tolerance=0, as.lines=FALSE, ...) {
-		if (is.null(bnd)) {
-			bnd <- vect()
-		} 
-		if (inherits(bnd, "SpatExtent")) {
-			bnd <- as.polygons(bnd)
-		}
-		x@ptr <- x@ptr$voronoi(bnd@ptr, tolerance, as.lines)
-		messages(x, "voronoi")
-	}
-)
-
-
-roundtrip <- function(x, coll=FALSE) {
-	if (coll) {
-		p <- methods::new("SpatVectorCollection")
-		p@ptr <- x@ptr$bienvenue()	
-		return(p)
-	} else {
-		x@ptr <- x@ptr$allerretour()
-		return(x)
-	}
-}
-
-setMethod("is.valid", signature(x="SpatVector"), 
-	function(x, messages=FALSE, ...) {
-		if (messages) {
-			x@ptr$geos_isvalid_msg()
-		} else {
-			x@ptr$geos_isvalid()
-		}
-	}
-)
-
-
 setMethod("vect", signature(x="missing"), 
 	function(...) {
 		p <- methods::new("SpatVector")

@@ -328,8 +328,9 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 
 \tabular{ll}{
   \code{\link{c}} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
-  \code{erase} or "-" \tab \bold{erase} parts of a polygons\cr
-  \code{intersect} or "*"  \tab \bold{intersect} polygons\cr
+  \code{erase} or "-" \tab \bold{erase} (parts of) geometries\cr
+  \code{\link{intersect}} or "*"  \tab \bold{intersect} geometries\cr
+  \code{\link{intersects}} \tab do geometries intersect?\cr
   \code{union} or "+" \tab \bold{union} polygons\cr
   \code{cover} \tab \bold{update} and \bold{identity} a polygons\cr
   \code{symdif} \tab\bold{symmetrical difference} of two polygons \cr 

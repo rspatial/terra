@@ -19,17 +19,27 @@ setMethod("select", signature(x="SpatRaster"),
 )
 	
 	
-#setMethod("select", signature(x="SpatVector"), 
-#	function(x, use="rec", draw=TRUE, col="cyan", size=2, ...) {
-#		use <- substr(tolower(use), 1, 3)
-#		stopifnot(use %in% c("rec", "pol"))
-#		if (use == "rec") {
-#			e <- as(drawExtent(), "SpatialPolygons")
-#		} else {
-#			e <- draw("pol")
-#		}
-#		intersect(x, e)
-#	}
-#)
+setMethod("select", signature(x="SpatVector"), 
+	function(x, use="rec", draw=TRUE, col="cyan", ...) {
+		use <- substr(tolower(use), 1, 3)
+		use <- match.arg(use, c("rec", "pol")) 
+		if (use == "rec") {
+			e <- draw()
+			e <- as.polygons(e)
+		} else {
+			e <- draw("pol")
+		}
+		i <- intersects(x, e)
+		x <- x[as.vector(i), ]
+		if (draw) {
+			if (geomtype(x) == "points" || geomtype(x) == "multipoints") {
+				points(x, col=col, ...)
+			} else {
+				lines(x, col=col, ...)
+			}
+		}
+		x
+	}
+)
 
 
