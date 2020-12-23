@@ -307,7 +307,9 @@ RCPP_MODULE(spat){
 		.method("geos_isvalid", &SpatVector::geos_isvalid, "geos_isvalid")	
 		.method("geos_isvalid_msg", &SpatVector::geos_isvalid_msg, "geos_isvalid_msg")	
 
-		.method("aggregate", &SpatVector::aggregate, "aggregate")	
+		.method("aggregate", ( SpatVector (SpatVector::*)(std::string, bool))( &SpatVector::aggregate ))
+		.method("aggregate_nofield", ( SpatVector (SpatVector::*)(bool))( &SpatVector::aggregate ))
+
 		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")	
 		.method("buffer", &SpatVector::buffer, "buffer")	
 		.method("centroid", &SpatVector::centroid, "centroid")	
@@ -320,6 +322,7 @@ RCPP_MODULE(spat){
 		.method("rotate", &SpatVector::rotate, "rotate")	
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
 		.method("intersect", &SpatVector::intersect, "intersect")		
+		.method("voronoi", &SpatVector::voronoi, "voronoi")	
 	;
 
 

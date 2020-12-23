@@ -225,9 +225,11 @@ class SpatVector {
 
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
+		SpatVector aggregate(bool dissolve);
 		SpatVector aggregate(std::string field, bool dissolve);
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 		SpatVector centroid();
+		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
 		SpatVector intersect(SpatVector v);
 		
 		SpatVector unaryunion();
@@ -239,10 +241,10 @@ class SpatVector {
 class SpatVectorCollection {
 
 	private:
-		SpatMessages msg;
 		std::vector<SpatVector> v;
 
 	public:
+		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool hasError() { return msg.has_error; }

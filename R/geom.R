@@ -32,7 +32,7 @@ setMethod("buffer", signature(x="SpatVector"),
 		if (geomtype(x) == "points") {
 			x@ptr <- x@ptr$buffer(width, quadsegs, 1)
 		} else {
-			if (isLonLat(x)) {
+			if (is.lonlat(x)) {
 				warn("buffer", "lon/lat data are treated as planar")
 			}
 			quadsegs <- max(3, quadsegs)

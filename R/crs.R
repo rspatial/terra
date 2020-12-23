@@ -66,7 +66,7 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 
 
 
-setMethod("isLonLat", signature("SpatRaster"), 
+setMethod("is.lonlat", signature("SpatRaster"), 
 	function(x, perhaps=FALSE, warn=TRUE, global=FALSE, ...) {
 		if (perhaps) {
 			ok <- x@ptr$isGeographic()
@@ -84,7 +84,7 @@ setMethod("isLonLat", signature("SpatRaster"),
 				}
 			}
 			if (ok && warn) {
-				warn("isLonLat", "assuming lon/lat crs")
+				warn("is.lonlat", "assuming lon/lat crs")
 			}
 			return(ok)	
 		} else {
@@ -98,14 +98,14 @@ setMethod("isLonLat", signature("SpatRaster"),
 )
 
 
-setMethod("isLonLat", signature("SpatVector"), 
+setMethod("is.lonlat", signature("SpatVector"), 
 	function(x, perhaps=FALSE, warn=TRUE, ...) {
 		ok <- x@ptr$isGeographic()
 		if (ok) return(ok)
 		if (perhaps) {
 			ok <- x@ptr$couldBeLonLat()
 			if (ok && warn) {
-				if (crs(x) == "") warn("isLonLat", "assuming lon/lat crs")
+				if (crs(x) == "") warn("is.lonlat", "assuming lon/lat crs")
 			}
 			ok
 		}

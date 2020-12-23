@@ -112,11 +112,29 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 		}
 		out.addGeom(g);
 	}
-
-	out = out.unaryunion();
+	if (dissolve) {
+		out = out.unaryunion();
+	}
 	out.df  = uv; 
 	return out;
 }
+
+
+
+SpatVector SpatVector::aggregate(bool dissolve) {
+	SpatVector out;
+	SpatGeom g;
+	g.gtype = geoms[0].gtype;
+	for (size_t i=0; i<size(); i++) {
+		g.unite( getGeom(i) );
+	}
+	out.addGeom(g);
+	if (dissolve) {
+		out = out.unaryunion();
+	}
+	return out;
+}
+
 
 
 /*

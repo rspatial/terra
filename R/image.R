@@ -9,7 +9,7 @@
 	value <- matrix(as.vector(x), nrow=nrow(x), byrow=TRUE)
 	value <- t(value[nrow(value):1, ,drop=FALSE])
 	if (is.null(asp)) {
-		asp <- ifelse(isLonLat(x, perhaps=TRUE, warn=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
+		asp <- ifelse(is.lonlat(x, perhaps=TRUE, warn=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
 		graphics::image(x=X, y=Y, z=value, asp=asp, xlab=xlab, ylab=ylab, ...)				
 	} else {
 		graphics::image(x=X, y=Y, z=value, xlab=xlab, ylab=ylab, ...)			

@@ -4,9 +4,9 @@
 SpatVector SpatVector::allerretour() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
-	SpatVectorCollection out = vect_from_geos(g, hGEOSCtxt, type());
+	SpatVector out = vect_from_geos(g, hGEOSCtxt, type());
 	geos_finish(hGEOSCtxt);
-	return out.get(0);
+	return out;
 }
 
 SpatVectorCollection SpatVector::bienvenue() {
@@ -41,17 +41,15 @@ std::vector<std::string> SpatVector::geos_isvalid_msg() {
 		ok.push_back(v);
 	}
 	geos_finish(hGEOSCtxt);
-	std::vector<std::string> out;
-
+	std::vector<std::string> out(ok.size(), "");
 	size_t j=0;
-
 	for (size_t i=0; i<ok.size(); i++) {
 		if (!ok[i]) {
 			if (j < msgs.size()) {
-				out.push_back(msgs[j]);
+				out[i] = msgs[j];
 				j++;
 			} else {
-				out.push_back("?");	
+				out[0] = "???";	
 			}
 		}
 	}
@@ -59,6 +57,40 @@ std::vector<std::string> SpatVector::geos_isvalid_msg() {
 	return out;
 }
   
+  
+SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) {
+	SpatVector out;
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	SpatVector a = aggregate(false);
+	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
+
+	std::string vt = type();
+	GEOSGeometry* v;
+	if (bnd.size() > 0) {
+		if (bnd.type() != "polygons") {
+			out.setError("boundary must be a single simple polygon");
+			return out;
+		}
+		std::vector<GeomPtr> ge = geos_geoms(&bnd, hGEOSCtxt);
+		v = GEOSVoronoiDiagram_r(hGEOSCtxt, g[0].get(), ge[0].get(), tolerance, onlyEdges);
+	} else {
+		std::vector<GeomPtr> ge = geos_geoms(&bnd, hGEOSCtxt);
+		v = GEOSVoronoiDiagram_r(hGEOSCtxt, g[0].get(), NULL, tolerance, onlyEdges);
+	}
+	if (v == NULL) {
+		out.setError("GEOS exception");
+		geos_finish(hGEOSCtxt);
+		return(out);
+	} 
+	std::vector<GeomPtr> b(1);
+	b[0] = geos_ptr(v, hGEOSCtxt);	
+	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	out = coll.get(0);
+	out.msg = coll.msg;
+	return out;
+}  
 
 SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyle) {
 
@@ -69,7 +101,7 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector out;
-	SpatVector f = remove_holes();
+//	SpatVector f = remove_holes();
 
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
@@ -82,7 +114,7 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 		} 
 		b[i] = geos_ptr(pt, hGEOSCtxt);	
 	}
-	SpatVectorCollection coll = vect_from_geos(b, hGEOSCtxt, "polygons");
+	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
 
 //	out = spat_from_geom(hGEOSCtxt, g, "points");
 	geos_finish(hGEOSCtxt);
@@ -124,8 +156,8 @@ SpatVector SpatVector::intersect(SpatVector v) {
 		}
 	}
 
-	// this should happen in the loop. And different types are possible!
-	SpatVectorCollection coll = vect_from_geos(result, hGEOSCtxt, type());
+	// this should happen in the loop. And different types are possible
+	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 	// deal with attributes
 	geos_finish(hGEOSCtxt);
 	return coll.get(0);	
@@ -150,10 +182,9 @@ SpatVector SpatVector::centroid() {
 		}
 		b[i] = geos_ptr(pt, hGEOSCtxt);	
 	}
-	SpatVectorCollection coll = vect_from_geos(b, hGEOSCtxt, "points");
+	out = vect_from_geos(b, hGEOSCtxt, "points");
 	geos_finish(hGEOSCtxt);
 
-	out = coll.get(0);
 	out.df = df;
 	return out;	
 }

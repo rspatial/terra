@@ -236,7 +236,7 @@
 	out$axs <- pax 
 	out$leg <- plg
 	out$asp <- 1
-	out$lonlat <- isLonLat(x, perhaps=TRUE, warn=FALSE)
+	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
 	if (out$lonlat) {
 		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
 	}

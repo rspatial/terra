@@ -127,7 +127,7 @@ setMethod("rast", signature(x="character"),
 		r <- messages(r, "rast")
 		
 		if (crs(r) == "") {
-			if (isLonLat(r, perhaps=TRUE, warn=FALSE)) {
+			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
 				crs(r) <- "+proj=longlat +datum=WGS84"
 			}
 		}
