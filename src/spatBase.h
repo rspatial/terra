@@ -245,16 +245,13 @@ class SpatExtent {
 class SpatSRS {
 	public:
 //		SpatSRS(std::string s);
-
 		std::string proj4, wkt;
 		bool set(std::string txt, std::string &msg);
-
 /*
 #ifdef useGDAL	
 		bool set(OGRSpatialReference *poSRS, std::string &msg);
 #endif		
 */
-	
 		double to_meter();
 
 		std::string get(std::string x) {
@@ -273,7 +270,9 @@ class SpatSRS {
 			return (wkt == "");
 		}
 
-		bool is_same(std::string other);
+		bool is_same(std::string other, bool ignoreempty);
+		bool is_same(SpatSRS x, bool ignoreempty);
+
 
 		bool is_geographic(); // as below, but using GDAL
 

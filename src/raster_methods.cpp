@@ -463,7 +463,6 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 		}
 	}
 
-
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -1365,13 +1364,13 @@ bool SpatRaster::shared_basegeom(SpatRaster &x, double tol, bool test_overlap) {
 
 
 
-SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
+
+SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true);
 	
 	bool rmatch = false;
-					 //  lyrs, crs, warncrs, ext, rowcol, res
 	if (out.compare_geom(x, false, false, true)) {
 		rmatch = true;
 	} else {
@@ -1390,6 +1389,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 	//		}
 	//	}
 	}
+
 
 	if (!x.hasValues()) {
 		return *this;
@@ -1417,31 +1417,66 @@ SpatRaster SpatRaster::cover(SpatRaster x, double value, SpatOptions &opt) {
 		x.readStop();
 		return out;
 	}
-	std::vector<double> v, m;
-	for (size_t i = 0; i < out.bs.n; i++) {
-		v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		recycle(v, m);
-		if (std::isnan(value)) {
-			for (size_t i=0; i < v.size(); i++) {
-				if (std::isnan(v[i])) {
-					v[i] = m[i];
+	if (values.size() == 1) {
+		double value=values[0];
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+			std::vector<double> m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+			recycle(v, m);
+			if (std::isnan(value)) {
+				for (size_t i=0; i < v.size(); i++) {
+					if (std::isnan(v[i])) {
+						v[i] = m[i];
+					}
+				}
+			} else {
+				for (size_t i=0; i < v.size(); i++) {
+					if (v[i] == value) {
+						v[i] = m[i];
+					}
 				}
 			}
-		} else {
-			for (size_t i=0; i < v.size(); i++) {
-				if (v[i] == value) {
-					v[i] = m[i];
-				}
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		}
+	} else {
+
+		values = vunique(values);
+		bool hasNA = false;
+		for (int i = values.size()-1; i>=0; i--) {
+			if (std::isnan(values[i])) {
+				hasNA = true;
+				values.erase(values.begin()+i);
 			}
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+			std::vector<double> m = x.readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+			recycle(v, m);
+			for (size_t i=0; i < v.size(); i++) {
+				if (hasNA) {
+					if (std::isnan(v[i])) {
+						v[i] = m[i];
+						continue;
+					}
+				}
+				for (size_t i=0; i<values.size(); i++) {
+					if (v[i] == values[i]) {
+						v[i] = m[i];
+						continue;
+					}
+				}
+			}
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		}
 	}
+	
 	out.writeStop();
 	readStop();
 	x.readStop();
 	return(out);
 }
+
 
 
 

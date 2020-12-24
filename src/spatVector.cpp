@@ -573,15 +573,21 @@ SpatVector SpatVector::subset_cols(int i) {
 }
 
 
-SpatVector SpatVector::append(SpatVector x) {
+SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
+	if (size() == 0) return x;
+	if (x.size() == 0) return *this;
+
 	SpatVector out;
 	if (type() != x.type()) {
-		out.setError("types do not match");
+		out.setError("geom types do not match");
 		return out;
 	}
-	if (srs.wkt != x.srs.wkt) {
-		out.setError("crs does not match");
-		return out;
+	
+	if (!(ingnorecrs)) {
+		if (!srs.is_same(x.srs, true)) {
+			out.setError("append: crs does not match");
+			return out;
+		}
 	}
 	out = *this;
 	for (size_t i=0; i<x.size(); i++) {

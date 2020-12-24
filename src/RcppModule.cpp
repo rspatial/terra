@@ -209,7 +209,10 @@ RCPP_MODULE(spat){
 		.method("remove_column", (bool (SpatDataFrame::*)(std::string field))( &SpatDataFrame::remove_column))
 		.method("remove_column", (bool (SpatDataFrame::*)(int i))( &SpatDataFrame::remove_column))
 		.method("get_datatypes", &SpatDataFrame::get_datatypes, "")
-				
+
+		.method("subset_rows", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_rows), "subset_cols")
+		.method("subset_cols", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_cols), "subset_cols")
+
 		.method("cbind", &SpatDataFrame::cbind)
 		.method("rbind", &SpatDataFrame::rbind)
 		.method("values", &getDataFrame, "get data.frame")
@@ -301,7 +304,6 @@ RCPP_MODULE(spat){
 
 		.method("write", &SpatVector::write, "write")	
 		
-//		.method("unaryunion", &SpatVector::unaryunion, "geosunion")	
 		.method("bienvenue", &SpatVector::bienvenue, "bienvenue")	
 		.method("allerretour", &SpatVector::allerretour, "allerretour")	
 		.method("geos_isvalid", &SpatVector::geos_isvalid, "geos_isvalid")	
@@ -321,10 +323,16 @@ RCPP_MODULE(spat){
 		.method("rescale", &SpatVector::rescale, "rescale")	
 		.method("rotate", &SpatVector::rotate, "rotate")	
 		.method("buffer2", &SpatVector::buffer2, "buffer2")		
+		.method("erase", &SpatVector::erase, "erase")		
+		.method("symdif", &SpatVector::symdif, "symdif")		
+		.method("cover", &SpatVector::cover, "cover")		
+
+		.method("union", &SpatVector::unite, "union")		
 		.method("intersect", &SpatVector::intersect, "intersect")		
 		.method("intersects", &SpatVector::intersects, "intersects")		
 		.method("voronoi", &SpatVector::voronoi, "voronoi")	
-		.method("crop", &SpatVector::crop, "crop")	
+		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent))( &SpatVector::crop ))
+		.method("crop_vct", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::crop ))
 	;
 
 

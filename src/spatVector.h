@@ -208,7 +208,7 @@ class SpatVector {
 		SpatVector point_buffer(double d, unsigned quadsegs);
         SpatVector buffer(double d, unsigned segments, unsigned capstyle);
 
-		SpatVector append(SpatVector x);
+		SpatVector append(SpatVector x, bool ignorecrs);
 		SpatVector disaggregate();
 		SpatVector shift(double x, double y);
 		SpatVector rescale(double f, double x0, double y0);
@@ -230,8 +230,13 @@ class SpatVector {
         SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
 		SpatVector centroid();
 		SpatVector crop(SpatExtent e);
+		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
 		SpatVector intersect(SpatVector v);
+		SpatVector unite(SpatVector v);
+		SpatVector erase(SpatVector v);
+		SpatVector cover(SpatVector v, bool identity);
+		SpatVector symdif(SpatVector v);
 		std::vector<bool> intersects(SpatVector v);
 		
 		SpatVector unaryunion();
@@ -275,13 +280,14 @@ class SpatVectorCollection {
 		}
 
 		SpatVector get(size_t i) { 
+			SpatVector out;
+			out.msg = msg;
 			if (i < size()) {
-				return v[i];
+				out = v[i];
 			} else {
-				SpatVector vv;
-				vv.setError("invalid index");
-				return vv;
+				out.setError("invalid index");
 			}
+			return out;
 		}
 		
 };

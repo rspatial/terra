@@ -3,6 +3,11 @@
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x,...) standardGeneric("voronoi"))}
 if (!isGeneric("intersects")) {setGeneric("intersects", function(x, y, ...) standardGeneric("intersects"))}
 if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y, ...) standardGeneric("intersect"))}
+if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
+
+if (!isGeneric("symdif")) {setGeneric("symdif", function(x, y, ...) standardGeneric("symdif"))}
+
+if (!isGeneric("union")) {setGeneric("union", function(x, y, ...) standardGeneric("union"))}
 
 if (!isGeneric("median")) {setGeneric("median", function(x, na.rm) standardGeneric("median"))}
 if (!isGeneric("polys")) {setGeneric("polys", function(x,...) standardGeneric("polys"))}

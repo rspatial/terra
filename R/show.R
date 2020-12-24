@@ -39,11 +39,12 @@ printDF <- function(x, n=6, first=FALSE) {
 	if (d[1] > 0) {
 		for (i in 1:ncol(x)) {
 			if (is.character(x[[i]])) {
+				x[[i]][is.na(x[[i]])] <- "NA"
 				n <- nchar(x[[i]])
 				j <- n > (mx+2)
 				x[[i]][j] <- paste0(substr(x[[i]][j], 1, (mx-1)), "~")
 			} else if (is.numeric(x[[i]])) {
-				x[[i]] <- formatC(x[[i]])		
+				x[[i]] <- formatC(x[[i]])
 			}
 		}
 	}

@@ -62,6 +62,7 @@ std::vector<std::string> SpatVector::geos_isvalid_msg() {
 
 SpatVector SpatVector::crop(SpatExtent e) {
 	SpatVector out;
+	out.srs = srs;
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
@@ -84,7 +85,7 @@ SpatVector SpatVector::crop(SpatExtent e) {
 	if (p.size() > 0) {
 		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
 		out = coll.get(0);
-		out.msg = coll.msg;
+		out.srs = srs;
 		out.df = df.subset_rows(id);
 	}
 	geos_finish(hGEOSCtxt);
@@ -92,9 +93,54 @@ SpatVector SpatVector::crop(SpatExtent e) {
 }
 
 
+
+SpatVector SpatVector::crop(SpatVector v) {
+
+	SpatVector out;
+	out.srs = srs;
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);	
+	std::vector<GeomPtr> result;
+	std::vector<unsigned> ids;
+	ids.reserve(size());
+	size_t nx = size();
+	size_t ny = v.size();
+	
+		
+	for (size_t i = 0; i < nx; i++) {
+		for (size_t j = 0; j < ny; j++) {
+			GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[j].get());
+			if (geom == NULL) {
+				out.setError("GEOS exception");
+				geos_finish(hGEOSCtxt);
+				return(out);
+			} 
+			if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
+				result.push_back(geos_ptr(geom, hGEOSCtxt));
+				ids.push_back(i);
+			}
+		}
+	}
+
+	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+
+	if (result.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		out = coll.get(0);
+		out.srs = srs;
+		out.df = df.subset_rows(ids);
+	} 
+	return out;	
+}
+
+
 SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) {
 	SpatVector out;
-
+	out.srs = srs;
+	
 #ifndef HAVE350
 	out.setError("GEOS 3.5 required for voronoi")
 #else 
@@ -126,7 +172,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
 	geos_finish(hGEOSCtxt);
 	out = coll.get(0);
-	out.msg = coll.msg;
+	out.srs = srs;
 	if (!out.hasError()) {
 		out = out.disaggregate();
 		// associate with attributes
@@ -137,13 +183,15 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 
 SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyle) {
 
+	SpatVector out;
+	out.srs = srs;
+
 	std::string vt = type();
 	if ((vt == "points") && (dist <= 0)) {
 		dist = -dist;
 	}
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	SpatVector out;
 //	SpatVector f = remove_holes();
 
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
@@ -161,23 +209,28 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 
 //	out = spat_from_geom(hGEOSCtxt, g, "points");
 	geos_finish(hGEOSCtxt);
-	return coll.get(0);	
+	out = coll.get(0);
+	out.srs = srs;
+
+	return out;	
 }
 
 
 SpatVector SpatVector::intersect(SpatVector v) {
 
 	SpatVector out;
+	out.srs = srs;
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);	
 	std::vector<GeomPtr> result;
-	std::vector<std::vector<unsigned>> atts(2);
+	std::vector<std::vector<unsigned>> ids(2);
+	ids[0].reserve(size());
+	ids[1].reserve(size());
 	size_t nx = size();
 	size_t ny = v.size();
-	
-		
+			
 	for (size_t i = 0; i < nx; i++) {
 		for (size_t j = 0; j < ny; j++) {
 			GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[j].get());
@@ -188,21 +241,38 @@ SpatVector SpatVector::intersect(SpatVector v) {
 			} 
 			if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
 				result.push_back(geos_ptr(geom, hGEOSCtxt));
-				atts[0].push_back(i);
-				atts[1].push_back(j);
+				ids[0].push_back(i);
+				ids[1].push_back(j);
+				//Rcpp::Rcout << "i: " << i << " j: " << j << std::endl;
 			}
 		}
 	}
 
 	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
-	// deal with attributes
 	geos_finish(hGEOSCtxt);
-	return coll.get(0);	
+
+	if (result.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		out = coll.get(0);
+		out.srs = srs;
+		SpatDataFrame df1 = df.subset_rows(ids[0]);
+		SpatDataFrame df2 = v.df.subset_rows(ids[1]);
+		if (!df1.cbind(df2)) {
+			out.addWarning("could not bind attributes");
+		}
+		out.df = df1;
+	} 
+	if (srs.is_same(v.srs, true)) {
+		out.addWarning("different crs"); 
+	}
+
+	return out;	
 }
 
 
 std::vector<bool> SpatVector::intersects(SpatVector v) {
 	std::vector<bool> out;
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);	
@@ -224,9 +294,86 @@ std::vector<bool> SpatVector::intersects(SpatVector v) {
 
 
 
+SpatVector SpatVector::unite(SpatVector v) {
+	SpatVector out = intersect(v);
+	out = out.append(erase(v), true);
+	out = out.append(v.erase(*this), true);
+	return out;	
+}
+
+
+SpatVector SpatVector::symdif(SpatVector v) {
+	SpatVector out = erase(v);
+	v = v.erase(*this);
+	return out.append(v, true);
+}
+
+
+
+SpatVector SpatVector::cover(SpatVector v, bool identity) {
+	if (v.srs.is_empty()) {
+		v.srs = srs; 
+	}
+	SpatVector out = erase(v);
+	out = identity ? out.append(intersect(v), true) : out.append(v, true);
+	return out;	
+}
+
+
+SpatVector SpatVector::erase(SpatVector v) {
+
+	SpatVector out;
+	out.srs = srs;
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);	
+	std::vector<GeomPtr> result;
+	std::vector<unsigned> ids;
+	ids.reserve(size());
+	size_t nx = size();
+	size_t ny = v.size();
+	
+		
+	for (size_t i = 0; i < nx; i++) {
+		GEOSGeometry* geom = x[i].get();	
+		for (size_t j = 0; j < ny; j++) {
+			geom = GEOSDifference_r(hGEOSCtxt, geom, y[j].get());
+			if (geom == NULL) {
+				out.setError("GEOS exception");
+				geos_finish(hGEOSCtxt);
+				return(out);
+			} 
+			if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+				break;
+			}
+		}
+		if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
+			result.push_back(geos_ptr(geom, hGEOSCtxt));
+			ids.push_back(i);
+		}
+	}
+
+	if (result.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		out = coll.get(0);
+		out.srs = srs;
+		out.df = df.subset_rows(ids);
+	} 
+	geos_finish(hGEOSCtxt);
+	if (srs.is_same(v.srs, true)) {
+		out.addWarning("different crs"); 
+	}
+
+	return out;	
+}
+
+
+
 SpatVector SpatVector::centroid() {
 
 	SpatVector out;
+	out.srs = srs;
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
@@ -248,10 +395,12 @@ SpatVector SpatVector::centroid() {
 }
 
 SpatVector SpatVector::unaryunion() {
+	SpatVector out;
+	out.srs = srs;
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> gout(g.size());
-	SpatVector out;
 	for (size_t i = 0; i < g.size(); i++) {		
 		GEOSGeometry* u = GEOSUnaryUnion_r(hGEOSCtxt, g[i].get());
 		if (u == NULL) {

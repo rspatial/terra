@@ -32,7 +32,7 @@ See \code{\link{crop}} for intersection of a SpatRaster.
 
 \S4method{intersect}{SpatExtent,SpatExtent}(x, y)
 
-\S4method{intersects}{SpatVector,SpatVector}(x, y, ...)
+\S4method{intersects}{SpatVector,SpatVector}(x, y)
 }
 
 \arguments{
@@ -45,13 +45,23 @@ Same as \code{x}
 }
 
 \seealso{
-\code{\link{union}}, code{\link{crop}}
+\code{\link{union}}, \code{\link{crop}}
 }
 
 \examples{
 e1 <- ext(-10, 10, -20, 20)
 e2 <- ext(0, 20, -40, 5)
 intersect(e1, e2)
+
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+e <- ext(5.6, 6, 49.55, 49.7)
+x <- intersect(v, e)
+
+p <- vect(c("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))", "POLYGON ((6.3 49.9, 6.2 49.7, 6.3 49.6, 6.5 49.8, 6.3 49.9))"), crs=crs(v))
+#values(p) <- data.frame(pid=1:2, area=area(p))
+
+y <- intersect(v, p)
 }
 
 

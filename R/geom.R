@@ -21,6 +21,58 @@ setMethod("is.valid", signature(x="SpatVector"),
 	}
 )
 
+setMethod("cover", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, identity=FALSE, ...) {
+		x@ptr <- x@ptr$cover(y@ptr, identity[1])
+		messages(x)
+	}
+)
+
+
+setMethod("symdif", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, ...) {
+		x@ptr <- x@ptr$symdif(y@ptr)
+		messages(x)
+	}
+)
+
+setMethod("erase", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, ...) {
+		x@ptr <- x@ptr$erase(y@ptr)
+		messages(x)
+	}
+)
+
+setMethod("erase", signature(x="SpatVector", y="SpatExtent"), 
+	function(x, y, ...) {
+		y <- as.polygons(y)
+		x@ptr <- x@ptr$erase(y@ptr)
+		messages(x)
+	}
+)
+
+
+setMethod("union", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y) {
+		x@ptr <- x@ptr$union(y@ptr)
+		messages(x)
+	}
+)
+
+setMethod("union", signature(x="SpatVector", y="SpatExtent"), 
+	function(x, y) {
+		y <- as.vector(y)
+		x@ptr <- x@ptr$union(y@ptr)
+		messages(x)
+	}
+)
+
+setMethod("union", signature(x="SpatExtent", y="SpatExtent"), 
+	function(x, y) {
+		x + y
+	}
+)
+
 
 
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 

@@ -17,7 +17,7 @@ bool sameSRS(std::string x, std::string y) {
 	std::string msg;
 	SpatSRS srs;
 	if (!srs.set(x, msg)) return false;
-	return srs.is_same(y);
+	return srs.is_same(y, false);
 }
 
 

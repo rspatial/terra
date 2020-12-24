@@ -171,11 +171,17 @@ std::string getDsWKT(GDALDataset *poDataset) {
 	if (poDataset->GetProjectionRef() != NULL) { 
 		char *cp;
 		OGRSpatialReference oSRS(poDataset->GetProjectionRef());
-		OGRErr err = oSRS.exportToPrettyWkt(&cp);
+
+#if GDAL_VERSION_MAJOR >= 3
+		const char *options[3] = { "MULTILINE=NO", "FORMAT=WKT2", NULL };
+		OGRErr err = oSRS.exportToWkt(&cp, options);
+#else
+		OGRErr err = oSRS.exportToWkt(&cp);
+#endif
 		if (err == OGRERR_NONE) {
 			wkt = std::string(cp);
 		}
-	        CPLFree(cp);
+        CPLFree(cp);
 	}
 #endif 	
 	return wkt;

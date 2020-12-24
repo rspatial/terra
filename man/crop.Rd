@@ -3,8 +3,8 @@
 \docType{methods}
 
 \alias{crop}
-\alias{crop,SpatRaster,ANY-method}
-\alias{crop,SpatVector,ANY-method}
+\alias{crop,SpatRaster-method}
+\alias{crop,SpatVector-method}
 
 \title{Cut out a geographic subset}
 
@@ -13,9 +13,9 @@ Cut out a part of a SpatRaster with a SpatExtent, or another object from which a
 }
 
 \usage{
-\S4method{crop}{SpatRaster,ANY}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{crop}{SpatVector,ANY}(x, y, ...)
+\S4method{crop}{SpatVector}(x, y, ...)
 }
 
 \arguments{

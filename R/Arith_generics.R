@@ -66,7 +66,7 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 			names(d) <- c("x", "y")
 			return(d)
 		} else {
-			error(oper, "only +, *, and / are supported")
+			error(oper, "only +, *, and / are supported for SpatExtent")
 		}
 		if (!e1@ptr$valid) {
 			error(oper, "this would create an invalid extent")
@@ -74,6 +74,26 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 		e1
 	}	
 )
+
+
+
+setMethod("Arith", signature(e1="SpatVector", e2="SpatVector"),
+    function(e1, e2){ 
+		oper <- as.vector(.Generic)[1]
+		e1 = ext(as.vector(e1)) # deep copy
+		if (oper == "+") { 
+			e1@ptr$unite(e2@ptr)
+		} else if (oper == "*") {
+			e1@ptr$intersect(e2@ptr)
+		} else if (oper == "-") {
+			e1@ptr$erase(e2@ptr)
+		} else {
+			error(oper, "only +, *, and - are supported for SpatVector")
+		}
+		e1
+	}	
+)
+
 
 
 

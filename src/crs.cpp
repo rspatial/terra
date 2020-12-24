@@ -92,10 +92,10 @@ bool string_from_spatial_reference(const OGRSpatialReference *srs, std::vector<s
 	out = std::vector<std::string>(2, "");
 	char *cp;
 #if GDAL_VERSION_MAJOR >= 3
-	const char *options[3] = { "MULTILINE=YES", "FORMAT=WKT2", NULL };
+	const char *options[3] = { "MULTILINE=NO", "FORMAT=WKT2", NULL };
 	OGRErr err = srs->exportToWkt(&cp, options);
 #else
-	OGRErr err = srs->exportToPrettyWkt(&cp);
+	OGRErr err = srs->exportToWkt(&cp);
 #endif
 	if (is_ogr_error(err, msg)) {
 		CPLFree(cp);
@@ -152,12 +152,31 @@ double SpatSRS::to_meter() {
 	return out;
 }
 
-bool SpatSRS::is_same(std::string other) {
+bool SpatSRS::is_same(SpatSRS other, bool ignoreempty) {
+	if (ignoreempty) {
+		if (is_empty() || other.is_empty()) {
+			return true;
+		}
+	}
+	OGRSpatialReference x, y;
+	OGRErr erro = x.SetFromUserInput(wkt.c_str());
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+	erro = y.SetFromUserInput(other.wkt.c_str());
+	if (erro != OGRERR_NONE) {
+		return false;
+	}
+	return x.IsSame(&y);
+}
+
+
+bool SpatSRS::is_same(std::string other, bool ignoreempty) {
 
 	if (wkt == "" && other == "") {
 		return true;
 	} else if (wkt == "" || other == "") {
-		return false;
+		return ignoreempty ? true : false;
 	}
 
 	OGRSpatialReference x, y;

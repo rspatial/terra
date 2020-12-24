@@ -156,13 +156,13 @@ setMethod("c", signature(x="SpatVector"),
 		dots <- list(...)
 		for (i in dots) {
 			if (inherits(i, "SpatVector")) {
-				x@ptr <- x@ptr$append(i@ptr)
+				x@ptr <- x@ptr$append(i@ptr, FALSE)
 				if (x@ptr$messages$has_error) {
 					messages(x, "c")
 					return()
 				}
 			} else {
-				skipped = TRUE;
+				skipped = TRUE
 			}
 		}
 		if (skipped) warn("c,SpatVector", "skipped object that are not SpatVector")
@@ -239,9 +239,9 @@ setMethod("selectRange", signature(x="SpatRaster"),
 )
 
 setMethod("cover", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, value=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, y, values=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- spatOptions(filename, overwrite, wopt)
-		x@ptr <- x@ptr$cover(y@ptr, value[1], opt)
+		x@ptr <- x@ptr$cover(y@ptr, values, opt)
 		messages(x, "cover")		
 	}
 )
@@ -331,9 +331,9 @@ setMethod("freq", signature(x="SpatRaster"),
 
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
-	function(x, mask, inverse=FALSE, maskvalue=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
+	function(x, mask, inverse=FALSE, maskvalues=NA, updatevalue=NA, filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- spatOptions(filename, overwrite,wopt)
-		x@ptr <- x@ptr$mask_raster(mask@ptr, inverse[1], maskvalue, updatevalue[1], opt)
+		x@ptr <- x@ptr$mask_raster(mask@ptr, inverse[1], maskvalues, updatevalue[1], opt)
 		messages(x, "mask")		
 	}
 )

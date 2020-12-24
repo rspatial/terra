@@ -12,6 +12,7 @@
 \alias{Arith,SpatExtent,SpatExtent-method}
 
 \alias{Arith,SpatRaster,SpatRaster-method}
+\alias{Arith,SpatVector,SpatVector-method}
 \alias{Arith,SpatRaster,missing-method}
 \alias{Arith,numeric,SpatRaster-method}
 \alias{Arith,SpatRaster,numeric-method}

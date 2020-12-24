@@ -476,7 +476,8 @@ class SpatRaster {
 
 		SpatRaster buffer(double d, SpatOptions &opt);
 		SpatRaster clamp(double low, double high, bool usevalue, SpatOptions &opt);
-		SpatRaster cover(SpatRaster x, double value, SpatOptions &opt);
+		SpatRaster cover(SpatRaster x, std::vector<double> value, SpatOptions &opt);
+
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
