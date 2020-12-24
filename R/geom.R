@@ -24,7 +24,7 @@ setMethod("is.valid", signature(x="SpatVector"),
 setMethod("cover", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, identity=FALSE, ...) {
 		x@ptr <- x@ptr$cover(y@ptr, identity[1])
-		messages(x)
+		messages(x, "cover")
 	}
 )
 
@@ -32,14 +32,14 @@ setMethod("cover", signature(x="SpatVector", y="SpatVector"),
 setMethod("symdif", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, ...) {
 		x@ptr <- x@ptr$symdif(y@ptr)
-		messages(x)
+		messages(x, "symdif")
 	}
 )
 
 setMethod("erase", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, ...) {
 		x@ptr <- x@ptr$erase(y@ptr)
-		messages(x)
+		messages(x, "erase")
 	}
 )
 
@@ -47,7 +47,7 @@ setMethod("erase", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y, ...) {
 		y <- as.polygons(y)
 		x@ptr <- x@ptr$erase(y@ptr)
-		messages(x)
+		messages(x, "erase")
 	}
 )
 
@@ -55,7 +55,7 @@ setMethod("erase", signature(x="SpatVector", y="SpatExtent"),
 setMethod("union", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
 		x@ptr <- x@ptr$union(y@ptr)
-		messages(x)
+		messages(x, "union")
 	}
 )
 
@@ -63,7 +63,7 @@ setMethod("union", signature(x="SpatVector", y="SpatExtent"),
 	function(x, y) {
 		y <- as.vector(y)
 		x@ptr <- x@ptr$union(y@ptr)
-		messages(x)
+		messages(x, "union")
 	}
 )
 
@@ -78,7 +78,7 @@ setMethod("union", signature(x="SpatExtent", y="SpatExtent"),
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
 		x@ptr <- x@ptr$intersect(y@ptr)
-		messages(x)
+		messages(x, "intersect")
 	}
 )
 
@@ -106,7 +106,7 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatVector"),
 setMethod("intersects", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
 		out <- x@ptr$intersects(y@ptr)
-		x <- messages(x)
+		x <- messages(x, "intersects")
 		matrix(out, nrow=nrow(x), byrow=TRUE)
 	}
 )
@@ -137,7 +137,7 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 			}
 		}
 		x@ptr <- x@ptr$crop(y@ptr)
-		messages(x)
+		messages(x, "crop")
 	}
 )
 

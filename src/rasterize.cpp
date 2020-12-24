@@ -351,7 +351,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	}  else {
 		out = rasterizePoints(x, out, values, background, opts);
 	}
-	if (update) out = cover(out, background, opt);
+if (update) out = cover(out, {background}, opt);
 
 	if (touches) {
 		out.addWarning("argument touches is not supported with your version of GDAL");	

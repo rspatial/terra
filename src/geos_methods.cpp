@@ -262,7 +262,7 @@ SpatVector SpatVector::intersect(SpatVector v) {
 		}
 		out.df = df1;
 	} 
-	if (srs.is_same(v.srs, true)) {
+	if (!srs.is_same(v.srs, true)) {
 		out.addWarning("different crs"); 
 	}
 
@@ -361,7 +361,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 		out.df = df.subset_rows(ids);
 	} 
 	geos_finish(hGEOSCtxt);
-	if (srs.is_same(v.srs, true)) {
+	if (!srs.is_same(v.srs, true)) {
 		out.addWarning("different crs"); 
 	}
 
