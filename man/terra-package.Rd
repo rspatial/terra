@@ -8,63 +8,16 @@
 \title{The terra package}
 
 \description{
-The \code{'terra'} package implements two main classes for spatial data handling: \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more.
 
-\code{'terra'} provides methods to manipulate geographic (spatial) data in "raster" and "vector" data types. Raster data divides space into rectangular cells (pixels). Such data are also referred to as "grid" data are often used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. Raster data can be contrasted with discrete "vector" spatial data such as points, lines, polygons. 
+\code{terra} provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divides space into rectangular cells (pixels) and it is commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) is typically used to represent discrete spatial entities. 
 
-The \code{'terra'} package is conceived as a replacement of the \code{'raster'} package. \code{'terra'} has a very similar, but simpler, interface, and it is faster than \code{'raster'}. A major simplification is that 'terra' has a single class \code{SpatRaster} for which \code{'raster'} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Like \code{'raster'} this package should be particularly useful when using very large datasets that can not be loaded into the computer's memory. Functions will work correctly, because they they process large files in chunks, i.e., they read, compute, and write blocks of data, without loading all values into memory at once. 
+The package implements two classes (R data types) to reprsent these data types: \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
-\code{'terra'} has additional classes. These include: \code{SpatExtent} used to define a spatial extent (bounding box); \code{SpatRasterDataset} to represents a collection of sub-datasets for the same area. Each subdataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector.
+Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset} to represents a collection of sub-datasets for the same area. Each subdataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector.
 
-Note the following important differences in methods names with the 'raster' package
+The \code{terra} package is conceived as a replacement of the \code{raster} package. \code{terra} has a very similar, but simpler, interface, and it is faster than \code{raster}. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
-\tabular{ll}{
-\bold{raster package} \tab \bold{terra package}\cr
-\code{raster, brick, stack}\tab\code{\link{rast}}\cr
-\code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
-\code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
-\code{addLayer} \tab\code{\link{add<-}}\cr
-\code{extent}\tab\code{\link{ext}}\cr
-\code{calc}\tab\code{\link{app}} and \code{\link{arith}}\cr
-\code{overlay}\tab\code{\link{lapp}}\cr
-\code{stackApply}\tab\code{\link{tapp}}\cr
-\code{extend}\tab\code{\link{expand}}\cr
-\code{nlayers}\tab\code{\link{nlyr}}\cr
-\code{NAvalue}\tab\code{\link{NAflag}}\cr
-\code{stackSelect}\tab\code{\link{selectRange}}\cr
-\code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
-\code{cellStats}\tab\code{\link{global}}\cr
-\code{projectRaster}\tab\code{\link{project}}\cr
-\code{dropLayer}\tab\code{\link{subset}}\cr
-\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
-\code{shapefile}\tab\code{\link{vect}}\cr
-\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
-\code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
-\code{compareRaster}\tab\code{\link{compareGeom}}\cr
-\code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
-\code{rasterToPoints}\tab\code{\link{as.points}}\cr
-\code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
-\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
-\code{layerize}\tab\code{\link{separate}}\cr
-\code{clump}\tab\code{patches}\cr
-}
-
-Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
-
-\tabular{ll}{
-\code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
-- \tab \cr
-\code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
-- \tab \cr
-\code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID column. You can use \code{list=TRUE} to get the results as a list\cr
-- \tab \cr
-\code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
-- \tab \cr
-\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single layer with the mean of all cell values. That is what \code{terra} returns with \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the computation is done layer-wise, and the number of layers in the output is the same as that of \code{x} and \code{y} (or the larger of the two if they are not the same). This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case (you can use \code{min} and \code{max} instead) \cr
-}
-
-
-Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet. 
+Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet (they are not hyperlinked). 
 }
 
 \section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
@@ -341,8 +294,8 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{intersect}} or "*"  \tab \bold{intersect} geometries\cr
   \code{\link{intersects}} \tab do geometries intersect?\cr
   \code{\link{union}} or "+" \tab \bold{union}. Merge geometries\cr
-  \code{cover} \tab \bold{update} and \bold{identity} a polygons\cr
-  \code{symdif} \tab\bold{symmetrical difference} of two polygons \cr 
+  \code{\link{cover}} \tab \bold{update} and \bold{identity} a polygons\cr
+  \code{\link{symdif}} \tab\bold{symmetrical difference} of two polygons \cr 
   \code{\link{aggregate}} \tab \bold{dissolve} smaller polygons into larger ones \cr
   \code{\link{buffer}} \tab \bold{buffer} \cr
   \code{\link{centroids}} \tab get the centroids of polygons\cr
@@ -471,6 +424,62 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
     \code{\link{boxplot}} \tab Box plot of the values of a SpatRaster\cr
   }
+}
+
+
+\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
+
+\bold{Comparison with the raster package}
+
+---------------------------------------------------------------------------------------------------------------------
+
+\code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but 
+note the following important differences in methods names with the 'raster' package
+
+\tabular{ll}{
+\bold{raster package} \tab \bold{terra package}\cr
+\code{raster, brick, stack}\tab\code{\link{rast}}\cr
+\code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
+\code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
+\code{addLayer} \tab\code{\link{add<-}}\cr
+\code{extent}\tab\code{\link{ext}}\cr
+\code{calc}\tab\code{\link{app}} and \code{\link{arith}}\cr
+\code{overlay}\tab\code{\link{lapp}}\cr
+\code{stackApply}\tab\code{\link{tapp}}\cr
+\code{extend}\tab\code{\link{expand}}\cr
+\code{nlayers}\tab\code{\link{nlyr}}\cr
+\code{NAvalue}\tab\code{\link{NAflag}}\cr
+\code{stackSelect}\tab\code{\link{selectRange}}\cr
+\code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
+\code{cellStats}\tab\code{\link{global}}\cr
+\code{projectRaster}\tab\code{\link{project}}\cr
+\code{dropLayer}\tab\code{\link{subset}}\cr
+\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
+\code{shapefile}\tab\code{\link{vect}}\cr
+\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
+\code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
+\code{compareRaster}\tab\code{\link{compareGeom}}\cr
+\code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
+\code{rasterToPoints}\tab\code{\link{as.points}}\cr
+\code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
+\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
+\code{layerize}\tab\code{\link{separate}}\cr
+\code{clump}\tab\code{patches}\cr
+}
+
+Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
+
+\tabular{ll}{
+\code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
+- \tab \cr
+\code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
+- \tab \cr
+\code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID column. You can use \code{list=TRUE} to get the results as a list\cr
+- \tab \cr
+\code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
+- \tab \cr
+\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single layer with the mean of all cell values. That is what \code{terra} returns with \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the computation is done layer-wise, and the number of layers in the output is the same as that of \code{x} and \code{y} (or the larger of the two if they are not the same). This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case (you can use \code{min} and \code{max} instead) \cr
+}
 }
 
 

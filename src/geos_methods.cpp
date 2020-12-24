@@ -94,13 +94,37 @@ SpatVector SpatVector::crop(SpatExtent e) {
 
 
 
+SpatVector SpatVector::convexhull() {
+	SpatVector out;
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	SpatVector a = aggregate(false);
+	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
+	std::string vt = type();
+	GEOSGeometry* h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+	std::vector<GeomPtr> b(1);
+	b[0] = geos_ptr(h, hGEOSCtxt);	
+	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	out = coll.get(0);
+	out.srs = srs;
+	return out;
+}  
+
+
 SpatVector SpatVector::crop(SpatVector v) {
 
 	SpatVector out;
 	out.srs = srs;
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	
+	std::vector<GeomPtr> x;
+	if ((type() != "polygons") & (type() != "mutlipolygons")) {
+		out = convexhull();
+		x = geos_geoms(&out, hGEOSCtxt);
+	} else {
+		x = geos_geoms(this, hGEOSCtxt);
+	}
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);	
 	std::vector<GeomPtr> result;
 	std::vector<unsigned> ids;

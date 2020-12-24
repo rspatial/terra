@@ -136,8 +136,22 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 				stop("y does not have a SpatExtent")
 			}
 		}
-		x@ptr <- x@ptr$crop(y@ptr)
+		x@ptr <- x@ptr$crop_ext(y@ptr)
 		messages(x, "crop")
+	}
+)
+
+setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, ...) {
+		x@ptr <- x@ptr$crop_vct(y@ptr)
+		messages(x, "crop")
+	}
+)
+
+setMethod("convexhull", signature(x="SpatVector"), 
+	function(x, ...) {
+		x@ptr <- x@ptr$chull()
+		messages(x, "convexhull")
 	}
 )
 

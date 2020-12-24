@@ -4,23 +4,28 @@
 
 \alias{crop}
 \alias{crop,SpatRaster-method}
-\alias{crop,SpatVector-method}
+\alias{crop,SpatVector,ANY-method}
+\alias{crop,SpatVector,SpatVector-method}
 
 \title{Cut out a geographic subset}
 
 \description{
-Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. You can only extract rectangular areas, but see \code{\link{mask}} for setting cell values within SpatRaster to \code{NA}.
+Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. With a SpatRaster you can only extract rectangular areas, but see \code{\link{mask}} for setting cell values within SpatRaster to \code{NA}.
+
+You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used)
 }
 
 \usage{
 \S4method{crop}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{crop}{SpatVector}(x, y, ...)
+\S4method{crop}{SpatVector,ANY}(x, y, ...)
+
+\S4method{crop}{SpatVector,SpatVector}(x, y, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{y}{SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a SpatExtent)}
+  \item{y}{SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a SpatExtent), or a SpatVector to crop another SpatVector}
   \item{snap}{character. One of "near", "in", or "out"}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

@@ -232,6 +232,7 @@ class SpatVector {
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
+		SpatVector convexhull();
 		SpatVector intersect(SpatVector v);
 		SpatVector unite(SpatVector v);
 		SpatVector erase(SpatVector v);
