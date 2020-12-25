@@ -158,7 +158,7 @@ function(x, i, j, ... , drop=FALSE) {
 setMethod("[", c("SpatVector", "numeric", "character"),
 function(x, i, j, ... , drop=FALSE) {
 	i <- positive_indices(i, nrow(x), "'['")
-	j <- na.omit(match(j, names(x)))
+	j <- stats::na.omit(match(j, names(x)))
 	if (length(j) == 0) j <- 0
 	x <- x[i,j,drop=drop]
 })
