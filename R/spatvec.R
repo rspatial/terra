@@ -10,13 +10,13 @@ setMethod("geomtype", signature(x="SpatVector"),
 	function(x, ...){ 
 		x@ptr$type()
 	}
-)	
+)
 
 setMethod("datatype", signature(x="SpatVector"), 
 	function(x, ...){ 
 		x@ptr$df$get_datatypes()
 	}
-)	
+)
 
 
 setMethod("is.lines", signature(x="SpatVector"), 
@@ -44,7 +44,7 @@ setMethod("geomtype", signature(x="Spatial"),
 		if (type %in% c("grid", "pixels")) type <- "raster"
 		type
 	}
-)	
+)
 
 setMethod("geom", signature(x="SpatVector"), 
 	function(x, wkt=FALSE, ...){
@@ -54,14 +54,14 @@ setMethod("geom", signature(x="SpatVector"),
 			x@ptr$getGeometry()
 		}
 	}
-)	
+)
 
 
 setMethod("dim", signature(x="SpatVector"), 
 	function(x){ 
 		c(nrow(x), ncol(x))
 	}
-)	
+)
 
 setMethod("as.data.frame", signature(x="SpatVector"), 
 	function(x, geom=FALSE, ...) {
@@ -84,8 +84,8 @@ setMethod("as.list", signature(x="SpatVector"),
 		as.list(as.data.frame(x, geom=geom, ...))
 	}
 )
-	
-	
+
+
 
 setMethod("area", signature(x="SpatVector"), 
 	function(x, ...) {
@@ -93,7 +93,7 @@ setMethod("area", signature(x="SpatVector"),
 		x <- messages(x, "area");
 		return(a)
 	}
-)	
+)
 
 setMethod("perimeter", signature(x="SpatVector"), 
 	function(x) {
@@ -101,7 +101,7 @@ setMethod("perimeter", signature(x="SpatVector"),
 		x <- messages(x, "length");
 		return(a)
 	}
-)	
+)
 
 setMethod("length", signature(x="SpatVector"), 
 	function(x) {

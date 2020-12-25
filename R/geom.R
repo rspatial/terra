@@ -3,7 +3,7 @@
 roundtrip <- function(x, coll=FALSE) {
 	if (coll) {
 		p <- methods::new("SpatVectorCollection")
-		p@ptr <- x@ptr$bienvenue()	
+		p@ptr <- x@ptr$bienvenue()
 		return(p)
 	} else {
 		x@ptr <- x@ptr$allerretour()
@@ -112,7 +112,7 @@ setMethod("buffer", signature(x="SpatVector"),
 				warn("buffer", "lon/lat data are treated as planar")
 			}
 			quadsegs <- max(3, quadsegs)
-			x@ptr <- x@ptr$buffer2(width, quadsegs, 1)		
+			x@ptr <- x@ptr$buffer2(width, quadsegs, 1)
 		}
 		messages(x, "buffer")
 	}

@@ -593,7 +593,25 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 	for (size_t i=0; i<x.size(); i++) {
 		out.addGeom(x.getGeom(i));
 	}
-	out.df.rbind(x.df);
+	if ((df.nrow() == 0) && (x.df.nrow() == 0)) {
+		return out;
+	} 
+	if ((df.nrow() > 0) && (x.df.nrow() > 0)) {
+		out.df.rbind(x.df);
+		return out;
+	}
+	if (x.df.nrow() == 0) {
+		for (size_t i=0; i<x.size(); i++) {
+			out.df.add_row();
+		}
+	} else {
+		std::vector<unsigned> i;
+		out.df = x.df.subset_rows(i);
+		for (size_t i=0; i<size(); i++) {
+			out.df.add_row();
+		}
+		out.df.rbind(x.df);
+	}
 	return out;
 }
 

@@ -15,7 +15,7 @@
 	if (length(vtst) >= nr) {
 		if ((length(vtst) %% nr) == 0) {
 			nl <- length(vtst) / nr
-		} else {	
+		} else {
 			nl <- -1
 		}
 	} else {
@@ -30,14 +30,14 @@
 
 setMethod("lapp", signature(x="SpatRaster"), 
 function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())  {
-	
+
 	fun <- match.fun(fun)
 	dots <- list(...)
 	if (any(sapply(dots, function(i) inherits(i, "SpatRaster")))) {
 		error("lapp", "only 'x' can be a SpatRaster")
 		# otherwise .lapp_test may crash! 
 	}
-	
+
 	if (usenames) {
 		fnames <- names(formals(fun))
 		x <- x[[names(x) %in% fnames]]
@@ -79,7 +79,7 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 	if (length(vtst) >= nr) {
 		if ((length(vtst) %% nr) == 0) {
 			nl <- length(vtst) / nr
-		} else {	
+		} else {
 			nl <- -1
 		}
 	} else {
@@ -95,19 +95,19 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 setMethod("lapp", signature(x="SpatRasterDataset"), 
 function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())  {
-	
+
 	fun <- match.fun(fun)
 	dots <- list(...)
 	if (any(sapply(dots, function(i) inherits(i, "SpatRasterDataset")))) {
 		error("lapp", "only 'x' can be a SpatRasterDataset")
 		# otherwise .lapp_test_stack fails
 	}
-	
+
 	ncx <- ncol(x[1])
 	nrx <- nrow(x[1])
 	readStart(x)
 	on.exit(readStop(x))
-	
+
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .lapp_test_stack(v, fun, recycle, ...)
 	if (test$nl < 1) error("lapp", "cannot use 'fun'")

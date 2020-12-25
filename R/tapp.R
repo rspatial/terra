@@ -17,9 +17,9 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
 			opt <- spatOptions(filename, overwrite, wopt)
 			narm <- isTRUE(list(...)$na.rm)
-			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, opt)	
+			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, opt)
 			return(messages(x, "tapp"))
-		}		
+		}
 	}
 	fun <- match.fun(fun)
 
@@ -40,7 +40,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 		v <- do.call(cbind, v)
 		writeValues(out, v, b$row[i], b$nrows[i])
 	}
-	out <- writeStop(out)	
+	out <- writeStop(out)
 	return(out)
 }
 )

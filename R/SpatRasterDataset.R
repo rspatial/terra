@@ -7,14 +7,14 @@ setMethod("length", signature(x="SpatRasterDataset"),
 
 setMethod("sds", signature(x="character"),
 	function(x, ids=0, ...) {
-		
+
 		if (length(x) > 1) {
 			r <- lapply(x, rast)
-			s <- sds(r)	
+			s <- sds(r)
 			names(s) <- tools::file_path_sans_ext(basename(x))
 			return(s)
 		}
-		
+
 		x <- trimws(x[1])
 		if (nchar(x) == 0) {
 			error("sds", "provide valid file name(s)")
@@ -54,7 +54,7 @@ setMethod("sds", signature(x="SpatRaster"),
 			if (inherits(dots[[i]], "SpatRaster")) {
 				r@ptr$add(dots[[i]]@ptr, nms[i], "", "", FALSE)
 			}
-		}	
+		}
 		messages(r, "sds")
 	}
 )
@@ -69,38 +69,38 @@ setMethod("sds", signature(x="list"),
 			if (inherits(x[[i]], "SpatRaster")) {
 				r@ptr$add(x[[i]]@ptr, nms[i], "", "", FALSE)
 			}
-		}	
+		}
 		messages(r, "sds")
 	}
 )
 
 setMethod("c", signature(x="SpatRasterDataset"), 
 	function(x, ...) {
-		
+
 		x@ptr <- x@ptr$subset((1:x@ptr$nsds()) -1 ) # why? make a copy?
-	 	
+	 
 		dots <- list(...)
 		nms <- names(dots)
-		
+
 		for (i in seq_along(dots)) {
 			if (inherits(dots[[i]], "SpatRasterDataset")) {
 				sdsnms <- names(dots[[i]])
 				for (j in 1:(length(dots[[i]]))) {
 					if (!x@ptr$add(dots[[i]][[j]]@ptr, sdsnms[j], "", "", FALSE)) {
-						messages(x, "c")		
+						messages(x, "c")
 					}
 				}
-			
+
 			} else if (inherits(dots[[i]], "SpatRaster")) {
 				if (is.null(nms)) error("c", "arguments must be named")
 				if (!x@ptr$add(dots[[i]]@ptr, nms[i], "", "", FALSE)) {
-					messages(x, "c")		
+					messages(x, "c")
 				}
 			} else {
 				error("c", "arguments must be SpatRaster or SpatRasterDataset")
 			} 
 		}
-		messages(x, "c")		
+		messages(x, "c")
 	}
 )
 
@@ -125,7 +125,8 @@ setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 
 setMethod("[", c("SpatRasterDataset", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	if (i<0) {i <- (1:length(x))[i]}
+	i <- positive_indices(i, length(x), " [ ")
+
 	if (drop && (length(i) == 1)) {
 		ptr <- x@ptr$getsds(i-1)
 		x <- rast()
@@ -171,7 +172,7 @@ setMethod("[[", c("SpatRasterDataset", "ANY", "ANY"),
 function(x, i, j, ... ,drop=TRUE) {
 	mi <- missing(i)
 	mj <- missing(j)
-	
+
 	if ((mi) && (mj)) {
 		`[`(x, ..., drop=drop)
 	} else if (mi) {

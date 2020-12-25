@@ -50,7 +50,7 @@ gdal <- function(warn=NA, drivers=FALSE) {
 		} else {
 			m <- data.frame(0[0], m, stringsAsFactors=FALSE)
 		}
-		for (i in 5:7) m[,i] <- as.integer(m[,i])	
+		for (i in 5:7) m[,i] <- as.integer(m[,i])
 		colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
 	} else {
 		m <- .sdsmetadata(x)

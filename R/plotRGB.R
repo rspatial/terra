@@ -31,14 +31,14 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 		}
 	}
 	scale <- as.vector(scale)[1]
-	
+
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
 	}
 	x <- spatSample(x[[c(r, g, b)]], maxcell, method="regular", as.raster=TRUE)
 
 	RGB <- values(x)
-	
+
 	if (!is.null(zlim)) {
 		if (length(zlim) == 2) {
 			zlim <- sort(zlim)
@@ -50,7 +50,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 			} 
 		} else if (NROW(zlim) == 3 & NCOL(zlim) == 2) {
 			for (i in 1:3) {
-				zmin <- min(zlim[i,])		
+				zmin <- min(zlim[i,])
 				zmax <- max(zlim[i,])
 				if (is.null(zlimcol)) {
 					RGB[RGB[,i] < zmin, i] <- zmin
@@ -63,9 +63,9 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 			error('zlim should be a vector of two numbers or a 3x2 matrix (one row for each color)')
 		}
 	}
-	
+
 	RGB <- stats::na.omit(RGB)
-	
+
 	if (!is.null(stretch)) {
 		stretch = tolower(stretch)
 		if (stretch == 'lin') {
@@ -83,7 +83,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 		}
 	}
 
-	
+
 	naind <- as.vector( attr(RGB, "na.action") )
 	if (!is.null(naind)) {
 		bg <- grDevices::col2rgb(colNA)
@@ -93,14 +93,14 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 	} else {
 		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, max=scale)
 	}
-	
+
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 
 	requireNamespace("grDevices")
 	bb <- as.vector(matrix(as.vector(ext(x)), ncol=2))
 
 	bb <- as.vector(ext(x))
-	
+
 	if (!add) {
 		#if ((!axes) & (!margins)) {
 		#	old.par <- graphics::par(no.readonly =TRUE)
@@ -117,15 +117,15 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 				asp <- 1
 			}
 		}
-		
+
 		xlim=c(bb[1], bb[2])
 		ylim=c(bb[3], bb[4])
-		
+
 		plot(NA, NA, xlim=xlim, ylim=ylim, type = "n", xaxs='i', yaxs='i', xlab=xlab, ylab=ylab, asp=asp, axes=FALSE, ...)
 		if (axes) {
 			xticks <- graphics::axTicks(1, c(xlim[1], xlim[2], 4))
 			yticks <- graphics::axTicks(2, c(ylim[1], ylim[2], 4))
-			
+
 			if (xres(x) %% 1 == 0) xticks = round(xticks)
 			if (yres(x) %% 1 == 0) yticks = round(yticks)
 			graphics::axis(1, at=xticks)
@@ -135,7 +135,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interp
 		}
 	}
 	graphics::rasterImage(z, bb[1], bb[3], bb[2], bb[4], interpolate=interpolate, ...)
-	
+
 	if (!is.null(addfun)) {
 		if (is.function(addfun)) {
 			addfun()

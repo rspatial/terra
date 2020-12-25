@@ -41,7 +41,7 @@ setMethod("click", signature(x="missing"),
 	}
 )
 
-	
+
 setMethod("click", signature(x="SpatRaster"), 
 	function(x, n=Inf, id=FALSE, xy=FALSE, cell=FALSE, type="n", show=TRUE, ...) {
 	values <- NULL
@@ -57,7 +57,7 @@ setMethod("click", signature(x="SpatRaster"),
 		}
 		cells <- stats::na.omit(cellFromXY(x, xyCoords))
 		if (length(cells) == 0) break
-		
+
 		value <- x[cells]
 		if (cell) {
 			value <- data.frame(cell=cells, value)

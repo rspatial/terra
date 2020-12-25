@@ -35,7 +35,7 @@ setMethod ("rats<-" , "SpatRaster",
 	}
 )
 
-	
+
 
 setMethod("as.factor", signature(x="SpatRaster"), 
 	function(x) {
@@ -88,22 +88,22 @@ setMethod ("cats<-" , "SpatRaster",
 			}
 			layer <- i
 		} else {
-			stopifnot(layer > 0 && layer <= nlyr(x))	
+			stopifnot(layer > 0 && layer <= nlyr(x))
 		}
 		if (is.null(value) | is.na(value[[1]][1])) {
 			x@ptr$removeCategories(layer-1)
 			return(messages(x, "levels<-"))
 		}
-		if (!is.factor(x)) {	
+		if (!is.factor(x)) {
 			opt <- spatOptions("", TRUE, list())
 			x@ptr <- x@ptr$makeCategorical(layer-1, opt)
-			x <- messages(x, "as.factor<-")	
+			x <- messages(x, "as.factor<-")
 		}
 		if (is.data.frame(value)) {
 			stopifnot(NCOL(value) == 2)
 			x@ptr$setCategories(layer-1, value[,1], value[,2])
 		} else if (is.vector(value)){
-			x@ptr$setCategories(layer-1, 0:(length(value)-1), as.character(value))		
+			x@ptr$setCategories(layer-1, 0:(length(value)-1), as.character(value))
 		}
 		messages(x, "levels<-")
 	}

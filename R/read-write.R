@@ -12,7 +12,7 @@ readAll <- function(x) {
 setMethod("readStart", signature(x="SpatRaster"), 
 	function(x, ...) {
 		success <- x@ptr$readStart()
-		messages(x, "readStart")		
+		messages(x, "readStart")
 		if (!success) error("readStart,SpatRaster", "cannot open file for reading")
 		invisible(success)
 	}
@@ -21,7 +21,7 @@ setMethod("readStart", signature(x="SpatRaster"),
 setMethod("readStart", signature(x="SpatRasterDataset"), 
 	function(x, ...) {
 		success <- x@ptr$readStart()
-		messages(x, "readStart")		
+		messages(x, "readStart")
 		if (!success) error("readStart,SpatRasterDataset", "cannot open file for reading")
 		invisible(success)
 	}
@@ -35,7 +35,7 @@ setMethod("readStart", signature(x="SpatRasterDataset"),
 #			success <- readStart(y)
 #			x[i] <- y
 #		}
-#		messages(x, "readStart")		
+#		messages(x, "readStart")
 #		invisible(success)
 #	}
 #)
@@ -44,7 +44,7 @@ setMethod("readStart", signature(x="SpatRasterDataset"),
 setMethod("readStop", signature(x="SpatRaster"), 
 	function(x) {
 		success <- x@ptr$readStop()
-		messages(x, "readStop")		
+		messages(x, "readStop")
 		invisible(success)
 	}
 )
@@ -52,7 +52,7 @@ setMethod("readStop", signature(x="SpatRaster"),
 setMethod("readStop", signature(x="SpatRasterDataset"), 
 	function(x) {
 		success <- x@ptr$readStop()
-		messages(x, "readStop")		
+		messages(x, "readStop")
 		invisible(success)
 	}
 )
@@ -62,10 +62,10 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- spatOptions(filename, overwrite, wopt)
 		ok <- x@ptr$writeStart(opt)
-		messages(x, "writeStart")		
+		messages(x, "writeStart")
 		b <- x@ptr$getBlockSize(4, opt$memfrac)
 		b$row <- b$row + 1
-		b		
+		b
 	}
 )
 
@@ -77,7 +77,7 @@ setMethod("writeStop", signature(x="SpatRaster"),
 		f <- sources(x)$source
 		if (f != "") {
 			x <- rast(f)
-		}	
+		}
 		return(x)
 	} 
 )

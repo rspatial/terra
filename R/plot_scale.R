@@ -50,7 +50,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		dd <- d
 	}
 
-	
+
     if(is.null(xy)) {
 		padding=c(5,5) / 100
 		#defaults to a lower left hand position
@@ -69,22 +69,22 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		if (missing(adj)) {
 			adj <- c(0.5, -0.2-lwd/20 )
 		}
-		
+
 		if (length(label) == 1) label =c("", label, "")
 		text(xy[1], xy[2],labels=label[1], xpd=xpd, adj=adj,...)
 		text(xy[1]+0.5*dd, xy[2],labels=label[2], xpd=xpd, adj=adj,...)
 		text(xy[1]+dd, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
 
 		xy[2] <- xy[2] - dd/10
-		
+
 	} else if (type == "bar") {
 		stopifnot(divs > 0)
-		
+
 		if (missing(adj)) {
 			adj <- c(0.5, -1 )
 		}
 		lwd <- dd / 25
-		
+
 		if (divs==2) {
 			half <- xy[1] + dd / 2
 			graphics::polygon(c(xy[1], xy[1], half, half), c(xy[2], xy[2]+lwd, xy[2]+lwd, xy[2]), col="white", xpd=xpd)
@@ -95,7 +95,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			if (is.null(label)) {
 				label <- c("0", "", d)
 			}
-			
+
 			text(xy[1], xy[2],labels=label[1], xpd=xpd, adj=adj,...)
 			text(xy[1]+0.5*dd, xy[2],labels=label[2], xpd=xpd, adj=adj,...)
 			text(xy[1]+dd, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
@@ -117,10 +117,10 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 			text(xy[1], xy[2], labels=label[1], xpd=xpd, adj=adj, ...)
 			text(half, xy[2], labels=label[2], xpd=xpd, adj=adj,...)
 			text(end, xy[2],labels=label[3], xpd=xpd, adj=adj,...)
-		}		
+		}
 	}
 	if (below != "") {
 		adj[2] <- -adj[2]
 		text(xy[1]+(0.5*dd), xy[2], xpd=xpd, labels=below, adj=adj,...)
-	}	
+	}
 }

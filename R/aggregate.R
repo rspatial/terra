@@ -41,22 +41,22 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		}
 	}
 	if (!hasValues(x)) { toc = TRUE }
-	if (toc) {	
+	if (toc) {
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		narm <- isTRUE(list(...)$na.rm)
-		opt <- spatOptions(filename, overwrite, wopt)	
+		opt <- spatOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$aggregate(fact, fun, narm, opt)
 		return (messages(x, "aggregate"))
 	} else {
 		out <- rast(x)
 		nl <- nlyr(out)
-		opt <- .getOptions()	
+		opt <- .getOptions()
 		out@ptr <- out@ptr$aggregate(fact, "sum", TRUE, opt)
 		out <- messages(out, "aggregate")
-		
+
 		dims <- x@ptr$get_aggregate_dims(fact)
-		b <- x@ptr$getBlockSize(4, opt$memfrac)		
-		
+		b <- x@ptr$getBlockSize(4, opt$memfrac)
+
 		nr <- max(1, floor(b$nrows[1] / fact[1])) * fact[1]
 		nrs <- rep(nr, floor(nrow(x)/nr))
 		d <- nrow(x) - sum(nrs) 
@@ -65,9 +65,9 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		b$nrows <- nrs
 		b$n <- length(nrs)
 		outnr <- ceiling(b$nrows / fact[1])
-		outrows  <- c(0, cumsum(outnr))[1:length(outnr)] + 1	
-		nc <- ncol(x)	
-		
+		outrows  <- c(0, cumsum(outnr))[1:length(outnr)] + 1
+		nc <- ncol(x)
+
 		if (cores > 1) {
 			doPar <- TRUE
 			cls <- parallel::makeCluster(cores)
@@ -89,17 +89,17 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 					error("aggregate", "this function does not return the correct number of values")
 				}
 				writeValues(out, v, outrows[i], outnr[i])
-			}	
+			}
 		} else {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)
 				v <- x@ptr$get_aggregates(v, b$nrows[i], dims)
-				v <- sapply(v, fun, ...)	
+				v <- sapply(v, fun, ...)
 				if (length(v) != outnr[i] * prod(dims[5:6])) {
 					error("aggregate", "this function does not return the correct number of values")
 				}
 				writeValues(out, v, outrows[i], outnr[i])
-			}	
+			}
 		}
 		readStop(x)
 		out <- writeStop(out)
@@ -126,7 +126,7 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 		if (any(i)) {
 			if (is.character(fun)) {
 				f <- match.fun(fun)
-				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], f)				
+				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], f)
 				names(da)[-j] <- paste0(fun, "_", names(da)[-j])
 			} else {
 				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], fun)
@@ -138,7 +138,7 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 	}
 	i[colnames(d) %in% by] <- TRUE
 	if (any(!i)) {
-		db <- aggregate(d[, !i,drop=FALSE], d[, by, drop=FALSE], .agg_uf)	
+		db <- aggregate(d[, !i,drop=FALSE], d[, by, drop=FALSE], .agg_uf)
 		db <- db[, colSums(is.na(db)) < nrow(db), drop=FALSE]
 		if (NCOL(da)>1) {
 			da <- merge(da, db, by=by)
@@ -209,7 +209,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 				# if (any(i)) {
 					# if (is.character(fun)) {
 						# f <- match.fun(fun)
-						# da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], f)				
+						# da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], f)
 						# names(da)[-j] <- paste0(fun, "_", names(da)[-j])
 					# } else {
 						# da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], fun)
@@ -219,7 +219,7 @@ setMethod("aggregate", signature(x="SpatVector"),
 				# }
 				# i[colnames(d) %in% by] <- TRUE
 				# if (any(!i)) {
-					# db <- aggregate(d[, !i,drop=FALSE], d[, by, drop=FALSE], .agg_uf)	
+					# db <- aggregate(d[, !i,drop=FALSE], d[, by, drop=FALSE], .agg_uf)
 					# db <- db[, colSums(is.na(db)) < nrow(db), drop=FALSE]
 					# if (ncol(db) > 1) {
 						# r <- merge(r, db, by)

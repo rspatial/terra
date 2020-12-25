@@ -9,7 +9,7 @@
 	compareGeom(x, y, lyrs=TRUE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
 	nlx <- nlyr(x)
 	nly <- nlyr(y)
-	
+
 	maxnl <- max(1, round(maxnl))
 	nl <- max(nlx, nly)
 	if (nl > maxnl) {
@@ -23,12 +23,12 @@
 			nly <- maxnl
 		}
 	}
-		
-		
+
+
 	if (missing(main)) {
 		main <- ""
 	}
-	
+
 	if (missing(xlab)) {
 		ln1 <- names(x)
 	} else {
@@ -46,15 +46,15 @@
 		}
 	}
 	cells <- ncell(x)
-		
-		
+
+
 	if (gridded) {
 #			if ((ncell(x) * (nlx + nly)) < .maxmemory()) {
 		if ((ncell(x) * (nlx + nly)) < 1000000) {
 			maxcell <- ncell(x)
 		}
 	}
-	
+
 	x <- spatSample(x, size=maxcell, method="regular", as.raster=FALSE)
 	y <- spatSample(y, size=maxcell, method="regular", as.raster=FALSE)
 
@@ -71,8 +71,8 @@
 			cex <- 0.2
 		}
 	}
-	
-	if (nlx != nly) {	
+
+	if (nlx != nly) {
 		# recycling
 		d <- cbind(as.vector(x), as.vector(y))
 		x <- matrix(d[,1], ncol=nl)
@@ -81,29 +81,29 @@
 		lab[] <- ln1
 		ln1 <- lab
 		lab[] <- ln2
-		ln2 <- lab		
+		ln2 <- lab
 	}
-		
+
 	if (nl > 1) {
-			
+
 		old.par <- graphics::par(no.readonly = TRUE) 
 		on.exit(graphics::par(old.par))
 		graphics::par(mfrow=c(nr, nc), mar=c(4, 4, 2, 2))
-		
-			
+
+
 		if (! gridded) {
 			if (add) {
 				for (i in 1:nl) {
-					graphics::points(x[,i], y[,i], cex=cex, ...)			
-				}				
+					graphics::points(x[,i], y[,i], cex=cex, ...)
+				}
 			} else {
 				for (i in 1:nl) {
-					plot(x[,i], y[,i], cex=cex, xlab=ln1[i], ylab=ln2[i], main=main[i],  ...)			
+					plot(x[,i], y[,i], cex=cex, xlab=ln1[i], ylab=ln2[i], main=main[i],  ...)
 				}
 			}
 		} else {
 			for (i in 1:nl) {
-				.plotdens(x[,i], y[,i], nc=ncol, nr=nrow, main=main[i], xlab=ln1[i], ylab=ln2[i], add=add, ...)		
+				.plotdens(x[,i], y[,i], nc=ncol, nr=nrow, main=main[i], xlab=ln1[i], ylab=ln2[i], add=add, ...)
 			}
 		}
 	} else  {
@@ -111,12 +111,12 @@
 			if (add) {
 				graphics::points(x, y, cex=cex, ...)
 			} else {
-				plot(x, y, cex=cex, xlab=ln1[1], ylab=ln2[1], main=main[1], ...)			
+				plot(x, y, cex=cex, xlab=ln1[1], ylab=ln2[1], main=main[1], ...)
 			}
 		} else {
 			.plotdens(x, y, nc=ncol, nr=nrow, main=main[1], xlab=ln1[1], ylab=ln2[1], ...)
 		}
-	}		
+	}
 }
 
 
@@ -136,7 +136,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 			nc <- ceiling(nl / nr)
 		}
 
-		
+
 		.scatterPlotRaster(x, y, maxcell=maxcell, warn=warn, nc=nc, nr=nr, maxnl=maxnl, gridded=gridded, ncol=ncol, nrow=nrow, ...)
 	}
 )
@@ -159,7 +159,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 		ry[1] <- ry[1] - 0.5
 		ry[2] <- ry[2] + 0.5
 	}
-	
+
 	out <- rast(xmin=rx[1], xmax=rx[2], ymin=ry[1], ymax=ry[2], ncol=nc, nrow=nr, crs="+proj=utm +zone=1 +datum=WGS84")
 	colnames(xy) <- c("x", "y")
 	out <- rasterize(vect(xy), out, fun=function(x, ...) length(x), background=0)
@@ -169,7 +169,7 @@ setMethod("plot", signature(x="SpatRaster", y="SpatRaster"),
 		e <- extent(xlim, ylim)
 		out <- expand(crop(out, e), e, value=0)
 	}
-	plot(out, maxcell=nc*nr, asp=asp, ...) 	
+	plot(out, maxcell=nc*nr, asp=asp, ...) 
 }
 
 

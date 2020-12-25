@@ -7,7 +7,7 @@
 setMethod("rast", signature(x="missing"),
 	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, ...) {
 
-		if (missing(extent)) {	
+		if (missing(extent)) {
 			e <- c(xmin, xmax, ymin, ymax) 
 		} else {
 			e <- as.vector(extent)
@@ -15,7 +15,7 @@ setMethod("rast", signature(x="missing"),
 		if ((e[1] >= e[2]) || e[3] >= e[4]) {
 			error("rast,missing", "invalid extent")
 		}
-		
+
 		if (missing(crs)) {
 			if (e[1] > -360.01 & e[2] < 360.01 & e[3] > -90.01 & e[4] < 90.01) {
 				crs <- "+proj=longlat +datum=WGS84"
@@ -114,7 +114,7 @@ setMethod("rast", signature(x="character"),
 		f <- .fullFilename(x)
 		#subds <- subds[1]
 		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds, "")		
+			r@ptr <- SpatRaster$new(f, -1, subds, "")
 		} else {
 			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", "")
 		}
@@ -125,7 +125,7 @@ setMethod("rast", signature(x="character"),
 			}
 		}
 		r <- messages(r, "rast")
-		
+
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
 				crs(r) <- "+proj=longlat +datum=WGS84"

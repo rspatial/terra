@@ -7,12 +7,12 @@ function(x, pause=0.25, main, range, maxcell=50000, n=1, ...) {
 	}
 
 	x <- spatSample(x, size=maxcell, method="regular", as.raster=TRUE)
-	
+
 	if (missing(range)) {
 		mnmx <- minmax(x)
 		range <- c(min(mnmx[1,]), max(mnmx[2,]))
 	}
-	
+
 	nl <- nlyr(x)
 	n <- max(1, round(n))
 	i <- 1

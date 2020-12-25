@@ -6,7 +6,7 @@
 
 setMethod("interpolate", signature(object="SpatRaster"), 
 	function(object, model, fun=predict, ..., xyNames=c("x", "y"), factors=NULL, const=NULL, index=NULL, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
-	
+
 		out <- rast(object)
 		hv <- hasValues(object)
 		nms <- c(xyNames, names(object))
@@ -29,7 +29,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 		out <- rast(object, nlyr=nl)
 		cn <- colnames(r)
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
-		
+
 		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
 			xy <- xyFromCell(out, cellFromRowCol(out, b$row[i], 1):cellFromRowCol(out, b$row[i]+b$nrows[i]-1, nc))

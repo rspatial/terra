@@ -10,7 +10,7 @@
 setMethod("Math", signature(x="SpatRaster"),
     function(x){ 
 		oper <- as.vector(.Generic)[1]
-		opt <- spatOptions("", TRUE, list())	
+		opt <- spatOptions("", TRUE, list())
 		if (substr(oper, 1, 3) == "cum") {
 			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, "", FALSE)
 		} else if (oper %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
@@ -19,17 +19,17 @@ setMethod("Math", signature(x="SpatRaster"),
 			x@ptr <- x@ptr$math(oper, opt)
 		}
 		messages(x, oper)
-	}	
+	}
 )
 
 
 setMethod("Math2", signature(x="SpatRaster"),
     function(x, digits=0){ 
-		opt <- spatOptions("", TRUE, list())	
+		opt <- spatOptions("", TRUE, list())
 		oper <- as.vector(.Generic)[1]
 		x@ptr <- x@ptr$math2(oper, digits, opt)
 		messages(x, oper)
-	}	
+	}
 )
 
 
@@ -46,8 +46,8 @@ setMethod("Math", signature(x="SpatExtent"),
 		if (!x@ptr$valid) {
 			error(oper, "invalid extent")
 		}
-		return(x)		
-	}	
+		return(x)
+	}
 )
 
 setMethod("Math2", signature(x="SpatExtent"),
@@ -62,7 +62,7 @@ setMethod("Math2", signature(x="SpatExtent"),
 		} else {
 			error(oper, "not implemented for SpatExtent")
 		}
-	}	
+	}
 )
 
 

@@ -22,7 +22,7 @@ setMethod("crs", signature("SpatRaster"),
 		if (warn) warn("crs", "expected a character string, not a CRS object")
 		y <- attr(x, "comment")
 		if (is.null(y)) {
-			y <- x@projargs				
+			y <- x@projargs
 			if (is.na(y)) y <- ""
 		}
 		x <- y
@@ -88,7 +88,7 @@ setMethod("is.lonlat", signature("SpatRaster"),
 			if (ok && warn) {
 				warn("is.lonlat", "assuming lon/lat crs")
 			}
-			return(ok)	
+			return(ok)
 		} else {
 			ok <- x@ptr$isGeographic()
 			if (ok && global) {

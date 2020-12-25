@@ -16,10 +16,10 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 	v <- x@ptr$readValues(row-1, nrows, col-1, ncols)
 	if (dataframe || mat) {
 		v <- matrix(v, ncol = nlyr(x))
-		colnames(v) <- names(x)	
+		colnames(v) <- names(x)
 	}
 	if (dataframe) {
-		v <- data.frame(v)	
+		v <- data.frame(v)
 		ff <- is.factor(x)
 		if (any(ff)) {
 			ff <- which(ff)
@@ -48,7 +48,7 @@ function(x, mat=TRUE, ...) {
 		v <- matrix(v, ncol=nlyr(x))
 		colnames(v) <- names(x)
 	}
-	return(v)	
+	return(v)
 }
 )
 
@@ -71,7 +71,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			stopifnot(length(dim(values)) == 3)
 			values <- as.vector(aperm(values, c(2,1,3)))
 		}
-		
+
 		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
 			error("setValues", "values must be numeric, integer, or logical")
 		}
@@ -79,7 +79,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		lv <- length(values)
 		nc <- ncell(x)
 		nl <- nlyr(x)
-		if (lv == 1) {	
+		if (lv == 1) {
 			values <- rep(values, nl * nc)
 		} else {
 			if (!((lv %% nc) == 0)) {
@@ -96,7 +96,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		y
 	}
 )
-	
+
 
 #.hasValues <- function(x) {
 #	x@ptr$hasValues
@@ -142,9 +142,9 @@ setMethod("minmax", signature(x="SpatRaster"),
 setMethod("setMinMax", signature(x="SpatRaster"), 
 	function(x, force=FALSE) {
 		if (force) {
-			x@ptr$setRange()		
+			x@ptr$setRange()
 		} else if (any(!.hasMinMax(x))) {
-			x@ptr$setRange()		
+			x@ptr$setRange()
 		}
 		x <- messages(x)
 	}

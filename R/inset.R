@@ -16,7 +16,7 @@
 	offset <- 0.9
 	#offset <- max(0.1, min(1, offset))
 	scale  <- offset * min(e / ext(x))
-	
+
 	y  <- rescale(x, scale)
 	ey <- ext(y)
 	xy <- c(mean(ey[1:2]), mean(ey[3:4]))
@@ -29,7 +29,7 @@
 		box  <- rescale(as.polygons(box), scale, ex[1]+diff(ex[1:2])/2, ex[3]+diff(ex[3:4])/2)
 		box <- shift(box, dx, dy)
 	}
-	
+
 	if (loc != "") {
 		stopifnot(loc %in% c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"))
 		ex <- ext(x)
@@ -41,9 +41,9 @@
 			dy <- (usr[3] + diff(usr[3:4])/2) - (e[3] + diff(e[3:4])/2)
 		}
 		if (grepl("left", loc)) {
-			dx <- usr[1] - e[1]		
+			dx <- usr[1] - e[1]
 		} else if (grepl("right", loc)) {
-			dx <- usr[2] - e[2]		
+			dx <- usr[2] - e[2]
 		} else {
 			dx <- (usr[1] + diff(usr[1:2])/2) - (e[1] + diff(e[1:2])/2)
 		}

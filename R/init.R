@@ -3,7 +3,7 @@
 # Version 1.0
 # License GPL v3
 
-	
+
 setMethod("init", signature(x="SpatRaster"), 
 	function(x, fun, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- spatOptions(filename, overwrite, wopt)
@@ -28,7 +28,7 @@ setMethod("init", signature(x="SpatRaster"),
 				writeValues(out, r, b$row[i], b$nrows[i])
 			}
 			out <- writeStop(out)
-			return(out)		
+			return(out)
 		}
 	}
 )

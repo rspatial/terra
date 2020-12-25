@@ -18,7 +18,7 @@
 	ff <- list.files(tempdir(), pattern=pattrn, full.names=TRUE)
 	i <- !(basename(ff) %in% basename(ftmp))
 	ff[i]
-	
+
 }
 
 
@@ -29,8 +29,8 @@ tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 	if (!(old | current | orphan)) {
 		error("tmpFiles", "at least one of 'orphan', 'current' and 'old' must be set to TRUE")
 	}
-	
-	opt <- spatOptions("", TRUE, list())	
+
+	opt <- spatOptions("", TRUE, list())
 	d <- opt$tempdir
 	f <- NULL
 	if (old) {
@@ -47,7 +47,7 @@ tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 			}
 		}
 	} 
-	
+
 	if (current) {
 		ff <- list.files(d, pattern="^spat", full.names=TRUE)
 		f <- c(f, ff)
@@ -55,8 +55,8 @@ tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 		fo <- .orphanTmpFiles()
 		f <- c(f, fo) # for if old=TRUE
 	} 
-	
-	
+
+
 	if (remove) {
 		file.remove(f) 
 		return(invisible(f))

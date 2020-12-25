@@ -20,7 +20,7 @@ setMethod("density", signature(x="SpatRaster"),
 		if (nl==1) {
 			res[[1]] <- .one.density(x, plot=plot, ...)
 		} else {
-		
+
 			if (nl > 16) {
 			warn("density", "only the first 16 layers are plotted")
 				nl <- 16
@@ -40,7 +40,7 @@ setMethod("density", signature(x="SpatRaster"),
 				on.exit(graphics::par(old.par))
 				graphics::par(mfrow=c(nr, nc))
 			}
-			for (i in 1:nlyr(x)) {	
+			for (i in 1:nlyr(x)) {
 				res[[i]] <- .one.density(x[[i]], maxcells=maxcells, main=main[i], plot=plot, ...)
 			}
 		}
@@ -62,12 +62,12 @@ setMethod("persp", signature(x="SpatRaster"),
 
 
 .plot.filled.contour <- function(x, maxcells=100000, ...) {
-	
+
 	x <- spatSample(x[[1]], maxcells, method="regular", as.raster=TRUE)
 	X <- xFromCol(x, 1:ncol(x))
 	Y <- yFromRow(x, nrow(x):1)
 	Z <- t( matrix( values(x), ncol=ncol(x), byrow=TRUE)[nrow(x):1,] )
-	
+
  	if (is.null(list(...)$asp)) {
 		asp <- ifelse(is.lonlat(x, perhaps=TRUE, warn=FALSE), 1/cos((mean(as.vector(ext(x))[3:4]) * pi)/180), 1)
 		graphics::filled.contour(x=X, y=Y, z=Z, asp=asp, ...)
@@ -112,7 +112,7 @@ setMethod("as.contour", signature(x="SpatRaster"),
 
 setMethod("pairs", signature(x="SpatRaster"), 
 	function(x, hist=TRUE, cor=TRUE, use="pairwise.complete.obs",  maxcells=100000, ...) {
-	
+
 		panelhist <- function(x,...)	{
 			usr <- graphics::par("usr"); on.exit(graphics::par(usr))
 			graphics::par(usr = c(usr[1:2], 0, 1.5) )
@@ -123,7 +123,7 @@ setMethod("pairs", signature(x="SpatRaster"),
 			y <- y/max(y)
 			graphics::rect(breaks[-nB], 0, breaks[-1], y, col="green")
 		}
-		
+
 		panelcor <- function(x, y,...) {
 			usr <- graphics::par("usr")
 			on.exit(graphics::par(usr))
@@ -132,19 +132,19 @@ setMethod("pairs", signature(x="SpatRaster"),
 			txt <- format(c(r, 0.123456789), digits=2)[1]
 			text(0.5, 0.5, txt, cex = max(0.5, r * 2))
 		}
-	
+
 		if (hist) {dp <- panelhist} else {dp <- NULL}
 		if (cor) {up <- panelcor} else {up <- NULL}
-	
-	
+
+
 		d <- spatSample(x, maxcells, method="regular", as.raster=FALSE)
-	
+
 		dots <- list(...) 
 		cex <- dots$cex
 		main <- dots$main
 		if (is.null(cex)) cex <- 0.5
 		if (is.null(main)) main <- ""
-	
+
 		graphics::pairs(d, main=main, cex=cex, upper.panel=up, diag.panel=dp)
 	}
 )
@@ -251,7 +251,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 
 setMethod("barplot", "SpatRaster", 
 	function(height, maxcell=1000000, digits=0, breaks=NULL, col, ...) {
-		
+
 		if (missing(col)) {
 			col=grDevices::rainbow
 		}
@@ -264,11 +264,11 @@ setMethod("barplot", "SpatRaster",
 		if (!is.null(digits)) {
 			x <- round(x, digits)
 		}
-		
+
 		if (!is.null(breaks)) {
 			x <- cut(x, breaks)
 		}
-		
+
 		x <- table(x) / adj
 		if (is.function(col)) {
 			col <- col(length(x))

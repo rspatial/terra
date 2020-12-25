@@ -3,6 +3,14 @@
 # Version 1.0
 # License GPL v3
 
+positive_indices <- function(i, n, caller=" [ ") {
+	if (!(all(i <= 0) || all(i >= 0))) {
+		error(caller, "you cannot mix postive and negative indices")
+	}
+	i <- stats::na.omit(i)
+	(1:n)[i]
+}
+
 
 setMethod("subset", signature(x="SpatRaster"), 
 function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
@@ -17,11 +25,11 @@ function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 	}
 
 	subset <- as.integer(stats::na.omit(subset) - 1)
-	
+
 	opt <- spatOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$subset(subset, opt)
 	messages(x, "subset")
-	return(x)	
+	return(x)
 } )
 
 
@@ -50,11 +58,7 @@ function(x, i, j, ... ,drop=TRUE) {
 
 setMethod("[[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	if (!(all(i <= 0) || all(i >= 0))) {
-		error(" [[,SpatRaster,numeric", "you cannot mix postive and negative indices")
-	}
-	i <- (1:nlyr(x))[i] #to account for negative indices
-	i <- stats::na.omit(i)
+	i <- positive_indices(i, nlyr(x), " [[ ")
 	subset(x, i, ...)
 })
 
@@ -71,7 +75,7 @@ setMethod("subset", signature(x="SpatVector"),
 	if (is.character(subset)) {
 		i <- stats::na.omit(match(subset, names(x)))
 	} else {
-		i <- subset[subset > 0 & subset <= ncol(x)]
+		i <- positive_indices(i, ncol(x), "subset")
 	}
 	if (length(i)==0) {
 		i <- 0
@@ -92,6 +96,7 @@ setMethod("subset", signature(x="SpatVector"),
 
 setMethod("[", c("SpatVector", "numeric", "missing"),
 function(x, i, j, ... , drop=FALSE) {
+	i <- positive_indices(i, nrow(x), "'['")
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
@@ -115,9 +120,11 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "numeric", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
+	i <- positive_indices(i, nrow(x), "'['")
+	j <- positive_indices(j, ncol(x), "'['")
 	p <- x@ptr$subset_rows(i-1)
-	x@ptr <- p$subset_cols(j-1)	
-	x <- messages(x, "[")
+	x@ptr <- p$subset_cols(j-1)
+	x <- messages(x, "'['")
 	if (drop) {
 		as.data.frame(x, stringsAsFactors=FALSE)
 	} else {
@@ -128,7 +135,8 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "missing", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
-	x@ptr <- x@ptr$subset_cols(j-1)	
+	j <- positive_indices(j, ncol(x), "'['")
+	x@ptr <- x@ptr$subset_cols(j-1)
 	x <- messages(x, "[")
 	if (drop) {
 		as.data.frame(x, stringsAsFactors=FALSE)
@@ -149,11 +157,10 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "numeric", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	x <- x[i,]
-	j <- match(j, names(x))
-	j <- stats::na.omit(j)
+	i <- positive_indices(i, nrow(x), "'['")
+	j <- na.omit(match(j, names(x)))
 	if (length(j) == 0) j <- 0
-	x[,j,drop=drop]
+	x <- x[i,j,drop=drop]
 })
 
 

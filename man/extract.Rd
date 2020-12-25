@@ -7,6 +7,8 @@
 \alias{extract,SpatRaster,matrix-method}
 \alias{extract,SpatRaster,data.frame-method}
 \alias{extract,SpatRaster,numeric-method}
+\alias{extract,SpatVector,SpatVector-method}
+
 
 \alias{[,SpatRaster,SpatVector,missing-method}
 \alias{[,SpatRaster,missing,missing-method}
@@ -108,6 +110,10 @@ values(z) <- 1:ncell(z)
 
 #ee <- extract(x, v, list=TRUE)
 #matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
+
+### SpatVector-SpatVector
+
+
 }
 
 \keyword{methods}

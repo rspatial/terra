@@ -13,7 +13,7 @@ setMethod("$<-", "SpatRaster",
 		} else if (!is.null(value)) {
 			error("$<-,SpatRaster", "the replacement value should be a SpatRaster or numeric")
 		}
-	
+
 		i <- which(name == names(x))[1]
 		if (is.na(i)) {
 			return(c(x, value))
@@ -21,7 +21,7 @@ setMethod("$<-", "SpatRaster",
 			if (i == 1) {
 				x <- c(value, x[[2:nlyr(x)]])
 			} else if (i == nlyr(x)) {
-				x <- c(x[[1:(nlyr(x)-1)]], value)			
+				x <- c(x[[1:(nlyr(x)-1)]], value)
 			} else {
 				x <- c(x[[1:(i-1)]], value, x[[(i+1):nlyr(x)]])
 			}
@@ -66,7 +66,7 @@ setReplaceMethod("[[", c("SpatRaster", "numeric", "missing"),
 			if (i[k] == 1) {
 				x <- c(value[[k]], x[[2:nlyr(x)]])
 			} else if (i[k] == nlyr(x)) {
-				x <- c(x[[1:(nlyr(x)-1)]], value[[k]])			
+				x <- c(x[[1:(nlyr(x)-1)]], value[[k]])
 			} else {
 				x <- c(x[[1:(i[k]-1)]], value[[k]], x[[(i[k]+1):nlyr(x)]])
 			}
@@ -79,10 +79,10 @@ setReplaceMethod("[[", c("SpatRaster", "numeric", "missing"),
 
 setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 	function(x, i, j, value) {
-	
+
 		nl <- nlyr(x)
 		x <- rast(x)
-		
+
 		if (is.matrix(value)) {
 			if (all(dim(value) == c(ncell(x), nl))) {
 				e <- try( values(x) <- value)
@@ -112,7 +112,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (narg > 0) { # row
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
-		
+
 		if (!is.null(dim(value))) {
 			#x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
 			stopifnot(ncol(value) == nlyr(x))
@@ -136,7 +136,7 @@ setReplaceMethod("[", c("SpatRaster", "numeric", "numeric"),
 		x[i] <- value
 		x
 	}
-)	
+)
 
 
 setReplaceMethod("[", c("SpatRaster","missing", "numeric"),
@@ -155,7 +155,7 @@ setReplaceMethod("[", c("SpatRaster", "logical", "missing"),
 		x[i] <- value
 		x
 	}
-)	
+)
 
 
 setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),

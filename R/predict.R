@@ -99,7 +99,7 @@ parfun <- function(cls, data, fun, model, ...) {
 	}
 	factors
 }
-	
+
 setMethod("predict", signature(object="SpatRaster"), 
 	function(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE, index=NULL, cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
@@ -108,7 +108,7 @@ setMethod("predict", signature(object="SpatRaster"),
 			tab <- table(nms)
 			error("predict", "duplicate names in SpatRaster: ", tab[tab>1])
 		}
-		
+
 		#factors should come with the SpatRaster
 		#haveFactor <- FALSE
 		#if (!is.null(factors)) {
@@ -116,20 +116,20 @@ setMethod("predict", signature(object="SpatRaster"),
 		#	fnames <- names(f)
 		#	haveFactor <- TRUE
 		#}
-		
+
 		nl <- 1
 		nc <- ncol(object)
 		tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
 		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
-	
+
 		r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
-		nl <- ncol(r)		
+		nl <- ncol(r)
 		out <- rast(object, nlyr=nl)
 		cn <- colnames(r)
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
-		
+
 		if (cores > 1) {
 			cls <- parallel::makeCluster(cores)
 			on.exit(parallel::stopCluster(cls), add=TRUE)

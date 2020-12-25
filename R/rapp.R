@@ -8,9 +8,9 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
 			opt <- spatOptions(filename, overwrite, wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
-			x@ptr <- x@ptr$rapply(index@ptr, txtfun, na.rm, opt)	
+			x@ptr <- x@ptr$rapply(index@ptr, txtfun, na.rm, opt)
 			return(messages(x, "rapp"))
-		}		
+		}
 	} 
 
 	stopifnot(hasValues(x))

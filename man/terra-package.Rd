@@ -264,16 +264,18 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{c}} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
   \code{\link{project}} \tab Project a SpatVector to a different coordinate reference system \cr
   \code{\link{writeVector}} \tab Write SpatVector data to disk \cr
+  \code{\link{centroids}} \tab get the centroids of another SpatVector\cr
   \code{\link{voronoi}} \tab Make a voronoi diagram \cr
   \code{\link{convexhull}} \tab Compute the convex hull of a SpatVector \cr  
+  \code{\link{fill}}\tab remove or extract holes from polygons\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
 
 \section{XIV. Properties of SpatVector objects}{
 \tabular{ll}{
+  \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
   \code{\link{area}} \tab computes the area covered by polygons\cr
-  \code{\link{perimeter}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
   \code{\link{perimeter}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
   \code{\link{geom}} \tab returns the geometries as matrix or WKT\cr
   \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
@@ -299,11 +301,8 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{symdif}} \tab\bold{symmetrical difference} of two polygons \cr 
   \code{\link{aggregate}} \tab \bold{dissolve} smaller polygons into larger ones \cr
   \code{\link{buffer}} \tab \bold{buffer} \cr
-  \code{\link{centroids}} \tab get the centroids of polygons\cr
   \code{\link{disaggregate}} \tab \bold{explode}: turn multi-geometries into separate geometries \cr
   \code{\link{crop}} \tab \bold{clip} geometries using a rectangle (SpatExtent)\cr
-  \code{\link{fill}}\tab remove or extract holes from polygons\cr
-  \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
    .\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}

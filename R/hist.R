@@ -6,7 +6,7 @@
 
 setMethod("hist", signature(x="SpatRaster"), 
 	function(x, layer, maxcell=1000000, plot=TRUE, main, ...) {
-			
+
 		if (missing(layer)) {
 			y <- 1:nlyr(x)
 		} else if (is.character(layer)) {
@@ -14,12 +14,12 @@ setMethod("hist", signature(x="SpatRaster"),
 		} else { 
 			y <- layer 
 		}
-		
+
 		y <- unique(as.integer(round(y)))
 		y <- stats::na.omit(y)
 		y <- y[ y >= 1 & y <= nlyr(x) ]
 		nl <- length(y)
-		
+
 		if (nl == 0) {
 			error("hist", "no layers selected")
 		}
@@ -27,7 +27,7 @@ setMethod("hist", signature(x="SpatRaster"),
 		if (missing(main)) {
 			main=names(x) 
 		}
-		
+
 		if (nl > 1)	{
 			res <- list()
 			if (nl > 16) {
@@ -47,15 +47,15 @@ setMethod("hist", signature(x="SpatRaster"),
 			}
 			for (i in 1:length(y)) {
 				res[[i]] = .hist1(x[[ y[i] ]], maxcell=maxcell, main=main[y[i]], plot=plot, ...) 
-			}		
+			}
 
 		} else if (nl==1) {
 			if (nlyr(x) > 1) {
 				x <- x[[y]]
 				main <- main[y]
 			}
-			res <- .hist1(x, maxcell=maxcell, main=main, plot=plot, ...) 	
-		}		
+			res <- .hist1(x, maxcell=maxcell, main=main, plot=plot, ...) 
+		}
 		if (plot) {
 			return(invisible(res))
 		} else {
@@ -81,18 +81,18 @@ setMethod("hist", signature(x="SpatRaster"),
 			msg <- paste(msg, " (of which ", 100 - round(100 * length(v) / maxcell ), "% was NA)", sep="")
 		}
 		warn("hist", msg)
-	}	
-		
+	}
+
 #	if (.shortDataType(x) == 'LOG') {
 #		v <- v * 1
 #	}
-		
+
 	if (plot) {
 		hist(v, main=main, plot=plot, ...)  
 	} else {
-		hist(v, plot=plot, ...)  		
+		hist(v, plot=plot, ...)  
 	}
-}	
+}
 
 
 

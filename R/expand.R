@@ -1,5 +1,5 @@
 
-if (!isGeneric("extend")) {setGeneric("extend", function(x, y, ...) standardGeneric("extend"))}	
+if (!isGeneric("extend")) {setGeneric("extend", function(x, y, ...) standardGeneric("extend"))}
 setMethod("extend", signature(x="SpatRaster"), 
 	function(x, y, ...) {
 		error("extend", "terra::extend has been removed. Use 'expand' instead")
@@ -48,7 +48,7 @@ function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) {
 			}
 		}
 	}
-	
+
 	opt <- spatOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$expand(y@ptr, opt)
 	messages(x, "expand")

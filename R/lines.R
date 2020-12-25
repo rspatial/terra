@@ -45,7 +45,7 @@ setMethod("points", signature(x="SpatVector"),
 		n <- size(x)
 		col <- .getCols(n, col)
 		cex <- rep_len(cex, n)
-		pch <- rep_len(pch, n)	
+		pch <- rep_len(pch, n)
 		g <- geom(x)
 		if (any(table(g$id) > 1)) {
 			g <- geom(x)
@@ -74,4 +74,4 @@ setMethod("polys", signature(x="SpatVector"),
 		.plotPolygons(x, out, lwd=lwd, lty=lty, ...)
 	}
 )
-	
+

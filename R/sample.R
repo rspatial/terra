@@ -23,7 +23,7 @@
 
 setMethod("spatSample", signature(x="SpatRaster"), 
 	function(x, size, method="regular", replace=FALSE, as.raster=FALSE, cells=FALSE, ...) {
-		
+
 		if (cells) {
 			return(.sampleCells(x, size, method, replace))
 		}
@@ -35,11 +35,11 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		size <- round(size)
 		stopifnot(size > 0)
 		size <- min(ncell(x), size)
-		
+
 		if (method == "regular") {
 			if (as.raster) {
 				x@ptr <- x@ptr$sampleRegularRaster(size)
-				x <- messages(x, "spatSample")		
+				x <- messages(x, "spatSample")
 				return(x);
 			} else {
 				v <- x@ptr$sampleRegularValues(size)
@@ -48,14 +48,14 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			seed <- .get_seed()
 			if (as.raster) {
 				x@ptr <- x@ptr$sampleRandomRaster(size, replace, seed)
-				x <- messages(x, "spatSample")		
+				x <- messages(x, "spatSample")
 				return(x);
 			} else {
 				v <- x@ptr$sampleRandomValues(size, replace, seed)
 			}
-		}	
+		}
 		# values
-		x <- messages(x, "spatSample")		
+		x <- messages(x, "spatSample")
 		if (length(v) > 0) {
 			v <- do.call(cbind, v)
 			colnames(v) <- names(x)
@@ -70,7 +70,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 #	function(x, size, ...) { 
 #		size <- max(1, min(size(x), size))
 #		x@ptr <- x@ptr$spatSample(size)
-#		messages(x, "spatSample")		
+#		messages(x, "spatSample")
 #	}
 #)
 
@@ -82,7 +82,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		# if (vect) xy=TRUE
 		# if (type == "regular") {
 			# x@ptr <- x@ptr$spatSample(size)
-			# x <- messages(x, "spatSample")	
+			# x <- messages(x, "spatSample")
 			# if (xy) {
 				# pts <- xyFromCell(x, 1:ncell(x))
 				# if (vect) {

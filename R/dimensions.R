@@ -41,7 +41,7 @@ setMethod("ncol", signature(x="SpatVector"),
 
 setMethod("dim<-", signature(x="SpatRaster"), 
 	function(x, value) {
-	
+
 		if (length(value) == 1) {
 			value <- c(value, ncol(x), nlyr(x))
 		} else if (length(value) == 2) {
@@ -49,7 +49,7 @@ setMethod("dim<-", signature(x="SpatRaster"),
 		} else if (length(value) > 3) {
 			warn("dim<-", "value should have length 1, 2, or 3. Additional values ignored")
 			value <- value[1:3]
-		}		
+		}
 		value <- as.integer(pmax(round(value), c(1,1,1)))
 		rast(nrow=value[1], ncol=value[2], nlyr=value[3], extent=ext(x), crs=crs(x))
 	}
@@ -154,7 +154,7 @@ setMethod("res<-", signature(x="SpatRaster"),
 			value <- c(value, value)
 		} else if (length(value) > 2) {
 			warn("res<-", "value should have length 1 or 2. Additional values ignored")
-		}		
+		}
 		x@ptr <- x@ptr$set_resolution(value[1], value[2])
 		messages(x, "resolution")
 	}

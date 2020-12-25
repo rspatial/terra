@@ -17,8 +17,8 @@ setMethod("select", signature(x="SpatRaster"),
 		x
 	}
 )
-	
-	
+
+
 setMethod("select", signature(x="SpatVector"), 
 	function(x, use="rec", draw=TRUE, col="cyan", ...) {
 		use <- substr(tolower(use), 1, 3)

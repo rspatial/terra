@@ -37,7 +37,7 @@
 # according to http://en.wikipedia.org/wiki/Gaussian_filter
 	m <- 1/(2*pi*sigma^2) * exp(-(p[,1]+p[,2])/(2*sigma^2))
 	m <- matrix(m, ncol=nx, nrow=ny, byrow=TRUE)
-# sum of weights should add up to 1	
+# sum of weights should add up to 1
 	m / sum(m)
 }
 

@@ -119,7 +119,7 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, ...) { 
-	.checkXYnames(colnames(y))	
+	.checkXYnames(colnames(y))
 	#if (length(list(...)) == 0) {
 	#	i <- cellFromXY(x, y)
 	#	r <- cbind(1:length(i), x[i])
@@ -192,5 +192,39 @@ function(x, i, j, ..., drop=FALSE) {
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 function(x, i, j, ..., drop=FALSE) {
 	x[which(as.logical(values(i)))]
+})
+
+
+setMethod("extract", c("SpatVector", "SpatVector"),
+function(x, y, ...) {
+	g <- geomtype(x)
+	if (!grepl("points", g)) {
+		stop("the first argument must be points")
+	}
+	r <- relate(x, y, "within")
+	e <- apply(r, 1, which)
+	if (length(e) == 0) {
+		e <- list(e)
+	}
+	if (is.list(e)) {
+		e <- lapply(1:length(e), function(i) {
+			if (length(e[[i]]) == 0) {
+				cbind(i, NA)	
+			} else {
+				cbind(i, e[[i]])
+			}
+		})
+		e <- do.call(rbind, e)
+	} else {
+		e <- cbind(1:nrow(x), e)
+	}
+	if (ncol(y) > 0) {
+		d <- as.data.frame(y)	
+		e <- data.frame(id.x=e[,1], d[e[,2], ,drop=FALSE])
+		rownames(e) <- NULL
+	} else {
+		colnames(e) <- c("id.x", "id.y")
+	}
+	e
 })
 

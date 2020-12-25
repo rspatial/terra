@@ -11,7 +11,7 @@
 	g <- geom(x)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(x) split(x, x[,2]))
-	#p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...))	
+	#p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...))
 	n <- length(g)
 	lty <- rep_len(lty, n)
 	lwd <- rep_len(lwd, n)
@@ -73,14 +73,14 @@
 .vplot <- function(x, out, xlab="", ylab="", cex=1, pch=20, ...) {
 	if (out$leg$geomtype == "points") {
 		if (out$add) {
-			points(x, col=out$main_cols, cex=cex, pch=pch, ...)			
+			points(x, col=out$main_cols, cex=cex, pch=pch, ...)
 		} else {
 			e <- out$lim
 			plot(e[1:2], e[3:4], type="n", axes=FALSE, xlab=xlab, ylab=ylab, asp=out$asp)
-			points(x, col=out$main_cols, cex=cex, pch=pch, ...)			
+			points(x, col=out$main_cols, cex=cex, pch=pch, ...)
 		}
 		out$leg$pch = pch
-		out$leg$pt.cex = cex		
+		out$leg$pt.cex = cex
 	} else {
 		e <- matrix(as.vector(ext(x)), 2)
 		if (out$leg$geomtype == "polygons") {
@@ -99,7 +99,7 @@
 		if (ncols > n) {
 			steps <- ncols/n
 			i <- round(seq(1, ncols, steps))
-			cols <- cols[i]				
+			cols <- cols[i]
 		} else if (ncols < n) {
 			cols <- rep_len(cols, n)
 		}
@@ -119,7 +119,7 @@
 
 .vect.legend.classes <- function(out) {
 	ucols <- .getCols(length(out$uv), out$cols)
-	
+
 	out$uv <- sort(out$uv)
 
 	i <- match(out$v, out$uv)
@@ -129,7 +129,7 @@
 	out$levels <- out$uv
 	out$leg$legend <- out$uv
 	nlevs <- length(out$uv)
-		
+
 	cols <- out$cols
 	ncols <- length(cols)
 	if (nlevs < ncols) {
@@ -144,7 +144,7 @@
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
 		out$leg$x <- "top"
 	}
-		
+
 	out
 }
 
@@ -160,10 +160,10 @@
 		n <- length(z)
 	}
 	out$range <- range(z)
-	
+
 	interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
 	breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
-		
+
 	out$legend_type <- "continuous"
 	if (is.null(out$levels)) {
 		out$levels <- 5
@@ -176,7 +176,7 @@
 			out$leg$digits <- max(0, -floor(log10(dif/10)))
 		}
 	}
-	
+
 	if (is.null(out$leg$loc)) out$leg$loc <- "right"
 
 	brks <- seq(min(out$v, na.rm=TRUE), max(out$v, na.rm=TRUE), length.out = length(out$cols))
@@ -206,7 +206,7 @@
 	out$vcut <- as.integer(fz)
 	levs <- levels(fz)
 	nlevs <- length(levs)
-	
+
 	cols <- out$cols
 	ncols <- length(cols)
 	if (nlevs < ncols) {
@@ -218,7 +218,7 @@
 	out$cols <- cols
 	out$leg$fill <- cols
 	out$legend_type <- "classes"
-	
+
 	if (!is.null(out$leg$legend)) {
 		if (length(out$leg$legend) != nlevs) {
 			warn("plot", "legend does not match number of levels")
@@ -231,7 +231,7 @@
 		m <- apply(m, 1, function(i) paste(i, collapse=" - "))
 		out$leg$legend <- m
 	}
-	
+
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
 		out$leg$x <- "top"
 	}
@@ -243,7 +243,7 @@
 
 
 .plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", ...) {
-	
+
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
 		plot(out$lim[1:2], out$lim[3:4], type="n", xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, main=main)
@@ -267,12 +267,12 @@
 	} else if (out$legend_type == "depends") {
 		if (nuq < 11) {
 			out <- .vect.legend.classes(out)
-		} else if (!is.numeric(out$uv)) {	
+		} else if (!is.numeric(out$uv)) {
 			if (nuq < 21) {
 				out <- .vect.legend.classes(out)
 			}
 		} else {
-			out <- .vect.legend.interval(out, dig.lab=dig.lab)		
+			out <- .vect.legend.interval(out, dig.lab=dig.lab)
 		}
 	} else {
 		if (nuq == 1) {
@@ -281,16 +281,16 @@
 			out <- .vect.legend.continuous(out)
 			out$leg$density <- NULL
 		}
-	}				
+	}
 	if (!out$legend_only) {
 		out <- .vplot(x, out, ...) 
 	}
 
 	if (out$axes) {
-		out <- .plot.axes(out)	
+		out <- .plot.axes(out)
 	}
 
-	if (out$legend_draw) {	
+	if (out$legend_draw) {
 		if (out$legend_type == "continuous") {
 			out$legpars <- do.call(.plot.cont.legend, list(x=out))
 		} else {
@@ -323,7 +323,7 @@
 		out$lim <- e
 	}
 
-	
+
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
 	out$axs <- pax 
@@ -336,7 +336,7 @@
 	}
 	out$breaks <- breaks
 	out$breakby <- breakby
-	
+
 	out$v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 	out$uv <- unique(out$v)
 
@@ -360,7 +360,7 @@
 				cols <- "black"
 			} 
 		} else {
-			cols <- rev(grDevices::rainbow(100, start=.1, end=0.9))		
+			cols <- rev(grDevices::rainbow(100, start=.1, end=0.9))
 		}
 	} 
 	if (!is.null(alpha)) {
@@ -418,22 +418,22 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 					if (newrow) {
 						pax$sides <- 1:2
 					} else {
-						pax$sides <- 1				
+						pax$sides <- 1
 					}
 				} else if (newrow) {
 					pax$sides <- 2
 				} else {
 					pax$sides <- 0
 				}
-			}	
+			}
 			if (missing(col)) col <- NULL
-			
+
 			if (y[i] == "") {
 				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], ...)
 			} else {
 				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], ...)
 			}
-			invisible(out)		
+			invisible(out)
 		}
 	}
 )

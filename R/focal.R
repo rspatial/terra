@@ -17,7 +17,7 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 			na.rm <- TRUE
 		}
 	}
-	
+
 	cpp <- FALSE
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
@@ -41,13 +41,13 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 			cpp <- TRUE
 		}
 	}
-	
-	if (cpp) {		
+
+	if (cpp) {
 		opt <- spatOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$focal(w, m, fillvalue, na.rm[1], na.only[1], fun, opt)
 		messages(x, "focal")
 		return(x)
-	
+
 	} else {
 		out <- rast(x)
 		readStart(x)
@@ -63,7 +63,7 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 			}
 			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		out <- writeStop(out)		
+		out <- writeStop(out)
 		return(out)
 	}
 }

@@ -9,9 +9,9 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
 				messages(ptr, "zonal")
 				return( .getSpatDF(ptr) )
-			}		
+			}
 		} 
-		
+
 		#else 
 		nl <- nlyr(x)
 		res <- list()
@@ -53,7 +53,7 @@ setMethod("global", signature(x="SpatRaster"),
 			rownames(res) <- nms
 			return(res)
 		}
-		
+
 		if (inherits(txtfun, "character")) { 
 			if (txtfun %in% c("max", "min", "mean", "sum", "range", "rms")) {
 				na.rm <- isTRUE(list(...)$na.rm)
@@ -74,7 +74,7 @@ setMethod("global", signature(x="SpatRaster"),
 		res <- do.call(rbind,res)
 		res <- data.frame(res)
 		if (ncol(res) > 1) {
-			colnames(res) <- paste0("global_", 1:ncol(res))			
+			colnames(res) <- paste0("global_", 1:ncol(res))
 		} else {
 			colnames(res) <- "global"
 		}

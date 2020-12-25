@@ -12,7 +12,7 @@
 	dims <- 1:3
 
 	nc <- ncdf4::nc_open(ss[2], readunlim=FALSE, suppress_dimvals = TRUE)
-	on.exit( ncdf4::nc_close(nc) )		
+	on.exit( ncdf4::nc_close(nc) )
 
 	ncols <- nc$var[[zvar]]$dim[[dims[1]]]$len
 	nrows <- nc$var[[zvar]]$dim[[dims[2]]]$len
@@ -36,7 +36,7 @@
 	if (inherits(yy, "try-error")) {
 	  yy <- seq_len(nc$var[[zvar]]$dim[[dims[2]]]$len)
 	}
-	
+
 	rs <- yy[-length(yy)] - yy[-1]
 	if (! isTRUE ( all.equal( min(rs), max(rs), tolerance=0.025, scale= abs(min(rs))) ) ) {
 		warn("rast", "cells are not equally spaced; extent is not defined") 
@@ -92,7 +92,7 @@
 	ncvars <- list()
 	cal <- NA
 	for (i in 1:n) {
-		if (nl[i] > 1) {	
+		if (nl[i] > 1) {
 			y <- x[i]
 			if (y@ptr$hasTime) {
 				zv <- y@ptr$time
@@ -105,7 +105,7 @@
 					zunit <- "days since 1970-1-1"
 					cal <- "standard"
 				} else {
-					zunit <- "unknown"					
+					zunit <- "unknown"
 				}
 			} else {
 				zv <- 1:nlyr(y)
@@ -113,13 +113,13 @@
 			} 
 			zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
 			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval, lvar[i], prec = prec[i], compression=compression[i],...)
-		} else {			
+		} else {
 			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), missval, lvar[i], prec = prec[i], compression=compression[i], ...)
 		}
 	}
 
 	ncvars[[n+1]] <- ncdf4::ncvar_def("crs", "", list(), NULL, prec="integer")
-		
+
 	ncobj <- ncdf4::nc_create(filename, ncvars, force_v4=force_v4, verbose=verbose)
 	on.exit(ncdf4::nc_close(ncobj))
 
@@ -144,7 +144,7 @@
 		if (nl[i] > 1) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
-				d <- array(d, c(nc, b$nrows[j], nl[i]))		
+				d <- array(d, c(nc, b$nrows[j], nl[i]))
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl[i]))
 			}
 		} else {
@@ -159,12 +159,12 @@
 			ncdf4::ncatt_put(ncobj, ncvars[[i]], "grid_mapping", "crs", prec="text")
 		}
 	}
-		
+
 	ncdf4::ncatt_put(ncobj, 0, "Conventions", "CF-1.4", prec="text")
 	pkgversion <- drop(read.dcf(file=system.file("DESCRIPTION", package="terra"), fields=c("Version")))
 	ncdf4::ncatt_put(ncobj, 0, "created_by", paste("R, packages ncdf4 and terra (version ", pkgversion, ")", sep=""), prec="text")
 	ncdf4::ncatt_put(ncobj, 0, "date", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), prec="text")
-	
+
 	TRUE
 }
 

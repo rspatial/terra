@@ -43,7 +43,7 @@ setMethod ("coltab<-" , "SpatRaster",
 		if (ncol(value) == 3) {
 			value <- cbind(value, alpha=255)
 		}
-	
+
 		d <- .makeSpatDF(value)
 		if (x@ptr$setColors(layer, d)) {
 			return(x)

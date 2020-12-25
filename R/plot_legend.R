@@ -105,7 +105,7 @@
 		leg.shrink <- rep_len(x$leg$shrink,2)
 	}
 	if (!is.null(x$leg$main)) {
-		n <- length(x$leg$main)		
+		n <- length(x$leg$main)
 		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
 	}
 
@@ -139,7 +139,7 @@
 
 .get.leg.extent <- function(x) {
 	usr <- graphics::par("usr")
-	dxy <- graphics::par("cxy") * graphics::par("cex")	
+	dxy <- graphics::par("cxy") * graphics::par("cex")
 	loc <- x$leg$loc
 	p <- NULL
 	if (is.character(loc)) {
@@ -173,7 +173,7 @@
 		e <- leg$ext
 		n <- length(leg$title)
 		ymax <- e$ymax + 0.05 * e$dy
-			
+
 		for (i in 1:n) {
 			if (x$leg$loc == "right") {
 				text(x=e$xmax, y=ymax+(n-i)*0.05* e$dy,
@@ -184,7 +184,7 @@
 			} else {
 				ymax <- e$ymax + 2*e$dy
 				text(x=(e$xmin+e$xmax)/2, y=ymax+(n-i)*0.05* e$dy,
-					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)				
+					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			}
 		}
 	}
@@ -197,12 +197,12 @@
 	if (is.null(x$leg$ext)) {
 		x <- .get.leg.extent(x)
 	} else {
-		x <- .get.leg.coords(x)	
+		x <- .get.leg.coords(x)
 	}
 
 	cex <- x$leg$cex
 	if (is.null(cex)) cex <- 0.8
-	
+
 	cols <- rev(x$cols)
 	nc <- length(cols)
 
@@ -212,7 +212,7 @@
 		if (is.null(x$levels)){
 			x$levels <- 5
 		}
-		zz <- pretty(zlim, n =(x$levels+1))	
+		zz <- pretty(zlim, n =(x$levels+1))
 		zz <- zz[zz >= zlim[1] & zz <= zlim[2]]
 	}
 	zztxt <- x$leg$labels
@@ -242,12 +242,12 @@
 			graphics::segments(xpos, e$ymin, xpos, e$ymax+e$dy*0.25, xpd=NA)
 			text(xpos, e$ymax+e$dy*0.25, zztxt, pos=3, xpd=NA, cex=cex)
 		}
-	}	
+	}
 	graphics::rect(e$xmin, e$ymin, e$xmax, e$ymax, border ="black", xpd=NA)
-	
+
 	x <- .leg.main(x)
 	x
-}	
+}
 
 
 .plot.class.legend <- function(x, y, legend, fill, xpd=TRUE, cex=0.8, geomtype="", 
@@ -263,12 +263,12 @@
 	}
 	if (grepl("points", geomtype)) {
 		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, pch=pch, 
-		pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)	
+		pt.cex=pt.cex, pt.bg=pt.bg, pt.lwd=pt.lwd, ...)
 	} else if (geomtype == "lines") {
-		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)	
+		leg <- legend(x, y, legend, col=fill, xpd=xpd, bty=bty, cex=cex, lty=lty, lwd=lwd, seg.len=seg.len, ...)
 	} else {
-		leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, ...)	
+		leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, ...)
 	}
 	return(leg)
-}	
+}
 

@@ -41,7 +41,7 @@ setMethod("svc", signature(x="list"),
 			if (inherits(x[[i]], "SpatVector")) {
 				r@ptr$push_back(x[[i]]@ptr)
 			}
-		}	
+		}
 		messages(r, "svc")
 	}
 )
@@ -56,7 +56,7 @@ setReplaceMethod("[", c("SpatVectorCollection", "numeric", "missing"),
 		i <- sort(i)
 		for (j in i) {
 			if (j == (length(x)+1)) {
-				x@ptr$push_back(value@ptr)			
+				x@ptr$push_back(value@ptr)
 			} else {
 				x@ptr$replace(value@ptr, j-1)
 			}
@@ -88,7 +88,7 @@ function(x, i, j, ... ,drop=TRUE) {
 
 setMethod("c", signature(x="SpatVectorCollection"), 
 	function(x, ...) {
-		
+
 		x@ptr <- x@ptr$subset(0:(x@ptr$size()-1) ) ## deep copy
 		dots <- list(...)
 		for (i in seq_along(dots)) {
@@ -102,6 +102,6 @@ setMethod("c", signature(x="SpatVectorCollection"),
 				error("c", "arguments must be SpatVector or SpatVectorCollection")
 			} 
 		}
-		messages(x, "c")		
+		messages(x, "c")
 	}
 )

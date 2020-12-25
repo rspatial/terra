@@ -16,7 +16,7 @@
  
 .setOptions <- function(x, opt) {
 	nms <- names(opt)
-	
+
 	g <- which(nms == "gdal")
 	if (length(g) > 0) {
 		gopt <- unlist(opt[g])
@@ -27,25 +27,25 @@
 		gopt <- gsub(" ", "", gopt)
 		x$gdal_options <- gopt
 	}
-	
+
 	s <- nms %in% .options_names()
-	
+
 	if (any(!s)) {
 		bad <- paste(nms[!s], collapse=",")
 		error("write", "unknown option(s):", bad)
 	}
-		
+
 	if (any(s)) {
 		nms <- nms[s]
 		opt <- opt[s]
-		i <- which(nms == "names")	
+		i <- which(nms == "names")
 		if (length(i) > 0) {
 			namevs <- trimws(unlist(strsplit(opt[[i]], ",")))
 			x[["names"]] <- namevs
 			opt <- opt[-i]
 			nms <- nms[-i]
 		}
-		
+
 		for (i in seq_along(nms)) {
 			x[[nms[i]]] <- opt[[i]]
 		}
@@ -61,13 +61,13 @@ spatOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
 	if (!is.list(wopt)) {
 		error("spatOptions", "wopt must be a list")
 	}
-	
+
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
-	
+
 	ptr <- .terra_environment$options@ptr
 	opt <- ptr$deepcopy(ptr)
-	
+
 	filename <- .fullFilename(filename, mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {
 		wopt$filenames <- filename
@@ -127,7 +127,7 @@ terraOptions <- function(...) {
 			if (d[i]) {
 				opt[[ dnms[i] ]] <- dots[[ i ]]
 			} else {
-				opt[[ nms[i] ]] <- dots[[ i ]]			
+				opt[[ nms[i] ]] <- dots[[ i ]]
 			}
 		}
 		.terra_environment$options@ptr <- opt

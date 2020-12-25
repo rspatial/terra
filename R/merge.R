@@ -8,7 +8,7 @@
 	.mosaic <- function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
 		opt <- spatOptions(filename, overwrite, wopt)
 		dots <- list(...)
-		rc <- SpatRasterCollection$new()		
+		rc <- SpatRasterCollection$new()
 		rc$add(x@ptr)
 		rc$add(y@ptr)
 		n <- length(dots)
@@ -24,7 +24,7 @@
 			}
 		}
 		x@ptr <- rc$mosaic(opt)
-		messages(x, "mosaic")		
+		messages(x, "mosaic")
 	}
 #)
 
@@ -32,7 +32,7 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
 		opt <- spatOptions(filename, overwrite, wopt)
 		dots <- list(...)
-		rc <- SpatRasterCollection$new()		
+		rc <- SpatRasterCollection$new()
 		rc$add(x@ptr)
 		rc$add(y@ptr)
 		n <- length(dots)
@@ -48,7 +48,7 @@ setMethod("merge", signature(x="SpatRaster", y="SpatRaster"),
 			}
 		}
 		x@ptr <- rc$merge(opt)
-		messages(x, "merge")		
+		messages(x, "merge")
 	}
 )
 
@@ -57,7 +57,7 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 	function(x, y, ...) {
 		v <- values(x)
 		v$unique_nique_ique_que_e <- 1:nrow(v)
-		m <- merge(v, y, ...)		
+		m <- merge(v, y, ...)
 		m <- m[order(m$unique_nique_ique_que_e), ]
 		x <- x[m$unique_nique_ique_que_e, ]
 		m$unique_nique_ique_que_e <- NULL

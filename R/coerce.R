@@ -26,7 +26,7 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
 		} else {
-			opt <- spatOptions("", TRUE, list())	
+			opt <- spatOptions("", TRUE, list())
 			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE, opt)
 			#x <- messages(x)
 		}
@@ -77,7 +77,7 @@ setMethod("as.points", signature(x="SpatVector"),
 setMethod("as.points", signature(x="SpatRaster"), 
 	function(x, values=TRUE, ...) {
 		p <- methods::new("SpatVector")
-		opt <- .getOptions()		
+		opt <- .getOptions()
 		p@ptr <- x@ptr$as_points(values, TRUE, opt)
 		x <- messages(x, "as.points")
 		messages(p, "as.points")
@@ -169,7 +169,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 		for (i in 1:dm[3]) {
 			a[,,i] <- matrix(x[,i], nrow=dm[1], byrow=TRUE)
 		}
-		a	
+		a
 	}
 )
 
@@ -220,8 +220,8 @@ setMethod("as.array", signature(x="SpatRaster"),
 					crs=prj,
 					extent=extent(from))
 		if (hasValues(from)) {
-			values(r) <- values(from)			
-		}	
+			values(r) <- values(from)
+		}
 		names(r)  <- names(from)
 	}
 	return(r)
@@ -235,7 +235,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 		if (length(unique(ff)) == 1) {
 			r <- rast(filename(x))
 			return(r)
-		}	
+		}
 	} 
 	s <- lapply(1:nlayers(from), function(i) {
 		x <- from[[i]]
@@ -248,7 +248,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 setAs("Raster", "SpatRaster", 
 	function(from) {
 		if (inherits(from, "RasterLayer") | inherits(from, "RasterBrick")) { 
-			.fromRasterLayerBrick(from)			
+			.fromRasterLayerBrick(from)
 		} else {
 			.fromRasterStack(from)
 		}
@@ -277,7 +277,7 @@ setAs("SpatRaster", "Raster",
 			names(r) <- names(from)
 		} else {
 			if (nrow(s) == 1 & s$source[1] != "") {
-				r <- brick(s$source)			
+				r <- brick(s$source)
 			} else if (all(s$source=="")) {
 				r <- brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4], nl=nlyr(from))
@@ -298,7 +298,7 @@ setAs("SpatRaster", "Raster",
 				r <- stack(r)
 			}
 		}
-		return(r)		
+		return(r)
 	}
 )
 

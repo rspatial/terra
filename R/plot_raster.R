@@ -1,9 +1,9 @@
 
 .as.raster.continuous <- function(out, x, type) {
-		
+
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
-	
+
 	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
 	if (n == 0) error("plot", "no values")
@@ -39,7 +39,7 @@
 			out$leg$digits <- max(0, -floor(log10(dif/10)))
 		}
 	}
-	
+
 	if (is.null(out$leg$loc)) out$leg$loc <- "right"
 	out
 }
@@ -74,7 +74,7 @@
 	}
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
-	
+
 	cols <- out$cols
 	ncols <- length(cols)
 	if (nlevs < ncols) {
@@ -87,7 +87,7 @@
 	Z[] <- cols[as.numeric(fz)]
 	out$r <- as.raster(Z)
 	out$legend_type <- "classes"
-	
+
 	if (is.null(out$leg$x)) {
 		if (is.null(out$leg$ext)) {
 			out$leg$x = "top"
@@ -100,8 +100,8 @@
 				out$leg$x = "top"
 				out$leg$y = NULL
 			}
-		}	
-	}	
+		}
+	}
 	out
 }
 
@@ -117,7 +117,7 @@
 	out$vcut = as.integer(fz)
 	levs <- levels(fz)
 	nlevs <- length(levs)
-	
+
 	cols <- out$cols
 	ncols <- length(cols)
 	if (nlevs < ncols) {
@@ -130,9 +130,9 @@
 	out$leg$fill <- cols
 	#out$leg$levels <- levels(fz)
 	out$legend_type <- "classes"
-	
+
 	if (!is.null(out$leg$legend)) {
-		stopifnot(length(out$leg$legend) == nlevs)	
+		stopifnot(length(out$leg$legend) == nlevs)
 	} else {
 		levs <- gsub("]", "", gsub(")", "", gsub("\\[", "", levs)))
 		levs <- paste(levs, collapse=",")
@@ -140,7 +140,7 @@
 		m <- apply(m, 1, function(i) paste(i, collapse=" - "))
 		out$leg$legend <- m
 	}
-	
+
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
 		out$leg$x <- "top"
 	}
@@ -175,7 +175,7 @@
 }
 
 
-# legend 	
+# legend 
 #	border="black", box.lwd = graphics::par("lwd"), box.lty = graphics::par("lty"), 
 #	box.col = graphics::par("fg"), bty = "o", bg = graphics::par("bg"), xjust = 0, 
 #	yjust = 1, x.intersp = 1, y.intersp = 1, adj = c(0, 0.5), text.width = NULL, 
@@ -183,20 +183,20 @@
  #   inset = 0, title.col = text.col, title.adj = 0.5, 
 
 .plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA, ...) {
-	
+
 	if ((!x$add) & (!x$legend_only)) {
-	
+
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, ...)
 	}
-	
+
 	if (!x$legend_only) {
 		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
-			angle = 0, interpolate = x$interpolate)	
+			angle = 0, interpolate = x$interpolate)
 
-		if (axes) x <- .plot.axes(x)			
+		if (axes) x <- .plot.axes(x)
 	}
-	if (x$legend_draw) {	
+	if (x$legend_draw) {
 		if (x$legend_type == "continuous") {
 			x <- do.call(.plot.cont.legend, list(x=x))
 #		} else if (x$legend_type == "classes") {
@@ -206,7 +206,7 @@
 		}
 	}
 	x
-}	
+}
 
 
 
@@ -240,14 +240,14 @@
 	if (out$lonlat) {
 		out$asp <- 1/cos((mean(out$ext[3:4]) * pi)/180)
 	}
-	
+
 	if (!is.null(alpha)) {
 		alpha <- clamp(alpha[1]*255, 0, 255)
 		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
 	} else {
 		alpha <- 255
 	}
-	
+
 	out$cols <- cols
 	out$facts <- facts
 	out$breaks <- breaks
@@ -320,7 +320,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				type <- match.arg(type, c("continuous", "classes", "interval"))
 			}
 		}
-		
+
 		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
 		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, colNA=colNA, ...)
 
@@ -341,11 +341,8 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		nl <- max(1, min(nlyr(x), maxnl))
 
 		if (nl==1) {
-			if (missing(main)) {
-				out <- plot(x, 1, maxcell=maxcell, ...)
-			} else {
-				out <- plot(x, 1, maxcell=maxcell, main=main[1], ...)
-			}
+			if (missing(main)) main = ""
+			out <- plot(x, 1, maxcell=maxcell, main=main[1], mar=mar, ...)
 			return(invisible(out))
 		}
 
@@ -357,11 +354,11 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		}
 		graphics::par(mfrow=nrnc)
 		maxcell=maxcell/(nl/2)
-			
+
 		if (missing("main")) {
 			main <- names(x)
 		} else {
-			main <- rep_len(main, nl)	
+			main <- rep_len(main, nl)
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		for (i in 1:nl) {
@@ -371,53 +368,4 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 )
 
 
-
-
-
-#mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; plg=list(); pax=list(); maxcell=50000
-
-#object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
-#x <- .prep.plot.data(object, type="classes", cols=rainbow(25), mar=rep(3,4), draw=T)
-#x <- .prep.plot.data(object, type="continuous", cols=rainbow(25), mar=rep(3,4), draw=T)
-
-#r <- rast(system.file("ex/test.tif", package="terra"))
-#plot(r)
-#e <- c(177963, 179702, 333502, 333650) 
-#plot(r, mar=c(3,3,3,3), plg=list(loc="top", ext=e, levels=3, at=c(10, 666,1222), range=c(0,2000)))
-#plot(r, type="interval", levels=c(0,500,3000), plg=list(legend=c("low", "high"), x="topleft"))
-#plot(r, type="interval", plg=list(x="topleft"))
-#plot(r, type="interval", plg=list(cex=.8, bty="n"), pax=list(cex.axis=.8, las=1))
-#plot(r, type="interval", plg=list(cex=.8, bty="n", ncol=2, x=178000, y=335250), pax=list(cex.axis=.8, las=1))
- 
-#par(mfrow=c(1,2))
-#plot(r, type="interval", mar=c(2,4,2,0), plg=list(inset=0.05, x="topleft"), pax=list(sides=c(1,2), cex.axis=0.8))
-#plot(r, type="interval", mar=c(2,0,2,4), legend=FALSE, pax=list(sides=c(3,4), cex.axis=0.8))
-
-#object <- spatSample(r, Inf, method="regular", as.raster=TRUE)
-#type="classes"; cols=rainbow(25); mar=rep(3,4); draw=TRUE
- 
-#r <- rast(system.file("ex/test.tif", package="terra"))
-#plot(r, type="interval", mar=c(2,4,2,0), plg=list(x="topleft", inset=0.05), pax=list(sides=c(1,2), cex.axis=0.8))
-#plot(r)
-
-# f <- system.file("ex/test.tif", package="terra") 
-# r <- rast(f)
-# plot(r)
-# plot(r, type="interval")
-# plot(r, type="classes")
-
-# d <- (r > 400) + (r > 600)
-# plot(d)
-# e <- c(178000,178200,332000,333000)
-# plot(d, plg=list(ext=e, title="Title\n", title.cex=2))
-
-# plot(d, type="interval", levels=0:3) 
-# plot(d, type="interval", levels=3, plg=list(legend=c("0-1", "1-2", "2-3"))) 
-# plot(d, type="classes", plg=list(legend=c("M", "X", "A")))
-
-# r <- rast(f)
-# x <- trunc(r/600)
-# x <- as.factor(x)
-# levels(x) <- c("earth", "wind", "fire")
-# plot(x)
 

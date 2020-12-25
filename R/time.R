@@ -36,7 +36,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 		} else {
 			if (!x@ptr$setTime(as.numeric(value), "raw")) {
 				error("time<-", "cannot set these  values")
-			}		
+			}
 		}
 		return(x)
 	}

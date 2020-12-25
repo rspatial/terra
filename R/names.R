@@ -20,7 +20,7 @@ setMethod("names<-", signature(x="SpatRaster"),
 		if (! x@ptr$setNames(value, FALSE)) {
 			error("names<-", "cannot set these names")
 		}
-		
+
 		if (any(names(x) != value)) {
 			# should only be possible with $setNames(value, TRUE)
 			warn("names<-", "some names were changed to make them valid and/or unique")

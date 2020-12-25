@@ -15,22 +15,22 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 		}
 		nms <- names(x)
 
-		opt <- .getOptions()	
-		
-		b <- x@ptr$getBlockSize(4, opt$memfrac)		
+		opt <- .getOptions()
+
+		b <- x@ptr$getBlockSize(4, opt$memfrac)
 		readStart(x)
 		on.exit(readStop(x))
-		
+
 		res <- NULL
 		nc <- ncol(x)
-		for (i in 1:b$n) {	
+		for (i in 1:b$n) {
 			d <- readValues(x, b$row[i]+1, b$nrows[i], 1, nc, TRUE)
 			d <- lapply(1:nl, function(i) round(d[, i], digits=digits))
 			d <- do.call(table, c(d, useNA="ifany"))
 			d <- as.data.frame(d)
 			res <- rbind(res, d)
 		}
-		
+
 		res <- res[res$Freq > 0,  ,drop=FALSE]
 
 		# some complexity to aggregate keeping 
@@ -43,7 +43,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			}
 		}
 		res <- aggregate(res[, ncol(res), drop=FALSE], res[, 1:(ncol(res)-1), drop=FALSE], sum)
-		
+
 		for (i in 1:(ncol(res)-1)) {
 		# get rid of factors
 			res[,i] <- as.numeric(as.character(res[,i]))
@@ -52,13 +52,13 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			res <- data.frame(matrix(nrow=0, ncol=length(nms)+1))
 		} 
 		nms <- make.names(nms, unique=TRUE)
-		colnames(res) <- c(nms, "Freq")	
+		colnames(res) <- c(nms, "Freq")
 
 		if (! useNA ) {
 			i <- apply(res, 1, function(x) any(is.na(x)))
 			res <- res[!i,  ,drop=FALSE]
 		}
-				
+
 		if (!long) {
 			f <- eval(parse(text=paste("Freq ~ ", paste(nms , collapse="+"))))
 			res <- stats::xtabs(f, data=res, addNA=useNA)

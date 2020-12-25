@@ -15,7 +15,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		if (length(field) == 1) {
 			field <- as.vector(unlist(x[[field]]))
 		} else if (length(field) != nrow(x)) {
-			error("rasterize", "field length should be 1 or nrow(x)")		
+			error("rasterize", "field length should be 1 or nrow(x)")
 		}
 	} else if (length(field) == 1) {
 		if (field > 0 && field <= ncol(x)) {
@@ -36,9 +36,9 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		field <- as.integer(f) - 1
 	} 
 	field <- field[g[,"id"]]
-		
+
 	g <- cellFromXY(y, as.matrix(g[, c("x", "y")]))
-	
+
 	if (missing(fun)) fun <- "last"
 	if (is.character(fun)) {
 		if (fun == "pa") {
@@ -51,13 +51,13 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		} else {
 			error("rasterize", "unknown character function")
 		}
-		
+
 	} else {
 		a <- tapply(field, g, fun, ...)
 		b <- as.numeric(names(a))
 		r[b] <- as.vector(a)
 	}
-	
+
 	if (update) {
 		if (hasValues(y)) {
 			r <- cover(r, y)
@@ -66,11 +66,11 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		id <- (1:length(levs))-1
 		cats(r, 1) <- data.frame(level=id, label=levs)
 	}
-	
+
 	if (filename != "") {
 		writeRaster(r, filename, overwrite=overwrite, wopt=wopt)
 	}
-	
+
 	return (r)
 }
 
@@ -83,7 +83,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
 			return (r)
 		}
-		
+
 		if (missing(field)) field <- 1:nrow(x)
 
 		domask <- FALSE
@@ -104,9 +104,9 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				error("rasterize", "NA detected in field, but length is not 1 or nrow(x)")
 			}
 		}
-		
+
 		opt <- spatOptions(filename, overwrite, wopt)
-					
+
 		levs <- ""[0]
 		inverse <- FALSE # use "mask" for TRUE
 		background <- as.numeric(background[1])
@@ -123,7 +123,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 					f <- as.factor(v)
 					levs <- levels(f)
 					v <- as.integer(f) - 1
-					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)					
+					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)
 				} else {
 					y@ptr <- y@ptr$rasterize(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
 				}
@@ -131,7 +131,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				f     <- as.factor(field)
 				levs  <- levels(f)
 				field <- as.integer(f) - 1
-				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], opt)					
+				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], opt)
 			} 
 		} else if (is.numeric(field)) {
 			if (length(field) == 1) {
@@ -152,12 +152,12 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		} else {
 			error("rasterize", "field should be character or numeric")
 		}
-		
+
 		if (domask) {
 			y <- mask(y, xx, inverse=FALSE, updatevalue=NA, touches=touches, filename=fname, overwrite=overwrite, wopt=wopt, ...)
-			return (y)	
+			return (y)
 		}
-		
+
 		messages(y, "rasterize")
 	}
 )
