@@ -73,7 +73,7 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 
 
 void SpatRaster::addSource(SpatRaster x) {
-	
+
 	if (compare_geom(x, false, false)) {
         if (!hasValues()) {  //or if n src == 0?
             source = x.source;
@@ -173,7 +173,7 @@ std::vector<double> SpatRasterSource::getValues(unsigned lyr) {
 	size_t start = lyr * nc;
 	std::vector<double> out(values.begin()+start, values.begin()+start+nc);
 	return out;
-	
+
 }
 
 bool SpatRasterSource::in_order() {
@@ -190,9 +190,9 @@ bool SpatRasterSource::in_order() {
 
 void SpatRasterSource::resize(unsigned n) {
 	names.resize(n);
-	time.resize(n);	
-	unit.resize(n);	
-	depth.resize(n);	
+	time.resize(n);
+	unit.resize(n);
+	depth.resize(n);
     hasRange.resize(n);
     range_min.resize(n);
     range_max.resize(n);
@@ -345,13 +345,13 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
     rs = source[ss].subset(slyr);
     out.source.push_back(rs);
-	
+
     if (opt.get_filename() != "") {
         out.writeRaster(opt);
     } else {
 		out = out.collapse_sources();
 	}
-		
+	
     return out;
 }
 
@@ -371,15 +371,15 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 		layers.insert(layers.end(), x.layers.begin(), x.layers.end());
 	} else {
 		return false;
-	}	
+	}
 	nlyr += x.nlyr;
 	names.insert(names.end(), x.names.begin(), x.names.end());
 	time.insert(time.end(), x.time.begin(), x.time.end());
 	if (!(hasTime & x.hasTime)) {
 		hasTime = false;
 	}
-	unit.insert(unit.end(), x.unit.begin(), x.unit.end());	
-	
+	unit.insert(unit.end(), x.unit.begin(), x.unit.end());
+
 	depth.insert(depth.end(), x.depth.begin(), x.depth.end());
 	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
 	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());

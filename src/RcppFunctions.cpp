@@ -58,7 +58,7 @@ std::vector<double> geotransform(std::string fname) {
 		return out;
 	}
 
-	double gt[6];	
+	double gt[6];
 	if( poDataset->GetGeoTransform( gt ) != CE_None ) {
 		Rcpp::Rcout << "bad" << std::endl;
 	}
@@ -162,7 +162,7 @@ static void __err_warning(CPLErr eErrClass, int err_no, const char *msg) {
             warningNoCall("%s (GDAL error class %d, #%d)", msg, eErrClass, err_no); 
             break; 
     }
-    return;	
+    return;
 }
 
 static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
@@ -170,7 +170,7 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 0:
         case 1:
         case 2:
-            break; 		
+            break; 	
         case 3:
             warningNoCall("%s (GDAL error %d)", msg, err_no); 
             break;
@@ -212,12 +212,12 @@ void set_gdal_warnings(int level) {
 	if (level==4) {
 		CPLSetErrorHandler((CPLErrorHandler)__err_none);
 	} else if (level==1) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_warning);			
+		CPLSetErrorHandler((CPLErrorHandler)__err_warning);		
 	} else if (level==2) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_error);			
+		CPLSetErrorHandler((CPLErrorHandler)__err_error);		
 	} else {
 		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
-	} 		
+	} 	
 }
 
 

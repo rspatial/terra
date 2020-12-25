@@ -74,7 +74,6 @@ setMethod("union", signature(x="SpatExtent", y="SpatExtent"),
 )
 
 
-
 setMethod("intersect", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
 		x@ptr <- x@ptr$intersect(y@ptr)
@@ -102,14 +101,6 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatVector"),
 	}
 )
 
-
-setMethod("intersects", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y) {
-		out <- x@ptr$intersects(y@ptr)
-		x <- messages(x, "intersects")
-		matrix(out, nrow=nrow(x), byrow=TRUE)
-	}
-)
 
 
 setMethod("buffer", signature(x="SpatVector"), 

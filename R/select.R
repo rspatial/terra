@@ -25,11 +25,11 @@ setMethod("select", signature(x="SpatVector"),
 		use <- match.arg(use, c("rec", "pol")) 
 		if (use == "rec") {
 			e <- draw()
-			e <- as.polygons(e)
+		#	e <- as.polygons(e)
 		} else {
 			e <- draw("pol")
 		}
-		i <- intersects(x, e)
+		i <- relate(x, e, "intersects")
 		x <- x[as.vector(i), ]
 		if (draw) {
 			if (geomtype(x) == "points" || geomtype(x) == "multipoints") {

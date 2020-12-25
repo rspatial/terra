@@ -25,7 +25,7 @@ std::vector<bool> points_in_polygon(const std::vector<double> &polX, const std::
 	std::vector<double> constant(nodes);
 	std::vector<double> multiple(nodes);
 	std::vector<bool> result(nodes);
-	
+
 	size_t j = nodes-1 ;
 	for(size_t i=0; i < nodes; i++) {
 		if (polY[j] == polY[i]) {
@@ -43,7 +43,7 @@ std::vector<bool> points_in_polygon(const std::vector<double> &polX, const std::
 		bool oddNodes = false;
 		double x = pX[p];
 		double y = pY[p];
-		
+	
 		for (size_t i=0; i< nodes; i++) {
 			if ((((polY[i]< y) && (polY[j]>=y)) || ((polY[j]< y) && (polY[i]>=y)))) {
 				oddNodes ^= (y * multiple[i]+constant[i] < x); 
@@ -59,14 +59,14 @@ std::vector<bool> points_in_polygon(const std::vector<double> &polX, const std::
 
 std::vector<int> pointsInPolygons(SpatVector pol, std::vector<double> pX, std::vector<double> pY) {
 
-	unsigned n = pol.size();	
+	unsigned n = pol.size();
 	std::vector<int> result(n, -1);
-	
+
 	for (size_t j = 0; j < n; j++) {
-			
+		
 		SpatGeom geom = pol.getGeom(j);
 		unsigned np = geom.size();
-		std::vector<bool> inside;	
+		std::vector<bool> inside;
 		for (size_t k = 0; k < np; k++) {
 			SpatPart part = geom.getPart(k);
 			if (part.hasHoles()) {

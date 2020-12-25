@@ -104,10 +104,10 @@ double roughness (std::vector<double> v) {
 
 std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> gy) {
 	size_t n = nrow * ncol;
-	
+
 	std::vector<double> ddx;
 	if (geo) {
-		ddx.resize(nrow);	
+		ddx.resize(nrow);
 		for (size_t i=0; i<nrow; i++) {
 			ddx[i] = distHav(-dx, gy[i], dx, gy[i]) / 2 ;
 		}
@@ -116,7 +116,7 @@ std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow,
 	double zy, zx; 
 	std::vector<double> val(n);
 
-	
+
 	if (ngb == 4) {
 		if (geo) {
 			int q;
@@ -126,7 +126,7 @@ std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow,
 
 			for (size_t i=0; i<2; i++) {
 				yw[i] = yw[i] / (2 * dy);
-			}			
+			}		
 			for (size_t i = ncol; i < (ncol * (nrow-1)-1); i++) {
 				if (i % ncol == 0) {
 					q = i / ncol;
@@ -139,7 +139,7 @@ std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow,
 				val[i] = sqrt( pow(zy, 2) + pow(zx, 2) ) ;
 			}
 		} else {
-			
+		
 			double xw[2] = {-1,1};
 			double yw[2] = {-1,1};
 			for (size_t i=0; i<2; i++) {
@@ -153,17 +153,17 @@ std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow,
 			}
 		}
 	} else {
-		
+	
 		if (geo) {
 			int q;
 			double xwi[6] = {-1,-2,-1,1,2,1};
 			double xw[6] = {0,0,0,0,0,0};
 			double yw[6] = {-1,1,-2,2,-1,1};
-			
+		
 			for (size_t i=0; i<6; i++) {
 				yw[i] = yw[i] / (8 * dy);
 			}
-						
+					
 			for (size_t i = ncol; i < (ncol * (nrow-1)-1); i++) {
 				if (i % ncol == 0) {
 					q = i / ncol;
@@ -176,11 +176,11 @@ std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow,
 				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
 				val[i] = sqrt( pow(zy, 2) + pow(zx, 2)  );
-								
+							
 			}
-			
-		} else {
 		
+		} else {
+	
 			double xw[6] = {-1,-2,-1,1,2,1};
 			double yw[6] = {-1,1,-2,2,-1,1};
 			for (size_t i=0; i<6; i++) {
@@ -195,8 +195,8 @@ std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow,
 				val[i] = sqrt( pow(zy, 2) + pow(zx, 2) );
 			}
 		}
-	} 	
-				
+	} 
+			
 	return val;
 }
 
@@ -219,7 +219,7 @@ SpatRaster SpatRaster::slope(unsigned neighbors, bool degrees, SpatOptions &opt)
 	}
 	if ((neighbors != 4) && (neighbors != 8)) {
 		out.setError("neighbors should be 4 or 8");
-		return out;		
+		return out;	
 	}
 	std::vector<double> d = getValues();
 	std::vector<double> y;
@@ -251,8 +251,8 @@ std::vector<std::vector<double> > terrain_indices(std::vector<std::vector<double
 
 
 	int opt;
-	
-	
+
+
 	if (option == "TPI") {
 		// TPI (Topographic Position Index)
 		// difference between the value of a cell and the mean value of its 8 surrounding cells.
@@ -420,17 +420,17 @@ SpatRaster SpatRaster::terrain(std::string option, std::string unit, SpatOptions
         std::vector<double> v = readValues(startrow, nrows, 0, nc);
 		vv.insert(vv.begin(), v);
 		if ((startrow+nrows) > nr) {
-			vv.insert(vv.begin(), std::vector<double>(nc, NAN))		
+			vv.insert(vv.begin(), std::vector<double>(nc, NAN))	
 		}
-		
+	
 		std::vector<double> a = readBlock(out.bs, i);
 		for (size_t j=0; j<a.size(); j++) {
-			
-			
-			
+		
+		
+		
 		}
 	}
-	
+
 	for (int row = 0; row < (nrows-1); row++) {
 		for (int col = 0; col < (ncols-1); col++) {
 			n = 0;

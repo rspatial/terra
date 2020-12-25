@@ -2,7 +2,7 @@
 
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x,...) standardGeneric("voronoi"))}
 if (!isGeneric("convexhull")) {setGeneric("convexhull", function(x,...) standardGeneric("convexhull"))}
-if (!isGeneric("intersects")) {setGeneric("intersects", function(x, y, ...) standardGeneric("intersects"))}
+if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}
 if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y, ...) standardGeneric("intersect"))}
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 

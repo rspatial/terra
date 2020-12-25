@@ -159,13 +159,13 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 
 	SpatRaster out = geometry(1);
 	size_t n = probs.size();
-	
+
 	if (n == 0) {
 		out.setError("no probs");
 		return out;
 	} else if (nlyr() < n) {
 		out.setError("more probs than layers");
-		return out;		
+		return out;	
 	}
 
 	double pmin = vmin(probs, false);
@@ -414,7 +414,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	if (!z.readStart()) {
 		out.setError(z.getError());
 		return(out);
-	}	
+	}
 	opt.ncopies = 12;
 	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {

@@ -30,7 +30,7 @@ bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
 	if (!extent_operator(oper)) {
 		return false;  // not very useful
 	}
-	
+
 	//double xr = (xmax - xmin) / tolerance;
 	//double yr = (ymax - ymin) / tolerance;
 
@@ -69,7 +69,7 @@ bool SpatExtent::compare(SpatExtent e, std::string oper, double tolerance) {
 		}
 	}
 	return false;
-}	
+}
 
 SpatExtent SpatExtent::round(int n) {
 	double xn = roundn(xmin, n);
@@ -78,7 +78,7 @@ SpatExtent SpatExtent::round(int n) {
 	double yx = roundn(ymax, n);
 	SpatExtent e(xn, xx, yn, yx);
 	return e;
-}	
+}
 
 SpatExtent SpatExtent::floor() {
 	double xn = std::floor(xmin);
@@ -87,7 +87,7 @@ SpatExtent SpatExtent::floor() {
 	double yx = std::ceil(ymax);
 	SpatExtent e(xn, xx, yn, yx);
 	return e;
-}	
+}
 
 SpatExtent SpatExtent::ceil() {
 	double xn = std::ceil(xmin);
@@ -96,7 +96,7 @@ SpatExtent SpatExtent::ceil() {
 	double yx = std::floor(ymax);
 	SpatExtent e(xn, xx, yn, yx);
 	return e;
-}	
+}
 
 SpatExtent SpatRaster::getExtent() { 
 	if (source.size() > 0) {
@@ -121,7 +121,7 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 	if (snap != "") {
 		ext = align(ext, snap);
 	}
-	
+
 	if (keepRes) {
 		std::vector<double> res = resolution();
 		double xrs = res[0];
@@ -134,7 +134,7 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 		ext.ymax = ext.ymin + nr * yrs;
 		source[0].extent = ext;
 	}
-	
+
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = ext;
 		//source[i].nrow = source[0].nrow;
@@ -150,8 +150,8 @@ SpatExtent SpatExtent::align(double d, std::string snap) {
 		return(out);
 	}
 	d = d < 0 ? -d : d;
-	
-	
+
+
 	for (size_t i=0; i<4; i++) {
 		double x = d * trunc(e[i] / d);
 		if ((i == 0) | (i == 2)) {
@@ -175,7 +175,7 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 	snap = is_in_set_default(snap, std::vector<std::string> {"near", "in", "out"}, "near", true);
 	std::vector<double> res = resolution();
 	std::vector<double> orig = origin(); 
-	
+
 	// snap points to pixel boundaries
 	double xmn, xmx, ymn, ymx;
 	if (snap == "near") {
@@ -194,19 +194,19 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 		ymn = std::ceil((e.ymin-orig[1]) / res[1]) * res[1] + orig[1];
 		ymx = std::floor((e.ymax-orig[1]) / res[1]) * res[1] + orig[1];
 	}
-	
+
 	if (xmn == xmx) {
 		if (xmn < e.xmin) {
 			xmx = xmx + res[0];
 		} else {
-			xmn = xmn - res[0];	
+			xmn = xmn - res[0];
 		}
 	}
 	if (ymn == ymx) {
 		if (ymn < e.ymin) {
 			ymx = ymx + res[1];
 		} else {
-			ymn = ymn - res[1];	
+			ymn = ymn - res[1];
 		}
 	}
 	return SpatExtent(xmn, xmx, ymn, ymx);
@@ -232,7 +232,7 @@ std::vector<double> SpatRaster::origin() {
 
 bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
 
-	
+
 	if (ext) {
 		SpatExtent extent = getExtent();
 		if (extent.compare(x.getExtent(), "!=", 100)) {

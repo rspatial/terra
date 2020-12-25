@@ -82,13 +82,13 @@ void intermediate_points(double lon1, double lat1, double lon2, double lat2, siz
 	if ((lon1 == lon2) && (lat1 == lat2)) {
 		return;
 	}
-	
+
 	if (antipodal(lon1, lat1, lon2, lat2)) {
 		lon.resize(1, NAN);
 		lat.resize(1, NAN);
 		return;
 	}
-	
+
 	lon.reserve(n);
 	lat.reserve(n);
 	n++;
@@ -105,7 +105,7 @@ void intermediate_points(double lon1, double lat1, double lon2, double lat2, siz
 
 	//if (addStartEnd) {
 	//	x = rbind(p[i,1:2,drop=FALSE], x, p[i,3:4,drop=FALSE])
-	//}			
+	//}		
 	//if (breakAtDateLine) {
 	//	res[[i]] <- .breakAtDateLine(x)
 	//}

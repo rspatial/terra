@@ -4,6 +4,7 @@
 
 \alias{crop}
 \alias{crop,SpatRaster-method}
+\alias{crop,SpatRaster,ANY-method}
 \alias{crop,SpatVector,ANY-method}
 \alias{crop,SpatVector,SpatVector-method}
 

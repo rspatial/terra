@@ -42,8 +42,8 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 			size_t off2 = startrow * ncols + i * nc; 
 			std::copy( vals.begin()+off1, vals.begin()+off1+chunk, source[0].values.begin()+off2 );
 		}
-		
-	 // block writing	
+	
+	 // block writing
 	} else {
 		for (size_t i=0; i<nlyr(); i++) {
 			unsigned off = i*chunk;
@@ -60,14 +60,14 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 
 
 void SpatRaster::fill(double x) {
-	if (source[0].driver == "gdal") {	
+	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
 		fillValuesGDAL(x);
 		#endif
 	} else {
 		source[0].values.resize(size(), x);
 	}
-		
+	
 }
 
 
@@ -149,7 +149,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			for (size_t i=0; i<nl; i++) {
 				if (fnames[i] == "") {
 					out.setError("empty filename detected");
-					return(out);					
+					return(out);				
 				}
 				if (!can_write(fnames[i], overwrite, errmsg)) {
 					out.setError(errmsg + " (" + fnames[i] +")");
@@ -165,14 +165,14 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			}
 			SpatRaster out(fnames, {-1}, {""}, "");
 			return out;
-		}		
+		}	
 	} 
 
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
 	}
-	
+
 	if (!out.writeStart(opt)) { 
 		readStop();
 		return out; 
@@ -247,7 +247,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		Rcpp::Rcout<< "n blocks      : " << bs.n << std::endl;
 		Rcpp::Rcout<< std::endl;
 	}
-	
+
 	pbar = new Progress(bs.n+2, opt.do_progress(bs.n));
 	pbar->increment();
 	#endif
@@ -264,8 +264,8 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 		return false;
 	}
 
-	
-	if (source[0].driver == "gdal") {	
+
+	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
 		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
 		#else
@@ -370,7 +370,7 @@ bool SpatRaster::setValues(std::vector<double> _values) {
 }
 
 void SpatRaster::setRange() {
-	
+
 	SpatOptions opts;
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].hasRange[0]) continue;

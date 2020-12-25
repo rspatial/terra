@@ -264,6 +264,8 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{c}} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
   \code{\link{project}} \tab Project a SpatVector to a different coordinate reference system \cr
   \code{\link{writeVector}} \tab Write SpatVector data to disk \cr
+  \code{\link{voronoi}} \tab Make a voronoi diagram \cr
+  \code{\link{convexhull}} \tab Compute the convex hull of a SpatVector \cr  
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
@@ -292,7 +294,6 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 \tabular{ll}{
   \code{\link{erase}} or "-" \tab \bold{erase} (parts of) geometries\cr
   \code{\link{intersect}} or "*"  \tab \bold{intersect} geometries\cr
-  \code{\link{intersects}} \tab do geometries intersect?\cr
   \code{\link{union}} or "+" \tab \bold{union}. Merge geometries\cr
   \code{\link{cover}} \tab \bold{update} and \bold{identity} a polygons\cr
   \code{\link{symdif}} \tab\bold{symmetrical difference} of two polygons \cr 
@@ -302,6 +303,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{disaggregate}} \tab \bold{explode}: turn multi-geometries into separate geometries \cr
   \code{\link{crop}} \tab \bold{clip} geometries using a rectangle (SpatExtent)\cr
   \code{\link{fill}}\tab remove or extract holes from polygons\cr
+  \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
    .\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}

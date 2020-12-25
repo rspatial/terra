@@ -63,10 +63,10 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 	unsigned n = opt.get_blocksizemp();
 	double frac = opt.get_memfrac();
 	unsigned steps = opt.get_steps();
-	
+
 	BlockSize bs;
 	size_t cs;
-	
+
 	if (steps > 0) {
 		if (steps > nrow()) {
 			steps = nrow();
@@ -86,7 +86,7 @@ BlockSize SpatRaster::getBlockSize( SpatOptions &opt) {
 		r += cs;
 	}
 	bs.nrows[bs.n-1] = cs - ((bs.n * cs) - nrow());
-	
+
 	return bs;
 }
 

@@ -3,20 +3,18 @@
 \docType{methods}
 
 \alias{intersect}
-\alias{intersects}
 
 \alias{intersect,SpatVector,SpatVector-method}
 \alias{intersect,SpatVector,SpatExtent-method}
 \alias{intersect,SpatExtent,SpatVector-method}
 \alias{intersect,SpatExtent,SpatExtent-method}
-\alias{intersects,SpatVector,SpatVector-method}
 
 \title{ 
 Intersection
 }
 
 \description{
-Intersect SpatVector, typically polygons or, with \code{intersects}, get a matrix indicating which geometries intersect.
+Intersect the geometries of two SpatVectors.
 
 Intersecting points with points uses the extent of \code{y} to get the intersection. Intersecting of points and lines is not supported because of numerical inaccuracies with that. You can use \code{\link{buffer}}, to create polygons from lines and use these with intersect. 
 
@@ -31,8 +29,6 @@ See \code{\link{crop}} for intersection of a SpatRaster.
 \S4method{intersect}{SpatExtent,SpatVector}(x, y)
 
 \S4method{intersect}{SpatExtent,SpatExtent}(x, y)
-
-\S4method{intersects}{SpatVector,SpatVector}(x, y)
 }
 
 \arguments{
@@ -45,7 +41,7 @@ Same as \code{x}
 }
 
 \seealso{
-\code{\link{union}}, \code{\link{crop}}
+\code{\link{union}}, \code{\link{crop}}, \code{\link{relate}}
 }
 
 \examples{

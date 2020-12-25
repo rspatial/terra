@@ -20,7 +20,7 @@
 
 
 void getSampleRowCol(std::vector<size_t> &oldrow, std::vector<size_t> &oldcol, size_t nrows, size_t ncols, size_t snrow, size_t sncol) {
-	
+
 	double rf = nrows / (double)(snrow);
 	double cf = ncols / (double)(sncol);
 	//double rstart = std::floor(0.5 * rf);
@@ -89,7 +89,7 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 	SpatRaster out = geometry(nlyr(), true);
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
-	
+
 	if (!source[0].hasValues) return (out);
 
 	std::vector<double> v;
@@ -117,7 +117,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 
 	std::vector<std::vector<double>> out;
 	if (!source[0].hasValues) return (out);
-	
+
 	unsigned nsize;
 	size_t nr = nrow();
 	size_t nc = ncol();
@@ -155,7 +155,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
 			out.push_back(vv);
 		}
-	}	
+	}
 	return out;
 }
 
@@ -180,9 +180,9 @@ std::vector<std::vector<double>> SpatRaster::sampleRandom(unsigned size, unsigne
 std::vector<double> sample_without_replacement(unsigned size, unsigned N, unsigned seed){
     // Sample "size" elements from [1, N] without replacement
     // see https://stackoverflow.com/questions/4461446/stl-way-to-add-a-constant-value-to-a-stdvector    
-	
+
 	size = std::max(unsigned(1), std::min(size, N)); // k <= N
-	
+
     std::default_random_engine gen(seed);   
 	std::uniform_int_distribution<> distribution(1, N);
     std::unordered_set<unsigned> samples;
@@ -193,7 +193,7 @@ std::vector<double> sample_without_replacement(unsigned size, unsigned N, unsign
     } 
     std::vector<double> result(samples.begin(), samples.end());
     std::shuffle(result.begin(), result.end(), gen);    
-	
+
     return result;
 }
 
@@ -201,9 +201,9 @@ std::vector<double> sample_without_replacement(unsigned size, unsigned N, unsign
 std::vector<double> sample_with_replacement(unsigned size, unsigned N, unsigned seed){
     // Sample "size" elements from [1, N] without replacement
     // see https://stackoverflow.com/questions/4461446/stl-way-to-add-a-constant-value-to-a-stdvector    
-	
+
 	size = std::max((unsigned)1, std::min(size, N)); // k <= N
-	
+
     std::default_random_engine gen(seed);   
     std::vector<double> samples;
     std::vector<double> result;
@@ -213,7 +213,7 @@ std::vector<double> sample_with_replacement(unsigned size, unsigned N, unsigned 
     for (size_t i=0; i<size; i++) {
         result.push_back( distribution(gen) );
     } 
-	
+
     return result;
 }
 
@@ -234,16 +234,16 @@ std::vector<std::vector<double>> SpatRaster::sampleRandomValues(unsigned size, b
 			std::default_random_engine gen(seed);  
 			std::shuffle(dcells.begin(), dcells.end(), gen);    
 			if (size < nc) {
-				dcells.erase(dcells.begin()+size, dcells.end());	
+				dcells.erase(dcells.begin()+size, dcells.end());
 			}
-			
+		
 		} else {
 			dcells = sample_without_replacement(size, nc, seed);
 		}
 	} else {
 		dcells = sample_with_replacement(size, nc, seed);
 	}
-	
+
 	std::vector<std::vector<double>> d = extractCell(dcells);
 	return d; 
 }
@@ -263,7 +263,7 @@ SpatRaster SpatRaster::sampleRandomRaster(unsigned size, bool replace, unsigned 
 	out.source[0].nrow = nr;
 	out.source[0].ncol = nc;
 	if (!source[0].hasValues) return (out);
-	
+
 	nsize = nr * nc;
 	std::vector<std::vector<double>> vv = sampleRandomValues(nsize, replace, seed);
 
@@ -292,11 +292,11 @@ SpatDataFrame sampleCells(unsigned size, std::string type, bool replace) {
 		return (out);
 	}
 	if (type == "Random") {
-		
-	} else if (type == "Regular") {
-		
-	} else { //type == "Stratified" 
 	
+	} else if (type == "Regular") {
+	
+	} else { //type == "Stratified" 
+
 	} // else "Cluster"
 	return out;
 }

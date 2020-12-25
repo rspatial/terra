@@ -242,7 +242,7 @@ SpatRaster SpatRaster::rst_area(bool adjust, SpatOptions &opt) {
 std::vector<double> SpatRaster::sum_area(bool adjust, SpatOptions &opt) {
 
 	std::vector<double> out(nlyr(), 0);
-	
+
 	if (adjust) { //avoid very large polygon objects
 		opt.set_memfrac(std::max(0.1, opt.get_memfrac()/2));
 	}
@@ -254,7 +254,7 @@ std::vector<double> SpatRaster::sum_area(bool adjust, SpatOptions &opt) {
 
 	double m = source[0].srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
-	
+
 	if (m == 0) {
 		SpatRaster x = geometry(1);
 		SpatExtent extent = x.getExtent();
@@ -312,7 +312,7 @@ std::vector<double> SpatRaster::sum_area(bool adjust, SpatOptions &opt) {
 				SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
 				p = p.project("+proj=longlat +datum=WGS84");
 				std::vector<double> par = p.area();
-				
+			
 				std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
 				unsigned off = bs.nrows[i] * ncol() ;
 				for (size_t lyr=0; lyr<nlyr(); lyr++) {
@@ -325,7 +325,7 @@ std::vector<double> SpatRaster::sum_area(bool adjust, SpatOptions &opt) {
 					}
 				}
 			}
-			
+		
 		}
 	} else {
 		double ar = xres() * yres() * m * m;
@@ -374,7 +374,7 @@ std::vector<std::vector<double>> SpatRaster::area_by_value(SpatOptions &opt) {
 	} else {
 		// to do
 		// combine freq and area to get area by latitudes
-		
+	
 		std::vector<std::vector<double>> out(nlyr());
 		return out;
 	}

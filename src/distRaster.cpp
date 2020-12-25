@@ -45,10 +45,10 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		out.setError("CRS not defined");
 		return(out);
 	}
-	
+
 	double m = source[0].srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
-	
+
 	std::string gtype = p.type();
 	if (gtype != "points") {
 		SpatOptions ops;
@@ -67,7 +67,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
-	
+
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -126,74 +126,78 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 
 
 
-SpatDataFrame SpatVector::distance() {
-	SpatDataFrame out;
+std::vector<double> SpatVector::distance() {
+	std::vector<double> d;
 	std::string gtype = type();
-	if (gtype != "points") {
-		out.setError("only inmplemented for points --- to be improved");
-		return(out);
-	}
-	std::string crs = getSRS("wkt");
-	if (crs == "") {
-		out.setError("CRS not defined");
-		return(out);
+	if (srs.is_empty()) {
+		setError("crs not defined");
+		return(d);
 	}
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
-
 	bool lonlat = is_geographic(); // m == 0
-
-	size_t s = size();
-	size_t n = ((s-1) * s)/2;
-	std::vector<double> d(n);
-	size_t k = 0;
-	std::vector<std::vector<double>> p = coordinates();
-	if (lonlat) {
-		double a = 6378137.0;
-		double f = 1/298.257223563;		
-		for (size_t i=0; i<(s-1); i++) {
-			for (size_t j=(i+1); j<s; j++) {
-				d[k] = distance_lonlat(p[0][i], p[1][i], p[0][j], p[1][j], a, f);
-				k++;
-			}
+	
+	if ((!lonlat) || (gtype != "points")) {
+		d = geos_distance();
+		if ((!lonlat) && (m != 1)) {
+			for (double &i : d) i *= m;
 		}
+		return d;
 	} else {
-		for (size_t i=0; i<(s-1); i++) {
-			for (size_t j=(i+1); j<s; j++) {
-				d[k] = distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]) * m;
-				k++;
+		size_t s = size();
+		size_t n = ((s-1) * s)/2;
+		d.reserve(n);
+		std::vector<std::vector<double>> p = coordinates();
+		if (lonlat) {
+			double a = 6378137.0;
+			double f = 1/298.257223563;	
+			for (size_t i=0; i<(s-1); i++) {
+				for (size_t j=(i+1); j<s; j++) {
+					d.push_back(
+						distance_lonlat(p[0][i], p[1][i], p[0][j], p[1][j], a, f)
+					);
+				}
+			}
+		} else {
+			for (size_t i=0; i<(s-1); i++) {
+				for (size_t j=(i+1); j<s; j++) {
+					d.push_back(
+						distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]) * m
+					);
+				}
 			}
 		}
 	}
-	out.add_column(d, "distance");
-	return out;
+	
+	return d;
 }
 
 
-SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
+std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise) {
 
-	SpatDataFrame out;
-	std::string gtype = type();
-	std::string xtype = x.type();
-	if ((gtype != "points") || (xtype != "points")) {
-		out.setError("only inmplemented for points --- to be improved");
-		return(out);
-	}
-	//std::vector<std::string> crs = getSRS();
-	//std::vector<std::string> xcrs = x.getSRS();
+	std::vector<double> d;
 
-	if (srs.is_empty()) {
-		out.setError("SRS not defined");
-		return(out);
+	if (srs.is_empty() || x.srs.is_empty()) {
+		setError("SRS not defined");
+		return(d);
 	}
 	if (! srs.is_equal(x.srs) ) {
-		out.setError("SRSs do not match");
-		return(out);
+		setError("SRS do not match");
+		return(d);
 	}
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
-
 	bool lonlat = is_geographic();
+
+	std::string gtype = type();
+	std::string xtype = x.type();
+	if ((!lonlat) || (gtype != "points") || (xtype != "points")) {
+		d = geos_distance(x, pairwise);
+		if ((!lonlat) && (m != 1)) {
+			for (double &i : d) i *= m;
+		}
+		return d;
+	}
 
 	size_t s = size();
 	size_t sx = x.size();
@@ -201,33 +205,33 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 		pairwise = false;
 	}
 	size_t n = pairwise ? s : s*sx;
-	std::vector<double> d(n);		
+	d.resize(n);	
 	std::vector<std::vector<double>> p = coordinates();
 	std::vector<std::vector<double>> px = x.coordinates();
-	
+
 	if (pairwise) {
 		if (lonlat) {
 			double a = 6378137.0;
-			double f = 1/298.257223563;		
+			double f = 1/298.257223563;	
 			for (size_t i = 0; i < s; i++) {
 				d[i] = distance_lonlat(p[0][i], p[1][i], px[0][i], px[1][i], a, f);
 			}
-		} else {
+		} else { // not reached
 			for (size_t i = 0; i < s; i++) {
 				d[i] = distance_plane(p[0][i], p[1][i], px[0][i], px[1][i]) * m;
-			}			
+			}		
 		} 
-	} else {		
+	} else {	
 		if (lonlat) {
 			double a = 6378137.0;
-			double f = 1/298.257223563;		
+			double f = 1/298.257223563;	
 			for (size_t i=0; i<s; i++) {
 				size_t k = i * sx;
 				for (size_t j=0; j<sx; j++) {
 					d[k+j] = distance_lonlat(p[0][i], p[1][i], px[0][j], px[1][j], a, f);
 				}
 			}
-		} else {
+		} else { // not reached
 			for (size_t i=0; i<s; i++) {
 				size_t k = i * sx;
 				for (size_t j=0; j<sx; j++) {
@@ -237,8 +241,7 @@ SpatDataFrame SpatVector::distance(SpatVector x, bool pairwise) {
 		} 
 	}
 
-	out.add_column(d, "distance");
-	return out;
+	return d;
 }
 
 
@@ -352,9 +355,9 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		out.setError(first.getError());
 		return(out);
 	}
-	
+
 	opt.set_filenames({filename});
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -378,15 +381,15 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 std::vector<double> do_edge(std::vector<double> &d, std::vector<size_t> dim, bool classes, bool outer, unsigned dirs) {
 
 	bool falseval = 0;
-	
+
 	size_t nrow = dim[0];
 	size_t ncol = dim[1];
 	size_t n = nrow * ncol;
 	std::vector<double> val(n, NAN);
-	
+
 	int r[8] = { -1,0,0,1 , -1,-1,1,1};
-	int c[8] = { 0,-1,1,0 , -1,1,-1,1};	
-	
+	int c[8] = { 0,-1,1,0 , -1,1,-1,1};
+
 	if (!classes) {
 		if (!outer) { // inner
 			for (size_t i = 1; i < (nrow-1); i++) {
@@ -404,7 +407,7 @@ std::vector<double> do_edge(std::vector<double> &d, std::vector<size_t> dim, boo
 					}
 				}
 			}
-		
+	
 		} else { //outer
 			for (size_t i = 1; i < (nrow-1); i++) {
 				for (size_t j = 1; j < (ncol-1); j++) {
@@ -412,7 +415,7 @@ std::vector<double> do_edge(std::vector<double> &d, std::vector<size_t> dim, boo
 					val[cell] = falseval;
 					if (std::isnan(d[cell])) {
 						val[cell] = NAN;
-						for (size_t k=0; k < dirs; k++) {			
+						for (size_t k=0; k < dirs; k++) {		
 							if ( !std::isnan(d[cell+ r[k] * ncol + c[k] ])) {
 								val[cell] = 1;
 								break;
@@ -455,13 +458,13 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 	unsigned nrows = dim[0];
 	unsigned ncols = dim[1];
 	unsigned n = nrows * ncols;
-	
+
 	std::vector<double> xval(n, NAN);
 
 	int r[8] = {-1,0,0,1, -1,-1,1,1};
-	int c[8] = {0,-1,1,0, -1,1,-1,1};	
+	int c[8] = {0,-1,1,0, -1,1,-1,1};
 	int falseval = 0;
-	
+
 	if (!classes) {
 		if (edgetype == "inner") { 
 			for (size_t i = 1; i < (nrows-1); i++) {
@@ -478,14 +481,14 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 					}
 				}
 			}
-		
+	
 		} else { // if (edgetype == "outer"
 			for (size_t i = 1; i < (nrows-1); i++) {
 				for (size_t j = 1; j < (ncols-1); j++) {
 					size_t cell = i*ncols+j;
 					xval[cell] = falseval;
 					if (std::isnan(xd[cell])) {
-						for (size_t k=0; k < dirs; k++) {			
+						for (size_t k=0; k < dirs; k++) {		
 							if (std::isnan(xd[cell+ r[k] * ncols + c[k] ])) {
 								xval[cell] = 1;
 								break;
@@ -528,14 +531,14 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 	}
 	if ((directions != 4) && (directions != 8)) {
 		out.setError("directions should be 4 or 8");
-		return(out);		
+		return(out);	
 	}
 	if ((type != "inner") && (type != "outer")) {
 		out.setError("directions should be 'inner' or 'outer'");
-		return(out);		
+		return(out);	
 	}
 	bool do_outer = type == "outer";
-	
+
 	size_t nc = ncol();
 	std::vector<size_t> dim = {nrow(), nc}; 
 

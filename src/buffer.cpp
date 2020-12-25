@@ -7,7 +7,7 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 	std::vector<std::vector<double>> xy = coordinates();
 	SpatVector out;
 	out.srs = srs;
-	size_t n = quadsegs * 4;	
+	size_t n = quadsegs * 4;
 	std::vector<double> px(n);
 	std::vector<double> py(n);
 	double step = 360.0 / n;

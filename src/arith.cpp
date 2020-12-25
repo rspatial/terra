@@ -168,7 +168,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 	if (!out.compare_geom(x, false, true)) {
 		return(out);
 	}
-	
+
 	if (!(hasValues() & x.hasValues())) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
@@ -233,7 +233,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 	if (!smooth_operator(oper)) {
 		out.setError("unknown arith function");
 		return out;
-	}	
+	}
 	if (!hasValues()) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
@@ -243,12 +243,12 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 		out.setError(getError());
 		return(out);
 	}
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
 	}
-	
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		if (std::isnan(x)) {
@@ -272,7 +272,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			}
 		} else if (oper == "^") {
 			if (reverse) {
-				for(double& d : a)  d = std::pow(x, d);				
+				for(double& d : a)  d = std::pow(x, d);			
 			} else {
 				for(double& d : a)  d = std::pow(d, x);
 			}
@@ -298,19 +298,19 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			}
 		} else if (oper == "<=") {
 			if (reverse) {
-				for(double& d : a) if (!std::isnan(d)) d = x <= d;				
+				for(double& d : a) if (!std::isnan(d)) d = x <= d;			
 			} else {
 				for(double& d : a) if (!std::isnan(d)) d = d <= x;
 			}
 		} else if (oper == ">") {
 			if (reverse) {
-				for(double& d : a) if (!std::isnan(d)) d = x > d;				
+				for(double& d : a) if (!std::isnan(d)) d = x > d;			
 			} else {
 				for(double& d : a) if (!std::isnan(d)) d = d > x;
 			}
 		} else if (oper == "<") {
 			if (reverse) {
-				for(double& d : a) if (!std::isnan(d)) d = x < d;				
+				for(double& d : a) if (!std::isnan(d)) d = x < d;			
 			} else {
 				for(double& d : a) if (!std::isnan(d)) d = d < x;
 			}
@@ -329,9 +329,9 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt) {
 
 	if (x.size() == 1) {
-		return(arith(x[0], oper, reverse, opt));	
+		return(arith(x[0], oper, reverse, opt));
 	}
-	
+
 	SpatRaster out = geometry();
 	if (!smooth_operator(oper)) {
 		out.setError("unknown arith function");
@@ -347,7 +347,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		return(out);
 	}
 
-		
+	
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -356,7 +356,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 	unsigned nl = nlyr();
 	unsigned nc = ncol();
 	recycle(x, nlyr());
-	
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> vv;
@@ -384,7 +384,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 				}
 			} else if (oper == "^") {
 				if (reverse) {
-					for(double& d : a)  d = std::pow(x[j], d);				
+					for(double& d : a)  d = std::pow(x[j], d);			
 				} else {
 					for(double& d : a)  d = std::pow(d, x[j]);
 				}
@@ -404,25 +404,25 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 				for(double& d : a) if (!std::isnan(d)) d = d != x[j];
 			} else if (oper == ">=") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] >= d;				
+					for(double& d : a) if (!std::isnan(d)) d = x[j] >= d;			
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d >= x[j];
 				}
 			} else if (oper == "<=") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] <= d;				
+					for(double& d : a) if (!std::isnan(d)) d = x[j] <= d;			
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d <= x[j];
 				}
 			} else if (oper == ">") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] > d;				
+					for(double& d : a) if (!std::isnan(d)) d = x[j] > d;			
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d > x[j];
 				}
 			} else if (oper == "<") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] < d;				
+					for(double& d : a) if (!std::isnan(d)) d = x[j] < d;			
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d < x[j];
 				}
@@ -493,8 +493,8 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+
 	
-		
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -502,7 +502,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> a = readBlock(out.bs, i);
 		for(double& d : a) if (!std::isnan(d)) d = mathFun(d);
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;		
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
 	}
 	out.writeStop();
 	readStop();
@@ -526,8 +526,8 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		out.setError(getError());
 		return(out);
 	}
+
 	
-		
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -610,8 +610,8 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+
 	
-		
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -637,7 +637,7 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 	if (!x.readStart()) {
 		out.setError(x.getError());
 		return(out);
-	}	
+	}
   	if (!out.writeStart(opt)) {
 		readStop();
 		x.readStop();
@@ -698,7 +698,7 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
-	}	
+	}
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -709,19 +709,19 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 			a[i] = !a[i];
 		}
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-		
+	
 	}
 	out.writeStop();
-	readStop();	
+	readStop();
 	return(out);
 }
 
 
 
 SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
-	
+
 	SpatRaster out = geometry();
-	
+
 	std::vector<std::string> f {"&", "|"}; 
 	if (std::find(f.begin(), f.end(), oper) == f.end()) {
 		out.setError("unknown logic function");
@@ -731,7 +731,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 	if (!out.compare_geom(x, true, false)) {
 		return(out);
 	}
-	
+
  	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -740,7 +740,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		out.setError(x.getError());
 		return(out);
 	}
-		
+	
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -756,11 +756,11 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 			// stop
 		}
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-		
+	
 	}
 	out.writeStop();
-	readStop();	
-	x.readStop();	
+	readStop();
+	x.readStop();
 	return(out);
 }
 
@@ -769,12 +769,12 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	
+
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
 	}
-		
+	
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -795,7 +795,7 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
-	readStop();		
+	readStop();	
 	return(out);
 }
 
@@ -819,7 +819,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 		return(out);
 	}
 
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -862,7 +862,7 @@ double vstdev(std::vector<double> v, bool narm) {
 	m = vmean(v, narm);
 	return sqrt(m);
 }
-	
+
 
 
 SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bool narm, SpatOptions &opt) {
@@ -893,7 +893,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		return(out);
 	}
 
-	
+
 	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -948,7 +948,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 		out.setError(getError());
 		return(out);
 	}
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -969,7 +969,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {
 				v[k] = a[j+k*nc];
-			}		
+			}	
 			b[j] = modal_value(v, ities, narm, rgen, dist);
 		}
 		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
@@ -993,7 +993,7 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 		return(out);
 	}
 
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -1056,7 +1056,7 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
 		}
 	}
 
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;

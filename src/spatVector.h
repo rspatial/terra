@@ -109,6 +109,8 @@ class SpatVector {
 		unsigned ncol();
 		unsigned nxy();
 
+		SpatVector deepCopy() {return *this;}
+
 		SpatExtent getExtent();
 		bool is_geographic();
 		bool is_lonlat();
@@ -151,8 +153,8 @@ class SpatVector {
 
 		std::vector<double> area();
 		std::vector<double> length();
-		SpatDataFrame distance(SpatVector x, bool pairwise);
-		SpatDataFrame distance();
+		std::vector<double> distance(SpatVector x, bool pairwise);
+		std::vector<double> distance();
 
 		size_t size();
 		SpatVector as_lines();
@@ -238,8 +240,11 @@ class SpatVector {
 		SpatVector erase(SpatVector v);
 		SpatVector cover(SpatVector v, bool identity);
 		SpatVector symdif(SpatVector v);
-		std::vector<bool> intersects(SpatVector v);
-		
+		std::vector<int> relate(SpatVector v, const std::string relation);
+		std::vector<int> relate(const std::string relation);
+		std::vector<double> geos_distance(SpatVector v, bool parallel);
+		std::vector<double> geos_distance();
+
 		SpatVector unaryunion();
 
 };

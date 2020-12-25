@@ -29,7 +29,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	def_datatype = opt.def_datatype;
 	def_filetype = opt.def_filetype; 
 	filenames = {""};
-	overwrite = false;	
+	overwrite = false;
 	progress = opt.progress;
 	blocksizemp = opt.blocksizemp;
 	verbose = opt.verbose;

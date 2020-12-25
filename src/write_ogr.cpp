@@ -60,7 +60,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		wkb = wkbMultiPolygon;
 	} else {
         setError("this geometry type is not supported");
-        return poDS;			
+        return poDS;		
 	}
 
 	std::string s = srs.wkt;
@@ -75,7 +75,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			return poDS;
 		}
 	}
-	
+
     OGRLayer *poLayer;
     poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, NULL );
     if( poLayer == NULL ) {
@@ -89,7 +89,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	OGRFieldType otype;
 	int nfields = nms.size();
 	size_t ngeoms = size();
-	
+
 	for (int i=0; i<nfields; i++) {
 		if (tps[i] == "double") {
 			otype = OFTReal;
@@ -108,11 +108,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			return poDS;
 		}
 	}
-	
+
 	//unsigned r = 0;
 
 	for (size_t i=0; i<ngeoms; i++) {
-		
+	
 		OGRFeature *poFeature;
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
@@ -125,7 +125,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			}
 		}
 		//r++;
-	
+
 // points -- also need to do multipoints
 		OGRPoint pt;
 		if (wkb == wkbPoint) {
@@ -133,8 +133,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			pt.setX( g.parts[0].x[0] );
 			pt.setY( g.parts[0].y[0] );
 			poFeature->SetGeometry( &pt );
-			
-// lines			
+		
+// lines		
 		} else if (wkb == wkbMultiLineString) {
 			SpatGeom g = getGeom(i);
 			OGRMultiLineString poGeom;
@@ -149,14 +149,14 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				if (poGeom.addGeometry(&poLine) != OGRERR_NONE ) {
 					setError("cannot add line");
 					return poDS;
-				}	
+				}
 			}
 			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
 				setError("cannot set geometry");
 				return poDS;
 			}
-			
-// polygons			
+		
+// polygons		
 		} else if (wkb == wkbMultiPolygon) {
 			SpatGeom g = getGeom(i);
 			OGRPolygon poGeom;
@@ -172,7 +172,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 					setError("cannot add ring");
 					return poDS;
 				}
-				
+			
 				if (p.hasHoles()) {
 					for (size_t h=0; h < p.nHoles(); h++) {
 						SpatHole hole = p.getHole(h);
@@ -181,7 +181,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 							pt.setX(hole.x[k]);
 							pt.setY(hole.y[k]);
 							poHole.setPoint(k, &pt);
-						}						
+						}					
 						if (poGeom.addRing(&poHole) != OGRERR_NONE ) {
 							setError("cannot add hole");
 							return poDS;
@@ -198,7 +198,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			setError("Only points, lines and polygons are currently supported");
 			return poDS;
 		}
-		
+	
 		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
 			setError("Failed to create feature");
 			return poDS;
@@ -221,7 +221,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 		return false;
 	} 
 	return true;
-	
+
 }
 
 GDALDataset* SpatVector::GDAL_ds() {

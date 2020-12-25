@@ -39,9 +39,8 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 setMethod("distance", signature(x="SpatVector", y="missing"), 
 	function(x, y, ...) {
 		nr <- nrow(x)
-		ptr <- x@ptr$distance_self()
-		ptr <- messages(ptr, "distance")
-		d <- ptr$values()[[1]]
+		d <- x@ptr$distance_self()
+		messages(x, "distance")
 		class(d) <- "dist"
 		attr(d, "Size") <- nr
 		attr(d, "Diag") <- FALSE
@@ -56,15 +55,14 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 	function(x, y, pairwise=FALSE, ...) {
 		nx <- nrow(x)
 		ny <- nrow(y)
-		ptr <- x@ptr$distance_other(y@ptr, pairwise)
-		ptr <- messages(ptr, "distance")
-		d <- ptr$values()[[1]]
+		d <- x@ptr$distance_other(y@ptr, pairwise)
+		messages(x, "distance")
 		if ((nx == ny) && pairwise) {
-			return(d) 
+			d
 		} else {
 			d <- matrix(d, nrow=nx, ncol=ny)
-			return(d)
 		}
+		return(d)
 	}
 )
 

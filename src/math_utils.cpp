@@ -70,7 +70,7 @@ double signif(double x, unsigned n) {
 }
 
 bool is_equal(double a, double b, double tolerance=10.0) {
-	
+
 	double tol = std::max(tolerance, std::abs(std::min(a,b))) * std::numeric_limits<double>::epsilon();
 	return ((a==b) || (std::abs(a-b) < tol) );
 }
@@ -142,20 +142,20 @@ std::vector<double> movingMedian(const std::vector<double> &x, size_t n) {
 
 
 double modal_value(std::vector<double> values, unsigned ties, bool narm, std::default_random_engine rgen, std::uniform_real_distribution<double> dist) {
-	
+
 	if (narm) {
 		na_omit(values);
 	}
 	size_t n = values.size();
 	if (n == 0) return (NAN);
-	if (n == 1) return (values[0]);		
+	if (n == 1) return (values[0]);	
     std::vector<unsigned> counts(n, 0);
 
 	if (ties < 3) {
 		std::sort(values.begin(), values.end());
 	}
 
-	
+
     for (size_t i=0; i<n; ++i) {
         counts[i] = 0;
         size_t j = 0;
@@ -164,7 +164,7 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
         }
         ++(counts[j]);
     }
-	
+
     size_t maxCount = 0;
 	// first (lowest due to sorting)
 	if (ties == 0) {
@@ -173,7 +173,7 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 				maxCount = i;
 			}
 		}
-	// last	
+	// last
 	} else if (ties == 1) {
 		for (size_t i = 1; i < n; ++i) {
 			if (counts[i] >= counts[maxCount]) {
@@ -201,9 +201,9 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 				double rand = dist(rgen);
 				if (rand < (1 / tieCount)) {
 					maxCount = i;
-				}			
+				}		
 			}
-		}		
+		}	
 	} else {
 		size_t tieCount = 1;
 		for (size_t i = 1; i < n; ++i) {
@@ -218,7 +218,7 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 			return(NAN);
 		}
 	}
-	
+
     return values[maxCount];
 }
 

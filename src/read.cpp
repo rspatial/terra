@@ -18,7 +18,7 @@
 #include "spatRaster.h"
 
 bool SpatRaster::readStart() {
-	
+
 	if (!valid_sources(true, true)) {
 		return false;
 	}
@@ -32,7 +32,7 @@ bool SpatRaster::readStart() {
 			source[i].open_read = true;
 		} else if (!readStartGDAL(i)) {
 			return false;
-		}	
+		}
 	}
 	return true;
 }
@@ -44,7 +44,7 @@ bool SpatRaster::readStop() {
 				source[i].open_read = false;
 			} else {
 				readStopGDAL(i); 
-			}	
+			}
 		}
 	}
 	return true;
@@ -64,7 +64,7 @@ std::vector<std::vector<double>> SpatRaster::readBlock2(BlockSize bs, unsigned i
 	size_t off = bs.nrows[i] * ncol();
 	for (size_t i=0; i<nlyr(); i++) {
 		v[i] = std::vector<double>(x.begin()+(i*off), x.begin()+((i+1)*off));
-	}	
+	}
 	return(v);
 }
 
@@ -80,7 +80,7 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 			size_t jj = j * nl + i;
 			v[jj] = lyr[j];
 		}
-	}	
+	}
 	return(v);
 }
 
@@ -88,7 +88,7 @@ std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
 void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols){
 
 	size_t nl = source[src].nlyr;
-	
+
 	if (source[src].hasWindow) {
 		row += source[src].window.off_row;
 		col += source[src].window.off_col;
@@ -121,7 +121,7 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 				out.insert(out.end(), v1.begin(), v1.end());
 			}
 			*/
-		
+	
 	} else { //	no window
 		if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
 			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
@@ -158,7 +158,7 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 		//setError
 		return out; // or NAs?
 	}
-	
+
 	row = std::min(std::max(size_t(0), row), nrow()-1);
 	col = std::min(std::max(size_t(0), col), ncol()-1);
 	nrows = std::max(size_t(1), std::min(nrows, nrow()-row));
@@ -167,7 +167,7 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 		return out;
 	}
 	unsigned n = nsrc();
-	
+
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
@@ -179,7 +179,7 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 				if (source[0].window.expanded) {
 					std::vector<double> gout;
 					readChunkGDAL(gout, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
-									
+								
 					size_t rrow = row + source[0].window.off_row;
 					size_t rcol = col + source[0].window.off_col;
 					unsigned endrow = rrow + nrows;
@@ -217,7 +217,7 @@ bool SpatRaster::readAll() {
 	if (!hasValues()) {
 		return true; 
 	}
-	
+
 	size_t row =0, col=0, nrows=nrow(), ncols=ncol();
 	readStart();
 	size_t n = nsrc();
@@ -233,7 +233,7 @@ bool SpatRaster::readAll() {
 				return false;
 			}
 			source[src].values.resize(0);
-		}		
+		}	
 	}
 	readStop();
 	if (n>1) source.resize(1);
@@ -244,7 +244,7 @@ bool SpatRaster::readAll() {
 std::vector<double> SpatRaster::getValues(long lyr) {
 
 	std::vector<double> out;
-	
+
 	bool hw = false;
 	for (size_t i=0; i<source.size(); i++) {
 		if (source[i].hasWindow) {
@@ -265,7 +265,7 @@ std::vector<double> SpatRaster::getValues(long lyr) {
 		readStop();
 		return out;
 	}
-		
+	
 	if (lyr < 0) { // default; read all
 		unsigned n = nsrc();
 		for (size_t src=0; src<n; src++) {
@@ -295,7 +295,7 @@ std::vector<double> SpatRaster::getValues(long lyr) {
 
 
 bool SpatRaster::getValuesSource(size_t src, std::vector<double> &out) {
-	
+
 	unsigned n = nsrc();
 	if (src > n) {
 		return false;
@@ -323,7 +323,7 @@ bool SpatRaster::getValuesSource(size_t src, std::vector<double> &out) {
 		#ifdef useGDAL
 		out = readValuesGDAL(src, 0, nrow(), 0, ncol());
 		#endif // useGDAL
-	}	
+	}
 	return true;
 }
 

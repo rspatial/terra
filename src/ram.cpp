@@ -60,7 +60,7 @@ double availableRAM() {
 			ram = free_memory;
 		//https://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 		}
-		
+	
 	#endif
 	return ram / 8;  // 8 bytes for each double
 }

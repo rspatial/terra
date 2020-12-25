@@ -25,7 +25,7 @@ std::vector<double> SpatRaster::readmulti(std::string filename, std::string var)
 		setError("cannot open this var");
 		return();
     }
-	
+
     size_t nValues = 1;
     std::vector<size_t> anCount;
 
@@ -33,7 +33,7 @@ std::vector<double> SpatRaster::readmulti(std::string filename, std::string var)
         anCount.push_back(static_cast<size_t>(poDim->GetSize()));
         nValues *= anCount.back();
     }
-	
+
     std::vector<double> values(nValues);
     poVar->Read(std::vector<GUInt64>{0,0,0}.data(),
                 anCount.data(),
@@ -41,7 +41,7 @@ std::vector<double> SpatRaster::readmulti(std::string filename, std::string var)
                 nullptr, // stride: default to row-major convention
                 GDALExtendedDataType::Create(GDT_Float64),
                 &values[0]);
-				
+			
 	return values;
 }
 

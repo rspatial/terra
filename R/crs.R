@@ -37,6 +37,7 @@ setMethod("crs", signature("SpatRaster"),
 setMethod("crs<-", signature("SpatRaster", "ANY"), 
 	function(x, ..., value) {
 		value <- .txtCRS(value)
+		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
 		messages(x, "crs<-")
 	}
@@ -59,7 +60,8 @@ setMethod("crs", signature("SpatVector"),
 setMethod("crs<-", signature("SpatVector", "ANY"), 
 	function(x, ..., value) {
 		value <- .txtCRS(value)
-		x@ptr$set_crs(value[1])
+		x@ptr <- x@ptr$deepcopy()
+		x@ptr$set_crs(value)
 		messages(x, "crs<-")
 	}
 )

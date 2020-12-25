@@ -372,7 +372,7 @@ SpatVector SpatVector::project(std::string crs) {
 	s.setSRS(crs);
 	s.df = df;
 	std::vector<unsigned> keeprows;
-	
+
 	for (size_t i=0; i < size(); i++) {
 		SpatGeom g = getGeom(i);
 		SpatGeom gg;
@@ -393,7 +393,7 @@ SpatVector SpatVector::project(std::string crs) {
 			}
 		}
 		s.addGeom(gg);
-		s.df.subset_rows(keeprows);		
+		s.df.subset_rows(keeprows);	
 	}
 
 	#endif
@@ -421,7 +421,7 @@ SpatVector SpatVector::project(std::string crs) {
 		s.setError(msg);
 		return s;
 	}
-	
+
 	s.msg = transform_coordinates(x, y, srs, outwkt);
 
 	if (!s.msg.has_error) {

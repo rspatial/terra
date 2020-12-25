@@ -116,22 +116,22 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 				}
 				GDALClose(hDstDS);
 			}
-			
-			rstDS = GDALOpen( filename.c_str(), GA_Update);		
+		
+			rstDS = GDALOpen( filename.c_str(), GA_Update);	
 		}
 		for (size_t i=0; i<nlyr(); i++) {
 			options.push_back("-b");
 			options.push_back(std::to_string(i+1));
 		}
-		
+	
 	} else {
 		if (!out.create_gdalDS(rstDS, filename, driver, true, background, opt)) {
 			out.setError("cannot create dataset");
 			return out;
 		}
 	}
-	
-	
+
+
 	GDALDataset *poDS = x.write_ogr("", "lyr", "Memory", true);
 	vecDS = poDS->ToHandle(poDS);
 
@@ -143,7 +143,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	if (err != 0) {
 		setError("error "+ std::to_string(err));
 	}
-	
+
 	if (driver == "MEM") {
 		bool test = out.from_gdalMEM(hDst, false, true); 
 		GDALClose( hDst );
@@ -165,7 +165,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			double adfMinMax[2];
 			bool approx = ncell() > 10e+8;
 			GDALComputeRasterMinMax(hBand, approx, adfMinMax);
-			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);		
+			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);	
 		}
 		GDALClose( hDst );
 		GDALRasterizeOptionsFree(ropts);
@@ -176,7 +176,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 }
 
 #else 
-	
+
 
 std::vector<double> rasterize_polygon(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned startrow, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
 
@@ -354,10 +354,10 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 if (update) out = cover(out, {background}, opt);
 
 	if (touches) {
-		out.addWarning("argument touches is not supported with your version of GDAL");	
+		out.addWarning("argument touches is not supported with your version of GDAL");
 	}
 	if (inverse) {
-		out.addWarning("argument inverse is not supported with your version of GDAL");	
+		out.addWarning("argument inverse is not supported with your version of GDAL");
 	}
 
 	return out;
@@ -378,11 +378,11 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 		return out;
 	}
 	SpatRaster rc = r.crop(e, "out", opt);
-#if GDAL_VERSION_MAJOR >= 3			
-	std::vector<double> feats(1, 1) ;			
+#if GDAL_VERSION_MAJOR >= 3		
+	std::vector<double> feats(1, 1) ;		
     SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
 #else
-	std::vector<double> feats(v.size(), 1) ;			
+	std::vector<double> feats(v.size(), 1) ;		
     SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
 #endif
 	SpatVector pts = rcr.as_points(false, true, opt);
@@ -408,10 +408,10 @@ std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v
 	SpatRaster r = rr.crop(v.extent, "out", opt);
 	r = r.disaggregate(fact, opt);
 #if GDAL_VERSION_MAJOR >= 3
-	std::vector<double> feats(1, 1) ;			
+	std::vector<double> feats(1, 1) ;		
 	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
 #else
-	std::vector<double> feats(v.size(), 1) ;			
+	std::vector<double> feats(v.size(), 1) ;		
 	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
 #endif
 	r = r.arith(100.0, "/", false, opt);

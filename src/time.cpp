@@ -36,17 +36,17 @@ SpatTime_t yeartime(const long &year) {
 
 
 SpatTime_t get_time(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0) {
-	
+
     static const unsigned mdays[2][12] = {
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
         {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}
     };
-	
+
 	if (month > 12) {
 		year += month / 12;
 		month = ((month-1) % 12) + 1;
 	}
-	
+
 	// the first day does not count, we start at 1970-01-01
     // 24 * 3600 = 86400
 	SpatTime_t time = -86400;  
@@ -60,8 +60,8 @@ SpatTime_t get_time(long year, unsigned month, unsigned day=15, unsigned hr=0, u
 			time += yeartime(y);
 		}
 	}
-		
-	time += (mdays[isleap(year)][month-1] + day) * 86400;	
+	
+	time += (mdays[isleap(year)][month-1] + day) * 86400;
 	time += (hr * 3600) + (min * 60) + sec;
     return time;
 }
@@ -82,7 +82,7 @@ std::vector<int> get_date(SpatTime_t x) {
 		while (x < 0) {
 			year--;
 			x += yeartime(year);
-		}		
+		}	
 	} else if (x > 0) {
 		while (x > 0) {
 			x -= yeartime(year);
@@ -124,7 +124,7 @@ std::vector<std::string> splitstr(std::string s, std::string delimiter){
 }
 
 std::vector<int> getymd(std::string s) {
-	
+
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	std::vector<std::string> x;
 	std::vector<std::string> y;
@@ -145,7 +145,7 @@ std::vector<int> getymd(std::string s) {
 	return out;
 }
 
-	
+
 
 SpatTime_t get_time_string(std::string s) {
 
@@ -167,7 +167,7 @@ SpatTime_t get_time_string(std::string s) {
 	time = get_time(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));
 
 //	} else {
-//		time = get_time_noleap(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));		
+//		time = get_time_noleap(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));	
 //	}
 	return time;
 }
@@ -183,8 +183,8 @@ void hours_to_time(std::vector<SpatTime_t> &time, std::string origin) {
 	SpatTime_t otime = get_time(ymd[0], ymd[1], ymd[2]);
 	for (SpatTime_t &d : time) d = otime + d * 3600;
 }
-	
-	
+
+
 
 SpatTime_t time_from_day(int syear, int smonth, int sday, int ndays) {
 	SpatTime_t time = get_time(syear, smonth, sday);
@@ -232,7 +232,7 @@ SpatTime_t time_from_day_360(int syear, int smonth, int sday, int ndays) {
 /*
 
 SpatTime_t get_time_noleap(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0) {
-	
+
     static const unsigned mdays[12] = 
 		{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
 	// the first day does not count, we start at 1970-01-01
@@ -277,7 +277,7 @@ SpatTime_t get_time_noleap_day(long long day, SpatTime_t offset=0) {
 
 
 SpatTime_t get_time360(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0) {
-	
+
     static const unsigned mdays[12] = 
         {0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330};
 	// the first day does not count, we start at 1970-01-01
@@ -293,7 +293,7 @@ SpatTime_t get_time360(long year, unsigned month, unsigned day=15, unsigned hr=0
 			time += 31104000;
 		}
 	}
-		
+	
 	time += (mdays[month-1] + day) * 86400;
 
 	time += (hr * 3600) + (min * 60) + sec;

@@ -72,7 +72,7 @@ SpatVector SpatVector::disaggregate() {
 	if (nrow() == 0) {
 		return out;
 	}
-	
+
 	for (size_t i=0; i<nrow(); i++) {
 		SpatGeom g = getGeom(i);
 		SpatDataFrame row = df.subset_rows(i);
@@ -86,7 +86,7 @@ SpatVector SpatVector::disaggregate() {
 			}
 		}
 	}
-	
+
 	return out;
 
 }
@@ -98,7 +98,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	int i = where_in_vector(field, get_names());
 	if (i < 0) {
 		out.setError("cannot find field");
-		return out;		
+		return out;	
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
@@ -108,7 +108,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 		for (size_t j=0; j<idx.size(); j++) {
 			if (i == (size_t)idx[j]) {
 				g.unite( getGeom(j) );
-			}	
+			}
 		}
 		out.addGeom(g);
 	}
@@ -166,9 +166,9 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 			//OGRMultiPolygon *poGeom = ( OGRMultiPolygon * )poGeometry;
 			if (!poGeometry->IsValid()) {
 				out.setError("invalid geom");
-				return out;				
+				return out;			
 			}
-			OGRGeometry *poGeom = poGeometry->UnionCascaded();	
+			OGRGeometry *poGeom = poGeometry->UnionCascaded();
 			if (poGeom == NULL) {
 				out.setError("union failed");
 				return out;
@@ -190,7 +190,7 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 		GDALClose(src);
 //		GDALClose(dst);
 	}
-	
+
 	return out;
 }
 */
@@ -206,7 +206,7 @@ SpatVector SpatVector::remove_holes() {
 	if (geoms[0].gtype != polygons) {
 		return out;
 	}
-	
+
 	for (size_t i=0; i<n; i++) {
 		for (size_t j=0; j < out.geoms[i].size(); j++) {
 			SpatPart p = out.geoms[i].parts[j];
@@ -215,7 +215,7 @@ SpatVector SpatVector::remove_holes() {
 				out.geoms[i].parts[j] = p;
 			}
 		}
-	}	
+	}
 	return out;
 }
 
@@ -234,7 +234,7 @@ SpatVector SpatVector::get_holes() {
 
 	for (size_t i=0; i<n; i++) {
 		SpatGeom g;
-		g.gtype = polygons;		
+		g.gtype = polygons;	
 		bool found = false;
 		for (size_t j=0; j < geoms[i].size(); j++) {
 			SpatPart p = geoms[i].parts[j];
@@ -295,7 +295,7 @@ std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value)
 	OGRLayer *poLayer = src->GetLayer(0);
 	poLayer->ResetReading();
 	OGRFeature *poFeature;
-	
+
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
 		g.push_back(poGeometry);
@@ -312,7 +312,7 @@ std::vector<OGRGeometry *> geoms_from_ds(GDALDataset* src, int field, int value)
 	geom = (OGRGeometry *) gvec.data();
 	OGRGeometry *gout;
 	gout = geom->UnionCascaded();
-// set geometry to output	
+// set geometry to output
    return dst;
 */
 
@@ -365,7 +365,7 @@ void resc(double &value, const double &base, const double &f) {
 
 
 SpatVector SpatVector::rescale(double f, double x0, double y0) {
-	
+
 	SpatVector out = *this;
 	for (size_t i=0; i < size(); i++) {
 		for (size_t j=0; j < geoms[i].size(); j++) {
@@ -415,7 +415,7 @@ SpatVector SpatVector::transpose() {
 			if (geoms[i].parts[j].hasHoles()) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					out.geoms[i].parts[j].holes[k].x.swap(out.geoms[i].parts[j].holes[k].y);
-					
+				
 					dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
 						 out.geoms[i].parts[j].holes[k].extent.ymin);
 					dswap(out.geoms[i].parts[j].holes[k].extent.xmax, 
@@ -527,7 +527,7 @@ SpatVector SpatVector::rotate(double angle, double x0, double y0) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					rotit(out.geoms[i].parts[j].holes[k].x,
 						  out.geoms[i].parts[j].holes[k].y, x0, y0, cos_angle, sin_angle);
-	
+
 					out.geoms[i].parts[j].holes[k].extent.xmin = 
 						vmin(out.geoms[i].parts[j].holes[k].x, true); 
 					out.geoms[i].parts[j].holes[k].extent.xmax = 
@@ -543,13 +543,13 @@ SpatVector SpatVector::rotate(double angle, double x0, double y0) {
 			out.geoms[i].parts[j].extent.ymin = vmin(out.geoms[i].parts[j].y, true);
 			out.geoms[i].parts[j].extent.ymax = vmax(out.geoms[i].parts[j].y, true);
 			if (j==0) {
-				out.geoms[i].extent = out.geoms[i].parts[j].extent;				
+				out.geoms[i].extent = out.geoms[i].parts[j].extent;			
 			} else {
 				out.geoms[i].extent.unite(out.geoms[i].parts[j].extent);
 			}
 		}
 		if (i==0) {
-			out.extent = out.geoms[i].extent;				
+			out.extent = out.geoms[i].extent;			
 		} else {
 			out.extent.unite(out.geoms[i].extent);
 		}

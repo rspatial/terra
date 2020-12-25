@@ -96,7 +96,7 @@ bool SpatGeom::addPart(SpatPart p) {
 		extent.unite(p.extent);
 	} else {
 		extent = p.extent;
-	}	
+	}
 	return true;
 }
 
@@ -137,7 +137,7 @@ SpatVector::SpatVector(SpatGeom g) {
 /*
 SpatVector::SpatVector(const SpatVector &x) {
 	srs = x.srs;
-	df = SpatDataFrame(x.df);	
+	df = SpatDataFrame(x.df);
 }
 */
 
@@ -386,13 +386,13 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			if (n > 1) {
 				wkt = "MULTIPOINT ";
 			} else {
-				wkt = "POINT ";				
+				wkt = "POINT ";			
 			}
 		} else if (g.gtype == lines) {
 			if (n > 1) {
 				wkt = "MULTILINESTRING ";
 			} else {
-				wkt = "LINESTRING ";		
+				wkt = "LINESTRING ";	
 			}
 		} else if (g.gtype == polygons) {
 			if (n > 1) {
@@ -401,7 +401,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 				wkt = "POLYGON ";
 			}
 		}
-		
+	
 		if (n == 0) {
 			wkt += "EMPTY";
 			out[i] = wkt;
@@ -410,16 +410,16 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 
 		if ((g.gtype == polygons) | (n > 1)) { 
 			wkt += "(";
-		}			
-		
+		}		
+	
 		for (size_t j=0; j < n; j++) {
 			SpatPart p = g.getPart(j);
 			if (j>0) wkt += ",";
 
 			if ((g.gtype == polygons) & (n > 1)) { 
 				wkt += "(";
-			}			
-		
+			}		
+	
 			wkt += "(" + nice_string(p.x[0]) + " " + nice_string(p.y[0]);
 			for (size_t q=1; q < p.x.size(); q++) {
 				wkt += ", " + nice_string(p.x[q]) + " " + nice_string(p.y[q]);
@@ -437,7 +437,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			}
 			if ((g.gtype == polygons) & (n > 1)) { 
 				wkt += ")";
-			}			
+			}		
 		}
 		if ((g.gtype == polygons) | (n > 1)) {
 			wkt += ")";
@@ -582,7 +582,7 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 		out.setError("geom types do not match");
 		return out;
 	}
-	
+
 	if (!(ingnorecrs)) {
 		if (!srs.is_same(x.srs, true)) {
 			out.setError("append: crs does not match");
