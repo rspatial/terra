@@ -88,7 +88,7 @@ x <- vect(d, geom="wkt")
 d$wkt <- NULL
 d$lon <- c(0,10)
 d$lat <- c(0,10)
-x <- vect(d, geom=c("lon", "lat))
+x <- vect(d, geom=c("lon", "lat"))
 
 
 
