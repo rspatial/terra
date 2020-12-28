@@ -42,10 +42,9 @@ x4 <- rbind(c(80,0), c(105,13), c(120,2), c(105,-13))
 z <- rbind(cbind(object=1, part=1, x1), cbind(object=2, part=1, x2), 
            cbind(object=3, part=1, x3), cbind(object=3, part=2,  x4))
 colnames(z)[3:4] <- c('x', 'y')
-z <- data.frame(z)
-z$hole <- 0
-z$hole[z$object==3 & z$part==2] <- 1
-z <- as.matrix(z)
+z <- cbind(z, hole=0)
+z[(z[, "object"]==3 & z[,"part"]==2), "hole"] <- 1
+
 p <- vect(z, "polygons")
 geom(p)
 
