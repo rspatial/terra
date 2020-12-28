@@ -58,7 +58,7 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 		oper <- as.vector(.Generic)[1]
 		e1 = ext(as.vector(e1)) # deep copy
 		if (oper == "+") { 
-			e1@ptr$unite(e2@ptr)
+			e1@ptr$union(e2@ptr)
 		} else if (oper == "*") {
 			e1@ptr$intersect(e2@ptr)
 		} else if (oper == "/") {
@@ -80,9 +80,8 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
 setMethod("Arith", signature(e1="SpatVector", e2="SpatVector"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
-		e1 = ext(as.vector(e1)) # deep copy
 		if (oper == "+") { 
-			e1@ptr$unite(e2@ptr)
+			e1@ptr$union(e2@ptr)
 		} else if (oper == "*") {
 			e1@ptr$intersect(e2@ptr)
 		} else if (oper == "-") {
@@ -335,6 +334,29 @@ setMethod("Summary", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("Summary", signature(x="SpatExtent"),
+	function(x, ..., na.rm=FALSE){
+		e <- as.vector(x)
+		x <- e[1:2]
+		y <- e[3:4]
+		fun <- as.character(sys.call()[[1L]])
+		if (fun == "range") {
+			r <- c(diff(x), diff(y))
+			names(r) <- c("x", "y")
+			r
+		} else {
+			c(callGeneric(x), callGeneric(y))
+		}
+	}
+)
+
+setMethod("mean", signature(x="SpatExtent"),
+	function(x, ..., trim=NA, na.rm=FALSE){
+		if (!is.na(trim)) {	warn("mean", "argument 'trim' is ignored") }
+		e <- as.vector(x)
+		c(mean(e[1:2]), mean(e[3:4]))
+	}
+)
 
 setMethod("mean", signature(x="SpatRaster"),
 	function(x, ..., trim=NA, na.rm=FALSE){

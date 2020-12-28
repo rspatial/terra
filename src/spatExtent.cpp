@@ -80,6 +80,7 @@ SpatExtent SpatExtent::round(int n) {
 	return e;
 }
 
+
 SpatExtent SpatExtent::floor() {
 	double xn = std::floor(xmin);
 	double xx = std::ceil(xmax);

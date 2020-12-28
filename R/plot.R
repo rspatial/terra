@@ -209,10 +209,10 @@ setMethod("text", signature(x="SpatVector"),
 				}
 			}
 		}
-		xy <- geom(centroids(x))[,c("x","y")]
+		xy <- geom(centroids(x))[,c("x","y"),drop=FALSE]
 		if (halo) {
 			.halo(xy[,1], xy[,2], labels, ...)
-		} else {
+		} else {	
 			text(xy[,1], xy[,2], labels, ...)
 		}
 	}

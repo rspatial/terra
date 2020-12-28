@@ -84,7 +84,7 @@ Rcpp::List getRasterAttributes(SpatRaster* x) {
 
 
 
-Rcpp::DataFrame getGeometry(SpatVector* v) {
+Rcpp::DataFrame get_geometryDF(SpatVector* v) {
 	SpatDataFrame df = v->getGeometryDF();
 
 	Rcpp::DataFrame out = Rcpp::DataFrame::create(
@@ -96,6 +96,7 @@ Rcpp::DataFrame getGeometry(SpatVector* v) {
 	);
 	return out;
 }
+
 
 RCPP_EXPOSED_CLASS(SpatSRS)
 RCPP_EXPOSED_CLASS(SpatExtent)
@@ -127,13 +128,15 @@ RCPP_MODULE(spat){
 		.property("valid", &SpatExtent::valid)
 		.method("align", &SpatExtent::align, "align")
 		.method("intersect", &SpatExtent::intersect, "intersect")
-		.method("unite", &SpatExtent::unite, "unite")
 		.method("as.points", &SpatExtent::asPoints, "as.points")
 		.method("ceil",  &SpatExtent::ceil,  "ceil")
 		.method("compare", &SpatExtent::compare, "compare")
 		.method("floor", &SpatExtent::floor, "floor")
 		.method("round", &SpatExtent::round, "round")
 		.method("union", &SpatExtent::unite, "union")
+		.method("sampleRandom", &SpatExtent::sampleRandom)
+		.method("sampleRegular", &SpatExtent::sampleRegular)		
+		.method("sample", &SpatExtent::test_sample)		
 	;
 
 /*
@@ -258,6 +261,10 @@ RCPP_MODULE(spat){
 		.method("getError", &SpatVector::getError)
 		.method("getWarnings", &SpatVector::getWarnings)
 
+		.method("coordinates", &SpatVector::coordinates)
+		.method("get_geometry", &SpatVector::getGeometry)
+		.method("get_geometryDF", &get_geometryDF)
+
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
@@ -288,7 +295,6 @@ RCPP_MODULE(spat){
 
 		.method("extent", &SpatVector::getExtent, "extent")
 		.method("getDF", &getVectorAttributes, "get attributes")
-		.method("getGeometry", &getGeometry, "getGeometry")
 		.method("getGeometryWKT", &SpatVector::getGeometryWKT, "getGeometryWKT")
 		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
 		.method("isGeographic", &SpatVector::is_geographic, "is geographic")
@@ -339,6 +345,12 @@ RCPP_MODULE(spat){
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string))( &SpatVector::relate ))
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent))( &SpatVector::crop ))
 		.method("crop_vct", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::crop ))
+
+		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool))( &SpatVector::nearest_point))
+		.method("near_within", (SpatVector (SpatVector::*)())( &SpatVector::nearest_point))
+		
+		//.method("sampleRandom", &SpatVector::sampleRandom)
+		//.method("sampleRegular", &SpatVector::sampleRegular)
 	;
 
 
@@ -566,6 +578,7 @@ RCPP_MODULE(spat){
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("reverse", &SpatRaster::reverse, "reverse")
 		.method("rotate", &SpatRaster::rotate, "rotate")
+		//.method("sampleCells", &SpatRaster::sampleCells, "sampleCells")
 		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster, "sampleRegular")
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues, "sampleValues")
 		.method("sampleRandomRaster", &SpatRaster::sampleRandomRaster, "sampleRandom")

@@ -31,7 +31,6 @@ hole <- rbind(c(80,0), c(105,13), c(120,2), c(105,-13))
 z <- rbind(cbind(object=1, part=1, x, hole=0), 
 		   cbind(object=1, part=1, hole, hole=1))
 colnames(z)[3:4] <- c('x', 'y')
-z <- data.frame(z)
 p <- vect(z, "polygons", atts=data.frame(id=1))
 p
 

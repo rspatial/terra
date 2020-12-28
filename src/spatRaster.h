@@ -557,6 +557,7 @@ class SpatRaster {
 		std::vector<double> readSample(unsigned src, size_t srows, size_t scols);
 		SpatRaster rotate(bool left, SpatOptions &opt);
 
+		std::vector<size_t> sampleCells(unsigned size, std::string method, bool replace, unsigned seed);
 		SpatRaster sampleRegularRaster(unsigned size);
 		SpatRaster sampleRandomRaster(unsigned size, bool replace, unsigned seed);
 		std::vector<std::vector<double>> sampleRegularValues(unsigned size);

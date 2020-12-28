@@ -27,14 +27,14 @@ setMethod("rast", signature(x="missing"),
 			crs <- as.character(crs)
 		}
 
-		if (!missing(resolution)) {
-			nrows <- max(1, round((e[4] - e[3]) / resolution))
-			ncols <- max(1, round((e[2] - e[1]) / resolution))
-		}
-
 		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
 		r <- messages(r, "rast")
+
+		if (!missing(resolution)) {
+			res(r) <- resolution
+		}
+
 		if (!missing(vals)) {
 			if (length(vals) == ncell(r)) {
 				values(r) <- vals
@@ -63,18 +63,34 @@ setMethod("rast", signature(x="list"),
 
 setMethod("rast", signature(x="SpatExtent"),
 	function(x, ...) {
-		e <- as.vector(x)
-		rast(xmin=e[1], xmax=e[2], ymin=e[3], ymax=e[4], ...)
+		dots <- list(...)
+		dots$xmin=x[1]
+		dots$xmax=x[2]
+		dots$ymin=x[3]
+		dots$ymax=x[4]
+		if (all(is.na(pmatch(names(dots), "resolution")))) {
+			dots$resolution <- min(range(x)) / 100
+		}
+		do.call(rast, dots)
 	}
 )
 
+
 setMethod("rast", signature(x="SpatVector"),
 	function(x, ...) {
+		dots <- list(...)
 		e <- ext(x)
-		dx <- diff(as.vector(e)[1:2])
-		dy <- diff(as.vector(e)[3:4])
-		res <- min(dx, dy) / 100
-		rast(ext(x), ...)
+		dots$xmin=e[1]
+		dots$xmax=e[2]
+		dots$ymin=e[3]
+		dots$ymax=e[4]
+		if (all(is.na(pmatch(names(dots), "resolution")))) {
+			dots$resolution <- min(range(e)) / 100
+		}
+		if (all(is.na(pmatch(names(dots), "crs")))) {
+			dots$crs <- crs(x)
+		}
+		do.call(rast, dots)
 	}
 )
 
@@ -103,7 +119,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, ...) {
+	function(x, subds=0) {
 
 		x <- trimws(x)
 		x <- x[x!=""]

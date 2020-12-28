@@ -12,8 +12,10 @@
 \alias{which.min}
 \alias{which.max}
 
+\alias{Summary,SpatExtent-method}
 \alias{Summary,SpatRaster-method}
 \alias{mean,SpatRaster-method}
+\alias{mean,SpatExtent-method}
 \alias{median,SpatRaster-method}
 \alias{stdev}
 \alias{stdev,SpatRaster-method}

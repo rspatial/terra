@@ -94,24 +94,6 @@ SpatVector SpatVector::crop(SpatExtent e) {
 
 
 
-
-SpatVector SpatVector::convexhull() {
-	SpatVector out;
-	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	SpatVector a = aggregate(false);
-	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
-	std::string vt = type();
-	GEOSGeometry* h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
-	std::vector<GeomPtr> b(1);
-	b[0] = geos_ptr(h, hGEOSCtxt);
-	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
-	geos_finish(hGEOSCtxt);
-	out = coll.get(0);
-	out.srs = srs;
-	return out;
-}
-
-
 SpatVector SpatVector::crop(SpatVector v) {
 
 	SpatVector out;
@@ -160,6 +142,25 @@ SpatVector SpatVector::crop(SpatVector v) {
 	} 
 	return out;
 }
+
+
+
+SpatVector SpatVector::convexhull() {
+	SpatVector out;
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	SpatVector a = aggregate(false);
+	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
+	std::string vt = type();
+	GEOSGeometry* h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+	std::vector<GeomPtr> b(1);
+	b[0] = geos_ptr(h, hGEOSCtxt);
+	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	out = coll.get(0);
+	out.srs = srs;
+	return out;
+}
+
 
 
 SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) {
@@ -547,6 +548,73 @@ SpatVector SpatVector::erase(SpatVector v) {
 
 
 
+SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
+	SpatVector out;
+	if ((size() == 0) || (v.size()==0)) {
+		out.setError("empty SpatVecor(s)");
+		return out;
+	}
+	if (parallel) {
+		if ((size() != v.size())) {
+			out.setError("SpatVecors do not have the same size");
+			return out;
+		}		
+		GEOSContextHandle_t hGEOSCtxt = geos_init();
+		std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+		std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+		std::vector<GeomPtr> b(size());
+		for (size_t i=0; i < x.size(); i++) {	
+			GEOSCoordSequence* csq = GEOSNearestPoints_r(hGEOSCtxt, x[i].get(), y[i].get());
+			GEOSGeometry* geom = GEOSGeom_createPoint_r(hGEOSCtxt, csq);
+			b[i] = geos_ptr(geom, hGEOSCtxt);
+		}
+		out = vect_from_geos(b, hGEOSCtxt, "points");
+		geos_finish(hGEOSCtxt);
+		
+	} else {	
+		SpatVector mp = v.aggregate(false);
+		GEOSContextHandle_t hGEOSCtxt = geos_init();
+		std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+		std::vector<GeomPtr> y = geos_geoms(&mp, hGEOSCtxt);
+		std::vector<GeomPtr> b(size());
+		for (size_t i = 0; i < x.size(); i++) {	
+			GEOSCoordSequence* csq = GEOSNearestPoints_r(hGEOSCtxt, x[i].get(), y[0].get());
+			GEOSGeometry* geom = GEOSGeom_createPoint_r(hGEOSCtxt, csq);
+			b[i] = geos_ptr(geom, hGEOSCtxt);
+		}
+		out = vect_from_geos(b, hGEOSCtxt, "points");
+		geos_finish(hGEOSCtxt);
+	}
+	return out;
+}
+
+SpatVector SpatVector::nearest_point() {
+	SpatVector out;
+	if ((size() == 0)) {
+		out.addWarning("empty SpatVecor");
+		return out;
+	}
+	if ((size() == 1)) {
+		out.addWarning("single geometry");
+		//return *this;
+	}
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	SpatVector xa = aggregate(false);
+	std::vector<GeomPtr> y = geos_geoms(&xa, hGEOSCtxt);
+	std::vector<GeomPtr> b(size());
+	for (size_t i = 0; i < x.size(); i++) {	
+		GEOSCoordSequence* csq = GEOSNearestPoints_r(hGEOSCtxt, x[i].get(), y[0].get());
+		GEOSGeometry* geom = GEOSGeom_createPoint_r(hGEOSCtxt, csq);
+		b[i] = geos_ptr(geom, hGEOSCtxt);
+	}
+	out = vect_from_geos(b, hGEOSCtxt, "points");
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+
+
 SpatVector SpatVector::centroid() {
 
 	SpatVector out;
@@ -593,6 +661,7 @@ SpatVector SpatVector::unaryunion() {
 	out.srs = srs;
 	return out;
 }
+
 
 /*
 bool geos_buffer(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> &g, double dist, unsigned nQuadSegs) {

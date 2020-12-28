@@ -4,11 +4,30 @@
 # License GPL v3
 
 
+.dotdensity <- function(p, field, x=1, type="regular", seed=0,  ...) {
+	set.seed(seed)
+    n <- length(p)
+    if (n < 1) return(invisible(NULL))
+	f <- tolower(type)
+	stopifnot(type %in% c("regular", "random"))  
+	stopifnot(is.numeric(field))
+
+	x <- x[1]
+	stopifnot(x > 0)
+	d <- round(field / x)
+	d[d < 1 | is.na(d)] <- 0
+
+	spatSample(p, field, type)
+}
+
+
+
+
 .plotLines <- function(x, out, lty=1, lwd=1, ...) {
 	cols <- out$cols
 	if (is.null(cols)) cols = rep("black", size(x))
 
-	g <- geom(x)
+	g <- geom(x, df=TRUE)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(x) split(x, x[,2]))
 	#p <- sapply(g, function(x) lapply(x, function(y) lines(y[,3:4], ...))
@@ -28,7 +47,7 @@
 
 .plotPolygons <- function(x, out, lty=1, lwd=1, density=NULL, angle=45, ...) {
 
-	g <- geom(x)
+	g <- geom(x, df=TRUE)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(y) split(y, y[,2]))
 	n <- length(g)

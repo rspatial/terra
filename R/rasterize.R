@@ -7,7 +7,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 	r <- rast(y, nlyr=1)
 	values(r) <- background
 
-	g <- geom(x)
+	g <- geom(x, df=TRUE)
 	# also allow for multiple columns to multiple layers
 	if (missing(field)) {
 		field <- g[,"id"] # consider multi-point

@@ -30,8 +30,8 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
   \tabular{ll}{
     \code{\link{rast}}\tab Create a SpatRaster from scratch, file, or another object\cr
-    \code{\link{c}} \tab Combine SpatRasters (multiple layers) (like raster::stack)\cr
-    \code{\link{add<-}} \tab Add a SpatRaster to another one (like raster::addLayer)\cr
+    \code{\link{c}} \tab Combine SpatRasters (multiple layers)\cr
+    \code{\link{add<-}} \tab Add a SpatRaster to another one\cr
     \code{\link{subset}} or \code{[[}, or \code{$} \tab Select layers of a SpatRaster\cr
     \code{\link{selectRange}} \tab Select cell values from different layers using an index layer\cr
 --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -428,11 +428,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 }
 
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
-
-\bold{Comparison with the raster package}
-
----------------------------------------------------------------------------------------------------------------------
+\section{XXII. Comparison with the raster package}{
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but 
 note the following important differences in methods names with the 'raster' package

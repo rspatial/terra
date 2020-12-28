@@ -4,6 +4,7 @@
 
 \alias{summary}
 \alias{summary,SpatRaster-method}
+\alias{summary,SpatVector-method}
 
 \title{summary}
 
@@ -13,10 +14,12 @@ Compute summary statistics (min, max, mean, and quartiles) for SpatRaster using 
 
 \usage{
 \S4method{summary}{SpatRaster}(object, size=100000, warn=TRUE, ...)
+
+\S4method{summary}{SpatVector}(object, ...)
 }
 
 \arguments{
-  \item{object}{SpatRaster}
+  \item{object}{SpatRaster or SpatVector}
   \item{size}{positive integer. Size of a regular sample used for large datasets (see \code{\link{spatSample}})}
   \item{warn}{logical. If \code{TRUE} a warning is given if a sample is used}  
   \item{...}{additional arguments passed on to the base \code{\link[base]{summary} method}}  

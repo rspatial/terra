@@ -164,8 +164,13 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"), 
-	function(x, type="points", atts=NULL, crs=NA, ...) {
-		x <- as.matrix(x)
-		vect(x, type=type, atts=atts, crs=crs, ...)
+	function(x, geom=c("lon", "lat"), crs=NA, ...) {
+		if (length(geom) == 2) {
+			v <- vect(as.matrix(x[,geom]), crs=crs)
+		} else if (length(geom) == 1) {
+			v <- vect(unlist(x[,geom]), crs=crs)
+		}
+		values(v) <- x
+		v
 	}
 )

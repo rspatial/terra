@@ -36,7 +36,7 @@ if \code{filled=TRUE}, a new filled contour plot is made. See \code{\link[graphi
 }
 
 \examples{
-r <- rast(system.file("ex/test.tif", package="terra"))
+r <- rast(system.file("ex/elev.tif", package="terra"))
 plot(r)
 contour(r, add=TRUE)
 
@@ -45,6 +45,14 @@ plot(r)
 lines(v)
 
 contour(r, filled=TRUE, nlevels=5)
+
+## if you want a SpatVector 
+template <- disaggregate(rast(r), 10)
+rr <- resample(r, template)
+rr <- floor(rr/100) * 100
+v <- as.polygons(rr)
+plot(v, 1, col=terrain.colors(7))
+
 }
 
 \keyword{methods}

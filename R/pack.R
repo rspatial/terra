@@ -29,7 +29,7 @@ setClass("PackedSpatRaster",
 	vd@type <- geomtype(x)
 	vd@crs <- as.character(crs(x))
 	stopifnot(vd@type %in% c("points", "lines", "polygons"))
-	g <- as.matrix(geom(x))
+	g <- geom(x)
 	vd@coordinates <- g[, c("x", "y")]
 	j <- c(1,2, grep("hole", colnames(g)))
 	g <- g[,j]

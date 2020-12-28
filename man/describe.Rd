@@ -32,7 +32,7 @@ character (invisibly, if \code{print=FALSE})
 }
 
 \examples{
-f <- system.file("ex/test.tif", package="terra")
+f <- system.file("ex/elev.tif", package="terra")
 describe(f)
 describe(f, meta=TRUE)
 #g <- desc(f, options=c("json", "nomd", "proj4"))

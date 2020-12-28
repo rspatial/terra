@@ -28,7 +28,7 @@ Plot (make a map of) the values of a SpatRaster via \code{\link[graphics]{image}
 }
 
 \examples{ 
-f <- system.file("ex/test.tif", package="terra") 
+f <- system.file("ex/elev.tif", package="terra") 
 r <- rast(f)
 image(r)
 image(r, col=rainbow(24))

@@ -238,6 +238,11 @@ class SpatExtent {
 		SpatExtent round(int n);
 		SpatExtent floor();
 		SpatExtent ceil();
+		
+		std::vector<size_t> test_sample(size_t size, size_t N, bool replace, std::vector<double> w, unsigned seed);
+		std::vector<std::vector<double>> sampleRegular(size_t size, bool lonlat);
+		std::vector<std::vector<double>> sampleRandom(size_t size, bool lonlat, unsigned seed);
+		
 };
 
 

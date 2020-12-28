@@ -47,11 +47,18 @@ setMethod("geomtype", signature(x="Spatial"),
 )
 
 setMethod("geom", signature(x="SpatVector"), 
-	function(x, wkt=FALSE, ...){
+	function(x, wkt=FALSE, df=FALSE, ...){
 		if (wkt) {
 			x@ptr$getGeometryWKT()
 		} else {
-			x@ptr$getGeometry()
+			g <- x@ptr$get_geometry()
+			g <- do.call(cbind, g)
+			colnames(g) <- c("geom", "part", "x", "y", "hole")[1:ncol(g)]
+			if (df) {
+				data.frame(g)
+			} else {
+				g
+			}
 		}
 	}
 )
@@ -68,7 +75,7 @@ setMethod("as.data.frame", signature(x="SpatVector"),
 		d <- data.frame(x@ptr$getDF(), check.names=FALSE, fix.empty.names=FALSE, stringsAsFactors=FALSE)
 		colnames(d) <- x@ptr$names
 		if (geom) {
-			g <- geom(x, TRUE)
+			g <- geom(x, wkt=TRUE)
 			if (nrow(d) > 0) {
 				d$geometry <- g
 			} else {

@@ -31,14 +31,15 @@ Pair plots of layers in a SpatRaster. This is a wrapper around graphics function
 }
 
 \examples{
-r <-rast(system.file("ex/test.tif", package="terra"))
-s <- c(r*1, 1/r, sqrt(r))
+r <-rast(system.file("ex/elev.tif", package="terra"))
+s <- c(r, 1/r, sqrt(r))
+names(s) <- c("elevation", "inverse", "sqrt") 
 pairs(s)
 
 # to make indvidual histograms:
 hist(r)
 # or scatter plots:
-plot(r, 1/r)
+plot(s[[1]], s[[2]])
 }
 
 

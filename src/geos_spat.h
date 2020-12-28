@@ -529,6 +529,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 
 
 
+/*
 SpatVectorCollection old_coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEOSCtxt) {
 
 	SpatVectorCollection out;
@@ -675,14 +676,7 @@ SpatVectorCollection old_coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContex
 	return out;
 }
 
-
-
-
-
-
-
-
-
+*/
 
 
 

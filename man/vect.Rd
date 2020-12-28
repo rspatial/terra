@@ -21,7 +21,9 @@ Create a new SpatVector
 \usage{
 \S4method{vect}{character}(x, ...)
 
-\S4method{vect}{data.frame}(x, type="points", atts=NULL, crs=NA, ...)
+\S4method{vect}{matrix}(x, type="points", atts=NULL, crs="", ...)
+
+\S4method{vect}{data.frame}(x, geom=c("lon", "lat"), crs="", ...)
 
 \S4method{vect}{sf}(x, ...)
 }
@@ -31,6 +33,7 @@ Create a new SpatVector
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{the coordinate reference system (PROJ4 notation)}
+\item{geom}{the field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)}
 \item{...}{additional matrices and/or lists with matrices}  
 }
 
@@ -55,15 +58,14 @@ hole <- rbind(c(80,0), c(105,13), c(120,2), c(105,-13))
 z <- rbind(cbind(object=1, part=1, x1, hole=0), cbind(object=2, part=1, x3, hole=0),
 			cbind(object=3, part=1, x2, hole=0), cbind(object=3, part=1, hole, hole=1))
 colnames(z)[3:4] <- c('x', 'y')
-z <- data.frame(z)
 
 p <- vect(z, "polygons")
 p
 
-z[z$hole==1, "object"] <- 4
+z[z[, "hole"]==1, "object"] <- 4
 lns <- vect(z[,1:4], "lines")
 plot(p)
-lines(lns, col='red')
+lines(lns, col="red", lwd=2)
 
 w <- vect("POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
 
@@ -72,10 +74,14 @@ wkt <- c("MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)),
 "POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
 w <- vect(wkt)
 
-# data.frame
+# add data.frame
 g <- geom(w)
-m <- vect(g, atts=data.frame(id=1:2, name=c("a", "b")), crs="+proj=longlat +datum=WGS84")
+d <- data.frame(id=1:2, name=c("a", "b"))
+m <- vect(g, atts=d, crs="+proj=longlat +datum=WGS84")
 
+# Or like this 
+d$wkt = wkt
+x <- vect(d, geom="wkt")
 
 #SpatVect to sf
 #sf::st_as_sf(as.data.frame(w, geom=TRUE), wkt="geometry", crs=crs(w))

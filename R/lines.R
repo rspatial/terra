@@ -20,7 +20,7 @@ setMethod("lines", signature(x="SpatVector"),
 			col <- .getCols(n, col)
 			lwd <- rep_len(lwd, n)
 			lty <- rep_len(lty, n)
-			g <- geom(x)
+			g <- geom(x, df=TRUE)
 			g <- split(g, g[,1])
 			if (gtype == "polygons") {
 				g <- lapply(g, function(x) split(x, x[,c(2,5)]))
@@ -46,15 +46,14 @@ setMethod("points", signature(x="SpatVector"),
 		col <- .getCols(n, col)
 		cex <- rep_len(cex, n)
 		pch <- rep_len(pch, n)
-		g <- geom(x)
+		g <- geom(x, df=TRUE)
 		if (any(table(g$id) > 1)) {
-			g <- geom(x)
 			g <- split(g, g[,1])
 			for (i in 1:n) {
 				graphics::points(g[[i]][,3:4], col=col[i], pch=pch[i], cex=cex[i], ...)
 			}
 		} else {
-			graphics::points(geom(x)[,3:4], col=col,  pch=pch, cex=cex,...)
+			graphics::points(g[,3:4], col=col,  pch=pch, cex=cex,...)
 		}
 	}
 )

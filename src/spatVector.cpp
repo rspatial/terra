@@ -368,6 +368,52 @@ SpatDataFrame SpatVector::getGeometryDF() {
 	return out;
 }
 
+
+
+std::vector<std::vector<double>> SpatVector::getGeometry() {
+
+
+	unsigned n = nxy();
+	std::vector<std::vector<double>> out(5);
+	for (size_t i=0; i>out.size(); i++) {
+		out[i].reserve(n);
+	}
+	for (size_t i=0; i < size(); i++) {
+		SpatGeom g = getGeom(i);
+		if (g.size() == 0) { // empty
+			out[0].push_back(i+1);
+			out[1].push_back(1);
+			out[2].push_back(NAN);
+			out[3].push_back(NAN);
+			out[4].push_back(0);
+		}
+
+		for (size_t j=0; j < g.size(); j++) {
+			SpatPart p = g.getPart(j);
+			for (size_t q=0; q < p.x.size(); q++) {
+				out[0].push_back(i+1);
+				out[1].push_back(j+1);
+				out[2].push_back(p.x[q]);
+				out[3].push_back(p.y[q]);
+				out[4].push_back(0);
+			}
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					SpatHole h = p.getHole(k);
+					for (size_t q=0; q < h.x.size(); q++) {
+						out[0].push_back(i+1);
+						out[1].push_back(j+1);
+						out[2].push_back(h.x[q]);
+						out[3].push_back(h.y[q]);
+						out[4].push_back(k+1);
+					}
+				}
+			}
+		}
+	}
+	return out;
+}
+
 std::string nice_string(const double &x) {
 	std::string s = std::to_string(x);
 	s.erase(s.find_last_not_of('0') + 1, std::string::npos);

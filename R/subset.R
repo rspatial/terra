@@ -147,39 +147,32 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "missing", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	m <- match(j, names(x))
-	m <- stats::na.omit(m)
-	if (length(m) == 0) { 
-		m <- 0
+	j <- match(j, names(x))
+	j <- stats::na.omit(j)
+	if (length(j) == 0) { 
+		j <- 0
 	}
-	x[,m,drop=drop]
+	x[,j,drop=drop]
 })
 
 setMethod("[", c("SpatVector", "numeric", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- positive_indices(i, nrow(x), "'['")
 	j <- stats::na.omit(match(j, names(x)))
 	if (length(j) == 0) j <- 0
 	x <- x[i,j,drop=drop]
 })
 
-
 setMethod("[", c("SpatVector", "logical", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	x <- x[i,]
-	j <- match(j, names(x))
-	j <- stats::na.omit(j)
-	if (length(j) == 0) j <- 0
-	x[,j,drop=drop]
+	i <- which(i)
+	x[i,j,drop=drop]
 })
 
 
 setMethod("[", c("SpatVector", "logical", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
-	x <- x[i,]
-	j <- stats::na.omit(j)
-	if (length(j) == 0) j <- 0
-	x[,j,drop=drop]
+	i <- which(i)
+	x[i,j,drop=drop]
 })
 
 

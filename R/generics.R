@@ -574,6 +574,13 @@ setMethod("summary", signature(object="SpatRaster"),
 )
 
 
+setMethod("summary", signature(object="SpatVector"), 
+	function(object, ...)  {
+		summary(as.data.frame(object), ...)
+	}
+)
+
+
 setMethod("t", signature(x="SpatRaster"), 
 	function(x) {
 		opt <- spatOptions(filename="", overwrite=TRUE, wopt=list())

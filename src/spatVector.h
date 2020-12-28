@@ -137,6 +137,7 @@ class SpatVector {
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
 		bool setGeom(SpatGeom p);
+		std::vector<std::vector<double>> getGeometry();
 		SpatDataFrame getGeometryDF();
 		std::vector<std::string> getGeometryWKT();
 
@@ -244,6 +245,11 @@ class SpatVector {
 		std::vector<int> relate(const std::string relation);
 		std::vector<double> geos_distance(SpatVector v, bool parallel);
 		std::vector<double> geos_distance();
+
+		SpatVector nearest_point(SpatVector v, bool parallel);
+		SpatVector nearest_point();
+		//SpatVector sampleRegular(unsigned size);
+		//SpatVector sampleRandom(unsigned size, unsigned seed);
 
 		SpatVector unaryunion();
 

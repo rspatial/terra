@@ -378,7 +378,7 @@ setAs("im", "SpatRaster",
 
 setAs("SpatVector", "Spatial", 
 	function(from) {
-		g <- geom(from)
+		g <- geom(from, df=TRUE)
 		raster::geom(g, values(from), geomtype(from), .proj4(from))
 	}
 )
@@ -386,7 +386,7 @@ setAs("SpatVector", "Spatial",
 
 setAs("Spatial", "SpatVector", 
 	function(from) {
-		g <- geom(from)
+		g <- geom(from, df=TRUE)
 		colnames(g)[1] <- "id"
 		if (inherits(from, "SpatialPolygons")) {
 			vtype <- "polygons"

@@ -28,7 +28,7 @@ Perspective plot of a SpatRaster. This is an implementation of a generic functio
 
 
 \examples{ 
-r <- rast(system.file("ex/test.tif", package="terra"))
+r <- rast(system.file("ex/elev.tif", package="terra"))
 persp(r)
 }
 
