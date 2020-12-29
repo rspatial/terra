@@ -252,37 +252,51 @@ coordinates <- function(x) {
 	do.call(cbind, x@ptr$coordinates())
 }
 
+get_field_name <- function(x, nms, sender="") {
+	x <- x[1]
+	if (is.numeric(x)) {
+		x <- round(x)
+		if (x > 0 && x <= length(nms)) {
+			x = nms[x]
+		} else {
+			error(sender, "invalid index. there are ", length(nms), " columns")
+		}
+	} else if (is.character(x)) {
+		if (!(x %in% nms)) {
+			error(sender, "invalid name")
+		}
+	}
+	x
+}
+
 setMethod("spatSample", signature(x="SpatVector"), 
-	function(x, size, method="regular", strata=NULL, chess="", ...) {
-		method = match.arg(tolower(method), c("regular", "random", "stratified"))
+	function(x, size, method="regular", by_geom=TRUE, strata=NULL, chess="", ...) {
+		method = match.arg(tolower(method), c("regular", "random"))
 		stopifnot(size > 0)
 		gtype <- geomtype(x)
 		if (gtype == "polygons") {
-			if (method == "stratified") {
-				error("spatSample", "with polygons, method must be 'random' or 'regular'")
-			}
-			x@ptr = x@ptr$sample(size, method, .seed())
+			st <- ""
+			if (!is.null(strata)) {
+				st <- get_field_name(strata, names(x), "spatSample")
+			} 
+			x@ptr = x@ptr$sample(size[1], method[1], by_geom[1], st, .seed())
 			return(messages(x))
-		}
-		
-		if (method=="random") {
-			if (grepl(gtype, "points")) {
+		} else if (grepl(gtype, "points")) {
+			if (!is.null(strata)) {
+				if (inherits(strata, "SpatRaster")) {
+					xy <- coordinates(x)
+					strata <- rast(strata)
+					i <- .grid_sample(xy, size, strata, chess) 
+					return(x[i,])
+				} else {
+					stop("not yet implemented for these strata")
+				}
+			} else {
 				error("spatSample", "use `sample` to sample (point) geometries")
-			} else {
-				stop("not yet implemented")
 			}
-		} else if (method=="regular") {
-			stop("not yet implemented")
 		} else {
-			if (inherits(strata, "SpatRaster")) {
-				xy <- coordinates(x)
-				strata <- rast(strata)
-				i <- .grid_sample(xy, size, strata, chess) 
-				return(x[i,])
-			} else {
-				stop("not yet implemented")
-			}
-		}		
+			stop("not yet implemented for lines")
+		}
 	}
 )
 

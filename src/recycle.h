@@ -91,7 +91,8 @@ template <typename T>
 void rep_each_vect(std::vector<T> &v, std::vector<size_t> n) {
 	std::vector<T> vv = v;
 	v.resize(0);
-	size_t nsum = accumulate(n.begin(), n.end(), 0);
+	size_t nsum = 0;
+	for (size_t i=0; i<n.size(); i++) nsum += n[i];
 	v.reserve(nsum);
 	for (size_t i=0; i<vv.size(); i++) {
 		for (size_t j=0; j<n[i]; j++) {

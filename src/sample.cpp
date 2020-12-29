@@ -537,7 +537,7 @@ std::vector<size_t> SpatRaster::sampleCells(unsigned size, std::string method, b
 }
 
 
-SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
+SpatVector SpatVector::sample(unsigned n, std::string method, bool by_geom, std::string strata, unsigned seed) {
 	std::string gt = type();
 
 	SpatVector out;
@@ -545,61 +545,93 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 		setError("only implemented for polygons");
 		return out;
 	}
-	std::vector<double> a = area();
-	double suma = accumulate(a.begin(), a.end(), 0.0);
-	std::vector<double> pa;
-	pa.reserve(a.size());
-	for (size_t i=0; i<a.size(); i++) {
-		pa.push_back(a[i] / suma);
-	}
 	bool lonlat = is_geographic();
 	bool random = (method == "random");
 
-	std::vector<std::vector<double>> xy(2);
-	std::vector<std::vector<double>> pxy(2);
+	std::vector<double> a = area();
+	double suma = accumulate(a.begin(), a.end(), 0.0);
+	
+	if (by_geom) {
+		std::vector<double> pa;
+		pa.reserve(a.size());
+		for (size_t i=0; i<a.size(); i++) {
+			pa.push_back(a[i] / suma);
+		}
+		std::vector<std::vector<double>> pxy(2);
 
-	std::vector<size_t> nsamp(size());
-	for (size_t i=0; i<size(); i++) {
-		if (pa[i] > 0) {
-			SpatGeom g = getGeom(i);
-			SpatVector ve(g.extent, "");
-			ve.srs = srs;
-			double vea = ve.area()[0];
-			if (random) {
-				double m = vea / a[i];
-				m = std::max(2.0, std::min(m*m, 100.0));
-				size_t ssize = pa[i] * n * m;
-				pxy = g.extent.sampleRandom(ssize, lonlat, seed);
-			} else {
-				size_t ssize = std::round(pa[i] * n * vea / a[i]);
-				pxy = g.extent.sampleRegular(ssize, lonlat);
-			}
-			SpatVector vpnt(pxy[0], pxy[1], points, "");
-			SpatVector vpol(g);
-			vpnt = vpnt.intersect(vpol);
-			if (random) {
-				size_t psize = pa[i] * n;
-				if (vpnt.size() > psize) {
-					std::vector<int> rows(psize);
-					std::iota(rows.begin(), rows.end(), 0);
-					vpnt = vpnt.subset_rows(rows);
+		std::vector<size_t> nsamp(size());
+		for (size_t i=0; i<size(); i++) {
+			if (pa[i] > 0) {
+				SpatGeom g = getGeom(i);
+				SpatVector ve(g.extent, "");
+				ve.srs = srs;
+				double vea = ve.area()[0];
+				if (random) {
+					double m = vea / a[i];
+					m = std::max(2.0, std::min(m*m, 100.0));
+					size_t ssize = pa[i] * n * m;
+					pxy = g.extent.sampleRandom(ssize, lonlat, seed);
+				} else {
+					size_t ssize = std::round(pa[i] * n * vea / a[i]);
+					pxy = g.extent.sampleRegular(ssize, lonlat);
+				}
+				SpatVector vpnt(pxy[0], pxy[1], points, "");
+				SpatVector vpol(g);
+				vpnt = vpnt.intersect(vpol);
+				if (random) {
+					size_t psize = pa[i] * n;
+					if (vpnt.size() > psize) {
+						std::vector<int> rows(psize);
+						std::iota(rows.begin(), rows.end(), 0);
+						vpnt = vpnt.subset_rows(rows);
+					}
+				}
+				nsamp[i] = vpnt.size();
+				if (out.size() == 0) {
+					out = vpnt;
+				} else {
+					out = out.append(vpnt, true);
 				}
 			}
-			nsamp[i] = vpnt.size();
-			if (out.size() == 0) {
-				out = vpnt;
-			} else {
-				out = out.append(vpnt, true);
+		}
+		std::vector<long> id(size());
+		std::iota(id.begin(), id.end(), 1);
+		rep_each_vect(id, nsamp);
+		SpatDataFrame df;
+		df.add_column(id, "pol.id");
+		out.df = df;
+	} else {
+
+		std::vector<std::vector<double>> pxy(2);
+
+		SpatVector ve(extent, "");
+		ve.srs = srs;
+		double vea = ve.area()[0];
+		if (random) {
+			double m = vea / suma;
+			m = std::max(2.0, std::min(m*m, 100.0));
+			size_t ssize = n * m;
+			pxy = extent.sampleRandom(ssize, lonlat, seed);
+		} else {
+			size_t ssize = std::round(n * vea / suma);
+			pxy = extent.sampleRegular(ssize, lonlat);
+		}
+		out = SpatVector(pxy[0], pxy[1], points, "");
+		out = intersect(out);
+		if (random) {
+			if (out.size() > n) {
+				std::vector<int> rows(n);
+				std::iota(rows.begin(), rows.end(), 0);
+				out = out.subset_rows(rows);
 			}
 		}
-	}
+		std::vector<long> id(out.size(), 1);
+		SpatDataFrame df;
+		df.add_column(id, "pol.id");
+		out.df = df;
+	}	
 	out.srs = srs;
-	std::vector<long> id(size());
-	std::iota(id.begin(), id.end(), 1);
-	rep_each_vect(id, nsamp);
-	SpatDataFrame df;
-	df.add_column(id, "pol.id");
-	out.df = df;
+	
 	return out;
 }
 

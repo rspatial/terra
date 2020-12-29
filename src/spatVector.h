@@ -248,7 +248,7 @@ class SpatVector {
 
 		SpatVector nearest_point(SpatVector v, bool parallel);
 		SpatVector nearest_point();
-		SpatVector sample(unsigned n, std::string method, unsigned seed);
+		SpatVector sample(unsigned n, std::string method, bool by_geom, std::string strata, unsigned seed);
 
 		SpatVector unaryunion();
 
