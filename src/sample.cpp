@@ -598,7 +598,7 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 	std::iota(id.begin(), id.end(), 1);
 	rep_each_vect(id, nsamp);
 	SpatDataFrame df;
-	df.add_column(id, "ID");
+	df.add_column(id, "pol.id");
 	out.df = df;
 	return out;
 }

@@ -16,7 +16,7 @@ Check the validity of polygons
 
 \arguments{
 \item{x}{SpatVector}
-\item{messages}{logical. If \code{TRUE} the error messags are returned}
+\item{messages}{logical. If \code{TRUE} the error messages are returned}
 \item{...}{additional arguments. None implemented}
 }
 
