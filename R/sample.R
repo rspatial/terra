@@ -1,5 +1,5 @@
 
-.get_seed <- function() {
+.seed <- function() {
   sample.int(.Machine$integer.max, 1)
 }
 
@@ -96,9 +96,8 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				v <- x@ptr$sampleRegularValues(size)
 			}
 		} else {
-			seed <- .get_seed()
 			if (as.raster) {
-				x@ptr <- x@ptr$sampleRandomRaster(size, replace, seed)
+				x@ptr <- x@ptr$sampleRandomRaster(size, replace, .seed())
 				x <- messages(x, "spatSample")
 				return(x);
 			} else {
@@ -161,59 +160,26 @@ setMethod("spatSample", signature(x="SpatRaster"),
 	}
 )
 
+
 setMethod("spatSample", signature(x="SpatExtent"), 
 	function(x, size, method="regular", lonlat, ...) {
 		if (missing(lonlat)) {
-			stop("provide a lonlat argument")
+			error("spatSample", "provide a lonlat argument")
 		}
 		method = match.arg(method, c("regular", "random"))
 		size <- round(size)
 		stopifnot(size > 0)
-		e <- as.vector(x)
 		if (method=="random") {
-			if (lonlat) {
-				d <- round((e[4] - e[3]) * 1000);
-				dx <- (e[4] - e[3]) / (2 * d)
-				r <- unique(seq(e[3], e[4], length.out=d))
-				w <- abs(cos(pi*r/180))
-				x <- sample.int(length(r), size, prob=w, replace=TRUE)
-				lat <- r[x] + stats::runif(size, -dx, dx)
-				lon <- stats::runif(size, min = e[1], max = e[2])
-				vect(cbind(lon,lat), crs="+proj=lonlat +datum=WGS84")
-			} else {
-				x <- stats::runif(size, min = e[1], max = e[2])
-				y <- stats::runif(size, min = e[3], max = e[4])
-				vect(cbind(x, y))
-			}
+			s <- x@ptr$sampleRandom(size, lonlat, .seed())
 		} else {
-			r <- range(x)
-			ratio <- 0.5 * r[1]/r[2]
-			n <- sqrt(size)
-			nx <- max(1, (round(n*ratio)))
-			ny <- max(1, (round(n/ratio)))
-			xi <- r[1] / nx
-			yi <- r[2] / ny
-			if (lonlat) {
-				lat <- seq(e[3]+0.5*yi, e[4], yi)
-				w <- cos(pi*lat/180)
-				w <- w * length(w)/sum(w)
-				xi <- xi / w
-				xi <- pmin(xi, 180)
-				z <- list()
-				#off <- stats::runif(1) 			
-				for (i in 1:length(lat)) {
-					z[[i]] <- cbind(seq(e[1]+0.5*xi[i], e[2], xi[i]), lat[i])
-				}
-				z <- do.call(rbind, z)
-				vect(z, crs="+proj=lonlat +datum=WGS84")		
-			} else {
-				x <- seq(e[1]+0.5*xi, e[2], xi)
-				y <- seq(e[3]+0.5*yi, e[4], yi)
-				vect(cbind(rep(x, length(y)), rep(y, each=length(x))))
-			}
+			s <- x@ptr$sampleRegular(size, lonlat)
 		}
+		s <- do.call(cbind, s)
+		colnames(s) <- c("x", "y")
+		s
 	}
 )
+
 
 setMethod("spatSample", signature(x="SpatVector"), 
 	function(x, size, method="regular", ...) {
@@ -291,11 +257,20 @@ setMethod("spatSample", signature(x="SpatVector"),
 		method = match.arg(tolower(method), c("regular", "random", "stratified"))
 		stopifnot(size > 0)
 		gtype <- geomtype(x)
+		if (gtype == "polygons") {
+			if (method == "stratified") {
+				error("spatSample", "with polygons, method must be 'random' or 'regular'")
+			}
+			x@ptr = x@ptr$sample(size, method, .seed())
+			return(messages(x))
+		}
+		
 		if (method=="random") {
 			if (grepl(gtype, "points")) {
 				error("spatSample", "use `sample` to sample (point) geometries")
+			} else {
+				stop("not yet implemented")
 			}
-			stop("not yet implemented")
 		} else if (method=="regular") {
 			stop("not yet implemented")
 		} else {
@@ -312,3 +287,59 @@ setMethod("spatSample", signature(x="SpatVector"),
 )
 
 #spatSample(disaggregate(as.points(v)), 1, "stratified", strata=r, chess="")
+
+
+
+# setMethod("spatSample", signature(x="SpatExtent"), 
+	# function(x, size, method="regular", lonlat, ...) {
+		# if (missing(lonlat)) {
+			# stop("provide a lonlat argument")
+		# }
+		# method = match.arg(method, c("regular", "random"))
+		# size <- round(size)
+		# stopifnot(size > 0)
+		# e <- as.vector(x)
+		# if (method=="random") {
+			# if (lonlat) {
+				# d <- round((e[4] - e[3]) * 1000);
+				# dx <- (e[4] - e[3]) / (2 * d)
+				# r <- unique(seq(e[3], e[4], length.out=d))
+				# w <- abs(cos(pi*r/180))
+				# x <- sample.int(length(r), size, prob=w, replace=TRUE)
+				# lat <- r[x] + stats::runif(size, -dx, dx)
+				# lon <- stats::runif(size, min = e[1], max = e[2])
+				# vect(cbind(lon,lat), crs="+proj=lonlat +datum=WGS84")
+			# } else {
+				# x <- stats::runif(size, min = e[1], max = e[2])
+				# y <- stats::runif(size, min = e[3], max = e[4])
+				# vect(cbind(x, y))
+			# }
+		# } else {
+			# r <- range(x)
+			# ratio <- 0.5 * r[1]/r[2]
+			# n <- sqrt(size)
+			# nx <- max(1, (round(n*ratio)))
+			# ny <- max(1, (round(n/ratio)))
+			# xi <- r[1] / nx
+			# yi <- r[2] / ny
+			# if (lonlat) {
+				# lat <- seq(e[3]+0.5*yi, e[4], yi)
+				# w <- cos(pi*lat/180)
+				# w <- w * length(w)/sum(w)
+				# xi <- xi / w
+				# xi <- pmin(xi, 180)
+				# z <- list()
+				# #off <- stats::runif(1) 			
+				# for (i in 1:length(lat)) {
+					# z[[i]] <- cbind(seq(e[1]+0.5*xi[i], e[2], xi[i]), lat[i])
+				# }
+				# z <- do.call(rbind, z)
+				# vect(z, crs="+proj=lonlat +datum=WGS84")		
+			# } else {
+				# x <- seq(e[1]+0.5*xi, e[2], xi)
+				# y <- seq(e[3]+0.5*yi, e[4], yi)
+				# vect(cbind(rep(x, length(y)), rep(y, each=length(x))))
+			# }
+		# }
+	# }
+# )

@@ -90,8 +90,6 @@ d$lon <- c(0,10)
 d$lat <- c(0,10)
 x <- vect(d, geom=c("lon", "lat"))
 
-
-
 ### SpatVect to sf
 #sf::st_as_sf(as.data.frame(w, geom=TRUE), wkt="geometry", crs=crs(w))
 }

@@ -419,7 +419,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 		y <- trimws(y)
 		if (any(is.na(match(y, c("", names(x)))))) {
 			i <- is.na(match(y, names(x)))
-			error("plot", paste(paste(y[i], collapse=",")), "is not a name in x")
+			error("plot", paste(paste(y[i], collapse=",")), " is not a name in x")
 		}
 		nrnc <- c(1,1)
 		if (length(y) > 1) {

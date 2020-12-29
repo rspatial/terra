@@ -409,11 +409,9 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 	std::default_random_engine gen(seed);   
 
 	if (lonlat) {
-		double d = std::round((ymax - ymin) / 1000);
-		double dx = (ymax - ymin) / (2 * d);
+		double d = (ymax - ymin) / 1000;
+		double dx = 0.5 * d;
 		std::vector<double> r = seq(ymin, ymax, d);
-		Rcpp::Rcout << r.size() << std::endl;
-
 		std::vector<double> w;
 		w.reserve(r.size());
 		for (size_t i=0; i<r.size(); i++) {
@@ -426,17 +424,14 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 		lon.reserve(size);
 		std::uniform_real_distribution<> U1(-0.5, 0.5);
 
-		Rcpp::Rcout << x.size() << std::endl;
 		for (size_t i=0; i<x.size(); i++) {
-			Rcpp::Rcout << x[i] << std::endl;
-			//lat.push_back(r[x[i]] + dx * U1(gen));
+			double v = r[x[i]] + dx * U1(gen);
+			lat.push_back(v);
 		}
-/*
 		std::uniform_real_distribution<> U2(xmin, xmax);
 		for (size_t i=0; i<size; i++) {
 			lon.push_back(U2(gen));
 		}
-*/
 		out[0] = lon;
 		out[1] = lat;
 
@@ -489,10 +484,9 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		for (size_t i=0; i<w.size(); i++) {
 			xi.push_back(x_i / (w[i] * nwsumw));
 		}
-		
 		for (size_t i=0; i<lat.size(); i++) {
 			std::vector <double> x = seq(xmin+0.5*xi[i], xmax, xi[i]);
-			std::vector <double> y = {lat[i]};
+			std::vector <double> y(x.size(), lat[i]);
 			out[0].insert(out[0].end(), x.begin(), x.end());
 			out[1].insert(out[1].end(), y.begin(), y.end());
 		}
@@ -541,6 +535,74 @@ std::vector<size_t> SpatRaster::sampleCells(unsigned size, std::string method, b
 	} // else "Cluster"
 	return out;
 }
+
+
+SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
+	std::string gt = type();
+
+	SpatVector out;
+	if (gt != "polygons") {
+		setError("only implemented for polygons");
+		return out;
+	}
+	std::vector<double> a = area();
+	double suma = accumulate(a.begin(), a.end(), 0.0);
+	std::vector<double> pa;
+	pa.reserve(a.size());
+	for (size_t i=0; i<a.size(); i++) {
+		pa.push_back(a[i] / suma);
+	}
+	bool lonlat = is_geographic();
+	bool random = (method == "random");
+
+	std::vector<std::vector<double>> xy(2);
+	std::vector<std::vector<double>> pxy(2);
+
+	std::vector<size_t> nsamp(size());
+	for (size_t i=0; i<size(); i++) {
+		if (pa[i] > 0) {
+			SpatGeom g = getGeom(i);
+			SpatVector ve(g.extent, "");
+			ve.srs = srs;
+			double vea = ve.area()[0];
+			if (random) {
+				double m = vea / a[i];
+				m = std::max(2.0, std::min(m*m, 100.0));
+				size_t ssize = pa[i] * n * m;
+				pxy = g.extent.sampleRandom(ssize, lonlat, seed);
+			} else {
+				size_t ssize = std::round(pa[i] * n * vea / a[i]);
+				pxy = g.extent.sampleRegular(ssize, lonlat);
+			}
+			SpatVector vpnt(pxy[0], pxy[1], points, "");
+			SpatVector vpol(g);
+			vpnt = vpnt.intersect(vpol);
+			if (random) {
+				size_t psize = pa[i] * n;
+				if (vpnt.size() > psize) {
+					std::vector<int> rows(psize);
+					std::iota(rows.begin(), rows.end(), 0);
+					vpnt = vpnt.subset_rows(rows);
+				}
+			}
+			nsamp[i] = vpnt.size();
+			if (out.size() == 0) {
+				out = vpnt;
+			} else {
+				out = out.append(vpnt, true);
+			}
+		}
+	}
+	out.srs = srs;
+	std::vector<long> id(size());
+	std::iota(id.begin(), id.end(), 1);
+	rep_each_vect(id, nsamp);
+	SpatDataFrame df;
+	df.add_column(id, "ID");
+	out.df = df;
+	return out;
+}
+
 
 
 

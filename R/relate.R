@@ -30,6 +30,7 @@ setMethod("relate", signature(x="SpatVector", y="ANY"),
 			if (!inherits(yy, "SpatExtent")) {
 				stop("cannot use argument 'y'")
 			}
+			yy <- as.polygons(yy)
 		}
 		relate(x, yy, relation)
 	}
@@ -43,6 +44,7 @@ setMethod("relate", signature(x="ANY", y="SpatVector"),
 			if (!inherits(xx, "SpatExtent")) {
 				stop("cannot use argument 'x'")
 			}
+			xx <- as.polygons(xx)
 		}
 		relate(xx, y, relation)
 	}
@@ -56,6 +58,7 @@ setMethod("relate", signature(x="ANY", y="ANY"),
 			if (!inherits(xx, "SpatExtent")) {
 				stop("cannot use argument 'x'")
 			}
+			xx <- as.polygons(xx)
 		}
 		yy <- try(vect(y), silent=TRUE)
 		if (!inherits(yy, "SpatVector")) {
@@ -63,6 +66,7 @@ setMethod("relate", signature(x="ANY", y="ANY"),
 			if (!inherits(yy, "SpatExtent")) {
 				stop("cannot use argument 'y'")
 			}
+			yy <- as.polygons(xx)
 		}
 		relate(xx, yy, relation)
 	}

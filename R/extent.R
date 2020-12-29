@@ -3,6 +3,12 @@
 # Version 0.9
 # License GPL v3
 
+setMethod("ext", signature(x="SpatExtent"), 
+	function(x, ...){ 
+		x
+	}
+)
+
 
 setMethod("ext", signature(x="missing"), 
 	function(x, ...){ 

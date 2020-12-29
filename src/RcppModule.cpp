@@ -349,13 +349,12 @@ RCPP_MODULE(spat){
 		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool))( &SpatVector::nearest_point))
 		.method("near_within", (SpatVector (SpatVector::*)())( &SpatVector::nearest_point))
 		
-		//.method("sampleRandom", &SpatVector::sampleRandom)
-		//.method("sampleRegular", &SpatVector::sampleRegular)
+		.method("sample", &SpatVector::sample)
 	;
 
 
-    class_<SpatRasterSource>("SpatRasterSource")
-		.field_readonly("time", &SpatRasterSource::time)
+//    class_<SpatRasterSource>("SpatRasterSource")
+//		.field_readonly("time", &SpatRasterSource::time)
 //		.field("srs", &SpatRasterSource::srs, "srs")
 
 		//.field_readonly("memory", &SpatRasterSource::memory)
@@ -372,7 +371,7 @@ RCPP_MODULE(spat){
 		//.field_readonly("flipped", &SpatRasterSource::flipped)
 		//.field_readonly("rotated", &SpatRasterSource::rotated)
 //		.field_readonly("parameters_changed", &SpatRasterSource::parameters_changed)
-	;
+//	;
 
 
     class_<SpatRaster>("SpatRaster")
@@ -466,7 +465,7 @@ RCPP_MODULE(spat){
 		.property("res", &SpatRaster::resolution)
 	
 // only if SpatRasterSource is exposed
-		.field_readonly("source", &SpatRaster::source )
+//		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
 

@@ -87,13 +87,25 @@ void rep_each(std::vector<T> &v, unsigned n) {
 	}
 }
 
+template <typename T>
+void rep_each_vect(std::vector<T> &v, std::vector<size_t> n) {
+	std::vector<T> vv = v;
+	v.resize(0);
+	size_t nsum = std::accumulate(n.begin(), n.end(), 0);
+	v.reserve(nsum);
+	for (size_t i=0; i<vv.size(); i++) {
+		for (size_t j=0; j<n[i]; j++) {
+			v.push_back(vv[i]);
+		}
+	}
+}
 
 template <typename T>
 std::vector<T> seq(T start, T end, T increment) {
 	size_t s = floor((end - start) / increment);
 	std::vector<T> out;
 	out.reserve(s);
-	for (size_t i=0; i<s; i++) {
+	for (size_t i=0; i<=s; i++) {
 		out.push_back(start + i * increment);
 	}
 	return out;

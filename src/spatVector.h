@@ -248,8 +248,7 @@ class SpatVector {
 
 		SpatVector nearest_point(SpatVector v, bool parallel);
 		SpatVector nearest_point();
-		//SpatVector sampleRegular(unsigned size);
-		//SpatVector sampleRandom(unsigned size, unsigned seed);
+		SpatVector sample(unsigned n, std::string method, unsigned seed);
 
 		SpatVector unaryunion();
 
