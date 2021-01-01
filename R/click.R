@@ -86,4 +86,13 @@ setMethod("click", signature(x="SpatRaster"),
 
 
 
+setMethod("click", signature(x="SpatVector"), 
+	function(x, n=1, type="n", ...) {
+		loc <- graphics::locator(n, type, ...)
+		xy <- vect(cbind(x=loc$x, y=loc$y))
+		e <- extract(xy, x)
+		e[,-1]
+	}
+)
+
 

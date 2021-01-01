@@ -9,8 +9,12 @@
 
 
 setMethod("crs", signature("SpatRaster"), 
-	function(x) {
-		x@ptr$get_crs("wkt")
+	function(x, proj4=FALSE) {
+		if (proj4) {
+			x@ptr$get_crs("proj4")		
+		} else {
+			x@ptr$get_crs("wkt")
+		}
 	}
 )
 
@@ -52,8 +56,12 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 
 
 setMethod("crs", signature("SpatVector"), 
-	function(x) {
-		x@ptr$get_crs("wkt")
+	function(x, proj4=FALSE) {
+		if (proj4) {
+			x@ptr$get_crs("proj4")		
+		} else {
+			x@ptr$get_crs("wkt")
+		}
 	}
 )
 

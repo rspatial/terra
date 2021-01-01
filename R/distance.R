@@ -3,6 +3,7 @@
 # Version 1.0
 # License GPL v3
 
+
 setMethod("distance", signature(x="SpatRaster", y="missing"), 
 	function(x, y, grid=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- spatOptions(filename, overwrite, wopt=list())
@@ -35,18 +36,46 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 )
 
 
+mat2wide <- function(m, sym=TRUE, keep=NULL) {
+	bool <- is.logical(m)
+	if (sym) {
+		m[lower.tri(m)] <- NA
+	}
+	m <- cbind(from=rep(1:nrow(m), each=ncol(m)), to=rep(1:ncol(m), nrow(m)), value=as.vector(t(m)))
+	m <- m[!is.na(m[,3]), , drop=FALSE]
+	if (!is.null(keep)) {
+		m <- m[m[,3] == keep, 1:2, drop=FALSE]
+	}
+	m
+}
+
 
 setMethod("distance", signature(x="SpatVector", y="missing"), 
-	function(x, y, ...) {
-		nr <- nrow(x)
-		d <- x@ptr$distance_self()
+	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, ...) {
+		if (sequential) {
+			return( x@ptr$distance_self(sequential))
+		}
+		d <- x@ptr$distance_self(sequential)
 		messages(x, "distance")
 		class(d) <- "dist"
-		attr(d, "Size") <- nr
+		attr(d, "Size") <- nrow(x)
 		attr(d, "Diag") <- FALSE
 		attr(d, "Upper") <- FALSE
 		attr(d, "method") <- "spatial"
+		if (pairs) {
+			d <- as.matrix(d)
+			diag(d) <- NA
+			d <- mat2wide(d, symmetrical)
+		}
 		d
+	}
+)
+
+
+setMethod("distance", signature(x="matrix", y="missing"), 
+	function(x, y, lonlat, sequential=FALSE, ...) {
+		x = vect(x)
+		distance(x, lonlat, sequential)
 	}
 )
 

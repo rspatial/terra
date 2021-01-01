@@ -187,7 +187,7 @@ setMethod("rast", signature(x="array"),
 
 
 
-setMethod("rast", signature(x="Raster"),
+setMethod("rast", signature(x="ANY"),
 	function(x, ...) {
 		methods::as(x, "SpatRaster")
 	}

@@ -155,11 +155,13 @@ class SpatVector {
 		std::vector<double> area();
 		std::vector<double> length();
 		std::vector<double> distance(SpatVector x, bool pairwise);
-		std::vector<double> distance();
+		std::vector<double> distance(bool sequential);
+
+		std::vector<std::vector<size_t>> knearest(size_t k);
 
 		size_t size();
 		SpatVector as_lines();
-		SpatVector as_points();
+		SpatVector as_points(bool multi);
 		SpatVector remove_holes();
 		SpatVector get_holes();
 		SpatVector set_holes(SpatVector x, size_t i);
@@ -235,16 +237,17 @@ class SpatVector {
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
+		SpatVector delauny(double tolerance, int onlyEdges);		
 		SpatVector convexhull();
 		SpatVector intersect(SpatVector v);
 		SpatVector unite(SpatVector v);
 		SpatVector erase(SpatVector v);
 		SpatVector cover(SpatVector v, bool identity);
 		SpatVector symdif(SpatVector v);
-		std::vector<int> relate(SpatVector v, const std::string relation);
-		std::vector<int> relate(const std::string relation);
+		std::vector<int> relate(SpatVector v, std::string relation);
+		std::vector<int> relate(std::string relation, bool symmetrical);
 		std::vector<double> geos_distance(SpatVector v, bool parallel);
-		std::vector<double> geos_distance();
+		std::vector<double> geos_distance(bool sequential);
 
 		SpatVector nearest_point(SpatVector v, bool parallel);
 		SpatVector nearest_point();

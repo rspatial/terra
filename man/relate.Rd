@@ -16,19 +16,21 @@ relate
 }
 
 \description{
-Geta matrix indicating the presence or absence of spatial relationships between geometries.
+Get a matrix indicating the presence or absence of spatial relationships between geometries.
 }
 
 \usage{
 \S4method{relate}{SpatVector,SpatVector}(x, y, relation)
 
-\S4method{relate}{SpatVector,missing}(x, y, relation)
+\S4method{relate}{SpatVector,missing}(x, y, relation, pairs=FALSE, symmetrical=FALSE)
 }
 
 \arguments{
-  \item{x}{SpatVector or any object for which vect returns a SpatVector or else for which ext returns a SpatExtent}
+  \item{x}{SpatVector or any object for which vect returns a SpatVector or else for which \code{\link{ext}} returns a SpatExtent}
   \item{y}{missing or as for \code{x}}
-  \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint"}
+  \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{wikipedia} or \href{http://docs.geotools.org/stable/userguide/library/jts/dim9.html}{geotools doc}}
+  \item{pairs}{logical. If \code{TRUE} a "from", "to" matrix is returned for the cases where the requested relation is \code{TRUE}} 
+  \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the relation between a pair is only included once. For example, the relation between geometry 1 and 3 is included, but the relation between 3 and 1 is not. Note that whole some relationships are symmetrical (e.g. "touches", other are not (e.g. "within")}
 } 
 
 \value{
@@ -36,7 +38,7 @@ matrix
 }
 
 \seealso{
-\code{\link{intersect}}, \code{\link{crop}}
+\code{\link{adjacent}}, \code{\link{near}}, \code{\link{intersect}}, \code{\link{crop}}
 }
 
 \examples{
@@ -55,7 +57,7 @@ lines(p, lwd=2)
 text(p)
 
 ## relate SpatVectors
-relate(p1, p2, "intersect")
+relate(p1, p2, "intersects")
 relate(p1, p3, "touches")
 relate(p1, p5, "disjoint")
 relate(c(p1, p2), p4, "disjoint")

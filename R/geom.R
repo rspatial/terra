@@ -14,7 +14,11 @@ roundtrip <- function(x, coll=FALSE) {
 setMethod("is.valid", signature(x="SpatVector"), 
 	function(x, messages=FALSE, ...) {
 		if (messages) {
-			x@ptr$geos_isvalid_msg()
+			r <- x@ptr$geos_isvalid_msg()
+			d <- data.frame(matrix(r, ncol=2, byrow=TRUE))
+			d[,1] = d[,1] == "\001"
+			colnames(d) <- c("valid", "reason")
+			d
 		} else {
 			x@ptr$geos_isvalid()
 		}
@@ -160,12 +164,19 @@ setMethod("voronoi", signature(x="SpatVector"),
 	function(x, bnd=NULL, tolerance=0, as.lines=FALSE, ...) {
 		if (is.null(bnd)) {
 			bnd <- vect()
-		} 
-		if (inherits(bnd, "SpatExtent")) {
+		} else if (inherits(bnd, "SpatExtent")) {
 			bnd <- as.polygons(bnd)
 		}
 		x@ptr <- x@ptr$voronoi(bnd@ptr, tolerance, as.lines)
 		messages(x, "voronoi")
+	}
+)
+
+
+setMethod("delauny", signature(x="SpatVector"), 
+	function(x, tolerance=0, as.lines=FALSE, ...) {
+		x@ptr <- x@ptr$delauny(tolerance, as.lines)
+		messages(x, "delauny")
 	}
 )
 

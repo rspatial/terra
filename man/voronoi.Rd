@@ -1,30 +1,34 @@
 \name{voronoi}
 
+\alias{delauny}
 \alias{voronoi}
 \alias{voronoi,SpatVector-method}
+\alias{delauny,SpatVector-method}
 
 
-\title{voronoi diagram}
+\title{voronoi diagram and delauny triangles}
 
 \description{
-Get a voronoi diagram for points, or nodes of lines or polygons
+Get a voronoi diagram or delauny triangles for points, or nodes of lines or polygons
 }
 
 \usage{
 \S4method{voronoi}{SpatVector}(x, bnd=NULL, tolerance=0, as.lines=FALSE, ...) 
+
+\S4method{delauny}{SpatVector}(x, tolerance=0, as.lines=FALSE, ...) 
 }
 
 
 \arguments{
 \item{x}{SpatVector}
-\item{bnd}{SpatVector to set the outer boundary. You can only make it larger then the default, not smaller}
+\item{bnd}{SpatVector to set the outer boundary of the voronoi diagram}
 \item{tolerance}{numeric >= 0, snapping tolerance (0 is no snapping)}
 \item{as.lines}{logical. If \code{TRUE}, lines are returned without the outer boundary}
 \item{...}{additional arguments. None implemented}  
 }
 
 
-\value{SpatVector of points}
+\value{SpatVector}
 
 
 \examples{
@@ -41,3 +45,4 @@ points(x)
 }
 
 \keyword{spatial}
+

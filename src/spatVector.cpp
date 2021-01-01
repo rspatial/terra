@@ -674,3 +674,61 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 	return out;
 }
 
+
+
+SpatVector SpatVector::as_points(bool multi) {
+	SpatVector v = *this;
+	if (geoms[0].gtype == points) {
+		v.addWarning("returning a copy");
+		return v;
+	}
+	if (geoms[0].gtype == polygons) {
+		v = v.as_lines();
+	}
+
+	for (size_t i=0; i < v.geoms.size(); i++) {
+		SpatGeom g;
+		g.gtype = points;
+		for (size_t j=0; j<geoms[i].parts.size(); j++) {
+			SpatPart p = geoms[i].parts[j];
+			for (size_t k=0; k<p.size(); k++) {
+				g.addPart(SpatPart(p.x[k], p.y[k]));
+			}
+		}
+		v.geoms[i] = g;
+	}
+	if (multi) {
+		v.df = df;
+	} else {
+		v = v.disaggregate();
+	}
+	return(v);
+}
+
+
+
+SpatVector SpatVector::as_lines() {
+	SpatVector v = *this;
+	if (geoms[0].gtype != polygons) {
+		v.setError("this only works for polygons");
+		return v;
+	}
+	for (size_t i=0; i<size(); i++) {
+		for (size_t j=0; j < v.geoms[i].size(); j++) {
+			SpatPart p = v.geoms[i].parts[j];
+			if (p.hasHoles()) {
+				for (size_t k=0; k < p.nHoles(); k++) {
+					SpatHole h = p.getHole(k);
+					SpatPart pp(h.x, h.y);
+					v.geoms[i].addPart(pp);
+				}
+				p.holes.resize(0);
+				v.geoms[i].parts[j] = p;
+			}
+		}
+		v.geoms[i].gtype = lines;
+	}
+	v.df = df;
+	return(v);
+}
+

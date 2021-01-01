@@ -287,10 +287,10 @@ RCPP_MODULE(spat){
 		.method("set_crs", (bool (SpatVector::*)(std::string crs))( &SpatVector::setSRS))
 		//.method("prj", &SpatVector::getPRJ)
 
-		.method("distance_self", (std::vector<double> (SpatVector::*)())( &SpatVector::distance))
+		.method("distance_self", (std::vector<double> (SpatVector::*)(bool))( &SpatVector::distance))
 		.method("distance_other", (std::vector<double> (SpatVector::*)(SpatVector, bool))( &SpatVector::distance))
 
-		.method("geosdist_self", (std::vector<double> (SpatVector::*)())( &SpatVector::geos_distance))
+		.method("geosdist_self", (std::vector<double> (SpatVector::*)(bool))( &SpatVector::geos_distance))
 		.method("geosdist_other", (std::vector<double> (SpatVector::*)(SpatVector, bool))( &SpatVector::geos_distance))
 
 		.method("extent", &SpatVector::getExtent, "extent")
@@ -339,15 +339,17 @@ RCPP_MODULE(spat){
 
 		.method("union", &SpatVector::unite)
 		.method("intersect", &SpatVector::intersect)
+		.method("delauny", &SpatVector::delauny)
 		.method("voronoi", &SpatVector::voronoi)
 		.method("chull", &SpatVector::convexhull)
 		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string))( &SpatVector::relate ))
-		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string))( &SpatVector::relate ))
+		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent))( &SpatVector::crop ))
 		.method("crop_vct", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::crop ))
 
 		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool))( &SpatVector::nearest_point))
 		.method("near_within", (SpatVector (SpatVector::*)())( &SpatVector::nearest_point))
+		//.method("knearest", &SpatVector::knearest)
 		
 		.method("sample", &SpatVector::sample)
 	;

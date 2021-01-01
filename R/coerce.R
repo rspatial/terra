@@ -66,9 +66,9 @@ setMethod("as.lines", signature(x="SpatVector"),
 
 
 setMethod("as.points", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x, multi=FALSE, ...) {
 		opt <- .getOptions()
-		x@ptr <- x@ptr$as_points()
+		x@ptr <- x@ptr$as_points(multi)
 		messages(x, "as.points")
 	}
 )

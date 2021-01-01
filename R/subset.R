@@ -75,7 +75,7 @@ setMethod("subset", signature(x="SpatVector"),
 	if (is.character(subset)) {
 		i <- stats::na.omit(match(subset, names(x)))
 	} else {
-		i <- positive_indices(i, ncol(x), "subset")
+		i <- positive_indices(subset, ncol(x), "subset")
 	}
 	if (length(i)==0) {
 		i <- 0

@@ -1,10 +1,13 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
+if (!isGeneric("delauny")) {setGeneric("delauny", function(x,...) standardGeneric("delauny"))}
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x,...) standardGeneric("voronoi"))}
 if (!isGeneric("convexhull")) {setGeneric("convexhull", function(x,...) standardGeneric("convexhull"))}
 if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}
 if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y, ...) standardGeneric("intersect"))}
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
+if (!isGeneric("near")) {setGeneric("near", function(x, ...) standardGeneric("near"))}
+if (!isGeneric("nearest")) {setGeneric("nearest", function(x, ...) standardGeneric("nearest"))}
 
 if (!isGeneric("symdif")) {setGeneric("symdif", function(x, y, ...) standardGeneric("symdif"))}
 

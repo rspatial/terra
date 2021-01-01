@@ -10,12 +10,28 @@ function(x, mx=50000, ...) {
 )
 
 setMethod("lines", signature(x="SpatVector"), 
-	function(x, col, lwd=1, lty=1, ...)  {
+	function(x, y=NULL, col, lwd=1, lty=1, arrows=FALSE, ...)  {
 		gtype <- geomtype(x)
-		if (grepl("points", gtype)) {
-			points(x, col, ...)
+		if (missing(col)) col <- "black"
+		if (!is.null(y)) {
+			stopifnot(inherits(y, "SpatVector"))
+			ytype <- geomtype(y)
+			if ((ytype != "points") || (gtype != "points")) {
+				error("lines", "when supplying two SpatVectors, both must have point geometry")
+			}
+			stopifnot(nrow(x) == nrow(y))	
+			p1 <- geom(x)[, c("x", "y")]
+			p2 <- geom(y)[, c("x", "y")]
+			if (arrows) {
+				arrows(p1[,1], p1[,2], p2[,1], p2[,2], col=col, lwd=lwd, lty=lty, ...)
+			} else {
+				a <- as.vector(t(cbind(p1[,1], p2[,1], NA)))
+				b <- as.vector(t(cbind(p1[,2], p2[,2], NA)))
+				lines(cbind(a, b), col=col, lwd=lwd, lty=lty, ...)
+			}
+		} else if (grepl("points", gtype)) {
+			points(x, col=col, type="l", lwd=lwd, lty=lty, ...)
 		} else {
-			if (missing(col)) col <- "black"
 			n <- size(x)
 			col <- .getCols(n, col)
 			lwd <- rep_len(lwd, n)

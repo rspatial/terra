@@ -6,6 +6,7 @@
 \alias{distance,SpatVector,missing-method}
 \alias{distance,SpatVector,SpatVector-method}
 \alias{distance,matrix,matrix-method}
+\alias{distance,matrix,missing-method}
 
 \title{Geographic distance}
 
@@ -29,11 +30,13 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 
 \S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{distance}{SpatVector,missing}(x, y, ...)
+\S4method{distance}{SpatVector,missing}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, ...)
 
 \S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, ...)
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, ...)
+
+\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, ...)
 }
 
 \arguments{
@@ -44,14 +47,21 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   \item{...}{additional arguments. None implemented}  
+  \item{sequential}{logical. If \code{TRUE}, the distance between sequential geometries is returned}
   \item{pairwise}{logical. If \code{TRUE} and if x and y have the same size (number of rows), the pairwise distances are returned instead of the distances between all elements} 
   \item{lonlat}{logical. If \code{TRUE} the coordinates are interpreted as angular (longitude/latitude). If \code{FALSE} they are interpreted as planar}
+  \item{pairs}{logical. If \code{TRUE} a "from", "to", "distance" matrix is returned} 
+  \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the distance between a pair is only included once. The distance between geometry 1 and 3 is included, but the (same) distance between 3 and 1 is not}
 }
 
 \value{
 SpatRaster or numeric or matrix or distance matrix (object of class "dist")
+}
 
-The unit is in meters if the CRS is \code{longlat} and in map units (typically also meters) when it is not.
+\note{
+The distance unit is in meters.
+
+A distance matrix can be coerced into a matrix with \code{as.matrix}
 }
 
 

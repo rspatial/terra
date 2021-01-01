@@ -12,7 +12,7 @@
 \alias{rast,list-method}
 \alias{rast,SpatExtent-method}
 \alias{rast,SpatVector-method}
-\alias{rast,Raster-method}
+\alias{rast,ANY-method}
 \alias{rast,PackedSpatRaster-method}
 
 \title{Create a SpatRaster}
@@ -46,7 +46,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 }
 
 \arguments{
-\item{x}{filename (character), SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects, or Raster* object (from the "raster" package). Can also be missing}
+\item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`}
 \item{subds}{positive integer or character to select a subdataset. If zero or "", all subdatasets are returned (if possible)}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}

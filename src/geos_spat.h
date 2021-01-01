@@ -96,37 +96,27 @@ GEOSContextHandle_t geos_init(void) {
 }
 
 
-// send messages to a global vector instead of to R warnings.
-std::vector<std::string> msgs;
-
-
-static void __msgHandler(const char *fmt, ...) {
-	char buf[BUFSIZ], *p;
-	va_list ap;
-	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
-	va_end(ap);
-	p = buf + strlen(buf) - 1;
-	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
-    msgs.push_back(buf); 
+static void __warningIgnore(const char *fmt, ...) {
 	return;
 }
 
 GEOSContextHandle_t geos_init2(void) {
-    msgs.resize(0); 
 
 #ifdef HAVE350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
-	GEOSContext_setNoticeHandler_r(ctxt, __msgHandler);
+	GEOSContext_setNoticeHandler_r(ctxt, __warningIgnore);
 	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
 	return ctxt;
 #else
-	return initGEOS_r((GEOSMessageHandler) __msgHandler, (GEOSMessageHandler) __errorHandler);
+	return initGEOS_r((GEOSMessageHandler) __warningIgnore, (GEOSMessageHandler) __errorHandler);
 #endif
 }
 
 
-GEOSGeometry* geos_line(std::vector<double> x, std::vector<double> y, GEOSContextHandle_t hGEOSCtxt) {
+
+
+
+GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
 	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
@@ -141,7 +131,7 @@ GEOSGeometry* geos_line(std::vector<double> x, std::vector<double> y, GEOSContex
 
 
 
-GEOSGeometry* geos_linearRing(std::vector<double> x, std::vector<double> y, GEOSContextHandle_t hGEOSCtxt) {
+GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();
 	pseq = GEOSCoordSeq_create_r(hGEOSCtxt, n, 2);
@@ -155,7 +145,7 @@ GEOSGeometry* geos_linearRing(std::vector<double> x, std::vector<double> y, GEOS
 }
 
 
-GEOSGeometry* geos_polygon(std::vector<double> &x, std::vector<double> &y, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy, GEOSContextHandle_t hGEOSCtxt) {
+GEOSGeometry* geos_polygon(const std::vector<double> &x, const std::vector<double> &y, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSGeometry* shell = geos_linearRing(x, y, hGEOSCtxt);
 	size_t nh = hx.size();
 	std::vector<GEOSGeometry*> holes(nh);
@@ -190,18 +180,27 @@ std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
 	g.reserve(n);
 	std::string vt = v->type();
 	if (vt == "points") {
-		std::vector<std::vector<double>> xy = v->coordinates();
-		std::vector<double> x = xy[0];
-		std::vector<double> y = xy[1];
-		GEOSCoordSequence *pseq;
-		for (size_t i = 0; i < n; i++) {
-			pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 1, 2);
-			GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, 0, x[i]);
-			GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, 0, y[i]);
-			GEOSGeometry* pt = GEOSGeom_createPoint_r(hGEOSCtxt, pseq);
-			g.push_back( geos_ptr(pt, hGEOSCtxt) );
-			// GEOSCoordSeq_destroy(pseq); 
+		for (size_t i=0; i<n; i++) {
+			SpatGeom svg = v->getGeom(i);
+			size_t np = svg.size();
+			GEOSCoordSequence *pseq;
+			std::vector<GEOSGeometry*> geoms;
+			geoms.reserve(np);
+			for (size_t j = 0; j < np; j++) {
+				//SpatPart svp = svg.getPart(j);
+				pseq = GEOSCoordSeq_create_r(hGEOSCtxt, 1, 2);
+				GEOSCoordSeq_setX_r(hGEOSCtxt, pseq, 0, svg.parts[j].x[0]);
+				GEOSCoordSeq_setY_r(hGEOSCtxt, pseq, 0, svg.parts[j].y[0]);
+				GEOSGeometry* pt = GEOSGeom_createPoint_r(hGEOSCtxt, pseq);
+				if (pt != NULL) {
+					geoms.push_back(pt);
+				}
+			}
+			GEOSGeometry* gcol = (np == 1) ? geoms[0] :		
+				GEOSGeom_createCollection_r(hGEOSCtxt, GEOS_MULTIPOINT, &geoms[0], np);			
+			g.push_back( geos_ptr(gcol, hGEOSCtxt) );
 		}
+
 	} else if (vt == "lines") {
 		// gp = NULL;
 		for (size_t i=0; i<n; i++) {
@@ -210,8 +209,8 @@ std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
 			std::vector<GEOSGeometry*> geoms;
 			geoms.reserve(np);
 			for (size_t j=0; j < np; j++) {
-				SpatPart svp = svg.getPart(j);			
-				GEOSGeometry* gp = geos_line(svp.x, svp.y, hGEOSCtxt); 
+				//SpatPart svp = svg.getPart(j);			
+				GEOSGeometry* gp = geos_line(svg.parts[j].x, svg.parts[j].y, hGEOSCtxt); 
 				if (gp != NULL) {
 					geoms.push_back(gp);
 				}
@@ -233,6 +232,7 @@ std::vector<GeomPtr> geos_geoms(SpatVector *v, GEOSContextHandle_t hGEOSCtxt) {
 				getHoles(svp, hx, hy); 
 				geoms[j] = geos_polygon(svp.x, svp.y, hx, hy, hGEOSCtxt); 
 			}
+			//Rcpp::Rcout << np << std::endl;
 			GEOSGeometry* gcol = (np == 1) ? geoms[0] :		
 				GEOSGeom_createCollection_r(hGEOSCtxt, GEOS_MULTIPOLYGON, &geoms[0], np);			
 			g.push_back( geos_ptr(gcol, hGEOSCtxt));

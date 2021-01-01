@@ -329,19 +329,22 @@
 	out$ngeom <- nrow(x)
 	e <- as.vector(ext(x))
 	out$ext <- e
-	if (!(is.null(xlim) & is.null(ylim))) {
+
+	if (!is.null(xlim)) {
 		stopifnot(length(xlim) == 2)
-		stopifnot(length(ylim) == 2)
-		if (!is.null(xlim)) e[1:2] <- sort(xlim)
-		if (!is.null(ylim)) e[3:4] <- sort(ylim)
-		out$lim <- e
+		e[1:2] <- sort(xlim)
 	} else {
 		dx <- diff(e[1:2]) / 50
-		dy <- diff(e[3:4]) / 50
-		e <- e + c(-dx, dx, -dy, dy)
-		out$lim <- e
+		e[1:2] <- e[1:2] + c(-dx, dx)
 	}
-
+	if (!is.null(ylim)) {
+		stopifnot(length(ylim) == 2)
+		e[3:4] <- sort(ylim)
+	} else {
+		dy <- diff(e[3:4]) / 50
+		e[3:4] <- e[3:4] + c(-dy, dy)
+	}
+	out$lim <- e
 
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)

@@ -181,18 +181,6 @@ setMethod("spatSample", signature(x="SpatExtent"),
 )
 
 
-setMethod("spatSample", signature(x="SpatVector"), 
-	function(x, size, method="regular", ...) {
-		method = match.arg(method, c("regular", "random"))
-		stopifnot(size > 0)
-		if (method=="random") {
-			stop("not yet implemented")		
-		} else {
-			stop("not yet implemented")
-		}		
-	}
-)
-
 
 
 
@@ -269,6 +257,7 @@ get_field_name <- function(x, nms, sender="") {
 	x
 }
 
+
 setMethod("spatSample", signature(x="SpatVector"), 
 	function(x, size, method="regular", by_geom=TRUE, strata=NULL, chess="", ...) {
 		method = match.arg(tolower(method), c("regular", "random"))
@@ -289,13 +278,13 @@ setMethod("spatSample", signature(x="SpatVector"),
 					i <- .grid_sample(xy, size, strata, chess) 
 					return(x[i,])
 				} else {
-					stop("not yet implemented for these strata")
+					error("spatSample", "not yet implemented for these strata")
 				}
 			} else {
 				error("spatSample", "use `sample` to sample (point) geometries")
 			}
 		} else {
-			stop("not yet implemented for lines")
+			error("spatSample", "not yet implemented for lines")
 		}
 	}
 )

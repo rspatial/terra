@@ -18,7 +18,7 @@ With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}) or 
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, ...)
 
-\S4method{spatSample}{SpatVector}(x, size, method="regular", strata=NULL, chess="", ...)
+\S4method{spatSample}{SpatVector}(x, size, method="regular", by_geom=TRUE, strata=NULL, chess="", ...)
 
 \S4method{spatSample}{SpatExtent}(x, size, method="regular", lonlat, ...)
 }
@@ -31,8 +31,9 @@ With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}) or 
   \item{na.rm}{logical. If \code{TRUE}, code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
   \item{cells}{logical. If \code{TRUE}, cellnumbers are returned instead of values}
-  \item{strata}{SpatVector (polygons) or SpatRaster. For if \code{x} is a SpatVector of points and \code{method=stratified}}
-  \item{chess}{character. One of "", "white", or "black". For startified sampling of \code{strata} is a SpatRaster. If not "", samples are only taken from the "white" or "black" cells}
+  \item{by_geom}{logical. If \code{TRUE}, sampling is done seperately for each geometry (multi-polygon or multi-line), otherwise, a single sample is taken for all geometries}
+  \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
+  \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}
   
   \item{lonlat}{logical. If \code{TRUE}, sampling of a SpatExtent is weighted by \code{cos(latitude)}. For SpatRaster and SpatVector this done based on the \code{\link{crs}}, but it is ignored if \code{as.raster=TRUE}}
   \item{...}{additional arguments. None implemented}

@@ -10,15 +10,6 @@ setMethod("origin", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("adjacent", signature(x="SpatRaster"), 
-	function(x, cells, directions="rook", include=FALSE, ...) {
-		v <- x@ptr$adjacent(cells-1, directions, include)
-		messages(x, "adjacent")
-		v <- do.call(rbind, v)
-		return(v+1)
-	}
-)
-
 
 setMethod("align", signature(x="SpatExtent", y="SpatRaster"), 
 	function(x, y, snap="near", ...) {
@@ -623,6 +614,16 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			colnames(u) = names(x)
 		}
 		u
+	}
+)
+
+setMethod("unique", signature(x="SpatVector", incomparables="ANY"), 
+	function(x, incomparables=FALSE, ...) {
+		u <- unique(as.data.frame(x, geom=TRUE), incomparables=incomparables, ...)
+		v <- vect(u, geom="geometry")
+		v$geometry <- NULL
+		crs(v) <- crs(x)
+		v
 	}
 )
 

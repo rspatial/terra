@@ -126,9 +126,8 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 
 
 
-std::vector<double> SpatVector::distance() {
+std::vector<double> SpatVector::distance(bool sequential) {
 	std::vector<double> d;
-	std::string gtype = type();
 	if (srs.is_empty()) {
 		setError("crs not defined");
 		return(d);
@@ -137,33 +136,60 @@ std::vector<double> SpatVector::distance() {
 	m = std::isnan(m) ? 1 : m;
 	bool lonlat = is_geographic(); // m == 0
 	
-	if ((!lonlat) || (gtype != "points")) {
-		d = geos_distance();
+//	if ((!lonlat) || (gtype != "points")) {
+	std::string gtype = type();
+	if (gtype != "points") {
+		d = geos_distance(sequential);
 		if ((!lonlat) && (m != 1)) {
 			for (double &i : d) i *= m;
 		}
 		return d;
 	} else {
-		size_t s = size();
-		size_t n = ((s-1) * s)/2;
-		d.reserve(n);
-		std::vector<std::vector<double>> p = coordinates();
-		if (lonlat) {
-			double a = 6378137.0;
-			double f = 1/298.257223563;	
-			for (size_t i=0; i<(s-1); i++) {
-				for (size_t j=(i+1); j<s; j++) {
+		if (sequential) {
+			std::vector<std::vector<double>> p = coordinates();
+			size_t n = p[0].size();
+			Rcpp::Rcout << n << std::endl;
+			d.reserve(n);
+			d.push_back(0);
+			n -= 1;
+			if (lonlat) {
+				double a = 6378137.0;
+				double f = 1/298.257223563;	
+				for (size_t i=0; i<n; i++) {
 					d.push_back(
-						distance_lonlat(p[0][i], p[1][i], p[0][j], p[1][j], a, f)
+						distance_lonlat(p[0][i], p[1][i], p[0][i+1], p[1][i+1], a, f)
+					);
+				}
+			} else {
+				for (size_t i=0; i<n; i++) {
+					d.push_back(
+						distance_plane(p[0][i], p[1][i], p[0][i+1], p[1][i+1]) * m
 					);
 				}
 			}
+			
 		} else {
-			for (size_t i=0; i<(s-1); i++) {
-				for (size_t j=(i+1); j<s; j++) {
-					d.push_back(
-						distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]) * m
-					);
+			size_t s = size();
+			size_t n = ((s-1) * s)/2;
+			d.reserve(n);
+			std::vector<std::vector<double>> p = coordinates();
+			if (lonlat) {
+				double a = 6378137.0;
+				double f = 1/298.257223563;	
+				for (size_t i=0; i<(s-1); i++) {
+					for (size_t j=(i+1); j<s; j++) {
+						d.push_back(
+							distance_lonlat(p[0][i], p[1][i], p[0][j], p[1][j], a, f)
+						);
+					}
+				}
+			} else {
+				for (size_t i=0; i<(s-1); i++) {
+					for (size_t j=(i+1); j<s; j++) {
+						d.push_back(
+							distance_plane(p[0][i], p[1][i], p[0][j], p[1][j]) * m
+						);
+					}
 				}
 			}
 		}
@@ -181,7 +207,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise) {
 		setError("SRS not defined");
 		return(d);
 	}
-	if (! srs.is_equal(x.srs) ) {
+	if (! srs.is_same(x.srs, false) ) {
 		setError("SRS do not match");
 		return(d);
 	}

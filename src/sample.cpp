@@ -20,6 +20,7 @@
 #include "recycle.h"
 #include <random>
 #include <unordered_set>
+#include "string_utils.h"
 
 
 void getSampleRowCol(std::vector<size_t> &oldrow, std::vector<size_t> &oldcol, size_t nrows, size_t ncols, size_t snrow, size_t sncol) {
@@ -163,8 +164,6 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 }
 
 
-
-
 std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 	std::default_random_engine gen(seed);   
 	std::uniform_int_distribution<> U(0, N-1);
@@ -180,9 +179,8 @@ std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 std::vector<size_t> sample_replace_weights(size_t size, size_t N, std::vector<double> prob, unsigned seed){
 	
 	// normalize prob
-	double minw = *min_element(prob.begin(),prob.end());
-	double maxw = *max_element(prob.begin(),prob.end()) - minw;
-	for (double& d : prob)  d = (d - minw) / maxw;
+	double maxw = *max_element(prob.begin(),prob.end());
+	for (double& d : prob)  d /= maxw;
 
 	std::default_random_engine gen(seed);   
 	std::uniform_int_distribution<> U(0, N-1);
@@ -202,7 +200,7 @@ std::vector<size_t> sample_replace_weights(size_t size, size_t N, std::vector<do
 	return sample;
 }
 
-
+/*
 std::vector<size_t> sample_replace_weights_gen(size_t size, size_t N, std::vector<double> prob, std::default_random_engine gen){
 	
 	// normalize prob
@@ -226,6 +224,7 @@ std::vector<size_t> sample_replace_weights_gen(size_t size, size_t N, std::vecto
 	}
 	return sample;
 }
+*/
 
 std::vector<size_t> sample_no_replace(size_t size, size_t N, unsigned seed){
 	size_t one = 1;
@@ -410,7 +409,6 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 
 	if (lonlat) {
 		double d = (ymax - ymin) / 1000;
-		double dx = 0.5 * d;
 		std::vector<double> r = seq(ymin, ymax, d);
 		std::vector<double> w;
 		w.reserve(r.size());
@@ -424,6 +422,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 		lon.reserve(size);
 		std::uniform_real_distribution<> U1(-0.5, 0.5);
 
+		double dx = 0.5 * d;
 		for (size_t i=0; i<x.size(); i++) {
 			double v = r[x[i]] + dx * U1(gen);
 			lat.push_back(v);
@@ -545,6 +544,36 @@ SpatVector SpatVector::sample(unsigned n, std::string method, bool by_geom, std:
 		setError("only implemented for polygons");
 		return out;
 	}
+
+	if (strata != "") {
+		
+		// should use
+		// SpatVector a = aggregate(strata, false);
+		// but get nasty self-intersection precision probs.
+		
+		int i = where_in_vector(strata, get_names());
+		if (i < 0) {
+			out.setError("cannot find field");
+			return out;	
+		}
+		SpatDataFrame uv;
+		std::vector<int> idx = df.getIndex(i, uv);
+		for (size_t i=0; i<uv.nrow(); i++) {
+			std::vector<int> g;
+			g.resize(0);
+			for (size_t j=0; j<idx.size(); j++) {
+				if (i == (size_t)idx[j]) {
+					g.push_back(j);
+				}
+			}
+			SpatVector s = subset_rows(g);
+			s = s.sample(n, "random", false, "", seed);
+			for (long &v : s.df.iv[0]) v = v+i; 
+			out = out.append(s, true);
+		}
+		return out;
+	}
+
 	bool lonlat = is_geographic();
 	bool random = (method == "random");
 
@@ -620,8 +649,11 @@ SpatVector SpatVector::sample(unsigned n, std::string method, bool by_geom, std:
 		out = intersect(out);
 		if (random) {
 			if (out.size() > n) {
-				std::vector<int> rows(n);
+				std::vector<int> rows(out.size());
 				std::iota(rows.begin(), rows.end(), 0);
+				std::default_random_engine gen(seed);   
+				std::shuffle(rows.begin(), rows.end(), gen);
+				rows.resize(n);
 				out = out.subset_rows(rows);
 			}
 		}

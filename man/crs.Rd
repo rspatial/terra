@@ -22,9 +22,9 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 }
 
 \usage{
-\S4method{crs}{SpatRaster}(x)
+\S4method{crs}{SpatRaster}(x, proj4=FALSE)
 
-\S4method{crs}{SpatVector}(x)
+\S4method{crs}{SpatVector}(x, proj4=FALSE)
 
 \S4method{crs}{SpatRaster}(x, ...)<-value
 
@@ -33,6 +33,7 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
+  \item{proj4}{logical. If \code{TRUE} the crs is returned in PROJ.4 notation. But note that this notation now only supports the WGS84 and NAD83 datums}
   \item{value}{character string describing a coordinate reference system. This can be in a WKT format, as a EPSG code, or a PROJ.4 "+" format (but see Note)}
   \item{...}{additional arguments (none implemented)}
 }

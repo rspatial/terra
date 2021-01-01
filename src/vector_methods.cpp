@@ -132,6 +132,7 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 	if (dissolve) {
 		out = out.unaryunion();
 	}
+	out.srs = srs;
 	return out;
 }
 

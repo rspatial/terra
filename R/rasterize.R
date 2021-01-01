@@ -10,7 +10,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 	g <- geom(x, df=TRUE)
 	# also allow for multiple columns to multiple layers
 	if (missing(field)) {
-		field <- g[,"id"] # consider multi-point
+		field <- g[,1] # consider multi-point
 	} else if (is.character(field)) {
 		if (length(field) == 1) {
 			field <- as.vector(unlist(x[[field]]))
@@ -35,7 +35,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		levs <- levels(f)
 		field <- as.integer(f) - 1
 	} 
-	field <- field[g[,"id"]]
+	field <- field[g[,1]]
 
 	g <- cellFromXY(y, as.matrix(g[, c("x", "y")]))
 
@@ -134,10 +134,10 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], opt)
 			} 
 		} else if (is.numeric(field)) {
-			if (length(field) == 1) {
+			if (length(field) == 1 && (nrow(x) > 1)) {
 				if (field > 0 && field <= ncol(x)) {
 					v <- x[[field]][,1]
-					if (inherits(field, "character")) {
+					if (inherits(v, "character")) {
 						f <- as.factor(field)
 						levs <- levels(f)
 						v <- as.integer(f) - 1
