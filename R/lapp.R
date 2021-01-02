@@ -111,7 +111,8 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .lapp_test_stack(v, fun, recycle, ...)
 	if (test$nl < 1) error("lapp", "cannot use 'fun'")
-	out <- rast(x, nlyr=test$nl)
+	out <- rast(x)
+	nlyr(out) <- test$nl
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}

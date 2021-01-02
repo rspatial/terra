@@ -249,7 +249,6 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }
 
 
-
 \section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
 
 \bold{SpatVector}
@@ -257,26 +256,23 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-
 \section{XIII. Create and combine SpatVector objects}{
 \tabular{ll}{
-  \code{\link{vect}} \tab create a SpatRaster from a file (e.g. shapefile) or from another object\cr
+  \code{\link{vect}} \tab Create a SpatRaster from a file (e.g. shapefile) or from another object\cr
   \code{\link{c}} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
   \code{\link{project}} \tab Project a SpatVector to a different coordinate reference system \cr
   \code{\link{writeVector}} \tab Write SpatVector data to disk \cr
-  \code{\link{centroids}} \tab get the centroids of another SpatVector\cr
-  \code{\link{voronoi}} \tab Make a voronoi diagram \cr
+  \code{\link{centroids}} \tab Get the centroids of a SpatVector\cr
+  \code{\link{voronoi}} \tab Voronoi diagram \cr
+  \code{\link{delauny}} \tab Delauny triangles\cr
   \code{\link{convexhull}} \tab Compute the convex hull of a SpatVector \cr  
-  \code{\link{fill}}\tab remove or extract holes from polygons\cr
+  \code{\link{fill}}\tab Remove or extract holes from polygons\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
 
 \section{XIV. Properties of SpatVector objects}{
 \tabular{ll}{
-  \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
-  \code{\link{area}} \tab computes the area covered by polygons\cr
-  \code{\link{perimeter}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
   \code{\link{geom}} \tab returns the geometries as matrix or WKT\cr
   \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
   \code{\link{ncol}}\tab The number of columns (of the attributes)\cr
@@ -290,6 +286,18 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 
 
 \section{XV. Geometric queries}{
+\tabular{ll}{
+  \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
+  \code{\link{adjacent}} \tab find adjacent polygons\cr
+  \code{\link{near}} \tab find nearby geometries\cr
+  \code{\link{area}} \tab computes the area covered by polygons\cr
+  \code{\link{perimeter}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
+}}
+
+
+
+\section{XVI. Geometric operations}{
 
 The name in \bold{bold} is the equivalent command in ArcGIS. 
 
@@ -308,7 +316,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 }}
 
 
-\section{XVI. SpatVector attributes}{
+\section{XVII. SpatVector attributes}{
 
 \tabular{ll}{
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatVector (e.g. point in polygons) \cr
@@ -319,7 +327,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 }}
 
 
-\section{XVII. Change geometries (for display, experimentation)}{
+\section{XVIII. Change geometries (for display, experimentation)}{
 
 \tabular{ll}{
   \code{\link{shift}} \tab change the position geometries \cr
@@ -338,7 +346,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XVIII. Collections}{
+\section{XIX. Collections}{
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the elements do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects. 
 
 \tabular{ll}{
@@ -357,7 +365,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 
 
-\section{XIX. SpatExtent}{
+\section{XX. SpatExtent}{
 
   \tabular{ll}{
     \code{\link{extent}} \tab Create a SpatExtent object \cr
@@ -379,7 +387,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XX. Data type conversion}{
+\section{XXI. Data type conversion}{
 
 You can coerce SpatRasters to Raster* objects after loading the \code{raster} package with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
   
@@ -394,7 +402,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
   }
 }
 
-\section{XXI. Plotting}{
+\section{XXII. Plotting}{
 
   \tabular{ll}{
     Maps \tab \cr
@@ -428,7 +436,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 }
 
 
-\section{XXII. Comparison with the raster package}{
+\section{XXIII. Comparison with the raster package}{
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but 
 note the following important differences in methods names with the 'raster' package

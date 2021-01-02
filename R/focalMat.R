@@ -12,7 +12,8 @@
 	if (nx == 1 & ny == 1) {
 		return(m)
 	} else {
-		x <- rast(m, xmin=0, xmax=nx*rs[1], ymin=0, ymax=ny*rs[2], crs="+proj=utm +zone=1 +datum=WGS84")
+		x <- rast(m, crs="+proj=utm +zone=1 +datum=WGS84")
+		ext(x) <- c(xmin=0, xmax=nx*rs[1], ymin=0, ymax=ny*rs[2])
 		d <- as.matrix(distance(x), wide=TRUE) <= d
 		d / sum(d)
 	}
@@ -32,7 +33,8 @@
 	m <- matrix(ncol=nx, nrow=ny)
 	xr <- (nx * rs[1]) / 2
 	yr <- (ny * rs[2]) / 2
-	r <- rast(m, xmin=-xr[1], xmax=xr[1], ymin=-yr[1], ymax=yr[1], crs="+proj=utm +zone=1 +datum=WGS84")
+	r <- rast(m, crs="+proj=utm +zone=1 +datum=WGS84")
+	ext(r) <- c(xmin=-xr[1], xmax=xr[1], ymin=-yr[1], ymax=yr[1])
 	p <- xyFromCell(r, 1:ncell(r))^2
 # according to http://en.wikipedia.org/wiki/Gaussian_filter
 	m <- 1/(2*pi*sigma^2) * exp(-(p[,1]+p[,2])/(2*sigma^2))

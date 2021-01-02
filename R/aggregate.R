@@ -14,15 +14,22 @@
 			} else if (test == '.Primitive(\"max\")') { fun <- 'max' 
 			}
 		} else {
-			test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
+			depf <- deparse(fun)
+			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"mean\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
 			if (test1 | test2) { 
 				fun <- "mean" 
 			}
-			test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"median\")', silent=TRUE))
+			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"median\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "median", silent=TRUE))
 			if (test1 | test2) { 
 				fun <- "median" 
+			}
+			test1 <- isTRUE(try( depf[1] == "function (x, na.rm = FALSE) ", silent=TRUE))
+			test2 <- isTRUE(try( depf[2] == "sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), ", silent=TRUE))
+			test3 <- isTRUE(try( depf[3] == "    na.rm = na.rm))", silent=TRUE))
+			if (test1 && test2 && test3) { 
+				fun <- "sd"
 			}
 		} 
 	}
@@ -36,7 +43,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 	fun <- .makeTextFun(match.fun(fun))
 	toc <- FALSE
 	if (class(fun) == "character") { 
-		if (fun %in% c("sum", "mean", "min", "max", "median", "modal")) {
+		if (fun %in% c("sum", "mean", "min", "max", "median", "modal", "sd", "sdpop")) {
 			toc <- TRUE
 		}
 	}

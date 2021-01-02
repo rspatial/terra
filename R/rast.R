@@ -5,7 +5,7 @@
 
 
 setMethod("rast", signature(x="missing"),
-	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, ...) {
+	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals) {
 
 		if (missing(extent)) {
 			e <- c(xmin, xmax, ymin, ymax) 
@@ -47,7 +47,7 @@ setMethod("rast", signature(x="missing"),
 )
 
 setMethod("rast", signature(x="list"),
-	function(x, ...) {
+	function(x) {
 		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
 		if (!any(i)) {
 			error("rast,list", "none of the elements of x are a SpatRaster")
@@ -153,20 +153,16 @@ setMethod("rast", signature(x="character"),
 
 
 setMethod("rast", signature(x="SpatRaster"),
-	function(x, nlyrs=nlyr(x), ...) {
-		r <- methods::new("SpatRaster")
-		r@ptr <- x@ptr$geometry(nlyrs, FALSE)
-		if (length(list(...)) > 0) {
-			warn("rast", "additional arguments are ignored")
-		}
-		messages(r, "rast")
+	function(x, nlyrs=nlyr(x)) {
+		x@ptr <- x@ptr$geometry(nlyrs, FALSE)
+		messages(x, "rast")
 	}
 )
 
 
 setMethod("rast", signature(x="SpatRasterDataset"),
-	function(x, ...) {
-		rast(x[1], ...)
+	function(x) {
+		rast(x[1])
 	}
 )
 
@@ -260,11 +256,11 @@ setMethod("rast", signature(x="ANY"),
 
 
 setMethod("rast", signature(x="matrix"),
-	function(x, type="", crs="", ...) {
+	function(x, type="", crs="") {
 		if (type == "xyz") {
-			r <- .rastFromXYZ(x, crs=crs, ...)
+			r <- .rastFromXYZ(x, crs=crs)
 		} else {
-			r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(c(0, ncol(x), 0, nrow(x))), crs=crs, ...)
+			r <- rast(nrow=nrow(x), ncol=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
 			values(r) <- t(x)
 		}
 		messages(r, "rast")

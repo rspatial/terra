@@ -21,6 +21,7 @@
 #include <type_traits>
 #include <vector>
 #include "NA.h"
+#include <math.h>
 
 
 
@@ -170,7 +171,6 @@ T vsum2(std::vector<T>& v, bool narm) {
 }
 
 
-
 template <typename T>
 T vprod(std::vector<T>& v, bool narm) {
 	T x = v[0];
@@ -232,6 +232,43 @@ double vmean(std::vector<T>& v, bool narm) {
 	return x;
 }
 
+template <typename T>
+double vsd(std::vector<T>& v, bool narm) {
+	double m = vmean(v, narm);
+	if (std::isnan(m)) return m;
+	double x = v[0];
+	size_t n = 0;
+	for (size_t i=0; i<v.size(); i++) {
+		if (!is_NA(v[i])) {
+			double d = (v[i] - m);
+			x += d * d;
+			n++;
+		}
+	}
+	n--;
+	if (n==0) return NAN;
+	x = sqrt(x / n);
+	return x;
+}
+
+
+
+template <typename T>
+double vsdpop(std::vector<T>& v, bool narm) {
+	double m = vmean(v, narm);
+	if (std::isnan(m)) return m;
+	double x = v[0];
+	size_t n = 0;
+	for (size_t i=0; i<v.size(); i++) {
+		if (!is_NA(v[i])) {
+			double d = (v[i] - m);
+			x += d * d;
+			n++;
+		}
+	}
+	x = sqrt(x / n);
+	return x;
+}
 
 
 

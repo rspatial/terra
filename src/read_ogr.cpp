@@ -321,7 +321,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 
 	OGRLayer *poLayer = poDS->GetLayer(0);
 	df = readAttributes(poLayer);
-	OGRwkbGeometryType wkbgeom = poLayer->GetGeomType();
+	OGRwkbGeometryType wkbgeom = wkbFlatten(poLayer->GetGeomType());
 
 	OGRFeature *poFeature;
 	poLayer->ResetReading();
@@ -357,7 +357,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 	} else if ( wkbgeom == wkbPolygon || wkbgeom == wkbMultiPolygon) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			wkbgeom = poGeometry ->getGeometryType();
+			wkbgeom = wkbFlatten(poGeometry ->getGeometryType());
 			if (poGeometry != NULL) {
 				if (wkbgeom == wkbPolygon) {
 					g = getPolygonsGeom(poGeometry);

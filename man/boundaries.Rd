@@ -32,7 +32,7 @@ SpatRaster. Cell values are either 1 (a border) or 0 (not a border), or \code{NA
 \seealso{ \code{\link{focal}}, \code{\link{clump}} }
 
 \examples{
-r <- rast(nrow=18, ncol=36, xmn=0)
+r <- rast(nrow=18, ncol=36, xmin=0)
 v <- rep(NA, ncell(r))
 v[150:250] <- 1
 v[251:450] <- 2

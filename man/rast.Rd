@@ -30,19 +30,19 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \S4method{rast}{character}(x, subds=0)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
-          ymin=-90, ymax=90, crs, extent, resolution, vals, ...)
+          ymin=-90, ymax=90, crs, extent, resolution, vals)
 
-\S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), ...) 
+\S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x)) 
 
-\S4method{rast}{matrix}(x, type="", crs="", ...)
+\S4method{rast}{matrix}(x, type="", crs="")
+
+\S4method{rast}{list}(x)
+
+\S4method{rast}{SpatRasterDataset}(x)
 
 \S4method{rast}{SpatVector}(x, ...)
 									  
 \S4method{rast}{SpatExtent}(x, ...)
-
-\S4method{rast}{list}(x, ...)
-
-\S4method{rast}{SpatRasterDataset}(x, ...)
 }
 
 \arguments{

@@ -6,6 +6,7 @@
 \alias{unique,SpatRaster-method}
 \alias{unique,SpatRaster,ANY-method}
 \alias{unique,SpatVector-method}
+\alias{unique,SpatVector,ANY-method}
 
 \title{Unique values}
 

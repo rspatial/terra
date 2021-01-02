@@ -22,11 +22,9 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
 		w <- dim(w)
-		na.rm <- FALSE
+		#na.rm <- FALSE
 		fun <- .makeTextFun(match.fun(fun))
-		if (!is.character(fun)) {
-			fun <- "bad"
-		}
+		if (!is.character(fun))	fun <- "bad"
 		if (fun != "sum") {
 			warning("focal", "if 'w' is a matrix, 'fun' must be 'sum'")
 		}
@@ -37,7 +35,7 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 		m <- 0.5[0]
 		fun <- .makeTextFun(match.fun(fun))
 		if (class(fun) == "character") { 
-			test <- match(fun, c("mean", "min", "max", "sum", "median", "modal"))
+			test <- match(fun, c("mean", "min", "max", "sum", "median", "modal", "sd", "sdpop"))
 			cpp <- TRUE
 		}
 	}

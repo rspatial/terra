@@ -170,15 +170,29 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 	} else {
 		for (size_t i = 0; i < out.bs.n; i++) {
 	
-//			Rcpp::Rcout << i << ", " << out.bs.row[i] << ", " << out.bs.nrows[i] << std::endl;
 	
 			std::vector<double> fv = focal_values(w, fillvalue, out.bs.row[i], out.bs.nrows[i]);
 			v.resize(out.bs.nrows[i] * ncol());
 			if (wmat) {
-				for (size_t j=0; j<v.size(); j++) {
-					v[j] = 0;
-					for (size_t k=0; k<ww; k++) {
-						v[j] += fv[j*ww+k] * m[k];
+				if (narm) {
+					for (size_t j=0; j<v.size(); j++) {
+						v[j] = 0;
+						size_t cnt = 0;
+						for (size_t k=0; k<ww; k++) {
+							double vv = fv[j*ww+k] * m[k];
+							if (!std::isnan(vv)) {
+								v[j] += vv;
+								cnt++;
+							}
+						}
+						if (cnt == 0) v[j] = NAN;
+					}
+				} else {
+					for (size_t j=0; j<v.size(); j++) {
+						v[j] = 0;
+						for (size_t k=0; k<ww; k++) {
+							v[j] += fv[j*ww+k] * m[k];
+						}
 					}
 				}
 			} else {

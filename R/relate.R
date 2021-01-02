@@ -87,7 +87,7 @@ setMethod("adjacent", signature(x="SpatRaster"),
 
 
 setMethod("adjacent", signature(x="SpatVector"), 
-	function(x, type="rook", symmetrical=FALSE, ...) {
+	function(x, type="rook", pairs=TRUE, symmetrical=FALSE, ...) {
 		type <- match.arg(tolower(type), c("intersects", "touches", "queen", "rook"))
 		stopifnot(geomtype(x) == "polygons")
 		a <- x@ptr$relate_within(type, TRUE)
@@ -98,7 +98,11 @@ setMethod("adjacent", signature(x="SpatVector"),
 		attr(a, "Diag") <- FALSE
 		attr(a, "Upper") <- FALSE
 		a <- as.matrix(a)
-		mat2wide(a, symmetrical, 1)
+		if (pairs) {
+			mat2wide(a, symmetrical, 1)
+		} else {
+			a
+		}
 	}
 )
 

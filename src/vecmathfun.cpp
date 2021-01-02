@@ -48,6 +48,10 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 		theFun = vany<double>;
 	} else if (fun == "all") {
 		theFun = vall<double>;
+	} else if (fun == "sd") {
+		theFun = vsd<double>;
+	} else if (fun == "std") {
+		theFun = vsdpop<double>;
 	} else {
 		theFun = vmean<double>;
 	}
