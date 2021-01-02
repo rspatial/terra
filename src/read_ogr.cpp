@@ -304,13 +304,13 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 }
 
 
+#include "Rcpp.h"
 bool SpatVector::read_ogr(GDALDataset *poDS) {
 
 	std::string crs = "";
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
 	if (poSRS) {
 		char *psz = NULL;
-		std::string errmsg;
 		OGRErr err = poSRS->exportToWkt(&psz);
 		if (err == OGRERR_NONE) {
 			crs = psz;
@@ -319,10 +319,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		CPLFree(psz);
 	}
 
-
 	OGRLayer *poLayer = poDS->GetLayer(0);
 	df = readAttributes(poLayer);
-	OGRwkbGeometryType wkbgeom = wkbFlatten( poLayer ->GetGeomType());
+	OGRwkbGeometryType wkbgeom = poLayer->GetGeomType();
+
 	OGRFeature *poFeature;
 	poLayer->ResetReading();
 	SpatGeom g;
@@ -342,7 +342,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 			}
 			addGeom(g);
 		}
-	} else if (wkbgeom == wkbLineString) {
+	} else if (wkbgeom == wkbLineString || wkbgeom == wkbMultiLineString) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
 			if (poGeometry != NULL) {
@@ -354,18 +354,17 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 			}
 			addGeom(g);
 		}
-	} else if ( wkbgeom == wkbPolygon ) {
+	} else if ( wkbgeom == wkbPolygon || wkbgeom == wkbMultiPolygon) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+			wkbgeom = poGeometry ->getGeometryType();
 			if (poGeometry != NULL) {
-				g = getPolygonsGeom(poGeometry);
-				addGeom(g);
+				if (wkbgeom == wkbPolygon) {
+					g = getPolygonsGeom(poGeometry);
+				} else { //if (wkbgeom == wkbMultiPolygon ) {
+					g = getMultiPolygonsGeom(poGeometry);
+				}
 			}
-		}
-	} else if (wkbgeom == wkbMultiPolygon ) {
-		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			g = getMultiPolygonsGeom(poGeometry);
 			addGeom(g);
 		}
 	} else {				
