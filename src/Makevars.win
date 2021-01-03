@@ -22,7 +22,7 @@ PKG_LIBS = \
 
 CXX_STD = CXX11
 
-	all: clean winlibs
+all: clean winlibs
 
 winlibs:
 	mkdir -p ../inst
