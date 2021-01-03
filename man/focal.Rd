@@ -54,7 +54,7 @@ Sobel filter: \code{filter=matrix(c(1,2,1,0,0,0,-1,-2,-1) / 4, nrow=3)}
 r <- rast(ncols=10, nrows=10, ext(0, 10, 0, 10))
 values(r) <- 1:ncell(r)
 
-f <- focal(r, w=3, fun=function(x, ...)quantile(x, .25, ...), na.rm=TRUE) 
+f <- focal(r, w=3, fun=function(x, ...) quantile(x, .25, ...), na.rm=TRUE) 
 
 f <- focal(r, w=3, fun="mean") 
 

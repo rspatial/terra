@@ -285,11 +285,11 @@ SpatVector SpatVector::intersect(SpatVector v) {
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	std::vector<GeomPtr> result;
-	std::vector<unsigned> idx, idy;
-	idx.reserve(size());
-	idy.reserve(size());
 	size_t nx = size();
 	size_t ny = v.size();
+	std::vector<unsigned> idx, idy;
+	idx.reserve(nx);
+	idy.reserve(ny);
 		
 	for (size_t i = 0; i < nx; i++) {
 		for (size_t j = 0; j < ny; j++) {
@@ -303,7 +303,6 @@ SpatVector SpatVector::intersect(SpatVector v) {
 				result.push_back(geos_ptr(geom, hGEOSCtxt));
 				idx.push_back(i);
 				idy.push_back(j);
-				//Rcpp::Rcout << "i: " << i << " j: " << j << std::endl;
 			}
 		}
 	}

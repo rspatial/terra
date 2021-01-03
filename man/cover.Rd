@@ -50,8 +50,8 @@ r3 <- cover(r2, r1)
 p <- vect(system.file("ex/lux.shp", package="terra"))
 e <- as.polygons(ext(6, 6.4, 49.75, 50))
 values(e) <- data.frame(y=10)
-cv1 <- cover(p, e)
-cv2 <- cover(p, e, identity=TRUE)
+cv <- cover(p, e)
+#ci <- cover(p, e, identity=TRUE)
 }
 
 
