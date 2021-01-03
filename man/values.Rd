@@ -14,6 +14,7 @@
 
 \alias{values,SpatVector-method}
 \alias{values<-,SpatVector,data.frame-method}
+\alias{values<-,SpatVector,NULL-method}
 
   
 \title{Get or set cell values}
@@ -37,7 +38,7 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
 \arguments{
  \item{x}{SpatRaster or SpatVector}
  \item{mat}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector}
- \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame}
+ \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame or NULL}
  \item{values}{Same as for \code{value}}
  \item{...}{additional arguments. none implemented}
 }

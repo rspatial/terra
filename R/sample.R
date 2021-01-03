@@ -81,6 +81,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (!hasValues(x) & !as.raster) {
 			error("spatSample", "SpatRaster has no values. Use cells=TRUE or as.raster=TRUE")
 		}
+
 		method <- tolower(method)
 		stopifnot(method %in% c("random", "regular"))
 		size <- round(size)
@@ -94,8 +95,14 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				return(x);
 			} else {
 				v <- x@ptr$sampleRegularValues(size)
+				x <- messages(x, "spatSample")
+				if (length(v) > 0) {
+					v <- do.call(cbind, v)
+					colnames(v) <- names(x)
+				}
+				return(v)
 			}
-		} else {
+		} else { # random
 			if (as.raster) {
 				x@ptr <- x@ptr$sampleRandomRaster(size, replace, .seed())
 				x <- messages(x, "spatSample")
@@ -117,47 +124,31 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					return	(out)
 				}
 
-				out <- cells <- NULL
-				ssize <- ifelse(na.rm, size*2, size)
-				for (i in 1:10) {
-					cells <- c(cells, .sampleCells(x, ssize, method, replace))
-					if ((i>1) && (!replace)) {
-						cells <- unique(cells)
-					}
-					if (length(cells) >= size) {
-						if (na.rm) {
-							out <- x[cells]
-							out <- stats::na.omit(out)
-							if (nrow(out) >= size) {
-								out <- x[1:size, ,drop=FALSE]
-								break
-							}
-						} else {
-							out <- x[cells[1:size]]
+				if (na.rm) {
+					scells <- NULL
+					ssize <- size*2
+					for (i in 1:10) {
+						scells <- c(scells, .sampleCells(x, ssize, method, replace))
+						if ((i>1) && (!replace)) {
+							scells <- unique(scells)
+						}
+						out <- stats::na.omit(x[scells])
+						if (nrow(out) >= size) {
+							out <- out[1:size, ,drop=FALSE]
+							attr(out, "na.action") <- NULL
 							break
 						}
 					}
+				} else {
+					scells <- .sampleCells(x, size, method, replace)
+					out <- x[scells]
 				}
-				if (is.null(out)) {
-					out <- out[cells]
-					if (na.rm) {
-						out <- stats::na.omit(out)
-						attr(x, "na.action") <- NULL
-					}
-				}
-				if (nrow(out) < size) {
+				if (NROW(out) < size) {
 					warn("spatSample", "fewer values returned than requested")
 				}
 				return(out)
 			}
 		}
-		# values
-		x <- messages(x, "spatSample")
-		if (length(v) > 0) {
-			v <- do.call(cbind, v)
-			colnames(v) <- names(x)
-		}
-		return(v)
 	}
 )
 
