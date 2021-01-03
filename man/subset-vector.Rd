@@ -6,7 +6,7 @@
 \alias{[,SpatVector,missing,numeric-method}
 \alias{[,SpatVector,missing,character-method}
 \alias{[,SpatVector,numeric,missing-method}
-\alias{[,SpatVector,numeric,numeric-method}0
+\alias{[,SpatVector,numeric,numeric-method}
 \alias{[,SpatVector,numeric,character-method}
 \alias{[,SpatVector,logical,missing-method}
 \alias{[,SpatVector,logical,character-method}

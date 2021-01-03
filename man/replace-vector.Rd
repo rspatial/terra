@@ -9,7 +9,7 @@
 \alias{[[,SpatVector,numeric,missing-method}
 \alias{[[,SpatVector,logical,missing-method}
 \alias{[[,SpatVector,character,missing-method}
-\alias{[[<-,SpatVector-method}
+\alias{[[<-,SpatVector,character,missing-method}
 
 \title{Get or replace attribute values of a SpatVector}
 
