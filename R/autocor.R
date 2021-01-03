@@ -45,20 +45,19 @@
 
 setMethod("autocor", signature(x="numeric"), 
 	function(x, w, method="moran", global=TRUE) {
+		d <- dim(w)
+		if ((d[1] != d[2]) || (d[1] != length(x))) {
+			stop("w must be a square matrix with sides the size of x")
+		}
 		if (global) {
+			n <- length(x)
+			dx <- x - mean(x, na.rm=TRUE)
 			if (method == "moran") {
-				d <- dim(w)
-				if ((d[1] != d[2]) || (d[1] != length(x))) {
-					stop("w must be a square matrix with sides the size of x")
-				}
-				n <- length(x)
-				dx <- x - mean(x, na.rm=TRUE)
 				pm <- matrix(rep(dx, each=n) * dx, ncol=n)
-				sw <- sum(pm * w) / sum(w)
-				vr <- n / sum(dx^2)
-				vr * sw	
+				(n / sum(dx^2)) * sum(pm * w) / sum(w)
 			} else {
-				stop("geary not yet implemented")			
+				pm <- matrix(rep(dx, each=n) - dx, ncol=n)^2
+				((n-1)/sum((dx)^2)) * sum(w * pm) / (2 * sum(w))
 			}
 		} else {
 			stop("local not yet implemented")			

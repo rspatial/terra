@@ -115,6 +115,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	if (dissolve) {
 		out = out.unaryunion();
 	}
+	out.srs = srs;
 	out.df  = uv; 
 	return out;
 }

@@ -178,8 +178,9 @@ setMethod("aggregate", signature(x="SpatVector"),
 		}
 
 		if (is.null(by)) {
-			x$aggregate_by = 1;
-			x@ptr <- x@ptr$aggregate("aggregate_by", dissolve)
+			x$aggregate_by_variable = 1;
+			x@ptr <- x@ptr$aggregate("aggregate_by_variable", dissolve)
+			x$aggregate_by_variable = NULL;
 		} else {
 			d <- as.data.frame(x)
 			x@ptr <- x@ptr$aggregate(by, dissolve)
