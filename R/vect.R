@@ -146,8 +146,7 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			error("[[<-", "you can only set one variable at a time")
 		}
 	
-		name <- i[i]
-
+		name <- i[1]
 		value <- rep(value, length.out=nrow(x))
 
 		if (name %in% names(x)) {
