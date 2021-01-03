@@ -136,6 +136,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 						if (nrow(out) >= size) {
 							out <- out[1:size, ,drop=FALSE]
 							attr(out, "na.action") <- NULL
+							rownames(out) <- NULL
 							break
 						}
 					}
