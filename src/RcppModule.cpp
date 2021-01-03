@@ -271,6 +271,7 @@ RCPP_MODULE(spat){
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
+		.method("remove_df", &SpatVector::remove_df)
 		.method("get_datatypes", &SpatVector::get_datatypes, "")
 
 		.method("set_holes", &SpatVector::set_holes, "set_holes")
@@ -342,6 +343,7 @@ RCPP_MODULE(spat){
 		.method("delauny", &SpatVector::delauny)
 		.method("voronoi", &SpatVector::voronoi)
 		.method("chull", &SpatVector::convexhull)
+		.method("relate_first", &SpatVector::relateFirst)
 		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string))( &SpatVector::relate ))
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))
 		.method("crop_ext", ( SpatVector (SpatVector::*)(SpatExtent))( &SpatVector::crop ))

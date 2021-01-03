@@ -118,22 +118,23 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				}
 
 				out <- cells <- NULL
+				ssize <- ifelse(na.rm, size*2, size)
 				for (i in 1:10) {
-					cells <- c(cells, .sampleCells(x, size, method, replace))
+					cells <- c(cells, .sampleCells(x, ssize, method, replace))
 					if ((i>1) && (!replace)) {
 						cells <- unique(cells)
 					}
 					if (length(cells) >= size) {
 						if (na.rm) {
-							out <- x[cells[1:size]]
-							break
-						} else {
 							out <- x[cells]
 							out <- stats::na.omit(out)
-							if (nrow(out) >= cells) {
+							if (nrow(out) >= size) {
 								out <- x[1:size, ,drop=FALSE]
 								break
 							}
+						} else {
+							out <- x[cells[1:size]]
+							break
 						}
 					}
 				}

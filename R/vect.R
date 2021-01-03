@@ -131,14 +131,22 @@ function(x, i, j, ... ,drop=FALSE) {
 
 
 
-setMethod("$<-", "SpatVector",  
-	function(x, name, value) { 
+setReplaceMethod("[[", c("SpatVector", "character", "missing"),
+	function(x, i, j, value) {
+		
 		if (is.null(value)) {
-			if (name %in% names(x)) {
-				x@ptr$remove_column(name)
+			for (name in i) {
+				if (name %in% names(x)) {
+					x@ptr$remove_column(name)
+				}
 			}
 			return(x);
 		}
+		if (length(i) > 1) {
+			error("[[<-", "you can only set one variable at a time")
+		}
+	
+		name <- i[i]
 
 		value <- rep(value, length.out=nrow(x))
 
@@ -155,12 +163,23 @@ setMethod("$<-", "SpatVector",
 				ok <- x@ptr$add_column_string(as.character(value), name)
 			}
 			if (!ok) {
-				error("$<-,SpatVector", "cannot set these values")
+				error("[[<-,SpatVector", "cannot set these values")
 			}
 		} 
-		return(x)
+		x
 	}
 )
+
+
+setMethod("$<-", "SpatVector",  
+	function(x, name, value) {
+		x[[name]] <- value
+		x
+	}
+)
+
+
+
 
 
 setMethod("vect", signature(x="data.frame"), 

@@ -192,6 +192,11 @@ class SpatVector {
 			return df.add_column(x, name);
 		}
 
+		void remove_df() {
+			SpatDataFrame empty;
+			df = empty;
+		};
+
 		bool remove_column(std::string field) {
 			return df.remove_column(field);
 		};
@@ -246,6 +251,7 @@ class SpatVector {
 		SpatVector symdif(SpatVector v);
 		std::vector<int> relate(SpatVector v, std::string relation);
 		std::vector<int> relate(std::string relation, bool symmetrical);
+		std::vector<int> relateFirst(SpatVector v, std::string relation);
 		std::vector<double> geos_distance(SpatVector v, bool parallel);
 		std::vector<double> geos_distance(bool sequential);
 

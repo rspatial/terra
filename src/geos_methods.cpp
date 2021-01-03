@@ -191,13 +191,15 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 	out.srs = srs;
 	if (!out.hasError()) {
 		out = out.disaggregate();
-		if ((type() == "points") && (out.size() == size())) {
-			out.df = df;
-		}
 		if (bnd.size() > 0) {
 			SpatDataFrame empty;
 			bnd.df = empty;
 			out = out.intersect(bnd);
+		}
+		if ((type() == "points") && (!onlyEdges)) {
+			//std::vector <int> atts = out.relateFirst(*this, "intersects");
+			//deal with unsigned need
+			//out.df = df.subset_rows(atts);
 		}
 	}
 #endif
@@ -410,6 +412,46 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 		for (size_t i = 0; i < nx; i++) {
 			for (size_t j = 0; j < ny; j++) {
 				out.push_back( relFun(hGEOSCtxt, x[i].get(), y[j].get()));
+			}
+		} 
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+
+std::vector<int> SpatVector::relateFirst(SpatVector v, std::string relation) {
+
+	int pattern = getRel(relation);
+	if (pattern == 2) {
+		setError("'" + relation + "'" + " is not a valid relate name or pattern");
+		std::vector<int> out;
+		return out;
+	}
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+	size_t nx = size();
+	size_t ny = v.size();
+	std::vector<int> out(nx, -1);
+	if (pattern == 1) {
+		for (size_t i = 0; i < nx; i++) {
+			for (size_t j = 0; j < ny; j++) {
+				if (GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str())) {
+					out[i] = j;
+					continue;
+				}
+			}
+		}
+	} else {
+		std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+
+		for (size_t i = 0; i < nx; i++) {
+			for (size_t j = 0; j < ny; j++) {
+				if (relFun(hGEOSCtxt, x[i].get(), y[j].get())) {
+					out[i] = j;
+					continue;					
+				}
 			}
 		} 
 	}

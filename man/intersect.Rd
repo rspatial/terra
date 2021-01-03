@@ -54,7 +54,8 @@ v <- vect(f)
 e <- ext(5.6, 6, 49.55, 49.7)
 x <- intersect(v, e)
 
-p <- vect(c("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))", "POLYGON ((6.3 49.9, 6.2 49.7, 6.3 49.6, 6.5 49.8, 6.3 49.9))"), crs=crs(v))
+p <- vect(c("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))", 
+"POLYGON ((6.3 49.9, 6.2 49.7, 6.3 49.6, 6.5 49.8, 6.3 49.9))"), crs=crs(v))
 #values(p) <- data.frame(pid=1:2, area=area(p))
 
 y <- intersect(v, p)

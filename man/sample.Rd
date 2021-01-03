@@ -18,7 +18,8 @@ With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}) or 
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, ...)
 
-\S4method{spatSample}{SpatVector}(x, size, method="regular", by_geom=TRUE, strata=NULL, chess="", ...)
+\S4method{spatSample}{SpatVector}(x, size, method="regular", by_geom=TRUE, 
+       strata=NULL, chess="", ...)
 
 \S4method{spatSample}{SpatExtent}(x, size, method="regular", lonlat, ...)
 }
