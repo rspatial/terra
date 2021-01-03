@@ -3,10 +3,10 @@
 \alias{distance}
 \alias{distance,SpatRaster,missing-method}
 \alias{distance,SpatRaster,SpatVector-method}
-\alias{distance,SpatVector,missing-method}
+\alias{distance,SpatVector,ANY-method}
 \alias{distance,SpatVector,SpatVector-method}
 \alias{distance,matrix,matrix-method}
-\alias{distance,matrix,missing-method}
+\alias{distance,matrix,ANY-method}
 
 \title{Geographic distance}
 
@@ -30,13 +30,13 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 
 \S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{distance}{SpatVector,missing}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, ...)
+\S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, ...)
 
 \S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, ...)
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, ...)
 
-\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE, ...)
+\S4method{distance}{matrix,ANY}(x, y, lonlat, sequential=FALSE, ...)
 }
 
 \arguments{
