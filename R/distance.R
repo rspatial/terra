@@ -50,7 +50,7 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 }
 
 
-setMethod("distance", signature(x="SpatVector", y="missing"), 
+setMethod("distance", signature(x="SpatVector", y="ANY"), 
 	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, ...) {
 		if (sequential) {
 			return( x@ptr$distance_self(sequential))
@@ -68,14 +68,6 @@ setMethod("distance", signature(x="SpatVector", y="missing"),
 			d <- mat2wide(d, symmetrical)
 		}
 		d
-	}
-)
-
-
-setMethod("distance", signature(x="matrix", y="missing"), 
-	function(x, y, lonlat, sequential=FALSE, ...) {
-		x = vect(x)
-		distance(x, lonlat, sequential)
 	}
 )
 
@@ -103,9 +95,21 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 		}
 		stopifnot(ncol(x) == 2)
 		stopifnot(ncol(y) == 2)
-		crs <- if (lonlat){ "+proj=longlat +datum=WGS84" } else {"+proj=utm +zone=1 +datum=WGS84"}
+		crs <- ifelse(lonlat, "+proj=longlat +datum=WGS84", 
+							  "+proj=utm +zone=1 +datum=WGS84")
 		x <- vect(x, crs=crs)
 		y <- vect(y, crs=crs)
 		distance(x, y, pairwise)
 	}
 )
+
+
+setMethod("distance", signature(x="matrix", y="ANY"), 
+	function(x, y, lonlat, sequential=FALSE, ...) {
+		crs <- ifelse(lonlat, "+proj=longlat +datum=WGS84", 
+							  "+proj=utm +zone=1 +datum=WGS84")
+		x <- vect(x, crs=crs)
+		distance(x, sequential)
+	}
+)
+

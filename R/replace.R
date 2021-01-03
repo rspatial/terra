@@ -170,9 +170,14 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 			cover(x, value)
 		} else {
 			if (length(value) > 1) {
-				warn(" [,SpatRaster,SpatRaster", "the first replacement value is used for all cells")
+				v <- values(x)
+				v[as.logical(values(i))] <- value
+				values(x) <- v
+				x
+				#warn(" [,SpatRaster,SpatRaster", "the first replacement value is used for all cells")
+			} else {
+				mask(x, i, maskvalue=TRUE, updatevalue=value[1])
 			}
-			mask(x, i, maskvalue=TRUE, updatevalue=value[1])
 		}
 	}
 )

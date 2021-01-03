@@ -199,5 +199,6 @@ setMethod("values<-", signature("SpatVector", "data.frame"),
 setMethod("values<-", signature("SpatVector", "NULL"), 
 	function(x, value) {
 		x@ptr$remove_df()
+		x
 	}
 )
