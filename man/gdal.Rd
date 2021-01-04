@@ -1,7 +1,7 @@
 \name{gdal}
 
 \alias{gdal}
-\alias{gdal}
+\alias{gdal_version}
 
 \title{gdal utilities}
 
@@ -11,6 +11,8 @@ Set the GDAL warning level or get a data.frame with the available GDAL drivers (
 
 \usage{
 gdal(warn=NA, drivers=FALSE)
+
+gdal_version()
 }
 
 \arguments{

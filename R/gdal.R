@@ -1,5 +1,10 @@
 
 
+gdal_version <- function() {
+	gdal()
+}
+
+
 gdal <- function(warn=NA, drivers=FALSE) {
 	if (!is.na(warn)) {
 		warn <- as.integer(warn)
