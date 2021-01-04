@@ -95,6 +95,11 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 		std::vector<unsigned> lyr = {0};
 		subset(lyr, ops);
 	}
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
+
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, ops);
 	SpatVector p = e.as_points(false, true, opt);
@@ -148,7 +153,6 @@ std::vector<double> SpatVector::distance(bool sequential) {
 		if (sequential) {
 			std::vector<std::vector<double>> p = coordinates();
 			size_t n = p[0].size();
-			Rcpp::Rcout << n << std::endl;
 			d.reserve(n);
 			d.push_back(0);
 			n -= 1;
@@ -555,6 +559,12 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		out.setError("boundary detection can only be done for one layer at a time --- to be improved");
 		return(out);
 	}
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
+
+	
 	if ((directions != 4) && (directions != 8)) {
 		out.setError("directions should be 4 or 8");
 		return(out);	

@@ -352,7 +352,6 @@ SpatVector SpatVector::project(std::string crs) {
 		s.setError("input crs is not valid");
 		return s;
 	}
-
 	const char *pszDefTo = crs.c_str();
 	erro = target.SetFromUserInput(pszDefTo);
 	if (erro != OGRERR_NONE) {
@@ -373,6 +372,7 @@ SpatVector SpatVector::project(std::string crs) {
 	s.df = df;
 	std::vector<unsigned> keeprows;
 
+
 	for (size_t i=0; i < size(); i++) {
 		SpatGeom g = getGeom(i);
 		SpatGeom gg;
@@ -389,71 +389,17 @@ SpatVector SpatVector::project(std::string crs) {
 					}
 				}
 				gg.addPart(pp);
-				keeprows.push_back(j);
 			}
 		}
+		keeprows.push_back(i);
 		s.addGeom(gg);
-		s.df.subset_rows(keeprows);	
 	}
+	s.df = df.subset_rows(keeprows);	
 
 	#endif
 	return s;
 }
 
-
-/*
-SpatVector SpatVector::project(std::string crs) {
-
-	SpatVector s;
-
-    #ifndef useGDAL
-		s.setError("GDAL is not available");
-		return(s);
-	#else
-	SpatDataFrame d = getGeometryDF();
-
-	std::vector<double> x = d.dv[0];
-	std::vector<double> y = d.dv[1];
-
-	std::string srs = getSRS("wkt");
-	std::string outwkt, msg;
-	if (!wkt_from_string(crs, outwkt, msg)) {
-		s.setError(msg);
-		return s;
-	}
-
-	s.msg = transform_coordinates(x, y, srs, outwkt);
-
-	if (!s.msg.has_error) {
-		unsigned n = d.iv[0].size();
-		std::vector<unsigned> a, b, c;
-		std::vector<double> ptx, pty;
-		a.reserve(n);
-		b.reserve(n);
-		c.reserve(n);
-		ptx.reserve(n);
-		pty.reserve(n);
-		for (size_t i=0; i<n; i++) {
-			if (!std::isnan(x[i])) {
-				a.push_back(d.iv[0][i]);
-				b.push_back(d.iv[1][i]);
-				c.push_back(d.iv[2][i]);
-				ptx.push_back(x[i]);
-				pty.push_back(y[i]);
-			}
-		}
-		s.setGeometry(type(), a, b, ptx, pty, c);
-		//std::vector<std::string> refs = srefs_from_string(crs);
-		std::string msg;
-		s.setSRS(crs);
-		//s.setPRJ(refs[1]);
-		s.df = df;
-	}
-	#endif
-	return s;
-}
-
-*/
 
 #endif
 
