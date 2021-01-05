@@ -73,7 +73,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		
 		if (cells) {
 			out <- .sampleCells(x, size, method, replace)
-			if (length(out) < size) {
+			if (length(out) < size && method == "random") {
 				warn("spatSample", "fewer cells returned than requested")
 			}
 			return(out)
@@ -159,7 +159,7 @@ setMethod("spatSample", signature(x="SpatExtent"),
 		if (missing(lonlat)) {
 			error("spatSample", "provide a lonlat argument")
 		}
-		method = match.arg(method, c("regular", "random"))
+		method <- match.arg(method, c("regular", "random"))
 		size <- round(size)
 		stopifnot(size > 0)
 		if (method=="random") {

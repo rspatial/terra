@@ -55,7 +55,7 @@ printDF <- function(x, n=6, first=FALSE) {
 		x <- rbind(x, "...")
 	}
 	if (first) {
-		x <- cbind("", x)
+		x <- data.frame("", x, stringsAsFactors=FALSE)
 		colnames(x)[1] <- "names       :"
 		x[1,1] <- "type        :"
 		if (d[1] > 0) {

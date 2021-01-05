@@ -179,22 +179,28 @@ std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
 std::vector<size_t> sample_replace_weights(size_t size, size_t N, std::vector<double> prob, unsigned seed){
 	
 	// normalize prob
-	double maxw = *max_element(prob.begin(),prob.end());
+	double maxw = *max_element(prob.begin(), prob.end());
 	for (double& d : prob)  d /= maxw;
+	double minw = *min_element(prob.begin(), prob.end());
 
 	std::default_random_engine gen(seed);   
 	std::uniform_int_distribution<> U(0, N-1);
 	std::vector<size_t> sample;
 	sample.reserve(size);
 
-	std::uniform_real_distribution<> Uw(0, 1);
+	std::uniform_real_distribution<> Uw(minw, 1);
 	size_t cnt = 0;
+	size_t cnt2 = 0;
+	size_t ssize = size * 10;
 	while (cnt < size) {
 		double w = Uw(gen);
 		double v = U(gen);
 		if (prob[v] >= w) { 
 			sample.push_back(v);
 			cnt++;
+		} else {
+			cnt2++;
+			if (cnt2 > ssize) cnt = size;
 		}
 	}
 	return sample;
@@ -330,18 +336,26 @@ std::vector<size_t> sample_no_replace_weights(size_t size, size_t N, std::vector
 
 
 std::vector<size_t> sample(size_t size, size_t N, bool replace, std::vector<double> prob, unsigned seed){
-	if (N == 0) {
+	if ((size == 0) || (N == 0)) {
 		std::vector<size_t> s;
 		return s;
 	}
 	bool w = prob.size() == N;
 	if (replace) {
+		if (N == 1) {
+			std::vector<size_t> s(size,0);
+			return s;
+		}
 		if (w) {
 			return sample_replace_weights(size, N, prob, seed);
 		} else {
 			return sample_replace(size, N, seed);	
 		}
 	} else {
+		if (N == 1) {
+			std::vector<size_t> s(1,0);
+			return s;
+		}
 		if (w) {
 			return sample_no_replace_weights(size, N, prob, seed);
 		} else {
@@ -407,16 +421,23 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 	if (size == 0) return out;
 	std::default_random_engine gen(seed);   
 
+
 	if (lonlat) {
-		double d = (ymax - ymin) / 1000;
+		double d = (ymax - ymin) / 1000.0;
 		std::vector<double> r = seq(ymin, ymax, d);
+		Rcpp::Rcout << r[0] << " " <<  r[r.size()-1] << std::endl;
+
 		std::vector<double> w;
 		w.reserve(r.size());
 		for (size_t i=0; i<r.size(); i++) {
-			w.push_back( abs(cos(M_PI * r[i]/180)));
+			if (i == 0) {
+			}
+			double ww = fabs(cos(M_PI * r[i]/180.0));
+			w.push_back(ww );
+			
 		}
+		
 		std::vector<size_t> x = sample(size, r.size(), true, w, seed);
-
 		std::vector <double> lat, lon;
 		lat.reserve(size);
 		lon.reserve(size);
