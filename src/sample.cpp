@@ -182,6 +182,8 @@ std::vector<size_t> sample_replace_weights(size_t size, size_t N, std::vector<do
 	double maxw = *max_element(prob.begin(), prob.end());
 	for (double& d : prob)  d /= maxw;
 	double minw = *min_element(prob.begin(), prob.end());
+	double maxw = *max_element(prob.begin(), prob.end());
+
 
 	std::default_random_engine gen(seed);   
 	std::uniform_int_distribution<> U(0, N-1);
@@ -432,7 +434,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 		for (size_t i=0; i<r.size(); i++) {
 			if (i == 0) {
 			}
-			double ww = fabs(cos(M_PI * r[i]/180.0));
+			double ww = std::abs(cos(M_PI * r[i]/180.0));
 			w.push_back(ww );
 			
 		}
@@ -480,7 +482,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 	double r1 = xmax - xmin;
 	double r2 = ymax - ymin;
 	double ratio = 0.5 * r1/r2;
-	double n = sqrt(size);
+	double n = sqrt( (double) size );
 	double nx = std::max(1.0, std::round(n*ratio));
 	double ny = std::max(1.0, std::round(n/ratio));
 	double x_i = r1 / nx;

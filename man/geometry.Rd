@@ -54,7 +54,7 @@ g <- geom(v)
 head(g)
 
 w <- geom(v, wkt=TRUE)
-head(w)
+substr(w, 1, 60)
 }
 
 \keyword{spatial}

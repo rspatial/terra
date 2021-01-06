@@ -432,6 +432,12 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
     std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + weights));
 
 	if (!hasValues()) return out;
+	#if GDAL_VERSION_MAJOR < 3
+	if (weights) {
+		setError("extract with weights not supported for your GDAL version")
+		return out;
+	}
+	#endif
 
 	std::vector<std::vector<double>> srcout;
 	if (gtype == "points") {

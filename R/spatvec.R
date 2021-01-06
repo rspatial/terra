@@ -79,7 +79,7 @@ setMethod("as.data.frame", signature(x="SpatVector"),
 			if (nrow(d) > 0) {
 				d$geometry <- g
 			} else {
-				d <- data.frame(geometry=g)
+				d <- data.frame(geometry=g, stringsAsFactors=FALSE)
 			}
 		}
 		d
