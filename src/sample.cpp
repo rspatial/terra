@@ -182,8 +182,6 @@ std::vector<size_t> sample_replace_weights(size_t size, size_t N, std::vector<do
 	double maxw = *max_element(prob.begin(), prob.end());
 	for (double& d : prob)  d /= maxw;
 	double minw = *min_element(prob.begin(), prob.end());
-	double maxw = *max_element(prob.begin(), prob.end());
-
 
 	std::default_random_engine gen(seed);   
 	std::uniform_int_distribution<> U(0, N-1);
