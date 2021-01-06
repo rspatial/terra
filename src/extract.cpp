@@ -434,7 +434,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 	if (!hasValues()) return out;
 	#if GDAL_VERSION_MAJOR < 3
 	if (weights) {
-		setError("extract with weights not supported for your GDAL version")
+		setError("extract with weights not supported for your GDAL version");
 		return out;
 	}
 	#endif

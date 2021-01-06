@@ -31,8 +31,6 @@
 #define M_PI (3.14159265358979323846)
 #endif
 
-
-
 double dmod(double x, double n) {
 	return(x - n * std::floor(x/n));
 }
@@ -112,11 +110,8 @@ std::vector<double> do_slope(std::vector<double> d, unsigned ngb, unsigned nrow,
 			ddx[i] = distHav(-dx, gy[i], dx, gy[i]) / 2 ;
 		}
 	} 
-
 	double zy, zx; 
 	std::vector<double> val(n);
-
-
 	if (ngb == 4) {
 		if (geo) {
 			int q;
@@ -210,11 +205,12 @@ void to_radians(std::vector<double>& x) {
 	for (double& d : x) d = atan(d);
 }
 
-SpatRaster SpatRaster::slope(unsigned neighbors, bool degrees, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+SpatRaster SpatRaster::terrain(std::string v, unsigned neighbors, bool degrees, SpatOptions &opt) {
+
+	SpatRaster out = geometry(v.size());
 	if (nlyr() > 1) {
-		out.setError("provide a single layer object");
+		out.setError("terrain needs a single layer object");
 		return out;
 	}
 	if ((neighbors != 4) && (neighbors != 8)) {

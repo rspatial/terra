@@ -588,7 +588,7 @@ RCPP_MODULE(spat){
 		.method("sampleRandomValues", &SpatRaster::sampleRandomValues, "sampleValues")
 		.method("scale", &SpatRaster::scale, "scale")
 		.method("shift", &SpatRaster::shift, "shift")
-		.method("slope", &SpatRaster::slope, "slope")
+		.method("terrain", &SpatRaster::terrain, "terrain")
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
 		.method("transpose", &SpatRaster::transpose, "transpose")

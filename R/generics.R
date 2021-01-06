@@ -534,12 +534,13 @@ setMethod("scale", signature(x="SpatRaster"),
 )
 
 
-setMethod("slope", signature(x="SpatRaster"), 
-	function(x, neighbors=8, unit="degrees", filename="", overwrite=FALSE, wopt=list(), ...) { 
+setMethod("terrain", signature(x="SpatRaster"), 
+	function(x, v="slope", neighbors=8, unit="degrees", filename="", overwrite=FALSE, wopt=list(), ...) { 
 		opt <- spatOptions(filename, overwrite, wopt)
+		stopifnot(v %in% c("slope"))
 		unit <- match.arg(unit, c("degrees", "radians"))
-		x@ptr <- x@ptr$slope(neighbors[1], unit=="degrees", opt)
-		messages(x, "slope")
+		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", opt)
+		messages(x, "terrain")
 	}
 )
 

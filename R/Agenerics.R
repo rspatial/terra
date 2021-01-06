@@ -1,5 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
+if (!isGeneric("terrain")) {setGeneric("terrain", function(x, ...) standardGeneric("terrain"))}
 if (!isGeneric("autocor")) {setGeneric("autocor", function(x, ...) standardGeneric("autocor"))}
 if (!isGeneric("delauny")) {setGeneric("delauny", function(x, ...) standardGeneric("delauny"))}
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGeneric("voronoi"))}
@@ -92,7 +93,7 @@ if (!isGeneric("separate")) {setGeneric("separate", function(x, ...) standardGen
 
 if (!isGeneric("selectRange")) {setGeneric("selectRange", function(x, ...) standardGeneric("selectRange"))}
 if (!isGeneric("setValues")) {setGeneric("setValues", function(x, ...) standardGeneric("setValues"))}
-if (!isGeneric("slope")) {setGeneric("slope", function(x, ...) standardGeneric("slope"))}
+#if (!isGeneric("slope")) {setGeneric("slope", function(x, ...) standardGeneric("slope"))}
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}
 if (!isGeneric("spatSample")) { setGeneric("spatSample", function(x, ...) standardGeneric("spatSample"))}
