@@ -190,12 +190,11 @@ setMethod("rast", signature(x="ANY"),
 )
 
 
-.rastFromXYZ <- function(xyz, digits=6, crs="", ...) {
-
-	if (length(list(...))>0) warn("rast (xyz)", "additional arguments ignored when x is a SpatRasterDataset")
+.rastFromXYZ <- function(xyz, digits=6, crs="") {
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names
+	if (is.null(ln)) ln <- rep("", ncol(xyz))
 	if (any(nchar(ln) < 1)) ln <- make.names(ln)
 	if (inherits(xyz, "data.frame")) {
 		xyz <- as.matrix(xyz)
@@ -256,9 +255,9 @@ setMethod("rast", signature(x="ANY"),
 
 
 setMethod("rast", signature(x="matrix"),
-	function(x, type="", crs="") {
+	function(x, type="", crs="", ...) {
 		if (type == "xyz") {
-			r <- .rastFromXYZ(x, crs=crs)
+			r <- .rastFromXYZ(x, crs=crs, ...)
 		} else {
 			r <- rast(nrow=nrow(x), ncol=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
 			values(r) <- t(x)
