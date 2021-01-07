@@ -255,9 +255,9 @@ setMethod("rast", signature(x="ANY"),
 
 
 setMethod("rast", signature(x="matrix"),
-	function(x, type="", crs="", ...) {
+	function(x, type="", crs="", digits=6) {
 		if (type == "xyz") {
-			r <- .rastFromXYZ(x, crs=crs, ...)
+			r <- .rastFromXYZ(x, crs=crs, digits=digits)
 		} else {
 			r <- rast(nrow=nrow(x), ncol=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
 			values(r) <- t(x)
