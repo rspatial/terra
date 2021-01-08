@@ -164,6 +164,7 @@ class SpatRaster {
 
 #ifdef useRcpp
 		Progress* pbar;
+		bool progressbar;
 #endif
 
 ////////////////////////////////////////////////////

@@ -605,12 +605,13 @@ RCPP_MODULE(spat){
     class_<SpatRasterCollection>("SpatRasterCollection")
 		.constructor()
 		.field("messages", &SpatRasterCollection::msg, "messages")
-		.field_readonly("x", &SpatRasterCollection::x)
+		.field_readonly("x", &SpatRasterCollection::ds)
 		.method("length", &SpatRasterCollection::size, "size")
 		.method("resize", &SpatRasterCollection::resize, "resize")
+		.method("erase", &SpatRasterCollection::erase, "erase")
 		.method("add", &SpatRasterCollection::push_back, "push_back")
 		.method("merge", &SpatRasterCollection::merge, "merge")
-		//.method("mosaic", &SpatRasterCollection::mosaic, "mosaic")
+		.method("mosaic", &SpatRasterCollection::mosaic, "mosaic")
 	;
 
     class_<SpatRasterStack>("SpatRasterStack")

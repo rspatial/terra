@@ -44,7 +44,7 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
-    \code{mosaic} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
+    \code{\link{mosaic}} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
     \code{\link{expand}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
@@ -110,8 +110,8 @@ Also see the methods in section VIII
     \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
     \code{patches} \tab Find patches \cr
-    \code{terrain} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
-    \code{autocor} \tab Compute global or local Moran or Geary indices of spatial autocorrelation  \cr	
+    \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
+    \code{\link{autocor}} \tab Compute global or local spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -260,6 +260,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 \tabular{ll}{
   \code{\link{vect}} \tab Create a SpatRaster from a file (e.g. shapefile) or from another object\cr
   \code{\link{c}} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
+  \code{\link{unique}} \tab remove duplicates \cr
   \code{\link{project}} \tab Project a SpatVector to a different coordinate reference system \cr
   \code{\link{writeVector}} \tab Write SpatVector data to disk \cr
   \code{\link{centroids}} \tab Get the centroids of a SpatVector\cr

@@ -324,7 +324,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 	}
 	out.bs = getBlockSize(opt);
     #ifdef useRcpp
-	out.pbar = new Progress(out.bs.n+2, opt.do_progress(bs.n));
+	out.pbar = new Progress(out.bs.n+2, opt.show_progress(bs.n));
 	out.pbar->increment();
 	#endif
 
@@ -1712,28 +1712,28 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 		return(out);
 	}
 	if (n == 1) {
-		out = x[0].deepCopy();
+		out = ds[0].deepCopy();
 		return(out);
 	}
 
 	bool any_hasvals = false;
-	if (x[0].hasValues()) any_hasvals = true;
-	out = x[0].geometry(x[0].nlyr(), true);
-	std::vector<double> orig = x[0].origin(); 
-	SpatExtent e = x[0].getExtent();
-	unsigned nl = x[0].nlyr();
+	if (ds[0].hasValues()) any_hasvals = true;
+	out = ds[0].geometry(ds[0].nlyr(), true);
+	std::vector<double> orig = ds[0].origin(); 
+	SpatExtent e = ds[0].getExtent();
+	unsigned nl = ds[0].nlyr();
 	for (size_t i=1; i<n; i++) {
 									 //  lyrs, crs, warncrs, ext, rowcol, res
-		if (!out.compare_geom(x[i], false, false, false, false, false, true)) {
+		if (!out.compare_geom(ds[i], false, false, false, false, false, true)) {
 			return(out);
 		}
-		if (!out.compare_origin(x[i].origin(), 0.1)) {
+		if (!out.compare_origin(ds[i].origin(), 0.1)) {
 			out.setError("origin of SpatRaster " + std::to_string(i+1) + " does not match the previous SpatRaster(s)");
 			return(out);		
 		}
-		e.unite(x[i].getExtent());
-		nl = std::max(nl, x[i].nlyr());
-		if (x[i].hasValues()) any_hasvals = true;
+		e.unite(ds[i].getExtent());
+		nl = std::max(nl, ds[i].nlyr());
+		if (ds[i].hasValues()) any_hasvals = true;
 	}
 	out.setExtent(e, true);
 	out = out.geometry(nl, true);
@@ -1744,7 +1744,7 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	out.fill(NAN);
 
 	for (size_t i=0; i<n; i++) {
-		SpatRaster r = x[i];
+		SpatRaster r = ds[i];
 		if (!r.hasValues()) continue;
 		BlockSize bs = r.getBlockSize(opt);
 		if (!r.readStart()) {
@@ -1767,6 +1767,103 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 		r.readStop();
 	}
 
+	out.writeStop();
+	return(out);
+}
+
+
+
+SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
+
+	SpatRaster out;
+
+	std::vector<std::string> f {"sum", "mean", "median", "min", "max"};
+	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+		out.setError("not a valid function");
+		return out;
+	}
+
+	unsigned n = size();
+
+	if (n == 0) {
+		out.setError("empty collection");
+		return(out);
+	}
+	if (n == 1) {
+		out = ds[0].deepCopy();
+		return(out);
+	}
+
+	std::vector<bool> hvals(n);
+	hvals[0] = ds[0].hasValues();
+	SpatExtent e = ds[0].getExtent();
+	unsigned nl = 1;
+	for (size_t i=1; i<n; i++) {
+		// for now, must have same nlyr; but should be easy to recycle.
+								 //  lyrs, crs, warncrs, ext, rowcol, res
+		if (!ds[0].compare_geom(ds[i], true, false, false, false, false, true)) {
+			out.setError(ds[0].msg.error);
+			return(out);
+		}
+		e.unite(ds[i].getExtent());
+		hvals[i] = ds[i].hasValues();
+		nl = std::max(nl, ds[i].nlyr());
+	}
+	out = ds[0].geometry(nl, false);
+	out.setExtent(e, true);
+	
+	for (int i=(n-1); i>=0; i--) {
+		 if (!hvals[i]) erase(i);
+	}
+	n = size();
+
+	if (size() == 0) {
+		return out;
+	}	
+	
+	SpatExtent eout = out.getExtent();
+	double hyr = out.yres()/2;
+	
+ 	if (!out.writeStart(opt)) { return out; }
+	SpatOptions sopt(opt);
+	sopt.progressbar = false;
+	std::vector<double> v;
+	for (size_t i=0; i < out.bs.n; i++) {
+		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - hyr;
+		SpatRasterStack s;
+		SpatRaster r;
+		for (size_t j=0; j<n; j++) {
+			e = ds[j].getExtent();
+			e.intersect(eout);
+			if ( e.valid() ) {
+				r = ds[j].crop(eout, "near", sopt);
+				r = r.extend(eout, sopt);
+				if (!s.push_back(r, "", "", "", false)) {
+					out.setError("internal error: " + s.getError());
+					out.writeStop();
+					return out;
+				}
+			}
+		} 
+		if (s.size() > 0) {
+			r = s.summary(fun, true, sopt);
+			if (r.hasError()) {
+				out.setError("internal error: " + r.getError());
+				out.writeStop();
+				return out;
+			}
+			if (!r.getValuesSource(0, v)) {
+				out.setError("internal error: " + r.getError());
+				out.writeStop();
+				return out;			
+			}
+		} else {
+			v = std::vector<double>(out.bs.nrows[i] * out.ncol(), NAN); 
+		}
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+		return r;
+
+	}
 	out.writeStop();
 	return(out);
 }

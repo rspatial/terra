@@ -175,7 +175,8 @@ class SpatOptions {
 		bool has_NAflag(double &flag);
 		bool get_overwrite();
 		unsigned get_progress();
-		bool do_progress(unsigned n);
+		bool show_progress(unsigned n);
+		bool progressbar=true;
 		unsigned get_blocksizemp();
 		void set_steps(size_t n);
 		size_t get_steps();

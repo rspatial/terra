@@ -1,5 +1,6 @@
 
 
+
 .one.density <- function(x, maxcells=100000, plot=TRUE, ...) {
 	d <- values(x)
 	d <- stats::density(stats::na.omit(d))
@@ -276,4 +277,27 @@ setMethod("barplot", "SpatRaster",
 		barplot(x, col=col, ...)
 	}
 )
+
+
+
+
+shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, ...) {
+	
+	x <- c(slope, aspect)
+
+	direction <- direction * pi/180
+	zenith <- (90 - angle)*pi/180
+	
+	if (normalize) {
+		fun <- function(slp, asp) { 
+			shade <- cos(slp) * cos(zenith) + sin(slp) * sin(zenith) * cos(direction-asp) 
+			shade[shade < 0] <- 0
+			shade * 255
+		}
+	} else {
+		fun <- function(slp, asp) { cos(slp) * cos(zenith) + sin(slp) * sin(zenith) * cos(direction-asp) }
+	}
+	x <- lapp(x, fun=fun, ...)		
+	return(x)
+}
 

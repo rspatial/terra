@@ -29,15 +29,19 @@ class SpatRasterCollection {
 		std::string getWarnings() { return msg.getWarnings(); }
 		std::string getError() { return msg.getError(); }
 	
-		std::vector<SpatRaster> x;
+		std::vector<SpatRaster> ds;
 		SpatRasterCollection() {};
-		SpatRasterCollection(size_t n) { x.resize(n); };
-		size_t size() { return x.size(); }
-		void resize(size_t n) { x.resize(n); }
-		void push_back(SpatRaster r) { x.push_back(r); };
-
+		SpatRasterCollection(size_t n) { ds.resize(n); };
+		size_t size() { return ds.size(); }
+		void resize(size_t n) { ds.resize(n); }
+		void push_back(SpatRaster r) { ds.push_back(r); };
+		void erase(size_t i) { 
+			if (i < ds.size()) {
+				ds.erase(ds.begin()+i);
+			}
+		}
 		SpatRaster merge(SpatOptions &opt);
-		SpatRaster mosaic(SpatOptions &opt);
+		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);
 		
 };
@@ -159,6 +163,7 @@ class SpatRasterStack {
 			return true;
 		};
 		
+		size_t size() { return ds.size(); }
 		void resize(size_t n) { 
 			if (n < ds.size()) {
 				ds.resize(n); 
@@ -167,6 +172,16 @@ class SpatRasterStack {
 				units.resize(n);
 			}
 		}
+		void erase(size_t i) { 
+			if (i < ds.size()) {
+				ds.erase(ds.begin()+i); 
+				names.erase(names.begin()+i);
+				long_names.erase(long_names.begin()+i);
+				units.erase(units.begin()+i);
+			}	
+		}
+
+
 		SpatRaster getsds(size_t i) {
 			if (i < ds.size()) {
 				return(ds[i]); 

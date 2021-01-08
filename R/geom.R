@@ -105,7 +105,13 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatVector"),
 	}
 )
 
-
+#setMethod("intersect", signature(x="SpatRaster", y="SpatRaster"),
+#	function(x, y) {
+#		a <- crop(x, y)
+#		b <- crop(y, x)
+#		c(a, b)
+#	}
+#)
 
 setMethod("buffer", signature(x="SpatVector"), 
 	function(x, width, quadsegs=10, capstyle="round", ...) {

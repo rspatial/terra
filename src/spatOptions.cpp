@@ -98,9 +98,10 @@ void SpatOptions::set_progress(unsigned p) {
 	progress = p; 
 }
 
-bool SpatOptions::do_progress(unsigned n) { 
+bool SpatOptions::show_progress(unsigned n) { 
 	return ((progress > 0) & (progress <= n));
 }
+
 
 
 unsigned SpatOptions::get_blocksizemp() { return blocksizemp; }

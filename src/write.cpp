@@ -245,11 +245,17 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		Rcpp::Rcout<< "in memory     : " << inmem << std::endl;
 		Rcpp::Rcout<< "block size    : " << mems[3] << " rows" << std::endl;
 		Rcpp::Rcout<< "n blocks      : " << bs.n << std::endl;
+		Rcpp::Rcout<< "pb            : " << opt.show_progress(bs.n) << std::endl;
 		Rcpp::Rcout<< std::endl;
 	}
 
-	pbar = new Progress(bs.n+2, opt.do_progress(bs.n));
-	pbar->increment();
+	if (opt.progressbar) {
+		pbar = new Progress(bs.n+2, opt.show_progress(bs.n));
+		pbar->increment();
+		progressbar = true;
+	} else {
+		progressbar = false;
+	}
 	#endif
 	return true;
 }
@@ -277,16 +283,20 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 	}
 
 #ifdef useRcpp
-	if (Progress::check_abort()) {
-		pbar->cleanup();
-		setError("aborted");
-		return(false);
+	if (progressbar) {
+		if (Progress::check_abort()) {
+			pbar->cleanup();
+			setError("aborted");
+			return(false);
+		}
+		pbar->increment();
 	}
-	pbar->increment();
 #endif
-
 	return success;
 }
+
+
+
 
 template <typename T>
 std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
@@ -332,13 +342,15 @@ bool SpatRaster::writeStop(){
 	}
 
 #ifdef useRcpp
-	if (Progress::check_abort()) {
-		pbar->cleanup();
-		setError("aborted");
-		return(false);
+	if (progressbar) {
+		if (Progress::check_abort()) {
+			pbar->cleanup();
+			setError("aborted");
+			return(false);
+		}
+		pbar->increment();
+		delete pbar;
 	}
-	pbar->increment();
-	delete pbar;
 #endif
 
 	return success;
