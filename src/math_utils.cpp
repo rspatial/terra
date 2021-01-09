@@ -21,6 +21,32 @@
 #include <algorithm>
 #include <random>
 
+/*
+
+std::vector<double> mean2d(const std::vector<std::vector<double>> &x) {
+	size_t n = x[0].size();
+	size_t nn = x.size();
+	std::vector<double> out(n, NAN);
+	size_t d;
+	double v;
+	for (size_t i=0; i<n; i++) {
+		v = 0;
+		d = 0;
+		for (size_t j=0; j<nn; j++) {
+			if (!std::isnan(x[i][j])) {
+				v += x[i][j];
+				d++;
+			}
+		}
+		if (d > 0) {
+			out[i] = v / d;	
+		}
+	}
+	return out;
+}
+
+*/
+
 
 void na_omit(std::vector<double> &x) {
 	x.erase(std::remove_if(std::begin(x), std::end(x),

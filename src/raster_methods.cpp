@@ -1797,11 +1797,10 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	std::vector<bool> hvals(n);
 	hvals[0] = ds[0].hasValues();
 	SpatExtent e = ds[0].getExtent();
-	unsigned nl = 1;
+	unsigned nl = ds[0].nlyr();
 	for (size_t i=1; i<n; i++) {
-		// for now, must have same nlyr; but should be easy to recycle.
-								 //  lyrs, crs, warncrs, ext, rowcol, res
-		if (!ds[0].compare_geom(ds[i], true, false, false, false, false, true)) {
+									//  lyrs, crs, warncrs, ext, rowcol, res
+		if (!ds[0].compare_geom(ds[i], false, false, false, false, false, true)) {
 			out.setError(ds[0].msg.error);
 			return(out);
 		}
@@ -1845,6 +1844,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 				}
 			}
 		} 
+		size_t ncls = out.bs.nrows[i] * out.ncol() * nl;
 		if (s.size() > 0) {
 			r = s.summary(fun, true, sopt);
 			if (r.hasError()) {
@@ -1857,12 +1857,11 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 				out.writeStop();
 				return out;			
 			}
+			recycle(v, ncls);
 		} else {
-			v = std::vector<double>(out.bs.nrows[i] * out.ncol(), NAN); 
+			v = std::vector<double>(ncls, NAN); 
 		}
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-		return r;
-
 	}
 	out.writeStop();
 	return(out);
