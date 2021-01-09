@@ -11,7 +11,7 @@
 
 \code{terra} provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divides space into rectangular cells (pixels) and it is commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) is typically used to represent discrete spatial entities. 
 
-The package implements two classes (R data types) to reprsent these data types: \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
+The package implements two classes (R data types) to represent these data types: \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
 Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset} to represents a collection of sub-datasets for the same area. Each subdataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector.
 
@@ -26,7 +26,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{I. Creating, combining and subsetting SpatRaster objects}{
+\section{I. Creating, combining and sub-setting SpatRaster objects}{
 
   \tabular{ll}{
     \code{\link{rast}}\tab Create a SpatRaster from scratch, file, or another object\cr
@@ -69,7 +69,7 @@ Also see the methods in section VIII
     \code{\link{lapp}} \tab Apply a function using the layers as variables\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
     \code{\link{arith}} \tab Use a function to compute new values for all cells \cr
-    \code{\link{Arith-methods}} \tab Standard arith methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
+    \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
 	\code{\link{Math-methods}} \tab Math methods like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
     \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
     \code{\link{Summary-methods}} \tab Summary methods (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
@@ -226,6 +226,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{readStop}} \tab Close file connections \cr
     \code{\link{inMemory}} \tab Are the cell values in memory? \cr
     \code{\link{fromDisk}} \tab Are the cell values read from a file? \cr	
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 }
 
@@ -245,6 +246,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{sds}} \tab Create a SpatRasterDataset \cr
   \code{[} or \code{$} \tab Extract a SpatRaster \cr
   \code{\link{names}} \tab Get the names of the sub-datasets \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 }
 
@@ -259,7 +261,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 \section{XIII. Create and combine SpatVector objects}{
 \tabular{ll}{
   \code{\link{vect}} \tab Create a SpatRaster from a file (e.g. shapefile) or from another object\cr
-  \code{\link{c}} \tab \bold{append} vector data of the same (vector) type ("rbind") \cr
+  \code{\link{c}} \tab append SpatVectors of the same geometry type ("rbind") \cr
   \code{\link{unique}} \tab remove duplicates \cr
   \code{\link{project}} \tab Project a SpatVector to a different coordinate reference system \cr
   \code{\link{writeVector}} \tab Write SpatVector data to disk \cr
@@ -297,22 +299,18 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }}
 
 
-
 \section{XVI. Geometric operations}{
 
-The name in \bold{bold} is the equivalent command in ArcGIS. 
-
 \tabular{ll}{
-  \code{\link{erase}} or "-" \tab \bold{erase} (parts of) geometries\cr
-  \code{\link{intersect}} or "*"  \tab \bold{intersect} geometries\cr
-  \code{\link{union}} or "+" \tab \bold{union}. Merge geometries\cr
-  \code{\link{cover}} \tab \bold{update} and \bold{identity} a polygons\cr
-  \code{\link{symdif}} \tab\bold{symmetrical difference} of two polygons \cr 
-  \code{\link{aggregate}} \tab \bold{dissolve} smaller polygons into larger ones \cr
-  \code{\link{buffer}} \tab \bold{buffer} \cr
-  \code{\link{disaggregate}} \tab \bold{explode}: turn multi-geometries into separate geometries \cr
-  \code{\link{crop}} \tab \bold{clip} geometries using a rectangle (SpatExtent)\cr
-   .\cr
+  \code{\link{erase}} or "-" \tab erase (parts of) geometries\cr
+  \code{\link{intersect}} or "*"  \tab intersect geometries\cr
+  \code{\link{union}} or "+" \tab Merge geometries\cr
+  \code{\link{cover}} \tab update polygons\cr
+  \code{\link{symdif}} \tab symmetrical difference of two polygons \cr 
+  \code{\link{aggregate}} \tab dissolve smaller polygons into larger ones \cr
+  \code{\link{buffer}} \tab buffer geometries \cr
+  \code{\link{disaggregate}} \tab split multi-geometries into separate geometries \cr
+  \code{\link{crop}} \tab clip geometries using a rectangle (SpatExtent)\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
@@ -321,10 +319,11 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
 
 \tabular{ll}{
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatVector (e.g. point in polygons) \cr
-  \code{\link{select}} \tab \bold{select} - interactively select geometries\cr
-  \code{\link{click}} \tab \bold{identify} attributes by clicking on a map\cr
-  \code{\link{merge}} \tab \bold{Join table} \cr
+  \code{\link{select}} \tab select - interactively select geometries\cr
+  \code{\link{click}} \tab identify attributes by clicking on a map\cr
+  \code{\link{merge}} \tab Join a table with a SpatVector \cr
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
 
@@ -336,6 +335,7 @@ The name in \bold{bold} is the equivalent command in ArcGIS.
   \code{\link{rescale}} \tab shrink (or expand) geometries, for example to make an inset map \cr
   \code{\link{flip}} \tab flip geometries vertially or horizontally\cr
   \code{\link{t}} \tab transpose geometries (switch x and y)\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
 
@@ -484,7 +484,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 - \tab \cr
 \code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
 - \tab \cr
-\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single layer with the mean of all cell values. That is what \code{terra} returns with \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the computation is done layer-wise, and the number of layers in the output is the same as that of \code{x} and \code{y} (or the larger of the two if they are not the same). This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case (you can use \code{min} and \code{max} instead) \cr
+\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single layer with the mean of all cell values. This is also what \code{terra} returns with \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the computation is done layer-wise, and the number of layers in the output is the same as that of \code{x} and \code{y} (or the larger of the two if they are not the same). This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case (you can use \code{min} and \code{max} instead) \cr
 }
 }
 

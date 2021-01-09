@@ -39,7 +39,7 @@ The value(s) of \code{x} at the point(s) clicked on (or touched by the box drawn
 \note{
 The plot only provides the coordinates for a spatial query, the values are read from the SpatRaster that is passed as an argument. Thus you can extract values from an object that has not been plotted, as long as it spatially overlaps with with the extent of the plot.
   
-Unless the process is terminated prematurely values at at most \code{n} positions are determined. The identification process can be terminated by hitting Esc, or by clicking the right mouse button and selecting 'Stop' from the menu, or from the 'Stop' menu on the graphics window. 
+Unless the process is terminated prematurely values at at most \code{n} positions are determined. The identification process can be terminated by hitting Esc, or by clicking the right mouse button and selecting "Stop" from the menu, or from the "Stop" menu on the graphics window. 
 }
 
 
@@ -47,11 +47,11 @@ Unless the process is terminated prematurely values at at most \code{n} position
 
 
 \examples{
-\donttest{
+\dontrun{
 r <-rast(system.file("ex/elev.tif", package="terra"))
 plot(r)
 click(r, n=1)
- # now click on the plot (map)
+## now click on the plot (map)
 }}
 
 \keyword{ spatial }
