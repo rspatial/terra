@@ -82,8 +82,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			return out;
 		}
 	}
-	if (!update) out.setNames({field});
-
+	
+	if (!update) {
+		if (field == "") {
+			out.setNames({"value"});
+		} else { 
+			out.setNames({field});
+		}
+	}
 	GDALDatasetH rstDS, vecDS;
 
 	if (update) {

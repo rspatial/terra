@@ -48,6 +48,12 @@ setMethod("vect", signature(x="sf"),
 	}
 )
 
+setMethod("vect", signature(x="sfc"), 
+	function(x, ...) {
+		methods::as(x, "SpatVector")
+	}
+)
+
 .checkXYnames <- function(x) {
 	if (is.null(x)) return(TRUE)
 	if (length(x) != 2) {
