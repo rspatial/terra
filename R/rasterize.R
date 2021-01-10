@@ -125,7 +125,10 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 					v <- as.integer(f) - 1
 					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)
 				} else {
-					y@ptr <- y@ptr$rasterize(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
+					
+					#y@ptr <- y@ptr$rasterize(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
+					## for old gdal
+					y@ptr <- y@ptr$rasterize(x@ptr, field, x[[field,drop=T]], levs, background, update[1], touches[1], inverse[1], opt)
 				}
 			} else {
 				f     <- as.factor(field)
