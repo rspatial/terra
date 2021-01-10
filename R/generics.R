@@ -594,7 +594,7 @@ setMethod("trim", signature(x="SpatRaster"),
 	function(x, padding=0, filename="", overwrite=FALSE, wopt=list(), ...) {
 		opt <- spatOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$trim(padding[1], opt)
-		messages(x, "rasterize")
+		messages(x, "trim")
 	}
 )
 
