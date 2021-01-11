@@ -9,6 +9,7 @@
 \alias{vect,missing-method}
 \alias{vect,Spatial-method}
 \alias{vect,sf-method}
+\alias{vect,sfc-method}
 \alias{vect,PackedSpatVector-method}
 
 
