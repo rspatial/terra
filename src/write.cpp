@@ -179,13 +179,13 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	}
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
-		if (!out.writeValuesGDAL(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) {
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) {
 			readStop();
-			out.writeStopGDAL();
+			out.writeStop();
 			return out;
 		}
 	}
-	out.writeStopGDAL();
+	out.writeStop();
 	//if (!out.writeStopGDAL()) {
 	//	out.setError("cannot close file");
 	//}
