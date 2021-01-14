@@ -46,19 +46,27 @@ setMethod("rast", signature(x="missing"),
 	}
 )
 
+
+
 setMethod("rast", signature(x="list"),
 	function(x) {
 		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
-		if (!any(i)) {
-			error("rast,list", "none of the elements of x are a SpatRaster")
-		}
 		if (!all(i)) {
-			warn("rast", sum(!i), " out of ", length(x), " elements of x are a SpatRaster")
+			if (!any(i)) {
+				error("rast,list", "none of the elements of x are a SpatRaster")
+			} else {
+				warn("rast", sum(!i), " out of ", length(x), " elements of x are a SpatRaster")
+				x <- x[i]
+			}
 		}
-		names(x) <- NULL
-		do.call(c, x[i])
+		out <- rast(x[[1]])
+		for (i in 1:length(x)) {
+			out@ptr$addSource(x[[i]]@ptr)
+		}
+		out
 	}
 )
+
 
 
 setMethod("rast", signature(x="SpatExtent"),
@@ -84,7 +92,9 @@ setMethod("rast", signature(x="SpatVector"),
 		dots$xmax=e[2]
 		dots$ymin=e[3]
 		dots$ymax=e[4]
-		if (all(is.na(pmatch(names(dots), "resolution")))) {
+		i <- pmatch(names(dots), "resolution")
+		j <- pmatch(names(dots), "nrow")
+		if (all(c(is.na(i), is.na(j)))) {
 			dots$resolution <- min(range(e)) / 100
 		}
 		if (all(is.na(pmatch(names(dots), "crs")))) {
