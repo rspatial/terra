@@ -61,6 +61,12 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		p = x.as_points(false, true, opt);
 	}
 
+
+	if (p.size() == 0) {
+		out.setError("no overlap between vector and raster");
+		return(out);
+	}
+	
 	bool lonlat = is_geographic(); // m == 0
 	unsigned nc = ncol();
 	if (!readStart()) {

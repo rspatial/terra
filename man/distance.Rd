@@ -16,7 +16,7 @@
 
 If \code{y} is \code{missing} this method computes the distance, for all cells that are \code{NA} in SpatRaster \code{x} to the nearest cell that is not \code{NA}. If argument \code{grid=TRUE}, the distance is computed using a path that goes through the centers of the 8 neighboring cells.
 
-If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization (for now).
+If \code{y} is a SpatVector, the distance to that SpatVector is computed for all cells. For lines and polygons this is done after rasterization; and only the overlapping areas of the vector and raster are considered (for now).
 
 \bold{If \code{x} is a SpatVector:}
 
