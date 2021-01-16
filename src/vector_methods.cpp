@@ -225,6 +225,7 @@ SpatVector SpatVector::remove_holes() {
 SpatVector SpatVector::get_holes() {
 
 	SpatVector out;
+	out.srs = srs;
 	size_t n = size();
 	if (n == 0) {
 		return out;
