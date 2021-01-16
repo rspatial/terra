@@ -63,7 +63,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 
 
 	if (p.size() == 0) {
-		out.setError("no overlap between vector and raster");
+		out.setError("no overlap between the vector and raster data");
 		return(out);
 	}
 	
