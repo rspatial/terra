@@ -77,11 +77,20 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), cover=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 
-		if (grepl("points", geomtype(x))) {
+		g <- geomtype(x)
+		if (grepl("points", g)) {
 			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
 			return (r)
+		}
+
+		opt <- spatOptions(filename, overwrite, wopt)
+
+		if (cover[1] && grepl("polygons", g)) {
+			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, "", background, FALSE, touches[1], FALSE, TRUE, opt)
+			y <- messages(y, "rasterize")
+			return(y)
 		}
 
 		if (missing(field)) field <- 1:nrow(x)
@@ -105,7 +114,6 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			}
 		}
 
-		opt <- spatOptions(filename, overwrite, wopt)
 
 		levs <- ""[0]
 		inverse <- FALSE # use "mask" for TRUE
@@ -123,18 +131,18 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 					f <- as.factor(v)
 					levs <- levels(f)
 					v <- as.integer(f) - 1
-					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)
+					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 				} else {
 					
 					#y@ptr <- y@ptr$rasterize(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
 					## for old gdal
-					y@ptr <- y@ptr$rasterize(x@ptr, field, x[[field,drop=T]], levs, background, update[1], touches[1], inverse[1], opt)
+					y@ptr <- y@ptr$rasterize(x@ptr, field, x[[field,drop=T]], levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 				}
 			} else {
 				f     <- as.factor(field)
 				levs  <- levels(f)
 				field <- as.integer(f) - 1
-				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], opt)
+				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 			} 
 		} else if (is.numeric(field)) {
 			if (length(field) == 1 && (nrow(x) > 1)) {
@@ -145,12 +153,12 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 						levs <- levels(f)
 						v <- as.integer(f) - 1
 					}
-					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], opt)
+					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 				} else {
 					error("rasterize", "field index outside the value range (1:ncol(x))")
 				} 
 			} else {
-				y@ptr <- y@ptr$rasterize(x@ptr, "", field, levs, background, update[1], touches[1], inverse[1], opt)
+				y@ptr <- y@ptr$rasterize(x@ptr, "", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 			} 
 		} else {
 			error("rasterize", "field should be character or numeric")

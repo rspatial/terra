@@ -92,8 +92,8 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 					break;
 			}
 		}
+		OGRFeature::DestroyFeature( poFeature );
 	}
-    OGRFeature::DestroyFeature( poFeature );
 	return df;
 }
 
@@ -340,6 +340,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 				g.addPart(p);
 			}
 			addGeom(g);
+			OGRFeature::DestroyFeature( poFeature );
 		}
 	} else if (wkbgeom == wkbLineString || wkbgeom == wkbMultiLineString) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
@@ -352,6 +353,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 				}
 			}
 			addGeom(g);
+			OGRFeature::DestroyFeature( poFeature );
 		}
 	} else if ( wkbgeom == wkbPolygon || wkbgeom == wkbMultiPolygon) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
@@ -366,6 +368,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 				}
 			} 
 			addGeom(g);
+			OGRFeature::DestroyFeature( poFeature );
 		}
 	} else {				
 		const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
@@ -374,7 +377,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		setError(s);
 		return false;			
 	}
-	OGRFeature::DestroyFeature( poFeature );
+	
  	return true;
 }
 

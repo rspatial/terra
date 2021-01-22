@@ -15,9 +15,24 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 
 #if GDAL_VERSION_MAJOR >= 3
 
-SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
+SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, bool weights, SpatOptions &opt) {
 
 	SpatRaster out;
+	std::string gtype = x.type();
+
+	if (weights && (gtype == "polygons")) {
+		SpatOptions sopts(opt);
+		out = geometry(1);
+		out = out.disaggregate({10, 10}, sopts);
+		field = "";
+		values = {0.01};
+		labels = {""};
+		out = out.rasterize(x, field, values, labels, background, false, touches, false, false, sopts);
+		out = out.aggregate({10, 10}, "sum", true, opt);
+		return out;
+	}
+
+
 	if ( !hasValues() ) update = false;
 
 	if (update) {
@@ -326,9 +341,20 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 
 //SpatRaster SpatRaster::rasterize(SpatVector x, std::vector<double> values, double background, bool update, SpatOptions &opt) {
 
-
 	std::string gtype = x.type();
 	SpatRaster out = geometry(1);
+
+	if (weights && (gtype == "polygons")) {
+		SpatOptions sopts(opt);
+		out = out.disaggregate({10, 10}, sopts);
+		field = "";
+		values = {0.01};
+		labels = {""};
+		out = out.rasterize(x, field, values, labels, background, false, touches, false, false, sopts);
+		out = out.aggregate({10, 10}, "sum", true, opt);
+		return out;
+	}
+
 
 	if (field != "") {
 		std::vector<std::string> nms = x.get_names();
@@ -386,10 +412,10 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	SpatRaster rc = r.crop(e, "out", opt);
 #if GDAL_VERSION_MAJOR >= 3		
 	std::vector<double> feats(1, 1) ;		
-    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
+    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;		
-    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
+    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #endif
 	SpatVector pts = rcr.as_points(false, true, opt);
     SpatDataFrame vd = pts.getGeometryDF();
@@ -415,10 +441,10 @@ std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v
 	r = r.disaggregate(fact, opt);
 #if GDAL_VERSION_MAJOR >= 3
 	std::vector<double> feats(1, 1) ;		
-	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
+	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;		
-	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, opt); 
+	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #endif
 	r = r.arith(100.0, "/", false, opt);
 	r = r.aggregate(fact, "sum", true, opt);
