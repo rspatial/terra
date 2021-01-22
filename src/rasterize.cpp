@@ -337,7 +337,7 @@ SpatRaster rasterizeLines(SpatVector p, SpatRaster r, std::vector<double> value,
 
 
 
-SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, SpatOptions &opt) {
+SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, bool weights, SpatOptions &opt) {
 
 //SpatRaster SpatRaster::rasterize(SpatVector x, std::vector<double> values, double background, bool update, SpatOptions &opt) {
 
