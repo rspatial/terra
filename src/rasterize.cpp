@@ -444,7 +444,7 @@ std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v
 	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;		
-	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
+	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, 	opt); 
 #endif
 	r = r.arith(100.0, "/", false, opt);
 	r = r.aggregate(fact, "sum", true, opt);
