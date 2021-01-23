@@ -474,7 +474,11 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 			//Rcpp::Rcout << GEOSGeom_getDimensions_r(hGEOSCtxt, g) << std::endl;
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* gg = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
-				std::string ggt = GEOSGeomType_r(hGEOSCtxt, gg);
+
+				char* geostype = GEOSGeomType_r(hGEOSCtxt, g);
+				std::string ggt = geostype;
+				free(geostype);
+
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, gg, j);
 				if (ggt == "Polygon" || ggt == "MultiPolygon") {
 					if (!polysFromGeom(hGEOSCtxt, part, i, j, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
