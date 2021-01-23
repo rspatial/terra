@@ -250,7 +250,8 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	}
 
 	if (opt.progressbar) {
-		pbar = new Progress(bs.n+2, opt.show_progress(bs.n));
+		unsigned long steps = bs.n+2;
+		pbar = new Progress(steps, opt.show_progress(bs.n));
 		pbar->increment();
 		progressbar = true;
 	} else {

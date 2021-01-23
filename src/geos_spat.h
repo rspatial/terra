@@ -114,8 +114,6 @@ GEOSContextHandle_t geos_init2(void) {
 
 
 
-
-
 GEOSGeometry* geos_line(const std::vector<double> &x, const std::vector<double> &y, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSCoordSequence *pseq;
 	size_t n = x.size();

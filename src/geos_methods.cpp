@@ -307,8 +307,7 @@ SpatVector SpatVector::intersect(SpatVector v) {
 		}
 	}
 
-	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
-	geos_finish(hGEOSCtxt);
+	//SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 
 	if (result.size() > 0) {
 		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
@@ -324,6 +323,7 @@ SpatVector SpatVector::intersect(SpatVector v) {
 	if (!srs.is_same(v.srs, true)) {
 		out.addWarning("different crs"); 
 	}
+	geos_finish(hGEOSCtxt);
 
 	return out;
 }
@@ -695,12 +695,12 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 		out.setError("empty SpatVecor(s)");
 		return out;
 	}
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	if (parallel) {
 		if ((size() != v.size())) {
 			out.setError("SpatVecors do not have the same size");
 			return out;
 		}		
-		GEOSContextHandle_t hGEOSCtxt = geos_init();
 		std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 		std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 		std::vector<GeomPtr> b(size());
@@ -710,11 +710,9 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 			b[i] = geos_ptr(geom, hGEOSCtxt);
 		}
 		out = vect_from_geos(b, hGEOSCtxt, "points");
-		geos_finish(hGEOSCtxt);
 		
 	} else {	
 		SpatVector mp = v.aggregate(false);
-		GEOSContextHandle_t hGEOSCtxt = geos_init();
 		std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 		std::vector<GeomPtr> y = geos_geoms(&mp, hGEOSCtxt);
 		std::vector<GeomPtr> b(size());
@@ -724,8 +722,8 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 			b[i] = geos_ptr(geom, hGEOSCtxt);
 		}
 		out = vect_from_geos(b, hGEOSCtxt, "points");
-		geos_finish(hGEOSCtxt);
 	}
+	geos_finish(hGEOSCtxt);
 	return out;
 }
 
@@ -751,7 +749,6 @@ SpatVector SpatVector::nearest_point() {
 	}
 	out = vect_from_geos(b, hGEOSCtxt, "points");
 	geos_finish(hGEOSCtxt);
-	
 	out.srs = srs;
 	return out;
 }
