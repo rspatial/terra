@@ -444,9 +444,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 		free(geostype);
 		size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
 
-		//Rcpp::Rcout << gt << std::endl;
-		//Rcpp::Rcout << np << " parts" << std::endl;
-		
+
 		if (gt == "Point" || gt == "MultiPoint") {
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
