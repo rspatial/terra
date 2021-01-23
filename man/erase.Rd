@@ -6,12 +6,11 @@
 \alias{erase,SpatVector,SpatVector-method}
 \alias{erase,SpatVector,SpatExtent-method}
 
-\title{ 
-Erase parts of a SpatVector object. The inverse of this can be done with \code{\link{intersect}} and \code{\link{crop}}
-}
+\title{ Erase parts of a SpatVector object}
 
 \description{
-Erase parts of a SpatVector with another SpatVector (or SpatExtent)
+Erase parts of a SpatVector with another SpatVector (or SpatExtent). 
+The inverse of this can be done with \code{\link{intersect}} and \code{\link{crop}}.
 }
 
 \usage{
