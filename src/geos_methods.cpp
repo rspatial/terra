@@ -120,6 +120,8 @@ SpatVector SpatVector::crop(SpatVector v) {
 			if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
 				result.push_back(geos_ptr(geom, hGEOSCtxt));
 				ids.push_back(i);
+			} else {
+				GEOSGeom_destroy_r(hGEOSCtxt, geom);
 			}
 		}
 	}
@@ -304,6 +306,8 @@ SpatVector SpatVector::intersect(SpatVector v) {
 				result.push_back(geos_ptr(geom, hGEOSCtxt));
 				idx.push_back(i);
 				idy.push_back(j);
+			} else {
+				GEOSGeom_destroy_r(hGEOSCtxt, geom);
 			}
 		}
 	}
@@ -656,6 +660,8 @@ SpatVector SpatVector::symdif(SpatVector v) {
 		if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
 			result.push_back(geos_ptr(geom, hGEOSCtxt));
 			ids.push_back(i);
+		} else {
+			GEOSGeom_destroy_r(hGEOSCtxt, geom);
 		}
 	}
 
@@ -717,7 +723,9 @@ SpatVector SpatVector::erase(SpatVector v) {
 		if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
 			result.push_back(geos_ptr(geom, hGEOSCtxt));
 			ids.push_back(i);
-		}
+		} else {
+			GEOSGeom_destroy_r(hGEOSCtxt, geom);
+		}	
 	}
 
 	if (result.size() > 0) {

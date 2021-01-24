@@ -1931,15 +1931,12 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 		return(out);
 	}
 
-	std::vector<double> stats2;
 	std::string sdfun = fun;
-	if (fun=="range") {
-		stats2.resize(nlyr());
-	} else if ((fun == "sdpop") || (fun == "sd")) {
-		stats2.resize(nlyr());
+	if ((fun == "sdpop") || (fun == "sd")) {
 		fun = "sd";
 	}
 	std::vector<double> stats(nlyr());
+	std::vector<double> stats2(nlyr());
 	std::vector<double> n(nlyr());
 	if (!readStart()) {
 		out.setError(getError());
