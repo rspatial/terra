@@ -475,7 +475,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* gg = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
 
-				char* geostype = GEOSGeomType_r(hGEOSCtxt, g);
+				char* geostype = GEOSGeomType_r(hGEOSCtxt, gg);
 				std::string ggt = geostype;
 				free(geostype);
 
