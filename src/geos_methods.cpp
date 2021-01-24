@@ -41,6 +41,7 @@ std::vector<std::string> SpatVector::geos_isvalid_msg() {
 		if (!v) {
 			char *r = GEOSisValidReason_r(hGEOSCtxt, g[i].get());
 			std::string reason = r;
+			free(r);
 			out.push_back(reason);
 		} else {
 			out.push_back("");
