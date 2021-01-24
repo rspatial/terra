@@ -328,6 +328,8 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 			failcount++;
 		}
 	}
+	
+	OCTDestroyCoordinateTransformation(pcCT); 	
 	if (failcount > 0) {
 		m.addWarning(std::to_string(failcount) + " failed transformations");
 	}
@@ -395,6 +397,7 @@ SpatVector SpatVector::project(std::string crs) {
 		s.addGeom(gg);
 	}
 	s.df = df.subset_rows(keeprows);	
+	OCTDestroyCoordinateTransformation(pcCT); 	
 
 	#endif
 	return s;
