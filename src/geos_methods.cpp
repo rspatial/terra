@@ -71,6 +71,8 @@ SpatVector SpatVector::crop(SpatExtent e) {
 		if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
 			p.push_back(geos_ptr(r, hGEOSCtxt));
 			id.push_back(i);
+		} else {
+			GEOSGeom_destroy_r(hGEOSCtxt, r);
 		}
 	}
 	if (p.size() > 0) {

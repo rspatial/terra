@@ -404,10 +404,11 @@ SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 SpatVector::SpatVector(std::vector<std::string> wkt) {
 
 	OGRGeometryFactory ogr;
-	OGRGeometry *poGeometry;
 
 	SpatGeom g;
 	for (size_t i=0; i<wkt.size(); i++) {
+
+		OGRGeometry *poGeometry;
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
 		char *cstring = &wkt[i][0];
@@ -442,6 +443,8 @@ SpatVector::SpatVector(std::vector<std::string> wkt) {
 					return;
 				}
 				addGeom(g);
+				OGRGeometryFactory::destroyGeometry(poGeometry);
+
 			}
 		} else {
 			setError("not WKT");
