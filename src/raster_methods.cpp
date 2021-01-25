@@ -323,10 +323,10 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 		return out;
 	}
 	out.bs = getBlockSize(opt);
-    #ifdef useRcpp
-	out.pbar = new Progress(out.bs.n+2, opt.show_progress(bs.n));
-	out.pbar->increment();
-	#endif
+//	#ifdef useRcpp
+//	out.pbar = new Progress(out.bs.n+2, opt.show_progress(bs.n));
+//	out.pbar->increment();
+//	#endif
 
 	std::vector<std::vector<double>> v(nl);
 	std::vector<unsigned> ird(ind.size());
