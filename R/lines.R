@@ -74,6 +74,7 @@ setMethod("points", signature(x="SpatVector"),
 	}
 )
 
+
 setMethod("polys", signature(x="SpatVector"), 
 	function(x, col, border="black", lwd=1, lty=1, ...)  {
 		gtype <- geomtype(x)
@@ -84,7 +85,7 @@ setMethod("polys", signature(x="SpatVector"),
 			col <- NULL
 		}
 		cols <- .getCols(size(x), col)
-		out <- list(main_cols=col)
+		out <- list(main_cols=cols)
 		out$leg$border <- border
 		.plotPolygons(x, out, lwd=lwd, lty=lty, ...)
 	}

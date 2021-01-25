@@ -413,7 +413,6 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 		}
 	} else {
 		std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
-
 		for (size_t i = 0; i < nx; i++) {
 			for (size_t j = 0; j < ny; j++) {
 				out.push_back( relFun(hGEOSCtxt, x[i].get(), y[j].get()));
