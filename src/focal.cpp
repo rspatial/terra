@@ -116,6 +116,15 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		out.setError("size of w is not 1 or 2");
 		return out;
 	}
+	if ((w[0] % 2) == 0 || (w[1] % 2) == 0) {
+		out.setError("w must be odd sized");
+		return out;
+	}
+	if (w[0] < 3 && w[1] < 3) {
+		out.setError("w must be > 1");
+		return out;
+	}
+	
 	unsigned ww = w[0] * w[1];
 	if (ww < 9) {
 		out.setError("not a meanigful window");
