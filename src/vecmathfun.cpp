@@ -52,6 +52,8 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 		theFun = vsd<double>;
 	} else if (fun == "std") {
 		theFun = vsdpop<double>;
+	} else if (fun == "first") {
+		theFun = vfirst<double>;
 	} else {
 		theFun = vmean<double>;
 	}

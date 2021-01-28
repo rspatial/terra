@@ -300,6 +300,19 @@ T vmin(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
+T vfirst(std::vector<T>& v, bool narm) {
+	if (narm) {
+		for (size_t i=0; i<v.size(); i++) {
+			if (!is_NA(v[i])) {
+				return v[i];
+			}
+		}
+	} 
+	return v[0];
+}
+
+
+template <typename T>
 T vmax(std::vector<T>& v, bool narm) {
 	T x = v[0];
 	if (narm) {

@@ -1702,6 +1702,8 @@ bool SpatRaster::compare_origin(std::vector<double> x, double tol) {
 	return true;
 }
 
+
+/*
 SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 
 	SpatRaster out;
@@ -1754,10 +1756,10 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 
 		for (size_t j=0; j<bs.n; j++) {
             std::vector<double> v = r.readValues(bs.row[j], bs.nrows[j], 0, r.ncol());
-            unsigned row1 = out.rowFromY(r.yFromRow(bs.row[j]));
-            unsigned row2 = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
-            unsigned col1 = out.colFromX(r.xFromCol(0));
-            unsigned col2 = out.colFromX(r.xFromCol(r.ncol()-1));
+            unsigned row1  = out.rowFromY(r.yFromRow(bs.row[j]));
+            unsigned row2  = out.rowFromY(r.yFromRow(bs.row[j]+bs.nrows[j]-1));
+            unsigned col1  = out.colFromX(r.xFromCol(0));
+            unsigned col2  = out.colFromX(r.xFromCol(r.ncol()-1));
 			unsigned ncols = col2-col1+1;
 			unsigned nrows = row2-row1+1;
 			recycle(v, ncols * nrows * nl);
@@ -1770,6 +1772,15 @@ SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
 	out.writeStop();
 	return(out);
 }
+*/
+
+
+
+
+SpatRaster SpatRasterCollection::merge(SpatOptions &opt) {
+	return mosaic("first", opt);
+}
+
 
 
 
@@ -1777,7 +1788,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 	SpatRaster out;
 
-	std::vector<std::string> f {"sum", "mean", "median", "min", "max"};
+	std::vector<std::string> f {"first", "sum", "mean", "median", "min", "max"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return out;
@@ -1866,7 +1877,6 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	out.writeStop();
 	return(out);
 }
-
 
 
 

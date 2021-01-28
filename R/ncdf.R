@@ -126,6 +126,8 @@
 	prj <- crs(x[1])
 	prj <- gsub("\n", "", prj)
 	if (prj != "") {
+		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "crs_wkt", prj, prec="text")
+		# need for older gdal?
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "spatial_ref", prj, prec="text")
 		ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "proj4", .proj4(x[1]), prec='text')
 	}
