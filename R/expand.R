@@ -33,7 +33,9 @@ function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 		if (is.vector(y)) {
 			if (length(y) <= 2) {
-				adj <- abs(y) * rev(res(x))
+				y <- round(y)
+				stopifnot(all(y > 0))
+				adj <- rev(y) * res(x)
 				y <- as.vector(ext(x))
 				y[1] <- y[1] - adj[1]
 				y[2] <- y[2] + adj[1]

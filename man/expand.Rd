@@ -23,7 +23,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 
 \arguments{
   \item{x}{SpatRaster or SpatExtent}
-  \item{y}{If \code{x} is a SpatRaster, \code{y} should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide a numeric vector of length 2 indicating the number of rows and columns that need to be added (or a single number when the number of rows and columns is equal)
+  \item{y}{If \code{x} is a SpatRaster, \code{y} should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide two postive integers indicating the number of rows and columns that need to be added at each side (or a single postive integer when the number of rows and columns is equal)
   
   If \code{x} is a SpatExtent, \code{y} should be a numeric vector of 1, 2, or 4 elements}
   \item{filename}{character. Output filename. Optional}
