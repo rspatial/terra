@@ -393,58 +393,63 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 
 
 
-std::vector<double> do_edge(std::vector<double> &d, std::vector<size_t> dim, bool classes, bool outer, unsigned dirs) {
+std::vector<double> do_edge(std::vector<double> &d, size_t nrow, size_t ncol, bool before, bool after, bool classes, bool inner, unsigned dirs) {
 
 	bool falseval = 0;
 
-	size_t nrow = dim[0];
-	size_t ncol = dim[1];
 	size_t n = nrow * ncol;
 	std::vector<double> val(n, NAN);
 
+	// main
 	int r[8] = { -1,0,0,1 , -1,-1,1,1};
 	int c[8] = { 0,-1,1,0 , -1,1,-1,1};
+		// first col
+	int fr[5] = {-1,0,1,-1,1};
+	int fc[5] = { 0,1,0, 1,1};
+		// last col
+	int lr[5] = { -1, 0,1, -1, 1};
+	int lc[5] = {  0,-1,0, -1,-1};
 
-	if (!classes) {
-		if (!outer) { // inner
-			for (size_t i = 1; i < (nrow-1); i++) {
-				for (size_t j = 1; j < (ncol-1); j++) {
-					size_t cell = i*ncol+j;
-					val[cell] = NAN;
-					if ( !std::isnan(d[cell])) {
-						val[cell] = falseval;
-						for (size_t k=0; k< dirs; k++) {
-							if ( std::isnan(d[cell + r[k] * ncol + c[k]])) {
-								val[cell] = 1;
-								break;
-							}
-						}
-					}
-				}
-			}
+
+	// first row
+	int br[5] = {  0,0,1 , 1,1};
+	int bc[5] = { -1,1,0 ,-1,1};
+		// first col
+	int bfr[3] = { 0,1 ,1};
+	int bfc[3] = { 1,0 ,1};
+		// last col
+	int blr[3] = {  0,1 , 1};
+	int blc[3] = { -1,0 ,-1};
+
+
+	// last row
+	int ar[5] = { -1,0,0, -1,-1};
+	int ac[5] = { 0,-1,1, -1, 1};
+		// first col
+	int afr[3] = { -1,0,-1};
+	int afc[3] = { 0 ,1, 1};
+		// last col
+	int alr[3] = { -1,0, -1};
+	int alc[3] = { 0,-1, -1};
 	
-		} else { //outer
-			for (size_t i = 1; i < (nrow-1); i++) {
-				for (size_t j = 1; j < (ncol-1); j++) {
-					size_t cell = i*ncol+j;
-					val[cell] = falseval;
-					if (std::isnan(d[cell])) {
-						val[cell] = NAN;
-						for (size_t k=0; k < dirs; k++) {		
-							if ( !std::isnan(d[cell+ r[k] * ncol + c[k] ])) {
-								val[cell] = 1;
-								break;
-							}
-						}
-					}
-				}
-			}
-		} 
-	} else { // by class
-		for (size_t i = 1; i < (nrow-1); i++) {
+
+	size_t rowoff = 0;
+	size_t nrows = nrow;
+	if (before) {
+		rowoff = 1;
+	}
+	if (after) {
+		nrows++;
+	}
+	size_t hrdirs = dirs == 4 ? 3 : 5;
+	size_t hcdirs = dirs == 4 ? 2 : 3;
+
+	if (classes) {  // by class
+
+		for (size_t i = 1; i < (nrows); i++) {
 			for (size_t j = 1; j < (ncol-1); j++) {
-				size_t cell = i*ncol+j;
-				double test = d[cell+r[0]*ncol+c[0]];
+				size_t cell = i * ncol+j ;
+				double test = d[cell + r[0] * ncol + c[0]];
 				val[cell] = std::isnan(test) ? NAN : falseval;
 				for (size_t k=1; k<dirs; k++) {
 					double v = d[cell+r[k]*ncol +c[k]];
@@ -459,22 +464,194 @@ std::vector<double> do_edge(std::vector<double> &d, std::vector<size_t> dim, boo
 					}
 				}
 			}
-		}
+		}		
+	} else { // not by class
+		if (inner) {  ////// inner //// 	
+			if (!before) { // no row above
+				for (size_t j = 1; j < (ncol-1); j++) {
+					// cell = j
+					if (!std::isnan(d[j])) {
+						val[j] = 0;
+						for (size_t k=0; k < hrdirs; k++) {		
+							if ( std::isnan(d[j + br[k] * ncol + bc[k] ])) {
+								val[j] = 1;
+								break;
+							}
+						}
+					}
+				} // first column of first row
+				// cell = j = 0
+				if (!std::isnan(d[0])) {
+					val[0] = 0;
+					for (size_t k=0; k < hcdirs; k++) {		
+						if ( std::isnan(d[bfr[k] * ncol + bfc[k] ])) {
+							val[0] = 1;
+							break;
+						}
+					}
+				} // last column of first row
+				size_t cell = ncol-1;
+				if (!std::isnan(d[cell])) {
+					val[cell] = 0;
+					for (size_t k=0; k < hcdirs; k++) {		
+						if ( std::isnan(d[cell + blr[k] * ncol + blc[k] ])) {
+							val[cell] = 1;
+							break;
+						}
+					}
+				}
+			}
+			if (!after) { // no row below
+				size_t i = nrows-1;
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = i * ncol + j;
+					size_t outcell = (i-rowoff) * ncol + j;
+					if (!std::isnan(d[cell])) {
+						val[outcell] = 0;
+						for (size_t k=0; k < hrdirs; k++) {		
+							if ( std::isnan(d[cell+ ar[k] * ncol + ac[k] ])) {
+								val[outcell] = 1;
+								break;
+							}
+						}
+					}
+				} // first cell for last row
+				size_t cell = (nrows-1) * ncol;
+				size_t outcell = (nrows-1-rowoff) * ncol;
+				if (!std::isnan(d[cell])) {
+					val[outcell] = 0;
+					for (size_t k=0; k < hcdirs; k++) {		
+						if ( std::isnan(d[cell + afr[k] * ncol + afc[k] ])) {
+							val[outcell] = 1;
+							break;
+						}
+					}
+				} // last cell for last row
+				cell += ncol-1;
+				outcell += ncol-1;
+				if (!std::isnan(d[cell])) {
+					val[outcell] = 0;
+					for (size_t k=0; k < hcdirs; k++) {		
+						if ( std::isnan(d[cell+ alr[k] * ncol + alc[k] ])) {
+							val[outcell] = 1;
+							break;
+						}
+					}
+				}	
+			} // other rows 
 
+			
+			for (size_t i = 1; i < nrows; i++) {
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = i * ncol + j;
+					if (!std::isnan(d[cell])) {
+						size_t outcell = (i-rowoff) * ncol + j;
+						val[outcell] = 0;
+						for (size_t k=0; k < dirs; k++) {		
+							if ( std::isnan(d[cell+ r[k] * ncol + c[k] ])) {
+								val[outcell] = 1;
+								break;
+							}
+						}
+					}
+				}
+
+				// first column
+				size_t cell = i * ncol;
+				size_t outcell = (i-rowoff) * ncol;
+				if (!std::isnan(d[cell])) {
+					val[outcell] = 0;
+					for (size_t k=0; k < hrdirs; k++) {		
+						if ( std::isnan(d[cell + fr[k] * ncol + fc[k] ])) {
+							val[outcell] = 1;
+							break;
+						}
+					}
+				}
+				// last column
+				cell += ncol - 1;
+				outcell += ncol - 1;
+				if (!std::isnan(d[cell])) {
+					val[outcell] = 0;
+					for (size_t k=0; k < hrdirs; k++) {		
+						if ( std::isnan( d[cell + lr[k] * ncol + lc[k] ])) {
+							val[outcell] = 1;
+							break;
+						}
+					}
+				}
+			}
+
+		} else { ////// outer //// 	
+
+	
+			if (!before) {
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = j;
+					if (std::isnan(d[cell])) {
+						val[cell] = NAN;
+						for (size_t k=0; k < hcdirs; k++) {		
+							if ( !std::isnan(d[j + br[k] * ncol + bc[k] ])) {
+								val[cell] = 1;
+								break;
+							}
+						}
+					} else {
+						val[cell] = 0;
+					}
+				}
+			}
+			if (!after) {
+				size_t i = (nrow - 1) * ncol;
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = (i-rowoff) * ncol + j;
+					if (std::isnan(d[cell])) {
+						val[cell] = NAN;
+						for (size_t k=0; k < hcdirs; k++) {		
+							if (!std::isnan(d[cell+ ar[k] * ncol + ac[k] ])) {
+								val[cell] = 1;
+								break;
+							}
+						}
+					} else {
+						val[cell] = 0;
+					}
+				}
+			}
+
+			for (size_t i = 1; i < nrows; i++) {
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = (i-rowoff) * ncol + j;
+					if (std::isnan(d[cell])) {
+						val[cell] = NAN;
+						for (size_t k=0; k<dirs; k++) {
+							if (!std::isnan(d[cell + r[k] * ncol + c[k]])) {
+								val[cell] = 1;
+								break;
+							}
+						}
+					} else {
+						val[cell] = 0;
+					}
+				}
+			}
+		}
+	
 	}
+//	val.erase(val.begin(), val.begin()+ncol);
+//	val.erase(val.end()-ncol, val.end());	
 	return(val);
 }
 
 
 
+/*
+std::vector<double> get_border(std::vector<double> xd, size_t nrows, size_t ncols, bool classes, std::string edgetype, unsigned dirs) {
 
-std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim, bool classes, std::string edgetype, unsigned dirs) {
+	size_t n = nrows * ncols;
 
-	unsigned nrows = dim[0];
-	unsigned ncols = dim[1];
-	unsigned n = nrows * ncols;
-
-	std::vector<double> xval(n, NAN);
+	std::vector<double> xval(n, 0);
+	Rcpp::Rcout << "hello" << std::endl;
 
 	int r[8] = {-1,0,0,1, -1,-1,1,1};
 	int c[8] = {0,-1,1,0, -1,1,-1,1};
@@ -485,7 +662,9 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 			for (size_t i = 1; i < (nrows-1); i++) {
 				for (size_t j = 1; j < (ncols-1); j++) {
 					size_t cell = i*ncols+j;
-					if (!std::isnan(xd[cell])) {
+					if (std::isnan(xd[cell])) {
+						xval[cell] = NAN;
+					} else {
 						xval[cell] = falseval;
 						for (size_t k=0; k< dirs; k++) {
 							if (std::isnan (xd[cell + r[k] * ncols + c[k]])) {
@@ -503,6 +682,8 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 					size_t cell = i*ncols+j;
 					xval[cell] = falseval;
 					if (std::isnan(xd[cell])) {
+						xval[cell] = NAN;
+					} else {
 						for (size_t k=0; k < dirs; k++) {		
 							if (std::isnan(xd[cell+ r[k] * ncols + c[k] ])) {
 								xval[cell] = 1;
@@ -517,14 +698,16 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 		for (size_t i = 1; i < (nrows-1); i++) {
 			for (size_t j = 1; j < (ncols-1); j++) {
 				size_t cell = i*ncols+j;
-				double test = xd[ cell+r[0]*ncols+c[0] ];
-				if (!std::isnan(test)) {
+				double test = xd[ cell + r[0]*ncols + c[0] ];
+				if (std::isnan(test)) {
+					xval[cell] = NAN;
+				} else {
 					xval[cell] = falseval;
-				}
-				for (size_t k=1; k < dirs; k++) {
-					if (test != xd[ cell+r[k]*ncols +c[k] ]) {
-						xval[cell] = 1;
-						break;
+					for (size_t k=1; k < dirs; k++) {
+						if (test != xd[ cell+r[k]*ncols +c[k] ]) {
+							xval[cell] = 1;
+							break;
+						}
 					}
 				}
 			}
@@ -533,7 +716,7 @@ std::vector<double> get_border(std::vector<double> xd, std::vector<unsigned> dim
 	}
 	return(xval);
 }
-
+*/
 
 
 
@@ -558,10 +741,9 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		out.setError("directions should be 'inner' or 'outer'");
 		return(out);	
 	}
-	bool do_outer = type == "outer";
+	bool inner = type == "inner";
 
 	size_t nc = ncol();
-	std::vector<size_t> dim = {nrow(), nc}; 
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -572,9 +754,28 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		readStop();
 		return out;
 	}
+	
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
-		std::vector<double> vv = do_edge(v, dim, classes, do_outer, directions);
+		std::vector<double> v;
+		bool before = false;
+		bool after = false;
+		if (i == 0) {
+			if (out.bs.n == 1) {
+				v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
+			} else {
+				v = readValues(out.bs.row[i], out.bs.nrows[i]+1, 0, nc);
+				after = true;
+			}	
+		} else {
+			before = true;
+			if (i == out.bs.n) {
+				v = readValues(out.bs.row[i]-1, out.bs.nrows[i]+1, 0, nc);
+			} else {
+				v = readValues(out.bs.row[i]-1, out.bs.nrows[i]+2, 0, nc);
+				after = true;
+			}
+		}
+		std::vector<double> vv = do_edge(v, out.bs.nrows[i], nc, before, after, classes, inner, directions);
 		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
 	out.writeStop();

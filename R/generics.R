@@ -61,9 +61,10 @@ setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 
 
 setMethod("boundaries", signature(x="SpatRaster"), 
-	function(x, classes=FALSE, type="inner", directions=8, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- spatOptions(filename, overwrite,wopt)
-		x@ptr <- x@ptr$boundaries(classes[1], type[1], directions[1], opt)
+	function(x, classes=FALSE, inner=TRUE, directions=8, filename="", overwrite=FALSE, ...) {
+		opt <- spatOptions(filename, overwrite, ...)
+		type <- ifelse(inner[1], "inner", "outer")
+		x@ptr <- x@ptr$boundaries(classes[1], type, directions[1], opt)
 		messages(x, "boundaries")
 	}
 )
