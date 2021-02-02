@@ -523,16 +523,8 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		
 			//double naflag = -3.4e+38;
 			double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
-			Rcpp::Rcout << hasNA << std::endl;
-			Rcpp::Rcout << naflag << std::endl;
 			if (hasNA && (!std::isnan(naflag))) {
-				Rcpp::Rcout << lyrout[0] << std::endl;
-				double dif = lyrout[0] + 3.4e+38;
-				Rcpp::Rcout << dif << std::endl;
-				dif = naflag + 3.4e+38;
-				Rcpp::Rcout << dif << std::endl;
 				std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
-				Rcpp::Rcout << lyrout[0] << std::endl;
 			}
 			source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
 		}
