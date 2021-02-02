@@ -324,7 +324,7 @@ setAs("SpatRaster", "Raster",
 			if (inherits(geom[[1]][[1]], "list")) {
 				vvv <- list()
 				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k!=1) 
+					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=k-1) 
 				}
 				vv[[j]] <- do.call(rbind, vvv)
 			} else {
@@ -401,6 +401,7 @@ setAs("sf", "SpatVector",
 		v
 	}
 )
+
 
 
 setAs("im", "SpatRaster", 
