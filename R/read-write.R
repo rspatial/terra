@@ -97,14 +97,14 @@ setMethod("writeValues", signature(x="SpatRaster", v="vector"),
 
 
 setMethod("writeRaster", signature(x="SpatRaster", filename="character"), 
-function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
+function(x, filename="", overwrite=FALSE, ...) {
 	filename <- trimws(filename)
 	stopifnot(filename != "")
 	if (tools::file_ext(filename) %in% c("nc", "cdf") || isTRUE(wopt$filetype=="netCDF")) {
 		warn("writeRaster", "call writeCDF directly")
 		return ( writeCDF(x, filename=filename, overwrite=overwrite, ...) )
 	}
-	opt <- spatOptions(filename, overwrite, wopt)
+	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$writeRaster(opt)
 	x <- messages(x, "writeRaster")
 	invisible(rast(filename))

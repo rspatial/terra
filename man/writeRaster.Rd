@@ -12,15 +12,14 @@ Write a SpatRaster object to a file.
 
 \usage{
 \S4method{writeRaster}{SpatRaster,character}(x, filename, 
-        overwrite=FALSE, wopt=list(), ...)
+        overwrite=FALSE, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files. See Details }
-  \item{...}{additional arguments. None implemented}
+  \item{...}{additional arguments for for writing files. See Details }
 }
 
 \value{
@@ -32,7 +31,7 @@ see \code{\link{writeCDF}} for writing NetCDF files.
 }
 
 \details{
-In many methods, options for writing raster files to disk can be provided with the \code{wopt} argument. \code{wopt} should be a named list. The following options are available: 
+In many methods, options for writing raster files to disk can be provided as additiona arguments or as the \code{wopt} argument (a named list) if the additional arguments are used for a different purpose. The following options are available: 
 
 \tabular{ll}{
 \bold{name} \tab \bold{description}\cr
