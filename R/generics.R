@@ -28,7 +28,7 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 
 
 setMethod("area", signature(x="SpatRaster"), 
-	function(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE, ...) {
 		if (sum) {
 			byvalue = FALSE
 			opt <- .getOptions()
@@ -42,7 +42,7 @@ setMethod("area", signature(x="SpatRaster"),
 				x@ptr$sum_area(correct, opt)
 			}
 		} else {
-			opt <- spatOptions(filename, overwrite, wopt)
+			opt <- spatOptions(filename, overwrite, ...)
 			x@ptr <- x@ptr$rst_area(correct, opt)
 			messages(x, "area")
 		} 
@@ -171,8 +171,8 @@ setMethod("rep", signature(x="SpatRaster"),
 
 
 setMethod("clamp", signature(x="SpatRaster"), 
-	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- spatOptions(filename, overwrite,wopt)
+	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, ...) {
+		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$clamp(lower, upper, values[1], opt)
 		messages(x, "clamp")
 	}
@@ -180,7 +180,7 @@ setMethod("clamp", signature(x="SpatRaster"),
 
 
 setMethod("classify", signature(x="SpatRaster"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
+function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", overwrite=FALSE, ...) {
 
 	if (is.data.frame(rcl)) {
 		rcl <- as.matrix(rcl)
@@ -189,7 +189,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 	right <- ifelse(is.na(right), 2, ifelse(right, 1, 0))
 	include.lowest <- as.logical(include.lowest[1])
 
-	opt <- spatOptions(filename, overwrite, wopt)
+	opt <- spatOptions(filename, overwrite, ...)
     x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA, opt)
 	messages(x, "classify")
 }

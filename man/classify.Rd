@@ -19,7 +19,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 
 \usage{
 \S4method{classify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, 
-     othersNA=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
+     othersNA=FALSE, filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -37,9 +37,8 @@ With "cuts" the values are sorted, so that the order in which they are provided 
  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{Additional arguments for writing files as in \code{\link{writeRaster}}}
 
- \item{...}{additional arguments. None implemented}  
 }
 
 \value{
