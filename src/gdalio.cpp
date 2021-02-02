@@ -523,8 +523,16 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		
 			//double naflag = -3.4e+38;
 			double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
+			Rcpp::Rcout << hasNA << std::endl;
+			Rcpp::Rcout << naflag << std::endl;
 			if (hasNA && (!std::isnan(naflag))) {
+				Rcpp::Rcout << lyrout[0] << std::endl;
+				double dif = lyrout[0] + 3.4e+38;
+				Rcpp::Rcout << dif << std::endl;
+				dif = naflag + 3.4e+38;
+				Rcpp::Rcout << dif << std::endl;
 				std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
+				Rcpp::Rcout << lyrout[0] << std::endl;
 			}
 			source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
 		}
@@ -552,12 +560,30 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	const char *pszFormat = driver.c_str();
 	GDALDriverH hDrv = GDALGetDriverByName(pszFormat);
 
-	std::string datatype = opt.get_datatype();
+	double naflag = NAN;
 	GDALDataType gdt;
-	if (!getGDALDataType(datatype, gdt)) {
-		addWarning("unknown datatype = " + datatype);
-	}
 
+	if (driver != "MEM") {
+		std::string datatype = opt.get_datatype();
+		if (!getGDALDataType(datatype, gdt)) {
+			addWarning("unknown datatype = " + datatype);
+		}
+		if (datatype == "INT4S") {
+			naflag = INT32_MIN; //-2147483648; 
+		} else if (datatype == "INT2S") {
+			naflag = INT16_MIN; 
+		} else if (datatype == "INT4U") {
+			naflag = (double)INT32_MAX * 2 - 1;
+		} else if (datatype == "INT2U") {
+			naflag = (double)INT16_MAX * 2 - 1;
+		} else if (datatype == "INT1U") {
+			naflag = 255; // ?; 
+		} else {
+			naflag = NAN; 
+		}
+	} else {
+		getGDALDataType("FLT8S", gdt);
+	}
 	const char *pszFilename = filename.c_str();
 	hDS = GDALCreate(hDrv, pszFilename, ncol(), nrow(), nlyr(), gdt, papszOptions );
 	CSLDestroy( papszOptions );
@@ -567,7 +593,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	for (size_t i=0; i < nlyr(); i++) {
 		hBand = GDALGetRasterBand(hDS, i+1);
 		GDALSetDescription(hBand, nms[i].c_str());
-		GDALSetRasterNoDataValue(hBand, NAN);
+		GDALSetRasterNoDataValue(hBand, naflag);
 		//GDALSetRasterNoDataValue(hBand, -3.4e+38);
 		if (fill) GDALFillRaster(hBand, fillvalue, 0);
 	}
