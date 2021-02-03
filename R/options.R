@@ -57,15 +57,15 @@
 	x
 } 
  
-spatOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
-	if (!is.list(wopt)) {
-		error("spatOptions", "wopt must be a list")
-	}
+spatOptions <- function(filename="", overwrite=FALSE, ...) {
 
+	wopt <- list(...)
 	w <- wopt$wopt
-	wopt$wopt <- NULL
-	wopt <- c(wopt, w)
-
+	if (!is.null(w)) {
+		wopt$wopt <- NULL
+		wopt <- c(wopt, w)
+	}
+	
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 

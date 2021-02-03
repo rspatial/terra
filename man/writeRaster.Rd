@@ -58,6 +58,24 @@ In many methods, options for writing raster files to disk can be provided as add
 }
 }
 
+
+\examples{
+
+library(terra)
+r <- rast(nrow=5, ncol=5, vals=1:25)
+
+# create a temporary filename for the example
+f <- file.path(tempdir(), "test.tif")
+
+writeRaster(r, f, overwrite=TRUE)
+
+writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=LZW", "TFW=YES","of=COG"), datatype='INT1U')
+
+
+# remove the file
+unlink(f)
+}
+
 \keyword{ spatial }
 \keyword{ methods }
 
