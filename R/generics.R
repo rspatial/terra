@@ -94,7 +94,7 @@ setMethod("add<-", signature("SpatRaster", "SpatRaster"),
 )
 
 setMethod("collapse", signature("SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr <- x@ptr$collapse_sources()
 		messages(x, "collapse")
 	}

@@ -19,7 +19,7 @@ setMethod("ext", signature(x="missing"),
 )
 
 setMethod("ext", signature(x="numeric"), 
-	function(x){ 
+	function(x, ...){ 
 		dots <- unlist(list(...))
 		x <- c(x, dots)
 		if (length(x) < 4) {

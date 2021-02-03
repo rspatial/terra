@@ -66,7 +66,7 @@ gdal <- function(warn=NA, drivers=FALSE) {
 
 
 setMethod("describe", signature(x="character"), 
-	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="", ...) {
+	function(x, sds=FALSE, meta=FALSE, parse=FALSE, options="", print=FALSE, open_opt="") {
 
 		if (meta) {
 			if (sds) {

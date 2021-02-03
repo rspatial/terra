@@ -64,7 +64,7 @@ function(x, i, j, ... ,drop=TRUE) {
 
 
 setMethod("subset", signature(x="SpatVector"), 
-	function(x, subset, drop=FALSE, ...) {
+	function(x, subset, drop=FALSE) {
 		x <- x[which(as.vector(subset)), , drop=drop]
 		messages(x, "subset")
 	}

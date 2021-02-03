@@ -288,7 +288,7 @@ setMethod("NAflag<-", signature(x="SpatRaster"),
 )
 
 setMethod("NAflag", signature(x="SpatRaster"), 
-	function(x, ...)  {
+	function(x)  {
 		x@ptr$getNAflag()
 	}
 )

@@ -1,4 +1,4 @@
-desc <- function(x, ...) {
+desc <- function(x) {
 	error("desc", "deprecated function. Use 'describe'")
 }
 
