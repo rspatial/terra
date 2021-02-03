@@ -26,7 +26,7 @@ setMethod("is.valid", signature(x="SpatVector"),
 )
 
 setMethod("cover", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y, identity=FALSE, ...) {
+	function(x, y, identity=FALSE) {
 		x@ptr <- x@ptr$cover(y@ptr, identity[1])
 		messages(x, "cover")
 	}

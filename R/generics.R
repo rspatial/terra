@@ -53,7 +53,7 @@ setMethod("area", signature(x="SpatRaster"),
 
 setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 	function(y, x) { 
-		opt <- spatOptions(filename="", overwrite=TRUE, wopt=list())
+		opt <- spatOptions(filename="", overwrite=TRUE)
 		y@ptr <- y@ptr$atan2(x@ptr, opt)
 		messages(y, "atan2")
 	}
@@ -201,8 +201,8 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
-	function(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- spatOptions(filename, overwrite, wopt)
+	function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
+		opt <- spatOptions(filename, overwrite, ...)
 
 		if (!inherits(y, "SpatExtent")) {
 			e <- try(ext(y), silent=TRUE)
@@ -223,16 +223,16 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 
 
 setMethod("selectRange", signature(x="SpatRaster"), 
-	function(x, y, z=1, repint=0, filename="", overwrite=FALSE, wopt=list(), ...) { 
-		opt <- spatOptions(filename, overwrite, wopt)
+	function(x, y, z=1, repint=0, filename="", overwrite=FALSE, ...) { 
+		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$selRange(y@ptr, z, repint, opt)
 		messages(x, "selectRange")
 	}
 )
 
 setMethod("cover", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, values=NA, filename="", overwrite=FALSE, wopt=list(), ...) {
-		opt <- spatOptions(filename, overwrite, wopt)
+	function(x, y, values=NA, filename="", overwrite=FALSE, ...) {
+		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$cover(y@ptr, values, opt)
 		messages(x, "cover")
 	}
