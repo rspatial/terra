@@ -11,13 +11,12 @@ Check the validity of polygons
 }
 
 \usage{
-\S4method{is.valid}{SpatVector}(x, messages=FALSE, ...)
+\S4method{is.valid}{SpatVector}(x, messages=FALSE)
 }
 
 \arguments{
 \item{x}{SpatVector}
 \item{messages}{logical. If \code{TRUE} the error messages are returned}
-\item{...}{additional arguments. None implemented}
 }
 
 \value{

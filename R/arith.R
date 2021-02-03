@@ -23,7 +23,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 		error("arith", "'fun' does not return the same number of values as the input")
 	}
 
-	b <- writeStart(out, filename, overwrite, wopt)
+	b <- writeStart(out, filename, overwrite, wopt=wopt)
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 		v <- fun(as.vector(v), ...)

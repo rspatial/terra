@@ -71,8 +71,12 @@ writeRaster(r, f, overwrite=TRUE)
 
 writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=LZW", "TFW=YES","of=COG"), datatype='INT1U')
 
+## Or with a wopt argument:
 
-# remove the file
+writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=LZW", "of=COG"), datatype='INT1U'))
+
+
+## remove the file
 unlink(f)
 }
 

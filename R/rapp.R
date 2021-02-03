@@ -6,7 +6,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
-			opt <- spatOptions(filename, overwrite, wopt)
+			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$rapply(index@ptr, txtfun, na.rm, opt)
 			return(messages(x, "rapp"))
@@ -20,7 +20,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 
 	out <- rast(x)
 	nlyr(out) <- 1
-	b <- writeStart(out, filename, overwrite, wopt)
+	b <- writeStart(out, filename, overwrite, wopt=wopt)
 	for (i in 1:b$n) {
 		v <- x@ptr$rappvals(index@ptr, b$row[i]-1, b$nrows[i])
 		v <- sapply(v, fun, ...)

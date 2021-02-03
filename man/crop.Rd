@@ -19,9 +19,9 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 \usage{
 \S4method{crop}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, ...)
 
-\S4method{crop}{SpatVector,ANY}(x, y, ...)
+\S4method{crop}{SpatVector,ANY}(x, y)
 
-\S4method{crop}{SpatVector,SpatVector}(x, y, ...)
+\S4method{crop}{SpatVector,SpatVector}(x, y)
 }
 
 \arguments{

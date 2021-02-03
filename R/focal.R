@@ -5,7 +5,7 @@
 
 
 setMethod("focal", signature(x="SpatRaster"), 
-function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename="", overwrite=FALSE, wopt=list(), ...)  {
+function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename="", overwrite=FALSE, ...)  {
 
 	if (nlyr(x) > 1) {
 		warn("focal", "only the first layer of x is used")
@@ -41,7 +41,7 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 	}
 
 	if (cpp) {
-		opt <- spatOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$focal(w, m, fillvalue, na.rm[1], na.only[1], fun, opt)
 		messages(x, "focal")
 		return(x)
@@ -50,7 +50,7 @@ function(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum", filename=""
 		out <- rast(x)
 		readStart(x)
 		on.exit(readStop(x))
-		b <- writeStart(out, filename, overwrite, wopt)
+		b <- writeStart(out, filename, overwrite, ...)
 		for (i in 1:b$n) {
 			v <- matrix(x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=prod(w), byrow=TRUE)
 			v <- apply(v, 1, fun, na.rm=na.rm)

@@ -13,7 +13,7 @@ Transfer vector data to a raster
 
 \usage{
 \S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x),
-	cover=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
+	cover=FALSE, filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -34,8 +34,7 @@ Transfer vector data to a raster
 
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments passed on to \code{fun}}  
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \seealso{

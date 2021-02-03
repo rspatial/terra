@@ -21,7 +21,7 @@ Select a subset of layers from a SpatRaster.
 }
 
 \usage{
-\S4method{subset}{SpatRaster}(x, subset, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{subset}{SpatRaster}(x, subset, filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -29,8 +29,7 @@ Select a subset of layers from a SpatRaster.
   \item{subset}{integer or character. Should indicate the layers (represented as integer or by their names)}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments. None implemented}  
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{
@@ -42,7 +41,7 @@ s <- rast(system.file("ex/logo.tif", package="terra"))
 subset(s, 2:3)
 subset(s, c(3,2,3,1))
 #equivalent to 
-s[[ c(3,2,3,1) ]]
+s[[ c(3,2,3,1) ]]d
 
 s[c("red", "green")]
 s$red

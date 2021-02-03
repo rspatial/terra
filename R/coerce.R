@@ -98,7 +98,7 @@ setMethod("as.vector", signature(x="SpatExtent"),
 
 
 setMethod("as.character", signature(x="SpatExtent"), 
-	function(x, ...) {
+	function(x) {
 		e <- as.vector(x)
 		paste0("ext(", paste(e, collapse=", "), ")")
 	}
@@ -112,19 +112,19 @@ setMethod("as.vector", signature(x="SpatRaster"),
 
 
 setMethod("as.matrix", signature(x="SpatRaster"), 
-	function(x, wide=FALSE, ...) {
+	function(x, wide=FALSE) {
 		if (!hasValues(x)) {
 			error("as.matrix", "SpatRaster has no cell values")
 		}
 		if (wide) {
 			if (nlyr(x) > 1) {
-				m <- values(x, matrix=TRUE)
+				m <- values(x, mat=TRUE)
 				m <- lapply(1:ncol(m), function(i) {
-					matrix(m[,i],nrow=nrow(x),byrow=TRUE)
+					matrix(m[,i], nrow=nrow(x), byrow=TRUE)
 					})
 				m <- do.call(cbind, m)
 			} else {
-				m <- matrix(values(x, matrix=FALSE),nrow=nrow(x),byrow=TRUE)
+				m <- matrix(values(x, mat=FALSE),nrow=nrow(x),byrow=TRUE)
 			}
 		} else {
 			m <- values(x, matrix=TRUE)

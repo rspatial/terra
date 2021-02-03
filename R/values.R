@@ -4,13 +4,13 @@
 # License GPL v3
 
 setMethod("hasValues", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr$hasValues
 	}
 )
 
 setMethod("readValues", signature(x="SpatRaster"), 
-function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...) {
+function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE) {
 	stopifnot(row > 0)
 	stopifnot(col > 0)
 	v <- x@ptr$readValues(row-1, nrows, col-1, ncols)
@@ -37,7 +37,7 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 
 
 setMethod("values", signature(x="SpatRaster"), 
-function(x, mat=TRUE, ...) {
+function(x, mat=TRUE) {
 	if (hasValues(x)) {
 		v <- x@ptr$getValues(-1)
 		messages(x, "values")
@@ -59,7 +59,7 @@ setMethod("values<-", signature("SpatRaster", "ANY"),
 )
 
 setMethod("setValues", signature("SpatRaster", "ANY"), 
-	function(x, values, ...) {
+	function(x, values) {
 
 		if (is.matrix(values)) { 
 			if (nrow(values) == nrow(x)) {
@@ -168,8 +168,8 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("values", signature("SpatVector"), 
-	function(x, ...) {
-		as.data.frame(x, ...)
+	function(x) {
+		as.data.frame(x)
 	}
 )
 
@@ -202,3 +202,4 @@ setMethod("values<-", signature("SpatVector", "NULL"),
 		x
 	}
 )
+

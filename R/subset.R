@@ -13,7 +13,7 @@ positive_indices <- function(i, n, caller=" [ ") {
 
 
 setMethod("subset", signature(x="SpatRaster"), 
-function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
+function(x, subset, filename="", overwrite=FALSE, ...) {
 	if (is.character(subset)) {
 		i <- stats::na.omit(match(subset, names(x)))
 		if (length(i)==0) {
@@ -26,7 +26,7 @@ function(x, subset, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	subset <- as.integer(stats::na.omit(subset) - 1)
 
-	opt <- spatOptions(filename, overwrite, wopt)
+	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$subset(subset, opt)
 	messages(x, "subset")
 	return(x)

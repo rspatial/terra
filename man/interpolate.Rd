@@ -30,7 +30,7 @@ Make a SpatRaster with interpolated values using a fitted model object of classe
 
 \item{filename}{character. Output filename. Optional}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-\item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+\item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{

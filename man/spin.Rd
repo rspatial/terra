@@ -12,7 +12,7 @@ Spin (rotate) the geometry of a SpatVector.
 }
 
 \usage{
-\S4method{spin}{SpatVector}(x, angle, x0, y0, ...)
+\S4method{spin}{SpatVector}(x, angle, x0, y0)
 }
 
 \arguments{
@@ -20,7 +20,6 @@ Spin (rotate) the geometry of a SpatVector.
  \item{angle}{numeric. Angle of rotation in degrees}
  \item{x0}{numeric. x-coordinate of the center of rotation. If missing, the center of the extent of \code{x} is used}
  \item{y0}{numeric. y-coordinate of the center of rotation. If missing, the center of the extent of \code{x} is used}
- \item{...}{additional arguments. None implemented}  
 }
 
 \value{

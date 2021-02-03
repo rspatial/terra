@@ -1,5 +1,5 @@
 
-rasterize_points <- function(x=x, y=y, field=field, fun="last", background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) {
+rasterize_points <- function(x=x, y=y, field=field, fun="last", background=background, update=update, filename=filename, overwrite=overwrite, ...) {
 
 	if (update) {
 		background <- NA 
@@ -68,7 +68,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 	}
 
 	if (filename != "") {
-		writeRaster(r, filename, overwrite=overwrite, wopt=wopt)
+		writeRaster(r, filename, overwrite=overwrite, ...)
 	}
 
 	return (r)
@@ -77,15 +77,15 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), cover=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
+	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), cover=FALSE, filename="", overwrite=FALSE, ...) {
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
+			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, ...) 
 			return (r)
 		}
 
-		opt <- spatOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, ...)
 
 		if (cover[1] && grepl("polygons", g)) {
 			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, "", background, FALSE, touches[1], FALSE, TRUE, opt)
@@ -98,7 +98,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		domask <- FALSE
 		if (any(is.na(field))) {
 			if (length(field) == 1) {
-				y <- mask(y, x, inverse=FALSE, updatevalue=NA, touches=touches, filename=filename, overwrite=overwrite, wopt=wopt, ...)
+				y <- mask(y, x, inverse=FALSE, updatevalue=NA, touches=touches, filename=filename, overwrite=overwrite, ...)
 				return (y)
 			} else if (length(field) == nrow(x)) {
 				i <- is.na(field)
@@ -165,7 +165,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		}
 
 		if (domask) {
-			y <- mask(y, xx, inverse=FALSE, updatevalue=NA, touches=touches, filename=fname, overwrite=overwrite, wopt=wopt, ...)
+			y <- mask(y, xx, inverse=FALSE, updatevalue=NA, touches=touches, filename=fname, overwrite=overwrite, ...)
 			return (y)
 		}
 

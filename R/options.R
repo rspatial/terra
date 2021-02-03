@@ -14,13 +14,14 @@
 }
 
  
-.setOptions <- function(x, opt) {
-	nms <- names(opt)
+.setOptions <- function(x, wopt) {
+
+	nms <- names(wopt)
 
 	g <- which(nms == "gdal")
 	if (length(g) > 0) {
-		gopt <- unlist(opt[g])
-		opt <- opt[-g]
+		gopt <- unlist(wopt[g])
+		wopt <- wopt[-g]
 		nms <- nms[-g]
 		i <- grep("=", gopt)
 		gopt <- gopt[i]
@@ -37,17 +38,17 @@
 
 	if (any(s)) {
 		nms <- nms[s]
-		opt <- opt[s]
+		wopt <- wopt[s]
 		i <- which(nms == "names")
 		if (length(i) > 0) {
-			namevs <- trimws(unlist(strsplit(opt[[i]], ",")))
+			namevs <- trimws(unlist(strsplit(wopt[[i]], ",")))
 			x[["names"]] <- namevs
-			opt <- opt[-i]
+			wopt <- wopt[-i]
 			nms <- nms[-i]
 		}
 
 		for (i in seq_along(nms)) {
-			x[[nms[i]]] <- opt[[i]]
+			x[[nms[i]]] <- wopt[[i]]
 		}
 		if ("datatype" %in% nms) {
 			x$datatype_set = TRUE;

@@ -15,7 +15,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	txtfun <- .makeTextFun(fun)
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
-			opt <- spatOptions(filename, overwrite, wopt)
+			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, opt)
 			return(messages(x, "tapp"))
@@ -30,7 +30,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	names(out) <- nms
 	readStart(x)
 	on.exit(readStop(x))
-	b <- writeStart(out, filename, overwrite, wopt)
+	b <- writeStart(out, filename, overwrite, wopt=wopt)
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
 		# like this, na.rm is not passed to FUN

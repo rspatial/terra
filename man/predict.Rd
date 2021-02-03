@@ -31,7 +31,7 @@ na.rm=FALSE, index=NULL, cores=1, filename="", overwrite=FALSE, wopt=list())
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
  }
 
 

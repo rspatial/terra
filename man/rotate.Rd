@@ -12,7 +12,7 @@ Rotate a SpatRaster that has longitude coordinates from 0 to 360, to standard co
 }
 
 \usage{
-\S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{rotate}{SpatRaster}(x, left=TRUE, filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -20,8 +20,7 @@ Rotate a SpatRaster that has longitude coordinates from 0 to 360, to standard co
  \item{left}{logical. If \code{TRUE}, rotate to the left, else to the right}
  \item{filename}{character. Output filename. Optional}
  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
- \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
- \item{...}{additional arguments. None implemented}  
+ \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{

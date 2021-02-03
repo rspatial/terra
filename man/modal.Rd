@@ -20,7 +20,7 @@ Compute the mode for each cell across the layers of a SpatRaster. The mode, or m
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}  
+  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}  
 }
 
 \value{

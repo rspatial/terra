@@ -13,7 +13,7 @@ Rectify a rotated SpatRaster into a non-rotated object
 
 \usage{
 \S4method{rectify}{SpatRaster}(x, method="bilinear", aoi=NULL, snap=TRUE,
-         filename="", overwrite=FALSE, wopt=list(), ...)
+         filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -23,8 +23,7 @@ Rectify a rotated SpatRaster into a non-rotated object
   \item{snap}{logical. If \code{TRUE}, the origin and resolution of the output are the same as would the case when \code{aoi = NULL}. Only relevant if \code{aoi} is a \code{SpatExtent}}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments. None implemented}    
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 

@@ -24,15 +24,15 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
 }
 
 \usage{
-\S4method{values}{SpatRaster}(x, mat=TRUE, ...)
+\S4method{values}{SpatRaster}(x, mat=TRUE)
 
-\S4method{values}{SpatRaster,ANY}(x, ...)<-value
+\S4method{values}{SpatRaster,ANY}(x)<-value
 
-\S4method{setValues}{SpatRaster,ANY}(x, values, ...)
+\S4method{setValues}{SpatRaster,ANY}(x, values)
 
-\S4method{values}{SpatVector}(x, ...)
+\S4method{values}{SpatVector}(x)
 
-\S4method{values}{SpatVector,data.frame}(x, ...)<-value
+\S4method{values}{SpatVector,data.frame}(x)<-value
 }
 
 \arguments{
@@ -40,7 +40,6 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
  \item{mat}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector}
  \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame or NULL}
  \item{values}{Same as for \code{value}}
- \item{...}{additional arguments. none implemented}
 }
 
 
