@@ -13,9 +13,9 @@ Get a voronoi diagram or delauny triangles for points, or nodes of lines or poly
 }
 
 \usage{
-\S4method{voronoi}{SpatVector}(x, bnd=NULL, tolerance=0, as.lines=FALSE, ...) 
+\S4method{voronoi}{SpatVector}(x, bnd=NULL, tolerance=0, as.lines=FALSE) 
 
-\S4method{delauny}{SpatVector}(x, tolerance=0, as.lines=FALSE, ...) 
+\S4method{delauny}{SpatVector}(x, tolerance=0, as.lines=FALSE) 
 }
 
 
@@ -24,7 +24,6 @@ Get a voronoi diagram or delauny triangles for points, or nodes of lines or poly
 \item{bnd}{SpatVector to set the outer boundary of the voronoi diagram}
 \item{tolerance}{numeric >= 0, snapping tolerance (0 is no snapping)}
 \item{as.lines}{logical. If \code{TRUE}, lines are returned without the outer boundary}
-\item{...}{additional arguments. None implemented}  
 }
 
 

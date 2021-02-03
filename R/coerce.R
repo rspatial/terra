@@ -162,7 +162,7 @@ setAs("SpatVector", "data.frame",
 )
 
 setMethod("as.array", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		dm <- dim(x)
 		x <- values(x, TRUE)
 		a <- array(NA, dm)

@@ -20,9 +20,9 @@ Coercion to other object types
 \usage{
 \S4method{as.vector}{SpatRaster}(x, mode='any')
 
-\S4method{as.matrix}{SpatRaster}(x, wide=FALSE, ...)
+\S4method{as.matrix}{SpatRaster}(x, wide=FALSE)
 
-\S4method{as.array}{SpatRaster}(x, ...)
+\S4method{as.array}{SpatRaster}(x)
 }
 
 

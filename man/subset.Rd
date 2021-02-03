@@ -41,7 +41,7 @@ s <- rast(system.file("ex/logo.tif", package="terra"))
 subset(s, 2:3)
 subset(s, c(3,2,3,1))
 #equivalent to 
-s[[ c(3,2,3,1) ]]d
+s[[ c(3,2,3,1) ]]
 
 s[c("red", "green")]
 s$red
