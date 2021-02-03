@@ -15,16 +15,15 @@ It is also possible to align a SpatExtent to a clean divisor.
 
 
 \usage{
-\S4method{align}{SpatExtent,SpatRaster}(x, y, snap="near", ...)
+\S4method{align}{SpatExtent,SpatRaster}(x, y, snap="near")
 
-\S4method{align}{SpatExtent,numeric}(x, y, ...)
+\S4method{align}{SpatExtent,numeric}(x, y)
 }
 
 \arguments{
   \item{x}{SpatExtent}  
   \item{y}{SpatRaster or numeric}
   \item{snap}{Character. One of "near", "in", or "out", to determine in which direction the extent should be aligned. To the nearest border, inwards or outwards}  
-  \item{...}{additional arguments. None implemented}  
 }
  
 \value{

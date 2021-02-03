@@ -87,8 +87,8 @@ setMethod("as.data.frame", signature(x="SpatVector"),
 )
 
 setMethod("as.list", signature(x="SpatVector"), 
-	function(x, geom=FALSE, ...) {
-		as.list(as.data.frame(x, geom=geom, ...))
+	function(x, geom=FALSE) {
+		as.list(as.data.frame(x, geom=geom))
 	}
 )
 
@@ -132,7 +132,7 @@ setMethod("fill", signature(x="SpatVector"),
 
 
 setMethod("centroids", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr <- x@ptr$centroid()
 		messages(x)
 	}

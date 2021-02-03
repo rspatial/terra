@@ -78,9 +78,9 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 \S4method{res}{SpatRaster}(x)
 
-ncol(x, ...) <- value
-nrow(x, ...) <- value
-nlyr(x, ...) <- value
+ncol(x) <- value
+nrow(x) <- value
+nlyr(x) <- value
 res(x) <- value
 
 \S4method{xres}{SpatRaster}(x)
@@ -91,7 +91,7 @@ res(x) <- value
 
 \S4method{nrow}{SpatVector}(x)
 
-\S4method{size}{SpatVector}(x, ...)
+\S4method{size}{SpatVector}(x)
 
 \S4method{length}{SpatVector}(x)
 
@@ -101,7 +101,6 @@ res(x) <- value
 \arguments{
 \item{x}{SpatRaster or SpatVector or related objecs}
 \item{value}{For ncol and nrow: positive integer. For res: one or two positive numbers }  
-\item{...}{additional arguments. None implemented}
 }
 
 \value{

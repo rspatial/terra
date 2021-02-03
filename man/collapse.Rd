@@ -17,12 +17,11 @@ Or combine subdatsets into a SpatRaster.
 
 \S4method{collapse}{SpatRaster}(x, ...)
 
-\S4method{collapse}{SpatRasterDataset}(x, ...)
+\S4method{collapse}{SpatRasterDataset}(x)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
-  \item{...}{additional arguments. None implemented}
 }
 
 

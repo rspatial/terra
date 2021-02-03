@@ -5,14 +5,14 @@
 
 
 setMethod("origin", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr$origin
 	}
 )
 
 
 setMethod("align", signature(x="SpatExtent", y="SpatRaster"), 
-	function(x, y, snap="near", ...) {
+	function(x, y, snap="near") {
 		x@ptr <- y@ptr$align(x@ptr, tolower(snap))
 		#messages(x, "align")
 		x
@@ -20,7 +20,7 @@ setMethod("align", signature(x="SpatExtent", y="SpatRaster"),
 )
 
 setMethod("align", signature(x="SpatExtent", y="numeric"), 
-	function(x, y, ...) {
+	function(x, y) {
 		x@ptr <- x@ptr$align(y, "")
 		x
 	}
@@ -76,7 +76,7 @@ setMethod("boundaries", signature(x="SpatRaster"),
 }
 
 setMethod("copy", signature("SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr <- x@ptr$deepcopy() 
 		x
 	}

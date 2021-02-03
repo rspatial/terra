@@ -21,7 +21,7 @@
  
  
 setMethod("as.polygons", signature(x="SpatRaster"), 
-	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE, ...) {
+	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE) {
 		p <- methods::new("SpatVector")
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
@@ -35,7 +35,7 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 )
 
 setMethod("as.polygons", signature(x="SpatExtent"), 
-	function(x, crs="", ...) {
+	function(x, crs="") {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new(x@ptr, crs)
 		messages(p, "as.polygons")
@@ -43,22 +43,22 @@ setMethod("as.polygons", signature(x="SpatExtent"),
 )
 
 setMethod("as.lines", signature(x="SpatExtent"), 
-	function(x, crs="", ...) {
-		as.lines(as.polygons(x, crs, ...))
+	function(x, crs="") {
+		as.lines(as.polygons(x, crs))
 	}
 )
 
 
 setMethod("as.points", signature(x="SpatExtent"), 
-	function(x, crs="", ...) {
+	function(x, crs="") {
 		#vect(do.call(cbind, x@ptr$as.points()), "points", crs=crs)
-		as.points(as.polygons(x, crs, ...))
+		as.points(as.polygons(x, crs))
 	}
 )
 
 
 setMethod("as.lines", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr <- x@ptr$as_lines()
 		messages(x, "as.lines")
 	}
@@ -66,7 +66,7 @@ setMethod("as.lines", signature(x="SpatVector"),
 
 
 setMethod("as.points", signature(x="SpatVector"), 
-	function(x, multi=FALSE, ...) {
+	function(x, multi=FALSE) {
 		opt <- .getOptions()
 		x@ptr <- x@ptr$as_points(multi)
 		messages(x, "as.points")
@@ -75,7 +75,7 @@ setMethod("as.points", signature(x="SpatVector"),
 
 
 setMethod("as.points", signature(x="SpatRaster"), 
-	function(x, values=TRUE, ...) {
+	function(x, values=TRUE) {
 		p <- methods::new("SpatVector")
 		opt <- .getOptions()
 		p@ptr <- x@ptr$as_points(values, TRUE, opt)
@@ -127,7 +127,7 @@ setMethod("as.matrix", signature(x="SpatRaster"),
 				m <- matrix(values(x, mat=FALSE),nrow=nrow(x),byrow=TRUE)
 			}
 		} else {
-			m <- values(x, matrix=TRUE)
+			m <- values(x, mat=TRUE)
 		}
 		m
 	}
@@ -135,7 +135,7 @@ setMethod("as.matrix", signature(x="SpatRaster"),
 
 
 setMethod("as.data.frame", signature(x="SpatRaster"), 
-	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE, ...) {
+	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE) {
 		d <- NULL
 		if (xy) {
 			d <- xyFromCell(x, 1:ncell(x))
@@ -143,7 +143,7 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 		if (cells) {
 			d <- cbind(cell=1:ncell(x), d)
 		}
-		d <- cbind(d, values(x, matrix=TRUE))
+		d <- cbind(d, values(x, mat=TRUE))
 		if (na.rm) d <- stats::na.omit(d) 
 		data.frame(d)
 	}

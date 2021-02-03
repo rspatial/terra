@@ -37,7 +37,7 @@ setMethod("ext", signature(x="numeric"),
 
 
 setMethod("ext", signature(x="SpatRaster"), 
-	function(x, ...){ 
+	function(x){ 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x@ptr$extent
 		return(e)

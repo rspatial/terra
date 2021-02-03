@@ -76,7 +76,7 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 
 
 setMethod("adjacent", signature(x="SpatRaster"), 
-	function(x, cells, directions="rook", include=FALSE, ...) {
+	function(x, cells, directions="rook", include=FALSE) {
 		v <- x@ptr$adjacent(cells-1, directions, include)
 		messages(x, "adjacent")
 		v <- do.call(rbind, v)
@@ -87,7 +87,7 @@ setMethod("adjacent", signature(x="SpatRaster"),
 
 
 setMethod("adjacent", signature(x="SpatVector"), 
-	function(x, type="rook", pairs=TRUE, symmetrical=FALSE, ...) {
+	function(x, type="rook", pairs=TRUE, symmetrical=FALSE) {
 		type <- match.arg(tolower(type), c("intersects", "touches", "queen", "rook"))
 		stopifnot(geomtype(x) == "polygons")
 		a <- x@ptr$relate_within(type, TRUE)
@@ -109,7 +109,7 @@ setMethod("adjacent", signature(x="SpatVector"),
 
 
 setMethod("near", signature(x="SpatVector"), 
-	function(x, distance=0, k=1, centroids=TRUE, symmetrical=TRUE, ...) {
+	function(x, distance=0, k=1, centroids=TRUE, symmetrical=TRUE) {
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)
 		}

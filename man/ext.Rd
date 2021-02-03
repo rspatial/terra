@@ -32,7 +32,7 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
 }
 
 \usage{
-\S4method{ext}{SpatRaster}(x, ...)
+\S4method{ext}{SpatRaster}(x)
 
 \S4method{ext}{SpatRaster,SpatExtent}(x)<-value
 
@@ -47,7 +47,6 @@ Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create 
   \item{x}{SpatRaster}
   \item{value}{SpatExtent, or numeric vector of lenght four (xmin, xmax, ymin, ymax), or a single number with the \code{$} method}  
   \item{name}{charcter, one of xmin, xmax, ymin, or ymax}  
-  \item{...}{additional arguments. None implemented }
 }
  
 \value{

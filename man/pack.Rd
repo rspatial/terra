@@ -20,7 +20,6 @@ Pack a SpatRaster or SpatVector object so that it can be saved as an R object to
 
 \arguments{
   \item{x}{SpatVector or SpatRaster}
-  \item{...}{additional arguments. None implemented}
 }
 
 \value{

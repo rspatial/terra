@@ -11,12 +11,11 @@ Get the centroids for the polygons of a SpatVector
 }
 
 \usage{
-\S4method{centroids}{SpatVector}(x, ...)
+\S4method{centroids}{SpatVector}(x)
 }
 
 \arguments{
 \item{x}{SpatVector}
-\item{...}{additional arguments. None implemented}  
 }
 
 

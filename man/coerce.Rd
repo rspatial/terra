@@ -30,7 +30,6 @@ Coercion to other object types
 \item{x}{SpatRaster or SpatVector}
 \item{mode}{this argument is ignored}
 \item{wide}{logical}
-\item{...}{additional arguments. None implemented}
 }
 
 \value{
