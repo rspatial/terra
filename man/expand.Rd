@@ -50,7 +50,7 @@ re2 <- expand(r, c(2,10))
 e <- ext(r)
 e
 expand(e, 10)
-expand(e, 10, -10, 0, 20)
+expand(e, c(10, -10, 0, 20))
 }
 
 \keyword{spatial}

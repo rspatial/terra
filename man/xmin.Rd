@@ -64,16 +64,15 @@ Get or set single values of an extent. Values can be set for a SpatExtent or Spa
 
 \S4method{ymax}{SpatVector}(x)
 
-xmin(x, ...) <- value
-xmax(x, ...) <- value
-ymin(x, ...) <- value
-ymax(x, ...) <- value
+xmin(x) <- value
+xmax(x) <- value
+ymin(x) <- value
+ymax(x) <- value
 }
 
 \arguments{
   \item{x}{SpatRaster, SpatExtent, or SpatVector}
   \item{value}{numeric}  
-  \item{...}{additional arguments. None implemented}  
 }
  
 \value{

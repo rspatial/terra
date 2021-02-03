@@ -101,7 +101,7 @@ setMethod("collapse", signature("SpatRaster"),
 )
 
 setMethod("collapse", signature("SpatRasterDataset"), 
-	function(x, ...) {
+	function(x) {
 		y <- new("SpatRaster")
 		y@ptr <- x@ptr$collapse()
 		messages(y, "collapse")
@@ -278,7 +278,7 @@ setMethod("flip", signature(x="SpatRaster"),
 
 
 setMethod("freq", signature(x="SpatRaster"), 
-	function(x, digits=0, value=NULL, bylayer=TRUE, ...) {
+	function(x, digits=0, value=NULL, bylayer=TRUE) {
 
 		opt <- spatOptions("", TRUE, list())
 

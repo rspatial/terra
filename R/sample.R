@@ -62,7 +62,7 @@
 }
 
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, ...) {
+	function(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE) {
 		size <- round(size)
 		if (size < 1) {
 			error("spatSample", "sample size must be a positive integer")
@@ -155,7 +155,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 
 setMethod("spatSample", signature(x="SpatExtent"), 
-	function(x, size, method="regular", lonlat, ...) {
+	function(x, size, method="regular", lonlat) {
 		if (missing(lonlat)) {
 			error("spatSample", "provide a lonlat argument")
 		}
@@ -252,7 +252,7 @@ get_field_name <- function(x, nms, sender="") {
 
 
 setMethod("spatSample", signature(x="SpatVector"), 
-	function(x, size, method="regular", by_geom=TRUE, strata=NULL, chess="", ...) {
+	function(x, size, method="regular", by_geom=TRUE, strata=NULL, chess="") {
 		method = match.arg(tolower(method), c("regular", "random"))
 		stopifnot(size > 0)
 		gtype <- geomtype(x)

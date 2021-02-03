@@ -13,13 +13,12 @@ Remove the holes in SpatVector polygons. If \code{inverse=TRUE} the holes are re
 } 
 
 \usage{
-\S4method{fill}{SpatVector}(x, inverse=FALSE, ...)
+\S4method{fill}{SpatVector}(x, inverse=FALSE)
 }
 
 \arguments{
 \item{x}{SpatVector}
 \item{inverse}{logical. If \code{TRUE} the holes are returned as polygons}
-\item{...}{additional arguments. None implemented }  
 }
 
 \value{SpatVector}

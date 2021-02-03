@@ -7,7 +7,7 @@
 
 
 setMethod("crosstab", signature(x="SpatRaster", y="missing"), 
-	function(x, digits=0, long=FALSE, useNA=FALSE, ...) {
+	function(x, digits=0, long=FALSE, useNA=FALSE) {
 
 		nl <- nlyr(x)
 		if (nl < 2) {

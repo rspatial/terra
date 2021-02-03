@@ -3,8 +3,8 @@ desc <- function(x, ...) {
 }
 
 setMethod("isLonLat", signature("SpatRaster"), 
-	function(x, ...) {
-		warn("isLonLat", "deprecated  method. Use 'is.lonlat'")
-		is.lonlat(x, ...)
+	function(x) {
+		error("isLonLat", "deprecated  method. Use 'is.lonlat'")
+		#is.lonlat(x)
 	}
 )

@@ -12,15 +12,14 @@ Get the linear units of the coordinate reference system (crs) of a SpatRaster or
 }
 
 \usage{
-\S4method{linearUnits}{SpatRaster}(x, ...)
+\S4method{linearUnits}{SpatRaster}(x)
 
-\S4method{linearUnits}{SpatVector}(x, ...)
+\S4method{linearUnits}{SpatVector}(x)
 
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{...}{additional arguments. None implemented}
 }
 
 \value{

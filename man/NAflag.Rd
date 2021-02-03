@@ -13,7 +13,7 @@ Set a particular value of a SpatRaster to \code{NA}. If the values are in memory
 }
 
 \usage{
-\S4method{NAflag}{SpatRaster}(x, ...)
+\S4method{NAflag}{SpatRaster}(x)
 
 \S4method{NAflag}{SpatRaster}(x)<-value
 }
@@ -21,7 +21,6 @@ Set a particular value of a SpatRaster to \code{NA}. If the values are in memory
 \arguments{
  \item{x}{SpatRaster}
  \item{value}{numeric. The value to be interpreted as NA; set this before reading the values from the file. This can be a single value, or multiple values, one for each data source (file / subdataset)}
- \item{...}{additional arguments. None implemented}
 }
 
 

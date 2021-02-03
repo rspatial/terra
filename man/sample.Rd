@@ -17,12 +17,12 @@ With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}) or 
 
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="regular", replace=FALSE, 
-       na.rm=FALSE, as.raster=FALSE, cells=FALSE, ...)
+       na.rm=FALSE, as.raster=FALSE, cells=FALSE)
 
 \S4method{spatSample}{SpatVector}(x, size, method="regular", by_geom=TRUE, 
-       strata=NULL, chess="", ...)
+       strata=NULL, chess="")
 
-\S4method{spatSample}{SpatExtent}(x, size, method="regular", lonlat, ...)
+\S4method{spatSample}{SpatExtent}(x, size, method="regular", lonlat)
 }
 
 \arguments{
@@ -38,7 +38,6 @@ With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}) or 
   \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}
   
   \item{lonlat}{logical. If \code{TRUE}, sampling of a SpatExtent is weighted by \code{cos(latitude)}. For SpatRaster and SpatVector this done based on the \code{\link{crs}}, but it is ignored if \code{as.raster=TRUE}}
-  \item{...}{additional arguments. None implemented}
 }
 
 

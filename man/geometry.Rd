@@ -14,14 +14,13 @@ If \code{wkt=TRUE}, the"well-known text" reprentation is returned as a character
 }
 
 \usage{
-\S4method{geom}{SpatVector}(x, wkt=FALSE, df=FALSE, ...)
+\S4method{geom}{SpatVector}(x, wkt=FALSE, df=FALSE)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{wkt}{logical. If \code{TRUE} the WKT geometry is returned}  
   \item{df}{logical. If \code{TRUE} a \code{data.frame} is returned in stead of a matrix (only for \code{WKT=FALSE}}  
-  \item{...}{additional arguments. None implemented}  
 }
 
 

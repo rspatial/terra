@@ -30,9 +30,9 @@ Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to
 
 \S4method{as.polygons}{SpatExtent}(x, crs="")
 
-\S4method{as.lines}{SpatExtent}(x, crs="", ...)
+\S4method{as.lines}{SpatExtent}(x, crs="")
 
-\S4method{as.points}{SpatExtent}(x, crs="", ...)
+\S4method{as.points}{SpatExtent}(x, crs="")
 }
 
 

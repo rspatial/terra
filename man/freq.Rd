@@ -12,7 +12,7 @@ Frequency table of the values of a SpatRaster. \code{NA}s are not counted.
 }
 
 \usage{
-\S4method{freq}{SpatRaster}(x, digits=0, value=NULL, bylayer=TRUE, ...)
+\S4method{freq}{SpatRaster}(x, digits=0, value=NULL, bylayer=TRUE)
 }
 
 \arguments{
@@ -20,7 +20,6 @@ Frequency table of the values of a SpatRaster. \code{NA}s are not counted.
   \item{bylayer}{logical. If \code{TRUE} tabulation is done by layer}
   \item{digits}{integer. Used for rounding the values before tabulation. Ignored if \code{NA}}
   \item{value}{numeric. An optional single value to only count the number of cells with that value}
-  \item{...}{additional arguments (none implemented)}
 }
 
 \value{

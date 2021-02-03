@@ -21,20 +21,19 @@ Get the geometry type (points, lines, or polygons) of a SpatVector or the data t
 } 
 
 \usage{
-\S4method{geomtype}{SpatVector}(x, ...)
+\S4method{geomtype}{SpatVector}(x)
 
-\S4method{datatype}{SpatVector}(x, ...)
+\S4method{datatype}{SpatVector}(x)
 
-\S4method{is.points}{SpatVector}(x, ...)
+\S4method{is.points}{SpatVector}(x)
 
-\S4method{is.lines}{SpatVector}(x, ...)
+\S4method{is.lines}{SpatVector}(x)
 
-\S4method{is.polygons}{SpatVector}(x, ...)
+\S4method{is.polygons}{SpatVector}(x)
 }
 
 \arguments{
 \item{x}{SpatVector}
-\item{...}{additional arguments. None implemented }  
 }
 
 \value{character}

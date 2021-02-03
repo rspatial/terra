@@ -1,44 +1,44 @@
 
 
 setMethod ("size" , "SpatVector", 
-	function(x, ...) {
+	function(x) {
 		x@ptr$size()
 	}
 )
 
 setMethod("geomtype", signature(x="SpatVector"), 
-	function(x, ...){ 
+	function(x){ 
 		x@ptr$type()
 	}
 )
 
 setMethod("datatype", signature(x="SpatVector"), 
-	function(x, ...){ 
+	function(x){ 
 		x@ptr$df$get_datatypes()
 	}
 )
 
 
 setMethod("is.lines", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		geomtype(x) == "lines"
 	}
 )
 
 setMethod("is.polygons", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		geomtype(x) == "polygons"
 	}
 )
 setMethod("is.points", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		grepl("points", geomtype(x))
 	}
 )
 
 
 setMethod("geomtype", signature(x="Spatial"), 
-	function(x, ...){ 
+	function(x){ 
 		type <- sub("spatial", "", as.vector(tolower(class(x))))
 		type <- sub("dataframe", "", type)
 		if (type %in% c("grid", "pixels")) type <- "raster"
@@ -47,7 +47,7 @@ setMethod("geomtype", signature(x="Spatial"),
 )
 
 setMethod("geom", signature(x="SpatVector"), 
-	function(x, wkt=FALSE, df=FALSE, ...){
+	function(x, wkt=FALSE, df=FALSE){
 		if (wkt) {
 			x@ptr$getGeometryWKT()
 		} else {
@@ -71,7 +71,7 @@ setMethod("dim", signature(x="SpatVector"),
 )
 
 setMethod("as.data.frame", signature(x="SpatVector"), 
-	function(x, geom=FALSE, ...) {
+	function(x, geom=FALSE) {
 		d <- data.frame(x@ptr$getDF(), check.names=FALSE, fix.empty.names=FALSE, stringsAsFactors=FALSE)
 		colnames(d) <- x@ptr$names
 		if (geom) {
@@ -119,7 +119,7 @@ setMethod("length", signature(x="SpatVector"),
 
 
 setMethod("fill", signature(x="SpatVector"), 
-	function(x, inverse=FALSE, ...) {
+	function(x, inverse=FALSE) {
 		if (inverse) {
 			x@ptr <- x@ptr$get_holes()
 		} else {
