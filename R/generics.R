@@ -4,6 +4,7 @@
 # License GPL v3
 
 
+
 setMethod("origin", signature(x="SpatRaster"), 
 	function(x) {
 		x@ptr$origin
@@ -61,8 +62,8 @@ setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 
 
 setMethod("boundaries", signature(x="SpatRaster"), 
-	function(x, classes=FALSE, inner=TRUE, directions=8, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, classes=FALSE, inner=TRUE, directions=8, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		type <- ifelse(inner[1], "inner", "outer")
 		x@ptr <- x@ptr$boundaries(classes[1], type, directions[1], opt)
 		messages(x, "boundaries")
@@ -201,8 +202,8 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
-	function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, y, snap="near", filename="", ...) {
+		opt <- spatOptions(filename, ...)
 
 		if (!inherits(y, "SpatExtent")) {
 			e <- try(ext(y), silent=TRUE)

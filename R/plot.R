@@ -179,7 +179,7 @@ setMethod("text", signature(x="SpatRaster"),
 				} 
 			}
 			x <- x[[labels]]
-			x <- as.points(x, values=TRUE, na.rm=TRUE)
+			x <- as.points(x, values=TRUE)
 			xy <- geom(x)[, c("x", "y")]
 			labels <- as.data.frame(x)[,1]
 			labels <- as.character(round(labels, digits=digits) )

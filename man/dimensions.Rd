@@ -25,6 +25,7 @@
 \alias{nrow<-,SpatRaster,numeric-method}
 \alias{ncol<-,SpatRaster,numeric-method}
 \alias{nlyr,SpatRasterDataset-method}
+\alias{res<-,SpatRaster,numeric-method}
 
 \alias{nlyr,SpatRaster-method}
 \alias{nlyr<-,SpatRaster,numeric-method}
@@ -76,15 +77,15 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 \S4method{nsrc}{SpatRaster}(x)
 
-\S4method{ncol}{SpatRaster}(x)<-value
+\S4method{ncol}{SpatRaster,numeric}(x)<-value
 
-\S4method{nrow}{SpatRaster}(x)<-value
+\S4method{nrow}{SpatRaster,numeric}(x)<-value
 
-\S4method{nlyr}{SpatRaster}(x)<-value
+\S4method{nlyr}{SpatRaster,numeric}(x)<-value
 
 \S4method{res}{SpatRaster}(x)
 
-\S4method{res}{SpatRaster}(x)<-value
+\S4method{res}{SpatRaster,numeric}(x)<-value
 
 \S4method{xres}{SpatRaster}(x)
 
