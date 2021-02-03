@@ -15,7 +15,7 @@ Or combine subdatsets into a SpatRaster.
 }
 \usage{
 
-\S4method{collapse}{SpatRaster}(x, ...)
+\S4method{collapse}{SpatRaster}(x)
 
 \S4method{collapse}{SpatRasterDataset}(x)
 }

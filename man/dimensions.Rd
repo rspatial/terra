@@ -76,12 +76,15 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 \S4method{nsrc}{SpatRaster}(x)
 
+\S4method{ncol}{SpatRaster}(x)<-value
+
+\S4method{nrow}{SpatRaster}(x)<-value
+
+\S4method{nlyr}{SpatRaster}(x)<-value
+
 \S4method{res}{SpatRaster}(x)
 
-ncol(x) <- value
-nrow(x) <- value
-nlyr(x) <- value
-res(x) <- value
+\S4method{res}{SpatRaster}(x)<-value
 
 \S4method{xres}{SpatRaster}(x)
 
