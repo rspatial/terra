@@ -321,7 +321,7 @@ setAs("SpatRaster", "Raster",
 	for (i in 1:length(geom)) {
 		vv <- list()
 		for (j in 1:length(geom[[i]])) {
-			if (inherits(geom[[1]][[1]], "list")) {
+			if (inherits(geom[[i]][[j]], "list")) {
 				vvv <- list()
 				for (k in 1:length(geom[[i]][[j]])) {
 					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=k-1) 
@@ -362,7 +362,7 @@ setAs("SpatRaster", "Raster",
 	for (i in 1:length(geom)) {
 		vv <- list()
 		for (j in 1:length(geom[[i]])) {
-			if (inherits(geom[[1]][[1]], "list")) {
+			if (inherits(geom[[i]][[j]], "list")) {
 				vvv <- list()
 				for (k in 1:length(geom[[i]][[j]])) {
 					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k-1) 

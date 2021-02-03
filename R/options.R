@@ -91,18 +91,18 @@ spatOptions <- function(filename="", overwrite=FALSE, ...) {
 	spatOptions("", TRUE, list())
 }
 
-..showOptions <- function(opt) {
-	cat("Options for package 'terra'\n")
-	cat("memfrac     :" , opt$memfrac, "\n")
-	cat("tempdir     :" , opt$tempdir, "\n")
-	cat("datatype    :" , opt$def_datatype, "\n")
-	cat("filetype    :" , opt$def_filetype, "\n")
-	cat("progress    :" , opt$progress, "\n")
-	cat("verbose     :" , opt$verbose, "\n")
-	if (opt$todisk) {
-		cat("todisk      :" , opt$todisk, "\n")
-	}
-}
+#..showOptions <- function(opt) {
+#	cat("Options for package 'terra'\n")
+#	cat("memfrac     :" , opt$memfrac, "\n")
+#	cat("tempdir     :" , opt$tempdir, "\n")
+#	cat("datatype    :" , opt$def_datatype, "\n")
+#	cat("filetype    :" , opt$def_filetype, "\n")
+#	cat("progress    :" , opt$progress, "\n")
+#	cat("verbose     :" , opt$verbose, "\n")
+#	if (opt$todisk) {
+#		cat("todisk      :" , opt$todisk, "\n")
+#	}
+#}
 
 .showOptions <- function(opt) {
 	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose") 
