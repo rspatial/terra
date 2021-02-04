@@ -523,9 +523,18 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		
 			//double naflag = -3.4e+38;
 			double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
-			if (hasNA && (!std::isnan(naflag))) {
-				std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
-			}
+			if (hasNA && (!std::isnan(naflag))) {			
+				if (naflag < -3.4e+37) {
+					naflag = -3.4e+37;
+					for (size_t i=0; i<lyrout.size(); i++) {
+						if (lyrout[i] < naflag) {
+							lyrout[i] = NAN;
+						} 
+					}
+				} else {
+					std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
+				}
+			} 
 			source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
 		}
 		source[0].hasValues = true;
@@ -559,6 +568,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		std::string datatype = opt.get_datatype();
 		if (!getGDALDataType(datatype, gdt)) {
 			addWarning("unknown datatype = " + datatype);
+			getGDALDataType("FLT4S", gdt);
 		}
 		if (datatype == "INT4S") {
 			naflag = INT32_MIN; //-2147483648; 
@@ -574,7 +584,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			naflag = NAN; 
 		}
 	} else {
-		getGDALDataType("FLT8S", gdt);
+		getGDALDataType("FLT4S", gdt);
 	}
 	const char *pszFilename = filename.c_str();
 	hDS = GDALCreate(hDrv, pszFilename, ncol(), nrow(), nlyr(), gdt, papszOptions );
