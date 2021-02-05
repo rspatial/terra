@@ -324,7 +324,7 @@ setAs("SpatRaster", "Raster",
 			if (inherits(geom[[1]][[1]], "list")) {
 				vvv <- list()
 				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k!=1) 
+					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k-1) 
 				}
 				vv[[j]] <- do.call(rbind, vvv)
 			} else {
@@ -365,7 +365,7 @@ setAs("SpatRaster", "Raster",
 			if (inherits(geom[[1]][[1]], "list")) {
 				vvv <- list()
 				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k!=1) 
+					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k-1) 
 				}
 				vv[[j]] <- do.call(rbind, vvv)
 			} else {
@@ -397,6 +397,16 @@ setAs("sf", "SpatVector",
 		v <- try(.from_sf(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
 			error("as,sf", "coercion failed. You can try coercing via a Spatial* (sp) class")
+		} 
+		v
+	}
+)
+
+setMethod("vect", signature(x="XY"), #sfg
+	function(x, ...) {
+		v <- try(.from_sfc(x), silent=TRUE)
+		if (inherits(v, "try-error")) {
+			error("as,sfg", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		} 
 		v
 	}

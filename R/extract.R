@@ -60,8 +60,8 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		} else {
 			fun <- match.fun(fun) 
 			e <- rapply(e, fun, ...)
-			e <- matrix(e, nrow=nrow(y), byrow=TRUE)
 		}
+		e <- matrix(e, nrow=nrow(y), byrow=TRUE)
 		colnames(e) <- names(x)
 		e <- cbind(ID=1:nrow(e), e)
 	} else if (!list) {
