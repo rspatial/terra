@@ -60,14 +60,17 @@
  
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
-	w <- list(...)
-	wopt <- c(w, wopt)
 	
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 
 	ptr <- .terra_environment$options@ptr
 	opt <- ptr$deepcopy()
+
+	return(opt)
+
+	w <- list(...)
+	wopt <- c(w, wopt)
 
 	filename <- .fullFilename(filename, mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {

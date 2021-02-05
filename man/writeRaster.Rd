@@ -67,17 +67,17 @@ r <- rast(nrow=5, ncol=5, vals=1:25)
 # create a temporary filename for the example
 f <- file.path(tempdir(), "test.tif")
 
-writeRaster(r, f, overwrite=TRUE)
+#writeRaster(r, f, overwrite=TRUE)
 
-writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=LZW", "TFW=YES","of=COG"), datatype='INT1U')
+#writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=LZW", "TFW=YES","of=COG"), datatype='INT1U')
 
 ## Or with a wopt argument:
 
-writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=LZW", "of=COG"), datatype='INT1U'))
+#writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=LZW", "of=COG"), datatype='INT1U'))
 
 
 ## remove the file
-unlink(f)
+#unlink(f)
 }
 
 \keyword{ spatial }

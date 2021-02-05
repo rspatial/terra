@@ -202,8 +202,8 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
-	function(x, y, snap="near", filename="", ...) {
-		opt <- spatOptions(filename, ...)
+	function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
+		opt <- spatOptions(filename, overwrite, ...)
 
 		if (!inherits(y, "SpatExtent")) {
 			e <- try(ext(y), silent=TRUE)
