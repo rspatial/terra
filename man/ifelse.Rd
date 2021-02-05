@@ -12,7 +12,7 @@ Implementation of \code{\link[base]{ifelse}} for SpatRasters. This method allows
 }
 
 \usage{
-\S4method{ifel}{SpatRaster}(test, yes, no, filename="", overwrite=FALSE, ...)
+\S4method{ifel}{SpatRaster}(test, yes, no, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -21,7 +21,8 @@ Implementation of \code{\link[base]{ifelse}} for SpatRasters. This method allows
   \item{no}{SpatRaster or numeric}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}  
 }
 
 \value{

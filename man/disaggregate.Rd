@@ -15,9 +15,9 @@
 }
 
 \usage{
-\S4method{disaggregate}{SpatRaster}(x, fact, method="near", filename="", overwrite=FALSE, ...)
+\S4method{disaggregate}{SpatRaster}(x, fact, method="near", filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{disaggregate}{SpatVector}(x)
+\S4method{disaggregate}{SpatVector}(x, ...)
 }
 
 \arguments{
@@ -26,7 +26,8 @@
   \item{method}{character. Either "near" for nearest or "bilinear" for bilinear interpolation}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}
 }
 
 

@@ -24,7 +24,7 @@ mosaic SpatRasters to form a new SpatRaster object with a larger spatial extent.
   \item{fun}{character. One of "sum", "mean", "median", "min", "max"}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 } 
 
 \details{

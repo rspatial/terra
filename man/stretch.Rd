@@ -11,7 +11,7 @@ Linear stretch of values in a SpatRaster object. Provide the desired output rang
 
 \usage{
 \S4method{stretch}{SpatRaster}(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
-          filename="", overwrite=FALSE, ...)
+          filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -25,7 +25,8 @@ Linear stretch of values in a SpatRaster object. Provide the desired output rang
 
 \item{filename}{character. Output filename. Optional}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-\item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+\item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+\item{...}{ additional arguments as for \code{\link{writeRaster}}}
 }
  
  

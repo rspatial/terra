@@ -12,13 +12,15 @@ Symetrical difference
 \description{
 Symetrical difference of polygons
 }
+
 \usage{
-\S4method{symdif}{SpatVector,SpatVector}(x, y)
+\S4method{symdif}{SpatVector,SpatVector}(x, y, ...)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{y}{SpatVector}
+  \item{...}{Additional arguments. None implemented} 
 }
 
 \value{

@@ -17,7 +17,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 }
 
 \usage{
-\S4method{area}{SpatRaster}(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE, ...)
+\S4method{area}{SpatRaster}(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE,  wopt=list(), ...)
 
 \S4method{area}{SpatVector}(x, ...)
 
@@ -31,7 +31,8 @@ The perimeter method works only on SpatVector objects, and computes the length o
   \item{correct}{logical. If \code{TRUE}, the area is not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. This may be considerbly slower}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented} 
 }
 
 \value{
@@ -62,7 +63,7 @@ area(r) / 1000000
 #m <- project(r, "+proj=merc")
 
 #a <- area(m, sum=FALSE, wopt=list(names="naive"))
-#b <- area(m, correct=TRUE, sum=FALSE, names="corrected")
+#b <- area(m, correct=TRUE, sum=FALSE, wopt=list(names="corrected"))
 #plot(c(a, b)/1000000, nc=1)
 
 

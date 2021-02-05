@@ -51,7 +51,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 	if (toc) {
 		#	fun="mean", expand=TRUE, na.rm=TRUE, filename=""
 		narm <- isTRUE(list(...)$na.rm)
-		opt <- spatOptions(filename, overwrite, wopt=wopt)
+		opt <- spatOptions(filename, overwrite, wopt)
 		x@ptr <- x@ptr$aggregate(fact, fun, narm, opt)
 		return (messages(x, "aggregate"))
 	} else {
@@ -86,7 +86,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		}
 
 		readStart(x)
-		ignore <- writeStart(out, filename, overwrite, wopt=wopt)
+		ignore <- writeStart(out, filename, overwrite, wopt)
 		if (doPar) {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc)

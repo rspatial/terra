@@ -21,7 +21,7 @@
  
  
 setMethod("as.polygons", signature(x="SpatRaster"), 
-	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE) {
+	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE, ...) {
 		p <- methods::new("SpatVector")
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
@@ -35,7 +35,7 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 )
 
 setMethod("as.polygons", signature(x="SpatExtent"), 
-	function(x, crs="") {
+	function(x, crs="", ...) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new(x@ptr, crs)
 		messages(p, "as.polygons")
@@ -43,22 +43,22 @@ setMethod("as.polygons", signature(x="SpatExtent"),
 )
 
 setMethod("as.lines", signature(x="SpatExtent"), 
-	function(x, crs="") {
-		as.lines(as.polygons(x, crs))
+	function(x, crs="", ...) {
+		as.lines(as.polygons(x, crs, ...))
 	}
 )
 
 
 setMethod("as.points", signature(x="SpatExtent"), 
-	function(x, crs="") {
+	function(x, crs="", ...) {
 		#vect(do.call(cbind, x@ptr$as.points()), "points", crs=crs)
-		as.points(as.polygons(x, crs))
+		as.points(as.polygons(x, crs, ...))
 	}
 )
 
 
 setMethod("as.lines", signature(x="SpatVector"), 
-	function(x) {
+	function(x, ...) {
 		x@ptr <- x@ptr$as_lines()
 		messages(x, "as.lines")
 	}
@@ -66,7 +66,7 @@ setMethod("as.lines", signature(x="SpatVector"),
 
 
 setMethod("as.points", signature(x="SpatVector"), 
-	function(x, multi=FALSE) {
+	function(x, multi=FALSE, ...) {
 		opt <- .getOptions()
 		x@ptr <- x@ptr$as_points(multi)
 		messages(x, "as.points")
@@ -75,7 +75,7 @@ setMethod("as.points", signature(x="SpatVector"),
 
 
 setMethod("as.points", signature(x="SpatRaster"), 
-	function(x, values=TRUE) {
+	function(x, values=TRUE, ...) {
 		p <- methods::new("SpatVector")
 		opt <- .getOptions()
 		p@ptr <- x@ptr$as_points(values, TRUE, opt)
@@ -98,7 +98,7 @@ setMethod("as.vector", signature(x="SpatExtent"),
 
 
 setMethod("as.character", signature(x="SpatExtent"), 
-	function(x) {
+	function(x, ...) {
 		e <- as.vector(x)
 		paste0("ext(", paste(e, collapse=", "), ")")
 	}
@@ -112,22 +112,22 @@ setMethod("as.vector", signature(x="SpatRaster"),
 
 
 setMethod("as.matrix", signature(x="SpatRaster"), 
-	function(x, wide=FALSE) {
+	function(x, wide=FALSE, ...) {
 		if (!hasValues(x)) {
 			error("as.matrix", "SpatRaster has no cell values")
 		}
 		if (wide) {
 			if (nlyr(x) > 1) {
-				m <- values(x, mat=TRUE)
+				m <- values(x, matrix=TRUE)
 				m <- lapply(1:ncol(m), function(i) {
-					matrix(m[,i], nrow=nrow(x), byrow=TRUE)
+					matrix(m[,i],nrow=nrow(x),byrow=TRUE)
 					})
 				m <- do.call(cbind, m)
 			} else {
-				m <- matrix(values(x, mat=FALSE),nrow=nrow(x),byrow=TRUE)
+				m <- matrix(values(x, matrix=FALSE),nrow=nrow(x),byrow=TRUE)
 			}
 		} else {
-			m <- values(x, mat=TRUE)
+			m <- values(x, matrix=TRUE)
 		}
 		m
 	}
@@ -135,7 +135,7 @@ setMethod("as.matrix", signature(x="SpatRaster"),
 
 
 setMethod("as.data.frame", signature(x="SpatRaster"), 
-	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE) {
+	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE, ...) {
 		d <- NULL
 		if (xy) {
 			d <- xyFromCell(x, 1:ncell(x))
@@ -143,7 +143,7 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 		if (cells) {
 			d <- cbind(cell=1:ncell(x), d)
 		}
-		d <- cbind(d, values(x, mat=TRUE))
+		d <- cbind(d, values(x, matrix=TRUE))
 		if (na.rm) d <- stats::na.omit(d) 
 		data.frame(d)
 	}
@@ -162,7 +162,7 @@ setAs("SpatVector", "data.frame",
 )
 
 setMethod("as.array", signature(x="SpatRaster"), 
-	function(x) {
+	function(x, ...) {
 		dm <- dim(x)
 		x <- values(x, TRUE)
 		a <- array(NA, dm)
@@ -321,10 +321,10 @@ setAs("SpatRaster", "Raster",
 	for (i in 1:length(geom)) {
 		vv <- list()
 		for (j in 1:length(geom[[i]])) {
-			if (inherits(geom[[i]][[j]], "list")) {
+			if (inherits(geom[[1]][[1]], "list")) {
 				vvv <- list()
 				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=k-1) 
+					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k!=1) 
 				}
 				vv[[j]] <- do.call(rbind, vvv)
 			} else {
@@ -362,10 +362,10 @@ setAs("SpatRaster", "Raster",
 	for (i in 1:length(geom)) {
 		vv <- list()
 		for (j in 1:length(geom[[i]])) {
-			if (inherits(geom[[i]][[j]], "list")) {
+			if (inherits(geom[[1]][[1]], "list")) {
 				vvv <- list()
 				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k-1) 
+					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k!=1) 
 				}
 				vv[[j]] <- do.call(rbind, vvv)
 			} else {
@@ -392,33 +392,6 @@ setAs("SpatRaster", "Raster",
 
 
 
-.from_sfg <- function(from) {
-	geom = from
-	v <- list()
-	for (i in 1:length(geom)) {
-		vv <- list()
-		for (j in 1:length(geom[[i]])) {
-			vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole= j-1) 
-		}
-		v[[i]] <- do.call(rbind, vv)
-	}
-	v <- do.call(rbind, v)
-	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	if (ncol(v) == 6) {
-		v <- v[,-5]
-	}
-	types <- class(geom)[2]
-	if (grepl("POINT", types, fixed=TRUE)) {
-		gt = "points"
-	} else if (grepl("LINE", types, fixed=TRUE)) {
-		gt = "lines"
-	} else if (grepl("POLY", types, fixed=TRUE)) {
-		gt = "polygons"
-	}
-	vect(v, type=gt, crs="")
-}
-
-
 setAs("sf", "SpatVector", 
 	function(from) {
 		v <- try(.from_sf(from), silent=TRUE)
@@ -428,7 +401,6 @@ setAs("sf", "SpatVector",
 		v
 	}
 )
-
 
 
 setAs("im", "SpatRaster", 

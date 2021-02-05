@@ -19,14 +19,16 @@ Transpose a SpatRaster
 
 \S4method{t}{SpatVector}(x)
 
-\S4method{transpose}{SpatRaster}(x, filename="", overwrite=FALSE, ...)
+\S4method{transpose}{SpatRaster}(x, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
  \item{x}{SpatRaster}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}  
+ 
 }
 
 \value{

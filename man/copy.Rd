@@ -14,11 +14,12 @@ Make a deep copy of a SpatRaster. This is occaisionaly useful when wanting to us
 }
 
 \usage{
-\S4method{copy}{SpatRaster}(x)
+\S4method{copy}{SpatRaster}(x, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
+ \item{...}{additional arguments. None implemented}  
 }
 
 \value{

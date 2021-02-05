@@ -11,7 +11,7 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
 
 \usage{
 \S4method{clamp}{SpatRaster}(x, lower=-Inf, upper=Inf, values=TRUE,
-             filename="", overwrite=FALSE, ...)
+             filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
@@ -21,7 +21,8 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
   \item{values}{logical. If \code{FALSE} values outside the clamping range become \code{NA}, if \code{TRUE}, they get the extreme values}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional argumments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}  
 }
 
 \value{

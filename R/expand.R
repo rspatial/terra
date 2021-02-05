@@ -7,7 +7,7 @@ setMethod("extend", signature(x="SpatRaster"),
 )
 
 setMethod("expand", signature(x="SpatExtent"), 
-function(x, y) {
+function(x, y, ...) {
 	if (length(y) == 1) {
 		y <- rep(y, 4)
 	} else if (length(y) == 2) {
@@ -27,7 +27,7 @@ function(x, y) {
 
 
 setMethod("expand", signature(x="SpatRaster"), 
-function(x, y, filename="", overwrite=FALSE, ...) {
+function(x, y, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	if (!inherits(y, "SpatExtent")) {
 
@@ -51,7 +51,7 @@ function(x, y, filename="", overwrite=FALSE, ...) {
 		}
 	}
 
-	opt <- spatOptions(filename, overwrite, ...)
+	opt <- spatOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$expand(y@ptr, opt)
 	messages(x, "expand")
 }

@@ -28,7 +28,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more
   \item{...}{additional arguments passed to \code{fun}}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{

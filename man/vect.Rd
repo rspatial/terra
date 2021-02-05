@@ -10,7 +10,6 @@
 \alias{vect,Spatial-method}
 \alias{vect,sf-method}
 \alias{vect,sfc-method}
-\alias{vect,XY-method}
 \alias{vect,PackedSpatVector-method}
 
 

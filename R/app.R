@@ -5,7 +5,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
-			opt <- spatOptions(filename, overwrite, wopt=wopt)
+			opt <- spatOptions(filename, overwrite, wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$summary(txtfun, na.rm, opt)
 			return(messages(x, "app"))
@@ -49,7 +49,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		}
 	}
 
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, wopt)
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cls))
@@ -163,7 +163,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
-			opt <- spatOptions(filename, overwrite, wopt=wopt)
+			opt <- spatOptions(filename, overwrite, wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			r <- rast()
 			opt <- spatOptions("", TRUE, list())
@@ -186,7 +186,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, wopt)
 
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)

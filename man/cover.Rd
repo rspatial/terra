@@ -17,9 +17,9 @@ For polygons: areas of \code{x} that overlap with \code{y} are replaced by \code
 }
 
 \usage{
-\S4method{cover}{SpatRaster,SpatRaster}(x, y, values=NA, filename="", overwrite=FALSE, ...)
+\S4method{cover}{SpatRaster,SpatRaster}(x, y, values=NA, filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{cover}{SpatVector,SpatVector}(x, y, identity=FALSE)
+\S4method{cover}{SpatVector,SpatVector}(x, y, identity=FALSE, ...)
 
 }
 
@@ -29,7 +29,8 @@ For polygons: areas of \code{x} that overlap with \code{y} are replaced by \code
   \item{values}{numeric. The cell values in \code{x} to be replaced by the values in \code{y}}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}  
   \item{identity}{logical. If \code{TRUE} overlapping areas are intersected rather than replaced}
 }
 

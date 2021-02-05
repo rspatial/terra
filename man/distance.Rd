@@ -26,17 +26,17 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 }
 
 \usage{
-\S4method{distance}{SpatRaster,missing}(x, y, grid=FALSE, filename="", overwrite=FALSE, ...)
+\S4method{distance}{SpatRaster,missing}(x, y, grid=FALSE, filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", overwrite=FALSE, ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", overwrite=FALSE, wopt=list(), ...)
 
-\S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE)
+\S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE, ...)
 
-\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE)
+\S4method{distance}{SpatVector,SpatVector}(x, y, pairwise=FALSE, ...)
 
-\S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE)
+\S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE, ...)
 
-\S4method{distance}{matrix,ANY}(x, y, lonlat, sequential=FALSE)
+\S4method{distance}{matrix,ANY}(x, y, lonlat, sequential=FALSE, ...)
 }
 
 \arguments{
@@ -45,7 +45,8 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
   \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}  
   \item{sequential}{logical. If \code{TRUE}, the distance between sequential geometries is returned}
   \item{pairwise}{logical. If \code{TRUE} and if x and y have the same size (number of rows), the pairwise distances are returned instead of the distances between all elements} 
   \item{lonlat}{logical. If \code{TRUE} the coordinates are interpreted as angular (longitude/latitude). If \code{FALSE} they are interpreted as planar}

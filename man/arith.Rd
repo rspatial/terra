@@ -21,7 +21,7 @@ Apply a function that (arithmetically) operates to individual cells and layers o
   \item{...}{additional arguments for \code{fun}}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{

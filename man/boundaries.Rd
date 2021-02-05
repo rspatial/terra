@@ -10,17 +10,19 @@ Detect boundaries (edges). boundaries are cells that have more than one class in
 }
 
 \usage{
-\S4method{boundaries}{SpatRaster}(x, classes=FALSE, inner=TRUE, 
-         directions=8, filename="", ...)
+\S4method{boundaries}{SpatRaster}(x, classes=FALSE, type="inner", 
+         directions=8, filename="", overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
 \item{x}{SpatRaster}
-\item{inner}{logical. If \code{TRUE}, "inner" boundaries are returned, else "outer" boundaries are returned}
+\item{type}{character. "inner" or "outer"}
 \item{classes}{character. Logical. If \code{TRUE} all different values are (after rounding) distinguished, as well as \code{NA}. If \code{FALSE} (the default) only edges between \code{NA} and non-\code{NA} cells are considered}
 \item{directions}{integer. Which cells are considered adjacent? Should be 8 (Queen's case) or 4 (Rook's case)}
-  \item{filename}{character. Output filename}
-  \item{...}{options for writing files as in \code{\link{writeRaster}}}
+  \item{filename}{character. Output filename. Optional}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}  
 }
 
 \value{
@@ -35,8 +37,8 @@ v <- rep(NA, ncell(r))
 v[150:250] <- 1
 v[251:450] <- 2
 values(r) <- v
-bi <- boundaries(r)
-bo <- boundaries(r, inner=FALSE)
+bi <- boundaries(r, type="inner")
+bo <- boundaries(r, type="outer")
 bc <- boundaries(r, classes=TRUE)
 plot(bc)
 }

@@ -39,7 +39,7 @@ setMethod("crs", signature("SpatRaster"),
 }
 
 setMethod("crs<-", signature("SpatRaster", "ANY"), 
-	function(x, value) {
+	function(x, ..., value) {
 		value <- .txtCRS(value)
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
@@ -66,7 +66,7 @@ setMethod("crs", signature("SpatVector"),
 )
 
 setMethod("crs<-", signature("SpatVector", "ANY"), 
-	function(x, value) {
+	function(x, ..., value) {
 		value <- .txtCRS(value)
 		x@ptr <- x@ptr$deepcopy()
 		x@ptr$set_crs(value)
@@ -77,7 +77,7 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 
 
 setMethod("is.lonlat", signature("SpatRaster"), 
-	function(x, perhaps=FALSE, warn=TRUE, global=FALSE) {
+	function(x, perhaps=FALSE, warn=TRUE, global=FALSE, ...) {
 		if (perhaps) {
 			ok <- x@ptr$isGeographic()
 			if (ok) {
@@ -109,7 +109,7 @@ setMethod("is.lonlat", signature("SpatRaster"),
 
 
 setMethod("is.lonlat", signature("SpatVector"), 
-	function(x, perhaps=FALSE, warn=TRUE) {
+	function(x, perhaps=FALSE, warn=TRUE, ...) {
 		ok <- x@ptr$isGeographic()
 		if (ok) return(ok)
 		if (perhaps) {

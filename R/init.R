@@ -5,8 +5,8 @@
 
 
 setMethod("init", signature(x="SpatRaster"), 
-	function(x, fun, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, fun, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- spatOptions(filename, overwrite, wopt)
 		if (is.character(fun)) {
 			fun <- fun[1]
 			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
@@ -21,7 +21,7 @@ setMethod("init", signature(x="SpatRaster"),
 		} else {
 			out <- rast(x)
 			nc <- ncol(out)
-			b <- writeStart(out, filename, overwrite, ...)
+			b <- writeStart(out, filename, overwrite, wopt)
 			for (i in 1:b$n) {
 				n <- b$nrows[i] * nc;
 				r <- fun(n)

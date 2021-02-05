@@ -15,7 +15,7 @@ This is called "one-hot encoding" or "dummy encoding" (for a dummy encoding sche
 
 \usage{
 \S4method{separate}{SpatRaster}(x, classes=NULL, keep=FALSE, other=0, filename="",
-    overwrite=FALSE, ...)
+    overwrite=FALSE, wopt=list(),...)
 }
 
 \arguments{
@@ -25,7 +25,8 @@ This is called "one-hot encoding" or "dummy encoding" (for a dummy encoding sche
   \item{other}{numeric. Value to assign to cells that are not of the class represented by a layer}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments. None implemented}    
 }
 
 \value{

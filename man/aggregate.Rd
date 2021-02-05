@@ -28,7 +28,7 @@ Or aggregate ("dissolve") a SpatVector.
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created. Ignored for C++ level implemented functions "mean", "max", "min", "median", "sum" and "modal"}  
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
   
   \item{by}{character. The variable used to aggregate the geometries}
   \item{dissolve}{logical. Should borders between aggregated geometries be dissolved?} 

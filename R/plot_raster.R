@@ -4,15 +4,14 @@
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 
-	z <- stats::na.omit(round(as.vector(Z), 12))
+	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
 	if (n == 0) error("plot", "no values")
-	uzi <- unique(z)
 	if (type == "depends") {
-		if (length(uzi) < 6) {
+		if (length(unique(z)) < 6) {
 			return (.as.raster.classes(out, x))
 		}
-	} else if (length(uzi) == 1) {
+	} else if (length(unique(z)) == 1) {
 		return (.as.raster.classes(out, x))
 	}
 

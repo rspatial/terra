@@ -31,7 +31,7 @@ There is a also a method for merging SpatVector with a data.frame.
   \item{...}{if \code{x} is a SpatRaster or SpatVector: additional objects of the same class as \code{x}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
 } 
 
 \details{

@@ -52,7 +52,7 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, dataframe=TRUE)
 		if (!usenames) colnames(v) <- NULL
@@ -116,7 +116,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, wopt)
 	for (i in 1:b$n) {
 		v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
 		if (recycle) {

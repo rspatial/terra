@@ -13,7 +13,7 @@ Compute quantiles for each cell across the layers of a SpatRaster
 
 \usage{
 \S4method{quantile}{SpatRaster}(x, probs=seq(0, 1, 0.25), na.rm=FALSE,
-    filename="", overwrite=FALSE, ...) 
+    filename="", overwrite=FALSE, wopt=list(), ...) 
 }
 
 \arguments{
@@ -22,7 +22,8 @@ Compute quantiles for each cell across the layers of a SpatRaster
   \item{na.rm}{logical. If \code{TRUE}, \code{NA}'s are removed from \code{x} before the quantiles are computed}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
+  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}  
+  \item{...}{additional arguments, none implemented}
 }
 
 \value{

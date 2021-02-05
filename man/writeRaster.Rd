@@ -12,14 +12,15 @@ Write a SpatRaster object to a file.
 
 \usage{
 \S4method{writeRaster}{SpatRaster,character}(x, filename, 
-        overwrite=FALSE, ...)
+        overwrite=FALSE, wopt=list(), ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments for for writing files. See Details }
+  \item{wopt}{list. Options for writing files. See Details }
+  \item{...}{additional arguments. None implemented}
 }
 
 \value{
@@ -31,7 +32,7 @@ see \code{\link{writeCDF}} for writing NetCDF files.
 }
 
 \details{
-In writeRaster, and in other methods that generate SpatRaster objects, options for writing raster files to disk can be provided as additional arguments or, in a few cases, as the \code{wopt} argument (a named list) if the additional arguments are already used for a different purpose. The following options are available: 
+In many methods, options for writing raster files to disk can be provided with the \code{wopt} argument. \code{wopt} should be a named list. The following options are available: 
 
 \tabular{ll}{
 \bold{name} \tab \bold{description}\cr
@@ -56,28 +57,6 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{todisk}\tab logical. If \code{TRUE} processing operates as if the dataset is very large and needs to be written to a temporary file (for debugging).\cr
 }
-}
-
-
-\examples{
-
-library(terra)
-r <- rast(nrow=5, ncol=5, vals=1:25)
-
-# create a temporary filename for the example
-f <- file.path(tempdir(), "test.tif")
-
-#writeRaster(r, f, overwrite=TRUE)
-
-#writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=LZW", "TFW=YES","of=COG"), datatype='INT1U')
-
-## Or with a wopt argument:
-
-#writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=LZW", "of=COG"), datatype='INT1U'))
-
-
-## remove the file
-#unlink(f)
 }
 
 \keyword{ spatial }

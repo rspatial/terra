@@ -63,7 +63,7 @@
 
 	n <- length(x)
 	y <- x[1]
-	if (is.lonlat(y, perhaps=TRUE, warn=FALSE)) {
+	if (isLonLat(y, perhaps=TRUE, warn=FALSE)) {
 		xname = "longitude"
 		yname = "latitude"
 		xunit = "degrees_east"

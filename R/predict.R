@@ -144,7 +144,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		} else {
 			cls <- NULL
 		}
-		b <- writeStart(out, filename, overwrite, wopt=wopt)
+		b <- writeStart(out, filename, overwrite, wopt)
 		for (i in 1:b$n) {
 			d <- readValues(object, b$row[i], b$nrows[i], 1, nc, TRUE, TRUE)
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, cores=cores, cls=cls, ...)

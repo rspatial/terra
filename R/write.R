@@ -1,7 +1,12 @@
+# Author: Robert J. Hijmans
+# Date : December 2017
+# Version 1.0
+# License GPL v3
+
 
 setMethod("writeStart", signature(x="SpatRaster", filename="character"), 
-	function(x, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
+		opt <- spatOptions(filename, overwrite, wopt)
 		ok <- x@ptr$writeStart(opt)
 		messages(x, "writeStart")
 		b <- x@ptr$getBlockSize(4, opt$memfrac)
@@ -24,7 +29,7 @@ setMethod("writeStop", signature(x="SpatRaster"),
 )
 
 setMethod("writeValues", signature(x="SpatRaster", v="vector"), 
-	function(x, v, start, nrows) {
+	function(x, v, start, nrows, ...) {
 		#wstart <- start[1]-1
 		#nrows <- start[2]
 		#if (is.na(nrows)) {
@@ -38,13 +43,14 @@ setMethod("writeValues", signature(x="SpatRaster", v="vector"),
 
 
 setMethod("writeRaster", signature(x="SpatRaster", filename="character"), 
-function(x, filename="", overwrite=FALSE, ...) {
+function(x, filename="", overwrite=FALSE, wopt=list(), ...) {
 	filename <- trimws(filename)
 	stopifnot(filename != "")
-	if (tools::file_ext(filename) %in% c("nc", "cdf") || isTRUE(list(...)$filetype=="netCDF")) {
-		warn("consider writeCDF to write ncdf files")
+	if (tools::file_ext(filename) %in% c("nc", "cdf") || isTRUE(wopt$filetype=="netCDF")) {
+		warn("writeRaster", "call writeCDF directly")
+		return ( writeCDF(x, filename=filename, overwrite=overwrite, ...) )
 	}
-	opt <- spatOptions(filename, overwrite, ...)
+	opt <- spatOptions(filename, overwrite, wopt)
 	x@ptr <- x@ptr$writeRaster(opt)
 	x <- messages(x, "writeRaster")
 	invisible(rast(filename))
