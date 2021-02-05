@@ -16,15 +16,14 @@ Currently, the window will be forced to intersect with the extent of the SpatRas
 }
 
 \usage{
-\S4method{window}{SpatRaster}(x, ...)<-value
+\S4method{window}{SpatRaster}(x)<-value
 
-\S4method{window}{SpatRaster}(x, ...)
+\S4method{window}{SpatRaster}(x)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{value}{SpatExtent}
-  \item{...}{additional arguments. None implemented}  
 }
 
 \seealso{

@@ -873,3 +873,4 @@ SpatVector SpatVector::buffer(double d, unsigned segments, unsigned capstyle){
 	out = point_buffer(d, segments); 
 	return out;
 }
+

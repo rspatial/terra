@@ -14,13 +14,14 @@
 }
 
  
-.setOptions <- function(x, opt) {
-	nms <- names(opt)
+.setOptions <- function(x, wopt) {
+
+	nms <- names(wopt)
 
 	g <- which(nms == "gdal")
 	if (length(g) > 0) {
-		gopt <- unlist(opt[g])
-		opt <- opt[-g]
+		gopt <- unlist(wopt[g])
+		wopt <- wopt[-g]
 		nms <- nms[-g]
 		i <- grep("=", gopt)
 		gopt <- gopt[i]
@@ -37,17 +38,17 @@
 
 	if (any(s)) {
 		nms <- nms[s]
-		opt <- opt[s]
+		wopt <- wopt[s]
 		i <- which(nms == "names")
 		if (length(i) > 0) {
-			namevs <- trimws(unlist(strsplit(opt[[i]], ",")))
+			namevs <- trimws(unlist(strsplit(wopt[[i]], ",")))
 			x[["names"]] <- namevs
-			opt <- opt[-i]
+			wopt <- wopt[-i]
 			nms <- nms[-i]
 		}
 
 		for (i in seq_along(nms)) {
-			x[[nms[i]]] <- opt[[i]]
+			x[[nms[i]]] <- wopt[[i]]
 		}
 		if ("datatype" %in% nms) {
 			x$datatype_set = TRUE;
@@ -57,20 +58,16 @@
 	x
 } 
  
-spatOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
-	if (!is.list(wopt)) {
-		error("spatOptions", "wopt must be a list")
-	}
+spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
-	w <- wopt$wopt
-	wopt$wopt <- NULL
-	wopt <- c(wopt, w)
-
+	w <- list(...)
+	wopt <- c(w, wopt)
+	
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 
 	ptr <- .terra_environment$options@ptr
-	opt <- ptr$deepcopy(ptr)
+	opt <- ptr$deepcopy()
 
 	filename <- .fullFilename(filename, mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {
@@ -90,18 +87,18 @@ spatOptions <- function(filename="", overwrite=FALSE, wopt=list()) {
 	spatOptions("", TRUE, list())
 }
 
-..showOptions <- function(opt) {
-	cat("Options for package 'terra'\n")
-	cat("memfrac     :" , opt$memfrac, "\n")
-	cat("tempdir     :" , opt$tempdir, "\n")
-	cat("datatype    :" , opt$def_datatype, "\n")
-	cat("filetype    :" , opt$def_filetype, "\n")
-	cat("progress    :" , opt$progress, "\n")
-	cat("verbose     :" , opt$verbose, "\n")
-	if (opt$todisk) {
-		cat("todisk      :" , opt$todisk, "\n")
-	}
-}
+#..showOptions <- function(opt) {
+#	cat("Options for package 'terra'\n")
+#	cat("memfrac     :" , opt$memfrac, "\n")
+#	cat("tempdir     :" , opt$tempdir, "\n")
+#	cat("datatype    :" , opt$def_datatype, "\n")
+#	cat("filetype    :" , opt$def_filetype, "\n")
+#	cat("progress    :" , opt$progress, "\n")
+#	cat("verbose     :" , opt$verbose, "\n")
+#	if (opt$todisk) {
+#		cat("todisk      :" , opt$todisk, "\n")
+#	}
+#}
 
 .showOptions <- function(opt) {
 	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose") 

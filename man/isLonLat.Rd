@@ -18,13 +18,13 @@ The form \code{\link{isLonLat}} is depracated. Use \code{\link{is.lonlat}}
 }
 
 \usage{
-\S4method{is.lonlat}{SpatRaster}(x, perhaps=FALSE, warn=TRUE, global=FALSE, ...)
+\S4method{is.lonlat}{SpatRaster}(x, perhaps=FALSE, warn=TRUE, global=FALSE)
 
-\S4method{is.lonlat}{SpatVector}(x, perhaps=FALSE, warn=TRUE, ...)
+\S4method{is.lonlat}{SpatVector}(x, perhaps=FALSE, warn=TRUE)
 
-\S4method{isLonLat}{SpatRaster}(x, ...)
+\S4method{isLonLat}{SpatRaster}(x)
 
-\S4method{isLonLat}{SpatVector}(x, ...)
+\S4method{isLonLat}{SpatVector}(x)
 }
 
 \arguments{
@@ -32,7 +32,6 @@ The form \code{\link{isLonLat}} is depracated. Use \code{\link{is.lonlat}}
 \item{perhaps}{logical. If \code{TRUE} and the crs is unknown, the method returns \code{TRUE} if the coordinates are plausible for longitude/latitude}
 \item{warn}{logical. If \code{TRUE}, a warning is given if the CRS is unknown or when the CRS is longitude/latitude but the coordinates do not match that}
 \item{global}{logical. If \code{TRUE}, the method tests if the raster covers all longitudes (from -180 to 180 degrees) such that the extreme columns are in fact adjacent }
-\item{...}{additional arguments. None implemented}
 }
 
 \value{

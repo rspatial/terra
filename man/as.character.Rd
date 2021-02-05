@@ -14,14 +14,13 @@ Create a text representation of (the skeleton of) an object
 }
 
 \usage{
-\S4method{as.character}{SpatExtent}(x, ...)
+\S4method{as.character}{SpatExtent}(x)
 
-\S4method{as.character}{SpatRaster}(x, ...)
+\S4method{as.character}{SpatRaster}(x)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{...}{additional arguments. None implemented }
 }
  
 \value{

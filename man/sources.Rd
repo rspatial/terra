@@ -15,14 +15,13 @@ Get the data sources of a SpatRaster and the number of layers by source. Sources
 }
 
 \usage{
-\S4method{sources}{SpatRaster}(x, ...)
+\S4method{sources}{SpatRaster}(x)
 
-\S4method{hasValues}{SpatRaster}(x, ...)
+\S4method{hasValues}{SpatRaster}(x)
 }
 
 \arguments{
 \item{x}{SpatRaster}
-\item{...}{additional arguments. None implemented }  
 }
 
 \value{sources returns a data.frame with the source names (if any) and the number of layers by source}

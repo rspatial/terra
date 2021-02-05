@@ -4,14 +4,14 @@
 # License GPL v3
 
 setMethod("ext", signature(x="SpatExtent"), 
-	function(x, ...){ 
+	function(x){ 
 		x
 	}
 )
 
 
 setMethod("ext", signature(x="missing"), 
-	function(x, ...){ 
+	function(x){ 
 		e <- methods::new("SpatExtent")
 		e@ptr <- SpatExtent$new()
 		return(e)
@@ -37,7 +37,7 @@ setMethod("ext", signature(x="numeric"),
 
 
 setMethod("ext", signature(x="SpatRaster"), 
-	function(x, ...){ 
+	function(x){ 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x@ptr$extent
 		return(e)
@@ -46,7 +46,7 @@ setMethod("ext", signature(x="SpatRaster"),
 
 
 setMethod("ext", signature(x="SpatRasterDataset"), 
-	function(x, ...){ 
+	function(x){ 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x[1]@ptr$extent
 		return(e)
@@ -92,13 +92,13 @@ setMethod("ext", signature(x="Extent"),
 )
 
 setMethod("ext", signature(x="Raster"), 
-	function(x, ...) { 
+	function(x) { 
 		ext(x@extent)
 	}
 )
 
 setMethod("ext", signature(x="Spatial"), 
-	function(x, ...) { 
+	function(x) { 
 		ext(as.vector(t(x@bbox)))
 	}
 )
@@ -128,28 +128,28 @@ setMethod("ymax", signature(x="SpatExtent"),
 
 
 setMethod("xmin<-", signature("SpatExtent", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(x)
 		v[1] <- value
 		ext(v)
 	}
 )
 setMethod("xmax<-", signature("SpatExtent", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(x)
 		v[2] <- value
 		ext(v)
 	}
 )
 setMethod("ymin<-", signature("SpatExtent", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(x)
 		v[3] <- value
 		ext(v)
 	}
 )
 setMethod("ymax<-", signature("SpatExtent", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(x)
 		v[4] <- value
 		ext(v)
@@ -180,7 +180,7 @@ setMethod("ymax", signature(x="SpatRaster"),
 
 
 setMethod("xmin<-", signature("SpatRaster", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(ext(x))
 		v[1] <- value
 		x@ptr <- x@ptr$deepcopy()
@@ -191,7 +191,7 @@ setMethod("xmin<-", signature("SpatRaster", "numeric"),
 
 
 setMethod("xmax<-", signature("SpatRaster", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(ext(x))
 		v[2] <- value
 		x@ptr <- x@ptr$deepcopy()
@@ -200,7 +200,7 @@ setMethod("xmax<-", signature("SpatRaster", "numeric"),
 	}
 )
 setMethod("ymin<-", signature("SpatRaster", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(ext(x))
 		v[3] <- value
 		x@ptr <- x@ptr$deepcopy()
@@ -210,7 +210,7 @@ setMethod("ymin<-", signature("SpatRaster", "numeric"),
 )
 
 setMethod("ymax<-", signature("SpatRaster", "numeric"), 
-	function(x, ..., value){ 
+	function(x, value){ 
 		v <- as.vector(ext(x))
 		v[4] <- value
 		x@ptr <- x@ptr$deepcopy()

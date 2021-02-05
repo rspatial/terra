@@ -13,7 +13,7 @@ Get or set the depth of the layers of a SpatRaster. Experimental.
 }
 
 \usage{
-\S4method{depth}{SpatRaster}(x, ...)
+\S4method{depth}{SpatRaster}(x)
 
 \S4method{depth}{SpatRaster}(x)<-value
 
@@ -22,7 +22,6 @@ Get or set the depth of the layers of a SpatRaster. Experimental.
 \arguments{
   \item{x}{SpatRaster}
   \item{value}{numeric vector}
-  \item{...}{additional arguments. None implemented}
 }
 
 \value{

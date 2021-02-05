@@ -46,7 +46,7 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 
 \S4method{yFromRow}{SpatRaster,numeric}(object, row)
 
-\S4method{xyFromCell}{SpatRaster,numeric}(object, cell, ...)
+\S4method{xyFromCell}{SpatRaster,numeric}(object, cell)
 
 \S4method{xFromCell}{SpatRaster,numeric}(object, cell)
 
@@ -56,9 +56,9 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 
 \S4method{rowFromY}{SpatRaster,numeric}(object, y)
 
-\S4method{cellFromRowCol}{SpatRaster,numeric,numeric}(object, row, col, ...)
+\S4method{cellFromRowCol}{SpatRaster,numeric,numeric}(object, row, col)
 
-\S4method{cellFromRowColCombine}{SpatRaster,numeric,numeric}(object, row, col, ...)
+\S4method{cellFromRowColCombine}{SpatRaster,numeric,numeric}(object, row, col)
 
 \S4method{rowFromCell}{SpatRaster,numeric}(object, cell)
 
@@ -78,7 +78,6 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
   \item{x}{x coordinate(s)}
   \item{y}{y coordinate(s)}
   \item{xy}{matrix of x and y coordinates}
-  \item{...}{additional arguments. None implemented}  
 }
   
 \details{

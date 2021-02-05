@@ -130,7 +130,8 @@ class SpatOptions {
 
 		SpatOptions();
 		SpatOptions(const SpatOptions &opt);
-		SpatOptions deepCopy(const SpatOptions &opt);
+		//SpatOptions deepCopy(const SpatOptions &opt);
+		SpatOptions deepCopy();
 
 		// permanent
 		bool get_todisk();

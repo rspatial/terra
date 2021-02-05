@@ -5,7 +5,7 @@
 
 
 setMethod("time", signature(x="SpatRaster"), 
-	function(x, ...) { 
+	function(x) { 
 		if (!x@ptr$hasTime) {
 			return(rep(NA, nlyr(x)))
 		}
@@ -45,7 +45,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 
 
 setMethod("depth", signature(x="SpatRaster"), 
-	function(x, ...) { 
+	function(x) { 
 		x@ptr$depth
 	}
 )
@@ -62,13 +62,13 @@ setMethod("depth<-", signature(x="SpatRaster"),
 )
 
 setMethod("linearUnits", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		.getLinearUnits(crs(x))
 	}
 )
 
 setMethod("linearUnits", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		.getLinearUnits(crs(x))
 	}
 )

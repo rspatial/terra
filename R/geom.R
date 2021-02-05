@@ -12,7 +12,7 @@ roundtrip <- function(x, coll=FALSE) {
 }
 
 setMethod("is.valid", signature(x="SpatVector"), 
-	function(x, messages=FALSE, ...) {
+	function(x, messages=FALSE) {
 		if (messages) {
 			r <- x@ptr$geos_isvalid_msg()
 			d <- data.frame(matrix(r, ncol=2, byrow=TRUE))
@@ -26,7 +26,7 @@ setMethod("is.valid", signature(x="SpatVector"),
 )
 
 setMethod("cover", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y, identity=FALSE, ...) {
+	function(x, y, identity=FALSE) {
 		x@ptr <- x@ptr$cover(y@ptr, identity[1])
 		messages(x, "cover")
 	}
@@ -34,21 +34,21 @@ setMethod("cover", signature(x="SpatVector", y="SpatVector"),
 
 
 setMethod("symdif", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y, ...) {
+	function(x, y) {
 		x@ptr <- x@ptr$symdif(y@ptr)
 		messages(x, "symdif")
 	}
 )
 
 setMethod("erase", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y, ...) {
+	function(x, y) {
 		x@ptr <- x@ptr$erase(y@ptr)
 		messages(x, "erase")
 	}
 )
 
 setMethod("erase", signature(x="SpatVector", y="SpatExtent"), 
-	function(x, y, ...) {
+	function(x, y) {
 		y <- as.polygons(y)
 		x@ptr <- x@ptr$erase(y@ptr)
 		messages(x, "erase")
@@ -114,7 +114,7 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatVector"),
 #)
 
 setMethod("buffer", signature(x="SpatVector"), 
-	function(x, width, quadsegs=10, capstyle="round", ...) {
+	function(x, width, quadsegs=10, capstyle="round") {
 		if (geomtype(x) == "points") {
 			x@ptr <- x@ptr$buffer(width, quadsegs, 1)
 		} else {
@@ -130,7 +130,7 @@ setMethod("buffer", signature(x="SpatVector"),
 
 
 setMethod("crop", signature(x="SpatVector", y="ANY"), 
-	function(x, y, ...) {
+	function(x, y) {
 		if (!inherits(y, "SpatExtent")) {
 			y <- try(ext(y), silent=TRUE)
 			if (inherits(y, "try-error")) {
@@ -143,14 +143,14 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 )
 
 setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y, ...) {
+	function(x, y) {
 		x@ptr <- x@ptr$crop_vct(y@ptr)
 		messages(x, "crop")
 	}
 )
 
 setMethod("convexhull", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr <- x@ptr$chull()
 		messages(x, "convexhull")
 	}
@@ -158,7 +158,7 @@ setMethod("convexhull", signature(x="SpatVector"),
 
 
 setMethod("disaggregate", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		x@ptr <- x@ptr$disaggregate()
 		messages(x, "disaggregate")
 	}
@@ -167,7 +167,7 @@ setMethod("disaggregate", signature(x="SpatVector"),
 
 
 setMethod("voronoi", signature(x="SpatVector"), 
-	function(x, bnd=NULL, tolerance=0, as.lines=FALSE, ...) {
+	function(x, bnd=NULL, tolerance=0, as.lines=FALSE) {
 		if (is.null(bnd)) {
 			bnd <- vect()
 		} else if (inherits(bnd, "SpatExtent")) {
@@ -180,9 +180,35 @@ setMethod("voronoi", signature(x="SpatVector"),
 
 
 setMethod("delauny", signature(x="SpatVector"), 
-	function(x, tolerance=0, as.lines=FALSE, ...) {
+	function(x, tolerance=0, as.lines=FALSE) {
 		x@ptr <- x@ptr$delauny(tolerance, as.lines)
 		messages(x, "delauny")
 	}
 )
 
+
+setMethod("flip", signature(x="SpatVector"), 
+	function(x, direction="vertical") {
+		d <- match.arg(direction, c("vertical", "horizontal")) 
+		x@ptr <- x@ptr$flip(d == "vertical")
+		messages(x, "flip")
+	}
+)
+
+
+
+setMethod("spin", signature(x="SpatVector"), 
+	function(x, angle, x0, y0) { 
+		e <- as.vector(ext(x))
+		if (missing(x0)) {
+			x0 <- mean(e[1:2])
+		}
+		if (missing(y0)) {
+			y0 <- mean(e[3:4])
+		}
+		angle <- angle[1]
+		stopifnot(is.numeric(angle) && !is.nan(angle))
+		x@ptr <- x@ptr$rotate(angle, x0[1], y0[1])
+		messages(x, "spin")
+	}
+)

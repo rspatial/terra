@@ -12,7 +12,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \usage{
 \S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum",
-            filename="", overwrite=FALSE, wopt=list(), ...) 
+            filename="", overwrite=FALSE, ...) 
 }
 
 \arguments{
@@ -31,8 +31,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \item{filename}{character. Output filename. Optional}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-\item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-\item{...}{additional arguments. None implemented}  
+\item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \details{
@@ -54,7 +53,7 @@ Sobel filter: \code{filter=matrix(c(1,2,1,0,0,0,-1,-2,-1) / 4, nrow=3)}
 r <- rast(ncols=10, nrows=10, ext(0, 10, 0, 10))
 values(r) <- 1:ncell(r)
 
-f <- focal(r, w=3, fun=function(x, ...) quantile(x, .25, ...), na.rm=TRUE) 
+#f <- focal(r, w=3, fun=function(x, ...) quantile(x, .25, ...), na.rm=TRUE) 
 
 f <- focal(r, w=3, fun="mean") 
 

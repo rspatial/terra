@@ -14,12 +14,11 @@ Get the convex hull of a vector dataset
 }
 
 \usage{
-\S4method{convexhull}{SpatVector}(x, ...)
+\S4method{convexhull}{SpatVector}(x)
 }
 
 \arguments{
   \item{x}{SpatVector}
-  \item{...}{Additional arguments. None implemented} 
 }
 
 \value{

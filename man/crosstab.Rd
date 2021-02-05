@@ -12,7 +12,7 @@ Cross-tabulate the layers of a SpatRaster to create a contingency table.
 }
 
 \usage{
-\S4method{crosstab}{SpatRaster,missing}(x, digits=0, long=FALSE, useNA=FALSE, ...)
+\S4method{crosstab}{SpatRaster,missing}(x, digits=0, long=FALSE, useNA=FALSE)
 }
 
 \arguments{
@@ -20,7 +20,6 @@ Cross-tabulate the layers of a SpatRaster to create a contingency table.
   \item{digits}{integer. The number of digits for rounding the values before cross-tabulation}
   \item{long}{logical. If \code{TRUE} the results are returned in 'long' format data.frame instead of a table}
   \item{useNA}{logical, indicting if the table should includes counts of \code{NA} values}
-  \item{...}{additional arguments. none implemented}
 }
 
 

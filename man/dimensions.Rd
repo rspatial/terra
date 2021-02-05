@@ -25,6 +25,7 @@
 \alias{nrow<-,SpatRaster,numeric-method}
 \alias{ncol<-,SpatRaster,numeric-method}
 \alias{nlyr,SpatRasterDataset-method}
+\alias{res<-,SpatRaster,numeric-method}
 
 \alias{nlyr,SpatRaster-method}
 \alias{nlyr<-,SpatRaster,numeric-method}
@@ -76,12 +77,15 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 \S4method{nsrc}{SpatRaster}(x)
 
+\S4method{ncol}{SpatRaster,numeric}(x)<-value
+
+\S4method{nrow}{SpatRaster,numeric}(x)<-value
+
+\S4method{nlyr}{SpatRaster,numeric}(x)<-value
+
 \S4method{res}{SpatRaster}(x)
 
-ncol(x, ...) <- value
-nrow(x, ...) <- value
-nlyr(x, ...) <- value
-res(x) <- value
+\S4method{res}{SpatRaster,numeric}(x)<-value
 
 \S4method{xres}{SpatRaster}(x)
 
@@ -91,7 +95,7 @@ res(x) <- value
 
 \S4method{nrow}{SpatVector}(x)
 
-\S4method{size}{SpatVector}(x, ...)
+\S4method{size}{SpatVector}(x)
 
 \S4method{length}{SpatVector}(x)
 
@@ -101,7 +105,6 @@ res(x) <- value
 \arguments{
 \item{x}{SpatRaster or SpatVector or related objecs}
 \item{value}{For ncol and nrow: positive integer. For res: one or two positive numbers }  
-\item{...}{additional arguments. None implemented}
 }
 
 \value{

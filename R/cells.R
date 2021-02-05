@@ -5,15 +5,15 @@
 
  
 setMethod("cells", signature(x="SpatRaster", y="missing"), 
-	function(x, y, ...) {
+	function(x, y) {
 		# is this useful?
 		which(!is.na(values(x)))
 	}
 )
 
 setMethod("cells", signature(x="SpatRaster", y="numeric"), 
-	function(x, y, ...) {
-		opt <- spatOptions("", TRUE, list())
+	function(x, y) {
+		opt <- spatOptions()
 		v <- x@ptr$is_in_cells(y, opt)
 		x <- messages(x, "cells")
 		v <- lapply(v, function(i) i+1)
@@ -24,7 +24,7 @@ setMethod("cells", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("cells", signature("SpatRaster", "SpatVector"), 
-	function(x, y, method="simple", weights=FALSE, touches=is.lines(y), ...) {
+	function(x, y, method="simple", weights=FALSE, touches=is.lines(y)) {
 		d <- x@ptr$vectCells(y@ptr, touches[1], method[1], weights[1] ) 
 		cn <- c("id", "cell")
 		if (weights[1]) {
@@ -62,7 +62,7 @@ setMethod("cells", signature("SpatRaster", "SpatVector"),
 
 
 setMethod("cells", signature("SpatRaster", "SpatExtent"), 
-	function(x, y, ...) {
+	function(x, y) {
 		x@ptr$extCells(y@ptr) + 1
 	}
 )

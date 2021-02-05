@@ -237,7 +237,7 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, b
 	if (ext) {
 		SpatExtent extent = getExtent();
 		double res = std::max(xres(), yres());
-		if (extent.compare(x.getExtent(), "!=", 0.1 * res)) {		
+		if (extent.compare(x.getExtent(), "!=", 0.1 * res)) {
 			setError("extents do not match");
 			return false;
 		}

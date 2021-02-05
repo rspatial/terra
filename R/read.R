@@ -10,7 +10,7 @@ readAll <- function(x) {
 }
 
 setMethod("readStart", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		success <- x@ptr$readStart()
 		messages(x, "readStart")
 		if (!success) error("readStart,SpatRaster", "cannot open file for reading")
@@ -19,7 +19,7 @@ setMethod("readStart", signature(x="SpatRaster"),
 )
 
 setMethod("readStart", signature(x="SpatRasterDataset"), 
-	function(x, ...) {
+	function(x) {
 		success <- x@ptr$readStart()
 		messages(x, "readStart")
 		if (!success) error("readStart,SpatRasterDataset", "cannot open file for reading")

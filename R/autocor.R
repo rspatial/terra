@@ -103,7 +103,7 @@ setMethod("autocor", signature(x="SpatRaster"),
 			if (method == "moran") {	
 				z <- x - unlist(global(x, "mean", na.rm=TRUE))
 				zz <- ifel(is.na(x), NA, 1)
-				W  <- focal( zz, w=w, na.rm=TRUE, pad=TRUE)		
+				W  <- focal(zz, w=w, na.rm=TRUE)		
 				lz <- focal(z, w=w, na.rm=TRUE) / W
 					
 				n <- ncell(x) - unlist(global(is.na(x), "sum", na.rm=TRUE))

@@ -11,7 +11,7 @@ Detect boundaries (edges). boundaries are cells that have more than one class in
 
 \usage{
 \S4method{boundaries}{SpatRaster}(x, classes=FALSE, inner=TRUE, 
-         directions=8, filename="", overwrite=FALSE, ...)
+         directions=8, filename="", ...)
 }
 
 \arguments{
@@ -19,8 +19,7 @@ Detect boundaries (edges). boundaries are cells that have more than one class in
 \item{inner}{logical. If \code{TRUE}, "inner" boundaries are returned, else "outer" boundaries are returned}
 \item{classes}{character. Logical. If \code{TRUE} all different values are (after rounding) distinguished, as well as \code{NA}. If \code{FALSE} (the default) only edges between \code{NA} and non-\code{NA} cells are considered}
 \item{directions}{integer. Which cells are considered adjacent? Should be 8 (Queen's case) or 4 (Rook's case)}
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{filename}{character. Output filename}
   \item{...}{options for writing files as in \code{\link{writeRaster}}}
 }
 

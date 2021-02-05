@@ -20,9 +20,9 @@ Coercion to other object types
 \usage{
 \S4method{as.vector}{SpatRaster}(x, mode='any')
 
-\S4method{as.matrix}{SpatRaster}(x, wide=FALSE, ...)
+\S4method{as.matrix}{SpatRaster}(x, wide=FALSE)
 
-\S4method{as.array}{SpatRaster}(x, ...)
+\S4method{as.array}{SpatRaster}(x)
 }
 
 
@@ -30,7 +30,6 @@ Coercion to other object types
 \item{x}{SpatRaster or SpatVector}
 \item{mode}{this argument is ignored}
 \item{wide}{logical}
-\item{...}{additional arguments. None implemented}
 }
 
 \value{

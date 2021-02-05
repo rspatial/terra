@@ -39,7 +39,7 @@ setClass("PackedSpatRaster",
 }
 
 setMethod("pack", signature(x="Spatial"), 
-	function(x, ...) {
+	function(x) {
 		pv <- .packVector(x)
 		if (methods::.hasSlot(x, "data")) {
 			pv@attributes <- x@data
@@ -50,7 +50,7 @@ setMethod("pack", signature(x="Spatial"),
 
 
 setMethod("pack", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		pv <- .packVector(x)
 		pv@attributes <- as.data.frame(x)
 		pv
@@ -59,7 +59,7 @@ setMethod("pack", signature(x="SpatVector"),
 
 
 setMethod("vect", signature(x="PackedSpatVector"), 
-	function(x, ...) {
+	function(x) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		if (!is.na(x@crs)) {
@@ -95,7 +95,7 @@ setMethod("show", signature(object="PackedSpatVector"),
 
 
 setMethod("as.character", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		e <- as.vector(ext(x))
 		crs <- crs(x)
 		crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
@@ -117,7 +117,7 @@ setMethod("as.character", signature(x="SpatRaster"),
 
 
 setMethod("pack", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition = as.character(x)
 		r@values = values(x)
@@ -128,7 +128,7 @@ setMethod("pack", signature(x="SpatRaster"),
 
 
 setMethod("rast", signature(x="PackedSpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		r <- eval(parse(text=x@definition))
 		values(r) <- x@values
 		r

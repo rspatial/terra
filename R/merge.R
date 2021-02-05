@@ -6,7 +6,7 @@
 
 setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) { 
-		opt <- spatOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		dots <- list(...)
 		rc <- SpatRasterCollection$new()
 		rc$add(x@ptr)
@@ -30,7 +30,7 @@ setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"),
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
-		opt <- spatOptions(filename, overwrite, wopt)
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		dots <- list(...)
 		rc <- SpatRasterCollection$new()
 		rc$add(x@ptr)

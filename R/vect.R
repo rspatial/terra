@@ -64,6 +64,8 @@ setMethod("vect", signature(x="XY"), #sfg
 	}
 )
 
+
+
 .checkXYnames <- function(x) {
 	if (is.null(x)) return(TRUE)
 	if (length(x) != 2) {

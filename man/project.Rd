@@ -11,10 +11,10 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 }
 
 \usage{
-\S4method{project}{SpatVector}(x, y, ...)
+\S4method{project}{SpatVector}(x, y)
 
 \S4method{project}{SpatRaster}(x, y, method="bilinear", mask=FALSE, 
-           filename="", overwrite=FALSE, wopt=list(), ...)
+           filename="", overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -36,8 +36,7 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
   \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments. None implemented}   
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 

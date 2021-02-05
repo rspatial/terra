@@ -11,12 +11,11 @@ Origin returns the coordinates of the point of origin of a SpatRaster object. Th
 }
 
 \usage{
-origin(x, ...)
+\S4method{origin}{SpatRaster}(x)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{...}{additional arguments. None implemented}  
 }
 
 

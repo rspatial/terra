@@ -14,15 +14,14 @@ The inverse of this can be done with \code{\link{intersect}} and \code{\link{cro
 }
 
 \usage{
-\S4method{erase}{SpatVector,SpatVector}(x, y, ...)
+\S4method{erase}{SpatVector,SpatVector}(x, y)
 
-\S4method{erase}{SpatVector,SpatExtent}(x, y, ...)
+\S4method{erase}{SpatVector,SpatExtent}(x, y)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{y}{SpatVector or SpatExtent}
-  \item{...}{Additional arguments (none)}  
 }
 
 \value{

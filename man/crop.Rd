@@ -17,23 +17,20 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 }
 
 \usage{
-\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, wopt=list(), ...)
+\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", ...)
 
-\S4method{crop}{SpatVector,ANY}(x, y, ...)
+\S4method{crop}{SpatVector,ANY}(x, y)
 
-\S4method{crop}{SpatVector,SpatVector}(x, y, ...)
+\S4method{crop}{SpatVector,SpatVector}(x, y)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{y}{SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a SpatExtent), or a SpatVector to crop another SpatVector}
   \item{snap}{character. One of "near", "in", or "out"}  
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
-  \item{...}{additional arguments. None implemented}  
+  \item{filename}{character. Output filename}
+  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
-
 
 
 \value{

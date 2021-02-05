@@ -13,7 +13,7 @@ Get or set the time of the layers of a SpatRaster. Experimental. Currently only 
 }
 
 \usage{
-\S4method{time}{SpatRaster}(x, ...)
+\S4method{time}{SpatRaster}(x)
 
 \S4method{time}{SpatRaster}(x)<-value
 }
@@ -24,7 +24,6 @@ Get or set the time of the layers of a SpatRaster. Experimental. Currently only 
 \arguments{
   \item{x}{SpatRaster}
   \item{value}{"Date", "POSIXt", or numeric}
-  \item{...}{additional arguments. None implemented}
 }
 
 \value{

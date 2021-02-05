@@ -33,7 +33,7 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
   \item{recycle}{logical. Recycle layers to match the subdataset with the largest number of layers}
   \item{filename}{character. Output filename. Optional}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{wopt}{list. Options for writing files as in \code{\link{writeRaster}}}
+  \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{
