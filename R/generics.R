@@ -69,6 +69,15 @@ setMethod("boundaries", signature(x="SpatRaster"),
 )
 
 
+setMethod("boundaries", signature(x="SpatRaster"), 
+	function(x, classes=FALSE, inner=TRUE, directions=8, filename="", overwrite=FALSE, ...) {
+		opt <- spatOptions(filename, overwrite, ...)
+		type <- ifelse(inner[1], "inner", "outer")
+		x@ptr <- x@ptr$boundaries(classes[1], type, directions[1], opt)
+		messages(x, "boundaries")
+	}
+)
+
 .collapseSources <- function(x) {
 	x@ptr <- x@ptr$collapse_sources()
 	messages(x, "collapse")
