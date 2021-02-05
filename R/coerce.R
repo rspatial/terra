@@ -391,6 +391,34 @@ setAs("SpatRaster", "Raster",
 }
 
 
+.from_sfg <- function(from) {
+	geom = from
+	v <- list()
+	for (i in 1:length(geom)) {
+		vv <- list()
+		for (j in 1:length(geom[[i]])) {
+			vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole= j-1) 
+		}
+		v[[i]] <- do.call(rbind, vv)
+	}
+	v <- do.call(rbind, v)
+	colnames(v)[1:4] <- c("id", "part", "x", "y")
+	if (ncol(v) == 6) {
+		v <- v[,-5]
+	}
+	types <- class(geom)[2]
+	if (grepl("POINT", types, fixed=TRUE)) {
+		gt = "points"
+	} else if (grepl("LINE", types, fixed=TRUE)) {
+		gt = "lines"
+	} else if (grepl("POLY", types, fixed=TRUE)) {
+		gt = "polygons"
+	}
+	vect(v, type=gt, crs="")
+}
+
+
+
 
 setAs("sf", "SpatVector", 
 	function(from) {
