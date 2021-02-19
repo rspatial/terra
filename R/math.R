@@ -6,11 +6,27 @@
 #to do
 #"gamma", "lgamma", "digamma", "trigamma")
 
+setMethod("log", signature(x="SpatRaster"),
+    function(x, base=exp(1)){ 
+		opt <- spatOptions()
+		if (base == exp(1)) {
+			x@ptr <- x@ptr$math("log", opt)			
+		} else if (base == 2) {
+			x@ptr <- x@ptr$math("log2", opt)			
+		} else if (base == 10) {
+			x@ptr <- x@ptr$math("log10", opt)			
+		} else {
+			x <- app(x, function(i) log(i, base))
+		}
+		x
+	}
+)	
+
 
 setMethod("Math", signature(x="SpatRaster"),
     function(x){ 
 		oper <- as.vector(.Generic)[1]
-		opt <- spatOptions("", TRUE, list())
+		opt <- spatOptions()
 		if (substr(oper, 1, 3) == "cum") {
 			x@ptr <- x@ptr$cum(substr(oper, 4, 10), FALSE, "", FALSE)
 		} else if (oper %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
@@ -25,7 +41,7 @@ setMethod("Math", signature(x="SpatRaster"),
 
 setMethod("Math2", signature(x="SpatRaster"),
     function(x, digits=0){ 
-		opt <- spatOptions("", TRUE, list())
+		opt <- spatOptions()
 		oper <- as.vector(.Generic)[1]
 		x@ptr <- x@ptr$math2(oper, digits, opt)
 		messages(x, oper)
