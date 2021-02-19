@@ -30,7 +30,7 @@ tmpFiles <- function(current=TRUE, orphan=FALSE, old=FALSE, remove=FALSE) {
 		error("tmpFiles", "at least one of 'orphan', 'current' and 'old' must be set to TRUE")
 	}
 
-	opt <- spatOptions("", TRUE, list())
+	opt <- spatOptions()
 	d <- opt$tempdir
 	f <- NULL
 	if (old) {

@@ -20,7 +20,7 @@
 \description{
 Add SpatVector data to a plot (map) with \code{points}, \code{lines}, or \code{polys}. 
 
-These are simpler alternatives for \code{\link[terra:plotVector]{plot(x, add=TRUE)}}
+These are simpler alternatives for \code{\link[terra:plot]{plot(x, add=TRUE)}}
 }
 
 \usage{

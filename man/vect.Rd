@@ -27,7 +27,7 @@ Create a new SpatVector
 
 \S4method{vect}{data.frame}(x, geom=c("lon", "lat"), crs="", ...)
 
-\S4method{vect}{sf}(x, ...)
+\S4method{vect}{sf}(x)
 }
 
 \arguments{

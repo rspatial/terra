@@ -66,6 +66,7 @@ if (!isGeneric("isFALSE")) { setGeneric("isFALSE", function(x) standardGeneric("
 if (!isGeneric("varnames")) {setGeneric("varnames", function(x,...) standardGeneric("varnames"))}
 if (!isGeneric("varnames<-")) {setGeneric("varnames<-", function(x, value) standardGeneric("varnames<-"))}
 
+if (!isGeneric("log")) {setGeneric("log", function(x,...) standardGeneric("log"))}
 if (!isGeneric("longnames")) {setGeneric("longnames", function(x,...) standardGeneric("longnames"))}
 if (!isGeneric("longnames<-")) {setGeneric("longnames<-", function(x, value) standardGeneric("longnames<-"))}
 

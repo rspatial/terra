@@ -26,7 +26,7 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
 		} else {
-			opt <- spatOptions("", TRUE, list())
+			opt <- spatOptions()
 			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE, opt)
 			#x <- messages(x)
 		}

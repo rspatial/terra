@@ -137,7 +137,7 @@
 	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
 
 
-	opt <- spatOptions("", TRUE, list())
+	opt <- spatOptions()
 
 	for (i in 1:n) {
 		y = x[i]

@@ -17,7 +17,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 }
 
 \usage{
-\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", ...)
+\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, ...)
 
 \S4method{crop}{SpatVector,ANY}(x, y)
 
@@ -29,6 +29,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
   \item{y}{SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a SpatExtent), or a SpatVector to crop another SpatVector}
   \item{snap}{character. One of "near", "in", or "out"}  
   \item{filename}{character. Output filename}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}  
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

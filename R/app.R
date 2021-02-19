@@ -166,7 +166,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			r <- rast()
-			opt <- spatOptions("", TRUE, list())
+			opt <- spatOptions()
 			r@ptr <- x@ptr$summary(txtfun, narm, opt)
 			return (messages(r, "app") )
 		}

@@ -21,6 +21,7 @@
 \alias{Compare,numeric,SpatRaster-method}
 \alias{Compare,SpatRaster,numeric-method}
 \alias{Compare,SpatRaster,math-method}
+
 \alias{Logic,SpatRaster,SpatRaster-method}
 \alias{Logic,SpatRaster,numeric-method}
 \alias{Logic,numeric,SpatRaster-method}
@@ -28,6 +29,10 @@
 \alias{Logic,logical,SpatRaster-method}
 \alias{Math,SpatRaster-method}
 \alias{Math2,SpatRaster-method}
+
+\alias{log}
+\alias{log,SpatRaster-method}
+
 \alias{Math,SpatExtent-method}
 \alias{Math2,SpatExtent-method}
 \alias{Compare,SpatExtent,SpatExtent-method}
@@ -66,11 +71,18 @@ for \bold{(SpatExtent, SpatExtent)}: \code{==, +, -}, and
 for \bold{(SpatExtent, numeric)} : \code{+, -, *, /, \%\%}
 }
 
+\usage{
+\S4method{log}{SpatRaster}(x, base=exp(1))
+}
 
 \section{seealso}{
 \code{\link{ifel}} to convieniently combine operations and \code{\link{app}} to use mathematical functions not implemented by the package.
 }
 
+\arguments{
+\item{x}{SpatRaster}
+\item{base}{a positive or complex number: the base with respect to which logarithms are computed}
+}
 
 \value{
 SpatRaster or SpatExtent

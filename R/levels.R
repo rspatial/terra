@@ -40,7 +40,7 @@ setMethod ("rats<-" , "SpatRaster",
 setMethod("as.factor", signature(x="SpatRaster"), 
 	function(x) {
 		stopifnot(hasValues(x))
-		opt <- spatOptions("", TRUE, list())
+		opt <- spatOptions()
 		x@ptr <- x@ptr$makeCategorical(0, opt)
 		messages(x, "as.factor")
 	}
@@ -95,7 +95,7 @@ setMethod ("cats<-" , "SpatRaster",
 			return(messages(x, "levels<-"))
 		}
 		if (!is.factor(x)) {
-			opt <- spatOptions("", TRUE, list())
+			opt <- spatOptions()
 			x@ptr <- x@ptr$makeCategorical(layer-1, opt)
 			x <- messages(x, "as.factor<-")
 		}

@@ -5,11 +5,16 @@
 \alias{plot}
 \alias{plot,SpatRaster,numeric-method}
 \alias{plot,SpatRaster,missing-method}
+\alias{plot,SpatVector,missing-method}
+\alias{plot,SpatVector,character-method}
+\alias{plot,SpatVector,numeric-method}
+\alias{plot,SpatExtent,missing-method}
 
-\title{Plot a SpatRaster}
+
+\title{Make a map}
 
 \description{
-Plot the values of a SpatRaster to make a map
+Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lines}} to add a SpatVector to an existing map.
 }
 
 \usage{
@@ -18,12 +23,23 @@ Plot the values of a SpatRaster to make a map
      colNA=NULL, alpha=NULL, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=50000, main, mar=NULL, nc, nr, maxnl=16, ...)
+
+\S4method{plot}{SpatVector,character}(x, y, col, type, mar=NULL, legend=TRUE,
+     add=FALSE, axes=!add, main=y,
+     plg=list(), pax=list(), nr, nc, ...)
+
+\S4method{plot}{SpatVector,numeric}(x, y, ...)
+
+\S4method{plot}{SpatVector,missing}(x, y, ...)
+
+\S4method{plot}{SpatExtent,missing}(x, y, ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
   \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
   \item{col}{character. Colors}
+ 
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval"}
   \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. When multiple layers are plotted, the defaults are 
   Use \code{mar=NA} to not set the margins}
@@ -42,14 +58,17 @@ Plot the values of a SpatRaster to make a map
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
+  \item{add}{logical. If \code{TRUE} add the object to the current plot}
+  
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
 }
 
 \seealso{
- \code{\link{image}}, \code{\link[terra:plotVector]{plotVector}}, \code{scatter\link[terra:scatter]{plot}}, \code{\link{sbar}}
+ \code{\link{points}}, \code{\link{lines}}, \code{\link{polys}}, \code{\link{image}}, \code{scatter\link[terra:scatter]{plot}}, \code{\link{sbar}}
 }
 
 \examples{ 
+## raster
 f <- system.file("ex/elev.tif", package="terra") 
 r <- rast(f)
 plot(r)
@@ -85,7 +104,32 @@ plot(r, range=c(50,600), mar=c(4, 3, 4, 3), plg=list(shrink=0.9, cex=.8),
 #text(182500, 335000, "Two maps, one plot", xpd=NA)
 plot(r/2, range=c(50,600), mar=c(4, 2, 4, 4), legend=FALSE, 
 	pax=list(sides=c(1,4), cex.axis=.6))
+
+## vector 
+
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+
+plot(v)
+
+plot(v, 2, pax=list(sides=1:2), plg=list(x=6.2, y=50.2, cex=1.2))
+
+plot(v, 4, pax=list(sides=1:2), plg=list(x=6.2, y=50.2, ncol=2), main="")
+ 
+plot(v, 1, plg=list(x=5.9, y=49.37, horiz=TRUE, cex=1.1), main="", mar=c(5,2,0.5,0.5))
+
+plot(v, density=1:12, angle=seq(18, 360, 20), col=rainbow(12))
+
+plot(v, "NAME_2", col=rainbow(12), border=c("gray", "blue"), lwd=3, type="classes")
+
+plot(v, "AREA", type="interval", breaks=3, mar=c(3.1, 3.1, 2.1, 3.1),
+  plg=list(x="topright"), main="")
+
+plot(v, "AREA", type="interval", breaks=c(0,200,250,350), mar=c(2,2,2,2), 
+  plg=list(legend=c("<200", "200-250", ">250"), cex=1, 
+  bty="o", x=6.4, y=50.125, box.lwd=2, bg="light yellow", title="My Legend"))
 }
+
 
 \keyword{methods}
 \keyword{spatial}
