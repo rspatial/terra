@@ -422,14 +422,14 @@ std::vector<std::vector<double>> SpatRaster::extractXY(std::vector<double> &x, s
 
 
 // <geom<layer<values>>>
-std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method, bool cells, bool weights) {
+std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights) {
 
 	std::string gtype = v.type();
 	if (gtype != "polygons") weights = false;
 
     unsigned nl = nlyr();
     unsigned ng = v.size();
-    std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + weights));
+    std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + 2*xy + weights));
 
 	if (!hasValues()) return out;
 	#if GDAL_VERSION_MAJOR < 3
@@ -454,6 +454,10 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 				if (cells) {
 					out[i][nl].push_back( srcout[nl][i] );			
 				}
+				if (xy) {
+					out[i][nl+cells].push_back(x[i]);		
+					out[i][nl+cells+1].push_back(y[i]);		
+				}
 			}
 		} else { // multipoint
 			for (size_t i=0; i<ng; i++) {
@@ -467,6 +471,10 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 				}
 				if (cells) {
 					out[i][nl] = srcout[nl];			
+				}
+				if (xy) {
+					out[i][nl+cells]   = x;		
+					out[i][nl+cells+1] = y;		
 				}
 			}
 		}
@@ -493,8 +501,13 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 			if (cells) {
 				out[i][nl] = cell;
 			}
+			if (xy) {
+				std::vector<std::vector<double>> crds = xyFromCell(cell);
+				out[i][nl+cells]   = crds[0];		
+				out[i][nl+cells+1] = crds[1];		
+			}
 			if (weights) {
-				out[i][nl+cells] = wgt;
+				out[i][nl + cells + 2*xy] = wgt;
 			}
         }
 	}
