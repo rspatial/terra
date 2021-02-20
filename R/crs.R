@@ -75,7 +75,7 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 
 
 setMethod("crs", signature("SpatVector"), 
-	function(x, proj4=FALSE) {
+	function(x, proj4=FALSE, describe=FALSE) {
 		if (describe) {
 			d <- .srs_describe(x@ptr$get_crs("wkt"))
 			if (proj4) {
