@@ -12,7 +12,12 @@
 	names(info) <- c("name", "EPSG", "area", "extent")
 	d <- data.frame(t(info))
 	d$area <- gsub("\\.$", "", d$area)
-	d$extent <- list(as.numeric(unlist(strsplit(d$extent, ","))))
+	d[d == ""] <- NA
+	if (is.na(d$extent)) {
+		d$extent <- list(c(NA, NA, NA, NA))
+	} else {
+		d$extent <- list(as.numeric(unlist(strsplit(d$extent, ","))))
+	}
 	d
 }
 
