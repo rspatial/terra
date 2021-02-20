@@ -21,12 +21,12 @@ bool sameSRS(std::string x, std::string y) {
 }
 
 
-// [[Rcpp::export(name = ".getSRSname")]]
-std::string getCRSname(std::string s) {
+// [[Rcpp::export(name = ".SRSinfo")]]
+std::vector<std::string> getCRSname(std::string s) {
 	OGRSpatialReference x;
 	OGRErr erro = x.SetFromUserInput(s.c_str());
 	if (erro != OGRERR_NONE) {
-		return "";
+		return {"", "", "", ""};
 	}
 	std::string node;
 	if (x.IsGeographic()) {
@@ -34,7 +34,31 @@ std::string getCRSname(std::string s) {
 	} else {
 		node = "projcs";
 	}
-	return x.GetAttrValue(node.c_str());
+
+	const char *value;
+	std::string name = "";
+	value = x.GetAttrValue(node.c_str());
+	if (value != NULL) {
+		name = value;
+	}
+	std::string epsg = "";
+	value = x.GetAuthorityCode(node.c_str());
+	if (value != NULL) {
+		epsg = value;
+	}
+		
+	double west, south, east, north;
+	west = -10000;
+	std::string aoi="", box="";
+	if (x.GetAreaOfUse(&west, &south, &east, &north, &value)) {
+		if (value != NULL) {
+			if (west > -1000) {
+				aoi	= value;
+				box = std::to_string(west) + ", " + std::to_string(east) + ", " + std::to_string(north) + ", " + std::to_string(south);	
+			}
+		}
+	}
+	return {name, epsg, aoi, box};
 }
 
 // [[Rcpp::export(name = ".getLinearUnits")]]

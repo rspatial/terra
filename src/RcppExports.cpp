@@ -18,7 +18,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // getCRSname
-std::string getCRSname(std::string s);
+std::vector<std::string> getCRSname(std::string s);
 RcppExport SEXP _terra_getCRSname(SEXP sSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
