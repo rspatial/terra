@@ -312,8 +312,8 @@ setAs("SpatRaster", "Raster",
 
 # from sf. first incomplete draft
 .from_sf <- function(from) {
-	i <- attr(from, "sf_column")
-	geom <- from[[i]]
+	sfi <- attr(from, "sf_column")
+	geom <- from[[sfi]]
 	crs <- attr(geom, "crs")$wkt
 	attr(geom, "class") <- NULL
 	types <- t(sapply(geom, function(i) attr(i, "class")))
@@ -351,7 +351,7 @@ setAs("SpatRaster", "Raster",
 		gt = "polygons"
 	}
 	if (ncol(from) > 1) {
-		from[[i]] <- NULL
+		from[[sfi]] <- NULL
 		d <- as.data.frame(from)
 		vect(v, type=gt, att=d, crs=crs)
 	} else {
