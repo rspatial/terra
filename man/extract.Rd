@@ -95,9 +95,9 @@ v <- vect(f)
 v <- v[1:2,]
 z <- rast(v, res=.1)
 values(z) <- 1:ncell(z)
-e <- extract(z, v)
-e
-tapply(e[,2], e[,1], mean)
+#e <- extract(z, v)
+#e
+#tapply(e[,2], e[,1], mean)
 
 #ee <- extract(z, v, list=TRUE)
 #rapply(ee, mean)
@@ -111,10 +111,6 @@ tapply(e[,2], e[,1], mean)
 
 #ee <- extract(x, v, list=TRUE)
 #matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
-
-### SpatVector-SpatVector
-
-
 }
 
 \keyword{methods}
