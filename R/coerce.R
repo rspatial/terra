@@ -339,7 +339,7 @@ setAs("SpatRaster", "Raster",
 	}
 	v <- do.call(rbind, v)
 	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	types <- unique(types[,2])
+	types <- unique(gsub("MULTI", "", unique(types[,2])))
 	if (length(types) > 1) {
 		error("as,sf", "SpatVector currently only accepts one geometry type")
 	}
