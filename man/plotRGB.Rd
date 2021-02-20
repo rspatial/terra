@@ -41,7 +41,6 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...)
   \item{ylab}{character. Label of y-axis}
   \item{asp}{numeric. Aspect (ratio of x and y. If NULL, and appropriate value is computed to match data for the longitude/latitude coordinate reference system, and 1 for planar coordinate reference systems}
   \item{add}{logical. If \code{TRUE} add values to current plot}
-  \item{margins}{logical. If \code{TRUE} standard whitespace margins are used. If \code{FALSE}, graphics::par(plt=c(0,1,0,1)) is used}
   \item{...}{graphical parameters as in \code{\link{plot}} or \code{\link{rasterImage}}}
 }
 
