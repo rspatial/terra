@@ -11,8 +11,7 @@ Write a SpatRaster object to a file.
 }
 
 \usage{
-\S4method{writeRaster}{SpatRaster,character}(x, filename, 
-        overwrite=FALSE, ...)
+\S4method{writeRaster}{SpatRaster,character}(x, filename, overwrite=FALSE, ...)
 }
 
 \arguments{
@@ -50,7 +49,7 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{names}\tab output layer names.\cr
 
-\code{NAflag}\tab numeric. value to represent missing (\code{NA} or \code{NaN}) values.\cr
+\code{NAflag}\tab numeric. value to represent missing (\code{NA} or \code{NaN}) values. See note\cr
 
 \code{verbose}\tab logical. If \code{TRUE} debugging information is printed.\cr
 
@@ -58,6 +57,10 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 }
 }
 
+
+\note{
+When writing integer values the lowest available value (given the datatype) is used for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for \code{NA}. To keep the value 255 use another value as NAflag, or do not set a NAflag (with \code{NAflag=NA})
+}
 
 \examples{
 
