@@ -19,7 +19,7 @@ terraOptions(...)
 \details{
 The following options are available. 
 
-memfrac - value between 0.1 and 0.8. The fraction of RAM that may be used by the program.
+memfrac - value between 0.1 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.
 
 tempdir - directory where temporary files are written. The default what is returned by tempdir().
 

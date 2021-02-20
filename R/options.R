@@ -58,6 +58,7 @@
 	x
 } 
  
+ 
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
 	w <- list(...)
@@ -129,6 +130,11 @@ terraOptions <- function(...) {
 				opt[[ dnms[i] ]] <- dots[[ i ]]
 			} else {
 				opt[[ nms[i] ]] <- dots[[ i ]]
+			}
+		}
+		if ("memfrac" %in% nms) {
+			if (dots$memfrac > 0.9) {
+				warn("terraOptions", "memfrac > 0.9")
 			}
 		}
 		.terra_environment$options@ptr <- opt
