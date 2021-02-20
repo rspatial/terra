@@ -25,7 +25,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 	if (!is.null(mar)) {
 		mar <- rep_len(mar, 4)
 		if (!any(is.na(mar))) {	
-			par(mar=mar)
+			graphics::par(mar=mar)
 		}
 	}
 

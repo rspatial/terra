@@ -51,7 +51,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...)
 \examples{
 b <- rast(system.file("ex/logo.tif", package="terra"))   
 plotRGB(b)
-graphics::par(plt=c(0,1,0,1))
+plotRGB(b, mar=c(2,2,2,2))
 plotRGB(b, 3, 2, 1)
 plotRGB(b, 3, 2, 1, stretch='hist')
 }
