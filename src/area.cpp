@@ -223,7 +223,7 @@ SpatRaster SpatRaster::rst_area(bool adjust, SpatOptions &opt) {
 			//std::iota (cells.begin(), cells.end(), 0);
 			//onechunk.setValues(cells);
 			//SpatVector p = onechunk.as_polygons(false, true, false, false, popt);
-			p = p.project("+proj=longlat +datum=WGS84");
+			p = p.project("EPSG:4326");
 			std::vector<double> v = p.area();
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		}
@@ -299,7 +299,7 @@ std::vector<double> SpatRaster::sum_area(bool adjust, SpatOptions &opt) {
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", popt);
 				SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
-				p = p.project("+proj=longlat +datum=WGS84");
+				p = p.project("EPSG:4326");
 				std::vector<double> v = p.area();
 				out[0] += accumulate(v.begin(), v.end(), 0);
 			}
@@ -310,7 +310,7 @@ std::vector<double> SpatRaster::sum_area(bool adjust, SpatOptions &opt) {
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", popt);
 				SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
-				p = p.project("+proj=longlat +datum=WGS84");
+				p = p.project("EPSG:4326");
 				std::vector<double> par = p.area();
 			
 				std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());

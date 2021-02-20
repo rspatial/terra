@@ -18,8 +18,7 @@ setMethod("rast", signature(x="missing"),
 
 		if (missing(crs)) {
 			if (e[1] > -360.01 & e[2] < 360.01 & e[3] > -90.01 & e[4] < 90.01) {
-				crs <- "+proj=longlat +datum=WGS84"
-				#crs <- 'GEOGCS["WGS 84", DATUM["WGS_1984", SPHEROID["WGS 84",6378137,298.257223563]], PRIMEM["Greenwich",0], UNIT["degree",0.0174532925199433]]'
+				crs <- "EPSG:4326"
 			} else {
 				crs <- ""
 			}
@@ -154,7 +153,7 @@ setMethod("rast", signature(x="character"),
 
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				crs(r) <- "+proj=longlat +datum=WGS84"
+				crs(r) <- "EPSG:4326"
 			}
 		}
 		r

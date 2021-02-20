@@ -5,7 +5,7 @@
     .Call(`_terra_sameSRS`, x, y)
 }
 
-.getSRSname <- function(s) {
+.SRSinfo <- function(s) {
     .Call(`_terra_getCRSname`, s)
 }
 
