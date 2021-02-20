@@ -19,9 +19,15 @@
 }
 
 
-
 setMethod("plotRGB", signature(x="SpatRaster"), 
-function(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, ext=NULL, interpolate=FALSE, colNA='white', alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab='', ylab='', asp=NULL, add=FALSE, margins=FALSE, ...) { 
+function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, interpolate=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...) { 
+
+	if (!is.null(mar)) {
+		mar <- rep_len(mar, 4)
+		if (!any(is.na(mar))) {	
+			par(mar=mar)
+		}
+	}
 
 	if (missing(scale)) {
 		scale <- 255

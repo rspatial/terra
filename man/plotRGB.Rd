@@ -14,9 +14,9 @@ Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (so
 
 
 \usage{
-\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxcell=500000, stretch=NULL, 
+\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, 
 ext=NULL, interpolate=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, 
-zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, margins=FALSE, ...)
+zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...)
 }
 
 \arguments{
@@ -26,6 +26,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, margins=FALSE, 
   \item{b}{integer. Index of the Blue channel, between 1 and nlyr(x)}
   \item{scale}{integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of \code{x} if that is known and larger than 255}
   \item{maxcell}{integer > 0. Maximum number of pixels to use}
+  \item{mar}{numeric vector recycled to length 4 to set the margins of the plot. Use \code{mar=NULL} or \code{mar=NA} to not set the margins}
   \item{stretch}{character. Option to stretch the values to increase the contrast of the image: "lin" or "hist"}
   \item{ext}{An \code{\link{SpatExtent}} object to zoom in to a region of interest (see \code{\link{draw}})}
   \item{interpolate}{logical. If \code{TRUE}, interpolate the image when drawing}
