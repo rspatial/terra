@@ -319,19 +319,23 @@ setAs("SpatRaster", "Raster",
 	types <- t(sapply(geom, function(i) attr(i, "class")))
 	v <- list()
 	for (i in 1:length(geom)) {
-		vv <- list()
-		for (j in 1:length(geom[[i]])) {
-			if (inherits(geom[[i]][[j]], "list")) {
-				vvv <- list()
-				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=k-1) 
+		if (inherits(geom[[i]], "POINT")) {
+			v[[i]] <- cbind(i, 1, geom[[i]][1], geom[[i]][2], hole=0)				
+		} else {
+			vv <- list()
+			for (j in 1:length(geom[[i]])) {
+				if (inherits(geom[[i]][[j]], "list")) {
+					vvv <- list()
+					for (k in 1:length(geom[[i]][[j]])) {
+						vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=k-1) 
+					}
+					vv[[j]] <- do.call(rbind, vvv)
+				} else {
+					vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole=0)
 				}
-				vv[[j]] <- do.call(rbind, vvv)
-			} else {
-				vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole=0) 
 			}
+			v[[i]] <- do.call(rbind, vv)
 		}
-		v[[i]] <- do.call(rbind, vv)
 	}
 	v <- do.call(rbind, v)
 	colnames(v)[1:4] <- c("id", "part", "x", "y")
