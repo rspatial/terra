@@ -337,6 +337,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 			}
 		}
 	}
+	OGRFeature::DestroyFeature( poFeature );
 	poLayer->ResetReading();
 	SpatGeom g;
 	
