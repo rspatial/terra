@@ -392,7 +392,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 }
 
 
-
+/*
 std::vector<double> do_edge(std::vector<double> &d, size_t nrow, size_t ncol, bool before, bool after, bool classes, bool inner, unsigned dirs) {
 
 	bool falseval = 0;
@@ -643,7 +643,7 @@ std::vector<double> do_edge(std::vector<double> &d, size_t nrow, size_t ncol, bo
 	return(val);
 }
 
-
+*/
 
 /*
 std::vector<double> get_border(std::vector<double> xd, size_t nrows, size_t ncols, bool classes, std::string edgetype, unsigned dirs) {
@@ -719,7 +719,7 @@ std::vector<double> get_border(std::vector<double> xd, size_t nrows, size_t ncol
 */
 
 
-
+/*
 SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
@@ -776,6 +776,189 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 			}
 		}
 		std::vector<double> vv = do_edge(v, out.bs.nrows[i], nc, before, after, classes, inner, directions);
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+	}
+	out.writeStop();
+	readStop();
+
+	return(out);
+}
+*/
+
+std::vector<double> do_edge(const std::vector<double> &d, const size_t nrow, const size_t ncol, const bool classes, const bool inner, const unsigned dirs) {
+
+	bool falseval = 0;
+	
+	
+	size_t n = nrow * ncol;
+	std::vector<double> val(n);
+	
+	int r[8] = { -1,0,0,1 , -1,-1,1,1};
+	int c[8] = { 0,-1,1,0 , -1,1,-1,1};	
+	
+	if (!classes) {
+		if (inner) { // inner
+			for (size_t i = 1; i < (nrow-1); i++) {
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = i*ncol+j;
+					val[cell] = NAN;
+					if ( !std::isnan(d[cell])) {
+						val[cell] = falseval;
+						for (size_t k=0; k< dirs; k++) {
+							if ( std::isnan(d[cell + r[k] * ncol + c[k]])) {
+								val[cell] = 1;
+								break;
+							}
+						}
+					}
+				}
+			}
+		
+		} else { //outer
+			for (size_t i = 1; i < (nrow-1); i++) {
+				for (size_t j = 1; j < (ncol-1); j++) {
+					size_t cell = i*ncol+j;
+					val[cell] = falseval;
+					if (std::isnan(d[cell])) {
+						val[cell] = NAN;
+						for (size_t k=0; k < dirs; k++) {			
+							if ( !std::isnan(d[cell+ r[k] * ncol + c[k] ])) {
+								val[cell] = 1;
+								break;
+							}
+						}
+					}
+				}
+			}
+		} 
+	} else { // by class
+		for (size_t i = 1; i < (nrow-1); i++) {
+			for (size_t j = 1; j < (ncol-1); j++) {
+				size_t cell = i*ncol+j;
+				double test = d[cell+r[0]*ncol+c[0]];
+				val[cell] = std::isnan(test) ? NAN : falseval;
+				for (size_t k=1; k<dirs; k++) {
+					double v = d[cell+r[k]*ncol +c[k]];
+					if (std::isnan(test)) {
+						if (!std::isnan(v)) {
+							val[cell] = 1;
+							break;
+						}
+					} else if (test != v) {
+						val[cell] = 1;
+						break;
+					}
+				}
+			}
+		}
+
+	}
+	return(val);
+}
+
+
+
+void addrowcol(std::vector<double> &v, size_t nr, size_t nc, bool rowbefore, bool rowafter, bool cols) {
+	
+	if (rowbefore) {
+		v.insert(v.begin(), v.begin(), v.begin()+nc);
+		nr++;
+	}
+	if (rowafter) {
+		v.insert(v.end(), v.end()-nc, v.end());
+		nr++;
+	}
+	if (cols) {
+		for (size_t i=0; i<nr; i++) {
+			size_t j = i*(nc+2);
+			v.insert(v.begin()+j+nc, v[j+nc-1]);
+			v.insert(v.begin()+j, v[j]);
+		}
+	}
+}
+
+
+void striprowcol(std::vector<double> &v, size_t nr, size_t nc, bool rows, bool cols) {
+	if (rows) {
+		v.erase(v.begin(), v.begin()+nc);
+		v.erase(v.end()-nc, v.end());
+		nr -= 2;
+	}
+	if (cols) {
+		nc -= 2;
+		for (size_t i=0; i<nr; i++) {
+			size_t j = i*nc;
+			v.erase(v.begin()+j);
+			v.erase(v.begin()+j+nc);
+		}
+	}
+}
+
+
+SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (nlyr() > 1) {
+		out.setError("boundary detection can only be done for one layer at a time --- to be improved");
+		return(out);
+	}
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
+
+	
+	if ((directions != 4) && (directions != 8)) {
+		out.setError("directions should be 4 or 8");
+		return(out);	
+	}
+	if ((type != "inner") && (type != "outer")) {
+		out.setError("directions should be 'inner' or 'outer'");
+		return(out);	
+	}
+	bool inner = type == "inner";
+
+	size_t nc = ncol();
+	size_t nr = nrow();
+	
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v;
+		//bool before = false;
+		//bool after = false;
+		if (i == 0) {
+			if (out.bs.n == 1) {
+				v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
+				addrowcol(v, nr, nc, true, true, true);			
+			} else {
+				v = readValues(out.bs.row[i], out.bs.nrows[i]+1, 0, nc);
+				addrowcol(v, nr, nc, true, false, true);			
+				//after = true;
+			}	
+		} else {
+			//before = true;
+			if (i == out.bs.n) {
+				v = readValues(out.bs.row[i]-1, out.bs.nrows[i]+1, 0, nc);
+				addrowcol(v, nr, nc, false, true, true);			
+			} else {
+				v = readValues(out.bs.row[i]-1, out.bs.nrows[i]+2, 0, nc);
+				addrowcol(v, nr, nc, false, false, true);			
+				//after = true;
+			}
+		}
+		//before, after, 
+		std::vector<double> vv = do_edge(v, out.bs.nrows[i]+2, nc+2, classes, inner, directions);
+		striprowcol(vv, out.bs.nrows[i]+2, nc+2, true, true);
 		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
 	out.writeStop();
