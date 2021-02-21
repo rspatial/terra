@@ -323,13 +323,29 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 	df = readAttributes(poLayer);
 	OGRwkbGeometryType wkbgeom = wkbFlatten(poLayer->GetGeomType());
 	OGRFeature *poFeature;
+	
+	poLayer->ResetReading();
+	poFeature = poLayer->GetNextFeature();
+	if (poFeature != NULL) {
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+		if (poGeometry != NULL) {
+			if (poGeometry->Is3D()) {
+				addWarning("Z coordinates ignored");
+			}
+			if (poGeometry->IsMeasured()) {
+				addWarning("M coordinates ignored");
+			}
+		}
+	}
 	poLayer->ResetReading();
 	SpatGeom g;
+	
 	if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
 		//SpatPart p(0,0);
 		while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
 			if (poGeometry != NULL) {
+				
 				if ( wkbFlatten(poGeometry->getGeometryType()) == wkbPoint ) {
 					g = getPointGeom(poGeometry);			
 				} else {
