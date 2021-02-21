@@ -338,6 +338,10 @@ setAs("SpatRaster", "Raster",
 		}
 	}
 	v <- do.call(rbind, v)
+	if (ncol(v) > 5) {
+		v <- cbind(v[,1:4], v[,ncol(v),drop=FALSE])
+		warn("as", "Z/M dimension dropped")
+	}
 	colnames(v)[1:4] <- c("id", "part", "x", "y")
 	types <- unique(gsub("MULTI", "", unique(types[,2])))
 	if (length(types) > 1) {
@@ -380,8 +384,9 @@ setAs("SpatRaster", "Raster",
 	}
 	v <- do.call(rbind, v)
 	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	if (ncol(v) == 6) {
-		v <- v[,-5]
+	if (ncol(v) > 5) {
+		v <- cbind(v[,1:4], v[,ncol(v),drop=FALSE])
+		warn("as", "Z/M dimension dropped")
 	}
 	types <- class(from)[1]
 	if (grepl("POINT", types, fixed=TRUE)) {
@@ -428,6 +433,16 @@ setAs("sf", "SpatVector",
 		v <- try(.from_sf(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
 			error("as,sf", "coercion failed. You can try coercing via a Spatial* (sp) class")
+		} 
+		v
+	}
+)
+
+setAs("sfc", "SpatVector", 
+	function(from) {
+		v <- try(.from_sfc(from), silent=TRUE)
+		if (inherits(v, "try-error")) {
+			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		} 
 		v
 	}
