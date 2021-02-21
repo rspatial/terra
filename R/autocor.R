@@ -55,7 +55,7 @@ setMethod("autocor", signature(x="numeric"),
 			if (method == "moran") {
 				pm <- matrix(rep(dx, each=n) * dx, ncol=n)
 				(n / sum(dx^2)) * sum(pm * w) / sum(w)
-			} else {
+			} else { # geary
 				pm <- matrix(rep(dx, each=n) - dx, ncol=n)^2
 				((n-1)/sum((dx)^2)) * sum(w * pm) / (2 * sum(w))
 			}
@@ -87,7 +87,7 @@ setMethod("autocor", signature(x="SpatRaster"),
 				W <- focal( zz, w=w, fun="sum") 
 				NS0 <- n / unlist(global(W, "sum", na.rm=TRUE))
 				NS0 * wZiZj / z2
-			} else {
+			} else { # geary
 				w <- .getFilter(w, warn=FALSE)
 				i <- trunc(length(w)/2)+1 
 				n <- ncell(x) - unlist(global(is.na(x), "sum"))
@@ -122,5 +122,22 @@ setMethod("autocor", signature(x="SpatRaster"),
 	}
 )
 
+
+
+setMethod("autocor", signature(x="SpatVector"), 
+	function(x, field, w, method="moran", global=TRUE) {
+		v <- (x[[field, drop=TRUE]])
+		if (!is.numeric(v)) {
+			error("autocor", "not a numeric field")
+		}
+		a <- autocor(v, w, method, global)
+		if (!global) {
+			v[[method]] <- a
+			return(v)
+		} else {
+			return(a)
+		}
+	}
+)
 
 
