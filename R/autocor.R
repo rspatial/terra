@@ -73,7 +73,7 @@ setMethod("autocor", signature(x="numeric"),
 			(Gi-Ei)/sqrt(VG)
 
 		} else if (method == "gi*") {
-			if (any(diag(w) == 0))) {
+			if (any(diag(w) == 0)) {
 				warn("autocor", "it is unexpected that a weight matrix for Gi* has diagonal values that are zero")
 			}
 			Gi <- colSums(x * w) / sum(x)
