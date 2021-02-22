@@ -12,7 +12,7 @@ Compute spatial autocorrelation for a numeric vecor or a SpatRaster. You can com
 }
 
 \usage{
-\S4method{autocor}{numeric}(x, w, method="moran", global=TRUE)
+\S4method{autocor}{numeric}(x, w, method="moran")
 
 \S4method{autocor}{SpatRaster}(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE)
 }

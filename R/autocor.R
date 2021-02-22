@@ -73,15 +73,14 @@ setMethod("autocor", signature(x="numeric"),
 			(Gi-Ei)/sqrt(VG)
 
 		} else if (method == "gi*") {
-			if (w[1,1] == 0) diag(w) <- 1
-
+			if (any(diag(w) == 0))) {
+				warn("autocor", "it is unexpected that a weight matrix for Gi* has diagonal values that are zero")
+			}
 			Gi <- colSums(x * w) / sum(x)
 			Ei <- rowSums(w) / n
 			# variance following spdep::localG
-			xibar <- mean(x)
 			si2 <- sum(scale(x, scale = FALSE)^2)/n
-			VG <- si2 * ((n * rowSums(w^2) - rowSums(w)^2)/(n - 1))
-			VG <- VG/(sum(x)^2)
+			VG <- (si2 * ((n * rowSums(w^2) - rowSums(w)^2)/(n - 1))) / (sum(x)^2)
 
 			(Gi-Ei)/sqrt(VG)
 
