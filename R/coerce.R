@@ -462,7 +462,7 @@ setAs("im", "SpatRaster",
 setAs("SpatVector", "Spatial", 
 	function(from) {
 		g <- geom(from, df=TRUE)
-		raster::geom(g, values(from), geomtype(from), .proj4(from))
+		raster::geom(g, values(from), geomtype(from), crs(from))
 	}
 )
 

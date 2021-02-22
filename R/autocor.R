@@ -44,31 +44,60 @@
 
 
 setMethod("autocor", signature(x="numeric"), 
-	function(x, w, method="moran", global=TRUE) {
+	function(x, w, method="moran") {
+		method <- match.arg(tolower(method), c("moran", "geary", "gi", "gi*"))
 		d <- dim(w)
-		if ((d[1] != d[2]) || (d[1] != length(x))) {
+		n <- length(x)
+		if ((d[1] != d[2]) || (d[1] != n)) {
 			stop("w must be a square matrix with sides the size of x")
 		}
-		if (global) {
-			n <- length(x)
+		if (method == "moran") {
 			dx <- x - mean(x, na.rm=TRUE)
-			if (method == "moran") {
-				pm <- matrix(rep(dx, each=n) * dx, ncol=n)
-				(n / sum(dx^2)) * sum(pm * w) / sum(w)
-			} else { # geary
-				pm <- matrix(rep(dx, each=n) - dx, ncol=n)^2
-				((n-1)/sum((dx)^2)) * sum(w * pm) / (2 * sum(w))
-			}
+			pm <- matrix(rep(dx, each=n) * dx, ncol=n)
+			(n / sum(dx^2)) * sum(pm * w) / sum(w)
+		} else if (method == "geary") { # geary
+			dx <- x - mean(x, na.rm=TRUE)
+			pm <- matrix(rep(dx, each=n) - dx, ncol=n)^2
+			((n-1)/sum((dx)^2)) * sum(w * pm) / (2 * sum(w))
+		} else if (method == "gi") {
+			diag(w) <- 0
+			Gi <- colSums(x * w) / (sum(x)-x)
+			Ei <- rowSums(w) / (n-1) 
+
+			# variance following spdep::localG
+			xibar <- (sum(x) - x)/(n - 1)
+		    si2 <- (sum(x^2) - x^2)/(n - 1) - xibar^2
+			VG <- si2 * (((n - 1) * rowSums(w^2) - rowSums(w)^2)/(n - 2))
+			VG <- VG/((sum(x) - x)^2)
+
+			(Gi-Ei)/sqrt(VG)
+
+		} else if (method == "gi*") {
+			if (w[1,1] == 0) diag(w) <- 1
+
+			Gi <- colSums(x * w) / sum(x)
+			Ei <- rowSums(w) / n
+			# variance following spdep::localG
+			xibar <- mean(x)
+			si2 <- sum(scale(x, scale = FALSE)^2)/n
+			VG <- si2 * ((n * rowSums(w^2) - rowSums(w)^2)/(n - 1))
+			VG <- VG/(sum(x)^2)
+
+			(Gi-Ei)/sqrt(VG)
+
+			
 		} else {
-			stop("local not yet implemented")			
+			stop()
 		}
-	}
+ 	} 
 )
 
 
 
 setMethod("autocor", signature(x="SpatRaster"), 
 	function(x, w=matrix(c(1,1,1,1,0,1,1,1,1),3), method="moran", global=TRUE) {
+
+		method <- match.arg(tolower(method), c("moran", "geary"))
 
 		if (nlyr(x) > 1) {
 			warn("autocor", "only the first layer of x is used")
@@ -122,22 +151,5 @@ setMethod("autocor", signature(x="SpatRaster"),
 	}
 )
 
-
-
-setMethod("autocor", signature(x="SpatVector"), 
-	function(x, field, w, method="moran", global=TRUE) {
-		v <- (x[[field, drop=TRUE]])
-		if (!is.numeric(v)) {
-			error("autocor", "not a numeric field")
-		}
-		a <- autocor(v, w, method, global)
-		if (!global) {
-			v[[method]] <- a
-			return(v)
-		} else {
-			return(a)
-		}
-	}
-)
 
 
