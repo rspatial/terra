@@ -19,7 +19,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 \usage{
 \S4method{area}{SpatRaster}(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE, ...)
 
-\S4method{area}{SpatVector}(x, ...)
+\S4method{area}{SpatVector}(x)
 
 \S4method{perimeter}{SpatVector}(x)
 }
@@ -57,13 +57,13 @@ area(r) / 1000000
 am <- mask(a, r)
 global(am, "sum", na.rm=TRUE) / 1000000
 
-# effect of "correct"
-r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
-m <- project(r, "+proj=merc")
+# effect of "correct" (commented out as this does not work with old GDAL)
+#r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
+#m <- project(r, "+proj=merc")
 
-a <- area(m, sum=FALSE, wopt=list(names="naive"))
-b <- area(m, correct=TRUE, sum=FALSE, names="corrected")
-plot(c(a, b)/1000000, nc=1)
+#a <- area(m, sum=FALSE, wopt=list(names="naive"))
+#b <- area(m, correct=TRUE, sum=FALSE, names="corrected")
+#plot(c(a, b)/1000000, nc=1)
 
 
 ### SpatVector

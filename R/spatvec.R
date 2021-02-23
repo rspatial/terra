@@ -95,7 +95,7 @@ setMethod("as.list", signature(x="SpatVector"),
 
 
 setMethod("area", signature(x="SpatVector"), 
-	function(x, ...) {
+	function(x) {
 		a <- x@ptr$area();
 		x <- messages(x, "area");
 		return(a)
@@ -104,9 +104,9 @@ setMethod("area", signature(x="SpatVector"),
 
 setMethod("perimeter", signature(x="SpatVector"), 
 	function(x) {
-		a <- x@ptr$length();
+		p <- x@ptr$length();
 		x <- messages(x, "length");
-		return(a)
+		return(p)
 	}
 )
 
