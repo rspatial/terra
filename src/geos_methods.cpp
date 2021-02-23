@@ -201,9 +201,15 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 			out = out.intersect(bnd);
 		}
 		if ((type() == "points") && (!onlyEdges)) {
-			//std::vector <int> atts = out.relateFirst(*this, "intersects");
-			//deal with unsigned need
-			//out.df = df.subset_rows(atts);
+			std::vector<int> atts = out.relateFirst(*this, "intersects");
+			std::vector<unsigned> a;
+			a.reserve(atts.size());
+			for (size_t i=0; i<atts.size(); i++) {
+				if (atts[i] >=0) a.push_back(atts[i]); 
+			}
+			if (a.size() == out.size()) {
+				out.df = df.subset_rows(a);
+			}
 		}
 	}
 #endif

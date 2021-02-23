@@ -144,6 +144,9 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 
 setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
+		if (size(y) > 1) {
+			y <- aggregate(y)
+		}
 		x@ptr <- x@ptr$crop_vct(y@ptr)
 		messages(x, "crop")
 	}
@@ -165,13 +168,12 @@ setMethod("disaggregate", signature(x="SpatVector"),
 )
 
 
-
 setMethod("voronoi", signature(x="SpatVector"), 
 	function(x, bnd=NULL, tolerance=0, as.lines=FALSE) {
 		if (is.null(bnd)) {
 			bnd <- vect()
-		} else if (inherits(bnd, "SpatExtent")) {
-			bnd <- as.polygons(bnd)
+		} else {
+			bnd <- as.polygons(ext(bnd))
 		}
 		x@ptr <- x@ptr$voronoi(bnd@ptr, tolerance, as.lines)
 		messages(x, "voronoi")
