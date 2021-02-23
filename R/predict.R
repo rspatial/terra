@@ -61,6 +61,9 @@ parfun <- function(cls, data, fun, model, ...) {
 	if (!is.null(index)) {
 		r <- r[, index,drop=FALSE]
 	}
+	if (inherits(model, "gstat")) {
+		r <- r[,-c(1:2)]   # x, y
+	}
 	r
 }
 

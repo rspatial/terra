@@ -12,7 +12,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 	if (missing(field)) {
 		field <- g[,1] # consider multi-point
 	} else if (is.character(field)) {
-		if (length(field) == 1) {
+		if ((length(field) == 1) && (field %in% names(x))) {
 			field <- as.vector(unlist(x[[field]]))
 		} else if (length(field) != nrow(x)) {
 			error("rasterize", "field length should be 1 or nrow(x)")
@@ -23,9 +23,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		} else {
 			error("rasterize", "field index outside the value range (1:ncol(x))")
 		}
-	} else if (length(field) == nrow(x)) {
-		field <- 1:nrow(x)
-	} else  {
+	} else if (length(field) != nrow(x)) {
 		error("rasterize", "length of field does not match the number of features")
 	}
 
