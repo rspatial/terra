@@ -29,7 +29,7 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 
 
 setMethod("area", signature(x="SpatRaster"), 
-	function(x, sum=TRUE, correct=FALSE, filename="", overwrite=FALSE, ...) {
+	function(x, sum=TRUE, correct=FALSE, filename="", ...) {
 		if (sum) {
 			byvalue = FALSE
 			opt <- .getOptions()
@@ -43,7 +43,7 @@ setMethod("area", signature(x="SpatRaster"),
 				x@ptr$sum_area(correct, opt)
 			}
 		} else {
-			opt <- spatOptions(filename, overwrite, ...)
+			opt <- spatOptions(filename, ...)
 			x@ptr <- x@ptr$rst_area(correct, opt)
 			messages(x, "area")
 		} 
@@ -172,8 +172,8 @@ setMethod("rep", signature(x="SpatRaster"),
 
 
 setMethod("clamp", signature(x="SpatRaster"), 
-	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, lower=-Inf, upper=Inf, values=TRUE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$clamp(lower, upper, values[1], opt)
 		messages(x, "clamp")
 	}
@@ -181,7 +181,7 @@ setMethod("clamp", signature(x="SpatRaster"),
 
 
 setMethod("classify", signature(x="SpatRaster"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", overwrite=FALSE, ...) {
+function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", ...) {
 
 	if (is.data.frame(rcl)) {
 		rcl <- as.matrix(rcl)
@@ -190,7 +190,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 	right <- ifelse(is.na(right), 2, ifelse(right, 1, 0))
 	include.lowest <- as.logical(include.lowest[1])
 
-	opt <- spatOptions(filename, overwrite, ...)
+	opt <- spatOptions(filename, ...)
     x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA, opt)
 	messages(x, "classify")
 }
@@ -202,8 +202,8 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
-	function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, y, snap="near", filename="", ...) {
+		opt <- spatOptions(filename, ...)
 
 		if (!inherits(y, "SpatExtent")) {
 			e <- try(ext(y), silent=TRUE)
@@ -224,16 +224,16 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 
 
 setMethod("selectRange", signature(x="SpatRaster"), 
-	function(x, y, z=1, repint=0, filename="", overwrite=FALSE, ...) { 
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, y, z=1, repint=0, filename="", ...) { 
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$selRange(y@ptr, z, repint, opt)
 		messages(x, "selectRange")
 	}
 )
 
 setMethod("cover", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, values=NA, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, y, values=NA, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$cover(y@ptr, values, opt)
 		messages(x, "cover")
 	}
@@ -241,12 +241,12 @@ setMethod("cover", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("diff", signature(x="SpatRaster"), 
-	function(x, filename="", overwrite=FALSE, ...) { 
+	function(x, filename="", ...) { 
 		n = nlyr(x)
 		if (n<2) return(rast(x))
 		y = x[[-1]]
 		x = x[[-n]]
-		opt <- spatOptions(filename, overwrite, ...)
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$arith_rast(y@ptr, "-", opt)
 		messages(x, "diff")
 	}
@@ -254,14 +254,14 @@ setMethod("diff", signature(x="SpatRaster"),
 
 
 setMethod("disaggregate", signature(x="SpatRaster"), 
-	function(x, fact, method="near", filename="", overwrite=FALSE, ...) {
+	function(x, fact, method="near", filename="", ...) {
 		stopifnot(method %in% c("near", "bilinear"))
 		if (method == "bilinear") {
 			y <- disaggregate(rast(x), fact)
-			r <- resample(x, y, "bilinear", filename=filename, overwrite=overwrite, ...)
+			r <- resample(x, y, "bilinear", filename=filename, ...)
 			return(r)
 		}
-		opt <- spatOptions(filename, overwrite, ...)
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$disaggregate(fact, opt)
 		messages(x, "disaggregate")
 	}
@@ -269,9 +269,9 @@ setMethod("disaggregate", signature(x="SpatRaster"),
 
 
 setMethod("flip", signature(x="SpatRaster"), 
-	function(x, direction="vertical", filename="", overwrite=FALSE, ...) {
+	function(x, direction="vertical", filename="", ...) {
 		d <- match.arg(direction, c("vertical", "horizontal")) 
-		opt <- spatOptions(filename, overwrite, ...)
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$flip(d == "vertical", opt)
 		messages(x, "flip")
 	}
@@ -316,16 +316,16 @@ setMethod("freq", signature(x="SpatRaster"),
 
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatRaster"), 
-	function(x, mask, inverse=FALSE, maskvalues=NA, updatevalue=NA, filename="", overwrite=FALSE, ...) { 
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, mask, inverse=FALSE, maskvalues=NA, updatevalue=NA, filename="", ...) { 
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$mask_raster(mask@ptr, inverse[1], maskvalues, updatevalue[1], opt)
 		messages(x, "mask")
 	}
 )
 
 setMethod("mask", signature(x="SpatRaster", mask="SpatVector"), 
-	function(x, mask, inverse=FALSE, updatevalue=NA, touches=is.lines(mask), filename="", overwrite=FALSE, ...) { 
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, mask, inverse=FALSE, updatevalue=NA, touches=is.lines(mask), filename="", ...) { 
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$mask_vector(mask@ptr, inverse[1], updatevalue[1], opt)
 		messages(x, "mask")
 	}
@@ -333,10 +333,10 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 
 setMethod("project", signature(x="SpatRaster"), 
-	function(x, y, method="bilinear", mask=FALSE, filename="", overwrite=FALSE, ...)  {
+	function(x, y, method="bilinear", mask=FALSE, filename="", ...)  {
 
 		method <- ifelse(method == "ngb", "near", method)
-		opt <- spatOptions(filename, overwrite, ...)
+		opt <- spatOptions(filename, ...)
 		if (inherits(y, "SpatRaster")) {
 			#x@ptr <- x@ptr$warp(y@ptr, method, opt)
 			x@ptr <- x@ptr$warp(y@ptr, "", method, mask, opt)
@@ -365,8 +365,8 @@ setMethod("project", signature(x="SpatVector"),
 
 
 setMethod("quantile", signature(x="SpatRaster"), 
-	function(x, probs=seq(0, 1, 0.25), na.rm=FALSE, filename="", overwrite=FALSE, ...) { 
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, probs=seq(0, 1, 0.25), na.rm=FALSE, filename="", ...) { 
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$quantile(probs, na.rm[1], opt)
 		messages(x, "quantile")
 	}
@@ -375,8 +375,8 @@ setMethod("quantile", signature(x="SpatRaster"),
 
 
 setMethod("rectify", signature(x="SpatRaster"), 
-	function(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		if (!is.null(aoi)) {
 			if (inherits(aoi, "SpatExtent")) {
 				aoi <- rast(aoi)
@@ -398,9 +398,9 @@ setMethod("rectify", signature(x="SpatRaster"),
 )
 
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, method="bilinear", filename="", overwrite=FALSE, ...)  {
+	function(x, y, method="bilinear", filename="", ...)  {
 		method <- ifelse(method == "ngb", "near", method)
-		opt <- spatOptions(filename, overwrite, ...)
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, opt)
 		messages(x, "resample")
 	}
@@ -417,16 +417,16 @@ setMethod("rev", signature(x="SpatRaster"),
 )
 
 setMethod("rotate", signature(x="SpatRaster"), 
-	function(x, left=TRUE, filename="", overwrite=FALSE, ...) { 
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, left=TRUE, filename="", ...) { 
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$rotate(left, opt)
 		messages(x, "rotate")
 	}
 )
 
 setMethod("separate", signature(x="SpatRaster"), 
-	function(x, classes=NULL, keep=FALSE, other=0, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, classes=NULL, keep=FALSE, other=0, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		if (is.null(classes)) classes <- 1[0]
 		x@ptr <- x@ptr$separate(classes, keep, other, opt)
 		messages(x, "separate")
@@ -435,8 +435,8 @@ setMethod("separate", signature(x="SpatRaster"),
 
 
 setMethod("shift", signature(x="SpatRaster"), 
-	function(x, dx=0, dy=0, filename="", overwrite=FALSE, ...) { 
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, dx=0, dy=0, filename="", ...) { 
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$shift(dx, dy, opt)
 		messages(x, "shift")
 	}
@@ -515,8 +515,8 @@ setMethod("scale", signature(x="SpatRaster"),
 
 
 setMethod("stretch", signature(x="SpatRaster"), 
-	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$stretch(minv, maxv, minq, maxq, smin, smax, opt)
 		messages(x, "stretch")
 	}
@@ -558,10 +558,10 @@ setMethod("t", signature(x="SpatVector"),
 
 
 setMethod("terrain", signature(x="SpatRaster"), 
-	function(x, v="slope", neighbors=8, unit="degrees", filename="", overwrite=FALSE, ...) { 
+	function(x, v="slope", neighbors=8, unit="degrees", filename="", ...) { 
 		v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"))
 		unit <- match.arg(unit, c("degrees", "radians"))
-		opt <- spatOptions(filename, overwrite, ...)
+		opt <- spatOptions(filename, ...)
 		seed <- ifelse("flowdirection" %in% v, .seed(), 0)
 		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", seed, opt)
 		messages(x, "terrain")
@@ -570,16 +570,16 @@ setMethod("terrain", signature(x="SpatRaster"),
 
 
 setMethod("trim", signature(x="SpatRaster"), 
-	function(x, padding=0, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, padding=0, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$trim(padding[1], opt)
 		messages(x, "trim")
 	}
 )
 
 setMethod("transpose", signature(x="SpatRaster"), 
-	function(x, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$transpose(opt)
 		messages(x, "transpose")
 	}

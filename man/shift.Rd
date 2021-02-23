@@ -14,7 +14,7 @@ Shift a SpatRaster, SpatVector or SpatExtent to another location.
 }
 
 \usage{
-\S4method{shift}{SpatRaster}(x, dx=0, dy=0, filename="", overwrite=FALSE, ...)
+\S4method{shift}{SpatRaster}(x, dx=0, dy=0, filename="", ...)
 
 \S4method{shift}{SpatVector}(x, dx=0, dy=0)
 
@@ -25,8 +25,7 @@ Shift a SpatRaster, SpatVector or SpatExtent to another location.
   \item{x}{SpatRaster, SpatVector or SpatExtent}
   \item{dx}{numeric. The shift in horizontal direction}
   \item{dy}{numeric. The shift in vertical direction}
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
  

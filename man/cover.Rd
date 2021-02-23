@@ -17,18 +17,17 @@ For polygons: areas of \code{x} that overlap with \code{y} are replaced by \code
 }
 
 \usage{
-\S4method{cover}{SpatRaster,SpatRaster}(x, y, values=NA, filename="", overwrite=FALSE, ...)
+\S4method{cover}{SpatRaster,SpatRaster}(x, y, values=NA, filename="", ...)
 
 \S4method{cover}{SpatVector,SpatVector}(x, y, identity=FALSE)
 
 }
 
 \arguments{
-  \item{x}{SpatRaster}
-  \item{y}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
+  \item{y}{Same as \code{x}}
   \item{values}{numeric. The cell values in \code{x} to be replaced by the values in \code{y}}
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
   \item{identity}{logical. If \code{TRUE} overlapping areas are intersected rather than replaced}
 }

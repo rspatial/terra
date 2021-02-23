@@ -19,7 +19,7 @@ Apply a function that (arithmetically) operates to individual cells and layers o
   \item{x}{SpatRaster}
   \item{fun}{function}
   \item{...}{additional arguments for \code{fun}}  
-  \item{filename}{character. Output filename. Optional}
+  \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 }

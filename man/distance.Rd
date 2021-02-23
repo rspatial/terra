@@ -26,9 +26,9 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 }
 
 \usage{
-\S4method{distance}{SpatRaster,missing}(x, y, grid=FALSE, filename="", overwrite=FALSE, ...)
+\S4method{distance}{SpatRaster,missing}(x, y, grid=FALSE, filename="", ...)
 
-\S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", overwrite=FALSE, ...)
+\S4method{distance}{SpatRaster,SpatVector}(x, y, filename="", ...)
 
 \S4method{distance}{SpatVector,ANY}(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE)
 
@@ -43,8 +43,7 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
   \item{x}{SpatRaster, SpatVector, or two-column matrix (x,y) or (lon,lat)}
   \item{y}{missing or SpatVector, or two-column matrix}
   \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
   \item{sequential}{logical. If \code{TRUE}, the distance between sequential geometries is returned}
   \item{pairwise}{logical. If \code{TRUE} and if x and y have the same size (number of rows), the pairwise distances are returned instead of the distances between all elements} 

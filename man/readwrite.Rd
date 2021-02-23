@@ -43,7 +43,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{filename}{Character. Output filename. Optional}
+  \item{filename}{character. Output filename}
 
   \item{v}{vector with cell values to be written}
   \item{start}{integer. Row number (counting starts at 1) from where to start writing \code{v}}

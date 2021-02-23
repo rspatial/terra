@@ -5,8 +5,8 @@
 
 
 setMethod("distance", signature(x="SpatRaster", y="missing"), 
-	function(x, y, grid=FALSE, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, y, grid=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		if (grid) {
 			x@ptr <- x@ptr$gridDistance(opt)
 		} else {
@@ -19,8 +19,8 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 
 
 setMethod("buffer", signature(x="SpatRaster"), 
-	function(x, width, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, width, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$buffer(width, opt)
 		messages(x, "buffer")
 	}
@@ -28,8 +28,8 @@ setMethod("buffer", signature(x="SpatRaster"),
 
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
-	function(x, y, filename="", overwrite=FALSE, ...) {
-		opt <- spatOptions(filename, overwrite, ...)
+	function(x, y, filename="", ...) {
+		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$vectDistance(y@ptr, opt)
 		messages(x, "distance")
 	}

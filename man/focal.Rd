@@ -12,7 +12,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \usage{
 \S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum",
-            filename="", overwrite=FALSE, ...) 
+            filename="", ...) 
 }
 
 \arguments{
@@ -29,8 +29,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 \item{fun}{function that takes multiple numbers, and returns a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument, either as actual argument or through use of \code{...}}
 
 
-\item{filename}{character. Output filename. Optional}
-\item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+\item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

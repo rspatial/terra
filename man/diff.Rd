@@ -10,14 +10,13 @@ Returns lagged differences.
 }
 
 \usage{
-\S4method{diff}{SpatRaster}(x, filename="", overwrite=FALSE, ...)
+\S4method{diff}{SpatRaster}(x, filename="", ...)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

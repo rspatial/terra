@@ -10,14 +10,13 @@ Trim (shrink) a SpatRaster by removing outer rows and columns that are \code{NA}
 }
 
 \usage{
-\S4method{trim}{SpatRaster}(x, padding=0, filename="", overwrite=FALSE, ...)
+\S4method{trim}{SpatRaster}(x, padding=0, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{padding}{integer. Number of outer rows/columns to keep}
-   \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

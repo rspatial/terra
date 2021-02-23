@@ -26,7 +26,7 @@ Or aggregate ("dissolve") a SpatVector.
   \item{fun}{function used to aggregate values. Either an actual function, or for the following, their name: "mean", "max", "min", "median", "sum" and "modal"}
   \item{...}{additional arguments passed to \code{fun}, such as \code{na.rm=TRUE}}  
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created. Ignored for C++ level implemented functions "mean", "max", "min", "median", "sum" and "modal"}  
-  \item{filename}{character. Output filename. Optional}
+  \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
   

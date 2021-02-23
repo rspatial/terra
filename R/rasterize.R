@@ -1,5 +1,5 @@
 
-rasterize_points <- function(x=x, y=y, field=field, fun="last", background=background, update=update, filename=filename, overwrite=overwrite, ...) {
+rasterize_points <- function(x=x, y=y, field=field, fun="last", background=background, update=update, filename=filename, ...) {
 
 	if (update) {
 		background <- NA 
@@ -51,7 +51,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		}
 
 	} else {
-		a <- tapply(field, g, fun, ...)
+		a <- tapply(field, g, fun)
 		b <- as.numeric(names(a))
 		r[b] <- as.vector(a)
 	}
@@ -66,7 +66,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 	}
 
 	if (filename != "") {
-		writeRaster(r, filename, overwrite=overwrite, ...)
+		writeRaster(r, filename, ...)
 	}
 
 	return (r)
@@ -75,15 +75,15 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), cover=FALSE, filename="", overwrite=FALSE, ...) {
+	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), cover=FALSE, filename="", ...) {
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, ...) 
+			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update, filename=filename, ...) 
 			return (r)
 		}
 
-		opt <- spatOptions(filename, overwrite, ...)
+		opt <- spatOptions(filename, ...)
 
 		if (cover[1] && grepl("polygons", g)) {
 			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, "", background, FALSE, touches[1], FALSE, TRUE, opt)
@@ -96,7 +96,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		domask <- FALSE
 		if (any(is.na(field))) {
 			if (length(field) == 1) {
-				y <- mask(y, x, inverse=FALSE, updatevalue=NA, touches=touches, filename=filename, overwrite=overwrite, ...)
+				y <- mask(y, x, inverse=FALSE, updatevalue=NA, touches=touches, filename=filename, ...)
 				return (y)
 			} else if (length(field) == nrow(x)) {
 				i <- is.na(field)

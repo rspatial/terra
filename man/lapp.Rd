@@ -31,7 +31,7 @@ Use \code{\link{app}} for summarize functions such as \code{sum}, that take any 
   \item{...}{additional arguments to be passed to \code{fun}} 
   \item{usenames}{logical. Use the layer names to match the function arguments? If \code{FALSE} matching is by position}
   \item{recycle}{logical. Recycle layers to match the subdataset with the largest number of layers}
-  \item{filename}{character. Output filename. Optional}
+  \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 }

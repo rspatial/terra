@@ -24,7 +24,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a fu
   \item{index}{factor or numeric (integer). Vector of length \code{nlyr(x)} (shorter vectors are recycled) grouping the input layers}
   \item{fun}{function to be applied}
   \item{...}{additional arguments passed to \code{fun}}  
-  \item{filename}{character. Output filename. Optional}
+  \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 }

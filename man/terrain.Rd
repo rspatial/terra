@@ -10,7 +10,7 @@ Compute terrain characteristic from elevation data. The elevation values should 
 }
 
 \usage{
-\S4method{terrain}{SpatRaster}(x, v="slope", neighbors=8, unit="degrees", filename="", overwrite=FALSE, ...)  
+\S4method{terrain}{SpatRaster}(x, v="slope", neighbors=8, unit="degrees", filename="", ...)  
 }
 
 \arguments{
@@ -18,8 +18,7 @@ Compute terrain characteristic from elevation data. The elevation values should 
   \item{v}{character. One or more of these options: slope, aspect, TPI, TRI, roughness, flowdir (see Details)}
   \item{unit}{character. "degrees" or "radians" for the output of "slope" and "aspect"}
   \item{neighbors}{integer. Indicating how many neighboring cells to use to compute slope or aspect with. Either 8 (queen case) or 4 (rook case)}
-  \item{filename}{character. Output filename. Optional}
-  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{filename}{character. Output filename}
   \item{...}{list. Options for writing files as in \code{\link{writeRaster}}}
 }
 
