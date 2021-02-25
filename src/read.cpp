@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020  Robert J. Hijmans
+// Copyright (c) 2018-2021  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -154,18 +154,28 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
 
 	std::vector<double> out;
-	if (!hasValues()) {
-		//setError
-		return out; // or NAs?
+
+	if (((row + nrows) > nrow()) || ((col + ncols) > ncol())) {
+		setError("invalid rows/columns");
+		return out;
 	}
 
-	row = std::min(std::max(size_t(0), row), nrow()-1);
-	col = std::min(std::max(size_t(0), col), ncol()-1);
-	nrows = std::max(size_t(1), std::min(nrows, nrow()-row));
-	ncols = std::max(size_t(1), std::min(ncols, ncol()-col));
+
+	//row = std::min(std::max(size_t(0), row), nrow()-1);
+	//col = std::min(std::max(size_t(0), col), ncol()-1);
+	//nrows = std::max(size_t(1), std::min(nrows, nrow()-row));
+	//ncols = std::max(size_t(1), std::min(ncols, ncol()-col));
 	if ((nrows==0) | (ncols==0)) {
 		return out;
 	}
+
+	if (!hasValues()) {
+		out.resize(nrows * ncols * nlyr(), NAN);
+		addWarning("raster has no values");
+		return out; // or NAs?
+	}
+
+
 	unsigned n = nsrc();
 
 	for (size_t src=0; src<n; src++) {

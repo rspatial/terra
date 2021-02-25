@@ -24,7 +24,7 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
 }
 
 \usage{
-\S4method{values}{SpatRaster}(x, mat=TRUE)
+\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x))
 
 \S4method{values}{SpatRaster,ANY}(x)<-value
 
@@ -37,7 +37,15 @@ values returns all cell values of a SpatRaster (a matrix), or all the attributes
 
 \arguments{
  \item{x}{SpatRaster or SpatVector}
- \item{mat}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector}
+ \item{mat}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector, except when dataframe is \code{TRUE}}
+ \item{dataframe}{logical. If \code{TRUE}, values are returned as a \code{data.frame} instead of as a vector (also if matrix is \code{TRUE})}
+
+ \item{row}{positive integer. Row number to start from, should be between 1 and nrow(x)}
+ \item{nrows}{positive integer. How many rows?}
+ \item{col}{positive integer. Column number to start from, should be between 1 and ncol(x)}
+ \item{ncols}{positive integer. How many columns? Default is the number of columns left after the start column}
+
+
  \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame or NULL}
  \item{values}{Same as for \code{value}}
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020  Robert J. Hijmans
+// Copyright (c) 2018-2021  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -1559,7 +1559,13 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	unsigned row1 = rowFromY(outext.ymax - 0.5 * yr);
 	unsigned row2 = rowFromY(outext.ymin + 0.5 * yr);
 
-	if ((row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1)) {
+	std::vector<bool> hw = hasWindow();
+	bool haswin = hw[0];
+	for (size_t i=1; i<nsrc(); i++) {
+		haswin = (haswin | hw[i]);
+	}
+
+	if ((row1==0) && (row2==nrow()-1) && (col1==0) && (col2==ncol()-1) && (!haswin)) {
 		// same extent
 		if (opt.get_filename() != "") {
 			out = writeRaster(opt);

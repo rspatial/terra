@@ -125,7 +125,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 		v <- do.call(fun, c(v, list(...)))
 		writeValues(out, v, b$row[i], b$nrows[i])
 	}
-	readStop(x)
+#	readStop(x)
 	out <- writeStop(out)
 	return(out)
 }

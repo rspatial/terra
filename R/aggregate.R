@@ -86,6 +86,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 		}
 
 		readStart(x)
+		on.exit(readStop(x))
 		ignore <- writeStart(out, filename, overwrite, wopt=wopt)
 		if (doPar) {
 			for (i in 1:b$n) {
@@ -108,7 +109,6 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 				writeValues(out, v, outrows[i], outnr[i])
 			}
 		}
-		readStop(x)
 		out <- writeStop(out)
 		messages(out, "aggregate")
 	}
