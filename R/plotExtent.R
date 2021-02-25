@@ -14,6 +14,10 @@ setMethod("lines", signature(x="SpatExtent"),
 
 setMethod("plot", signature(x="SpatExtent", y="missing"), 
 	function(x, ...)  {
+		test <- try(x$valid, silent=TRUE)
+		if (inherits(test, "try-error")) {
+			stop("invalid SpatExtent")
+		}
 		plot(as.polygons(x), ...)
 	}
 )
