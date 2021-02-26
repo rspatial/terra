@@ -460,6 +460,8 @@ setMethod("shift", signature(x="SpatVector"),
 
 setMethod("rescale", signature(x="SpatRaster"), 
 	function(x, f=0.5, x0, y0) { 
+		stopifnot(f > 0)
+		f <- sqrt(f)
 		e <- as.vector(ext(x))
 		if (missing(x0)) {
 			x0 <- mean(e[1:2])
@@ -477,6 +479,8 @@ setMethod("rescale", signature(x="SpatRaster"),
 
 setMethod("rescale", signature(x="SpatVector"), 
 	function(x, f=0.5, x0, y0) { 
+		stopifnot(f > 0)
+		f <- sqrt(f)
 		e <- as.vector(ext(x))
 		if (missing(x0)) {
 			x0 <- mean(e[1:2])

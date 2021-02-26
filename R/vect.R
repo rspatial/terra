@@ -66,24 +66,26 @@ setMethod("vect", signature(x="XY"), #sfg
 
 
 
-.checkXYnames <- function(x) {
+.checkXYnames <- function(x, warn=TRUE) {
 	if (is.null(x)) return(TRUE)
 	if (length(x) != 2) {
 		error("vect", "coordinate matrix should have 2 columns")
 	}
-
-	x <- substr(tolower(x)[1:2], 1, 3)
+	z <- tolower(x[1:2])
+	x <- substr(z, 1, 3)
 	y <- substr(x, 1, 1)
 	if ((y[1] == "x") & (y[2] == "y")) return(TRUE)
 	if ((x[1] == "eas") & (x[2] == "nor")) return(TRUE)
 	if ((x[1] == "lon") & (x[2] == "lat")) return(TRUE)
+	if (grepl("lon", z[1]) & grepl("lat", z[2])) return(TRUE)
+
 	if ((x[1] == "lat") | (x[2] == "lon")) {
 		error("vect", "longitude/latitude in the wrong order")
 	} else if ((y[1] == "y") | (y[2] == "x")) {
 		error("vect", "x/y in the wrong order")
 	} else if ((x[1] == "nor") | (x[2] == "eas")) {
 		error("vect", "easting/northing in the wrong order")
-	} else {
+	} else if (warn) {
 		warn("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
 	}
 }
