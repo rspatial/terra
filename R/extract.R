@@ -54,6 +54,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#e <- rapply(e, f, how="replace")
+	cn <- names(x)
 	if (!is.null(fun)) {
 		if (weights) {
 			test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
@@ -65,10 +66,9 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			e <- rapply(e, fun, ...)
 		}
 		e <- matrix(e, nrow=nrow(y), byrow=TRUE)
-		colnames(e) <- names(x)
+		colnames(e) <- cn
 		e <- cbind(ID=1:nrow(e), e)
 	} else {
-		cn <- names(x)
 		if (cells) {
 			cn <- c(cn, "cell")
 			i <- which(cn=="cell")
@@ -82,17 +82,16 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		if (weights) cn <- c(cn, "weight")
 		if (xy) {
 			cn <- c(cn, "x", "y")
+		}	
+		if (!list) {
+			e <- lapply(1:length(e), function(i) {
+				ee <- unlist(e[[i]])
+				if (length(ee) == 0) ee <- NA
+				cbind(ID=i, matrix(ee, ncol=length(e[[i]])))
+			})
+			e <- do.call(rbind, e)
+			colnames(e)[-1] <- cn	
 		}
-	}
-		
-	if (!list) {
-		e <- lapply(1:length(e), function(i) {
-			ee <- unlist(e[[i]])
-			if (length(ee) == 0) ee <- NA
-			cbind(ID=i, matrix(ee, ncol=length(e[[i]])))
-		})
-		e <- do.call(rbind, e)
-		colnames(e)[-1] <- cn	
 	}
 	if (factors) {
 		if (is.matrix(e)) {
