@@ -146,9 +146,13 @@ GEOSGeometry* geos_linearRing(const std::vector<double> &x, const std::vector<do
 GEOSGeometry* geos_polygon(const std::vector<double> &x, const std::vector<double> &y, std::vector<std::vector<double>> &hx, std::vector<std::vector<double>> &hy, GEOSContextHandle_t hGEOSCtxt) {
 	GEOSGeometry* shell = geos_linearRing(x, y, hGEOSCtxt);
 	size_t nh = hx.size();
-	std::vector<GEOSGeometry*> holes(nh);
+	std::vector<GEOSGeometry*> holes;
+	holes.reserve(nh);
 	for (size_t i=0; i<nh; i++) {
-		holes[i] = geos_linearRing(hx[i], hy[i], hGEOSCtxt);
+		GEOSGeometry* glr = geos_linearRing(hx[i], hy[i], hGEOSCtxt);
+		if (glr != NULL) {
+			holes.push_back(glr);
+		}
 	}
 	GEOSGeometry* g = GEOSGeom_createPolygon_r(hGEOSCtxt, shell, &holes[0], nh);
 	return g;

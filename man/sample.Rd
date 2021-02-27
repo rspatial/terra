@@ -12,28 +12,28 @@
 \description{
 Take a spatial sample from a SpatRaster, SpatVector or SpatExtent. Sampling a SpatVector or SpatExtent always returns a SpatVector of points. 
 
-With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}) or (when \code{type="regular"} and \code{as.raster=TRUE}) get a new SpatRaster with the same extent, but fewer cells. Note that, in order to assure regularity when requesting a regular sample, the number of values returned may not be exactly the same as the \code{size} requested.
+With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}), coordinates (\code{xy=TRUE}) or (when \code{type="regular"} and \code{as.raster=TRUE}) get a new SpatRaster with the same extent, but fewer cells. 
+
+In order to assure regularity when requesting a regular sample, the number of cells or points returned may not be exactly the same as the \code{size} requested.
 }
 
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="regular", replace=FALSE, 
        na.rm=FALSE, as.raster=FALSE, cells=FALSE)
 
-\S4method{spatSample}{SpatVector}(x, size, method="regular", by_geom=TRUE, 
-       strata=NULL, chess="")
+\S4method{spatSample}{SpatVector}(x, size, method="regular", strata=NULL, chess="")
 
 \S4method{spatSample}{SpatExtent}(x, size, method="regular", lonlat)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{size}{numeric. The sample size}
+  \item{size}{numeric. The sample size. If \code{x} is a SpatVector, you can also provide a vector of the same length as \code{x} in wich case sampling is done seperately for each geometry}
   \item{method}{character. Should be "regular" or "random". It can also be "stratified" if \code{x} is a SpatVector}
   \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"}}
   \item{na.rm}{logical. If \code{TRUE}, code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
   \item{cells}{logical. If \code{TRUE}, cellnumbers are returned instead of values}
-  \item{by_geom}{logical. If \code{TRUE}, sampling is done seperately for each geometry (multi-polygon or multi-line), otherwise, a single sample is taken for all geometries}
   \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
   \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}
   
@@ -42,8 +42,6 @@ With a SpatRaster, you can get cell values, cell numbers (\code{cells=TRUE}) or 
 
 
 \details{
-In some cases you may want to know the location of the sampled cells. In that situation you can take a sample of the cell numbers and use extract. See examples.
-
 In stead of \code{spatSample(x, size, method="random")} you can also use the equivalent base method \code{sample(x, size)}. The base method also works for sampling the geometries of \code{SpatVector} (you can take a sample from the number of geometries and use that as an index). 
 }
 

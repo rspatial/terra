@@ -414,6 +414,8 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 	\code{\link{lines}} \tab Add lines to a map\cr
 	\code{\link{polys}} \tab Add polygons to a map \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
+    \code{\link{dots}} \tab Make a dot-density map \cr
+    \code{\link{cartogram}} \tab Make a cartogram \cr
     \code{\link{image}} \tab Alternative way to plot a SpatRaster \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr

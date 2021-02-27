@@ -354,6 +354,7 @@ RCPP_MODULE(spat){
 		//.method("knearest", &SpatVector::knearest)
 		
 		.method("sample", &SpatVector::sample)
+		.method("sampleGeom", &SpatVector::sample_geom)
 	;
 
 

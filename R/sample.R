@@ -252,23 +252,46 @@ get_field_name <- function(x, nms, sender="") {
 
 
 setMethod("spatSample", signature(x="SpatVector"), 
-	function(x, size, method="regular", by_geom=TRUE, strata=NULL, chess="") {
+	function(x, size, method="regular", strata=NULL, chess="") {
 		method = match.arg(tolower(method), c("regular", "random"))
 		stopifnot(size > 0)
 		gtype <- geomtype(x)
 		if (gtype == "polygons") {
-			st <- ""
 			if (!is.null(strata)) {
-				st <- get_field_name(strata, names(x), "spatSample")
-			} 
-			x@ptr = x@ptr$sample(size[1], method[1], by_geom[1], st, .seed())
+				if (length(strata) == 1) {
+					if (is.character(strata)) {
+						stopifnot(strata %in% names(x))
+					} else  {
+						stopifnot((strata > 0) && (strata < ncol(x)))	
+					} 
+					strata <- x[[strata, drop=TRUE]]
+				} else if (length(strata) != length(x)) {
+					stop("length of strata must be 1 or length(x)")
+				}
+				s <- stats::na.omit(unique(strata))
+				n <- length(size)
+				if (n==1) {
+					n <- rep_len(n, length(s)) 
+				} else if (length(s) != n) {
+					stop("length of strata must be 1 or length(na.omit(unique(strata)))")
+				}
+				r <- lapply(s, function(s) {
+					spatSample(x[strata == s, ], size, method, NULL, "")
+				})
+				r <- do.call(c, r)
+				return(r)
+			}
+			if (length(size) == 1) {
+				x@ptr = x@ptr$sample(size, method[1], .seed())
+			} else {
+				x@ptr = x@ptr$sampleGeom(size, method[1], .seed())			
+			}
 			return(messages(x))
 		} else if (grepl(gtype, "points")) {
 			if (!is.null(strata)) {
 				if (inherits(strata, "SpatRaster")) {
 					xy <- coordinates(x)
-					strata <- rast(strata)
-					i <- .grid_sample(xy, size, strata, chess) 
+					i <- .grid_sample(xy, size[1], rast(strata), chess) 
 					return(x[i,])
 				} else {
 					error("spatSample", "not yet implemented for these strata")

@@ -2035,7 +2035,7 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 	}
 
 	std::vector<double> stats(nlyr());
-	double stats2;
+	double stats2 = 0;
 	std::vector<double> n(nlyr());
 	std::vector<double> w(nlyr());
 	if (!readStart()) {

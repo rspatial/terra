@@ -4,22 +4,29 @@
 # License GPL v3
 
 
-.dotdensity <- function(p, field, x=1, type="regular", seed=0,  ...) {
-	set.seed(seed)
-    n <- length(p)
-    if (n < 1) return(invisible(NULL))
-	f <- tolower(type)
-	stopifnot(type %in% c("regular", "random"))  
-	stopifnot(is.numeric(field))
-
-	x <- x[1]
-	stopifnot(x > 0)
-	d <- round(field / x)
-	d[d < 1 | is.na(d)] <- 0
-
-	spatSample(p, field, type)
-}
-
+setMethod("dots", signature(x="SpatVector"), 
+	function(x, field, size,  ...) {
+		n <- length(x)
+		if (n < 1) return(NULL)
+		#method <- match.arg(tolower(method), c("regular", "random"))
+		if (is.character(field)) {
+			stopifnot(field %in% names(x))
+		} else {
+			stopifnot(field > 0 && field <= ncol(x))
+		}
+		stopifnot(is.numeric(x[[field,drop=TRUE]]))
+		field <- x[[field,drop=TRUE]]
+		size <- size[1]
+		stopifnot(size > 0)
+		d <- round(field / size)
+		d[d < 1 | is.na(d)] <- 0
+		s <- spatSample(x, d, "random")
+		if (.Device  != "null device") {
+			try(points(s, ...), silent=TRUE)
+		}
+		invisible(s)
+	}
+)
 
 
 

@@ -9,6 +9,7 @@ if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y, ...) standa
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("near")) {setGeneric("near", function(x, ...) standardGeneric("near"))}
 if (!isGeneric("cartogram")) {setGeneric("cartogram", function(x, ...) standardGeneric("cartogram"))}
+if (!isGeneric("dots")) {setGeneric("dots", function(x, ...) standardGeneric("dots"))}
 
 if (!isGeneric("symdif")) {setGeneric("symdif", function(x, y, ...) standardGeneric("symdif"))}
 

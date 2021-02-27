@@ -557,17 +557,21 @@ std::vector<size_t> SpatRaster::sampleCells(unsigned size, std::string method, b
 }
 
 
-SpatVector SpatVector::sample(unsigned n, std::string method, bool by_geom, std::string strata, unsigned seed) {
-	std::string gt = type();
+SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 
+	std::string gt = type();
 	SpatVector out;
 	if (gt != "polygons") {
-		setError("only implemented for polygons");
+		out.setError("only implemented for polygons");
+		return out;
+	}
+	if (n == 0) {
+		out.srs = srs;
 		return out;
 	}
 
-	if (strata != "") {
-		
+/*
+	if (strata != "") {	
 		// should use
 		// SpatVector a = aggregate(strata, false);
 		// but get nasty self-intersection precision probs.
@@ -594,13 +598,14 @@ SpatVector SpatVector::sample(unsigned n, std::string method, bool by_geom, std:
 		}
 		return out;
 	}
-
+*/
 	bool lonlat = is_geographic();
 	bool random = (method == "random");
 
 	std::vector<double> a = area();
 	double suma = accumulate(a.begin(), a.end(), 0.0);
-	
+
+/*
 	if (by_geom) {
 		std::vector<double> pa;
 		pa.reserve(a.size());
@@ -651,45 +656,68 @@ SpatVector SpatVector::sample(unsigned n, std::string method, bool by_geom, std:
 		df.add_column(id, "pol.id");
 		out.df = df;
 	} else {
+*/
+	std::vector<std::vector<double>> pxy(2);
 
-		std::vector<std::vector<double>> pxy(2);
-
-		SpatVector ve(extent, "");
-		ve.srs = srs;
-		double vea = ve.area()[0];
-		if (random) {
-			double m = vea / suma;
-			m = std::max(2.0, std::min(m*m, 100.0));
-			size_t ssize = n * m;
-			pxy = extent.sampleRandom(ssize, lonlat, seed);
-		} else {
-			size_t ssize = std::round(n * vea / suma);
-			pxy = extent.sampleRegular(ssize, lonlat);
+	SpatVector ve(extent, "");
+	ve.srs = srs;
+	double vea = ve.area()[0];
+	if (random) {
+		double m = vea / suma;
+		m = std::max(10.0, std::min(m*m, 100.0));
+		size_t ssize = n * m;
+		pxy = extent.sampleRandom(ssize, lonlat, seed);
+	} else {
+		size_t ssize = std::round(n * vea / suma);
+		pxy = extent.sampleRegular(ssize, lonlat);
+	}
+	out = SpatVector(pxy[0], pxy[1], points, "");
+	out = intersect(out);
+	if (random) {
+		if (out.size() > n) {
+			std::vector<int> rows(out.size());
+			std::iota(rows.begin(), rows.end(), 0);
+			std::default_random_engine gen(seed);   
+			std::shuffle(rows.begin(), rows.end(), gen);
+			rows.resize(n);
+			out = out.subset_rows(rows);
 		}
-		out = SpatVector(pxy[0], pxy[1], points, "");
-		out = intersect(out);
-		if (random) {
-			if (out.size() > n) {
-				std::vector<int> rows(out.size());
-				std::iota(rows.begin(), rows.end(), 0);
-				std::default_random_engine gen(seed);   
-				std::shuffle(rows.begin(), rows.end(), gen);
-				rows.resize(n);
-				out = out.subset_rows(rows);
-			}
-		}
-		std::vector<long> id(out.size(), 1);
-		SpatDataFrame df;
-		df.add_column(id, "pol.id");
-		out.df = df;
-	}	
+	}
+	//std::vector<long> id(out.size(), 1);
+	//SpatDataFrame df;
+	//df.add_column(id, "pol.id");
+	//out.df = df;
+//	}	
 	out.srs = srs;
 	
 	return out;
 }
 
 
+SpatVector SpatVector::sample_geom(std::vector<unsigned> n, std::string method, unsigned seed) {
 
+	SpatVector out;
+	if (n.size() != size()) {
+		out.setError("length of samples does not match number of geoms");
+		return out;
+	}
+	if (n.size() == 0) {
+		out.srs = srs;
+		return out;
+	}
+	
+	for (size_t i=0; i<size(); i++) {
+		if (n[i] == 0) {
+			continue;
+		}
+		int j = i;
+		SpatVector v = subset_rows(j);
+		SpatVector p = v.sample(n[i], method, seed+i);
+		out = out.append(p, true);
+	}
+	out.srs = srs;
+	return out;
+}
 
 /*
 std::vector<double> sample(size_t size, size_t N, bool replace, std::vector<double> prob, unsigned seed){
