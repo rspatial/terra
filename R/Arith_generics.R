@@ -52,6 +52,29 @@ setMethod("Arith", signature(e1="SpatExtent", e2="numeric"),
 )
 
 
+setMethod("Arith", signature(e1="numeric", e2="SpatExtent"),
+    function(e1, e2) {
+		oper <- as.vector(.Generic)[1]
+		if (oper == "%%") { 
+			stop("only 'Spatextent %% numeric' (in that order) is supported")
+		} else if (oper == "+") {
+			return(e2 + e1)
+		} else if (oper == "-") {
+			stop("only 'Spatextent - numeric' (in that order) is supported")
+		} else if (oper == "*") {
+			return(e2 * e1)
+		} else if (oper == "/") {
+			stop("only 'Spatextent / numeric' (in that order) is supported")
+		} else {
+			error(oper, "only +, -, *, / and %% are supported")
+		}
+		if (!e1@ptr$valid) {
+			error(oper, "this would create an invalid extent")
+		}
+		e1
+	}
+)
+
 
 setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
     function(e1, e2){ 
@@ -81,15 +104,15 @@ setMethod("Arith", signature(e1="SpatVector", e2="SpatVector"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
 		if (oper == "+") { 
-			e1@ptr$union(e2@ptr)
+			e1@ptr <- e1@ptr$union(e2@ptr)
 		} else if (oper == "*") {
-			e1@ptr$intersect(e2@ptr)
+			e1@ptr <- e1@ptr$intersect(e2@ptr)
 		} else if (oper == "-") {
-			e1@ptr$erase(e2@ptr)
+			e1@ptr <- e1@ptr$erase(e2@ptr)
 		} else {
-			error(oper, "only +, *, and - are supported for SpatVector")
+			error(oper, "only operators +, *, and - are supported for SpatVector")
 		}
-		e1
+		messages(e1, oper)
 	}
 )
 

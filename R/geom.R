@@ -55,6 +55,13 @@ setMethod("erase", signature(x="SpatVector", y="SpatExtent"),
 	}
 )
 
+setMethod("union", signature(x="SpatVector", y="missing"), 
+	function(x, y) {
+		x@ptr <- x@ptr$union_self()
+		messages(x, "union")
+	}
+)
+
 
 setMethod("union", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
@@ -87,7 +94,8 @@ setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 
 setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"), 
 	function(x, y) {
-		x * y
+		x@ptr$intersect(x@ptr)
+		x
 	}
 )
 

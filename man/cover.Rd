@@ -49,7 +49,13 @@ p <- vect(system.file("ex/lux.shp", package="terra"))
 e <- as.polygons(ext(6, 6.4, 49.75, 50))
 values(e) <- data.frame(y=10)
 cv <- cover(p, e)
-#ci <- cover(p, e, identity=TRUE)
+plot(cv, col=rainbow(12))
+ci <- cover(p, e, identity=TRUE)
+lines(e, lwd=3)
+
+plot(ci, col=rainbow(12))
+lines(e, lwd=3)
+
 }
 
 

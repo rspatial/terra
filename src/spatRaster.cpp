@@ -208,7 +208,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 	s.memory = true;
 	s.hasValues = false;
 	long nl = nlyr();
-	bool keepnlyr = ((nlyrs == nl) | (nlyrs < 1));
+	bool keepnlyr = ((nlyrs == nl) || (nlyrs < 1));
 	nlyrs = (keepnlyr) ? nlyr(): nlyrs;
 	if (properties) {
 		s.hasColors = hasColors();
@@ -549,7 +549,7 @@ bool SpatRaster::setNAflag(std::vector<double> flag) {
 		}
 	}
 	return true;
-};
+}
 
 
 std::vector<double> SpatRaster::getNAflag() {

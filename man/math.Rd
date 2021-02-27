@@ -9,6 +9,7 @@
 \alias{Math2-methods}
 
 \alias{Arith,SpatExtent,numeric-method}
+\alias{Arith,numeric,SpatExtent-method}
 \alias{Arith,SpatExtent,SpatExtent-method}
 
 \alias{Arith,SpatRaster,SpatRaster-method}

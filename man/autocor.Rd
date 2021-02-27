@@ -52,17 +52,14 @@ Anselin, L., 1995. Local indicators of spatial association-LISA. Geographical An
 r <- rast(nrows=10, ncols=10, xmin=0)
 values(r) <- 1:ncell(r)
 
-autocor(r)
+#autocor(r)
 
 # rook's case neighbors
-f <- matrix(c(0,1,0,1,0,1,0,1,0), nrow=3)
-autocor(r, f)
+#f <- matrix(c(0,1,0,1,0,1,0,1,0), nrow=3)
+#autocor(r, f)
 
 ## local 
-x1 <- autocor(r, global=FALSE)
-x2 <- autocor(r, w=f, global=FALSE)
-
-#autocor(r, geary=TRUE)
+#rc <- autocor(r, w=f, global=FALSE)
 }
 
 \keyword{spatial}

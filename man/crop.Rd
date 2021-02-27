@@ -13,7 +13,7 @@
 \description{
 Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. With a SpatRaster you can only extract rectangular areas, but see \code{\link{mask}} for setting cell values within SpatRaster to \code{NA}.
 
-You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used)
+You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used). Unlike with \code{\link{intersect}} the geometries and attributes of \code{y} are not trasferred to the output.
 }
 
 \usage{
@@ -37,6 +37,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 SpatRaster
 }
 
+\seealso{\code{intersect}}
 
 \examples{
 r <- rast(xmin=0, xmax=10, ymin=0, ymax=10, nrows=25, ncols=25)

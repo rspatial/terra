@@ -9,9 +9,9 @@
 
 \description{
 
-\code{terra} provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divides space into rectangular cells (pixels) and it is commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) is typically used to represent discrete spatial entities. 
+\code{terra} provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divide space into rectangular cells (pixels) and they are commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) are typically used to represent discrete spatial entities, such as a road, country, or bus stop. 
 
-The package implements two classes (R data types) to represent these data types: \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
+The package implements two main classes (R data types): \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
 Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset} to represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector.
 
@@ -312,7 +312,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{aggregate}} \tab dissolve smaller polygons into larger ones \cr
   \code{\link{buffer}} \tab buffer geometries \cr
   \code{\link{disaggregate}} \tab split multi-geometries into separate geometries \cr
-  \code{\link{crop}} \tab clip geometries using a rectangle (SpatExtent)\cr
+  \code{\link{crop}} \tab clip geometries using a rectangle (SpatExtent) or SpatVector \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 

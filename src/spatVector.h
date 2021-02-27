@@ -246,6 +246,7 @@ class SpatVector {
 		SpatVector convexhull();
 		SpatVector intersect(SpatVector v);
 		SpatVector unite(SpatVector v);
+		SpatVector unite();
 		SpatVector erase(SpatVector v);
 		SpatVector cover(SpatVector v, bool identity);
 		SpatVector symdif(SpatVector v);

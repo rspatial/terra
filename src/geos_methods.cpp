@@ -282,7 +282,8 @@ SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyl
 	geos_finish(hGEOSCtxt);
 	out = coll.get(0);
 	out.srs = srs;
-
+	out.df = df;
+	
 	return out;
 }
 
@@ -337,6 +338,13 @@ SpatVector SpatVector::intersect(SpatVector v) {
 		out.addWarning("different crs"); 
 	}
 	geos_finish(hGEOSCtxt);
+
+	if ((type() == "polygons") && (v.type() == "polygons") && (out.type() != "polygons")) {
+		// intersection is point or line, return empty 
+		out = SpatVector();
+		out.addWarning("no intersection");
+		out.srs = srs;
+	}
 
 	return out;
 }
@@ -626,18 +634,59 @@ std::vector<double> SpatVector::geos_distance(bool sequential) {
 
 
 SpatVector SpatVector::unite(SpatVector v) {
-	SpatVector out = intersect(v);
-	out = out.append(erase(v), true);
-	out = out.append(v.erase(*this), true);
+	SpatVector intsec = intersect(v);
+	if (intsec.hasError()) {
+		return intsec;
+	}
+	SpatVector sdif = symdif(v);
+	if (sdif.hasError()) {
+		return intsec;
+	}
+	return intsec.append(sdif, true);
+}
+
+
+SpatVector SpatVector::unite() {
+	int n = size();
+
+	std::vector<long> x(1, 1);
+	SpatDataFrame d;
+	d.add_column(x, "id_1");
+	SpatVector out = subset_rows(0);
+	out.df = d;
+	for (int i=1; i<n; i++) {
+		std::string name = "id_" + std::to_string(i+1);
+		SpatDataFrame d;
+		d.add_column(x, name);
+		SpatVector r = subset_rows(i);
+		r.df = d;
+		out = out.unite(r);
+	}
+
+	for (size_t i=0; i<out.df.iv.size(); i++) {
+		for (size_t j=0; j<out.df.iv[i].size(); j++) {
+			if (out.df.iv[i][j] != 1) {
+				out.df.iv[i][j] = 0;
+			}
+		}
+	}
+
 	return out;
 }
 
 
 
 SpatVector SpatVector::symdif(SpatVector v) {
-//	SpatVector out = erase(v);
-//	v = v.erase(*this);
-
+	if ((type() != "polygons") || (v.type() != "polygons")) {
+		SpatVector out;
+		out.setError("expect two polygon geometries");
+		return out;
+	}
+	SpatVector out = erase(v);
+	out = out.append(v.erase(*this), true);
+	return out;
+	
+/*
 	SpatVector out;
 	out.srs = srs;
 
@@ -684,6 +733,7 @@ SpatVector SpatVector::symdif(SpatVector v) {
 	}
 
 	return out.append(v, true);
+	*/
 }
 
 
@@ -694,7 +744,14 @@ SpatVector SpatVector::cover(SpatVector v, bool identity) {
 		v.srs = srs; 
 	}
 	SpatVector out = erase(v);
-	out = identity ? out.append(intersect(v), true) : out.append(v, true);
+	if (identity) {
+		SpatVector insect = intersect(v);
+		v = v.erase(insect);
+		out = out.append(insect, true);
+		out = out.append(v, true);
+	} else {
+		out = out.append(v, true);
+	}
 	return out;
 }
 

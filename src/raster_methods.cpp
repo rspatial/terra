@@ -1883,6 +1883,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 
 
 void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, double &stat2,double &n, size_t i) {
+	if (v.size() == 0) return;
 	if (fun == "sum") {
 		stat += vsum(v, narm);
 	} else if (fun == "mean") {
@@ -1960,7 +1961,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 		unsigned off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			unsigned offset = lyr * off;
-			std::vector<double> vv = { v.begin()+offset, v.begin()+offset+off};
+			std::vector<double> vv = { v.begin()+offset, v.begin()+offset+off };
 			do_stats(vv, fun, narm, stats[lyr], stats2[lyr], n[lyr], i);
 		}
 	}
