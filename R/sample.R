@@ -4,78 +4,82 @@
 }
 
 
-.sampleCells <- function(x, size, method, replace, na.rm=FALSE) {
-	lonlat <- is.lonlat(x, perhaps=TRUE, warn=TRUE)
+.sampleCells <- function(x, size, method, replace, na.rm=FALSE, ext=NULL) {
+	r <- rast(x)
+	lonlat <- is.lonlat(r, perhaps=TRUE, warn=TRUE)
+	if (!is.null(ext)) {
+		r <- crop(rast(r), ext)
+	}
 	if (method == "random") {
 		n <- size
 		if (na.rm) {
-			size <- min(ncell(x), size*2)
+			size <- min(ncell(r)*2, size*5)
 		}
 		if (lonlat) {
 			m <- ifelse(replace, 1.5, 1.25)
 			n <- m * size
-			r <- yFromRow(x, 1:nrow(x))
-			w <- abs(cos(pi*r/180))
-			rows <- sample.int(nrow(x), n, replace=TRUE, prob=w)
-			cols <- sample.int(ncol(x), n, replace=TRUE)
-			cells <- cellFromRowCol(x, rows, cols)
+			y <- yFromRow(r, 1:nrow(r))
+			w <- abs(cos(pi*y/180))
+			rows <- sample.int(nrow(r), n, replace=TRUE, prob=w)
+			cols <- sample.int(ncol(r), n, replace=TRUE)
+			cells <- cellFromRowCol(r, rows, cols)
 			if (!replace) {
 				cells <- unique(cells)
 			}
 		} else {
-			cells <- sample(ncell(x), size, replace=replace)
-		}
-		v <- rowSums(is.na(x[cells])) == 0
-		cells <- cells[v]
-		if (length(cells) > n) {
-			cells <- cells[1:n]
+			cells <- sample(ncell(r), size, replace=replace)
 		}
 	} else { # regular 
 		if (lonlat) {
-			ratio <- 0.5 * ncol(x)/nrow(x)
+			ratio <- 0.5 * ncol(r)/nrow(r)
 			n <- sqrt(size)
 			nx <- max(1, (round(n*ratio)))
 			ny <- max(1, (round(n/ratio)))
-			xi <- ncol(x) / nx
-			yi <- nrow(x) / ny
-			rows <- unique(round(seq(.5*yi, nrow(x), yi)))
+			xi <- ncol(r) / nx
+			yi <- nrow(r) / ny
+			rows <- unique(round(seq(.5*yi, nrow(r), yi)))
 
-			w <- cos(pi*yFromRow(x, rows)/180)
+			w <- cos(pi*yFromRow(r, rows)/180)
 			w <- w * length(w)/sum(w)
 			xi <- xi / w
-			xi <- pmax(1,pmin(xi, ncol(x)))
+			xi <- pmax(1,pmin(xi, ncol(r)))
 			z <- list()
 			#off <- stats::runif(1) 			
 			for (i in 1:length(rows)) {
-				z[[i]] <- cbind(rows[i], unique(round(seq(0.5*xi[i], ncol(x), xi[i]))))
+				z[[i]] <- cbind(rows[i], unique(round(seq(0.5*xi[i], ncol(r), xi[i]))))
 			}
 			z <- do.call(rbind, z)
-			cells <- cellFromRowCol(x, z[,1], z[,2])
+			cells <- cellFromRowCol(r, z[,1], z[,2])
 	
 		} else {
-			f <- sqrt(size / ncell(x))
-			nr <- ceiling(nrow(x) * f)
-			nc <- ceiling(ncol(x) * f);
-			xstep <- ncol(x) / nc
-			ystep <- nrow(x) / nr
-			xsamp <- seq(0.5*xstep, ncol(x), xstep)
-			ysamp <- seq(0.5*ystep, nrow(x), ystep)
+			f <- sqrt(size / ncell(r))
+			nr <- ceiling(nrow(r) * f)
+			nc <- ceiling(ncol(r) * f);
+			xstep <- ncol(r) / nc
+			ystep <- nrow(r) / nr
+			xsamp <- seq(0.5*xstep, ncol(r), xstep)
+			ysamp <- seq(0.5*ystep, nrow(r), ystep)
 			xy <- expand.grid(round(ysamp), round(xsamp))
-			cells <- cellFromRowCol(x, xy[,1], xy[,2]) 
+			cells <- cellFromRowCol(r, xy[,1], xy[,2]) 
 		}
-		if (na.rm) {
-			v <- rowSums(is.na(x[cells]) == 0)
-			cells <- cells[v]
-			if (length(cells) > n) {
-				cells <- cells[1:n]
-			}
+	}
+	if (!is.null(ext)) {
+		cells <- cellFromXY(x, xyFromCell(r, cells))
+	}
+	if (na.rm) {
+		v <- rowSums(is.na(x[cells])) == 0
+		cells <- cells[v]
+	}
+	if (method == "random") {
+		if (length(cells) > n) {
+			cells <- cells[1:n]
 		}
 	}
 	return(cells)
 }
 
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, xy=FALSE) {
+	function(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, xy=FALSE, ext=NULL) {
 		size <- round(size)
 		if (size < 1) {
 			error("spatSample", "sample size must be a positive integer")
@@ -85,7 +89,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		#}
 		
 		if (cells || xy) {
-			out <- .sampleCells(x, size, method, replace, na.rm)
+			out <- .sampleCells(x, size, method, replace, na.rm, ext)
 			if (length(out) < size && method == "random") {
 				warn("spatSample", "fewer cells returned than requested")
 			}
@@ -103,6 +107,8 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		size <- round(size)
 		stopifnot(size > 0)
 		size <- min(ncell(x), size)
+
+		if (!is.null(ext)) x <- crop(x, ext)
 
 		if (method == "regular") {
 			if (as.raster) {

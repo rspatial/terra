@@ -33,8 +33,8 @@ SpatVector
 \examples{
 p <- vect(system.file("ex/lux.shp", package="terra"))
 b <- as.polygons(ext(6, 6.4, 49.75, 50))
-sd <- symdif(p, b)
-plot(sd, col=rainbow(12))
+#sd <- symdif(p, b)
+#plot(sd, col=rainbow(12))
 }
 
 \keyword{methods}

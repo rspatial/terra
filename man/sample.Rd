@@ -19,7 +19,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="regular", replace=FALSE, 
-       na.rm=FALSE, as.raster=FALSE, cells=FALSE)
+       na.rm=FALSE, as.raster=FALSE, cells=FALSE, xy=FALSE, ext=NULL)
 
 \S4method{spatSample}{SpatVector}(x, size, method="regular", strata=NULL, chess="")
 
@@ -33,7 +33,10 @@ In order to assure regularity when requesting a regular sample, the number of ce
   \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"}}
   \item{na.rm}{logical. If \code{TRUE}, code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
-  \item{cells}{logical. If \code{TRUE}, cellnumbers are returned instead of values}
+  \item{cells}{logical. If \code{TRUE} and \code{xy=FALSE}, cellnumbers are returned instead of values}
+  \item{xy}{logical. If \code{TRUE}, coordinates are returned instead of values}
+  \item{ext}{SpatExtent or NULL to restrict sampling to a a subset of the area of \code{x}}
+
   \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
   \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}
   
