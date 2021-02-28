@@ -1013,9 +1013,16 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 			brng[i] = i * step;
 		}
 		for (size_t i=0; i<npts; i++) {
-			std::vector<std::vector<double>> dp = destpoint_lonlat(xy[0][i], xy[1][i], brng, d, a, f);
-			g.setPart(SpatPart(dp[0], dp[1]), 0);
-			out.addGeom(g);
+			if (std::isnan(xy[0][i]) || std::isnan(xy[1][i])) {
+				out.addGeom(SpatGeom(polygons));
+			} else {
+				std::vector<std::vector<double>> dp = destpoint_lonlat(xy[0][i], xy[1][i], brng, d, a, f);
+				//close polygons
+				dp[0].push_back(dp[0][0]);
+				dp[1].push_back(dp[1][0]);
+				g.setPart(SpatPart(dp[0], dp[1]), 0);
+				out.addGeom(g);
+			}
 		}
 
 	} else {
@@ -1028,12 +1035,19 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 			sinb[i] = d * sin(brng);
 		}
 		for (size_t i=0; i<npts; i++) {
-			for (size_t j=0; j<n; j++) {
-				px[j] = xy[0][i] + cosb[j];
-				py[j] = xy[1][i] + sinb[j];
+			if (std::isnan(xy[0][i]) || std::isnan(xy[1][i])) {
+				out.addGeom(SpatGeom(polygons));
+			} else {
+				for (size_t j=0; j<n; j++) {
+					px[j] = xy[0][i] + cosb[j];
+					py[j] = xy[1][i] + sinb[j];
+				}
+				//close polygons
+				px.push_back(px[0]);
+				py.push_back(py[0]);
+				g.setPart(SpatPart(px, py), 0);
+				out.addGeom(g);
 			}
-			g.setPart(SpatPart(px, py), 0);
-			out.addGeom(g);
 		}
 	}
 	return(out);
