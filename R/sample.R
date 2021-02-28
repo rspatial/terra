@@ -22,13 +22,10 @@
 			if (!replace) {
 				cells <- unique(cells)
 			}
-			if (length(cells) > size) {
-				cells <- cells[1:size]
-			} 
 		} else {
 			cells <- sample(ncell(x), size, replace=replace)
 		}
-		v <- rowSums(is.na(x[cells]) == 0)
+		v <- rowSums(is.na(x[cells])) == 0
 		cells <- cells[v]
 		if (length(cells) > n) {
 			cells <- cells[1:n]

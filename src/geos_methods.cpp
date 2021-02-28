@@ -787,8 +787,9 @@ SpatVector SpatVector::erase(SpatVector v) {
 		if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
 			result.push_back(geos_ptr(geom, hGEOSCtxt));
 			ids.push_back(i);
-		} 
-		GEOSGeom_destroy_r(hGEOSCtxt, geom);	
+		} else {
+			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
+		}
 	}
 
 	if (result.size() > 0) {
