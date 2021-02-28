@@ -1,5 +1,5 @@
 
-rasterize_points <- function(x=x, y=y, field=field, fun="last", background=background, update=update, filename=filename, ...) {
+rasterize_points <- function(x, y, field, fun="last", background, update, filename, ...) {
 
 	if (update) {
 		background <- NA 
@@ -54,6 +54,7 @@ rasterize_points <- function(x=x, y=y, field=field, fun="last", background=backg
 		a <- tapply(field, g, fun)
 		b <- as.numeric(names(a))
 		r[b] <- as.vector(a)
+		levs <- NULL
 	}
 
 	if (update) {

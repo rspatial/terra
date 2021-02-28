@@ -122,12 +122,18 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 			value <- i
 			value[] <- v
 		}
-		v <- values(x)
+		if (hasValues(x)) {
+			v <- values(x)
+		} else {
+			v <- matrix(NA, nrow=ncell(x), ncol=nlyr(x))
+		}
 		v[i,] <- value
 		values(x) <- v
 		x
 	}
 )
+
+
 
 
 setReplaceMethod("[", c("SpatRaster", "numeric", "numeric"),

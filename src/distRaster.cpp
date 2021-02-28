@@ -998,8 +998,6 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 	SpatVector out;
 	out.srs = srs;
 	size_t n = quadsegs * 4;
-	std::vector<double> px(n);
-	std::vector<double> py(n);
 	double step = 360.0 / n;
 	SpatGeom g(polygons);
 	g.addPart(SpatPart(0, 0));
@@ -1028,6 +1026,8 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 	} else {
 		std::vector<double> cosb(n);
 		std::vector<double> sinb(n);
+		std::vector<double> px(n+1);
+		std::vector<double> py(n+1);
 		for (size_t i=0; i<n; i++) {
 			double brng = i * step;
 			brng = toRad(brng);
@@ -1042,9 +1042,8 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 					px[j] = xy[0][i] + cosb[j];
 					py[j] = xy[1][i] + sinb[j];
 				}
-				//close polygons
-				px.push_back(px[0]);
-				py.push_back(py[0]);
+				px[n] = px[0];
+				py[n] = py[0];
 				g.setPart(SpatPart(px, py), 0);
 				out.addGeom(g);
 			}
