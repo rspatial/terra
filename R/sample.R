@@ -4,9 +4,13 @@
 }
 
 
-.sampleCells <- function(x, size, method, replace) {
+.sampleCells <- function(x, size, method, replace, na.rm=FALSE) {
 	lonlat <- is.lonlat(x, perhaps=TRUE, warn=TRUE)
 	if (method == "random") {
+		n <- size
+		if (na.rm) {
+			size <- min(ncell(x), size*2)
+		}
 		if (lonlat) {
 			m <- ifelse(replace, 1.5, 1.25)
 			n <- m * size
@@ -23,6 +27,11 @@
 			} 
 		} else {
 			cells <- sample(ncell(x), size, replace=replace)
+		}
+		v <- rowSums(is.na(x[cells]) == 0)
+		cells <- cells[v]
+		if (length(cells) > n) {
+			cells <- cells[1:n]
 		}
 	} else { # regular 
 		if (lonlat) {
@@ -57,12 +66,19 @@
 			xy <- expand.grid(round(ysamp), round(xsamp))
 			cells <- cellFromRowCol(x, xy[,1], xy[,2]) 
 		}
+		if (na.rm) {
+			v <- rowSums(is.na(x[cells]) == 0)
+			cells <- cells[v]
+			if (length(cells) > n) {
+				cells <- cells[1:n]
+			}
+		}
 	}
 	return(cells)
 }
 
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE) {
+	function(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, xy=FALSE) {
 		size <- round(size)
 		if (size < 1) {
 			error("spatSample", "sample size must be a positive integer")
@@ -71,10 +87,13 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			#error("spatSample", "sample size is larger than ncell(x) and replace=FALSE")
 		#}
 		
-		if (cells) {
-			out <- .sampleCells(x, size, method, replace)
+		if (cells || xy) {
+			out <- .sampleCells(x, size, method, replace, na.rm)
 			if (length(out) < size && method == "random") {
 				warn("spatSample", "fewer cells returned than requested")
+			}
+			if (xy) {
+				out <- xyFromCell(x, out)
 			}
 			return(out)
 		}
