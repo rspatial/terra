@@ -10,7 +10,7 @@
 \description{
 Get the geometry of a SpatVector. If \code{wkt=FALSE}, this is a five-column matrix or data.frame: the vector object ID, the IDs for the parts of each object (e.g. five polygons that together are one spatial object), the x (longitude) and y (latitude) coordinates, and a flag indicating whether the part is a "hole" (only relevant for polygons). 
 
-If \code{wkt=TRUE}, the"well-known text" reprentation is returned as a character vector.
+If \code{wkt=TRUE}, the"well-known text" representation is returned as a character vector.
 }
 
 \usage{

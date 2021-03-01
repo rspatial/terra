@@ -12,7 +12,7 @@
  
 
 .as.image <- function(x, maxcells=10000) {
-	x <- spatSample(x, size=maxcells, as.raster=TRUE)
+	x <- spatSample(x, size=maxcells, method="regular", as.raster=TRUE)
 	X <- xFromCol(x, 1:ncol(x))
 	Y <- yFromRow(x, nrow(x):1)
 	Z <- t(as.matrix(x, wide=TRUE)[nrow(x):1,]) 

@@ -63,6 +63,26 @@ setMethod("geom", signature(x="SpatVector"),
 	}
 )
 
+setMethod("coords", signature(x="SpatVector"), 
+	function(x, df=FALSE){
+		g <- x@ptr$coordinates()
+		g <- do.call(cbind, g)
+		colnames(g) <- c("x", "y")
+		if (df) {
+			data.frame(g)
+		} else {
+			g
+		}
+	}
+)
+
+setMethod("coords", signature(x="SpatRaster"), 
+	function(x, df=FALSE){
+		x <- as.points(x)
+		coordinates(x)
+	}
+)
+
 
 setMethod("dim", signature(x="SpatVector"), 
 	function(x){ 

@@ -147,6 +147,21 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// percRank
+std::vector<double> percRank(std::vector<double> x, std::vector<double> y, double minc, double maxc, int tail);
+RcppExport SEXP _terra_percRank(SEXP xSEXP, SEXP ySEXP, SEXP mincSEXP, SEXP maxcSEXP, SEXP tailSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type minc(mincSEXP);
+    Rcpp::traits::input_parameter< double >::type maxc(maxcSEXP);
+    Rcpp::traits::input_parameter< int >::type tail(tailSEXP);
+    rcpp_result_gen = Rcpp::wrap(percRank(x, y, minc, maxc, tail));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -164,6 +179,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_gdal_drivers", (DL_FUNC) &_terra_gdal_drivers, 0},
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
+    {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

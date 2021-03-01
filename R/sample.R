@@ -79,7 +79,7 @@
 }
 
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="regular", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, xy=FALSE, ext=NULL) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
 		size <- round(size)
 		if (size < 1) {
 			error("spatSample", "sample size must be a positive integer")
@@ -166,7 +166,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					scells <- .sampleCells(x, size, method, replace)
 					out <- x[scells]
 				}
-				if (NROW(out) < size) {
+				if (warn && (NROW(out) < size)) {
 					warn("spatSample", "fewer values returned than requested")
 				}
 				return(out)
@@ -177,7 +177,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 
 setMethod("spatSample", signature(x="SpatExtent"), 
-	function(x, size, method="regular", lonlat) {
+	function(x, size, method="random", lonlat) {
 		if (missing(lonlat)) {
 			error("spatSample", "provide a lonlat argument")
 		}
@@ -251,9 +251,9 @@ setMethod("spatSample", signature(x="SpatExtent"),
 }
 
 
-coordinates <- function(x) {
-	do.call(cbind, x@ptr$coordinates())
-}
+#coordinates <- function(x) {
+#	do.call(cbind, x@ptr$coordinates())
+#}
 
 get_field_name <- function(x, nms, sender="") {
 	x <- x[1]
@@ -274,7 +274,7 @@ get_field_name <- function(x, nms, sender="") {
 
 
 setMethod("spatSample", signature(x="SpatVector"), 
-	function(x, size, method="regular", strata=NULL, chess="") {
+	function(x, size, method="random", strata=NULL, chess="") {
 		method = match.arg(tolower(method), c("regular", "random"))
 		stopifnot(size > 0)
 		gtype <- geomtype(x)
@@ -312,7 +312,7 @@ setMethod("spatSample", signature(x="SpatVector"),
 		} else if (grepl(gtype, "points")) {
 			if (!is.null(strata)) {
 				if (inherits(strata, "SpatRaster")) {
-					xy <- coordinates(x)
+					xy <- coords(x)
 					i <- .grid_sample(xy, size[1], rast(strata), chess) 
 					return(x[i,])
 				} else {

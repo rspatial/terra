@@ -264,3 +264,59 @@ void gdal_init(std::string path) {
 #endif
 }
 
+
+
+
+
+// [[Rcpp::export(name = ".precRank")]]
+
+std::vector<double> percRank(std::vector<double> x, std::vector<double> y, double minc, double maxc, int tail) {
+					
+	std::vector<double> out;
+	out.reserve(y.size());
+	size_t nx = x.size();
+	for (size_t i=0; i<y.size(); i++) {
+		if (std::isnan(y[i]) ) {
+			out.push_back( NAN );
+		} else if ((y[i] < minc) | (y[i] > maxc )) {
+			out.push_back( 0 ); 
+		} else {
+			size_t b = 0;
+			size_t t = 0;
+			for (size_t j=0; j<x.size(); j++) {
+				if (y[i] > x[j]) {
+					b++;
+				} else if (y[i] == x[j]) {
+					t++;
+				} else {
+				// y is sorted, so we need not continue
+					break;
+				}
+			}
+			double z = (b + 0.5 * t) / nx;
+			if (tail == 1) { // both
+				if (z > 0.5) {
+					z = 2 * (1 - z); 
+				} else {
+					z = 2 * z;
+				}
+			} else if (tail == 2) { // high
+				if (z < 0.5) {
+					z = 1;
+				} else {
+					z = 2 * (1 - z);
+				}
+			} else { // if (tail == 3) { // low
+				if (z > 0.5) {
+					z = 1;
+				} else {
+					z = 2 * z;
+				}
+			}
+			out.push_back(z);
+		} 
+	}
+	return(out);
+}
+
+

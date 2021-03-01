@@ -20,7 +20,7 @@ setMethod("dots", signature(x="SpatVector"),
 		stopifnot(size > 0)
 		d <- round(field / size)
 		d[d < 1 | is.na(d)] <- 0
-		s <- spatSample(x, d, "random")
+		s <- spatSample(x, d, method="random")
 		if (.Device  != "null device") {
 			try(points(s, ...), silent=TRUE)
 		}
