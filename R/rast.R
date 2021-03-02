@@ -4,6 +4,7 @@
 # License GPL v3
 
 
+
 setMethod("rast", signature(x="missing"),
 	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals) {
 
@@ -139,9 +140,9 @@ setMethod("rast", signature(x="character"),
 		f <- .fullFilename(x)
 		#subds <- subds[1]
 		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds, "")
+			r@ptr <- SpatRaster$new(f, -1, subds, "", FALSE)
 		} else {
-			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", "")
+			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", "", FALSE)
 		}
 		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)
@@ -159,6 +160,38 @@ setMethod("rast", signature(x="character"),
 		r
 	}
 )
+
+
+multi <- function(x, subds=0) {
+
+		x <- trimws(x)
+		x <- x[x!=""]
+		if (length(x) == 0) {
+			error("rast,character", "provide a valid filename")
+		}
+		r <- methods::new("SpatRaster")
+		f <- .fullFilename(x)
+		#subds <- subds[1]
+		if (is.character(subds)) { 
+			r@ptr <- SpatRaster$new(f, -1, subds, TRUE, "")
+		} else {
+			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", TRUE, "")
+		}
+		if (r@ptr$getMessage() == "ncdf extent") {
+			test <- try(r <- .ncdf_extent(r), silent=TRUE)
+			if (inherits(test, "try-error")) {
+				warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+			}
+		}
+		r <- messages(r, "rast")
+
+		if (crs(r) == "") {
+			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
+				crs(r) <- "EPSG:4326"
+			}
+		}
+		r
+	}
 
 
 setMethod("rast", signature(x="SpatRaster"),

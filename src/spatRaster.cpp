@@ -28,21 +28,34 @@
 #endif
 
 
-SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
+SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi) {
 #ifdef useGDAL
-	constructFromFile(fname, subds, subdsname);
+	if (multi) {
+		constructFromFileMulti(fname, subds, subdsname);		
+	} else {
+		constructFromFile(fname, subds, subdsname);
+	}
 #endif
 }
 
 
-SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::string x) {
+SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::string x) {
 // argument "x" is ignored. It is only there to have four arguments such that the Rcpp module
 // can distinguish this constructor from another with three arguments. 
 #ifdef useGDAL
+	if (multi) {
+		constructFromFileMulti(fname[0], subds, subdsname);
+		return;
+	}
+	
 	constructFromFile(fname[0], subds, subdsname);
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
 		bool ok = r.constructFromFile(fname[i], subds, subdsname);
+		if (r.msg.has_warning) {
+			addWarning(r.msg.warnings[0]);	
+		}
+
 		if (ok) {
 			addSource(r);
 			if (r.msg.has_error) {

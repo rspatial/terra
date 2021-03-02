@@ -410,7 +410,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			GDALSetDescription(hBand, nms[i].c_str());
 		}
 		GDALClose( hDstDS );
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, false);
 	}
 
 	if (mask) {

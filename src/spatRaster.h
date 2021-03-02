@@ -75,6 +75,9 @@ class SpatRasterSource {
 		bool hasWindow=false;
 		SpatWindow window;
 	
+		bool multidim = false;
+		std::vector<size_t> mdims;
+
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
 		SpatSRS srs;
@@ -290,8 +293,8 @@ class SpatRaster {
 		SpatRaster();
 		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
-		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::string x);
-		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname);
+		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::string x);
+		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi);
 		SpatRaster(SpatRasterSource s);
 		void setSource(SpatRasterSource s);
 		void setSources(std::vector<SpatRasterSource> s);
@@ -301,6 +304,7 @@ class SpatRaster {
         SpatRaster geometry(long nlyrs=-1, bool properties=false);
 
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname);
+		bool constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname);
 		bool constructFromFiles(std::vector<std::string> fnames);
 		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, bool ncdf);
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);

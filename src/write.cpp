@@ -163,7 +163,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 					return out;
 				}
 			}
-			SpatRaster out(fnames, {-1}, {""}, "");
+			SpatRaster out(fnames, {-1}, {""}, false, "");
 			return out;
 		}	
 	} 
