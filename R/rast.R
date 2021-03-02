@@ -140,9 +140,9 @@ setMethod("rast", signature(x="character"),
 		f <- .fullFilename(x)
 		#subds <- subds[1]
 		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds, "", FALSE)
+			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
 		} else {
-			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", "", FALSE)
+			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", FALSE, 0[])
 		}
 		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)
@@ -162,7 +162,7 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds=0) {
+multi <- function(x, subds=0, xyz=c(1,2,3)) {
 
 		x <- trimws(x)
 		x <- x[x!=""]
@@ -173,9 +173,9 @@ multi <- function(x, subds=0) {
 		f <- .fullFilename(x)
 		#subds <- subds[1]
 		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds, TRUE, "")
+			r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
 		} else {
-			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", TRUE, "")
+			r@ptr <- terra:::SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
 		}
 		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)

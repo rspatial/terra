@@ -13,7 +13,7 @@
 #include "gdal.h"
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
 
     GDALAllRegister();
     auto poDataset = std::unique_ptr<GDALDataset>(
@@ -29,10 +29,10 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
 		return false;
     }
 
-	std::string var = "HWAM";
-    auto poVar = poRootGroup->OpenMDArray(var.c_str());
+	//std::string var = "HWAM";
+    auto poVar = poRootGroup->OpenMDArray(sub.c_str());
     if( !poVar )   {
-		setError("cannot open var: " + var);
+		setError("cannot find: " + sub);
 		return false;
     }
 
@@ -44,7 +44,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subd
         nValues *= anCount.back();
     }
 
-	std::vector<size_t> xyz = {0,1,2};
+	//std::vector<size_t> xyz = {0,1,2};
 	SpatRasterSource s;
 	s.multidim = false;
 	s.mdims = anCount;
