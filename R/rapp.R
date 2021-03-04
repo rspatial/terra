@@ -20,7 +20,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 
 	out <- rast(x)
 	nlyr(out) <- 1
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x))*3)
 	for (i in 1:b$n) {
 		v <- x@ptr$rappvals(index@ptr, b$row[i]-1, b$nrows[i])
 		v <- sapply(v, fun, ...)

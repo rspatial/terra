@@ -49,7 +49,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		}
 	}
 
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x), nlyr(out))*2)
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cls))
@@ -186,7 +186,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nlyr(x[1])*2)
 
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)

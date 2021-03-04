@@ -7,10 +7,12 @@
 
 //#include "cpl_conv.h" // for CPLMalloc()
 //#include "cpl_string.h"
-//#include "ogr_spatialref.h"
+#include "ogr_spatialref.h"
 
 #include "gdal_priv.h"
 #include "gdal.h"
+#include "crs.h"
+
 
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
@@ -36,29 +38,41 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		return false;
     }
 
-    size_t nValues = 1;
-    std::vector<size_t> anCount;
-
-    for( const auto poDim: poVar->GetDimensions() ) {
-        anCount.push_back(static_cast<size_t>(poDim->GetSize()));
-        nValues *= anCount.back();
-    }
-
-	//std::vector<size_t> xyz = {0,1,2};
-	SpatRasterSource s;
-	s.multidim = false;
-	s.mdims = anCount;
-	s.ncol=anCount[xyz[0]];
-	s.nrow=anCount[xyz[1]];
-	s.nlyr=anCount[xyz[2]];
-	setSource(s);
-	
-	for (size_t i=0; i<anCount.size(); i++){
-		Rcpp::Rcout << anCount[i] << std::endl;
+//	const auto sref:
+	std::shared_ptr<OGRSpatialReference> srs = poVar->GetSpatialRef();
+	if (srs != NULL) {
+		char *cp;
+		std::string msg;
+		OGRErr err = srs->exportToProj4(&cp);
+		if (is_ogr_error(err, msg)) {
+			Rcpp::Rcout << msg << std::endl;
+		} else {
+			std::string prj = std::string(cp);
+			Rcpp::Rcout << prj << std::endl;
+		}
+		CPLFree(cp);
+	} else {
+		Rcpp::Rcout << "srs is null" << std::endl;		
 	}
 	
-	Rcpp::Rcout << nValues << std::endl;
-	addWarning("Good!");
+    std::vector<std::string> dimname;
+	SpatRasterSource s;
+	s.multidim = true;
+
+    for( const auto poDim: poVar->GetDimensions() ) {
+        s.mdims.push_back(static_cast<size_t>(poDim->GetSize()));
+        dimname.push_back(static_cast<std::string>(poDim->GetName()));
+    }
+	
+	//std::vector<size_t> xyz = {0,1,2};
+	s.ncol = s.mdims[xyz[0]];
+	s.nrow = s.mdims[xyz[1]];
+	s.nlyr = s.mdims[xyz[2]];
+	setSource(s);
+	
+	for (size_t i=0; i<s.mdims.size(); i++){
+		Rcpp::Rcout << s.mdims[i] << " " << dimname[i] << std::endl;
+	}
 	return true;
 }
 
