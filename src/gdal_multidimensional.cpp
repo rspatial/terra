@@ -94,7 +94,8 @@ read
   
 #else  
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
+
+bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
 	setError("multidim is not supported by GDAL < 3.1")
 	return false;
 }
