@@ -253,6 +253,9 @@ RCPP_MODULE(spat){
 		.constructor<SpatExtent, std::string>()
 		.constructor<std::vector<std::string>>()
 		.method("deepcopy", &SpatVector::deepCopy, "deepCopy")
+		.method("wkt", &SpatVector::wkt, "")
+		.method("wkb", &SpatVector::wkb, "")
+		.method("hex", &SpatVector::hex, "")
 
 		.field_readonly("df", &SpatVector::df )
 

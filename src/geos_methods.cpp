@@ -1,6 +1,53 @@
 #include "geos_spat.h"
 
 
+std::vector<std::string> SpatVector::wkt() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<std::string> out;
+	out.reserve(g.size());
+	char * wkt;
+	for (size_t i = 0; i < g.size(); i++) {	
+		wkt = GEOSGeomToWKT_r(hGEOSCtxt, g[i].get());
+		out.push_back(wkt);
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+
+std::vector<std::string> SpatVector::wkb() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<std::string> out;
+	out.reserve(g.size());
+	size_t len = 0;
+	for (size_t i = 0; i < g.size(); i++) {	
+		unsigned char *wkb = GEOSGeomToWKB_buf_r(hGEOSCtxt, g[i].get(), &len);
+		std::string s( reinterpret_cast<char const*>(wkb), len) ;		
+		out.push_back(s);
+		free(wkb);
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+std::vector<std::string> SpatVector::hex() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<std::string> out;
+	out.reserve(g.size());
+	size_t len = 0;
+	for (size_t i = 0; i < g.size(); i++) {	
+		unsigned char *hex = GEOSGeomToHEX_buf_r(hGEOSCtxt, g[i].get(), &len);
+		std::string s( reinterpret_cast<char const*>(hex), len) ;		
+		out.push_back(s);
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+	
 SpatVector SpatVector::allerretour() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);

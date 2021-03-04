@@ -232,6 +232,9 @@ class SpatVector {
 //geos
 		std::vector<bool> geos_isvalid();
 		std::vector<std::string> geos_isvalid_msg();
+		std::vector<std::string> wkt();
+		std::vector<std::string> wkb();
+		std::vector<std::string> hex();
 
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();

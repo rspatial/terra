@@ -47,9 +47,13 @@ setMethod("geomtype", signature(x="Spatial"),
 )
 
 setMethod("geom", signature(x="SpatVector"), 
-	function(x, wkt=FALSE, df=FALSE){
-		if (wkt) {
+	function(x, wkt=FALSE, hex=FALSE, df=FALSE){
+		if (hex) {
+			x@ptr$hex()
+		} else if (wkt) {
 			x@ptr$getGeometryWKT()
+			# or via geos with 
+			# x@ptr$wkt()
 		} else {
 			g <- x@ptr$get_geometry()
 			g <- do.call(cbind, g)
@@ -91,11 +95,12 @@ setMethod("dim", signature(x="SpatVector"),
 )
 
 setMethod("as.data.frame", signature(x="SpatVector"), 
-	function(x, geom=FALSE) {
+	function(x, geom=NULL) {
 		d <- data.frame(x@ptr$getDF(), check.names=FALSE, fix.empty.names=FALSE, stringsAsFactors=FALSE)
 		colnames(d) <- x@ptr$names
-		if (geom) {
-			g <- geom(x, wkt=TRUE)
+		if (!is.null(geom)) {
+			geom <- match.arg(toupper(geom), c("WKT", "HEX"))
+			g <- geom(x, wkt=geom=="WKT", hex=geom=="HEX")
 			if (nrow(d) > 0) {
 				d$geometry <- g
 			} else {
@@ -107,7 +112,7 @@ setMethod("as.data.frame", signature(x="SpatVector"),
 )
 
 setMethod("as.list", signature(x="SpatVector"), 
-	function(x, geom=FALSE) {
+	function(x, geom=NULL) {
 		as.list(as.data.frame(x, geom=geom))
 	}
 )
