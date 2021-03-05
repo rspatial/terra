@@ -76,7 +76,10 @@ class SpatRasterSource {
 		SpatWindow window;
 	
 		bool multidim = false;
-		std::vector<size_t> mdims;
+		std::vector<size_t> m_dims;
+		std::vector<std::string> m_dimnames;
+		std::vector<size_t> m_order;
+		std::vector<size_t> m_subset;
 
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");

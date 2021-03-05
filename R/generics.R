@@ -604,7 +604,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 
 setMethod("unique", signature(x="SpatVector", incomparables="ANY"), 
 	function(x, incomparables=FALSE, ...) {
-		u <- unique(as.data.frame(x, geom=TRUE), incomparables=incomparables, ...)
+		u <- unique(as.data.frame(x, geom="WKT"), incomparables=incomparables, ...)
 		v <- vect(u, geom="geometry")
 		v$geometry <- NULL
 		crs(v) <- crs(x)
