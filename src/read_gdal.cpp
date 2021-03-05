@@ -379,8 +379,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 	std::string msg;
 	if (!s.srs.set({crs}, msg)) {
-		setError(msg);
-		return false;
+		addWarning(msg);
 	}
 
 	GDALRasterBand  *poBand;

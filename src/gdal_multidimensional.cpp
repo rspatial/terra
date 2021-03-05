@@ -4,9 +4,6 @@
 
 #include "proj.h"
 
-
-//#include "cpl_conv.h" // for CPLMalloc()
-//#include "cpl_string.h"
 #include "ogr_spatialref.h"
 
 #include "gdal_priv.h"
@@ -17,14 +14,11 @@
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
 
-//    GDALAllRegister();
-	
 	size_t ndims = xyz.size();
-	if (ndims < 2 || ndims > 3) {
-		setError("need two or three dimension variables");
+	if (ndims != 3) {
+		setError("need three dimension indices");
         return false;
 	}
-	
 	
     auto poDataset = std::unique_ptr<GDALDataset>(
         GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER ));
@@ -57,7 +51,6 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 
 	SpatRasterSource s;
 
-//	const auto sref:
 	std::string wkt = "";
 	std::shared_ptr<OGRSpatialReference> srs = poVar->GetSpatialRef();
 	if (srs != NULL) {
@@ -76,34 +69,62 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 
 	s.multidim = true;
 
+	std::vector<size_t> dims;
+	std::vector<std::string> dimnames;
     for( const auto poDim: poVar->GetDimensions() ) {
-        s.m_dims.push_back(static_cast<size_t>(poDim->GetSize()));
-        s.m_dimnames.push_back(static_cast<std::string>(poDim->GetName()));
+        dims.push_back(static_cast<size_t>(poDim->GetSize()));
+        dimnames.push_back(static_cast<std::string>(poDim->GetName()));
     }
+	s.m_ndims = dims.size();
 
 	if (warngroup) {
-	//to do: remove dimnames from gnames
 		std::string gn = "";
 		for (size_t i=0; i<gnames.size(); i++) {
-			if (!is_in_vector(gnames[i], s.m_dimnames) &&  (gnames[i] != sub)) { 
+			if (!is_in_vector(gnames[i], dimnames) &&  (gnames[i] != sub)) { 
 				gn += gnames[i] + ", ";
 			}
 		}
 		addWarning("using: " + sub + ". Other groups are: \n" + gn);
 	}
 	s.source_name = sub;
-	s.source_name_long = poVar->GetFullName();
+	s.source_name_long = poVar->GetAttribute("long_name")->ReadAsString();
 
-	Rcpp::Rcout << poVar->GetName() << std::endl;
-	Rcpp::Rcout << poVar->GetFullName() << std::endl;
-
-	//std::vector<size_t> xyz = {0,1,2};
-	s.ncol = s.m_dims[xyz[0]];
-	s.nrow = s.m_dims[xyz[1]];
-	if (ndims > 2) {
-		s.nlyr = s.m_dims[xyz[2]];
+	if (xyz[0] < s.m_ndims) {
+		s.ncol = dims[xyz[0]];
+		s.m_dimnames.push_back(dimnames[xyz[0]]);
 	} else {
-		s.nlyr = 1;		
+		setError("the first dimension is not valid");
+		return false;		
+	}
+	if (xyz[1] < s.m_ndims) {
+		s.nrow = dims[xyz[1]];
+		s.m_dimnames.push_back(dimnames[xyz[1]]);
+	} else {
+		setError("the second dimension is not valid");
+		return false;		
+	}
+	if (s.m_ndims > 2) {
+		if (xyz[2] < s.m_ndims) {
+			s.nlyr = dims[xyz[2]];
+			s.m_dimnames.push_back(dimnames[xyz[2]]);
+		} else {
+			setError("the third dimension is not valid");
+			return false;		
+		}
+	}
+	s.m_dims = xyz;
+		
+	if (dims.size() > 3) {
+		for (size_t i=0; i<ndims; i++) {
+			bool found = false;
+			for (size_t j=0; j<3; j++) {
+				if (i == xyz[j]) found = true;
+			}
+			if (!found) {
+				s.m_dims.push_back(dims[i]);
+				s.m_dimnames.push_back(dimnames[i]);				
+			}
+		}
 	}
 	s.nlyrfile = s.nlyr;
 	s.layers.resize(s.nlyr);
@@ -115,15 +136,13 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	s.hasValues = true;
 	s.unit = std::vector<std::string>(s.nlyr, poVar->GetUnit());
 
-
 // layer names
 // time 
 // extent
 
 	setSource(s);
-	
 	for (size_t i=0; i<s.m_dims.size(); i++){
-		Rcpp::Rcout << s.m_dims[i] << " " << s.m_dimnames[i] << std::endl;
+		Rcpp::Rcout << s.m_dims[i] << " " << s.m_dimnames[i] << " " << dims[s.m_dims[i]] << std::endl;
 	}
 	return true;
 }
