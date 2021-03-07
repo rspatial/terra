@@ -69,7 +69,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 
 	std::vector<size_t> dimcount;
 	std::vector<std::string> dimnames;
-    for( const auto poDim: poVar->GetDimensions() ) {
+    for( const auto &poDim: poVar->GetDimensions() ) {
         dimcount.push_back(static_cast<size_t>(poDim->GetSize()));
         dimnames.push_back(static_cast<std::string>(poDim->GetName()));
     }
@@ -225,7 +225,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
                     0 /* array size in bytes. Omitted */);
     GDALExtendedDataTypeRelease(hDT);
  	
-	std::replace (out.begin(), out.end(), source[src].m_missing_value, NAN);
+	std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	
 	return true;
 }
