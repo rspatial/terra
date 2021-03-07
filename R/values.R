@@ -43,6 +43,7 @@ function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x
 	readStart(x)
 	on.exit(readStop(x))
 	v <- readValues(x, row, nrows, col, ncols, mat=mat, dataframe=dataframe)
+	messages(x)
 	return(v)
 }
 )

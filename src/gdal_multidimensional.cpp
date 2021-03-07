@@ -14,9 +14,8 @@
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
 
-	size_t ndims = xyz.size();
-	if (ndims != 3) {
-		setError("need three dimension indices");
+	if (xyz.size() != 3) {
+		setError("you must supply three dimension indices");
         return false;
 	}
 	
@@ -67,15 +66,14 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		addWarning(msg);
 	}
 
-	s.multidim = true;
 
-	std::vector<size_t> dims;
+	std::vector<size_t> dimcount;
 	std::vector<std::string> dimnames;
     for( const auto poDim: poVar->GetDimensions() ) {
-        dims.push_back(static_cast<size_t>(poDim->GetSize()));
+        dimcount.push_back(static_cast<size_t>(poDim->GetSize()));
         dimnames.push_back(static_cast<std::string>(poDim->GetName()));
     }
-	s.m_ndims = dims.size();
+	s.m_ndims = dimcount.size();
 
 	if (warngroup) {
 		std::string gn = "";
@@ -89,15 +87,22 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	s.source_name = sub;
 	s.source_name_long = poVar->GetAttribute("long_name")->ReadAsString();
 
+	s.m_hasNA = false;
+	double NAval = poVar->GetNoDataValueAsDouble(&s.m_hasNA);
+	if (s.m_hasNA) {
+		s.m_missing_value = NAval;
+		Rcpp::Rcout << "NAval: " << NAval << std::endl;
+	}
+
 	if (xyz[0] < s.m_ndims) {
-		s.ncol = dims[xyz[0]];
+		s.ncol = dimcount[xyz[0]];
 		s.m_dimnames.push_back(dimnames[xyz[0]]);
 	} else {
 		setError("the first dimension is not valid");
 		return false;		
 	}
 	if (xyz[1] < s.m_ndims) {
-		s.nrow = dims[xyz[1]];
+		s.nrow = dimcount[xyz[1]];
 		s.m_dimnames.push_back(dimnames[xyz[1]]);
 	} else {
 		setError("the second dimension is not valid");
@@ -105,7 +110,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	}
 	if (s.m_ndims > 2) {
 		if (xyz[2] < s.m_ndims) {
-			s.nlyr = dims[xyz[2]];
+			s.nlyr = dimcount[xyz[2]];
 			s.m_dimnames.push_back(dimnames[xyz[2]]);
 		} else {
 			setError("the third dimension is not valid");
@@ -114,18 +119,19 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	}
 	s.m_dims = xyz;
 		
-	if (dims.size() > 3) {
-		for (size_t i=0; i<ndims; i++) {
+	if (s.m_ndims > 3) {
+		for (size_t i=0; i<s.m_ndims; i++) {
 			bool found = false;
 			for (size_t j=0; j<3; j++) {
 				if (i == xyz[j]) found = true;
 			}
 			if (!found) {
-				s.m_dims.push_back(dims[i]);
+				s.m_dims.push_back(i);
 				s.m_dimnames.push_back(dimnames[i]);				
 			}
 		}
 	}
+	
 	s.nlyrfile = s.nlyr;
 	s.layers.resize(s.nlyr);
     std::iota(s.layers.begin(), s.layers.end(), 0);
@@ -135,32 +141,88 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	s.filename = fname;
 	s.hasValues = true;
 	s.unit = std::vector<std::string>(s.nlyr, poVar->GetUnit());
+	s.multidim = true;
 
 // layer names
 // time 
 // extent
-
+	s.m_counts = dimcount;
 	setSource(s);
-	for (size_t i=0; i<s.m_dims.size(); i++){
-		Rcpp::Rcout << s.m_dims[i] << " " << s.m_dimnames[i] << " " << dims[s.m_dims[i]] << std::endl;
+	for (size_t i=0; i<s.m_ndims; i++){
+		Rcpp::Rcout << s.m_dims[i] << " " << s.m_dimnames[i] << " " << s.m_counts[s.m_dims[i]] << std::endl;
 	}
 	return true;
 }
 
 
-/*
-read
-    std::vector<double> values(nValues);
-    poVar->Read(std::vector<GUInt64>{0,0,0}.data(),
-                anCount.data(),
-                nullptr, // step: defaults to 1,1,1 
-                nullptr, // stride: default to row-major convention
-                GDALExtendedDataType::Create(GDT_Float64),
-                &values[0]);
 
-			
-	return values;
-*/
+bool SpatRaster::readStartMulti(unsigned src) {
+
+    GDALDatasetH hDS = GDALOpenEx( source[src].filename.c_str(), GDAL_OF_MULTIDIM_RASTER, NULL, NULL, NULL);
+    if (!hDS) {
+		setError("not a good dataset");
+        return false;
+    }
+    GDALGroupH hGroup = GDALDatasetGetRootGroup(hDS);
+    GDALReleaseDataset(hDS);
+    if (!hGroup) {
+		setError("not a good root group");
+		return false;
+    }
+    
+	GDALMDArrayH hVar = GDALGroupOpenMDArray(hGroup, source[src].source_name.c_str(), NULL);
+    GDALGroupRelease(hGroup);
+    if (!hVar) {
+		setError("not a good array");
+		return false;
+    }
+
+	source[src].gdalmdarray = hVar;
+	return true;
+}
+
+
+bool SpatRaster::readStopMulti(unsigned src) {
+	GDALMDArrayRelease(source[src].gdalmdarray);
+	source[src].open_read = false;
+	return true;
+}
+
+
+bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
+	
+	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
+
+	std::vector<GUInt64> offset(source[src].m_ndims, 0);
+	std::vector<size_t> count = source[src].m_counts;
+	size_t n=1;
+	count = {3600, 1, 1, 7200, 1};
+	for (size_t i=0; i<count.size(); i++) {
+		//count[i] = std::min(count[i], source[src].m_counts[i]);
+		Rcpp::Rcout << offset[i] << "-" << count[i] << ", ";
+		n *= count[i];
+	}
+	Rcpp::Rcout << std::endl;
+	
+
+	out.resize(n, -99);
+	
+	
+    GDALMDArrayRead(source[src].gdalmdarray,
+                    &offset[0],
+                    &count[0],
+                    NULL, /* step: defaults to 1,1,1 */
+                    NULL, /* stride: default to row-major convention */
+                    hDT,
+                    &out[0],
+                    NULL, /* array start. Omitted */
+                    0 /* array size in bytes. Omitted */);
+    GDALExtendedDataTypeRelease(hDT);
+ 	
+	std::replace (out.begin(), out.end(), source[src].m_missing_value, NAN);
+	
+	return true;
+}
 
   
 #else  
@@ -171,6 +233,21 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	return false;
 }
 
+bool SpatRaster::readStartMulti(unsigned src) {
+	setError("multidim is not supported by GDAL < 3.1");
+	return false;
+}
+bool SpatRaster::readStopMulti(unsigned src) {
+	setError("multidim is not supported by GDAL < 3.1");
+	return false;
+}
+
+
+bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
+	setError("multidim is not supported by GDAL < 3.1");
+	std::vector<double>out;
+	return out;
+}
 
 #endif
 

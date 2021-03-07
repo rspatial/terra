@@ -584,6 +584,11 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 
 void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t row, unsigned nrows, size_t col, unsigned ncols) {
 
+	if (source[src].multidim) {
+		readValuesMulti(data, src, row, nrows, col, ncols);
+		return;
+	}
+
 	if (source[src].hasWindow) { // ignoring the expanded case.
 		row = row + source[src].window.off_row;
 		col = col + source[src].window.off_col;

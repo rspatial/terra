@@ -56,6 +56,9 @@ class SpatRasterSource {
 	public:
 #ifdef useGDAL
 		GDALDataset* gdalconnection;
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1	
+		GDALMDArrayH gdalmdarray;
+#endif
 #endif
 		bool open_read=false;
 		bool open_write=false;
@@ -79,8 +82,11 @@ class SpatRasterSource {
 		size_t m_ndims;
 		std::vector<size_t> m_dims;
 		std::vector<std::string> m_dimnames;
+		std::vector<size_t> m_counts;
 		std::vector<size_t> m_order;
 		std::vector<size_t> m_subset;
+		bool m_hasNA;
+		double m_missing_value;
 
 		
 		//std::vector<std::string> crs = std::vector<std::string>(2, "");
@@ -410,7 +416,10 @@ class SpatRaster {
 		bool writeStopGDAL();
 
 
-		std::vector<double> readmulti(std::string filename, std::string var);
+		bool readStartMulti(unsigned src);
+		bool readStopMulti(unsigned src);
+		bool readValuesMulti(std::vector<double> &data, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
+
 
 
 		//bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
