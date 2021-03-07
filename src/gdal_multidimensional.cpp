@@ -245,8 +245,7 @@ bool SpatRaster::readStopMulti(unsigned src) {
 
 bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 	setError("multidim is not supported by GDAL < 3.1");
-	std::vector<double>out;
-	return out;
+	return false;
 }
 
 #endif
