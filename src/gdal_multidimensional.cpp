@@ -219,7 +219,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
                     0 /* array size in bytes. Omitted */);
     GDALExtendedDataTypeRelease(hDT);
  	
-	std::replace (out.begin(), out.end(), source[src].m_missing_value, NAN);
+	std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	
 	return true;
 }
