@@ -194,9 +194,17 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
 
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
-	std::vector<size_t> count = source[src].m_counts;
+	offst[dims[0]] = row;
+	offst[dims[1]] = col;
+
+//	std::vector<size_t> count = source[src].m_counts;
+	std::vector<size_t> count(source[src].m_ndims, 1);
+	count[dims[0]] = nrows;
+	count[dims[1]] = ncols;
+	count[dims[2]] = nlyr();
+
 	size_t n=1;
-	count = {3600, 1, 1, 7200, 1};
+	//count = {3600, 1, 1, 7200, 1};
 	for (size_t i=0; i<count.size(); i++) {
 		//count[i] = std::min(count[i], source[src].m_counts[i]);
 		Rcpp::Rcout << offset[i] << "-" << count[i] << ", ";
@@ -204,10 +212,8 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	}
 	Rcpp::Rcout << std::endl;
 	
-
 	out.resize(n, -99);
-	
-	
+		
     GDALMDArrayRead(source[src].gdalmdarray,
                     &offset[0],
                     &count[0],
