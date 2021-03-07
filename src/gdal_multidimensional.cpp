@@ -69,7 +69,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 
 	std::vector<size_t> dimcount;
 	std::vector<std::string> dimnames;
-    for( const auto poDim: poVar->GetDimensions() ) {
+    for( const auto &poDim: poVar->GetDimensions() ) {
         dimcount.push_back(static_cast<size_t>(poDim->GetSize()));
         dimnames.push_back(static_cast<std::string>(poDim->GetName()));
     }
