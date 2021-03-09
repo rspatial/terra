@@ -25,9 +25,14 @@
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
 
 
-//bool SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
-
     GDALDataset *poDS = NULL;
+
+	if (filename != "") {
+		if (file_exists(filename) & (!overwrite)) {
+			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
+			return(poDS);
+		}
+	}
 
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
     if( poDriver == NULL )  {

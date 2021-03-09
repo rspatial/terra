@@ -4,26 +4,23 @@
 
 \alias{writeVector}
 
-\title{Write vector data to a file}
+\title{Write SpatVector data to a file}
 
 \description{
-Write a SpatVector object to a file. 
+Write a SpatVector to a file. You can choose one of many file formats.  
 }
 
 \usage{
-\S4method{writeVector}{SpatVector,character}(x, filename, overwrite=FALSE, ...)
+\S4method{writeVector}{SpatVector,character}(x, filename, filetype="ESRI Shapefile", overwrite=FALSE)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{filename}{character. Output filename}
+  \item{filetype}{character. A file format associated with a GDAL "driver". See \code{ gdal(drivers=TRUE)}}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
-  \item{...}{additional arguments. None implemented}
 }
 
-\value{
-SpatVector (invisibly). This function is used for the side-effect of writing values to a file.
-}
 
 \examples{
 v <- vect(cbind(1:5,1:5))

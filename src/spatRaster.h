@@ -82,6 +82,8 @@ class SpatRasterSource {
 		size_t m_ndims;
 		std::vector<size_t> m_dims;
 		std::vector<std::string> m_dimnames;
+//		std::vector<double> m_dimstart;
+//		std::vector<double> m_dimend;
 		std::vector<size_t> m_counts;
 		std::vector<size_t> m_order;
 		std::vector<size_t> m_subset;
