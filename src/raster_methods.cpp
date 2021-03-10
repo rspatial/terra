@@ -1179,7 +1179,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 				v.insert(v.end(), b.begin(), b.end());
 			}
 			recycle(v, out.bs.nrows[i] * nc);
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
 	}
 
@@ -1195,10 +1195,11 @@ SpatRaster SpatRaster::init(double value, SpatOptions &opt) {
 	unsigned nc = ncol();
 	std::vector<double> v(out.bs.nrows[0]*nc, value);
 	for (size_t i = 0; i < out.bs.n; i++) {
-		if (i > 0 && i == (out.bs.n-1)) {
-			v.resize(bs.nrows[i]*nc);
+		if ((i == (out.bs.n-1)) && (i > 0)) {
+			// it can be longer, it seems
+			v.resize(out.bs.nrows[i] * nc, value);
 		}
-		if (!out.writeValues(v, i, 1, 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
 	out.writeStop();
 	return(out);
@@ -1950,6 +1951,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 	}
 	std::vector<double> stats(nlyr());
 	std::vector<double> stats2(nlyr());
+	
 	std::vector<double> n(nlyr());
 	if (!readStart()) {
 		out.setError(getError());
