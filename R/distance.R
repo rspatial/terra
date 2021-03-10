@@ -37,18 +37,25 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 
 
 mat2wide <- function(m, sym=TRUE, keep=NULL) {
-	bool <- is.logical(m)
-	if (sym) {
-		m[lower.tri(m)] <- NA
+	if (inherits(m, "dist")) { 
+		# sym must be true in this case
+		nr <- attr(m, "Size")
+		x <- rep(1:(nr-1), (nr-1):1)
+		y <- unlist(sapply(2:nr, function(i) i:nr))
+		cbind(x,y, as.vector(m))
+	} else {
+		bool <- is.logical(m)
+		if (sym) {
+			m[lower.tri(m)] <- NA
+		}
+		m <- cbind(from=rep(1:nrow(m), each=ncol(m)), to=rep(1:ncol(m), nrow(m)), value=as.vector(t(m)))
+		m <- m[!is.na(m[,3]), , drop=FALSE]
+		if (!is.null(keep)) {
+			m <- m[m[,3] == keep, 1:2, drop=FALSE]
+		}
+		m
 	}
-	m <- cbind(from=rep(1:nrow(m), each=ncol(m)), to=rep(1:ncol(m), nrow(m)), value=as.vector(t(m)))
-	m <- m[!is.na(m[,3]), , drop=FALSE]
-	if (!is.null(keep)) {
-		m <- m[m[,3] == keep, 1:2, drop=FALSE]
-	}
-	m
 }
-
 
 setMethod("distance", signature(x="SpatVector", y="ANY"), 
 	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {

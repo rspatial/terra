@@ -75,10 +75,10 @@ setMethod("as.points", signature(x="SpatVector"),
 
 
 setMethod("as.points", signature(x="SpatRaster"), 
-	function(x, values=TRUE) {
+	function(x, values=TRUE, na.rm=TRUE) {
 		p <- methods::new("SpatVector")
 		opt <- .getOptions()
-		p@ptr <- x@ptr$as_points(values, TRUE, opt)
+		p@ptr <- x@ptr$as_points(values, na.rm, opt)
 		x <- messages(x, "as.points")
 		messages(p, "as.points")
 	}

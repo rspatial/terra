@@ -9,56 +9,28 @@ setMethod("relate", signature(x="SpatVector", y="SpatVector"),
 )
 
 
-setMethod("relate", signature(x="SpatVector", y="ANY"), 
-	function(x, y, relation) {
-		yy <- try(vect(y), silent=TRUE)
-		if (!inherits(yy, "SpatVector")) {
-			yy <- try(ext(y), silent=TRUE)
-			if (!inherits(yy, "SpatExtent")) {
-				stop("cannot use argument 'y'")
-			}
-			yy <- as.polygons(yy)
-		}
-		relate(x, yy, relation)
+setMethod("relate", signature(x="SpatVector", y="SpatExtent"), 
+	function(x, y, relation, ...) {
+		y <- as.polygons(y)
+		relate(x, y, relation, ...)
 	}
 )
 
-setMethod("relate", signature(x="ANY", y="SpatVector"), 
-	function(x, y, relation) {
-		xx <- try(vect(x), silent=TRUE)
-		if (!inherits(xx, "SpatVector")) {
-			xx <- try(ext(x), silent=TRUE)
-			if (!inherits(xx, "SpatExtent")) {
-				stop("cannot use argument 'x'")
-			}
-			xx <- as.polygons(xx)
-		}
-		relate(xx, y, relation)
+setMethod("relate", signature(x="SpatExtent", y="SpatVector"), 
+	function(x, y, relation, ...) {
+		x <- as.polygons(x)
+		relate(x, y, relation, ...)
 	}
 )
 
-setMethod("relate", signature(x="ANY", y="ANY"), 
-	function(x, y, relation) {
-		xx <- try(vect(x), silent=TRUE)
-		if (!inherits(xx, "SpatVector")) {
-			xx <- try(ext(x), silent=TRUE)
-			if (!inherits(xx, "SpatExtent")) {
-				stop("cannot use argument 'x'")
-			}
-			xx <- as.polygons(xx)
-		}
-		yy <- try(vect(y), silent=TRUE)
-		if (!inherits(yy, "SpatVector")) {
-			yy <- try(ext(y), silent=TRUE)
-			if (!inherits(yy, "SpatExtent")) {
-				stop("cannot use argument 'y'")
-			}
-			yy <- as.polygons(xx)
-		}
-		relate(xx, yy, relation)
+
+setMethod("relate", signature(x="SpatExtent", y="SpatExtent"), 
+	function(x, y, relation, ...) {
+		x <- as.polygons(x)
+		y <- as.polygons(y)
+		relate(x, y, relation, ...)
 	}
 )
-
 
 
 setMethod("relate", signature(x="SpatVector", y="missing"), 
@@ -66,11 +38,18 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 		out <- x@ptr$relate_within(relation, symmetrical)
 		x <- messages(x, "relate")
 		out[out == 2] <- NA
-		out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		if (symmetrical) {
+			class(out) <- "dist"
+			attr(out, "Size") <- nrow(x)
+			attr(out, "Diag") <- FALSE
+			attr(out, "Upper") <- FALSE
+		} else {
+			out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
+		}	
 		if (pairs) {
 			out <- mat2wide(out, symmetrical)
+			out
 		}
-		out
 	}
 )
 

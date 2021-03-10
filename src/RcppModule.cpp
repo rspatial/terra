@@ -186,6 +186,7 @@ RCPP_MODULE(spat){
 		.field("messages", &SpatOptions::msg, "messages")
 		.field("gdal_options", &SpatOptions::gdal_options, "gdal_options")
 		.field("names", &SpatOptions::names, "names")
+		.property("steps", &SpatOptions::get_steps, &SpatOptions::set_steps, "steps")
 	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )
 		//.field("gdaloptions", &SpatOptions::gdaloptions)
 	;

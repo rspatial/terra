@@ -320,13 +320,15 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt) {
 
 
 bool SpatRaster::to_memory() {
-	setValues(getValues());
+	std::vector<double> v = getValues();
+	setValues(v);
 	return true;
 }
 
 SpatRaster SpatRaster::to_memory_copy() {
 	SpatRaster m = geometry();
-	m.setValues(getValues());
+	std::vector<double> v = getValues();
+	m.setValues(v);
 	return m;
 }
 

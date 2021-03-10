@@ -29,9 +29,10 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 		return true;
 	} 
 
-	if (source[0].values.size() == 0) {
+	if (source[0].values.size() == 0 && startrow != 0 && startcol != 0) {
 		source[0].values = std::vector<double>(size(), NAN);
 	}
+	
 	size_t nc = ncell();
 	size_t chunk = nrows * ncols;
 
@@ -364,26 +365,25 @@ bool SpatRaster::writeStop(){
 //bool SpatRaster::replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols) {
 //}
 
-bool SpatRaster::setValues(std::vector<double> _values) {
-	bool result = false;
+bool SpatRaster::setValues(std::vector<double> &v) {
 	SpatRaster g = geometry();
+	SpatRasterSource s = g.source[0];
+	s.hasValues = true;
+	s.memory = true;
+	s.names = getNames();
+	s.driver = "memory";
+	setSource(s);
 
-	if (_values.size() == g.size()) {
-
-		SpatRasterSource s = g.source[0];
-		s.values = _values;
-		s.hasValues = true;
-		s.memory = true;
-		s.names = getNames();
-		s.driver = "memory";
-
-		s.setRange();
-		setSource(s);
-		result = true;
+	if (v.size() == 1) {
+		source[0].values = std::vector<double>(g.size(), v[0]);		
+	} else if (v.size() == g.size()) {
+		source[0].values = v;				
 	} else {
 		setError("incorrect number of values");
+		return false;
 	}
-	return (result);
+	source[0].setRange();
+	return true;
 }
 
 void SpatRaster::setRange() {

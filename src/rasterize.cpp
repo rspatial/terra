@@ -111,7 +111,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		size_t nsrc = source.size();
 		if (driver == "MEM") {
 			// force into single source
-			out.setValues(getValues());
+			std::vector<double> v = getValues();
+			out.setValues(v);
 			if (!out.open_gdal(rstDS, 0, opt)) {
 				out.setError("cannot open dataset");
 				return out;
