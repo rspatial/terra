@@ -229,7 +229,6 @@ setMethod("boxplot", signature(x="SpatRaster"),
 				warn("boxplot", "taking a sample of ", maxcell, " cells")
 				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 			} 
-			x <- values(x)
 			colnames(x) <- cn
 			boxplot(x, ...)
 		} else {
@@ -238,7 +237,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 				warning("boxplot", "taking a regular sample of ", maxcell, " cells")
 				s <- spatSample(s, maxcell, method="regular", as.raster=TRUE)
 			} 
-			s <- na.omit(values(s, dataframe=TRUE))
+			s <- values(s, dataframe=TRUE)
 			cn <- colnames(s)
 			cn[cn==""] <- c('layer1', 'layer2')[cn==""]
 			f <- stats::as.formula(paste(cn[1], '~', cn[2]))
