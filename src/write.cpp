@@ -29,7 +29,9 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 		return true;
 	} 
 
-	if (source[0].values.size() == 0 && startrow != 0 && startcol != 0) {
+	// this seems rather inefficient for most cases 
+	// where values could simply be appended 
+	if (source[0].values.size() == 0) { // && startrow != 0 && startcol != 0) {
 		source[0].values = std::vector<double>(size(), NAN);
 	}
 	
