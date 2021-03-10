@@ -111,7 +111,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
 
 .default_option_names <- function() {
-	c("datatype", "filetype", "verbose") 
+	c("datatype", "filetype") #, "verbose") 
 }
 
 

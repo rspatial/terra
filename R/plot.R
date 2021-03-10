@@ -222,7 +222,7 @@ setMethod("text", signature(x="SpatVector"),
 
 
 setMethod("boxplot", signature(x="SpatRaster"), 
-	function(x,y=NULL,  maxcell=100000, ...) {
+	function(x, y=NULL, maxcell=100000, ...) {
 		if (is.null(y)) {
 			cn <- names(x)
 			if ( ncell(x) > maxcell) {
@@ -235,11 +235,10 @@ setMethod("boxplot", signature(x="SpatRaster"),
 		} else {
 			s <- c(x[[1]], y[[1]])
 			if ( ncell(x) > maxcell) {
-				warning("boxplot", "taking a sample of ", maxcell, " cells")
-				s <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
-			} else {
-				s <- values(s)
-			}
+				warning("boxplot", "taking a regular sample of ", maxcell, " cells")
+				s <- spatSample(s, maxcell, method="regular", as.raster=TRUE)
+			} 
+			s <- na.omit(values(s, dataframe=TRUE))
 			cn <- colnames(s)
 			cn[cn==""] <- c('layer1', 'layer2')[cn==""]
 			f <- stats::as.formula(paste(cn[1], '~', cn[2]))

@@ -13,7 +13,7 @@
 
 The package implements two main classes (R data types): \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
-Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset} to represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector.
+Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector.
 
 The classes used wrap a C++ pointer that holds pr points to the data, and almost all data manipulation is done in C++ (for better speed). These objects cannot be directly saved to a ".Rds" file or used in cluster computing. They cannot be recovered from a saved R session either. See \code{\link{pack}} or \code{\link{writeRaster}} to work around that limitation. 
 
@@ -262,7 +262,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 
 \section{XIII. Create and combine SpatVector objects}{
 \tabular{ll}{
-  \code{\link{vect}} \tab Create a SpatRaster from a file (e.g. shapefile) or from another object\cr
+  \code{\link{vect}} \tab Create a SpatVector from a file (for example a "shapefile") or from another object\cr
   \code{\link{c}} \tab append SpatVectors of the same geometry type ("rbind") \cr
   \code{\link{unique}} \tab remove duplicates \cr
   \code{\link{project}} \tab Project a SpatVector to a different coordinate reference system \cr
