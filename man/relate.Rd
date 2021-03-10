@@ -6,9 +6,9 @@
 
 \alias{relate,SpatVector,SpatVector-method}
 \alias{relate,SpatVector,missing-method}
-\alias{relate,SpatVector,ANY-method}
-\alias{relate,ANY,SpatVector-method}
-\alias{relate,ANY,ANY-method}
+\alias{relate,SpatVector,SpatExtent-method}
+\alias{relate,SpatExtent,SpatVector-method}
+\alias{relate,SpatExtent,SpatExtent-method}
 
 
 \title{ 

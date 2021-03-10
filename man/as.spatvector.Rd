@@ -22,7 +22,7 @@ Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to
 \usage{
 \S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, extent=FALSE)
 
-\S4method{as.points}{SpatRaster}(x, values=TRUE)
+\S4method{as.points}{SpatRaster}(x, values=TRUE, na.rm=TRUE)
 
 \S4method{as.lines}{SpatVector}(x)
 
@@ -43,6 +43,7 @@ Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to
 \item{values}{logical; include cell values as attributes? If \code{FALSE} the cells are not dissolved and the object returned can be very large}
 \item{multi}{logical. If \code{TRUE} a multipoint geometry is returned}
 \item{extent}{logical. if \code{TRUE}, a polygon for the extent of the SpatRaster is returned. It has vertices for each grid cell, not just the four corners of the raster. This can be useful for more precise projection. In other cases it is better to do \code{as.polygons(ext(x))} to get a much smaller object returned that covers the same extent}
+\item{na.rm}{logical. If \code{TRUE}, only points for cells that are not \code{NA} are returned}
 \item{crs}{character. The coordinate reference system (see \code{\link{crs}}}
 }
 

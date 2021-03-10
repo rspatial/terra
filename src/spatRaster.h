@@ -252,7 +252,7 @@ class SpatRaster {
 		std::vector<double> getValues(long lyr= -1);
 		
 		bool getValuesSource(size_t src, std::vector<double> &out);				
-		bool setValues(std::vector<double> &v);
+		bool setValues(std::vector<double> &v, SpatOptions &opt);
 		bool replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols);
 		void setRange();
 

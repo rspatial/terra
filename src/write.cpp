@@ -367,7 +367,7 @@ bool SpatRaster::writeStop(){
 //bool SpatRaster::replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols) {
 //}
 
-bool SpatRaster::setValues(std::vector<double> &v) {
+bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 	SpatRaster g = geometry();
 	SpatRasterSource s = g.source[0];
 	s.hasValues = true;
@@ -377,7 +377,13 @@ bool SpatRaster::setValues(std::vector<double> &v) {
 	setSource(s);
 
 	if (v.size() == 1) {
-		source[0].values = std::vector<double>(g.size(), v[0]);		
+		if (!canProcessInMemory(opt)) {
+			SpatRaster out = geometry();
+			out.init(v[0], opt);
+			source[0] = out.source[0];
+		} else {
+			source[0].values = std::vector<double>(g.size(), v[0]);		
+		}
 	} else if (v.size() == g.size()) {
 		source[0].values = v;				
 	} else {

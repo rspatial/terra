@@ -73,10 +73,13 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		}
 
 		lv <- length(values)
-		nc <- ncell(x)
-		nl <- nlyr(x)
+		y <- rast(x)
+		nc <- ncell(y)
+		nl <- nlyr(y)
+		opt <- spatOptions()
+		
 		if (lv == 1) {
-			values <- rep(values, nl * nc)
+			y@ptr$setValues(values, opt)
 		} else {
 			if (!((lv %% nc) == 0)) {
 				warn("setValues", "length of values does not match the number of cells")
@@ -86,9 +89,8 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			} else if (lv < (nc * nl)) {
 				values <- rep(values, length.out=nc*nl)
 			}
+			y@ptr$setValues(values, opt)
 		}
-		y <- rast(x)
-		y@ptr$setValues(values)
 		y
 	}
 )
