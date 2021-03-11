@@ -239,8 +239,13 @@ setMethod("boxplot", signature(x="SpatRaster"),
 			} 
 			s <- values(s, dataframe=TRUE)
 			cn <- colnames(s)
-			cn[cn==""] <- c('layer1', 'layer2')[cn==""]
-			f <- stats::as.formula(paste(cn[1], '~', cn[2]))
+			if (is.null(cn)) cn <- c("", "")
+			colnames(s)[cn==""] <- c("layer1", "layer2")[cn==""]
+			f <- try(stats::as.formula(paste(cn[1], '~', cn[2])), silent=TRUE)
+			if (inherits(f, "try-error")) {
+				colnames(s) <- c("layer1", "layer2")
+				f <- layer1 ~ layer2
+			}
 			boxplot(f, data=s, ...)
 		}
 	}
