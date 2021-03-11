@@ -1,5 +1,7 @@
+
 #include "spatRaster.h"
 
+/*
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
 
 #include "proj.h"
@@ -76,8 +78,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
         dimcount.push_back(static_cast<size_t>(poDim->GetSize()));
         dimnames.push_back(static_cast<std::string>(poDim->GetName()));
 
-
-		std::vector<size_t> count = {poDim->GetSize()};
+		std::vector<size_t> count = {dimcount[dimcount.size()-1]};
 		std::vector<double> vals(count[0]);
 
 		const auto indvar = poDim->GetIndexingVariable();
@@ -268,15 +269,6 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 		}
 	}
 
-/*
-	for (size_t i=0; i<nl; i++) {
-		size_t nci = nc*i;
-		for (size_t j=0; j<nc; j++) {
-			out[nci + j] = temp[nl*j + i];
-		}
-	}
-	temp.resize(0);
-*/	
 	if (source[src].m_hasNA) {
 		std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	}
@@ -286,7 +278,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
   
 #else  
 
-
+*/
 bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
 	setError("multidim is not supported by GDAL < 3.1");
 	return false;
@@ -307,5 +299,7 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	return false;
 }
 
+/*
 #endif
 
+*/

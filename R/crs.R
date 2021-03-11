@@ -10,7 +10,7 @@
 .srs_describe <- function(srs) {
 	info <- .SRSinfo(srs)
 	names(info) <- c("name", "EPSG", "area", "extent")
-	d <- data.frame(t(info))
+	d <- data.frame(t(info), stringsAsFactors=FALSE)
 	d$area <- gsub("\\.$", "", d$area)
 	d[d == ""] <- NA
 	if (is.na(d$extent)) {
