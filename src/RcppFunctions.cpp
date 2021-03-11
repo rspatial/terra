@@ -49,6 +49,10 @@ std::vector<std::string> getCRSname(std::string s) {
 		
 	double west, south, east, north;
 	west = -10000;
+	east = -10000;
+	south = -10000;
+	north = -10000;
+	
 	std::string aoi="", box="";
 	#if GDAL_VERSION_MAJOR >= 3
 	if (x.GetAreaOfUse(&west, &south, &east, &north, &value)) {

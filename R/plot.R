@@ -229,8 +229,8 @@ setMethod("boxplot", signature(x="SpatRaster"),
 				warn("boxplot", "taking a sample of ", maxcell, " cells")
 				x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 			} 
-			colnames(x) <- cn
-			boxplot(x, ...)
+			names(x) <- cn
+			boxplot(values(x), ...)
 		} else {
 			s <- c(x[[1]], y[[1]])
 			if ( ncell(x) > maxcell) {
