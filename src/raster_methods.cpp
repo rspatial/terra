@@ -1107,6 +1107,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		return out;
 	}
 
+	opt.ncopies = std::max(opt.ncopies, (unsigned) 4);
 	if (!out.writeStart(opt)) {
 		readStop();
 		return out;

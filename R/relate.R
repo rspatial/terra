@@ -48,8 +48,8 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 		}	
 		if (pairs) {
 			out <- mat2wide(out, symmetrical)
-			out
 		}
+		out
 	}
 )
 

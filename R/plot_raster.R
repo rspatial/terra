@@ -214,13 +214,18 @@
 .prep.plot.data <- function(x, type, maxcell, cols, mar=NULL, draw=FALSE, 
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), 
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
-  coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, ...) {
+  coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
  
 	out <- list()
 
-	if (!(is.null(xlim) & is.null(ylim))) {
+	if (!is.null(ext)) {
+		stopifnot(inherits(ext, "SpatExtent"))
+		x <- crop(x, ext)
+		out$ext <- as.vector(ext(x))
+		out$lim <- ext
+	} else if (!(is.null(xlim) & is.null(ylim))) {
 		e <- as.vector(ext(x))
 		if (!is.null(xlim)) e[1:2] <- sort(xlim)
 		if (!is.null(ylim)) e[3:4] <- sort(ylim)
