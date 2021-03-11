@@ -205,7 +205,7 @@ function(x, i, j, ..., drop=FALSE) {
 
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 function(x, i, j, ..., drop=FALSE) {
-	x[which(as.logical(values(i)))]
+	x[which(as.logical(values(i))), drop=drop]
 })
 
 

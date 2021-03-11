@@ -145,6 +145,7 @@ setReplaceMethod("[", c("SpatRaster", "numeric", "numeric"),
 )
 
 
+
 setReplaceMethod("[", c("SpatRaster","missing", "numeric"),
 	function(x, i, j, value) {
 		i <- cellFromRowColCombine(x, 1:nrow(x), j)
@@ -174,6 +175,15 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 		if (inherits(value, "SpatRaster")) {
 			x <- mask(x, i, maskvalue=TRUE)
 			cover(x, value)
+		} else if (inherits(value, "data.frame")) {
+			if (ncol(value) > 1) {
+				error(" [", "cannot use a data.frame with multiple columns")
+			}
+			value <- unlist(value)
+			v <- values(x)
+			v[as.logical(values(i))] <- value
+			values(x) <- v
+			x		
 		} else {
 			if (length(value) > 1) {
 				v <- values(x)
