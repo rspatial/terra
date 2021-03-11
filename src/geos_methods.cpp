@@ -24,7 +24,7 @@ std::vector<std::string> SpatVector::wkb() {
 	size_t len = 0;
 	for (size_t i = 0; i < g.size(); i++) {	
 		unsigned char *wkb = GEOSGeomToWKB_buf_r(hGEOSCtxt, g[i].get(), &len);
-		std::string s( reinterpret_cast<char const*>(wkb), len) ;		
+		std::string s( reinterpret_cast<char const*>(wkb), len) ;
 		out.push_back(s);
 		free(wkb);
 	}
@@ -461,6 +461,7 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 		setError("'" + relation + "'" + " is not a valid relate name or pattern");
 		return out;
 	}
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
@@ -482,6 +483,7 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 		} 
 	}
 	geos_finish(hGEOSCtxt);
+
 	return out;
 }
 
@@ -516,10 +518,10 @@ std::vector<int> SpatVector::relateFirst(SpatVector v, std::string relation) {
 			for (size_t j = 0; j < ny; j++) {
 				if (relFun(hGEOSCtxt, x[i].get(), y[j].get())) {
 					out[i] = j;
-					continue;					
+					continue;
 				}
 			}
-		} 
+		}
 	}
 	geos_finish(hGEOSCtxt);
 	return out;
@@ -538,7 +540,7 @@ std::vector<int> SpatVector::relate(std::string relation, bool symmetrical) {
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
-	
+
 	if (symmetrical) {
 		size_t s = size();
 		size_t n = ((s-1) * s)/2;
@@ -575,7 +577,9 @@ std::vector<int> SpatVector::relate(std::string relation, bool symmetrical) {
 			} 
 		}
 	}
+
 	geos_finish(hGEOSCtxt);
+
 	return out;
 }
 
@@ -591,7 +595,7 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 	size_t nx = size();
 	size_t ny = v.size();
 	double d;
-	
+
 	if (parallel) {
 		bool nyone = false;
 		if (nx != ny) {
