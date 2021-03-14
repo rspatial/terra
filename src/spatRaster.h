@@ -565,7 +565,7 @@ class SpatRaster {
 
 		SpatRaster range(std::vector<double> add, bool narm, SpatOptions &opt);
 		//SpatRaster rasterize(SpatVector p, std::vector<double> values, double background, bool update, SpatOptions &opt);
-		SpatRaster rasterize1(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, bool weights, SpatOptions &opt);
+		//SpatRaster rasterize1(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, bool weights, SpatOptions &opt);
 		SpatRaster rasterize2(SpatVector x, std::string field, std::vector<double> values, double background, bool touches, bool add, bool weights, SpatOptions &opt);
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches);
 		std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
