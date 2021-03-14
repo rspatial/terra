@@ -19,7 +19,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	on.exit(readStop(x))
 
 # figure out the shape of the output by testing with one row
-	v <- readValues(x, round(0.5*nrow(x)), 1, 1, nc, mat=TRUE)
+	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
 	#narg <- sum(sapply(f, as.character) == "", na.rm=TRUE)
 	#if (narg > 1) {
 	#	vv <- as.list(as.data.frame(v))
@@ -179,7 +179,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	readStart(x)
 	on.exit(readStop(x))
 
-	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.5*nrx), 1, 1, ncx, mat=TRUE))
+	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.51*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .app_test_stack(v, fun, ncx, ...)
 	if (test$nl < 1) error("app", "cannot find 'fun'")
 	out <- rast(x[1], nlyr=test$nl)

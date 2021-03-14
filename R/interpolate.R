@@ -15,7 +15,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 			error("interpolate", "duplicate names: ", tab[tab>1])
 		}
 		nc <- ncol(out)
-		testrow <- round(0.5*nrow(object))
+		testrow <- round(0.51*nrow(object))
 		xy <- xyFromCell(out, cellFromRowCol(out, testrow, 1):cellFromRowCol(out, testrow, min(nc, 500)))
 		colnames(xy) <- xyNames
 		if (hv) { 

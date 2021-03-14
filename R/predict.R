@@ -125,7 +125,7 @@ setMethod("predict", signature(object="SpatRaster"),
 		tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
-		d <- readValues(object, round(0.5*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
+		d <- readValues(object, round(0.51*nrow(object)), 1, 1, min(nc,500), TRUE, TRUE)
 
 		r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
 		nl <- ncol(r)
