@@ -175,6 +175,7 @@ class SpatVector {
 		GDALDataset* GDAL_ds();
 		bool read_ogr(GDALDataset *poDS);
 		SpatVector fromDS(GDALDataset *poDS);
+		bool ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &message);		
 #endif
 
 // attributes
