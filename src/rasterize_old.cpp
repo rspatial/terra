@@ -353,7 +353,7 @@ SpatRaster SpatRaster::rasterize1(SpatVector x, std::string field, std::vector<d
 		field = "";
 		values = {0.01};
 		labels = {""};
-		out = out.rasterize(x, field, values, labels, background, false, touches, false, false, sopts);
+		out = out.rasterize1(x, field, values, labels, background, false, touches, false, false, sopts);
 		out = out.aggregate({10, 10}, "sum", true, opt);
 		return out;
 	}
@@ -383,10 +383,10 @@ SpatRaster SpatRaster::rasterize1(SpatVector x, std::string field, std::vector<d
 		out = rasterizePolygons(x, out, values, background, opts);
 	} else if (gtype == "lines") {
 		out = rasterizeLines(x, out, values, background, opts);
-	}  else {
-		out = rasterizePoints(x, out, values, background, opts);
-	}
-if (update) out = cover(out, {background}, opt);
+	} // else {
+	//	out = rasterizePoints(x, out, values, background, opts);
+	//}
+	if (update) out = cover(out, {background}, opt);
 
 	if (touches) {
 		out.addWarning("argument touches is not supported with your version of GDAL");
