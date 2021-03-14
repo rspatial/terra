@@ -177,9 +177,6 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 //	}
 
 	std::vector<int> anBandList = {1};
-//	papszOptions
-//	std::vector <char *> options_char = string_to_charpnt(options);
-//	GDALRasterizeOptions* ropts = GDALRasterizeOptionsNew(options_char.data(), NULL);
 	char** papszOptions = NULL;
 	if (touches) {
 		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
@@ -187,8 +184,7 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 	if (add) {
 		papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
 	}
-	
-	
+		
 	CPLErr err = GDALRasterizeGeometries(rstDS, 
 			static_cast<int>(anBandList.size()), &(anBandList[0]),
             static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
@@ -233,14 +229,10 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 		std::vector<double> out;
 		return out;
 	}
+	
 	SpatRaster rc = r.crop(e, "out", opt);
-#if GDAL_VERSION_MAJOR >= 3		
 	std::vector<double> feats(1, 1) ;		
-    SpatRaster rcr = rc.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
-#else
-	std::vector<double> feats(v.size(), 1) ;		
-    SpatRaster rcr = rc.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
-#endif
+    SpatRaster rcr = rc.rasterize2(v, "", feats, NAN, touches, false, false, opt); 
 	SpatVector pts = rcr.as_points(false, true, opt);
     SpatDataFrame vd = pts.getGeometryDF();
     std::vector<double> x = vd.getD(0);
@@ -263,13 +255,8 @@ std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v
 	}
 	SpatRaster r = rr.crop(v.extent, "out", opt);
 	r = r.disaggregate(fact, opt);
-#if GDAL_VERSION_MAJOR >= 3
-	std::vector<double> feats(1, 1) ;		
-	r = r.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
-#else
-	std::vector<double> feats(v.size(), 1) ;		
-	r = r.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, 	opt); 
-#endif
+	std::vector<double> feats(1, 1) ;	
+	r = r.rasterize2(v, "", feats, NAN, touches, false, false, opt); 
 	r = r.arith(100.0, "/", false, opt);
 	r = r.aggregate(fact, "sum", true, opt);
 	SpatVector pts = r.as_points(true, true, opt);

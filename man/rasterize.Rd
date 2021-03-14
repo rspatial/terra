@@ -12,8 +12,8 @@ Transfer vector data to a raster
 }
 
 \usage{
-\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, values, fun, background=NA, touches=is.lines(x),
-	add=FALSE, cover=FALSE, filename="", ...)
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, values=1, fun, background=NA, touches=is.lines(x),
+	sum=FALSE, cover=FALSE, filename="", ...)
 }
 
 \arguments{
@@ -54,7 +54,7 @@ SpatRaster
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 r <- rast(v, ncol=75, nrow=100)
-#x <- rasterize(v, r, "NAME_2")
+x <- rasterize(v, r, "NAME_2")
 
 #plot(x)
 #lines(v)

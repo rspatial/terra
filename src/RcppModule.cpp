@@ -585,7 +585,7 @@ RCPP_MODULE(spat){
 		.method("modal", &SpatRaster::modal, "modal")
 		.method("quantile", &SpatRaster::quantile, "quantile")
 		//.method("rasterize", &SpatRaster::rasterize, "rasterize")
-		.method("rasterize1", &SpatRaster::rasterize1, "rasterize1")
+		//.method("rasterize1", &SpatRaster::rasterize1, "rasterize1")
 		.method("rasterize2", &SpatRaster::rasterize2, "rasterize2")
 		.method("reverse", &SpatRaster::reverse, "reverse")
 		.method("rotate", &SpatRaster::rotate, "rotate")

@@ -1,4 +1,4 @@
-
+/*
 
 #include "ogr_spatialref.h"
 
@@ -401,3 +401,4 @@ SpatRaster SpatRaster::rasterize1(SpatVector x, std::string field, std::vector<d
 
 #endif
 
+*/
