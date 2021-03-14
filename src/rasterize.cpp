@@ -239,7 +239,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
     SpatRaster rcr = rc.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;		
-    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
+    SpatRaster rcr = rc.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #endif
 	SpatVector pts = rcr.as_points(false, true, opt);
     SpatDataFrame vd = pts.getGeometryDF();
@@ -268,7 +268,7 @@ std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v
 	r = r.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;		
-	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, 	opt); 
+	r = r.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, 	opt); 
 #endif
 	r = r.arith(100.0, "/", false, opt);
 	r = r.aggregate(fact, "sum", true, opt);
