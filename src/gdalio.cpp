@@ -655,6 +655,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			if (err != CE_None) {
 				addWarning("could not write categories");
 			}
+			CSLDestroy( names );
 		}
 	}
 
