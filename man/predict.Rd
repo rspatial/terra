@@ -14,8 +14,8 @@ This approach of using model predictions is commonly used in remote sensing (for
 }
 
 \usage{
-\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., factors=NULL, const=NULL, 
-na.rm=FALSE, index=NULL, cores=1, filename="", overwrite=FALSE, wopt=list())
+\S4method{predict}{SpatRaster}(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE,
+          index=NULL, cores=1, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

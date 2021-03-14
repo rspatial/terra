@@ -98,9 +98,11 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 	OGRFeature *poFeature;
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->StealGeometry();
-        OGRGeometryH hGeom = poGeometry;
+		OGRGeometryH hGeom = poGeometry->ToHandle(poGeometry);
+//        OGRGeometryH hGeom = poGeometry;
         ahGeometries.push_back( hGeom );
 	}
+	OGRFeature::DestroyFeature( poFeature );
 	GDALClose(vecDS);
 
 
@@ -192,6 +194,8 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
             &(values[0]), 
 			papszOptions, 
 			NULL, NULL);
+			
+	CSLDestroy(papszOptions);	
 			
 	if ( err != CE_None ) {
 		Rcpp::Rcout << err << std::endl;

@@ -43,8 +43,8 @@ SpatRaster
 \seealso{\code{ \link{app}, \link[terra]{tapp},  \link[terra]{math}} }
 
 \examples{
-s <- rast(system.file("ex/logo.tif", package="terra"))   
-ss <- s[[2:1]] + 1
+s <- rast(system.file("ex/logo.tif", package="terra")) + 1  
+ss <- s[[2:1]]
 
 fvi <- function(x, y){ (x - y ) / (x + y) } 
 x <- lapp(ss, fun=fvi )
