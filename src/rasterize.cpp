@@ -1,11 +1,15 @@
 #include "ogr_spatialref.h"
 
 #include "spatRaster.h"
-#include "string_utils.h"
-#include "crs.h"
 #include "file_utils.h"
 
-#include "gdal_utils.h"
+#include "gdal_alg.h"
+#include "ogrsf_frmts.h"
+
+#include "spatFactor.h"
+#include "string_utils.h"
+#include "recycle.h"
+#include "gdalio.h"
 
 SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> values, double background, SpatOptions &opt) {
 	r.setError("not implemented yet");
@@ -13,100 +17,119 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 }
 
 
-#if GDAL_VERSION_MAJOR >= 3
+SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<double> values, 
+	double background, bool touches, bool add, bool weights, SpatOptions &opt) {
 
-SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, bool weights, SpatOptions &opt) {
-
-	SpatRaster out;
 	std::string gtype = x.type();
 
 	if (weights && (gtype == "polygons")) {
 		SpatOptions sopts(opt);
-		out = geometry(1);
-		out = out.disaggregate({10, 10}, sopts);
+		SpatRaster wout = geometry(1);
+		unsigned agx = 1000 / ncol();
+		agx = std::max((unsigned)10, agx); 
+		unsigned agy = 1000 / nrow();
+		agy = std::max((unsigned)10, agy);
+		wout = wout.disaggregate({agx, agy}, sopts);
 		field = "";
-		values = {0.01};
-		labels = {""};
-		out = out.rasterize(x, field, values, labels, background, false, touches, false, false, sopts);
-		out = out.aggregate({10, 10}, "sum", true, opt);
-		return out;
+		double f = agx * agy;
+		wout = wout.rasterize2(x, field, {1/f}, background, touches, add, false, sopts);
+		wout = wout.aggregate({agx, agy}, "sum", true, opt);
+		return wout;
 	}
 
-
-	if ( !hasValues() ) update = false;
-
-	if (update) {
-		out = geometry();
-	} else {
+	SpatRaster out;
+//	if ( !hasValues() ) update = false;
+//	if (update) {
+//		out = geometry();
+//	} else {
 		out = geometry(1);
-		out.setNames({""});
-		if ((!update) && (labels.size() > 0)) {
-			std::vector<double> levels(labels.size());
-			std::iota(levels.begin(), levels.end(), 0);
-			out.setCategories(0, levels, labels);
+		out.setNames({field});
+//	}
+
+	if (field != "") {
+		int i = x.df.get_fieldindex(field);
+		if (i < 0) {
+			out.setError("field " + field + " not found");
+			return out;
+		}		
+		std::string dt = x.df.get_datatype(field);
+		if (dt == "string") {
+			//std::vector<std::string> ss = ;
+			SpatFactor f;
+			f.set_values(x.df.getS(i));
+			values.resize(f.v.size());
+			for (size_t i=0; i<values.size(); i++) {
+				values[i] = f.v[i];
+			}
+//			if (!update) {
+				std::vector<double> levels(f.levels.size());
+				for (size_t i=0; i<levels.size(); i++) {
+					levels[i] = f.levels[i];
+				}
+				out.setCategories(0, levels, f.labels);
+//			}
+			if (add) {
+				add = false;
+				addWarning("cannot add factors");
+			}
+		} else if (dt == "double") {
+			values = x.df.getD(i);
+		} else {
+			std::vector<long> v = x.df.getI(i);
+			values.resize(v.size());
+			for (size_t i=0; i<values.size(); i++) {
+				values[i] = v[i];
+			}			
 		}
 	}
+	size_t nGeoms = x.size();
+	if (values.size() != nGeoms) {
+		recycle(values, nGeoms);
+	}
+
+	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true);
+	if (x.hasError()) {
+		out.setError(x.getError());
+		return out;
+	}
+    std::vector<OGRGeometryH> ahGeometries;
+	OGRLayer *poLayer = vecDS->GetLayer(0);
+	poLayer->ResetReading();
+	OGRFeature *poFeature;
+	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+		OGRGeometry *poGeometry = poFeature->StealGeometry();
+        OGRGeometryH hGeom = poGeometry;
+        ahGeometries.push_back( hGeom );
+	}
+	GDALClose(vecDS);
+
 
 	std::string errmsg;
 	std::string filename = opt.get_filename();
-	std::string driver = filename == "" ? "MEM" : "GTiff";
-
-	bool canRAM = canProcessInMemory(opt);
+	std::string driver;
 	if (filename == "") {
-		if (!canRAM) {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
 			filename = tempFile(opt.get_tempdir(), ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		} 
 	} else {
+		std::string driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
 		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 			out.setError(errmsg);
 			return out;
-		}
-		//if (canRAM) driver == "MEM";
+		}	
 	}
 
-
-	std::vector<std::string> options; 
-	if (inverse) options.push_back("-i");
-	if (touches) options.push_back("-at");
-
-	if (values.size() == 0) {
-//	if (field != "") {
-		std::vector<std::string> nms = x.get_names();
-		if (!is_in_vector(field, nms)) {
-			out.setError("field " + field + " not found");
-			return out;
-		}
-		options.push_back("-a");
-		options.push_back(field);
-	} else {
-		if (values.size() == 1) {
-			options.push_back("-burn");
-			options.push_back(std::to_string(values[0]));
-		} else if (values.size() == x.size()) {
-			std::string burnvar = "rst_var";
-			if (!x.df.add_column(values, burnvar)) {
-				out.setError("this does not work??");
-				return out;
-			}
-			options.push_back("-a");
-			options.push_back(burnvar);
-		} else {
-			out.setError("the length of values must 1 or the number of features");
-			return out;
-		}
-	}
-	
-	if (!update) {
-		if (field == "") {
-			out.setNames({"value"});
-		} else { 
-			out.setNames({field});
-		}
-	}
-	GDALDatasetH rstDS, vecDS;
-
+	GDALDatasetH rstDS;
+/*
 	if (update) {
 		size_t nsrc = source.size();
 		if (driver == "MEM") {
@@ -139,266 +162,65 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 				}
 				GDALClose(hDstDS);
 			}
-		
 			rstDS = GDALOpen( filename.c_str(), GA_Update);	
-		}
-		for (size_t i=0; i<nlyr(); i++) {
-			options.push_back("-b");
-			options.push_back(std::to_string(i+1));
 		}
 	
 	} else {
+*/		
+		if (add) {
+			background = 0;
+		}
 		if (!out.create_gdalDS(rstDS, filename, driver, true, background, opt)) {
 			out.setError("cannot create dataset");
 			return out;
 		}
+//	}
+
+	std::vector<int> anBandList = {1};
+//	papszOptions
+//	std::vector <char *> options_char = string_to_charpnt(options);
+//	GDALRasterizeOptions* ropts = GDALRasterizeOptionsNew(options_char.data(), NULL);
+	char** papszOptions = NULL;
+	if (touches) {
+		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
 	}
-
-
-	GDALDataset *poDS = x.write_ogr("", "lyr", "Memory", true);
-	vecDS = poDS->ToHandle(poDS);
-
-	std::vector <char *> options_char = string_to_charpnt(options);
-	GDALRasterizeOptions* ropts = GDALRasterizeOptionsNew(options_char.data(), NULL);
-
-	int err = 0;
-	GDALDatasetH hDst = GDALRasterize(NULL, rstDS, vecDS, ropts, &err);
-	if (err != 0) {
-		setError("error "+ std::to_string(err));
+	if (add) {
+		papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
 	}
-
-	if (driver == "MEM") {
-		bool test = out.from_gdalMEM(hDst, false, true); 
-		GDALClose( hDst );
-		GDALRasterizeOptionsFree(ropts);
-		if (!test) {
-			out.setError("wat nu?");
-			return out;
-		}
-		if (update) {
-			// seems to a bug that the input layers are returned as well
-			out.source[0].values.erase(out.source[0].values.begin(), out.source[0].values.begin()+out.size());
-		}
-		if (filename != "") {
-			writeRaster(opt);
-		}
-	} else {
-		for (size_t i=0; i < nlyr(); i++) { //currently always one band
-			GDALRasterBandH hBand = GDALGetRasterBand(hDst, i+1);
-			double adfMinMax[2];
-			bool approx = ncell() > 10e+8;
-			GDALComputeRasterMinMax(hBand, approx, adfMinMax);
-			GDALSetRasterStatistics(hBand, adfMinMax[0], adfMinMax[1], NAN, NAN);	
-		}
-		GDALClose( hDst );
-		GDALRasterizeOptionsFree(ropts);
-		out = SpatRaster(filename, {-1}, {""});
-	}
-
-	return out;
-}
-
-#else 
-
-
-std::vector<double> rasterize_polygon(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned startrow, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
-
-	unsigned n = pX.size();
-	std::vector<unsigned> nCol(n);
-	for (size_t row=0; row < (nrows); row++) {
-		double y = ymax - (startrow+row+0.5) * ry;
-
-		// find nodes.
-		unsigned nodes = 0;
-		size_t j = n-1;
-		for (size_t i=0; i<n; i++) {
-			if (((pY[i] < y) && (pY[j] >= y)) || ((pY[j] < y) && (pY[i] >= y))) {
-			//	nCol[nodes++]=(int)  (((pX[i] - xmin + (y-pY[i])/(pY[j]-pY[i]) * (pX[j]-pX[i])) + 0.5 * rx ) / rx);
-				double nds = ((pX[i] - xmin + (y-pY[i])/(pY[j]-pY[i]) * (pX[j]-pX[i])) + 0.5 * rx ) / rx;
-				nds = nds < 0 ? 0 : nds;
-		        nds = nds > ncols ? ncols : nds;
-				nCol[nodes] = (unsigned) nds;
-				nodes++;
-			}
-			j = i;
-		}
-
-		std::sort(nCol.begin(), nCol.begin()+nodes);
-		unsigned ncell = ncols * row;
-
-		//  Fill the cells between node pairs.
-		for (size_t i=0; i < nodes; i+=2) {
-			if (nCol[i+1] > 0 && nCol[i] < ncols) {
-				for (size_t col = nCol[i]; col < nCol[i+1]; col++) {
-					r[col + ncell] = value;
-				}
-			}
-		}
-	}
-	return(r);
-}
-
-
-
-
-SpatRaster rasterizePolygons(SpatVector p, SpatRaster r, std::vector<double> value, double background, SpatOptions &opt) {
-
-	SpatRaster out = r.geometry(1);
-
-  	if (!out.writeStart(opt)) { return out; }
-	double resx = out.xres();
-	double resy = out.yres();
-	SpatGeom poly;
-	SpatPart part;
-	SpatHole hole;
-	unsigned n = p.size();
-	unsigned nc = out.ncol();
-	SpatExtent extent = out.getExtent();
-
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v(out.bs.nrows[i] * nc, background);
-
-		for (size_t j = 0; j < n; j++) {
-			poly = p.getGeom(j);
-			unsigned np = poly.size();
-
-			for (size_t k = 0; k < np; k++) {
-				part = poly.getPart(k);
-				if (part.hasHoles()) {
-					std::vector<double> vv = rasterize_polygon(v, value[j], part.x, part.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
-					for (size_t h=0; h < part.nHoles(); h++) {
-						hole = part.getHole(h);
-						vv = rasterize_polygon(vv, background, hole.x, hole.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
-					}
-					for (size_t q=0; q < vv.size(); q++) {
-						if ((vv[q] != background) && (!std::isnan(vv[q]))) {
-							v[q] = vv[q];
-						}
-					}
-				} else {
-					v = rasterize_polygon(v, value[j], part.x, part.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
-				}
-			}
-		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-
-	}
-	out.writeStop();
-	return(out);
-}
-
-
-
-
-std::vector<double> rasterize_line(std::vector<double> r, double value, const std::vector<double> &pX, const std::vector<double> &pY, const unsigned startrow, const unsigned nrows, const unsigned ncols, const double xmin, const double ymax, const double rx, const double ry) {
-	unsigned n = pX.size();
-	for (size_t row=0; row<nrows; row++) {
-		double y = ymax - (startrow+row+0.5) * ry;
-		unsigned ncell = ncols * row;
-		for (size_t i=1; i<n; i++) {
-            size_t j = i-1;
-			if (((pY[i] < y) && (pY[j] >= y)) || ((pY[j] < y) && (pY[i] >= y))) {
-				double col = ((pX[i] - xmin + (y-pY[i])/(pY[j]-pY[i]) * (pX[j]-pX[i])) + 0.5 * rx ) / rx;
-				if ((col >= 0) & (col < ncols)) {
-                    r[ncell + col] = value;
-				}
-			}
-		}
-	}
-	return(r);
-}
-
-
-
-SpatRaster rasterizeLines(SpatVector p, SpatRaster r, std::vector<double> value, double background, SpatOptions &opt) {
-
-	SpatRaster out = r.geometry(1);
-  	if (!out.writeStart(opt)) { return out; }
-	double resx = out.xres();
-	double resy = out.yres();
-	SpatGeom line;
-	SpatPart part;
-	unsigned n = p.size();
-	SpatExtent extent = out.getExtent();
-
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v(out.bs.nrows[i] * out.ncol(), background);
-		for (size_t j = 0; j < n; j++) {
-			line = p.getGeom(j);
-			unsigned nln = line.size();
-			for (size_t k = 0; k < nln; k++) {
-				part = line.getPart(k);
-				v = rasterize_line(v, value[j], part.x, part.y, out.bs.row[i], out.bs.nrows[i], out.ncol(), extent.xmin, extent.ymax, resx, resy);
-			}
-		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-	}
-	out.writeStop();
-	return(out);
-}
-
-
-
-SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, bool weights, SpatOptions &opt) {
-
-//SpatRaster SpatRaster::rasterize(SpatVector x, std::vector<double> values, double background, bool update, SpatOptions &opt) {
-
-	std::string gtype = x.type();
-	SpatRaster out = geometry(1);
-
-	if (weights && (gtype == "polygons")) {
-		SpatOptions sopts(opt);
-		out = out.disaggregate({10, 10}, sopts);
-		field = "";
-		values = {0.01};
-		labels = {""};
-		out = out.rasterize(x, field, values, labels, background, false, touches, false, false, sopts);
-		out = out.aggregate({10, 10}, "sum", true, opt);
+	
+	
+	CPLErr err = GDALRasterizeGeometries(rstDS, 
+			static_cast<int>(anBandList.size()), &(anBandList[0]),
+            static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
+			NULL, NULL,
+            &(values[0]), 
+			papszOptions, 
+			NULL, NULL);
+			
+	if ( err != CE_None ) {
+		Rcpp::Rcout << err << std::endl;
+		out.setError("rasterization failed");
+		GDALClose(rstDS);
 		return out;
 	}
-
-
-	if (field != "") {
-		std::vector<std::string> nms = x.get_names();
-		if (!is_in_vector(field, nms)) {
-			out.setError("field " + field + " not found");
-			return out;
-		}
-		if (!update) out.setNames({field});
-	} else {
-		if (values.size() == 1) {
-			values = std::vector<double>(x.size(), values[0]);
-		} else if (values.size() != x.size()) {
-			out.setError("the length of values must 1 or the number of features");
-			return out;
+	
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(rstDS, false, true)) {
+			out.setError("rasterization failed (mem)");
 		}
 	}
-
-	SpatOptions opts(opt);
-	if (!update) {
-		opts = opt;
+	
+	GDALRasterBandH band = GDALGetRasterBand(rstDS, 1);
+	double adfMinMax[2];
+	GDALComputeRasterMinMax(band, false, adfMinMax);
+	GDALSetRasterStatistics(band, adfMinMax[0], adfMinMax[1], -9999, -9999);
+	
+	GDALClose(rstDS);
+	if (driver != "MEM") {
+		out = SpatRaster(filename, {-1}, {""});
 	}
-	if (gtype == "polygons") {
-		out = rasterizePolygons(x, out, values, background, opts);
-	} else if (gtype == "lines") {
-		out = rasterizeLines(x, out, values, background, opts);
-	}  else {
-		out = rasterizePoints(x, out, values, background, opts);
-	}
-if (update) out = cover(out, {background}, opt);
-
-	if (touches) {
-		out.addWarning("argument touches is not supported with your version of GDAL");
-	}
-	if (inverse) {
-		out.addWarning("argument inverse is not supported with your version of GDAL");
-	}
-
 	return out;
 }
-
-
-#endif
 
 
 std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) { 
@@ -414,7 +236,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	SpatRaster rc = r.crop(e, "out", opt);
 #if GDAL_VERSION_MAJOR >= 3		
 	std::vector<double> feats(1, 1) ;		
-    SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
+    SpatRaster rcr = rc.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;		
     SpatRaster rcr = rc.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
@@ -443,7 +265,7 @@ std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v
 	r = r.disaggregate(fact, opt);
 #if GDAL_VERSION_MAJOR >= 3
 	std::vector<double> feats(1, 1) ;		
-	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
+	r = r.rasterize1(v, "", feats, {""}, NAN, false, touches, false, false, opt); 
 #else
 	std::vector<double> feats(v.size(), 1) ;		
 	r = r.rasterize(v, "", feats, {""}, NAN, false, touches, false, false, 	opt); 

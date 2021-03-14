@@ -442,6 +442,28 @@ std::vector<std::string> SpatDataFrame::get_datatypes() {
 }
 
 
+std::string SpatDataFrame::get_datatype(std::string field) {
+	int i = where_in_vector(field, get_names());
+	if (i < 0) return "";
+	i = itype[i]; 
+	std::vector<std::string> types = {"double", "long", "string"};
+	return types[i]; 
+}
+
+std::string SpatDataFrame::get_datatype(int field) {
+	if ((field < 0) || (field > (int)(ncol()-1))) return "";
+	std::vector<std::string> types = {"double", "long", "string"};
+	return types[itype[field]]; 
+}
+
+bool SpatDataFrame::field_exists(std::string field) {
+	return is_in_vector(field, get_names()); 
+}
+
+
+int SpatDataFrame::get_fieldindex(std::string field) {
+	return where_in_vector(field, get_names());
+}
 
 
 // only doing this for one column for now

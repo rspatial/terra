@@ -31,48 +31,6 @@
 #include "gdalio.h"
 
 
-void getGDALdriver(std::string &filename, std::string &driver) {
-
-	lrtrim(filename);
-	lrtrim(driver);
-
-	if (driver != "") {
-		if (driver == "RST") {
-			filename = noext(filename) + ".rst";
-		}
-
-		return;
-	}
-
-	std::string ext = getFileExt(filename);
-    lowercase(ext);
-
-	std::unordered_map<std::string, std::string>
-	drivers = {
-		{".tif","GTiff"}, {".tiff","GTiff"},
-		{".nc","netCDF"}, {".cdf","netCDF"}, 
-		{".img","HFA"}, {".ige","HFA"},
-		{".bmp","BMP"},
-		{".flt","EHdr"},
-		{".grd","RRASTER"}, {".gri","RRASTER"},
-		{".sgrd","SAGA"}, {".sdat","SAGA"},
-		{".rst","RST"}, {".rdc","RST"},
-		{".envi","ENVI"},
-		{".asc","AAIGrid"},
-		{".bmp","BMP"},
-//		{".jpg","JPEG"}, or JPEG2000?
-		{".png","PNG"},
-		{".gif","GIF"},
-	};
-
-    auto i = drivers.find(ext);
-    if (i != drivers.end()) {
-		driver = i->second;
-	}
-}
-
-
-
 bool setCats(GDALRasterBand *poBand, SpatCategories &cats) {
 	char **names = NULL;
 	for (size_t i = 0; i < cats.labels.size(); i++) {

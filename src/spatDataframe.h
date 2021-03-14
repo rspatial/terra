@@ -84,9 +84,17 @@ class SpatDataFrame {
 
 		SpatDataFrame unique(int col);
 		std::vector<int> getIndex(int col, SpatDataFrame &x);
+
 		std::vector<std::string> get_names();
 		void set_names(std::vector<std::string> nms);
 		
 		std::vector<std::string> get_datatypes();	
+		std::string get_datatype(std::string field);
+		std::string get_datatype(int field);
+		int get_fieldindex(std::string field);
+
+		bool field_exists(std::string field);
+		
+		
 };
 

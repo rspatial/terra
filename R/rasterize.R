@@ -74,9 +74,48 @@ rasterize_points <- function(x, y, field, fun="last", background, update, filena
 }
 
 
-
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), cover=FALSE, filename="", ...) {
+	function(x, y, field="", values=1, fun, background=NA, touches=is.lines(x), sum=FALSE, cover=FALSE, filename="", ...) {
+
+		g <- geomtype(x)
+		if (grepl("points", g)) {
+			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=FALSE, filename=filename, ...) 
+			return (r)
+		}
+
+		opt <- spatOptions(filename, ...)
+
+		if (cover[1] && grepl("polygons", g)) {
+			y@ptr <- y@ptr$rasterize2(x@ptr, "", 1, background, touches[1], sum[1], TRUE, opt)
+			y <- messages(y, "rasterize")
+			return(y)
+		}
+
+		if (is.null(field) || is.na(field)) field = ""
+		stopifnot(length(field) == 1)
+		stopifnot(is.numeric(values))
+		if (field != "") {
+			if (ncol(x) == 0) {
+				error("rasterize", "there are no fields")
+			}
+			if (is.numeric(field)) {
+				if (field > 0 && field <= ncol(x)) {
+					field <- names(x)[field]
+				} else {
+					error("rasterize", "if field is numeric, it should be a single number in the range (1:ncol(x))")
+				}
+			} 
+		} 
+		background <- as.numeric(background[1])
+		y@ptr <- y@ptr$rasterize2(x@ptr, field, values, background, touches[1], sum[1], FALSE, opt)
+		messages(y, "rasterize")
+	}
+)
+
+
+
+
+old_rasterize <- function(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x), cover=FALSE, filename="", ...) {
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
@@ -87,7 +126,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		opt <- spatOptions(filename, ...)
 
 		if (cover[1] && grepl("polygons", g)) {
-			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, "", background, FALSE, touches[1], FALSE, TRUE, opt)
+			y@ptr <- y@ptr$rasterize1(x@ptr, "", 1, "", background, FALSE, touches[1], FALSE, TRUE, opt)
 			y <- messages(y, "rasterize")
 			return(y)
 		}
@@ -118,6 +157,18 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		inverse <- FALSE # use "mask" for TRUE
 		background <- as.numeric(background[1])
 		#if (is.na(background)) background = 0/0 # NAN
+		if (is.numeric(field)) {
+			if ((length(field) == 1) && (ncol(x) > 1)) {
+				if (field > 0 && field <= ncol(x)) {
+					field <- names(x)[field]
+				} else {
+					error("rasterize", "field index outside the value range (1:ncol(x))")
+				} 
+			} else {
+				y@ptr <- y@ptr$rasterize1(x@ptr, "", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
+			} 
+		}
+
 		if (is.character(field)) {
 			if (length(field) == 1) {
 				i <- which(field == names(x)) 
@@ -130,38 +181,20 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 					f <- as.factor(v)
 					levs <- levels(f)
 					v <- as.integer(f) - 1
-					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
+					y@ptr <- y@ptr$rasterize1(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 				} else {
 					
-					#y@ptr <- y@ptr$rasterize(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
+					#y@ptr <- y@ptr$rasterize1(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
 					## for old gdal
-					y@ptr <- y@ptr$rasterize(x@ptr, field, x[[field,drop=T]], levs, background, update[1], touches[1], inverse[1], FALSE, opt)
+					y@ptr <- y@ptr$rasterize1(x@ptr, field, x[[field,drop=T]], levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 				}
 			} else {
 				f     <- as.factor(field)
 				levs  <- levels(f)
 				field <- as.integer(f) - 1
-				y@ptr <- y@ptr$rasterize(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
+				y@ptr <- y@ptr$rasterize1(x@ptr, "value", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 			} 
-		} else if (is.numeric(field)) {
-			if (length(field) == 1 && (nrow(x) > 1)) {
-				if (field > 0 && field <= ncol(x)) {
-					v <- x[[field]][,1]
-					if (inherits(v, "character")) {
-						f <- as.factor(field)
-						levs <- levels(f)
-						v <- as.integer(f) - 1
-					}
-					y@ptr <- y@ptr$rasterize(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
-				} else {
-					error("rasterize", "field index outside the value range (1:ncol(x))")
-				} 
-			} else {
-				y@ptr <- y@ptr$rasterize(x@ptr, "", field, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
-			} 
-		} else {
-			error("rasterize", "field should be character or numeric")
-		}
+		} 
 
 		if (domask) {
 			y <- mask(y, xx, inverse=FALSE, updatevalue=NA, touches=touches, filename=fname, overwrite=overwrite, ...)
@@ -170,4 +203,4 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 		messages(y, "rasterize")
 	}
-)
+

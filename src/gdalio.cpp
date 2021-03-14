@@ -13,6 +13,50 @@
 //#include "gdal_version.h"
 
 
+
+void getGDALdriver(std::string &filename, std::string &driver) {
+
+	lrtrim(filename);
+	lrtrim(driver);
+
+	if (driver != "") {
+		if (driver == "RST") {
+			filename = noext(filename) + ".rst";
+		}
+
+		return;
+	}
+
+	std::string ext = getFileExt(filename);
+    lowercase(ext);
+
+	std::unordered_map<std::string, std::string>
+	drivers = {
+		{".tif","GTiff"}, {".tiff","GTiff"},
+		{".nc","netCDF"}, {".cdf","netCDF"}, 
+		{".img","HFA"}, {".ige","HFA"},
+		{".bmp","BMP"},
+		{".flt","EHdr"},
+		{".grd","RRASTER"}, {".gri","RRASTER"},
+		{".sgrd","SAGA"}, {".sdat","SAGA"},
+		{".rst","RST"}, {".rdc","RST"},
+		{".envi","ENVI"},
+		{".asc","AAIGrid"},
+		{".bmp","BMP"},
+//		{".jpg","JPEG"}, or JPEG2000?
+		{".png","PNG"},
+		{".gif","GIF"},
+	};
+
+    auto i = drivers.find(ext);
+    if (i != drivers.end()) {
+		driver = i->second;
+	}
+}
+
+
+
+
 std::string sectostr(int x) {
 	char buffer[20];
 	time_t now = x;
@@ -264,7 +308,6 @@ bool getGDALDataType(std::string datatype, GDALDataType &gdt) {
 
 
 bool GDALsetSRS(GDALDatasetH &hDS, const std::string &crs) {
-
 	OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
 	OGRErr erro = OSRSetFromUserInput(hSRS, crs.c_str());
 	if (erro == 4) {
@@ -276,7 +319,6 @@ bool GDALsetSRS(GDALDatasetH &hDS, const std::string &crs) {
 	GDALSetProjection( hDS, pszSRS_WKT );
 	CPLFree( pszSRS_WKT );
 	return true;
-
 }
 
 
@@ -292,8 +334,7 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt) {
 	GDALSetGeoTransform(hVRT, adfGeoTransform);
 
 	if (!GDALsetSRS(hVRT, source[0].srs.wkt)) {
-		setError("cannot set SRS");
-		return false;
+		addWarning("cannot set SRS");
 	}
 
 	char** papszOptions = NULL;
@@ -596,12 +637,25 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 
 	GDALRasterBandH hBand;
 	std::vector<std::string> nms = getNames();
+	std::vector<bool> hasCats = hasCategories();
+	
 	for (size_t i=0; i < nlyr(); i++) {
 		hBand = GDALGetRasterBand(hDS, i+1);
 		GDALSetDescription(hBand, nms[i].c_str());
 		GDALSetRasterNoDataValue(hBand, naflag);
 		//GDALSetRasterNoDataValue(hBand, -3.4e+38);
 		if (fill) GDALFillRaster(hBand, fillvalue, 0);
+		if (hasCats[i]) {
+			SpatCategories cats = getLayerCategories(i);
+			char **names = NULL;
+			for (size_t j = 0; j < cats.labels.size(); j++) {
+				names = CSLAddString(names, cats.labels[j].c_str());
+			}
+			CPLErr err = GDALSetRasterCategoryNames(hBand, names);
+			if (err != CE_None) {
+				addWarning("could not write categories");
+			}
+		}
 	}
 
 	std::vector<double> rs = resolution();

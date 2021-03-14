@@ -12,15 +12,17 @@ Transfer vector data to a raster
 }
 
 \usage{
-\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, fun, background=NA, update=FALSE, touches=is.lines(x),
-	cover=FALSE, filename="", ...)
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, values, fun, background=NA, touches=is.lines(x),
+	add=FALSE, cover=FALSE, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{y}{SpatRaster}
   
-  \item{field}{character, numeric, or missing. If \code{field} is a character, it should a variable name in \code{x} or vector of values if \code{fun} can handle these. If \code{field} is numeric it should be a single number (index the variable), or a vector with the same length as \code{x}. If it is missing, \code{1:nrow(x)} is used}
+  \item{field}{character or numeric. If \code{field} is a character, it should a variable name in \code{x}. If \code{field} is numeric it should be a single number (index the variable)}
+
+  \item{values}{numeric. Only used if \code{field} is \code{""}. Typically a single number or a vector of length \code{nrow(x)}. The values are recycled to \code{nrow(x)}}
   
   \item{fun}{function, summarizing function that returns a single number; for when there are multiple points in one cell. For example \code{mean}, \code{length} (to get a count), \code{min} or \code{max}. Only used if \code{x} consists of points}
   
@@ -28,7 +30,7 @@ Transfer vector data to a raster
   
   \item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons are affected, not just those on the line render path, or whose center point is within the polygon}
   
-  \item{update}{logical. If \code{TRUE}, the values of the SpatRaster are updated for the cells that overlap with the geometries of \code{x}. Default is \code{FALSE}}
+  \item{sum}{logical. If \code{TRUE}, the values of overlapping geometries are summed instead of replaced; and \code{background} is set to zero. Only used if \code{x} does not consists of points} 
 
   \item{cover}{logical. If \code{TRUE} and the geometry of \code{x} is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in the each subcell} 
 
@@ -40,6 +42,9 @@ Transfer vector data to a raster
 \code{\link{mask}}
 }
 
+\note{
+To update existing raster data use the output of \code{rasterize} as second argument in \code{\link{cover}} 
+}
 
 \value{
 SpatRaster

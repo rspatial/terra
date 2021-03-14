@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 
-#include "NA.h"
+//#include "NA.h"
 #include <algorithm>
 
 template <typename T>
@@ -13,7 +13,8 @@ std::vector<T> unique_values(std::vector<T> d) {
   return d;
 }
 
-std::string double_to_string(double x) { 
+/*
+std::string double_2_string(double x) { 
   std::string s = std::to_string (x);
   s.erase( s.find_last_not_of('0') + 1, std::string::npos );
   s.erase( s.find_last_not_of('.') + 1, std::string::npos );
@@ -21,13 +22,14 @@ std::string double_to_string(double x) {
 }
 
 
-std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep) { 
+std::vector<std::string> double_2_string(const std::vector<double> &x, std::string prep) { 
   std::vector<std::string> out(x.size());
   for (size_t i=0; i<x.size(); i++) {
-    out[i] = prep + double_to_string (x[i]);
+    out[i] = prep + double_2_string (x[i]);
   }
   return out;
 }
+*/
 
 std::vector<std::string> string_values(std::vector<std::string>& v) {
   return v;
@@ -55,7 +57,8 @@ public:
 	std::vector<unsigned> levels;
 	std::vector<std::string> labels;
   
-  size_t size() { return v.size(); }
+	size_t size() { return v.size(); }
+	
 	void compute_levels() {
 		levels = unique_values(v);
 		labels = string_values(levels);

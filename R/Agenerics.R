@@ -8,6 +8,7 @@ if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGene
 if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y, ...) standardGeneric("intersect"))}
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("near")) {setGeneric("near", function(x, ...) standardGeneric("near"))}
+if (!isGeneric("nearest")) {setGeneric("nearest", function(x, ...) standardGeneric("nearest"))}
 if (!isGeneric("cartogram")) {setGeneric("cartogram", function(x, ...) standardGeneric("cartogram"))}
 if (!isGeneric("dots")) {setGeneric("dots", function(x, ...) standardGeneric("dots"))}
 if (!isGeneric("coords")) {setGeneric("coords", function(x, ...) standardGeneric("coords"))}

@@ -99,7 +99,47 @@ setMethod("near", signature(x="SpatVector"),
 			k <- max(1, min(round(k), nrow(x)))
 			d <- as.matrix(distance(x, pairs=FALSE))
 			diag(d) <- NA
-			t(apply(d, 1, function(i) order(i)[1:k]))
+			d <- t(apply(d, 1, function(i) order(i)[1:k]))
+			if (k==1) d <- t(d)
+			d <- cbind(id=1:length(x), d)
+			colnames(d)[-1] <- paste0("n", 1:k)
+			d
 		}
 	}
 )
+
+
+
+
+setMethod("nearest", signature(x="SpatVector"), 
+	function(x, y, pairs=FALSE, centroids=FALSE , lines=FALSE) {
+		if ((geomtype(x) == "polygons") && centroids) {
+			x <- centroids(x)
+		}
+		if ((geomtype(y) == "polygons") && centroids) {
+			y <- centroids(y)
+		}
+		z <- x
+		z@ptr <- x@ptr$near_between(y@ptr, pairs)
+		z <- messages(z, "nearest")
+		if (lines) return(z)
+		
+		dis <- perimeter(z)
+		z <- as.points(z)
+		from <- z[seq(1, nrow(z), 2), ]
+		to <- z[seq(2, nrow(z), 2), ]
+		values(to) <- data.frame(id=1:nrow(to))
+		values(y) <- data.frame(to_id=1:nrow(y))
+		to_int <- as.data.frame(intersect(to, y))
+		if (nrow(to_int) > nrow(to)) {
+			to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"to",drop=FALSE], function(x)x[1]) 
+		}
+		to_int <- to_int[,2] 
+		from <- geom(from)[, c("x", "y")]
+		to <- geom(to)[, c("x", "y")]
+		d <- data.frame(1:nrow(from), from, to_int, to, dis)
+		colnames(d) <- c("from_id", "from_x", "from_y", "to_id", "to_x", "to_y", "distance")
+		d
+	}
+)
+
