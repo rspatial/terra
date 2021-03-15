@@ -287,11 +287,12 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 		}
 	}
 	for (size_t r=1; r<nr; r++) { //other rows
-		size_t i=r*nc;
-		if (std::isnan(v[i])) {
-			dist[i] = dist[i-nc] + dy;
+		size_t start=r*nc;
+		if (std::isnan(v[start])) {
+			dist[start] = dist[start-nc] + dy;
 		}
-		for (size_t i=r*nc+1; i<((r+1)*nc); i++) {
+		size_t end = start+nc;
+		for (size_t i=(start+1); i<end; i++) {
 			if (std::isnan(v[i])) {
 				dist[i] = std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), dist[i-nc-1] + dxy);
 			}
@@ -301,9 +302,9 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 	if ( std::isnan(v[nc-1])) { //first cell
 		dist[nc-1] = std::min(dist[nc-1], above[nc-1] + dy);
 	}
-	for (size_t i=(nc-1); i > 0; i--) { // other cells on first row
-		if (std::isnan(v[i-1])) {
-			dist[i] = std::min(std::min(std::min(dist[i-1], above[i-1] + dy), above[i] + dxy), dist[i] + dx);
+	for (size_t i=(nc-1); i >= 0; i--) { // other cells on first row
+		if (std::isnan(v[i])) {
+			dist[i] = std::min(std::min(std::min(dist[i+1] + dx, above[i+1] + dy), above[i] + dxy), dist[i]);
 		}
 	}
 	for (size_t r=1; r<nr; r++) { // other rows
@@ -311,7 +312,7 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 		if (std::isnan(v[i])) {
 			dist[i] = std::min(dist[i], dist[i-nc] + dy);
 		}
-		for (size_t i=(r+1)*nc-2; i>(r*nc-1); i--) {
+		for (size_t i=(r+1)*nc-2; i>(r*nc); i--) {
 			if (std::isnan(v[i])) {
 				dist[i] = std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i-nc] + dy), dist[i-nc+1] + dxy);
 			}
