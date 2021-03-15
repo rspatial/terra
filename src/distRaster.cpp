@@ -94,22 +94,29 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 
 
 SpatRaster SpatRaster::distance(SpatOptions &opt) {
-	SpatRaster out = geometry();
-	SpatOptions ops;
-	if (nlyr() > 1) {
-		out.addWarning("distance computations can only be done for one layer at a time --- to be improved");
-		std::vector<unsigned> lyr = {0};
-		subset(lyr, ops);
-	}
+	SpatRaster out = geometry(1);
 	if (!hasValues()) {
 		out.setError("SpatRaster has no values");
 		return out;
+	}
+
+	SpatOptions ops(opt);
+	bool warn = false;
+	std::string msg;
+	if (nlyr() > 1) {
+		warn = true;
+		msg = "distance computations are only done for the first input layer";
+		std::vector<unsigned> lyr = {0};
+		*this = subset(lyr, ops);
 	}
 
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, ops);
 	SpatVector p = e.as_points(false, true, opt);
 	out = out.distance(p, opt);
+	if (warn) {
+		out.addWarning(msg);
+	}
 	return out;
 }
 
@@ -416,12 +423,15 @@ std::vector<double> broom_dist_geo(std::vector<double> &v, std::vector<double> &
 
 SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(1);
+	SpatOptions ops(opt);
+	bool warn = false;
+	std::string msg;
 	if (nlyr() > 1) {
-		SpatOptions ops(opt);
-		out.addWarning("distance computations can only be done for one layer at a time");
+		warn = true;
+		msg = "distance computations are only done for the first input layer";
 		std::vector<unsigned> lyr = {0};
-		subset(lyr, ops);
+		*this = subset(lyr, ops);
 	}
 
 	if (!hasValues()) {
@@ -492,6 +502,8 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	out.writeStop();
 	readStop();
 	first.readStop();
+	
+	if (warn) out.addWarning(msg);
 	return(out);
 	
 }
@@ -1004,8 +1016,10 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 
 	SpatRaster out = geometry();
 	if (nlyr() > 1) {
-		out.setError("boundary detection can only be done for one layer at a time --- to be improved");
-		return(out);
+		out.addWarning("boundary detection is only done for the first layer");
+		std::vector<unsigned> lyr = {0};
+		SpatOptions ops(opt);
+		*this = subset(lyr, ops);
 	}
 	if (!hasValues()) {
 		out.setError("SpatRaster has no values");
@@ -1075,22 +1089,28 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 
 
 SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(1);
 	if (d <= 0) {
 		out.setError("buffer size <= 0; nothing to compute");
 		return out;
 	}
-	SpatOptions ops;
+	
+	SpatOptions ops(opt);
+	bool warn = false;
+	std::string msg;
 	if (nlyr() > 1) {
-		out.addWarning("buffer computations can only be done for one layer at a time --- to be improved");
+		warn = true;
+		msg = "distance computations are only done for the first input layer";
 		std::vector<unsigned> lyr = {0};
-		subset(lyr, ops);
+		*this = subset(lyr, ops);
 	}
+	
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, ops);
 	SpatVector p = e.as_points(false, true, opt);
 	out = out.distance(p, ops);
 	out = out.arith(d, "<=", false, opt);
+	if (warn) addWarning(msg);
 	return out;
 }
 
