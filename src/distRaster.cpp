@@ -317,6 +317,9 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 			}
 		}
 	}
+
+	size_t off = (nr-1) * nc;
+	above = std::vector<double>(dist.begin()+off, dist.end());
 	return dist;
 }
 
@@ -372,6 +375,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	}
 
 	opt.set_filenames({filename});
+	above = std::vector<double>(ncol(), std::numeric_limits<double>::infinity());
 
   	if (!out.writeStart(opt)) {
 		readStop();

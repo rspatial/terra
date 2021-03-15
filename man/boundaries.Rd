@@ -27,14 +27,12 @@ Detect boundaries (edges). boundaries are cells that have more than one class in
 SpatRaster. Cell values are either 1 (a border) or 0 (not a border), or \code{NA}
 }
 
-\seealso{ \code{\link{focal}}, \code{\link{clump}} }
+\seealso{ \code{\link{focal}}, \code{\link{patches}} }
 
 \examples{
 r <- rast(nrow=18, ncol=36, xmin=0)
-v <- rep(NA, ncell(r))
-v[150:250] <- 1
-v[251:450] <- 2
-values(r) <- v
+r[150:250] <- 1
+r[251:450] <- 2
 bi <- boundaries(r)
 bo <- boundaries(r, inner=FALSE)
 bc <- boundaries(r, classes=TRUE)

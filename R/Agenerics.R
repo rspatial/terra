@@ -153,7 +153,7 @@ if (!isGeneric("inset")) {setGeneric("inset", function(x, ...) standardGeneric("
 
 if (!isGeneric("interpolate")) { setGeneric("interpolate", function(object, ...) standardGeneric("interpolate"))}
 if (!isGeneric("is.factor")) {setGeneric("is.factor", function(x) standardGeneric("is.factor"))}
-if (!isGeneric("isLonLat")) { setGeneric("isLonLat", function(x, ...) standardGeneric("isLonLat"))}
+#if (!isGeneric("isLonLat")) { setGeneric("isLonLat", function(x, ...) standardGeneric("isLonLat"))}
 if (!isGeneric("is.lonlat")) { setGeneric("is.lonlat", function(x, ...) standardGeneric("is.lonlat"))}
 
 if (!isGeneric("mask")) { setGeneric("mask", function(x, mask, ...) standardGeneric("mask")) }
@@ -167,6 +167,8 @@ if (!isGeneric("ncol<-")) { setGeneric("ncol<-", function(x, ..., value) standar
 if (!isGeneric("nrow<-")) { setGeneric("nrow<-", function(x, ..., value) standardGeneric("nrow<-")) }
 if (!isGeneric("origin")) {	setGeneric("origin", function(x, ...) standardGeneric("origin")) }
 if (!isGeneric("pairs")) { setGeneric("pairs", function(x, ...)	standardGeneric("pairs"))}
+if (!isGeneric("patches")) {setGeneric("patches", function(x, ...) standardGeneric("patches"))}
+
 if (!isGeneric("persp")) { setGeneric("persp", function(x,...) standardGeneric("persp")) }
 if (!isGeneric("plot")) { setGeneric("plot", function(x, y,...) standardGeneric("plot"))}
 if (!isGeneric("plotRGB")) { setGeneric("plotRGB", function(x, ...)standardGeneric("plotRGB"))}

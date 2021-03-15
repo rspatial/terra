@@ -503,6 +503,7 @@ class SpatRaster {
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
 		SpatRaster distance(SpatOptions &opt);
 		SpatRaster distance(SpatVector p, SpatOptions &opt);
+		SpatRaster clumps(int directions, SpatOptions &opt);
 
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, SpatOptions &opt);

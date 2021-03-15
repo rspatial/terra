@@ -111,7 +111,7 @@ Also see the methods in section VIII
     \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA} or to or from a vector object\cr
     \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
-    \code{patches} \tab Find patches \cr
+    \code{\link{patches}} \tab Find patches (clumps) \cr
     \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
     \code{\link{autocor}} \tab Compute global or local spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr

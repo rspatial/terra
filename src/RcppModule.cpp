@@ -537,6 +537,7 @@ RCPP_MODULE(spat){
 
 		.method("bilinearValues", &SpatRaster::bilinearValues, "bilin")
 
+		.method("patches", &SpatRaster::clumps)
 		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("buffer", &SpatRaster::buffer, "buffer")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
