@@ -75,10 +75,10 @@ std::vector<double> get_focal(std::vector<double> &d, int nrow, int ncol, int wr
 std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows) {
 
 	if (nlyr() > 1) {
+		SpatOptions ops;
 		std::vector<unsigned> lyr = {0};
 		*this = subset(lyr, ops);
 	}
-		
 
 	if ((w[0] % 2 == 0) || (w[1] % 2 == 0)) {
 		setError("weights matrix must have uneven sides");
@@ -111,12 +111,12 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 
 	SpatRaster out = geometry(1);
 	if (nlyr() > 1) {
+		SpatOptions ops(opt);
 		out.addWarning("distance computations are only done for the first input layer");
 		std::vector<unsigned> lyr = {0};
 		*this = subset(lyr, ops);
 	}
-		
-	
+
 	if (!source[0].hasValues) { return(out); }
 
 	bool wmat = false;
@@ -124,7 +124,7 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		wmat = true;
 	} else if (w.size() == 1) {
 		w.push_back(w[0]);
-	} 
+	}
 	if (w.size() != 2) {
 		out.setError("size of w is not 1 or 2");
 		return out;

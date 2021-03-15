@@ -24,7 +24,7 @@ std::vector<std::vector<double>> getRCL(std::vector<std::vector<size_t>> rcl, si
 	for (size_t i=0; i<rcl[0].size(); i++) {
 		rcl2[i].push_back(rcl[0][i]);
 		rcl2[i].push_back(rcl[1][i]);
-	}	
+	}
     std::sort(rcl2.begin(), rcl2.end());
     rcl2.erase(std::unique(rcl2.begin(), rcl2.end()), rcl2.end());
 	std::vector<std::vector<double>> out(2);
@@ -34,10 +34,10 @@ std::vector<std::vector<double>> getRCL(std::vector<std::vector<size_t>> rcl, si
 	}
 	// from - to 
 	// 3 - 1
-	// 4 - 3 
-    // becomes 
+	// 4 - 3
+    // becomes
     // 3 - 1
-    // 4 - 1	
+    // 4 - 1
 	for (size_t i=1; i<out[0].size(); i++) {
 		for (size_t j=0; j<i; j++) {
 			if (out[0][i] == out[1][j]) {
@@ -73,7 +73,7 @@ void replace(std::vector<double> &v, size_t n, const std::vector<double>& d, siz
 			rcl[0].push_back(d[0]);
 			rcl[1].push_back(d[j]);
 		}
-	}	
+	}
 }
 
 
@@ -85,7 +85,7 @@ void test(std::vector<double> &d) {
 }
 
 void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size_t &dirs, size_t &ncps, const size_t &nr, const size_t &nc, std::vector<std::vector<size_t>> &rcl) {
-	
+
 	size_t nstart = ncps;
 
 	bool d4 = dirs == 4;
@@ -95,7 +95,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 			v[0] = ncps;
 			ncps++;
 		} else {
-			v[0] = above[0];				
+			v[0] = above[0];
 		}
 	}
 
@@ -105,7 +105,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 			if (d4) {
 				d = {above[i], v[i-1]} ;
 			} else {
-				d = {above[i], above[i-1], v[i-1]} ;				
+				d = {above[i], above[i-1], v[i-1]} ;
 			}
 			test(d);
 			if (d.size() > 0) {
@@ -126,9 +126,9 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 		if (!std::isnan(v[i])) { // first cell
 			if (std::isnan(v[i-nc])) {
 				v[i] = ncps;
-				ncps++;		
+				ncps++;
 			} else {
-				v[i] = v[i-nc];				
+				v[i] = v[i-nc];
 			}
 		}
 		for (size_t i=r*nc+1; i<((r+1)*nc); i++) { // other cells
@@ -137,7 +137,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 				if (d4) {
 					d = {v[i-nc], v[i-1]} ;
 				} else {
-					d = {v[i-nc], v[i-nc-1], v[i-1]} ;					
+					d = {v[i-nc], v[i-nc-1], v[i-1]} ;
 				}
 				test(d);
 				if (d.size() > 0) {
@@ -153,7 +153,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 		}
 	}
 	size_t off = (nr-1) * nc;
-	above = std::vector<double>(v.begin()+off, v.end());	
+	above = std::vector<double>(v.begin()+off, v.end());
 }
 
 
@@ -189,7 +189,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	std::vector<size_t> dim = {nrow(), ncol()};
 
 	std::string tempfile = "";
-    std::vector<double> d, v, vv;	
+    std::vector<double> d, v, vv;
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -213,7 +213,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
         v = readBlock(out.bs, i);
 		if (zeroAsNA) {
-			std::replace(v.begin(), v.end(), 0.0, NAN);
+			std::replace(v.begin(), v.end(), 0.0, (double)NAN);
 		}
         broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl);
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
@@ -233,7 +233,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 		//}
 		out = out.reclassify(rc, 3, true, false, opt);
 	} else if (filename != "") {
-		out = out.writeRaster(opt);	
+		out = out.writeRaster(opt);
 	}
 	return out;
 }
