@@ -158,7 +158,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 
 
 
-SpatRaster SpatRaster::clumps(int directions, SpatOptions &opt) {
+SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (nlyr() > 1) {
@@ -168,7 +168,7 @@ SpatRaster SpatRaster::clumps(int directions, SpatOptions &opt) {
 		for (size_t i=0; i<nlyr(); i++) {
 			std::vector<unsigned> lyr = {(unsigned)i};
 			SpatRaster x = subset(lyr, ops);
-			x = x.clumps(directions, ops);
+			x = x.clumps(directions, zeroAsNA, ops);
 			out.addSource(x);
 		}
 		if (filename != "") {
@@ -212,12 +212,14 @@ SpatRaster SpatRaster::clumps(int directions, SpatOptions &opt) {
 	std::vector<std::vector<size_t>> rcl(2);
 	for (size_t i = 0; i < out.bs.n; i++) {
         v = readBlock(out.bs, i);
+		if (zeroAsNA) {
+			std::replace(v.begin(), v.end(), 0.0, NAN);
+		}
         broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl);
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
 	out.writeStop();
 	readStop();
-
 
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {

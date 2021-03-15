@@ -5,9 +5,9 @@
 
 
 setMethod("patches", signature(x="SpatRaster"), 
-	function(x, directions=4, filename="", ...) {
+	function(x, directions=4, zeroAsNA=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$patches(directions[1], opt)
+		x@ptr <- x@ptr$patches(directions[1], zeroAsNA[1], opt)
 		messages(x, "patches")
 	}
 )
