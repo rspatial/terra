@@ -6,7 +6,7 @@
 \title{Detect patches (clumps) of cells}
 
 \description{
-Detect patches (clumps). Patches are groups of cells that are surrounded by cells that are \code{NA}. 
+Detect patches (clumps). Patches are groups of cells that are surrounded by cells that are \code{NA}. To also ignore cells that are zero, first use \code{\link{classify)} (see examples below).
 }
 
 \usage{
@@ -15,7 +15,7 @@ Detect patches (clumps). Patches are groups of cells that are surrounded by cell
 
 \arguments{
 \item{x}{SpatRaster}
-\item{directions}{integer. Which cells are considered adjacent? Should be 8 (Queen's case) or 4 (Rook's case)}
+\item{directions}{integer indicating which cells are considered adjacent. Should be 8 (Queen's case) or 4 (Rook's case)}
   \item{filename}{character. Output filename}
   \item{...}{options for writing files as in \code{\link{writeRaster}}}
 }
@@ -34,14 +34,24 @@ r[7:12, 22:36] <- 1
 r[15:16, 18:29] <- 1
 p <- patches(r)
 
-r <- rast(r)
-r[5, 5] <- 1
-r[4, 4] <- 1
-r[6, 6:8] <- 1
-r[7, 8:10] <- 1
+r <- rast(nrow=10, ncol=10, xmin=0)
+r[] <- 0
+r[3, 3] <- 10
+r[4, 4] <- 10
+r[5, 5:8] <- 12
+r[6, 6:9] <- 12
+
+# remove zeros if need be
+r <- classify(r, cbind(0, NA))
 
 p4 <- patches(r)
 p8 <- patches(r, 8)
+
+# patches for different values
+# first make layers for each value
+s <- separate(r, keep=TRUE, other=NA)
+p <- patches(s)
+
 }
 
 \keyword{methods}
