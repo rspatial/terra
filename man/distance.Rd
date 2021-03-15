@@ -66,17 +66,13 @@ A distance matrix can be coerced into a matrix with \code{as.matrix}
 \examples{
 #lonlat
 r <- rast(ncol=36,nrow=18, crs="+proj=longlat +datum=WGS84")
-v <- rep(NA, ncell(r))
-v[500] <- 1
-values(r) <- v
+r[500] <- 1
 d <- distance(r) 
 plot(d / 100000)
 
 #planar
 r <- rast(ncol=36,nrow=18, crs="+proj=utm +zone=1 +datum=WGS84")
-v <- rep(NA, ncell(r))
-v[500] <- 1
-values(r) <- v
+r[500] <- 1
 d <- distance(r) 
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")

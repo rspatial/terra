@@ -160,7 +160,23 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 
 SpatRaster SpatRaster::clumps(int directions, SpatOptions &opt) {
 
-	SpatRaster out = geometry();
+	SpatRaster out = geometry(1);
+	if (nlyr() > 1) {
+		SpatOptions ops(opt);
+		std::string filename = opt.get_filename();
+		ops.set_filenames({""});
+		for (size_t i=0; i<nlyr(); i++) {
+			std::vector<unsigned> lyr = {(unsigned)i};
+			SpatRaster x = subset(lyr, ops);
+			x = x.clumps(directions, ops);
+			out.addSource(x);
+		}
+		if (filename != "") {
+			out = out.writeRaster(opt);
+		}
+		return out;
+	}
+
 	if (!(directions == 4 || directions == 8)) {
 		out.setError("directions must be 4 or 8");
 		return out;

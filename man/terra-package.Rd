@@ -474,7 +474,7 @@ note the following important differences in methods names with the 'raster' pack
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
 \code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{layerize}\tab\code{\link{separate}}\cr
-\code{clump}\tab\code{patches}\cr
+\code{clump}\tab\code{\link{patches}}\cr
 }
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:

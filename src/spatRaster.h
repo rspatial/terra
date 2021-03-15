@@ -228,10 +228,6 @@ class SpatRaster {
 #endif 
 */
 
-		//bool isLonLat();
-		//bool couldBeLonLat();
-		//bool isGlobalLonLat();
-
 		bool is_geographic();
 		bool is_lonlat();
 		bool could_be_lonlat();
