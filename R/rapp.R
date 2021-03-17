@@ -1,30 +1,72 @@
 
 setMethod("rapp", signature(x="SpatRaster"), 
-function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
-
-	stopifnot(inherits(index, "SpatRaster"))
-	txtfun <- .makeTextFun(match.fun(fun))
-	if (inherits(txtfun, "character")) { 
-		if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
-			opt <- spatOptions(filename, overwrite, wopt=wopt)
-			na.rm <- isTRUE(list(...)$na.rm)
-			x@ptr <- x@ptr$rapply(index@ptr, txtfun, na.rm, opt)
-			return(messages(x, "rapp"))
-		}
-	} 
+function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(hasValues(x))
-	stopifnot(hasValues(index))
-	stopifnot(nlyr(index) == 2)
+	firstval <- lastval <- NA
+	if (inherits(first, "SpatRaster")) {
+		first <- first[[1]]
+		stopifnot(hasValues(first))
+	} else {
+		if (!is.numeric(first)) {
+			error("rapp", "argument 'first' should be numeric or SpatRaster")
+		}
+		firstval <- first
+		stopifnot(first %in% 1:nlyr(x))
+	}
+	if (inherits(last, "SpatRaster")) {
+		last <- last[[1]]
+		stopifnot(hasValues(last))
+	} else {
+		if (!is.numeric(last)) {
+			error("rapp", "argument 'last' should be numeric or SpatRaster")
+		}
+		lastval <- last
+		stopifnot(last %in% 1:nlyr(x))
+	}
+	if (!(is.na(firstval)) && (!(is.na(lastval)))) {
+		error("rapp", "either first or last must be a SpatRaster. For other cases use `app`")
+	}
+	if (!is.na(firstval)) {
+		index <- last;
+	} else if (!is.na(lastval)) {
+		index <- first
+	} else {
+		index <- c(first, last)
+	}
 	compareGeom(x, index, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
 
+	if (!allyrs) {
+		txtfun <- .makeTextFun(match.fun(fun))
+		if (inherits(txtfun, "character")) { 
+			if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
+				opt <- spatOptions(filename, overwrite, wopt=wopt)
+				na.rm <- isTRUE(list(...)$na.rm)
+				x@ptr <- x@ptr$rapply(index@ptr, firstval, lastval, txtfun, na.rm, opt)
+				return(messages(x, "rapp"))
+			}
+		} 
+	}
 	out <- rast(x)
-	nlyr(out) <- 1
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x))*3)
+	v <- x@ptr$rappvals(index@ptr, firstval, lastval, allyrs, fill, 0, 1)
+	v <- sapply(v, fun, ...)
+	if (is.list(v)) { error("rapp", "values returned do not have the same length for each cell") }
+	nc <- ncol(out)
+	trans = FALSE
+	if (NCOL(v) == nc) {
+		trans = TRUE
+		nlyr(out) <- nrow(v)
+	} else if (NROW(v) == nc) {
+		nlyr(out) <- NCOL(v)
+	} else if (length(v) == nc) {
+		nlyr(out) <- 1
+	}
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nlyr(x)*3)
 	for (i in 1:b$n) {
-		v <- x@ptr$rappvals(index@ptr, b$row[i]-1, b$nrows[i])
-		v <- sapply(v, fun, ...)
-		writeValues(out, v, b$row[i], b$nrows[i])
+		v <- x@ptr$rappvals(index@ptr, firstval, lastval, allyrs, fill, b$row[i]-1, b$nrows[i])
+		v <- sapply(v, fun , ...)
+		if (trans) v = t(v)		
+		writeValues(out, as.vector(v), b$row[i], b$nrows[i])
 	}
 	out <- writeStop(out)
 	return(out)

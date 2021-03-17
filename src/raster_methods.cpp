@@ -798,26 +798,36 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 }
 
 
-
-SpatRaster SpatRaster::rapply(SpatRaster x, std::string fun, bool narm, SpatOptions &opt) {
+SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
+	bool sval = !std::isnan(first);
+	bool eval = !std::isnan(last);
+	if (sval && eval) {
+		out.setError("first or last must be NA. See `app` for other cases");
+		return out;		
+	}
+
 	if (!out.compare_geom(x, false, false)) {
 		return(out);
 	}
-	if (!hasValues()) return(out);
 	if (!x.hasValues()) {
 		out.setError("index raster has no values");
 		return out;
 	}
-	if (x.nlyr() != 2) {
-		out.setError("index raster must have two layers");
+	unsigned expnl = 2 - (sval + eval);
+	if (x.nlyr() != expnl) {
+		out.setError("index raster must have " + std::to_string(expnl) + "layer(s)");
 		return out;
+	}
+	if (!hasValues()) {
+		out.setError("no values in input");
+		return(out);
 	}
 
 	std::vector<std::string> f {"sum", "mean", "min", "max", "prod", "any", "all"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.setError("unknown apply function");
+		out.setError("unknown rapply function");
 		return out;
 	}
 	std::function<double(std::vector<double>&, bool)> theFun;
@@ -836,24 +846,35 @@ SpatRaster SpatRaster::rapply(SpatRaster x, std::string fun, bool narm, SpatOpti
 		out.setError(x.getError());
 		return(out);
 	}
-
+	
+	first -= 1;
+	last -= 1;
+	int start, end;
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> idx = x.readBlock(out.bs, i);
 		size_t ncell = out.bs.nrows[i] * ncol();
 		std::vector<double> vv(ncell, NAN);
 		for (size_t j=0; j<ncell; j++) {
-			int start = idx[j] - 1;
-			int end   = idx[j+ncell];
-			if ((start >= 0) && (end <= nl) && (end >= start)) {
+			if (sval) {
+				start = first;
+				end   = idx[j] - 1;	
+			} else if (eval) {
+				start = idx[j] - 1;
+				end   = last;
+			} else {
+				start = idx[j] - 1;
+				end   = idx[j+ncell];
+			}
+			if ((start <= end) && (end <= nl) && (start >= 0)) {
 				std::vector<double> se;
 				se.reserve(end-start+1);
-				for (int i = start; i<end; i++){
+				for (int i = start; i<=end; i++){
 					size_t off = i * ncell + j;
 					se.push_back(v[off]);   
 				}
 				vv[j] = theFun(se, narm);
-			}
+			} 
 		}
 		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
@@ -864,9 +885,17 @@ SpatRaster SpatRaster::rapply(SpatRaster x, std::string fun, bool narm, SpatOpti
 }
 
 
-std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, size_t startrow, size_t nrows) {
+std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first, double last, bool all, double fill, size_t startrow, size_t nrows) {
 
 	std::vector<std::vector<double>> r;
+
+	bool sval = !std::isnan(first);
+	bool eval = !std::isnan(last);
+	if (sval && eval) {
+		setError("first or last must be NA. See `app` for other cases");
+		return r;		
+	}
+
 	if (!compare_geom(x, false, false)) {
 		return(r);
 	}
@@ -874,9 +903,12 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, size_t start
 		return r;
 	}
 	if (!x.hasValues()) {
+		setError("index raster has no values");
 		return r;
 	}
-	if (x.nlyr() != 2) {
+	unsigned expnl = 2 - (sval + eval);
+	if (x.nlyr() != expnl) {
+		setError("index raster must have " + std::to_string(expnl) + "layer(s)");
 		return r;
 	}
 
@@ -885,6 +917,7 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, size_t start
 		return(r);
 	}
 	if (!x.readStart()) {
+		setError(x.getError());
 		return(r);
 	}
 
@@ -892,15 +925,37 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, size_t start
 	std::vector<double> idx = x.readValues(startrow, nrows, 0, ncol());
 	size_t ncell = nrows * ncol();
 	r.resize(ncell);
+	int start, end;
 	for (size_t j=0; j<ncell; j++) {
-		int start = idx[j] - 1;
-		int end   = idx[j+ncell];
-		if ((start >= 0) && (end <= nl) && (end >= start)) {
+		if (sval) {
+			start = first;
+			end   = idx[j] - 1;	
+		} else if (eval) {
+			start = idx[j] - 1;
+			end   = last;
+		} else {
+			start = idx[j] - 1;
+			end   = idx[j+ncell];
+		}
+
+		if (all) {
+			if ((start <= end) && (end <= nl) && (start >= 0)) {
+				r[j].resize(nl, fill);
+				for (int i = start; i<end; i++){
+					size_t off = i * ncell + j;
+					r[j][i] = v[off];   
+				}		
+			} else {
+				r[j].resize(nl, NAN);
+			}	
+		} else if ((start <= end) && (end <= nl) && (start >= 0)) {
 			r[j].reserve(end-start+1);
 			for (int i = start; i<end; i++){
 				size_t off = i * ncell + j;
 				r[j].push_back(v[off]);   
 			}
+		} else {
+			r[j].push_back(NAN);
 		}
 	}
 	readStop();
