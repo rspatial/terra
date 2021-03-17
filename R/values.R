@@ -55,7 +55,7 @@ setMethod("values<-", signature("SpatRaster", "ANY"),
 )
 
 setMethod("focalValues", signature("SpatRaster"), 
-	function(x, w, row=1, nrows=nrow(x), fillvalue=NA) {
+	function(x, w=3, row=1, nrows=nrow(x), fillvalue=NA) {
 		if (is.matrix(w)) {
 			m <- as.vector(t(w))
 			w <- dim(w)

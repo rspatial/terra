@@ -5,12 +5,12 @@
 \alias{rapp}
 \alias{rapp,SpatRaster-method}
 
-\title{Apply a function to a range of the layers of a SpatRaster}
+\title{Range-Apply. Apply a function to a cell-varying range of the layers of a SpatRaster}
 
 \description{
-Apply a function to a range of the layers of a SpatRaster. The range is specified for each cell separately by other SpatRasters. One of these two can be replaced by a constant \code{index}. 
+Apply a function to a range of the layers of a SpatRaster. The range is specified for each cell separately by two other SpatRasters; or by one SpatRaster and a constant.
 
-See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a function to all layers (or a subset of all layers) in a SpatRaster.
+See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a function to all layers (perhaps after making a \code{\link{subset}}) of a SpatRaster.
 }
 
 \usage{
@@ -19,11 +19,11 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a fu
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{first}{SpatRaster or postive integer between 1 and nlyr(x)}
-  \item{last}{SpatRaster or postive integer between 1 and nlyr(x)}  
+  \item{first}{SpatRaster or positive integer between 1 and nlyr(x)}
+  \item{last}{SpatRaster or positive integer between 1 and nlyr(x)}  
   \item{fun}{function to be applied}
   \item{...}{additional arguments passed to \code{fun}} 
-  \item{allyrs}{logical. Should the values of all layers be used by \code{fun} (the values outside of the range set to \code{fill}}
+  \item{allyrs}{logical. Should the values of all layers be passed to \code{fun}. The values outside of the range are set to \code{fill}}
   \item{fill}{numeric. The fill value for the the values outside of the range, for when \code{allyrs=TRUE}} 
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

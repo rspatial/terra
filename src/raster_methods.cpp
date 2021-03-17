@@ -847,9 +847,8 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 		return(out);
 	}
 	
-	first -= 1;
-	last -= 1;
-	int start, end;
+	int start = first-1;
+	int end = last-1;
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> idx = x.readBlock(out.bs, i);
@@ -857,11 +856,9 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 		std::vector<double> vv(ncell, NAN);
 		for (size_t j=0; j<ncell; j++) {
 			if (sval) {
-				start = first;
 				end   = idx[j] - 1;	
 			} else if (eval) {
 				start = idx[j] - 1;
-				end   = last;
 			} else {
 				start = idx[j] - 1;
 				end   = idx[j+ncell];
@@ -925,14 +922,14 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 	std::vector<double> idx = x.readValues(startrow, nrows, 0, ncol());
 	size_t ncell = nrows * ncol();
 	r.resize(ncell);
-	int start, end;
+	int start = first-1;
+	int end = last-1;
+	
 	for (size_t j=0; j<ncell; j++) {
 		if (sval) {
-			start = first;
 			end   = idx[j] - 1;	
 		} else if (eval) {
 			start = idx[j] - 1;
-			end   = last;
 		} else {
 			start = idx[j] - 1;
 			end   = idx[j+ncell];

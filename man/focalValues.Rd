@@ -1,0 +1,38 @@
+\name{focalValues}
+
+\docType{methods}
+
+\alias{focalValues}
+\alias{focalValues,SpatRaster-method}
+  
+\title{Get focal values}
+
+\description{
+values returns all cell values of a SpatRaster (a matrix), or all the attributes of a SpatVector (a data.frame).
+}
+
+\usage{
+\S4method{focalValues}{SpatRaster}(x, w=3 row=1, nrows=nrow(x), fillvalue=NA)
+}
+
+\arguments{
+ \item{x}{SpatRaster or SpatVector}
+ \item{w}{window. The window can be defined as one (for a square) or two odd numbers (row, col); or with an odd sized matrix}
+ \item{row}{positive integer. Row number to start from, should be between 1 and nrow(x)}
+ \item{nrows}{positive integer. How many rows?}
+ \item{fillValue}{numeric used as values for imaginary cells outside the raster}
+}
+
+\value{
+matrix
+}
+
+
+\examples{
+r <- rast(ncol=4, nrow=4, crs="+proj=utm +zone=1 +datum=WGS84")
+values(r) <- 1:ncell(r)
+focalValues(r)
+}
+
+\keyword{spatial}
+\keyword{methods}

@@ -2,7 +2,6 @@
 
 \docType{methods}
 
-
 \alias{values}
 \alias{values<-}
 \alias{values,SpatRaster-method}
@@ -20,7 +19,7 @@
 \title{Get or set cell values}
 
 \description{
-values returns all cell values of a SpatRaster (a matrix), or all the attributes of a SpatVector (a data.frame).
+Get are set all cell values of a SpatRaster or SpatVector. For large SpatRaster objects use \code{\link(init)} instead to set values. 
 }
 
 \usage{

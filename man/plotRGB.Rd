@@ -15,7 +15,7 @@ Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (so
 
 \usage{
 \S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, 
-ext=NULL, interpolate=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, 
+ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, 
 zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...)
 }
 
@@ -29,7 +29,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...)
   \item{mar}{numeric vector recycled to length 4 to set the margins of the plot. Use \code{mar=NULL} or \code{mar=NA} to not set the margins}
   \item{stretch}{character. Option to stretch the values to increase the contrast of the image: "lin" or "hist"}
   \item{ext}{An \code{\link{SpatExtent}} object to zoom in to a region of interest (see \code{\link{draw}})}
-  \item{interpolate}{logical. If \code{TRUE}, interpolate the image when drawing}
+  \item{smooth}{logical. If \code{TRUE}, smooth the image when drawing to get the appearance of a higher spatial resolution}
   \item{colNA}{color for the background (\code{NA} values)}
   \item{alpha}{transparency. Integer between 0 (transparent) and 255 (opaque)}
   \item{bgalpha}{Background transparency. Integer between 0 (transparent) and 255 (opaque)}
