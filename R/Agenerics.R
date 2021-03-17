@@ -1,5 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
+if (!isGeneric("RGB<-")) {setGeneric("RGB<-", function(x, ..., value) standardGeneric("RGB<-"))}
 if (!isGeneric("autocor")) {setGeneric("autocor", function(x, ...) standardGeneric("autocor"))}
 if (!isGeneric("delauny")) {setGeneric("delauny", function(x, ...) standardGeneric("delauny"))}
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGeneric("voronoi"))}
@@ -142,6 +143,7 @@ if (!isGeneric("extract")) { setGeneric("extract", function(x, y, ...) standardG
 if (!isGeneric("expand")) {setGeneric("expand", function(x, y, ...) standardGeneric("expand"))}
 if (!isGeneric("flip")) {setGeneric("flip", function(x, ...) standardGeneric("flip")) }
 if (!isGeneric("focal")) { setGeneric("focal", function(x, ...) standardGeneric("focal")) }
+if (!isGeneric("focalValues")) { setGeneric("focalValues", function(x, ...) standardGeneric("focalValues")) }
 if (!isGeneric("freq")) { setGeneric("freq", function(x, ...) standardGeneric("freq")) }
 if (!isGeneric("geom")) { setGeneric("geom", function(x,...) standardGeneric("geom"))}
 if (!isGeneric("hasValues")) {setGeneric("hasValues", function(x, ...) standardGeneric("hasValues")) }

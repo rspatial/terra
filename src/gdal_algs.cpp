@@ -29,7 +29,6 @@
 #include "gdalio.h"
 
 
-
 //#include <vector>
 //#include "vecmath.h"
 
@@ -786,4 +785,119 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 }
 
 #endif
+	
+	
+SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) {	
+	SpatRaster out = geometry(1);
+	if (nlyr() < 3) {
+		out.setError("need at least three layers");
+		return out;
+	}
+	size_t mxlyr = std::max(std::max(r, g), b);
+	if (nlyr() < mxlyr) {
+		out.setError("layer number for R, G, B, cannot exceed nlyr()");		
+		return out;
+	}
+	
+	std::string filename = opt.get_filename();
+	opt.set_datatype("INT1U");
+	std::string driver;
+	if (filename == "") {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
+			filename = tempFile(opt.get_tempdir(), ".tif");
+			opt.set_filenames({filename});
+			driver = "GTiff";
+		} 
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}	
+	}
+	
+	std::vector<unsigned> lyrs = {(unsigned)r, (unsigned)g, (unsigned)b};
+	SpatOptions ops(opt);
+	*this = subset(lyrs, ops);
+	*this = collapse_sources();	
+	GDALDatasetH hSrcDS, hDstDS;
+	if (!open_gdal(hSrcDS, 0, ops)) {
+		out.setError("cannot create dataset from source");
+		return out;
+	}
+	GDALRasterBandH R = GDALGetRasterBand(hSrcDS,1);
+	GDALRasterBandH G = GDALGetRasterBand(hSrcDS,1);
+	GDALRasterBandH B = GDALGetRasterBand(hSrcDS,1);
+
+	GDALColorTableH hColorTable= GDALCreateColorTable(GPI_RGB);
+
+	if (GDALComputeMedianCutPCT(R, G, B, NULL, 256, hColorTable, NULL, NULL) != CE_None) {
+		out.setError("cannot create color table");
+		GDALClose(hSrcDS);
+		return out;
+	}	
+	
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, opt)) {
+		out.setError("cannot create new dataset");
+		GDALClose(hSrcDS);
+		return out;
+	}
+	
+	GDALRasterBandH hTarget = GDALGetRasterBand(hDstDS, 1);
+	GDALSetRasterColorInterpretation(hTarget, GCI_PaletteIndex);
+	if (GDALDitherRGB2PCT(R, G, B, hTarget, hColorTable, NULL, NULL) != CE_None) {
+		out.setError("cannot set color table");
+		GDALClose(hSrcDS);
+		GDALClose(hDstDS);
+		return out;		
+	}
+	GDALClose(hSrcDS);
+
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(hDstDS, false, true)) {
+			out.setError("conversion failed (mem)");
+			GDALClose(hDstDS);
+			return out;
+		}
+		SpatDataFrame cdf;
+		cdf.add_column(1, "red");
+		cdf.add_column(1, "green");
+		cdf.add_column(1, "blue");
+		cdf.add_column(1, "alpha");
+		size_t nc = GDALGetColorEntryCount(hColorTable);
+		cdf.reserve(nc);
+
+		for (size_t i=0; i<nc; i++) {	
+			const GDALColorEntry* col = GDALGetColorEntry(hColorTable, i);
+			cdf.iv[0].push_back(col->c1);
+			cdf.iv[1].push_back(col->c2);
+			cdf.iv[2].push_back(col->c3);
+			cdf.iv[3].push_back(col->c4);
+		}
+		out.source[0].hasColors.resize(1);
+		out.source[0].hasColors[0] = true;
+		out.source[0].cols.resize(1);
+		out.source[0].cols[0] = cdf;		
+	} else {
+		if (GDALSetRasterColorTable(hTarget, hColorTable) != CE_None) {
+			out.setError("cannot set color table");
+			GDALClose(hDstDS);
+			return out;
+		}
+	}
+	GDALClose(hDstDS);
+	if (driver != "MEM") {
+		out = SpatRaster(filename, {-1}, {""});
+	}
+	return out;
+}
+
 	

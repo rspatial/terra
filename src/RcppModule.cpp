@@ -421,6 +421,12 @@ RCPP_MODULE(spat){
 
 		.property("filenames", &SpatRaster::filenames )
 
+		.field_readonly("rgb", &SpatRaster::rgb)
+		.method("setRGB", &SpatRaster::setRGB)
+		.method("removeRGB", &SpatRaster::removeRGB)
+		.method("getRGB", &SpatRaster::getRGB)
+
+
 		.method("hasAttributes", &SpatRaster::hasAttributes, "hasAttributes")
 		.method("getAttributes", &SpatRaster::getAttributes, "getAttributes")
 		.method("setAttributes", &SpatRaster::setAttributes, "setAttributes")
@@ -588,6 +594,7 @@ RCPP_MODULE(spat){
 		//.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		//.method("rasterize1", &SpatRaster::rasterize1, "rasterize1")
 		.method("rasterize2", &SpatRaster::rasterize2, "rasterize2")
+		.method("rgb2col", &SpatRaster::rgb2col, "rgb2col")
 		.method("reverse", &SpatRaster::reverse, "reverse")
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		//.method("sampleCells", &SpatRaster::sampleCells, "sampleCells")

@@ -304,8 +304,9 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 		x <- x[[y]]
 		if (!hasValues(x)) { error("plot", "SpatRaster has no cell values") }
-
-
+		if (ncell(x) > 1.1 * maxcell) {
+			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+		}
 		breaks <- list(...)$breaks
 		coltab <- NULL
 		facts  <- NULL
@@ -316,6 +317,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (x@ptr$hasColors()) {
 					coltab <- coltab(x)[[1]]
 					type <- "colortable"
+					legend = FALSE
 				} else if (is.factor(x)) {
 					type <- "classes"
 					facts <- levels(x)
@@ -341,8 +343,15 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 	}
 )
 
+
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
 	function(x, y, maxcell=50000, main, mar=NULL, nc, nr, maxnl=16, ...)  {
+
+		if (x@ptr$rgb) {
+			i <- x@ptr$getRGB() + 1
+			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, ...)
+			return(invisible())
+		}
 
 		nl <- max(1, min(nlyr(x), maxnl))
 

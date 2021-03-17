@@ -29,7 +29,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	#}
 	if (is.list(r)) {
-		error("app", "the function returns a list (should be numeric or matrix")
+		error("app", "'fun' returns a list (should be numeric or matrix)")
 	}
 	trans <- FALSE
 	if (NCOL(r) > 1) {
@@ -42,7 +42,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			nlyr(out) <- ncol(r)
 			nms <- colnames(r)
 		} else {
-			error("app", "cannot handle this function")
+			error("app", "'fun' is not appropriate")
 		}
 		if (is.null(wopt$names)) {
 			wopt$names <- nms
@@ -99,7 +99,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		} else if (nrow(r) == ncols) {
 			nl <- ncol(r)
 		} else {
-			error("app", "cannot handle this function")
+			error("app", "cannot handle 'fun'")
 		}
 	} else if (length(r) >= nr) {
 		if ((length(r) %% nr) == 0) {
@@ -138,7 +138,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		} else if (nrow(r) == ncols) {
 			nl <- ncol(r)
 		} else {
-			error("app", "cannot handle this function")
+			error("app", "'fun' is not appropriate")
 		}
 	} else if (length(r) >= nr) {
 		if ((length(r) %% nr) == 0) {
@@ -172,7 +172,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		}
 	}
 
-	if (missing(fun)) error("app", "fun is missing")
+	if (missing(fun)) error("app", "'fun' is missing")
 
 	ncx <- ncol(x[1])
 	nrx <- nrow(x[1])

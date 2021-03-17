@@ -3,6 +3,17 @@
 # Version 0.9
 # Licence GPL v3
 
+setMethod("RGB<-", signature(x="SpatRaster"), 
+	function(x, value) {
+		if (is.null(value) || is.na(value)) {
+			x@ptr$removeRGB()
+		} else {
+			stopifnot(length(value) == 3)
+			x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1)
+		}
+		messages(x, "RGB<-")
+	}
+)
 
 .linStretch <- function (x) {
     v <- stats::quantile(x, c(0.02, 0.98), na.rm = TRUE)
@@ -20,7 +31,7 @@
 
 
 setMethod("plotRGB", signature(x="SpatRaster"), 
-function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, interpolate=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...) { 
+function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...) { 
 
 	if (!is.null(mar)) {
 		mar <- rep_len(mar, 4)
@@ -140,7 +151,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 			#graphics::axis(4, at=yticks, labels=FALSE, lwd.ticks=0)
 		}
 	}
-	graphics::rasterImage(z, bb[1], bb[3], bb[2], bb[4], interpolate=interpolate, ...)
+	graphics::rasterImage(z, bb[1], bb[3], bb[2], bb[4], interpolate=smooth, ...)
 
 	if (!is.null(addfun)) {
 		if (is.function(addfun)) {
@@ -149,4 +160,12 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 	}
 }
 )
+
+
+rgb2col <- function(x, r=1, g=2, b=3, filename="", ...) { 
+	opt <- spatOptions(filename, ...)
+	x@ptr <- x@ptr$rgb2col(r-1, g-1, b-1, opt)
+	messages(x, "rgb2col")
+}
+
 

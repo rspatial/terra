@@ -69,6 +69,7 @@ class SpatRasterSource {
 //		bool fswrite(std::vector<double> &v);
 //		void fsclose();
 
+
 		size_t ncol, nrow;
 		unsigned nlyr;
 		unsigned nlyrfile = 0;
@@ -221,6 +222,12 @@ class SpatRaster {
 		bool setSRS(std::string crs);
 
 
+		bool rgb=false;
+		std::vector<unsigned> rgblyrs;
+		bool setRGB(unsigned r, unsigned g, unsigned b);
+		std::vector<unsigned> getRGB();
+		void removeRGB();
+		
 
 /*
 #ifdef useGDAL	
@@ -607,6 +614,7 @@ class SpatRaster {
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);
 		bool as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt);
 		//bool as_gdalmem(GDALDatasetH &hVRT);
+		
 #endif
 
 		SpatRaster to_memory_copy();
@@ -621,6 +629,7 @@ class SpatRaster {
 		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
+		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 
 };
 

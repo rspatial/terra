@@ -629,7 +629,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			naflag = NAN; 
 		}
 	} else {
-		getGDALDataType("FLT4S", gdt);
+		getGDALDataType(opt.get_datatype(), gdt);
 	}
 	const char *pszFilename = filename.c_str();
 	hDS = GDALCreate(hDrv, pszFilename, ncol(), nrow(), nlyr(), gdt, papszOptions );

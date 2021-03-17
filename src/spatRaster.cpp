@@ -1731,4 +1731,25 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 }
 
 
+bool SpatRaster::setRGB(unsigned r, unsigned g, unsigned b) {
+	size_t mxlyr = std::max(std::max(r, g), b);
+	if (nlyr() < mxlyr) {
+		setError("layer number for R, G, B, cannot exceed nlyr()");		
+		return false;
+	} else {
+		rgblyrs = {r, g, b};
+		rgb = true;
+	}
+	return true;
+}
+
+std::vector<unsigned> SpatRaster::getRGB(){
+	return rgblyrs;
+}
+
+void SpatRaster::removeRGB(){
+	rgblyrs = std::vector<unsigned>(0);
+	rgb = false;
+}
+
 
