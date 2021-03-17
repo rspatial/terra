@@ -630,6 +630,8 @@ class SpatRaster {
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
+		SpatRaster which(SpatOptions &opt);
+		SpatRaster is_true(SpatOptions &opt);
 
 };
 

@@ -42,7 +42,7 @@ SpatRaster
 \seealso{\code{ \link{app}, \link[terra]{tapp},  \link[terra]{math}} }
 
 \note{
-Use \code{lapply} to apply a functiont that takes a SpatRaster as argument to each layer of SpatRaster.
+Use \code{lapply} to apply a function that takes a SpatRaster as argument to each layer of a SpatRaster.
 }
 
 \examples{

@@ -12,7 +12,6 @@ Declare the layers to be used as Red, Green and Blue when plotting a SpatRaster.
 }
 
 \usage{
-
 \S4method{RGB}{SpatRaster}(x)<-value
 }
 

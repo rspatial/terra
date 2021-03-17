@@ -1,5 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
+if (!isGeneric("isTRUE")) {setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
+
 if (!isGeneric("RGB<-")) {setGeneric("RGB<-", function(x, ..., value) standardGeneric("RGB<-"))}
 if (!isGeneric("autocor")) {setGeneric("autocor", function(x, ...) standardGeneric("autocor"))}
 if (!isGeneric("delauny")) {setGeneric("delauny", function(x, ...) standardGeneric("delauny"))}

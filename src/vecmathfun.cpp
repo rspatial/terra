@@ -40,6 +40,8 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 		theFun = vmodal<double>;
 	} else if (fun == "prod") {
 		theFun = vprod<double>;
+	} else if (fun == "which") {
+		theFun = vwhich<double>;
 	} else if (fun == "which.min") {
 		theFun = vwhichmin<double>;
 	} else if (fun == "which.max") {

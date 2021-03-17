@@ -349,6 +349,15 @@ setMethod("which.min", "SpatRaster",
 )
 
 
+setMethod("Which", "SpatRaster",  
+	function(x) { 
+		opt <- spatOptions()
+		x@ptr <- x@ptr$summary("which", TRUE, opt)
+		messages(x, "Which")
+	}
+)
+
+
 
 setMethod("Summary", signature(x="SpatRaster"),
 	function(x, ..., na.rm=FALSE){
