@@ -34,6 +34,7 @@ Get are set all cell values of a SpatRaster or SpatVector. For large SpatRaster 
 \S4method{values}{SpatVector,data.frame}(x)<-value
 }
 
+
 \arguments{
  \item{x}{SpatRaster or SpatVector}
  \item{mat}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector, except when dataframe is \code{TRUE}}
@@ -65,6 +66,8 @@ If \code{x} is a \code{SpatVector}: a \code{data.frame}
 matrix, vector, SpatRaster, or nothing
 }
 
+
+\seeAlso(\code{\link{init}, \code{\link{focalValues}})
 
 \examples{
 r <- rast(system.file("ex/test.tif", package="terra"))
