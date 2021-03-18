@@ -67,7 +67,7 @@ matrix, vector, SpatRaster, or nothing
 }
 
 
-\seeAlso{\code{\link{init}}, \code{\link{focalValues}}}
+\seealso{\code{\link{init}}, \code{\link{focalValues}}}
 
 \examples{
 r <- rast(system.file("ex/test.tif", package="terra"))

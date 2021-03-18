@@ -77,7 +77,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \value{SpatRaster}
 
-\seealso{\code{\link{app}}, \code{\link{Math-methods}, \link{modal}} }
+\seealso{\code{\link{app}}, \code{\link{Math-methods}}, \code{\link{modal}}, \code{\link{which.lyr}} }
 
 
 \examples{

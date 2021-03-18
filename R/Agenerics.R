@@ -233,7 +233,7 @@ if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneri
 if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standardGeneric("values<-"))}
 if (!isGeneric("which.max")) {setGeneric("which.max", function(x) standardGeneric("which.max"))}
 if (!isGeneric("which.min")) {setGeneric("which.min", function(x) standardGeneric("which.min"))}
-if (!isGeneric("Which")) {setGeneric("Which", function(x) standardGeneric("Which"))}
+if (!isGeneric("which.lyr")) {setGeneric("which.lyr", function(x) standardGeneric("which.lyr"))}
 
 if (!isGeneric("writeStart")) {	setGeneric("writeStart", function(x, filename, ...)	standardGeneric("writeStart")) }
 if (!isGeneric("writeStop")) { setGeneric("writeStop", function(x, ...) standardGeneric("writeStop")) }

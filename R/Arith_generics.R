@@ -349,11 +349,11 @@ setMethod("which.min", "SpatRaster",
 )
 
 
-setMethod("Which", "SpatRaster",  
+setMethod("which.lyr", "SpatRaster",  
 	function(x) { 
 		opt <- spatOptions()
 		x@ptr <- x@ptr$summary("which", TRUE, opt)
-		messages(x, "Which")
+		messages(x, "which.lyr")
 	}
 )
 

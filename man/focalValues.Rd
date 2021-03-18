@@ -8,11 +8,11 @@
 \title{Get focal values}
 
 \description{
-values returns all cell values of a SpatRaster (a matrix), or all the attributes of a SpatVector (a data.frame).
+Get a matrix in which each row had the focal values of a cell. These are the values of a cell and a rectangular window around it.
 }
 
 \usage{
-\S4method{focalValues}{SpatRaster}(x, w=3 row=1, nrows=nrow(x), fillvalue=NA)
+\S4method{focalValues}{SpatRaster}(x, w=3, row=1, nrows=nrow(x), fillvalue=NA)
 }
 
 \arguments{

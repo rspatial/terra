@@ -1,19 +1,19 @@
-\name{which}
+\name{which.lyr}
 
 \docType{methods}
 
-\alias{Which}
-\alias{Which,SpatRaster-method}
+\alias{which.lyr}
+\alias{which.lyr,SpatRaster-method}
 
 \title{Which cells are TRUE?}
 
 \description{
-\code{Which} returns a single layer SpatRaster with cell values that are the first layer in the input that is not 0 (are \code{TRUE}) 
+This method returns a single layer SpatRaster with cell values that are the first layer in the input that has the value is not zero (FALSE), and, hence, is \code{TRUE}.
 }
 
 
 \usage{
-\S4method{Which}{SpatRasterLayer}(x)
+\S4method{which.lyr}{SpatRaster}(x)
 }
 
 \arguments{
@@ -25,11 +25,12 @@
 SpatRaster
 }
 
+\seealso{\code{\link{isTRUE}}, \code{\link{which}}, See \code{\link{Summary-methods}} for \code{which.min} and \code{which.max}}
 
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
-x <- Which(s)
+x <- which.lyr(s > 100)
 }
 
 \keyword{spatial}
