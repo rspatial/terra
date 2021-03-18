@@ -4,6 +4,7 @@
 \alias{as.list}
 \alias{as.data.frame,SpatRaster-method}
 \alias{as.data.frame,SpatVector-method}
+\alias{as.list,SpatRaster-method}
 \alias{as.list,SpatVector-method}
   
 
@@ -19,6 +20,8 @@ Coerce a SpatRaster or SpatVector into a data.frame or a SpatVector into list
 \S4method{as.data.frame}{SpatRaster}(x, xy=FALSE, cells=FALSE, na.rm=TRUE)
 
 \S4method{as.list}{SpatVector}(x, geom=NULL)
+
+\S4method{as.list}{SpatRaster}(x)
 }
 
 \arguments{

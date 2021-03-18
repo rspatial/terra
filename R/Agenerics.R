@@ -38,6 +38,7 @@ if (!isGeneric("app")) { setGeneric("app", function(x, ...) standardGeneric("app
 if (!isGeneric("lapp")) { setGeneric("lapp", function(x, ...) standardGeneric("lapp"))}
 if (!isGeneric("rapp")) { setGeneric("rapp", function(x, ...) standardGeneric("rapp"))}
 if (!isGeneric("tapp")) { setGeneric("tapp", function(x, ...) standardGeneric("tapp"))}
+if (!isGeneric("sapp")) { setGeneric("sapp", function(x, ...) standardGeneric("sapp"))}
 
 if (!isGeneric("add<-")) {setGeneric("add<-", function(x, value) standardGeneric("add<-"))}
 if (!isGeneric("align")) { setGeneric("align", function(x, y, ...) standardGeneric("align"))}

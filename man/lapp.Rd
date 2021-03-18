@@ -2,6 +2,8 @@
 
 \docType{methods}
 
+\alias{sapp}
+\alias{sapp,SpatRaster-method}
 \alias{lapp}
 \alias{lapp,SpatRaster-method}
 \alias{lapp,SpatRasterDataset-method}
@@ -16,17 +18,21 @@ The number of arguments in function \code{fun} must match the number of layers i
 Before you use the function, test it to make sure that it works for vectors (not only for single numbers). That is, it must return the same number of elements as its input vectors, or multiples of that. Make sure it also returns the same number of values when some or all input values are \code{NA}. Also, the function must return a vector or matrix, not a \code{data.frame}.
 
 Use \code{\link{app}} for summarize functions such as \code{sum}, that take any number of arguments; and \code{\link{tapp}} to so for groups of layers. 
+
+Use \code{\link{sapp}} to apply to all layers of a SpatRaster a functio that only takes a single layer SpatRaster (these are rare). 
 }
 
 \usage{
 \S4method{lapp}{SpatRaster}(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{lapp}{SpatRasterDataset}(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())
+
+\S4method{sapp}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
-  \item{fun}{function to be applied to each cell of \code{x}}
+  \item{fun}{for \code{lapp}, a function that takes a vector and can be applied to each cell of \code{x}; for \code{sapp}, a function that takes a SpatRaster argument and can be applied to each layer of \code{x};}
   \item{...}{additional arguments to be passed to \code{fun}} 
   \item{usenames}{logical. Use the layer names to match the function arguments? If \code{FALSE} matching is by position}
   \item{recycle}{logical. Recycle layers to match the subdataset with the largest number of layers}
@@ -81,6 +87,10 @@ pairs(c(x1, x2, x3, x4))
 ## SpatRasterDataset
 x <- sds(s, s[[1]]+50)
 lapp(x, function(x, y) x/y, recycle=TRUE)
+
+## sapp -- rarely needed 
+x <- sapp(s, terrain)
+
 }
  
 \keyword{methods}

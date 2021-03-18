@@ -4,11 +4,11 @@
 # License GPL v3
 
 
-#setMethod("as.list", signature(x="SpatRaster"), 
-#	function(x, ...) {
-#		lapply(1:nlyr(x), function(i) x[[i]])
-#	}
-#)
+setMethod("as.list", signature(x="SpatRaster"), 
+	function(x, ...) {
+		lapply(1:nlyr(x), function(i) x[[i]])
+	}
+)
  
 
 .as.image <- function(x, maxcells=10000) {

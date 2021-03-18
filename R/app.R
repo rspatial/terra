@@ -1,4 +1,17 @@
 
+setMethod("sapp", signature(x="SpatRaster"), 
+function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
+	x <- lapply(as.list(x), fun, ..., wopt=wopt)
+	x <- lapply(x, messages)
+	x <- rast(x)
+	if (filename != "") {
+		x <- writeRaster(x, filename, overwrite, wopt=wopt)
+	}
+	x
+}
+)
+
+
 setMethod("app", signature(x="SpatRaster"), 
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
