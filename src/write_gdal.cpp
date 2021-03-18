@@ -71,12 +71,12 @@ SpatDataFrame grayColorTable() {
 }
 
 
-bool SpatRaster::checkFormatRequirements(const std::string &driver, std::string &filename, std::string &datatype) {
+bool checkFormatRequirements(const std::string &driver, std::string &filename, std::string &msg) {
 
 	if (driver == "SAGA") {
 		std::string ext = getFileExt(filename);
 		if (ext != ".sdat") {
-			setError("SAGA filenames must end on '.sdat'");
+			msg = "SAGA filenames must end on '.sdat'";
 			return false;
 		}
 	}
@@ -110,8 +110,11 @@ void stat_options(int sstat, bool &compute_stats, bool &gdal_stats, bool &gdal_m
 
 
 
+
+
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
+	bool writeRGB = false;
 
 	std::string filename = opt.get_filename();
 	if (filename == "") {
@@ -129,10 +132,14 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return(false);
 	}
 	std::string datatype = opt.get_datatype();
-	if (!checkFormatRequirements(driver, filename, datatype)) {
-		return false;
+	if (writeRGB) {
+		datatype = "INT1U";
 	}
 	std::string errmsg;
+	if (!checkFormatRequirements(driver, filename, errmsg)) {
+		setError(errmsg);
+		return false;
+	}
 	if (file_exists(filename) & (!opt.get_overwrite())) {
 		setError("file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return(false);
@@ -187,6 +194,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
 		if (gopt.size() == 2) {
 			papszOptions = CSLSetNameValue( papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+		}
+	}
+	if (writeRGB) {
+		papszOptions = CSLSetNameValue( papszOptions, "PHOTOMETRIC", "RGB");
+		if (driver == "GeoTIFF") {
+			papszOptions = CSLSetNameValue( papszOptions, "PROFILE", "GeoTIFF");
 		}
 	}
 
@@ -289,7 +302,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		} else {
 		*/
 		poBand->SetDescription(nms[i].c_str());
-	
+		
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
 			if (hasNAflag) {
@@ -310,6 +323,17 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 				poBand->SetNoDataValue(NAN); 
 			}
 		}
+		
+		if (writeRGB) {
+			if (i==0) {
+				poBand->SetColorInterpretation(GCI_RedBand);
+			} else if (i==1) {
+				poBand->SetColorInterpretation(GCI_GreenBand);
+			} else if (i==2) {
+				poBand->SetColorInterpretation(GCI_BlueBand);
+			}
+		}
+		
 	}
 
 	std::vector<double> rs = resolution();

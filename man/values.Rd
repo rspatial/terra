@@ -19,7 +19,7 @@
 \title{Get or set cell values}
 
 \description{
-Get are set all cell values of a SpatRaster or SpatVector. For large SpatRaster objects use \code{\link(init)} instead to set values. 
+Get are set all cell values of a SpatRaster or SpatVector. For large SpatRaster objects use \code{\link{init}} instead to set values. 
 }
 
 \usage{
@@ -67,7 +67,7 @@ matrix, vector, SpatRaster, or nothing
 }
 
 
-\seeAlso(\code{\link{init}, \code{\link{focalValues}})
+\seeAlso{\code{\link{init}}, \code{\link{focalValues}}}
 
 \examples{
 r <- rast(system.file("ex/test.tif", package="terra"))

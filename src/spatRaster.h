@@ -455,7 +455,7 @@ class SpatRaster {
 		SpatRaster writeRaster(SpatOptions &opt);
 		//SpatRaster writeRasterGDAL(std::string filename, std::string format, std::string datatype, bool overwrite, SpatOptions &opt);
 		//SpatRaster writeRasterBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
-		bool checkFormatRequirements(const std::string &driver, std::string &filename, std::string &datatype);
+		//bool checkFormatRequirements(const std::string &driver, std::string &filename);
 
 		bool canProcessInMemory(SpatOptions &opt);
 		size_t chunkSize(unsigned n, double frac);

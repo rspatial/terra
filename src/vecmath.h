@@ -342,9 +342,9 @@ T vmax(std::vector<T>& v, bool narm) {
 template <typename T>
 double vwhich(std::vector<T>& v, bool narm) {
 	double out;
-	for (size_t i=1; i<v.size(); i++) {
+	for (size_t i=0; i<v.size(); i++) {
 		if ((!is_NA(v[i])) && v[i] != 0) {
-			out = i;
+			out = i+1;
 			return out;
 		}
 	}
