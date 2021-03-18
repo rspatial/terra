@@ -1935,51 +1935,89 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 }
 
 
+void notisnan(const std::vector<double> &x, double &n) {
+	for (size_t i=0; i<x.size(); i++) {
+		n += !std::isnan(x[i]);
+	}
+}
 
-void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, double &stat2,double &n, size_t i) {
+
+
+void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, double &stat2,double &n, size_t step) {
 	if (v.size() == 0) return;
 	if (fun == "sum") {
-		stat += vsum(v, narm);
+		if (narm && (step > 0)) {
+			v.push_back(stat);
+		} 
+		stat = vsum(v, narm);
 	} else if (fun == "mean") {
-		stat += vsum(v, narm);
-		for (size_t i=0; i<v.size(); i++) {
-			n += !std::isnan(v[i]);
+		if (narm) {
+			notisnan(v, n);
+			if (step > 0) {
+				v.push_back(stat);
+			}
+		} else {
+			n += v.size();
 		}
+		stat = vsum(v, narm);
 	} else if (fun == "rms") {
-		stat += vsum2(v, narm);
-		for (size_t i=0; i<v.size(); i++) {
-			n += !std::isnan(v[i]);
+		if (narm) {
+			notisnan(v, n);
+		} else {
+			n += v.size();
 		}
+		double s = vsum2(v, narm);
+		if (step > 1) {
+			std::vector<double> ss = {stat, s};
+			stat = vsum(ss, narm);
+		} else {
+			stat = s;
+		}		
 	} else if (fun == "min") {
 		double s = vmin(v, narm);
-		if (i > 0) {
-			stat = std::min(stat, s);
+		if (step > 0) {
+			std::vector<double> ss = {stat, s};
+			stat = vmin(ss, narm);
 		} else {
 			stat = s;		
 		}
 	} else if (fun == "max") {
 		double s = vmax(v, narm);
-		if (i > 0) {
-			stat = std::max(stat, s);
+		if (step > 0) {
+			std::vector<double> ss = {stat, s};
+			stat = vmax(ss, narm);
 		} else {
 			stat = s;		
 		}
 	} else if (fun == "range") {
 		double sn = vmin(v, narm);
 		double sx = vmax(v, narm);
-		if (i > 0) {
-			stat = std::min(stat, sn);
-			stat2 = std::max(stat2, sx);
+		if (step > 0) {
+			std::vector<double> ss1 = {stat, sn};
+			stat = vmin(ss1, narm);
+			std::vector<double> ss2 = {stat2, sx};
+			stat2 = vmax(ss2, narm);
 		} else {
 			stat = sn;		
 			stat2 = sx;		
 		}
 	} else if (fun == "sd") {
-		stat += vsum(v, narm);
-		for (size_t i=0; i<v.size(); i++) {
-			n += !std::isnan(v[i]);
+		if (narm) {
+			notisnan(v, n);
+		} else {
+			n += v.size();
 		}
-		stat2 += vsum2(v, narm);
+		double s1 = vsum(v, narm);
+		double s2 = vsum2(v, narm);
+		if (step > 1) {
+			std::vector<double> ss1 = {stat, s1};
+			stat = vsum(ss1, narm);
+			std::vector<double> ss2 = {stat2, s2};
+			stat2 = vsum(ss2, narm);
+		} else {
+			stat = s1;
+			stat2 = s2;
+		}		
 	}
 }
 
