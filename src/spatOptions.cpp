@@ -34,6 +34,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	blocksizemp = opt.blocksizemp;
 	verbose = opt.verbose;
 	statistics = opt.statistics;
+	steps = opt.steps;
 	//ncdfcopy = opt.ncdfcopy;
 }
 

@@ -403,7 +403,7 @@ bool SpatVector::read(std::string fname) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
-        setError("Cannot open this file");
+        setError("Cannot open this file as a SpatVector");
 		return false;
     }
 	bool success = read_ogr(poDS);

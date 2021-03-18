@@ -55,16 +55,16 @@ setMethod("values<-", signature("SpatRaster", "ANY"),
 )
 
 setMethod("focalValues", signature("SpatRaster"), 
-	function(x, w=3, row=1, nrows=nrow(x), fillvalue=NA) {
+	function(x, w=3, row=1, nrows=nrow(x), fill=NA) {
 		if (is.matrix(w)) {
-			m <- as.vector(t(w))
+			#m <- as.vector(t(w))
 			w <- dim(w)
 		} else {
 			w <- rep_len(w, 2)
 		}
 		readStart(x)
 		on.exit(readStop(x))
-		m <- matrix(x@ptr$focalValues(w, fillvalue, row-1, nrows), ncol=prod(w), byrow=TRUE)
+		m <- matrix(x@ptr$focalValues(w, fill, row-1, nrows), ncol=prod(w), byrow=TRUE)
 		messages(x)
 		m
 	}
