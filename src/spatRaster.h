@@ -511,6 +511,9 @@ class SpatRaster {
 		SpatRaster edges(bool classes, std::string type, unsigned directions, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method="", bool cells=false, bool xy=false, bool weights=false);
+		std::vector<double> extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights);
+		
+		
 		std::vector<double> vectCells(SpatVector v, bool touches, std::string method, bool weights);
 		std::vector<double> extCells(SpatExtent ext);
 

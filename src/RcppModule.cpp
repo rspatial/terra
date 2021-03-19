@@ -563,6 +563,7 @@ RCPP_MODULE(spat){
 		.method("expand", &SpatRaster::extend, "extend")
 		.method("extractCell", &SpatRaster::extractCell, "extractCell")
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
+		.method("extractVectorFlat", &SpatRaster::extractVectorFlat, "extractVectorFlat")
 		.method("flip", &SpatRaster::flip, "flip")
 		.method("focal", &SpatRaster::focal, "focal")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")

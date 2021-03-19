@@ -41,59 +41,78 @@ wmean <- function(p) {
 }
 
 
+		#if (!list) {
+			#if (geomtype(y) == "points")  {
+			#	e <- cbind(ID=1:length(e), matrix(unlist(e), ncol=nlyr(x), byrow=TRUE))
+			#} else {
+			#	e <- lapply(1:length(e), function(i) {
+			#		ee <- unlist(e[[i]])
+			#		if (length(ee) == 0) ee <- NA
+			#		cbind(ID=i, matrix(ee, ncol=length(e[[i]])))
+			#	})
+			#	e <- do.call(rbind, e)
+			#}
+		#}
+
+
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, touches=is.lines(y), ...) { 
 	method = match.arg(tolower(method), c("simple", "bilinear"))
-	if (!is.null(fun)) {
+	hasfun <- !is.null(fun)
+	if (hasfun) {
 		cells <- FALSE
 		xy <- FALSE
+		if (weights) list = TRUE
 	} 
-	e <- x@ptr$extractVector(y@ptr, touches[1], method[1], isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]))
-	x <- messages(x, "extract")
-
-
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#e <- rapply(e, f, how="replace")
 	cn <- names(x)
-	if (!is.null(fun)) {
+	if (list) {
+		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]))
+		x <- messages(x, "extract")
 		if (weights) {
-			test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
-			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
-			if (!(test1 | test2)) { warn("extract", "the weighted mean is returned") }
+			if (hasfun) {
+				test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
+				test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
+				if (!(test1 | test2)) { warn("extract", "the weighted mean is returned") }
+			}
 			e <- t(sapply(e, wmean))
-		} else {
-			fun <- match.fun(fun) 
-			e <- rapply(e, fun, ...)
+			e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+			colnames(e) <- cn
+			e <- cbind(ID=1:nrow(e), e)
 		}
-		e <- matrix(e, nrow=nrow(y), byrow=TRUE)
-		colnames(e) <- cn
-		e <- cbind(ID=1:nrow(e), e)
-	} else {
-		if (cells) {
-			cn <- c(cn, "cell")
-			i <- which(cn=="cell")
-			e <- lapply(e, function(j) {
-					j[[i]] <- j[[i]] + 1
-					#names(j) <- cn
-					j
-				}
-			)			
-		}
-		if (weights) cn <- c(cn, "weight")
-		if (xy) {
-			cn <- c(cn, "x", "y")
-		}	
-		if (!list) {
-			e <- lapply(1:length(e), function(i) {
-				ee <- unlist(e[[i]])
-				if (length(ee) == 0) ee <- NA
-				cbind(ID=i, matrix(ee, ncol=length(e[[i]])))
-			})
-			e <- do.call(rbind, e)
-			colnames(e)[-1] <- cn	
-		}
+		return(e)
 	}
+
+	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]))
+	x <- messages(x, "extract")
+	nc <- nlyr(x) + 1
+	cn <- c("ID", cn)
+	if (cells) {
+		cn <- c(cn, "cell")
+		nc <- nc + 1
+	}
+	if (weights) {
+		cn <- c(cn, "weight")
+		nc <- nc + 1
+	}
+	if (xy) {
+		cn <- c(cn, "x", "y")
+		nc <- nc + 2
+	}
+
+	e <- matrix(e, ncol=nc, byrow=TRUE)
+	colnames(e) <- cn
+	if (hasfun) {
+		fun <- match.fun(fun) 
+		e <- data.frame(e)
+		e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
+	} else if (cells) {
+		cncell <- cn =="cell"
+		e[, cncell] <- e[, cncell] + 1
+	}
+	
 	if (factors) {
 		if (is.matrix(e)) {
 			e <- data.frame(e, check.names = FALSE)

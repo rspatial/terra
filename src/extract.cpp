@@ -467,7 +467,10 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
     unsigned ng = v.size();
     std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + 2*xy + weights));
 
-	if (!hasValues()) return out;
+	if (!hasValues()) {
+		setError("raster has no value");
+		return out;
+	}
 /*
 	#if GDAL_VERSION_MAJOR < 3
 	if (weights) {
@@ -549,6 +552,119 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
         }
 	}
 	return out;
+}
+
+
+std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights) {
+
+	std::vector<double> flat;
+	std::string gtype = v.type();
+	if (gtype != "polygons") weights = false;
+
+    unsigned nl = nlyr();
+    unsigned ng = v.size();
+    std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + 2*xy + weights));
+
+	if (!hasValues()) {
+		setError("raster has no value");
+		return flat;
+	}
+/*
+	#if GDAL_VERSION_MAJOR < 3
+	if (weights) {
+		setError("extract with weights not supported for your GDAL version");
+		return out;
+	}
+	#endif
+*/
+	std::vector<std::vector<double>> srcout;
+	if (gtype == "points") {
+		if (method != "bilinear") method = "simple";
+		SpatDataFrame vd = v.getGeometryDF();
+		if (vd.nrow() == ng) {  // single point geometry
+			std::vector<double> x = vd.getD(0);
+			std::vector<double> y = vd.getD(1);
+			srcout = extractXY(x, y, method, cells);
+			for (size_t i=0; i<ng; i++) {
+				for (size_t j=0; j<nl; j++) {
+					out[i][j].push_back( srcout[j][i] );
+				}
+				if (cells) {
+					out[i][nl].push_back( srcout[nl][i] );			
+				}
+				if (xy) {
+					out[i][nl+cells].push_back(x[i]);		
+					out[i][nl+cells+1].push_back(y[i]);		
+				}
+			}
+		} else { // multipoint
+			for (size_t i=0; i<ng; i++) {
+				SpatVector vv = v.subset_rows(i);
+				SpatDataFrame vd = vv.getGeometryDF();
+				std::vector<double> x = vd.getD(0);
+				std::vector<double> y = vd.getD(1);
+				srcout = extractXY(x, y, method, cells);
+				for (size_t j=0; j<nl; j++) {
+					out[i][j] = srcout[j];
+				}
+				if (cells) {
+					out[i][nl] = srcout[nl];			
+				}
+				if (xy) {
+					out[i][nl+cells]   = x;		
+					out[i][nl+cells+1] = y;		
+				}
+			}
+		}
+	} else {
+	    SpatRaster r = geometry(1);
+	    //SpatOptions opt;
+		//std::vector<double> feats(1, 1) ;		
+        for (size_t i=0; i<ng; i++) {
+            SpatGeom g = v.getGeom(i);
+            SpatVector p(g);
+			p.srs = v.srs;
+			std::vector<double> cell, wgt;
+			if (weights) {
+				std::vector<std::vector<double>> cw = rasterizeCellsWeights(p, touches);
+				cell = cw[0];
+				wgt = cw[1];
+			} else {
+				cell = rasterizeCells(p, touches);
+            }
+			srcout = extractCell(cell);
+            for (size_t j=0; j<nl; j++) {
+                out[i][j] = srcout[j];
+            }
+			if (cells) {
+				out[i][nl] = cell;
+			}
+			if (xy) {
+				std::vector<std::vector<double>> crds = xyFromCell(cell);
+				out[i][nl+cells]   = crds[0];		
+				out[i][nl+cells+1] = crds[1];		
+			}
+			if (weights) {
+				out[i][nl + cells + 2*xy] = wgt;
+			}
+        }
+	}
+
+	size_t fsize = 0;
+	for (size_t i=0; i<out.size(); i++) { // geoms
+		fsize += (out[i].size()+1) * nl;
+	}
+	flat.reserve(fsize);
+	
+	for (size_t i=0; i<out.size(); i++) { // geoms
+		for (size_t j=0; j<out[i][0].size(); j++) { // cells
+			flat.push_back(i+1);
+			for (size_t k=0; k<out[i].size(); k++) { // layers
+				flat.push_back(out[i][k][j]);
+			}
+		}
+	}
+	return flat;
 }
 
 

@@ -93,7 +93,7 @@ y[i]
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v <- v[1:2,]
-z <- rast(v, res=.1)
+z <- rast(v, res=.1, names="test")
 values(z) <- 1:ncell(z)
 #e <- extract(z, v)
 #e
@@ -104,6 +104,8 @@ values(z) <- 1:ncell(z)
 
 #x <- c(z, z*2, z/3)
 #names(x) <- letters[1:3]
+
+#extract(x, v, mean)
 
 #e <- extract(x, v)
 #de <- data.frame(e)
