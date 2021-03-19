@@ -6,7 +6,7 @@
 
 
 setMethod("rast", signature(x="missing"),
-	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals) {
+	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, names) {
 
 		if (missing(extent)) {
 			e <- c(xmin, xmax, ymin, ymax) 
@@ -33,6 +33,9 @@ setMethod("rast", signature(x="missing"),
 
 		if (!missing(resolution)) {
 			res(r) <- resolution
+		}
+		if (!missing(names)) {
+			names(r) <- names
 		}
 
 		if (!missing(vals)) {
