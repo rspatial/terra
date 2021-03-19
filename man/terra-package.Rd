@@ -68,13 +68,15 @@ Also see the methods in section VIII
   \tabular{ll}{
     \code{\link{app}} \tab Apply a function to cells, across layers (as in \code{base::apply}) \cr
     \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
-    \code{\link{lapp}} \tab Apply a function using the layers as variables\cr
+    \code{\link{lapp}} \tab Apply a function to cells using the layers as variables\cr
+    \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
     \code{\link{arith}} \tab Use a function to compute new values for all cells \cr
     \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
 	\code{\link{Math-methods}} \tab Math methods like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
     \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
     \code{\link{Summary-methods}} \tab Summary methods (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
+    \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
     \code{\link{Compare-methods}} \tab Comparison methods (\code{==, !=, >, <, <=, >=}) \cr
     \code{\link{area}} \tab Compute the area of cells \cr
     \code{\link{classify}} \tab (Re-)classify values \cr

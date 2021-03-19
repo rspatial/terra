@@ -1,13 +1,15 @@
 
 setMethod("sapp", signature(x="SpatRaster"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
-	x <- lapply(as.list(x), fun, ..., wopt=wopt)
-	x <- lapply(x, messages)
-	x <- rast(x)
+	#x <- lapply(as.list(x), fun, ..., wopt=wopt)
+	#x <- lapply(x, messages)
+	#x <- rast(x)
+	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
 	if (filename != "") {
-		x <- writeRaster(x, filename, overwrite, wopt=wopt)
+		writeRaster(x, filename, overwrite, wopt=wopt)
+	} else {
+		collapse(x)
 	}
-	x
 }
 )
 
@@ -42,7 +44,11 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	#}
 	if (is.list(r)) {
-		error("app", "'fun' returns a list (should be numeric or matrix)")
+		if (length(unique(sapply(r, length))) >  1) {
+			error("app", "'fun' returns a list (should be numeric or matrix). Perhaps because returned values have different lenghts?")
+		} else {
+			error("app", "'fun' returns a list (should be numeric or matrix)")
+		}
 	}
 	trans <- FALSE
 	if (NCOL(r) > 1) {
