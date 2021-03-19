@@ -44,6 +44,7 @@ wmean <- function(p) {
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, touches=is.lines(y), ...) { 
+	method = match.arg(tolower(method), c("simple", "bilinear"))
 	if (!is.null(fun)) {
 		cells <- FALSE
 		xy <- FALSE

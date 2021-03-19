@@ -146,11 +146,11 @@ std::vector<double> fourCellsFromXY (unsigned ncols, unsigned nrows, double xmin
 
 
 double linearInt(const double& d, const double& x, const double& x1, const double& x2, const double& v1, const double& v2) {
-  double result = (v2 * (x - x1) + v1 * (x2 - x)) / d;
-  return result;
+	double result = (v2 * (x - x1) + v1 * (x2 - x)) / d;
+	return result;
 }
 
-
+/*
 double bilinearInt(const double& x, const double& y, const double& x1, const double& x2, const double& y1, const double& y2, const double& v11, const double& v21, const double& v12, const double& v22) {
   double d = x2-x1;
   double h1 =  linearInt(d, x, x1, x2, v11, v21);
@@ -159,6 +159,43 @@ double bilinearInt(const double& x, const double& y, const double& x1, const dou
   double v =  linearInt(d, y, y1, y2, h1, h2);
   return v;
 }
+*/
+
+
+double bilinearInt(const double& x, const double& y, 
+                   const double& x1, const double& x2, const double& y1, const double& y2, 
+                   const double& v11, const double& v21, const double& v12, const double& v22) {
+	double d = x2-x1;
+	double h1=NAN; 
+	double h2=NAN;
+	if (!std::isnan(v11) && !std::isnan(v21)) {
+		h1 =  linearInt(d, x, x1, x2, v11, v21);
+	} else if (!std::isnan(v11)) {
+		h1 = v11;
+	} else if (!std::isnan(v21)) {
+		h1 = v21;
+	}
+
+	if (!std::isnan(v12) && !std::isnan(v22)) {
+		h2 =  linearInt(d, x, x1, x2, v12, v22);
+	} else if (!std::isnan(v12)) {
+		h2 = v12;
+	} else if (!std::isnan(v22)) {
+		h2 = v22;
+	}
+  //Rcpp::Rcout << h1 << " " << h2 << std::endl;
+	if (!std::isnan(h1) && !std::isnan(h2)) {
+		d = y2-y1;
+		double v = linearInt(d, y, y1, y2, h1, h2);
+		return v;
+	} else if (!std::isnan(h1)) {
+		return h1;
+	} else if (!std::isnan(h2)) {
+		return h2;
+	}
+	return NAN;
+}
+
 
 double distInt(double d, double pd1, double pd2, double v1, double v2) {
   double result = (v2 * pd1 + v1 * pd2) / d;
@@ -211,10 +248,9 @@ std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> 
             }
         }
 	} else {
- */       for (size_t i=0; i<n; i++) {
+ */     for (size_t i=0; i<n; i++) {
             size_t ii = i * 4;
             for (size_t j=0; j<nlyr(); j++) {
-
   /*      if (i==0) {
             std::cout << x[i] << " "<< y[i] << "\n";
             std::cout << xy[0][ii] << " " << xy[0][ii+1] << " " << xy[1][ii] << " " << xy[1][ii+3] << "\n";
