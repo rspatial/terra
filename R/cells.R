@@ -35,7 +35,7 @@ setMethod("cells", signature("SpatRaster", "SpatVector"),
 				d[,2:5] <- d[,2:5] + 1
 			} else {
 				colnames(d) <- c("ID", "cell")
-				d[,1] <- d[,1] + 1
+				d[,2] <- d[,2] + 1
 			}
 			return (d)
 		}
