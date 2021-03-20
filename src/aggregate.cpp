@@ -21,19 +21,6 @@
 #include "spatRaster.h"
 #include "vecmathfun.h"
 
-
-template <typename T>
-std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
-    std::size_t total_size = 0;
-    for (const auto& sub : v)
-        total_size += sub.size();
-    std::vector<T> result;
-    result.reserve(total_size);
-    for (const auto& sub : v)
-        result.insert(result.end(), sub.begin(), sub.end());
-    return result;
-}
-
 std::vector<double> flat(std::vector<std::vector<double>> v) {
     unsigned s1 = v.size();
     unsigned s2 = v[0].size();

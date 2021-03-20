@@ -562,6 +562,8 @@ RCPP_MODULE(spat){
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
 		.method("expand", &SpatRaster::extend, "extend")
 		.method("extractCell", &SpatRaster::extractCell, "extractCell")
+		.method("extractXY", &SpatRaster::extractXY, "extractXY")
+//		.method("extractXYFlat", &SpatRaster::extractXYFlat, "extractXYflat")
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		.method("extractVectorFlat", &SpatRaster::extractVectorFlat, "extractVectorFlat")
 		.method("flip", &SpatRaster::flip, "flip")

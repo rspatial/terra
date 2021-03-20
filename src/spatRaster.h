@@ -441,6 +441,7 @@ class SpatRaster {
 		std::vector<double> readValuesGDAL(unsigned src, size_t row, size_t nrows, size_t col, size_t ncols, int lyr = -1);
 		std::vector<double> readGDALsample(unsigned src, size_t srows, size_t scols);
 		std::vector<std::vector<double>> readRowColGDAL(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
+		std::vector<double> readRowColGDALFlat(unsigned src, std::vector<int_64> &rows, const std::vector<int_64> &cols);
 
 		bool readStartGDAL(unsigned src);
 		bool readStopGDAL(unsigned src);
@@ -518,7 +519,12 @@ class SpatRaster {
 		std::vector<double> extCells(SpatExtent ext);
 
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
-        std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method, bool cells=false);
+		std::vector<double> extractCellFlat(std::vector<double> &cell);
+
+        //std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method, bool cells=false);
+		
+		std::vector<std::vector<double>> extractXY(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);
+		std::vector<double> extractXYFlat(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);
 		
 		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster filler(SpatRaster x, SpatOptions &opt);

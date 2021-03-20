@@ -25,6 +25,19 @@
 
 
 
+template <typename T>
+std::vector<T> flatten(const std::vector<std::vector<T>>& v) {
+    std::size_t total_size = 0;
+    for (const auto& sub : v)
+        total_size += sub.size();
+    std::vector<T> result;
+    result.reserve(total_size);
+    for (const auto& sub : v)
+        result.insert(result.end(), sub.begin(), sub.end());
+    return result;
+}
+
+
 static inline double interpolate(double x, double y1, double y2, unsigned x1, unsigned x2) {
 	double denom = (x2-x1);
 	return y1 + (x-x1) * (y2-y1)/denom;

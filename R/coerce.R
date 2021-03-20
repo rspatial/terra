@@ -5,7 +5,7 @@
 
 
 setMethod("as.list", signature(x="SpatRaster"), 
-	function(x, ...) {
+	function(x) {
 		lapply(1:nlyr(x), function(i) x[[i]])
 	}
 )

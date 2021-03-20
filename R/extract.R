@@ -87,8 +87,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]))
 	x <- messages(x, "extract")
-	nc <- nlyr(x) + 1
-	cn <- c("ID", cn)
+	nc <- nlyr(x)
 	if (cells) {
 		cn <- c(cn, "cell")
 		nc <- nc + 1
@@ -102,7 +101,14 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		nc <- nc + 2
 	}
 
-	e <- matrix(e, ncol=nc, byrow=TRUE)
+	geo <- geomtype(y)
+	if (geo == "points") {
+		e <- matrix(e, ncol=nc, byrow=TRUE)
+		e <- cbind(1:nrow(e), e)
+	} else {
+		e <- matrix(e, ncol=nc+1, byrow=TRUE)
+	}
+	cn <- c("ID", cn)
 	colnames(e) <- cn
 	if (hasfun) {
 		fun <- match.fun(fun) 
