@@ -29,7 +29,7 @@ Get the cell numbers covered by a SpatVector or SpatExtent. Or that match values
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{SpatVector, SpatExtent, 2-column matrix representing points, numeric representing values to match, or missing}
-  \item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}
+  \item{method}{character. Method for getting cell numbers for points. The default is "simple", the alternative is "bilinear". If it is "bilinear", the four neareast cells and their weights are returned}
   \item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the fraction of each cell that is covered is returned as well}
   \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
 }
@@ -56,13 +56,14 @@ cellFromXY(r, m)
 
 v <- vect(m)
 cells(r, v)
+cells(r, v, method="bilinear")
 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 r <- rast(v)
 #cv <- cells(r, v) 
 
-#z  <- cells(r,ext(v))
+#z  <- cells(r, ext(v))
 #xy <- xyFromCell(r, z)
 #plot(v)
 #points(xy)
