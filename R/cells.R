@@ -25,14 +25,17 @@ setMethod("cells", signature(x="SpatRaster", y="numeric"),
 
 setMethod("cells", signature("SpatRaster", "SpatVector"), 
 	function(x, y, method="simple", weights=FALSE, touches=is.lines(y)) {
+		method = match.arg(tolower(method), c("simple", "bilinear"))
 		d <- x@ptr$vectCells(y@ptr, touches[1], method[1], weights[1] ) 
 		if (geomtype(y) == "points") {
-			d <- matrix(d, nrow=nrow(y))
+			d <- matrix(d, nrow=nrow(y), byrow=TRUE)
 			d <- cbind(1:nrow(y), d)
 			if (method == "bilinear") {
 				colnames(d) <- c("ID", "c1", "c2", "c3", "c4", "w1", "w2", "w3", "w4")
+				d[,2:5] <- d[,2:5] + 1
 			} else {
 				colnames(d) <- c("ID", "cell")
+				d[,1] <- d[,1] + 1
 			}
 			return (d)
 		}
