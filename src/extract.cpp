@@ -199,7 +199,7 @@ double bilinearIntold(const double& x, const double& y,
 
 double bilinearInt(const double& x, const double& y, 
                    const double& x1, const double& x2, const double& y1, const double& y2, 
-                   const double& v11, const double& v21, const double& v12, const double& v22) {
+                   const double& v11, const double& v12, const double& v21, const double& v22) {
 
 	bool n1 = std::isnan(v11);
 	bool n2 = std::isnan(v12);
