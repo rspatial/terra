@@ -52,8 +52,7 @@ double getCol(const unsigned& ncol, const double& x, const double& xmin, const d
 }
 
 
-std::vector<double> fourCellsFromXY (unsigned ncols, unsigned nrows, double xmin, double xmax, double ymin, double ymax,
-                                     std::vector<double> x, std::vector<double> y, bool duplicates, bool isGlobalLonLat ) {
+std::vector<double> fourCellsFromXY (unsigned ncols, unsigned nrows, double xmin, double xmax, double ymin, double ymax, std::vector<double> x, std::vector<double> y, bool duplicates, bool isGlobalLonLat ) {
 
   size_t n = x.size();
   double yres_inv = nrows / (ymax - ymin);
@@ -150,7 +149,7 @@ double linearInt(const double& d, const double& x, const double& x1, const doubl
 	return result;
 }
 
-/*
+/* ok but cannot handle NA
 double bilinearInt(const double& x, const double& y, const double& x1, const double& x2, const double& y1, const double& y2, const double& v11, const double& v21, const double& v12, const double& v22) {
   double d = x2-x1;
   double h1 =  linearInt(d, x, x1, x2, v11, v21);
@@ -161,8 +160,8 @@ double bilinearInt(const double& x, const double& y, const double& x1, const dou
 }
 */
 
-
-double bilinearInt1(const double& x, const double& y, 
+/*
+double bilinearIntold(const double& x, const double& y, 
                    const double& x1, const double& x2, const double& y1, const double& y2, 
                    const double& v11, const double& v21, const double& v12, const double& v22) {
 	double d = x2-x1;
@@ -195,6 +194,7 @@ double bilinearInt1(const double& x, const double& y,
 	}
 	return NAN;
 }
+*/
 
 
 double bilinearInt(const double& x, const double& y, 

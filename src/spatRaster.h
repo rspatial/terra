@@ -413,6 +413,7 @@ class SpatRaster {
 		bool writeValues2(std::vector<std::vector<double>> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
 		bool writeStop();
 		bool writeHDR(std::string filename);
+		SpatRaster make_vrt(std::vector<std::string> filenames, SpatOptions opt);
 
 		//bool writeStartGDAL(std::string filename, std::string driver, std::string datatype, bool overwrite, SpatOptions &opt);
 		bool writeStartGDAL(SpatOptions &opt);		

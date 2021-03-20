@@ -68,6 +68,9 @@ if (!isGeneric("is.points")) {setGeneric("is.points", function(x,...) standardGe
 if (!isGeneric("is.lines")) {setGeneric("is.lines", function(x,...) standardGeneric("is.lines"))}
 if (!isGeneric("is.polygons")) {setGeneric("is.polygons", function(x,...) standardGeneric("is.polygons"))}
 
+if (!isGeneric("tiles")) {setGeneric("tiles", function(x,...) standardGeneric("tiles"))}
+if (!isGeneric("vrt")) {setGeneric("vrt", function(x,...) standardGeneric("vrt"))}
+
 if (!isGeneric("isTRUE")) { setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
 if (!isGeneric("isFALSE")) { setGeneric("isFALSE", function(x) standardGeneric("isFALSE"))}
 

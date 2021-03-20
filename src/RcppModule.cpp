@@ -485,6 +485,7 @@ RCPP_MODULE(spat){
 //		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
+		.method("make_vrt", &SpatRaster::make_vrt, "make_vrt" )
 
 		.method("dense_extent", &SpatRaster::dense_extent, "dense_extent")
 		.method("setNames", &SpatRaster::setNames, "setNames" )

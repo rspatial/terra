@@ -83,7 +83,7 @@ setMethod("coords", signature(x="SpatVector"),
 setMethod("coords", signature(x="SpatRaster"), 
 	function(x, df=FALSE){
 		x <- as.points(x)
-		coordinates(x)
+		coords(x, df=df)
 	}
 )
 

@@ -14,6 +14,7 @@
 
 
 
+
 void getGDALdriver(std::string &filename, std::string &driver) {
 
 	lrtrim(filename);
@@ -256,6 +257,65 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 #if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
 # include "gdal_utils.h" // requires >= 2.1
 
+
+
+SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions opt) {
+
+	SpatRaster out;
+	std::string outfilename = opt.get_filename();
+	if (outfilename == "") {
+		outfilename = tempFile(opt.get_tempdir(), ".vrt");
+	} else if (file_exists(outfilename) & (!opt.get_overwrite())) {
+		out.setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
+		return(out);
+	}
+	
+	std::vector<GDALDataset *> tiles;
+    GDALDataset *poDataset;
+	for (std::string& f : filenames) {
+		poDataset = (GDALDataset *) GDALOpen(f.c_str(), GA_ReadOnly );
+		if( poDataset == NULL )  {
+			for (size_t j= 0; j<tiles.size(); j++) GDALClose(tiles[j]);
+			out.setError("cannot open " + f);
+			return out;
+		}
+		tiles.push_back(poDataset);
+	}
+
+//	psOptions * vrtops;
+/*gdalbuildvrt [-tileindex field_name]
+            [-resolution {highest|lowest|average|user}]
+            [-te xmin ymin xmax ymax] [-tr xres yres] [-tap]
+            [-separate] [-b band]* [-sd subdataset]
+            [-allow_projection_difference] [-q]
+            [-optim {[AUTO]/VECTOR/RASTER}]
+            [-addalpha] [-hidenodata]
+            [-srcnodata "value [value...]"] [-vrtnodata "value [value...]"]
+            [-ignore_srcmaskband]
+            [-a_srs srs_def]
+            [-r {nearest,bilinear,cubic,cubicspline,lanczos,average,mode}]
+            [-oo NAME=VALUE]*
+*/
+
+	int pbUsageError;
+	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfilename.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, nullptr, &pbUsageError);
+//	GDALBuildVRTOptionsFree(vrtops);
+
+	for (size_t i= 0; i<tiles.size(); i++) GDALClose(tiles[i]);
+	if(ds == NULL )  {
+		out.setError("cannot create vrt. UsageError #"+ std::to_string(pbUsageError));
+		return out;
+	}
+	GDALClose(ds);
+	if (!out.constructFromFile(outfilename, {-1}, {""})) {
+		out.setError("cannot open created vrt");
+		return out;		
+	}
+	return out;
+}
+
+
+
 std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> openopts) {
 // adapted from the 'sf' package by Edzer Pebesma et al
 
@@ -273,10 +333,19 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 	return out;
 }
 #else
+
+SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions opt) {
+	SpatRaster out;
+	out.setError( "GDAL version >= 2.1 required for vrt");
+	return out;
+}
+
+
 std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
 	std::string out = "GDAL version >= 2.1 required for gdalinfo");
 	return out;
 }
+
 
 #endif
 

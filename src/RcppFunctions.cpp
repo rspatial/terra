@@ -268,12 +268,7 @@ void gdal_init(std::string path) {
 #endif
 }
 
-
-
-
-
 // [[Rcpp::export(name = ".precRank")]]
-
 std::vector<double> percRank(std::vector<double> x, std::vector<double> y, double minc, double maxc, int tail) {
 					
 	std::vector<double> out;
