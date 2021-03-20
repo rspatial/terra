@@ -499,7 +499,8 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return out;
 			#endif
 		}
-		std::vector<std::vector<double>> v = xx.extractXY(xy[0], xy[1], method);
+		bool cells = false;
+		std::vector<std::vector<double>> v = xx.extractXY(xy[0], xy[1], method, cells);
 		if (!out.writeValues2(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
 	}
 	out.writeStop();

@@ -328,6 +328,24 @@ std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> 
 }
 
 
+std::vector<double> SpatRaster::bilinearCells(std::vector<double> x, std::vector<double> y) {
+    bool glob = is_global_lonlat();
+	SpatExtent extent = getExtent();
+	std::vector<double> four = fourCellsFromXY(ncol(), nrow(), extent.xmin, extent.xmax, extent.ymin, extent.ymax, x, y, false, glob);
+	std::vector<std::vector<double>> xy = xyFromCell(four);
+	std::vector<std::vector<double>> v = extractCell(four);
+	size_t n = x.size();
+	std::vector<double> res;
+    for (size_t i=0; i<n; i++) {
+        size_t ii = i * 4;
+		size_t j=0; 
+        std::vector<double> w = bilinearWeights(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3]);
+		res.insert(res.end(), four.begin()+ii, four.begin()+ii+4); 
+		res.insert(res.end(), w.begin(), w.end()); 
+    }
+	return res;
+}
+
 
 
 double bilinear(const std::vector<double> &v, const  std::vector<double> &e, const double &dxdy, const double &x, const double &y) {
@@ -934,12 +952,16 @@ std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::strin
 	if (gtype != "polygons") weights = false;
 	std::vector<double> out, cells, wghts;
 	if (gtype == "points") {
-		if (method != "bilinear") method = "simple";
 		SpatDataFrame vd = v.getGeometryDF();
-		cells = cellFromXY(vd.getD(0), vd.getD(1));
 		std::vector<long> id = vd.getI(0);
-		out.insert(out.end(), id.begin(), id.end());
-		out.insert(out.end(), cells.begin(), cells.end());
+		if (method != "bilinear") {
+			return bilinearCells(vd.getD(0), vd.getD(1));
+		} else {
+			return cellFromXY(vd.getD(0), vd.getD(1));
+			//cells = cellFromXY(vd.getD(0), vd.getD(1));
+			//out.insert(out.end(), id.begin(), id.end());
+			//out.insert(out.end(), cells.begin(), cells.end());
+		}
 	} else {
 		unsigned ng = v.size();
 	    SpatOptions opt;

@@ -496,6 +496,7 @@ class SpatRaster {
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
 		std::vector<std::vector<double>> bilinearValues(std::vector<double> x, std::vector<double> y);
+		std::vector<double> bilinearCells(std::vector<double> x, std::vector<double> y);
 
 
 		SpatRaster buffer(double d, SpatOptions &opt);
