@@ -162,7 +162,7 @@ double bilinearInt(const double& x, const double& y, const double& x1, const dou
 */
 
 
-double bilinearInt(const double& x, const double& y, 
+double bilinearInt1(const double& x, const double& y, 
                    const double& x1, const double& x2, const double& y1, const double& y2, 
                    const double& v11, const double& v21, const double& v12, const double& v22) {
 	double d = x2-x1;
@@ -196,6 +196,69 @@ double bilinearInt(const double& x, const double& y,
 	return NAN;
 }
 
+
+double bilinearInt(const double& x, const double& y, 
+                   const double& x1, const double& x2, const double& y1, const double& y2, 
+                   const double& v11, const double& v21, const double& v12, const double& v22) {
+
+	bool n1 = std::isnan(v11);
+	bool n2 = std::isnan(v12);
+	bool n3 = std::isnan(v21);
+	bool n4 = std::isnan(v22);
+	if (n1 & n2 & n3 & n4) return NAN;
+
+	double d1 = ((x2-x1) * (y2 - y1));
+	double d2 = ((x2-x1) * (y2 - y1));
+	double w11=0, w12=0, w21=0, w22=0;
+	if (!(n1 || n2)) {
+		w11 = v11 * ((x2 - x) * (y2 - y)) / d1;
+		w12 = v12 * ((x - x1) * (y2 - y)) / d1;
+	} else {
+		w11 = n1 ? 0 : v11;
+		w12 = n2 ? 0 : v12;
+	}
+	if (!(n3 || n4)) {
+		w21 = v21 * ((x2 - x) * (y - y1)) / d2;
+		w22 = v22 * ((x - x1) * (y - y1)) / d2;		
+	} else {
+		w21 = n3 ? 0 : v21;
+		w22 = n4 ? 0 : v22;
+	}
+	return (w11 + w12 + w21 + w22); 
+}
+				   
+
+std::vector<double> bilinearWeights(const double& x, const double& y, 
+                   const double& x1, const double& x2, const double& y1, const double& y2, 
+                   const double& v11, const double& v21, const double& v12, const double& v22) {
+
+	std::vector<double> w(4, 0);
+	bool n1 = std::isnan(v11);
+	bool n2 = std::isnan(v12);
+	bool n3 = std::isnan(v21);
+	bool n4 = std::isnan(v22);
+	if (n1 & n2 & n3 & n4) return w;
+
+	double d1 = ((x2-x1) * (y2 - y1));
+	double d2 = ((x2-x1) * (y2 - y1));
+	if (!n1 & !n2) {
+		w[0] = ((x2 - x) * (y2 - y)) / d1;
+		w[1] = ((x - x1) * (y2 - y)) / d1;
+	} else if (n1 || n2 ) {
+		w[0] = n1 ? 0 : 1;
+		w[1] = n2 ? 0 : 1;
+	}
+	if (!n3 & !n4) {
+		w[2] = ((x2 - x) * (y - y1)) / d2;
+		w[3] = ((x - x1) * (y - y1)) / d2;		
+	} else if (n3 || n4) {
+		w[2] = n3 ? 0 : 1;
+		w[3] = n4 ? 0 : 1;
+	}
+	
+	return (w);
+}
+						   
 
 double distInt(double d, double pd1, double pd2, double v1, double v2) {
   double result = (v2 * pd1 + v1 * pd2) / d;
