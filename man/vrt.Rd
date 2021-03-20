@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{vrt}
-\alias{vrt,SpatRaster-method}
+\alias{vrt,character-method}
 
 
 \title{Virtual Raster Tiles}

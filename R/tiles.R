@@ -33,8 +33,8 @@ setMethod("tiles", signature(x="SpatRaster"),
 
 setMethod("vrt", signature(x="character"), 
 	function(x, filename="test.vrt", overwrite=FALSE) {
+		opt <- spatOptions(filename, overwrite=overwrite)
 		r <- rast()
-		opt <- terra:::spatOptions(filename, overwrite=overwrite)
 		r@ptr <- r@ptr$make_vrt(x, opt)
 		messages(r)
 	}

@@ -254,18 +254,18 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
 
 
-#if (!(GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR < 1))
+#if (GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR >= 1))
 # include "gdal_utils.h" // requires >= 2.1
 
 
 
-SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions opt) {
+SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions &opt) {
 
 	SpatRaster out;
-	std::string outfilename = opt.get_filename();
-	if (outfilename == "") {
-		outfilename = tempFile(opt.get_tempdir(), ".vrt");
-	} else if (file_exists(outfilename) & (!opt.get_overwrite())) {
+	std::string outfile = opt.get_filename();
+	if (outfile == "") {
+		outfile = tempFile(opt.get_tempdir(), ".vrt");
+	} else if (file_exists(outfile) & (!opt.get_overwrite())) {
 		out.setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return(out);
 	}
@@ -298,7 +298,7 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions 
 */
 
 	int pbUsageError;
-	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfilename.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, nullptr, &pbUsageError);
+	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, nullptr, &pbUsageError);
 //	GDALBuildVRTOptionsFree(vrtops);
 
 	for (size_t i= 0; i<tiles.size(); i++) GDALClose(tiles[i]);
@@ -307,7 +307,7 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions 
 		return out;
 	}
 	GDALClose(ds);
-	if (!out.constructFromFile(outfilename, {-1}, {""})) {
+	if (!out.constructFromFile(outfile, {-1}, {""})) {
 		out.setError("cannot open created vrt");
 		return out;		
 	}

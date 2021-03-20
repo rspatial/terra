@@ -207,22 +207,22 @@ double bilinearInt(const double& x, const double& y,
 	bool n4 = std::isnan(v22);
 	if (n1 & n2 & n3 & n4) return NAN;
 
+	double w11, w12, w21, w22;
 	double d1 = ((x2-x1) * (y2 - y1));
-	double d2 = ((x2-x1) * (y2 - y1));
-	double w11=0, w12=0, w21=0, w22=0;
 	if (!(n1 || n2)) {
 		w11 = v11 * ((x2 - x) * (y2 - y)) / d1;
 		w12 = v12 * ((x - x1) * (y2 - y)) / d1;
 	} else {
-		w11 = n1 ? 0 : 0.5 * v11;
-		w12 = n2 ? 0 : 0.5 * v12;
+		w11 = n1 ? 0.0 : 0.5 * v11;
+		w12 = n2 ? 0.0 : 0.5 * v12;
 	}
+	double d2 = ((x2-x1) * (y2 - y1));
 	if (!(n3 || n4)) {
 		w21 = v21 * ((x2 - x) * (y - y1)) / d2;
 		w22 = v22 * ((x - x1) * (y - y1)) / d2;		
 	} else {
-		w21 = n3 ? 0 : 0.5 * v21;
-		w22 = n4 ? 0 : 0.5 * v22;
+		w21 = n3 ? 0.0 : 0.5 * v21;
+		w22 = n4 ? 0.0 : 0.5 * v22;
 	}
 	return (w11 + w12 + w21 + w22); 
 }
