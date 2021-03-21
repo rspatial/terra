@@ -679,8 +679,12 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 		}
 	}
     GDALDataset *srcDS=NULL;
-	srcDS = srcDS->FromHandle(rstDS);
 
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+	srcDS = (GDALDataset *) rstDS);
+#else
+	srcDS = srcDS->FromHandle(rstDS);
+#endif
 
 	GDALDatasetH rstMask;
 	GDALDataset *maskDS=NULL;
@@ -698,7 +702,11 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 				return out;		
 			}
 		}
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+		maskDS = (GDALDataset *) rstMask);
+#else
 		maskDS = srcDS->FromHandle(rstMask);
+#endif
 	}
 
     GDALDataset *poDS = NULL;
