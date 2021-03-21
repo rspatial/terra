@@ -675,13 +675,13 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 		rstDS = GDALOpen( filename.c_str(), GA_ReadOnly);
 		if (rstDS == NULL) {
 			out.setError("cannot open dataset from file");
-			return out;		
+			return out;
 		}
 	}
     GDALDataset *srcDS=NULL;
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-	srcDS = (GDALDataset *) rstDS);
+	srcDS = (GDALDataset *) rstDS;
 #else
 	srcDS = srcDS->FromHandle(rstDS);
 #endif
@@ -703,7 +703,7 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 			}
 		}
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-		maskDS = (GDALDataset *) rstMask);
+		maskDS = (GDALDataset *) rstMask;
 #else
 		maskDS = srcDS->FromHandle(rstMask);
 #endif
