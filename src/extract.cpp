@@ -151,7 +151,11 @@ std::vector<double> bilinearInt(const double& x, const double& y,
 	bool n3 = std::isnan(v21);
 	bool n4 = std::isnan(v22);
 	if (std::isnan(x) || std::isnan(y) || (n1 && n2 && n3 && n4)) {
-		std::vector<double> out(5, NAN);
+		if (weights) {
+			std::vector<double> out(4, NAN);
+			return out;
+		} 
+		std::vector<double> out(1, NAN);
 		return out;
 	}
 	double dx = (x2 - x1);
@@ -301,7 +305,7 @@ std::vector<double> SpatRaster::bilinearCells(const std::vector<double> &x, cons
 		size_t j=0; 
         std::vector<double> w = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3], true);
 		res.insert(res.end(), four.begin()+ii, four.begin()+ii+4); 
-		res.insert(res.end(), w.begin()+1, w.end()); 
+		res.insert(res.end(), w.begin(), w.end()); 
     }
 	return res;
 }
