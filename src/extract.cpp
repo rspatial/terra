@@ -30,124 +30,69 @@ double rowColToCell(unsigned ncols, unsigned row, unsigned col) {
 }
 
 
-double getRow(const unsigned& nrow, const double& y, const double& ymin, const double& ymax, const double& invyr) {
-  double result = NAN;
-  if (y == ymin) {
-    result = nrow-0.0000001;
-  } else if ((y > ymin) && (y <= ymax)) {
-    result = (ymax - y) * invyr;
-  }
-  return result;
+std::vector<double> SpatRaster::fourCellsFromXY(const std::vector<double> &x, const std::vector<double> &y) {
+
+ 	size_t n = x.size();
+	SpatExtent e = getExtent();
+	std::vector<double> out;
+	out.reserve(4*n);
+
+	double xmin = e.xmin;
+	double xmax = e.xmax;
+	double xr = xres();
+	double ymin = e.ymin;
+	double ymax = e.ymax;
+	double yr = yres();
+	double nc = ncol();
+	int_64 mxr = nrow()-1;
+	int_64 mxc = ncol()-1;
+	int_64 r1, r2, c1, c2;
+	std::vector<double> bad = {NAN, NAN, NAN, NAN}; 
+	for (size_t i = 0; i < n; i++) {
+		if (y[i] < ymin || y[i] > ymax || x[i] < xmin || x[i] > xmax) {
+			out.insert(out.end(), bad.begin(), bad.end());
+			continue;
+		} 
+		if (y[i] == ymin) {
+			r1 = mxr;
+			r2 = mxr;
+		} else {
+			double p = (ymax - y[i]) / yr;
+			r1 = trunc(p);
+			if ((p - r1) > 0.5) {
+				r2 = r1 == mxr ? mxr : r1 + 1;
+			} else {
+				r2 = r1;
+				r1 = r1 == 0 ? 0 : r1 - 1;
+			}
+		}	
+		if (x[i] == xmax) {
+			c1 = mxc;
+			c2 = mxc;
+		} else {
+			double p = (x[i] - xmin) / xr;
+			c1 = trunc(p);
+			if ((p - c1) > 0.5) {
+				c2 = c1 == mxc ? mxc : c1 + 1;					
+			} else {
+				c2 = c1;
+				c1 = c2 == 0 ? 0 : c2 - 1;					
+			}
+		}
+		out.push_back(r1 * nc + c1);
+		out.push_back(r1 * nc + c2);
+		out.push_back(r2 * nc + c1);
+		out.push_back(r2 * nc + c2);
+	}
+	return out;
 }
 
-
-double getCol(const unsigned& ncol, const double& x, const double& xmin, const double& xmax, const double& invxr) {
-    double result = NAN;
-    if (x == xmax) {
-      result = ncol-0.0000001;
-    } else if ((x >= xmin) & (x < xmax)) {
-      result = (x - xmin) * invxr;
-    }
-  return result;
-}
-
-
-std::vector<double> fourCellsFromXY (unsigned ncols, unsigned nrows, double xmin, double xmax, double ymin, double ymax, std::vector<double> x, std::vector<double> y, bool duplicates, bool isGlobalLonLat ) {
-
-  size_t n = x.size();
-  double yres_inv = nrows / (ymax - ymin);
-  double xres_inv = ncols / (xmax - xmin);
-  std::vector<double> result(4*n, NAN);
-  unsigned maxrow = nrows-1;
-  unsigned maxcol = ncols-1;
-
-  for (size_t i = 0; i < n; i++) {
-
-    double row = getRow(nrows, y[i], ymin, ymax, yres_inv);
-    double col = getCol(ncols, x[i], xmin, xmax, xres_inv);
-//    std::cout << row << " " << col << "\n";
-    if (std::isnan(row) || std::isnan(col)) {
-      continue;
-    }
-    //double row = (ymax - y[i]) * yres_inv;
-    //double col = (x[i] - xmin) * xres_inv;
-
-    double roundRow = std::floor(row);
-    double roundCol = std::floor(col);
-
-    if (roundRow < 0 || roundRow > maxrow || roundCol < 0 || roundCol > maxcol) {
-      continue;
-    }
-
-    // roundRow and roundCol are now the nearest row/col to x/y.
-    // That gives us one corner. We will find the other corner by starting
-    // at roundRow/roundCol and moving in the direction of row/col, stopping
-    // at the next integral values.
-
-    // >0 if row is greater than the nearest round row, 0 if equal
-    double vertDir = row - roundRow  - 0.5;
-    // >0 if col is greater than the nearest round col, 0 if equal
-    double horizDir = col - roundCol - 0.5;
-
-    // If duplicates are not allowed, make sure vertDir and horizDir
-    // are not 0
-    if (!duplicates) {
-      if (vertDir == 0)
-        vertDir = 1;
-      if (horizDir == 0)
-        horizDir = 1;
-    }
-
-    // roundRow and roundCol will be one corner; posRow and posCol will be
-    // the other corner. Start out by moving left/right or up/down relative
-    // to roundRow/roundCol.
-    double posRow = roundRow + (vertDir > 0 ? 1 : vertDir < 0 ? -1 : 0);
-    double posCol = roundCol + (horizDir > 0 ? 1 : horizDir < 0 ? -1 : 0);
-
-    // Now, some fixups in case posCol/posRow go off the edge of the raster.
-    if (isGlobalLonLat) {
-      if (posCol < 0) {
-        posCol = maxcol;
-      } else if (posCol > maxcol) {
-        posCol = 0;
-      }
-    } else {
-      if (posCol < 0) {
-        posCol = 1;
-      } else if (posCol > maxcol) {
-        posCol = maxcol - 1;
-      }
-    }
-
-    if (posRow < 0) {
-      posRow = 1;
-    } else if (posRow > maxrow) {
-      posRow = maxrow - 1;
-    }
-
-    // Fixups done--just store the results.
-
-    std::vector<double> res(4);
-    res[0] = rowColToCell(ncols, roundRow, roundCol);
-    res[1] = rowColToCell(ncols, posRow, roundCol);
-    res[2] = rowColToCell(ncols, posRow, posCol);
-    res[3] = rowColToCell(ncols, roundRow, posCol);
-    std::sort(res.begin(), res.end());
-
-    size_t j = i * 4;
-    result[j]   = res[0];
-    result[j+1] = res[1];
-    result[j+2] = res[2];
-    result[j+3] = res[3];
-  }
-  return result;
-}
-
-
+/*
 double linearInt(const double& d, const double& x, const double& x1, const double& x2, const double& v1, const double& v2) {
 	double result = (v2 * (x - x1) + v1 * (x2 - x)) / d;
 	return result;
 }
+*/
 
 /* ok but cannot handle NA
 double bilinearInt(const double& x, const double& y, const double& x1, const double& x2, const double& y1, const double& y2, const double& v11, const double& v21, const double& v12, const double& v22) {
@@ -197,73 +142,88 @@ double bilinearIntold(const double& x, const double& y,
 */
 
 
-double bilinearInt(const double& x, const double& y, 
+std::vector<double> bilinearInt(const double& x, const double& y, 
                    const double& x1, const double& x2, const double& y1, const double& y2, 
-                   const double& v11, const double& v12, const double& v21, const double& v22) {
+                   double& v11, double& v12, double& v21, double& v22, bool weights) {
 
 	bool n1 = std::isnan(v11);
 	bool n2 = std::isnan(v12);
 	bool n3 = std::isnan(v21);
 	bool n4 = std::isnan(v22);
-	if (n1 & n2 & n3 & n4) return NAN;
-
+	if (std::isnan(x) || std::isnan(y) || (n1 && n2 && n3 && n4)) {
+		std::vector<double> out(5, NAN);
+		return out;
+	}
+	double dx = (x2 - x1);
+	bool intx = dx > 0;
+	double dy = (y1 - y2);
+	bool inty = dy > 0;
 	double w11, w12, w21, w22;
-	double d1 = ((x2-x1) * (y2 - y1));
-	if (!(n1 || n2)) {
-		w11 = v11 * ((x2 - x) * (y2 - y)) / d1;
-		w12 = v12 * ((x - x1) * (y2 - y)) / d1;
-	} else {
-		w11 = n1 ? 0.0 : 0.5 * v11;
-		w12 = n2 ? 0.0 : 0.5 * v12;
+	if (weights) {
+		v11 = 1;
+		v12 = 1;
+		v21 = 1;
+		v22 = 1;
 	}
-	double d2 = ((x2-x1) * (y2 - y1));
-	if (!(n3 || n4)) {
-		w21 = v21 * ((x2 - x) * (y - y1)) / d2;
-		w22 = v22 * ((x - x1) * (y - y1)) / d2;		
-	} else {
-		w21 = n3 ? 0.0 : 0.5 * v21;
-		w22 = n4 ? 0.0 : 0.5 * v22;
+
+	if (intx & inty) {
+		double d = dx * dy;
+		if (!(n1 || n2)) {
+			w11 = v11 * ((x2 - x) * (y - y2)) / d;
+			w12 = v12 * ((x - x1) * (y - y2)) / d;
+		} else {
+			w11 = n1 ? 0.0 : 0.5 * v11;
+			w12 = n2 ? 0.0 : 0.5 * v12;
+		}
+		if (!(n3 || n4)) {
+			w21 = v21 * ((x2 - x) * (y1 - y)) / d;
+			w22 = v22 * ((x - x1) * (y1 - y)) / d;		
+		} else {
+			w21 = n3 ? 0.0 : 0.5 * v21;
+			w22 = n4 ? 0.0 : 0.5 * v22;
+		}
+	} else if (intx) {
+		if (!(n1 || n2)) {
+			w11 = v11 * (x2 - x) / dx;
+			w12 = v12 * (x - x1) / dx;
+		} else {
+			w11 = n1 ? 0.0 : v11;
+			w12 = n2 ? 0.0 : v12;			
+		}
+		w21 = 0;
+		w22 = 0;
+	} else if (inty) {
+		if (!(n1 || n3)) {
+			w11 = v11 * (y - y2) / dy;
+			w21 = v21 * (y1 - y) / dy;
+		} else {
+			w11 = n1 ? 0.0 : v11;
+			w21 = n3 ? 0.0 : v21;					
+		}
+		w12 = 0;
+		w22 = 0;
+	} else { 
+		w11 = v11;
+		w21 = 0;
+		w12 = 0;
+		w22 = 0;
 	}
-	return (w11 + w12 + w21 + w22); 
+
+	if (weights) {
+		std::vector<double> out = { w11, w12, w21, w22 };
+		return out;
+	}
+	std::vector<double> out = { w11 + w12 + w21 + w22 };
+	return out;
 }
-				   
+		
 
-std::vector<double> bilinearWeights(const double& x, const double& y, 
-                   const double& x1, const double& x2, const double& y1, const double& y2, 
-                   const double& v11, const double& v21, const double& v12, const double& v22) {
-
-	std::vector<double> w(4, 0);
-	bool n1 = std::isnan(v11);
-	bool n2 = std::isnan(v12);
-	bool n3 = std::isnan(v21);
-	bool n4 = std::isnan(v22);
-	if (n1 & n2 & n3 & n4) return w;
-
-	double d1 = ((x2-x1) * (y2 - y1));
-	double d2 = ((x2-x1) * (y2 - y1));
-	if (!n1 & !n2) {
-		w[0] = ((x2 - x) * (y2 - y)) / d1;
-		w[1] = ((x - x1) * (y2 - y)) / d1;
-	} else if (n1 || n2 ) {
-		w[0] = n1 ? 0 : 0.5;
-		w[1] = n2 ? 0 : 0.5;
-	}
-	if (!n3 & !n4) {
-		w[2] = ((x2 - x) * (y - y1)) / d2;
-		w[3] = ((x - x1) * (y - y1)) / d2;		
-	} else if (n3 || n4) {
-		w[2] = n3 ? 0 : 0.5;
-		w[3] = n4 ? 0 : 0.5;
-	}
-	
-	return (w);
-}
-						   
-
+/*
 double distInt(double d, double pd1, double pd2, double v1, double v2) {
   double result = (v2 * pd1 + v1 * pd2) / d;
   return result;
 }
+
 
 double bilinear_geo(double x, double y, double x1, double x2, double y1, double y2, double halfyres, std::vector<double> vv) {
 
@@ -282,15 +242,13 @@ double bilinear_geo(double x, double y, double x1, double x2, double y1, double 
 
 	return v;
 }
+*/
 
 
+std::vector<std::vector<double>> SpatRaster::bilinearValues(const std::vector<double> &x, const std::vector<double> &y) {
 
-std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> x, std::vector<double> y) {
-
-    bool glob = is_global_lonlat();
-//    bool lonlat = could_be_lonlat();
-	SpatExtent extent = getExtent();
-	std::vector<double> four = fourCellsFromXY(ncol(), nrow(), extent.xmin, extent.xmax, extent.ymin, extent.ymax, x, y, false, glob);
+	
+	std::vector<double> four = fourCellsFromXY(x, y);
 	std::vector<std::vector<double>> xy = xyFromCell(four);
 	std::vector<std::vector<double>> v = extractCell(four);
 	size_t n = x.size();
@@ -311,7 +269,9 @@ std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> 
             }
         }
 	} else {
- */     for (size_t i=0; i<n; i++) {
+		
+ */     
+		for (size_t i=0; i<n; i++) {
             size_t ii = i * 4;
             for (size_t j=0; j<nlyr(); j++) {
   /*      if (i==0) {
@@ -320,7 +280,8 @@ std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> 
             std::cout << v[j][ii] << " " << v[j][ii+1] << " " << v[j][ii+2] << " " << v[j][ii+3]  << "\n";
         }
 */
-                res[j][i] = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3]);
+                std::vector<double> value = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3], false);
+				res[j][i] = value[0];
             }
         }
 //	}
@@ -328,20 +289,19 @@ std::vector<std::vector<double>> SpatRaster::bilinearValues(std::vector<double> 
 }
 
 
-std::vector<double> SpatRaster::bilinearCells(std::vector<double> x, std::vector<double> y) {
-    bool glob = is_global_lonlat();
-	SpatExtent extent = getExtent();
-	std::vector<double> four = fourCellsFromXY(ncol(), nrow(), extent.xmin, extent.xmax, extent.ymin, extent.ymax, x, y, false, glob);
+std::vector<double> SpatRaster::bilinearCells(const std::vector<double> &x, const std::vector<double> &y) {
+	std::vector<double> four = fourCellsFromXY(x, y);
 	std::vector<std::vector<double>> xy = xyFromCell(four);
 	std::vector<std::vector<double>> v = extractCell(four);
 	size_t n = x.size();
 	std::vector<double> res;
+	std::vector<double> w;
     for (size_t i=0; i<n; i++) {
         size_t ii = i * 4;
 		size_t j=0; 
-        std::vector<double> w = bilinearWeights(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3]);
+        std::vector<double> w = bilinearInt(x[i], y[i], xy[0][ii], xy[0][ii+1], xy[1][ii], xy[1][ii+3], v[j][ii], v[j][ii+1], v[j][ii+2], v[j][ii+3], true);
 		res.insert(res.end(), four.begin()+ii, four.begin()+ii+4); 
-		res.insert(res.end(), w.begin(), w.end()); 
+		res.insert(res.end(), w.begin()+1, w.end()); 
     }
 	return res;
 }

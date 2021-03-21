@@ -345,14 +345,14 @@ class SpatRaster {
 		double cellFromRowCol(int_64 row, int_64 col);
 		std::vector<double> cellFromRowColCombine(std::vector<int_64> row, std::vector<int_64> col);
 		double cellFromRowColCombine(int_64 row, int_64 col);
-		std::vector<double> yFromRow(std::vector<int_64> &row);
+		std::vector<double> yFromRow(const std::vector<int_64> &row);
 		double yFromRow(int_64 row);
-		std::vector<double> xFromCol(std::vector<int_64> &col);
+		std::vector<double> xFromCol(const std::vector<int_64> &col);
 		double xFromCol(int_64 col);
 
-		std::vector<int_64> colFromX(std::vector<double> &x);
+		std::vector<int_64> colFromX(const std::vector<double> &x);
 		int_64 colFromX(double x);
-		std::vector<int_64> rowFromY(std::vector<double> &y);
+		std::vector<int_64> rowFromY(const std::vector<double> &y);
 		int_64 rowFromY(double y);
 		std::vector<std::vector<double>> xyFromCell( std::vector<double> &cell);
 		std::vector<std::vector<double>> xyFromCell( double cell);
@@ -496,8 +496,9 @@ class SpatRaster {
 		SpatVector as_points(bool values, bool narm, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
-		std::vector<std::vector<double>> bilinearValues(std::vector<double> x, std::vector<double> y);
-		std::vector<double> bilinearCells(std::vector<double> x, std::vector<double> y);
+		std::vector<std::vector<double>> bilinearValues(const std::vector<double> &x, const std::vector<double> &y);
+		std::vector<double> bilinearCells(const std::vector<double> &x, const std::vector<double> &y);
+		std::vector<double> fourCellsFromXY(const std::vector<double> &x, const std::vector<double> &y);
 
 
 		SpatRaster buffer(double d, SpatOptions &opt);

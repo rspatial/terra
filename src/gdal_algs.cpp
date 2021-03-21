@@ -645,7 +645,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 
 
 
-#if GDAL_VERSION_MAJOR >= 3
+//#if GDAL_VERSION_MAJOR >= 3
 
 SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 
@@ -777,6 +777,7 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 	return out;
 }
 
+/*
 #else
 
 SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
@@ -786,7 +787,7 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 }
 
 #endif
-	
+*/	
 	
 SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) {	
 	SpatRaster out = geometry(1);

@@ -300,10 +300,8 @@ class SpatSRS {
 		}
 
 		bool is_global_lonlat(SpatExtent e) {
-			if (could_be_lonlat(e)) {
-                if (std::abs(e.xmax - e.xmin - 360) < 0.001) {
-                    return true;
-                }
+			if (is_geographic()) {
+                return (std::abs(e.xmax - e.xmin - 360) < 0.001);
 				//double halfres = xres()/ 180;
 				//if (((e.xmin - halfres) <= -180) && ((e.xmax + halfres) >= 180)) {
 				//	return true;
