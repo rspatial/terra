@@ -139,6 +139,9 @@ setMethod("predict", signature(object="SpatRaster"),
 			testrow <- floor(testrow + 0.5*nrow(object))
 			d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
 		}
+		if (na.rm && all(is.na(d))) {
+			d <- spatSample(object, min(1000, ncell(object)), "regular")
+		}
 		if (!na.rm || !all(is.na(d)) || !is.null(index)) {
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
 			nl <- ncol(r)
