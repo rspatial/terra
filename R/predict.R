@@ -135,7 +135,7 @@ setMethod("predict", signature(object="SpatRaster"),
 
 		if (cores > 1) {
 			cls <- parallel::makeCluster(cores)
-			on.exit(parallel::stopCluster(cls), add=TRUE)
+			on.exit(parallel::stopCluster(cls)) #  add=TRUE?)
 			parallel::clusterExport(cls, c("model", "fun"), environment())
 			dots <- list(...)
 			if (length(dots) > 0) {

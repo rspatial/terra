@@ -548,7 +548,8 @@ class SpatRaster {
 		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions &opt);
 
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
-		SpatRaster init(double value, SpatOptions &opt);
+		SpatRaster init(std::vector<double> values, SpatOptions &opt);
+		
 		SpatRaster is_in(std::vector<double> m, SpatOptions &opt);
 		std::vector<std::vector<double>> is_in_cells(std::vector<double> m, SpatOptions &opt);
 

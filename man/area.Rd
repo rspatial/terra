@@ -60,7 +60,7 @@ global(am, "sum", na.rm=TRUE) / 1000000
 #r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
 #m <- project(r, "+proj=merc")
 
-#a <- area(m, sum=FALSE, wopt=list(names="naive"))
+#a <- area(m, sum=FALSE, names="naive")
 #b <- area(m, correct=TRUE, sum=FALSE, names="corrected")
 #plot(c(a, b)/1000000, nc=1)
 

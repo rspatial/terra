@@ -580,7 +580,7 @@ RCPP_MODULE(spat){
 		.method("global_weighted_mean", &SpatRaster::global_weighted_mean, "global weighted mean")
 	
 		.method("initf", ( SpatRaster (SpatRaster::*)(std::string, bool, SpatOptions&) )( &SpatRaster::init ), "init fun")
-		.method("initv", ( SpatRaster (SpatRaster::*)(double, SpatOptions&) )( &SpatRaster::init ), "init value")
+		.method("initv", ( SpatRaster (SpatRaster::*)(std::vector<double>, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("is_in", &SpatRaster::is_in, "isin")
 		.method("is_in_cells", &SpatRaster::is_in_cells, "isincells")
 		.method("isnan", &SpatRaster::isnan, "isnan")

@@ -17,7 +17,7 @@ setMethod("init", signature(x="SpatRaster"),
 				error("init", "unknown function")
 			}
 		} else if (is.numeric(fun)) {
-			x@ptr <- x@ptr$initv(fun[1], opt)
+			x@ptr <- x@ptr$initv(fun, opt)
 			messages(x, "init")
 		} else {
 			nc <- ncol(x)

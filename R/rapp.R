@@ -9,7 +9,7 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, filename="", overwrite
 		stopifnot(hasValues(first))
 	} else {
 		if (!is.numeric(first)) {
-			error("rapp", "argument 'first' should be numeric or SpatRaster")
+			error("rapp", "argument `first` should be numeric or SpatRaster")
 		}
 		firstval <- first
 		stopifnot(first %in% 1:nlyr(x))
@@ -19,13 +19,13 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, filename="", overwrite
 		stopifnot(hasValues(last))
 	} else {
 		if (!is.numeric(last)) {
-			error("rapp", "argument 'last' should be numeric or SpatRaster")
+			error("rapp", "argument `last` should be numeric or SpatRaster")
 		}
 		lastval <- last
 		stopifnot(last %in% 1:nlyr(x))
 	}
 	if (!(is.na(firstval)) && (!(is.na(lastval)))) {
-		error("rapp", "either first or last must be a SpatRaster. For other cases use `app`")
+		error("rapp", "argument `first` or `last` must be a SpatRaster. Or use `app`")
 	}
 	if (!is.na(firstval)) {
 		index <- last;

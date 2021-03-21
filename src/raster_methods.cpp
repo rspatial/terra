@@ -804,9 +804,11 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 	bool sval = !std::isnan(first);
 	bool eval = !std::isnan(last);
 	if (sval && eval) {
-		out.setError("first or last must be NA. See `app` for other cases");
+		out.setError("arguments `first` or `last` must be NA. See `app` for other cases");
 		return out;		
 	}
+	int start = sval ? first-1 : 0;
+	int end = eval ? last-1 : 0;
 
 	if (!out.compare_geom(x, false, false)) {
 		return(out);
@@ -847,21 +849,22 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 		return(out);
 	}
 	
-	int start = first-1;
-	int end = last-1;
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
 		std::vector<double> idx = x.readBlock(out.bs, i);
 		size_t ncell = out.bs.nrows[i] * ncol();
 		std::vector<double> vv(ncell, NAN);
 		for (size_t j=0; j<ncell; j++) {
+			if (std::isnan(idx[j])) continue;
 			if (sval) {
 				end   = idx[j] - 1;	
 			} else if (eval) {
 				start = idx[j] - 1;
 			} else {
 				start = idx[j] - 1;
-				end   = idx[j+ncell];
+				double dend = idx[j+ncell];
+				if (std::isnan(dend)) continue;
+				end   = dend;
 			}
 			if ((start <= end) && (end <= nl) && (start >= 0)) {
 				std::vector<double> se;
@@ -892,6 +895,8 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 		setError("first or last must be NA. See `app` for other cases");
 		return r;		
 	}
+	int start = sval ? first-1 : 0;
+	int end = eval ? last-1 : 0;
 
 	if (!compare_geom(x, false, false)) {
 		return(r);
@@ -922,17 +927,24 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 	std::vector<double> idx = x.readValues(startrow, nrows, 0, ncol());
 	size_t ncell = nrows * ncol();
 	r.resize(ncell);
-	int start = first-1;
-	int end = last-1;
 	
 	for (size_t j=0; j<ncell; j++) {
+		if (std::isnan(idx[j])) {
+			if (all) {
+				r[j].resize(nl, NAN);			
+			} else {
+				r[j].push_back(NAN);
+			}
+			continue;
+		}
 		if (sval) {
 			end   = idx[j] - 1;	
 		} else if (eval) {
 			start = idx[j] - 1;
 		} else {
 			start = idx[j] - 1;
-			end   = idx[j+ncell];
+			double dend = idx[j+ncell];
+			end = std::isnan(dend) ? -99 : (int) dend;
 		}
 
 		if (all) {
@@ -1241,18 +1253,32 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 }
 
 
-
-SpatRaster SpatRaster::init(double value, SpatOptions &opt) {
-	SpatRaster out = geometry();
+SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
+	SpatRaster out = geometry(1);
  	if (!out.writeStart(opt)) { return out; }
 	unsigned nc = ncol();
-	std::vector<double> v(out.bs.nrows[0]*nc, value);
-	for (size_t i = 0; i < out.bs.n; i++) {
-		if ((i == (out.bs.n-1)) && (i > 0)) {
-			// it can be longer, it seems
-			v.resize(out.bs.nrows[i] * nc, value);
+	if (values.size() == 1) {
+		std::vector<double> v(out.bs.nrows[0]*nc, values[0]);
+		for (size_t i = 0; i < out.bs.n; i++) {
+			if ((i == (out.bs.n-1)) && (i > 0)) {
+				// last block can be longer, it seems
+				v.resize(out.bs.nrows[i] * nc, values[0]);
+			}
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+	} else {
+		int over = 0;
+		for (size_t i = 0; i < out.bs.n; i++) {
+			if (over > 0) {
+				std::vector<double> newv(values.begin()+over, values.end());
+				newv.insert(newv.end(), values.begin(), values.begin()+over);
+				values = newv;
+			}
+			std::vector<double> v = values;
+			recycle(v, out.bs.nrows[i]*nc);
+			over = v.size() % values.size();
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+		}
 	}
 	out.writeStop();
 	return(out);
