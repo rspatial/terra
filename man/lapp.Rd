@@ -78,7 +78,7 @@ x2 <- lapp(s[[2:1]], fvi2, usenames=TRUE)
 x3 <- lapp(s[[2:1]], fvi2, usenames=FALSE)
 x4 <- lapp(s, fvi2, usenames=TRUE)
 
-# while this would give an error because 
+# while this would fail because 
 # there are too many layers in s
 # x5 <- lapp(s, fvi2, usenames=FALSE)
 

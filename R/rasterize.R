@@ -13,12 +13,14 @@ rasterize_points <- function(x, y, field, fun="last", background, update, filena
 		field <- g[,1] # consider multi-point
 	} else if (is.character(field)) {
 		if ((length(field) == 1) && (field %in% names(x))) {
+			names(r) <- field
 			field <- as.vector(unlist(x[[field]]))
 		} else if (length(field) != nrow(x)) {
 			error("rasterize", "field length should be 1 or nrow(x)")
 		}
 	} else if (length(field) == 1) {
 		if (field > 0 && field <= ncol(x)) {
+			names(r) = names(x)[field]
 			field <- as.vector(unlist(x[[field]]))
 		} else {
 			error("rasterize", "field index outside the value range (1:ncol(x))")

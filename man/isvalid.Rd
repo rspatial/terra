@@ -34,7 +34,7 @@ is.valid(w, TRUE)
 plot(w)
 points(cbind(4.54, -2.72), cex=2, col="red")
 
-# this gives an error
+# invalid polygon
 #w <- vect("POLYGON ((0 -5, 10 0, 10 -10, 4 -2))")
 #is.valid(w)
 
