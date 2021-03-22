@@ -910,4 +910,16 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	return out;
 }
 
-	
+/*	
+SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &opt) {	
+
+	CPLErr err = GDALSieveFilter(GDALRasterBandHhSrcBand, GDALRasterBandHhMaskBand, NULL, threshold, connections, NULL, NULL, NULL)
+}
+*/
+
+/*	
+SpatRaster SpatRaster::fillna(int threshold, int connections, SpatOptions &opt) {	
+CPLErrGDALFillNodata(GDALRasterBandHhTargetBand, GDALRasterBandHhMaskBand, doubledfMaxSearchDist, intbDeprecatedOption, intnSmoothingIterations, char**papszOptions, GDALProgressFuncpfnProgress, void*pProgressArg)
+*/
+
+

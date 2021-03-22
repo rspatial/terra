@@ -1,9 +1,9 @@
 
-rasterize_points <- function(x, y, field, fun="last", background, update, filename, ...) {
+rasterize_points <- function(x, y, field, fun="last", background, filename, ...) {
 
-	if (update) {
-		background <- NA 
-	} 
+	#if (update) {
+	#	background <- NA 
+	#} 
 	r <- rast(y, nlyr=1)
 	values(r) <- background
 
@@ -43,8 +43,8 @@ rasterize_points <- function(x, y, field, fun="last", background, update, filena
 	if (length(g) == 0) {
 		return(r)
 	}
-
 	field <- field[i]
+
 	if (missing(fun)) fun <- "last"
 	if (is.character(fun)) {
 		if (fun == "pa") {
@@ -65,11 +65,12 @@ rasterize_points <- function(x, y, field, fun="last", background, update, filena
 		levs <- NULL
 	}
 
-	if (update) {
-		if (hasValues(y)) {
-			r <- cover(r, y)
-		}
-	} else if (!is.null(levs)) {
+	#if (update) {
+	#	if (hasValues(y)) {
+	#		r <- cover(r, y)
+	#	}
+	#} else 
+	if (!is.null(levs)) {
 		id <- (1:length(levs))-1
 		cats(r, 1) <- data.frame(level=id, label=levs)
 	}
@@ -87,7 +88,8 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=FALSE, filename=filename, ...) 
+			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, #update=FALSE,
+			filename=filename, ...) 
 			return (r)
 		}
 
