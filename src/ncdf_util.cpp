@@ -186,9 +186,20 @@ std::vector<int_64> str2int64v(std::string s, std::string delim) {
 }
 
 
-bool getlong(std::string input, long &output) {
+bool get_long(std::string input, long &output) {
     try  {
 		output = std::stoi(input);
+		return true;
+    }
+    catch (std::invalid_argument &e)  {
+		return false;
+    }
+}
+
+
+bool get_double(std::string input, double &output) {
+    try  {
+		output = std::stod(input);
 		return true;
     }
     catch (std::invalid_argument &e)  {
@@ -206,13 +217,14 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		return out;
 	}
 
+	std::vector<double> raw;
+	raw.reserve(vals.size());
 	for (size_t i=0; i<vals.size(); i++) {
-		long lval;
-		if (getlong(vals[i], lval)) {
-			out.push_back(lval);
+		double dval;
+		if (get_double(vals[i], dval)) {
+			raw.push_back(dval);
 		} else {
 			step = "";
-			out.resize(0);
 			return out;
 		}
 	}
@@ -270,19 +282,18 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	if (foundorigin) {
 		step = "seconds";
 		if (days) {
+			out.reserve(raw.size());
+			std::vector<int> ymd = getymd(origin);
 			if (calendar == "noleap" || calendar == "365_day" || calendar == "365 day") { 
-				std::vector<int> ymd = getymd(origin);
-				for (int_64 &d : out) d = time_from_day_noleap(ymd[0], ymd[1], ymd[2], d);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day_noleap(ymd[0], ymd[1], ymd[2], raw[i]));
 			} else if (calendar == "360_day" || calendar == "360 day") { 
-				std::vector<int> ymd = getymd(origin);
-				for (int_64 &d : out) d = time_from_day_360(ymd[0], ymd[1], ymd[2], d);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day_360(ymd[0], ymd[1], ymd[2], raw[i]));
 			} else { 
 				if (!(calendar =="gregorian" || calendar =="proleptic_gregorian" || calendar=="standard" || calendar == "julian")) { 
 					// julian is perhaps questionable it can mean different things.
 					msg = "unknown calendar (assuming standard): " + calendar;
 				}
-				std::vector<int> ymd = getymd(origin);
-				for (int_64 &d : out) d = time_from_day(ymd[0], ymd[1], ymd[2], d);
+				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day(ymd[0], ymd[1], ymd[2], raw[i]));
 			}
 		} else if (hours) {
 			hours_to_time(out, origin);
@@ -290,9 +301,9 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 			//for (int_64 &d : out) d = time_from_hour(ymd[0], ymd[1], ymd[2], d);
 		} else if (seconds) {
 			offset = get_time_string(origin);
-			for (int_64 &d : out) d = d + offset;
+			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]+offset);
 		} else {
-			step = "raw";
+			step = "raw";			
 		}
 	}
 

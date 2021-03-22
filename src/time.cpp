@@ -172,7 +172,7 @@ SpatTime_t get_time_string(std::string s) {
 	return time;
 }
 
-SpatTime_t time_from_hour(int syear, int smonth, int sday, int nhours) {
+SpatTime_t time_from_hour(int syear, int smonth, int sday, double nhours) {
 	SpatTime_t time = get_time(syear, smonth, sday);
 	time += nhours * 3600;
 	return time;
@@ -186,17 +186,18 @@ void hours_to_time(std::vector<SpatTime_t> &time, std::string origin) {
 
 
 
-SpatTime_t time_from_day(int syear, int smonth, int sday, int ndays) {
+SpatTime_t time_from_day(int syear, int smonth, int sday, double ndays) {
 	SpatTime_t time = get_time(syear, smonth, sday);
 	time += ndays * 86400;
 	return time;
 }
 
 
-SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, int ndays) {
+SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, double ndays) {
     static const int md[13] =  {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 	int year = ndays / 365;
-	int doy = ndays % 365;
+	//int doy = ndays % 365;
+	int doy = ndays - (year * 365);
 	int month;
 	for (month=1; month<13; month++) {
 		if (doy < md[month]) {
@@ -210,10 +211,11 @@ SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, int ndays) {
 }
 
 
-SpatTime_t time_from_day_360(int syear, int smonth, int sday, int ndays) {
+SpatTime_t time_from_day_360(int syear, int smonth, int sday, double ndays) {
     static const int md[13] =  {0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360 };
 	int year = ndays / 360;
-	int doy = ndays % 360;
+	//int doy = ndays % 360;
+	int doy = ndays - (year * 360);
 	int month;
 	for (month=1; month<13; month++) {
 		if (doy < md[month]) {
