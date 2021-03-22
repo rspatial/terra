@@ -38,7 +38,13 @@ rasterize_points <- function(x, y, field, fun="last", background, update, filena
 	field <- field[g[,1]]
 
 	g <- cellFromXY(y, as.matrix(g[, c("x", "y")]))
+	i <- which(!is.na(g))
+	g <- g[i]
+	if (length(g) == 0) {
+		return(r)
+	}
 
+	field <- field[i]
 	if (missing(fun)) fun <- "last"
 	if (is.character(fun)) {
 		if (fun == "pa") {
