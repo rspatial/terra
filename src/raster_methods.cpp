@@ -862,15 +862,15 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 				start = idx[j] - 1;
 			} else {
 				start = idx[j] - 1;
-				double dend = idx[j+ncell];
+				double dend = idx[j+ncell]-1;
 				if (std::isnan(dend)) continue;
 				end   = dend;
 			}
 			if ((start <= end) && (end <= nl) && (start >= 0)) {
 				std::vector<double> se;
 				se.reserve(end-start+1);
-				for (int i = start; i<=end; i++){
-					size_t off = i * ncell + j;
+				for (int k = start; k<=end; k++){
+					size_t off = k * ncell + j;
 					se.push_back(v[off]);   
 				}
 				vv[j] = theFun(se, narm);
@@ -943,24 +943,24 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 			start = idx[j] - 1;
 		} else {
 			start = idx[j] - 1;
-			double dend = idx[j+ncell];
+			double dend = idx[j+ncell]-1;
 			end = std::isnan(dend) ? -99 : (int) dend;
 		}
 
 		if (all) {
 			if ((start <= end) && (end <= nl) && (start >= 0)) {
 				r[j].resize(nl, fill);
-				for (int i = start; i<end; i++){
-					size_t off = i * ncell + j;
-					r[j][i] = v[off];   
+				for (int k = start; k<end; k++){
+					size_t off = k * ncell + j;
+					r[j][k] = v[off];   
 				}		
 			} else {
 				r[j].resize(nl, NAN);
 			}	
 		} else if ((start <= end) && (end <= nl) && (start >= 0)) {
 			r[j].reserve(end-start+1);
-			for (int i = start; i<end; i++){
-				size_t off = i * ncell + j;
+			for (int k=start; k<end; k++){
+				size_t off = k * ncell + j;
 				r[j].push_back(v[off]);   
 			}
 		} else {
@@ -1004,8 +1004,6 @@ bool disaggregate_dims(std::vector<unsigned> &fact, std::string &message ) {
 SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt) {
 
     SpatRaster out = geometry(nlyr(), true);
-
-
 	std::string message = "";
 	bool success = disaggregate_dims(fact, message);
 	if (!success) {
