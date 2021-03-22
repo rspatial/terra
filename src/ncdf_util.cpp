@@ -281,8 +281,8 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 	SpatTime_t offset = 0;
 	if (foundorigin) {
 		step = "seconds";
+		out.reserve(raw.size());
 		if (days) {
-			out.reserve(raw.size());
 			std::vector<int> ymd = getymd(origin);
 			if (calendar == "noleap" || calendar == "365_day" || calendar == "365 day") { 
 				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day_noleap(ymd[0], ymd[1], ymd[2], raw[i]));
@@ -296,14 +296,15 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day(ymd[0], ymd[1], ymd[2], raw[i]));
 			}
 		} else if (hours) {
-			hours_to_time(out, origin);
-			//std::vector<int> ymd = getymd(origin);
-			//for (int_64 &d : out) d = time_from_hour(ymd[0], ymd[1], ymd[2], d);
+			//hours_to_time(out, origin);
+			std::vector<int> ymd = getymd(origin);
+			for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_hour(ymd[0], ymd[1], ymd[2], raw[i]));
 		} else if (seconds) {
 			offset = get_time_string(origin);
 			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]+offset);
 		} else {
 			step = "raw";			
+			for (size_t i=0; i<raw.size(); i++) out.push_back(raw[i]);
 		}
 	}
 
