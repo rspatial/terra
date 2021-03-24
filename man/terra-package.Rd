@@ -150,7 +150,7 @@ Also see the methods in section VIII
 
 \section{VII. Accessing cell values}{
 
-Apart from the function listed below, you can also use indexing with \code{[} with cell numbers, and row and/or column numbers \cr
+Ap	art from the function listed below, you can also use indexing with \code{[} with cell numbers, and row and/or column numbers \cr
 
 \tabular{ll}{
     \code{\link{values}} \tab Get or set all cell values (fails with very large rasters)\cr
@@ -221,19 +221,21 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \section{X. Writing SpatRaster files}{
 
+\subsection{Basic}{
   \tabular{ll}{
-    Basic\tab\cr
     \code{\link{writeRaster}} \tab Write all values of SpatRaster to disk \cr
-   .\cr
     \code{\link{writeCDF}} \tab Write netCDF files \cr
-   .\cr
+ 	}
+}
 
-   Advanced\tab\cr
+\subsection{Advanced}{
+  \tabular{ll}{
    \code{\link{blockSize}} \tab Get suggested block size for reading and writing \cr
    \code{\link{writeStart}} \tab Open a file for writing \cr
    \code{\link{writeValues}} \tab Write some values  \cr
    \code{\link{writeStop}} \tab Close the file after writing \cr
     --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}
 }
 }	
 
@@ -427,39 +429,44 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 
 \section{XXII. Plotting}{
 
+\subsection{Maps}{
   \tabular{ll}{
-    Maps \tab \cr
     \code{\link{plot}} \tab Plot a SpatRaster or SpatVector. The main method to create a map \cr
 	\code{\link{points}} \tab Add points to a map\cr
 	\code{\link{lines}} \tab Add lines to a map\cr
 	\code{\link{polys}} \tab Add polygons to a map \cr
+    \code{\link{text}} \tab Add text (such as the values of a SpatRaster or SpatVector) to a map \cr
+    \code{\link{image}} \tab Alternative to plot to make a map with a SpatRaster \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
     \code{\link{dots}} \tab Make a dot-density map \cr
     \code{\link{cartogram}} \tab Make a cartogram \cr
-    \code{\link{image}} \tab Alternative way to plot a SpatRaster \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
-    \code{\link{text}} \tab Plot the values of a SpatRaster or SpatVector on top of a map \cr
     \code{\link{inset}} \tab Add a small inset (overview) map\cr
     \code{\link{sbar}} \tab Add a scalebar\cr
-    .\cr
-    Interacting with a map \tab \cr
+	}
+}
+
+\subsection{Interacting with a map}{
+  \tabular{ll}{
     \code{\link{zoom}} \tab Zoom in to a part of a map \cr
     \code{\link{click}} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
     \code{\link{select}} \tab Select a spatial subset of a SpatRaster or SpatVector \cr
     \code{\link{draw}} \tab Create a SpatExtent or SpatVector by drawing on a map \cr
-    .\cr
+	}
+}
 	
-	Other plots\tab \cr
+\subsection{Other plots}{
+  \tabular{ll}{
     \code{\link{plot}} \tab x-y scatter plot of the values of two SpatRaster objects\cr
     \code{\link{hist}} \tab Histogram of SpatRaster values \cr
     \code{\link{barplot}} \tab Barplot of a SpatRaster \cr
     \code{\link{density}} \tab Density plot of SpatRaster values \cr
     \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
     \code{\link{boxplot}} \tab Box plot of the values of a SpatRaster\cr
-  }
+	}
 }
-
+}
 
 \section{XXIII. Comparison with the raster package}{
 
@@ -497,7 +504,7 @@ note the following important differences in methods names with the 'raster' pack
 \code{clump}\tab\code{\link{patches}}\cr
 }
 
-Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
+Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
 
 \tabular{ll}{
 \code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
@@ -516,7 +523,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 \section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{.}
 
 
-\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand. Some of the underlying C++ code for GDAL/GEOS was adapted from code written by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
+\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
 
 \section{Acknowledgments}{
 This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{filing bug reports}. The feedback and suggestsions by Kendon Bell, Jean-Luc Dupouey, Gerald Nelson, and Michael Sumner have been especially helpful.
