@@ -2528,6 +2528,33 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 }
 
 
+SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, SpatOptions &opt) {
+	SpatRaster out = geometry();
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+  	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	
+	recycle(to, from);
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		for (size_t j=0; j< from.size(); j++) {
+			if (std::isnan(from[j])) {
+				for (double &d : v) d = std::isnan(d) ? to[j] : d;
+			} else {
+				std::replace(v.begin(), v.end(), from[j], to[j]);
+			}
+		}
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
 
 SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
 

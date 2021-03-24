@@ -44,6 +44,8 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 SpatRaster
 }
 
+\seealso{\code{\link{subs}} for simpler from-to replacement}
+
 \note{
 For model-based classification see \code{\link{predict}}
 }

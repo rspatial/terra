@@ -912,14 +912,71 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 
 /*	
 SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &opt) {	
+	
+	std::string filename = opt.get_filename();
+	std::string driver;
+	if (filename == "") {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
+			filename = tempFile(opt.get_tempdir(), ".tif");
+			opt.set_filenames({filename});
+			driver = "GTiff";
+		} 
+	} else {
+		driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			setError("cannot guess file type from filename");
+			return out;
+		}
+		std::string errmsg;
+		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
+			out.setError(errmsg);
+			return out;
+		}	
+	}
 
-	CPLErr err = GDALSieveFilter(GDALRasterBandHhSrcBand, GDALRasterBandHhMaskBand, NULL, threshold, connections, NULL, NULL, NULL)
+	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
+	if ( hDriver == NULL ) {
+		msg = "empty driver";
+		return false;
+	}
+	GDALDatasetH hDS;
+	if (filename != "") {
+		writeRaster(opt);
+		hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
+	} else {
+		hDS = GDALCreate( hDriver, "", nPixels, nLines, 1, eDT, NULL );
+	} 
+	if ( hDstDS == NULL ) {
+		msg = "cannot create output dataset";
+		return false;	
+	}
+
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, opt)) {
+		out.setError("cannot create new dataset");
+		GDALClose(hSrcDS);
+		return out;
+	}
+	
+	GDALRasterBandH hTarget = GDALGetRasterBand(hDstDS, 1);
+	GDALSetRasterColorInterpretation(hTarget, GCI_PaletteIndex);
+	if (GDALDitherRGB2PCT(R, G, B, hTarget, hColorTable, NULL, NULL) != CE_None) {
+		out.setError("cannot set color table");
+		GDALClose(hSrcDS);
+		GDALClose(hDstDS);
+		return out;		
+	}
+	GDALClose(hSrcDS);
+
+	CPLErr err = GDALSieveFilter(GDALRasterBandH hSrcBand, GDALRasterBandH hMaskBand, NULL, threshold, connections, NULL, NULL, NULL)
 }
 */
 
 /*	
 SpatRaster SpatRaster::fillna(int threshold, int connections, SpatOptions &opt) {	
-CPLErrGDALFillNodata(GDALRasterBandHhTargetBand, GDALRasterBandHhMaskBand, doubledfMaxSearchDist, intbDeprecatedOption, intnSmoothingIterations, char**papszOptions, GDALProgressFuncpfnProgress, void*pProgressArg)
+CPLErr GDALFillNodata(GDALRasterBandH hTargetBand, GDALRasterBandH hMaskBand, doubledfMaxSearchDist, intbDeprecatedOption, intnSmoothingIterations, char**papszOptions, GDALProgressFuncpfnProgress, void*pProgressArg)
 */
 
 

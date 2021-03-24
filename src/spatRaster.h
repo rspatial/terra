@@ -256,7 +256,7 @@ class SpatRaster {
 		
 		bool getValuesSource(size_t src, std::vector<double> &out);				
 		bool setValues(std::vector<double> &v, SpatOptions &opt);
-		bool replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols);
+		bool replaceCellValues(std::vector<double> cells, std::vector<double> _values, int ncols);
 		void setRange();
 
 
@@ -587,6 +587,7 @@ class SpatRaster {
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches);
 		std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
 
+		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);

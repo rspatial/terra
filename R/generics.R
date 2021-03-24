@@ -206,6 +206,14 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 }
 )
 
+setMethod("subst", signature(x="SpatRaster"), 
+function(x, from, to, filename="", ...) {
+	opt <- spatOptions(filename, ...)
+    x@ptr <- x@ptr$replaceValues(from, to, opt)
+	messages(x, "replace")
+}
+)
+
 
 .getExt <- function(x) {
 	return(x)

@@ -62,8 +62,11 @@ Also see the methods in section VIII
   }
 }
 
+
   
 \section{III. Local (cell based) computation}{
+
+\subsection{Apply-like methods}{
 
   \tabular{ll}{
     \code{\link{app}} \tab Apply a function to cells, across layers (as in \code{base::apply}) \cr
@@ -71,19 +74,34 @@ Also see the methods in section VIII
     \code{\link{lapp}} \tab Apply a function to cells using the layers as variables\cr
     \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
-    \code{\link{arith}} \tab Use a function to compute new values for all cells \cr
+	}
+}
+
+\subsection{Arithmetic, logical, and standard math methods}{
+
+  \tabular{ll}{
     \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
-	\code{\link{Math-methods}} \tab Math methods like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
-    \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
-    \code{\link{Summary-methods}} \tab Summary methods (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
-    \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
     \code{\link{Compare-methods}} \tab Comparison methods (\code{==, !=, >, <, <=, >=}) \cr
+    \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
+	\code{\link{Math-methods}} \tab Math methods like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
+    \code{\link{Summary-methods}} \tab Summary methods (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
+	}
+}
+
+\subsection{Other methods}{
+
+  \tabular{ll}{
     \code{\link{area}} \tab Compute the area of cells \cr
+    \code{\link{arith}} \tab Use a function to compute new values for all cells\cr
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
+    \code{\link{subst}} \tab Substitute (replace) cell values \cr
+    \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
+	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+  }
   }
 }
 
