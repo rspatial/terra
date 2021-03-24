@@ -31,10 +31,15 @@
 
 
 using GeomPtr = std::unique_ptr<GEOSGeometry, std::function<void(GEOSGeometry*)> >;
-
 static GeomPtr geos_ptr(GEOSGeometry* g, GEOSContextHandle_t hGEOSctxt) {
 	auto deleter = std::bind(GEOSGeom_destroy_r, hGEOSctxt, std::placeholders::_1);
 	return GeomPtr(g, deleter);
+}
+
+using PrepGeomPtr= std::unique_ptr<const GEOSPreparedGeometry, std::function<void(const GEOSPreparedGeometry*)> >;
+static PrepGeomPtr geos_ptr(const GEOSPreparedGeometry* pg, GEOSContextHandle_t hGEOSctxt) {
+	auto deleter = std::bind(GEOSPreparedGeom_destroy_r, hGEOSctxt, std::placeholders::_1);
+	return PrepGeomPtr(pg, deleter);
 }
 
 

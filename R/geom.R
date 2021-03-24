@@ -101,8 +101,8 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"),
 
 setMethod("intersect", signature(x="SpatVector", y="SpatExtent"), 
 	function(x, y) {
-		y <- as.polygons(y)
-		intersect(x, y)
+		x@ptr <- x@ptr$crop_ext(y@ptr)
+		x
 	}
 )
 

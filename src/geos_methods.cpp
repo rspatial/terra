@@ -156,7 +156,6 @@ SpatVector SpatVector::crop(SpatVector v) {
 	ids.reserve(size());
 	size_t nx = size();
 	size_t ny = v.size();
-
 	
 	for (size_t i = 0; i < nx; i++) {
 		for (size_t j = 0; j < ny; j++) {
@@ -342,6 +341,7 @@ SpatVector SpatVector::intersect(SpatVector v) {
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	v = v.aggregate(false);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	std::vector<GeomPtr> result;
 	size_t nx = size();
@@ -349,40 +349,60 @@ SpatVector SpatVector::intersect(SpatVector v) {
 	std::vector<unsigned> idx, idy;
 	idx.reserve(nx);
 	idy.reserve(ny);
-		
-	for (size_t i = 0; i < nx; i++) {
+
+	if (type() == "points") {
+		std::vector<bool> ixj(nx, false);
+		size_t count = 0;
 		for (size_t j = 0; j < ny; j++) {
-			GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[j].get());
-			if (geom == NULL) {
-				out.setError("GEOS exception");
-				geos_finish(hGEOSCtxt);
-				return(out);
-			} 
-			if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
-				result.push_back(geos_ptr(geom, hGEOSCtxt));
-				idx.push_back(i);
-				idy.push_back(j);
-			} else {
-				GEOSGeom_destroy_r(hGEOSCtxt, geom);
+			PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, y[j].get()), hGEOSCtxt);
+			for (size_t i = 0; i < nx; i++) {
+				if (GEOSPreparedIntersects_r(hGEOSCtxt, pr.get(), x[i].get())) {
+					ixj[i] = true;
+					count++;
+				}
 			}
 		}
-	}
-
-	//SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
-
-	if (result.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
-		out = coll.get(0);
-		out.srs = srs;
-		SpatDataFrame df1 = df.subset_rows(idx);
-		SpatDataFrame df2 = v.df.subset_rows(idy);
-		if (!df1.cbind(df2)) {
-			out.addWarning("could not combine attributes");
+		std::vector<int> sx;
+		sx.reserve(count);
+		for (size_t i=0; i<ixj.size(); i++) {
+			if (ixj[i]) sx.push_back(i);	
 		}
-		out.df = df1;
-	} 
-	if (!srs.is_same(v.srs, true)) {
-		out.addWarning("different crs"); 
+		out = subset_rows(sx);
+		
+	} else {
+		
+		for (size_t i = 0; i < nx; i++) {
+			for (size_t j = 0; j < ny; j++) {
+				GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[j].get());
+				if (geom == NULL) {
+					out.setError("GEOS exception");
+					geos_finish(hGEOSCtxt);
+					return(out);
+				} 
+				if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
+					result.push_back(geos_ptr(geom, hGEOSCtxt));
+					idx.push_back(i);
+					idy.push_back(j);
+				} else {
+					GEOSGeom_destroy_r(hGEOSCtxt, geom);
+				}
+			}
+		}
+	//SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		if (result.size() > 0) {
+			SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+			out = coll.get(0);
+			out.srs = srs;
+			SpatDataFrame df1 = df.subset_rows(idx);
+			SpatDataFrame df2 = v.df.subset_rows(idy);
+			if (!df1.cbind(df2)) {
+				out.addWarning("could not combine attributes");
+			}
+			out.df = df1;
+		} 
+		if (!srs.is_same(v.srs, true)) {
+			out.addWarning("different crs"); 
+		}
 	}
 	geos_finish(hGEOSCtxt);
 
@@ -423,6 +443,30 @@ std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry
 	return rfun;
 }
 
+
+std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> getPrepRelateFun(const std::string rel) {
+	std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> rfun;
+	if (rel == "intersects") {
+		rfun = GEOSPreparedIntersects_r;
+	} else if (rel == "disjoint") {
+		rfun = GEOSPreparedDisjoint_r;
+	} else if (rel == "touches") {
+		rfun = GEOSPreparedTouches_r;
+	} else if (rel == "crosses") {
+		rfun = GEOSPreparedCrosses_r;
+	} else if (rel == "within") {
+		rfun = GEOSPreparedWithin_r;
+	} else if (rel == "contains") {
+		rfun = GEOSPreparedContains_r;
+	} else if (rel == "overlaps") {
+		rfun = GEOSPreparedOverlaps_r;
+	} else if (rel == "covers") {
+		rfun = GEOSPreparedCovers_r;
+	} else if (rel == "coveredby") {
+		rfun = GEOSPreparedCoveredBy_r;
+	}
+	return rfun;
+}
 
 
 int getRel(std::string &relation) {
@@ -475,10 +519,11 @@ std::vector<int> SpatVector::relate(SpatVector v, std::string relation) {
 			}
 		}
 	} else {
-		std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+		std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
 		for (size_t i = 0; i < nx; i++) {
+			PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
 			for (size_t j = 0; j < ny; j++) {
-				out.push_back( relFun(hGEOSCtxt, x[i].get(), y[j].get()));
+				out.push_back( relFun(hGEOSCtxt, pr.get(), y[j].get()));
 			}
 		} 
 	}
@@ -552,10 +597,11 @@ std::vector<int> SpatVector::relate(std::string relation, bool symmetrical) {
 				}
 			}
 		} else {
-			std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+			std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
 			for (size_t i=0; i<(s-1); i++) {
+				PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
 				for (size_t j=(i+1); j<s; j++) {
-					out.push_back( relFun(hGEOSCtxt, x[i].get(), x[j].get()));
+					out.push_back( relFun(hGEOSCtxt, pr.get(), x[j].get()));
 				}
 			} 			
 		}
@@ -569,10 +615,11 @@ std::vector<int> SpatVector::relate(std::string relation, bool symmetrical) {
 				}
 			}
 		} else {
-			std::function<char(GEOSContextHandle_t, const GEOSGeometry *, const GEOSGeometry *)> relFun = getRelateFun(relation);
+			std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
 			for (size_t i = 0; i < nx; i++) {
+				PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
 				for (size_t j = 0; j < nx; j++) {
-					out.push_back( relFun(hGEOSCtxt, x[i].get(), x[j].get()));
+					out.push_back( relFun(hGEOSCtxt, pr.get(), x[j].get()));
 				}
 			} 
 		}
