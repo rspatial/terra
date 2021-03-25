@@ -160,6 +160,8 @@ bool SpatOptions::get_todisk() { return todisk; }
 void SpatOptions::set_todisk(bool b) { todisk = b; }
 
 
-void SpatOptions::set_steps(size_t n) { steps = n; }
+void SpatOptions::set_steps(size_t n) { steps = std::max((size_t)1, n); }
 size_t SpatOptions::get_steps(){ return steps; }
 
+void SpatOptions::set_ncopies(size_t n) { ncopies = std::max((size_t)1, n); }
+size_t SpatOptions::get_ncopies(){ return ncopies; }

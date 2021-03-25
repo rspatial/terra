@@ -178,6 +178,8 @@ class SpatOptions {
 		bool progressbar=true;
 		void set_steps(size_t n);
 		size_t get_steps();
+		void set_ncopies(size_t n);
+		size_t get_ncopies();
 
 		SpatMessages msg;
 };

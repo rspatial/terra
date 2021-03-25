@@ -174,7 +174,7 @@ RCPP_MODULE(spat){
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
 		.field("datatype_set", &SpatOptions::datatype_set)
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
-		.field("ncopies", &SpatOptions::ncopies, "ncopies")
+		.property("ncopies", &SpatOptions::get_ncopies, &SpatOptions::set_ncopies, "ncopies")
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
 		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )
