@@ -375,7 +375,7 @@ SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEO
 							y.push_back(yvalue);
 							gid.push_back(i);
 							gp.push_back(j);
-							hole.push_back(h);
+							hole.push_back(h+1);
 						}
 					}
 				}
@@ -459,7 +459,7 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 				y.push_back(yvalue);
 				gid.push_back(i);			
 				gp.push_back(j);			
-				hole.push_back(h);
+				hole.push_back(h+1);
 			}
 		}
 	}
