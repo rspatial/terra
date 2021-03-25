@@ -6,7 +6,7 @@
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
 	SpatOptions opt;
-	opt.set_blocksizemp(n);
+	opt.ncopies = n;
 	opt.set_memfrac(frac);
     BlockSize bs = r->getBlockSize(opt);
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);

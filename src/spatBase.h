@@ -111,7 +111,6 @@ class SpatOptions {
 		//std::string def_bandorder = "BIL";
 		bool overwrite = false;
 		unsigned progress = 3;
-		unsigned blocksizemp = 4;
 		size_t steps = 0;
 		bool hasNAflag = false;
 		double NAflag = NAN;
@@ -163,7 +162,6 @@ class SpatOptions {
 		//void set_bandorder(std::string d);
 		void set_overwrite(bool b);
 		void set_progress(unsigned p);
-		void set_blocksizemp(unsigned x);
 		std::string get_filename();
 		std::vector<std::string> get_filenames();
 		std::string get_filetype();
@@ -178,7 +176,6 @@ class SpatOptions {
 		unsigned get_progress();
 		bool show_progress(unsigned n);
 		bool progressbar=true;
-		unsigned get_blocksizemp();
 		void set_steps(size_t n);
 		size_t get_steps();
 

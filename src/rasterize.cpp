@@ -205,7 +205,6 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 	}
 	
 	if ( err != CE_None ) {
-		Rcpp::Rcout << err << std::endl;
 		out.setError("rasterization failed");
 		GDALClose(rstDS);
 		return out;

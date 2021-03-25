@@ -151,6 +151,7 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 		out.setError(getError());
 		return(out);
 	}
+	opt.ncopies = opt.ncopies + 2 * ww;
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;

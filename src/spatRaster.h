@@ -460,7 +460,7 @@ class SpatRaster {
 		//bool checkFormatRequirements(const std::string &driver, std::string &filename);
 
 		bool canProcessInMemory(SpatOptions &opt);
-		size_t chunkSize(unsigned n, double frac);
+		size_t chunkSize(SpatOptions &opt);
 
 		void fill(double x);
 

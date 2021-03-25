@@ -307,6 +307,11 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		if (ncell(x) > 1.1 * maxcell) {
 			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		}
+		if (is.character(legend)) {
+			plg$x <- legend
+			legend <- TRUE
+		}
+
 		breaks <- list(...)$breaks
 		coltab <- NULL
 		facts  <- NULL
@@ -317,7 +322,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (x@ptr$hasColors()) {
 					coltab <- coltab(x)[[1]]
 					type <- "colortable"
-					legend = FALSE
+					legend <- FALSE
 				} else if (is.factor(x)) {
 					type <- "classes"
 					facts <- levels(x)

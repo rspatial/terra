@@ -1019,8 +1019,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
         return out;
     }
 
-	unsigned bsmp = opt.get_blocksizemp()*fact[0]*fact[1]*fact[2];
-	opt.set_blocksizemp(bsmp);
+	opt.ncopies = 2*fact[0]*fact[1]*fact[2];
 	BlockSize bs = getBlockSize(opt);
 	//opt.set_blocksizemp();
 	std::vector<double> v, vout;

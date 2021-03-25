@@ -31,7 +31,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	filenames = {""};
 	overwrite = false;
 	progress = opt.progress;
-	blocksizemp = opt.blocksizemp;
+	ncopies = opt.ncopies;
 	verbose = opt.verbose;
 	statistics = opt.statistics;
 	steps = opt.steps;
@@ -108,12 +108,6 @@ bool SpatOptions::show_progress(unsigned n) {
 	return ((progress > 0) & (progress <= n));
 }
 
-
-
-unsigned SpatOptions::get_blocksizemp() { return blocksizemp; }
-void SpatOptions::set_blocksizemp(unsigned x) { 
-	blocksizemp = x; 
-}
 
 //void SpatOptions::set_filename(std::string f) { 
 //	f = lrtrim_copy(f); 

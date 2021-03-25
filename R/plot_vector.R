@@ -436,6 +436,10 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			on.exit(graphics::par(old.par))   
 			graphics::par(mfrow=nrnc)
 		}
+		if (is.character(legend)) {
+			plg$x <- legend
+			legend <- TRUE
+		}
 
 		for (i in 1:length(y)) {
 			if (length(y) > 1) {
