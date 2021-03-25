@@ -143,9 +143,14 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 		if (cells) {
 			d <- cbind(cell=1:ncell(x), d)
 		}
-		d <- cbind(d, values(x, mat=TRUE))
+		if (is.null(d)) {
+			d <- values(x, dataframe=TRUE)
+		} else {
+			d <- data.frame(d, values(x, dataframe=TRUE))
+		}
 		if (na.rm) d <- stats::na.omit(d) 
-		data.frame(d)
+		#data.frame(d)
+		d
 	}
 )
 
