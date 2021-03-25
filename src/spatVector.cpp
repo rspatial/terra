@@ -16,6 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatVector.h"
+#include <numeric>
 
 #ifdef useGDAL
 	#include "crs.h"
@@ -587,7 +588,7 @@ SpatVector SpatVector::subset_rows(std::vector<int> range) {
 	int n = nrow();
 	std::vector<unsigned> r;
 	for (size_t i=0; i<range.size(); i++) {
-	if ((range[i] >= 0) & (range[i] < n)) {
+		if ((range[i] >= 0) & (range[i] < n)) {
 			r.push_back(range[i]);
 		}
 	}
@@ -601,11 +602,53 @@ SpatVector SpatVector::subset_rows(std::vector<int> range) {
 }
 
 
+SpatVector SpatVector::subset_rows(std::vector<unsigned> range) {
+
+	SpatVector out;
+	unsigned n = nrow();
+	std::vector<unsigned> r;
+	for (size_t i=0; i<range.size(); i++) {
+		if (range[i] < n) {
+			r.push_back(range[i]);
+		}
+	}
+
+	for (size_t i=0; i < r.size(); i++) {
+		out.addGeom( geoms[r[i]] );
+	}
+	out.srs = srs;
+	out.df = df.subset_rows(r);
+	return out;
+}
+
+
+
+
 SpatVector SpatVector::subset_rows(int i) {
 	std::vector<int> range(1, i);
 	SpatVector out = subset_rows(range);
 	return out;
 }
+
+
+SpatVector SpatVector::remove_rows(std::vector<unsigned> range) {
+
+	std::sort(range.begin(), range.end());
+	range.erase(std::unique(range.begin(), range.end()), range.end());
+	std::reverse(range.begin(), range.end());
+	std::vector<unsigned> id(size());
+	std::iota(id.begin(), id.end(), 0);
+	unsigned n = size();
+	for (size_t i=0; i<range.size(); i++) {
+		if (range[i] < n) {
+			id.erase(id.begin()+range[i]);
+		}
+	}
+	SpatVector out = subset_rows(id);
+	return out;
+}
+
+
 
 
 SpatVector SpatVector::subset_cols(std::vector<int> range) {

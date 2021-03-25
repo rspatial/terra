@@ -97,13 +97,17 @@ setMethod("near", signature(x="SpatVector"),
 			d[d[,3] <= distance, 1:2,drop=FALSE]		
 		} else {
 			k <- max(1, min(round(k), nrow(x)))
-			d <- as.matrix(distance(x, pairs=FALSE))
-			diag(d) <- NA
-			d <- t(apply(d, 1, function(i) order(i)[1:k]))
-			if (k==1) d <- t(d)
-			d <- cbind(id=1:length(x), d)
-			colnames(d)[-1] <- paste0("n", 1:k)
-			d
+			if (k> 1) {
+				d <- as.matrix(distance(x, pairs=FALSE))
+				diag(d) <- NA
+				d <- t(apply(d, 1, function(i) order(i)[1:k]))
+				if (k==1) d <- t(d)
+				d <- cbind(id=1:length(x), d)
+				colnames(d)[-1] <- paste0("n", 1:k)
+				d
+			} else {
+			
+			}
 		}
 	}
 )
@@ -112,15 +116,25 @@ setMethod("near", signature(x="SpatVector"),
 
 
 setMethod("nearest", signature(x="SpatVector"), 
-	function(x, y, pairs=FALSE, centroids=FALSE , lines=FALSE) {
+	function(x, y, pairs=FALSE, centroids=TRUE, lines=FALSE) {
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)
 		}
-		if ((geomtype(y) == "polygons") && centroids) {
-			y <- centroids(y)
+		within <- FALSE
+		if (missing(y)) {
+			within <- TRUE
+			y <- x
+		} else {
+			if ((geomtype(y) == "polygons") && centroids) {
+				y <- centroids(y)
+			}
 		}
 		z <- x
-		z@ptr <- x@ptr$near_between(y@ptr, pairs)
+		if (within) {
+			z@ptr <- x@ptr$near_within()
+		} else {
+			z@ptr <- x@ptr$near_between(y@ptr, pairs)
+		}
 		z <- messages(z, "nearest")
 		if (lines) return(z)
 		
@@ -132,14 +146,14 @@ setMethod("nearest", signature(x="SpatVector"),
 		values(y) <- data.frame(to_id=1:nrow(y))
 		to_int <- as.data.frame(intersect(to, y))
 		if (nrow(to_int) > nrow(to)) {
-			to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"to",drop=FALSE], function(x)x[1]) 
+			to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"id",drop=FALSE], function(x)x[1]) 
 		}
 		to_int <- to_int[,2] 
-		from <- geom(from)[, c("x", "y")]
-		to <- geom(to)[, c("x", "y")]
+		from <- geom(from)[, c("x", "y"),drop=FALSE]
+		to <- geom(to)[, c("x", "y"),drop=FALSE]
 		d <- data.frame(1:nrow(from), from, to_int, to, dis)
 		colnames(d) <- c("from_id", "from_x", "from_y", "to_id", "to_x", "to_y", "distance")
-		d
+		vect(d, c("to_x", "to_y"), crs=crs(x))
 	}
 )
 

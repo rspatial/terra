@@ -315,6 +315,7 @@ RCPP_MODULE(spat){
 		.method("size", &SpatVector::size, "size")
 		.method("subset_cols", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_cols ))
 		.method("subset_rows", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_rows ))	
+		.method("remove_rows", &SpatVector::remove_rows, "remove_rows")	
 		.method("type", &SpatVector::type, "type")
 
 		.method("write", &SpatVector::write, "write")

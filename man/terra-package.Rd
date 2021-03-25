@@ -153,7 +153,8 @@ Also see the methods in section VIII
 Ap	art from the function listed below, you can also use indexing with \code{[} with cell numbers, and row and/or column numbers \cr
 
 \tabular{ll}{
-    \code{\link{values}} \tab Get or set all cell values (fails with very large rasters)\cr
+    \code{\link{values}} \tab cell values (fails with very large rasters)\cr
+    \code{\link{values<-}} \tab Set new values to the cells of a SpatRaster \cr
     \code{\link{setValues}} \tab Set new values to the cells of a SpatRaster \cr
     \code{\link{as.matrix}} \tab Get cell values as a matrix \cr
     \code{\link{as.array}} \tab Get cell values as an array \cr
@@ -314,10 +315,11 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 
 \section{XV. Geometric queries}{
 \tabular{ll}{
-  \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
   \code{\link{adjacent}} \tab find adjacent polygons\cr
-  \code{\link{near}} \tab find nearby geometries\cr
   \code{\link{area}} \tab computes the area covered by polygons\cr
+  \code{\link{near}} \tab find nearby geometries\cr
+  \code{\link{nearest}} \tab find the nearest geometries\cr
+  \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
   \code{\link{perimeter}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
@@ -340,6 +342,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 
 
 \section{XVII. SpatVector attributes}{
+We use the term "attributes" for the tabular data (data.frame) associated with vector geometries.
 
 \tabular{ll}{
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatVector (e.g. point in polygons) \cr
@@ -347,6 +350,9 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{click}} \tab identify attributes by clicking on a map\cr
   \code{\link{merge}} \tab Join a table with a SpatVector \cr
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
+  \code{\link{values}} \tab Get the attributes of a SpatVector \cr
+  \code{\link{values<-}} \tab Set new attributes to the geometries of a SpatRaster \cr
+  
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 

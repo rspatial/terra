@@ -211,10 +211,37 @@ setMethod("values<-", signature("SpatVector", "data.frame"),
 	}
 )
 
+setMethod("values<-", signature("SpatVector", "matrix"), 
+	function(x, value) {
+		`values<-`(x, data.frame(value))
+	}
+)
+
+
+setMethod("values<-", signature("SpatVector", "ANY"),
+	function(x, value) {
+		if (!is.vector(value)) {
+			error("values<-", "the values must be a data.frame, matrix or vector")
+		}
+		value <- rep(value, length.out=nrow(x))
+		value <- data.frame(value=value)
+		`values<-`(x, data.frame(value))
+	}
+) 
+
+
+
 setMethod("values<-", signature("SpatVector", "NULL"), 
 	function(x, value) {
 		x@ptr$remove_df()
 		x
+	}
+)
+
+setMethod("setValues", signature("SpatVector", "ANY"), 
+	function(x, values) {
+		x@ptr <- x@ptr$deepcopy()
+		`values<-`(x, values)
 	}
 )
 

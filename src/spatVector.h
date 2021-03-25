@@ -149,6 +149,8 @@ class SpatVector {
 		SpatVector subset_cols(std::vector<int> range);
 		SpatVector subset_rows(int i);
 		SpatVector subset_rows(std::vector<int> range);
+		SpatVector subset_rows(std::vector<unsigned> range);
+		SpatVector remove_rows(std::vector<unsigned> range);
 
 		void setGeometry(std::string type, std::vector<unsigned> gid, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<unsigned> hole);
 

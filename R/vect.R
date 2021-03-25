@@ -66,7 +66,7 @@ setMethod("vect", signature(x="XY"), #sfg
 
 
 
-.checkXYnames <- function(x, warn=TRUE) {
+.checkXYnames <- function(x, warn=FALSE) {
 	if (is.null(x)) return(TRUE)
 	if (length(x) != 2) {
 		error("vect", "coordinate matrix should have 2 columns")
@@ -196,8 +196,6 @@ setMethod("$<-", "SpatVector",
 		x
 	}
 )
-
-
 
 
 

@@ -5,7 +5,7 @@
 \alias{rep}
 \alias{rep,SpatRaster-method}
 
-\title{Combine}
+\title{Replicate layers}
 
 \description{
 Replicate layers in a SpatRaster
