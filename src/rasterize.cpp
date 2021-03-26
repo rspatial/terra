@@ -12,7 +12,7 @@
 #include "gdalio.h"
 
 SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> values, double background, SpatOptions &opt) {
-	r.setError("not implemented yet");
+	r.setError("not implemented in C++ yet");
 	return(r);
 }
 
@@ -21,8 +21,9 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 	double background, bool touches, bool add, bool weights, SpatOptions &opt) {
 
 	std::string gtype = x.type();
+	bool ispol = gtype == "polygons";
 
-	if (weights && (gtype == "polygons")) {
+	if (weights && ispol) {
 		SpatOptions sopts(opt);
 		SpatRaster wout = geometry(1);
 		unsigned agx = 1000 / ncol();
@@ -46,6 +47,11 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 		out.setNames({field});
 //	}
 
+	if (ispol && touches && add) {
+		add = false;
+		out.addWarning("you cannot use add and touches at the same time");
+	}
+
 	if (field != "") {
 		int i = x.df.get_fieldindex(field);
 		if (i < 0) {
@@ -61,13 +67,13 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 			for (size_t i=0; i<values.size(); i++) {
 				values[i] = f.v[i];
 			}
-//			if (!update) {
+			if (!add) { // or update
 				std::vector<double> levels(f.levels.size());
 				for (size_t i=0; i<levels.size(); i++) {
 					levels[i] = f.levels[i];
 				}
 				out.setCategories(0, levels, f.labels);
-//			}
+			}
 			if (add) {
 				add = false;
 				addWarning("cannot add factors");
@@ -183,22 +189,49 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 
 	std::vector<int> anBandList = {1};
 	char** papszOptions = NULL;
-	if (touches) {
+	CPLErr err;
+	if (ispol && touches && (nGeoms > 1)) {
+		// first to get the touches
 		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
+		if (add) {
+			papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
+		}		
+		err = GDALRasterizeGeometries(rstDS, 
+				static_cast<int>(anBandList.size()), &(anBandList[0]),
+				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
+				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);		
+		CSLDestroy(papszOptions);	
+
+		if ( err != CE_None ) {
+			out.setError("rasterization failed");
+			GDALClose(rstDS);
+			for (size_t i=0; i<ahGeometries.size(); i++) {
+				OGR_G_DestroyGeometry(ahGeometries[i]);			
+			}
+			return out;
+		}
+		GDALFlushCache(rstDS);
+		// second time to fix the internal area
+		err = GDALRasterizeGeometries(rstDS, 
+				static_cast<int>(anBandList.size()), &(anBandList[0]),
+				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
+				NULL, NULL, &(values[0]), NULL, NULL, NULL);
+
+
+	} else {
+		if (add) {
+			papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
+		}
+		if (touches) {
+			papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
+		}
+		err = GDALRasterizeGeometries(rstDS, 
+				static_cast<int>(anBandList.size()), &(anBandList[0]),
+				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
+				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
+				
+		CSLDestroy(papszOptions);	
 	}
-	if (add) {
-		papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
-	}
-		
-	CPLErr err = GDALRasterizeGeometries(rstDS, 
-			static_cast<int>(anBandList.size()), &(anBandList[0]),
-            static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
-			NULL, NULL,
-            &(values[0]), 
-			papszOptions, 
-			NULL, NULL);
-			
-	CSLDestroy(papszOptions);	
 			
 	for (size_t i=0; i<ahGeometries.size(); i++) {
 		OGR_G_DestroyGeometry(ahGeometries[i]);			
@@ -220,7 +253,7 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 	double adfMinMax[2];
 	GDALComputeRasterMinMax(band, false, adfMinMax);
 	GDALSetRasterStatistics(band, adfMinMax[0], adfMinMax[1], -9999, -9999);
-	
+
 	GDALClose(rstDS);
 	if (driver != "MEM") {
 		out = SpatRaster(filename, {-1}, {""});

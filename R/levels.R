@@ -13,7 +13,6 @@ setMethod ("rats" , "SpatRaster",
 )
 
 
-
 setMethod ("rats<-" , "SpatRaster", 
 	function(x, layer=1, value) {
 		if (missing(value)) {
@@ -90,7 +89,7 @@ setMethod ("cats<-" , "SpatRaster",
 		} else {
 			stopifnot(layer > 0 && layer <= nlyr(x))
 		}
-		if (is.null(value) | is.na(value[[1]][1])) {
+		if (is.null(value) || is.na(value[[1]][1])) {
 			x@ptr$removeCategories(layer-1)
 			return(messages(x, "levels<-"))
 		}

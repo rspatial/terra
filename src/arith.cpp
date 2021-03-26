@@ -206,7 +206,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		} else if (oper == "==") {
 			a == b;
 		} else if (oper == "!=") {
-			a == b;
+			a != b;
 		} else if (oper == ">=") {
 			a >= b;
 		} else if (oper == "<=") {

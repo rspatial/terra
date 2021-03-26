@@ -10,6 +10,7 @@
 \alias{[[,SpatVector,logical,missing-method}
 \alias{[[,SpatVector,character,missing-method}
 \alias{[[<-,SpatVector,character,missing-method}
+\alias{[[<-,SpatVector,numeric,missing-method}
 
 \title{Get or replace attribute values of a SpatVector}
 
@@ -25,8 +26,8 @@ Replace values of a SpatVector.
 
 \arguments{
   \item{x}{SpatVector}
-  \item{name}{character}
-  \item{value}{vector}
+  \item{name}{character (field name) or numeric (column number}
+  \item{value}{vector of new values}
 }
 
 \value{

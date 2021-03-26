@@ -84,7 +84,7 @@ rasterize_points <- function(x, y, field, fun="last", background, filename, ...)
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field="", values=1, fun, background=NA, touches=is.lines(x), sum=FALSE, cover=FALSE, filename="", ...) {
+	function(x, y, field="", values=1, fun, background=NA, touches=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
@@ -94,8 +94,14 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		}
 
 		opt <- spatOptions(filename, ...)
+		pols <- grepl("polygons", g)
+		#if (pols && touches) {
+		#	first = rasterize(x, y, field=field, values=values, fun=fun, background=background, touches=FALSE, sum=sum, cover=cover, filename="", ...)
+		#	ouf <- filename
+		#	filename <- ""
+		#}
 
-		if (cover[1] && grepl("polygons", g)) {
+		if (cover[1] && pols) {
 			y@ptr <- y@ptr$rasterize2(x@ptr, "", 1, background, touches[1], sum[1], TRUE, opt)
 			y <- messages(y, "rasterize")
 			return(y)
@@ -112,12 +118,16 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				if (field > 0 && field <= ncol(x)) {
 					field <- names(x)[field]
 				} else {
-					error("rasterize", "if field is numeric, it should be a single number in the range (1:ncol(x))")
+					error("rasterize", "if `field` is numeric, it should be a single number in the range (1:ncol(x))")
 				}
 			} 
 		} 
 		background <- as.numeric(background[1])
 		y@ptr <- y@ptr$rasterize2(x@ptr, field, values, background, touches[1], sum[1], FALSE, opt)
+
+		#if (pols && touches) {
+		#	y <- cover(first, y, filename=filename, ...)
+		#}
 		messages(y, "rasterize")
 	}
 )

@@ -25,10 +25,24 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 		p <- methods::new("SpatVector")
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
+			x <- messages(x)
 		} else {
 			opt <- spatOptions()
 			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], TRUE, opt)
-			#x <- messages(x)
+			x <- messages(x)
+			if (values) {
+				ff <- is.factor(x)
+				if (any(ff)) {
+					ff <- which(ff)
+					levs <- levels(x)
+					for (f in ff) {
+						lev <- levs[[f]]
+						v <- factor(unlist(p[[f]], use.names=FALSE), levels=lev$levels)
+						levels(v) <- lev$labels
+						p[[f]] <- as.character(v)
+					}
+				}
+			}				
 		}
 		messages(p, "as.polygons")
 	}
