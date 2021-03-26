@@ -342,7 +342,7 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions 
 
 
 std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
-	std::string out = "GDAL version >= 2.1 required for gdalinfo");
+	std::string out = "GDAL version >= 2.1 required for gdalinfo";
 	return out;
 }
 
