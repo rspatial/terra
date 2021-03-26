@@ -189,6 +189,16 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 	}
 )
 
+setReplaceMethod("[[", c("SpatVector", "numeric", "missing"),
+	function(x, i, j, value) {
+		stopifnot(i > 0 && i <= ncol(x))
+		vn <- names(x)[i]
+		x[[vn]] <- value
+		x
+	}
+)
+
+
 
 setMethod("$<-", "SpatVector",  
 	function(x, name, value) {

@@ -5,7 +5,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		if (inherits(txtfun, "character")) { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
 				na.rm <- isTRUE(list(...)$na.rm)
-				opt <- .getOptions()
+				opt <- spatOptions()
 				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
 				messages(ptr, "zonal")
 				return( .getSpatDF(ptr) )
@@ -40,7 +40,7 @@ setMethod("global", signature(x="SpatRaster"),
 		nms <- make.unique(nms)
 		txtfun <- .makeTextFun(fun)
 
-		opt <- .getOptions()
+		opt <- spatOptions()
 		if (!is.null(weights)) {
 			stopifnot(inherits(weights, "SpatRaster"))
 			stopifnot(txtfun %in% c("mean", "sum"))

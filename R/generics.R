@@ -42,7 +42,7 @@ setMethod("area", signature(x="SpatRaster"),
 	function(x, sum=TRUE, correct=FALSE, filename="", ...) {
 		if (sum) {
 			byvalue = FALSE
-			opt <- .getOptions()
+			opt <- spatOptions()
 			if (byvalue) {
 				v <- x@ptr$area_by_value(opt)
 				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))

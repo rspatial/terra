@@ -15,7 +15,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 		}
 		nms <- names(x)
 
-		opt <- .getOptions()
+		opt <- spatOptions()
 
 		b <- x@ptr$getBlockSize(4, opt$memfrac)
 		readStart(x)

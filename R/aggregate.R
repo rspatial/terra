@@ -57,7 +57,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 	} else {
 		out <- rast(x)
 		nl <- nlyr(out)
-		opt <- .getOptions()
+		opt <- spatOptions()
 		out@ptr <- out@ptr$aggregate(fact, "sum", TRUE, opt)
 		out <- messages(out, "aggregate")
 

@@ -67,7 +67,7 @@ setMethod("as.lines", signature(x="SpatVector"),
 
 setMethod("as.points", signature(x="SpatVector"), 
 	function(x, multi=FALSE) {
-		opt <- .getOptions()
+		opt <- spatOptions()
 		x@ptr <- x@ptr$as_points(multi)
 		messages(x, "as.points")
 	}
@@ -77,9 +77,23 @@ setMethod("as.points", signature(x="SpatVector"),
 setMethod("as.points", signature(x="SpatRaster"), 
 	function(x, values=TRUE, na.rm=TRUE) {
 		p <- methods::new("SpatVector")
-		opt <- .getOptions()
+		opt <- spatOptions()
 		p@ptr <- x@ptr$as_points(values, na.rm, opt)
 		x <- messages(x, "as.points")
+			
+		if (values) {
+			ff <- is.factor(x)
+			if (any(ff)) {
+				ff <- which(ff)
+				levs <- levels(x)
+				for (f in ff) {
+					lev <- levs[[f]]
+					v <- factor(unlist(p[[f]], use.names=FALSE), levels=lev$levels)
+					levels(v) <- lev$labels
+					p[[f]] <- as.character(v)
+				}
+			}
+		}	
 		messages(p, "as.points")
 	}
 )
@@ -148,8 +162,10 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 		} else {
 			d <- data.frame(d, values(x, dataframe=TRUE))
 		}
-		if (na.rm) d <- stats::na.omit(d) 
-		#data.frame(d)
+		if (na.rm) {
+			d <- stats::na.omit(d) 
+			attr(d, "na.action") <- NULL
+		}
 		d
 	}
 )

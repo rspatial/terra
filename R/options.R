@@ -84,9 +84,9 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	opt
 }
 
-.getOptions <- function() {
-	spatOptions("", TRUE, list())
-}
+#..getOptions <- function() {
+#	spatOptions("", TRUE, list())
+#}
 
 #..showOptions <- function(opt) {
 #	cat("Options for package 'terra'\n")

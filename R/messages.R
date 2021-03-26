@@ -34,7 +34,7 @@ messages <- function(x, f="") {
 
 .mem_info <- function(x, n=1, print=TRUE) {
 	n <- max(0,n)
-	opt <- .getOptions()
+	opt <- spatOptions()
 	opt$ncopies = n;
 	v <- x@ptr$mem_needs(opt)
 	if (print) {
