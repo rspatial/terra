@@ -193,9 +193,6 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 	if (ispol && touches && (nGeoms > 1)) {
 		// first to get the touches
 		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
-		if (add) {
-			papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
-		}		
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(anBandList.size()), &(anBandList[0]),
 				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
@@ -210,7 +207,7 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 			}
 			return out;
 		}
-		GDALFlushCache(rstDS);
+		//GDALFlushCache(rstDS);
 		// second time to fix the internal area
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(anBandList.size()), &(anBandList[0]),
@@ -219,11 +216,10 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 
 
 	} else {
-		if (add) {
-			papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
-		}
 		if (touches) {
 			papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
+		} else if (add) {
+			papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
 		}
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(anBandList.size()), &(anBandList[0]),

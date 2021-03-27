@@ -106,6 +106,7 @@ class SpatOptions {
 
 	public:
 		unsigned ncopies = 4;
+		unsigned minrows = 1;
 		std::string def_datatype = "FLT4S";
 		std::string def_filetype = "GTiff";
 		//std::string def_bandorder = "BIL";

@@ -35,6 +35,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	verbose = opt.verbose;
 	statistics = opt.statistics;
 	steps = opt.steps;
+	minrows = opt.minrows;
 	//ncdfcopy = opt.ncdfcopy;
 }
 

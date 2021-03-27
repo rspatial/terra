@@ -12,7 +12,7 @@ Transfer vector data to a raster
 }
 
 \usage{
-\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, values=1, fun, background=NA, touches=is.lines(x),
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, values=1, fun, background=NA, touches=FALSE,
 	sum=FALSE, cover=FALSE, filename="", ...)
 }
 
@@ -28,11 +28,11 @@ Transfer vector data to a raster
   
   \item{background}{numeric. Value to put in the cells that are not covered by any of the features of \code{x}. Default is \code{NA}}
   
-  \item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons are affected, not just those on the line render path, or whose center point is within the polygon}
+  \item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons are affected, not just those on the line render path, or whose center point is within the polygon. If \code{touches=TRUE}, \code{add} cannot be \code{TRUE}}
   
   \item{sum}{logical. If \code{TRUE}, the values of overlapping geometries are summed instead of replaced; and \code{background} is set to zero. Only used if \code{x} does not consists of points} 
 
-  \item{cover}{logical. If \code{TRUE} and the geometry of \code{x} is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in the each subcell} 
+  \item{cover}{logical. If \code{TRUE} and the geometry of \code{x} is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)} 
 
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

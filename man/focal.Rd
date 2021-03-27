@@ -11,14 +11,14 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 }
 
 \usage{
-\S4method{focal}{SpatRaster}(x, w=3, na.rm=TRUE, na.only=FALSE, fillvalue=NA, fun="sum",
-            filename="", ...) 
+\S4method{focal}{SpatRaster}(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, 
+			fillvalue=NA, filename="", ...) 
 }
 
 \arguments{
 \item{x}{SpatRaster}
   
-\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix . See Details. If \code{w} is a matrix, \code{na.rm=FALSE} and \code{fun=sum}, and cannot be changed}
+\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See Details. If \code{w} is a matrix, \code{na.rm=FALSE} and \code{fun=sum}, and cannot be changed}
 
 \item{na.rm}{logical. Should missing values be removed?}
 

@@ -190,6 +190,18 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 
 	char **papszOptions = NULL;
+	
+	if (driver == "GTiff") {
+		bool lzw = true;
+		for (size_t i=0; i<opt.gdal_options.size(); i++) {
+			if (opt.gdal_options[i].substr(0, 7) == "COMPRESS") {
+				lzw = false;
+			}
+		}
+		if (lzw) {
+			papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "LZW");			
+		}
+	}
 	for (size_t i=0; i<opt.gdal_options.size(); i++) {
 		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
 		if (gopt.size() == 2) {

@@ -38,7 +38,8 @@ size_t SpatRaster::chunkSize(SpatOptions &opt) {
 	//double maxrows = 10000;
 	//rows = std::min(rows, maxrows);
 	size_t urows = floor(rows);
-	if (rows < 1) return (1);
+	urows = std::max(urows, (size_t)opt.minrows);
+	if (urows < 1) return (1);
 	if (urows < nrow()){
 		return(urows);
 	} else {

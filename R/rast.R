@@ -4,10 +4,7 @@
 # License GPL v3
 
 
-
-setMethod("rast", signature(x="missing"),
-	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, names) {
-
+new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names) {
 		if (missing(extent)) {
 			e <- c(xmin, xmax, ymin, ymax) 
 		} else {
@@ -46,6 +43,12 @@ setMethod("rast", signature(x="missing"),
 			}
 		}
 		r
+}
+
+
+setMethod("rast", signature(x="missing"),
+	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, names) {
+		new_rast(nrows, ncols, nlyrs, xmin, xmax, ymin, ymax, crs, extent, resolution, vals, names)
 	}
 )
 
@@ -79,10 +82,7 @@ setMethod("rast", signature(x="SpatExtent"),
 		dots$xmax=x[2]
 		dots$ymin=x[3]
 		dots$ymax=x[4]
-		if (all(is.na(pmatch(names(dots), "resolution")))) {
-			dots$resolution <- min(range(x)) / 100
-		}
-		do.call(rast, dots)
+		do.call(new_rast, dots)
 	}
 )
 
@@ -95,15 +95,10 @@ setMethod("rast", signature(x="SpatVector"),
 		dots$xmax=e[2]
 		dots$ymin=e[3]
 		dots$ymax=e[4]
-		i <- pmatch(names(dots), "resolution")
-		j <- pmatch(names(dots), "nrow")
-		if (all(c(is.na(i), is.na(j)))) {
-			dots$resolution <- min(range(e)) / 100
-		}
 		if (all(is.na(pmatch(names(dots), "crs")))) {
 			dots$crs <- crs(x)
 		}
-		do.call(rast, dots)
+		do.call(new_rast, dots)
 	}
 )
 

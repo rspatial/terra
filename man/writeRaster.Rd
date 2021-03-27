@@ -39,7 +39,7 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{filetype}\tab file format expresses as \href{https://gdal.org/drivers/raster/index.html}{GDAL driver names}. If this argument is not supplied, the driver is derived from the filename.\cr
 
-\code{gdal}\tab GDAL driver specific datasource creation options. See the GDAL documentation. For example, with the \href{https://gdal.org/drivers/raster/gtiff.html}{GeoTiff file format} you can use \code{gdal=c("COMPRESS=LZW", "TFW=YES")}.\cr
+\code{gdal}\tab GDAL driver specific datasource creation options. See the GDAL documentation. For example, with the \href{https://gdal.org/drivers/raster/gtiff.html}{GeoTiff file format} you can use \code{gdal=c("COMPRESS=DEFLATE", "TFW=YES")}.\cr
 
 \code{tempdir}\tab the path where temporary files are to be written to.\cr
 
@@ -59,7 +59,9 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 
 \note{
-When writing integer values the lowest available value (given the datatype) is used for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for \code{NA}. To keep the value 255 use another value as NAflag, or do not set a NAflag (with \code{NAflag=NA})
+GeoTiff files are, by default, written with LZW compression. If you do not want compression, use \code{gdal="COMPRESS=NONE"}.
+
+When writing integer values the lowest available value (given the datatype) is used for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for \code{NA}. To keep the value 255, you need to set another value as \code{NAflag}, or do not set a \code{NAflag} (with \code{NAflag=NA})
 }
 
 \examples{

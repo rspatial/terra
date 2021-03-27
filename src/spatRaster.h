@@ -532,7 +532,10 @@ class SpatRaster {
 		SpatRaster flip(bool vertical, SpatOptions &opt);
 		SpatRaster filler(SpatRaster x, SpatOptions &opt);
 		
-		SpatRaster focal(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
+		SpatRaster focal1(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
+		SpatRaster focal2(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
+		SpatRaster focal3(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
+
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows);
 		std::vector<std::vector<double>> freq(bool bylayer, bool round, int digits, SpatOptions &opt);
 		std::vector<size_t> count(double value, bool bylayer, bool round, int digits, SpatOptions &opt);

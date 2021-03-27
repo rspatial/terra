@@ -281,6 +281,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	}
 
 	opt.steps = bs.n;
+	opt.minrows = fact[0];
 	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
