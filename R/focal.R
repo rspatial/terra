@@ -18,7 +18,6 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename=""
 		}
 	}
 
-	cpp <- FALSE
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
 		w <- dim(w)
@@ -26,7 +25,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename=""
 		w <- rep_len(w, 2)
 		m <- rep(1, prod(w))
 	}
-	
+	cpp <- FALSE
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (is.character(txtfun)) { 
 		if (txtfun %in% c("mean", "sum")) {
@@ -51,7 +50,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename=""
 		readStart(x)
 		on.exit(readStop(x))
 		b <- writeStart(out, filename, ...)
-		dow <- !all(w == 1)
+		dow <- !all(m == 1)
 		for (i in 1:b$n) {
 			v <- matrix(x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=prod(w), byrow=TRUE)
 			if (dow) {
