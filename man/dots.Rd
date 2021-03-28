@@ -35,10 +35,10 @@ SpatVector (invisibly)
 \examples{ 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
-v$population <- v$AREA^2
+v$population <- 1000*(1:12)^2
 plot(v)
-d <- dots(v, "population", 1000)
-d
+#d <- dots(v, "population", 10000)
+#d
 }
 
 \keyword{methods}

@@ -16,7 +16,7 @@ Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (so
 \usage{
 \S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, 
 ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, 
-zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...)
+zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...)
 }
 
 \arguments{
@@ -41,6 +41,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...)
   \item{ylab}{character. Label of y-axis}
   \item{asp}{numeric. Aspect (ratio of x and y. If NULL, and appropriate value is computed to match data for the longitude/latitude coordinate reference system, and 1 for planar coordinate reference systems}
   \item{add}{logical. If \code{TRUE} add values to current plot}
+  \item{interpolate}{logical. Do not use, to be removed}
   \item{...}{graphical parameters as in \code{\link{plot}} or \code{\link{rasterImage}}}
 }
 

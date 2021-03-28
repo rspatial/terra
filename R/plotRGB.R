@@ -33,7 +33,7 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 
 
 setMethod("plotRGB", signature(x="SpatRaster"), 
-function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, ...) { 
+function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) { 
 
 	if (!is.null(mar)) {
 		mar <- rep_len(mar, 4)
@@ -151,6 +151,11 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 			graphics::axis(2, at=yticks, las = 1)
 			#graphics::axis(3, at=xticks, labels=FALSE, lwd.ticks=0)
 			#graphics::axis(4, at=yticks, labels=FALSE, lwd.ticks=0)
+		}
+	}
+	if (!missing(interpolate)) { # for backwards compatibility
+		if (is.logical(interpolate)) {
+			smooth <- interpolate
 		}
 	}
 	graphics::rasterImage(z, bb[1], bb[3], bb[2], bb[4], interpolate=smooth, ...)
