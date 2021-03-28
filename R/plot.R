@@ -179,10 +179,14 @@ setMethod("text", signature(x="SpatRaster"),
 				} 
 			}
 			x <- x[[labels]]
-			x <- as.points(x, values=TRUE)
-			xy <- geom(x)[, c("x", "y")]
+			p <- as.points(x, values=TRUE)
+			xy <- geom(p)[, c("x", "y")]
 			labels <- as.data.frame(x)[,1]
-			labels <- as.character(round(labels, digits=digits) )
+			if (is.factor(labels)) {
+				labels <- substr(as.character(labels), 1, max(1, digits))
+			} else {
+				labels <- as.character(round(labels, digits=digits) )
+			}
 		}
 		if (halo) {
 			.halo(xy[,1], xy[,2], labels, ...)
