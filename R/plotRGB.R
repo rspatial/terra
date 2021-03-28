@@ -5,10 +5,12 @@
 
 setMethod("RGB<-", signature(x="SpatRaster"), 
 	function(x, value) {
-		if (is.null(value) || is.na(value)) {
+		if (is.null(value[1]) || is.na(value[1])) {
 			x@ptr$removeRGB()
 		} else {
 			stopifnot(length(value) == 3)
+			stopifnot(all(value) %in% 1:nlyr(x))
+			
 			x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1)
 		}
 		messages(x, "RGB<-")
