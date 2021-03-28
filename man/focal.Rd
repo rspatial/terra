@@ -12,13 +12,15 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \usage{
 \S4method{focal}{SpatRaster}(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, 
-			fillvalue=NA, filename="", ...) 
+			fillvalue=NA, expand=FALSE, filename="", ...) 
 }
 
 \arguments{
 \item{x}{SpatRaster}
   
-\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See Details. If \code{w} is a matrix, \code{na.rm=FALSE} and \code{fun=sum}, and cannot be changed}
+\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See Details.}
+
+\item{fun}{function that takes multiple numbers, and returns a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument, either as actual argument or through use of \code{...}}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
@@ -26,8 +28,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 
-\item{fun}{function that takes multiple numbers, and returns a single number. For example mean, modal, min or max. It should also accept a \code{na.rm} argument, either as actual argument or through use of \code{...}}
-
+\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
 
 \item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -36,7 +37,9 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 \details{
 \code{focal} 
 
-The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero. 
+The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero.
+
+Window values are typically 0 or 1, or a value between 0 and 1 if you are using a rectangular area and/or the "sum" function. They can also be \code{NA}; these are ignored in the computation. That can be useful to compute the mean, min, or max value for a non-rectangular area.  
 
 Example weight matrices
 

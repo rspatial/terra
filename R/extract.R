@@ -6,7 +6,7 @@
 
 .big_number_warning <- function() {
 # this warning should be given by C
-	warning("big number", "cell numbers larger than ", 2^.Machine$double.digits, " are approximate")
+	warn("big number", "cell numbers larger than ", 2^.Machine$double.digits, " are approximate")
 }
 
 
@@ -239,7 +239,7 @@ setMethod("extract", c("SpatVector", "SpatVector"),
 function(x, y, ...) {
 	g <- geomtype(x)
 	if (!grepl("points", g)) {
-		stop("the first argument must be points")
+		error("extract", "the first argument must be points")
 	}
 	r <- relate(x, y, "within")
 	e <- apply(r, 1, which)

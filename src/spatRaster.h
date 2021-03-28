@@ -534,7 +534,7 @@ class SpatRaster {
 		
 		SpatRaster focal1(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
 		SpatRaster focal2(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
-		SpatRaster focal3(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, SpatOptions &opt);
+		SpatRaster focal3(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, bool expand, SpatOptions &opt);
 
 		std::vector<double> focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows);
 		std::vector<std::vector<double>> freq(bool bylayer, bool round, int digits, SpatOptions &opt);

@@ -234,7 +234,7 @@ setMethod("boxplot", signature(x="SpatRaster"),
 		} else {
 			s <- c(x[[1]], y[[1]])
 			if ( ncell(x) > maxcell) {
-				warning("boxplot", "taking a regular sample of ", maxcell, " cells")
+				warn("boxplot", "taking a regular sample of ", maxcell, " cells")
 				s <- spatSample(s, maxcell, method="regular", as.raster=TRUE)
 			} 
 			s <- values(s, dataframe=TRUE)
@@ -262,7 +262,7 @@ setMethod("barplot", "SpatRaster",
 		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE)
 		adj <- length(x) / ncell(height)
 		if (adj < 1) {
-			warning("barplot", "a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
+			warn("barplot", "a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
 		}
 
 		if (!is.null(digits)) {

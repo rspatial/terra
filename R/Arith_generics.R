@@ -56,15 +56,15 @@ setMethod("Arith", signature(e1="numeric", e2="SpatExtent"),
     function(e1, e2) {
 		oper <- as.vector(.Generic)[1]
 		if (oper == "%%") { 
-			stop("only 'Spatextent %% numeric' (in that order) is supported")
+			error("%%", "only 'Spatextent %% numeric' (in that order) is supported")
 		} else if (oper == "+") {
 			return(e2 + e1)
 		} else if (oper == "-") {
-			stop("only 'Spatextent - numeric' (in that order) is supported")
+			error("-", "only 'Spatextent - numeric' (in that order) is supported")
 		} else if (oper == "*") {
 			return(e2 * e1)
 		} else if (oper == "/") {
-			stop("only 'Spatextent / numeric' (in that order) is supported")
+			error("/", "only 'Spatextent / numeric' (in that order) is supported")
 		} else {
 			error(oper, "only +, -, *, / and %% are supported")
 		}

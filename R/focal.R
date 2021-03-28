@@ -5,7 +5,7 @@
 
 
 setMethod("focal", signature(x="SpatRaster"), 
-function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename="", method=3, ...)  {
+function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
 	if (nlyr(x) > 1) {
 		warn("focal", "only the first layer of x is used")
@@ -13,7 +13,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename=""
 	}
 	if (na.only && (!is.matrix(w))) {
 		if (!na.rm) {
-			warning("focal", "na.rm set to TRUE because na.only is TRUE")
+			warn("focal", "na.rm set to TRUE because na.only is TRUE")
 			na.rm <- TRUE
 		}
 	}
@@ -23,6 +23,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename=""
 		w <- dim(w)
 	} else {
 		w <- rep_len(w, 2)
+		stopifnot(all(w > 0))
 		m <- rep(1, prod(w))
 	}
 	cpp <- FALSE
@@ -35,13 +36,13 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename=""
 
 	if (cpp) {
 		opt <- spatOptions(filename, ...)
-		if (method==1) {
-			x@ptr <- x@ptr$focal1(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)		
-		} else if (method == 2) {
-			x@ptr <- x@ptr$focal2(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)
-		} else {
-			x@ptr <- x@ptr$focal3(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)
-		}
+		#if (method==1) {
+		#	x@ptr <- x@ptr$focal1(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)		
+		#} else if (method == 2) {
+		#	x@ptr <- x@ptr$focal2(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)
+		#} else {
+		x@ptr <- x@ptr$focal3(w, m, fillvalue, na.rm[1], na.only[1], txtfun, expand, opt)
+		#}
 		messages(x, "focal")
 		return(x)
 
@@ -50,12 +51,24 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, filename=""
 		readStart(x)
 		on.exit(readStop(x))
 		b <- writeStart(out, filename, ...)
-		dow <- !all(m == 1)
+		dow <- !isTRUE(all(m == 1))
+		msz <- prod(w)
+		if (any(is.na(m))) {
+			k <- !is.na(m)
+			mm <- m[k]
+			msz <- sum(k)
+		}
+		
 		for (i in 1:b$n) {
-			v <- matrix(x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=prod(w), byrow=TRUE)
+			v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
 			if (dow) {
-				v <- v * w
+				if (any(is.na(m))) {
+					v <- v[k] * mm
+				} else {
+					v <- v * m
+				}
 			}
+			v <- matrix(v, ncol=msz, byrow=TRUE)
 			v <- apply(v, 1, fun, na.rm=na.rm)
 			if (na.only) {
 				vv <- readValues(x, b$row[i], b$nrows[i])

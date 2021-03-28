@@ -9,12 +9,12 @@
 	if (length(ngb) == 1) {
 		ngb <- c(ngb, ngb)
 	} else if (length(ngb) > 2) {
-		stop('ngb should be a single value or two values')
+		error("autocor", "ngb should be a single value or two values")
 	}
 	if (min(ngb) < 1) { stop("ngb should be larger than 1") } 
 	if (mustBeOdd) {
 		if (any(ngb %% 2 == 0)) {
-			stop('neighborhood size must be an odd number')
+			error("autocor", "neighborhood size must be an odd number")
 		}
 	}
 	return(ngb)
@@ -49,7 +49,7 @@ setMethod("autocor", signature(x="numeric"),
 		d <- dim(w)
 		n <- length(x)
 		if ((d[1] != d[2]) || (d[1] != n)) {
-			stop("w must be a square matrix with sides the size of x")
+			error("autocor", "w must be a square matrix with sides the size of x")
 		}
 		if (method == "moran") {
 			dx <- x - mean(x, na.rm=TRUE)
@@ -83,10 +83,6 @@ setMethod("autocor", signature(x="numeric"),
 			VG <- (si2 * ((n * rowSums(w^2) - rowSums(w)^2)/(n - 1))) / (sum(x)^2)
 
 			(Gi-Ei)/sqrt(VG)
-
-			
-		} else {
-			stop()
 		}
  	} 
 )
