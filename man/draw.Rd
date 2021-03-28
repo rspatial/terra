@@ -12,7 +12,7 @@ Draw on a plot (map) to get a SpatVector or SpatExtent object for later use. Aft
 }
 
 \usage{
-\S4method{draw}{character}(x="extent", col="red", lwd=2, n=10000, ...)
+\S4method{draw}{character}(x="extent", col="red", lwd=2, n=1000, ...)
 }
 
 \arguments{
@@ -27,7 +27,7 @@ Draw on a plot (map) to get a SpatVector or SpatExtent object for later use. Aft
 SpatVector or SpatExtent 
 }
 
-\seealso{ \code{\link[graphics]{locator}}  }
+\seealso{ \code{\link{click}} }
  
 
 \keyword{ spatial }

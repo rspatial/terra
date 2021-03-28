@@ -1,5 +1,5 @@
 
-RS_locator <- function(n, type, pch=20, ...) {
+RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 # locator that also works in RStudio
 # Berry Boessenkool 
 # https://stackoverflow.com/a/65147220/635245
@@ -11,11 +11,14 @@ RS_locator <- function(n, type, pch=20, ...) {
 		x <- c(x, p$x)
 		y <- c(y, p$y)
 		points(x, y, type=type, pch=pch, ...)
+		if (id) { 
+			text(p$x, p$y, labels=i, pos=4, ...) 
+		} 
 	}
 }
 
-.drawPol <- function(n=10000, ...) {
-	#xy <- graphics::locator(n=10000, type="l", col=col, lwd=lwd, ...)
+.drawPol <- function(n=1000, ...) {
+	#xy <- graphics::locator(n=1000, type="l", col=col, lwd=lwd, ...)
 	#xy <- cbind(xy$x, xy$y)
 	xy <- RS_locator(n, "l", ...)
 	xy <- rbind(xy, xy[1,])
@@ -25,8 +28,8 @@ RS_locator <- function(n, type, pch=20, ...) {
 }
 
 
-.drawLin <- function(n=10000, ...) {
-	#xy <- graphics::locator(n=10000, type="l", col=col, lwd=lwd, ...)
+.drawLin <- function(n=1000, ...) {
+	#xy <- graphics::locator(n=1000, type="l", col=col, lwd=lwd, ...)
 	#xy <- cbind(xy$x, xy$y)
 	xy <- RS_locator(n, "l", ...)
 	g <- cbind(1,1,xy)
@@ -34,8 +37,8 @@ RS_locator <- function(n, type, pch=20, ...) {
 }
 
 
-.drawPts <- function(n=10000, ...) {
-	#xy <- graphics::locator(n=10000, type="p", col=col, lwd=lwd, ...)
+.drawPts <- function(n=1000, ...) {
+	#xy <- graphics::locator(n=1000, type="p", col=col, lwd=lwd, ...)
 	#xy <- cbind(xy$x, xy$y)
 	xy <- RS_locator(n, "p", ...)
 	g <- cbind(1:nrow(xy), 1, xy)
@@ -61,16 +64,16 @@ RS_locator <- function(n, type, pch=20, ...) {
 }
 
 setMethod("draw", signature(x="character"),
-    function(x="extent", col="red", lwd=2, n=10000, ...){ 
+    function(x="extent", col="red", lwd=2, id=FALE, n=1000, ...){ 
 		x <- match.arg(tolower(x), c("extent", "polygon", "lines", "points"))
 		if (x == "extent") {
 			.drawExt(col=col, lwd=lwd, ...)
 		} else if (x == "polygon") {
-			.drawPol(n, col=col, lwd=lwd, ...)
+			.drawPol(n, col=col, lwd=lwd, id=id, ...)
 		} else if (x == "lines") {
-			.drawLin(n, col=col, lwd=lwd, ...)
+			.drawLin(n, col=col, lwd=lwd, id=id, ...)
 		} else if (x == "points" || x == "multipoints" ) {
-			.drawPts(n, col=col, ...)
+			.drawPts(n, col=col, id=id, ...)
 		} 
 	}
 )

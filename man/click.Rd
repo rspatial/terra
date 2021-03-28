@@ -13,11 +13,11 @@ Click on a map (plot) to get the coordinates or the values of a SpatRaster or Sp
 
 
 \usage{
-\S4method{click}{SpatRaster}(x, n=Inf, id=FALSE, xy=FALSE, cell=FALSE, type="n", show=TRUE, ...)
+\S4method{click}{SpatRaster}(x, n=1000, id=FALSE, xy=FALSE, cell=FALSE, type="n", show=TRUE, ...)
 
-\S4method{click}{SpatVector}(x,  n=1, type="n", ...)
+\S4method{click}{SpatVector}(x,  n=1, id=FALSE, type="n", ...)
 
-\S4method{click}{missing}(x, n=1, type="n", ...)
+\S4method{click}{missing}(x, n=1, id=FALSE, type="n", ...)
 }
 
 
