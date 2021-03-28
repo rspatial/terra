@@ -23,9 +23,9 @@
 
 \description{
 
-These functions allow for defining a SpatRaster layer as a categorical variable (factor). These can be inspected and set with \code{levels} and \code{cats}. These methods are the same except that with \code{levels<-} you can only set the categories of the first layer. Like factors in R, categories are stored as indices (integers) that have an associated label. In a SpatRaster, the index starts at 0, and cannot be larger than 255. \code{as.factor} makes the first layer of a SpatRaster a categorical variable. You can then use \code{levels<-} to replace the lables.
+These functions allow for defining a SpatRaster layer as a categorical variable (factor). These can be inspected and set with \code{levels} and \code{cats}. These methods are the same except that with \code{levels<-} you can only set the categories of the first layer. Like factors in R, categories are stored as indices (integers) that have an associated label. In a SpatRaster, the index starts at 0, and cannot be larger than 255. \code{as.factor} makes the first layer of a SpatRaster a categorical variable. You can then use \code{levels<-} to replace the labels.
 
-The "Raster Attribute Table" (RAT) is similar in concept. A main difference with categries is that there can be many labels (variables) assocuated with one index. The RAT is a data.frame; the first column ("ID") has the unique cell values of the layer.
+The "Raster Attribute Table" (RAT) is similar in concept. A main difference with categories is that there can be many labels (variables) associated with one index. The RAT is a data.frame; the first column ("ID") has the unique cell values of the layer.
 }
 
 \usage{

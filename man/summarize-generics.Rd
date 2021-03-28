@@ -87,7 +87,7 @@ values(r) <- runif(size(r))
 
 x <- mean(r)
 # note how this returns one layer
-x <- sum(c(r, r[[2]], 5))
+x <- sum(c(r, r[[2]]), 5)
 
 # and this returns three layers
 y <- sum(r, r[[2]], 5)

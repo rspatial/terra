@@ -230,9 +230,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 		return out; 
 	}
 
-	std::vector<std::string> f {"sum", "mean", "min", "max", "median", "modal"};
-	auto it = std::find(f.begin(), f.end(), fun);
-	if (it == f.end()) {
+	if (!haveFun(fun)) {
 		out.setError("unknown function argument");
 		return out;
 	}

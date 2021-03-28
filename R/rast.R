@@ -296,6 +296,7 @@ setMethod("rast", signature(x="ANY"),
 
 setMethod("rast", signature(x="matrix"),
 	function(x, type="", crs="", digits=6) {
+		stopifnot(prod(dim(x)) > 0)
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs=crs, digits=digits)
 		} else {

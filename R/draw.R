@@ -17,10 +17,10 @@ RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 	}
 }
 
-.drawPol <- function(n=1000, ...) {
+.drawPol <- function(n=1000, id=FALSE, ...) {
 	#xy <- graphics::locator(n=1000, type="l", col=col, lwd=lwd, ...)
 	#xy <- cbind(xy$x, xy$y)
-	xy <- RS_locator(n, "l", ...)
+	xy <- RS_locator(n, "l", id=id, ...)
 	xy <- rbind(xy, xy[1,])
 	graphics::lines(xy[(length(xy[,1])-1):length(xy[,1]),], ...)
 	g <- cbind(1,1,xy,0)
@@ -64,7 +64,7 @@ RS_locator <- function(n, type, id=FALSE, pch=20, ...) {
 }
 
 setMethod("draw", signature(x="character"),
-    function(x="extent", col="red", lwd=2, id=FALE, n=1000, ...){ 
+    function(x="extent", col="red", lwd=2, id=FALSE, n=1000, ...){ 
 		x <- match.arg(tolower(x), c("extent", "polygon", "lines", "points"))
 		if (x == "extent") {
 			.drawExt(col=col, lwd=lwd, ...)

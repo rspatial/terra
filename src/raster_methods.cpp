@@ -305,12 +305,10 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 	recycle(nms, nl);
 	out.setNames(nms);
 
-	std::vector<std::string> f {"sum", "mean", "min", "max", "prod", "any", "all"};
-	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.setError("unknown apply function");
+	if (!haveFun(fun)) {
+		out.setError("unknown function argument");
 		return out;
 	}
-
 
 	if (!hasValues()) return(out);
 
@@ -341,8 +339,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 		}
 	}
 
-	std::function<double(std::vector<double>&, bool)> theFun;
-	theFun = getFun(fun);
+	std::function<double(std::vector<double>&, bool)> theFun = getFun(fun);
 
 	for (size_t i=0; i<out.bs.n; i++) {
         std::vector<double> a = readBlock(out.bs, i);
@@ -801,6 +798,11 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
+	if (!haveFun(fun)) {
+		out.setError("unknown function argument");
+		return out;
+	}
+
 	bool sval = !std::isnan(first);
 	bool eval = !std::isnan(last);
 	if (sval && eval) {
@@ -827,13 +829,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 		return(out);
 	}
 
-	std::vector<std::string> f {"sum", "mean", "min", "max", "prod", "any", "all"};
-	if (std::find(f.begin(), f.end(), fun) == f.end()) {
-		out.setError("unknown rapply function");
-		return out;
-	}
-	std::function<double(std::vector<double>&, bool)> theFun;
-	theFun = getFun(fun);
+	std::function<double(std::vector<double>&, bool)> theFun = getFun(fun);
 
 	int nl = nlyr();
  	if (!out.writeStart(opt)) {

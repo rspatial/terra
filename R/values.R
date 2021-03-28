@@ -84,6 +84,13 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			stopifnot(length(dim(values)) == 3)
 			values <- as.vector(aperm(values, c(2,1,3)))
 		}
+		make_factor <- FALSE
+		if (is.character(values)) {
+			values <- as.factor(values)
+			levs <- levels(values)
+			values <- as.integer(values)
+			make_factor <- TRUE
+		}
 
 		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
 			error("setValues", "values must be numeric, integer, or logical")
@@ -108,7 +115,13 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			}
 			y@ptr$setValues(values, opt)
 		}
-		messages(y)
+		y <- messages(y)
+		if (make_factor) {
+			for (i in 1:nlyr(y)) {
+				cats(y, i) <- levs
+			}
+		}
+		y
 	}
 )
 

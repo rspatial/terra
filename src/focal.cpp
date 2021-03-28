@@ -397,7 +397,7 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 			if (out.bs.n != 1) {
 				nrows -= hw0;
 			}
-		} else if (i == (out.bs.n - 1)) {
+		} else if (i == (out.bs.n-1)) {
 			startrow -= hw0;
 			nrows += hw0;
 		} else {
@@ -426,6 +426,57 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 					}
 
 */
+
+	
+
+void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand,
+					std::function<double(std::vector<double>&, bool)> fun) {
+	
+	out.resize(nc * nr);
+	int hwc = wnc / 2;
+	int hwr = wnr / 2;
+	std::vector<bool> winNA(window.size(), false);
+	for (size_t i=0; i<window.size(); i++) {
+		if (std::isnan(window[i])) winNA[i] = true; 
+	}
+	
+	int wr1 = wnr - 1;
+	int wc1 = wnc - 1;
+	int nc1 = nc - 1;
+	
+	for (int r=0; r < nr; r++) {
+		int rread = r+srow;
+		for (int c=0; c < nc; c++) {
+			std::vector<double> v;
+			v.reserve(wnr * wnc);
+			for (int rr=0; rr<wnr; rr++) {
+				int offr = wr1 - rr;
+				for (int cc=0; cc < wnc; cc++)  {
+					int offc = wc1 - cc; 
+					int wi = wnc * offr + offc;
+					if (winNA[wi]) {
+						continue;
+					}
+					int row = rread + hwr - offr;
+					int col = c + hwc - offc;
+					if (expand) {
+						col = col < 0 ? 0 : col;
+						col = col > nc1 ? nc1 : col;
+						v.push_back(d[nc*row + col] * window[wi]);
+					} else {
+						if (col >= 0 && col < nc) {
+							v.push_back(d[nc*row + col] * window[wi]);
+						} else {
+							v.push_back(fill * window[wi]);
+						}
+					}
+				}
+			}
+			out[nc * r + c] = fun(v, narm);
+		}	
+	}
+}
 
 
 
@@ -625,6 +676,17 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 	size_t dhw0 = hw0 * 2;
 	//size_t fsz = hw0*nc;
 	size_t fsz2 = dhw0*nc;
+
+	bool dofun = false;
+	std::function<double(std::vector<double>&, bool)> fFun;
+	if ((fun != "mean") && (fun != "sum")) {
+		if (!haveFun(fun)) {
+			out.setError("unknown function argument");
+			return out;
+		}
+		fFun = getFun(fun);
+		dofun = true;
+	}
 	
 	std::vector<double> fill;
 	std::vector<double> vout;
@@ -670,7 +732,9 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 			vin.insert(vin.end(), fill.begin(), fill.end());
 		}
 
-		if (fun == "mean") {
+		if (dofun) {
+			focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, fFun);			
+		} else if (fun == "mean") {
 			focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand);
 		} else {
 			focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand);

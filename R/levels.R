@@ -93,7 +93,7 @@ setMethod ("cats<-" , "SpatRaster",
 			x@ptr$removeCategories(layer-1)
 			return(messages(x, "levels<-"))
 		}
-		if (!is.factor(x)) {
+		if (!is.factor(x[[layer]])) {
 			opt <- spatOptions()
 			x@ptr <- x@ptr$makeCategorical(layer-1, opt)
 			x <- messages(x, "as.factor<-")

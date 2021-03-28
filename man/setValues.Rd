@@ -41,7 +41,7 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
 
 
 \value{
-setValues returns the same object type as \code{x}
+The same object type as \code{x}
 }
 
 
@@ -50,7 +50,9 @@ setValues returns the same object type as \code{x}
 \examples{
 r <- rast(system.file("ex/test.tif", package="terra"))
 x <- setValues(r, 1:ncell(r))
+x
 values(x) <- runif(ncell(x))
+x
 head(x)
 
 f <- system.file("ex/lux.shp", package="terra")

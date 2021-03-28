@@ -22,6 +22,7 @@
 #include <string>
 #include "vecmath.h"
 
+bool haveFun(std::string fun);
 std::function<double(std::vector<double>&, bool)> getFun(std::string fun);
 
 //#endif

@@ -27,11 +27,9 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 		m <- rep(1, prod(w))
 	}
 	cpp <- FALSE
-	txtfun <- .makeTextFun(match.fun(fun))
+	txtfun <- .makeTextFun(fun)
 	if (is.character(txtfun)) { 
-		if (txtfun %in% c("mean", "sum")) {
-			cpp <- TRUE
-		}
+		cpp <- TRUE
 	}
 
 	if (cpp) {
@@ -59,6 +57,15 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 			msz <- sum(k)
 		}
 		
+		usenarm = TRUE
+		test <- try( apply(rbind(1:9), 1, fun, na.rm=FALSE), silent=TRUE )
+		if (inherits(test, "try-error")) {
+			test <- try( apply(rbind(1:9), 1, fun), silent=TRUE )
+			if (!inherits(test, "try-error")) {
+				usenarm = FALSE
+			}
+		}
+		
 		for (i in 1:b$n) {
 			v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
 			if (dow) {
@@ -69,7 +76,11 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 				}
 			}
 			v <- matrix(v, ncol=msz, byrow=TRUE)
-			v <- apply(v, 1, fun, na.rm=na.rm)
+			if (usenarm) {
+				v <- apply(v, 1, fun, na.rm=na.rm)
+			} else {
+				v <- apply(v, 1, fun)			
+			}
 			if (na.only) {
 				vv <- readValues(x, b$row[i], b$nrows[i])
 				j <- !is.na(vv)
