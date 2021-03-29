@@ -70,6 +70,9 @@ names(r) <- "land cover"
 is.factor(r)
 r
 
+plot(r, col=c("green", "blue", "light gray"))
+text(r, digits=3, cex=.75, halo=TRUE)
+
 f <- as.factor(r)
 }
 
