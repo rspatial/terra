@@ -15,6 +15,7 @@ setMethod ("rats" , "SpatRaster",
 
 setMethod ("rats<-" , "SpatRaster", 
 	function(x, layer=1, value) {
+		stopifnot(is.data.frame(value))
 		if (missing(value)) {
 			value <- layer
 			layer <- 1
@@ -28,8 +29,8 @@ setMethod ("rats<-" , "SpatRaster",
 		} else {
 			stopifnot(layer > 0 && layer <= nlyr(x))
 		}
-		rat <- .makeSpatDF(rat)
-		x@ptr$setAttributes(layer-1, rat)
+		rat <- .makeSpatDF(value)
+		x@ptr$setAttributes(layer-1, value)
 		x
 	}
 )
@@ -76,6 +77,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 setMethod ("cats<-" , "SpatRaster", 
 	function(x, layer=1, value) {
 		stopifnot(hasValues(x))
+		stopifnot(is.data.frame(value))
 		if (missing(value)) {
 			value <- layer
 			layer <- 1
