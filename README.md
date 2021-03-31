@@ -34,6 +34,7 @@ If you are on Windows, you need to first install [Rtools](https://cran.r-project
 Then, in R, install the package.
 
 ```
+Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")
 ```
 
@@ -49,6 +50,7 @@ brew install gdal
 Followed by
 
 ```
+Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")
 ```
 

@@ -51,10 +51,6 @@ You can use \code{merge} with \code{do.call} to merge a list of SpatRasters (see
 }
 
 
-\code{\link{mosaic}}
-}
-
-
 \examples{
 x <- rast(xmin=-110, xmax=-50, ymin=40, ymax=70, ncols=60, nrows=30)
 y <- rast(xmin=-80, xmax=-20, ymax=60, ymin=30)

@@ -52,10 +52,9 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 #endif
 }
 
+SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 
-SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT, int &rati) {
-
-	SpatDataFrame out;
+	SpatCategories out;
 /*
 	const char *GFU_type_string[] = {"GFT_Integer", "GFT_Real","GFT_String"};
 	const char *GFU_usage_string[] = {"GFU_Generic", "GFU_PixelCount", "GFU_Name", "GFU_Min",
@@ -68,48 +67,51 @@ SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT, int &rati) {
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
+	std::vector<long> id(nr);
+	std::iota(id.begin(), id.end(), 0);
+	out.d.add_column(id, "ID");
+
+	std::vector<std::string> ss = {"histogram", "red", "green", "blue", "opacity"};
+	
 	for (size_t i=0; i<nc; i++) {
 		GDALRATFieldType nc_type = pRAT->GetTypeOfCol(i);
 //		GFT_type.push_back(GFU_type_string[nc_types[i]]);
 //		GDALRATFieldUsage nc_usage = pRAT->GetUsageOfCol(i);
 //		GFT_usage.push_back(GFU_usage_string[nc_usages[i]]);
 		std::string name = pRAT->GetNameOfCol(i);
+		int j = where_in_vector(name, ss, true);
+		if (j >= 0) continue;
+
 		if (nc_type == GFT_Integer) {
 			std::vector<long> d(nr);
 			for (size_t j=0; j<nr; j++) {
 				d[j] = (int) pRAT->GetValueAsInt(j, i);
 			}
-			out.add_column(d, name);
+			out.d.add_column(d, name);
 		} else if (nc_type == GFT_Real) {
 			std::vector<double> d(nr);
 			for (size_t j=0; j<nr; j++) {
 				d[j] = (double) pRAT->GetValueAsDouble(j, i);
 			}
-			out.add_column(d, name);
+			out.d.add_column(d, name);
 		} else if (nc_type == GFT_String) {
 			std::vector<std::string> d(nr);
 			for (size_t j=0; j<nr; j++) {
 				d[j] = (std::string) pRAT->GetValueAsString(j, i);
 			}
-			out.add_column(d, name);
+			out.d.add_column(d, name);
 		}
 	}
 	
-	std::vector<std::string> nms = out.get_names();
+	std::vector<std::string> nms = out.d.get_names();
 	lowercase(nms);
-	std::vector<std::string> ss = {"count", "histogram", "red", "green", "blue", "opacity"};
-	rati = 0;
-	for (size_t i=0; i<nms.size(); i++){
+	out.index = 0;
+	for (size_t i=1; i<nms.size(); i++){
 		int j = where_in_vector(nms[i], ss, false);
 		if (j < 0) {
-			rati = i;
+			out.index = i;
 			break;
 		}
-	}
-	int hist = where_in_vector("histogram", nms, false);
-	int count = where_in_vector("count", nms, false);
-	if ((hist > -1) && (count < 0)) {
-		out.names[hist] = "count"; 
 	}
 	
 	return(out);
@@ -138,7 +140,7 @@ SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
 	return(out);
 }
 
-
+/*
 SpatDataFrame GetColFromRAT(SpatDataFrame &rat) {
 	
 	SpatDataFrame out;
@@ -161,16 +163,21 @@ SpatDataFrame GetColFromRAT(SpatDataFrame &rat) {
 	out.names = {"red", "green", "blue", "alpha"};		
 	return out;
 }
-
+*/
 
 SpatCategories GetCategories(char **pCat) {
 	size_t n = CSLCount(pCat);
+	SpatCategories scat;
+
+	std::vector<long> id(n);
+	std::iota(id.begin(), id.end(), 0);
+	scat.d.add_column(id, "ID");
+
 	std::vector<std::string> nms(n);
 	for (size_t i = 0; i<n; i++) {
 		const char *field = CSLGetField(pCat, i);
 		nms[i] = field;
 	}
-	SpatCategories scat;
 	scat.d.add_column(nms, "category");
 	scat.index = 0;
 	return(scat);
@@ -501,8 +508,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 		if( rat != NULL ) {
-			SpatCategories cat;
-			cat.d = GetRATdf(rat, cat.index);
+			SpatCategories cat = GetRAT(rat);
 			s.cats.resize(i+1);
 			s.cats[i] = cat;
 			s.hasCategories.push_back(true);
@@ -515,7 +521,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			SpatCategories scat = GetCategories(cat);
 			if (s.hasCategories[i]) {
 				s.cats[i].index = s.cats[i].d.ncol();
-				s.cats[i].d.cbind(scat.d);
+				s.cats[i].d.cbind(scat.d); // needs more checking.
 			} else {
 				s.cats.resize(i+1);
 				s.cats[i] = scat;
@@ -527,7 +533,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		if (bandname != "") {
 			s.names.push_back(bandname);
 		} else {
-			if (s.nlyr > 1) {
+			if (s.hasCategories[i]) {
+				std::string nm = "";
+				if (s.cats[i].index < (s.cats[i].d.ncol()-1)) {
+					std::vector<std::string> nms = s.cats[i].d.get_names();
+					nm = nms[s.cats[i].index];
+				} 
+				s.names.push_back(nm);				
+			} else if (s.nlyr > 1) {
 				s.names.push_back(varname + "_" + std::to_string(i+1) ) ;
 			} else {
 				s.names.push_back(basename_noext(fname)) ;

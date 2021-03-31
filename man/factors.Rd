@@ -17,9 +17,12 @@
 
 \description{
 
-A SpatRaster layer can be a categorical variable (factor). These can be inspected and set with \code{levels} and \code{cats}. With \code{levels<-} you can set the categories of the first layer and with \code{setCats} you can set it for any layer. Like factors in R, categories are stored as indices (integers) that have an associated label. In a SpatRaster, the index starts at 0, and cannot be larger than 255. 
+A SpatRaster layer can be a categorical variable (factor). Like \code{\link{factor}}s, categories are stored as indices (integers) that have an associated label. For a SpatRaster, the index starts at 0, and cannot exceed 255. 
 
-There may be multiple categories (attributes) associated with a single layer. These can be set as a data.frame with \code{setCats} and they are returned with \code{cats}.
+The categories can be inspected with \code{levels} and \code{cats}. With \code{levels<-} you can set the categories of the first layer by providing a vector of labels (the first value will be for cells with value 0, the second for 1, etc). You can also provide a \code{data.frame} that must have two or more columns, the first one identifying the cell values and the other column(s) provding the category labels. To set categories for multiple layers you can provide \code{levels<-} with a list with one element for each layer. 
+
+With \code{setCats} you can set it for any layer and you can also set the variable of interest if there are multiple categories. 
+
 }
 
 \usage{
@@ -29,23 +32,22 @@ There may be multiple categories (attributes) associated with a single layer. Th
 
 \S4method{levels}{SpatRaster}(x)<-value
 
-\S4method{cats}{SpatRaster}(x)
+\S4method{cats}{SpatRaster}(x, layer)
 
-\S4method{setCats}{SpatRaster}(x, layer=1, value, index=1)
-
+\S4method{setCats}{SpatRaster}(x, layer=1, value, index)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
-  \item{value}{ a characte vectors with new labels or a data.frame}
-  \item{index}{positive integer, indicating the column in \code{value} to be used as the category (factor labels)}
+  \item{value}{a data.frame (ID, category) or vector with category names}
+  \item{index}{positive integer, indicating the column in \code{value} to be used as the category}
 }  
 
 
 \value{
-SpatRaster; list (e.g., levels); boolean (is.factor)
+list (levels, cats) or data.frame (cats for a single layer); logical (is.factor, setCats)
 }
 
 \examples{

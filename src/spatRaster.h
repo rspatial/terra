@@ -36,7 +36,7 @@ typedef long long int_64;
 class SpatCategories {
 	public:
 		SpatDataFrame d;
-		int index = 0;
+		unsigned index = 0;
 };
 
 
@@ -375,14 +375,14 @@ class SpatRaster {
 		SpatRaster makeCategorical(unsigned layer, SpatOptions opt);
 		bool createCategories(unsigned layer);
 		std::vector<bool> hasCategories();
-		bool setCategories(unsigned layer, SpatDataFrame d, int index);
+		bool setCategories(unsigned layer, SpatDataFrame d, unsigned index);
 		bool removeCategories(unsigned layer);
 		std::vector<SpatCategories> getCategories();
 		SpatCategories getLayerCategories(unsigned layer);
 		std::vector<std::string> getLabels(unsigned layer);
 		bool setLabels(unsigned layer, std::vector<std::string> labels);
 		int getCatIndex(unsigned layer);
-		bool setCatIndex(unsigned layer, int idx);
+		bool setCatIndex(unsigned layer, unsigned index);
 		
 
 
