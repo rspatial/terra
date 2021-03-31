@@ -68,31 +68,42 @@ setMethod ("setCats" , "SpatRaster",
 		if (inherits(value, "list")) {
 			value <- value[[1]]		
 		}
+		setname <- FALSE
 		if (!is.data.frame(value)) {
 			if (is.vector(value) || is.factor(value)) {
-				value <- data.frame(ID=1:length(value), category=value)
+				value <- data.frame(ID=0:(length(value)-1), category=value)
 			} else {
 				error("setCats", "value should be a data.frame or a vector")
 			}
 		} else {
+			setname <- TRUE
 			if (nrow(value) > 256) {
 				error("setCats", "you can set no more than 256 categories")
 			}
 			if (ncol(value) == 1) {
 				value <- data.frame(ID=1:nrow(value), value)
-			}
-			r <- range(value[,1])
-			if (r[1] < 0 || r[2] > 255) {
-				error("seCats", "ID values must be between 0 and 255")
+			} else {
+				value[,1] <- round(value[,1])
+				if (length(unique(value[,1])) != nrow(value)) {
+					error("setCats", "duplicate IDs supplied")
+				}
+				r <- range(value[,1])
+				if (r[1] < 0 || r[2] > 255) {
+					error("seCats", "ID values must be between 0 and 255")
+				}
 			}
 		}
+		v <- data.frame(ID=0:255)
+		value <- merge(v, value, by=1, all.x=TRUE)		
 		
 		index <- max(1, min(ncol(value), index))
 #		if (is.data.frame(value)) {
+		if (setname) {
+			names(x)[layer] <- colnames(value)[index]
+		}
 
 		value <- .makeSpatDF(value)
 		ok <- x@ptr$setCategories(layer-1, value, index-1)
-
 #		} else {
 #			value <- as.character(value)
 #			x@ptr$setLabels(layer-1, value)

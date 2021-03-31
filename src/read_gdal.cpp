@@ -529,23 +529,24 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			}
 		} 
 
-		std::string bandname = poBand->GetDescription();
-		if (bandname != "") {
-			s.names.push_back(bandname);
-		} else {
-			if (s.hasCategories[i]) {
-				std::string nm = "";
-				if (s.cats[i].index < (s.cats[i].d.ncol()-1)) {
-					std::vector<std::string> nms = s.cats[i].d.get_names();
-					nm = nms[s.cats[i].index];
-				} 
-				s.names.push_back(nm);				
+		std::string nm = "";
+		if (s.hasCategories[i]) {
+			if (s.cats[i].index < s.cats[i].d.ncol()) {
+				std::vector<std::string> nms = s.cats[i].d.get_names();
+				nm = nms[s.cats[i].index];
+			} 
+		} 
+		if (nm == "") {
+			std::string bandname = poBand->GetDescription();
+			if (bandname != "") {
+				nm = bandname;
 			} else if (s.nlyr > 1) {
-				s.names.push_back(varname + "_" + std::to_string(i+1) ) ;
+				nm = varname + "_" + std::to_string(i+1);
 			} else {
-				s.names.push_back(basename_noext(fname)) ;
+				nm = basename_noext(fname) ;
 			}
 		}
+		s.names.push_back(nm);
 	}
 
 	if (gdrv == "netCDF") {
