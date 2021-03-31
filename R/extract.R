@@ -10,15 +10,17 @@
 }
 
 
-.makeDataFrame <- function(x, v) {
+.makeDataFrame <- function(x, v, factors=TRUE) {
 	v <- data.frame(v, check.names = FALSE)
-	ff <- is.factor(x)
-	if (any(ff)) {
-		ff <- which(ff)
-		levs <- levels(x)
-		for (f in ff) {
-			v[[f]] = factor(v[[f]], levels=0:255)
-			levels(v[[f]]) = levs[[f]]
+	if (factors) {
+		ff <- is.factor(x)
+		if (any(ff)) {
+			ff <- which(ff)
+			levs <- levels(x)
+			for (f in ff) {
+				v[[f]] = factor(v[[f]], levels=0:255)
+				levels(v[[f]]) = levs[[f]]
+			}
 		}
 	}
 	v
@@ -191,7 +193,8 @@ function(x, y, ...) {
 setMethod("extract", signature(x="SpatRaster", y="SpatExtent"), 
 function(x, y, factors=TRUE, cells=FALSE, xy=FALSE) { 
 	y <- cells(x, y)
-	v <- extract_cell(x, y)
+	if (factors) dataframe = TRUE
+	v <- extract_cell(x, y, factors=factors)
 	if (cells) {
 		v$cell <- y
 	}
@@ -214,12 +217,12 @@ function(x, i, j, ... , drop=FALSE) {
 })
 
 
-extract_cell <- function(x, cells, drop=FALSE) {
+extract_cell <- function(x, cells, drop=FALSE, factors=TRUE) {
 	e <- x@ptr$extractCell(cells-1)
 	messages(x, "extract_cell")
 	e <- do.call(cbind, e)
 	colnames(e) = names(x)
-	.makeDataFrame(x, e)[,,drop]
+	.makeDataFrame(x, e, factors)[,,drop]
 }
 
 setMethod("[", c("SpatRaster", "numeric", "missing"),

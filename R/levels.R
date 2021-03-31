@@ -13,7 +13,7 @@ setMethod("levels", signature(x="SpatRaster"),
 		lapply(x, function(i) {
 			if (is.null(i)) return( NULL)
 			d <- .getSpatDF(i$df)
-			d[,max(1, i$index)]
+			d[,max(1, i$index+1)]
 		})
 	}
 )
@@ -79,3 +79,16 @@ setMethod ("cats" , "SpatRaster",
 		})
 	}
 )
+
+catvar <- function(x, layer=1) {
+	stopifnot(layer > 0)
+	x@ptr$getCatIndex(layer-1);
+}
+
+setcatvar <- function(x, layer=1, index=1) {
+	stopifnot(layer > 0)
+	stopifnot(index > 0)
+	x@ptr$setCatIndex(layer-1, index-1);
+}
+
+

@@ -43,13 +43,23 @@ bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
 
 bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 	CPLErr err = poBand->SetColorInterpretation(GCI_PaletteIndex);
+	if (err != CE_None) {
+		return false;
+	}
 	GDALColorTable *poCT = new GDALColorTable(GPI_RGB);
 	GDALColorEntry col;
 	for (size_t j=0; j< d.nrow(); j++) {
-		col.c1 = (short)d.iv[0][j];
-		col.c2 = (short)d.iv[1][j];
-		col.c3 = (short)d.iv[2][j];
-		col.c4 = (short)d.iv[3][j];
+	if (d.iv[3][j] == 0) { // maintain transparaency in gtiff
+			col.c1 = 255;
+			col.c2 = 255;
+			col.c3 = 255;
+			col.c4 = 0;
+		} else {
+			col.c1 = (short)d.iv[0][j];
+			col.c2 = (short)d.iv[1][j];
+			col.c3 = (short)d.iv[2][j];
+			col.c4 = (short)d.iv[3][j];
+		}
 		poCT->SetColorEntry(j, &col);
 	}
 	err = poBand->SetColorTable(poCT);

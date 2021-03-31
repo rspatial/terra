@@ -1004,6 +1004,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 }
 
 
+
 bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, int index) {
 
 	if (layer > (nlyr()-1)) { 
@@ -1060,13 +1061,17 @@ std::vector<SpatCategories> SpatRaster::getCategories() {
 std::vector<std::string> SpatRaster::getLabels(unsigned layer) {
 	std::vector<std::string> out;
 	if (layer >= nlyr()) return out;
+	
 	std::vector<bool> hascat = hasCategories();
 	if (!hascat[layer]) return out;
+
 	std::vector<SpatCategories> cats = getCategories();
 	SpatCategories cat = cats[layer];
+	
 	SpatDataFrame d;
 	cat.index = cat.index < 0 ? 0 : cat.index;
 	d = cat.d.subset_cols(cat.index);
+	
 	std::string dt = d.get_datatype(0);
 	if (dt == "double") {
 		out.reserve( d.nrow() );
@@ -1089,6 +1094,30 @@ std::vector<std::string> SpatRaster::getLabels(unsigned layer) {
 	return out;
 }
 
+bool SpatRaster::setCatIndex(unsigned layer, int index) {
+	if (layer > (nlyr()-1)) { 
+		return(false);
+	}
+    std::vector<unsigned> sl = findLyr(layer);
+	if ((index > -1) && (index < (int)source[sl[0]].cats[sl[1]].d.ncol())) {
+		source[sl[0]].cats[sl[1]].index  = index;
+		return true;
+	} else if (index < 0) {
+		source[sl[0]].cats[sl[1]].index  = -1;
+		source[sl[0]].hasCategories[sl[1]] = false;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+int SpatRaster::getCatIndex(unsigned layer) {
+	if (layer > (nlyr()-1)) { 
+		return(-1);
+	}
+    std::vector<unsigned> sl = findLyr(layer);
+	return source[sl[0]].cats[sl[1]].index;
+}
 
 
 

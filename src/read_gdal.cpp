@@ -98,10 +98,13 @@ SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT, int &rati) {
 	std::vector<std::string> nms = out.get_names();
 	lowercase(nms);
 	std::vector<std::string> ss = {"count", "histogram", "red", "green", "blue", "opacity"};
-	rati = -1;
+	rati = 0;
 	for (size_t i=0; i<nms.size(); i++){
-		rati = where_in_vector(nms[i], ss, false);
-		if (rati >= 0) continue;
+		int j = where_in_vector(nms[i], ss, false);
+		if (j < 0) {
+			rati = i;
+			break;
+		}
 	}
 	int hist = where_in_vector("histogram", nms, false);
 	int count = where_in_vector("count", nms, false);

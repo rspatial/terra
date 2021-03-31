@@ -438,14 +438,15 @@ RCPP_MODULE(spat){
 
 		.method("makeCategorical", &SpatRaster::makeCategorical, "makeCategorical")
 		.method("createCategories", &SpatRaster::createCategories, "createCategories")
-		
 		.method("hasCategories", &SpatRaster::hasCategories, "hasCategories")
 		.method("getCategories", &SpatRaster::getCategories, "getCategories")
 		.method("setCategories", &SpatRaster::setCategories, "setCategories")
 		.method("removeCategories", &SpatRaster::removeCategories, "removeCategories")
 		.method("getLabels", &SpatRaster::getLabels, "getLabels")
 		.method("setLabels", &SpatRaster::setLabels, "setLabels")
-
+		.method("getCatIndex", &SpatRaster::getCatIndex, "getCatIndex")
+		.method("setCatIndex", &SpatRaster::setCatIndex, "setCatIndex")
+		
 
 		.method("hasColors", &SpatRaster::hasColors, "hasColors")
 		.method("getColors", &SpatRaster::getColors, "getColors")
