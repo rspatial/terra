@@ -46,6 +46,14 @@ SpatRaster or SpatExtent
 \code{\link{mosaic}}
 }
 
+\note{
+You can use \code{merge} with \code{do.call} to merge a list of SpatRasters (see example). But note that if the list is named, these names are used by \code{merge}. So if all elements are named, there should be one element with a SpatRaster called \code{x} and another one called \code{y}. For example with \code{names(x)[1:2] <- c("x"m "y")}. You can also removed the names of the the first two elements (assuming these are SpatRasters) with \code{names(x)[1:2] <- ""}.
+}
+
+
+\code{\link{mosaic}}
+}
+
 
 \examples{
 x <- rast(xmin=-110, xmax=-50, ymin=40, ymax=70, ncols=60, nrows=30)
