@@ -18,14 +18,20 @@ setMethod("levels", signature(x="SpatRaster"),
 	}
 )
 
+
 setMethod("levels<-", signature(x="SpatRaster"), 
 	function(x, value) {
 		if (is.null(value)) {
 			x@ptr$removeCategories(0)
 			return(messages(x, "levels<-"))
+		} else if (inherits(value, "list")) {
+			for (i in 1:length(value)) {
+				setCats(x, i, value[[i]], 1)
+			}
 		} else {
-			setCats(x, 1, value, 1)
+			setCats(x, 1, value, 1)		
 		}
+		x
 	}
 )
 

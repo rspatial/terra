@@ -29,7 +29,7 @@ Implementation of the generic \code{\link[grDevices]{as.raster}} function to cre
 
 
 \examples{
-r <- raster(ncol=3, nrow=3)
+r <- rast(ncol=3, nrow=3)
 values(r) <- 1:ncell(r)
 as.raster(r)
 }

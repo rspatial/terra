@@ -71,8 +71,7 @@ rasterize_points <- function(x, y, field, fun="last", background, filename, ...)
 	#	}
 	#} else 
 	if (!is.null(levs)) {
-		id <- (1:length(levs))-1
-		cats(r, 1) <- data.frame(level=id, label=levs)
+		levels(r) <- levs
 	}
 
 	if (filename != "") {
