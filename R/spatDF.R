@@ -21,6 +21,6 @@
 
 
 .getSpatDF <- function(x) {
-	data.frame(x$values(), stringsAsFactors=FALSE)
+	data.frame(x$values(), check.names = FALSE, stringsAsFactors=FALSE)
 }
 

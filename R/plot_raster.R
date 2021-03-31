@@ -61,12 +61,6 @@
 			out$leg$legend <- as.character(out$levels)
 		}
 		levs <- out$levels
-	} else if (!is.null(out$facts)) {
-		uz <- as.integer(levels(fz))
-		labs <- out$facts[[1]]$labels[uz+1]
-		labs[is.na(labs)] <- "?"
-		out$leg$legend <- labs
-		out$levels <- uz
 	} else {
 		out$levels <- as.numeric(levs)
 		if (is.null(out$leg$legend)) {
@@ -105,6 +99,62 @@
 	}
 	out
 }
+
+
+.as.raster.factor <- function(out, x, ...) {
+
+	z <- round(values(x)) + 1
+	z[z<1 | z>256] <- NA
+	z[is.nan(z) | is.infinite(z)] <- NA
+	if (all(is.na(z))) {
+		error("plot", "no values")
+	}
+	out$levels <- sort(stats::na.omit(unique(z)))
+	out$leg$legend <- out$facts[out$levels]
+
+	if (!is.null(out$coltab)) {
+		out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
+		z <- out$cols[z]
+		out$cols <- out$cols[out$levels]
+	} else {
+		nlevs <- length(out$levels)
+		ncols <- length(out$cols)
+		if (nlevs < ncols) {
+			i <- trunc((ncols / nlevs) * 1:nlevs)
+			out$cols <- out$cols[i]
+		} else if (nlevs > ncols) {
+			out$cols <- rep_len(out$cols, nlevs)
+		}
+		zmn <- min(z, na.rm=TRUE) - 1
+		if (zmn > 0) {
+			z <- z - zmn
+			out$levels <- out$levels - zmn
+		}
+		z <- out$cols[z]		
+	}
+	out$leg$fill <- out$cols
+
+	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
+	out$r <- as.raster(z)	
+
+	out$legend_type <- "classes"
+	if (is.null(out$leg$x)) {
+		if (is.null(out$leg$ext)) {
+			out$leg$x = "top"
+			out$leg$y = NULL
+		} else {
+			if (length(out$leg$ext) == 4) {
+				out$leg$x = out$leg$ext[1]
+				out$leg$y = out$leg$ext[4]
+			} else {
+				out$leg$x = "top"
+				out$leg$y = NULL
+			}
+		}
+	}
+	out
+}
+
 
 # to be merged with the vector variant.
 .generic.interval <- function(out, Z) {
@@ -170,8 +220,7 @@
 	out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
 	z <- out$cols[z+1]
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
-	out$r <- as.raster(z)
-	out$legend_draw	 <- FALSE
+	out$r <- as.raster(z)	
 	out
 }
 
@@ -255,6 +304,7 @@
 	}
 
 	out$cols <- cols
+	out$coltab <- coltab
 	out$facts <- facts
 	out$breaks <- breaks
 	out$breakby <- breakby
@@ -271,8 +321,9 @@
 	}
 	out$mar <- mar
 
-	if (type=="colortable") {
-		out$coltab <- coltab
+	if (type=="factor") {
+		out <- .as.raster.factor(out, x)
+	} else if (type=="colortable") {
 		out <- .as.raster.colortable(out, x)
 	} else if (type=="classes") {
 		out$levels <- levels
@@ -300,7 +351,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=50000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
+	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
 
 		x <- x[[y]]
 		if (!hasValues(x)) { error("plot", "SpatRaster has no cell values") }
@@ -321,11 +372,17 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			if (missing(type)) {
 				if (x@ptr$hasColors()) {
 					coltab <- coltab(x)[[1]]
-					type <- "colortable"
-					legend <- FALSE
+					if (is.factor(x)) {
+						facts <- levels(x)[[1]]
+						type <- "factor"
+					} else {
+						facts <- NULL
+						type <- "colortable"
+						legend <- FALSE
+					}
 				} else if (is.factor(x)) {
-					type <- "classes"
-					facts <- levels(x)
+					type <- "factor"
+					facts <- levels(x)[[1]]
 				} else {
 					type <- "depends"
 				}
@@ -350,7 +407,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxcell=50000, main, mar=NULL, nc, nr, maxnl=16, ...)  {
+	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)  {
 
 		if (x@ptr$rgb) {
 			i <- x@ptr$getRGB() + 1

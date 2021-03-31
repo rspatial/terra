@@ -88,12 +88,11 @@ if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardG
 if (!isGeneric("project")) {setGeneric("project", function(x,...) standardGeneric("project"))}
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}
 
-if (!isGeneric("rats")) { setGeneric("rats", function(x, ...) standardGeneric("rats")) }
-if (!isGeneric("rats<-")) { setGeneric("rats<-", function(x, ..., value) standardGeneric("rats<-")) }
-
+#if (!isGeneric("cats<-")) { setGeneric("cats<-", function(x, ..., value) standardGeneric("cats<-")) }
 if (!isGeneric("cats")) { setGeneric("cats", function(x, ...) standardGeneric("cats")) }
-if (!isGeneric("cats<-")) { setGeneric("cats<-", function(x, ..., value) standardGeneric("cats<-")) }
+if (!isGeneric("setCats")) { setGeneric("setCats", function(x, ...) standardGeneric("setCats")) }
 
+if (!isGeneric("as.raster")) { setGeneric("as.raster", function(x, ...) standardGeneric("as.raster"))}
 
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 if (!isGeneric("rev") ) { setGeneric("rev", function(x) standardGeneric("rev")) }
@@ -130,7 +129,7 @@ if (!isGeneric("animate")) { setGeneric("animate", function(x, ...) standardGene
 if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, ...) standardGeneric("as.data.frame"))}
 if (!isGeneric("as.list")) { setGeneric("as.list", function(x, ...) standardGeneric("as.list"))}
-if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneric("as.factor"))}
+#if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneric("as.factor"))}
 if (!isGeneric("atan2")) { setGeneric("atan2", function(y, x) standardGeneric("atan2"))}
 if (!isGeneric("barplot")) {setGeneric("barplot", function(height,...) standardGeneric("barplot"))}
 if (!isGeneric("bbox")) {setGeneric("bbox", function(obj) standardGeneric("bbox"))}

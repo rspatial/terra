@@ -68,11 +68,7 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 				values[i] = f.v[i];
 			}
 			if (!add) { // or update
-				std::vector<double> levels(f.levels.size());
-				for (size_t i=0; i<levels.size(); i++) {
-					levels[i] = f.levels[i];
-				}
-				out.setCategories(0, levels, f.labels);
+				out.setLabels(0, f.labels);
 			}
 			if (add) {
 				add = false;

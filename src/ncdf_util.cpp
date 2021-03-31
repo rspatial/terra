@@ -73,7 +73,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	// select by name
 	} else if (subdsname[0] != "") {
 		for (size_t i=0; i<subdsname.size(); i++) {
-			int w = where_in_vector(subdsname[i], info[1]);
+			int w = where_in_vector(subdsname[i], info[1], false);
 			if (w >= 0) {
 				sd.push_back(info[0][w]);
 				varname.push_back(info[1][w]);

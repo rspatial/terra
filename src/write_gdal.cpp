@@ -31,12 +31,12 @@
 #include "gdalio.h"
 
 
-bool setCats(GDALRasterBand *poBand, SpatCategories &cats) {
-	char **names = NULL;
-	for (size_t i = 0; i < cats.labels.size(); i++) {
-		names = CSLAddString(names, cats.labels[i].c_str());
+bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
+	char **labs = NULL;
+	for (size_t i = 0; i < labels.size(); i++) {
+		labs = CSLAddString(labs, labels[i].c_str());
 	}
-	CPLErr err = poBand->SetCategoryNames(names);
+	CPLErr err = poBand->SetCategoryNames(labs);
 	return (err == CE_None);
 }
 
@@ -299,7 +299,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			}
 		}
 		if (hasCats[i]) {
-			SpatCategories cats = getLayerCategories(i);
+			std::vector<std::string> cats = getLabels(i);
 			if (!setCats(poBand, cats)) {
 				addWarning("could not write categories");
 			}

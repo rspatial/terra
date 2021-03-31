@@ -2,33 +2,40 @@
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
 	function(x, z, fun="mean", ...)  {
 		txtfun <- .makeTextFun(match.fun(fun))
+		if (nlyr(z) > 1) {
+			z <- z[[1]]
+		}
 		if (inherits(txtfun, "character")) { 
 			if (txtfun %in% c("max", "min", "mean", "sum")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				opt <- spatOptions()
 				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
 				messages(ptr, "zonal")
-				return( .getSpatDF(ptr) )
+				out <- .getSpatDF(ptr)
 			}
-		} 
-
-		#else 
-		nl <- nlyr(x)
-		res <- list()
-		z <- values(z)
-		nms <- names(x)
-		for (i in 1:nl) {
-			d <- stats::aggregate(values(x[[i]]), list(zone=z), fun, ...)
-			colnames(d)[2] <- nms[i]
-			res[[i]] <- d
-		}
-		r <- res[[1]]
-		if (nl > 1) {
-			for (i in 2:nl) {
-				r <- merge(r, res[[i]])
+		} else {
+			nl <- nlyr(x)
+			res <- list()
+			z <- values(z)
+			nms <- names(x)
+			for (i in 1:nl) {
+				d <- stats::aggregate(values(x[[i]]), list(zone=z), fun, ...)
+				colnames(d)[2] <- nms[i]
+				res[[i]] <- d
+			}
+			out <- res[[1]]
+			if (nl > 1) {
+				for (i in 2:nl) {
+					out <- merge(out, res[[i]])
+				}
 			}
 		}
-		r
+		if (is.factor(z)) {
+			levs <- levels(z)[[1]]
+			out$zone <- levs[out$zone+1]
+		}
+		colnames(out)[1] <- names(z)
+		out 
 	}
 )
 

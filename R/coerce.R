@@ -1,4 +1,4 @@
-# Author: Robert J. Hijmans 
+# Author: Robfert J. Hijmans 
 # Date : October 2018
 # Version 1.0
 # License GPL v3
@@ -10,6 +10,25 @@ setMethod("as.list", signature(x="SpatRaster"),
 	}
 )
  
+ 
+# create a "grDevices::raster" (small r) object for use with the rasterImage function
+# NOT a raster::Raster* object
+setMethod("as.raster", signature(x="SpatRaster"), 
+	function(x, maxcell=500000, col) {
+		if (missing(col)) {
+			col=rev(grDevices::terrain.colors(255))
+		}
+		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+		x <- as.matrix(x, wide=TRUE)
+		r <- range(x, na.rm=TRUE)
+		x <- (x - r[1])/ (r[2] - r[1])
+		x <- round(x * (length(col)-1) + 1)
+		x[] <- col[x]
+		as.raster(x)
+	} 
+)
+
+
 
 .as.image <- function(x, maxcells=10000) {
 	x <- spatSample(x, size=maxcells, method="regular", as.raster=TRUE)
@@ -36,9 +55,8 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 					ff <- which(ff)
 					levs <- levels(x)
 					for (f in ff) {
-						lev <- levs[[f]]
-						v <- factor(unlist(p[[f]], use.names=FALSE), levels=lev$levels)
-						levels(v) <- lev$labels
+						v <- factor(unlist(p[[f]], use.names=FALSE), levels=0:255)
+						levels(v) <- levs[[f]]
 						p[[f]] <- as.character(v)
 					}
 				}
@@ -101,9 +119,8 @@ setMethod("as.points", signature(x="SpatRaster"),
 				ff <- which(ff)
 				levs <- levels(x)
 				for (f in ff) {
-					lev <- levs[[f]]
-					v <- factor(unlist(p[[f]], use.names=FALSE), levels=lev$levels)
-					levels(v) <- lev$labels
+					v <- factor(unlist(p[[f]], use.names=FALSE), levels=0:255)
+					levels(v) <- levs[[f]]
 					p[[f]] <- as.character(v)
 				}
 			}

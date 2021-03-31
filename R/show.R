@@ -4,11 +4,6 @@
 # License GPL v3
 
 
-setMethod ("show" , "Rcpp_SpatCategories", 
-	function(object) {
-		print(data.frame(value=object$levels, label=object$labels))
-	}
-)
 
 
 printDF <- function(x, n=6, first=FALSE) {
@@ -55,13 +50,13 @@ printDF <- function(x, n=6, first=FALSE) {
 		x <- rbind(x, "...")
 	}
 	if (first) {
-		x <- data.frame("", x, stringsAsFactors=FALSE)
+		x <- data.frame("", x, check.names=FALSE, stringsAsFactors=FALSE)
 		colnames(x)[1] <- "names       :"
 		x[1,1] <- "type        :"
 		if (d[1] > 0) {
 			x[2,1] <- "values      :"
 		}
-	}
+	}	
 	if (old[2] > d[2]) {
 		name <- paste0("(and ", old[2] - d[2], " more)")
 		x[[name]] <- ""
@@ -83,6 +78,12 @@ setMethod ("show" , "Rcpp_SpatDataFrame",
 			cat("values\n") 
 		}
 		printDF(object)
+	}
+)
+
+setMethod ("show" , "Rcpp_SpatCategories", 
+	function(object) {
+		show(object$df)
 	}
 )
 
@@ -244,8 +245,11 @@ setMethod ("show" , "SpatRaster",
 						if (i > mnr) break
 						if (isf[i]) {
 							cats <- lv[[i]]
-							minv[i] <- cats$labels[1]
-							maxv[i] <- cats$labels[length(cats$labels)]
+							cats <- sort(cats[cats != ""])
+							if (length(cats) > 0) {
+								minv[i] <- cats[1]
+								maxv[i] <- cats[length(cats)]
+							}
 						} 
 					}
 				}

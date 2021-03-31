@@ -27,9 +27,8 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 			ff <- which(ff)
 			levs <- levels(x)
 			for (f in ff) {
-				lev <- levs[[f]]
-				v[[f]] = factor(v[[f]], levels=lev$levels)
-				levels(v[[f]]) = lev$labels
+				v[[f]] = factor(v[[f]], levels=0:255)
+				levels(v[[f]]) = levs[[f]]
 			}
 		}
 	}
@@ -118,7 +117,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		y <- messages(y)
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
-				cats(y, i) <- levs
+				setCats(y, i, levs, 1)
 			}
 		}
 		y

@@ -252,12 +252,26 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
 
 
+//#if (GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR >= 1)
+
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 1
+
+SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions &opt) {
+	SpatRaster out;
+	out.setError( "GDAL version >= 2.1 required for vrt");
+	return out;
+}
 
 
-#if (GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR >= 1)
+std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
+	std::string out = "GDAL version >= 2.1 required for gdalinfo";
+	return out;
+}
+
+
+#else 
+
 # include "gdal_utils.h" // requires >= 2.1
-
-
 
 SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions &opt) {
 
@@ -330,19 +344,6 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 	CPLFree(val);
 	GDALInfoOptionsFree(opt);
 	GDALClose(ds);
-	return out;
-}
-#else
-
-SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions &opt) {
-	SpatRaster out;
-	out.setError( "GDAL version >= 2.1 required for vrt");
-	return out;
-}
-
-
-std::string gdalinfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {
-	std::string out = "GDAL version >= 2.1 required for gdalinfo";
 	return out;
 }
 
@@ -715,10 +716,10 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		//GDALSetRasterNoDataValue(hBand, -3.4e+38);
 		if (fill) GDALFillRaster(hBand, fillvalue, 0);
 		if (hasCats[i]) {
-			SpatCategories cats = getLayerCategories(i);
+			std::vector<std::string> cats = getLabels(i);
 			char **names = NULL;
-			for (size_t j = 0; j < cats.labels.size(); j++) {
-				names = CSLAddString(names, cats.labels[j].c_str());
+			for (size_t j = 0; j < cats.size(); j++) {
+				names = CSLAddString(names, cats[j].c_str());
 			}
 			CPLErr err = GDALSetRasterCategoryNames(hBand, names);
 			if (err != CE_None) {

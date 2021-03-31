@@ -17,9 +17,8 @@
 		ff <- which(ff)
 		levs <- levels(x)
 		for (f in ff) {
-			lev <- levs[[f]]
-			v[[f]] = factor(v[[f]], levels=lev$levels)
-			levels(v[[f]]) = lev$labels
+			v[[f]] = factor(v[[f]], levels=0:255)
+			levels(v[[f]]) = levs[[f]]
 		}
 	}
 	v
@@ -27,7 +26,9 @@
 
 setlabs <- function(x, labs) {
 	x[ (x<1) | (x>length(labs))] <- NA
-	factor(labs[x], levels=labs)
+	x <- factor(x, levels=1:length(labs))
+	levels(x) <- labs
+	x
 }
 
 
@@ -125,13 +126,13 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		}
 		f <- is.factor(x)
 		if (any(f)) {
-			g <- cats(x)
+			g <- levels(x)
 			for (i in which(f)) {
-				labs <- g[[i]]$labels
+				labs <- g[[i]]
 				if (!list) {
 					v <- e[[i+1]] + 1
 					if (!(is.null(fun))) {
-						if (max(abs(v - trunc(v)), na.rm=T) > 0) {
+						if (max(abs(v - trunc(v)), na.rm=TRUE) > 0) {
 							next
 						}
 					}
@@ -187,6 +188,20 @@ function(x, y, ...) {
 	x[y]
 })
 
+setMethod("extract", signature(x="SpatRaster", y="SpatExtent"), 
+function(x, y, factors=TRUE, cells=FALSE, xy=FALSE) { 
+	y <- cells(x, y)
+	v <- extract_cell(x, y)
+	if (cells) {
+		v$cell <- y
+	}
+	if (xy) {
+		v <- cbind(v, xyFromCell(x, y))
+	}
+	v
+}
+)
+
 
 setMethod("[", c("SpatRaster", "missing", "missing"),
 function(x, i, j, ... , drop=FALSE) {
@@ -201,7 +216,7 @@ function(x, i, j, ... , drop=FALSE) {
 
 extract_cell <- function(x, cells, drop=FALSE) {
 	e <- x@ptr$extractCell(cells-1)
-	messages(x, "[")
+	messages(x, "extract_cell")
 	e <- do.call(cbind, e)
 	colnames(e) = names(x)
 	.makeDataFrame(x, e)[,,drop]

@@ -53,7 +53,7 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 }
 
 
-SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
+SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT, int &rati) {
 
 	SpatDataFrame out;
 /*
@@ -94,6 +94,21 @@ SpatDataFrame GetRATdf(GDALRasterAttributeTable *pRAT) {
 			out.add_column(d, name);
 		}
 	}
+	
+	std::vector<std::string> nms = out.get_names();
+	lowercase(nms);
+	std::vector<std::string> ss = {"count", "histogram", "red", "green", "blue", "opacity"};
+	rati = -1;
+	for (size_t i=0; i<nms.size(); i++){
+		rati = where_in_vector(nms[i], ss, false);
+		if (rati >= 0) continue;
+	}
+	int hist = where_in_vector("histogram", nms, false);
+	int count = where_in_vector("count", nms, false);
+	if ((hist > -1) && (count < 0)) {
+		out.names[hist] = "count"; 
+	}
+	
 	return(out);
 }
 
@@ -121,6 +136,30 @@ SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
 }
 
 
+SpatDataFrame GetColFromRAT(SpatDataFrame &rat) {
+	
+	SpatDataFrame out;
+	size_t nr = rat.nrow();
+	if (nr > 256) return out;
+	std::vector<std::string> nms = rat.get_names();
+	int red = where_in_vector("red", nms, false);
+	int green = where_in_vector("green", nms, false);
+	int blue = where_in_vector("blue", nms, false);
+	int alpha = where_in_vector("alpha", nms, true);
+	std::vector<unsigned> r {(unsigned)red, (unsigned)green, (unsigned)blue};
+	if (alpha >= 0) {
+		r.push_back(alpha);
+	} 
+	out = rat.subset_cols(r);
+	if (alpha < 0) {
+		std::vector<long> a(nr, 255);
+		out.add_column(a, "alpha");
+	}
+	out.names = {"red", "green", "blue", "alpha"};		
+	return out;
+}
+
+
 SpatCategories GetCategories(char **pCat) {
 	size_t n = CSLCount(pCat);
 	std::vector<std::string> nms(n);
@@ -129,9 +168,8 @@ SpatCategories GetCategories(char **pCat) {
 		nms[i] = field;
 	}
 	SpatCategories scat;
-	scat.labels = nms;
-	scat.levels.resize(nms.size());
-	std::iota(scat.levels.begin(), scat.levels.end(), 0);
+	scat.d.add_column(nms, "category");
+	scat.index = 0;
 	return(scat);
 }
 
@@ -446,7 +484,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
-
 		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
 
 		GDALColorTable *ct = poBand->GetColorTable();
@@ -460,23 +497,28 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
-		if( rat != NULL )	{
-			s.hasAttributes.push_back(true);
-			s.atts.resize(i+1);
-			s.atts[i] = GetRATdf(rat);;
+		if( rat != NULL ) {
+			SpatCategories cat;
+			cat.d = GetRATdf(rat, cat.index);
+			s.cats.resize(i+1);
+			s.cats[i] = cat;
+			s.hasCategories.push_back(true);
 		} else {
-			s.hasAttributes.push_back(false);
+			s.hasCategories.push_back(false);
 		}
 
 		char **cat = poBand->GetCategoryNames();
 		if( cat != NULL )	{
-			s.hasCategories.push_back(true);
 			SpatCategories scat = GetCategories(cat);
-			s.cats.resize(i+1);
-			s.cats[i] = scat;
-		} else {
-			s.hasCategories.push_back(false);
-		}
+			if (s.hasCategories[i]) {
+				s.cats[i].index = s.cats[i].d.ncol();
+				s.cats[i].d.cbind(scat.d);
+			} else {
+				s.cats.resize(i+1);
+				s.cats[i] = scat;
+				s.hasCategories[i] = true;
+			}
+		} 
 
 		std::string bandname = poBand->GetDescription();
 		if (bandname != "") {

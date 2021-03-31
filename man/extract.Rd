@@ -4,6 +4,7 @@
 
 \alias{extract}
 \alias{extract,SpatRaster,SpatVector-method}
+\alias{extract,SpatRaster,SpatExtent-method}
 \alias{extract,SpatRaster,matrix-method}
 \alias{extract,SpatRaster,data.frame-method}
 \alias{extract,SpatRaster,numeric-method}
@@ -27,6 +28,8 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, 
         cells=FALSE, xy=FALSE, weights=FALSE, touches=is.lines(y), ...)
+
+\S4method{extract}{SpatRaster,SpatExtent}(x, y, factors=TRUE, cells=FALSE, xy=FALSE)
 
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 

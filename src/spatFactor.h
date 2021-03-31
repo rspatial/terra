@@ -70,7 +70,7 @@ public:
 	  size_t n = _values.size();
 	  size_t un = u.size();
 	  
-	  labels = string_values(u);
+	labels = string_values(u);
     levels.resize(un);
     std::iota(levels.begin(), levels.end(), 0);
     v.resize(n);

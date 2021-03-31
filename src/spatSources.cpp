@@ -203,8 +203,9 @@ void SpatRasterSource::resize(unsigned n) {
 	cols.resize(n);
     hasCategories.resize(n);
 	cats.resize(n);
-    hasAttributes.resize(n);
-	atts.resize(n);
+    //hasAttributes.resize(n);
+	//atts.resize(n);
+    //attsIndex.resize(n);
 	nlyr = n;
 	layers.resize(n);
 	std::iota(layers.begin(), layers.end(), 0);
@@ -250,8 +251,9 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
                     out.cols.push_back(cols[j]);
                     out.hasCategories.push_back(hasCategories[j]);
                     out.cats.push_back(cats[j]);
-					out.hasAttributes.push_back(hasAttributes[j]);
-					out.atts.push_back(atts[j]);
+					//out.hasAttributes.push_back(hasAttributes[j]);
+					//out.atts.push_back(atts[j]);
+					//out.attsIndex.push_back(attsIndex[j]);
 					out.has_scale_offset.push_back(has_scale_offset[j]);
 					out.scale.push_back(scale[j]);
 					out.offset.push_back(offset[j]);
@@ -273,8 +275,9 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
                 out.cols.push_back(cols[j]);
                 out.hasCategories.push_back(hasCategories[j]);
                 out.cats.push_back(cats[j]);
-				out.hasAttributes.push_back(hasAttributes[j]);
-				out.atts.push_back(atts[j]);
+				//out.hasAttributes.push_back(hasAttributes[j]);
+				//out.atts.push_back(atts[j]);
+				//out.attsIndex.push_back(attsIndex[j]);
 				out.has_scale_offset.push_back(has_scale_offset[j]);
 				out.scale.push_back(scale[j]);
 				out.offset.push_back(offset[j]);
@@ -384,8 +387,9 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
 	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());
 	range_max.insert(range_max.end(), x.range_max.begin(), x.range_max.end());
-	hasAttributes.insert(hasAttributes.end(), x.hasAttributes.begin(), x.hasAttributes.end());
-	atts.insert(atts.end(), x.atts.begin(), x.atts.end());
+	//hasAttributes.insert(hasAttributes.end(), x.hasAttributes.begin(), x.hasAttributes.end());
+	//atts.insert(atts.end(), x.atts.begin(), x.atts.end());
+	//attsIndex.insert(attsIndex.end(), x.attsIndex.begin(), x.attsIndex.end());
 	hasCategories.insert(hasCategories.end(), x.hasCategories.begin(), x.hasCategories.end());
 	cats.insert(cats.end(), x.cats.begin(), x.cats.end());
 	hasColors.insert(hasColors.end(), x.hasColors.begin(), x.hasColors.end());

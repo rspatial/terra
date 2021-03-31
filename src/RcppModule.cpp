@@ -73,15 +73,16 @@ Rcpp::List getVectorAttributes(SpatVector* v) {
 	return lst;
 }
 
+/*
 Rcpp::List getRasterAttributes(SpatRaster* x) {
 	Rcpp::List lst;
 	if (x->nlyr() > 0) {
-		SpatDataFrame df = x->source[0].atts[0];
+		SpatDataFrame df = x->source[0].cats[0];
 		lst = getDataFrame(&df);
 	}
 	return lst;
 }
-
+*/
 
 
 Rcpp::DataFrame get_geometryDF(SpatVector* v) {
@@ -244,8 +245,8 @@ RCPP_MODULE(spat){
 
     class_<SpatCategories>("SpatCategories")
 		.constructor()
-		.field_readonly("levels", &SpatCategories::levels, "levels")
-		.field_readonly("labels", &SpatCategories::labels, "labels")
+		.field_readonly("df", &SpatCategories::d, "d")
+		.field("index", &SpatCategories::index, "index")
 	;
 
 
@@ -418,7 +419,7 @@ RCPP_MODULE(spat){
 		.method("removeWindow", &SpatRaster::removeWindow, "")
 		.method("hasWindow", &SpatRaster::hasWindow, "")
 
-		.method("getRasterAtt", &getRasterAttributes, "get attributes")
+		//.method("getRasterAtt", &getRasterAttributes, "get attributes")
 
 		.property("filenames", &SpatRaster::filenames )
 
@@ -428,17 +429,24 @@ RCPP_MODULE(spat){
 		.method("getRGB", &SpatRaster::getRGB)
 
 
-		.method("hasAttributes", &SpatRaster::hasAttributes, "hasAttributes")
-		.method("getAttributes", &SpatRaster::getAttributes, "getAttributes")
-		.method("setAttributes", &SpatRaster::setAttributes, "setAttributes")
-		.method("createAttributes", &SpatRaster::createAttributes, "createAttributes")
+		//.method("setAttIndex", &SpatRaster::setAttrIndex, "setAttrIndex")
+		//.method("getAttIndex", &SpatRaster::getAttrIndex, "getAttrIndex")
+		//.method("hasAttributes", &SpatRaster::hasAttributes, "hasAttributes")
+		//.method("getAttributes", &SpatRaster::getAttributes, "getAttributes")
+		//.method("setAttributes", &SpatRaster::setAttributes, "setAttributes")
+		//.method("createAttributes", &SpatRaster::createAttributes, "createAttributes")
+
+		.method("makeCategorical", &SpatRaster::makeCategorical, "makeCategorical")
+		.method("createCategories", &SpatRaster::createCategories, "createCategories")
+		
 		.method("hasCategories", &SpatRaster::hasCategories, "hasCategories")
 		.method("getCategories", &SpatRaster::getCategories, "getCategories")
 		.method("setCategories", &SpatRaster::setCategories, "setCategories")
 		.method("removeCategories", &SpatRaster::removeCategories, "removeCategories")
+		.method("getLabels", &SpatRaster::getLabels, "getLabels")
+		.method("setLabels", &SpatRaster::setLabels, "setLabels")
 
-		.method("makeCategorical", &SpatRaster::makeCategorical, "makeCategorical")
-		.method("createCategories", &SpatRaster::createCategories, "createCategories")
+
 		.method("hasColors", &SpatRaster::hasColors, "hasColors")
 		.method("getColors", &SpatRaster::getColors, "getColors")
 		.method("setColors", &SpatRaster::setColors, "setColors")

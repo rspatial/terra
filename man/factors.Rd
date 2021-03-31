@@ -4,34 +4,26 @@
 
 \alias{is.factor}
 \alias{is.factor,SpatRaster-method}
-\alias{as.factor}
-\alias{as.factor,SpatRaster-method}
 \alias{levels}
 \alias{levels,SpatRaster-method}
 \alias{levels<-}
 \alias{levels<-,SpatRaster-method}
-\alias{rats}
-\alias{rats,SpatRaster-method}
-\alias{rats<-}
-\alias{rats<-,SpatRaster-method}
 \alias{cats}
 \alias{cats,SpatRaster-method}
-\alias{cats<-}
-\alias{cats<-,SpatRaster-method}
+\alias{setCats}
+\alias{setCats,SpatRaster-method}
   
 \title{Factors}
 
 \description{
 
-These functions allow for defining a SpatRaster layer as a categorical variable (factor). These can be inspected and set with \code{levels} and \code{cats}. These methods are the same except that with \code{levels<-} you can only set the categories of the first layer. Like factors in R, categories are stored as indices (integers) that have an associated label. In a SpatRaster, the index starts at 0, and cannot be larger than 255. \code{as.factor} makes the first layer of a SpatRaster a categorical variable. You can then use \code{levels<-} to replace the labels.
+A SpatRaster layer can be a categorical variable (factor). These can be inspected and set with \code{levels} and \code{cats}. With \code{levels<-} you can set the categories of the first layer and with \code{setCats} you can set it for any layer. Like factors in R, categories are stored as indices (integers) that have an associated label. In a SpatRaster, the index starts at 0, and cannot be larger than 255. 
 
-The "Raster Attribute Table" (RAT) is similar in concept. A main difference with categories is that there can be many labels (variables) associated with one index. The RAT is a data.frame; the first column ("ID") has the unique cell values of the layer.
+There may be multiple categories (attributes) associated with a single layer. These can be set as a data.frame with \code{setCats} and they are returned with \code{cats}.
 }
 
 \usage{
 \S4method{is.factor}{SpatRaster}(x)
-
-\S4method{as.factor}{SpatRaster}(x)
 
 \S4method{levels}{SpatRaster}(x)
 
@@ -39,18 +31,16 @@ The "Raster Attribute Table" (RAT) is similar in concept. A main difference with
 
 \S4method{cats}{SpatRaster}(x)
 
-\S4method{cats}{SpatRaster}(x, layer=1)<-value
+\S4method{setCats}{SpatRaster}(x, layer=1, value, index=1)
 
-\S4method{rats}{SpatRaster}(x)
-
-\S4method{rats}{SpatRaster}(x, layer=1)<-value
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
-  \item{value}{ With \code{cats<-} and {levels<-} this can be a character vectors with new labels or a two column data.frame. The first column is an integer cell value, and the second column is the character label. With \code{rats<-} this is a data.frame. The first column is an integer cell value, and any number and type of additional columns is allowed}
+  \item{value}{ a characte vectors with new labels or a data.frame}
+  \item{index}{positive integer, indicating the column in \code{value} to be used as the category (factor labels)}
 }  
 
 
@@ -61,7 +51,7 @@ SpatRaster; list (e.g., levels); boolean (is.factor)
 \examples{
 set.seed(0)
 r <- rast(nrow=10, ncol=10)
-values(r) <- sample(3, ncell(r), replace=TRUE) + 2
+values(r) <- sample(3, ncell(r), replace=TRUE) - 1
 is.factor(r)
 
 cls <- c("forest", "water", "urban")
@@ -73,7 +63,8 @@ r
 plot(r, col=c("green", "blue", "light gray"))
 text(r, digits=3, cex=.75, halo=TRUE)
 
-f <- as.factor(r)
+#p <- as.polygons(r)
+#plot(p, "land cover", col=c("green", "blue", "light gray"))
 }
 
 \keyword{methods}

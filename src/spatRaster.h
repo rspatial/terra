@@ -32,10 +32,11 @@
 
 typedef long long int_64;
 
+
 class SpatCategories {
 	public:
-		std::vector<double> levels;
-		std::vector<std::string> labels;
+		SpatDataFrame d;
+		int index = -1;
 };
 
 
@@ -115,10 +116,12 @@ class SpatRasterSource {
 		std::vector<bool> hasRange;
 		std::vector<double> range_min;
 		std::vector<double> range_max;
-		std::vector<bool> hasAttributes;
-		std::vector<SpatDataFrame> atts;
+//		std::vector<bool> hasAttributes;
+//		std::vector<SpatDataFrame> atts;
+//		std::vector<int> attsIndex;
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
+
 		std::vector<bool> hasColors;
 		std::vector<SpatDataFrame> cols;
 
@@ -372,16 +375,21 @@ class SpatRaster {
 		SpatRaster makeCategorical(unsigned layer, SpatOptions opt);
 		bool createCategories(unsigned layer);
 		std::vector<bool> hasCategories();
-		bool setCategories(unsigned layer, std::vector<double> levels, std::vector<std::string> labels);
+		bool setCategories(unsigned layer, SpatDataFrame d, int index);
 		bool removeCategories(unsigned layer);
 		std::vector<SpatCategories> getCategories();
 		SpatCategories getLayerCategories(unsigned layer);
+		std::vector<std::string> getLabels(unsigned layer);
+		bool setLabels(unsigned layer, std::vector<std::string> labels);
 
-		void createAttributes(unsigned layer);
-		std::vector<bool> hasAttributes();
-		void setAttributes(unsigned layer, SpatDataFrame df);
-		std::vector<SpatDataFrame> getAttributes();
-		SpatDataFrame getLayerAttributes(unsigned layer);
+		//bool setAttrIndex(size_t layer, int i);
+		//std::vector<int> getAttrIndex();
+		//void createAttributes(unsigned layer);
+		//std::vector<bool> hasAttributes();
+		//void setAttributes(unsigned layer, SpatDataFrame df);
+		//std::vector<SpatDataFrame> getAttributes();
+		//SpatDataFrame getLayerAttributes(unsigned layer);
+		
 		std::vector<bool> hasColors();
 		std::vector<SpatDataFrame> getColors();
 		bool setColors(size_t layer, SpatDataFrame cols);
