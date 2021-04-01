@@ -5,6 +5,13 @@
 setMethod("match", signature(x="SpatRaster", table="ANY", nomatch="ANY", incomparables="ANY"),
 	function(x, table, nomatch, incomparables) {
 #		app(x, function(i) match(i, table, nomatch, incomparables))
+		if (is.character(table)) {
+			if (!is.factor(x)) error("match", "table has character values")
+			table <- stats::na.omit(match(table, levels(x)[[1]]))
+			if (length(table) == 0) {
+				return (x * 0)
+			} 
+		}
 		arith(x, function(i) match(i, table, nomatch, incomparables))
 	}
 )

@@ -223,9 +223,12 @@ setMethod ("show" , "SpatRaster",
 				uts <- c(uts[1:mnr], "...")
 			}
 
-			hMM <- .hasMinMax(object)
-			if (any(hMM)) {
-				r <- minmax(object)
+			#hMM <- .hasMinMax(object)
+			hMM <- object@ptr$hasRange
+			if (any(hMM) || any(is.factor(object))) {
+				#r <- minmax(object)
+				r <- rbind(object@ptr$range_min, object@ptr$range_max)
+				r[,!hMM] <- c(Inf, -Inf)
 				minv <- format(r[1,])
 				maxv <- format(r[2,])
 				minv <- gsub("Inf", " ? ", minv)

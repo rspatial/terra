@@ -13,6 +13,9 @@ setMethod("init", signature(x="SpatRaster"),
 			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
 				x@ptr <- x@ptr$initf(fun, TRUE, opt)
 				messages(x, "init")
+			} else if (is.na(fun)) {
+				x@ptr <- x@ptr$initv(as.numeric(NA), opt)
+				messages(x, "init")
 			} else {
 				error("init", "unknown function")
 			}

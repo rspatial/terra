@@ -189,19 +189,19 @@ bool SpatRasterSource::in_order() {
 
 
 void SpatRasterSource::resize(unsigned n) {
-	names.resize(n);
+	names.resize(n, "");
 	time.resize(n);
 	unit.resize(n);
 	depth.resize(n);
-    hasRange.resize(n);
-    range_min.resize(n);
-    range_max.resize(n);
-	has_scale_offset.resize(n);
-	scale.resize(n);
-	offset.resize(n);
-    hasColors.resize(n);
+    hasRange.resize(n, false);
+    range_min.resize(n, NAN);
+    range_max.resize(n, NAN);
+	has_scale_offset.resize(n, false);
+	scale.resize(n, 1);
+	offset.resize(n, 0);
+    hasColors.resize(n, false);
 	cols.resize(n);
-    hasCategories.resize(n);
+    hasCategories.resize(n, false);
 	cats.resize(n);
     //hasAttributes.resize(n);
 	//atts.resize(n);

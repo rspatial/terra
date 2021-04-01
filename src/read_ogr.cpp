@@ -387,7 +387,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
 		}
-	} else {				
+	} else if (wkbgeom != wkbNone) {
 		const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
 		std::string strgeomtype = geomtypechar;
 		std::string s = "cannot read this geometry type: "+ strgeomtype;

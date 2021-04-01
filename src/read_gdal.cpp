@@ -118,6 +118,33 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 }
 
 
+SpatCategories GetVAT(std::string filename) {
+	SpatCategories out;
+	filename = filename + ".vat.dbf";
+	if (!file_exists(filename)) {
+		return out;
+	}
+
+	SpatVector v;
+	v.read(filename);
+	std::vector<std::string> ss = {"histogram", "red", "green", "blue", "opacity"};
+	SpatDataFrame d = v.df;
+	std::vector<std::string> nms = d.get_names();
+	std::vector<unsigned> rng;
+	for (size_t i=0; i<nms.size(); i++) {
+		int j = where_in_vector(nms[i], ss, true);
+		if (j < 0) rng.push_back(i);
+	}
+	if (rng.size() > 1) {
+		d = d.subset_cols(rng);
+		nms = d.get_names();
+		nms[0] = "ID";
+		d.set_names(nms);
+		out.d = d;
+		out.index = 1;
+	}
+	return out;
+}
 
 SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
 
@@ -363,8 +390,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	s.nrow = poDataset->GetRasterYSize();
 	s.nlyr = nl;
 	s.nlyrfile = nl;
-	s.layers.resize(nl);
-    std::iota(s.layers.begin(), s.layers.end(), 0);
+	s.resize(nl);
 
 	s.flipped = false;
 	s.rotated = false;
@@ -464,19 +490,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	//	}
 		double offset = poBand->GetOffset(&success);
 		if (success) {
-			s.offset.push_back(offset);
-			s.has_scale_offset.push_back(true);
-		} else {
-			s.offset.push_back(0);
-			s.has_scale_offset.push_back(false);
-		}
+			s.offset[i] = offset;
+			s.has_scale_offset[i] = true;
+		} 
 		double scale = poBand->GetScale(&success);
 		if (success) {
-			s.scale.push_back(scale);
+			s.scale[i] = scale;
 			s.has_scale_offset[i] = true;
-		} else {
-			s.scale.push_back(1);
-		}
+		} 
 
 
 		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
@@ -484,36 +505,25 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );
 		adfMinMax[1] = poBand->GetMaximum( &bGotMax );
 		if( (bGotMin && bGotMax) ) {
-			s.hasRange.push_back(true);
-			s.range_min.push_back( adfMinMax[0] );
-			s.range_max.push_back( adfMinMax[1] );
-		} else {
-			s.hasRange.push_back(false);
-			s.range_min.push_back( NAN );
-			s.range_max.push_back( NAN );
-		}
+			s.hasRange[i] = true;
+			s.range_min[i] = adfMinMax[0];
+			s.range_max[i] = adfMinMax[1];
+		} 
 
 		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
 		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
 
 		GDALColorTable *ct = poBand->GetColorTable();
 		if( ct != NULL ) {
-			s.hasColors.push_back(true);
-			s.cols.resize(i+1);
+			s.hasColors[i] = true;
 			s.cols[i] = GetCOLdf(ct);
-		} else {
-			s.hasColors.push_back(false);
-		}
+		} 
 
 
 		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 		if( rat != NULL ) {
-			SpatCategories cat = GetRAT(rat);
-			s.cats.resize(i+1);
-			s.cats[i] = cat;
-			s.hasCategories.push_back(true);
-		} else {
-			s.hasCategories.push_back(false);
+			s.cats[i] = GetRAT(rat);
+			s.hasCategories[i] = true;
 		}
 
 		char **cat = poBand->GetCategoryNames();
@@ -523,11 +533,18 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				s.cats[i].index = s.cats[i].d.ncol();
 				s.cats[i].d.cbind(scat.d); // needs more checking.
 			} else {
-				s.cats.resize(i+1);
 				s.cats[i] = scat;
 				s.hasCategories[i] = true;
 			}
 		} 
+
+		if (!s.hasCategories[i]) {
+			SpatCategories vat = GetVAT(fname);
+			if (vat.d.nrow() > 0) {
+				s.cats[i] = vat;
+				s.hasCategories[i] = true;				
+			}
+		}
 
 		std::string nm = "";
 		if (s.hasCategories[i]) {
@@ -546,7 +563,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				nm = basename_noext(fname) ;
 			}
 		}
-		s.names.push_back(nm);
+		s.names[i] = nm;
 	}
 
 	if (gdrv == "netCDF") {
