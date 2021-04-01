@@ -10,7 +10,7 @@
 \title{Color table}
 
 \description{
-Get the color table(s) associated with a SpatRaster if there are any
+Get or set color table(s) associated with a SpatRaster. Color tables are used for associating colors with values, for use in mapping (plot).
 }
 
 \usage{
@@ -23,7 +23,7 @@ Get the color table(s) associated with a SpatRaster if there are any
 \arguments{
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
-  \item{value}{a three (red,green,blue) or four (alpha) column data.frame with no more than 256 rows}
+  \item{value}{a three (red,green,blue) or four (alpha) column data.frame with no more than 256 rows; or NULL to remove the color table}
 }  
 
 

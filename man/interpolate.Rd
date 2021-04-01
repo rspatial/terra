@@ -95,7 +95,7 @@ v <- v[i]
 #data(meuse)
 
 ### inverse distance weighted (IDW)
-#r <- raster(system.file("ex/test.tif", package="terra"))
+#r <- rast(system.file("ex/test.tif", package="terra"))
 #mg <- gstat(id = "zinc", formula = zinc~1, locations = ~x+y, data=meuse, 
 #            nmax=7, set=list(idp = .5))
 #z <- interpolate(r, mg, debug.level=0)

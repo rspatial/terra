@@ -269,7 +269,5 @@
 	} else {
 		leg <- legend(x, y, legend, fill=fill, xpd=xpd, bty=bty, cex=cex, density=density*2, angle=angle, border=border, ...)
 	}
-	x$leg <- leg
-	x
 }
 

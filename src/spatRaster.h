@@ -397,6 +397,7 @@ class SpatRaster {
 		std::vector<bool> hasColors();
 		std::vector<SpatDataFrame> getColors();
 		bool setColors(size_t layer, SpatDataFrame cols);
+		bool removeColors(size_t layer);
 
 		double valuesCell(double);
 		double valuesCell(int, int);

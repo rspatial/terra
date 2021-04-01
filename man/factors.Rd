@@ -71,7 +71,10 @@ text(x, digits=3, cex=.75, halo=TRUE)
 x <- r + 2
 is.factor(x)
 
-# two categories
+# approach 1
+levels(x) <- c("", "", "", "forest", "water", "urban")
+
+# approach 2, also showing the use of two categories
 d <- data.frame(id=3:5, cover=cls, letters=letters[1:3])
 levels(x) <- d
 x

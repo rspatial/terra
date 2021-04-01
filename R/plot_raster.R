@@ -111,13 +111,14 @@
 	}
 	out$levels <- sort(stats::na.omit(unique(z)))
 	out$leg$legend <- out$facts[out$levels]
-
 	if (!is.null(out$coltab)) {
 		out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
 		z <- out$cols[z]
 		out$cols <- out$cols[out$levels]
 	} else {
-		nlevs <- length(out$levels)
+		levlab <- data.frame(id=1:length(out$facts), lab=out$facts, stringsAsFactors=FALSE)
+		levlab <- levlab[out$levels, ,drop=FALSE]
+		nlevs <- nrow(levlab)
 		ncols <- length(out$cols)
 		if (nlevs < ncols) {
 			i <- trunc((ncols / nlevs) * 1:nlevs)
@@ -125,12 +126,7 @@
 		} else if (nlevs > ncols) {
 			out$cols <- rep_len(out$cols, nlevs)
 		}
-		zmn <- min(z, na.rm=TRUE) - 1
-		if (zmn > 0) {
-			z <- z - zmn
-			out$levels <- out$levels - zmn
-		}
-		z <- out$cols[z]		
+		z <- out$cols[match(z, levlab[,1])]		
 	}
 	out$leg$fill <- out$cols
 
@@ -252,7 +248,7 @@
 #		} else if (x$legend_type == "classes") {
 		} else {
 			#y <- do.call(.plot.class.legend, x$leg)
-			x <- do.call(.plot.class.legend, x$leg)
+			leg <- do.call(.plot.class.legend, x$leg)
 		}
 	}
 	x

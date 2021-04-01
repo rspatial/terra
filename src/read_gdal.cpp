@@ -102,18 +102,7 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 			out.d.add_column(d, name);
 		}
 	}
-	
-	std::vector<std::string> nms = out.d.get_names();
-	lowercase(nms);
-	out.index = 0;
-	for (size_t i=1; i<nms.size(); i++){
-		int j = where_in_vector(nms[i], ss, false);
-		if (j < 0) {
-			out.index = i;
-			break;
-		}
-	}
-	
+	out.index = out.d.ncol() > 1 ? 1 : 0;
 	return(out);
 }
 
@@ -206,7 +195,7 @@ SpatCategories GetCategories(char **pCat) {
 		nms[i] = field;
 	}
 	scat.d.add_column(nms, "category");
-	scat.index = 0;
+	scat.index = 1;
 	return(scat);
 }
 

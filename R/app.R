@@ -45,7 +45,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	#}
 	if (is.list(r)) {
 		if (length(unique(sapply(r, length))) >  1) {
-			error("app", "'fun' returns a list (should be numeric or matrix). Perhaps because returned values have different lenghts?")
+			error("app", "'fun' returns a list (should be numeric or matrix).\nPerhaps because returned values have different lenghts due to NAs in input?")
 		} else {
 			error("app", "'fun' returns a list (should be numeric or matrix)")
 		}

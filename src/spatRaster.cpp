@@ -1093,8 +1093,6 @@ std::vector<std::string> SpatRaster::getLabels(unsigned layer) {
 		out = d.sv[0];
 	}
 
-	//int get_fieldindex(std::string field);
-	
 	return out;
 }
 
@@ -1106,6 +1104,7 @@ bool SpatRaster::setCatIndex(unsigned layer, unsigned index) {
 	unsigned nc = source[sl[0]].cats[sl[1]].d.ncol();
 	if (index < nc) {
 		source[sl[0]].cats[sl[1]].index  = index;
+		source[sl[0]].names[sl[1]] = source[sl[0]].cats[sl[1]].d.names[index];
 		return true;
 	} else {
 		return false;
@@ -1242,6 +1241,20 @@ bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
 
 	source[sl[0]].cols[sl[1]] = cols;
 	source[sl[0]].hasColors[sl[1]] = (cols.nrow() > 1);
+	return true;
+}
+
+
+bool SpatRaster::removeColors(size_t layer) {
+	if (layer >= nlyr()) {
+		return false;
+	}
+    std::vector<unsigned> sl = findLyr(layer);
+	if (source[sl[0]].hasColors[sl[1]]) {
+		SpatDataFrame d;
+		source[sl[0]].cols[sl[1]] = d;
+		source[sl[0]].hasColors[sl[1]] = false;
+	}
 	return true;
 }
 

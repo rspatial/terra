@@ -26,7 +26,7 @@ setMethod("levels<-", signature(x="SpatRaster"),
 			return(messages(x, "levels<-"))
 		} else if (inherits(value, "list")) {
 			for (i in 1:length(value)) {
-				setCats(x, i, value[[i]], 1)
+				setCats(x, i, value[[i]])
 			}
 		} else {
 			setCats(x, 1, value, 2)		
