@@ -135,9 +135,6 @@ setMethod("Arith", signature(e1="SpatRaster", e2="numeric"),
     function(e1, e2){
 		oper <- as.vector(.Generic)[1]
 		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%")) 
-		if (length(e2) != 1) {
-			error(oper, "comparisons only supported for single values (see %in% and match)")
-		}
 		opt <- spatOptions()
 		oper <- ifelse(oper == "%%", "%", oper)
 		e1@ptr <- e1@ptr$arith_numb(e2, oper, FALSE, opt)
@@ -156,9 +153,6 @@ setMethod("Arith", signature(e1="numeric", e2="SpatRaster"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
 		stopifnot(oper %in% c("+", "-", "^", "*", "/", "%%")) 
-		if (length(e1) != 1) {
-			error(oper, "comparisons only supported for single values (see %in% and match)")
-		}
 		opt <- spatOptions()
 		oper <- ifelse(oper == "%%", "%", oper)
 		e2@ptr <- e2@ptr$arith_numb(e1, oper, TRUE, opt)
