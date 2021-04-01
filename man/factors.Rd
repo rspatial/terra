@@ -91,7 +91,7 @@ text(x, digits=3, cex=.75, halo=TRUE)
 
 #setCats(x, 1, index=2)
 #p <- as.polygons(x)
-#plot(p, "land cover", col=c("green", "blue", "light gray"))
+#plot(p, "cover", col=c("green", "blue", "light gray"))
 }
 
 \keyword{methods}

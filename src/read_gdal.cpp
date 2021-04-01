@@ -107,32 +107,31 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 }
 
 
-SpatCategories GetVAT(std::string filename) {
-	SpatCategories out;
+bool GetVAT(std::string filename, SpatCategories &vat) {
+
 	filename = filename + ".vat.dbf";
 	if (!file_exists(filename)) {
-		return out;
+		return false;
 	}
 
 	SpatVector v;
 	v.read(filename);
+	if (v.df.nrow() == 0) return false;
+	
 	std::vector<std::string> ss = {"histogram", "red", "green", "blue", "opacity"};
-	SpatDataFrame d = v.df;
-	std::vector<std::string> nms = d.get_names();
+	std::vector<std::string> nms = v.df.get_names();
 	std::vector<unsigned> rng;
 	for (size_t i=0; i<nms.size(); i++) {
 		int j = where_in_vector(nms[i], ss, true);
 		if (j < 0) rng.push_back(i);
 	}
 	if (rng.size() > 1) {
-		d = d.subset_cols(rng);
-		nms = d.get_names();
-		nms[0] = "ID";
-		d.set_names(nms);
-		out.d = d;
-		out.index = 1;
+		vat.d = v.df.subset_cols(rng);
+		vat.d.names[0] = "ID";
+		vat.index = 1;
+		return true;
 	}
-	return out;
+	return false;
 }
 
 SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
@@ -509,27 +508,28 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		} 
 
 
-		GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
-		if( rat != NULL ) {
-			s.cats[i] = GetRAT(rat);
-			s.hasCategories[i] = true;
-		}
-
 		char **cat = poBand->GetCategoryNames();
 		if( cat != NULL )	{
 			SpatCategories scat = GetCategories(cat);
-			if (s.hasCategories[i]) {
-				s.cats[i].index = s.cats[i].d.ncol();
-				s.cats[i].d.cbind(scat.d); // needs more checking.
-			} else {
-				s.cats[i] = scat;
-				s.hasCategories[i] = true;
-			}
+			s.cats[i] = scat;
+			s.hasCategories[i] = true;
 		} 
 
 		if (!s.hasCategories[i]) {
-			SpatCategories vat = GetVAT(fname);
-			if (vat.d.nrow() > 0) {
+			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
+			if( rat != NULL ) {
+				s.cats[i] = GetRAT(rat);
+				s.hasCategories[i] = true;
+			}
+		}
+		//	} else {
+		//		s.cats[i].d.cbind(crat.d); // needs more checking.
+		//	} else {
+
+
+		if (!s.hasCategories[i]) {
+			SpatCategories vat;
+			if (GetVAT(fname, vat)) {
 				s.cats[i] = vat;
 				s.hasCategories[i] = true;				
 			}
