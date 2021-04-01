@@ -247,7 +247,7 @@ setMethod ("show" , "SpatRaster",
 					for (i in 1:length(isf)) {
 						if (i > mnr) break
 						if (isf[i]) {
-							cats <- na.omit(lv[[i]])
+							cats <- stats::na.omit(lv[[i]])
 							cats <- sort(cats[cats != ""])
 							cats <- sort(cats[cats != "NA"])
 							if (length(cats) > 0) {
