@@ -106,10 +106,10 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	geo <- geomtype(y)
 	if (geo == "points") {
-		e <- matrix(e, ncol=nc, byrow=TRUE)
+		e <- matrix(e, ncol=nc)
 		e <- cbind(1:nrow(e), e)
 	} else {
-		e <- matrix(e, ncol=nc+1, byrow=TRUE)
+		e <- matrix(e, ncol=nc+1)
 	}
 	cn <- c("ID", cn)
 	colnames(e) <- cn
@@ -179,7 +179,8 @@ function(x, y, ...) {
 	if (ncol(y) != 2) {
 		error("extract", "extract expects a 2 column data.frame of x and y coordinates")
 	}
-	extract(x, as.matrix(y), ...)
+	v <- vect(y, colnames(y))
+	extract(x, v, ...)
 })
 
 
