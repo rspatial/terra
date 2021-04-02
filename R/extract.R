@@ -109,7 +109,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		e <- matrix(e, ncol=nc)
 		e <- cbind(1:nrow(e), e)
 	} else {
-		e <- matrix(e, ncol=nc+1)
+		e <- matrix(e, ncol=nc+1, byrow=TRUE)
 	}
 	cn <- c("ID", cn)
 	colnames(e) <- cn
