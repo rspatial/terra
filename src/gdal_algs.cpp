@@ -34,7 +34,7 @@
 
 
 SpatVector SpatRaster::dense_extent() {
-	
+
 	std::vector<int_64> rows(nrow());
 	std::iota(rows.begin(), rows.end(), 0);
 	std::vector<int_64> cols(ncol());
@@ -303,6 +303,10 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 	    (double *) CPLMalloc(sizeof(double) * nbands );
 	psWarpOptions->padfDstNoDataReal =
 	    (double *) CPLMalloc(sizeof(double) * nbands );
+	psWarpOptions->padfSrcNoDataImag =
+	    (double *) CPLMalloc(sizeof(double) * nbands );
+	psWarpOptions->padfDstNoDataImag =
+	    (double *) CPLMalloc(sizeof(double) * nbands );
 
 	GDALRasterBandH hBand;
 	int hasNA;
@@ -323,10 +327,9 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 			hBand = GDALGetRasterBand(hDstDS, dstbands[i]+1);
 			GDALSetRasterNoDataValue(hBand, naflag);
 		} else {
-			psWarpOptions->padfSrcNoDataReal[i] = NAN;		
+			psWarpOptions->padfSrcNoDataReal[i] = NAN;
 			psWarpOptions->padfDstNoDataReal[i] = NAN;
 		}
-		//psWarpOptions->padfDstNoDataReal[i] = NAN;
     }
 
 	//psWarpOptions->pfnProgress = GDALTermProgress;
@@ -336,29 +339,22 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 	psWarpOptions->papszWarpOptions =
       CSLSetNameValue( psWarpOptions->papszWarpOptions, "WRITE_FLUSH", "YES");
 
-//GDALWarpInitSrcNoDataReal(GDALWarpOptions *psOptionsIn, double dNoDataReal)
-//void GDALWarpInitDstNoDataReal(GDALWarpOptions *psOptionsIn, double dNoDataReal)
-
-    // Establish reprojection transformer.
 
     psWarpOptions->pTransformerArg =
         GDALCreateGenImgProjTransformer( hSrcDS, srccrs.c_str(),
                                         hDstDS, GDALGetProjectionRef(hDstDS),
                                         FALSE, 0.0, 1 );
-//    psWarpOptions->pTransformerArg =
-//        GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef(hSrcDS),
-//                                        hDstDS, GDALGetProjectionRef(hDstDS),
-//                                        FALSE, 0.0, 1 );
     psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
-
-    // Initialize and execute the warp operation.
     GDALWarpOperation oOperation;
-    oOperation.Initialize( psWarpOptions );
+    	if (oOperation.Initialize( psWarpOptions ) != CE_None) {
+		return false;
+	}
     oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) );
     GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
     GDALDestroyWarpOptions( psWarpOptions );
-    
+
+
 	return true;
 }
 
@@ -430,7 +426,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	int bandstart = 0;
 
 	for (size_t i=0; i<ns; i++) {
-	
+
 		if (!open_gdal(hSrcDS, i, opt)) {
 			out.setError("cannot create dataset from source");
 			return out;
@@ -466,7 +462,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		std::vector<unsigned> dstbands(srcbands.size()); 
 		std::iota (dstbands.begin(), dstbands.end(), bandstart); 
 		bandstart += dstbands.size();
-	
+
 		bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose());
 
 		GDALClose( hSrcDS );
