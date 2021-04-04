@@ -291,22 +291,14 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
     GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
     psWarpOptions->hSrcDS = hSrcDS;
     psWarpOptions->hDstDS = hDstDS;
-
 	psWarpOptions->eResampleAlg = a;
-
     psWarpOptions->nBandCount = nbands;
-    psWarpOptions->panSrcBands =
-        (int *) CPLMalloc(sizeof(int) * nbands );
-    psWarpOptions->panDstBands =
-        (int *) CPLMalloc(sizeof(int) * nbands );
-	psWarpOptions->padfSrcNoDataReal =
-	    (double *) CPLMalloc(sizeof(double) * nbands );
-	psWarpOptions->padfDstNoDataReal =
-	    (double *) CPLMalloc(sizeof(double) * nbands );
-	psWarpOptions->padfSrcNoDataImag =
-	    (double *) CPLMalloc(sizeof(double) * nbands );
-	psWarpOptions->padfDstNoDataImag =
-	    (double *) CPLMalloc(sizeof(double) * nbands );
+    psWarpOptions->panSrcBands = (int *) CPLMalloc(sizeof(int) * nbands );
+    psWarpOptions->panDstBands = (int *) CPLMalloc(sizeof(int) * nbands );
+	psWarpOptions->padfSrcNoDataReal = (double *) CPLMalloc(sizeof(double) * nbands );
+	psWarpOptions->padfDstNoDataReal = (double *) CPLMalloc(sizeof(double) * nbands );
+	psWarpOptions->padfSrcNoDataImag = (double *) CPLMalloc(sizeof(double) * nbands );
+	psWarpOptions->padfDstNoDataImag = (double *) CPLMalloc(sizeof(double) * nbands );
 
 	GDALRasterBandH hBand;
 	int hasNA;
@@ -347,14 +339,12 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
     psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
     GDALWarpOperation oOperation;
-    	if (oOperation.Initialize( psWarpOptions ) != CE_None) {
+    if (oOperation.Initialize( psWarpOptions ) != CE_None) {
 		return false;
 	}
     oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) );
     GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
     GDALDestroyWarpOptions( psWarpOptions );
-
-
 	return true;
 }
 
@@ -641,8 +631,6 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 }
 
 
-
-//#if GDAL_VERSION_MAJOR >= 3
 
 SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 

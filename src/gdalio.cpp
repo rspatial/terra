@@ -252,7 +252,6 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
 
 
-//#if (GDAL_VERSION_MAJOR >= 2 && GDAL_VERSION_MINOR >= 1)
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 1
 
