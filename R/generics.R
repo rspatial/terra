@@ -196,25 +196,6 @@ setMethod("c", signature(x="SpatRaster"),
 )
 
 
-setMethod("c", signature(x="SpatVector"), 
-	function(x, ...) {
-		skipped <- FALSE
-		dots <- list(...)
-		for (i in dots) {
-			if (inherits(i, "SpatVector")) {
-				x@ptr <- x@ptr$append(i@ptr, FALSE)
-				if (x@ptr$messages$has_error) {
-					messages(x, "c")
-					return()
-				}
-			} else {
-				skipped = TRUE
-			}
-		}
-		if (skipped) warn("c,SpatVector", "skipped object that are not SpatVector")
-		messages(x, "c")
-	}
-)
 
 setMethod("rep", signature(x="SpatRaster"), 
 	function(x, ...) {

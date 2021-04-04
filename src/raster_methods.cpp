@@ -1171,9 +1171,10 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 	}
 
 	size_t nc = ncol();
+	std::vector<double> v;
 	if (value == "row") {
 		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> v(out.bs.nrows[i] * nc );
+			v.resize(nc * out.bs.nrows[i]);
 			for (size_t j = 0; j < out.bs.nrows[i]; j++) {
 				size_t r = out.bs.row[i] + j + plusone;
 				for (size_t k = 0; k < nc; k++) {
@@ -1183,16 +1184,20 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
 	} else if (value == "col") {
-		std::vector<double> v(nc);
+		std::vector<double> cnn(nc);
 		double start = plusone ? 1 : 0;
-		std::iota(v.begin(), v.end(), start);
+		std::iota(cnn.begin(), cnn.end(), start);
+		size_t oldnr = 0;
 		for (size_t i = 0; i < out.bs.n; i++) {
-			recycle(v, out.bs.nrows[i] * nc);
+			if (oldnr != out.bs.nrows[i]) {
+				v = cnn;
+				recycle(v, out.bs.nrows[i] * nc);
+			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
 	} else if (value == "cell") {
 		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> v(nc * out.bs.nrows[i]);
+			v.resize(nc * out.bs.nrows[i]);
 			size_t firstcell = cellFromRowCol(out.bs.row[i], 0);
 			firstcell = plusone ? firstcell + 1 : firstcell;
 			std::iota(v.begin(), v.end(), firstcell);
@@ -1201,15 +1206,19 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 	} else if (value == "x") {
 		std::vector<int_64> col(nc);
 		std::iota(col.begin(), col.end(), 0);
-		std::vector<double> v = xFromCol(col);
+		std::vector<double> xcoords = xFromCol(col);
+		size_t oldnr = 0;
 		for (size_t i = 0; i < out.bs.n; i++) {
-			recycle(v, out.bs.nrows[i] * nc);
+			if (oldnr != out.bs.nrows[i]) {
+				v = xcoords;
+				recycle(v, out.bs.nrows[i] * nc);
+			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
 	} else if (value == "y") {
 	
 		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> v(out.bs.nrows[i] * nc );
+			v.resize(out.bs.nrows[i] * nc );
 			for (size_t j = 0; j < out.bs.nrows[i]; j++) {
 				double y = yFromRow(out.bs.row[i] + j);
 				for (size_t k = 0; k < nc; k++) {

@@ -66,8 +66,94 @@ SpatVector SpatRaster::dense_extent() {
 	return v;
 }
 
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 2
 
-#if GDAL_VERSION_MAJOR >= 3
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
+
+	unsigned nl = nlyr();
+	SpatRaster out = x.geometry(nl);
+	out.setNames(getNames());
+
+	if (crs != "") {
+		out.setError("You cannot project by specifying a crs with your version of GDAL");
+		return out;
+	}
+
+	out.setNames(getNames());
+	std::vector<std::string> f {"bilinear", "near"};
+	if (std::find(f.begin(), f.end(), method) == f.end()) {
+		out.setError("unknown warp method");
+		return out;
+	}
+	if (!hasValues()) {
+		return out;
+	}
+
+	std::string crsin = source[0].srs.wkt;
+	std::string crsout = out.source[0].srs.wkt;
+	bool do_prj = true;
+	if ((crsin == crsout) || (crsin == "") || (crsout == "")) {
+		do_prj = false;
+	}
+
+	if (!do_prj) {
+		SpatExtent e = out.getExtent();
+		e.intersect(getExtent());
+		if (!e.valid()) {
+			out.addWarning("No spatial overlap");
+			return out;
+		}
+	}
+
+	SpatRaster xx;
+	if (do_prj) {
+		xx = *this;
+	} else {
+		unsigned xq = x.xres() / xres();
+		unsigned yq = x.yres() / yres();
+		if (std::max(xq, yq) > 1) {
+			xq = xq == 0 ? 1 : xq;
+			yq = yq == 0 ? 1 : yq;
+			std::vector<unsigned> agf = {yq, xq, 1};
+			SpatOptions agopt;
+			if (method == "bilinear") {
+				xx = aggregate(agf, "mean", true, agopt);
+			} else {
+				xx = aggregate(agf, "modal", true, agopt);
+			}
+		} else {
+			xx = *this;
+		}
+	}
+	unsigned nc = out.ncol();
+
+  	if (!out.writeStart(opt)) { return out; }
+	for (size_t i = 0; i < out.bs.n; i++) {
+        unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
+		unsigned lastcell  = out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
+		std::vector<double> cells(1+lastcell-firstcell);
+		std::iota (std::begin(cells), std::end(cells), firstcell);
+        std::vector<std::vector<double>> xy = out.xyFromCell(cells);
+		if (do_prj) {
+			#ifdef useGDAL
+			out.msg = transform_coordinates(xy[0], xy[1], crsout, crsin);
+			#else
+			out.setError("GDAL is needed for crs transformation, but not available");
+			return out;
+			#endif
+		}
+		std::vector<std::vector<double>> v = xx.extractXY(xy[0], xy[1], method, false);
+		if (!out.writeValues2(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+	}
+	out.writeStop();
+	return(out);
+}
+
+
+
+
+#else
+
 
 bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string srccrs, const std::string dstcrs, std::string filename, std::string driver, int nlyrs, std::string datatype, std::string &msg) {
 
@@ -302,10 +388,10 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	std::string filename = opt.get_filename();
 
 	std::string srccrs = getSRS("wkt");
-	if (opt.verbose) {
-		Rcpp::Rcout << "wkt" << std::endl;
-		Rcpp::Rcout << srccrs << std::endl;
-	}
+	//if (opt.verbose) {
+	//	Rcpp::Rcout << "wkt" << std::endl;
+	//	Rcpp::Rcout << srccrs << std::endl;
+	//}
 	if (srccrs == "") {
 		out.setError("input raster CRS not set");
 		return out;	
@@ -322,7 +408,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 
 	if (filename == "") {
-		if (!canProcessInMemory(opt)) {
+		if (!canProcessInMemory(opt) || !out.canProcessInMemory(opt)) {
 			filename = tempFile(opt.get_tempdir(), ".tif");
 		} 
 	} else {
@@ -421,91 +507,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	return out;
 }
 
-
-#else 
-
-
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
-
-	unsigned nl = nlyr();
-	SpatRaster out = x.geometry(nl);
-	out.setNames(getNames());
-
-	if (crs != "") {
-		out.setError("You cannot project by specifying a crs with your version of GDAL");
-		return out;
-	}
-
-	out.setNames(getNames());
-	std::vector<std::string> f {"bilinear", "near"};
-	if (std::find(f.begin(), f.end(), method) == f.end()) {
-		out.setError("unknown warp method");
-		return out;
-	}
-	if (!hasValues()) {
-		return out;
-	}
-
-	std::string crsin = source[0].srs.wkt;
-	std::string crsout = out.source[0].srs.wkt;
-	bool do_prj = true;
-	if ((crsin == crsout) || (crsin == "") || (crsout == "")) {
-		do_prj = false;
-	}
-
-	if (!do_prj) {
-		SpatExtent e = out.getExtent();
-		e.intersect(getExtent());
-		if (!e.valid()) {
-			out.addWarning("No spatial overlap");
-			return out;
-		}
-	}
-
-	SpatRaster xx;
-	if (do_prj) {
-		xx = *this;
-	} else {
-		unsigned xq = x.xres() / xres();
-		unsigned yq = x.yres() / yres();
-		if (std::max(xq, yq) > 1) {
-			xq = xq == 0 ? 1 : xq;
-			yq = yq == 0 ? 1 : yq;
-			std::vector<unsigned> agf = {yq, xq, 1};
-			SpatOptions agopt;
-			if (method == "bilinear") {
-				xx = aggregate(agf, "mean", true, agopt);
-			} else {
-				xx = aggregate(agf, "modal", true, agopt);
-			}
-		} else {
-			xx = *this;
-		}
-	}
-	unsigned nc = out.ncol();
-
-  	if (!out.writeStart(opt)) { return out; }
-	for (size_t i = 0; i < out.bs.n; i++) {
-        unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
-		unsigned lastcell  = out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
-		std::vector<double> cells(1+lastcell-firstcell);
-		std::iota (std::begin(cells), std::end(cells), firstcell);
-        std::vector<std::vector<double>> xy = out.xyFromCell(cells);
-		if (do_prj) {
-			#ifdef useGDAL
-			out.msg = transform_coordinates(xy[0], xy[1], crsout, crsin);
-			#else
-			out.setError("GDAL is needed for crs transformation, but not available");
-			return out;
-			#endif
-		}
-		bool getcells = false;
-		std::vector<std::vector<double>> v = xx.extractXY(xy[0], xy[1], method, getcells);
-		if (!out.writeValues2(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-	}
-	out.writeStop();
-	return(out);
-}
 
 
 

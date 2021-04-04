@@ -85,6 +85,11 @@ function(x, i, j, ... ,drop=TRUE) {
 })
 
 
+setMethod("c", signature(x="SpatVector"), 
+	function(x, ...) {
+		svc(x, ...)
+	}
+)
 
 setMethod("c", signature(x="SpatVectorCollection"), 
 	function(x, ...) {

@@ -17,9 +17,9 @@ With \code{c} you can:
 
 -- Add a \code{SpatRaster} to a \code{SpatRasterDataset}
 
--- Append \code{SpatVector} objects. They must be of the same geometry type. See \code{\link{svc} for combining different geometry type objects in a SpatVectorCollection}
+-- Add \code{SpatVector} objects to a new or existing \code{SpatVectorCollection}
 
--- Add a \code{SpatVector} to a \code{SpatVectorCollection}
+To append SpatVectors, use \code{rbind}. 
 }
 
 \seealso{\code{\link{collapse}}, \code{\link{add<-}}}
