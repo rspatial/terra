@@ -283,6 +283,8 @@ RCPP_MODULE(spat){
 		.method("get_holes", &SpatVector::get_holes, "get_holes")
 		.method("remove_holes", &SpatVector::remove_holes, "remove holes")
 		.method("append", &SpatVector::append, "append")
+		.method("cbind", &SpatVector::cbind, "cbind")
+		.method("rbind", &SpatVector::append, "rbind")
 
 		.method("area", &SpatVector::area, "area")
 		.method("as_lines", &SpatVector::as_lines, "as_lines")

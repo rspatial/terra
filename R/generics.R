@@ -132,6 +132,49 @@ setMethod("collapse", signature("SpatRasterDataset"),
 
 
 
+#cbind.SpatVector <- function(x, y, ...) {
+#	if (inherits(y, "SpatVector")) {
+#		y <- y@ptr$df
+#	} else {
+#		stopifnot(inherits(y, "data.frame"))
+#		y <- terra:::.makeSpatDF(y)
+#	}
+#	x@ptr <- x@ptr$cbind(y)
+#	messages(x, "cbind")
+#}
+
+cbind.SpatVector <- function(x, y, ...) {
+	dots <- list(y, ...)
+	for (y in dots) {
+		if (inherits(y, "SpatVector")) {
+			y <- y@ptr$df
+		} else {
+			stopifnot(inherits(y, "data.frame"))
+			y <- .makeSpatDF(y)
+		}
+		x@ptr <- x@ptr$cbind(y)
+		x <- messages(x, "cbind")
+	}
+	x
+}
+
+rbind.SpatVector <- function(x, y, ...) {
+	skipped <- FALSE
+	stopifnot(inherits(y, "SpatVector"))
+	x@ptr <- x@ptr$rbind(y@ptr, FALSE)
+	x <- messages(x, "rbind")
+	dots <- list(...)
+	if (!is.null(dots)) {
+		for (y in dots) {
+			stopifnot(inherits(y, "SpatVector"))
+			x@ptr <- x@ptr$rbind(y@ptr, FALSE)
+			x <- messages(x, "rbind")
+		}
+	}
+	x
+}
+
+
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ...) {
 		skipped <- FALSE

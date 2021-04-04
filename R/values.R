@@ -205,6 +205,7 @@ setMethod("values<-", signature("SpatVector", "data.frame"),
 	function(x, value) {
 		stopifnot(nrow(x) == nrow(value))
 		x <- x[,0]
+		# use cbind instead
 		types <- sapply(value, class)
 		nms <- colnames(value)
 		for (i in 1:ncol(value)) {

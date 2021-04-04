@@ -325,13 +325,13 @@ bool SpatDataFrame::cbind(SpatDataFrame &x) {
 	for (size_t i=0; i<nc; i++) {
 		if (x.itype[i] == 0) {
 			std::vector<double> d = x.getD(i);
-			add_column(d, nms[i]);
+			if (!add_column(d, nms[i])) return false;
 		} else if (x.itype[i] == 1) {
 			std::vector<long> d = x.getI(i);
-			add_column(d, nms[i]);
+			if (!add_column(d, nms[i])) return false;
 		} else {
 			std::vector<std::string> d = x.getS(i);
-			add_column(d, nms[i]);		
+			if (!add_column(d, nms[i])) return false;
 		}
 	}
 	return true;

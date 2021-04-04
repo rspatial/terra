@@ -947,6 +947,7 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 		out = vect_from_geos(b, hGEOSCtxt, "lines");
 	}
 	geos_finish(hGEOSCtxt);
+	out.srs = srs;
 	return out;
 }
 

@@ -41,7 +41,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
 \item{fun}{function to summarize the data by geometry (e.g. polygon)}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (i.e., the \code{method} and \code{cells} arguments)}
-\item{method}{character. method for extracting values with points. The default is "simple", the alternative is "bilinear"}
+\item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{list}{logical. If \code{FALSE} the output is simplified to a matrix (if \code{fun=NULL})}
 \item{factors}{logical. If \code{TRUE} the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}

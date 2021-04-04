@@ -720,6 +720,21 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 
 
 
+SpatVector SpatVector::cbind(SpatDataFrame d) {
+	if (nrow() != d.nrow()) {
+		SpatVector out;
+		out.setError("nrow does not match");
+		return out;
+	}
+	SpatVector out = *this;
+	if (!out.df.cbind(d)) {
+		out.setError("cbind failed");
+	}
+	return out;
+}
+
+
+
 SpatVector SpatVector::as_points(bool multi) {
 	SpatVector v = *this;
 	if (geoms[0].gtype == points) {

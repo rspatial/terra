@@ -269,6 +269,8 @@ class SpatVector {
 
 		SpatVector unaryunion();
 
+		SpatVector cbind(SpatDataFrame d);
+
 };
 
 
