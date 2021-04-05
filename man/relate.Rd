@@ -51,7 +51,7 @@ p4 <- vect("POLYGON ((2 6, 3 6, 3 8, 2 8, 2 6))")
 p5 <- vect("POLYGON ((2 12, 3 12, 3 13, 2 13, 2 12))")
 p6 <- vect("POLYGON ((10 4, 12 4, 12 7, 11 7, 11 6, 10 6, 10 4))")
 
-p <- c(p1, p2, p3, p4, p5, p6)
+p <- rbind(p1, p2, p3, p4, p5, p6)
 plot(p, col=rainbow(6, alpha=.5))
 lines(p, lwd=2)
 text(p)
@@ -60,7 +60,7 @@ text(p)
 relate(p1, p2, "intersects")
 relate(p1, p3, "touches")
 relate(p1, p5, "disjoint")
-relate(c(p1, p2), p4, "disjoint")
+relate(rbind(p1, p2), p4, "disjoint")
 
 ## relate geometries within SpatVectors
 # which are completely separated?
@@ -86,11 +86,11 @@ relate(p, relation="coveredby")
 
 # polygons, lines, and points 
 
-pp <- c(p1, p2)
+pp <- rbind(p1, p2)
 L1 <- vect("LINESTRING(1 11, 4 6, 10 6)")
 L2 <- vect("LINESTRING(8 14, 12 10)")
 L3 <- vect("LINESTRING(1 8, 12 14)")
-lns <- c(L1, L2, L3)
+lns <- rbind(L1, L2, L3)
 pts <- vect(cbind(c(7,10,10), c(3,5,6)))
 
 plot(pp, col=rainbow(2, alpha=.5))
