@@ -11,8 +11,8 @@ setMethod("levels", signature(x="SpatRaster"),
 	function(x) {
 		x <- x@ptr$getCategories()
 		lapply(x, function(i) {
-			if (is.null(i)) return( NULL)
 			d <- .getSpatDF(i$df)
+			if (ncol(d) == 0) return("")
 			d[,max(1, i$index+1)]
 		})
 	}

@@ -10,7 +10,7 @@ setMethod("cartogram", signature(x="SpatVector"),
 		v <- v[!is.na(v)]
 		f <- v / max(v)
 		r <- lapply(1:length(v), function(i) rescale(x[i,], f[i]))
-		do.call(c, r)
+		do.call(rbind, r)
 	}
 )
 

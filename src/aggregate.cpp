@@ -282,20 +282,13 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	opt.minrows = fact[0];
 
 	if (fun == "modal") {
-		if (nlyr() == 1) {
-			if (source[0].hasColors[0]) {
-				out.setColors(0, source[0].cols[0]);
-			}
-			if (source[0].hasCategories[0]) {
-				out.source[0].cats.resize(1);
-				out.source[0].hasCategories.resize(1);
-				out.source[0].cats[0] = source[0].cats[0];
-				out.source[0].hasCategories[0] = true;
-			}
+		if (nlyr() == out.nlyr()) {
+			out.source[0].hasColors = hasColors();
+			out.source[0].cols = getColors();
+			out.source[0].hasCategories = hasCategories();
+			out.source[0].cats = getCategories();
 		}
 	}
-	Rcpp::Rcout << std::endl;
-
 	
 	if (!out.writeStart(opt)) {
 		readStop();
