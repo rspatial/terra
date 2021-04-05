@@ -87,12 +87,20 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		if (is.character(values)) {
 			values <- as.factor(values)
 			levs <- levels(values)
-			values <- as.integer(values)
-			make_factor <- TRUE
+			values <- as.integer(values) - 1
+			if (max(values, na.rm=TRUE) <= 255) {
+				make_factor <- TRUE
+			}
+		} else if (is.factor(values)) {
+			levs <- levels(values)			
+			values <- as.integer(values) - 1
+			if (max(values, na.rm=TRUE) <= 255) {
+				make_factor <- TRUE
+			}
 		}
 
 		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
-			error("setValues", "values must be numeric, integer, or logical")
+			error("setValues", "values must be numeric, integer, logical, factor or character")
 		}
 
 		lv <- length(values)
@@ -117,7 +125,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		y <- messages(y)
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
-				setCats(y, i, levs, 1)
+				setCats(y, i, levs, 2)
 			}
 		}
 		y
