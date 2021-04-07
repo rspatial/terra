@@ -322,6 +322,8 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 			psWarpOptions->padfSrcNoDataReal[i] = NAN;
 			psWarpOptions->padfDstNoDataReal[i] = NAN;
 		}
+		psWarpOptions->padfSrcNoDataImag[i] = 0;
+		psWarpOptions->padfDstNoDataImag[i] = 0;
     }
 
 	//psWarpOptions->pfnProgress = GDALTermProgress;
