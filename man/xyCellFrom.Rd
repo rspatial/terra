@@ -26,7 +26,6 @@
 \alias{colFromCell,SpatRaster,numeric-method}
 \alias{rowColFromCell}
 \alias{rowColFromCell,SpatRaster,numeric-method}
-\alias{cellFromXY}
 \alias{cellFromXY,SpatRaster,matrix-method}
 
   

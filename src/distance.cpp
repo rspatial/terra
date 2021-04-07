@@ -24,13 +24,22 @@
 #define M_2PI (6.28318530717958647692)
 #endif
 
+//degrees to radians
+#ifndef PIdiv180
+#define PIdiv180 (M_PI / 180)
+#endif
+
+
 #include <vector>
 #include <math.h>
-#include "geodesic.h"
+#include "ggeodesic.h"
 #include "recycle.h"
 
 
-double distance_lonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2, const double &a, const double &f) {
+
+double distance_lonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
 	double s12, azi1, azi2;
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
@@ -39,7 +48,10 @@ double distance_lonlat(const double &lon1, const double &lat1, const double &lon
 }
 
 
-std::vector<double> distance_lonlat(std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2, double a, double f) {
+std::vector<double> distance_lonlat(std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	
     recycle(lon1, lon2);
     recycle(lat1, lat2);
 	std::vector<double> r (lon1.size());
@@ -55,32 +67,11 @@ std::vector<double> distance_lonlat(std::vector<double> &lon1, std::vector<doubl
 
 
 std::vector<double> distance_lonlat_vd(std::vector<double> &lon1, std::vector<double> &lat1, double lon2, double lat2) {
-	double a = 6378137;
-	double f = 1 / 298.257223563;
 	std::vector<double> vlon2(lon1.size(), lon2);
 	std::vector<double> vlat2(lat1.size(), lat2);
-    return distance_lonlat(lon1, lat1, vlon2, vlat2, a, f);
+    return distance_lonlat(lon1, lat1, vlon2, vlat2);
 }
 
-std::vector<double> distanceToNearest_lonlat(const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2, const double &a, const double &f) {
-	double azi1, azi2, s12;
-	size_t n = lon1.size();
-	size_t m = lon2.size();
-	std::vector<double> r(n);
-
-	struct geod_geodesic g;
-	geod_init(&g, a, f);
-  	for (size_t i=0; i < n; i++) {
-		geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &r[i], &azi1, &azi2);
-		for (size_t j=1; j<m; j++) {
-			geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
-			if (s12 < r[i]) {
-				r[i] = s12;
-			}
-		}
-	}
-  	return r;
-}
 
 
 double distance_plane(const double &x1, const double &y1, const double &x2, const double &y2) {
@@ -106,24 +97,6 @@ std::vector<double> distance_plane_vd(std::vector<double> &x1, std::vector<doubl
 }
 
 
-std::vector<double> distanceToNearest_plane(const std::vector<double> &x1, const std::vector<double> &y1, const std::vector<double> &x2, const std::vector<double> &y2) {
-	size_t n = x1.size();
-	size_t m = x2.size();
-	std::vector<double> r(n);
-	double d;
-  	for (size_t i=0; i < n; i++) {
-		r[i] = distance_plane(x1[i], y1[i], x2[0], y2[0]);
-		for (size_t j=1; j < m; j++) {
-			d = distance_plane(x1[i], y1[i], x2[j], y2[j]);
-			if (d < r[i]) {
-				r[i] = d;
-			}
-		}
-	}
-  	return r;
-}
-
-
 
 // Convert degrees to radians
 double toRad(double &deg) {
@@ -137,7 +110,10 @@ double toDeg(double &rad) {
 
 
 
-double direction_lonlat(double lon1, double lat1, double lon2, double lat2, bool degrees, double a, double f) {
+double direction_lonlat(double lon1, double lat1, double lon2, double lat2, bool degrees) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	
 	double s12, azi1, azi2;
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
@@ -148,7 +124,10 @@ double direction_lonlat(double lon1, double lat1, double lon2, double lat2, bool
 	return( azi1) ;
 }
 
-std::vector<double> direction_lonlat(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, bool degrees, double a, double f) {
+std::vector<double> direction_lonlat(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, bool degrees) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	
 // lonlat1 and lonlat2 should have the same length
 
 	std::vector<double> azi1(lon1.size());
@@ -170,7 +149,11 @@ std::vector<double> direction_lonlat(std::vector<double> lon1, std::vector<doubl
 }
 
 
-std::vector<double> directionToNearest_lonlat(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, bool degrees, bool from, double a, double f) {
+std::vector<double> directionToNearest_lonlat(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, bool degrees, bool from) {
+
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	
 	double azi1, azi2, s12, dist;
 	size_t n = lon1.size();
 	size_t m = lon2.size();
@@ -276,7 +259,10 @@ std::vector<double> directionToNearest_plane(std::vector<double> x1, std::vector
 
 
 
-std::vector<double> destpoint_lonlat(double longitude, double latitude, double  bearing, double distance, double a, double f) {
+std::vector<double> destpoint_lonlat(double longitude, double latitude, double  bearing, double distance) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
 	double lat2, lon2, azi2;
@@ -286,7 +272,10 @@ std::vector<double> destpoint_lonlat(double longitude, double latitude, double  
 }
 
 
-std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> &longitude, std::vector<double> &latitude, std::vector<double> &bearing, std::vector<double> &distance, double a, double f) {
+std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> &longitude, std::vector<double> &latitude, std::vector<double> &bearing, std::vector<double> &distance) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
 	size_t n = longitude.size();
@@ -302,7 +291,10 @@ std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> &longitud
 }
 
 
-std::vector<std::vector<double> > destpoint_lonlat(double &longitude, double &latitude, std::vector<double> &bearing, double& distance, double a, double f) {
+std::vector<std::vector<double> > destpoint_lonlat(double &longitude, double &latitude, std::vector<double> &bearing, double& distance) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	
 	struct geod_geodesic g;
 	geod_init(&g, a, f);
 	size_t n = bearing.size();

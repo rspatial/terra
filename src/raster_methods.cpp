@@ -22,7 +22,7 @@
 //#include "vecmath.h"
 #include <cmath>
 #include "math_utils.h"
-
+#include "file_utils.h"
 
 
 SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, double othervalue, SpatOptions &opt) {
@@ -2637,95 +2637,223 @@ SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned
 }
 
 
-/*
 
-
-std::vector<double> reclass_multiple(std::vector<std::vector<double>> &v, std::vector<std::vector<double>> groups, std::vector<double> id) {
-
-	size_t nc = groups.size(); 
-
-	size_t n = v[0].size();
-	unsigned nr = groups[0].size();
-	std::vector<double> out(n, NAN);
-	size_t cnt = 0;
-	for (size_t i=0; i<n; i++) {
-		nextcell:
-		for (size_t j=0; j<nr; j++) {
-			cnt = 0;
-			for (size_t k=0; k<nc; k++) {
-				if (std::isnan(v[i][k])) goto nextcell;
-				if (v[i][k] != groups[j][k]) cnt++;
+std::vector<std::vector<double>> clump_getRCL(std::vector<std::vector<size_t>> rcl, size_t n) {
+	std::vector<std::vector<size_t>> rcl2(rcl[0].size());
+	for (size_t i=0; i<rcl[0].size(); i++) {
+		rcl2[i].push_back(rcl[0][i]);
+		rcl2[i].push_back(rcl[1][i]);
+	}
+    std::sort(rcl2.begin(), rcl2.end());
+    rcl2.erase(std::unique(rcl2.begin(), rcl2.end()), rcl2.end());
+	std::vector<std::vector<double>> out(2);
+	for (size_t i=0; i<rcl2.size(); i++) {
+		out[0].push_back(rcl2[i][1]);
+		out[1].push_back(rcl2[i][0]);
+	}
+	// from - to 
+	// 3 - 1
+	// 4 - 3
+    // becomes
+    // 3 - 1
+    // 4 - 1
+	for (size_t i=1; i<out[0].size(); i++) {
+		for (size_t j=0; j<i; j++) {
+			if (out[0][i] == out[1][j]) {
+				out[1][j] = out[0][i];
 			}
-			if (cnt == nc) {
-				out[i] = id[j];
-				break;
-			}
+		}
+	}
+
+	std::vector<double> lost = out[0];
+	lost.push_back(n);
+	size_t sub = 0;
+	for (size_t i=0; i<lost.size(); i++) {
+		sub++;
+		for (size_t j=lost[i]+1; j<lost[i+1]; j++) {
+			out[0].push_back(j);
+			out[1].push_back(j-sub);
 		}
 	}
 	return out;
 }
 
 
+void clump_replace(std::vector<double> &v, size_t n, const std::vector<double>& d, size_t cstart, std::vector<std::vector<size_t>>& rcl) {
+	for (size_t i=0; i<n; i++) {
+		for (size_t j=1; j<d.size(); j++) {
+			if (v[i] == d[j]) {
+				v[i] = d[0];
+			}
+		}
+	}
+	if (d[0] < cstart) {
+		for (size_t j=1; j<d.size(); j++) {
+			rcl[0].push_back(d[0]);
+			rcl[1].push_back(d[j]);
+		}
+	}
+}
 
 
-SpatRaster SpatRaster::classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt) {
+void clump_test(std::vector<double> &d) {
+	d.erase(std::remove_if(d.begin(), d.end(),
+		[](const double& v) { return std::isnan(v); }), d.end());
+	std::sort(d.begin(), d.end());
+	d.erase(std::unique(d.begin(), d.end()), d.end());
+}
 
-	SpatRaster out = geometry();
-	size_t nc = groups.size();
-	size_t nr = groups[0].size();
-	if (nc < 1 || nr < 1) {
-		out.setError("reclassification matrix must have at least one row and column");
+void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size_t &dirs, size_t &ncps, const size_t &nr, const size_t &nc, std::vector<std::vector<size_t>> &rcl) {
+
+	size_t nstart = ncps;
+
+	bool d4 = dirs == 4;
+
+	if ( !std::isnan(v[0]) ) { //first cell, no cell left of it
+		if (std::isnan(above[0])) {
+			v[0] = ncps;
+			ncps++;
+		} else {
+			v[0] = above[0];
+		}
+	}
+
+	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
+		if (!std::isnan(v[i])) {
+			std::vector<double> d;
+			if (d4) {
+				d = {above[i], v[i-1]} ;
+			} else {
+				d = {above[i], above[i-1], v[i-1]} ;
+			}
+			clump_test(d);
+			if (d.size() > 0) {
+				v[i] = d[0];
+				if (d.size() > 1) {
+					clump_replace(v, i, d, nstart, rcl);
+				}
+			} else {
+				v[i] = ncps;
+				ncps++;
+			}
+		}
+	}
+
+
+	for (size_t r=1; r<nr; r++) { //other rows
+		size_t i=r*nc;
+		if (!std::isnan(v[i])) { // first cell
+			if (std::isnan(v[i-nc])) {
+				v[i] = ncps;
+				ncps++;
+			} else {
+				v[i] = v[i-nc];
+			}
+		}
+		for (size_t i=r*nc+1; i<((r+1)*nc); i++) { // other cells
+			if (!std::isnan(v[i])) {
+				std::vector<double> d;
+				if (d4) {
+					d = {v[i-nc], v[i-1]} ;
+				} else {
+					d = {v[i-nc], v[i-nc-1], v[i-1]} ;
+				}
+				clump_test(d);
+				if (d.size() > 0) {
+					v[i] = d[0];
+					if (d.size() > 1) {
+						clump_replace(v, i, d, nstart, rcl);
+					}
+				} else {
+					v[i] = ncps;
+					ncps++;
+				}
+			}
+		}
+	}
+	size_t off = (nr-1) * nc;
+	above = std::vector<double>(v.begin()+off, v.end());
+}
+
+
+
+SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	if (nlyr() > 1) {
+		SpatOptions ops(opt);
+		std::string filename = opt.get_filename();
+		ops.set_filenames({""});
+		for (size_t i=0; i<nlyr(); i++) {
+			std::vector<unsigned> lyr = {(unsigned)i};
+			SpatRaster x = subset(lyr, ops);
+			x = x.clumps(directions, zeroAsNA, ops);
+			out.addSource(x);
+		}
+		if (filename != "") {
+			out = out.writeRaster(opt);
+		}
 		return out;
 	}
 
-	for (size_t i=0; i<nc; i++) {
-		if (groups[i].size() != nr) {
-			out.setError("reclassification matrix is not rectangular");
-			return out;
-		}
+	if (!(directions == 4 || directions == 8)) {
+		out.setError("directions must be 4 or 8");
+		return out;
 	}
-	if (id.size() != nr) {
-		out.setError("output size does not match classes size");
-		return out;	
+	if (!hasValues()) {
+		out.setError("cannot compute clumps for a raster with no values");
+		return out;
 	}
+
+	std::vector<size_t> dim = {nrow(), ncol()};
+
+	std::string tempfile = "";
+    std::vector<double> d, v, vv;
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
 	}
+	std::string filename = opt.get_filename();
+	if (filename != "") {
+		bool overwrite = opt.get_overwrite();
+		std::string errmsg;
+		if (!can_write(filename, overwrite, errmsg)) {
+			out.setError(errmsg + " (" + filename +")");
+			return(out);
+		}
+	}
 
-  	if (!out.writeStart(opt)) { return out; }
+	opt.set_filenames({""});
+ 	if (!out.writeStart(opt)) { return out; }
+	size_t nc = ncol();
+	size_t ncps = 1;
+	std::vector<double> above(nc, NAN);
+	std::vector<std::vector<size_t>> rcl(2);
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<std::vector<double>> v = readBlock2(out.bs, i);
-		std::vector<double> vv = reclass_multiple(v, groups, id);
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+        v = readBlock(out.bs, i);
+		if (zeroAsNA) {
+			std::replace(v.begin(), v.end(), 0.0, (double)NAN);
+		}
+        broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl);
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
-	readStop();
 	out.writeStop();
-	return(out);
+	readStop();
 
-}
-
-
-
-SpatRaster SpatRaster::classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt) {
-
-	SpatRaster out;
-	if ((groups.size() % nc) != 0) {
-		out.setError("incorrect length of reclassify matrix");
-		return(out);
+	opt.set_filenames({filename});
+	if (rcl[0].size() > 0) {
+		//for (size_t i=0; i<rcl[0].size(); i++) {
+		//	Rcpp::Rcout << rcl[0][i] << " - " << rcl[1][i] << std::endl;
+		//}
+		//Rcpp::Rcout << std::endl;
+		std::vector<std::vector<double>> rc = clump_getRCL(rcl, ncps);
+		//for (size_t i=0; i<rc[0].size(); i++) {
+		//	Rcpp::Rcout << rc[0][i] << " - " << rc[1][i] << std::endl;
+		//}
+		out = out.reclassify(rc, 3, true, false, opt);
+	} else if (filename != "") {
+		out = out.writeRaster(opt);
 	}
-	unsigned nr = groups.size() / nc;
-	std::vector< std::vector<double>> rc(nc);
-
-	for (size_t i=0; i<nc; i++) {
-		rc[i] = std::vector<double>(groups.begin()+(i*nr), groups.begin()+((i+1)*nr));
-	}
-
-	out = classify_layers(rc, id, opt);
 	return out;
-
 }
-
-*/
-
 

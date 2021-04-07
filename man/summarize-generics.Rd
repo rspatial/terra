@@ -8,7 +8,6 @@
 \alias{mean}
 \alias{min}
 \alias{max}
-\alias{range}
 \alias{which.min}
 \alias{which.max}
 

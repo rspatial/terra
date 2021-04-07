@@ -1,4 +1,4 @@
-\name{range}
+\name{extremes}
 
 \alias{minmax}
 \alias{setMinMax}

@@ -17,8 +17,7 @@
 
 #include <vector>
 #include <math.h>
-//#include "GeographicLib_geodesic.h"
-#include "geodesic.h"
+#include "ggeodesic.h"
 #include "spatRaster.h"
 #include "distance.h"
 
@@ -111,7 +110,7 @@ double length_line_lonlat(std::vector<double> lon, std::vector<double> lat, doub
 	size_t n = lat.size();
 	double length = 0;
 	for (size_t i=1; i < n; i++) {
-		length += distance_lonlat(lon[i-1], lat[i-1], lon[i], lat[i], a, f);
+		length += distance_lonlat(lon[i-1], lat[i-1], lon[i], lat[i]);
 	}
 	return(length);
 }

@@ -3,13 +3,14 @@
 // version 0.1
 // license GPL
 
-/*
+
+
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
 
-#ifndef PIdiv180
-#define PIdiv180 (M_PI / 180)
+#ifndef toRAD
+#define toRAD (M_PI / 180)
 #endif
 
 #ifndef geod_a
@@ -23,8 +24,7 @@
 
 #include <vector>
 #include <math.h>
-#include "geodesic.h"
-#include "distance.h"
+#include "ggeodesic.h"
 
 
 void DegtoRad(double &deg) {
@@ -40,7 +40,10 @@ void normalizeLonRad(double &x) {
 }
 
 
-bool antipodal(double x1, double y1, double x2, const double &y2, const double &tol=1e-9) {
+
+
+
+bool antipodal(double x1, double y1, double x2, const double y2, const double &tol=1e-9) {
 	normalizeLonDeg(x1);
 	normalizeLonDeg(x2);
 	double diflon = std::abs(x1 - x2);
@@ -91,25 +94,154 @@ void intermediate_points(double lon1, double lat1, double lon2, double lat2, siz
 
 	lon.reserve(n);
 	lat.reserve(n);
-	n++;
+	lon.push_back(lon1);
+	lat.push_back(lon2);
+	
+	double azi1, azi2, s12, dlon, dlat;
+	struct geod_geodesic g;
+	geod_init(&g, geod_a, geod_f);
+	geod_inverse(&g, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
 
-	double d = distance_lonlat(lon1, lat1, lon2, lat2, geod_a, geod_f);
-	double step = d / n;
-
-	double dx, dy;
-	for (size_t i=1; i<n; i++) {
-		destPoint(lon1, lat1, lon2, lat2, step*(i+1), dx, dy);
-		lon.push_back(dx);
-		lat.push_back(dy);
+	double step = s12 / (n+1);
+	for (size_t i=0; i<n; i++) {
+		geod_direct(&g, lat1, lon1, azi1, step*(i+1), &dlat, &dlon, &azi2);
+		lon.push_back(dlon);
+		lat.push_back(dlat);
 	}
+	lon.push_back(lon2);
+	lat.push_back(lat2);
 
-	//if (addStartEnd) {
-	//	x = rbind(p[i,1:2,drop=FALSE], x, p[i,3:4,drop=FALSE])
-	//}		
 	//if (breakAtDateLine) {
 	//	res[[i]] <- .breakAtDateLine(x)
 	//}
 
 }
 
-*/
+
+double dist2segment (double lon1, double lat1, double lon2, double lat2, double lon3, double lat3) {
+
+	bool sign = false;
+
+	double s12, azi1, azi2;
+	struct geod_geodesic g;
+	//geod_init(&g, r, 0);
+	geod_init(&g, geod_a, geod_f);
+
+	geod_inverse(&g, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+	double tc = azi1 * toRAD;
+	geod_inverse(&g, lat1, lon1, lat3, lon3, &s12, &azi1, &azi2);
+	double tcp = azi1 * toRAD;
+	//geod_init(&g, 1, 0);
+	geod_init(&g, 1, geod_f);
+	geod_inverse(&g, lat1, lon1, lat3, lon3, &s12, &azi1, &azi2);
+	double xtr = (asin(sin(tcp-tc) * sin(s12)) * geod_a);
+	xtr = sign ? xtr : std::abs(xtr);
+	return xtr;
+}
+
+double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, double lon3, double lat3) {
+
+	double s12, azi1, azi2;
+	struct geod_geodesic g;
+	//geod_init(&g, r, 0);
+	geod_init(&g, geod_a, geod_f);
+
+	geod_inverse(&g, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+	double tc = azi1 * toRAD;
+	geod_inverse(&g, lat1, lon1, lat3, lon3, &s12, &azi1, &azi2);
+	double tcp = azi1 * toRAD;
+	//geod_init(&g, 1, 0);
+	geod_init(&g, 1, geod_f);
+	geod_inverse(&g, lat1, lon1, lat3, lon3, &s12, &azi1, &azi2);
+
+	double xtr = asin(sin(tcp-tc) * sin(s12));
+
+// +1/-1 for ahead/behind [lat1,lon1]
+// is std::abs enough?? or do we need 0 as well?
+//	bearing = sign(cos(tc - tcp)) ;
+//	double dist = bearing * acos(cos(s12) / cos(xtr)) * geod_a;
+	double dist = acos(cos(s12) / cos(xtr)) * geod_a;
+	return std::abs(dist);
+}
+
+
+/*
+
+dist2Line <- function(p, line, distfun=distGeo) {
+
+	line <- .pointsToMatrix(line) 
+	line1 <- line[-nrow(line), ,drop=FALSE]
+	line2 <- line[-1, ,drop=FALSE]
+	seglength  <- distfun(line1, line2)
+	
+	res <- matrix(nrow=nrow(p), ncol=3)
+	colnames(res) <- c("distance","lon","lat")
+	
+	for (i in 1:nrow(p)) {
+		xy <- p[i,]
+# the shortest distance of a point to a great circle
+		crossdist <- abs(dist2gc(line1, line2, xy))
+		
+# the alongTrackDistance is the length of the path along the great circle to the point of intersection
+# there are two, depending on which node you start
+# we want to use the min, but the max needs to be < segment length
+		trackdist1 <- alongTrackDistance(line1, line2, xy)
+		trackdist2 <- alongTrackDistance(line2, line1, xy)
+		mintrackdist <- pmin(trackdist1, trackdist2)
+		maxtrackdist <- pmax(trackdist1, trackdist2)
+		crossdist[maxtrackdist >= seglength] <- NA 
+		
+# if the crossdist is NA, we use the distance to the nodes
+		nodedist <- distfun(xy, line)
+		
+		warnopt = getOption('warn')
+	 	options('warn'=-1) 		
+		distmin1 <- min(nodedist, na.rm=TRUE)
+		distmin2 <- min(crossdist, na.rm=TRUE)
+		options('warn'= warnopt) 
+		
+		if (distmin1 <= distmin2) {
+			j <- which.min(nodedist)
+			res[i,] <- c(distmin1, line[j,])
+		} else {
+			j <- which.min(crossdist)
+			# if else to determine from which node to start
+			if (trackdist1[j] < trackdist2[j]) {
+				bear <- bearing(line1[j,], line2[j,])
+				pt <- destPoint(line1[j,], bear, mintrackdist[j])
+				res[i,] <- c(crossdist[j], pt)
+			} else {
+				bear <- bearing(line2[j,], line1[j,])
+				pt <- destPoint(line2[j,], bear, mintrackdist[j])
+				res[i,] <- c(crossdist[j], pt)	
+			}
+		}
+	}
+	return(res)
+}
+
+ */
+
+
+
+double distance_haversine(double lon1, double lat1, double lon2, double lat2) {
+// Haversine formula to calculate distance between two points specified by 
+// from: Haversine formula - R.W. Sinnott, "Virtues of the Haversine",
+//  Sky and Telescope, vol 68, no 2, 1984
+//  http:#//www.census.gov/cgi-bin/geo/gisfaq?Q5.1
+
+	double r=6378137;
+	lon1 = lon1 * toRAD;
+	lat1 = lat1 * toRAD;
+	lon2 = lon2 * toRAD;
+	lat2 = lat2 * toRAD;
+		
+	double dLat = lat2-lat1;
+	double dLon = lon2-lon1;
+	double a = pow(sin(dLat/2), 2) + cos(lat1) * cos(lat2) * pow(sin(dLon/2), 2);
+	// to avoid values of 'a' that are a sliver above 1, which may occur at antipodes
+	// https://stackoverflow.com/q/45889616/635245 
+	a = a > 1 ? 1 : a;
+	return 2 * atan2(sqrt(a), sqrt(1-a)) * r;
+}
+
