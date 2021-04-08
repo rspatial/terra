@@ -328,6 +328,12 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 
 SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt) {
 
+	if (x.size() == 0) {
+		SpatRaster out;
+		out.setError("cannot compute with nothing");
+		return out;
+	}
+
 	if (x.size() == 1) {
 		return(arith(x[0], oper, reverse, opt));
 	}
