@@ -92,7 +92,6 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{area}} \tab Compute the area of cells \cr
-    \code{\link{arith}} \tab Use a function to compute new values for all cells\cr
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
@@ -486,7 +485,7 @@ note the following important differences in methods names with the 'raster' pack
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
-\code{calc}\tab\code{\link{app}} and \code{\link{arith}}\cr
+\code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{extend}\tab\code{\link{expand}}\cr

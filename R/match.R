@@ -2,9 +2,9 @@
 # License GPL v3
 
 
-setMethod("match", signature(x="SpatRaster", table="ANY", nomatch="ANY", incomparables="ANY"),
-	function(x, table, nomatch, incomparables) {
-#		app(x, function(i) match(i, table, nomatch, incomparables))
+setMethod("match", signature(x="SpatRaster"),
+	function(x, table, nomatch=NA, incomparables=NULL) {
+		table <- unique(table)
 		if (is.character(table)) {
 			if (!is.factor(x)) error("match", "table has character values")
 			table <- stats::na.omit(match(table, levels(x)[[1]]))
@@ -12,12 +12,12 @@ setMethod("match", signature(x="SpatRaster", table="ANY", nomatch="ANY", incompa
 				return (x * 0)
 			} 
 		}
-		arith(x, function(i) match(i, table, nomatch, incomparables))
+		app(x, function(i) match(i, table, nomatch, incomparables))
 	}
 )
 
 
-setMethod("%in%", signature(x="SpatRaster", table="ANY"),
+setMethod("%in%", signature(x="SpatRaster"),
 	function(x, table) {
 		opt <- spatOptions("", FALSE, list())
 		table <- unique(table)

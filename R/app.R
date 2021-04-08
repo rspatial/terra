@@ -32,22 +32,20 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	nc <- ncol(x)
 	readStart(x)
 	on.exit(readStop(x))
-
+	nl <- nlyr(x)
+	
 # figure out the shape of the output by testing with one row
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
-	#narg <- sum(sapply(f, as.character) == "", na.rm=TRUE)
-	#if (narg > 1) {
-	#	vv <- as.list(as.data.frame(v))
-	#	r <- do.call(fun, vv, ...)
-	#} else {
-	r <- apply(v, 1, fun, ...)
-
-	#}
+	if (nl==1) {
+		r <- fun(v, ...)
+	} else {
+		r <- apply(v, 1, fun, ...)
+	}
 	if (is.list(r)) {
 		if (length(unique(sapply(r, length))) >  1) {
 			error("app", "'fun' returns a list (should be numeric or matrix).\nPerhaps because returned values have different lenghts due to NAs in input?")
 		} else {
-			error("app", "'fun' returns a list (should be numeric or matrix)")
+				error("app", "'fun' returns a list (should be numeric or matrix)")
 		}
 	}
 	trans <- FALSE
@@ -69,6 +67,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	}
 
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x), nlyr(out))*2)
+
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cls))
@@ -82,14 +81,22 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 	} else {
-		for (i in 1:b$n) {
-			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
-			r <- apply(v, 1, fun, ...)
-			if (trans) {
-				r <- t(r)
-				#r <- as.vector(r)
+		if ((nl == 1) && !trans) {
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
+				r <- fun(v, ...)
+				writeValues(out, r, b$row[i], b$nrows[i])
 			}
-			writeValues(out, r, b$row[i], b$nrows[i])
+		} else {
+			for (i in 1:b$n) {
+				v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
+				r <- apply(v, 1, fun, ...)
+				if (trans) {
+					r <- t(r)
+					#r <- as.vector(r)
+				}
+				writeValues(out, r, b$row[i], b$nrows[i])
+			}
 		}
 	}
 	writeStop(out)

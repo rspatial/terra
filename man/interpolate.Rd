@@ -50,85 +50,85 @@ i <- !is.na(v)
 xy <- xy[i,]
 v <- v[i]
 
-#library(fields) 
-#tps <- Tps(xy, v)
-#p <- rast(r)
+\dontrun{
+library(fields) 
+tps <- Tps(xy, v)
+p <- rast(r)
 
-## use model to predict values at all locations
-#p <- interpolate(p, tps)
-#p <- mask(p, r)
-#plot(p)
-
+# use model to predict values at all locations
+p <- interpolate(p, tps)
+p <- mask(p, r)
+plot(p)
 
 ### change "fun" from predict to fields::predictSE to get the TPS standard error
 ## need to use "rast(p)" to remove the values
-#se <- interpolate(rast(p), tps, fun=predictSE)
-#se <- mask(se, r)
-#plot(se)
+se <- interpolate(rast(p), tps, fun=predictSE)
+se <- mask(se, r)
+plot(se)
 
 ### another variable; let's call it elevation
-#elevation <- (init(r, 'x') * init(r, 'y')) / 100000000
-#names(elevation) <- 'elev'
+elevation <- (init(r, 'x') * init(r, 'y')) / 100000000
+names(elevation) <- 'elev'
 
 #z <- as.matrix(extract(elevation, xy))
 
 ## add as another independent variable
-#xyz <- cbind(xy, z)
-#tps2 <- Tps(xyz, v)
-#p2 <- interpolate(elevation, tps2, xyOnly=FALSE)
+xyz <- cbind(xy, z)
+tps2 <- Tps(xyz, v)
+p2 <- interpolate(elevation, tps2, xyOnly=FALSE)
 
 ## as a linear coveriate
-#tps3 <- Tps(xy, v, Z=z)
+tps3 <- Tps(xy, v, Z=z)
 
 ## Z is a separate argument in Krig.predict, so we need a new function
 ## Internally (in interpolate) a matrix is formed of x, y, and elev (Z)
 
-#pfun <- function(model, x, ...) {
-#   predict(model, x[,1:2], Z=x[,3], ...)
-#}
-#p3 <- interpolate(elevation, tps3, fun=pfun)
+pfun <- function(model, x, ...) {
+   predict(model, x[,1:2], Z=x[,3], ...)
+}
+p3 <- interpolate(elevation, tps3, fun=pfun)
 
 
 #### gstat examples
-#library(gstat)
-#library(sp)
-#data(meuse)
+library(gstat)
+library(sp)
+data(meuse)
 
 ### inverse distance weighted (IDW)
-#r <- rast(system.file("ex/test.tif", package="terra"))
-#mg <- gstat(id = "zinc", formula = zinc~1, locations = ~x+y, data=meuse, 
-#            nmax=7, set=list(idp = .5))
-#z <- interpolate(r, mg, debug.level=0)
-#z <- mask(z, r)
+r <- rast(system.file("ex/test.tif", package="terra"))
+mg <- gstat(id = "zinc", formula = zinc~1, locations = ~x+y, data=meuse, 
+            nmax=7, set=list(idp = .5))
+z <- interpolate(r, mg, debug.level=0)
+z <- mask(z, r)
 
 ### kriging
 
 ### ordinary kriging
-#v <- variogram(log(zinc)~1, ~x+y, data=meuse)
-#mv <- fit.variogram(v, vgm(1, "Sph", 300, 1))
-#gOK <- gstat(NULL, "log.zinc", log(zinc)~1, meuse, locations=~x+y, model=mv)
-#OK <- interpolate(r, gOK, debug.level=0)
+v <- variogram(log(zinc)~1, ~x+y, data=meuse)
+mv <- fit.variogram(v, vgm(1, "Sph", 300, 1))
+gOK <- gstat(NULL, "log.zinc", log(zinc)~1, meuse, locations=~x+y, model=mv)
+OK <- interpolate(r, gOK, debug.level=0)
 
 ## universal kriging
-#vu <- variogram(log(zinc)~elev, ~x+y, data=meuse)
-#mu <- fit.variogram(vu, vgm(1, "Sph", 300, 1))
-#gUK <- gstat(NULL, "log.zinc", log(zinc)~elev, meuse, locations=~x+y, model=mu)
-#names(r) <- "elev"
-#UK <- interpolate(r, gUK, debug.level=0)
+vu <- variogram(log(zinc)~elev, ~x+y, data=meuse)
+mu <- fit.variogram(vu, vgm(1, "Sph", 300, 1))
+gUK <- gstat(NULL, "log.zinc", log(zinc)~elev, meuse, locations=~x+y, model=mu)
+names(r) <- "elev"
+UK <- interpolate(r, gUK, debug.level=0)
 
 ## co-kriging
-#gCoK <- gstat(NULL, 'log.zinc', log(zinc)~1, meuse, locations=~x+y)
-#gCoK <- gstat(gCoK, 'elev', elev~1, meuse, locations=~x+y)
-#gCoK <- gstat(gCoK, 'cadmium', cadmium~1, meuse, locations=~x+y)
-#gCoK <- gstat(gCoK, 'copper', copper~1, meuse, locations=~x+y)
-#coV <- variogram(gCoK)
-#plot(coV, type='b', main='Co-variogram')
-#coV.fit <- fit.lmc(coV, gCoK, vgm(model='Sph', range=1000))
-#coV.fit
-#plot(coV, coV.fit, main='Fitted Co-variogram')
-#coK <- interpolate(r, coV.fit, debug.level=0)
-#plot(coK)
-
+gCoK <- gstat(NULL, 'log.zinc', log(zinc)~1, meuse, locations=~x+y)
+gCoK <- gstat(gCoK, 'elev', elev~1, meuse, locations=~x+y)
+gCoK <- gstat(gCoK, 'cadmium', cadmium~1, meuse, locations=~x+y)
+gCoK <- gstat(gCoK, 'copper', copper~1, meuse, locations=~x+y)
+coV <- variogram(gCoK)
+plot(coV, type='b', main='Co-variogram')
+coV.fit <- fit.lmc(coV, gCoK, vgm(model='Sph', range=1000))
+coV.fit
+plot(coV, coV.fit, main='Fitted Co-variogram')
+coK <- interpolate(r, coV.fit, debug.level=0)
+plot(coK)
+}
 }
 
 \keyword{methods}

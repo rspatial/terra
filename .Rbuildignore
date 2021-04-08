@@ -9,6 +9,7 @@
 ^inst/proj
 ^python
 ^revdep
+^doc
 .travis.yml
 LICENSE
 README.md
