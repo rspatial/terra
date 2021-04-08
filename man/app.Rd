@@ -58,6 +58,12 @@ a
 # same as 
 max(x, x*2, x/3)
 
+## also works for a single layer
+f <- function(i) (i+1) * 2 * i + sqrt(i)
+s <- app(r, f)
+# same as above, but that is not memory-safe
+# and has no filename argument 
+s <- f(r)
 }
 
 

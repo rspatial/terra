@@ -227,20 +227,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 
 # todo:
-# for ncdf files (not yet natively supported in terra)
-# check the variable to be used
-# 
-# check z values, other attributes such as NAvalue that may have been
-# changed after creation of object from file
-# RAT tables
-# Author: Robert J. Hijmans 
-# Date : February 2019
-# Version 1.0
-# License GPL v3
-
-# todo:
-# for ncdf files (not yet natively supported in terra)
-# check the variable to be used
+# for ncdf files check the variable to be used
 # 
 # check z values, other attributes such as NAvalue that may have been
 # changed after creation of object from file
@@ -356,7 +343,7 @@ setAs("SpatRaster", "Raster",
 
 
 # to sf from SpatVector
-# could be in sf
+# available in sf
 .v2sf <- function(from) {
 	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))'
 	eval(parse(text = txt))
