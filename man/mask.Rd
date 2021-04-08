@@ -17,7 +17,7 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
    updatevalue=NA, filename="", ...)
    
 \S4method{mask}{SpatRaster,SpatVector}(x, mask, inverse=FALSE, updatevalue=NA,
-	touches=is.lines(mask), filename="", ...)
+	touches=TRUE, filename="", ...)
 }
 
 \arguments{

@@ -582,7 +582,7 @@ class SpatRaster {
 		SpatRaster mask(SpatRaster x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt);
 
 
-		SpatRaster mask(SpatVector x, bool inverse, double updatevalue, SpatOptions &opt);
+		SpatRaster mask(SpatVector x, bool inverse, double updatevalue, bool touches, SpatOptions &opt);
 		SpatRaster math(std::string fun, SpatOptions &opt);
 		SpatRaster math2(std::string fun, unsigned digits, SpatOptions &opt);
 
@@ -597,9 +597,10 @@ class SpatRaster {
 		SpatRaster reverse(SpatOptions &opt);
 
 		SpatRaster range(std::vector<double> add, bool narm, SpatOptions &opt);
-		//SpatRaster rasterize(SpatVector p, std::vector<double> values, double background, bool update, SpatOptions &opt);
-		//SpatRaster rasterize1(SpatVector x, std::string field, std::vector<double> values, std::vector<std::string> labels, double background, bool update, bool touches, bool inverse, bool weights, SpatOptions &opt);
-		SpatRaster rasterize2(SpatVector x, std::string field, std::vector<double> values, double background, bool touches, bool add, bool weights, SpatOptions &opt);
+
+		SpatRaster rasterizeLyr(SpatVector x, double value, double background, bool touches, bool update, SpatOptions &opt);
+
+		SpatRaster rasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool touches, bool add, bool weights, bool update, SpatOptions &opt);
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches);
 		std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
 
@@ -639,6 +640,7 @@ class SpatRaster {
 //		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
 #ifdef useGDAL
+		bool getDSh(GDALDatasetH &rstDS, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt);
 		bool open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt);
 		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, SpatOptions& opt);
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);

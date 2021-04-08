@@ -76,6 +76,7 @@ void rep(std::vector<T> &v, unsigned n) {
 
 template <typename T>
 void rep_each(std::vector<T> &v, unsigned n) {
+	if (n == 1) return;
 	std::vector<T> vv = v;
 	size_t s = v.size();
 	v.resize(0);

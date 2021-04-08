@@ -349,6 +349,27 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 
 #endif
 
+bool getNAvalue(GDALDataType gdt, double & naval) {
+	if (gdt == GDT_Float32) {
+		naval = NAN;
+	} else if (gdt == GDT_Int32) {
+		naval = INT32_MIN;
+	} else if (gdt == GDT_Float64) {
+		naval = NAN;
+	} else if (gdt == GDT_Int16) {
+		naval = INT16_MIN;
+	} else if (gdt == GDT_UInt32) {
+		naval = (double)INT32_MAX * 2 - 1;
+	} else if (gdt == GDT_UInt16) {
+		naval = (double)INT16_MAX * 2 - 1;
+	} else if (gdt == GDT_Byte) {
+		naval = 255;
+	} else {
+		naval = NAN;
+		return false;
+	}
+	return true;
+}
 
 
 
@@ -373,6 +394,8 @@ bool getGDALDataType(std::string datatype, GDALDataType &gdt) {
 	}
 	return true;
 }
+
+
 
 
 
@@ -623,6 +646,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 	}
 
 	if (get_values) {
+		source[0].values.resize(0);
 		source[0].values.reserve(ncell() * nlyr());
 		CPLErr err = CE_None;
 		int hasNA;
@@ -675,7 +699,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	const char *pszFormat = driver.c_str();
 	GDALDriverH hDrv = GDALGetDriverByName(pszFormat);
 
-	double naflag = NAN;
+	double naflag = opt.NAflag; //NAN;
 	GDALDataType gdt;
 
 	if (driver != "MEM") {
@@ -694,9 +718,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			naflag = (double)INT16_MAX * 2 - 1;
 		} else if (datatype == "INT1U") {
 			naflag = 255; // ?; 
-		} else {
-			naflag = NAN; 
-		}
+		} 
 	} else {
 		getGDALDataType(opt.get_datatype(), gdt);
 	}
@@ -704,12 +726,11 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	hDS = GDALCreate(hDrv, pszFilename, ncol(), nrow(), nlyr(), gdt, papszOptions );
 	CSLDestroy( papszOptions );
 
-	GDALRasterBandH hBand;
 	std::vector<std::string> nms = getNames();
 	std::vector<bool> hasCats = hasCategories();
 	
 	for (size_t i=0; i < nlyr(); i++) {
-		hBand = GDALGetRasterBand(hDS, i+1);
+		GDALRasterBandH hBand = GDALGetRasterBand(hDS, i+1);
 		GDALSetDescription(hBand, nms[i].c_str());
 		GDALSetRasterNoDataValue(hBand, naflag);
 		//GDALSetRasterNoDataValue(hBand, -3.4e+38);

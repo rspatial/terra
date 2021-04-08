@@ -489,7 +489,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	if (mask) {
 		SpatVector v = dense_extent();
 		v = v.project(out.getSRS("wkt"));
-		out = out.mask(v, false, NAN, mopt);
+		out = out.mask(v, false, NAN, true, mopt);
 	}
 
 	return out;

@@ -1,9 +1,14 @@
 
-rasterize_points <- function(x, y, field, fun="last", background, filename, ...) {
+rasterize_points <- function(x, y, field, fun="last", background, filename, update, ...) {
 
-	#if (update) {
-	#	background <- NA 
-	#} 
+	
+	if (update) {
+		if (!hasValues(y)) {
+			update <- FALSE
+		} else {
+			background <- NA 
+		}
+	} 
 	r <- rast(y, nlyr=1)
 	values(r) <- background
 
@@ -65,12 +70,9 @@ rasterize_points <- function(x, y, field, fun="last", background, filename, ...)
 		levs <- NULL
 	}
 
-	#if (update) {
-	#	if (hasValues(y)) {
-	#		r <- cover(r, y)
-	#	}
-	#} else 
-	if (!is.null(levs)) {
+	if (update) {
+		r <- cover(r, y)
+	} else if (!is.null(levs)) {
 		levels(r) <- levs
 	}
 
@@ -83,11 +85,11 @@ rasterize_points <- function(x, y, field, fun="last", background, filename, ...)
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field="", values=1, fun, background=NA, touches=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
+	function(x, y, field="", values=1, fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, #update=FALSE,
+			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update,
 			filename=filename, ...) 
 			return (r)
 		}
@@ -101,7 +103,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		#}
 
 		if (cover[1] && pols) {
-			y@ptr <- y@ptr$rasterize2(x@ptr, "", 1, background, touches[1], sum[1], TRUE, opt)
+			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, background, touches[1], sum[1], TRUE, FALSE, opt)
 			y <- messages(y, "rasterize")
 			return(y)
 		}
@@ -122,7 +124,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			} 
 		} 
 		background <- as.numeric(background[1])
-		y@ptr <- y@ptr$rasterize2(x@ptr, field, values, background, touches[1], sum[1], FALSE, opt)
+		y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], sum[1], FALSE, update[1], opt)
 
 		#if (pols && touches) {
 		#	y <- cover(first, y, filename=filename, ...)

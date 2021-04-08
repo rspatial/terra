@@ -13,7 +13,7 @@ Transfer vector data to a raster
 
 \usage{
 \S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, values=1, fun, background=NA, touches=FALSE,
-	sum=FALSE, cover=FALSE, filename="", ...)
+	update=FALSE, sum=FALSE, cover=FALSE, filename="", ...)
 }
 
 \arguments{
@@ -29,6 +29,8 @@ Transfer vector data to a raster
   \item{background}{numeric. Value to put in the cells that are not covered by any of the features of \code{x}. Default is \code{NA}}
   
   \item{touches}{logical. If \code{TRUE}, all cells touched by lines or polygons are affected, not just those on the line render path, or whose center point is within the polygon. If \code{touches=TRUE}, \code{add} cannot be \code{TRUE}}
+
+  \item{update}{logical. If \code{TRUE}, the values of the input SpatRaster are updated}
   
   \item{sum}{logical. If \code{TRUE}, the values of overlapping geometries are summed instead of replaced; and \code{background} is set to zero. Only used if \code{x} does not consists of points} 
 

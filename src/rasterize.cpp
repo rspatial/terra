@@ -17,12 +17,171 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 }
 
 
-SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<double> values, 
-	double background, bool touches, bool add, bool weights, SpatOptions &opt) {
+
+bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt) {
+
+	filename = opt.get_filename();
+	if (filename == "") {
+		if (canProcessInMemory(opt)) {
+			driver = "MEM";
+		} else {
+			filename = tempFile(opt.get_tempdir(), ".tif");
+			opt.set_filenames({filename});
+			driver = "GTiff";
+		} 
+	} else {
+		std::string driver = opt.get_filetype();
+		getGDALdriver(filename, driver);
+		if (driver == "") {
+			msg = "cannot guess file type from filename";
+			return false;
+		}
+		if (!can_write(filename, opt.get_overwrite(), msg)) {
+			return false;
+		}	
+	}
+
+	if (update) {
+		size_t nsrc = source.size();
+		if (driver == "MEM") {
+			// force into single source
+			SpatOptions svopt;
+			std::vector<double> v = getValues();
+			SpatRaster tmp = geometry();
+			tmp.setValues(v, svopt);
+			if (!tmp.open_gdal(rstDS, 0, opt)) {
+				msg = "cannot open dataset";
+				return false;
+			}
+		} else {
+			// make a copy first
+			// including for the odd case that MEM is false but the source in memory
+			if ( (nsrc > 1) || (!sources_from_file()) ) {
+				SpatRaster out = writeRaster(opt);
+			} else {
+				// writeRaster should do the below? copyRaster?
+				GDALDatasetH hSrcDS = GDALOpen(source[0].filename.c_str(), GA_ReadOnly );
+				if(hSrcDS == NULL) {
+					msg = "cannot open source dataset";
+					return false;
+				}
+				GDALDriverH hDriver = GDALGetDatasetDriver(hSrcDS);
+				GDALDatasetH hDstDS = GDALCreateCopy( hDriver, filename.c_str(), hSrcDS, FALSE, NULL, NULL, NULL );
+				GDALClose(hSrcDS);
+				if(hDstDS == NULL) {
+					msg  = "cannot create dataset";
+					return false;
+				}
+				GDALClose(hDstDS);
+			}
+			rstDS = GDALOpen( filename.c_str(), GA_Update);	
+		}
+	
+	} else {
+		SpatRaster tmp = geometry();
+		if (!tmp.create_gdalDS(rstDS, filename, driver, true, background, opt)) {
+			msg = "cannot create dataset";
+			return false;
+		}
+	}
+
+	GDALRasterBandH hBand = GDALGetRasterBand(rstDS, 1);
+	GDALDataType gdt = GDALGetRasterDataType(hBand);
+	getNAvalue(gdt, naval);
+	int hasNA;
+	double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
+	naval = hasNA ? naflag : naval;
+	return true;
+}
+
+SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double background, bool touches, bool update, SpatOptions &opt) {
+
+	std::string gtype = x.type();
+	SpatRaster out;
+	if ( !hasValues() ) update = false;
+	if (update) { // all lyrs
+		out = geometry();
+	} else {
+		out = geometry(1);
+	}
+
+	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true);
+	if (x.hasError()) {
+		out.setError(x.getError());
+		return out;
+	}
+
+	OGRLayer *poLayer = vecDS->GetLayer(0);
+//#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+//#else
+	OGRLayerH hLyr = poLayer->ToHandle(poLayer);
+//#endif
+    std::vector<OGRLayerH> ahLayers;
+	ahLayers.push_back( hLyr );
+
+	std::string errmsg, driver, filename;
+	GDALDatasetH rstDS;
+	double naval;
+	if (!getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
+		out.setError(errmsg);
+		return out;
+	}
+	if (std::isnan(value)) {
+		// passing NULL instead may also work.
+		value = naval;
+	}
+	
+	std::vector<int> bands(out.nlyr());
+	std::iota(bands.begin(), bands.end(), 1);
+	std::vector<double> values(out.nlyr(), value);
+	
+	char** papszOptions = NULL;
+	CPLErr err;
+	if (touches) {
+		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
+	}
+	err = GDALRasterizeLayers(rstDS, static_cast<int>(bands.size()), &(bands[0]),
+			1, &(ahLayers[0]), NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
+			
+	CSLDestroy(papszOptions);	
+			
+//	for (size_t i=0; i<ahGeometries.size(); i++) {
+//		OGR_G_DestroyGeometry(ahGeometries[i]);			
+//	}
+	GDALClose(vecDS);
+	
+	if ( err != CE_None ) {
+		out.setError("rasterization failed");
+		GDALClose(rstDS);
+		return out;
+	}
+	
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(rstDS, false, true)) {
+			out.setError("rasterization failed (mem)");
+		}
+	}
+	
+	GDALRasterBandH band = GDALGetRasterBand(rstDS, 1);
+	double adfMinMax[2];
+	GDALComputeRasterMinMax(band, false, adfMinMax);
+	GDALSetRasterStatistics(band, adfMinMax[0], adfMinMax[1], -9999, -9999);
+
+	GDALClose(rstDS);
+	if (driver != "MEM") {
+		out = SpatRaster(filename, {-1}, {""});
+	}
+	return out;
+}
+
+
+SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<double> values, 
+	double background, bool touches, bool add, bool weights, bool update, SpatOptions &opt) {
 
 	std::string gtype = x.type();
 	bool ispol = gtype == "polygons";
-
+	if (weights) update = false;
+	
 	if (weights && ispol) {
 		SpatOptions sopts(opt);
 		SpatRaster wout = geometry(1);
@@ -33,19 +192,19 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 		wout = wout.disaggregate({agx, agy}, sopts);
 		field = "";
 		double f = agx * agy;
-		wout = wout.rasterize2(x, field, {1/f}, background, touches, add, false, sopts);
+		wout = wout.rasterize(x, field, {1/f}, background, touches, add, false, false, sopts);
 		wout = wout.aggregate({agx, agy}, "sum", true, opt);
 		return wout;
 	}
 
 	SpatRaster out;
-//	if ( !hasValues() ) update = false;
-//	if (update) {
-//		out = geometry();
-//	} else {
+	if ( !hasValues() ) update = false;
+	if (update) {
+		out = geometry();
+	} else {
 		out = geometry(1);
 		out.setNames({field});
-//	}
+	}
 
 	if (ispol && touches && add) {
 		add = false;
@@ -67,7 +226,7 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 			for (size_t i=0; i<values.size(); i++) {
 				values[i] = f.v[i];
 			}
-			if (!add) { // or update
+			if (!add && !update) {
 				out.setLabels(0, f.labels);
 			}
 			if (add) {
@@ -110,87 +269,31 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 	OGRFeature::DestroyFeature( poFeature );
 	GDALClose(vecDS);
 
-
-	std::string errmsg;
-	std::string filename = opt.get_filename();
-	std::string driver;
-	if (filename == "") {
-		if (canProcessInMemory(opt)) {
-			driver = "MEM";
-		} else {
-			filename = tempFile(opt.get_tempdir(), ".tif");
-			opt.set_filenames({filename});
-			driver = "GTiff";
-		} 
-	} else {
-		std::string driver = opt.get_filetype();
-		getGDALdriver(filename, driver);
-		if (driver == "") {
-			setError("cannot guess file type from filename");
-			return out;
-		}
-		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
-			out.setError(errmsg);
-			return out;
-		}	
-	}
-
+	std::string errmsg, driver, filename;
 	GDALDatasetH rstDS;
-/*
-	if (update) {
-		size_t nsrc = source.size();
-		if (driver == "MEM") {
-			// force into single source
-			SpatOptions svopt;
-			std::vector<double> v = getValues();
-			out.setValues(v, svopt);
-			if (!out.open_gdal(rstDS, 0, opt)) {
-				out.setError("cannot open dataset");
-				return out;
-			}
-		} else {
-			// make a copy first
-			// including for the odd case that MEM is false but the source in memory
-			if ( (nsrc > 1) || (!sources_from_file()) ) {
-				SpatRaster out = writeRaster(opt);
-			} else {
-				// writeRaster should do the below? copyRaster?
-				GDALDatasetH hSrcDS = GDALOpen(source[0].filename.c_str(), GA_ReadOnly );
-				if(hSrcDS == NULL) {
-					out.setError("cannot open source dataset");
-					return out;
-				}
-				GDALDriverH hDriver = GDALGetDatasetDriver(hSrcDS);
-				GDALDatasetH hDstDS = GDALCreateCopy( hDriver, filename.c_str(), hSrcDS, FALSE, NULL, NULL, NULL );
-				GDALClose(hSrcDS);
-				if(hDstDS == NULL) {
-					out.setError("cannot create dataset");
-					return out;
-				}
-				GDALClose(hDstDS);
-			}
-			rstDS = GDALOpen( filename.c_str(), GA_Update);	
-		}
-	
-	} else {
-*/		
-		if (add) {
-			background = 0;
-		}
-		if (!out.create_gdalDS(rstDS, filename, driver, true, background, opt)) {
-			out.setError("cannot create dataset");
-			return out;
-		}
-//	}
+	double naval;
+	if (add) {	background = 0;	}
 
-	std::vector<int> anBandList = {1};
+	if (!getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
+		out.setError(errmsg);
+		return out;
+	}
+	for (double &d : values) d = std::isnan(d) ? naval : d;
+		// passing NULL instead may also work.
+
+
+	std::vector<int> bands(out.nlyr());
+	std::iota(bands.begin(), bands.end(), 1);
+	rep_each(values, out.nlyr());
+
+
 	char** papszOptions = NULL;
 	CPLErr err;
 	if (ispol && touches && (nGeoms > 1)) {
 		// first to get the touches
 		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
 		err = GDALRasterizeGeometries(rstDS, 
-				static_cast<int>(anBandList.size()), &(anBandList[0]),
+				static_cast<int>(bands.size()), &(bands[0]),
 				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
 				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);		
 		CSLDestroy(papszOptions);	
@@ -206,7 +309,7 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 		//GDALFlushCache(rstDS);
 		// second time to fix the internal area
 		err = GDALRasterizeGeometries(rstDS, 
-				static_cast<int>(anBandList.size()), &(anBandList[0]),
+				static_cast<int>(bands.size()), &(bands[0]),
 				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
 				NULL, NULL, &(values[0]), NULL, NULL, NULL);
 
@@ -218,7 +321,7 @@ SpatRaster SpatRaster::rasterize2(SpatVector x, std::string field, std::vector<d
 			papszOptions = CSLSetNameValue(papszOptions, "MERGE_ALG", "ADD"); 
 		}
 		err = GDALRasterizeGeometries(rstDS, 
-				static_cast<int>(anBandList.size()), &(anBandList[0]),
+				static_cast<int>(bands.size()), &(bands[0]),
 				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
 				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
 				
@@ -267,7 +370,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	
 	SpatRaster rc = r.crop(e, "out", opt);
 	std::vector<double> feats(1, 1) ;		
-    SpatRaster rcr = rc.rasterize2(v, "", feats, NAN, touches, false, false, opt); 
+    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, opt); 
 	SpatVector pts = rcr.as_points(false, true, opt);
     SpatDataFrame vd = pts.getGeometryDF();
     std::vector<double> x = vd.getD(0);
@@ -291,7 +394,7 @@ std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v
 	SpatRaster r = rr.crop(v.extent, "out", opt);
 	r = r.disaggregate(fact, opt);
 	std::vector<double> feats(1, 1) ;	
-	r = r.rasterize2(v, "", feats, NAN, touches, false, false, opt); 
+	r = r.rasterize(v, "", feats, NAN, touches, false, false, false, opt); 
 	r = r.arith(100.0, "/", false, opt);
 	r = r.aggregate(fact, "sum", true, opt);
 	SpatVector pts = r.as_points(true, true, opt);
