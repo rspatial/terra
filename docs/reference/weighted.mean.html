@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rasterize vector data — rasterize • terra</title>
+<title>Weighted mean of layers — weighted.mean • terra</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Rasterize vector data — rasterize" />
-<meta property="og:description" content="Transfer vector data to a raster" />
+<meta property="og:title" content="Weighted mean of layers — weighted.mean" />
+<meta property="og:description" content="Compute the weighted mean for each cell of the layers of a SpatRaster. The weights can be spatially variable or not." />
 
 
 
@@ -108,61 +108,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Rasterize vector data</h1>
+    <h1>Weighted mean of layers</h1>
     
-    <div class="hidden name"><code>rasterize.Rd</code></div>
+    <div class="hidden name"><code>weighted.mean.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Transfer vector data to a raster</p>
+    <p>Compute the weighted mean for each cell of the layers of a SpatRaster. The weights can be spatially variable or not.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for SpatVector,SpatRaster</span>
-<span class='fu'>rasterize</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>field</span>, values<span class='op'>=</span><span class='fl'>1</span>, <span class='va'>fun</span>, background<span class='op'>=</span><span class='cn'>NA</span>, touches<span class='op'>=</span><span class='cn'>FALSE</span>,
-  update<span class='op'>=</span><span class='cn'>FALSE</span>, sum<span class='op'>=</span><span class='cn'>FALSE</span>, cover<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S4 method for SpatRaster,numeric</span>
+<span class='fu'>weighted.mean</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>w</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S4 method for SpatRaster,SpatRaster</span>
+<span class='fu'>weighted.mean</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>w</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatVector</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
       <td><p>SpatRaster</p></td>
     </tr>
     <tr>
-      <th>field</th>
-      <td><p>character or numeric. If <code>field</code> is a character, it should a variable name in <code>x</code>. If <code>field</code> is numeric it should be a single number (index the variable)</p></td>
+      <th>w</th>
+      <td><p>A vector of weights (one number for each layer), or for spatially variable weights, a SpatRaster with weights (should have the same extent, resolution and number of layers as x)</p></td>
     </tr>
     <tr>
-      <th>values</th>
-      <td><p>numeric. Only used if <code>field</code> is <code>""</code>. Typically a single number or a vector of length <code><a href='dimensions.html'>nrow(x)</a></code>. The values are recycled to <code><a href='dimensions.html'>nrow(x)</a></code></p></td>
-    </tr>
-    <tr>
-      <th>fun</th>
-      <td><p>function, summarizing function that returns a single number; for when there are multiple points in one cell. For example <code>mean</code>, <code>length</code> (to get a count), <code>min</code> or <code>max</code>. Only used if <code>x</code> consists of points</p></td>
-    </tr>
-    <tr>
-      <th>background</th>
-      <td><p>numeric. Value to put in the cells that are not covered by any of the features of <code>x</code>. Default is <code>NA</code></p></td>
-    </tr>
-    <tr>
-      <th>touches</th>
-      <td><p>logical. If <code>TRUE</code>, all cells touched by lines or polygons are affected, not just those on the line render path, or whose center point is within the polygon. If <code>touches=TRUE</code>, <code>add</code> cannot be <code>TRUE</code></p></td>
-    </tr>
-    <tr>
-      <th>update</th>
-      <td><p>logical. If <code>TRUE</code>, the values of the input SpatRaster are updated</p></td>
-    </tr>
-    <tr>
-      <th>sum</th>
-      <td><p>logical. If <code>TRUE</code>, the values of overlapping geometries are summed instead of replaced; and <code>background</code> is set to zero. Only used if <code>x</code> does not consists of points</p></td>
-    </tr>
-    <tr>
-      <th>cover</th>
-      <td><p>logical. If <code>TRUE</code> and the geometry of <code>x</code> is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)</p></td>
+      <th>na.rm</th>
+      <td><p>Logical. Should missing values be removed?</p></td>
     </tr>
     <tr>
       <th>filename</th>
@@ -170,28 +144,32 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code></p></td>
+      <td><p>options for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='mask.html'>mask</a></code></p></div>
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    <p>To update existing raster data use the output of <code>rasterize</code> as second argument in <code><a href='cover.html'>cover</a></code></p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>SpatRaster</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='summarize-generics.html'>Summary-methods</a></code>, <code><a href='https://rdrr.io/r/stats/weighted.mean.html'>weighted.mean</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
-<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='va'>v</span>, ncol<span class='op'>=</span><span class='fl'>75</span>, nrow<span class='op'>=</span><span class='fl'>100</span><span class='op'>)</span>
-<span class='co'>#x &lt;- rasterize(v, r, "NAME_2")</span>
+    <pre class="examples"><div class='input'><span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
 
-<span class='co'>#plot(x)</span>
-<span class='co'>#lines(v)</span>
+<span class='co'># give least weight to first layer, most to last layer</span>
+<span class='va'>wm1</span> <span class='op'>&lt;-</span> <span class='fu'>weighted.mean</span><span class='op'>(</span><span class='va'>b</span>, w<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>
+
+<span class='co'># spatially varying weights</span>
+<span class='co'># weigh by column number</span>
+<span class='va'>w1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"col"</span><span class='op'>)</span>
+
+<span class='co'># weigh by row number</span>
+<span class='va'>w2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"row"</span><span class='op'>)</span>
+<span class='va'>w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>w1</span>, <span class='va'>w2</span>, <span class='va'>w2</span><span class='op'>)</span>
+
+<span class='va'>wm2</span> <span class='op'>&lt;-</span> <span class='fu'>weighted.mean</span><span class='op'>(</span><span class='va'>b</span>, w<span class='op'>=</span><span class='va'>w</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
