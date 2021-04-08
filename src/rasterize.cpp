@@ -112,10 +112,11 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	}
 
 	OGRLayer *poLayer = vecDS->GetLayer(0);
-//#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-//#else
+#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+	OGRLayerH hLyr = poLayer;
+#else
 	OGRLayerH hLyr = poLayer->ToHandle(poLayer);
-//#endif
+#endif
     std::vector<OGRLayerH> ahLayers;
 	ahLayers.push_back( hLyr );
 
