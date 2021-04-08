@@ -25,6 +25,32 @@
 #include "file_utils.h"
 
 
+SpatRaster SpatRaster::weighted_mean(SpatRaster w, bool narm, SpatOptions &opt) {
+	SpatRaster out;
+	if (nlyr() != w.nlyr()) {
+		out.setError("nlyr of data and weights are different");
+		return out;
+	}
+	
+	SpatOptions topt(opt);
+	out = arith(w, "*", topt);
+	out = out.summary("sum", narm, topt);
+	SpatRaster wsum = w.summary("sum", narm, topt);
+	return out.arith(wsum, "/", opt);
+	
+}
+
+
+SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptions &opt) {
+	SpatOptions topt(opt);
+	recycle(w, nlyr());
+	SpatRaster out = arith(w, "*", false, topt);
+	out = out.summary("sum", narm, topt);
+	double wsum = vsum(w, narm);
+	return out.arith(wsum, "/", false, opt);
+}
+
+
 SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, double othervalue, SpatOptions &opt) {
 
 	SpatRaster out;

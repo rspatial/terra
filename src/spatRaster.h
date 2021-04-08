@@ -652,6 +652,9 @@ class SpatRaster {
 		SpatRaster to_memory_copy();
 		bool to_memory();
 
+		SpatRaster weighted_mean(SpatRaster w, bool narm, SpatOptions &opt);
+		SpatRaster weighted_mean(std::vector<double> w, bool narm, SpatOptions &opt);
+
 		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
 		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
 

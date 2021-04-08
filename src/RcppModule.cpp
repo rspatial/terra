@@ -512,6 +512,9 @@ RCPP_MODULE(spat){
 		.method("vectCells", &SpatRaster::vectCells, "vectCells")
 		.method("extCells", &SpatRaster::extCells, "extCells")
 
+		.method("wmean_rast", (SpatRaster (SpatRaster::*)(SpatRaster, bool, SpatOptions&))( &SpatRaster::weighted_mean ))
+		.method("wmean_vect", (SpatRaster (SpatRaster::*)(std::vector<double>, bool, SpatOptions&))( &SpatRaster::weighted_mean ))
+
 		.method("cellFromRowCol", ( std::vector<double> (SpatRaster::*)(std::vector<int_64>,std::vector<int_64>) )( &SpatRaster::cellFromRowCol ))
 		.method("cellFromRowColCombine", ( std::vector<double> (SpatRaster::*)(std::vector<int_64>,std::vector<int_64>) )( &SpatRaster::cellFromRowColCombine ))
 		.method("yFromRow", ( std::vector<double> (SpatRaster::*)(const std::vector<int_64>&) )( &SpatRaster::yFromRow ))

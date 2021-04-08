@@ -4,6 +4,25 @@
 # License GPL v3
 
 
+setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"), 
+	function(x, w, na.rm=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$wmean_vect(w, na.rm, opt)
+		messages(x)
+	}
+)
+
+
+setMethod("weighted.mean", signature(x="SpatRaster", w="SpatRaster"), 
+	function(x, w, na.rm=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <-x@ptr$wmean_rast(w@ptr, na.rm, opt)
+		messages(x)
+	}
+)
+
+
+
 setMethod("patches", signature(x="SpatRaster"), 
 	function(x, directions=4, zeroAsNA=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
@@ -11,8 +30,6 @@ setMethod("patches", signature(x="SpatRaster"),
 		messages(x, "patches")
 	}
 )
-
-
 
 
 setMethod("origin", signature(x="SpatRaster"), 

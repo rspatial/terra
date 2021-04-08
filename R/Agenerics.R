@@ -1,5 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 
+if (!isGeneric("weighted.mean")) {setGeneric("weighted.mean", function(x, w, ...) standardGeneric("weighted.mean"))}	
 
 if (!isGeneric("isTRUE")) {setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
 if (!isGeneric("subst")) {setGeneric("subst", function(x, ...) standardGeneric("subst"))}
