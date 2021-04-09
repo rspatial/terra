@@ -190,6 +190,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return(false);		
 	}
 
+
 	stat_options(opt.get_statistics(), compute_stats, gdal_stats, gdal_minmax, gdal_approx);
 
     GDALDriver *poDriver;
@@ -203,13 +204,42 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	
 	if (driver == "GTiff") {
 		bool lzw = true;
+		bool compressed = true;
 		for (size_t i=0; i<opt.gdal_options.size(); i++) {
-			if (opt.gdal_options[i].substr(0, 7) == "COMPRESS") {
+			if (opt.gdal_options[i].substr(0, 8) == "COMPRESS") {
 				lzw = false;
+				if (opt.gdal_options[i].substr(9, 4) == "NONE") {
+					compressed = false;
+				}
+				break;
 			}
 		}
 		if (lzw) {
 			papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "LZW");			
+		}
+		if (opt.verbose) {
+			Rcpp::Rcout<< "LZW           : " << lzw << std::endl;
+		}
+
+		// ~ 4GB
+		if (compressed & (diskNeeded > 4194304000)) { 
+			bool big = true;
+			for (size_t i=0; i<opt.gdal_options.size(); i++) {
+				if (opt.gdal_options[i].substr(0, 7) == "BIGTIFF") {
+					big = false;
+					break;
+				}
+			}
+			if (big) {
+				papszOptions = CSLSetNameValue( papszOptions, "BIGTIFF", "YES");
+				if (opt.verbose) {
+					Rcpp::Rcout<< "BIGTIFF       : yes" << std::endl;
+				}
+			} else {
+				if (opt.verbose) {
+					Rcpp::Rcout<< "BIGTIFF       : as requested" << std::endl;
+				}
+			}
 		}
 	}
 	for (size_t i=0; i<opt.gdal_options.size(); i++) {
