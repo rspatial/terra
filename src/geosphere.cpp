@@ -3,7 +3,7 @@
 // version 0.1
 // license GPL
 
-
+/*
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
@@ -46,10 +46,10 @@ void normalizeLonRad(double &x) {
 bool antipodal(double x1, double y1, double x2, const double y2, const double &tol=1e-9) {
 	normalizeLonDeg(x1);
 	normalizeLonDeg(x2);
-	double diflon = std::abs(x1 - x2);
-	double diflat = std::abs(y1 - y2);
+	double diflon = fabs(x1 - x2);
+	double diflat = fabs(y1 - y2);
 	DegtoRad(y1);
-	return ((diflat < tol) && (cos(y1) * abs(fmod(diflon, 360) - 180) < tol));
+	return ((diflat < tol) && (cos(y1) * fabs(fmod(diflon, 360) - 180) < tol));
 }
 
 
@@ -135,7 +135,7 @@ double dist2segment (double lon1, double lat1, double lon2, double lat2, double 
 	geod_init(&g, 1, geod_f);
 	geod_inverse(&g, lat1, lon1, lat3, lon3, &s12, &azi1, &azi2);
 	double xtr = (asin(sin(tcp-tc) * sin(s12)) * geod_a);
-	xtr = sign ? xtr : std::abs(xtr);
+	xtr = sign ? xtr : fabs(xtr);
 	return xtr;
 }
 
@@ -161,9 +161,9 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 //	bearing = sign(cos(tc - tcp)) ;
 //	double dist = bearing * acos(cos(s12) / cos(xtr)) * geod_a;
 	double dist = acos(cos(s12) / cos(xtr)) * geod_a;
-	return std::abs(dist);
+	return fabs(dist);
 }
-
+*/
 
 /*
 
@@ -223,7 +223,7 @@ dist2Line <- function(p, line, distfun=distGeo) {
  */
 
 
-
+/*
 double distance_haversine(double lon1, double lat1, double lon2, double lat2) {
 // Haversine formula to calculate distance between two points specified by 
 // from: Haversine formula - R.W. Sinnott, "Virtues of the Haversine",
@@ -245,3 +245,4 @@ double distance_haversine(double lon1, double lat1, double lon2, double lat2) {
 	return 2 * atan2(sqrt(a), sqrt(1-a)) * r;
 }
 
+*/
