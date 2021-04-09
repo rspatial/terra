@@ -73,7 +73,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1-16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1-17</span>
       </span>
     </div>
 
@@ -217,6 +217,12 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
 #&gt; names       :     lyr.1,     lyr.1,     lyr.1 
 #&gt; min values  :   2.00000,   2.00000, -16.33333 
 #&gt; max values  :       200,        20,       100 </div><div class='input'>
+<span class='co'>## also works for a single layer</span>
+<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span> <span class='op'>(</span><span class='va'>i</span><span class='op'>+</span><span class='fl'>1</span><span class='op'>)</span> <span class='op'>*</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='va'>i</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span>
+<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>app</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>f</span><span class='op'>)</span>
+<span class='co'># same as above, but that is not memory-safe</span>
+<span class='co'># and has no filename argument </span>
+<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>f</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

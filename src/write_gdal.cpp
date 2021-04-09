@@ -221,7 +221,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			Rcpp::Rcout<< "LZW           : " << lzw << std::endl;
 		}
 
-		// ~ 4GB
+		// ~ 4GB 
 		if (compressed & (diskNeeded > 4194304000)) { 
 			bool big = true;
 			for (size_t i=0; i<opt.gdal_options.size(); i++) {
