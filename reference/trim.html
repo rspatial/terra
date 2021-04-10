@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Trim a SpatRaster — trim" />
-<meta property="og:description" content="Trim (shrink) a SpatRaster by removing outer rows and columns that are NA." />
+<meta property="og:description" content="Trim (shrink) a SpatRaster by removing outer rows and columns that are NA or another value." />
 
 
 
@@ -87,6 +87,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -114,11 +117,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Trim (shrink) a SpatRaster by removing outer rows and columns that are <code>NA</code>.</p>
+    <p>Trim (shrink) a SpatRaster by removing outer rows and columns that are <code>NA</code> or another value.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>trim</span><span class='op'>(</span><span class='va'>x</span>, padding<span class='op'>=</span><span class='fl'>0</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>trim</span><span class='op'>(</span><span class='va'>x</span>, padding<span class='op'>=</span><span class='fl'>0</span>, value<span class='op'>=</span><span class='cn'>NA</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,6 +133,10 @@
     <tr>
       <th>padding</th>
       <td><p>integer. Number of outer rows/columns to keep</p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p>numeric. The value of outer rows or columns that are to be removed</p></td>
     </tr>
     <tr>
       <th>filename</th>
