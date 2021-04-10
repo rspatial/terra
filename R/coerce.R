@@ -226,19 +226,25 @@ setMethod("as.array", signature(x="SpatRaster"),
 )
 
 
-# todo:
-# for ncdf files check the variable to be used
-# 
-# check z values, other attributes such as NAvalue that may have been
-# changed after creation of object from file
-# RAT tables
 
 .fromRasterLayerBrick <- function(from) {
 	f <- filename(from)
 	if (f != "") {
-		r <- rast(f)
+		if (from@file@driver == "netcdf") {
+			v <- attr(from@data, "zvar")
+			r <- rast(f, v)	
+		} else {
+			r <- try(rast(f), silent=TRUE)
+			if (inherits(r, "try-error")) {
+				r <- rast(from + 0)
+				levs <- levels(from)[[1]]
+				if (!is.null(levs)) {
+					levels(r) <- levs
+				}
+			}
+		}
 		if (from@file@NAchanged) {
-			warn("as,Raster", "changed NA value ignored")
+			NAflag(r) <- from@file@nodatavalue
 		}
 		return(r)
 	} else {
@@ -262,8 +268,12 @@ setMethod("as.array", signature(x="SpatRaster"),
 			values(r) <- values(from)
 		}
 		names(r)  <- names(from)
+		levs <- levels(from)[[1]]
+		if (!is.null(levs)) {
+			levels(r) <- levs				
+		}
 	}
-	return(r)
+	r
 }
 
 .fromRasterStack <- function(from) {
@@ -286,7 +296,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 setAs("Raster", "SpatRaster", 
 	function(from) {
-		if (inherits(from, "RasterLayer") | inherits(from, "RasterBrick")) { 
+		if (inherits(from, "RasterLayer") || inherits(from, "RasterBrick")) { 
 			.fromRasterLayerBrick(from)
 		} else {
 			.fromRasterStack(from)
