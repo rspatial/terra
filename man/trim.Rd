@@ -6,16 +6,17 @@
 \title{Trim a SpatRaster}
 
 \description{
-Trim (shrink) a SpatRaster by removing outer rows and columns that are \code{NA}.
+Trim (shrink) a SpatRaster by removing outer rows and columns that are \code{NA} or another value.
 }
 
 \usage{
-\S4method{trim}{SpatRaster}(x, padding=0, filename="", ...)
+\S4method{trim}{SpatRaster}(x, padding=0, value=NA, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{padding}{integer. Number of outer rows/columns to keep}
+  \item{value}{numeric. The value of outer rows or columns that are to be removed}
    \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

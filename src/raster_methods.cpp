@@ -604,7 +604,8 @@ SpatRaster SpatRaster::transpose(SpatOptions &opt) {
 
 
 
-SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
+
+SpatRaster SpatRaster::trim(double value, unsigned padding, SpatOptions &opt) {
 
 	long nrl = nrow() * nlyr();
 	long ncl = ncol() * nlyr();
@@ -618,60 +619,105 @@ SpatRaster SpatRaster::trim(unsigned padding, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
-	for (r=0; r<nr; r++) {
-		v = readValues(r, 1, 0, ncol());
-		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < ncl) {
-			rowfound = true;
-			break;
+
+
+	size_t firstrow, lastrow, firstcol, lastcol;
+	if (std::isnan(value)) {
+		for (r=0; r<nr; r++) {
+			v = readValues(r, 1, 0, ncol());
+			if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < ncl) {
+				rowfound = true;
+				break;
+			}
 		}
-	}
 
-	if (!rowfound) { 
-		SpatRaster out;
-		out.setError("only NA values found");
-		return out;
-	}
-
-	size_t firstrow = std::max(r - padding, size_t(0));
-
-	for (r=nrow()-1; r>firstrow; r--) {
-		v = readValues(r, 1, 0, ncol());
-		if (std::count_if(v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < ncl) {
-			break;
+		if (!rowfound) { 
+			SpatRaster out;
+			out.setError("only cells with NA found");
+			return out;
 		}
-	}
 
-	size_t lastrow = std::max(std::min(r+padding, nrow()), size_t(0));
+		firstrow = std::max(r - padding, size_t(0));
 
-	size_t tmp;
-	if (lastrow < firstrow) {
-		tmp = firstrow;
-		firstrow = lastrow;
-		lastrow = tmp;
-	}
-	size_t c;
-	for (c=0; c<ncol(); c++) {
-		v = readValues(0, nrow(), c, 1);
-		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
-			break;
+		for (r=nrow()-1; r>firstrow; r--) {
+			v = readValues(r, 1, 0, ncol());
+			if (std::count_if(v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < ncl) {
+				break;
+			}
 		}
-	}
-	size_t firstcol = std::min(std::max(c-padding, size_t(0)), ncol());
 
+		lastrow = std::max(std::min(r+padding, nrow()), size_t(0));
 
-	for (c=ncol()-1; c>firstcol; c--) {
-		v = readValues(0, nrow(), c, 1);
-		if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
-			break;
+		if (lastrow < firstrow) {
+			std::swap(firstrow, lastrow);
 		}
+		size_t c;
+		for (c=0; c<ncol(); c++) {
+			v = readValues(0, nrow(), c, 1);
+			if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
+				break;
+			}
+		}
+		firstcol = std::min(std::max(c-padding, size_t(0)), ncol());
+
+		for (c=ncol()-1; c>firstcol; c--) {
+			v = readValues(0, nrow(), c, 1);
+			if (std::count_if( v.begin(), v.end(), [](double d) { return std::isnan(d); } ) < nrl) {
+				break;
+			}
+		}
+		lastcol = std::max(std::min(c+padding, ncol()), size_t(0));
+	} else {	
+		for (r=0; r<nr; r++) {
+			v = readValues(r, 1, 0, ncol());
+			if (std::count( v.begin(), v.end(), value) < ncl) {
+				rowfound = true;
+				break;
+			}
+		}
+
+		if (!rowfound) { 
+			SpatRaster out;
+			out.setError("only cells with value: " + std::to_string(value) + " found");
+			return out;
+		}
+
+		firstrow = std::max(r - padding, size_t(0));
+
+		for (r=nrow()-1; r>firstrow; r--) {
+			v = readValues(r, 1, 0, ncol());
+			if (std::count( v.begin(), v.end(), value) < ncl) {
+				break;
+			}
+		}
+
+		lastrow = std::max(std::min(r+padding, nrow()), size_t(0));
+
+		if (lastrow < firstrow) {
+			std::swap(firstrow, lastrow);
+		}
+		size_t c;
+		for (c=0; c<ncol(); c++) {
+			v = readValues(0, nrow(), c, 1);
+			if (std::count( v.begin(), v.end(), value) < nrl) {
+				break;
+			}
+		}
+		firstcol = std::min(std::max(c-padding, size_t(0)), ncol());
+
+
+		for (c=ncol()-1; c>firstcol; c--) {
+			v = readValues(0, nrow(), c, 1);
+			if (std::count( v.begin(), v.end(), value) < nrl) {
+				break;
+			}
+		}
+		lastcol = std::max(std::min(c+padding, ncol()), size_t(0));
+
 	}
-	size_t lastcol = std::max(std::min(c+padding, ncol()), size_t(0));
 	readStop();
-
 	if (lastcol < firstcol) {
-		tmp = firstcol;
-		firstcol = lastcol;
-		lastcol = tmp;
+		std::swap(firstcol, lastcol);
 	}
 
 	std::vector<double> res = resolution();

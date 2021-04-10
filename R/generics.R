@@ -633,9 +633,9 @@ setMethod("terrain", signature(x="SpatRaster"),
 
 
 setMethod("trim", signature(x="SpatRaster"), 
-	function(x, padding=0, filename="", ...) {
+	function(x, padding=0, value=NA, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$trim(padding[1], opt)
+		x@ptr <- x@ptr$trim(value[1], padding[1], opt)
 		messages(x, "trim")
 	}
 )

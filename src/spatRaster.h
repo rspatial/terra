@@ -630,7 +630,7 @@ class SpatRaster {
 
 		SpatRaster transpose(SpatOptions &opt);
 		SpatRaster trig(std::string fun, SpatOptions &opt);
-		SpatRaster trim(unsigned padding, SpatOptions &opt);
+		SpatRaster trim(double value, unsigned padding, SpatOptions &opt);
 		std::vector<std::vector<double>> unique(bool bylayer, SpatOptions &opt);
 		SpatRaster project1(std::string newcrs, std::string method, SpatOptions &opt);
 		SpatRaster project2(SpatRaster &x, std::string method, SpatOptions &opt);
