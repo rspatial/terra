@@ -73,8 +73,8 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#terra" class="anchor"></a>terra</h1></div>
 
-<p><code>terra</code> is an R package that replaces <a href="https://github.com/rspatial/raster">raster</a>. It has a very similar interface, but it is simpler and much faster. The first (beta-) release was on 20 March 2020.</p>
-<p><code>terra</code> is written in C++. Classes, methods and properties are exposed via a Rcpp module. The R side has two main classes (SpatRaster and SpatVector) that represent spatial data. These classes are used to provide a standard R user-interface. There are tutorials at <a href="https://rspatial.org/terra/index.html">rspatial.org/terra</a>.</p>
+<p><code>terra</code> is an R package that replaces <a href="https://github.com/rspatial/raster">raster</a>. It has a very similar interface, but it is simpler and much faster. It was first released on 20 March 2020.</p>
+<p><code>terra</code> mostly relies on two classes, SpatRaster and SpatVector, to represent spatial data. There are tutorials at <a href="https://rspatial.org/terra/index.html">rspatial.org/terra</a>.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -103,7 +103,7 @@ brew install gdal</code></pre>
 <p>Followed by</p>
 <pre><code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")</a></code></pre>
-<p>This should work on <strong>Catalina</strong>. For other versions, especially for <strong>Big Sur</strong>, first see the instructions <a href="https://github.com/r-spatial/sf">for sf</a></p>
+<p>This should work on <strong>Catalina</strong> and <strong>Big Sur</strong></p>
 </div>
 <div id="linux" class="section level3">
 <h3 class="hasAnchor">
