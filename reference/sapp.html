@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Apply a single layer function to all layers — sapp • terra</title>
+<title>Apply a terra function that takes only a single layer to all layers — sapp • terra</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Apply a single layer function to all layers — sapp" />
+<meta property="og:title" content="Apply a terra function that takes only a single layer to all layers — sapp" />
 <meta property="og:description" content="Apply to all layers of a SpatRaster a function that only takes a single layer SpatRaster (these are rare). 
 in most cases you can also use lapply or sapply for this." />
 
@@ -112,7 +112,7 @@ in most cases you can also use lapply or sapply for this." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Apply a single layer function to all layers</h1>
+    <h1>Apply a terra function that takes only a single layer to all layers</h1>
     
     <div class="hidden name"><code>sapp.Rd</code></div>
     </div>
@@ -139,10 +139,6 @@ in most cases you can also use <code>lapply</code> or <code>sapply</code> for th
     <tr>
       <th>...</th>
       <td><p>additional arguments to be passed to <code>fun</code></p></td>
-    </tr>
-    <tr>
-      <th>usenames</th>
-      <td><p>logical. Use the layer names to match the function arguments? If <code>FALSE</code> matching is by position</p></td>
     </tr>
     <tr>
       <th>filename</th>
