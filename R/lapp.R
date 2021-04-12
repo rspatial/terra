@@ -53,10 +53,15 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
 	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	expected <- test$nl * ncx
 	for (i in 1:b$n) {
 		v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, dataframe=TRUE)
 		if (!usenames) colnames(v) <- NULL
 		v <- do.call(fun, c(v, list(...)))
+		if (length(v) != (expected * b$nrows[i])) {
+			out <- writeStop(out)
+			error("lapp", "output length of fun is not correct")
+		}
 		writeValues(out, v, b$row[i], b$nrows[i])
 	}
 	out <- writeStop(out)
