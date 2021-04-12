@@ -1,6 +1,6 @@
 
 setMethod("rapp", signature(x="SpatRaster"), 
-function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, filename="", overwrite=FALSE, wopt=list()) {
+function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(hasValues(x))
 	firstval <- lastval <- NA
@@ -42,20 +42,20 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, filename="", overwrite
 			if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
 				opt <- spatOptions(filename, overwrite, wopt=wopt)
 				na.rm <- isTRUE(list(...)$na.rm)
-				x@ptr <- x@ptr$rapply(index@ptr, firstval, lastval, txtfun, na.rm, opt)
+				x@ptr <- x@ptr$rapply(index@ptr, firstval, lastval, txtfun, clamp, na.rm, opt)
 				return(messages(x, "rapp"))
 			}
 		} 
 	}
 	out <- rast(x)
-	v <- x@ptr$rappvals(index@ptr, firstval, lastval, allyrs, fill, 0, 1)
+	v <- x@ptr$rappvals(index@ptr, firstval, lastval, clamp, allyrs, fill, 0, 1)
 	v <- sapply(v, fun, ...)
 	if (is.list(v)) { error("rapp", "values returned do not have the same length for each cell") }
 	nc <- ncol(out)
 	trans = FALSE
 	if (NCOL(v) == nc) {
 		trans = TRUE
-		nlyr(out) <- nrow(v)
+		nlyr(out) <- 	nrow(v)
 	} else if (NROW(v) == nc) {
 		nlyr(out) <- NCOL(v)
 	} else if (length(v) == nc) {
@@ -63,9 +63,9 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, filename="", overwrite
 	}
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nlyr(x)*3)
 	for (i in 1:b$n) {
-		v <- x@ptr$rappvals(index@ptr, firstval, lastval, allyrs, fill, b$row[i]-1, b$nrows[i])
-		v <- sapply(v, fun , ...)
-		if (trans) v = t(v)		
+		v <- x@ptr$rappvals(index@ptr, firstval, lastval, clamp, allyrs, fill, b$row[i]-1, b$nrows[i])
+		v <- sapply(v, fun, ...)
+		if (trans) v = t(v)
 		writeValues(out, as.vector(v), b$row[i], b$nrows[i])
 	}
 	out <- writeStop(out)

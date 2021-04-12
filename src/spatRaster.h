@@ -501,8 +501,8 @@ class SpatRaster {
 		SpatRaster arith(double x, std::string oper, bool reverse, SpatOptions &opt);
 		SpatRaster arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt);
 		SpatRaster apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt);
-		SpatRaster rapply(SpatRaster x, double first, double last, std::string fun, bool narm, SpatOptions &opt);
-		std::vector<std::vector<double>> rappvals(SpatRaster x, double first, double last,  bool all, double fill, size_t startrow, size_t nrows);
+		SpatRaster rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, SpatOptions &opt);
+		std::vector<std::vector<double>> rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows);
 
 		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt);
 		SpatVector polygonize(bool trunc, SpatOptions &opt);

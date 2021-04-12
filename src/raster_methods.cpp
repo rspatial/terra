@@ -861,7 +861,7 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 }
 
 
-SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::string fun, bool narm, SpatOptions &opt) {
+SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (!haveFun(fun)) {
@@ -919,7 +919,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 		for (size_t j=0; j<ncell; j++) {
 			if (std::isnan(idx[j])) continue;
 			if (sval) {
-				end   = idx[j] - 1;	
+				end = idx[j] - 1;	
 			} else if (eval) {
 				start = idx[j] - 1;
 			} else {
@@ -927,6 +927,10 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 				double dend = idx[j+ncell]-1;
 				if (std::isnan(dend)) continue;
 				end   = dend;
+			}
+			if (clamp) {
+				start = start < 0 ? 0 : start; 
+				end = end > nl ? nl : end; 
 			}
 			if ((start <= end) && (end <= nl) && (start >= 0)) {
 				std::vector<double> se;
@@ -947,7 +951,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 }
 
 
-std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first, double last, bool all, double fill, size_t startrow, size_t nrows) {
+std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows) {
 
 	std::vector<std::vector<double>> r;
 
@@ -1000,13 +1004,19 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 			continue;
 		}
 		if (sval) {
-			end   = idx[j] - 1;	
+			//end = idx[j] - 1;	
+			end = idx[j];	
 		} else if (eval) {
 			start = idx[j] - 1;
 		} else {
 			start = idx[j] - 1;
-			double dend = idx[j+ncell]-1;
+			double dend = idx[j+ncell];
+			//double dend = idx[j+ncell]-1;
 			end = std::isnan(dend) ? -99 : (int) dend;
+		}
+		if (clamp) {
+			start = start < 0 ? 0 : start; 
+			end = end > nl ? nl : end; 
 		}
 
 		if (all) {
