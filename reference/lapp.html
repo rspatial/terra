@@ -41,10 +41,9 @@
 
 <meta property="og:title" content="Apply a function to layers of a SpatRaster, or sub-datasets of a SpatRasterDataset — lapp" />
 <meta property="og:description" content="Apply a function to each cell of a SpatRaster, using layers as arguments.
-The number of arguments in function fun must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function : fun=function(x,y){return(x*y)} percentage: fun=function(x,y){return(100 * x / y)}. If you combine three layers you could use fun=function(x,y,z){return((x + y) * z)}
-Before you use the function, test it to make sure that it works for vectors (not only for single numbers). That is, it must return the same number of elements as its input vectors, or multiples of that. Make sure it also returns the same number of values when some or all input values are NA. Also, the function must return a vector or matrix, not a data.frame.
-Use app for summarize functions such as sum, that take any number of arguments; and tapp to so for groups of layers.
-Use sapp to apply to all layers of a SpatRaster a functio that only takes a single layer SpatRaster (these are rare)." />
+The number of arguments in function fun must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function: fun=function(x,y){return(x*y)} percentage: fun=function(x,y){return(100 * x / y)}. If you combine three layers you could use fun=function(x,y,z){return((x + y) * z)}
+Before you use the function, test it to make sure that it is vectorized. That is, it should work for vectors longer than one, not only for single numbers. The function must return the same number of elements as its input vectors, or multiples of that. Also make sure that the function is NA-proof: it should returns the same number of values when some or all input values are NA. And the function must return a vector or a matrix, not a data.frame.
+Use app for summarize functions such as sum, that take any number of arguments; and tapp to do so for groups of layers." />
 
 
 
@@ -122,20 +121,16 @@ Use sapp to apply to all layers of a SpatRaster a functio that only takes a sing
 
     <div class="ref-description">
     <p>Apply a function to each cell of a SpatRaster, using layers as arguments.</p>
-<p>The number of arguments in function <code>fun</code> must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function : <code>fun=function(x,y){return(x*y)}</code> percentage: <code>fun=function(x,y){return(100 * x / y)}</code>. If you combine three layers you could use <code>fun=function(x,y,z){return((x + y) * z)}</code></p>
-<p>Before you use the function, test it to make sure that it works for vectors (not only for single numbers). That is, it must return the same number of elements as its input vectors, or multiples of that. Make sure it also returns the same number of values when some or all input values are <code>NA</code>. Also, the function must return a vector or matrix, not a <code>data.frame</code>.</p>
-<p>Use <code><a href='app.html'>app</a></code> for summarize functions such as <code>sum</code>, that take any number of arguments; and <code><a href='tapp.html'>tapp</a></code> to so for groups of layers.</p>
-<p>Use <code>sapp</code> to apply to all layers of a SpatRaster a functio that only takes a single layer SpatRaster (these are rare).</p>
+<p>The number of arguments in function <code>fun</code> must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function: <code>fun=function(x,y){return(x*y)}</code> percentage: <code>fun=function(x,y){return(100 * x / y)}</code>. If you combine three layers you could use <code>fun=function(x,y,z){return((x + y) * z)}</code></p>
+<p>Before you use the function, test it to make sure that it is vectorized. That is, it should work for vectors longer than one, not only for single numbers. The function must return the same number of elements as its input vectors, or multiples of that. Also make sure that the function is NA-proof: it should returns the same number of values when some or all input values are <code>NA</code>. And the function must return a vector or a matrix, not a <code>data.frame</code>.</p>
+<p>Use <code><a href='app.html'>app</a></code> for summarize functions such as <code>sum</code>, that take any number of arguments; and <code><a href='tapp.html'>tapp</a></code> to do so for groups of layers.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>lapp</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>...</span>, usenames<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRasterDataset</span>
-<span class='fu'>lapp</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>...</span>, recycle<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>sapp</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>...</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+<span class='fu'>lapp</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>...</span>, recycle<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,7 +141,7 @@ Use sapp to apply to all layers of a SpatRaster a functio that only takes a sing
     </tr>
     <tr>
       <th>fun</th>
-      <td><p>for <code>lapp</code>, a function that takes a vector and can be applied to each cell of <code>x</code>; for <code>sapp</code>, a function that takes a SpatRaster argument and can be applied to each layer of <code>x</code>;</p></td>
+      <td><p>a function that takes a vector and can be applied to each cell of <code>x</code></p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -182,7 +177,7 @@ Use sapp to apply to all layers of a SpatRaster a functio that only takes a sing
     <div class='dont-index'><p><code> <a href='app.html'>app</a>, <a href='tapp.html'>tapp</a>,  math</code></p></div>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Use <code>lapply</code> to apply a function that takes a SpatRaster as argument to each layer of a SpatRaster.</p>
+    <p>Use <code><a href='sapp.html'>sapp</a></code> or <code>lapply</code> to apply a function that takes a SpatRaster as argument to each layer of a SpatRaster (that is rarely necessary).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>1</span>  
@@ -228,11 +223,7 @@ Use sapp to apply to all layers of a SpatRaster a functio that only takes a sing
 #&gt; source      : memory 
 #&gt; names       :      lyr.1,      lyr.2,      lyr.3 
 #&gt; min values  : 0.01960784, 0.01851852, 0.01694915 
-#&gt; max values  :  0.8366013,  0.8857143,  1.1235955 </div><div class='input'>
-<span class='co'>## sapp -- rarely needed </span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>sapp</span><span class='op'>(</span><span class='va'>s</span>, <span class='va'>terrain</span><span class='op'>)</span>
-
-</div></pre>
+#&gt; max values  :  0.8366013,  0.8857143,  1.1235955 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
