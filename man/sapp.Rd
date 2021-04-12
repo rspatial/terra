@@ -6,7 +6,7 @@
 \alias{sapp,SpatRaster-method}
 \alias{sapp,SpatRasterDataset-method}
 
-\title{Apply a single layer function to all layers}
+\title{Apply a terra function that takes only a single layer to all layers}
 
 \description{
 Apply to all layers of a SpatRaster a function that only takes a single layer SpatRaster (these are rare). 
@@ -21,7 +21,6 @@ in most cases you can also use \code{lapply} or \code{sapply} for this.
   \item{x}{SpatRaster}
   \item{fun}{a function that takes a SpatRaster argument and can be applied to each layer of \code{x}}
   \item{...}{additional arguments to be passed to \code{fun}} 
-  \item{usenames}{logical. Use the layer names to match the function arguments? If \code{FALSE} matching is by position}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
