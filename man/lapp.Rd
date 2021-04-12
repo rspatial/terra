@@ -2,8 +2,6 @@
 
 \docType{methods}
 
-\alias{sapp}
-\alias{sapp,SpatRaster-method}
 \alias{lapp}
 \alias{lapp,SpatRaster-method}
 \alias{lapp,SpatRasterDataset-method}
@@ -13,26 +11,22 @@
 \description{
 Apply a function to each cell of a SpatRaster, using layers as arguments.
 
-The number of arguments in function \code{fun} must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function : \code{fun=function(x,y){return(x*y)}} percentage: \code{fun=function(x,y){return(100 * x / y)}}. If you combine three layers you could use \code{fun=function(x,y,z){return((x + y) * z)}}
+The number of arguments in function \code{fun} must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function: \code{fun=function(x,y){return(x*y)}} percentage: \code{fun=function(x,y){return(100 * x / y)}}. If you combine three layers you could use \code{fun=function(x,y,z){return((x + y) * z)}}
 
-Before you use the function, test it to make sure that it works for vectors (not only for single numbers). That is, it must return the same number of elements as its input vectors, or multiples of that. Make sure it also returns the same number of values when some or all input values are \code{NA}. Also, the function must return a vector or matrix, not a \code{data.frame}.
+Before you use the function, test it to make sure that it is vectorized. That is, it should work for vectors longer than one, not only for single numbers. The function must return the same number of elements as its input vectors, or multiples of that. Also make sure that the function is NA-proof: it should returns the same number of values when some or all input values are \code{NA}. And the function must return a vector or a matrix, not a \code{data.frame}.
 
-Use \code{\link{app}} for summarize functions such as \code{sum}, that take any number of arguments; and \code{\link{tapp}} to so for groups of layers. 
-
-Use \code{\link{sapp}} to apply to all layers of a SpatRaster a functio that only takes a single layer SpatRaster (these are rare). 
+Use \code{\link{app}} for summarize functions such as \code{sum}, that take any number of arguments; and \code{\link{tapp}} to do so for groups of layers. 
 }
 
 \usage{
 \S4method{lapp}{SpatRaster}(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 
 \S4method{lapp}{SpatRasterDataset}(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list())
-
-\S4method{sapp}{SpatRaster}(x, fun, ..., filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
-  \item{fun}{for \code{lapp}, a function that takes a vector and can be applied to each cell of \code{x}; for \code{sapp}, a function that takes a SpatRaster argument and can be applied to each layer of \code{x};}
+  \item{fun}{a function that takes a vector and can be applied to each cell of \code{x}}
   \item{...}{additional arguments to be passed to \code{fun}} 
   \item{usenames}{logical. Use the layer names to match the function arguments? If \code{FALSE} matching is by position}
   \item{recycle}{logical. Recycle layers to match the subdataset with the largest number of layers}
@@ -48,7 +42,7 @@ SpatRaster
 \seealso{\code{ \link{app}, \link[terra]{tapp},  \link[terra]{math}} }
 
 \note{
-Use \code{lapply} to apply a function that takes a SpatRaster as argument to each layer of a SpatRaster.
+Use \code{\link{sapp}} or \code{lapply} to apply a function that takes a SpatRaster as argument to each layer of a SpatRaster (that is rarely necessary).
 }
 
 \examples{
@@ -87,10 +81,6 @@ pairs(c(x1, x2, x3, x4))
 ## SpatRasterDataset
 x <- sds(s, s[[1]]+50)
 lapp(x, function(x, y) x/y, recycle=TRUE)
-
-## sapp -- rarely needed 
-x <- sapp(s, terrain)
-
 }
  
 \keyword{methods}
