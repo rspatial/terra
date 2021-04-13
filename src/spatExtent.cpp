@@ -177,7 +177,7 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 	std::vector<double> res = resolution();
 	std::vector<double> orig = origin(); 
 
-	// snap points to pixel boundaries
+	// snap points to cell boundaries
 	double xmn, xmx, ymn, ymx;
 	if (snap == "near") {
 		xmn = round((e.xmin-orig[0]) / res[0]) * res[0] + orig[0];
@@ -194,6 +194,8 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 		xmx = std::floor((e.xmax-orig[0]) / res[0]) * res[0] + orig[0];
 		ymn = std::ceil((e.ymin-orig[1]) / res[1]) * res[1] + orig[1];
 		ymx = std::floor((e.ymax-orig[1]) / res[1]) * res[1] + orig[1];
+		if (xmn > xmx) std::swap(xmn, xmx);
+		if (ymn > ymx) std::swap(ymn, ymx);
 	}
 
 	if (xmn == xmx) {
