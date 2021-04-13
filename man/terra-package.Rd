@@ -398,7 +398,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 \section{XX. SpatExtent}{
 
   \tabular{ll}{
-    \code{\link{extent}} \tab Create a SpatExtent object \cr
+    \code{\link{ext}} \tab Create a SpatExtent object \cr
     \code{\link{intersect}} \tab Intersect two SpatExtent objects, same as \code{-}  \cr
     \code{\link{union}} \tab Combine two SpatExtent objects, same as \code{+} \cr
     \code{\link{Math-methods}} \tab round/floor/ceiling of a SpatExtent \cr			
