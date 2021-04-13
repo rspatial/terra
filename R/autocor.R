@@ -104,24 +104,29 @@ setMethod("autocor", signature(x="SpatRaster"),
 				z <- x - unlist(global(x, "mean", na.rm=TRUE))
 				wZiZj <- focal(z, w=w, fun="sum", na.rm=TRUE)
 				wZiZj <- wZiZj * z
-				wZiZj <- unlist(global(wZiZj, "sum"))
-				z2 <- unlist(global(z*z, "sum"))
+				wZiZj <- unlist(global(wZiZj, "sum", na.rm=TRUE))
+				z2 <- unlist(global(z*z, "sum", na.rm=TRUE))
 				n <- ncell(z) - unlist(global(is.na(z), "sum", na.rm=TRUE))
 				zz <- ifel(is.na(x), NA, 1)
 				W <- focal( zz, w=w, fun="sum") 
 				NS0 <- n / unlist(global(W, "sum", na.rm=TRUE))
-				NS0 * wZiZj / z2
+				m <- NS0 * wZiZj / z2
+				names(m) <- names(x)
+				m
 			} else { # geary
 				w <- .getFilter(w, warn=FALSE)
 				i <- trunc(length(w)/2)+1 
-				n <- ncell(x) - unlist(global(is.na(x), "sum"))
+				n <- ncell(x) - unlist(global(is.na(x), "sum", na.rm=TRUE))
 				fun <- function(x,...) sum((x-x[i])^2, ...)
 				f <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
-				Eij <- unlist(global(f, "sum"))
+				Eij <- unlist(global(f, "sum", na.rm=TRUE))
 				xx <- ifel(is.na(x), NA ,1)
 				W <- focal(xx, w=w, na.rm=TRUE ) 
-				z <- 2 * unlist(global(W, "sum")) * unlist(global((x - unlist(global(x, "mean")))^2, "sum"))
-				(n-1)*Eij/z
+				z <- 2 * unlist(global(W, "sum", na.rm=TRUE)) * 
+					unlist(global((x - unlist(global(x, "mean", na.rm=TRUE)))^2, "sum", na.rm=TRUE))
+				g <- (n-1)*Eij/z
+				names(g) <- names(x)
+				g
 			}
 		} else { # local
 			if (method == "moran") {	
@@ -132,7 +137,9 @@ setMethod("autocor", signature(x="SpatRaster"),
 					
 				n <- ncell(x) - unlist(global(is.na(x), "sum", na.rm=TRUE))
 				s2 <- unlist(global(x, "sd")^2 )
-				(z / s2) * lz	
+				m <- (z / s2) * lz	
+				names(m) <- names(x)
+				m				
 			} else {
 				w <- .getFilter(w)
 				i <- trunc(length(w)/2)+1 
@@ -140,7 +147,9 @@ setMethod("autocor", signature(x="SpatRaster"),
 				Eij <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
 				s2 <- unlist(global(x, "sd"))^2 
 				n <- ncell(x) - unlist(global(is.na(x), "sum"))	
-				Eij / s2
+				g <- Eij / s2
+				names(g) <- names(x)
+				g		
 			}
 		}
 	}
