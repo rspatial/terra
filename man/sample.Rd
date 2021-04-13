@@ -45,9 +45,6 @@ In order to assure regularity when requesting a regular sample, the number of ce
 }
 
 
-\details{
-In stead of \code{spatSample(x, size, method="random")} you can also use the equivalent base method \code{sample(x, size)}. The base method also works for sampling the geometries of \code{SpatVector} (you can take a sample from the number of geometries and use that as an index). 
-}
 
 \value{
 numeric or SpatRaster
