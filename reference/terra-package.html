@@ -217,7 +217,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code><a href='classify.html'>classify</a></code></td><td>(Re-)classify values</td></tr>
 <tr><td><code><a href='cover.html'>cover</a></code></td><td>First layer covers second layer except where the first layer is <code>NA</code></td></tr>
 <tr><td><code><a href='initialize.html'>init</a></code></td><td>Initialize cells with new values</td></tr>
-<tr><td><code><a href='mask.html'>mask</a></code></td><td>Replace values in a SpatRaster based on values in another SpatRaster(</td></tr>
+<tr><td><code><a href='mask.html'>mask</a></code></td><td>Replace values in a SpatRaster based on values in another SpatRaster</td></tr>
 <tr><td><code><a href='subst.html'>subst</a></code></td><td>Substitute (replace) cell values</td></tr>
 <tr><td><code><a href='which.lyr.html'>which.lyr</a></code></td><td>which is the first layer that is <code>TRUE</code>?</td></tr>
 <tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr>
@@ -641,23 +641,19 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <table class='table'>
 <tr><td><code><a href='area.html'>area</a></code></td><td>By default, <code>terra</code> returns the summed area of the raster cells that are not <code>NA</code>.</td></tr>
 <tr><td></td><td><code>raster</code> returns a <code>RasterLayer</code>. Use <code>sum=FALSE</code> in <code>terra</code> for that behavior</td></tr>
-<tr><td>-</td><td></td></tr>
 <tr><td><code><a href='as.spatvector.html'>as.polygons</a></code></td><td>By default, <code>terra</code> returns dissolved polygons</td></tr>
-<tr><td>-</td><td></td></tr>
 <tr><td><code><a href='extract.html'>extract</a></code></td><td>By default, <code>terra</code> returns a matrix, with the first column the sequential ID of the vectors.</td></tr>
 <tr><td></td><td><code>raster</code> returns a list (for lines or polygons) or a matrix (for points, but without the ID</td></tr>
 <tr><td></td><td>column. You can use <code>list=TRUE</code> to get the results as a list</td></tr>
-<tr><td>-</td><td></td></tr>
 <tr><td><code><a href='values.html'>values</a></code></td><td><code>terra</code> always returns a matrix. <code>raster</code> returns a vector for a <code>RasterLayer</code></td></tr>
-<tr><td>-</td><td></td></tr>
 <tr><td><code><a href='summarize-generics.html'>Summary-methods</a></code></td><td>With <code>raster</code>, <code><a href='summarize-generics.html'>mean(x, y)</a></code> and <code>mean(stack(x, y)</code> return the same result, a single</td></tr>
 <tr><td></td><td>layer with the mean of all cell values. This is also what <code>terra</code> returns with</td></tr>
 <tr><td></td><td><code><a href='summarize-generics.html'>mean(c(x, y))</a></code>, but with <code><a href='summarize-generics.html'>mean(x, y)</a></code> the parallel mean is returned -- that is, the</td></tr>
 <tr><td></td><td>computation is done layer-wise, and the number of layers in the output is the same as</td></tr>
-<tr><td></td><td>that of <code>x</code> and <code>y</code> (or the larger of the two if they are not the same).</td></tr>
-<tr><td></td><td>This affects all summary functions (<code>sum</code>, <code>mean</code>, <code>median</code>, <code>which.min</code>, <code>which.max</code>,</td></tr>
-<tr><td></td><td><code>min</code>, <code>max</code>, <code>prod</code>, <code>any</code>, <code>all</code>, <code>stdev</code>), except <code>range</code>, which is not</td></tr>
-<tr><td></td><td>implemented for this case (you can use <code>min</code> and <code>max</code> instead)</td></tr>
+<tr><td></td><td>that of <code>x</code> and <code>y</code> (or the larger of the two if they are not the same). This affects</td></tr>
+<tr><td></td><td>all summary functions (<code>sum</code>, <code>mean</code>, <code>median</code>, <code>which.min</code>, <code>which.max</code>, <code>min</code>, <code>max</code>,</td></tr>
+<tr><td></td><td><code>prod</code>, <code>any</code>, <code>all</code>, <code>stdev</code>), except <code>range</code>, which is not implemented for this case</td></tr>
+<tr><td></td><td>(you can use <code>min</code> and <code>max</code> instead)</td></tr>
 </table>
 
 
