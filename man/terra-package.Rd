@@ -22,7 +22,8 @@ The \code{terra} package is conceived as a replacement of the \code{raster} pack
 Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet (they are not hyperlinked). 
 }
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
+\section{}{
+---------------------------------------------------------------------------------------------------------------------
 
 \bold{SpatRaster}
 
@@ -46,7 +47,7 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
-    \code{\link{mosaic}} \tab Combine SpatRasters with different extents and a function for the values in overlapping areas \cr
+    \code{\link{mosaic}} \tab Combine SpatRasters with different extents using a function for overlapping cells \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
     \code{\link{expand}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
@@ -69,9 +70,9 @@ Also see the methods in section VIII
 \subsection{Apply-like methods}{
 
   \tabular{ll}{
-    \code{\link{app}} \tab Apply a function to cells, across layers (as in \code{base::apply}) \cr
-    \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply})\cr
-    \code{\link{lapp}} \tab Apply a function to cells using the layers as variables\cr
+    \code{\link{app}} \tab Apply a function to all cells, across layers, typically to summarize (as in \code{base::apply}) \cr
+    \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply} and \code{base::aggregate})\cr
+    \code{\link{lapp}} \tab Apply a function to using the layers of a SpatRaster as variables\cr
     \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
 	}
@@ -81,10 +82,13 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{Arith-methods}} \tab Standard arithmetic methods (\code{+, -, *, ^, \%\%, \%/\%, /}) \cr
-    \code{\link{Compare-methods}} \tab Comparison methods (\code{==, !=, >, <, <=, >=}) \cr
+    \code{\link{Compare-methods}} \tab Comparison methods for SpatRaster (\code{==, !=, >, <, <=, >=}) \cr
     \code{\link{Logic-methods}} \tab Boolean methods (\code{!, &, |}) \cr
-	\code{\link{Math-methods}} \tab Math methods like \code{abs, sqrt, trunc, log, log10, exp, sin, round} \cr	
-    \code{\link{Summary-methods}} \tab Summary methods (\code{mean, max, min, median, sum, range, prod, any, all, stdev, which.min, which.max}) \cr
+	\code{\link{Math-methods}} \tab \code{abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod,} \cr	
+	\tab \code{cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh,} \cr	 
+	\tab \code{exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}\cr
+    \code{\link{Summary-methods}} \tab \code{mean, max, min, median, sum, range, prod,} \cr
+    \tab \code{any, all, stdev, which.min, which.max}\cr
 	}
 }
 
@@ -95,7 +99,7 @@ Also see the methods in section VIII
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
-    \code{\link{mask}} \tab Use values from first SpatRaster except where cells of the mask SpatRaster are \code{NA} (or another value of choice)\cr
+    \code{\link{mask}} \tab Replace values in a SpatRaster based on values in another SpatRaster(\cr
     \code{\link{subst}} \tab Substitute (replace) cell values \cr
     \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
 	
@@ -185,10 +189,10 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{xmax}} \tab The maximum x coordinate (or longitude) \cr
     \code{\link{ymin}} \tab The minimum y coordinate (or latitude) \cr
     \code{\link{ymax}} \tab The maximum y coordinate (or latitude) \cr
-	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates (a.k.a. "bounding box") \cr
+	\code{\link{ext}} \tab Get or set the extent (minimum and maximum x and y coordinates ("bounding box") \cr
 	\code{\link{origin}} \tab The origin of a SpatRaster\cr
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
-    \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system; and if it has global coverage \cr
+    \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
     \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr	
     \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr		
     \code{\link{NAflag}} \tab Set the \code{NA} value (for reading from a file with insufficient metadata) \cr
@@ -223,8 +227,8 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \subsection{Basic}{
   \tabular{ll}{
-    \code{\link{writeRaster}} \tab Write all values of SpatRaster to disk \cr
-    \code{\link{writeCDF}} \tab Write netCDF files \cr
+    \code{\link{writeRaster}} \tab Write all values of SpatRaster to disk. You can set the filetype, datatype, compression. \cr
+    \code{\link{writeCDF}} \tab Write SpatRaster data to a netCDF file\cr
  	}
 }
 
@@ -242,7 +246,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 \section{XI. Miscellaneous SpatRaster methods}{
 
 \tabular{ll}{
-    \code{\link{terraOptions}} \tab Show, set, save or get session options \cr
+    \code{\link{terraOptions}} \tab Show, set, or get session options, mostly to control memory use and to set write options\cr
     \code{\link{sources}} \tab Show the data sources of a SpatRaster \cr
     \code{\link{tmpFiles}} \tab Show or remove temporary files \cr
     \code{\link{canProcessInMemory}} \tab Test whether a file can be created in memory \cr
@@ -250,12 +254,12 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{readStop}} \tab Close file connections \cr
     \code{\link{inMemory}} \tab Are the cell values in memory? \cr
     \code{\link{fromDisk}} \tab Are the cell values read from a file? \cr	
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 }
 
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
+\section{}{
+---------------------------------------------------------------------------------------------------------------------
 
 \bold{SpatRasterDataSet}
 
@@ -267,15 +271,15 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
 
 \tabular{ll}{
-  \code{\link{sds}} \tab Create a SpatRasterDataset \cr
+  \code{\link{sds}} \tab Create a SpatRasterDataset from a file with subdatasets (ncdf or hdf) or from SpatRaster objects \cr
   \code{[} or \code{$} \tab Extract a SpatRaster \cr
   \code{\link{names}} \tab Get the names of the sub-datasets \cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }
 }
 
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
+\section{}{
+---------------------------------------------------------------------------------------------------------------------
 
 \bold{SpatVector}
 
@@ -305,9 +309,9 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{ncol}}\tab The number of columns (of the attributes)\cr
   \code{\link{nrow}} \tab The number of rows (of the geometries and attributes)\cr
   \code{\link{names}} \tab Get or set the layer names \cr	
-  \code{\link{ext}} \tab Get the extent (minimum and maximum x and y coordinates (a.k.a. "bounding box") \cr
+  \code{\link{ext}} \tab Get the extent (minimum and maximum x and y coordinates ("bounding box") \cr
   \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
-  \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system; and if it has global coverage \cr
+  \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
@@ -359,17 +363,18 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 \section{XVIII. Change geometries (for display, experimentation)}{
 
 \tabular{ll}{
-  \code{\link{shift}} \tab change the position geometries \cr
+  \code{\link{shift}} \tab change the position geometries by shifting their coordinates in horizontal and/or vertical direction\cr
   \code{\link{spin}}\tab rotate geometries around an origin\cr
   \code{\link{rescale}} \tab shrink (or expand) geometries, for example to make an inset map \cr
   \code{\link{flip}} \tab flip geometries vertially or horizontally\cr
   \code{\link{t}} \tab transpose geometries (switch x and y)\cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
+
 }}
 
 
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
+\section{}{
+---------------------------------------------------------------------------------------------------------------------
 
 \bold{Spat* Collections}
 
@@ -377,17 +382,18 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 
 
 \section{XIX. Collections}{
-A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the elements do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects. 
+A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects. 
 
 \tabular{ll}{
-\code{\link{svc}} \tab create a SpatRasterCollection\cr
-\code{\link{length}} \tab how many elements does the collection have?\cr
-\code{\link{[}} \tab extract an element\cr
+\code{\link{svc}} \tab create a SpatRasterCollection from a set of SpatRaster objects\cr
+\code{\link{length}} \tab how many SpatRasters does the SpatRasterCollection have?\cr
+\code{\link{[}} \tab extract a SpatRastert\cr
 }}
 
 
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
+\section{}{
+---------------------------------------------------------------------------------------------------------------------
 
 \bold{SpatExtent}
 
@@ -398,7 +404,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 \section{XX. SpatExtent}{
 
   \tabular{ll}{
-    \code{\link{ext}} \tab Create a SpatExtent object \cr
+    \code{\link{ext}} \tab Create a SpatExtent object. For example to \code{\link{crop}} a Spatial dataset\cr
     \code{\link{intersect}} \tab Intersect two SpatExtent objects, same as \code{-}  \cr
     \code{\link{union}} \tab Combine two SpatExtent objects, same as \code{+} \cr
     \code{\link{Math-methods}} \tab round/floor/ceiling of a SpatExtent \cr			
@@ -410,7 +416,8 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{
+\section{}{
+---------------------------------------------------------------------------------------------------------------------
 
 \bold{General methods}
 
@@ -454,16 +461,16 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 
 \subsection{Interacting with a map}{
   \tabular{ll}{
-    \code{\link{zoom}} \tab Zoom in to a part of a map \cr
+    \code{\link{zoom}} \tab Zoom in to a part of a map by drawing a bounding box on it \cr
     \code{\link{click}} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
-    \code{\link{select}} \tab Select a spatial subset of a SpatRaster or SpatVector \cr
+    \code{\link{select}} \tab Select a spatial subset of a SpatRaster or SpatVector by drawing on a map\cr
     \code{\link{draw}} \tab Create a SpatExtent or SpatVector by drawing on a map \cr
 	}
 }
 	
 \subsection{Other plots}{
   \tabular{ll}{
-    \code{\link{plot}} \tab x-y scatter plot of the values of two SpatRaster objects\cr
+    \code{\link{plot}} \tab x-y scatter plot of the values of (a sample of) the layers of two SpatRaster objects\cr
     \code{\link{hist}} \tab Histogram of SpatRaster values \cr
     \code{\link{barplot}} \tab Barplot of a SpatRaster \cr
     \code{\link{density}} \tab Density plot of SpatRaster values \cr
@@ -473,10 +480,21 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 }
 }
 
-\section{XXIII. Comparison with the raster package}{
 
-\code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but 
-note the following important differences in methods names with the 'raster' package
+
+\section{}{
+---------------------------------------------------------------------------------------------------------------------
+
+\bold{Comparison with the raster package}
+
+---------------------------------------------------------------------------------------------------------------------}
+
+
+\section{XXIII. New method names}{
+
+
+\code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
+
 
 \tabular{ll}{
 \bold{raster package} \tab \bold{terra package}\cr
@@ -508,27 +526,41 @@ note the following important differences in methods names with the 'raster' pack
 \code{layerize}\tab\code{\link{separate}}\cr
 \code{clump}\tab\code{\link{patches}}\cr
 }
+}
+
+\section{XXIV. Changed behavior}{
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
 
 \tabular{ll}{
-\code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}. \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
+\code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}.\cr
+\tab \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
 - \tab \cr
 \code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
 - \tab \cr
-\code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID column. You can use \code{list=TRUE} to get the results as a list\cr
+\code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \cr
+\tab \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID\cr
+\tab column. You can use \code{list=TRUE} to get the results as a list\cr
 - \tab \cr
 \code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
 - \tab \cr
-\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single layer with the mean of all cell values. This is also what \code{terra} returns with \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the computation is done layer-wise, and the number of layers in the output is the same as that of \code{x} and \code{y} (or the larger of the two if they are not the same). This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case (you can use \code{min} and \code{max} instead) \cr
+\code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single\cr
+\tab layer with the mean of all cell values. This is also what \code{terra} returns with \cr
+\tab \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the\cr
+\tab computation is done layer-wise, and the number of layers in the output is the same as\cr
+\tab  that of \code{x} and \code{y} (or the larger of the two if they are not the same).\cr
+\tab This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max},\cr
+\tab \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not \cr
+\tab implemented for this case (you can use \code{min} and \code{max} instead) \cr
 }
 }
 
 
-\section{-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------}{.}
+\section{}{
+---------------------------------------------------------------------------------------------------------------------}
 
-
-\author{Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
+\section{Author}{
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
 
 \section{Acknowledgments}{
 This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{filing bug reports}. The feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Gerald Nelson, and Michael Sumner have been especially helpful.
