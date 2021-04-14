@@ -8,9 +8,7 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 
 `terra` is an R package that replaces [raster](https://github.com/rspatial/raster).
-It has a very similar interface, but it is simpler and much faster. It was first released on 20 March 2020.
-
-`terra` mostly relies on two classes, SpatRaster and SpatVector, to represent spatial data. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html).
+It has a very similar interface, but it is simpler, much faster and can do more. It was first released on 20 March 2020. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html).
 
 
 ## Installation

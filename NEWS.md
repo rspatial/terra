@@ -1,4 +1,5 @@
-# development version 
+
+# version under development
 
 ## new
 
@@ -13,4 +14,6 @@
 
 # version 1.1-17
 
-No updates for this or earlier versions
+Submitted to CRAN
+
+No news for this or earlier versions

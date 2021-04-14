@@ -99,7 +99,7 @@ Also see the methods in section VIII
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
-    \code{\link{mask}} \tab Replace values in a SpatRaster based on values in another SpatRaster(\cr
+    \code{\link{mask}} \tab Replace values in a SpatRaster based on values in another SpatRaster\cr
     \code{\link{subst}} \tab Substitute (replace) cell values \cr
     \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
 	
@@ -535,23 +535,19 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 \tabular{ll}{
 \code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}.\cr
 \tab \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
-- \tab \cr
 \code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
-- \tab \cr
 \code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \cr
 \tab \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID\cr
 \tab column. You can use \code{list=TRUE} to get the results as a list\cr
-- \tab \cr
 \code{\link{values}}\tab \code{terra} always returns a matrix. \code{raster} returns a vector for a \code{RasterLayer}\cr
-- \tab \cr
 \code{\link{Summary-methods}}\tab With \code{raster}, \code{mean(x, y)} and \code{mean(stack(x, y)} return the same result, a single\cr
 \tab layer with the mean of all cell values. This is also what \code{terra} returns with \cr
 \tab \code{mean(c(x, y))}, but with \code{mean(x, y)} the parallel mean is returned -- that is, the\cr
 \tab computation is done layer-wise, and the number of layers in the output is the same as\cr
-\tab  that of \code{x} and \code{y} (or the larger of the two if they are not the same).\cr
-\tab This affects all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max},\cr
-\tab \code{min}, \code{max}, \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not \cr
-\tab implemented for this case (you can use \code{min} and \code{max} instead) \cr
+\tab  that of \code{x} and \code{y} (or the larger of the two if they are not the same). This affects \cr
+\tab all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max},\cr
+\tab \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case \cr
+\tab (you can use \code{min} and \code{max} instead) \cr
 }
 }
 
