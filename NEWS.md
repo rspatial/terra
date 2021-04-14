@@ -1,5 +1,7 @@
 
-# version under development
+# version 2.0.x
+
+Under development
 
 ## new
 
@@ -16,4 +18,11 @@
 
 Submitted to CRAN
 
-No news for this or earlier versions
+## major changes 
+
+* `c-SpatVector-method` now returns a list. `rbind` is used to append SpatVector objects.
+* overhaul of handling of factors. `rats` has been removed, and `levels` and `cats` have changed.
+
+# version 1.1-4
+
+- No news for this or earlier versions
