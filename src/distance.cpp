@@ -31,7 +31,8 @@
 
 
 #include <vector>
-#include <math.h>
+//#include <math.h>
+#include <cmath>
 #include "ggeodesic.h"
 #include "recycle.h"
 

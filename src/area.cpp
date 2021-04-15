@@ -16,7 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include "ggeodesic.h"
 #include "spatRaster.h"
 #include "distance.h"
