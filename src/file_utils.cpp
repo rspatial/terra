@@ -90,6 +90,12 @@ std::string get_path(const std::string filename) {
 	return result;
 }
 
+bool filepath_exists(const std::string& name) {
+	std::string p = get_path(name);
+	return path_exists(p);
+}
+
+
 
 bool can_write(std::string filename, bool overwrite, std::string &msg) {
 	if (file_exists(filename)) {
