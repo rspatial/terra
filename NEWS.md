@@ -10,18 +10,18 @@ Under development
 
 ## bug fixes
 
-* `extract` did not work for horizontal or vertical lines as their extent was considered invalid (bug reported by Monika Tomaszewska)
-* `autocor` did not handle NA values [#192](https://github.com/rspatial/terra/issues/192)
+- `extract` did not work for horizontal or vertical lines as their extent was considered invalid (bug reported by Monika Tomaszewska)
+- `autocor` did not handle NA values [#192](https://github.com/rspatial/terra/issues/192)
+- `nearest` now works for angular coordinates
 
 
 # version 1.1-17
-
-Submitted to CRAN
 
 ## major changes 
 
 * `c-SpatVector-method` now returns a list. `rbind` is used to append SpatVector objects.
 * overhaul of handling of factors. `rats` has been removed, and `levels` and `cats` have changed.
+
 
 # version 1.1-4
 

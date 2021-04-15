@@ -285,7 +285,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
 	CSLDestroy( papszOptions );
 	if (poDS == NULL) {
-		setError("failed writing "+ driver + " file");
+		setError("failed writing "+ driver + " file. Invalid path?");
 		GDALClose( (GDALDatasetH) poDS );
 		return false;	
 	}
