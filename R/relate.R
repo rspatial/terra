@@ -137,10 +137,20 @@ setMethod("nearest", signature(x="SpatVector"),
 		}
 		z <- messages(z, "nearest")
 		if (geomtype(z) == "points") { #lonlat points
-			att <- data.frame(1:nrow(x), coords(x), z$id+1, coords(z), z$distance)
-			names(att) <- c("from_id", "from_x", "from_y", "to_id", "to_x", "to_y", "distance")
-			values(z) <- att
-			return(z)
+			if (lines) {
+				x <- z[,c(2,5), drop=T]
+				y <- z[,c(3,6), drop=T]
+				geom <- cbind(rep(1:nrow(x), each=2), 1, as.vector(t(x)), as.vector(t(y)))
+				zz <- vect(geom, "lines", crs=crs(z))
+				values(zz) <- values(z)
+				zz$to_id = zz$to_id + 1
+				zz$from_id = zz$from_id + 1
+				return(zz)
+			} else {
+				z$from_id = z$from_id + 1
+				z$to_id = z$to_id + 1
+				return(z)
+			}
 		} else {
 			if (lines) return(z)
 			dis <- perimeter(z)

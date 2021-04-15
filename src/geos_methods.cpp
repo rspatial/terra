@@ -934,7 +934,14 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 			std::vector<std::vector<double>> pv = v.coordinates();
 			nearest_lonlat(id, dist, nlon, nlat, p[0], p[1], pv[0], pv[1]);
 			out.setPointsGeometry(nlon, nlat);
-			out.df.add_column(id, "id");
+			std::vector<long> fromid(id.size());
+			std::iota(fromid.begin(), fromid.end(), 0);
+			out.df.add_column(fromid, "from_id");
+			out.df.add_column(p[0], "from_lon");
+			out.df.add_column(p[1], "from_lat");	
+			out.df.add_column(id, "to_id");
+			out.df.add_column(nlon, "to_lon");
+			out.df.add_column(nlat, "to_lat");
 			out.df.add_column(dist, "distance");					
 			return out;
 		} else {

@@ -412,7 +412,7 @@ void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<d
 				nlon[i] = lon2[j];
 				nlat[i] = lat2[j];
 			}
-		}		
+		}
 	}
 }
 
