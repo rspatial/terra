@@ -89,7 +89,7 @@ class SpatRasterSource {
 		std::vector<size_t> m_counts;
 		std::vector<size_t> m_order;
 		std::vector<size_t> m_subset;
-		bool m_hasNA;
+		bool m_hasNA = false;
 		double m_missing_value;
 
 		

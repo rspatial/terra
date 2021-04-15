@@ -1,4 +1,5 @@
 #include "geos_spat.h"
+#include "distance.h"
 
 
 std::vector<std::string> SpatVector::wkt() {
@@ -914,10 +915,34 @@ SpatVector SpatVector::erase(SpatVector v) {
 
 SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 	SpatVector out;
+		
 	if ((size() == 0) || (v.size()==0)) {
 		out.setError("empty SpatVecor(s)");
 		return out;
 	}
+	if (!srs.is_equal(v.srs)) {
+		out.setError("CRSs do not match");
+		return out;
+	}
+	out.srs = srs;
+	
+	if (is_lonlat()) {
+		if (type() == "points") {
+			std::vector<double> nlon, nlat, dist;
+			std::vector<long> id;
+			std::vector<std::vector<double>> p = coordinates();
+			std::vector<std::vector<double>> pv = v.coordinates();
+			nearest_lonlat(id, dist, nlon, nlat, p[0], p[1], pv[0], pv[1]);
+			out.setPointsGeometry(nlon, nlat);
+			out.df.add_column(id, "id");
+			out.df.add_column(dist, "distance");					
+			return out;
+		} else {
+			out.setError("not yet implement for non-point lonlat vector data");
+			return out;
+		}		
+	}
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	if (parallel) {
 		if ((size() != v.size())) {
@@ -962,6 +987,25 @@ SpatVector SpatVector::nearest_point() {
 		//return *this;
 	}
 	size_t n = size();
+	out.srs = srs;
+	
+	if (is_lonlat()) {
+		if (type() == "points") {
+			std::vector<double> nlon, nlat, dist;
+			std::vector<long> id;
+			std::vector<std::vector<double>> p = coordinates();
+			nearest_lonlat_self(id, dist, nlon, nlat, p[0], p[1]);
+			out.setPointsGeometry(nlon, nlat);
+			out.df.add_column(id, "id");
+			out.df.add_column(dist, "distance");		
+			return out;
+		} else {
+			out.setError("not yet implement for non-point lonlat vector data");
+			return out;
+		}		
+	}
+
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(n);

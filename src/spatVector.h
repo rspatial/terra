@@ -112,7 +112,7 @@ class SpatVector {
 		SpatVector deepCopy() {return *this;}
 
 		SpatExtent getExtent();
-		bool is_geographic();
+//		bool is_geographic();
 		bool is_lonlat();
 		bool could_be_lonlat();
 		std::string type();
@@ -153,6 +153,7 @@ class SpatVector {
 		SpatVector remove_rows(std::vector<unsigned> range);
 
 		void setGeometry(std::string type, std::vector<unsigned> gid, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<unsigned> hole);
+		void setPointsGeometry(std::vector<double> x, std::vector<double> y);
 
 		std::vector<double> area();
 		std::vector<double> length();

@@ -192,7 +192,7 @@ bool SpatSRS::is_same(std::string other, bool ignoreempty) {
 }
 
 
-bool SpatSRS::is_geographic() {
+bool SpatSRS::is_lonlat() {
 	OGRSpatialReference x;
 	if (wkt.size() < 2) {
 		return false;

@@ -216,16 +216,13 @@ size_t SpatVector::size() {
 	return geoms.size();
 }
 
-bool SpatVector::is_geographic() {
-	return srs.is_geographic();
-}
-
 bool SpatVector::is_lonlat() {
 	return srs.is_lonlat();
 }
 
+
 bool SpatVector::could_be_lonlat() {
-	if (srs.is_geographic()) return true;
+	if (srs.is_lonlat()) return true;
 	SpatExtent e = getExtent();
 	return srs.could_be_lonlat(e);
 }
@@ -580,6 +577,19 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 	}
 	addGeom(g);
 }
+
+
+void SpatVector::setPointsGeometry(std::vector<double> x, std::vector<double> y) {
+	SpatGeom g;
+	g.gtype = points;
+	for (size_t i=0; i<x.size(); i++) {
+		SpatGeom gg = g;
+		SpatPart p(x[i], y[i]);
+		gg.addPart(p);
+		addGeom(gg);
+	}
+}
+
 
 
 SpatVector SpatVector::subset_rows(std::vector<int> range) {

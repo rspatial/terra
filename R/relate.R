@@ -136,24 +136,30 @@ setMethod("nearest", signature(x="SpatVector"),
 			z@ptr <- x@ptr$near_between(y@ptr, pairs)
 		}
 		z <- messages(z, "nearest")
-		if (lines) return(z)
-		
-		dis <- perimeter(z)
-		z <- as.points(z)
-		from <- z[seq(1, nrow(z), 2), ]
-		to <- z[seq(2, nrow(z), 2), ]
-		values(to) <- data.frame(id=1:nrow(to))
-		values(y) <- data.frame(to_id=1:nrow(y))
-		to_int <- as.data.frame(intersect(to, y))
-		if (nrow(to_int) > nrow(to)) {
-			to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"id",drop=FALSE], function(x)x[1]) 
+		if (geomtype(z) == "points") { #lonlat points
+			att <- data.frame(1:nrow(x), coords(x), z$id, coords(z), z$distance)
+			names(att) <- c("from_id", "from_x", "from_y", "to_id", "to_x", "to_y", "distance")
+			values(z) <- att
+			return(z)
+		} else {
+			if (lines) return(z)
+			dis <- perimeter(z)
+			z <- as.points(z)
+			from <- z[seq(1, nrow(z), 2), ]
+			to <- z[seq(2, nrow(z), 2), ]
+			values(to) <- data.frame(id=1:nrow(to))
+			values(y) <- data.frame(to_id=1:nrow(y))
+			to_int <- as.data.frame(intersect(to, y))
+			if (nrow(to_int) > nrow(to)) {
+				to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"id",drop=FALSE], function(x)x[1]) 
+			}
+			to_int <- to_int[,2] 
+			from <- geom(from)[, c("x", "y"),drop=FALSE]
+			to <- geom(to)[, c("x", "y"),drop=FALSE]
+			d <- data.frame(1:nrow(from), from, to_int, to, dis)
+			colnames(d) <- c("from_id", "from_x", "from_y", "to_id", "to_x", "to_y", "distance")
+			vect(d, c("to_x", "to_y"), crs=crs(x))
 		}
-		to_int <- to_int[,2] 
-		from <- geom(from)[, c("x", "y"),drop=FALSE]
-		to <- geom(to)[, c("x", "y"),drop=FALSE]
-		d <- data.frame(1:nrow(from), from, to_int, to, dis)
-		colnames(d) <- c("from_id", "from_x", "from_y", "to_id", "to_x", "to_y", "distance")
-		vect(d, c("to_x", "to_y"), crs=crs(x))
 	}
 )
 

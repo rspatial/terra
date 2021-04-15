@@ -118,7 +118,7 @@ RCPP_MODULE(spat){
     using namespace Rcpp;
 
     class_<SpatSRS>("SpatSRS")
-		.method("is_geographic", &SpatSRS::is_geographic, "")
+		.method("is_lonlat", &SpatSRS::is_lonlat, "")
 		.method("to_meter", &SpatSRS::to_meter, "to_meter")
 	;
 
@@ -304,8 +304,7 @@ RCPP_MODULE(spat){
 		.method("extent", &SpatVector::getExtent, "extent")
 		.method("getDF", &getVectorAttributes, "get attributes")
 		.method("getGeometryWKT", &SpatVector::getGeometryWKT, "getGeometryWKT")
-		.method("isLonLat", &SpatVector::is_lonlat, "isLonLat")
-		.method("isGeographic", &SpatVector::is_geographic, "is geographic")
+		.method("isLonLat", &SpatVector::is_lonlat, "is lonlat")
 		.method("length", &SpatVector::length, "length")
 //		.field("srs", &SpatVector::srs, "srs")
 		.field("messages", &SpatVector::msg, "messages")
@@ -458,7 +457,6 @@ RCPP_MODULE(spat){
 		.property("hasRange", &SpatRaster::hasRange )
 		.property("hasValues", &SpatRaster::hasValues )
 		.property("inMemory", &SpatRaster::inMemory )
-		.method("isGeographic", &SpatRaster::is_geographic, "is_geographic")
 		.method("isLonLat", &SpatRaster::is_lonlat, "isLonLat")
 		.method("isGlobalLonLat", &SpatRaster::is_global_lonlat, "isGlobalLonLat") 
 

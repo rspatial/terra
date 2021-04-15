@@ -21,46 +21,6 @@
 #include <cmath>
 #include "ggeodesic.h"
 
-void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2) {
-	int n = lon1.size();
-	int m = lon2.size();
-	double a = 6378137.0;
-	double f = 1/298.257223563;
-	double azi1, azi2, s12;
-	struct geod_geodesic g;
-	geod_init(&g, a, f);
-
- 	for (int i=0; i < n; i++) {
-		if (std::isnan(lat1[i])) {
-			continue;
-		}
-		geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &d[i], &azi1, &azi2);
-		for (int j=1; j<m; j++) {
-			geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
-			if (s12 < d[i]) {
-				d[i] = s12;
-			}
-		}		
-	}
-}
-
-
-
-void distanceToNearest_plane(std::vector<double> &d, const std::vector<double> &x1, const  std::vector<double> &y1, const std::vector<double> &x2, const std::vector<double> &y2, const double& lindist) {
-	int n = x1.size();
-	int m = x2.size();
-  	for (int i=0; i < n; i++) {
-		if (std::isnan(x1[i])) continue;
-		d[i] = sqrt(pow((x2[0]-x1[i]),2) + pow((y2[0]-y1[i]), 2)) * lindist;
-		for (int j=1; j < m; j++) {
-			double r = sqrt(pow((x2[j]-x1[i]),2) + pow((y2[j]-y1[i]), 2));
-			if (r < d[i]) {
-				d[i] = r * lindist;
-			}
-		}
-	}
-}
-
 
 
 void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const double &lindist) {
@@ -103,7 +63,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		return(out);
 	}
 	
-	bool lonlat = is_geographic(); // m == 0
+	bool lonlat = is_lonlat(); // m == 0
 	unsigned nc = ncol();
 	if (!readStart()) {
 		out.setError(getError());
@@ -180,7 +140,7 @@ std::vector<double> SpatVector::distance(bool sequential) {
 	}
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
-	bool lonlat = is_geographic(); // m == 0
+	bool lonlat = is_lonlat(); // m == 0
 	
 //	if ((!lonlat) || (gtype != "points")) {
 	std::string gtype = type();
@@ -254,7 +214,7 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise) {
 	}
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
-	bool lonlat = is_geographic();
+	bool lonlat = is_lonlat();
 
 	std::string gtype = type();
 	std::string xtype = x.type();
@@ -497,7 +457,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	opt.set_filenames({""});
  	if (!first.writeStart(opt)) { return first; }
 
-//	bool lonlat = is_geographic(); 
+//	bool lonlat = is_lonlat(); 
 	size_t nc = ncol();
 	for (size_t i = 0; i < first.bs.n; i++) {
         v = readBlock(first.bs, i);
@@ -1162,7 +1122,7 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 	g.addPart(SpatPart(0, 0));
 	size_t npts = size();
 
-	if (is_geographic()) {
+	if (is_lonlat()) {
 		std::vector<double> brng(n);
 		for (size_t i=0; i<n; i++) {
 			brng[i] = i * step;

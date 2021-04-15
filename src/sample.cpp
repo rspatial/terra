@@ -599,7 +599,7 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 		return out;
 	}
 */
-	bool lonlat = is_geographic();
+	bool lonlat = is_lonlat();
 	bool random = (method == "random");
 
 	std::vector<double> a = area();

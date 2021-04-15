@@ -104,7 +104,7 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 setMethod("is.lonlat", signature("SpatRaster"), 
 	function(x, perhaps=FALSE, warn=TRUE, global=FALSE) {
 		if (perhaps) {
-			ok <- x@ptr$isGeographic()
+			ok <- x@ptr$isLonLat()
 			if (ok) {
 				if (global) {
 					return(x@ptr$isGlobalLonLat())
@@ -123,7 +123,7 @@ setMethod("is.lonlat", signature("SpatRaster"),
 			}
 			return(ok)
 		} else {
-			ok <- x@ptr$isGeographic()
+			ok <- x@ptr$isLonLat()
 			if (ok && global) {
 				ok <- x@ptr$isGlobalLonLat()
 			}
@@ -135,7 +135,7 @@ setMethod("is.lonlat", signature("SpatRaster"),
 
 setMethod("is.lonlat", signature("SpatVector"), 
 	function(x, perhaps=FALSE, warn=TRUE) {
-		ok <- x@ptr$isGeographic()
+		ok <- x@ptr$isLonLat()
 		if (ok) return(ok)
 		if (perhaps) {
 			ok <- x@ptr$couldBeLonLat()
