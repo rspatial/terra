@@ -96,22 +96,22 @@ setMethod("near", signature(x="SpatVector"),
 			d <- distance(x, pairs=TRUE, symmetrical=symmetrical)
 			d[d[,3] <= distance, 1:2,drop=FALSE]		
 		} else {
-			k <- max(1, min(round(k), nrow(x)))
-			if (k> 1) {
+			k <- max(1, min(round(k), (nrow(x)-1)))
+			if (k > 1) {
 				d <- as.matrix(distance(x, pairs=FALSE))
 				diag(d) <- NA
 				d <- t(apply(d, 1, function(i) order(i)[1:k]))
 				if (k==1) d <- t(d)
-				d <- cbind(id=1:length(x), d)
-				colnames(d)[-1] <- paste0("n", 1:k)
-				d
+				d <- cbind(1:length(x), d)
 			} else {
-			
+				d <- nearest(x)
+				d <- cbind(1:nrow(d), d$to_id)
 			}
+			colnames(d) <- c("id", paste0("k", 1:k))
+			d				
 		}
 	}
 )
-
 
 
 
@@ -137,7 +137,7 @@ setMethod("nearest", signature(x="SpatVector"),
 		}
 		z <- messages(z, "nearest")
 		if (geomtype(z) == "points") { #lonlat points
-			att <- data.frame(1:nrow(x), coords(x), z$id, coords(z), z$distance)
+			att <- data.frame(1:nrow(x), coords(x), z$id+1, coords(z), z$distance)
 			names(att) <- c("from_id", "from_x", "from_y", "to_id", "to_x", "to_y", "distance")
 			values(z) <- att
 			return(z)
