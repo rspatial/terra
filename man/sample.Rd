@@ -62,13 +62,16 @@ spatSample(r, 10, "random")
 ## if you require cell numbers and/or coordinates
 size <- 6
 # random cells 
-cells <- spatSample(r, 6, "random", cells=TRUE)
+cells <- spatSample(r, 6, "random", cells=TRUE, values=FALSE)
+cells <- as.vector(cells)
+
 v <- r[cells]
 xy <- xyFromCell(r, cells)
 cbind(xy, v)
 
 # regular 
-cells <- spatSample(r, 6, "regular", cells=TRUE)
+cells <- spatSample(r, 6, "regular", cells=TRUE, values=FALSE)
+cells <- as.vector(cells)
 v <- r[cells]
 xy <- xyFromCell(r, cells)
 cbind(xy, v)
@@ -76,7 +79,6 @@ cbind(xy, v)
 ## SpatExtent 
 e <- ext(r)
 spatSample(e, 10, "random", lonlat=TRUE)
-
 
 ## SpatVector
 f <- system.file("ex/lux.shp", package="terra")
