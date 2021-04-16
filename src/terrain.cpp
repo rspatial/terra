@@ -240,22 +240,24 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				}
 				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
-				val[i+add] = sqrt( pow(zy, 2) + pow(zx, 2) );
+				val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2) ));
 			}
 		} else {
 		
 			double xw[2] = {-1,1};
 			double yw[2] = {-1,1};
 			for (size_t i=0; i<2; i++) {
-				xw[i] = xw[i] / (-2 * dx);
-				yw[i] = yw[i] / (2 * dy);
+				xw[i] /= -2 * dx;
+				yw[i] /=  2 * dy;
 			}
 			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
 				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
-				val[i+add] =  sqrt( pow(zy, 2) + pow(zx, 2)  );
+				val[i+add] =  atan( sqrt( pow(zy, 2) + pow(zx, 2)  ));
 			}
-		}
+		}	
+
+		
 	} else {
 	
 		if (geo) {
@@ -279,7 +281,7 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 						+ d[i+1-ncol] * xw[3] + d[i+1] * xw[4] + d[i+1+ncol] * xw[5];
 				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
-				val[i+add] = sqrt( pow(zy, 2) + pow(zx, 2)  );
+				val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2)  ));
 							
 			}
 		
@@ -288,22 +290,22 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 			double xw[6] = {-1,-2,-1,1,2,1};
 			double yw[6] = {-1,1,-2,2,-1,1};
 			for (size_t i=0; i<6; i++) {
-				xw[i] = xw[i] / (-8 * dx);
-				yw[i] = yw[i] / (8 * dy);
+				xw[i] /= -8 * dx;
+				yw[i] /= 8 * dy;
 			}
 			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
 				zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
 						+ d[i+1-ncol] * xw[3] + d[i+1] * xw[4] + d[i+1+ncol] * xw[5];
 				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
-				val[i+add] = sqrt( pow(zy, 2) + pow(zx, 2) );
+				val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2) ));
 			}
 		}
 	} 
+
 	if (degrees) {
 		to_degrees(val, add);
-	}
-			
+	} 
 }
 
 
@@ -393,8 +395,8 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 			double xw[6] = {-1,-2,-1,1,2,1};
 			double yw[6] = {-1,1,-2,2,-1,1};
 			for (size_t i=0; i<6; i++) {
-				xw[i] = xw[i] / (-8 * dx);
-				yw[i] = yw[i] / (8 * dy);
+				xw[i] /= -8 * dx;
+				yw[i] /= 8 * dy;
 			}
 			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
 				zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
