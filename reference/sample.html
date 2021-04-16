@@ -126,7 +126,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>spatSample</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>size</span>, method<span class='op'>=</span><span class='st'>"random"</span>, replace<span class='op'>=</span><span class='cn'>FALSE</span>, 
-       na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, as.raster<span class='op'>=</span><span class='cn'>FALSE</span>, cells<span class='op'>=</span><span class='cn'>FALSE</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span>, ext<span class='op'>=</span><span class='cn'>NULL</span>, warn<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+       na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, as.raster<span class='op'>=</span><span class='cn'>FALSE</span>, as.vector<span class='op'>=</span><span class='cn'>FALSE</span>, values<span class='op'>=</span><span class='cn'>TRUE</span>, cells<span class='op'>=</span><span class='cn'>FALSE</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span>, ext<span class='op'>=</span><span class='cn'>NULL</span>, warn<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>spatSample</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>size</span>, method<span class='op'>=</span><span class='st'>"random"</span>, strata<span class='op'>=</span><span class='cn'>NULL</span>, chess<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
@@ -162,12 +162,20 @@ In order to assure regularity when requesting a regular sample, the number of ce
       <td><p>logical. If <code>TRUE</code>, a SpatRaster is returned</p></td>
     </tr>
     <tr>
+      <th>as.vector</th>
+      <td><p>logical. If <code>TRUE</code>, a SpatVector is returned</p></td>
+    </tr>
+    <tr>
+      <th>values</th>
+      <td><p>logical. If <code>TRUE</code> cell values are returned</p></td>
+    </tr>
+    <tr>
       <th>cells</th>
-      <td><p>logical. If <code>TRUE</code> and <code>xy=FALSE</code>, cellnumbers are returned instead of values</p></td>
+      <td><p>logical. If <code>TRUE</code>, cell numbers are returned</p></td>
     </tr>
     <tr>
       <th>xy</th>
-      <td><p>logical. If <code>TRUE</code>, coordinates are returned instead of values</p></td>
+      <td><p>logical. If <code>TRUE</code>, cell coordinates are returned</p></td>
     </tr>
     <tr>
       <th>ext</th>
@@ -210,9 +218,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 #&gt; 7        NaN
 #&gt; 8        497
 #&gt; 9        358
-#&gt; 10       NaN
-#&gt; 11       462
-#&gt; 12       NaN</div><div class='input'><span class='fu'>spatSample</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>10</span>, <span class='st'>"random"</span><span class='op'>)</span>
+#&gt; 10       NaN</div><div class='input'><span class='fu'>spatSample</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>10</span>, <span class='st'>"random"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    elevation
 #&gt; 1        371
 #&gt; 2        449
@@ -223,35 +229,21 @@ In order to assure regularity when requesting a regular sample, the number of ce
 #&gt; 7        358
 #&gt; 8        386
 #&gt; 9        345
-#&gt; 10       406
-#&gt; 11       NaN
-#&gt; 12       NaN</div><div class='input'>
+#&gt; 10       406</div><div class='input'>
 <span class='co'>## if you require cell numbers and/or coordinates</span>
 <span class='va'>size</span> <span class='op'>&lt;-</span> <span class='fl'>6</span>
 <span class='co'># random cells </span>
 <span class='va'>cells</span> <span class='op'>&lt;-</span> <span class='fu'>spatSample</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>6</span>, <span class='st'>"random"</span>, cells<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='va'>r</span><span class='op'>[</span><span class='va'>cells</span><span class='op'>]</span>
-<span class='va'>xy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xyRowColCell.html'>xyFromCell</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>cells</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>xy</span>, <span class='va'>v</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;          x        y elevation
-#&gt; 1 6.504167 50.02917       NaN
-#&gt; 2 6.220833 49.69583       402
-#&gt; 3 6.187500 49.61250       337
-#&gt; 4 5.870833 49.84583       509
-#&gt; 5 5.862500 50.11250       NaN
-#&gt; 6 6.245833 50.08750       NaN
-#&gt; 7 6.379167 49.76250       367</div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in r[cells]: object of type 'S4' is not subsettable</span></div><div class='input'><span class='va'>xy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xyRowColCell.html'>xyFromCell</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>cells</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in (function (classes, fdef, mtable) {    methods &lt;- .findInheritedMethods(classes, fdef, mtable)    if (length(methods) == 1L)         return(methods[[1L]])    else if (length(methods) == 0L) {        cnames &lt;- paste0("\"", vapply(classes, as.character,             ""), "\"", collapse = ", ")        stop(gettextf("unable to find an inherited method for function %s for signature %s",             sQuote(fdef@generic), sQuote(cnames)), domain = NA)    }    else stop("Internal error in finding inherited methods; didn't return a unique method",         domain = NA)})(list(structure("SpatRaster", package = "terra"), "data.frame"),     new("standardGeneric", .Data = function (object, cell, ...)     standardGeneric("xyFromCell"), generic = structure("xyFromCell", package = "raster"),         package = "raster", group = list(), valueClass = character(0),         signature = c("object", "cell"), default = NULL, skeleton = (function (object,             cell, ...)         stop("invalid call in method dispatch to 'xyFromCell' (no default method)",             domain = NA))(object, cell, ...)), &lt;environment&gt;): unable to find an inherited method for function ‘xyFromCell’ for signature ‘"SpatRaster", "data.frame"’</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>xy</span>, <span class='va'>v</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in cbind(xy, v): object 'xy' not found</span></div><div class='input'>
 <span class='co'># regular </span>
 <span class='va'>cells</span> <span class='op'>&lt;-</span> <span class='fu'>spatSample</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>6</span>, <span class='st'>"regular"</span>, cells<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='va'>r</span><span class='op'>[</span><span class='va'>cells</span><span class='op'>]</span>
-<span class='va'>xy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xyRowColCell.html'>xyFromCell</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>cells</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>xy</span>, <span class='va'>v</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;          x        y elevation
-#&gt; 1 6.137500 50.12083       NaN
-#&gt; 2 6.137500 49.97083       412
-#&gt; 3 6.129167 49.82083       328
-#&gt; 4 6.129167 49.67083       228
-#&gt; 5 6.129167 49.52083       275</div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in r[cells]: object of type 'S4' is not subsettable</span></div><div class='input'><span class='va'>xy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='xyRowColCell.html'>xyFromCell</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>cells</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in (function (classes, fdef, mtable) {    methods &lt;- .findInheritedMethods(classes, fdef, mtable)    if (length(methods) == 1L)         return(methods[[1L]])    else if (length(methods) == 0L) {        cnames &lt;- paste0("\"", vapply(classes, as.character,             ""), "\"", collapse = ", ")        stop(gettextf("unable to find an inherited method for function %s for signature %s",             sQuote(fdef@generic), sQuote(cnames)), domain = NA)    }    else stop("Internal error in finding inherited methods; didn't return a unique method",         domain = NA)})(list(structure("SpatRaster", package = "terra"), "data.frame"),     new("standardGeneric", .Data = function (object, cell, ...)     standardGeneric("xyFromCell"), generic = structure("xyFromCell", package = "raster"),         package = "raster", group = list(), valueClass = character(0),         signature = c("object", "cell"), default = NULL, skeleton = (function (object,             cell, ...)         stop("invalid call in method dispatch to 'xyFromCell' (no default method)",             domain = NA))(object, cell, ...)), &lt;environment&gt;): unable to find an inherited method for function ‘xyFromCell’ for signature ‘"SpatRaster", "data.frame"’</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>xy</span>, <span class='va'>v</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in cbind(xy, v): object 'xy' not found</span></div><div class='input'>
 <span class='co'>## SpatExtent </span>
 <span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 <span class='fu'>spatSample</span><span class='op'>(</span><span class='va'>e</span>, <span class='fl'>10</span>, <span class='st'>"random"</span>, lonlat<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
