@@ -78,8 +78,9 @@
 	return(cells)
 }
 
+
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.vector=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
 		size <- round(size)
 		if (size < 1) {
 			error("spatSample", "sample size must be a positive integer")
@@ -88,18 +89,45 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			#error("spatSample", "sample size is larger than ncell(x) and replace=FALSE")
 		#}
 		
-		if (cells || xy) {
-			out <- .sampleCells(x, size, method, replace, na.rm, ext)
-			if (length(out) < size && method == "random") {
-				warn("spatSample", "fewer cells returned than requested")
+		if (cells || xy || as.vector) {
+			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
+			if (method == "random") {
+				if (length(cnrs) < size) {
+					warn("spatSample", "fewer cells returned than requested")
+				} else if (length(cnrs) > size) {
+					cnrs <- cnrs[1:size]
+				}
+			}
+			out <- NULL
+			if (cells) {
+				out <- matrix(cnrs, ncol=1)
+				colnames(out) <- "cell"
 			}
 			if (xy) {
-				out <- xyFromCell(x, out)
+				out <- cbind(out, xyFromCell(x, cnrs))
+			}
+			if (values && hasValues(x)) {
+				e <- extract(x, cnrs)
+				if (is.null(out)) {
+					out <- e				
+				} else {
+					out <- cbind(out, e)
+				}
+			}
+			if (as.vector) {
+				if (xy) {
+					out <- vect(out, geom=c("x", "y"), crs=crs(x))
+				} else {
+					xy <- xyFromCell(x, cnrs)
+					v <- vect(xy, geom=c("x", "y"), crs=crs(x))
+					values(v) <- out
+					return(v)
+				}
 			}
 			return(out)
 		}
 		if (!hasValues(x) & !as.raster) {
-			error("spatSample", "SpatRaster has no values. Use cells=TRUE or as.raster=TRUE")
+			error("spatSample", "SpatRaster has no values")
 		}
 
 		method <- tolower(method)
@@ -166,8 +194,14 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					scells <- .sampleCells(x, size, method, replace)
 					out <- x[scells]
 				}
-				if (warn && (NROW(out) < size)) {
-					warn("spatSample", "fewer values returned than requested")
+				if (NROW(out) < size) {
+					if (warn) warn("spatSample", "fewer values returned than requested")
+				} else if (method == "random") {
+					if (is.null(dim(out))) {
+						out = out[1:size]
+					} else {
+						out = out[1:size, ,drop=FALSE]
+					}
 				}
 				return(out)
 			}
