@@ -126,6 +126,8 @@
 <code>trim</code> has a new argument <code>value</code> that allows trimming rows and columns with other values than the default <code>NA</code>.</li>
 <li>
 <code>rapp</code> has a new argument <code>clamp</code> that allows clamping start and end values to <code>1:nlyr(x)</code>, avoiding that all values are considered <code>NA</code>.</li>
+<li>
+<code>spatSample,SpatRaster-method</code> has new arguments <code>as.vector</code> and <code>values</code>. Getting values, cells and coordinates is no longer mutally exclusive. In response to <a href="https://github.com/rspatial/terra/issues/191"><a href='https://github.com/rspatial/terra/issues/191'>#191</a></a>. Requested by Agustin Lobo</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
