@@ -1773,11 +1773,7 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	}
 
 	if (dissolve) {
-		SpatVector out = polygonize(trunc, values, true, opt);
-		if (!narm) {
-			out.addWarning("cannot keep NAs with dissolve");
-		}
-		return out;
+		return polygonize(trunc, values, narm, dissolve, opt);
 	}
 
 	SpatVector vect;
@@ -1806,7 +1802,6 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 			vect.add_column(vv, nms[i]);
 		}
 	}
-
 
 	SpatGeom g;
 	g.gtype = polygons;
@@ -1842,6 +1837,10 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	}
 
 	std::reverse(std::begin(vect.geoms), std::end(vect.geoms));		
+
+	if (dissolve) {
+		vect = vect.aggregate(vect.get_names()[0], true);
+	}
 
 	if (remove_values) {
 		vect.df = SpatDataFrame();	

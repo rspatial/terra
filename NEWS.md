@@ -7,6 +7,8 @@
 - `trim` has a new argument `value` that allows trimming rows and columns with other values than the default `NA`.
 - `rapp` has a new argument `clamp` that allows clamping start and end values to `1:nlyr(x)`, avoiding that all values are considered `NA`.
 - `spatSample,SpatRaster-method` has new arguments `as.points` and `values`. Getting values, cells and coordinates is no longer mutually exclusive. In response to [#191](https://github.com/rspatial/terra/issues/191). Requested by Agustin Lobo
+- `area,SpatRaster-method` has a new argument `mask=FALSE`.
+- `classify` can now take a single number to request that many cuts.
 
 
 ## bug fixes
@@ -21,8 +23,8 @@
 
 ## major changes 
 
-* `c-SpatVector-method` now returns a list. `rbind` is used to append SpatVector objects.
-* overhaul of handling of factors. `rats` has been removed, and `levels` and `cats` have changed.
+- `c-SpatVector-method` now returns a list. `rbind` is used to append SpatVector objects.
+- overhaul of handling of factors. `rats` has been removed, and `levels` and `cats` have changed.
 
 
 # version 1.1-4

@@ -1,6 +1,10 @@
+#ifndef SPATFACTOR_GUARD
+#define SPATFACTOR_GUARD
+
+
 #include <vector>
 #include <string>
-
+#include <numeric>
 //#include "NA.h"
 #include <algorithm>
 
@@ -130,4 +134,6 @@ public:
 	
 	SpatFactor(){} ;
 };
+
+#endif
 

@@ -469,10 +469,17 @@ int SpatDataFrame::get_fieldindex(std::string field) {
 // only doing this for one column for now
 SpatDataFrame SpatDataFrame::unique(int col) {
 	SpatDataFrame out = subset_cols(col);
+	
 	if (out.hasError()) return out;
 	if (out.itype[0] == 0) {
+		size_t sz = nrow();
+		out.dv[0].erase(std::remove_if(out.dv[0].begin(), out.dv[0].end(),
+            [](const double& value) { return std::isnan(value); }), out.dv[0].end());
+		bool hasNAN = sz > out.dv[0].size();
 		std::sort(out.dv[0].begin(), out.dv[0].end());
 		out.dv[0].erase(std::unique(out.dv[0].begin(), out.dv[0].end()), out.dv[0].end());
+		if (hasNAN) out.dv[0].push_back(NAN);
+		
 	} else if (out.itype[0] == 1) {
 		std::sort(out.iv[0].begin(), out.iv[0].end());
 		out.iv[0].erase(std::unique(out.iv[0].begin(), out.iv[0].end()), out.iv[0].end());
@@ -492,13 +499,11 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 	size_t ccol = iplace[col];
 	if (x.itype[0] == 0) {
 		for (size_t i=0; i<nd; i++) {
-			//for (size_t j=0; j<nu; j++) {
-			//	if ((std::isnan(x.dv[0][j])) && (std::isnan(dv[0][i]))) {
-			//		idx[i] = j;
-			//		continue;					
-			//	} else 
 			for (size_t j=0; j<nu; j++) {
-				if (dv[ccol][i] == x.dv[0][j]) {
+				if (std::isnan(dv[ccol][i]) && (std::isnan(x.dv[0][j]))) {
+					idx[i] = j;
+					continue;					
+				} else if (dv[ccol][i] == x.dv[0][j]) {
 					idx[i] = j;
 					continue;
 				}

@@ -80,6 +80,7 @@ setMethod("dots", signature(x="SpatVector"),
 		gg <- g[[i]]
 		for (j in 1:length(gg)) {
 			a <- gg[[j]]
+			if (any(is.na(a))) next
 			if (any(a[,5] > 0)) {
 				a <- split(a, a[,5]) 
 				a <- lapply(a, function(i) rbind(i, NA))

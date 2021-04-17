@@ -126,8 +126,6 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 }
 
 
-
-
 aggregate_attributes <- function(d, by, fun=NULL, ...) {
 	i <- sapply(d, is.numeric)
 	i[colnames(d) %in% by] <- FALSE
@@ -157,6 +155,7 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 			da <- db
 		}
 	}
+
 	dn <- aggregate(d[, by,drop=FALSE], d[, by, drop=FALSE], length)
 	colnames(dn)[2] = "agg_n"
 	if (NCOL(da)>1) {

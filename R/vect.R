@@ -93,7 +93,7 @@ setMethod("vect", signature(x="XY"), #sfg
 setMethod("vect", signature(x="matrix"), 
 	function(x, type="points", atts=NULL, crs="", ...) {
 		type <- tolower(type)
-		stopifnot(type %in% c("points", "lines", "polygons"))
+		type <- match.arg(tolower(type), c("points", "lines", "polygons"))
 		stopifnot(NCOL(x) > 1)
 
 		p <- methods::new("SpatVector")

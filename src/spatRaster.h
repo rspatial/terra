@@ -328,6 +328,9 @@ class SpatRaster {
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);
 
 
+		virtual ~SpatRaster(){}
+
+
 		void addSource(SpatRaster x);	
 		SpatRaster combineSources(SpatRaster x);
 		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions &opt);
@@ -505,7 +508,7 @@ class SpatRaster {
 		std::vector<std::vector<double>> rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows);
 
 		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt);
-		SpatVector polygonize(bool trunc, bool values, bool aggregate, SpatOptions &opt);
+		SpatVector polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt);
 		SpatVector as_points(bool values, bool narm, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 

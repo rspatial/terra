@@ -34,6 +34,7 @@ std::string double_to_string(double x) {
 }
 
 
+
 std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
 	size_t n = s.size();
 	std::vector<char *> out(n + 1);

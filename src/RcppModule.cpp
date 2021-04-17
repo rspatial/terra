@@ -4,6 +4,10 @@
 #include <memory> //std::addressof
 
 
+//void SpatRaster_finalizer( SpatRaster* ptr ){
+//   Rcpp::Rcout << "finalizer" << std::endl;
+//}
+
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
 	SpatOptions opt;
 	opt.ncopies = n;
@@ -393,6 +397,8 @@ RCPP_MODULE(spat){
 	 // .constructor<std::string, int>()
 	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<size_t>>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
+
+        //.finalizer( &SpatRaster_finalizer)    
 
 		.method("has_error", &SpatRaster::hasError)
 		.method("has_warning", &SpatRaster::hasWarning)

@@ -634,25 +634,31 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 
 
 
-SpatVector SpatRaster::polygonize(bool trunc, bool values, bool aggregate, SpatOptions &opt) {
+SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt) {
 
 	SpatVector out;
 	SpatOptions topt(opt);
 	SpatRaster tmp = subset({0}, topt);
 
-	// to vectorize all values that are not NAN (or Inf)
-	// we could also skip this if we know that min(tmp) > 0
 	bool usemask = false;
 	SpatRaster mask;
-	std::vector<double> rmin = tmp.range_min();
-	if (!(std::isnan(rmin[0]) || rmin[0] > 0)) {
+	if (narm) {
 		usemask = true;
-		mask = tmp.isfinite(opt);	
+		mask = tmp.isfinite(topt);	
+	} else if (trunc) {
+		tmp = tmp.math("trunc", topt);
+		trunc = false;
+	} else if (tmp.sources_from_file()) {
+		// for NAN and INT files. Should have a check for that
+		//tmp = tmp.arith(0, "+", false, topt);
+		// riskier  
+		tmp.readAll();
 	}
+	
 	
 	GDALDatasetH rstDS;
 	if (! tmp.sources_from_file() ) {
-		if (!tmp.open_gdal(rstDS, 0, opt)) {
+		if (!tmp.open_gdal(rstDS, 0, topt)) {
 			out.setError("cannot open dataset");
 			return out;
 		}
@@ -672,9 +678,9 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool aggregate, SpatO
 	srcDS = srcDS->FromHandle(rstDS);
 #endif
 
-	GDALDatasetH rstMask;
 	GDALDataset *maskDS=NULL;
 	if (usemask) {
+		GDALDatasetH rstMask;
 		if (! mask.sources_from_file() ) {
 			if (!mask.open_gdal(rstMask, 0, opt)) {
 				out.setError("cannot open dataset");
@@ -753,9 +759,9 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool aggregate, SpatO
 		GDALClose(maskDS);
 	} else {
 		if (trunc) {
-			err = GDALPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+			err = GDALPolygonize(poBand, NULL, poLayer, 0, NULL, NULL, NULL);
 		} else {
-			err = GDALFPolygonize(poBand, poBand, poLayer, 0, NULL, NULL, NULL);
+			err = GDALFPolygonize(poBand, NULL, poLayer, 0, NULL, NULL, NULL);
 		}
 	}
 	if (err == 4) {
@@ -767,7 +773,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool aggregate, SpatO
 	out.read_ogr(poDS);
 	GDALClose(poDS);
 
-	if (aggregate) {
+	if (aggregate && (out.nrow() > 0)) {
 		out = out.aggregate(name, false);
 	}
 

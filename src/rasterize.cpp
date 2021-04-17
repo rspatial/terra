@@ -7,7 +7,6 @@
 #include "ogrsf_frmts.h"
 
 #include "spatFactor.h"
-#include "string_utils.h"
 #include "recycle.h"
 #include "gdalio.h"
 

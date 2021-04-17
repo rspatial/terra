@@ -274,3 +274,4 @@ void SpatDate::operator =(const SpatDate &d){
 }
 
 #endif
+

@@ -113,3 +113,10 @@ std::vector<T> seq(T start, T end, T increment) {
 	return out;
 }
 
+template <typename T>
+std::vector<T> seq_steps(T start, T end, size_t steps) {
+	double increment = (end - start) / (double) steps;
+	std::vector<T> out = seq(start, end, (T)increment);
+	return out;
+}
+

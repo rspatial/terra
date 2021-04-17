@@ -97,7 +97,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	SpatVector out;
 	int i = where_in_vector(field, get_names(), false);
 	if (i < 0) {
-		out.setError("cannot find field");
+		out.setError("cannot find field: " + field);
 		return out;	
 	}
 	SpatDataFrame uv;

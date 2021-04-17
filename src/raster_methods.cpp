@@ -23,6 +23,7 @@
 #include <cmath>
 #include "math_utils.h"
 #include "file_utils.h"
+#include "string_utils.h"
 
 
 SpatRaster SpatRaster::weighted_mean(SpatRaster w, bool narm, SpatOptions &opt) {
@@ -2356,7 +2357,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						for (size_t j=1; j<nr; j++) {
 							if (v[i] <= rc[j]) {
-								v[i] = j;
+								v[i] = j-1;
 								break;
 							}
 						}
@@ -2371,7 +2372,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						for (size_t j=1; j<nr; j++) {
 							if (v[i] <= rc[j]) {
-								v[i] = j;
+								v[i] = j-1;
 								break;
 							}
 						}
@@ -2390,7 +2391,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						for (size_t j=1; j<nr; j++) {
 							if (v[i] < rc[j]) {
-								v[i] = j;
+								v[i] = j-1;
 								break;
 							}
 						}
@@ -2405,7 +2406,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						for (size_t j=1; j<nr; j++) {
 							if (v[i] < rc[j]) {
-								v[i] = j;
+								v[i] = j-1;
 								break;
 							}
 						}
@@ -2645,9 +2646,35 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		out.setError("matrix must have 1, 2 or 3 columns, and at least one row");
 		return out;
 	}
-	if (nc == 1 && nr == 1) {
-		out.setError("cannot classify with a single number");
-		return out;
+	if (nc == 1) {
+		if (nr == 1) {
+			int breaks = rcl[0][0];
+			if (breaks < 2) {
+				out.setError("cannot classify with a single number that is smaller than 2");
+				return out;
+			}
+			std::vector<bool> hr = hasRange();
+			bool hasR;
+			for (size_t i=0; i<hr.size(); i++) {
+				if (hr[i]) hasR = true;
+			}
+			if (!hasR) setRange();
+			std::vector<double> mn = range_min();
+			std::vector<double> mx = range_max();
+			double mnv = vmin(mn, true);
+			double mxv = vmax(mx, true);
+			rcl[0] = seq_steps(mnv, mxv, breaks);
+		}
+		if (rcl[0].size() < 256) {
+			std::vector<std::string> s;
+			for (size_t i=1; i<rcl[0].size(); i++) {
+				s.push_back(double_to_string(rcl[0][i-1]) + " - " + double_to_string(rcl[0][i]));
+			}
+			for (size_t i=0; i<out.nlyr(); i++) {
+				out.setLabels(i, s);
+			}
+		}
+		nr = rcl[0].size();
 	}
 	for (size_t i=0; i<nc; i++) {
 		if (rcl[i].size() != nr) {
