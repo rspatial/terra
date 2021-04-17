@@ -125,7 +125,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span>, sum<span class='op'>=</span><span class='cn'>TRUE</span>, correct<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span>, sum<span class='op'>=</span><span class='cn'>TRUE</span>, correct<span class='op'>=</span><span class='cn'>FALSE</span>, mask<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
@@ -147,6 +147,10 @@ The perimeter method works only on SpatVector objects, and computes the length o
     <tr>
       <th>correct</th>
       <td><p>logical. If <code>TRUE</code>, the area is not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. This may be considerably slower. Only relevant for planar coordinate references, not for lon/lat data</p></td>
+    </tr>
+    <tr>
+      <th>mask</th>
+      <td><p>logical. If <code>TRUE</code>, cells that are <code>NA</code> in <code>x</code> are also <code>NA</code> in the output</p></td>
     </tr>
     <tr>
       <th>filename</th>
@@ -180,8 +184,8 @@ The perimeter method works only on SpatVector objects, and computes the length o
 <span class='co'>## and compute the global sum to get the same result</span>
 <span class='va'>am</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mask.html'>mask</a></span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>r</span><span class='op'>)</span>
 <span class='fu'><a href='global.html'>global</a></span><span class='op'>(</span><span class='va'>am</span>, <span class='st'>"sum"</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>1000000</span>
-</div><div class='output co'>#&gt;             sum
-#&gt; lyr.1 273986501</div><div class='input'>
+</div><div class='output co'>#&gt;            sum
+#&gt; area 273986501</div><div class='input'>
 <span class='co'># effect of "correct" (commented out as this does not work with old GDAL)</span>
 <span class='co'>#r &lt;- rast(ncol=90, nrow=45, ymin=-80, ymax=80)</span>
 <span class='co'>#m &lt;- project(r, "+proj=merc")</span>

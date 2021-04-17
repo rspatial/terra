@@ -121,7 +121,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>as.polygons</span><span class='op'>(</span><span class='va'>x</span>, trunc<span class='op'>=</span><span class='cn'>TRUE</span>, dissolve<span class='op'>=</span><span class='cn'>TRUE</span>, values<span class='op'>=</span><span class='cn'>TRUE</span>, extent<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>as.polygons</span><span class='op'>(</span><span class='va'>x</span>, trunc<span class='op'>=</span><span class='cn'>TRUE</span>, dissolve<span class='op'>=</span><span class='cn'>TRUE</span>, values<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span>, extent<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>as.points</span><span class='op'>(</span><span class='va'>x</span>, values<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
@@ -170,7 +170,7 @@
     </tr>
     <tr>
       <th>na.rm</th>
-      <td><p>logical. If <code>TRUE</code>, only points for cells that are not <code>NA</code> are returned</p></td>
+      <td><p>logical. If <code>TRUE</code> cells that are <code>NA</code> are ignored</p></td>
     </tr>
     <tr>
       <th>crs</th>
