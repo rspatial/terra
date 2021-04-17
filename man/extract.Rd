@@ -27,7 +27,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, 
-        cells=FALSE, xy=FALSE, weights=FALSE, touches=is.lines(y), ...)
+        cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, factors=TRUE, cells=FALSE, xy=FALSE)
 
@@ -46,7 +46,8 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \item{factors}{logical. If \code{TRUE} the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
-\item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the fraction of each cell that is covered is returned as well, to compute a weighted mean. If \code{fun} is not \code{NULL}, the weighted mean is returned}
+\item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, to compute a weighted mean. If \code{fun} is not \code{NULL}, the weighted mean is returned}
+\item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, to compute a weighted mean. If \code{fun} is not \code{NULL}, the weighted mean is returned}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points}
 }
 

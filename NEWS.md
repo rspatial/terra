@@ -6,7 +6,7 @@
 
 - `trim` has a new argument `value` that allows trimming rows and columns with other values than the default `NA`.
 - `rapp` has a new argument `clamp` that allows clamping start and end values to `1:nlyr(x)`, avoiding that all values are considered `NA`.
-- `spatSample,SpatRaster-method` has new arguments `as.vector` and `values`. Getting values, cells and coordinates is no longer mutally exclusive. In response to [#191](https://github.com/rspatial/terra/issues/191). Requested by Agustin Lobo
+- `spatSample,SpatRaster-method` has new arguments `as.points` and `values`. Getting values, cells and coordinates is no longer mutually exclusive. In response to [#191](https://github.com/rspatial/terra/issues/191). Requested by Agustin Lobo
 
 
 ## bug fixes

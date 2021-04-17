@@ -55,3 +55,4 @@ void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> 
 void nearest_lonlat(std::vector<long> &id, std::vector<double> &d, std::vector<double> &nlon, std::vector<double> &nlat, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2);
 void nearest_lonlat_self(std::vector<long> &id, std::vector<double> &d, std::vector<double> &nlon, std::vector<double> &nlat, const std::vector<double> &lon, const std::vector<double> &lat);
 
+

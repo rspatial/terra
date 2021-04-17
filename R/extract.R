@@ -60,21 +60,24 @@ wmean <- function(p) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, touches=is.lines(y), ...) { 
+function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), ...) { 
 	method = match.arg(tolower(method), c("simple", "bilinear"))
 	hasfun <- !is.null(fun)
+	if (weights && exact) {
+		exact = FALSE
+	}
 	if (hasfun) {
 		cells <- FALSE
 		xy <- FALSE
-		if (weights) list = TRUE
+		if (weights || exact) list = TRUE
 	} 
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#e <- rapply(e, f, how="replace")
 	cn <- names(x)
 	if (list) {
-		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]))
+		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]))
 		x <- messages(x, "extract")
-		if (weights) {
+		if (weights || exact) {
 			if (hasfun) {
 				test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
 				test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
@@ -88,14 +91,14 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		return(e)
 	}
 
-	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]))
+	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]))
 	x <- messages(x, "extract")
 	nc <- nlyr(x)
 	if (cells) {
 		cn <- c(cn, "cell")
 		nc <- nc + 1
 	}
-	if (weights) {
+	if (weights || exact) {
 		cn <- c(cn, "weight")
 		nc <- nc + 1
 	}

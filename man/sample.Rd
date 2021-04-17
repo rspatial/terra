@@ -18,8 +18,8 @@ In order to assure regularity when requesting a regular sample, the number of ce
 }
 
 \usage{
-\S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, 
-       na.rm=FALSE, as.raster=FALSE, as.vector=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
+\S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE,
+	as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
 
@@ -33,7 +33,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
   \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"}}
   \item{na.rm}{logical. If \code{TRUE}, code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
-  \item{as.vector}{logical. If \code{TRUE}, a SpatVector is returned}
+  \item{as.points}{logical. If \code{TRUE}, a SpatVector of points is returned}
   \item{values}{logical. If \code{TRUE} cell values are returned}
   \item{cells}{logical. If \code{TRUE}, cell numbers are returned}
   \item{xy}{logical. If \code{TRUE}, cell coordinates are returned}

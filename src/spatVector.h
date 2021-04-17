@@ -75,10 +75,10 @@ class SpatGeom {
 		bool addHole(SpatHole h);
 		bool setPart(SpatPart p, unsigned i);
 		SpatPart getPart(unsigned i);
-		double area_plane();
-		double area_lonlat(double a, double f);
-		double length_plane();
-		double length_lonlat(double a, double f);
+		//double area_plane();
+		//double area_lonlat(double a, double f);
+		//double length_plane();
+		//double length_lonlat(double a, double f);
 		unsigned size() { return parts.size(); };
 };
 

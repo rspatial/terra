@@ -1773,7 +1773,11 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	}
 
 	if (dissolve) {
-		return polygonize(trunc, opt);
+		SpatVector out = polygonize(trunc, values, true, opt);
+		if (!narm) {
+			out.addWarning("cannot keep NAs with dissolve");
+		}
+		return out;
 	}
 
 	SpatVector vect;

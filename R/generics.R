@@ -56,7 +56,7 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 
 
 setMethod("area", signature(x="SpatRaster"), 
-	function(x, sum=TRUE, correct=FALSE, filename="", ...) {
+	function(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...) {
 		if (sum) {
 			byvalue = FALSE
 			opt <- spatOptions()
@@ -71,7 +71,7 @@ setMethod("area", signature(x="SpatRaster"),
 			}
 		} else {
 			opt <- spatOptions(filename, ...)
-			x@ptr <- x@ptr$rst_area(correct, opt)
+			x@ptr <- x@ptr$rst_area(correct, mask, opt)
 			messages(x, "area")
 		} 
 	}

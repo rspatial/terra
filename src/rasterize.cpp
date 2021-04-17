@@ -98,6 +98,8 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 
 	std::string gtype = x.type();
 	SpatRaster out;
+	out.setNames({"ID"});
+
 	if ( !hasValues() ) update = false;
 	if (update) { // all lyrs
 		out = geometry();
@@ -380,30 +382,90 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	return cells;
 }
 
-std::vector<std::vector<double>> SpatRaster::rasterizeCellsWeights(SpatVector &v, bool touches) { 
+void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v) { 
 // note that this is only for polygons
     SpatOptions opt;
 	opt.progress = nrow()+1;
 	SpatRaster rr = geometry(1);
 	std::vector<unsigned> fact = {10, 10};
 	SpatExtent e = getExtent();
-	e.intersect(v.getExtent());
-	std::vector<std::vector<double>> out(2);
+	SpatExtent ve = v.getExtent();
+	e.intersect(ve);
 	if ( !e.valid() ) {
-		return out;
+		return;
 	}
 	SpatRaster r = rr.crop(v.extent, "out", opt);
 	r = r.disaggregate(fact, opt);
 	std::vector<double> feats(1, 1) ;	
-	r = r.rasterize(v, "", feats, NAN, touches, false, false, false, opt); 
+	r = r.rasterize(v, "", feats, NAN, true, false, false, false, opt); 
 	r = r.arith(100.0, "/", false, opt);
 	r = r.aggregate(fact, "sum", true, opt);
 	SpatVector pts = r.as_points(true, true, opt);
 	SpatDataFrame vd = pts.getGeometryDF();
 	std::vector<double> x = vd.getD(0);
 	std::vector<double> y = vd.getD(1);
-	out[0] = rr.cellFromXY(x, y);
-	out[1] = pts.df.dv[0];
-	return out;
+	cells = rr.cellFromXY(x, y);
+	weights = pts.df.dv[0];
+	return;
 }
+
+void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v) { 
+    
+	SpatOptions opt;
+	opt.progress = nrow()+1;
+	SpatRaster r = geometry(1);
+	r = r.crop(v.extent, "out", opt);
+
+	if (r.ncell() < 1000) {
+		//Rcpp::Rcout << "small" << std::endl;
+		std::vector<double> feats(1, 1) ;	
+		r = r.rasterize(v, "", feats, NAN, true, false, false, false, opt); 
+
+		SpatVector pts = r.as_points(true, true, opt);
+		SpatDataFrame vd = pts.getGeometryDF();
+		std::vector<double> x = vd.getD(0);
+		std::vector<double> y = vd.getD(1);
+		cells = cellFromXY(x, y);
+
+		SpatVector rv = r.as_polygons(false, false, false, true, opt);
+		std::vector<double> csize = rv.area();
+		rv.df.add_column(csize, "area");
+		
+		rv = rv.crop(v);
+		weights = rv.area();
+		for (size_t i=0; i<weights.size(); i++) {
+			weights[i] /= rv.df.dv[0][i];
+		}
+	} else {
+		//Rcpp::Rcout << "large" << std::endl;
+		std::vector<double> feats(1, 1) ;	
+		SpatVector vv = v.as_lines();
+		SpatRaster b = r.rasterize(vv, "", feats, NAN, true, false, false, false, opt); 
+		SpatVector pts = b.as_points(true, true, opt);
+		SpatDataFrame vd = pts.getGeometryDF();
+		std::vector<double> x = vd.getD(0);
+		std::vector<double> y = vd.getD(1);
+		cells = cellFromXY(x, y);
+		
+		SpatVector bv = b.as_polygons(false, false, false, true, opt);
+		std::vector<double> csize = bv.area();
+		bv.df.add_column(csize, "area");
+		bv = bv.crop(v);
+		weights = bv.area();
+		for (size_t i=0; i<weights.size(); i++) {
+			weights[i] /= bv.df.dv[0][i];
+		}
+		
+		// touches = false
+		r = r.rasterize(v, "", feats, NAN, false, false, false, false, opt); 
+		pts = r.as_points(true, true, opt);
+		vd = pts.getGeometryDF();
+		x = vd.getD(0);
+		y = vd.getD(1);
+		std::vector<double> cells2 = cellFromXY(x, y);
+		cells.insert(cells.end(), cells2.begin(), cells2.end());
+		weights.resize(weights.size() + cells2.size(), 1);	
+	}
+}
+
 

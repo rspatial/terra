@@ -80,7 +80,7 @@
 
 
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.vector=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
 		size <- round(size)
 		if (size < 1) {
 			error("spatSample", "sample size must be a positive integer")
@@ -89,7 +89,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			#error("spatSample", "sample size is larger than ncell(x) and replace=FALSE")
 		#}
 		
-		if (cells || xy || as.vector) {
+		if (cells || xy || as.points) {
 			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
 			if (method == "random") {
 				if (length(cnrs) < size) {
@@ -114,7 +114,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					out <- cbind(out, e)
 				}
 			}
-			if (as.vector) {
+			if (as.points) {
 				if (xy) {
 					out <- vect(out, geom=c("x", "y"), crs=crs(x))
 				} else {

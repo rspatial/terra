@@ -97,7 +97,8 @@ setMethod("dim", signature(x="SpatVector"),
 setMethod("as.data.frame", signature(x="SpatVector"), 
 	function(x, geom=NULL) {
 		d <- data.frame(x@ptr$getDF(), check.names=FALSE, fix.empty.names=FALSE, stringsAsFactors=FALSE)
-		#colnames(d) <- x@ptr$names
+		# fix empty names 
+		colnames(d) <- x@ptr$names
 		if (!is.null(geom)) {
 			geom <- match.arg(toupper(geom), c("WKT", "HEX"))
 			g <- geom(x, wkt=geom=="WKT", hex=geom=="HEX")

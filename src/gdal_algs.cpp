@@ -634,23 +634,22 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 
 
 
-SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
+SpatVector SpatRaster::polygonize(bool trunc, bool values, bool aggregate, SpatOptions &opt) {
 
 	SpatVector out;
 	SpatOptions topt(opt);
 	SpatRaster tmp = subset({0}, topt);
 
 	// to vectorize all values that are not NAN (or Inf)
-	// we could skip this if we know that min(tmp) > 0
-	bool usemask;
-	std::vector<double> rmin = tmp.range_min();
+	// we could also skip this if we know that min(tmp) > 0
+	bool usemask = false;
 	SpatRaster mask;
-	if (std::isnan(rmin[0]) || rmin[0] > 0) {
-		usemask = false;
-	} else {
+	std::vector<double> rmin = tmp.range_min();
+	if (!(std::isnan(rmin[0]) || rmin[0] > 0)) {
 		usemask = true;
 		mask = tmp.isfinite(opt);	
 	}
+	
 	GDALDatasetH rstDS;
 	if (! tmp.sources_from_file() ) {
 		if (!tmp.open_gdal(rstDS, 0, opt)) {
@@ -738,8 +737,9 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 
 	GDALRasterBand  *poBand;
 	poBand = srcDS->GetRasterBand(1);
+
 	//int hasNA=1;
-	//poBand->GetNoDataValue(&hasNA);
+	//double naflag = poBand->GetNoDataValue(&hasNA);
 
 	CPLErr err;
 	if (usemask) {
@@ -767,22 +767,17 @@ SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
 	out.read_ogr(poDS);
 	GDALClose(poDS);
 
-	out = out.aggregate(name, false);
+	if (aggregate) {
+		out = out.aggregate(name, false);
+	}
 
+	if (!values) {
+		out.df = SpatDataFrame();
+	} 
 	return out;
 }
 
-/*
-#else
-
-SpatVector SpatRaster::polygonize(bool trunc, SpatOptions &opt) {
-	SpatVector out;
-	out.setError("not supported with your version of GDAL");
-	return out;
-}
-
-#endif
-*/	
+	
 	
 SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) {	
 	SpatRaster out = geometry(1);

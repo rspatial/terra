@@ -493,7 +493,7 @@ class SpatRaster {
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
-		SpatRaster rst_area(bool adjust, SpatOptions &opt);
+		SpatRaster rst_area(bool adjust, bool mask, SpatOptions &opt);
 		std::vector<double> sum_area(bool adjust, SpatOptions &opt);
 		std::vector<std::vector<double>> area_by_value(SpatOptions &opt);
 
@@ -505,7 +505,7 @@ class SpatRaster {
 		std::vector<std::vector<double>> rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows);
 
 		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt);
-		SpatVector polygonize(bool trunc, SpatOptions &opt);
+		SpatVector polygonize(bool trunc, bool values, bool aggregate, SpatOptions &opt);
 		SpatVector as_points(bool values, bool narm, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
@@ -527,11 +527,11 @@ class SpatRaster {
 
 		SpatRaster edges(bool classes, std::string type, unsigned directions, double falseval, SpatOptions &opt);
 		SpatRaster extend(SpatExtent e, SpatOptions &opt);
-		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method="", bool cells=false, bool xy=false, bool weights=false);
-		std::vector<double> extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights);
+		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method="", bool cells=false, bool xy=false, bool weights=false, bool exact=false);
+		std::vector<double> extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact);
 		
 		
-		std::vector<double> vectCells(SpatVector v, bool touches, std::string method, bool weights);
+		std::vector<double> vectCells(SpatVector v, bool touches, std::string method, bool weights, bool exact);
 		std::vector<double> extCells(SpatExtent ext);
 
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
@@ -603,6 +603,9 @@ class SpatRaster {
 		SpatRaster rasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool touches, bool add, bool weights, bool update, SpatOptions &opt);
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches);
 		std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
+
+		void rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v); 
+		void rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v); 
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt);
