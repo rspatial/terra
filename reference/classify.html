@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Classify (or reclassify) cell values — classify" />
 <meta property="og:description" content="Classify values of a SpatRaster. The function (re-)classifies groups of values to other values.
-Classification can be based on ranges &quot;from-to-becomes&quot; or on specific values &quot;is-becomes&quot;, or on &quot;cuts&quot;.
-With &quot;from-to-becomes&quot; or &quot;is-becomes&quot;, classification is done with matrix rcl, in the row order of the matrix. Thus, if there are overlapping ranges or values, the first time a number is within a range determines the reclassification value.
+The classification is done based on the argument rcl. You can classify ranges by specifying a three-column matrix &quot;from-to-becomes&quot; or change specific values by using a two-column matrix &quot;is-becomes&quot;. You can also supply a vector with &quot;cuts&quot; or the &quot;number of cuts&quot;.
+With &quot;from-to-becomes&quot; or &quot;is-becomes&quot; classification is done in the row order of the matrix. Thus, if there are overlapping ranges or values, the first time a number is within a range determines the reclassification value.
 With &quot;cuts&quot; the values are sorted, so that the order in which they are provided does not matter." />
 
 
@@ -121,8 +121,8 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
 
     <div class="ref-description">
     <p>Classify values of a SpatRaster. The function (re-)classifies groups of values to other values.</p>
-<p>Classification can be based on ranges "from-to-becomes" or on specific values "is-becomes", or on "cuts".</p>
-<p>With "from-to-becomes" or "is-becomes", classification is done with matrix <code>rcl</code>, in the row order of the matrix. Thus, if there are overlapping ranges or values, the first time a number is within a range determines the reclassification value.</p>
+<p>The classification is done based on the argument <code>rcl</code>. You can classify ranges by specifying a three-column matrix "from-to-becomes" or change specific values by using a two-column matrix "is-becomes". You can also supply a vector with "cuts" or the "number of cuts".</p>
+<p>With "from-to-becomes" or "is-becomes" classification is done in the row order of the matrix. Thus, if there are overlapping ranges or values, the first time a number is within a range determines the reclassification value.</p>
 <p>With "cuts" the values are sorted, so that the order in which they are provided does not matter.</p>
     </div>
 
@@ -141,7 +141,8 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
       <th>rcl</th>
       <td><p>matrix for classification. This matrix must have 1, 2 or 3 columns. If there are three columns, the first two columns are "from" "to" of the input values, and the third column "becomes" has the new value for that range.</p>  
 <p>The two column matrix ("is", "becomes") can be useful for re-classifying integer values. In that case, the <code>right</code> argument is automatically set to <code>NA</code>.</p>  
-<p>A single column matrix or a vector is interpreted as a set of cuts. In that case the values are classified based on their location inbetween the cut-values</p></td>
+<p>A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location inbetween the cut-values.</p>  
+<p>If a single number is provided, that is used to make that number of cuts, at equal intervals between the lowest and highest values of the SpatRaster.</p></td>
     </tr>
     <tr>
       <th>include.lowest</th>
