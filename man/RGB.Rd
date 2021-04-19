@@ -2,16 +2,20 @@
 
 \docType{methods}
 
+\alias{RGB}
+\alias{RGB,SpatRaster-method}
 \alias{RGB<-}
 \alias{RGB<-,SpatRaster-method}
   
 \title{Declare RGB channels}
 
 \description{
-Declare the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, the sole benefit of this is that \code{\link{plot}} will send the object to \code{\link{plotRGB}}
+Get or set the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, the sole benefit of this is that \code{\link{plot}} will send the object to \code{\link{plotRGB}}
 }
 
 \usage{
+\S4method{RGB}{SpatRaster}(x)
+
 \S4method{RGB}{SpatRaster}(x)<-value
 }
 
