@@ -1796,6 +1796,7 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	if (values) {
 		std::vector<double> v = getValues();
 		std::vector<std::string> nms = getNames();
+		make_unique_names(nms);
 		for (size_t i=0; i<nl; i++) {
 			size_t offset = i * nc;
 			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nc);

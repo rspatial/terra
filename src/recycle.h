@@ -104,11 +104,13 @@ void rep_each_vect(std::vector<T> &v, std::vector<size_t> n) {
 
 template <typename T>
 std::vector<T> seq(T start, T end, T increment) {
-	size_t s = floor((end - start) / increment);
 	std::vector<T> out;
+	if ((start <= 0) || (increment <= 0)) return out; 
+	size_t s = floor((end - start) / increment);
 	out.reserve(s);
 	for (size_t i=0; i<=s; i++) {
-		out.push_back(start + i * increment);
+		T val = start + i * increment;
+		out.push_back(val);
 	}
 	return out;
 }

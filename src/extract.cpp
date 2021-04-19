@@ -536,6 +536,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 	std::string gtype = v.type();
 	if (gtype != "polygons") weights = false;
 
+	if (exact) weights = false;
     unsigned nl = nlyr();
     unsigned ng = v.size();
     std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + 2*xy + (weights || exact)));

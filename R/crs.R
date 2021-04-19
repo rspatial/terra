@@ -142,8 +142,8 @@ setMethod("is.lonlat", signature("SpatVector"),
 			if (ok && warn) {
 				if (crs(x) == "") warn("is.lonlat", "assuming lon/lat crs")
 			}
-			ok
 		}
+		ok
 	}
 )
 

@@ -27,6 +27,7 @@
 
 #include "crs.h"
 #include "gdalio.h"
+#include "recycle.h"
 
 
 //#include <vector>
@@ -35,18 +36,31 @@
 
 SpatVector SpatRaster::dense_extent() {
 
-	std::vector<int_64> rows(nrow());
-	std::iota(rows.begin(), rows.end(), 0);
-	std::vector<int_64> cols(ncol());
-	std::iota(cols.begin(), cols.end(), 0);
+	std::vector<int_64> rows, cols;
+	if (nrow() < 51) {
+		rows.resize(nrow());
+		std::iota(rows.begin(), rows.end(), 0);
+	} else {
+		rows = seq_steps((int_64) 0, (int_64) nrow(), 50);
+		rows[rows.size()-1] = nrow()-1;
+	} 
+	if (ncol() < 20) {
+		cols.resize(nrow());
+		std::iota(cols.begin(), cols.end(), 0);
+	} else {
+		cols = seq_steps((int_64) 0, (int_64) ncol(), 50);
+		cols[cols.size()-1] = ncol()-1;
+	} 
+	
 
 	std::vector<double> xcol = xFromCol(cols) ;
 	std::vector<double> yrow = yFromRow(rows) ;
 
-	std::vector<double> y0(ncol(), yFromRow(nrow()-1));
-	std::vector<double> y1(ncol(), yFromRow(0));
-	std::vector<double> x0(nrow(), xFromCol(0));
-	std::vector<double> x1(nrow(), xFromCol(ncol()-1));
+	SpatExtent e = getExtent();
+	std::vector<double> y0(cols.size(), e.ymin);
+	std::vector<double> y1(cols.size(), e.ymax);
+	std::vector<double> x0(rows.size(), e.xmin);
+	std::vector<double> x1(rows.size(), e.xmax);
 
 	std::vector<double> x = x0;
 	std::vector<double> y = yrow;
@@ -638,6 +652,10 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 
 	SpatVector out;
 	SpatOptions topt(opt);
+
+	if (nlyr() > 1) {
+		out.addWarning("only the first layer is polygonized when 'dissolve=TRUE'");
+	}
 	SpatRaster tmp = subset({0}, topt);
 
 	bool usemask = false;

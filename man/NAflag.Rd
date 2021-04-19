@@ -6,10 +6,13 @@
 \alias{NAflag<-,SpatRaster-method}
 
 
-\title{Set a value to NA}
+\title{Set the NA flag}
 
 \description{
-Set a particular value of a SpatRaster to \code{NA}. If the values are in memory the change is made immediately. If the values are on disk, the changes is only made for values read from the file ("lazy evaluation"). 
+The main purpose of this method is to allow correct reading of a SpatRaster that is based on a file that has an incorrect NA flag. The file is not changed, but flagged value is set to NA when values are read from the file ("lazy evaluation"). In contrast, if the values are in memory the change is made immediately. 
+
+To change values, it is generally better to use \code{\link{classify}}
+
 }
 
 \usage{
@@ -28,6 +31,9 @@ Set a particular value of a SpatRaster to \code{NA}. If the values are in memory
 none or numeric
 }
 
+\seealso{
+ \code{\link{classify}}
+}
 
 \examples{ 
 s <- rast(system.file("ex/logo.tif", package="terra"))[[1]]   
