@@ -197,6 +197,11 @@ setMethod ("show" , "SpatRaster",
 			} else {
 				cat("source      :", sources[1], "\n")
 			}
+			rgb <- RGB(object)
+			if (!is.null(rgb)) {
+				cat("red-grn-blue:", paste(rgb, collapse=", "), "\n")			
+			}
+			
 			varnms <- varnames(object)
 			i <- varnms != ""
 			if (any(i)) {

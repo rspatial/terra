@@ -17,6 +17,17 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("RGB", signature(x="SpatRaster"), 
+	function(x) {
+		if (x@ptr$rgb) {
+			x@ptr$getRGB() + 1
+		} else {
+			return(NULL)
+		}
+	}
+)
+
+
 .linStretch <- function (x) {
     v <- stats::quantile(x, c(0.02, 0.98), na.rm = TRUE)
     temp <- (255 * (x - v[1]))/(v[2] - v[1])
