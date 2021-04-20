@@ -144,7 +144,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	std::string datatype = opt.get_datatype();
 	
 	bool writeRGB = (rgb && nlyr() == 3 && rgblyrs.size() == 3);
-	Rcpp::Rcout << rgb << " - " << nlyr() << " - " << rgblyrs.size() << " - " << writeRGB << std::endl;
 	if (writeRGB) {
 		datatype = "INT1U";
 	}
