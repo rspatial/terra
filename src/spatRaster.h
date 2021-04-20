@@ -226,9 +226,9 @@ class SpatRaster {
 
 
 		bool rgb=false;
-		std::vector<unsigned> rgblyrs;
-		bool setRGB(unsigned r, unsigned g, unsigned b);
-		std::vector<unsigned> getRGB();
+		std::vector<int> rgblyrs;
+		bool setRGB(int r, int g, int b);
+		std::vector<int> getRGB();
 		void removeRGB();
 		
 

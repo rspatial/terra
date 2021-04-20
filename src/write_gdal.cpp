@@ -16,6 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 
+
 #include "spatRaster.h"
 #include "math_utils.h"
 #include "string_utils.h"
@@ -124,7 +125,6 @@ void stat_options(int sstat, bool &compute_stats, bool &gdal_stats, bool &gdal_m
 
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
-	bool writeRGB = false;
 
 	std::string filename = opt.get_filename();
 	if (filename == "") {
@@ -142,6 +142,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return(false);
 	}
 	std::string datatype = opt.get_datatype();
+	
+	bool writeRGB = (rgb && nlyr() == 3 && rgblyrs.size() == 3);
+	Rcpp::Rcout << rgb << " - " << nlyr() << " - " << rgblyrs.size() << " - " << writeRGB << std::endl;
 	if (writeRGB) {
 		datatype = "INT1U";
 	}
@@ -333,6 +336,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	double naflag=NAN; 
 	bool hasNAflag = opt.has_NAflag(naflag);
 
+	if (writeRGB) nms = {"red", "green", "blue"};
+
 	for (size_t i=0; i < nlyr(); i++) {
 
 		poBand = poDS->GetRasterBand(i+1);
@@ -348,6 +353,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 				addWarning("could not write categories");
 			}
 		}
+
 		/*
 		if (isncdf) {
 			std::string opt = "NETCDF_VARNAME";
@@ -381,11 +387,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		}
 		
 		if (writeRGB) {
-			if (i==0) {
+			if (rgblyrs[i]==0) {
 				poBand->SetColorInterpretation(GCI_RedBand);
-			} else if (i==1) {
+			} else if (rgblyrs[i]==1) {
 				poBand->SetColorInterpretation(GCI_GreenBand);
-			} else if (i==2) {
+			} else if (rgblyrs[i]==2) {
 				poBand->SetColorInterpretation(GCI_BlueBand);
 			}
 		}

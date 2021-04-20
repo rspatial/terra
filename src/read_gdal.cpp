@@ -458,6 +458,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::string varname = basename_noext(fname).substr(0,3);
 	std::vector<std::vector<std::string>> bandmeta(s.nlyr);
 
+	bool getCols = s.nlyr == 3;
+	std::vector<unsigned> rgb_lyrs(3, -99);
 
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
@@ -499,8 +501,16 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		} 
 
 		//if( poBand->GetOverviewCount() > 0 ) printf( "Band has %d overviews.\n", poBand->GetOverviewCount() );
-		//GDALGetColorInterpretationName( poBand->GetColorInterpretation()) );
 
+		if (getCols) {
+			if (poBand->GetColorInterpretation() == GCI_RedBand) {
+				rgb_lyrs[0] = i;
+			} else if (poBand->GetColorInterpretation() == GCI_GreenBand) {
+				rgb_lyrs[1] = i;
+			} else if (poBand->GetColorInterpretation() == GCI_BlueBand) {
+				rgb_lyrs[2] = i;
+			}
+		}
 		GDALColorTable *ct = poBand->GetColorTable();
 		if( ct != NULL ) {
 			s.hasColors[i] = true;
@@ -571,6 +581,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	GDALClose( (GDALDatasetH) poDataset );
 	s.hasValues = true;
 	setSource(s);
+
+	if (getCols) {
+		setRGB(rgb_lyrs[0], rgb_lyrs[1], rgb_lyrs[2]);
+	}
 
 	return true;
 }

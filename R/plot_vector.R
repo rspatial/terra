@@ -448,7 +448,7 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 
 		for (i in 1:length(y)) {
 			if (length(y) > 1) {
-				newrow <- (i %% nrnc[2]) == 1 
+				newrow <- (nrnc[2] == 1) | ((i %% nrnc[2]) == 1)
 				lastrow <- i > (prod(nrnc) - nrnc[2])
 				if (lastrow) {
 					if (newrow) {

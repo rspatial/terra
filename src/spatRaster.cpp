@@ -239,6 +239,10 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 	}
 	s.names = nms;
 	SpatRaster out(s);
+	if (properties) {
+		out.rgb = rgb;
+		out.rgblyrs = rgblyrs;
+	}
 	return out;
 }
 
@@ -1851,24 +1855,30 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 }
 
 
-bool SpatRaster::setRGB(unsigned r, unsigned g, unsigned b) {
+bool SpatRaster::setRGB(int r, int g, int b) {
 	size_t mxlyr = std::max(std::max(r, g), b);
-	if (nlyr() < mxlyr) {
-		setError("layer number for R, G, B, cannot exceed nlyr()");		
+	if (nlyr() <= mxlyr) {
+		setError("layer number for R, G, B, cannot exceed the number of layers");		
 		return false;
 	} else {
-		rgblyrs = {r, g, b};
-		rgb = true;
+		size_t mnlyr = std::min(std::min(r, g), b);
+		if (mnlyr >= 0) {
+			rgblyrs = {r, g, b};
+			rgb = true;
+		} else {
+			rgb = false;
+			return false;
+		}
 	}
 	return true;
 }
 
-std::vector<unsigned> SpatRaster::getRGB(){
+std::vector<int> SpatRaster::getRGB(){
 	return rgblyrs;
 }
 
 void SpatRaster::removeRGB(){
-	rgblyrs = std::vector<unsigned>(0);
+	rgblyrs = std::vector<int>(0);
 	rgb = false;
 }
 
