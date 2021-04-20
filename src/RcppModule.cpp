@@ -636,6 +636,7 @@ RCPP_MODULE(spat){
 		.method("trig", &SpatRaster::trig, "trig")
 		.method("trim", &SpatRaster::trim, "trim")
 		.method("unique", &SpatRaster::unique, "unique")
+		.method("sieve", &SpatRaster::sievefilter, "sievefilter")
 
 		.method("rectify", &SpatRaster::rectify, "rectify")
 		.method("stretch", &SpatRaster::stretch, "stretch")

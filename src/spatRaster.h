@@ -674,5 +674,7 @@ class SpatRaster {
 		SpatRaster which(SpatOptions &opt);
 		SpatRaster is_true(SpatOptions &opt);
 
+		SpatRaster sievefilter(int threshold, int connections, SpatOptions &opt);	
+
 };
 

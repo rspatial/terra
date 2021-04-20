@@ -375,6 +375,14 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	SpatRaster out = x.geometry(nlyr());
 	out.setNames(getNames());
+	if (method == "near") {
+		out.source[0].hasColors = hasColors();
+		out.source[0].cols = getColors();
+		out.source[0].hasCategories = hasCategories();
+		out.source[0].cats = getCategories();
+		out.rgb = rgb;
+		out.rgblyrs = rgblyrs;		
+	}
 
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
@@ -916,9 +924,9 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	return out;
 }
 
-/*	
-SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &opt) {	
 	
+SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &opt) {	
+	SpatRaster out;
 	std::string filename = opt.get_filename();
 	std::string driver;
 	if (filename == "") {
@@ -943,42 +951,48 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 		}	
 	}
 
+	SpatOptions ops(opt);
+	GDALDatasetH hSrcDS, hDstDS;
+	if (!open_gdal(hSrcDS, 0, ops)) {
+		out.setError("cannot open input dataset");
+		return out;
+	}
+	
 	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
 	if ( hDriver == NULL ) {
-		msg = "empty driver";
-		return false;
+		out.setError("empty driver");
+		return out;
 	}
-	GDALDatasetH hDS;
-	if (filename != "") {
-		writeRaster(opt);
-		hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
-	} else {
-		hDS = GDALCreate( hDriver, "", nPixels, nLines, 1, eDT, NULL );
-	} 
-	if ( hDstDS == NULL ) {
-		msg = "cannot create output dataset";
-		return false;	
-	}
-
 	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, opt)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
 		return out;
 	}
-	
-	GDALRasterBandH hTarget = GDALGetRasterBand(hDstDS, 1);
-	GDALSetRasterColorInterpretation(hTarget, GCI_PaletteIndex);
-	if (GDALDitherRGB2PCT(R, G, B, hTarget, hColorTable, NULL, NULL) != CE_None) {
-		out.setError("cannot set color table");
+
+	GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS, 1);
+	GDALRasterBandH hTargetBand = GDALGetRasterBand(hDstDS, 1);
+
+	if (!GDALSieveFilter(hSrcBand, NULL, hTargetBand, threshold, connections, NULL, NULL, NULL)) {
+		out.setError("sieve failed");
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);
-		return out;		
-	}
+		return out;
+	}	
+	
 	GDALClose(hSrcDS);
-
-	CPLErr err = GDALSieveFilter(GDALRasterBandH hSrcBand, GDALRasterBandH hMaskBand, NULL, threshold, connections, NULL, NULL, NULL)
+	if (driver == "MEM") {
+		if (!out.from_gdalMEM(hDstDS, false, true)) {
+			out.setError("conversion failed (mem)");
+			GDALClose(hDstDS);
+			return out;
+		}
+	} else {
+		out = SpatRaster(filename, {-1}, {""});
+	}
+	GDALClose(hDstDS);
+	return out;
 }
-*/
+
 
 /*	
 SpatRaster SpatRaster::fillna(int threshold, int connections, SpatOptions &opt) {	

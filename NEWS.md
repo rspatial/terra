@@ -9,6 +9,7 @@
 - `spatSample,SpatRaster-method` has new arguments `as.points` and `values`. Getting values, cells and coordinates is no longer mutually exclusive. In response to [#191](https://github.com/rspatial/terra/issues/191). Requested by Agustin Lobo
 - `area,SpatRaster-method` has a new argument `mask=FALSE`.
 - `classify` can now take a single number to request that many cuts.
+- `mosaic` and `merge` now warn and resample if rasters are not aligned.
 
 
 ## bug fixes

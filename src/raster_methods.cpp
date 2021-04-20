@@ -1970,30 +1970,50 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	hvals[0] = ds[0].hasValues();
 	SpatExtent e = ds[0].getExtent();
 	unsigned nl = ds[0].nlyr();
+	std::vector<bool> resample(n, false);
 	for (size_t i=1; i<n; i++) {
 									//  lyrs, crs, warncrs, ext, rowcol, res
 		if (!ds[0].compare_geom(ds[i], false, false, false, false, false, true)) {
 			out.setError(ds[0].msg.error);
 			return(out);
-		}
+		}		
 		e.unite(ds[i].getExtent());
 		hvals[i] = ds[i].hasValues();
 		nl = std::max(nl, ds[i].nlyr());
 	}
 	out = ds[0].geometry(nl, false);
-	out.setExtent(e, true);
+	out.setExtent(e, true, "");
 	
 	for (int i=(n-1); i>=0; i--) {
-		 if (!hvals[i]) erase(i);
+		if (!hvals[i]) {
+			erase(i);
+		}
 	}
+	
 	n = size();
-
 	if (size() == 0) {
 		return out;
 	}	
-	
+
 	SpatExtent eout = out.getExtent();
 	double hyr = out.yres()/2;
+
+	std::string warn = "";
+	for (size_t i=0; i<n; i++) {
+		SpatOptions topt(opt);
+		if(!ds[i].shared_basegeom(out, 0.1, true)) {
+			SpatRaster temp = out.crop(ds[i].getExtent(), "near", topt);
+			std::vector<bool> hascats = ds[i].hasCategories();
+			std::string method = hascats[0] ? "near" : "bilinear";
+			ds[i] = ds[i].warper(temp, "", method, false, topt);
+			if (ds[i].hasError()) {
+				out.setError(ds[i].getError());
+				return out;
+			}
+			warn = "rasters did not align and were resampled";
+		}
+	}
+	if (warn != "") out.addWarning(warn);
 	
  	if (!out.writeStart(opt)) { return out; }
 	SpatOptions sopt(opt);
@@ -2006,9 +2026,15 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		for (size_t j=0; j<n; j++) {
 			e = ds[j].getExtent();
 			e.intersect(eout);
-			if ( e.valid() ) {
+			if ( e.valid_notequal() ) {
+				//Rcpp::Rcout << "e : " << e.ymin << " " << e.ymax << std::endl; 
+				//Rcpp::Rcout << "eo: " << eout.ymin << " " << eout.ymax << std::endl; 
 				r = ds[j].crop(eout, "near", sopt);
+				//SpatExtent ec = r.getExtent();
+				//Rcpp::Rcout << "ec: " << ec.ymin << " " << ec.ymax << std::endl; 
 				r = r.extend(eout, sopt);
+				//SpatExtent ee = r.getExtent();
+				//Rcpp::Rcout << "ee: " << ee.ymin << " " << ee.ymax << std::endl; 
 				if (!s.push_back(r, "", "", "", false)) {
 					out.setError("internal error: " + s.getError());
 					out.writeStop();

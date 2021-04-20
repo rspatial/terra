@@ -121,6 +121,7 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	if (snap != "") {
 		ext = align(ext, snap);
+		ext.intersect(getExtent());
 	}
 
 	if (keepRes) {
@@ -198,6 +199,7 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 		if (ymn > ymx) std::swap(ymn, ymx);
 	}
 
+		
 	if (xmn == xmx) {
 		if (xmn < e.xmin) {
 			xmx = xmx + res[0];

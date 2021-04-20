@@ -286,10 +286,10 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XIII. Create and combine SpatVector objects}{
+\section{XIII. Create SpatVector objects}{
 \tabular{ll}{
   \code{\link{vect}} \tab Create a SpatVector from a file (for example a "shapefile") or from another object\cr
-  \code{\link{c}} \tab append SpatVectors of the same geometry type ("rbind") \cr
+  \code{rbind} \tab append SpatVectors of the same geometry type\cr
   \code{\link{unique}} \tab remove duplicates \cr
   \code{\link{project}} \tab Project a SpatVector to a different coordinate reference system \cr
   \code{\link{writeVector}} \tab Write SpatVector data to disk \cr
