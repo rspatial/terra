@@ -46,10 +46,9 @@ Compute summary statistics for cells, either across layers or between layers (pa
 The following summary methods are available for SpatRaster: any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max. See modal to compute the mode and app to compute summary statistics that are not included here. 
 Because generic functions are used, the method applied is chosen based on the first argument: &quot;x&quot;. This means that if r is a SpatRaster, mean(r, 5) will work, but mean(5, r) will not work.
 The mean method has an argument &quot;trim&quot; that is ignored.
-The stdev method returns the population standard deviation, computed as:
+If pop=TRUE stdev computes the population standard deviation, computed as:
 f &amp;lt;- function(x) sqrt(sum((x-mean(x))^2) / length(x))
-This is different than the sample standard deviation returned by sd (which uses n-1 as denominator). Function f above is equivalent to function g below
-g &amp;lt;- function(x) sqrt(sum((x-mean(x))^2) / length(x))" />
+This is different than the sample standard deviation returned by sd (which uses n-1 as denominator)." />
 
 
 
@@ -132,10 +131,9 @@ g &amp;lt;- function(x) sqrt(sum((x-mean(x))^2) / length(x))" />
 <p>The following summary methods are available for SpatRaster: <code>any, all, max, min, mean, median, prod, range, stdev, sum, which.min, which.max</code>. See <code><a href='modal.html'>modal</a></code> to compute the mode and <code><a href='app.html'>app</a></code> to compute summary statistics that are not included here.</p> 
 <p>Because generic functions are used, the method applied is chosen based on the first argument: "<code>x</code>". This means that if <code>r</code> is a SpatRaster, <code>mean(r, 5)</code> will work, but <code>mean(5, r)</code> will not work.</p>
 <p>The <code>mean</code> method has an argument "trim" that is ignored.</p>
-<p>The <code>stdev</code> method returns the population standard deviation, computed as:</p>
+<p>If <code>pop=TRUE</code> <code>stdev</code> computes the population standard deviation, computed as:</p>
 <p><code>f &lt;- function(x) sqrt(sum((x-mean(x))^2) / length(x))</code></p>
-<p>This is different than the sample standard deviation returned by <code>sd</code> (which uses <code>n-1</code> as denominator). Function <code>f</code> above is equivalent to function <code>g</code> below</p>
-<p><code>g &lt;- function(x) sqrt(sum((x-mean(x))^2) / length(x))</code></p>
+<p>This is different than the sample standard deviation returned by <code>sd</code> (which uses <code>n-1</code> as denominator).</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
@@ -154,7 +152,7 @@ g &amp;lt;- function(x) sqrt(sum((x-mean(x))^2) / length(x))" />
 <span class='fu'>median</span><span class='op'>(</span><span class='va'>x</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>stdev</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>stdev</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, pop<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>which.min</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
@@ -176,6 +174,10 @@ g &amp;lt;- function(x) sqrt(sum((x-mean(x))^2) / length(x))" />
     <tr>
       <th>trim</th>
       <td><p>ignored</p></td>
+    </tr>
+    <tr>
+      <th>pop</th>
+      <td><p>logical. If <code>TRUE</code>, the population standard deviation is computed. Otherwise the sample standard deviation is computed</p></td>
     </tr>
     <tr>
       <th>na.rm</th>
