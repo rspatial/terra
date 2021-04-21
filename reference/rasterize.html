@@ -121,7 +121,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector,SpatRaster</span>
-<span class='fu'>rasterize</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>field</span>, values<span class='op'>=</span><span class='fl'>1</span>, <span class='va'>fun</span>, background<span class='op'>=</span><span class='cn'>NA</span>, touches<span class='op'>=</span><span class='cn'>FALSE</span>,
+<span class='fu'>rasterize</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, field<span class='op'>=</span><span class='st'>""</span>, values<span class='op'>=</span><span class='fl'>1</span>, <span class='va'>fun</span>, background<span class='op'>=</span><span class='cn'>NA</span>, touches<span class='op'>=</span><span class='cn'>FALSE</span>,
   update<span class='op'>=</span><span class='cn'>FALSE</span>, sum<span class='op'>=</span><span class='cn'>FALSE</span>, cover<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -137,11 +137,11 @@
     </tr>
     <tr>
       <th>field</th>
-      <td><p>character or numeric. If <code>field</code> is a character, it should a variable name in <code>x</code>. If <code>field</code> is numeric it should be a single number (index the variable)</p></td>
+      <td><p>character or numeric. If <code>field</code> is a character, it should a variable name in <code>x</code>. If <code>field</code> is numeric it should be a single number (the index (column) for the variable)</p></td>
     </tr>
     <tr>
       <th>values</th>
-      <td><p>numeric. Only used if <code>field</code> is <code>""</code>. Typically a single number or a vector of length <code><a href='dimensions.html'>nrow(x)</a></code>. The values are recycled to <code><a href='dimensions.html'>nrow(x)</a></code></p></td>
+      <td><p>numeric. Only used if <code>field</code> is <code>""</code> or <code>NA</code>. Typically a single number or a vector of length <code><a href='dimensions.html'>nrow(x)</a></code>. The values are recycled to <code><a href='dimensions.html'>nrow(x)</a></code></p></td>
     </tr>
     <tr>
       <th>fun</th>
