@@ -1,5 +1,5 @@
 
-rasterize_points <- function(x, y, field, fun="last", background, filename, update, ...) {
+rasterize_points <- function(x, y, field, values, fun="last", background, filename, update, ...) {
 
 	
 	if (update) {
@@ -14,7 +14,9 @@ rasterize_points <- function(x, y, field, fun="last", background, filename, upda
 
 	g <- geom(x, df=TRUE)
 	# also allow for multiple columns to multiple layers
-	if (missing(field)) {
+	if (!missing(values)) {
+		field <- rep_len(values, nrow(x))
+	} else if (missing(field)) {
 		field <- g[,1] # consider multi-point
 	} else if (is.character(field)) {
 		if ((length(field) == 1) && (field %in% names(x))) {
@@ -85,12 +87,11 @@ rasterize_points <- function(x, y, field, fun="last", background, filename, upda
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field="", values=1, fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
+	function(x, y, field="", values, fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, fun=fun, background=background, update=update,
-			filename=filename, ...) 
+			r <- rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, ...) 
 			return (r)
 		}
 

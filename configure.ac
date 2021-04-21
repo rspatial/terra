@@ -23,7 +23,7 @@ if test [$RVER_MAJOR = "development"]; then
     CXX11STD=`"${RBIN}" CMD config CXX11STD`
 else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
-        AC_MSG_ERROR([terra is not compatible with R versions before 3.3.0])
+        AC_MSG_ERROR([sf is not compatible with R versions before 3.3.0])
     else
         if test [$RVER_MINOR -eq 3]; then
             CXX11=`"${RBIN}" CMD config CXX1X`
@@ -40,6 +40,7 @@ fi
 : ${CXX=${CXX11} ${CXX11STD}}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
+: ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
 # AC_SUBST([CC],["clang"])
 # AC_SUBST([CXX],["clang++"])
@@ -118,7 +119,7 @@ AC_MSG_CHECKING([GDAL version >= 2.0.1])
 GDAL_MAJ_VER=`echo $GDAL_VERSION | cut -d "." -f1`
 if test ${GDAL_MAJ_VER} -lt 2 ; then
   AC_MSG_RESULT(no)
-  AC_MSG_ERROR([terra is not compatible with GDAL versions below 2.0.1])
+  AC_MSG_ERROR([sf is not compatible with GDAL versions below 2.0.1])
 else
    AC_MSG_RESULT(yes)
 fi
@@ -217,10 +218,15 @@ fi
 # Optional local copy of GDAL datadir and PROJ_LIB
 
 data_copy=no
-AC_ARG_WITH([data-copy],
-    AC_HELP_STRING([--with-data-copy=yes/no],
+if test "${PROJ_GDAL_DATA_COPY}" ; then
+    data_copy=yes
+    AC_MSG_NOTICE([PROJ_GDAL_DATA_COPY used.])
+else
+    AC_ARG_WITH([data-copy],
+        AC_HELP_STRING([--with-data-copy=yes/no],
                [local copy of data directories in package, default no]),
                [data_copy=$withval])
+fi
 if test "${data_copy}" = "yes" ; then
 AC_MSG_NOTICE([Copy data for:])
   proj_lib0="${PROJ_LIB}"
@@ -287,7 +293,7 @@ if test "${gdal_has_proj}" = no; then
    AC_MSG_ERROR([cannot link projection code])
 fi
 
-AC_MSG_CHECKING(GDAL: checking whether PROJ is available for running:)
+AC_MSG_CHECKING(GDAL: checking whether PROJ is available fur running:)
 ./gdal_proj
 if test `echo $?` -ne 0 ; then
 gdal_has_proj=no
@@ -384,7 +390,7 @@ if test [ -n "$proj_lib_path" ] ; then
     AC_SUBST([PROJ_LIBS], ["-L${proj_lib_path} ${INPKG_LIBS} -lproj"])
 else
   if test "${proj_config_ok}" = yes; then
-    PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
+    PROJ_LIB_PATH=`${PROJ_CONFIG} --libs --static`
     AC_SUBST([PROJ_LIBS], ["${PROJ_LIB_PATH} ${INPKG_LIBS}"])
 	proj_version=`${PROJ_CONFIG} --modversion`
 	AC_MSG_NOTICE([PROJ: ${proj_version}])
@@ -433,7 +439,7 @@ _EOCONF]
     AC_MSG_RESULT(yes)
   fi
   if test "${proj6ok}" = no; then
-     AC_MSG_ERROR([libproj not found in standard or given locations.])
+     AC_MSG_ERROR([libproj or sqlite3 not found in standard or given locations.])
   fi
 
 [cat > proj_conf_test.c <<_EOCONF

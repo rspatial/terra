@@ -582,7 +582,7 @@ PACKAGE_STRING=
 PACKAGE_BUGREPORT=
 PACKAGE_URL=
 
-ac_unique_file="src/write_ogr.cpp"
+ac_unique_file="src/wkb.cpp"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -2090,6 +2090,7 @@ fi
 : ${CXX=${CXX11} ${CXX11STD}}
 : ${CFLAGS=`"${RBIN}" CMD config CFLAGS`}
 : ${CPPFLAGS=`"${RBIN}" CMD config CPPFLAGS`}
+: ${CXXFLAGS=`"${RBIN}" CMD config CXXFLAGS`}
 : ${LDFLAGS=`"${RBIN}" CMD config LDFLAGS`}
 # AC_SUBST([CC],["clang"])
 # AC_SUBST([CXX],["clang++"])
@@ -3539,12 +3540,18 @@ fi
 # Optional local copy of GDAL datadir and PROJ_LIB
 
 data_copy=no
+if test "${PROJ_GDAL_DATA_COPY}" ; then
+    data_copy=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: PROJ_GDAL_DATA_COPY used." >&5
+$as_echo "$as_me: PROJ_GDAL_DATA_COPY used." >&6;}
+else
 
 # Check whether --with-data-copy was given.
 if test "${with_data_copy+set}" = set; then :
   withval=$with_data_copy; data_copy=$withval
 fi
 
+fi
 if test "${data_copy}" = "yes" ; then
 { $as_echo "$as_me:${as_lineno-$LINENO}: Copy data for:" >&5
 $as_echo "$as_me: Copy data for:" >&6;}
@@ -3759,7 +3766,7 @@ if test  -n "$proj_lib_path"  ; then
 
 else
   if test "${proj_config_ok}" = yes; then
-    PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
+    PROJ_LIB_PATH=`${PROJ_CONFIG} --libs --static`
     PROJ_LIBS="${PROJ_LIB_PATH} ${INPKG_LIBS}"
 
 	proj_version=`${PROJ_CONFIG} --modversion`
@@ -3859,7 +3866,7 @@ $as_echo "no" >&6; }
 $as_echo "yes" >&6; }
   fi
   if test "${proj6ok}" = no; then
-     as_fn_error $? "libproj not found in standard or given locations." "$LINENO" 5
+     as_fn_error $? "libproj or sqlite3 not found in standard or given locations." "$LINENO" 5
   fi
 
 cat > proj_conf_test.c <<_EOCONF
