@@ -442,11 +442,14 @@ setMethod("Compare", signature(e1="SpatExtent", e2="SpatExtent"),
 
 
 setMethod("stdev", signature(x="SpatRaster"),
-	function(x, ..., na.rm=FALSE){
-		.summarize(x, ..., fun="stdev", na.rm=na.rm)
+	function(x, ..., pop=TRUE, na.rm=FALSE){
+		if (pop) {
+			.summarize(x, ..., fun="std", na.rm=na.rm)			
+		} else {
+			.summarize(x, ..., fun="sd", na.rm=na.rm)
+		}
 	}
 )
-
 
 
 setMethod("modal", signature("SpatRaster"), 

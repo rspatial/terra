@@ -887,7 +887,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 	} 
 	out.source[0].names[0] = fun;
 	std::function<double(std::vector<double>&, bool)> sumFun;
-	if (fun == "stdev") {
+	if (fun == "std") {
 		sumFun = vstdev;
 	} else {
 		if (!haveFun(fun)) {
@@ -1047,7 +1047,7 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
   	if (!ds[0].hasValues()) { return out; }
 
 	std::function<double(std::vector<double>&, bool)> sumFun;
-	if (fun == "stdev") {
+	if (fun == "std") {
 		sumFun = vstdev;
 	} else {
 		if (!haveFun(fun)) {

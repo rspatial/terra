@@ -37,13 +37,11 @@ Because generic functions are used, the method applied is chosen based on the fi
 
 The \code{mean} method has an argument "trim" that is ignored.
 
-The \code{stdev} method returns the population standard deviation, computed as:
+If \code{pop=TRUE} \code{stdev} computes the population standard deviation, computed as:
 
 \code{f <- function(x) sqrt(sum((x-mean(x))^2) / length(x))}
 
-This is different than the sample standard deviation returned by \code{sd} (which uses \code{n-1} as denominator). Function \code{f} above is equivalent to function \code{g} below
-
-\code{g <- function(x) sqrt(sum((x-mean(x))^2) / length(x))}
+This is different than the sample standard deviation returned by \code{sd} (which uses \code{n-1} as denominator). 
 }
 
 
@@ -58,7 +56,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \S4method{median}{SpatRaster}(x, na.rm=FALSE)
 
-\S4method{stdev}{SpatRaster}(x, ..., na.rm=FALSE)
+\S4method{stdev}{SpatRaster}(x, ..., pop=TRUE, na.rm=FALSE)
 
 \S4method{which.min}{SpatRaster}(x)
 
@@ -70,6 +68,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
   \item{x}{SpatRaster}
   \item{...}{additional SpatRaster objects or numeric values}
   \item{trim}{ignored}
+  \item{pop}{logical. If \code{TRUE}, the population standard deviation is computed. Otherwise the sample standard deviation is computed}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
 }
 
