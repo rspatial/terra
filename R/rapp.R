@@ -39,7 +39,7 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, filename=
 	if (!allyrs) {
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (inherits(txtfun, "character")) { 
-			if (txtfun %in% c("max", "min", "mean", "prod", "sum", "any", "all")) {
+			if (txtfun %in% .cpp_funs) {
 				opt <- spatOptions(filename, overwrite, wopt=wopt)
 				na.rm <- isTRUE(list(...)$na.rm)
 				x@ptr <- x@ptr$rapply(index@ptr, firstval, lastval, txtfun, clamp, na.rm, opt)

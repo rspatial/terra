@@ -14,7 +14,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 
 	txtfun <- .makeTextFun(fun)
 	if (inherits(txtfun, "character")) { 
-		if (txtfun %in% c("sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first")) {
+		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$apply(index, txtfun, narm, nms, opt)

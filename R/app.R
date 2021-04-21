@@ -1,4 +1,6 @@
 
+.cpp_funs <- c("sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first")
+
 setMethod("sapp", signature(x="SpatRaster"), 
 function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	#x <- lapply(as.list(x), fun, ..., wopt=wopt)
@@ -19,7 +21,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (inherits(txtfun, "character")) { 
-		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
+		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			na.rm <- isTRUE(list(...)$na.rm)
 			x@ptr <- x@ptr$summary(txtfun, na.rm, opt)
@@ -188,7 +190,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	txtfun <- .makeTextFun(match.fun(fun))
 	if (inherits(txtfun, "character")) { 
-		if (txtfun %in% c("max", "min", "mean", "range", "prod", "sum", "any", "all")) {
+		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
 			narm <- isTRUE(list(...)$na.rm)
 			r <- rast()
