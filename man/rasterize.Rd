@@ -12,7 +12,7 @@ Transfer vector data to a raster
 }
 
 \usage{
-\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field, values=1, fun, background=NA, touches=FALSE,
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", values=1, fun, background=NA, touches=FALSE,
 	update=FALSE, sum=FALSE, cover=FALSE, filename="", ...)
 }
 
@@ -20,9 +20,9 @@ Transfer vector data to a raster
   \item{x}{SpatVector}
   \item{y}{SpatRaster}
   
-  \item{field}{character or numeric. If \code{field} is a character, it should a variable name in \code{x}. If \code{field} is numeric it should be a single number (index the variable)}
+  \item{field}{character or numeric. If \code{field} is a character, it should a variable name in \code{x}. If \code{field} is numeric it should be a single number (the index (column) for the variable)}
 
-  \item{values}{numeric. Only used if \code{field} is \code{""}. Typically a single number or a vector of length \code{nrow(x)}. The values are recycled to \code{nrow(x)}}
+  \item{values}{numeric. Only used if \code{field} is \code{""} or \code{NA}. Typically a single number or a vector of length \code{nrow(x)}. The values are recycled to \code{nrow(x)}}
   
   \item{fun}{function, summarizing function that returns a single number; for when there are multiple points in one cell. For example \code{mean}, \code{length} (to get a count), \code{min} or \code{max}. Only used if \code{x} consists of points}
   

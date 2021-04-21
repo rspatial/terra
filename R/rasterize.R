@@ -1,7 +1,6 @@
 
 rasterize_points <- function(x, y, field, values, fun="last", background, filename, update, ...) {
 
-	
 	if (update) {
 		if (!hasValues(y)) {
 			update <- FALSE
@@ -87,7 +86,11 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field="", values, fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
+	function(x, y, field="", values=1, fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
+
+		if (is.null(field) || is.na(field)) field = ""
+		stopifnot(length(field) == 1)
+		stopifnot(is.numeric(values))
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
@@ -109,9 +112,6 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			return(y)
 		}
 
-		if (is.null(field) || is.na(field)) field = ""
-		stopifnot(length(field) == 1)
-		stopifnot(is.numeric(values))
 		if (field != "") {
 			if (ncol(x) == 0) {
 				error("rasterize", "there are no fields")
@@ -124,6 +124,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 				}
 			} 
 		} 
+		
 		background <- as.numeric(background[1])
 		y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], sum[1], FALSE, update[1], opt)
 
