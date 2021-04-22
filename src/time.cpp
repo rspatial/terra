@@ -35,7 +35,7 @@ SpatTime_t yeartime(const long &year) {
 
 
 
-SpatTime_t get_time(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0) {
+SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsigned min, unsigned sec) {
 
     static const unsigned mdays[2][12] = {
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
@@ -164,7 +164,7 @@ SpatTime_t get_time_string(std::string s) {
 	}
 	//Rcpp::Rcout << ss[0] << "-" << ss[1] << "-" << ss[2] << std::endl;
 
-	time = get_time(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));
+	time = get_time(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]), 0, 0, 0);
 
 //	} else {
 //		time = get_time_noleap(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));	
@@ -173,21 +173,21 @@ SpatTime_t get_time_string(std::string s) {
 }
 
 SpatTime_t time_from_hour(int syear, int smonth, int sday, double nhours) {
-	SpatTime_t time = get_time(syear, smonth, sday);
+	SpatTime_t time = get_time(syear, smonth, sday, 0, 0, 0);
 	time += nhours * 3600;
 	return time;
 }
 
 void hours_to_time(std::vector<SpatTime_t> &time, std::string origin) {
 	std::vector<int> ymd = getymd(origin);
-	SpatTime_t otime = get_time(ymd[0], ymd[1], ymd[2]);
+	SpatTime_t otime = get_time(ymd[0], ymd[1], ymd[2], 0, 0, 0);
 	for (SpatTime_t &d : time) d = otime + d * 3600;
 }
 
 
 
 SpatTime_t time_from_day(int syear, int smonth, int sday, double ndays) {
-	SpatTime_t time = get_time(syear, smonth, sday);
+	SpatTime_t time = get_time(syear, smonth, sday, 0, 0, 0);
 	time += ndays * 86400;
 	return time;
 }
@@ -206,7 +206,7 @@ SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, double ndays) {
 	}
 	month--;
 	int day = doy - md[month];
-	SpatTime_t time = get_time(year+syear, month+smonth, day+sday);
+	SpatTime_t time = get_time(year+syear, month+smonth, day+sday, 0, 0, 0);
 	return time;
 }
 
@@ -224,7 +224,7 @@ SpatTime_t time_from_day_360(int syear, int smonth, int sday, double ndays) {
 	}
 	month--;
 	int day = doy - md[month];
-	SpatTime_t time = get_time(year+syear, month+smonth, day+sday);
+	SpatTime_t time = get_time(year+syear, month+smonth, day+sday, 0, 0, 0);
 	return time;
 }
 
