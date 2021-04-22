@@ -42,7 +42,7 @@ static PrepGeomPtr geos_ptr(const GEOSPreparedGeometry* pg, GEOSContextHandle_t 
 	return PrepGeomPtr(pg, deleter);
 }
 
-
+#ifdef useRcpp
 #include "Rcpp.h"
 
 template <typename... Args>
@@ -79,6 +79,37 @@ static void __warningHandler(const char *fmt, ...) {
     warnNoCall(buf); 
 	return;
 }
+
+#else 
+
+
+static void __errorHandler(const char *fmt, ...) { 
+	char buf[BUFSIZ], *p;
+	va_list ap;
+	va_start(ap, fmt);
+	vsprintf(buf, fmt, ap);
+	va_end(ap);
+	p = buf + strlen(buf) - 1;
+	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
+    std::cout << buf << std::endl; 
+	return; 
+} 
+
+static void __warningHandler(const char *fmt, ...) {
+	char buf[BUFSIZ], *p;
+	va_list ap;
+	va_start(ap, fmt);
+	vsprintf(buf, fmt, ap);
+	va_end(ap);
+	p = buf + strlen(buf) - 1;
+	if(strlen(buf) > 0 && *p == '\n') *p = '\0';
+    std::cout << buf << std::endl; 
+	return;
+}
+
+
+#endif 
+
 
 void geos_finish(GEOSContextHandle_t ctxt) {
 #ifdef HAVE350
