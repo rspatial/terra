@@ -1109,13 +1109,74 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 }
 
 
+void SpatVector::fix_lonlat_overflow() {
+
+	
+	if (! ((extent.xmin < -180) || (extent.xmax > 180))) { return; }
+
+	SpatExtent world(-180, 180, -90, 90);
+
+	std::string vt = type();
+	if (vt == "points") {
+		for (size_t i=0; i<geoms.size(); i++) {
+			SpatGeom g = geoms[i];
+			for (size_t j=0; j<g.parts.size(); j++) {
+				for (size_t k=0; k<g.parts[j].x.size(); k++) {	
+					if (geoms[i].parts[j].x[k] < -180) { geoms[i].parts[j].x[k] += 360; }
+					if (geoms[i].parts[j].x[k] > 180) { geoms[i].parts[j].x[k] -= 360; }
+				}
+			}
+		}
+	} else {
+		SpatExtent east(-360, -180, -180, 180);
+		SpatExtent west(180, 360, -180, 180);
+	
+		for (size_t i=0; i<geoms.size(); i++) {
+			if (geoms[i].extent.xmin < -180) {
+				SpatVector v(geoms[i]);
+				if (geoms[i].extent.xmax <= -180) {
+					v = v.shift(360, 0);
+				} else {
+					SpatVector add = v.crop(east);
+					add = add.shift(360, 0);
+					v = v.crop(world);
+					v.geoms[i].addPart(add.geoms[0].parts[0]);
+				}
+				replaceGeom(v.geoms[0], i);
+			}
+
+			if (geoms[i].extent.xmax > 180) {
+				SpatVector v(geoms[i]);
+				if (geoms[i].extent.xmin >= 180) {
+					v = v.shift(-360, 0);
+				} else {
+					SpatVector add = v.crop(west);
+					add = add.shift(-360, 0);
+					v = v.crop(world);
+					v.geoms[i].addPart(add.geoms[0].parts[0]);
+				}
+				replaceGeom(v.geoms[0], i);
+			}
+		}
+	}
+
+	if ((extent.ymax > 90) || (extent.ymin < -90)) {	
+		SpatVector out = crop(world);
+		geoms = out.geoms;
+		extent = out.extent;
+		df = out.df;
+		srs = out.srs;
+	}
+	return;
+}
 
 
-SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) { 
+
+
+SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) { 
 
 	std::vector<std::vector<double>> xy = coordinates();
 	SpatVector out;
-	out.srs = srs;
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
 	SpatGeom g(polygons);
@@ -1131,7 +1192,7 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 			if (std::isnan(xy[0][i]) || std::isnan(xy[1][i])) {
 				out.addGeom(SpatGeom(polygons));
 			} else {
-				std::vector<std::vector<double>> dp = destpoint_lonlat(xy[0][i], xy[1][i], brng, d);
+				std::vector<std::vector<double>> dp = destpoint_lonlat(xy[0][i], xy[1][i], brng, d[i], false);
 				//close polygons
 				dp[0].push_back(dp[0][0]);
 				dp[1].push_back(dp[1][0]);
@@ -1139,7 +1200,7 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 				out.addGeom(g);
 			}
 		}
-
+		out.fix_lonlat_overflow();
 	} else {
 		std::vector<double> cosb(n);
 		std::vector<double> sinb(n);
@@ -1148,8 +1209,8 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 		for (size_t i=0; i<n; i++) {
 			double brng = i * step;
 			brng = toRad(brng);
-			cosb[i] = d * cos(brng);
-			sinb[i] = d * sin(brng);
+			cosb[i] = d[i] * cos(brng);
+			sinb[i] = d[i] * sin(brng);
 		}
 		for (size_t i=0; i<npts; i++) {
 			if (std::isnan(xy[0][i]) || std::isnan(xy[1][i])) {
@@ -1166,22 +1227,25 @@ SpatVector SpatVector::point_buffer(double d, unsigned quadsegs) {
 			}
 		}
 	}
+	out.srs = srs;
+	out.df = df;
 	return(out);
 }
 
 
 
 
-SpatVector SpatVector::buffer(double d, unsigned segments, unsigned capstyle){
+SpatVector SpatVector::buffer(std::vector<double> d, unsigned segments, unsigned capstyle){
 	SpatVector out;
 	std::string vt = type();
 	if (vt != "points") {
-		out.setError("must be points");
+		out.setError("geometry must be points");
 		return out;
 	}
-	if ((vt == "points") && (d <= 0)) {
-		out.setError("buffer size must be >= 0 with points");
-		return out;
+	for (size_t i=0; i<d.size(); i++) {
+		if (d[i] <= 0) {
+			d[i] = -d[i];
+		}
 	}
 	out = point_buffer(d, segments); 
 	return out;

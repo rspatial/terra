@@ -280,6 +280,31 @@ bool SpatVector::setGeom(SpatGeom p) {
 	return true;
 }
 
+void SpatVector::computeExtent() {
+	if (geoms.size() == 0) return;
+	extent = geoms[0].extent;
+	for (size_t i=1; i<geoms.size(); i++) {
+		extent.unite(geoms[i].extent);
+	}
+}
+
+
+bool SpatVector::replaceGeom(SpatGeom p, unsigned i) {
+	if (i < geoms.size()) {
+		if ((geoms[i].extent.xmin == extent.xmin) || (geoms[i].extent.xmax == extent.xmax) ||
+			(geoms[i].extent.ymin == extent.ymin) || (geoms[i].extent.ymax == extent.ymax)) {
+
+			geoms[i] = p;
+			computeExtent();
+		} else {
+			geoms[i] = p;
+		}
+	} else {
+		return false;
+	}
+	return true;
+}
+
 
 unsigned SpatVector::nxy() {
 	unsigned n = 0;

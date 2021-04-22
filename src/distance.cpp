@@ -273,7 +273,7 @@ std::vector<double> destpoint_lonlat(double longitude, double latitude, double  
 }
 
 
-std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> &longitude, std::vector<double> &latitude, std::vector<double> &bearing, std::vector<double> &distance) {
+std::vector<std::vector<double> > destpoint_lonlat(const std::vector<double> &longitude, const std::vector<double> &latitude, const std::vector<double> &bearing, const std::vector<double> &distance) {
 	double a = 6378137.0;
 	double f = 1/298.257223563;
 	
@@ -292,7 +292,7 @@ std::vector<std::vector<double> > destpoint_lonlat(std::vector<double> &longitud
 }
 
 
-std::vector<std::vector<double> > destpoint_lonlat(double &longitude, double &latitude, std::vector<double> &bearing, double& distance) {
+std::vector<std::vector<double> > destpoint_lonlat(const double &longitude, const double &latitude, const std::vector<double> &bearing, const double& distance, bool wrap) {
 	double a = 6378137.0;
 	double f = 1/298.257223563;
 	
@@ -301,11 +301,20 @@ std::vector<std::vector<double> > destpoint_lonlat(double &longitude, double &la
 	size_t n = bearing.size();
 	std::vector<std::vector<double> > out(3, std::vector<double>(n));
 	double lat2, lon2, azi2;
-	for (size_t i=0; i < n; i++) {
-		geod_direct(&g, latitude, longitude, bearing[i], distance, &lat2, &lon2, &azi2);
-		out[0][i] = lon2;
-		out[1][i] = lat2;
-		out[2][i] = azi2;
+	if (wrap) {
+		for (size_t i=0; i < n; i++) {
+			geod_direct(&g, latitude, longitude, bearing[i], distance, &lat2, &lon2, &azi2);
+			out[0][i] = lon2;
+			out[1][i] = lat2;
+			out[2][i] = azi2;
+		}
+	} else {
+		for (size_t i=0; i < n; i++) {
+			geod_direct(&g, latitude, 0, bearing[i], distance, &lat2, &lon2, &azi2);
+			out[0][i] = lon2 + longitude;
+			out[1][i] = lat2;
+			out[2][i] = azi2;
+		}
 	}
 	return out;
 }

@@ -137,9 +137,11 @@ class SpatVector {
 		SpatGeom getGeom(unsigned i);
 		bool addGeom(SpatGeom p);
 		bool setGeom(SpatGeom p);
+		bool replaceGeom(SpatGeom p, unsigned i);
 		std::vector<std::vector<double>> getGeometry();
 		SpatDataFrame getGeometryDF();
 		std::vector<std::string> getGeometryWKT();
+		void computeExtent();
 
 		std::vector<std::vector<double>> coordinates();
 
@@ -219,8 +221,8 @@ class SpatVector {
 		std::string getWarnings() { return msg.getWarnings();}
 		std::string getError() { return msg.getError();}
 
-		SpatVector point_buffer(double d, unsigned quadsegs);
-        SpatVector buffer(double d, unsigned segments, unsigned capstyle);
+		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs);
+        SpatVector buffer(std::vector<double> d, unsigned segments, unsigned capstyle);
 
 		SpatVector append(SpatVector x, bool ignorecrs);
 		SpatVector disaggregate();
@@ -244,7 +246,7 @@ class SpatVector {
 		SpatVectorCollection bienvenue();
 		SpatVector aggregate(bool dissolve);
 		SpatVector aggregate(std::string field, bool dissolve);
-        SpatVector buffer2(double d, unsigned segments, unsigned capstyle);
+        SpatVector buffer2(std::vector<double> d, unsigned segments, unsigned capstyle);
 		SpatVector centroid();
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
@@ -271,6 +273,7 @@ class SpatVector {
 		SpatVector unaryunion();
 
 		SpatVector cbind(SpatDataFrame d);
+		void fix_lonlat_overflow();
 
 };
 

@@ -1,5 +1,6 @@
 #include "geos_spat.h"
 #include "distance.h"
+#include "recycle.h"
 
 
 std::vector<std::string> SpatVector::wkt() {
@@ -295,23 +296,28 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 
 
 
-SpatVector SpatVector::buffer2(double dist, unsigned nQuadSegs, unsigned capstyle) {
+SpatVector SpatVector::buffer2(std::vector<double> dist, unsigned nQuadSegs, unsigned capstyle) {
 
 	SpatVector out;
 	out.srs = srs;
 
 	std::string vt = type();
-	if ((vt == "points") && (dist <= 0)) {
-		dist = -dist;
+	if (vt == "points") {
+		for (size_t i=0; i<dist.size(); i++) {
+			if (dist[i] <= 0) {
+				dist[i] = -dist[i];
+			}
+		}	
 	}
-
+	recycle(dist, size());
+	
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 //	SpatVector f = remove_holes();
 
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {
-		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), dist, nQuadSegs);
+		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), dist[i], nQuadSegs);
 		if (pt == NULL) {
 			out.setError("GEOS exception");
 			geos_finish(hGEOSCtxt);
