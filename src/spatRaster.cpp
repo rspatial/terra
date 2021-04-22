@@ -43,7 +43,7 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		constructFromFileMulti(fname[0], subdsname[0], xyz);
 		return;
 	}
-	
+
 	constructFromFile(fname[0], subds, subdsname);
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;

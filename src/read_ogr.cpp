@@ -231,7 +231,7 @@ SpatGeom getMultiLinesGeom(OGRGeometry *poGeometry) {
 	return g;
 }
 
-#include "Rcpp.h"
+//#include "Rcpp.h"
 
 SpatGeom getPolygonsGeom(OGRGeometry *poGeometry) {
 	SpatGeom g(polygons);

@@ -323,9 +323,11 @@ bool gdal_warper(GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::vector<unsigne
 		hBand = GDALGetRasterBand(hSrcDS, srcbands[i]+1);
 		double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
 		if (verbose && i == 0) {
+#ifdef useRcpp
 			std::string hna = hasNA ? "true" : "false";
 			Rcpp::Rcout << "hasNA         : " << hna << std::endl;
 			Rcpp::Rcout << "NA flag       : " << naflag << std::endl;
+#endif
 		}
 		if (hasNA) {
 			psWarpOptions->padfSrcNoDataReal[i] = naflag;

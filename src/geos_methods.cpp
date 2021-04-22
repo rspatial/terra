@@ -1,3 +1,4 @@
+#include <numeric>
 #include "geos_spat.h"
 #include "distance.h"
 #include "recycle.h"

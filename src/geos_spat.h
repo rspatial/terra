@@ -82,7 +82,7 @@ static void __warningHandler(const char *fmt, ...) {
 
 #else 
 
-
+#include <iostream>
 static void __errorHandler(const char *fmt, ...) { 
 	char buf[BUFSIZ], *p;
 	va_list ap;
@@ -360,28 +360,32 @@ SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEO
 		for(size_t i = 0; i < ng; i++) {
 			GEOSGeometry* g = geoms[i].get();
 			size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
-			
+
 			for(size_t j = 0; j<np; j++) {
-				
+
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
 				const GEOSGeometry* ring = GEOSGetExteriorRing_r(hGEOSCtxt, part);
-				const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, ring); 		
+				const GEOSCoordSequence* crds = GEOSGeom_getCoordSeq_r(hGEOSCtxt, ring);
 				int npts = -1;
 				npts = GEOSGetNumCoordinates_r(hGEOSCtxt, ring);
 				if (npts < 0) {
+#ifdef useRcpp
 					Rcpp::Rcout << "exception 99" << std::endl;
+#else
+					std::cout <<  "exception 66" << std::endl;
+#endif
 					continue;
 				}
 				double xvalue = 0;
 				double yvalue = 0;
 				for (int p=0; p < npts; p++) {
-					xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);				
-					yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);				
+					xok = GEOSCoordSeq_getX_r(hGEOSCtxt, crds, p, &xvalue);
+					yok = GEOSCoordSeq_getY_r(hGEOSCtxt, crds, p, &yvalue);
 					if (xok & yok) {
 						x.push_back(xvalue);
 						y.push_back(yvalue);
-						gid.push_back(i);			
-						gp.push_back(j);			
+						gid.push_back(i);
+						gp.push_back(j);
 						hole.push_back(0);
 					}
 				}
@@ -393,7 +397,12 @@ SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEO
 					int npts = -1;
 					npts = GEOSGetNumCoordinates_r(hGEOSCtxt, ring);
 					if (npts < 0) {
-						Rcpp::Rcout << "exception 99" << std::endl;
+
+#ifdef useRcpp
+						Rcpp::Rcout << "exception 909" << std::endl;
+#else 
+						std::cout << "exception 606" << std::endl; 
+#endif
 						continue;
 					}
 					double xvalue = 0;
