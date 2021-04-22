@@ -219,10 +219,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		if (lzw) {
 			papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "LZW");			
 		}
+#ifdef useRcpp
 		if (opt.verbose) {
 			Rcpp::Rcout<< "LZW           : " << lzw << std::endl;
 		}
-
+#endif
 		// ~ 4GB 
 		if (compressed & (diskNeeded > 4194304000)) { 
 			bool big = true;
@@ -234,13 +235,17 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			}
 			if (big) {
 				papszOptions = CSLSetNameValue( papszOptions, "BIGTIFF", "YES");
+#ifdef useRcpp
 				if (opt.verbose) {
 					Rcpp::Rcout<< "BIGTIFF       : yes" << std::endl;
 				}
+#endif
 			} else {
+#ifdef useRcpp
 				if (opt.verbose) {
 					Rcpp::Rcout<< "BIGTIFF       : as requested" << std::endl;
 				}
+#endif
 			}
 		}
 	}
@@ -363,7 +368,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		} else {
 		*/
 		poBand->SetDescription(nms[i].c_str());
-		
+
 		if ((i==0) || (driver != "GTiff")) {
 			// to avoid "Setting nodata to nan on band 2, but band 1 has nodata at nan." 
 			if (hasNAflag) {
@@ -384,7 +389,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 				poBand->SetNoDataValue(NAN); 
 			}
 		}
-		
+
 		if (writeRGB) {
 			if (rgblyrs[i]==0) {
 				poBand->SetColorInterpretation(GCI_RedBand);
@@ -394,7 +399,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 				poBand->SetColorInterpretation(GCI_BlueBand);
 			}
 		}
-		
+
 	}
 
 	std::vector<double> rs = resolution();

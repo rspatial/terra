@@ -18,13 +18,16 @@
 
 #include <algorithm>
 #include <stdint.h>
+#include <vector>
+#include <regex>
 
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
 
 #include "file_utils.h"
 #include "string_utils.h"
-#include <regex>
+
+//#include <ctime>
 //#include "NA.h"
 
 #include "gdal_priv.h"

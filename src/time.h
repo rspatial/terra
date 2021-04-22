@@ -1,6 +1,8 @@
 #ifndef SPATTIME_GUARD
 #define SPATTIME_GUARD
 
+#include <vector>
+#include <string>
 typedef long long SpatTime_t;
 //SpatTime_t get_time(long year, unsigned month, unsigned day=15, unsigned hr=0, unsigned min=0, unsigned sec=0);
 std::vector<int> get_date(SpatTime_t x);

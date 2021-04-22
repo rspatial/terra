@@ -7,7 +7,8 @@ SpatRaster make_raster() {
     for (size_t i = 0; i < r.ncell(); i++) {
        v.push_back(i+1);
     }
-    r.setValues(v);
+    SpatOptions opt;
+    r.setValues(v, opt);
     return r;
 }
 

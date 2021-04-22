@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     	//std::cout <<  test.nrow() << std::endl;
     	//show(test);
 	std::vector<std::string> arguments = std::vector<std::string>(argv, argv + argc);
-	
+
  	arguments[0] = arguments[0].substr(arguments[0].find_last_of("/\\") + 1);
  	if (arguments.size() < 2) {
 		std::string msg = "usage: " +  arguments[0] + " method input output parameters";

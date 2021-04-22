@@ -1,10 +1,11 @@
+#include <unordered_map>
+
 #include "ogr_spatialref.h"
 
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
 #include "crs.h"
-
 //#include <vector>
 //#include <string>
 
@@ -57,7 +58,7 @@ void getGDALdriver(std::string &filename, std::string &driver) {
 
 
 
-
+/*
 std::string sectostr(int x) {
 	char buffer[20];
 	time_t now = x;
@@ -66,7 +67,7 @@ std::string sectostr(int x) {
 	std::string s = buffer;
 	return s;
 }
-
+*/
 
 std::vector<std::string> get_metadata(std::string filename) {
 
