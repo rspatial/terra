@@ -1,5 +1,5 @@
 #include "spatRaster.h"
-#include "time.h"
+#include "spatTime.h"
 #include "recycle.h"
 
 #include "file_utils.h"

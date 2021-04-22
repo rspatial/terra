@@ -18,7 +18,7 @@
 #include "spatRaster.h"
 #include "string_utils.h"
 #include "file_utils.h"
-#include "time.h"
+#include "spatTime.h"
 #include "recycle.h"
 
 #include <set>
