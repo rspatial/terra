@@ -10,6 +10,8 @@
 \description{
 Apply a function to a cell-varying range of the layers of a SpatRaster. The range is specified for each cell separately by another SpatRaster with two layers. For either \code{first} or \code{last} you can use a constant instead. 
 
+See \code{\link{selectRange}} to create a new SpatRaster by extracting one or more values starting at a cell-varying layer.
+
 See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a function to all layers (perhaps after making a \code{\link{subset}}) of a SpatRaster.
 }
 
@@ -36,7 +38,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a fu
 SpatRaster
 }
 
-\seealso{\code{\link{app}}, \code{\link{Summary-methods}}, \code{\link{lapp}}, \code{\link{tapp}}}
+\seealso{\code{\link{selectRange}}, \code{\link{app}}, \code{\link{Summary-methods}}, \code{\link{lapp}}, \code{\link{tapp}}}
 
 \examples{
 r <- rast(ncol=9, nrow=9)

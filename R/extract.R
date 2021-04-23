@@ -125,6 +125,22 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		fun <- match.fun(fun) 
 		e <- data.frame(e)
 		e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
+		m <- sapply(e, NCOL)
+		if (any(m > 1)) {
+			e <- do.call(cbind, as.list(e))
+			skip <- (length(cn) - nlyr(x))
+			nms <- colnames(e)
+			snms <- nms[(skip+1):length(nms)]
+			mr <- max(m)
+			if (!all(snms=="")) {
+				snms <- paste0(rep(names(x), each=mr), ".", snms)
+			} else {
+				snms <- paste0(rep(names(x), each=mr), ".", rep(1:mr))
+			}
+			snms <- c(cn[1:skip], snms)
+			colnames(e) <- snms
+			e <- data.frame(e)
+		}
 	} else if (cells) {
 		cncell <- cn =="cell"
 		e[, cncell] <- e[, cncell] + 1

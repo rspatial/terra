@@ -66,12 +66,6 @@ setMethod("names", signature(x="SpatVector"),
 	}
 )
 
-setMethod("colnames", signature(x="SpatVector"), 
-	function(x) { 
-		x@ptr$names
-	}
-)
-
 setMethod("names<-", signature(x="SpatVector"), 
 	function(x, value)  {
 		if (length(value) != ncol(x)) {
@@ -82,12 +76,6 @@ setMethod("names<-", signature(x="SpatVector"),
 			warn("names<-", "some names were changed to make them valid and/or unique")
 		}
 		return(x)
-	}
-)
-
-setMethod("colnames<-", signature(x="SpatVector"), 
-	function(x, value)  {
-		`names<-`(x, value)
 	}
 )
 

@@ -7,7 +7,7 @@
 \title{Select the values of a range of layers, as specified by cell values in another SpatRaster}
 
 \description{
-Use a single layer SpatRaster object to select cell values from different layers in a multi-layer SpatRaster. The values of the SpatRaster to select layers (\code{y}) should be between \code{1} and \code{nlyr(x)} (values outside this range are ignored); they are also truncated to integers. 
+Use a single layer SpatRaster to select cell values from different layers in a multi-layer SpatRaster. The values of the SpatRaster to select layers (\code{y}) should be whole numbers between \code{1} and \code{nlyr(x)} (values outside this range are ignored). 
 
 See \code{\link{rapp}} for applying af function to a range of variable size.
 
