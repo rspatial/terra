@@ -19,7 +19,7 @@
 #include <limits>
 #include <cmath>
 #include "spatRaster.h"
-#include "vecmathfun.h"
+#include "vecmath.h"
 
 std::vector<double> flat(std::vector<std::vector<double>> v) {
     unsigned s1 = v.size();

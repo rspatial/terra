@@ -163,8 +163,8 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 	if (n == 0) {
 		out.setError("no probs");
 		return out;
-	} else if (nlyr() < n) {
-		out.setError("more probs than layers");
+	} else if (nlyr() < 2) {
+		out.setError("more than one layer needed to compute quantiles");
 		return out;	
 	}
 

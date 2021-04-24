@@ -18,7 +18,7 @@
 //#include <vector>
 #include "spatRasterMultiple.h"
 #include "recycle.h"
-#include "vecmathfun.h"
+#include "vecmath.h"
 //#include "vecmath.h"
 #include <cmath>
 #include "math_utils.h"

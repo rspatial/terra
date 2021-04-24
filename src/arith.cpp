@@ -19,7 +19,7 @@
 #include "spatRasterMultiple.h"
 #include "recycle.h"
 #include "math_utils.h"
-#include "vecmathfun.h"
+#include "vecmath.h"
 //#include "modal.h"
 
 

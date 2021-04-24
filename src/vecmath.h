@@ -18,11 +18,17 @@
 #ifndef VECMATH_GUARD
 #define VECMATH_GUARD
 
+#include <functional>
+#include <string>
 #include <type_traits>
 #include <vector>
 #include "NA.h"
 #include <math.h>
 
+
+
+bool haveFun(std::string fun);
+std::function<double(std::vector<double>&, bool)> getFun(std::string fun);
 
 
 template <typename T>
