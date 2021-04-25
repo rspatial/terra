@@ -16,7 +16,6 @@
 \alias{readValues,SpatRaster-method}
 \alias{writeStart,SpatRaster,character-method}
 \alias{writeStop,SpatRaster-method}
-\alias{writeStop,SpatRaster-method}
 \alias{writeValues,SpatRaster,vector-method}
 
 \title{Read from, or write to, file}

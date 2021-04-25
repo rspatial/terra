@@ -26,7 +26,6 @@
 \alias{colFromCell,SpatRaster,numeric-method}
 \alias{rowColFromCell}
 \alias{rowColFromCell,SpatRaster,numeric-method}
-\alias{cellFromXY,SpatRaster,matrix-method}
 
   
 \title{Coordinates from a row, column or cell number and vice versa}
