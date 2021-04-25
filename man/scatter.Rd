@@ -23,7 +23,7 @@ Scatterplot of the values of two SpatRaster layers
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
-  \item{maxnl}{postive integer. Maximum number of layers to plot (for multi-layer objects)}
+  \item{maxnl}{positive integer. Maximum number of layers to plot (for multi-layer objects)}
   \item{gridded}{logical. If \code{TRUE} the scatterplot is gridded (counts by cells)}
   \item{warn}{boolean. Show a warning if a sample of the pixels is used (for scatterplot only)}
 

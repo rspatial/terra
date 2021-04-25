@@ -1190,7 +1190,6 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 	size_t npts = size();
 	recycle(d, npts);
 
-	quadsegs = std::min(quadsegs, (unsigned) 180);
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
 	SpatGeom g(polygons);

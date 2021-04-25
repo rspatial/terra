@@ -30,7 +30,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 
 \arguments{
 \item{x}{character (filename), or SpatRaster, or list of SpatRaster objects, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatRasterDataset}
-\item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a postive integer}
+\item{ids}{optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer}
 \item{...}{additional arguments. Can be other \code{SpatRaster} objects if \code{x} is a \code{SpatRaster}} 
 }
 

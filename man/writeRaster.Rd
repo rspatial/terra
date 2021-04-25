@@ -35,7 +35,7 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 \tabular{ll}{
 \bold{name} \tab \bold{description}\cr
 
-\code{datatype}\tab values for \code{datatype} are "INT1U", "INT2U", "INT2S", "INT4U", "INT4S", "FLT4S", "FLT8S". The first three letters indicate whether the datatype is integer (whole numbers) of a real number (decimal numbers), the fourth character indicates the number of bytes used (allowing for large numbers and/or more precision), and the  "S" or "U" indicate whether the values are signed (both negative and positive) or unsigned (postive values only).\cr
+\code{datatype}\tab values for \code{datatype} are "INT1U", "INT2U", "INT2S", "INT4U", "INT4S", "FLT4S", "FLT8S". The first three letters indicate whether the datatype is integer (whole numbers) of a real number (decimal numbers), the fourth character indicates the number of bytes used (allowing for large numbers and/or more precision), and the  "S" or "U" indicate whether the values are signed (both negative and positive) or unsigned (positive values only).\cr
 
 \code{filetype}\tab file format expresses as \href{https://gdal.org/drivers/raster/index.html}{GDAL driver names}. If this argument is not supplied, the driver is derived from the filename.\cr
 
@@ -43,7 +43,7 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{tempdir}\tab the path where temporary files are to be written to.\cr
 
-\code{progress}\tab postive integer. If the number of chunks is larger, a progress bar is shown.\cr
+\code{progress}\tab positive integer. If the number of chunks is larger, a progress bar is shown.\cr
 
 \code{memfrac}\tab numeric between 0.1 and 0.9. The fraction of available RAM that terra is allowed to use.\cr
 

@@ -243,7 +243,7 @@ class SpatVector {
 		SpatVectorCollection bienvenue();
 		SpatVector aggregate(bool dissolve);
 		SpatVector aggregate(std::string field, bool dissolve);
-        SpatVector buffer(std::vector<double> d, unsigned segments, unsigned capstyle);
+        SpatVector buffer(std::vector<double> d, unsigned quadsegs);
 		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs);
 
 		SpatVector centroid();

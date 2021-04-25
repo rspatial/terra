@@ -297,11 +297,13 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 
 
 
-SpatVector SpatVector::buffer(std::vector<double> dist, unsigned nQuadSegs, unsigned capstyle) {
+SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
+
+	quadsegs = std::min(quadsegs, (unsigned) 180);
 
 	std::string vt = type();
 	if ((vt == "points") && (is_lonlat())) {
-		return point_buffer(dist, nQuadSegs);
+		return point_buffer(dist, quadsegs);
 	}
 	
 	SpatVector out;
@@ -322,7 +324,7 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned nQuadSegs, unsi
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> b(size());
 	for (size_t i = 0; i < g.size(); i++) {
-		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), dist[i], nQuadSegs);
+		GEOSGeometry* pt = GEOSBuffer_r(hGEOSCtxt, g[i].get(), dist[i], quadsegs);
 		if (pt == NULL) {
 			out.setError("GEOS exception");
 			geos_finish(hGEOSCtxt);
