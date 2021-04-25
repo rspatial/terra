@@ -38,16 +38,27 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	
 # figure out the shape of the output by testing with one row
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
+	usefun <- FALSE
 	if (nl==1) {
 		r <- fun(v, ...)
+		usefun <- TRUE
 	} else {
-		r <- apply(v, 1, fun, ...)
+		r <- try(apply(v, 1, fun, ...), silent=TRUE)
+		if (inherits(r, "try-error")) {
+			rr <- try(fun(v, ...), silent=TRUE)
+			if (inherits(rr, "try-error")) {
+				error("app", paste0("cannot use this function\n", attr(r, "condition")))
+			} else {
+				usefun <- TRUE
+				r <- rr
+			}
+		}
 	}
 	if (is.list(r)) {
 		if (length(unique(sapply(r, length))) >  1) {
 			error("app", "'fun' returns a list (should be numeric or matrix).\nPerhaps because returned values have different lenghts due to NAs in input?")
 		} else {
-				error("app", "'fun' returns a list (should be numeric or matrix)")
+			error("app", "'fun' returns a list (should be numeric or matrix)")
 		}
 	}
 	trans <- FALSE
@@ -61,13 +72,19 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			nlyr(out) <- ncol(r)
 			nms <- colnames(r)
 		} else {
-			error("app", "'fun' is not appropriate")
+			error("app", "the number of values returned by 'fun' is not appropriate")
 		}
 		if (is.null(wopt$names)) {
 			wopt$names <- nms
 		}
+	} else {
+		if ((length(r) %% nc) != 0) {
+			error("app", "the number of values returned by 'fun' is not appropriate")
+		} else {
+			nlyr(out) <- length(r) / nc
+		}
 	}
-
+	
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x), nlyr(out))*2)
 
 	if (cores > 1) {
@@ -83,10 +100,13 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 	} else {
-		if ((nl == 1) && !trans) {
+		if (usefun) {
 			for (i in 1:b$n) {
 				v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 				r <- fun(v, ...)
+				if (trans) {
+					r <- t(r)
+				}
 				writeValues(out, r, b$row[i], b$nrows[i])
 			}
 		} else {
