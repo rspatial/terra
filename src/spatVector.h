@@ -221,9 +221,6 @@ class SpatVector {
 		std::string getWarnings() { return msg.getWarnings();}
 		std::string getError() { return msg.getError();}
 
-		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs);
-        SpatVector buffer(std::vector<double> d, unsigned segments, unsigned capstyle);
-
 		SpatVector append(SpatVector x, bool ignorecrs);
 		SpatVector disaggregate();
 		SpatVector shift(double x, double y);
@@ -246,7 +243,9 @@ class SpatVector {
 		SpatVectorCollection bienvenue();
 		SpatVector aggregate(bool dissolve);
 		SpatVector aggregate(std::string field, bool dissolve);
-        SpatVector buffer2(std::vector<double> d, unsigned segments, unsigned capstyle);
+        SpatVector buffer(std::vector<double> d, unsigned segments, unsigned capstyle);
+		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs);
+
 		SpatVector centroid();
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);

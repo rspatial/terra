@@ -297,12 +297,16 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 
 
 
-SpatVector SpatVector::buffer2(std::vector<double> dist, unsigned nQuadSegs, unsigned capstyle) {
+SpatVector SpatVector::buffer(std::vector<double> dist, unsigned nQuadSegs, unsigned capstyle) {
 
+	std::string vt = type();
+	if ((vt == "points") && (is_lonlat())) {
+		return point_buffer(dist, nQuadSegs);
+	}
+	
 	SpatVector out;
 	out.srs = srs;
 
-	std::string vt = type();
 	if (vt == "points") {
 		for (size_t i=0; i<dist.size(); i++) {
 			if (dist[i] <= 0) {

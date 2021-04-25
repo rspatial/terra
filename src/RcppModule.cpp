@@ -344,7 +344,6 @@ RCPP_MODULE(spat){
 		.method("shift", &SpatVector::shift)
 		.method("rescale", &SpatVector::rescale)
 		.method("rotate", &SpatVector::rotate)
-		.method("buffer2", &SpatVector::buffer2)
 		.method("erase", &SpatVector::erase)
 		.method("symdif", &SpatVector::symdif)
 		.method("cover", &SpatVector::cover)

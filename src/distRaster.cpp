@@ -20,7 +20,7 @@
 #include <limits>
 #include <cmath>
 #include "ggeodesic.h"
-
+#include "recycle.h"
 
 
 void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const double &lindist) {
@@ -1175,13 +1175,28 @@ void SpatVector::fix_lonlat_overflow() {
 
 SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) { 
 
-	std::vector<std::vector<double>> xy = coordinates();
 	SpatVector out;
+	std::string vt = type();
+	if (vt != "points") {
+		out.setError("geometry must be points");
+		return out;
+	}
+	for (size_t i=0; i<d.size(); i++) {
+		if (d[i] <= 0) {
+			d[i] = -d[i];
+		}
+	}
+
+	size_t npts = size();
+	recycle(d, npts);
+
+	quadsegs = std::min(quadsegs, (unsigned) 180);
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
 	SpatGeom g(polygons);
 	g.addPart(SpatPart(0, 0));
-	size_t npts = size();
+
+	std::vector<std::vector<double>> xy = coordinates();
 
 	if (is_lonlat()) {
 		std::vector<double> brng(n);
@@ -1230,25 +1245,6 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 	out.srs = srs;
 	out.df = df;
 	return(out);
-}
-
-
-
-
-SpatVector SpatVector::buffer(std::vector<double> d, unsigned segments, unsigned capstyle){
-	SpatVector out;
-	std::string vt = type();
-	if (vt != "points") {
-		out.setError("geometry must be points");
-		return out;
-	}
-	for (size_t i=0; i<d.size(); i++) {
-		if (d[i] <= 0) {
-			d[i] = -d[i];
-		}
-	}
-	out = point_buffer(d, segments); 
-	return out;
 }
 
 
