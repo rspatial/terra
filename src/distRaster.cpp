@@ -1181,15 +1181,18 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 		out.setError("geometry must be points");
 		return out;
 	}
+
+	size_t npts = size();
+
+/*
+# taken care of by `buffer`	
 	for (size_t i=0; i<d.size(); i++) {
 		if (d[i] <= 0) {
 			d[i] = -d[i];
 		}
 	}
-
-	size_t npts = size();
 	recycle(d, npts);
-
+*/
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
 	SpatGeom g(polygons);

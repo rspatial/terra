@@ -39,6 +39,9 @@ setMethod("crs", signature("SpatRaster"),
 
 
 .txtCRS <- function(x, warn=TRUE) {
+	if (inherits(x, "SpatVector") | inherits(x, "SpatRaster")) {
+		x <- crs(x)
+	}
 	if (is.na(x)) {
 		x <- ""
 	} else if (inherits(x, "CRS")) {

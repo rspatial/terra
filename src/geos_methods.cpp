@@ -295,21 +295,47 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 }
 
 
+SpatVector buflinepol(SpatVector x, double dist, unsigned quadsegs, bool ispol, bool ishole) {
+
+	SpatVector tmp;
+	x = x.disaggregate();
+	for (size_t i =0; i<x.geoms.size(); i++) {
+		SpatVector p(x.geoms[i]);
+		p.srs = x.srs;
+		p = p.as_points(false);
+		std::vector<double> d(p.size(), dist);
+		SpatVector b = p.point_buffer(d, quadsegs);
+		SpatVector part;
+		for (size_t j =0; j<(b.size()-1); j++) {
+			std::vector<unsigned> range = {(unsigned)j, (unsigned)j+1};
+			SpatVector g = b.subset_rows(range);
+			g = g.convexhull();
+			part.addGeom(g.geoms[0]);
+		}
+		part = part.aggregate(true);
+		tmp.addGeom(part.geoms[0]);
+	}
+	tmp = tmp.aggregate(true);
+	if (ispol) {
+		tmp = ishole ? tmp.get_holes() : tmp.remove_holes();
+	}
+	return tmp;
+}
+
 
 
 SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 
 	quadsegs = std::min(quadsegs, (unsigned) 180);
-
-	std::string vt = type();
-	if ((vt == "points") && (is_lonlat())) {
-		return point_buffer(dist, quadsegs);
-	}
-	
 	SpatVector out;
 	out.srs = srs;
-
-	if (vt == "points") {
+	if (srs.is_empty()) {
+		out.setError("crs not defined");
+		return(out);
+	}
+	bool islonlat = is_lonlat();
+	std::string vt = type();
+	if (vt == "points" || vt == "lines" || islonlat) {
 		for (size_t i=0; i<dist.size(); i++) {
 			if (dist[i] <= 0) {
 				dist[i] = -dist[i];
@@ -317,6 +343,37 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 		}	
 	}
 	recycle(dist, size());
+
+	if (islonlat) {
+		if (vt == "points") {
+			return point_buffer(dist, quadsegs);
+		} else {
+			SpatVector p;
+			bool ispol = vt == "polygons";
+			for (size_t i =0; i<size(); i++) {
+				p = subset_rows(i);
+				if (ispol) {
+					SpatVector h = p.get_holes();
+					p = p.remove_holes();
+					p = buflinepol(p, dist[i], quadsegs, true, false);
+					if (h.size() > 0) {
+						h = buflinepol(h, dist[i], quadsegs, true, true);
+						if (h.size() > 0) {
+							for (size_t j=0; j<h.geoms[0].parts.size(); j++) {
+								p.geoms[0].parts[0].addHole(h.geoms[0].parts[j].x, h.geoms[0].parts[j].y);
+							}
+						}
+					}
+				} else {
+					p = buflinepol(p, dist[i], quadsegs, false, false);
+				}
+				out.addGeom(p.geoms[0]);
+			}	
+			return out;	
+		}
+	}
+
+	
 	
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 //	SpatVector f = remove_holes();

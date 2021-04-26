@@ -53,7 +53,6 @@ v <- vect(f)
 v
 
 ### from a geom matrix
-
 x1 <- rbind(c(-180,-20), c(-140,55), c(10, 0), c(-140,-60))
 x2 <- rbind(c(-10,0), c(140,60), c(160,0), c(140,-55))
 x3 <- rbind(c(-125,0), c(0,60), c(40,5), c(15,-45))
@@ -71,19 +70,26 @@ plot(p)
 lines(lns, col="red", lwd=2)
 
 ### from wkt
-w <- vect("POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
+v <- vect("POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
 
 wkt <- c("MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)), 
 ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20)))", 
 "POLYGON ((0 -5, 10 0, 10 -10, 0 -5))")
 w <- vect(wkt)
 
-# add data.frame
+# combine two SpatVectors 
+vw <- rbind(w, v)
+
+# add a data.frame
+d <- data.frame(id=1:2, name=c("a", "b"))
+values(w) <- d
+
+# add data.frame on creation, here from a geom matrix
 g <- geom(w)
 d <- data.frame(id=1:2, name=c("a", "b"))
-m <- vect(g, atts=d, crs="+proj=longlat +datum=WGS84")
+m <- vect(g, "polygons", atts=d, crs="+proj=longlat +datum=WGS84")
 
-### from a data.frame
+### SpatVector from a data.frame
 d$wkt <- wkt
 x <- vect(d, geom="wkt")
 
@@ -92,8 +98,8 @@ d$lon <- c(0,10)
 d$lat <- c(0,10)
 x <- vect(d, geom=c("lon", "lat"))
 
-### SpatVect to sf
-#sf::st_as_sf(as.data.frame(w, geom=TRUE), wkt="geometry", crs=crs(w))
+# SpatVector to sf
+#sf::st_as_sf(x)
 }
 
 \keyword{methods}

@@ -143,7 +143,6 @@ setMethod("length", signature(x="SpatVector"),
 )
 
 
-
 setMethod("fill", signature(x="SpatVector"), 
 	function(x, inverse=FALSE) {
 		if (inverse) {
@@ -154,7 +153,6 @@ setMethod("fill", signature(x="SpatVector"),
 		messages(x)
 	}
 )
-
 
 
 setMethod("centroids", signature(x="SpatVector"), 

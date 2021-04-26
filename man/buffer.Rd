@@ -43,12 +43,12 @@ values(r) <- v
 b <- buffer(r, width=5000000) 
 plot(b)
 
-v <- vect(rbind(c(10,10), c(0,60)))
+v <- vect(rbind(c(10,10), c(0,60)), crs="+proj=merc")
 b <- buffer(v, 20)
 plot(b)
 points(v)
 
-crs(v) <- "+proj=longlat +datum=WGS84"
+crs(v) <- "+proj=longlat" 
 b <- buffer(v, 1500000)
 plot(b)
 points(v)
