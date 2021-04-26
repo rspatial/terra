@@ -185,7 +185,6 @@
 #&gt;                    1 Diekirch     2 Diekirch   218
 #&gt;                    1 Diekirch     3  Redange   259</div><div class='input'>
 <span class='co'>### from a geom matrix</span>
-
 <span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>180</span>,<span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='fl'>55</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>60</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>10</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>160</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>55</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>125</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>40</span>,<span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>15</span>,<span class='op'>-</span><span class='fl'>45</span><span class='op'>)</span><span class='op'>)</span>
@@ -207,19 +206,26 @@
 </div><div class='input'><span class='fu'><a href='lines.html'>lines</a></span><span class='op'>(</span><span class='va'>lns</span>, col<span class='op'>=</span><span class='st'>"red"</span>, lwd<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
 </div><div class='img'><img src='vect-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>### from wkt</span>
-<span class='va'>w</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='st'>"POLYGON ((0 -5, 10 0, 10 -10, 0 -5))"</span><span class='op'>)</span>
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='st'>"POLYGON ((0 -5, 10 0, 10 -10, 0 -5))"</span><span class='op'>)</span>
 
 <span class='va'>wkt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"MULTIPOLYGON ( ((40 40, 20 45, 45 30, 40 40)), 
 ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35),(30 20, 20 15, 20 25, 30 20)))"</span>, 
 <span class='st'>"POLYGON ((0 -5, 10 0, 10 -10, 0 -5))"</span><span class='op'>)</span>
 <span class='va'>w</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>wkt</span><span class='op'>)</span>
 
-<span class='co'># add data.frame</span>
+<span class='co'># combine two SpatVectors </span>
+<span class='va'>vw</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='va'>w</span>, <span class='va'>v</span><span class='op'>)</span>
+
+<span class='co'># add a data.frame</span>
+<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>id<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, name<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>w</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>d</span>
+
+<span class='co'># add data.frame on creation, here from a geom matrix</span>
 <span class='va'>g</span> <span class='op'>&lt;-</span> <span class='fu'><a href='geom.html'>geom</a></span><span class='op'>(</span><span class='va'>w</span><span class='op'>)</span>
 <span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>id<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, name<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>g</span>, atts<span class='op'>=</span><span class='va'>d</span>, crs<span class='op'>=</span><span class='st'>"+proj=longlat +datum=WGS84"</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>g</span>, <span class='st'>"polygons"</span>, atts<span class='op'>=</span><span class='va'>d</span>, crs<span class='op'>=</span><span class='st'>"+proj=longlat +datum=WGS84"</span><span class='op'>)</span>
 
-<span class='co'>### from a data.frame</span>
+<span class='co'>### SpatVector from a data.frame</span>
 <span class='va'>d</span><span class='op'>$</span><span class='va'>wkt</span> <span class='op'>&lt;-</span> <span class='va'>wkt</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>d</span>, geom<span class='op'>=</span><span class='st'>"wkt"</span><span class='op'>)</span>
 
@@ -228,8 +234,8 @@
 <span class='va'>d</span><span class='op'>$</span><span class='va'>lat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>10</span><span class='op'>)</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>d</span>, geom<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"lon"</span>, <span class='st'>"lat"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'>### SpatVect to sf</span>
-<span class='co'>#sf::st_as_sf(as.data.frame(w, geom=TRUE), wkt="geometry", crs=crs(w))</span>
+<span class='co'># SpatVector to sf</span>
+<span class='co'>#sf::st_as_sf(x)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
