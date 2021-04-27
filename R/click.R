@@ -45,7 +45,7 @@ do_click <- function(type="p", id=FALSE, i=1, pch=20, ...) {
 
 
 setMethod("click", signature(x="missing"), 
-	function(x, n=1, id=FALSE, type="p", show=TRUE, ...) {
+	function(x, n=10, id=FALSE, type="p", show=TRUE, ...) {
 		#loc <- graphics::locator(n, type, ...)
 		#cbind(x=loc$x, y=loc$y)
 		n <- max(1, round(n))
@@ -62,7 +62,7 @@ setMethod("click", signature(x="missing"),
 
 
 setMethod("click", signature(x="SpatRaster"), 
-	function(x, n=1000, id=FALSE, xy=FALSE, cell=FALSE, type="p", show=TRUE, ...) {
+	function(x, n=10, id=FALSE, xy=FALSE, cell=FALSE, type="p", show=TRUE, ...) {
 	n <- max(round(n), 1)
 	values <- NULL
 	for (i in 1:n) {
@@ -99,18 +99,21 @@ setMethod("click", signature(x="SpatRaster"),
 
 
 setMethod("click", signature(x="SpatVector"), 
-	function(x, n=1, id=FALSE, type="p", show=TRUE, ...) {
+	function(x, n=10, id=FALSE, xy=FALSE, type="p", show=TRUE, ...) {
 		n <- max(round(n), 1)
-		values <- NULL
+		values <- xys <- NULL
 		for (i in 1:n) {
 			p <- do_click(type=type, id=id, i=i, ...)
 			if (is.null(p)) break
 			e <- extract(x, vect(p))
+			if (xy) { 
+				e <- cbind(e[,1], x=p$x, y=p$y, e[,-1,drop=FALSE])
+			} 
+			names(e)[1] <- "ID"
 			if (show) {
 				if (!id) {
 					print(e[,-1])
 				} else {
-					colnames(e)[1] <- "ID"
 					print(e)
 				}
 				flush.console()
