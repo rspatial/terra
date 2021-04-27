@@ -478,12 +478,6 @@ setMethod("rotate", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("separate", signature(x="ANY"), 
-	function(...) {
-		warn("separate", "deprecated function. Use 'segregate'")
-		segregate(...)
-	}
-)
 
 setMethod("segregate", signature(x="SpatRaster"), 
 	function(x, classes=NULL, keep=FALSE, other=0, filename="", ...) {

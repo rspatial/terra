@@ -38,13 +38,6 @@ setClass("PackedSpatRaster",
 	vd
 }
 
-setMethod("pack", signature(x="ANY"), 
-	function(...) {
-		warn("pack", "deprecated function, use 'wrap' instead")
-		wrap(...)
-	}
-)
-
 setMethod("wrap", signature(x="Spatial"), 
 	function(x) {
 		pv <- .packVector(x)

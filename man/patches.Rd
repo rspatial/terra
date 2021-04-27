@@ -51,7 +51,7 @@ p8 <- patches(r, 8, zeroAsNA=TRUE)
 # remove zeros
 rr <- classify(r, cbind(0, NA))
 # first make layers for each value
-s <- separate(rr, keep=TRUE, other=NA)
+s <- segregate(rr, keep=TRUE, other=NA)
 p <- patches(s)
 
 }
