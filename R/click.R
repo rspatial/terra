@@ -54,7 +54,7 @@ setMethod("click", signature(x="missing"),
 			x <- do_click(type=type, id=id, i=i, ...)
 			if (is.null(x)) break
 			X <- cbind(X, x)
-			if (show) print(x); flush.console()
+			if (show) print(x); utils::flush.console()
 		}
 		if (show) invisible(X) else x
 	}
@@ -116,7 +116,7 @@ setMethod("click", signature(x="SpatVector"),
 				} else {
 					print(e)
 				}
-				flush.console()
+				utils::flush.console()
 			}
 			values <- rbind(values, e)
 		}
