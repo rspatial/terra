@@ -508,7 +508,6 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
-\code{extend}\tab\code{\link{extend}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{NAvalue}\tab\code{\link{NAflag}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
@@ -525,7 +524,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
 \code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
-\code{layerize}\tab\code{\link{separate}}\cr
+\code{layerize}\tab\code{\link{segregate}}\cr
 \code{clump}\tab\code{\link{patches}}\cr
 }
 }

@@ -17,16 +17,17 @@
 - `autocor` did not handle NA values [#192](https://github.com/rspatial/terra/issues/192). Reported by Laurence Hawker.
 - `nearest` now works for angular coordinates
 - The unit of `slope` in `terrain` was not correct (the tangent was returned instead of the slope) [#196](https://github.com/rspatial/terra/issues/196). Reported by Sven Alder.
+`quantile` now works for rasters that have cells that are all `NA`. Reported by Jerry Nelson.
 
 ## name changes
 
-To avoid name masking by/of tidyverse 
+To avoid name conflicts with tidyverse 
 
 ### with deprecation warning
 - separate -> segregate
 - expand -> extend
 - near -> nearby
-- pack -> export 
+- pack -> wrap 
 
 ### without deprecation warning
 - transpose -> trans
