@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{separate}
-\alias{separate,missing-method}
+\alias{separate,ANY-method}
 \alias{segregate}
 \alias{segregate,SpatRaster-method}
 

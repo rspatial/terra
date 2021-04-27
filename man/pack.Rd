@@ -1,11 +1,13 @@
 \name{wrap}
 
+\alias{pack}
+\alias{wrap}
+
 \alias{wrap,SpatVector-method}
 \alias{wrap,SpatRaster-method}
 \alias{wrap,Spatial-method}
-\alias{pack,missing-method}
+\alias{pack,ANY-method}
 
-\alias{pack}
 
 \title{pack a SpatRaster or SpatVector object}
 
