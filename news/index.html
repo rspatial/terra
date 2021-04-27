@@ -146,13 +146,13 @@
 <code>autocor</code> did not handle NA values <a href="https://github.com/rspatial/terra/issues/192"><a href='https://github.com/rspatial/terra/issues/192'>#192</a></a>. Reported by Laurence Hawker.</li>
 <li>
 <code>nearest</code> now works for angular coordinates</li>
-<li>The unit of <code>slope</code> in <code>terrain</code> was not correct (the tangent was returned instead of the slope) <a href="https://github.com/rspatial/terra/issues/196"><a href='https://github.com/rspatial/terra/issues/196'>#196</a></a>. Reported by Sven Alder.</li>
+<li>The unit of <code>slope</code> in <code>terrain</code> was not correct (the tangent was returned instead of the slope) <a href="https://github.com/rspatial/terra/issues/196"><a href='https://github.com/rspatial/terra/issues/196'>#196</a></a>. Reported by Sven Alder. <code>quantile</code> now works for rasters that have cells that are all <code>NA</code>. Reported by Jerry Nelson.</li>
 </ul>
 </div>
 <div id="name-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#name-changes" class="anchor"></a>name changes</h2>
-<p>To avoid name masking by/of tidyverse</p>
+<p>To avoid name conflicts with tidyverse</p>
 <div id="with-deprecation-warning" class="section level3">
 <h3 class="hasAnchor">
 <a href="#with-deprecation-warning" class="anchor"></a>with deprecation warning</h3>
@@ -160,7 +160,7 @@
 <li>separate -&gt; segregate</li>
 <li>expand -&gt; extend</li>
 <li>near -&gt; nearby</li>
-<li>pack -&gt; export</li>
+<li>pack -&gt; wrap</li>
 </ul>
 </div>
 <div id="without-deprecation-warning" class="section level3">
