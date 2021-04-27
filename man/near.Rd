@@ -2,8 +2,10 @@
 
 \docType{methods}
 
+\alias{nearby}
+\alias{nearby,SpatVector-method}
 \alias{near}
-\alias{near,SpatVector-method}
+\alias{near,missing-method}
 \alias{nearest}
 \alias{nearest,SpatVector-method}
 
@@ -14,7 +16,7 @@ Identify geometries that are near to each other. Either get the index of all geo
 }
 
 \usage{
-\S4method{near}{SpatVector}(x, distance=0, k=1, centroids=TRUE, symmetrical=TRUE)
+\S4method{nearby}{SpatVector}(x, distance=0, k=1, centroids=TRUE, symmetrical=TRUE)
 
 \S4method{nearest}{SpatVector}(x, y, pairs=FALSE, centroids=TRUE, lines=FALSE)
 }
@@ -39,7 +41,7 @@ matrix
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
-near(v, distance=12000)
+nearby(v, distance=12000)
 }
 
 \keyword{spatial}

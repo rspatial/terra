@@ -5,8 +5,8 @@
 \alias{t}
 \alias{t,SpatRaster-method}
 \alias{t,SpatVector-method}
-\alias{transpose}
-\alias{transpose,SpatRaster-method}
+\alias{trans}
+\alias{trans,SpatRaster-method}
   
 \title{Transpose}
 
@@ -19,7 +19,7 @@ Transpose a SpatRaster
 
 \S4method{t}{SpatVector}(x)
 
-\S4method{transpose}{SpatRaster}(x, filename="", ...)
+\S4method{trans}{SpatRaster}(x, filename="", ...)
 }
 
 \arguments{
@@ -40,8 +40,8 @@ SpatRaster
 r <- rast(nrow=18, ncol=36)
 values(r) <- 1:ncell(r)
 tr1 <- t(r)
-tr2 <- transpose(r)
-ttr <- transpose(tr2)
+tr2 <- trans(r)
+ttr <- trans(tr2)
 }
 
 \keyword{spatial}

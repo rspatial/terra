@@ -1,6 +1,5 @@
 
-# version 1.2-x
-
+# version 1.2-3
 
 ## new
 
@@ -19,6 +18,21 @@
 - `nearest` now works for angular coordinates
 - The unit of `slope` in `terrain` was not correct (the tangent was returned instead of the slope) [#196](https://github.com/rspatial/terra/issues/196). Reported by Sven Alder.
 
+## name changes
+
+To avoid name masking by/of tidyverse 
+
+### with deprecation warning
+- separate -> segregate
+- expand -> extend
+- near -> nearby
+- pack -> export 
+
+### without deprecation warning
+- transpose -> trans
+- collapse -> tighten 
+- fill -> fillHoles
+- select -> sel
 
 # version 1.1-17
 

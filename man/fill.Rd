@@ -1,9 +1,9 @@
-\name{fill}
+\name{fillHoles}
 
 \docType{methods}
 
-\alias{fill}
-\alias{fill,SpatVector-method}
+\alias{fillHoles}
+\alias{fillHoles,SpatVector-method}
 
 
 \title{Remove holes from polygons}
@@ -13,7 +13,7 @@ Remove the holes in SpatVector polygons. If \code{inverse=TRUE} the holes are re
 } 
 
 \usage{
-\S4method{fill}{SpatVector}(x, inverse=FALSE)
+\S4method{fillHoles}{SpatVector}(x, inverse=FALSE)
 }
 
 \arguments{
@@ -33,8 +33,8 @@ colnames(z)[3:4] <- c('x', 'y')
 p <- vect(z, "polygons", atts=data.frame(id=1))
 p
 
-f <- fill(p)
-g <- fill(p, inverse=TRUE)
+f <- fillHoles(p)
+g <- fillHoles(p, inverse=TRUE)
 
 plot(p, lwd=16, border="gray", col="light yellow")
 polys(f, border="blue", lwd=3, density=4, col="orange")

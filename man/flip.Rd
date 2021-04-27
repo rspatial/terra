@@ -36,7 +36,7 @@ Flip the values of a SpatRaster by inverting the order of the rows (\code{vertic
 SpatRaster
 }
 
-\seealso{ \code{\link{transpose}}, \code{\link{rotate}} }
+\seealso{ \code{\link{trans}}, \code{\link{rotate}} }
 
 
 \examples{

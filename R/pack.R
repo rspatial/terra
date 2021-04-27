@@ -38,7 +38,14 @@ setClass("PackedSpatRaster",
 	vd
 }
 
-setMethod("pack", signature(x="Spatial"), 
+setMethod("pack", signature(x="ANY"), 
+	function(...) {
+		warn("pack", "deprecated function, use 'wrap' instead")
+		wrap(...)
+	}
+)
+
+setMethod("wrap", signature(x="Spatial"), 
 	function(x) {
 		pv <- .packVector(x)
 		if (methods::.hasSlot(x, "data")) {
@@ -49,7 +56,7 @@ setMethod("pack", signature(x="Spatial"),
 )
 
 
-setMethod("pack", signature(x="SpatVector"), 
+setMethod("wrap", signature(x="SpatVector"), 
 	function(x) {
 		pv <- .packVector(x)
 		pv@attributes <- as.data.frame(x)
@@ -116,7 +123,7 @@ setMethod("as.character", signature(x="SpatRaster"),
 #eval(parse(text=as.character(stack())))
 
 
-setMethod("pack", signature(x="SpatRaster"), 
+setMethod("wrap", signature(x="SpatRaster"), 
 	function(x) {
 		r <- methods::new("PackedSpatRaster")
 		r@definition = as.character(x)

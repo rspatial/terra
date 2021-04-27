@@ -995,8 +995,8 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 	cats.d.add_column(labels, "category");
 	cats.index = 0;
 
-	if (source[sl[0]].cats.size() < sl[1]) {
-		source[sl[0]].cats.resize(sl[1]);
+	if (source[sl[0]].cats.size() < (sl[1]+1)) {
+		source[sl[0]].cats.resize(sl[1]+1);
 	}
 	source[sl[0]].cats[sl[1]] = cats;
 	source[sl[0]].hasCategories[sl[1]] = true;

@@ -1,10 +1,10 @@
-\name{select}
+\name{sel}
 
 \docType{methods}
 
-\alias{select}
-\alias{select,SpatRaster-method}
-\alias{select,SpatVector-method}
+\alias{sel}
+\alias{sel,SpatRaster-method}
+\alias{sel,SpatVector-method}
 
 \title{
 Spatial selection
@@ -16,9 +16,9 @@ Geometrically subset SpatRaster or SpatVector (to be done) by drawing on a plot 
 
 
 \usage{
-\S4method{select}{SpatRaster}(x, ...)
+\S4method{sel}{SpatRaster}(x, ...)
 
-\S4method{select}{SpatVector}(x, use="rec", draw=TRUE, col="cyan", ...)
+\S4method{sel}{SpatVector}(x, use="rec", draw=TRUE, col="cyan", ...)
 }
 
 \arguments{
@@ -45,7 +45,7 @@ SpatRaster or SpatVector
 r <- rast(nrow=10, ncol=10)
 values(r) <- 1:ncell(r)
 plot(r)
-s <- select(r) # now click on the map twice
+s <- sel(r) # now click on the map twice
 
 # plot the selection on a new canvas:
 x11()
@@ -55,7 +55,7 @@ plot(s)
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 plot(v)
-x <- select(v) # now click on the map twice
+x <- sel(v) # now click on the map twice
 x
 }
 }

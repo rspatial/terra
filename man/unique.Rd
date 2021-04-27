@@ -11,7 +11,7 @@
 \title{Unique values}
 
 \description{
-This function returns the unique values in a SpatRaster.
+This function returns the unique values in a SpatRaster or removes duplicates in a SpatVector. 
 }
 
 \usage{

@@ -100,7 +100,7 @@ setMethod("boundaries", signature(x="SpatRaster"),
 
 .collapseSources <- function(x) {
 	x@ptr <- x@ptr$collapse_sources()
-	messages(x, "collapse")
+	messages(x, "tighten")
 }
 
 setMethod("copy", signature("SpatRaster"), 
@@ -121,18 +121,18 @@ setMethod("add<-", signature("SpatRaster", "SpatRaster"),
 	}
 )
 
-setMethod("collapse", signature("SpatRaster"), 
+setMethod("tighten", signature("SpatRaster"), 
 	function(x) {
 		x@ptr <- x@ptr$collapse_sources()
-		messages(x, "collapse")
+		messages(x, "tighten")
 	}
 )
 
-setMethod("collapse", signature("SpatRasterDataset"), 
+setMethod("tighten", signature("SpatRasterDataset"), 
 	function(x) {
 		y <- new("SpatRaster")
 		y@ptr <- x@ptr$collapse()
-		messages(y, "collapse")
+		messages(y, "tighten")
 	}
 )
 
@@ -478,12 +478,19 @@ setMethod("rotate", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("separate", signature(x="SpatRaster"), 
+setMethod("separate", signature(x="ANY"), 
+	function(...) {
+		warn("separate", "deprecated function. Use 'segregate'")
+		segregate(...)
+	}
+)
+
+setMethod("segregate", signature(x="SpatRaster"), 
 	function(x, classes=NULL, keep=FALSE, other=0, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (is.null(classes)) classes <- 1[0]
 		x@ptr <- x@ptr$separate(classes, keep, other, opt)
-		messages(x, "separate")
+		messages(x, "segregate")
 	}
 )
 
@@ -635,11 +642,11 @@ setMethod("trim", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("transpose", signature(x="SpatRaster"), 
+setMethod("trans", signature(x="SpatRaster"), 
 	function(x, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$transpose(opt)
-		messages(x, "transpose")
+		messages(x, "trans")
 	}
 )
 

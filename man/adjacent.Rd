@@ -28,7 +28,7 @@ Identify cells that are adjacent to a set of raster cells. Or identify adjacent 
   \item{symmetrical}{logical. If \code{TRUE}, an adjacent pair is only included once. For example, if polygon 1 is adjacent to polygon 3, the implied adjacency between 3 and 1 is not reported}
 }
 
-\seealso{\code{\link{relate}}, \code{\link{near}}}
+\seealso{\code{\link{relate}}, \code{\link{nearby}}}
 
 \value{
 matrix

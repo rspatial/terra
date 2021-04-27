@@ -3,7 +3,9 @@
 \docType{methods}
 
 \alias{separate}
-\alias{separate,SpatRaster-method}
+\alias{separate,missing-method}
+\alias{segregate}
+\alias{segregate,SpatRaster-method}
 
 \title{separate}
 
@@ -14,7 +16,7 @@ This is called "one-hot encoding" or "dummy encoding" (for a dummy encoding sche
 }
 
 \usage{
-\S4method{separate}{SpatRaster}(x, classes=NULL, keep=FALSE, other=0, filename="", ...)
+\S4method{segregate}{SpatRaster}(x, classes=NULL, keep=FALSE, other=0, filename="", ...)
 }
 
 \arguments{
@@ -33,8 +35,8 @@ SpatRaster
 \examples{
 r <- rast(nrow=5, ncol=5)
 values(r) <- rep(c(1:4, NA), each=5)
-b <- separate(r)
-bb <- separate(r, keep=TRUE, other=NA)
+b <- segregate(r)
+bb <- segregate(r, keep=TRUE, other=NA)
 }
 
 \keyword{spatial}

@@ -85,9 +85,15 @@ setMethod("adjacent", signature(x="SpatVector"),
 	}
 )
 
+setMethod("near", signature(x="ANY"), 
+	function(...) {
+		warn("near", "near is deprecated. Use 'nearby' instead")
+		nearby(...)
+	}
+)
 
 
-setMethod("near", signature(x="SpatVector"), 
+setMethod("nearby", signature(x="SpatVector"), 
 	function(x, distance=0, k=1, centroids=TRUE, symmetrical=TRUE) {
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)

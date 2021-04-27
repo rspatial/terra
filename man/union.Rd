@@ -45,7 +45,7 @@ SpatVector or SpatExtent
 
 \code{\link{merge}} and \code{\link{mosaic}} to union SpatRaster objects.
 
-\code{\link{crop}} and \code{\link{expand}} for the union of SpatRaster and SpatExtent.
+\code{\link{crop}} and \code{\link{extend}} for the union of SpatRaster and SpatExtent.
 
 \code{\link[terra]{merge}} for merging a data.frame with attributes of a SpatVector.
 }

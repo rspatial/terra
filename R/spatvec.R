@@ -143,7 +143,7 @@ setMethod("length", signature(x="SpatVector"),
 )
 
 
-setMethod("fill", signature(x="SpatVector"), 
+setMethod("fillHoles", signature(x="SpatVector"), 
 	function(x, inverse=FALSE) {
 		if (inverse) {
 			x@ptr <- x@ptr$get_holes()

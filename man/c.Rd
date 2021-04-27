@@ -22,7 +22,7 @@ With \code{c} you can:
 To append SpatVectors, use \code{rbind}. 
 }
 
-\seealso{\code{\link{collapse}}, \code{\link{add<-}}}
+\seealso{\code{\link{add<-}}}
 
 
 \usage{

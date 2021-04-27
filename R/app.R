@@ -10,7 +10,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 	if (filename != "") {
 		writeRaster(x, filename, overwrite, wopt=wopt)
 	} else {
-		collapse(x)
+		tighten(x)
 	}
 }
 )

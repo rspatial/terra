@@ -49,7 +49,7 @@ Also see the methods in section VIII
     \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
     \code{\link{mosaic}} \tab Combine SpatRasters with different extents using a function for overlapping cells \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
-    \code{\link{expand}} \tab Enlarge a SpatRaster \cr
+    \code{\link{extend}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disaggregate}} \tab Subdivide cells \cr
@@ -297,7 +297,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{voronoi}} \tab Voronoi diagram \cr
   \code{\link{delauny}} \tab Delauny triangles\cr
   \code{\link{convexhull}} \tab Compute the convex hull of a SpatVector \cr  
-  \code{\link{fill}}\tab Remove or extract holes from polygons\cr
+  \code{\link{fillHoles}}\tab Remove or extract holes from polygons\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
@@ -320,7 +320,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 \tabular{ll}{
   \code{\link{adjacent}} \tab find adjacent polygons\cr
   \code{\link{area}} \tab computes the area covered by polygons\cr
-  \code{\link{near}} \tab find nearby geometries\cr
+  \code{\link{nearby}} \tab find nearby geometries\cr
   \code{\link{nearest}} \tab find the nearest geometries\cr
   \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
   \code{\link{perimeter}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
@@ -349,7 +349,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 
 \tabular{ll}{
   \code{\link{extract}} \tab spatial queries between SpatVector and SpatVector (e.g. point in polygons) \cr
-  \code{\link{select}} \tab select - interactively select geometries\cr
+  \code{\link{sel}} \tab select - interactively select geometries\cr
   \code{\link{click}} \tab identify attributes by clicking on a map\cr
   \code{\link{merge}} \tab Join a table with a SpatVector \cr
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
@@ -430,6 +430,8 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
   
   \tabular{ll}{
     \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr
+    \code{\link{vect}} \tab SpatVector from \code{sf} or \code{Spatial*} vector data\cr
+    \code{sf::st_as_sf} \tab sf object from SpatVector\cr
     \code{\link{rasterize}} \tab Rasterizing points, lines or polygons\cr
     \code{\link{as.points}} \tab Create points from a SpatRaster or SpatVector \cr
     \code{\link{as.lines}} \tab Create points from a SpatRaster or SpatVector\cr
@@ -506,7 +508,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
-\code{extend}\tab\code{\link{expand}}\cr
+\code{extend}\tab\code{\link{extend}}\cr
 \code{nlayers}\tab\code{\link{nlyr}}\cr
 \code{NAvalue}\tab\code{\link{NAflag}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
