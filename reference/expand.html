@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Expand — expand • terra</title>
+<title>Extend — expand • terra</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Expand — expand" />
-<meta property="og:description" content="Expand the extent of a SpatRaster. See crop if you (also) want to remove rows or columns.
+<meta property="og:title" content="Extend — expand" />
+<meta property="og:description" content="Enlarge the spatial extent of a SpatRaster. See crop if you (also) want to remove rows or columns.
 You can also enlarge a SpatExtent with this method, or with algebraic notation (see examples)" />
 
 
@@ -73,7 +73,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-3</span>
       </span>
     </div>
 
@@ -112,21 +112,21 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Expand</h1>
+    <h1>Extend</h1>
     
     <div class="hidden name"><code>expand.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Expand the extent of a SpatRaster. See <code><a href='crop.html'>crop</a></code> if you (also) want to remove rows or columns.</p>
+    <p>Enlarge the spatial extent of a SpatRaster. See <code><a href='crop.html'>crop</a></code> if you (also) want to remove rows or columns.</p>
 <p>You can also enlarge a SpatExtent with this method, or with algebraic notation (see examples)</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>expand</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span> 
+<span class='fu'>extend</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span> 
 
 <span class='co'># S4 method for SpatExtent</span>
-<span class='fu'>expand</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></pre>
+<span class='fu'>extend</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,16 +165,16 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
     <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>150</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>120</span>, ymin<span class='op'>=</span><span class='fl'>30</span>, ymax<span class='op'>=</span><span class='fl'>60</span>, ncol<span class='op'>=</span><span class='fl'>36</span>, nrow<span class='op'>=</span><span class='fl'>18</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 <span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>180</span>, <span class='op'>-</span><span class='fl'>100</span>, <span class='fl'>40</span>, <span class='fl'>70</span><span class='op'>)</span>
-<span class='va'>re</span> <span class='op'>&lt;-</span> <span class='fu'>expand</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>e</span><span class='op'>)</span>
+<span class='va'>re</span> <span class='op'>&lt;-</span> <span class='fu'>extend</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>e</span><span class='op'>)</span>
 
 <span class='co'># expand with a number of rows and columns (at each side)</span>
-<span class='va'>re2</span> <span class='op'>&lt;-</span> <span class='fu'>expand</span><span class='op'>(</span><span class='va'>r</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>re2</span> <span class='op'>&lt;-</span> <span class='fu'>extend</span><span class='op'>(</span><span class='va'>r</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># SpatExtent</span>
 <span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 <span class='va'>e</span>
-</div><div class='output co'>#&gt; SpatExtent : -150, -120, 30, 60 (xmin, xmax, ymin, ymax)</div><div class='input'><span class='fu'>expand</span><span class='op'>(</span><span class='va'>e</span>, <span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; SpatExtent : -160, -110, 20, 70 (xmin, xmax, ymin, ymax)</div><div class='input'><span class='fu'>expand</span><span class='op'>(</span><span class='va'>e</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='op'>-</span><span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; SpatExtent : -150, -120, 30, 60 (xmin, xmax, ymin, ymax)</div><div class='input'><span class='fu'>extend</span><span class='op'>(</span><span class='va'>e</span>, <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; SpatExtent : -160, -110, 20, 70 (xmin, xmax, ymin, ymax)</div><div class='input'><span class='fu'>extend</span><span class='op'>(</span><span class='va'>e</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='op'>-</span><span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; SpatExtent : -160, -130, 30, 80 (xmin, xmax, ymin, ymax)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-3</span>
       </span>
     </div>
 
@@ -114,9 +114,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-12-x" class="section level1">
-<h1 class="page-header" data-toc-text="1.2">
-<a href="#version-12-x" class="anchor"></a>version 1.2-x<small> Unreleased </small>
+    <div id="version-12-3" class="section level1">
+<h1 class="page-header" data-toc-text="1.2-3">
+<a href="#version-12-3" class="anchor"></a>version 1.2-3<small> Unreleased </small>
 </h1>
 <div id="new" class="section level2">
 <h2 class="hasAnchor">
@@ -148,6 +148,31 @@
 <code>nearest</code> now works for angular coordinates</li>
 <li>The unit of <code>slope</code> in <code>terrain</code> was not correct (the tangent was returned instead of the slope) <a href="https://github.com/rspatial/terra/issues/196"><a href='https://github.com/rspatial/terra/issues/196'>#196</a></a>. Reported by Sven Alder.</li>
 </ul>
+</div>
+<div id="name-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#name-changes" class="anchor"></a>name changes</h2>
+<p>To avoid name masking by/of tidyverse</p>
+<div id="with-deprecation-warning" class="section level3">
+<h3 class="hasAnchor">
+<a href="#with-deprecation-warning" class="anchor"></a>with deprecation warning</h3>
+<ul>
+<li>separate -&gt; segregate</li>
+<li>expand -&gt; extend</li>
+<li>near -&gt; nearby</li>
+<li>pack -&gt; export</li>
+</ul>
+</div>
+<div id="without-deprecation-warning" class="section level3">
+<h3 class="hasAnchor">
+<a href="#without-deprecation-warning" class="anchor"></a>without deprecation warning</h3>
+<ul>
+<li>transpose -&gt; trans</li>
+<li>collapse -&gt; tighten</li>
+<li>fill -&gt; fillHoles</li>
+<li>select -&gt; sel</li>
+</ul>
+</div>
 </div>
 </div>
     <div id="version-11-17" class="section level1">

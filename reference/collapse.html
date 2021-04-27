@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Collapse SpatRaster or SpatRasterDataset objects — collapse • terra</title>
+<title>tighten SpatRaster or SpatRasterDataset objects — tighten • terra</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Collapse SpatRaster or SpatRasterDataset objects — collapse" />
-<meta property="og:description" content="Combines sources within a SpatRaster object (that are in memory, or from the same file) to allow for faster processing.
-Or combine subdatsets into a SpatRaster." />
+<meta property="og:title" content="tighten SpatRaster or SpatRasterDataset objects — tighten" />
+<meta property="og:description" content="Combines data sources within a SpatRaster object (that are in memory, or from the same file) to allow for faster processing.
+Or combine sub-datsets into a SpatRaster." />
 
 
 
@@ -73,7 +73,7 @@ Or combine subdatsets into a SpatRaster." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-3</span>
       </span>
     </div>
 
@@ -112,21 +112,21 @@ Or combine subdatsets into a SpatRaster." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Collapse SpatRaster or SpatRasterDataset objects</h1>
+    <h1>tighten SpatRaster or SpatRasterDataset objects</h1>
     
     <div class="hidden name"><code>collapse.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Combines sources within a SpatRaster object (that are in memory, or from the same file) to allow for faster processing.</p>
-<p>Or combine subdatsets into a SpatRaster.</p>
+    <p>Combines data sources within a SpatRaster object (that are in memory, or from the same file) to allow for faster processing.</p>
+<p>Or combine sub-datsets into a SpatRaster.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>collapse</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>tighten</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRasterDataset</span>
-<span class='fu'>collapse</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='fu'>tighten</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,7 +155,7 @@ Or combine subdatsets into a SpatRaster." />
 #&gt;               memory  
 #&gt; names       : lyr.1, lyr.1, lyr.1 
 #&gt; min values  :     1,     2,     3 
-#&gt; max values  :    45,    90,   135 </div><div class='input'><span class='fu'>collapse</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+#&gt; max values  :    45,    90,   135 </div><div class='input'><span class='fu'>tighten</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; class       : SpatRaster 
 #&gt; dimensions  : 5, 9, 3  (nrow, ncol, nlyr)
 #&gt; resolution  : 40, 36  (x, y)

@@ -79,7 +79,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-3</span>
       </span>
     </div>
 
@@ -129,7 +129,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <p><code>terra</code> provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divide space into rectangular cells (pixels) and they are commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) are typically used to represent discrete spatial entities, such as a road, country, or bus stop.</p>
 <p>The package implements two main classes (R data types): <code>SpatRaster</code> and <code>SpatVector</code>. <code>SpatRaster</code> supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. <code>SpatVector</code> supports all types of geometric operations such as intersections.</p>
 <p>Additional classes include <code>SpatExtent</code>, which is used to define a spatial extent (bounding box); <code>SpatRasterDataset</code>, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and <code>SpatRasterCollection</code> and <code>SpatVectorCollection</code> that are vectors of SpatRaster or SpatVector.</p>
-<p>The classes used wrap a C++ pointer that holds pr points to the data, and almost all data manipulation is done in C++ (for better speed). These objects cannot be directly saved to a ".Rds" file or used in cluster computing. They cannot be recovered from a saved R session either. See <code><a href='pack.html'>pack</a></code> or <code><a href='writeRaster.html'>writeRaster</a></code> to work around that limitation.</p>
+<p>The classes used wrap a C++ pointer that holds pr points to the data, and almost all data manipulation is done in C++ (for better speed). These objects cannot be directly saved to a ".Rds" file or used in cluster computing. They cannot be recovered from a saved R session either. See <code><a href='wrap.html'>pack</a></code> or <code><a href='writeRaster.html'>writeRaster</a></code> to work around that limitation.</p>
 <p>The <code>terra</code> package is conceived as a replacement of the <code>raster</code> package. <code>terra</code> has a very similar, but simpler, interface, and it is faster than <code>raster</code>. At the bottom of this page there is a table that shows differences in the methods between the two packages.</p>
 <p>Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet (they are not hyperlinked).</p>
     </div>
@@ -162,7 +162,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code><a href='merge.html'>merge</a></code></td><td>Combine SpatRasters with different extents (but same origin and resolution)</td></tr>
 <tr><td><code><a href='mosaic.html'>mosaic</a></code></td><td>Combine SpatRasters with different extents using a function for overlapping cells</td></tr>
 <tr><td><code><a href='crop.html'>crop</a></code></td><td>Select a geographic subset of a SpatRaster</td></tr>
-<tr><td><code><a href='expand.html'>expand</a></code></td><td>Enlarge a SpatRaster</td></tr>
+<tr><td><code><a href='expand.html'>extend</a></code></td><td>Enlarge a SpatRaster</td></tr>
 <tr><td><code><a href='trim.html'>trim</a></code></td><td>Trim a SpatRaster by removing exterior rows and/or columns that only have NAs</td></tr>
 <tr><td><code><a href='aggregate.html'>aggregate</a></code></td><td>Combine cells of a SpatRaster to create larger cells</td></tr>
 <tr><td><code><a href='disaggregate.html'>disaggregate</a></code></td><td>Subdivide cells</td></tr>
@@ -415,7 +415,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code><a href='voronoi.html'>voronoi</a></code></td><td>Voronoi diagram</td></tr>
 <tr><td><code><a href='voronoi.html'>delauny</a></code></td><td>Delauny triangles</td></tr>
 <tr><td><code><a href='convexhull.html'>convexhull</a></code></td><td>Compute the convex hull of a SpatVector</td></tr>
-<tr><td><code><a href='fill.html'>fill</a></code></td><td>Remove or extract holes from polygons</td></tr>
+<tr><td><code><a href='fillHoles.html'>fillHoles</a></code></td><td>Remove or extract holes from polygons</td></tr>
 <tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr>
 </table>
 
@@ -440,7 +440,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <table class='table'>
 <tr><td><code><a href='adjacent.html'>adjacent</a></code></td><td>find adjacent polygons</td></tr>
 <tr><td><code><a href='area.html'>area</a></code></td><td>computes the area covered by polygons</td></tr>
-<tr><td><code><a href='nearest.html'>near</a></code></td><td>find nearby geometries</td></tr>
+<tr><td><code><a href='nearest.html'>nearby</a></code></td><td>find nearby geometries</td></tr>
 <tr><td><code><a href='nearest.html'>nearest</a></code></td><td>find the nearest geometries</td></tr>
 <tr><td><code><a href='relate.html'>relate</a></code></td><td>geometric relationships such as "intersects", "overlaps", and "touches"</td></tr>
 <tr><td><code><a href='area.html'>perimeter</a></code></td><td>computes the length of the perimeter of polygons, and the length of lines</td></tr>
@@ -469,7 +469,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
     <p>We use the term "attributes" for the tabular data (data.frame) associated with vector geometries.</p>
 <table class='table'>
 <tr><td><code><a href='extract.html'>extract</a></code></td><td>spatial queries between SpatVector and SpatVector (e.g. point in polygons)</td></tr>
-<tr><td><code><a href='select.html'>select</a></code></td><td>select - interactively select geometries</td></tr>
+<tr><td><code><a href='sel.html'>sel</a></code></td><td>select - interactively select geometries</td></tr>
 <tr><td><code><a href='click.html'>click</a></code></td><td>identify attributes by clicking on a map</td></tr>
 <tr><td><code><a href='merge.html'>merge</a></code></td><td>Join a table with a SpatVector</td></tr>
 <tr><td><code><a href='as.data.frame.html'>as.data.frame</a></code></td><td>get attributes as a data.frame</td></tr>
@@ -535,6 +535,8 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <p>You can coerce SpatRasters to Raster* objects after loading the <code>raster</code> package with <code>as(object, "Raster")</code>, or <code>raster(object)</code> or <code>brick(object)</code> or <code><a href='https://rdrr.io/r/utils/stack.html'>stack(object)</a></code></p>  
 <p></p><table class='table'>
 <tr><td><code><a href='rast.html'>rast</a></code></td><td>SpatRaster from matrix and other objects</td></tr>
+<tr><td><code><a href='vect.html'>vect</a></code></td><td>SpatVector from <code>sf</code> or <code>Spatial*</code> vector data</td></tr>
+<tr><td><code>sf::st_as_sf</code></td><td>sf object from SpatVector</td></tr>
 <tr><td><code><a href='rasterize.html'>rasterize</a></code></td><td>Rasterizing points, lines or polygons</td></tr>
 <tr><td><code><a href='as.spatvector.html'>as.points</a></code></td><td>Create points from a SpatRaster or SpatVector</td></tr>
 <tr><td><code><a href='as.spatvector.html'>as.lines</a></code></td><td>Create points from a SpatRaster or SpatVector</td></tr>
@@ -571,7 +573,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <p></p><table class='table'>
 <tr><td><code><a href='zoom.html'>zoom</a></code></td><td>Zoom in to a part of a map by drawing a bounding box on it</td></tr>
 <tr><td><code><a href='click.html'>click</a></code></td><td>Query values of SpatRaster or SpatVector by clicking on a map</td></tr>
-<tr><td><code><a href='select.html'>select</a></code></td><td>Select a spatial subset of a SpatRaster or SpatVector by drawing on a map</td></tr>
+<tr><td><code>select</code></td><td>Select a spatial subset of a SpatRaster or SpatVector by drawing on a map</td></tr>
 <tr><td><code><a href='draw.html'>draw</a></code></td><td>Create a SpatExtent or SpatVector by drawing on a map</td></tr>
 </table>
 
@@ -611,7 +613,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code>calc</code></td><td><code><a href='app.html'>app</a></code></td></tr>
 <tr><td><code>overlay</code></td><td><code><a href='lapp.html'>lapp</a></code></td></tr>
 <tr><td><code>stackApply</code></td><td><code><a href='tapp.html'>tapp</a></code></td></tr>
-<tr><td><code>extend</code></td><td><code><a href='expand.html'>expand</a></code></td></tr>
+<tr><td><code>extend</code></td><td><code><a href='expand.html'>extend</a></code></td></tr>
 <tr><td><code>nlayers</code></td><td><code><a href='dimensions.html'>nlyr</a></code></td></tr>
 <tr><td><code>NAvalue</code></td><td><code><a href='NAflag.html'>NAflag</a></code></td></tr>
 <tr><td><code>stackSelect</code></td><td><code><a href='selectRange.html'>selectRange</a></code></td></tr>

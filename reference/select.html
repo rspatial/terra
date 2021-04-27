@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Spatial selection — select • terra</title>
+<title>Spatial selection — sel • terra</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Spatial selection — select" />
+<meta property="og:title" content="Spatial selection — sel" />
 <meta property="og:description" content="Geometrically subset SpatRaster or SpatVector (to be done) by drawing on a plot (map)." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-3</span>
       </span>
     </div>
 
@@ -121,10 +121,10 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>select</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>sel</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>select</span><span class='op'>(</span><span class='va'>x</span>, use<span class='op'>=</span><span class='st'>"rec"</span>, draw<span class='op'>=</span><span class='cn'>TRUE</span>, col<span class='op'>=</span><span class='st'>"cyan"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>sel</span><span class='op'>(</span><span class='va'>x</span>, use<span class='op'>=</span><span class='st'>"rec"</span>, draw<span class='op'>=</span><span class='cn'>TRUE</span>, col<span class='op'>=</span><span class='st'>"cyan"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,7 +164,7 @@
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>10</span>, ncol<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>select</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='co'># now click on the map twice</span>
+<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>sel</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='co'># now click on the map twice</span>
 
 <span class='co'># plot the selection on a new canvas:</span>
 <span class='fu'><a href='https://rdrr.io/r/grDevices/x11.html'>x11</a></span><span class='op'>(</span><span class='op'>)</span>
@@ -174,7 +174,7 @@
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>select</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span> <span class='co'># now click on the map twice</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>sel</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span> <span class='co'># now click on the map twice</span>
 <span class='va'>x</span>
 <span class='op'>}</span>
 </div></pre>
