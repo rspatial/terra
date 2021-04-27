@@ -295,7 +295,16 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 }
 
 
-SpatVector buflinepol(SpatVector x, double dist, unsigned quadsegs, bool ispol, bool ishole) {
+SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, bool ishole) {
+
+	if ((x.extent.ymax < 60) && ((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
+		x.setSRS("+proj=merc");
+		double f = 0.5 - (dist / 220000);
+		double halfy = x.extent.ymin + f * (x.extent.ymax - x.extent.ymin);
+		std::vector<double> dd = destpoint_lonlat(0, halfy, 0, dist);
+		dist = dd[1] - halfy;
+		return x.buffer({dist}, quadsegs);
+	} 
 
 	SpatVector tmp;
 	x = x.disaggregate();
@@ -355,9 +364,9 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 				if (ispol) {
 					SpatVector h = p.get_holes();
 					p = p.remove_holes();
-					p = buflinepol(p, dist[i], quadsegs, true, false);
+					p = lonlat_buf(p, dist[i], quadsegs, true, false);
 					if (h.size() > 0) {
-						h = buflinepol(h, dist[i], quadsegs, true, true);
+						h = lonlat_buf(h, dist[i], quadsegs, true, true);
 						if (h.size() > 0) {
 							for (size_t j=0; j<h.geoms[0].parts.size(); j++) {
 								p.geoms[0].parts[0].addHole(h.geoms[0].parts[j].x, h.geoms[0].parts[j].y);
@@ -365,7 +374,7 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 						}
 					}
 				} else {
-					p = buflinepol(p, dist[i], quadsegs, false, false);
+					p = lonlat_buf(p, dist[i], quadsegs, false, false);
 				}
 				out.addGeom(p.geoms[0]);
 			}	
@@ -1007,11 +1016,11 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 			std::vector<long> fromid(id.size());
 			std::iota(fromid.begin(), fromid.end(), 0);
 			out.df.add_column(fromid, "from_id");
-			out.df.add_column(p[0], "from_lon");
-			out.df.add_column(p[1], "from_lat");	
+			out.df.add_column(p[0], "from_x");
+			out.df.add_column(p[1], "from_y");	
 			out.df.add_column(id, "to_id");
-			out.df.add_column(nlon, "to_lon");
-			out.df.add_column(nlat, "to_lat");
+			out.df.add_column(nlon, "to_x");
+			out.df.add_column(nlat, "to_y");
 			out.df.add_column(dist, "distance");					
 			return out;
 		} else {

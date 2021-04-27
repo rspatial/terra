@@ -280,11 +280,7 @@ function(x, i, j, ..., drop=FALSE) {
 
 setMethod("extract", c("SpatVector", "SpatVector"),
 function(x, y, ...) {
-	g <- geomtype(x)
-	if (!grepl("points", g)) {
-		error("extract", "the first argument must be points")
-	}
-	r <- relate(x, y, "within")
+	r <- relate(y, x, "within")
 	e <- apply(r, 1, which)
 	if (length(e) == 0) {
 		e <- list(e)
@@ -299,10 +295,10 @@ function(x, y, ...) {
 		})
 		e <- do.call(rbind, e)
 	} else {
-		e <- cbind(1:nrow(x), e)
+		e <- cbind(1:nrow(y), e)
 	}
-	if (ncol(y) > 0) {
-		d <- as.data.frame(y)	
+	if (ncol(x) > 0) {
+		d <- as.data.frame(x)	
 		e <- data.frame(id.x=e[,1], d[e[,2], ,drop=FALSE])
 		rownames(e) <- NULL
 	} else {

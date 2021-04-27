@@ -4,8 +4,6 @@
 # Licence GPL v3
 
 
-
-
 #.getClicks <- function(...) {
 #	res <- list()
 #	while(TRUE) {
@@ -15,8 +13,6 @@
 #	}
 #	matrix(res, ncol=2, byrow=TRUE)
 #}
-
-
 
 .getCellFromClick <- function(x, n, type, id, ...) {
 	#loc <- graphics::locator(n, type, ...)
@@ -35,41 +31,64 @@
 
 
 
+do_click <- function(type="p", id=FALSE, i=1, pch=20, ...) {
+	p <- graphics::locator(1)
+	if (is.null(p)) return(p) # ESC
+	points(p$x, p$y, type=type, pch=pch, ...)
+	if (id) { 
+		text(p$x, p$y, labels=i, pos=4, ...) 
+	} 
+	cbind(x=p$x, y=p$y)
+}
+
+
+
+
 setMethod("click", signature(x="missing"), 
-	function(x, n=1, id=FALSE, type="p", ...) {
+	function(x, n=1, id=FALSE, type="p", show=TRUE, ...) {
 		#loc <- graphics::locator(n, type, ...)
 		#cbind(x=loc$x, y=loc$y)
-		RS_locator(n, type=type, id=id, ...)
+		n <- max(1, round(n))
+		X <- NULL
+		for (i in 1:n) {
+			x <- do_click(type=type, id=id, i=i, ...)
+			if (is.null(x)) break
+			X <- cbind(X, x)
+			if (show) print(x); flush.console()
+		}
+		if (show) invisible(X) else x
 	}
 )
 
 
 setMethod("click", signature(x="SpatRaster"), 
 	function(x, n=1000, id=FALSE, xy=FALSE, cell=FALSE, type="p", show=TRUE, ...) {
-	n <- max(n, 1)
-	xyCoords <- RS_locator(n, type=type, id=id, ...)
-	if (NROW(xyCoords) == 0) return(invisible(NULL))
+	n <- max(round(n), 1)
 	values <- NULL
-	cells <- stats::na.omit(cellFromXY(x, xyCoords))
-	if (length(cells) == 0) break
-	value <- x[cells]
-	if (cell) {
-		value <- data.frame(cell=cells, value)
+	for (i in 1:n) {
+		p <- do_click(type=type, id=id, i=i, ...)
+		if (is.null(p)) break
+		celln <- cellFromXY(x, p)
+		if (is.na(celln)) next
+		value <- x[celln]
+		if (cell) {
+			value <- data.frame(cell=celln, value)
+		}
+		if (xy) { 
+			p <- xyFromCell(x, celln)
+			colnames(p) <- c("x", "y")
+			value <- data.frame(p, value)
+		} 
+		if (show) {
+			print(value)
+			utils::flush.console()
+		}
+		if (is.null(dim(value))) { 
+			value <- matrix(value)
+			colnames(value) <- names(x)
+		}
+		values <- rbind(values, value)
 	}
-	if (xy) { 
-		xyCoords <- xyFromCell(x, cells)
-		colnames(xyCoords) <- c("x", "y")
-		value <- data.frame(xyCoords, value)
-	} 
-	if (show) {
-		print(value)
-		utils::flush.console()
-	}
-	if (is.null(dim(value))) { 
-		value <- matrix(value)
-		colnames(value) <- names(x)
-	}
-	values <- rbind(values, value)
 	if (show) {
 		invisible(values)
 	} else {
@@ -80,17 +99,25 @@ setMethod("click", signature(x="SpatRaster"),
 
 
 setMethod("click", signature(x="SpatVector"), 
-	function(x, n=1, id=FALSE, type="p", ...) {
-		#loc <- graphics::locator(n, type, ...)
-		#xy <- vect(cbind(x=loc$x, y=loc$y))
-		xy <- vect(RS_locator(n, type=type, id=id, ...))
-		e <- extract(xy, x)
-		if (!id) {
-			e[,-1]
-		} else {
-			colnames(e)[1] <- "ID"
-			e
+	function(x, n=1, id=FALSE, type="p", show=TRUE, ...) {
+		n <- max(round(n), 1)
+		values <- NULL
+		for (i in 1:n) {
+			p <- do_click(type=type, id=id, i=i, ...)
+			if (is.null(p)) break
+			e <- extract(x, vect(p))
+			if (show) {
+				if (!id) {
+					print(e[,-1])
+				} else {
+					colnames(e)[1] <- "ID"
+					print(e)
+				}
+				flush.console()
+			}
+			values <- rbind(values, e)
 		}
+		if (show) { invisible(values) } else { values }
 	}
 )
 
