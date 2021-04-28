@@ -1,4 +1,11 @@
 
+# version 1.2-4
+
+## bug fixes
+
+- `flip(x, direction="vertical")` no longer reverses the order of the layers. 
+
+
 # version 1.2-3
 
 ## new

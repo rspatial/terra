@@ -1769,25 +1769,26 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
-	std::vector<double> b;
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 
 	if (vertical) {
 		for (size_t i=0; i < out.bs.n; i++) {
+			std::vector<double> b;
 			size_t ii = out.bs.n - 1 - i;
 			std::vector<double> a = readBlock(out.bs, ii);
-			unsigned lyrrows = nl * out.bs.nrows[ii];
-			for (size_t j=0; j < lyrrows; j++) {
-				unsigned start = (lyrrows - 1 - j) * nc;
-				unsigned end = start + nc;
-				b.insert(b.end(), a.begin()+start, a.begin()+end);
+			for (size_t j=0; j < out.nlyr(); j++) {
+				size_t offset = j * out.bs.nrows[ii] * nc;
+				for (size_t k=0; k < out.bs.nrows[ii]; k++) {
+					unsigned start = offset + (out.bs.nrows[ii] - 1 - k) * nc;
+					b.insert(b.end(), a.begin()+start, a.begin()+start+nc);
+				}
 			}
 			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-			b.resize(0);
 		}
 	} else {
 		for (size_t i=0; i < out.bs.n; i++) {
+			std::vector<double> b;
 			std::vector<double> a = readBlock(out.bs, i);
 			unsigned lyrrows = nl * out.bs.nrows[i];
 			for (size_t j=0; j < lyrrows; j++) {
