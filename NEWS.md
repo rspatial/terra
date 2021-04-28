@@ -23,17 +23,20 @@
 
 To avoid name conflicts with tidyverse 
 
-### with deprecation warning
+with deprecation warning:
+
 - separate -> segregate
 - expand -> extend
 - near -> nearby
 - pack -> wrap 
 
-### without deprecation warning
+without deprecation warning:
+
 - transpose -> trans
 - collapse -> tighten 
 - fill -> fillHoles
 - select -> sel
+
 
 # version 1.1-17
 

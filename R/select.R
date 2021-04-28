@@ -5,7 +5,7 @@
 
 
 
-setMethod("select", signature(x="SpatRaster"), 
+setMethod("sel", signature(x="SpatRaster"), 
 	function(x, ...) {
 		e <- draw(...)
 		int <- intersect(e, ext(x))
@@ -19,7 +19,7 @@ setMethod("select", signature(x="SpatRaster"),
 )
 
 
-setMethod("select", signature(x="SpatVector"), 
+setMethod("sel", signature(x="SpatVector"), 
 	function(x, use="rec", draw=TRUE, col="cyan", ...) {
 		use <- substr(tolower(use), 1, 3)
 		use <- match.arg(use, c("rec", "pol")) 

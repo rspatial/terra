@@ -987,7 +987,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 
     std::vector<unsigned> sl = findLyr(layer);
 
-	if (labels.size() != 256) {
+	if (labels.size() > 256) {
 		labels.resize(256);
 	} 
 
@@ -995,8 +995,9 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 	cats.d.add_column(labels, "category");
 	cats.index = 0;
 
-	if (source[sl[0]].cats.size() < (sl[1]+1)) {
+	if (source[sl[0]].cats.size() <= sl[1]) {
 		source[sl[0]].cats.resize(sl[1]+1);
+		source[sl[0]].hasCategories.resize(sl[1]+1);		
 	}
 	source[sl[0]].cats[sl[1]] = cats;
 	source[sl[0]].hasCategories[sl[1]] = true;
@@ -1014,7 +1015,7 @@ bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) 
 
     std::vector<unsigned> sl = findLyr(layer);
 
-	if (d.nrow() != 256) {
+	if (d.nrow() > 256) {
 		d.resize_rows(256);
 	} 
 

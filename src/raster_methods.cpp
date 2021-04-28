@@ -2680,9 +2680,9 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 				return out;
 			}
 			std::vector<bool> hr = hasRange();
-			bool hasR;
+			bool hasR = true;
 			for (size_t i=0; i<hr.size(); i++) {
-				if (hr[i]) hasR = true;
+				if (!hr[i]) hasR = false;
 			}
 			if (!hasR) setRange();
 			std::vector<double> mn = range_min();
@@ -2691,6 +2691,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			double mxv = vmax(mx, true);
 			rcl[0] = seq_steps(mnv, mxv, breaks);
 		}
+		
 		if (rcl[0].size() < 256) {
 			std::vector<std::string> s;
 			for (size_t i=1; i<rcl[0].size(); i++) {
