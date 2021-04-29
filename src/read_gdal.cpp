@@ -185,7 +185,7 @@ SpatDataFrame GetColFromRAT(SpatDataFrame &rat) {
 }
 */
 
-SpatCategories GetCategories(char **pCat) {
+SpatCategories GetCategories(char **pCat, std::string name) {
 	size_t n = CSLCount(pCat);
 	SpatCategories scat;
 
@@ -198,7 +198,8 @@ SpatCategories GetCategories(char **pCat) {
 		const char *field = CSLGetField(pCat, i);
 		nms[i] = field;
 	}
-	scat.d.add_column(nms, "category");
+	name = name == "" ? "category" : name; 
+	scat.d.add_column(nms, name);
 	scat.index = 1;
 	return(scat);
 }
@@ -522,10 +523,10 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			s.cols[i] = GetCOLdf(ct);
 		} 
 
-
+		std::string bandname = poBand->GetDescription();
 		char **cat = poBand->GetCategoryNames();
 		if( cat != NULL )	{
-			SpatCategories scat = GetCategories(cat);
+			SpatCategories scat = GetCategories(cat, bandname);
 			s.cats[i] = scat;
 			s.hasCategories[i] = true;
 		} 
@@ -558,7 +559,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			} 
 		} 
 		if (nm == "") {
-			std::string bandname = poBand->GetDescription();
 			if (bandname != "") {
 				nm = bandname;
 			} else if (s.nlyr > 1) {

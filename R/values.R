@@ -27,8 +27,9 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 			ff <- which(ff)
 			levs <- levels(x)
 			for (f in ff) {
-				v[[f]] = factor(v[[f]], levels=0:255)
-				levels(v[[f]]) = levs[[f]]
+				fct <- levs[[f]]
+				v[[f]] = factor(v[[f]], levels=(1:length(fct))-1)
+				levels(v[[f]]) = fct
 			}
 		}
 	}
