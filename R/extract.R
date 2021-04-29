@@ -18,7 +18,8 @@
 			ff <- which(ff)
 			levs <- levels(x)
 			for (f in ff) {
-				v[[f]] = factor(v[[f]], levels=0:255)
+				lvs <- levs[[f]]
+				v[[f]] = factor(v[[f]], levels=(1:length(lvs))-1)
 				levels(v[[f]]) = levs[[f]]
 			}
 		}
