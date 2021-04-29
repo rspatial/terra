@@ -15,31 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef M_PI_2
-#define M_PI_2 (1.57079632679489661923)
-#endif
-
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
-
-#ifndef M_2PI
-#define M_2PI (6.28318530717958647692)
-#endif
-
-//degrees to radians
-#ifndef PIdiv180
-#define PIdiv180 (M_PI / 180)
-#endif
-
 
 #include <vector>
 //#include <math.h>
 #include <cmath>
 #include "ggeodesic.h"
 #include "recycle.h"
-
 
 
 double distance_lonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
@@ -210,8 +195,9 @@ std::vector<double> directionToNearest_lonlat(std::vector<double> lon1, std::vec
 
 double direction_plane(double x1, double y1, double x2, double y2, bool degrees) {
 	double a;
-	a = fmod(atan2( x2 - x1, y2 - y1), M_2PI);
-	a = (a < 0 ? a + M_2PI : a );
+	double pi2 = M_PI * 2;
+	a = fmod(atan2( x2 - x1, y2 - y1), pi2);
+	a = (a < 0 ? a + pi2 : a );
 	return (degrees ? toDeg(a) : a);
 }
 

@@ -1713,6 +1713,13 @@ void do_roughness(std::vector<double> &val, const std::vector<double> &d, size_t
 }
 
 
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
+
+
+
+
 void to_degrees(std::vector<double>& x, size_t start) { 
 	double adj = 180 / M_PI;
 	for (size_t i=start; i<x.size(); i++) {
@@ -1829,6 +1836,7 @@ double dmod(double x, double n) {
 }
 
 
+
 void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees) {
 
 	size_t n = nrow * ncol;
@@ -1844,7 +1852,8 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 	val.resize(add+n, NAN);
 	
 	//double const pi2 = M_PI / 2;
-	//double const m2pi = 2 / M_PI;
+	double const twoPI = 2 * M_PI;
+	double const halfPI = M_PI / 2;
 	
 	if (ngb == 4) {
 		if (geo) {
@@ -1866,7 +1875,7 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
 				zx = atan2(zy, zx);
-				val[i+add] = dmod( M_PI_2 - zx, M_2_PI);
+				val[i+add] = dmod( halfPI - zx, twoPI);
 			}
 		} else {
 		
@@ -1880,7 +1889,7 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
 				zx = atan2(zy, zx);
-				val[i+add] = dmod( M_PI_2 - zx, M_2_PI);
+				val[i+add] = dmod( halfPI - zx, twoPI);
 			}
 		} 
 	} else {
@@ -1907,7 +1916,7 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
 				zx = atan2(zy, zx);
-				val[i+add] = dmod( M_PI_2 - zx, M_2_PI);
+				val[i+add] = dmod( halfPI - zx, twoPI);
 			}
 		
 		} else {
@@ -1924,7 +1933,7 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
 				zx = atan2(zy, zx);
-				val[i+add] = dmod( M_PI_2 - zx, M_2_PI);
+				val[i+add] = dmod( halfPI - zx, twoPI);
 			}
 			
 		}
