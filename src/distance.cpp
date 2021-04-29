@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-//#ifndef M_PI_2
-//#define M_PI_2 (1.57079632679489661923)
-//#endif
+#ifndef M_PI_2
+#define M_PI_2 (1.57079632679489661923)
+#endif
 
 
 #ifndef M_PI
