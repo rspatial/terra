@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
+//#ifndef M_PI_2
+//#define M_PI_2 (1.57079632679489661923)
+//#endif
+
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
@@ -98,6 +102,11 @@ std::vector<double> distance_plane_vd(std::vector<double> &x1, std::vector<doubl
 }
 
 
+/*
+double distPlane(double x1, double y1, double x2, double y2) {
+	return( sqrt(pow((x2-x1),2) + pow((y2-y1), 2)) );
+}
+*/
 
 // Convert degrees to radians
 double toRad(double &deg) {
@@ -108,6 +117,7 @@ double toRad(double &deg) {
 double toDeg(double &rad) {
 	return( rad * 57.2957795130823 );
 }
+
 
 
 
@@ -480,4 +490,18 @@ void nearest_lonlat_self(std::vector<long> &id, std::vector<double> &d, std::vec
 }
 
 
+
+double distHaversine(double lon1, double lat1, double lon2, double lat2) {
+	double r = 6378137;
+	double dLat, dLon, a;
+	lon1 = toRad(lon1);
+	lon2 = toRad(lon2);
+	lat1 = toRad(lat1);
+	lat2 = toRad(lat2);
+
+	dLat = lat2-lat1;
+	dLon = lon2-lon1;
+	a = sin(dLat/2.) * sin(dLat/2.) + cos(lat1) * cos(lat2) * sin(dLon/2.) * sin(dLon/2.);
+	return 2. * atan2(sqrt(a), sqrt(1.-a)) * r;
+}
 

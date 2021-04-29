@@ -25,7 +25,7 @@ double distance_haversine(double lon1, double lat1, double lon2, double lat2);
 double distance_lonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2);
 std::vector<double> distance_lonlat(std::vector<double> &lon1, std::vector<double> &lat1, std::vector<double> &lon2, std::vector<double> &lat2) ;
 std::vector<double> distance_lonlat_vd(std::vector<double> &lon1, std::vector<double> &lat1, double lon2, double lat2) ;
-
+double distHaversine(double lon1, double lat1, double lon2, double lat2);
 
 // direction
 double direction_lonlat(double lon1, double lat1, double lon2, double lat2, bool degrees);
