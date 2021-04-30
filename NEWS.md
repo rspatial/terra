@@ -1,12 +1,8 @@
-
-# version 1.2-4
-
-## bug fixes
-
-- `flip(x, direction="vertical")` no longer reverses the order of the layers. 
+# version 1.2-6
 
 
-# version 1.2-3
+
+# version 1.2-5
 
 ## new
 
@@ -20,11 +16,12 @@
 
 ## bug fixes
 
+- `flip(x, direction="vertical")` no longer reverses the order of the layers. 
 - `extract` did not work for horizontal or vertical lines as their extent was considered invalid. Reported by Monika Tomaszewska.
 - `autocor` did not handle NA values [#192](https://github.com/rspatial/terra/issues/192). Reported by Laurence Hawker.
 - `nearest` now works for angular coordinates
 - The unit of `slope` in `terrain` was not correct (the tangent was returned instead of the slope) [#196](https://github.com/rspatial/terra/issues/196). Reported by Sven Alder.
-`quantile` now works for rasters that have cells that are all `NA`. Reported by Jerry Nelson.
+- `quantile` now works for rasters that have cells that are all `NA`. Reported by Jerry Nelson.
 
 ## name changes
 

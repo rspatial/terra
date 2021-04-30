@@ -1,10 +1,4 @@
 
-setMethod("expand", signature(x="ANY"), 
-	function(...) {
-		warn("expand", "terra::expand has been removed. Use 'extend' instead")
-		extend(...)
-	}
-)
 
 setMethod("extend", signature(x="SpatExtent"), 
 function(x, y) {
