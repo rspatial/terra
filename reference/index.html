@@ -202,9 +202,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="area.html">area(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="area.html">area(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="area.html">perimeter(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+          <p><code><a href="area.html">area(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="area.html">area(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Area and perimeter</p></td>
+        <td><p>Area</p></td>
       </tr><tr>
         
         <td>
@@ -292,12 +292,6 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="chull.html">convexhull(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Convex hull</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="clamp.html">clamp(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Clamp values</p></td>
@@ -343,6 +337,12 @@
           <p><code><a href="contour.html">contour(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="contour.html">as.contour(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Contour plot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="convhull.html">convhull(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Convex hull</p></td>
       </tr><tr>
         
         <td>
@@ -442,15 +442,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="expand.html">extend(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="expand.html">extend(<i>&lt;SpatExtent&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extend</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ext.html">ext(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="ext.html">ext(<i>&lt;numeric&gt;</i>)</a></code> <code><a href="ext.html">`ext&lt;-`(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="ext.html">`ext&lt;-`(<i>&lt;SpatRaster&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="ext.html">`$`(<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="ext.html">`$&lt;-`(<i>&lt;SpatExtent&gt;</i>)</a></code> </p>
         </td>
         <td><p>Create, get or set a SpatExtent</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="extend.html">extend(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="extend.html">extend(<i>&lt;SpatExtent&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extend</p></td>
       </tr><tr>
         
         <td>
@@ -604,6 +604,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="makeTiles.html">makeTiles(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Make tiles</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="mask.html">mask(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="mask.html">mask(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
         <td><p>Mask values in a SpatRaster</p></td>
@@ -652,7 +658,7 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="near.html">nearby(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="near.html">nearest(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+          <p><code><a href="nearby.html">nearby(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="nearby.html">nearest(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
         <td><p>nearby geometries</p></td>
       </tr><tr>
@@ -661,12 +667,6 @@
           <p><code><a href="origin.html">origin(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Origin</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="pack.html">wrap(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="pack.html">wrap(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>pack a SpatRaster or SpatVector object</p></td>
       </tr><tr>
         
         <td>
@@ -679,6 +679,12 @@
           <p><code><a href="patches.html">patches(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Detect patches (clumps) of cells</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="perim.html">perim(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Perimeter or length</p></td>
       </tr><tr>
         
         <td>
@@ -826,6 +832,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="segregate.html">segregate(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>segregate</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="select.html">sel(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="select.html">sel(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
         <td><p>Spatial selection</p></td>
@@ -835,12 +847,6 @@
           <p><code><a href="selectRange.html">selectRange(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Select the values of a range of layers, as specified by cell values in another SpatRaster</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="separate.html">segregate(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>separate</p></td>
       </tr><tr>
         
         <td>
@@ -946,12 +952,6 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="tiles.html">tiles(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Make tiles</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="time.html">time(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="time.html">`time&lt;-`(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>time of SpatRaster layers</p></td>
@@ -1033,6 +1033,12 @@
           <p><code><a href="window.html">`window&lt;-`(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="window.html">window(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Set a window</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wrap.html">wrap(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="wrap.html">wrap(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>wrap (pack) a SpatRaster or SpatVector object</p></td>
       </tr><tr>
         
         <td>

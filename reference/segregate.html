@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transfer values of a SpatRaster to another one with a different geometry — resample • terra</title>
+<title>segregate — segregate • terra</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Transfer values of a SpatRaster to another one with a different geometry — resample" />
-<meta property="og:description" content="resample transfers values between SpatRaster objects that do not align (have a different origin and/or resolution). See project to change the coordinate reference system (crs).
-If the origin and crs are the same, you should consider using these other functions instead: aggregate, disaggregate, expand or crop." />
+<meta property="og:title" content="segregate — segregate" />
+<meta property="og:description" content="Create a SpatRaster with a layer for each class (value, or subset of the values) in the input SpatRaster. For example, if the input has vegetation types, this function will create a layer (presence/absence; dummy variable) for each of these classes. Classes and cell values are always truncated to integers.
+This is called &quot;one-hot encoding&quot; or &quot;dummy encoding&quot; (for a dummy encoding scheme you can remove (any) one of the output layers as it is redundant)." />
 
 
 
@@ -112,38 +112,37 @@ If the origin and crs are the same, you should consider using these other functi
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transfer values of a SpatRaster to another one with a different geometry</h1>
+    <h1>segregate</h1>
     
-    <div class="hidden name"><code>resample.Rd</code></div>
+    <div class="hidden name"><code>segregate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>resample transfers values between SpatRaster objects that do not align (have a different origin and/or resolution). See <code><a href='project.html'>project</a></code> to change the coordinate reference system (crs).</p>
-<p>If the origin and crs are the same, you should consider using these other functions instead: <code><a href='aggregate.html'>aggregate</a></code>, <code><a href='disaggregate.html'>disaggregate</a></code>, <code>expand</code> or <code><a href='crop.html'>crop</a></code>.</p>
+    <p>Create a SpatRaster with a layer for each class (value, or subset of the values) in the input SpatRaster. For example, if the input has vegetation types, this function will create a layer (presence/absence; dummy variable) for each of these classes. Classes and cell values are always truncated to integers.</p>
+<p>This is called "one-hot encoding" or "dummy encoding" (for a dummy encoding scheme you can remove (any) one of the output layers as it is redundant).</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for SpatRaster,SpatRaster</span>
-<span class='fu'>resample</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, method<span class='op'>=</span><span class='st'>"bilinear"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>segregate</span><span class='op'>(</span><span class='va'>x</span>, classes<span class='op'>=</span><span class='cn'>NULL</span>, keep<span class='op'>=</span><span class='cn'>FALSE</span>, other<span class='op'>=</span><span class='fl'>0</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatRaster to be resampleed</p></td>
+      <td><p>SpatRaster</p></td>
     </tr>
     <tr>
-      <th>y</th>
-      <td><p>SpatRaster that <code>x</code> should be resampled to</p></td>
+      <th>classes</th>
+      <td><p>numeric. The values (classes) for which layers should be made. If <code>NULL</code> all classes are used</p></td>
     </tr>
     <tr>
-      <th>method</th>
-      <td><p>character. Method used for estimating the new cell values. One of:</p>  
-<p><code>near</code>: nearest neighbour. This method is fast, and the preferred method if the cell values represent classes. It is not a good choice for continuous values.</p>	
-<p><code>bilinear</code>: bilinear interpolation. Default.</p>	
-<p><code>cubic</code>: cubic interpolation.</p>	
-<p><code>cubicspline</code>: cubic spline interpolation.</p>	
-<p><code>lanczos</code>: Lanczos windowed sinc resampling.</p></td>
+      <th>keep</th>
+      <td><p>logical. If <code>TRUE</code>, cells that are of the class represented by a layer get that value, rather than a value of 1</p></td>
+    </tr>
+    <tr>
+      <th>other</th>
+      <td><p>numeric. Value to assign to cells that are not of the class represented by a layer</p></td>
     </tr>
     <tr>
       <th>filename</th>
@@ -158,22 +157,12 @@ If the origin and crs are the same, you should consider using these other functi
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>SpatRaster</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='aggregate.html'>aggregate</a></code>, <code><a href='disaggregate.html'>disaggregate</a></code>, <code><a href='crop.html'>crop</a></code>, <code><a href='project.html'>project</a></code>,</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>3</span>, ncol<span class='op'>=</span><span class='fl'>3</span>, xmin<span class='op'>=</span><span class='fl'>0</span>, xmax<span class='op'>=</span><span class='fl'>10</span>, ymin<span class='op'>=</span><span class='fl'>0</span>, ymax<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>25</span>, ncol<span class='op'>=</span><span class='fl'>30</span>, xmin<span class='op'>=</span><span class='fl'>1</span>, xmax<span class='op'>=</span><span class='fl'>11</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>1</span>, ymax<span class='op'>=</span><span class='fl'>11</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>resample</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>s</span>, method<span class='op'>=</span><span class='st'>"bilinear"</span><span class='op'>)</span>
-
-<span class='va'>opar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>no.readonly <span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='img'><img src='resample-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span><span class='va'>opar</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>5</span>, ncol<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rep.html'>rep</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>, <span class='cn'>NA</span><span class='op'>)</span>, each<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'>segregate</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+<span class='va'>bb</span> <span class='op'>&lt;-</span> <span class='fu'>segregate</span><span class='op'>(</span><span class='va'>r</span>, keep<span class='op'>=</span><span class='cn'>TRUE</span>, other<span class='op'>=</span><span class='cn'>NA</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

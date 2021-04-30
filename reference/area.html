@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Area and perimeter — area • terra</title>
+<title>Area — area • terra</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,9 @@
 
 
 
-<meta property="og:title" content="Area and perimeter — area" />
-<meta property="og:description" content="Compute the area of polygons or for raster cells that are not NA. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the correct=TRUE option.
-For vector data, the best way to compute area is to use the longitude/latitude crs if that is what the data come in. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system.
-The perimeter method works only on SpatVector objects, and computes the length of lines or the perimeter of polygons." />
+<meta property="og:title" content="Area — area" />
+<meta property="og:description" content="Compute the area covered by polygons or for raster cells that are not NA. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the correct=TRUE option.
+For vector data, the best way to compute area is to use the longitude/latitude crs if that is what the data come in. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system." />
 
 
 
@@ -113,25 +112,21 @@ The perimeter method works only on SpatVector objects, and computes the length o
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Area and perimeter</h1>
+    <h1>Area</h1>
     
     <div class="hidden name"><code>area.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute the area of polygons or for raster cells that are not <code>NA</code>. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the <code>correct=TRUE</code> option.</p>
+    <p>Compute the area covered by polygons or for raster cells that are not <code>NA</code>. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the <code>correct=TRUE</code> option.</p>
 <p>For vector data, the best way to compute area is to use the longitude/latitude crs if that is what the data come in. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system.</p>
-<p>The perimeter method works only on SpatVector objects, and computes the length of lines or the perimeter of polygons.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span>, sum<span class='op'>=</span><span class='cn'>TRUE</span>, correct<span class='op'>=</span><span class='cn'>FALSE</span>, mask<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatVector</span>
-<span class='fu'>perimeter</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,7 +159,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>area or perimeter in m2</p>
+    <p>numeric (area in m2)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -202,10 +197,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 <span class='va'>a</span>
 </div><div class='output co'>#&gt;  [1] 312283206 218674025 259454806  76200409 263174257 188282143 128991500
 #&gt;  [8] 210354494 185630770 251322021 237113004 233329960</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 2564810595</div><div class='input'><span class='fu'>perimeter</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1] 117100.12  93477.28  84502.45  44919.14  85032.61  74708.05  57991.42
-#&gt;  [8]  81203.93  74443.82  95564.74  80618.76  70810.67</div><div class='input'>
-</div></pre>
+</div><div class='output co'>#&gt; [1] 2564810595</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

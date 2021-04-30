@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transfer values of a SpatRaster to another one with a different geometry — resample • terra</title>
+<title>Extend — expand • terra</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Transfer values of a SpatRaster to another one with a different geometry — resample" />
-<meta property="og:description" content="resample transfers values between SpatRaster objects that do not align (have a different origin and/or resolution). See project to change the coordinate reference system (crs).
-If the origin and crs are the same, you should consider using these other functions instead: aggregate, disaggregate, expand or crop." />
+<meta property="og:title" content="Extend — expand" />
+<meta property="og:description" content="Enlarge the spatial extent of a SpatRaster. See crop if you (also) want to remove rows or columns.
+You can also enlarge a SpatExtent with this method, or with algebraic notation (see examples)" />
 
 
 
@@ -112,42 +112,41 @@ If the origin and crs are the same, you should consider using these other functi
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transfer values of a SpatRaster to another one with a different geometry</h1>
+    <h1>Extend</h1>
     
-    <div class="hidden name"><code>resample.Rd</code></div>
+    <div class="hidden name"><code>extend.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>resample transfers values between SpatRaster objects that do not align (have a different origin and/or resolution). See <code><a href='project.html'>project</a></code> to change the coordinate reference system (crs).</p>
-<p>If the origin and crs are the same, you should consider using these other functions instead: <code><a href='aggregate.html'>aggregate</a></code>, <code><a href='disaggregate.html'>disaggregate</a></code>, <code>expand</code> or <code><a href='crop.html'>crop</a></code>.</p>
+    <p>Enlarge the spatial extent of a SpatRaster. See <code><a href='crop.html'>crop</a></code> if you (also) want to remove rows or columns.</p>
+<p>You can also enlarge a SpatExtent with this method, or with algebraic notation (see examples)</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for SpatRaster,SpatRaster</span>
-<span class='fu'>resample</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, method<span class='op'>=</span><span class='st'>"bilinear"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>extend</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span> 
+
+<span class='co'># S4 method for SpatExtent</span>
+<span class='fu'>extend</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatRaster to be resampleed</p></td>
+      <td><p>SpatRaster or SpatExtent</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>SpatRaster that <code>x</code> should be resampled to</p></td>
-    </tr>
-    <tr>
-      <th>method</th>
-      <td><p>character. Method used for estimating the new cell values. One of:</p>  
-<p><code>near</code>: nearest neighbour. This method is fast, and the preferred method if the cell values represent classes. It is not a good choice for continuous values.</p>	
-<p><code>bilinear</code>: bilinear interpolation. Default.</p>	
-<p><code>cubic</code>: cubic interpolation.</p>	
-<p><code>cubicspline</code>: cubic spline interpolation.</p>	
-<p><code>lanczos</code>: Lanczos windowed sinc resampling.</p></td>
+      <td><p>If <code>x</code> is a SpatRaster, <code>y</code> should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide two positive integers indicating the number of rows and columns that need to be added at each side (or a single positive integer when the number of rows and columns is equal)</p>  
+<p>If <code>x</code> is a SpatExtent, <code>y</code> should be a numeric vector of 1, 2, or 4 elements</p></td>
     </tr>
     <tr>
       <th>filename</th>
       <td><p>character. Output filename</p></td>
+    </tr>
+    <tr>
+      <th>overwrite</th>
+      <td><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -157,24 +156,26 @@ If the origin and crs are the same, you should consider using these other functi
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SpatRaster</p>
+    <p>SpatRaster or SpatExtent</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='aggregate.html'>aggregate</a></code>, <code><a href='disaggregate.html'>disaggregate</a></code>, <code><a href='crop.html'>crop</a></code>, <code><a href='project.html'>project</a></code>,</p></div>
+    <div class='dont-index'><p><code><a href='crop.html'>crop</a></code>, <code><a href='merge.html'>merge</a></code>, <code><a href='ext.html'>ext</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>3</span>, ncol<span class='op'>=</span><span class='fl'>3</span>, xmin<span class='op'>=</span><span class='fl'>0</span>, xmax<span class='op'>=</span><span class='fl'>10</span>, ymin<span class='op'>=</span><span class='fl'>0</span>, ymax<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>150</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>120</span>, ymin<span class='op'>=</span><span class='fl'>30</span>, ymax<span class='op'>=</span><span class='fl'>60</span>, ncol<span class='op'>=</span><span class='fl'>36</span>, nrow<span class='op'>=</span><span class='fl'>18</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>25</span>, ncol<span class='op'>=</span><span class='fl'>30</span>, xmin<span class='op'>=</span><span class='fl'>1</span>, xmax<span class='op'>=</span><span class='fl'>11</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>1</span>, ymax<span class='op'>=</span><span class='fl'>11</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>resample</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>s</span>, method<span class='op'>=</span><span class='st'>"bilinear"</span><span class='op'>)</span>
+<span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>180</span>, <span class='op'>-</span><span class='fl'>100</span>, <span class='fl'>40</span>, <span class='fl'>70</span><span class='op'>)</span>
+<span class='va'>re</span> <span class='op'>&lt;-</span> <span class='fu'>extend</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>e</span><span class='op'>)</span>
 
-<span class='va'>opar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>no.readonly <span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='img'><img src='resample-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span><span class='va'>opar</span><span class='op'>)</span>
-</div></pre>
+<span class='co'># expand with a number of rows and columns (at each side)</span>
+<span class='va'>re2</span> <span class='op'>&lt;-</span> <span class='fu'>extend</span><span class='op'>(</span><span class='va'>r</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># SpatExtent</span>
+<span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+<span class='va'>e</span>
+</div><div class='output co'>#&gt; SpatExtent : -150, -120, 30, 60 (xmin, xmax, ymin, ymax)</div><div class='input'><span class='fu'>extend</span><span class='op'>(</span><span class='va'>e</span>, <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; SpatExtent : -160, -110, 20, 70 (xmin, xmax, ymin, ymax)</div><div class='input'><span class='fu'>extend</span><span class='op'>(</span><span class='va'>e</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='op'>-</span><span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; SpatExtent : -160, -130, 30, 80 (xmin, xmax, ymin, ymax)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
