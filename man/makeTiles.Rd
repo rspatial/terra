@@ -1,9 +1,11 @@
-\name{tiles}
+\name{makeTiles}
 
 \docType{methods}
 
 \alias{tiles}
 \alias{tiles,SpatRaster-method}
+\alias{makeTiles}
+\alias{makeTiles,SpatRaster-method}
 
 
 \title{Make tiles}
@@ -13,7 +15,7 @@ Divide a SpatRaster into "tiles". The cell of another SpatRaster (normally with 
 }
 
 \usage{
-\S4method{tiles}{SpatRaster}(x, y, filename="tile_.tif", ...)
+\S4method{makeTiles}{SpatRaster}(x, y, filename="tile_.tif", ...)
 }
 
 \arguments{
@@ -33,7 +35,7 @@ r <- rast(ncols=100, nrows=100)
 values(r) <- 1:ncell(r)
 x <- rast(ncol=2, nrow=2)
 filename <- paste0(tempfile(), "_.tif")
-ff <- tiles(r, x, filename)
+ff <- makeTiles(r, x, filename)
 }
 
 

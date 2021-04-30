@@ -1,15 +1,13 @@
 \name{wrap}
 
-\alias{pack}
 \alias{wrap}
 
 \alias{wrap,SpatVector-method}
 \alias{wrap,SpatRaster-method}
 \alias{wrap,Spatial-method}
-\alias{pack,ANY-method}
 
 
-\title{pack a SpatRaster or SpatVector object}
+\title{wrap (pack) a SpatRaster or SpatVector object}
 
 \description{
 Wrap a SpatRaster or SpatVector object to create a Packed* object that it can be saved as an R object to disk, or passed over a connection that serializes (e.g. using a computer cluster). 

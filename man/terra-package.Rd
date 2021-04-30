@@ -15,7 +15,7 @@ The package implements two main classes (R data types): \code{SpatRaster} and \c
 
 Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector.
 
-The classes used wrap a C++ pointer that holds pr points to the data, and almost all data manipulation is done in C++ (for better speed). These objects cannot be directly saved to a ".Rds" file or used in cluster computing. They cannot be recovered from a saved R session either. See \code{\link{pack}} or \code{\link{writeRaster}} to work around that limitation. 
+These classes wrap a C++ pointer to the data, and almost all data manipulation is done in C++ (for speed). These objects cannot be directly saved to a ".Rds" file or used in cluster computing. They cannot be recovered from a saved R session either. See \code{\link{pack}} or \code{\link{writeRaster}} to work around that limitation. 
 
 The \code{terra} package is conceived as a replacement of the \code{raster} package. \code{terra} has a very similar, but simpler, interface, and it is faster than \code{raster}. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
@@ -296,7 +296,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{centroids}} \tab Get the centroids of a SpatVector\cr
   \code{\link{voronoi}} \tab Voronoi diagram \cr
   \code{\link{delauny}} \tab Delauny triangles\cr
-  \code{\link{convexhull}} \tab Compute the convex hull of a SpatVector \cr  
+  \code{\link{convhull}} \tab Compute the convex hull of a SpatVector \cr  
   \code{\link{fillHoles}}\tab Remove or extract holes from polygons\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
@@ -323,7 +323,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{nearby}} \tab find nearby geometries\cr
   \code{\link{nearest}} \tab find the nearest geometries\cr
   \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
-  \code{\link{perimeter}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
+  \code{\link{perim}} \tab computes the length of the perimeter of polygons, and the length of lines\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 

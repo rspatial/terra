@@ -4,9 +4,6 @@
 \alias{extend,SpatRaster-method}
 \alias{extend,SpatExtent-method}
 
-\alias{expand}
-\alias{expand,missing-method}
-
 
 \title{Extend}
 

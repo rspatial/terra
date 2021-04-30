@@ -4,8 +4,6 @@
 
 \alias{nearby}
 \alias{nearby,SpatVector-method}
-\alias{near}
-\alias{near,ANY-method}
 \alias{nearest}
 \alias{nearest,SpatVector-method}
 

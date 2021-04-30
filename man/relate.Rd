@@ -38,7 +38,7 @@ matrix
 }
 
 \seealso{
-\code{\link{adjacent}}, \code{\link{near}}, \code{\link{intersect}}, \code{\link{crop}}
+\code{\link{adjacent}}, \code{\link{nearby}}, \code{\link{intersect}}, \code{\link{crop}}
 }
 
 \examples{

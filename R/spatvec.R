@@ -128,7 +128,7 @@ setMethod("area", signature(x="SpatVector"),
 	}
 )
 
-setMethod("perimeter", signature(x="SpatVector"), 
+setMethod("perim", signature(x="SpatVector"), 
 	function(x) {
 		p <- x@ptr$length();
 		x <- messages(x, "length");

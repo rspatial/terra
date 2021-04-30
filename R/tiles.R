@@ -1,5 +1,5 @@
 
-setMethod("tiles", signature(x="SpatRaster"), 
+setMethod("makeTiles", signature(x="SpatRaster"), 
 	function(x, y, filename="tile_.tif", ...) {
 		stopifnot(inherits(y, "SpatRaster")) 
 		y <- y[[1]]

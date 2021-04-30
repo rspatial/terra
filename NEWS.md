@@ -1,6 +1,14 @@
 # version 1.2-6
 
 
+## name changes
+
+To avoid name conflicts with `spatstat`
+
+- convexHull -> convHull
+- perimeter -> perim
+- tiles -> makeTiles
+
 
 # version 1.2-5
 

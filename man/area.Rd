@@ -1,27 +1,21 @@
 \name{area}
 
 \alias{area}
-\alias{perimeter}
 \alias{area,SpatRaster-method}
 \alias{area,SpatVector-method}
-\alias{perimeter,SpatVector-method}
   
-\title{Area and perimeter}
+\title{Area}
 
 \description{
-Compute the area of polygons or for raster cells that are not \code{NA}. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the \code{correct=TRUE} option. 
+Compute the area covered by polygons or for raster cells that are not \code{NA}. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the \code{correct=TRUE} option. 
 
 For vector data, the best way to compute area is to use the longitude/latitude crs if that is what the data come in. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system.
-
-The perimeter method works only on SpatVector objects, and computes the length of lines or the perimeter of polygons.
 }
 
 \usage{
 \S4method{area}{SpatRaster}(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...)
 
 \S4method{area}{SpatVector}(x)
-
-\S4method{perimeter}{SpatVector}(x)
 }
 
 
@@ -35,7 +29,7 @@ The perimeter method works only on SpatVector objects, and computes the length o
 }
 
 \value{
-area or perimeter in m2
+numeric (area in m2)
 }
 
 \examples{
@@ -72,8 +66,6 @@ v <- vect(f)
 a <- area(v)
 a
 sum(a)
-perimeter(v)
-
 }
 
 \keyword{methods}

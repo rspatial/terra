@@ -1,13 +1,11 @@
-\name{separate}
+\name{segregate}
 
 \docType{methods}
 
-\alias{separate}
-\alias{separate,ANY-method}
 \alias{segregate}
 \alias{segregate,SpatRaster-method}
 
-\title{separate}
+\title{segregate}
 
 \description{
 Create a SpatRaster with a layer for each class (value, or subset of the values) in the input SpatRaster. For example, if the input has vegetation types, this function will create a layer (presence/absence; dummy variable) for each of these classes. Classes and cell values are always truncated to integers.
