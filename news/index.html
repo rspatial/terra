@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-6</span>
       </span>
     </div>
 
@@ -114,22 +114,14 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-12-4" class="section level1">
-<h1 class="page-header" data-toc-text="1.2-4">
-<a href="#version-12-4" class="anchor"></a>version 1.2-4<small> Unreleased </small>
+    <div id="version-12-6" class="section level1">
+<h1 class="page-header" data-toc-text="1.2-6">
+<a href="#version-12-6" class="anchor"></a>version 1.2-6<small> Unreleased </small>
 </h1>
-<div id="bug-fixes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
-<ul>
-<li>
-<code><a href="../reference/flip.html">flip(x, direction="vertical")</a></code> no longer reverses the order of the layers.</li>
-</ul>
 </div>
-</div>
-    <div id="version-12-3" class="section level1">
-<h1 class="page-header" data-toc-text="1.2-3">
-<a href="#version-12-3" class="anchor"></a>version 1.2-3<small> Unreleased </small>
+    <div id="version-12-5" class="section level1">
+<h1 class="page-header" data-toc-text="1.2-5">
+<a href="#version-12-5" class="anchor"></a>version 1.2-5<small> 2021-04-30 </small>
 </h1>
 <div id="new" class="section level2">
 <h2 class="hasAnchor">
@@ -149,17 +141,21 @@
 <code>mosaic</code> and <code>merge</code> now warn and resample if rasters are not aligned.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
 <ul>
+<li>
+<code><a href="../reference/flip.html">flip(x, direction="vertical")</a></code> no longer reverses the order of the layers.</li>
 <li>
 <code>extract</code> did not work for horizontal or vertical lines as their extent was considered invalid. Reported by Monika Tomaszewska.</li>
 <li>
 <code>autocor</code> did not handle NA values <a href="https://github.com/rspatial/terra/issues/192"><a href='https://github.com/rspatial/terra/issues/192'>#192</a></a>. Reported by Laurence Hawker.</li>
 <li>
 <code>nearest</code> now works for angular coordinates</li>
-<li>The unit of <code>slope</code> in <code>terrain</code> was not correct (the tangent was returned instead of the slope) <a href="https://github.com/rspatial/terra/issues/196"><a href='https://github.com/rspatial/terra/issues/196'>#196</a></a>. Reported by Sven Alder. <code>quantile</code> now works for rasters that have cells that are all <code>NA</code>. Reported by Jerry Nelson.</li>
+<li>The unit of <code>slope</code> in <code>terrain</code> was not correct (the tangent was returned instead of the slope) <a href="https://github.com/rspatial/terra/issues/196"><a href='https://github.com/rspatial/terra/issues/196'>#196</a></a>. Reported by Sven Alder.</li>
+<li>
+<code>quantile</code> now works for rasters that have cells that are all <code>NA</code>. Reported by Jerry Nelson.</li>
 </ul>
 </div>
 <div id="name-changes" class="section level2">
