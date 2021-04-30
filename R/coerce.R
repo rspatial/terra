@@ -55,8 +55,9 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 					ff <- which(ff)
 					levs <- levels(x)
 					for (f in ff) {
-						v <- factor(unlist(p[[f]], use.names=FALSE), levels=0:255)
-						levels(v) <- levs[[f]]
+						facts <- levs[[f]]
+						v <- factor(unlist(p[[f]], use.names=FALSE), levels=(1:length(facts))-1)
+						levels(v) <- facts
 						p[[f]] <- as.character(v)
 					}
 				}
@@ -119,8 +120,9 @@ setMethod("as.points", signature(x="SpatRaster"),
 				ff <- which(ff)
 				levs <- levels(x)
 				for (f in ff) {
-					v <- factor(unlist(p[[f]], use.names=FALSE), levels=0:255)
-					levels(v) <- levs[[f]]
+					facts <- levs[[f]]
+					v <- factor(unlist(p[[f]], use.names=FALSE), levels=(1:length(facts))-1)
+					levels(v) <- facts
 					p[[f]] <- as.character(v)
 				}
 			}

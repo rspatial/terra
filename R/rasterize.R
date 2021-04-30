@@ -13,35 +13,19 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 
 	g <- geom(x, df=TRUE)
 	# also allow for multiple columns to multiple layers
-	if (!missing(values)) {
-		field <- rep_len(values, nrow(x))
-	} else if (missing(field)) {
-		field <- g[,1] # consider multi-point
-	} else if (is.character(field)) {
-		if ((length(field) == 1) && (field %in% names(x))) {
-			names(r) <- field
-			field <- as.vector(unlist(x[[field]]))
-		} else if (length(field) != nrow(x)) {
-			error("rasterize", "field length should be 1 or nrow(x)")
-		}
-	} else if (length(field) == 1) {
-		if (field > 0 && field <= ncol(x)) {
-			names(r) = names(x)[field]
-			field <- as.vector(unlist(x[[field]]))
-		} else {
-			error("rasterize", "field index outside the value range (1:ncol(x))")
-		}
-	} else if (length(field) != nrow(x)) {
-		error("rasterize", "length of field does not match the number of features")
+	if (field != "") {
+		values <- as.vector(unlist(x[[field]]))
+	} else {
+		values <- rep_len(values, nrow(x))
 	}
 
 	levs <- NULL
-	if (is.character(field)) {
-		f <- as.factor(field)
+	if (is.character(values)) {
+		f <- as.factor(values)
 		levs <- levels(f)
-		field <- as.integer(f) - 1
+		values <- as.integer(f) - 1
 	} 
-	field <- field[g[,1]]
+	values <- values[g[,1]]
 
 	g <- cellFromXY(y, as.matrix(g[, c("x", "y")]))
 	i <- which(!is.na(g))
@@ -49,7 +33,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 	if (length(g) == 0) {
 		return(r)
 	}
-	field <- field[i]
+	values <- values[i]
 
 	if (missing(fun)) fun <- "last"
 	if (is.character(fun)) {
@@ -57,15 +41,15 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 			b <- unique(g)
 			r[b] <- 1
 		} else if (fun == "first") {
-			r[rev(g)] <- rev(field)
+			r[rev(g)] <- rev(values)
 		} else if (fun == "last") {
-			r[g] <- field
+			r[g] <- values
 		} else {
 			error("rasterize", "unknown character function")
 		}
 
 	} else {
-		a <- tapply(field, g, fun)
+		a <- tapply(values, g, fun)
 		b <- as.numeric(names(a))
 		r[b] <- as.vector(a)
 		levs <- NULL
@@ -86,11 +70,17 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field="", values=1, fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
+	function(x, y, field="", fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
 
-		if (is.null(field) || is.na(field)) field = ""
-		stopifnot(length(field) == 1)
-		stopifnot(is.numeric(values))
+		values <- 1
+		if (is.null(field) || is.na(field) || (field == "")) {
+			field <- ""
+		} else if (!is.character(field)) {
+			values <- as.numeric(field)
+			field  <- ""
+		} else {
+			stopifnot(field %in% names(x))
+		}
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
@@ -100,11 +90,6 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 		opt <- spatOptions(filename, ...)
 		pols <- grepl("polygons", g)
-		#if (pols && touches) {
-		#	first = rasterize(x, y, field=field, values=values, fun=fun, background=background, touches=FALSE, sum=sum, cover=cover, filename="", ...)
-		#	ouf <- filename
-		#	filename <- ""
-		#}
 
 		if (cover[1] && pols) {
 			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, background, touches[1], sum[1], TRUE, FALSE, opt)
@@ -112,25 +97,9 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			return(y)
 		}
 
-		if (field != "") {
-			if (ncol(x) == 0) {
-				error("rasterize", "there are no fields")
-			}
-			if (is.numeric(field)) {
-				if (field > 0 && field <= ncol(x)) {
-					field <- names(x)[field]
-				} else {
-					error("rasterize", "if `field` is numeric, it should be a single number in the range (1:ncol(x))")
-				}
-			} 
-		} 
-		
 		background <- as.numeric(background[1])
 		y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], sum[1], FALSE, update[1], opt)
 
-		#if (pols && touches) {
-		#	y <- cover(first, y, filename=filename, ...)
-		#}
 		messages(y, "rasterize")
 	}
 )
