@@ -244,6 +244,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 					levels(r) <- levs
 				}
 			}
+			crs(r) <- wkt(from)
 		}
 		if (from@file@NAchanged) {
 			NAflag(r) <- from@file@nodatavalue
