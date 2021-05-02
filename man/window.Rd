@@ -36,10 +36,10 @@ none for \code{window<-} and logical for \code{window}
 }
 
 \examples{ 
-f <- system.file("ex/test.tif", package="terra") 
+f <- system.file("ex/elev.tif", package="terra") 
 r <- rast(f)
 global(r, "mean", na.rm=TRUE)
-e <- ext(c(179680, 180176, 331905, 332304))
+e <- ext(c(5.9, 6,49.95, 50))
 
 window(r) <- e
 global(r, "mean", na.rm=TRUE)

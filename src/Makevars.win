@@ -20,7 +20,7 @@ PKG_LIBS = \
 	-lodbc32 -lodbccp32 -liconv -lpsapi -lwldap32 -lsecur32 -lgdi32 -lnormaliz \
 	-lcrypto -lcrypt32 -lws2_32 -lshlwapi
 
-CXX_STD = CXX14
+CXX_STD = CXX11
 
 all: clean winlibs
 

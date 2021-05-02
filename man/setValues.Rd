@@ -48,7 +48,8 @@ The same object type as \code{x}
 \seealso{\code{\link{values}}, \code{\link{init}}}
 
 \examples{
-r <- rast(system.file("ex/test.tif", package="terra"))
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
 x <- setValues(r, 1:ncell(r))
 x
 values(x) <- runif(ncell(x))

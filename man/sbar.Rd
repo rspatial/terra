@@ -34,7 +34,7 @@ none
 \seealso{ \code{\link[terra]{plot}}, \code{\link[terra]{inset}} }
 
 \examples{
-f <- system.file("ex/test.tif", package="terra")
+f <- system.file("ex/meuse.tif", package="terra")
 r <- rast(f)
 plot(r)
 sbar(1000)

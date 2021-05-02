@@ -1856,6 +1856,60 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 }
 
 
+SpatVector SpatRaster::as_lines() {
+
+	SpatVector vect;
+	SpatOptions opt;
+	opt.ncopies = 12;
+	if (!canProcessInMemory(opt)) {
+		if (ncell() > 1000000) { // for testing with canPIM=false
+			vect.setError("the raster is too large");
+			return vect;
+		}
+	}
+
+	SpatGeom g;
+	g.gtype = lines;
+	double xr = xres()/2;
+	double yr = yres()/2;
+
+	std::vector<int_64> cols(ncol());
+	std::vector<int_64> rows(nrow());
+	std::iota(std::begin(rows), std::end(rows), 0);
+	std::iota(std::begin(cols), std::end(cols), 0);
+	std::vector<double> x = xFromCol(cols);
+	std::vector<double> y = yFromRow(rows);
+	
+	for (double &d : x) d = d - xr;
+	for (double &d : y) d = d + yr;
+	x.push_back(x[x.size()-1] + xr);
+	y.push_back(y[y.size()-1] - yr);
+	
+	SpatExtent e = getExtent();
+	for (size_t i=0; i<x.size(); i++) {
+		
+		std::vector<double> xc = {x[i], x[i]};
+		std::vector<double> yc = {e.ymin, e.ymax};
+		SpatPart p(xc, yc);
+		g.addPart(p);
+		vect.addGeom(g);
+		g.parts.resize(0);
+	}
+	for (size_t i=0; i<y.size(); i++) {
+		std::vector<double> xc = {e.xmin, e.xmax};
+		std::vector<double> yc = {y[i], y[i]};
+		SpatPart p(xc, yc);
+		g.addPart(p);
+		vect.addGeom(g);
+		g.parts.resize(0);
+	}
+
+	vect.srs = source[0].srs;
+	return(vect);
+}
+
+
+
 bool SpatRaster::setRGB(int r, int g, int b) {
 	size_t mxlyr = std::max(std::max(r, g), b);
 	if (nlyr() <= mxlyr) {

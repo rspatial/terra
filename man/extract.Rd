@@ -70,7 +70,7 @@ r[,5]
 
 r[c(0:2, 99:101)]
 
-f <- system.file("ex/test.tif", package="terra")
+f <- system.file("ex/meuse.tif", package="terra")
 r <- rast(f)
 
 xy <- cbind(179000, 330000)

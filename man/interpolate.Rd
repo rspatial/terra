@@ -42,7 +42,7 @@ SpatRaster
 
 \examples{
 
-r <- rast(system.file("ex/test.tif", package="terra"))
+r <- rast(system.file("ex/elev.tif", package="terra"))
 ra <- aggregate(r, 10)
 xy <- data.frame(xyFromCell(ra, 1:ncell(ra)))
 v <- values(ra)
@@ -66,16 +66,16 @@ se <- interpolate(rast(p), tps, fun=predictSE)
 se <- mask(se, r)
 plot(se)
 
-### another variable; let's call it elevation
-elevation <- (init(r, 'x') * init(r, 'y')) / 100000000
-names(elevation) <- 'elev'
+### another predictor variable, "e"
+e <- (init(r, "x") * init(r, "y")) / 100000000
+names(e) <- "e"
 
-#z <- as.matrix(extract(elevation, xy))
+z <- as.matrix(extract(e, xy)[,-1])
 
 ## add as another independent variable
 xyz <- cbind(xy, z)
 tps2 <- Tps(xyz, v)
-p2 <- interpolate(elevation, tps2, xyOnly=FALSE)
+p2 <- interpolate(e, tps2, xyOnly=FALSE)
 
 ## as a linear coveriate
 tps3 <- Tps(xy, v, Z=z)
@@ -86,7 +86,7 @@ tps3 <- Tps(xy, v, Z=z)
 pfun <- function(model, x, ...) {
    predict(model, x[,1:2], Z=x[,3], ...)
 }
-p3 <- interpolate(elevation, tps3, fun=pfun)
+p3 <- interpolate(e, tps3, fun=pfun)
 
 
 #### gstat examples
@@ -95,7 +95,7 @@ library(sp)
 data(meuse)
 
 ### inverse distance weighted (IDW)
-r <- rast(system.file("ex/test.tif", package="terra"))
+r <- rast(system.file("ex/meuse.tif", package="terra"))
 mg <- gstat(id = "zinc", formula = zinc~1, locations = ~x+y, data=meuse, 
             nmax=7, set=list(idp = .5))
 z <- interpolate(r, mg, debug.level=0)

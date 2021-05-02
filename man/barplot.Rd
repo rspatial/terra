@@ -31,13 +31,13 @@ A numeric vector (or matrix, when \code{beside = TRUE}) of the coordinates of th
 
 
 \examples{ 
-f <- system.file("ex/test.tif", package="terra")
+f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
-barplot(r, digits=-2, las=2, ylab='Frequency')
+barplot(r, digits=-1, las=2, ylab="Frequency")
 
 op <- par(no.readonly = TRUE)
 par(mai = c(1, 2, .5, .5))
-barplot(r, breaks=10, col=c('red', 'blue'), horiz=TRUE, digits=NULL, las=1)
+barplot(r, breaks=10, col=c("red", "blue"), horiz=TRUE, digits=NULL, las=1)
 par(op)
 }
 

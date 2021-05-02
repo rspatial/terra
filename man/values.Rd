@@ -45,15 +45,18 @@ matrix or data.frame
 \seealso{\code{\link{values<-}}, \code{\link{focalValues}}}
 
 \examples{
-r <- rast(system.file("ex/test.tif", package="terra"))
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
 r
-v <- values(r)
-head(v)
+x <- values(r)
+x[3650:3655, ]
+r[3650:3655]
 
-f <- system.file("ex/lux.shp", package="terra")
-v <- vect(f)
-x <- values(v)
-head(x)
+
+ff <- system.file("ex/lux.shp", package="terra")
+v <- vect(ff)
+y <- values(v)
+head(y)
 }
 
 \keyword{spatial}

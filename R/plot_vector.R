@@ -107,7 +107,7 @@ setMethod("dots", signature(x="SpatVector"),
 			points(x, col=out$main_cols, cex=cex, pch=pch, ...)
 		} else {
 			e <- out$lim
-			plot(e[1:2], e[3:4], type="n", axes=FALSE, xlab=xlab, ylab=ylab, asp=out$asp)
+			#plot(e[1:2], e[3:4], type="n", axes=FALSE, xlab=xlab, ylab=ylab, asp=out$asp)
 			points(x, col=out$main_cols, cex=cex, pch=pch, ...)
 		}
 		out$leg$pch = pch

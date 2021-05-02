@@ -556,6 +556,7 @@ RCPP_MODULE(spat){
 		.method("area_by_value", &SpatRaster::area_by_value, "area_by_value")
 
 		.method("as_points", &SpatRaster::as_points, "as_points")
+		.method("as_lines", &SpatRaster::as_lines, "as_lines")
 		.method("as_polygons", &SpatRaster::as_polygons, "as_polygons")
 		.method("polygonize", &SpatRaster::polygonize, "polygonize")
 

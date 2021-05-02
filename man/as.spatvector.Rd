@@ -7,6 +7,7 @@
 \alias{as.points}
 
 \alias{as.polygons,SpatRaster-method}
+\alias{as.lines,SpatRaster-method}
 \alias{as.points,SpatRaster-method}
 \alias{as.lines,SpatVector-method}
 \alias{as.points,SpatVector-method}
@@ -21,6 +22,8 @@ Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to
 
 \usage{
 \S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, extent=FALSE)
+
+\S4method{as.lines}{SpatRaster}(x)
 
 \S4method{as.points}{SpatRaster}(x, values=TRUE, na.rm=TRUE)
 
