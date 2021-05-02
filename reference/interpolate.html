@@ -187,7 +187,7 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/test.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/elev.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>ra</span> <span class='op'>&lt;-</span> <span class='fu'><a href='aggregate.html'>aggregate</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>10</span><span class='op'>)</span>
 <span class='va'>xy</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='fu'><a href='xyRowColCell.html'>xyFromCell</a></span><span class='op'>(</span><span class='va'>ra</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>ra</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>ra</span><span class='op'>)</span>
@@ -211,16 +211,16 @@
 <span class='va'>se</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mask.html'>mask</a></span><span class='op'>(</span><span class='va'>se</span>, <span class='va'>r</span><span class='op'>)</span>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span>
 
-<span class='co'>### another variable; let's call it elevation</span>
-<span class='va'>elevation</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>'x'</span><span class='op'>)</span> <span class='op'>*</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>'y'</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>100000000</span>
-<span class='fu'><a href='names.html'>names</a></span><span class='op'>(</span><span class='va'>elevation</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>'elev'</span>
+<span class='co'>### another predictor variable, "e"</span>
+<span class='va'>e</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>"x"</span><span class='op'>)</span> <span class='op'>*</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>"y"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>100000000</span>
+<span class='fu'><a href='names.html'>names</a></span><span class='op'>(</span><span class='va'>e</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"e"</span>
 
-<span class='co'>#z &lt;- as.matrix(extract(elevation, xy))</span>
+<span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='coerce.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='extract.html'>extract</a></span><span class='op'>(</span><span class='va'>e</span>, <span class='va'>xy</span><span class='op'>)</span><span class='op'>[</span>,<span class='op'>-</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
 
 <span class='co'>## add as another independent variable</span>
 <span class='va'>xyz</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>xy</span>, <span class='va'>z</span><span class='op'>)</span>
 <span class='va'>tps2</span> <span class='op'>&lt;-</span> <span class='fu'>Tps</span><span class='op'>(</span><span class='va'>xyz</span>, <span class='va'>v</span><span class='op'>)</span>
-<span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'>interpolate</span><span class='op'>(</span><span class='va'>elevation</span>, <span class='va'>tps2</span>, xyOnly<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'>interpolate</span><span class='op'>(</span><span class='va'>e</span>, <span class='va'>tps2</span>, xyOnly<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'>## as a linear coveriate</span>
 <span class='va'>tps3</span> <span class='op'>&lt;-</span> <span class='fu'>Tps</span><span class='op'>(</span><span class='va'>xy</span>, <span class='va'>v</span>, Z<span class='op'>=</span><span class='va'>z</span><span class='op'>)</span>
@@ -231,7 +231,7 @@
 <span class='va'>pfun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span>
    <span class='fu'><a href='predict.html'>predict</a></span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>x</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>]</span>, Z<span class='op'>=</span><span class='va'>x</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>]</span>, <span class='va'>...</span><span class='op'>)</span>
 <span class='op'>}</span>
-<span class='va'>p3</span> <span class='op'>&lt;-</span> <span class='fu'>interpolate</span><span class='op'>(</span><span class='va'>elevation</span>, <span class='va'>tps3</span>, fun<span class='op'>=</span><span class='va'>pfun</span><span class='op'>)</span>
+<span class='va'>p3</span> <span class='op'>&lt;-</span> <span class='fu'>interpolate</span><span class='op'>(</span><span class='va'>e</span>, <span class='va'>tps3</span>, fun<span class='op'>=</span><span class='va'>pfun</span><span class='op'>)</span>
 
 
 <span class='co'>#### gstat examples</span>
@@ -240,7 +240,7 @@
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>meuse</span><span class='op'>)</span>
 
 <span class='co'>### inverse distance weighted (IDW)</span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/test.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/meuse.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>mg</span> <span class='op'>&lt;-</span> <span class='fu'>gstat</span><span class='op'>(</span>id <span class='op'>=</span> <span class='st'>"zinc"</span>, formula <span class='op'>=</span> <span class='va'>zinc</span><span class='op'>~</span><span class='fl'>1</span>, locations <span class='op'>=</span> <span class='op'>~</span><span class='va'>x</span><span class='op'>+</span><span class='va'>y</span>, data<span class='op'>=</span><span class='va'>meuse</span>, 
             nmax<span class='op'>=</span><span class='fl'>7</span>, set<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>idp <span class='op'>=</span> <span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'>interpolate</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>mg</span>, debug.level<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
