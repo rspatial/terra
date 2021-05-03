@@ -99,8 +99,8 @@ setMethod("autocor", signature(x="numeric"),
 			w <- w[, j, drop=FALSE]
 			x <- x[j]
 			apply(w, 1, function(i) {
-				sum(x * i) / sum(i)
-			}
+					sum(x * i) / sum(i)}
+				)
 		}
  	} 
 )
