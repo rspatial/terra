@@ -265,10 +265,14 @@ setMethod("crop", signature(x="SpatRaster", y="ANY"),
 		opt <- spatOptions(filename, ...)
 
 		if (!inherits(y, "SpatExtent")) {
-			y <- try(ext(y), silent=TRUE)
-			if (class(y) == "try-error") { 
-				error("crop", "cannot get a SpatExtent from y")
+			e <- try(ext(y), silent=TRUE)
+			if (class(e) == "try-error") { 
+				e <- try(ext(vect(y)), silent=TRUE)
+				if (class(e) == "try-error") { 
+					error("crop", "cannot get a SpatExtent from y")
+				}
 			}
+			y <- e
 		}
 		
 		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
