@@ -8,7 +8,7 @@
 \title{Spatial autocorrelation}
 
 \description{
-Compute spatial autocorrelation for a numeric vecor or a SpatRaster. You can compute standard (global) Moran's I or Geary's C, or the local variations thereof (Anselin, 1995).
+Compute spatial autocorrelation for a numeric vector or a SpatRaster. You can compute standard (global) Moran's I or Geary's C, or local indicators of spatial autocorrelation (Anselin, 1995).
 }
 
 \usage{
@@ -21,7 +21,7 @@ Compute spatial autocorrelation for a numeric vecor or a SpatRaster. You can com
   \item{x}{numeric or SpatRaster}
   \item{w}{Spatial weights defined by or a rectangular matrix. For a SpatRaster this matrix must the sides must have an odd length (3, 5, ...)}
   \item{global}{logical. If \code{TRUE} global autocorrelation is computed instead of local autocorrelation}
-  \item{method}{character. "moran" for Moran's I and "geary" for Geary's C}
+  \item{method}{character. If \code{x} is numeric or SpatRaster: "moran" for Moran's I and "geary" for Geary's C. If \code{x} is numeric also: "Gi", "Gi*" (the Getis-Ord statistics), and "mean" (local mean)}
 }
 
 
@@ -49,17 +49,30 @@ Anselin, L., 1995. Local indicators of spatial association-LISA. Geographical An
 }
 
 \examples{
+### raster
 r <- rast(nrows=10, ncols=10, xmin=0)
 values(r) <- 1:ncell(r)
 
-#autocor(r)
+autocor(r)
 
 # rook's case neighbors
-#f <- matrix(c(0,1,0,1,0,1,0,1,0), nrow=3)
-#autocor(r, f)
+f <- matrix(c(0,1,0,1,0,1,0,1,0), nrow=3)
+autocor(r, f)
 
-## local 
-#rc <- autocor(r, w=f, global=FALSE)
+# local 
+rc <- autocor(r, w=f, global=FALSE)
+
+### numeric (for vector data)
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+w <- relate(v, relation="touches")
+
+# global
+autocor(v$AREA, w)
+
+# local
+v$Gi <- autocor(v$AREA, w, "Gi") 
+plot(v, "Gi")
 }
 
 \keyword{spatial}

@@ -45,7 +45,15 @@
 
 setMethod("autocor", signature(x="numeric"), 
 	function(x, w, method="moran") {
-		method <- match.arg(tolower(method), c("moran", "geary", "gi", "gi*"))
+		method <- match.arg(tolower(method), c("moran", "geary", "gi", "gi*", "mean"))
+
+		if (all(is.na(x))) {
+			error("autocor", "all values are NA")
+		}
+		if (any(is.na(w))) {
+			error("autocor", "NA value(s) in the weight matrix")
+		}
+
 		d <- dim(w)
 		n <- length(x)
 		if ((d[1] != d[2]) || (d[1] != n)) {
@@ -73,7 +81,8 @@ setMethod("autocor", signature(x="numeric"),
 			(Gi-Ei)/sqrt(VG)
 
 		} else if (method == "gi*") {
-			if (any(diag(w) == 0)) {
+			
+			if (any(as.numeric(diag(w)) == 0)) {
 				warn("autocor", "it is unexpected that a weight matrix for Gi* has diagonal values that are zero")
 			}
 			Gi <- colSums(x * w) / sum(x)
@@ -83,6 +92,15 @@ setMethod("autocor", signature(x="numeric"),
 			VG <- (si2 * ((n * rowSums(w^2) - rowSums(w)^2)/(n - 1))) / (sum(x)^2)
 
 			(Gi-Ei)/sqrt(VG)
+
+		} else if (method == "mean") {
+			
+			j <- !is.na(x)
+			w <- w[, j, drop=FALSE]
+			x <- x[j]
+			apply(w, 1, function(i) {
+				sum(x * i) / sum(i)
+			}
 		}
  	} 
 )

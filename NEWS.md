@@ -20,7 +20,7 @@ To avoid name conflicts with `spatstat`
 - `area,SpatRaster-method` has a new argument `mask=FALSE`.
 - `classify` can now take a single number to request that many cuts.
 - `mosaic` and `merge` now warn and resample if rasters are not aligned.
-
+- `extract` has a new argument `exact` to get the fraction covered for each cell.
 
 ## bug fixes
 
