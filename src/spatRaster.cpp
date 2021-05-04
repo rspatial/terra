@@ -1870,8 +1870,6 @@ SpatVector SpatRaster::as_lines() {
 
 	SpatGeom g;
 	g.gtype = lines;
-	double xr = xres()/2;
-	double yr = yres()/2;
 
 	std::vector<int_64> cols(ncol());
 	std::vector<int_64> rows(nrow());
@@ -1880,10 +1878,12 @@ SpatVector SpatRaster::as_lines() {
 	std::vector<double> x = xFromCol(cols);
 	std::vector<double> y = yFromRow(rows);
 	
+	double xr = xres()/2;
+	double yr = yres()/2;
 	for (double &d : x) d = d - xr;
 	for (double &d : y) d = d + yr;
-	x.push_back(x[x.size()-1] + xr);
-	y.push_back(y[y.size()-1] - yr);
+	x.push_back(x[x.size()-1] + xres());
+	y.push_back(y[y.size()-1] - yres());
 	
 	SpatExtent e = getExtent();
 	for (size_t i=0; i<x.size(); i++) {

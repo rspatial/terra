@@ -21,7 +21,7 @@ Compute spatial autocorrelation for a numeric vector or a SpatRaster. You can co
   \item{x}{numeric or SpatRaster}
   \item{w}{Spatial weights defined by or a rectangular matrix. For a SpatRaster this matrix must the sides must have an odd length (3, 5, ...)}
   \item{global}{logical. If \code{TRUE} global autocorrelation is computed instead of local autocorrelation}
-  \item{method}{character. If \code{x} is numeric or SpatRaster: "moran" for Moran's I and "geary" for Geary's C. If \code{x} is numeric also: "Gi", "Gi*" (the Getis-Ord statistics), and "mean" (local mean)}
+  \item{method}{character. If \code{x} is numeric or SpatRaster: "moran" for Moran's I and "geary" for Geary's C. If \code{x} is numeric also: "Gi", "Gi*" (the Getis-Ord statistics), locmor (local Moran's I) and "mean" (local mean)}
 }
 
 

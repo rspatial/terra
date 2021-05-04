@@ -1,4 +1,19 @@
+
 # version 1.2-6
+
+## new
+
+- `as.lines` for SpatRaster
+- `autocor,numeric-method` has new options for "method": `mean` to compute the local mean and `locmor` for the local Moran's I. 
+
+## enhancements
+
+- `rast(Raster*)` now takes the crs from the object, not from the file it may point to. Suggested by Floris Vanderhaeghe (https://github.com/rspatial/terra/issues/200).
+
+
+## bug fixes
+
+- `crop` works again with `sf` objects. Reported by Sebastian Brinkmann (https://github.com/rspatial/terra/issues/201).
 
 
 ## name changes
