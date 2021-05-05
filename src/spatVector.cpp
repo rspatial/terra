@@ -800,13 +800,30 @@ SpatVector SpatVector::as_points(bool multi) {
 }
 
 
-
+#include "Rcpp.h"
 SpatVector SpatVector::as_lines() {
-	SpatVector v = *this;
-	if (geoms[0].gtype != polygons) {
-		v.setError("this only works for polygons");
+	SpatVector v;
+
+	v = *this;
+	if (geoms[0].gtype == lines) {
 		return v;
-	}
+	} else if (geoms[0].gtype == points) {
+		
+		for (int i=geoms.size()-1; i >=0; i--) {
+			if (v.geoms[i].parts.size() > 1) {
+				for (size_t j=1; j<v.geoms[i].parts.size(); j++) {
+					v.geoms[i].parts[0].x.push_back(v.geoms[i].parts[j].x[0]);
+					v.geoms[i].parts[0].y.push_back(v.geoms[i].parts[j].y[0]);			
+					v.geoms[i].gtype = lines;
+				}
+				v.geoms[i].parts.resize(1);
+			} else {
+				v.geoms.erase(v.geoms.begin()+i);
+			}
+		}
+		return v;
+	} 
+	
 	for (size_t i=0; i<size(); i++) {
 		for (size_t j=0; j < v.geoms[i].size(); j++) {
 			SpatPart p = v.geoms[i].parts[j];

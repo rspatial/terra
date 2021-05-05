@@ -9,16 +9,20 @@
 \alias{as.polygons,SpatRaster-method}
 \alias{as.lines,SpatRaster-method}
 \alias{as.points,SpatRaster-method}
+\alias{as.polygons,SpatVector-method}
 \alias{as.lines,SpatVector-method}
 \alias{as.points,SpatVector-method}
 \alias{as.polygons,SpatExtent-method}
 \alias{as.lines,SpatExtent-method}
 \alias{as.points,SpatExtent-method}
 
-\title{Coercion to a SpatVector, or to another SpatVector type}
+\title{Conversion to a SpatVector, or to another SpatVector type}
 
 \description{
-Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to a points SpatVector; or of a SpatVector to a lower level SpatVector type (polygons to lines or points; lines to points}
+Conversion of a SpatRaster or SpatExtent to a SpatVector of points, lines, or polygons; 
+
+And conversion of a SpatVector to a another SpatVector type.
+}
 
 \usage{
 \S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, extent=FALSE)
@@ -26,6 +30,8 @@ Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to
 \S4method{as.lines}{SpatRaster}(x)
 
 \S4method{as.points}{SpatRaster}(x, values=TRUE, na.rm=TRUE)
+
+\S4method{as.polygons}{SpatVector}(x)
 
 \S4method{as.lines}{SpatVector}(x)
 

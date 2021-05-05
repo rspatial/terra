@@ -429,6 +429,10 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
 	main=y, plg=list(), pax=list(), nr, nc, ...) {
 
+		if (nrow(x) == 0) {
+			error("plot", "SpatVector has zero geometries")
+		}
+
 		y <- trimws(y)
 		if (any(is.na(match(y, c("", names(x)))))) {
 			i <- is.na(match(y, names(x)))

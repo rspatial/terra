@@ -263,6 +263,9 @@ RCPP_MODULE(spat){
 		.method("wkb", &SpatVector::wkb, "")
 		.method("hex", &SpatVector::hex, "")
 		.method("from_hex", &SpatVector::from_hex, "")
+		.method("make_nodes", &SpatVector::make_nodes, "")
+		.method("boundary", &SpatVector::boundary, "")
+		.method("polygonize", &SpatVector::polygonize, "")
 
 		.field_readonly("df", &SpatVector::df )
 

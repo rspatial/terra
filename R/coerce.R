@@ -106,6 +106,12 @@ setMethod("as.lines", signature(x="SpatVector"),
 	}
 )
 
+setMethod("as.polygons", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$polygonize()
+		messages(x, "as.polygons")
+	}
+)
 
 setMethod("as.points", signature(x="SpatVector"), 
 	function(x, multi=FALSE) {

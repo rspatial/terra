@@ -170,6 +170,107 @@ SpatVector SpatVector::crop(SpatExtent e) {
 }
 
 
+SpatVector SpatVector::make_nodes() {
+
+	SpatVector out;
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> p;
+	p.reserve(g.size());
+	for (size_t i = 0; i < g.size(); i++) {
+		GEOSGeometry* r = GEOSNode_r(hGEOSCtxt, g[i].get());
+		if (r == NULL) {
+			out.setError("something bad happened");
+			geos_finish(hGEOSCtxt);
+			return out;
+		}
+		if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+			p.push_back(geos_ptr(r, hGEOSCtxt));
+		} else {
+			GEOSGeom_destroy_r(hGEOSCtxt, r);
+		}
+	}
+	if (p.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
+		out = coll.get(0);
+		out.df = df;
+	}
+	geos_finish(hGEOSCtxt);
+	out.srs = srs;
+	return out;
+}
+
+
+
+
+SpatVector SpatVector::boundary() {
+
+	SpatVector out;
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> p;
+	p.reserve(g.size());
+	for (size_t i = 0; i < g.size(); i++) {
+		GEOSGeometry* r = GEOSBoundary_r(hGEOSCtxt, g[i].get());
+		if (r == NULL) {
+			out.setError("something bad happened");
+			geos_finish(hGEOSCtxt);
+			return out;
+		}
+		if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+			p.push_back(geos_ptr(r, hGEOSCtxt));
+		} else {
+			GEOSGeom_destroy_r(hGEOSCtxt, r);
+		}
+	}
+	if (p.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
+		out = coll.get(0);
+		out.df = df;
+	}
+	geos_finish(hGEOSCtxt);
+	out.srs = srs;
+	return out;
+}
+
+
+
+SpatVector SpatVector::polygonize() {
+
+	SpatVector out;
+	out.srs = srs;
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> p;
+	p.reserve(g.size());
+	size_t ngeoms = 1;
+	for (size_t i = 0; i < g.size(); i++) {
+		const GEOSGeometry* gi = g[i].get();		
+		GEOSGeometry* r = GEOSPolygonize_r(hGEOSCtxt, &gi, ngeoms);
+		if (r == NULL) {
+			out.setError("something bad happened");
+			geos_finish(hGEOSCtxt);
+			return out;
+		}
+		if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+			p.push_back(geos_ptr(r, hGEOSCtxt));
+		} else {
+			GEOSGeom_destroy_r(hGEOSCtxt, r);
+		}
+	}
+	if (p.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
+		out = coll.get(0);
+		out.srs = srs;
+		out.df = df;
+	}
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
 
 SpatVector SpatVector::crop(SpatVector v) {
 
@@ -410,6 +511,7 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 				}
 				out.addGeom(p.geoms[0]);
 			}	
+			out.df = df;
 			return out;	
 		}
 	}

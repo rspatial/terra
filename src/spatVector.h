@@ -239,7 +239,10 @@ class SpatVector {
 		std::vector<std::string> wkb();
 		std::vector<std::string> hex();
 		SpatVector from_hex(std::vector<std::string> x, std::string srs);
-		
+		SpatVector make_nodes();
+		SpatVector polygonize();
+		SpatVector boundary();
+
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
 		SpatVector aggregate(bool dissolve);
