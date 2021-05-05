@@ -46,6 +46,7 @@ std::vector<std::string> SpatVector::hex() {
 		unsigned char *hex = GEOSGeomToHEX_buf_r(hGEOSCtxt, g[i].get(), &len);
 		std::string s( reinterpret_cast<char const*>(hex), len) ;		
 		out.push_back(s);
+		free(hex);
 	}
 	geos_finish(hGEOSCtxt);
 	return out;
