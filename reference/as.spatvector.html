@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Coercion to a SpatVector, or to another SpatVector type — as.spatvector • terra</title>
+<title>Conversion to a SpatVector, or to another SpatVector type — as.spatvector • terra</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Coercion to a SpatVector, or to another SpatVector type — as.spatvector" />
-<meta property="og:description" content="Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to a points SpatVector; or of a SpatVector to a lower level SpatVector type (polygons to lines or points; lines to points" />
+<meta property="og:title" content="Conversion to a SpatVector, or to another SpatVector type — as.spatvector" />
+<meta property="og:description" content="Conversion of a SpatRaster or SpatExtent to a SpatVector of points, lines, or polygons;
+And conversion of a SpatVector to a another SpatVector type." />
 
 
 
@@ -111,13 +112,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Coercion to a SpatVector, or to another SpatVector type</h1>
+    <h1>Conversion to a SpatVector, or to another SpatVector type</h1>
     
     <div class="hidden name"><code>as.spatvector.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Coercion of a SpatRaster or SpatExtent to a SpatVector (polygons); SpatRaster to a points SpatVector; or of a SpatVector to a lower level SpatVector type (polygons to lines or points; lines to points</p>
+    <p>Conversion of a SpatRaster or SpatExtent to a SpatVector of points, lines, or polygons;</p>
+<p>And conversion of a SpatVector to a another SpatVector type.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
@@ -128,6 +130,9 @@
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>as.points</span><span class='op'>(</span><span class='va'>x</span>, values<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+
+<span class='co'># S4 method for SpatVector</span>
+<span class='fu'>as.polygons</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>as.lines</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
