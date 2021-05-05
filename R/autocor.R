@@ -60,6 +60,17 @@ setMethod("autocor", signature(x="numeric"),
 			error("autocor", "w must be a square matrix with sides the size of x")
 		}
 
+		if (method %in% c("moran", "geary", "locmor", "gi")) {
+			if (any(as.numeric(diag(w)) != 0)) {
+				warn("autocor", paste("it is unexpected that a weight matrix for", method, "has diagonal values that are not zero"))
+			}
+		} else if (method %in% c("gi*")) {
+			if (any(as.numeric(diag(w)) == 0)) {
+				warn("autocor", paste("it is unexpected that a weight matrix for", method, "has diagonal values that are zero"))
+			}
+		}
+		
+
 		if (method == "moran") {
 			dx <- x - mean(x, na.rm=TRUE)
 			pm <- matrix(rep(dx, each=n) * dx, ncol=n)
@@ -69,6 +80,9 @@ setMethod("autocor", signature(x="numeric"),
 			pm <- matrix(rep(dx, each=n) - dx, ncol=n)^2
 			((n-1)/sum((dx)^2)) * sum(w * pm) / (2 * sum(w))
 		} else if (method == "gi") {
+			if (any(as.numeric(diag(w)) != 0)) {
+				warn("autocor", "it is unexpected that a weight matrix for Gi has diagonal values that are not zero")
+			}
 			diag(w) <- 0
 			sumxminx <- sum(x, na.rm=TRUE) - x
 			Gi <- colSums(x * w) / sumxminx
@@ -96,6 +110,9 @@ setMethod("autocor", signature(x="numeric"),
 			(Gi-Ei)/sqrt(VG)
 
 		} else if (method == "locmor") {
+			if (any(as.numeric(diag(w)) != 0)) {
+				warn("autocor", "it is unexpected that a weight matrix for local Moran has diagonal values that are not zero")
+			}
 			z <- x - mean(x, na.rm=TRUE)	
 			mp <- z / ( (sum(z^2, na.rm=TRUE) / length(x)) )
 			mp * apply(w, 1, function(i) {

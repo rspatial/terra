@@ -2,6 +2,8 @@
 
 \alias{perim}
 \alias{perim,SpatVector-method}
+
+\alias{perimeter}
 \alias{perimeter,SpatVector-method}
   
 \title{Perimeter or length}

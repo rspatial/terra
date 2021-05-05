@@ -262,6 +262,7 @@ RCPP_MODULE(spat){
 		.method("wkt", &SpatVector::wkt, "")
 		.method("wkb", &SpatVector::wkb, "")
 		.method("hex", &SpatVector::hex, "")
+		.method("from_hex", &SpatVector::from_hex, "")
 
 		.field_readonly("df", &SpatVector::df )
 

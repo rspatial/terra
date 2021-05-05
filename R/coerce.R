@@ -371,8 +371,33 @@ setAs("SpatRaster", "Raster",
 	eval(parse(text = txt))
 }
 
-# from sf. first incomplete draft
+# sf bbox
+.ext_from_sf <- function(from) {
+	sfi <- attr(from, "sf_column")
+	geom <- from[[sfi]]
+	e <- attr(geom, "bbox")
+	ext(e[c(1,3,2,4)])
+}
+
+
 .from_sf <- function(from) {
+	sfi <- attr(from, "sf_column")
+	geom <- from[[sfi]]
+	crs <- attr(geom, "crs")$wkt
+	if (is.na(crs)) crs <- ""
+	#geom <- st_as_text(geom)
+	#v <- vect(geom, crs=crs)
+	v <- vect()
+	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(geom)), crs)
+	if (ncol(from) > 1) {
+		from[[sfi]] <- NULL
+		values(v) <- as.data.frame(from)
+	}
+	v
+}
+
+
+...from_sf <- function(from) {
 	sfi <- attr(from, "sf_column")
 	geom <- from[[sfi]]
 	crs <- attr(geom, "crs")$wkt
@@ -425,7 +450,9 @@ setAs("SpatRaster", "Raster",
 }
 
 
-.from_sfc <- function(from) {
+
+
+...from_sfc <- function(from) {
 	geom = from
 	v <- list()
 	for (i in 1:length(geom)) {
@@ -461,8 +488,7 @@ setAs("SpatRaster", "Raster",
 }
 
 
-
-.from_sfg <- function(from) {
+...from_sfg <- function(from) {
 	geom = from
 	v <- list()
 	for (i in 1:length(geom)) {
@@ -499,17 +525,49 @@ setAs("sf", "SpatVector",
 	}
 )
 
+.from_sfc <- function(from) {
+	v <- vect()
+	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(from)), "")
+}
+
+
 setAs("sfc", "SpatVector", 
 	function(from) {
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
 			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		} 
-		v
+		x <- vect()
+		x@ptr <- v
+		x
 	}
 )
 
 
+
+setAs("sfg", "SpatVector", 
+	function(from) {
+		v <- try(.from_sfc(from), silent=TRUE)
+		if (inherits(v, "try-error")) {
+			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
+		}
+		x <- vect()
+		x@ptr <- v
+		x
+	}
+)
+
+setAs("XY", "SpatVector", 
+	function(from) {
+		v <- try(.from_sfc(from), silent=TRUE)
+		if (inherits(v, "try-error")) {
+			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
+		} 
+		x <- vect()
+		x@ptr <- v
+		x
+	}
+)
 
 setAs("im", "SpatRaster", 
 	function(from) {

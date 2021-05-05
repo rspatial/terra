@@ -55,6 +55,8 @@ setMethod("erase", signature(x="SpatVector", y="SpatExtent"),
 	}
 )
 
+
+
 setMethod("union", signature(x="SpatVector", y="missing"), 
 	function(x, y) {
 		x@ptr <- x@ptr$union_self()

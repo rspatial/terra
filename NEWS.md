@@ -14,7 +14,7 @@
 ## bug fixes
 
 - `crop` works again with `sf` objects. Reported by Sebastian Brinkmann (https://github.com/rspatial/terra/issues/201).
-
+- `vect,sf-method` now also works for lines
 
 ## name changes
 

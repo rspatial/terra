@@ -10,6 +10,15 @@ setMethod("ext", signature(x="SpatExtent"),
 )
 
 
+setMethod("ext", signature(x="sf"), 
+	function(x){ 
+		sfi <- attr(x, "sf_column")
+		geom <- x[[sfi]]
+		e <- attr(geom, "bbox")
+		ext(e[c(1,3,2,4)])
+	}
+)
+
 setMethod("ext", signature(x="missing"), 
 	function(x){ 
 		e <- methods::new("SpatExtent")
