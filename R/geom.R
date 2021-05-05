@@ -25,6 +25,15 @@ setMethod("is.valid", signature(x="SpatVector"),
 	}
 )
 
+
+
+setMethod("sharedPaths", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$shared_paths()
+		messages(x, "sharedPaths")
+	}
+)
+
 setMethod("cover", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, identity=FALSE) {
 		x@ptr <- x@ptr$cover(y@ptr, identity[1])

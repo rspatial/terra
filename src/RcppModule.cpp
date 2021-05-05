@@ -266,6 +266,10 @@ RCPP_MODULE(spat){
 		.method("make_nodes", &SpatVector::make_nodes, "")
 		.method("boundary", &SpatVector::boundary, "")
 		.method("polygonize", &SpatVector::polygonize, "")
+		.method("normalize", &SpatVector::normalize, "")
+		.method("line_merge", &SpatVector::line_merge, "")
+		.method("simplify", &SpatVector::simplify, "")
+		.method("shared_paths", &SpatVector::shared_paths, "")
 
 		.field_readonly("df", &SpatVector::df )
 

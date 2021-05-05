@@ -241,7 +241,11 @@ class SpatVector {
 		SpatVector from_hex(std::vector<std::string> x, std::string srs);
 		SpatVector make_nodes();
 		SpatVector polygonize();
+		SpatVector normalize();
 		SpatVector boundary();
+		SpatVector line_merge();
+		SpatVector simplify(double tolerance, bool preserveTopology);
+		SpatVector shared_paths();
 
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
