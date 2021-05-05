@@ -56,11 +56,7 @@ setMethod("vect", signature(x="sfc"),
 
 setMethod("vect", signature(x="XY"), #sfg
 	function(x) {
-		v <- try(.from_sfg(x), silent=TRUE)
-		if (inherits(v, "try-error")) {
-			error("as,sfg", "coercion failed. You can try coercing via a Spatial* (sp) class")
-		} 
-		v
+		methods::as(x, "SpatVector")
 	}
 )
 

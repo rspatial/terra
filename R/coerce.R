@@ -528,6 +528,7 @@ setAs("sf", "SpatVector",
 .from_sfc <- function(from) {
 	v <- vect()
 	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(from)), "")
+	v
 }
 
 
@@ -537,23 +538,18 @@ setAs("sfc", "SpatVector",
 		if (inherits(v, "try-error")) {
 			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		} 
-		x <- vect()
-		x@ptr <- v
-		x
+		v
 	}
 )
-
 
 
 setAs("sfg", "SpatVector", 
 	function(from) {
 		v <- try(.from_sfc(from), silent=TRUE)
 		if (inherits(v, "try-error")) {
-			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
+			error("as,sfg", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		}
-		x <- vect()
-		x@ptr <- v
-		x
+		v
 	}
 )
 
@@ -563,9 +559,7 @@ setAs("XY", "SpatVector",
 		if (inherits(v, "try-error")) {
 			error("as,sfc", "coercion failed. You can try coercing via a Spatial* (sp) class")
 		} 
-		x <- vect()
-		x@ptr <- v
-		x
+		v
 	}
 )
 
