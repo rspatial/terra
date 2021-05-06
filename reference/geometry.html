@@ -166,7 +166,7 @@ If wkt=TRUE, the&quot;well-known text&quot; representation is returned as a char
 
 <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>z</span>, <span class='st'>"polygons"</span><span class='op'>)</span>
 <span class='fu'>geom</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;       geom part    x   y hole
+</div><div class='output co'>#&gt; 20</div><div class='output co'>#&gt;       geom part    x   y hole
 #&gt;  [1,]    1    1 -175 -20    0
 #&gt;  [2,]    1    1 -140  55    0
 #&gt;  [3,]    1    1   10   0    0
@@ -190,7 +190,7 @@ If wkt=TRUE, the&quot;well-known text&quot; representation is returned as a char
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='va'>g</span> <span class='op'>&lt;-</span> <span class='fu'>geom</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-<span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>g</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 3995</div><div class='input'><span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>g</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;      geom part        x        y hole
 #&gt; [1,]    1    1 6.026519 50.17767    0
 #&gt; [2,]    1    1 6.031361 50.16563    0
