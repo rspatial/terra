@@ -203,8 +203,8 @@
 <span class='va'>z</span><span class='op'>[</span><span class='va'>z</span><span class='op'>[</span>, <span class='st'>"hole"</span><span class='op'>]</span><span class='op'>==</span><span class='fl'>1</span>, <span class='st'>"object"</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
 <span class='va'>lns</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>z</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>, <span class='st'>"lines"</span><span class='op'>)</span>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 20</div><div class='input'><span class='fu'><a href='lines.html'>lines</a></span><span class='op'>(</span><span class='va'>lns</span>, col<span class='op'>=</span><span class='st'>"red"</span>, lwd<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
-</div><div class='img'><img src='vect-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; 16</div><div class='input'>
+</div><div class='input'><span class='fu'><a href='lines.html'>lines</a></span><span class='op'>(</span><span class='va'>lns</span>, col<span class='op'>=</span><span class='st'>"red"</span>, lwd<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
+</div><div class='img'><img src='vect-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>### from wkt</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='st'>"POLYGON ((0 -5, 10 0, 10 -10, 0 -5))"</span><span class='op'>)</span>
 
@@ -222,7 +222,7 @@
 
 <span class='co'># add data.frame on creation, here from a geom matrix</span>
 <span class='va'>g</span> <span class='op'>&lt;-</span> <span class='fu'><a href='geom.html'>geom</a></span><span class='op'>(</span><span class='va'>w</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 18</div><div class='input'><span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>id<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, name<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>id<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, name<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>g</span>, <span class='st'>"polygons"</span>, atts<span class='op'>=</span><span class='va'>d</span>, crs<span class='op'>=</span><span class='st'>"+proj=longlat +datum=WGS84"</span><span class='op'>)</span>
 
 <span class='co'>### SpatVector from a data.frame</span>
