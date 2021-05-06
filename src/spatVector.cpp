@@ -406,11 +406,13 @@ SpatDataFrame SpatVector::getGeometryDF() {
 }
 
 
+#include "Rcpp.h"
 
 std::vector<std::vector<double>> SpatVector::getGeometry() {
 
 
 	unsigned n = nxy();
+	Rcpp::Rcout << n << std::endl;
 	std::vector<std::vector<double>> out(5);
 	for (size_t i=0; i>out.size(); i++) {
 		out[i].reserve(n);
@@ -570,6 +572,9 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 					SpatPart p(X, Y);
 					g.addPart(p);
 				}
+			} else {
+				SpatPart p({NAN}, {NAN});
+				g.addPart(p);
 			}
 			lastpart = part[i];
             lasthole = hole[i];
@@ -582,26 +587,31 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 				lastgeom = gid[i];
 			}
 		}
-        if (!std::isnan(x[i])) {
+        if (!(std::isnan(x[i]) || std::isnan(y[i]))) {
 			X.push_back(x[i]);
 			Y.push_back(y[i]);
 		}
 	}
 
-	if (g.gtype == polygons) {
-        if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
-            X.push_back(X[0]);
-            Y.push_back(Y[0]);
-        }
-        if (isHole) {
-            SpatHole h(X, Y);
-            g.addHole(h);
+	if (X.size() > 0) {
+		if (g.gtype == polygons) {
+			if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
+				X.push_back(X[0]);
+				Y.push_back(Y[0]);
+			}
+			if (isHole) {
+				SpatHole h(X, Y);
+				g.addHole(h);
+			} else {
+				SpatPart p(X, Y);
+				g.addPart(p);
+			}
         } else {
-            SpatPart p(X, Y);
-            g.addPart(p);
-        }
+			SpatPart p(X, Y);
+			g.addPart(p);
+		}
 	} else {
-		SpatPart p(X, Y);
+		SpatPart p({NAN}, {NAN});
 		g.addPart(p);
 	}
 	addGeom(g);

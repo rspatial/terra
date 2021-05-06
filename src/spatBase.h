@@ -207,10 +207,17 @@ class SpatExtent {
 		}
 
 		void unite(SpatExtent e) {
-			xmin = std::min(xmin, e.xmin);
-			xmax = std::max(xmax, e.xmax);
-			ymin = std::min(ymin, e.ymin);
-			ymax = std::max(ymax, e.ymax);
+			if (std::isnan(xmin)) {
+				xmin = e.xmin; 
+				xmax = e.xmax;
+				ymin = e.ymin;
+				ymax = e.ymax;
+			} else {
+				xmin = std::min(xmin, e.xmin);
+				xmax = std::max(xmax, e.xmax);
+				ymin = std::min(ymin, e.ymin);
+				ymax = std::max(ymax, e.ymax);
+			}
 		}
 
 		std::vector<double> asVector() {
