@@ -456,6 +456,7 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 }
 
 
+
 bool polysFromGeom(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* part, 
 const unsigned i, const unsigned j, std::vector<double> &x, std::vector<double> &y, 
 std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole, std::string &msg) {
@@ -508,7 +509,18 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 }
 
 
-SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEOSCtxt) {
+bool emptyGeom(const unsigned i, std::vector<double> &x, std::vector<double> &y, 
+std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &hole) {
+	x.push_back(NAN);
+	y.push_back(NAN);
+	gid.push_back(i);			
+	gp.push_back(0);
+	hole.push_back(0);
+	return true;
+}
+
+
+SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, bool keepnull=true) {
 
 	SpatVectorCollection out;
 
@@ -529,6 +541,9 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 		size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
 
 		if (gt == "Point" || gt == "MultiPoint") {
+			if (keepnull && np == 0) {
+				emptyGeom(i, pt_x, pt_y, pt_gid, pt_gp, pt_hole);
+			}
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
 
@@ -538,6 +553,9 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 				}
 			}	
 		} else if (gt == "LineString" || gt == "MultiLineString") {
+			if (keepnull && np == 0) {
+				emptyGeom(i, pl_x, pl_y, pl_gid, pl_gp, pl_hole);
+			}
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
 				if (!pointsFromGeom(hGEOSCtxt, part, i, j, ln_x, ln_y, ln_gid, ln_gp, ln_hole, msg)) {
@@ -546,6 +564,9 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHan
 				}
 			}
 		} else if (gt == "Polygon" || gt == "MultiPolygon") {
+			if (keepnull && np == 0) {
+				emptyGeom(i, pl_x, pl_y, pl_gid, pl_gp, pl_hole);
+			}
 			for(size_t j = 0; j<np; j++) {
 				const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
 				if (!polysFromGeom(hGEOSCtxt, part, i, j, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {

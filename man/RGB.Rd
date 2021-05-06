@@ -33,6 +33,7 @@ With \code{RGB2col} you can convert a three-layer RGB SpatRaster into a single-l
   \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram)}  
   \item{grays}{logical. If \code{TRUE}, a gray-scale color-table is created}
   \item{filename}{character. Output filename}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}  
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }  
 

@@ -553,22 +553,24 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 
 	for (size_t i=0; i<gid.size(); i++) {
 		if ((lastgeom != gid[i]) || (lastpart != part[i]) || (lasthole != hole[i])) {
-            if (g.gtype == polygons) {
-                if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
-                    X.push_back(X[0]);
-                    Y.push_back(Y[0]);
-                }
-                if (isHole) {
-                    SpatHole h(X, Y);
-                    g.addHole(h);
-                } else {
-                    SpatPart p(X, Y);
-                    g.addPart(p);
-                }
-            } else {
-                SpatPart p(X, Y);
-                g.addPart(p);
-            }
+			if (X.size() > 0) {
+				if (g.gtype == polygons) {
+					if ((X[0] != X[X.size()-1]) || (Y[0] != Y[Y.size()-1])) {
+						X.push_back(X[0]);
+						Y.push_back(Y[0]);
+					}
+					if (isHole) {
+						SpatHole h(X, Y);
+						g.addHole(h);
+					} else {
+						SpatPart p(X, Y);
+						g.addPart(p);
+					}
+				} else {
+					SpatPart p(X, Y);
+					g.addPart(p);
+				}
+			}
 			lastpart = part[i];
             lasthole = hole[i];
             isHole = lasthole > 0;
@@ -580,8 +582,10 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 				lastgeom = gid[i];
 			}
 		}
-		X.push_back(x[i]);
-		Y.push_back(y[i]);
+        if (!std::isnan(x[i])) {
+			X.push_back(x[i]);
+			Y.push_back(y[i]);
+		}
 	}
 
 	if (g.gtype == polygons) {

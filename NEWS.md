@@ -11,7 +11,7 @@
 
 ## enhancements
 
-- `rast(Raster*)` now takes the crs from the object, not from the file it may point to. Suggested by Floris Vanderhaeghe [#200](https://github.com/rspatial/terra/issues/200).
+- `rast(Raster*)` now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe [#200](https://github.com/rspatial/terra/issues/200).
 
 
 ## bug fixes
