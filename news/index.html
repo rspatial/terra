@@ -127,11 +127,12 @@
 <li>
 <code>as.polygons</code> for SpatVector lines</li>
 <li>
-<code>autocor,numeric-method</code> has new options for “method”: <code>mean</code> to compute the local mean and <code>locmor</code> for the local Moran’s I.</li>
+<code>autocor,numeric-method</code> has new options for “method”: <code>mean</code> to compute the local mean and <code>locmor</code> for the local Moran’s <em>I</em>
+</li>
 <li>
 <code>sharedPaths</code> for SpatVector (lines and polygons)</li>
 <li>
-<code>RGB2col</code> to reduce a three-layer RGB SpatRaster to a single layer SpatRaster with a color-table (with &lt;= 256 colors).</li>
+<code>RGB2col</code> to reduce a three-layer RGB SpatRaster to a single layer SpatRaster with a color-table (with &lt;= 256 colors)</li>
 </ul>
 </div>
 <div id="enhancements" class="section level2">
@@ -139,7 +140,8 @@
 <a href="#enhancements" class="anchor"></a>enhancements</h2>
 <ul>
 <li>
-<code>rast(Raster*)</code> now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe <a href="https://github.com/rspatial/terra/issues/200"><a href='https://github.com/rspatial/terra/issues/200'>#200</a></a>.</li>
+<code>rast(Raster*)</code> now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe <a href="https://github.com/rspatial/terra/issues/200"><a href='https://github.com/rspatial/terra/issues/200'>#200</a></a>
+</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -147,9 +149,12 @@
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
-<code>crop</code> works again with <code>sf</code> objects. Reported by Sebastian Brinkmann [<a href='https://github.com/rspatial/terra/issues/201'>#201</a>] (<a href="https://github.com/rspatial/terra/issues/201" class="uri">https://github.com/rspatial/terra/issues/201</a>).</li>
+<code>crop</code> works again with <code>sf</code> objects. Reported by Sebastian Brinkmann [<a href='https://github.com/rspatial/terra/issues/201'>#201</a>] (<a href="https://github.com/rspatial/terra/issues/201" class="uri">https://github.com/rspatial/terra/issues/201</a>)</li>
 <li>
 <code>vect,sf-method</code> now also works for lines</li>
+<li>
+<code>vect,character</code> crashed R if a shapefile had empty geometries. Reported by consumere <a href="https://github.com/rspatial/terra/issues/202"><a href='https://github.com/rspatial/terra/issues/202'>#202</a></a>
+</li>
 </ul>
 </div>
 <div id="name-changes" class="section level2">
@@ -172,19 +177,22 @@
 <a href="#new-1" class="anchor"></a>new</h2>
 <ul>
 <li>
-<code>trim</code> has a new argument <code>value</code> that allows trimming rows and columns with other values than the default <code>NA</code>.</li>
+<code>trim</code> has a new argument <code>value</code> that allows trimming rows and columns with other values than the default <code>NA</code>
+</li>
 <li>
-<code>rapp</code> has a new argument <code>clamp</code> that allows clamping start and end values to <code>1:nlyr(x)</code>, avoiding that all values are considered <code>NA</code>.</li>
+<code>rapp</code> has a new argument <code>clamp</code> that allows clamping start and end values to <code>1:nlyr(x)</code>, avoiding that all values are considered <code>NA</code>
+</li>
 <li>
 <code>spatSample,SpatRaster-method</code> has new arguments <code>as.points</code> and <code>values</code>. Getting values, cells and coordinates is no longer mutually exclusive. In response to <a href="https://github.com/rspatial/terra/issues/191"><a href='https://github.com/rspatial/terra/issues/191'>#191</a></a>. Requested by Agustin Lobo</li>
 <li>
-<code>area,SpatRaster-method</code> has a new argument <code>mask=FALSE</code>.</li>
+<code>area,SpatRaster-method</code> has a new argument <code>mask=FALSE</code>
+</li>
 <li>
-<code>classify</code> can now take a single number to request that many cuts.</li>
+<code>classify</code> can now take a single number to request that many cuts</li>
 <li>
-<code>mosaic</code> and <code>merge</code> now warn and resample if rasters are not aligned.</li>
+<code>mosaic</code> and <code>merge</code> now warn and resample if rasters are not aligned</li>
 <li>
-<code>extract</code> has a new argument <code>exact</code> to get the fraction covered for each cell.</li>
+<code>extract</code> has a new argument <code>exact</code> to get the fraction covered for each cell</li>
 </ul>
 </div>
 <div id="bug-fixes-1" class="section level2">
@@ -192,16 +200,16 @@
 <a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
-<code><a href="../reference/flip.html">flip(x, direction="vertical")</a></code> no longer reverses the order of the layers.</li>
+<code><a href="../reference/flip.html">flip(x, direction="vertical")</a></code> no longer reverses the order of the layers</li>
 <li>
-<code>extract</code> did not work for horizontal or vertical lines as their extent was considered invalid. Reported by Monika Tomaszewska.</li>
+<code>extract</code> did not work for horizontal or vertical lines as their extent was considered invalid. Reported by Monika Tomaszewska</li>
 <li>
-<code>autocor</code> did not handle NA values <a href="https://github.com/rspatial/terra/issues/192"><a href='https://github.com/rspatial/terra/issues/192'>#192</a></a>. Reported by Laurence Hawker.</li>
+<code>autocor</code> did not handle NA values <a href="https://github.com/rspatial/terra/issues/192"><a href='https://github.com/rspatial/terra/issues/192'>#192</a></a>. Reported by Laurence Hawker</li>
 <li>
 <code>nearest</code> now works for angular coordinates</li>
-<li>The unit of <code>slope</code> in <code>terrain</code> was not correct (the tangent was returned instead of the slope) <a href="https://github.com/rspatial/terra/issues/196"><a href='https://github.com/rspatial/terra/issues/196'>#196</a></a>. Reported by Sven Alder.</li>
+<li>The unit of <code>slope</code> in <code>terrain</code> was not correct (the tangent was returned instead of the slope) <a href="https://github.com/rspatial/terra/issues/196"><a href='https://github.com/rspatial/terra/issues/196'>#196</a></a>. Reported by Sven Alder</li>
 <li>
-<code>quantile</code> now works for rasters that have cells that are all <code>NA</code>. Reported by Jerry Nelson.</li>
+<code>quantile</code> now works for rasters that have cells that are all <code>NA</code>. Reported by Jerry Nelson</li>
 </ul>
 </div>
 <div id="name-changes-1" class="section level2">
@@ -233,8 +241,8 @@
 <a href="#major-changes" class="anchor"></a>major changes</h2>
 <ul>
 <li>
-<code>c-SpatVector-method</code> now returns a list. <code>rbind</code> is used to append SpatVector objects.</li>
-<li>overhaul of handling of factors. <code>rats</code> has been removed, and <code>levels</code> and <code>cats</code> have changed.</li>
+<code>c-SpatVector-method</code> now returns a list. <code>rbind</code> is used to append SpatVector objects</li>
+<li>overhaul of handling of factors. <code>rats</code> has been removed, and <code>levels</code> and <code>cats</code> have changed</li>
 </ul>
 </div>
 </div>
