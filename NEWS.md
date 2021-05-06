@@ -7,6 +7,7 @@
 - `as.polygons` for SpatVector lines
 - `autocor,numeric-method` has new options for "method": `mean` to compute the local mean and `locmor` for the local Moran's I. 
 - `sharedPaths` for SpatVector (lines and polygons)
+- `RGB2col` to reduce a three-layer RGB SpatRaster to a single layer SpatRaster with a color-table (with <= 256 colors).
 
 ## enhancements
 

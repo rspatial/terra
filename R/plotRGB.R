@@ -275,13 +275,13 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 		
 		
 		if (grays) {
-			opt <- terra:::spatOptions(filename, overwrite, ...)
+			opt <- spatOptions(filename, overwrite, ...)
 			x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
 			return(x)
 		}
 		
 		v <- cbind(id=1:ncell(x), values(x))
-		v <- median_cut(na.omit(v))
+		v <- median_cut(stats::na.omit(v))
 		
 		a <- aggregate(v[,3:5], list(v[,1]), median)
 		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], max=255)
