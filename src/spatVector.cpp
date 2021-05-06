@@ -406,13 +406,10 @@ SpatDataFrame SpatVector::getGeometryDF() {
 }
 
 
-#include "Rcpp.h"
 
 std::vector<std::vector<double>> SpatVector::getGeometry() {
 
-
 	unsigned n = nxy();
-	Rcpp::Rcout << n << std::endl;
 	std::vector<std::vector<double>> out(5);
 	for (size_t i=0; i>out.size(); i++) {
 		out[i].reserve(n);
