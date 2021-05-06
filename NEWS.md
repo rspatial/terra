@@ -6,6 +6,7 @@
 - `as.lines` for SpatRaster
 - `as.polygons` for SpatVector lines
 - `autocor,numeric-method` has new options for "method": `mean` to compute the local mean and `locmor` for the local Moran's I. 
+- `sharedPaths` for SpatVector (lines and polygons)
 
 ## enhancements
 
