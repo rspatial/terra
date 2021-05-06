@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Declare RGB channels — RGB" />
-<meta property="og:description" content="Get or set the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, the sole benefit of this is that plot will send the object to plotRGB" />
+<meta property="og:description" content="With RGB you can get or set the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, the sole benefit of this is that plot will send the object to plotRGB
+With RGB2col you can convert a three-layer RGB SpatRaster into a single-layer SpatRaster with a color-table." />
 
 
 
@@ -117,14 +118,18 @@
     </div>
 
     <div class="ref-description">
-    <p>Get or set the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, the sole benefit of this is that <code><a href='plot.html'>plot</a></code> will send the object to <code><a href='plotRGB.html'>plotRGB</a></code></p>
+    <p>With <code>RGB</code> you can get or set the layers to be used as Red, Green and Blue when plotting a SpatRaster. Currently, the sole benefit of this is that <code><a href='plot.html'>plot</a></code> will send the object to <code><a href='plotRGB.html'>plotRGB</a></code></p>
+<p>With <code>RGB2col</code> you can convert a three-layer RGB SpatRaster into a single-layer SpatRaster with a color-table.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>RGB</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>RGB</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span></pre>
+<span class='fu'>RGB</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span>
+
+<span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>RGB2col</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>value</span>, stretch<span class='op'>=</span><span class='cn'>NULL</span>, grays<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,17 +140,23 @@
     </tr>
     <tr>
       <th>value</th>
-      <td><p>positive integers indicating the layers that are red, green and blue. Or <code>NULL</code> to remove the RGB settings</p></td>
+      <td><p>vector of three positive integers indicating the layers that are red, green and blue. Or <code>NULL</code> to remove the RGB settings. With <code>rgb2coltab</code>, this can be missing if <code>RGB</code> is not <code>NULL
+  {stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram)}  
+  {grays}{logical. If <code>TRUE</code>, a gray-scale color-table is created}
+  {filename}{character. Output filename}
+  {...}{additional arguments for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code>}
+</code></p>
+
+<p>s &lt;- rast(system.file("ex/logo.tif", package="terra"))   
+RGB(s) &lt;- c(1,2,3)
+plot(s)
+RGB(s) &lt;- NULL</p>
+<p>methods
+spatial</p></td>
     </tr>
     </table>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
-<span class='fu'>RGB</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>
-</div><div class='img'><img src='RGB-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>RGB</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='cn'>NULL</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
