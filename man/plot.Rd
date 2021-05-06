@@ -103,6 +103,17 @@ plot(r, range=c(50,600), mar=c(4, 3, 4, 3), plg=list(shrink=0.9, cex=.8),
 plot(r/2, range=c(50,600), mar=c(4, 2, 4, 4), legend=FALSE, 
 	pax=list(sides=c(1,4), cex.axis=.6))
 
+## multi-layer with RGB
+s <- rast(system.file("ex/logo.tif", package="terra"))   
+s
+plot(s)
+# remove RGB
+plot(s*1)
+# or use layers
+plot(s, 1)
+plot(s, 1:3)
+
+
 ## vector 
 
 f <- system.file("ex/lux.shp", package="terra")

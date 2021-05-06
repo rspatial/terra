@@ -27,7 +27,7 @@ zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ..
   \item{scale}{integer. Maximum (possible) value in the three channels. Defaults to 255 or to the maximum value of \code{x} if that is known and larger than 255}
   \item{maxcell}{integer > 0. Maximum number of pixels to use}
   \item{mar}{numeric vector recycled to length 4 to set the margins of the plot. Use \code{mar=NULL} or \code{mar=NA} to not set the margins}
-  \item{stretch}{character. Option to stretch the values to increase the contrast of the image: "lin" or "hist"}
+  \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram)}
   \item{ext}{An \code{\link{SpatExtent}} object to zoom in to a region of interest (see \code{\link{draw}})}
   \item{smooth}{logical. If \code{TRUE}, smooth the image when drawing to get the appearance of a higher spatial resolution}
   \item{colNA}{color for the background (\code{NA} values)}

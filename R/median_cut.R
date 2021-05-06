@@ -48,23 +48,25 @@ median_cut <- function(v) {
 	do.call(rbind, v)
 }
 
-make.coltab <- function(x, R, G, B, grays=FALSE) {
+rgb2coltab <- function(x, value, grays=FALSE, filename="", overwrite=FALSE, ...) {
 	idx <- RGB(x)
-	if (is.null(idx)) idx <- c(NA, NA, NA)
-	if (!missing(R)) idx[1] <- R
-	if (!missing(G)) idx[2] <- G
-	if (!missing(B)) idx[3] <- B
-	if (any(is.na(idx))) {
-		error("make.coltab", "x does not have an RGB attribute and the arguments are missing")
+	if (is.null(idx)) {
+		if (missing(value)) {
+			error("rgb2coltab", "x does not have an RGB attribute and the value argument is missing")
+		} else {
+			idx <- value
+		}
 	}
+	stopifnot(length(idx) == 3)
 	if ((min(idx) < 1) | (max(idx) > nlyr(x))) {
-		error("make.coltab", "invalid R, G, B index values")	
+		error("rgb2coltab", "invalid value (RGB indices)")	
 	}
 	x <- x[[idx]]
 	
 	if (grays) {
-		opt <- terra:::spatOptions()
+		opt <- terra:::spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
+		return(x)
 	}
 	
 	v <- cbind(id=1:ncell(x), values(x))
@@ -76,6 +78,9 @@ make.coltab <- function(x, R, G, B, grays=FALSE) {
 	r <- rast(x, 1)
 	r[m$id] <- m$group - 1
 	coltab(r) <- a$cols
+	if (filename != "") {
+		r <- writeRaster(r, filename, overwrite, ...)
+	}
 	r
 }
 
