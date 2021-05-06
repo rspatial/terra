@@ -375,8 +375,8 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 	} else if ( wkbgeom == wkbPolygon || wkbgeom == wkbMultiPolygon) {
 		while ( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-			wkbgeom = wkbFlatten(poGeometry ->getGeometryType());
 			if (poGeometry != NULL) {
+				wkbgeom = wkbFlatten(poGeometry->getGeometryType());
 				if (wkbgeom == wkbPolygon) {
 					g = getPolygonsGeom(poGeometry);
 				} else if (wkbgeom == wkbMultiPolygon ) {
