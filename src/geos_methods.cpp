@@ -4,7 +4,6 @@
 #include "recycle.h"
 #include "string_utils.h"
 
-
 std::vector<std::string> SpatVector::wkt() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
