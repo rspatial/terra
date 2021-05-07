@@ -286,12 +286,14 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 		//r++;
 
-// points -- also need to do multipoints
+// points -- also need to do multi-points
 		OGRPoint pt;
 		if (wkb == wkbPoint) {
 			SpatGeom g = getGeom(i);
-			pt.setX( g.parts[0].x[0] );
-			pt.setY( g.parts[0].y[0] );
+			if (!std::isnan(g.parts[0].x[0])) {
+				pt.setX( g.parts[0].x[0] );
+				pt.setY( g.parts[0].y[0] );
+			}
 			poFeature->SetGeometry( &pt );
 		
 // lines		
@@ -302,9 +304,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				OGRLineString poLine = OGRLineString();
 				SpatPart p = g.getPart(j);
 				for (size_t k=0; k<p.size(); k++) {
-					pt.setX(p.x[k]);
-					pt.setY(p.y[k]);
-					poLine.setPoint(k, &pt);
+					if (!std::isnan(p.x[k])) {
+						pt.setX(p.x[k]);
+						pt.setY(p.y[k]);
+						poLine.setPoint(k, &pt);
+					}
 				}
 				if (poGeom.addGeometry(&poLine) != OGRERR_NONE ) {
 					setError("cannot add line");
@@ -324,9 +328,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				OGRLinearRing poRing;
 				SpatPart p = g.getPart(j);
 				for (size_t k=0; k<p.size(); k++) {
-					pt.setX(p.x[k]);
-					pt.setY(p.y[k]);
-					poRing.setPoint(k, &pt);
+					if (!std::isnan(p.x[k])) {
+						pt.setX(p.x[k]);
+						pt.setY(p.y[k]);
+						poRing.setPoint(k, &pt);
+					}
 				}
 				if (poGeom.addRing(&poRing) != OGRERR_NONE ) {
 					setError("cannot add ring");

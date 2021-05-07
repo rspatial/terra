@@ -19,6 +19,7 @@
 - `crop` works again with `sf` objects. Reported by Sebastian Brinkmann [#201] (https://github.com/rspatial/terra/issues/201)
 - `vect,sf-method` now also works for lines
 - `vect,character` crashed R if a shapefile had empty geometries. Reported by consumere [#202](https://github.com/rspatial/terra/issues/202)
+- `extract(points, bilinear=TRUE, cells=TRUE)` now works. Reported by fab4app [#203](https://github.com/rspatial/terra/issues/203)
 
 
 ## name changes
