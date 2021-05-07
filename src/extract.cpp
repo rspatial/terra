@@ -487,10 +487,12 @@ std::vector<std::vector<double>> SpatRaster::extractXY(const std::vector<double>
 	std::vector<std::vector<double>> out;
 
     if (method == "bilinear") {
-			out = bilinearValues(x, y);
-
+		out = bilinearValues(x, y);
+		if (cells) {
+			std::vector<double> cell = cellFromXY(x, y);	
+			out.push_back(cell);
+		}
 	} else {
-
         std::vector<double> cell = cellFromXY(x, y);
         out = extractCell(cell);
 		if (cells) {
@@ -513,6 +515,10 @@ std::vector<double> SpatRaster::extractXYFlat(const std::vector<double> &x, cons
 	std::vector<double> out;
     if (method == "bilinear") {
 		std::vector<std::vector<double>> bil = bilinearValues(x, y);
+		if (cells) {
+			std::vector<double> cell = cellFromXY(x, y);	
+			bil.push_back(cell);
+		}
 		out = flatten(bil);
 	} else {
         std::vector<double> cell = cellFromXY(x, y);	
