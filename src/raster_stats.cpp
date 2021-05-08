@@ -461,6 +461,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	opt.ncopies = 6;
 	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
+//		Rcpp::Rcout << i << std::endl;
 		std::vector<double> v =    readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		std::vector<double> zv = z.readValues(bs.row[i], bs.nrows[i], 0, ncol());
 		std::vector<double> zvr(zv.size());
@@ -477,6 +478,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			}
 		}
 		zv.resize(0);
+//		Rcpp::Rcout << "here" << std::endl;
 		unsigned off = bs.nrows[i] * ncol() ;
 		if (nl > 1) {
 			for (size_t lyr=0; lyr<nl; lyr++) {

@@ -462,8 +462,34 @@ SpatVector SpatVector::crop(SpatVector v) {
 
 
 
-SpatVector SpatVector::convexhull() {
+SpatVector SpatVector::convexhull(std::string by) {
+
 	SpatVector out;
+	if (by != "") {
+		SpatVector tmp = aggregate(by, false);
+		if (tmp.hasError()) {
+			return tmp;	
+		}
+		for (size_t i=0; i<tmp.size(); i++) {
+			SpatVector x = tmp.subset_rows(i);
+			x = x.convexhull("");
+			if (x.hasError()) {
+				return x;
+			}
+			if ((x.geoms.size() > 0) && (x.geoms[0].gtype == polygons)) {
+				out.addGeom(x.geoms[0]);
+			} else {
+				SpatGeom g;
+				g.gtype = polygons;
+				out.addGeom(g);
+			}
+		}
+		out.df = tmp.df;
+		out.srs = out.srs;
+		return out;
+	}
+	
+	
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector a = aggregate(false);
 	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);

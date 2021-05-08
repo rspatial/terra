@@ -7,13 +7,13 @@
 \title{Area}
 
 \description{
-Compute the area covered by polygons or for raster cells that are not \code{NA}. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the \code{correct=TRUE} option. 
+Compute the area covered by polygons or for raster cells that are not \code{NA}. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with a planar raster data if the coordinate reference system is planar, but not equal-area. 
 
-For vector data, the best way to compute area is to use the longitude/latitude crs if that is what the data come in. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system.
+For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system.
 }
 
 \usage{
-\S4method{area}{SpatRaster}(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...)
+\S4method{area}{SpatRaster}(x, sum=TRUE, correct=TRUE, mask=FALSE, filename="", ...)
 
 \S4method{area}{SpatVector}(x)
 }
@@ -22,7 +22,7 @@ For vector data, the best way to compute area is to use the longitude/latitude c
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{sum}{logical. If \code{TRUE} the summed area of the cells that are not \code{NA} is returned. Otherwise, a SpatRaster with the area for each cell is returned}
-  \item{correct}{logical. If \code{TRUE}, the area is not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. This may be considerably slower. Only relevant for planar coordinate references, not for lon/lat data}
+  \item{correct}{logical. If \code{TRUE}, the area is not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. This may be considerably slower. Only relevant for planar coordinate reference systems, lon/lat data are always corrected}
   \item{mask}{logical. If \code{TRUE}, cells that are \code{NA} in \code{x} are also \code{NA} in the output}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
@@ -51,14 +51,13 @@ area(r) / 1000000
 am <- mask(a, r)
 global(am, "sum", na.rm=TRUE) / 1000000
 
-# effect of "correct" (commented out as this does not work with old GDAL)
-#r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
-#m <- project(r, "+proj=merc")
+# effect of "correct=TRUE"
+r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
+m <- project(r, "+proj=merc")
 
-#a <- area(m, sum=FALSE, names="naive")
-#b <- area(m, correct=TRUE, sum=FALSE, names="corrected")
-#plot(c(a, b)/1000000, nc=1)
-
+a <- area(m, correct=FALSE, sum=FALSE, names="naive")
+b <- area(m, correct=TRUE, sum=FALSE, names="corrected")
+plot(c(a, b)/1000000, nc=1)
 
 ### SpatVector
 f <- system.file("ex/lux.shp", package="terra")

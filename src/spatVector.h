@@ -24,7 +24,7 @@
 #endif
 
 
-enum SpatGeomType { points, multipoints, lines, polygons, unknown };
+enum SpatGeomType { points, lines, polygons, unknown };
 
 
 class SpatHole {
@@ -259,7 +259,7 @@ class SpatVector {
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
 		SpatVector delauny(double tolerance, int onlyEdges);		
-		SpatVector convexhull();
+		SpatVector convexhull(std::string by="");
 		SpatVector intersect(SpatVector v);
 		SpatVector unite(SpatVector v);
 		SpatVector unite();

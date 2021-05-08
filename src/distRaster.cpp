@@ -1409,13 +1409,20 @@ std::vector<double> SpatVector::length() {
 
 SpatRaster SpatRaster::rst_area(bool adjust, bool mask, SpatOptions &opt) {
 
-	double m = source[0].srs.to_meter();
+	SpatRaster out = geometry(1);
+
+	double m = out.source[0].srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
 
-	SpatRaster out = geometry(1);
+	if (adjust && (m == 1) && (out.source[0].srs.wkt == "")) {
+		out.setError("empty CRS");
+		return out;
+	}
+
 	if (opt.names.size() == 0) {
 		opt.names = {"area"};
 	}
+	
 	SpatOptions mopt = opt;
 	if (mask) {
 		if (!hasValues()) {
@@ -1451,6 +1458,7 @@ SpatRaster SpatRaster::rst_area(bool adjust, bool mask, SpatOptions &opt) {
 		}
 
 	} else if (adjust) {
+	// if (mask) this could be more efficient by only making polys for non NA cells
 		SpatExtent extent = getExtent();
 		double dy = yres() / 2;
 		SpatOptions popt(opt);

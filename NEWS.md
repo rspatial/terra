@@ -5,19 +5,20 @@
 
 - `as.lines` for SpatRaster
 - `as.polygons` for SpatVector lines
-- `autocor,numeric-method` has new options for "method": `mean` to compute the local mean and `locmor` for the local Moran's *I* 
+- `autocor,numeric-method` has new methods `mean`, to compute the local mean, and `locmor`, for the local Moran's *I* 
 - `sharedPaths` for SpatVector (lines and polygons)
 - `RGB2col` to reduce a three-layer RGB SpatRaster to a single layer SpatRaster with a color-table (with <= 256 colors)
 
 ## enhancements
 
 - `rast(Raster*)` now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe [#200](https://github.com/rspatial/terra/issues/200)
+- `convhull` has a new argument `by=""` to make hulls by sub-group.
 
 
 ## bug fixes
 
 - `crop` works again with `sf` objects. Reported by Sebastian Brinkmann [#201] (https://github.com/rspatial/terra/issues/201)
-- `vect,sf-method` now also works for lines
+- `vect,sf-method` now also works for lines, and should be faster
 - `vect,character` crashed R if a shapefile had empty geometries. Reported by consumere [#202](https://github.com/rspatial/terra/issues/202)
 - `extract(points, bilinear=TRUE, cells=TRUE)` now works. Reported by fab4app [#203](https://github.com/rspatial/terra/issues/203)
 
@@ -26,7 +27,7 @@
 
 To avoid name conflicts with `spatstat`
 
-- convexHull -> convHull
+- convexhull -> convhull
 - perimeter -> perim
 - tiles -> makeTiles
 

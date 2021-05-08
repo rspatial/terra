@@ -56,7 +56,7 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 
 
 setMethod("area", signature(x="SpatRaster"), 
-	function(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...) {
+	function(x, sum=TRUE, correct=TRUE, mask=FALSE, filename="", ...) {
 		if (sum) {
 			byvalue = FALSE
 			opt <- spatOptions()
