@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the size (area) for individual polygons or for all (summed) raster cells — size • terra</title>
+<title>Area covered by raster cells — cellSize • terra</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,12 @@
 
 
 
-<meta property="og:title" content="Get the size (area) for individual polygons or for all (summed) raster cells — size" />
-<meta property="og:description" content="Compute the area covered by polygons or for all raster cells that are not NA.
-This method computes areas for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be important if the coordinate reference system is planar, but not equal-area.
-For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system. This is done automatically, if transform=TRUE." />
+<meta property="og:title" content="Area covered by raster cells — cellSize" />
+<meta property="og:description" content="
+
+Compute the area covered by indivual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.
+Note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area crs.
+For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. If you do not want that, you can instead use init(x, prod(res(x)))" />
 
 
 
@@ -113,74 +115,70 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the size (area) for individual polygons or for all (summed) raster cells</h1>
+    <h1>Area covered by raster cells</h1>
     
-    <div class="hidden name"><code>area.Rd</code></div>
+    <div class="hidden name"><code>cellSize.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute the area covered by polygons or for all raster cells that are not <code>NA</code>.</p>
-<p>This method computes areas for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be important if the coordinate reference system is planar, but not equal-area.</p>
-<p>For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system. This is done automatically, if <code>transform=TRUE</code>.</p>
+    
+
+<p>Compute the area covered by indivual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.</p>
+<p>Note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area crs.</p>
+<p>For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. If you do not want that, you can instead use <code><a href='initialize.html'>init(x, prod(res(x)))</a></code></p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>x</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, transform<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatVector</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>x</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, transform<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>cellSize</span><span class='op'>(</span><span class='va'>x</span>, mask<span class='op'>=</span><span class='cn'>TRUE</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatRaster or SpatVector</p></td>
+      <td><p>SpatRaster</p></td>
+    </tr>
+    <tr>
+      <th>mask</th>
+      <td><p>logical. If <code>TRUE</code>, cells that are <code>NA</code> in <code>x</code> are also <code>NA</code> in the output</p></td>
     </tr>
     <tr>
       <th>unit</th>
       <td><p>character. One of "m", "km", or "ha"</p></td>
     </tr>
     <tr>
-      <th>transform</th>
-      <td><p>logical. If <code>TRUE</code>, planar CRS are transformed to lon/lat for accuracy</p></td>
+      <th>filename</th>
+      <td><p>character. Output filename</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>numeric</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='cellSize.html'>cellSize</a></code> for a the size of individual cells of a raster</p></div>
+    <p>numeric (area)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'>### SpatRaster </span>
+<span class='co'># SpatRaster </span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>18</span>, ncol<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 <span class='va'>v</span><span class='op'>[</span><span class='fl'>200</span><span class='op'>:</span><span class='fl'>400</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>v</span>
 
-<span class='co'># summed area in km2</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>r</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in x@ptr$sum_area(unit, transform, opt): could not find valid method</span></div><div class='input'>
-
+<span class='co'># size of each raster cell</span>
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>cellSize</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in x@ptr$rst_area(mask, unit, opt): could not find valid method</span></div><div class='input'>
+<span class='co'># illustration of distortion</span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncol<span class='op'>=</span><span class='fl'>90</span>, nrow<span class='op'>=</span><span class='fl'>45</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymax<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='project.html'>project</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>"+proj=merc"</span><span class='op'>)</span>
 
-<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>suze</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in suze(m, unit = "km"): could not find function "suze"</span></div><div class='input'><span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='global.html'>global</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>, <span class='st'>"sum"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'global': [==] raster has no values</span></div><div class='input'>
-
-<span class='co'>### SpatVector</span>
-<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>size</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-<span class='va'>a</span>
-</div><div class='output co'>#&gt;  [1] 312283206 218674025 259454806  76200409 263174257 188282143 128991500
-#&gt;  [8] 210354494 185630770 251322021 237113004 233329960</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 2564810595</div></pre>
+<span class='va'>bad</span> <span class='op'>&lt;-</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>m</span>, <span class='fu'><a href='https://rdrr.io/r/base/prod.html'>prod</a></span><span class='op'>(</span><span class='fu'><a href='dimensions.html'>res</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>1000000</span>, names<span class='op'>=</span><span class='st'>"naive"</span><span class='op'>)</span>
+<span class='va'>good</span> <span class='op'>&lt;-</span> <span class='fu'>cellSize</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span>, names<span class='op'>=</span><span class='st'>"corrected"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in x@ptr$rst_area(mask, unit, opt): could not find valid method</span></div><div class='input'><span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>good</span>, <span class='va'>bad</span><span class='op'>)</span>, nc<span class='op'>=</span><span class='fl'>1</span>, mar<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'plot': object 'good' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

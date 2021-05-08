@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SpatRaster or SpatVector to data.frame — as.data.frame • terra</title>
+<title>Split — split • terra</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="SpatRaster or SpatVector to data.frame — as.data.frame" />
-<meta property="og:description" content="Coerce a SpatRaster or SpatVector into a data.frame or a SpatVector into list" />
+<meta property="og:title" content="Split — split" />
+<meta property="og:description" content="Split a SpatVector" />
 
 
 
@@ -111,95 +111,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>SpatRaster or SpatVector to data.frame</h1>
+    <h1>Split</h1>
     
-    <div class="hidden name"><code>as.data.frame.Rd</code></div>
+    <div class="hidden name"><code>split.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Coerce a SpatRaster or SpatVector into a data.frame or a SpatVector into list</p>
+    <p>Split a SpatVector</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>x</span>, geom<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>x</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span>, cells<span class='op'>=</span><span class='cn'>FALSE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+    <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>f</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>as.list</span><span class='op'>(</span><span class='va'>x</span>, geom<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>as.list</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='fu'>split</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>f</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatVector</p></td>
+      <td><p>SpatRaster or SpatVector</p></td>
     </tr>
     <tr>
-      <th>geom</th>
-      <td><p>character or NULL. If not NULL, either "WKT" or "HEX", to get the geometry included in Well-Known-Text or hexadecimal notation</p></td>
-    </tr>
-    <tr>
-      <th>xy</th>
-      <td><p>logical. If <code>TRUE</code>, the coordinates of each raster cell are included</p></td>
-    </tr>
-    <tr>
-      <th>cells</th>
-      <td><p>logical. If <code>TRUE</code>, the cell numbers of each raster cell are included</p></td>
-    </tr>
-    <tr>
-      <th>na.rm</th>
-      <td><p>logical. If <code>TRUE</code>, cells that have a NA value in at least one layer are removed</p></td>
+      <th>f</th>
+      <td><p>If <code>x</code> is a SpatVector: a field (variable) name or a vector of the same length as <code>x</code>. If <code>x</code> is a SpatVector: a vector of the length <code><a href='dimensions.html'>nlyr(x)</a></code></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>see <code>coerce</code> for <code>as.data.frame</code> with a SpatRaster; and <code><a href='geom.html'>geom</a></code> to only extract the geometry of a SpatVector</p></div>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data.frame</p>
+    <p>Same as <code>x</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
-<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    ID_1       NAME_1 ID_2           NAME_2 AREA
-#&gt; 1     1     Diekirch    1         Clervaux  312
-#&gt; 2     1     Diekirch    2         Diekirch  218
-#&gt; 3     1     Diekirch    3          Redange  259
-#&gt; 4     1     Diekirch    4          Vianden   76
-#&gt; 5     1     Diekirch    5            Wiltz  263
-#&gt; 6     2 Grevenmacher    6       Echternach  188
-#&gt; 7     2 Grevenmacher    7           Remich  129
-#&gt; 8     2 Grevenmacher   12     Grevenmacher  210
-#&gt; 9     3   Luxembourg    8         Capellen  185
-#&gt; 10    3   Luxembourg    9 Esch-sur-Alzette  251
-#&gt; 11    3   Luxembourg   10       Luxembourg  237
-#&gt; 12    3   Luxembourg   11           Mersch  233</div><div class='input'><span class='fu'>as.list</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $ID_1
-#&gt;  [1] 1 1 1 1 1 2 2 2 3 3 3 3
-#&gt; 
-#&gt; $NAME_1
-#&gt;  [1] "Diekirch"     "Diekirch"     "Diekirch"     "Diekirch"     "Diekirch"    
-#&gt;  [6] "Grevenmacher" "Grevenmacher" "Grevenmacher" "Luxembourg"   "Luxembourg"  
-#&gt; [11] "Luxembourg"   "Luxembourg"  
-#&gt; 
-#&gt; $ID_2
-#&gt;  [1]  1  2  3  4  5  6  7 12  8  9 10 11
-#&gt; 
-#&gt; $NAME_2
-#&gt;  [1] "Clervaux"         "Diekirch"         "Redange"          "Vianden"         
-#&gt;  [5] "Wiltz"            "Echternach"       "Remich"           "Grevenmacher"    
-#&gt;  [9] "Capellen"         "Esch-sur-Alzette" "Luxembourg"       "Mersch"          
-#&gt; 
-#&gt; $AREA
-#&gt;  [1] 312 218 259  76 263 188 129 210 185 251 237 233
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>split</span><span class='op'>(</span><span class='va'>v</span>, <span class='st'>"NAME_1"</span><span class='op'>)</span>
+
+<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>split</span><span class='op'>(</span><span class='va'>s</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='sds.html'>sds</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; class       : SpatRasterDataset 
+#&gt; subdatasets : 2 
+#&gt; dimensions  : 77, 101 (nrow, ncol)
+#&gt; nlyr        : 2, 1 
+#&gt; resolution  : 1, 1  (x, y)
+#&gt; extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : +proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
+#&gt; source(s)   : logo.tif </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

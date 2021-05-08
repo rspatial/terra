@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Dimensions of a SpatRaster or SpatVector and related objects — dimensions" />
 <meta property="og:description" content="Get the number of rows (nrow), columns (ncol), cells (ncell), layers (nlyr), sources (nsrc) or the spatial resolution of a SpatRaster; (length) returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.
-The size of a SpatRaster x is ncell(x) * nlyr(x). For a SpatVector length(x) is the same as nrow(x).
+For a SpatVector length(x) is the same as nrow(x).
 You can also set the number of rows or columns or layers. When setting dimensions, all cell values are dropped." />
 
 
@@ -74,7 +74,7 @@ You can also set the number of rows or columns or layers. When setting dimension
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-8</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@ You can also set the number of rows or columns or layers. When setting dimension
 
     <div class="ref-description">
     <p>Get the number of rows (<code>nrow</code>), columns (<code>ncol</code>), cells (<code>ncell</code>), layers (<code>nlyr</code>), sources (<code>nsrc</code>) or the spatial resolution of a SpatRaster; (<code>length</code>) returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.</p>
-<p>The <code>size</code> of a SpatRaster <code>x</code> is <code>ncell(x) * nlyr(x)</code>. For a SpatVector <code>length(x)</code> is the same as <code>nrow(x)</code>.</p>
+<p>For a SpatVector <code>length(x)</code> is the same as <code>nrow(x)</code>.</p>
 <p>You can also set the number of rows or columns or layers. When setting dimensions, all cell values are dropped.</p>
     </div>
 
@@ -135,9 +135,6 @@ You can also set the number of rows or columns or layers. When setting dimension
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>ncell</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>nsrc</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
@@ -170,9 +167,6 @@ You can also set the number of rows or columns or layers. When setting dimension
 <span class='fu'>nrow</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatVector</span>
 <span class='fu'>length</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -203,14 +197,12 @@ You can also set the number of rows or columns or layers. When setting dimension
 </div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='fu'>dim</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 180 360   1</div><div class='input'><span class='fu'>nsrc</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='fu'>ncell</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 64800</div><div class='input'><span class='fu'>size</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 64800</div><div class='input'>
 <span class='va'>rr</span>  <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>r</span>,<span class='va'>r</span><span class='op'>)</span>
 <span class='fu'>nlyr</span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 2</div><div class='input'><span class='fu'>nsrc</span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 2</div><div class='input'><span class='fu'>ncell</span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 64800</div><div class='input'><span class='fu'>size</span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 129600</div><div class='input'>
+</div><div class='output co'>#&gt; [1] 64800</div><div class='input'>
 <span class='fu'>nrow</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>18</span>
 <span class='fu'>ncol</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>36</span>
 <span class='co'># equivalent to</span>

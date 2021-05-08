@@ -79,7 +79,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-8</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
 
 <p></p><table class='table'>
-<tr><td><code><a href='area.html'>area</a></code></td><td>Compute the area of cells</td></tr>
+<tr><td><code><a href='size.html'>area</a></code></td><td>Compute the area of cells</td></tr>
 <tr><td><code><a href='classify.html'>classify</a></code></td><td>(Re-)classify values</td></tr>
 <tr><td><code><a href='cover.html'>cover</a></code></td><td>First layer covers second layer except where the first layer is <code>NA</code></td></tr>
 <tr><td><code><a href='initialize.html'>init</a></code></td><td>Initialize cells with new values</td></tr>
@@ -227,7 +227,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
     <h2 class="hasAnchor" id="iv-zonal-and-global-computation"><a class="anchor" href="#iv-zonal-and-global-computation"></a>IV. Zonal and global computation</h2>
 
     <p></p><table class='table'>
-<tr><td><code><a href='area.html'>area</a></code></td><td>Compute the total area covered by cells</td></tr>
+<tr><td><code><a href='size.html'>area</a></code></td><td>Compute the total area covered by cells</td></tr>
 <tr><td><code><a href='crosstab.html'>crosstab</a></code></td><td>Cross-tabulate two SpatRasters</td></tr>
 <tr><td><code><a href='freq.html'>freq</a></code></td><td>Frequency table of SpatRaster cell values</td></tr>
 <tr><td><code><a href='global.html'>global</a></code></td><td>Summarize SpatRaster cell values with a function</td></tr>
@@ -439,7 +439,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
     
 <table class='table'>
 <tr><td><code><a href='adjacent.html'>adjacent</a></code></td><td>find adjacent polygons</td></tr>
-<tr><td><code><a href='area.html'>area</a></code></td><td>computes the area covered by polygons</td></tr>
+<tr><td><code><a href='size.html'>area</a></code></td><td>computes the area covered by polygons</td></tr>
 <tr><td><code><a href='nearest.html'>nearby</a></code></td><td>find nearby geometries</td></tr>
 <tr><td><code><a href='nearest.html'>nearest</a></code></td><td>find the nearest geometries</td></tr>
 <tr><td><code><a href='relate.html'>relate</a></code></td><td>geometric relationships such as "intersects", "overlaps", and "touches"</td></tr>
@@ -640,7 +640,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
 <p>Also note that even if function names are the same in <code>terra</code> and <code>raster</code>, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:</p>
 <table class='table'>
-<tr><td><code><a href='area.html'>area</a></code></td><td>By default, <code>terra</code> returns the summed area of the raster cells that are not <code>NA</code>.</td></tr>
+<tr><td><code><a href='size.html'>area</a></code></td><td>By default, <code>terra</code> returns the summed area of the raster cells that are not <code>NA</code>.</td></tr>
 <tr><td></td><td><code>raster</code> returns a <code>RasterLayer</code>. Use <code>sum=FALSE</code> in <code>terra</code> for that behavior</td></tr>
 <tr><td><code><a href='as.spatvector.html'>as.polygons</a></code></td><td>By default, <code>terra</code> returns dissolved polygons</td></tr>
 <tr><td><code><a href='extract.html'>extract</a></code></td><td>By default, <code>terra</code> returns a matrix, with the first column the sequential ID of the vectors.</td></tr>
