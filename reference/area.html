@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Area — area" />
-<meta property="og:description" content="Compute the area covered by polygons or for raster cells that are not NA. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the correct=TRUE option.
-For vector data, the best way to compute area is to use the longitude/latitude crs if that is what the data come in. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system." />
+<meta property="og:description" content="Compute the area covered by polygons or for raster cells that are not NA. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with a planar raster data if the coordinate reference system is planar, but not equal-area.
+For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system." />
 
 
 
@@ -118,12 +118,12 @@ For vector data, the best way to compute area is to use the longitude/latitude c
     </div>
 
     <div class="ref-description">
-    <p>Compute the area covered by polygons or for raster cells that are not <code>NA</code>. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with raster data if the coordinate reference system is not equal-area. In that case, you can detect variation in true cell size using the <code>correct=TRUE</code> option.</p>
-<p>For vector data, the best way to compute area is to use the longitude/latitude crs if that is what the data come in. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system.</p>
+    <p>Compute the area covered by polygons or for raster cells that are not <code>NA</code>. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be very important with a planar raster data if the coordinate reference system is planar, but not equal-area.</p>
+<p>For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span>, sum<span class='op'>=</span><span class='cn'>TRUE</span>, correct<span class='op'>=</span><span class='cn'>FALSE</span>, mask<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span>, sum<span class='op'>=</span><span class='cn'>TRUE</span>, correct<span class='op'>=</span><span class='cn'>TRUE</span>, mask<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>area</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
@@ -141,7 +141,7 @@ For vector data, the best way to compute area is to use the longitude/latitude c
     </tr>
     <tr>
       <th>correct</th>
-      <td><p>logical. If <code>TRUE</code>, the area is not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. This may be considerably slower. Only relevant for planar coordinate references, not for lon/lat data</p></td>
+      <td><p>logical. If <code>TRUE</code>, the area is not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. This may be considerably slower. Only relevant for planar coordinate reference systems, lon/lat data are always corrected</p></td>
     </tr>
     <tr>
       <th>mask</th>
@@ -181,15 +181,14 @@ For vector data, the best way to compute area is to use the longitude/latitude c
 <span class='fu'><a href='global.html'>global</a></span><span class='op'>(</span><span class='va'>am</span>, <span class='st'>"sum"</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>1000000</span>
 </div><div class='output co'>#&gt;            sum
 #&gt; area 273986501</div><div class='input'>
-<span class='co'># effect of "correct" (commented out as this does not work with old GDAL)</span>
-<span class='co'>#r &lt;- rast(ncol=90, nrow=45, ymin=-80, ymax=80)</span>
-<span class='co'>#m &lt;- project(r, "+proj=merc")</span>
+<span class='co'># effect of "correct=TRUE"</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncol<span class='op'>=</span><span class='fl'>90</span>, nrow<span class='op'>=</span><span class='fl'>45</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymax<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='project.html'>project</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>"+proj=merc"</span><span class='op'>)</span>
 
-<span class='co'>#a &lt;- area(m, sum=FALSE, names="naive")</span>
-<span class='co'>#b &lt;- area(m, correct=TRUE, sum=FALSE, names="corrected")</span>
-<span class='co'>#plot(c(a, b)/1000000, nc=1)</span>
-
-
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>area</span><span class='op'>(</span><span class='va'>m</span>, correct<span class='op'>=</span><span class='cn'>FALSE</span>, sum<span class='op'>=</span><span class='cn'>FALSE</span>, names<span class='op'>=</span><span class='st'>"naive"</span><span class='op'>)</span>
+<span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'>area</span><span class='op'>(</span><span class='va'>m</span>, correct<span class='op'>=</span><span class='cn'>TRUE</span>, sum<span class='op'>=</span><span class='cn'>FALSE</span>, names<span class='op'>=</span><span class='st'>"corrected"</span><span class='op'>)</span>
+<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>b</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>1000000</span>, nc<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+</div><div class='img'><img src='area-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>### SpatVector</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>

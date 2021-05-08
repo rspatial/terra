@@ -127,7 +127,7 @@
 <li>
 <code>as.polygons</code> for SpatVector lines</li>
 <li>
-<code>autocor,numeric-method</code> has new options for “method”: <code>mean</code> to compute the local mean and <code>locmor</code> for the local Moran’s <em>I</em>
+<code>autocor,numeric-method</code> has new methods <code>mean</code>, to compute the local mean, and <code>locmor</code>, for the local Moran’s <em>I</em>
 </li>
 <li>
 <code>sharedPaths</code> for SpatVector (lines and polygons)</li>
@@ -142,6 +142,8 @@
 <li>
 <code>rast(Raster*)</code> now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe <a href="https://github.com/rspatial/terra/issues/200"><a href='https://github.com/rspatial/terra/issues/200'>#200</a></a>
 </li>
+<li>
+<code>convhull</code> has a new argument <code>by=""</code> to make hulls by sub-group.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -151,7 +153,7 @@
 <li>
 <code>crop</code> works again with <code>sf</code> objects. Reported by Sebastian Brinkmann [<a href='https://github.com/rspatial/terra/issues/201'>#201</a>] (<a href="https://github.com/rspatial/terra/issues/201" class="uri">https://github.com/rspatial/terra/issues/201</a>)</li>
 <li>
-<code>vect,sf-method</code> now also works for lines</li>
+<code>vect,sf-method</code> now also works for lines, and should be faster</li>
 <li>
 <code>vect,character</code> crashed R if a shapefile had empty geometries. Reported by consumere <a href="https://github.com/rspatial/terra/issues/202"><a href='https://github.com/rspatial/terra/issues/202'>#202</a></a>
 </li>
@@ -165,7 +167,7 @@
 <a href="#name-changes" class="anchor"></a>name changes</h2>
 <p>To avoid name conflicts with <code>spatstat</code></p>
 <ul>
-<li>convexHull -&gt; convHull</li>
+<li>convexhull -&gt; convhull</li>
 <li>perimeter -&gt; perim</li>
 <li>tiles -&gt; makeTiles</li>
 </ul>
