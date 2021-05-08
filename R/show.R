@@ -99,7 +99,7 @@ setMethod ("show" , "SpatExtent",
 setMethod ("show" , "SpatVectorCollection", 
 	function(object) {
 		cat(" class       :", class(object), "\n")
-		cat(" size        :", length(object), "\n")
+		cat(" length      :", length(object), "\n")
 		for (i in 1:length(object)) {
 			v <- object[i]
 			if (i==1) {

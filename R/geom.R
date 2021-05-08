@@ -27,6 +27,38 @@ setMethod("is.valid", signature(x="SpatVector"),
 
 
 
+setMethod("copy", signature("SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$deepcopy() 
+		x
+	}
+)
+
+
+as.list.svc <- function(x) {
+	v <- vect()
+	lapply(1:x$size(), 
+		function(i) {
+			v@ptr <- x$get(i-1)
+			v
+		})
+}
+
+
+
+setMethod("split", signature(x="SpatVector"), 
+	function(x, f) {
+		if (length(f) > 1) {
+			x <- copy(x)
+			x$f <- f
+			f <- "f"
+		}
+		x <- messages(x@ptr$split(f), "split")
+		as.list.svc(x)
+	}
+)
+
+
 setMethod("sharedPaths", signature(x="SpatVector"), 
 	function(x) {
 		x@ptr <- x@ptr$shared_paths()
@@ -155,7 +187,7 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 
 setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y) {
-		if (size(y) > 1) {
+		if (length(y) > 1) {
 			y <- aggregate(y)
 		}
 		x@ptr <- x@ptr$crop_vct(y@ptr)

@@ -427,11 +427,11 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 		cells = cellFromXY(x, y);
 
 		SpatVector rv = r.as_polygons(false, false, false, true, opt);
-		std::vector<double> csize = rv.area();
+		std::vector<double> csize = rv.area("m", true, {});
 		rv.df.add_column(csize, "area");
 		
 		rv = rv.crop(v);
-		weights = rv.area();
+		weights = rv.area("m", true, {});
 		for (size_t i=0; i<weights.size(); i++) {
 			weights[i] /= rv.df.dv[0][i];
 		}
@@ -447,10 +447,10 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 		cells = cellFromXY(x, y);
 		
 		SpatVector bv = b.as_polygons(false, false, false, true, opt);
-		std::vector<double> csize = bv.area();
+		std::vector<double> csize = bv.area("m", true, {});
 		bv.df.add_column(csize, "area");
 		bv = bv.crop(v);
-		weights = bv.area();
+		weights = bv.area("m", true, {});
 		for (size_t i=0; i<weights.size(); i++) {
 			weights[i] /= bv.df.dv[0][i];
 		}

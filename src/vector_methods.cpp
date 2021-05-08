@@ -138,6 +138,36 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 }
 
 
+SpatVectorCollection SpatVector::split(std::string field) {
+
+	SpatVectorCollection out;
+	
+	int i = where_in_vector(field, get_names(), false);
+	if (i < 0) {
+		out.setError("cannot find field: " + field);
+		return out;	
+	}
+	SpatDataFrame uv;
+	std::vector<int> idx = df.getIndex(i, uv);
+	for (size_t i=0; i<uv.nrow(); i++) {
+		SpatVector v;
+		std::vector<unsigned> r;
+		for (size_t j=0; j<idx.size(); j++) {
+			if (i == (size_t)idx[j]) {
+				v.addGeom( getGeom(j) );
+				r.push_back(j);
+			}
+		}
+		v.srs = srs;
+		v.df = df.subset_rows(r);
+		out.push_back(v);
+	}
+	return out;
+}
+
+
+
+
 
 /*
 	} else {

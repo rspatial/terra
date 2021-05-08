@@ -83,12 +83,6 @@ setMethod("size", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("size", signature(x="SpatRasterDataset"), 
-	function(x){
-		nc <- ncell(x)
-		sapply(1:length(x), function(i) nlyr(x[i]) * nc)
-    }
-)
 
 setMethod("nlyr", signature(x="SpatRaster"), 
 	function(x){

@@ -1,10 +1,5 @@
 
 
-setMethod ("size" , "SpatVector", 
-	function(x) {
-		x@ptr$size()
-	}
-)
 
 setMethod("geomtype", signature(x="SpatVector"), 
 	function(x){ 
@@ -120,11 +115,17 @@ setMethod("as.list", signature(x="SpatVector"),
 
 
 
-setMethod("area", signature(x="SpatVector"), 
-	function(x) {
-		a <- x@ptr$area();
+setMethod ("size", "SpatVector", 
+	function(x, unit="m", transform=TRUE) {
+		a <- x@ptr$area(unit, transform, double());
 		x <- messages(x, "area");
 		return(a)
+	}
+)
+
+setMethod("area", signature(x="SpatVector"), 
+	function(x, ...) {
+		error("area", 'area was removed. Use "size(x)"')
 	}
 )
 
@@ -138,7 +139,7 @@ setMethod("perim", signature(x="SpatVector"),
 
 setMethod("length", signature(x="SpatVector"), 
 	function(x) {
-		size(x)
+		x@ptr$size()
 	}
 )
 

@@ -32,7 +32,7 @@ setMethod("lines", signature(x="SpatVector"),
 		} else if (grepl("points", gtype)) {
 			points(x, col=col, type="l", lwd=lwd, lty=lty, ...)
 		} else {
-			n <- size(x)
+			n <- length(x)
 			col <- .getCols(n, col)
 			lwd <- rep_len(lwd, n)
 			lty <- rep_len(lty, n)
@@ -58,7 +58,7 @@ setMethod("lines", signature(x="SpatVector"),
 setMethod("points", signature(x="SpatVector"), 
 	function(x, col, cex=1, pch=20, ...)  {
 		if (missing(col)) col <- "black"
-		n <- size(x)
+		n <- length(x)
 		col <- .getCols(n, col)
 		cex <- rep_len(cex, n)
 		pch <- rep_len(pch, n)
@@ -84,7 +84,7 @@ setMethod("polys", signature(x="SpatVector"),
 		if (missing(col)) {
 			col <- NULL
 		}
-		cols <- .getCols(size(x), col)
+		cols <- .getCols(length(x), col)
 		out <- list(main_cols=cols)
 		out$leg$border <- border
 		.plotPolygons(x, out, lwd=lwd, lty=lty, ...)

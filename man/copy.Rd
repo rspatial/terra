@@ -10,19 +10,21 @@
 \title{Deep copy}
 
 \description{ 
-Make a deep copy of a SpatRaster. This is occaisionaly useful when wanting to use a replacement function in a shallow copy. If use a replacement function to change an object, its shallow copies will also be changed.
+Make a deep copy of a SpatRaster or SpatVector. This is occasionally useful when wanting to use a replacement function in a shallow copy. That is a copy that was created like this: \code{x <- y}. If you use a replacement function to change an object, its shallow copies also change.
 }
 
 \usage{
 \S4method{copy}{SpatRaster}(x)
+
+\S4method{copy}{SpatVector}(x)
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
 }
 
 \value{
-SpatRaster
+Same as \code{x}
 }
 
 

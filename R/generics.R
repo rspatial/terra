@@ -54,26 +54,39 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 	}
 )
 
+setMethod("cellSize", signature(x="SpatRaster"), 
+	function(x, mask=TRUE, unit="m", filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$rst_area(mask, unit, opt)
+		messages(x, "cellSize")
+	}
+)
 
 setMethod("area", signature(x="SpatRaster"), 
-	function(x, sum=TRUE, correct=TRUE, mask=FALSE, filename="", ...) {
-		if (sum) {
-			byvalue = FALSE
-			opt <- spatOptions()
-			if (byvalue) {
-				v <- x@ptr$area_by_value(opt)
-				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
-				v <- do.call(rbind, v)
-				colnames(v) <- c("layer", "value", "area")
-				return(v)
-			} else {
-				x@ptr$sum_area(correct, opt)
-			}
+	function(x, cells=TRUE, ...) {
+		if (cells) {
+			error("area", 'area(x, sum=FALSE) was removed. Use "cellSize(x)"')
 		} else {
-			opt <- spatOptions(filename, ...)
-			x@ptr <- x@ptr$rst_area(correct, mask, opt)
-			messages(x, "area")
-		} 
+			error("area", 'area(x, sum=TRUE) was removed. Use "global(cellSize(x), "sum")"')		
+		}		
+	}
+)
+
+
+setMethod ("size", "SpatRaster", 
+	function(x, unit="m", transform=TRUE) {
+
+		byvalue = FALSE
+		opt <- spatOptions()
+		if (byvalue) {
+			v <- x@ptr$area_by_value(opt)
+			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
+			v <- do.call(rbind, v)
+			colnames(v) <- c("layer", "value", "area")
+			return(v)
+		} else {
+			x@ptr$sum_area(unit, transform, opt)
+		}
 	}
 )
 
@@ -107,6 +120,17 @@ setMethod("copy", signature("SpatRaster"),
 	function(x) {
 		x@ptr <- x@ptr$deepcopy() 
 		x
+	}
+)
+
+
+
+setMethod("split", signature(x="SpatRaster"), 
+	function(x, f) {
+		stopifnot(length(f) == nlyr(x))
+		stopifnot(!any(is.na(f)))
+		u <- unique(f)
+		lapply(u, function(i) x[[f==i]])
 	}
 )
 

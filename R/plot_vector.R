@@ -36,7 +36,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 .plotLines <- function(x, out, lty=1, lwd=1, ...) {
 	cols <- out$cols
-	if (is.null(cols)) cols = rep("black", size(x))
+	if (is.null(cols)) cols = rep("black", length(x))
 
 	g <- geom(x, df=TRUE)
 	g <- split(g, g[,1])

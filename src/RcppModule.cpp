@@ -372,6 +372,8 @@ RCPP_MODULE(spat){
 		.method("near_between", (SpatVector (SpatVector::*)(SpatVector, bool))( &SpatVector::nearest_point))
 		.method("near_within", (SpatVector (SpatVector::*)())( &SpatVector::nearest_point))
 		//.method("knearest", &SpatVector::knearest)
+
+		.method("split", &SpatVector::split)
 		
 		.method("sample", &SpatVector::sample)
 		.method("sampleGeom", &SpatVector::sample_geom)

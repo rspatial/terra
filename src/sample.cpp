@@ -602,7 +602,11 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 	bool lonlat = is_lonlat();
 	bool random = (method == "random");
 
-	std::vector<double> a = area();
+	std::vector<double> a = area("m", true, {});
+	if (hasError()) {
+		out.setError(getError());
+		return out;
+	}
 	double suma = accumulate(a.begin(), a.end(), 0.0);
 
 /*
@@ -661,7 +665,7 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 
 	SpatVector ve(extent, "");
 	ve.srs = srs;
-	double vea = ve.area()[0];
+	double vea = ve.area("m", true, {})[0];
 	if (random) {
 		double m = vea / suma;
 		m = std::max(10.0, std::min(m*m, 100.0));

@@ -238,7 +238,6 @@ class SpatRaster {
 #endif 
 */
 
-		bool is_geographic();
 		bool is_lonlat();
 		bool could_be_lonlat();
 		bool is_global_lonlat();
@@ -496,8 +495,8 @@ class SpatRaster {
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
-		SpatRaster rst_area(bool adjust, bool mask, SpatOptions &opt);
-		std::vector<double> sum_area(bool adjust, SpatOptions &opt);
+		SpatRaster rst_area(bool mask, std::string unit, bool transform, SpatOptions &opt);
+		std::vector<double> sum_area(bool transform, SpatOptions &opt);
 		std::vector<std::vector<double>> area_by_value(SpatOptions &opt);
 
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);
