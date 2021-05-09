@@ -29,7 +29,7 @@
 To avoid name conflicts with the `spatstat` package
 
 - `area,SpatRaster-method(x, sum=FALSE)` -> `cellSize(x)`
-- `area,SpatRaster or SpatVector -method(x, sum=TRUE)` -> `size(x)`
+- `area,SpatRaster/SpatVector-method(x, sum=TRUE)` -> `size(x)`
 - `convexhull` -> `convhull`
 - `perimeter` -> `perim`
 - `tiles` -> `makeTiles`

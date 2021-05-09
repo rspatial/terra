@@ -39,15 +39,15 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \arguments{
 \item{x}{SpatRaster}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
-\item{fun}{function to summarize the data by geometry (e.g. polygon)}
-\item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (i.e., the \code{method} and \code{cells} arguments)}
+\item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only code{mean}, \code{sum}, \code{min} and \code{max} are accepted)}
+\item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{list}{logical. If \code{FALSE} the output is simplified to a matrix (if \code{fun=NULL})}
 \item{factors}{logical. If \code{TRUE} the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
-\item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean. If \code{fun} is not \code{NULL}, the weighted mean is returned}
-\item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean. If \code{fun} is not \code{NULL}, the weighted mean is returned}
+\item{weights}{logical. If \code{TRUE} and \code{y} has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
+\item{exact}{logical. If \code{TRUE} and \code{y} has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean}
 \item{touches}{logical. If \code{TRUE}, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered \code{TRUE} when \code{weights=TRUE} or \code{exact=TRUE}}
 }
 
@@ -99,9 +99,12 @@ v <- vect(f)
 v <- v[1:2,]
 z <- rast(v, res=.1, names="test")
 values(z) <- 1:ncell(z)
+
+#extract(x, v, mean, na.rm=TRUE)
+
 #e <- extract(z, v)
 #e
-#tapply(e[,2], e[,1], mean)
+#tapply(e[,2], e[,1], mean, na.rm=TRUE)
 
 #ee <- extract(z, v, list=TRUE)
 #rapply(ee, mean)
@@ -109,7 +112,6 @@ values(z) <- 1:ncell(z)
 #x <- c(z, z*2, z/3)
 #names(x) <- letters[1:3]
 
-#extract(x, v, mean)
 
 #e <- extract(x, v)
 #de <- data.frame(e)

@@ -92,13 +92,13 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		pols <- grepl("polygons", g)
 
 		if (cover[1] && pols) {
-			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, background, touches[1], sum[1], TRUE, FALSE, opt)
+			y@ptr <- y@ptr$rasterize(x@ptr, "", 1, background, touches[1], sum[1], TRUE, FALSE, TRUE, opt)
 			y <- messages(y, "rasterize")
 			return(y)
 		}
 
 		background <- as.numeric(background[1])
-		y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], sum[1], FALSE, update[1], opt)
+		y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], sum[1], FALSE, update[1], TRUE, TRUE, opt)
 
 		messages(y, "rasterize")
 	}

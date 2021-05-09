@@ -35,12 +35,37 @@ setlabs <- function(x, labs) {
 }
 
 
-wmean <- function(p) {
+wmean <- function(p, na.rm=FALSE) {
 	n <- length(p)
 	w <- p[[n]]
 	p[[n]] <- NULL
 	sapply(p, function(x) {
-		stats::weighted.mean(x, w, na.rm = TRUE)
+		stats::weighted.mean(x, w, na.rm=na.rm)
+	})
+}
+
+wsum <- function(p, na.rm=FALSE) {
+	n <- length(p)
+	w <- p[[n]]
+	p[[n]] <- NULL
+	sapply(p, function(x) {
+		sum(x * w, na.rm=na.rm)
+	})
+}
+
+wmin <- function(p, na.rm=FALSE) {
+	n <- length(p)
+	p[[n]] <- NULL
+	sapply(p, function(x) {
+		min(x, na.rm=na.rm)
+	})
+}
+
+wmax <- function(p, na.rm=FALSE) {
+	n <- length(p)
+	p[[n]] <- NULL
+	sapply(p, function(x) {
+		max(x, na.rm=na.rm)
 	})
 }
 
@@ -70,7 +95,27 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	if (hasfun) {
 		cells <- FALSE
 		xy <- FALSE
-		if (weights || exact) list = TRUE
+		if (weights || exact) {
+			list <- TRUE
+			fun <- .makeTextFun(fun)
+			bad <- FALSE
+			if (is.character(fun)) {
+				if (!(fun %in% c("sum", "mean", "min", "max"))) {
+					bad <- TRUE
+				} else if (fun == "mean") {
+					fun <- wmean
+				} else if (fun == "sum") {
+					fun <- wsum
+				} else if (fun == "min") {
+					fun <- wmin
+				} else if (fun == "max") {
+					fun <- wmax
+				} 
+			} else {
+				bad <- TRUE
+			}
+			if (bad) error("extract", 'if weights or exact=TRUE, "fun" must be "sum", "mean" or NULL')
+		}
 	} 
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#e <- rapply(e, f, how="replace")
@@ -80,14 +125,11 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		x <- messages(x, "extract")
 		if (weights || exact) {
 			if (hasfun) {
-				test1 <- isTRUE(try( deparse(fun)[2] == 'UseMethod(\"mean\")', silent=TRUE))
-				test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
-				if (!(test1 | test2)) { warn("extract", "the weighted mean is returned") }
+				e <- t(sapply(e, fun, ...))
+				e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+				colnames(e) <- cn
+				e <- cbind(ID=1:nrow(e), e)
 			}
-			e <- t(sapply(e, wmean))
-			e <- matrix(e, nrow=nrow(y), byrow=TRUE)
-			colnames(e) <- cn
-			e <- cbind(ID=1:nrow(e), e)
 		}
 		return(e)
 	}
@@ -99,8 +141,11 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		cn <- c(cn, "cell")
 		nc <- nc + 1
 	}
-	if (weights || exact) {
+	if (weights) {
 		cn <- c(cn, "weight")
+		nc <- nc + 1
+	} else if (exact) {
+		cn <- c(cn, "fraction")
 		nc <- nc + 1
 	}
 	if (xy) {
