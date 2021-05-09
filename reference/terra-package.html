@@ -213,7 +213,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
 
 <p></p><table class='table'>
-<tr><td><code><a href='size.html'>area</a></code></td><td>Compute the area of cells</td></tr>
+<tr><td><code><a href='cellSize.html'>cellSize</a></code></td><td>Compute the area of cells</td></tr>
 <tr><td><code><a href='classify.html'>classify</a></code></td><td>(Re-)classify values</td></tr>
 <tr><td><code><a href='cover.html'>cover</a></code></td><td>First layer covers second layer except where the first layer is <code>NA</code></td></tr>
 <tr><td><code><a href='initialize.html'>init</a></code></td><td>Initialize cells with new values</td></tr>
@@ -227,7 +227,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
     <h2 class="hasAnchor" id="iv-zonal-and-global-computation"><a class="anchor" href="#iv-zonal-and-global-computation"></a>IV. Zonal and global computation</h2>
 
     <p></p><table class='table'>
-<tr><td><code><a href='size.html'>area</a></code></td><td>Compute the total area covered by cells</td></tr>
+<tr><td><code><a href='size.html'>size</a></code></td><td>Compute the summed area of cells</td></tr>
 <tr><td><code><a href='crosstab.html'>crosstab</a></code></td><td>Cross-tabulate two SpatRasters</td></tr>
 <tr><td><code><a href='freq.html'>freq</a></code></td><td>Frequency table of SpatRaster cell values</td></tr>
 <tr><td><code><a href='global.html'>global</a></code></td><td>Summarize SpatRaster cell values with a function</td></tr>
@@ -424,6 +424,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
     
 <table class='table'>
 <tr><td><code><a href='geom.html'>geom</a></code></td><td>returns the geometries as matrix or WKT</td></tr>
+<tr><td><code><a href='crds.html'>crds</a></code></td><td>returns the coordinates as a matrix</td></tr>
 <tr><td><code><a href='linearUnits.html'>linearUnits</a></code></td><td>returns the linear units of the crs (in meter)</td></tr>
 <tr><td><code><a href='dimensions.html'>ncol</a></code></td><td>The number of columns (of the attributes)</td></tr>
 <tr><td><code><a href='dimensions.html'>nrow</a></code></td><td>The number of rows (of the geometries and attributes)</td></tr>
@@ -439,7 +440,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
     
 <table class='table'>
 <tr><td><code><a href='adjacent.html'>adjacent</a></code></td><td>find adjacent polygons</td></tr>
-<tr><td><code><a href='size.html'>area</a></code></td><td>computes the area covered by polygons</td></tr>
+<tr><td><code><a href='size.html'>size</a></code></td><td>computes the area covered by polygons</td></tr>
 <tr><td><code><a href='nearest.html'>nearby</a></code></td><td>find nearby geometries</td></tr>
 <tr><td><code><a href='nearest.html'>nearest</a></code></td><td>find the nearest geometries</td></tr>
 <tr><td><code><a href='relate.html'>relate</a></code></td><td>geometric relationships such as "intersects", "overlaps", and "touches"</td></tr>
@@ -558,7 +559,8 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code><a href='lines.html'>polys</a></code></td><td>Add polygons to a map</td></tr>
 <tr><td><code><a href='text.html'>text</a></code></td><td>Add text (such as the values of a SpatRaster or SpatVector) to a map</td></tr>
 <tr><td><code><a href='image.html'>image</a></code></td><td>Alternative to plot to make a map with a SpatRaster</td></tr>
-<tr><td><code><a href='plotRGB.html'>plotRGB</a></code></td><td>Combine three layers (red, green, blue channels) into a single "real color" image</td></tr>
+<tr><td><code><a href='plotRGB.html'>plotRGB</a></code></td><td>Combine three layers (red, green, blue channels) into a single "real color" plot</td></tr>
+<tr><td><code><a href='RGB.html'>RGB2col</a></code></td><td>Combine three layers (red, green, blue channels) into a single layer with a color-table</td></tr>
 <tr><td><code><a href='dots.html'>dots</a></code></td><td>Make a dot-density map</td></tr>
 <tr><td><code><a href='cartogram.html'>cartogram</a></code></td><td>Make a cartogram</td></tr>
 <tr><td><code><a href='persp.html'>persp</a></code></td><td>Perspective plot of a SpatRaster</td></tr>
@@ -609,6 +611,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code>rasterFromXYZ</code></td><td><code><a href='rast.html'>rast</a>( , type="xyz")</code></td></tr>
 <tr><td><code>stack, addLayer</code> (combining Raster* objects or files)</td><td><code><a href='c.html'>c</a></code></td></tr>
 <tr><td><code>addLayer</code></td><td><code>add&lt;-</code></td></tr>
+<tr><td><code>area</code></td><td><code><a href='cellSize.html'>cellSize</a></code></td></tr>
 <tr><td><code>extent</code></td><td><code><a href='ext.html'>ext</a></code></td></tr>
 <tr><td><code>calc</code></td><td><code><a href='app.html'>app</a></code></td></tr>
 <tr><td><code>overlay</code></td><td><code><a href='lapp.html'>lapp</a></code></td></tr>
@@ -640,8 +643,6 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
 <p>Also note that even if function names are the same in <code>terra</code> and <code>raster</code>, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:</p>
 <table class='table'>
-<tr><td><code><a href='size.html'>area</a></code></td><td>By default, <code>terra</code> returns the summed area of the raster cells that are not <code>NA</code>.</td></tr>
-<tr><td></td><td><code>raster</code> returns a <code>RasterLayer</code>. Use <code>sum=FALSE</code> in <code>terra</code> for that behavior</td></tr>
 <tr><td><code><a href='as.spatvector.html'>as.polygons</a></code></td><td>By default, <code>terra</code> returns dissolved polygons</td></tr>
 <tr><td><code><a href='extract.html'>extract</a></code></td><td>By default, <code>terra</code> returns a matrix, with the first column the sequential ID of the vectors.</td></tr>
 <tr><td></td><td><code>raster</code> returns a list (for lines or polygons) or a matrix (for points, but without the ID</td></tr>
