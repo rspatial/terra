@@ -195,10 +195,10 @@ setMethod("crop", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
-setMethod("convhull", signature(x="SpatVector"), 
+setMethod("convHull", signature(x="SpatVector"), 
 	function(x, by="") {
 		x@ptr <- x@ptr$chull(by[1])
-		messages(x, "convhull")
+		messages(x, "convHull")
 	}
 )
 

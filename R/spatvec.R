@@ -62,7 +62,7 @@ setMethod("geom", signature(x="SpatVector"),
 	}
 )
 
-setMethod("coords", signature(x="SpatVector"), 
+setMethod("crds", signature(x="SpatVector"), 
 	function(x, df=FALSE){
 		g <- x@ptr$coordinates()
 		g <- do.call(cbind, g)
@@ -75,10 +75,10 @@ setMethod("coords", signature(x="SpatVector"),
 	}
 )
 
-setMethod("coords", signature(x="SpatRaster"), 
+setMethod("crds", signature(x="SpatRaster"), 
 	function(x, df=FALSE){
 		x <- as.points(x)
-		coords(x, df=df)
+		crds(x, df=df)
 	}
 )
 

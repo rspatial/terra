@@ -346,7 +346,7 @@ setMethod("spatSample", signature(x="SpatVector"),
 		} else if (grepl(gtype, "points")) {
 			if (!is.null(strata)) {
 				if (inherits(strata, "SpatRaster")) {
-					xy <- coords(x)
+					xy <- crds(x)
 					i <- .grid_sample(xy, size[1], rast(strata), chess) 
 					return(x[i,])
 				} else {

@@ -1,10 +1,10 @@
-\name{coords}
+\name{crds}
 
 \docType{methods}
 
-\alias{coords}
-\alias{coords,SpatVector-method}
-\alias{coords,SpatRaster-method}
+\alias{crds}
+\alias{crds,SpatVector-method}
+\alias{crds,SpatRaster-method}
 
 \title{Get the coordinates of SpatVector geometries or SpatRaster cells}
 
@@ -13,9 +13,9 @@ Get the coordinates of a SpatVector or SpatRaster cells. A matrix or data.frame 
 }
 
 \usage{
-\S4method{coords}{SpatVector}(x, df=FALSE)
+\S4method{crds}{SpatVector}(x, df=FALSE)
 
-\S4method{coords}{SpatRaster}(x, df=FALSE)
+\S4method{crds}{SpatRaster}(x, df=FALSE)
 }
 
 \arguments{
@@ -45,11 +45,11 @@ z <- cbind(z, hole=0)
 z[(z[, "object"]==3 & z[,"part"]==2), "hole"] <- 1
 
 p <- vect(z, "polygons")
-coords(p)
+crds(p)
 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
-g <- coords(v)
+g <- crds(v)
 head(g)
 
 }

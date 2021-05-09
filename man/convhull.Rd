@@ -1,9 +1,9 @@
-\name{convhull}
+\name{convHull}
 
 \docType{methods}
 
-\alias{convhull}
-\alias{convhull,SpatVector-method}
+\alias{convHull}
+\alias{convHull,SpatVector-method}
 \alias{convexhull}
 \alias{convexhull,SpatVector-method}
 
@@ -16,7 +16,7 @@ Get the convex hull of a vector dataset
 }
 
 \usage{
-\S4method{convhull}{SpatVector}(x, by="")
+\S4method{convHull}{SpatVector}(x, by="")
 }
 
 \arguments{
@@ -30,9 +30,9 @@ SpatVector
 
 \examples{
 p <- vect(system.file("ex/lux.shp", package="terra"))
-h <- convhull(p)
+h <- convHull(p)
 
-hh <- convhull(p, "NAME_1")
+hh <- convHull(p, "NAME_1")
 plot(hh, "NAME_1", col=rainbow(10, alpha=.5), lwd=3)
 lines(aggregate(p, "NAME_1"), col="blue", lty=2, lwd=2)
 }

@@ -496,7 +496,7 @@ class SpatRaster {
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster rst_area(bool mask, std::string unit, bool transform, SpatOptions &opt);
-		std::vector<double> sum_area(bool transform, SpatOptions &opt);
+		std::vector<double> sum_area(std::string unit, bool transform, SpatOptions &opt);
 		std::vector<std::vector<double>> area_by_value(SpatOptions &opt);
 
 		SpatRaster arith(SpatRaster x, std::string oper, SpatOptions &opt);

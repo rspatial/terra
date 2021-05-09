@@ -1573,15 +1573,19 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 }
 
 
-std::vector<double> SpatRaster::sum_area(bool transform, SpatOptions &opt) {
+std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatOptions &opt) {
 
 	if (source[0].srs.wkt == "") {
 		setError("empty CRS");
 		return {NAN};
 	}
 
-	std::string unit = "m";
-	
+	std::vector<std::string> f {"m", "km", "ha"};
+	if (std::find(f.begin(), f.end(), unit) == f.end()) {
+		setError("invalid unit");	
+		return {NAN};
+	}
+
 	std::vector<double> out(nlyr(), 0);
 
 	if (transform) { //avoid very large polygon objects
@@ -1666,9 +1670,10 @@ std::vector<double> SpatRaster::sum_area(bool transform, SpatOptions &opt) {
 		
 		}
 	} else {
+		double adj = unit == "m" ? 1 : unit == "km" ? 1000000 : 10000;
 		double m = source[0].srs.to_meter();
 		m = std::isnan(m) ? 1 : m;
-		double ar = xres() * yres() * m * m;
+		double ar = xres() * yres() * m * m / adj;
 		if (!hasValues()) {
 			out.resize(1);
 			out[0] = ncell() * ar;

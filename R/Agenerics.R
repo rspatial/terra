@@ -13,7 +13,7 @@ if (!isGeneric("RGB<-")) {setGeneric("RGB<-", function(x, ..., value) standardGe
 if (!isGeneric("autocor")) {setGeneric("autocor", function(x, ...) standardGeneric("autocor"))}
 if (!isGeneric("delauny")) {setGeneric("delauny", function(x, ...) standardGeneric("delauny"))}
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGeneric("voronoi"))}
-if (!isGeneric("convhull")) {setGeneric("convhull", function(x, ...) standardGeneric("convhull"))}
+if (!isGeneric("convHull")) {setGeneric("convHull", function(x, ...) standardGeneric("convHull"))}
 if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}
 if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y, ...) standardGeneric("intersect"))}
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
@@ -21,7 +21,7 @@ if (!isGeneric("nearby")) {setGeneric("nearby", function(x, ...) standardGeneric
 if (!isGeneric("nearest")) {setGeneric("nearest", function(x, ...) standardGeneric("nearest"))}
 if (!isGeneric("cartogram")) {setGeneric("cartogram", function(x, ...) standardGeneric("cartogram"))}
 if (!isGeneric("dots")) {setGeneric("dots", function(x, ...) standardGeneric("dots"))}
-if (!isGeneric("coords")) {setGeneric("coords", function(x, ...) standardGeneric("coords"))}
+if (!isGeneric("crds")) {setGeneric("crds", function(x, ...) standardGeneric("crds"))}
 if (!isGeneric("symdif")) {setGeneric("symdif", function(x, y, ...) standardGeneric("symdif"))}
 if (!isGeneric("union")) {setGeneric("union", function(x, y, ...) standardGeneric("union"))}
 if (!isGeneric("median")) {setGeneric("median", function(x, na.rm) standardGeneric("median"))}

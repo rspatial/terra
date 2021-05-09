@@ -30,9 +30,10 @@ To avoid name conflicts with the `spatstat` package
 
 - `area,SpatRaster-method(x, sum=FALSE)` -> `cellSize(x)`
 - `area,SpatRaster/SpatVector-method(x, sum=TRUE)` -> `size(x)`
-- `convexhull` -> `convhull`
+- `convexhull` -> `convHull`
 - `perimeter` -> `perim`
 - `tiles` -> `makeTiles`
+- `coords` -> `crds`
 
 
 # version 1.2-5
