@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the coordinates of SpatVector geometries or SpatRaster cells — coords • terra</title>
+<title>Get the coordinates of SpatVector geometries or SpatRaster cells — crds • terra</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Get the coordinates of SpatVector geometries or SpatRaster cells — coords" />
+<meta property="og:title" content="Get the coordinates of SpatVector geometries or SpatRaster cells — crds" />
 <meta property="og:description" content="Get the coordinates of a SpatVector or SpatRaster cells. A matrix or data.frame of the x (longitude) and y (latitude) coordinates is returned." />
 
 
@@ -121,10 +121,10 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>coords</span><span class='op'>(</span><span class='va'>x</span>, df<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>crds</span><span class='op'>(</span><span class='va'>x</span>, df<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>coords</span><span class='op'>(</span><span class='va'>x</span>, df<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
+<span class='fu'>crds</span><span class='op'>(</span><span class='va'>x</span>, df<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,7 +158,7 @@
 <span class='va'>z</span><span class='op'>[</span><span class='op'>(</span><span class='va'>z</span><span class='op'>[</span>, <span class='st'>"object"</span><span class='op'>]</span><span class='op'>==</span><span class='fl'>3</span> <span class='op'>&amp;</span> <span class='va'>z</span><span class='op'>[</span>,<span class='st'>"part"</span><span class='op'>]</span><span class='op'>==</span><span class='fl'>2</span><span class='op'>)</span>, <span class='st'>"hole"</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>
 
 <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>z</span>, <span class='st'>"polygons"</span><span class='op'>)</span>
-<span class='fu'>coords</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+<span class='fu'>crds</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;          x   y
 #&gt;  [1,] -175 -20
 #&gt;  [2,] -140  55
@@ -182,7 +182,7 @@
 #&gt; [20,]   80   0</div><div class='input'>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='va'>g</span> <span class='op'>&lt;-</span> <span class='fu'>coords</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
+<span class='va'>g</span> <span class='op'>&lt;-</span> <span class='fu'>crds</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
 <span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>g</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;             x        y
 #&gt; [1,] 6.026519 50.17767
