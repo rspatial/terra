@@ -55,9 +55,9 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 )
 
 setMethod("cellSize", signature(x="SpatRaster"), 
-	function(x, mask=TRUE, unit="m", correct=TRUE, filename="", ...) {
+	function(x, mask=TRUE, unit="m", transform=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rst_area(mask, unit, correct, opt)
+		x@ptr <- x@ptr$rst_area(mask, unit, transform, opt)
 		messages(x, "cellSize")
 	}
 )

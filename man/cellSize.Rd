@@ -7,7 +7,7 @@
 
 \description{
 
-Compute the area covered by indivual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.
+Compute the area covered by individual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.
 
 Note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area crs. 
 
@@ -15,7 +15,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 }
 
 \usage{
-\S4method{cellSize}{SpatRaster}(x, mask=TRUE, unit="m", filename="", ...)
+\S4method{cellSize}{SpatRaster}(x, mask=TRUE, unit="m", transform=TRUE, filename="", ...)
 }
 
 
@@ -23,6 +23,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
   \item{x}{SpatRaster}
   \item{mask}{logical. If \code{TRUE}, cells that are \code{NA} in \code{x} are also \code{NA} in the output}
   \item{unit}{character. One of "m", "km", or "ha"}
+  \item{transform}{logical. If \code{TRUE}, planar CRS data are transformed to lon/lat for accuracy}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
