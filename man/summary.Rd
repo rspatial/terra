@@ -34,7 +34,7 @@ Compute summary statistics (min, max, mean, and quartiles) for SpatRaster using 
 \examples{
 set.seed(0)
 r <- rast(nrow=10, ncol=10, nlyr=3)
-values(r) <- runif(size(r))
+values(r) <- runif(nlyr(r)*ncell(r))
 summary(r)
 }
 
