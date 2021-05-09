@@ -95,7 +95,7 @@ Also see the methods in section VIII
 \subsection{Other methods}{
 
   \tabular{ll}{
-    \code{\link{area}} \tab Compute the area of cells \cr
+    \code{\link{cellSize}} \tab Compute the area of cells \cr
     \code{\link{classify}} \tab (Re-)classify values \cr
     \code{\link{cover}} \tab First layer covers second layer except where the first layer is \code{NA} \cr
     \code{\link{init}} \tab Initialize cells with new values \cr	
@@ -110,7 +110,7 @@ Also see the methods in section VIII
 
 \section{IV. Zonal and global computation}{
   \tabular{ll}{
-    \code{\link{area}} \tab Compute the total area covered by cells \cr
+    \code{\link{size}} \tab Compute the summed area of cells \cr
     \code{\link{crosstab}} \tab Cross-tabulate two SpatRasters\cr
     \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
     \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
@@ -305,6 +305,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 \section{XIV. Properties of SpatVector objects}{
 \tabular{ll}{
   \code{\link{geom}} \tab returns the geometries as matrix or WKT\cr
+  \code{\link{crds}} \tab returns the coordinates as a matrix\cr
   \code{\link{linearUnits}} \tab returns the linear units of the crs (in meter)\cr
   \code{\link{ncol}}\tab The number of columns (of the attributes)\cr
   \code{\link{nrow}} \tab The number of rows (of the geometries and attributes)\cr
@@ -319,7 +320,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 \section{XV. Geometric queries}{
 \tabular{ll}{
   \code{\link{adjacent}} \tab find adjacent polygons\cr
-  \code{\link{area}} \tab computes the area covered by polygons\cr
+  \code{\link{size}} \tab computes the area covered by polygons\cr
   \code{\link{nearby}} \tab find nearby geometries\cr
   \code{\link{nearest}} \tab find the nearest geometries\cr
   \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr
@@ -451,7 +452,8 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 	\code{\link{polys}} \tab Add polygons to a map \cr
     \code{\link{text}} \tab Add text (such as the values of a SpatRaster or SpatVector) to a map \cr
     \code{\link{image}} \tab Alternative to plot to make a map with a SpatRaster \cr
-    \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" image \cr
+    \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" plot \cr
+    \code{\link{RGB2col}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr
     \code{\link{dots}} \tab Make a dot-density map \cr
     \code{\link{cartogram}} \tab Make a cartogram \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
@@ -504,6 +506,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
+\code{area} \tab\code{\link{cellSize}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr
@@ -534,8 +537,6 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
 
 \tabular{ll}{
-\code{\link{area}}\tab By default, \code{terra} returns the summed area of the raster cells that are not \code{NA}.\cr
-\tab \code{raster} returns a \code{RasterLayer}. Use \code{sum=FALSE} in \code{terra} for that behavior\cr
 \code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
 \code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \cr
 \tab \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID\cr

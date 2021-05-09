@@ -49,13 +49,11 @@ values(r) <- v
 # summed area in km2
 size(r, unit="km")
 
-
 r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
 m <- project(r, "+proj=merc")
 
-a <- suze(m, unit="km")
-b <- global(!is.na(r), "sum")
-
+size(m, unit="km")
+size(m, unit="km", transform=FALSE)
 
 ### SpatVector
 v <- vect(system.file("ex/lux.shp", package="terra"))
