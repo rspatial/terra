@@ -33,10 +33,10 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 }
 
 \value{
-numeric 
+numeric. The sum of the size of the cells that are not \code{NA} 
 }
 
-\seealso{\code{\link{cellSize}} for a the size of individual cells of a raster}
+\seealso{\code{\link{cellSize}} for a the size of individual cells of a raster, that can be summed with \code{\link{global}} or with \code{zonal} to get the area for different categories.
 
 \examples{
 

@@ -3,7 +3,7 @@
 \alias{cellSize}
 \alias{cellSize,SpatRaster-method}
   
-\title{Area covered by raster cells}
+\title{Area covered by each raster cell}
 
 \description{
 
