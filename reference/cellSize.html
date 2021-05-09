@@ -42,7 +42,7 @@
 <meta property="og:title" content="Area covered by raster cells — cellSize" />
 <meta property="og:description" content="
 
-Compute the area covered by indivual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.
+Compute the area covered by individual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.
 Note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area crs.
 For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. If you do not want that, you can instead use init(x, prod(res(x)))" />
 
@@ -123,13 +123,13 @@ For planar CRSs, the area is therefore not computed based on the linear units of
     <div class="ref-description">
     
 
-<p>Compute the area covered by indivual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.</p>
+<p>Compute the area covered by individual raster cells. Computing the surface area of raster cells is particularly relevant for longitude/latitude rasters.</p>
 <p>Note that for both angular (longitude/latitude) and for planar (projected) coordinate reference systems raster cells sizes are generally not constant, unless you are using an equal-area crs.</p>
 <p>For planar CRSs, the area is therefore not computed based on the linear units of the coordinate reference system, but on the *actual* area, correcting for distortion. If you do not want that, you can instead use <code><a href='initialize.html'>init(x, prod(res(x)))</a></code></p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>cellSize</span><span class='op'>(</span><span class='va'>x</span>, mask<span class='op'>=</span><span class='cn'>TRUE</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>cellSize</span><span class='op'>(</span><span class='va'>x</span>, mask<span class='op'>=</span><span class='cn'>TRUE</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, transform<span class='op'>=</span><span class='cn'>TRUE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,6 +145,10 @@ For planar CRSs, the area is therefore not computed based on the linear units of
     <tr>
       <th>unit</th>
       <td><p>character. One of "m", "km", or "ha"</p></td>
+    </tr>
+    <tr>
+      <th>transform</th>
+      <td><p>logical. If <code>TRUE</code>, planar CRS data are transformed to lon/lat for accuracy</p></td>
     </tr>
     <tr>
       <th>filename</th>
