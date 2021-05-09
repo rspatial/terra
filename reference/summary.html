@@ -157,9 +157,15 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>)</span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>10</span>, ncol<span class='op'>=</span><span class='fl'>10</span>, nlyr<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fu'><a href='size.html'>size</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: vector memory exhausted (limit reached?)</span></div><div class='input'><span class='fu'>summary</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': [spatSample] SpatRaster has no values</span></div></pre>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fu'><a href='dimensions.html'>nlyr</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>*</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>summary</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;      lyr.1             lyr.2             lyr.3        
+#&gt;  Min.   :0.01339   Min.   :0.01308   Min.   :0.02779  
+#&gt;  1st Qu.:0.32308   1st Qu.:0.28440   1st Qu.:0.18947  
+#&gt;  Median :0.48781   Median :0.51860   Median :0.37810  
+#&gt;  Mean   :0.52076   Mean   :0.51569   Mean   :0.43403  
+#&gt;  3rd Qu.:0.77171   3rd Qu.:0.72570   3rd Qu.:0.63596  
+#&gt;  Max.   :0.99191   Max.   :0.99268   Max.   :0.98156  </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
