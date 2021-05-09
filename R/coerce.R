@@ -1,4 +1,4 @@
-# Author: Robfert J. Hijmans 
+# Author: Robert J. Hijmans 
 # Date : October 2018
 # Version 1.0
 # License GPL v3

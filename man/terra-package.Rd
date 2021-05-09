@@ -71,7 +71,7 @@ Also see the methods in section VIII
 
   \tabular{ll}{
     \code{\link{app}} \tab Apply a function to all cells, across layers, typically to summarize (as in \code{base::apply}) \cr
-    \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply} and \code{base::aggregate})\cr
+    \code{\link{tapp}} \tab Apply a function to groups of layers (as in \code{base::tapply} and \code{stats::aggregate})\cr
     \code{\link{lapp}} \tab Apply a function to using the layers of a SpatRaster as variables\cr
     \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
@@ -467,7 +467,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
   \tabular{ll}{
     \code{\link{zoom}} \tab Zoom in to a part of a map by drawing a bounding box on it \cr
     \code{\link{click}} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
-    \code{\link{select}} \tab Select a spatial subset of a SpatRaster or SpatVector by drawing on a map\cr
+    \code{\link{sel}} \tab Select a spatial subset of a SpatRaster or SpatVector by drawing on a map\cr
     \code{\link{draw}} \tab Create a SpatExtent or SpatVector by drawing on a map \cr
 	}
 }
