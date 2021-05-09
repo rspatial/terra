@@ -152,21 +152,33 @@ For vector data, the best way to compute area is to use the longitude/latitude C
     <p>numeric. The sum of the size of the cells that are not <code>NA</code></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='cellSize.html'>cellSize</a></code> for a the size of individual cells of a raster, that can be summed with <code><a href='global.html'>global</a></code> or with <code>zonal</code> to get the area for different categories.</p>
-<p>### SpatRaster 
-r &lt;- rast(nrow=18, ncol=36)
-v &lt;- 1:ncell(r)
-v[200:400] &lt;- NA
-values(r) &lt;- v# summed area in km2
-size(r, unit="km")r &lt;- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
-m &lt;- project(r, "+proj=merc")size(m, unit="km")
-size(m, unit="km", transform=FALSE)### SpatVector
-v &lt;- vect(system.file("ex/lux.shp", package="terra"))a &lt;- size(v)
-a
-sum(a)</p>
-<p>methods
-spatial</p></div>
+    <div class='dont-index'><p><code><a href='cellSize.html'>cellSize</a></code> for a the size of individual cells of a raster, that can be summed with <code><a href='global.html'>global</a></code> or with <code><a href='zonal.html'>zonal</a></code> to get the area for different categories.</p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'>### SpatRaster </span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>18</span>, ncol<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span>
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+<span class='va'>v</span><span class='op'>[</span><span class='fl'>200</span><span class='op'>:</span><span class='fl'>400</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>v</span>
+
+<span class='co'># summed area in km2</span>
+<span class='fu'>size</span><span class='op'>(</span><span class='va'>r</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 273986501</div><div class='input'>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncol<span class='op'>=</span><span class='fl'>90</span>, nrow<span class='op'>=</span><span class='fl'>45</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymax<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='project.html'>project</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>"+proj=merc"</span><span class='op'>)</span>
+
+<span class='fu'>size</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 498749680</div><div class='input'><span class='fu'>size</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span>, transform<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1241591858</div><div class='input'>
+<span class='co'>### SpatVector</span>
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>size</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
+<span class='va'>a</span>
+</div><div class='output co'>#&gt;  [1] 312283206 218674025 259454806  76200409 263174257 188282143 128991500
+#&gt;  [8] 210354494 185630770 251322021 237113004 233329960</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 2564810595</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
