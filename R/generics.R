@@ -65,9 +65,11 @@ setMethod("cellSize", signature(x="SpatRaster"),
 setMethod("area", signature(x="SpatRaster"), 
 	function(x, cells=TRUE, ...) {
 		if (cells) {
-			error("area", 'area(x, sum=FALSE) was removed. Use "cellSize(x)"')
+			warn("area", 'area(x, sum=FALSE) was removed. Use "cellSize(x)"')
+			cellSize(x, ...)
 		} else {
-			error("area", 'area(x, sum=TRUE) was removed. Use "global(cellSize(x), "sum")"')		
+			warn("area", 'area(x, sum=TRUE) was removed. Use "size(x)" or "global(cellSize(x), "sum")"')
+			size(x, ...)			
 		}		
 	}
 )
