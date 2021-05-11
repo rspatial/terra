@@ -28,6 +28,7 @@
 #include "cpl_conv.h" // for CPLMalloc()
 #include "cpl_string.h"
 #include "ogr_spatialref.h"
+#include "gdal_rat.h"
 
 #include "gdalio.h"
 
@@ -40,6 +41,48 @@ bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
 	CPLErr err = poBand->SetCategoryNames(labs);
 	return (err == CE_None);
 }
+
+
+
+bool setRAT(GDALRasterBand *poBand, SpatDataFrame &d) {
+
+	GDALRasterAttributeTable *pRat = poBand->GetDefaultRAT();
+	size_t nr = d.nrow();
+	pRat->SetRowCount(nr);
+	std::vector<std::string> nms = d.get_names();
+	
+	for (size_t i=0; i<nms.size(); i++) {
+		if (d.itype[i] == 0) {
+			if (pRat->CreateColumn(nms[i].c_str(), GFT_Real, GFU_Generic) != CE_None) {
+				return false;
+			};
+			std::vector<double> v = d.dv[d.iplace[i]];
+			if( pRat->ValuesIO(GF_Write, i, 0, nr, &v[0]) != CE_None ) {
+				return false;				
+			}
+		} else if (d.itype[i] == 1) {
+			if (pRat->CreateColumn(nms[i].c_str(), GFT_Integer, GFU_Generic) != CE_None) {
+				return false;
+			}
+			std::vector<long> v = d.iv[d.iplace[i]];
+			for (size_t j=0; j<v.size(); j++) {
+				pRat->SetValue(j, i, (int)v[j]);
+			}
+		} else {
+			if (pRat->CreateColumn(nms[i].c_str(), GFT_String, GFU_Generic) != CE_None) {
+				return false;
+			}
+			std::vector<std::string> v = d.sv[d.iplace[i]];
+			for (size_t j=0; j<v.size(); j++) {
+				pRat->SetValue(j, i, v[j].c_str());
+			}
+		}
+	}
+	CPLErr err = poBand->SetDefaultRAT(pRat);
+	delete pRat;
+	return (err == CE_None);
+}
+
 
 
 bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {

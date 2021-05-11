@@ -570,7 +570,7 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 					g.addPart(p);
 				}
 			} else {
-				SpatPart p({NAN}, {NAN});
+				SpatPart p(NAN, NAN);
 				g.addPart(p);
 			}
 			lastpart = part[i];
@@ -608,7 +608,7 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 			g.addPart(p);
 		}
 	} else {
-		SpatPart p({NAN}, {NAN});
+		SpatPart p(NAN, NAN);
 		g.addPart(p);
 	}
 	addGeom(g);
