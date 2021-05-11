@@ -2,6 +2,7 @@
 
 \docType{methods}
 
+\alias{size}
 \alias{length}
 \alias{ncol}
 \alias{nrow}
@@ -16,6 +17,7 @@
 \alias{nrow<-}
 \alias{nlyr<-}
 \alias{res<-}
+\alias{size,SpatRaster-method}
 \alias{ncell,ANY-method}
 \alias{nrow,SpatRaster-method}
 \alias{ncol,SpatRaster-method}
@@ -53,7 +55,9 @@
 \title{Dimensions of a SpatRaster or SpatVector and related objects}
 
 \description{
-Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}) or the spatial resolution of a SpatRaster; (\code{length}) returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.
+Get the number of rows (\code{nrow}), columns (\code{ncol}), cells (\code{ncell}), layers (\code{nlyr}), sources (\code{nsrc}), the size \code{size} (\code{nlyr(x)*ncell(x)}), or spatial resolution of a SpatRaster.
+
+\code{length} returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.
 
 For a SpatVector \code{length(x)} is the same as \code{nrow(x)}.
 

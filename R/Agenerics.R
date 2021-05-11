@@ -89,6 +89,7 @@ if (!isGeneric("sel")) {setGeneric("sel", function(x, ...) standardGeneric("sel"
 if (!isGeneric("segregate")) {setGeneric("segregate", function(x, ...) standardGeneric("segregate"))}
 if (!isGeneric("selectRange")) {setGeneric("selectRange", function(x, ...) standardGeneric("selectRange"))}
 if (!isGeneric("setValues")) {setGeneric("setValues", function(x, ...) standardGeneric("setValues"))}
+if (!isGeneric("expanse")) {setGeneric("expanse", function(x, ...) standardGeneric("expanse"))}
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}
 if (!isGeneric("sources")) {setGeneric("sources", function(x, ...) standardGeneric("sources"))}
 if (!isGeneric("spatSample")) { setGeneric("spatSample", function(x, ...) standardGeneric("spatSample"))}

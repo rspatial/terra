@@ -110,7 +110,7 @@ Also see the methods in section VIII
 
 \section{IV. Zonal and global computation}{
   \tabular{ll}{
-    \code{\link{size}} \tab Compute the summed area of cells \cr
+    \code{\link{expanse}} \tab Compute the summed area of cells \cr
     \code{\link{crosstab}} \tab Cross-tabulate two SpatRasters\cr
     \code{\link{freq}} \tab Frequency table of SpatRaster cell values \cr
     \code{\link{global}} \tab Summarize SpatRaster cell values with a function \cr
@@ -320,7 +320,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 \section{XV. Geometric queries}{
 \tabular{ll}{
   \code{\link{adjacent}} \tab find adjacent polygons\cr
-  \code{\link{size}} \tab computes the area covered by polygons\cr
+  \code{\link{expanse}} \tab computes the area covered by polygons\cr
   \code{\link{nearby}} \tab find nearby geometries\cr
   \code{\link{nearest}} \tab find the nearest geometries\cr
   \code{\link{relate}} \tab geometric relationships such as "intersects", "overlaps", and "touches"\cr

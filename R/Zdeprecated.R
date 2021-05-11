@@ -1,6 +1,26 @@
 
 ## spatstat conflicts
 
+setMethod("area", signature(x="SpatRaster"), 
+	function(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...) {
+		if (!sum) {
+			warn("area", 'area(x, sum=FALSE) will be removed. Use "cellSize(x)"')
+			cellSize(x, mask=mask, transform=correct, filename=filename, ...)
+		} else {
+			warn("area", 'area(x, sum=TRUE) will be removed. Use "expanse(x)" or "global(cellSize(x), "sum")"')
+			expanse(x, transform=correct, ...)			
+		}		
+	}
+)
+
+setMethod("area", signature(x="SpatVector"), 
+	function(x, ...) {
+		warn("area", 'area was removed. Use "expanse(x)"')
+		expanse(x)
+	}
+)
+
+
 if (!isGeneric("convexhull")) {setGeneric("convexhull", function(x, ...) standardGeneric("convexhull"))}
 setMethod("convexhull", signature(x="SpatVector"), 
 	function(x) {

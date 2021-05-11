@@ -32,6 +32,8 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 numeric (area)
 }
 
+\seealso{\code{\link{expanse}}}
+
 \examples{
 
 # SpatRaster 

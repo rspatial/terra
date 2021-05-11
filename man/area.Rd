@@ -1,15 +1,15 @@
-\name{size}
+\name{expanse}
 
-\alias{size}
-\alias{size,SpatRaster-method}
-\alias{size,SpatVector-method}
+\alias{expanse}
+\alias{expanse,SpatRaster-method}
+\alias{expanse,SpatVector-method}
 
 \alias{area}
 \alias{area,SpatRaster-method}
 \alias{area,SpatVector-method}
 
   
-\title{Get the size (area) for individual polygons or for all (summed) raster cells}
+\title{Get the expanse (area) of individual polygons or for all (summed) raster cells}
 
 \description{
 Compute the area covered by polygons or for all raster cells that are not \code{NA}. 
@@ -20,9 +20,9 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 }
 
 \usage{
-\S4method{size}{SpatRaster}(x, unit="m", transform=TRUE)
+\S4method{expanse}{SpatRaster}(x, unit="m", transform=TRUE)
 
-\S4method{size}{SpatVector}(x, unit="m", transform=TRUE)
+\S4method{expanse}{SpatVector}(x, unit="m", transform=TRUE)
 }
 
 
@@ -49,18 +49,18 @@ v[200:400] <- NA
 values(r) <- v
 
 # summed area in km2
-size(r, unit="km")
+expanse(r, unit="km")
 
 r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
 m <- project(r, "+proj=merc")
 
-size(m, unit="km")
-size(m, unit="km", transform=FALSE)
+expanse(m, unit="km")
+expanse(m, unit="km", transform=FALSE)
 
 ### SpatVector
 v <- vect(system.file("ex/lux.shp", package="terra"))
 
-a <- size(v)
+a <- expanse(v)
 a
 sum(a)
 }

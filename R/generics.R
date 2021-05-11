@@ -62,33 +62,24 @@ setMethod("cellSize", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("area", signature(x="SpatRaster"), 
-	function(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...) {
-		if (!sum) {
-			warn("area", 'area(x, sum=FALSE) will be removed. Use "cellSize(x)"')
-			cellSize(x, mask=mask, transform=correct, filename=filename, ...)
-		} else {
-			warn("area", 'area(x, sum=TRUE) will be removed. Use "size(x)" or "global(cellSize(x), "sum")"')
-			size(x, transform=correct, ...)			
-		}		
-	}
-)
 
 
-setMethod ("size", "SpatRaster", 
+setMethod ("expanse", "SpatRaster", 
 	function(x, unit="m", transform=TRUE) {
 
 		byvalue = FALSE
 		opt <- spatOptions()
 		if (byvalue) {
 			v <- x@ptr$area_by_value(opt)
+			x <- messages(x, "expanse")
 			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
 			v <- do.call(rbind, v)
 			colnames(v) <- c("layer", "value", "area")
-			return(v)
 		} else {
-			x@ptr$sum_area(unit, transform, opt)
+			v <- x@ptr$sum_area(unit, transform, opt)
+			x <- messages(x, "expanse")
 		}
+		return(v)
 	}
 )
 

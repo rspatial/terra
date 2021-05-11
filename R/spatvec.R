@@ -115,20 +115,14 @@ setMethod("as.list", signature(x="SpatVector"),
 
 
 
-setMethod ("size", "SpatVector", 
+setMethod ("expanse", "SpatVector", 
 	function(x, unit="m", transform=TRUE) {
 		a <- x@ptr$area(unit, transform, double());
-		x <- messages(x, "size");
+		x <- messages(x, "expanse");
 		return(a)
 	}
 )
 
-setMethod("area", signature(x="SpatVector"), 
-	function(x, ...) {
-		warn("area", 'area was removed. Use "size(x)"')
-		size(x)
-	}
-)
 
 setMethod("perim", signature(x="SpatVector"), 
 	function(x) {
