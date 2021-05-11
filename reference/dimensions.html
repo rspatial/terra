@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Dimensions of a SpatRaster or SpatVector and related objects — dimensions" />
-<meta property="og:description" content="Get the number of rows (nrow), columns (ncol), cells (ncell), layers (nlyr), sources (nsrc) or the spatial resolution of a SpatRaster; (length) returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.
+<meta property="og:description" content="Get the number of rows (nrow), columns (ncol), cells (ncell), layers (nlyr), sources (nsrc), the size size (nlyr(x)*ncell(x)), or spatial resolution of a SpatRaster.
+length returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.
 For a SpatVector length(x) is the same as nrow(x).
 You can also set the number of rows or columns or layers. When setting dimensions, all cell values are dropped." />
 
@@ -119,7 +120,8 @@ You can also set the number of rows or columns or layers. When setting dimension
     </div>
 
     <div class="ref-description">
-    <p>Get the number of rows (<code>nrow</code>), columns (<code>ncol</code>), cells (<code>ncell</code>), layers (<code>nlyr</code>), sources (<code>nsrc</code>) or the spatial resolution of a SpatRaster; (<code>length</code>) returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.</p>
+    <p>Get the number of rows (<code>nrow</code>), columns (<code>ncol</code>), cells (<code>ncell</code>), layers (<code>nlyr</code>), sources (<code>nsrc</code>), the size <code>size</code> (<code>nlyr(x)*ncell(x)</code>), or spatial resolution of a SpatRaster.</p>
+<p><code>length</code> returns the number of sub-datasets in a SpatRasterDataset or SpatVectorCollection.</p>
 <p>For a SpatVector <code>length(x)</code> is the same as <code>nrow(x)</code>.</p>
 <p>You can also set the number of rows or columns or layers. When setting dimensions, all cell values are dropped.</p>
     </div>

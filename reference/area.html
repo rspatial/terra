@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the size (area) for individual polygons or for all (summed) raster cells — size • terra</title>
+<title>Get the expanse (area) of individual polygons or for all (summed) raster cells — expanse • terra</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Get the size (area) for individual polygons or for all (summed) raster cells — size" />
+<meta property="og:title" content="Get the expanse (area) of individual polygons or for all (summed) raster cells — expanse" />
 <meta property="og:description" content="Compute the area covered by polygons or for all raster cells that are not NA.
 This method computes areas for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be important if the coordinate reference system is planar, but not equal-area.
 For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system. This is done automatically, if transform=TRUE." />
@@ -113,7 +113,7 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the size (area) for individual polygons or for all (summed) raster cells</h1>
+    <h1>Get the expanse (area) of individual polygons or for all (summed) raster cells</h1>
     
     <div class="hidden name"><code>area.Rd</code></div>
     </div>
@@ -125,10 +125,10 @@ For vector data, the best way to compute area is to use the longitude/latitude C
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>x</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, transform<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>expanse</span><span class='op'>(</span><span class='va'>x</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, transform<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>x</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, transform<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>expanse</span><span class='op'>(</span><span class='va'>x</span>, unit<span class='op'>=</span><span class='st'>"m"</span>, transform<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,18 +163,18 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>v</span>
 
 <span class='co'># summed area in km2</span>
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>r</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
+<span class='fu'>expanse</span><span class='op'>(</span><span class='va'>r</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 273986501</div><div class='input'>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncol<span class='op'>=</span><span class='fl'>90</span>, nrow<span class='op'>=</span><span class='fl'>45</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymax<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='project.html'>project</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>"+proj=merc"</span><span class='op'>)</span>
 
-<span class='fu'>size</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 498749680</div><div class='input'><span class='fu'>size</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span>, transform<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>expanse</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 498749680</div><div class='input'><span class='fu'>expanse</span><span class='op'>(</span><span class='va'>m</span>, unit<span class='op'>=</span><span class='st'>"km"</span>, transform<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 1241591858</div><div class='input'>
 <span class='co'>### SpatVector</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>size</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>expanse</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
 <span class='va'>a</span>
 </div><div class='output co'>#&gt;  [1] 312283206 218674025 259454806  76200409 263174257 188282143 128991500
 #&gt;  [8] 210354494 185630770 251322021 237113004 233329960</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span>
