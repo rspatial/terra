@@ -1938,3 +1938,28 @@ void SpatRaster::removeRGB(){
 }
 
 
+
+bool SpatRaster::to_memory() {
+	if ((nsrc() == 1) & (source[0].memory)) {
+		return true;
+	}
+	SpatRaster g = geometry();
+	SpatRasterSource s = g.source[0];
+	s.hasValues = true;
+	s.memory = true;
+	s.names = getNames();
+	s.driver = "memory";
+	source[0].values = getValues();
+	return true;
+}
+
+
+SpatRaster SpatRaster::to_memory_copy() {
+	SpatRaster m = geometry();
+	SpatOptions opt;
+	std::vector<double> v = getValues();
+	m.setValues(v, opt);
+	return m;
+}
+
+

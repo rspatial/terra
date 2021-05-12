@@ -44,40 +44,55 @@ bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
 
 
 
-bool setRAT(GDALRasterBand *poBand, SpatDataFrame &d) {
+bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 
 	GDALRasterAttributeTable *pRat = poBand->GetDefaultRAT();
+	if (pRat == NULL) {
+		return false;
+	}
 	size_t nr = d.nrow();
-	pRat->SetRowCount(nr);
-	std::vector<std::string> nms = d.get_names();
 	
-	for (size_t i=0; i<nms.size(); i++) {
+	for (size_t i=0; i<d.ncol(); i++) {
+		const char *fn = d.names[i].c_str();
 		if (d.itype[i] == 0) {
-			if (pRat->CreateColumn(nms[i].c_str(), GFT_Real, GFU_Generic) != CE_None) {
+			if (pRat->CreateColumn(fn, GFT_Real, GFU_Generic) != CE_None) {
+				delete pRat;
 				return false;
 			};
+		} else if (d.itype[i] == 1) {
+			if (pRat->CreateColumn(fn, GFT_Integer, GFU_Generic) != CE_None) {
+				delete pRat;
+				return false;
+			}
+		} else {
+			if (pRat->CreateColumn(fn, GFT_String, GFU_Generic) != CE_None) {
+				delete pRat;
+				return false;
+			}
+		}
+	}
+
+	pRat->SetRowCount(nr);
+	for (size_t i=0; i<d.ncol(); i++) {
+		Rcpp::Rcout << i << std::endl;
+		if (d.itype[i] == 0) {
 			std::vector<double> v = d.dv[d.iplace[i]];
 			if( pRat->ValuesIO(GF_Write, i, 0, nr, &v[0]) != CE_None ) {
 				return false;				
 			}
 		} else if (d.itype[i] == 1) {
-			if (pRat->CreateColumn(nms[i].c_str(), GFT_Integer, GFU_Generic) != CE_None) {
-				return false;
-			}
 			std::vector<long> v = d.iv[d.iplace[i]];
 			for (size_t j=0; j<v.size(); j++) {
 				pRat->SetValue(j, i, (int)v[j]);
 			}
 		} else {
-			if (pRat->CreateColumn(nms[i].c_str(), GFT_String, GFU_Generic) != CE_None) {
-				return false;
-			}
 			std::vector<std::string> v = d.sv[d.iplace[i]];
 			for (size_t j=0; j<v.size(); j++) {
 				pRat->SetValue(j, i, v[j].c_str());
 			}
 		}
 	}
+
 	CPLErr err = poBand->SetDefaultRAT(pRat);
 	delete pRat;
 	return (err == CE_None);
@@ -395,10 +410,19 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			}
 		}
 		if (hasCats[i]) {
-			std::vector<std::string> cats = getLabels(i);
-			if (!setCats(poBand, cats)) {
-				addWarning("could not write categories");
-			}
+			//bool catsdone = false;
+			//SpatCategories cats = getLayerCategories(i);
+			//if (cats.d.ncol() > 2) {
+			//	if (!setRat(poBand, cats.d)) {
+			//		catsdone = true;
+			//	}
+			//}
+			//if (!catsdone) {
+				std::vector<std::string> labs = getLabels(i);
+				if (!setCats(poBand, labs)) {
+					addWarning("could not write categories");
+				}
+			//}
 		}
 
 		/*

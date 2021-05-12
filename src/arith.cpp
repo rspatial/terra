@@ -22,7 +22,7 @@
 #include "vecmath.h"
 //#include "modal.h"
 
-
+/*
 // need to take care of NAs here. OK for NAN, but not for int types
 //template <typename T>
 //void operator+(std::vector<T>& a, const std::vector<T>& b) {
@@ -33,7 +33,7 @@ void operator+(std::vector<double>& a, const std::vector<double>& b) {
 
 //template <typename T>
 void operator-(std::vector<double>& a, const std::vector<double>& b) {
-    std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::minus<double>());
+   std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::minus<double>());
 }
 
 
@@ -47,7 +47,7 @@ void operator*(std::vector<double>& a, const std::vector<double>& b) {
     std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::multiplies<double>());
 }
 
-
+*/
 
 //template <typename T>
 void operator%(std::vector<double>& a, const std::vector<double>& b) {
@@ -193,13 +193,13 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		std::vector<double> b = x.readBlock(out.bs, i);
 		recycle(a,b);
 		if (oper == "+") {
-			a + b;
+			std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::plus<double>());
 		} else if (oper == "-") {
-			a - b;
+			std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::minus<double>());
 		} else if (oper == "*") {
-			a * b;
+			std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::multiplies<double>());
 		} else if (oper == "/") {
-			a / b;
+			std::transform(a.begin(), a.end(), b.begin(), a.begin(), std::divides<double>());
 		} else if (oper == "^") {
 			power(a, b);
 		} else if (oper == "%") {

@@ -80,6 +80,7 @@ class SpatRasterSource {
 		bool hasWindow=false;
 		SpatWindow window;
 	
+
 		bool multidim = false;
 		size_t m_ndims;
 		std::vector<size_t> m_dims;
@@ -141,11 +142,15 @@ class SpatRasterSource {
 
 //		std::vector<SpatRasterSource> subset(std::vector<unsigned> lyrs);
 		SpatRasterSource subset(std::vector<unsigned> lyrs);
-		std::vector<double> getValues(unsigned lyr);
+		void getValues(std::vector<double> &v, unsigned lyr);
+		void appendValues(std::vector<double> &v, unsigned lyr);
+		
 		void setRange();
 		void resize(unsigned n);
 		bool in_order();
 		bool combine_sources(const SpatRasterSource &x);
+		bool combine(SpatRasterSource &x);
+		
 
 		bool parameters_changed = false;		
 		
@@ -172,14 +177,9 @@ class SpatRaster {
 		bool gdal_minmax = true;
 
 	protected:
-		//SpatExtent extent;
 		SpatExtent window;
-		//SpatSRS srs;
 
 	public:
-	//	std::string prj;
-
-	//	bool GDALregistred = false;
 
 #ifdef useRcpp
 		Progress* pbar;
@@ -189,8 +189,6 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 // properties and property-like methods for entire object
 ////////////////////////////////////////////////////
-
-		//std::string name;
 		
 		std::vector<SpatRasterSource> source;
 
@@ -332,6 +330,8 @@ class SpatRaster {
 
 		void addSource(SpatRaster x);	
 		SpatRaster combineSources(SpatRaster x);
+		void combine(SpatRaster x);
+		
 		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions &opt);
 		SpatRaster replace(SpatRaster x, unsigned layer, SpatOptions &opt);
 ////////////////////////////////////////////////////
@@ -490,6 +490,8 @@ class SpatRaster {
 ////////////////////////////////////////////////////
 
 		SpatRaster collapse_sources();
+		void collapse();
+		
 		SpatRaster rectify(std::string method, SpatRaster aoi, unsigned useaoi, bool snap, SpatOptions &opt);
 		
         std::vector<std::vector<double>> adjacent(std::vector<double> cells, std::string directions, bool include);

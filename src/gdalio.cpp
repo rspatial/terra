@@ -453,22 +453,6 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt) {
 }
 
 
-bool SpatRaster::to_memory() {
-	std::vector<double> v = getValues();
-	SpatOptions opt;
-	setValues(v, opt);
-	return true;
-}
-
-SpatRaster SpatRaster::to_memory_copy() {
-	SpatRaster m = geometry();
-	SpatOptions opt;
-	std::vector<double> v = getValues();
-	m.setValues(v, opt);
-	return m;
-}
-
-
 
 bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 
