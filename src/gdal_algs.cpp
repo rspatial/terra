@@ -251,7 +251,6 @@ bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::s
 	if( hCT != NULL )
 		GDALSetRasterColorTable( GDALGetRasterBand(hDstDS,1), hCT );
 
-
 	return true;
 }
 

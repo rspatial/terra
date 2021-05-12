@@ -239,7 +239,12 @@ function(x, y, ...) {
 	#	colnames(r) <- c("ID", names(x))
 	#} else {
 	y <- vect(y)
-	extract(x, y, ...)[,-1,drop=FALSE]
+	e <- extract(x, y, ...)
+	if (!is.list(e)) {
+		e[,-1,drop=FALSE]
+	} else {
+		e
+	}
 	#}
 })
 
