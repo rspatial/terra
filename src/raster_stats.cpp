@@ -390,23 +390,33 @@ void jointstats(const std::vector<double> &u, const std::vector<double> &v, cons
 	}
 	if (fun=="sum") {
 		for (size_t i=0; i<u.size(); i++) {	
-			out[i] += vsum(dat[i], false);
+			if (dat[i].size() > 0) {
+				out[i] += vsum(dat[i], false);
+			}
 		}
 	}
 	if (fun=="mean") {
 		for (size_t i=0; i<u.size(); i++) {	
-			out[i] += vsum(dat[i], false);
-			cnt[i] += dat[i].size();
+			if (dat[i].size() > 0) {
+				out[i] += vsum(dat[i], false);
+				cnt[i] += dat[i].size();
+			}
 		}
 	}
 	if (fun=="min") {
 		for (size_t i=0; i<u.size(); i++) {	
-			out[i] += std::min(out[i], vmin(dat[i], false));
+			if (dat[i].size() > 0) {
+				double mn = vmin(dat[i], false);
+				out[i] = std::min(out[i], mn);
+			}
 		}
 	}
 	if (fun=="max") {
 		for (size_t i=0; i<u.size(); i++) {	
-			out[i] += std::max(out[i], vmax(dat[i], false));
+			if (dat[i].size() > 0) {
+				double mx = vmax(dat[i], false);
+				out[i] = std::max(out[i], mx);
+			}
 		}
 	}
 }
@@ -504,7 +514,9 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 				}
 			}
 		}
-	} else if (fun == "min") {
+	} 
+	
+	else if (fun == "min") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			for (size_t j=0; j<u.size(); j++) {
 				if (stats[lyr][j] == posinf) {
