@@ -242,8 +242,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
         setError( "Layer creation failed" );
         return poDS;
     }
-	if (SRS != NULL) SRS->Release();
-
+//	if (SRS != NULL) SRS->Release();
+	if (SRS != NULL) OSRDestroySpatialReference(SRS);
+	
 	std::vector<std::string> nms = get_names();
 	std::vector<std::string> tps = df.get_datatypes();
 	OGRFieldType otype;

@@ -186,10 +186,10 @@ bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::s
 
 	// Get Source coordinate system.
 	// const char *pszSrcWKT = GDALGetProjectionRef( hSrcDS );
-	 const char *pszSrcWKT = srccrs.c_str();
+	const char *pszSrcWKT = srccrs.c_str();
 	if ( pszSrcWKT == NULL || strlen(pszSrcWKT) == 0 ) {
 		msg = "data source has no WKT";
-		return false;	
+		return false;
 	}
 
 	OGRSpatialReference* oSRS = new OGRSpatialReference;
@@ -250,6 +250,9 @@ bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::s
 	hCT = GDALGetRasterColorTable( GDALGetRasterBand(hSrcDS,1) );
 	if( hCT != NULL )
 		GDALSetRasterColorTable( GDALGetRasterBand(hDstDS,1), hCT );
+
+	CPLFree(pszDstWKT);
+ 	delete oSRS;
 
 	return true;
 }
