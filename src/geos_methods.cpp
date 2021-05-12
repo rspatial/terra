@@ -564,6 +564,8 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 }  
 
 
+
+
 SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 	SpatVector out;
 

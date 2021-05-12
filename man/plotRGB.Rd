@@ -14,9 +14,10 @@ Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (so
 
 
 \usage{
-\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, 
-		ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, 
-		zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...)
+\S4method{plotRGB}{SpatRaster}(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, 
+		stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, 
+		addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", 
+		asp=NULL, add=FALSE, interpolate, ...)
 }
 
 \arguments{

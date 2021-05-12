@@ -155,7 +155,12 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	geo <- geomtype(y)
 	if (geo == "points") {
-		e <- matrix(e, ncol=nc, byrow=TRUE)		
+		## this was? should be fixed upstream
+		#if (nc == nlyr(x)) {		
+		#	e <- matrix(e, ncol=nc)
+		#} else {
+		e <- matrix(e, ncol=nc)		
+		#}
 		e <- cbind(1:nrow(e), e)
 	} else {
 		e <- matrix(e, ncol=nc+1, byrow=TRUE)

@@ -211,6 +211,7 @@ setMethod("disaggregate", signature(x="SpatVector"),
 )
 
 
+
 setMethod("voronoi", signature(x="SpatVector"), 
 	function(x, bnd=NULL, tolerance=0, as.lines=FALSE) {
 		if (is.null(bnd)) {

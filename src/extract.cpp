@@ -506,6 +506,18 @@ std::vector<std::vector<double>> SpatRaster::extractXY(const std::vector<double>
 
 std::vector<double> SpatRaster::extractXYFlat(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells) {
 
+// <layer<values>>
+	std::vector<std::vector<double>> e = extractXY(x, y, method, cells);
+	std::vector<double> out = e[0];
+	for (size_t i=1; i<e.size(); i++) {
+		out.insert(out.end(), e[i].begin(), e[i].end());
+	}
+	return out;
+}
+
+/*
+std::vector<double> SpatRaster::extractXYFlat(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells) {
+
     unsigned nl = nlyr();
     unsigned np = x.size();
 	if (!hasValues()) {
@@ -533,7 +545,7 @@ std::vector<double> SpatRaster::extractXYFlat(const std::vector<double> &x, cons
 	}
 	return out;
 }
-
+*/
 
 
 // <geom<layer<values>>>
@@ -843,16 +855,12 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 	rc = rowColFromCell(cell);
 
 	size_t n  = cell.size();
-	if (!hasValues()) {
-		std::vector<double> out(nlyr() * n, NAN);
-		return out;
-	}
-	std::vector<double> out;
-	out.reserve(nlyr() * n);
+	std::vector<double> out(nlyr() * n, NAN);
 
 	unsigned ns = nsrc();
 	unsigned lyr = 0;
 	size_t nc;
+	size_t off = 0;
 	for (size_t src=0; src<ns; src++) {
 		unsigned slyrs = source[src].layers.size();
 		bool win = source[src].hasWindow;
@@ -876,20 +884,17 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 		if (source[src].memory) {
 			for (size_t i=0; i<slyrs; i++) {
 				size_t j = i * nc;
+				size_t off2 = off + i*n;
 				if (win) {
 					for (size_t k=0; k<n; k++) {
 						if (!is_NA(wcell[k]) && wcell[k] >= 0 && wcell[k] < nc) {
-							out.push_back( source[src].values[j + wcell[k]] );
-						} else {
-							out.push_back(NAN);
-						}
+							out[off2+k] = source[src].values[j + wcell[k]] ;
+						} 
 					}				
 				} else {
 					for (size_t k=0; k<n; k++) {
 						if (!is_NA(cell[k]) && cell[k] >= 0 && cell[k] < nc) {
-							out.push_back( source[src].values[j + cell[k]] );
-						} else {
-							out.push_back(NAN);
+							out[off2+k] = source[src].values[j + cell[k]];
 						}
 					}
 				}
@@ -906,12 +911,19 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 			} else {
 				g = readRowColGDALFlat(src, rc[0], rc[1]);
 			}
-			out.insert(out.end(), g.begin(), g.end());
+			for (size_t i=0; i<slyrs; i++) {
+				size_t j = i * n;
+				size_t off2 = off + j;
+				for (size_t k=0; k<n; k++) {
+					out[off2+k] = g[j + k];
+				}
+			}
 			#endif
 			if (hasError()) {
 				return out;
 			}
 		}
+		off += source[src].nlyr;
 	}
 	return out;
 }

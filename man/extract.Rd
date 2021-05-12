@@ -100,7 +100,9 @@ v <- v[1:2,]
 z <- rast(v, res=.1, names="test")
 values(z) <- 1:ncell(z)
 
-#extract(x, v, mean, na.rm=TRUE)
+rf <- system.file("ex/elev.tif", package="terra")
+x <- rast(rf)
+extract(x, v, mean, na.rm=TRUE)
 
 #e <- extract(z, v)
 #e

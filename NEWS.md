@@ -1,5 +1,5 @@
 
-# version 1.2-8
+# version 1.2-9
 
 ## new
 
@@ -18,6 +18,7 @@
 
 ## bug fixes
 
+-`extract` with mutliple layers could return a data.frame where the values were by row instead of by column
 - `crop` works again with `sf` objects. Reported by Sebastian Brinkmann [#201] (https://github.com/rspatial/terra/issues/201)
 - `vect,sf-method` now also works for lines, and should be faster
 - `vect,character` crashed R if a file had empty geometries. Reported by consumere [#202](https://github.com/rspatial/terra/issues/202)

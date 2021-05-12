@@ -98,7 +98,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		}
 
 		background <- as.numeric(background[1])
-		y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], sum[1], FALSE, update[1], TRUE, TRUE, opt)
+		y@ptr <- y@ptr$rasterize(x@ptr, field, values, background, touches[1], sum[1], FALSE, update[1], TRUE, opt)
 
 		messages(y, "rasterize")
 	}
