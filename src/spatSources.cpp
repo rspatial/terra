@@ -71,6 +71,23 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 	return(out);
 }
 
+void SpatRaster::combine(SpatRaster x) {
+
+
+	if (!compare_geom(x, false, false)) {
+		return;
+	}
+
+	bool hv = hasValues();
+	if (hv != x.hasValues()) {
+		setError("combined sources must all have values; or none should have values");
+		return;
+	}
+
+	source.insert(source.end(), x.source.begin(), x.source.end());
+	setNames(getNames());
+	return;
+}
 
 void SpatRaster::addSource(SpatRaster x) {
 
@@ -162,8 +179,8 @@ std::vector<unsigned> SpatRaster::sourcesFromLyrs(std::vector<unsigned> lyrs) {
 }
 
 
-
-std::vector<double> SpatRasterSource::getValues(unsigned lyr) {
+/*
+void SpatRasterSource::getValues(std::vector<double> &v, unsigned lyr) {
 	size_t nc ;
 	if (hasWindow) {
 		nc = window.full_ncol * window.full_nrow;
@@ -171,10 +188,22 @@ std::vector<double> SpatRasterSource::getValues(unsigned lyr) {
 		nc = nrow * ncol;
 	}
 	size_t start = lyr * nc;
-	std::vector<double> out(values.begin()+start, values.begin()+start+nc);
-	return out;
-
+	v = std::vector<double>(values.begin()+start, values.begin()+start+nc);
 }
+*/
+
+
+void SpatRasterSource::appendValues(std::vector<double> &v, unsigned lyr) {
+	size_t nc ;
+	if (hasWindow) {
+		nc = window.full_ncol * window.full_nrow;
+	} else {	
+		nc = nrow * ncol;
+	}
+	size_t start = lyr * nc;
+	v.insert(v.end(), values.begin()+start, values.begin()+start+nc);
+}
+
 
 bool SpatRasterSource::in_order() {
 	if (memory) return true;
@@ -214,9 +243,7 @@ void SpatRasterSource::resize(unsigned n) {
 
 //std::vector<SpatRasterSource> SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
-
-	SpatRasterSource out;
-
+	
     unsigned nl = lyrs.size();
     bool all = true;
     if (lyrs.size() == nlyr) {
@@ -229,64 +256,70 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
     } else {
         all = false;
     }
-	out = *this ;
-    if (!all) {
-        out.resize(0);
-        if (memory) {
-            if (hasValues) {
-                out.values.resize(0);
-                for (size_t i=0; i<nl; i++) {
-                    unsigned j = lyrs[i];
-                    std::vector<double> x = getValues(j);
-                    out.values.insert(out.values.end(), x.begin(), x.end());
-                    out.names.push_back(names[j]);
-					out.time.push_back(time[j]);
-					out.depth.push_back(depth[j]);
-					out.unit.push_back(unit[j]);
-					out.layers.push_back(i);
-                    out.hasRange.push_back(hasRange[j]);
-                    out.range_min.push_back(range_min[j]);
-                    out.range_max.push_back(range_max[j]);
-                    out.hasColors.push_back(hasColors[j]);
-                    out.cols.push_back(cols[j]);
-                    out.hasCategories.push_back(hasCategories[j]);
-                    out.cats.push_back(cats[j]);
-					//out.hasAttributes.push_back(hasAttributes[j]);
-					//out.atts.push_back(atts[j]);
-					//out.attsIndex.push_back(attsIndex[j]);
-					out.has_scale_offset.push_back(has_scale_offset[j]);
-					out.scale.push_back(scale[j]);
-					out.offset.push_back(offset[j]);
-                }
-            }
-        } else {
-            //out.layers = lyrs;
-            for (size_t i=0; i<nl; i++) {
-                unsigned j = lyrs[i];
-                out.layers.push_back(layers[j]);
-                out.names.push_back(names[j]);
-				out.time.push_back(time[j]);
-				out.unit.push_back(unit[j]);
-				out.depth.push_back(depth[j]);
-                out.hasRange.push_back(hasRange[j]);
-                out.range_min.push_back(range_min[j]);
-                out.range_max.push_back(range_max[j]);
-                out.hasColors.push_back(hasColors[j]);
-                out.cols.push_back(cols[j]);
-                out.hasCategories.push_back(hasCategories[j]);
-                out.cats.push_back(cats[j]);
-				//out.hasAttributes.push_back(hasAttributes[j]);
-				//out.atts.push_back(atts[j]);
-				//out.attsIndex.push_back(attsIndex[j]);
-				out.has_scale_offset.push_back(has_scale_offset[j]);
-				out.scale.push_back(scale[j]);
-				out.offset.push_back(offset[j]);
-            }
-        }
-        out.nlyr = nl;
+	if (all) {
+		return *this ;
+	} 
+
+	SpatRasterSource out;
+	if (memory) {
+		out.srs = srs;
+		out.ncol = ncol;
+		out.nrow = nrow;
+		out.nlyrfile = nlyrfile;
+		out.extent = extent;
+		out.rotated = rotated;
+		out.flipped = flipped;
+		out.hasWindow = hasWindow;
+		out.window = window;
+		out.source_name = source_name;
+		out.source_name_long = source_name_long;
+		out.timestep = timestep;
+		out.hasTime = hasTime;
+		out.memory = memory;
+		out.hasValues = hasValues;
+		//out.filename = filename;
+		//out.driver = driver;
+		//out.datatype = datatype; 
+		//out.hasNAflag = hasNAflag;
+		//out.NAflag = NAflag;
+	} else { 
+		//no values, deep copy is cheap
+		out = *this;
+		out.resize(0);
+	}		
+		
+	
+    for (size_t i=0; i<nl; i++) {
+        unsigned j = lyrs[i];
+		out.names.push_back(names[j]);
+		out.time.push_back(time[j]);
+		out.depth.push_back(depth[j]);
+		out.unit.push_back(unit[j]);
+        out.hasRange.push_back(hasRange[j]);
+        out.range_min.push_back(range_min[j]);
+        out.range_max.push_back(range_max[j]);
+        out.hasColors.push_back(hasColors[j]);
+        out.cols.push_back(cols[j]);
+        out.hasCategories.push_back(hasCategories[j]);
+        out.cats.push_back(cats[j]);
+		out.has_scale_offset.push_back(has_scale_offset[j]);
+		out.scale.push_back(scale[j]);
+		out.offset.push_back(offset[j]);
+		
+		if (memory) {
+			out.layers.push_back(i);
+			if (hasValues) {
+				appendValues(out.values, j);
+			}
+		} else {
+			out.layers.push_back(layers[j]);
+		}
     }
+    out.nlyr = nl;
+	out.hasValues = hasValues;
     return out;
 }
+
 
 std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
     unsigned s = lyrs.size();
@@ -311,7 +344,7 @@ std::vector<unsigned> validLayers( std::vector<unsigned> lyrs , unsigned nl) {
 
 SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
-    SpatRaster out = geometry();
+    SpatRaster out = geometry(1);
     out.source.resize(0);
 
     unsigned oldsize = lyrs.size();
@@ -325,11 +358,10 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 	}
 
     std::vector<unsigned> srcs = sourcesFromLyrs(lyrs);
-
     unsigned ss = srcs[0];
     std::vector<unsigned> slyr;
     std::vector<unsigned> lyrbys = nlyrBySource();
-    SpatRasterSource rs;
+//    SpatRasterSource rs;
     unsigned offset = 0;
     for (size_t i=0; i<ss; i++) { offset += lyrbys[i]; }
 
@@ -337,8 +369,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
         if (srcs[i] == ss) {
             slyr.push_back( (lyrs[i] - offset) );
         } else {
-            rs = source[ss].subset(slyr);
-            out.source.push_back(rs);
+            out.source.push_back( source[ss].subset(slyr) );
             ss = srcs[i];
             offset = 0;
             for (size_t i=0; i<ss; i++) { offset += lyrbys[i]; }
@@ -346,14 +377,12 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 		}
     }
 
-    rs = source[ss].subset(slyr);
-    out.source.push_back(rs);
-
+    out.source.push_back( source[ss].subset(slyr) );
     if (opt.get_filename() != "") {
         out.writeRaster(opt);
-    } else {
-		out = out.collapse_sources();
-	}
+    } //else {
+	//	out.collapse();
+	//}
 	
     return out;
 }
@@ -399,6 +428,64 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	scale.insert(scale.end(), x.scale.begin(), x.scale.end());
 	offset.insert(offset.end(), x.offset.begin(), x.offset.end());
 	return true;
+}
+
+
+
+bool SpatRasterSource::combine(SpatRasterSource &x) {
+	if (memory & x.memory) {
+		if ((values.size() + x.values.size()) < (values.max_size()/8) ) {
+			values.insert(values.end(), x.values.begin(), x.values.end());
+			layers.resize(nlyr + x.nlyr);
+			std::iota(layers.begin(), layers.end(), 0);
+			x.values.resize(0);
+		} else {
+			return false;
+		}
+	} else if (filename == x.filename) {
+		layers.insert(layers.end(), x.layers.begin(), x.layers.end());
+	} else {
+		return false;
+	}
+	nlyr += x.nlyr;
+	names.insert(names.end(), x.names.begin(), x.names.end());
+	time.insert(time.end(), x.time.begin(), x.time.end());
+	if (!(hasTime & x.hasTime)) {
+		hasTime = false;
+	}
+	unit.insert(unit.end(), x.unit.begin(), x.unit.end());
+	depth.insert(depth.end(), x.depth.begin(), x.depth.end());
+	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
+	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());
+	range_max.insert(range_max.end(), x.range_max.begin(), x.range_max.end());
+	//hasAttributes.insert(hasAttributes.end(), x.hasAttributes.begin(), x.hasAttributes.end());
+	//atts.insert(atts.end(), x.atts.begin(), x.atts.end());
+	//attsIndex.insert(attsIndex.end(), x.attsIndex.begin(), x.attsIndex.end());
+	hasCategories.insert(hasCategories.end(), x.hasCategories.begin(), x.hasCategories.end());
+	cats.insert(cats.end(), x.cats.begin(), x.cats.end());
+	hasColors.insert(hasColors.end(), x.hasColors.begin(), x.hasColors.end());
+	cols.insert(cols.end(), x.cols.begin(), x.cols.end());
+	datatype.insert(datatype.end(), x.datatype.begin(), x.datatype.end());
+	has_scale_offset.insert(has_scale_offset.end(), x.has_scale_offset.begin(), x.has_scale_offset.end());
+	scale.insert(scale.end(), x.scale.begin(), x.scale.end());
+	offset.insert(offset.end(), x.offset.begin(), x.offset.end());
+	return true;
+}
+
+
+
+void SpatRaster::collapse() {
+	size_t n = nsrc();
+	if (n < 2) return;
+	std::vector<size_t> rem;
+	for (size_t i=1; i<n; i++) {
+		if (source[0].combine(source[i])) {
+			rem.push_back(i);
+		}
+	}
+	for (int i=rem.size(); i>= 0; i--) {
+		source.erase(source.begin()+i);
+	}
 }
 
 
