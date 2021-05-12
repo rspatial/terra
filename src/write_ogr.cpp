@@ -219,7 +219,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	} else if (geomtype == polygons) {
 		wkb = wkbMultiPolygon;
 	} else {
-        setError("this geometry type is not supported");
+        setError("this geometry type is not supported: " + type());
         return poDS;		
 	}
 

@@ -16,9 +16,9 @@
 \title{ Get or set a coordinate reference system }
 
 \description{
-Get or set the coordinate reference system (CRS), also referred to as a "projection" of a SpatRaster or SpatVector object. 
+Get or set the coordinate reference system (CRS), also referred to as a "projection", of a SpatRaster or SpatVector object. 
 
-Setting a new CRS does not change the data itself, it just changes the label. So you should only set the CRS of a dataset (if it does not come with one) to what it *is*, not to what you would *like it to be*. See \code{\link{project}} to *transform* spatial from one CRS to another.
+Setting a new CRS does not change the data itself, it just changes the label. So you should only set the CRS of a dataset (if it does not come with one) to what it *is*, not to what you would *like it to be*. See \code{\link{project}} to *transform* an object from one CRS to another.
 }
 
 \usage{
