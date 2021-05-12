@@ -71,6 +71,7 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 	return(out);
 }
 
+
 void SpatRaster::combine(SpatRaster x) {
 
 

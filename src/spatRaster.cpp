@@ -224,6 +224,11 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 		s.cols = getColors();
 		s.hasCategories = hasCategories();
 		s.cats = getCategories();
+		if (hasTime()) {
+			s.hasTime = true;
+			s.timestep = getTimeStep();
+			s.time = getTime();
+		}
 	}
 	s.resize(nlyrs);
 	std::vector<std::string> nms;
