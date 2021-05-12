@@ -530,7 +530,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 	std::vector<double> pt_x, pt_y, ln_x, ln_y, pl_x, pl_y;
 
 	std::string msg;
-	Rcpp::Rcout << ng << " geoms" << std::endl;
+	//Rcpp::Rcout << ng << " geoms" << std::endl;
 	
 	size_t f = 0;
 	for(size_t i = 0; i < ng; i++) {
@@ -538,7 +538,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 		char* geostype = GEOSGeomType_r(hGEOSCtxt, g);
 		std::string gt = geostype;
 		free(geostype);
-		Rcpp::Rcout << gt << std::endl;
+		//Rcpp::Rcout << gt << std::endl;
 	
 		size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);
 
