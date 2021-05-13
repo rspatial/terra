@@ -13,7 +13,7 @@ Transfer vector data to a raster
 
 \usage{
 \S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", fun, background=NA, touches=FALSE,
-	update=FALSE, sum=FALSE, cover=FALSE, filename="", ...)
+	update=FALSE, sum=FALSE, cover=FALSE, filename="", ..., wopt=list())
 }
 
 \arguments{
@@ -35,7 +35,8 @@ Transfer vector data to a raster
   \item{cover}{logical. If \code{TRUE} and the geometry of \code{x} is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)} 
 
   \item{filename}{character. Output filename}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{...}{additional arguments passed to \code{fun} if \code{x} has point geometries}
+  \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \seealso{
