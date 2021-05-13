@@ -27,6 +27,30 @@ setMethod("is.valid", signature(x="SpatVector"),
 
 
 
+setMethod("na.omit", signature("SpatVector"), 
+	function(object, field=NA, geom=FALSE) {
+		if (geom) {
+			g <- geom(object)
+			g <- g[is.na(g[,"x"]) | is.na(g[,"y"]), 1]
+			if (length(g) > 0) {
+				object <- object[-g, ]
+			}
+		}
+		if (!is.na(field)) {
+			v <- values(object)
+			if (field != "") {
+				v <- v[, field, drop=FALSE]
+			}
+			i <- apply(v, 1, function(i) any(is.na(i)))
+			if (any(i)) {
+				object <- object[!i, ]
+			}
+		}
+		object
+	}
+)
+
+
 setMethod("copy", signature("SpatVector"), 
 	function(x) {
 		x@ptr <- x@ptr$deepcopy() 

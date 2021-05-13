@@ -4,6 +4,8 @@ if (!isGeneric("weighted.mean")) {setGeneric("weighted.mean", function(x, w, ...
 if (!isGeneric("split")) {setGeneric("split", function(x, ...) standardGeneric("split"))}
 if (!isGeneric("cellSize")) {setGeneric("cellSize", function(x, ...) standardGeneric("cellSize"))}
 
+if (!isGeneric("na.omit")) {setGeneric("na.omit", function(object, ...) standardGeneric("na.omit"))}
+
 if (!isGeneric("sharedPaths")) {setGeneric("sharedPaths", function(x, ...) standardGeneric("sharedPaths"))}
 if (!isGeneric("isTRUE")) {setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
 if (!isGeneric("subst")) {setGeneric("subst", function(x, ...) standardGeneric("subst"))}
