@@ -30,7 +30,7 @@ SpatVector
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
-plot(v, 1, col="light gray")
+plot(v, col="light gray")
 text(v, halo=TRUE)
 
 x <- sharedPaths(v)

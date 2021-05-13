@@ -379,14 +379,16 @@ void jointstats(const std::vector<double> &u, const std::vector<double> &v, cons
 	std::vector<std::vector<double>> dat(u.size());
 	if (narm) {
 		for (size_t i=0; i<z.size(); i++) {
-			if (!std::isnan(v[i])) {
+			if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
 				dat[z[i]].push_back(v[i]);	
 			}
 		}
 	} else {
 		for (size_t i=0; i<z.size(); i++) {
-			dat[z[i]].push_back(v[i]);	
-		}		
+			if (!std::isnan(z[i])) {
+				dat[z[i]].push_back(v[i]);	
+			}
+		}
 	}
 	if (fun=="sum") {
 		for (size_t i=0; i<u.size(); i++) {	
@@ -488,7 +490,6 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 			}
 		}
 		zv.resize(0);
-//		Rcpp::Rcout << "here" << std::endl;
 		unsigned off = bs.nrows[i] * ncol() ;
 		if (nl > 1) {
 			for (size_t lyr=0; lyr<nl; lyr++) {

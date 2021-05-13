@@ -4,6 +4,8 @@
 #include "recycle.h"
 #include "string_utils.h"
 
+
+
 std::vector<std::string> SpatVector::wkt() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
@@ -17,6 +19,7 @@ std::vector<std::string> SpatVector::wkt() {
 	geos_finish(hGEOSCtxt);
 	return out;
 }
+
 
 
 std::vector<std::string> SpatVector::wkb() {
@@ -360,10 +363,9 @@ SpatVector SpatVector::shared_paths() {
 		}
 	}
 	
-	
 	SpatVector out;
 	if (p.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, false, false);
 		out = coll.get(0);
 		out = out.line_merge();
 	}

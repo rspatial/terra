@@ -260,8 +260,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	poLayer->ResetReading();
 	OGRFeature *poFeature;
 	
-	Rcpp::Rcout << "here" << std::endl;
-	
+
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->StealGeometry();
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2

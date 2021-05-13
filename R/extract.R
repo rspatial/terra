@@ -240,8 +240,8 @@ function(x, y, ...) {
 	#} else {
 	y <- vect(y)
 	e <- extract(x, y, ...)
-	if (!is.list(e)) {
-		e[,-1,drop=FALSE]
+	if (NCOL(e) > 1) {
+		e[, -1, drop=FALSE]
 	} else {
 		e
 	}

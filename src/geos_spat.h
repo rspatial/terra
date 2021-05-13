@@ -519,7 +519,7 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 }
 
 
-SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, bool keepnull=true) {
+SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, bool keepnull=true, bool increment = true) {
 
 	SpatVectorCollection out;
 
@@ -553,6 +553,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					return out;
 				}
 			}	
+			f++;
 		} else if (gt == "LineString" || gt == "MultiLineString") {
 			if (np == 0 && keepnull) {
 				emptyGeom(f, ln_x, ln_y, ln_gid, ln_gp, ln_hole);
@@ -564,6 +565,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					return out;
 				}
 			}
+			f++;
 		} else if (gt == "Polygon" || gt == "MultiPolygon") {
 			if (np == 0 && keepnull) {
 				emptyGeom(f, pl_x, pl_y, pl_gid, pl_gp, pl_hole);
@@ -575,7 +577,13 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					return out;
 				}
 			}
+			f++;
+
 		} else if (gt == "GeometryCollection") {
+
+			//Rcpp::Rcout << np << std::endl;
+
+
 			for(size_t j = 0; j<np; j++) {
 
 				const GEOSGeometry* gg = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
@@ -585,6 +593,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 				free(geostype);
 				size_t npp = GEOSGetNumGeometries_r(hGEOSCtxt, gg);
 
+				//Rcpp::Rcout << geostype << " " << npp << std::endl;
 
 				if (npp == 0 && keepnull) {
 					if (ggt == "Polygon" || ggt == "MultiPolygon") {
@@ -594,6 +603,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					} else if (ggt == "LineString" || ggt == "MultiLineString") {
 						emptyGeom(f, ln_x, ln_y, ln_gid, ln_gp, ln_hole);
 					}
+					if (increment) f++;
 				}
 
 	
@@ -619,12 +629,13 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					} else {
 						out.addWarning("unhandeled Collection geom: " + ggt);
 					}
+					if (increment) f++;
 				}
+				if (!increment) f++;
 			}
 		} else {
 			out.setError("what is this: " + gt + "?");
 		}
-		f++;
 	}
 
 	if (pl_x.size() > 0) {

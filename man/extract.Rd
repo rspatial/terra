@@ -23,6 +23,8 @@
 
 \description{
 Extract values from a SpatRaster for a set of locations. The locations can be a SpatVector (points, lines, polygons), a matrix with (x, y) or (longitude, latitude -- in that order!) coordinates, or a vector with cell numbers.  
+
+When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first column has the ID (record number) of the \code{SpatVector} used.
 } 
 
 \usage{
@@ -42,7 +44,7 @@ Extract values from a SpatRaster for a set of locations. The locations can be a 
 \item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only code{mean}, \code{sum}, \code{min} and \code{max} are accepted)}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
-\item{list}{logical. If \code{FALSE} the output is simplified to a matrix (if \code{fun=NULL})}
+\item{list}{logical. If \code{FALSE} the output is simplified to a \code{matrix} (if \code{fun=NULL})}
 \item{factors}{logical. If \code{TRUE} the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors}
 \item{cells}{logical. If \code{TRUE} the cell numbers are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{cells}}}
 \item{xy}{logical. If \code{TRUE} the coordinates of the cells are also returned, unless \code{fun} is not \code{NULL}. Also see \code{\link{xyFromCell}}}
