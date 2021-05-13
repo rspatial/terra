@@ -1,5 +1,5 @@
 
-rasterize_points <- function(x, y, field, values, fun="last", background, filename, update, ...) {
+rasterize_points <- function(x, y, field, values, fun="last", background=NA, filename="", update=FALSE, ..., wopt=list()) {
 
 	if (update) {
 		if (!hasValues(y)) {
@@ -14,7 +14,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 	g <- geom(x, df=TRUE)
 	# also allow for multiple columns to multiple layers
 	if (field != "") {
-		values <- as.vector(unlist(x[[field]]))
+		values <- x[[field, drop=TRUE]]
 	} else {
 		values <- rep_len(values, nrow(x))
 	}
@@ -37,21 +37,31 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 
 	if (missing(fun)) fun <- "last"
 	if (is.character(fun)) {
-		if (fun == "pa") {
-			b <- unique(g)
-			r[b] <- 1
-		} else if (fun == "first") {
-			r[rev(g)] <- rev(values)
-		} else if (fun == "last") {
-			r[g] <- values
-		} else {
-			error("rasterize", "unknown character function")
+		narm <- isTRUE(list(...)$na.rm)
+		if (narm) {
+			i <- which(!is.na(values))
+			values <- values[i]
+			g <- g[i]
 		}
-
+		if (length(g) > 0) {
+			if (fun == "pa") {
+				b <- unique(g)
+				r[b] <- 1
+			} else if (fun == "first") {
+				r[rev(g)] <- rev(values)
+			} else if (fun == "last") {
+				r[g] <- values
+			} else {
+				error("rasterize", "unknown character function")
+			}
+		}
 	} else {
-		a <- tapply(values, g, fun)
-		b <- as.numeric(names(a))
-		r[b] <- as.vector(a)
+		#a <- tapply(values, g, fun, ...)
+		#b <- as.numeric(names(a))
+		#r[b] <- as.vector(a)
+		a <- aggregate(values, list(g), fun, ...)
+		# could allow for multiple fields
+		r[a[,1]] <- a[,2]
 		levs <- NULL
 	}
 
@@ -62,7 +72,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 	}
 
 	if (filename != "") {
-		writeRaster(r, filename, ...)
+		writeRaster(r, filename, wopt)
 	}
 
 	return (r)
@@ -70,7 +80,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background, filena
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field="", fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ...) {
+	function(x, y, field="", fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ..., wopt=list()) {
 
 		values <- 1
 		if (is.null(field) || is.na(field) || (field == "")) {
@@ -83,12 +93,12 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		}
 
 		g <- geomtype(x)
+		opt <- spatOptions(filename, wopt=wopt)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, ...) 
+			r <- rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, ..., wopt=wopt) 
 			return (r)
 		}
 
-		opt <- spatOptions(filename, ...)
 		pols <- grepl("polygons", g)
 
 		if (cover[1] && pols) {
