@@ -1,4 +1,16 @@
 
+# version 1.2-11
+
+## new
+
+- `na.omit,SpatVector-method` to remove empty geometries and/or attribute records that have an `NA`
+
+## enhancements
+
+- additional arguments (such as `na.rm` to `rasterize` with point geometries. Suggested by Jakub Nowosad  [#200](https://github.com/rspatial/terra/issues/209)
+
+
+
 # version 1.2-10
 
 ## new
@@ -14,6 +26,7 @@
 
 - `rast(Raster*)` now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe [#200](https://github.com/rspatial/terra/issues/200)
 - `convhull` has a new argument `by=""` to make convex hulls for sub-sets of a SpatVector.
+- faster processing of large in memory rasters. See issue [#206](https://github.com/rspatial/terra/issues/206) by Krzysztof Dyba.
 
 
 ## bug fixes
@@ -23,6 +36,7 @@
 - `vect,sf-method` now also works for lines, and should be faster
 - `vect,character` crashed R if a file had empty geometries. Reported by consumere [#202](https://github.com/rspatial/terra/issues/202)
 - `extract(points, bilinear=TRUE, cells=TRUE)` now works. Reported by fab4app [#203](https://github.com/rspatial/terra/issues/203)
+- `zonal` now works for `min` and `max`. Reported by Jakub Nowosad  [#207](https://github.com/rspatial/terra/issues/207)
 
 
 ## name changes
