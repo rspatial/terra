@@ -1,18 +1,17 @@
 \name{gdal}
 
 \alias{gdal}
-\alias{gdal_version}
 
-\title{gdal utilities}
+\title{GDAL version and supported file formats}
 
 \description{
-Set the GDAL warning level or get a data.frame with the available GDAL drivers (file formats), or get the GDAL version (if \code{warn=NA} and \code{drivers=FALSE}, the default. 
+Set the \code{GDAL} warning level or get a \code{data.frame} with the available GDAL drivers (file formats), or get the GDAL version (if \code{warn=NA} and \code{drivers=FALSE}, the default. 
+
+\code{GDAL} is the software library that terra builds on to read and write spatial data and for some raster data processing.
 }
 
 \usage{
 gdal(warn=NA, drivers=FALSE)
-
-gdal_version()
 }
 
 \arguments{

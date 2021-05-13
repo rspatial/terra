@@ -413,7 +413,11 @@ SpatVector SpatVector::polygonize() {
 }
 
 
+//GEOSPolygonizer_getCutEdges_r(GEOSContextHandle_t extHandle, const Geometry * const * g, unsigned int ngeoms)
 
+//Geometry * GEOSPolygonize_full_r(GEOSContextHandle_t extHandle, const Geometry* g, Geometry** cuts, Geometry** dangles, Geometry** invalid)
+ 
+//GEOSGeometry * GEOSSnap_r(GEOSContextHandle_t extHandle, const GEOSGeometry* g1, const GEOSGeometry* g2, double tolerance)
 
 SpatVector SpatVector::crop(SpatVector v) {
 

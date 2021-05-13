@@ -12,11 +12,11 @@ Remove empty geometries and/or records that are \code{NA} from a SpatVector.
 
 
 \usage{
-\S4method{na.omit}{SpatVector}(x, field=NA, geom=FALSE)
+\S4method{na.omit}{SpatVector}(object, field=NA, geom=FALSE)
 }
 
 \arguments{
-  \item{x}{SpatVector}  
+  \item{object}{SpatVector}  
   \item{field}{character or NA. If \code{NA}, missing values in the attributes are ignored. Other values are either one or more field (variable) names, or \code{""} to consider all fields}
   \item{geom}{logical. If \code{TRUE} empty geometries are removed}  
 }

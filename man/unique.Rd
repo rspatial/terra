@@ -22,7 +22,7 @@ This function returns the unique values in a SpatRaster or removes duplicates in
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{incomparables}{logical. If \code{FALSE} and \code{x} is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If \code{TRUE}, each layer is evaluated separately, and a list is returned. If \code{x} is a SpatVector this argument is as for a data.frame}
+  \item{incomparables}{logical. If \code{FALSE} and \code{x} is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If \code{TRUE}, each layer is evaluated separately, and a list is returned. If \code{x} is a SpatVector this argument is as for a \code{data.frame}.}
   \item{...}{additional arguments passed on to base::unique}  
 }
 
@@ -48,6 +48,8 @@ nrow(v)
 u <- unique(v)
 nrow(u)
 
+values(v) <- c(1:5, 1:3, 5:4)
+unique(v)
 }
 
 \keyword{spatial}

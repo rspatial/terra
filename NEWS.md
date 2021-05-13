@@ -95,7 +95,7 @@ without deprecation warning:
 
 ## major changes 
 
-- `c-SpatVector-method` now returns a list. `rbind` is used to append SpatVector objects
+- `c,SpatVector-method` now returns a list. `rbind` is used to append SpatVector objects
 - overhaul of handling of factors. `rats` has been removed, and `levels` and `cats` have changed
 
 

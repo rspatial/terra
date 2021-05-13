@@ -1,6 +1,8 @@
 
 ## spatstat conflicts
 
+if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}
+
 setMethod("area", signature(x="SpatRaster"), 
 	function(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...) {
 		if (!sum) {
@@ -21,6 +23,7 @@ setMethod("area", signature(x="SpatVector"),
 )
 
 
+## not exported
 if (!isGeneric("convexhull")) {setGeneric("convexhull", function(x, ...) standardGeneric("convexhull"))}
 setMethod("convexhull", signature(x="SpatVector"), 
 	function(x) {
@@ -28,7 +31,7 @@ setMethod("convexhull", signature(x="SpatVector"),
 	}
 )
 
-
+## not exported
 if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardGeneric("perimeter"))}
 setMethod("perimeter", signature(x="SpatVector"), 
 	function(x) {
@@ -36,6 +39,8 @@ setMethod("perimeter", signature(x="SpatVector"),
 	}
 )
 
+
+## not exported
 if (!isGeneric("tiles")) {setGeneric("tiles", function(x,...) standardGeneric("tiles"))}
 setMethod("tiles", signature(x="SpatRaster"), 
 	function(x) {
@@ -81,16 +86,3 @@ setMethod("pack", signature(x="ANY"),
 		wrap(x, ...)
 	}
 )
-
-## replaced for other reasons
-#not exported
-desc <- function(x) {#
-	error("desc", "deprecated function. Use 'describe'")
-}
-
-
-#not exported
-gdal_version <- function() {
-	gdal()
-}
-
