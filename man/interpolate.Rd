@@ -14,7 +14,7 @@ Make a SpatRaster with interpolated values using a fitted model object of classe
 \usage{
 \S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., xyNames=c("x", "y"), 
        factors=NULL, const=NULL, index = NULL, na.rm=FALSE, 
-	   filename="", overwrite=FALSE, wopt=list())
+       filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -103,6 +103,7 @@ z <- mask(z, r)
 
 ## of with a model built with a sf object
 
+library(sf)
 sfmeuse <- st_as_sf(meuse, coords = c("x", "y"), crs=crs(r))
 mgsf <- gstat(id = "zinc", formula = zinc~1, data=sfmeuse,  nmax=7, set=list(idp = .5))
 
@@ -113,7 +114,7 @@ interpolate_gstat <- function(model, x, crs, ...) {
 	as.data.frame(p)[,1:2]
 }
 
-zsf <- interpolate(r, mg2, debug.level=0, fun=interpolate_gstat, crs=crs(r), index=1)
+zsf <- interpolate(r, mgsf, debug.level=0, fun=interpolate_gstat, crs=crs(r), index=1)
 zsf <- mask(zsf, r)
 
 ### kriging
