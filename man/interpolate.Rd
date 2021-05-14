@@ -1,4 +1,4 @@
-\name{interpolate}
+\name{Spatial interpolation}
 
 \docType{methods}
 
@@ -12,9 +12,9 @@ Make a SpatRaster with interpolated values using a fitted model object of classe
 }
 
 \usage{
-\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., 
-       xyNames=c("x", "y"), factors=NULL, const=NULL, index = NULL, 
-	   na.rm=FALSE, filename="", overwrite=FALSE, wopt=list())
+\S4method{interpolate}{SpatRaster}(object, model, fun=predict, ..., xyNames=c("x", "y"), 
+       factors=NULL, const=NULL, index = NULL, na.rm=FALSE, 
+	   filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -98,8 +98,23 @@ data(meuse)
 r <- rast(system.file("ex/meuse.tif", package="terra"))
 mg <- gstat(id = "zinc", formula = zinc~1, locations = ~x+y, data=meuse, 
             nmax=7, set=list(idp = .5))
-z <- interpolate(r, mg, debug.level=0)
+z <- interpolate(r, mg, debug.level=0, index=1)
 z <- mask(z, r)
+
+## of with a model built with a sf object
+
+sfmeuse <- st_as_sf(meuse, coords = c("x", "y"), crs=crs(r))
+mgsf <- gstat(id = "zinc", formula = zinc~1, data=sfmeuse,  nmax=7, set=list(idp = .5))
+
+
+interpolate_gstat <- function(model, x, crs, ...) {
+	v <- st_as_sf(x, coords=c("x", "y"), crs=crs)
+	p <- predict(model, v, ...)
+	as.data.frame(p)[,1:2]
+}
+
+zsf <- interpolate(r, mg2, debug.level=0, fun=interpolate_gstat, crs=crs(r), index=1)
+zsf <- mask(zsf, r)
 
 ### kriging
 
