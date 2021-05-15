@@ -32,7 +32,7 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 
 
 setMethod("vrt", signature(x="character"), 
-	function(x, filename="test.vrt", overwrite=FALSE) {
+	function(x, filename="", overwrite=FALSE) {
 		opt <- spatOptions(filename, overwrite=overwrite)
 		r <- rast()
 		r@ptr <- r@ptr$make_vrt(x, opt)
