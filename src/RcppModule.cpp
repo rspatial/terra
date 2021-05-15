@@ -270,6 +270,7 @@ RCPP_MODULE(spat){
 		.method("line_merge", &SpatVector::line_merge, "")
 		.method("simplify", &SpatVector::simplify, "")
 		.method("shared_paths", &SpatVector::shared_paths, "")
+		.method("snap", &SpatVector::snap, "")
 
 		.field_readonly("df", &SpatVector::df )
 
@@ -657,7 +658,11 @@ RCPP_MODULE(spat){
 
     class_<SpatRasterCollection>("SpatRasterCollection")
 		.constructor()
-		.field("messages", &SpatRasterCollection::msg, "messages")
+		.method("has_error", &SpatRasterCollection::has_error)
+		.method("has_warning", &SpatRasterCollection::has_warning)
+		.method("getError", &SpatRasterCollection::getError)
+		.method("getWarnings", &SpatRasterCollection::getWarnings)
+		//.field("messages", &SpatRasterCollection::msg, "messages")
 		.field_readonly("x", &SpatRasterCollection::ds)
 		.method("length", &SpatRasterCollection::size, "size")
 		.method("resize", &SpatRasterCollection::resize, "resize")

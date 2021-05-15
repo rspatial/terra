@@ -324,17 +324,6 @@ SpatVector SpatVector::simplify(double tolerance, bool preserveTopology) {
 
 
 
-//GEOSGeometry * GEOSSnap_r(GEOSContextHandle_t extHandle, const GEOSGeometry* g1, const GEOSGeometry* g2, double tolerance)
-
-/*
-int geom_type(GEOSContextHandle_t hGEOSCtxt, const GEOSGeometry* g) {
-	char* x = GEOSGeomType_r(hGEOSCtxt, g);
-	int y = atoi(x);
-	free(x);
-	return y;
-}
-*/
-
 SpatVector SpatVector::shared_paths() {
 	
 	if (type() == "polygons") {
@@ -413,11 +402,55 @@ SpatVector SpatVector::polygonize() {
 }
 
 
+
+SpatVector SpatVector::snap(double tolerance) {
+	
+	tolerance = std::max(0.0, tolerance);
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+
+	size_t s = size();
+	std::vector<long> id;
+	std::vector<GeomPtr> p;
+	for (size_t i=0; i<(s-1); i++) {
+		GEOSGeometry* r = x[i].get();
+		for (size_t j=(i+1); j<s; j++) {
+			r = GEOSSnap_r(hGEOSCtxt, r, x[j].get(), tolerance);
+		}
+		if (r != NULL) {
+			if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+				x[i] = geos_ptr(r, hGEOSCtxt);
+				id.push_back(i+1);
+			} else {
+				GEOSGeom_destroy_r(hGEOSCtxt, r);
+			}
+		}
+	}
+	SpatVector out;
+	if (p.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, false, false);
+		out = coll.get(0);
+	}
+	geos_finish(hGEOSCtxt);
+	out.geoms.push_back(geoms[s-1]);
+	id.push_back(s);
+	out.srs = srs;
+	if (out.size() == size()) {
+		out.df = df;
+	} else {
+		out.df.add_column(id, "id");
+	}
+	return out;
+}
+
+
+
 //GEOSPolygonizer_getCutEdges_r(GEOSContextHandle_t extHandle, const Geometry * const * g, unsigned int ngeoms)
 
 //Geometry * GEOSPolygonize_full_r(GEOSContextHandle_t extHandle, const Geometry* g, Geometry** cuts, Geometry** dangles, Geometry** invalid)
  
-//GEOSGeometry * GEOSSnap_r(GEOSContextHandle_t extHandle, const GEOSGeometry* g1, const GEOSGeometry* g2, double tolerance)
+
+
 
 SpatVector SpatVector::crop(SpatVector v) {
 

@@ -4,6 +4,7 @@
 
 \alias{mosaic}
 \alias{mosaic,SpatRaster,SpatRaster-method}
+\alias{merge,SpatRasterCollection-method}
 
 \title{ 
 mosaic SpatRasters
@@ -15,6 +16,8 @@ mosaic SpatRasters to form a new SpatRaster object with a larger spatial extent.
 
 \usage{
 \S4method{mosaic}{SpatRaster,SpatRaster}(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list())
+
+\S4method{merge}{SpatRasterCollection}(x, fun="mean", filename="", ...)
 }
 
 \arguments{

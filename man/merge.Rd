@@ -4,6 +4,7 @@
 
 \alias{merge}
 \alias{merge,SpatRaster,SpatRaster-method}
+\alias{merge,SpatRasterCollection-method}
 \alias{merge,SpatExtent,SpatExtent-method}
 \alias{merge,SpatVector,data.frame-method}
 
@@ -20,6 +21,8 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
 \usage{
 \S4method{merge}{SpatRaster,SpatRaster}(x, y, ..., filename="", overwrite=FALSE, wopt=list())
 
+\S4method{merge}{SpatRasterCollection}(x, filename="", ...)
+
 \S4method{merge}{SpatExtent,SpatExtent}(x, y, ...)
 
 \S4method{merge}{SpatVector,data.frame}(x, y, ...)
@@ -28,7 +31,7 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
 \arguments{
   \item{x}{SpatRaster or SpatExtent}
   \item{y}{object of same class as \code{x}}
-  \item{...}{if \code{x} is a SpatRaster or SpatVector: additional objects of the same class as \code{x}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
+  \item{...}{if \code{x} is a SpatRaster: additional objects of the same class as \code{x}. If \code{x} is a SpatRasterCollection: options for writing files as in \code{\link{writeRaster}}. If \code{x} is a SpatVector, the same arguments as in \code{\link[base]{merge}}}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}

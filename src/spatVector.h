@@ -247,6 +247,7 @@ class SpatVector {
 		SpatVector line_merge();
 		SpatVector simplify(double tolerance, bool preserveTopology);
 		SpatVector shared_paths();
+		SpatVector snap(double tolerance);
 
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
