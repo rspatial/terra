@@ -34,6 +34,7 @@
 \alias{ncell,SpatRaster-method}
 \alias{ncell,SpatRasterDataset-method}
 \alias{length,SpatRasterDataset-method}
+\alias{length,SpatRasterCollection-method}
 \alias{dim,SpatRaster-method}
 \alias{dim,SpatRasterDataset-method}
 \alias{dim<-,SpatRaster-method}

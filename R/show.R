@@ -370,6 +370,19 @@ setMethod("show" , "SpatRasterDataset",
 )
 
 
+
+
+setMethod("show" , "SpatRasterCollection", 
+	function(object) {
+		cat("class       :" , class(object), "\n")
+		nr <- length(object)
+		cat("length      :", nr, "\n") 
+	}
+)
+
+
+
+
 setMethod ("head" , "SpatVector", 
 	function(x, n=6L, ...) {
 		utils::head(as.data.frame(x), n=n, ...)

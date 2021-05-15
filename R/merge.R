@@ -3,56 +3,6 @@
 # Version 1.0
 # License GPL v3
 
-
-setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) { 
-		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		dots <- list(...)
-		rc <- SpatRasterCollection$new()
-		rc$add(x@ptr)
-		rc$add(y@ptr)
-		n <- length(dots)
-		if (n > 0) {
-			for (i in 1:n) {
-				if (inherits(dots[[i]], "SpatRaster")) {
-					rc$add(dots[[i]]@ptr)
-				} else {
-					name <- names(dots[[i]])
-					cls <- class(dots[[i]])
-					error("mosaic", "additional arguments should be 'SpatRaster'\n Found argument", name, "of class: ", cls)
-				}
-			}
-		}
-		x@ptr <- rc$mosaic(fun, opt)
-		messages(x, "mosaic")
-	}
-)
-
-setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
-		opt <- spatOptions(filename, overwrite, wopt=wopt)
-		dots <- list(...)
-		rc <- SpatRasterCollection$new()
-		rc$add(x@ptr)
-		rc$add(y@ptr)
-		n <- length(dots)
-		if (n > 0) {
-			for (i in 1:n) {
-				if (inherits(dots[[i]], "SpatRaster")) {
-					rc$add(dots[[i]]@ptr)
-				} else {
-					name <- names(dots[[i]])
-					cls <- class(dots[[i]])
-					error("merge", "additional arguments should be 'SpatRaster'\n Found argument", name, "of class: ", cls)
-				}
-			}
-		}
-		x@ptr <- rc$merge(opt)
-		messages(x, "merge")
-	}
-)
-
-
 setMethod("merge", signature(x="SpatVector", y="data.frame"), 
 	function(x, y, ...) {
 		v <- values(x)
@@ -67,4 +17,41 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 )
 
 
+setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
+	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
+		rc <- src(x, y, ...)
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
+		x@ptr <- rc@ptr$merge(opt)
+		messages(x, "merge")
+	}
+)
+
+
+setMethod("merge", signature(x="SpatRasterCollection", "missing"), 
+	function(x, filename="", ...) { 
+		opt <- spatOptions(filename, ...)
+		out <- rast()
+		out@ptr <- x@ptr$merge(opt)
+		messages(out, "merge")
+	}
+)
+
+
+setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
+	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) { 
+		rc <- src(x, y, ...)
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
+		x@ptr <- rc@ptr$mosaic(fun, opt)
+		messages(x, "mosaic")
+	}
+)
+
+setMethod("mosaic", signature(x="SpatRasterCollection", "missing"), 
+	function(x, fun="mean", filename="", ...) { 
+		opt <- spatOptions(filename, ...)
+		out <- rast()
+		out@ptr <- x@ptr$mosaic(fun, opt)
+		messages(out, "mosaic")
+	}
+)
 

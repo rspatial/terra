@@ -5,8 +5,9 @@ setMethod("length", signature(x="SpatRasterDataset"),
 	}
 )
 
+
 setMethod("sds", signature(x="character"),
-	function(x, ids=0, ...) {
+	function(x, ids=0) {
 
 		if (length(x) > 1) {
 			r <- lapply(x, rast)
@@ -33,7 +34,7 @@ setMethod("sds", signature(x="character"),
 )
 
 setMethod("sds", signature(x="missing"),
-	function(x, ...) {
+	function(x) {
 		r <- methods::new("SpatRasterDataset")
 		r@ptr <- SpatRasterStack$new()
 		r
@@ -60,7 +61,7 @@ setMethod("sds", signature(x="SpatRaster"),
 )
 
 setMethod("sds", signature(x="list"),
-	function(x, ...) {
+	function(x) {
 		r <- methods::new("SpatRasterDataset")
 		r@ptr <- SpatRasterStack$new()
 		nms <- names(x)
@@ -190,4 +191,77 @@ setMethod("$", "SpatRasterDataset",
 		x[name] 
 	}
 )
+
+
+
+
+setMethod("src", signature(x="SpatRaster"), 
+	function(x, ...) {
+		rc <- SpatRasterCollection$new()
+		rc$add(x@ptr)
+		dots <- list(...)
+		n <- length(dots)
+		if (n > 0) {
+			for (i in 1:n) {
+				if (inherits(dots[[i]], "SpatRaster")) {
+					rc$add(dots[[i]]@ptr)
+				} else {
+					name <- names(dots[[i]])
+					cls <- class(dots[[i]])
+					error("src", "additional arguments should be 'SpatRaster'\n Found argument", name, "of class: ", cls)
+				}
+			}
+		}
+		x <- new("SpatRasterCollection")
+		x@ptr <- rc
+		x
+	}
+)
+
+
+setMethod("src", signature(x="list"), 
+	function(x) {
+		n <- length(x)
+		ptr <- SpatRasterCollection$new()
+		if (n > 0) {
+			for (i in 1:n) {
+				if (inherits(x[[i]], "SpatRaster")) {
+					ptr$add(x[[i]]@ptr)
+				} else {
+					name <- names(x[[i]])
+					cls <- class(x[[i]])
+					error("src", "list elements should be 'SpatRaster'\n", name, "is of class: ", cls)
+				}
+			}
+		}
+		x <- new("SpatRasterCollection")
+		x@ptr <- ptr
+		x
+	}
+)
+
+
+setMethod("length", signature(x="SpatRasterCollection"),
+	function(x) {
+		x@ptr$length()
+	}
+)
+
+setMethod("[", c("SpatRasterCollection", "numeric", "missing"),
+function(x, i, j, ... ,drop=TRUE) {
+	i <- positive_indices(i, length(x), " [ ")
+	if (drop && (length(i) == 1)) {
+		ptr <- x@ptr$x[i][[1]]
+		x <- rast()
+		x@ptr <- ptr
+	} else {
+		s <- x@ptr$x[i]
+		ptr <- SpatRasterCollection$new()
+		for (i in 1:length(s)) {
+			ptr$add(s[[i]])
+		}
+		x@ptr <- ptr
+	}
+	messages(x, "`[`")
+})
 

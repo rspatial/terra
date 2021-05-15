@@ -11,6 +11,9 @@
 \alias{[,SpatRasterDataset,logical,missing-method}
 \alias{[,SpatRasterDataset,character,missing-method}
 \alias{[[,SpatRasterDataset,ANY,ANY-method}
+
+\alias{[,SpatRasterCollection,numeric,missing-method}
+
 \alias{$,SpatRaster-method}
 \alias{$,SpatRasterDataset-method}
 

@@ -86,6 +86,7 @@ if (!isGeneric("as.raster")) { setGeneric("as.raster", function(x, ...) standard
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 if (!isGeneric("rev") ) { setGeneric("rev", function(x) standardGeneric("rev")) }
 if (!isGeneric("sds") ) { setGeneric("sds", function(x, ...) standardGeneric("sds")) }
+if (!isGeneric("src") ) { setGeneric("src", function(x, ...) standardGeneric("src")) }
 if (!isGeneric("svc") ) { setGeneric("svc", function(x, ...) standardGeneric("svc")) }
 if (!isGeneric("sel")) {setGeneric("sel", function(x, ...) standardGeneric("sel"))}
 if (!isGeneric("segregate")) {setGeneric("segregate", function(x, ...) standardGeneric("segregate"))}
