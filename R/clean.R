@@ -25,14 +25,13 @@ clean_further <- function(x) {
 
 
 clean <- function(x) {
-	x <- clean_further(x)
 
 	out = x[1]
 	for (i in 2:nrow(x)) {
 		out <- erase(out, x[i])
 		out <- rbind(out, x[i])
 	}
-	out <- clean_further(out)
+	out <- snap(out, 0.001)
 	p <- as.polygons(floor(ext(out)+1), crs=crs(out))
 	e <- disaggregate(erase(p, out))
 	if (nrow(e) > 1) {
@@ -58,9 +57,15 @@ mergebyborder <- function(x, field) {
 	}
 } 
 
+snap <- function(x, tolerance) {
+	x@ptr <- x@ptr$snap(tolerance)
+	messages(x)
+}
 
+
+#library(terra); messages = terra:::messages
 #p <- vect(system.file("ex/lux.shp", package="terra"))
-#h = convHull(p[-12], "NAME_1")
+#h <- convHull(p[-12], "NAME_1")
 #x <- clean(h)
 #y <- clean_further(x)
 
