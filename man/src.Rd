@@ -3,6 +3,7 @@
 \docType{methods}
 
 \alias{src}
+\alias{src,missing-method}
 \alias{src,list-method}
 \alias{src,SpatRaster-method}
 
@@ -19,10 +20,12 @@ They can be used to combine several SpatRasters to be used with \code{\link{merg
 \S4method{src}{SpatRaster}(x, ...) 
 
 \S4method{src}{list}(x) 
+
+\S4method{src}{missing}(x) 
 }
 
 \arguments{
-\item{x}{SpatRaster, or list of SpatRaster objects}
+\item{x}{SpatRaster, list with SpatRaster objects, or missing}
 \item{...}{additional SpatRaster objects} 
 }
 

@@ -55,24 +55,24 @@ You can use \code{merge} with \code{do.call} to merge a list of SpatRasters (see
 
 
 \examples{
-x <- rast(xmin=-110, xmax=-50, ymin=40, ymax=70, ncols=60, nrows=30)
-y <- rast(xmin=-80, xmax=-20, ymax=60, ymin=30)
-res(y) <- res(x)
+x <- rast(xmin=-110, xmax=-80, ymin=40, ymax=70, ncols=30, nrows=30)
+y <- rast(xmin=-85, xmax=-55, ymax=60, ymin=30, ncols=30, nrows=30)
+z <- rast(xmin=-60, xmax=-30, ymax=50, ymin=20, ncols=30, nrows=30)
 values(x) <- 1:ncell(x)
 values(y) <- 1:ncell(y)
-mr <- merge(x, y)
-plot(mr)
-mr <- merge(y, x)
+values(z) <- 1:ncell(z)
 
-# if you have many SpatRaster objects in a list
-# you can use do.call:
-s <- list(x, y)
-# add arguments such as filename
-s$filename <- ""
-m <- do.call(merge, s)
+m1 <- merge(x, y, z)
+m2 <- merge(z, y, x)
 
-##
-# SpatVector with data.frame
+# if you have many SpatRasters make a SpatRasterCollection from a list
+rlist <- list(x, y, z)
+rsrc <- src(rlist)
+
+m <- merge(rsrc)
+
+
+## SpatVector with data.frame
 f <- system.file("ex/lux.shp", package="terra")
 p <- vect(f)
 dfr <- data.frame(District=p$NAME_1, Canton=p$NAME_2, Value=round(runif(length(p), 100, 1000)))

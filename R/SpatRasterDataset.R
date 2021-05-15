@@ -194,27 +194,18 @@ setMethod("$", "SpatRasterDataset",
 
 
 
+setMethod("src", signature(x="missing"),
+	function(x) {
+		r <- methods::new("SpatRasterCollection")
+		r@ptr <- SpatRasterCollection$new()
+		r
+	}
+)
+
 
 setMethod("src", signature(x="SpatRaster"), 
 	function(x, ...) {
-		rc <- SpatRasterCollection$new()
-		rc$add(x@ptr)
-		dots <- list(...)
-		n <- length(dots)
-		if (n > 0) {
-			for (i in 1:n) {
-				if (inherits(dots[[i]], "SpatRaster")) {
-					rc$add(dots[[i]]@ptr)
-				} else {
-					name <- names(dots[[i]])
-					cls <- class(dots[[i]])
-					error("src", "additional arguments should be 'SpatRaster'\n Found argument", name, "of class: ", cls)
-				}
-			}
-		}
-		x <- new("SpatRasterCollection")
-		x@ptr <- rc
-		x
+		src(list(x, ...))
 	}
 )
 
