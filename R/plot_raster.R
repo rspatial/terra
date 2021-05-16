@@ -310,12 +310,13 @@
 
 	if (is.null(mar)) {
 		if (out$legend_draw) {
-			mar=c(3.1, 3.1, 2.1, 7.1)
+			out$mar <- c(3.1, 3.1, 2.1, 7.1)
 		} else {
-			mar=c(3.1, 3.1, 2.1, 2.1)
+			out$mar <- c(3.1, 3.1, 2.1, 2.1)
 		}
+	} else {
+		out$mar <- rep_len(mar, 4)
 	}
-	out$mar <- mar
 
 	if (type=="factor") {
 		out <- .as.raster.factor(out, x)

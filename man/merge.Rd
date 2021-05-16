@@ -64,6 +64,7 @@ values(z) <- 1:ncell(z)
 
 m1 <- merge(x, y, z)
 m2 <- merge(z, y, x)
+m3 <- merge(y, x, z)
 
 # if you have many SpatRasters make a SpatRasterCollection from a list
 rlist <- list(x, y, z)

@@ -32,7 +32,7 @@ messages <- function(x, f="") {
 }
 
 
-.mem_info <- function(x, n=1, print=TRUE) {
+mem_info <- function(x, n=1, print=TRUE) {
 	n <- max(0,n)
 	opt <- spatOptions()
 	opt$ncopies = n;
@@ -52,6 +52,15 @@ messages <- function(x, f="") {
 		cat("\n------------------------\n")
 	} 
 	names(v) <- c("needed", "available", "memfrac", "chunksize")
-	invisible(v)
 }
+
+
+free_RAM <- function() {
+	opt <- spatOptions()
+	x <- rast()
+	v <- x@ptr$mem_needs(opt)
+	v[2] / 128
+}
+
+
 
