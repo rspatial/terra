@@ -33,7 +33,7 @@ boxplot returns a list (invisibly) that can be used with \code{\link{bxp}}
 }
 
 \examples{
-r1 <- r2 <- r3 <- rast(ncol=10, nrow=10)
+r1 <- r2 <- r3 <- rast(ncols=10, nrows=10)
 set.seed(409)
 values(r1) <- rnorm(ncell(r1), 100, 40)
 values(r2) <- rnorm(ncell(r1), 80, 10)

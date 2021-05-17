@@ -31,7 +31,7 @@ SpatRaster. Cell values are either 1 (a border) or 0 (not a border), or \code{NA
 \seealso{ \code{\link{focal}}, \code{\link{patches}} }
 
 \examples{
-r <- rast(nrow=18, ncol=36, xmin=0)
+r <- rast(nrows=18, ncols=36, xmin=0)
 r[150:250] <- 1
 r[251:450] <- 2
 bi <- boundaries(r)

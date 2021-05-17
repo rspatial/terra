@@ -36,7 +36,7 @@ matrix (SpatRaster) or data.frame (SpatVector)
 
 
 \examples{
-r <- rast(nrow=25, ncol=25)
+r <- rast(nrows=25, ncols=25)
 values(r) <- 1:ncell(r)
 head(r)
 tail(r)

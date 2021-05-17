@@ -43,7 +43,7 @@ numeric. The sum of the size of the cells that are not \code{NA}
 \examples{
 
 ### SpatRaster 
-r <- rast(nrow=18, ncol=36)
+r <- rast(nrows=18, ncols=36)
 v <- 1:ncell(r)
 v[200:400] <- NA
 values(r) <- v
@@ -51,7 +51,7 @@ values(r) <- v
 # summed area in km2
 expanse(r, unit="km")
 
-r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
+r <- rast(ncols=90, nrows=45, ymin=-80, ymax=80)
 m <- project(r, "+proj=merc")
 
 expanse(m, unit="km")

@@ -24,8 +24,8 @@ See \code{\link{Math-methods}} for other trigonometric and mathematical function
 
 
 \examples{
-r1 <- rast(nrow=10, ncol=10)
-r2 <- rast(nrow=10, ncol=10)
+r1 <- rast(nrows=10, ncols=10)
+r2 <- rast(nrows=10, ncols=10)
 values(r1) <- (runif(ncell(r1))-0.5) * 10
 values(r2) <- (runif(ncell(r1))-0.5) * 10
 atan2(r1, r2)

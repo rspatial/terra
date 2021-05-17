@@ -38,7 +38,7 @@ SpatRaster
 \seealso{\code{\link{app}}, \code{\link{Summary-methods}}}
 
 \examples{
-r <- rast(ncol=10, nrow=10)
+r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
 s <- c(r, r, r, r, r, r)
 s <- s * 1:6

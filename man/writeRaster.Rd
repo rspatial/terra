@@ -67,7 +67,7 @@ When writing integer values the lowest available value (given the datatype) is u
 \examples{
 
 library(terra)
-r <- rast(nrow=5, ncol=5, vals=1:25)
+r <- rast(nrows=5, ncols=5, vals=1:25)
 
 # create a temporary filename for the example
 f <- file.path(tempdir(), "test.tif")

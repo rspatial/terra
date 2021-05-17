@@ -35,7 +35,7 @@ If \code{x} is a SpatVector: SpatVector
 
 
 \examples{
-r <- rast(ncol=5, nrow=5)
+r <- rast(ncols=5, nrows=5)
 values(r) <- rep(1:5, each=5)
 unique(r)
 s <- c(r, round(r/3))

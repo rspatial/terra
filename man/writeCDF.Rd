@@ -50,7 +50,7 @@ fname <- paste0(tempfile(), ".nc")
 rr <- writeCDF(r, fname, overwrite=TRUE, varname="alt", 
       longname="elevation in m above sea level", unit="m")
 
-a <- rast(ncol=5, nrow=5, nl=50)
+a <- rast(ncols=5, nrows=5, nl=50)
 values(a) <- 1:prod(dim(a))
 time(a) <- as.Date("2020-12-31") + 1:nlyr(a)
 aa <- writeCDF(a, fname, overwrite=TRUE, varname="power", 

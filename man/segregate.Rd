@@ -31,7 +31,7 @@ SpatRaster
 }
 
 \examples{
-r <- rast(nrow=5, ncol=5)
+r <- rast(nrows=5, ncols=5)
 values(r) <- rep(c(1:4, NA), each=5)
 b <- segregate(r)
 bb <- segregate(r, keep=TRUE, other=NA)

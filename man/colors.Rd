@@ -32,7 +32,7 @@ data.frame
 }
 
 \examples{
-r <- rast(ncol=3, nrow=2, vals=0:5)
+r <- rast(ncols=3, nrows=2, vals=0:5)
 coltb <- data.frame(t(col2rgb(rainbow(6, end=.9), alpha=TRUE)))
 coltb
 

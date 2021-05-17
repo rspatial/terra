@@ -36,7 +36,7 @@ Note that the distance unit of the buffer \code{width} parameter is meters if th
 
 
 \examples{
-r <- rast(ncol=36,nrow=18)
+r <- rast(ncols=36, nrows=18)
 v <- rep(NA, ncell(r))
 v[500] <- 1
 values(r) <- v

@@ -29,7 +29,7 @@ matrix with 2 columns (value, count) or, if \code{bylayer=TRUE} three layers (la
 \seealso{\code{\link{freq}}}
 
 \examples{
-r <- rast(nrow=10, ncol=10)
+r <- rast(nrows=10, ncols=10)
 set.seed(2)
 values(r) <- sample(5, ncell(r), replace=TRUE)
 

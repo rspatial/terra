@@ -1,6 +1,8 @@
 \name{mem}
 
-\alias{mem}
+\alias{mem_info}
+\alias{free_RAM}
+
 
 \title{Memory available and needed}
 
@@ -11,7 +13,7 @@
 }
 
 \usage{
-mem_info(x, n=1, print=TRUE)
+mem_info(x, n=1)
 
 free_RAM()
 }
@@ -19,7 +21,6 @@ free_RAM()
 \arguments{
   \item{x}{SpatRastaer}
   \item{n}{positive integer. The number of copies of \code{x} that are needed}
-  \itme{print}{logical. Print information to console}
 }
 
 

@@ -52,7 +52,7 @@ list (levels, cats) or data.frame (cats for a single layer); logical (is.factor,
 
 \examples{
 set.seed(0)
-r <- rast(nrow=10, ncol=10)
+r <- rast(nrows=10, ncols=10)
 values(r) <- sample(3, ncell(r), replace=TRUE)
 is.factor(r)
 

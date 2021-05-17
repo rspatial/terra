@@ -41,7 +41,7 @@ SpatRaster
 \seealso{\code{\link{selectRange}}, \code{\link{app}}, \code{\link{Summary-methods}}, \code{\link{lapp}}, \code{\link{tapp}}}
 
 \examples{
-r <- rast(ncol=9, nrow=9)
+r <- rast(ncols=9, nrows=9)
 values(r) <- 1:ncell(r)
 s <- c(r, r, r, r, r, r)
 s <- s * 1:6

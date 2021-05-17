@@ -26,7 +26,7 @@ Replace values of a SpatRaster. These are convenience functions for smaller obje
 \seealso{\link{values}, \link{replace}}
 
 \examples{
-r <- rast(ncol=5, nrow=5, xmin=0, xmax=5, ymin=0, ymax=5)
+r <- rast(ncols=5, nrows=5, xmin=0, xmax=5, ymin=0, ymax=5)
 r[] <- 1:25
 r[1,] <- 5
 r[,2] <- 10

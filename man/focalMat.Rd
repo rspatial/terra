@@ -24,7 +24,7 @@ matrix that can be used with \code{\link{focal}}
 
 
 \examples{
-r <- rast(ncol=180, nrow=180, xmin=0)
+r <- rast(ncols=180, nrows=180, xmin=0)
 focalMat(r, 2, "circle")
 
 focalMat(r, c(2,3), "rect")

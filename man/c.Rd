@@ -47,7 +47,7 @@ Same class as \code{x}
 
 
 \examples{
-r <- rast(nrow=5, ncol=9)
+r <- rast(nrows=5, ncols=9)
 values(r) <- 1:ncell(r)
 x <- c(r, r*2, r*3)
 }

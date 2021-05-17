@@ -42,7 +42,7 @@ SpatRaster or SpatVector
 \examples{
 \dontrun{
 # select a subset of a SpatRaster
-r <- rast(nrow=10, ncol=10)
+r <- rast(nrows=10, ncols=10)
 values(r) <- 1:ncell(r)
 plot(r)
 s <- sel(r) # now click on the map twice

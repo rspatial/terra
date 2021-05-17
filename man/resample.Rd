@@ -47,9 +47,9 @@ SpatRaster
 
 \examples{
 
-r <- rast(nrow=3, ncol=3, xmin=0, xmax=10, ymin=0, ymax=10)
+r <- rast(nrows=3, ncols=3, xmin=0, xmax=10, ymin=0, ymax=10)
 values(r) <- 1:ncell(r)
-s <- rast(nrow=25, ncol=30, xmin=1, xmax=11, ymin=-1, ymax=11)
+s <- rast(nrows=25, ncols=30, xmin=1, xmax=11, ymin=-1, ymax=11)
 x <- resample(r, s, method="bilinear")
 
 opar <- par(no.readonly =TRUE)

@@ -39,7 +39,7 @@ SpatRaster
 
 
 \examples{
-r <- rast(nrow=10, ncol=10)
+r <- rast(nrows=10, ncols=10)
 values(r) <- 1:100
 m <- match(r, c(5:10, 50:55))
 n <- r \%in\% c(5:10, 50:55)

@@ -28,14 +28,14 @@ SpatRaster. Cell values are either a patch number
 \seealso{ \code{\link{focal}}, \code{\link{boundaries}} }
 
 \examples{
-r <- rast(nrow=18, ncol=36, xmin=0)
+r <- rast(nrows=18, ncols=36, xmin=0)
 r[1:2, 5:8] <- 1
 r[5:8, 2:6] <- 1
 r[7:12, 22:36] <- 1
 r[15:16, 18:29] <- 1
 p <- patches(r)
 
-r <- rast(nrow=10, ncol=10, xmin=0)
+r <- rast(nrows=10, ncols=10, xmin=0)
 r[] <- 0
 r[3, 3] <- 10
 r[4, 4] <- 10

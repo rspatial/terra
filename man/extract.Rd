@@ -58,7 +58,7 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \seealso{\link{values}}
 
 \examples{
-r <- rast(ncol=5, nrow=5, xmin=0, xmax=5, ymin=0, ymax=5)
+r <- rast(ncols=5, nrows=5, xmin=0, xmax=5, ymin=0, ymax=5)
 values(r) <- 1:25
 xy <- rbind(c(0.5,0.5), c(2.5,2.5))
 p <- vect(xy, crs="+proj=longlat +datum=WGS84")

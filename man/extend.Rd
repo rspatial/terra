@@ -36,7 +36,7 @@ SpatRaster or SpatExtent
 \seealso{\code{\link{crop}}, \code{\link{merge}}, \code{\link{ext}}}
 
 \examples{
-r <- rast(xmin=-150, xmax=-120, ymin=30, ymax=60, ncol=36, nrow=18)
+r <- rast(xmin=-150, xmax=-120, ymin=30, ymax=60, ncols=36, nrows=18)
 values(r) <- 1:ncell(r)
 e <- ext(-180, -100, 40, 70)
 re <- extend(r, e)

@@ -32,12 +32,12 @@ messages <- function(x, f="") {
 }
 
 
-mem_info <- function(x, n=1, print=TRUE) {
+mem_info <- function(x, n=1) {
 	n <- max(0,n)
 	opt <- spatOptions()
 	opt$ncopies = n;
 	v <- x@ptr$mem_needs(opt)
-	if (print) {
+	#if (print) {
 		gb <- 1024^3 / 8  # 
 		cat("\n------------------------")
 		cat("\nMemory (GB) ")
@@ -50,7 +50,7 @@ mem_info <- function(x, n=1, print=TRUE) {
 		cat(paste("\nproc in memory  :", round(v[5]) != 0))
 		cat(paste("\nnr chunks       :", ceiling(nrow(x)/v[4])))
 		cat("\n------------------------\n")
-	} 
+	#} 
 	names(v) <- c("needed", "available", "memfrac", "chunksize")
 }
 

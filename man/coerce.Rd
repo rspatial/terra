@@ -40,7 +40,7 @@ vector, matrix, array
 
 
 \examples{
-r <- rast(ncol=2, nrow=2)
+r <- rast(ncols=2, nrows=2)
 values(r) <- 1:ncell(r)
 
 as.vector(r)

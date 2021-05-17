@@ -76,7 +76,7 @@ The files are opened and read via GDAL. GDAL guesses the file format from the na
 
 \examples{
 # Create a SpatRaster from scratch
-x <- rast(nrow=108, ncol=21, xmin=0, xmax=10)
+x <- rast(nrows=108, ncols=21, xmin=0, xmax=10)
 
 # Create a SpatRaster from a file
 f <- system.file("ex/elev.tif", package="terra")

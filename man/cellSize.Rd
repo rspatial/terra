@@ -37,7 +37,7 @@ numeric (area)
 \examples{
 
 # SpatRaster 
-r <- rast(nrow=18, ncol=36)
+r <- rast(nrows=18, ncols=36)
 v <- 1:ncell(r)
 v[200:400] <- NA
 values(r) <- v
@@ -46,7 +46,7 @@ values(r) <- v
 a <- cellSize(r)
 
 # illustration of distortion
-r <- rast(ncol=90, nrow=45, ymin=-80, ymax=80)
+r <- rast(ncols=90, nrows=45, ymin=-80, ymax=80)
 m <- project(r, "+proj=merc")
 
 bad <- init(m, prod(res(m)) / 1000000, names="naive")

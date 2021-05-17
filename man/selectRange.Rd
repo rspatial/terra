@@ -35,7 +35,7 @@ SpatRaster
 
 
 \examples{
-r <- rast(ncol=10, nrow=10)
+r <- rast(ncols=10, nrows=10)
 values(r) <- 1
 s <- c(r, r+2, r+5)
 s <- c(s, s)

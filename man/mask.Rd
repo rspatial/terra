@@ -37,8 +37,8 @@ Create a new SpatRaster that has the same values as SpatRaster \code{x}, except 
 
 
 \examples{
-r <- rast(ncol=10, nrow=10)
-m <- rast(ncol=10, nrow=10)
+r <- rast(ncols=10, nrows=10)
+m <- rast(ncols=10, nrows=10)
 values(r) <- 1:100
 set.seed(1965)
 x <- round(3 * runif(ncell(r)))

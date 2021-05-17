@@ -33,7 +33,7 @@ character (filenames)
 \examples{
 r <- rast(ncols=100, nrows=100)
 values(r) <- 1:ncell(r)
-x <- rast(ncol=2, nrow=2)
+x <- rast(ncols=2, nrows=2)
 filename <- paste0(tempfile(), "_.tif")
 ff <- makeTiles(r, x, filename)
 }

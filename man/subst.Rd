@@ -30,7 +30,7 @@ SpatRaster
 \seealso{\code{\link{classify}}}
 
 \examples{
-r <- rast(ncol=5, nrow=5, xmin=0, xmax=1, ymin=0, ymax=1, crs="")
+r <- rast(ncols=5, nrows=5, xmin=0, xmax=1, ymin=0, ymax=1, crs="")
 r <- init(r, 1:6)
 x <- subst(r, 3, 7)
 x <- subst(r, 2:3, NA)

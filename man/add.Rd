@@ -27,7 +27,7 @@ SpatRaster
 }
 
 \examples{
-r <- rast(nrow=5, ncol=9, vals=1:45)
+r <- rast(nrows=5, ncols=9, vals=1:45)
 x <- c(r, r*2)
 add(x) <- r*3
 x

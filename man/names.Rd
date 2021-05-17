@@ -80,7 +80,7 @@ terra enforces neither unique nor valid names. See \code{\link{make.unique}} to 
 }
 
 \examples{
-s <- rast(ncols=5, nrows=5, nlyr=3)
+s <- rast(ncols=5, nrows=5, nlyrs=3)
 nlyr(s)
 names(s)
 names(s) <- c("a", "b", "c")
