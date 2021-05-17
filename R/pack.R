@@ -100,6 +100,7 @@ setMethod("as.character", signature(x="SpatRaster"),
 		crs <- crs(x)
 		crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
 		crs <- gsub("\n[ ]+", "", crs)
+		nms <- paste0(", names=c('", paste(names(x), collapse="', '"), "')")
 		paste0("rast(", 
 				"ncol=", ncol(x),
 				", nrow=", nrow(x),
@@ -108,12 +109,12 @@ setMethod("as.character", signature(x="SpatRaster"),
 				", xmax=",e[2],
 				", ymin=",e[3],
 				", ymax=",e[4],
+				nms, 
 				crs, ")" 
 		)
 	}
 )
-#eval(parse(text=as.character(raster())))
-#eval(parse(text=as.character(stack())))
+#eval(parse(text=as.character(s)))
 
 
 setMethod("wrap", signature(x="SpatRaster"), 
