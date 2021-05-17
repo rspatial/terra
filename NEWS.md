@@ -1,14 +1,21 @@
 
-# version 1.2-11
+# version 1.2-12
 
 ## new
 
 - `na.omit,SpatVector-method` to remove empty geometries and/or attribute records that have an `NA`
+- new method `src` to create a `SpatRasterCollection` (a loose collection of tiles). 
+- `merge` and `mosaic` now have methods for a `SpatRasterCollection`. To avoid the (inefficient) use of `do.call`. See issue [#210](https://github.com/rspatial/terra/issues/210) by Matthew Talluto.
 
 ## enhancements
 
-- additional arguments (such as `na.rm` to `rasterize` with point geometries. Suggested by Jakub Nowosad  [#200](https://github.com/rspatial/terra/issues/209)
+- additional arguments (such as `na.rm`) are now used by `rasterize` with point geometries. Suggested by Jakub Nowosad  [#209](https://github.com/rspatial/terra/issues/209)
+- improved handling and documentation of `gstat` models by `interpolate`. See issue [#208](https://github.com/rspatial/terra/issues/208) by Jakub Nowosad.
 
+
+## bug fixes 
+
+`as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
 
 
 # version 1.2-10
