@@ -76,7 +76,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-12</span>
       </span>
     </div>
 
@@ -170,7 +170,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># SpatRaster </span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrow<span class='op'>=</span><span class='fl'>18</span>, ncol<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>18</span>, ncols<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 <span class='va'>v</span><span class='op'>[</span><span class='fl'>200</span><span class='op'>:</span><span class='fl'>400</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='cn'>NA</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>v</span>
@@ -179,7 +179,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 <span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>cellSize</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 
 <span class='co'># illustration of distortion</span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncol<span class='op'>=</span><span class='fl'>90</span>, nrow<span class='op'>=</span><span class='fl'>45</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymax<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='fl'>90</span>, nrows<span class='op'>=</span><span class='fl'>45</span>, ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymax<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='project.html'>project</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='st'>"+proj=merc"</span><span class='op'>)</span>
 
 <span class='va'>bad</span> <span class='op'>&lt;-</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>m</span>, <span class='fu'><a href='https://rdrr.io/r/base/prod.html'>prod</a></span><span class='op'>(</span><span class='fu'><a href='dimensions.html'>res</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>1000000</span>, names<span class='op'>=</span><span class='st'>"naive"</span><span class='op'>)</span>

@@ -74,7 +74,7 @@ Always use the &quot;.nc&quot; or &quot;.cdf&quot; file extension to assure that
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-12</span>
       </span>
     </div>
 
@@ -194,7 +194,7 @@ Always use the &quot;.nc&quot; or &quot;.cdf&quot; file extension to assure that
 <span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'>writeCDF</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>fname</span>, overwrite<span class='op'>=</span><span class='cn'>TRUE</span>, varname<span class='op'>=</span><span class='st'>"alt"</span>, 
       longname<span class='op'>=</span><span class='st'>"elevation in m above sea level"</span>, unit<span class='op'>=</span><span class='st'>"m"</span><span class='op'>)</span>
 
-<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncol<span class='op'>=</span><span class='fl'>5</span>, nrow<span class='op'>=</span><span class='fl'>5</span>, nl<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='fl'>5</span>, nrows<span class='op'>=</span><span class='fl'>5</span>, nl<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/prod.html'>prod</a></span><span class='op'>(</span><span class='fu'><a href='dimensions.html'>dim</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='time.html'>time</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2020-12-31"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>nlyr</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span>
 <span class='va'>aa</span> <span class='op'>&lt;-</span> <span class='fu'>writeCDF</span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>fname</span>, overwrite<span class='op'>=</span><span class='cn'>TRUE</span>, varname<span class='op'>=</span><span class='st'>"power"</span>, 

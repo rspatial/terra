@@ -79,7 +79,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-12</span>
       </span>
     </div>
 
@@ -265,7 +265,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
 <p></p><table class='table'>
 <tr><td><code><a href='predict.html'>predict</a></code></td><td>Predict a non-spatial model to a SpatRaster</td></tr>
-<tr><td><code><a href='interpolate.html'>interpolate</a></code></td><td>Predict a spatial model to a SpatRaster</td></tr>
+<tr><td><code><a href='Spatial interpolation.html'>interpolate</a></code></td><td>Predict a spatial model to a SpatRaster</td></tr>
 <tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr>
 </table>
 
@@ -409,6 +409,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code><a href='vect.html'>vect</a></code></td><td>Create a SpatVector from a file (for example a "shapefile") or from another object</td></tr>
 <tr><td><code>rbind</code></td><td>append SpatVectors of the same geometry type</td></tr>
 <tr><td><code><a href='unique.html'>unique</a></code></td><td>remove duplicates</td></tr>
+<tr><td><code><a href='na.omit.html'>na.omit</a></code></td><td>remove empty geometries and/or fields that are <code>NA</code></td></tr>
 <tr><td><code><a href='project.html'>project</a></code></td><td>Project a SpatVector to a different coordinate reference system</td></tr>
 <tr><td><code><a href='writeVector.html'>writeVector</a></code></td><td>Write SpatVector data to disk</td></tr>
 <tr><td><code><a href='centroids.html'>centroids</a></code></td><td>Get the centroids of a SpatVector</td></tr>
@@ -533,7 +534,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 
     
 
-<p>You can coerce SpatRasters to Raster* objects after loading the <code>raster</code> package with <code>as(object, "Raster")</code>, or <code>raster(object)</code> or <code>brick(object)</code> or <code><a href='https://rdrr.io/r/utils/stack.html'>stack(object)</a></code></p>  
+<p>You can coerce SpatRasters to Raster* objects after loading the <code>raster</code> package with <code><a href='https://r-spatial.github.io/sf/reference/coerce-methods.html'>as(object, "Raster")</a></code>, or <code>raster(object)</code> or <code>brick(object)</code> or <code><a href='https://rdrr.io/r/utils/stack.html'>stack(object)</a></code></p>  
 <p></p><table class='table'>
 <tr><td><code><a href='rast.html'>rast</a></code></td><td>SpatRaster from matrix and other objects</td></tr>
 <tr><td><code><a href='vect.html'>vect</a></code></td><td>SpatVector from <code>sf</code> or <code>Spatial*</code> vector data</td></tr>
@@ -667,7 +668,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
     <p>Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for <code>rgdal</code> and <code>sf</code>. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for <code>sf</code>. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows</p>
     <h2 class="hasAnchor" id="acknowledgments"><a class="anchor" href="#acknowledgments"></a>Acknowledgments</h2>
 
-    <p>This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or <a href='https://github.com/rspatial/terra'>filing bug reports</a>. The feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Gerald Nelson, and Michael Sumner have been especially helpful.</p>
+    <p>This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or <a href='https://github.com/rspatial/terra'>filing bug reports</a>. The feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Krzysztof Dyba, Jakub Nowosad, Gerald Nelson, and Michael Sumner have been especially helpful.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

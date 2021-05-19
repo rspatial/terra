@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-12</span>
       </span>
     </div>
 
@@ -400,7 +400,7 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="describe.html">describe(<i>&lt;character&gt;</i>)</a></code> <code><a href="describe.html">desc()</a></code> </p>
+          <p><code><a href="describe.html">describe(<i>&lt;character&gt;</i>)</a></code> </p>
         </td>
         <td><p>describe</p></td>
       </tr><tr>
@@ -508,9 +508,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="gdal.html">gdal()</a></code> <code><a href="gdal.html">gdal_version()</a></code> </p>
+          <p><code><a href="gdal.html">gdal()</a></code> </p>
         </td>
-        <td><p>gdal utilities</p></td>
+        <td><p>GDAL version and supported file formats</p></td>
       </tr><tr>
         
         <td>
@@ -634,7 +634,13 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="merge.html">merge(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="merge.html">merge(<i>&lt;SpatExtent&gt;</i>,<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="merge.html">merge(<i>&lt;SpatVector&gt;</i>,<i>&lt;data.frame&gt;</i>)</a></code> </p>
+          <p><code><a href="mem.html">mem_info()</a></code> <code><a href="mem.html">free_RAM()</a></code> </p>
+        </td>
+        <td><p>Memory available and needed</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="merge.html">merge(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="merge.html">merge(<i>&lt;SpatRasterCollection&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> <code><a href="merge.html">merge(<i>&lt;SpatExtent&gt;</i>,<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="merge.html">merge(<i>&lt;SpatVector&gt;</i>,<i>&lt;data.frame&gt;</i>)</a></code> </p>
         </td>
         <td><p>Merge SpatRaster or SpatExtent objects, or a SpatVector with a data.frame</p></td>
       </tr><tr>
@@ -652,9 +658,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="mosaic.html">mosaic(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
+          <p><code><a href="mosaic.html">mosaic(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="mosaic.html">mosaic(<i>&lt;SpatRasterCollection&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> </p>
         </td>
         <td><p>mosaic SpatRasters</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="na.omit.html">na.omit(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>na.omit for SpatVector</p></td>
       </tr><tr>
         
         <td>
@@ -883,6 +895,12 @@
           <p><code><a href="split.html">split(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="split.html">split(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
         <td><p>Split</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="src.html">src(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="src.html">src(<i>&lt;list&gt;</i>)</a></code> <code><a href="src.html">src(<i>&lt;missing&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Create a SpatRasterCollection</p></td>
       </tr><tr>
         
         <td>

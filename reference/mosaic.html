@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-12</span>
       </span>
     </div>
 
@@ -121,7 +121,10 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster,SpatRaster</span>
-<span class='fu'>mosaic</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span>, fun<span class='op'>=</span><span class='st'>"mean"</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+<span class='fu'>mosaic</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span>, fun<span class='op'>=</span><span class='st'>"mean"</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># S4 method for SpatRasterCollection,missing</span>
+<span class='fu'>mosaic</span><span class='op'>(</span><span class='va'>x</span>, fun<span class='op'>=</span><span class='st'>"mean"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,12 +170,21 @@
     <div class='dont-index'><p><code><a href='merge.html'>merge</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>110</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>50</span>, ymin<span class='op'>=</span><span class='fl'>40</span>, ymax<span class='op'>=</span><span class='fl'>70</span>, ncols<span class='op'>=</span><span class='fl'>60</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>20</span>, ymax<span class='op'>=</span><span class='fl'>60</span>, ymin<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
-<span class='fu'><a href='dimensions.html'>res</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dimensions.html'>res</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>110</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymin<span class='op'>=</span><span class='fl'>40</span>, ymax<span class='op'>=</span><span class='fl'>70</span>, ncols<span class='op'>=</span><span class='fl'>30</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>85</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>55</span>, ymax<span class='op'>=</span><span class='fl'>60</span>, ymin<span class='op'>=</span><span class='fl'>30</span>, ncols<span class='op'>=</span><span class='fl'>30</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
+<span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>60</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>30</span>, ymax<span class='op'>=</span><span class='fl'>50</span>, ymin<span class='op'>=</span><span class='fl'>20</span>, ncols<span class='op'>=</span><span class='fl'>30</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
-<span class='va'>mr</span> <span class='op'>&lt;-</span> <span class='fu'>mosaic</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>
+
+<span class='va'>m1</span> <span class='op'>&lt;-</span> <span class='fu'>mosaic</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>z</span><span class='op'>)</span>
+<span class='va'>m2</span> <span class='op'>&lt;-</span> <span class='fu'>mosaic</span><span class='op'>(</span><span class='va'>z</span>, <span class='va'>y</span>, <span class='va'>x</span><span class='op'>)</span>
+
+<span class='co'># if you have many SpatRasters make a SpatRasterCollection from a list</span>
+<span class='va'>rlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>z</span><span class='op'>)</span>
+<span class='va'>rsrc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='src.html'>src</a></span><span class='op'>(</span><span class='va'>rlist</span><span class='op'>)</span>
+
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>mosaic</span><span class='op'>(</span><span class='va'>rsrc</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

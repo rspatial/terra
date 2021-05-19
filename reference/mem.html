@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Color table — colors • terra</title>
+<title>Memory available and needed — mem • terra</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Color table — colors" />
-<meta property="og:description" content="Get or set color table(s) associated with a SpatRaster. Color tables are used for associating colors with values, for use in mapping (plot)." />
+<meta property="og:title" content="Memory available and needed — mem" />
+<meta property="og:description" content="mem_info prints the amount of RAM that is required and available to process a SpatRaster.
+free_RAM returns the amount of RAM that is available" />
 
 
 
@@ -111,61 +112,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Color table</h1>
+    <h1>Memory available and needed</h1>
     
-    <div class="hidden name"><code>colors.Rd</code></div>
+    <div class="hidden name"><code>mem.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get or set color table(s) associated with a SpatRaster. Color tables are used for associating colors with values, for use in mapping (plot).</p>
+    <p><code>mem_info</code> prints the amount of RAM that is required and available to process a SpatRaster.</p>
+<p><code>free_RAM</code> returns the amount of RAM that is available</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>coltab</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>mem_info</span><span class='op'>(</span><span class='va'>x</span>, n<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
 
-<span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>coltab</span><span class='op'>(</span><span class='va'>x</span>, layer<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span></pre>
+<span class='fu'>free_RAM</span><span class='op'>(</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatRaster</p></td>
+      <td><p>SpatRastaer</p></td>
     </tr>
     <tr>
-      <th>layer</th>
-      <td><p>positive integer, the layer number or name</p></td>
-    </tr>
-    <tr>
-      <th>value</th>
-      <td><p>a three (red,green,blue) or four (alpha) column data.frame with no more than 256 rows; or NULL to remove the color table</p></td>
+      <th>n</th>
+      <td><p>positive integer. The number of copies of <code>x</code> that are needed</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>data.frame</p>
+    <p>free_RAM returns the amount of available RAM in kilobytes</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='fl'>3</span>, nrows<span class='op'>=</span><span class='fl'>2</span>, vals<span class='op'>=</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span>
-<span class='va'>coltb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='fu'><a href='transpose.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/grDevices/col2rgb.html'>col2rgb</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span><span class='op'>(</span><span class='fl'>6</span>, end<span class='op'>=</span><span class='fl'>.9</span><span class='op'>)</span>, alpha<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>coltb</span>
-</div><div class='output co'>#&gt;   red green blue alpha
-#&gt; 1 255     0    0   255
-#&gt; 2 235   255    0   255
-#&gt; 3   0   255   41   255
-#&gt; 4   0   194  255   255
-#&gt; 5  82     0  255   255
-#&gt; 6 255     0  153   255</div><div class='input'>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-</div><div class='img'><img src='colors-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>coltab</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>coltb</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-</div><div class='img'><img src='colors-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='va'>tb</span> <span class='op'>&lt;-</span> <span class='fu'>coltab</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>tb</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "list"</div><div class='input'><span class='fu'><a href='dimensions.html'>dim</a></span><span class='op'>(</span><span class='va'>tb</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 256   4</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>mem_info</span><span class='op'>(</span><span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 
+#&gt; ------------------------
+#&gt; Memory (GB) 
+#&gt; ------------------------
+#&gt; available       : 10.4
+#&gt; allowed (60%)   : 6.24
+#&gt; needed (n=1)    : 0
+#&gt; ------------------------
+#&gt; proc in memory  : TRUE
+#&gt; nr chunks       : 1
+#&gt; ------------------------</div><div class='input'>
+<span class='fu'>free_RAM</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 10903824</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -73,7 +73,7 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-12</span>
       </span>
     </div>
 
@@ -125,6 +125,9 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
     <pre class="usage"><span class='co'># S4 method for SpatRaster,SpatRaster</span>
 <span class='fu'>merge</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
+<span class='co'># S4 method for SpatRasterCollection,missing</span>
+<span class='fu'>merge</span><span class='op'>(</span><span class='va'>x</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
+
 <span class='co'># S4 method for SpatExtent,SpatExtent</span>
 <span class='fu'>merge</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
 
@@ -144,7 +147,7 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
     </tr>
     <tr>
       <th>...</th>
-      <td><p>if <code>x</code> is a SpatRaster or SpatVector: additional objects of the same class as <code>x</code>. If <code>x</code> is a SpatVector, the same arguments as in <code><a href='https://rdrr.io/r/base/merge.html'>merge</a></code></p></td>
+      <td><p>if <code>x</code> is a SpatRaster: additional objects of the same class as <code>x</code>. If <code>x</code> is a SpatRasterCollection: options for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code>. If <code>x</code> is a SpatVector, the same arguments as in <code><a href='https://rdrr.io/r/base/merge.html'>merge</a></code></p></td>
     </tr>
     <tr>
       <th>filename</th>
@@ -174,24 +177,25 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
     <p>You can use <code>merge</code> with <code>do.call</code> to merge a list of SpatRasters (see example). But note that if the list is named, these names are used by <code>merge</code>. So if all elements are named, there should be one element with a SpatRaster called <code>x</code> and another one called <code>y</code>. For example with <code>names(x)[1:2] &lt;- c("x"m "y")</code>. You can also removed the names of the the first two elements (assuming these are SpatRasters) with <code>names(x)[1:2] &lt;- ""</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>110</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>50</span>, ymin<span class='op'>=</span><span class='fl'>40</span>, ymax<span class='op'>=</span><span class='fl'>70</span>, ncols<span class='op'>=</span><span class='fl'>60</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>20</span>, ymax<span class='op'>=</span><span class='fl'>60</span>, ymin<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
-<span class='fu'><a href='dimensions.html'>res</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dimensions.html'>res</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>110</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>80</span>, ymin<span class='op'>=</span><span class='fl'>40</span>, ymax<span class='op'>=</span><span class='fl'>70</span>, ncols<span class='op'>=</span><span class='fl'>30</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>85</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>55</span>, ymax<span class='op'>=</span><span class='fl'>60</span>, ymin<span class='op'>=</span><span class='fl'>30</span>, ncols<span class='op'>=</span><span class='fl'>30</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
+<span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>60</span>, xmax<span class='op'>=</span><span class='op'>-</span><span class='fl'>30</span>, ymax<span class='op'>=</span><span class='fl'>50</span>, ymin<span class='op'>=</span><span class='fl'>20</span>, ncols<span class='op'>=</span><span class='fl'>30</span>, nrows<span class='op'>=</span><span class='fl'>30</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
-<span class='va'>mr</span> <span class='op'>&lt;-</span> <span class='fu'>merge</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>mr</span><span class='op'>)</span>
-</div><div class='img'><img src='merge-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='va'>mr</span> <span class='op'>&lt;-</span> <span class='fu'>merge</span><span class='op'>(</span><span class='va'>y</span>, <span class='va'>x</span><span class='op'>)</span>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>
 
-<span class='co'># if you have many SpatRaster objects in a list</span>
-<span class='co'># you can use do.call:</span>
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
-<span class='co'># add arguments such as filename</span>
-<span class='va'>s</span><span class='op'>$</span><span class='va'>filename</span> <span class='op'>&lt;-</span> <span class='st'>""</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>merge</span>, <span class='va'>s</span><span class='op'>)</span>
+<span class='va'>m1</span> <span class='op'>&lt;-</span> <span class='fu'>merge</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>z</span><span class='op'>)</span>
+<span class='va'>m2</span> <span class='op'>&lt;-</span> <span class='fu'>merge</span><span class='op'>(</span><span class='va'>z</span>, <span class='va'>y</span>, <span class='va'>x</span><span class='op'>)</span>
+<span class='va'>m3</span> <span class='op'>&lt;-</span> <span class='fu'>merge</span><span class='op'>(</span><span class='va'>y</span>, <span class='va'>x</span>, <span class='va'>z</span><span class='op'>)</span>
 
-<span class='co'>##</span>
-<span class='co'># SpatVector with data.frame</span>
+<span class='co'># if you have many SpatRasters make a SpatRasterCollection from a list</span>
+<span class='va'>rlist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>z</span><span class='op'>)</span>
+<span class='va'>rsrc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='src.html'>src</a></span><span class='op'>(</span><span class='va'>rlist</span><span class='op'>)</span>
+
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>merge</span><span class='op'>(</span><span class='va'>rsrc</span><span class='op'>)</span>
+
+
+<span class='co'>## SpatVector with data.frame</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='va'>dfr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>District<span class='op'>=</span><span class='va'>p</span><span class='op'>$</span><span class='va'>NAME_1</span>, Canton<span class='op'>=</span><span class='va'>p</span><span class='op'>$</span><span class='va'>NAME_2</span>, Value<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fu'><a href='dimensions.html'>length</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>, <span class='fl'>100</span>, <span class='fl'>1000</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
