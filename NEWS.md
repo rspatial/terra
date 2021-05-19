@@ -10,12 +10,12 @@
 ## enhancements
 
 - additional arguments (such as `na.rm`) are now used by `rasterize` with point geometries. Suggested by Jakub Nowosad  [#209](https://github.com/rspatial/terra/issues/209)
-- improved handling and documentation of `gstat` models by `interpolate`. See issue [#208](https://github.com/rspatial/terra/issues/208) by Jakub Nowosad.
+- improved handling (and documentation) of `gstat` models by `interpolate`. See issue [#208](https://github.com/rspatial/terra/issues/208) by Jakub Nowosad.
 
 
 ## bug fixes 
 
-`as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
+- `as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
 
 
 # version 1.2-10
@@ -38,7 +38,7 @@
 
 ## bug fixes
 
--`extract` with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)
+- `extract` with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)
 - `crop` works again with `sf` objects. Reported by Sebastian Brinkmann [#201] (https://github.com/rspatial/terra/issues/201)
 - `vect,sf-method` now also works for lines, and should be faster
 - `vect,character` crashed R if a file had empty geometries. Reported by consumere [#202](https://github.com/rspatial/terra/issues/202)

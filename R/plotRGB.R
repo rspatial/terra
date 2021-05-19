@@ -117,11 +117,11 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 	naind <- as.vector( attr(RGB, "na.action") )
 	if (!is.null(naind)) {
 		bg <- grDevices::col2rgb(colNA)
-		bg <- grDevices::rgb(bg[1], bg[2], bg[3], alpha=bgalpha, max=255)
+		bg <- grDevices::rgb(bg[1], bg[2], bg[3], alpha=bgalpha, maxColorValue=255)
 		z <- rep( bg, times=ncell(x))
-		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, max=scale)
+		z[-naind] <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, maxColorValue=scale)
 	} else {
-		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, max=scale)
+		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, maxColorValue=scale)
 	}
 
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)

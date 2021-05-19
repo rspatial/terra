@@ -152,7 +152,7 @@ setMethod("nearest", signature(x="SpatVector"),
 			}
 		} else {
 			if (lines) return(z)
-			dis <- perimeter(z)
+			dis <- perim(z)
 			z <- as.points(z)
 			from <- z[seq(1, nrow(z), 2), ]
 			to <- z[seq(2, nrow(z), 2), ]
@@ -161,8 +161,12 @@ setMethod("nearest", signature(x="SpatVector"),
 			to_int <- as.data.frame(intersect(to, y))
 			if (nrow(to_int) > nrow(to)) {
 				to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"id",drop=FALSE], function(x)x[1]) 
+			} 
+			if (nrow(to_int) < nrow(to)) {
+				to_int <- rep(NA, nrow(to))
+			} else {
+				to_int <- to_int[,2] 
 			}
-			to_int <- to_int[,2] 
 			from <- geom(from)[, c("x", "y"),drop=FALSE]
 			to <- geom(to)[, c("x", "y"),drop=FALSE]
 			d <- data.frame(1:nrow(from), from, to_int, to, dis)

@@ -392,6 +392,15 @@ setMethod("Summary", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("Summary", signature(x="SpatVector"),
+	function(x, ..., na.rm=FALSE){
+		apply(values(x), 2, sys.call()[[1L]], ...)
+	}
+)
+
+
+
+
 setMethod("Summary", signature(x="SpatExtent"),
 	function(x, ..., na.rm=FALSE){
 		e <- as.vector(x)
@@ -423,12 +432,24 @@ setMethod("mean", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("mean", signature(x="SpatVector"),
+	function(x, ..., trim=NA, na.rm=FALSE){
+		if (!is.na(trim)) {	warn("mean", "argument 'trim' is ignored") }
+		colMeans(values(x))
+	}
+)
+
 setMethod("median", signature(x="SpatRaster"),
 	function(x, na.rm=FALSE){
 		.summarize(x, fun="median", na.rm=na.rm)
 	}
 )
 
+setMethod("median", signature(x="SpatVector"),
+	function(x, na.rm=FALSE){
+		apply(values(x), 2, median, na.rm=na.rm)
+	}
+)
 
 setMethod("Compare", signature(e1="SpatExtent", e2="SpatExtent"),
     function(e1, e2){ 
