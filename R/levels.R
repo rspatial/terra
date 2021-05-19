@@ -53,7 +53,7 @@ setMethod ("setCats" , "SpatRaster",
 			if (missing(index)) {
 				return(x@ptr$getCatIndex(layer-1) + 1)
 			} else {
-				return(invisible(x@ptr$setCatIndex(layer-1, index-1)))
+				return(invisible(x@ptr$setCatIndex(layer-1, index)))
 			}
 		} 
 		if (missing(index)) {
@@ -131,4 +131,49 @@ setMethod ("cats" , "SpatRaster",
 	}
 )
 
+
+
+
+setMethod ("as.numeric" , "SpatRaster", 
+	function(x, index=NULL, ...) {
+		stopifnot(nlyr(x) == 1)
+		if (!is.factor(x)) return(x)
+		g <- cats(x)[[1]]
+		if (!is.null(index)) {
+			if (!((index > 1) & (index <= ncol(g)))) {
+				error("as.numeric", "invalid index")
+			}
+		} else {
+			index <- setCats(x, 1)
+		}
+		from <- g[,1]
+		to <- g[,index]
+		if (!is.numeric(to)) {
+			to <- 1:length(to)
+		}
+		x <- classify(x, cbind(from, to), names=names(g)[index], ...)
+		messages(x)
+	}
+)
+
+
+	
+	
+.as.layers <- function(x) {
+	g <- cats(x)
+	out <- list()
+	for (i in 1:nlyr(x)) {
+		y <- x[[i]]
+		gg <- g[[i]]
+		if (nrow(gg) > 0) {
+			for (j in 2:ncol(gg)) {
+				z <- as.numeric(y, index=j)
+				out <- c(out, z)
+			}
+		} else {
+			out <- c(out, y)
+		}
+	}
+	rast(out)
+}
 

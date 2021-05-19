@@ -12,6 +12,8 @@
 \alias{cats,SpatRaster-method}
 \alias{setCats}
 \alias{setCats,SpatRaster-method}
+\alias{as.numeric}
+  
   
 \title{Factors}
 
@@ -23,6 +25,7 @@ The categories can be inspected with \code{levels} and \code{cats}. With \code{l
 
 With \code{setCats} you can set it for any layer and you can also set the variable of interest if there are multiple categories. 
 
+With \code{as.numeric} you can transfer the category values to cell values in a non categorical SpatRaster.
 }
 
 \usage{
@@ -35,6 +38,8 @@ With \code{setCats} you can set it for any layer and you can also set the variab
 \S4method{cats}{SpatRaster}(x, layer)
 
 \S4method{setCats}{SpatRaster}(x, layer=1, value, index)
+
+\S4method{as.numeric}{SpatRaster}(x, index=NULL)
 }
 
 
@@ -42,12 +47,12 @@ With \code{setCats} you can set it for any layer and you can also set the variab
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
   \item{value}{a data.frame (ID, category) or vector with category names}
-  \item{index}{positive integer, indicating the column in \code{value} to be used as the category}
+  \item{index}{positive integer, indicating the column in \code{value} to be used as the category. If NULL the current index is used}
 }  
 
 
 \value{
-list (levels, cats) or data.frame (cats for a single layer); logical (is.factor, setCats)
+list (levels, cats) or data.frame (cats for a single layer); logical (is.factor, setCats); SpatRaster (as.numeric)
 }
 
 \examples{
