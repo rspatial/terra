@@ -4,19 +4,24 @@
 
 \alias{quantile}
 \alias{quantile,SpatRaster-method}
+\alias{quantile,SpatVector-method}
 
-\title{SpatRaster local quantiles}
+\title{Quantiles of spatial data}
 
 \description{
-Compute quantiles for each cell across the layers of a SpatRaster 
+Compute quantiles for each cell across the layers of a SpatRaster.
+
+You can also use this method to compute the quantiles of the numeric variables of a SpatVector.
 }
 
 \usage{
 \S4method{quantile}{SpatRaster}(x, probs=seq(0, 1, 0.25), na.rm=FALSE, filename="", ...) 
+
+\S4method{quantile}{SpatVector}(x, probs=seq(0, 1, 0.25), ...) 
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster or SpatVector}
   \item{probs}{numeric vector of probabilities with values in [0,1]}  
   \item{na.rm}{logical. If \code{TRUE}, \code{NA}'s are removed from \code{x} before the quantiles are computed}
   \item{filename}{character. Output filename}

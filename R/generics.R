@@ -448,6 +448,17 @@ setMethod("quantile", signature(x="SpatRaster"),
 )
 
 
+setMethod("quantile", signature(x="SpatVector"), 
+	function(x, probs=seq(0, 1, 0.25), ...) { 
+		x <- values(x)
+		cls <- sapply(x, class)
+		i <- cls != "character"
+		if (!any(i)) error("quantile", "no numeric variables")
+		x <- x[, i, drop=FALSE]
+		apply(x, 2, function(i) quantile(i, probs=probs, ...))
+	}
+)
+
 
 setMethod("rectify", signature(x="SpatRaster"), 
 	function(x, method="bilinear", aoi=NULL, snap=TRUE, filename="", ...) {

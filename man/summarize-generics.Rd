@@ -13,9 +13,12 @@
 
 \alias{Summary,SpatExtent-method}
 \alias{Summary,SpatRaster-method}
+\alias{Summary,SpatVector-method}
 \alias{mean,SpatRaster-method}
+\alias{mean,SpatVector-method}
 \alias{mean,SpatExtent-method}
 \alias{median,SpatRaster-method}
+\alias{median,SpatVector-method}
 \alias{stdev}
 \alias{stdev,SpatRaster-method}
 \alias{min,SpatRaster-method}
