@@ -132,7 +132,7 @@ setMethod("rast", signature(x="character"),
 		x <- trimws(x)
 		x <- x[x!=""]
 		if (length(x) == 0) {
-			error("rast,character", "provide a valid filename")
+			error("rast,character", "filename is empty. Provide a valid filename")
 		}
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
