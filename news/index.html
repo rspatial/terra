@@ -136,13 +136,17 @@
 <ul>
 <li>additional arguments (such as <code>na.rm</code>) are now used by <code>rasterize</code> with point geometries. Suggested by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/209"><a href='https://github.com/rspatial/terra/issues/209'>#209</a></a>
 </li>
-<li>improved handling and documentation of <code>gstat</code> models by <code>interpolate</code>. See issue <a href="https://github.com/rspatial/terra/issues/208"><a href='https://github.com/rspatial/terra/issues/208'>#208</a></a> by Jakub Nowosad.</li>
+<li>improved handling (and documentation) of <code>gstat</code> models by <code>interpolate</code>. See issue <a href="https://github.com/rspatial/terra/issues/208"><a href='https://github.com/rspatial/terra/issues/208'>#208</a></a> by Jakub Nowosad.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
-<p><code>as.character,SpatRaster-method</code> (called by <code>wrap</code>) did not capture the layer names. Reported by Pascal Title <a href="https://github.com/rspatial/terra/issues/213"><a href='https://github.com/rspatial/terra/issues/213'>#213</a></a></p>
+<ul>
+<li>
+<code>as.character,SpatRaster-method</code> (called by <code>wrap</code>) did not capture the layer names. Reported by Pascal Title <a href="https://github.com/rspatial/terra/issues/213"><a href='https://github.com/rspatial/terra/issues/213'>#213</a></a>
+</li>
+</ul>
 </div>
 </div>
     <div id="version-12-10" class="section level1">
@@ -183,8 +187,9 @@
 <div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
-<p>-<code>extract</code> with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)</p>
 <ul>
+<li>
+<code>extract</code> with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)</li>
 <li>
 <code>crop</code> works again with <code>sf</code> objects. Reported by Sebastian Brinkmann [<a href='https://github.com/rspatial/terra/issues/201'>#201</a>] (<a href="https://github.com/rspatial/terra/issues/201" class="uri">https://github.com/rspatial/terra/issues/201</a>)</li>
 <li>
