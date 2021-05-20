@@ -15,7 +15,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 
 \usage{
 \S4method{predict}{SpatRaster}(object, model, fun=predict, ..., factors=NULL, const=NULL, na.rm=FALSE,
-          index=NULL, cores=1, filename="", overwrite=FALSE, wopt=list())
+          index=NULL, cores=1, cpkgs=NULL, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -29,6 +29,7 @@ This approach of using model predictions is commonly used in remote sensing (for
   \item{na.rm}{logical. If \code{TRUE}, cells with \code{NA} values in the predictors are removed from the computation. This option prevents errors with models that cannot handle \code{NA} values. In most other cases this will not affect the output. An exception is when predicting with a model that returns predicted values even if some (or all!) variables are \code{NA} }
   \item{index}{integer. To select subset of output variables}
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used}
+  \item{cpkgs}{character. The package(s) that need to be loaded on the nodes to be able to run the model.predict function (see examples)}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
@@ -93,6 +94,49 @@ pca <- prcomp(sr)
 
 x <- predict(logo, pca)
 plot(x)
+
+## parallelization
+\dontrun{
+## simple case with GLM 
+model <- glm(formula=pa~., data=v)
+p <- predict(logo, model, cores=2)
+
+## The above does not work with a model from a contributed
+## package, as the package needs to be loaded in each core. 
+## Below are three approaches to deal with that 
+
+library(randomForest)
+rfm <- randomForest(formula=pa~., data=v)
+
+## approach 0 (not parallel) 
+rp0 <- predict(logo, rfm)
+
+## approach 1, use the "cpkgs" argument 
+rp1 <- predict(logo, rfm, cores=2, cpkgs="randomForest")
+
+## approach 2, write a custom predict function that loads the package
+rfun <- function(mod, dat, ...) {
+	library(randomForest)
+	predict(mod, dat, ...)
+}
+rp2 <- predict(logo, rfm, fun=rfun, cores=2)
+
+## approach 3, write a parallelized custom predict function 
+rfun <- function(mod, dat, ...) {
+	ncls <- length(cls)
+	nr <- nrow(dat)
+	s <- split(dat, rep(1:ncls, each=ceiling(nr/ncls), length.out=nr))
+	unlist(  parallel::clusterApply(cls, s, function(x, ...) predict(mod, x, ...))  )
+}
+
+library(parallel)
+cls <- parallel::makeCluster(2)
+parallel::clusterExport(cls, c("rfm", "rfun", "randomForest"))
+rp3 <- predict(logo, rfm, fun=rfun)
+parallel::stopCluster(cls)
+
+plot(c(rp0, rp1, rp2, rp3))
+}
 
 }
 

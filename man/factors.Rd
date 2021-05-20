@@ -14,7 +14,7 @@
 \alias{setCats,SpatRaster-method}
   
   
-\title{Factors}
+\title{Categorical rasters}
 
 \description{
 

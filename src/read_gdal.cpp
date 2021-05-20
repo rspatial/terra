@@ -570,6 +570,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.names[i] = nm;
 	}
 
+
 	if (gdrv == "netCDF") {
 		std::vector<std::string> metadata;
 		char **m = poDataset->GetMetadata();
@@ -1075,25 +1076,27 @@ bool ncdf_good_ends(std::string const &s) {
 	return true;
 }
 
-void ncdf_pick_most(std::vector<std::string> &sd, std::vector<std::string> &name, std::vector<int> &dim1, std::vector<int> &dim2) {
+void ncdf_pick_most(std::vector<std::string> &sd, std::vector<std::string> &varname, std::vector<std::string> &longname, std::vector<int> &dim1, std::vector<int> &dim2) {
 	if (sd.size() < 2) return;
 	std::vector<int> ud = dim1;
 	std::sort(ud.begin(), ud.end());
 	ud.erase(std::unique(ud.begin(), ud.end()), ud.end());
 	if (ud.size() > 1) {
-		std::vector<std::string> tmpsd, tmpname;
+		std::vector<std::string> tmpsd, tmpvarname, tmplongname;
 		std::vector<int> tmpdim1, tmpdim2;
 		int mx = ud[ud.size()-1];
 		for (size_t i=0; i<sd.size(); i++) {
 			if (dim1[i] == mx) {
 				tmpsd.push_back(sd[i]);
-				tmpname.push_back(name[i]);
+				tmpvarname.push_back(varname[i]);
+				tmplongname.push_back(longname[i]);
 				tmpdim1.push_back(dim1[i]);
 				tmpdim2.push_back(dim2[i]);
 			}
 		}
 		sd = tmpsd;
-		name = tmpname;
+		varname = tmpvarname;
+		longname = tmplongname;
 		dim1 = tmpdim1;
 		dim2 = tmpdim2;
 	}
@@ -1104,7 +1107,15 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 
 	std::vector<std::vector<std::string>> info = parse_metadata_sds(meta);
 	int n = info[0].size();
-	std::vector<std::string> sd, varname;
+	std::vector<std::string> sd, varname, srcname;
+	
+/*
+    for (size_t i=0; i<info.size(); i++) {
+		for (size_t j=0; j<info[i].size(); j++) {
+			Rcpp::Rcout << info[i][j] << std::endl;
+		}
+	}
+*/
 
 // std::vector<unsigned> varnl;
 // for selection based on nlyr
@@ -1146,6 +1157,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 			if (ncdf_good_ends(info[1][i])) {
 				sd.push_back(info[0][i]);
 				varname.push_back(info[1][i]);
+				srcname.push_back(info[2][i]);
 				rows.push_back(stoi(info[3][i]));
 				cols.push_back(stoi(info[4][i]));
 			} 
@@ -1160,6 +1172,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 				if (nl[i] == mxnl) {
 					sd.push_back(info[0][i]);
 					varname.push_back(info[1][i]);
+					srcname.push_back(info[2][i]);
 					rows.push_back(stoi(info[3][i]));
 					cols.push_back(stoi(info[4][i]));
 				}		
@@ -1167,26 +1180,27 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		}
 		// pick the ones with most rows and then cols
 		// to avoid picking the 1 or 2 "row" datasets
-		ncdf_pick_most(sd, varname, rows, cols);
-		ncdf_pick_most(sd, varname, cols, rows);
+		ncdf_pick_most(sd, varname, srcname, rows, cols);
+		ncdf_pick_most(sd, varname, srcname, cols, rows);
 	}
 
 	std::vector<size_t> srcnl;
-	size_t cnt=0;
-    for (size_t i=0; i < sd.size(); i++) {
-		cnt++;
-		bool success = constructFromFile(sd[i], {-1}, {""});
-		if (success) break;
+	size_t cnt;
+    for (cnt=0; cnt < sd.size(); cnt++) {
+		if (constructFromFile(sd[cnt], {-1}, {""})) break;
 	}
+//	source[0].source_name = srcname[cnt];
+	
 	std::vector<std::string> skipped, used;
 	srcnl.push_back(nlyr());
 	used.push_back(varname[0]);			
 	SpatRaster out;
-    for (size_t i=cnt; i < sd.size(); i++) {
+    for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
 		bool success = out.constructFromFile(sd[i], {-1}, {""});
 		if (success) {
 			if (out.compare_geom(*this, false, false)) {
+//				out.source	[0].source_name = srcname[i];
 				addSource(out);
 				srcnl.push_back(out.nlyr());
 				used.push_back(varname[i]);			
