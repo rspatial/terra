@@ -5,6 +5,9 @@ if (!isGeneric("split")) {setGeneric("split", function(x, ...) standardGeneric("
 if (!isGeneric("cellSize")) {setGeneric("cellSize", function(x, ...) standardGeneric("cellSize"))}
 
 if (!isGeneric("na.omit")) {setGeneric("na.omit", function(object, ...) standardGeneric("na.omit"))}
+if (!isGeneric("catalyze")) {setGeneric("catalyze", function(x, ...) standardGeneric("catalyze"))}
+if (!isGeneric("activeCat")) {setGeneric("activeCat", function(x, ...) standardGeneric("activeCat"))}
+if (!isGeneric("activeCat<-")) {setGeneric("activeCat<-", function(x, ..., value) standardGeneric("activeCat<-"))}
 
 if (!isGeneric("sharedPaths")) {setGeneric("sharedPaths", function(x, ...) standardGeneric("sharedPaths"))}
 if (!isGeneric("isTRUE")) {setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}

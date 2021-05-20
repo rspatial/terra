@@ -4,8 +4,6 @@
 # License GPL v3
 
 
-
-
 printDF <- function(x, n=6, first=FALSE) {
 	n <- min(nrow(x), max(n, 0))
 	old <- dim(x)
@@ -270,6 +268,12 @@ setMethod ("show" , "SpatRaster",
 					m[,i]   <- format(m[,i], width=w[i], justify="right")
 				}
 				if (ncol(m) == 1) {
+					if (is.factor(object)) {
+						g <- cats(object)[[1]]
+						if (ncol(g) > 2) {
+							cat("categories  :", paste(colnames(g)[-1], collapse=", "), "\n")
+						}
+					}
 					cat("name        :", paste(m[1,], collapse=", "), "\n")
 					cat("min value   :", paste(m[2,], collapse=", "), "\n")
 					cat("max value   :", paste(m[3,], collapse=", "), "\n")

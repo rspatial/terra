@@ -116,7 +116,51 @@ setMethod ("setCats" , "SpatRaster",
 )
 
 
-setMethod ("cats" , "SpatRaster", 
+setMethod ("activeCat" , "SpatRaster", 
+	function(x, layer=1) {
+		layer = layer[1]
+		if (is.character(layer)) {
+			layer = which(layer == names(x))[1]
+			if (is.na(layer)) {
+				error("activeCat", "invalid layer name")
+			}
+		}
+		if (!is.factor(x)[layer]) {
+			return(NA)
+		}
+		x@ptr$getCatIndex(layer-1)
+	}
+)
+
+setMethod("activeCat<-" , "SpatRaster", 
+	function(x, layer=1, value) {
+		if (missing(value)) {
+			value <- layer[1]
+			layer <- 1
+		} else {
+			layer <- layer[1]
+		}
+		if ((layer < 1) | (layer > nlyr(x))) {
+			error("activeCat", "invalid layer")		
+		}
+		if (!is.factor(x)[layer]) {
+			error("activeCat", "layer is not categorical")				
+		}
+		if (is.character(value)) {
+			g <- cats(x)[[layer]]
+			value <- which(value == names(g))[1] - 1
+			if (is.na(value)) {
+				error("activeCat", "invalid category name")
+			}
+		}
+		if (!x@ptr$setCatIndex(layer-1, value)) {
+			error("activeCat", "invalid category index")
+		} 
+		x
+	}
+)
+
+setMethod("cats" , "SpatRaster", 
 	function(x, layer) {
 		x <- x@ptr$getCategories()
 		x <- lapply(x, function(i) {
@@ -134,8 +178,8 @@ setMethod ("cats" , "SpatRaster",
 
 
 
-setMethod ("as.numeric" , "SpatRaster", 
-	function(x, index=NULL, ...) {
+setMethod ("as.numeric", "SpatRaster", 
+	function(x, index=NULL, filename="", ...) {
 		stopifnot(nlyr(x) == 1)
 		if (!is.factor(x)) return(x)
 		g <- cats(x)[[1]]
@@ -149,31 +193,37 @@ setMethod ("as.numeric" , "SpatRaster",
 		from <- g[,1]
 		to <- g[,index]
 		if (!is.numeric(to)) {
-			to <- 1:length(to)
+			to <- as.integer(as.factor(to))
 		}
-		x <- classify(x, cbind(from, to), names=names(g)[index], ...)
-		messages(x)
+		m <- cbind(from, to)
+		m <- m[!is.na(m[,1]), ,drop=FALSE]
+		classify(x, m, names=names(g)[index], filename, ...)
 	}
 )
 
-
 	
-	
-.as.layers <- function(x) {
-	g <- cats(x)
-	out <- list()
-	for (i in 1:nlyr(x)) {
-		y <- x[[i]]
-		gg <- g[[i]]
-		if (nrow(gg) > 0) {
-			for (j in 2:ncol(gg)) {
-				z <- as.numeric(y, index=j)
-				out <- c(out, z)
+setMethod("catalyze", "SpatRaster", 
+	function(x, filename="", ...) {
+		g <- cats(x)
+		out <- list()
+		for (i in 1:nlyr(x)) {
+			y <- x[[i]]
+			gg <- g[[i]]
+			if (nrow(gg) > 0) {
+				for (j in 2:ncol(gg)) {
+					z <- as.numeric(y, index=j)
+					out <- c(out, z)
+				}
+			} else {
+				out <- c(out, y)
 			}
-		} else {
-			out <- c(out, y)
 		}
+		out <- rast(out)
+		if (filename!="") {
+			out <- writeRaster(out, filename, ...)
+		}
+		out
 	}
-	rast(out)
-}
+)
+
 

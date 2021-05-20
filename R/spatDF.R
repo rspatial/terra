@@ -21,6 +21,8 @@
 
 
 .getSpatDF <- function(x) {
-	data.frame(x$values(), check.names = FALSE, stringsAsFactors=FALSE)
+	d <- data.frame(x$values(), check.names = FALSE, stringsAsFactors=FALSE)
+	d[d=="NA"] <- NA
+	d
 }
 
