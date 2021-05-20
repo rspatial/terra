@@ -124,7 +124,7 @@ This approach of using model predictions is commonly used in remote sensing (for
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>predict</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>model</span>, fun<span class='op'>=</span><span class='va'>predict</span>, <span class='va'>...</span>, factors<span class='op'>=</span><span class='cn'>NULL</span>, const<span class='op'>=</span><span class='cn'>NULL</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>,
-          index<span class='op'>=</span><span class='cn'>NULL</span>, cores<span class='op'>=</span><span class='fl'>1</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+          index<span class='op'>=</span><span class='cn'>NULL</span>, cores<span class='op'>=</span><span class='fl'>1</span>, cpkgs<span class='op'>=</span><span class='cn'>NULL</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,6 +164,10 @@ This approach of using model predictions is commonly used in remote sensing (for
     <tr>
       <th>cores</th>
       <td><p>positive integer. If <code>cores &gt; 1</code>, a 'parallel' package cluster with that many cores is created and used</p></td>
+    </tr>
+    <tr>
+      <th>cpkgs</th>
+      <td><p>character. The package(s) that need to be loaded on the nodes to be able to run the model.predict function (see examples)</p></td>
     </tr>
     <tr>
       <th>filename</th>
@@ -237,6 +241,49 @@ This approach of using model predictions is commonly used in remote sensing (for
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>predict</span><span class='op'>(</span><span class='va'>logo</span>, <span class='va'>pca</span><span class='op'>)</span>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 </div><div class='img'><img src='predict-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'>## parallelization</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'>## simple case with GLM </span>
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span>formula<span class='op'>=</span><span class='va'>pa</span><span class='op'>~</span><span class='va'>.</span>, data<span class='op'>=</span><span class='va'>v</span><span class='op'>)</span>
+<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'>predict</span><span class='op'>(</span><span class='va'>logo</span>, <span class='va'>model</span>, cores<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
+
+<span class='co'>## The above does not work with a model from a contributed</span>
+<span class='co'>## package, as the package needs to be loaded in each core. </span>
+<span class='co'>## Below are three approaches to deal with that </span>
+
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>randomForest</span><span class='op'>)</span>
+<span class='va'>rfm</span> <span class='op'>&lt;-</span> <span class='fu'>randomForest</span><span class='op'>(</span>formula<span class='op'>=</span><span class='va'>pa</span><span class='op'>~</span><span class='va'>.</span>, data<span class='op'>=</span><span class='va'>v</span><span class='op'>)</span>
+
+<span class='co'>## approach 0 (not parallel) </span>
+<span class='va'>rp0</span> <span class='op'>&lt;-</span> <span class='fu'>predict</span><span class='op'>(</span><span class='va'>logo</span>, <span class='va'>rfm</span><span class='op'>)</span>
+
+<span class='co'>## approach 1, use the "cpkgs" argument </span>
+<span class='va'>rp1</span> <span class='op'>&lt;-</span> <span class='fu'>predict</span><span class='op'>(</span><span class='va'>logo</span>, <span class='va'>rfm</span>, cores<span class='op'>=</span><span class='fl'>2</span>, cpkgs<span class='op'>=</span><span class='st'>"randomForest"</span><span class='op'>)</span>
+
+<span class='co'>## approach 2, write a custom predict function that loads the package</span>
+<span class='va'>rfun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>mod</span>, <span class='va'>dat</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>randomForest</span><span class='op'>)</span>
+  <span class='fu'>predict</span><span class='op'>(</span><span class='va'>mod</span>, <span class='va'>dat</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='va'>rp2</span> <span class='op'>&lt;-</span> <span class='fu'>predict</span><span class='op'>(</span><span class='va'>logo</span>, <span class='va'>rfm</span>, fun<span class='op'>=</span><span class='va'>rfun</span>, cores<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
+
+<span class='co'>## approach 3, write a parallelized custom predict function </span>
+<span class='va'>rfun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>mod</span>, <span class='va'>dat</span>, <span class='va'>...</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='va'>ncls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dimensions.html'>length</a></span><span class='op'>(</span><span class='va'>cls</span><span class='op'>)</span>
+  <span class='va'>nr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dimensions.html'>nrow</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>)</span>
+  <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='split.html'>split</a></span><span class='op'>(</span><span class='va'>dat</span>, <span class='fu'><a href='rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>ncls</span>, each<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>ceiling</a></span><span class='op'>(</span><span class='va'>nr</span><span class='op'>/</span><span class='va'>ncls</span><span class='op'>)</span>, length.out<span class='op'>=</span><span class='va'>nr</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span>  <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/clusterApply.html'>clusterApply</a></span><span class='op'>(</span><span class='va'>cls</span>, <span class='va'>s</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span> <span class='fu'>predict</span><span class='op'>(</span><span class='va'>mod</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span><span class='op'>)</span>  <span class='op'>)</span>
+<span class='op'>}</span>
+
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>parallel</span><span class='op'>)</span>
+<span class='va'>cls</span> <span class='op'>&lt;-</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/makeCluster.html'>makeCluster</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>
+<span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/clusterApply.html'>clusterExport</a></span><span class='op'>(</span><span class='va'>cls</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"rfm"</span>, <span class='st'>"rfun"</span>, <span class='st'>"randomForest"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>rp3</span> <span class='op'>&lt;-</span> <span class='fu'>predict</span><span class='op'>(</span><span class='va'>logo</span>, <span class='va'>rfm</span>, fun<span class='op'>=</span><span class='va'>rfun</span><span class='op'>)</span>
+<span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/makeCluster.html'>stopCluster</a></span><span class='op'>(</span><span class='va'>cls</span><span class='op'>)</span>
+
+<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>rp0</span>, <span class='va'>rp1</span>, <span class='va'>rp2</span>, <span class='va'>rp3</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
