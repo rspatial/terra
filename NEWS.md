@@ -1,20 +1,27 @@
 
-# version 1.2-12
+# version 1.2-13
 
 ## new
 
 - `na.omit,SpatVector-method` to remove empty geometries and/or attribute records that have an `NA`
 - new method `src` to create a `SpatRasterCollection` (a loose collection of tiles). 
 - `merge` and `mosaic` now have methods for a `SpatRasterCollection`. To avoid the (inefficient) use of `do.call`. See issue [#210](https://github.com/rspatial/terra/issues/210) by Matthew Talluto.
+- `activeCat` and `activeCat<-` to get or set the "active" category if there are multiple categories (raster attributes)
+- `as.numeric` and `catalyze` to transfer categories to numeric cell values
+- summarize methods such as `range` and `mean` for (the attributes of) a `SpatVector`
+
 
 ## enhancements
 
 - additional arguments (such as `na.rm`) are now used by `rasterize` with point geometries. Suggested by Jakub Nowosad  [#209](https://github.com/rspatial/terra/issues/209)
 - improved handling (and documentation) of `gstat` models by `interpolate`. See issue [#208](https://github.com/rspatial/terra/issues/208) by Jakub Nowosad.
+- new argument `cpkgs` to `predict` to list the packages that need to be exported to the cores if argument `cores` is larger than one. `?predict` now shows different approaches to parallelize `predict` (based on examples in issue [#178](
+https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill.
 
 
 ## bug fixes 
 
+- `extract` with points and `cells=T` or `xy=T` gave garbled output
 - `as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
 
 
