@@ -114,9 +114,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-12-12" class="section level1">
-<h1 class="page-header" data-toc-text="1.2-12">
-<a href="#version-12-12" class="anchor"></a>version 1.2-12<small> Unreleased </small>
+    <div id="version-12-13" class="section level1">
+<h1 class="page-header" data-toc-text="1.2-13">
+<a href="#version-12-13" class="anchor"></a>version 1.2-13<small> Unreleased </small>
 </h1>
 <div id="new" class="section level2">
 <h2 class="hasAnchor">
@@ -128,6 +128,12 @@
 <li>new method <code>src</code> to create a <code>SpatRasterCollection</code> (a loose collection of tiles).</li>
 <li>
 <code>merge</code> and <code>mosaic</code> now have methods for a <code>SpatRasterCollection</code>. To avoid the (inefficient) use of <code>do.call</code>. See issue <a href="https://github.com/rspatial/terra/issues/210"><a href='https://github.com/rspatial/terra/issues/210'>#210</a></a> by Matthew Talluto.</li>
+<li>
+<code>activeCat</code> and <code>activeCat&lt;-</code> to get or set the “active” category if there are multiple categories (raster attributes)</li>
+<li>
+<code>as.numeric</code> and <code>catalyze</code> to transfer categories to numeric cell values</li>
+<li>summarize methods such as <code>range</code> and <code>mean</code> for (the attributes of) a <code>SpatVector</code>
+</li>
 </ul>
 </div>
 <div id="enhancements" class="section level2">
@@ -137,12 +143,15 @@
 <li>additional arguments (such as <code>na.rm</code>) are now used by <code>rasterize</code> with point geometries. Suggested by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/209"><a href='https://github.com/rspatial/terra/issues/209'>#209</a></a>
 </li>
 <li>improved handling (and documentation) of <code>gstat</code> models by <code>interpolate</code>. See issue <a href="https://github.com/rspatial/terra/issues/208"><a href='https://github.com/rspatial/terra/issues/208'>#208</a></a> by Jakub Nowosad.</li>
+<li>new argument <code>cpkgs</code> to <code>predict</code> to list the packages that need to be exported to the cores if argument <code>cores</code> is larger than one. <code><a href="../reference/predict.html">?predict</a></code> now shows different approaches to parallelize <code>predict</code> (based on examples in issue <a href="https://github.com/rspatial/terra/issues/178"><a href='https://github.com/rspatial/terra/issues/178'>#178</a></a> raised by by Matthew Coghill.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
 <ul>
+<li>
+<code>extract</code> with points and <code>cells=T</code> or <code>xy=T</code> gave garbled output</li>
 <li>
 <code>as.character,SpatRaster-method</code> (called by <code>wrap</code>) did not capture the layer names. Reported by Pascal Title <a href="https://github.com/rspatial/terra/issues/213"><a href='https://github.com/rspatial/terra/issues/213'>#213</a></a>
 </li>
