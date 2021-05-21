@@ -1918,7 +1918,7 @@ SpatVector SpatRaster::as_lines() {
 bool SpatRaster::setRGB(int r, int g, int b) {
 	size_t mxlyr = std::max(std::max(r, g), b);
 	if (nlyr() <= mxlyr) {
-		setError("layer number for R, G, B, cannot exceed the number of layers");		
+		//addWarning("layer number for R, G, B, cannot exceed the number of layers");		
 		return false;
 	} else {
 		size_t mnlyr = std::min(std::min(r, g), b);
