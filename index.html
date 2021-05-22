@@ -77,26 +77,39 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p><code>terra</code> is available from CRAN, so you can use <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("terra")</a></code>.</p>
-<p>See below for instructions on installing the <em>development version</em></p>
-<div id="all-os" class="section level3">
+<div id="cran" class="section level3">
 <h3 class="hasAnchor">
-<a href="#all-os" class="anchor"></a>All OS</h3>
-<p>First install the packages that terra depends on</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages(c("raster", "Rcpp"))</a></code></pre>
+<a href="#cran" class="anchor"></a>CRAN</h3>
+<p><code>terra</code> is available from CRAN, so you can use <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("terra")</a></code> to get the current <em>released version</em></p>
 </div>
-<div id="windows" class="section level3">
+<div id="r-universe" class="section level3">
 <h3 class="hasAnchor">
-<a href="#windows" class="anchor"></a>Windows</h3>
-<p>If you are on Windows, you need to first install <a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a> to get a C++ compiler that R can use.</p>
+<a href="#r-universe" class="anchor"></a>R-Universe</h3>
+<p>The easiest way to install the <em>development version</em> is to get it from r-universe like this</p>
+<pre><code><a href="https://rdrr.io/r/base/options.html">options(repos = c(
+    rspatial = 'https://rspatial.r-universe.dev',
+    CRAN = 'https://cloud.r-project.org'))
+
+install.packages('terra')</a></code></pre>
+</div>
+<div id="self-compilation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#self-compilation" class="anchor"></a>Self compilation</h3>
+<p>For a more bare bones install, first install the packages that terra depends on</p>
+<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages(c("raster", "Rcpp"))</a></code></pre>
+<p>And then continue based on the OS you are using.</p>
+<div id="windows" class="section level4">
+<h4 class="hasAnchor">
+<a href="#windows" class="anchor"></a>Windows</h4>
+<p>On Windows, you need to first install <a href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a> to get a C++ compiler that R can use.</p>
 <p>Then, in R, install the package.</p>
 <pre><code><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")</a></code></pre>
 </div>
-<div id="macos" class="section level3">
-<h3 class="hasAnchor">
-<a href="#macos" class="anchor"></a>MacOS</h3>
-<p>First install gdal and proj with homebrew</p>
+<div id="macos" class="section level4">
+<h4 class="hasAnchor">
+<a href="#macos" class="anchor"></a>MacOS</h4>
+<p>On OSX, first install gdal and proj with homebrew</p>
 <pre><code>brew install pkg-config
 brew install gdal</code></pre>
 <p>Followed by</p>
@@ -104,10 +117,10 @@ brew install gdal</code></pre>
 remotes::install_github("rspatial/terra")</a></code></pre>
 <p>This should work on <strong>Catalina</strong> and <strong>Big Sur</strong></p>
 </div>
-<div id="linux" class="section level3">
-<h3 class="hasAnchor">
-<a href="#linux" class="anchor"></a>Linux</h3>
-<p>The GDAL (&gt;= 3.0.4), GEOS (&gt;= 3.3.0) and PROJ (&gt;= 6.0.0) libraries are required</p>
+<div id="linux" class="section level4">
+<h4 class="hasAnchor">
+<a href="#linux" class="anchor"></a>Linux</h4>
+<p>The GDAL (&gt;= 2.2.0), GEOS (&gt;= 3.3.0) and PROJ (&gt;= 6.0.0) libraries are required</p>
 <p>To install these on Ubuntu version 18.04 (Bionic) you can do:</p>
 <pre><code>sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
@@ -115,6 +128,7 @@ sudo apt-get install libgdal-dev libgeos-dev libproj-dev </code></pre>
 <p>And now, in R, install the package</p>
 <pre><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github("rspatial/terra")</a></code></pre>
 <p>See the <code>sf</code> <a href="https://github.com/r-spatial/sf">instructions</a> for installation on other linux systems — and for possible updates/improvements on the above instructions. But note that <code>terra</code> depends on on more recent versions of GDAL and PROJ libraries</p>
+</div>
 </div>
 </div>
 </div>
