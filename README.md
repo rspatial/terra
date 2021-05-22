@@ -13,21 +13,35 @@ It has a very similar interface, but it is simpler, much faster and can do more.
 
 ## Installation
 
-`terra` is available from CRAN, so you can use `install.packages("terra")`. 
+### CRAN 
 
-See below for instructions on installing the *development version*
+`terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
 
-### All OS
+### R-Universe
 
-First install the packages that terra depends on 
+The easiest  way to install the *development version* is to get it from r-universe like this
+
+```
+options(repos = c(
+    rspatial = 'https://rspatial.r-universe.dev',
+    CRAN = 'https://cloud.r-project.org'))
+
+install.packages('terra')
+```
+
+### Self compilation
+
+For a more bare bones install, first install the packages that terra depends on 
 
 ```
 install.packages(c("raster", "Rcpp"))
 ```
 
-### Windows
+And then continue based on the OS you are using. 
 
-If you are on Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. 
+#### Windows
+
+On Windows, you need to first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to get a C++ compiler that R can use. 
 
 Then, in R, install the package.
 
@@ -36,10 +50,9 @@ Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
 remotes::install_github("rspatial/terra")
 ```
 
+#### MacOS
 
-### MacOS
-
-First install gdal and proj with homebrew
+On OSX, first install gdal and proj with homebrew
 
 ```
 brew install pkg-config
@@ -55,9 +68,9 @@ remotes::install_github("rspatial/terra")
 This should work on **Catalina** and **Big Sur**
 
 
-### Linux
+#### Linux
 
-The GDAL (>= 3.0.4), GEOS (>= 3.3.0) and PROJ (>= 6.0.0) libraries are required 
+The GDAL (>= 2.2.0), GEOS (>= 3.3.0) and PROJ (>= 6.0.0) libraries are required 
 
 
 To install these on Ubuntu version 18.04 (Bionic) you can do:
