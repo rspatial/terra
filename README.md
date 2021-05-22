@@ -22,11 +22,7 @@ It has a very similar interface, but it is simpler, much faster and can do more.
 The easiest  way to install the *development version* is to get it from r-universe like this
 
 ```
-options(repos = c(
-    rspatial = 'https://rspatial.r-universe.dev',
-    CRAN = 'https://cloud.r-project.org'))
-
-install.packages('terra')
+install.packages('terra', repos='https://rspatial.r-universe.dev')
 ```
 
 ### Self compilation
