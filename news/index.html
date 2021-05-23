@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-14</span>
       </span>
     </div>
 
@@ -155,6 +155,8 @@
 <li>
 <code>as.character,SpatRaster-method</code> (called by <code>wrap</code>) did not capture the layer names. Reported by Pascal Title <a href="https://github.com/rspatial/terra/issues/213"><a href='https://github.com/rspatial/terra/issues/213'>#213</a></a>
 </li>
+<li>
+<code>focal</code> mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani</li>
 </ul>
 </div>
 </div>
