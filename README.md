@@ -12,8 +12,6 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 ## Installation
 
-### CRAN 
-
 `terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
 
 The easiest way to install the *development version* on Windows or MacOS, is to get it from the [R-universe](https://r-universe.dev/organizations/) repository, like this:
