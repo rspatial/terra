@@ -17,17 +17,15 @@ It has a very similar interface, but it is simpler, much faster and can do more.
 
 `terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
 
-### R-Universe
-
 The easiest way to install the *development version* on Windows or MacOS, is to get it from the [R-universe](https://r-universe.dev/organizations/) repository, like this:
 
 ```
 install.packages('terra', repos='https://rspatial.r-universe.dev')
 ```
 
-### Self compilation
+### From source-code
 
-For a more bare bones install, first install the packages that terra depends on 
+For a more bare bones install, infirst install the packages that terra depends on 
 
 ```
 install.packages(c("raster", "Rcpp"))
