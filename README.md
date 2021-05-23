@@ -1,33 +1,28 @@
 # terra
 
-[![Travis build
-status](https://travis-ci.org/rspatial/terra.svg?branch=master)](https://travis-ci.org/rspatial/terra)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
 
+`terra` is an R package for spatial analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
-`terra` is an R package that replaces [raster](https://github.com/rspatial/raster).
-It has a very similar interface, but it is simpler, much faster and can do more. It was first released on 20 March 2020. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html).
+[stackoverflow](https://stackoverflow.com/) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/raster/issues).
 
+`terra` replaces the [raster](https://github.com/rspatial/raster) package. The interfaces of `terra` and `raster` are similar, but `terra` it is simpler, faster and it can do more. 
 
 ## Installation
 
-### CRAN 
-
 `terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
 
-### R-Universe
-
-The easiest way to install the *development version* on Windows or MacOS, is to get it from the [R-universe](https://r-universe.dev/organizations/) repository, like this:
+The easiest way to use the *development version* on Windows or MacOS, is to install it from the [R-universe](https://r-universe.dev/organizations/), like this:
 
 ```
 install.packages('terra', repos='https://rspatial.r-universe.dev')
 ```
 
-### Self compilation
+### From source-code
 
-For a more bare bones install, first install the packages that terra depends on 
+To install from source-code, first install the packages that terra depends on: 
 
 ```
 install.packages(c("raster", "Rcpp"))
