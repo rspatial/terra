@@ -23,7 +23,7 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill.
 
 - `extract` with points and `cells=TRUE` or `xy=TRUE` gave garbled output
 - `as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
-
+- `focal` mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani
 
 # version 1.2-10
 

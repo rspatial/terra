@@ -12,7 +12,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \usage{
 \S4method{focal}{SpatRaster}(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, 
-			fillvalue=NA, expand=FALSE, filename="", ...) 
+		fillvalue=NA, expand=FALSE, filename="", ...) 
 }
 
 \arguments{

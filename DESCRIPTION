@@ -1,8 +1,8 @@
 Package: terra
 Type: Package
 Title: Spatial Data Analysis
-Version: 1.2-13
-Date: 2021-05-19
+Version: 1.2-14
+Date: 2021-05-23
 Depends: R (>= 3.5.0)
 Suggests: parallel, tinytest, ncdf4, sf (>= 0.9-8)
 LinkingTo: Rcpp

@@ -187,7 +187,7 @@ setMethod("text", signature(x="SpatRaster"),
 		xy <- geom(p)[, c("x", "y")]
 		if (is.factor(labels)) {
 			labels <- substr(as.character(labels), 1, max(1, digits))
-		} else {
+		} else if (is.numeric(labels)) {
 			labels <- as.character(round(labels, digits=digits) )
 		}
 		if (halo) {

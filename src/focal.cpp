@@ -454,7 +454,8 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 				int offr = wr1 - rr;
 				for (int cc=0; cc < wnc; cc++)  {
 					int offc = wc1 - cc; 
-					int wi = wnc * offr + offc;
+					//int wi = wnc * offr + offc;
+					int wi = wnc * rr + cc;
 					if (winNA[wi]) {
 						continue;
 					}
@@ -505,7 +506,8 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 				int offr = wr1 - rr;
 				for (int cc=0; cc < wnc; cc++)  {
 					int offc = wc1 - cc; 
-					int wi = wnc * offr + offc;
+					//int wi = wnc * offr + offc;
+					int wi = wnc * rr + cc;
 					if (winNA[wi]) {
 						continue;
 					}
@@ -550,23 +552,35 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 	bool nafill = std::isnan(fill);
 	bool dofill = !(narm && nafill);
 	std::vector<bool> winNA(window.size(), false);
+	double winsum = 0;
+	std::vector<double> poswin = window;
 	for (size_t i=0; i<window.size(); i++) {
-		if (std::isnan(window[i])) winNA[i] = true; 
+		if (std::isnan(window[i])) {
+			winNA[i] = true; 
+		} else {
+			if (window[i] < 0) {
+				poswin[i] = -poswin[i];
+			} 
+			winsum += poswin[i]; 
+		}
 	}
 
 	int wr1 = wnr - 1;
 	int wc1 = wnc - 1;
 	int nc1 = nc - 1;
+	
+	
 	for (int r=0; r<nr; r++) {
 		int rread = r+srow;
 		for (int c=0; c < nc; c++) {
 			double value = 0;
-			int cnt = 0;
+			if (narm) winsum = 0;
 			for (int rr=0; rr<wnr; rr++) {
 				int offr = wr1 - rr;
 				for(int cc=0; cc < wnc; cc++)  {
 					int offc = wc1 - cc; 
-					int wi = wnc * offr + offc;
+					//int wi = wnc * offr + offc;
+					int wi = wnc * rr + cc;
 					if (winNA[wi]) {
 						continue;
 					}
@@ -577,33 +591,33 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 						col = col > nc1 ? nc1 : col;
 						if (narm) {
 							if (!std::isnan(d[nc * row + col])) {
-								value += d[nc * row + col];
-								cnt++;
+								value += d[nc * row + col] * window[wi];
+								winsum += poswin[wi];
 							}
 						} else {
-							value += d[nc * row + col]; 
-							cnt++;
+							value += d[nc * row + col] * window[wi]; 
 						}
 					} else {
 						if (col >= 0 && col < nc) {
 							if (narm) {
 								if (!std::isnan(d[nc * row + col])) {
-									value += d[nc * row + col];
-									cnt++;
+									value += d[nc * row + col] * window[wi];
+									winsum += poswin[wi];
 								}
 							} else {
-								value += d[nc * row + col]; 
-								cnt++;
+								value += d[nc * row + col] * window[wi]; 
 							}
 						} else if (dofill) {
 							value += fill;
-							cnt++;
-						} 
+							if (narm) {
+								winsum += poswin[wi];
+							}
+						}
 					}
 				}
 			}
-			if (cnt > 0) {
-				out[nc * r + c] = value / cnt;
+			if (winsum > 0) {
+				out[nc * r + c] = value / winsum;
 			}	
 		}	
 	}
