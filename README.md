@@ -14,7 +14,7 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 `terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
 
-The easiest way to install the *development version* on Windows or MacOS, is to get it from the [R-universe](https://r-universe.dev/organizations/) repository, like this:
+The easiest way to use the *development version* on Windows or MacOS, is to install it from the [R-universe](https://r-universe.dev/organizations/), like this:
 
 ```
 install.packages('terra', repos='https://rspatial.r-universe.dev')
