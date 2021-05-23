@@ -173,7 +173,7 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 			error(" [,SpatRaster,SpatRaster", "you cannot use a SpatRaster as a row index")
 		}
 		if (inherits(value, "SpatRaster")) {
-			x <- mask(x, i, maskvalue=TRUE)
+			x <- mask(x, i, maskvalues=TRUE)
 			cover(x, value)
 		} else if (inherits(value, "data.frame")) {
 			if (ncol(value) > 1) {
@@ -192,7 +192,7 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 				x
 				#warn(" [,SpatRaster,SpatRaster", "the first replacement value is used for all cells")
 			} else {
-				mask(x, i, maskvalue=TRUE, updatevalue=value[1])
+				mask(x, i, maskvalues=TRUE, updatevalue=value[1])
 			}
 		}
 	}

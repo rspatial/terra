@@ -3,19 +3,20 @@
 \alias{diff}
 \alias{diff,SpatRaster-method}
   
-\title{diff}
+\title{Lagged differences}
 
 \description{
-Returns lagged differences.
+Compute the difference between consecutive layers in a SpatRaster.
 }
 
 \usage{
-\S4method{diff}{SpatRaster}(x, filename="", ...)
+\S4method{diff}{SpatRaster}(x, lag=1, filename="", ...)
 }
 
 
 \arguments{
   \item{x}{SpatRaster}
+  \item{lag}{postive integer indicating which lag to use}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
@@ -23,7 +24,6 @@ Returns lagged differences.
 \value{
 SpatRaster
 }
-
 
 
 \examples{

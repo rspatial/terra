@@ -102,9 +102,9 @@ setMethod("as.character", signature(x="SpatRaster"),
 		crs <- gsub("\n[ ]+", "", crs)
 		nms <- paste0(", names=c('", paste(names(x), collapse="', '"), "')")
 		paste0("rast(", 
-				"ncol=", ncol(x),
-				", nrow=", nrow(x),
-				", nlyr=", nlyr(x),
+				"ncols=", ncol(x),
+				", nrows=", nrow(x),
+				", nlyrs=", nlyr(x),
 				", xmin=",e[1],
 				", xmax=",e[2],
 				", ymin=",e[3],

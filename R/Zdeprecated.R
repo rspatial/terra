@@ -6,24 +6,25 @@ if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("ar
 setMethod("area", signature(x="SpatRaster"), 
 	function(x, sum=TRUE, correct=FALSE, mask=FALSE, filename="", ...) {
 		if (!sum) {
-			warn("area", 'area(x, sum=FALSE) will be removed. Use "cellSize(x)"')
-			cellSize(x, mask=mask, transform=correct, filename=filename, ...)
+			error("area", 'area(x, sum=FALSE) will be removed. Use "cellSize(x)"')
+			#cellSize(x, mask=mask, transform=correct, filename=filename, ...)
 		} else {
-			warn("area", 'area(x, sum=TRUE) will be removed. Use "expanse(x)" or "global(cellSize(x), "sum")"')
-			expanse(x, transform=correct, ...)			
+			error("area", 'area(x, sum=TRUE) will be removed. Use "expanse(x)" or "global(cellSize(x), "sum")"')
+			#expanse(x, transform=correct, ...)			
 		}		
 	}
 )
 
 setMethod("area", signature(x="SpatVector"), 
 	function(x, ...) {
-		warn("area", 'area was removed. Use "expanse(x)"')
-		expanse(x)
+		error("area", 'area was removed. Use "expanse(x)"')
+		#expanse(x)
 	}
 )
 
 
-## not exported
+## old not exported
+################
 if (!isGeneric("convexhull")) {setGeneric("convexhull", function(x, ...) standardGeneric("convexhull"))}
 setMethod("convexhull", signature(x="SpatVector"), 
 	function(x) {
@@ -31,7 +32,6 @@ setMethod("convexhull", signature(x="SpatVector"),
 	}
 )
 
-## not exported
 if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardGeneric("perimeter"))}
 setMethod("perimeter", signature(x="SpatVector"), 
 	function(x) {
@@ -40,7 +40,6 @@ setMethod("perimeter", signature(x="SpatVector"),
 )
 
 
-## not exported
 if (!isGeneric("tiles")) {setGeneric("tiles", function(x,...) standardGeneric("tiles"))}
 setMethod("tiles", signature(x="SpatRaster"), 
 	function(x) {
@@ -51,7 +50,6 @@ setMethod("tiles", signature(x="SpatRaster"),
 
 
 ## tidyverse conflicts
-#not exported
 if (!isGeneric("expand")) {setGeneric("expand", function(x, y, ...) standardGeneric("expand"))}
 setMethod("expand", signature(x="ANY"), 
 	function(...) {
@@ -60,7 +58,6 @@ setMethod("expand", signature(x="ANY"),
 	}
 )
 
-#not exported
 if (!isGeneric("near")) {setGeneric("near", function(x, ...) standardGeneric("near"))}
 setMethod("near", signature(x="ANY"), 
 	function(x, ...) {
@@ -68,7 +65,6 @@ setMethod("near", signature(x="ANY"),
 	}
 )
 
-#not exported
 if (!isGeneric("separate")) {setGeneric("separate", function(x, ...) standardGeneric("separate"))}
 setMethod("separate", signature(x="ANY"), 
 	function(x, ...) {
@@ -78,7 +74,6 @@ setMethod("separate", signature(x="ANY"),
 )
 
 
-#not exported
 if (!isGeneric("pack")) {setGeneric("pack", function(x, ...) standardGeneric("pack"))}
 setMethod("pack", signature(x="ANY"), 
 	function(x, ...) {

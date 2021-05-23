@@ -284,7 +284,7 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 		v <- median_cut(stats::na.omit(v))
 		
 		a <- aggregate(v[,3:5], list(v[,1]), median)
-		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], max=255)
+		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
 		m <- merge(v[,1:2], a[, c(1,5)], by=1)
 		r <- rast(x, 1)
 		r[m$id] <- m$group - 1

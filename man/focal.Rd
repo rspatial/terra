@@ -48,7 +48,11 @@ Laplacian filter: \code{filter=matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3)}
 Sobel filter: \code{filter=matrix(c(1,2,1,0,0,0,-1,-2,-1) / 4, nrow=3)}
 }
 
+
 \value{SpatRaster}
+
+
+\seealso{ \code{\link{focalMat}}, \code{\link{focalValues}} }
 
 
 \examples{

@@ -21,7 +21,7 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill.
 
 ## bug fixes 
 
-- `extract` with points and `cells=T` or `xy=T` gave garbled output
+- `extract` with points and `cells=TRUE` or `xy=TRUE` gave garbled output
 - `as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
 
 

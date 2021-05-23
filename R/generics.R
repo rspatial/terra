@@ -316,11 +316,14 @@ setMethod("cover", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("diff", signature(x="SpatRaster"), 
-	function(x, filename="", ...) { 
-		n = nlyr(x)
-		if (n<2) return(rast(x))
-		y = x[[-1]]
-		x = x[[-n]]
+	function(x, lag=1, filename="", ...) { 
+		n <- nlyr(x)
+		lag <- round(lag)
+		if ((lag < 1) | (lag >= n)) {
+			error("diff", "lag must be > 0 and < nlyr(x)") 
+		}
+		y <- x[[-((n-lag+1):n)]]
+		x <- x[[-(1:lag)]]
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$arith_rast(y@ptr, "-", opt)
 		messages(x, "diff")

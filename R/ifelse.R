@@ -10,7 +10,7 @@ setMethod("ifel", signature(test="SpatRaster"),
 			if (length(no) > 1) warn("ifel", 'only the first element of "no" is used')
 			no <- classify(test, rbind(c(0, no[1]), c(1, NA)))
 		} else {
-			no <- mask(no, test, maskvalue=TRUE)
+			no <- mask(no, test, maskvalues=TRUE)
 		}
 		if (!inherits(yes, "SpatRaster")) {
 			stopifnot(is.numeric(yes) || is.logical(yes)) 

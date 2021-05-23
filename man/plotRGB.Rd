@@ -47,7 +47,7 @@ Make a Red-Green-Blue plot based on three layers in a SpatRaster. The layers (so
 }
 
 
-\seealso{ \code{\link{plot}} }
+\seealso{ \code{\link{plot}}, \code{\link{RGB}} }
 
 \examples{
 b <- rast(system.file("ex/logo.tif", package="terra"))   

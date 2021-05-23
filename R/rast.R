@@ -16,7 +16,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 
 		if (missing(crs)) {
 			if (e[1] > -360.01 & e[2] < 360.01 & e[3] > -90.01 & e[4] < 90.01) {
-				crs <- "EPSG:4326"
+				crs <- "OGC:CRS84"
 			} else {
 				crs <- ""
 			}
@@ -152,7 +152,7 @@ setMethod("rast", signature(x="character"),
 
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				crs(r) <- "EPSG:4326"
+				crs(r) <- "OGC:CRS84"
 			}
 		}
 		r
@@ -185,7 +185,7 @@ multi <- function(x, subds=0, xyz=c(1,2,3)) {
 
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				crs(r) <- "EPSG:4326"
+				crs(r) <- "OGC:CRS84"
 			}
 		}
 		r
@@ -300,7 +300,7 @@ setMethod("rast", signature(x="matrix"),
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs=crs, digits=digits)
 		} else {
-			r <- rast(nrow=nrow(x), ncol=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
+			r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
 			values(r) <- t(x)
 		}
 		messages(r, "rast")
