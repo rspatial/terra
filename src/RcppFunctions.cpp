@@ -80,8 +80,9 @@ double getLinearUnits(std::string s) {
 // [[Rcpp::export(name = ".geotransform")]]
 std::vector<double> geotransform(std::string fname) {
 	std::vector<double> out;
-    GDALDataset *poDataset;
-    poDataset = (GDALDataset *) GDALOpen(fname.c_str(), GA_ReadOnly );
+    GDALDataset *poDataset = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY, NULL, NULL, NULL ));
+	
+//    poDataset = (GDALDataset *) GDALOpen(fname.c_str(), GA_ReadOnly );
 
     if( poDataset == NULL )  {
 		Rcpp::Rcout << "cannot read from: " + fname << std::endl;

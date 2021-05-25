@@ -69,12 +69,23 @@ std::string sectostr(int x) {
 }
 */
 
+GDALDataset* openGDAL(std::string filename, unsigned OpenFlag) {
+
+	GDALDataset *poDataset;
+
+	//std::vector <char *> oo_char = string_to_charpnt(openopts); // open options
+    //poDataset = static_cast<GDALDataset*>(GDALOpenEx( filename.c_str(), OpenFlag, NULL, oo_char.data(), NULL ));
+
+    poDataset = static_cast<GDALDataset*>(GDALOpenEx( filename.c_str(), OpenFlag, NULL, NULL, NULL ));
+	return poDataset;
+}
+
+
 std::vector<std::string> get_metadata(std::string filename) {
 
 	std::vector<std::string> out;
 
-    GDALDataset *poDataset;
-    poDataset = (GDALDataset *) GDALOpen(filename.c_str(), GA_ReadOnly );
+    GDALDataset *poDataset = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
     if( poDataset == NULL )  {
 		return out;
 	}
@@ -92,8 +103,7 @@ std::vector<std::string> get_metadata(std::string filename) {
 
 std::vector<std::string> get_metadata_sds(std::string filename) {
 	std::vector<std::string> meta;
-    GDALDataset *poDataset;
-    poDataset = (GDALDataset *) GDALOpen(filename.c_str(), GA_ReadOnly );
+    GDALDataset *poDataset = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
     if( poDataset == NULL )  {
 		return meta;
 	}
@@ -183,8 +193,8 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
 	std::vector<std::vector<std::string>> out(6);
-	GDALDataset *poDataset;
-    poDataset = (GDALDataset *) GDALOpen( fname.c_str(), GA_ReadOnly );
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY);
+
     if( poDataset == NULL ) {
 		if (!file_exists(fname)) {
 			out[0] = std::vector<std::string> {"no such file"};
@@ -285,9 +295,9 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions 
 	}
 	
 	std::vector<GDALDataset *> tiles;
-    GDALDataset *poDataset;
 	for (std::string& f : filenames) {
-		poDataset = (GDALDataset *) GDALOpen(f.c_str(), GA_ReadOnly );
+
+		GDALDataset *poDataset = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_READONLY);
 		if( poDataset == NULL )  {
 			for (size_t j= 0; j<tiles.size(); j++) GDALClose(tiles[j]);
 			out.setError("cannot open " + f);
@@ -484,7 +494,14 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		//} else {
 			f = source[src].filename;
 		//}
-		hDS = GDALOpenShared(f.c_str(), GA_ReadOnly);
+		
+
+		
+		//hDS = GDALOpenShared(f.c_str(), GA_ReadOnly);
+
+		hDS = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_SHARED);
+		return(hDS != NULL);
+
 		return(hDS != NULL);
 	
 	} else { // in memory

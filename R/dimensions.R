@@ -51,7 +51,7 @@ setMethod("dim<-", signature(x="SpatRaster"),
 			value <- value[1:3]
 		}
 		value <- as.integer(pmax(round(value), c(1,1,1)))
-		rast(nrow=value[1], ncol=value[2], nlyr=value[3], extent=ext(x), crs=crs(x))
+		rast(nrows=value[1], ncols=value[2], nlyrs=value[3], extent=ext(x), crs=crs(x))
 	}
 )
 

@@ -279,10 +279,10 @@ std::string getDsPRJ(GDALDataset *poDataset) {
 }
 
 
+
 SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool useids) {
 
-    GDALDataset *poDataset;
-    poDataset = (GDALDataset *) GDALOpen( fname.c_str(), GA_ReadOnly );
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR);
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
 			setError("file does not exist");
@@ -342,8 +342,7 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
 
-    GDALDataset *poDataset;
-    poDataset = (GDALDataset *) GDALOpen(fname.c_str(), GA_ReadOnly );
+    GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR);
 
     if( poDataset == NULL )  {
 		if (!file_exists(fname)) {
@@ -389,7 +388,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	s.flipped = false;
 	s.rotated = false;
 	double adfGeoTransform[6];
-	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
+	CPLErr err = poDataset->GetGeoTransform( adfGeoTransform );
+	if (err == CE_None ) {
 		double xmin = adfGeoTransform[0]; /* left x */
 		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
 		//xmax = roundn(xmax, 9);
@@ -410,6 +410,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
 		}
 	} else {
+		Rcpp::Rcout << err << std::endl;
 		SpatExtent e(0, 1, 0, 1);
 		s.extent = e;
 		if (gdrv=="netCDF") {
@@ -597,10 +598,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 
 bool SpatRaster::readStartGDAL(unsigned src) {
-    GDALDataset *poDataset;
-    //GDALAllRegister();
-	const char* pszFilename = source[src].filename.c_str();
-	poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+	
 	if( poDataset == NULL )  {
 		setError("cannot read from " + source[src].filename );
 		return false;
@@ -764,11 +763,9 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t 
 		col = col + source[src].window.off_col;
 	}
 
-
-    GDALDataset *poDataset;
+    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
 	GDALRasterBand *poBand;
-	const char* pszFilename = source[src].filename.c_str();
-    poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
+	
     if( poDataset == NULL )  {
 		setError("cannot read values. Does the file still exist?");
 		return errout;
@@ -838,11 +835,12 @@ std::vector<double> SpatRaster::readGDALsample(unsigned src, size_t srows, size_
 		scols = std::min(scols, ncols);
 	} 
 
-    GDALDataset *poDataset;
+
+    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+
 	GDALRasterBand *poBand;
     //GDALAllRegister();
-	const char* pszFilename = source[src].filename.c_str();
-    poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
+	
     if( poDataset == NULL )  {
 		setError("no data");
 		return errout;
@@ -912,11 +910,10 @@ std::vector<std::vector<double>> SpatRaster::readRowColGDAL(unsigned src, std::v
 		return errout;
 	}
 
-    GDALDataset *poDataset;
+    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+
 	GDALRasterBand *poBand;
-    //GDALAllRegister();
-	const char* pszFilename = source[src].filename.c_str();
-    poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
+	
     if( poDataset == NULL )  {
 		return errout;
 	}
@@ -994,11 +991,10 @@ std::vector<double> SpatRaster::readRowColGDALFlat(unsigned src, std::vector<int
 		return errout;
 	}
 
-    GDALDataset *poDataset;
+    GDALDataset *poDataset = openGDAL(source[src].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+
 	GDALRasterBand *poBand;
-    //GDALAllRegister();
-	const char* pszFilename = source[src].filename.c_str();
-    poDataset = (GDALDataset *) GDALOpen(pszFilename, GA_ReadOnly);
+	
     if( poDataset == NULL )  {
 		return errout;
 	}

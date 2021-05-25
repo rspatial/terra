@@ -8,7 +8,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, fil
 			background <- NA 
 		}
 	} 
-	r <- rast(y, nlyr=1)
+	r <- rast(y, nlyrs=1)
 	values(r) <- background
 
 	g <- geom(x, df=TRUE)

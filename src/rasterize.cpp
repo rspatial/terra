@@ -59,7 +59,8 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string 
 				SpatRaster out = writeRaster(opt);
 			} else {
 				// writeRaster should do the below? copyRaster?
-				GDALDatasetH hSrcDS = GDALOpen(source[0].filename.c_str(), GA_ReadOnly );
+				//rstDS = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+				GDALDatasetH hSrcDS = GDALOpenEx(source[0].filename.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY, NULL, NULL, NULL);
 				if(hSrcDS == NULL) {
 					msg = "cannot open source dataset";
 					return false;
@@ -73,9 +74,8 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string 
 				}
 				GDALClose(hDstDS);
 			}
-			rstDS = GDALOpen( filename.c_str(), GA_Update);	
+			rstDS = GDALOpenEx(filename.c_str(), GDAL_OF_RASTER | GDAL_OF_UPDATE, NULL, NULL, NULL);
 		}
-	
 	} else {
 		SpatRaster tmp = geometry();
 		if (!tmp.create_gdalDS(rstDS, filename, driver, true, background, opt)) {

@@ -668,8 +668,8 @@ bool SpatRaster::writeStopGDAL() {
 			GDALClose( (GDALDatasetH) source[0].gdalconnection );
 		} else {
 			GDALClose( (GDALDatasetH) source[0].gdalconnection );
-			GDALDataset *oldDS;
-			oldDS = (GDALDataset *) GDALOpen(copy_filename.c_str(), GA_ReadOnly );
+			GDALDataset *oldDS = openGDAL(copy_filename.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY);
+
 			if( oldDS == NULL )  {
 				setError("file copy create failed for "+ copy_driver);
 				copy_driver = "";

@@ -6,7 +6,7 @@ setMethod("$<-", "SpatRaster",
 			value <- value[[1]]
 			names(value) <- name
 		} else if (is.numeric(value)) {
-			y <- rast(x, nlyr=1)
+			y <- rast(x, nlyrs=1)
 			values(y) <- value
 			value <- y
 			names(value) <- name

@@ -6,3 +6,4 @@ std::vector<std::string> get_metadata_sds(std::string filename);
 std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string> meta);
 void getGDALdriver(std::string &filename, std::string &driver);
 bool getNAvalue(GDALDataType gdt, double & naval);
+GDALDataset* openGDAL(std::string filename, unsigned OpenFlag);

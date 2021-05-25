@@ -19,9 +19,9 @@
 
 bool SpatRaster::readStart() {
 
-	if (!valid_sources(true, true)) {
-		return false;
-	}
+	//if (!valid_sources(true, true)) {
+	//	return false;
+	//}
 
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].open_read) {

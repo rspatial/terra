@@ -48,7 +48,7 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, ncx, dataframe=TRUE)
 	test <- .lapp_test(v, fun, usenames, ...)
 	if (test$nl < 1) error("lapp", "I do not like 'fun' :(")
-	out <- rast(x, nlyr=test$nl)
+	out <- rast(x, nlyrs=test$nl)
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}

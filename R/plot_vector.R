@@ -412,7 +412,7 @@ setMethod("dots", signature(x="SpatVector"),
 			mar=c(3.1, 3.1, 2.1, 2.1)
 		}
 	}
-	out$mar <- mar
+	out$mar <- rep_len(mar, 4)
 
 	if (!is.null(colNA)) {
 		if (!is.na(colNA)) {

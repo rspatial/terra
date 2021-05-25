@@ -46,6 +46,8 @@ setMethod("RGB", signature(x="SpatRaster"),
 setMethod("plotRGB", signature(x="SpatRaster"), 
 function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) { 
 
+	x <- x[[c(r, g, b)]]
+	
 	if (!is.null(mar)) {
 		mar <- rep_len(mar, 4)
 		if (!any(is.na(mar))) {	
@@ -65,7 +67,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 	if (!is.null(ext)) {
 		x <- crop(x, ext)
 	}
-	x <- spatSample(x[[c(r, g, b)]], maxcell, method="regular", as.raster=TRUE)
+	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
 	RGB <- values(x)
 

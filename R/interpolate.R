@@ -26,7 +26,7 @@ setMethod("interpolate", signature(object="SpatRaster"),
 		}
 		r <- .runModel(model, fun, xy, 1, const, (na.rm & hv), index, ...)
 		nl <- ncol(r)
-		out <- rast(object, nlyr=nl)
+		out <- rast(object, nlyrs=nl)
 		cn <- colnames(r)
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
 
