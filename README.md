@@ -1,5 +1,6 @@
 # terra
 
+[![rcmdcheck](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml/badge.svg)](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
