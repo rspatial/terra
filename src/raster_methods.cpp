@@ -582,7 +582,6 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 			}
 		}
 		mult[i] = maxv[i] / (q[i][1]-q[i][0]);
-		//Rcpp::Rcout << q[i][0] << " " << q[i][1] << " " << minv[i] << " " << maxv[i] << " " << mult[i] << std::endl;
 	}
 
 	if (!readStart()) {
@@ -2317,14 +2316,10 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 			e = ds[j].getExtent();
 			e.intersect(eout);
 			if ( e.valid_notequal() ) {
-				//Rcpp::Rcout << "e : " << e.ymin << " " << e.ymax << std::endl; 
-				//Rcpp::Rcout << "eo: " << eout.ymin << " " << eout.ymax << std::endl; 
 				r = ds[j].crop(eout, "near", sopt);
 				//SpatExtent ec = r.getExtent();
-				//Rcpp::Rcout << "ec: " << ec.ymin << " " << ec.ymax << std::endl; 
 				r = r.extend(eout, sopt);
 				//SpatExtent ee = r.getExtent();
-				//Rcpp::Rcout << "ee: " << ee.ymin << " " << ee.ymax << std::endl; 
 				if (!s.push_back(r, "", "", "", false)) {
 					out.setError("internal error: " + s.getError());
 					out.writeStop();
@@ -3262,14 +3257,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {
-		//for (size_t i=0; i<rcl[0].size(); i++) {
-		//	Rcpp::Rcout << rcl[0][i] << " - " << rcl[1][i] << std::endl;
-		//}
-		//Rcpp::Rcout << std::endl;
 		std::vector<std::vector<double>> rc = clump_getRCL(rcl, ncps);
-		//for (size_t i=0; i<rc[0].size(); i++) {
-		//	Rcpp::Rcout << rc[0][i] << " - " << rc[1][i] << std::endl;
-		//}
 		out = out.reclassify(rc, 3, true, false, opt);
 	} else if (filename != "") {
 		out = out.writeRaster(opt);

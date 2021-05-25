@@ -98,8 +98,6 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	int readnrows = nrows+offset+wr;
 	readnrows = (startrow+readnrows) > nr ? (nr-startrow) : readnrows;
 
-//	Rcpp::Rcout << readnrows << ", " << offset << ", " << wr << std::endl;
-
 	std::vector<double> d = readValues(startrow, readnrows, 0, nc);
 
 	std::vector<double> f = get_focal(d, nrows, nc, w[0], w[1], offset, fillvalue);
@@ -296,7 +294,6 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 //		w[1] = nc*2;
 //		w[1] = std::fmod(w[1], 2) == 0 ? w[1]+1 : w[1];
 	}
-//	Rcpp::Rcout << "W " << w[0] << " " << w[1] << std::endl;
 	unsigned ww = w[0] * w[1];
 	if (ww < 9) {
 		out.setError("not a meaningful window");

@@ -236,10 +236,8 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 
 	size_t n=1;
 	for (size_t i=0; i<count.size(); i++) {
-		Rcpp::Rcout << offset[i] << "-" << count[i] << ", ";
 		n *= count[i];
 	}
-	Rcpp::Rcout << std::endl;
 	
 	//count = {3600, 1, 1, 7200, 1};
 

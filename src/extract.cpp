@@ -127,7 +127,6 @@ double bilinearIntold(const double& x, const double& y,
 	} else if (!std::isnan(v22)) {
 		h2 = v22;
 	}
-  //Rcpp::Rcout << h1 << " " << h2 << std::endl;
 	if (!std::isnan(h1) && !std::isnan(h2)) {
 		d = y2-y1;
 		double v = linearInt(d, y, y1, y2, h1, h2);

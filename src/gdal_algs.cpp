@@ -402,10 +402,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	std::string filename = opt.get_filename();
 
 	std::string srccrs = getSRS("wkt");
-	//if (opt.verbose) {
-	//	Rcpp::Rcout << "wkt" << std::endl;
-	//	Rcpp::Rcout << srccrs << std::endl;
-	//}
 	if (srccrs == "") {
 		out.setError("input raster CRS not set");
 		return out;	

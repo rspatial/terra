@@ -344,8 +344,6 @@ void DxDxy(const double &lat, const int &row, double xres, double yres, const in
 	dx  = distance_lonlat(-xres, thislat     , xres, thislat);
 	dxy = distance_lonlat(-xres, thislat-yres, xres, thislat+yres);
 	//double dy = distance_lonlat(0, 0, -yres, yres, a, f);
-//	Rcpp::Rcout << thislat << " " << row << " " << xres << " " << yres << std::endl;
-//	Rcpp::Rcout << dy << " " << dx << " " << dxy << std::endl;
 }
 
 
@@ -766,7 +764,6 @@ std::vector<double> get_border(std::vector<double> xd, size_t nrows, size_t ncol
 	size_t n = nrows * ncols;
 
 	std::vector<double> xval(n, 0);
-	//Rcpp::Rcout << "hello" << std::endl;
 
 	int r[8] = {-1,0,0,1, -1,-1,1,1};
 	int c[8] = {0,-1,1,0, -1,1,-1,1};

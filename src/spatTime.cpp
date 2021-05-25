@@ -162,8 +162,6 @@ SpatTime_t get_time_string(std::string s) {
 	} else {
 		return time;
 	}
-	//Rcpp::Rcout << ss[0] << "-" << ss[1] << "-" << ss[2] << std::endl;
-
 	time = get_time(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]), 0, 0, 0);
 
 //	} else {

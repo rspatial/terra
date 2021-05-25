@@ -82,8 +82,6 @@ std::vector<double> geotransform(std::string fname) {
 	std::vector<double> out;
     GDALDataset *poDataset = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY, NULL, NULL, NULL ));
 	
-//    poDataset = (GDALDataset *) GDALOpen(fname.c_str(), GA_ReadOnly );
-
     if( poDataset == NULL )  {
 		Rcpp::Rcout << "cannot read from: " + fname << std::endl;
 		return out;
@@ -131,6 +129,18 @@ std::vector<std::string> sdsmetatdata(std::string filename) {
 	std::vector<std::string> m = get_metadata_sds(filename);
 	return m;
 }
+
+
+//#include "file_utils.h"
+// [[Rcpp::export(name = ".stest")]]
+std::string stest(std::string s, bool utf8) {
+	Rcpp::Rcout << s << std::endl;
+//	std::string e = file_exists(s) ? "exists" : "does not exist";
+//	Rcpp::Rcout << e << std::endl;
+	return s;
+}
+
+
 
 // [[Rcpp::export(name = ".parsedsdsmetadata")]]
 std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {

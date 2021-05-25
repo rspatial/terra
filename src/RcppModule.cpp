@@ -5,7 +5,6 @@
 
 
 //void SpatRaster_finalizer( SpatRaster* ptr ){
-//   Rcpp::Rcout << "finalizer" << std::endl;
 //}
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
@@ -19,11 +18,6 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 
 
 bool sameObject(SpatRaster* a, SpatRaster* b) {
-//	Rcpp::Rcout << a->source[0].time[0] << std::endl;
-//	size_t n = a->source[0].time.size();
-//	Rcpp::Rcout << n << std::endl;
-//	Rcpp::Rcout << a->nlyr() << std::endl;
-//	Rcpp::Rcout << a->source[0].time[n-1] << std::endl;
 	return a == b;
 }
 

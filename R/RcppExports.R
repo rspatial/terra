@@ -37,6 +37,10 @@
     .Call(`_terra_sdsmetatdata`, filename)
 }
 
+.stest <- function(s, utf8) {
+    .Call(`_terra_stest`, s, utf8)
+}
+
 .parsedsdsmetadata <- function(filename) {
     .Call(`_terra_sdsmetatdataparsed`, filename)
 }

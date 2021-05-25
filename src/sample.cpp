@@ -425,8 +425,6 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 	if (lonlat) {
 		double d = (ymax - ymin) / 1000.0;
 		std::vector<double> r = seq(ymin, ymax, d);
-		//Rcpp::Rcout << r[0] << " " <<  r[r.size()-1] << std::endl;
-
 		std::vector<double> w;
 		w.reserve(r.size());
 		for (size_t i=0; i<r.size(); i++) {

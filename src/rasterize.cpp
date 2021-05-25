@@ -378,7 +378,6 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	std::vector<double> feats(1, 1) ;		
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, opt); 
 	SpatVector pts = rcr.as_points(false, true, opt);
-	//Rcpp::Rcout << pts.size() << std::endl;
 	if (pts.size() == 0) {
 		std::vector<double> out(1, NAN);
 		return out;
@@ -433,7 +432,6 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 	r = r.crop(v.extent, "out", opt);
 
 	if (r.ncell() < 1000) {
-		//Rcpp::Rcout << "small" << std::endl;
 		std::vector<double> feats(1, 1) ;	
 		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, opt); 
 
@@ -459,7 +457,6 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			}
 		}
 	} else {
-		//Rcpp::Rcout << "large" << std::endl;
 		std::vector<double> feats(1, 1) ;	
 		SpatVector vv = v.as_lines();
 		SpatRaster b = r.rasterize(vv, "", feats, NAN, true, false, false, false, false, opt); 

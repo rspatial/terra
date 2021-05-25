@@ -356,12 +356,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	int nl = poDataset->GetRasterCount();
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
-/*
-	char **metadata = poDataset->GetMetadataDomainList();
-    for (size_t i=0; metadata[i] != NULL; i++) {
-		Rcpp::Rcout << metadata[i] << std::endl;
-	}
-*/
 
 	if (nl == 0) {
 		std::vector<std::string> meta;
@@ -388,8 +382,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	s.flipped = false;
 	s.rotated = false;
 	double adfGeoTransform[6];
-	CPLErr err = poDataset->GetGeoTransform( adfGeoTransform );
-	if (err == CE_None ) {
+
+	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
 		double xmin = adfGeoTransform[0]; /* left x */
 		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
 		//xmax = roundn(xmax, 9);
@@ -410,7 +404,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
 		}
 	} else {
-		Rcpp::Rcout << err << std::endl;
 		SpatExtent e(0, 1, 0, 1);
 		s.extent = e;
 		if (gdrv=="netCDF") {
@@ -442,7 +435,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::string crs = getDsWKT(poDataset);
 	if (crs == "") {
 		if (s.extent.xmin >= -180 && s.extent.xmax <= 360 && s.extent.ymin >= -90 && s.extent.ymax <= 90) {
-			crs = "EPSG:4326";
+			crs = "OGC:CRS84";
 			s.parameters_changed = true;
 		}
 	}
@@ -457,9 +450,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	int bGotMin, bGotMax;
 
 //	s.layers.resize(1);
-
-	//Rcpp::Rcout << "driver: " << gdrv << std::endl;
-
 //	std::string unit = "";
 
 	std::string varname = basename_noext(fname).substr(0,3);
@@ -1105,14 +1095,6 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	int n = info[0].size();
 	std::vector<std::string> sd, varname, srcname;
 	
-/*
-    for (size_t i=0; i<info.size(); i++) {
-		for (size_t j=0; j<info[i].size(); j++) {
-			Rcpp::Rcout << info[i][j] << std::endl;
-		}
-	}
-*/
-
 // std::vector<unsigned> varnl;
 // for selection based on nlyr
 
@@ -1224,8 +1206,6 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 			recycle(nms, srcnl[i]);
 			make_unique_names(nms);
 			lyrnames.insert(lyrnames.end(), nms.begin(), nms.end());
-			//Rcpp::Rcout << used[i] << std::endl;
-			//Rcpp::Rcout << nms.size() << std::endl;	
 		}
 		if (lyrnames.size() > 0) {
 			setNames(lyrnames, false);
@@ -1437,29 +1417,8 @@ std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<s
 void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.size() == 0) return;
-/*
-	for (size_t i=0; i<metadata.size(); i++) {
-		Rcpp::Rcout << metadata[i] << std::endl;
-	}
-
-	for (size_t i=0; i<bandmeta.size(); i++) {
-	Rcpp::Rcout << "band " << i << std::endl;
-	for (size_t j=0; j<bandmeta[i].size(); j++) {
-		Rcpp::Rcout << bandmeta[i][j] << std::endl;
-	}
-	}
-*/
 
 	std::vector<std::vector<std::string>> nms = ncdf_names(bandmeta);
-
-/*
-	for (size_t i=0; i<nms.size(); i++) {
-		Rcpp::Rcout << "i " << i << std::endl;
-		for (size_t j=0; j<nms[i].size(); j++) {
-			Rcpp::Rcout << j << ": " << nms[i][j] << std::endl;
-		}
-	}
-*/
 
 
 	if (nms[1].size() > 0) {
