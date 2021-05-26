@@ -21,6 +21,8 @@ The easiest way to use the *development version* on Windows or MacOS, is to inst
 install.packages('terra', repos='https://rspatial.r-universe.dev')
 ```
 
+Please note that, on MacOS, the development version does not support the HDF4 file format, which is used for some NASA satellite data products.
+
 ### From source-code
 
 To install from source-code, first install the packages that terra depends on: 
