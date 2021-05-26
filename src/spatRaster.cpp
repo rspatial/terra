@@ -44,7 +44,10 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		return;
 	}
 
-	constructFromFile(fname[0], subds, subdsname);
+	if (!constructFromFile(fname[0], subds, subdsname)) {
+		setError("cannot open file: " + fname[0]);
+		return;
+	}
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
 		bool ok = r.constructFromFile(fname[i], subds, subdsname);

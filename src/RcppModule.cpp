@@ -402,6 +402,8 @@ RCPP_MODULE(spat){
 	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<size_t>>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
+		.method("fromFiles", &SpatRaster::fromFiles)
+
         //.finalizer( &SpatRaster_finalizer)    
 
 		.method("has_error", &SpatRaster::hasError)

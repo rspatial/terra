@@ -106,18 +106,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// stest
-std::string stest(std::string s, bool utf8);
-RcppExport SEXP _terra_stest(SEXP sSEXP, SEXP utf8SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
-    Rcpp::traits::input_parameter< bool >::type utf8(utf8SEXP);
-    rcpp_result_gen = Rcpp::wrap(stest(s, utf8));
-    return rcpp_result_gen;
-END_RCPP
-}
 // sdsmetatdataparsed
 std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename);
 RcppExport SEXP _terra_sdsmetatdataparsed(SEXP filenameSEXP) {
@@ -174,6 +162,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// readncdf
+bool readncdf(std::string f);
+RcppExport SEXP _terra_readncdf(SEXP fSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type f(fSEXP);
+    rcpp_result_gen = Rcpp::wrap(readncdf(f));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -187,12 +186,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
     {"_terra_metatdata", (DL_FUNC) &_terra_metatdata, 1},
     {"_terra_sdsmetatdata", (DL_FUNC) &_terra_sdsmetatdata, 1},
-    {"_terra_stest", (DL_FUNC) &_terra_stest, 2},
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
     {"_terra_gdal_drivers", (DL_FUNC) &_terra_gdal_drivers, 0},
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
+    {"_terra_readncdf", (DL_FUNC) &_terra_readncdf, 1},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

@@ -294,8 +294,8 @@ shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, ...) {
 	
 	x <- c(slope, aspect)
 
-	direction <- direction * pi/180
-	zenith <- (90 - angle)*pi/180
+	direction <- direction[1] * pi/180
+	zenith <- (90 - angle[1]) * pi/180
 	
 	if (normalize) {
 		fun <- function(slp, asp) { 

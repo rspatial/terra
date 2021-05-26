@@ -322,6 +322,9 @@ class SpatRaster {
 		bool constructFromFileMulti(std::string fname, std::string subdsname, std::vector<size_t> xyz);
 		bool constructFromFiles(std::vector<std::string> fnames);
 		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, bool ncdf);
+		
+		SpatRaster fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname);
+		
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);
 
 

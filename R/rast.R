@@ -132,7 +132,7 @@ setMethod("rast", signature(x="character"),
 		x <- trimws(x)
 		x <- x[x!=""]
 		if (length(x) == 0) {
-			error("rast,character", "filename is empty. Provide a valid filename")
+			error("rast", "filename is empty. Provide a valid filename")
 		}
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
@@ -142,6 +142,7 @@ setMethod("rast", signature(x="character"),
 		} else {
 			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, 0[])
 		}
+		r <- messages(r)
 		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)
 			if (inherits(test, "try-error")) {

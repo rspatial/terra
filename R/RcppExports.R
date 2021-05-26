@@ -37,10 +37,6 @@
     .Call(`_terra_sdsmetatdata`, filename)
 }
 
-.stest <- function(s, utf8) {
-    .Call(`_terra_stest`, s, utf8)
-}
-
 .parsedsdsmetadata <- function(filename) {
     .Call(`_terra_sdsmetatdataparsed`, filename)
 }
@@ -59,5 +55,9 @@
 
 .precRank <- function(x, y, minc, maxc, tail) {
     .Call(`_terra_percRank`, x, y, minc, maxc, tail)
+}
+
+.readncdf <- function(f) {
+    .Call(`_terra_readncdf`, f)
 }
 

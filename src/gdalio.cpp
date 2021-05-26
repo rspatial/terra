@@ -76,6 +76,7 @@ GDALDataset* openGDAL(std::string filename, unsigned OpenFlag) {
 	//std::vector <char *> oo_char = string_to_charpnt(openopts); // open options
     //poDataset = static_cast<GDALDataset*>(GDALOpenEx( filename.c_str(), OpenFlag, NULL, oo_char.data(), NULL ));
 
+
     poDataset = static_cast<GDALDataset*>(GDALOpenEx( filename.c_str(), OpenFlag, NULL, NULL, NULL ));
 	return poDataset;
 }

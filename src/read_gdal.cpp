@@ -340,7 +340,36 @@ SpatRasterStack::SpatRasterStack(std::string fname, std::vector<int> ids, bool u
 
 
 
+SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname) {
+	SpatRaster out;
+	out.constructFromFile(fname[0], subds, subdsname);
+	if (out.hasError()) return out;
+	for (size_t i=1; i<fname.size(); i++) {
+		SpatRaster r;
+		bool ok = r.constructFromFile(fname[i], subds, subdsname);
+		if (r.msg.has_warning) {
+			out.addWarning(r.msg.warnings[0]);	
+		}
+		if (ok) {
+			out.addSource(r);
+			if (r.msg.has_error) {
+				out.setError(r.msg.error);
+				return out;
+			}
+		} else {
+			if (r.msg.has_error) {
+				out.setError(r.msg.error);
+			}
+			return out;
+		}
+	}
+	return out;
+}
+
+
+
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
+
 
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR);
 

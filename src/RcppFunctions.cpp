@@ -131,15 +131,6 @@ std::vector<std::string> sdsmetatdata(std::string filename) {
 }
 
 
-//#include "file_utils.h"
-// [[Rcpp::export(name = ".stest")]]
-std::string stest(std::string s, bool utf8) {
-	Rcpp::Rcout << s << std::endl;
-//	std::string e = file_exists(s) ? "exists" : "does not exist";
-//	Rcpp::Rcout << e << std::endl;
-	return s;
-}
-
 
 
 // [[Rcpp::export(name = ".parsedsdsmetadata")]]
