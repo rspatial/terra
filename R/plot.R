@@ -290,7 +290,7 @@ setMethod("barplot", "SpatRaster",
 
 
 
-shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", overwrite=FALSE, ...) {
+shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", ...) {
 	
 	x <- c(slope[[1]], aspect[[1]])
 
@@ -306,6 +306,6 @@ shade <- function(slope, aspect, angle=45, direction=0, normalize=FALSE, filenam
 	} else {
 		fun <- function(slp, asp) { cos(slp) * cos(zenith) + sin(slp) * sin(zenith) * cos(direction-asp) }
 	}
-	lapp(x, fun=fun, filename=filename, overwrite=overwrite, wopt=list(...))		
+	lapp(x, fun=fun, filename=filename, wopt=list(...))		
 }
 
