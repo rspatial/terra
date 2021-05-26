@@ -57,7 +57,3 @@
     .Call(`_terra_percRank`, x, y, minc, maxc, tail)
 }
 
-.readncdf <- function(f) {
-    .Call(`_terra_readncdf`, f)
-}
-

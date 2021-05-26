@@ -162,17 +162,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// readncdf
-bool readncdf(std::string f);
-RcppExport SEXP _terra_readncdf(SEXP fSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type f(fSEXP);
-    rcpp_result_gen = Rcpp::wrap(readncdf(f));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -191,7 +180,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
-    {"_terra_readncdf", (DL_FUNC) &_terra_readncdf, 1},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

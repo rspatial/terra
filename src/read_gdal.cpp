@@ -370,7 +370,6 @@ SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int
 
 bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
 
-
     GDALDataset *poDataset = openGDAL(fname, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_VERBOSE_ERROR);
 
     if( poDataset == NULL )  {

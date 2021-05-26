@@ -138,7 +138,8 @@ setMethod("rast", signature(x="character"),
 		f <- .fullFilename(x)
 		#subds <- subds[1]
 		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
+			#r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
+			r@ptr <- r@ptrSpatRaster$new(f, -1, subds, FALSE, 0[])
 		} else {
 			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, 0[])
 		}
