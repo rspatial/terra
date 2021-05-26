@@ -9,6 +9,7 @@
 - `activeCat` and `activeCat<-` to get or set the "active" category if there are multiple categories (raster attributes)
 - `as.numeric` and `catalyze` to transfer categories to numeric cell values
 - summarize methods such as `range` and `mean` for (the attributes of) a `SpatVector`
+- new method `shade`, to compute hill shading
 
 
 ## enhancements
