@@ -386,6 +386,24 @@ setMethod("freq", signature(x="SpatRaster"),
 			} else {
 				v <- matrix(v[[1]], ncol=2, dimnames=list(NULL, c("value", "count")))
 			}
+			ff <- is.factor(x)
+			if (any(ff)) {
+				if (bylayer) {
+					v <- data.frame(v)
+					v$label <- ""
+					f <- which(ff)
+					levs <- levels(x)
+					for (i in f) {
+						g <- levs[[i]]
+						k <- v$layer==i
+						v$label[k] <- g[v$value[k] + 1]
+					}
+				} else if (nlyr(x) == 1) {				
+					v <- data.frame(v)
+					g <- levels(x)[[1]]
+					v$label <- g[v$value + 1]
+				}
+			}
 		}
 		v
 	}
