@@ -19,7 +19,6 @@ shade(slope, aspect, angle=45, direction=0, normalize=FALSE, filename="", ...)
   \item{aspect}{SpatRaster with aspect values (in radians) }
   \item{angle}{ The the elevation angle of the light source (sun), in degrees}
   \item{direction}{ The direction (azimuth) angle of the light source (sun), in degrees}
-  \item{filename}{Character. Optional filename}
   \item{normalize}{Logical. If \code{TRUE}, values below zero are set to zero and the results are multiplied with 255}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
