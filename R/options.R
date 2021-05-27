@@ -118,6 +118,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
  
 terraOptions <- function(...) {
 	dots <- list(...)
+	if (is.null(.terra_environment$options)) .create_options()
 	opt <- .terra_environment$options@ptr
 	if (length(dots) == 0) {
 		.showOptions(opt)
