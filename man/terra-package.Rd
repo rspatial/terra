@@ -136,6 +136,7 @@ Also see the methods in section VIII
     \code{localFun} \tab Local association (using neighborhoods) functions \cr
     \code{\link{patches}} \tab Find patches (clumps) \cr
     \code{\link{terrain}} \tab Compute slope, aspect and other terrain characteristics from elevation data \cr	
+    \code{\link{shade}} \tab Compute hill shade from slope and aspect layers \cr	
     \code{\link{autocor}} \tab Compute global or local spatial autocorrelation  \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
