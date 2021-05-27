@@ -145,6 +145,8 @@
 </li>
 <li>improved handling (and documentation) of <code>gstat</code> models by <code>interpolate</code>. See issue <a href="https://github.com/rspatial/terra/issues/208"><a href='https://github.com/rspatial/terra/issues/208'>#208</a></a> by Jakub Nowosad.</li>
 <li>new argument <code>cpkgs</code> to <code>predict</code> to list the packages that need to be exported to the cores if argument <code>cores</code> is larger than one. <code><a href="../reference/predict.html">?predict</a></code> now shows different approaches to parallelize <code>predict</code> (based on examples in issue <a href="https://github.com/rspatial/terra/issues/178"><a href='https://github.com/rspatial/terra/issues/178'>#178</a></a> raised by by Matthew Coghill.</li>
+<li>
+<code>freq</code> now returns labels for categorical layers</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -158,6 +160,8 @@
 </li>
 <li>
 <code>focal</code> mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani</li>
+<li>
+<code><a href="../reference/options.html">terra::terraOptions</a></code> now works without attaching the package (issue <a href="https://github.com/rspatial/terra/issues/229"><a href='https://github.com/rspatial/terra/issues/229'>#229</a></a> reported by Karl Dunkle Werner)</li>
 </ul>
 </div>
 </div>
