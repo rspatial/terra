@@ -316,7 +316,7 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 	poCT = OGRCreateCoordinateTransformation(&source, &target);
 
 	if( poCT == NULL )	{
-		m.setError( "Cannot do this transformation" );
+		m.setError( "Cannot do this coordinate transformation" );
 		return (m);
 	}
 
