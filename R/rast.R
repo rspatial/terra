@@ -23,6 +23,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 		} else {
 			crs <- as.character(crs)
 		}
+		#check_proj4_datum(crs)
 
 		r <- methods::new("SpatRaster")
 		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)

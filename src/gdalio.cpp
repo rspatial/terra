@@ -612,6 +612,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		std::string wkt;
 
 #if GDAL_VERSION_MAJOR >= 3
+
 		std::string errmsg;
 		OGRSpatialReferenceH srs = GDALGetSpatialRef( hDS );
 		if (srs == NULL) {
