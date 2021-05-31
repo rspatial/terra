@@ -84,10 +84,14 @@ std::vector<double> SpatRaster::readSample(unsigned src, size_t srows, size_t sc
 
 SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 
+	if ((size >= ncell())) {
+		return( *this );
+	}
+
 	double f = std::min(1.0, sqrt(size / ncell()));
-	size_t nr = ceil(nrow() * f);
-	size_t nc = ceil(ncol() * f);
-	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
+	size_t nr = std::min((size_t)ceil(nrow() * f), nrow());
+	size_t nc = std::min((size_t)ceil(ncol() * f), ncol());
+	if ((nc == ncol()) && (nr == nrow())) {
 		return( *this );
 	}
 	SpatRaster out = geometry(nlyr(), true);
