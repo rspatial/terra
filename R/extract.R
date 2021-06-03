@@ -126,7 +126,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		if (weights || exact) {
 			if (hasfun) {
 				e <- t(sapply(e, fun, ...))
-				e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+				#e <- matrix(e, nrow=nrow(y), byrow=TRUE)
 				colnames(e) <- cn
 				e <- cbind(ID=1:nrow(e), e)
 			}
@@ -171,6 +171,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		fun <- match.fun(fun) 
 		e <- data.frame(e)
 		e <- aggregate(e[,-1,drop=FALSE], e[,1,drop=FALSE], fun, ...)
+
 		m <- sapply(e, NCOL)
 		if (any(m > 1)) {
 			e <- do.call(cbind, as.list(e))

@@ -132,8 +132,6 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 		method <- tolower(method)
 		stopifnot(method %in% c("random", "regular"))
-		size <- round(size)
-		stopifnot(size > 0)
 		size <- min(ncell(x), size)
 
 		if (!is.null(ext)) x <- crop(x, ext)

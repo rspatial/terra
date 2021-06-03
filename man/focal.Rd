@@ -45,7 +45,9 @@ Example weight matrices
 
 Laplacian filter: \code{filter=matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3)}
 
-Sobel filter: \code{filter=matrix(c(1,2,1,0,0,0,-1,-2,-1) / 4, nrow=3)}
+Sobel filters (for edge detection):
+\code{fx=matrix(c(-1,-2,-1,0,0,0,1,2,1), nrow=3)}
+\code{fy=matrix(c(1,0,-1,2,0,-2,1,0,-1), nrow=3)}
 }
 
 

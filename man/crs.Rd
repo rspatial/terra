@@ -22,9 +22,9 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 }
 
 \usage{
-\S4method{crs}{SpatRaster}(x, proj4=FALSE, describe=FALSE)
+\S4method{crs}{SpatRaster}(x, proj=FALSE, describe=FALSE)
 
-\S4method{crs}{SpatVector}(x, proj4=FALSE, describe=FALSE)
+\S4method{crs}{SpatVector}(x, proj=FALSE, describe=FALSE)
 
 \S4method{crs}{SpatRaster}(x)<-value
 
@@ -33,15 +33,18 @@ Setting a new CRS does not change the data itself, it just changes the label. So
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{proj4}{logical. If \code{TRUE} the crs is returned in PROJ.4 notation. But note that GDAL now only supports the WGS84 and NAD83 datums with this notation}
+  \item{proj}{logical. If \code{TRUE} the crs is returned in PROJ-string notation}
   \item{describe}{logical. If \code{TRUE} the name, EPSG code, and the name and extent of the area of use are returned if known}
-  \item{value}{character string describing a coordinate reference system. This can be in a WKT format, as a EPSG code, or a PROJ.4 "+" format (but see Note)}
+  \item{value}{character string describing a coordinate reference system. This can be in a WKT format, as a <authority:number> code such as "EPSG:4326", or a PROJ-string format such as "+proj=utm +zone=12" (see Note)}
 }
 
 
 \note{
-Because of changes in the PROJ library that is behind the coordinate transformations, when using the PROJ.4 format, the datum should be WGS84 -- if you want to transform your data to a different coordinate reference system)
+Projections are handled by the PROJ/GDAL libaries. Recent changes in the PROJ library to improve transformations between datums have degraded the library's usability. The PROJ developers suggest to no longer use the proj-string notation to define a CRS, but use the WKT2 or <authority>:<code> notation instead. These alternative systems work for formally described CRSs that are in databases, but they do not cover the infinite number of CRSs that exist. It is not practical to define one's own custom CRS with WKT2. Moreover, unlike the proj-notation, these newer systems are hard to read and that leads to code that cannot be easily understood and, therefore, is more error-prone.
+
+It is still possible to use the PROJ-string notation with one major caveat: the datum should be WGS84 (or the equivalent NAD83) -- if you want to transform your data to a coordinate reference system with a different datum. Thus as long as you use WGS84, or an ellipsoid instead of a datum, you can safely use PROJ-strings to represent your CRS; including to define your own custom CRS.
 }
+
 
 \value{
 character or modified SpatRaster/Vector

@@ -45,14 +45,14 @@ is.proj <- function(crs) {
 }
 
 setMethod("crs", signature("SpatRaster"), 
-	function(x, proj4=FALSE, describe=FALSE) {
+	function(x, proj=FALSE, describe=FALSE) {
 		if (describe) {
 			d <- .srs_describe(x@ptr$get_crs("wkt"))
-			if (proj4) {
-				d$proj4 <- x@ptr$get_crs("proj4")		
+			if (proj) {
+				d$proj <- x@ptr$get_crs("proj4")		
 			}
 			d
-		} else if (proj4) {
+		} else if (proj) {
 			x@ptr$get_crs("proj4")		
 		}  else {
 			x@ptr$get_crs("wkt")
@@ -102,14 +102,14 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 
 
 setMethod("crs", signature("SpatVector"), 
-	function(x, proj4=FALSE, describe=FALSE) {
+	function(x, proj=FALSE, describe=FALSE) {
 		if (describe) {
 			d <- .srs_describe(x@ptr$get_crs("wkt"))
-			if (proj4) {
-				d$proj4 <- x@ptr$get_crs("proj4")		
+			if (proj) {
+				d$proj <- x@ptr$get_crs("proj4")		
 			}
 			d
-		} else if (proj4) {
+		} else if (proj) {
 			x@ptr$get_crs("proj4")		
 		} else {
 			x@ptr$get_crs("wkt")
