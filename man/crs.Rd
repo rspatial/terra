@@ -54,7 +54,7 @@ character or modified SpatRaster/Vector
 \examples{ 
 r <- rast()
 crs(r)
-crs(r, describe=TRUE, proj4=TRUE)
+crs(r, describe=TRUE, proj=TRUE)
 
 crs(r) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 crs(r)
