@@ -34,7 +34,7 @@ Create a new SpatVector
 \item{x}{character (filename or "Well Known Text"); or a data.frame or matrix with geometry data (see \code{\link{geom}}); or missing; or a vector data object defined in the \code{sf} or \code{sp} packages}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
-\item{crs}{the coordinate reference system (PROJ4 notation)}
+\item{crs}{the coordinate reference system (WKT2, <authority>:<code>, or PROJ-string notation (see\code{link{crs}})}
 \item{geom}{the field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)}
 \item{...}{additional matrices and/or lists with matrices}  
 }
