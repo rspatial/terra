@@ -73,7 +73,7 @@ Setting a new CRS does not change the data itself, it just changes the label. So
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2-17</span>
       </span>
     </div>
 
@@ -123,10 +123,10 @@ Setting a new CRS does not change the data itself, it just changes the label. So
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj4<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj4<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span>
@@ -142,8 +142,8 @@ Setting a new CRS does not change the data itself, it just changes the label. So
       <td><p>SpatRaster or SpatVector</p></td>
     </tr>
     <tr>
-      <th>proj4</th>
-      <td><p>logical. If <code>TRUE</code> the crs is returned in PROJ.4 notation. But note that GDAL now only supports the WGS84 and NAD83 datums with this notation</p></td>
+      <th>proj</th>
+      <td><p>logical. If <code>TRUE</code> the crs is returned in PROJ-string notation</p></td>
     </tr>
     <tr>
       <th>describe</th>
@@ -151,13 +151,14 @@ Setting a new CRS does not change the data itself, it just changes the label. So
     </tr>
     <tr>
       <th>value</th>
-      <td><p>character string describing a coordinate reference system. This can be in a WKT format, as a EPSG code, or a PROJ.4 "+" format (but see Note)</p></td>
+      <td><p>character string describing a coordinate reference system. This can be in a WKT format, as a &lt;authority:number&gt; code such as "EPSG:4326", or a PROJ-string format such as "+proj=utm +zone=12" (see Note)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Because of changes in the PROJ library that is behind the coordinate transformations, when using the PROJ.4 format, the datum should be WGS84 -- if you want to transform your data to a different coordinate reference system)</p>
+    <p>Projections are handled by the PROJ/GDAL libaries. Recent changes in the PROJ library to improve transformations between datums have degraded the library's usability. The PROJ developers suggest to no longer use the proj-string notation to define a CRS, but use the WKT2 or &lt;authority&gt;:&lt;code&gt; notation instead. These alternative systems work for formally described CRSs that are in databases, but they do not cover the infinite number of CRSs that exist. It is not practical to define one's own custom CRS with WKT2. Moreover, unlike the proj-notation, these newer systems are hard to read and that leads to code that cannot be easily understood and, therefore, is more error-prone.</p>
+<p>It is still possible to use the PROJ-string notation with one major caveat: the datum should be WGS84 (or the equivalent NAD83) -- if you want to transform your data to a coordinate reference system with a different datum. Thus as long as you use WGS84, or an ellipsoid instead of a datum, you can safely use PROJ-strings to represent your CRS; including to define your own custom CRS.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>character or modified SpatRaster/Vector</p>
@@ -166,8 +167,7 @@ Setting a new CRS does not change the data itself, it just changes the label. So
     <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='fu'>crs</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "GEOGCRS[\"WGS 84\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n            LENGTHUNIT[\"metre\",1]],\n        ID[\"EPSG\",6326]],\n    PRIMEM[\"Greenwich\",0,\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n        ID[\"EPSG\",8901]],\n    CS[ellipsoidal,2],\n        AXIS[\"longitude\",east,\n            ORDER[1],\n            ANGLEUNIT[\"degree\",0.0174532925199433,\n                ID[\"EPSG\",9122]]],\n        AXIS[\"latitude\",north,\n            ORDER[2],\n            ANGLEUNIT[\"degree\",0.0174532925199433,\n                ID[\"EPSG\",9122]]]]"</div><div class='input'><span class='fu'>crs</span><span class='op'>(</span><span class='va'>r</span>, describe<span class='op'>=</span><span class='cn'>TRUE</span>, proj4<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;     name EPSG area         extent                               proj4
-#&gt; 1 WGS 84 &lt;NA&gt; &lt;NA&gt; NA, NA, NA, NA +proj=longlat +datum=WGS84 +no_defs</div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in .local(x, ...): unused argument (proj4 = TRUE)</span></div><div class='input'>
 <span class='fu'>crs</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"</span>
 <span class='fu'>crs</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "PROJCRS[\"unknown\",\n    BASEGEOGCRS[\"unknown\",\n        DATUM[\"Unknown based on WGS84 ellipsoid\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1],\n                ID[\"EPSG\",7030]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8901]]],\n    CONVERSION[\"unknown\",\n        METHOD[\"Lambert Conic Conformal (2SP)\",\n            ID[\"EPSG\",9802]],\n        PARAMETER[\"Latitude of false origin\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8821]],\n        PARAMETER[\"Longitude of false origin\",-100,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8822]],\n        PARAMETER[\"Latitude of 1st standard parallel\",48,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8823]],\n        PARAMETER[\"Latitude of 2nd standard parallel\",33,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8824]],\n        PARAMETER[\"Easting at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8826]],\n        PARAMETER[\"Northing at false origin\",0,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8827]]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]]]"</div><div class='input'>
