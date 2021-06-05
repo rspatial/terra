@@ -1527,7 +1527,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
 	unsigned n = cells.size();
 	std::vector<std::vector<double>> out(n);
 
-	std::vector<std::string> f {"rook", "queen", "bishop", "16"};
+	std::vector<std::string> f {"rook", "queen", "bishop", "4", "8", "16"};
 	if (std::find(f.begin(), f.end(), directions) == f.end()) {
         setError("argument directions is not valid");
         return(out);
@@ -1540,7 +1540,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
     int_64 nc = ncol();
     int_64 lc = nc-1;
     std::vector<int_64> cols, rows;
-	if (directions == "rook") {
+	if (directions == "rook" || directions == "4") {
 		for (size_t i=0; i<n; i++) {
 			rows = {r[i]-1, r[i]   , r[i]  , r[i]+1};
             cols = {c[i]  , c[i]-1 , c[i]+1, c[i]};
@@ -1558,7 +1558,7 @@ std::vector<std::vector<double>> SpatRaster::adjacent(std::vector<double> cells,
 			out[i] = cellFromRowCol(rows, cols);
 			//std::sort(out[i].begin(), out[i].end());
 		}
-	} else if (directions == "queen") {
+	} else if (directions == "queen" || directions == "8") {
 		for (size_t i=0; i<n; i++) {
             rows = {r[i]-1, r[i]-1, r[i]-1, r[i], r[i], r[i]+1, r[i]+1, r[i]+1};
             cols = {c[i]-1, c[i], c[i]+1, c[i]-1, c[i]+1, c[i]-1, c[i], c[i]+1};
