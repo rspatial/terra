@@ -330,7 +330,7 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 )
 
 
-.summarize <- function(x, ..., fun, na.rm=FALSE) {
+.summarize <- function(x, ..., fun, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 	dots <- list(...)
 	add <- NULL
 	cls <- FALSE
@@ -338,15 +338,21 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 		cls <- sapply(dots, function(i) inherits(i, "SpatRaster"))
 		if (!all(cls)) {
 			dots <- dots[!cls]
+			if (!is.null(names(dots))) {
+				error(fun, "additional arguments cannot be names (except for `filename`, `overwrite` and `wopt`)")
+			}
 			i <- sapply(dots, function(x) class(x) %in% c("logical", "integer", "numeric"))
 			add <- unlist(dots[i], use.names = FALSE)
+			if (any(!i)) {
+				error(fun, "invalid argument(s)")
+			}
 		}
 	}
 	if (any(cls)) {
 		x <- sds(c(list(x), dots[cls]))
 	} 
 
-	opt <- spatOptions()
+	opt <- spatOptions(filename, overwrite, wopt=wopt)
 	r <- rast()
 	if (is.null(add)) {
 		r@ptr <- x@ptr$summary(fun, na.rm, opt)

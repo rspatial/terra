@@ -39,7 +39,8 @@ r <- rast(nrows=10, ncols=10)
 adjacent(r, cells=c(1, 5, 55), directions="queen") 
 r <- rast(nrows=10, ncols=10, crs="+proj=utm +zone=1 +datum=WGS84")
 adjacent(r, cells=11, directions="rook") 
-# global lat/lon wraps around
+
+## note that with global lat/lon data the E and W connect
 r <- rast(nrows=10, ncols=10, crs="+proj=longlat +datum=WGS84")
 adjacent(r, cells=11, directions="rook") 
 
