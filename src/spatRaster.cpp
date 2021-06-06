@@ -1521,6 +1521,60 @@ std::vector<std::vector<int_64>>  SpatRaster::rowColFromExtent(SpatExtent e) {
 }
 
 
+std::vector<double> SpatRaster::adjacentMat(std::vector<double> cells, std::vector<bool> mat, std::vector<unsigned> dim, bool include) {
+	std::vector<double> out;
+	if ((dim.size() != 2) || (dim[0] % 2 == 0) || (dim[1] %2 == 0)) {
+		setError("invalid matrix dimensions (must be odd sized)");
+		return out;
+	}
+	int dy = dim[0] / 2;
+	int dx = dim[1] / 2;
+	
+	unsigned n = cells.size();
+	unsigned nngb = std::accumulate(mat.begin(), mat.end(), 0);
+	out.reserve(n * (nngb + include));
+
+    std::vector<int> offcols(nngb);
+    std::vector<int> offrows(nngb);
+	size_t j = 0;
+	for (int r = -dy; r<dy; r++) {
+		for (int c = -dx; c<dx; c++) {
+			if (mat[j]) {
+				offrows[j] = r;
+				offcols[j] = c;
+				j++;
+			}
+		}
+	}
+
+	std::vector<std::vector<int_64>> rc = rowColFromCell(cells);
+	std::vector<int_64> r = rc[0];
+	std::vector<int_64> c = rc[1];
+	bool globlatlon = is_global_lonlat();
+    int_64 nc = ncol();
+    int_64 lc = nc-1;
+    std::vector<int_64> cols, rows;
+	
+	for (size_t i=0; i<n; i++) {
+		for (int j = 0; j<nngb; j++) {
+			rows[j] = r[i] + offrows[j];
+			cols[j] = c[i] + offcols[j];
+		}
+	
+		if (globlatlon) {
+			for (int j = 0; j<nngb; j++) {
+				if (cols[j] < 0) cols[j] = nc + cols[j];
+				if (cols[j] > lc) cols[j] = cols[j] - nc;
+			}
+		}
+		std::vector<double> adjcells = cellFromRowCol(rows, cols);
+        if (include) {
+			out.push_back(cells[i]);
+        }
+		out.insert(out.end(), adjcells.begin(), adjcells.end());
+	}
+	return out;
+}
 
 std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string directions, bool include) {
 
@@ -1533,7 +1587,8 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
 	}
 	unsigned n = cells.size();
 
-	unsigned nngb = (directions=="queen" || directions=="8") ? 9 : (directions=="16" ? 17 : 5);
+	unsigned nngb = (directions=="queen" || directions=="8") ? 8 : (directions=="16" ? 16 : 4);
+	nngb += include;
 	out.reserve(n * nngb);
 
 	std::vector<std::vector<int_64>> rc = rowColFromCell(cells);
@@ -1555,11 +1610,10 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
                 }
             }
             if (include) {
-                rows.push_back(r[i]);
-                cols.push_back(c[i]);
+				out.push_back(cells[i]);
             }
-			std::vector<double> cells = cellFromRowCol(rows, cols);
-			out.insert(out.end(), cells.begin(), cells.end());
+			std::vector<double> adjcells = cellFromRowCol(rows, cols);
+			out.insert(out.end(), adjcells.begin(), adjcells.end());
 		}
 	} else if (directions == "queen" || directions == "8") {
 		for (size_t i=0; i<n; i++) {
@@ -1573,11 +1627,10 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
                 }
             }
             if (include) {
-                rows.push_back(r[i]);
-                cols.push_back(c[i]);
+				out.push_back(cells[i]);
             }
-			std::vector<double> cells = cellFromRowCol(rows, cols);
-			out.insert(out.end(), cells.begin(), cells.end());
+			std::vector<double> adjcells = cellFromRowCol(rows, cols);
+			out.insert(out.end(), adjcells.begin(), adjcells.end());
 		}
 	} else if (directions == "bishop") {
 		for (size_t i=0; i<n; i++) {
@@ -1591,11 +1644,10 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
                 }
             }
             if (include) {
-                rows.push_back(r[i]);
-                cols.push_back(c[i]);
+				out.push_back(cells[i]);
             }
-			std::vector<double> cells = cellFromRowCol(rows, cols);
-			out.insert(out.end(), cells.begin(), cells.end());
+			std::vector<double> adjcells = cellFromRowCol(rows, cols);
+			out.insert(out.end(), adjcells.begin(), adjcells.end());
 		}
 	} else if (directions == "16") {
 		for (size_t i=0; i<n; i++) {
@@ -1613,11 +1665,10 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
                 }
             }
             if (include) {
-                rows.push_back(r[i]);
-                cols.push_back(c[i]);
+				out.push_back(cells[i]);
             }
-			std::vector<double> cells = cellFromRowCol(rows, cols);
-			out.insert(out.end(), cells.begin(), cells.end());
+			std::vector<double> adjcells = cellFromRowCol(rows, cols);
+			out.insert(out.end(), adjcells.begin(), adjcells.end());
 		}
 	}
 	return(out);

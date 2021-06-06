@@ -498,6 +498,7 @@ class SpatRaster {
 		SpatRaster rectify(std::string method, SpatRaster aoi, unsigned useaoi, bool snap, SpatOptions &opt);
 		
         std::vector<double> adjacent(std::vector<double> cells, std::string directions, bool include);
+        std::vector<double> adjacentMat(std::vector<double> cells, std::vector<bool> mat, std::vector<unsigned> dim, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
 		SpatRaster rst_area(bool mask, std::string unit, bool transform, SpatOptions &opt);
