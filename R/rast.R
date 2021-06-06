@@ -67,10 +67,10 @@ setMethod("rast", signature(x="list"),
 			}
 		}
 		out <- rast(x[[1]])
-		for (i in 1:length(x)) {
+		for (i in 2:length(x)) {
 			out@ptr$addSource(x[[i]]@ptr)
 		}
-		out
+		messages(out)
 	}
 )
 
