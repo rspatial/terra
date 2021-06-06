@@ -60,13 +60,14 @@ setMethod("adjacent", signature(x="SpatRaster"),
 		v <- x@ptr$adjacent(cells-1, directions=directions, include=include)
 		messages(x, "adjacent")
 		if (pairs) {
-			v <- do.call(cbind, v)
-			v <- cbind(from=rep(cells, each=nrow(v)), to=as.vector(v))
-			v <- v[!is.na(v[,2]), ]
+			#v <- do.call(cbind, v)
+			#v <- cbind(from=rep(cells, each=nrow(v)), to=as.vector(v))
+			v <- cbind(from=rep(cells, each=length(v)/length(cells)), to=v)
 			v[,2] <- v[,2] + 1
-			v
+			v[!is.na(v[,2]), ]
 		} else {
-			v <- do.call(rbind, v)
+			v <- matrix(v, nrow=length(cells), byrow=TRUE)
+			#v <- do.call(rbind, v)
 			rownames(v) <- cells
 			v + 1
 		}
