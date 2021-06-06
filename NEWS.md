@@ -1,5 +1,5 @@
 
-# version 1.2-15
+# version 1.2-18
 
 ## new
 
@@ -11,7 +11,6 @@
 - summarize methods such as `range` and `mean` for (the attributes of) a `SpatVector`
 - new method `shade`, to compute hill shading
 
-
 ## enhancements
 
 - additional arguments (such as `na.rm`) are now used by `rasterize` with point geometries. Suggested by Jakub Nowosad  [#209](https://github.com/rspatial/terra/issues/209)
@@ -19,14 +18,20 @@
 - new argument `cpkgs` to `predict` to list the packages that need to be exported to the cores if argument `cores` is larger than one. `?predict` now shows different approaches to parallelize `predict` (based on examples in issue [#178](
 https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill.
 - `freq` now returns labels for categorical layers
-
+- `adjacent` now has a `pairs` argument. Requested by Kenneth Blake Vernon in issue [#239](https://github.com/rspatial/terra/issues/239) 
+- `adjacent` now also takes a matrix to specify adjacent cells
+- `mean` and other summarize methods now take a `filename` argument and disallow non-recognized named arguments. See issue [#238](https://github.com/rspatial/terra/issues/238) by Jessica Nephin
+- The raster attribute table of ESRI-GRID integer data is now ignored if it only has the counts of the values. See issue [#234]( https://github.com/rspatial/terra/issues/234) by Jullee
 
 ## bug fixes 
 
+- better handling of paths with "special" characters (e.g. Chinese) for e.g. GeoTiff but still fails for NetCDF (see issue [#233](https://github.com/rspatial/terra/issues/223) by Dongdong Kong)
 - `extract` with points and `cells=TRUE` or `xy=TRUE` gave garbled output
 - `as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
 - `focal` mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani
 - `terra::terraOptions` now works without attaching the package (issue [#229](https://github.com/rspatial/terra/issues/229) reported by Karl Dunkle Werner)
+- `app` with `ncores > 0` and a function that returns multiple layers now works (issue [#240] (https://github.com/rspatial/terra/issues/240) reported by BastienFR.
+
 
 
 # version 1.2-10
