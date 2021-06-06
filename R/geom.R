@@ -236,26 +236,6 @@ setMethod("disaggregate", signature(x="SpatVector"),
 
 
 
-setMethod("voronoi", signature(x="SpatVector"), 
-	function(x, bnd=NULL, tolerance=0, as.lines=FALSE) {
-		if (is.null(bnd)) {
-			bnd <- vect()
-		} else {
-			bnd <- as.polygons(ext(bnd))
-		}
-		x@ptr <- x@ptr$voronoi(bnd@ptr, tolerance, as.lines)
-		messages(x, "voronoi")
-	}
-)
-
-
-setMethod("delauny", signature(x="SpatVector"), 
-	function(x, tolerance=0, as.lines=FALSE) {
-		x@ptr <- x@ptr$delauny(tolerance, as.lines)
-		messages(x, "delauny")
-	}
-)
-
 
 setMethod("flip", signature(x="SpatVector"), 
 	function(x, direction="vertical") {
@@ -282,3 +262,67 @@ setMethod("spin", signature(x="SpatVector"),
 		messages(x, "spin")
 	}
 )
+
+
+setMethod("delauny", signature(x="SpatVector"), 
+	function(x, tolerance=0, as.lines=FALSE) {
+		x@ptr <- x@ptr$delauny(tolerance, as.lines)
+		messages(x, "delauny")
+	}
+)
+
+
+
+voronoi_deldir <- function(x, bnd=NULL, eps=1e-09, ...){
+
+	xy <- crds(x)
+	dat <- values(x)
+	if (nrow(dat > 0)) {
+		dups <- duplicated(xy)
+		if (any(dups)) {
+			xy <- xy[!dups, ,drop=FALSE]
+			dat <- dat[!dups, ,drop=FALSE]
+		}
+	} else {
+		xy <- stats::na.omit(xy[, 1:2])
+		xy <- unique(xy)
+	}
+	
+	e <- bnd
+	if (!is.null(e)) {
+		e <- as.vector(ext(bnd))
+	}
+	
+	dd <- deldir::deldir(xy[,1], xy[,2], rw=e, eps=eps, suppressMsge=TRUE)
+	g <- lapply(deldir::tile.list(dd), function(i) cbind(i$ptNum, 1, i$x, i$y))
+	g <- do.call(rbind, g)
+	g <- vect(g, "polygons", crs=crs(x))
+	if (nrow(g) == nrow(dat)) {
+		values(g) <- dat 
+	} else {
+		values(g) <- data.frame(id=dd$ind.orig)
+	}
+	g
+}
+
+
+
+setMethod("voronoi", signature(x="SpatVector"), 
+	function(x, bnd=NULL, tolerance=1e-09, as.lines=FALSE, deldir=FALSE) {
+		if (geomtype(x) != "points") {
+			x <- as.points(x)
+		}
+		if (deldir) {
+			voronoi_deldir(x, bnd, tolerance=tolerance)
+		} else {
+			if (is.null(bnd)) {
+				bnd <- vect()
+			} else {
+				bnd <- as.polygons(ext(bnd))
+			}
+			x@ptr <- x@ptr$voronoi(bnd@ptr, tolerance, as.lines)
+			messages(x, "voronoi")
+		}
+	}
+)
+
