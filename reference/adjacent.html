@@ -174,22 +174,22 @@
     <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
 <span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>r</span>, cells<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>5</span>, <span class='fl'>55</span><span class='op'>)</span>, directions<span class='op'>=</span><span class='st'>"queen"</span><span class='op'>)</span> 
 </div><div class='output co'>#&gt;    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
-#&gt; 1   NaN  NaN  NaN   10    2   20   11   12
-#&gt; 5   NaN  NaN  NaN    4    6   14   15   16
-#&gt; 55   44   45   46   54   56   64   65   66</div><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span>, crs<span class='op'>=</span><span class='st'>"+proj=utm +zone=1 +datum=WGS84"</span><span class='op'>)</span>
+#&gt; 0   NaN  NaN  NaN   10    2   20   11   12
+#&gt; 4   NaN  NaN  NaN    4    6   14   15   16
+#&gt; 54   44   45   46   54   56   64   65   66</div><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span>, crs<span class='op'>=</span><span class='st'>"+proj=utm +zone=1 +datum=WGS84"</span><span class='op'>)</span>
 <span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>r</span>, cells<span class='op'>=</span><span class='fl'>11</span>, directions<span class='op'>=</span><span class='st'>"rook"</span><span class='op'>)</span> 
 </div><div class='output co'>#&gt;    [,1] [,2] [,3] [,4]
-#&gt; 11    1  NaN   12   21</div><div class='input'>
+#&gt; 10    1  NaN   12   21</div><div class='input'>
 <span class='co'>#same as </span>
 <span class='va'>rk</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>
 <span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>r</span>, cells<span class='op'>=</span><span class='fl'>11</span>, directions<span class='op'>=</span><span class='va'>rk</span><span class='op'>)</span> 
 </div><div class='output co'>#&gt;    [,1] [,2] [,3] [,4]
-#&gt; 11    1  NaN   12   21</div><div class='input'>
+#&gt; 10    1  NaN   12   21</div><div class='input'>
 <span class='co'>## note that with global lat/lon data the E and W connect</span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span>, crs<span class='op'>=</span><span class='st'>"+proj=longlat +datum=WGS84"</span><span class='op'>)</span>
 <span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>r</span>, cells<span class='op'>=</span><span class='fl'>11</span>, directions<span class='op'>=</span><span class='st'>"rook"</span><span class='op'>)</span> 
 </div><div class='output co'>#&gt;    [,1] [,2] [,3] [,4]
-#&gt; 11    1   20   12   21</div><div class='input'>
+#&gt; 10    1   20   12   21</div><div class='input'>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>v</span>, symmetrical<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
