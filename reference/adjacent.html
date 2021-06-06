@@ -143,15 +143,59 @@
     </tr>
     <tr>
       <th>pairs</th>
-      <td><p>logical. If <code>TRUE</code>, a two-column matrix of pairs of adjacent cells is returned. If <code>FALSE</code>, an <code>n*m</code> matrix is returned where the number of rows <code>n</code> is <code><a href='dimensions.html'>length(cells)</a></code> and the number of coumns <code>m</code> is the number of neighbors requested with <code>directions</code>
-  includelogical. Should the focal cells be included in the result? 
-  typecharacter. One of "rook", "queen", "touches", or "intersects". "queen" and "touches" are synonyms. "rook" exclude polygons that touch at a single node only. "intersects" includes polygons that touch or overlap
-  pairslogical. If <code>TRUE</code> a "from", "to" matrix is returned   
-  symmetricallogical. If <code>TRUE</code>, an adjacent pair is only included once. For example, if polygon 1 is adjacent to polygon 3, the implied adjacency between 3 and 1 is not reported</p></td>
+      <td><p>logical. If <code>TRUE</code>, a two-column matrix of pairs of adjacent cells is returned. If <code>FALSE</code>, an <code>n*m</code> matrix is returned where the number of rows <code>n</code> is <code><a href='dimensions.html'>length(cells)</a></code> and the number of coumns <code>m</code> is the number of neighbors requested with <code>directions</code></p></td>
+    </tr>
+    <tr>
+      <th>include</th>
+      <td><p>logical. Should the focal cells be included in the result?</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>character. One of "rook", "queen", "touches", or "intersects". "queen" and "touches" are synonyms. "rook" exclude polygons that touch at a single node only. "intersects" includes polygons that touch or overlap</p></td>
+    </tr>
+    <tr>
+      <th>pairs</th>
+      <td><p>logical. If <code>TRUE</code> a "from", "to" matrix is returned</p></td>
+    </tr>
+    <tr>
+      <th>symmetrical</th>
+      <td><p>logical. If <code>TRUE</code>, an adjacent pair is only included once. For example, if polygon 1 is adjacent to polygon 3, the implied adjacency between 3 and 1 is not reported</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p><code><a href='relate.html'>relate</a></code>, <code><a href='nearest.html'>nearby</a></code></p></div>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>matrix</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
+<span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>r</span>, cells<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>5</span>, <span class='fl'>55</span><span class='op'>)</span>, directions<span class='op'>=</span><span class='st'>"queen"</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt;    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
+#&gt; 1   NaN  NaN  NaN   10    2   20   11   12
+#&gt; 5   NaN  NaN  NaN    4    6   14   15   16
+#&gt; 55   44   45   46   54   56   64   65   66</div><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span>, crs<span class='op'>=</span><span class='st'>"+proj=utm +zone=1 +datum=WGS84"</span><span class='op'>)</span>
+<span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>r</span>, cells<span class='op'>=</span><span class='fl'>11</span>, directions<span class='op'>=</span><span class='st'>"rook"</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt;    [,1] [,2] [,3] [,4]
+#&gt; 11    1  NaN   12   21</div><div class='input'>
+<span class='co'>## note that with global lat/lon data the E and W connect</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span>, crs<span class='op'>=</span><span class='st'>"+proj=longlat +datum=WGS84"</span><span class='op'>)</span>
+<span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>r</span>, cells<span class='op'>=</span><span class='fl'>11</span>, directions<span class='op'>=</span><span class='st'>"rook"</span><span class='op'>)</span> 
+</div><div class='output co'>#&gt;    [,1] [,2] [,3] [,4]
+#&gt; 11    1   20   12   21</div><div class='input'>
+<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
+<span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'>adjacent</span><span class='op'>(</span><span class='va'>v</span>, symmetrical<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;      from to
+#&gt; [1,]    1  2
+#&gt; [2,]    1  4
+#&gt; [3,]    1  5
+#&gt; [4,]    2  3
+#&gt; [5,]    2  4
+#&gt; [6,]    2  5</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
