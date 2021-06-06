@@ -36,7 +36,7 @@ SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<st
 
 
 SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<size_t> xyz) {
-// argument "x" is ignored. It is only there to have four arguments such that the Rcpp module
+// argument "x" is ignored. It is only there to have four arguments such that the 	 module
 // can distinguish this constructor from another with three arguments. 
 #ifdef useGDAL
 	if (multi) {
@@ -1527,33 +1527,43 @@ std::vector<double> SpatRaster::adjacentMat(std::vector<double> cells, std::vect
 		setError("invalid matrix dimensions (must be odd sized)");
 		return out;
 	}
+	if ((dim[0] == 1) && (dim[1] == 1)) {
+		setError("invalid matrix dimensions (too small)");
+		return out;
+	}
+	
 	int dy = dim[0] / 2;
 	int dx = dim[1] / 2;
 	
 	unsigned n = cells.size();
-	unsigned nngb = std::accumulate(mat.begin(), mat.end(), 0);
+	int nngb = std::accumulate(mat.begin(), mat.end(), 0);
 	out.reserve(n * (nngb + include));
 
     std::vector<int> offcols(nngb);
     std::vector<int> offrows(nngb);
+
+	size_t i = 0;
 	size_t j = 0;
-	for (int r = -dy; r<dy; r++) {
-		for (int c = -dx; c<dx; c++) {
-			if (mat[j]) {
+	for (int r = -dy; r<=dy; r++) {
+		for (int c = -dx; c<=dx; c++) {
+			if (mat[i]) {
 				offrows[j] = r;
 				offcols[j] = c;
 				j++;
 			}
+			i++;
 		}
 	}
+
+	bool globlatlon = is_global_lonlat();
 
 	std::vector<std::vector<int_64>> rc = rowColFromCell(cells);
 	std::vector<int_64> r = rc[0];
 	std::vector<int_64> c = rc[1];
-	bool globlatlon = is_global_lonlat();
+    std::vector<int_64> cols(nngb);
+    std::vector<int_64> rows(nngb);
     int_64 nc = ncol();
     int_64 lc = nc-1;
-    std::vector<int_64> cols, rows;
 	
 	for (size_t i=0; i<n; i++) {
 		for (int j = 0; j<nngb; j++) {

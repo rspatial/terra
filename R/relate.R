@@ -56,15 +56,18 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 
 setMethod("adjacent", signature(x="SpatRaster"), 
 	function(x, cells, directions="rook", pairs=FALSE, include=FALSE) {
-		directions <- as.character(directions)[1]
-		if (pairs) include <- TRUE
-		v <- x@ptr$adjacent(cells-1, directions=directions, include=include)
+		if (inherits(directions, "matrix")) {
+			v <- x@ptr$adjacentMat(cells-1, as.logical(directions), dim(directions), include)
+		} else {
+			if (pairs) include <- FALSE
+			v <- x@ptr$adjacent(cells-1,  as.character(directions)[1], include)
+		}
 		messages(x, "adjacent")
-		v <- matrix(v, nrow=length(cells), byrow=TRUE)
 		if (pairs) {
-			v <- cbind(from=rep(v[,1], each=ncol(v)-1), to=as.vector(t(v[,-1])))
+			v <- cbind(from=rep(cells, each=length(v)/length(cells)), to=v)
 			v <- v[!is.na(v[,2]), ]
 		} else {
+			v <- matrix(v, nrow=length(cells), byrow=TRUE)
 			if (!include) rownames(v) <- cells
 		}
 		v + 1
