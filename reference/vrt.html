@@ -151,10 +151,10 @@
 <span class='va'>filename</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"_.tif"</span><span class='op'>)</span>
 <span class='va'>ff</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeTiles.html'>makeTiles</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>x</span>, <span class='va'>filename</span><span class='op'>)</span>
 <span class='va'>ff</span>
-</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpHVbOd5/file20b81251741_1.tif"
-#&gt; [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpHVbOd5/file20b81251741_2.tif"
-#&gt; [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpHVbOd5/file20b81251741_3.tif"
-#&gt; [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpHVbOd5/file20b81251741_4.tif"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmpm0rz1e/file20d067fb0e33_1.tif"
+#&gt; [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmpm0rz1e/file20d067fb0e33_2.tif"
+#&gt; [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmpm0rz1e/file20d067fb0e33_3.tif"
+#&gt; [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmpm0rz1e/file20d067fb0e33_4.tif"</div><div class='input'>
 <span class='va'>vrtfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>".vrt"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vrt</span><span class='op'>(</span><span class='va'>ff</span>, <span class='va'>vrtfile</span><span class='op'>)</span>
 <span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='va'>vrtfile</span><span class='op'>)</span><span class='op'>)</span>
@@ -169,8 +169,8 @@
 #&gt; resolution  : 3.6, 1.8  (x, y)
 #&gt; extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt; source      : file20b82a19acfd.vrt 
-#&gt; name        : file20b82a19acfd 
+#&gt; source      : file20d013616b9a.vrt 
+#&gt; name        : file20d013616b9a 
 #&gt; min value   :                1 
 #&gt; max value   :            10000 </div></pre>
   </div>
