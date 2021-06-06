@@ -114,9 +114,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-12-15" class="section level1">
-<h1 class="page-header" data-toc-text="1.2-15">
-<a href="#version-12-15" class="anchor"></a>version 1.2-15<small> Unreleased </small>
+    <div id="version-12-18" class="section level1">
+<h1 class="page-header" data-toc-text="1.2-18">
+<a href="#version-12-18" class="anchor"></a>version 1.2-18<small> Unreleased </small>
 </h1>
 <div id="new" class="section level2">
 <h2 class="hasAnchor">
@@ -147,12 +147,21 @@
 <li>new argument <code>cpkgs</code> to <code>predict</code> to list the packages that need to be exported to the cores if argument <code>cores</code> is larger than one. <code><a href="../reference/predict.html">?predict</a></code> now shows different approaches to parallelize <code>predict</code> (based on examples in issue <a href="https://github.com/rspatial/terra/issues/178"><a href='https://github.com/rspatial/terra/issues/178'>#178</a></a> raised by by Matthew Coghill.</li>
 <li>
 <code>freq</code> now returns labels for categorical layers</li>
+<li>
+<code>adjacent</code> now has a <code>pairs</code> argument. Requested by Kenneth Blake Vernon in issue <a href="https://github.com/rspatial/terra/issues/239"><a href='https://github.com/rspatial/terra/issues/239'>#239</a></a>
+</li>
+<li>
+<code>adjacent</code> now also takes a matrix to specify adjacent cells</li>
+<li>
+<code>mean</code> and other summarize methods now take a <code>filename</code> argument and disallow non-recognized named arguments. See issue <a href="https://github.com/rspatial/terra/issues/238"><a href='https://github.com/rspatial/terra/issues/238'>#238</a></a> by Jessica Nephin</li>
+<li>The raster attribute table of ESRI-GRID integer data is now ignored if it only has the counts of the values. See issue <a href="https://github.com/rspatial/terra/issues/234"><a href='https://github.com/rspatial/terra/issues/234'>#234</a></a> by Jullee</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
 <ul>
+<li>better handling of paths with “special” characters (e.g. Chinese) for e.g. GeoTiff but still fails for NetCDF (see issue <a href="https://github.com/rspatial/terra/issues/223"><a href='https://github.com/rspatial/terra/issues/233'>#233</a></a> by Dongdong Kong)</li>
 <li>
 <code>extract</code> with points and <code>cells=TRUE</code> or <code>xy=TRUE</code> gave garbled output</li>
 <li>
@@ -162,6 +171,8 @@
 <code>focal</code> mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani</li>
 <li>
 <code><a href="../reference/options.html">terra::terraOptions</a></code> now works without attaching the package (issue <a href="https://github.com/rspatial/terra/issues/229"><a href='https://github.com/rspatial/terra/issues/229'>#229</a></a> reported by Karl Dunkle Werner)</li>
+<li>
+<code>app</code> with <code>ncores &gt; 0</code> and a function that returns multiple layers now works (issue [<a href='https://github.com/rspatial/terra/issues/240'>#240</a>] (<a href="https://github.com/rspatial/terra/issues/240" class="uri">https://github.com/rspatial/terra/issues/240</a>) reported by BastienFR.</li>
 </ul>
 </div>
 </div>
