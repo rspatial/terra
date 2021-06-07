@@ -43,7 +43,7 @@ function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x
 	readStart(x)
 	on.exit(readStop(x))
 	v <- readValues(x, row, nrows, col, ncols, mat=mat, dataframe=dataframe)
-	messages(x)
+	messages(x, "values")
 	return(v)
 }
 )
@@ -65,7 +65,7 @@ setMethod("focalValues", signature("SpatRaster"),
 		readStart(x)
 		on.exit(readStop(x))
 		m <- matrix(x@ptr$focalValues(w, fill, row-1, nrows), ncol=prod(w), byrow=TRUE)
-		messages(x)
+		messages(x, "focalValues")
 		m
 	}
 )
@@ -123,7 +123,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			}
 			y@ptr$setValues(values, opt)
 		}
-		y <- messages(y)
+		y <- messages(y, "setValues")
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
 				setCats(y, i, levs, 2)
@@ -182,7 +182,7 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 		} else if (any(!.hasMinMax(x))) {
 			x@ptr$setRange()
 		}
-		x <- messages(x)
+		x <- messages(x, "setMinMax")
 	}
 )
 

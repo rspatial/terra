@@ -2,18 +2,18 @@
 
 simplify <- function(x, tolerance=0, preserveTopology=TRUE) {
 	x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
-	messages(x)	
+	messages(x, "simplify")	
 }
 
 
 make_nodes <- function(x) {
 	x@ptr <- x@ptr$make_nodes()
-	messages(x)
+	messages(x, "make_nodes")
 }
 
 line_merge <- function(x) {
 	x@ptr <- x@ptr$line_merge()
-	messages(x)
+	messages(x, "line_merge")
 }
 
 clean_further <- function(x) {
@@ -59,7 +59,7 @@ mergebyborder <- function(x, field) {
 
 snap <- function(x, tolerance) {
 	x@ptr <- x@ptr$snap(tolerance)
-	messages(x)
+	messages(x, "snap")
 }
 
 

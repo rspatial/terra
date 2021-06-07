@@ -8,7 +8,7 @@ setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"),
 	function(x, w, na.rm=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$wmean_vect(w, na.rm, opt)
-		messages(x)
+		messages(x, "weighted.mean")
 	}
 )
 
@@ -17,7 +17,7 @@ setMethod("weighted.mean", signature(x="SpatRaster", w="SpatRaster"),
 	function(x, w, na.rm=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x@ptr <-x@ptr$wmean_rast(w@ptr, na.rm, opt)
-		messages(x)
+		messages(x, "weighted.mean")
 	}
 )
 

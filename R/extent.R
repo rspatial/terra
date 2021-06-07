@@ -66,7 +66,7 @@ setMethod("ext", signature(x="SpatRasterDataset"),
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"), 
 	function(x, value) {
 		x@ptr$extent <- value@ptr
-		messages(x)
+		messages(x, "ext")
 	}
 )
 
@@ -79,7 +79,7 @@ setMethod("ext<-", signature("SpatRaster", "numeric"),
 			error("ext<-", "not a valid extent specification")
 		}
 		x@ptr$extent <- e@ptr
-		messages(x)
+		messages(x, "ext")
 	}
 )
 

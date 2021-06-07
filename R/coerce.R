@@ -44,11 +44,11 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 		p <- methods::new("SpatVector")
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent()
-			x <- messages(x)
+			x <- messages(x, "as.polygons")
 		} else {
 			opt <- spatOptions()
 			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], na.rm[1], opt)
-			x <- messages(x)
+			x <- messages(x, "as.polygons")
 			if (values) {
 				ff <- is.factor(x)
 				if (any(ff)) {

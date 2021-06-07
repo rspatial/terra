@@ -70,7 +70,7 @@ setMethod("rast", signature(x="list"),
 		for (i in 2:length(x)) {
 			out@ptr$addSource(x[[i]]@ptr)
 		}
-		messages(out)
+		messages(out, "rast")
 	}
 )
 
@@ -144,7 +144,7 @@ setMethod("rast", signature(x="character"),
 		} else {
 			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, 0[])
 		}
-		r <- messages(r)
+		r <- messages(r, "rast")
 		if (r@ptr$getMessage() == "ncdf extent") {
 			test <- try(r <- .ncdf_extent(r), silent=TRUE)
 			if (inherits(test, "try-error")) {

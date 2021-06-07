@@ -5,7 +5,7 @@
 
 readAll <- function(x) {
 	ok <- x@ptr$readAll()
-	x <- messages(x)
+	x <- messages(x, "readAll")
 	invisible(ok)
 }
 
