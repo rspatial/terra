@@ -143,7 +143,7 @@
     </tr>
     <tr>
       <th>pairs</th>
-      <td><p>logical. If <code>TRUE</code>, a two-column matrix of pairs of adjacent cells is returned. If <code>FALSE</code>, an <code>n*m</code> matrix is returned where the number of rows <code>n</code> is <code><a href='dimensions.html'>length(cells)</a></code> and the number of coumns <code>m</code> is the number of neighbors requested with <code>directions</code></p></td>
+      <td><p>logical. If <code>TRUE</code>, a two-column matrix of pairs of adjacent cells is returned. If <code>x</code> is a <code>SpatRaster</code> and <code>pairs</code> is <code>FALSE</code>, an <code>n*m</code> matrix is returned where the number of rows <code>n</code> is <code><a href='dimensions.html'>length(cells)</a></code> and the number of columns <code>m</code> is the number of neighbors requested with <code>directions</code></p></td>
     </tr>
     <tr>
       <th>include</th>
@@ -152,10 +152,6 @@
     <tr>
       <th>type</th>
       <td><p>character. One of "rook", "queen", "touches", or "intersects". "queen" and "touches" are synonyms. "rook" exclude polygons that touch at a single node only. "intersects" includes polygons that touch or overlap</p></td>
-    </tr>
-    <tr>
-      <th>pairs</th>
-      <td><p>logical. If <code>TRUE</code> a "from", "to" matrix is returned</p></td>
     </tr>
     <tr>
       <th>symmetrical</th>

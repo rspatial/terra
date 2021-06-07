@@ -121,7 +121,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>voronoi</span><span class='op'>(</span><span class='va'>x</span>, bnd<span class='op'>=</span><span class='cn'>NULL</span>, tolerance<span class='op'>=</span><span class='fl'>0</span>, as.lines<span class='op'>=</span><span class='cn'>FALSE</span>, deldir<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span> 
+<span class='fu'>voronoi</span><span class='op'>(</span><span class='va'>x</span>, bnd<span class='op'>=</span><span class='cn'>NULL</span>, tolerance<span class='op'>=</span><span class='fl'>1e-09</span>, as.lines<span class='op'>=</span><span class='cn'>FALSE</span>, deldir<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span> 
 
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>delauny</span><span class='op'>(</span><span class='va'>x</span>, tolerance<span class='op'>=</span><span class='fl'>0</span>, as.lines<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -147,7 +147,7 @@
     </tr>
     <tr>
       <th>deldir</th>
-      <td><p>logical. If <code>TRUE</code>, the <code><a href='https://rdrr.io/pkg/deldir/man/deldir.html'>deldir::deldir</a></code> is used instead of the GEOS C++ library method. It has been reported that <code>deldir</code> does not choke on very large data sets</p></td>
+      <td><p>logical. If <code>TRUE</code>, the <code><a href='https://rdrr.io/pkg/deldir/man/deldir.html'>deldir</a></code> is used instead of the GEOS C++ library method. It has been reported that <code>deldir</code> does not choke on very large data sets</p></td>
     </tr>
     </table>
 
