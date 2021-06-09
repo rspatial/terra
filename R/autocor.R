@@ -180,7 +180,7 @@ setMethod("autocor", signature(x="SpatRaster"),
 				W  <- focal(zz, w=w, na.rm=TRUE)		
 				lz <- focal(z, w=w, na.rm=TRUE) / W
 					
-				n <- ncell(x) - unlist(global(is.na(x), "sum", na.rm=TRUE))
+				n <- ncell(x) - unlist(global(is.na(x), "sum"))
 				s2 <- unlist(global(x, "sd", na.rm=TRUE)^2)
 				m <- (z / s2) * lz	
 				names(m) <- names(x)
@@ -190,7 +190,7 @@ setMethod("autocor", signature(x="SpatRaster"),
 				i <- trunc(length(w)/2)+1 
 				fun <- function(x,...) sum((x-x[i])^2, ...)
 				Eij <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
-				s2 <- unlist(global(x, "sd"))^2 
+				s2 <- unlist(global(x, "sd", na.rm=TRUE))^2 
 				n <- ncell(x) - unlist(global(is.na(x), "sum"))	
 				g <- Eij / s2
 				names(g) <- names(x)
