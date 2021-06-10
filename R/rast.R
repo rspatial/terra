@@ -196,8 +196,8 @@ multi <- function(x, subds=0, xyz=c(1,2,3)) {
 
 
 setMethod("rast", signature(x="SpatRaster"),
-	function(x, nlyrs=nlyr(x)) {
-		x@ptr <- x@ptr$geometry(nlyrs, FALSE)
+	function(x, nlyrs=nlyr(x), props=FALSE, time=FALSE) {
+		x@ptr <- x@ptr$geometry(nlyrs, props, time)
 		messages(x, "rast")
 	}
 )

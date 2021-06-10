@@ -316,7 +316,7 @@ class SpatRaster {
 		//SpatRaster(const SpatRaster& x);
 
         SpatRaster deepCopy();
-        SpatRaster geometry(long nlyrs=-1, bool properties=false);
+        SpatRaster geometry(long nlyrs=-1, bool properties=false, bool time=true);
 
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname);
 		bool constructFromFileMulti(std::string fname, std::string subdsname, std::vector<size_t> xyz);

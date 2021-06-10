@@ -209,7 +209,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
+SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time) {
 	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
@@ -227,17 +227,14 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties) {
 		s.cols = getColors();
 		s.hasCategories = hasCategories();
 		s.cats = getCategories();
-		if (hasTime()) {
-			s.hasTime = true;
-			s.timestep = getTimeStep();
-			s.time = getTime();
-		}
 	}
 	s.resize(nlyrs);
 	std::vector<std::string> nms;
 	if (keepnlyr) {
 		nms = getNames();
-		if (hasTime()) {
+		if (time && hasTime()) {
+			s.hasTime = true;
+			s.timestep = getTimeStep();
 			s.time = getTime();
 		}
 	} else {
