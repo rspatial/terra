@@ -155,6 +155,8 @@
 <li>
 <code>mean</code> and other summarize methods now take a <code>filename</code> argument and disallow non-recognized named arguments. See issue <a href="https://github.com/rspatial/terra/issues/238"><a href='https://github.com/rspatial/terra/issues/238'>#238</a></a> by Jessica Nephin</li>
 <li>The raster attribute table of ESRI-GRID integer data is now ignored if it only has the counts of the values. See issue <a href="https://github.com/rspatial/terra/issues/234"><a href='https://github.com/rspatial/terra/issues/234'>#234</a></a> by Jullee</li>
+<li>time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in <a href="https://github.com/rspatial/terra/issues/246"><a href='https://github.com/rspatial/terra/issues/246'>#246</a></a>
+</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -173,6 +175,8 @@
 <code><a href="../reference/options.html">terra::terraOptions</a></code> now works without attaching the package (issue <a href="https://github.com/rspatial/terra/issues/229"><a href='https://github.com/rspatial/terra/issues/229'>#229</a></a> reported by Karl Dunkle Werner)</li>
 <li>
 <code>app</code> with <code>ncores &gt; 0</code> and a function that returns multiple layers now works (issue <a href="https://github.com/rspatial/terra/issues/240"><a href='https://github.com/rspatial/terra/issues/240'>#240</a></a> reported by BastienFR.</li>
+<li>
+<code>autocor</code> (local) can now handle <code>NA</code>s. Reported by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/245"><a href='https://github.com/rspatial/terra/issues/245'>#245</a></a>.</li>
 </ul>
 </div>
 </div>
