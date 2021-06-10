@@ -66,7 +66,7 @@ setMethod("rast", signature(x="list"),
 				x <- x[i]
 			}
 		}
-		out <- rast(x[[1]])
+		out <- x[[1]]
 		for (i in 2:length(x)) {
 			out@ptr$addSource(x[[i]]@ptr)
 		}
