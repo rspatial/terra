@@ -9,7 +9,7 @@
 \title{time of SpatRaster layers}
 
 \description{
-Get or set the time of the layers of a SpatRaster. Experimental. Currently only Date's allowed.
+Get or set the time of the layers of a SpatRaster. 
 }
 
 \usage{

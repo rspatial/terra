@@ -32,7 +32,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
           ymin=-90, ymax=90, crs, extent, resolution, vals, names)
 
-\S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x)) 
+\S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), props=FALSE, time=FALSE) 
 
 \S4method{rast}{matrix}(x, type="", crs="", digits=6)
 
@@ -56,6 +56,8 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{ymin}{minimum y coordinate (bottom border)}
 \item{ymax}{maximum y coordinate (top border)}
 \item{crs}{character. PROJ.4 type description of a Coordinate Reference System (map projection). If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, "+proj=longlat +datum=WGS84" is used}
+\item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
+\item{time}{logical. If \code{TRUE} the time stamps are kept}
 \item{extent}{object of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored}
 \item{resolution}{numeric vector of length 1 or 2 to set the resolution (see \code{\link{res}}). If this argument is used, arguments \code{ncol} and \code{nrow} are ignored }
 \item{vals}{numeric. An optional vector with cell values (if fewer values are provided, these are recycled to reach the number of cells)}

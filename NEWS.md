@@ -22,6 +22,8 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - `adjacent` now also takes a matrix to specify adjacent cells
 - `mean` and other summarize methods now take a `filename` argument and disallow non-recognized named arguments. See issue [#238](https://github.com/rspatial/terra/issues/238) by Jessica Nephin
 - The raster attribute table of ESRI-GRID integer data is now ignored if it only has the counts of the values. See issue [#234]( https://github.com/rspatial/terra/issues/234) by Jullee
+- time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in [#246]( https://github.com/rspatial/terra/issues/246)
+
 
 ## bug fixes 
 
@@ -31,7 +33,7 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - `focal` mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani
 - `terra::terraOptions` now works without attaching the package (issue [#229](https://github.com/rspatial/terra/issues/229) reported by Karl Dunkle Werner)
 - `app` with `ncores > 0` and a function that returns multiple layers now works (issue [#240](https://github.com/rspatial/terra/issues/240) reported by BastienFR.
-
+- `autocor` (local) can now handle `NA`s. Reported by Jakub Nowosad [#245](https://github.com/rspatial/terra/issues/245).
 
 
 # version 1.2-10
@@ -44,6 +46,8 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - `sharedPaths` method for SpatVector (lines and polygons)
 - `RGB2col` method to reduce a three-layer RGB SpatRaster to a single layer SpatRaster with a color-table (with <= 256 colors)
 - `split` methods for SpatVector and SpatRaster
+
+
 
 ## enhancements
 
