@@ -221,7 +221,14 @@ setMethod("crop", signature(x="SpatVector", y="SpatVector"),
 
 setMethod("convHull", signature(x="SpatVector"), 
 	function(x, by="") {
-		x@ptr <- x@ptr$chull(by[1])
+		x@ptr <- x@ptr$hull("convex", by[1])
+		messages(x, "convHull")
+	}
+)
+
+setMethod("minRect", signature(x="SpatVector"), 
+	function(x, by="") {
+		x@ptr <- x@ptr$hull("minrot", by[1])
 		messages(x, "convHull")
 	}
 )
@@ -308,7 +315,7 @@ voronoi_deldir <- function(x, bnd=NULL, eps=1e-09, ...){
 
 
 setMethod("voronoi", signature(x="SpatVector"), 
-	function(x, bnd=NULL, tolerance=1e-09, as.lines=FALSE, deldir=FALSE) {
+	function(x, bnd=NULL, tolerance=0, as.lines=FALSE, deldir=FALSE) {
 		if (geomtype(x) != "points") {
 			x <- as.points(x)
 		}

@@ -66,11 +66,9 @@ setMethod("rast", signature(x="list"),
 				x <- x[i]
 			}
 		}
-		if (length(x) == 1) {
-			return(x[[1]])
-		}
-		out <- x[[1]]
-		for (i in 2:length(x)) {
+		# start with an empty raster (alternatively use a deep copy)
+		out <- rast(x[[1]])
+		for (i in 1:length(x)) {
 			out@ptr$addSource(x[[i]]@ptr)
 		}
 		messages(out, "rast")

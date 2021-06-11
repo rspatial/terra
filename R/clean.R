@@ -54,6 +54,7 @@ mergebyborder <- function(x, field) {
 
 	for (i in 1:nrow(from)) {
 
+
 	}
 } 
 
@@ -61,6 +62,14 @@ snap <- function(x, tolerance) {
 	x@ptr <- x@ptr$snap(tolerance)
 	messages(x, "snap")
 }
+
+
+centerline <- function(p) {
+	v <- as.points(voronoi(p, tolerance=0))
+	v <- intersect(v, p)
+	v
+}
+
 
 
 #library(terra); messages = terra:::messages

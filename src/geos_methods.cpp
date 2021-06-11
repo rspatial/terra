@@ -462,7 +462,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 //	if ((type() != "polygons") & (type() != "mutlipolygons")) {
 	if ((type() != "polygons")) {
-		v = v.convexhull();
+		v = v.hull("convex");
 	} else {
 		v = v.aggregate(false);
 	}
@@ -501,7 +501,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 
 
 
-SpatVector SpatVector::convexhull(std::string by) {
+SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	SpatVector out;
 	if (by != "") {
@@ -511,7 +511,7 @@ SpatVector SpatVector::convexhull(std::string by) {
 		}
 		for (size_t i=0; i<tmp.size(); i++) {
 			SpatVector x = tmp.subset_rows(i);
-			x = x.convexhull("");
+			x = x.hull(htype, "");
 			if (x.hasError()) {
 				return x;
 			}
@@ -533,7 +533,12 @@ SpatVector SpatVector::convexhull(std::string by) {
 	SpatVector a = aggregate(false);
 	std::vector<GeomPtr> g = geos_geoms(&a, hGEOSCtxt);
 	//std::string vt = type();
-	GEOSGeometry* h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+	GEOSGeometry* h;
+	if (htype == "convex") {
+		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+	} else {
+		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
+	}
 	std::vector<GeomPtr> b(1);
 	b[0] = geos_ptr(h, hGEOSCtxt);
 	SpatVectorCollection coll = coll_from_geos(b, hGEOSCtxt);
@@ -660,7 +665,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		for (size_t j =0; j<(b.size()-1); j++) {
 			std::vector<unsigned> range = {(unsigned)j, (unsigned)j+1};
 			SpatVector g = b.subset_rows(range);
-			g = g.convexhull();
+			g = g.hull("convex");
 			part.addGeom(g.geoms[0]);
 		}
 		part = part.aggregate(true);
