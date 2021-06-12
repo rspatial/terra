@@ -206,6 +206,8 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 		r.setError("cannot create TranformArg");
 		return false;
 	}
+	CPLFree(pszDstWKT);
+ 	delete oSRS;
 
 	double adfDstGeoTransform[6];
 	int nPixels=0, nLines=0;
@@ -218,6 +220,7 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 		return false;	
 	}
 
+
 	r.source[0].nrow = nPixels;
 	r.source[0].ncol = nLines;
 	
@@ -228,6 +231,7 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	r.source[0].extent.ymin = r.source[0].extent.ymax + nLines * adfDstGeoTransform[5]; 
 
 	r.setSRS({dstcrs});
+
 	return true;
 }
 
