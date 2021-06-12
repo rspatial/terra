@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convex hull — convHull • terra</title>
+<title>Convex hull and minimal rotated rectangle — convHull • terra</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Convex hull — convHull" />
-<meta property="og:description" content="Get the convex hull of a vector dataset" />
+<meta property="og:title" content="Convex hull and minimal rotated rectangle — convHull" />
+<meta property="og:description" content="Get the convex hull or the minimal rotated rectangle of a SpatVector" />
 
 
 
@@ -111,17 +111,20 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convex hull</h1>
+    <h1>Convex hull and minimal rotated rectangle</h1>
     
     <div class="hidden name"><code>convhull.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get the convex hull of a vector dataset</p>
+    <p>Get the convex hull or the minimal rotated rectangle of a SpatVector</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>convHull</span><span class='op'>(</span><span class='va'>x</span>, by<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span></pre>
+<span class='fu'>convHull</span><span class='op'>(</span><span class='va'>x</span>, by<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
+
+<span class='co'># S4 method for SpatVector</span>
+<span class='fu'>minRect</span><span class='op'>(</span><span class='va'>x</span>, by<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,9 +148,13 @@
 <span class='va'>h</span> <span class='op'>&lt;-</span> <span class='fu'>convHull</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
 
 <span class='va'>hh</span> <span class='op'>&lt;-</span> <span class='fu'>convHull</span><span class='op'>(</span><span class='va'>p</span>, <span class='st'>"NAME_1"</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>hh</span>, <span class='st'>"NAME_1"</span>, col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span><span class='op'>(</span><span class='fl'>10</span>, alpha<span class='op'>=</span><span class='fl'>.5</span><span class='op'>)</span>, lwd<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'>minRect</span><span class='op'>(</span><span class='va'>p</span>, <span class='st'>"NAME_1"</span><span class='op'>)</span>
+
+<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>rr</span>, lwd<span class='op'>=</span><span class='fl'>5</span>, border<span class='op'>=</span><span class='st'>"gray"</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>hh</span>, <span class='st'>"NAME_1"</span>, col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/grDevices/palettes.html'>rainbow</a></span><span class='op'>(</span><span class='fl'>10</span>, alpha<span class='op'>=</span><span class='fl'>.5</span><span class='op'>)</span>, lwd<span class='op'>=</span><span class='fl'>3</span>, add<span class='op'>=</span><span class='cn'>TRUE</span>, plg<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='st'>"topright"</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='input'><span class='fu'><a href='lines.html'>lines</a></span><span class='op'>(</span><span class='fu'><a href='aggregate.html'>aggregate</a></span><span class='op'>(</span><span class='va'>p</span>, <span class='st'>"NAME_1"</span><span class='op'>)</span>, col<span class='op'>=</span><span class='st'>"blue"</span>, lty<span class='op'>=</span><span class='fl'>2</span>, lwd<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
-</div><div class='img'><img src='convhull-1.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='convhull-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
