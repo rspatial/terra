@@ -689,16 +689,54 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 }
 
 
-bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, SpatOptions& opt) {
 
-	std::vector<std::string> foptions = opt.gdal_options;
-	char **papszOptions = NULL;
-	for (size_t i=0; i < foptions.size(); i++) {
-		std::vector<std::string> wopt = strsplit(foptions[i], "=");
-		if (wopt.size() == 2) {
-			papszOptions = CSLSetNameValue( papszOptions, wopt[0].c_str(), wopt[1].c_str() );
+void set_GDAL_options(char ***gdalops, std::string driver, double diskNeeded, bool writeRGB, SpatOptions &opt) {
+
+	if (driver == "GTiff") {
+		bool lzw = true;
+		bool compressed = true;
+		for (size_t i=0; i<opt.gdal_options.size(); i++) {
+			if (opt.gdal_options[i].substr(0, 8) == "COMPRESS") {
+				lzw = false;
+				if (opt.gdal_options[i].substr(9, 4) == "NONE") {
+					compressed = false;
+				}
+				break;
+			}
+		}
+		if (lzw) {
+			*gdalops = CSLSetNameValue( *gdalops, "COMPRESS", "LZW");			
+		}
+		if (compressed & (diskNeeded > 4194304000)) { 
+			bool big = true;
+			for (size_t i=0; i<opt.gdal_options.size(); i++) {
+				if (opt.gdal_options[i].substr(0, 7) == "BIGTIFF") {
+					big = false;
+					break;
+				}
+			}
+			if (big) {
+				*gdalops = CSLSetNameValue( *gdalops, "BIGTIFF", "YES");
+			} 
+		}
+		if (writeRGB) {
+			*gdalops = CSLSetNameValue( *gdalops, "PROFILE", "GeoTIFF");
+		}
+	} else if (writeRGB) {
+		*gdalops = CSLSetNameValue( *gdalops, "PHOTOMETRIC", "RGB");
+	}
+	
+	for (size_t i=0; i<opt.gdal_options.size(); i++) {
+		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
+		if (gopt.size() == 2) {
+			*gdalops = CSLSetNameValue( *gdalops, gopt[0].c_str(), gopt[1].c_str() );
 		}
 	}
+}
+
+
+
+bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, SpatOptions& opt) {
 
 	const char *pszFormat = driver.c_str();
 	GDALDriverH hDrv = GDALGetDriverByName(pszFormat);
@@ -706,12 +744,25 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 	double naflag = opt.NAflag; //NAN;
 	GDALDataType gdt;
 
+	char **papszOptions = NULL;
+
 	if (driver != "MEM") {
 		std::string datatype = opt.get_datatype();
 		if (!getGDALDataType(datatype, gdt)) {
 			addWarning("unknown datatype = " + datatype);
 			getGDALDataType("FLT4S", gdt);
 		}
+		int dsize = std::stoi(datatype.substr(3,1));
+		GIntBig diskNeeded = ncell() * nlyr() * dsize;
+		std::string dname = dirname(filename);
+		GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
+		if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
+			setError("insufficient disk space (perhaps from temporary files?)");
+			return(false);		
+		}
+
+		set_GDAL_options(&papszOptions, driver, diskNeeded, false, opt);
+
 		if (datatype == "INT4S") {
 			naflag = INT32_MIN; //-2147483648; 
 		} else if (datatype == "INT2S") {
@@ -774,51 +825,6 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		OSRDestroySpatialReference( hSRS );
 	}
 	return true;
-}
-
-
-void set_GDAL_options(char ***gdalops, bool gtiff,  bool is_big, bool writeRGB, SpatOptions &opt) {
-
-	if (gtiff) {
-		bool lzw = true;
-		bool compressed = true;
-		for (size_t i=0; i<opt.gdal_options.size(); i++) {
-			if (opt.gdal_options[i].substr(0, 8) == "COMPRESS") {
-				lzw = false;
-				if (opt.gdal_options[i].substr(9, 4) == "NONE") {
-					compressed = false;
-				}
-				break;
-			}
-		}
-		if (lzw) {
-			*gdalops = CSLSetNameValue( *gdalops, "COMPRESS", "LZW");			
-		}
-		if (compressed & is_big) { 
-			bool big = true;
-			for (size_t i=0; i<opt.gdal_options.size(); i++) {
-				if (opt.gdal_options[i].substr(0, 7) == "BIGTIFF") {
-					big = false;
-					break;
-				}
-			}
-			if (big) {
-				*gdalops = CSLSetNameValue( *gdalops, "BIGTIFF", "YES");
-			} 
-		}
-		if (writeRGB) {
-			*gdalops = CSLSetNameValue( *gdalops, "PROFILE", "GeoTIFF");
-		}
-	} else if (writeRGB) {
-		*gdalops = CSLSetNameValue( *gdalops, "PHOTOMETRIC", "RGB");
-	}
-	
-	for (size_t i=0; i<opt.gdal_options.size(); i++) {
-		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
-		if (gopt.size() == 2) {
-			*gdalops = CSLSetNameValue( *gdalops, gopt[0].c_str(), gopt[1].c_str() );
-		}
-	}
 }
 
 

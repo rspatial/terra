@@ -260,7 +260,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 
 	char **papszOptions = NULL;
-	set_GDAL_options(&papszOptions, driver=="GTiff", diskNeeded > 4194304000, writeRGB, opt);
+	set_GDAL_options(&papszOptions, driver, diskNeeded > 4194304000, writeRGB, opt);
 
 /*	if (driver == "GTiff") {
 		GDAL_tiff_options(diskNeeded > 4194304000, writeRGB, opt);

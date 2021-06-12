@@ -13,7 +13,7 @@ Get a voronoi diagram or delauny triangles for points, or the nodes of lines or 
 }
 
 \usage{
-\S4method{voronoi}{SpatVector}(x, bnd=NULL, tolerance=1e-09, as.lines=FALSE, deldir=FALSE) 
+\S4method{voronoi}{SpatVector}(x, bnd=NULL, tolerance=0, as.lines=FALSE, deldir=FALSE) 
 
 \S4method{delauny}{SpatVector}(x, tolerance=0, as.lines=FALSE) 
 }
