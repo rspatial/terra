@@ -21,8 +21,9 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - `adjacent` now has a `pairs` argument. Requested by Kenneth Blake Vernon in issue [#239](https://github.com/rspatial/terra/issues/239) 
 - `adjacent` now also takes a matrix to specify adjacent cells
 - `mean` and other summarize methods now take a `filename` argument and disallow non-recognized named arguments. See issue [#238](https://github.com/rspatial/terra/issues/238) by Jessica Nephin
-- The raster attribute table of ESRI-GRID integer data is now ignored if it only has the counts of the values. See issue [#234]( https://github.com/rspatial/terra/issues/234) by Jullee
+- The raster attribute table of ESRI-GRID integer data, or from an ESRI `vat.dbf` file is now ignored if it only has the counts of the values. See issue [#234]( https://github.com/rspatial/terra/issues/234) by Jullee
 - time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in [#246]( https://github.com/rspatial/terra/issues/246)
+- resample (and project) no longer ignore `gdal=""` write options and use BIGTIFF if necessary (suggested by Ani Ghosh)
 
 
 ## bug fixes 

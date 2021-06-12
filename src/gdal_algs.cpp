@@ -169,13 +169,11 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 #else
 
 
-//bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string srccrs, const std::string dstcrs, std::string filename, std::string driver, int nlyrs, std::string datatype, std::string &msg) {
 
-bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std::string dstcrs, int &nLines, int &nPixels, std::vector<double> &ext, std::string &msg) {
+bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std::string dstcrs, SpatRaster &r) {
 
-	msg = "";
 	if ( hSrcDS == NULL ) {
-		msg = "data source is NULL";
+		r.setError("data source is NULL");
 		return false;
 	}
 
@@ -183,12 +181,14 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	// const char *pszSrcWKT = GDALGetProjectionRef( hSrcDS );
 	const char *pszSrcWKT = srccrs.c_str();
 	if ( pszSrcWKT == NULL || strlen(pszSrcWKT) == 0 ) {
-		msg = "data source has no WKT";
+		r.setError("data source has no WKT");
 		return false;
 	}
 
 	OGRSpatialReference* oSRS = new OGRSpatialReference;
+	std::string msg = "";
 	if (is_ogr_error(oSRS->SetFromUserInput( dstcrs.c_str() ), msg)) {
+		r.setError(msg);
 		return false;
 	};
 
@@ -203,26 +203,31 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	hTransformArg =
 		GDALCreateGenImgProjTransformer( hSrcDS, pszSrcWKT, NULL, pszDstWKT, FALSE, 0, 1 );
 	if (hTransformArg == NULL ) {
-		msg = "cannot create TranformArg";
+		r.setError("cannot create TranformArg");
 		return false;
 	}
 
 	double adfDstGeoTransform[6];
-	nPixels=0; nLines=0;
+	int nPixels=0, nLines=0;
 	CPLErr eErr = GDALSuggestedWarpOutput( hSrcDS, GDALGenImgProjTransform, 
 					hTransformArg, adfDstGeoTransform, &nPixels, &nLines );
 
 	GDALDestroyGenImgProjTransformer( hTransformArg );
 	if ( eErr != CE_None ) {
-		msg = "cannot create warp output";
+		r.setError("cannot create warp output");
 		return false;	
 	}
 
-	double xmin = adfDstGeoTransform[0]; /* left x */
-	double xmax = xmin + adfDstGeoTransform[1] * nPixels; /* w-e pixel resolution */
-	double ymax = adfDstGeoTransform[3]; // top y 
-	double ymin = ymax + nLines * adfDstGeoTransform[5]; 
-	ext = { xmin, xmax, ymin, ymax };
+	r.source[0].nrow = nPixels;
+	r.source[0].ncol = nLines;
+	
+	r.source[0].extent.xmin = adfDstGeoTransform[0]; /* left x */
+	/* w-e pixel resolution */
+	r.source[0].extent.xmax = r.source[0].extent.xmin + adfDstGeoTransform[1] * nPixels;
+	r.source[0].extent.ymax = adfDstGeoTransform[3]; // top y 
+	r.source[0].extent.ymin = r.source[0].extent.ymax + nLines * adfDstGeoTransform[5]; 
+
+	r.setSRS({dstcrs});
 	return true;
 }
 
@@ -385,7 +390,32 @@ bool is_valid_warp_method(const std::string &method) {
 
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
 
-	SpatRaster out = x.geometry(nlyr(), method == "near");
+	SpatRaster out = x.geometry(nlyr(), false, false);
+	out.setNames(getNames());
+	if (method == "near") {
+		out.source[0].hasColors = hasColors();
+		out.source[0].cols = getColors();
+		out.source[0].hasCategories = hasCategories();
+		out.source[0].cats = getCategories();
+		out.rgb = rgb;
+		out.rgblyrs = rgblyrs;		
+	}
+	if (hasTime()) {
+		out.source[0].hasTime = true;
+		out.source[0].timestep = getTimeStep();
+		out.source[0].time = getTime();
+	}
+	
+	
+	bool use_crs = crs != "";  
+	std::string filename = opt.get_filename();
+	if ((!use_crs) & (!hasValues())) {
+		if (filename != "") {
+			addWarning("raster has no values, not writing to file");
+		}
+		return out;
+	}
+
 	//out.setNames(getNames());
 	if (method == "near") {
 		out.rgb = rgb;
@@ -403,7 +433,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		mopt = opt;
 		opt = SpatOptions(opt);
 	}
-	std::string filename = opt.get_filename();
+	filename = opt.get_filename();
 
 	std::string srccrs = getSRS("wkt");
 	if (srccrs == "") {
@@ -411,15 +441,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		return out;	
 	}
 
-	bool use_crs = crs != "";  
-	// should not be needed (need to fix)
-
-	if ((!use_crs) & (!hasValues())) {
-		if (filename != "") {
-			addWarning("raster has no values, not writing to file");
-		}
-		return out;
-	}
 
 	if (filename == "") {
 		if (!canProcessInMemory(opt) || !out.canProcessInMemory(opt)) {
@@ -452,17 +473,11 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 		// create dest source, only once 
 		if (i==0) {
-			 // use the crs, ignore argument "x"
 			if (use_crs) {
-				int nrow=0, ncol=0;
-				std::vector<double> e;
-				if (!get_output_bounds(hSrcDS, srccrs, crs, nrow, ncol, e, errmsg)) {
-					out.setError(errmsg);
+				if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
 					GDALClose( hSrcDS );
 					return out;
 				}
-				std::vector<unsigned> rcl = {(unsigned)nrow, (unsigned)ncol, nlyr()};
-				out = SpatRaster(rcl, e, crs);
 			}
 			if (!hasValues()) {
 				GDALClose( hSrcDS );
