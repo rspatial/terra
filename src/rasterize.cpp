@@ -124,7 +124,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	std::string errmsg, driver, filename;
 	GDALDatasetH rstDS;
 	double naval;
-	if (!getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
+	if (!out.getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
 		out.setError(errmsg);
 		return out;
 	}
@@ -278,7 +278,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	double naval;
 	if (add) {	background = 0;	}
 
-	if (!getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
+	if (!out.getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
 		out.setError(errmsg);
 		return out;
 	}
