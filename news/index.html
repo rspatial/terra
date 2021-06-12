@@ -154,9 +154,10 @@
 <code>adjacent</code> now also takes a matrix to specify adjacent cells</li>
 <li>
 <code>mean</code> and other summarize methods now take a <code>filename</code> argument and disallow non-recognized named arguments. See issue <a href="https://github.com/rspatial/terra/issues/238"><a href='https://github.com/rspatial/terra/issues/238'>#238</a></a> by Jessica Nephin</li>
-<li>The raster attribute table of ESRI-GRID integer data is now ignored if it only has the counts of the values. See issue <a href="https://github.com/rspatial/terra/issues/234"><a href='https://github.com/rspatial/terra/issues/234'>#234</a></a> by Jullee</li>
+<li>The raster attribute table of ESRI-GRID integer data, or from an ESRI <code>vat.dbf</code> file is now ignored if it only has the counts of the values. See issue <a href="https://github.com/rspatial/terra/issues/234"><a href='https://github.com/rspatial/terra/issues/234'>#234</a></a> by Jullee</li>
 <li>time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in <a href="https://github.com/rspatial/terra/issues/246"><a href='https://github.com/rspatial/terra/issues/246'>#246</a></a>
 </li>
+<li>resample (and project) no longer ignore <code>gdal=""</code> write options and use BIGTIFF if necessary (suggested by Ani Ghosh)</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
