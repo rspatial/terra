@@ -282,6 +282,9 @@ class SpatVector {
 		SpatVector sample(unsigned n, std::string method, unsigned seed);
 		SpatVector sample_geom(std::vector<unsigned> n, std::string method, unsigned seed);
 
+		std::vector<double> clearance();
+		std::vector<double> width();
+
 		SpatVector unaryunion();
 
 		SpatVector cbind(SpatDataFrame d);

@@ -377,13 +377,9 @@ bool is_valid_warp_method(const std::string &method) {
 
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
 
-	SpatRaster out = x.geometry(nlyr());
-	out.setNames(getNames());
+	SpatRaster out = x.geometry(nlyr(), method == "near");
+	//out.setNames(getNames());
 	if (method == "near") {
-		out.source[0].hasColors = hasColors();
-		out.source[0].cols = getColors();
-		out.source[0].hasCategories = hasCategories();
-		out.source[0].cats = getCategories();
 		out.rgb = rgb;
 		out.rgblyrs = rgblyrs;		
 	}

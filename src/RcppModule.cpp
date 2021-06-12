@@ -358,6 +358,10 @@ RCPP_MODULE(spat){
 		.method("delauny", &SpatVector::delauny)
 		.method("voronoi", &SpatVector::voronoi)
 		.method("hull", &SpatVector::hull)
+		
+		.method("width", &SpatVector::width)
+		.method("clearance", &SpatVector::clearance)
+
 		.method("relate_first", &SpatVector::relateFirst)
 		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string))( &SpatVector::relate ))
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))

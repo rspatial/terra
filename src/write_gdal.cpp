@@ -180,7 +180,6 @@ void stat_options(int sstat, bool &compute_stats, bool &gdal_stats, bool &gdal_m
 
 
 
-
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
 
@@ -261,52 +260,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 
 	char **papszOptions = NULL;
-	
-	if (driver == "GTiff") {
-		bool lzw = true;
-		bool compressed = true;
-		for (size_t i=0; i<opt.gdal_options.size(); i++) {
-			if (opt.gdal_options[i].substr(0, 8) == "COMPRESS") {
-				lzw = false;
-				if (opt.gdal_options[i].substr(9, 4) == "NONE") {
-					compressed = false;
-				}
-				break;
-			}
-		}
-		if (lzw) {
-			papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "LZW");			
-		}
-#ifdef useRcpp
-		if (opt.verbose) {
-			Rcpp::Rcout<< "LZW           : " << lzw << std::endl;
-		}
-#endif
-		// ~ 4GB 
-		if (compressed & (diskNeeded > 4194304000)) { 
-			bool big = true;
-			for (size_t i=0; i<opt.gdal_options.size(); i++) {
-				if (opt.gdal_options[i].substr(0, 7) == "BIGTIFF") {
-					big = false;
-					break;
-				}
-			}
-			if (big) {
-				papszOptions = CSLSetNameValue( papszOptions, "BIGTIFF", "YES");
-#ifdef useRcpp
-				if (opt.verbose) {
-					Rcpp::Rcout<< "BIGTIFF       : yes" << std::endl;
-				}
-#endif
-			} else {
-#ifdef useRcpp
-				if (opt.verbose) {
-					Rcpp::Rcout<< "BIGTIFF       : as requested" << std::endl;
-				}
-#endif
-			}
-		}
+	set_GDAL_options(&papszOptions, driver=="GTiff", diskNeeded > 4194304000, writeRGB, opt);
+
+/*	if (driver == "GTiff") {
+		GDAL_tiff_options(diskNeeded > 4194304000, writeRGB, opt);
 	}
+	
 	for (size_t i=0; i<opt.gdal_options.size(); i++) {
 		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
 		if (gopt.size() == 2) {
@@ -315,10 +274,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 	if (writeRGB) {
 		papszOptions = CSLSetNameValue( papszOptions, "PHOTOMETRIC", "RGB");
-		if (driver == "GeoTIFF") {
-			papszOptions = CSLSetNameValue( papszOptions, "PROFILE", "GeoTIFF");
-		}
 	}
+*/
 
     char **papszMetadata;
     papszMetadata = poDriver->GetMetadata();

@@ -1,4 +1,13 @@
 
+width <- function(x) {
+	x@ptr$width()
+}
+
+
+clearance <- function(x) {
+	x@ptr$clearance()
+}
+
 
 simplify <- function(x, tolerance=0, preserveTopology=TRUE) {
 	x@ptr <- x@ptr$simplify(tolerance, preserveTopology)

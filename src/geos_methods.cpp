@@ -5,6 +5,23 @@
 #include "string_utils.h"
 
 
+	
+SpatVector SpatVector::allerretour() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	SpatVector out = vect_from_geos(g, hGEOSCtxt, type());
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
+SpatVectorCollection SpatVector::bienvenue() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	SpatVectorCollection out = coll_from_geos(g, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	return out;
+}
+
 
 std::vector<std::string> SpatVector::wkt() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -76,22 +93,6 @@ SpatVector SpatVector::from_hex(std::vector<std::string> x, std::string srs) {
 }
 
 
-	
-SpatVector SpatVector::allerretour() {
-	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
-	SpatVector out = vect_from_geos(g, hGEOSCtxt, type());
-	geos_finish(hGEOSCtxt);
-	return out;
-}
-
-SpatVectorCollection SpatVector::bienvenue() {
-	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
-	SpatVectorCollection out = coll_from_geos(g, hGEOSCtxt);
-	geos_finish(hGEOSCtxt);
-	return out;
-}
 
 std::vector<bool> SpatVector::geos_isvalid() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init2();
@@ -1519,4 +1520,51 @@ bool geos_buffer(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> &g, double 
 	return true;
 }
 */
+
+
+
+std::vector<double> SpatVector::width() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> gout(g.size());
+	SpatVector tmp;
+	for (size_t i = 0; i < g.size(); i++) {	
+		GEOSGeometry* w = GEOSMinimumWidth_r(hGEOSCtxt, g[i].get());
+		if (w == NULL) {
+			setError("NULL geom");
+			geos_finish(hGEOSCtxt);
+			std::vector<double> out;
+			return out;
+		}
+		gout[i] = geos_ptr(w, hGEOSCtxt);
+	}
+	SpatVectorCollection coll = coll_from_geos(gout, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	tmp = coll.get(0);
+	tmp.srs = srs;
+	return tmp.length();
+}
+
+
+std::vector<double> SpatVector::clearance() {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> gout(g.size());
+	SpatVector tmp;
+	for (size_t i = 0; i < g.size(); i++) {	
+		GEOSGeometry* w = GEOSMinimumClearanceLine_r(hGEOSCtxt, g[i].get());
+		if (w == NULL) {
+			setError("NULL geom");
+			geos_finish(hGEOSCtxt);
+			std::vector<double> out;
+			return out;
+		}
+		gout[i] = geos_ptr(w, hGEOSCtxt);
+	}
+	SpatVectorCollection coll = coll_from_geos(gout, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	tmp = coll.get(0);
+	tmp.srs = srs;
+	return tmp.length();
+}
 
