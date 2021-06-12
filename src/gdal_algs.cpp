@@ -169,20 +169,15 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 #else
 
 
-bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string srccrs, const std::string dstcrs, std::string filename, std::string driver, int nlyrs, std::string datatype, std::string &msg) {
+//bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::string srccrs, const std::string dstcrs, std::string filename, std::string driver, int nlyrs, std::string datatype, std::string &msg) {
+
+bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std::string dstcrs, int &nLines, int &nPixels, std::vector<double> &ext, std::string &msg) {
 
 	msg = "";
 	if ( hSrcDS == NULL ) {
 		msg = "data source is NULL";
 		return false;
 	}
-
-	// Create output with same datatype as first input band.
-	//GDALDataType eDT = GDALGetRasterDataType(GDALGetRasterBand(hSrcDS,1));
-	GDALDataType eDT;
-	getGDALDataType(datatype, eDT);
-
-	// Get output driver (GeoTIFF format)
 
 	// Get Source coordinate system.
 	// const char *pszSrcWKT = GDALGetProjectionRef( hSrcDS );
@@ -212,9 +207,8 @@ bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::s
 		return false;
 	}
 
-	// Get approximate output georeferenced bounds and resolution for file.
 	double adfDstGeoTransform[6];
-	int nPixels=0, nLines=0;
+	nPixels=0; nLines=0;
 	CPLErr eErr = GDALSuggestedWarpOutput( hSrcDS, GDALGenImgProjTransform, 
 					hTransformArg, adfDstGeoTransform, &nPixels, &nLines );
 
@@ -223,6 +217,20 @@ bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::s
 		msg = "cannot create warp output";
 		return false;	
 	}
+
+	double xmin = adfDstGeoTransform[0]; /* left x */
+	double xmax = xmin + adfDstGeoTransform[1] * nPixels; /* w-e pixel resolution */
+	double ymax = adfDstGeoTransform[3]; // top y 
+	double ymin = ymax + nLines * adfDstGeoTransform[5]; 
+	ext = { xmin, xmax, ymin, ymax };
+	return true;
+}
+
+/*
+	// Create output with same datatype as first input band.
+	GDALDataType eDT = GDALGetRasterDataType(GDALGetRasterBand(hSrcDS,1));
+	GDALDataType eDT;
+	getGDALDataType(datatype, eDT);
 
 	// Create the output DS.
 
@@ -256,7 +264,7 @@ bool find_output_bounds(const GDALDatasetH &hSrcDS, GDALDatasetH &hDstDS, std::s
 
 	return true;
 }
-
+*/
 
 GDALResampleAlg getAlgo(std::string m) {
 	GDALResampleAlg alg;
@@ -446,26 +454,24 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		if (i==0) {
 			 // use the crs, ignore argument "x"
 			if (use_crs) {
-				if (! find_output_bounds(hSrcDS, hDstDS, srccrs, crs, filename, driver, nlyr(), opt.get_datatype(), errmsg)) {
+				int nrow=0, ncol=0;
+				std::vector<double> e;
+				if (!get_output_bounds(hSrcDS, srccrs, crs, nrow, ncol, e, errmsg)) {
 					out.setError(errmsg);
 					GDALClose( hSrcDS );
 					return out;
 				}
-				if (!hasValues()) {
-					if (!out.from_gdalMEM(hDstDS, use_crs, false)) {
-						out.setError("cannot get geometry from mem");
-					} 
-					GDALClose( hSrcDS );
-					GDALClose( hDstDS );
-					out.setSRS({crs});	 // fix the need for this
-					return out;
-				}
-			} else {
-				if (!out.create_gdalDS(hDstDS, filename, driver, false, NAN, opt)) {
-					GDALClose( hSrcDS );
-					//GDALClose( hDstDS );
-					return out;
-				}
+				std::vector<unsigned> rcl = {(unsigned)nrow, (unsigned)ncol, nlyr()};
+				out = SpatRaster(rcl, e, crs);
+			}
+			if (!hasValues()) {
+				GDALClose( hSrcDS );
+				return out;
+			}
+			if (!out.create_gdalDS(hDstDS, filename, driver, false, NAN, opt)) {
+				GDALClose( hSrcDS );
+				//GDALClose( hDstDS );
+				return out;
 			}
 		}
 		std::vector<unsigned> srcbands = source[i].layers;
