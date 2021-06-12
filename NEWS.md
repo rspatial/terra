@@ -1,5 +1,5 @@
 
-# version 1.3-0
+# version 1.3-1
 
 ## new
 
@@ -35,6 +35,8 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - `terra::terraOptions` now works without attaching the package (issue [#229](https://github.com/rspatial/terra/issues/229) reported by Karl Dunkle Werner)
 - `app` with `ncores > 0` and a function that returns multiple layers now works (issue [#240](https://github.com/rspatial/terra/issues/240) reported by BastienFR.
 - `autocor` (local) can now handle `NA`s. Reported by Jakub Nowosad [#245](https://github.com/rspatial/terra/issues/245).
+- `mask` with a SpatVector and a large (out of memory) multi-layer SpatRaster only worked for the first layer. Reported by Monika Tomaszewska.
+
 
 
 # version 1.2-10
