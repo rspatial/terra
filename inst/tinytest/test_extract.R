@@ -16,6 +16,7 @@ r[c(2,7)] <- c(15, 20)
 rr <- c(r, r/2)
 names(rr)[2] <- "half"
 xy <- cbind(x=0.3, y=c(0.9, 0.7))
+
 v <- vect(xy)
 e <- extract(r, v)
 expect_equal(e, data.frame(ID=1:2, test=c(15,20)))
@@ -33,3 +34,17 @@ expect_equal(ee, data.frame(ID=1:2, test=c(15,20), half=c(7.5, 10), cell=c(2,7),
 ee <- extract(rr, v, xy=TRUE)
 expect_equal(ee, data.frame(ID=1:2, test=c(15,20), half=c(7.5, 10), xy))
 
+f <- system.file("ex/meuse.tif", package="terra")
+r <- rast(f)
+xy <- cbind(179000, 330000)
+xy <- rbind(xy-100, xy, xy+1000)
+e <- extract(r, xy)
+expect_equal(e[,1] , c(378, 251, 208))
+
+e <- extract(r, xy, method="bilinear")
+expect_equal(e[,1] , c(378.00, 270.75, 197.25))
+
+e <- extract(r, xy, method="bilinear", cells=T, xy=T)
+expect_equal(unlist(e, use.names=FALSE), c(378.00, 270.75, 197.25,8173.00,8016.00,6041.00,178900.00, 179000.00, 180000.00, 329900.00, 330000.00, 331000.00))
+	
+ 

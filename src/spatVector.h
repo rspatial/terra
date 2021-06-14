@@ -225,7 +225,7 @@ class SpatVector {
 		SpatVector append(SpatVector x, bool ignorecrs);
 		SpatVector disaggregate();
 		SpatVector shift(double x, double y);
-		SpatVector rescale(double f, double x0, double y0);
+		SpatVector rescale(double fx, double fy, double x0, double y0);
 		SpatVector transpose();
 		SpatVector flip(bool vertical);	
 		SpatVector rotate(double angle, double x0, double y0);

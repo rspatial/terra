@@ -83,88 +83,9 @@ SpatVector SpatRaster::dense_extent() {
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 2
 
 SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
-
-	unsigned nl = nlyr();
-	SpatRaster out = x.geometry(nl);
-	out.setNames(getNames());
-
-	if (crs != "") {
-		out.setError("You cannot project by specifying a crs with your version of GDAL");
-		return out;
-	}
-
-	out.setNames(getNames());
-	std::vector<std::string> f {"bilinear", "near"};
-	if (std::find(f.begin(), f.end(), method) == f.end()) {
-		out.setError("unknown warp method");
-		return out;
-	}
-	if (!hasValues()) {
-		return out;
-	}
-
-	std::string crsin = source[0].srs.wkt;
-	std::string crsout = out.source[0].srs.wkt;
-	bool do_prj = true;
-	if ((crsin == crsout) || (crsin == "") || (crsout == "")) {
-		do_prj = false;
-	}
-
-	if (!do_prj) {
-		SpatExtent e = out.getExtent();
-		e.intersect(getExtent());
-		if (!e.valid()) {
-			out.addWarning("No spatial overlap");
-			return out;
-		}
-	}
-
-	SpatRaster xx;
-	if (do_prj) {
-		xx = *this;
-	} else {
-		unsigned xq = x.xres() / xres();
-		unsigned yq = x.yres() / yres();
-		if (std::max(xq, yq) > 1) {
-			xq = xq == 0 ? 1 : xq;
-			yq = yq == 0 ? 1 : yq;
-			std::vector<unsigned> agf = {yq, xq, 1};
-			SpatOptions agopt;
-			if (method == "bilinear") {
-				xx = aggregate(agf, "mean", true, agopt);
-			} else {
-				xx = aggregate(agf, "modal", true, agopt);
-			}
-		} else {
-			xx = *this;
-		}
-	}
-	unsigned nc = out.ncol();
-
-  	if (!out.writeStart(opt)) { return out; }
-	for (size_t i = 0; i < out.bs.n; i++) {
-        unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
-		unsigned lastcell  = out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
-		std::vector<double> cells(1+lastcell-firstcell);
-		std::iota (std::begin(cells), std::end(cells), firstcell);
-        std::vector<std::vector<double>> xy = out.xyFromCell(cells);
-		if (do_prj) {
-			#ifdef useGDAL
-			out.msg = transform_coordinates(xy[0], xy[1], crsout, crsin);
-			#else
-			out.setError("GDAL is needed for crs transformation, but not available");
-			return out;
-			#endif
-		}
-		std::vector<std::vector<double>> v = xx.extractXY(xy[0], xy[1], method, false);
-		if (!out.writeValues2(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
-	}
-	out.writeStop();
+	out.setError("Not supported for this old version of GDAL");
 	return(out);
 }
-
-
-
 
 #else
 
@@ -543,69 +464,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 #endif
 
-
-
-/*
-
-void SpatRaster::resample2(SpatRaster &out, const std::string &method, SpatOptions &opt) {
-
-	unsigned nc = out.ncol();
-  	if (!out.writeStart(opt)) { return; }
-	for (size_t i = 0; i < out.bs.n; i++) {
-        unsigned firstcell = out.cellFromRowCol(out.bs.row[i], 0);
-		unsigned lastcell  = out.cellFromRowCol(out.bs.row[i]+out.bs.nrows[i]-1, nc-1);
-		std::vector<double> cells(1+lastcell-firstcell);
-		std::iota (std::begin(cells), std::end(cells), firstcell);
-        std::vector<std::vector<double>> xy = out.xyFromCell(cells);
-		std::vector<std::vector<double>> v = extractXY(xy[0], xy[1], method);
-		if (!out.writeValues2(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return;
-	}
-	out.writeStop();
-
-}
-
-
-SpatRaster SpatRaster::resample1(SpatRaster &x, const std::string &method, SpatOptions &opt) {
-
-	unsigned nl = nlyr();
-	SpatRaster out = x.geometry(nl);
-	out.setNames(getNames());
-	std::vector<std::string> f {"bilinear", "ngb"};
-	if (std::find(f.begin(), f.end(), method) == f.end()) {
-		out.setError("unknown resample method");
-		return out;
-	}
-	if (!hasValues()) {
-		return out;
-	}
-
-	if ((!source[0].srs.is_empty()) && (!out.source[0].srs.is_empty())) {
-		if (!source[0].srs.is_equal(out.source[0].srs)) {
-			out.addWarning("Rasters have different crs");
-		}
-	}
-
-	unsigned xq = x.xres() / xres();
-	unsigned yq = x.yres() / yres();
-	if (std::max(xq, yq) > 1) {
-		SpatRaster xx;
-		xq = xq == 0 ? 1 : xq;
-		yq = yq == 0 ? 1 : yq;
-		std::vector<unsigned> agf = {yq, xq, 1};
-		SpatOptions agopt;
-		if (method == "bilinear") {
-			xx = aggregate(agf, "mean", true, agopt);
-		} else {
-			xx = aggregate(agf, "modal", true, agopt);
-		}
-		xx.resample2(out, method, opt);
-	} else {
-		resample2(out, method, opt);
-	}
-	return out;
-}
-
-*/
 
 
 

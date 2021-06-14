@@ -397,39 +397,39 @@ void resc(double &value, const double &base, const double &f) {
 }
 
 
-SpatVector SpatVector::rescale(double f, double x0, double y0) {
+SpatVector SpatVector::rescale(double fx, double fy, double x0, double y0) {
 
 	SpatVector out = *this;
 	for (size_t i=0; i < size(); i++) {
 		for (size_t j=0; j < geoms[i].size(); j++) {
 			for (size_t q=0; q < geoms[i].parts[j].x.size(); q++) {
-				resc(out.geoms[i].parts[j].x[q], x0, f);
-				resc(out.geoms[i].parts[j].y[q], y0, f);
+				resc(out.geoms[i].parts[j].x[q], x0, fx);
+				resc(out.geoms[i].parts[j].y[q], y0, fy);
 			}
 			if (geoms[i].parts[j].hasHoles()) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					for (size_t q=0; q < geoms[i].parts[j].holes[k].x.size(); q++) {
-						resc(out.geoms[i].parts[j].holes[k].x[q], x0, f);
-						resc(out.geoms[i].parts[j].holes[k].y[q], y0, f);
+						resc(out.geoms[i].parts[j].holes[k].x[q], x0, fx);
+						resc(out.geoms[i].parts[j].holes[k].y[q], y0, fy);
 					}
-					resc(out.geoms[i].parts[j].holes[k].extent.xmax, x0, f);
-					resc(out.geoms[i].parts[j].holes[k].extent.ymax, y0, f);
+					resc(out.geoms[i].parts[j].holes[k].extent.xmax, x0, fx);
+					resc(out.geoms[i].parts[j].holes[k].extent.ymax, y0, fy);
 				}
 			}
-			resc(out.geoms[i].parts[j].extent.xmin, x0, f);
-			resc(out.geoms[i].parts[j].extent.xmax, x0, f);
-			resc(out.geoms[i].parts[j].extent.ymin, y0, f);
-			resc(out.geoms[i].parts[j].extent.ymax, y0, f);
+			resc(out.geoms[i].parts[j].extent.xmin, x0, fx);
+			resc(out.geoms[i].parts[j].extent.xmax, x0, fx);
+			resc(out.geoms[i].parts[j].extent.ymin, y0, fy);
+			resc(out.geoms[i].parts[j].extent.ymax, y0, fy);
 		}
-		resc(out.geoms[i].extent.xmin, x0, f);
-		resc(out.geoms[i].extent.xmax, x0, f);
-		resc(out.geoms[i].extent.ymin, y0, f);
-		resc(out.geoms[i].extent.ymax, y0, f);
+		resc(out.geoms[i].extent.xmin, x0, fx);
+		resc(out.geoms[i].extent.xmax, x0, fx);
+		resc(out.geoms[i].extent.ymin, y0, fy);
+		resc(out.geoms[i].extent.ymax, y0, fy);
 	}
-	resc(out.extent.xmin, x0, f);
-	resc(out.extent.xmax, x0, f);
-	resc(out.extent.ymin, y0, f);
-	resc(out.extent.ymax, y0, f);
+	resc(out.extent.xmin, x0, fx);
+	resc(out.extent.xmax, x0, fx);
+	resc(out.extent.ymin, y0, fy);
+	resc(out.extent.ymax, y0, fy);
 	return out;
 }
 

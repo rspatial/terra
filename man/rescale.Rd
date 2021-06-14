@@ -15,12 +15,14 @@ Rescale a SpatVector or SpatRaster. This may be useful to make small \code{\link
 \usage{
 \S4method{rescale}{SpatRaster}(x, f=0.5, x0, y0)
 
-\S4method{rescale}{SpatVector}(x, f=0.5, x0, y0)
+\S4method{rescale}{SpatVector}(x, fx=0.5, fy=0.5, x0, y0)
 }
 
 \arguments{
   \item{x}{SpatVector or SpatRaster}
-  \item{f}{numeric. The scaling factor (a fraction)}
+  \item{f}{numeric > 0. The scaling factor (a fraction)}
+  \item{fx}{numeric > 0. The x scaling factor (a fraction)}
+  \item{fy}{numeric > 0. The y scaling factor (a fraction)}
   \item{x0}{numeric. x-coordinate of the center of rescaling. If missing, the center of the extent of \code{x} is used}
   \item{y0}{numeric. y-coordinate of the center of rescaling. If missing, the center of the extent of \code{x} is used}
 }
