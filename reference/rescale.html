@@ -124,7 +124,7 @@
 <span class='fu'>rescale</span><span class='op'>(</span><span class='va'>x</span>, f<span class='op'>=</span><span class='fl'>0.5</span>, <span class='va'>x0</span>, <span class='va'>y0</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>rescale</span><span class='op'>(</span><span class='va'>x</span>, f<span class='op'>=</span><span class='fl'>0.5</span>, <span class='va'>x0</span>, <span class='va'>y0</span><span class='op'>)</span></pre>
+<span class='fu'>rescale</span><span class='op'>(</span><span class='va'>x</span>, fx<span class='op'>=</span><span class='fl'>0.5</span>, fy<span class='op'>=</span><span class='fl'>0.5</span>, <span class='va'>x0</span>, <span class='va'>y0</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,7 +135,15 @@
     </tr>
     <tr>
       <th>f</th>
-      <td><p>numeric. The scaling factor (a fraction)</p></td>
+      <td><p>numeric &gt; 0. The scaling factor (a fraction)</p></td>
+    </tr>
+    <tr>
+      <th>fx</th>
+      <td><p>numeric &gt; 0. The x scaling factor (a fraction)</p></td>
+    </tr>
+    <tr>
+      <th>fy</th>
+      <td><p>numeric &gt; 0. The y scaling factor (a fraction)</p></td>
     </tr>
     <tr>
       <th>x0</th>
