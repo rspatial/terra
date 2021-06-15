@@ -9,31 +9,33 @@ setClass("GCP",
 	)
 )
 
-if (!isGeneric("addGCP")) {setGeneric("addGCP", function(x, ...) standardGeneric("addGCP"))}
+
 
 setMethod("show", signature(object="GCP"), 
 	function(object) {
 		m <- object@gcp
 		show(m)
-		if (!is.null(dev.list())) {
+		if (!is.null(grDevices::dev.list())) {
 			for (i in 1:nrow(m)) {
-				arrows(m[i,1], m[i,2], x1 = m[i,3], y1 = m[i,4], col="red", length = 0.1)
+				graphics::arrows(m[i,1], m[i,2], x1 = m[i,3], y1 = m[i,4], col="red", length = 0.1)
 			}
 		}
 	}
 )
 
 
-setMethod("addGCP", signature(x="GCP"), 
-	function(x, from_to) {
-		if (missing(from_to)) {
-			from_to = terra:::RS_locator(2, "l")
-			from_to <- rbind(as.vector(t(from_to)))
+setMethod("add<-", signature(x="GCP"), 
+	function(x, value) {
+		if (missing(value)) {
+			value <- terra:::RS_locator(2, "l")
+			value <- rbind(as.vector(t(value)))
 		} 
-		if (ncol(from_to) == 4) {
-			x@gcp <- rbind(x@gcp, from_to)
+		if (ncol(value) == 4) {
+			x@gcp <- rbind(x@gcp, value)
 		}
-		arrows(from_to[1,1], from_to[1,2], x1 = from_to[1,3], y1 = from_to[1,4], col="red", length = 0.1)
+		if (!is.null(grDevices::dev.list())) {
+			graphics::arrows(value[1,1], value[1,2], x1 = value[1,3], y1 = value[1,4], col="red", length = 0.1)
+		}
 		x
 	}
 )
