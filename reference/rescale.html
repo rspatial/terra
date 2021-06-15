@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="rescale — rescale" />
-<meta property="og:description" content="Rescale a SpatVector or SpatRaster. This may be useful to make small inset maps." />
+<meta property="og:description" content="Rescale a SpatVector or SpatRaster. This may be useful to make small inset maps or for georeferencing." />
 
 
 
@@ -117,14 +117,14 @@
     </div>
 
     <div class="ref-description">
-    <p>Rescale a SpatVector or SpatRaster. This may be useful to make small <code><a href='inset.html'>inset</a></code> maps.</p>
+    <p>Rescale a SpatVector or SpatRaster. This may be useful to make small <code><a href='inset.html'>inset</a></code> maps or for georeferencing.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>rescale</span><span class='op'>(</span><span class='va'>x</span>, f<span class='op'>=</span><span class='fl'>0.5</span>, <span class='va'>x0</span>, <span class='va'>y0</span><span class='op'>)</span>
+<span class='fu'>rescale</span><span class='op'>(</span><span class='va'>x</span>, fx<span class='op'>=</span><span class='fl'>0.5</span>, fy<span class='op'>=</span><span class='va'>fx</span>, <span class='va'>x0</span>, <span class='va'>y0</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>rescale</span><span class='op'>(</span><span class='va'>x</span>, fx<span class='op'>=</span><span class='fl'>0.5</span>, fy<span class='op'>=</span><span class='fl'>0.5</span>, <span class='va'>x0</span>, <span class='va'>y0</span><span class='op'>)</span></pre>
+<span class='fu'>rescale</span><span class='op'>(</span><span class='va'>x</span>, fx<span class='op'>=</span><span class='fl'>0.5</span>, fy<span class='op'>=</span><span class='va'>fx</span>, <span class='va'>x0</span>, <span class='va'>y0</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,16 +134,12 @@
       <td><p>SpatVector or SpatRaster</p></td>
     </tr>
     <tr>
-      <th>f</th>
-      <td><p>numeric &gt; 0. The scaling factor (a fraction)</p></td>
-    </tr>
-    <tr>
       <th>fx</th>
-      <td><p>numeric &gt; 0. The x scaling factor (a fraction)</p></td>
+      <td><p>numeric &gt; 0. The horizontal scaling factor</p></td>
     </tr>
     <tr>
       <th>fy</th>
-      <td><p>numeric &gt; 0. The y scaling factor (a fraction)</p></td>
+      <td><p>numeric &gt; 0. The vertical scaling factor</p></td>
     </tr>
     <tr>
       <th>x0</th>

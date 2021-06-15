@@ -204,27 +204,27 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
 <span class='va'>pm</span>
 </div><div class='output co'>#&gt;  class       : SpatVector 
 #&gt;  geometry    : polygons 
-#&gt;  dimensions  : 12, 6  (geometries, attributes)
+#&gt;  dimensions  : 12, 7  (geometries, attributes)
 #&gt;  extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
 #&gt;  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt;  names       :   NAME_1   NAME_2  ID_1  ID_2  AREA Value
-#&gt;  type        :    &lt;chr&gt;    &lt;chr&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
-#&gt;  values      : Diekirch Clervaux     1     1   312   708
-#&gt;                Diekirch Diekirch     1     2   218   755
-#&gt;                Diekirch  Redange     1     3   259   568</div><div class='input'><span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>pm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;          NAME_1           NAME_2 ID_1 ID_2 AREA Value
-#&gt; 1      Diekirch         Clervaux    1    1  312   708
-#&gt; 2      Diekirch         Diekirch    1    2  218   755
-#&gt; 3      Diekirch          Redange    1    3  259   568
-#&gt; 4      Diekirch          Vianden    1    4   76   878
-#&gt; 5      Diekirch            Wiltz    1    5  263   496
-#&gt; 6  Grevenmacher       Echternach    2    6  188    NA
-#&gt; 7  Grevenmacher           Remich    2    7  129    NA
-#&gt; 8  Grevenmacher     Grevenmacher    2   12  210    NA
-#&gt; 9    Luxembourg         Capellen    3    8  185    NA
-#&gt; 10   Luxembourg Esch-sur-Alzette    3    9  251    NA
-#&gt; 11   Luxembourg       Luxembourg    3   10  237    NA
-#&gt; 12   Luxembourg           Mersch    3   11  233    NA</div></pre>
+#&gt;  names       :   NAME_1   NAME_2  ID_1  ID_2  AREA       POP Value
+#&gt;  type        :    &lt;chr&gt;    &lt;chr&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;     &lt;num&gt; &lt;num&gt;
+#&gt;  values      : Diekirch Clervaux     1     1   312 1.808e+04   708
+#&gt;                Diekirch Diekirch     1     2   218 3.254e+04   755
+#&gt;                Diekirch  Redange     1     3   259 1.866e+04   568</div><div class='input'><span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>pm</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;          NAME_1           NAME_2 ID_1 ID_2 AREA    POP Value
+#&gt; 1      Diekirch         Clervaux    1    1  312  18081   708
+#&gt; 2      Diekirch         Diekirch    1    2  218  32543   755
+#&gt; 3      Diekirch          Redange    1    3  259  18664   568
+#&gt; 4      Diekirch          Vianden    1    4   76   5163   878
+#&gt; 5      Diekirch            Wiltz    1    5  263  16735   496
+#&gt; 6  Grevenmacher       Echternach    2    6  188  18899    NA
+#&gt; 7  Grevenmacher           Remich    2    7  129  22366    NA
+#&gt; 8  Grevenmacher     Grevenmacher    2   12  210  29828    NA
+#&gt; 9    Luxembourg         Capellen    3    8  185  48187    NA
+#&gt; 10   Luxembourg Esch-sur-Alzette    3    9  251 176820    NA
+#&gt; 11   Luxembourg       Luxembourg    3   10  237 182607    NA
+#&gt; 12   Luxembourg           Mersch    3   11  233  32112    NA</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

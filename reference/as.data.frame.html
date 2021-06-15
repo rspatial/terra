@@ -168,19 +168,19 @@
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    ID_1       NAME_1 ID_2           NAME_2 AREA
-#&gt; 1     1     Diekirch    1         Clervaux  312
-#&gt; 2     1     Diekirch    2         Diekirch  218
-#&gt; 3     1     Diekirch    3          Redange  259
-#&gt; 4     1     Diekirch    4          Vianden   76
-#&gt; 5     1     Diekirch    5            Wiltz  263
-#&gt; 6     2 Grevenmacher    6       Echternach  188
-#&gt; 7     2 Grevenmacher    7           Remich  129
-#&gt; 8     2 Grevenmacher   12     Grevenmacher  210
-#&gt; 9     3   Luxembourg    8         Capellen  185
-#&gt; 10    3   Luxembourg    9 Esch-sur-Alzette  251
-#&gt; 11    3   Luxembourg   10       Luxembourg  237
-#&gt; 12    3   Luxembourg   11           Mersch  233</div><div class='input'><span class='fu'>as.list</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    ID_1       NAME_1 ID_2           NAME_2 AREA    POP
+#&gt; 1     1     Diekirch    1         Clervaux  312  18081
+#&gt; 2     1     Diekirch    2         Diekirch  218  32543
+#&gt; 3     1     Diekirch    3          Redange  259  18664
+#&gt; 4     1     Diekirch    4          Vianden   76   5163
+#&gt; 5     1     Diekirch    5            Wiltz  263  16735
+#&gt; 6     2 Grevenmacher    6       Echternach  188  18899
+#&gt; 7     2 Grevenmacher    7           Remich  129  22366
+#&gt; 8     2 Grevenmacher   12     Grevenmacher  210  29828
+#&gt; 9     3   Luxembourg    8         Capellen  185  48187
+#&gt; 10    3   Luxembourg    9 Esch-sur-Alzette  251 176820
+#&gt; 11    3   Luxembourg   10       Luxembourg  237 182607
+#&gt; 12    3   Luxembourg   11           Mersch  233  32112</div><div class='input'><span class='fu'>as.list</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $ID_1
 #&gt;  [1] 1 1 1 1 1 2 2 2 3 3 3 3
 #&gt; 
@@ -199,6 +199,10 @@
 #&gt; 
 #&gt; $AREA
 #&gt;  [1] 312 218 259  76 263 188 129 210 185 251 237 233
+#&gt; 
+#&gt; $POP
+#&gt;  [1]  18081  32543  18664   5163  16735  18899  22366  29828  48187 176820
+#&gt; [11] 182607  32112
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

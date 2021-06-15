@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Apply a function to layers of a SpatRaster, or sub-datasets of a SpatRasterDataset — lapp" />
-<meta property="og:description" content="Apply a function to each cell of a SpatRaster, using layers as arguments.
+<meta property="og:description" content="Apply a function to a SpatRaster, using layers as arguments.
 The number of arguments in function fun must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function: fun=function(x,y){return(x*y)} percentage: fun=function(x,y){return(100 * x / y)}. If you combine three layers you could use fun=function(x,y,z){return((x + y) * z)}
 Before you use the function, test it to make sure that it is vectorized. That is, it should work for vectors longer than one, not only for single numbers. The function must return the same number of elements as its input vectors, or multiples of that. Also make sure that the function is NA-proof: it should returns the same number of values when some or all input values are NA. And the function must return a vector or a matrix, not a data.frame.
 Use app for summarize functions such as sum, that take any number of arguments; and tapp to do so for groups of layers." />
@@ -120,7 +120,7 @@ Use app for summarize functions such as sum, that take any number of arguments; 
     </div>
 
     <div class="ref-description">
-    <p>Apply a function to each cell of a SpatRaster, using layers as arguments.</p>
+    <p>Apply a function to a SpatRaster, using layers as arguments.</p>
 <p>The number of arguments in function <code>fun</code> must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function: <code>fun=function(x,y){return(x*y)}</code> percentage: <code>fun=function(x,y){return(100 * x / y)}</code>. If you combine three layers you could use <code>fun=function(x,y,z){return((x + y) * z)}</code></p>
 <p>Before you use the function, test it to make sure that it is vectorized. That is, it should work for vectors longer than one, not only for single numbers. The function must return the same number of elements as its input vectors, or multiples of that. Also make sure that the function is NA-proof: it should returns the same number of values when some or all input values are <code>NA</code>. And the function must return a vector or a matrix, not a <code>data.frame</code>.</p>
 <p>Use <code><a href='app.html'>app</a></code> for summarize functions such as <code>sum</code>, that take any number of arguments; and <code><a href='tapp.html'>tapp</a></code> to do so for groups of layers.</p>

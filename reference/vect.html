@@ -176,14 +176,14 @@
 <span class='va'>v</span>
 </div><div class='output co'>#&gt;  class       : SpatVector 
 #&gt;  geometry    : polygons 
-#&gt;  dimensions  : 12, 5  (geometries, attributes)
+#&gt;  dimensions  : 12, 6  (geometries, attributes)
 #&gt;  extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)
 #&gt;  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt;  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA
-#&gt;  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt;
-#&gt;  values      :     1 Diekirch     1 Clervaux   312
-#&gt;                    1 Diekirch     2 Diekirch   218
-#&gt;                    1 Diekirch     3  Redange   259</div><div class='input'>
+#&gt;  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA       POP
+#&gt;  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt;     &lt;num&gt;
+#&gt;  values      :     1 Diekirch     1 Clervaux   312 1.808e+04
+#&gt;                    1 Diekirch     2 Diekirch   218 3.254e+04
+#&gt;                    1 Diekirch     3  Redange   259 1.866e+04</div><div class='input'>
 <span class='co'>### from a geom matrix</span>
 <span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>180</span>,<span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='fl'>55</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>60</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>10</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>160</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>55</span><span class='op'>)</span><span class='op'>)</span>
