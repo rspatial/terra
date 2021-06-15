@@ -2,7 +2,7 @@
 f <- system.file("ex/lux.shp", package="terra")
 lux <- vect(f)
 
-expect_equal(dim(lux), c(12,5)) 
+expect_equal(dim(lux), c(12,6)) 
 expect_equivalent(unlist(lux[,"ID_2",drop=TRUE]), c(1:7, 12, 8:11))	
 
 x <- lux[lux$NAME_1 == "Luxembourg", 2:3]
