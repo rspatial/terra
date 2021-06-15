@@ -9,7 +9,7 @@
 \title{Apply a function to the cells of a SpatRaster}
 
 \description{ 
-Apply a function to values of each cell of a SpatRaster. Similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix. This is generally used to summarize the values of multiple layers into one layer; but this is not required.
+Apply a function to the values of each cell of a SpatRaster. Similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix. This is generally used to summarize the values of multiple layers into one layer; but this is not required. The function applied can only take one argument for the raster data that is provided as a matrix in which each layer is a column.
 
 You can also apply a function \code{fun} across datasets by layer of a \code{SpatRasterDataset}. In that case, summarization is across SpatRasters, not across layers.
 }

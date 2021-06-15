@@ -53,10 +53,10 @@ setMethod("click", signature(x="missing"),
 		for (i in 1:n) {
 			x <- do_click(type=type, id=id, i=i, ...)
 			if (is.null(x)) break
-			X <- cbind(X, x)
+			X <- rbind(X, x)
 			if (show) print(x); utils::flush.console()
 		}
-		if (show) invisible(X) else x
+		if (show) invisible(X) else X
 	}
 )
 

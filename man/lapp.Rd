@@ -9,7 +9,7 @@
 \title{Apply a function to layers of a SpatRaster, or sub-datasets of a SpatRasterDataset}
 
 \description{
-Apply a function to each cell of a SpatRaster, using layers as arguments.
+Apply a function to a SpatRaster, using layers as arguments.
 
 The number of arguments in function \code{fun} must match the number of layers in the SpatRaster (or the number of sub-datasets in the SpatRasterDataset). For example, if you want to multiply two layers, you could use this function: \code{fun=function(x,y){return(x*y)}} percentage: \code{fun=function(x,y){return(100 * x / y)}}. If you combine three layers you could use \code{fun=function(x,y,z){return((x + y) * z)}}
 

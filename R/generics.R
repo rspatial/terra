@@ -567,9 +567,9 @@ setMethod("shift", signature(x="SpatVector"),
 )
 
 setMethod("rescale", signature(x="SpatRaster"), 
-	function(x, f=0.5, x0, y0) { 
-		stopifnot(f > 0)
-		f <- sqrt(f)
+	function(x, fx=0.5, fy=fx, x0, y0) { 
+		stopifnot(fx > 0)
+		stopifnot(fy > 0)
 		e <- as.vector(ext(x))
 		if (missing(x0)) {
 			x0 <- mean(e[1:2])
@@ -577,8 +577,8 @@ setMethod("rescale", signature(x="SpatRaster"),
 		if (missing(y0)) {
 			y0 <- mean(e[3:4])
 		}
-		ex = x0 + f * (e[1:2] - x0);
-		ey = y0 + f * (e[3:4] - y0);
+		ex = x0 + fx * (e[1:2] - x0);
+		ey = y0 + fy * (e[3:4] - y0);
 		x@ptr <- x@ptr$deepcopy()
 		ext(x) <- ext(c(ex, ey))
 		messages(x, "rescale")
