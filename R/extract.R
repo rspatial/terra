@@ -241,7 +241,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	if (useLyr) {
 		idx <- cbind(e[,1], layer[e[,1]]+1)
-		ee <- cbind(e[,1,drop=FALSE], names(x)[idx[,2]], value=e[idx])
+		ee <- cbind(e[,1,drop=FALSE], names(x)[idx[,2]-1], value=e[idx])
 		colnames(ee)[2] <- lyr_name
 		if (ncol(e) > (nl+1)) {
 			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
