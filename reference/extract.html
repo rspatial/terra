@@ -73,7 +73,7 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-2</span>
       </span>
     </div>
 
@@ -124,7 +124,7 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster,SpatVector</span>
 <span class='fu'>extract</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, fun<span class='op'>=</span><span class='cn'>NULL</span>, method<span class='op'>=</span><span class='st'>"simple"</span>, list<span class='op'>=</span><span class='cn'>FALSE</span>, factors<span class='op'>=</span><span class='cn'>TRUE</span>, 
-        cells<span class='op'>=</span><span class='cn'>FALSE</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span>, weights<span class='op'>=</span><span class='cn'>FALSE</span>, exact<span class='op'>=</span><span class='cn'>FALSE</span>, touches<span class='op'>=</span><span class='fu'><a href='geomtype.html'>is.lines</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
+        cells<span class='op'>=</span><span class='cn'>FALSE</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span>, weights<span class='op'>=</span><span class='cn'>FALSE</span>, exact<span class='op'>=</span><span class='cn'>FALSE</span>, touches<span class='op'>=</span><span class='fu'><a href='geomtype.html'>is.lines</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>, layer<span class='op'>=</span><span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster,SpatExtent</span>
 <span class='fu'>extract</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, factors<span class='op'>=</span><span class='cn'>TRUE</span>, cells<span class='op'>=</span><span class='cn'>FALSE</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
@@ -185,6 +185,10 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
     <tr>
       <th>touches</th>
       <td><p>logical. If <code>TRUE</code>, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered <code>TRUE</code> when <code>weights=TRUE</code> or <code>exact=TRUE</code></p></td>
+    </tr>
+    <tr>
+      <th>layer</th>
+      <td><p>character or numeric to select the layer to exctract from for each geometry. If <code>layer</code> is a character it can be a name in <code>y</code> or a vector of layer names. If it is numeric, it must be integer values between <code>1</code> and <code><a href='dimensions.html'>nlyr(x)</a></code></p></td>
     </tr>
     </table>
 
