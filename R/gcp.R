@@ -24,21 +24,21 @@ setMethod("show", signature(object="GCP"),
 )
 
 
-setMethod("add<-", signature(x="GCP"), 
-	function(x, value) {
-		if (missing(value)) {
-			value <- terra:::RS_locator(2, "l")
-			value <- rbind(as.vector(t(value)))
-		} 
-		if (ncol(value) == 4) {
-			x@gcp <- rbind(x@gcp, value)
-		}
-		if (!is.null(grDevices::dev.list())) {
-			graphics::arrows(value[1,1], value[1,2], x1 = value[1,3], y1 = value[1,4], col="red", length = 0.1)
-		}
-		x
-	}
-)
+#setMethod("add<-", signature(x="GCP"), 
+#	function(x, value) {
+#		if (missing(value)) {
+#			value <- terra:::RS_locator(2, "l")
+#			value <- rbind(as.vector(t(value)))
+#		} 
+#		if (ncol(value) == 4) {
+#			x@gcp <- rbind(x@gcp, value)
+#		}
+#		if (!is.null(grDevices::dev.list())) {
+#			graphics::arrows(value[1,1], value[1,2], x1 = value[1,3], y1 = value[1,4], col="red", length = 0.1)
+#		}
+#		x
+#	}
+#)
 
 
 #gcp <- new("GCP")

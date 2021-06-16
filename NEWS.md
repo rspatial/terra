@@ -1,5 +1,5 @@
 
-# version 1.3-1
+# version 1.3-2
 
 ## new
 
@@ -24,7 +24,7 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - The raster attribute table of ESRI-GRID integer data, or from an ESRI `vat.dbf` file is now ignored if it only has the counts of the values. See issue [#234]( https://github.com/rspatial/terra/issues/234) by Jullee
 - time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in [#246]( https://github.com/rspatial/terra/issues/246)
 - resample (and project) no longer ignore `gdal=""` write options and use BIGTIFF if necessary (suggested by Ani Ghosh)
-
+- new argument `layer` in the `extract-SpatRaster,SpatVector` method to extract values for a single layers specified for each geometry (see this [question](https://gis.stackexchange.com/a/401591/8993)).
 
 ## bug fixes 
 

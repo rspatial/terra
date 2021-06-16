@@ -239,7 +239,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	if (useLyr) {
 		idx <- cbind(e[,1], layer[e[,1]]+1)
-		ee <- cbind(e[,1,drop=FALSE], value=e[idx])
+		ee <- cbind(e[,1,drop=FALSE], layer=names(x)[layer], value=e[idx])
 		if (ncol(e) > (nl+1)) {
 			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
 		} else {
