@@ -86,8 +86,11 @@ wmax <- function(p, na.rm=FALSE) {
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
-function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), ...) { 
-	method = match.arg(tolower(method), c("simple", "bilinear"))
+function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) { 
+
+	nl <- nlyr(x)
+	useLyr <- FALSE
+	method <- match.arg(tolower(method), c("simple", "bilinear"))
 	hasfun <- !is.null(fun)
 	if (weights && exact) {
 		exact = FALSE
@@ -117,6 +120,23 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			if (bad) error("extract", 'if weights or exact=TRUE, "fun" must be "sum", "mean" or NULL')
 		}
 	} 
+	if (!is.null(layer) && nl > 1) {
+		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
+		if (length(layer) == 1) {
+			layer <- as.character(y[[layer,drop=TRUE]])
+		} else {
+			stopifnot(length(layer) == nrow(y))
+		}
+		if (is.numeric(layer)) {
+			layer <- round(layer)
+			stopifnot(min(layer) > 0 & max(layer) <= nl)
+		} else {
+			layer <- match(layer, names(x))
+			if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
+		}
+		useLyr <- TRUE
+	}
+
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#e <- rapply(e, f, how="replace")
 	cn <- names(x)
@@ -136,7 +156,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 
 	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]))
 	x <- messages(x, "extract")
-	nc <- nlyr(x)
+	nc <- nl
 	if (cells) {
 		cn <- c(cn, "cell")
 		nc <- nc + 1
@@ -156,7 +176,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	geo <- geomtype(y)
 	if (geo == "points") {
 		## this was? should be fixed upstream
-		if (nc == nlyr(x)) {		
+		if (nc == nl) {		
 			e <- matrix(e, ncol=nc)
 		} else {
 			e <- matrix(e, ncol=nc, byrow=TRUE)
@@ -214,6 +234,16 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 					e[[i]] <- rapply(e[[i]], function(j) setlabs(j+1, labs), how="replace")
 				}
 			}
+		}
+	}
+
+	if (useLyr) {
+		idx <- cbind(e[,1], layer[e[,1]]+1)
+		ee <- cbind(e[,1,drop=FALSE], value=e[idx])
+		if (ncol(e) > (nl+1)) {
+			e <- cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
+		} else {
+			e <- ee
 		}
 	}
 	e
