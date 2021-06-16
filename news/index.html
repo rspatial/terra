@@ -114,9 +114,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-13-1" class="section level1">
-<h1 class="page-header" data-toc-text="1.3-1">
-<a href="#version-13-1" class="anchor"></a>version 1.3-1<small> Unreleased </small>
+    <div id="version-13-2" class="section level1">
+<h1 class="page-header" data-toc-text="1.3-2">
+<a href="#version-13-2" class="anchor"></a>version 1.3-2<small> Unreleased </small>
 </h1>
 <div id="new" class="section level2">
 <h2 class="hasAnchor">
@@ -158,6 +158,7 @@
 <li>time attributes are no longer lost when doing raster operations. Suggested by Mauricio Zambrano-Bigiarini in <a href="https://github.com/rspatial/terra/issues/246"><a href='https://github.com/rspatial/terra/issues/246'>#246</a></a>
 </li>
 <li>resample (and project) no longer ignore <code>gdal=""</code> write options and use BIGTIFF if necessary (suggested by Ani Ghosh)</li>
+<li>new argument <code>layer</code> in the <code>extract-SpatRaster,SpatVector</code> method to extract values for a single layers specified for each geometry (see this <a href="https://gis.stackexchange.com/a/401591/8993">question</a>).</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
