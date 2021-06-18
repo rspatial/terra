@@ -29,7 +29,8 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 
 \usage{
 \S4method{extract}{SpatRaster,SpatVector}(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, 
-        cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...)
+        cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE,
+        touches=is.lines(y), layer=NULL, ...)
 
 \S4method{extract}{SpatRaster,SpatExtent}(x, y, factors=TRUE, cells=FALSE, xy=FALSE)
 

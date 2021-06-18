@@ -62,7 +62,7 @@ setMethod("rast", signature(x="list"),
 			if (!any(i)) {
 				error("rast,list", "none of the elements of x are a SpatRaster")
 			} else {
-				warn("rast", sum(!i), " out of ", length(x), " elements of x are a SpatRaster")
+				warn("rast", sum(!i), " out of ", length(x), " elements of x are not a SpatRaster")
 				x <- x[i]
 			}
 		}
@@ -283,7 +283,7 @@ setMethod("rast", signature(x="ANY"),
 	maxy <- max(y) + 0.5 * ry
 
 	d <- dim(xyz)
-	r <- rast(xmin=minx, xmax=maxx, ymin=miny, ymax=maxy, crs=crs, nl=d[2]-2)
+	r <- rast(xmin=minx, xmax=maxx, ymin=miny, ymax=maxy, crs=crs, nlyrs=d[2]-2)
 	res(r) <- c(rx, ry)
 	cells <- cellFromXY(r, xyz[,1:2])
 	if (d[2] > 2) {
