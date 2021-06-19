@@ -149,14 +149,19 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
 
+<span class='co'># Date"</span>
 <span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2001-05-04"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>2</span>
 <span class='fu'>time</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>d</span>
 <span class='fu'>time</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "2001-05-04" "2001-05-05" "2001-05-06"</div><div class='input'>
+<span class='co'># POSIX (time stored as seconds)</span>
 <span class='fu'>time</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXlt</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>
 <span class='fu'>time</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "2001-05-04 UTC" "2001-05-05 UTC" "2001-05-06 UTC"</div><div class='input'>
-</div></pre>
+<span class='co'># "raw" time</span>
+<span class='fu'>time</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='catalyze.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>)</span>
+<span class='fu'>time</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 11446 11447 11448</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
