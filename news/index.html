@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-5</span>
       </span>
     </div>
 
@@ -114,9 +114,21 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-13-3" class="section level1">
-<h1 class="page-header" data-toc-text="1.3-3">
-<a href="#version-13-3" class="anchor"></a>version 1.3-3<small> Unreleased </small>
+    <div id="version-13-5" class="section level1">
+<h1 class="page-header" data-toc-text="1.3-5">
+<a href="#version-13-5" class="anchor"></a>version 1.3-5<small> Unreleased </small>
+</h1>
+<div id="enhancements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#enhancements" class="anchor"></a>enhancements</h2>
+<ul>
+<li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code><a href="../reference/time.html">time(x)</a></code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue <a href="https://github.com/rspatial/terra/issues/256"><a href='https://github.com/rspatial/terra/issues/256'>#256</a></a> raised by Mauricio Zambrano-Bigiarini.</li>
+</ul>
+</div>
+</div>
+    <div id="version-13-4" class="section level1">
+<h1 class="page-header" data-toc-text="1.3-4">
+<a href="#version-13-4" class="anchor"></a>version 1.3-4<small> Unreleased </small>
 </h1>
 <div id="new" class="section level2">
 <h2 class="hasAnchor">
@@ -137,9 +149,9 @@
 <li>new method <code>shade</code>, to compute hill shading</li>
 </ul>
 </div>
-<div id="enhancements" class="section level2">
+<div id="enhancements-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-1" class="anchor"></a>enhancements</h2>
 <ul>
 <li>additional arguments (such as <code>na.rm</code>) are now used by <code>rasterize</code> with point geometries. Suggested by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/209"><a href='https://github.com/rspatial/terra/issues/209'>#209</a></a>
 </li>
@@ -207,9 +219,9 @@
 <code>split</code> methods for SpatVector and SpatRaster</li>
 </ul>
 </div>
-<div id="enhancements-1" class="section level2">
+<div id="enhancements-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-1" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-2" class="anchor"></a>enhancements</h2>
 <ul>
 <li>
 <code>rast(Raster*)</code> now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe <a href="https://github.com/rspatial/terra/issues/200"><a href='https://github.com/rspatial/terra/issues/200'>#200</a></a>
