@@ -10,7 +10,10 @@
 		} else if (cls[i] == "character") {
 			x$add_column_string(d[[i]], nms[i])
 		} else if (cls[i] == "integer") {
-			x$add_column_long(d[[i]], nms[i])
+			v <- d[[i]]
+			# min long
+			v[is.na(v)] <- -9223372036854775808
+			x$add_column_long(v, nms[i])
 		} else {
 			v <- as.numeric(d[[i]])
 			x$add_column_double(v, nms[i])
