@@ -1839,11 +1839,9 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 			ddx[i] = distHaversine(-dx, gy[i], dx, gy[i]) / 2 ;
 		}
 	} 
-	double zy, zx; 
-	
+
 	if (ngb == 4) {
 		if (geo) {
-			int q;
 			double xwi[2] = {-1,1};
 			double xw[2] = {0,0};
 			double yw[2] = {-1,1};
@@ -1851,15 +1849,15 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 			for (size_t i=0; i<2; i++) {
 				yw[i] = yw[i] / (2 * dy);
 			}		
-			for (size_t i = ncol; i < (ncol * (nrow-1)-1); i++) {
+			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
 				if (i % ncol == 0) {
-					q = i / ncol;
+					int q = i / ncol;
 					for (size_t k=0; k<2; k++) {
 						xw[k] = xwi[k] / (-2 * ddx[q]);
 					}
 				}
-				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
-				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
+				double zx = d[i-1] * xw[0] + d[i+1] * xw[1];
+				double zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
 				val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2) ));
 			}
 		} else {
@@ -1871,8 +1869,8 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				yw[i] /=  2 * dy;
 			}
 			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
-				zx = d[i-1] * xw[0] + d[i+1] * xw[1];
-				zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
+				double zx = d[i-1] * xw[0] + d[i+1] * xw[1];
+				double zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
 				val[i+add] =  atan( sqrt( pow(zy, 2) + pow(zx, 2)  ));
 			}
 		}	
@@ -1881,7 +1879,6 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 	} else {
 	
 		if (geo) {
-			int q;
 			double xwi[6] = {-1,-2,-1,1,2,1};
 			double xw[6] = {0,0,0,0,0,0};
 			double yw[6] = {-1,1,-2,2,-1,1};
@@ -1890,21 +1887,20 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				yw[i] = yw[i] / (8 * dy);
 			}
 					
-			for (size_t i = ncol; i < (ncol * (nrow-1)-1); i++) {
+			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
 				if (i % ncol == 0) {
-					q = i / ncol;
+					int q = i / ncol;
 					for (size_t k=0; k<6; k++) {
 						xw[k] = xwi[k] / (8 * ddx[q]);
 					}
 				}
-				zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
+				double zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
 						+ d[i+1-ncol] * xw[3] + d[i+1] * xw[4] + d[i+1+ncol] * xw[5];
-				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
+				double zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
-				val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2)  ));
-							
+				val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2) ));							
 			}
-		
+
 		} else {
 	
 			double xw[6] = {-1,-2,-1,1,2,1};
@@ -1914,9 +1910,9 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				yw[i] /= 8 * dy;
 			}
 			for (size_t i = ncol+1; i < (ncol * (nrow-1)-1); i++) {
-				zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
+				double zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
 						+ d[i+1-ncol] * xw[3] + d[i+1] * xw[4] + d[i+1+ncol] * xw[5];
-				zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
+				double zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 						+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
 				val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2) ));
 			}
