@@ -101,7 +101,7 @@ y[i]
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v <- v[1:2,]
-z <- rast(v, res=.1, names="test")
+z <- rast(v, resolution=.1, names="test")
 values(z) <- 1:ncell(z)
 
 rf <- system.file("ex/elev.tif", package="terra")

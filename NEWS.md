@@ -1,5 +1,11 @@
+# version 1.3-5
 
-# version 1.3-3
+## enhancements
+
+- if `time(x) <- d` is set with a `Date` class object, `time(x)` now returns a `Date` object instead of a `POSIXct` object. Issue [#256](https://github.com/rspatial/terra/issues/256) raised by Mauricio Zambrano-Bigiarini.
+
+
+# version 1.3-4
 
 ## new
 

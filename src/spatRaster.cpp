@@ -638,7 +638,7 @@ bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
 	if (time.size() != nlyr()) {
 		return false;
 	} 
-	if (!(step == "seconds") || (step == "raw")) {  // "days", "months", "years"
+	if (!((step == "seconds") || (step == "raw")  || (step == "days"))) {  // "months", "years"
 		return false;
 	} 
 	size_t begin=0;

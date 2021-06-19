@@ -27,16 +27,15 @@ setMethod("time", signature(x="SpatRaster"),
 setMethod("time<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		if (inherits(value, "Date")) {
-			value <- as.POSIXlt(value)
-		}
-		if (inherits(value, "POSIXt")) {
-			if (!x@ptr$setTime(as.numeric(value), "seconds")) {
-				error("time<-", "cannot set these  values")
-			}
+			#value <- as.POSIXlt(value)
+			tstep <- "days"
+		} else if (inherits(value, "POSIXt")) {
+			tstep <- "seconds"
 		} else {
-			if (!x@ptr$setTime(as.numeric(value), "raw")) {
-				error("time<-", "cannot set these  values")
-			}
+			tstep <- "raw"
+		}
+		if (!x@ptr$setTime(as.numeric(value), tstep)) {
+			error("time<-", "cannot set these  values")
 		}
 		return(x)
 	}
