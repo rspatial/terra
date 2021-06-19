@@ -34,8 +34,13 @@ Date
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 
-time(s) <- as.Date("2001-05-04") + 0:2
+d <- as.Date("2001-05-04") + 0:2
+time(s) <- d
 time(s)
+
+time(s) <- as.POSIXlt(d)
+time(s)
+
 }
 
 \keyword{spatial}
