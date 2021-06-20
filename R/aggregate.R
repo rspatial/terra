@@ -40,7 +40,7 @@
 setMethod("aggregate", signature(x="SpatRaster"), 
 function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
-	#fun <- .makeTextFun(fun)
+	fun <- .makeTextFun(fun)
 	toc <- FALSE
 	if (class(fun) == "character") { 
 		if (fun %in% c("sum", "mean", "min", "max", "median", "modal", "sd", "sdpop")) {
