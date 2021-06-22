@@ -1089,7 +1089,7 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 				nyone = true;
 			} else {
 				// recycle?
-				setError("vectors have different lenghts");
+				setError("vectors have different lengths");
 				return out;
 			}
 		}

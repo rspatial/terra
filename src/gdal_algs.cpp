@@ -313,7 +313,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
+SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
 	out.setNames(getNames());
@@ -336,15 +336,9 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	std::string filename = opt.get_filename();
 	if ((!use_crs) & (!hasValues())) {
 		if (filename != "") {
-			addWarning("raster has no values, not writing to file");
+			out.addWarning("raster has no values, not writing to file");
 		}
 		return out;
-	}
-
-	//out.setNames(getNames());
-	if (method == "near") {
-		out.rgb = rgb;
-		out.rgblyrs = rgblyrs;		
 	}
 
 	if (!is_valid_warp_method(method)) {
@@ -459,6 +453,130 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	return out;
 }
 
+
+
+
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
+
+
+	SpatRaster out = x.geometry(nlyr(), false, false);
+	out.setNames(getNames());
+	if (method == "near") {
+		out.source[0].hasColors = hasColors();
+		out.source[0].cols = getColors();
+		out.source[0].hasCategories = hasCategories();
+		out.source[0].cats = getCategories();
+		out.rgb = rgb;
+		out.rgblyrs = rgblyrs;		
+	}
+	if (hasTime()) {
+		out.source[0].hasTime = true;
+		out.source[0].timestep = getTimeStep();
+		out.source[0].time = getTime();
+	}
+	
+	bool use_crs = crs != "";  
+	std::string filename = opt.get_filename();
+	if ((!use_crs) & (!hasValues())) {
+		if (filename != "") {
+			out.addWarning("raster has no values, not writing to file");
+		}
+		return out;
+	}
+
+	if (!is_valid_warp_method(method)) {
+		out.setError("not a valid warp method");
+		return out;
+	}
+
+	std::string srccrs = getSRS("wkt");
+	if (srccrs == "") {
+		out.setError("input raster CRS not set");
+		return out;	
+	}
+
+	lrtrim(crs);
+	SpatOptions sopt(opt);
+	if (use_crs) {
+		GDALDatasetH hSrcDS;
+		if (!open_gdal(hSrcDS, 0, sopt)) {
+			out.setError("cannot create dataset from source");
+			return out;
+		}
+		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
+			GDALClose( hSrcDS );
+			return out;
+		}
+		GDALClose( hSrcDS );
+		if (!hasValues()) {
+			return out;
+		}
+	}
+
+	SpatOptions mopt;
+	if (mask) {
+		mopt = opt;
+		opt = SpatOptions(opt);
+	}
+	filename = opt.get_filename();
+
+	if (!out.writeStart(opt)) {
+		return out;		
+	}
+
+	std::string errmsg;
+	size_t ns = nsrc();
+	SpatExtent eout = out.getExtent();
+	GDALDatasetH hDstDS, hSrcDS;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		int bandstart = 0;
+		eout.ymax = out.yFromRow(out.bs.row[i]);
+		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1);
+		SpatRaster crop_out = out.crop(eout, "out", sopt);
+		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, sopt)) {
+			return crop_out;
+		}
+		for (size_t i=0; i<ns; i++) {
+			if (!open_gdal(hSrcDS, i, sopt)) {
+				out.setError("cannot create dataset from source");
+				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+				return out;
+			}
+			std::vector<unsigned> srcbands = source[i].layers;
+			std::vector<unsigned> dstbands(srcbands.size()); 
+			std::iota (dstbands.begin(), dstbands.end(), bandstart); 
+			bandstart += dstbands.size();
+
+			bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose());
+			if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );
+			
+			if (!success) {
+				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+				out.setError(errmsg);
+				return out;
+			}
+		}
+		bool ok = crop_out.from_gdalMEM(hDstDS, use_crs, true); 
+
+	
+		if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
+		if (!ok) {
+			out.setError("cannot do this transformation (warp)");
+			return out;
+		}
+		std::vector<double> v = crop_out.getValues(-1);
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+	}
+	out.writeStop();
+
+	if (mask) {
+		SpatVector v = dense_extent();
+		v = v.project(out.getSRS("wkt"));
+		out = out.mask(v, false, NAN, true, mopt);
+	}
+
+	return out;
+}
 
 
 

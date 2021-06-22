@@ -111,7 +111,8 @@ cellFromRowColCombine(r, 1:2, 1:2)
 
 colFromX(r, 10)
 rowFromY(r, 10)
-cellFromXY(r, cbind(c(10,5), c(15, 88)))
+xy <- cbind(lon=c(10,5), lat=c(15, 88))
+cellFromXY(r, xy)
 }
 
 \keyword{spatial}

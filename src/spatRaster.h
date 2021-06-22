@@ -671,6 +671,7 @@ class SpatRaster {
 		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
 
 		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt);
+		SpatRaster old_warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt);
 		//SpatRaster tester(bool geom);
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty);
 
