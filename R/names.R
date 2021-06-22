@@ -6,7 +6,9 @@
 
 setMethod("names", signature(x="SpatRaster"), 
 	function(x) { 
-		x@ptr$names
+		nms <- x@ptr$names
+		Encoding(nms) <- "UTF-8"
+		nms
 	}
 )
 
@@ -31,7 +33,9 @@ setMethod("names<-", signature(x="SpatRaster"),
 
 setMethod("names", signature(x="SpatRasterDataset"), 
 	function(x) { 
-		x@ptr$names
+		nms <- x@ptr$names
+		Encoding(nms) <- "UTF-8"
+		nms
 	}
 )
 
@@ -45,8 +49,10 @@ setMethod("names<-", signature(x="SpatRasterDataset"),
 )
 
 setMethod("varnames", signature(x="SpatRasterDataset"), 
-	function(x) { 
-		x@ptr$names
+	function(x) {
+		nms <- x@ptr$names
+		Encoding(nms) <- "UTF-8"
+		nms
 	}
 )
 
@@ -62,7 +68,9 @@ setMethod("varnames<-", signature(x="SpatRasterDataset"),
 
 setMethod("names", signature(x="SpatVector"), 
 	function(x) { 
-		x@ptr$names
+		nms <- x@ptr$names
+		Encoding(nms) <- "UTF-8"
+		nms
 	}
 )
 
@@ -97,7 +105,9 @@ setMethod("varnames<-", signature(x="SpatRaster"),
 
 setMethod("longnames", signature(x="SpatRasterDataset"), 
 	function(x) { 
-		x@ptr$long_names
+		nms <- x@ptr$long_names
+		Encoding(nms) <- "UTF-8"
+		nms		
 	}
 )
 

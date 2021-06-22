@@ -5,7 +5,7 @@
 
 positive_indices <- function(i, n, caller=" [ ") {
 	if (!(all(i <= 0) || all(i >= 0))) {
-		error(caller, "you cannot mix postive and negative indices")
+		error(caller, "you cannot mix positive and negative indices")
 	}
 	i <- stats::na.omit(i)
 	(1:n)[i]

@@ -260,12 +260,27 @@ setMethod ("show" , "SpatRaster",
 						} 
 					}
 				}
-				w <- pmax(nchar(ln), nchar(minv), nchar(maxv), nchar(uts))
-				m <- rbind(ln, minv, maxv)
-				if (hasunits) m <- rbind(m, uts)
-				# a loop because "width" is not recycled by format
-				for (i in 1:ncol(m)) {
-					m[,i]   <- format(m[,i], width=w[i], justify="right")
+				u8 <- Encoding(ln) == "UTF-8"
+				if (any(u8)) {
+					wln <- nchar(ln)
+					wln <- wln + u8 * wln
+					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts))
+					m <- rbind(paste0(rep(" ", nchar(ln)), collapse=""), minv, maxv)
+					if (hasunits) m <- rbind(m, uts)
+					# a loop because "width" is not recycled by format
+					for (i in 1:ncol(m)) {					
+						m[,i] <- format(m[,i], width=w[i], justify="right")
+						addsp <- w[i] - nchar(ln[i])
+						m[1,i] <- paste0(paste0(rep(" ", addsp), collapse=""), ln[i])
+					}
+				} else {
+					w <- pmax(ln, nchar(minv), nchar(maxv), nchar(uts))
+					m <- rbind(ln, minv, maxv)
+					if (hasunits) m <- rbind(m, uts)
+					# a loop because "width" is not recycled by format
+					for (i in 1:ncol(m)) {					
+						m[,i] <- format(m[,i], width=w[i], justify="right")
+					}
 				}
 				if (ncol(m) == 1) {
 					if (is.factor(object)) {
