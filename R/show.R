@@ -261,11 +261,11 @@ setMethod ("show" , "SpatRaster",
 					}
 				}
 				u8 <- Encoding(ln) == "UTF-8"
+				wln <- nchar(ln)
 				if (any(u8)) {
-					wln <- nchar(ln)
-					wln <- wln + u8 * wln
+					# for Chinese: wln <- wln + u8 * wln
 					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts))
-					m <- rbind(paste0(rep(" ", nchar(ln)), collapse=""), minv, maxv)
+					m <- rbind(paste0(rep(" ", max(wln)), collapse=""), minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format
 					for (i in 1:ncol(m)) {					
@@ -274,7 +274,7 @@ setMethod ("show" , "SpatRaster",
 						m[1,i] <- paste0(paste0(rep(" ", addsp), collapse=""), ln[i])
 					}
 				} else {
-					w <- pmax(ln, nchar(minv), nchar(maxv), nchar(uts))
+					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts))
 					m <- rbind(ln, minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format

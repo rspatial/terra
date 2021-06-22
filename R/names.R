@@ -16,6 +16,8 @@ setMethod("names", signature(x="SpatRaster"),
 setMethod("names<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		value <- as.character(value)
+		value <- enc2utf8(value)
+
 		if (length(value) != nlyr(x)) {
 			error("names<-", "incorrect number of names")
 		}
