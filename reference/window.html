@@ -164,10 +164,7 @@ Currently, the window will be forced to intersect with the extent of the SpatRas
 #&gt; resolution  : 0.008333333, 0.008333333  (x, y)
 #&gt; window      : 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt; source      : elev.tif 
-#&gt; name        : elevation 
-#&gt; min value   :      &gt;141 
-#&gt; max value   :      547&lt; </div><div class='input'>
+#&gt; source      : elev.tif </div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in format.default(m[, i], width = w[i], justify = "right"): invalid 'width' argument</span></div><div class='input'>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='va'>xe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='crop.html'>crop</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>e</span><span class='op'>)</span>
 <span class='fu'><a href='global.html'>global</a></span><span class='op'>(</span><span class='va'>xe</span>, <span class='st'>"mean"</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
@@ -182,10 +179,7 @@ Currently, the window will be forced to intersect with the extent of the SpatRas
 #&gt; extent (win): 5.9, 6, 49.95, 50  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
 #&gt; sources     : memory  
-#&gt;               elev.tif  
-#&gt; names       : elevation, elevation 
-#&gt; min values  :       323,      &gt;141 
-#&gt; max values  :       492,      547&lt; </div><div class='input'>
+#&gt;               elev.tif  </div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in format.default(m[, i], width = w[i], justify = "right"): invalid 'width' argument</span></div><div class='input'>
 <span class='fu'>window</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='cn'>NULL</span>
 <span class='va'>r</span>
 </div><div class='output co'>#&gt; class       : SpatRaster 
@@ -193,10 +187,7 @@ Currently, the window will be forced to intersect with the extent of the SpatRas
 #&gt; resolution  : 0.008333333, 0.008333333  (x, y)
 #&gt; extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt; source      : elev.tif 
-#&gt; name        : elevation 
-#&gt; min value   :       141 
-#&gt; max value   :       547 </div></pre>
+#&gt; source      : elev.tif </div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in format.default(m[, i], width = w[i], justify = "right"): invalid 'width' argument</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

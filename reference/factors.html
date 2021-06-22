@@ -189,10 +189,7 @@ With setCats you can set it for any layer and you can also set the 'active&quot;
 #&gt; resolution  : 36, 18  (x, y)
 #&gt; extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt; source      : memory 
-#&gt; name        : land cover 
-#&gt; min value   :     forest 
-#&gt; max value   :      water </div><div class='input'>
+#&gt; source      : memory </div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in format.default(m[, i], width = w[i], justify = "right"): invalid 'width' argument</span></div><div class='input'>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, col<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"green"</span>, <span class='st'>"blue"</span>, <span class='st'>"light gray"</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='input'><span class='fu'><a href='text.html'>text</a></span><span class='op'>(</span><span class='va'>x</span>, digits<span class='op'>=</span><span class='fl'>3</span>, cex<span class='op'>=</span><span class='fl'>.75</span>, halo<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='img'><img src='factors-1.png' alt='' width='700' height='433' /></div><div class='input'>
@@ -212,11 +209,7 @@ With setCats you can set it for any layer and you can also set the 'active&quot;
 #&gt; resolution  : 36, 18  (x, y)
 #&gt; extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt; source      : memory 
-#&gt; categories  : cover, letters, value 
-#&gt; name        :  cover 
-#&gt; min value   : forest 
-#&gt; max value   :  water </div><div class='input'>
+#&gt; source      : memory </div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in format.default(m[, i], width = w[i], justify = "right"): invalid 'width' argument</span></div><div class='input'>
 <span class='co'>## switch categories</span>
 <span class='fu'>cats</span><span class='op'>(</span><span class='va'>x</span>, <span class='fl'>1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   ID  cover letters value
@@ -239,10 +232,7 @@ With setCats you can set it for any layer and you can also set the 'active&quot;
 #&gt; resolution  : 36, 18  (x, y)
 #&gt; extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-#&gt; source      : memory 
-#&gt; name        : value 
-#&gt; min value   :    10 
-#&gt; max value   :    12 </div><div class='input'>
+#&gt; source      : memory </div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in format.default(m[, i], width = w[i], justify = "right"): invalid 'width' argument</span></div><div class='input'>
 <span class='co'>#activeCat(x) &lt;- 2</span>
 <span class='co'>#p &lt;- as.polygons(x)</span>
 <span class='co'>#plot(p, "letters", col=c("green", "blue", "light gray"))</span>
