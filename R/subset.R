@@ -86,8 +86,7 @@ setMethod("subset", signature(x="SpatVector"),
 	x@ptr <- x@ptr$subset_cols(i-1)
 	x <- messages(x, "subset")
 	if (drop) {	# drop geometry
-		d <- x@ptr$getDF()
-		as.data.frame(d, stringsAsFactors=FALSE)
+		.getSpatDF(x@ptr$df)
 	} else {
 		x
 	}

@@ -26,6 +26,8 @@
 .getSpatDF <- function(x) {
 	d <- data.frame(x$values(), check.names = FALSE, stringsAsFactors=FALSE)
 	d[d=="NA"] <- NA
+	s <- which(sapply(d, class) == "character")
+	for (i in s) Encoding(d[[i]]) <- "UTF-8"
 	d
 }
 

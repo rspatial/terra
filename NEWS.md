@@ -3,7 +3,7 @@
 ## enhancements
 
 - if `time(x) <- d` is set with a `Date` class object, `time(x)` now returns a `Date` object instead of a `POSIXct` object. Issue [#256](https://github.com/rspatial/terra/issues/256) raised by Mauricio Zambrano-Bigiarini.
-
+- The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. issue [#258](https://github.com/rspatial/terra/issues/258) by AGeographer.
 
 # version 1.3-4
 
