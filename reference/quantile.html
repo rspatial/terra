@@ -170,7 +170,10 @@ You can also use this method to compute the quantiles of the numeric variables o
 #&gt; resolution  : 1, 1  (x, y)
 #&gt; extent      : 0, 101, 0, 77  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : +proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs 
-#&gt; source      : memory </div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='error'>Error in format.default(m[, i], width = w[i], justify = "right"): invalid 'width' argument</span></div><div class='input'>
+#&gt; source      : memory 
+#&gt; names       :    q0, q0.25,  q0.5, q0.75,    q1 
+#&gt; min values  :     0,     0,     0,     0,     0 
+#&gt; max values  : 127.5, 127.5, 255.0, 510.0, 510.0 </div><div class='input'>
 <span class='co'># same but slower</span>
 <span class='co'># qa &lt;- app(r, quantile)</span>
 </div></pre>
