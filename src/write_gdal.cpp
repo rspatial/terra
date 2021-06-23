@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmans
+// Copyright (c) 2018-2021  Robert J. Hijmansf
 //
 // This file is part of the "spat" library.
 //
@@ -74,7 +74,6 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 
 	pRat->SetRowCount(nr);
 	for (size_t i=0; i<d.ncol(); i++) {
-		Rcpp::Rcout << i << std::endl;
 		if (d.itype[i] == 0) {
 			std::vector<double> v = d.dv[d.iplace[i]];
 			if( pRat->ValuesIO(GF_Write, i, 0, nr, &v[0]) != CE_None ) {
@@ -259,8 +258,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return (false);
 	}
 
-	char **papszOptions = NULL;
-	set_GDAL_options(&papszOptions, driver, diskNeeded, writeRGB, opt);
+	char **papszOptions = set_GDAL_options(driver, diskNeeded, writeRGB, opt.gdal_options);
 
 /*	if (driver == "GTiff") {
 		GDAL_tiff_options(diskNeeded > 4194304000, writeRGB, opt);
@@ -290,6 +288,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 	} else if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
 		copy_driver = driver;
+		gdal_options = opt.gdal_options;
 		if (canProcessInMemory(opt)) {
 			poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
 			poDS = poDriver->Create("", ncol(), nrow(), nlyr(), gdt, papszOptions);
@@ -605,14 +604,14 @@ bool SpatRaster::writeStopGDAL() {
 			source[0].hasRange[i] = false;
 		}
 	}
-
 	if (copy_driver != "") {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;
+		char **papszOptions = set_GDAL_options(copy_driver, 0.0, false, gdal_options);
 		poDriver = GetGDALDriverManager()->GetDriverByName(copy_driver.c_str());
 		if (copy_filename == "") {
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
-				source[0].gdalconnection, FALSE, NULL, NULL, NULL);
+				source[0].gdalconnection, FALSE, papszOptions, NULL, NULL);
 			if( newDS == NULL )  {
 				setError("mem copy create failed for "+ copy_driver);
 				copy_driver = "";
@@ -634,8 +633,9 @@ bool SpatRaster::writeStopGDAL() {
 				GDALClose( (GDALDatasetH) oldDS );
 				return false;
 			}
+
 			newDS = poDriver->CreateCopy(source[0].filename.c_str(),
-				oldDS, FALSE, NULL, NULL, NULL);
+				oldDS, FALSE, papszOptions, NULL, NULL);
 			if( newDS == NULL )  {
 				setError("copy create failed for "+ copy_driver);
 				copy_driver = "";
