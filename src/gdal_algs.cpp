@@ -476,9 +476,9 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 	
 	bool use_crs = crs != "";  
-	std::string filename = opt.get_filename();
 	if ((!use_crs) & (!hasValues())) {
-		if (filename != "") {
+		std::string fname = opt.get_filename();
+		if (fname != "") {
 			out.addWarning("raster has no values, not writing to file");
 		}
 		return out;
@@ -494,7 +494,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out.setError("input raster CRS not set");
 		return out;	
 	}
-
+	
 	lrtrim(crs);
 	SpatOptions sopt(opt);
 	if (use_crs) {
@@ -518,7 +518,6 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		mopt = opt;
 		opt = SpatOptions(opt);
 	}
-	filename = opt.get_filename();
 
 	if (!out.writeStart(opt)) {
 		return out;		

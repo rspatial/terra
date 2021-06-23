@@ -6,7 +6,7 @@
 
 
 setMethod("zoom", signature(x="SpatRaster"), 
-	function(x, e=draw(), maxcell=10000, layer=1, new=FALSE, ...) {
+	function(x, e=draw(), maxcell=100000, layer=1, new=FALSE, ...) {
 		if (grDevices::dev.cur() == 1) {
 			if (!is.null(RGB(x))) {
 				plot(x, maxcell=maxcell, ...)

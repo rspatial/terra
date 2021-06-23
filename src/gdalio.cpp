@@ -690,48 +690,50 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 
 
 
-void set_GDAL_options(char ***gdalops, std::string driver, double diskNeeded, bool writeRGB, SpatOptions &opt) {
+char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, std::vector<std::string> gdal_options) {
 
+	char ** gdalops = NULL;
 	if (driver == "GTiff") {
 		bool lzw = true;
 		bool compressed = true;
-		for (size_t i=0; i<opt.gdal_options.size(); i++) {
-			if (opt.gdal_options[i].substr(0, 8) == "COMPRESS") {
+		for (size_t i=0; i<gdal_options.size(); i++) {
+			if (gdal_options[i].substr(0, 8) == "COMPRESS") {
 				lzw = false;
-				if (opt.gdal_options[i].substr(9, 4) == "NONE") {
+				if (gdal_options[i].substr(9, 4) == "NONE") {
 					compressed = false;
 				}
 				break;
 			}
 		}
 		if (lzw) {
-			*gdalops = CSLSetNameValue( *gdalops, "COMPRESS", "LZW");			
+			gdalops = CSLSetNameValue( gdalops, "COMPRESS", "LZW");			
 		}
 		if (compressed & (diskNeeded > 4194304000)) { 
 			bool big = true;
-			for (size_t i=0; i<opt.gdal_options.size(); i++) {
-				if (opt.gdal_options[i].substr(0, 7) == "BIGTIFF") {
+			for (size_t i=0; i<gdal_options.size(); i++) {
+				if (gdal_options[i].substr(0, 7) == "BIGTIFF") {
 					big = false;
 					break;
 				}
 			}
 			if (big) {
-				*gdalops = CSLSetNameValue( *gdalops, "BIGTIFF", "YES");
+				gdalops = CSLSetNameValue( gdalops, "BIGTIFF", "YES");
 			} 
 		}
 		if (writeRGB) {
-			*gdalops = CSLSetNameValue( *gdalops, "PROFILE", "GeoTIFF");
+			gdalops = CSLSetNameValue( gdalops, "PROFILE", "GeoTIFF");
 		}
 	} else if (writeRGB) {
-		*gdalops = CSLSetNameValue( *gdalops, "PHOTOMETRIC", "RGB");
+		gdalops = CSLSetNameValue( gdalops, "PHOTOMETRIC", "RGB");
 	}
 	
-	for (size_t i=0; i<opt.gdal_options.size(); i++) {
-		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
+	for (size_t i=0; i<gdal_options.size(); i++) {
+		std::vector<std::string> gopt = strsplit(gdal_options[i], "=");
 		if (gopt.size() == 2) {
-			*gdalops = CSLSetNameValue( *gdalops, gopt[0].c_str(), gopt[1].c_str() );
+			gdalops = CSLSetNameValue(gdalops, gopt[0].c_str(), gopt[1].c_str() );
 		}
 	}
+	return gdalops;
 }
 
 
@@ -743,9 +745,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 
 	double naflag = opt.NAflag; //NAN;
 	GDALDataType gdt;
-
 	char **papszOptions = NULL;
-
 	if (driver != "MEM") {
 		std::string datatype = opt.get_datatype();
 		if (!getGDALDataType(datatype, gdt)) {
@@ -761,7 +761,7 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 			return(false);		
 		}
 
-		set_GDAL_options(&papszOptions, driver, diskNeeded, false, opt);
+		papszOptions = set_GDAL_options(driver, diskNeeded, false, opt.gdal_options);
 
 		if (datatype == "INT4S") {
 			naflag = INT32_MIN; //-2147483648; 

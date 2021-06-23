@@ -481,7 +481,7 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
                     std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand) {
 	
-	out.resize(nc*nr);
+	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
 	int hwr = wnr / 2;
 	bool nafill = std::isnan(fill);
@@ -499,6 +499,7 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 		int rread = r+srow;
 		for (int c=0; c < nc; c++) {
 			double value = 0;
+			bool found = false;
 			for (int rr=0; rr<wnr; rr++) {
 				int offr = wr1 - rr;
 				for (int cc=0; cc < wnc; cc++)  {
@@ -516,6 +517,7 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 						if (narm) {
 							if (!std::isnan(d[nc * row + col])) {
 								value += d[nc*row + col] * window[wi];
+								found = true;
 							}
 						} else {
 							value += d[nc*row + col] * window[wi];
@@ -525,6 +527,7 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 							if (narm) {
 								if (!std::isnan(d[nc*row + col])) {
 									value += d[nc*row + col] * window[wi];
+									found = true;
 								}
 							} else {
 								value += d[nc*row + col] * window[wi]; 
@@ -535,15 +538,21 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 					}
 				}
 			}
-			out[nc * r + c] = value;
-		}	
+			if (narm) {
+				if (found) {
+					out[nc * r + c] = value;
+				}
+			} else {
+				out[nc * r + c] = value;
+			}
+		}
 	}
 }
 
 void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
                     std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand) {
 	
-	out.resize(nc*nr);
+	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
 	int hwr = wnr / 2;
 	bool nafill = std::isnan(fill);

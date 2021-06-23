@@ -171,6 +171,7 @@ class SpatRaster {
     private:
 		std::string copy_driver = "";
 		std::string copy_filename = "";
+		std::vector<std::string> gdal_options;
 		bool compute_stats = true;
 		bool gdal_stats = false;
 		bool gdal_approx = true;

@@ -12,8 +12,8 @@ Transfer vector data to a raster
 }
 
 \usage{
-\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", fun, background=NA, touches=FALSE,
-	update=FALSE, sum=FALSE, cover=FALSE, filename="", ..., wopt=list())
+\S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", fun, ..., background=NA, touches=FALSE,
+	update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -23,6 +23,7 @@ Transfer vector data to a raster
   \item{field}{character or numeric. If \code{field} is a character, it should a variable name in \code{x}. If \code{field} is numeric it typically is a single number or a vector of length \code{nrow(x)}. The values are recycled to \code{nrow(x)}}
   
   \item{fun}{function, summarizing function that returns a single number; for when there are multiple points in one cell. For example \code{mean}, \code{length} (to get a count), \code{min} or \code{max}. Only used if \code{x} consists of points}
+  \item{...}{additional arguments passed to \code{fun} if \code{x} has point geometries}
   
   \item{background}{numeric. Value to put in the cells that are not covered by any of the features of \code{x}. Default is \code{NA}}
   
@@ -35,7 +36,7 @@ Transfer vector data to a raster
   \item{cover}{logical. If \code{TRUE} and the geometry of \code{x} is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)} 
 
   \item{filename}{character. Output filename}
-  \item{...}{additional arguments passed to \code{fun} if \code{x} has point geometries}
+  \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}  
   \item{wopt}{list with additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

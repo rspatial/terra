@@ -1,5 +1,5 @@
 
-rasterize_points <- function(x, y, field, values, fun="last", background=NA, filename="", update=FALSE, ..., wopt=list()) {
+rasterize_points <- function(x, y, field, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	if (update) {
 		if (!hasValues(y)) {
@@ -72,7 +72,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, fil
 	}
 
 	if (filename != "") {
-		writeRaster(r, filename, wopt)
+		writeRaster(r, filename, overwrite=overwrite, wopt=wopt)
 	}
 
 	return (r)
@@ -80,7 +80,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, fil
 
 
 setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, field="", fun, background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", ..., wopt=list()) {
+	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		values <- 1
 		if (is.null(field) || is.na(field) || (field == "")) {
@@ -93,12 +93,12 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 		}
 
 		g <- geomtype(x)
-		opt <- spatOptions(filename, wopt=wopt)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, ..., wopt=wopt) 
+			r <- rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
 			return (r)
 		}
 
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		pols <- grepl("polygons", g)
 
 		if (cover[1] && pols) {
