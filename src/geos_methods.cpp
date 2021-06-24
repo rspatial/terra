@@ -677,6 +677,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		p = p.as_points(false);
 		std::vector<double> d(p.size(), dist);
 		SpatVector b = p.point_buffer(d, quadsegs);
+		//b = b.disaggregate();
 		SpatVector part;
 		for (size_t j =0; j<(b.size()-1); j++) {
 			std::vector<unsigned> range = {(unsigned)j, (unsigned)j+1};

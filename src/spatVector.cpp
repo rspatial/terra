@@ -781,7 +781,7 @@ SpatVector SpatVector::cbind(SpatDataFrame d) {
 
 
 
-SpatVector SpatVector::as_points(bool multi) {
+SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 	SpatVector v = *this;
 	if (geoms[0].gtype == points) {
 		v.addWarning("returning a copy");
@@ -790,7 +790,9 @@ SpatVector SpatVector::as_points(bool multi) {
 	size_t skip = 0;
 	if (geoms[0].gtype == polygons) {
 		v = v.as_lines();
-		skip = 1;
+		if (skiplast) {
+			skip = 1;
+		}
 	}
 
 

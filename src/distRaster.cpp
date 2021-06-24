@@ -1286,6 +1286,8 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 						ptx.push_back(-180);
 						pty.push_back(pty[0]);
 					}
+					ptx.push_back(ptx[0]);
+					pty.push_back(pty[0]);
 					g.setPart(SpatPart(ptx, pty), 0);
 				} else if (spole) {
 					sort_unique_2d(ptx, pty);
@@ -1301,6 +1303,8 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 						ptx.push_back(-180);
 						pty.push_back(pty[0]);
 					}
+					ptx.push_back(ptx[0]);
+					pty.push_back(pty[0]);
 					g.setPart(SpatPart(ptx, pty), 0);
 				} else {
 					ptx.push_back(ptx[0]);

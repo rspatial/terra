@@ -114,9 +114,9 @@ setMethod("as.polygons", signature(x="SpatVector"),
 )
 
 setMethod("as.points", signature(x="SpatVector"), 
-	function(x, multi=FALSE) {
+	function(x, multi=FALSE, skiplast=TRUE) {
 		opt <- spatOptions()
-		x@ptr <- x@ptr$as_points(multi)
+		x@ptr <- x@ptr$as_points(multi, skiplast)
 		messages(x, "as.points")
 	}
 )

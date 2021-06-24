@@ -167,7 +167,7 @@ class SpatVector {
 
 		size_t size();
 		SpatVector as_lines();
-		SpatVector as_points(bool multi);
+		SpatVector as_points(bool multi, bool skiplast=false);
 		SpatVector remove_holes();
 		SpatVector get_holes();
 		SpatVector set_holes(SpatVector x, size_t i);
