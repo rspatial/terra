@@ -1185,31 +1185,46 @@ void sort_unique_2d(std::vector<double> &x, std::vector<double> &y) {
 	}
 }
 
+
+SpatVector split_dateline(SpatVector v) {
+	SpatExtent e1 = {-1,  180, -91, 91};
+	SpatExtent e2 = {180, 361, -91, 91};
+	SpatVector ve(e1, "");
+	SpatVector ve2(e2, "");
+	ve = ve.append(ve2, true);
+	v = v.intersect(ve);
+	ve = v.subset_rows(1);
+	ve = ve.shift(-360, 0);
+	v = v.subset_rows(0);
+	v = v.append(ve, true);
+	return v.aggregate(false);
+}
+	
+
+
+
 void fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double> &y) {
 	double minx = vmin(x, false);
 	double maxx = vmax(x, false);
-	// need a better check but this shoud work for all normal cases
+	// need a better check but this should work for all normal cases
 	if ((minx < -170) && (maxx > 170)) {
+		SpatPart p(x, y);
 		for (size_t i=0; i<x.size(); i++) {
 			if (x[i] < 0) {
 				x[i] += 360;
 			}
 		}
-		g.setPart(SpatPart(x, y), 0);
+		double minx2 = vmin(x, false);
+		double maxx2 = vmax(x, false);
+		if ((maxx - minx) < (maxx2 - minx2)) {
+			g.setPart(p, 0);
+			return;
+		}
+		p.x = x;
+		g.setPart(p, 0);
 		SpatVector v;
 		v.addGeom(g);
-
-		SpatExtent e1 = {-1,  180, -91, 91};
-		SpatExtent e2 = {180, 361, -91, 91};
-		SpatVector ve(e1, "");
-		SpatVector ve2(e2, "");
-		ve = ve.append(ve2, true);
-		v = v.intersect(ve);
-		ve = v.subset_rows(1);
-		ve = ve.shift(-360, 0);
-		v = v.subset_rows(0);
-		v = v.append(ve, true);
-		v = v.aggregate(false);
+		v = split_dateline(v);
 		g = v.geoms[0];
 	} else {
 		g.setPart(SpatPart(x, y), 0);
