@@ -367,6 +367,21 @@ SpatVector SpatVector::shared_paths() {
 }
 
 
+/*
+SpatVector SpatVector::split_polygons(SpatVector lns) {
+		SpatGeom glns;
+		glns.gtype = lines;
+		glns.setPart(SpatPart(x, y), 0);
+		std::vector<double> xln = {180, 180};
+		std::vector<double> yln = {-91, 91};
+		glns.setPart(SpatPart(xln, yln), 1);
+		SpatVector v;
+		v.addGeom(glns);	
+		v = v.line_merge();
+		v = v.aggregate(false);
+		v = v.polygonize();
+		g = v.geoms[0];		
+*/
 
 SpatVector SpatVector::polygonize() {
 
@@ -645,7 +660,7 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 
 SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, bool ishole) {
 
-	if ((x.extent.ymax < 60) && ((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
+	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && ((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
 		x.setSRS("+proj=merc");
 		double f = 0.5 - (dist / 220000);
 		double halfy = x.extent.ymin + f * (x.extent.ymax - x.extent.ymin);

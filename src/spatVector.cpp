@@ -787,17 +787,23 @@ SpatVector SpatVector::as_points(bool multi) {
 		v.addWarning("returning a copy");
 		return v;
 	}
+	size_t skip = 0;
 	if (geoms[0].gtype == polygons) {
 		v = v.as_lines();
+		skip = 1;
 	}
+
 
 	for (size_t i=0; i < v.geoms.size(); i++) {
 		SpatGeom g;
 		g.gtype = points;
 		for (size_t j=0; j<geoms[i].parts.size(); j++) {
 			SpatPart p = geoms[i].parts[j];
-			for (size_t k=0; k<p.size(); k++) {
-				g.addPart(SpatPart(p.x[k], p.y[k]));
+			if (p.size() > 0) {
+				size_t n = p.size() - skip;
+				for (size_t k=0; k<n; k++) {
+					g.addPart(SpatPart(p.x[k], p.y[k]));
+				}
 			}
 		}
 		v.geoms[i] = g;

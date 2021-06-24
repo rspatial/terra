@@ -22,6 +22,7 @@
 #include "ggeodesic.h"
 #include "recycle.h"
 #include "math_utils.h"
+#include "vecmath.h"
 
 
 void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const double &lindist) {
@@ -1109,9 +1110,7 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 
 void SpatVector::fix_lonlat_overflow() {
 
-	
 	if (! ((extent.xmin < -180) || (extent.xmax > 180))) { return; }
-
 	SpatExtent world(-180, 180, -90, 90);
 
 	std::string vt = type();
@@ -1142,7 +1141,6 @@ void SpatVector::fix_lonlat_overflow() {
 				}
 				replaceGeom(v.geoms[0], i);
 			}
-
 			if (geoms[i].extent.xmax > 180) {
 				SpatVector v(geoms[i]);
 				if (geoms[i].extent.xmin >= 180) {
@@ -1169,6 +1167,54 @@ void SpatVector::fix_lonlat_overflow() {
 }
 
 
+void sort_unique_2d(std::vector<double> &x, std::vector<double> &y) {
+	std::vector<std::vector<double>> v(x.size());
+	for (size_t i=0; i<v.size(); i++) {  
+		v[i] = {x[i], y[i]};
+	}
+	std::sort(v.begin(), v.end(), [] 
+		(const std::vector<double> &a, const std::vector<double> &b)
+			{ return a[0] < b[0];});  
+			
+	v.erase(std::unique(v.begin(), v.end()), v.end());
+	x.resize(v.size());
+	y.resize(v.size());
+	for (size_t i=0; i<x.size(); i++) {  
+		x[i] = v[i][0];
+		y[i] = v[i][1];
+	}
+}
+
+void fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double> &y) {
+	double minx = vmin(x, false);
+	double maxx = vmax(x, false);
+	// need a better check but this shoud work for all normal cases
+	if ((minx < -170) && (maxx > 170)) {
+		for (size_t i=0; i<x.size(); i++) {
+			if (x[i] < 0) {
+				x[i] += 360;
+			}
+		}
+		g.setPart(SpatPart(x, y), 0);
+		SpatVector v;
+		v.addGeom(g);
+
+		SpatExtent e1 = {-1,  180, -91, 91};
+		SpatExtent e2 = {180, 361, -91, 91};
+		SpatVector ve(e1, "");
+		SpatVector ve2(e2, "");
+		ve = ve.append(ve2, true);
+		v = v.intersect(ve);
+		ve = v.subset_rows(1);
+		ve = ve.shift(-360, 0);
+		v = v.subset_rows(0);
+		v = v.append(ve, true);
+		v = v.aggregate(false);
+		g = v.geoms[0];
+	} else {
+		g.setPart(SpatPart(x, y), 0);
+	}
+}
 
 
 SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) { 
@@ -1182,15 +1228,6 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 
 	size_t npts = size();
 
-/*
-# taken care of by `buffer`	
-	for (size_t i=0; i<d.size(); i++) {
-		if (d[i] <= 0) {
-			d[i] = -d[i];
-		}
-	}
-	recycle(d, npts);
-*/
 	size_t n = quadsegs * 4;
 	double step = 360.0 / n;
 	SpatGeom g(polygons);
@@ -1203,19 +1240,76 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 		for (size_t i=0; i<n; i++) {
 			brng[i] = i * step;
 		}
+		double a = 6378137.0;
+		double f = 1/298.257223563;
+		struct geod_geodesic gd;
+		geod_init(&gd, a, f);
+		double lat, lon, azi, s12, azi2;
+				
+		// not checking for empty points
+
 		for (size_t i=0; i<npts; i++) {
-			if (std::isnan(xy[0][i]) || std::isnan(xy[1][i])) {
+			if (std::isnan(xy[0][i] || std::isnan(xy[1][i]) || (xy[1][i]) > 90) || (xy[1][i] < -90)) {
 				out.addGeom(SpatGeom(polygons));
 			} else {
-				std::vector<std::vector<double>> dp = destpoint_lonlat(xy[0][i], xy[1][i], brng, d[i], false);
-				//close polygons
-				dp[0].push_back(dp[0][0]);
-				dp[1].push_back(dp[1][0]);
-				g.setPart(SpatPart(dp[0], dp[1]), 0);
-				out.addGeom(g);
+				std::vector<double> ptx;
+				std::vector<double> pty;
+				ptx.reserve(n);
+				pty.reserve(n);
+				geod_inverse(&gd, xy[1][i], xy[0][i],  90, xy[0][i], &s12, &azi, &azi2);
+				bool npole = s12 < d[i];
+				geod_inverse(&gd, xy[1][i], xy[0][i], -90, xy[0][i], &s12, &azi, &azi2);
+				bool spole = s12 < d[i];
+				if (npole && spole) {
+					ptx = std::vector<double> {-180,  0, 180, 180, 180,   0, -180, -180};
+					pty = std::vector<double> {  90, 90,  90,   0, -90, -90,  -90,    0};
+					npole = false;
+					spole = false;
+				} else {
+					for (size_t j=0; j < n; j++) {
+						geod_direct(&gd, xy[1][i], xy[0][i], brng[j], d[i], &lat, &lon, &azi);
+						ptx.push_back(lon);
+						pty.push_back(lat);
+					}
+				}
+				if (npole) {
+					sort_unique_2d(ptx, pty);
+					if (ptx[ptx.size()-1] < 180) {
+						ptx.push_back(180);
+						pty.push_back(pty[pty.size()-1]);
+					}
+					ptx.push_back(180);
+					pty.push_back(90);
+					ptx.push_back(-180);
+					pty.push_back(90);
+					if (ptx[0] > -180) {
+						ptx.push_back(-180);
+						pty.push_back(pty[0]);
+					}
+					g.setPart(SpatPart(ptx, pty), 0);
+				} else if (spole) {
+					sort_unique_2d(ptx, pty);
+					if (ptx[ptx.size()-1] < 180) {
+						ptx.push_back(180);
+						pty.push_back(pty[pty.size()-1]);
+					}
+					ptx.push_back(180);
+					pty.push_back(-90);
+					ptx.push_back(-180);
+					pty.push_back(-90);
+					if (ptx[0] > -180) {
+						ptx.push_back(-180);
+						pty.push_back(pty[0]);
+					}
+					g.setPart(SpatPart(ptx, pty), 0);
+				} else {
+					ptx.push_back(ptx[0]);
+					pty.push_back(pty[0]);
+					fix_date_line(g, ptx, pty);
+				}
+				out.addGeom(g);			
 			}
 		}
-		out.fix_lonlat_overflow();
 	} else {
 		std::vector<double> cosb(n);
 		std::vector<double> sinb(n);
