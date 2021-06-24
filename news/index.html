@@ -123,7 +123,17 @@
 <a href="#enhancements" class="anchor"></a>enhancements</h2>
 <ul>
 <li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code><a href="../reference/time.html">time(x)</a></code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue <a href="https://github.com/rspatial/terra/issues/256"><a href='https://github.com/rspatial/terra/issues/256'>#256</a></a> raised by Mauricio Zambrano-Bigiarini.</li>
-<li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. issue <a href="https://github.com/rspatial/terra/issues/258"><a href='https://github.com/rspatial/terra/issues/258'>#258</a></a> by AGeographer.</li>
+<li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue <a href="https://github.com/rspatial/terra/issues/258"><a href='https://github.com/rspatial/terra/issues/258'>#258</a></a> by AGeographer. Also implemented for names in both SpatVector and SpatRaster.</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
+<ul>
+<li>The <code>filename</code> and <code>overwrite</code> arguments were ignored in <code>rasterize</code>
+</li>
+<li>gdal options are now also honored for create-copy drivers <a href="https://github.com/rspatial/terra/issues/260"><a href='https://github.com/rspatial/terra/issues/260'>#260</a></a>
+</li>
 </ul>
 </div>
 </div>
@@ -174,9 +184,9 @@
 <li>new argument <code>layer</code> in the <code>extract-SpatRaster,SpatVector</code> method to extract values for a single layers specified for each geometry (see this <a href="https://gis.stackexchange.com/a/401591/8993">question</a>).</li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>better handling of paths with “special” characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue <a href="https://github.com/rspatial/terra/issues/223"><a href='https://github.com/rspatial/terra/issues/233'>#233</a></a> by Dongdong Kong)</li>
 <li>
@@ -232,9 +242,9 @@
 <li>faster processing of large in memory rasters. See issue <a href="https://github.com/rspatial/terra/issues/206"><a href='https://github.com/rspatial/terra/issues/206'>#206</a></a> by Krzysztof Dyba.</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code>extract</code> with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)</li>
@@ -306,9 +316,9 @@
 <code>extract</code> has a new argument <code>exact</code> to get the fraction covered for each cell</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code><a href="../reference/flip.html">flip(x, direction="vertical")</a></code> no longer reverses the order of the layers</li>
