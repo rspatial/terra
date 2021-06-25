@@ -124,6 +124,8 @@
 <ul>
 <li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code><a href="../reference/time.html">time(x)</a></code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue <a href="https://github.com/rspatial/terra/issues/256"><a href='https://github.com/rspatial/terra/issues/256'>#256</a></a> raised by Mauricio Zambrano-Bigiarini.</li>
 <li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue <a href="https://github.com/rspatial/terra/issues/258"><a href='https://github.com/rspatial/terra/issues/258'>#258</a></a> by AGeographer. Also implemented for names in both SpatVector and SpatRaster.</li>
+<li>
+<code>rast,data.frame</code> method to avoid confusion with the <code>matrix</code> and <code>list</code> methods in response to a <a href="https://stackoverflow.com/q/68133958/635245">SO question</a> by Stackbeans.</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
