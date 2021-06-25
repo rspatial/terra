@@ -15,7 +15,7 @@ Zoom in on a map (plot) by providing a new extent, by default this is done by cl
 }
 
 \usage{
-\S4method{zoom}{SpatRaster}(x, e=draw(), maxcell=10000, layer=1, new=FALSE, ...)
+\S4method{zoom}{SpatRaster}(x, e=draw(), maxcell=100000, layer=1, new=FALSE, ...)
 
 \S4method{zoom}{SpatVector}(x, e=draw(), new=FALSE, ...)
 }

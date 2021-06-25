@@ -7,6 +7,7 @@
 \alias{rast,character-method}
 \alias{rast,SpatRaster-method}
 \alias{rast,SpatRasterDataset-method}
+\alias{rast,data.frame-method}
 \alias{rast,matrix-method}
 \alias{rast,array-method}
 \alias{rast,list-method}
@@ -35,6 +36,8 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), props=FALSE, time=FALSE) 
 
 \S4method{rast}{matrix}(x, type="", crs="", digits=6)
+
+\S4method{rast}{data.frame}(x, type="", crs="", digits=6)
 
 \S4method{rast}{list}(x)
 

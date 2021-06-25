@@ -312,6 +312,13 @@ setMethod("rast", signature(x="matrix"),
 )
 
 
+setMethod("rast", signature(x="data.frame"),
+	function(x, type="", crs="", digits=6) {
+		rast(as.matrix(x), type=type, crs=crs, digits=digits)
+	}
+)
+
+
 setMethod("NAflag<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		value <- as.numeric(value)

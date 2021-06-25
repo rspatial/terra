@@ -4,7 +4,7 @@
 
 - if `time(x) <- d` is set with a `Date` class object, `time(x)` now returns a `Date` object instead of a `POSIXct` object. Issue [#256](https://github.com/rspatial/terra/issues/256) raised by Mauricio Zambrano-Bigiarini.
 - The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue [#258](https://github.com/rspatial/terra/issues/258) by AGeographer. Also implemented for names in both SpatVector and SpatRaster.
-
+- `rast,data.frame` method to avoid confusion with the `matrix` and `list` methods in response to a [SO question](https://stackoverflow.com/q/68133958/635245) by Stackbeans.
 
 ## bug fixes 
 - The `filename` and `overwrite` arguments were ignored in `rasterize`
