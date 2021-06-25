@@ -1186,7 +1186,7 @@ void sort_unique_2d(std::vector<double> &x, std::vector<double> &y) {
 }
 
 
-SpatVector split_dateline(SpatVector v) {
+void split_dateline(SpatVector &v) {
 	SpatExtent e1 = {-1,  180, -91, 91};
 	SpatExtent e2 = {180, 361, -91, 91};
 	SpatVector ve(e1, "");
@@ -1195,20 +1195,20 @@ SpatVector split_dateline(SpatVector v) {
 	v = v.intersect(ve);
 	ve = v.subset_rows(1);
 	ve = ve.shift(-360, 0);
-	v = v.subset_rows(0);
-	v = v.append(ve, true);
-	return v.aggregate(false);
+	v.geoms[1] = ve.geoms[0];
+	v = v.aggregate(false);
 }
 	
 
 
 
-void fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double> &y) {
+bool fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double> &y) {
+
+	SpatPart p(x, y);
 	double minx = vmin(x, false);
 	double maxx = vmax(x, false);
 	// need a better check but this should work for all normal cases
 	if ((minx < -170) && (maxx > 170)) {
-		SpatPart p(x, y);
 		for (size_t i=0; i<x.size(); i++) {
 			if (x[i] < 0) {
 				x[i] += 360;
@@ -1217,22 +1217,22 @@ void fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double
 		double minx2 = vmin(x, false);
 		double maxx2 = vmax(x, false);
 		if ((maxx - minx) < (maxx2 - minx2)) {
-			g.setPart(p, 0);
-			return;
+			g.reSetPart(p);
+			return false;
 		}
 		p.x = x;
-		g.setPart(p, 0);
-		SpatVector v;
-		v.addGeom(g);
-		v = split_dateline(v);
+		g.reSetPart(p);
+		SpatVector v(g);
+		split_dateline(v);
 		g = v.geoms[0];
-	} else {
-		g.setPart(SpatPart(x, y), 0);
-	}
+		return true;
+	} 
+	g.reSetPart(p);
+	return false;
 }
 
 
-SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) { 
+SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bool no_multipolygons) { 
 
 	SpatVector out;
 	std::string vt = type();
@@ -1303,7 +1303,8 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 					}
 					ptx.push_back(ptx[0]);
 					pty.push_back(pty[0]);
-					g.setPart(SpatPart(ptx, pty), 0);
+					g.reSetPart(SpatPart(ptx, pty));
+					out.addGeom(g);
 				} else if (spole) {
 					sort_unique_2d(ptx, pty);
 					if (ptx[ptx.size()-1] < 180) {
@@ -1320,13 +1321,21 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs) {
 					}
 					ptx.push_back(ptx[0]);
 					pty.push_back(pty[0]);
-					g.setPart(SpatPart(ptx, pty), 0);
+					g.reSetPart(SpatPart(ptx, pty));
+					out.addGeom(g);			
 				} else {
 					ptx.push_back(ptx[0]);
 					pty.push_back(pty[0]);
-					fix_date_line(g, ptx, pty);
+					bool split = fix_date_line(g, ptx, pty);
+					if (split & no_multipolygons) {
+						for (size_t j=0; j<g.parts.size(); j++) {
+							SpatGeom gg(g.parts[j]);
+							out.addGeom(gg);			
+						}
+					} else {
+						out.addGeom(g);			
+					}
 				}
-				out.addGeom(g);			
 			}
 		}
 	} else {

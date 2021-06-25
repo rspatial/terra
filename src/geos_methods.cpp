@@ -658,7 +658,23 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 }
 
 
+SpatGeom hullify(SpatVector b) {
+	if (b.nrow() == 1) return b.geoms[0];
+	b.addGeom(b.geoms[0]);
+	SpatVector part;
+	for (size_t j =0; j<(b.size()-1); j++) {
+		std::vector<unsigned> range = {(unsigned)j, (unsigned)j+1};
+		SpatVector g = b.subset_rows(range);
+		g = g.hull("convex");
+		part.addGeom(g.geoms[0]);
+	}	
+	part = part.aggregate(true);
+	return part.geoms[0];
+}
+
+
 SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, bool ishole) {
+
 
 	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && ((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
 		x.setSRS("+proj=merc");
@@ -674,24 +690,39 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 	for (size_t i =0; i<x.geoms.size(); i++) {
 		SpatVector p(x.geoms[i]);
 		p.srs = x.srs;
-		p = p.as_points(false);
+		p = p.as_points(false, true);
 		std::vector<double> d(p.size(), dist);
-		SpatVector b = p.point_buffer(d, quadsegs);
-		//b = b.disaggregate();
-		SpatVector part;
-		for (size_t j =0; j<(b.size()-1); j++) {
-			std::vector<unsigned> range = {(unsigned)j, (unsigned)j+1};
-			SpatVector g = b.subset_rows(range);
-			g = g.hull("convex");
-			part.addGeom(g.geoms[0]);
+		SpatVector b = p.point_buffer(d, quadsegs, true);
+		if (b.size() <= p.size()) {	
+			SpatGeom g = hullify(b);
+			tmp.addGeom(g);
+		} else {			
+			SpatVector west, east, eastwest;
+			for (size_t j =0; j<b.size(); j++) {
+				if ((b.geoms[j].extent.xmin < -179.99) && (b.geoms[j].extent.xmax > 179.99)) {
+					tmp.addGeom(b.geoms[j]);							
+				} else if (b.geoms[j].extent.xmax < 0) {
+					west.addGeom(b.geoms[j]);					
+				} else {
+					east.addGeom(b.geoms[j]);										
+				}	
+			}
+			if (east.nrow() > 0) {
+				SpatGeom geast = hullify(east);
+				tmp.addGeom(geast);
+			}
+			if (west.nrow() > 0) {
+				SpatGeom gwest = hullify(west);
+				tmp.addGeom(gwest);
+			}
 		}
-		part = part.aggregate(true);
-		tmp.addGeom(part.geoms[0]);
 	}
 	tmp = tmp.aggregate(true);
+
 	if (ispol) {
 		tmp = ishole ? tmp.get_holes() : tmp.remove_holes();
 	}
+
 	return tmp;
 }
 
@@ -719,7 +750,7 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 
 	if (islonlat) {
 		if (vt == "points") {
-			return point_buffer(dist, quadsegs);
+			return point_buffer(dist, quadsegs, false);
 		} else {
 			SpatVector p;
 			bool ispol = vt == "polygons";
@@ -740,7 +771,7 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 				} else {
 					p = lonlat_buf(p, dist[i], quadsegs, false, false);
 				}
-				out.addGeom(p.geoms[0]);
+				out = out.append(p, true);
 			}	
 			out.df = df;
 			return out;	

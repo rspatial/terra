@@ -9,7 +9,7 @@
 ## bug fixes 
 - The `filename` and `overwrite` arguments were ignored in `rasterize`
 - gdal options are now also honored for create-copy drivers [#260](https://github.com/rspatial/terra/issues/260)
-
+- buffer for lonlat now works better at the worlds "edges" [#261](https://github.com/rspatial/terra/issues/261)
 
 # version 1.3-4
 

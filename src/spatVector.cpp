@@ -101,6 +101,7 @@ bool SpatGeom::addPart(SpatPart p) {
 	return true;
 }
 
+
 bool SpatGeom::addHole(SpatHole h) {
 	long i = parts.size()-1;
 	if (i > -1) {
@@ -121,6 +122,15 @@ bool SpatGeom::setPart(SpatPart p, unsigned i) {
 	}
 	return true;
 }
+
+bool SpatGeom::reSetPart(SpatPart p) {
+	parts.resize(1);
+	parts[0] = p;
+	extent = p.extent;
+	return true;
+}
+
+
 
 SpatPart SpatGeom::getPart(unsigned i) {
 	return parts[i];

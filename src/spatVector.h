@@ -74,6 +74,7 @@ class SpatGeom {
 		bool addPart(SpatPart p);
 		bool addHole(SpatHole h);
 		bool setPart(SpatPart p, unsigned i);
+		bool reSetPart(SpatPart p);
 		SpatPart getPart(unsigned i);
 		//double area_plane();
 		//double area_lonlat(double a, double f);
@@ -255,7 +256,7 @@ class SpatVector {
 		SpatVector aggregate(std::string field, bool dissolve);
 
         SpatVector buffer(std::vector<double> d, unsigned quadsegs);
-		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs);
+		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs, bool no_multipolygons);
 
 		SpatVector centroid();
 		SpatVector crop(SpatExtent e);
