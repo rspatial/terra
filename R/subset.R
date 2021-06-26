@@ -32,9 +32,10 @@ function(x, subset, filename="", overwrite=FALSE, ...) {
 	return(x)
 } )
 
-
+## expression matching
 setMethod("[", c("SpatRaster", "character", "missing"),
 	function(x, i, j, ... ,drop=TRUE) {
+		i <- grep(i, names(x))
 		subset(x, i, ...)
 	}
 )
