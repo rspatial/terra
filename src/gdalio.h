@@ -8,3 +8,4 @@ void getGDALdriver(std::string &filename, std::string &driver);
 bool getNAvalue(GDALDataType gdt, double & naval);
 GDALDataset* openGDAL(std::string filename, unsigned OpenFlag);
 char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, std::vector<std::string> gdal_options);
+

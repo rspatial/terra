@@ -1,4 +1,4 @@
-# version 1.3-6
+# version 1.3-8
 
 ## enhancements
 
@@ -10,6 +10,8 @@
 - The `filename` and `overwrite` arguments were ignored in `rasterize`
 - gdal options are now also honored for create-copy drivers [#260](https://github.com/rspatial/terra/issues/260)
 - buffer for lonlat now works better at the worlds "edges" [#261](https://github.com/rspatial/terra/issues/261)
+- scale/offset were ignored when using project. Reported by Fabian Fischer
+
 
 # version 1.3-4
 

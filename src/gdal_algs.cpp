@@ -402,7 +402,7 @@ SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string met
 				GDALClose( hSrcDS );
 				return out;
 			}
-			if (!out.create_gdalDS(hDstDS, filename, driver, false, NAN, opt)) {
+			if (!out.create_gdalDS(hDstDS, filename, driver, false, NAN, source[i].has_scale_offset, source[i].scale, source[i].offset, opt)) {
 				GDALClose( hSrcDS );
 				//GDALClose( hDstDS );
 				return out;
@@ -532,7 +532,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		eout.ymax = out.yFromRow(out.bs.row[i]);
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1);
 		SpatRaster crop_out = out.crop(eout, "out", sopt);
-		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, sopt)) {
+		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, source[i].has_scale_offset, source[i].scale, source[i].offset, sopt)) {
 			return crop_out;
 		}
 		for (size_t i=0; i<ns; i++) {
@@ -555,6 +555,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 				return out;
 			}
 		}
+		
 		bool ok = crop_out.from_gdalMEM(hDstDS, use_crs, true); 
 
 	
@@ -868,7 +869,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		return out;
 	}	
 	
-	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, opt)) {
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, {false}, {0.0}, {1.0}, opt)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
 		return out;
@@ -962,7 +963,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 		out.setError("empty driver");
 		return out;
 	}
-	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, opt)) {
+	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
 		return out;

@@ -78,7 +78,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string 
 		}
 	} else {
 		SpatRaster tmp = geometry();
-		if (!tmp.create_gdalDS(rstDS, filename, driver, true, background, opt)) {
+		if (!tmp.create_gdalDS(rstDS, filename, driver, true, background, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
 			msg = "cannot create dataset";
 			return false;
 		}

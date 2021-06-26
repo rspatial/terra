@@ -495,14 +495,9 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		//} else {
 			f = source[src].filename;
 		//}
-		
-
-		
 		//hDS = GDALOpenShared(f.c_str(), GA_ReadOnly);
 
 		hDS = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_SHARED);
-		return(hDS != NULL);
-
 		return(hDS != NULL);
 	
 	} else { // in memory
@@ -654,7 +649,8 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		source[0].values.reserve(ncell() * nlyr());
 		CPLErr err = CE_None;
 		int hasNA;
-		for (size_t i=0; i < nlyr(); i++) {
+		size_t nl = nlyr();
+		for (size_t i=0; i < nl; i++) {
 			GDALRasterBandH hBand = GDALGetRasterBand(hDS, i+1);
 			std::vector<double> lyrout( ncell() );
 			err = GDALRasterIO(hBand, GF_Read, 0, 0, ncol(), nrow(), &lyrout[0], ncol(), nrow(), GDT_Float64, 0, 0);
@@ -662,7 +658,7 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 				setError("CE_None");
 				return false;
 			}
-		
+
 			//double naflag = -3.4e+38;
 			double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
 			if (hasNA && (!std::isnan(naflag))) {			
@@ -677,6 +673,30 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 					std::replace(lyrout.begin(), lyrout.end(), naflag, (double) NAN);
 				}
 			} 
+
+
+			bool has_so = false;;
+			int success;
+			double moffset = GDALGetRasterOffset(hBand, &success);
+			if (success) {
+				if (moffset != 0) {
+					has_so = true;
+				}
+			} else {
+				moffset = 0;
+			}
+			
+			double mscale = GDALGetRasterScale(hBand, &success);
+			if (success) {
+				if (mscale != 1) {
+					has_so = true;
+				}
+			} else {
+				mscale = 1;
+			}
+			if (has_so) {
+				for (double &d : lyrout) { d *= mscale + moffset;}
+			}
 			source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
 		}
 		source[0].hasValues = true;
@@ -738,8 +758,10 @@ char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, s
 
 
 
-bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, SpatOptions& opt) {
+bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, std::vector<bool> has_so, std::vector<double> scale, std::vector<double> offset, SpatOptions& opt) {
 
+	has_so.resize(nlyr(), false);
+	
 	const char *pszFormat = driver.c_str();
 	GDALDriverH hDrv = GDALGetDriverByName(pszFormat);
 
@@ -790,6 +812,12 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		GDALSetRasterNoDataValue(hBand, naflag);
 		//GDALSetRasterNoDataValue(hBand, -3.4e+38);
 		if (fill) GDALFillRaster(hBand, fillvalue, 0);
+		
+		if (has_so[i]) {
+			GDALSetRasterOffset(hBand, offset[i]);
+			GDALSetRasterScale(hBand, scale[i]);
+		}
+		
 		if (hasCats[i]) {
 			std::vector<std::string> cats = getLabels(i);
 			char **names = NULL;
