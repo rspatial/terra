@@ -32,6 +32,7 @@ function(x, subset, filename="", overwrite=FALSE, ...) {
 	return(x)
 } )
 
+
 ## expression matching
 setMethod("[", c("SpatRaster", "character", "missing"),
 	function(x, i, j, ... ,drop=TRUE) {
@@ -40,16 +41,18 @@ setMethod("[", c("SpatRaster", "character", "missing"),
 	}
 )
 
-setMethod("$", "SpatRaster",  
-	function(x, name) { 
-		subset(x, name) 
-	} 
-)
+## exact matching
 
 setMethod("[[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 	subset(x, i, ...)
 })
+
+setMethod("$", "SpatRaster",  
+	function(x, name) { 
+		subset(x, name) 
+	} 
+)
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
