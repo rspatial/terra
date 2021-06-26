@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date : April 2011 / Jan 2021
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 
 .checkngb <- function(ngb, mustBeOdd=FALSE) {

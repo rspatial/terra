@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  June 2008
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 
 setMethod("hist", signature(x="SpatRaster"), 

@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date : January 2009 - December 2011
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 
 #.getClicks <- function(...) {

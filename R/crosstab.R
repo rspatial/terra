@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date : March 2009
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 # revised April 2011
 # adapted November 2020
 

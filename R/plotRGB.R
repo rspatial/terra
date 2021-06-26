@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  April 2010
 # Version 0.9
-# Licence GPL v3
+# License GPL v3
 
 setMethod("RGB<-", signature(x="SpatRaster"), 
 	function(x, value) {

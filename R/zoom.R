@@ -1,8 +1,7 @@
-# R function for the raster package
 # Author: Robert J. Hijmans
 # Date : September 2009
 # Version 0.9
-# Licence GPL v3
+# License GPL v3
 
 
 setMethod("zoom", signature(x="SpatRaster"), 

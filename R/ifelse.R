@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date : May 2019
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 setMethod("ifel", signature(test="SpatRaster"), 
 	function(test, yes, no, filename="", ...) {

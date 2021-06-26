@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date : June 2013
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 
 .circular.weight <- function(rs, d) {

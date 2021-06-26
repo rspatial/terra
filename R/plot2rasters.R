@@ -1,7 +1,7 @@
 # Author: Robert J. Hijmans
 # Date :  June 2019
 # Version 1.0
-# Licence GPL v3
+# License GPL v3
 
 
 .scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
