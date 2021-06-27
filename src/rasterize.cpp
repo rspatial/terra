@@ -41,21 +41,28 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string 
 	}
 
 	if (update) {
-		size_t nsrc = source.size();
+		size_t ns = source.size();
 		if (driver == "MEM") {
-			// force into single source
-			SpatOptions svopt;
-			std::vector<double> v = getValues();
-			SpatRaster tmp = geometry();
-			tmp.setValues(v, svopt);
-			if (!tmp.open_gdal(rstDS, 0, opt)) {
-				msg = "cannot open dataset";
-				return false;
+			if (ns > 1) {
+				// force into single source
+				SpatOptions svopt;
+				SpatRaster tmp = geometry();
+				std::vector<double> v = getValues();
+				tmp.setValues(v, svopt);
+				if (!tmp.open_gdal(rstDS, 0, opt)) {
+					msg = "cannot open dataset";
+					return false;
+				}
+			} else {
+				if (!open_gdal(rstDS, 0, opt)) {
+					msg = "cannot open dataset";
+					return false;
+				}
 			}
 		} else {
 			// make a copy first
 			// including for the odd case that MEM is false but the source in memory
-			if ( (nsrc > 1) || (!sources_from_file()) ) {
+			if ( (ns > 1) || (!sources_from_file()) ) {
 				SpatRaster out = writeRaster(opt);
 			} else {
 				// writeRaster should do the below? copyRaster?
@@ -84,6 +91,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string 
 		}
 	}
 
+
 	GDALRasterBandH hBand = GDALGetRasterBand(rstDS, 1);
 	GDALDataType gdt = GDALGetRasterDataType(hBand);
 	getNAvalue(gdt, naval);
@@ -101,7 +109,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 
 	if ( !hasValues() ) update = false;
 	if (update) { // all lyrs
-		out = geometry();
+		out = geometry(-1, true, true);
 	} else {
 		out = geometry(1);
 	}
@@ -124,7 +132,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	std::string errmsg, driver, filename;
 	GDALDatasetH rstDS;
 	double naval;
-	if (!out.getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
+	if (!getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
 		out.setError(errmsg);
 		return out;
 	}

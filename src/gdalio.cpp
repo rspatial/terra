@@ -501,6 +501,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		return(hDS != NULL);
 	
 	} else { // in memory
+
 			
 		size_t nl;
 		if (src < 0) {
@@ -510,6 +511,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		}
 		size_t ncls = nrow() * ncol();
 		GDALDriverH hDrv = GDALGetDriverByName("MEM");
+
 
 /*https://gis.stackexchange.com/questions/196048/how-to-reuse-memory-pointer-of-gdal-memory-driver
 		char **papszOptions = NULL;
