@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-9</span>
       </span>
     </div>
 
@@ -114,9 +114,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-13-8" class="section level1">
-<h1 class="page-header" data-toc-text="1.3-8">
-<a href="#version-13-8" class="anchor"></a>version 1.3-8<small> Unreleased </small>
+    <div id="version-13-9" class="section level1">
+<h1 class="page-header" data-toc-text="1.3-9">
+<a href="#version-13-9" class="anchor"></a>version 1.3-9<small> Unreleased </small>
 </h1>
 <div id="enhancements" class="section level2">
 <h2 class="hasAnchor">
@@ -138,7 +138,9 @@
 </li>
 <li>buffer for lonlat now works better at the worlds “edges” <a href="https://github.com/rspatial/terra/issues/261"><a href='https://github.com/rspatial/terra/issues/261'>#261</a></a>
 </li>
-<li>scale/offset were ignored when using project. Reported by Fabian Fischer</li>
+<li>scale/offset were ignored by <code>project</code>. Reported by Fabian Fischer</li>
+<li>
+<code><a href="../reference/rasterize.html">rasterize(SpatRaster,SpatVector)</a></code> with <code>inverse=TRUE</code> crashed the R session. Issue <a href="https://github.com/rspatial/terra/issues/264"><a href='https://github.com/rspatial/terra/issues/264'>#264</a></a> by Jean-Luc Dupouey.</li>
 </ul>
 </div>
 </div>
@@ -193,7 +195,7 @@
 <h2 class="hasAnchor">
 <a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
 <ul>
-<li>better handling of paths with “special” characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue <a href="https://github.com/rspatial/terra/issues/223"><a href='https://github.com/rspatial/terra/issues/233'>#233</a></a> by Dongdong Kong)</li>
+<li>better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue <a href="https://github.com/rspatial/terra/issues/223"><a href='https://github.com/rspatial/terra/issues/233'>#233</a></a> by Dongdong Kong)</li>
 <li>
 <code>extract</code> with points and <code>cells=TRUE</code> or <code>xy=TRUE</code> gave garbled output</li>
 <li>
@@ -206,7 +208,7 @@
 <li>
 <code>app</code> with <code>ncores &gt; 0</code> and a function that returns multiple layers now works (issue <a href="https://github.com/rspatial/terra/issues/240"><a href='https://github.com/rspatial/terra/issues/240'>#240</a></a> reported by BastienFR.</li>
 <li>
-<code>autocor</code> (local) can now handle <code>NA</code>s. Reported by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/245"><a href='https://github.com/rspatial/terra/issues/245'>#245</a></a>.</li>
+<code>autocor</code> (local) can now handle <code>NA</code> values. Reported by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/245"><a href='https://github.com/rspatial/terra/issues/245'>#245</a></a>.</li>
 <li>
 <code>mask</code> with a SpatVector and a large (out of memory) multi-layer SpatRaster only worked for the first layer. Reported by Monika Tomaszewska.</li>
 </ul>
