@@ -46,8 +46,16 @@ subset(s, c(3,2,3,1))
 #equivalent to 
 s[[ c(3,2,3,1) ]]
 
-s[c("red", "green")]
+s[[c("red", "green")]]
 s$red
+
+# expresion based (partial) matching of names with single brackets
+s["re"]
+s["^re"]
+
+# not with double brackets
+# s[["re"]]
+
 }
 
 \keyword{ spatial }

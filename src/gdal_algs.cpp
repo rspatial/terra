@@ -313,6 +313,7 @@ bool is_valid_warp_method(const std::string &method) {
 }
 
 
+/*
 SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
@@ -452,7 +453,7 @@ SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string met
 
 	return out;
 }
-
+*/
 
 
 
@@ -519,6 +520,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		opt = SpatOptions(opt);
 	}
 
+	opt.ncopies += 4;
 	if (!out.writeStart(opt)) {
 		return out;		
 	}
@@ -526,16 +528,32 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	std::string errmsg;
 	size_t ns = nsrc();
 	SpatExtent eout = out.getExtent();
-	GDALDatasetH hDstDS, hSrcDS;
+
+
+	std::vector<bool> has_so = source[0].has_scale_offset;
+	std::vector<double> scale = source[0].scale;
+	std::vector<double> offset = source[0].offset;
+	for (size_t i=1; i<ns; i++) {
+		has_so.insert(has_so.end(), source[0].has_scale_offset.begin(), source[0].has_scale_offset.end());
+		scale.insert(scale.end(), source[0].scale.begin(), source[0].scale.end());
+		offset.insert(offset.end(), source[0].offset.begin(), source[0].offset.end());
+	}
+
 	for (size_t i = 0; i < out.bs.n; i++) {
 		int bandstart = 0;
 		eout.ymax = out.yFromRow(out.bs.row[i]);
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1);
 		SpatRaster crop_out = out.crop(eout, "out", sopt);
-		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, source[i].has_scale_offset, source[i].scale, source[i].offset, sopt)) {
+		GDALDatasetH hDstDS;
+
+		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, has_so, scale, offset, sopt)) {
 			return crop_out;
 		}
+	
 		for (size_t i=0; i<ns; i++) {
+
+			GDALDatasetH hSrcDS;
+
 			if (!open_gdal(hSrcDS, i, sopt)) {
 				out.setError("cannot create dataset from source");
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
@@ -546,18 +564,17 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			std::iota (dstbands.begin(), dstbands.end(), bandstart); 
 			bandstart += dstbands.size();
 
+
 			bool success = gdal_warper(hSrcDS, hDstDS, srcbands, dstbands, method, srccrs, errmsg, opt.get_verbose());
 			if( hSrcDS != NULL ) GDALClose( (GDALDatasetH) hSrcDS );
-			
 			if (!success) {
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 				out.setError(errmsg);
 				return out;
 			}
 		}
-		
-		bool ok = crop_out.from_gdalMEM(hDstDS, use_crs, true); 
 
+		bool ok = crop_out.from_gdalMEM(hDstDS, false, true); 
 	
 		if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 		if (!ok) {

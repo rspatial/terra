@@ -1,4 +1,4 @@
-# version 1.3-8
+# version 1.3-9
 
 ## enhancements
 
@@ -10,7 +10,8 @@
 - The `filename` and `overwrite` arguments were ignored in `rasterize`
 - gdal options are now also honored for create-copy drivers [#260](https://github.com/rspatial/terra/issues/260)
 - buffer for lonlat now works better at the worlds "edges" [#261](https://github.com/rspatial/terra/issues/261)
-- scale/offset were ignored when using project. Reported by Fabian Fischer
+- scale/offset were ignored by `project`. Reported by Fabian Fischer
+- `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey.
 
 
 # version 1.3-4
@@ -42,13 +43,13 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 
 ## bug fixes 
 
-- better handling of paths with "special" characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue [#233](https://github.com/rspatial/terra/issues/223) by Dongdong Kong)
+- better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue [#233](https://github.com/rspatial/terra/issues/223) by Dongdong Kong)
 - `extract` with points and `cells=TRUE` or `xy=TRUE` gave garbled output
 - `as.character,SpatRaster-method` (called by `wrap`) did not capture the layer names. Reported by Pascal Title [#213](https://github.com/rspatial/terra/issues/213)
 - `focal` mirrored the weight matrix, thus affecting the results when using an asymmetrical weight matrix. Reported by Sebastiano Trevisani
 - `terra::terraOptions` now works without attaching the package (issue [#229](https://github.com/rspatial/terra/issues/229) reported by Karl Dunkle Werner)
 - `app` with `ncores > 0` and a function that returns multiple layers now works (issue [#240](https://github.com/rspatial/terra/issues/240) reported by BastienFR.
-- `autocor` (local) can now handle `NA`s. Reported by Jakub Nowosad [#245](https://github.com/rspatial/terra/issues/245).
+- `autocor` (local) can now handle `NA` values. Reported by Jakub Nowosad [#245](https://github.com/rspatial/terra/issues/245).
 - `mask` with a SpatVector and a large (out of memory) multi-layer SpatRaster only worked for the first layer. Reported by Monika Tomaszewska.
 
 

@@ -660,7 +660,6 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 				setError("CE_None");
 				return false;
 			}
-
 			//double naflag = -3.4e+38;
 			double naflag = GDALGetRasterNoDataValue(hBand, &hasNA);
 			if (hasNA && (!std::isnan(naflag))) {			
@@ -697,10 +696,11 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 				mscale = 1;
 			}
 			if (has_so) {
-				for (double &d : lyrout) { d *= mscale + moffset;}
+				for (double &d : lyrout) { d = d * mscale + moffset;}
 			}
 			source[0].values.insert(source[0].values.end(), lyrout.begin(), lyrout.end());
 		}
+
 		source[0].hasValues = true;
 		source[0].memory = true;
 		source[0].driver = "memory";

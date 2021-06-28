@@ -653,7 +653,7 @@ class SpatRaster {
 //		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
 #ifdef useGDAL
-		bool getDSh(GDALDatasetH &rstDS, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt);
+		bool getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt);
 		bool open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt);
 		bool create_gdalDS(GDALDatasetH &hDS, std::string filename, std::string driver, bool fill, double fillvalue, std::vector<bool> has_so, std::vector<double> scale, std::vector<double> offset, SpatOptions& opt);
 		bool from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_values);

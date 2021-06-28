@@ -17,7 +17,7 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 
 
 
-bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt) {
+bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt) {
 
 	filename = opt.get_filename();
 	if (filename == "") {
@@ -84,13 +84,11 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, std::string &filename, std::string 
 			rstDS = GDALOpenEx(filename.c_str(), GDAL_OF_RASTER | GDAL_OF_UPDATE, NULL, NULL, NULL);
 		}
 	} else {
-		SpatRaster tmp = geometry();
-		if (!tmp.create_gdalDS(rstDS, filename, driver, true, background, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+		if (!out.create_gdalDS(rstDS, filename, driver, true, background, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
 			msg = "cannot create dataset";
 			return false;
 		}
 	}
-
 
 	GDALRasterBandH hBand = GDALGetRasterBand(rstDS, 1);
 	GDALDataType gdt = GDALGetRasterDataType(hBand);
@@ -132,7 +130,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	std::string errmsg, driver, filename;
 	GDALDatasetH rstDS;
 	double naval;
-	if (!getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
+	if (!getDSh(rstDS, out, filename, driver, naval, errmsg, update, background, opt)) {
 		out.setError(errmsg);
 		return out;
 	}
@@ -286,7 +284,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	double naval;
 	if (add) {	background = 0;	}
 
-	if (!out.getDSh(rstDS, filename, driver, naval, errmsg, update, background, opt)) {
+	if (!getDSh(rstDS, out, filename, driver, naval, errmsg, update, background, opt)) {
 		out.setError(errmsg);
 		return out;
 	}
