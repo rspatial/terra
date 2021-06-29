@@ -62,8 +62,8 @@ test <- terra::extract(rr, p, fun = mean)
 expect_equal(as.vector(as.matrix(test)), c(1,2,NaN,53,NaN,106))
 
 test <- terra::extract(r, p, fun = mean, exact=TRUE)
-expect_equal(as.vector(as.matrix(test)), c(1,2, 9.200232,5.126552))
+expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312))
 
 test <- terra::extract(rr, p, fun = mean, exact=TRUE)
-expect_equal(as.vector(as.matrix(test)), c(1,2, 9.200232,5.126552,18.40046, 10.25310))
+expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312, 103.60012, 104.42623))
 
