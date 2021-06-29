@@ -48,3 +48,22 @@ e <- extract(r, xy, method="bilinear", cells=T, xy=T)
 expect_equal(unlist(e, use.names=FALSE), c(378.00, 270.75, 197.25,8173.00,8016.00,6041.00,178900.00, 179000.00, 180000.00, 329900.00, 330000.00, 331000.00))
 	
  
+r <- rast(nrows = 10, ncols = 10, nlyrs = 1, vals = 1:100, names = "temp")
+x1 <- rbind(c(-145,-10), c(-145,-5), c(-140, -5), c(-140,-10))
+x2 <- rbind(c(-10,0), c(140,60), c(160,0), c(140,-55))
+z <- rbind(cbind(object=1, part=1, x1, hole=0), cbind(object=3, part=1, x2, hole=0))
+colnames(z)[3:4] <- c('x', 'y')
+p <- vect(z, "polygons")
+rr <- c(r, r*2)
+test <- terra::extract(r, p, fun = mean)
+expect_equal(as.vector(as.matrix(test)), c(1,2,NaN,53))
+
+test <- terra::extract(rr, p, fun = mean)
+expect_equal(as.vector(as.matrix(test)), c(1,2,NaN,53,NaN,106))
+
+test <- terra::extract(r, p, fun = mean, exact=TRUE)
+expect_equal(as.vector(as.matrix(test)), c(1,2, 9.200232,5.126552))
+
+test <- terra::extract(rr, p, fun = mean, exact=TRUE)
+expect_equal(as.vector(as.matrix(test)), c(1,2, 9.200232,5.126552,18.40046, 10.25310))
+

@@ -147,8 +147,8 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		x <- messages(x, "extract")
 		if (weights || exact) {
 			if (hasfun) {
-				e <- t(sapply(e, fun, ...))
-				#e <- matrix(e, nrow=nrow(y), byrow=TRUE)
+				e <- sapply(e, fun, ...)
+				e <- matrix(e, nrow=nrow(y), byrow=TRUE)
 				colnames(e) <- cn
 				e <- cbind(ID=1:nrow(e), e)
 			}
