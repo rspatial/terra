@@ -23,7 +23,7 @@ You can also apply a function \code{fun} across datasets by layer of a \code{Spa
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
   \item{fun}{function}
-  \item{...}{additional arguments for \code{fun}}  
+  \item{...}{additional arguments for \code{fun}. These are typically numerical constants. They should *never* be another SpatRaster}  
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. Ignored for C++ level implemented functions "max", "min", "mean", "range", "prod", "sum", "any", and "all"}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
