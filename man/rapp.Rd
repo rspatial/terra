@@ -8,11 +8,11 @@
 \title{Range-Apply}
 
 \description{
-Apply a function to a cell-varying range of the layers of a SpatRaster. The range is specified for each cell separately by another SpatRaster with two layers. For either \code{first} or \code{last} you can use a constant instead. 
+Apply a function to a range of the layers of a SpatRaster that varies by cell. The range is specified for each cell one or two SpatRasters (arguments \code{first} and \code{last}}. For either \code{first} or \code{last} you can use a numeric constant instead. 
 
 See \code{\link{selectRange}} to create a new SpatRaster by extracting one or more values starting at a cell-varying layer.
 
-See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a function to all layers (perhaps after making a \code{\link{subset}}) of a SpatRaster.
+See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a function to all cells (not a range), perhaps after making a \code{\link{subset}} of a SpatRaster.
 }
 
 \usage{
