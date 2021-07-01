@@ -114,7 +114,7 @@ class SpatRasterSource {
         //std::vector<int64_t> ivalues;
         //std::vector<bool> bvalues;
 
-		unsigned char datatype;
+//		unsigned char datatype;
 
 		std::vector<bool> hasRange;
 		std::vector<double> range_min;
