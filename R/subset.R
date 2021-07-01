@@ -15,19 +15,16 @@ positive_indices <- function(i, n, caller=" [ ") {
 setMethod("subset", signature(x="SpatRaster"), 
 function(x, subset, filename="", overwrite=FALSE, ...) {
 	if (is.character(subset)) {
-		i <- stats::na.omit(match(subset, names(x)))
-		if (length(i)==0) {
-			return (NULL)
-		} else if (length(i) < length(subset)) {
-			warn("subset", "invalid layer names omitted")
-		}
-		subset <- i
+		i <- match(subset, names(x))
+	} else {
+		i <- as.integer(subset)
+		i[(i<1) | (i>nlyr(x))] <- NA
 	}
-
-	subset <- as.integer(stats::na.omit(subset) - 1)
-
+	if (any(is.na(i))) {
+		error("subset", paste("undefined layer(s) selected:", paste(subset[is.na(i)], collapse=", ")))
+	}
 	opt <- spatOptions(filename, overwrite, ...)
-	x@ptr <- x@ptr$subset(subset, opt)
+	x@ptr <- x@ptr$subset(i-1, opt)
 	messages(x, "subset")
 	return(x)
 } )
