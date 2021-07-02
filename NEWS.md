@@ -1,4 +1,4 @@
-# version 1.3-10
+# version 1.3-11
 
 ## enhancements
 
@@ -12,7 +12,7 @@
 - buffer for lonlat now works better at the worlds "edges" [#261](https://github.com/rspatial/terra/issues/261)
 - scale/offset were ignored by `project`. Reported by Fabian Fischer
 - `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey.
-
+- The output of `merge` and `mosaic` was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in [#271](https://github.com/rspatial/terra/issues/271)
 
 # version 1.3-4
 
