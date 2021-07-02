@@ -371,9 +371,9 @@ bool getNAvalue(GDALDataType gdt, double & naval) {
 	} else if (gdt == GDT_Int16) {
 		naval = INT16_MIN;
 	} else if (gdt == GDT_UInt32) {
-		naval = (double)INT32_MAX * 2 - 1;
+		naval = UINT32_MAX;
 	} else if (gdt == GDT_UInt16) {
-		naval = (double)INT16_MAX * 2 - 1;
+		naval = UINT16_MAX;
 	} else if (gdt == GDT_Byte) {
 		naval = 255;
 	} else {
@@ -792,9 +792,9 @@ bool SpatRaster::create_gdalDS(GDALDatasetH &hDS, std::string filename, std::str
 		} else if (datatype == "INT2S") {
 			naflag = INT16_MIN; 
 		} else if (datatype == "INT4U") {
-			naflag = (double)INT32_MAX * 2 - 1;
+			naflag = UINT32_MAX;
 		} else if (datatype == "INT2U") {
-			naflag = (double)INT16_MAX * 2 - 1;
+			naflag = UINT16_MAX;
 		} else if (datatype == "INT1U") {
 			naflag = 255; // ?; 
 		} 

@@ -9,7 +9,11 @@
 \title{Apply a function to the cells of a SpatRaster}
 
 \description{ 
-Apply a function to the values of each cell of a SpatRaster. Similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix. This is generally used to summarize the values of multiple layers into one layer; but this is not required. The function applied can only take one argument for the raster data that is provided as a matrix in which each layer is a column.
+Apply a function to the values of each cell of a SpatRaster. Similar to \code{\link[base]{apply}} -- think of each layer in a SpatRaster as a column (or row) in a matrix. 
+
+This is generally used to summarize the values of multiple layers into one layer; but this is not required.
+
+\code{app} calls function \code{fun} with the raster data as first argument. Depending on the function supplied, the raster data is represented as either a matrix in which each layer is a column, or a vector representing a cell. The function should return a vector or matrix that is divisible by ncell(x). Thus, both "sum" and "rowSums" can be used, but "colSums" cannot be used.
 
 You can also apply a function \code{fun} across datasets by layer of a \code{SpatRasterDataset}. In that case, summarization is across SpatRasters, not across layers.
 }
@@ -22,7 +26,7 @@ You can also apply a function \code{fun} across datasets by layer of a \code{Spa
 
 \arguments{
   \item{x}{SpatRaster or SpatRasterDataset}
-  \item{fun}{function}
+  \item{fun}{function that operates on a vector or matrix}
   \item{...}{additional arguments for \code{fun}. These are typically numerical constants. They should *never* be another SpatRaster}  
   \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. Ignored for C++ level implemented functions "max", "min", "mean", "range", "prod", "sum", "any", and "all"}
   \item{filename}{character. Output filename}

@@ -24,19 +24,21 @@ setMethod("ifel", signature(test="SpatRaster"),
 			yes <- yes[1]
 			yes_num <- TRUE
 		}
+	
+		test <- as.logical(test)
+
 		if (no_num & yes_num) {
-			stopifnot(is.numeric(yes) || is.logical(yes)) 
-			return (classify(test, rbind(c(0, no[1]), c(1, yes[1]))))		
+			return (classify(test, rbind(c(1, yes), c(0, no))))
 		}
 		
 		if (no_num) {
-			no <- classify(test, rbind(c(0, no[1]), c(1, NA)))
+			no <- classify(test, rbind(c(0, no), c(1, NA)))
 		} else {
 			no <- mask(no, test, maskvalues=TRUE)
 		}
 		
 		if (yes_num) {
-			yes <- classify(test, rbind(c(1, yes[1]), c(0, NA)))
+			yes <- classify(test, rbind(c(1, yes), c(0, NA)))
 		} else {
 			yes <- mask(yes, test, maskvalues=FALSE)
 		}
