@@ -171,7 +171,7 @@
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>GeoTiff files are, by default, written with LZW compression. If you do not want compression, use <code>gdal="COMPRESS=NONE"</code>.</p>
-<p>When writing integer values the lowest available value (given the datatype) is used for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for <code>NA</code>. To keep the value 255, you need to set another value as <code>NAflag</code>, or do not set a <code>NAflag</code> (with <code>NAflag=NA</code>)</p>
+<p>When writing integer values the lowest available value (given the datatype) is used to represent <code>NA</code> for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for <code>NA</code>. To keep the value 255, you need to set another value as <code>NAflag</code>, or do not set a <code>NAflag</code> (with <code>NAflag=NA</code>)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
