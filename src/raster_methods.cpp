@@ -2309,14 +2309,14 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	sopt.progressbar = false;
 	std::vector<double> v;
 	for (size_t i=0; i < out.bs.n; i++) {
+		eout.ymax = out.yFromRow(out.bs.row[i]) + hyr;
 		eout.ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i] - 1) - hyr;
 		SpatRasterStack s;
-		SpatRaster r;
 		for (size_t j=0; j<n; j++) {
 			e = ds[j].getExtent();
 			e.intersect(eout);
 			if ( e.valid_notequal() ) {
-				r = ds[j].crop(eout, "near", sopt);
+				SpatRaster r = ds[j].crop(eout, "near", sopt);
 				//SpatExtent ec = r.getExtent();
 				r = r.extend(eout, sopt);
 				//SpatExtent ee = r.getExtent();
@@ -2329,7 +2329,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		} 
 		size_t ncls = out.bs.nrows[i] * out.ncol() * nl;
 		if (s.size() > 0) {
-			r = s.summary(fun, true, sopt);
+			SpatRaster r = s.summary(fun, true, sopt);
 			if (r.hasError()) {
 				out.setError("internal error: " + r.getError());
 				out.writeStop();
