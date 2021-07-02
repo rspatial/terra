@@ -61,7 +61,7 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 \note{
 GeoTiff files are, by default, written with LZW compression. If you do not want compression, use \code{gdal="COMPRESS=NONE"}.
 
-When writing integer values the lowest available value (given the datatype) is used for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for \code{NA}. To keep the value 255, you need to set another value as \code{NAflag}, or do not set a \code{NAflag} (with \code{NAflag=NA})
+When writing integer values the lowest available value (given the datatype) is used to represent \code{NA} for signed types, and the highest value is used for unsigned values. This can be a problem with byte data (between 0 and 255) as the value 255 is reserved for \code{NA}. To keep the value 255, you need to set another value as \code{NAflag}, or do not set a \code{NAflag} (with \code{NAflag=NA})
 }
 
 \examples{

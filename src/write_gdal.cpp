@@ -401,13 +401,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			} else if (datatype == "INT2S") {
 				poBand->SetNoDataValue(INT16_MIN); 
 			} else if (datatype == "INT4U") {
-				//double na = (double)INT32_MAX * 2 - 1;
-				double na = (double)UINT32_MAX;
-				poBand->SetNoDataValue(na); 
+				//double na = (double)UINT32_MAX;
+				poBand->SetNoDataValue(UINT32_MAX); 
 			} else if (datatype == "INT2U") {
 				//double na = (double)INT16_MAX * 2 - 1;
-				double na = (double)UINT16_MAX;
-				poBand->SetNoDataValue(na); 
+				poBand->SetNoDataValue(UINT16_MAX); 
 			} else if (datatype == "INT1U") {
 				poBand->SetNoDataValue(255); 
 			} else {
@@ -497,9 +495,9 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			} else if (datatype == "INT2S") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, (double)INT16_MIN, (double)INT16_MAX);
 			} else if (datatype == "INT4U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)INT32_MAX*2-1);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT32_MAX);
 			} else if (datatype == "INT2U") {
-				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)INT16_MAX*2-1);
+				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, (double)UINT16_MAX);
 			} else if (datatype == "INT1U") {
 				minmaxlim(vals.begin()+start, vals.begin()+start+nc, vmin, vmax, 0.0, 255.0);
 			} else {
@@ -541,13 +539,13 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			//min_max_na(vals, na, 0, (double)INT32_MAX * 2 - 1);
 			//std::vector<uint32_t> vv(vals.begin(), vals.end());
 			std::vector<uint32_t> vv;
-			tmp_min_max_na(vv, vals, na, 0, (double)INT32_MAX * 2 - 1);
+			tmp_min_max_na(vv, vals, na, 0, (double)UINT32_MAX);
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt32, nl, NULL, 0, 0, 0, NULL );
 		} else if (datatype == "INT2U") {
 			//min_max_na(vals, na, 0, (double)INT16_MAX * 2 - 1); 
 			//std::vector<uint16_t> vv(vals.begin(), vals.end());
 			std::vector<uint16_t> vv;
-			tmp_min_max_na(vv, vals, na, 0, (double)INT16_MAX * 2 - 1); 
+			tmp_min_max_na(vv, vals, na, 0, (double)UINT16_MAX); 
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_UInt16, nl, NULL, 0, 0, 0, NULL );
 		} else if (datatype == "INT1U") {
 			//min_max_na(vals, na, 0, 255);
