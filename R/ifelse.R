@@ -28,7 +28,7 @@ setMethod("ifel", signature(test="SpatRaster"),
 		test <- as.logical(test)
 
 		if (no_num & yes_num) {
-			return (classify(test, rbind(c(1, yes), c(0, no))))
+			return (classify(test, rbind(c(1, yes), c(0, no)), filename=filename, ...))
 		}
 		
 		if (no_num) {
