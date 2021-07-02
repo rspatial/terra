@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Apply a function to the cells of a SpatRaster — app" />
-<meta property="og:description" content="Apply a function to the values of each cell of a SpatRaster. Similar to apply -- think of each layer in a SpatRaster as a column (or row) in a matrix. This is generally used to summarize the values of multiple layers into one layer; but this is not required. The function applied can only take one argument for the raster data that is provided as a matrix in which each layer is a column.
+<meta property="og:description" content="Apply a function to the values of each cell of a SpatRaster. Similar to apply -- think of each layer in a SpatRaster as a column (or row) in a matrix.
+This is generally used to summarize the values of multiple layers into one layer; but this is not required.
+app calls function fun with the raster data as first argument. Depending on the function supplied, the raster data is represented as either a matrix in which each layer is a column, or a vector representing a cell. The function should return a vector or matrix that is divisible by ncell(x). Thus, both &quot;sum&quot; and &quot;rowSums&quot; can be used, but &quot;colSums&quot; cannot be used.
 You can also apply a function fun across datasets by layer of a SpatRasterDataset. In that case, summarization is across SpatRasters, not across layers." />
 
 
@@ -118,7 +120,9 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
     </div>
 
     <div class="ref-description">
-    <p>Apply a function to the values of each cell of a SpatRaster. Similar to <code><a href='https://rdrr.io/r/base/apply.html'>apply</a></code> -- think of each layer in a SpatRaster as a column (or row) in a matrix. This is generally used to summarize the values of multiple layers into one layer; but this is not required. The function applied can only take one argument for the raster data that is provided as a matrix in which each layer is a column.</p>
+    <p>Apply a function to the values of each cell of a SpatRaster. Similar to <code><a href='https://rdrr.io/r/base/apply.html'>apply</a></code> -- think of each layer in a SpatRaster as a column (or row) in a matrix.</p>
+<p>This is generally used to summarize the values of multiple layers into one layer; but this is not required.</p>
+<p><code>app</code> calls function <code>fun</code> with the raster data as first argument. Depending on the function supplied, the raster data is represented as either a matrix in which each layer is a column, or a vector representing a cell. The function should return a vector or matrix that is divisible by ncell(x). Thus, both "sum" and "rowSums" can be used, but "colSums" cannot be used.</p>
 <p>You can also apply a function <code>fun</code> across datasets by layer of a <code>SpatRasterDataset</code>. In that case, summarization is across SpatRasters, not across layers.</p>
     </div>
 
@@ -137,7 +141,7 @@ You can also apply a function fun across datasets by layer of a SpatRasterDatase
     </tr>
     <tr>
       <th>fun</th>
-      <td><p>function</p></td>
+      <td><p>function that operates on a vector or matrix</p></td>
     </tr>
     <tr>
       <th>...</th>
