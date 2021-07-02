@@ -401,10 +401,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			} else if (datatype == "INT2S") {
 				poBand->SetNoDataValue(INT16_MIN); 
 			} else if (datatype == "INT4U") {
-				double na = (double)INT32_MAX * 2 - 1;
+				//double na = (double)INT32_MAX * 2 - 1;
+				double na = (double)UINT32_MAX;
 				poBand->SetNoDataValue(na); 
 			} else if (datatype == "INT2U") {
-				double na = (double)INT16_MAX * 2 - 1;
+				//double na = (double)INT16_MAX * 2 - 1;
+				double na = (double)UINT16_MAX;
 				poBand->SetNoDataValue(na); 
 			} else if (datatype == "INT1U") {
 				poBand->SetNoDataValue(255); 

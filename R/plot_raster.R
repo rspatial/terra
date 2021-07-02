@@ -229,14 +229,15 @@
  #   inset = 0, title.col = text.col, title.adj = 0.5, 
 
 .plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA, 
-	main="", line=0.5, cex.main=0.8, font.main=par()$font.main, col.main = par()$col.main, ...) {
+	main="", line=0.5, cex.main=0.8, font.main=graphics::par()$font.main, 
+	col.main = graphics::par()$col.main, ...) {
 	
 	if ((!x$add) & (!x$legend_only)) {
 
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, ...)
 		if (main != "") {
-			title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)		
+			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)		
 		}
 	}
 
