@@ -126,6 +126,10 @@
 <li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue <a href="https://github.com/rspatial/terra/issues/258"><a href='https://github.com/rspatial/terra/issues/258'>#258</a></a> by AGeographer. Also implemented for names in both SpatVector and SpatRaster.</li>
 <li>
 <code>rast,data.frame</code> method to avoid confusion with the <code>matrix</code> and <code>list</code> methods in response to a <a href="https://stackoverflow.com/q/68133958/635245">SO question</a> by Stackbeans.</li>
+<li>the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on <a href="https://stackoverflow.com/q/68216362/635245">stackoverflow</a>
+</li>
+<li>writeCDF now also writes the time dimensions if there is only one time-step see this <a href="https://stackoverflow.com/a/68227180/635245">SO question</a>
+</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
