@@ -92,7 +92,7 @@
 	ncvars <- list()
 	cal <- NA
 	for (i in 1:n) {
-		if (nl[i] > 1) {
+		if ((nl[i] > 1) | (x[i]@ptr$hasTime)) {
 			y <- x[i]
 			if (y@ptr$hasTime) {
 				zv <- y@ptr$time
@@ -143,7 +143,7 @@
 		y = x[i]
 		readStart(y)
 		b <- y@ptr$getBlockSize(4, opt$memfrac)
-		if (nl[i] > 1) {
+		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
 				d <- array(d, c(nc, b$nrows[j], nl[i]))
