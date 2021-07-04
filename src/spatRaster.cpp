@@ -1725,7 +1725,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 			for (size_t j=0; j<vnc; j++) {
 				bool foundna = false;
 				for (size_t lyr=0; lyr<nl; lyr++) {
-                    size_t off2 = lyr*nc;
+                    size_t off2 = lyr*vnc;
                     if (std::isnan(v[off2+j])) {
                         foundna = true;
                         continue;
