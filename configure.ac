@@ -394,7 +394,7 @@ else
       PROJ_LIB_PATH=`${PROJ_CONFIG} --libs --static`
     else
       PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
-    fi  
+    fi
     AC_SUBST([PROJ_LIBS], ["${PROJ_LIB_PATH} ${INPKG_LIBS}"])
 	proj_version=`${PROJ_CONFIG} --modversion`
 	AC_MSG_NOTICE([PROJ: ${proj_version}])

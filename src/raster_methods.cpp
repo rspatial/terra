@@ -1621,16 +1621,16 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 
 
 SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
-	SpatRaster out = geometry(nlyr());
+	SpatRaster out = geometry();
  	if (!out.writeStart(opt)) { return out; }
 	unsigned nc = ncol();
-	unsigned nl = nlyr();
+	unsigned nl = nc * nlyr();
 	if (values.size() == 1) {
 		std::vector<double> v(out.bs.nrows[0]*nc*nl, values[0]);
 		for (size_t i = 0; i < out.bs.n; i++) {
 			if ((i == (out.bs.n-1)) && (i > 0)) {
 				// last block can be longer, it seems
-				v.resize(out.bs.nrows[i] * nc, values[0]);
+				v.resize(out.bs.nrows[i]*nc*nl, values[0]);
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
