@@ -305,9 +305,12 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 }
 
 
-bool SpatVector::read_ogr(GDALDataset *poDS) {
+#include "Rcpp.h"
+
+bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query) {
 
 	std::string crs = "";
+
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
 	if (poSRS) {
 		char *psz = NULL;
@@ -319,7 +322,36 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 		CPLFree(psz);
 	}
 
-	OGRLayer *poLayer = poDS->GetLayer(0);
+	OGRLayer *poLayer;
+	
+	if (query != "") {
+		poLayer = poDS->ExecuteSQL(query.c_str(), NULL, NULL);
+		if (poLayer == NULL) {
+			setError("Query failed");
+			return false;
+		}
+	} else {
+		if (layer == "") {
+			poLayer = poDS->GetLayer(0);
+			if (poLayer == NULL) {
+				setError("dataset has no layers");
+				return false;
+			}
+		} else {
+			poLayer = poDS->GetLayerByName(layer.c_str());			
+			if (poLayer == NULL) {
+				std::string msg = layer + " is not a valid layer name\nChoose one of: ";
+				for ( auto&& poLayer: poDS->GetLayers() ) {
+					msg += (std::string)poLayer->GetName() + ", ";
+				}
+				msg = msg.substr(0, msg.size()-2);
+				setError(msg);
+				return false;
+			}
+		}
+	}
+	//const char* lname = poLayer->GetName();
+
 	df = readAttributes(poLayer);
 	OGRwkbGeometryType wkbgeom = wkbFlatten(poLayer->GetGeomType());
 	OGRFeature *poFeature;
@@ -404,21 +436,21 @@ bool SpatVector::read_ogr(GDALDataset *poDS) {
 }
 
 
-bool SpatVector::read(std::string fname) {
+bool SpatVector::read(std::string fname, std::string layer, std::string query) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
         setError("Cannot open this file as a SpatVector");
 		return false;
     }
-	bool success = read_ogr(poDS);
+	bool success = read_ogr(poDS, layer, query);
 	if (poDS != NULL) GDALClose( poDS );
 	return success;
 }
 
 SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 	SpatVector out;
-	out.read_ogr(poDS);
+	out.read_ogr(poDS, "", "");
 	return out;
 }
 

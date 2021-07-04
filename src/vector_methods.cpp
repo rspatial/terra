@@ -58,7 +58,7 @@ SpatVector SpatVector::make_valid() {
 		}
 		OGRFeature::DestroyFeature( inFeature );
 	}
-	out.read_ogr(src);
+	out.read_ogr(src, "", "");
 	GDALClose(src);
 	return out;
 }

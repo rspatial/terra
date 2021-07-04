@@ -6,12 +6,13 @@
 - The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue [#258](https://github.com/rspatial/terra/issues/258) by AGeographer. Also implemented for names in both SpatVector and SpatRaster.
 - `rast,data.frame` method to avoid confusion with the `matrix` and `list` methods in response to a [SO question](https://stackoverflow.com/q/68133958/635245) by Stackbeans.
 - the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on [stackoverflow](https://stackoverflow.com/q/68216362/635245)
-- writeCDF now also writes the time dimensions if there is only one time-step see this [SO question](https://stackoverflow.com/a/68227180/635245)
+- `writeCDF` now also writes the time dimensions if there is only one time-step see this [SO question](https://stackoverflow.com/a/68227180/635245)
+- `vect,character` (filename) now has a `layer` and a `query` argument
 
 ## bug fixes 
 - The `filename` and `overwrite` arguments were ignored in `rasterize`
 - gdal options are now also honored for create-copy drivers [#260](https://github.com/rspatial/terra/issues/260)
-- buffer for lonlat now works better at the worlds "edges" [#261](https://github.com/rspatial/terra/issues/261)
+- buffer for lonlat now works better at the world's "edges" [#261](https://github.com/rspatial/terra/issues/261)
 - scale/offset were ignored by `project`. Reported by Fabian Fischer
 - `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey.
 - The output of `merge` and `mosaic` was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in [#271](https://github.com/rspatial/terra/issues/271)
@@ -66,7 +67,6 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - `sharedPaths` method for SpatVector (lines and polygons)
 - `RGB2col` method to reduce a three-layer RGB SpatRaster to a single layer SpatRaster with a color-table (with <= 256 colors)
 - `split` methods for SpatVector and SpatRaster
-
 
 
 ## enhancements

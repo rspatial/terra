@@ -209,7 +209,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 
 setMethod("spatSample", signature(x="SpatExtent"), 
-	function(x, size, method="random", lonlat) {
+	function(x, size, method="random", lonlat, as.points=FALSE) {
 		if (missing(lonlat)) {
 			error("spatSample", "provide a lonlat argument")
 		}
@@ -223,6 +223,9 @@ setMethod("spatSample", signature(x="SpatExtent"),
 		}
 		s <- do.call(cbind, s)
 		colnames(s) <- c("x", "y")
+		if (as.points) {
+			s <- vect(s)
+		}
 		s
 	}
 )

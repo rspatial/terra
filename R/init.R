@@ -7,8 +7,9 @@
 setMethod("init", signature(x="SpatRaster"), 
 	function(x, fun, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x <- rast(x, 1)
+		x <- rast(x)
 		if (is.character(fun)) {
+			x <- rast(x, 1)
 			fun <- fun[1]
 			if (fun %in% c("x", "y", "row", "col", "cell", "chess")) {
 				x@ptr <- x@ptr$initf(fun, TRUE, opt)
@@ -33,8 +34,7 @@ setMethod("init", signature(x="SpatRaster"),
 				}
 				writeValues(x, r, b$row[i], b$nrows[i])
 			}
-			x <- writeStop(x)
-			return(x)
+			writeStop(x)
 		}
 	}
 )

@@ -6,7 +6,7 @@
 #)
 
 setMethod("vect", signature(x="missing"), 
-	function(...) {
+	function(x) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		messages(p, "vect")
@@ -15,21 +15,21 @@ setMethod("vect", signature(x="missing"),
 )
 
 setMethod("vect", signature(x="character"), 
-	function(x, ...) {
+	function(x, layer="", query="", crs="") {
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			x <- gsub("\n", "", x)
 			p@ptr <- SpatVector$new(x)
-			dots <- list(...)
-			if (!is.null(dots$crs)) {
-				crs(p) <- dots$crs
-			}
+			crs(p) <- crs
 		} else {
 			p@ptr <- SpatVector$new()
 			x <- normalizePath(x)
-			p@ptr$read(x)
+			p@ptr$read(x, layer, query)
+			if (isTRUE(crs != "")) {
+				crs(p) <- crs
+			}
 		}
 		messages(p, "vect")
 	}
@@ -87,7 +87,7 @@ setMethod("vect", signature(x="XY"), #sfg
 }
 
 setMethod("vect", signature(x="matrix"), 
-	function(x, type="points", atts=NULL, crs="", ...) {
+	function(x, type="points", atts=NULL, crs="") {
 		type <- tolower(type)
 		type <- match.arg(tolower(type), c("points", "lines", "polygons"))
 		stopifnot(NCOL(x) > 1)
@@ -206,7 +206,7 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"), 
-	function(x, geom=c("lon", "lat"), crs=NA, ...) {
+	function(x, geom=c("lon", "lat"), crs=NA) {
 		if (length(geom) == 2) {
 			v <- vect(as.matrix(x[,geom]), crs=crs)
 		} else if (length(geom) == 1) {

@@ -23,7 +23,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
 
-\S4method{spatSample}{SpatExtent}(x, size, method="random", lonlat)
+\S4method{spatSample}{SpatExtent}(x, size, method="random", lonlat, as.points=FALSE)
 }
 
 \arguments{
