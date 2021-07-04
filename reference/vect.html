@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-12</span>
       </span>
     </div>
 
@@ -121,7 +121,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for character</span>
-<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, layer<span class='op'>=</span><span class='st'>""</span>, query<span class='op'>=</span><span class='st'>""</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
+<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, layer<span class='op'>=</span><span class='st'>""</span>, query<span class='op'>=</span><span class='st'>""</span>, filter<span class='op'>=</span><span class='cn'>NULL</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
 
 <span class='co'># S4 method for matrix</span>
 <span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, type<span class='op'>=</span><span class='st'>"points"</span>, atts<span class='op'>=</span><span class='cn'>NULL</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
@@ -146,6 +146,10 @@
     <tr>
       <th>query</th>
       <td><p>character. An query to subset the dataset in the <a href='https://gdal.org/user/ogr_sql_dialect.html'>OGR-SQL dialect</a></p></td>
+    </tr>
+    <tr>
+      <th>filter</th>
+      <td><p>Spat* object. The extent of the object is used as spatial filter</p></td>
     </tr>
     <tr>
       <th>type</th>
