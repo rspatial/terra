@@ -340,11 +340,15 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 		} else {
 			poLayer = poDS->GetLayerByName(layer.c_str());			
 			if (poLayer == NULL) {
-				std::string msg = layer + " is not a valid layer name\nChoose one of: ";
+				std::string msg = layer + " is not a valid layer name";
+				
+			#if GDAL_VERSION_MAJOR > 2 || GDAL_VERSION_MINOR > 2
+				msg += "\nChoose one of: ";
 				for ( auto&& poLayer: poDS->GetLayers() ) {
 					msg += (std::string)poLayer->GetName() + ", ";
 				}
 				msg = msg.substr(0, msg.size()-2);
+			#endif
 				setError(msg);
 				return false;
 			}
