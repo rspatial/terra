@@ -341,8 +341,9 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 			poLayer = poDS->GetLayerByName(layer.c_str());			
 			if (poLayer == NULL) {
 				std::string msg = layer + " is not a valid layer name";	
-				
-			#if GDAL_VERSION_MAJOR > 2 || GDAL_VERSION_MINOR > 2
+			#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+				// do nothing
+			#else
 				msg += "\nChoose one of: ";
 				for ( auto&& poLayer: poDS->GetLayers() ) {
 					msg += (std::string)poLayer->GetName() + ", ";
@@ -354,6 +355,9 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 			}
 		}
 	}
+	
+	//	poLayer->SetSpatialFilter(filter);
+
 	//const char* lname = poLayer->GetName();
 
 	df = readAttributes(poLayer);
@@ -434,6 +438,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 		std::string s = "cannot read this geometry type: "+ strgeomtype;
 		setError(s);
 		return false;			
+	}
+	
+	if (query != "") {
+		poDS->ReleaseResultSet(poLayer);
 	}
 	
  	return true;
