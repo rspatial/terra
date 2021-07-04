@@ -72,7 +72,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			nlyr(out) <- ncol(r)
 			nms <- colnames(r)
 		} else {
-			error("app", "the number of values returned by 'fun' is not appropriate")
+			error("app", "the number of values returned by 'fun' is not appropriate\n(it should be the product of the number of cells and and a positive integer)")
 		}
 		if (is.null(wopt$names)) {
 			wopt$names <- nms
