@@ -21,7 +21,7 @@ Create a SpatVector
 } 
 
 \usage{
-\S4method{vect}{character}(x, layer="", query="", crs="")
+\S4method{vect}{character}(x, layer="", query="", filter=NULL, crs="")
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
@@ -34,6 +34,7 @@ Create a SpatVector
 \item{x}{character. A filename; or a "Well Known Text" string; or a data.frame (only to make a SpatVector of points); or a "geom" matrix to make a SpatVector of any supported geometry (see examples and  \code{\link{geom}}); or a spatial vector data object defined in the \code{sf} or \code{sp} packages}
 \item{layer}{character. layer name to select a layer from a file (database) with multiple layers}
 \item{query}{character. An query to subset the dataset in the \href{https://gdal.org/user/ogr_sql_dialect.html}{OGR-SQL dialect}}
+\item{filter}{Spat* object. The extent of the object is used as spatial filter}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{the coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see\code{link{crs}})}

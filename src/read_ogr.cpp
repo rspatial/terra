@@ -305,12 +305,10 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 }
 
 
-#include "Rcpp.h"
-
-bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query) {
+bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query, std::vector<double> filter) {
 
 	std::string crs = "";
-
+	
 	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
 	if (poSRS) {
 		char *psz = NULL;
@@ -356,8 +354,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 		}
 	}
 	
-	//	poLayer->SetSpatialFilter(filter);
-
+	if (filter.size() > 0) {
+		poLayer->SetSpatialFilterRect(filter[0], filter[2], filter[1], filter[3]);
+	}
+	
 	//const char* lname = poLayer->GetName();
 
 	df = readAttributes(poLayer);
@@ -448,21 +448,22 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 }
 
 
-bool SpatVector::read(std::string fname, std::string layer, std::string query) {
+bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> filter) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
         setError("Cannot open this file as a SpatVector");
 		return false;
     }
-	bool success = read_ogr(poDS, layer, query);
+	bool success = read_ogr(poDS, layer, query, filter);
 	if (poDS != NULL) GDALClose( poDS );
 	return success;
 }
 
 SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 	SpatVector out;
-	out.read_ogr(poDS, "", "");
+	std::vector<double> filter;
+	out.read_ogr(poDS, "", "", filter);
 	return out;
 }
 

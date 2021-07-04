@@ -15,7 +15,7 @@ setMethod("vect", signature(x="missing"),
 )
 
 setMethod("vect", signature(x="character"), 
-	function(x, layer="", query="", crs="") {
+	function(x, layer="", query="", filter=NULL, crs="") {
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
@@ -26,7 +26,12 @@ setMethod("vect", signature(x="character"),
 		} else {
 			p@ptr <- SpatVector$new()
 			x <- normalizePath(x)
-			p@ptr$read(x, layer, query)
+			if (is.null(filter)) {
+				filter <- double()
+			} else {
+				filter <- as.vector(ext(filter))
+			}
+			p@ptr$read(x, layer, query, filter)
 			if (isTRUE(crs != "")) {
 				crs(p) <- crs
 			}

@@ -4,7 +4,6 @@
 #include "recycle.h"
 #include "string_utils.h"
 
-
 	
 SpatVector SpatVector::allerretour() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -503,8 +502,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 		}
 	}
 
-	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
-	geos_finish(hGEOSCtxt);
+//	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 
 	if (result.size() > 0) {
 		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
@@ -512,6 +510,7 @@ SpatVector SpatVector::crop(SpatVector v) {
 		out.srs = srs;
 		out.df = df.subset_rows(ids);
 	} 
+	geos_finish(hGEOSCtxt);
 	return out;
 }
 
