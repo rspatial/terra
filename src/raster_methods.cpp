@@ -1644,7 +1644,7 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 			}
 			std::vector<double> v = values;
 			recycle(v, out.bs.nrows[i]*nc);
-			recycle(v, nl);
+			recycle(v, out.bs.nrows[i]*nc*nl);
 			over = v.size() % values.size();
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
