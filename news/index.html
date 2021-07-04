@@ -147,9 +147,11 @@
 </li>
 <li>scale/offset were ignored by <code>project</code>. Reported by Fabian Fischer</li>
 <li>
-<code><a href="../reference/rasterize.html">rasterize(SpatRaster,SpatVector)</a></code> with <code>inverse=TRUE</code> crashed the R session. Issue <a href="https://github.com/rspatial/terra/issues/264"><a href='https://github.com/rspatial/terra/issues/264'>#264</a></a> by Jean-Luc Dupouey.</li>
+<code><a href="../reference/rasterize.html">rasterize(SpatRaster,SpatVector)</a></code> with <code>inverse=TRUE</code> crashed the R session. Issue <a href="https://github.com/rspatial/terra/issues/264"><a href='https://github.com/rspatial/terra/issues/264'>#264</a></a> by Jean-Luc Dupouey</li>
 <li>The output of <code>merge</code> and <code>mosaic</code> was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in <a href="https://github.com/rspatial/terra/issues/271"><a href='https://github.com/rspatial/terra/issues/271'>#271</a></a>
 </li>
+<li>
+<code>as.points,SpatRaster</code> did not remove <code>NA</code>’s correctly. Issue <a href="https://github.com/rspatial/terra/issues/269"><a href='https://github.com/rspatial/terra/issues/269'>#269</a></a> by Julian Hagenauer</li>
 </ul>
 </div>
 </div>
