@@ -389,15 +389,23 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	std::vector<double> feats(1, 1) ;		
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, opt); 
 	SpatVector pts = rcr.as_points(false, true, opt);
+	std::vector<double> cells;
 	if (pts.size() == 0) {
-		std::vector<double> out(1, NAN);
-		return out;
+		pts = v.as_points(false, true);
+		SpatDataFrame vd = pts.getGeometryDF();
+		std::vector<double> x = vd.getD(0);
+		std::vector<double> y = vd.getD(1);
+		cells = r.cellFromXY(x, y);
+		cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
+		if (cells.size() == 0) {
+			cells.resize(1, NAN);
+		}
+	} else {	
+		SpatDataFrame vd = pts.getGeometryDF();
+		std::vector<double> x = vd.getD(0);
+		std::vector<double> y = vd.getD(1);
+		cells = r.cellFromXY(x, y);
 	}
-	
-    SpatDataFrame vd = pts.getGeometryDF();
-    std::vector<double> x = vd.getD(0);
-    std::vector<double> y = vd.getD(1);
-	std::vector<double> cells = r.cellFromXY(x, y);
 	return cells;
 }
 

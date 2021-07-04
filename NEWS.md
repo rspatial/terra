@@ -10,12 +10,15 @@
 - `vect,character` (filename) now has a `layer` and a `query` argument
 
 ## bug fixes 
+
 - The `filename` and `overwrite` arguments were ignored in `rasterize`
 - gdal options are now also honored for create-copy drivers [#260](https://github.com/rspatial/terra/issues/260)
 - buffer for lonlat now works better at the world's "edges" [#261](https://github.com/rspatial/terra/issues/261)
 - scale/offset were ignored by `project`. Reported by Fabian Fischer
-- `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey.
+- `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey
 - The output of `merge` and `mosaic` was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in [#271](https://github.com/rspatial/terra/issues/271)
+- `as.points,SpatRaster` did not remove `NA`'s correctly. Issue [#269](https://github.com/rspatial/terra/issues/269) by Julian Hagenauer
+
 
 # version 1.3-4
 

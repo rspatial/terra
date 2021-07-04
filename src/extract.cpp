@@ -21,10 +21,6 @@
 #include "distance.h"
 #include "vecmath.h"
 
-
-
-//#include <iostream>
-
 double rowColToCell(unsigned ncols, unsigned row, unsigned col) {
   return row * ncols + col;
 }
