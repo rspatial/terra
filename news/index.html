@@ -128,8 +128,11 @@
 <code>rast,data.frame</code> method to avoid confusion with the <code>matrix</code> and <code>list</code> methods in response to a <a href="https://stackoverflow.com/q/68133958/635245">SO question</a> by Stackbeans.</li>
 <li>the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on <a href="https://stackoverflow.com/q/68216362/635245">stackoverflow</a>
 </li>
-<li>writeCDF now also writes the time dimensions if there is only one time-step see this <a href="https://stackoverflow.com/a/68227180/635245">SO question</a>
+<li>
+<code>writeCDF</code> now also writes the time dimensions if there is only one time-step see this <a href="https://stackoverflow.com/a/68227180/635245">SO question</a>
 </li>
+<li>
+<code>vect,character</code> (filename) now has a <code>layer</code> and a <code>query</code> argument</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -140,7 +143,7 @@
 </li>
 <li>gdal options are now also honored for create-copy drivers <a href="https://github.com/rspatial/terra/issues/260"><a href='https://github.com/rspatial/terra/issues/260'>#260</a></a>
 </li>
-<li>buffer for lonlat now works better at the worlds “edges” <a href="https://github.com/rspatial/terra/issues/261"><a href='https://github.com/rspatial/terra/issues/261'>#261</a></a>
+<li>buffer for lonlat now works better at the world’s “edges” <a href="https://github.com/rspatial/terra/issues/261"><a href='https://github.com/rspatial/terra/issues/261'>#261</a></a>
 </li>
 <li>scale/offset were ignored by <code>project</code>. Reported by Fabian Fischer</li>
 <li>

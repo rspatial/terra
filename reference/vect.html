@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Create SpatVector objects — vect" />
-<meta property="og:description" content="Create a new SpatVector" />
+<meta property="og:description" content="Create a SpatVector" />
 
 
 
@@ -117,17 +117,17 @@
     </div>
 
     <div class="ref-description">
-    <p>Create a new SpatVector</p>
+    <p>Create a SpatVector</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for character</span>
-<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, layer<span class='op'>=</span><span class='st'>""</span>, query<span class='op'>=</span><span class='st'>""</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
 
 <span class='co'># S4 method for matrix</span>
-<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, type<span class='op'>=</span><span class='st'>"points"</span>, atts<span class='op'>=</span><span class='cn'>NULL</span>, crs<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, type<span class='op'>=</span><span class='st'>"points"</span>, atts<span class='op'>=</span><span class='cn'>NULL</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
 
 <span class='co'># S4 method for data.frame</span>
-<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, geom<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"lon"</span>, <span class='st'>"lat"</span><span class='op'>)</span>, crs<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, geom<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"lon"</span>, <span class='st'>"lat"</span><span class='op'>)</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
 
 <span class='co'># S4 method for sf</span>
 <span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
@@ -137,7 +137,15 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>character (filename or "Well Known Text"); or a data.frame or matrix with geometry data (see <code><a href='geom.html'>geom</a></code>); or missing; or a vector data object defined in the <code>sf</code> or <code>sp</code> packages</p></td>
+      <td><p>character. A filename; or a "Well Known Text" string; or a data.frame (only to make a SpatVector of points); or a "geom" matrix to make a SpatVector of any supported geometry (see examples and  <code><a href='geom.html'>geom</a></code>); or a spatial vector data object defined in the <code>sf</code> or <code>sp</code> packages</p></td>
+    </tr>
+    <tr>
+      <th>layer</th>
+      <td><p>character. layer name to select a layer from a file (database) with multiple layers</p></td>
+    </tr>
+    <tr>
+      <th>query</th>
+      <td><p>character. An query to subset the dataset in the <a href='https://gdal.org/user/ogr_sql_dialect.html'>OGR-SQL dialect</a></p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -149,15 +157,11 @@
     </tr>
     <tr>
       <th>crs</th>
-      <td><p>the coordinate reference system (WKT2, &lt;authority&gt;:&lt;code&gt;, or PROJ-string notation (see<code>link{crs}</code>)</p></td>
+      <td><p>the coordinate reference system in one of the following formats: WKT/WKT2, &lt;authority&gt;:&lt;code&gt;, or PROJ-string notation (see<code>link{crs}</code>)</p></td>
     </tr>
     <tr>
       <th>geom</th>
       <td><p>the field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional matrices and/or lists with matrices</p></td>
     </tr>
     </table>
 
@@ -184,6 +188,20 @@
 #&gt;  values      :     1 Diekirch     1 Clervaux   312 1.808e+04
 #&gt;                    1 Diekirch     2 Diekirch   218 3.254e+04
 #&gt;                    1 Diekirch     3  Redange   259 1.866e+04</div><div class='input'>
+<span class='co'># with query </span>
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>f</span>, query<span class='op'>=</span><span class='st'>"SELECT NAME_1, NAME_2 FROM lux WHERE ID_2 &lt; 4"</span><span class='op'>)</span>
+<span class='va'>v</span>
+</div><div class='output co'>#&gt;  class       : SpatVector 
+#&gt;  geometry    : polygons 
+#&gt;  dimensions  : 3, 2  (geometries, attributes)
+#&gt;  extent      : 5.746118, 6.315773, 49.69933, 50.18162  (xmin, xmax, ymin, ymax)
+#&gt;  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+#&gt;  names       :   NAME_1   NAME_2
+#&gt;  type        :    &lt;chr&gt;    &lt;chr&gt;
+#&gt;  values      : Diekirch Clervaux
+#&gt;                Diekirch Diekirch
+#&gt;                Diekirch  Redange</div><div class='input'>
+
 <span class='co'>### from a geom matrix</span>
 <span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>180</span>,<span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='fl'>55</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>60</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>10</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>160</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>55</span><span class='op'>)</span><span class='op'>)</span>
