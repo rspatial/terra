@@ -5,9 +5,7 @@
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
 
-<p align="right"> 
-  <img align="right" width="350" height="350" src="https://github.com/rspatial/terra/raw/master/logo.png">
-logo by Zane Dax</p>
+<img align="right" width="350" height="350" src="https://github.com/rspatial/terra/raw/master/logo.png">
 
 `terra` is an R package for spatial analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
@@ -21,6 +19,8 @@ logo by Zane Dax</p>
 `terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
 
 The easiest way to use the *development version* on Windows or MacOS, is to install it from the [R-universe](https://r-universe.dev/organizations/), like this:
+
+<p align="right">logo by Zane Dax</p>
 
 ```
 install.packages('terra', repos='https://rspatial.r-universe.dev')
