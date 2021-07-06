@@ -380,7 +380,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
 
     out.source.push_back( source[ss].subset(slyr) );
     if (opt.get_filename() != "") {
-        out.writeRaster(opt);
+        out = out.writeRaster(opt);
     } //else {
 	//	out.collapse();
 	//}

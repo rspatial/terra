@@ -55,7 +55,7 @@ v <- vect(f)
 v
 
 # with query 
-v <- vect(f, query="SELECT NAME_1, NAME_2 FROM lux WHERE ID_2 < 4")
+v <- vect(f, query="SELECT NAME_1, NAME_2, ID_2 FROM lux WHERE ID_2 < 4")
 v
 
 

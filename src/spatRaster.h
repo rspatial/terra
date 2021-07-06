@@ -488,7 +488,7 @@ class SpatRaster {
 		SpatRaster sources_to_disk(std::vector<std::string> &tmpfs, bool unique, SpatOptions &opt);
 		bool sources_from_file();
 
-		bool differentFilenames(std::vector<std::string> outf);
+		bool differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty);
 
 
 ////////////////////////////////////////////////////

@@ -101,8 +101,17 @@ bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
 }
 */
 
-bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
+bool SpatRaster::differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty) {
 	std::vector<std::string> inf = filenames();
+	duplicates = false;
+	empty = false;
+	for (size_t j=0; j<outf.size(); j++) {
+		if (outf[j] == "") {
+			empty = true;
+			return false;
+		}
+	}
+
 	for (size_t i=0; i<inf.size(); i++) {
 		if (inf[i] == "") continue;
 		#ifdef _WIN32
@@ -114,6 +123,13 @@ bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
 			#endif
 			if (inf[i] == outf[j]) return false;
 		}
+	}
+
+	size_t n = outf.size();
+	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
+	if (n > outf.size()) {
+		duplicates = true;
+		return false;
 	}
 	return true;
 }
@@ -134,11 +150,17 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	// recursive writing of layers
 	std::vector<std::string> fnames = opt.get_filenames();
-	if (!differentFilenames(fnames)) {
-		out.setError("source and target filename cannot be the same");
+	bool dups, empty;
+	if (!differentFilenames(fnames, dups, empty)) {
+		if (dups) {
+			out.setError("duplicate filenames");			
+		} else if (empty) {
+			out.setError("empty filename");			
+		} else {
+			out.setError("source and target filename cannot be the same");
+		}
 		return(out);
 	}
-
 
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {
@@ -149,10 +171,6 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			bool overwrite = opt.get_overwrite();
 			std::string errmsg;
 			for (size_t i=0; i<nl; i++) {
-				if (fnames[i] == "") {
-					out.setError("empty filename detected");
-					return(out);				
-				}
 				if (!can_write(fnames[i], overwrite, errmsg)) {
 					out.setError(errmsg + " (" + fnames[i] +")");
 					return(out);
@@ -164,6 +182,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 				if (out.hasError()) {
 					return out;
 				}
+				fnames[i] = out.source[0].filename;
 			}
 			SpatRaster out(fnames, {-1}, {""}, false, {});
 			return out;
