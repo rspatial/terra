@@ -1,5 +1,7 @@
 # terra
 
+<p align="right">logo by Zane Dax</p>
+
 [![rcmdcheck](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml/badge.svg)](https://github.com/rspatial/terra/actions/workflows/rcmdcheck.yml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
@@ -20,7 +22,6 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 The easiest way to use the *development version* on Windows or MacOS, is to install it from the [R-universe](https://r-universe.dev/organizations/), like this:
 
-<p align="right">logo by Zane Dax</p>
 
 ```
 install.packages('terra', repos='https://rspatial.r-universe.dev')
