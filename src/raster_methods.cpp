@@ -1307,9 +1307,6 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 			start = start < 0 ? 0 : start; 
 			end = end >= nl ? (nl-1) : end; 
 		}
-		if ((j>2) && (j <5)) {
-			Rcpp::Rcout << start << "-" << end << std::endl;
-		}
 
 		bool inrange = (start <= end) && (end < nl) && (start >= 0);
 		if (all) {
