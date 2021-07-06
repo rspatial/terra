@@ -4,6 +4,9 @@ on:
       - main
       - master
 
+    paths:
+      - '**.R'
+
 name: pkgdown
 
 jobs:
