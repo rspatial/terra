@@ -1164,8 +1164,8 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 		out.setError("arguments `first` or `last` must be NA. See `app` for other cases");
 		return out;		
 	}
-	int start = sval ? first-1 : 0;
-	int end = eval ? last-1 : 0;
+	int start = sval ? first-1 : -99;
+	int end = eval ? last-1 : -999;
 
 	if (!out.compare_geom(x, false, false)) {
 		return(out);
@@ -1219,9 +1219,9 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 			}
 			if (clamp) {
 				start = start < 0 ? 0 : start; 
-				end = end > nl ? nl : end; 
+				end = end >= nl ? (nl-1) : end; 
 			}
-			if ((start <= end) && (end <= nl) && (start >= 0)) {
+			if ((start <= end) && (end < nl) && (start >= 0)) {
 				std::vector<double> se;
 				se.reserve(end-start+1);
 				for (int k = start; k<=end; k++){
@@ -1293,40 +1293,45 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 			continue;
 		}
 		if (sval) {
-			//end = idx[j] - 1;	
-			end = idx[j];	
+			end = idx[j] - 1;	
+			//end = idx[j];	
 		} else if (eval) {
 			start = idx[j] - 1;
 		} else {
 			start = idx[j] - 1;
-			double dend = idx[j+ncell];
-			//double dend = idx[j+ncell]-1;
-			end = std::isnan(dend) ? -99 : (int) dend;
+			//double dend = idx[j+ncell];
+			double dend = idx[j+ncell]-1;
+			end = std::isnan(dend) ? -999 : (int) dend;
 		}
 		if (clamp) {
 			start = start < 0 ? 0 : start; 
-			end = end > nl ? nl : end; 
+			end = end >= nl ? (nl-1) : end; 
+		}
+		if ((j>2) && (j <5)) {
+			Rcpp::Rcout << start << "-" << end << std::endl;
 		}
 
+		bool inrange = (start <= end) && (end < nl) && (start >= 0);
 		if (all) {
-			if ((start <= end) && (end <= nl) && (start >= 0)) {
+			if (inrange) {
 				r[j].resize(nl, fill);
-				for (int k = start; k<end; k++){
+				for (int k = start; k<=end; k++){
 					size_t off = k * ncell + j;
 					r[j][k] = v[off];   
 				}		
 			} else {
 				r[j].resize(nl, NAN);
 			}	
-		} else if ((start <= end) && (end <= nl) && (start >= 0)) {
+		} else if (inrange) {
 			r[j].reserve(end-start+1);
-			for (int k=start; k<end; k++){
+			for (int k=start; k<=end; k++){
 				size_t off = k * ncell + j;
 				r[j].push_back(v[off]);   
 			}
 		} else {
 			r[j].push_back(NAN);
 		}
+		
 	}
 	readStop();
 	x.readStop();

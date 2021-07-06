@@ -50,7 +50,7 @@ function(x, first, last, fun, ..., allyrs=FALSE, fill=NA, clamp=FALSE, filename=
 	out <- rast(x)
 	v <- x@ptr$rappvals(index@ptr, firstval, lastval, clamp, allyrs, fill, 0, 1)
 	v <- sapply(v, fun, ...)
-	if (is.list(v)) { error("rapp", "values returned do not have the same length for each cell") }
+	if (is.list(v)) { error("rapp", "values returned by 'fun' do not have the same length for each cell") }
 	nc <- ncol(out)
 	trans = FALSE
 	if (NCOL(v) == nc) {
