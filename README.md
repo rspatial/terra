@@ -6,6 +6,7 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
 
 <img align="right" width="350" height="350" src="https://github.com/rspatial/terra/raw/master/logo.png">
+<p style="text-align:right;">logo by Zane Dax</p>
 
 
 `terra` is an R package for spatial analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
