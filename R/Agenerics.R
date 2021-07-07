@@ -145,6 +145,7 @@ if (!isGeneric("ifel")) {setGeneric("ifel", function(test, ...) standardGeneric(
 if (!isGeneric("image")) {setGeneric("image", function(x, ...)standardGeneric("image"))}
 if (!isGeneric("init")) {setGeneric("init", function(x, ...) standardGeneric("init"))}
 if (!isGeneric("inset")) {setGeneric("inset", function(x, ...) standardGeneric("inset"))}
+if (!isGeneric("inext")) {setGeneric("inext", function(x, ...) standardGeneric("inext"))}
 if (!isGeneric("interpolate")) { setGeneric("interpolate", function(object, ...) standardGeneric("interpolate"))}
 if (!isGeneric("is.factor")) {setGeneric("is.factor", function(x) standardGeneric("is.factor"))}
 if (!isGeneric("is.lonlat")) { setGeneric("is.lonlat", function(x, ...) standardGeneric("is.lonlat"))}

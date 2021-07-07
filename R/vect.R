@@ -212,12 +212,16 @@ setMethod("$<-", "SpatVector",
 
 setMethod("vect", signature(x="data.frame"), 
 	function(x, geom=c("lon", "lat"), crs=NA) {
+		stopifnot(all(geom %in% names(x)))
 		if (length(geom) == 2) {
 			v <- vect(as.matrix(x[,geom]), crs=crs)
 		} else if (length(geom) == 1) {
 			v <- vect(unlist(x[,geom]), crs=crs)
+		} else {
+			error("vect", "the length of 'geom' must be 1 or 2")
 		}
 		values(v) <- x
 		v
 	}
 )
+
