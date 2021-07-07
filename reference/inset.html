@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Make an inset map — inset" />
-<meta property="og:description" content="Make an inset map" />
+<meta property="og:description" content="Make an inset map or scale the extent of a SpatVector" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-13</span>
       </span>
     </div>
 
@@ -125,14 +125,17 @@
     </div>
 
     <div class="ref-description">
-    <p>Make an inset map</p>
+    <p>Make an inset map or scale the extent of a SpatVector</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
 <span class='fu'>inset</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>e</span>, loc<span class='op'>=</span><span class='st'>""</span>, scale<span class='op'>=</span><span class='fl'>0.2</span>, background<span class='op'>=</span><span class='st'>"white"</span>, border<span class='op'>=</span><span class='st'>"black"</span>, box<span class='op'>=</span><span class='cn'>NULL</span>, <span class='va'>pbx</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>inset</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>e</span>, loc<span class='op'>=</span><span class='st'>""</span>, scale<span class='op'>=</span><span class='fl'>0.2</span>, background<span class='op'>=</span><span class='st'>"white"</span>, border<span class='op'>=</span><span class='st'>"black"</span>, box<span class='op'>=</span><span class='cn'>NULL</span>, <span class='va'>pbx</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>inset</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>e</span>, loc<span class='op'>=</span><span class='st'>""</span>, scale<span class='op'>=</span><span class='fl'>0.2</span>, background<span class='op'>=</span><span class='st'>"white"</span>, border<span class='op'>=</span><span class='st'>"black"</span>, box<span class='op'>=</span><span class='cn'>NULL</span>, <span class='va'>pbx</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S4 method for SpatVector</span>
+<span class='fu'>inext</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>e</span>, y<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -172,6 +175,10 @@
     <tr>
       <th>...</th>
       <td><p>additional arguments passed to plot for the drawing of <code>x</code></p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>SpatVector. If not NULL, <code>y</code> is scaled based with the parameters for <code>x</code>. This is useful, for example, when <code>x</code> represent boundaries, and <code>y</code> points within these boundaries</p></td>
     </tr>
     </table>
 
