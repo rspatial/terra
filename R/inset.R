@@ -5,10 +5,13 @@
 
 
 setMethod("inext", signature(x="SpatVector"), 
-	function(x, e, y=NULL) {
+	function(x, e, y=NULL, border=0) {
 	# the area used for scaling
+		border <- rep_len(border, 2)
+		e <- as.vector(e) + c(border[1], -border[1], border[2], -border[2])
+		stopifnot((e[2] > e[1]) && (e[4] > e[3]))
 		ex <- ext(x)
-		x <- shift(x, e[1] - xe[1], e[3] - xe[3])
+		x <- shift(x, e[1] - ex[1], e[3] - ex[3])
 		ve <- ext(x)
 		fx <- (e[2] - e[1]) / (ve[2] - ve[1])
 		fy <- (e[4] - e[3]) / (ve[4] - ve[3])
