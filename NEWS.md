@@ -1,4 +1,4 @@
-# version 1.3-12
+# version 1.3-13
 
 ## enhancements
 
@@ -17,8 +17,8 @@
 - scale/offset were ignored by `project`. Reported by Fabian Fischer
 - `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey
 - The output of `merge` and `mosaic` was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in [#271](https://github.com/rspatial/terra/issues/271)
-- `as.points,SpatRaster` did not remove `NA`'s correctly. Issue [#269](https://github.com/rspatial/terra/issues/269) by Julian Hagenauer
-
+- `as.points,SpatRaster` did not remove `NA`'s correctly and shifted values. Issues [#269](https://github.com/rspatial/terra/issues/269) and [#273](https://github.com/rspatial/terra/issues/273) by Julian Hagenauer.
+- `rast-matrix` rotated values when using an equal-sided matrix [#274](https://github.com/rspatial/terra/issues/274) by Jakub Nowosad.
 
 # version 1.3-4
 
