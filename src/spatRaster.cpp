@@ -1719,7 +1719,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 	unsigned nl = nlyr();
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-        size_t off1 = (bs.row[i] * nc);
+         size_t off1 = (bs.row[i] * nc);
  		size_t vnc = bs.nrows[i] * nc;
 		if (narm) {
 			for (size_t j=0; j<vnc; j++) {
@@ -1739,7 +1739,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
                 g.parts.resize(0);
                 if (values) {
                     for (size_t lyr=0; lyr<nl; lyr++) {
-                        unsigned off2 = lyr*nc;
+                        unsigned off2 = lyr*vnc;
                         pv.df.dv[lyr].push_back(v[off2+j]);
                     }
                 }
@@ -1751,10 +1751,10 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
                 g.addPart(p);
                 pv.addGeom(g);
                 g.parts.resize(0);
-                for (size_t lyr=0; lyr<nl; lyr++) {
-                    unsigned off2 = lyr*nc;
-                    pv.df.dv[lyr].push_back(v[off2+j]);
-                }
+			}
+            for (size_t lyr=0; lyr<nl; lyr++) {
+				size_t off2 = lyr*vnc;
+				pv.df.dv[lyr] = std::vector<double>(v.begin()+off2, v.begin()+off2+vnc);
 			}
 		}
 	}
