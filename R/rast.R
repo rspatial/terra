@@ -305,7 +305,7 @@ setMethod("rast", signature(x="matrix"),
 			r <- .rastFromXYZ(x, crs=crs, digits=digits)
 		} else {
 			r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
-			values(r) <- t(x)
+			values(r) <- as.vector(t(x))
 		}
 		messages(r, "rast")
 	}
