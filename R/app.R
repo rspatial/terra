@@ -19,7 +19,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 setMethod("app", signature(x="SpatRaster"), 
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
-	txtfun <- .makeTextFun(match.fun(fun))
+	txtfun <- .makeTextFun(fun)
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
@@ -28,7 +28,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			return(messages(x, "app"))
 		}
 	}
-
+	fun <- match.fun(fun)
 	out <- rast(x)
 	nlyr(out) <- 1
 	nc <- ncol(x)
