@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-14</span>
       </span>
     </div>
 
@@ -132,7 +132,7 @@
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span>
 
 <span class='co'># S4 method for SpatRaster,ANY</span>
-<span class='fu'>setValues</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>values</span><span class='op'>)</span>
+<span class='fu'>setValues</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>values</span>, time<span class='op'>=</span><span class='cn'>TRUE</span>, props<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector,ANY</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span></pre>
@@ -151,6 +151,14 @@
     <tr>
       <th>values</th>
       <td><p>Same as for <code>value</code></p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>logical. If <code>TRUE</code> the time stamps are kept</p></td>
+    </tr>
+    <tr>
+      <th>props</th>
+      <td><p>logical. If <code>TRUE</code> the properties (categories and color-table) are kept</p></td>
     </tr>
     </table>
 
