@@ -21,7 +21,7 @@ Create a SpatVector
 } 
 
 \usage{
-\S4method{vect}{character}(x, layer="", query="", filter=NULL, crs="")
+\S4method{vect}{character}(x, layer="", query="", extent=NULL, crs="")
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
