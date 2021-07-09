@@ -397,7 +397,7 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 
 	if (v.size() < g.size()) {
 		*this = init(v, opt);
-		return hasError();
+		return (!hasError());
 	} else if (v.size() == g.size()) {
 		if (!canProcessInMemory(opt)) { 
 		// this should be chunked to avoid the copy

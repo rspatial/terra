@@ -27,7 +27,7 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
 \usage{
 \S4method{values}{SpatRaster,ANY}(x)<-value
 
-\S4method{setValues}{SpatRaster,ANY}(x, values)
+\S4method{setValues}{SpatRaster,ANY}(x, values, time=TRUE, props=FALSE)
 
 \S4method{values}{SpatVector,ANY}(x)<-value
 }
@@ -37,6 +37,8 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
  \item{x}{SpatRaster or SpatVector}
  \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame, matrix, vector, or NULL}
  \item{values}{Same as for \code{value}}
+ \item{time}{logical. If \code{TRUE} the time stamps are kept}
+ \item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
 }
 
 

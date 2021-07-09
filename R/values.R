@@ -72,7 +72,7 @@ setMethod("focalValues", signature("SpatRaster"),
 
 
 setMethod("setValues", signature("SpatRaster", "ANY"), 
-	function(x, values) {
+	function(x, values, time=TRUE, props=FALSE) {
 
 		if (is.matrix(values)) { 
 			if (nrow(values) == nrow(x)) {
@@ -105,7 +105,7 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		}
 
 		lv <- length(values)
-		y <- rast(x)
+		y <- rast(x, time=time, props=props)
 		nc <- ncell(y)
 		nl <- nlyr(y)
 		opt <- spatOptions()

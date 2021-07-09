@@ -35,7 +35,14 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	readStart(x)
 	on.exit(readStop(x))
 	nl <- nlyr(x)
-	
+
+	dots <- list(...)
+	if (length(dots) > 0) {
+		test <- any(sapply(dots, inherits("SpatRaster")))
+		if (test) {
+			error("app", "additional arguments cannot be SpatRaster")
+		}
+	}	
 # figure out the shape of the output by testing with one row
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
 	usefun <- FALSE

@@ -20,7 +20,7 @@ Make an inset map or scale the extent of a SpatVector
 
 \S4method{inset}{SpatRaster}(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...)
 
-\S4method{inext}{SpatVector}(x, e, y=NULL)
+\S4method{inext}{SpatVector}(x, e, y=NULL, border=0)
 }
 
 \arguments{
@@ -34,6 +34,7 @@ Make an inset map or scale the extent of a SpatVector
   \item{pbx}{list with graphical arguments for the box}
   \item{...}{additional arguments passed to plot for the drawing of \code{x}}
   \item{y}{SpatVector. If not NULL, \code{y} is scaled based with the parameters for \code{x}. This is useful, for example, when \code{x} represent boundaries, and \code{y} points within these boundaries}
+  \item{border}{numeric to add space between the SpatVector and the SpatExtent}
 }
 
 

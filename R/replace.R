@@ -85,7 +85,7 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 
 		if (is.matrix(value)) {
 			if (all(dim(value) == c(ncell(x), nl))) {
-				e <- try( values(x) <- value)
+				x <- try( setValues(x, value, TRUE, TRUE) )
 			} else {
 				error(" [,SpatRaster","dimensions of the matrix do not match the SpatRaster")
 			}
@@ -93,10 +93,10 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 			v <- try( matrix(nrow=ncell(x), ncol=nl) )
 			if (! inherits(x, "try-error")) {
 				v[] <- value
-				e <- try(values(x) <- v)
+				x <- try( setValues(x, v, TRUE, TRUE) )
 			}
 		}
-		if (inherits(e, "try-error")) {
+		if (inherits(x, "try-error")) {
 			error(" [,SpatRaster", "cannot set values")
 		}
 		return(x)
@@ -128,8 +128,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 			v <- matrix(NA, nrow=ncell(x), ncol=nlyr(x))
 		}
 		v[i,] <- value
-		values(x) <- v
-		x
+		setValues(x, v, TRUE, TRUE)
 	}
 )
 
