@@ -129,7 +129,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for character</span>
-<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, layer<span class='op'>=</span><span class='st'>""</span>, query<span class='op'>=</span><span class='st'>""</span>, extent<span class='op'>=</span><span class='cn'>NULL</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
+<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, layer<span class='op'>=</span><span class='st'>""</span>, query<span class='op'>=</span><span class='st'>""</span>, extent<span class='op'>=</span><span class='cn'>NULL</span>, filter<span class='op'>=</span><span class='cn'>NULL</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
 
 <span class='co'># S4 method for matrix</span>
 <span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, type<span class='op'>=</span><span class='st'>"points"</span>, atts<span class='op'>=</span><span class='cn'>NULL</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
@@ -156,8 +156,12 @@
       <td><p>character. An query to subset the dataset in the <a href='https://gdal.org/user/ogr_sql_dialect.html'>OGR-SQL dialect</a></p></td>
     </tr>
     <tr>
+      <th>extent</th>
+      <td><p>Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if <code>filter</code> is not <code>NULL</code></p></td>
+    </tr>
+    <tr>
       <th>filter</th>
-      <td><p>Spat* object. The extent of the object is used as spatial filter</p></td>
+      <td><p>SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -185,7 +189,7 @@
     <p>SpatVector</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>### from file</span>
+    <pre class="examples"><div class='input'><span class='co'>### SpatVector from file</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>f</span>
 </div><div class='output co'>#&gt; [1] "/Users/runner/work/_temp/Library/terra/ex/lux.shp"</div><div class='input'><span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
@@ -200,7 +204,8 @@
 #&gt;  values      :     1 Diekirch     1 Clervaux   312 1.808e+04
 #&gt;                    1 Diekirch     2 Diekirch   218 3.254e+04
 #&gt;                    1 Diekirch     3  Redange   259 1.866e+04</div><div class='input'>
-<span class='co'># with query </span>
+<span class='co'>## subsetting (large) files</span>
+<span class='co'>## with attribute query </span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>f</span>, query<span class='op'>=</span><span class='st'>"SELECT NAME_1, NAME_2, ID_2 FROM lux WHERE ID_2 &lt; 4"</span><span class='op'>)</span>
 <span class='va'>v</span>
 </div><div class='output co'>#&gt;  class       : SpatVector 
@@ -213,8 +218,16 @@
 #&gt;  values      : Diekirch Clervaux     1
 #&gt;                Diekirch Diekirch     2
 #&gt;                Diekirch  Redange     3</div><div class='input'>
+<span class='co'>## with extent</span>
+<span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='fl'>5.9</span>, <span class='fl'>6.3</span>, <span class='fl'>49.9</span>, <span class='fl'>50</span><span class='op'>)</span> 
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>f</span>, extent<span class='op'>=</span><span class='va'>e</span><span class='op'>)</span>
 
-<span class='co'>### from a geom matrix</span>
+<span class='co'>## with polygons</span>
+<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='as.spatvector.html'>as.polygons</a></span><span class='op'>(</span><span class='va'>e</span><span class='op'>)</span>
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>f</span>, filter<span class='op'>=</span><span class='va'>p</span><span class='op'>)</span>
+
+
+<span class='co'>### SpatVector from a geom matrix</span>
 <span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>180</span>,<span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='fl'>55</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>60</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>10</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>160</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>55</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>125</span>,<span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>40</span>,<span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>15</span>,<span class='op'>-</span><span class='fl'>45</span><span class='op'>)</span><span class='op'>)</span>
