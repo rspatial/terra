@@ -60,7 +60,7 @@ v
 v <- vect(f, query="SELECT NAME_1, NAME_2, ID_2 FROM lux WHERE ID_2 < 4")
 v
 
-## with extent
+## with an extent
 e <- ext(5.9, 6.3, 49.9, 50) 
 v <- vect(f, extent=e)
 
