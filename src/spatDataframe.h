@@ -44,6 +44,7 @@ class SpatDataFrame {
 		
 		unsigned nrow();
 		unsigned ncol();
+		SpatDataFrame subset_rows(std::vector<long> range);
 		SpatDataFrame subset_rows(std::vector<unsigned> range);
 		SpatDataFrame subset_cols(std::vector<unsigned> range);
 		SpatDataFrame subset_rows(unsigned i);

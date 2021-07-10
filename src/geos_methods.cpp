@@ -505,10 +505,12 @@ SpatVector SpatVector::crop(SpatVector v) {
 //	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 
 	if (result.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		Rcpp::Rcout << result.size() << std::endl;
+//		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		SpatVectorCollection coll = coll_from_geos_ids(result, hGEOSCtxt, ids);
 		out = coll.get(0);
 		out.srs = srs;
-		out.df = df.subset_rows(ids);
+		out.df = df.subset_rows(out.df.iv[0]);
 	} 
 	geos_finish(hGEOSCtxt);
 	return out;

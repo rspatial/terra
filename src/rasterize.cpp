@@ -471,11 +471,13 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			SpatVector rv = r.as_polygons(false, false, false, true, opt);
 			std::vector<double> csize = rv.area("m", true, {});
 			rv.df.add_column(csize, "area");
+			rv.df.add_column(cells, "cells");
 			rv = rv.crop(v);
 			weights = rv.area("m", true, {});
 			for (size_t i=0; i<weights.size(); i++) {
 				weights[i] /= rv.df.dv[0][i];
 			}
+			cells = rv.df.dv[1];
 		}
 	} else {
 		std::vector<double> feats(1, 1) ;	

@@ -115,6 +115,12 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 }
 
 
+SpatDataFrame SpatDataFrame::subset_rows(std::vector<long> range) { 
+	std::vector<unsigned> r(range.begin(), range.end());
+	return subset_rows(r);
+}
+
+
 SpatDataFrame SpatDataFrame::subset_cols(unsigned i) {
 	std::vector<unsigned> c = { i }; 
 	return subset_cols(c);
