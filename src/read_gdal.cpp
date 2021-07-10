@@ -119,9 +119,10 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 		return false;
 	}
 
-	SpatVector v;
-	std::vector<double> filter;
-	v.read(filename, "", "", filter);
+	SpatVector v, fvct;
+	std::vector<double> fext;
+	
+	v.read(filename, "", "", fext, fvct);
 	if (v.df.nrow() == 0) return false;
 	
 	std::vector<std::string> ss = {"histogram", "red", "green", "blue", "opacity"};

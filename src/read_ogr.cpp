@@ -305,7 +305,7 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 }
 
 
-bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query, std::vector<double> filter) {
+bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query, std::vector<double> extent, SpatVector filter) {
 
 	std::string crs = "";
 	
@@ -354,8 +354,32 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 		}
 	}
 	
-	if (filter.size() > 0) {
-		poLayer->SetSpatialFilterRect(filter[0], filter[2], filter[1], filter[3]);
+	if (filter.nrow() > 0) {
+		if (filter.type() != "polygons") {
+			filter = filter.hull("convex");
+		} else {
+			if (filter.nrow() > 1) {
+				filter = filter.aggregate(true);
+			}
+		}
+		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", true);
+		if (filter.hasError()) {
+			setError(filter.getError());
+			GDALClose(filterDS);
+			return false;
+		}
+		OGRLayer *fLayer = filterDS->GetLayer(0);
+		fLayer->ResetReading();
+		OGRFeature *fFeature = fLayer->GetNextFeature();
+		if (fFeature != NULL ) {
+			OGRGeometry *fGeometry = fFeature->StealGeometry();
+			poLayer->SetSpatialFilter(fGeometry);	
+			OGRGeometryFactory::destroyGeometry(fGeometry);
+		}
+		OGRFeature::DestroyFeature( fFeature );
+		GDALClose(filterDS);
+	} else if (extent.size() > 0) {
+		poLayer->SetSpatialFilterRect(extent[0], extent[2], extent[1], extent[3]);
 	}
 	
 	//const char* lname = poLayer->GetName();
@@ -448,22 +472,22 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 }
 
 
-bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> filter) {
+bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
         setError("Cannot open this file as a SpatVector");
 		return false;
     }
-	bool success = read_ogr(poDS, layer, query, filter);
+	bool success = read_ogr(poDS, layer, query, extent, filter);
 	if (poDS != NULL) GDALClose( poDS );
 	return success;
 }
 
 SpatVector SpatVector::fromDS(GDALDataset *poDS) {
-	SpatVector out;
-	std::vector<double> filter;
-	out.read_ogr(poDS, "", "", filter);
+	SpatVector out, fvct;
+	std::vector<double> fext;
+	out.read_ogr(poDS, "", "", fext, fvct);
 	return out;
 }
 

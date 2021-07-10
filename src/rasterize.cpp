@@ -276,6 +276,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 #endif
 		ahGeometries.push_back( hGeom );
 	}
+//	OGRGeometryFactory::destroyGeometry(poGeometry); ?
+
 	OGRFeature::DestroyFeature( poFeature );
 	GDALClose(vecDS);
 

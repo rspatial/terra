@@ -7,7 +7,7 @@
 - `rast,data.frame` method to avoid confusion with the `matrix` and `list` methods in response to a [SO question](https://stackoverflow.com/q/68133958/635245) by Stackbeans.
 - the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on [stackoverflow](https://stackoverflow.com/q/68216362/635245)
 - `writeCDF` now also writes the time dimensions if there is only one time-step see this [SO question](https://stackoverflow.com/a/68227180/635245)
-- `vect,character` (filename) now has a `layer` and a `query` argument
+- `vect,character` (filename) now has argument `layer` to select a layer from a multi-layer file / database, and arguments `query`, `extent` and `filter` for reading a subset.
 
 ## bug fixes 
 

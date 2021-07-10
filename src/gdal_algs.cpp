@@ -813,8 +813,9 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	}
 	GDALClose(srcDS);
 
-	std::vector<double> filter;
-	out.read_ogr(poDS, "", "", filter);
+	std::vector<double> fext;
+	SpatVector fvct;
+	out.read_ogr(poDS, "", "", fext, fvct);
 	GDALClose(poDS);
 
 	if (aggregate && (out.nrow() > 0)) {

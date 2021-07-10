@@ -58,8 +58,9 @@ SpatVector SpatVector::make_valid() {
 		}
 		OGRFeature::DestroyFeature( inFeature );
 	}
-	std::vector<double> filter;
-	out.read_ogr(src, "", "", filter);
+	std::vector<double> fext;
+	SpatVector fvct;
+	out.read_ogr(src, "", "", fext, fvct);
 	GDALClose(src);
 	return out;
 }

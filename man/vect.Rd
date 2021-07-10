@@ -21,7 +21,7 @@ Create a SpatVector
 } 
 
 \usage{
-\S4method{vect}{character}(x, layer="", query="", extent=NULL, crs="")
+\S4method{vect}{character}(x, layer="", query="", extent=NULL, filter=NULL, crs="")
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
@@ -34,7 +34,8 @@ Create a SpatVector
 \item{x}{character. A filename; or a "Well Known Text" string; or a data.frame (only to make a SpatVector of points); or a "geom" matrix to make a SpatVector of any supported geometry (see examples and  \code{\link{geom}}); or a spatial vector data object defined in the \code{sf} or \code{sp} packages}
 \item{layer}{character. layer name to select a layer from a file (database) with multiple layers}
 \item{query}{character. An query to subset the dataset in the \href{https://gdal.org/user/ogr_sql_dialect.html}{OGR-SQL dialect}}
-\item{filter}{Spat* object. The extent of the object is used as spatial filter}
+\item{extent}{Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if \code{filter} is not \code{NULL}}
+\item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{the coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see\code{link{crs}})}
@@ -48,18 +49,27 @@ Create a SpatVector
 
 
 \examples{
-### from file
+### SpatVector from file
 f <- system.file("ex/lux.shp", package="terra")
 f
 v <- vect(f)
 v
 
-# with query 
+## subsetting (large) files
+## with attribute query 
 v <- vect(f, query="SELECT NAME_1, NAME_2, ID_2 FROM lux WHERE ID_2 < 4")
 v
 
+## with extent
+e <- ext(5.9, 6.3, 49.9, 50) 
+v <- vect(f, extent=e)
 
-### from a geom matrix
+## with polygons
+p <- as.polygons(e)
+v <- vect(f, filter=p)
+
+
+### SpatVector from a geom matrix
 x1 <- rbind(c(-180,-20), c(-140,55), c(10, 0), c(-140,-60))
 x2 <- rbind(c(-10,0), c(140,60), c(160,0), c(140,-55))
 x3 <- rbind(c(-125,0), c(0,60), c(40,5), c(15,-45))

@@ -173,14 +173,14 @@ class SpatVector {
 		SpatVector get_holes();
 		SpatVector set_holes(SpatVector x, size_t i);
 
-		bool read(std::string fname, std::string layer, std::string query, std::vector<double> filter);
+		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 		
 		bool write(std::string filename, std::string lyrname, std::string driver, bool overwrite);
 		
 #ifdef useGDAL
 		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite);
 		GDALDataset* GDAL_ds();
-		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> filter);
+		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 		SpatVector fromDS(GDALDataset *poDS);
 		bool ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &message);		
 #endif
