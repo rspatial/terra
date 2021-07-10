@@ -154,10 +154,10 @@ SpatVector SpatVector::crop(SpatExtent e) {
 		}
 	}
 	if (p.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, id);
 		out = coll.get(0);
+		out.df = df.subset_rows(out.df.iv[0]);
 		out.srs = srs;
-		out.df = df.subset_rows(id);
 	}
 	geos_finish(hGEOSCtxt);
 	return out;
@@ -354,7 +354,7 @@ SpatVector SpatVector::shared_paths() {
 	
 	SpatVector out;
 	if (p.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, false, false);
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, std::vector<unsigned>(), false, false);
 		out = coll.get(0);
 		out = out.line_merge();
 	}
@@ -443,7 +443,7 @@ SpatVector SpatVector::snap(double tolerance) {
 	}
 	SpatVector out;
 	if (p.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, false, false);
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, std::vector<unsigned>(), false, false);
 		out = coll.get(0);
 	}
 	geos_finish(hGEOSCtxt);
@@ -505,12 +505,11 @@ SpatVector SpatVector::crop(SpatVector v) {
 //	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 
 	if (result.size() > 0) {
-		Rcpp::Rcout << result.size() << std::endl;
 //		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
-		SpatVectorCollection coll = coll_from_geos_ids(result, hGEOSCtxt, ids);
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
 		out = coll.get(0);
-		out.srs = srs;
 		out.df = df.subset_rows(out.df.iv[0]);
+		out.srs = srs;
 	} 
 	geos_finish(hGEOSCtxt);
 	return out;
@@ -1374,10 +1373,10 @@ SpatVector SpatVector::erase(SpatVector v) {
 	}
 
 	if (result.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
 		out = coll.get(0);
+		out.df = df.subset_rows(out.df.iv[0]);
 		out.srs = srs;
-		out.df = df.subset_rows(ids);
 	} 
 	geos_finish(hGEOSCtxt);
 	if (!srs.is_same(v.srs, true)) {
