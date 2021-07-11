@@ -51,7 +51,7 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 	if (gtype != "points") {
 		SpatOptions ops;
 		std::vector<double> feats(p.size(), 1) ;
-		x = rasterize(p, "", feats, NAN, false, false, false, false, false, ops);
+		x = out.rasterize(p, "", feats, NAN, false, false, false, false, false, ops);
 		if (gtype == "polygons") {
 			std::string etype = "inner";
 			x = x.edges(false, etype, 8, 0, ops);
@@ -86,14 +86,12 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		
 		if (gtype != "points") {
 			v = x.readBlock(out.bs, i);
-		} else if (hasValues()) {
-			v = readBlock(out.bs, i);
-		}
-		for (size_t j=0; j<v.size(); j++) {
-			if (!std::isnan(v[j])) {
-				cells[j] = -1;
+			for (size_t j=0; j<v.size(); j++) {
+				if (!std::isnan(v[j])) {
+					cells[j] = -1;
+				}
 			}
-		}
+		} 
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
 		std::vector<double> d(cells.size(), 0); 
 		shortDistPoints(d, xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
