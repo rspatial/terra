@@ -1434,13 +1434,11 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 	bool domask = false;
 	if (m > 0) {
 		if (s != mask.size()) {
-			setError("mask size is not correct");
-			return {NAN};
+			addWarning("mask size is not correct");
 		} else {
 			domask = true;
 		}
 	}
-
 
 	std::vector<double> ar;
 	ar.reserve(s);
@@ -1476,14 +1474,26 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 					setError(v.getError());
 					return {NAN};
 				}
-				return v.area(unit, false, {});
+				return v.area(unit, false, mask);
+				
 			} else {
 				double m = srs.to_meter();
 				adj *= std::isnan(m) ? 1 : m * m;	
-				for (size_t i=0; i<s; i++) {
-					ar.push_back(area_plane(geoms[i]));
+				if (domask) {
+					for (size_t i=0; i<s; i++) {
+						if (std::isnan(mask[i])) {
+							ar.push_back(NAN);
+						} else {
+							ar.push_back(area_plane(geoms[i]));
+						}
+					}
+				} else {
+					for (size_t i=0; i<s; i++) {
+						ar.push_back(area_plane(geoms[i]));
+					}
 				}
 			}
+
 		} else {
 
 			struct geod_geodesic g;
@@ -1662,7 +1672,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 				//SpatVector p = onechunk.as_polygons(false, true, false, false, popt);
 				std::vector<double> v;
 				if (mask) {
-					std::vector<double> m = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+					std::vector<double> m = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
 					v = p.area(unit, true, m);
 				} else {
 					v = p.area(unit, true, {});
