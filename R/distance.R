@@ -4,6 +4,16 @@
 # License GPL v3
 
 
+
+setMethod("buffer", signature(x="SpatRaster"), 
+	function(x, width, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$buffer(width, opt)
+		messages(x, "buffer")
+	}
+)
+
+
 setMethod("distance", signature(x="SpatRaster", y="missing"), 
 	function(x, y, grid=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
@@ -18,22 +28,18 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 
 
 
-setMethod("buffer", signature(x="SpatRaster"), 
-	function(x, width, filename="", ...) {
-		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$buffer(width, opt)
-		messages(x, "buffer")
-	}
-)
-
-
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
 	function(x, y, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$vectDistance(y@ptr, opt)
+		if (is.longlat(x)) {
+			x@ptr <- x@ptr$vectDistanceRasterize(y@ptr, TRUE, opt)		
+		} else {
+			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, opt)
+		} 
 		messages(x, "distance")
 	}
 )
+
 
 
 mat2wide <- function(m, sym=TRUE, keep=NULL) {
@@ -59,6 +65,10 @@ mat2wide <- function(m, sym=TRUE, keep=NULL) {
 
 setMethod("distance", signature(x="SpatVector", y="ANY"), 
 	function(x, y, sequential=FALSE, pairs=FALSE, symmetrical=TRUE) {
+		if (!missing(y)) {
+			error("distance", "If 'x' is a SpatVector, 'y' should be a SpatVector or missing")
+		}
+
 		if (sequential) {
 			return( x@ptr$distance_self(sequential))
 		}

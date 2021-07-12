@@ -1,10 +1,10 @@
 
 setMethod("lines", signature(x="SpatRaster"),
-function(x, mx=50000, ...) {
+function(x, mx=10000, ...) {
 		if(prod(dim(x)) > mx) {
-			error("lines", "too many lines (you can increase the value of mx)")
+			error("lines", "too many lines (you can increase the value of mx or use as.polygons)")
 		}
-		v <- as.polygons(x)
+		v <- as.polygons(x, dissolve=FALSE, values=FALSE)
 		lines(v, ...)
 	}
 )
