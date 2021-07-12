@@ -98,18 +98,37 @@ setMethod("adjacent", signature(x="SpatVector"),
 
 
 setMethod("nearby", signature(x="SpatVector"), 
-	function(x, distance=0, k=1, centroids=TRUE, symmetrical=TRUE) {
+	function(x, y=NULL, distance=0, k=1, centroids=TRUE, symmetrical=TRUE) {
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)
 		}
+		hasy <- !is.null(y)
+		if (hasy) {
+			if ((geomtype(y) == "polygons") && centroids) {
+				y <- centroids(y)
+			}
+		}
 		if (distance > 0) {
-			d <- distance(x, pairs=TRUE, symmetrical=symmetrical)
-			d[d[,3] <= distance, 1:2,drop=FALSE]		
+			if (hasy) {
+				d <- distance(x, y)
+				d <- cbind(from_id=rep(1:nrow(d), ncol(d)), to_id=rep(1:ncol(d), each=nrow(d)), distance=as.vector(d))
+			} else {
+				d <- distance(x, pairs=TRUE, symmetrical=symmetrical)
+			}
+			d[d[,3] <= distance, 1:2, drop=FALSE]		
 		} else {
-			k <- max(1, min(round(k), (nrow(x)-1)))
+			if (hasy) {
+				k <- max(1, min(round(k), (nrow(y)-1)))
+			} else {
+				k <- max(1, min(round(k), (nrow(x)-1)))			
+			}
 			if (k > 1) {
-				d <- as.matrix(distance(x, pairs=FALSE))
-				diag(d) <- NA
+				if (hasy) {
+					d <- distance(x, y)
+				} else {
+					d <- as.matrix(distance(x, pairs=FALSE))
+					diag(d) <- NA
+				}
 				d <- t(apply(d, 1, function(i) order(i)[1:k]))
 				if (k==1) d <- t(d)
 				d <- cbind(1:length(x), d)
@@ -126,12 +145,12 @@ setMethod("nearby", signature(x="SpatVector"),
 
 
 setMethod("nearest", signature(x="SpatVector"), 
-	function(x, y, pairs=FALSE, centroids=TRUE, lines=FALSE) {
+	function(x, y=NULL, pairs=FALSE, centroids=TRUE, lines=FALSE) {
 		if ((geomtype(x) == "polygons") && centroids) {
 			x <- centroids(x)
 		}
 		within <- FALSE
-		if (missing(y)) {
+		if (is.null(y)) {
 			within <- TRUE
 			y <- x
 		} else {

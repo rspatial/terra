@@ -31,7 +31,7 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
 	function(x, y, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		if (is.longlat(x)) {
+		if (is.lonlat(x)) {
 			x@ptr <- x@ptr$vectDistanceRasterize(y@ptr, TRUE, opt)		
 		} else {
 			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, opt)

@@ -268,7 +268,6 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 
 setMethod("subst", signature(x="SpatRaster"), 
 function(x, from, to, filename="", ...) {
-
 	opt <- spatOptions(filename, ...)
 	if (inherits(to, "data.frame")) {
 		to <- as.matrix(to)
