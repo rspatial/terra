@@ -27,7 +27,7 @@
 
 void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const double &lindist) {
 	if (lonlat) {
-		distanceToNearest_lonlat(d, x, y, px, py);
+		distanceCosineToNearest_lonlat(d, x, y, px, py);
 	} else {
 		distanceToNearest_plane(d, x, y, px, py, lindist);
 	}
@@ -35,7 +35,7 @@ void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const
 
 
 
-SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
+SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (source[0].srs.wkt == "") {
@@ -48,7 +48,15 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 
 	SpatRaster x;
 	std::string gtype = p.type();
-	if (gtype != "points") {
+	std::vector<std::vector<double>> pxy;
+	if (gtype == "points") {
+		pxy = p.coordinates();
+		if (align_points) {
+			std::vector<double> cells = cellFromXY(pxy[0], pxy[1]);
+			cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
+			pxy = xyFromCell(cells);			
+		}
+	} else {
 		SpatOptions ops;
 		std::vector<double> feats(p.size(), 1) ;
 		x = out.rasterize(p, "", feats, NAN, false, false, false, false, false, ops);
@@ -57,15 +65,23 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 			x = x.edges(false, etype, 8, 0, ops);
 		}
 		p = x.as_points(false, true, opt);
+		pxy = p.coordinates();
 	}
 
-
-	if (p.size() == 0) {
-		out.setError("no cells to compute distance from");
+	if (pxy.size() == 0) {
+		out.setError("no locations to compute distance from");
 		return(out);
 	}
 	
 	bool lonlat = is_lonlat(); // m == 0
+	double torad = 0.0174532925199433;
+	if (lonlat) {
+		for (size_t i=0; i<pxy[0].size(); i++) {
+			pxy[0][i] *= torad;
+			pxy[1][i] *= torad;
+		}
+	}
+	
 	unsigned nc = ncol();
 	if (!readStart()) {
 		out.setError(getError());
@@ -76,7 +92,6 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
-	std::vector<std::vector<double>> pxy = p.coordinates();
 	std::vector<double> v, cells;
 	
 	for (size_t i = 0; i < out.bs.n; i++) {
@@ -94,11 +109,64 @@ SpatRaster SpatRaster::distance(SpatVector p, SpatOptions &opt) {
 		} 
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
 		std::vector<double> d(cells.size(), 0); 
+		if (lonlat) {
+			for (size_t i=0; i<xy[0].size(); i++) {
+				xy[0][i] *= torad;
+				xy[1][i] *= torad;
+			}
+		}
 		shortDistPoints(d, xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
 		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
 	out.writeStop();
 	readStop();
+	return(out);
+}
+
+
+SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (source[0].srs.wkt == "") {
+		out.setError("CRS not defined");
+		return(out);
+	}
+
+	double m = source[0].srs.to_meter();
+	m = std::isnan(m) ? 1 : m;
+
+
+	if (p.size() == 0) {
+		out.setError("no locations to compute distance from");
+		return(out);
+	}
+	p = p.aggregate(false);
+	
+	bool lonlat = is_lonlat(); // m == 0
+	unsigned nc = ncol();
+
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	std::vector<double> cells;
+	
+	for (size_t i = 0; i < out.bs.n; i++) {
+		double s = out.bs.row[i] * nc;
+		cells.resize(out.bs.nrows[i] * nc) ;
+		std::iota(cells.begin(), cells.end(), s);
+		std::vector<std::vector<double>> xy = xyFromCell(cells);
+		SpatVector pv(xy[0], xy[1], points, "");
+		pv.srs = p.srs;
+		std::vector<double> d = p.distance(pv, false);
+		if (p.hasError()) {
+			out.setError(p.getError());
+			out.writeStop();
+			return(out);
+		}
+		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+	}
+	out.writeStop();
 	return(out);
 }
 
@@ -122,7 +190,7 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 
 	out = edges(false, "inner", 8, 0, ops);
 	SpatVector p = out.as_points(false, true, opt);
-	out = out.distance(p, opt);
+	out = out.distance_vector_rasterize(p, false, opt);
 	if (warn) {
 		out.addWarning(msg);
 	}
@@ -1099,7 +1167,7 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, 0, ops);
 	SpatVector p = e.as_points(false, true, opt);
-	out = out.distance(p, ops);
+	out = out.distance_vector_rasterize(p, false, ops);
 	out = out.arith(d, "<=", false, opt);
 	if (warn) addWarning(msg);
 	return out;
