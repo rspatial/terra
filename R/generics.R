@@ -273,6 +273,7 @@ function(x, from, to, filename="", ...) {
 		to <- as.matrix(to)
 	}
 	if (inherits(to, "matrix")) {
+		opt$names = colnames(to)
 		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), opt)	
 	} else {
 		x@ptr <- x@ptr$replaceValues(from, to, -1, opt)
