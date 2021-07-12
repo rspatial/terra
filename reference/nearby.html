@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="nearby geometries — nearest" />
-<meta property="og:description" content="Identify geometries that are near to each other. Either get the index of all geometries within a certain distance, or the k nearest neighbors, or (with nearest) get closest points between two geometries." />
+<meta property="og:description" content="Identify geometries that are near to each other. Either get the index of all geometries within a certain distance, or the k nearest neighbors, or (with nearest) get the nearest points between two geometries." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-15</span>
       </span>
     </div>
 
@@ -125,11 +125,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Identify geometries that are near to each other. Either get the index of all geometries within a certain distance, or the k nearest neighbors, or (with <code>nearest</code>) get closest points between two geometries.</p>
+    <p>Identify geometries that are near to each other. Either get the index of all geometries within a certain distance, or the k nearest neighbors, or (with <code>nearest</code>) get the nearest points between two geometries.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>nearby</span><span class='op'>(</span><span class='va'>x</span>, distance<span class='op'>=</span><span class='fl'>0</span>, k<span class='op'>=</span><span class='fl'>1</span>, centroids<span class='op'>=</span><span class='cn'>TRUE</span>, symmetrical<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>nearby</span><span class='op'>(</span><span class='va'>x</span>, y<span class='op'>=</span><span class='cn'>NULL</span>, distance<span class='op'>=</span><span class='fl'>0</span>, k<span class='op'>=</span><span class='fl'>1</span>, centroids<span class='op'>=</span><span class='cn'>TRUE</span>, symmetrical<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>nearest</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, pairs<span class='op'>=</span><span class='cn'>FALSE</span>, centroids<span class='op'>=</span><span class='cn'>TRUE</span>, lines<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -143,7 +143,7 @@
     </tr>
     <tr>
       <th>y</th>
-      <td><p>SpatVector</p></td>
+      <td><p>SpatVector or NULL</p></td>
     </tr>
     <tr>
       <th>distance</th>
@@ -159,7 +159,7 @@
     </tr>
     <tr>
       <th>symmetrical</th>
-      <td><p>logical. If <code>TRUE</code>, a near pair is only included once. That is, if geometry 1 is near to geometry 3, the implied nearness between 3 and 1 is not reported</p></td>
+      <td><p>logical. If <code>TRUE</code>, a near pair is only included once. That is, if geometry 1 is near to geometry 3, the implied nearness between 3 and 1 is not reported. Ignored if <code>k</code> neighbors are returned</p></td>
     </tr>
     <tr>
       <th>pairs</th>
