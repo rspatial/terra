@@ -136,7 +136,7 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>classify</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>rcl</span>, include.lowest<span class='op'>=</span><span class='cn'>FALSE</span>, right<span class='op'>=</span><span class='cn'>TRUE</span>, 
-     othersNA<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+     othersNA<span class='op'>=</span><span class='cn'>FALSE</span>, bylayer<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,6 +165,10 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
       <td><p>logical. If <code>TRUE</code>, values that are not matched become <code>NA</code>. If <code>FALSE</code>, they retain their original value.</p></td>
     </tr>
     <tr>
+      <th>bylayer</th>
+      <td><p>logical. If <code>TRUE</code> different values are assigned to each layer by adding columns to <code>rcl</code>. There should be one column with output values for each layer</p></td>
+    </tr>
+    <tr>
       <th>filename</th>
       <td><p>character. Output filename</p></td>
     </tr>
@@ -179,7 +183,7 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
     <p>SpatRaster</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>subs</code> for simpler from-to replacement</p></div>
+    <div class='dont-index'><p><code><a href='subst.html'>subst</a></code> for simpler from-to replacement</p></div>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>For model-based classification see <code><a href='predict.html'>predict</a></code></p>
@@ -196,7 +200,7 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
        <span class='fl'>0.5</span>, <span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>rclmat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='va'>m</span>, ncol<span class='op'>=</span><span class='fl'>3</span>, byrow<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='va'>rc1</span> <span class='op'>&lt;-</span> <span class='fu'>classify</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>rclmat</span>, include.lowest<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'>
 <span class='co'>## cuts</span>
 <span class='co'># equivalent to the above</span>
 <span class='va'>rc2</span> <span class='op'>&lt;-</span> <span class='fu'>classify</span><span class='op'>(</span><span class='va'>r</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, include.lowest<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
@@ -210,11 +214,8 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
 #&gt; [3,]     2
 #&gt; [4,]     3</div><div class='input'><span class='co'># replace 0 with NA</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>classify</span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='cn'>NA</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='unique.html'>unique</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      lyr.1
-#&gt; [1,]     1
-#&gt; [2,]     2
-#&gt; [3,]     3</div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'><span class='fu'><a href='unique.html'>unique</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'unique': object 'y' not found</span></div><div class='input'>
 <span class='co'># multiple replacements</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>200</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>300</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>m</span>
@@ -222,17 +223,11 @@ With &quot;cuts&quot; the values are sorted, so that the order in which they are
 #&gt; [1,]    2  200
 #&gt; [2,]    3  300</div><div class='input'>
 <span class='va'>rcx1</span> <span class='op'>&lt;-</span> <span class='fu'>classify</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>m</span><span class='op'>)</span>
-<span class='fu'><a href='unique.html'>unique</a></span><span class='op'>(</span><span class='va'>rcx1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      lyr.1
-#&gt; [1,]     0
-#&gt; [2,]     1
-#&gt; [3,]   200
-#&gt; [4,]   300</div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'><span class='fu'><a href='unique.html'>unique</a></span><span class='op'>(</span><span class='va'>rcx1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'unique': object 'rcx1' not found</span></div><div class='input'>
 <span class='va'>rcx2</span> <span class='op'>&lt;-</span> <span class='fu'>classify</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>m</span>, othersNA<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'><a href='unique.html'>unique</a></span><span class='op'>(</span><span class='va'>rcx2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      lyr.1
-#&gt; [1,]   200
-#&gt; [2,]   300</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'><span class='fu'><a href='unique.html'>unique</a></span><span class='op'>(</span><span class='va'>rcx2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'unique': object 'rcx2' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
