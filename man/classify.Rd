@@ -19,7 +19,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 
 \usage{
 \S4method{classify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, 
-     othersNA=FALSE, bylayer=FALSE, filename="", ...)
+     othersNA=FALSE, filename="", ...)
 }
 
 \arguments{

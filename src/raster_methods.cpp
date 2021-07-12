@@ -3119,8 +3119,9 @@ SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned
 	std::vector< std::vector<double>> rc(nc);
 	
 	for (size_t i=0; i<nc; i++) {
-		rc[i] = std::vector<double>(rcl.begin(), rcl.begin()+(i*nr) + (i+1)*nr);
+		rc[i] = std::vector<double>(rcl.begin()+(i*nr), rcl.begin()+(i+1)*nr);
 	}
+
 	out = reclassify(rc, right, lowest, othersNA, bylayer, opt);
 	return out;
 }
