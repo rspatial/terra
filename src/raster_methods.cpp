@@ -2643,13 +2643,13 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 
 	size_t nc = rcl.size(); // should be 2 or 3
 	if (nc == 2) {
-		doright = 3;
+		doright = 3; // should be 2?
 	}
 	bool right = false;
 	bool leftright = false;
-	if ((doright != 0) & (doright != 1)) {
+	if (doright > 1) {
 		leftright = true;
-	} else if (doright == 0) {
+	} else if (doright) {
 		right = true;
 	}
 
@@ -2924,8 +2924,18 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 }
 
 
-SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, SpatOptions &opt) {
-	SpatRaster out = geometry();
+SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, SpatOptions &opt) {
+
+	SpatRaster out = geometry(nl);
+	bool multi = false;
+	if (nl > 1) {
+		if (nlyr() > 1) {
+			out.setError("cannot create layer-varying replacement with multi-layer input");
+			return out;
+		}	
+		multi = true;
+	}
+
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -2934,33 +2944,77 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		readStop();
 		return out;
 	}
-	
-	recycle(to, from);
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v = readBlock(out.bs, i);
-		for (size_t j=0; j< from.size(); j++) {
-			if (std::isnan(from[j])) {
-				for (double &d : v) d = std::isnan(d) ? to[j] : d;
-			} else {
-				std::replace(v.begin(), v.end(), from[j], to[j]);
+
+	if (multi) {
+		size_t tosz = to.size() / nl;
+		size_t nlyr = out.nlyr();
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v = readBlock(out.bs, i);
+			size_t vs = v.size();
+			v.reserve(vs * nlyr);
+			for (size_t lyr = 1; lyr < nlyr; lyr++) {
+				v.insert(v.end(), v.begin(), v.begin()+vs);
 			}
+			for (size_t lyr = 0; lyr < nlyr; lyr++) {
+				std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
+				recycle(tolyr, from);
+				size_t offset = lyr*vs;
+				for (size_t j=0; j< from.size(); j++) {
+					if (std::isnan(from[j])) {
+						for (size_t k=offset; k<(offset+vs); k++) {
+							v[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
+						}
+					} else {
+						std::replace(v.begin()+offset, v.begin()+(offset+vs), from[j], tolyr[j]);
+					}
+				}
+			}
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+	} else {
+		recycle(to, from);
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v = readBlock(out.bs, i);
+			for (size_t j=0; j< from.size(); j++) {
+				if (std::isnan(from[j])) {
+					for (double &d : v) d = std::isnan(d) ? to[j] : d;
+				} else {
+					std::replace(v.begin(), v.end(), from[j], to[j]);
+				}
+			}
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+		}
 	}
 	readStop();
 	out.writeStop();
 	return(out);
 }
 
-SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
+
+
+SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, bool bylayer, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	size_t nc = rcl.size();
 	size_t nr = rcl[0].size();
-	if (nc < 1 || nc > 3 || nr < 1) {
-		out.setError("matrix must have 1, 2 or 3 columns, and at least one row");
-		return out;
+	size_t nl = nlyr();
+	if (nl == 1) bylayer = false;
+	size_t maxnc = 3 + nl * bylayer;
+	size_t rcldim = nc;
+
+	if (bylayer) {
+		if (((nc != maxnc) && (nc != (maxnc-1))) || nr < 1) {
+			out.setError("reclass matrix is not correct. Should be nlyr(x) plus 1 or 2");
+			return out;
+		}		
+		rcldim = nc - (nl-1);
+	} else {
+		if (nc < 1 || nc > 3 || nr < 1) {
+			out.setError("matrix must have 1, 2 or 3 columns, and at least one row");
+			return out;
+		}
 	}
+	
 	if (nc == 1) {
 		if (nr == 1) {
 			int breaks = rcl[0][0];
@@ -2998,7 +3052,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			return out;
 		}
 	}
-	if (nc == 3) {
+	if (rcldim == 3) {
 		for (size_t i=0; i<nr; i++) {
 			if (rcl[0][i] > rcl[1][i]) {
 				out.setError("'from' larger than 'to': (" + std::to_string(rcl[0][i]) + " - " + std::to_string(rcl[1][i]) +")");
@@ -3016,11 +3070,32 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		readStop();
 		return out;
 	}
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v = readBlock(out.bs, i);
-		reclass_vector(v, rcl, right, lowest, othersNA);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+	
+	if (bylayer) {
+		std::vector<std::vector<double>> lyrrcl(rcldim+1);
+		for (size_t i=0; i<rcldim; i++) {
+			lyrrcl[i] = rcl[i];
+		}
+		for (size_t i = 0; i < out.bs.n; i++) {
+			unsigned off = bs.nrows[i] * ncol() ;
+			std::vector<double> v = readBlock(out.bs, i);
+			for (size_t lyr = 0; lyr < nl; lyr++) {
+				unsigned offset = lyr * off;
+				lyrrcl[rcldim] = rcl[rcldim+lyr];
+				std::vector<double> vx(v.begin()+offset, v.begin()+offset+off);
+				reclass_vector(vx, lyrrcl, right, lowest, othersNA);
+				std::copy(vx.begin(), vx.end(), v.begin()+offset);
+			}
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+		}
+	} else {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v = readBlock(out.bs, i);
+			reclass_vector(v, rcl, right, lowest, othersNA);
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+		}
 	}
+	
 	readStop();
 	out.writeStop();
 	return(out);
@@ -3028,30 +3103,25 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 }
 
 
-SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, bool bylayer, SpatOptions &opt) {
 
 	SpatRaster out;
-	std::vector< std::vector<double>> rc(nc);
 	if ((rcl.size() % nc) != 0) {
 		out.setError("incorrect length of reclassify matrix");
 		return(out);
 	}
+	size_t maxnc = 3 + bylayer * (nlyr() - 1);
 	unsigned nr = rcl.size() / nc;
-
-	if (nc == 1) {
-		rc[0] = rcl;
-	} else if (nc==2) {
-		rc[0] = std::vector<double>(rcl.begin(), rcl.begin()+nr);
-		rc[1] = std::vector<double>(rcl.begin()+nr, rcl.end());
-	} else if (nc==3) {
-		rc[0] = std::vector<double>(rcl.begin(), rcl.begin()+nr);
-		rc[1] = std::vector<double>(rcl.begin()+nr, rcl.begin()+2*nr);
-		rc[2] = std::vector<double>(rcl.begin()+2*nr, rcl.end());
-	} else {
+	if (nc > maxnc) {
 		out.setError("incorrect number of columns in reclassify matrix");
 		return(out);
 	}
-	out = reclassify(rc, right, lowest, othersNA, opt);
+	std::vector< std::vector<double>> rc(nc);
+	
+	for (size_t i=0; i<nc; i++) {
+		rc[i] = std::vector<double>(rcl.begin(), rcl.begin()+(i*nr) + (i+1)*nr);
+	}
+	out = reclassify(rc, right, lowest, othersNA, bylayer, opt);
 	return out;
 }
 
@@ -3262,7 +3332,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {
 		std::vector<std::vector<double>> rc = clump_getRCL(rcl, ncps);
-		out = out.reclassify(rc, 3, true, false, opt);
+		out = out.reclassify(rc, 3, true, false, false, opt);
 	} else if (filename != "") {
 		out = out.writeRaster(opt);
 	}

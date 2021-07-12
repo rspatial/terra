@@ -249,7 +249,7 @@ setMethod("clamp", signature(x="SpatRaster"),
 
 
 setMethod("classify", signature(x="SpatRaster"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", ...) {
+function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, bylayer=FALSE, filename="", ...) {
 
 	if (is.data.frame(rcl)) {
 		rcl <- as.matrix(rcl)
@@ -259,7 +259,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 	include.lowest <- as.logical(include.lowest[1])
 
 	opt <- spatOptions(filename, ...)
-    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA, opt)
+    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right[1], include.lowest[1], othersNA[1], bylayer[1], opt)
 	messages(x, "classify")
 }
 )
@@ -267,7 +267,14 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 setMethod("subst", signature(x="SpatRaster"), 
 function(x, from, to, filename="", ...) {
 	opt <- spatOptions(filename, ...)
-    x@ptr <- x@ptr$replaceValues(from, to, opt)
+	if (inherits(to, "data.frame")) {
+		to <- as.matrix(to)
+	}
+	if (inherits(to, "matrix")) {
+		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), opt)	
+	} else {
+		x@ptr <- x@ptr$replaceValues(from, to, -1, opt)
+	}
 	messages(x, "replace")
 }
 )

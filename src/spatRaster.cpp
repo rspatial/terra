@@ -924,7 +924,7 @@ SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions opt) {
 	std::vector<std::vector<double>> rcl(2);
 	rcl[0] = u[0];
 	rcl[1] = id;
-	r = r.reclassify(rcl, true, true, true, fopt);
+	r = r.reclassify(rcl, true, true, true, false, fopt);
 
 	std::vector<std::string> s(id.size());
 	for (size_t i=0; i<s.size(); i++) {
