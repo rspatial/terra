@@ -55,6 +55,11 @@ setMethod("click", signature(x="missing"),
 			if (is.null(x)) break
 			X <- rbind(X, x)
 			if (show) print(x); utils::flush.console()
+			if (show) {
+				on.exit(return(invisible(values)))
+			} else {
+				on.exit(return(values))
+			}			
 		}
 		if (show) invisible(X) else X
 	}
@@ -88,6 +93,11 @@ setMethod("click", signature(x="SpatRaster"),
 			colnames(value) <- names(x)
 		}
 		values <- rbind(values, value)
+		if (show) {
+			on.exit(return(invisible(values)))
+		} else {
+			on.exit(return(values))
+		}
 	}
 	if (show) {
 		invisible(values)
@@ -119,6 +129,11 @@ setMethod("click", signature(x="SpatVector"),
 				utils::flush.console()
 			}
 			values <- rbind(values, e)
+			if (show) {
+				on.exit(return(invisible(values)))
+			} else {
+				on.exit(return(values))
+			}
 		}
 		if (show) { invisible(values) } else { values }
 	}
