@@ -249,8 +249,10 @@ setMethod("clamp", signature(x="SpatRaster"),
 
 
 setMethod("classify", signature(x="SpatRaster"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, bylayer=FALSE, filename="", ...) {
+function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", ...) {
 
+	bylayer = FALSE
+	
 	if (is.data.frame(rcl)) {
 		rcl <- as.matrix(rcl)
 	}

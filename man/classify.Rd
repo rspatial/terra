@@ -37,8 +37,6 @@ With "cuts" the values are sorted, so that the order in which they are provided 
  \item{right}{logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa. The default is \code{TRUE}. A special case is to use right=NA. In this case both the left and right intervals are open}
  \item{othersNA}{logical. If \code{TRUE}, values that are not matched become \code{NA}. If \code{FALSE}, they retain their original value.} 
 
-  \item{bylayer}{logical. If \code{TRUE} different values are assigned to each layer by adding columns to \code{rcl}. There should be one column with output values for each layer}
- 
   \item{filename}{character. Output filename}
   \item{...}{Additional arguments for writing files as in \code{\link{writeRaster}}}
 
