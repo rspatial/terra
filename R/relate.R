@@ -115,7 +115,7 @@ setMethod("nearby", signature(x="SpatVector"),
 				d <- cbind(1:length(x), d)
 			} else {
 				d <- nearest(x)
-				d <- cbind(1:nrow(d), d$to_id)
+				d <- values(d)[, c("from_id", "to_id")]
 			}
 			colnames(d) <- c("id", paste0("k", 1:k))
 			d				
@@ -148,8 +148,8 @@ setMethod("nearest", signature(x="SpatVector"),
 		z <- messages(z, "nearest")
 		if (geomtype(z) == "points") { #lonlat points
 			if (lines) {
-				x <- z[,c(2,5), drop=T]
-				y <- z[,c(3,6), drop=T]
+				x <- z[,c(2,5), drop=TRUE]
+				y <- z[,c(3,6), drop=TRUE]
 				geom <- cbind(rep(1:nrow(x), each=2), 1, as.vector(t(x)), as.vector(t(y)))
 				zz <- vect(geom, "lines", crs=crs(z))
 				values(zz) <- values(z)
@@ -157,8 +157,7 @@ setMethod("nearest", signature(x="SpatVector"),
 				zz$from_id = zz$from_id + 1
 				return(zz)
 			} else {
-				z$from_id = z$from_id + 1
-				z$to_id = z$to_id + 1
+				values(z) <- data.frame(from_id = 1:nrow(z), to_id = z$id + 1, distance=z$distance)
 				return(z)
 			}
 		} else {
