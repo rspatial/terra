@@ -167,9 +167,9 @@ ifel is an R equivalent to the Con method in ArcGIS (arcpy)." />
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>10</span><span class='op'>:</span><span class='fl'>0</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='fl'>0</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span>
 
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ifel</span><span class='op'>(</span><span class='va'>r</span> <span class='op'>&gt;</span> <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='va'>r</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'><span class='co'># same as </span>
+<span class='co'># same as </span>
 <span class='va'>a</span> <span class='op'>&lt;-</span> <span class='fu'><a href='classify.html'>classify</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='cn'>Inf</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'><span class='co'># or</span>
+<span class='co'># or</span>
 <span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='app.html'>app</a></span><span class='op'>(</span><span class='va'>r</span>, fun<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>i</span><span class='op'>)</span> <span class='op'>{</span><span class='va'>i</span><span class='op'>[</span><span class='va'>i</span> <span class='op'>&gt;</span> <span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>; <span class='va'>i</span><span class='op'>}</span><span class='op'>)</span>
 <span class='co'># or </span>
 <span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='clamp.html'>clamp</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='op'>-</span><span class='cn'>Inf</span>, <span class='fl'>1</span><span class='op'>)</span>
@@ -179,14 +179,14 @@ ifel is an R equivalent to the Con method in ArcGIS (arcpy)." />
 
 <span class='co'>## other examples</span>
 <span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'>ifel</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>, <span class='fl'>100</span>, <span class='va'>r</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'>
+
 <span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'>ifel</span><span class='op'>(</span><span class='va'>r</span> <span class='op'>&gt;</span> <span class='op'>-</span><span class='fl'>2</span> <span class='op'>&amp;</span> <span class='va'>r</span> <span class='op'>&lt;</span> <span class='fl'>2</span>, <span class='fl'>100</span>, <span class='fl'>0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'>
+
 <span class='co'># nested expressions</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>ifel</span><span class='op'>(</span><span class='va'>r</span> <span class='op'>&gt;</span> <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fu'>ifel</span><span class='op'>(</span><span class='va'>r</span> <span class='op'>&lt;</span> <span class='op'>-</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>1</span>, <span class='va'>r</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'>
+
 <span class='va'>k</span> <span class='op'>&lt;-</span> <span class='fu'>ifel</span><span class='op'>(</span><span class='va'>r</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='va'>r</span><span class='op'>+</span><span class='fl'>10</span>, <span class='fu'>ifel</span><span class='op'>(</span><span class='va'>r</span> <span class='op'>&lt;</span> <span class='fl'>0</span>, <span class='va'>r</span><span class='op'>-</span><span class='fl'>10</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

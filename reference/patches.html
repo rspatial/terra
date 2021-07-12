@@ -186,10 +186,10 @@
 <span class='co'># patches for different values</span>
 <span class='co'># remove zeros</span>
 <span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='classify.html'>classify</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='cn'>NA</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: [classify] matrix is not rectangular</span></div><div class='input'><span class='co'># first make layers for each value</span>
+<span class='co'># first make layers for each value</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='segregate.html'>segregate</a></span><span class='op'>(</span><span class='va'>rr</span>, keep<span class='op'>=</span><span class='cn'>TRUE</span>, other<span class='op'>=</span><span class='cn'>NA</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'segregate': object 'rr' not found</span></div><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'>patches</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'patches': object 's' not found</span></div><div class='input'>
+<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'>patches</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
