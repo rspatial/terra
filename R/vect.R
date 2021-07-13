@@ -157,6 +157,43 @@ function(x, i, j, ... ,drop=FALSE) {
 
 
 
+setReplaceMethod("[", c("SpatVector", "ANY", "ANY"),
+	function(x, i, j, value) {
+		v <- values(x)
+		v[i,j] <- value
+		if (nrow(v) != nrow(x)) {
+			error("[<-", "this would create an invalid SpatVector")
+		}
+		values(x) <- v
+		x
+	}
+)
+
+setReplaceMethod("[", c("SpatVector", "ANY", "missing"),
+	function(x, i, j, value) {
+		v <- values(x)
+		v[i,] <- value
+		if (nrow(v) != nrow(x)) {
+			error("[<-", "this would create an invalid SpatVector")
+		}
+		values(x) <- v
+		x
+	}
+)
+
+setReplaceMethod("[", c("SpatVector", "missing", "ANY"),
+	function(x, i, j, value) {
+		v <- values(x)
+		v[,j] <- value
+		if (nrow(v) != nrow(x)) {
+			error("[<-", "this would create an invalid SpatVector")
+		}
+		values(x) <- v
+		x
+	}
+)
+
+
 setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 	function(x, i, j, value) {
 		
