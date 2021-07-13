@@ -164,13 +164,14 @@ $(x, name)&lt;-value</pre>
 <span class='va'>v</span><span class='op'>$</span><span class='va'>NAME_1</span>
 </div><div class='output co'>#&gt;  [1] "Diekirch"     "Diekirch"     "Diekirch"     "Diekirch"     "Diekirch"    
 #&gt;  [6] "Grevenmacher" "Grevenmacher" "Grevenmacher" "Luxembourg"   "Luxembourg"  
-#&gt; [11] "Luxembourg"   "Luxembourg"  </div><div class='input'><span class='va'>v</span><span class='op'>$</span><span class='va'>ID_1</span> <span class='op'>&lt;-</span> <span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>]</span>
+#&gt; [11] "Luxembourg"   "Luxembourg"  </div><div class='input'><span class='va'>v</span><span class='op'>$</span><span class='va'>NAME_1</span><span class='op'>[</span><span class='fl'>3</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='st'>"my name"</span>
+<span class='va'>v</span><span class='op'>$</span><span class='va'>ID_1</span> <span class='op'>&lt;-</span> <span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>]</span>
 <span class='va'>v</span><span class='op'>$</span><span class='va'>new</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>12</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    ID_1       NAME_1 ID_2           NAME_2 AREA    POP new
 #&gt; 1     A     Diekirch    1         Clervaux  312  18081   7
 #&gt; 2     B     Diekirch    2         Diekirch  218  32543   2
-#&gt; 3     C     Diekirch    3          Redange  259  18664   8
+#&gt; 3     C      my name    3          Redange  259  18664   8
 #&gt; 4     D     Diekirch    4          Vianden   76   5163   3
 #&gt; 5     E     Diekirch    5            Wiltz  263  16735   6
 #&gt; 6     F Grevenmacher    6       Echternach  188  18899  10
@@ -179,7 +180,16 @@ $(x, name)&lt;-value</pre>
 #&gt; 9     I   Luxembourg    8         Capellen  185  48187  12
 #&gt; 10    J   Luxembourg    9 Esch-sur-Alzette  251 176820  11
 #&gt; 11    K   Luxembourg   10       Luxembourg  237 182607   1
-#&gt; 12    L   Luxembourg   11           Mersch  233  32112   4</div></pre>
+#&gt; 12    L   Luxembourg   11           Mersch  233  32112   4</div><div class='input'>
+<span class='va'>v</span><span class='op'>[</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='st'>"hello"</span>
+<span class='va'>v</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>v</span><span class='op'>[</span><span class='fl'>10</span>,<span class='op'>]</span>
+<span class='va'>v</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>v</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span>
+<span class='va'>v</span><span class='op'>[</span><span class='fl'>2</span>, <span class='st'>"NAME_2"</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='st'>"terra"</span>
+<span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>v</span>, <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   ID_1     NAME_1 ID_2           NAME_2 AREA    POP new
+#&gt; 1    J Luxembourg    J Esch-sur-Alzette  251 176820  11
+#&gt; 2    B      hello    B            terra  218  32543   2
+#&gt; 3    C    my name    C          Redange  259  18664   8</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

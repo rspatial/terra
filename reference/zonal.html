@@ -177,24 +177,30 @@ If fun is a true function, zonal may fail for very large SpatRaster objects, exc
     <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='fl'>10</span>, nrows<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 <span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>, each<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rep.html'>rep</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='cn'>NA</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span>, each<span class='op'>=</span><span class='fl'>20</span><span class='op'>)</span>
+<span class='fu'><a href='names.html'>names</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"zone"</span>
 <span class='fu'>zonal</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>z</span>, <span class='st'>"sum"</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   lyr.1 lyr.1
-#&gt; 1     1   325
-#&gt; 2     2   950
-#&gt; 3     3  1575
-#&gt; 4     4  2200</div><div class='input'>
+</div><div class='output co'>#&gt;   zone lyr.1
+#&gt; 1    1   210
+#&gt; 2    2   610
+#&gt; 3    3  1410
+#&gt; 4    4  1810</div><div class='input'>
 <span class='co'># multiple layers</span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package <span class='op'>=</span> <span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span> 
 <span class='co'># zonal layer </span>
 <span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>, each<span class='op'>=</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>4</span>, len<span class='op'>=</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='names.html'>names</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='st'>"zone"</span>
+<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rep.html'>rep</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='cn'>NA</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, each<span class='op'>=</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>5</span>, length.out<span class='op'>=</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>)</span>
+
 <span class='fu'>zonal</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>z</span>, <span class='st'>"mean"</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   lyr1      red    green     blue
-#&gt; 1    1 196.2643 196.3193 192.0617
-#&gt; 2    2 171.0123 175.3524 187.5319
-#&gt; 3    3 172.8014 177.0823 188.9223
-#&gt; 4    4 189.0566 192.6440 202.7027</div></pre>
+</div><div class='output co'>#&gt;   zone      red    green     blue
+#&gt; 1    1 197.9486 198.0103 193.5556
+#&gt; 2    2 173.2219 176.7717 185.2585
+#&gt; 3    3 168.2952 172.6232 184.6939
+#&gt; 4    4 193.5859 197.0019 206.5717</div><div class='input'>
+<span class='co'># raster of zonal values</span>
+<span class='va'>zr</span> <span class='op'>&lt;-</span> <span class='fu'>zonal</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>z</span>, <span class='st'>"mean"</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span>, as.raster<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
