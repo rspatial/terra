@@ -217,7 +217,9 @@ setMethod("$<-", "SpatVector",
 
 setMethod("vect", signature(x="data.frame"), 
 	function(x, geom=c("lon", "lat"), crs=NA) {
-		stopifnot(all(geom %in% names(x)))
+		if (!all(geom %in% names(x))) {
+			error("vect", "the variable name(s) set by argument geom are not in `x`")
+		}
 		if (length(geom) == 2) {
 			v <- vect(as.matrix(x[,geom]), crs=crs)
 		} else if (length(geom) == 1) {

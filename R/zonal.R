@@ -1,6 +1,6 @@
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
-	function(x, z, fun="mean", ...)  {
+	function(x, z, fun="mean", ..., as.raster=FALSE, filename="", wopt=list())  {
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (nlyr(z) > 1) {
 			z <- z[[1]]
@@ -35,7 +35,13 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			out$zone <- levs[out$zone+1]
 		}
 		colnames(out)[1] <- names(z)
-		out 
+
+		if (as.raster) {
+			subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
+		} else {
+			out
+		}
+
 	}
 )
 

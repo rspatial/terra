@@ -278,7 +278,7 @@ function(x, from, to, filename="", ...) {
 	} else {
 		x@ptr <- x@ptr$replaceValues(from, to, -1, opt)
 	}
-	messages(x, "replace")
+	messages(x, "subst")
 }
 )
 
