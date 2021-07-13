@@ -172,6 +172,9 @@ setReplaceMethod("[", c("SpatVector", "ANY", "ANY"),
 setReplaceMethod("[", c("SpatVector", "ANY", "missing"),
 	function(x, i, j, value) {
 		v <- values(x)
+		if (inherits(value, "SpatVector")) {
+			value <- values(value)
+		}
 		v[i,] <- value
 		if (nrow(v) != nrow(x)) {
 			error("[<-", "this would create an invalid SpatVector")
