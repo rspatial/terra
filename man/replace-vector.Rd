@@ -12,6 +12,10 @@
 \alias{[[<-,SpatVector,character,missing-method}
 \alias{[[<-,SpatVector,numeric,missing-method}
 
+\alias{[<-,SpatVector,ANY,ANY-method}
+\alias{[<-,SpatVector,ANY,missing-method}
+\alias{[<-,SpatVector,missing,ANY-method}
+
 \title{Get or replace attribute values of a SpatVector}
 
 \description{
@@ -44,9 +48,16 @@ vector
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v$NAME_1
+v$NAME_1[3] <- "my name"
 v$ID_1 <- LETTERS[1:12]
 v$new <- sample(12)
 values(v)
+
+v[2,2] <- "hello"
+v[1,] <- v[10,]
+v[,3] <- v[,1]
+v[2, "NAME_2"] <- "terra"
+head(v, 3)
 }
 
 \keyword{ spatial }
