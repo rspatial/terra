@@ -10,14 +10,14 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 `terra` is an R package for spatial analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
-[stackoverflow](https://stackoverflow.com/) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
+[stackoverflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
 
 `terra` replaces the [raster](https://github.com/rspatial/raster) package. The interfaces of `terra` and `raster` are similar, but `terra` is simpler, faster and can do more. 
 
 
 ## Installation
 
-`terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
+`terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*.
 
 The easiest way to use the *development version* on Windows or MacOS, is to install it from the [R-universe](https://r-universe.dev/organizations/), like this:
 
