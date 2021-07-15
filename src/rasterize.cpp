@@ -19,7 +19,7 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
 	SpatRaster out = geometry(-1, true, true);
 	if (!hasValues()) {
-		out.setWarning("raster has no values");
+		out.addWarning("raster has no values");
 		return out;
 	}
 	if (!readStart()) {
