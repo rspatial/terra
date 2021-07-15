@@ -16,8 +16,44 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 }
 
 
+SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
+	SpatRaster out = geometry(-1, true, true);
+	if (!hasValues()) {
+		return out;
+	}
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	out.writeStop();
+	return(out);
+}
 
-bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt) {
+/* gdalcopy
+			GDALDatasetH hSrcDS = GDALOpenEx(out.source[0].filename.c_str(), GDAL_OF_RASTER | GDAL_OF_UPDATE, NULL, NULL, NULL);
+			if(hSrcDS == NULL) {
+				out.setError("cannot open dataset";)
+				return false;
+			}
+			GDALDriverH hDriver = GDALGetDatasetDriver(hSrcDS);
+			GDALDatasetH hDstDS = GDALCreateCopy( hDriver, filename.c_str(), hSrcDS, FALSE, NULL, NULL, NULL );
+			GDALClose(hSrcDS);
+			if(hDstDS == NULL) {
+				out.setError("cannot create dataset";
+				return false;
+			}
+			GDALClose(hDstDS);
+*/
+
+bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filename, std::string &driver, double &naval, bool update, double background, SpatOptions opt) {
 
 	filename = opt.get_filename();
 	if (filename == "") {
@@ -32,62 +68,25 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filena
 		std::string driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
 		if (driver == "") {
-			msg = "cannot guess file type from filename";
+			out.setError("cannot guess file type from filename");
 			return false;
 		}
+		std::string msg;
 		if (!can_write(filename, opt.get_overwrite(), msg)) {
+			out.setError(msg);
 			return false;
 		}	
 	}
 
 	if (update) {
-		size_t ns = source.size();
-		if (driver == "MEM") {
-			if (ns > 1) {
-				// force into single source
-				SpatOptions svopt;
-				SpatRaster tmp = geometry();
-				std::vector<double> v = getValues();
-				tmp.setValues(v, svopt);
-				if (!tmp.open_gdal(rstDS, 0, opt)) {
-					msg = "cannot open dataset";
-					return false;
-				}
-			} else {
-				if (!open_gdal(rstDS, 0, opt)) {
-					msg = "cannot open dataset";
-					return false;
-				}
-			}
-		} else {
-			// make a copy first
-			// including for the odd case that MEM is false but the source in memory
-			if ( (ns > 1) || (!sources_from_file()) ) {
-				SpatRaster out = writeRaster(opt);
-			} else {
-				// writeRaster should do the below? copyRaster?
-				//rstDS = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
-				GDALDatasetH hSrcDS = GDALOpenEx(source[0].filename.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY, NULL, NULL, NULL);
-				if(hSrcDS == NULL) {
-					msg = "cannot open source dataset";
-					return false;
-				}
-				GDALDriverH hDriver = GDALGetDatasetDriver(hSrcDS);
-				GDALDatasetH hDstDS = GDALCreateCopy( hDriver, filename.c_str(), hSrcDS, FALSE, NULL, NULL, NULL );
-				GDALClose(hSrcDS);
-				if(hDstDS == NULL) {
-					msg  = "cannot create dataset";
-					return false;
-				}
-				GDALClose(hDstDS);
-			}
-			rstDS = GDALOpenEx(filename.c_str(), GDAL_OF_RASTER | GDAL_OF_UPDATE, NULL, NULL, NULL);
-		}
-	} else {
-		if (!out.create_gdalDS(rstDS, filename, driver, true, background, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
-			msg = "cannot create dataset";
+		out = hardCopy(opt);
+		//size_t ns = source.size();
+		if (!out.open_gdal(rstDS, 0, true, opt)) {
 			return false;
 		}
+	} else if (!out.create_gdalDS(rstDS, filename, driver, true, background, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+		out.setError("cannot create dataset");
+		return false;
 	}
 
 	GDALRasterBandH hBand = GDALGetRasterBand(rstDS, 1);
@@ -99,6 +98,10 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filena
 	return true;
 }
 
+
+
+
+
 SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double background, bool touches, bool update, SpatOptions &opt) {
 
 	std::string gtype = x.type();
@@ -106,8 +109,8 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	out.setNames({"ID"});
 
 	if ( !hasValues() ) update = false;
-	if (update) { // all lyrs
-		out = geometry(-1, true, true);
+	if (update) { // all lyrs		
+		out = geometry();
 	} else {
 		out = geometry(1);
 	}
@@ -127,11 +130,10 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
     std::vector<OGRLayerH> ahLayers;
 	ahLayers.push_back( hLyr );
 
-	std::string errmsg, driver, filename;
+	std::string driver, filename;
 	GDALDatasetH rstDS;
 	double naval;
-	if (!getDSh(rstDS, out, filename, driver, naval, errmsg, update, background, opt)) {
-		out.setError(errmsg);
+	if (!getDSh(rstDS, out, filename, driver, naval, update, background, opt)) {
 		return out;
 	}
 	if (std::isnan(value)) {
@@ -208,7 +210,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	SpatRaster out;
 	if ( !hasValues() ) update = false;
 	if (update) {
-		out = geometry();
+		out = hardCopy(opt);
 	} else {
 		out = geometry(1);
 		out.setNames({field});
@@ -286,8 +288,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	double naval;
 	if (add) {	background = 0;	}
 
-	if (!getDSh(rstDS, out, filename, driver, naval, errmsg, update, background, opt)) {
-		out.setError(errmsg);
+	if (!out.getDSh(rstDS, out, filename, driver, naval, update, background, opt)) {
 		return out;
 	}
 	for (double &d : values) d = std::isnan(d) ? naval : d;
@@ -368,7 +369,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out = SpatRaster(filename, {-1}, {""});
 	} else {
 		std::string fname = opt.get_filename();
-		if (fname != "") {
+		if ((fname != "") && (!update)) {
 			out = out.writeRaster(opt);
 		}
 	}

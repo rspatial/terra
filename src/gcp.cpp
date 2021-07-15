@@ -25,7 +25,7 @@ SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, 
 	SpatOptions opt;
     GDALDatasetH hSrcDS; //hDstDS, 
 
-	if (!open_gdal(hSrcDS, 0, opt)) {
+	if (!open_gdal(hSrcDS, 0, false, opt)) {
 		out.setError("bad");
 		return out;
 	}

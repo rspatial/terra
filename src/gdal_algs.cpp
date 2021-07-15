@@ -500,7 +500,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	SpatOptions sopt(opt);
 	if (use_crs) {
 		GDALDatasetH hSrcDS;
-		if (!open_gdal(hSrcDS, 0, sopt)) {
+		if (!open_gdal(hSrcDS, 0, false, sopt)) {
 			out.setError("cannot create dataset from source");
 			return out;
 		}
@@ -554,7 +554,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 			GDALDatasetH hSrcDS;
 
-			if (!open_gdal(hSrcDS, i, sopt)) {
+			if (!open_gdal(hSrcDS, i, false, sopt)) {
 				out.setError("cannot create dataset from source");
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 				return out;
@@ -697,7 +697,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	
 	GDALDatasetH rstDS;
 	if (! tmp.sources_from_file() ) {
-		if (!tmp.open_gdal(rstDS, 0, topt)) {
+		if (!tmp.open_gdal(rstDS, 0, false, topt)) {
 			out.setError("cannot open dataset");
 			return out;
 		}
@@ -723,7 +723,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	if (usemask) {
 		GDALDatasetH rstMask;
 		if (! mask.sources_from_file() ) {
-			if (!mask.open_gdal(rstMask, 0, opt)) {
+			if (!mask.open_gdal(rstMask, 0, false, opt)) {
 				out.setError("cannot open dataset");
 				return out;
 			}
@@ -872,7 +872,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	*this = subset(lyrs, ops);
 	*this = collapse_sources();	
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, ops)) {
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot create dataset from source");
 		return out;
 	}
@@ -972,7 +972,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 
 	SpatOptions ops(opt);
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, ops)) {
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot open input dataset");
 		return out;
 	}

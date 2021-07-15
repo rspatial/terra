@@ -418,6 +418,7 @@ RCPP_MODULE(spat){
 
 		//.field("name", &SpatRaster::name)
 
+		
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 		.method("mem_needs", &SpatRaster::mem_needs, "mem_needs")
 		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
@@ -427,6 +428,7 @@ RCPP_MODULE(spat){
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
 		.method("deepcopy", &SpatRaster::deepCopy, "deepCopy")
+		.method("hardcopy", &SpatRaster::hardCopy)
 		.method("get_crs", &SpatRaster::getSRS)
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
 		//.field_readonly("prj", &SpatRaster::prj)

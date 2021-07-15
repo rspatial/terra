@@ -119,7 +119,8 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					out <- vect(out, geom=c("x", "y"), crs=crs(x))
 				} else {
 					xy <- xyFromCell(x, cnrs)
-					v <- vect(xy, geom=c("x", "y"), crs=crs(x))
+					# xy is a matrix, no geom argument
+					v <- vect(xy, crs=crs(x))
 					values(v) <- out
 					return(v)
 				}

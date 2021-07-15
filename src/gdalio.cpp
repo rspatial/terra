@@ -447,7 +447,7 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt) {
 	for (size_t i=0; i<nlyr(); i++) {
 		RS = SpatRaster(source[i]);
 		std::string filename = source[i].filename;
-		if (!SpatRaster::open_gdal(DS, i, opt)) {
+		if (!SpatRaster::open_gdal(DS, i, false, opt)) {
 			setError("cannot open datasource");
 			return false;
 		}
@@ -465,11 +465,10 @@ bool SpatRaster::as_gdalvrt(GDALDatasetH &hVRT, SpatOptions &opt) {
 
 
 
-bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
+bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, bool update, SpatOptions &opt) {
 
 	size_t isrc = src < 0 ? 0 : src;
 	
-	bool hasval = source[isrc].hasValues;
 	bool fromfile = !source[isrc].memory;
 
 	if (fromfile & (nsrc() > 1) & (src < 0)) {
@@ -493,16 +492,22 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		//	topt.set_filenames({f});
 		//	tmp.writeRaster(topt);
 		//} else {
-			f = source[src].filename;
+		f = source[src].filename;
 		//}
 		//hDS = GDALOpenShared(f.c_str(), GA_ReadOnly);
 
-		hDS = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_SHARED);
+		if (update) {
+			hDS = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_UPDATE | GDAL_OF_SHARED);			
+		} else {
+			hDS = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_SHARED);
+		}
 		return(hDS != NULL);
 	
 	} else { // in memory
 
-			
+
+		bool hasval = source[isrc].hasValues;
+
 		size_t nl;
 		if (src < 0) {
 			nl = nlyr();
@@ -511,7 +516,6 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, SpatOptions &opt) {
 		}
 		size_t ncls = nrow() * ncol();
 		GDALDriverH hDrv = GDALGetDriverByName("MEM");
-
 
 /*https://gis.stackexchange.com/questions/196048/how-to-reuse-memory-pointer-of-gdal-memory-driver
 		char **papszOptions = NULL;

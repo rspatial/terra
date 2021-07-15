@@ -20,6 +20,9 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 		}
 		if (nrow(values) == 1) {
 			values <- sapply(values, function(x) rep_len(x, nrx))
+			if (!is.data.frame(values)) { # dropped if nrx==1
+				values <- as.data.frame(values)
+			}
 		} else {
 			if (nrow(values) != nrx) {
 				error("rasterize", "the number or rows in values does not match the number of points")
