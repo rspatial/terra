@@ -22,6 +22,8 @@
 - The output of `merge` and `mosaic` was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in [#271](https://github.com/rspatial/terra/issues/271)
 - `as.points,SpatRaster` did not remove `NA`'s correctly and shifted values. Issues [#269](https://github.com/rspatial/terra/issues/269) and [#273](https://github.com/rspatial/terra/issues/273) by Julian Hagenauer.
 - `rast-matrix` rotated values when using an equal-sided matrix [#274](https://github.com/rspatial/terra/issues/274) by Jakub Nowosad.
+- the number of rows and columns were switched when using `project` with a crs argument. [#283](https://github.com/rspatial/terra/issues/283) by Timothée Giraud.
+
 
 # version 1.3-4
 
