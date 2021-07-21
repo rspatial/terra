@@ -142,8 +142,8 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	}
 
 
-	r.source[0].nrow = nPixels;
-	r.source[0].ncol = nLines;
+	r.source[0].ncol = nPixels;
+	r.source[0].nrow = nLines;
 	
 	r.source[0].extent.xmin = adfDstGeoTransform[0]; /* left x */
 	/* w-e pixel resolution */
