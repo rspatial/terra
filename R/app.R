@@ -38,7 +38,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	dots <- list(...)
 	if (length(dots) > 0) {
-		test <- any(sapply(dots, inherits("SpatRaster")))
+		test <- any(sapply(dots, function(i) inherits(i, "SpatRaster")))
 		if (test) {
 			error("app", "additional arguments cannot be SpatRaster")
 		}
