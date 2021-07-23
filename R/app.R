@@ -40,7 +40,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	if (length(dots) > 0) {
 		test <- any(sapply(dots, function(i) inherits(i, "SpatRaster")))
 		if (test) {
-			error("app", "additional arguments cannot be SpatRaster")
+			error("app", "additional arguments cannot be a SpatRaster")
 		}
 	}	
 # figure out the shape of the output by testing with one row

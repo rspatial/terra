@@ -19,11 +19,10 @@
 #include "distance.h"
 #include <limits>
 #include <cmath>
-#include "ggeodesic.h"
+#include "geodesic.h"
 #include "recycle.h"
 #include "math_utils.h"
 #include "vecmath.h"
-
 
 void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const double &lindist) {
 	if (lonlat) {
@@ -142,7 +141,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
 	}
 	p = p.aggregate(false);
 	
-	bool lonlat = is_lonlat(); // m == 0
+//	bool lonlat = is_lonlat(); // m == 0
 	unsigned nc = ncol();
 
  	if (!out.writeStart(opt)) {

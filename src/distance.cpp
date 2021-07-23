@@ -23,7 +23,7 @@
 #include <vector>
 //#include <math.h>
 #include <cmath>
-#include "ggeodesic.h"
+#include "geodesic.h"
 #include "recycle.h"
 
 
