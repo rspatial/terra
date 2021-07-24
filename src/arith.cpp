@@ -339,7 +339,14 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		return(arith(x[0], oper, reverse, opt));
 	}
 
-	SpatRaster out = geometry();
+	unsigned innl = nlyr();
+	unsigned outnl = innl;
+	
+	if (x.size() > innl) {
+		outnl = x.size();
+	}
+	SpatRaster out = geometry(outnl);
+	
 	if (!smooth_operator(oper)) {
 		out.setError("unknown arith function");
 		return out;
@@ -354,21 +361,22 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		return(out);
 	}
 
-	
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
 	}
 
-	unsigned nl = nlyr();
 	unsigned nc = ncol();
-	recycle(x, nlyr());
+	recycle(x, outnl);
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
+		if (outnl > innl) {
+			recycle(v, outnl * out.bs.nrows[i] * nc);
+		}
 		std::vector<double> vv;
 		unsigned off = out.bs.nrows[i] * nc;
-		for (size_t j=0; j<nl; j++) {
+		for (size_t j=0; j<outnl; j++) {
 			unsigned s = j * off;
 			std::vector<double> a(v.begin()+s, v.begin()+s+off);
 			if (std::isnan(x[j])) {
@@ -436,9 +444,9 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 			} else {
 				// stop
 			}
-			vv.insert(vv.end(), a.begin(), a.end());
+			std::copy(a.begin(), a.end(), v.begin()+s);
 		}
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();
