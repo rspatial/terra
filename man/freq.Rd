@@ -8,7 +8,7 @@
 \title{Frequency table}
 
 \description{
-Frequency table of the values of a SpatRaster. \code{NA}s are not counted. 
+Frequency table of the values of a SpatRaster. \code{NA}s are not counted unless \code{value=NA}. 
 }
 
 \usage{
@@ -19,7 +19,7 @@ Frequency table of the values of a SpatRaster. \code{NA}s are not counted.
   \item{x}{SpatRaster}
   \item{bylayer}{logical. If \code{TRUE} tabulation is done by layer}
   \item{digits}{integer. Used for rounding the values before tabulation. Ignored if \code{NA}}
-  \item{value}{numeric. An optional single value to only count the number of cells with that value}
+  \item{value}{numeric. An optional single value to only count the number of cells with that value. This value can be \code{NA}}
 }
 
 \value{
