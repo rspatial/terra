@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-17</span>
       </span>
     </div>
 
@@ -122,9 +122,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-13-15" class="section level1">
-<h1 class="page-header" data-toc-text="1.3-15">
-<a href="#version-13-15" class="anchor"></a>version 1.3-15<small> Unreleased </small>
+    <div id="version-13-16" class="section level1">
+<h1 class="page-header" data-toc-text="1.3-16">
+<a href="#version-13-16" class="anchor"></a>version 1.3-16<small> Unreleased </small>
 </h1>
 <div id="enhancements" class="section level2">
 <h2 class="hasAnchor">
@@ -166,6 +166,8 @@
 <code>as.points,SpatRaster</code> did not remove <code>NA</code>’s correctly and shifted values. Issues <a href="https://github.com/rspatial/terra/issues/269"><a href='https://github.com/rspatial/terra/issues/269'>#269</a></a> and <a href="https://github.com/rspatial/terra/issues/273"><a href='https://github.com/rspatial/terra/issues/273'>#273</a></a> by Julian Hagenauer.</li>
 <li>
 <code>rast-matrix</code> rotated values when using an equal-sided matrix <a href="https://github.com/rspatial/terra/issues/274"><a href='https://github.com/rspatial/terra/issues/274'>#274</a></a> by Jakub Nowosad.</li>
+<li>the number of rows and columns were reversed when using <code>project</code> with a crs argument. <a href="https://github.com/rspatial/terra/issues/283"><a href='https://github.com/rspatial/terra/issues/283'>#283</a></a> by Timothée Giraud.</li>
+<li>argument <code>right</code> had TRUE and FALSE reversed.</li>
 </ul>
 </div>
 </div>

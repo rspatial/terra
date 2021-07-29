@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Frequency table — freq" />
-<meta property="og:description" content="Frequency table of the values of a SpatRaster. NAs are not counted." />
+<meta property="og:description" content="Frequency table of the values of a SpatRaster. NAs are not counted unless value=NA." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-17</span>
       </span>
     </div>
 
@@ -125,7 +125,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Frequency table of the values of a SpatRaster. <code>NA</code>s are not counted.</p>
+    <p>Frequency table of the values of a SpatRaster. <code>NA</code>s are not counted unless <code>value=NA</code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
@@ -148,7 +148,7 @@
     </tr>
     <tr>
       <th>value</th>
-      <td><p>numeric. An optional single value to only count the number of cells with that value</p></td>
+      <td><p>numeric. An optional single value to only count the number of cells with that value. This value can be <code>NA</code></p></td>
     </tr>
     </table>
 
