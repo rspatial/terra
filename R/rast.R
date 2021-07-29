@@ -71,7 +71,15 @@ setMethod("rast", signature(x="list"),
 		for (i in 1:length(x)) {
 			out@ptr$addSource(x[[i]]@ptr)
 		}
-		messages(out, "rast")
+		out <- messages(out, "rast")
+		lnms <- names(x)
+		i <- lnms != ""
+		if (any(i)) {
+			rnms <- names(out)
+			rnms[lnms != ""] <- lnms[lnms != ""]
+			names(out) <- rnms
+		}
+		out
 	}
 )
 
