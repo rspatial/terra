@@ -707,14 +707,26 @@ setMethod("trans", signature(x="SpatRaster"),
 	}
 )
 
+
 setMethod("unique", signature(x="SpatRaster", incomparables="ANY"), 
 	function(x, incomparables=FALSE) {
 		opt <- spatOptions()
 		u <- x@ptr$unique(incomparables, opt)
+
+		isfact <- is.factor(x)
+		if (any(isfact)) {
+			ff <- which(isfact)
+			levs <- levels(x)
+			for (f in ff) {
+				lvs <- levs[[f]]
+				u[[f]] = factor(u[[f]], levels=(1:length(lvs))-1)
+				levels(u[[f]]) = levs[[f]]
+			}
+		}
 		if (!incomparables) {
 			if (!length(u)) return(u)
-			u <- do.call(cbind, u)
-			colnames(u) = names(x)
+			u <- do.call(data.frame, u)
+			colnames(u) <- names(x)
 		}
 		u
 	}
