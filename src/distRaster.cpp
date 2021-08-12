@@ -2287,35 +2287,30 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 
 SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt) {
 
-//aspect, flowdir, TPI, TRI, slope, roughness
-	std::sort(v.begin(), v.end());
-	v.erase(std::unique(v.begin(), v.end()), v.end());
+//TPI, TRI, aspect, flowdir, slope, roughness
+	//std::sort(v.begin(), v.end());
+	//v.erase(std::unique(v.begin(), v.end()), v.end());
 
 	SpatRaster out = geometry(v.size());
-	bool slope = false, aspect = false, rough=false, tpi=false, tri=false, flow=false;
-	for (size_t i=0; i<v.size(); i++) {
-		if (v[i] == "slope") {
-			slope=true;
-		} else if (v[i] == "aspect") {
-			aspect=true;
-		} else if (v[i] == "roughness") {
-			rough=true;
-		} else if (v[i] == "TPI") {
-			tpi=true;
-		} else if (v[i] == "TRI") {
-			tri=true;
-		} else if (v[i] == "flowdir") {
-			flow=true;
-		} else {
-			out.setError("unknown option: " + v[i]);
-			return out;
-		}
-	}
 	out.setNames(v);
+
 	if (nlyr() > 1) {
 		out.setError("terrain needs a single layer object");
 		return out;
 	}
+
+	bool aspslope = false;
+	std::vector<std::string> f {"TPI", "TRI", "aspect", "flowdir", "slope", "roughness"};
+	for (size_t i=0; i<v.size(); i++) {
+		if (std::find(f.begin(), f.end(), v[i]) == f.end()) {
+			out.setError("unknown terrain variable: " + v[i]);
+			return(out);
+		}
+		if (v[i] == "slope" || v[i] == "aspect") {
+			aspslope=true;
+		} 
+	}
+	
 	if ((neighbors != 4) && (neighbors != 8)) {
 		out.setError("neighbors should be 4 or 8");
 		return out;	
@@ -2331,45 +2326,54 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 		readStop();
 		return out;
 	}
+	
+	if (nrow() < 3 || ncol() < 3) {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> val(out.bs.nrows[i] * ncol(), NAN);
+			if (!out.writeValues(val, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		}
+		return out;
+	}
+	
+	
 	std::vector<double> y;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> d = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
-		if (lonlat && (aspect || slope)) {
+		if (lonlat && aspslope) {
 			std::vector<int_64> rows(out.bs.nrows[i]);
 			std::iota(rows.begin(), rows.end(), out.bs.row[i]);
 			y = yFromRow(rows);
 			yr = distHaversine(0, 0, 0, yr);
 		}
 		std::vector<double> val;
-		if (aspect) {
-			do_aspect(val, d, neighbors, out.bs.nrows[i], ncol(), xres(), yr, lonlat, y, degrees);
-		}
-		if (slope) {
-			do_slope(val, d, neighbors, out.bs.nrows[i], ncol(), xres(), yr, lonlat, y, degrees);
-		}
-		if (rough) {
-			do_roughness(val, d, out.bs.nrows[i], ncol());
-		}
-		if (tpi) {
-			do_TPI(val, d, out.bs.nrows[i], ncol());
-		}
-		if (tri) {
-			do_TRI(val, d, out.bs.nrows[i], ncol());
-		}
-		if (flow) {
-			double dx = xres();
-			double dy = yres();
-			if (lonlat) {
-				double yhalf = yFromRow((size_t) nrow()/2);
-				dx = distHaversine(0, yhalf, dx, yhalf);
-				dy = distHaversine(0, 0, 0, dy);
+		for (size_t j =0; j<v.size(); j++) {
+			if (v[j] == "slope") {
+				do_slope(val, d, neighbors, out.bs.nrows[i], ncol(), xres(), yr, lonlat, y, degrees);
+			} else if (v[j] == "aspect") {
+				do_aspect(val, d, neighbors, out.bs.nrows[i], ncol(), xres(), yr, lonlat, y, degrees);
+			} else if (v[j] == "flowdir") {
+				double dx = xres();
+				double dy = yres();
+				if (lonlat) {
+					double yhalf = yFromRow((size_t) nrow()/2);
+					dx = distHaversine(0, yhalf, dx, yhalf);
+					dy = distHaversine(0, 0, 0, dy);
+				}
+				do_flowdir(val, d, out.bs.nrows[i], ncol(), dx, dy, seed);
+			} else if (v[j] == "roughness") {
+				do_roughness(val, d, out.bs.nrows[i], ncol());
+			} else if (v[j] == "TPI") {
+				do_TPI(val, d, out.bs.nrows[i], ncol());
+			} else if (v[j] == "TRI") {
+				do_TRI(val, d, out.bs.nrows[i], ncol());
+			} else {
+				out.setError("?"); return out;
 			}
-			do_flowdir(val, d, out.bs.nrows[i], ncol(), dx, dy, seed);
 		}
-		
 		if (!out.writeValues(val, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();
 	return out; 
 }
+

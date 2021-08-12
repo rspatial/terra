@@ -92,7 +92,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		}
 	}
 	
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x), nlyr(out))*2)
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x), nlyr(out)) * 2)
 
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)

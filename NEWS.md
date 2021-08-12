@@ -1,4 +1,4 @@
-# version 1.3-16
+# version 1.3-18
 
 ## enhancements
 
@@ -23,7 +23,10 @@
 - `as.points,SpatRaster` did not remove `NA`'s correctly and shifted values. Issues [#269](https://github.com/rspatial/terra/issues/269) and [#273](https://github.com/rspatial/terra/issues/273) by Julian Hagenauer.
 - `rast-matrix` rotated values when using an equal-sided matrix [#274](https://github.com/rspatial/terra/issues/274) by Jakub Nowosad.
 - the number of rows and columns were reversed when using `project` with a crs argument. [#283](https://github.com/rspatial/terra/issues/283) by Timothée Giraud.
-- argument `right` had TRUE and FALSE reversed. 
+- In `classify`, argument `right` had TRUE and FALSE reversed. 
+- `terrain` had edge effects [#303](https://github.com/rspatial/terra/issues/303) by Andrew Gene Brown.
+- `wrap,SpatRaster` changed factors into numeric [#302](https://github.com/rspatial/terra/issues/302) by Patrick Schratz.
+
 
 # version 1.3-4
 

@@ -333,7 +333,7 @@ setAs("SpatRaster", "Raster",
 		prj <- .proj4(from)
 		if (nl == 1) {
 			if (s$source == "") {
-				r <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
+				r <- raster(ncols=ncol(from), nrows=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
 				if (hasValues(from)) {
 					values(r) <- values(from)
