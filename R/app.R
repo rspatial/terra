@@ -100,6 +100,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 			icsz <- max(min(100, ceiling(b$nrows[i] / cores)), b$nrows[i])
+			
 			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
 			if (nlyr(out) > 1) {
 				r <- matrix(r, ncol=nlyr(out), byrow=TRUE)
@@ -128,6 +129,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			}
 		}
 	}
+	readStop(x)	
 	writeStop(out)
 }
 )
@@ -267,9 +269,8 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 	}
-#	readStop(x)
-	out <- writeStop(out)
-	return(out)
+	#readStop(x)
+	writeStop(out)
 }
 )
 
