@@ -165,13 +165,17 @@
 <li>
 <code>as.points,SpatRaster</code> did not remove <code>NA</code>’s correctly and shifted values. Issues <a href="https://github.com/rspatial/terra/issues/269"><a href='https://github.com/rspatial/terra/issues/269'>#269</a></a> and <a href="https://github.com/rspatial/terra/issues/273"><a href='https://github.com/rspatial/terra/issues/273'>#273</a></a> by Julian Hagenauer.</li>
 <li>
-<code>rast-matrix</code> rotated values when using an equal-sided matrix <a href="https://github.com/rspatial/terra/issues/274"><a href='https://github.com/rspatial/terra/issues/274'>#274</a></a> by Jakub Nowosad.</li>
-<li>the number of rows and columns were reversed when using <code>project</code> with a crs argument. <a href="https://github.com/rspatial/terra/issues/283"><a href='https://github.com/rspatial/terra/issues/283'>#283</a></a> by Timothée Giraud.</li>
+<code>rast-matrix</code> rotated values when using an equal-sided matrix <a href="https://github.com/rspatial/terra/issues/274"><a href='https://github.com/rspatial/terra/issues/274'>#274</a></a> by Jakub Nowosad</li>
+<li>the number of rows and columns were reversed when using <code>project</code> with a crs argument. <a href="https://github.com/rspatial/terra/issues/283"><a href='https://github.com/rspatial/terra/issues/283'>#283</a></a> by Timothée Giraud</li>
 <li>In <code>classify</code>, argument <code>right</code> had TRUE and FALSE reversed.</li>
 <li>
 <code>terrain</code> had edge effects <a href="https://github.com/rspatial/terra/issues/303"><a href='https://github.com/rspatial/terra/issues/303'>#303</a></a> by Andrew Gene Brown.</li>
 <li>
-<code>wrap,SpatRaster</code> changed factors into numeric <a href="https://github.com/rspatial/terra/issues/302"><a href='https://github.com/rspatial/terra/issues/302'>#302</a></a> by Patrick Schratz.</li>
+<code>terrain</code> can now compute multiple variables at once <a href="https://github.com/rspatial/terra/issues/286"><a href='https://github.com/rspatial/terra/issues/286'>#286</a></a> by Žan Kuralt</li>
+<li>
+<code>wrap,SpatRaster</code> changed factors into numeric <a href="https://github.com/rspatial/terra/issues/302"><a href='https://github.com/rspatial/terra/issues/302'>#302</a></a> by Patrick Schratz</li>
+<li>
+<code>writeVector</code> failed with “FlatGeobuf” (and probably other formats as well) for not using a proper MultiPolygon <a href="https://github.com/rspatial/terra/issues/299"><a href='https://github.com/rspatial/terra/issues/299'>#299</a></a> by L Dalby</li>
 </ul>
 </div>
 </div>
