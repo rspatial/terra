@@ -27,6 +27,8 @@
 - `terrain` had edge effects [#303](https://github.com/rspatial/terra/issues/303) by Andrew Gene Brown.
 - `terrain` can now compute multiple variables at once [#286](https://github.com/rspatial/terra/issues/286) by Žan Kuralt
 - `wrap,SpatRaster` changed factors into numeric [#302](https://github.com/rspatial/terra/issues/302) by Patrick Schratz
+- `writeVector` failed with "FlatGeobuf" (and probably other formats as well) for not using a proper MultiPolygon [#299](https://github.com/rspatial/terra/issues/299) by L Dalby
+
 
 
 # version 1.3-4
