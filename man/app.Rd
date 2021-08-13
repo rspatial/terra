@@ -48,7 +48,7 @@ To speed things up, parallelization is supported, but this is often not helpful,
 \examples{
 r <- rast(ncols=10, nrows=10)
 values(r) <- 1:ncell(r)
-x <- c(r, sqrt(r), r-50)
+x <- c(r, sqrt(r), r+50)
 s <- app(x, fun=sum)
 s
 # for a few generic functions like 
@@ -68,6 +68,21 @@ s <- app(r, f)
 # same as above, but that is not memory-safe
 # and has no filename argument 
 s <- f(r)
+
+#### multiple cores 
+test0 <- app(x, sqrt) 
+test1 <- app(x, sqrt, cores=2)
+
+testfun <- function(i) { 2 * sqrt(i) }
+test2 <- app(x, fun=testfun, cores =2)
+
+## this fails because testfun is not exported to the nodes
+# test3 <- app(x, fun=function(i) testfun(i), cores=2)
+## to export it, add it as argument to fun
+test3 <- app(x, fun=function(i, ff) ff(i), cores =3, ff=testfun)
+
+
+
 }
 
 
