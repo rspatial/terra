@@ -11,9 +11,13 @@
 		r <- crop(rast(r), ext)
 	}
 	if (method == "random") {
-		n <- size
+		nsize <- size
 		if (na.rm) {
-			size <- min(ncell(r)*2, size*5)
+			if (replace) {
+				size <- size*5			
+			} else {
+				size <- min(ncell(r)*2, size*5)
+			}
 		}
 		if (lonlat) {
 			m <- ifelse(replace, 1.5, 1.25)
@@ -71,8 +75,8 @@
 		cells <- cells[v]
 	}
 	if (method == "random") {
-		if (length(cells) > n) {
-			cells <- cells[1:n]
+		if (length(cells) > nsize) {
+			cells <- cells[1:nsize]
 		}
 	}
 	return(cells)
@@ -133,7 +137,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 		method <- tolower(method)
 		stopifnot(method %in% c("random", "regular"))
-		size <- min(ncell(x), size)
+		if (!replace) size <- min(ncell(x), size)
 
 		if (!is.null(ext)) x <- crop(x, ext)
 
@@ -163,14 +167,15 @@ setMethod("spatSample", signature(x="SpatRaster"),
 						out <- stats::na.omit(values(x))
 						attr(x, "na.action") <- NULL
 						if (nrow(out) < size) {
-							warn("spatSample", "more non NA cells requested than available")
+							warn("spatSample", "more non-NA cells requested than available")
 						} else {
-							out <- out[sample(nrow(out), size), ]
+							out <- out[sample(nrow(out), size), ,drop=FALSE]
 						}
 					} else {
-						out <- out[sample(nrow(out), size, replace=replace), ]
+						out <- values(x)
+						out <- out[sample(nrow(out), size, replace=replace), ,drop=FALSE]
 					}
-					return	(out)
+					return(out)
 				}
 
 				if (na.rm) {
