@@ -208,10 +208,18 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError(errmsg);
 		return false;
 	}
-	if (file_exists(filename) & (!opt.get_overwrite())) {
+	
+	bool append = std::find(opt.gdal_options.begin(), opt.gdal_options.end(), "APPEND_SUBDATASET=YES") != opt.gdal_options.end();
+	if (append) {
+		if (!file_exists(filename)) {
+			setError("cannot append to a file that does not exist");
+			return(false);
+		} 
+	} else if (file_exists(filename) & (!opt.get_overwrite())) {
 		setError("file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return(false);
 	}
+	
 //	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 //		setError(errmsg);
 //		return(false);
@@ -284,7 +292,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	//bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
 
 	GDALDataset *poDS;
-    if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+	if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
 		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 	} else if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
 		copy_driver = driver;
@@ -442,7 +450,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	poDS->SetProjection(pszSRS_WKT);
 	CPLFree(pszSRS_WKT);
 	// destroySRS(oSRS) ?
-
+	
 	source[0].gdalconnection = poDS;
 
 	source[0].resize(nlyr());
@@ -575,7 +583,7 @@ bool SpatRaster::writeStopGDAL() {
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
 	std::string datatype = source[0].datatype;
-
+/*
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = source[0].gdalconnection->GetRasterBand(i+1);
 
@@ -604,6 +612,9 @@ bool SpatRaster::writeStopGDAL() {
 			source[0].hasRange[i] = false;
 		}
 	}
+	
+*/
+	
 	if (copy_driver != "") {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;

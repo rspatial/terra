@@ -77,6 +77,9 @@ std::string SpatOptions::get_filetype() { return filetype;}
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }
 
+//bool SpatOptions::get_append() { return append; }
+//void SpatOptions::set_append(bool b) { append = b; }
+
 int SpatOptions::get_statistics() { return statistics; }
 void SpatOptions::set_statistics(int s) { if ((s> 0) && (s<7)) statistics = s; }
 
