@@ -583,7 +583,7 @@ bool SpatRaster::writeStopGDAL() {
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
 	std::string datatype = source[0].datatype;
-/*
+
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = source[0].gdalconnection->GetRasterBand(i+1);
 
@@ -612,8 +612,6 @@ bool SpatRaster::writeStopGDAL() {
 			source[0].hasRange[i] = false;
 		}
 	}
-	
-*/
 	
 	if (copy_driver != "") {
 		GDALDataset *newDS;
