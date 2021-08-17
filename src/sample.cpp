@@ -17,6 +17,7 @@
 
 #include <vector>
 #include "spatRaster.h"
+#include "distance.h"
 #include "recycle.h"
 #include <random>
 #include <unordered_set>
@@ -439,7 +440,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 			
 		}
 		
-		std::vector<size_t> x = sample(size, r.size(), true, w, seed);
+		std::vector	<size_t> x = sample(size, r.size(), true, w, seed);
 		std::vector <double> lat, lon;
 		lat.reserve(size);
 		lon.reserve(size);
@@ -479,16 +480,22 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lonlat) {
 	std::vector<std::vector<double>> out(2);
 	if (size == 0) return out;
+
 	double r1 = xmax - xmin;
 	double r2 = ymax - ymin;
-	double ratio = 0.5 * r1/r2;
-	double n = sqrt( (double) size );
-	double nx = std::max(1.0, std::round(n*ratio));
-	double ny = std::max(1.0, std::round(n/ratio));
-	double x_i = r1 / nx;
-	double y_i = r2 / ny;
 
 	if (lonlat) {
+		double halfy = ymin + (ymax - ymin)/2;	
+		double dx = distance_lonlat(xmin, halfy, xmax, halfy);
+		double dy = distance_lonlat(0, ymin, 0, ymax);
+		double ratio = dx/dy;
+		double ny = std::max(1.0, sqrt(size / ratio));
+		double nx = std::max(1.0, size / ny);
+		ny = std::round(ny);
+		nx = std::round(nx);
+		double x_i = r1 / nx;
+		double y_i = r2 / ny;
+
 		std::vector<double> lat, lon, w, xi;
 		lat.reserve(ny);
 		lat.push_back(ymin+0.5*y_i);
@@ -506,13 +513,36 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		for (size_t i=0; i<w.size(); i++) {
 			xi.push_back(x_i / (w[i] * nwsumw));
 		}
+		double halfx = xmin + (xmax - xmin)/2;
 		for (size_t i=0; i<lat.size(); i++) {
-			std::vector <double> x = seq(xmin+0.5*xi[i], xmax, xi[i]);
+			double start = halfx - 0.5*xi[i];
+			std::vector <double> x;
+			if (start < xmin) {
+				x = { halfx };
+			} else {
+				while (start > xmin) {
+					start -= xi[i];
+				} 
+				x = seq(start + xi[i], xmax, xi[i]);
+			}
+			if (x.size() <= 1) {
+				x = { halfx };
+			}
 			std::vector <double> y(x.size(), lat[i]);
+        
 			out[0].insert(out[0].end(), x.begin(), x.end());
 			out[1].insert(out[1].end(), y.begin(), y.end());
 		}
+
 	} else {
+		double ratio = r1/r2;
+		double ny = std::max(1.0, sqrt(size / ratio));
+		double nx = std::max(1.0, size / ny);
+		ny = std::round(ny);
+		nx = std::round(nx);
+		double x_i = r1 / nx;
+		double y_i = r2 / ny;
+
 		std::vector<double> x, y;
 		x.reserve(nx);
 		y.reserve(ny);

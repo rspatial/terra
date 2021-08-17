@@ -219,6 +219,9 @@ setMethod("spatSample", signature(x="SpatExtent"),
 		if (missing(lonlat)) {
 			error("spatSample", "provide a lonlat argument")
 		}
+		if (lonlat) {
+			stopifnot(x$ymax <= 90 || x$ymin >= -90)
+		}
 		method <- match.arg(method, c("regular", "random"))
 		size <- round(size)
 		stopifnot(size > 0)
