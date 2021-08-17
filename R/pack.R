@@ -123,10 +123,10 @@ setMethod("as.character", signature(x="SpatRaster"),
 setMethod("wrap", signature(x="SpatRaster"), 
 	function(x) {
 		r <- methods::new("PackedSpatRaster")
-		r@definition = as.character(x)
-		r@values = values(x)
+		r@definition <- as.character(x)
+		r@values <- values(x)
 		if (any(is.factor(x))) {
-			r@attributes = levels(x)
+			r@attributes <- levels(x)
 		} 
 		r
 	}
