@@ -81,7 +81,7 @@ To write chunks, begin by opening a file with writeStart, then write values to i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-19</span>
       </span>
     </div>
 
@@ -185,11 +185,11 @@ To write chunks, begin by opening a file with writeStart, then write values to i
     </tr>
     <tr>
       <th>mat</th>
-      <td><p>logical. If <code>TRUE</code>, values are returned as a matrix instead of as a vector, except when dataframe is <code>TRUE</code></p></td>
+      <td><p>logical. If <code>TRUE</code>, values are returned as a numeric matrix instead of as a vector, except when dataframe is <code>TRUE</code>. If any of the layers of <code>x</code> is a factor, the level index is returned, not the label. Use <code>dataframe=TRUE</code> to get the labels</p></td>
     </tr>
     <tr>
       <th>dataframe</th>
-      <td><p>logical. If <code>TRUE</code>, values are returned as a data.frame instead of as a vector (also if matrix is <code>TRUE</code>)</p></td>
+      <td><p>logical. If <code>TRUE</code>, values are returned as a <code>data.frame</code> instead of as a vector (also if matrix is <code>TRUE</code>)</p></td>
     </tr>
     <tr>
       <th>overwrite</th>
