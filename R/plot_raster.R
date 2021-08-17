@@ -333,9 +333,9 @@
 
 	if (!hasValues(x)) {
 		out$values = FALSE
+		warn("plot", "SpatRaster has no cell values")
 	} else {
 		out$values <- TRUE
-
 
 		if (type=="factor") {
 			out <- .as.raster.factor(out, x)
@@ -380,7 +380,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		x <- x[[y]]
-		if (!hasValues(x)) { warn("plot", "SpatRaster has no cell values") }
 		if (ncell(x) > 1.1 * maxcell) {
 			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		}
