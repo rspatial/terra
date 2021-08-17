@@ -6,7 +6,10 @@
 
 	z <- stats::na.omit(round(as.vector(Z), 12))
 	n <- length(z)
-	if (n == 0) error("plot", "no values")
+	if (n == 0) {
+		out$values = FALSE
+		return(out)
+	}
 	uzi <- unique(z)
 	if (type == "depends") {
 		if (length(uzi) < 6) {
@@ -51,7 +54,8 @@
 	Z <- as.matrix(x, TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 	if (all(is.na(Z))) {
-		error("plot", "no values")
+		out$values = FALSE
+		return(out)
 	}
 
 	fz <- as.factor(Z)
@@ -107,7 +111,8 @@
 	z[z<1 | z>256] <- NA
 	z[is.nan(z) | is.infinite(z)] <- NA
 	if (all(is.na(z))) {
-		error("plot", "no values")
+		out$values = FALSE
+		return(out)
 	}
 	out$levels <- sort(stats::na.omit(unique(z)))
 	out$leg$legend <- out$facts[out$levels]
@@ -211,7 +216,8 @@
 	z[z<0 | z>255] <- NA
 	z[is.nan(z) | is.infinite(z)] <- NA
 	if (all(is.na(z))) {
-		error("plot", "no values")
+		out$values = FALSE
+		return(out)
 	}
 	out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
 	z <- out$cols[z+1]
@@ -235,12 +241,14 @@
 	if ((!x$add) & (!x$legend_only)) {
 
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
-		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, ...)
+		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
 		if (main != "") {
 			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)		
 		}
 	}
-
+	if (!x$values) {
+		return(x)
+	}
 	if (!x$legend_only) {
 		graphics::rasterImage(x$r, x$ext[1], x$ext[3], x$ext[2], x$ext[4], 
 			angle = 0, interpolate = x$interpolate)
@@ -323,28 +331,35 @@
 		out$mar <- rep_len(mar, 4)
 	}
 
-	if (type=="factor") {
-		out <- .as.raster.factor(out, x)
-	} else if (type=="colortable") {
-		out <- .as.raster.colortable(out, x)
-	} else if (type=="classes") {
-		out$levels <- levels
-		out <- .as.raster.classes(out, x)
-	} else if (type=="interval") {
-		out <- .as.raster.interval(out, x)
+	if (!hasValues(x)) {
+		out$values = FALSE
 	} else {
-		out$interpolate <- isTRUE(interpolate)
-		out$range <- range
-		out <- .as.raster.continuous(out, x, type)
-	}
+		out$values <- TRUE
 
-	if (!is.null(colNA)) {
-		if (!is.na(colNA)) {
-			out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=alpha, maxColorValue=255)
-			out$r[is.na(out$r)] <- out$colNA
+
+		if (type=="factor") {
+			out <- .as.raster.factor(out, x)
+		} else if (type=="colortable") {
+			out <- .as.raster.colortable(out, x)
+		} else if (type=="classes") {
+			out$levels <- levels
+			out <- .as.raster.classes(out, x)
+		} else if (type=="interval") {
+			out <- .as.raster.interval(out, x)
+		} else {
+			out$interpolate <- isTRUE(interpolate)
+			out$range <- range
+			out <- .as.raster.continuous(out, x, type)
+		}
+ 
+		if (!is.null(colNA)) {
+			if (!is.na(colNA) && out$values) {
+				out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=alpha, maxColorValue=255)
+				out$r[is.na(out$r)] <- out$colNA
+			}
 		}
 	}
-
+	
 	if (draw) {
 		out <- .plotit(out, new=new, ...)
 	}
@@ -365,7 +380,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		x <- x[[y]]
-		if (!hasValues(x)) { error("plot", "SpatRaster has no cell values") }
+		if (!hasValues(x)) { warn("plot", "SpatRaster has no cell values") }
 		if (ncell(x) > 1.1 * maxcell) {
 			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		}
@@ -434,7 +449,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			return(invisible(out))
 		}
 
-		nrnc <- .get_nrnc(nr, nc, nl)
+			nrnc <- .get_nrnc(nr, nc, nl)
 		old.par <- graphics::par(no.readonly = TRUE) 
 		on.exit(graphics::par(old.par))
 		if (is.null(mar)) {
