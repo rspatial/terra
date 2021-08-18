@@ -20,6 +20,8 @@
 #include "file_utils.h"
 #include "spatTime.h"
 #include "recycle.h"
+#include "vecmath.h"
+
 
 #include <set>
 
@@ -1979,15 +1981,21 @@ SpatVector SpatRaster::as_lines() {
 
 
 
-bool SpatRaster::setRGB(int r, int g, int b) {
-	size_t mxlyr = std::max(std::max(r, g), b);
+bool SpatRaster::setRGB(int r, int g, int b, int alpha) {
+	std::vector<int> channels;
+	if (alpha >= 0) {
+		channels = {r, g, b, alpha};
+	} else {
+		channels = {r, g, b};
+	}
+	size_t mxlyr = vmax( channels, false );
 	if (nlyr() <= mxlyr) {
 		//addWarning("layer number for R, G, B, cannot exceed the number of layers");		
 		return false;
 	} else {
-		size_t mnlyr = std::min(std::min(r, g), b);
+		size_t mnlyr =  vmin( channels, false );;
 		if (mnlyr >= 0) {
-			rgblyrs = {r, g, b};
+			rgblyrs = channels;
 			rgb = true;
 		} else {
 			rgb = false;

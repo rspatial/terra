@@ -69,6 +69,7 @@ s <- app(r, f)
 # and has no filename argument 
 s <- f(r)
 
+\dontrun{
 #### multiple cores 
 test0 <- app(x, sqrt) 
 test1 <- app(x, sqrt, cores=2)
@@ -80,9 +81,7 @@ test2 <- app(x, fun=testfun, cores =2)
 # test3 <- app(x, fun=function(i) testfun(i), cores=2)
 ## to export it, add it as argument to fun
 test3 <- app(x, fun=function(i, ff) ff(i), cores =3, ff=testfun)
-
-
-
+}
 }
 
 
