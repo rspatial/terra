@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3-20</span>
       </span>
     </div>
 
@@ -129,7 +129,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>plotRGB</span><span class='op'>(</span><span class='va'>x</span>, r<span class='op'>=</span><span class='fl'>1</span>, g<span class='op'>=</span><span class='fl'>2</span>, b<span class='op'>=</span><span class='fl'>3</span>, <span class='va'>scale</span>, maxcell<span class='op'>=</span><span class='fl'>500000</span>, mar<span class='op'>=</span><span class='fl'>0</span>, 
+<span class='fu'>plotRGB</span><span class='op'>(</span><span class='va'>x</span>, r<span class='op'>=</span><span class='fl'>1</span>, g<span class='op'>=</span><span class='fl'>2</span>, b<span class='op'>=</span><span class='fl'>3</span>, a<span class='op'>=</span><span class='cn'>NULL</span>, <span class='va'>scale</span>, maxcell<span class='op'>=</span><span class='fl'>500000</span>, mar<span class='op'>=</span><span class='fl'>0</span>, 
     stretch<span class='op'>=</span><span class='cn'>NULL</span>, ext<span class='op'>=</span><span class='cn'>NULL</span>, smooth<span class='op'>=</span><span class='cn'>FALSE</span>, colNA<span class='op'>=</span><span class='st'>"white"</span>, <span class='va'>alpha</span>, <span class='va'>bgalpha</span>, 
     addfun<span class='op'>=</span><span class='cn'>NULL</span>, zlim<span class='op'>=</span><span class='cn'>NULL</span>, zlimcol<span class='op'>=</span><span class='cn'>NULL</span>, axes<span class='op'>=</span><span class='cn'>FALSE</span>, xlab<span class='op'>=</span><span class='st'>""</span>, ylab<span class='op'>=</span><span class='st'>""</span>, 
     asp<span class='op'>=</span><span class='cn'>NULL</span>, add<span class='op'>=</span><span class='cn'>FALSE</span>, <span class='va'>interpolate</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -152,6 +152,10 @@
     <tr>
       <th>b</th>
       <td><p>integer. Index of the Blue channel, between 1 and nlyr(x)</p></td>
+    </tr>
+    <tr>
+      <th>a</th>
+      <td><p>integer. Index of the alpha (transparancy) channel, between 1 and nlyr(x). If not NULL, argument <code>alpha</code> is ignored</p></td>
     </tr>
     <tr>
       <th>scale</th>
