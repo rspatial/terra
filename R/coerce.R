@@ -16,7 +16,7 @@ setMethod("as.list", signature(x="SpatRaster"),
 setMethod("as.raster", signature(x="SpatRaster"), 
 	function(x, maxcell=500000, col) {
 		if (missing(col)) {
-			col=rev(grDevices::terrain.colors(255))
+			col <- rev(grDevices::terrain.colors(255))
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		x <- as.matrix(x, wide=TRUE)

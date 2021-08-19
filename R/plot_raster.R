@@ -307,8 +307,9 @@
 	}
 
 	if (!is.null(alpha)) {
-		alpha <- clamp(alpha[1]*255, 0, 255)
-		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha, maxColorValue=255)
+		if (!inherits(alpha, "SpatRaster")) {
+			cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
+		} 
 	} else {
 		alpha <- 255
 	}
@@ -362,6 +363,11 @@
 	}
 	
 	if (draw) {
+		if (inherits(alpha, "SpatRaster")) {
+			alpha <- clamp(as.vector(alpha[[1]])*255, 0, 255)		
+			out$r <- matrix(grDevices::rgb(t(grDevices::col2rgb(out$r)), alpha=alpha, maxColorValue=255),
+			nrow=nrow(out$r), byrow=TRUE)
+		}	
 		out <- .plotit(out, new=new, ...)
 	}
 	invisible(out)
@@ -376,14 +382,32 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 		if (length(y) > 1) {
 			x <- x[[y]]
+			if (inherits(alpha, "SpatRaster")) {
+				if (nlyr(alpha) > 1) {
+					alpha <- alpha[[y]]
+				}
+			}
 			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell/(length(x)/2), smooth=smooth, range=range, levels=levels, fun=fun, colNA=colNA, alpha=alpha, ...)
 			return(invisible())
 		}
 
+		if (inherits(alpha, "SpatRaster")) {
+			if (!compareGeom(x, alpha, crs=FALSE, ext=FALSE, rowcol=TRUE)) {
+				error("plot", "geometry of alpha does not match x")
+			}
+		}
+		
 		x <- x[[y]]
 		if (ncell(x) > 1.1 * maxcell) {
+			if (inherits(alpha, "SpatRaster")) {
+				if (nlyr(alpha) > 1) {
+					alpha <- alpha[[y]]
+				}
+				alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE)
+			}
 			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		}
+
 		if (is.character(legend)) {
 			plg$x <- legend
 			legend <- TRUE
@@ -418,7 +442,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
-		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, colNA=colNA, ...)
+		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
@@ -449,7 +473,7 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			return(invisible(out))
 		}
 
-			nrnc <- .get_nrnc(nr, nc, nl)
+		nrnc <- .get_nrnc(nr, nc, nl)
 		old.par <- graphics::par(no.readonly = TRUE) 
 		on.exit(graphics::par(old.par))
 		if (is.null(mar)) {
@@ -463,7 +487,6 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		} else {
 			main <- rep_len(main, nl)
 		}
-		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		#if (onelegend) { legend <- FALSE }
 		for (i in 1:nl) {
 			plot(x, i, main=main[i], mar=mar, ...)
