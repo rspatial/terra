@@ -1,4 +1,10 @@
-# version 1.3-21
+# version 1.4-0
+
+## bug fixes 
+
+
+
+# version 1.3-22
 
 ## enhancements
 
@@ -10,6 +16,7 @@
 - `vect,character` (filename) now has argument `layer` to select a layer from a multi-layer file / database, and arguments `query`, `extent` and `filter` for reading a subset.
 - `subst` can now create multiple output layers See [issue 276](https://github.com/rspatial/terra/issues/276) by Agustin Lobo.
 - `classify` can now create different multiple output layers See [issue 276](https://github.com/rspatial/terra/issues/276) by Agustin Lobo.
+- Argument `alpha` of `plot,SpatRaster` can now be a `SpatRaster`. See this [SO question](https://stackoverflow.com/q/68736432/635245) by James McCarthy
 
 
 ## bug fixes 
