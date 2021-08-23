@@ -11,7 +11,6 @@
 \alias{plot,SpatExtent,missing-method}
 
 
-
 \title{Make a map}
 
 \description{
