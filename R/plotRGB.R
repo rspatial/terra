@@ -74,10 +74,10 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 	}
 	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
+	RGB <- values(x)
 	RGB <- stats::na.omit(RGB)
 	naind <- as.vector( attr(RGB, "na.action") )
 
-	RGB <- values(x)
 	if (!is.null(a)) {
 		alpha <- RGB[,4] * 255
 		RGB <- RGB[,-4]

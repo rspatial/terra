@@ -55,6 +55,8 @@ b <- rast(system.file("ex/logo.tif", package="terra"))
 plotRGB(b)
 plotRGB(b, mar=c(2,2,2,2))
 plotRGB(b, 3, 2, 1)
+
+b[1000:2000] <- NA
 plotRGB(b, 3, 2, 1, stretch='hist')
 }
 
