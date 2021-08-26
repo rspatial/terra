@@ -367,11 +367,33 @@ setMethod("flip", signature(x="SpatRaster"),
 
 
 setMethod("freq", signature(x="SpatRaster"), 
-	function(x, digits=0, value=NULL, bylayer=TRUE) {
+	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE) {
 
 		opt <- spatOptions()
-
+		if (!bylayer) usenames <- FALSE
+		
 		if (!is.null(value)) {
+			value <- unique(value)
+			if (length(value) > 1) {
+				error("freq", "value must have a length of one")
+			}
+			if (is.character(value)) {
+				value <- value[value != ""]
+				if (length(value) == 0) {
+					error("freq", "no valid value")
+				}
+				ff <- is.factor(x)
+				if (!any(ff)) {
+					error("freq", "a character value is only meaningful for categorical rasters")				
+				}
+				f <- freq(x[[ff]])
+				if (usenames) {
+					f$layer <- names(x)[f$layer]
+				}
+				f <- f[f$label == value,]
+				return(f)
+			}
+		
 			if (is.na(digits)) {
 				v <- x@ptr$count(value, bylayer[1], FALSE, 0, opt)
 			} else {
@@ -414,6 +436,10 @@ setMethod("freq", signature(x="SpatRaster"),
 					v$label <- g[v$value + 1]
 				}
 			}
+		}
+		if (usenames) {
+			v <- data.frame(v)
+			v$layer <- names(x)[v$layer]
 		}
 		v
 	}
