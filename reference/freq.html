@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-1</span>
       </span>
     </div>
 
@@ -129,7 +129,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span>, digits<span class='op'>=</span><span class='fl'>0</span>, value<span class='op'>=</span><span class='cn'>NULL</span>, bylayer<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span>, digits<span class='op'>=</span><span class='fl'>0</span>, value<span class='op'>=</span><span class='cn'>NULL</span>, bylayer<span class='op'>=</span><span class='cn'>TRUE</span>, usenames<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -139,16 +139,20 @@
       <td><p>SpatRaster</p></td>
     </tr>
     <tr>
-      <th>bylayer</th>
-      <td><p>logical. If <code>TRUE</code> tabulation is done by layer</p></td>
-    </tr>
-    <tr>
       <th>digits</th>
       <td><p>integer. Used for rounding the values before tabulation. Ignored if <code>NA</code></p></td>
     </tr>
     <tr>
       <th>value</th>
       <td><p>numeric. An optional single value to only count the number of cells with that value. This value can be <code>NA</code></p></td>
+    </tr>
+    <tr>
+      <th>bylayer</th>
+      <td><p>logical. If <code>TRUE</code> tabulation is done by layer</p></td>
+    </tr>
+    <tr>
+      <th>usenames</th>
+      <td><p>logical. If <code>TRUE</code> layers are identified by their names instead of their numbers. Only relevant if <code>bylayer</code> is <code>TRUE</code></p></td>
     </tr>
     </table>
 
@@ -164,13 +168,7 @@
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>freq</span><span class='op'>(</span><span class='va'>r</span>, <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      layer value count
-#&gt; [1,]     1     1    27
-#&gt; [2,]     1     2    15
-#&gt; [3,]     1     3    17
-#&gt; [4,]     1     4    17
-#&gt; [5,]     1     5    24</div><div class='input'><span class='fu'>freq</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+<span class='fu'>freq</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;      layer value count
 #&gt; [1,]     1     1    27
 #&gt; [2,]     1     2    15
@@ -178,7 +176,14 @@
 #&gt; [4,]     1     4    17
 #&gt; [5,]     1     5    24</div><div class='input'>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>r</span><span class='op'>/</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span>, <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span>, bylayer<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;      value count
+#&gt; [1,]     0    27
+#&gt; [2,]     1    76
+#&gt; [3,]     2    39
+#&gt; [4,]     3    17
+#&gt; [5,]     4    17
+#&gt; [6,]     5    24</div><div class='input'><span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;      layer value count
 #&gt; [1,]     1     1    27
 #&gt; [2,]     1     2    15
@@ -187,16 +192,8 @@
 #&gt; [5,]     1     5    24
 #&gt; [6,]     2     0    27
 #&gt; [7,]     2     1    49
-#&gt; [8,]     2     2    24</div><div class='input'><span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      layer value count
-#&gt; [1,]     1     1    27
-#&gt; [2,]     1     2    15
-#&gt; [3,]     1     3    17
-#&gt; [4,]     1     4    17
-#&gt; [5,]     1     5    24
-#&gt; [6,]     2     0    27
-#&gt; [7,]     2     1    49
-#&gt; [8,]     2     2    24</div><div class='input'><span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span>, digits<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+#&gt; [8,]     2     2    24</div><div class='input'>
+<span class='fu'>freq</span><span class='op'>(</span><span class='va'>x</span>, digits<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;       layer value count
 #&gt;  [1,]     1   1.0    27
 #&gt;  [2,]     1   2.0    15
