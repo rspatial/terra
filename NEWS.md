@@ -1,7 +1,12 @@
-# version 1.4-0
+# version 1.4-1
+
+## enhancements
+
+- `freq` has a new argument `usenames`. See issue [#309](https://github.com/rspatial/terra/issues/309) by Bappa Das
 
 ## bug fixes 
 
+- `plotRGB` failed if there were `NA`s. Issue [#308](https://github.com/rspatial/terra/issues/308) by Jakub Nowasad
 
 
 # version 1.3-22
