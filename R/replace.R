@@ -5,18 +5,21 @@ setMethod("$<-", "SpatRaster",
 		if (inherits(value, "SpatRaster")) {
 			value <- value[[1]]
 			names(value) <- name
-		} else if (is.numeric(value)) {
+		} else {
 			y <- rast(x, nlyrs=1)
-			values(y) <- value
+			test <- try(values(y) <- value, silent=TRUE)
+			if (inherits(test, "try-error")) {
+				error("$<-,SpatRaster", "the replacement value is not valid")
+			}
 			value <- y
 			names(value) <- name
-		} else if (!is.null(value)) {
-			error("$<-,SpatRaster", "the replacement value should be a SpatRaster or numeric")
 		}
 
 		i <- which(name == names(x))[1]
 		if (is.na(i)) {
 			return(c(x, value))
+		} else if (nlyr(x) == 1) {
+			return(value)
 		} else {
 			if (i == 1) {
 				x <- c(value, x[[2:nlyr(x)]])
