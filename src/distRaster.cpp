@@ -493,7 +493,9 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		warn = true;
 		msg = "distance computations are only done for the first input layer";
 		std::vector<unsigned> lyr = {0};
-		*this = subset(lyr, ops);
+		SpatOptions opt(ops);
+		SpatRaster x = subset(lyr, opt);
+		return x.gridDistance(ops);
 	}
 
 	if (!hasValues()) {
