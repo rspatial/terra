@@ -122,22 +122,34 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-0" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-0">
-<a href="#version-14-0" class="anchor"></a>version 1.4-0<small> Unreleased </small>
+    <div id="version-14-1" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-1">
+<a href="#version-14-1" class="anchor"></a>version 1.4-1<small> Unreleased </small>
 </h1>
+<div id="enhancements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#enhancements" class="anchor"></a>enhancements</h2>
+<ul>
+<li>
+<code>freq</code> has a new argument <code>usenames</code>. See issue <a href="https://github.com/rspatial/terra/issues/309"><a href='https://github.com/rspatial/terra/issues/309'>#309</a></a> by Bappa Das</li>
+</ul>
+</div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
+<ul>
+<li>
+<code>plotRGB</code> failed if there were <code>NA</code>s. Issue <a href="https://github.com/rspatial/terra/issues/308"><a href='https://github.com/rspatial/terra/issues/308'>#308</a></a> by Jakub Nowasad</li>
+</ul>
 </div>
 </div>
     <div id="version-13-22" class="section level1">
 <h1 class="page-header" data-toc-text="1.3-22">
 <a href="#version-13-22" class="anchor"></a>version 1.3-22<small> 2021-08-20 </small>
 </h1>
-<div id="enhancements" class="section level2">
+<div id="enhancements-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-1" class="anchor"></a>enhancements</h2>
 <ul>
 <li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code><a href="../reference/time.html">time(x)</a></code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue <a href="https://github.com/rspatial/terra/issues/256"><a href='https://github.com/rspatial/terra/issues/256'>#256</a></a> raised by Mauricio Zambrano-Bigiarini.</li>
 <li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue <a href="https://github.com/rspatial/terra/issues/258"><a href='https://github.com/rspatial/terra/issues/258'>#258</a></a> by AGeographer. Also implemented for names in both SpatVector and SpatRaster.</li>
@@ -213,9 +225,9 @@
 <li>new method <code>shade</code>, to compute hill shading</li>
 </ul>
 </div>
-<div id="enhancements-1" class="section level2">
+<div id="enhancements-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-1" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-2" class="anchor"></a>enhancements</h2>
 <ul>
 <li>additional arguments (such as <code>na.rm</code>) are now used by <code>rasterize</code> with point geometries. Suggested by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/209"><a href='https://github.com/rspatial/terra/issues/209'>#209</a></a>
 </li>
@@ -283,9 +295,9 @@
 <code>split</code> methods for SpatVector and SpatRaster</li>
 </ul>
 </div>
-<div id="enhancements-2" class="section level2">
+<div id="enhancements-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-2" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-3" class="anchor"></a>enhancements</h2>
 <ul>
 <li>
 <code>rast(Raster*)</code> now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe <a href="https://github.com/rspatial/terra/issues/200"><a href='https://github.com/rspatial/terra/issues/200'>#200</a></a>

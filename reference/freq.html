@@ -158,10 +158,8 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>matrix with 2 columns (value, count) or, if <code>bylayer=TRUE</code> three layers (layer, value, count).</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code>freq</code></p></div>
+    <p><code>matrix</code> or <code>data.frame</code> with 3 columns (layer, value, count) or, if <code>bylayer=FALSE</code> two columns (value, count). If any of the layers of <code>x</code> is categorical, there is an additional column (label). 
+A <code>data.frame</code> is returned if <code>usenames=TRUE</code> or if any of the layers of <code>x</code> is categorical.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
