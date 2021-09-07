@@ -80,7 +80,7 @@ setMethod("crs", signature("SpatRaster"),
 	} else {
 		error("crs", "I do not know what to do with this argument (expected a character string)")
 	}
-	#check_proj4_datum(x)
+	.check_proj4_datum(x)
 	x
 }
 
