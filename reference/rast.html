@@ -82,7 +82,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-2</span>
       </span>
     </div>
 
@@ -133,7 +133,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
     </div>
 
     <pre class="usage"><span class='co'># S4 method for character</span>
-<span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, subds<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
+<span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, subds<span class='op'>=</span><span class='fl'>0</span>, opts<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='co'># S4 method for missing</span>
 <span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, nrows<span class='op'>=</span><span class='fl'>180</span>, ncols<span class='op'>=</span><span class='fl'>360</span>, nlyrs<span class='op'>=</span><span class='fl'>1</span>, xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>180</span>, xmax<span class='op'>=</span><span class='fl'>180</span>, 
@@ -170,6 +170,10 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
     <tr>
       <th>subds</th>
       <td><p>positive integer or character to select a subdataset. If zero or "", all subdatasets are returned (if possible)</p></td>
+    </tr>
+    <tr>
+      <th>opts</th>
+      <td><p>character. GDAL dataset open options</p></td>
     </tr>
     <tr>
       <th>nrows</th>
