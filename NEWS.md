@@ -3,12 +3,13 @@
 ## enhancements
 
 - `freq` has a new argument `usenames`. See issue [#309](https://github.com/rspatial/terra/issues/309) by Bappa Das
-- `rast` has a new argument `opts` that can be used to pass GDAL open options. See issue [#314]
-- `crs<-` now warns if an unsupported datum is used. See issue [#317]
+- `rast` has a new argument `opts` that can be used to pass GDAL open options. See issue [#314](https://github.com/rspatial/terra/issues/314)
+- `crs<-` now warns if an unsupported datum is used. See issue [#317](https://github.com/rspatial/terra/issues/317)
 
 ## bug fixes 
 
 - `plotRGB` failed if there were `NA`s. Issue [#308](https://github.com/rspatial/terra/issues/308) by Jakub Nowasad
+- `writeVector` crashed R when used with a SpatVector with no geometries. Reported by Timothy White in issue [#319](https://github.com/rspatial/terra/issues/319)
 
 
 # version 1.3-22
