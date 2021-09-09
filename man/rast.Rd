@@ -28,7 +28,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 
 \usage{
-\S4method{rast}{character}(x, subds=0)
+\S4method{rast}{character}(x, subds=0, opts=NULL)
 
 \S4method{rast}{missing}(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, 
           ymin=-90, ymax=90, crs, extent, resolution, vals, names)
@@ -51,6 +51,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \arguments{
 \item{x}{filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`}
 \item{subds}{positive integer or character to select a subdataset. If zero or "", all subdatasets are returned (if possible)}
+\item{opts}{character. GDAL dataset open options}
 \item{nrows}{positive integer. Number of rows}
 \item{ncols}{positive integer. Number of columns}
 \item{nlyrs}{positive integer. Number of layers}

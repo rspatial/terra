@@ -404,7 +404,7 @@ RCPP_MODULE(spat){
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<size_t>>()
+	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<size_t>>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 		.method("fromFiles", &SpatRaster::fromFiles)

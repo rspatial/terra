@@ -1,8 +1,10 @@
-# version 1.4-1
+# version 1.4-2
 
 ## enhancements
 
 - `freq` has a new argument `usenames`. See issue [#309](https://github.com/rspatial/terra/issues/309) by Bappa Das
+- `rast` has a new argument `opts` that can be used to pass GDAL open options. See issue [#314]
+- `crs<-` now warns if an unsupported datum is used. See issue [#317]
 
 ## bug fixes 
 
