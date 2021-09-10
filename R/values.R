@@ -139,8 +139,13 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 #}
 
 setMethod("inMemory", signature(x="SpatRaster"), 
-	function(x) {
-		x@ptr$inMemory
+	function(x, bylayer=FALSE) {
+		r <- x@ptr$inMemory
+		if (bylayer) {
+			nl <- .nlyrBySource(x)
+			r <- unlist(lapply(1:length(nl), function(i) rep(r[i], nl[i])))
+		}
+		r
 	}
 )
 
