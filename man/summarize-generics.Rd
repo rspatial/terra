@@ -1,4 +1,4 @@
-\name{summarize-generics}
+\name{summarize}
 
 \docType{methods}
 
@@ -11,9 +11,6 @@
 \alias{which.min}
 \alias{which.max}
 
-\alias{Summary,SpatExtent-method}
-\alias{Summary,SpatRaster-method}
-\alias{Summary,SpatVector-method}
 \alias{mean,SpatRaster-method}
 \alias{mean,SpatVector-method}
 \alias{mean,SpatExtent-method}

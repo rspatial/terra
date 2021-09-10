@@ -138,7 +138,14 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 #	x@ptr$hasValues
 #}
 
-.inMemory <- function(x) {
+setMethod("inMemory", signature(x="SpatRaster"), 
+	function(x) {
+		x@ptr$inMemory
+	}
+)
+
+
+..inMemory <- function(x) {
 	x@ptr$inMemory
 }
 

@@ -674,6 +674,10 @@ setMethod("stretch", signature(x="SpatRaster"),
 
 setMethod("summary", signature(object="SpatRaster"), 
 	function(object, size=100000, warn=TRUE, ...)  {
+		if (!hasValues(object)) {
+			warn("summary", "SpatRaster has no values")
+			return(invisible())
+		}
 		if (warn && (ncell(object) > size)) {
 			warn("summary", "used a sample")
 		}

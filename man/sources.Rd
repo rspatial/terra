@@ -6,6 +6,8 @@
 \alias{sources,SpatRaster-method}
 \alias{hasValues}
 \alias{hasValues,SpatRaster-method}
+\alias{inMemory}
+\alias{inMemory,SpatRaster-method}
 
 
 \title{Data sources of a SpatRaster}

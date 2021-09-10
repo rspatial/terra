@@ -165,7 +165,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {
 		if (fnames.size() != nl) {
-			out.setError("the number of filenames should be 1 or equal to the number of layers");
+			out.setError("the number of filenames should either be one, or equal to the number of layers");
 			return out;
 		} else {
 			bool overwrite = opt.get_overwrite();

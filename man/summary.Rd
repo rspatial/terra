@@ -5,11 +5,16 @@
 \alias{summary}
 \alias{summary,SpatRaster-method}
 \alias{summary,SpatVector-method}
+\alias{Summary,SpatExtent-method}
+\alias{Summary,SpatRaster-method}
+\alias{Summary,SpatVector-method}
 
 \title{summary}
 
 \description{
 Compute summary statistics (min, max, mean, and quartiles) for SpatRaster using base \code{\link[base]{summary}} method. A sample is used for very large files. 
+
+For single or other statistics see \code{\link{Summary-methods}}, \code{\link{global}}, and \code{\link{quantile}} 
 }
 
 \usage{
@@ -29,7 +34,7 @@ Compute summary statistics (min, max, mean, and quartiles) for SpatRaster using 
 \value{matrix with (an estimate of) the median, minimum and maximum values, the first and third quartiles, and the number of cells with \code{NA} values}
 
 
-\seealso{ \code{\link{global}, \link{quantile}} }
+\seealso{ \code{\link{Summary-methods}}, \code{\link{global}}, \code{\link{quantile}} }
 
 \examples{
 set.seed(0)

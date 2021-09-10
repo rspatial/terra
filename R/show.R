@@ -172,7 +172,7 @@ setMethod ("show" , "SpatRaster",
 			}
 
 			nsr <- nsrc(object)
-			m <- .inMemory(object)
+			m <- inMemory(object)
 			f <- .filenames(object)
 			#f <- gsub("\\", "/", f, fixed=TRUE)
 			f <- gsub("\"", "", basename(f))
@@ -334,7 +334,7 @@ setMethod ("show" , "SpatRaster",
 
 
 .sources <- function(x) {
-	m <- .inMemory(x)
+	m <- inMemory(x)
 	f <- .filenames(x)
 	f <- gsub("\"", "", basename(f))
 	i <- grep(":", f)
