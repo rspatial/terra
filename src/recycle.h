@@ -106,6 +106,7 @@ template <typename T>
 std::vector<T> seq(T start, T end, T increment) {
 	std::vector<T> out;
 	if (increment <= 0) return out; 
+	if (start >= end) return out;
 	size_t s = floor((end - start) / increment);
 	out.reserve(s);
 	for (size_t i=0; i<=s; i++) {

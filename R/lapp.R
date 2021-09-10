@@ -121,7 +121,9 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	nltot <- sum(nlyr(x)) + nlyr(out)
+	fact <- max(4, 4 * nltot / nlyr(out))
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=fact)
 	for (i in 1:b$n) {
 		v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
 		if (recycle) {

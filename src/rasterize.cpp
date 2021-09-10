@@ -181,7 +181,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 
 	GDALClose(rstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	}
 	return out;
 }
@@ -368,7 +368,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	
 	GDALClose(rstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	} else {
 		std::string fname = opt.get_filename();
 		if ((fname != "") && (!update)) {

@@ -137,7 +137,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0) {
+	function(x, subds=0, opts=NULL) {
 
 		x <- trimws(x)
 		x <- x[x!=""]
@@ -147,11 +147,12 @@ setMethod("rast", signature(x="character"),
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
 		#subds <- subds[1]
+		if (is.null(opts)) opts <- ""[0]
 		if (is.character(subds)) { 
 			#r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
+			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, opts, 0[])
 		} else {
-			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, 0[])
+			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, opts, 0[])
 		}
 		r <- messages(r, "rast")
 		if (r@ptr$getMessage() == "ncdf extent") {

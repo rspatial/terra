@@ -187,8 +187,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
 			return(poDS);
 		}
+		if (nrow() == 0) {
+			setError("no geometries to write");
+			return(poDS);		
+		}
 	}
-
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
     if( poDriver == NULL )  {
         setError( driver + " driver not available");
@@ -324,7 +327,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 // polygons		
 		} else if (wkb == wkbMultiPolygon) {
 			SpatGeom g = getGeom(i);
-			OGRPolygon poGeom;
+			OGRMultiPolygon poGeom;
 			for (size_t j=0; j<g.size(); j++) {
 				OGRLinearRing poRing;
 				SpatPart p = g.getPart(j);
@@ -335,7 +338,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 						poRing.setPoint(k, &pt);
 					}
 				}
-				if (poGeom.addRing(&poRing) != OGRERR_NONE ) {
+				OGRPolygon polyGeom;
+				if (polyGeom.addRing(&poRing) != OGRERR_NONE ) {
 					setError("cannot add ring");
 					return poDS;
 				}
@@ -349,14 +353,17 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 							pt.setY(hole.y[k]);
 							poHole.setPoint(k, &pt);
 						}					
-						if (poGeom.addRing(&poHole) != OGRERR_NONE ) {
+						if (polyGeom.addRing(&poHole) != OGRERR_NONE ) {
 							setError("cannot add hole");
 							return poDS;
 						}
 					}
 				}
+				poGeom.addGeometry( &polyGeom);
 				//closeRings
 			}
+			
+			//OGRMultiPolygon* mGeom = poGeom.toMultiPolygon();	
 			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
 				setError("cannot set geometry");
 				return poDS;

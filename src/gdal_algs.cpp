@@ -615,7 +615,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out.setError("this source is not rotated");
 		return(out);
 	} 
-	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_ops);
 	
 	if( poDataset == NULL )  {
 		setError("cannot read from " + source[0].filename);
@@ -702,9 +702,8 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 			return out;
 		}
 	} else {
-		//std::string filename = tmp.source[0].filename;
-		//rstDS = GDALOpen( filename.c_str(), GA_ReadOnly);
-		rstDS = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+		std::vector<std::string> ops;
+		rstDS = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, ops);
 		
 		if (rstDS == NULL) {
 			out.setError("cannot open dataset from file");
@@ -728,7 +727,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 				return out;
 			}
 		} else {
-			rstMask = openGDAL(mask.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+			rstMask = openGDAL(mask.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, mask.source[0].open_ops);
 
 			//std::string filename = mask.source[0].filename;
 			//rstMask = GDALOpen( filename.c_str(), GA_ReadOnly);
@@ -938,7 +937,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	}
 	GDALClose(hDstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	}
 	return out;
 }
@@ -1006,7 +1005,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 			return out;
 		}
 	} else {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	}
 	GDALClose(hDstDS);
 	return out;

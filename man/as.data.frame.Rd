@@ -11,7 +11,7 @@
 \title{SpatRaster or SpatVector to data.frame}
 
 \description{
-Coerce a SpatRaster or SpatVector into a data.frame or a SpatVector into list
+Coerce a SpatRaster or SpatVector to a data.frame or coerce a SpatVector to a list
 }
 
 \usage{

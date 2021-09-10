@@ -184,7 +184,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 				}
 				fnames[i] = out.source[0].filename;
 			}
-			SpatRaster out(fnames, {-1}, {""}, false, {});
+			SpatRaster out(fnames, {-1}, {""}, false, {}, {});
 			return out;
 		}	
 	} 
@@ -194,6 +194,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		return(out);
 	}
 
+	opt.ncopies = 2;
 	if (!out.writeStart(opt)) { 
 		readStop();
 		return out; 
@@ -300,6 +301,7 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 
 	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
+
 		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
 		#else
 		setError("GDAL is not available");

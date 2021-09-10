@@ -29,7 +29,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 \arguments{
   \item{x}{SpatRaster}
   \item{size}{numeric. The sample size. If \code{x} is a SpatVector, you can also provide a vector of the same length as \code{x} in wich case sampling is done seperately for each geometry}
-  \item{method}{character. Should be "regular" or "random". It can also be "stratified" if \code{x} is a SpatVector}
+  \item{method}{character. Should be "regular" or "random"}
   \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"}}
   \item{na.rm}{logical. If \code{TRUE}, code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
