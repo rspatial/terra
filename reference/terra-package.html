@@ -211,7 +211,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code><a href='math.html'>Math-methods</a></code></td><td><code>abs, sign, sqrt, ceiling, floor, trunc, cummax, cummin, cumprod,</code></td></tr>
 <tr><td></td><td><code>cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh,</code></td></tr>
 <tr><td></td><td><code>exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif</code></td></tr>
-<tr><td><code><a href='summarize-generics.html'>Summary-methods</a></code></td><td><code>mean, max, min, median, sum, range, prod,</code></td></tr>
+<tr><td><code><a href='summarize.html'>Summary-methods</a></code></td><td><code>mean, max, min, median, sum, range, prod,</code></td></tr>
 <tr><td></td><td><code>any, all, stdev, which.min, which.max</code></td></tr>
 </table>
 
@@ -384,7 +384,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code>canProcessInMemory</code></td><td>Test whether a file can be created in memory</td></tr>
 <tr><td><code><a href='read and write.html'>readStart</a></code></td><td>Open file connections for efficient multi-chunk reading</td></tr>
 <tr><td><code><a href='read and write.html'>readStop</a></code></td><td>Close file connections</td></tr>
-<tr><td><code>inMemory</code></td><td>Are the cell values in memory?</td></tr>
+<tr><td><code><a href='sources.html'>inMemory</a></code></td><td>Are the cell values in memory?</td></tr>
 <tr><td><code>fromDisk</code></td><td>Are the cell values read from a file?</td></tr>
 </table>
 
@@ -658,9 +658,9 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td></td><td><code>raster</code> returns a list (for lines or polygons) or a matrix (for points, but without the ID</td></tr>
 <tr><td></td><td>column. You can use <code>list=TRUE</code> to get the results as a list</td></tr>
 <tr><td><code><a href='values.html'>values</a></code></td><td><code>terra</code> always returns a matrix. <code>raster</code> returns a vector for a <code>RasterLayer</code></td></tr>
-<tr><td><code><a href='summarize-generics.html'>Summary-methods</a></code></td><td>With <code>raster</code>, <code><a href='summarize-generics.html'>mean(x, y)</a></code> and <code>mean(stack(x, y)</code> return the same result, a single</td></tr>
+<tr><td><code><a href='summarize.html'>Summary-methods</a></code></td><td>With <code>raster</code>, <code><a href='summarize.html'>mean(x, y)</a></code> and <code>mean(stack(x, y)</code> return the same result, a single</td></tr>
 <tr><td></td><td>layer with the mean of all cell values. This is also what <code>terra</code> returns with</td></tr>
-<tr><td></td><td><code><a href='summarize-generics.html'>mean(c(x, y))</a></code>, but with <code><a href='summarize-generics.html'>mean(x, y)</a></code> the parallel mean is returned -- that is, the</td></tr>
+<tr><td></td><td><code><a href='summarize.html'>mean(c(x, y))</a></code>, but with <code><a href='summarize.html'>mean(x, y)</a></code> the parallel mean is returned -- that is, the</td></tr>
 <tr><td></td><td>computation is done layer-wise, and the number of layers in the output is the same as</td></tr>
 <tr><td></td><td>that of <code>x</code> and <code>y</code> (or the larger of the two if they are not the same). This affects</td></tr>
 <tr><td></td><td>all summary functions (<code>sum</code>, <code>mean</code>, <code>median</code>, <code>which.min</code>, <code>which.max</code>, <code>min</code>, <code>max</code>,</td></tr>
