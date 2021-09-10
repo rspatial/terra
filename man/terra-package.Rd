@@ -251,7 +251,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{sources}} \tab Show the data sources of a SpatRaster \cr
     \code{\link{tmpFiles}} \tab Show or remove temporary files \cr
     \code{\link{canProcessInMemory}} \tab Test whether a file can be created in memory \cr
-    \code{\link{readStart}} \tab Open file connections for efficient multi-chunck reading \cr
+    \code{\link{readStart}} \tab Open file connections for efficient multi-chunk reading \cr
     \code{\link{readStop}} \tab Close file connections \cr
     \code{\link{inMemory}} \tab Are the cell values in memory? \cr
     \code{\link{fromDisk}} \tab Are the cell values read from a file? \cr	
@@ -369,7 +369,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{shift}} \tab change the position geometries by shifting their coordinates in horizontal and/or vertical direction\cr
   \code{\link{spin}}\tab rotate geometries around an origin\cr
   \code{\link{rescale}} \tab shrink (or expand) geometries, for example to make an inset map \cr
-  \code{\link{flip}} \tab flip geometries vertially or horizontally\cr
+  \code{\link{flip}} \tab flip geometries vertically or horizontally\cr
   \code{\link{t}} \tab transpose geometries (switch x and y)\cr
 
 }}
@@ -478,7 +478,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
   \tabular{ll}{
     \code{\link{plot}} \tab x-y scatter plot of the values of (a sample of) the layers of two SpatRaster objects\cr
     \code{\link{hist}} \tab Histogram of SpatRaster values \cr
-    \code{\link{barplot}} \tab Barplot of a SpatRaster \cr
+    \code{\link{barplot}} \tab Bar plot of a SpatRaster \cr
     \code{\link{density}} \tab Density plot of SpatRaster values \cr
     \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
     \code{\link{boxplot}} \tab Box plot of the values of a SpatRaster\cr
