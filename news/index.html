@@ -133,9 +133,11 @@
 <li>
 <code>freq</code> has a new argument <code>usenames</code>. See issue <a href="https://github.com/rspatial/terra/issues/309"><a href='https://github.com/rspatial/terra/issues/309'>#309</a></a> by Bappa Das</li>
 <li>
-<code>rast</code> has a new argument <code>opts</code> that can be used to pass GDAL open options. See issue [<a href='https://github.com/rspatial/terra/issues/314'>#314</a>]</li>
+<code>rast</code> has a new argument <code>opts</code> that can be used to pass GDAL open options. See issue <a href="https://github.com/rspatial/terra/issues/314"><a href='https://github.com/rspatial/terra/issues/314'>#314</a></a>
+</li>
 <li>
-<code>crs&lt;-</code> now warns if an unsupported datum is used. See issue [<a href='https://github.com/rspatial/terra/issues/317'>#317</a>]</li>
+<code>crs&lt;-</code> now warns if an unsupported datum is used. See issue <a href="https://github.com/rspatial/terra/issues/317"><a href='https://github.com/rspatial/terra/issues/317'>#317</a></a>
+</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -144,6 +146,9 @@
 <ul>
 <li>
 <code>plotRGB</code> failed if there were <code>NA</code>s. Issue <a href="https://github.com/rspatial/terra/issues/308"><a href='https://github.com/rspatial/terra/issues/308'>#308</a></a> by Jakub Nowasad</li>
+<li>
+<code>writeVector</code> crashed R when used with a SpatVector with no geometries. Reported by Timothy White in issue <a href="https://github.com/rspatial/terra/issues/319"><a href='https://github.com/rspatial/terra/issues/319'>#319</a></a>
+</li>
 </ul>
 </div>
 </div>
