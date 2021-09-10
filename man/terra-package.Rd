@@ -195,6 +195,7 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
     \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
     \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr	
+    \code{\link{inMemory}} \tab Are the data sources in memory (or on disk)? \cr	
     \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr		
     \code{\link{NAflag}} \tab Set the \code{NA} value (for reading from a file with insufficient metadata) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
