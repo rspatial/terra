@@ -143,7 +143,7 @@ setMethod("inMemory", signature(x="SpatRaster"),
 		r <- x@ptr$inMemory
 		if (bylayer) {
 			nl <- .nlyrBySource(x)
-			r <- unlist(lapply(1:length(nl), function(i) rep(r[i], nl[i])))
+			r <- rep(r, nl)
 		}
 		r
 	}
