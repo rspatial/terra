@@ -16,12 +16,13 @@ setMethod("interpolate", signature(object="SpatRaster"),
 		}
 		nc <- ncol(out)
 		testrow <- round(0.51*nrow(object))
-		xy <- xyFromCell(out, cellFromRowCol(out, testrow, 1):cellFromRowCol(out, testrow, min(nc, 500)))
+		ntest <- min(nc, 500)
+		xy <- xyFromCell(out, cellFromRowCol(out, testrow, 1):cellFromRowCol(out, testrow, ntest))
 		colnames(xy) <- xyNames
 		if (hv) { 
 			readStart(object)
 			on.exit(readStop(object))
-			d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
+			d <- readValues(object, testrow, 1, 1, ntest, TRUE, TRUE)
 			xy <- cbind(xy, d)
 		}
 		r <- .runModel(model, fun, xy, 1, const, (na.rm & hv), index, ...)

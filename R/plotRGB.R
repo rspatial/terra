@@ -8,14 +8,19 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 		if (is.null(value[1]) || is.na(value[1])) {
 			x@ptr$removeRGB()
 		} else {
-			stopifnot(length(value) == 3)
 			stopifnot(all(value %in% 1:nlyr(x)))
-			
-			x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1)
+			if (length(value) == 3) {
+				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, -99)
+			} else if (length(value) == 4) {
+				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1)	
+			} else {
+				error("RGB<-", "value must have length 3 or 4")
+			}
 		}
 		messages(x, "RGB<-")
 	}
 )
+
 
 setMethod("RGB", signature(x="SpatRaster"), 
 	function(x) {
@@ -44,9 +49,9 @@ setMethod("RGB", signature(x="SpatRaster"),
 
 
 setMethod("plotRGB", signature(x="SpatRaster"), 
-function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) { 
+function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) { 
 
-	x <- x[[c(r, g, b)]]
+	x <- x[[c(r, g, b, a)]]
 	
 	if (!is.null(mar)) {
 		mar <- rep_len(mar, 4)
@@ -58,7 +63,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 	if (missing(scale)) {
 		scale <- 255
 		if ( all(.hasMinMax(x)) ) {
-			rng <- minmax(x)
+			rng <- minmax(x)[, 1:3]
 			scale <- max(max(rng[2]), 255)
 		}
 	}
@@ -70,6 +75,13 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
 	RGB <- values(x)
+	RGB <- stats::na.omit(RGB)
+	naind <- as.vector( attr(RGB, "na.action") )
+
+	if (!is.null(a)) {
+		alpha <- RGB[,4] * 255
+		RGB <- RGB[,-4]
+	}
 
 	if (!is.null(zlim)) {
 		if (length(zlim) == 2) {
@@ -96,7 +108,6 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 		}
 	}
 
-	RGB <- stats::na.omit(RGB)
 
 	if (!is.null(stretch)) {
 		stretch = tolower(stretch)
@@ -115,8 +126,6 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 		}
 	}
 
-
-	naind <- as.vector( attr(RGB, "na.action") )
 	if (!is.null(naind)) {
 		bg <- grDevices::col2rgb(colNA)
 		bg <- grDevices::rgb(bg[1], bg[2], bg[3], alpha=bgalpha, maxColorValue=255)
@@ -125,7 +134,7 @@ function(x, r=1, g=2, b=3, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL,
 	} else {
 		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, maxColorValue=scale)
 	}
-
+	
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 
 	requireNamespace("grDevices")
@@ -252,7 +261,8 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 				idx <- value
 			}
 		}
-		stopifnot(length(idx) == 3)
+		n <- length(idx)
+		stopifnot((n == 3) | (n == 4))
 		if ((min(idx) < 1) | (max(idx) > nlyr(x))) {
 			error("rgb2coltab", "invalid value (RGB indices)")	
 		}
@@ -274,8 +284,9 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 				warn("plotRGB", 'invalid stretch value')
 			}
 		}
-		
-		
+
+		if (n == 4) x[[4]] <- x[[4]] * 255
+	
 		if (grays) {
 			opt <- spatOptions(filename, overwrite, ...)
 			x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
@@ -285,9 +296,13 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 		v <- cbind(id=1:ncell(x), values(x))
 		v <- median_cut(stats::na.omit(v))
 		
-		a <- aggregate(v[,3:5], list(v[,1]), median)
-		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
-		m <- merge(v[,1:2], a[, c(1,5)], by=1)
+		a <- aggregate(v[,-c(1:2)], list(v[,1]), median)
+		if (n==3) {
+			a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
+		} else {
+			a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], a[,5], maxColorValue=255)		
+		}
+		m <- merge(v[,1:2], a[, c(1,n+2)], by=1)
 		r <- rast(x, 1)
 		r[m$id] <- m$group - 1
 		coltab(r) <- a$cols

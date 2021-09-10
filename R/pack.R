@@ -19,8 +19,11 @@ setClass("PackedSpatRaster",
 	representation (
 		definition = "character",
 		values = "matrix",
-		attributes = "data.frame"
+		attributes = "list"
 	),
+	prototype (
+		attributes = list()
+	)
 )
 
 
@@ -120,9 +123,11 @@ setMethod("as.character", signature(x="SpatRaster"),
 setMethod("wrap", signature(x="SpatRaster"), 
 	function(x) {
 		r <- methods::new("PackedSpatRaster")
-		r@definition = as.character(x)
-		r@values = values(x)
-		#r@attributes = "data.frame"
+		r@definition <- as.character(x)
+		r@values <- values(x)
+		if (any(is.factor(x))) {
+			r@attributes <- levels(x)
+		} 
 		r
 	}
 )
@@ -132,6 +137,9 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 	function(x) {
 		r <- eval(parse(text=x@definition))
 		values(r) <- x@values
+		if (length(x@attributes) > 0) {
+			levels(r) <- x@attributes
+		}
 		r
 	}
 )

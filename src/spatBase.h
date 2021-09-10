@@ -117,6 +117,7 @@ class SpatOptions {
 		double NAflag = NAN;
 		bool def_verbose = false;
 		bool verbose = false;
+		//bool append = false;
 		int statistics = 1;
 		bool datatype_set = false;
 		//bool ncdfcopy = false;
@@ -162,6 +163,7 @@ class SpatOptions {
 		void set_datatype(std::string d);
 		//void set_bandorder(std::string d);
 		void set_overwrite(bool b);
+		//void set_append(bool b);
 		void set_progress(unsigned p);
 		std::string get_filename();
 		std::vector<std::string> get_filenames();
@@ -174,6 +176,7 @@ class SpatOptions {
 		double get_NAflag();
 		bool has_NAflag(double &flag);
 		bool get_overwrite();
+		//bool get_append();
 		unsigned get_progress();
 		bool show_progress(unsigned n);
 		bool progressbar=true;

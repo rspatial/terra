@@ -171,6 +171,7 @@ RCPP_MODULE(spat){
 		//.property("ncdfcopy", &SpatOptions::get_ncdfcopy, &SpatOptions::set_ncdfcopy )
 		.property("statistics", &SpatOptions::get_statistics, &SpatOptions::set_statistics )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
+		//.property("append", &SpatOptions::get_append, &SpatOptions::set_append )
 		.field("datatype_set", &SpatOptions::datatype_set)
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 		.property("ncopies", &SpatOptions::get_ncopies, &SpatOptions::set_ncopies, "ncopies")
@@ -403,7 +404,7 @@ RCPP_MODULE(spat){
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<size_t>>()
+	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<size_t>>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 		.method("fromFiles", &SpatRaster::fromFiles)

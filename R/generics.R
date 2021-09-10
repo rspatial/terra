@@ -367,11 +367,33 @@ setMethod("flip", signature(x="SpatRaster"),
 
 
 setMethod("freq", signature(x="SpatRaster"), 
-	function(x, digits=0, value=NULL, bylayer=TRUE) {
+	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE) {
 
 		opt <- spatOptions()
-
+		if (!bylayer) usenames <- FALSE
+		
 		if (!is.null(value)) {
+			value <- unique(value)
+			if (length(value) > 1) {
+				error("freq", "value must have a length of one")
+			}
+			if (is.character(value)) {
+				value <- value[value != ""]
+				if (length(value) == 0) {
+					error("freq", "no valid value")
+				}
+				ff <- is.factor(x)
+				if (!any(ff)) {
+					error("freq", "a character value is only meaningful for categorical rasters")				
+				}
+				f <- freq(x[[ff]])
+				if (usenames) {
+					f$layer <- names(x)[f$layer]
+				}
+				f <- f[f$label == value,]
+				return(f)
+			}
+		
 			if (is.na(digits)) {
 				v <- x@ptr$count(value, bylayer[1], FALSE, 0, opt)
 			} else {
@@ -414,6 +436,10 @@ setMethod("freq", signature(x="SpatRaster"),
 					v$label <- g[v$value + 1]
 				}
 			}
+		}
+		if (usenames) {
+			v <- data.frame(v)
+			v$layer <- names(x)[v$layer]
 		}
 		v
 	}
@@ -681,10 +707,10 @@ setMethod("t", signature(x="SpatVector"),
 
 setMethod("terrain", signature(x="SpatRaster"), 
 	function(x, v="slope", neighbors=8, unit="degrees", filename="", ...) { 
-		v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"))
+		#v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"), several.ok=TRUE)
 		unit <- match.arg(unit, c("degrees", "radians"))
 		opt <- spatOptions(filename, ...)
-		seed <- ifelse("flowdirection" %in% v, .seed(), 0)
+		seed <- ifelse("flowdir" %in% v, .seed(), 0)
 		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", seed, opt)
 		messages(x, "terrain")
 	}

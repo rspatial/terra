@@ -52,8 +52,8 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
  \item{col}{positive integer. Column number to start from, should be between 1 and ncol(x)}
  \item{ncols}{positive integer. How many columns? Default is the number of columns left after the start column}
 
- \item{mat}{logical. If \code{TRUE}, values are returned as a matrix instead of as a vector, except when dataframe is \code{TRUE}}
- \item{dataframe}{logical. If \code{TRUE}, values are returned as a data.frame instead of as a vector (also if matrix is \code{TRUE})}
+ \item{mat}{logical. If \code{TRUE}, values are returned as a numeric matrix instead of as a vector, except when dataframe is \code{TRUE}. If any of the layers of \code{x} is a factor, the level index is returned, not the label. Use \code{dataframe=TRUE} to get the labels}
+ \item{dataframe}{logical. If \code{TRUE}, values are returned as a \code{data.frame} instead of as a vector (also if matrix is \code{TRUE})}
   
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{n}{poistive integer indicating how many copies the data may be in memory at any point in time. This is used to determine how many blocks (large) datasets need to be read}
