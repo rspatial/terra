@@ -17,6 +17,7 @@
 \alias{[,SpatRaster,missing,numeric-method}
 \alias{[,SpatRaster,numeric,numeric-method}
 \alias{[,SpatRaster,SpatRaster,missing-method}
+\alias{[,SpatRaster,SpatExtent,missing-method}
 
 
 \title{Extract values from a SpatRaster}

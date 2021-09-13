@@ -337,11 +337,13 @@ extract_cell <- function(x, cells, drop=FALSE, factors=TRUE) {
 
 setMethod("[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=FALSE) {
-	if (nargs() > 2) {
+	add <- any(grepl("drop", names(match.call())))
+	if (nargs() > (2+add)) {
 		i <- cellFromRowColCombine(x, i, 1:ncol(x))
 	} 
 	extract_cell(x, i, drop)
 })
+
 
 setMethod("[", c("SpatRaster", "missing", "numeric"),
 function(x, i, j, ... ,drop=FALSE) {
@@ -358,9 +360,20 @@ function(x, i, j, ..., drop=FALSE) {
 
 
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
-function(x, i, j, ..., drop=FALSE) {
-	x[which(as.logical(values(i))), drop=drop]
+function(x, i, j, ..., drop=TRUE) {
+	x[ext(i), drop=drop]
 })
+
+setMethod("[", c("SpatRaster", "SpatExtent", "missing"),
+function(x, i, j, ..., drop=FALSE) {
+	x <- crop(x, i)
+	if (drop) {
+		values(x)
+	} else {
+		x
+	}
+})
+
 
 
 setMethod("extract", c("SpatVector", "SpatVector"),
