@@ -188,6 +188,7 @@ setMethod("nearest", signature(x="SpatVector"),
 			values(to) <- data.frame(id=1:nrow(to))
 			values(y) <- data.frame(to_id=1:nrow(y))
 			to_int <- as.data.frame(intersect(to, y))
+			to_int <- to_int[order(to_int[["id"]]), ]
 			if (nrow(to_int) > nrow(to)) {
 				to_int <- aggregate(to_int[, "to_id",drop=FALSE], to_int[,"id",drop=FALSE], function(x)x[1]) 
 			} 
