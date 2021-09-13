@@ -213,7 +213,7 @@ setMethod("rast", signature(x="SpatRaster"),
 			if (length(names) == nlyr(x)) names(x) <- names
 		}
 		if (!missing(vals)) {
-			if (!is.null(vals)) values(x) <- vals
+			values(x) <- vals
 		}
 		x
 	}

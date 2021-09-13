@@ -6,7 +6,7 @@
 
 .scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
 
-	compareGeom(x, y, lyrs=TRUE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
+	compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
 	nlx <- nlyr(x)
 	nly <- nlyr(y)
 

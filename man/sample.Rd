@@ -18,8 +18,9 @@ In order to assure regularity when requesting a regular sample, the number of ce
 }
 
 \usage{
-\S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE,
-	as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
+\S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE,
+	as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, 
+	cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
 
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
