@@ -367,7 +367,6 @@ setMethod("[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
 
 	add <- any(grepl("drop", names(match.call())))
-	print(nargs())
 	if (!drop) {
 		if (nargs() == 3) {
 			rc <- rowColFromCell(x, i)
