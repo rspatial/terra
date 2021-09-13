@@ -31,7 +31,7 @@ A vector of two numbers (x and y coordinates)
 \examples{
 r <- rast(xmin=-0.5, xmax = 9.5, ncols=10)
 origin(r)
-orgin(r) <- c(0,0)
+origin(r) <- c(0,0)
 r
 }
 
