@@ -175,40 +175,47 @@ setMethod("rast", signature(x="character"),
 
 multi <- function(x, subds=0, xyz=c(1,2,3)) {
 
-		x <- trimws(x)
-		x <- x[x!=""]
-		if (length(x) == 0) {
-			error("rast,character", "provide a valid filename")
-		}
-		r <- methods::new("SpatRaster")
-		f <- .fullFilename(x)
-		#subds <- subds[1]
-		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
-		} else {
-			r@ptr <- SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
-		}
-		if (r@ptr$getMessage() == "ncdf extent") {
-			test <- try(r <- .ncdf_extent(r), silent=TRUE)
-			if (inherits(test, "try-error")) {
-				warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
-			}
-		}
-		r <- messages(r, "rast")
-
-		if (crs(r) == "") {
-			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				crs(r) <- "OGC:CRS84"
-			}
-		}
-		r
+	x <- trimws(x)
+	x <- x[x!=""]
+	if (length(x) == 0) {
+		error("rast,character", "provide a valid filename")
 	}
+	r <- methods::new("SpatRaster")
+	f <- .fullFilename(x)
+	#subds <- subds[1]
+	if (is.character(subds)) { 
+		r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
+	} else {
+		r@ptr <- SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
+	}
+	if (r@ptr$getMessage() == "ncdf extent") {
+		test <- try(r <- .ncdf_extent(r), silent=TRUE)
+		if (inherits(test, "try-error")) {
+			warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+		}
+	}
+	r <- messages(r, "rast")
+
+	if (crs(r) == "") {
+		if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
+			crs(r) <- "OGC:CRS84"
+		}
+	}
+	r
+}
 
 
 setMethod("rast", signature(x="SpatRaster"),
-	function(x, nlyrs=nlyr(x), time=FALSE, props=FALSE) {
+	function(x, nlyrs=nlyr(x), names, vals, time=FALSE, props=FALSE) {
 		x@ptr <- x@ptr$geometry(nlyrs, props, time)
-		messages(x, "rast")
+		x <- messages(x, "rast")
+		if (!missing(names)) {
+			if (length(names) == nlyr(x)) names(x) <- names
+		}
+		if (!missing(vals)) {
+			if (!is.null(vals)) values(x) <- vals
+		}
+		x
 	}
 )
 
