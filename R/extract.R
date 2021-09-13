@@ -364,7 +364,7 @@ extract_cell <- function(x, cells, drop=FALSE, factors=TRUE) {
 
 
 setMethod("[", c("SpatRaster", "numeric", "missing"),
-function(x, i, j, ... ,drop=TRUE) {
+function(x, i, j, ... , drop=TRUE) {
 
 	add <- any(grepl("drop", names(match.call())))
 	if (!drop) {
@@ -396,7 +396,7 @@ function(x, i, j, ... , drop=TRUE) {
 
 
 setMethod("[", c("SpatRaster", "numeric", "numeric"),
-function(x, i, j, ..., drop=FALSE) {
+function(x, i, j, ..., drop=TRUE) {
 	if (!drop) {
 		e <- ext_from_rc(x, min(i), max(i), min(j), max(j))
 		return(crop(x, e))
