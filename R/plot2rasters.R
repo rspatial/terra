@@ -59,7 +59,7 @@
 	x <- as.matrix(spatSample(c(x,y), size=maxcell, method="regular", as.raster=FALSE))
 	# y <- as.matrix(spatSample(y, size=maxcell, method="regular", as.raster=FALSE))
 
-	y <- x[,c((nlx+1):ncol(x)]
+	y <- x[,c((nlx+1):ncol(x))]
 	x <- x[,1:nlx]
 	
 
