@@ -683,7 +683,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true);
 
-	if (!out.compare_geom(x, false, true, true, true, true, false)) {
+	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}
 
@@ -754,7 +754,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 	unsigned nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl, true);
 
-	if (!out.compare_geom(x, false, true, true, true, true, false)) {
+	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
 	}
 
@@ -1087,7 +1087,7 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 		recycleby = 0;
 	}
 	SpatRaster out = geometry( z * nrecs );
-	if (!out.compare_geom(x, false, false)) {
+	if (!out.compare_geom(x, false, false, opt.get_tolerance())) {
 		return(out);
 	}
 	if (!hasValues()) return(out);
@@ -1167,7 +1167,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 	int start = sval ? first-1 : -99;
 	int end = eval ? last-1 : -999;
 
-	if (!out.compare_geom(x, false, false)) {
+	if (!out.compare_geom(x, false, false, opt.get_tolerance())) {
 		return(out);
 	}
 	if (!x.hasValues()) {
@@ -1253,7 +1253,7 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 	int start = sval ? first-1 : 0;
 	int end = eval ? last-1 : 0;
 
-	if (!compare_geom(x, false, false)) {
+	if (!compare_geom(x, false, false, 0.1)) {
 		return(r);
 	}
 	if (!hasValues()) {
@@ -1818,7 +1818,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 	SpatRaster out = geometry(nl, true);
 
 	bool rmatch = false;
-	if (out.compare_geom(x, false, false, true)) {
+	if (out.compare_geom(x, false, false, opt.get_tolerance(), true)) {
 		rmatch = true;
 	} else {
 	//	if (!shared_basegeom(x, 0.1, true)) {
@@ -2266,7 +2266,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 	std::vector<bool> resample(n, false);
 	for (size_t i=1; i<n; i++) {
 									//  lyrs, crs, warncrs, ext, rowcol, res
-		if (!ds[0].compare_geom(ds[i], false, false, false, false, false, true)) {
+		if (!ds[0].compare_geom(ds[i], false, false, opt.get_tolerance(), false, false, false, true)) {
 			out.setError(ds[0].msg.error);
 			return(out);
 		}		
@@ -2543,7 +2543,7 @@ SpatDataFrame SpatRaster::global_weighted_mean(SpatRaster &weights, std::string 
 		out.setError("The weights raster must have 1 layer");
 		return(out);
 	}
-	if (!compare_geom(weights, false, false, true)) {
+	if (!compare_geom(weights, false, false, opt.get_tolerance(), true)) {
 		out.setError( msg.getError() );
 		return(out);
 	}

@@ -103,7 +103,8 @@ class SpatOptions {
 		std::string tempdir = "";
 		bool todisk = false;
 		double memfrac = 0.6;
-
+		double tolerance = 0.1;
+		
 	public:
 		unsigned ncopies = 4;
 		unsigned minrows = 1;
@@ -141,6 +142,8 @@ class SpatOptions {
 		void set_memfrac(double d);
 		std::string get_tempdir();
 		void set_tempdir(std::string d);
+		double get_tolerance();
+		void set_tolerance(double d);
 
 		std::string get_def_datatype();
 		std::string get_def_bandorder();

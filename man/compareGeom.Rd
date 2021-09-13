@@ -10,9 +10,8 @@ Evaluate whether two SpatRaster objects have the same extent, number of rows and
 }
 
 \usage{
-\S4method{compareGeom}{SpatRaster,SpatRaster}(x, y, ..., lyrs=FALSE, 
-          crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, 
-		  stopOnError=TRUE)
+\S4method{compareGeom}{SpatRaster,SpatRaster}(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE,
+	rowcol=TRUE, res=FALSE, stopOnError=TRUE)
 }
 
 \arguments{

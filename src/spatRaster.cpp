@@ -870,7 +870,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (!out.compare_geom(x, false, true)) {
+	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
 		return(out);
 	}
 	SpatOptions fopt(opt);

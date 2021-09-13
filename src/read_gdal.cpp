@@ -1232,7 +1232,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 //		printf( "%s\n", sd[i].c_str() );
 		bool success = out.constructFromFile(sd[i], {-1}, {""}, {});
 		if (success) {
-			if (out.compare_geom(*this, false, false)) {
+			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
 				addSource(out);
 				srcnl.push_back(out.nlyr());

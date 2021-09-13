@@ -7,6 +7,7 @@
 - `rast,SpatRaster-method` now takes arguments `names` and `vals`. See issue [#323](https://github.com/rspatial/terra/issues/323) by Dongdong Kong
 - `crs<-` now warns if an unsupported datum is used. See issue [#317](https://github.com/rspatial/terra/issues/317)
 - `spatSample` now returns factor values if a SpatRaster layer is.factor except when using `as.df=FALSE`
+- new method `origin<-` to set the origin of a SpatRaster. See issue [#326](https://github.com/rspatial/terra/issues/326) by Jakub Nowosad
 
 
 ## bug fixes 

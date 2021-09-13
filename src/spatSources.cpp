@@ -50,7 +50,8 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 
 	SpatRaster out = geometry();
 
-	if (!out.compare_geom(x, false, false)) {
+						// opt.get_tolerance()
+	if (!out.compare_geom(x, false, false, 0.1)) {
 		return out;
 	}
 
@@ -75,7 +76,7 @@ SpatRaster SpatRaster::combineSources(SpatRaster x) {
 void SpatRaster::combine(SpatRaster x) {
 
 
-	if (!compare_geom(x, false, false)) {
+	if (!compare_geom(x, false, false, 0.1)) {
 		return;
 	}
 
@@ -92,7 +93,7 @@ void SpatRaster::combine(SpatRaster x) {
 
 void SpatRaster::addSource(SpatRaster x) {
 
-	if (compare_geom(x, false, false)) {
+	if (compare_geom(x, false, false, 0.1	)) {
         if (!hasValues()) {  //or if n src == 0?
             source = x.source;
         } else {

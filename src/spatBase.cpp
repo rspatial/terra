@@ -157,10 +157,17 @@ void SpatOptions::set_memfrac(double d) {
 	// allowing very high values for testing purposes
 	if ((d >= 0.1) && (d <= 100)) { 
 		memfrac = d;
-		return;
 	} 
-	//setError;
 }
+
+double SpatOptions::get_tolerance() { return tolerance; }
+
+void SpatOptions::set_tolerance(double d) {
+	if (d > 0) { 
+		tolerance = d;
+	} 
+}
+
 
 bool SpatOptions::get_todisk() { return todisk; }
 void SpatOptions::set_todisk(bool b) { todisk = b; }
@@ -388,13 +395,14 @@ std::vector<double> SpatRaster::origin() {
 
 
 
-bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
+bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
 
+	tol = tol < 0 ? 0 : tol;
 
 	if (ext) {
 		SpatExtent extent = getExtent();
 		double res = std::max(xres(), yres());
-		if (extent.compare(x.getExtent(), "!=", 0.1 * res)) {
+		if (extent.compare(x.getExtent(), "!=", tol * res)) {
 			setError("extents do not match");
 			return false;
 		}

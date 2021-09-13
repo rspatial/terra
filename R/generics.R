@@ -39,6 +39,37 @@ setMethod("origin", signature(x="SpatRaster"),
 )
 
 
+setMethod("origin<-", signature("SpatRaster"), 
+	function(x, value) {
+		value <- rep(value, length.out=2)
+		dif <- value - origin(x)
+		res <- res(x)
+		dif[1] <- dif[1] %% res[1]
+		dif[2] <- dif[2] %% res[2]
+		for (i in 1:2) {
+			if (dif[i] < 0) {
+				if ((dif[i] + res[i]) < abs(dif[i])) {
+					dif[i] <- dif[i] + res[i]
+				}
+			} else {
+				if (abs(dif[i] - res[i]) < dif[i]) {
+					dif[i] <- dif[i] - res[i]
+				}
+			}
+		}
+		e <- as.vector(ext(x))
+		e["xmin"] <- e["xmin"] + dif[1]
+		e["xmax"] <- e["xmax"] + dif[1]		
+		e["ymin"] <- e["ymin"] + dif[2]
+		e["ymax"] <- e["ymax"] + dif[2]		
+		ext(x) <- e
+		return(x)
+	}
+)
+
+
+
+
 setMethod("align", signature(x="SpatExtent", y="SpatRaster"), 
 	function(x, y, snap="near") {
 		x@ptr <- y@ptr$align(x@ptr, tolower(snap))

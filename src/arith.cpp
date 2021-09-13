@@ -166,7 +166,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
 
-	if (!out.compare_geom(x, false, true)) {
+	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
 		return(out);
 	}
 
@@ -743,7 +743,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
 
-	if (!out.compare_geom(x, true, false)) {
+	if (!out.compare_geom(x, true, false, opt.get_tolerance())) {
 		return(out);
 	}
 

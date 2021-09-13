@@ -10,7 +10,7 @@
 }
  
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies") #, "append") 
+	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance") #, "append") 
 }
 
  
@@ -102,7 +102,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 #}
 
 .showOptions <- function(opt) {
-	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose") 
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance") 
 	for (n in nms) {
 		v <- eval(parse(text=paste0("opt$", n)))
 		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))
