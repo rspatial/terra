@@ -10,6 +10,33 @@
 }
 
 
+ext_from_rc <- function(x, r1, r2, c1, c2){ 
+	e <- as.vector(ext(x))
+	r <- res(x)
+	c1 <- min(max(c1, 1), ncol(x))
+	c2 <- min(max(c2, 1), ncol(x))
+	if (c1 > c2) {
+		tmp <- c1
+		c1 <- c2
+		c2 <- tmp
+	}
+	r1 <- min(max(r1, 1), nrow(x))
+	r2 <- min(max(r2, 1), nrow(x))
+	if (r1 > r2) {
+		tmp <- r1
+		r1 <- r2
+		r2 <- tmp
+	}
+		
+	xn <- xFromCol(x, c1) - 0.5 * r[1]
+	xx <- xFromCol(x, c2) + 0.5 * r[1]
+	yx <- yFromRow(x, r1) + 0.5 * r[2]
+	yn <- yFromRow(x, r2) - 0.5 * r[2]
+	ext(c(sort(c(xn, xx))), sort(c(yn, yx)))
+}
+
+
+
 .makeDataFrame <- function(x, v, factors=TRUE) {
 	v <- data.frame(v, check.names = FALSE)
 	if (factors) {
@@ -335,27 +362,48 @@ extract_cell <- function(x, cells, drop=FALSE, factors=TRUE) {
 	.makeDataFrame(x, e, factors)[,,drop]
 }
 
+
 setMethod("[", c("SpatRaster", "numeric", "missing"),
-function(x, i, j, ... ,drop=FALSE) {
+function(x, i, j, ... ,drop=TRUE) {
+
 	add <- any(grepl("drop", names(match.call())))
+	print(nargs())
+	if (!drop) {
+		if (nargs() == 3) {
+			rc <- rowColFromCell(x, i)
+			e <- ext_from_rc(x, min(rc[,1]), max(rc[,1]), min(rc[,2]), max(rc[,2]))
+		} else {
+			e <- ext_from_rc(x, min(i), max(i), 1, ncol(x))
+		}
+		return(crop(x, e))
+	}
 	if (nargs() > (2+add)) {
 		i <- cellFromRowColCombine(x, i, 1:ncol(x))
 	} 
-	extract_cell(x, i, drop)
+	extract_cell(x, i, drop=FALSE)
 })
 
 
 setMethod("[", c("SpatRaster", "missing", "numeric"),
-function(x, i, j, ... ,drop=FALSE) {
+function(x, i, j, ... , drop=TRUE) {
+	if (!drop) {
+		e <- ext_from_rc(x, 1, nrow(x), min(j), max(j))
+		return(crop(x, e))
+	}
+
 	i <- cellFromRowColCombine(x, 1:nrow(x), j)
-	extract_cell(x, i, drop)
+	extract_cell(x, i, drop=FALSE)
 })
 
 
 setMethod("[", c("SpatRaster", "numeric", "numeric"),
 function(x, i, j, ..., drop=FALSE) {
+	if (!drop) {
+		e <- ext_from_rc(x, min(i), max(i), min(j), max(j))
+		return(crop(x, e))
+	}
 	i <- cellFromRowColCombine(x, i, j)
-	extract_cell(x, i, drop)
+	extract_cell(x, i, drop=FALSE)
 })
 
 
