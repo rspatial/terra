@@ -682,14 +682,6 @@ setMethod("summary", signature(object="SpatRaster"),
 			warn("summary", "used a sample")
 		}
 		s <- spatSample(object, size, method="regular")
-		ff <- is.factor(object)
-		if (any(ff)) {
-			s  <- data.frame(s)
-			lv <- levels(object)
-			for (i in which(ff)) {
-				s[[i]] <- factor(lv[[i]][s[[i]]+1], levels=lv[[i]])
-			}
-		}		
 		summary(s, ...)
 	}
 )

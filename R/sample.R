@@ -83,8 +83,22 @@
 }
 
 
+set_factors <- function(x, ff, lv, asdf) {
+	if (any(ff)) {
+		x <- data.frame(x)
+		for (i in which(ff)) {
+			x[[i]] <- factor(lv[[i]][x[[i]]+1], levels=lv[[i]])
+		}
+	} else if (asdf) {
+		x <- data.frame(x)
+	}
+	x
+}
+
+
+
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
 		size <- round(size)
 		if (size < 1) {
 			error("spatSample", "sample size must be a positive integer")
@@ -92,6 +106,11 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		#if ((size > ncell(x)) & (!replace)) {
 			#error("spatSample", "sample size is larger than ncell(x) and replace=FALSE")
 		#}
+
+		if (!as.raster) {
+			ff <- is.factor(x)
+			lv <- levels(x)
+		}
 		
 		if (cells || xy || as.points) {
 			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
@@ -112,6 +131,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			if (values && hasValues(x)) {
 				e <- extract(x, cnrs)
+				e <- set_factors(e, ff, lv, as.df)
 				if (is.null(out)) {
 					out <- e				
 				} else {
@@ -153,6 +173,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					v <- do.call(cbind, v)
 					colnames(v) <- names(x)
 				}
+				v <- set_factors(v, ff, lv, as.df)
 				return(v)
 			}
 		} else { # random
@@ -175,6 +196,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 						out <- values(x)
 						out <- out[sample(nrow(out), size, replace=replace), ,drop=FALSE]
 					}
+					out <- set_factors(out, ff, lv, as.df)
 					return(out)
 				}
 

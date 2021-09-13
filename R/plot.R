@@ -265,20 +265,22 @@ setMethod("barplot", "SpatRaster",
 		if (missing(col)) {
 			col=grDevices::rainbow
 		}
-		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE)
-		adj <- length(x) / ncell(height)
+		height <- height[[1]]
+		f <- is.factor(height)
+		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=f)
+		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=FALSE)
+		adj <- nrow(x) / ncell(height)
 		if (adj < 1) {
 			warn("barplot", "a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
 		}
-
-		if (!is.null(digits)) {
-			x <- round(x, digits)
+		if (!f) {
+			if (!is.null(digits)) {
+				x <- round(x, digits)
+			}
+			if (!is.null(breaks)) {
+				x <- cut(x, breaks)
+			}
 		}
-
-		if (!is.null(breaks)) {
-			x <- cut(x, breaks)
-		}
-
 		x <- table(x) / adj
 		if (is.function(col)) {
 			col <- col(length(x))
