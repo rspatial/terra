@@ -337,7 +337,7 @@ setAs("SpatRaster", "Raster",
 				r <- raster::raster(ncols=ncol(from), nrows=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
 				if (hasValues(from)) {
-					values(r) <- values(from)
+					raster::values(r) <- values(from)
 				}
 			} else {
 				r <- raster::raster(s$source)
@@ -358,7 +358,7 @@ setAs("SpatRaster", "Raster",
 				r <- list()
 				for (i in 1:nl) {
 					if (s$source[i] == "") {
-						r[[i]] <- setValues(x, values(from[[i]]))
+						r[[i]] <- raster::setValues(x, values(from[[i]]))
 					} else {
 						r[[i]] <- raster::raster(s$source[i])
 					}
