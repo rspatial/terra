@@ -589,7 +589,7 @@ setAs("SpatVector", "Spatial",
 
 setAs("Spatial", "SpatVector", 
 	function(from) {
-		g <- geom(from, df=TRUE)
+		g <- raster::geom(from, df=TRUE)
 		colnames(g)[1] <- "id"
 		if (inherits(from, "SpatialPolygons")) {
 			vtype <- "polygons"
@@ -606,9 +606,9 @@ setAs("Spatial", "SpatVector",
 			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3,drop=FALSE])
 		}
 		if (methods::.hasSlot(from, "data")) {
-			v <- vect(g, vtype, from@data, crs(from))
+			v <- vect(g, vtype, from@data, raster::crs(from))
 		} else {
-			v <- vect(g, vtype, crs=crs(from))
+			v <- vect(g, vtype, crs=raster::crs(from))
 		}
 		return(v)
 	}
