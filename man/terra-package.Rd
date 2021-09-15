@@ -236,7 +236,6 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \subsection{Advanced}{
   \tabular{ll}{
-   \code{\link{blockSize}} \tab Get suggested block size for reading and writing \cr
    \code{\link{writeStart}} \tab Open a file for writing \cr
    \code{\link{writeValues}} \tab Write some values  \cr
    \code{\link{writeStop}} \tab Close the file after writing \cr
@@ -251,11 +250,10 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{terraOptions}} \tab Show, set, or get session options, mostly to control memory use and to set write options\cr
     \code{\link{sources}} \tab Show the data sources of a SpatRaster \cr
     \code{\link{tmpFiles}} \tab Show or remove temporary files \cr
-    \code{\link{canProcessInMemory}} \tab Test whether a file can be created in memory \cr
+    \code{\link{mem_info}} \tab memory needs and availability \cr
     \code{\link{readStart}} \tab Open file connections for efficient multi-chunk reading \cr
     \code{\link{readStop}} \tab Close file connections \cr
     \code{\link{inMemory}} \tab Are the cell values in memory? \cr
-    \code{\link{fromDisk}} \tab Are the cell values read from a file? \cr	
 }
 }
 

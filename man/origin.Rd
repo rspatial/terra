@@ -14,7 +14,8 @@ Get or set the coordinates of the point of origin of a SpatRaster. This is the p
 
 \usage{
 \S4method{origin}{SpatRaster}(x)
-\S4method{origin}{SpatRaster,numeric}(x)<-value
+
+\S4method{origin}{SpatRaster}(x)<-value
 }
 
 \arguments{

@@ -22,6 +22,7 @@
 \alias{ext,Raster-method}
 \alias{ext,Extent-method}
 \alias{ext,sf-method}
+\alias{bbox}
 \alias{bbox,SpatRaster-method}
 \alias{bbox,SpatVector-method}
 

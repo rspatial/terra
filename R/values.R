@@ -71,7 +71,7 @@ setMethod("focalValues", signature("SpatRaster"),
 )
 
 
-setMethod("setValues", signature("SpatRaster", "ANY"), 
+setMethod("setValues", signature("SpatRaster"), 
 	function(x, values, time=TRUE, props=FALSE) {
 
 		if (is.matrix(values)) { 
@@ -274,7 +274,7 @@ setMethod("values<-", signature("SpatVector", "NULL"),
 	}
 )
 
-setMethod("setValues", signature("SpatVector", "ANY"), 
+setMethod("setValues", signature("SpatVector"), 
 	function(x, values) {
 		x@ptr <- x@ptr$deepcopy()
 		`values<-`(x, values)

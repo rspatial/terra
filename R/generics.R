@@ -279,6 +279,20 @@ setMethod("clamp", signature(x="SpatRaster"),
 )
 
 
+setMethod("clamp", signature(x="numeric"), 
+function(x, lower=-Inf, upper=Inf, values=TRUE, ...) {
+	stopifnot(lower <= upper)
+	if (values) {
+		x[x < lower] <- lower
+		x[x > upper] <- upper
+	} else {
+		x[x < lower] <- NA
+		x[x > upper] <- NA	
+	}
+	x
+}
+)
+
 setMethod("classify", signature(x="SpatRaster"), 
 function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", ...) {
 

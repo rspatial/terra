@@ -2,6 +2,7 @@
 
 \alias{clamp}
 \alias{clamp,SpatRaster-method}
+\alias{clamp,numeric-method}
 
 \title{Clamp values}
 
@@ -11,6 +12,8 @@ Clamp values to a minimum and maximum value. That is, all values below a lower t
 
 \usage{
 \S4method{clamp}{SpatRaster}(x, lower=-Inf, upper=Inf, values=TRUE, filename="", ...)
+
+\S4method{clamp}{numeric}(x, lower=-Inf, upper=Inf, values=TRUE, ...)
 }
 
 \arguments{

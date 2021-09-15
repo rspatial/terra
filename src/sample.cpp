@@ -122,12 +122,52 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 	return out;
 }
 
+
+SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
+
+	SpatRaster out = geometry(nlyr(), true);
+	if ((nr == 0) || (nc ==0)) {
+		out.setError("number of rows and columns must be > 0");
+	}
+	
+	nr = std::min(nr, nrow());
+	nc = std::min(nc, ncol());
+	if ((nc == ncol()) && (nr == nrow())) {
+		return( *this );
+	}
+	out.source[0].nrow = nr;
+	out.source[0].ncol = nc;
+
+	if (!source[0].hasValues) return (out);
+
+	std::vector<double> v;
+	for (size_t src=0; src<nsrc(); src++) {
+		if (source[src].memory) {
+			v = readSample(src, nr, nc);
+		//} else if (source[src].driver == "raster") {
+		//	v = readSampleBinary(src, nr, nc);
+		} else {
+		    #ifdef useGDAL
+			v = readGDALsample(src, nr, nc);
+			#endif
+		}
+		if (hasError()) return out;
+		out.source[0].values.insert(out.source[0].values.end(), v.begin(), v.end());
+	}
+	out.source[0].memory = true;
+	out.source[0].hasValues = true;
+	out.source[0].setRange();
+
+	return out;
+}
+
+
 std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) {
 
 	std::vector<std::vector<double>> out;
 	if (!source[0].hasValues) return (out);
 
-	unsigned nsize;
+	size_t nsize;
 	size_t nr = nrow();
 	size_t nc = ncol();
 	if (size < ncell()) {
@@ -167,6 +207,51 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 	}
 	return out;
 }
+
+
+std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_t nc) {
+
+	std::vector<std::vector<double>> out;
+	if (!source[0].hasValues) return (out);
+
+	if ((nr == 0) || (nc ==0)) {
+		return(out);
+	}
+	
+	nr = std::min(nr, nrow());
+	nc = std::min(nc, ncol());
+
+	size_t nsize = nc * nr;
+	std::vector<double> v;
+	if ((nc == ncol()) && (nr == nrow())) {
+		v = getValues() ;
+		if (hasError()) return out;
+		for (size_t i=0; i<nlyr(); i++) {
+			size_t offset = i * nsize;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
+			out.push_back(vv);
+		}
+		return out;
+	}
+
+	for (size_t src=0; src<nsrc(); src++) {
+		if (source[src].memory) {
+			v = readSample(src, nr, nc);
+		} else {
+		    #ifdef useGDAL
+			v = readGDALsample(src, nr, nc);
+			#endif
+		}
+		if (hasError()) return out;
+		for (size_t i=0; i<source[src].nlyr; i++) {
+			size_t offset = i * nsize;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
+			out.push_back(vv);
+		}
+	}
+	return out;
+}
+
 
 
 std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){

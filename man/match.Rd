@@ -33,7 +33,7 @@ x \%in\% table
 SpatRaster
 }
 
-\seealso{ \code{\link{calc}, \link[base]{match}} }
+\seealso{ \code{\link{app}, \link[base]{match}} }
 
 
 

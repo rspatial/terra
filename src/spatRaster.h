@@ -632,8 +632,11 @@ class SpatRaster {
 
 		std::vector<size_t> sampleCells(unsigned size, std::string method, bool replace, unsigned seed);
 		SpatRaster sampleRegularRaster(unsigned size);
+		SpatRaster sampleRowColRaster(size_t nr, size_t nc);
 		SpatRaster sampleRandomRaster(unsigned size, bool replace, unsigned seed);
 		std::vector<std::vector<double>> sampleRegularValues(unsigned size);
+		std::vector<std::vector<double>> sampleRowColValues(size_t nr, size_t nc);
+		
 		std::vector<std::vector<double>> sampleRandomValues(unsigned size, bool replace, unsigned seed);
 
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);

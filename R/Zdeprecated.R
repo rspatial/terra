@@ -51,7 +51,7 @@ setMethod("tiles", signature(x="SpatRaster"),
 
 ## tidyverse conflicts
 if (!isGeneric("expand")) {setGeneric("expand", function(x, y, ...) standardGeneric("expand"))}
-setMethod("expand", signature(x="ANY"), 
+setMethod("expand", signature(x="ANY", y="ANY"), 
 	function(...) {
 		warn("expand", "terra::expand has been removed. Use 'extend' instead")
 		extend(...)

@@ -245,7 +245,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 
 .fromRasterLayerBrick <- function(from) {
-	f <- filename(from)
+	f <- raster::filename(from)
 	if (f != "") {
 		if (from@file@driver == "netcdf") {
 			v <- attr(from@data, "zvar")
@@ -259,14 +259,14 @@ setMethod("as.array", signature(x="SpatRaster"),
 					levels(r) <- levs
 				}
 			}
-			crs(r) <- wkt(from)
+			crs(r) <- raster::wkt(from)
 		}
 		if (from@file@NAchanged) {
 			NAflag(r) <- from@file@nodatavalue
 		}
 		return(r)
 	} else {
-		crsobj <- crs(from)
+		crsobj <- from@crs
 		if (is.na(crsobj)) {
 			prj <- ""
 		} else {
@@ -279,14 +279,14 @@ setMethod("as.array", signature(x="SpatRaster"),
 		}
 		r <- rast(	nrows=nrow(from), 
 					ncols=ncol(from),
-					nlyrs=nlayers(from),
+					nlyrs=raster::nlayers(from),
 					crs=prj,
-					extent=extent(from))
-		if (hasValues(from)) {
-			values(r) <- values(from)
+					extent=raster::extent(from))
+		if (raster::hasValues(from)) {
+			values(r) <- raster::values(from)
 		}
 		names(r)  <- names(from)
-		levs <- levels(from)[[1]]
+		levs <- raster::levels(from)[[1]]
 		if (!is.null(levs)) {
 			levels(r) <- levs				
 		}
@@ -296,17 +296,18 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 .fromRasterStack <- function(from) {
 	x <- from[[1]]
-	n <- nbands(x)
-	if ((n > 1) & (n == nlayers(from))) {
-		ff <- lapply(1:nlayers(from), function(i) { filename(from[[i]]) })
+	n <- raster::nbands(x)
+	nl <- raster::nlayers(from)
+	if ((n > 1) & (n == nl)) {
+		ff <- lapply(1:nl, function(i) { raster::filename(from[[i]]) })
 		if (length(unique(ff)) == 1) {
-			r <- rast(filename(x))
+			r <- rast(raster::filename(x))
 			return(r)
 		}
 	} 
-	s <- lapply(1:nlayers(from), function(i) {
+	s <- lapply(1:raster::nlayers(from), function(i) {
 		x <- from[[i]]
-		.fromRasterLayerBrick(x)[[bandnr(x)]]
+		.fromRasterLayerBrick(x)[[raster::bandnr(x)]]
 	})
 	do.call(c, s)
 }
@@ -333,23 +334,23 @@ setAs("SpatRaster", "Raster",
 		prj <- .proj4(from)
 		if (nl == 1) {
 			if (s$source == "") {
-				r <- raster(ncols=ncol(from), nrows=nrow(from), crs=prj,
+				r <- raster::raster(ncols=ncol(from), nrows=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
 				if (hasValues(from)) {
 					values(r) <- values(from)
 				}
 			} else {
-				r <- raster(s$source)
+				r <- raster::raster(s$source)
 			}
 			names(r) <- names(from)
 		} else {
 			if (nrow(s) == 1 & s$source[1] != "") {
-				r <- brick(s$source)
+				r <- raster::brick(s$source)
 			} else if (all(s$source=="")) {
-				r <- brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
+				r <- raster::brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
 			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4], nl=nlyr(from))
 				if (hasValues(from)) {
-					values(r) <- values(from)
+					raster::values(r) <- values(from)
 				}
 			} else {
 				x <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
@@ -362,7 +363,7 @@ setAs("SpatRaster", "Raster",
 						r[[i]] <- raster(s$source[i])
 					}
 				}
-				r <- stack(r)
+				r <- raster::stack(r)
 			}
 		}
 		return(r)
@@ -372,10 +373,10 @@ setAs("SpatRaster", "Raster",
 
 # to sf from SpatVector
 # available in sf
-.v2sf <- function(from) {
-	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))'
-	eval(parse(text = txt))
-}
+#.v2sf <- function(from) {
+#	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))'
+#	eval(parse(text = txt))
+#}
 
 # sf bbox
 .ext_from_sf <- function(from) {

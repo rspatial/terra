@@ -99,8 +99,9 @@ set_factors <- function(x, ff, lv, asdf) {
 
 setMethod("spatSample", signature(x="SpatRaster"), 
 	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
+		
 		size <- round(size)
-		if (size < 1) {
+		if (any(size < 1)) {
 			error("spatSample", "sample size must be a positive integer")
 		}
 		#if ((size > ncell(x)) & (!replace)) {
@@ -113,6 +114,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		}
 		
 		if (cells || xy || as.points) {
+			size <- size[1]
 			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
 			if (method == "random") {
 				if (length(cnrs) < size) {
@@ -157,17 +159,25 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 		method <- tolower(method)
 		stopifnot(method %in% c("random", "regular"))
-		if (!replace) size <- min(ncell(x), size)
+		if (!replace) size <- pmin(ncell(x), size)
 
 		if (!is.null(ext)) x <- crop(x, ext)
 
 		if (method == "regular") {
 			if (as.raster) {
-				x@ptr <- x@ptr$sampleRegularRaster(size)
+				if (length(size) > 1) {
+					x@ptr <- x@ptr$sampleRowColRaster(size[1], size[2])
+				} else {
+					x@ptr <- x@ptr$sampleRegularRaster(size)
+				}
 				x <- messages(x, "spatSample")
 				return(x);
 			} else {
-				v <- x@ptr$sampleRegularValues(size)
+				if (length(size) > 1) {
+					v <- x@ptr$sampleRowColValues(size[1], size[2])
+				} else {
+					v <- x@ptr$sampleRegularValues(size)				
+				}
 				x <- messages(x, "spatSample")
 				if (length(v) > 0) {
 					v <- do.call(cbind, v)
@@ -177,6 +187,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				return(v)
 			}
 		} else { # random
+			size <- size[1]
 			if (as.raster) {
 				x@ptr <- x@ptr$sampleRandomRaster(size, replace, .seed())
 				x <- messages(x, "spatSample")
