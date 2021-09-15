@@ -82,7 +82,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-3</span>
       </span>
     </div>
 
@@ -153,7 +153,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
     </tr>
     <tr>
       <th>size</th>
-      <td><p>numeric. The sample size. If <code>x</code> is a SpatVector, you can also provide a vector of the same length as <code>x</code> in wich case sampling is done seperately for each geometry</p></td>
+      <td><p>numeric. The sample size. If <code>x</code> is a SpatVector, you can also provide a vector of the same length as <code>x</code> in wich case sampling is done seperately for each geometry. If <code>x</code> is a SpatRaster, and you are using <code>method="regular"</code> you can specify the size as two numbers (number of rows and columns)</p></td>
     </tr>
     <tr>
       <th>method</th>
