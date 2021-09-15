@@ -290,6 +290,19 @@ function(x, i, j, ... , drop=FALSE) {
 	}
 })
 
+setMethod("[", c("SpatVector", "SpatVector", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	r <- !relate(x, i, "disjoint")
+	r <- which(apply(r, 1, any))
+	x[r, ]
+})
+
+
+setMethod("[", c("SpatVector", "SpatExtent", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	x[as.polygons(i)]
+})
+
 
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, ...) { 

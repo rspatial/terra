@@ -11,6 +11,8 @@
 \alias{extract,SpatVector,SpatVector-method}
 
 
+\alias{[,SpatVector,SpatVector,missing-method}
+\alias{[,SpatVector,SpatExtent,missing-method}
 \alias{[,SpatRaster,SpatVector,missing-method}
 \alias{[,SpatRaster,missing,missing-method}
 \alias{[,SpatRaster,numeric,missing-method}
