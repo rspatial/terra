@@ -408,7 +408,12 @@ function(x, i, j, ..., drop=TRUE) {
 
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 function(x, i, j, ..., drop=TRUE) {
-	x[ext(i), drop=drop]
+	x <- x[ext(i), drop=drop]
+	if (!drop) {
+		mask(x, i)
+	} else {
+		x
+	}
 })
 
 setMethod("[", c("SpatRaster", "SpatExtent", "missing"),
