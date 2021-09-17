@@ -402,6 +402,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			for (size_t i=0; metadata[i] != NULL; i++) {
 				meta.push_back(metadata[i]);
 			}
+			GDALClose( (GDALDatasetH) poDataset );
 			return constructFromSDS(fname, meta, subds, subdsname, options, gdrv=="netCDF"); 
 		} else {
 			setError("no data detected in " + fname);
