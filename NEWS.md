@@ -1,6 +1,6 @@
 # version 1.4-4
 
-`terra` no longer depends on `raster`, but only suggests it to allow for coercion to and from `Raster*` and `Spatial*` objects. to avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
+`terra` no longer depends on `raster`. It still suggests it to allow for coercion to and from `Raster*` and `Spatial*` objects. to avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
 
 ## enhancements
 

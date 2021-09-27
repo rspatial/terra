@@ -320,7 +320,7 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 	SpatRaster out = geometry(1);
 	if (nlyr() > 1) {
 		SpatOptions ops(opt);
-		out.addWarning("focal computations are only done for the first input layer");
+		out.addWarning("focal computations are only done for the first layer");
 		std::vector<unsigned> lyr = {0};
 		*this = subset(lyr, ops);
 	}
