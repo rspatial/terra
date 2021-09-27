@@ -242,7 +242,7 @@ rbind.SpatVector <- function(x, y, ...) {
 
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ...) {
-		skipped <- FALSE
+		skips <- 0
 		dots <- list(...)
 		for (i in dots) {
 			if (inherits(i, "SpatRaster")) {
@@ -252,10 +252,10 @@ setMethod("c", signature(x="SpatRaster"),
 					return()
 				}
 			} else {
-				skipped = TRUE
+				skips = skips + 1
 			}
 		}
-		if (skipped) warn("c,SpatRaster", "skipped object that are not SpatRaster")
+		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
 		messages(x, "c")
 	}
 )

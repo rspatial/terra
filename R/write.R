@@ -60,6 +60,7 @@ function(x, filename, filetype="ESRI Shapefile", overwrite=FALSE) {
 	}
 	
 	lyrname <- tools::file_path_sans_ext(basename(filename))
+
 	success <- x@ptr$write(filename, lyrname, filetype, overwrite[1])
 	messages(x, "writeVector")
 	invisible(TRUE)
