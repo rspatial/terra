@@ -27,6 +27,8 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	tempdir = opt.tempdir;
 	memfrac = opt.memfrac;
 	todisk = opt.todisk;
+	tolerance = tolerance;
+	
 	def_datatype = opt.def_datatype;
 	def_filetype = opt.def_filetype; 
 	filenames = {""};
@@ -34,11 +36,19 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	progress = opt.progress;
 	ncopies = opt.ncopies;
 	verbose = opt.verbose;
+	def_verbose = opt.def_verbose;
 	statistics = opt.statistics;
 	steps = opt.steps;
 	minrows = opt.minrows;
 	names = opt.names;
 	//ncdfcopy = opt.ncdfcopy;
+	gdal_options = opt.gdal_options;
+	overwrite = opt.overwrite;
+	hasNAflag = false;
+	NAflag = NAN;
+	datatype_set = opt.datatype_set;
+	datatype = opt.datatype;
+	filetype = opt.filetype;
 }
 
 SpatOptions SpatOptions::deepCopy() {
