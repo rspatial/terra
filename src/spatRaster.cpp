@@ -999,8 +999,11 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 	} 
 
 	SpatCategories cats;
+	std::vector<long> ids(labels.size());
+	std::iota(ids.begin(), ids.end(), 0);
+	cats.d.add_column(ids, "ID");
 	cats.d.add_column(labels, "category");
-	cats.index = 0;
+	cats.index = 1;
 
 	if (source[sl[0]].cats.size() <= sl[1]) {
 		source[sl[0]].cats.resize(sl[1]+1);
