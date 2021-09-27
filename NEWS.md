@@ -1,4 +1,4 @@
-# version 1.4-3
+# version 1.4-4
 
 `terra` no longer depends on `raster`, but only suggests it to allow for coercion to and from `Raster*` and `Spatial*` objects. to avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
 
@@ -10,6 +10,7 @@
 - `crs<-` now warns if an unsupported datum is used. See issue [#317](https://github.com/rspatial/terra/issues/317)
 - `spatSample` now returns factor values if a SpatRaster layer is.factor except when using `as.df=FALSE`
 - new method `origin<-` to set the origin of a SpatRaster. See issue [#326](https://github.com/rspatial/terra/issues/326) by Jakub Nowosad
+- `crs` has a new argument `parse`. See [#344](https://github.com/rspatial/terra/issues/344) 
 
 
 ## bug fixes 
@@ -17,6 +18,12 @@
 - `plotRGB` failed if there were `NA`s. Issue [#308](https://github.com/rspatial/terra/issues/308) by Jakub Nowosad
 - `writeVector` crashed R when used with a SpatVector with no geometries. Reported by Timothy White in issue [#319](https://github.com/rspatial/terra/issues/319)
 - `summary,SpatRaster-method` now returns counts for the classes (instead of a numerical summary of the indices) [#324](https://github.com/rspatial/terra/issues/324) by Jakub Nowosad
+- `tapp` with a character index now returns a SpatRaster with the correct names [#345](https://github.com/rspatial/terra/issues/345) by scbrown86 
+- `rasterize` with a character variable now adds the ID column to the categories [#337](https://github.com/rspatial/terra/issues/337) by tabrasel
+- `cellSize` now masks values in all cases (when requested with `mask=TRUE`). Issue  [#339](https://github.com/rspatial/terra/issues/339) by Jean-Luc Dupouey
+- `buffer,SpatVector` no longer treats lines like polygons [#332](https://github.com/rspatial/terra/issues/332) by  AM Barbosa
+- `plot` now passes the layer index to `fun` [#310](https://github.com/rspatial/terra/issues/310) by btupper
+
 
 
 # version 1.3-22
