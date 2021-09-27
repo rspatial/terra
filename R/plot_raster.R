@@ -446,7 +446,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
-				fun(1)
+				fun(y)
 			} else {
 				fun()
 			}
