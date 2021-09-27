@@ -1681,24 +1681,20 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 	}
 	bool lonlat = is_lonlat();
 
-	SpatOptions mopt = opt;
+	SpatOptions mopt(opt);
 	if (mask) {
 		if (!hasValues()) {
 			mask = false;
 		} else {
-			if (lonlat) {
-				opt = SpatOptions(opt);			
-			} else {
-				if (!readStart()) {
-					out.setError(getError());
-					return(out);
-				}
-			}
+			mopt.filenames = opt.filenames;
+			opt = SpatOptions(opt);			
 		}
 	}
+
+Rcpp::Rcout << "opt " << opt.get_filename() << std::endl;
+Rcpp::Rcout << "mopt " << mopt.get_filename() << std::endl;
 	
   	if (!out.writeStart(opt)) { return out; }
-
 
 	if (lonlat) { 
 		SpatExtent extent = getExtent();
@@ -1738,12 +1734,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 				//onechunk.setValues(cells);
 				//SpatVector p = onechunk.as_polygons(false, true, false, false, popt);
 				std::vector<double> v;
-				if (mask) {
-					std::vector<double> m = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
-					v = p.area(unit, true, m);
-				} else {
-					v = p.area(unit, true, {});
-				}
+				v = p.area(unit, true, {});
 				if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 			}
 		} else {
@@ -1758,12 +1749,10 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 		}
 	} 
 	out.writeStop();
+
+
 	if (mask) {
-		if (lonlat) {
-			out = out.mask(*this, false, NAN, NAN, opt);
-		} else {
-			readStop();
-		}
+		out = out.mask(*this, false, NAN, NAN, mopt);
 	}
 	return(out);
 }
