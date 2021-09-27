@@ -658,9 +658,9 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 }
 
 
-SpatGeom hullify(SpatVector b) {
+SpatGeom hullify(SpatVector b, bool ispoly) {
 	if (b.nrow() == 1) return b.geoms[0];
-	b.addGeom(b.geoms[0]);
+	if (ispoly) b.addGeom(b.geoms[0]);
 	SpatVector part;
 	for (size_t j =0; j<(b.size()-1); j++) {
 		std::vector<unsigned> range = {(unsigned)j, (unsigned)j+1};
@@ -694,7 +694,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		std::vector<double> d(p.size(), dist);
 		SpatVector b = p.point_buffer(d, quadsegs, true);
 		if (b.size() <= p.size()) {	
-			SpatGeom g = hullify(b);
+			SpatGeom g = hullify(b, ispol);
 			tmp.addGeom(g);
 		} else {			
 			SpatVector west, east, eastwest;
@@ -708,11 +708,11 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 				}	
 			}
 			if (east.nrow() > 0) {
-				SpatGeom geast = hullify(east);
+				SpatGeom geast = hullify(east, ispol);
 				tmp.addGeom(geast);
 			}
 			if (west.nrow() > 0) {
-				SpatGeom gwest = hullify(west);
+				SpatGeom gwest = hullify(west, ispol);
 				tmp.addGeom(gwest);
 			}
 		}
