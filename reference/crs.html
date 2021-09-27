@@ -81,7 +81,7 @@ Setting a new CRS does not change the data itself, it just changes the label. So
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-4</span>
       </span>
     </div>
 
@@ -131,10 +131,10 @@ Setting a new CRS does not change the data itself, it just changes the label. So
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span>, parse<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span>, proj<span class='op'>=</span><span class='cn'>FALSE</span>, describe<span class='op'>=</span><span class='cn'>FALSE</span>, parse<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>crs</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span>
@@ -160,6 +160,10 @@ Setting a new CRS does not change the data itself, it just changes the label. So
     <tr>
       <th>value</th>
       <td><p>character string describing a coordinate reference system. This can be in a WKT format, as a &lt;authority:number&gt; code such as "EPSG:4326", or a PROJ-string format such as "+proj=utm +zone=12" (see Note)</p></td>
+    </tr>
+    <tr>
+      <th>parse</th>
+      <td><p>logical. If <code>TRUE</code>, wkt parts are parsed into a vector (each line becomes an element)</p></td>
     </tr>
     </table>
 
