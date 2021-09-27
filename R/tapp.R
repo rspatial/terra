@@ -11,7 +11,7 @@ function(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list()) {
 	d <- unique(data.frame(nms, ind, stringsAsFactors=FALSE))
 	uin <- d[,2]
 	nms <- make.names(d[,1])
-
+	nms <- nms[uin]
 	txtfun <- .makeTextFun(fun)
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% .cpp_funs) {
