@@ -236,12 +236,15 @@
 
 .plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA, 
 	main="", line=0.5, cex.main=0.8, font.main=graphics::par()$font.main, 
-	col.main = graphics::par()$col.main, ...) {
+	col.main = graphics::par()$col.main, reset=FALSE, ...) {
 	
 #	if (x$add) axes = FALSE
 	if ((!x$add) & (!x$legend_only)) {
 
+		old.mar <- graphics::par()$mar 
 		if (!any(is.na(x$mar))) { graphics::par(mar=x$mar) }
+		if (reset) on.exit(graphics::par(mar=old.mar))
+
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
 		if (main != "") {
 			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)		
@@ -273,7 +276,7 @@
 .prep.plot.data <- function(x, type, maxcell, cols, mar=NULL, draw=FALSE, 
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), 
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
-  coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, ...) {
+  coltab=NULL, facts=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
  
@@ -368,14 +371,14 @@
 			out$r <- matrix(grDevices::rgb(t(grDevices::col2rgb(out$r)), alpha=alpha, maxColorValue=255),
 			nrow=nrow(out$r), byrow=TRUE)
 		}	
-		out <- .plotit(out, new=new, ...)
+		out <- .plotit(out, new=new, reset=reset, ...)
 	}
 	invisible(out)
 }
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, ...) {
+	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, reset=FALSE, ...) {
 
 		y <- round(y)
 		stopifnot((min(y) > 0) & (max(y) <= nlyr(x)))
@@ -442,7 +445,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
-		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, ...)
+		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, facts=facts, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
@@ -454,6 +457,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		invisible(x)
 	}
 )
+
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
