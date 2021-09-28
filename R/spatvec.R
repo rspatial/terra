@@ -76,8 +76,8 @@ setMethod("crds", signature(x="SpatVector"),
 )
 
 setMethod("crds", signature(x="SpatRaster"), 
-	function(x, df=FALSE){
-		x <- as.points(x)
+	function(x, df=FALSE, na.rm=TRUE){
+		x <- as.points(x, na.rm=na.rm)
 		crds(x, df=df)
 	}
 )

@@ -29,7 +29,7 @@ Coercion to other object types
 \arguments{
 \item{x}{SpatRaster or SpatVector}
 \item{mode}{this argument is ignored}
-\item{wide}{logical}
+\item{wide}{logical. If \code{FALSE} each layer in the SpatRaster becomes a column in the matrix and each cell in the SpatRaster becomes a row. If \code{TRUE} each row in the SpatRaster becomes a row in the matrix and each column in the SpatRaster becomes a column in the matrix }
 }
 
 \value{
