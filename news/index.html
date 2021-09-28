@@ -148,6 +148,8 @@
 <li>
 <code>crs</code> has a new argument <code>parse</code>. See <a href="https://github.com/rspatial/terra/issues/344"><a href='https://github.com/rspatial/terra/issues/344'>#344</a></a>
 </li>
+<li>
+<code>plot-SpatRaster,missing</code> has a new argument <code>reset=FALSE</code> that allows resetting the par()$mar parameters after plotting. See issue <a href="https://github.com/rspatial/terra/issues/340"><a href='https://github.com/rspatial/terra/issues/340'>#340</a></a> by Derek Friend</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
@@ -162,15 +164,16 @@
 <li>
 <code>summary,SpatRaster-method</code> now returns counts for the classes (instead of a numerical summary of the indices) <a href="https://github.com/rspatial/terra/issues/324"><a href='https://github.com/rspatial/terra/issues/324'>#324</a></a> by Jakub Nowosad</li>
 <li>
-<code>tapp</code> with a character index now returns a SpatRaster with the correct names <a href="https://github.com/rspatial/terra/issues/345"><a href='https://github.com/rspatial/terra/issues/345'>#345</a></a> by scbrown86</li>
+<code>tapp</code> with a character index now returns a SpatRaster with the correct names <a href="https://github.com/rspatial/terra/issues/345"><a href='https://github.com/rspatial/terra/issues/345'>#345</a></a> by Stuart Brown</li>
 <li>
-<code>rasterize</code> with a character variable now adds the ID column to the categories <a href="https://github.com/rspatial/terra/issues/337"><a href='https://github.com/rspatial/terra/issues/337'>#337</a></a> by tabrasel</li>
+<code>rasterize</code> with a character variable now adds the ID column to the categories <a href="https://github.com/rspatial/terra/issues/337"><a href='https://github.com/rspatial/terra/issues/337'>#337</a></a> by Tate Brasel</li>
 <li>
 <code>cellSize</code> now masks values in all cases (when requested with <code>mask=TRUE</code>). Issue <a href="https://github.com/rspatial/terra/issues/339"><a href='https://github.com/rspatial/terra/issues/339'>#339</a></a> by Jean-Luc Dupouey</li>
 <li>
-<code>buffer,SpatVector</code> no longer treats lines like polygons <a href="https://github.com/rspatial/terra/issues/332"><a href='https://github.com/rspatial/terra/issues/332'>#332</a></a> by AM Barbosa</li>
+<code>buffer,SpatVector</code> no longer treats lines like polygons <a href="https://github.com/rspatial/terra/issues/332"><a href='https://github.com/rspatial/terra/issues/332'>#332</a></a> by Márcia Barbosa</li>
 <li>
-<code>plot</code> now passes the layer index to <code>fun</code> <a href="https://github.com/rspatial/terra/issues/310"><a href='https://github.com/rspatial/terra/issues/310'>#310</a></a> by btupper</li>
+<code>plot</code> now passes the layer index to <code>fun</code> <a href="https://github.com/rspatial/terra/issues/310"><a href='https://github.com/rspatial/terra/issues/310'>#310</a></a> by Ben Tupper</li>
+<li>the <code>to_id</code> in <code>nearest</code> was sometimes wrong. See <a href="https://github.com/rspatial/terra/issues/328"><a href='https://github.com/rspatial/terra/issues/328'>#328</a></a> by Shawn Ligocki</li>
 </ul>
 </div>
 </div>
