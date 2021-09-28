@@ -103,17 +103,14 @@ setMethod("dots", signature(x="SpatVector"),
 
 .vplot <- function(x, out, xlab="", ylab="", cex=1, pch=20, ...) {
 	if (out$leg$geomtype == "points") {
-		if (out$add) {
-			points(x, col=out$main_cols, cex=cex, pch=pch, ...)
-		} else {
-			e <- out$lim
-			#plot(e[1:2], e[3:4], type="n", axes=FALSE, xlab=xlab, ylab=ylab, asp=out$asp)
-			points(x, col=out$main_cols, cex=cex, pch=pch, ...)
-		}
+		points(x, col=out$main_cols, cex=cex, pch=pch, ...)
+		#if (!out$add) {
+		#	e <- out$lim
+		#}
 		out$leg$pch = pch
 		out$leg$pt.cex = cex
 	} else {
-		e <- matrix(as.vector(ext(x)), 2)
+		#e <- matrix(as.vector(ext(x)), 2)
 		if (out$leg$geomtype == "polygons") {
 			out <- .plotPolygons(x, out, density=out$leg$density, angle=out$leg$angle, ...)
 		} else {
