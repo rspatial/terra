@@ -132,18 +132,22 @@
 <span class='fu'>crds</span><span class='op'>(</span><span class='va'>x</span>, df<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>crds</span><span class='op'>(</span><span class='va'>x</span>, df<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
+<span class='fu'>crds</span><span class='op'>(</span><span class='va'>x</span>, df<span class='op'>=</span><span class='cn'>FALSE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatVector</p></td>
+      <td><p>SpatRaster or SpatVector</p></td>
     </tr>
     <tr>
       <th>df</th>
       <td><p>logical. If <code>TRUE</code> a <code>data.frame</code> is returned in stead of a matrix</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>logical. If <code>TRUE</code> cells that are <code>NA</code> are excluded</p></td>
     </tr>
     </table>
 
@@ -152,7 +156,7 @@
     <p>matrix or data.frame</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='geom.html'>geom</a></code> returns the complete structure of SpatVector geometries</p></div>
+    <div class='dont-index'><p><code><a href='geom.html'>geom</a></code> returns the complete structure of SpatVector geometries. For SpatRaster see code<a href='xyRowColCell.html'>xyFromCell</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>175</span>,<span class='op'>-</span><span class='fl'>20</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='fl'>55</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>140</span>,<span class='op'>-</span><span class='fl'>60</span><span class='op'>)</span><span class='op'>)</span>

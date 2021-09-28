@@ -169,8 +169,7 @@
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If <code>x</code> is a <code>SpatRaster</code>, and <code>matrix=TRUE</code>, a matrix is returned in which the values of each layer are represented by a column (with <code><a href='dimensions.html'>ncell(x)</a></code> rows). The values per layer are in cell-order, that is, from top-left, to top-right and then down by row. Use <code><a href='coerce.html'>as.matrix</a></code> for an alternative matrix representation where the number of rows and columns matches that of <code>x</code>, if <code>x</code> has a single layer.
-If <code>matrix=FALSE</code>, the values are returned as a vector. In cell-order by layer.</p>
+    <p>If <code>x</code> is a <code>SpatRaster</code>, and <code>mat=FALSE</code>, the values are returned as a vector. In cell-order by layer. If <code>mat=TRUE</code>, a matrix is returned in which the values of each layer are represented by a column (with <code><a href='dimensions.html'>ncell(x)</a></code> rows). The values per layer are in cell-order, that is, from top-left, to top-right and then down by row. Use <code><a href='coerce.html'>as.matrix</a>(x, wide=TRUE)</code> for an alternative matrix representation where the number of rows and columns matches that of <code>x</code>.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>matrix or data.frame</p>
