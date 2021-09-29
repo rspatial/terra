@@ -1,6 +1,9 @@
-# version 1.4-4
+# version 1.4-5
 
-`terra` no longer depends on `raster`. It still suggests it to allow for coercion to and from `Raster*` and `Spatial*` objects. to avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
+## note
+
+`terra` no longer depends on `raster`. It still suggests it to allow for coercion to and from `Raster*` and `Spatial*` objects. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
+
 
 ## enhancements
 
@@ -13,7 +16,7 @@
 - `crs` has a new argument `parse`. See [#344](https://github.com/rspatial/terra/issues/344) 
 - `plot-SpatRaster,missing` has a new argument `reset=FALSE` that allows resetting the par()$mar parameters after plotting. See issue [#340](https://github.com/rspatial/terra/issues/340) by Derek Friend
 - `crds` has a new argument `na.rm`. See [#338](https://github.com/rspatial/terra/issues/338) by Kodi Arfer 
-
+- `show(Spat*)` now prints the name and EPSG code of a crs if available. See [#317] https://github.com/rspatial/terra/issues/317 by Jakub Nowosad
 
 ## bug fixes 
 
