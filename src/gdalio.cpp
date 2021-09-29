@@ -240,6 +240,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 
     for (size_t i=0; i<meta.size(); i++) {
 		std::string s = meta[i];
+		//Rcpp::Rcout << s << std::endl;
 		size_t pos = s.find(ndelim);
 		if (pos != std::string::npos) {
 			s.erase(0, pos + ndelim.length());

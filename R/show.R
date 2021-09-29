@@ -174,9 +174,8 @@ setMethod ("show" , "SpatRaster",
 			nsr <- nsrc(object)
 			m <- inMemory(object)
 			f <- .filenames(object)
-			if (substr(f, 1, 5) != "HDF5:") {
-				f <- basename(f)
-			}
+			nothdf5 <- substr(f, 1, 5) != "HDF5:"
+			f[nothdf5] <- basename(f[nothdf5])
 			#f <- gsub("\\", "/", f, fixed=TRUE)
 			
 			f <- gsub("\"", "", f)
