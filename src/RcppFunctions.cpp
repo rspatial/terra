@@ -89,7 +89,7 @@ std::vector<double> geotransform(std::string fname) {
 
 	double gt[6];
 	if( poDataset->GetGeoTransform( gt ) != CE_None ) {
-		Rcpp::Rcout << "bad" << std::endl;
+		Rcpp::Rcout << "bad geotransform" << std::endl;
 	}
 	out = std::vector<double>(std::begin(gt), std::end(gt));
 	GDALClose( (GDALDatasetH) poDataset );
