@@ -223,8 +223,9 @@ std::string basename_sds(std::string f) {
 	if (std::string::npos != j) {
 		f.erase(0, j + 1);
 	}
-	f = std::regex_replace(f, std::regex(".hdf$"), "");
-	f = std::regex_replace(f, std::regex(".nc$"), "");
+	f = std::regex_replace(f, std::regex("\\.h5$"), "");
+	f = std::regex_replace(f, std::regex("\\.hdf$"), "");
+	f = std::regex_replace(f, std::regex("\\.nc$"), "");
 	f = std::regex_replace(f, std::regex("\""), "");
 
 	return f;
@@ -394,7 +395,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	int nl = poDataset->GetRasterCount();
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
-
 	if (nl == 0) {
 		std::vector<std::string> meta;
 		char **metadata = poDataset->GetMetadata("SUBDATASETS");
@@ -445,7 +445,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	} else {
 		SpatExtent e(0, 1, 0, 1);
 		s.extent = e;
-		if (gdrv=="netCDF") {
+		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 			#ifndef standalone
 			setMessage("ncdf extent");
 			#else 
@@ -501,7 +501,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
-		if (gdrv == "netCDF") {
+		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 			char **m = poBand->GetMetadata();
 			while (*m != nullptr) {
 				bandmeta[i].push_back(*m++);
@@ -614,7 +614,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 
-	if (gdrv == "netCDF") {
+	if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 		std::vector<std::string> metadata;
 		char **m = poDataset->GetMetadata();
 		while (*m != nullptr) {
@@ -1258,7 +1258,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	if (!ncdf) {
 		std::vector<std::string> lyrnames;
 		for (size_t i=0; i<used.size(); i++) {
-			std::vector<std::string> nms = {basename(used[i])};
+			std::vector<std::string> nms = { basename(used[i]) };
 			recycle(nms, srcnl[i]);
 			make_unique_names(nms);
 			lyrnames.insert(lyrnames.end(), nms.begin(), nms.end());
