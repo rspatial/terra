@@ -19,16 +19,36 @@ is.proj <- function(crs) {
 			warn("crs<-", "Only the WGS84, NAD83 and NAD27 datums can be used with a PROJ.4 string. Use WKT2, authority:code, or +towgs84= instead")
 		}		
 	}
-	d <- grep("towgs84=", x, value=TRUE)
-	if (length(d) > 0) {  
-		warn("crs<-", "+towgs84 parameters in a PROJ4 string are ignored")
-	}
+	#d <- grep("towgs84=", x, value=TRUE)
+	#if (length(d) > 0) {  
+	#	warn("crs<-", "+towgs84 parameters in a PROJ4 string are ignored")
+	#}
 }
 
 
 .proj4 <- function(x) {
 	x@ptr$get_crs("proj4")
 }
+
+.name_or_proj4 <- function(x) {
+	d <- .srs_describe(x@ptr$get_crs("wkt"))
+	r <- x@ptr$get_crs("proj4")
+	if (d$name != "unknown") {
+		if (substr(r, 1, 13) == "+proj=longlat") {
+			r <- paste("lon/lat", d$name)
+		} else {
+			r <- d$name
+		}
+		if (!is.na(d$EPSG)) {
+			r <- paste0(r, " (EPSG:", d$EPSG, ")")
+		} 
+	} else {
+		r <- x@ptr$get_crs("proj4")
+	}
+	r
+}
+
+
 
 .srs_describe <- function(srs) {
 	info <- .SRSinfo(srs)
