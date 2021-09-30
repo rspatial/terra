@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-5</span>
       </span>
     </div>
 
@@ -122,11 +122,15 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-4" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-4">
-<a href="#version-14-4" class="anchor"></a>version 1.4-4<small> Unreleased </small>
+    <div id="version-14-5" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-5">
+<a href="#version-14-5" class="anchor"></a>version 1.4-5<small> Unreleased </small>
 </h1>
-<p><code>terra</code> no longer depends on <code>raster</code>. It still suggests it to allow for coercion to and from <code>Raster*</code> and <code>Spatial*</code> objects. to avoid name clashes between these two packages, and to allow replacing methods from <code>rgeos</code> and <code>rgdal</code> in <code>raster</code>, a future version of <code>raster</code> will depend on <code>terra</code> instead.</p>
+<div id="note" class="section level2">
+<h2 class="hasAnchor">
+<a href="#note" class="anchor"></a>note</h2>
+<p><code>terra</code> no longer depends on <code>raster</code>. It still suggests it to allow for coercion to and from <code>Raster*</code> and <code>Spatial*</code> objects. To avoid name clashes between these two packages, and to allow replacing methods from <code>rgeos</code> and <code>rgdal</code> in <code>raster</code>, a future version of <code>raster</code> will depend on <code>terra</code> instead.</p>
+</div>
 <div id="enhancements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#enhancements" class="anchor"></a>enhancements</h2>
@@ -150,6 +154,10 @@
 </li>
 <li>
 <code>plot-SpatRaster,missing</code> has a new argument <code>reset=FALSE</code> that allows resetting the par()$mar parameters after plotting. See issue <a href="https://github.com/rspatial/terra/issues/340"><a href='https://github.com/rspatial/terra/issues/340'>#340</a></a> by Derek Friend</li>
+<li>
+<code>crds</code> has a new argument <code>na.rm</code>. See <a href="https://github.com/rspatial/terra/issues/338"><a href='https://github.com/rspatial/terra/issues/338'>#338</a></a> by Kodi Arfer</li>
+<li>
+<code>show(Spat*)</code> now prints the name and EPSG code of a crs if available. See [<a href='https://github.com/rspatial/terra/issues/317'>#317</a>] <a href="https://github.com/rspatial/terra/issues/317" class="uri">https://github.com/rspatial/terra/issues/317</a> by Jakub Nowosad</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
