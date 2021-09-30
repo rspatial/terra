@@ -119,7 +119,7 @@
 	out$leg$legend <- unique(na.omit(out$cats[[2]][ilevels]))
 	if (!is.null(out$coltab)) {
 		out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
-		z <- out$cols[z]
+		z <- out$cols[z+1]
 		out$cols <- out$cols[out$levels+1]
 	} else {
 		#levlab <- data.frame(id=out$levels, lab=out$cats[[2]][ilevels], stringsAsFactors=FALSE)
