@@ -43,11 +43,21 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 		ff <- is.factor(x)
 		if (any(ff)) {
 			ff <- which(ff)
-			levs <- levels(x)
+			#levs <- levels(x)
+			cgs <- cats(x)
 			for (f in ff) {
-				lvs <- levs[[f]]
-				v[[f]] = factor(v[[f]], levels=(1:length(lvs))-1)
-				levels(v[[f]]) = levs[[f]]
+				#lvs <- levs[[f]]
+				cg <- cgs[[f]]
+				i <- match(v[,1], cg[,1])
+				act <- activeCat(x, f)
+				#v[[f]] = factor(v[[f]], levels=(1:length(lvs))-1)
+				#levels(v[[f]]) = levs[[f]]
+				
+				if (!inherits(cg[[act+1]], "numeric")) {
+					v[[f]] <- factor(cg[i, act+1], levels=unique(cg[[act+1]]))
+				} else {
+					v[[f]] <- cg[i, act+1]				
+				}
 			}
 		}
 	}
@@ -371,7 +381,7 @@ extract_cell <- function(x, cells, drop=FALSE, factors=TRUE) {
 	e <- x@ptr$extractCell(cells-1)
 	messages(x, "extract_cell")
 	e <- do.call(cbind, e)
-	colnames(e) = names(x)
+	colnames(e) <- names(x)
 	.makeDataFrame(x, e, factors)[,,drop]
 }
 

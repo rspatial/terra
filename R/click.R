@@ -56,9 +56,9 @@ setMethod("click", signature(x="missing"),
 			X <- rbind(X, x)
 			if (show) print(x); utils::flush.console()
 			if (show) {
-				on.exit(return(invisible(values)))
+				on.exit(return(invisible(X)))
 			} else {
-				on.exit(return(values))
+				on.exit(return(X))
 			}			
 		}
 		if (show) invisible(X) else X

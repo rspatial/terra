@@ -83,11 +83,18 @@
 }
 
 
-set_factors <- function(x, ff, lv, asdf) {
+set_factors <- function(x, ff, cts, asdf) {
 	if (any(ff)) {
 		x <- data.frame(x)
 		for (i in which(ff)) {
-			x[[i]] <- factor(lv[[i]][x[[i]]+1], levels=lv[[i]])
+			ct <- cts[[i]]
+			m <- match(x[[i]], ct[,1])
+			act <- activeCat(x, i) + 1
+			if (!inherits(lv, "numeric")) {
+				x[[i]] <- factor(ct[m,act], levels=unique(ct[[act]]))
+			} else {
+				x[[i]] <- ct[m]
+			}
 		}
 	} else if (asdf) {
 		x <- data.frame(x)
@@ -95,6 +102,32 @@ set_factors <- function(x, ff, lv, asdf) {
 	x
 }
 
+.makeDataFrame <- function(x, v, factors=TRUE) {
+	v <- data.frame(v, check.names = FALSE)
+	if (factors) {
+		ff <- is.factor(x)
+		if (any(ff)) {
+			ff <- which(ff)
+			#levs <- levels(x)
+			cgs <- cats(x)
+			for (f in ff) {
+				#lvs <- levs[[f]]
+				cg <- cgs[[f]]
+				i <- match(v[,1], cg[,1])
+				act <- activeCat(x, f)
+				#v[[f]] = factor(v[[f]], levels=(1:length(lvs))-1)
+				#levels(v[[f]]) = levs[[f]]
+				
+				if (!inherits(cg[[act+1]], "numeric")) {
+					v[[f]] <- factor(cg[i, act+1], levels=unique(cg[[act+1]]))
+				} else {
+					v[[f]] <- cg[i, act+1]				
+				}
+			}
+		}
+	}
+	v
+}
 
 
 setMethod("spatSample", signature(x="SpatRaster"), 
@@ -110,7 +143,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 
 		if (!as.raster) {
 			ff <- is.factor(x)
-			lv <- levels(x)
+			lv <- cats(x)
 		}
 		
 		if (cells || xy || as.points) {
