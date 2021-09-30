@@ -1,4 +1,4 @@
-# version 1.4-5
+# version 1.4-6
 
 ## note
 
@@ -18,6 +18,7 @@
 - `crds` has a new argument `na.rm`. See [#338](https://github.com/rspatial/terra/issues/338) by Kodi Arfer 
 - `show(Spat*)` now prints the name and EPSG code of a crs if available. See [#317] https://github.com/rspatial/terra/issues/317 by Jakub Nowosad
 
+
 ## bug fixes 
 
 - `plotRGB` failed if there were `NA`s. Issue [#308](https://github.com/rspatial/terra/issues/308) by Jakub Nowosad
@@ -29,7 +30,7 @@
 - `buffer,SpatVector` no longer treats lines like polygons [#332](https://github.com/rspatial/terra/issues/332) by Márcia Barbosa
 - `plot` now passes the layer index to `fun` [#310](https://github.com/rspatial/terra/issues/310) by Ben Tupper
 - the `to_id` in `nearest` was sometimes wrong. See [#328](https://github.com/rspatial/terra/issues/328) by Shawn Ligocki
-
+- better support for ESRI value attribute tables (VAT). See this [SO question] https://stackoverflow.com/q/69385928/635245
 
 # version 1.3-22
 
