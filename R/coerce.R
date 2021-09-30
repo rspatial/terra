@@ -53,12 +53,12 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 				ff <- is.factor(x)
 				if (any(ff)) {
 					ff <- which(ff)
-					levs <- levels(x)
+					cgs <- cats(x)
 					for (f in ff) {
-						facts <- levs[[f]]
-						v <- factor(unlist(p[[f]], use.names=FALSE), levels=(1:length(facts))-1)
-						levels(v) <- facts
-						p[[f]] <- as.character(v)
+						cg <- cgs[[f]]
+						i <- match(unlist(p[[f]]), cg[,1])
+						act <- activeCat(x, f)
+						p[[f]] <- cg[i, act+1]				
 					}
 				}
 			}				
