@@ -37,42 +37,6 @@ std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& 
 
 // todo: three dimensional focal
 
-get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
-	int wr = wrows / 2;
-	int wc = wcols / 2;
-	wr = std::min(wr, nrow-1);
-	wc = std::min(wc, ncol-1);
-
-	
-	size_t n = nrow * ncol * wrows * wcols;
-	out.resize(n, fill);
-	int f = 0;
-	int nrmax = nrow + startoff + endoff - 1;
-	//int nrmax = d.size() / ncol - 1;
-	
-	
-	//Rcpp::Rcout << nrow << " " << offset << " " << nrmax << std::endl;
-	
-	for (int r=0; r < nrow; r++) {
-		for (int c=0; c < ncol; c++) {
-			for (int i = -wr; i <= wr; i++) {
-				int row = r+startoff+i;		
-				if ((row < 0) || (row > nrmax)) {
-					f = f + wcols;
-				} else {
-					unsigned bcell = row * ncol;
-					for (int j = -wc; j <= wc; j++) {
-						int col = c + j;
-						if ((col >= 0) && (col < ncol)) {
-							out[f] = d[bcell+col];
-						}
-						f++;
-					}
-				}
-			}
-		}
-	}
-}
 
 
 
@@ -97,19 +61,49 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 	int startrow = row-wr;
 	startrow = startrow < 0 ? 0 : startrow;
-	int offset = row-startrow;
+	int startoff = row-startrow;
 
-	int readnrows = nrows+offset+wr;
+	int readnrows = nrows+startoff+wr;
 	int endoff = wr;
 	if ((startrow+readnrows) > nr ) {
 		readnrows = nr-startrow;
-		endoff = readnrows - (nrows+offset);
+		endoff = readnrows - (nrows+startoff);
 	}	
 	std::vector<double> d = readValues(startrow, readnrows, 0, nc);
 
-	std::vector<double> f;
-	get_focal(f, d, nrows, nc, w[0], w[1], offset, endoff, fillvalue);
-	return(f);
+//	get_focal(f, d, nrows, nc, w[0], w[1], offset, endoff, fillvalue);
+//  get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
+
+	int wc = w[1] / 2;
+	wr = std::min(wr, nrows-1);
+	wc = std::min(wc, nc-1);
+
+	size_t n = nrows * nc * w[0] * w[1];
+	std::vector<double> out(n, fillvalue);
+	int nrmax = nrows + startoff + endoff - 1;
+	//int nrmax = d.size() / ncol - 1;
+	int f = 0;
+	for (int r=0; r < nrows; r++) {
+		for (int c=0; c < nc; c++) {
+			for (int i = -wr; i <= wr; i++) {
+				int row = r+startoff+i;		
+				if ((row < 0) || (row > nrmax)) {
+					f = f + w[1];
+				} else {
+					unsigned bcell = row * nc;
+					for (int j = -wc; j <= wc; j++) {
+						int col = c + j;
+						if ((col >= 0) && (col < nc)) {
+							out[f] = d[bcell+col];
+						}
+						f++;
+					}
+				}
+			}
+		}
+	}
+	
+	return out;
 }
 
 
