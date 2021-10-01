@@ -391,8 +391,8 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 	}
 	
 	std::vector<double> fill;
-	std::vector<double> vout;
 	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> vout;
 		unsigned rstart, roff;
 		unsigned rnrows = out.bs.nrows[i];
 		if (i == 0) {
