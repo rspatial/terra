@@ -181,9 +181,13 @@ setMethod("cats" , "SpatRaster",
 
 
 active_cats <- function(x, layer) {
+	ff <- is.factor(x)
+	if (!any(ff)) {
+		return (lapply(ff, function(i)NULL))
+	}
 	cats <- x@ptr$getCategories()
 	x <- lapply(1:length(cats), function(i) {
-		if (is.null(cats[[i]])) return( NULL)
+		if (cats[[1]]$df$nrow == 0) return(NULL)
 		r <- .getSpatDF(cats[[i]]$df)
 		a <- activeCat(x, i)
 		r[, c(1, a+1)]
