@@ -37,21 +37,26 @@ std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& 
 
 // todo: three dimensional focal
 
-std::vector<double> get_focal(std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int offset, double fill) {
+get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
 	int wr = wrows / 2;
 	int wc = wcols / 2;
 	wr = std::min(wr, nrow-1);
 	wc = std::min(wc, ncol-1);
 
+	
 	size_t n = nrow * ncol * wrows * wcols;
-	std::vector<double> out(n, fill);
+	out.resize(n, fill);
 	int f = 0;
-
-	int nrmax = nrow+offset-1;
+	int nrmax = nrow + startoff + endoff - 1;
+	//int nrmax = d.size() / ncol - 1;
+	
+	
+	//Rcpp::Rcout << nrow << " " << offset << " " << nrmax << std::endl;
+	
 	for (int r=0; r < nrow; r++) {
 		for (int c=0; c < ncol; c++) {
 			for (int i = -wr; i <= wr; i++) {
-				int row = r+offset+i;		
+				int row = r+startoff+i;		
 				if ((row < 0) || (row > nrmax)) {
 					f = f + wcols;
 				} else {
@@ -67,7 +72,6 @@ std::vector<double> get_focal(std::vector<double> &d, int nrow, int ncol, int wr
 			}
 		}
 	}
-	return(out);
 }
 
 
@@ -96,11 +100,15 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	int offset = row-startrow;
 
 	int readnrows = nrows+offset+wr;
-	readnrows = (startrow+readnrows) > nr ? (nr-startrow) : readnrows;
-
+	int endoff = wr;
+	if ((startrow+readnrows) > nr ) {
+		readnrows = nr-startrow;
+		endoff = readnrows - (nrows+offset);
+	}	
 	std::vector<double> d = readValues(startrow, readnrows, 0, nc);
 
-	std::vector<double> f = get_focal(d, nrows, nc, w[0], w[1], offset, fillvalue);
+	std::vector<double> f;
+	get_focal(f, d, nrows, nc, w[0], w[1], offset, endoff, fillvalue);
 	return(f);
 }
 
