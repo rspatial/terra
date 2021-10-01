@@ -48,15 +48,15 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 			for (f in ff) {
 				#lvs <- levs[[f]]
 				cg <- cgs[[f]]
-				i <- match(v[,1], cg[,1])
-				act <- activeCat(x, f)
+				i <- match(v[,f], cg[,1])
+				act <- activeCat(x, f) + 1
 				#v[[f]] = factor(v[[f]], levels=(1:length(lvs))-1)
 				#levels(v[[f]]) = levs[[f]]
 				
-				if (!inherits(cg[[act+1]], "numeric")) {
-					v[[f]] <- factor(cg[i, act+1], levels=unique(cg[[act+1]]))
+				if (!inherits(cg[[act]], "numeric")) {
+					v[[f]] <- factor(cg[i, act], levels=unique(cg[[act]]))
 				} else {
-					v[[f]] <- cg[i, act+1]				
+					v[[f]] <- cg[i, act]				
 				}
 			}
 		}

@@ -31,6 +31,8 @@
 - `plot` now passes the layer index to `fun` [#310](https://github.com/rspatial/terra/issues/310) by Ben Tupper
 - the `to_id` in `nearest` was sometimes wrong. See [#328](https://github.com/rspatial/terra/issues/328) by Shawn Ligocki
 - better support for ESRI value attribute tables (VAT). See this [SO question] https://stackoverflow.com/q/69385928/635245
+- `focal` did not reset initial values for NA cells when processing chunks. [#312](https://github.com/rspatial/terra/issues/312) by Jeffrey Evans
+
 
 # version 1.3-22
 

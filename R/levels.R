@@ -180,6 +180,25 @@ setMethod("cats" , "SpatRaster",
 
 
 
+active_cats <- function(x, layer) {
+	cats <- x@ptr$getCategories()
+	x <- lapply(1:length(cats), function(i) {
+		if (is.null(cats[[i]])) return( NULL)
+		r <- .getSpatDF(cats[[i]]$df)
+		a <- activeCat(x, i)
+		r[, c(1, a+1)]
+	})
+	
+	if (!missing(layer)) {
+		x[[layer]]
+	} else {
+		x
+	}
+}
+
+
+
+
 
 setMethod ("as.numeric", "SpatRaster", 
 	function(x, index=NULL, filename="", ...) {
