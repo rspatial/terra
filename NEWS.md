@@ -16,7 +16,7 @@
 - `crs` has a new argument `parse`. See [#344](https://github.com/rspatial/terra/issues/344) 
 - `plot-SpatRaster,missing` has a new argument `reset=FALSE` that allows resetting the par()$mar parameters after plotting. See issue [#340](https://github.com/rspatial/terra/issues/340) by Derek Friend
 - `crds` has a new argument `na.rm`. See [#338](https://github.com/rspatial/terra/issues/338) by Kodi Arfer 
-- `show(Spat*)` now prints the name and EPSG code of a crs if available. See [#317] https://github.com/rspatial/terra/issues/317 by Jakub Nowosad
+- `show(Spat*)` now prints the name and EPSG code of a crs if available. See [#317] (https://github.com/rspatial/terra/issues/317) by Jakub Nowosad
 
 
 ## bug fixes 
@@ -30,8 +30,9 @@
 - `buffer,SpatVector` no longer treats lines like polygons [#332](https://github.com/rspatial/terra/issues/332) by Márcia Barbosa
 - `plot` now passes the layer index to `fun` [#310](https://github.com/rspatial/terra/issues/310) by Ben Tupper
 - the `to_id` in `nearest` was sometimes wrong. See [#328](https://github.com/rspatial/terra/issues/328) by Shawn Ligocki
-- better support for ESRI value attribute tables (VAT). See this [SO question] https://stackoverflow.com/q/69385928/635245
+- better support for ESRI value attribute tables (VAT). See this [SO question]( https://stackoverflow.com/q/69385928/635245)
 - `focal` did not reset initial values for NA cells when processing chunks. [#312](https://github.com/rspatial/terra/issues/312) by Jeffrey Evans
+- `focal` could run out of memory when using a large window and user-defined function, and was inexact at the chunk boundary [#347](https://github.com/rspatial/terra/issues/347)
 
 
 # version 1.3-22
