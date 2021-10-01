@@ -2052,6 +2052,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
@@ -3766,7 +3767,7 @@ if test  -n "$proj_lib_path"  ; then
 
 else
   if test "${proj_config_ok}" = yes; then
-    if test `uname` = "Darwin" ; then
+    if test `uname` = "Darwin"; then
       PROJ_LIB_PATH=`${PROJ_CONFIG} --libs --static`
     else
       PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
