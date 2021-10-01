@@ -45,12 +45,12 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 		return(x)
 
 	} else {
+		msz <- prod(w)
 		out <- rast(x)
 		readStart(x)
 		on.exit(readStop(x))
-		b <- writeStart(out, filename, ...)
+		b <- writeStart(out, filename, n=msz*4, ...)
 		dow <- !isTRUE(all(m == 1))
-		msz <- prod(w)
 		if (any(is.na(m))) {
 			k <- !is.na(m)
 			mm <- m[k]
