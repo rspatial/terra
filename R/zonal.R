@@ -30,18 +30,17 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				}
 			}
 		}
-		if (is.factor(z)) {
-			levs <- levels(z)[[1]]
-			out$zone <- levs[out$zone+1]
-		}
-		colnames(out)[1] <- names(z)
 
 		if (as.raster) {
 			subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
 		} else {
+			if (is.factor(z)) {
+				levs <- levels(z)[[1]]
+				out$zone <- levs[out$zone+1]
+			}
+			colnames(out)[1] <- names(z)
 			out
 		}
-
 	}
 )
 
