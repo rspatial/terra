@@ -32,6 +32,9 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		}
 
 		if (as.raster) {
+			if (is.null(wopt$names)) {
+				wopt$names <- names(x)
+			}
 			subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
 		} else {
 			if (is.factor(z)) {
