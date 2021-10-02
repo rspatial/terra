@@ -405,6 +405,11 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 		// this should be chunked to avoid the copy
 		// but this may still help in some cases
 			source[0].values = v;
+			std::string f = opt.get_filename();
+			if (f == "") {
+				std::string filename = tempFile(opt.get_tempdir(), ".tif");
+				opt.set_filenames({filename});
+			}	
 			*this = writeRaster(opt);
 			return true;
 		} else {
