@@ -33,6 +33,8 @@
 - better support for ESRI value attribute tables (VAT). See this [SO question]( https://stackoverflow.com/q/69385928/635245)
 - `focal` did not reset initial values for NA cells when processing chunks. [#312](https://github.com/rspatial/terra/issues/312) by Jeffrey Evans
 - `focal` could run out of memory when using a large window and user-defined function, and was inexact at the chunk boundary [#347](https://github.com/rspatial/terra/issues/347)
+- `zonal` with `as.raster=TRUE` failed for categorical SpatRasters [#348](https://github.com/rspatial/terra/issues/348) by Jakub Nowosad
+
 
 
 # version 1.3-22
