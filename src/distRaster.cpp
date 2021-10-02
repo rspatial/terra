@@ -1696,7 +1696,8 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 	if (lonlat) { 
 		bool disagg = false;
 		SpatOptions xopt(opt);
-		if (out.ncol() == 1) {
+		SpatExtent extent = getExtent();
+		if ((out.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
 			disagg = true;
 			std::vector<unsigned> fact = {1,2};
 			out = out.disaggregate(fact, xopt);
@@ -1704,7 +1705,6 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 		
 		if (!out.writeStart(opt)) { return out; }
 
-		SpatExtent extent = getExtent();
 		SpatExtent e = {extent.xmin, extent.xmin+out.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = out.crop(e, "near", xopt);
 		SpatVector p = onecol.as_polygons(false, false, false, false, xopt);
@@ -1798,13 +1798,13 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 
 	if (is_lonlat()) {
 		SpatRaster x = geometry(1);
+		SpatExtent extent = x.getExtent();
 		SpatOptions opt;
-		if (x.ncol() == 1) {
+		if ((x.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
 			std::vector<unsigned> fact= {1,2};
 			x = x.disaggregate(fact, opt);
 		}
 		size_t nc = x.ncol();
-		SpatExtent extent = x.getExtent();
 		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = x.crop(e, "near", opt);
 		SpatVector p = onecol.as_polygons(false, false, false, false, opt);
