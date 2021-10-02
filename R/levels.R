@@ -260,8 +260,8 @@ catLayer <- function(x, index, ...) {
 			setCats(x, 1, fact, 2)
 		}
 		x
-	}
-)
+}
+
 	
 	
 setMethod("catalyze", "SpatRaster", 
