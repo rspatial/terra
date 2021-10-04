@@ -108,8 +108,8 @@ setMethod ("setCats" , "SpatRaster",
 			names(x)[layer] <- colnames(value)[index]
 		}
 
-		value <- .makeSpatDF(value)
 		if (ncol(value) > 2) vat <- TRUE
+		value <- .makeSpatDF(value)
 		ok <- x@ptr$setCategories(layer-1, value, index-1, vat)
 #		} else {
 #			value <- as.character(value)
