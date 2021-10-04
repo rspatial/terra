@@ -37,6 +37,7 @@ class SpatCategories {
 	public:
 		SpatDataFrame d;
 		unsigned index = 0;
+		bool vat = false;
 };
 
 
@@ -122,6 +123,7 @@ class SpatRasterSource {
 //		std::vector<int> attsIndex;
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
+
 
 		std::vector<bool> hasColors;
 		std::vector<SpatDataFrame> cols;
@@ -382,7 +384,8 @@ class SpatRaster {
 		SpatRaster makeCategorical(unsigned layer, SpatOptions opt);
 		bool createCategories(unsigned layer);
 		std::vector<bool> hasCategories();
-		bool setCategories(unsigned layer, SpatDataFrame d, unsigned index);
+		bool isRat();		
+		bool setCategories(unsigned layer, SpatDataFrame d, unsigned index, bool is_vat);
 		bool removeCategories(unsigned layer);
 		std::vector<SpatCategories> getCategories();
 		SpatCategories getLayerCategories(unsigned layer);

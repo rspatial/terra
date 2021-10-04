@@ -226,9 +226,18 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 //	}
 	
 	std::vector<bool> hasCT = hasColors();
+	bool rat = isRat();
 	std::vector<bool> hasCats = hasCategories();
 	std::vector<SpatDataFrame> ct = getColors();
-	if (hasCT[0] || hasCats[0]) { 
+	if (rat) {
+		datatype = "INT4S";
+		hasCats[0] = false;
+		hasCT[0] = false;
+		std::fill(hasCT.begin(), hasCT.end(), false);
+		SpatCategories cats = source[0].cats[0];
+		SpatOptions sopt(opt);
+		cats.d.write_dbf(filename, true, sopt);
+	} else if (hasCT[0] || hasCats[0]) { 
 		datatype = "INT1U";
 	} else if (datatype != "INT1U") {
 		std::fill(hasCT.begin(), hasCT.end(), false);

@@ -95,7 +95,6 @@ class SpatDataFrame {
 		int get_fieldindex(std::string field);
 
 		bool field_exists(std::string field);
-		
-		
+		bool write_dbf(std::string filename, bool overwrite, SpatOptions opt);
 };
 
