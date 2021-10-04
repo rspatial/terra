@@ -586,13 +586,17 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 					out[i][nl+cells+1].push_back(y[i]);		
 				}
 			}
-		} else { // multipoint
+		} else { //multipoint
+			Rcpp::Rcout << "multipoint" << std::endl;
 			for (size_t i=0; i<ng; i++) {
 				SpatVector vv = v.subset_rows(i);
 				SpatDataFrame vd = vv.getGeometryDF();
 				std::vector<double> x = vd.getD(0);
 				std::vector<double> y = vd.getD(1);
-				srcout = extractXY(x, y, method, cells);
+				//srcout = extractXY(x, y, method, cells);
+				Rcpp::Rcout << srcout.size() << " " << srcout[0].size() << std::endl;
+				
+				/*
 				for (size_t j=0; j<nl; j++) {
 					out[i][j] = srcout[j];
 				}
@@ -603,6 +607,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 					out[i][nl+cells]   = x;		
 					out[i][nl+cells+1] = y;		
 				}
+				*/
 			}
 		}
 	} else {
@@ -672,7 +677,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 	if (gtype == "points") {
 		if (method != "bilinear") method = "simple";
 		SpatDataFrame vd = v.getGeometryDF();
-		if (vd.nrow() == ng) {  // single point geometry
+		//if (vd.nrow() == ng) {  // single point geometry
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
 			if (!cells & !xy & !weights) {
@@ -680,7 +685,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 			} else {
 				srcout = extractXY(x, y, method, cells);
 				nl += cells;
-				flat.reserve(ng * nl); // + ng);
+				flat.reserve(ng * nl);
 				for (size_t i=0; i<ng; i++) {
 					//flat.push_back( i+1 );//no id for points
 					for (size_t j=0; j<nl; j++) {
@@ -693,17 +698,24 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 				}
 			}
 			return flat;
-			
+		/*	
 		} else { // multipoint
+			Rcpp::Rcout << "multipoint" << std::endl;
+			std::vector<double> x = vd.getD(0);
+			std::vector<double> y = vd.getD(1);
+			if (!cells & !xy & !weights) {
+				return( extractXYFlat(x, y, method, cells));
+			}
 			for (size_t i=0; i<ng; i++) {
 				SpatVector vv = v.subset_rows(i);
 				SpatDataFrame vd = vv.getGeometryDF();
 				std::vector<double> x = vd.getD(0);
 				std::vector<double> y = vd.getD(1);
 				srcout = extractXY(x, y, method, cells);
-				for (size_t j=0; j<nl; j++) {
-					out[i][j] = srcout[j];
-				}
+				Rcpp::Rcout << srcout.size() << " " << srcout[0].size();
+				
+				out.push_back(srcout);
+		
 				if (cells) {
 					out[i][nl] = srcout[nl];			
 				}
@@ -711,8 +723,12 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 					out[i][nl+cells]   = x;		
 					out[i][nl+cells+1] = y;		
 				}
+				
+				
 			}
+			
 		}
+		*/
 	} else {
 	    SpatRaster r = geometry(1);
 	    //SpatOptions opt;
