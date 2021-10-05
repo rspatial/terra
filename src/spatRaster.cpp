@@ -1337,7 +1337,7 @@ std::vector<double> SpatRaster::cellFromRowCol(std::vector<int_64> row, std::vec
 	int_64 nr = nrow();
 	int_64 nc = ncol();
 	for (size_t i=0; i<n; i++) {
-		result[i] = (row[i]<0 || row[i] >= nr || col[i]<0 || col[i] >= nc) ? NAN : row[i] * nc + col[i];
+		result[i] = (row[i]<0 || row[i] >= nr || col[i]<0 || col[i] >= nc) ? NAN : (double)row[i] * nc + col[i];
 	}
 	return result;
 }
