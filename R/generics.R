@@ -510,10 +510,15 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 
 setMethod("project", signature(x="SpatRaster"), 
-	function(x, y, method=NULL, mask=FALSE, filename="", ...)  {
+	function(x, y, method, mask=FALSE, filename="", ...)  {
 	  
-	  method <- ifelse(!is.null(method), method, ifelse(is.factor(x), "near", "bilinear"))
-		method <- ifelse(method == "ngb", "near", method)
+		if (missing(method)) {
+			method <- ifelse(is.factor(x)[1], "near", "bilinear")
+		}
+		if (method == "ngb") {
+			method <- "near"
+			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
+		}
 		opt <- spatOptions(filename, ...)
 		if (inherits(y, "SpatRaster")) {
 			#x@ptr <- x@ptr$warp(y@ptr, method, opt)

@@ -13,7 +13,7 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 \usage{
 \S4method{project}{SpatVector}(x, y)
 
-\S4method{project}{SpatRaster}(x, y, method=NULL, mask=FALSE, filename="", ...)
+\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, filename="", ...)
 }
 
 \arguments{
@@ -26,8 +26,8 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
   
   \item{method}{character. Method used for estimating the new cell values. One of: 
   
-	near: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. Default if \code{x} is categorical.
-	bilinear: bilinear interpolation. Default if \code{x} is continuous.
+	near: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.
+	bilinear: bilinear interpolation. This is the default if the first layer of \code{x} is numeric (not categorical).
 	cubic: cubic interpolation.
 	cubicspline: cubic spline interpolation.
   }
