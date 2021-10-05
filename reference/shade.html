@@ -81,7 +81,7 @@ A hill shade layer is often used as a backdrop on top of which another, semi-tra
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-8</span>
       </span>
     </div>
 
@@ -175,7 +175,7 @@ A hill shade layer is often used as a backdrop on top of which another, semi-tra
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/elev.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='va'>alt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='disaggregate.html'>disaggregate</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>10</span>, method<span class='op'>=</span><span class='st'>"bilinear"</span><span class='op'>)</span>
+<span class='va'>alt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='disagg.html'>disagg</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>10</span>, method<span class='op'>=</span><span class='st'>"bilinear"</span><span class='op'>)</span>
 <span class='va'>slope</span> <span class='op'>&lt;-</span> <span class='fu'><a href='terrain.html'>terrain</a></span><span class='op'>(</span><span class='va'>alt</span>, <span class='st'>"slope"</span>, unit<span class='op'>=</span><span class='st'>"radians"</span><span class='op'>)</span>
 <span class='va'>aspect</span> <span class='op'>&lt;-</span> <span class='fu'><a href='terrain.html'>terrain</a></span><span class='op'>(</span><span class='va'>alt</span>, <span class='st'>"aspect"</span>, unit<span class='op'>=</span><span class='st'>"radians"</span><span class='op'>)</span>
 <span class='va'>hill</span> <span class='op'>&lt;-</span> <span class='fu'>shade</span><span class='op'>(</span><span class='va'>slope</span>, <span class='va'>aspect</span>, <span class='fl'>40</span>, <span class='fl'>270</span><span class='op'>)</span>

@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-8</span>
       </span>
     </div>
 
@@ -159,10 +159,10 @@
 <span class='va'>filename</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"_.tif"</span><span class='op'>)</span>
 <span class='va'>ff</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeTiles.html'>makeTiles</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>x</span>, <span class='va'>filename</span><span class='op'>)</span>
 <span class='va'>ff</span>
-</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp55z7Gz/file43d53ac3c186_1.tif"
-#&gt; [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp55z7Gz/file43d53ac3c186_2.tif"
-#&gt; [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp55z7Gz/file43d53ac3c186_3.tif"
-#&gt; [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp55z7Gz/file43d53ac3c186_4.tif"</div><div class='input'>
+</div><div class='output co'>#&gt; [1] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpO4IxMJ/file22c845d2c3c0_1.tif"
+#&gt; [2] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpO4IxMJ/file22c845d2c3c0_2.tif"
+#&gt; [3] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpO4IxMJ/file22c845d2c3c0_3.tif"
+#&gt; [4] "/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpO4IxMJ/file22c845d2c3c0_4.tif"</div><div class='input'>
 <span class='va'>vrtfile</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>".vrt"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'>vrt</span><span class='op'>(</span><span class='va'>ff</span>, <span class='va'>vrtfile</span><span class='op'>)</span>
 <span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/readLines.html'>readLines</a></span><span class='op'>(</span><span class='va'>vrtfile</span><span class='op'>)</span><span class='op'>)</span>
@@ -177,10 +177,10 @@
 #&gt; resolution  : 3.6, 1.8  (x, y)
 #&gt; extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 #&gt; coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#&gt; source      : file43d59d6628e.vrt 
-#&gt; name        : file43d59d6628e 
-#&gt; min value   :               1 
-#&gt; max value   :           10000 </div></pre>
+#&gt; source      : file22c810319610.vrt 
+#&gt; name        : file22c810319610 
+#&gt; min value   :                1 
+#&gt; max value   :            10000 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

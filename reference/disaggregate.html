@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Disaggregate raster cells — disaggregate • terra</title>
+<title>Disaggregate raster cells or vector geometries — disagg • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="Disaggregate raster cells — disaggregate" />
+<meta property="og:title" content="Disaggregate raster cells or vector geometries — disagg" />
 <meta property="og:description" content="SpatRaster: Create a SpatRaster with a higher resolution (smaller cells). The values in the new SpatRaster are the same as in the larger original cells.
 SpatVector: Separate multi-objects (points, lines, polygons) into single objects." />
 <meta property="og:image" content="/logo.png" />
@@ -81,7 +81,7 @@ SpatVector: Separate multi-objects (points, lines, polygons) into single objects
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-8</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@ SpatVector: Separate multi-objects (points, lines, polygons) into single objects
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Disaggregate raster cells</h1>
+    <h1>Disaggregate raster cells or vector geometries</h1>
     
     <div class="hidden name"><code>disaggregate.Rd</code></div>
     </div>
@@ -131,10 +131,10 @@ SpatVector: Separate multi-objects (points, lines, polygons) into single objects
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>disaggregate</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fact</span>, method<span class='op'>=</span><span class='st'>"near"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>disagg</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fact</span>, method<span class='op'>=</span><span class='st'>"near"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>disaggregate</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='fu'>disagg</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,11 +170,11 @@ SpatVector: Separate multi-objects (points, lines, polygons) into single objects
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='fl'>10</span>, nrows<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='va'>rd</span> <span class='op'>&lt;-</span> <span class='fu'>disaggregate</span><span class='op'>(</span><span class='va'>r</span>, fact<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>rd</span> <span class='op'>&lt;-</span> <span class='fu'>disagg</span><span class='op'>(</span><span class='va'>r</span>, fact<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='dimensions.html'>ncol</a></span><span class='op'>(</span><span class='va'>rd</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 20</div><div class='input'><span class='fu'><a href='dimensions.html'>nrow</a></span><span class='op'>(</span><span class='va'>rd</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 100</div><div class='input'><span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='va'>rd</span> <span class='op'>&lt;-</span> <span class='fu'>disaggregate</span><span class='op'>(</span><span class='va'>r</span>, fact<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>rd</span> <span class='op'>&lt;-</span> <span class='fu'>disagg</span><span class='op'>(</span><span class='va'>r</span>, fact<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 
 </div></pre>
   </div>
