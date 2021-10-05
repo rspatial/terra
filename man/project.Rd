@@ -13,7 +13,7 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 \usage{
 \S4method{project}{SpatVector}(x, y)
 
-\S4method{project}{SpatRaster}(x, y, method="bilinear", mask=FALSE, filename="", ...)
+\S4method{project}{SpatRaster}(x, y, method=NULL, mask=FALSE, filename="", ...)
 }
 
 \arguments{
@@ -26,8 +26,8 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
   
   \item{method}{character. Method used for estimating the new cell values. One of: 
   
-	near: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values.
-	bilinear: bilinear interpolation. Default.
+	near: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. Default if \code{x} is categorical.
+	bilinear: bilinear interpolation. Default if \code{x} is continuous.
 	cubic: cubic interpolation.
 	cubicspline: cubic spline interpolation.
   }
@@ -49,7 +49,7 @@ User beware. Sadly, the PROJ.4 notation has been partly deprecated in the GDAL/P
 
 When printing a Spat* object the PROJ.4 notation is shown because it is the most concise and clear format available. However, internally a WKT representation is used (see \code{\link{crs}}).
 
-Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. In each transformation the values for the new cells are estiamted in some fashion. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data. 
+Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. In each transformation the values for the new cells are estimated in some fashion. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data. 
 
 When using this method with a \code{SpatRaster}, the preferable approach is to provide a template \code{SpatRaster} as argument \code{y}. The template is then another raster dataset that you want your data to align with. If you do not have a template to begin with, you can do \code{project(x, crs)} and then manipulate the output to get the template you want. For example, where possible use whole numbers for the extent and resolution so that you do not have to worry about small differences in the future. You can use commands like \code{dim(z) = c(180, 360)} or \code{res(z) <- 100000}. 
 
