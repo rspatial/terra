@@ -12,12 +12,12 @@ If the origin and crs are the same, you should consider using these other functi
 }
 
 \usage{
-\S4method{resample}{SpatRaster,SpatRaster}(x, y, method="bilinear", filename="", ...)
+\S4method{resample}{SpatRaster,SpatRaster}(x, y, method, filename="", ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster to be resampleed}
-  \item{y}{SpatRaster that \code{x} should be resampled to}
+  \item{x}{SpatRaster to be resampled}
+  \item{y}{SpatRaster with the geometry that \code{x} should be resampled to}
   \item{method}{character. Method used for estimating the new cell values. One of: 
   
 	\code{near}: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.

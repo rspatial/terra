@@ -18,7 +18,7 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 
 \arguments{
   \item{x}{SpatVector}
-  \item{y}{if (\code{x} is a SpatRaster, the prefered approach is for \code{y} to be a SpatRaster as well, serving as a template for the output SpatRaster. Alternatively, you can provide a character variable containing a textual coordinate reference system (crs). 
+  \item{y}{if (\code{x} is a SpatRaster, the prefered approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry of the output SpatRaster. Alternatively, you can provide a character variable containing a textual coordinate reference system (crs). 
     
   You can use the following formats to provide textual coordinate reference system (crs) definitions: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}) to define the output coordinate reference system (crs). But note that when using PROJ.4 you now must use the WGS84 datum. Other datums are silently ignored. 
   
