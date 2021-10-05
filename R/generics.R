@@ -510,8 +510,9 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 
 setMethod("project", signature(x="SpatRaster"), 
-	function(x, y, method="bilinear", mask=FALSE, filename="", ...)  {
-
+	function(x, y, method=NULL, mask=FALSE, filename="", ...)  {
+	  
+	  method <- ifelse(!is.null(method), method, ifelse(is.factor(x), "near", "bilinear"))
 		method <- ifelse(method == "ngb", "near", method)
 		opt <- spatOptions(filename, ...)
 		if (inherits(y, "SpatRaster")) {
