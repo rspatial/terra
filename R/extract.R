@@ -221,6 +221,10 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			e <- matrix(e, ncol=nc, byrow=TRUE)
 		}
 		e <- cbind(1:nrow(e), e)
+		if (nrow(e) > nrow(y)) { #multipoint 
+			g <- geom(y)
+			e[,1] <- g[,1]
+		}
 	} else {
 		e <- matrix(e, ncol=nc+1, byrow=TRUE)
 	}

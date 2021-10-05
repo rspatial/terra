@@ -222,6 +222,7 @@ RCPP_MODULE(spat){
 		.method("rbind", &SpatDataFrame::rbind)
 		.method("values", &getDataFrame, "get data.frame")
 		.method("unique", &SpatDataFrame::unique)
+		.method("write", &SpatDataFrame::write_dbf)
 		.field("messages", &SpatDataFrame::msg, "messages")
 	;
 
@@ -247,6 +248,7 @@ RCPP_MODULE(spat){
 		.constructor()
 		.field_readonly("df", &SpatCategories::d, "d")
 		.field("index", &SpatCategories::index, "index")
+		.field("vat", &SpatCategories::vat, "vat")
 	;
 
 

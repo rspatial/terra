@@ -983,6 +983,13 @@ std::vector<bool> SpatRaster::hasCategories() {
 	return b;
 }
 
+bool SpatRaster::isRat() {
+	if ((nlyr() == 1) && source[0].hasCategories[0]) {
+		return source[0].cats[0].vat;
+	}
+	return false;
+}
+
 
 
 bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
@@ -1016,7 +1023,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 
 
 
-bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) {
+bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index, bool is_vat) {
 
 	if (layer > (nlyr()-1)) { 
 		setError("invalid layer number");
@@ -1032,7 +1039,8 @@ bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) 
 	SpatCategories cats;
 	cats.d = d;
 	cats.index = index;
-
+	cats.vat = is_vat;
+	
 	if (source[sl[0]].cats.size() < sl[1]) {
 		source[sl[0]].cats.resize(sl[1]);
 	}

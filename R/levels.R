@@ -69,6 +69,7 @@ setMethod ("setCats" , "SpatRaster",
 			value <- value[[1]]		
 		}
 		setname <- FALSE
+		vat <- FALSE
 		if (!is.data.frame(value)) {
 			if (is.vector(value) || is.factor(value)) {
 				if (length(value == 1) && value[1] == "") {
@@ -81,7 +82,7 @@ setMethod ("setCats" , "SpatRaster",
 		} else {
 			setname <- TRUE
 			if (nrow(value) > 256) {
-				error("setCats", "you can set no more than 256 categories")
+				vat <- TRUE
 			}
 			if (ncol(value) == 1) {
 				value <- data.frame(ID=1:nrow(value), value)
@@ -92,7 +93,7 @@ setMethod ("setCats" , "SpatRaster",
 				}
 				r <- range(value[,1])
 				if (r[1] < 0 || r[2] > 255) {
-					error("seCats", "ID values must be between 0 and 255")
+					vat <- TRUE
 				}
 			}
 		}
@@ -107,8 +108,9 @@ setMethod ("setCats" , "SpatRaster",
 			names(x)[layer] <- colnames(value)[index]
 		}
 
+		if (ncol(value) > 2) vat <- TRUE
 		value <- .makeSpatDF(value)
-		ok <- x@ptr$setCategories(layer-1, value, index-1)
+		ok <- x@ptr$setCategories(layer-1, value, index-1, vat)
 #		} else {
 #			value <- as.character(value)
 #			x@ptr$setLabels(layer-1, value)

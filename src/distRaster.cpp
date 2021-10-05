@@ -1691,24 +1691,29 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 		}
 	}
 
-Rcpp::Rcout << "opt " << opt.get_filename() << std::endl;
-Rcpp::Rcout << "mopt " << mopt.get_filename() << std::endl;
-	
-  	if (!out.writeStart(opt)) { return out; }
+
 
 	if (lonlat) { 
+		bool disagg = false;
+		SpatOptions xopt(opt);
 		SpatExtent extent = getExtent();
-		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
-		SpatOptions optint(opt);
-		SpatRaster onecol = out.crop(e, "near", optint);
-		SpatOptions popt(opt);
-		SpatVector p = onecol.as_polygons(false, false, false, false, popt);
+		if ((out.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
+			disagg = true;
+			std::vector<unsigned> fact = {1,2};
+			out = out.disaggregate(fact, xopt);
+		}
+		
+		if (!out.writeStart(opt)) { return out; }
+
+		SpatExtent e = {extent.xmin, extent.xmin+out.xres(), extent.ymin, extent.ymax};
+		SpatRaster onecol = out.crop(e, "near", xopt);
+		SpatVector p = onecol.as_polygons(false, false, false, false, xopt);
 		if (p.hasError()) {
 			out.setError(p.getError());
 			return out;
 		}
 		std::vector<double> a = p.area(unit, true, {});
-		size_t nc = ncol();
+		size_t nc = out.ncol();
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
 			for (size_t j=0; j<out.bs.nrows[i]; j++) {
@@ -1717,8 +1722,18 @@ Rcpp::Rcout << "mopt " << mopt.get_filename() << std::endl;
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		}
+		if (disagg) {
+			out.writeStop();
+			SpatRaster tmp = out.to_memory_copy();
+			std::vector<unsigned> fact = {1,2};
+			opt.overwrite=true;
+			out = tmp.aggregate(fact, "sum", true, opt); 
+		} else {
+			out.writeStop();
+		}
 
 	} else {
+		if (!out.writeStart(opt)) { return out; }
 		if (transform) {
 			SpatExtent extent = getExtent();
 			double dy = yres() / 2;
@@ -1747,9 +1762,8 @@ Rcpp::Rcout << "mopt " << mopt.get_filename() << std::endl;
 				if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 			}
 		}
+		out.writeStop();
 	} 
-	out.writeStop();
-
 
 	if (mask) {
 		out = out.mask(*this, false, NAN, NAN, mopt);
@@ -1785,12 +1799,16 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 	if (is_lonlat()) {
 		SpatRaster x = geometry(1);
 		SpatExtent extent = x.getExtent();
-		SpatExtent e = {extent.xmin, extent.xmin+xres(), extent.ymin, extent.ymax};
 		SpatOptions opt;
+		if ((x.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
+			std::vector<unsigned> fact= {1,2};
+			x = x.disaggregate(fact, opt);
+		}
+		size_t nc = x.ncol();
+		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = x.crop(e, "near", opt);
 		SpatVector p = onecol.as_polygons(false, false, false, false, opt);
 		std::vector<double> ar = p.area(unit, true, {});
-		size_t nc = ncol();
 		if (!hasValues()) {
 			out.resize(1);
 			for (size_t i=0; i<ar.size(); i++) {

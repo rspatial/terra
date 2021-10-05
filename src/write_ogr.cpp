@@ -403,4 +403,108 @@ GDALDataset* SpatVector::GDAL_ds() {
 }
 
 
+#include <fstream>
+
+bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions opt) {
+// filename is here "raster.tif"
+// to write "raster.tif.vat.dbf"
+
+	if (filename != "") {
+		if (file_exists(filename) & (!overwrite)) {
+			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
+			return(false);
+		}
+		if (nrow() == 0) {
+			setError("nothing to write");
+			return(false);		
+		}
+	}
+
+	std::string fbase = tempFile(opt.get_tempdir(), "");
+	std::string f = fbase + ".shp";
+    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "ESRI Shapefile" );
+    GDALDataset *poDS = NULL;
+    poDS = poDriver->Create(f.c_str(), 0, 0, 0, GDT_Unknown, NULL );
+    if( poDS == NULL ) {
+        setError("Creation of output dataset failed" );
+        return false;
+    }
+
+	OGRwkbGeometryType wkb = wkbPoint;
+	OGRSpatialReference *SRS = NULL;
+    OGRLayer *poLayer;
+    poLayer = poDS->CreateLayer("dbf", SRS, wkb, NULL );
+    if( poLayer == NULL ) {
+        setError( "Layer creation failed" );
+        return false;
+    }
+	std::vector<std::string> nms = get_names();
+	std::vector<std::string> tps = get_datatypes();
+	OGRFieldType otype;
+	int nfields = nms.size();
+
+	for (int i=0; i<nfields; i++) {
+		if (tps[i] == "double") {
+			otype = OFTReal;
+		} else if (tps[i] == "long") {
+			otype = OFTInteger64;
+		} else {
+			otype = OFTString;
+		}
+
+		OGRFieldDefn oField(nms[i].c_str(), otype);
+		if (otype == OFTString) {
+			oField.SetWidth(32); // needs to be computed
+		}
+		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
+			setError( "Field creation failed for: " + nms[i]);
+			return false;
+		}
+	}
+
+	for (size_t i=0; i<nrow(); i++) {
+	
+		OGRFeature *poFeature;
+        poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
+		for (int j=0; j<nfields; j++) {
+			if (tps[j] == "double") {
+				poFeature->SetField(j, getDvalue(i, j));
+			} else if (tps[j] == "long") {
+				poFeature->SetField(j, (GIntBig) getIvalue(i, j));
+			} else {
+				poFeature->SetField(j, getSvalue(i, j).c_str());
+			}
+		}
+
+		OGRPoint pt;
+		pt.setX( 0.0 );
+		pt.setY( 0.0 );
+		poFeature->SetGeometry( &pt );	
+	
+		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+			setError("Failed to create feature");
+			return false;
+        }
+
+        OGRFeature::DestroyFeature( poFeature );
+    }
+    GDALClose( poDS );
+	f = fbase + ".dbf";
+	filename += ".vat.dbf";
+	// c++17 has file_copy
+    std::ifstream  src(f.c_str(), std::ios::binary);
+    std::ofstream  dst(filename.c_str(),  std::ios::binary);
+    dst << src.rdbuf();
+	
+	filename.erase(filename.length()-3);
+	filename += "cpg";
+	std::ofstream cpg;
+	cpg.open (filename.c_str());
+	cpg << "UTF-8";
+	cpg.close();
+	
+	return true;
+}
+
+
 #endif
