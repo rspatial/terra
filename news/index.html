@@ -129,7 +129,7 @@
 <div id="name-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#name-changes" class="anchor"></a>name changes</h2>
-<p>To avoid name conflicts with <code>sp</code> (via <code>raster</code>) <code>disaggregate</code> is now called <code>disagg</code> and <code>bbox</code> is now called <code>box</code> (and may be removed altogether).</p>
+<p>To avoid name conflicts with <code>sp</code> (via <code>raster</code>) <code>disaggregate</code> is now called <code>disagg</code> and <code>bbox,SpatRaster</code> and <code>bbox,SpatVector</code> have been removed (but could be resurrected in <code>raster</code>). To avoid name conflicts with <code>dismo</code> (via <code>raster</code>) <code>convHull</code> is now called <code>convexHull</code></p>
 </div>
 <div id="enhancements" class="section level2">
 <h2 class="hasAnchor">
@@ -138,6 +138,14 @@
 <li>
 <code>project</code> and <code>resample</code> now choose the resampling method based on the first layer, using “near” for categorical data. Thanks to Matthew Lewis <a href="https://github.com/rspatial/terra/pull/355"><a href='https://github.com/rspatial/terra/issues/355'>#355</a></a>
 </li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
+<ul>
+<li>
+<code>hist</code> failed with small samples. Issue <a href="https://github.com/rspatial/terra/issues/356"><a href='https://github.com/rspatial/terra/issues/356'>#356</a></a> by Martin Queinnec</li>
 </ul>
 </div>
 </div>
@@ -176,12 +184,12 @@
 <li>
 <code>crds</code> has a new argument <code>na.rm</code>. See <a href="https://github.com/rspatial/terra/issues/338"><a href='https://github.com/rspatial/terra/issues/338'>#338</a></a> by Kodi Arfer</li>
 <li>
-<code>show(Spat*)</code> now prints the name and EPSG code of a crs if available. See [<a href='https://github.com/rspatial/terra/issues/317'>#317</a>] (<a href="https://github.com/rspatial/terra/issues/317" class="uri">https://github.com/rspatial/terra/issues/317</a>) by Jakub Nowosad</li>
+<code>show(Spat*)</code> now prints the name and EPSG code of a crs if available. See <a href="https://github.com/rspatial/terra/issues/317"><a href='https://github.com/rspatial/terra/issues/317'>#317</a></a> by Jakub Nowosad</li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level2">
+<div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code>plotRGB</code> failed if there were <code>NA</code>s. Issue <a href="https://github.com/rspatial/terra/issues/308"><a href='https://github.com/rspatial/terra/issues/308'>#308</a></a> by Jakub Nowosad</li>
@@ -239,9 +247,9 @@
 <li>Argument <code>alpha</code> of <code>plot,SpatRaster</code> can now be a <code>SpatRaster</code>. See this <a href="https://stackoverflow.com/q/68736432/635245">SO question</a> by James McCarthy</li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>The <code>filename</code> and <code>overwrite</code> arguments were ignored in <code>rasterize</code>
 </li>
@@ -319,9 +327,9 @@
 <li>new argument <code>layer</code> in the <code>extract-SpatRaster,SpatVector</code> method to extract values for a single layers specified for each geometry (see this <a href="https://gis.stackexchange.com/a/401591/8993">question</a>).</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue <a href="https://github.com/rspatial/terra/issues/223"><a href='https://github.com/rspatial/terra/issues/233'>#233</a></a> by Dongdong Kong)</li>
 <li>
@@ -377,9 +385,9 @@
 <li>faster processing of large in memory rasters. See issue <a href="https://github.com/rspatial/terra/issues/206"><a href='https://github.com/rspatial/terra/issues/206'>#206</a></a> by Krzysztof Dyba.</li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level2">
+<div id="bug-fixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-4" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code>extract</code> with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)</li>
@@ -452,9 +460,9 @@
 <code>extract</code> has a new argument <code>exact</code> to get the fraction covered for each cell</li>
 </ul>
 </div>
-<div id="bug-fixes-4" class="section level2">
+<div id="bug-fixes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-5" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code><a href="../reference/flip.html">flip(x, direction="vertical")</a></code> no longer reverses the order of the layers</li>
