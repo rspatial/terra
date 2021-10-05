@@ -20,9 +20,9 @@ If the origin and crs are the same, you should consider using these other functi
   \item{y}{SpatRaster that \code{x} should be resampled to}
   \item{method}{character. Method used for estimating the new cell values. One of: 
   
-	\code{near}: nearest neighbour. This method is fast, and the preferred method if the cell values represent classes. It is not a good choice for continuous values.
-	
-	\code{bilinear}: bilinear interpolation. Default.
+	\code{near}: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.
+
+	\code{bilinear}: bilinear interpolation. This is the default if the first layer of \code{x} is numeric (not categorical).
 	
 	\code{cubic}: cubic interpolation.
 	

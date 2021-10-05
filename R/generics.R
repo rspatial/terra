@@ -592,8 +592,14 @@ setMethod("rectify", signature(x="SpatRaster"),
 )
 
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, method="bilinear", filename="", ...)  {
-		method <- ifelse(method == "ngb", "near", method)
+	function(x, y, method, filename="", ...)  {
+		if (missing(method)) {
+			method <- ifelse(is.factor(x)[1], "near", "bilinear")
+		}
+		if (method == "ngb") {
+			method <- "near"
+			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
+		}
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, opt)
 		messages(x, "resample")

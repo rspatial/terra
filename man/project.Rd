@@ -26,10 +26,14 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
   
   \item{method}{character. Method used for estimating the new cell values. One of: 
   
-	near: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.
-	bilinear: bilinear interpolation. This is the default if the first layer of \code{x} is numeric (not categorical).
-	cubic: cubic interpolation.
-	cubicspline: cubic spline interpolation.
+	\code{near}: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.
+
+	\code{bilinear}: bilinear interpolation. This is the default if the first layer of \code{x} is numeric (not categorical).
+	
+	\code{cubic}: cubic interpolation.
+	
+	\code{cubicspline}: cubic spline interpolation.
+	
   }
 
   \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}

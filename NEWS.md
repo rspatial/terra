@@ -4,6 +4,10 @@
 
 To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox` is now called `box` (and may be removed altogether).
 
+## enhancements
+
+- `project` and `resample` now choose the resampling method based on the first layer, using "near" for categorical data. Thanks to Matthew Lewis [#355](https://github.com/rspatial/terra/pull/355)
+
 
 # version 1.4-7
 
