@@ -124,7 +124,7 @@ if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneri
 
 if (!isGeneric("atan2")) { setGeneric("atan2", function(y, x) standardGeneric("atan2"))}
 if (!isGeneric("barplot")) {setGeneric("barplot", function(height,...) standardGeneric("barplot"))}
-if (!isGeneric("box")) {setGeneric("box", function(obj) standardGeneric("box"))}
+#if (!isGeneric("bndbox")) {setGeneric("bndbox", function(obj) standardGeneric("bndbox"))}
 if (!isGeneric("boundaries")) {	setGeneric("boundaries", function(x, ...) standardGeneric("boundaries"))}
 if (!isGeneric("boxplot")) { setGeneric("boxplot", function(x, ...) standardGeneric("boxplot"))}
 if (!isGeneric("buffer")) {setGeneric("buffer", function(x, ...) standardGeneric("buffer"))}
