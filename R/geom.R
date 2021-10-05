@@ -219,17 +219,17 @@ setMethod("crop", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
-setMethod("convHull", signature(x="SpatVector"), 
+setMethod("convexHull", signature(x="SpatVector"), 
 	function(x, by="") {
 		x@ptr <- x@ptr$hull("convex", by[1])
-		messages(x, "convHull")
+		messages(x, "convexHull")
 	}
 )
 
 setMethod("minRect", signature(x="SpatVector"), 
 	function(x, by="") {
 		x@ptr <- x@ptr$hull("minrot", by[1])
-		messages(x, "convHull")
+		messages(x, "minRect")
 	}
 )
 

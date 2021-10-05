@@ -114,6 +114,13 @@ setMethod("as.contour", signature(x="SpatRaster"),
 setMethod("pairs", signature(x="SpatRaster"), 
 	function(x, hist=TRUE, cor=TRUE, use="pairwise.complete.obs",  maxcells=100000, ...) {
 
+		if (nlyr(x) < 2) {
+			error("x must have at least two layers")
+		}
+		if (nlyr(x) < 2) {
+			error("x must have at least two layers")
+		}
+
 		panelhist <- function(x,...)	{
 			usr <- graphics::par("usr"); on.exit(graphics::par(usr))
 			graphics::par(usr = c(usr[1:2], 0, 1.5) )

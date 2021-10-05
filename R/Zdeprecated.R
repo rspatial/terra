@@ -25,12 +25,6 @@ setMethod("area", signature(x="SpatVector"),
 
 ## old not exported
 ################
-if (!isGeneric("convexhull")) {setGeneric("convexhull", function(x, ...) standardGeneric("convexhull"))}
-setMethod("convexhull", signature(x="SpatVector"), 
-	function(x) {
-		error("convexhull", "terra::convexhull has been removed. Use 'convHull' instead")
-	}
-)
 
 if (!isGeneric("perimeter")) {setGeneric("perimeter", function(x, ...) standardGeneric("perimeter"))}
 setMethod("perimeter", signature(x="SpatVector"), 

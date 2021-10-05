@@ -3,6 +3,7 @@
 ## name changes
 
 To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox,SpatRaster` and `bbox,SpatVector` have been removed (but could be resurrected in `raster`).
+To avoid name conflicts with `dismo` (via `raster`) `convHull` is now called `convexHull`
 
 ## enhancements
 

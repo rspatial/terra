@@ -2,8 +2,8 @@
 
 \docType{methods}
 
-\alias{convHull}
-\alias{convHull,SpatVector-method}
+\alias{convexHull}
+\alias{convexHull,SpatVector-method}
 \alias{minRect}
 \alias{minRect,SpatVector-method}
 
@@ -16,7 +16,7 @@ Get the convex hull or the minimal rotated rectangle of a SpatVector
 }
 
 \usage{
-\S4method{convHull}{SpatVector}(x, by="")
+\S4method{convexHull}{SpatVector}(x, by="")
 
 \S4method{minRect}{SpatVector}(x, by="")
 }
@@ -32,9 +32,9 @@ SpatVector
 
 \examples{
 p <- vect(system.file("ex/lux.shp", package="terra"))
-h <- convHull(p)
+h <- convexHull(p)
 
-hh <- convHull(p, "NAME_1")
+hh <- convexHull(p, "NAME_1")
 rr <- minRect(p, "NAME_1")
 
 plot(rr, lwd=5, border="gray")
