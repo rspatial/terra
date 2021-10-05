@@ -132,7 +132,7 @@
 <span class='fu'>project</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>project</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, method<span class='op'>=</span><span class='st'>"bilinear"</span>, mask<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>project</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>method</span>, mask<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,8 +150,8 @@
     <tr>
       <th>method</th>
       <td><p>character. Method used for estimating the new cell values. One of:</p>  
-<p>near: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values.
-	bilinear: bilinear interpolation. Default.
+<p>near: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of <code>x</code> is categorical.
+	bilinear: bilinear interpolation. This is the default if the first layer of <code>x</code> is numeric (not categorical).
 	cubic: cubic interpolation.
 	cubicspline: cubic spline interpolation.</p></td>
     </tr>
@@ -179,7 +179,7 @@
 
     <p>User beware. Sadly, the PROJ.4 notation has been partly deprecated in the GDAL/PROJ library that is used by this function. You can still use this notation, but *only* with the the WGS84 datum. Other datums are silently ignored.</p>
 <p>When printing a Spat* object the PROJ.4 notation is shown because it is the most concise and clear format available. However, internally a WKT representation is used (see <code><a href='crs.html'>crs</a></code>).</p>
-<p>Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. In each transformation the values for the new cells are estiamted in some fashion. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data.</p>
+<p>Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. In each transformation the values for the new cells are estimated in some fashion. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data.</p>
 <p>When using this method with a <code>SpatRaster</code>, the preferable approach is to provide a template <code>SpatRaster</code> as argument <code>y</code>. The template is then another raster dataset that you want your data to align with. If you do not have a template to begin with, you can do <code>project(x, crs)</code> and then manipulate the output to get the template you want. For example, where possible use whole numbers for the extent and resolution so that you do not have to worry about small differences in the future. You can use commands like <code>dim(z) = c(180, 360)</code> or <code>res(z) &lt;- 100000</code>.</p>
 <p>The output resolution should be similar to the input resolution, but there is not "correct" resolution in raster transformation; but it is not obvious what this resolution is if you are using lon/lat data that spans a large North-South extent.</p>
 
