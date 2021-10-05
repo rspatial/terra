@@ -74,13 +74,17 @@ setMethod("hist", signature(x="SpatRaster"),
 		v <- stats::na.omit(values(x))
 	} else {
 		# TO DO: make a function that does this by block and combines  all data into a single histogram
-		v <- spatSample(x, maxcell, method="regular", as.raster=FALSE)
+		v <- spatSample(x, maxcell, method="regular", as.df=FALSE, as.raster=FALSE)
 		msg <- paste(round(100 * length(v) / ncell(x)), "% of the raster cells were used.", sep="")
 		if (any(is.na(v))) {
 			v <- stats::na.omit(v)
 			msg <- paste(msg, " (of which ", 100 - round(100 * length(v) / maxcell ), "% was NA)", sep="")
 		}
 		warn("hist", msg)
+	}
+
+	if (nrow(v) == 0) {
+		error("hist", "all values are NA")
 	}
 
 #	if (.shortDataType(x) == 'LOG') {

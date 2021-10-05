@@ -2,11 +2,15 @@
 
 ## name changes
 
-To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox` is now called `box` (and may be removed altogether).
+To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox,SpatRaster` and `bbox,SpatVector` have been removed (but could be resurrected in `raster`).
 
 ## enhancements
 
 - `project` and `resample` now choose the resampling method based on the first layer, using "near" for categorical data. Thanks to Matthew Lewis [#355](https://github.com/rspatial/terra/pull/355)
+
+## bug fixes
+
+- `hist` failed with small samples. Issue [#356](https://github.com/rspatial/terra/issues/356) by Martin Queinnec
 
 
 # version 1.4-7
@@ -27,7 +31,7 @@ To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `d
 - `crs` has a new argument `parse`. See [#344](https://github.com/rspatial/terra/issues/344) 
 - `plot-SpatRaster,missing` has a new argument `reset=FALSE` that allows resetting the par()$mar parameters after plotting. See issue [#340](https://github.com/rspatial/terra/issues/340) by Derek Friend
 - `crds` has a new argument `na.rm`. See [#338](https://github.com/rspatial/terra/issues/338) by Kodi Arfer 
-- `show(Spat*)` now prints the name and EPSG code of a crs if available. See [#317] (https://github.com/rspatial/terra/issues/317) by Jakub Nowosad
+- `show(Spat*)` now prints the name and EPSG code of a crs if available. See [#317](https://github.com/rspatial/terra/issues/317) by Jakub Nowosad
 
 
 ## bug fixes 
