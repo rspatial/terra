@@ -34,7 +34,7 @@ Horn, B.K.P., 1981. Hill shading and the reflectance map. Proceedings of the IEE
 \examples{
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
-alt <- disaggregate(r, 10, method="bilinear")
+alt <- disagg(r, 10, method="bilinear")
 slope <- terrain(alt, "slope", unit="radians")
 aspect <- terrain(alt, "aspect", unit="radians")
 hill <- shade(slope, aspect, 40, 270)

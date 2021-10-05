@@ -252,13 +252,13 @@ setMethod("ymax", signature(x="SpatVector"),
 	matrix(as.vector(e), ncol=2, byrow=TRUE)
 }
 
-setMethod("bbox", signature(obj="SpatRaster"), 
+setMethod("box", signature(obj="SpatRaster"), 
 	function(obj){ 
 		.ext2bb(ext(obj))
 	}
 )
 
-setMethod("bbox", signature(obj="SpatVector"), 
+setMethod("box", signature(obj="SpatVector"), 
 	function(obj){ 
 		.ext2bb(ext(obj))
 	}

@@ -324,53 +324,6 @@ setAs("Raster", "SpatRaster",
 )
 
 
-
-
-setAs("SpatRaster", "Raster", 
-	function(from) {
-		s <- sources(from)
-		nl <- nlyr(from)
-		e <- as.vector(ext(from))
-		prj <- .proj4(from)
-		if (nl == 1) {
-			if (s$source == "") {
-				r <- raster::raster(ncols=ncol(from), nrows=nrow(from), crs=prj,
-			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
-				if (hasValues(from)) {
-					raster::values(r) <- values(from)
-				}
-			} else {
-				r <- raster::raster(s$source)
-			}
-			names(r) <- names(from)
-		} else {
-			if (nrow(s) == 1 & s$source[1] != "") {
-				r <- raster::brick(s$source)
-			} else if (all(s$source=="")) {
-				r <- raster::brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
-			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4], nl=nlyr(from))
-				if (hasValues(from)) {
-					raster::values(r) <- values(from)
-				}
-			} else {
-				x <- raster::raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
-			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
-				r <- list()
-				for (i in 1:nl) {
-					if (s$source[i] == "") {
-						r[[i]] <- raster::setValues(x, values(from[[i]]))
-					} else {
-						r[[i]] <- raster::raster(s$source[i])
-					}
-				}
-				r <- raster::stack(r)
-			}
-		}
-		return(r)
-	}
-)
-
-
 # to sf from SpatVector
 # available in sf
 #.v2sf <- function(from) {

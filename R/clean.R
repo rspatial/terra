@@ -42,7 +42,7 @@ clean <- function(x) {
 	}
 	out <- snap(out, 0.001)
 	p <- as.polygons(floor(ext(out)+1), crs=crs(out))
-	e <- disaggregate(erase(p, out))
+	e <- disagg(erase(p, out))
 	if (nrow(e) > 1) {
 		xmin = ext(p)[1]
 		i <- sapply(1:nrow(e), function(i) ext(e[i])[1] > xmin)

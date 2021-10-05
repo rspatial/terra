@@ -43,7 +43,7 @@ The function \code{fun} should take multiple numbers, and return a single number
 It should also accept a \code{na.rm} argument (or ignore it as one of the 'dots' arguments). 
 }
 
-\seealso{\code{\link{disaggregate}}}
+\seealso{\code{\link{disagg}} to disaggregate}
 
 \value{
 SpatRaster

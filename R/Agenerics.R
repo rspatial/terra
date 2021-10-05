@@ -124,7 +124,7 @@ if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneri
 
 if (!isGeneric("atan2")) { setGeneric("atan2", function(y, x) standardGeneric("atan2"))}
 if (!isGeneric("barplot")) {setGeneric("barplot", function(height,...) standardGeneric("barplot"))}
-if (!isGeneric("bbox")) {setGeneric("bbox", function(obj) standardGeneric("bbox"))}
+if (!isGeneric("box")) {setGeneric("box", function(obj) standardGeneric("box"))}
 if (!isGeneric("boundaries")) {	setGeneric("boundaries", function(x, ...) standardGeneric("boundaries"))}
 if (!isGeneric("boxplot")) { setGeneric("boxplot", function(x, ...) standardGeneric("boxplot"))}
 if (!isGeneric("buffer")) {setGeneric("buffer", function(x, ...) standardGeneric("buffer"))}
@@ -137,7 +137,7 @@ if (!isGeneric("crs")) { setGeneric("crs", function(x, ...)	standardGeneric("crs
 if (!isGeneric("crs<-")) { setGeneric("crs<-", function(x, ..., value) standardGeneric("crs<-")) }
 if (!isGeneric("density")) { setGeneric("density", function(x, ...) standardGeneric("density"))}
 if (!isGeneric("aggregate")) {setGeneric("aggregate", function(x, ...) standardGeneric("aggregate"))}
-if (!isGeneric("disaggregate")) {setGeneric("disaggregate", function(x, ...) standardGeneric("disaggregate"))}
+if (!isGeneric("disagg")) {setGeneric("disagg", function(x, ...) standardGeneric("disagg"))}
 if (!isGeneric("distance")) {setGeneric("distance", function(x, y, ...)standardGeneric("distance"))}
 if (!isGeneric("extract")) { setGeneric("extract", function(x, y, ...) standardGeneric("extract"))}
 if (!isGeneric("extend")) {setGeneric("extend", function(x, y, ...) standardGeneric("extend"))}

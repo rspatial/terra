@@ -409,7 +409,7 @@ setMethod("spatSample", signature(x="SpatVector"),
 	}
 )
 
-#spatSample(disaggregate(as.points(v)), 1, "stratified", strata=r, chess="")
+#spatSample(disagg(as.points(v)), 1, "stratified", strata=r, chess="")
 
 
 

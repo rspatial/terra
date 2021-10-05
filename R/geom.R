@@ -234,10 +234,10 @@ setMethod("minRect", signature(x="SpatVector"),
 )
 
 
-setMethod("disaggregate", signature(x="SpatVector"), 
+setMethod("disagg", signature(x="SpatVector"), 
 	function(x) {
 		x@ptr <- x@ptr$disaggregate()
-		messages(x, "disaggregate")
+		messages(x, "disagg")
 	}
 )
 

@@ -52,7 +52,7 @@ Also see the methods in section VIII
     \code{\link{extend}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
-    \code{\link{disaggregate}} \tab Subdivide cells \cr
+    \code{\link{disagg}} \tab Subdivide cells \cr
     \code{\link{resample}} \tab Resample (warp) values to a SpatRaster with a different origin and/or resolution \cr 
 	\code{\link{project}} \tab Project (warp) values to a SpatRaster with a different coordinate reference system \cr
     \code{\link{shift}} \tab Adjust the location of SpatRaster \cr
@@ -340,7 +340,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{symdif}} \tab symmetrical difference of two polygons \cr 
   \code{\link{aggregate}} \tab dissolve smaller polygons into larger ones \cr
   \code{\link{buffer}} \tab buffer geometries \cr
-  \code{\link{disaggregate}} \tab split multi-geometries into separate geometries \cr
+  \code{\link{disagg}} \tab split multi-geometries into separate geometries \cr
   \code{\link{crop}} \tab clip geometries using a rectangle (SpatExtent) or SpatVector \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
@@ -508,6 +508,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
 \code{area} \tab\code{\link{cellSize}}\cr
+\code{disaggregate} \tab\code{\link{disagg}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{overlay}\tab\code{\link{lapp}}\cr

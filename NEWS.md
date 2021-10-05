@@ -1,3 +1,10 @@
+# version 1.4-8
+
+## name changes
+
+To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox` is now called `box` (and may be removed altogether).
+
+
 # version 1.4-7
 
 ## note
