@@ -1,4 +1,4 @@
-\name{convHull}
+\name{convexHull}
 
 \docType{methods}
 
