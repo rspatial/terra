@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-9</span>
       </span>
     </div>
 
@@ -122,14 +122,14 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-8" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-8">
-<a href="#version-14-8" class="anchor"></a>version 1.4-8<small> Unreleased </small>
+    <div id="version-14-9" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-9">
+<a href="#version-14-9" class="anchor"></a>version 1.4-9<small> Unreleased </small>
 </h1>
 <div id="name-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#name-changes" class="anchor"></a>name changes</h2>
-<p>To avoid name conflicts with <code>sp</code> (via <code>raster</code>) <code>disaggregate</code> is now called <code>disagg</code> and <code>bbox,SpatRaster</code> and <code>bbox,SpatVector</code> have been removed (but could be resurrected in <code>raster</code>). To avoid name conflicts with <code>dismo</code> (via <code>raster</code>) <code>convHull</code> is now called <code>convexHull</code></p>
+<p>To avoid name conflicts with <code>sp</code> (via <code>raster</code>) <code>disaggregate</code> is now called <code>disagg</code> and <code>bbox,SpatRaster</code> and <code>bbox,SpatVector</code> have been removed (but could be resurrected in <code>raster</code> or under another name).</p>
 </div>
 <div id="enhancements" class="section level2">
 <h2 class="hasAnchor">
@@ -156,7 +156,7 @@
 <div id="note" class="section level2">
 <h2 class="hasAnchor">
 <a href="#note" class="anchor"></a>note</h2>
-<p><code>terra</code> no longer depends on <code>raster</code>. It still suggests it to allow for coercion to and from <code>Raster*</code> and <code>Spatial*</code> objects. To avoid name clashes between these two packages, and to allow replacing methods from <code>rgeos</code> and <code>rgdal</code> in <code>raster</code>, a future version of <code>raster</code> will depend on <code>terra</code> instead.</p>
+<p><code>terra</code> no longer depends on <code>raster</code>. To avoid name clashes between these two packages, and to allow replacing methods from <code>rgeos</code> and <code>rgdal</code> in <code>raster</code>, a future version of <code>raster</code> will depend on <code>terra</code> instead.</p>
 </div>
 <div id="enhancements-1" class="section level2">
 <h2 class="hasAnchor">
