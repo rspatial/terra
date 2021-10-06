@@ -217,10 +217,10 @@ setMethod("crop", signature(x="SpatVector", y="ANY"),
 )
 
 
-setMethod("convexHull", signature(x="SpatVector"), 
+setMethod("convHull", signature(x="SpatVector"), 
 	function(x, by="") {
 		x@ptr <- x@ptr$hull("convex", by[1])
-		messages(x, "convexHull")
+		messages(x, "convHull")
 	}
 )
 

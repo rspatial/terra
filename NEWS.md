@@ -1,9 +1,8 @@
-# version 1.4-8
+# version 1.4-9
 
 ## name changes
 
-To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox,SpatRaster` and `bbox,SpatVector` have been removed (but could be resurrected in `raster`).
-To avoid name conflicts with `dismo` (via `raster`) `convHull` is now called `convexHull`
+To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox,SpatRaster` and `bbox,SpatVector` have been removed (but could be resurrected in `raster` or under another name).
 
 ## enhancements
 
@@ -18,7 +17,7 @@ To avoid name conflicts with `dismo` (via `raster`) `convHull` is now called `co
 
 ## note
 
-`terra` no longer depends on `raster`. It still suggests it to allow for coercion to and from `Raster*` and `Spatial*` objects. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
+`terra` no longer depends on `raster`. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
 
 
 ## enhancements
