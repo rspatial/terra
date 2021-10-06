@@ -48,7 +48,7 @@
 
 <meta property="og:title" content="Cut out a geographic subset — crop" />
 <meta property="og:description" content="Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. With a SpatRaster you can only extract rectangular areas, but see mask for setting cell values within SpatRaster to NA.
-You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used). Unlike with intersect the geometries and attributes of y are not trasferred to the output." />
+You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used). Unlike with intersect the geometries and attributes of y are not transferred to the output." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -127,16 +127,13 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 
     <div class="ref-description">
     <p>Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. With a SpatRaster you can only extract rectangular areas, but see <code><a href='mask.html'>mask</a></code> for setting cell values within SpatRaster to <code>NA</code>.</p>
-<p>You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used). Unlike with <code><a href='intersect.html'>intersect</a></code> the geometries and attributes of <code>y</code> are not trasferred to the output.</p>
+<p>You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used). Unlike with <code><a href='intersect.html'>intersect</a></code> the geometries and attributes of <code>y</code> are not transferred to the output.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>crop</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, snap<span class='op'>=</span><span class='st'>"near"</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S4 method for SpatVector,ANY</span>
-<span class='fu'>crop</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatVector,SpatVector</span>
+<span class='co'># S4 method for SpatVector</span>
 <span class='fu'>crop</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -148,7 +145,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
     </tr>
     <tr>
       <th>y</th>
-      <td><p>SpatExtent or other object that has a SpatExtent (<code><a href='ext.html'>ext</a></code> returns a SpatExtent), or a SpatVector to crop another SpatVector</p></td>
+      <td><p>SpatRaster, SpatVector, SpatExtent or other object that has a SpatExtent (<code><a href='ext.html'>ext</a></code> returns a <code>SpatExtent</code>)</p></td>
     </tr>
     <tr>
       <th>snap</th>
@@ -182,7 +179,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='fl'>6.15</span>, <span class='fl'>6.3</span>, <span class='fl'>49.7</span>, <span class='fl'>49.8</span><span class='op'>)</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>crop</span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>e</span><span class='op'>)</span>
-<span class='co'>#plot(x, "NAME_1")</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in x@ptr$crop_vct(y@ptr): std::bad_alloc</span></div><div class='input'><span class='co'>#plot(x, "NAME_1")</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
