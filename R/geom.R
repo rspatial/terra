@@ -198,26 +198,24 @@ setMethod("buffer", signature(x="SpatVector"),
 
 setMethod("crop", signature(x="SpatVector", y="ANY"), 
 	function(x, y) {
-		if (!inherits(y, "SpatExtent")) {
-			y <- try(ext(y), silent=TRUE)
-			if (inherits(y, "try-error")) {
-				stop("y does not have a SpatExtent")
+		if (!inherits(y, "SpatVector")) {
+			if (length(y) > 1) {
+				y <- aggregate(y)
 			}
+			x@ptr <- x@ptr$crop_vct(y@ptr)
+		} else {
+			if (!inherits(y, "SpatExtent")) {
+				y <- try(ext(y), silent=TRUE)
+				if (inherits(y, "try-error")) {
+					stop("y does not have a SpatExtent")
+				}
+			}
+			x@ptr <- x@ptr$crop_ext(y@ptr)
 		}
-		x@ptr <- x@ptr$crop_ext(y@ptr)
 		messages(x, "crop")
 	}
 )
 
-setMethod("crop", signature(x="SpatVector", y="SpatVector"), 
-	function(x, y) {
-		if (length(y) > 1) {
-			y <- aggregate(y)
-		}
-		x@ptr <- x@ptr$crop_vct(y@ptr)
-		messages(x, "crop")
-	}
-)
 
 setMethod("convexHull", signature(x="SpatVector"), 
 	function(x, by="") {
