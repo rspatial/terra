@@ -83,7 +83,7 @@ centerline <- function(p) {
 
 #library(terra); messages = terra:::messages
 #p <- vect(system.file("ex/lux.shp", package="terra"))
-#h <- convexHull(p[-12], "NAME_1")
+#h <- convHull(p[-12], "NAME_1")
 #x <- clean(h)
 #y <- clean_further(x)
 
