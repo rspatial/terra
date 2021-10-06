@@ -198,7 +198,7 @@ setMethod("buffer", signature(x="SpatVector"),
 
 setMethod("crop", signature(x="SpatVector", y="ANY"), 
 	function(x, y) {
-		if (!inherits(y, "SpatVector")) {
+		if (inherits(y, "SpatVector")) {
 			if (length(y) > 1) {
 				y <- aggregate(y)
 			}
