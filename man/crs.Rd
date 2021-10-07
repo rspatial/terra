@@ -6,6 +6,7 @@
 \alias{crs<-}
 
 \alias{crs,SpatRaster-method}
+\alias{crs,SpatRasterDataset-method}
 \alias{crs<-,SpatRaster-method}
 \alias{crs<-,SpatRaster,ANY-method}
 
