@@ -211,7 +211,7 @@ And conversion of a SpatVector to a another SpatVector type." />
 #&gt;  geometry    : points 
 #&gt;  dimensions  : 4, 1  (geometries, attributes)
 #&gt;  extent      : -90, 90, -45, 45  (xmin, xmax, ymin, ymax)
-#&gt;  coord. ref. : lon/lat WGS 84 
+#&gt;  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
 #&gt;  names       : lyr.1
 #&gt;  type        : &lt;num&gt;
 #&gt;  values      :     1
@@ -221,7 +221,7 @@ And conversion of a SpatVector to a another SpatVector type." />
 #&gt;  geometry    : lines 
 #&gt;  dimensions  : 1, 0  (geometries, attributes)
 #&gt;  extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#&gt;  coord. ref. : lon/lat WGS 84 </div><div class='input'>
+#&gt;  coord. ref. : +proj=longlat +datum=WGS84 +no_defs </div><div class='input'>
 <span class='kw'>if</span>  <span class='op'>(</span><span class='fu'><a href='gdal.html'>gdal</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>&gt;=</span> <span class='st'>"3.0.0"</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'>as.polygons</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
   <span class='va'>p</span>
@@ -232,7 +232,7 @@ And conversion of a SpatVector to a another SpatVector type." />
 #&gt;  geometry    : points 
 #&gt;  dimensions  : 16, 1  (geometries, attributes)
 #&gt;  extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-#&gt;  coord. ref. : lon/lat WGS 84 
+#&gt;  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
 #&gt;  names       : lyr.1
 #&gt;  type        : &lt;num&gt;
 #&gt;  values      :     1
