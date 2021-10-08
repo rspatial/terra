@@ -1,3 +1,9 @@
+# version 1.4-10
+
+## enhancements
+
+- the definition of `setValues` now has two arguments (`x` and `values`), just like `raster` had to avoid reverse dependency problems with `raster`
+
 # version 1.4-9
 
 ## name changes
