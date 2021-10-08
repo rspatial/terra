@@ -95,7 +95,7 @@ if (!isGeneric("svc") ) { setGeneric("svc", function(x, ...) standardGeneric("sv
 if (!isGeneric("sel")) {setGeneric("sel", function(x, ...) standardGeneric("sel"))}
 if (!isGeneric("segregate")) {setGeneric("segregate", function(x, ...) standardGeneric("segregate"))}
 if (!isGeneric("selectRange")) {setGeneric("selectRange", function(x, ...) standardGeneric("selectRange"))}
-if (!isGeneric("setValues")) {setGeneric("setValues", function(x, ...) standardGeneric("setValues"))}
+if (!isGeneric("setValues")) {setGeneric("setValues", function(x, values, ...) standardGeneric("setValues"))}
 if (!isGeneric("expanse")) {setGeneric("expanse", function(x, ...) standardGeneric("expanse"))}
 if (!isGeneric("size")) {setGeneric("size", function(x, ...) standardGeneric("size"))}
 if (!isGeneric("inMemory")) {setGeneric("inMemory", function(x, ...) standardGeneric("inMemory"))}
