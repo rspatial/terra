@@ -22,7 +22,6 @@
 #include "recycle.h"
 #include "vecmath.h"
 
-
 #include <set>
 
 #ifdef useGDAL
