@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <regex>
 
 typedef long long SpatTime_t;
 
@@ -123,22 +124,29 @@ std::vector<std::string> splitstr(std::string s, std::string delimiter){
 	return out;
 }
 
-std::vector<int> getymd(std::string s) {
 
+std::vector<int> getymd(std::string s) {
+	s = std::regex_replace(s, std::regex("T"), " ");
+	
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	std::vector<std::string> x;
 	std::vector<std::string> y;
 	if (ncolon > 0) {
 		x = splitstr(s, " ");
 		s = x[0];
-		y = splitstr(x[1], ":");
+		if (x.size() > 1) {
+			x[1] = std::regex_replace(s, std::regex("Z"), "");
+			y = splitstr(x[1], ":");
+		}
 	}
+
 	size_t ndash = std::count(s.begin(), s.end(), '-');
 	if (ndash == 2) {
 		x = splitstr(s, "-");
 	}
 	x.insert( x.end(), y.begin(), y.end() );
 	std::vector<int> out(x.size());
+
 	for (size_t i=0; i<out.size(); i++){
 		out[i] = std::stoi(x[i]);
 	}
