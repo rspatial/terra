@@ -135,8 +135,7 @@ SpatVector SpatVector::crop(SpatExtent e) {
 	out.setError("GEOS 3.5 required for crop");
 	return out;
 #else 
-	
-	
+		
 	SpatVector out;
 	out.srs = srs;
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -168,6 +167,7 @@ SpatVector SpatVector::crop(SpatExtent e) {
 	}
 	geos_finish(hGEOSCtxt);
 	return out;
+#endif
 }
 
 
@@ -532,7 +532,6 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	return out;
 #else 
 
-
 	SpatVector out;
 	if (by != "") {
 		SpatVector tmp = aggregate(by, false);
@@ -576,6 +575,8 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	out = coll.get(0);
 	out.srs = srs;
 	return out;
+#endif
+
 }
 
 
@@ -633,8 +634,8 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 			}
 		}
 	}
-#endif
 	return out;
+#endif
 }  
 
 
@@ -667,8 +668,8 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 		out = out.disaggregate();
 		// associate with attributes
 	}
-#endif
 	return out;
+#endif
 }
 
 
@@ -1610,6 +1611,8 @@ std::vector<double> SpatVector::width() {
 	tmp = coll.get(0);
 	tmp.srs = srs;
 	return tmp.length();
+
+#endif
 }
 
 
@@ -1639,5 +1642,7 @@ std::vector<double> SpatVector::clearance() {
 	tmp = coll.get(0);
 	tmp.srs = srs;
 	return tmp.length();
+
+#endif
 }
 
