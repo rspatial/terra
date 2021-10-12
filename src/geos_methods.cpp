@@ -130,6 +130,13 @@ std::vector<std::string> SpatVector::geos_isvalid_msg() {
 
 
 SpatVector SpatVector::crop(SpatExtent e) {
+	
+#ifndef HAVE350
+	out.setError("GEOS 3.5 required for crop");
+	return out;
+#else 
+	
+	
 	SpatVector out;
 	out.srs = srs;
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
@@ -519,6 +526,13 @@ SpatVector SpatVector::crop(SpatVector v) {
 
 SpatVector SpatVector::hull(std::string htype, std::string by) {
 
+#ifndef HAVE350
+	if (htype != "convex") {
+	out.setError("GEOS 3.5 required for rotated rectangle");
+	return out;
+#else 
+
+
 	SpatVector out;
 	if (by != "") {
 		SpatVector tmp = aggregate(by, false);
@@ -570,7 +584,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 	SpatVector out;
 
 #ifndef HAVE350
-	out.setError("GEOS 3.5 required for voronoi")
+	out.setError("GEOS 3.5 required for voronoi");
 	return out;
 #else 
 
@@ -630,7 +644,7 @@ SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 	SpatVector out;
 
 #ifndef HAVE350
-	out.setError("GEOS 3.5 required for delauny")
+	out.setError("GEOS 3.5 required for delauny");
 	return out;
 #else 
 
@@ -1571,6 +1585,12 @@ bool geos_buffer(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> &g, double 
 
 
 std::vector<double> SpatVector::width() {
+	
+#ifndef HAVE350
+	out.setError("GEOS 3.5 required for width");
+	return out;
+#else 
+	
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> gout(g.size());
@@ -1594,6 +1614,12 @@ std::vector<double> SpatVector::width() {
 
 
 std::vector<double> SpatVector::clearance() {
+
+#ifndef HAVE350
+	out.setError("GEOS 3.5 required for clearance");
+	return out;
+#else 
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> gout(g.size());
