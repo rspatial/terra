@@ -544,7 +544,7 @@ std::vector<double> SpatRaster::extractXYFlat(const std::vector<double> &x, cons
 
 
 // <geom<layer<values>>>
-std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact) {
+std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
 	std::string gtype = v.type();
 	if (gtype != "polygons") weights = false;
@@ -620,11 +620,11 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 			p.srs = v.srs;
 			std::vector<double> cell, wgt;
 			if (weights) {
-				rasterizeCellsWeights(cell, wgt, p);
+				rasterizeCellsWeights(cell, wgt, p, opt);
 			} else if (exact) {
-				rasterizeCellsExact(cell, wgt, p);
+				rasterizeCellsExact(cell, wgt, p, opt);
 			} else {
-				cell = rasterizeCells(p, touches);
+				cell = rasterizeCells(p, touches, opt);
             }
 			srcout = extractCell(cell);
             for (size_t j=0; j<nl; j++) {
@@ -647,7 +647,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 }
 
 
-std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact) {
+std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
 	std::vector<double> flat;
 	std::string gtype = v.type();
@@ -731,7 +731,6 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 		*/
 	} else {
 	    SpatRaster r = geometry(1);
-	    //SpatOptions opt;
 		//std::vector<double> feats(1, 1) ;		
         for (size_t i=0; i<ng; i++) {
             SpatGeom g = v.getGeom(i);
@@ -739,11 +738,11 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 			p.srs = v.srs;
 			std::vector<double> cell, wgt;
 			if (weights) {
-				rasterizeCellsWeights(cell, wgt, p);
+				rasterizeCellsWeights(cell, wgt, p, opt);
 			} else if (exact) {
-				rasterizeCellsExact(cell, wgt, p);
+				rasterizeCellsExact(cell, wgt, p, opt);
 			} else {
-				cell = rasterizeCells(p, touches);
+				cell = rasterizeCells(p, touches, opt);
             }
 			srcout = extractCell(cell);
             for (size_t j=0; j<nl; j++) {
@@ -940,7 +939,7 @@ std::vector<double> SpatRaster::extractCellFlat(std::vector<double> &cell) {
 }
 
 
-std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::string method, bool weights, bool exact) {
+std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::string method, bool weights, bool exact, SpatOptions &opt) {
 
 	std::string gtype = v.type();
 	if (gtype != "polygons") weights = false;
@@ -958,7 +957,6 @@ std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::strin
 		}
 	} else {
 		unsigned ng = v.size();
-	    SpatOptions opt;
 		SpatRaster r = geometry(1);
 		std::vector<double> feats(1, 1) ;		
         for (size_t i=0; i<ng; i++) {
@@ -967,20 +965,20 @@ std::vector<double> SpatRaster::vectCells(SpatVector v, bool touches, std::strin
 			p.srs = v.srs;
 			if (weights) {
 				std::vector<double> cnr, wght;
-				rasterizeCellsWeights(cnr, wght, p);			
+				rasterizeCellsWeights(cnr, wght, p, opt);			
 				std::vector<double> id(cnr.size(), i);
 				out.insert(out.end(), id.begin(), id.end());
 				cells.insert(cells.end(), cnr.begin(), cnr.end());			
 				wghts.insert(wghts.end(), wght.begin(), wght.end());			
 			} else if (exact) {
 				std::vector<double> cnr, wght;
-				rasterizeCellsExact(cnr, wght, p);			
+				rasterizeCellsExact(cnr, wght, p, opt);			
 				std::vector<double> id(cnr.size(), i);
 				out.insert(out.end(), id.begin(), id.end());
 				cells.insert(cells.end(), cnr.begin(), cnr.end());			
 				wghts.insert(wghts.end(), wght.begin(), wght.end());			
 			} else {
-				std::vector<double> geomc = rasterizeCells(p, touches);
+				std::vector<double> geomc = rasterizeCells(p, touches, opt);
 				std::vector<double> id(geomc.size(), i);
 				out.insert(out.end(), id.begin(), id.end());
 				cells.insert(cells.end(), geomc.begin(), geomc.end());
@@ -1051,12 +1049,12 @@ std::vector<std::vector<std::vector<double>>> SpatRasterStack::extractCell(std::
 
 
 // this is rather inefficient (repeated rasterization)
-std::vector<std::vector<std::vector<std::vector<double>>>> SpatRasterStack::extractVector(SpatVector v, bool touches, std::string method) {
+std::vector<std::vector<std::vector<std::vector<double>>>> SpatRasterStack::extractVector(SpatVector v, bool touches, std::string method, SpatOptions &opt) {
 	unsigned ns = nsds();
 	std::vector<std::vector<std::vector<std::vector<double>>>> out(ns);
 	for (size_t i=0; i<ns; i++) {
 		SpatRaster r = getsds(i);
-		out[i] = r.extractVector(v, touches, method);
+		out[i] = r.extractVector(v, touches, method, false, false, false, false, opt);
 	}
 	return out;
 }
@@ -1074,7 +1072,7 @@ std::vector<std::vector<std::vector<std::vector<double>>>> SpatRasterStack::extr
             double yrs = yres();
             double xrs = xres();
 
-            SpatOptions opt;
+            //SpatOptions opt;
             SpatRaster g = geometry();
 			std::vector<unsigned> f = {2,2};
             SpatRaster gd = g.disaggregate(f, opt);

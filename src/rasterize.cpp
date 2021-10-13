@@ -55,7 +55,7 @@ SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
 			GDALClose(hDstDS);
 */
 
-bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filename, std::string &driver, double &naval, bool update, double background, SpatOptions opt) {
+bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filename, std::string &driver, double &naval, bool update, double background, SpatOptions &opt) {
 
 	filename = opt.get_filename();
 	if (filename == "") {
@@ -379,9 +379,9 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 }
 
 
-std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) { 
+std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt) { 
 // note that this is only for lines and polygons
-    SpatOptions opt;
+    SpatOptions ropt;
 	SpatRaster r = geometry(1);
 	SpatExtent e = getExtent();
 	e.intersect(v.getExtent());
@@ -390,10 +390,10 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 		return out;
 	}
 	
-	SpatRaster rc = r.crop(e, "out", opt);
+	SpatRaster rc = r.crop(e, "out", ropt);
 	std::vector<double> feats(1, 1) ;		
-    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, opt); 
-	SpatVector pts = rcr.as_points(false, true, opt);
+    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt); 
+	SpatVector pts = rcr.as_points(false, true, ropt);
 	std::vector<double> cells;
 	if (pts.size() == 0) {
 		pts = v.as_points(false, true);
@@ -414,9 +414,9 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 	return cells;
 }
 
-void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v) { 
+void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt) { 
 // note that this is only for polygons
-    SpatOptions opt;
+    SpatOptions ropt(opt);
 	opt.progress = nrow()+1;
 	SpatRaster rr = geometry(1);
 	std::vector<unsigned> fact = {10, 10};
@@ -426,13 +426,13 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	if ( !e.valid() ) {
 		return;
 	}
-	SpatRaster r = rr.crop(v.extent, "out", opt);
-	r = r.disaggregate(fact, opt);
+	SpatRaster r = rr.crop(v.extent, "out", ropt);
+	r = r.disaggregate(fact, ropt);
 	std::vector<double> feats(1, 1) ;	
-	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, opt); 
-	r = r.arith(100.0, "/", false, opt);
-	r = r.aggregate(fact, "sum", true, opt);
-	SpatVector pts = r.as_points(true, true, opt);
+	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
+	r = r.arith(100.0, "/", false, ropt);
+	r = r.aggregate(fact, "sum", true, ropt);
+	SpatVector pts = r.as_points(true, true, ropt);
 	if (pts.size() == 0) {
 		weights.resize(1);
 		weights[0] = NAN;
@@ -448,18 +448,18 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	return;
 }
 
-void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v) { 
+void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt) { 
     
-	SpatOptions opt;
+	SpatOptions ropt(opt);
 	opt.progress = nrow()+1;
 	SpatRaster r = geometry(1);
-	r = r.crop(v.extent, "out", opt);
+	r = r.crop(v.extent, "out", ropt);
 
 //	if (r.ncell() < 1000) {
 		std::vector<double> feats(1, 1) ;	
-		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, opt); 
+		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
 
-		SpatVector pts = r.as_points(true, true, opt);
+		SpatVector pts = r.as_points(true, true, ropt);
 		if (pts.size() == 0) {
 			weights.resize(1);
 			weights[0] = NAN;			
@@ -471,7 +471,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			std::vector<double> y = vd.getD(1);
 			cells = cellFromXY(x, y);
 
-			SpatVector rv = r.as_polygons(false, false, false, true, opt);
+			SpatVector rv = r.as_polygons(false, false, false, true, ropt);
 			std::vector<double> csize = rv.area("m", true, {});
 			rv.df.add_column(csize, "area");
 			rv.df.add_column(cells, "cells");

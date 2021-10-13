@@ -423,9 +423,8 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 	return true;
 }
 
-void SpatRaster::setRange() {
+void SpatRaster::setRange(SpatOptions &opt) {
 
-	SpatOptions opts;
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].hasRange[0]) continue;
 
@@ -433,7 +432,7 @@ void SpatRaster::setRange() {
 			source[i].setRange();
 		} else {
 			SpatRaster r(source[i]);
-			SpatDataFrame x = r.global("range", true, opts);
+			SpatDataFrame x = r.global("range", true, opt);
 			source[i].range_min = x.getD(0);
 			source[i].range_max = x.getD(1);
 			source[i].hasRange = std::vector<bool>(source[i].hasRange.size(), true);

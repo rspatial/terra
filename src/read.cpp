@@ -259,7 +259,7 @@ bool SpatRaster::readAll() {
 }
 
 
-std::vector<double> SpatRaster::getValues(long lyr) {
+std::vector<double> SpatRaster::getValues(long lyr, SpatOptions &opt) {
 
 	std::vector<double> out;
 
@@ -275,7 +275,6 @@ std::vector<double> SpatRaster::getValues(long lyr) {
 		if (lyr < 0) { // default; read all
 			out = readValues(0, nrow(), 0, ncol());
 		} else {
-			SpatOptions opt;
 			unsigned lyrnr = lyr;
 			SpatRaster sub = subset({lyrnr}, opt);
 			out = sub.readValues(0, nrow(), 0, ncol());

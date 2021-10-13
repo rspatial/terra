@@ -578,7 +578,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, bool update, SpatOptions 
 
 			std::vector<double> vv, vals;	
 			if (src < 0) {
-				vv = getValues();
+				vv = getValues(-1, opt);
 			} else {
 				if (!getValuesSource(src, vv)) {
 					setError("cannot read from source");

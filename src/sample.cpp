@@ -162,7 +162,7 @@ SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
 }
 
 
-std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) {
+std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!source[0].hasValues) return (out);
@@ -178,7 +178,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 	nsize = nc * nr;
 	std::vector<double> v;
 	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
-		v = getValues() ;
+		v = getValues(-1, opt) ;
 		if (hasError()) return out;
 		for (size_t i=0; i<nlyr(); i++) {
 			size_t offset = i * nsize;
@@ -209,7 +209,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 }
 
 
-std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_t nc) {
+std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!source[0].hasValues) return (out);
@@ -224,7 +224,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_
 	size_t nsize = nc * nr;
 	std::vector<double> v;
 	if ((nc == ncol()) && (nr == nrow())) {
-		v = getValues() ;
+		v = getValues(-1, opt) ;
 		if (hasError()) return out;
 		for (size_t i=0; i<nlyr(); i++) {
 			size_t offset = i * nsize;

@@ -179,8 +179,9 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	#f <- function(i) if(length(i)==0) { NA } else { i }
 	#e <- rapply(e, f, how="replace")
 	cn <- names(x)
+	opt <- spatOptions()
 	if (list) {
-		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]))
+		e <- x@ptr$extractVector(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 		x <- messages(x, "extract")
 		if (weights || exact) {
 			if (hasfun) {
@@ -193,7 +194,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		return(e)
 	}
 
-	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]))
+	e <- x@ptr$extractVectorFlat(y@ptr, touches[1], method, isTRUE(cells[1]), isTRUE(xy[1]), isTRUE(weights[1]), isTRUE(exact[1]), opt)
 	x <- messages(x, "extract")
 	nc <- nl
 	if (cells) {

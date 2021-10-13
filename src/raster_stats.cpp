@@ -446,9 +446,9 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	}
 
 	if (z.nlyr() > 1) {
-		SpatOptions opt;
+		SpatOptions xopt(opt);
 		std::vector<unsigned> lyr = {0};
-		z = z.subset(lyr, opt);
+		z = z.subset(lyr, xopt);
 		out.addWarning("only the first zonal layer is used"); 
 	}
 

@@ -577,7 +577,8 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 				q[i] = {rmn[i], rmx[i]};
 			} else {
 				std::vector<double> probs = {minq[i], maxq[i]};
-				std::vector<double> v = getValues(i);
+				SpatOptions xopt(opt);
+				std::vector<double> v = getValues(i, xopt);
 				q[i] = vquantile(v, probs, true);
 			}
 		}
@@ -3027,7 +3028,11 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			for (size_t i=0; i<hr.size(); i++) {
 				if (!hr[i]) hasR = false;
 			}
-			if (!hasR) setRange();
+			
+			if (!hasR) {
+				SpatOptions xopt(opt);
+				setRange(xopt);
+			}
 			std::vector<double> mn = range_min();
 			std::vector<double> mx = range_max();
 			double mnv = vmin(mn, true);

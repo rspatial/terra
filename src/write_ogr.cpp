@@ -405,7 +405,7 @@ GDALDataset* SpatVector::GDAL_ds() {
 
 #include <fstream>
 
-bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions opt) {
+bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions &opt) {
 // filename is here "raster.tif"
 // to write "raster.tif.vat.dbf"
 

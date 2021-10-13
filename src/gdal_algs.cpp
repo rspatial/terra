@@ -581,7 +581,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			out.setError("cannot do this transformation (warp)");
 			return out;
 		}
-		std::vector<double> v = crop_out.getValues(-1);
+		std::vector<double> v = crop_out.getValues(-1, opt);
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
 	}
 	out.writeStop();

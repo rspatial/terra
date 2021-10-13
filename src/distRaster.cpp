@@ -1724,7 +1724,8 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 		}
 		if (disagg) {
 			out.writeStop();
-			SpatRaster tmp = out.to_memory_copy();
+			SpatOptions dopt(opt);
+			SpatRaster tmp = out.to_memory_copy(dopt);
 			std::vector<unsigned> fact = {1,2};
 			opt.overwrite=true;
 			out = tmp.aggregate(fact, "sum", true, opt); 
@@ -1799,7 +1800,7 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 	if (is_lonlat()) {
 		SpatRaster x = geometry(1);
 		SpatExtent extent = x.getExtent();
-		SpatOptions opt;
+		//SpatOptions opt;
 		if ((x.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
 			std::vector<unsigned> fact= {1,2};
 			x = x.disaggregate(fact, opt);
