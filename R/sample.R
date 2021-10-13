@@ -178,10 +178,11 @@ setMethod("spatSample", signature(x="SpatRaster"),
 				x <- messages(x, "spatSample")
 				return(x);
 			} else {
+				opt <- spatOptions()
 				if (length(size) > 1) {
-					v <- x@ptr$sampleRowColValues(size[1], size[2])
+					v <- x@ptr$sampleRowColValues(size[1], size[2], opt)
 				} else {
-					v <- x@ptr$sampleRegularValues(size)				
+					v <- x@ptr$sampleRegularValues(size, opt)				
 				}
 				x <- messages(x, "spatSample")
 				if (length(v) > 0) {
