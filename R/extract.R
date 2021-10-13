@@ -257,27 +257,8 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	}
 	
 	if (factors) {
-		if (is.matrix(e)) {
-			e <- data.frame(e, check.names = FALSE)
-		}
-		f <- is.factor(x)
-		if (any(f)) {
-			g <- levels(x)
-			for (i in which(f)) {
-				labs <- g[[i]]
-				if (!list) {
-					v <- e[[i+1]] + 1
-					if (!(is.null(fun))) {
-						if (max(abs(v - trunc(v)), na.rm=TRUE) > 0) {
-							next
-						}
-					}
-					e[[i+1]] <- setlabs(v, labs)
-				} else {
-					e[[i]] <- rapply(e[[i]], function(j) setlabs(j+1, labs), how="replace")
-				}
-			}
-		}
+		id <- data.frame(e[,1,drop=FALSE])
+		e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE], TRUE))
 	}
 
 	if (useLyr) {
