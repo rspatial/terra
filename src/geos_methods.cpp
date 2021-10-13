@@ -561,14 +561,14 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	//std::string vt = type();
 	GEOSGeometry* h;
 	if (htype == "convex") {
+		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
+	} else {
 	#ifndef HAVE350
 		out.setError("GEOS 3.5 required for rotated rectangle");
 		return out;
 	#else 
-		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
-	#endif
-	} else {
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
+	#endif
 	}
 	std::vector<GeomPtr> b(1);
 	b[0] = geos_ptr(h, hGEOSCtxt);
