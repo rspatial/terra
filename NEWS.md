@@ -1,4 +1,8 @@
-# version 1.4-12
+# version 1.4-14
+
+## bug fixes
+- terra did not install with GEOS < 3.5. [#363](https://github.com/rspatial/terra/pull/363)
+- `rast` with some NetCDF files failed because of bad date parsing. [#361](https://github.com/rspatial/terra/pull/361) by Juan Carlos Zamora-Pereira
 
 
 # version 1.4-11
@@ -26,7 +30,7 @@ To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `d
 
 ## note
 
-`terra` no longer depends on `raster`. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, a future version of `raster` will depend on `terra` instead. 
+`terra` no longer depends on `raster`. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`. `raster` now depends on `terra` instead. 
 
 
 ## enhancements
