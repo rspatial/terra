@@ -1851,10 +1851,9 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 }
 
 
-SpatVector SpatRaster::as_lines() {
+SpatVector SpatRaster::as_lines(SpatOptions &opt) {
 
 	SpatVector vect;
-	SpatOptions opt;
 	opt.ncopies = 12;
 	if (!canProcessInMemory(opt)) {
 		if (ncell() > 1000000) { // for testing with canPIM=false

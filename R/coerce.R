@@ -119,7 +119,8 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 setMethod("as.lines", signature(x="SpatRaster"), 
 	function(x) {
 		p <- methods::new("SpatVector")
-		p@ptr <- x@ptr$as_lines()
+		opt <- spatOptions()
+		p@ptr <- x@ptr$as_lines(opt)
 		messages(p, "as.lines")
 	}
 )

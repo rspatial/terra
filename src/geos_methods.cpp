@@ -563,8 +563,8 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	if (htype == "convex") {
 		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
 	} else {
-	#ifndef HAVE350
-		out.setError("GEOS 3.5 required for rotated rectangle");
+	#ifndef HAVE361
+		out.setError("GEOS 3.6.1 required for rotated rectangle");
 		return out;
 	#else 
 		h = GEOSMinimumRotatedRectangle_r(hGEOSCtxt, g[0].get());
@@ -1588,8 +1588,9 @@ bool geos_buffer(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> &g, double 
 
 std::vector<double> SpatVector::width() {
 	
-#ifndef HAVE350
-	setError("GEOS 3.5 required for width");
+	
+#ifndef HAVE361
+	setError("GEOS 3.6.1 required for width");
 	std::vector<double> out;
 	return out;
 #else 
@@ -1620,7 +1621,7 @@ std::vector<double> SpatVector::width() {
 
 std::vector<double> SpatVector::clearance() {
 
-#ifndef HAVE350
+#ifndef HAVE361
 	setError("GEOS 3.5 required for clearance");
 	std::vector<double> out;
 	return out;
