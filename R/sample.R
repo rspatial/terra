@@ -63,7 +63,7 @@
 			ystep <- nrow(r) / nr
 			xsamp <- seq(0.5*xstep, ncol(r), xstep)
 			ysamp <- seq(0.5*ystep, nrow(r), ystep)
-			xy <- expand.grid(round(ysamp), round(xsamp))
+			xy <- expand.grid(ysamp, xsamp)
 			cells <- cellFromRowCol(r, xy[,1], xy[,2]) 
 		}
 	}
@@ -109,9 +109,9 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		if (any(size < 1)) {
 			error("spatSample", "sample size must be a positive integer")
 		}
-		#if ((size > ncell(x)) & (!replace)) {
-			#error("spatSample", "sample size is larger than ncell(x) and replace=FALSE")
-		#}
+		if ((size > ncell(x)) & (!replace)) {
+			size <- ncell(x)
+		}
 
 		if (!as.raster) {
 			ff <- is.factor(x)
