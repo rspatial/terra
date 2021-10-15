@@ -78,6 +78,6 @@ setMethod("cells", signature("SpatRaster", "SpatVector"),
 setMethod("cells", signature("SpatRaster", "SpatExtent"), 
 	function(x, y) {
 		opt <- spatOptions()
-		x@ptr$extCells(y@ptr, opt) + 1
+		x@ptr$extCells(y@ptr) + 1
 	}
 )
