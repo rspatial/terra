@@ -1,5 +1,5 @@
 
-.terra_environment <- new.env()
+.terra_environment <- new.env(parent=emptyenv())
 
  
 .create_options <- function() {
@@ -58,17 +58,20 @@
 	x
 } 
  
+defaultOptions <- function() {
+	## work around onLoad problem
+	if (is.null(terra:::.terra_environment$options)) .create_options()
+	terra:::.terra_environment$options@ptr$deepcopy()
+}
  
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
-	w <- list(...)
-	wopt <- c(w, wopt)
+	wopt <- c(list(...), wopt)
 	
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 
-	ptr <- .terra_environment$options@ptr
-	opt <- ptr$deepcopy()
+	opt <- .terra_environment$options@ptr$deepcopy()
 
 	filename <- .fullFilename(filename, mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {

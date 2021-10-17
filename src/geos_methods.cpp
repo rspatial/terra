@@ -427,14 +427,17 @@ SpatVector SpatVector::polygonize() {
 
 
 SpatVector SpatVector::snap(double tolerance) {
+
+	size_t s = size();
+	SpatVector out;
+	if (s == 0) {
+		return out;
+	}
 	
 	tolerance = std::max(0.0, tolerance);
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 
-	size_t s = size();
-	std::vector<long> id;
-	std::vector<GeomPtr> p;
 	for (size_t i=0; i<(s-1); i++) {
 		GEOSGeometry* r = x[i].get();
 		for (size_t j=(i+1); j<s; j++) {
@@ -443,26 +446,16 @@ SpatVector SpatVector::snap(double tolerance) {
 		if (r != NULL) {
 			if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
 				x[i] = geos_ptr(r, hGEOSCtxt);
-				id.push_back(i+1);
 			} else {
 				GEOSGeom_destroy_r(hGEOSCtxt, r);
 			}
 		}
 	}
-	SpatVector out;
-	if (p.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, std::vector<unsigned>(), false, false);
-		out = coll.get(0);
-	}
+	SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt, std::vector<unsigned>(), false, false);
+	out = coll.get(0);
 	geos_finish(hGEOSCtxt);
-	out.geoms.push_back(geoms[s-1]);
-	id.push_back(s);
 	out.srs = srs;
-	if (out.size() == size()) {
-		out.df = df;
-	} else {
-		out.df.add_column(id, "id");
-	}
+	out.df = df;
 	return out;
 }
 

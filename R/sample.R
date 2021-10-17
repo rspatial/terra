@@ -10,6 +10,10 @@
 	if (!is.null(ext)) {
 		r <- crop(rast(r), ext)
 	}
+	if ( ((!replace) || (method == "regular")) && (size >= ncell(r)) ) {
+		cells <- 1:ncell(r)
+	}
+
 	if (method == "random") {
 		nsize <- size
 		if (na.rm) {
