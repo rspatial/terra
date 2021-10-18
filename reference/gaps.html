@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Erase parts of a SpatVector object — erase • terra</title>
+<title>Find gaps between polygons — gaps • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Erase parts of a SpatVector object — erase" />
-<meta property="og:description" content="Erase parts of a SpatVector with another SpatVector or with a SpatExtent. You can also erase (parts of) polygons with the other polygons of the same SpatVector." />
+<meta property="og:title" content="Find gaps between polygons — gaps" />
+<meta property="og:description" content="Get the gaps between polygons of a SpatVector" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -119,23 +119,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Erase parts of a SpatVector object</h1>
+    <h1>Find gaps between polygons</h1>
     
-    <div class="hidden name"><code>erase.Rd</code></div>
+    <div class="hidden name"><code>gaps.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Erase parts of a SpatVector with another SpatVector or with a SpatExtent. You can also erase (parts of) polygons with the other polygons of the same SpatVector.</p>
+    <p>Get the gaps between polygons of a SpatVector</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for SpatVector,SpatVector</span>
-<span class='fu'>erase</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatVector,missing</span>
-<span class='fu'>erase</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatVector,SpatExtent</span>
-<span class='fu'>erase</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S4 method for SpatVector</span>
+<span class='fu'>gaps</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -144,32 +138,20 @@
       <th>x</th>
       <td><p>SpatVector</p></td>
     </tr>
-    <tr>
-      <th>y</th>
-      <td><p>SpatVector or SpatExtent</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SpatVector or SpatExtent</p>
+    <p>SpatVector</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='intersect.html'>intersect</a></code>, <code><a href='crop.html'>crop</a></code>. 
-The equivalent for SpatRaster is <code><a href='mask.html'>mask</a></code></p></div>
+    <div class='dont-index'><p><code><a href='fillHoles.html'>fillHoles</a></code> to get or remove polygon holes</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
-<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='fl'>5.6</span>, <span class='fl'>6</span>, <span class='fl'>49.55</span>, <span class='fl'>49.7</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>erase</span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>e</span><span class='op'>)</span>
-
-<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='st'>"POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))"</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>erase</span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>p</span><span class='op'>)</span>
-
 <span class='va'>h</span> <span class='op'>&lt;-</span> <span class='fu'><a href='convHull.html'>convHull</a></span><span class='op'>(</span><span class='va'>v</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>12</span><span class='op'>]</span>, <span class='st'>"NAME_1"</span><span class='op'>)</span>
-<span class='va'>he</span> <span class='op'>&lt;-</span> <span class='fu'>erase</span><span class='op'>(</span><span class='va'>h</span><span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'convHull': object 'v' not found</span></div><div class='input'><span class='va'>g</span> <span class='op'>&lt;-</span> <span class='fu'>gaps</span><span class='op'>(</span><span class='va'>h</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'gaps': object 'h' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
