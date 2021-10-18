@@ -296,7 +296,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 .fromRasterLayerBrick <- function(from) {
 	 
-	if (fromDisk(from)) {
+	if (raster::fromDisk(from)) {
 		f <- raster::filename(from)
 		if (from@file@driver == "netcdf") {
 			v <- attr(from@data, "zvar")

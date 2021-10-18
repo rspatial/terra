@@ -31,8 +31,10 @@ Erase parts of a SpatVector with another SpatVector or with a SpatExtent. You ca
 SpatVector or SpatExtent
 }
 
-\seealso{\code{\link{intersect}}, \code{\link{crop}}. 
-The equivalent for SpatRaster is \code{\link{mask}}}
+\seealso{
+\code{\link{intersect}}, \code{\link{crop}}. 
+The equivalent for SpatRaster is \code{\link{mask}}
+}
 
 
 \examples{
@@ -43,6 +45,9 @@ x <- erase(v, e)
 
 p <- vect("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))")
 y <- erase(v, p)
+
+h <- convHull(v[-12], "NAME_1")
+he <- erase(h)
 }
 
 \keyword{methods}

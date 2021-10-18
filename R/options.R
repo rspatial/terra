@@ -60,8 +60,8 @@
  
 defaultOptions <- function() {
 	## work around onLoad problem
-	if (is.null(terra:::.terra_environment$options)) .create_options()
-	terra:::.terra_environment$options@ptr$deepcopy()
+	if (is.null(.terra_environment$options)) .create_options()
+	.terra_environment$options@ptr$deepcopy()
 }
  
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {

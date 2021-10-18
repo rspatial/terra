@@ -127,6 +127,12 @@ setMethod("erase", signature(x="SpatVector", y="SpatExtent"),
 	}
 )
 
+setMethod("gaps", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$gaps()
+		messages(x, "gaps")
+	}
+)
 
 
 setMethod("union", signature(x="SpatVector", y="missing"), 

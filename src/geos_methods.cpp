@@ -1438,7 +1438,6 @@ SpatVector SpatVector::erase() {
 		if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
 			result.push_back(geos_ptr(geom, hGEOSCtxt));
 			ids.push_back(i);
-			Rcpp::Rcout << i << std::endl;
 		} else {
 			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
 		}
@@ -1449,14 +1448,45 @@ SpatVector SpatVector::erase() {
 	out.srs = srs;
 	geos_finish(hGEOSCtxt);
 
-	if (ids.size() < (n-1)) {
-		out.df = df.subset_rows(out.df.iv[0]);
-	} else {
-		out.df = df;
-	}
+	out.df = df.subset_rows(out.df.iv[0]);
 	SpatVector last = subset_rows(n-1); 
 	out = out.append(last, true);
 	return out;
+}
+
+
+SpatVector SpatVector::gaps() {
+	SpatVector out;
+	
+	if (type() != "polygons") {
+		out.setError("not polygons");
+		return out;
+	}
+	size_t n = size();
+	if (n < 2) {
+		out.srs = srs;
+		return out;
+	}
+
+	SpatExtent e = extent;
+	e.xmin -= 11;
+	e.xmax += 10;
+	e.ymin -= 10;
+	e.ymax += 10;
+	SpatVector p(e, "");
+	
+	p = p.erase(*this);
+	p = p.disaggregate();
+	double exmin = e.xmin + 1;
+	unsigned j;
+	for (size_t i=0; i<p.size(); i++) {
+		if (p.geoms[i].extent.xmin < exmin) {
+			j = i;
+			break;
+		}
+	}
+	std::vector<unsigned> r(1, j);
+	return p.remove_rows(r);
 }
 
 
