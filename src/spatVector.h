@@ -268,6 +268,7 @@ class SpatVector {
 		SpatVector unite(SpatVector v);
 		SpatVector unite();
 		SpatVector erase(SpatVector v);
+		SpatVector erase();
 		SpatVector cover(SpatVector v, bool identity);
 		SpatVectorCollection split(std::string field);
 		SpatVector symdif(SpatVector v);

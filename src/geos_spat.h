@@ -519,7 +519,7 @@ std::vector<unsigned> &gid, std::vector<unsigned> &gp, std::vector<unsigned> &ho
 }
 
 
-SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, const std::vector<unsigned> &ids = std::vector<unsigned>(), bool keepnull=true, bool increment = true) {
+SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHandle_t hGEOSCtxt, const std::vector<long> &ids = std::vector<long>(), bool keepnull=true, bool increment = true) {
 
 	SpatVectorCollection out;
 

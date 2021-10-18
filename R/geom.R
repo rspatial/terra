@@ -112,6 +112,13 @@ setMethod("erase", signature(x="SpatVector", y="SpatVector"),
 	}
 )
 
+setMethod("erase", signature(x="SpatVector", y="missing"), 
+	function(x) {
+		x@ptr <- x@ptr$erase_self()
+		messages(x, "erase")
+	}
+)
+
 setMethod("erase", signature(x="SpatVector", y="SpatExtent"), 
 	function(x, y) {
 		y <- as.polygons(y)
