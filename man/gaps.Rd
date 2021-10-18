@@ -31,6 +31,7 @@ SpatVector
 
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
 h <- convHull(v[-12], "NAME_1")
 g <- gaps(h)
 }
