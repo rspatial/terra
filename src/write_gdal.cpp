@@ -324,7 +324,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	CSLDestroy( papszOptions );
 	if (poDS == NULL) {
 		if (!filepath_exists(filename)) {
-			setError("failed writing "+ driver + " file. Path does not exist");
+			setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
 		} else {
 			setError("failed writing "+ driver + " file");
 		}
