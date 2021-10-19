@@ -26,7 +26,7 @@
 
 void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, const double &lindist) {
 	if (lonlat) {
-		distanceCosineToNearest_lonlat(d, x, y, px, py);
+		distanceToNearest_lonlat(d, x, y, px, py);
 	} else {
 		distanceToNearest_plane(d, x, y, px, py, lindist);
 	}
@@ -73,13 +73,13 @@ SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points
 	}
 	
 	bool lonlat = is_lonlat(); // m == 0
-	double torad = 0.0174532925199433;
-	if (lonlat) {
-		for (size_t i=0; i<pxy[0].size(); i++) {
-			pxy[0][i] *= torad;
-			pxy[1][i] *= torad;
-		}
-	}
+	//double torad = 0.0174532925199433;
+	//if (lonlat) {
+	//	for (size_t i=0; i<pxy[0].size(); i++) {
+	//		pxy[0][i] *= torad;
+	//		pxy[1][i] *= torad;
+	//	}
+	//}
 	
 	unsigned nc = ncol();
 	if (!readStart()) {
@@ -108,12 +108,12 @@ SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points
 		} 
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
 		std::vector<double> d(cells.size(), 0); 
-		if (lonlat) {
-			for (size_t i=0; i<xy[0].size(); i++) {
-				xy[0][i] *= torad;
-				xy[1][i] *= torad;
-			}
-		}
+		//if (lonlat) {
+		//	for (size_t i=0; i<xy[0].size(); i++) {
+		//		xy[0][i] *= torad;
+		//		xy[1][i] *= torad;
+		//	}
+		//}
 		shortDistPoints(d, xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
 		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
