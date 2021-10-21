@@ -100,6 +100,9 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 			x <- messages(x, "as.polygons")
 			if (values) {
 				ff <- is.factor(x)
+				if (dissolve) {
+					ff <- ff[[1]]
+				}
 				if (any(ff)) {
 					ff <- which(ff)
 					cgs <- cats(x)
