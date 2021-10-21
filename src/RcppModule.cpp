@@ -589,7 +589,9 @@ RCPP_MODULE(spat){
 		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("buffer", &SpatRaster::buffer, "buffer")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
-		.method("rastDistance", ( SpatRaster (SpatRaster::*)(SpatOptions&) )( &SpatRaster::distance), "rastDistance")
+		.method("rastDistance", &SpatRaster::distance, "rastDistance")
+
+//		.method("rastDistance", ( SpatRaster (SpatRaster::*)(SpatOptions&) )( &SpatRaster::distance), "rastDistance")
 //		.method("vectDistance", ( SpatRaster (SpatRaster::*)(SpatVector, SpatOptions&) )( &SpatRaster::distance), "vectDistance")
 		.method("vectDistanceRasterize", &SpatRaster::distance_vector_rasterize) 
 		.method("vectDistanceDirect", &SpatRaster::distance_vector) 
