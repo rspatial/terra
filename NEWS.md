@@ -1,4 +1,4 @@
-# version 1.4-14
+# version 1.4-15
 
 ## bug fixes
 
@@ -6,7 +6,12 @@
 - `rast` with some NetCDF files failed because of bad date parsing, [#361](https://github.com/rspatial/terra/pull/361) by Juan Carlos Zamora-Pereira
 - `distance,SpatRaster` with lon/lat data was not correct. [#368](https://github.com/rspatial/terra/pull/368)
 by Greg Schmidt
-- `as.polygons,SpatRaster` with a SpatRaster and a factor beyond the first layer failed. [#370](https://github.com/rspatial/terra/pull/370) by Patrick Schratz
+- `as.polygons,SpatRaster` failed with a SpatRaster and a categorical layer that is not the first layer. [#370](https://github.com/rspatial/terra/pull/370) by Patrick Schratz
+
+## new
+
+- new method `selectHighest` to select n cell values of a `SpatRaster` with the highest or lowest values. 
+
 
 # version 1.4-11
 

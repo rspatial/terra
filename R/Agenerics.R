@@ -1,4 +1,6 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
+if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) standardGeneric("selectHighest"))}
+
 if (!isGeneric("weighted.mean")) {setGeneric("weighted.mean", function(x, w, ...) standardGeneric("weighted.mean"))}
 
 if (!isGeneric("split")) {setGeneric("split", function(x, f, drop = FALSE, ...) standardGeneric("split"))}
