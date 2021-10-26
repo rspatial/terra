@@ -41,26 +41,26 @@ SpatVector SpatRaster::dense_extent() {
 		rows.resize(nrow());
 		std::iota(rows.begin(), rows.end(), 0);
 	} else {
-		rows = seq_steps((int_64) 0, (int_64) nrow(), 50);
-		rows[rows.size()-1] = nrow()-1;
+		rows = seq_steps((int_64) 0, (int_64) nrow()-1, 50);
 	} 
-	if (ncol() < 20) {
+	if (ncol() < 51) {
 		cols.resize(nrow());
 		std::iota(cols.begin(), cols.end(), 0);
 	} else {
-		cols = seq_steps((int_64) 0, (int_64) ncol(), 50);
-		cols[cols.size()-1] = ncol()-1;
+		cols = seq_steps((int_64) 0, (int_64) ncol()-1, 50);
 	} 
 	
+	SpatExtent e = getExtent();
 
 	std::vector<double> xcol = xFromCol(cols) ;
 	std::vector<double> yrow = yFromRow(rows) ;
+	yrow.insert(yrow.begin(), e.ymax);
+	yrow.push_back(e.ymin);
 
-	SpatExtent e = getExtent();
-	std::vector<double> y0(cols.size(), e.ymin);
-	std::vector<double> y1(cols.size(), e.ymax);
-	std::vector<double> x0(rows.size(), e.xmin);
-	std::vector<double> x1(rows.size(), e.xmax);
+	std::vector<double> y0(xcol.size(), e.ymin);
+	std::vector<double> y1(xcol.size(), e.ymax);
+	std::vector<double> x0(yrow.size(), e.xmin);
+	std::vector<double> x1(yrow.size(), e.xmax);
 
 	std::vector<double> x = x0;
 	std::vector<double> y = yrow;
@@ -75,6 +75,9 @@ SpatVector SpatRaster::dense_extent() {
 	x.insert(x.end(), xcol.begin(), xcol.end());
 	y.insert(y.end(), y1.begin(), y1.end());
 
+	x.push_back(e.xmin);
+	y.push_back(e.ymax);
+	
 	SpatVector v(x, y, polygons, getSRS("wkt"));
 
 	return v;

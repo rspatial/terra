@@ -118,7 +118,7 @@ std::vector<T> seq(T start, T end, T increment) {
 
 template <typename T>
 std::vector<T> seq_steps(T start, T end, size_t steps) {
-	T increment = (end - start) / (double) steps;
+	double increment = (end - start) / (double) steps;
 	std::vector<T> out;
 	out.reserve(steps);
 	for (size_t i=0; i<=steps; i++) {

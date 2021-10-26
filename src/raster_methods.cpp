@@ -42,6 +42,41 @@ std::vector<double> flat(std::vector<std::vector<double>> v) {
 }
 */
 
+/*
+SpatRaster SpatRaster::selectHighest(size_t n, bool low, SpatOptions &opt) {
+
+	SpatVector out;
+
+	if (nlyr() > 1) {
+		SpatOptions ops(opt);
+		out.addWarning("only processing the first layer");
+		std::vector<unsigned> lyr = {0};
+		*this = subset(lyr, ops);
+	}
+	if (!hasValues()) {
+		return(out);
+	}
+	if (n >= ncell()) {
+		return isnotnan(opt);
+	}
+	
+	std::vector<double> sel;
+	
+	if (!readStart()) {
+		return(out);
+	}
+
+	BlockSize bs = getBlockSize(opt);
+	for (size_t i = 0; i < bs.n; i++) {
+		std::vector<double> v = readBlock(bs, i);
+		for (size_t j=0; j<v.size(); j++) {
+		} 
+	
+	readStop();
+	return(out);
+}
+*/
+
 bool SpatRaster::get_aggregate_dims(std::vector<unsigned> &fact, std::string &message ) {
 
 	unsigned fs = fact.size();
