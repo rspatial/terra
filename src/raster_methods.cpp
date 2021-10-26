@@ -2065,7 +2065,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 		return(out);
 	}
 
-	opt.ncopies = 2;
+//	opt.ncopies = 2;
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
