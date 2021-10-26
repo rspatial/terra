@@ -97,10 +97,12 @@ setMethod ("setCats" , "SpatRaster",
 				}
 			}
 		}
+		minv <- min(value[,1])
 		maxv <- max(value[,1])
-		v <- data.frame(ID=0:maxv)
-		value <- merge(v, value, by=1, all.x=TRUE)
-			
+		if ((maxv < 256) && (minv >=0)) {
+			v <- data.frame(ID=0:maxv)
+			value <- merge(v, value, by=1, all.x=TRUE)
+		}	
 		
 		index <- max(1, min(ncol(value), index))
 #		if (is.data.frame(value)) {

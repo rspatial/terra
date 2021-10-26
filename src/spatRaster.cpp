@@ -1031,7 +1031,8 @@ bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index, 
     std::vector<unsigned> sl = findLyr(layer);
 
 	if (d.nrow() > 256) {
-		d.resize_rows(256);
+		is_vat = true;
+		//	d.resize_rows(256);
 	} 
 
 	SpatCategories cats;
