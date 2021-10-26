@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set the values of raster cells or of geometry attributes — setValues • terra</title>
+<title>select cells with high or low values — selectHighest • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Set the values of raster cells or of geometry attributes — setValues" />
-<meta property="og:description" content="Set cell values of a SpatRaster or the attributes of a SpatVector. For large SpatRaster objects use init instead to set values." />
+<meta property="og:title" content="select cells with high or low values — selectHighest" />
+<meta property="og:description" content="Identify n cells that have the highest of lowest values in the first layer of a SpatRaster." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -119,98 +119,49 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set the values of raster cells or of geometry attributes</h1>
+    <h1>select cells with high or low values</h1>
     
-    <div class="hidden name"><code>setValues.Rd</code></div>
+    <div class="hidden name"><code>selectHigh.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Set cell values of a SpatRaster or the attributes of a SpatVector. For large SpatRaster objects use <code><a href='initialize.html'>init</a></code> instead to set values.</p>
+    <p>Identify n cells that have the highest of lowest values in the first layer of a SpatRaster.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S4 method for SpatRaster,ANY</span>
-<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span>
-
-<span class='co'># S4 method for SpatRaster,ANY</span>
-<span class='fu'>setValues</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>values</span>, time<span class='op'>=</span><span class='cn'>TRUE</span>, props<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='co'># S4 method for SpatVector,ANY</span>
-<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>&lt;-</span><span class='va'>value</span></pre>
+    <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>selectHighest</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>n</span>, low<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatRaster or SpatVector</p></td>
+      <td><p>SpatRaster. Only the first layer is processed</p></td>
     </tr>
     <tr>
-      <th>value</th>
-      <td><p>For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame, matrix, vector, or NULL</p></td>
+      <th>n</th>
+      <td><p>The number of cells to select</p></td>
     </tr>
     <tr>
-      <th>values</th>
-      <td><p>Same as for <code>value</code></p></td>
-    </tr>
-    <tr>
-      <th>time</th>
-      <td><p>logical. If <code>TRUE</code> the time stamps are kept</p></td>
-    </tr>
-    <tr>
-      <th>props</th>
-      <td><p>logical. If <code>TRUE</code> the properties (categories and color-table) are kept</p></td>
+      <th>low</th>
+      <td><p>logical. If <code>TRUE</code>, the lowest values are selected instead of the highest values</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The same object type as <code>x</code></p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='values.html'>values</a></code>, <code><a href='initialize.html'>init</a></code></p></div>
+    <p>SpatRaster</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/elev.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>setValues</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>x</span>
-</div><div class='output co'>#&gt; class       : SpatRaster 
-#&gt; dimensions  : 90, 95, 1  (nrow, ncol, nlyr)
-#&gt; resolution  : 0.008333333, 0.008333333  (x, y)
-#&gt; extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
-#&gt; coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#&gt; source      : memory 
-#&gt; name        : elevation 
-#&gt; min value   :         1 
-#&gt; max value   :      8550 </div><div class='input'><span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>x</span>
-</div><div class='output co'>#&gt; class       : SpatRaster 
-#&gt; dimensions  : 90, 95, 1  (nrow, ncol, nlyr)
-#&gt; resolution  : 0.008333333, 0.008333333  (x, y)
-#&gt; extent      : 5.741667, 6.533333, 49.44167, 50.19167  (xmin, xmax, ymin, ymax)
-#&gt; coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-#&gt; source      : memory 
-#&gt; name        :    elevation 
-#&gt; min value   : 0.0001064336 
-#&gt; max value   :    0.9999306 </div><div class='input'><span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    elevation
-#&gt; 1 0.20754511
-#&gt; 2 0.22865814
-#&gt; 3 0.59571200
-#&gt; 4 0.57487220
-#&gt; 5 0.07706438
-#&gt; 6 0.03554058</div><div class='input'>
-<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
-<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>ID<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span>, name<span class='op'>=</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>]</span><span class='op'>)</span>
-<span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   ID name
-#&gt; 1  1    a
-#&gt; 2  2    b
-#&gt; 3  3    c
-#&gt; 4  4    d
-#&gt; 5  5    e
-#&gt; 6  6    f</div></pre>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>selectHighest</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>1000</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>selectHighest</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>1000</span>, <span class='cn'>TRUE</span><span class='op'>)</span>
+
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='merge.html'>merge</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>-</span><span class='fl'>1</span>, <span class='va'>x</span><span class='op'>)</span>
+<span class='fu'><a href='factors.html'>levels</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"low"</span>, <span class='st'>"high"</span><span class='op'>)</span>
+<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+</div><div class='img'><img src='selectHigh-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

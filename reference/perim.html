@@ -47,7 +47,8 @@
 
 
 <meta property="og:title" content="Perimeter or length — perim" />
-<meta property="og:description" content="This method returns the length of lines or the perimeter of polygons." />
+<meta property="og:description" content="This method returns the length of lines or the perimeter of polygons.
+When the crs is not longitude/latitude, you may get more accurate results by first un-projecting the SpatVector (you can use project to transform the crs to longitude/latitude)" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-15</span>
       </span>
     </div>
 
@@ -126,6 +127,7 @@
 
     <div class="ref-description">
     <p>This method returns the length of lines or the perimeter of polygons.</p>
+<p>When the crs is not longitude/latitude, you may get more accurate results by first un-projecting the SpatVector (you can use <code><a href='project.html'>project</a></code> to transform the crs to longitude/latitude)</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>

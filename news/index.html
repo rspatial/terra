@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-15</span>
       </span>
     </div>
 
@@ -122,9 +122,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-14" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-14">
-<a href="#version-14-14" class="anchor"></a>version 1.4-14<small> Unreleased </small>
+    <div id="version-14-15" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-15">
+<a href="#version-14-15" class="anchor"></a>version 1.4-15<small> Unreleased </small>
 </h1>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
@@ -134,6 +134,17 @@
 </li>
 <li>
 <code>rast</code> with some NetCDF files failed because of bad date parsing, <a href="https://github.com/rspatial/terra/pull/361"><a href='https://github.com/rspatial/terra/issues/361'>#361</a></a> by Juan Carlos Zamora-Pereira</li>
+<li>
+<code>distance,SpatRaster</code> with lon/lat data was not correct. <a href="https://github.com/rspatial/terra/pull/368"><a href='https://github.com/rspatial/terra/issues/368'>#368</a></a> by Greg Schmidt</li>
+<li>
+<code>as.polygons,SpatRaster</code> failed with a SpatRaster and a categorical layer that is not the first layer. <a href="https://github.com/rspatial/terra/pull/370"><a href='https://github.com/rspatial/terra/issues/370'>#370</a></a> by Patrick Schratz</li>
+</ul>
+</div>
+<div id="new" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new" class="anchor"></a>new</h2>
+<ul>
+<li>new method <code>selectHighest</code> to select n cell values of a <code>SpatRaster</code> with the highest or lowest values.</li>
 </ul>
 </div>
 </div>
@@ -312,9 +323,9 @@
 <h1 class="page-header" data-toc-text="1.3-4">
 <a href="#version-13-4" class="anchor"></a>version 1.3-4<small> 2021-06-20 </small>
 </h1>
-<div id="new" class="section level2">
+<div id="new-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new" class="anchor"></a>new</h2>
+<a href="#new-1" class="anchor"></a>new</h2>
 <ul>
 <li>
 <code>na.omit,SpatVector-method</code> to remove empty geometries and/or attribute records that have an <code>NA</code>
@@ -382,9 +393,9 @@
 <h1 class="page-header" data-toc-text="1.2-10">
 <a href="#version-12-10" class="anchor"></a>version 1.2-10<small> 2021-05-13 </small>
 </h1>
-<div id="new-1" class="section level2">
+<div id="new-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-1" class="anchor"></a>new</h2>
+<a href="#new-2" class="anchor"></a>new</h2>
 <ul>
 <li>
 <code>as.lines</code> method for SpatRaster</li>
@@ -465,9 +476,9 @@
 <h1 class="page-header" data-toc-text="1.2-5">
 <a href="#version-12-5" class="anchor"></a>version 1.2-5<small> 2021-04-30 </small>
 </h1>
-<div id="new-2" class="section level2">
+<div id="new-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-2" class="anchor"></a>new</h2>
+<a href="#new-3" class="anchor"></a>new</h2>
 <ul>
 <li>
 <code>trim</code> has a new argument <code>value</code> that allows trimming rows and columns with other values than the default <code>NA</code>
