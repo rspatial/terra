@@ -1,12 +1,13 @@
-# version 1.4-15
+# version 1.4-16
 
 ## bug fixes
 
 - terra did not install for older versions of GEOS [#363](https://github.com/rspatial/terra/pull/363)
-- `rast` with some NetCDF files failed because of bad date parsing, [#361](https://github.com/rspatial/terra/pull/361) by Juan Carlos Zamora-Pereira
+- `rast` with some NetCDF files failed because of bad date parsing. [#361](https://github.com/rspatial/terra/pull/361) by Juan Carlos Zamora-Pereira
 - `distance,SpatRaster` with lon/lat data was not correct. [#368](https://github.com/rspatial/terra/pull/368)
 by Greg Schmidt
 - `as.polygons,SpatRaster` failed with a SpatRaster and a categorical layer that is not the first layer. [#370](https://github.com/rspatial/terra/pull/370) by Patrick Schratz
+- The filename argument in `rasterize` was not ignored, also causing errors when writing to temporary files. ). [#377](https://github.com/rspatial/terra/pull/377) by Robbie Price
 
 ## new
 
