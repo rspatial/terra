@@ -290,7 +290,7 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 		if (grays) {
 			opt <- spatOptions(filename, overwrite, ...)
 			x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
-			return(x)
+			return(messages(x, "RGB2col"))
 		}
 		
 		v <- cbind(id=1:ncell(x), values(x))
