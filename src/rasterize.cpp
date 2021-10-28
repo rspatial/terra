@@ -67,7 +67,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 			driver = "GTiff";
 		} 
 	} else {
-		std::string driver = opt.get_filetype();
+		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
 		if (driver == "") {
 			out.setError("cannot guess file type from filename");
