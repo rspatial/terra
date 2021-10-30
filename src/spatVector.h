@@ -81,6 +81,7 @@ class SpatGeom {
 		//double length_plane();
 		//double length_lonlat(double a, double f);
 		unsigned size() { return parts.size(); };
+		void remove_duplicate_nodes(int digits);
 };
 
 
@@ -172,6 +173,7 @@ class SpatVector {
 		SpatVector remove_holes();
 		SpatVector get_holes();
 		SpatVector set_holes(SpatVector x, size_t i);
+		SpatVector remove_duplicate_nodes(int digits);
 
 		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 		

@@ -17,6 +17,7 @@
 
 #include "spatVector.h"
 #include <numeric>
+#include "math_utils.h"
 
 #ifdef useGDAL
 	#include "crs.h"
@@ -833,7 +834,6 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 }
 
 
-#include "Rcpp.h"
 SpatVector SpatVector::as_lines() {
 	SpatVector v;
 
@@ -873,6 +873,58 @@ SpatVector SpatVector::as_lines() {
 		v.geoms[i].gtype = lines;
 	}
 	v.df = df;
+	return(v);
+}
+
+
+void vecround(std::vector<double> &x, int digits) {
+	for (double& d : x) d = roundn(d, digits);
+}
+
+void remove_duplicates(std::vector<double> &x, std::vector<double> &y, int digits) {
+	if (digits > -1) {
+		vecround(x, digits);
+		vecround(y, digits);
+	}
+	size_t start = x.size() - 1;
+	for (size_t i=start; i>0; i--) {
+		if ((x[i] == x[i-1]) && (y[i] == y[i-1])) {
+			x.erase(x.begin()+i);
+			y.erase(y.begin()+i);
+		}
+	}
+}
+
+
+void SpatGeom::remove_duplicate_nodes(int digits) {
+	size_t start = parts.size()-1;
+	for (size_t i=start; i>0; i--) {
+		remove_duplicates(parts[i].x, parts[i].y, digits);
+		if (parts[i].x.size() < 4) {
+			parts.erase(parts.begin()+i); 
+			continue;
+		}
+		if (parts[i].hasHoles()) {
+			for (size_t j=0; j < parts[i].nHoles(); j++) {
+				remove_duplicates(parts[i].holes[j].x, parts[i].holes[j].y, digits);
+				if (parts[i].holes[j].x.size() < 4) {
+					parts[i].holes.erase(parts[i].holes.begin()+j); 
+				}
+			}
+		}
+	}
+}
+
+
+SpatVector SpatVector::remove_duplicate_nodes(int digits) {
+	SpatVector v = *this;
+	if (geoms[0].gtype == points) {
+		v.addWarning("returning a copy");
+		return v;
+	}
+	for (size_t i=0; i<size(); i++) {
+		v.geoms[i].remove_duplicate_nodes(digits);
+	}
 	return(v);
 }
 

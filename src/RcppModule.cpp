@@ -382,6 +382,7 @@ RCPP_MODULE(spat){
 		
 		.method("sample", &SpatVector::sample)
 		.method("sampleGeom", &SpatVector::sample_geom)
+		.method("remove_duplicate_nodes", &SpatVector::remove_duplicate_nodes)
 	;
 
 

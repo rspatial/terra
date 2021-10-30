@@ -21,6 +21,12 @@ clearance <- function(x) {
 }
 
 
+removeDupNodes <- function(x, digits=-1) {
+	x@ptr <- x@ptr$remove_duplicate_nodes(digits)
+	messages(x, "removeDupNodes")	
+}
+
+
 simplify <- function(x, tolerance=0, preserveTopology=TRUE) {
 	x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
 	messages(x, "simplify")	
