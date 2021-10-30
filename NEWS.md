@@ -8,10 +8,12 @@
 by Greg Schmidt
 - `as.polygons,SpatRaster` failed with a SpatRaster and a categorical layer that is not the first layer. [#370](https://github.com/rspatial/terra/pull/370) by Patrick Schratz
 - The filename argument in `rasterize` was not ignored, also causing errors when writing to temporary files. ). [#377](https://github.com/rspatial/terra/pull/377) by Robbie Price
+- `rast,character` crashed if the sds was an empty character string. [#381](https://github.com/rspatial/terra/pull/381) by Dan Baston
 
 ## new
 
 - new method `selectHighest` to select n cell values of a `SpatRaster` with the highest or lowest values. 
+- new method `vect,list` to append SpatVectors (faster than `do.call(rbind, x)`)
 
 
 # version 1.4-11
