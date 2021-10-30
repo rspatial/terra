@@ -288,6 +288,7 @@ bool SpatVector::addGeom(SpatGeom p) {
 	return true;
 }
 
+
 bool SpatVector::setGeom(SpatGeom p) {
 	geoms.resize(1);
 	geoms[0] = p;
@@ -765,15 +766,11 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 		return out;
 	}
 	if (x.df.nrow() == 0) {
-		for (size_t i=0; i<x.size(); i++) {
-			out.df.add_row();
-		}
+		out.df.add_rows(x.size());
 	} else {
 		std::vector<unsigned> i;
 		out.df = x.df.subset_rows(i);
-		for (size_t i=0; i<size(); i++) {
-			out.df.add_row();
-		}
+		out.df.add_rows(size());
 		out.df.rbind(x.df);
 	}
 	return out;
@@ -928,3 +925,44 @@ SpatVector SpatVector::remove_duplicate_nodes(int digits) {
 	return(v);
 }
 
+
+SpatVector SpatVectorCollection::append() {
+	SpatVector out;
+	size_t n = size();
+	if (n < 1) {
+		out.setError("no data in collection");
+		return out;
+	}
+	out = v[0];
+	// if out.nrow == 0? 
+	std::string gtype = out.type();
+	for (size_t i=1; i<n; i++) {
+		if (v[i].type() != gtype) {
+			out.setError("all SpatVectors must have the same geometry type");
+			return out;
+		}
+		//too much copying
+		//out = out.append(v[i], true);
+						
+		if (v[i].size() == 0) continue;
+		out.geoms.insert(out.geoms.end(), v[i].geoms.begin(), v[i].geoms.end());
+		out.extent.unite(v[i].extent);
+
+		if ((out.df.nrow() == 0) && (v[i].df.nrow() == 0)) {
+			continue;
+		} 
+		if ((out.df.nrow() > 0) && (v[i].df.nrow() > 0)) {
+			out.df.rbind(v[i].df);
+			continue;
+		}
+		if (v[i].df.nrow() == 0) {
+			out.df.add_rows(v[i].size());
+		} else {
+			std::vector<unsigned> r0;
+			out.df = v[i].df.subset_rows(r0);
+			out.df.add_rows(out.size());
+			out.df.rbind(v[i].df);
+		}
+	}
+	return out;
+}

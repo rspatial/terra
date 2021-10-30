@@ -4,6 +4,7 @@
 
 \alias{vect}
 \alias{vect,character-method}
+\alias{vect,list-method}
 \alias{vect,data.frame-method}
 \alias{vect,matrix-method}
 \alias{vect,missing-method}
@@ -17,7 +18,15 @@
 \title{Create SpatVector objects}
 
 \description{
-Create a SpatVector
+Methods to create a SpatVector from a filename or other R object. 
+
+A filename can be for a shapefile or any spatial file format. 
+
+You can use a data.frame to make a SpatVector of points; or a "geom" matrix to make a SpatVector of any supported geometry (see examples and  \code{\link{geom}}). 
+
+You can supply a list of SpatVectors to append them into a single SpatVector. 
+
+SpatVectors can also be crated from a "Well Known Text" string and from spatial vector data objects defined in the \code{sf} or \code{sp} packages}
 } 
 
 \usage{
@@ -26,6 +35,8 @@ Create a SpatVector
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
 \S4method{vect}{data.frame}(x, geom=c("lon", "lat"), crs="")
+
+\S4method{vect}{list}(x)
 
 \S4method{vect}{sf}(x)
 }

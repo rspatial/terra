@@ -6,7 +6,7 @@ setMethod("length", signature(x="SpatVectorCollection"),
 )
 
 setMethod("svc", signature(x="missing"),
-	function(x, ...) {
+	function(x) {
 		v <- methods::new("SpatVectorCollection")
 		v@ptr <- SpatVectorCollection$new()
 		v
@@ -34,7 +34,7 @@ setMethod("svc", signature(x="SpatVector"),
 )
 
 setMethod("svc", signature(x="list"),
-	function(x, ...) {
+	function(x) {
 		r <- methods::new("SpatVectorCollection")
 		r@ptr <- SpatVectorCollection$new()
 		for (i in seq_along(x)) {

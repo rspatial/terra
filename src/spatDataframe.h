@@ -58,6 +58,7 @@ class SpatDataFrame {
 		std::string getSvalue(unsigned i, unsigned j);
 	
 		void add_row();
+		void add_rows(size_t n);
 		
 		void set_values(std::vector<double> x, std::string name);
 		void set_values(std::vector<long> x, std::string name);

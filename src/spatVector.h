@@ -344,5 +344,7 @@ class SpatVectorCollection {
 			return out;
 		}
 		
+		SpatVector append();
+		
 };
 

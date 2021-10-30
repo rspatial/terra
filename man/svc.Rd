@@ -19,16 +19,16 @@ Methods to create a SpatVectorCollection. This is an object to hold "sub-dataset
 }
 
 \usage{
-\S4method{svc}{missing}(x, ...) 
+\S4method{svc}{missing}(x) 
 
 \S4method{svc}{SpatVector}(x, ...) 
 
-\S4method{svc}{list}(x, ...) 
+\S4method{svc}{list}(x) 
 }
 
 \arguments{
-\item{x}{SpatVector, or list of SpatVector objects, or missing}
-\item{...}{additional arguments. Can be other \code{SpatVector} objects if \code{x} is a \code{SpatVector}} 
+\item{x}{SpatVector, or list of a SpatVector, or missing}
+\item{...}{Additional \code{SpatVector}s} 
 }
 
 

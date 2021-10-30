@@ -198,6 +198,21 @@ void SpatDataFrame::add_row() {
 }
 
 
+void SpatDataFrame::add_rows(size_t n) {
+	size_t s = nrow() + n;
+	for (size_t i=0; i < dv.size(); i++) {
+		dv[i].resize(s, NAN);
+	}
+	long longNA = NA<long>::value;
+	for (size_t i=0; i < iv.size(); i++) {
+		iv[i].resize(s, longNA);
+	}
+	for (size_t i=0; i < sv.size(); i++) {
+		sv[i].resize(s, NAS);
+	}
+}
+
+
 void SpatDataFrame::reserve(unsigned n) {
 	for (size_t i=0; i<dv.size(); i++) {
 		dv[i].reserve(n);
