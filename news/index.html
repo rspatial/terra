@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-16</span>
       </span>
     </div>
 
@@ -122,9 +122,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-15" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-15">
-<a href="#version-14-15" class="anchor"></a>version 1.4-15<small> Unreleased </small>
+    <div id="version-14-16" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-16">
+<a href="#version-14-16" class="anchor"></a>version 1.4-16<small> Unreleased </small>
 </h1>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
@@ -133,11 +133,14 @@
 <li>terra did not install for older versions of GEOS <a href="https://github.com/rspatial/terra/pull/363"><a href='https://github.com/rspatial/terra/issues/363'>#363</a></a>
 </li>
 <li>
-<code>rast</code> with some NetCDF files failed because of bad date parsing, <a href="https://github.com/rspatial/terra/pull/361"><a href='https://github.com/rspatial/terra/issues/361'>#361</a></a> by Juan Carlos Zamora-Pereira</li>
+<code>rast</code> with some NetCDF files failed because of bad date parsing. <a href="https://github.com/rspatial/terra/pull/361"><a href='https://github.com/rspatial/terra/issues/361'>#361</a></a> by Juan Carlos Zamora-Pereira</li>
 <li>
 <code>distance,SpatRaster</code> with lon/lat data was not correct. <a href="https://github.com/rspatial/terra/pull/368"><a href='https://github.com/rspatial/terra/issues/368'>#368</a></a> by Greg Schmidt</li>
 <li>
 <code>as.polygons,SpatRaster</code> failed with a SpatRaster and a categorical layer that is not the first layer. <a href="https://github.com/rspatial/terra/pull/370"><a href='https://github.com/rspatial/terra/issues/370'>#370</a></a> by Patrick Schratz</li>
+<li>The filename argument in <code>rasterize</code> was not ignored, also causing errors when writing to temporary files. ). <a href="https://github.com/rspatial/terra/pull/377"><a href='https://github.com/rspatial/terra/issues/377'>#377</a></a> by Robbie Price</li>
+<li>
+<code>rast,character</code> crashed if the sds was an empty character string. <a href="https://github.com/rspatial/terra/pull/381"><a href='https://github.com/rspatial/terra/issues/381'>#381</a></a> by Dan Baston</li>
 </ul>
 </div>
 <div id="new" class="section level2">
@@ -145,6 +148,7 @@
 <a href="#new" class="anchor"></a>new</h2>
 <ul>
 <li>new method <code>selectHighest</code> to select n cell values of a <code>SpatRaster</code> with the highest or lowest values.</li>
+<li>new method <code>vect,list</code> to append SpatVectors (faster than <code><a href="https://rdrr.io/r/base/do.call.html">do.call(rbind, x)</a></code>)</li>
 </ul>
 </div>
 </div>

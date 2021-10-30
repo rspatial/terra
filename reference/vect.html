@@ -47,7 +47,11 @@
 
 
 <meta property="og:title" content="Create SpatVector objects — vect" />
-<meta property="og:description" content="Create a SpatVector" />
+<meta property="og:description" content="Methods to create a SpatVector from a filename or other R object.
+A filename can be for a shapefile or any spatial file format.
+You can use a data.frame to make a SpatVector of points; or a &quot;geom&quot; matrix to make a SpatVector of any supported geometry (see examples and  geom).
+You can supply a list of SpatVectors to append them into a single SpatVector.
+SpatVectors can also be crated from a &quot;Well Known Text&quot; string and from spatial vector data objects defined in the sf or sp packages" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -80,7 +84,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-16</span>
       </span>
     </div>
 
@@ -125,7 +129,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Create a SpatVector</p>
+    <p>Methods to create a SpatVector from a filename or other R object.</p>
+<p>A filename can be for a shapefile or any spatial file format.</p>
+<p>You can use a data.frame to make a SpatVector of points; or a "geom" matrix to make a SpatVector of any supported geometry (see examples and  <code><a href='geom.html'>geom</a></code>).</p>
+<p>You can supply a list of SpatVectors to append them into a single SpatVector.</p>
+<p>SpatVectors can also be crated from a "Well Known Text" string and from spatial vector data objects defined in the <code>sf</code> or <code>sp</code> packages</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for character</span>
@@ -136,6 +144,9 @@
 
 <span class='co'># S4 method for data.frame</span>
 <span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span>, geom<span class='op'>=</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"lon"</span>, <span class='st'>"lat"</span><span class='op'>)</span>, crs<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
+
+<span class='co'># S4 method for list</span>
+<span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
 <span class='co'># S4 method for sf</span>
 <span class='fu'>vect</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
