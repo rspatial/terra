@@ -1159,7 +1159,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		return false;
 	}
 	// select sds by index
-	if (subds[0] >=0) {
+	if ((subds.size() > 0) && (subds[0] >= 0)) {
 		for (size_t i=0; i<subds.size(); i++) {
 			if (subds[i] >=0 && subds[i] < n) {
 				sd.push_back(info[0][subds[i]]);
@@ -1171,7 +1171,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 			}
 		}
 	// select by name
-	} else if (subdsname[0] != "") {
+	} else if ((subdsname.size() > 0) && (subdsname[0] != "")) {
 		for (size_t i=0; i<subdsname.size(); i++) {
 			int w = where_in_vector(subdsname[i], info[1], false);
 			if (w >= 0) {
