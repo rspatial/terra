@@ -53,15 +53,15 @@ function(x, filename="", overwrite=FALSE, ...) {
 
 
 setMethod("writeVector", signature(x="SpatVector", filename="character"), 
-function(x, filename, filetype="ESRI Shapefile", overwrite=FALSE) {
+function(x, filename, filetype="ESRI Shapefile", overwrite=FALSE, options=NULL) {
 	filename <- trimws(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")
 	}
 	
 	lyrname <- tools::file_path_sans_ext(basename(filename))
-
-	success <- x@ptr$write(filename, lyrname, filetype, overwrite[1])
+	if (is.null(options)) { options <- ""[0] }
+	success <- x@ptr$write(filename, lyrname, filetype, overwrite[1], options)
 	messages(x, "writeVector")
 	invisible(TRUE)
 }

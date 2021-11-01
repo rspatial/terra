@@ -26,7 +26,7 @@ You can use a data.frame to make a SpatVector of points; or a "geom" matrix to m
 
 You can supply a list of SpatVectors to append them into a single SpatVector. 
 
-SpatVectors can also be crated from a "Well Known Text" string and from spatial vector data objects defined in the \code{sf} or \code{sp} packages
+SpatVectors can also be created from "Well Known Text", and from spatial vector data objects defined in the \code{sf} or \code{sp} packages
 } 
 
 \usage{

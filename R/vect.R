@@ -278,9 +278,10 @@ setMethod("vect", signature(x="data.frame"),
 
 setMethod("vect", signature(x="list"), 
 	function(x) {
-		s <- svc(x)
+		x <- svc(x)
+		x <- x@ptr$append()
 		v <- methods::new("SpatVector")
-		v@ptr <- s@ptr$append()
+		v@ptr <- x 
 		messages(v)
 	}
 )

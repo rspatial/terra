@@ -117,7 +117,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 		out = geometry(1);
 	}
 
-	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true);
+	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true, std::vector<std::string>());
 	if (x.hasError()) {
 		out.setError(x.getError());
 		return out;
@@ -260,7 +260,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		recycle(values, nGeoms);
 	}
 
-	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true);
+	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true, std::vector<std::string>());
 	if (x.hasError()) {
 		out.setError(x.getError());
 		return out;

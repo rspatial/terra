@@ -177,10 +177,10 @@ class SpatVector {
 
 		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 		
-		bool write(std::string filename, std::string lyrname, std::string driver, bool overwrite);
+		bool write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string>);
 		
 #ifdef useGDAL
-		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite);
+		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options);
 		GDALDataset* GDAL_ds();
 		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
 		SpatVector fromDS(GDALDataset *poDS);

@@ -362,7 +362,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 				filter = filter.aggregate(true);
 			}
 		}
-		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", true);
+		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", true, std::vector<std::string>());
 		if (filter.hasError()) {
 			setError(filter.getError());
 			GDALClose(filterDS);

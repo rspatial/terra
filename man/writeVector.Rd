@@ -11,7 +11,7 @@ Write a SpatVector to a file. You can choose one of many file formats.
 }
 
 \usage{
-\S4method{writeVector}{SpatVector,character}(x, filename, filetype="ESRI Shapefile", overwrite=FALSE)
+\S4method{writeVector}{SpatVector,character}(x, filename, filetype="ESRI Shapefile", overwrite=FALSE, options=NULL)
 }
 
 \arguments{
@@ -19,6 +19,7 @@ Write a SpatVector to a file. You can choose one of many file formats.
   \item{filename}{character. Output filename}
   \item{filetype}{character. A file format associated with a GDAL "driver". See \code{ gdal(drivers=TRUE)}}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+  \item{options}{character. Vector of format specific GDAL options such as "ENCODING=UTF-8"}
 }
 
 

@@ -16,11 +16,13 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatVector.h"
+#include "string_utils.h"
 
 #ifdef useGDAL
 
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
+
 
 /*
 bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	message) {
@@ -177,7 +179,7 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 
 
 
-GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
+GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
 
 
     GDALDataset *poDS = NULL;
@@ -240,7 +242,17 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	}
 
     OGRLayer *poLayer;
-    poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, NULL );
+	char** papszOptions = NULL;
+	if (options.size() > 0) {
+		for (size_t i=0; i<options.size(); i++) {
+			std::vector<std::string> gopt = strsplit(options[i], "=");
+			if (gopt.size() == 2) {
+				papszOptions = CSLSetNameValue(papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+			}
+		}
+		// papszOptions = CSLSetNameValue( papszOptions, "ENCODING", "UTF-8" );
+    }
+	poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, papszOptions);
     if( poLayer == NULL ) {
         setError( "Layer creation failed" );
         return poDS;
@@ -387,9 +399,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 
-bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
+bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string>) {
 
-	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite);
+	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite, std::vector<std::string>());
     if (poDS != NULL) GDALClose( poDS );
 	if (hasError()) {
 		return false;
@@ -399,7 +411,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 }
 
 GDALDataset* SpatVector::GDAL_ds() {
-	return write_ogr("", "layer", "Memory", true);
+	return write_ogr("", "layer", "Memory", true, std::vector<std::string>());
 }
 
 
