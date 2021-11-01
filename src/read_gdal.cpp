@@ -134,19 +134,14 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 	}
 	if (rng.size() > 1) {
 		vat.d = v.df.subset_cols(rng);
-		if (rng.size() == 2) {
-			std::string sc = vat.d.names[1];
-			lowercase(sc);
-			if (sc == "count") {
-				return false;
-			}
-		}
 		vat.d.names[0] = "ID";
 		vat.index = 1;
-		if (rng.size() == 3) {
-			std::string sc = vat.d.names[1];
-			lowercase(sc);
-			if (sc == "count") {
+		std::string sc = vat.d.names[1];
+		lowercase(sc);
+		if (sc == "count") {
+			if (rng.size() == 2) {
+				return false;
+			} else {
 				vat.index = 2;
 			}
 		}
