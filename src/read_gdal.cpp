@@ -143,6 +143,13 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 		}
 		vat.d.names[0] = "ID";
 		vat.index = 1;
+		if (rng.size() == 3) {
+			std::string sc = vat.d.names[1];
+			lowercase(sc);
+			if (sc == "count") {
+				vat.index = 2;
+			}
+		}
 		vat.vat = true;
 		return true;
 	}
