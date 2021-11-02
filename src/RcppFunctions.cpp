@@ -139,7 +139,7 @@ std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {
 	std::vector<std::vector<std::string>> s = parse_metadata_sds(m);
 	return s;
 }
-
+/*
 // [[Rcpp::export(name = ".gdaldrivers")]]
 std::vector<std::vector<std::string>> gdal_drivers() {
 	size_t n = GetGDALDriverManager()->GetDriverCount();
@@ -163,6 +163,33 @@ std::vector<std::vector<std::string>> gdal_drivers() {
 		bool vsi = CSLFetchBoolean( papszMetadata, GDAL_DCAP_VIRTUALIO, FALSE);
 		s[3].push_back(std::to_string(vsi));
 
+	}
+	return s;
+}
+*/
+
+
+// [[Rcpp::export(name = ".gdaldrivers")]]
+std::vector<std::vector<std::string>> gdal_drivers() {
+	size_t n = GetGDALDriverManager()->GetDriverCount();
+	std::vector<std::vector<std::string>> s(5, std::vector<std::string>(n));
+    GDALDriver *poDriver;
+    char **papszMetadata;
+	for (size_t i=0; i<n; i++) {
+	    poDriver = GetGDALDriverManager()->GetDriver(i);
+		const char* ss = poDriver->GetDescription();
+		if (ss != NULL ) s[0][i] = ss;		
+		ss = poDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
+		if (ss != NULL ) s[4][i] = ss;
+
+		papszMetadata = poDriver->GetMetadata();
+		bool rst = CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE);
+		s[1][i] = std::to_string(rst);
+		bool create = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE);
+		bool copy = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE);
+		s[2][i] = std::to_string(create + copy);
+		bool vsi = CSLFetchBoolean( papszMetadata, GDAL_DCAP_VIRTUALIO, FALSE);
+		s[3][i] = std::to_string(vsi);
 	}
 	return s;
 }
