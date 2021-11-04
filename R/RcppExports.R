@@ -57,3 +57,11 @@
     .Call(`_terra_percRank`, x, y, minc, maxc, tail)
 }
 
+setGDALCacheSizeMB <- function(x) {
+    invisible(.Call(`_terra_setGDALCacheSizeMB`, x))
+}
+
+getGDALCacheSizeMB <- function() {
+    .Call(`_terra_getGDALCacheSizeMB`)
+}
+

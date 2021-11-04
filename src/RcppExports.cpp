@@ -167,6 +167,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// setGDALCacheSizeMB
+void setGDALCacheSizeMB(double x);
+RcppExport SEXP _terra_setGDALCacheSizeMB(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    setGDALCacheSizeMB(x);
+    return R_NilValue;
+END_RCPP
+}
+// getGDALCacheSizeMB
+double getGDALCacheSizeMB();
+RcppExport SEXP _terra_getGDALCacheSizeMB() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(getGDALCacheSizeMB());
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -185,6 +205,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_set_gdal_warnings", (DL_FUNC) &_terra_set_gdal_warnings, 1},
     {"_terra_gdal_init", (DL_FUNC) &_terra_gdal_init, 1},
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
+    {"_terra_setGDALCacheSizeMB", (DL_FUNC) &_terra_setGDALCacheSizeMB, 1},
+    {"_terra_getGDALCacheSizeMB", (DL_FUNC) &_terra_getGDALCacheSizeMB, 0},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };
