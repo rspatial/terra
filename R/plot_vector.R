@@ -187,7 +187,7 @@ setMethod("dots", signature(x="SpatVector"),
 		z <- stats::na.omit(out$v)
 		n <- length(z)
 	}
-	out$range <- range(z)
+	#out$range <- range(z)
 
 	interval <- (out$range[2]-out$range[1])/(length(out$cols)-1)
 	breaks <- out$range[1] + interval * (0:(length(out$cols)-1))
@@ -329,7 +329,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
-	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, 
+	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL,  
 	pax=list(), plg=list(), ...) {
 
 	out <- list()
@@ -366,7 +366,23 @@ setMethod("dots", signature(x="SpatVector"),
 	out$breaks <- breaks
 	out$breakby <- breakby
 
-	out$v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
+	v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
+	if (!is.null(range)) {
+		range <- sort(range)
+		v[v < range[1]] <- NA
+		v[v > range[2]] <- NA
+		if (length(v) == 0) {
+			v <- NULL
+			y <- ""
+			type <- "none"
+		} else {
+			out$range <- range
+		}
+	} else {
+		out$range <- range(v, na.rm=TRUE)
+	}
+	out$v <- v
+
 	out$uv <- unique(out$v)
 
 	if (missing(type)) {
@@ -375,7 +391,6 @@ setMethod("dots", signature(x="SpatVector"),
 		type <- match.arg(type, c("continuous", "classes", "interval", "depends", "none"))
 	}
 	out$levels <- levels
-	out$range <- range
 
 	if (type=="none") {
 		legend <- FALSE
