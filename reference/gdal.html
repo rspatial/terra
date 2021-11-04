@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GDAL version and supported file formats — gdal • terra</title>
+<title>GDAL version, supported file formats, and cache size — gdal • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="GDAL version and supported file formats — gdal" />
+<meta property="og:title" content="GDAL version, supported file formats, and cache size — gdal" />
 <meta property="og:description" content="Set the GDAL warning level or get a data.frame with the available GDAL drivers (file formats), or get the GDAL version (if warn=NA and drivers=FALSE, the default.
 GDAL is the software library that terra builds on to read and write spatial data and for some raster data processing." />
 <meta property="og:image" content="/logo.png" />
@@ -120,7 +120,7 @@ GDAL is the software library that terra builds on to read and write spatial data
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>GDAL version and supported file formats</h1>
+    <h1>GDAL version, supported file formats, and cache size</h1>
     
     <div class="hidden name"><code>gdal.Rd</code></div>
     </div>
@@ -130,7 +130,8 @@ GDAL is the software library that terra builds on to read and write spatial data
 <p><code>GDAL</code> is the software library that terra builds on to read and write spatial data and for some raster data processing.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>gdal</span><span class='op'>(</span>warn<span class='op'>=</span><span class='cn'>NA</span>, drivers<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>gdal</span><span class='op'>(</span>warn<span class='op'>=</span><span class='cn'>NA</span>, drivers<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>gdalCache</span><span class='op'>(</span>size<span class='op'>=</span><span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,6 +143,10 @@ GDAL is the software library that terra builds on to read and write spatial data
     <tr>
       <th>drivers</th>
       <td><p>logical. If <code>TRUE</code> a data.frame with the raster and vector data formats that are available.</p></td>
+    </tr>
+    <tr>
+      <th>size</th>
+      <td><p>numeric. The new cache size in MB</p></td>
     </tr>
     </table>
 
