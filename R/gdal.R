@@ -1,5 +1,21 @@
 
 
+fileBlocksize <- function(x) {
+	v <- x@ptr$getFileBlocksize()
+	matrix(v, ncol=2)
+}
+
+
+gdalCache <- function(size=NA) {
+	if (is.na(size)) {
+		.getGDALCacheSizeMB()
+	} else {
+		if (size > 0) {
+			.setGDALCacheSizeMB(size)
+		}
+	}
+}
+
 gdal <- function(warn=NA, drivers=FALSE) {
 	if (!is.na(warn)) {
 		warn <- as.integer(warn)

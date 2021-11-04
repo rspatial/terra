@@ -501,6 +501,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	bool getCols = s.nlyr == 3;
 	std::vector<unsigned> rgb_lyrs(3, -99);
 
+	int bs1, bs2;
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
@@ -529,7 +530,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			s.has_scale_offset[i] = true;
 		} 
 
-
+	
+		poBand->GetBlockSize(&bs1, &bs2);
+		s.blockcols[i] = bs1;
+		s.blockrows[i] = bs2;
+		
 		//std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
 
 		adfMinMax[0] = poBand->GetMinimum( &bGotMin );

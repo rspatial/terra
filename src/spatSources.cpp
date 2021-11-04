@@ -227,6 +227,9 @@ void SpatRasterSource::resize(unsigned n) {
     hasRange.resize(n, false);
     range_min.resize(n, NAN);
     range_max.resize(n, NAN);
+    blockcols.resize(n);
+    blockrows.resize(n);
+	
 	has_scale_offset.resize(n, false);
 	scale.resize(n, 1);
 	offset.resize(n, 0);
@@ -300,6 +303,8 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
         out.hasRange.push_back(hasRange[j]);
         out.range_min.push_back(range_min[j]);
         out.range_max.push_back(range_max[j]);
+        out.blockrows.push_back(blockrows[j]);
+        out.blockcols.push_back(blockcols[j]);
         out.hasColors.push_back(hasColors[j]);
         out.cols.push_back(cols[j]);
         out.hasCategories.push_back(hasCategories[j]);
@@ -418,6 +423,9 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
 	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());
 	range_max.insert(range_max.end(), x.range_max.begin(), x.range_max.end());
+
+	blockrows.insert(blockrows.end(), x.blockrows.begin(), x.blockrows.end());
+	blockcols.insert(blockcols.end(), x.blockcols.begin(), x.blockcols.end());
 	//hasAttributes.insert(hasAttributes.end(), x.hasAttributes.begin(), x.hasAttributes.end());
 	//atts.insert(atts.end(), x.atts.begin(), x.atts.end());
 	//attsIndex.insert(attsIndex.end(), x.attsIndex.begin(), x.attsIndex.end());
@@ -460,6 +468,8 @@ bool SpatRasterSource::combine(SpatRasterSource &x) {
 	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
 	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());
 	range_max.insert(range_max.end(), x.range_max.begin(), x.range_max.end());
+	blockrows.insert(blockrows.end(), x.blockrows.begin(), x.blockrows.end());
+	blockcols.insert(blockcols.end(), x.blockcols.begin(), x.blockcols.end());
 	//hasAttributes.insert(hasAttributes.end(), x.hasAttributes.begin(), x.hasAttributes.end());
 	//atts.insert(atts.end(), x.atts.begin(), x.atts.end());
 	//attsIndex.insert(attsIndex.end(), x.attsIndex.begin(), x.attsIndex.end());

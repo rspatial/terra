@@ -7,5 +7,5 @@ exportMethods("[", "[[", "!", "%in%", activeCat, "activeCat<-", "add<-", adjacen
 S3method(cbind, SpatVector)
 S3method(rbind, SpatVector)
 
-export(focalMat, gdal, sbar, terraOptions, tmpFiles, mem_info, free_RAM, shade, setGDALCacheSizeMB, getGDALCacheSizeMB)
+export(focalMat, gdal, sbar, terraOptions, tmpFiles, mem_info, free_RAM, shade, gdalCache, fileBlocksize)
 

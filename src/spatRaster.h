@@ -115,6 +115,8 @@ class SpatRasterSource {
 
 //		unsigned char datatype;
 
+		std::vector<int> blockrows;
+		std::vector<int> blockcols;
 		std::vector<bool> hasRange;
 		std::vector<double> range_min;
 		std::vector<double> range_max;
@@ -492,6 +494,7 @@ class SpatRaster {
 
 		bool differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty);
 
+		std::vector<int> getFileBlocksize();
 
 ////////////////////////////////////////////////////
 // main methods

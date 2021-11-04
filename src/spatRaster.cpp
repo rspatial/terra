@@ -1963,3 +1963,16 @@ SpatRaster SpatRaster::to_memory_copy(SpatOptions &opt) {
 }
 
 
+std::vector<int> SpatRaster::getFileBlocksize() {
+	std::vector<int> b;
+	for (size_t i=0; i<source.size(); i++) {
+		b.insert(b.end(), source[i].blockrows.begin(), source[i].blockrows.end());
+	}
+	for (size_t i=0; i<source.size(); i++) {
+		b.insert(b.end(), source[i].blockcols.begin(), source[i].blockcols.end());
+	}
+	return b;
+
+}
+
+

@@ -425,7 +425,7 @@ RCPP_MODULE(spat){
 		.method("getMessage", &SpatRaster::getMessage)
 
 		//.field("name", &SpatRaster::name)
-
+		.method("getFileBlocksize", &SpatRaster::getFileBlocksize)
 		
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 		.method("mem_needs", &SpatRaster::mem_needs, "mem_needs")

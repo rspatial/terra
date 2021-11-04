@@ -348,12 +348,12 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 }
 
 
-// [[Rcpp::export()]]
+// [[Rcpp::export(name = ".setGDALCacheSizeMB")]]
 void setGDALCacheSizeMB(double x) {
   GDALSetCacheMax64(static_cast<int64_t>(x) * 1024 * 1024);
 }
 
-// [[Rcpp::export()]]
+// [[Rcpp::export(name = ".getGDALCacheSizeMB")]]
 double getGDALCacheSizeMB() {
   return static_cast<double>(GDALGetCacheMax64() / 1024 / 1024);
 }
