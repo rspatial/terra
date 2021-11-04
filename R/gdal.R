@@ -2,7 +2,9 @@
 
 fileBlocksize <- function(x) {
 	v <- x@ptr$getFileBlocksize()
-	matrix(v, ncol=2)
+	m <- matrix(v, ncol=2)
+	colnames(m) <- c("rows", "cols")
+	m
 }
 
 
