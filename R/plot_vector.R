@@ -371,10 +371,10 @@ setMethod("dots", signature(x="SpatVector"),
 		range <- sort(range)
 		v[v < range[1]] <- NA
 		v[v > range[2]] <- NA
-		if (length(v) == 0) {
+		if (all(is.na(v))) {
 			v <- NULL
 			y <- ""
-			type <- "none"
+			type = "none"
 		} else {
 			out$range <- range
 		}
