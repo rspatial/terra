@@ -217,6 +217,12 @@ SpatCategories GetCategories(char **pCat, std::string name) {
 }
 
 
+std::string strend(std::string f, size_t n) {
+	n = std::min(n, f.length());
+	std::string end = f.substr(f.length() - n);
+	return end;
+}
+
 std::string basename_sds(std::string f) {
 	const size_t i = f.find_last_of("\\/");
 	if (std::string::npos != i) {
@@ -226,11 +232,21 @@ std::string basename_sds(std::string f) {
 	if (std::string::npos != j) {
 		f.erase(0, j + 1);
 	}
+
+	std::string end = strend(f, 3);
+	if ((end == ".h5") || (end == ".nc")) {
+		f.erase( f.end()-3, f.end() );
+	} else if (strend(f, 4) == ".hdf")  {
+		f.erase( f.end()-4, f.end() );
+	}
+	f.erase(std::remove(f.begin(), f.end(), '"'), f.end());
+
+/*	
 	f = std::regex_replace(f, std::regex("\\.h5$"), "");
 	f = std::regex_replace(f, std::regex("\\.hdf$"), "");
 	f = std::regex_replace(f, std::regex("\\.nc$"), "");
 	f = std::regex_replace(f, std::regex("\""), "");
-
+*/
 	return f;
 }
 

@@ -124,10 +124,19 @@ std::vector<std::string> splitstr(std::string s, std::string delimiter){
 	return out;
 }
 
+void replace_one_char(std::string& s, char from, char to) {
+	for (size_t i = 0; i < s.size(); i++) {
+		if (s[i] == from) {
+			s[i] = to;
+		}
+	}
+}
+
 
 std::vector<int> getymd(std::string s) {
-	s = std::regex_replace(s, std::regex("T"), " ");
-	
+//	s = std::regex_replace(s, std::regex("T"), " ");
+	replace_one_char(s, 'T', ' ');
+
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	std::vector<std::string> x;
 	std::vector<std::string> y;
@@ -135,6 +144,9 @@ std::vector<int> getymd(std::string s) {
 		x = splitstr(s, " ");
 		s = x[0];
 		if (x.size() > 1) {
+			std::string f = s;
+			f.erase(std::remove(f.begin(), f.end(), 'Z'), f.end());
+			x[1] = f;
 			x[1] = std::regex_replace(s, std::regex("Z"), "");
 			y = splitstr(x[1], ":");
 		}
