@@ -147,7 +147,7 @@ std::vector<int> getymd(std::string s) {
 			std::string f = s;
 			f.erase(std::remove(f.begin(), f.end(), 'Z'), f.end());
 			x[1] = f;
-			x[1] = std::regex_replace(s, std::regex("Z"), "");
+			//x[1] = std::regex_replace(s, std::regex("Z"), "");
 			y = splitstr(x[1], ":");
 		}
 	}
