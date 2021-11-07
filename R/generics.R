@@ -602,7 +602,7 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
 		}
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, opt)
+		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, FALSE, opt)
 		messages(x, "resample")
 	}
 )

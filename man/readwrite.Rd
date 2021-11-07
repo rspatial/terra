@@ -8,6 +8,8 @@
 \alias{writeStart}
 \alias{writeStop}
 \alias{writeValues}
+\alias{fileBlocksize}
+
 
 \alias{readStart,SpatRaster-method}
 \alias{readStop,SpatRaster-method}
@@ -38,6 +40,8 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 \S4method{writeStop}{SpatRaster}(x)
 
 \S4method{writeValues}{SpatRaster,vector}(x, v, start, nrows)
+
+fileBlocksize(x)
 }
 
 \arguments{
