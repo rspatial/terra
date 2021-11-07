@@ -2331,7 +2331,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 			SpatRaster temp = out.crop(ds[i].getExtent(), "near", topt);
 			std::vector<bool> hascats = ds[i].hasCategories();
 			std::string method = hascats[0] ? "near" : "bilinear";
-			ds[i] = ds[i].warper(temp, "", method, false, topt);
+			ds[i] = ds[i].warper(temp, "", method, false, false, topt);
 			if (ds[i].hasError()) {
 				out.setError(ds[i].getError());
 				return out;

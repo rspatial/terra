@@ -13,18 +13,18 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 \usage{
 \S4method{project}{SpatVector}(x, y)
 
-\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, filename="", ...)
+\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatVector}
-  \item{y}{if (\code{x} is a SpatRaster, the prefered approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry of the output SpatRaster. Alternatively, you can provide a character variable containing a textual coordinate reference system (crs). 
+  \item{y}{if (\code{x} is a SpatRaster, the prefered approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (crs) description. 
     
-  You can use the following formats to provide textual coordinate reference system (crs) definitions: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}) to define the output coordinate reference system (crs). But note that when using PROJ.4 you now must use the WGS84 datum. Other datums are silently ignored. 
+  You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}). But note that the PROJ.4 notation has been deprecated, and you can only use if with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored. 
   
   If \code{x} is a SpatVector, you can provide a crs definition as discussed above, or any other object from which such a crs can be extracted with \code{\link{crs}}}
   
-  \item{method}{character. Method used for estimating the new cell values. One of: 
+  \item{method}{character. Method used for estimating the new cell values of a SpatRaster. One of: 
   
 	\code{near}: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of \code{x} is categorical.
 
@@ -33,10 +33,10 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 	\code{cubic}: cubic interpolation.
 	
 	\code{cubicspline}: cubic spline interpolation.
-	
   }
 
   \item{mask}{logical. If \code{TRUE}, mask out areas outside the input extent (see example with Robinson projection)}
+  \item{align}{logical. If \code{TRUE}, and \code{y} is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of \code{x} is included}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

@@ -461,7 +461,7 @@ SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string met
 
 
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, SpatOptions &opt) {
 
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
@@ -481,6 +481,12 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 	
 	bool use_crs = crs != "";  
+	if (use_crs) {
+		align = false;
+	}
+	if (align) {
+		crs = out.getSRS("wkt");
+	}
 	if ((!use_crs) & (!hasValues())) {
 		std::string fname = opt.get_filename();
 		if (fname != "") {
@@ -488,6 +494,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		}
 		return out;
 	}
+
 
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
@@ -502,7 +509,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	
 	lrtrim(crs);
 	SpatOptions sopt(opt);
-	if (use_crs) {
+	if (use_crs || align) {
 		GDALDatasetH hSrcDS;
 		if (!open_gdal(hSrcDS, 0, false, sopt)) {
 			out.setError("cannot create dataset from source");
@@ -510,12 +517,20 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		}
 		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
 			GDALClose( hSrcDS );
+			out.setError("cannot get output boundaries");
 			return out;
 		}
 		GDALClose( hSrcDS );
-		if (!hasValues()) {
-			return out;
-		}
+	}
+	if (align) {
+		SpatExtent e = out.getExtent();
+		e = x.align(e, "out");
+		out.setExtent(e, false);
+		std::vector<double> res = x.resolution();
+		out = out.setResolution(res[0], res[1]);
+	}
+	if (!hasValues()) {
+		return out;
 	}
 
 	SpatOptions mopt;
@@ -666,7 +681,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	} // else { // if (useaoi == 0) // no aoi
 
 	
-	out = warper(out, "", method, false, opt);
+	out = warper(out, "", method, false, false, opt);
 
 	return(out);
 }
