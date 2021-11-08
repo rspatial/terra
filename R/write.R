@@ -1,4 +1,17 @@
 
+
+# not exported
+if (!isGeneric("blockSize")) {setGeneric("blockSize", function(x, ...) standardGeneric("blockSize"))}
+setMethod("blockSize", signature(x="SpatRaster"), 
+	function(x, n) {
+		opt <- spatOptions("", FALSE, ncopies=n)
+		b <- x@ptr$getBlockSize(n, opt$memfrac)
+		b$row <- b$row + 1
+		b
+	}
+)
+
+
 setMethod("writeStart", signature(x="SpatRaster", filename="character"), 
 	function(x, filename="", overwrite=FALSE, n=4, ...) {
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
