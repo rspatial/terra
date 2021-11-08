@@ -70,10 +70,10 @@ This should work on **Catalina** and **Big Sur**
 
 #### Linux
 
-The GDAL (>= 2.2.0), GEOS (>= 3.3.0) and PROJ (>= 6.0.0) libraries are required 
+C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
 
+To install these system requirements on Ubuntu you can do:
 
-To install these on Ubuntu version 18.04 (Bionic) you can do:
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
@@ -85,5 +85,4 @@ And now, in R, install the package
 remotes::install_github("rspatial/terra")
 ```
 
-See the `sf` [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions. But note that `terra` depends on on more recent versions of GDAL and PROJ libraries 
-
+See the `sf` [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions.
