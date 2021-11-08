@@ -177,7 +177,7 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 }
 */
 
-
+//#include "Rcpp.h"
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
 
@@ -399,9 +399,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 
-bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string>) {
+bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
 
-	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite, std::vector<std::string>());
+	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite, options);
     if (poDS != NULL) GDALClose( poDS );
 	if (hasError()) {
 		return false;

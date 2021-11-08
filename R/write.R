@@ -74,9 +74,31 @@ function(x, filename, filetype="ESRI Shapefile", overwrite=FALSE, options=NULL) 
 	
 	lyrname <- tools::file_path_sans_ext(basename(filename))
 	if (is.null(options)) { options <- ""[0] }
+	
+	if (filetype == "ESRI Shapefile") {
+		nms <- names(x)
+		i <- nchar(nms) > 10
+		if (any(i)) {
+			nms[i] <- substr(nms[i], 1, 10)
+			testnms <- make.unique(nms, sep="")
+			if (!all(testnms == nms)) {
+				nms[i] <- substr(nms[i], 1, 9)
+				nms <- make.unique(nms, sep="")
+			}
+			x@ptr <- x@ptr$deepcopy()
+			names(x) <- nms
+		}
+	}
 	success <- x@ptr$write(filename, lyrname, filetype, overwrite[1], options)
 	messages(x, "writeVector")
 	invisible(TRUE)
 }
 )
 
+
+f <- function(x)
+{
+	x@ptr <- x@ptr$deepcopy()
+	names(x) <- substr(names(x), 1, 5)
+	x
+}

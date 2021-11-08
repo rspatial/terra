@@ -17,11 +17,12 @@ by Greg Schmidt
 - new argument `align=FALSE` to `project` to align to the template SpatRaster but ignore the resolution
 - new method `gdalCache` to set the GDAL chache size, contributed by Dan Baston [#387](https://github.com/rspatial/terra/pull/387)
 - new method `fileBlocksize`
+- new argument `options=NULL` to `writeVector` to pass layer creation options to GDAL
 
 ## enhancements 
 
 - `terra` now installs with older versions of GEOS [#363](https://github.com/rspatial/terra/pull/363)
-- `terra` now installs on CentOS 7 with GDAL 2.1.4 and a C++ compiler that does not support std::regexp [#384](https://github.com/rspatial/terra/issues/384) by Ariel Paulson
+- `terra` now installs on CentOS 7 with GDAL 2.1.4 and a C++ compiler that does not support std::regexp. [#384](https://github.com/rspatial/terra/issues/384) by Ariel Paulson
 
 
 # version 1.4-11
