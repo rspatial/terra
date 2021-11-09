@@ -66,13 +66,13 @@ function(x, filename="", overwrite=FALSE, ...) {
 
 
 setMethod("writeVector", signature(x="SpatVector", filename="character"), 
-function(x, filename, filetype="ESRI Shapefile", overwrite=FALSE, options=NULL) {
+function(x, filename, filetype="ESRI Shapefile", layer=NULL, overwrite=FALSE, options=NULL) {
 	filename <- trimws(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")
 	}
 	
-	lyrname <- tools::file_path_sans_ext(basename(filename))
+	if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
 	if (is.null(options)) { options <- ""[0] }
 	
 	if (filetype == "ESRI Shapefile") {
@@ -82,14 +82,18 @@ function(x, filename, filetype="ESRI Shapefile", overwrite=FALSE, options=NULL) 
 			nms[i] <- substr(nms[i], 1, 10)
 			testnms <- make.unique(nms, sep="")
 			if (!all(testnms == nms)) {
-				nms[i] <- substr(nms[i], 1, 9)
-				nms <- make.unique(nms, sep="")
+				i <- which(i)
+				newnms <- substr(nms[i], 1, 9)
+				newnms <- make.unique(newnms, sep="")
+				j <- which(nchar(newnms) == 9)
+				newnms[j] <- paste0(newnms[j], "0")
+				nms[i] <- newnms
 			}
 			x@ptr <- x@ptr$deepcopy()
 			names(x) <- nms
 		}
 	}
-	success <- x@ptr$write(filename, lyrname, filetype, overwrite[1], options)
+	success <- x@ptr$write(filename, layer, filetype, overwrite[1], options)
 	messages(x, "writeVector")
 	invisible(TRUE)
 }
