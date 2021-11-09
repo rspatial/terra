@@ -8,7 +8,8 @@ by Greg Schmidt
 - `as.polygons,SpatRaster` failed with a SpatRaster and a categorical layer that is not the first layer. [#370](https://github.com/rspatial/terra/pull/370) by Patrick Schratz
 - The filename argument in `rasterize` was not ignored, also causing errors when writing to temporary files. ). [#377](https://github.com/rspatial/terra/pull/377) by Robbie Price
 - `rast,character` crashed if the sds was an empty character string. [#381](https://github.com/rspatial/terra/pull/381) by Dan Baston
-- `plot,SpatVector` now responds to the `range` argument [#385]https://github.com/rspatial/terra/issues/385 by Márcia Barbosa
+- `plot,SpatVector` now responds to the `range` argument [#385](https://github.com/rspatial/terra/issues/385) by Márcia Barbosa
+- `zonal` failed for user-defined functions. [#393](https://github.com/rspatial/terra/issues/393) by mqueinnec
 
 ## new
 
