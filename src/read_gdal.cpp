@@ -441,7 +441,9 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	s.rotated = false;
 	double adfGeoTransform[6];
 
+	bool hasExtent = true;
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
+
 		double xmin = adfGeoTransform[0]; /* left x */
 		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
 		//xmax = roundn(xmax, 9);
@@ -462,6 +464,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			addWarning("the data in this file are rotated. Use 'rectify' to fix that");
 		}
 	} else {
+		hasExtent = false;
 		SpatExtent e(0, 1, 0, 1);
 		s.extent = e;
 		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
@@ -493,13 +496,13 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 
 	std::string crs = getDsWKT(poDataset);
 	if (crs == "") {
-		if (s.extent.xmin >= -180 && s.extent.xmax <= 360 && s.extent.ymin >= -90 && s.extent.ymax <= 90) {
+		if (hasExtent && s.extent.xmin >= -180 && s.extent.xmax <= 360 && s.extent.ymin >= -90 && s.extent.ymax <= 90) {
 			crs = "OGC:CRS84";
 			s.parameters_changed = true;
 		}
 	}
 	std::string msg;
-	if (!s.srs.set({crs}, msg)) {
+	if (!s.srs.set(crs, msg)) {
 		addWarning(msg);
 	}
 
