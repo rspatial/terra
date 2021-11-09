@@ -6,31 +6,29 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			z <- z[[1]]
 		}
 		zname <- names(z)
-		if (inherits(txtfun, "character")) { 
-			if (txtfun %in% c("max", "min", "mean", "sum")) {
-				na.rm <- isTRUE(list(...)$na.rm)
-				opt <- spatOptions()
-				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
-				messages(ptr, "zonal")
-				out <- .getSpatDF(ptr)
+		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum"))) {
+			na.rm <- isTRUE(list(...)$na.rm)
+			opt <- spatOptions()
+			ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
+			messages(ptr, "zonal")
+			out <- .getSpatDF(ptr)
+		} else {
+			nl <- nlyr(x)
+			res <- list()
+			z <- values(z)
+			nms <- names(x)
+			for (i in 1:nl) {
+				d <- stats::aggregate(values(x[[i]]), list(zone=z), fun, ...)
+				colnames(d)[2] <- nms[i]
+				res[[i]] <- d
 			}
-		} 
-		nl <- nlyr(x)
-		res <- list()
-		z <- values(z)
-		nms <- names(x)
-		for (i in 1:nl) {
-			d <- stats::aggregate(values(x[[i]]), list(zone=z), fun, ...)
-			colnames(d)[2] <- nms[i]
-			res[[i]] <- d
-		}
-		out <- res[[1]]
-		if (nl > 1) {
-			for (i in 2:nl) {
-				out <- merge(out, res[[i]])
+			out <- res[[1]]
+			if (nl > 1) {
+				for (i in 2:nl) {
+					out <- merge(out, res[[i]])
+				}
 			}
 		}
-
 		if (as.raster) {
 			if (is.null(wopt$names)) {
 				wopt$names <- names(x)
