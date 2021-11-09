@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-17</span>
       </span>
     </div>
 
@@ -120,14 +120,14 @@ remotes::install_github("rspatial/terra")</a></code></pre>
 <div id="linux" class="section level4">
 <h4 class="hasAnchor">
 <a href="#linux" class="anchor"></a>Linux</h4>
-<p>The GDAL (&gt;= 2.2.0), GEOS (&gt;= 3.3.0) and PROJ (&gt;= 6.0.0) libraries are required</p>
-<p>To install these on Ubuntu version 18.04 (Bionic) you can do:</p>
+<p>C++11, GDAL (&gt;= 2.2.3), GEOS (&gt;= 3.4.0), PROJ (&gt;= 4.9.3), sqlite3 are required, but more recent versions highly recommended.</p>
+<p>To install these system requirements on Ubuntu you can do:</p>
 <pre><code>sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
 sudo apt-get install libgdal-dev libgeos-dev libproj-dev </code></pre>
 <p>And now, in R, install the package</p>
 <pre><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github("rspatial/terra")</a></code></pre>
-<p>See the <code>sf</code> <a href="https://github.com/r-spatial/sf">instructions</a> for installation on other linux systems — and for possible updates/improvements on the above instructions. But note that <code>terra</code> depends on on more recent versions of GDAL and PROJ libraries</p>
+<p>See the <code>sf</code> <a href="https://github.com/r-spatial/sf">instructions</a> for installation on other linux systems — and for possible updates/improvements on the above instructions.</p>
 </div>
 </div>
 </div>

@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-17</span>
       </span>
     </div>
 
@@ -129,7 +129,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector,character</span>
-<span class='fu'>writeVector</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>filename</span>, filetype<span class='op'>=</span><span class='st'>"ESRI Shapefile"</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, options<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span></pre>
+<span class='fu'>writeVector</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>filename</span>, filetype<span class='op'>=</span><span class='st'>"ESRI Shapefile"</span>, layer<span class='op'>=</span><span class='cn'>NULL</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, options<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,6 +145,10 @@
     <tr>
       <th>filetype</th>
       <td><p>character. A file format associated with a GDAL "driver". See <code><a href='gdal.html'> gdal(drivers=TRUE)</a></code></p></td>
+    </tr>
+    <tr>
+      <th>layer</th>
+      <td><p>character. Output layer name. If <code>NULL</code> the filename is used</p></td>
     </tr>
     <tr>
       <th>overwrite</th>

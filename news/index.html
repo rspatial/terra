@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-17</span>
       </span>
     </div>
 
@@ -122,18 +122,16 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-16" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-16">
-<a href="#version-14-16" class="anchor"></a>version 1.4-16<small> Unreleased </small>
+    <div id="version-14-17" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-17">
+<a href="#version-14-17" class="anchor"></a>version 1.4-17<small> Unreleased </small>
 </h1>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
 <ul>
-<li>terra did not install for older versions of GEOS <a href="https://github.com/rspatial/terra/pull/363"><a href='https://github.com/rspatial/terra/issues/363'>#363</a></a>
-</li>
 <li>
-<code>rast</code> with some NetCDF files failed because of bad date parsing. <a href="https://github.com/rspatial/terra/pull/361"><a href='https://github.com/rspatial/terra/issues/361'>#361</a></a> by Juan Carlos Zamora-Pereira</li>
+<code>rast</code> with some NetCDF files failed because of bad parsing of dates. <a href="https://github.com/rspatial/terra/pull/361"><a href='https://github.com/rspatial/terra/issues/361'>#361</a></a> by Juan Carlos Zamora-Pereira</li>
 <li>
 <code>distance,SpatRaster</code> with lon/lat data was not correct. <a href="https://github.com/rspatial/terra/pull/368"><a href='https://github.com/rspatial/terra/issues/368'>#368</a></a> by Greg Schmidt</li>
 <li>
@@ -141,6 +139,8 @@
 <li>The filename argument in <code>rasterize</code> was not ignored, also causing errors when writing to temporary files. ). <a href="https://github.com/rspatial/terra/pull/377"><a href='https://github.com/rspatial/terra/issues/377'>#377</a></a> by Robbie Price</li>
 <li>
 <code>rast,character</code> crashed if the sds was an empty character string. <a href="https://github.com/rspatial/terra/pull/381"><a href='https://github.com/rspatial/terra/issues/381'>#381</a></a> by Dan Baston</li>
+<li>
+<code>plot,SpatVector</code> now responds to the <code>range</code> argument [<a href='https://github.com/rspatial/terra/issues/385'>#385</a>]<a href="https://github.com/rspatial/terra/issues/385" class="uri">https://github.com/rspatial/terra/issues/385</a> by Márcia Barbosa</li>
 </ul>
 </div>
 <div id="new" class="section level2">
@@ -149,6 +149,23 @@
 <ul>
 <li>new method <code>selectHighest</code> to select n cell values of a <code>SpatRaster</code> with the highest or lowest values.</li>
 <li>new method <code>vect,list</code> to append SpatVectors (faster than <code><a href="https://rdrr.io/r/base/do.call.html">do.call(rbind, x)</a></code>)</li>
+<li>new argument <code>align=FALSE</code> to <code>project</code> to align to the template SpatRaster but ignore the resolution</li>
+<li>new method <code>gdalCache</code> to set the GDAL chache size, contributed by Dan Baston <a href="https://github.com/rspatial/terra/pull/387"><a href='https://github.com/rspatial/terra/issues/387'>#387</a></a>
+</li>
+<li>new method <code>fileBlocksize</code>
+</li>
+<li>new argument <code>options=NULL</code> to <code>writeVector</code> to pass layer creation options to GDAL</li>
+</ul>
+</div>
+<div id="enhancements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#enhancements" class="anchor"></a>enhancements</h2>
+<ul>
+<li>
+<code>terra</code> now installs with older versions of GEOS <a href="https://github.com/rspatial/terra/pull/363"><a href='https://github.com/rspatial/terra/issues/363'>#363</a></a>
+</li>
+<li>
+<code>terra</code> now installs on CentOS 7 with GDAL 2.1.4 and a C++ compiler that does not support std::regexp. <a href="https://github.com/rspatial/terra/issues/384"><a href='https://github.com/rspatial/terra/issues/384'>#384</a></a> by Ariel Paulson</li>
 </ul>
 </div>
 </div>
@@ -156,11 +173,12 @@
 <h1 class="page-header" data-toc-text="1.4-11">
 <a href="#version-14-11" class="anchor"></a>version 1.4-11<small> 2021-10-11 </small>
 </h1>
-<div id="enhancements" class="section level2">
+<p>Released on 2021-10-11</p>
+<div id="enhancements-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-1" class="anchor"></a>enhancements</h2>
 <ul>
-<li>the definition of <code>setValues</code> now has two arguments (<code>x</code> and <code>values</code>), just like <code>raster</code> had to avoid reverse dependency problems with <code>raster</code>
+<li>the definition of <code>setValues</code> now has two arguments (<code>x</code> and <code>values</code>), just like <code>raster</code> had; to avoid reverse dependency problems with <code>raster</code>
 </li>
 </ul>
 </div>
@@ -169,14 +187,15 @@
 <h1 class="page-header" data-toc-text="1.4-9">
 <a href="#version-14-9" class="anchor"></a>version 1.4-9<small> 2021-10-07 </small>
 </h1>
+<p>Released on 2021-10-07</p>
 <div id="name-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#name-changes" class="anchor"></a>name changes</h2>
 <p>To avoid name conflicts with <code>sp</code> (via <code>raster</code>) <code>disaggregate</code> is now called <code>disagg</code> and <code>bbox,SpatRaster</code> and <code>bbox,SpatVector</code> have been removed (but could be resurrected in <code>raster</code> or under another name).</p>
 </div>
-<div id="enhancements-1" class="section level2">
+<div id="enhancements-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-1" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-2" class="anchor"></a>enhancements</h2>
 <ul>
 <li>
 <code>project</code> and <code>resample</code> now choose the resampling method based on the first layer, using “near” for categorical data. Thanks to Matthew Lewis <a href="https://github.com/rspatial/terra/pull/355"><a href='https://github.com/rspatial/terra/issues/355'>#355</a></a>
@@ -196,14 +215,15 @@
 <h1 class="page-header" data-toc-text="1.4-7">
 <a href="#version-14-7" class="anchor"></a>version 1.4-7<small> 2021-10-05 </small>
 </h1>
+<p>Released on 2021-10-05</p>
 <div id="note" class="section level2">
 <h2 class="hasAnchor">
 <a href="#note" class="anchor"></a>note</h2>
 <p><code>terra</code> no longer depends on <code>raster</code>. To avoid name clashes between these two packages, and to allow replacing methods from <code>rgeos</code> and <code>rgdal</code> in <code>raster</code>. <code>raster</code> now depends on <code>terra</code> instead.</p>
 </div>
-<div id="enhancements-2" class="section level2">
+<div id="enhancements-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-2" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-3" class="anchor"></a>enhancements</h2>
 <ul>
 <li>
 <code>freq</code> has a new argument <code>usenames</code>. See issue <a href="https://github.com/rspatial/terra/issues/309"><a href='https://github.com/rspatial/terra/issues/309'>#309</a></a> by Bappa Das</li>
@@ -268,9 +288,10 @@
 <h1 class="page-header" data-toc-text="1.3-22">
 <a href="#version-13-22" class="anchor"></a>version 1.3-22<small> 2021-08-20 </small>
 </h1>
-<div id="enhancements-3" class="section level2">
+<p>Released on 2021-08-20</p>
+<div id="enhancements-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-3" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-4" class="anchor"></a>enhancements</h2>
 <ul>
 <li>if <code>time(x) &lt;- d</code> is set with a <code>Date</code> class object, <code><a href="../reference/time.html">time(x)</a></code> now returns a <code>Date</code> object instead of a <code>POSIXct</code> object. Issue <a href="https://github.com/rspatial/terra/issues/256"><a href='https://github.com/rspatial/terra/issues/256'>#256</a></a> raised by Mauricio Zambrano-Bigiarini</li>
 <li>The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue <a href="https://github.com/rspatial/terra/issues/258"><a href='https://github.com/rspatial/terra/issues/258'>#258</a></a> by AGeographer. Also implemented for names in both SpatVector and SpatRaster</li>
@@ -327,6 +348,7 @@
 <h1 class="page-header" data-toc-text="1.3-4">
 <a href="#version-13-4" class="anchor"></a>version 1.3-4<small> 2021-06-20 </small>
 </h1>
+<p>Released on 2021-06-20</p>
 <div id="new-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-1" class="anchor"></a>new</h2>
@@ -346,9 +368,9 @@
 <li>new method <code>shade</code>, to compute hill shading</li>
 </ul>
 </div>
-<div id="enhancements-4" class="section level2">
+<div id="enhancements-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-4" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-5" class="anchor"></a>enhancements</h2>
 <ul>
 <li>additional arguments (such as <code>na.rm</code>) are now used by <code>rasterize</code> with point geometries. Suggested by Jakub Nowosad <a href="https://github.com/rspatial/terra/issues/209"><a href='https://github.com/rspatial/terra/issues/209'>#209</a></a>
 </li>
@@ -397,6 +419,7 @@
 <h1 class="page-header" data-toc-text="1.2-10">
 <a href="#version-12-10" class="anchor"></a>version 1.2-10<small> 2021-05-13 </small>
 </h1>
+<p>Released on 2021-05-13</p>
 <div id="new-2" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-2" class="anchor"></a>new</h2>
@@ -416,9 +439,9 @@
 <code>split</code> methods for SpatVector and SpatRaster</li>
 </ul>
 </div>
-<div id="enhancements-5" class="section level2">
+<div id="enhancements-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#enhancements-5" class="anchor"></a>enhancements</h2>
+<a href="#enhancements-6" class="anchor"></a>enhancements</h2>
 <ul>
 <li>
 <code>rast(Raster*)</code> now takes the crs from the Raster object, not from the file it may point to. Suggested by Floris Vanderhaeghe <a href="https://github.com/rspatial/terra/issues/200"><a href='https://github.com/rspatial/terra/issues/200'>#200</a></a>
@@ -480,6 +503,7 @@
 <h1 class="page-header" data-toc-text="1.2-5">
 <a href="#version-12-5" class="anchor"></a>version 1.2-5<small> 2021-04-30 </small>
 </h1>
+<p>Released on 2021-04-30</p>
 <div id="new-3" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-3" class="anchor"></a>new</h2>
@@ -544,6 +568,7 @@
 <h1 class="page-header" data-toc-text="1.1-17">
 <a href="#version-11-17" class="anchor"></a>version 1.1-17<small> 2021-04-14 </small>
 </h1>
+<p>Released on 2021-04-14</p>
 <div id="major-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"></a>major changes</h2>
