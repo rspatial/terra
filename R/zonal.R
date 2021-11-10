@@ -1,11 +1,11 @@
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
 	function(x, z, fun="mean", ..., as.raster=FALSE, filename="", wopt=list())  {
-		txtfun <- .makeTextFun(match.fun(fun))
 		if (nlyr(z) > 1) {
 			z <- z[[1]]
 		}
 		zname <- names(z)
+		txtfun <- .makeTextFun(match.fun(fun))
 		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
 			opt <- spatOptions()
