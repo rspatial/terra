@@ -301,7 +301,7 @@ setMethod("rast", signature(x="ANY"),
 
 	d <- dim(xyz)
 	r <- rast(xmin=minx, xmax=maxx, ymin=miny, ymax=maxy, crs=crs, nlyrs=d[2]-2)
-	res(r) <- c(rx, ry)
+	res(r) <- round(c(rx, ry), max(digits+2, 12))
 	cells <- cellFromXY(r, xyz[,1:2])
 	if (d[2] > 2) {
 		names(r) <- ln[-c(1:2)]
