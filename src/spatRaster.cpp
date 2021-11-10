@@ -274,8 +274,8 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 		return(out);
 	}
 	SpatExtent e = getExtent();
-	unsigned nc = ceil((e.xmax-e.xmin) / xres);
-	unsigned nr = ceil((e.ymax-e.ymin) / yres);
+	unsigned nc = round((e.xmax-e.xmin) / xres);
+	unsigned nr = round((e.ymax-e.ymin) / yres);
 	double xmax = e.xmin + nc * xres;
 	double ymax = e.ymin + nr * yres;
 	unsigned nl = nlyr();
