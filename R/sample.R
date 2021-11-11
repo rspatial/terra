@@ -151,7 +151,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			if (as.points) {
 				if (xy) {
-					out <- vect(out, geom=c("x", "y"), crs=crs(x))
+					out <- vect(out, crs=crs(x))
 				} else {
 					xy <- xyFromCell(x, cnrs)
 					# xy is a matrix, no geom argument
