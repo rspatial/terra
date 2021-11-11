@@ -35,7 +35,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 
 	nl <- ncol(values)
 	r <- rast(y, nlyrs=nl)
-	values(r) <- background
+#	values(r) <- background
 
 	levs <- list()
 	has_levels <- FALSE
@@ -80,27 +80,42 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 				values <- aggregate(values, list(g), function(i) rev(i)[1])
 			}
 		}
-		r[values[,1]] <- as.matrix(values[,-1])
+		#r[values[,1]] <- as.matrix(values[,-1])
 
 	} else {
 		has_levels <- FALSE
-		#a <- tapply(values, g, fun, ...)
-		#b <- as.numeric(names(a))
-		#r[b] <- as.vector(a)
-		a <- aggregate(values, list(g), fun, ...)
+		values <- aggregate(values, list(g), fun, ...)
 		# allow for multiple fields
-		r[a[,1]] <- as.matrix(a[,-1])
+		#r[a[,1]] <- as.matrix(a[,-1])
 		levs <- NULL
 	}
 
-	if (update) {
-		r <- cover(r, y)
-	} else if (has_levels) {
-		levels(r) <- levs
-	}
 
-	if (filename != "") {
-		writeRaster(r, filename, overwrite=overwrite, wopt=wopt)
+	if (!update) {
+		if (has_levels) {
+			levels(r) <- levs
+		}
+		b <- writeStart(r, filename=filename, overwrite=overwrite, wopt=wopt)
+		filename  <- ""
+	} else {
+		b <- writeStart(r, "")
+	}
+	nc <- ncol(r)
+	for (i in 1:b$n) {
+		w <- matrix(background, nrow=b$nrows * nc, ncol=nl)
+		mincell <- cellFromRowCol(r, b$row[i], 1)
+		maxcell <- cellFromRowCol(r, b$row[i] + b$nrows[i]-1, nc)
+		vv <- values[values[,1] >= mincell & values[,1] <= maxcell, ]
+		if (nrow(vv) > 0) {
+			vv[,1] <- vv[,1] - (b$row[i] - 1) * nc
+			w[vv[,1],] <- vv[,-1]
+		} 
+		writeValues(r, w, b$row[i], b$nrows[i])
+	}
+	r <- writeStop(r)
+
+	if (update) {
+		r <- cover(r, y, filename=filename, overwrite=overwrite, wopt=wopt)
 	}
 
 	return (r)
@@ -122,8 +137,9 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 
 		g <- geomtype(x)
 		if (grepl("points", g)) {
-			r <- rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
-			return (r)
+			return(
+				rasterize_points(x=x, y=y, field=field, values=values, fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
+			)
 		}
 
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
