@@ -207,7 +207,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (is.null(out$leg$loc)) out$leg$loc <- "right"
 
-	brks <- seq(min(out$v, na.rm=TRUE), max(out$v, na.rm=TRUE), length.out = length(out$cols))
+	brks <- seq(out$range[0], out$range[2], length.out = length(out$cols))
 	grps <- cut(out$v, breaks = brks, include.lowest = TRUE)
 	out$main_cols <- out$cols[grps]
 
@@ -378,8 +378,10 @@ setMethod("dots", signature(x="SpatVector"),
 		} else {
 			out$range <- range
 		}
+		out$range_set <- TRUE
 	} else {
 		out$range <- range(v, na.rm=TRUE)
+		out$range_set <- FALSE
 	}
 	out$v <- v
 
