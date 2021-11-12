@@ -12,42 +12,11 @@
 }
 
 
-width <- function(x) {
-	x@ptr$width()
-}
-
-clearance <- function(x) {
-	x@ptr$clearance()
-}
-
-
-removeDupNodes <- function(x, digits=-1) {
-	x@ptr <- x@ptr$remove_duplicate_nodes(digits)
-	messages(x, "removeDupNodes")	
-}
-
-
-simplify <- function(x, tolerance=0, preserveTopology=TRUE) {
-	x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
-	messages(x, "simplify")	
-}
-
-
-make_nodes <- function(x) {
-	x@ptr <- x@ptr$make_nodes()
-	messages(x, "make_nodes")
-}
-
-line_merge <- function(x) {
-	x@ptr <- x@ptr$line_merge()
-	messages(x, "line_merge")
-}
-
 clean_further <- function(x, tolerance=0.0001) {
 	out <- as.lines(x)
 	out <- snap(out, tolerance)
-	out <- make_nodes(out)
-	out <- line_merge(out)
+	out <- makeNodes(out)
+	out <- mergeLines(out)
 	as.polygons(out)
 }
 
@@ -74,10 +43,6 @@ mergebyborder <- function(x, field) {
 	}
 } 
 
-snap <- function(x, tolerance) {
-	x@ptr <- x@ptr$snap(tolerance)
-	messages(x, "snap")
-}
 
 
 centerline <- function(p) {

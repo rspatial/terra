@@ -65,13 +65,28 @@ function(x, filename="", overwrite=FALSE, ...) {
 )
 
 
+get_filetype <- function(filename) {
+	ext <- tolower(tools::file_ext(filename))
+	if (ext == "shp" || ext == "") {
+		"ESRI Shapefile"
+	} else if (ext == "gpkg") {
+		"GPKG"
+	} else if (ext == "gml") {
+		"GML"
+	} else {
+		error("writeVector", "cannot guess filetype from filename")
+	}
+}
+
 setMethod("writeVector", signature(x="SpatVector", filename="character"), 
-function(x, filename, filetype="ESRI Shapefile", layer=NULL, overwrite=FALSE, options=NULL) {
+function(x, filename, filetype=NULL, layer=NULL, overwrite=FALSE, options=NULL) {
 	filename <- trimws(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")
 	}
-	
+	if (is.null(filetype)) {
+		filetype <- get_filetype(filename)	
+	}
 	if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
 	if (is.null(options)) { options <- ""[0] }
 	
@@ -100,9 +115,3 @@ function(x, filename, filetype="ESRI Shapefile", layer=NULL, overwrite=FALSE, op
 )
 
 
-f <- function(x)
-{
-	x@ptr <- x@ptr$deepcopy()
-	names(x) <- substr(names(x), 1, 5)
-	x
-}

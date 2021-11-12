@@ -380,7 +380,9 @@ setMethod("dots", signature(x="SpatVector"),
 		}
 		out$range_set <- TRUE
 	} else {
-		out$range <- range(v, na.rm=TRUE)
+		if (!is.null(v)) {
+			out$range <- range(v, na.rm=TRUE)
+		}
 		out$range_set <- FALSE
 	}
 	out$v <- v

@@ -3,11 +3,19 @@
 \docType{methods}
 
 \alias{sharedPaths}
+\alias{mergeLines}
+\alias{snap}
+\alias{makeNodes}
+\alias{removeDupNodes}
 
 \alias{sharedPaths,SpatVector-method}
+\alias{mergeLines,SpatVector-method}
+\alias{snap,SpatVector-method}
+\alias{makeNodes,SpatVector-method}
+\alias{removeDupNodes,SpatVector-method}
 
 \title{ 
-sharedPaths
+Vector topology methods
 }
 
 \description{
@@ -16,10 +24,16 @@ Get the shared paths of lines or polygons
 
 \usage{
 \S4method{sharedPaths}{SpatVector}(x)
+\S4method{snap}{SpatVector}(x, tolerance)
+\S4method{mergeLines}{SpatVector}(x)
+\S4method{removeDupNodes}{SpatVector}(x, digits = -1)
+\S4method{makeNodes}{SpatVector}(x)
 }
 
 \arguments{
   \item{x}{SpatVector of lines or polygons}
+  \item{tolerance}{numeric}
+  \item{digits}{numeric}
 } 
 
 \value{

@@ -1,4 +1,4 @@
-# version 1.4-17
+# version 1.4-18
 
 ## bug fixes
 
@@ -16,9 +16,12 @@ by Greg Schmidt
 - new method `selectHighest` to select n cell values of a `SpatRaster` with the highest or lowest values. 
 - new method `vect,list` to append SpatVectors (faster than `do.call(rbind, x)`)
 - new argument `align=FALSE` to `project` to align to the template SpatRaster but ignore the resolution
-- new method `gdalCache` to set the GDAL chache size, contributed by Dan Baston [#387](https://github.com/rspatial/terra/pull/387)
+- new method `gdalCache` to set the GDAL cache size, contributed by Dan Baston [#387](https://github.com/rspatial/terra/pull/387)
 - new method `fileBlocksize`
 - new argument `options=NULL` to `writeVector` to pass layer creation options to GDAL
+- new SpatVector topology methods `mergeLines`, `snap`, `makeNodes`, `removeDupNodes`
+- new SpatVector methods `width` and `clearance`
+
 
 ## enhancements 
 

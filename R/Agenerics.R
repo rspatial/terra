@@ -1,5 +1,12 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
 if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) standardGeneric("selectHighest"))}
+if (!isGeneric("clearance")) {setGeneric("clearance", function(x, ...) standardGeneric("clearance"))}
+if (!isGeneric("width")) {setGeneric("width", function(x, ...) standardGeneric("width"))}
+if (!isGeneric("simplify")) {setGeneric("simplify", function(x, ...) standardGeneric("simplify"))}
+if (!isGeneric("mergeLines")) {setGeneric("mergeLines", function(x, ...) standardGeneric("mergeLines"))}
+if (!isGeneric("makeNodes")) {setGeneric("makeNodes", function(x, ...) standardGeneric("makeNodes"))}
+if (!isGeneric("removeDupNodes")) {setGeneric("removeDupNodes", function(x, ...) standardGeneric("removeDupNodes"))}
+if (!isGeneric("snap")) {setGeneric("snap", function(x, ...) standardGeneric("snap"))}
 
 if (!isGeneric("weighted.mean")) {setGeneric("weighted.mean", function(x, w, ...) standardGeneric("weighted.mean"))}
 

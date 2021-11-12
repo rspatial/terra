@@ -11,13 +11,41 @@ roundtrip <- function(x, coll=FALSE) {
 	}
 }
 
+get_invalid_coords <- function(x) {
+	x <- x[!x[,1], ]
+	if (nrow(x) > 0) {
+		id <- as.integer(rownames(x))
+		txt <- x[,2]
+		txt <- gsub("Ring Self-intersection\\[", "", txt)
+		txt <- gsub("Self-intersection\\[", "", txt)
+		txt <- gsub("Too few points in geometry component\\[", "", txt)
+		txt <- unlist(strsplit(gsub("]", "", txt), " "))
+		txt <- matrix(as.numeric(txt), ncol=2, byrow=TRUE)
+		v <- vect(txt)
+		values(v) <- data.frame(id=id, msg=x[,2])
+		v
+	} else {
+		vect()
+	}
+}
+
 setMethod("is.valid", signature(x="SpatVector"), 
-	function(x, messages=FALSE) {
+	function(x, messages=FALSE, as.points=FALSE) {
+		if (as.points) messages = TRUE
 		if (messages) {
 			r <- x@ptr$geos_isvalid_msg()
 			d <- data.frame(matrix(r, ncol=2, byrow=TRUE))
 			d[,1] = d[,1] == "\001"
 			colnames(d) <- c("valid", "reason")
+			if (as.points) {
+				p <- try(get_invalid_coords(d), silent=TRUE)
+				if (inherits(p, "try-error")) {
+					warn("is.valid", "as.points failed, returning matrix")
+					return(d)
+				} else {
+					return(p)
+				}
+			}
 			d
 		} else {
 			x@ptr$geos_isvalid()
@@ -82,13 +110,6 @@ setMethod("split", signature(x="SpatVector"),
 	}
 )
 
-
-setMethod("sharedPaths", signature(x="SpatVector"), 
-	function(x) {
-		x@ptr <- x@ptr$shared_paths()
-		messages(x, "sharedPaths")
-	}
-)
 
 setMethod("cover", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, identity=FALSE) {
@@ -344,3 +365,65 @@ setMethod("voronoi", signature(x="SpatVector"),
 	}
 )
 
+
+setMethod("width", signature(x="SpatVector"), 
+	function(x) {
+		w <- x@ptr$width()
+		messages(x, "width")
+		w		
+	}
+)
+
+
+setMethod("clearance", signature(x="SpatVector"), 
+	function(x) {
+		w <- x@ptr$clearance()
+		messages(x, "clearance")
+		w		
+	}
+)
+
+
+setMethod("simplify", signature(x="SpatVector"), 
+	function(x, tolerance=0, preserveTopology=TRUE) {
+		x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
+		messages(x, "simplify")	
+	}
+)
+
+
+setMethod("mergeLines", signature(x="SpatVector"),
+	function(x) {
+		x@ptr <- x@ptr$line_merge()
+		messages(x, "line_merge")
+	}
+)
+
+setMethod("makeNodes", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$make_nodes()
+		messages(x, "makeNodes")
+	}
+)
+
+setMethod("removeDupNodes", signature(x="SpatVector"),
+	function(x, digits=-1) {
+		x@ptr <- x@ptr$remove_duplicate_nodes(digits)
+		messages(x, "removeDupNodes")	
+	}
+)
+
+setMethod("sharedPaths", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$shared_paths()
+		messages(x, "sharedPaths")
+	}
+)
+
+
+setMethod("snap", signature(x="SpatVector"), 
+	function(x, tolerance) {
+		x@ptr <- x@ptr$snap(tolerance)
+		messages(x, "snap")
+	}
+)
