@@ -512,6 +512,9 @@ RCPP_MODULE(spat){
 		.method("nsrc", &SpatRaster::nsrc, "nsrc" )
 		.field("messages", &SpatRaster::msg, "messages")
 		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )
+		.method("lyrsBySource", &SpatRaster::lyrsBySource, "lyrsBySource" )
+		.method("getBands", &SpatRaster::getBands, "getBands" )
+		
 		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.property("origin", &SpatRaster::origin)
 		.property("range_min", &SpatRaster::range_min )

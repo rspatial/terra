@@ -17,7 +17,7 @@ Get the data sources of a SpatRaster and the number of layers by source. Sources
 }
 
 \usage{
-\S4method{sources}{SpatRaster}(x)
+\S4method{sources}{SpatRaster}(x, bands=FALSE)
 
 \S4method{hasValues}{SpatRaster}(x)
 
@@ -26,6 +26,7 @@ Get the data sources of a SpatRaster and the number of layers by source. Sources
 
 \arguments{
 \item{x}{SpatRaster}
+\item{bands}{logical. If \code{TRUE} for each source, the "bands" used, that is, the layers in the source file, are returned}
 \item{bylayer}{logical. If \code{TRUE} a value is retured for each layer instead of for each source}
 }
 

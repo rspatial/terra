@@ -165,10 +165,14 @@ setMethod("inMemory", signature(x="SpatRaster"),
 
 
 setMethod("sources", signature(x="SpatRaster"), 
-	function(x) {
+	function(x, bands=FALSE) {
 		src <- x@ptr$filenames
 		src[src == ""] <= "memory"
-		data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
+		if (bands) {
+			data.frame(source=rep(src, x@ptr$nlyrBySource()), bands=x@ptr$getBands()+1, stringsAsFactors=FALSE)
+		} else {
+			data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
+		}
 	}
 )
 

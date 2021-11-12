@@ -168,6 +168,16 @@ std::vector<unsigned> SpatRaster::findLyr(unsigned lyr) {
     return sl;
 }
 
+std::vector<unsigned> SpatRaster::getBands() {
+	std::vector<unsigned> out;
+    for (size_t i=0; i<source.size(); i++) {
+		out.insert(out.end(), source[i].layers.begin(), source[i].layers.end());
+	}
+	return out;
+}
+
+
+
 
 
 

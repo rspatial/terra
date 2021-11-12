@@ -378,6 +378,7 @@ class SpatRaster {
         std::vector<unsigned> sourcesFromLyrs(std::vector<unsigned> lyrs);
 		int sourceFromLyr(unsigned lyr);
 		std::vector<unsigned> findLyr(unsigned lyr);
+		std::vector<unsigned> getBands();
 
         std::vector<unsigned> nlyrBySource();
         std::vector<unsigned> lyrsBySource();
