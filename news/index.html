@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-18</span>
       </span>
     </div>
 
@@ -122,9 +122,9 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-17" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-17">
-<a href="#version-14-17" class="anchor"></a>version 1.4-17<small> Unreleased </small>
+    <div id="version-14-18" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-18">
+<a href="#version-14-18" class="anchor"></a>version 1.4-18<small> Unreleased </small>
 </h1>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
@@ -140,7 +140,9 @@
 <li>
 <code>rast,character</code> crashed if the sds was an empty character string. <a href="https://github.com/rspatial/terra/pull/381"><a href='https://github.com/rspatial/terra/issues/381'>#381</a></a> by Dan Baston</li>
 <li>
-<code>plot,SpatVector</code> now responds to the <code>range</code> argument [<a href='https://github.com/rspatial/terra/issues/385'>#385</a>]<a href="https://github.com/rspatial/terra/issues/385" class="uri">https://github.com/rspatial/terra/issues/385</a> by Márcia Barbosa</li>
+<code>plot,SpatVector</code> now responds to the <code>range</code> argument <a href="https://github.com/rspatial/terra/issues/385"><a href='https://github.com/rspatial/terra/issues/385'>#385</a></a> by Márcia Barbosa</li>
+<li>
+<code>zonal</code> failed for user-defined functions. <a href="https://github.com/rspatial/terra/issues/393"><a href='https://github.com/rspatial/terra/issues/393'>#393</a></a> by mqueinnec</li>
 </ul>
 </div>
 <div id="new" class="section level2">
@@ -150,11 +152,15 @@
 <li>new method <code>selectHighest</code> to select n cell values of a <code>SpatRaster</code> with the highest or lowest values.</li>
 <li>new method <code>vect,list</code> to append SpatVectors (faster than <code><a href="https://rdrr.io/r/base/do.call.html">do.call(rbind, x)</a></code>)</li>
 <li>new argument <code>align=FALSE</code> to <code>project</code> to align to the template SpatRaster but ignore the resolution</li>
-<li>new method <code>gdalCache</code> to set the GDAL chache size, contributed by Dan Baston <a href="https://github.com/rspatial/terra/pull/387"><a href='https://github.com/rspatial/terra/issues/387'>#387</a></a>
+<li>new method <code>gdalCache</code> to set the GDAL cache size, contributed by Dan Baston <a href="https://github.com/rspatial/terra/pull/387"><a href='https://github.com/rspatial/terra/issues/387'>#387</a></a>
 </li>
 <li>new method <code>fileBlocksize</code>
 </li>
 <li>new argument <code>options=NULL</code> to <code>writeVector</code> to pass layer creation options to GDAL</li>
+<li>new SpatVector topology methods <code>mergeLines</code>, <code>snap</code>, <code>makeNodes</code>, <code>removeDupNodes</code>
+</li>
+<li>new SpatVector methods <code>width</code> and <code>clearance</code>
+</li>
 </ul>
 </div>
 <div id="enhancements" class="section level2">

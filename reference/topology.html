@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>sharedPaths — topology • terra</title>
+<title>Vector topology methods — topology • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="sharedPaths — topology" />
+<meta property="og:title" content="Vector topology methods — topology" />
 <meta property="og:description" content="Get the shared paths of lines or polygons" />
 <meta property="og:image" content="/logo.png" />
 
@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-18</span>
       </span>
     </div>
 
@@ -119,7 +119,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>sharedPaths</h1>
+    <h1>Vector topology methods</h1>
     
     <div class="hidden name"><code>topology.Rd</code></div>
     </div>
@@ -129,7 +129,15 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>sharedPaths</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='fu'>sharedPaths</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='co'># S4 method for SpatVector</span>
+<span class='fu'>snap</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>tolerance</span><span class='op'>)</span>
+<span class='co'># S4 method for SpatVector</span>
+<span class='fu'>mergeLines</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='co'># S4 method for SpatVector</span>
+<span class='fu'>removeDupNodes</span><span class='op'>(</span><span class='va'>x</span>, digits <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>
+<span class='co'># S4 method for SpatVector</span>
+<span class='fu'>makeNodes</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -137,6 +145,14 @@
     <tr>
       <th>x</th>
       <td><p>SpatVector of lines or polygons</p></td>
+    </tr>
+    <tr>
+      <th>tolerance</th>
+      <td><p>numeric</p></td>
+    </tr>
+    <tr>
+      <th>digits</th>
+      <td><p>numeric</p></td>
     </tr>
     </table>
 
@@ -148,7 +164,7 @@
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>v</span>, col<span class='op'>=</span><span class='st'>"light gray"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to min; returning Inf</span></div><div class='output co'>#&gt; <span class='warning'>Warning: no non-missing arguments to max; returning -Inf</span></div><div class='input'><span class='fu'><a href='text.html'>text</a></span><span class='op'>(</span><span class='va'>v</span>, halo<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='text.html'>text</a></span><span class='op'>(</span><span class='va'>v</span>, halo<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='input'>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>sharedPaths</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
 <span class='fu'><a href='lines.html'>lines</a></span><span class='op'>(</span><span class='va'>x</span>, col<span class='op'>=</span><span class='st'>"red"</span>, lwd<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
