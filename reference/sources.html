@@ -129,7 +129,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>sources</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>sources</span><span class='op'>(</span><span class='va'>x</span>, bands<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>hasValues</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
@@ -143,6 +143,10 @@
     <tr>
       <th>x</th>
       <td><p>SpatRaster</p></td>
+    </tr>
+    <tr>
+      <th>bands</th>
+      <td><p>logical. If <code>TRUE</code> for each source, the "bands" used, that is, the layers in the source file, are returned</p></td>
     </tr>
     <tr>
       <th>bylayer</th>
