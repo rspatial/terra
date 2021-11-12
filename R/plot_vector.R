@@ -207,7 +207,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (is.null(out$leg$loc)) out$leg$loc <- "right"
 
-	brks <- seq(out$range[0], out$range[2], length.out = length(out$cols))
+	brks <- seq(out$range[1], out$range[2], length.out = length(out$cols))
 	grps <- cut(out$v, breaks = brks, include.lowest = TRUE)
 	out$main_cols <- out$cols[grps]
 
