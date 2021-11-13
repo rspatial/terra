@@ -47,7 +47,11 @@
 
 
 <meta property="og:title" content="SpatVector geometric properties — width" />
-<meta property="og:description" content="Geometric properties" />
+<meta property="og:description" content="width returns the minimum diameter of the geometry, defined as the smallest band that contains the geometry, where a band is a strip of the plane defined by two parallel lines. This can be thought of as the smallest hole that the geometry can be moved through, with a single rotation.
+clearance returns the minimum clearance of a geometry. The minimum clearance is the smallest amount by which a vertex could be moved to produce an invalid polygon, a non-simple linestring, or a multipoint with repeated points. If a geometry has a minimum clearance of 'mc', it can be said that:
+No two distinct vertices in the geometry are separated by less than 'mc'
+No vertex is closer than 'mc' to a line segment of which it is not an endpoint.
+If the minimum clearance cannot be defined for a geometry (such as with a single point, or a multipoint whose points are identical, NA is returned." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -125,7 +129,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Geometric properties</p>
+    <p><code>width</code> returns the minimum diameter of the geometry, defined as the smallest band that contains the geometry, where a band is a strip of the plane defined by two parallel lines. This can be thought of as the smallest hole that the geometry can be moved through, with a single rotation.</p>
+<p><code>clearance</code> returns the minimum clearance of a geometry. The minimum clearance is the smallest amount by which a vertex could be moved to produce an invalid polygon, a non-simple linestring, or a multipoint with repeated points. If a geometry has a minimum clearance of 'mc', it can be said that:</p>
+<p>No two distinct vertices in the geometry are separated by less than 'mc'
+No vertex is closer than 'mc' to a line segment of which it is not an endpoint.
+If the minimum clearance cannot be defined for a geometry (such as with a single point, or a multipoint whose points are identical, NA is returned.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
@@ -144,7 +152,7 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SpatVector</p>
+    <p>numeric for each geometry in m</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
