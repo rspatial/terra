@@ -19,13 +19,14 @@ Vector topology methods
 }
 
 \description{
-Get the shared paths of lines or polygons
+\code{sharedPaths} returns the shared paths of lines or polygons
+
 }
 
 \usage{
 \S4method{sharedPaths}{SpatVector}(x)
-\S4method{snap}{SpatVector}(x, tolerance)
 \S4method{mergeLines}{SpatVector}(x)
+\S4method{snap}{SpatVector}(x, tolerance)
 \S4method{removeDupNodes}{SpatVector}(x, digits = -1)
 \S4method{makeNodes}{SpatVector}(x)
 }

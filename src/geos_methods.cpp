@@ -467,6 +467,49 @@ SpatVector SpatVector::snap(double tolerance) {
 	return out;
 }
 
+SpatVector SpatVector::snapto(SpatVector y, double tolerance) {
+
+	y = y.aggregate(false);
+	size_t s = size();
+	
+	SpatVector out;
+	if (s == 0) {
+		return out;
+	}
+	
+	tolerance = std::max(0.0, tolerance);
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> to = geos_geoms(&y, hGEOSCtxt);
+
+	std::vector<long> ids;
+	ids.reserve(s);
+	
+	GEOSGeometry* gto = to[0].get();
+	for (size_t i=0; i<s; i++) {
+		GEOSGeometry* r = GEOSSnap_r(hGEOSCtxt, x[i].get(), gto, tolerance);
+		if (r != NULL) {
+			if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+				x[i] = geos_ptr(r, hGEOSCtxt);
+				ids.push_back(i);
+			} else {
+				GEOSGeom_destroy_r(hGEOSCtxt, r);
+			}
+		}
+	}
+	SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt, ids);
+	out = coll.get(0);
+	geos_finish(hGEOSCtxt);
+	out.srs = srs;
+	if (ids.size() != s) {
+		out.df = df.subset_rows(out.df.iv[0]);
+	} else {
+		out.df = df;
+	}
+	return out;
+}
+
+
 //GEOSPolygonizer_getCutEdges_r(GEOSContextHandle_t extHandle, const Geometry * const * g, unsigned int ngeoms)
 
 //Geometry * GEOSPolygonize_full_r(GEOSContextHandle_t extHandle, const Geometry* g, Geometry** cuts, Geometry** dangles, Geometry** invalid)
@@ -1672,26 +1715,24 @@ bool geos_buffer(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> &g, double 
 
 
 
-std::vector<double> SpatVector::width() {
+SpatVector SpatVector::widthline() {
 	
+	SpatVector tmp;
 	
 #ifndef HAVE361
-	setError("GEOS 3.6.1 required for width");
-	std::vector<double> out;
-	return out;
+	tmp.setError("GEOS 3.6.1 required for width");
+	return tmp;
 #else 
 	
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> gout(g.size());
-	SpatVector tmp;
 	for (size_t i = 0; i < g.size(); i++) {	
 		GEOSGeometry* w = GEOSMinimumWidth_r(hGEOSCtxt, g[i].get());
 		if (w == NULL) {
-			setError("NULL geom");
+			tmp.setError("found NULL geom");
 			geos_finish(hGEOSCtxt);
-			std::vector<double> out;
-			return out;
+			return tmp;
 		}
 		gout[i] = geos_ptr(w, hGEOSCtxt);
 	}
@@ -1699,10 +1740,22 @@ std::vector<double> SpatVector::width() {
 	geos_finish(hGEOSCtxt);
 	tmp = coll.get(0);
 	tmp.srs = srs;
-	return tmp.length();
-
+	return tmp;
+	
 #endif
 }
+
+std::vector<double> SpatVector::width() {
+#ifndef HAVE361
+	std::vector<double> out;
+	setError("GEOS 3.6.1 required for width");
+	return out;
+#else 
+	SpatVector tmp = widthline();
+	return tmp.length();
+#endif
+}	
+
 
 
 std::vector<double> SpatVector::clearance() {

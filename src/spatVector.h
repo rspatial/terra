@@ -251,6 +251,7 @@ class SpatVector {
 		SpatVector simplify(double tolerance, bool preserveTopology);
 		SpatVector shared_paths();
 		SpatVector snap(double tolerance);
+		SpatVector snapto(SpatVector y, double tolerance);
 
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
@@ -288,6 +289,7 @@ class SpatVector {
 		SpatVector sample_geom(std::vector<unsigned> n, std::string method, unsigned seed);
 
 		std::vector<double> clearance();
+		SpatVector widthline();
 		std::vector<double> width();
 
 		SpatVector unaryunion();

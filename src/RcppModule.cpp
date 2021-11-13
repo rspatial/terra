@@ -367,6 +367,7 @@ RCPP_MODULE(spat){
 		.method("hull", &SpatVector::hull)
 		
 		.method("width", &SpatVector::width)
+		.method("widthline", &SpatVector::widthline)
 		.method("clearance", &SpatVector::clearance)
 
 		.method("relate_first", &SpatVector::relateFirst)

@@ -379,6 +379,7 @@ setMethod("clearance", signature(x="SpatVector"),
 	function(x) {
 		w <- x@ptr$clearance()
 		messages(x, "clearance")
+		w[!is.finite(w)] <- NA
 		w		
 	}
 )
