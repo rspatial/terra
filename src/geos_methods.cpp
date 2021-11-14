@@ -1480,6 +1480,7 @@ SpatVector SpatVector::erase() {
 			geom = GEOSDifference_r(hGEOSCtxt, geom, x[j].get());
 			if (geom == NULL) {
 				out.setError("GEOS exception");
+				GEOSGeom_destroy_r(hGEOSCtxt, geom);	
 				geos_finish(hGEOSCtxt);
 				return(out);
 			} 

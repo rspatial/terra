@@ -46,8 +46,8 @@ x <- erase(v, e)
 p <- vect("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))")
 y <- erase(v, p)
 
-h <- convHull(v[-12], "NAME_1")
-he <- erase(h)
+#h <- convHull(v[-12], "NAME_1")
+#he <- erase(h)
 }
 
 \keyword{methods}
