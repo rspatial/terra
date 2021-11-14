@@ -253,6 +253,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		// papszOptions = CSLSetNameValue( papszOptions, "ENCODING", "UTF-8" );
     }
 	poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, papszOptions);
+	CSLDestroy(papszOptions);
     if( poLayer == NULL ) {
         setError( "Layer creation failed" );
         return poDS;

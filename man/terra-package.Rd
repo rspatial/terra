@@ -374,6 +374,23 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 }}
 
 
+\section{XIX. Geometry properties and topology}{
+
+\tabular{ll}{
+  \code{\link{width}} \tab the minimum diameter of the geometries \cr
+  \code{\link{clearance}} \tab the minimum clearance of the geometries \cr
+  \code{\link{sharedPaths}} \tab shared paths (arcs) between line or polygon geometries\cr
+  \code{\link{simplify}} \tab simplify geometries\cr
+  \code{\link{gaps}} \tab find gaps between polygon geometries \cr
+  \code{\link{fillHoles}} \tab get or remove the polygon holes\cr
+  \code{\link{makeNodes}} \tab create nodes on lines \cr
+  \code{\link{mergeLines}} \tab connect lines to form polygons  \cr
+  \code{\link{removeDupNodes}} \tab remove duplicate nodes in geometries and optionally rounds the coordinates  \cr
+  \code{\link{snap}} \tab make boundaries of geometries identical if they are very close to each other  \cr
+  \code{\link{erase} (single argument)} \tab remove parts of geometries that overlap \cr
+  \code{\link{union} (single argument)} \tab create new polygons such that there are no overlapping polygons \cr
+}}
+
 
 \section{}{
 ---------------------------------------------------------------------------------------------------------------------
@@ -383,7 +400,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XIX. Collections}{
+\section{XX. Collections}{
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects. 
 
 \tabular{ll}{
@@ -403,7 +420,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 
 
-\section{XX. SpatExtent}{
+\section{XXI. SpatExtent}{
 
   \tabular{ll}{
     \code{\link{ext}} \tab Create a SpatExtent object. For example to \code{\link{crop}} a Spatial dataset\cr
@@ -426,7 +443,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XXI. Data type conversion}{
+\section{XXII. Data type conversion}{
 
 You can coerce SpatRasters to Raster* objects after loading the \code{raster} package with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
   
@@ -443,7 +460,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
   }
 }
 
-\section{XXII. Plotting}{
+\section{XXIII. Plotting}{
 
 \subsection{Maps}{
   \tabular{ll}{
@@ -495,7 +512,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XXIII. New method names}{
+\section{XXIV. New method names}{
 
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
@@ -534,7 +551,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 }
 }
 
-\section{XXIV. Changed behavior}{
+\section{XXV. Changed behavior}{
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
 

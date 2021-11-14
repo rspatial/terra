@@ -51,11 +51,6 @@ SpatVector
 \seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{simplify}}}
 
 
-\examples{
-f <- system.file("ex/lux.shp", package="terra")
-v <- as.lines(vect(f))
-}
-
 
 \keyword{methods}
 \keyword{spatial}

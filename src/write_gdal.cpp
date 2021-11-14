@@ -667,6 +667,7 @@ bool SpatRaster::writeStopGDAL() {
 			GDALClose( (GDALDatasetH) oldDS );
 			GDALClose( (GDALDatasetH) newDS );
 		}
+		CSLDestroy(papszOptions);
 	} else {
 		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	}
