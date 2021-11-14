@@ -367,30 +367,29 @@ setMethod("voronoi", signature(x="SpatVector"),
 
 
 setMethod("width", signature(x="SpatVector"), 
-	function(x) {
-		w <- x@ptr$width()
-		messages(x, "width")
-		w		
+	function(x, as.lines=FALSE) {
+		x@ptr <- x@ptr$width()
+		x <- messages(x, "width")
+		if (!as.lines) {
+			x <- perim(x)
+		}
+		x
 	}
 )
 
 
 setMethod("clearance", signature(x="SpatVector"), 
-	function(x) {
-		w <- x@ptr$clearance()
-		messages(x, "clearance")
-		w[!is.finite(w)] <- NA
-		w		
+	function(x, as.lines=FALSE) {
+		x@ptr <- x@ptr$clearance()
+		x <- messages(x, "clearance")
+		if (!as.lines) {
+			x <- perim(x)
+		}
+		x
 	}
 )
 
 
-setMethod("simplify", signature(x="SpatVector"), 
-	function(x, tolerance=0, preserveTopology=TRUE) {
-		x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
-		messages(x, "simplify")	
-	}
-)
 
 
 setMethod("mergeLines", signature(x="SpatVector"),
@@ -414,6 +413,16 @@ setMethod("removeDupNodes", signature(x="SpatVector"),
 	}
 )
 
+
+setMethod("simplify", signature(x="SpatVector"), 
+	function(x, tolerance=0.1) {
+		preserveTopology <- TRUE
+		x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
+		messages(x, "simplify")	
+	}
+)
+
+
 setMethod("sharedPaths", signature(x="SpatVector"), 
 	function(x) {
 		x@ptr <- x@ptr$shared_paths()
@@ -423,8 +432,12 @@ setMethod("sharedPaths", signature(x="SpatVector"),
 
 
 setMethod("snap", signature(x="SpatVector"), 
-	function(x, tolerance) {
-		x@ptr <- x@ptr$snap(tolerance)
+	function(x, y=NULL, tolerance) {
+		if (is.null(y)) {
+			x@ptr <- x@ptr$snap(tolerance)
+		} else {
+			x@ptr <- x@ptr$snapto(y@ptr, tolerance)		
+		}
 		messages(x, "snap")
 	}
 )

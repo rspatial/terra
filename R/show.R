@@ -119,7 +119,8 @@ setMethod ("show" , "SpatVector",
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		if (all(d > 0)) {
-			dd <- as.data.frame(object)
+			nr <- min(d[1], 3)
+			dd <- as.data.frame(object[1:nr,])
 			printDF(dd, 3, TRUE)
 		}
 	}

@@ -25,6 +25,7 @@ SpatVector
 }
 
 \seealso{
+\code{\link{sharedPaths}}, \code{\link{topology}}, and 
 \code{\link{fillHoles}} to get or remove polygon holes
 }
 

@@ -1446,6 +1446,7 @@ double area_polygon_lonlat(geod_geodesic &g, const std::vector<double> &lon, con
 	size_t n = lat.size();
 	for (size_t i=0; i < n; i++) {
 		//double lat = lat[i] > 90 ? 90 : lat[i] < -90 ? -90 : lat[i];
+		// for #397
 		double flat = lat[i] < -90 ? -90 : lat[i];
 		geod_polygon_addpoint(&g, &p, flat, lon[i]);
 	}

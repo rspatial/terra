@@ -73,13 +73,23 @@ get_filetype <- function(filename) {
 		"GPKG"
 	} else if (ext == "gml") {
 		"GML"
+	} else if (ext == "json") {
+		"GeoJSON"
+	} else if (ext == "cdf") {
+		"netCDF"
+	} else if (ext == "svg") {
+		"SVG"
+	} else if (ext == "kml") {
+		"KML"
+	} else if (ext == "vct") {
+		"Idrisi"
 	} else {
 		error("writeVector", "cannot guess filetype from filename")
 	}
 }
 
 setMethod("writeVector", signature(x="SpatVector", filename="character"), 
-function(x, filename, filetype=NULL, layer=NULL, overwrite=FALSE, options=NULL) {
+function(x, filename, filetype=NULL, layer=NULL, overwrite=FALSE, options="ENCODING=UTF-8") {
 	filename <- trimws(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")

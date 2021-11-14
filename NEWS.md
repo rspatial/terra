@@ -11,6 +11,7 @@ by Greg Schmidt
 - `plot,SpatVector` now responds to the `range` argument [#385](https://github.com/rspatial/terra/issues/385) by Márcia Barbosa
 - `zonal` failed for user-defined functions. [#393](https://github.com/rspatial/terra/issues/393) by mqueinnec
 
+
 ## new
 
 - new method `selectHighest` to select n cell values of a `SpatRaster` with the highest or lowest values. 
@@ -18,9 +19,9 @@ by Greg Schmidt
 - new argument `align=FALSE` to `project` to align to the template SpatRaster but ignore the resolution
 - new method `gdalCache` to set the GDAL cache size, contributed by Dan Baston [#387](https://github.com/rspatial/terra/pull/387)
 - new method `fileBlocksize`
-- new argument `options=NULL` to `writeVector` to pass layer creation options to GDAL
-- new SpatVector topology methods `mergeLines`, `snap`, `makeNodes`, `removeDupNodes`
-- new SpatVector methods `width` and `clearance`
+- new argument `options` to `writeVector` to pass layer creation options to GDAL
+- new SpatVector topology methods `mergeLines`, `snap`, `makeNodes`, `removeDupNodes`, `gaps`, `simplify`
+- new SpatVector characterization methods `width` and `clearance`
 
 
 ## enhancements 

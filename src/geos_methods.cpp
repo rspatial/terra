@@ -264,7 +264,13 @@ SpatVector SpatVector::normalize() {
 
 
 SpatVector SpatVector::line_merge() {
+		
 	SpatVector out;
+	if (type() != "lines") {
+		out.setError("input must be lines");
+		return out;
+	}
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
@@ -796,6 +802,9 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 		return(out);
 	}
 	bool islonlat = is_lonlat();
+	if (dist.size() == 1 && dist[0] == 0) {
+		islonlat = false; //faster
+	}
 	std::string vt = type();
 	if (vt == "points" || vt == "lines" || islonlat) {
 		for (size_t i=0; i<dist.size(); i++) {
@@ -1715,7 +1724,7 @@ bool geos_buffer(GEOSContextHandle_t hGEOSCtxt, std::vector<GeomPtr> &g, double 
 
 
 
-SpatVector SpatVector::widthline() {
+SpatVector SpatVector::width() {
 	
 	SpatVector tmp;
 	
@@ -1745,20 +1754,7 @@ SpatVector SpatVector::widthline() {
 #endif
 }
 
-std::vector<double> SpatVector::width() {
-#ifndef HAVE361
-	std::vector<double> out;
-	setError("GEOS 3.6.1 required for width");
-	return out;
-#else 
-	SpatVector tmp = widthline();
-	return tmp.length();
-#endif
-}	
-
-
-
-std::vector<double> SpatVector::clearance() {
+SpatVector SpatVector::clearance() {
 
 #ifndef HAVE361
 	setError("GEOS 3.5 required for clearance");
@@ -1773,10 +1769,9 @@ std::vector<double> SpatVector::clearance() {
 	for (size_t i = 0; i < g.size(); i++) {	
 		GEOSGeometry* w = GEOSMinimumClearanceLine_r(hGEOSCtxt, g[i].get());
 		if (w == NULL) {
-			setError("NULL geom");
+			tmp.setError("NULL geom");
 			geos_finish(hGEOSCtxt);
-			std::vector<double> out;
-			return out;
+			return tmp;
 		}
 		gout[i] = geos_ptr(w, hGEOSCtxt);
 	}
@@ -1784,8 +1779,9 @@ std::vector<double> SpatVector::clearance() {
 	geos_finish(hGEOSCtxt);
 	tmp = coll.get(0);
 	tmp.srs = srs;
-	return tmp.length();
+	return tmp;
 
 #endif
 }
+
 

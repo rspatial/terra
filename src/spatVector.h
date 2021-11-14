@@ -288,9 +288,8 @@ class SpatVector {
 		SpatVector sample(unsigned n, std::string method, unsigned seed);
 		SpatVector sample_geom(std::vector<unsigned> n, std::string method, unsigned seed);
 
-		std::vector<double> clearance();
-		SpatVector widthline();
-		std::vector<double> width();
+		SpatVector clearance();
+		SpatVector width();
 
 		SpatVector unaryunion();
 

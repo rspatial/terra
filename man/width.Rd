@@ -23,19 +23,22 @@ If the minimum clearance cannot be defined for a geometry (such as with a single
 }
 
 \usage{
-\S4method{width}{SpatVector}(x)
-\S4method{clearance}{SpatVector}(x)
+\S4method{width}{SpatVector}(x, as.lines=FALSE)
+\S4method{clearance}{SpatVector}(x, as.lines=FALSE)
 }
 
 \arguments{
   \item{x}{SpatVector of lines or polygons}
+  \item{as.lines}{logical. If \code{TRUE} lines are returned that define the width or clearance}
 } 
 
 \value{
-numeric for each geometry in m
+numeric or SpatVector
 }
 
-seealso{\code{\link{minRect}}}
+\seealso{
+\code{\link{minRect}}
+}
 
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
@@ -43,7 +46,6 @@ v <- vect(f)
 width(v)
 clearance(v)
 }
-
 
 \keyword{methods}
 \keyword{spatial}
