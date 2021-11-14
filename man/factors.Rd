@@ -4,6 +4,8 @@
 
 \alias{is.factor}
 \alias{is.factor,SpatRaster-method}
+\alias{as.factor}
+\alias{as.factor,SpatRaster-method}
 \alias{levels}
 \alias{levels,SpatRaster-method}
 \alias{levels<-}

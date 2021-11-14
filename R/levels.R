@@ -6,6 +6,15 @@ setMethod("is.factor", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("as.factor", signature(x="SpatRaster"), 
+	function(x) {
+		x <- round(x)
+		u <- unique(x)
+		levels(x) <- cbind(u, u)
+		x
+	}
+)
+
 
 setMethod("levels", signature(x="SpatRaster"), 
 	function(x) {
