@@ -47,7 +47,12 @@
 
 
 <meta property="og:title" content="Vector topology methods — topology" />
-<meta property="og:description" content="sharedPaths returns the shared paths of lines or polygons" />
+<meta property="og:description" content="
+
+makeNodes create nodes on lines
+mergeLines connect lines to form polygons
+removeDupNodes removes duplicate nodes in geometries and optionally rounds the coordinates
+snap makes boundaries of geometries identical if they are very close to each other." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -125,15 +130,18 @@
     </div>
 
     <div class="ref-description">
-    <p><code>sharedPaths</code> returns the shared paths of lines or polygons</p>
+    
+
+<p><code>makeNodes</code> create nodes on lines</p>
+<p><code>mergeLines</code> connect lines to form polygons</p>
+<p><code>removeDupNodes</code> removes duplicate nodes in geometries and optionally rounds the coordinates</p>
+<p><code>snap</code> makes boundaries of geometries identical if they are very close to each other.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>sharedPaths</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-<span class='co'># S4 method for SpatVector</span>
 <span class='fu'>mergeLines</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>snap</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>tolerance</span><span class='op'>)</span>
+<span class='fu'>snap</span><span class='op'>(</span><span class='va'>x</span>, y<span class='op'>=</span><span class='cn'>NULL</span>, <span class='va'>tolerance</span><span class='op'>)</span>
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>removeDupNodes</span><span class='op'>(</span><span class='va'>x</span>, digits <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>
 <span class='co'># S4 method for SpatVector</span>
@@ -147,36 +155,30 @@
       <td><p>SpatVector of lines or polygons</p></td>
     </tr>
     <tr>
+      <th>y</th>
+      <td><p>SpatVector of lines or polygons to snap to. If <code>NULL</code> snapping is to the other geometries in <code>x</code></p></td>
+    </tr>
+    <tr>
       <th>tolerance</th>
-      <td><p>numeric</p></td>
+      <td><p>numeric. Snapping tolerance (distance between geometries) or simplifying tolerance (distance between nodes)</p></td>
     </tr>
     <tr>
       <th>digits</th>
-      <td><p>numeric</p></td>
+      <td><p>numeric. Number of digits used in rounding. Ignored if &lt; 0</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>SpatVector</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='sharedPaths.html'>sharedPaths</a></code>, <code><a href='gaps.html'>gaps</a></code>, <code><a href='simplify.html'>simplify</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
-<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>v</span>, col<span class='op'>=</span><span class='st'>"light gray"</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='text.html'>text</a></span><span class='op'>(</span><span class='va'>v</span>, halo<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='input'>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>sharedPaths</span><span class='op'>(</span><span class='va'>v</span><span class='op'>)</span>
-<span class='fu'><a href='lines.html'>lines</a></span><span class='op'>(</span><span class='va'>x</span>, col<span class='op'>=</span><span class='st'>"red"</span>, lwd<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='text.html'>text</a></span><span class='op'>(</span><span class='va'>x</span>, col<span class='op'>=</span><span class='st'>"blue"</span>, halo<span class='op'>=</span><span class='cn'>TRUE</span>, cex<span class='op'>=</span><span class='fl'>0.8</span><span class='op'>)</span>
-</div><div class='img'><img src='topology-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='head and tail.html'>head</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   id1 id2
-#&gt; 1   1   2
-#&gt; 2   1   4
-#&gt; 3   1   5
-#&gt; 4   2   3
-#&gt; 5   2   4
-#&gt; 6   2   5</div></pre>
+<span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='as.spatvector.html'>as.lines</a></span><span class='op'>(</span><span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
