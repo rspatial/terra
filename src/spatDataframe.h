@@ -78,6 +78,8 @@ class SpatDataFrame {
 		bool remove_column(int i);		
 
 		void resize_rows(unsigned n);
+		void remove_rows(std::vector<unsigned> r);
+
 		void resize_cols(unsigned n);
 		void reserve(unsigned n);
 		

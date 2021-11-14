@@ -238,6 +238,26 @@ void SpatDataFrame::resize_rows(unsigned n) {
 	}
 }
 
+void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
+	if (r.size() == 0) return;
+	sort(r.begin(), r.end(), std::greater<unsigned>());
+	r.erase(std::unique(r.begin(), r.end()), r.end());
+	
+	for (size_t j=0; j<r.size(); j++) {
+		for (size_t i=0; i<dv.size(); i++) {
+			dv[i].erase(dv[i].begin() + r[j]);
+		}
+		for (size_t i=0; i<iv.size(); i++) {
+			iv[i].erase(iv[i].begin() +r[j]);
+		}
+		for (size_t i=0; i<sv.size(); i++) {
+			sv[i].erase(sv[i].begin() +r[j]);
+		}
+	}
+}
+
+
+
 void SpatDataFrame::resize_cols(unsigned n) {
 	if (n < ncol()) {
 		itype.resize(n);

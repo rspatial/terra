@@ -1470,42 +1470,35 @@ SpatVector SpatVector::erase() {
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
-	std::vector<GeomPtr> result;
-	std::vector<long> ids;
-	ids.reserve(n);
-	result.reserve(n);
+	std::vector<unsigned> rids;
 
-	GEOSGeometry* geom;
 	for (size_t i = 0; i < (n-1); i++) {		
-		geom = x[i].get();
 		for (size_t j = (i+1); j < n; j++) {
-			geom = GEOSDifference_r(hGEOSCtxt, geom, x[j].get());
+			GEOSGeometry* geom = GEOSDifference_r(hGEOSCtxt, x[i].get(), x[j].get());
 			if (geom == NULL) {
 				out.setError("GEOS exception");
 				geos_finish(hGEOSCtxt);
 				return(out);
-			} 
-			if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+			} else if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+				GEOSGeom_destroy_r(hGEOSCtxt, geom);	
+				rids.push_back(i);
 				break;
+			} else {
+				x[i] = geos_ptr(geom, hGEOSCtxt);
 			}
 		}	
-		if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
-			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
-		} else {
-			result.push_back(geos_ptr(geom, hGEOSCtxt));
-			ids.push_back(i);
-		}
 	}
-	geom = x[n-1].get();
 
-	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
+	SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
 	out = coll.get(0);
 	out.srs = srs;
-	geos_finish(hGEOSCtxt);
 
-	out.df = df.subset_rows(out.df.iv[0]);
-	SpatVector last = subset_rows(n-1); 
-	out = out.append(last, true);
+	out.df = df;
+	out.df.remove_rows(rids);
+	//SpatVector last = subset_rows(n-1); 
+	//out = out.append(last, true);
+
+	geos_finish(hGEOSCtxt);
 	return out;
 }
 
