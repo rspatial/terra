@@ -416,14 +416,32 @@ setMethod("show" , "SpatRasterCollection",
 
 setMethod ("head" , "SpatVector", 
 	function(x, n=6L, ...) {
-		utils::head(as.data.frame(x), n=n, ...)
+		nn <- min(n, nrow(x))
+		if (nn > 0) { 
+			x <- x[1:nn, ]
+		} else {
+			x <- x[0,]
+		}
+		as.data.frame(x)
 	}
 )
 
 
 setMethod ("tail" , "SpatVector", 
 	function(x, n=6L, ...) {
-		utils::tail(as.data.frame(x), n=n,...)
+		nrx <- nrow(x)
+		nn <- min(n, nrx)
+		if (nn > 0) { 
+			start <- nrx - nn + 1
+			x <- x[start:nrx, ]
+		} else {
+			x <- x[0,]
+		}
+		x <- as.data.frame(x)
+		if (nn > 0) { 
+			rownames(x) <- start:nrx
+		}
+		x
 	}
 )
 
