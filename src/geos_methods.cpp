@@ -1431,11 +1431,11 @@ SpatVector SpatVector::erase(SpatVector v) {
 				break;
 			}
 		}
-		if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
+		if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
+		} else {
 			result.push_back(geos_ptr(geom, hGEOSCtxt));
 			ids.push_back(i);
-		} else {
-			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
 		}
 	}
 
@@ -1446,6 +1446,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 		out.srs = srs;
 	} 
 	geos_finish(hGEOSCtxt);
+
 	if (!srs.is_same(v.srs, true)) {
 		out.addWarning("different crs"); 
 	}
@@ -1474,28 +1475,29 @@ SpatVector SpatVector::erase() {
 	ids.reserve(n);
 	result.reserve(n);
 
+	GEOSGeometry* geom;
 	for (size_t i = 0; i < (n-1); i++) {		
-		GEOSGeometry* geom = x[i].get();
+		geom = x[i].get();
 		for (size_t j = (i+1); j < n; j++) {
 			geom = GEOSDifference_r(hGEOSCtxt, geom, x[j].get());
 			if (geom == NULL) {
 				out.setError("GEOS exception");
-				GEOSGeom_destroy_r(hGEOSCtxt, geom);	
 				geos_finish(hGEOSCtxt);
 				return(out);
 			} 
 			if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
 				break;
 			}
-		}		
-		if (!GEOSisEmpty_r(hGEOSCtxt, geom)) {
+		}	
+		if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
+		} else {
 			result.push_back(geos_ptr(geom, hGEOSCtxt));
 			ids.push_back(i);
-		} else {
-			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
 		}
 	}
-	
+	geom = x[n-1].get();
+
 	SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
 	out = coll.get(0);
 	out.srs = srs;
