@@ -167,8 +167,8 @@ The equivalent for SpatRaster is <code><a href='mask.html'>mask</a></code></p></
 <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='st'>"POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))"</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>erase</span><span class='op'>(</span><span class='va'>v</span>, <span class='va'>p</span><span class='op'>)</span>
 
-<span class='va'>h</span> <span class='op'>&lt;-</span> <span class='fu'><a href='convHull.html'>convHull</a></span><span class='op'>(</span><span class='va'>v</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>12</span><span class='op'>]</span>, <span class='st'>"NAME_1"</span><span class='op'>)</span>
-<span class='va'>he</span> <span class='op'>&lt;-</span> <span class='fu'>erase</span><span class='op'>(</span><span class='va'>h</span><span class='op'>)</span>
+<span class='co'>#h &lt;- convHull(v[-12], "NAME_1")</span>
+<span class='co'>#he &lt;- erase(h)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
