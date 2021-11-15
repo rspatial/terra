@@ -1406,50 +1406,44 @@ SpatVector SpatVector::cover(SpatVector v, bool identity) {
 SpatVector SpatVector::erase(SpatVector v) {
 
 	SpatVector out;
-	out.srs = srs;
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
-	std::vector<GeomPtr> result;
-	std::vector<long> ids;
-	ids.reserve(size());
+	std::vector<unsigned> rids;
 	size_t nx = size();
 	size_t ny = v.size();
-
 	
 	for (size_t i = 0; i < nx; i++) {
-		GEOSGeometry* geom = x[i].get();
+		//GEOSGeometry* geom = x[i].get();
 		for (size_t j = 0; j < ny; j++) {
-			geom = GEOSDifference_r(hGEOSCtxt, geom, y[j].get());
+			GEOSGeometry* geom = GEOSDifference_r(hGEOSCtxt, x[i].get(), y[j].get());
 			if (geom == NULL) {
 				out.setError("GEOS exception");
 				geos_finish(hGEOSCtxt);
 				return(out);
 			} 
 			if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+				GEOSGeom_destroy_r(hGEOSCtxt, geom);	
+				rids.push_back(i);
 				break;
 			}
-		}
-		if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
-			GEOSGeom_destroy_r(hGEOSCtxt, geom);	
-		} else {
-			result.push_back(geos_ptr(geom, hGEOSCtxt));
-			ids.push_back(i);
+			x[i] = geos_ptr(geom, hGEOSCtxt);
 		}
 	}
 
-	if (result.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
+	if (rids.size() < nx) {
+		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
 		out = coll.get(0);
-		out.df = df.subset_rows(out.df.iv[0]);
-		out.srs = srs;
+		out.df = df;
+		out.df.remove_rows(rids);
 	} 
 	geos_finish(hGEOSCtxt);
 
 	if (!srs.is_same(v.srs, true)) {
 		out.addWarning("different crs"); 
 	}
+	out.srs = srs;
 
 	return out;
 }
@@ -1534,6 +1528,7 @@ SpatVector SpatVector::gaps() {
 		}
 	}
 	std::vector<unsigned> r(1, j);
+	p.srs = srs;
 	return p.remove_rows(r);
 }
 

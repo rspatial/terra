@@ -65,3 +65,11 @@
     .Call(`_terra_getGDALCacheSizeMB`)
 }
 
+.get_proj_search_paths <- function() {
+    .Call(`_terra_get_proj_search_paths`)
+}
+
+.set_proj_search_paths <- function(paths) {
+    .Call(`_terra_set_proj_search_paths`, paths)
+}
+

@@ -187,6 +187,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// get_proj_search_paths
+std::vector<std::string> get_proj_search_paths();
+RcppExport SEXP _terra_get_proj_search_paths() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(get_proj_search_paths());
+    return rcpp_result_gen;
+END_RCPP
+}
+// set_proj_search_paths
+bool set_proj_search_paths(std::vector<std::string> paths);
+RcppExport SEXP _terra_set_proj_search_paths(SEXP pathsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type paths(pathsSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_proj_search_paths(paths));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -207,6 +228,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_percRank", (DL_FUNC) &_terra_percRank, 5},
     {"_terra_setGDALCacheSizeMB", (DL_FUNC) &_terra_setGDALCacheSizeMB, 1},
     {"_terra_getGDALCacheSizeMB", (DL_FUNC) &_terra_getGDALCacheSizeMB, 0},
+    {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
+    {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

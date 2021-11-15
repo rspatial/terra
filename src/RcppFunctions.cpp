@@ -357,3 +357,50 @@ void setGDALCacheSizeMB(double x) {
 double getGDALCacheSizeMB() {
   return static_cast<double>(GDALGetCacheMax64() / 1024 / 1024);
 }
+
+// convert NULL-terminated array of strings to std::vector<std::string>
+std::vector<std::string> charpp2vect(char **cp) {
+	std::vector<std::string> out;
+	if (cp == NULL) return out;
+	size_t i=0;
+	while (cp[i] != NULL) {
+		out.push_back(cp[i]);
+		i++;
+	}
+	return out;
+}
+
+
+// [[Rcpp::export(name = ".get_proj_search_paths")]]
+std::vector<std::string> get_proj_search_paths() {
+	std::vector<std::string> out;
+#if GDAL_VERSION_NUM >= 3000300
+	char **cp = OSRGetPROJSearchPaths();
+	out = charpp2vect(cp);
+	CSLDestroy(cp);
+#else
+	out.push_back("error: GDAL >= 3.0.3 required");
+#endif
+	return out;
+}
+
+
+
+
+// [[Rcpp::export(name = ".set_proj_search_paths")]]
+bool set_proj_search_paths(std::vector<std::string> paths) {
+	if (!paths.size()) {
+		return false;
+	}
+#if GDAL_VERSION_NUM >= 3000000
+	std::vector <char *> cpaths(paths.size()+1);
+	for (size_t i = 0; i < paths.size(); i++) {
+		cpaths[i] = (char *) (paths[i].c_str());
+	}
+	cpaths[cpaths.size()] = NULL;
+	OSRSetPROJSearchPaths(cpaths.data());
+	return true;
+#else
+	return false
+#endif
+}
