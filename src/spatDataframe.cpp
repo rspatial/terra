@@ -287,12 +287,15 @@ bool SpatDataFrame::remove_column(int i) {
 	size_t dtype = itype[i];
 	size_t place = iplace[i];
 
-	for (size_t i=(place+1); i<iplace.size(); i++) {
-		if (itype[i] == dtype) {
-			iplace[i]--;
+	size_t ii = i;
+	if (ii < (iplace.size()-1)) {
+		for (size_t j=i+1; j<iplace.size(); j++) {
+			if (itype[j] == dtype) {
+				iplace[j]--;
+			}
 		}
 	}
-
+	
 	names.erase(names.begin()+i);
 	itype.erase(itype.begin()+i);
 	iplace.erase(iplace.begin()+i);
