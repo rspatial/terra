@@ -98,7 +98,7 @@ setMethod("distance", signature(x="SpatVector", y="SpatVector"),
 		if ((nx == ny) && pairwise) {
 			d
 		} else {
-			d <- matrix(d, nrow=nx, ncol=ny)
+			d <- matrix(d, nrow=nx, ncol=ny, byrow=TRUE)
 		}
 		return(d)
 	}
