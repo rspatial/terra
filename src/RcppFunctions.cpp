@@ -401,6 +401,6 @@ bool set_proj_search_paths(std::vector<std::string> paths) {
 	OSRSetPROJSearchPaths(cpaths.data());
 	return true;
 #else
-	return false
+	return false;
 #endif
 }
