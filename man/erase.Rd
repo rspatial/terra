@@ -46,8 +46,11 @@ x <- erase(v, e)
 p <- vect("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.6, 5.8 49.8))")
 y <- erase(v, p)
 
-#h <- convHull(v[-12], "NAME_1")
-#he <- erase(h)
+# self-erase
+h <- convHull(v[-12], "NAME_1")
+he <- erase(h)
+plot(h, lwd=2, border="red", lty=2)
+lines(he, col="gray", lwd=3)
 }
 
 \keyword{methods}
