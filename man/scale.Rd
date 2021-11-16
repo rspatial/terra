@@ -7,7 +7,7 @@
 \title{Scale values}
 
 \description{
-Center and/or scale raster data. For details see \code{link{scale}} 
+Center and/or scale raster data. For details see \code{\link{scale}} 
 }
 
 \usage{
