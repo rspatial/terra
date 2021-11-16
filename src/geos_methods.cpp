@@ -1775,16 +1775,16 @@ SpatVector SpatVector::width() {
 
 SpatVector SpatVector::clearance() {
 
+	SpatVector tmp;
+
 #ifndef HAVE361
-	setError("GEOS 3.5 required for clearance");
-	std::vector<double> out;
-	return out;
+	tmp.setError("GEOS 3.5 required for clearance");
+	return tmp;
 #else 
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> gout(g.size());
-	SpatVector tmp;
 	for (size_t i = 0; i < g.size(); i++) {	
 		GEOSGeometry* w = GEOSMinimumClearanceLine_r(hGEOSCtxt, g[i].get());
 		if (w == NULL) {
