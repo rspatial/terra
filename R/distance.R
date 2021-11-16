@@ -91,16 +91,12 @@ setMethod("distance", signature(x="SpatVector", y="ANY"),
 
 setMethod("distance", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, pairwise=FALSE) {
-		nx <- nrow(x)
-		ny <- nrow(y)
 		d <- x@ptr$distance_other(y@ptr, pairwise)
 		messages(x, "distance")
-		if ((nx == ny) && pairwise) {
-			d
-		} else {
-			d <- matrix(d, nrow=nx, ncol=ny, byrow=TRUE)
+		if (!pairwise) {
+			d <- matrix(d, nrow=nrow(x), ncol=nrow(y), byrow=TRUE)
 		}
-		return(d)
+		d
 	}
 )
 

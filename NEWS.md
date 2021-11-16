@@ -1,5 +1,9 @@
 # version 1.4-20
 
+## bug fixes
+
+- `terra` did not install with GDAL < 3 [#402](https://github.com/rspatial/terra/issues/402) by Alex.
+- `distance` between two SpatVectors or matrices with `pairwise=FALSE` returned a matrix that was filled by column instead of by row [#403](https://github.com/rspatial/terra/issues/403) by Paul Smith
 
 
 # version 1.4-19

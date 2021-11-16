@@ -1185,11 +1185,40 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 
 	std::vector<double> out;
 
-	GEOSContextHandle_t hGEOSCtxt = geos_init();
-	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
-	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	size_t nx = size();
 	size_t ny = v.size();
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+
+	/* recycling, not a good idea here
+	std::vector<GeomPtr> x;
+	std::vector<GeomPtr> y;
+	if ((parallel) && (nx != ny) && (nx > 1) && (ny > 1)) {
+		SpatVector rr;
+		if (ny < nx) {
+			rr = v;
+			ny = nx;
+			recycle(rr.geoms, nx);
+			x = geos_geoms(this, hGEOSCtxt);
+			y = geos_geoms(&rr, hGEOSCtxt);
+		} else {
+			rr = *this;
+			recycle(rr.geoms, ny);
+			nx = ny;
+			x = geos_geoms(&rr, hGEOSCtxt);
+			y = geos_geoms(&v, hGEOSCtxt);
+		}
+		
+	} else {
+		x = geos_geoms(this, hGEOSCtxt);
+		y = geos_geoms(&v, hGEOSCtxt);
+	}
+	*/
+
+
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+
 	double d;
 
 	if (parallel) {
@@ -1202,7 +1231,6 @@ std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 				std::swap(nx, ny);
 				nyone = true;
 			} else {
-				// recycle?
 				setError("vectors have different lengths");
 				return out;
 			}

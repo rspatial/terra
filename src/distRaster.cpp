@@ -279,6 +279,14 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise) {
 		setError("SRS do not match");
 		return(d);
 	}
+
+	size_t s = size();
+	size_t sx = x.size();
+	if (pairwise && (s != sx ) && (s > 1) && (sx > 1))  {
+		setError("Can only do pairwise distance if geometries match, or if one is a single geometry");
+		return(d);
+	}
+	
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
 	bool lonlat = is_lonlat();
@@ -292,27 +300,59 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise) {
 		}
 		return d;
 	}
-
-	size_t s = size();
-	size_t sx = x.size();
-	if (s != sx) {
-		pairwise = false;
-	}
-	size_t n = pairwise ? s : s*sx;
-	d.resize(n);	
 	std::vector<std::vector<double>> p = coordinates();
 	std::vector<std::vector<double>> px = x.coordinates();
 
+/*  recycling, not a good idea.
 	if (pairwise) {
-		if (lonlat) {
-			for (size_t i = 0; i < s; i++) {
-				d[i] = distance_lonlat(p[0][i], p[1][i], px[0][i], px[1][i]);
+		if (s < sx) {
+			recycle(p[0], sx);
+			recycle(p[1], sx);
+			s = sx;
+		} else if (s > sx) {
+			recycle(px[0], s);
+			recycle(px[1], s);
+			sx = s;
+		}
+	}
+*/
+
+
+	size_t n = pairwise ? std::max(s,sx) : s*sx;
+	d.resize(n);	
+
+	if (pairwise) {
+		if (s == sx) {
+			if (lonlat) {
+				for (size_t i = 0; i < s; i++) {
+					d[i] = distance_lonlat(p[0][i], p[1][i], px[0][i], px[1][i]);
+				}
+			} else { // not reached
+				for (size_t i = 0; i < s; i++) {
+					d[i] = distance_plane(p[0][i], p[1][i], px[0][i], px[1][i]) * m;
+				}		
+			} 
+		} else if (s == 1) {  // to avoid recycling. 
+			if (lonlat) {
+				for (size_t i = 0; i < sx; i++) {
+					d[i] = distance_lonlat(p[0][0], p[1][0], px[0][i], px[1][i]);
+				}
+			} else { // not reached
+				for (size_t i = 0; i < sx; i++) {
+					d[i] = distance_plane(p[0][0], p[1][0], px[0][i], px[1][i]) * m;
+				}		
 			}
-		} else { // not reached
-			for (size_t i = 0; i < s; i++) {
-				d[i] = distance_plane(p[0][i], p[1][i], px[0][i], px[1][i]) * m;
-			}		
-		} 
+		} else { // if (sx == 1) {
+			if (lonlat) {
+				for (size_t i = 0; i < s; i++) {
+					d[i] = distance_lonlat(p[0][i], p[1][i], px[0][0], px[1][0]);
+				}
+			} else { // not reached
+				for (size_t i = 0; i < s; i++) {
+					d[i] = distance_plane(p[0][i], p[1][i], px[0][0], px[1][0]) * m;
+				}		
+			} 
+		}
 	} else {	
 		if (lonlat) {
 			for (size_t i=0; i<s; i++) {
