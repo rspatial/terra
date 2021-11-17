@@ -278,16 +278,18 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 )
 
 
+if (!isGeneric("as.data.table")) { setGeneric("as.data.table", function(x, ...) standardGeneric("as.data.table")) }	
+
 setMethod("as.data.table", signature(x="SpatRaster"), 
 	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE) {
-		d <- data.table()
+		d <- data.table::data.table()
 		if (xy) {
 			d <- cbind(d, xyFromCell(x, 1:ncell(x)))
 		} 
 		if (cells) {
 			d <- cbind(cell=1:ncell(x), d)
 		}
-		if (any(is.factor(y))) {
+		if (any(is.factor(x))) {
 			d <- cbind(d, values(x, dataframe=TRUE))
 		} else {
 			d <- cbind(d, values(x, dataframe=FALSE))
