@@ -296,7 +296,6 @@ setMethod("as.data.table", signature(x="SpatRaster"),
 		}
 		if (na.rm) {
 			d <- stats::na.omit(d) 
-			attr(d, "na.action") <- NULL
 		}
 		d
 	}
