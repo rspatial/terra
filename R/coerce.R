@@ -277,6 +277,30 @@ setMethod("as.data.frame", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("as.data.table", signature(x="SpatRaster"), 
+	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE) {
+		d <- data.table()
+		if (xy) {
+			d <- cbind(d, xyFromCell(x, 1:ncell(x)))
+		} 
+		if (cells) {
+			d <- cbind(cell=1:ncell(x), d)
+		}
+		if (any(is.factor(y))) {
+			d <- cbind(d, values(x, dataframe=TRUE))
+		} else {
+			d <- cbind(d, values(x, dataframe=FALSE))
+		}
+		if (na.rm) {
+			d <- stats::na.omit(d) 
+			attr(d, "na.action") <- NULL
+		}
+		d
+	}
+)
+
+
 setAs("SpatRaster", "data.frame", 
 	function(from) {
 		as.data.frame(from)
