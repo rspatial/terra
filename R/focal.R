@@ -123,3 +123,106 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 	}
 }
 )
+
+
+
+
+
+setMethod("focalReg", signature(x="SpatRaster"), 
+function(x, w=3, intercept=FALSE, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
+
+	slope <- function(x, y) {
+	  v <- cbind(x, y)
+	  X <- cbind(1, v[,1])
+	  invXtX <- solve(t(X) %*% X) %*% t(X)
+	  (invXtX %*% v[,2])[2]
+	}
+
+	slopenarm <- function(x, y) {
+	  v <- na.omit(cbind(x, y))
+	  X <- cbind(1, v[,1])
+	  invXtX <- solve(t(X) %*% X) %*% t(X)
+	  (invXtX %*% v[,2])[2]
+	}
+
+
+	intslope <- function(x, y) {
+	  v <- cbind(x, y)
+	  X <- cbind(1, v[,1])
+	  invXtX <- solve(t(X) %*% X) %*% t(X)
+	  (invXtX %*% v[,2])
+	}
+
+	intslopenarm <- function(x, y) {
+	  v <- na.omit(cbind(x, y))
+	  X <- cbind(1, v[,1])
+	  invXtX <- solve(t(X) %*% X) %*% t(X)
+	  (invXtX %*% v[,2])
+	}
+
+
+
+	if (nlyr(x) != 2) error("focalReg", "x must have 2 layers")
+	outnl <- 1 + isTRUE(intercept)	
+	if (na.rm) {
+		if (outnl == 2) {
+			fun = \(x, y) try(intslopenarm(x, y), silent=TRUE)
+		} else {
+			fun = \(x, y) try(slopenarm(x, y), silent=TRUE)		
+		}
+	} else {
+		if (outnl == 2) {
+			fun = \(x, y) try(intslope(x, y), silent=TRUE)
+		} else {
+			fun = \(x, y) try(slope(x, y), silent=TRUE)		
+		}
+	}
+	if (!is.numeric(w)) {
+		error("focal", "w should be numeric vector or matrix")	
+	}
+	if (is.matrix(w)) {
+		m <- as.vector(t(w))
+		w <- dim(w)
+	} else {
+		w <- rep_len(w, 2)
+		stopifnot(all(w > 0))
+		m <- rep(1, prod(w))
+	}
+	msz <- prod(w)
+	dow <- !isTRUE(all(m == 1))
+	if (any(is.na(m))) {
+		k <- !is.na(m)
+		mm <- m[k]
+		msz <- sum(k)
+	}
+	out <- rast(x, nlyr=outnl)
+	if (outnl == 2) {
+		names(out) <- c("intercept", "slope")
+	} else {
+		names(out) <- "slope"
+	}
+	b <- writeStart(out, filename, n=msz*4, ...)
+
+	for (i in 1:b$n) {
+		X <- focalValues(x[[1]], w)
+		Y <- focalValues(x[[2]], w)
+		if (dow) {
+			if (any(is.na(m))) {
+				X <- X[k] * mm
+				Y <- Y[k] * mm
+			} else {
+				X <- X * m
+				Y <- Y * m
+			}
+		}
+		v <- sapply(1:nrow(X), function(i) fun(X[i,], Y[i,]))
+		if (outnl == 2) {
+			v <- as.vector(t(v))
+		}
+		writeValues(out, v, b$row[i], b$nrows[i])
+	}
+	out <- writeStop(out)
+	return(out)
+}
+)
+

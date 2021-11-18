@@ -1890,7 +1890,7 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 				SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
 				p = p.project("EPSG:4326");
 				std::vector<double> v = p.area(unit, true, 	{});
-				out[0] += accumulate(v.begin(), v.end(), 0);
+				out[0] += accumulate(v.begin(), v.end(), 0.0);
 			}
 		} else {
 			for (size_t i=0; i<bs.n; i++) {
