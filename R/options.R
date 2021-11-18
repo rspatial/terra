@@ -5,7 +5,9 @@
 .create_options <- function() {
 	opt <- methods::new("SpatOptions")
 	opt@ptr <- SpatOptions$new()
-	opt@ptr$tempdir <- normalizePath(tempdir(check = TRUE), winslash="/")
+	# check=T does not exist in ancient R
+	tmpdir <- try(tempdir(check = TRUE), silent=TRUE)
+	opt@ptr$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
 }
  
