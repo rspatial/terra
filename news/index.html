@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-21</span>
       </span>
     </div>
 
@@ -122,13 +122,43 @@
       <small>Source: <a href='https://github.com/rspatial/terra/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="version-14-18" class="section level1">
-<h1 class="page-header" data-toc-text="1.4-18">
-<a href="#version-14-18" class="anchor"></a>version 1.4-18<small> Unreleased </small>
+    <div id="version-14-21" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-21">
+<a href="#version-14-21" class="anchor"></a>version 1.4-21<small> Unreleased </small>
 </h1>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
+<ul>
+<li>
+<code>app</code> grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson</li>
+<li>
+<code>terra</code> now installs, again, with older versions of GEOS <a href="https://github.com/rspatial/terra/pull/406"><a href='https://github.com/rspatial/terra/issues/406'>#406</a></a> by fparyani</li>
+</ul>
+</div>
+</div>
+    <div id="version-14-20" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-20">
+<a href="#version-14-20" class="anchor"></a>version 1.4-20<small> 2021-11-16 </small>
+</h1>
+<div id="bug-fixes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
+<ul>
+<li>
+<code>terra</code> did not install with GDAL &lt; 3 <a href="https://github.com/rspatial/terra/issues/402"><a href='https://github.com/rspatial/terra/issues/402'>#402</a></a> by Alex.</li>
+<li>
+<code>distance</code> between two SpatVectors or matrices with <code>pairwise=FALSE</code> returned a matrix that was filled by column instead of by row <a href="https://github.com/rspatial/terra/issues/403"><a href='https://github.com/rspatial/terra/issues/403'>#403</a></a> by Paul Smith</li>
+</ul>
+</div>
+</div>
+    <div id="version-14-19" class="section level1">
+<h1 class="page-header" data-toc-text="1.4-19">
+<a href="#version-14-19" class="anchor"></a>version 1.4-19<small> 2021-11-15 </small>
+</h1>
+<div id="bug-fixes-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code>rast</code> with some NetCDF files failed because of bad parsing of dates. <a href="https://github.com/rspatial/terra/pull/361"><a href='https://github.com/rspatial/terra/issues/361'>#361</a></a> by Juan Carlos Zamora-Pereira</li>
@@ -208,9 +238,9 @@
 </li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level2">
+<div id="bug-fixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-3" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code>hist</code> failed with small samples. Issue <a href="https://github.com/rspatial/terra/issues/356"><a href='https://github.com/rspatial/terra/issues/356'>#356</a></a> by Martin Queinnec</li>
@@ -256,9 +286,9 @@
 <code>show(Spat*)</code> now prints the name and EPSG code of a crs if available. See <a href="https://github.com/rspatial/terra/issues/317"><a href='https://github.com/rspatial/terra/issues/317'>#317</a></a> by Jakub Nowosad</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level2">
+<div id="bug-fixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-4" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code>plotRGB</code> failed if there were <code>NA</code>s. Issue <a href="https://github.com/rspatial/terra/issues/308"><a href='https://github.com/rspatial/terra/issues/308'>#308</a></a> by Jakub Nowosad</li>
@@ -317,9 +347,9 @@
 <li>Argument <code>alpha</code> of <code>plot,SpatRaster</code> can now be a <code>SpatRaster</code>. See this <a href="https://stackoverflow.com/q/68736432/635245">SO question</a> by James McCarthy</li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level2">
+<div id="bug-fixes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-5" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>The <code>filename</code> and <code>overwrite</code> arguments were ignored in <code>rasterize</code>
 </li>
@@ -398,9 +428,9 @@
 <li>new argument <code>layer</code> in the <code>extract-SpatRaster,SpatVector</code> method to extract values for a single layers specified for each geometry (see this <a href="https://gis.stackexchange.com/a/401591/8993">question</a>).</li>
 </ul>
 </div>
-<div id="bug-fixes-4" class="section level2">
+<div id="bug-fixes-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-6" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>better handling of paths with non-ASCII characters (e.g., Chinese) for GeoTiff but still fails for NetCDF (see issue <a href="https://github.com/rspatial/terra/issues/223"><a href='https://github.com/rspatial/terra/issues/233'>#233</a></a> by Dongdong Kong)</li>
 <li>
@@ -457,9 +487,9 @@
 <li>faster processing of large in memory rasters. See issue <a href="https://github.com/rspatial/terra/issues/206"><a href='https://github.com/rspatial/terra/issues/206'>#206</a></a> by Krzysztof Dyba.</li>
 </ul>
 </div>
-<div id="bug-fixes-5" class="section level2">
+<div id="bug-fixes-7" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-5" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-7" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code>extract</code> with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)</li>
@@ -533,9 +563,9 @@
 <code>extract</code> has a new argument <code>exact</code> to get the fraction covered for each cell</li>
 </ul>
 </div>
-<div id="bug-fixes-6" class="section level2">
+<div id="bug-fixes-8" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bug-fixes-6" class="anchor"></a>bug fixes</h2>
+<a href="#bug-fixes-8" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
 <code><a href="../reference/flip.html">flip(x, direction="vertical")</a></code> no longer reverses the order of the layers</li>

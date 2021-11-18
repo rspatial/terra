@@ -87,7 +87,7 @@ If y is a SpatVector the geographic distance between all objects is computed (an
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-21</span>
       </span>
     </div>
 
@@ -240,10 +240,10 @@ If y is a SpatVector the geographic distance between all objects is computed (an
 <span class='va'>p2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>30</span>,<span class='op'>-</span><span class='fl'>30</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>40</span><span class='op'>)</span>, <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>9</span>,<span class='op'>-</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>, crs<span class='op'>=</span><span class='st'>"+proj=longlat +datum=WGS84"</span><span class='op'>)</span>
 <span class='va'>dd</span> <span class='op'>&lt;-</span> <span class='fu'>distance</span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span><span class='op'>)</span>
 <span class='va'>dd</span>
-</div><div class='output co'>#&gt;         [,1]     [,2]     [,3]
-#&gt; [1,] 4596223  9192445 10825924
-#&gt; [2,] 5104507  5905838 14117180
-#&gt; [3,] 1054933 11048088  8981037</div><div class='input'><span class='va'>pd</span> <span class='op'>&lt;-</span> <span class='fu'>distance</span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, pairwise<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;          [,1]     [,2]     [,3]
+#&gt; [1,]  4596223  5104507  1054933
+#&gt; [2,]  9192445  5905838 11048088
+#&gt; [3,] 10825924 14117180  8981037</div><div class='input'><span class='va'>pd</span> <span class='op'>&lt;-</span> <span class='fu'>distance</span><span class='op'>(</span><span class='va'>p1</span>, <span class='va'>p2</span>, pairwise<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='va'>pd</span>
 </div><div class='output co'>#&gt; [1] 4596223 5905838 8981037</div><div class='input'><span class='va'>pd</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>dd</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] TRUE TRUE TRUE</div><div class='input'>
@@ -266,18 +266,18 @@ If y is a SpatVector the geographic distance between all objects is computed (an
 </div><div class='output co'>#&gt;   1 2
 #&gt; 2 0  
 #&gt; 3 3 2</div><div class='input'><span class='fu'>distance</span><span class='op'>(</span><span class='va'>p</span>,<span class='va'>pts</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2]     [,3]
-#&gt; [1,]    0    3 9.848858
-#&gt; [2,]    2    1 9.899495
-#&gt; [3,]    2    0 9.219544</div><div class='input'><span class='fu'>distance</span><span class='op'>(</span><span class='va'>p</span>,<span class='va'>lns</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;          [,1] [,2]     [,3]
-#&gt; [1,] 0.000000    0 1.414214
-#&gt; [2,] 3.535534    0 5.099020
-#&gt; [3,] 0.000000    0 2.553878</div><div class='input'><span class='fu'>distance</span><span class='op'>(</span><span class='va'>pts</span>,<span class='va'>lns</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;          [,1]     [,2]     [,3]
-#&gt; [1,] 3.000000 1.000000 0.000000
-#&gt; [2,] 8.602325 5.385165 4.472136
-#&gt; [3,] 7.262591 6.943356 6.065460</div></pre>
+#&gt; [1,] 0.000000 2.000000 2.000000
+#&gt; [2,] 3.000000 1.000000 0.000000
+#&gt; [3,] 9.848858 9.899495 9.219544</div><div class='input'><span class='fu'>distance</span><span class='op'>(</span><span class='va'>p</span>,<span class='va'>lns</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;          [,1]     [,2]     [,3]
+#&gt; [1,] 0.000000 3.535534 0.000000
+#&gt; [2,] 0.000000 0.000000 0.000000
+#&gt; [3,] 1.414214 5.099020 2.553878</div><div class='input'><span class='fu'>distance</span><span class='op'>(</span><span class='va'>pts</span>,<span class='va'>lns</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;      [,1]     [,2]     [,3]
+#&gt; [1,]    3 8.602325 7.262591
+#&gt; [2,]    1 5.385165 6.943356
+#&gt; [3,]    0 4.472136 6.065460</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

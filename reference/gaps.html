@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-21</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@
     <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/lux.shp"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
 <span class='va'>v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vect.html'>vect</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
 <span class='va'>h</span> <span class='op'>&lt;-</span> <span class='fu'><a href='convHull.html'>convHull</a></span><span class='op'>(</span><span class='va'>v</span><span class='op'>[</span><span class='op'>-</span><span class='fl'>12</span><span class='op'>]</span>, <span class='st'>"NAME_1"</span><span class='op'>)</span>
-<span class='co'>#g &lt;- gaps(h)</span>
+<span class='va'>g</span> <span class='op'>&lt;-</span> <span class='fu'>gaps</span><span class='op'>(</span><span class='va'>h</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
