@@ -49,10 +49,8 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 
 	} else {
 		msz <- prod(w)
-		out <- rast(x)
 		readStart(x)
 		on.exit(readStop(x))
-		b <- writeStart(out, filename, n=msz*4, ...)
 		dow <- !isTRUE(all(m == 1))
 		if (any(is.na(m))) {
 			k <- !is.na(m)
@@ -70,6 +68,22 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 		}
 
 		nl <- nlyr(x)
+		outnl <- nl * length(test)
+		transp <- FALSE
+		nms <- NULL
+		if (nrow(test) > 1) {
+			transp <- TRUE
+			nms <- rownames(test)
+		} else if (ncol(test) > 1) {
+			nms <- rownames(test)
+		}
+		
+		out <- rast(x, nlyr=outnl)
+		if (!is.null(nms)) {
+			names(out) <- nms
+		}
+		b <- writeStart(out, filename, n=msz*4, ...)
+		
 		for (i in 1:b$n) {
 			vv <- NULL
 			for (j in 1:nl) {
@@ -91,13 +105,21 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 				} else {
 					v <- apply(v, 1, fun)			
 				}
+				if (transp) {
+					v <- t(v)
+				}
+
 				if (na.only) {
 					vv <- readValues(x, b$row[i], b$nrows[i])
 					j <- !is.na(vv)
 					v[j] <- vv[j]
 				}
 				if (nl > 1) {
-					vv <- c(vv, v)
+					if (nlout > 1) {
+						vv <- rbind(vv, v)
+					} else {
+						vv <- c(vv, v)
+					}
 				}
 			}
 			if (nl > 1) {
