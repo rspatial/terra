@@ -9,6 +9,9 @@
 ## enhancements 
 
 - `lapp` and `tapp` now have a `cores` argument (as do `app` and `predict`). Suggested by Dongdong Kong [#365](https://github.com/rspatial/terra/pull/365)
+- `focal` now also works with a function that returns multiple values (see [#318](https://github.com/rspatial/terra/pull/318) by Alex). 
+- `focal` can now process multiple layers in one step. 
+
 
 # version 1.4-20
 

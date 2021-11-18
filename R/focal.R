@@ -7,10 +7,6 @@
 setMethod("focal", signature(x="SpatRaster"), 
 function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
-	#if (nlyr(x) > 1) {
-	#	warn("focal", "only the first layer of x is used")
-	#	x <- x[[1]]
-	#}
 	if (na.only && (!is.matrix(w))) {
 		if (!na.rm) {
 			warn("focal", "na.rm set to TRUE because na.only is TRUE")
@@ -37,13 +33,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 
 	if (cpp) {
 		opt <- spatOptions(filename, ...)
-		#if (method==1) {
-		#	x@ptr <- x@ptr$focal1(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)		
-		#} else if (method == 2) {
-		#	x@ptr <- x@ptr$focal2(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)
-		#} else {
 		x@ptr <- x@ptr$focal3(w, m, fillvalue, na.rm[1], na.only[1], txtfun, expand, opt)
-		#}
 		messages(x, "focal")
 		return(x)
 
@@ -71,7 +61,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 		outnl <- nl * length(test)
 		transp <- FALSE
 		nms <- NULL
-		if (nrow(test) > 1) {
+		if (isTRUE(nrow(test) > 1)) {
 			transp <- TRUE
 			nms <- rownames(test)
 		} else if (ncol(test) > 1) {
