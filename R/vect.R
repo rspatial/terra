@@ -9,7 +9,7 @@
 setMethod("as.vector", signature(x="SpatVector"), 
 	function(x, mode="any") {
 		if (nrow(x) > 0) {
-			lapply(1:nrow(x), \(i) x[i,])
+			lapply(1:nrow(x), function(i) x[i,])
 		} else {
 			x
 		}

@@ -43,11 +43,11 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	b <- writeStart(out, filename, overwrite, wopt=wopt)
 
 	if (doclust) {
-		pfun <- \(x, ...) apply(x, 1, FUN=fun, ...)
+		pfun <- function(x, ...) apply(x, 1, FUN=fun, ...)
 		parallel::clusterExport(cores, "pfun", environment())	
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
-			v <- lapply(uin, \(i) v[, ind==i, drop=FALSE])
+			v <- lapply(uin, function(i) v[, ind==i, drop=FALSE])
 			v <- parallel::parLapply(cores, v, pfun, ...)
 			v <- do.call(cbind, v)
 			writeValues(out, v, b$row[i], b$nrows[i])

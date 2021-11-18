@@ -69,7 +69,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	expected <- test$nl * ncx
 
 	if (doclust) {
-		cfun <- \(i, ...)  do.call(fun, i, ...)
+		cfun <- function(i, ...)  do.call(fun, i, ...)
 		parallel::clusterExport(cores, "cfun", environment())
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, dataframe=TRUE)

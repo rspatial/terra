@@ -166,15 +166,15 @@ function(x, w=3, intercept=FALSE, na.rm=TRUE, fillvalue=NA, expand=FALSE, filena
 	outnl <- 1 + isTRUE(intercept)	
 	if (na.rm) {
 		if (outnl == 2) {
-			fun = \(x, y) try(intslopenarm(x, y), silent=TRUE)
+			fun = function(x, y) try(intslopenarm(x, y), silent=TRUE)
 		} else {
-			fun = \(x, y) try(slopenarm(x, y), silent=TRUE)		
+			fun = function(x, y) try(slopenarm(x, y), silent=TRUE)		
 		}
 	} else {
 		if (outnl == 2) {
-			fun = \(x, y) try(intslope(x, y), silent=TRUE)
+			fun = function(x, y) try(intslope(x, y), silent=TRUE)
 		} else {
-			fun = \(x, y) try(slope(x, y), silent=TRUE)		
+			fun = function(x, y) try(slope(x, y), silent=TRUE)		
 		}
 	}
 	if (!is.numeric(w)) {
