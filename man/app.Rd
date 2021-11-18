@@ -28,7 +28,7 @@ You can also apply a function \code{fun} across datasets by layer of a \code{Spa
   \item{x}{SpatRaster or SpatRasterDataset}
   \item{fun}{a function that operates on a vector or matrix. This can be a function that is defined in base-R or in a package, or a function you write yourself (see examples). Functions that return complex output (e.g. a list) may need to be wrapped in your own function to simplify the output to a vector or matrix. The following functions have been re-implemented in C++ for speed: "sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first". To use the base-R function for say, "min", you could use something like \code{fun=function(i) min(i)} or the equivalent \code{fun = \(i) min(i)}}
   \item{...}{additional arguments for \code{fun}. These are typically numerical constants. They should *never* be another SpatRaster}  
-  \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. Ignored for functions that are implemented by terra in C++ (see under fun)}
+  \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object. Ignored for functions that are implemented by terra in C++ (see under fun)}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}

@@ -63,7 +63,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	}
 	if (is.list(r)) {
 		if (length(unique(sapply(r, length))) >  1) {
-			error("app", "'fun' returns a list (should be numeric or matrix).\nPerhaps because returned values have different lenghts due to NAs in input?")
+			error("app", "'fun' returns a list (should be numeric or matrix).\nPerhaps because returned values have different lengths due to NAs in input?")
 		} else {
 			error("app", "'fun' returns a list (should be numeric or matrix)")
 		}
@@ -91,19 +91,27 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			nlyr(out) <- length(r) / nc
 		}
 	}
-	
-	nc <- nlyr(x) / nlyr(out)
-	nc <- ifelse(nc > 1, ceil(nc), 1) * 3 
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc)
 
-	if (cores > 1) {
-		cls <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cls))
+	doclust <- FALSE
+	if (inherits(cores, "cluster")) {
+		doclust <- TRUE
+		ncores <- length(cores)				
+	} else if (cores > 1) {
+		doclust <- TRUE
+		ncores <- cores	
+		cores <- parallel::makeCluster(cores)
+		on.exit(parallel::stopCluster(cores), add=TRUE)	
+	}
+	
+	ncops <- nlyr(x) / nlyr(out)
+	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4 
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops)
+
+	if (doclust) {
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
-			icsz <- max(min(100, ceiling(b$nrows[i] / cores)), b$nrows[i])
-			
-			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
+			icsz <- max(min(100, ceiling(b$nrows[i] / ncores)), b$nrows[i])
+			r <- parallel::parRapply(cores, v, fun, ..., chunk.size=icsz)
 			if (nlyr(out) > 1) {
 				r <- matrix(r, ncol=nlyr(out), byrow=TRUE)
 			}
@@ -246,13 +254,13 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
 	
-	nc <- (nlyr(x[1]) * lenght(x)) / nlyr(out)
+	nc <- (nlyr(x[1]) * length(x)) / nlyr(out)
 	nc <- ifelse(nc > 1, ceil(nc), 1) * 3 
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc)
 
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cls))
+		on.exit(parallel::stopCluster(cls), add=TRUE)
 		for (i in 1:b$n) {
 			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
 			v <- do.call(cbind, v)
