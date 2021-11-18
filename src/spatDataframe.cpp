@@ -240,9 +240,11 @@ void SpatDataFrame::resize_rows(unsigned n) {
 
 void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
 	if (r.size() == 0) return;
-	sort(r.begin(), r.end(), std::greater<unsigned>());
+	//sort(r.begin(), r.end(), std::greater<unsigned>());
+	sort(r.begin(), r.end());
 	r.erase(std::unique(r.begin(), r.end()), r.end());
-	
+	std::reverse(r.begin(), r.end());
+		
 	for (size_t j=0; j<r.size(); j++) {
 		for (size_t i=0; i<dv.size(); i++) {
 			dv[i].erase(dv[i].begin() + r[j]);
