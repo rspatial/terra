@@ -1,3 +1,11 @@
+# version 1.4-21
+
+## bug fixes
+
+- `app` grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson 
+- `terra` now installs, again, with older versions of GEOS [#406](https://github.com/rspatial/terra/pull/406) by fparyani
+
+
 # version 1.4-20
 
 ## bug fixes

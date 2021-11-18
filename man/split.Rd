@@ -10,7 +10,7 @@
 \title{Split}
 
 \description{ 
-Split a SpatVector}
+Split a SpatVector or SpatRaster}
 
 \usage{
 \S4method{split}{SpatRaster}(x, f)

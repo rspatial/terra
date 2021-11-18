@@ -5,6 +5,17 @@
 #	}
 #)
 
+
+setMethod("as.vector", signature(x="SpatVector"), 
+	function(x, mode="any") {
+		if (nrow(x) > 0) {
+			lapply(1:nrow(x), \(i) x[i,])
+		} else {
+			x
+		}
+	}
+)
+
 setMethod("vect", signature(x="missing"), 
 	function(x) {
 		p <- methods::new("SpatVector")
