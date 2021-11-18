@@ -64,7 +64,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 		if (isTRUE(nrow(test) > 1)) {
 			transp <- TRUE
 			nms <- rownames(test)
-		} else if (ncol(test) > 1) {
+		} else if (isTRUE(ncol(test) > 1)) {
 			nms <- rownames(test)
 		}
 		
