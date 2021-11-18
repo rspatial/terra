@@ -6,6 +6,10 @@
 - `terra` now installs, again, with older versions of GEOS [#406](https://github.com/rspatial/terra/pull/406) by fparyani
 
 
+## enhancements 
+
+- `lapp` and `tapp` now have a `cores` argument (as do `app` and `predict`). Suggested by Dongdong Kong [#365](https://github.com/rspatial/terra/pull/365)
+
 # version 1.4-20
 
 ## bug fixes
