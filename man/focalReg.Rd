@@ -11,7 +11,7 @@ Calculate the slope and intercept for a focal ("moving window") two variable (la
 }
 
 \usage{
-\S4method{focalReg}{SpatRaster}(x, w=3, intercept=TRUE, na.rm=TRUE,  
+\S4method{focalReg}{SpatRaster}(x, w=3, intercept=FALSE, na.rm=TRUE,  
 		fillvalue=NA, expand=FALSE, filename="", ...) 
 }
 

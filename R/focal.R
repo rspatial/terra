@@ -105,7 +105,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 					v[j] <- vv[j]
 				}
 				if (nl > 1) {
-					if (nlout > 1) {
+					if (outnl > 1) {
 						vv <- rbind(vv, v)
 					} else {
 						vv <- c(vv, v)
