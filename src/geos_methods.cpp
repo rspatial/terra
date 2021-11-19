@@ -886,6 +886,7 @@ SpatVector SpatVector::intersect(SpatVector v) {
 	size_t nx = size();
 	size_t ny = v.size();
 	std::vector<unsigned> idx, idy;
+	std::vector<long> ids;
 	idx.reserve(nx);
 	idy.reserve(ny);
 
@@ -913,6 +914,7 @@ SpatVector SpatVector::intersect(SpatVector v) {
 		
 	} else {
 		
+		long k = 0;
 		for (size_t i = 0; i < nx; i++) {
 			for (size_t j = 0; j < ny; j++) {
 				GEOSGeometry* geom = GEOSIntersection_r(hGEOSCtxt, x[i].get(), y[j].get());
@@ -925,6 +927,8 @@ SpatVector SpatVector::intersect(SpatVector v) {
 					result.push_back(geos_ptr(geom, hGEOSCtxt));
 					idx.push_back(i);
 					idy.push_back(j);
+					ids.push_back(k);
+					k++;
 				} else {
 					GEOSGeom_destroy_r(hGEOSCtxt, geom);
 				}
@@ -932,7 +936,7 @@ SpatVector SpatVector::intersect(SpatVector v) {
 		}
 	//SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 		if (result.size() > 0) {
-			SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+			SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
 			out = coll.get(0);
 			out.srs = srs;
 		}
@@ -950,8 +954,22 @@ SpatVector SpatVector::intersect(SpatVector v) {
 		out.srs = srs;
 	}
 
-	SpatDataFrame df1 = df.subset_rows(idx);
-	SpatDataFrame df2 = v.df.subset_rows(idy);
+	SpatDataFrame df1, df2;
+	size_t n = out.nrow();
+	if (n < idx.size()) {
+		std::vector<unsigned> idx2, idy2;
+		idx2.reserve(n);
+		idy2.reserve(n);
+		for (size_t i=0; i<n; i++) {
+			idx2.push_back( idx[ out.df.iv[0][i] ]);
+			idy2.push_back( idy[ out.df.iv[0][i] ]);
+		}
+		df1 = df.subset_rows(idx2);
+		df2 = v.df.subset_rows(idy2);
+	} else {
+		df1 = df.subset_rows(idx);
+		df2 = v.df.subset_rows(idy);
+	}
 	if (!df1.cbind(df2)) {
 		out.addWarning("could not combine attributes");
 	}
