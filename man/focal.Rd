@@ -11,8 +11,8 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 }
 
 \usage{
-\S4method{focal}{SpatRaster}(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, 
-		fillvalue=NA, expand=FALSE, filename="", ...) 
+\S4method{focal}{SpatRaster}(x, w=3, fun="sum", ..., na.only=FALSE, 
+		fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 }
 
 \arguments{
@@ -20,9 +20,9 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
   
 \item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See Details.}
 
-\item{fun}{function that takes multiple numbers, and returns a numeric vector (one or multiple numbers). For example mean, modal, min or max. It should also accept a \code{na.rm} argument, either as actual argument or through use of \code{...}}
+\item{fun}{function that takes multiple numbers, and returns a numeric vector (one or multiple numbers). For example mean, modal, min or max}
 
-\item{na.rm}{logical. Should missing values be removed?}
+\item{...}{additional arguments passed to \code{fun} such as \code{na.rm}}
 
 \item{na.only}{logical. Should only missing values in \code{x} be changed?}
 
@@ -31,7 +31,8 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 \item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
 
 \item{filename}{character. Output filename}
-\item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+
+\item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \details{
