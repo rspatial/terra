@@ -132,7 +132,7 @@ See focal for an easier to use method." />
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>focalCpp</span><span class='op'>(</span><span class='va'>x</span>, w<span class='op'>=</span><span class='fl'>3</span>, <span class='va'>fun</span>, <span class='va'>...</span>, fillvalue<span class='op'>=</span><span class='cn'>NA</span>, 
-    expand<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    expand<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, overwrite<span class='op'>=</span><span class='cn'>FALSE</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,7 +147,7 @@ See focal for an easier to use method." />
     </tr>
     <tr>
       <th>fun</th>
-      <td><p><code>cppFunction</code> that iterates over cells. For C++ functions that operate on a single focal window, or for R functions use <code><a href='focal.html'>focal</a></code> instead. The function must have at least three arguments. The first argument can have any name, but it must be a NumericVector or std::vector&lt;double&gt; and gets the focal values. The other two arguments <code>ni</code> and <code>wi</code> must be of type <code>size_t</code></p></td>
+      <td><p><code>cppFunction</code> that iterates over cells. For C++ functions that operate on a single focal window, or for R functions use <code><a href='focal.html'>focal</a></code> instead. The function must have at least three arguments. The first argument can have any name, but it must be a NumericVector or std::vector&lt;double&gt; and gets the focal values. The other two arguments <code>ni</code> and <code>wi</code> must be of type <code>size_t</code>. <code>ni</code> represents the number of cells and <code>nw</code> represents the size of (number of elements in) the window</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -182,7 +182,7 @@ See focal for an easier to use method." />
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.rcpp.org'>Rcpp</a></span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/pkg/Rcpp/man/cppFunction.html'>cppFunction</a></span><span class='op'>(</span> 
-  <span class='st'>'NumericVector summult(NumericVector x, double m, size_t ni, size_t nw) {
+  <span class='st'>'NumericVector sum_and_multiply(NumericVector x, double m, size_t ni, size_t nw) {
 
     NumericVector out(ni, NAN);
     if (std::isnan(m)){
@@ -203,7 +203,7 @@ See focal for an easier to use method." />
 <span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='va'>nc</span>, nrows<span class='op'>=</span><span class='va'>nr</span>, ext<span class='op'>=</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='va'>nc</span>, <span class='fl'>0</span>, <span class='va'>nr</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
 
-<span class='va'>raw</span> <span class='op'>&lt;-</span> <span class='fu'>focalCpp</span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>summult</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span>, m<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>raw</span> <span class='op'>&lt;-</span> <span class='fu'>focalCpp</span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>sum_and_multiply</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span>, m<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># same as</span>
 <span class='va'>foc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='focal.html'>focal</a></span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>sum</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='op'>*</span><span class='fl'>10</span>
