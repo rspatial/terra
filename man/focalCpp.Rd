@@ -46,17 +46,13 @@ See \code{\link{focal}} for an easier to use method.
 library(Rcpp)
 cppFunction( 
 	'NumericVector sum_and_multiply(NumericVector x, double m, size_t ni, size_t nw) {
-
-		NumericVector out(ni, NAN);
-		if (std::isnan(m)){
-			return out;
-		}
+		NumericVector out(ni);
+		// loop over cells
 		for (size_t i=0; i<ni; i++) {
+			// compute something for a window
 			size_t start = i*nw;
-			size_t end = start+nw;
-			double value = std::accumulate(x.begin()+start, x.begin()+end, 0.0);
-			value *= m;
-			out[i] = value;
+			double value = std::accumulate(x.begin()+start, x.begin()+start+nw, 0.0);
+			out[i] = value * m;
 		}		
 		return out;
 	}'

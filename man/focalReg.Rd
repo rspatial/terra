@@ -4,7 +4,7 @@
 \alias{focalReg,SpatRaster-method}
 
 
-\title{Focal values}
+\title{Focal regression}
 
 \description{
 Calculate the slope and intercept for a focal ("moving window") two variable (layer) OLS regression model. 
