@@ -166,6 +166,10 @@ See focal for an easier to use method." />
       <td><p>character. Output filename</p></td>
     </tr>
     <tr>
+      <th>overwrite</th>
+      <td><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></td>
+    </tr>
+    <tr>
       <th>wopt</th>
       <td><p>additional arguments for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code></p></td>
     </tr>
@@ -206,8 +210,13 @@ See focal for an easier to use method." />
 <span class='va'>raw</span> <span class='op'>&lt;-</span> <span class='fu'>focalCpp</span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>sum_and_multiply</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span>, m<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># same as</span>
-<span class='va'>foc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='focal.html'>focal</a></span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>sum</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='op'>*</span><span class='fl'>10</span>
-<span class='fu'><a href='https://rdrr.io/r/base/all.html'>all</a></span><span class='op'>(</span><span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>foc</span><span class='op'>)</span> <span class='op'>==</span> <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>raw</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>f1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='focal.html'>focal</a></span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>sum</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='op'>*</span><span class='fl'>10</span>
+<span class='fu'><a href='https://rdrr.io/r/base/all.html'>all</a></span><span class='op'>(</span><span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>f1</span><span class='op'>)</span> <span class='op'>==</span> <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>raw</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># and as</span>
+<span class='va'>ffun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>m</span><span class='op'>)</span> <span class='op'>{</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>m</span> <span class='op'>}</span>
+<span class='va'>f2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='focal.html'>focal</a></span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>ffun</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span>, m<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
+
 <span class='op'>}</span>
 </div></pre>
   </div>
