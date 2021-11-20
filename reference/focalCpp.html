@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Focal values — focalReg • terra</title>
+<title>Compute focal values with an iterating C++ function — focalCpp • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Focal values — focalReg" />
-<meta property="og:description" content="Calculate the slope and intercept for a focal (&quot;moving window&quot;) two variable (layer) OLS regression model." />
+<meta property="og:title" content="Compute focal values with an iterating C++ function — focalCpp" />
+<meta property="og:description" content="Calculate focal values with a C++ function that iterates over cells.
+See focal for an easier to use method." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -119,37 +120,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Focal values</h1>
+    <h1>Compute focal values with an iterating C++ function</h1>
     
-    <div class="hidden name"><code>focalReg.Rd</code></div>
+    <div class="hidden name"><code>focalCpp.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate the slope and intercept for a focal ("moving window") two variable (layer) OLS regression model.</p>
+    <p>Calculate focal values with a C++ function that iterates over cells.</p>
+<p>See <code><a href='focal.html'>focal</a></code> for an easier to use method.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>focalReg</span><span class='op'>(</span><span class='va'>x</span>, w<span class='op'>=</span><span class='fl'>3</span>, intercept<span class='op'>=</span><span class='cn'>FALSE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span>,  
-    fillvalue<span class='op'>=</span><span class='cn'>NA</span>, expand<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>focalCpp</span><span class='op'>(</span><span class='va'>x</span>, w<span class='op'>=</span><span class='fl'>3</span>, <span class='va'>fun</span>, <span class='va'>...</span>, fillvalue<span class='op'>=</span><span class='cn'>NA</span>, 
+    expand<span class='op'>=</span><span class='cn'>FALSE</span>, filename<span class='op'>=</span><span class='st'>""</span>, wopt<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatRaster with two layers. The first is the "x" (independent) and the second the "y" (dependent) variable</p></td>
+      <td><p>SpatRaster</p></td>
     </tr>
     <tr>
       <th>w</th>
       <td><p>window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in <code><a href='focal.html'>focal</a></code></p></td>
     </tr>
     <tr>
-      <th>intercept</th>
-      <td><p>logical. If <code>TRUE</code>, the intercept and the slope are returned, otherwise only the slope is returned</p></td>
+      <th>fun</th>
+      <td><p><code>cppFunction</code> that iterates over cells. For C++ functions that operate on a single focal window, or for R functions use <code><a href='focal.html'>focal</a></code> instead. The function must have at least three arguments. The first argument can have any name, but it must be a NumericVector or std::vector&lt;double&gt; and gets the focal values. The other two arguments <code>ni</code> and <code>wi</code> must be of type <code>size_t</code></p></td>
     </tr>
     <tr>
-      <th>na.rm</th>
-      <td><p>logical. Should missing values be removed?</p></td>
+      <th>...</th>
+      <td><p>additional arguments to <code>fun</code></p></td>
     </tr>
     <tr>
       <th>fillvalue</th>
@@ -164,7 +166,7 @@
       <td><p>character. Output filename</p></td>
     </tr>
     <tr>
-      <th>...</th>
+      <th>wopt</th>
       <td><p>additional arguments for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code></p></td>
     </tr>
     </table>
@@ -177,10 +179,36 @@
     <div class='dont-index'><p><code><a href='focal.html'>focal</a></code>, <code><a href='focalValues.html'>focalValues</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='fl'>10</span>, nrows<span class='op'>=</span><span class='fl'>10</span>, <span class='fu'><a href='ext.html'>ext</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://www.rcpp.org'>Rcpp</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/Rcpp/man/cppFunction.html'>cppFunction</a></span><span class='op'>(</span> 
+  <span class='st'>'NumericVector summult(NumericVector x, double m, size_t ni, size_t nw) {
+
+    NumericVector out(ni, NAN);
+    if (std::isnan(m)){
+      return out;
+    }
+    for (size_t i=0; i&lt;ni; i++) {
+      size_t start = i*nw;
+      size_t end = start+nw;
+      double value = std::accumulate(x.begin()+start, x.begin()+end, 0.0);
+      value *= m;
+      out[i] = value;
+    }    
+    return out;
+  }'</span>
+<span class='op'>)</span>
+
+<span class='va'>nr</span> <span class='op'>&lt;-</span> <span class='va'>nc</span> <span class='op'>&lt;-</span> <span class='fl'>10</span>
+<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>ncols<span class='op'>=</span><span class='va'>nc</span>, nrows<span class='op'>=</span><span class='va'>nr</span>, ext<span class='op'>=</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='va'>nc</span>, <span class='fl'>0</span>, <span class='va'>nr</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='dimensions.html'>ncell</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>runif</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>r</span><span class='op'>)</span>
-<span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'>focalReg</span><span class='op'>(</span><span class='va'>x</span>, <span class='fl'>3</span>, intercept<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+
+<span class='va'>raw</span> <span class='op'>&lt;-</span> <span class='fu'>focalCpp</span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>summult</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span>, m<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
+
+<span class='co'># same as</span>
+<span class='va'>foc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='focal.html'>focal</a></span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>sum</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='op'>*</span><span class='fl'>10</span>
+<span class='fu'><a href='https://rdrr.io/r/base/all.html'>all</a></span><span class='op'>(</span><span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>foc</span><span class='op'>)</span> <span class='op'>==</span> <span class='fu'><a href='values.html'>values</a></span><span class='op'>(</span><span class='va'>raw</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
