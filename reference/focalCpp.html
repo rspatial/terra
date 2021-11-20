@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Compute focal values with an iterating C++ function — focalCpp" />
-<meta property="og:description" content="Calculate focal values with a C++ function that iterates over cells.
+<meta property="og:description" content="Calculate focal values with a C++ function that iterates over cells to speed up computations by avoiding an R loop (with apply).
 See focal for an easier to use method." />
 <meta property="og:image" content="/logo.png" />
 
@@ -126,7 +126,7 @@ See focal for an easier to use method." />
     </div>
 
     <div class="ref-description">
-    <p>Calculate focal values with a C++ function that iterates over cells.</p>
+    <p>Calculate focal values with a C++ function that iterates over cells to speed up computations by avoiding an R loop (with apply).</p>
 <p>See <code><a href='focal.html'>focal</a></code> for an easier to use method.</p>
     </div>
 
@@ -212,6 +212,21 @@ See focal for an easier to use method." />
 <span class='co'># and as</span>
 <span class='va'>ffun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>m</span><span class='op'>)</span> <span class='op'>{</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>m</span> <span class='op'>}</span>
 <span class='va'>f2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='focal.html'>focal</a></span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>ffun</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span>, m<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
+
+
+<span class='co'># You can also use an R function with focalCpp but this</span>
+<span class='co'># is not recommended </span>
+
+<span class='va'>R_sm_iter</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>m</span>, <span class='va'>ni</span>, <span class='va'>nw</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='va'>out</span> <span class='op'>&lt;-</span> <span class='cn'>NULL</span>
+  <span class='kw'>for</span> <span class='op'>(</span><span class='va'>i</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='va'>ni</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='va'>start</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>i</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>nw</span> <span class='op'>+</span> <span class='fl'>1</span>
+    <span class='va'>out</span><span class='op'>[</span><span class='va'>i</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>[</span><span class='va'>start</span><span class='op'>:</span><span class='op'>(</span><span class='va'>start</span><span class='op'>+</span><span class='va'>nw</span><span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>*</span> <span class='va'>m</span>
+  <span class='op'>}</span>    
+  <span class='va'>out</span>
+<span class='op'>}</span>
+
+<span class='va'>fr</span> <span class='op'>&lt;-</span> <span class='fu'>focalCpp</span><span class='op'>(</span><span class='va'>r</span>, w<span class='op'>=</span><span class='fl'>3</span>, fun<span class='op'>=</span><span class='va'>R_sm_iter</span>, fillvalue<span class='op'>=</span><span class='fl'>0</span>, m<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
 
 <span class='op'>}</span>
 </div></pre>

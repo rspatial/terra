@@ -126,6 +126,14 @@
 <h1 class="page-header" data-toc-text="1.4-21">
 <a href="#version-14-21" class="anchor"></a>version 1.4-21<small> Unreleased </small>
 </h1>
+<div id="changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes" class="anchor"></a>changes</h2>
+<ul>
+<li>
+<code>focal</code> now has ellipses (<code>...</code>) to allow for providing additional arguments to <code>fun</code>. For this reason it does not have a <code>na.rm</code> argument anymore as that can be supplied via the ellipses. In practice this means that the default will be na.rm=FALSE for the standard functions such as <code>mean</code> and <code>sum</code>.</li>
+</ul>
+</div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>bug fixes</h2>
@@ -134,6 +142,8 @@
 <code>app</code> grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson</li>
 <li>
 <code>terra</code> now installs, again, with older versions of GEOS <a href="https://github.com/rspatial/terra/pull/406"><a href='https://github.com/rspatial/terra/issues/406'>#406</a></a> by fparyani</li>
+<li>
+<code>terra</code> did not install with Clang on CRAN/OSX.</li>
 </ul>
 </div>
 <div id="enhancements" class="section level2">
@@ -149,11 +159,22 @@
 <code>focal</code> can now process multiple layers in one step.</li>
 </ul>
 </div>
+<div id="new" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new" class="anchor"></a>new</h2>
+<ul>
+<li>
+<code>focalCpp</code> takes a C++ function that iterates over cells to speed up computation by avoiding <code>apply</code> (see <a href="https://github.com/rspatial/terra/pull/318"><a href='https://github.com/rspatial/terra/issues/318'>#318</a></a> by Alex).</li>
+<li>
+<code>focalReg</code> creates focal OLS regression models between layers</li>
+</ul>
+</div>
 </div>
     <div id="version-14-20" class="section level1">
 <h1 class="page-header" data-toc-text="1.4-20">
 <a href="#version-14-20" class="anchor"></a>version 1.4-20<small> 2021-11-16 </small>
 </h1>
+<p>Released on 2021-11-16</p>
 <div id="bug-fixes-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-1" class="anchor"></a>bug fixes</h2>
@@ -169,6 +190,7 @@
 <h1 class="page-header" data-toc-text="1.4-19">
 <a href="#version-14-19" class="anchor"></a>version 1.4-19<small> 2021-11-15 </small>
 </h1>
+<p>Released on 2021-11-15</p>
 <div id="bug-fixes-2" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
@@ -188,9 +210,9 @@
 <code>zonal</code> failed for user-defined functions. <a href="https://github.com/rspatial/terra/issues/393"><a href='https://github.com/rspatial/terra/issues/393'>#393</a></a> by mqueinnec</li>
 </ul>
 </div>
-<div id="new" class="section level2">
+<div id="new-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new" class="anchor"></a>new</h2>
+<a href="#new-1" class="anchor"></a>new</h2>
 <ul>
 <li>new method <code>selectHighest</code> to select n cell values of a <code>SpatRaster</code> with the highest or lowest values.</li>
 <li>new method <code>vect,list</code> to append SpatVectors (faster than <code><a href="https://rdrr.io/r/base/do.call.html">do.call(rbind, x)</a></code>)</li>
@@ -398,9 +420,9 @@
 <a href="#version-13-4" class="anchor"></a>version 1.3-4<small> 2021-06-20 </small>
 </h1>
 <p>Released on 2021-06-20</p>
-<div id="new-1" class="section level2">
+<div id="new-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-1" class="anchor"></a>new</h2>
+<a href="#new-2" class="anchor"></a>new</h2>
 <ul>
 <li>
 <code>na.omit,SpatVector-method</code> to remove empty geometries and/or attribute records that have an <code>NA</code>
@@ -469,9 +491,9 @@
 <a href="#version-12-10" class="anchor"></a>version 1.2-10<small> 2021-05-13 </small>
 </h1>
 <p>Released on 2021-05-13</p>
-<div id="new-2" class="section level2">
+<div id="new-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-2" class="anchor"></a>new</h2>
+<a href="#new-3" class="anchor"></a>new</h2>
 <ul>
 <li>
 <code>as.lines</code> method for SpatRaster</li>
@@ -553,9 +575,9 @@
 <a href="#version-12-5" class="anchor"></a>version 1.2-5<small> 2021-04-30 </small>
 </h1>
 <p>Released on 2021-04-30</p>
-<div id="new-3" class="section level2">
+<div id="new-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-3" class="anchor"></a>new</h2>
+<a href="#new-4" class="anchor"></a>new</h2>
 <ul>
 <li>
 <code>trim</code> has a new argument <code>value</code> that allows trimming rows and columns with other values than the default <code>NA</code>
