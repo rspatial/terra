@@ -5,14 +5,8 @@
 
 
 setMethod("focal", signature(x="SpatRaster"), 
-function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
+function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
-	if (na.only && (!is.matrix(w))) {
-		if (!na.rm) {
-			warn("focal", "na.rm set to TRUE because na.only is TRUE")
-			na.rm <- TRUE
-		}
-	}
 
 	if (!is.numeric(w)) {
 		error("focal", "w should be numeric vector or matrix")	
@@ -32,8 +26,9 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 	}
 
 	if (cpp) {
-		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$focal3(w, m, fillvalue, na.rm[1], na.only[1], txtfun, expand, opt)
+		opt <- spatOptions(filename, overwrite, wopt)
+		narm <- isTRUE(list(...)$na.rm)
+		x@ptr <- x@ptr$focal3(w, m, fillvalue, narm, na.only[1], txtfun, expand, opt)
 		messages(x, "focal")
 		return(x)
 
@@ -49,13 +44,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 		}
 		
 		usenarm = TRUE
-		test <- try( apply(rbind(1:prod(w)), 1, fun, na.rm=FALSE), silent=TRUE )
-		if (inherits(test, "try-error")) {
-			test <- try( apply(rbind(1:prod(w)), 1, fun), silent=TRUE )
-			if (!inherits(test, "try-error")) {
-				usenarm = FALSE
-			}
-		}
+		test <- try( apply(rbind(1:prod(w)), 1, fun, ...), silent=TRUE )
 
 		nl <- nlyr(x)
 		outnl <- nl * length(test)
@@ -72,7 +61,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 		if (!is.null(nms)) {
 			names(out) <- nms
 		}
-		b <- writeStart(out, filename, n=msz*4, ...)
+		b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
 		
 		for (i in 1:b$n) {
 			vv <- NULL
@@ -90,11 +79,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 					}
 				}
 				v <- matrix(v, ncol=msz, byrow=TRUE)
-				if (usenarm) {
-					v <- apply(v, 1, fun, na.rm=na.rm)
-				} else {
-					v <- apply(v, 1, fun)			
-				}
+				v <- apply(v, 1, fun, ...)
 				if (transp) {
 					v <- t(v)
 				}
@@ -129,7 +114,7 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 
 
 setMethod("focalCpp", signature(x="SpatRaster"), 
-function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", wopt=list())  {
+function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
 	if (!(all(c("ni", "nw") %in% names(formals(fun))))) {
 		error("focalRaw", 'fun must have an argument "ni"')
@@ -162,7 +147,7 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", wopt=list())
 	outnl <- nl * length(test)
 	
 	out <- rast(x, nlyr=outnl)
-	b <- writeStart(out, filename, n=msz*4, wopt=wopt)
+	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
 
 	nc <- ncol(out)
 	for (i in 1:b$n) {
