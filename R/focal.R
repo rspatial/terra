@@ -132,35 +132,55 @@ setMethod("focalReg", signature(x="SpatRaster"),
 function(x, w=3, intercept=FALSE, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
 	slope <- function(x, y) {
-	  v <- cbind(x, y)
-	  X <- cbind(1, v[,1])
-	  invXtX <- solve(t(X) %*% X) %*% t(X)
-	  (invXtX %*% v[,2])[2]
+		v <- cbind(x, y)
+		X <- cbind(1, v[,1])
+		XtX <- t(X) %*% X
+		if (det(XtX) == 0) {
+			return(NA)
+		}
+		invXtX <- solve(XtX) %*% t(X)
+		(invXtX %*% v[,2])[2]
 	}
 
 	slopenarm <- function(x, y) {
-	  v <- na.omit(cbind(x, y))
-	  X <- cbind(1, v[,1])
-	  invXtX <- solve(t(X) %*% X) %*% t(X)
-	  (invXtX %*% v[,2])[2]
+		v <- na.omit(cbind(x, y))
+		if (nrow(v) == 0) {
+			return(NA)
+		}
+		X <- cbind(1, v[,1])
+		XtX <- t(X) %*% X
+		if (det(XtX) == 0) {
+			return(NA)
+		}
+		invXtX <- solve(XtX) %*% t(X)
+		(invXtX %*% v[,2])[2]
 	}
 
 
 	intslope <- function(x, y) {
-	  v <- cbind(x, y)
-	  X <- cbind(1, v[,1])
-	  invXtX <- solve(t(X) %*% X) %*% t(X)
-	  (invXtX %*% v[,2])
+		v <- cbind(x, y)
+		X <- cbind(1, v[,1])
+		XtX <- t(X) %*% X
+		if (det(XtX) == 0) {
+			return(NA)
+		}
+		invXtX <- solve(XtX) %*% t(X)
+		invXtX %*% v[,2]
 	}
 
 	intslopenarm <- function(x, y) {
-	  v <- na.omit(cbind(x, y))
-	  X <- cbind(1, v[,1])
-	  invXtX <- solve(t(X) %*% X) %*% t(X)
-	  (invXtX %*% v[,2])
+		v <- na.omit(cbind(x, y))
+		if (nrow(v) == 0) {
+			return(NA)
+		}
+		X <- cbind(1, v[,1])
+		XtX <- t(X) %*% X
+		if (det(XtX) == 0) {
+			return(NA)
+		}
+		invXtX <- solve(XtX) %*% t(X)
+		invXtX %*% v[,2]
 	}
-
-
 
 	if (nlyr(x) != 2) error("focalReg", "x must have 2 layers")
 	outnl <- 1 + isTRUE(intercept)	
