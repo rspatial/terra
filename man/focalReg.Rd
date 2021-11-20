@@ -7,7 +7,7 @@
 \title{Focal values}
 
 \description{
-Calculate the slope and intercept for a focal ("moving window") two variable (layer) regression model. 
+Calculate the slope and intercept for a focal ("moving window") two variable (layer) OLS regression model. 
 }
 
 \usage{

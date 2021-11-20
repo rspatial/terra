@@ -1,0 +1,78 @@
+\name{focalCpp}
+
+\alias{focalCpp}
+\alias{focalCpp,SpatRaster-method}
+
+
+\title{Compute focal values with an iterating C++ function}
+
+\description{
+Calculate focal values with a C++ function that iterates over cells.
+
+See \code{\link{focal}} for an easier to use method. 
+}
+
+\usage{
+\S4method{focalCpp}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
+		expand=FALSE, filename="", wopt=list())
+}
+
+\arguments{
+\item{x}{SpatRaster}
+\item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}}
+
+\item{fun}{\code{\link{cppFunction}} that iterates over cells. For C++ functions that operate on a single focal window, or for R functions use \code{\link{focal}} instead. The function must have at least three arguments. The first argument can have any name, but it must be a NumericVector or std::vector<double> and gets the focal values. The other two arguments \code{ni} and \code{wi} must be of type \code{size_t}}
+
+\item{...}{additional arguments to \code{fun}}
+
+\item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
+
+\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
+
+\item{filename}{character. Output filename}
+
+\item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
+}
+
+\value{SpatRaster}
+
+
+\seealso{ \code{\link{focal}}, \code{\link{focalValues}} }
+
+
+\examples{
+\dontrun{
+library(Rcpp)
+cppFunction( 
+	'NumericVector summult(NumericVector x, double m, size_t ni, size_t nw) {
+
+		NumericVector out(ni, NAN);
+		if (std::isnan(m)){
+			return out;
+		}
+		for (size_t i=0; i<ni; i++) {
+			size_t start = i*nw;
+			size_t end = start+nw;
+			double value = std::accumulate(x.begin()+start, x.begin()+end, 0.0);
+			value *= m;
+			out[i] = value;
+		}		
+		return out;
+	}'
+)
+
+nr <- nc <- 10
+r <- rast(ncols=nc, nrows=nr, ext= c(0, nc, 0, nr))
+values(r) <- 1:ncell(r)
+
+raw <- focalCpp(r, w=3, fun=summult, fillvalue=0, m=10)
+
+# same as
+foc <- focal(r, w=3, fun=sum, fillvalue=0) *10
+all(values(foc) == values(raw))
+}
+}
+
+
+\keyword{spatial}
+

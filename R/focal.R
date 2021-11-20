@@ -112,6 +112,9 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 					}
 				}
 			}
+			#if (bip) {
+			#	v <- matrix(as.vector(v), ncol=ncol(v), byrow=TRUE)
+			#}
 			if (nl > 1) {
 				writeValues(out, vv, b$row[i], b$nrows[i])
 			} else {
@@ -124,6 +127,78 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 }
 )
 
+
+setMethod("focalCpp", signature(x="SpatRaster"), 
+function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", wopt=list())  {
+
+	if (!(all(c("ni", "nw") %in% names(formals(fun))))) {
+		error("focalRaw", 'fun must have an argument "ni"')
+	}
+
+	if (!is.numeric(w)) {
+		error("focal", "w should be numeric vector or matrix")	
+	}
+	if (is.matrix(w)) {
+		m <- as.vector(t(w))
+		w <- dim(w)
+	} else {
+		w <- rep_len(w, 2)
+		stopifnot(all(w > 0))
+		m <- rep(1, prod(w))
+	}
+
+	msz <- prod(w)
+	readStart(x)
+	on.exit(readStop(x))
+	dow <- !isTRUE(all(m == 1))
+	if (any(is.na(m))) {
+		k <- !is.na(m)
+		mm <- m[k]
+		msz <- sum(k)
+	}
+
+	test <- fun(1:msz, ..., ni=1, nw=msz)
+	nl <- nlyr(x)
+	outnl <- nl * length(test)
+	
+	out <- rast(x, nlyr=outnl)
+	b <- writeStart(out, filename, n=msz*4, wopt=wopt)
+
+	nc <- ncol(out)
+	for (i in 1:b$n) {
+		vv <- NULL
+		for (j in 1:nl) {
+			if (nl > 1) {
+				v <- x[[j]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+			} else {
+				v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+			}
+			if (dow) {
+				if (any(is.na(m))) {
+					v <- v[k] * mm
+				} else {
+					v <- v * m
+				}
+			}
+			v <- fun(v, ..., ni=b$nrows[i]*nc, nw=msz)	
+			if (nl > 1) {
+				if (outnl > 1) {
+					vv <- rbind(vv, v)
+				} else {
+					vv <- c(vv, v)
+				}
+			}
+		}
+		if (nl > 1) {
+			writeValues(out, vv, b$row[i], b$nrows[i])
+		} else {
+			writeValues(out, v, b$row[i], b$nrows[i])			
+		}
+	}
+	out <- writeStop(out)
+	return(out)
+}
+)
 
 
 
