@@ -31,6 +31,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 \item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
 
 \item{filename}{character. Output filename}
+\item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
 
 \item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

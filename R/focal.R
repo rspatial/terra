@@ -44,7 +44,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 		}
 		
 		usenarm = TRUE
-		test <- try( apply(rbind(1:prod(w)), 1, fun, ...), silent=TRUE )
+		test <- apply(rbind(1:prod(w)), 1, fun, ...)
 
 		nl <- nlyr(x)
 		outnl <- nl * length(test)

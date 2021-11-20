@@ -30,6 +30,7 @@ See \code{\link{focal}} for an easier to use method.
 \item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
 
 \item{filename}{character. Output filename}
+\item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
 
 \item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
@@ -68,8 +69,13 @@ values(r) <- 1:ncell(r)
 raw <- focalCpp(r, w=3, fun=sum_and_multiply, fillvalue=0, m=10)
 
 # same as
-foc <- focal(r, w=3, fun=sum, fillvalue=0) *10
-all(values(foc) == values(raw))
+f1 <- focal(r, w=3, fun=sum, fillvalue=0) *10
+all(values(f1) == values(raw))
+
+# and as
+ffun <- function(x, m) { sum(x) * m }
+f2 <- focal(r, w=3, fun=ffun, fillvalue=0, m=10)
+
 }
 }
 
