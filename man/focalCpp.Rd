@@ -7,7 +7,7 @@
 \title{Compute focal values with an iterating C++ function}
 
 \description{
-Calculate focal values with a C++ function that iterates over cells.
+Calculate focal values with a C++ function that iterates over cells to speed up computations by avoiding an R loop (with apply).
 
 See \code{\link{focal}} for an easier to use method. 
 }
@@ -71,6 +71,21 @@ all(values(f1) == values(raw))
 # and as
 ffun <- function(x, m) { sum(x) * m }
 f2 <- focal(r, w=3, fun=ffun, fillvalue=0, m=10)
+
+
+# You can also use an R function with focalCpp but this
+# is not recommended 
+
+R_sm_iter <- function(x, m, ni, nw) {
+	out <- NULL
+	for (i in 1:ni) {
+		start <- (i-1) * nw + 1
+		out[i] <- sum(x[start:(start+nw-1)]) * m
+	}		
+	out
+}
+
+fr <- focalCpp(r, w=3, fun=R_sm_iter, fillvalue=0, m=10)
 
 }
 }

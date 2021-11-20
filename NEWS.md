@@ -1,9 +1,14 @@
 # version 1.4-21
 
+## changes 
+- `focal` now has ellipses (`...`) to allow for providing additional arguments to `fun`. For this reason it does not have a `na.rm` argument anymore as that can be supplied via the ellipses. In practice this means that the default will be na.rm=FALSE for the standard functions such as `mean` and `sum`.
+
+
 ## bug fixes
 
 - `app` grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson 
 - `terra` now installs, again, with older versions of GEOS [#406](https://github.com/rspatial/terra/pull/406) by fparyani
+- `terra` did not install with Clang on CRAN/OSX.
 
 
 ## enhancements 
@@ -12,8 +17,16 @@
 - `focal` now also works with a function that returns multiple values (see [#318](https://github.com/rspatial/terra/pull/318) by Alex). 
 - `focal` can now process multiple layers in one step. 
 
+## new 
+
+- `focalCpp` takes a C++ function that iterates over cells to speed up computation by avoiding `apply` (see [#318](https://github.com/rspatial/terra/pull/318) by Alex). 
+- `focalReg` creates focal OLS regression models between layers 
+
+
 
 # version 1.4-20
+
+Released on 2021-11-16
 
 ## bug fixes
 
@@ -22,6 +35,8 @@
 
 
 # version 1.4-19
+
+Released on 2021-11-15
 
 ## bug fixes
 
