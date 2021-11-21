@@ -704,6 +704,11 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	if (narm) {
 		usemask = true;
 		mask = tmp.isfinite(topt);	
+		if (!tmp.sources_from_file()) {
+			if (mask.sources_from_file()) {
+				mask.readAll();				
+			}
+		}
 	} else if (trunc) {
 		tmp = tmp.math("trunc", topt);
 		trunc = false;
@@ -739,15 +744,17 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 #endif
 
 	GDALDataset *maskDS=NULL;
+	GDALDatasetH rstMask;
 	if (usemask) {
-		GDALDatasetH rstMask;
 		if (! mask.sources_from_file() ) {
 			if (!mask.open_gdal(rstMask, 0, false, opt)) {
 				out.setError("cannot open dataset");
 				return out;
 			}
 		} else {
-			rstMask = openGDAL(mask.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, mask.source[0].open_ops);
+			//rstMask = openGDAL(mask.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, mask.source[0].open_ops);
+			std::vector<std::string> ops;
+			rstMask = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, ops);
 
 			//std::string filename = mask.source[0].filename;
 			//rstMask = GDALOpen( filename.c_str(), GA_ReadOnly);
@@ -766,12 +773,12 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
     GDALDataset *poDS = NULL;
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
     if( poDriver == NULL )  {
-        out.setError( "cannot create output dataset");
+        out.setError( "cannot create output driver");
         return out;
     }
     poDS = poDriver->Create("", 0, 0, 0, GDT_Unknown, NULL );
     if( poDS == NULL ) {
-        out.setError("Creation of dataset failed" );
+        out.setError("Creation of output dataset failed" );
         return out;
     }
 	std::vector<std::string> nms = getNames();
@@ -811,7 +818,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 
 	CPLErr err;
 	if (usemask) {
-		GDALRasterBand  *maskBand;
+		GDALRasterBand *maskBand;
 		maskBand = maskDS->GetRasterBand(1);
 		if (trunc) {
 			err = GDALPolygonize(poBand, maskBand, poLayer, 0, NULL, NULL, NULL);
