@@ -189,74 +189,36 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 
 
 setMethod("focalReg", signature(x="SpatRaster"), 
-function(x, w=3, intercept=FALSE, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
+function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
-	slope <- function(x, y) {
-		v <- cbind(x, y)
-		X <- cbind(1, v[,1])
+	ols <- function(x, y) {
+		v <- cbind(y, x)
+		X <- cbind(1, v[,-1])
 		XtX <- t(X) %*% X
 		if (det(XtX) == 0) {
 			return(NA)
 		}
 		invXtX <- solve(XtX) %*% t(X)
-		(invXtX %*% v[,2])[2]
+		invXtX %*% v[,1]
 	}
 
-	slopenarm <- function(x, y) {
-		v <- na.omit(cbind(x, y))
-		if (nrow(v) == 0) {
+	ols_narm <- function(x, y) {
+		v <- na.omit(cbind(y, x))
+		if (nrow(v) < (ncol(x) + 1)) {
 			return(NA)
 		}
-		X <- cbind(1, v[,1])
+		X <- cbind(1, v[,-1])
 		XtX <- t(X) %*% X
 		if (det(XtX) == 0) {
 			return(NA)
 		}
 		invXtX <- solve(XtX) %*% t(X)
-		(invXtX %*% v[,2])[2]
+		invXtX %*% v[,1]
 	}
 
+	nl <- nlyr(x)
+	if (nl < 2) error("focalReg", "x must have at least 2 layers")
 
-	intslope <- function(x, y) {
-		v <- cbind(x, y)
-		X <- cbind(1, v[,1])
-		XtX <- t(X) %*% X
-		if (det(XtX) == 0) {
-			return(NA)
-		}
-		invXtX <- solve(XtX) %*% t(X)
-		invXtX %*% v[,2]
-	}
-
-	intslopenarm <- function(x, y) {
-		v <- na.omit(cbind(x, y))
-		if (nrow(v) == 0) {
-			return(NA)
-		}
-		X <- cbind(1, v[,1])
-		XtX <- t(X) %*% X
-		if (det(XtX) == 0) {
-			return(NA)
-		}
-		invXtX <- solve(XtX) %*% t(X)
-		invXtX %*% v[,2]
-	}
-
-	if (nlyr(x) != 2) error("focalReg", "x must have 2 layers")
-	outnl <- 1 + isTRUE(intercept)	
-	if (na.rm) {
-		if (outnl == 2) {
-			fun = function(x, y) try(intslopenarm(x, y), silent=TRUE)
-		} else {
-			fun = function(x, y) try(slopenarm(x, y), silent=TRUE)		
-		}
-	} else {
-		if (outnl == 2) {
-			fun = function(x, y) try(intslope(x, y), silent=TRUE)
-		} else {
-			fun = function(x, y) try(slope(x, y), silent=TRUE)		
-		}
-	}
 	if (!is.numeric(w)) {
 		error("focal", "w should be numeric vector or matrix")	
 	}
@@ -270,37 +232,81 @@ function(x, w=3, intercept=FALSE, na.rm=TRUE, fillvalue=NA, expand=FALSE, filena
 	}
 	msz <- prod(w)
 	dow <- !isTRUE(all(m == 1))
+	isnam <- FALSE
 	if (any(is.na(m))) {
 		k <- !is.na(m)
 		mm <- m[k]
 		msz <- sum(k)
+		isnam <- TRUE
 	}
-	out <- rast(x, nlyr=outnl)
-	if (outnl == 2) {
-		names(out) <- c("intercept", "slope")
-	} else {
-		names(out) <- "slope"
-	}
-	b <- writeStart(out, filename, n=msz*4, ...)
+	out <- rast(x)
 
-	for (i in 1:b$n) {
-		X <- focalValues(x[[1]], w)
-		Y <- focalValues(x[[2]], w)
-		if (dow) {
-			if (any(is.na(m))) {
-				X <- X[k] * mm
-				Y <- Y[k] * mm
-			} else {
-				X <- X * m
-				Y <- Y * m
-			}
+	if (na.rm) {
+		fun = function(x, y) {
+			x <- try(ols_narm(x, y), silent=TRUE)
 		}
-		v <- sapply(1:nrow(X), function(i) fun(X[i,], Y[i,]))
-		if (outnl == 2) {
-			v <- as.vector(t(v))
-		}
-		writeValues(out, v, b$row[i], b$nrows[i])
+		#fun = ols_narm
+	} else {
+		fun = function(x, y) try(ols(x, y), silent=TRUE)		
+		#fun = ols
 	}
+	names(out) <- paste0("B", 0:(nl-1))
+	b <- writeStart(out, filename, n=msz*4, ...)
+	ry <- x[[1]]
+	rx <- x[[-1]]
+
+	if (nl == 2) {
+		for (i in 1:b$n) {
+			Y <- focalValues(ry, w, b$row[i]-1, b$nrows[i], fillvalue)
+			X <- focalValues(rx, w, b$row[i]-1, b$nrows[i], fillvalue)
+			if (dow) {
+				if (isnam) {
+					Y <- Y[k] * mm
+					X <- X[k] * mm
+				} else {
+					Y <- Y * m
+					X <- X * m
+				}
+			}
+			v <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,])))
+			writeValues(out, v, b$row[i], b$nrows[i])		
+		}
+	} else {
+
+		for (i in 1:b$n) {
+			Y <- focalValues(ry, w, b$row[i]-1, b$nrows[i], fillvalue)
+			if (dow) {
+				if (isnam) {
+					Y <- Y[k] * mm
+				} else {
+					Y <- Y * m
+				}
+			}
+			X <- list()
+			for (j in 1:(nl-1)) {
+				X[[j]] <- focalValues(rx[[j]], w, b$row[i]-1, b$nrows[i], fillvalue)
+				if (dow) {
+					if (any(is.na(m))) {
+						X[[j]] <- X[[j]][k] * mm
+					} else {
+						X[[j]] <- X[[j]] * m
+					}
+				}
+			}
+			v <- list()
+			for (p in 1:nrow(Y)) {
+				xlst <- list()
+				for (j in 1:(nl-1)) {
+					xlst[[j]] <- X[[j]][p,]
+				}
+				pX <- do.call(cbind, xlst)
+				v[[p]] <- fun(pX, Y[p,])
+			}
+			v <- t(do.call(cbind, v))
+			writeValues(out, v, b$row[i], b$nrows[i])		
+		}
+	}
+	
 	out <- writeStop(out)
 	return(out)
 }

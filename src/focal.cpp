@@ -418,7 +418,7 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 
 		std::vector<double> vout, voutcomb;
 		std::vector<double> vin, vincomb;
-		size_t off;
+		size_t off=0;
 		if (nl > 1) {
 			vincomb = readValues(rstart, rnrows, 0, nc);
 			off = nc * out.bs.nrows[i];

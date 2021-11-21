@@ -7,20 +7,18 @@
 \title{Focal regression}
 
 \description{
-Calculate the slope and intercept for a focal ("moving window") two variable (layer) OLS regression model. 
+Calculate the coeffients for a focal ("moving window") OLS regression model. 
 }
 
 \usage{
-\S4method{focalReg}{SpatRaster}(x, w=3, intercept=FALSE, na.rm=TRUE,  
+\S4method{focalReg}{SpatRaster}(x, w=3, na.rm=TRUE,  
 		fillvalue=NA, expand=FALSE, filename="", ...) 
 }
 
 \arguments{
-\item{x}{SpatRaster with two layers. The first is the "x" (independent) and the second the "y" (dependent) variable}
+\item{x}{SpatRaster with at leat two layers. The first is the "Y" (dependent) variable and the remainder are the "X" (independent) variables}
 
 \item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}}
-
-\item{intercept}{logical. If \code{TRUE}, the intercept and the slope are returned, otherwise only the slope is returned}
 
 \item{na.rm}{logical. Should missing values be removed?}
 
@@ -42,7 +40,7 @@ Calculate the slope and intercept for a focal ("moving window") two variable (la
 r <- rast(ncols=10, nrows=10, ext(0, 10, 0, 10))
 values(r) <- 1:ncell(r)
 x <- c(r, init(r, runif) * r)
-f <- focalReg(x, 3, intercept=TRUE)
+f <- focalReg(x, 3)
 }
 
 
