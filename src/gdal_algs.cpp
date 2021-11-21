@@ -692,6 +692,8 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt) {
 
 	SpatVector out;
+	out.srs = source[0].srs;
+	
 	SpatOptions topt(opt);
 
 	if (nlyr() > 1) {
@@ -785,16 +787,6 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	std::string name = nms[0];
 
 	OGRSpatialReference *SRS = NULL;
-	std::string s = source[0].srs.wkt;
-	if (s != "") {
-		SRS = new OGRSpatialReference;
-		OGRErr err = SRS->SetFromUserInput(s.c_str()); 
-		if (err != OGRERR_NONE) {
-			out.setError("crs error");
-			delete SRS;
-			return out;
-		}
-	}
 
     OGRLayer *poLayer;
     poLayer = poDS->CreateLayer(name.c_str(), SRS, wkbPolygon, NULL );
@@ -851,6 +843,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	if (!values) {
 		out.df = SpatDataFrame();
 	} 
+	
 	return out;
 }
 
