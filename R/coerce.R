@@ -3,7 +3,23 @@
 # Version 1.0
 # License GPL v3
 
-
+## from stars
+setAs("SpatRaster", "stars", 
+	function(from) {
+		if (inherits(from, "stars_proxy")) {
+			f <- from[[1]]
+			return(rast(f))
+		}
+		dims <- attr(from, "dimensions")
+		xmin <- dims$x$offset
+		nc <- dims$x$to
+		xmax <- xmin + nc * dims$x$delta
+		ymax <- dims$y$offset
+		nr <- dims$y$to
+		ymin <- ymax + nr * dims$y$delta
+		rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dims$band$to, vals=as.vector(from[[1]]))
+	}
+)	
 
 
 ### from terra
