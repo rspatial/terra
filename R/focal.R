@@ -204,7 +204,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
 	ols_narm <- function(x, y) {
 		v <- na.omit(cbind(y, x))
-		if (nrow(v) < (ncol(x) + 1)) {
+		if (nrow(v) < (NCOL(x) + 1)) {
 			return(NA)
 		}
 		X <- cbind(1, v[,-1])
