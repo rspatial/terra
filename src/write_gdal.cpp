@@ -107,7 +107,7 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 	GDALColorTable *poCT = new GDALColorTable(GPI_RGB);
 	GDALColorEntry col;
 	for (size_t j=0; j< d.nrow(); j++) {
-	if (d.iv[3][j] == 0) { // maintain transparaency in gtiff
+	if (d.iv[3][j] == 0) { // maintain transparency in gtiff
 			col.c1 = 255;
 			col.c2 = 255;
 			col.c3 = 255;
