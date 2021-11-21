@@ -35,7 +35,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 \S4method{rast}{SpatRaster}(x, nlyrs=nlyr(x), names, vals, time=FALSE, props=FALSE) 
 
-\S4method{rast}{matrix}(x, type="", crs="", digits=6, ext=NULL)
+\S4method{rast}{matrix}(x, type="", crs="", digits=6, extent=NULL)
 
 \S4method{rast}{data.frame}(x, type="", crs="", digits=6)
 
