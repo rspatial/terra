@@ -321,6 +321,9 @@ setMethod("rast", signature(x="matrix"),
 		stopifnot(prod(dim(x)) > 0)
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs=crs, digits=digits)
+			if (!is.null(ext)) {
+				warn("rast", 'argument "ext" is ignored if type="xyz"')
+			}
 		} else {
 			if (is.null(ext)) {
 				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))

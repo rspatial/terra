@@ -514,6 +514,14 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, bool update, SpatOptions 
 
 		if (update) {
 			hDS = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_UPDATE | GDAL_OF_SHARED, source[src].open_ops);
+		/*
+			if (hDS != NULL) { // for user-set extents
+				std::vector<double> rs = resolution();
+				SpatExtent extent = getExtent();	
+				double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
+				GDALSetGeoTransform(hDS, adfGeoTransform);
+			}
+		*/	
 		} else {
 			hDS = openGDAL(f, GDAL_OF_RASTER | GDAL_OF_READONLY | GDAL_OF_SHARED, source[src].open_ops);
 		}
@@ -556,8 +564,7 @@ bool SpatRaster::open_gdal(GDALDatasetH &hDS, int src, bool update, SpatOptions 
 		if (hDS == NULL) return false;
 
 		std::vector<double> rs = resolution();
-		SpatExtent extent = getExtent();
-	
+		SpatExtent extent = getExtent();	
 		double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 		GDALSetGeoTransform(hDS, adfGeoTransform);
 
