@@ -696,24 +696,24 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	
 	SpatOptions topt(opt);
 
+	SpatRaster tmp;
 	if (nlyr() > 1) {
 		out.addWarning("only the first layer is polygonized when 'dissolve=TRUE'");
+		SpatRaster tmp = subset({0}, topt);
+	} else {
+		tmp = *this;
 	}
-	SpatRaster tmp = subset({0}, topt);
 
 	bool usemask = false;
 	SpatRaster mask;
 	if (narm) {
 		usemask = true;
-		mask = tmp.isfinite(topt);	
-		if (!tmp.sources_from_file()) {
-			if (mask.sources_from_file()) {
-				mask.readAll();				
-			}
-		}
+		SpatOptions mopt(topt);
+		mopt.set_datatype("INT1U"); 
+		mask = tmp.isfinite(mopt);	
 	} else if (trunc) {
 		tmp = tmp.math("trunc", topt);
-		trunc = false;
+		trunc = false; 
 	} else if (tmp.sources_from_file()) {
 		// for NAN and INT files. Should have a check for that
 		//tmp = tmp.arith(0, "+", false, topt);
@@ -721,22 +721,12 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 		tmp.readAll();
 	}
 	
-	
 	GDALDatasetH rstDS;
-	if (! tmp.sources_from_file() ) {
-		if (!tmp.open_gdal(rstDS, 0, false, topt)) {
-			out.setError("cannot open dataset");
-			return out;
-		}
-	} else {
-		std::vector<std::string> ops;
-		rstDS = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, ops);
-		
-		if (rstDS == NULL) {
-			out.setError("cannot open dataset from file");
-			return out;
-		}
+	if (!tmp.open_gdal(rstDS, 0, false, topt)) {
+		out.setError("cannot open dataset");
+		return out;
 	}
+
     GDALDataset *srcDS=NULL;
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
@@ -748,22 +738,9 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	GDALDataset *maskDS=NULL;
 	GDALDatasetH rstMask;
 	if (usemask) {
-		if (! mask.sources_from_file() ) {
-			if (!mask.open_gdal(rstMask, 0, false, opt)) {
-				out.setError("cannot open dataset");
-				return out;
-			}
-		} else {
-			//rstMask = openGDAL(mask.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, mask.source[0].open_ops);
-			std::vector<std::string> ops;
-			rstMask = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, ops);
-
-			//std::string filename = mask.source[0].filename;
-			//rstMask = GDALOpen( filename.c_str(), GA_ReadOnly);
-			if (rstMask == NULL) {
-				out.setError("cannot open dataset from file");
-				return out;		
-			}
+		if (!mask.open_gdal(rstMask, 0, false, opt)) {
+			out.setError("cannot open dataset");
+			return out;
 		}
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
 		maskDS = (GDALDataset *) rstMask;

@@ -401,6 +401,7 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 		*this = init(v, opt);
 		return (!hasError());
 	} else if (v.size() == g.size()) {
+/*
 		if (!canProcessInMemory(opt)) { 
 		// this should be chunked to avoid the copy
 		// but this may still help in some cases
@@ -413,9 +414,11 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 			*this = writeRaster(opt);
 			return true;
 		} else {
+*/
 			source[0].values = v;				
-		}
+//		}
 	} else {
+
 		setError("incorrect number of values");
 		return false;
 	}

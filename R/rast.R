@@ -317,12 +317,16 @@ setMethod("rast", signature(x="ANY"),
 
 
 setMethod("rast", signature(x="matrix"),
-	function(x, type="", crs="", digits=6) {
+	function(x, type="", crs="", digits=6, ext=NULL) {
 		stopifnot(prod(dim(x)) > 0)
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs=crs, digits=digits)
 		} else {
-			r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
+			if (is.null(ext)) {
+				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
+			} else {
+				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext)			
+			}
 			values(r) <- as.vector(t(x))
 		}
 		messages(r, "rast")
