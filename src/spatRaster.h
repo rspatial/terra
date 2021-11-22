@@ -75,6 +75,7 @@ class SpatRasterSource {
 		unsigned nlyr;
 		unsigned nlyrfile = 0;
 		SpatExtent extent;
+		bool extset=false;
 		bool rotated=false;
 		bool flipped=false;
 		bool hasWindow=false;

@@ -720,6 +720,10 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 		// riskier  
 		tmp.readAll();
 	}
+	if (tmp.source[0].extset) {
+		Rcpp::Rcout << "extent corrected" << std::endl;
+		tmp = tmp.hardCopy(topt);
+	}
 	
 	GDALDatasetH rstDS;
 	if (!tmp.open_gdal(rstDS, 0, false, topt)) {

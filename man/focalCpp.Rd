@@ -50,9 +50,13 @@ cppFunction(
 		// loop over cells
 		for (size_t i=0; i<ni; i++) {
 			// compute something for a window
-			size_t start = i*nw;
-			double value = std::accumulate(x.begin()+start, x.begin()+start+nw, 0.0);
-			out[i] = value * m;
+			size_t start = i * nw;
+			double v = 0;
+			// loop over the values of a window
+			for (size_t j=start; j<(start+nw); j++) {
+				v += x[j];
+			}
+			out[i] = v * m;
 		}		
 		return out;
 	}'

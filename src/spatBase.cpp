@@ -283,6 +283,7 @@ SpatExtent SpatRaster::getExtent() {
 void SpatRaster::setExtent(SpatExtent e) { 
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = e;
+		source[i].extset = true;
 	}
 }
 
@@ -309,6 +310,7 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = ext;
+		source[i].extset = true;
 		//source[i].nrow = source[0].nrow;
 		//source[i].ncol = source[0].ncol;
 	}
