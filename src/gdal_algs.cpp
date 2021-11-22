@@ -693,13 +693,12 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 
 	SpatVector out;
 	out.srs = source[0].srs;
-	
 	SpatOptions topt(opt);
 
 	SpatRaster tmp;
 	if (nlyr() > 1) {
 		out.addWarning("only the first layer is polygonized when 'dissolve=TRUE'");
-		SpatRaster tmp = subset({0}, topt);
+		tmp = subset({0}, topt);
 	} else {
 		tmp = *this;
 	}
@@ -721,7 +720,6 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 		tmp.readAll();
 	}
 	if (tmp.source[0].extset) {
-		Rcpp::Rcout << "extent corrected" << std::endl;
 		tmp = tmp.hardCopy(topt);
 	}
 	
