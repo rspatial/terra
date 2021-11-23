@@ -137,7 +137,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 <span class='co'># S4 method for missing</span>
 <span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, nrows<span class='op'>=</span><span class='fl'>180</span>, ncols<span class='op'>=</span><span class='fl'>360</span>, nlyrs<span class='op'>=</span><span class='fl'>1</span>, xmin<span class='op'>=</span><span class='op'>-</span><span class='fl'>180</span>, xmax<span class='op'>=</span><span class='fl'>180</span>, 
-          ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>90</span>, ymax<span class='op'>=</span><span class='fl'>90</span>, <span class='va'>crs</span>, <span class='va'>extent</span>, <span class='va'>resolution</span>, <span class='va'>vals</span>, <span class='va'>names</span><span class='op'>)</span>
+          ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>90</span>, ymax<span class='op'>=</span><span class='fl'>90</span>, <span class='va'>crs</span>, <span class='va'>extent</span>, <span class='va'>resolution</span>, <span class='va'>vals</span>, <span class='va'>names</span>, <span class='va'>time</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, nlyrs<span class='op'>=</span><span class='fu'><a href='dimensions.html'>nlyr</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='va'>names</span>, <span class='va'>vals</span>, time<span class='op'>=</span><span class='cn'>FALSE</span>, props<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span> 
@@ -230,6 +230,10 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
     <tr>
       <th>names</th>
       <td><p>character. An optional vector with layer names (must match the number of layers)</p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>time or date stamps for each layer</p></td>
     </tr>
     <tr>
       <th>type</th>
