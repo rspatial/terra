@@ -5,28 +5,50 @@
 
 ## from stars
 #stars:::st_as_raster is used
+#setAs("stars", "SpatRaster") is provided by stars via st_as_raster
 
-#setAs("SpatRaster", "stars", 
-#	function(from) {
-#		if (inherits(from, "stars_proxy")) {
-#			f <- from[[1]]
-#			return(rast(f))
-		#}
-		#dims <- attr(from, "dimensions")
-		#if (length(dims) != 3) {
-	#		error("coerce from stars", "can only coerce objects with 3 dimensions")
-		#}
-		#xmin <- dims$x$offset
-		#nc <- dims$x$to
-		#xmax <- xmin + nc * dims$x$delta
-		#ymax <- dims$y$offset
-		#nr <- dims$y$to
-		#ymin <- ymax + nr * dims$y$delta
-		#r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dims$band$to)
-		# not good:
-		#setValues(r, as.vector(from[[1]]))
-	#}
-#)	
+
+from_stars <- function(from) {
+	if (inherits(from, "stars_proxy")) {
+		f <- from[[1]]
+		return(rast(f))
+	}
+	dims <- attr(from, "dimensions")
+	xmin <- dims$x$offset
+	nc <- dims$x$to
+	xmax <- xmin + nc * dims$x$delta
+	ymax <- dims$y$offset
+	nr <- dims$y$to
+	ymin <- ymax + nr * dims$y$delta
+	if (length(dims) > 2) {
+		from <- split(from)
+		from <- lapply(from, function(i) {
+			r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dim(i)[3])
+			setValues(r, i)
+			})
+		sds(from)
+	} else {
+		r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dims$band$to)
+		setValues(r, as.vector(from[[1]]))
+	}
+}
+	
+setAs("stars", "SpatRasterDataset",
+	function(from) {
+		from_stars(from) 
+	}
+)
+
+setAs("ggmap", "SpatRaster", 
+	function(from) {
+		b <- attr(from, "bb")
+		e <- ext(b$ll.lon, b$ur.lon, b$ll.lat, b$ur.lat)
+		r <- rast(nrows=nrow(from), ncols=ncol(from), ext=e, nlyr=3, crs="epsg:4326")
+		values(r) <- t(col2rgb(from))
+		RGB(r) <- 1:3
+		r
+	}
+)
 
 
 ### from terra

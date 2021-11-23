@@ -387,7 +387,7 @@ setMethod("spatSample", signature(x="SpatVector"),
 				r <- lapply(s, function(s) {
 					spatSample(x[strata == s, ], size, method, NULL, "")
 				})
-				r <- do.call(c, r)
+				r <- do.call(rbind, r)
 				return(r)
 			}
 			if (length(size) == 1) {

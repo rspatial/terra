@@ -7,6 +7,7 @@
 \alias{sds,character-method}
 \alias{sds,list-method}
 \alias{sds,SpatRaster-method}
+\alias{sds,stars-method}
 \alias{[<-,SpatRasterDataset,numeric,missing-method}
 
 

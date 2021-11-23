@@ -10,7 +10,7 @@
 \title{wrap (pack) a SpatRaster or SpatVector object}
 
 \description{
-Wrap a SpatRaster or SpatVector object to create a Packed* object that it can be saved as an R object to disk, or passed over a connection that serializes (e.g. using a computer cluster). 
+Wrap a SpatRaster or SpatVector object to create a Packed* object. Packed objects can be saved as an R object to disk (.rds or .RData), or passed over a connection that serializes (e.g. to nodes on a computer cluster); but with large datasets passing a filename could be more sensible in that context. 
 }
 
 \usage{

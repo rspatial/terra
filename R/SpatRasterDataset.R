@@ -75,6 +75,13 @@ setMethod("sds", signature(x="list"),
 	}
 )
 
+setMethod("sds", signature(x="stars"),
+	function(x) {
+		from_stars(x) 
+	}
+)
+
+
 setMethod("c", signature(x="SpatRasterDataset"), 
 	function(x, ...) {
 
@@ -104,6 +111,7 @@ setMethod("c", signature(x="SpatRasterDataset"),
 		messages(x, "c")
 	}
 )
+
 
 setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 	function(x, i, j, value) {
