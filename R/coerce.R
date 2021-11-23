@@ -20,13 +20,16 @@ from_stars <- function(from) {
 	ymax <- dims$y$offset
 	nr <- dims$y$to
 	ymin <- ymax + nr * dims$y$delta
-	if (length(dims) > 2) {
+	if (length(dims) > 3) {
 		from <- split(from)
 		from <- lapply(from, function(i) {
 			r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dim(i)[3])
 			setValues(r, i)
 			})
 		sds(from)
+		#if (drop && (length(from) == 1)) {
+		#	from <- from[1]
+		#}
 	} else {
 		r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dims$band$to)
 		setValues(r, as.vector(from[[1]]))
