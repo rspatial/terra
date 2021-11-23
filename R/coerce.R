@@ -9,31 +9,78 @@
 
 
 from_stars <- function(from) {
-	if (inherits(from, "stars_proxy")) {
-		f <- from[[1]]
-		return(rast(f))
-	}
 	dims <- attr(from, "dimensions")
+	dd <- dim(from)
+	# x, y
+	hasBands <- "band" %in% names(dd)
+	hasTime <- "time" %in% names(dd)
+	timev <- NULL
+	if (hasTime) {
+		tim <- dims$time$offset
+		tseq <- dims$time$from:dims$time$to
+		if (dims$time$refsys == "Date") {
+			timev <- as.Date(tim) + tseq
+		} else { # for now
+			timev <- tseq
+		}
+	}
+
+	# no time or variables
+	if (length(dd) - hasBands == 2) {
+		return( methods::as(from, "SpatRaster"))
+	}
+
+
+	# time, perhaps bands or variables
+	if (length(dd) - (hasTime + hasBands) == 2) {
+		r <- methods::as(from, "SpatRaster")
+		if (hasBands) {
+			timev <- rep(timev, each=dd["band"])
+		} 
+		time(r) <- timev
+		return(r)
+	}
+
+	if (inherits(from, "stars_proxy")) {
+		# currently not setting time dim here
+		f <- from[[1]]
+		sds(f)
+	}
+
 	xmin <- dims$x$offset
 	nc <- dims$x$to
 	xmax <- xmin + nc * dims$x$delta
 	ymax <- dims$y$offset
 	nr <- dims$y$to
 	ymin <- ymax + nr * dims$y$delta
-	if (length(dims) > 3) {
-		from <- split(from)
-		from <- lapply(from, function(i) {
-			r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dim(i)[3])
-			setValues(r, i)
-			})
-		sds(from)
-		#if (drop && (length(from) == 1)) {
-		#	from <- from[1]
-		#}
-	} else {
-		r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dims$band$to)
-		setValues(r, as.vector(from[[1]]))
-	}
+
+	from <- from[[1]]
+	rr <- list()
+	if (hasTime && hasBands) {
+		for (i in 1:dd[5]) {
+			x <- from[,,,,i]
+			r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dd["band"] * dd["time"])
+			time(r) <- rep(timev, each=dd["band"])
+			bandnames <- rep(paste("band", 1:dd["band"], sep="-"), length(timev))
+			names(r) <- paste(bandnames, rep(timev, each=dd["band"]), sep="_")
+			r <- setValues(r, as.vector(x))
+			rr[[i]] <- r
+		}
+	} else { #if (hasTime || hasBands) {
+		for (i in 1:dd[4]) {
+			x <- from[,,,i]
+			r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dim(x)[3], time=timev)
+			if (hasBands) {
+				names(r) <- paste("band", 1:dd["band"], sep="-")
+			} else {
+				names(r) <- timve
+			}
+			rr[[i]] <- setValues(r, x)
+		}
+	} 
+	s <- sds(rr)
+	names(s) <- paste(names(dd)[4], 1:length(s), sep="-")
+	s
 }
 	
 setAs("stars", "SpatRasterDataset",

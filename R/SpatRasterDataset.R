@@ -77,7 +77,12 @@ setMethod("sds", signature(x="list"),
 
 setMethod("sds", signature(x="stars"),
 	function(x) {
-		from_stars(x) 
+		s <- from_stars(x) 
+		if (inherits(s, "SpatRaster")) {
+			sds(s)
+		} else {
+			s
+		}
 	}
 )
 

@@ -636,6 +636,16 @@ std::string SpatRaster::getTimeStep() {
 }
 
 bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
+
+	if (time.size() == 0 || step == "remove") { 
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].time = std::vector<int_64> (source[i].nlyr);
+			source[i].timestep = "";
+			source[i].hasTime = false;
+		}
+		return true;
+	}
+
 	if (time.size() != nlyr()) {
 		return false;
 	} 
@@ -671,6 +681,14 @@ std::vector<double> SpatRaster::getDepth() {
 
 
 bool SpatRaster::setDepth(std::vector<double> depths) {
+
+	if (depths.size() == 0) {
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].depth = std::vector<double>(source[i].nlyr);
+		}
+		return true;
+	}
+
 	if (depths.size() == 1) {
         for (size_t i=0; i<source.size(); i++)	{
             source[i].depth = std::vector<double> (source[i].nlyr, depths[0]);

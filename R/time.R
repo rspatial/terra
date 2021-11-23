@@ -31,6 +31,9 @@ setMethod("time<-", signature(x="SpatRaster"),
 			tstep <- "days"
 		} else if (inherits(value, "POSIXt")) {
 			tstep <- "seconds"
+		} else if (is.null(value)) {
+			x@ptr$setTime(0[0], "remove")
+			return(x)
 		} else {
 			tstep <- "raw"
 		}
@@ -52,6 +55,10 @@ setMethod("depth", signature(x="SpatRaster"),
 
 setMethod("depth<-", signature(x="SpatRaster"), 
 	function(x, value)  {
+		if (is.null(value)) {
+			x@ptr$setTime(0[0])
+			return(x)
+		}
 		value <- as.numeric(value)
 		if (! x@ptr$setDepth(value)) {
 			error("depth<-", "cannot set these  values")
