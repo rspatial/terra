@@ -67,6 +67,16 @@ setMethod("rast", signature(x="stars"),
 	}
 )
 
+setMethod("rast", signature(x="stars_proxy"),
+	function(x) {
+		x <- from_stars(x)
+		if (inherits(x, "SpatRasterDataset")) {
+			rast(x)
+		} else {
+			x
+		}
+	}
+)
 
 setMethod("rast", signature(x="list"),
 	function(x) {

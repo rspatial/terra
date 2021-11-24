@@ -16,6 +16,7 @@
 \alias{rast,ANY-method}
 \alias{rast,PackedSpatRaster-method}
 \alias{rast,stars-method}
+\alias{rast,stars_proxy-method}
 
 \title{Create a SpatRaster}
 

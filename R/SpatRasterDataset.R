@@ -86,6 +86,17 @@ setMethod("sds", signature(x="stars"),
 	}
 )
 
+setMethod("sds", signature(x="stars_proxy"),
+	function(x) {
+		s <- from_stars(x) 
+		if (inherits(s, "SpatRaster")) {
+			sds(s)
+		} else {
+			s
+		}
+	}
+)
+
 
 setMethod("c", signature(x="SpatRasterDataset"), 
 	function(x, ...) {

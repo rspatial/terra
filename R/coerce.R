@@ -9,8 +9,32 @@
 
 
 from_stars <- function(from) {
+
+	isProxy <- inherits(from, "stars_proxy")
+	natts <- length(from)
+	#from[i] recursion does not work with proxy
+	if (!isProxy && (natts > 1)) { # not sure what attributes represent
+		ra <- list()
+		for (i in 1:natts) {
+			ra[[i]] <- from_stars(from[i])
+		}
+		if (all(sapply(ra, function(i) inherits(i, "SpatRaster")))) {
+			nl <- sapply(ra, nlyr)
+			ra <- rast(ra)
+			nms <- names(ra)
+			names(ra) <- paste(rep(names(from), nl), nms, sep="_")
+		} else 	if (all(sapply(ra, function(i) inherits(i, "SpatRasterDataset")))) {
+			ra <- do.call(c, ra)
+		} else {
+			ra <- lapply(ra, function(i) if (!inherits(i, "SpatRasterDataset")) {sds(i)} else {i})
+			ra <- do.call(c, ra)
+		}
+		return(ra)
+	}
+	
 	dims <- attr(from, "dimensions")
 	dd <- dim(from)
+	
 	# x, y
 	hasBands <- "band" %in% names(dd)
 	hasTime <- "time" %in% names(dd)
@@ -41,10 +65,21 @@ from_stars <- function(from) {
 		return(r)
 	}
 
-	if (inherits(from, "stars_proxy")) {
+	if (isProxy) {
 		# currently not setting time dim here
-		f <- from[[1]]
-		sds(f)
+		if (natts > 1) {
+			ff <- sapply(from, function(i) from[i][[1]])
+			s <- sds(ff)
+			names(s) <- names(from) 
+		} else {
+			f <- from[[1]]
+			s <- sds(f)
+			nms <- names(dd)[3+hasBands]
+			if (!is.na(nms)) {
+				names(s) <- paste(nms, 1:length(s), sep="-")
+			}
+		}
+		return(s)
 	}
 
 	xmin <- dims$x$offset
@@ -83,6 +118,8 @@ from_stars <- function(from) {
 	s
 }
 	
+	
+
 setAs("stars", "SpatRasterDataset",
 	function(from) {
 		from_stars(from) 

@@ -8,6 +8,7 @@
 \alias{sds,list-method}
 \alias{sds,SpatRaster-method}
 \alias{sds,stars-method}
+\alias{sds,stars_proxy-method}
 \alias{[<-,SpatRasterDataset,numeric,missing-method}
 
 
