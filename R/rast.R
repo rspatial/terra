@@ -246,21 +246,21 @@ setMethod("rast", signature(x="SpatRaster"),
 
 setMethod("rast", signature(x="SpatRasterDataset"),
 	function(x) {
-		if (length(x) == 1) {
+		if (length(x) == 0) {
+			error("rast", "empty SpatRasterDataset")
+		} else if (length(x) == 1) {
 			x[1]
 		} else {
-			r <- rast(lapply(1:length(x), function(i) x[i]))
+			r <- methods::new("SpatRaster")
+			r@ptr <- x@ptr$collapse()
 			nms <- names(x)
 			if (any(nms != "")) {
-				nl <- nlyr(x)
-				nms <- paste(rep(nms, nl), names(r), sep="_")
-				names(r) <- nms
+				names(r) <- paste(rep(nms, nlyr(x)), names(r), sep="_")
 			}
 			r
 		}
 	}
 )
-
 
 
 setMethod("rast", signature(x="array"),
