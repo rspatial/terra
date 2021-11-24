@@ -1665,11 +1665,9 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 	unsigned nl = nlyr();
 	if (values.size() == 1) {
 		double val = values[0];
-		std::vector<double> v(out.bs.nrows[0]*nc*nl, val);				
+		std::vector<double> v;
 		for (size_t i = 0; i < out.bs.n; i++) {
-			if (i > 0) { // only need (i == (out.bs.n-1)) ?
-				v.resize(out.bs.nrows[i]*nc*nl, val);				
-			}
+			v.resize(out.bs.nrows[i]*nc*nl, val);				
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
 	} else {
