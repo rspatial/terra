@@ -105,7 +105,7 @@ setMethod("crs", signature("SpatRasterDataset"),
 	if (inherits(x, "SpatVector") | inherits(x, "SpatRaster")) {
 		x <- crs(x)
 	}
-	if (is.na(x)) {
+	if (is.null(x) || is.na(x)) {
 		x <- ""
 	} else if (inherits(x, "CRS")) {
 		if (warn) warn("crs", "expected a character string, not a CRS object")

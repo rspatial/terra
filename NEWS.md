@@ -1,4 +1,13 @@
-# version 1.4-21
+# version 1.5-0
+
+## enhancements 
+
+- conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
+
+
+# version 1.4-22
+
+Released on 2021-11-24
 
 ## changes 
 - `focal` now has ellipses (`...`) to allow for providing additional arguments to `fun`. For this reason it does not have a `na.rm` argument anymore as that can be supplied via the ellipses. In practice this means that the default will be na.rm=FALSE for the standard functions such as `mean` and `sum`.
@@ -16,11 +25,13 @@
 - `lapp` and `tapp` now have a `cores` argument (as do `app` and `predict`). Suggested by Dongdong Kong [#365](https://github.com/rspatial/terra/pull/365)
 - `focal` now also works with a function that returns multiple values (see [#318](https://github.com/rspatial/terra/pull/318) by Alex). 
 - `focal` can now process multiple layers in one step. 
+- expanded support for conversion from `stars` objects [#220](https://github.com/rspatial/terra/issues/220) by Jakub Nowosad
+
 
 ## new 
 
 - `focalCpp` takes a C++ function that iterates over cells to speed up computation by avoiding `apply` (see [#318](https://github.com/rspatial/terra/pull/318) by Alex). 
-- `focalReg` creates focal OLS regression models between layers 
+- `focalReg` for focal OLS regression models between layers 
 
 
 
