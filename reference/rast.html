@@ -82,7 +82,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-21</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4-22</span>
       </span>
     </div>
 
@@ -140,7 +140,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
           ymin<span class='op'>=</span><span class='op'>-</span><span class='fl'>90</span>, ymax<span class='op'>=</span><span class='fl'>90</span>, <span class='va'>crs</span>, <span class='va'>extent</span>, <span class='va'>resolution</span>, <span class='va'>vals</span>, <span class='va'>names</span>, <span class='va'>time</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, nlyrs<span class='op'>=</span><span class='fu'><a href='dimensions.html'>nlyr</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='va'>names</span>, <span class='va'>vals</span>, time<span class='op'>=</span><span class='cn'>FALSE</span>, props<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span> 
+<span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, nlyrs<span class='op'>=</span><span class='fu'><a href='dimensions.html'>nlyr</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='va'>names</span>, <span class='va'>vals</span>, keeptime<span class='op'>=</span><span class='cn'>FALSE</span>, props<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span> 
 
 <span class='co'># S4 method for matrix</span>
 <span class='fu'>rast</span><span class='op'>(</span><span class='va'>x</span>, type<span class='op'>=</span><span class='st'>""</span>, crs<span class='op'>=</span><span class='st'>""</span>, digits<span class='op'>=</span><span class='fl'>6</span>, extent<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>
@@ -169,7 +169,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
     </tr>
     <tr>
       <th>subds</th>
-      <td><p>positive integer or character to select a subdataset. If zero or "", all subdatasets are returned (if possible)</p></td>
+      <td><p>positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)</p></td>
     </tr>
     <tr>
       <th>opts</th>
@@ -208,7 +208,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
       <td><p>character. PROJ.4 type description of a Coordinate Reference System (map projection). If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, "+proj=longlat +datum=WGS84" is used</p></td>
     </tr>
     <tr>
-      <th>time</th>
+      <th>keeptime</th>
       <td><p>logical. If <code>TRUE</code> the time stamps are kept</p></td>
     </tr>
     <tr>
