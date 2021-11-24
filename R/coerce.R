@@ -574,124 +574,6 @@ setAs("Raster", "SpatRaster",
 }
 
 
-...from_sf <- function(from) {
-	sfi <- attr(from, "sf_column")
-	geom <- from[[sfi]]
-	crs <- attr(geom, "crs")$wkt
-	attr(geom, "class") <- NULL
-	types <- t(sapply(geom, function(i) attr(i, "class")))
-	v <- list()
-	for (i in 1:length(geom)) {
-		if (inherits(geom[[i]], "POINT")) {
-			v[[i]] <- cbind(i, 1, geom[[i]][1], geom[[i]][2], hole=0)				
-		} else {
-			vv <- list()
-			for (j in 1:length(geom[[i]])) {
-				if (inherits(geom[[i]][[j]], "list")) {
-					vvv <- list()
-					for (k in 1:length(geom[[i]][[j]])) {
-						vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=k-1) 
-					}
-					vv[[j]] <- do.call(rbind, vvv)
-				} else {
-					vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole=0)
-				}
-			}
-			v[[i]] <- do.call(rbind, vv)
-		}
-	}
-	v <- do.call(rbind, v)
-	if (ncol(v) > 5) {
-		v <- cbind(v[,1:4], v[,ncol(v),drop=FALSE])
-		warn("as", "Z/M dimension dropped")
-	}
-	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	types <- unique(gsub("MULTI", "", unique(types[,2])))
-	if (length(types) > 1) {
-		error("as,sf", "SpatVector currently only accepts one geometry type")
-	}
-	if (grepl("POINT", types, fixed=TRUE)) {
-		gt = "points"
-	} else if (grepl("LINE", types, fixed=TRUE)) {
-		gt = "lines"
-	} else if (grepl("POLY", types, fixed=TRUE)) {
-		gt = "polygons"
-	}
-	if (ncol(from) > 1) {
-		from[[sfi]] <- NULL
-		d <- as.data.frame(from)
-		vect(v, type=gt, att=d, crs=crs)
-	} else {
-		vect(v, type=gt, crs=crs)
-	}
-}
-
-
-
-
-...from_sfc <- function(from) {
-	geom = from
-	v <- list()
-	for (i in 1:length(geom)) {
-		vv <- list()
-		for (j in 1:length(geom[[i]])) {
-			if (inherits(geom[[i]][[j]], "list")) {
-				vvv <- list()
-				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k-1) 
-				}
-				vv[[j]] <- do.call(rbind, vvv)
-			} else {
-				vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole=0) 
-			}
-		}
-		v[[i]] <- do.call(rbind, vv)
-	}
-	v <- do.call(rbind, v)
-	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	if (ncol(v) > 5) {
-		v <- cbind(v[,1:4], v[,ncol(v),drop=FALSE])
-		warn("as", "Z/M dimension dropped")
-	}
-	types <- class(from)[1]
-	if (grepl("POINT", types, fixed=TRUE)) {
-		gt = "points"
-	} else if (grepl("LINE", types, fixed=TRUE)) {
-		gt = "lines"
-	} else if (grepl("POLY", types, fixed=TRUE)) {
-		gt = "polygons"
-	}
-	vect(v, type=gt, crs="")
-}
-
-
-...from_sfg <- function(from) {
-	geom = from
-	v <- list()
-	for (i in 1:length(geom)) {
-		vv <- list()
-		for (j in 1:length(geom[[i]])) {
-			vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole= j-1) 
-		}
-		v[[i]] <- do.call(rbind, vv)
-	}
-	v <- do.call(rbind, v)
-	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	if (ncol(v) == 6) {
-		v <- v[,-5]
-	}
-	types <- class(geom)[2]
-	if (grepl("POINT", types, fixed=TRUE)) {
-		gt = "points"
-	} else if (grepl("LINE", types, fixed=TRUE)) {
-		gt = "lines"
-	} else if (grepl("POLY", types, fixed=TRUE)) {
-		gt = "polygons"
-	}
-	vect(v, type=gt, crs="")
-}
-
-
 setAs("sf", "SpatVector", 
 	function(from) {
 		v <- try(.from_sf(from), silent=TRUE)
@@ -705,6 +587,7 @@ setAs("sf", "SpatVector",
 .from_sfc <- function(from) {
 	v <- vect()
 	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(from)), "")
+	crs(v) <- attr(from, "crs")$wkt
 	v
 }
 
