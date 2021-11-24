@@ -230,8 +230,8 @@ multi <- function(x, subds=0, xyz=c(1,2,3)) {
 
 
 setMethod("rast", signature(x="SpatRaster"),
-	function(x, nlyrs=nlyr(x), names, vals, time=FALSE, props=FALSE) {
-		x@ptr <- x@ptr$geometry(nlyrs, props, time)
+	function(x, nlyrs=nlyr(x), names, vals, keeptime=FALSE, props=FALSE) {
+		x@ptr <- x@ptr$geometry(nlyrs, props, keeptime)
 		x <- messages(x, "rast")
 		if (!missing(names)) {
 			if (length(names) == nlyr(x)) names(x) <- names

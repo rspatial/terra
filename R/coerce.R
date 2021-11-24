@@ -108,7 +108,7 @@ from_stars <- function(from) {
 			if (hasBands) {
 				names(r) <- paste("band", 1:dd["band"], sep="-")
 			} else {
-				names(r) <- timve
+				names(r) <- timev
 			}
 			rr[[i]] <- setValues(r, x)
 		}
@@ -131,7 +131,7 @@ setAs("ggmap", "SpatRaster",
 		b <- attr(from, "bb")
 		e <- ext(b$ll.lon, b$ur.lon, b$ll.lat, b$ur.lat)
 		r <- rast(nrows=nrow(from), ncols=ncol(from), ext=e, nlyr=3, crs="epsg:4326")
-		values(r) <- t(col2rgb(from))
+		values(r) <- t(grDevices::col2rgb(from))
 		RGB(r) <- 1:3
 		r
 	}
