@@ -1,5 +1,9 @@
 # version 1.5-0
 
+## bug fixes
+
+- `setValues`/`init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
+
 ## enhancements 
 
 - conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey

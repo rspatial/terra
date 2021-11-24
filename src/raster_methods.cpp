@@ -1662,11 +1662,14 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 	SpatRaster out = geometry();
  	if (!out.writeStart(opt)) { return out; }
 	unsigned nc = ncol();
-	unsigned nl = nc * nlyr();
+	unsigned nl = nlyr();
 	if (values.size() == 1) {
-		std::vector<double> v;
+		double val = values[0];
+		std::vector<double> v(out.bs.nrows[0]*nc*nl, val);				
 		for (size_t i = 0; i < out.bs.n; i++) {
-			v.resize(out.bs.nrows[i]*nc*nl, values[0]);				
+			if (i > 0) { // only need (i == (out.bs.n-1)) ?
+				v.resize(out.bs.nrows[i]*nc*nl, val);				
+			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
 	} else {
