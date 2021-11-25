@@ -130,7 +130,7 @@ setAs("ggmap", "SpatRaster",
 	function(from) {
 		b <- attr(from, "bb")
 		e <- ext(b$ll.lon, b$ur.lon, b$ll.lat, b$ur.lat)
-		r <- rast(nrows=nrow(from), ncols=ncol(from), ext=e, nlyr=3, crs="epsg:4326")
+		r <- rast(nrows=nrow(from), ncols=ncol(from), ext=e, nlyr=3, crs="epsg:4326", names=c("red", "green", "blue"))
 		values(r) <- t(grDevices::col2rgb(from))
 		RGB(r) <- 1:3
 		r

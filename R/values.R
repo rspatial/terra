@@ -72,7 +72,9 @@ setMethod("focalValues", signature("SpatRaster"),
 
 
 setMethod("setValues", signature("SpatRaster"), 
-	function(x, values, keeptime=TRUE, props=FALSE) {
+	function(x, values, keeptime=TRUE, keepunits=FALSE, props=FALSE) {
+
+		y <- rast(x, keeptime=keeptime, keepunits=keepunits, props=props)
 
 		if (is.matrix(values)) { 
 			if (nrow(values) == nrow(x)) {
@@ -85,19 +87,28 @@ setMethod("setValues", signature("SpatRaster"),
 			values <- as.vector(aperm(values, c(2,1,3)))
 		}
 		make_factor <- FALSE
+		set_coltab <- FALSE
 		if (is.character(values)) {
-			values <- as.factor(values)
-			levs <- levels(values)
-			values <- as.integer(values) - 1
-			if (max(values, na.rm=TRUE) <= 255) {
+			if (all(substr(na.omit(values), 1, 1) == "#")) {
+				fv <- as.factor(values)
+				if (length(levels(fv)) <= 256) {
+					set_coltab <- TRUE
+					values <- as.integer(fv)-1
+				} else {
+					values <- t(grDevices::col2rgb(values))
+					y <- rast(y, nlyr=3, names=c("red", "green", "blue"))
+					RGB(y) <- 1:3
+				}
+			} else {
+				values <- as.factor(values)
+				levs <- levels(values)
+				values <- as.integer(values) - 1 # -1 not needed anymore?
 				make_factor <- TRUE
 			}
 		} else if (is.factor(values)) {
 			levs <- levels(values)			
 			values <- as.integer(values) - 1
-			if (max(values, na.rm=TRUE) <= 255) {
-				make_factor <- TRUE
-			}
+			make_factor <- TRUE
 		}
 
 		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
@@ -105,7 +116,6 @@ setMethod("setValues", signature("SpatRaster"),
 		}
 
 		lv <- length(values)
-		y <- rast(x, keeptime=keeptime, props=props)
 		nc <- ncell(y)
 		nl <- nlyr(y)
 		opt <- spatOptions()
