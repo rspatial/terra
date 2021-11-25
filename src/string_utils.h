@@ -5,6 +5,8 @@
 #include<string>
 #include<vector>
 
+void unquote(std::string &s);
+
 std::string double_to_string(double x);
 std::vector<std::string> double_to_string(const std::vector<double> &x, std::string prep);
 std::vector<char *> string_to_charpnt(std::vector<std::string> s);
@@ -20,6 +22,8 @@ int where_in_vector(std::string s, std::vector<std::string> ss, bool tolower);
 std::vector<std::string> getlastpart (std::vector<std::string> s, std::string delim);
 
 std::vector<std::string> strsplit(std::string s, std::string delimiter);
+std::vector<std::string> strsplit_first(std::string s, std::string delimiter);
+
 std::vector<double> str2dbl(std::vector<std::string> s);
 std::vector<int> str2int(std::vector<std::string> s);
 std::vector<long> str2long(std::vector<std::string> s);

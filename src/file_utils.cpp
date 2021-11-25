@@ -6,14 +6,12 @@
 #include <sys/stat.h>
 
 bool write_text(std::string filename, std::vector<std::string> s) {
-    std::string ss;
-	for (size_t i=0; i<s.size(); i++) {
-		ss += s[i] + "\n";
-	}
 	std::ofstream f;
 	f.open(filename);
-	 if (f.is_open()) {
-		f << ss;
+	if (f.is_open()) {
+		for (size_t i=0; i<s.size(); i++) {
+			f << s[i] << std::endl;
+		}
 		f.close();
 		return true;
 	} else {

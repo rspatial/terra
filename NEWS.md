@@ -7,7 +7,7 @@
 ## enhancements 
 
 - conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
-- timestamps are now saved to an auxiliary file for all raster formats
+- timestamps and units are now saved to an .aux.json file for all raster formats
 
 
 # version 1.4-22

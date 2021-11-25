@@ -18,7 +18,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <regex>
+//#include <regex>
+#include "string_utils.h"
 
 
 typedef long long SpatTime_t;
@@ -256,7 +257,6 @@ SpatTime_t time_from_day_360(int syear, int smonth, int sday, double ndays) {
 }
 
 
-#include "string_utils.h"
 
 SpatTime_t parse_time(std::string x) {
 	lrtrim(x);

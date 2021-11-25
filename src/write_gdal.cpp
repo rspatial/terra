@@ -29,6 +29,57 @@
 #include "gdal_rat.h"
 
 #include "gdalio.h"
+/*
+void add_quotes(std::vector<std::string> &s) {
+	for (size_t i=0; i< s.size(); i++) {
+		s[i] = "\"" + s[i] + "\"";
+	}
+}
+*/
+
+std::string quoted_csv(const std::vector<std::string> &s) {
+	std::string ss;
+	if (s.size() == 0) {
+		ss = "";
+		return ss;
+	}
+	ss = "\"" + s[0] + "\"";
+	for (size_t i=1; i< s.size(); i++) {
+		ss += ",\"" + s[i] + "\"";
+	}
+	return ss;
+}
+
+bool SpatRaster::write_aux_json(std::string filename) {
+	filename += ".aux.json";
+	std::ofstream f;
+	bool wunits = hasUnit();
+	bool wtime = hasTime();
+	if (wunits || wtime) {
+		f.open(filename);
+		if (f.is_open()) {
+			f << "{" << std::endl;
+			if (wtime) {
+				std::vector<std::string> tstr = getTimeStr(false);
+				std::string ss = quoted_csv(tstr);
+				f << "\"time\":[" << ss << "]," << std::endl;
+				f << "\"timestep\":\"" << source[0].timestep << "\"";
+				if (wunits) f << ",";
+				f << std::endl;
+			}	
+			if (wunits) {
+				std::vector<std::string> units = getUnit();
+				std::string ss = quoted_csv(units);
+				f << "\"unit\":[" << ss << "]" << std::endl;
+			}
+			f << "}" << std::endl;
+		} else {
+			return false;
+		}
+		return true;
+	}
+	return true;
+}
 
 
 bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
@@ -478,6 +529,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	source[0].filename = filename;
 	source[0].memory = false;
 
+	write_aux_json(filename);
+/*
 	if (hasTime()) {
 		std::vector<std::string> tstr = getTimeStr(true);
 		std::string fname = filename + ".time";
@@ -488,6 +541,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		std::string fname = filename + ".unit";
 		write_text(fname, units);
 	}
+*/
 
 	return true;
 }

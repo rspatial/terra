@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <stdint.h>
 #include <vector>
-#include <regex>
+//#include <regex>
 
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
@@ -56,6 +56,86 @@ void SpatRaster::gdalogrproj_init(std::string path) {
 	}
 #endif
 }
+
+/*
+bool GetTime(std::string filename, std::vector<int_64> &time, std::string &timestep, size_t nl) {
+	filename += ".time";
+	if (!file_exists(filename)) {
+		return false;
+	}
+	std::vector<std::string> s = read_text(filename);
+	if (nl != (s.size()-1)) return false;
+	time.reserve(nl);
+	timestep = s[0];
+	for (size_t i=0; i<nl; i++) {
+		time.push_back( parse_time(s[i+1]) );
+	}
+	return true;
+}
+
+bool GetUnits(std::string filename, std::vector<std::string> &units, size_t nl) {
+	filename += ".unit";
+	if (!file_exists(filename)) {
+		return false;
+	}
+	units = read_text(filename);
+	if (nl != units.size()) return false;
+	return true;
+}
+*/
+
+bool read_aux_json(std::string filename, std::vector<int_64> &time, std::string &timestep, std::vector<std::string> &units, size_t nlyr) {
+	filename += ".aux.json";
+	if (!file_exists(filename)) return false;
+	std::vector<std::string> s = read_text(filename);
+	int itime=-1, istep=-1, iunit=-1;
+	for (size_t i=0; i<s.size(); i++) {
+		std::vector<std::string> x = strsplit_first(s[i], ":");
+		if (x.size() != 2) continue;
+		x[0].erase(std::remove(x[0].begin(), x[0].end(), '\"'), x[0].end());
+		if (x[0] == "time") itime = i;
+		if (x[0] == "timestep") istep = i;
+		if (x[0] == "unit") iunit = i;
+	}
+	if (itime >= 0) {
+		std::vector<std::string> x = strsplit_first(s[itime], "[");
+		if (x.size() == 2) {
+			x = strsplit(x[1], "]");
+			x = strsplit(x[0], ",");
+			std::vector<int_64> tm;
+			for (size_t i=0; i<x.size(); i++) {
+				unquote(x[i]); 
+				tm.push_back( parse_time(x[i]) );
+			}
+			if (tm.size() == nlyr) {
+				time = tm;
+			}
+		}
+		if ((istep >= 0) && (time.size() > 0)) {
+			std::vector<std::string> x = strsplit_first(s[istep], ":");
+			if (x.size() == 2) {
+				x = strsplit(x[1], ",");
+				unquote(x[0]); 
+				timestep = x[0];
+			}
+		}	
+	}
+	if (iunit >= 0) {
+		std::vector<std::string> x = strsplit_first(s[iunit], "[");
+		if (x.size() == 2) {
+			x = strsplit(x[1], "]");
+			x = strsplit(x[0], ",");
+			if (x.size() == nlyr) {
+				for (size_t i=0; i< x.size(); i++) {
+					unquote(x[i]); 
+				}
+				units = x;
+			}
+		}
+	}
+	return false;
+}
+
 
 SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 
@@ -151,31 +231,6 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 	return false;
 }
 
-
-bool GetTime(std::string filename, std::vector<int_64> &time, std::string &timestep, size_t nl) {
-	filename += ".time";
-	if (!file_exists(filename)) {
-		return false;
-	}
-	std::vector<std::string> s = read_text(filename);
-	if (nl != (s.size()-1)) return false;
-	time.reserve(nl);
-	timestep = s[0];
-	for (size_t i=0; i<nl; i++) {
-		time.push_back( parse_time(s[i+1]) );
-	}
-	return true;
-}
-
-bool GetUnits(std::string filename, std::vector<std::string> &units, size_t nl) {
-	filename += ".unit";
-	if (!file_exists(filename)) {
-		return false;
-	}
-	units = read_text(filename);
-	if (nl != units.size()) return false;
-	return true;
-}
 
 SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
 
@@ -533,14 +588,33 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 	
 	std::vector<int_64> timestamps;
-	std::string timestep;
+	std::string timestep="raw";
+	std::vector<std::string> units;
+
+/*
 	if (GetTime(fname, timestamps, timestep, s.nlyr)) {
 		s.time = timestamps;
 		s.timestep = timestep;
 		s.hasTime = true;	
 	}
-	std::vector<std::string> units;
 	if (GetUnits(fname, units, s.nlyr)) {
+		s.unit = units;
+		s.hasUnit = true;	
+	}
+*/
+
+	try {
+		read_aux_json(fname, timestamps, timestep, units, s.nlyr);
+	} catch ( ...) {
+		timestamps.resize(0);
+		units.resize(0);
+	}
+	if (timestamps.size() > 0) {
+		s.time = timestamps;
+		s.timestep = timestep;
+		s.hasTime = true;	
+	}
+	if (units.size() > 0) {
 		s.unit = units;
 		s.hasUnit = true;	
 	}
