@@ -108,6 +108,7 @@ class SpatRasterSource {
 		bool hasTime = false;
 		std::vector<double> depth;
 		std::vector<std::string> unit;
+		bool hasUnit = false;
 
 		//std::vector< std::vector<double> values;
         std::vector<double> values;
@@ -295,12 +296,13 @@ class SpatRaster {
 		bool hasTime();
 		std::vector<int_64> getTime();
 		std::string getTimeStep();
-		
 		std::vector<std::string> getTimeStr(bool addstep);
-
 		bool setTime(std::vector<int_64> time, std::string step);
+		
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);
+
+		bool hasUnit();
 		std::vector<std::string> getUnit();
 		bool setUnit(std::vector<std::string> units);
 
@@ -324,7 +326,7 @@ class SpatRaster {
 
         SpatRaster deepCopy();
 		SpatRaster hardCopy(SpatOptions &opt);
-        SpatRaster geometry(long nlyrs=-1, bool properties=false, bool time=true);
+        SpatRaster geometry(long nlyrs=-1, bool properties=false, bool time=true, bool units=false);
 
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options);
 		bool constructFromFileMulti(std::string fname, std::string subdsname, std::vector<size_t> xyz);

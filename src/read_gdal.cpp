@@ -167,6 +167,16 @@ bool GetTime(std::string filename, std::vector<int_64> &time, std::string &times
 	return true;
 }
 
+bool GetUnits(std::string filename, std::vector<std::string> &units, size_t nl) {
+	filename += ".unit";
+	if (!file_exists(filename)) {
+		return false;
+	}
+	units = read_text(filename);
+	if (nl != units.size()) return false;
+	return true;
+}
+
 SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
 
 	SpatDataFrame out;
@@ -528,6 +538,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		s.time = timestamps;
 		s.timestep = timestep;
 		s.hasTime = true;	
+	}
+	std::vector<std::string> units;
+	if (GetUnits(fname, units, s.nlyr)) {
+		s.unit = units;
+		s.hasUnit = true;	
 	}
 
 	GDALRasterBand  *poBand;

@@ -290,6 +290,7 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 		out.source_name_long = source_name_long;
 		out.timestep = timestep;
 		out.hasTime = hasTime;
+		out.hasUnit = hasUnit;
 		out.memory = memory;
 		out.hasValues = hasValues;
 		//out.filename = filename;

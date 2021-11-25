@@ -717,7 +717,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
-	SpatRaster out = geometry(nl, true);
+	SpatRaster out = geometry(nl, true, true, true);
 
 	if (!out.compare_geom(x, false, true, opt.get_tolerance(), true, true, true, false)) {
 		return(out);
@@ -2016,7 +2016,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true);
+	SpatRaster out = geometry(nlyr(), true, true, true);
 
 	if ( !e.valid() ) {
 		out.setError("invalid extent");
@@ -2084,7 +2084,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true);
+	SpatRaster out = geometry(nlyr(), true, true, true);
 	if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());
@@ -2136,7 +2136,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 
 SpatRaster SpatRaster::reverse(SpatOptions &opt) {
 
-	SpatRaster out = geometry(nlyr(), true);
+	SpatRaster out = geometry(nlyr(), true, true, true);
 	if (!hasValues()) return out;
 	if (!readStart()) {
 		out.setError(getError());

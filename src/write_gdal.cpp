@@ -227,6 +227,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	remove(auxf.c_str());
 	auxf = filename + ".time";
 	remove(auxf.c_str());
+	auxf = filename + ".unit";
+	remove(auxf.c_str());
 		
 	std::vector<bool> hasCT = hasColors();
 	bool rat = isRat();
@@ -478,8 +480,13 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
 	if (hasTime()) {
 		std::vector<std::string> tstr = getTimeStr(true);
-		filename += ".time";
-		write_text(filename, tstr);
+		std::string fname = filename + ".time";
+		write_text(fname, tstr);
+	}
+	if (hasUnit()) {
+		std::vector<std::string> units = getUnit();
+		std::string fname = filename + ".unit";
+		write_text(fname, units);
 	}
 
 	return true;

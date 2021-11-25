@@ -210,7 +210,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time) {
+SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units) {
 	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
@@ -237,6 +237,10 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time) {
 			s.hasTime = true;
 			s.timestep = getTimeStep();
 			s.time = getTime();
+		}
+		if (units && hasUnit()) {
+			s.hasUnit = true;
+			s.unit = getUnit();
 		}
 	} else {
 		for (size_t i=0; i < s.nlyr; i++) {
@@ -733,6 +737,7 @@ bool SpatRaster::setUnit(std::vector<std::string> units) {
 	if (units.size() == 1) {
         for (size_t i=0; i<source.size(); i++)	{
             source[i].unit = std::vector<std::string> (source[i].nlyr, units[0]);
+			source[i].hasUnit = true;
         }
         return true;
 	} else if (units.size() != nlyr()) {
@@ -742,10 +747,19 @@ bool SpatRaster::setUnit(std::vector<std::string> units) {
         for (size_t i=0; i<source.size(); i++)	{
             size_t end = begin + source[i].nlyr;
             source[i].unit = std::vector<std::string> (units.begin() + begin, units.begin() + end);
-            begin = end;
+            source[i].hasUnit = true;
+			begin = end;
         }
         return true;
 	}
+}
+
+bool SpatRaster::hasUnit() {
+	bool test = source[0].hasUnit; 
+	for (size_t i=1; i<source.size(); i++) {
+		test = test && source[i].hasUnit; 
+	}
+	return test;
 }
 
 
