@@ -276,9 +276,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	
 	std::string auxf = filename + ".aux.xml";
 	remove(auxf.c_str());
-	auxf = filename + ".time";
-	remove(auxf.c_str());
-	auxf = filename + ".unit";
+	auxf = filename + ".aux.json";
 	remove(auxf.c_str());
 		
 	std::vector<bool> hasCT = hasColors();
