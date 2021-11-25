@@ -140,7 +140,9 @@
 <a href="#enhancements" class="anchor"></a>enhancements</h2>
 <ul>
 <li>conversion from <code>sfc</code> to <code>SpatVector</code> lost the crs. <a href="https://github.com/rspatial/terra/issues/415"><a href='https://github.com/rspatial/terra/issues/415'>#415</a></a> by Jean-Luc Dupouey</li>
-<li>timestamps and units are now saved to an .aux.json file for all raster formats</li>
+<li>timestamps and units are now saved to file (filename.aux.json) for all raster formats</li>
+<li>
+<code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
 </ul>
 </div>
 </div>
@@ -154,7 +156,7 @@
 <a href="#changes" class="anchor"></a>changes</h2>
 <ul>
 <li>
-<code>focal</code> now has ellipses (<code>...</code>) to allow for providing additional arguments to <code>fun</code>. For this reason it does not have a <code>na.rm</code> argument anymore as that can be supplied via the ellipses. In practice this means that the default will be na.rm=FALSE for the standard functions such as <code>mean</code> and <code>sum</code>.</li>
+<code>focal</code> now has ellipses (<code>...</code>) to allow for providing additional arguments to <code>fun</code>. For this reason it does not have a <code>na.rm</code> argument anymore as that can be supplied via the ellipses. In practice this means that the default will be <code>na.rm=FALSE</code> for the standard functions such as <code>mean</code> and <code>sum</code>.</li>
 </ul>
 </div>
 <div id="bug-fixes-1" class="section level2">
