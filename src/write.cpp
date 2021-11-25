@@ -142,7 +142,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 // a) the SpatRaster is backed by a file
 // b) there are no write options 
 
-	SpatRaster out = geometry(nlyr(), true);
+	SpatRaster out = geometry(nlyr(), true, true);
 	if (!hasValues()) {
 		out.setError("there are no cell values");
 		return out;

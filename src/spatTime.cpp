@@ -20,6 +20,7 @@
 #include <string>
 #include <regex>
 
+
 typedef long long SpatTime_t;
 
 
@@ -67,6 +68,14 @@ SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsign
     return time;
 }
 
+
+SpatTime_t get_time_str(std::vector<std::string> s) {
+	std::vector<long> d(6, 0);
+	for (size_t i=0; i<s.size(); i++) {
+		d[i] = stoi(s[i]);
+	}
+	return get_time(d[0], d[1], d[2], d[3], d[4], d[5]);
+}
 
 
 std::vector<int> get_date(SpatTime_t x) {
@@ -247,6 +256,28 @@ SpatTime_t time_from_day_360(int syear, int smonth, int sday, double ndays) {
 }
 
 
+#include "string_utils.h"
+
+SpatTime_t parse_time(std::string x) {
+	lrtrim(x);
+	std::vector<std::string> s = strsplit(x, " ");
+
+	std::vector<std::string> time = strsplit(s[0], "-");
+	if (time.size() == 1) {
+		return stoi(time[0]);
+	} else if (time.size() != 3) {
+		return 0;
+	}	
+	
+	if (s.size() > 1) {
+		std::vector<std::string> secs = strsplit(s[1], ":");
+		if (secs.size() == 3) {
+			time.insert(time.end(), secs.begin(), secs.end());
+		}
+	}
+
+	return get_time_str(time);
+}	
 
 
 /*

@@ -406,4 +406,3 @@ bool set_proj_search_paths(std::vector<std::string> paths) {
 }
 
 
-

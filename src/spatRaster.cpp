@@ -579,11 +579,11 @@ std::vector<double> SpatRaster::getNAflag() {
 
 
 bool SpatRaster::hasTime() {
-	bool test = true;
-	for (size_t i=0; i<source.size(); i++) {
-		test = test & source[i].hasTime; 
+	bool test = source[0].hasTime; 
+	for (size_t i=1; i<source.size(); i++) {
+		test = test && source[i].hasTime; 
 	}
-	return(test);
+	return test;
 }
 
 /*
@@ -597,12 +597,28 @@ std::vector<double> SpatRaster::getTimeDbl() {
 }
 */
 
-std::vector<std::string> SpatRaster::getTimeStr() {
+std::vector<std::string> SpatRaster::getTimeStr(bool addstep) {
 	std::vector<std::string> out;
+	std::vector<int_64> time = getTime();
+	out.reserve(time.size()+addstep);
+	if (addstep) out.push_back(source[0].timestep);
 	if (source[0].timestep == "seconds") {
-		std::vector<int_64> time = getTime();
-		out.reserve(time.size());
-		for (size_t i=0; i < out.size(); i++) {
+		for (size_t i=0; i < time.size(); i++) {
+			std::vector<int> x = get_date(time[i]);
+			if (x.size() > 2) {
+				out.push_back( std::to_string(x[0]) + "-" 
+						  + std::to_string(x[1]) + "-"
+						  + std::to_string(x[2]) + " "
+						  + std::to_string(x[3]) + ":"
+						  + std::to_string(x[4]) + ":"
+						  + std::to_string(x[5]) );
+						  
+			} else {
+				out.push_back("");
+			}
+		}
+	} else if (source[0].timestep == "days") {
+		for (size_t i=0; i < time.size(); i++) {
 			std::vector<int> x = get_date(time[i]);
 			if (x.size() > 2) {
 				out.push_back( std::to_string(x[0]) + "-" 
@@ -613,7 +629,11 @@ std::vector<std::string> SpatRaster::getTimeStr() {
 				out.push_back("");
 			}
 		}
-	} 
+	} else {
+		for (size_t i=0; i < time.size(); i++) {
+			out.push_back( std::to_string(time[i]));
+		}
+	}
 	return out;
 }
 

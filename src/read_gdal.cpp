@@ -114,7 +114,7 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 
 bool GetVAT(std::string filename, SpatCategories &vat) {
 
-	filename = filename + ".vat.dbf";
+	filename += ".vat.dbf";
 	if (!file_exists(filename)) {
 		return false;
 	}
@@ -149,6 +149,22 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 		return true;
 	}
 	return false;
+}
+
+
+bool GetTime(std::string filename, std::vector<int_64> &time, std::string &timestep, size_t nl) {
+	filename += ".time";
+	if (!file_exists(filename)) {
+		return false;
+	}
+	std::vector<std::string> s = read_text(filename);
+	if (nl != (s.size()-1)) return false;
+	time.reserve(nl);
+	timestep = s[0];
+	for (size_t i=0; i<nl; i++) {
+		time.push_back( parse_time(s[i+1]) );
+	}
+	return true;
 }
 
 SpatDataFrame GetCOLdf(GDALColorTable *pCT) {
@@ -505,6 +521,14 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	if (!s.srs.set(crs, msg)) {
 		addWarning(msg);
 	}
+	
+	std::vector<int_64> timestamps;
+	std::string timestep;
+	if (GetTime(fname, timestamps, timestep, s.nlyr)) {
+		s.time = timestamps;
+		s.timestep = timestep;
+		s.hasTime = true;	
+	}
 
 	GDALRasterBand  *poBand;
 	//int nBlockXSize, nBlockYSize;
@@ -612,7 +636,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		//		s.cats[i].d.cbind(crat.d); // needs more checking.
 		//	} else {
 
-
 		if (!s.hasCategories[i]) {
 			SpatCategories vat;
 			if (GetVAT(fname, vat)) {
@@ -620,7 +643,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				s.hasCategories[i] = true;				
 			}
 		}
-
+		
 		std::string nm = "";
 		if (s.hasCategories[i]) {
 			if (s.cats[i].index < s.cats[i].d.ncol()) {

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmansf
+// Copyright (c) 2018-2021  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -14,8 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
-
-
 
 #include "spatRaster.h"
 #include "math_utils.h"
@@ -225,6 +223,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 //		return(false);
 //	}
 	
+	std::string auxf = filename + ".aux.xml";
+	remove(auxf.c_str());
+	auxf = filename + ".time";
+	remove(auxf.c_str());
+		
 	std::vector<bool> hasCT = hasColors();
 	bool rat = isRat();
 	std::vector<bool> hasCats = hasCategories();
@@ -461,7 +464,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	// destroySRS(oSRS) ?
 	
 	source[0].gdalconnection = poDS;
-
 	source[0].resize(nlyr());
 	source[0].nlyrfile = nlyr();
 	source[0].datatype = datatype;
@@ -473,6 +475,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	source[0].driver = "gdal" ;
 	source[0].filename = filename;
 	source[0].memory = false;
+
+	if (hasTime()) {
+		std::vector<std::string> tstr = getTimeStr(true);
+		filename += ".time";
+		write_text(filename, tstr);
+	}
 
 	return true;
 }
