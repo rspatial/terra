@@ -389,7 +389,7 @@ bool SpatRaster::writeStop(){
 //}
 
 bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
-	SpatRaster g = geometry();
+	SpatRaster g = geometry(nlyr(), true, true, true);
 	SpatRasterSource s = g.source[0];
 	s.hasValues = true;
 	s.memory = true;

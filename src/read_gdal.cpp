@@ -591,23 +591,12 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	std::string timestep="raw";
 	std::vector<std::string> units;
 
-/*
-	if (GetTime(fname, timestamps, timestep, s.nlyr)) {
-		s.time = timestamps;
-		s.timestep = timestep;
-		s.hasTime = true;	
-	}
-	if (GetUnits(fname, units, s.nlyr)) {
-		s.unit = units;
-		s.hasUnit = true;	
-	}
-*/
-
 	try {
 		read_aux_json(fname, timestamps, timestep, units, s.nlyr);
-	} catch ( ...) {
+	} catch(...) {
 		timestamps.resize(0);
 		units.resize(0);
+		addWarning("could not parse aux.json");
 	}
 	if (timestamps.size() > 0) {
 		s.time = timestamps;

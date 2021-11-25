@@ -91,8 +91,8 @@ setMethod("vect", signature(x="XY"), #sfg
 	z <- tolower(x[1:2])
 	x <- substr(z, 1, 3)
 	y <- substr(x, 1, 1)
-	if ((y[1] == "x") & (y[2] == "y")) return(TRUE)
-	if ((x[1] == "eas") & (x[2] == "nor")) return(TRUE)
+	if ((y[1] == "x") & (y[2] == "y")) return(FALSE)
+	if ((x[1] == "eas") & (x[2] == "nor")) return(FALSE)
 	if ((x[1] == "lon") & (x[2] == "lat")) return(TRUE)
 	if (grepl("lon", z[1]) & grepl("lat", z[2])) return(TRUE)
 
@@ -105,6 +105,7 @@ setMethod("vect", signature(x="XY"), #sfg
 	} else if (warn) {
 		warn("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
 	}
+	return(FALSE)
 }
 
 setMethod("vect", signature(x="matrix"), 
@@ -121,12 +122,13 @@ setMethod("vect", signature(x="matrix"),
 		}
 
 		if (ncol(x) == 2) { 
-			.checkXYnames(colnames(x))
+			lonlat <- .checkXYnames(colnames(x))
 			if (type == "points") {	# treat as unique points
 				p@ptr$setGeometry(type, 1:nr, rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
 			} else {
 				p@ptr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
 			}
+			if (lonlat && isTRUE(crs=="")) crs <- "+proj=longlat" 
 		} else if (ncol(x) == 4) {
 			#.checkXYnames(colnames(x)[3:4])
 			p@ptr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], rep(FALSE, nr))

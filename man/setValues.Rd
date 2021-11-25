@@ -27,7 +27,7 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
 \usage{
 \S4method{values}{SpatRaster,ANY}(x)<-value
 
-\S4method{setValues}{SpatRaster,ANY}(x, values, keeptime=TRUE, props=FALSE)
+\S4method{setValues}{SpatRaster,ANY}(x, values, keeptime=TRUE, keepunits=TRUE, props=FALSE)
 
 \S4method{values}{SpatVector,ANY}(x)<-value
 }

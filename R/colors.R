@@ -16,7 +16,7 @@ setMethod ("coltab" , "SpatRaster",
 
 setMethod ("coltab<-" , "SpatRaster", 
 	function(x, layer=1, value) {
-		stopifnot(hasValues(x))
+		#stopifnot(hasValues(x))
 		if (missing(value)) {
 			value <- layer
 			layer <- 1

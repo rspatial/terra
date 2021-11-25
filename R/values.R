@@ -72,7 +72,7 @@ setMethod("focalValues", signature("SpatRaster"),
 
 
 setMethod("setValues", signature("SpatRaster"), 
-	function(x, values, keeptime=TRUE, keepunits=FALSE, props=FALSE) {
+	function(x, values, keeptime=TRUE, keepunits=TRUE, props=FALSE) {
 
 		y <- rast(x, keeptime=keeptime, keepunits=keepunits, props=props)
 
@@ -92,9 +92,11 @@ setMethod("setValues", signature("SpatRaster"),
 			if (all(substr(na.omit(values), 1, 1) == "#")) {
 				fv <- as.factor(values)
 				if (length(levels(fv)) <= 256) {
-					set_coltab <- TRUE
 					values <- as.integer(fv)-1
+					fv <- levels(fv)
+					set_coltab <- TRUE
 				} else {
+					fv <- NULL
 					values <- t(grDevices::col2rgb(values))
 					y <- rast(y, nlyr=3, names=c("red", "green", "blue"))
 					RGB(y) <- 1:3
@@ -138,6 +140,9 @@ setMethod("setValues", signature("SpatRaster"),
 			for (i in 1:nlyr(y)) {
 				setCats(y, i, levs, 2)
 			}
+		}
+		if (set_coltab) {
+			coltab(y) <- fv
 		}
 		y
 	}

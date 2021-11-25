@@ -81,7 +81,6 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 	function(x, i, j, value) {
 
 		nl <- nlyr(x)
-		x <- rast(x)
 
 		if (is.matrix(value)) {
 			if (all(dim(value) == c(ncell(x), nl))) {

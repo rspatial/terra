@@ -7,7 +7,8 @@
 ## enhancements 
 
 - conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
-- timestamps and units are now saved to an .aux.json file for all raster formats
+- timestamps and units are now saved to file (filename.aux.json) for all raster formats
+- `values(x)<-` now accepts (hex coded) colors as values
 
 
 # version 1.4-22
@@ -15,7 +16,7 @@
 Released on 2021-11-24
 
 ## changes 
-- `focal` now has ellipses (`...`) to allow for providing additional arguments to `fun`. For this reason it does not have a `na.rm` argument anymore as that can be supplied via the ellipses. In practice this means that the default will be na.rm=FALSE for the standard functions such as `mean` and `sum`.
+- `focal` now has ellipses (`...`) to allow for providing additional arguments to `fun`. For this reason it does not have a `na.rm` argument anymore as that can be supplied via the ellipses. In practice this means that the default will be `na.rm=FALSE` for the standard functions such as `mean` and `sum`.
 
 
 ## bug fixes
