@@ -275,6 +275,10 @@ setMethod("dots", signature(x="SpatVector"),
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
 		plot(out$lim[1:2], out$lim[3:4], type="n", xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=FALSE, main=main)
+		if (!is.null(out$background)) {
+			usr <- graphics::par("usr")
+			graphics::rect(usr[1], usr[3], usr[2], usr[4], col=out$background)
+		}
 	}
 
 	out$leg$density <- density
@@ -329,7 +333,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
-	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL,  
+	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
 	pax=list(), plg=list(), ...) {
 
 	out <- list()
@@ -340,14 +344,14 @@ setMethod("dots", signature(x="SpatVector"),
 	if (!is.null(xlim)) {
 		stopifnot(length(xlim) == 2)
 		e[1:2] <- sort(xlim)
-	} else {
+	} else if (buffer) {
 		dx <- diff(e[1:2]) / 50
 		e[1:2] <- e[1:2] + c(-dx, dx)
 	}
 	if (!is.null(ylim)) {
 		stopifnot(length(ylim) == 2)
 		e[3:4] <- sort(ylim)
-	} else {
+	} else if (buffer) {
 		dy <- diff(e[3:4]) / 50
 		e[3:4] <- e[3:4] + c(-dy, dy)
 	}
@@ -365,7 +369,7 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	out$breaks <- breaks
 	out$breakby <- breakby
-
+	out$background <- background
 	v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
 	if (!is.null(range)) {
 		range <- sort(range)
@@ -443,7 +447,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
 	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
-	main=y, plg=list(), pax=list(), nr, nc, ...) {
+	main=y, buffer=TRUE, background=NULL, plg=list(), pax=list(), nr, nc, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
@@ -485,9 +489,9 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			if (missing(col)) col <- NULL
 
 			if (y[i] == "") {
-				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], ...)
+				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, ...)
 			} else {
-				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], ...)
+				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, ...)
 			}
 			invisible(out)
 		}

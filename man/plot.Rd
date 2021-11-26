@@ -26,7 +26,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)
 
 \S4method{plot}{SpatVector,character}(x, y, col, type, mar=NULL, legend=TRUE,
-     add=FALSE, axes=!add, main=y,
+     add=FALSE, axes=!add, main=y, buffer=TRUE, background=NULL,
      plg=list(), pax=list(), nr, nc, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
@@ -45,6 +45,8 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be draw. For example "topright" or "bottomleft". Use \code{plg} for more refined placement (SpatVector data only)}
   \item{axes}{logical. Draw axes?}
+  \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
+  \item{background}{background color. Default is no color (white)}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}}
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}

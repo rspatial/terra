@@ -38,6 +38,7 @@ Set cell values of a SpatRaster or the attributes of a SpatVector. For large Spa
  \item{value}{For SpatRaster: matrix or numeric, the length must match the total number of cells (ncell(x) * nlyr(x)), or be a single value. For SpatVector: data.frame, matrix, vector, or NULL}
  \item{values}{Same as for \code{value}}
  \item{keeptime}{logical. If \code{TRUE} the time stamps are kept}
+ \item{keepunits}{logical. If \code{FALSE} the units are discarded}
  \item{props}{logical. If \code{TRUE} the properties (categories and color-table) are kept}
 }
 
