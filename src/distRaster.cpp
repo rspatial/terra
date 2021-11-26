@@ -178,21 +178,17 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	}
 
 	SpatOptions ops(opt);
-	bool warn = false;
-	std::string msg;
 	if (nlyr() > 1) {
-		warn = true;
-		msg = "distance computations are only done for the first input layer";
 		std::vector<unsigned> lyr = {0};
-		*this = subset(lyr, ops);
+		out = subset(lyr, ops);
+		out = out.distance(opt);
+		out.addWarning("distance computations are only done for the first input layer");
+		return out;
 	}
 
 	out = edges(false, "inner", 8, 0, ops);
 	SpatVector p = out.as_points(false, true, opt);
 	out = out.distance_vector_rasterize(p, false, opt);
-	if (warn) {
-		out.addWarning(msg);
-	}
 	return out;
 }
 
@@ -1116,10 +1112,12 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 
 	SpatRaster out = geometry();
 	if (nlyr() > 1) {
-		out.addWarning("boundary detection is only done for the first layer");
 		std::vector<unsigned> lyr = {0};
 		SpatOptions ops(opt);
-		*this = subset(lyr, ops);
+		out = subset(lyr, ops);
+		out = out.edges(classes, type, directions, falseval, opt);
+		out.addWarning("boundary detection is only done for the first layer");
+		return out;
 	}
 	if (!hasValues()) {
 		out.setError("SpatRaster has no values");
@@ -1189,20 +1187,21 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 
 
 SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
+
 	SpatRaster out = geometry(1);
+
 	if (d <= 0) {
 		out.setError("buffer size <= 0; nothing to compute");
 		return out;
 	}
 	
 	SpatOptions ops(opt);
-	bool warn = false;
-	std::string msg;
 	if (nlyr() > 1) {
-		warn = true;
-		msg = "distance computations are only done for the first input layer";
 		std::vector<unsigned> lyr = {0};
-		*this = subset(lyr, ops);
+		out = subset(lyr, ops);
+		out = out.buffer(d, opt);
+		out.addWarning("buffer computations are only done for the first input layer");
+		return out;
 	}
 	
 	std::string etype = "inner";
@@ -1210,7 +1209,6 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	SpatVector p = e.as_points(false, true, opt);
 	out = out.distance_vector_rasterize(p, false, ops);
 	out = out.arith(d, "<=", false, opt);
-	if (warn) addWarning(msg);
 	return out;
 }
 
