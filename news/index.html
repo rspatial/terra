@@ -134,6 +134,8 @@
 <code>setValues</code>/<code>init</code> failed (or even crashed R) when using a single value on a largish raster. <a href="https://github.com/rspatial/terra/issues/414"><a href='https://github.com/rspatial/terra/issues/414'>#414</a></a>
 </li>
 <li>conversion from <code>sfc</code> to <code>SpatVector</code> lost the crs. <a href="https://github.com/rspatial/terra/issues/415"><a href='https://github.com/rspatial/terra/issues/415'>#415</a></a> by Jean-Luc Dupouey</li>
+<li>
+<code>buffer</code> on a SpatRaster with no values caused a crash <a href="https://github.com/rspatial/terra/issues/416"><a href='https://github.com/rspatial/terra/issues/416'>#416</a></a> by Sebastian Brinkmann</li>
 </ul>
 </div>
 <div id="enhancements" class="section level2">
@@ -144,9 +146,11 @@
 <li>
 <code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
 <li>
-<code>focal</code> now wraps around the dateline <a href="https://github.com/rspatial/terra/issues/242"><a href='https://github.com/rspatial/terra/issues/242'>#242</a></a> by Alexander Marbler</li>
+<code>focal</code> now wraps around the dateline like raster::focal <a href="https://github.com/rspatial/terra/issues/242"><a href='https://github.com/rspatial/terra/issues/242'>#242</a></a> by Alexander Marbler</li>
 <li>
 <code>aggregate</code> now does not show a progress bar in all cases <a href="https://github.com/rspatial/terra/issues/249"><a href='https://github.com/rspatial/terra/issues/249'>#249</a></a> by Lachlan</li>
+<li>
+<code>as.data.frame-SpatRaster/SpatVector</code> is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as <code>data.table::as.data.table</code>. See <a href="https://github.com/rspatial/terra/issues/284"><a href='https://github.com/rspatial/terra/issues/284'>#284</a></a> by Patrick Schratz</li>
 </ul>
 </div>
 </div>
@@ -238,8 +242,6 @@
 <code>plot,SpatVector</code> now responds to the <code>range</code> argument <a href="https://github.com/rspatial/terra/issues/385"><a href='https://github.com/rspatial/terra/issues/385'>#385</a></a> by Márcia Barbosa</li>
 <li>
 <code>zonal</code> failed for user-defined functions. <a href="https://github.com/rspatial/terra/issues/393"><a href='https://github.com/rspatial/terra/issues/393'>#393</a></a> by mqueinnec</li>
-<li>
-<code>buffer</code> on a SpatRaster with no values caused a crash <a href="https://github.com/rspatial/terra/issues/416"><a href='https://github.com/rspatial/terra/issues/416'>#416</a></a> by Sebastian Brinkmann</li>
 </ul>
 </div>
 <div id="new-1" class="section level2">
@@ -322,7 +324,7 @@
 <div id="note" class="section level2">
 <h2 class="hasAnchor">
 <a href="#note" class="anchor"></a>note</h2>
-<p><code>terra</code> no longer depends on <code>raster</code>. To avoid name clashes between these two packages, and to allow replacing methods from <code>rgeos</code> and <code>rgdal</code> in <code>raster</code>. <code>raster</code> now depends on <code>terra</code> instead.</p>
+<p><code>terra</code> no longer depends on <code>raster</code>. To avoid name clashes between these two packages, and to allow replacing methods from <code>rgeos</code> and <code>rgdal</code> in <code>raster</code>, <code>raster</code> now depends on <code>terra</code> instead.</p>
 </div>
 <div id="enhancements-5" class="section level2">
 <h2 class="hasAnchor">

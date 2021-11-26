@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Coercion of a SpatRaster to other object types — coerce • terra</title>
+<title>Coercion of a SpatRaster to a vector, matrix or array — coerce • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,7 @@
 
 
 
-<meta property="og:title" content="Coercion of a SpatRaster to other object types — coerce" />
+<meta property="og:title" content="Coercion of a SpatRaster to a vector, matrix or array — coerce" />
 <meta property="og:description" content="Coercion to other object types" />
 <meta property="og:image" content="/logo.png" />
 
@@ -119,7 +119,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Coercion of a SpatRaster to other object types</h1>
+    <h1>Coercion of a SpatRaster to a vector, matrix or array</h1>
     
     <div class="hidden name"><code>coerce.Rd</code></div>
     </div>
@@ -132,7 +132,7 @@
 <span class='fu'>as.vector</span><span class='op'>(</span><span class='va'>x</span>, mode<span class='op'>=</span><span class='st'>'any'</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>as.matrix</span><span class='op'>(</span><span class='va'>x</span>, wide<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>as.matrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
 <span class='fu'>as.array</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
@@ -145,18 +145,18 @@
       <td><p>SpatRaster or SpatVector</p></td>
     </tr>
     <tr>
-      <th>mode</th>
-      <td><p>this argument is ignored</p></td>
+      <th>...</th>
+      <td><p>additional argument <code>as.matrix</code>: <code>wide (logical)</code>. If <code>FALSE</code> each layer in the SpatRaster becomes a column in the matrix and each cell in the SpatRaster becomes a row. If <code>TRUE</code> each row in the SpatRaster becomes a row in the matrix and each column in the SpatRaster becomes a column in the matrix</p></td>
     </tr>
     <tr>
-      <th>wide</th>
-      <td><p>logical. If <code>FALSE</code> each layer in the SpatRaster becomes a column in the matrix and each cell in the SpatRaster becomes a row. If <code>TRUE</code> each row in the SpatRaster becomes a row in the matrix and each column in the SpatRaster becomes a column in the matrix</p></td>
+      <th>mode</th>
+      <td><p>this argument is ignored</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>vector, matrix, array</p>
+    <p>vector, matrix, or array</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='as.data.frame.html'>as.data.frame</a></code> and <code><a href='as.spatvector.html'>as.polygons</a></code></p></div>

@@ -129,10 +129,10 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>values</span><span class='op'>(</span><span class='va'>x</span>, mat<span class='op'>=</span><span class='cn'>TRUE</span>, dataframe<span class='op'>=</span><span class='cn'>FALSE</span>, row<span class='op'>=</span><span class='fl'>1</span>, nrows<span class='op'>=</span><span class='fu'><a href='dimensions.html'>nrow</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, col<span class='op'>=</span><span class='fl'>1</span>, ncols<span class='op'>=</span><span class='fu'><a href='dimensions.html'>ncol</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>values</span><span class='op'>(</span><span class='va'>x</span>, mat<span class='op'>=</span><span class='cn'>TRUE</span>, dataframe<span class='op'>=</span><span class='cn'>FALSE</span>, row<span class='op'>=</span><span class='fl'>1</span>, nrows<span class='op'>=</span><span class='fu'><a href='dimensions.html'>nrow</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, col<span class='op'>=</span><span class='fl'>1</span>, ncols<span class='op'>=</span><span class='fu'><a href='dimensions.html'>ncol</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
-<span class='fu'>values</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='fu'>values</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,6 +164,10 @@
     <tr>
       <th>ncols</th>
       <td><p>positive integer. How many columns? Default is the number of columns left after the start column</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments passed to <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></code></p></td>
     </tr>
     </table>
 

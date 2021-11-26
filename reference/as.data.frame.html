@@ -129,10 +129,10 @@
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatVector</span>
-<span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>x</span>, geom<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>
+<span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>x</span>, row.names<span class='op'>=</span><span class='cn'>NULL</span>, optional<span class='op'>=</span><span class='cn'>FALSE</span>, geom<span class='op'>=</span><span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>x</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span>, cells<span class='op'>=</span><span class='cn'>FALSE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>as.data.frame</span><span class='op'>(</span><span class='va'>x</span>, row.names<span class='op'>=</span><span class='cn'>NULL</span>, optional<span class='op'>=</span><span class='cn'>FALSE</span>, xy<span class='op'>=</span><span class='cn'>FALSE</span>, cells<span class='op'>=</span><span class='cn'>FALSE</span>, na.rm<span class='op'>=</span><span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector</span>
 <span class='fu'>as.list</span><span class='op'>(</span><span class='va'>x</span>, geom<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>
@@ -145,7 +145,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatVector</p></td>
+      <td><p>SpatRaster or SpatVector</p></td>
     </tr>
     <tr>
       <th>geom</th>
@@ -162,6 +162,18 @@
     <tr>
       <th>na.rm</th>
       <td><p>logical. If <code>TRUE</code>, cells that have a NA value in at least one layer are removed</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments passed to the <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></code></p></td>
+    </tr>
+    <tr>
+      <th>row.names</th>
+      <td><p>This argument is ignored</p></td>
+    </tr>
+    <tr>
+      <th>optional</th>
+      <td><p>This argument is ignored</p></td>
     </tr>
     </table>
 
