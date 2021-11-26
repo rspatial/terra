@@ -140,7 +140,7 @@ setMethod("boundaries", signature(x="SpatRaster"),
 	messages(x, "tighten")
 }
 
-setMethod("copy", signature("SpatRaster"), 
+setMethod("deepcopy", signature("SpatRaster"), 
 	function(x) {
 		x@ptr <- x@ptr$deepcopy() 
 		x
