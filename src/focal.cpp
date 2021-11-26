@@ -84,18 +84,27 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	int nrmax = nrows + startoff + endoff - 1;
 	//int nrmax = d.size() / ncol - 1;
 	int f = 0;
+	const bool global = is_global_lonlat();
+	
 	for (int r=0; r < nrows; r++) {
 		for (int c=0; c < nc; c++) {
 			for (int i = -wr; i <= wr; i++) {
 				int row = r+startoff+i;		
 				if ((row < 0) || (row > nrmax)) {
-					f = f + w[1];
+					f += w[1];
 				} else {
 					unsigned bcell = row * nc;
 					for (int j = -wc; j <= wc; j++) {
 						int col = c + j;
 						if ((col >= 0) && (col < nc)) {
 							out[f] = d[bcell+col];
+						} else if (global) {
+							if (col < 0) {
+								col = nc + col;
+							} else if (col >= nc) {
+								col = col - nc;
+							} 
+							out[f] = d[bcell+col]; 
 						}
 						f++;
 					}
@@ -103,7 +112,6 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 			}
 		}
 	}
-	
 	return out;
 }
 
@@ -112,8 +120,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	
 
 void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand,
-					std::function<double(std::vector<double>&, bool)> fun) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global,	std::function<double(std::vector<double>&, bool)> fun) {
 	
 	out.resize(nc * nr);
 	int hwc = wnc / 2;
@@ -143,7 +150,11 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 					}
 					int row = rread + hwr - offr;
 					int col = c + hwc - offc;
-					if (expand) {
+					if (global) {
+						col = col < 0 ? nc + col : col;
+						col = col > nc1 ? col - nc : col;
+						v.push_back(d[nc*row + col] * window[wi]);
+					} else if (expand) {
 						col = col < 0 ? 0 : col;
 						col = col > nc1 ? nc1 : col;
 						v.push_back(d[nc*row + col] * window[wi]);
@@ -164,7 +175,7 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 
 
 void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global) {
 	
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
@@ -196,7 +207,18 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 					}
 					int row = rread + hwr - offr;
 					int col = c + hwc - offc;
-					if (expand) {
+					if (global) {
+						col = col < 0 ? nc + col : col;
+						col = col > nc1 ? col - nc : col;
+						if (narm) {
+							if (!std::isnan(d[nc * row + col])) {
+								value += d[nc*row + col] * window[wi];
+								found = true;
+							}
+						} else {
+							value += d[nc*row + col] * window[wi];
+						}
+					} else if (expand) {
 						col = col < 0 ? 0 : col;
 						col = col > nc1 ? nc1 : col;
 						if (narm) {
@@ -235,7 +257,7 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 }
 
 void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global) {
 	
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
@@ -277,7 +299,18 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 					}
 					int row = rread + hwr - offr;
 					int col = c + hwc - offc;
-					if (expand) {
+					if (global) {
+						col = col < 0 ? nc + col : col;
+						col = col > nc1 ? col - nc : col;
+						if (narm) {
+							if (!std::isnan(d[nc * row + col])) {
+								value += d[nc * row + col] * window[wi];
+								winsum += poswin[wi];
+							}
+						} else {
+							value += d[nc * row + col] * window[wi]; 
+						}
+					} else if (expand) {
 						col = col < 0 ? 0 : col;
 						col = col > nc1 ? nc1 : col;
 						if (narm) {
@@ -321,6 +354,7 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, bool expand, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	bool global = is_global_lonlat();
 	size_t nl = nlyr();
 /*
 	SpatRaster out = geometry(1);
@@ -456,11 +490,11 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 			}
 
 			if (dofun) {
-				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, fFun);			
+				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global, fFun);			
 			} else if (fun == "mean") {
-				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand);
+				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global);
 			} else {
-				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand);
+				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global);
 			}
 			
 			if (i != (out.bs.n-1)) {
