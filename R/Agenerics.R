@@ -48,7 +48,7 @@ if (!isGeneric("polys")) {setGeneric("polys", function(x,...) standardGeneric("p
 if (!isGeneric("centroids")) {setGeneric("centroids", function(x, ...) standardGeneric("centroids"))}
 if (!isGeneric("coltab")) {setGeneric("coltab", function(x, ...) standardGeneric("coltab"))}
 if (!isGeneric("coltab<-")) { setGeneric("coltab<-", function(x, ..., value) standardGeneric("coltab<-")) }
-if (!isGeneric("copy")) { setGeneric("copy", function(x, ...) standardGeneric("copy")) }
+if (!isGeneric("deepcopy")) { setGeneric("deepcopy", function(x, ...) standardGeneric("deepcopy")) }
 if (!isGeneric("window")) {setGeneric("window", function(x, ...) standardGeneric("window"))}
 if (!isGeneric("window<-")) {setGeneric("window<-", function(x, ..., value) standardGeneric("window<-"))}
 if (!isGeneric("NAflag")) {setGeneric("NAflag", function(x, ...) standardGeneric("NAflag"))}

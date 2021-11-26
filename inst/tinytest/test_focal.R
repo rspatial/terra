@@ -18,7 +18,7 @@ m <- matrix(1,3,3)
 f <- focal(r, m, na.rm=TRUE)
 e <- c(12,21,16,27,45,33,24,39,28)
 expect_equal(e, as.vector(values(f)))
-0
+
 f <- focal(r, 3, na.rm=TRUE)
 expect_equal(e, as.vector(values(f)))
 
