@@ -138,7 +138,7 @@
 
 <span class='co'># S4 method for SpatVector,character</span>
 <span class='fu'>plot</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>col</span>, <span class='va'>type</span>, mar<span class='op'>=</span><span class='cn'>NULL</span>, legend<span class='op'>=</span><span class='cn'>TRUE</span>,
-     add<span class='op'>=</span><span class='cn'>FALSE</span>, axes<span class='op'>=</span><span class='op'>!</span><span class='va'>add</span>, main<span class='op'>=</span><span class='va'>y</span>,
+     add<span class='op'>=</span><span class='cn'>FALSE</span>, axes<span class='op'>=</span><span class='op'>!</span><span class='va'>add</span>, main<span class='op'>=</span><span class='va'>y</span>, buffer<span class='op'>=</span><span class='cn'>TRUE</span>, background<span class='op'>=</span><span class='cn'>NULL</span>,
      plg<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, pax<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>nr</span>, <span class='va'>nc</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SpatVector,numeric</span>
@@ -180,6 +180,14 @@
     <tr>
       <th>axes</th>
       <td><p>logical. Draw axes?</p></td>
+    </tr>
+    <tr>
+      <th>buffer</th>
+      <td><p>logical. If <code>TRUE</code> the plotting area is slightly larger than the extent of <code>x</code></p></td>
+    </tr>
+    <tr>
+      <th>background</th>
+      <td><p>background color. Default is no color (white)</p></td>
     </tr>
     <tr>
       <th>plg</th>

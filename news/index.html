@@ -133,16 +133,20 @@
 <li>
 <code>setValues</code>/<code>init</code> failed (or even crashed R) when using a single value on a largish raster. <a href="https://github.com/rspatial/terra/issues/414"><a href='https://github.com/rspatial/terra/issues/414'>#414</a></a>
 </li>
+<li>conversion from <code>sfc</code> to <code>SpatVector</code> lost the crs. <a href="https://github.com/rspatial/terra/issues/415"><a href='https://github.com/rspatial/terra/issues/415'>#415</a></a> by Jean-Luc Dupouey</li>
 </ul>
 </div>
 <div id="enhancements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#enhancements" class="anchor"></a>enhancements</h2>
 <ul>
-<li>conversion from <code>sfc</code> to <code>SpatVector</code> lost the crs. <a href="https://github.com/rspatial/terra/issues/415"><a href='https://github.com/rspatial/terra/issues/415'>#415</a></a> by Jean-Luc Dupouey</li>
 <li>timestamps and units are now saved to file (filename.aux.json) for all raster formats</li>
 <li>
 <code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
+<li>
+<code>focal</code> now wraps around the dateline <a href="https://github.com/rspatial/terra/issues/242"><a href='https://github.com/rspatial/terra/issues/242'>#242</a></a> by Alexander Marbler</li>
+<li>
+<code>aggregate</code> now does not show a progress bar in all cases <a href="https://github.com/rspatial/terra/issues/249"><a href='https://github.com/rspatial/terra/issues/249'>#249</a></a> by Lachlan</li>
 </ul>
 </div>
 </div>
@@ -234,6 +238,8 @@
 <code>plot,SpatVector</code> now responds to the <code>range</code> argument <a href="https://github.com/rspatial/terra/issues/385"><a href='https://github.com/rspatial/terra/issues/385'>#385</a></a> by Márcia Barbosa</li>
 <li>
 <code>zonal</code> failed for user-defined functions. <a href="https://github.com/rspatial/terra/issues/393"><a href='https://github.com/rspatial/terra/issues/393'>#393</a></a> by mqueinnec</li>
+<li>
+<code>buffer</code> on a SpatRaster with no values caused a crash <a href="https://github.com/rspatial/terra/issues/416"><a href='https://github.com/rspatial/terra/issues/416'>#416</a></a> by Sebastian Brinkmann</li>
 </ul>
 </div>
 <div id="new-1" class="section level2">
