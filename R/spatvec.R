@@ -89,23 +89,25 @@ setMethod("dim", signature(x="SpatVector"),
 	}
 )
 
-setMethod("as.data.frame", signature(x="SpatVector"), 
-	function(x, geom=NULL) {
-		d <- .getSpatDF(x@ptr$df)
-		# fix empty names 
-		colnames(d) <- x@ptr$names
-		if (!is.null(geom)) {
-			geom <- match.arg(toupper(geom), c("WKT", "HEX"))
-			g <- geom(x, wkt=geom=="WKT", hex=geom=="HEX")
-			if (nrow(d) > 0) {
-				d$geometry <- g
-			} else {
-				d <- data.frame(geometry=g, stringsAsFactors=FALSE)
-			}
+
+as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NULL, ...) {
+	d <- .getSpatDF(x@ptr$df, ...)
+	# fix empty names 
+	colnames(d) <- x@ptr$names
+	if (!is.null(geom)) {
+		geom <- match.arg(toupper(geom), c("WKT", "HEX"))
+		g <- geom(x, wkt=geom=="WKT", hex=geom=="HEX")
+		if (nrow(d) > 0) {
+			d$geometry <- g
+		} else {
+			d <- data.frame(geometry=g, stringsAsFactors=FALSE, ...)
 		}
-		d
 	}
-)
+	d
+}
+
+setMethod("as.data.frame", signature(x="SpatVector"), as.data.frame.SpatVector)
+
 
 setMethod("as.list", signature(x="SpatVector"), 
 	function(x, geom=NULL) {

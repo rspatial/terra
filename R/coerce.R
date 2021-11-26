@@ -363,75 +363,55 @@ setMethod("as.vector", signature(x="SpatRaster"),
 	}
 )
 
-
-setMethod("as.matrix", signature(x="SpatRaster"), 
-	function(x, wide=FALSE) {
-		if (!hasValues(x)) {
-			error("as.matrix", "SpatRaster has no cell values")
-		}
-		if (wide) {
-			if (nlyr(x) > 1) {
-				m <- values(x, mat=TRUE)
-				m <- lapply(1:ncol(m), function(i) {
-					matrix(m[,i], nrow=nrow(x), byrow=TRUE)
-					})
-				m <- do.call(cbind, m)
-			} else {
-				m <- matrix(values(x, mat=FALSE),nrow=nrow(x),byrow=TRUE)
-			}
-		} else {
+as.matrix.SpatRaster <- function(x, ...) {
+	if (!hasValues(x)) {
+		error("as.matrix", "SpatRaster has no cell values")
+	}
+	wide <- isTRUE(list(...)$wide)
+	if (wide) {
+		if (nlyr(x) > 1) {
 			m <- values(x, mat=TRUE)
-		}
-		m
-	}
-)
-
-
-setMethod("as.data.frame", signature(x="SpatRaster"), 
-	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE) {
-		d <- NULL
-		if (xy) {
-			d <- xyFromCell(x, 1:ncell(x))
-		} 
-		if (cells) {
-			d <- cbind(cell=1:ncell(x), d)
-		}
-		if (is.null(d)) {
-			d <- values(x, dataframe=TRUE)
+			m <- lapply(1:ncol(m), function(i) {
+				matrix(m[,i], nrow=nrow(x), byrow=TRUE)
+				})
+			m <- do.call(cbind, m)
 		} else {
-			d <- data.frame(d, values(x, dataframe=TRUE))
+			m <- matrix(values(x, mat=FALSE),nrow=nrow(x),byrow=TRUE)
 		}
-		if (na.rm) {
-			d <- stats::na.omit(d) 
-			attr(d, "na.action") <- NULL
-		}
-		d
+	} else {
+		m <- values(x, mat=TRUE)
 	}
-)
+	m
+}
+setMethod("as.matrix", signature(x="SpatRaster"), as.matrix.SpatRaster)
 
 
-if (!isGeneric("as.data.table")) { setGeneric("as.data.table", function(x, ...) standardGeneric("as.data.table")) }	
-
-setMethod("as.data.table", signature(x="SpatRaster"), 
-	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE) {
-		d <- data.table::data.table()
-		if (xy) {
-			d <- cbind(d, xyFromCell(x, 1:ncell(x)))
-		} 
-		if (cells) {
-			d <- cbind(cell=1:ncell(x), d)
-		}
-		if (any(is.factor(x))) {
-			d <- cbind(d, values(x, dataframe=TRUE))
-		} else {
-			d <- cbind(d, values(x, dataframe=FALSE))
-		}
-		if (na.rm) {
-			d <- stats::na.omit(d) 
-		}
-		d
+as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=TRUE, ...) {
+#	dots <- list(...) 
+#	xy <- isTRUE(dots$xy) 
+#	cells <- isTRUE(dots$cells)
+#	na.rm <- isTRUE(dots$na.rm)
+	
+	d <- NULL
+	if (xy) {
+		d <- xyFromCell(x, 1:ncell(x))
+	} 
+	if (cells) {
+		d <- cbind(cell=1:ncell(x), d)
 	}
-)
+	if (is.null(d)) {
+		d <- values(x, dataframe=TRUE, ... )
+	} else {
+		d <- data.frame(d, values(x, dataframe=TRUE), ...)
+	}
+	if (na.rm) {
+		d <- stats::na.omit(d) 
+		attr(d, "na.action") <- NULL
+	}
+	d
+}
+setMethod("as.data.frame", signature(x="SpatRaster"), as.data.frame.SpatRaster)
+
 
 
 setAs("SpatRaster", "data.frame", 

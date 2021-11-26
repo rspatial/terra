@@ -33,7 +33,7 @@ To write chunks, begin by opening a file with \code{writeStart}, then write valu
 
 \S4method{readStop}{SpatRaster}(x)
 
-\S4method{readValues}{SpatRaster}(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE)
+\S4method{readValues}{SpatRaster}(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...)
 
 \S4method{writeStart}{SpatRaster,character}(x, filename="", overwrite=FALSE, n=4, ...)
 
@@ -61,7 +61,11 @@ fileBlocksize(x)
   
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{n}{poistive integer indicating how many copies the data may be in memory at any point in time. This is used to determine how many blocks (large) datasets need to be read}
-  \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+  \item{...}{
+	For \code{writeStart}: additional arguments for writing files as in \code{\link{writeRaster}}
+
+    For \code{readValues}: additional arguments for \code{\link{data.frame}} (and thus only relevant when \code{dataframe=TRUE})
+  }
 }
 
 \value{

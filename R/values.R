@@ -10,7 +10,7 @@ setMethod("hasValues", signature(x="SpatRaster"),
 )
 
 setMethod("readValues", signature(x="SpatRaster"), 
-function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE) {
+function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...) {
 	stopifnot(row > 0 && nrows > 0)
 	stopifnot(col > 0 && ncols > 0)
 	
@@ -21,7 +21,7 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 		colnames(v) <- names(x)
 	}
 	if (dataframe) {
-		v <- data.frame(v)
+		v <- data.frame(v, ...)
 		ff <- is.factor(x)
 		if (any(ff)) {
 			ff <- which(ff)
@@ -39,10 +39,10 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 
 
 setMethod("values", signature(x="SpatRaster"), 
-function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x)) {
+function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...) {
 	readStart(x)
 	on.exit(readStop(x))
-	v <- readValues(x, row, nrows, col, ncols, mat=mat, dataframe=dataframe)
+	v <- readValues(x, row, nrows, col, ncols, mat=mat, dataframe=dataframe, ...)
 	messages(x, "values")
 	return(v)
 }
@@ -241,8 +241,8 @@ setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"),
 
 
 setMethod("values", signature("SpatVector"), 
-	function(x) {
-		as.data.frame(x)
+	function(x, ...) {
+		as.data.frame(x, ...)
 	}
 )
 

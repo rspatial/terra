@@ -79,7 +79,7 @@ setMethod("na.omit", signature("SpatVector"),
 )
 
 
-setMethod("copy", signature("SpatVector"), 
+setMethod("deepcopy", signature("SpatVector"), 
 	function(x) {
 		x@ptr <- x@ptr$deepcopy() 
 		x

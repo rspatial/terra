@@ -13,9 +13,9 @@ Get the cell values of a SpatRaster or the attributes of a SpatVector
 }
 
 \usage{
-\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x))
+\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...)
 
-\S4method{values}{SpatVector}(x)
+\S4method{values}{SpatVector}(x, ...)
 }
 
 
@@ -28,6 +28,8 @@ Get the cell values of a SpatRaster or the attributes of a SpatVector
  \item{nrows}{positive integer. How many rows?}
  \item{col}{positive integer. Column number to start from, should be between 1 and ncol(x)}
  \item{ncols}{positive integer. How many columns? Default is the number of columns left after the start column}
+
+ \item{...}{additional arguments passed to \code{\link{data.frame}}}
 }
 
 

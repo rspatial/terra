@@ -4,13 +4,18 @@
 
 - `setValues`/`init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
 - conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
+- `buffer` on a SpatRaster with no values caused a crash [#416](https://github.com/rspatial/terra/issues/416) by Sebastian Brinkmann
 
 ## enhancements 
 
 - timestamps and units are now saved to file (filename.aux.json) for all raster formats
 - `values(x)<-` now accepts (hex coded) colors as values
-- `focal` now wraps around the dateline [#242](https://github.com/rspatial/terra/issues/242) by Alexander Marbler
+- `focal` now wraps around the dateline like raster::focal [#242](https://github.com/rspatial/terra/issues/242) by Alexander Marbler
 - `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
+- `as.data.frame-SpatRaster/SpatVector` is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
+
+
+# for S3 dispatch in e.g., as.data.table.default 
 
 
 # version 1.4-22
@@ -67,7 +72,6 @@ by Greg Schmidt
 - `rast,character` crashed if the sds was an empty character string. [#381](https://github.com/rspatial/terra/pull/381) by Dan Baston
 - `plot,SpatVector` now responds to the `range` argument [#385](https://github.com/rspatial/terra/issues/385) by Márcia Barbosa
 - `zonal` failed for user-defined functions. [#393](https://github.com/rspatial/terra/issues/393) by mqueinnec
-- `buffer` on a SpatRaster with no values caused a crash [#416](https://github.com/rspatial/terra/issues/416) by Sebastian Brinkmann
 
 
 ## new
@@ -119,7 +123,7 @@ Released on 2021-10-05
 
 ## note
 
-`terra` no longer depends on `raster`. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`. `raster` now depends on `terra` instead. 
+`terra` no longer depends on `raster`. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, `raster` now depends on `terra` instead. 
 
 
 ## enhancements
