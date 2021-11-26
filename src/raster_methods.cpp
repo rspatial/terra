@@ -299,6 +299,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	unsigned outnc = out.ncol();
 
 	//BlockSize bs = getBlockSize(4, opt.get_memfrac());
+	opt.progress *= 300;
 	BlockSize bs = getBlockSize(opt);
 	//bs.n = floor(nrow() / fact[0]); # ambiguous on solaris
 	bs.n = std::floor(static_cast <double> (nrow() / fact[0]));
