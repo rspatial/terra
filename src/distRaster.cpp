@@ -1189,6 +1189,10 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
 
 	if (d <= 0) {
 		out.setError("buffer size <= 0; nothing to compute");

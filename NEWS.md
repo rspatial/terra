@@ -3,12 +3,14 @@
 ## bug fixes
 
 - `setValues`/`init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
+- conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
 
 ## enhancements 
 
-- conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
 - timestamps and units are now saved to file (filename.aux.json) for all raster formats
 - `values(x)<-` now accepts (hex coded) colors as values
+- `focal` now wraps around the dateline [#242](https://github.com/rspatial/terra/issues/242) by Alexander Marbler
+- `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
 
 
 # version 1.4-22
@@ -65,6 +67,7 @@ by Greg Schmidt
 - `rast,character` crashed if the sds was an empty character string. [#381](https://github.com/rspatial/terra/pull/381) by Dan Baston
 - `plot,SpatVector` now responds to the `range` argument [#385](https://github.com/rspatial/terra/issues/385) by Márcia Barbosa
 - `zonal` failed for user-defined functions. [#393](https://github.com/rspatial/terra/issues/393) by mqueinnec
+- `buffer` on a SpatRaster with no values caused a crash [#416](https://github.com/rspatial/terra/issues/416) by Sebastian Brinkmann
 
 
 ## new
