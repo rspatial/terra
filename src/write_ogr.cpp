@@ -234,6 +234,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	if (s != "") {
 		SRS = new OGRSpatialReference;
 		OGRErr err = SRS->SetFromUserInput(s.c_str()); 
+#if GDAL_VERSION_NUM >= 2050000
+		SRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
+#endif
 		if (err != OGRERR_NONE) {
 			setError("crs error");
 			delete SRS;
