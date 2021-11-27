@@ -8,14 +8,11 @@
 
 ## enhancements 
 
-- timestamps and units are now saved to file (filename.aux.json) for all raster formats
+- timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)
 - `values(x)<-` now accepts (hex coded) colors as values
 - `focal` now wraps around the dateline like raster::focal [#242](https://github.com/rspatial/terra/issues/242) by Alexander Marbler
 - `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
 - `as.data.frame-SpatRaster/SpatVector` is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
-
-
-# for S3 dispatch in e.g., as.data.table.default 
 
 
 # version 1.4-22

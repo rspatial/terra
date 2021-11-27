@@ -16,6 +16,7 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 )
 
 
+
 setMethod("app", signature(x="SpatRaster"), 
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
