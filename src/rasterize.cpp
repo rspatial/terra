@@ -80,6 +80,11 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 		}	
 	}
 
+	if (opt.names.size() == nlyr()) {
+		out.setNames(opt.names);
+	}
+
+
 	if (update) {
 		out = hardCopy(opt);
 		//size_t ns = source.size();
@@ -215,7 +220,11 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out = hardCopy(opt);
 	} else {
 		out = geometry(1);
-		out.setNames({field});
+		if (field == "") {
+			out.setNames({"layer"});
+		} else {
+			out.setNames({field});
+		}
 	}
 
 	if (ispol && touches && add) {
