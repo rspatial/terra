@@ -5,6 +5,8 @@
 - `setValues`/`init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
 - conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
 - `buffer` on a SpatRaster with no values caused a crash [#416](https://github.com/rspatial/terra/issues/416) by Sebastian Brinkmann
+- `writeVector` now assumes "traditional GIS order" (long/lat) if the CRS specifies lat/long. [#333](
+https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 
 ## enhancements 
 

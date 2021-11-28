@@ -43,6 +43,7 @@ connect_dateline <- function(x) {
 
 	xx <- shift(x[west,], 360, 0)
 	yy <- x[east, ]
+	#zz <- x[-c(east, west), ]
 	px <- py <- c()
 	hasDF <- ncol(x) > 0
 	for (i in 1:nrow(xx)) {
@@ -77,3 +78,8 @@ connect_dateline <- function(x) {
 	do.call(rbind, out)
 }
 
+
+connect_dateline2 <- function(x) {
+
+
+}

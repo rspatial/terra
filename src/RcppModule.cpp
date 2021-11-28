@@ -386,6 +386,9 @@ RCPP_MODULE(spat){
 		.method("sample", &SpatVector::sample)
 		.method("sampleGeom", &SpatVector::sample_geom)
 		.method("remove_duplicate_nodes", &SpatVector::remove_duplicate_nodes)
+		
+		.method("cross_dateline", &SpatVector::cross_dateline)
+		.method("fix_lonlat_overflow", &SpatVector::fix_lonlat_overflow)
 	;
 
 

@@ -1703,7 +1703,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 	if (left) {
 		addx = -addx;
 	}
-	SpatRaster out = geometry(nlyr(), true);
+	SpatRaster out = geometry(nlyr(), true, true, true);
 	SpatExtent outext = out.getExtent();
 	outext.xmin = outext.xmin + addx;
 	outext.xmax = outext.xmax + addx;
@@ -3217,6 +3217,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 
 
 
+
 SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
@@ -3263,22 +3264,28 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 		}
 	}
 
+
 	opt.set_filenames({""});
  	if (!out.writeStart(opt)) { return out; }
 	size_t nc = ncol();
 	size_t ncps = 1;
 	std::vector<double> above(nc, NAN);
 	std::vector<std::vector<size_t>> rcl(2);
+
 	for (size_t i = 0; i < out.bs.n; i++) {
-        v = readBlock(out.bs, i);
+		v = readBlock(out.bs, i);
 		if (zeroAsNA) {
 			std::replace(v.begin(), v.end(), 0.0, (double)NAN);
 		}
-        broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl);
+		broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl);
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
 	out.writeStop();
 	readStop();
+
+//	if (is_global_lonlat()) {
+//  read the first and last column and reclass
+//	} 
 
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {

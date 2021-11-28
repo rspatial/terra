@@ -261,7 +261,7 @@ class SpatVector {
         SpatVector buffer(std::vector<double> d, unsigned quadsegs);
 		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs, bool no_multipolygons);
 
-		SpatVector centroid();
+		SpatVector centroid(bool check_lonlat);
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
@@ -295,6 +295,7 @@ class SpatVector {
 
 		SpatVector cbind(SpatDataFrame d);
 		void fix_lonlat_overflow();
+		SpatVector cross_dateline(bool &fixed);
 
 };
 

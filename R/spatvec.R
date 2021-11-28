@@ -155,7 +155,7 @@ setMethod("fillHoles", signature(x="SpatVector"),
 
 setMethod("centroids", signature(x="SpatVector"), 
 	function(x) {
-		x@ptr <- x@ptr$centroid()
+		x@ptr <- x@ptr$centroid(TRUE)
 		messages(x)
 	}
 )

@@ -1696,11 +1696,59 @@ SpatVector SpatVector::nearest_point() {
 	return out;
 }
 
+SpatVector SpatVector::cross_dateline(bool &fixed) {
+	SpatVector out;
+	fixed = false;
+	if (type() == "points") {
+		return out;
+	}
+	
+	for (size_t i=0; i<geoms.size(); i++) {
+		if ((geoms[i].size() > 1) && 
+			((geoms[i].extent.xmax - geoms[i].extent.xmin) > 180)) {
+			SpatGeom g = geoms[i];
+			for (size_t j=0; j<g.size(); j++) {
+				if (g.parts[j].extent.xmax < 0) {
+					for (size_t k=0; k<g.parts[j].x.size(); k++) {
+						g.parts[j].x[k] += 360;
+					}
+					for (size_t k=0; k<g.parts[j].holes.size(); k++) {
+						for (size_t m=0; m<g.parts[j].holes[k].x.size(); m++) {
+							g.parts[j].holes[k].x[m] += 360;
+						}
+					}
+					g.parts[j].extent.xmin += 360;
+					g.parts[j].extent.xmax += 360;
+					g.setPart(g.parts[j], j);
+					fixed = true;
+				}
+			}
+			out.addGeom(g);
+		} else {
+			out.addGeom(geoms[i]);
+		}
+	}
+	out.srs = srs;
+	out.df = df;
+	return out;
+}
 
 
-SpatVector SpatVector::centroid() {
+
+
+SpatVector SpatVector::centroid(bool check_lonlat) {
 
 	SpatVector out;
+	
+	if (check_lonlat && could_be_lonlat()) {
+		bool changed = false;
+		SpatVector v = cross_dateline(changed);
+		if (changed) {
+			out = v.centroid(false);
+			out.fix_lonlat_overflow();
+			return out;
+		}
+	}
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
@@ -1721,6 +1769,7 @@ SpatVector SpatVector::centroid() {
 	out.df = df;
 	return out;
 }
+
 
 SpatVector SpatVector::unaryunion() {
 	SpatVector out;

@@ -1,7 +1,7 @@
 
 .as.raster.continuous <- function(out, x, type) {
 
-	Z <- as.matrix(x, TRUE)
+	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 
 	z <- stats::na.omit(round(as.vector(Z), 12))
@@ -51,7 +51,7 @@
 
 .as.raster.classes <- function(out, x, ...) {
 
-	Z <- as.matrix(x, TRUE)
+	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 	if (all(is.na(Z))) {
 		out$values = FALSE
@@ -204,7 +204,7 @@
 }
 
 .as.raster.interval <- function(out, x, ...) {
-	Z <- as.matrix(x, TRUE)
+	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 	out <- .generic.interval(out, Z)
 	Z[] <- out$leg$fill[out$vcut]
