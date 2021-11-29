@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>merge SpatRasters by timelines — mergeTimelines • terra</title>
+<title>merge SpatRasters by timelines to create a single timeseries — mergeTimelines • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="merge SpatRasters by timelines — mergeTimelines" />
-<meta property="og:description" content="merge SpatRasters by timelines" />
+<meta property="og:title" content="merge SpatRasters by timelines to create a single timeseries — mergeTimelines" />
+<meta property="og:description" content="merge SpatRasters with partly overlapping timestamps to create a single time series. If there is no overlap there is no point in using this functoin (use c instead).
+Time gaps are not filled" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -119,13 +120,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>merge SpatRasters by timelines</h1>
+    <h1>merge SpatRasters by timelines to create a single timeseries</h1>
     
     <div class="hidden name"><code>mergeTimelines.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>merge SpatRasters by timelines</p>
+    <p>merge SpatRasters with partly overlapping timestamps to create a single time series. If there is no overlap there is no point in using this functoin (use <code><a href='c.html'>c</a></code> instead).</p>
+<p>Time gaps are not filled</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRasterCollection</span>
@@ -157,14 +159,14 @@
     <p>SpatRaster</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>s</span>, <span class='va'>s</span><span class='op'>)</span>
-<span class='fu'><a href='time.html'>time</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2001-01-01"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>5</span>
-<span class='va'>s1</span> <span class='op'>&lt;-</span> <span class='va'>s</span><span class='op'>/</span><span class='fl'>10</span>
+    <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
+<span class='va'>s1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>r</span><span class='op'>)</span>
+<span class='fu'><a href='time.html'>time</a></span><span class='op'>(</span><span class='va'>s1</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2001-01-01"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>5</span>
+<span class='va'>s1</span> <span class='op'>&lt;-</span> <span class='va'>s1</span><span class='op'>/</span><span class='fl'>10</span>
 <span class='fu'><a href='time.html'>time</a></span><span class='op'>(</span><span class='va'>s1</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2001-01-07"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>5</span>
-<span class='va'>s2</span> <span class='op'>&lt;-</span> <span class='va'>s</span><span class='op'>*</span><span class='fl'>10</span>
+<span class='va'>s2</span> <span class='op'>&lt;-</span> <span class='va'>s1</span><span class='op'>*</span><span class='fl'>10</span>
 <span class='fu'><a href='time.html'>time</a></span><span class='op'>(</span><span class='va'>s2</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2001-01-05"</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>5</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sds.html'>sds</a></span><span class='op'>(</span><span class='va'>s</span>, <span class='va'>s1</span>, <span class='va'>s2</span><span class='op'>)</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sds.html'>sds</a></span><span class='op'>(</span><span class='va'>s1</span>, <span class='va'>s1</span>, <span class='va'>s2</span><span class='op'>)</span>
 
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>mergeTimelines</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>mean</span><span class='op'>)</span>
 </div></pre>
