@@ -7,6 +7,7 @@ if (!isGeneric("clearance")) {setGeneric("clearance", function(x, ...) standardG
 if (!isGeneric("width")) {setGeneric("width", function(x, ...) standardGeneric("width"))}
 if (!isGeneric("simplify")) {setGeneric("simplify", function(x, ...) standardGeneric("simplify"))}
 if (!isGeneric("mergeLines")) {setGeneric("mergeLines", function(x, ...) standardGeneric("mergeLines"))}
+if (!isGeneric("mergeTimelines")) {setGeneric("mergeTimelines", function(x, ...) standardGeneric("mergeTimelines"))}
 if (!isGeneric("makeNodes")) {setGeneric("makeNodes", function(x, ...) standardGeneric("makeNodes"))}
 if (!isGeneric("removeDupNodes")) {setGeneric("removeDupNodes", function(x, ...) standardGeneric("removeDupNodes"))}
 if (!isGeneric("snap")) {setGeneric("snap", function(x, ...) standardGeneric("snap"))}

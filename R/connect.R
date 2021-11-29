@@ -79,7 +79,3 @@ connect_dateline <- function(x) {
 }
 
 
-connect_dateline2 <- function(x) {
-
-
-}
