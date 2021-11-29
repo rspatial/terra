@@ -3,7 +3,7 @@
 \docType{methods}
 
 \alias{mergeTimelines}
-\alias{mergeTimelines,SpatRasterCollection-method}
+\alias{mergeTimelines,SpatRasterDataset-method}
 
 \title{ 
 merge SpatRasters by timelines to create a single timeseries
@@ -16,7 +16,7 @@ Time gaps are not filled
 }
 
 \usage{
-\S4method{mergeTimelines}{SpatRasterCollection}(x, fun=mean, filename="", ...)
+\S4method{mergeTimelines}{SpatRasterDataset}(x, fun=mean, filename="", ...)
 }
 
 \arguments{
