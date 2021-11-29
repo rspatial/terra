@@ -136,13 +136,15 @@
 <li>conversion from <code>sfc</code> to <code>SpatVector</code> lost the crs. <a href="https://github.com/rspatial/terra/issues/415"><a href='https://github.com/rspatial/terra/issues/415'>#415</a></a> by Jean-Luc Dupouey</li>
 <li>
 <code>buffer</code> on a SpatRaster with no values caused a crash <a href="https://github.com/rspatial/terra/issues/416"><a href='https://github.com/rspatial/terra/issues/416'>#416</a></a> by Sebastian Brinkmann</li>
+<li>
+<code>writeVector</code> now assumes “traditional GIS order” (long/lat) if the CRS specifies lat/long. <a href="https://github.com/rspatial/terra/issues/333"><a href='https://github.com/rspatial/terra/issues/333'>#333</a></a> by Agustin Lobo</li>
 </ul>
 </div>
 <div id="enhancements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#enhancements" class="anchor"></a>enhancements</h2>
 <ul>
-<li>timestamps and units are now saved to file (filename.aux.json) for all raster formats</li>
+<li>timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)</li>
 <li>
 <code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
 <li>
