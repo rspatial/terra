@@ -39,8 +39,8 @@ is.proj <- function(crs) {
 		} else {
 			r <- d$name
 		}
-		if (!is.na(d$EPSG)) {
-			r <- paste0(r, " (EPSG:", d$EPSG, ")")
+		if (!is.na(d$code)) {
+			r <- paste0(r, " (", d$authority, ":", d$code, ")")
 		} 
 	} 
 	r
@@ -50,7 +50,7 @@ is.proj <- function(crs) {
 
 .srs_describe <- function(srs) {
 	info <- .SRSinfo(srs)
-	names(info) <- c("name", "EPSG", "area", "extent")
+	names(info) <- c("name", "authority", "code", "area", "extent")
 	d <- data.frame(t(info), stringsAsFactors=FALSE)
 	d$area <- gsub("\\.$", "", d$area)
 	d[d == ""] <- NA

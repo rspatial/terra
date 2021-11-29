@@ -41,10 +41,16 @@ std::vector<std::string> getCRSname(std::string s) {
 	if (value != NULL) {
 		name = value;
 	}
-	std::string epsg = "";
+	std::string aname = "";
+	value = x.GetAuthorityName(node.c_str());
+	if (value != NULL) {
+		aname = value;
+	}
+
+	std::string acode = "";
 	value = x.GetAuthorityCode(node.c_str());
 	if (value != NULL) {
-		epsg = value;
+		acode = value;
 	}
 		
 	double west, south, east, north;
@@ -64,7 +70,7 @@ std::vector<std::string> getCRSname(std::string s) {
 		}
 	}
 	#endif
-	return {name, epsg, aoi, box};
+	return {name, aname, acode, aoi, box};
 }
 
 // [[Rcpp::export(name = ".getLinearUnits")]]
