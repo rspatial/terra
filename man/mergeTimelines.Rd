@@ -6,11 +6,13 @@
 \alias{mergeTimelines,SpatRasterCollection-method}
 
 \title{ 
-merge SpatRasters by timelines
+merge SpatRasters by timelines to create a single timeseries
 }
 
 \description{
-merge SpatRasters by timelines
+merge SpatRasters with partly overlapping timestamps to create a single time series. If there is no overlap there is no point in using this functoin (use \code{\link{c}} instead).
+
+Time gaps are not filled 
 }
 
 \usage{
@@ -30,14 +32,14 @@ SpatRaster
 
 
 \examples{
-s <- rast(system.file("ex/logo.tif", package="terra"))   
-s <- c(s, s)
-time(s) <- as.Date("2001-01-01") + 0:5
-s1 <- s/10
+r <- rast(system.file("ex/logo.tif", package="terra"))   
+s1 <- c(r, r)
+time(s1) <- as.Date("2001-01-01") + 0:5
+s1 <- s1/10
 time(s1) <- as.Date("2001-01-07") + 0:5
-s2 <- s*10
+s2 <- s1*10
 time(s2) <- as.Date("2001-01-05") + 0:5
-x <- sds(s, s1, s2)
+x <- sds(s1, s1, s2)
 
 m <- mergeTimelines(x, mean)
 }

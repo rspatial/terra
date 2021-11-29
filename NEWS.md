@@ -10,12 +10,15 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 
 ## enhancements 
 
-- timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)
 - `values(x)<-` now accepts (hex coded) colors as values
 - `focal` now wraps around the dateline like raster::focal [#242](https://github.com/rspatial/terra/issues/242) by Alexander Marbler
 - `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
 - `as.data.frame-SpatRaster/SpatVector` is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
 
+## new 
+
+- timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)
+- new method `mergeTimelines` to combine multiple rasters, perhaps partly overlapping in time, into a single time series
 
 # version 1.4-22
 
@@ -29,7 +32,7 @@ Released on 2021-11-24
 
 - `app` grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson 
 - `terra` now installs, again, with older versions of GEOS [#406](https://github.com/rspatial/terra/pull/406) by fparyani
-- `terra` did not install with Clang on CRAN/OSX.
+- `terra` did not install with Clang on CRAN/OSX due to using C++13 idiom.
 
 
 ## enhancements 
