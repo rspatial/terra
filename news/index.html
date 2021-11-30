@@ -152,6 +152,8 @@
 <code>aggregate</code> now does not show a progress bar in all cases <a href="https://github.com/rspatial/terra/issues/249"><a href='https://github.com/rspatial/terra/issues/249'>#249</a></a> by Lachlan</li>
 <li>
 <code>as.data.frame-SpatRaster/SpatVector</code> is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as <code>data.table::as.data.table</code>. See <a href="https://github.com/rspatial/terra/issues/284"><a href='https://github.com/rspatial/terra/issues/284'>#284</a></a> by Patrick Schratz</li>
+<li>
+<code>crs</code> now shows the correct authority if it is not EPSG. <a href="https://github.com/rspatial/terra/issues/419"><a href='https://github.com/rspatial/terra/issues/419'>#419</a></a> by Matthew Williamson</li>
 </ul>
 </div>
 <div id="new" class="section level2">
@@ -159,7 +161,9 @@
 <a href="#new" class="anchor"></a>new</h2>
 <ul>
 <li>timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)</li>
-<li>new method <code>mergeTimelines</code> to combine multiple rasters, perhaps partly overlapping in time, into a single time series</li>
+<li>new method <code>mergeTime</code> to combine multiple rasters, perhaps partly overlapping in time, into a single time series</li>
+<li>new method <code>fillTime</code> that can add empty layers in between existing layers to assure that the time step between layers is constant</li>
+<li>new method <code>approxNA</code> to fill in missing values by cell across layers</li>
 </ul>
 </div>
 </div>

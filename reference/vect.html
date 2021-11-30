@@ -252,7 +252,8 @@ SpatVectors can also be created from &quot;Well Known Text&quot;, and from spati
 </div><div class='output co'>#&gt;  class       : SpatVector 
 #&gt;  geometry    : polygons 
 #&gt;  dimensions  : 3, 0  (geometries, attributes)
-#&gt;  extent      : -180, 160, -60, 60  (xmin, xmax, ymin, ymax)</div><div class='output co'>#&gt; <span class='error'>Error in names(info) &lt;- c("name", "authority", "code", "area", "extent"): 'names' attribute [5] must be the same length as the vector [4]</span></div><div class='input'>
+#&gt;  extent      : -180, 160, -60, 60  (xmin, xmax, ymin, ymax)
+#&gt;  coord. ref. :  </div><div class='input'>
 <span class='va'>z</span><span class='op'>[</span><span class='va'>z</span><span class='op'>[</span>, <span class='st'>"hole"</span><span class='op'>]</span><span class='op'>==</span><span class='fl'>1</span>, <span class='st'>"object"</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
 <span class='va'>lns</span> <span class='op'>&lt;-</span> <span class='fu'>vect</span><span class='op'>(</span><span class='va'>z</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>, <span class='st'>"lines"</span><span class='op'>)</span>
 <span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
