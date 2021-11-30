@@ -45,7 +45,7 @@ setMethod("mergeTime", signature(x="SpatRasterDataset"),
 		if (any(sapply(tim, function(i) any(is.na(i))))) {
 			terra:::error("mergeTime", "NA in time values")
 		}
-		if (any(sapply(tim, function(i) any(table(tm)>1)))) {
+		if (any(sapply(tim, function(i) any(table(i)>1)))) {
 			terra:::error("mergeTime", "duplicate time values")		
 		}
 		us <- sapply(tim, is.unsorted)
