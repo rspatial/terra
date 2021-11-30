@@ -7,7 +7,8 @@ if (!isGeneric("clearance")) {setGeneric("clearance", function(x, ...) standardG
 if (!isGeneric("width")) {setGeneric("width", function(x, ...) standardGeneric("width"))}
 if (!isGeneric("simplify")) {setGeneric("simplify", function(x, ...) standardGeneric("simplify"))}
 if (!isGeneric("mergeLines")) {setGeneric("mergeLines", function(x, ...) standardGeneric("mergeLines"))}
-if (!isGeneric("mergeTimelines")) {setGeneric("mergeTimelines", function(x, ...) standardGeneric("mergeTimelines"))}
+if (!isGeneric("mergeTime")) {setGeneric("mergeTime", function(x, ...) standardGeneric("mergeTime"))}
+if (!isGeneric("fillTime")) {setGeneric("fillTime", function(x, ...) standardGeneric("fillTime"))}
 if (!isGeneric("makeNodes")) {setGeneric("makeNodes", function(x, ...) standardGeneric("makeNodes"))}
 if (!isGeneric("removeDupNodes")) {setGeneric("removeDupNodes", function(x, ...) standardGeneric("removeDupNodes"))}
 if (!isGeneric("snap")) {setGeneric("snap", function(x, ...) standardGeneric("snap"))}
@@ -130,6 +131,7 @@ if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, 
 if (!isGeneric("%in%")) { setGeneric("%in%", function(x, table)	standardGeneric("%in%")) }
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}
 if (!isGeneric("animate")) { setGeneric("animate", function(x, ...) standardGeneric("animate")) }
+if (!isGeneric("approxNA")) {setGeneric("approxNA", function(x, ...) standardGeneric("approxNA"))}	
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names = NULL, optional = FALSE, ...) standardGeneric("as.data.frame")) }	
 
 

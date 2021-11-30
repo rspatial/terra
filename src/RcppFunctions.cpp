@@ -26,7 +26,7 @@ std::vector<std::string> getCRSname(std::string s) {
 	OGRSpatialReference x;
 	OGRErr erro = x.SetFromUserInput(s.c_str());
 	if (erro != OGRERR_NONE) {
-		return {"unknown", "", "", ""};
+		return {"unknown", "", "", "", ""};
 	}
 	std::string node;
 	if (x.IsGeographic()) {

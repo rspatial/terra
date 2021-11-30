@@ -250,6 +250,7 @@
 		if (reset) on.exit(graphics::par(mar=old.mar))
 
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
+		main <- as.character(main)
 		if (main != "") {
 			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)		
 		}
@@ -492,7 +493,12 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 		maxcell=maxcell/(nl/2)
 
 		if (missing("main")) {
-			main <- names(x)
+			tm <- time(x)
+			if (!any(is.na(tm))) {
+				main <- as.character(time(x))
+			} else {
+				main <- names(x)
+			}
 		} else {
 			main <- rep_len(main, nl)
 		}

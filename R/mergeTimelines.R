@@ -1,16 +1,56 @@
 
- 
-if (!isGeneric("mergeTimelines")) {setGeneric("mergeTimelines", function(x, ...) standardGeneric("mergeTimelines"))}
+if (!isGeneric("fillTime")) {setGeneric("fillTime", function(x, ...) standardGeneric("fillTime"))}
 
-setMethod("mergeTimelines", signature(x="SpatRasterDataset"), 
+setMethod("fillTime", signature(x="SpatRaster"), 
+	function(x, filename="", ...)  {
+		tm <- time(x)
+		if (any(is.na(tm))) {
+			terra:::error("fillTime", "NA in time values")		
+		}
+		if (any(table(tm)>1)) {
+			terra:::error("fillTime", "duplicate time values")		
+		}
+		if (is.unsorted(tm)) {
+			warn("mergeTimelines", paste("sorting SpatRaster", paste(us, collapse=", ")))
+			ord <- order(tm)
+			x <- x[[ ord ]]	
+			tm <- tm[ord]
+		}
+		d <- data.frame(time=seq(min(tm), max(tm), min(diff(tm))))
+		d <- merge(d, data.frame(time=tm, tm=tm), by=1, all.x=TRUE)
+		b <- (!is.na(d[,2])) + 0
+		b <- cumsum(b) * b
+		if (any(b==0)) {
+			mx <- max(b)
+			b[b==0] <- mx+1
+			r <- init(rast(x, nlyr=1), NA)
+			x <- c(x, r)
+			x <- x[[b]]
+		} 
+		time(x) <- d[,1]
+		if (filename != "") {
+			writeRaster(x, ...)
+		} else {
+			x
+		}
+	}	
+)
+
+ 
+if (!isGeneric("mergeTime")) {setGeneric("mergeTime", function(x, ...) standardGeneric("mergeTime"))}
+
+setMethod("mergeTime", signature(x="SpatRasterDataset"), 
 	function(x, fun="mean", filename="", ...)  {
 		tim <- lapply(1:length(x), function(i) time(x[i]))
 		if (any(sapply(tim, function(i) any(is.na(i))))) {
-			terra:::error("mergeTimelines", "NA detected in time values")
+			terra:::error("mergeTime", "NA in time values")
+		}
+		if (any(sapply(tim, function(i) any(table(tm)>1)))) {
+			terra:::error("mergeTime", "duplicate time values")		
 		}
 		us <- sapply(tim, is.unsorted)
 		if (any(us)) {
-			warn("mergeTimelines", paste("sorting SpatRaster", paste(us, collapse=", ")))
+			warn("mergeTime", paste("sorting SpatRaster", paste(us, collapse=", ")))
 			us <- which(us)
 			for (i in us) {
 				ord <- order(tim[[i]])

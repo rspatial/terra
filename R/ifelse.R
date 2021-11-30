@@ -8,7 +8,7 @@ setMethod("ifel", signature(test="SpatRaster"),
 		no_num <- FALSE
 		yes_num <- FALSE
 		if (!inherits(no, "SpatRaster")) {
-							# logical includes default NA 
+			# logical includes default NA 
 			if (!(is.numeric(no) || is.logical(no))) { 
 				error("ifel", "argument 'no' must be a SpatRaster, numeric or logical")
 			}

@@ -1,27 +1,27 @@
-\name{mergeTimelines}
+\name{mergeTime}
 
 \docType{methods}
 
-\alias{mergeTimelines}
-\alias{mergeTimelines,SpatRasterDataset-method}
+\alias{mergeTime}
+\alias{mergeTime,SpatRasterDataset-method}
 
 \title{ 
 merge SpatRasters by timelines to create a single timeseries
 }
 
 \description{
-merge SpatRasters with partly overlapping timestamps to create a single time series. If there is no overlap there is no point in using this functoin (use \code{\link{c}} instead).
+Combine SpatRasters with partly overlapping time-stamps to create a single time series. If there is no overlap between the SpatRasters there is no point in using this function (use \code{\link{c}} instead). 
 
-Time gaps are not filled 
+Also note that time gaps are not filled. You can use \code{\link{fillTime}} to do that.
 }
 
 \usage{
-\S4method{mergeTimelines}{SpatRasterDataset}(x, fun=mean, filename="", ...)
+\S4method{mergeTime}{SpatRasterDataset}(x, fun=mean, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRasterDataset}
-  \item{fun}{reducing function}
+  \item{fun}{A function that reduces a vector to a single number, such as \code{mean} or \code{min}}
   \item{filename}{character. Output filename}
   \item{...}{list with named options for writing files as in \code{\link{writeRaster}}}
 } 
@@ -41,7 +41,7 @@ s2 <- s1*10
 time(s2) <- as.Date("2001-01-05") + 0:5
 x <- sds(s1, s1, s2)
 
-m <- mergeTimelines(x, mean)
+m <- mergeTime(x, mean)
 }
 
 \keyword{methods}

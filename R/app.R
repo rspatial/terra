@@ -140,7 +140,6 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			}
 		}
 	}
-	readStop(x)	
 	writeStop(out)
 }
 )

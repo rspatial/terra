@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names, time) {
+new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names, time, units) {
 		if (missing(extent)) {
 			e <- c(xmin, xmax, ymin, ymax) 
 		} else {
@@ -35,26 +35,25 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 		if (!missing(names)) {
 			names(r) <- names
 		}
-
 		if (!missing(vals)) {
-			if (length(vals) == ncell(r)) {
-				values(r) <- vals
-			} else {
-				values(r) <- rep_len(vals, ncell(r))
-			}
+			values(r) <- vals
 		}
 		if (!missing(time)) {
 			time(r) <- time
+		}
+		if (!missing(units)) {
+			time(r) <- units
 		}
 		r
 }
 
 
 setMethod("rast", signature(x="missing"),
-	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, names, time) {
-		new_rast(nrows, ncols, nlyrs, xmin, xmax, ymin, ymax, crs, extent, resolution, vals, names, time)
+	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, names, time, units) {
+		new_rast(nrows, ncols, nlyrs, xmin, xmax, ymin, ymax, crs, extent, resolution, vals, names, time, units)
 	}
 )
+
 
 setMethod("rast", signature(x="stars"),
 	function(x) {
