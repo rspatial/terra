@@ -11,7 +11,7 @@ setMethod("fillTime", signature(x="SpatRaster"),
 			terra:::error("fillTime", "duplicate time values")		
 		}
 		if (is.unsorted(tm)) {
-			warn("mergeTimelines", paste("sorting SpatRaster", paste(us, collapse=", ")))
+			warn("mergeTimelines", "sorting layers")
 			ord <- order(tm)
 			x <- x[[ ord ]]	
 			tm <- tm[ord]
@@ -50,7 +50,7 @@ setMethod("mergeTime", signature(x="SpatRasterDataset"),
 		}
 		us <- sapply(tim, is.unsorted)
 		if (any(us)) {
-			warn("mergeTime", paste("sorting SpatRaster", paste(us, collapse=", ")))
+			warn("mergeTime", paste("sorting layers of SpatRaster:", paste(us, collapse=", ")))
 			us <- which(us)
 			for (i in us) {
 				ord <- order(tim[[i]])
