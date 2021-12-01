@@ -314,7 +314,7 @@ class SpatRaster {
 // constructors
 ////////////////////////////////////////////////////
 
-		SpatRaster();
+		SpatRaster(bool source);
 		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
 		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> options, std::vector<size_t> x);

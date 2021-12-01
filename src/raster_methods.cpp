@@ -2391,7 +2391,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
-	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "rms", "sd", "sdpop"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "rms", "sd", "std", "stdpop"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return(out);
@@ -2403,7 +2403,8 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 	}
 
 	std::string sdfun = fun;
-	if ((fun == "sdpop") || (fun == "sd")) {
+	if ((fun == "std") || (fun == "sdpop")) {
+		sdfun = "std";
 		fun = "sd";
 	}
 	std::vector<double> stats(nlyr());
@@ -2450,12 +2451,11 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 				double mn = stats[lyr] / n[lyr];
 				double mnsq = mn * mn;
 				double mnsumsq = stats2[lyr] / n[lyr];
-				if (sdfun == "sdpop") {
+				if (sdfun == "std") {
 					stats[lyr] = sqrt(mnsumsq - mnsq);
 				} else {
 					stats[lyr] = sqrt((mnsumsq - mnsq) * n[lyr]/(n[lyr]-1));
 				}
-
 			} else {
 				stats[lyr] = NAN;
 			}

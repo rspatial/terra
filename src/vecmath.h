@@ -166,7 +166,7 @@ T vsum(std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vsum2(std::vector<T>& v, bool narm) {
-	T x = v[0];
+	T x = v[0] * v[0];
 	if (narm) {		
 		for (size_t i=1; i<v.size(); i++) {
 			if (is_NA(x)) {

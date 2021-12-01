@@ -530,7 +530,7 @@ setMethod("project", signature(x="SpatRaster"),
 				y <- as.character(crs(y))
 			}
 			#x@ptr <- x@ptr$warpcrs(y, method, opt)
-			x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
+			x@ptr <- x@ptr$warp(SpatRaster$new(TRUE), y, method, mask, FALSE, opt)
 		}
 		messages(x, "project")
 	}
