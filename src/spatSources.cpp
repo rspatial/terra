@@ -46,13 +46,29 @@ SpatRasterSource::SpatRasterSource() {
 
 
 
-SpatRaster SpatRaster::combineSources(SpatRaster x) {
+SpatRaster SpatRaster::combineSources(SpatRaster x, bool warn) {
 	
+	SpatRaster out = geometry();
 	if (!hasValues()) {
-		return x.deepCopy();
+		if (!x.hasValues()) {
+			if (out.compare_geom(x, false, false, 0.1)) {
+				out.source.insert(out.source.end(), x.source.begin(), x.source.end());
+				out.setNames(out.getNames());
+			} else {
+				out = x.deepCopy();
+				if (warn) {
+					out.addWarning("both rasters were empty, but had different geometries. The first one was ignored");
+				}
+			}
+		} else {
+			out = x.deepCopy();
+			if (warn) {
+				out.addWarning("the first raster was empty and ignored");
+			}
+		}
+		return out;
 	}
 
-	SpatRaster out = geometry();
 	if (!out.compare_geom(x, false, false, 0.1)) {
 		return out;
 	}

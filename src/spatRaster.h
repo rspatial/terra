@@ -341,7 +341,7 @@ class SpatRaster {
 
 
 		void addSource(SpatRaster x);	
-		SpatRaster combineSources(SpatRaster x);
+		SpatRaster combineSources(SpatRaster x, bool warn);
 		void combine(SpatRaster x);
 		
 		SpatRaster subset(std::vector<unsigned> lyrs, SpatOptions &opt);

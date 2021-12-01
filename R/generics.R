@@ -247,7 +247,7 @@ setMethod("c", signature(x="SpatRaster"),
 		dots <- list(...)
 		for (i in dots) {
 			if (inherits(i, "SpatRaster")) {
-				x@ptr <- x@ptr$combineSources(i@ptr)
+				x@ptr <- x@ptr$combineSources(i@ptr, warn)
 				if (x@ptr$messages$has_error) {
 					messages(x, "c")
 					return()
@@ -258,11 +258,6 @@ setMethod("c", signature(x="SpatRaster"),
 		}
 		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
 		messages(x, "c")
-		if (warn) {
-			if ((!hv) && (hasValues(x))) {
-				warn("c", "x was empty and thus ignored")
-			}
-		}
 		x
 	}
 )
@@ -537,7 +532,7 @@ setMethod("project", signature(x="SpatRaster"),
 				y <- as.character(crs(y))
 			}
 			#x@ptr <- x@ptr$warpcrs(y, method, opt)
-			x@ptr <- x@ptr$warp(SpatRaster$new(TRUE), y, method, mask, FALSE, opt)
+			x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
 		}
 		messages(x, "project")
 	}
