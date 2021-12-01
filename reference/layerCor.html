@@ -179,16 +179,25 @@
 <span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"pearson"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $pearson
 #&gt;             red     green      blue
-#&gt; red   1.0014992 0.9996231 0.9516742
-#&gt; green 0.9996231 1.0015607 0.9673666
-#&gt; blue  0.9516742 0.9673666 1.0016812
+#&gt; red   1.0000000 0.9980961 0.9501633
+#&gt; green 0.9980961 1.0000000 0.9658011
+#&gt; blue  0.9501633 0.9658011 1.0000000
 #&gt; 
 #&gt; $mean
 #&gt;      red    green     blue 
 #&gt; 182.2855 185.3509 192.8046 
 #&gt; </div><div class='input'>
 <span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"cov"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in data.frame(value, row.names = rn, check.names = FALSE): row names supplied are of the wrong length</span></div><div class='input'>
+</div><div class='output co'>#&gt; $covariance
+#&gt;            red    green     blue
+#&gt; red   5564.371 5443.405 4993.165
+#&gt; green 5443.405 5345.403 4974.478
+#&gt; blue  4993.165 4974.478 4962.942
+#&gt; 
+#&gt; $mean
+#&gt;      red    green     blue 
+#&gt; 182.2855 185.3509 192.8046 
+#&gt; </div><div class='input'>
 <span class='co'># weigh by column number</span>
 <span class='va'>w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>b</span>, fun<span class='op'>=</span><span class='st'>"col"</span><span class='op'>)</span>
 <span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"weighted.cov"</span>, w<span class='op'>=</span><span class='va'>w</span><span class='op'>)</span>
