@@ -22,11 +22,10 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 	cpp <- FALSE
 	txtfun <- .makeTextFun(fun)
 	if (is.character(txtfun)) { 
-		cpp <- TRUE
-	}
-
-	if (cpp) {
-		opt <- spatOptions(filename, overwrite, wopt)
+		if (is.null(wopt$names)) {
+			wopt$names <- paste0("focal_", txtfun)
+		}
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		narm <- isTRUE(list(...)$na.rm)
 		x@ptr <- x@ptr$focal3(w, m, fillvalue, narm, na.only[1], txtfun, expand, opt)
 		messages(x, "focal")
@@ -43,7 +42,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 			msz <- sum(k)
 		}
 		
-		usenarm = TRUE
+		usenarm <- TRUE
 		test <- apply(rbind(1:prod(w)), 1, fun, ...)
 
 		nl <- nlyr(x)
@@ -54,7 +53,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 			transp <- TRUE
 			nms <- rownames(test)
 		} else if (isTRUE(ncol(test) > 1)) {
-			nms <- rownames(test)
+			nms <- colnames(test)
 		}
 		
 		out <- rast(x, nlyr=outnl)
@@ -145,7 +144,11 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 	test <- fun(1:msz, ..., ni=1, nw=msz)
 	nl <- nlyr(x)
 	outnl <- nl * length(test)
-	
+
+	if (is.null(wopt$names )) {
+		wopt$names <- colnames(test)
+	}
+
 	out <- rast(x, nlyr=outnl)
 	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
 
