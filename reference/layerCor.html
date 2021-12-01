@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Options — options • terra</title>
+<title>Correlation and (weighted) covariance — layerCor • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Options — options" />
-<meta property="og:description" content="Class and methods for showing and setting general options for terra." />
+<meta property="og:title" content="Correlation and (weighted) covariance — layerCor" />
+<meta property="og:description" content="Compute correlation and (weighted) covariance between the layers of a multi-layer SpatRaster." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -119,54 +119,89 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Options</h1>
+    <h1>Correlation and (weighted) covariance</h1>
     
-    <div class="hidden name"><code>terraOptions.Rd</code></div>
+    <div class="hidden name"><code>layerCor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Class and methods for showing and setting general options for terra.</p>
+    <p>Compute correlation and (weighted) covariance between the layers of a multi-layer SpatRaster.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>terraOptions</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>w</span>, asSample<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, maxcell<span class='op'>=</span><span class='cn'>Inf</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>option names and values (see Details). Or missing, to show the current options</p></td>
+      <th>x</th>
+      <td><p>SpatRaster</p></td>
+    </tr>
+    <tr>
+      <th>fun</th>
+      <td><p>character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "pearson" (correlation coefficient) or your own function that takes two vectors as argument to comptue a single number</p></td>
+    </tr>
+    <tr>
+      <th>w</th>
+      <td><p>SpatRaster with the weights  to compute the weighted covariance. It should have a single layer and the same geometry as <code>x</code></p></td>
+    </tr>
+    <tr>
+      <th>asSample</th>
+      <td><p>logical. If <code>TRUE</code>, the statistic for a sample (denominator is <code>n-1</code>) is computed, rather than for the population (denominator is <code>n</code>). Only for the standard functions</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>logical. Should missing values be removed?</p></td>
+    </tr>
+    <tr>
+      <th>maxcell</th>
+      <td><p>postive integer. The number of cells to be regularly sampled. Only used when <code>fun</code> is a function</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The following options are available.</p>
-<p>memfrac - value between 0.1 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.</p>
-<p>tempdir - directory where temporary files are written. The default what is returned by tempdir().</p>
-<p>datatype - default data type. See <code><a href='writeRaster.html'>writeRaster</a></code></p>
-<p>todisk - logical. If <code>TRUE</code> write all raster data to disk (temp file if no file name is specified). For debugging.</p>
-<p>progress - non-negative integer. A progress bar is shown if the number of chunks in which the data is processed is larger than this number. No progress bar is shown if the value is zero</p>
-<p>verbose - logical. If <code>TRUE</code> debugging info is printed for some functions</p>
+    <p>If <code>fun</code> is one of the three standard statistics, you get a list with two items: the correlation or (weighted) covariance matrix, and the (weighted) means.</p>
+<p>If <code>fun</code> is a function, you get a matrix.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>For the weighted covariance:</p><ul>
+<li><p>Canty, M.J. and A.A. Nielsen, 2008. Automatic radiometric normalization of multitemporal satellite imagery with the iteratively re-weighted MAD transformation. Remote Sensing of Environment 112:1025-1036.</p></li>
+<li><p>Nielsen, A.A., 2007. The regularized iteratively reweighted MAD method for change detection in multi- and hyperspectral data. IEEE Transactions on Image Processing 16(2):463-478.</p></li>
+</ul>
+
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='global.html'>global</a></code>, <code><a href='https://rdrr.io/r/stats/cov.wt.html'>cov.wt</a></code>, <code><a href='weighted.mean.html'>weighted.mean</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>terraOptions</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; memfrac   : 0.6
-#&gt; tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpYEoKGh
-#&gt; datatype  : FLT4S
-#&gt; progress  : 3
-#&gt; todisk    : FALSE
-#&gt; verbose   : FALSE
-#&gt; tolerance : 0.1</div><div class='input'><span class='fu'>terraOptions</span><span class='op'>(</span>memfrac<span class='op'>=</span><span class='fl'>0.5</span>, tempdir <span class='op'>=</span> <span class='st'>"c:/temp"</span><span class='op'>)</span>
-<span class='fu'>terraOptions</span><span class='op'>(</span>progress<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='fu'>terraOptions</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; memfrac   : 0.5
-#&gt; tempdir   : c:/temp
-#&gt; datatype  : FLT4S
-#&gt; progress  : 10
-#&gt; todisk    : FALSE
-#&gt; verbose   : FALSE
-#&gt; tolerance : 0.1</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
+<span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"pearson"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $pearson
+#&gt;             red     green      blue
+#&gt; red   1.0014992 0.9996231 0.9516742
+#&gt; green 0.9996231 1.0015607 0.9673666
+#&gt; blue  0.9516742 0.9673666 1.0016812
+#&gt; 
+#&gt; $mean
+#&gt;      red    green     blue 
+#&gt; 182.2855 185.3509 192.8046 
+#&gt; </div><div class='input'>
+<span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"cov"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in data.frame(value, row.names = rn, check.names = FALSE): row names supplied are of the wrong length</span></div><div class='input'>
+<span class='co'># weigh by column number</span>
+<span class='va'>w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='initialize.html'>init</a></span><span class='op'>(</span><span class='va'>b</span>, fun<span class='op'>=</span><span class='st'>"col"</span><span class='op'>)</span>
+<span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>b</span>, <span class='st'>"weighted.cov"</span>, w<span class='op'>=</span><span class='va'>w</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $weighted_covariance
+#&gt;            red    green     blue
+#&gt; red   5670.750 5536.351 5009.851
+#&gt; green 5536.351 5427.161 4987.092
+#&gt; blue  5009.851 4987.092 4937.007
+#&gt; 
+#&gt; $weighted_mean
+#&gt;      red    green     blue 
+#&gt; 177.5983 181.3521 191.5236 
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
