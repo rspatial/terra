@@ -259,7 +259,7 @@ class SpatRaster {
 		unsigned nlyr();
 
 		// only no values allowed with a single SpatRasterSource
-		bool hasValues() { return source[0].hasValues ; };
+		bool hasValues();
 		std::vector<double> getValues(long lyr, SpatOptions &opt);
 		
 		bool getValuesSource(size_t src, std::vector<double> &out);				
@@ -314,7 +314,7 @@ class SpatRaster {
 // constructors
 ////////////////////////////////////////////////////
 
-		SpatRaster(bool source);
+		SpatRaster();
 		SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, std::string crs);
 		SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs);
 		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> options, std::vector<size_t> x);

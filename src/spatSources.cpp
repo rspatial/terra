@@ -47,26 +47,22 @@ SpatRasterSource::SpatRasterSource() {
 
 
 SpatRaster SpatRaster::combineSources(SpatRaster x) {
+	
+	if (!hasValues()) {
+		return x.deepCopy();
+	}
 
 	SpatRaster out = geometry();
-
-						// opt.get_tolerance()
 	if (!out.compare_geom(x, false, false, 0.1)) {
 		return out;
 	}
 
-	bool hv = hasValues();
-	if (hv != x.hasValues()) {
-		out.setError("combined sources must all have values; or none should have values");
+	out = deepCopy();
+	if (!x.hasValues()) {
+		out.addWarning("you cannot add SpatRaster with no values to one that has values");
 		return(out);
 	}
-
-	out = deepCopy();
-//    if (!hv) {
-//       out.source = x.source;
-//    } else {
 	out.source.insert(out.source.end(), x.source.begin(), x.source.end());
-//	}
     // to make names unique
 	out.setNames(out.getNames());
 	return(out);
