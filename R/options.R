@@ -43,7 +43,7 @@
 		wopt <- wopt[s]
 		i <- which(nms == "names")
 		if (length(i) > 0) {
-			namevs <- trimws(unlist(strsplit(wopt[[i]], ",")))
+			namevs <- trimws(unlist(strsplit(as.character(wopt[[i]]), ",")))
 			x[["names"]] <- namevs
 			wopt <- wopt[-i]
 			nms <- nms[-i]
