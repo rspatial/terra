@@ -61,7 +61,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			
 		} else if (fun == "cov") {
 
-			means <- global(x, fun="mean", na.rm=na.rm) 
+			means <- unlist(global(x, fun="mean", na.rm=na.rm) )
 			x <- (x - means)
 			
 			for(i in 1:nl) {
