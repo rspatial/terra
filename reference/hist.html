@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-1</span>
       </span>
     </div>
 
@@ -201,9 +201,9 @@
 #&gt; 
 #&gt; attr(,"class")
 #&gt; [1] "histogram"</div><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>rs</span>, <span class='va'>rp</span>, <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='va'>rs</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>hist</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span><span class='va'>opar</span><span class='op'>)</span>
-</div><div class='img'><img src='hist-2.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error: [sqrt] unknown math function</span></div><div class='input'><span class='fu'>hist</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'hist': object 'x' not found</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span><span class='va'>opar</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

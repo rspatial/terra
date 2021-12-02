@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>select cells with high or low values — selectHighest • terra</title>
+<title>Raster value types — is.bool • terra</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="select cells with high or low values — selectHighest" />
-<meta property="og:description" content="Identify n cells that have the highest of lowest values in the first layer of a SpatRaster." />
+<meta property="og:title" content="Raster value types — is.bool" />
+<meta property="og:description" content="The values in a SpatRaster layer are by default numeric, but they can also be logical (Boolean), integer, or categorical
+Note that as.bool and as.int return a new SpatRaster, whereas is.bool and is.int return a logical value for each layer. For a SpatRaster, isTRUE is equivalent to as.bool, isFALSE is equivalent to !as.bool, codeas.integer is the same as as.int and as.logical is the same as as.bool" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -119,49 +120,59 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>select cells with high or low values</h1>
+    <h1>Raster value types</h1>
     
-    <div class="hidden name"><code>selectHigh.Rd</code></div>
+    <div class="hidden name"><code>is.bool.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Identify n cells that have the highest of lowest values in the first layer of a SpatRaster.</p>
+    <p>The values in a SpatRaster layer are by default numeric, but they can also be logical (Boolean), integer, or categorical</p>
+<p>Note that <code>as.bool</code> and <code>as.int</code> return a new <code>SpatRaster</code>, whereas <code>is.bool</code> and <code>is.int</code> return a <code>logical</code> value for each layer. For a <code>SpatRaster</code>, <code>isTRUE</code> is equivalent to <code>as.bool</code>, <code>isFALSE</code> is equivalent to <code>!as.bool</code>, codeas.integer is the same as <code>as.int</code> and <code>as.logical</code> is the same as <code>as.bool</code></p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
-<span class='fu'>selectHighest</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>n</span>, low<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></pre>
+<span class='fu'>is.bool</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>as.bool</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>filename</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>is.int</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>as.int</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>filename</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>SpatRaster. Only the first layer is processed</p></td>
+      <td><p>SpatRaster</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>The number of cells to select</p></td>
+      <th>filename</th>
+      <td><p>character. Output filename</p></td>
     </tr>
     <tr>
-      <th>low</th>
-      <td><p>logical. If <code>TRUE</code>, the lowest values are selected instead of the highest values</p></td>
+      <th>...</th>
+      <td><p>list with named options for writing files as in <code><a href='writeRaster.html'>writeRaster</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SpatRaster</p>
+    <p>logical or SpatRaster</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/elev.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span>
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>selectHighest</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>1000</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>selectHighest</span><span class='op'>(</span><span class='va'>r</span>, <span class='fl'>1000</span>, <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='merge.html'>merge</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>-</span><span class='fl'>1</span>, <span class='va'>x</span><span class='op'>)</span>
-<span class='fu'><a href='factors.html'>levels</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"low"</span>, <span class='st'>"high"</span><span class='op'>)</span>
-<span class='fu'><a href='plot.html'>plot</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
-</div><div class='img'><img src='selectHigh-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span>nrows<span class='op'>=</span><span class='fl'>10</span>, ncols<span class='op'>=</span><span class='fl'>10</span>, vals<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='fu'>is.bool</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='va'>z</span> <span class='op'>&lt;-</span> <span class='fu'>as.bool</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
+<span class='fu'>is.bool</span><span class='op'>(</span><span class='va'>z</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='va'>r</span> <span class='op'>&gt;</span> <span class='fl'>25</span>
+<span class='fu'>is.bool</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='va'>r</span><span class='op'>/</span><span class='fl'>2</span>
+<span class='fu'>is.int</span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'>is.int</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

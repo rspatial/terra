@@ -82,7 +82,7 @@ Always use the &quot;.nc&quot; or &quot;.cdf&quot; file extension to assure that
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-1</span>
       </span>
     </div>
 
@@ -209,12 +209,12 @@ Always use the &quot;.nc&quot; or &quot;.cdf&quot; file extension to assure that
       longname<span class='op'>=</span><span class='st'>"my nice data"</span>, unit<span class='op'>=</span><span class='st'>"U/Pa"</span><span class='op'>)</span>
 
 <span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='va'>a</span><span class='op'>)</span>
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sds.html'>sds</a></span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>b</span><span class='op'>)</span>
-<span class='fu'><a href='names.html'>names</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"temp"</span>, <span class='st'>"prec"</span><span class='op'>)</span>
-<span class='fu'><a href='names.html'>longnames</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"temperature (C)"</span>, <span class='st'>"precicpiation (mm)"</span><span class='op'>)</span>
-<span class='fu'><a href='units.html'>units</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"C"</span>, <span class='st'>"mm"</span><span class='op'>)</span>
-<span class='va'>ss</span> <span class='op'>&lt;-</span> <span class='fu'>writeCDF</span><span class='op'>(</span><span class='va'>s</span>, <span class='va'>fname</span>, overwrite<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error: [sqrt] unknown math function</span></div><div class='input'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sds.html'>sds</a></span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>b</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in sds(a, b): object 'b' not found</span></div><div class='input'><span class='fu'><a href='names.html'>names</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"temp"</span>, <span class='st'>"prec"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in names(s) &lt;- c("temp", "prec"): object 's' not found</span></div><div class='input'><span class='fu'><a href='names.html'>longnames</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"temperature (C)"</span>, <span class='st'>"precicpiation (mm)"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in longnames(s) &lt;- c("temperature (C)", "precicpiation (mm)"): object 's' not found</span></div><div class='input'><span class='fu'><a href='units.html'>units</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='st'>"C"</span>, <span class='st'>"mm"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in units(s) &lt;- c("C", "mm"): object 's' not found</span></div><div class='input'><span class='va'>ss</span> <span class='op'>&lt;-</span> <span class='fu'>writeCDF</span><span class='op'>(</span><span class='va'>s</span>, <span class='va'>fname</span>, overwrite<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): error in evaluating the argument 'x' in selecting a method for function 'writeCDF': object 's' not found</span></div><div class='input'>
 <span class='co'># for CRAN</span>
 <span class='fu'><a href='https://rdrr.io/r/base/files.html'>file.remove</a></span><span class='op'>(</span><span class='va'>fname</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] TRUE</div></pre>

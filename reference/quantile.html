@@ -48,7 +48,8 @@
 
 <meta property="og:title" content="Quantiles of spatial data — quantile" />
 <meta property="og:description" content="Compute quantiles for each cell across the layers of a SpatRaster.
-You can also use this method to compute the quantiles of the numeric variables of a SpatVector." />
+You can use use global(x, fun=quantile) to instead compute quantiles across cells for each layer.
+You can also use this method to compute quantiles of the numeric variables of a SpatVector." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -81,7 +82,7 @@ You can also use this method to compute the quantiles of the numeric variables o
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-1</span>
       </span>
     </div>
 
@@ -127,7 +128,8 @@ You can also use this method to compute the quantiles of the numeric variables o
 
     <div class="ref-description">
     <p>Compute quantiles for each cell across the layers of a SpatRaster.</p>
-<p>You can also use this method to compute the quantiles of the numeric variables of a SpatVector.</p>
+<p>You can use use <code><a href='global.html'>global</a>(x, fun=quantile)</code> to instead compute quantiles across cells for each layer.</p>
+<p>You can also use this method to compute quantiles of the numeric variables of a SpatVector.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
@@ -182,8 +184,13 @@ You can also use this method to compute the quantiles of the numeric variables o
 #&gt; names       :    q0, q0.25,  q0.5, q0.75,    q1 
 #&gt; min values  :     0,     0,     0,     0,     0 
 #&gt; max values  : 127.5, 127.5, 255.0, 510.0, 510.0 </div><div class='input'>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># same but slower</span>
-<span class='co'># qa &lt;- app(r, quantile)</span>
+<span class='va'>qa</span> <span class='op'>&lt;-</span> <span class='fu'><a href='app.html'>app</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>quantile</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+<span class='co'>#quantile by layer instead of by cell</span>
+<span class='va'>qr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='global.html'>global</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>quantile</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

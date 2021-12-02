@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5-1</span>
       </span>
     </div>
 
@@ -151,9 +151,10 @@
 <li>
 <code>aggregate</code> now does not show a progress bar in all cases <a href="https://github.com/rspatial/terra/issues/249"><a href='https://github.com/rspatial/terra/issues/249'>#249</a></a> by Lachlan</li>
 <li>
-<code>as.data.frame-SpatRaster/SpatVector</code> is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as <code>data.table::as.data.table</code>. See <a href="https://github.com/rspatial/terra/issues/284"><a href='https://github.com/rspatial/terra/issues/284'>#284</a></a> by Patrick Schratz</li>
+<code>as.data.frame-SpatRaster/SpatVector</code> are now also implemented as S3 methods to assure correct dispatch by other S3 methods such as <code>data.table::as.data.table</code>. See <a href="https://github.com/rspatial/terra/issues/284"><a href='https://github.com/rspatial/terra/issues/284'>#284</a></a> by Patrick Schratz</li>
 <li>
 <code>crs</code> now shows the correct authority if it is not EPSG. <a href="https://github.com/rspatial/terra/issues/419"><a href='https://github.com/rspatial/terra/issues/419'>#419</a></a> by Matthew Williamson</li>
+<li>It now possible to add any SpatRaster with values to a SpatRaster with no values <a href="https://github.com/rspatial/terra/issues/421"><a href='https://github.com/rspatial/terra/issues/421'>#421</a></a> by Alex Ilich.</li>
 </ul>
 </div>
 <div id="new" class="section level2">
@@ -164,6 +165,9 @@
 <li>new method <code>mergeTime</code> to combine multiple rasters, perhaps partly overlapping in time, into a single time series</li>
 <li>new method <code>fillTime</code> that can add empty layers in between existing layers to assure that the time step between layers is constant</li>
 <li>new method <code>approxNA</code> to fill in missing values by cell across layers</li>
+<li>new methods <code>is.bool</code> and <code>as.bool</code> for SpatRaster and more explicit recoginiation of Boolean raster data in various places (e.g., extract, plot)</li>
+<li>new methods <code>is.int</code> and <code>as.int</code> for SpatRaster</li>
+<li>new method <code>layerCor</code> (like <code><a href="https://rdrr.io/pkg/raster/man/layerStats.html">raster::layerStats</a></code>) <a href="https://github.com/rspatial/terra/issues/420"><a href='https://github.com/rspatial/terra/issues/420'>#420</a></a> by Alex Ilich</li>
 </ul>
 </div>
 </div>
@@ -200,7 +204,7 @@
 <code>lapp</code> and <code>tapp</code> now have a <code>cores</code> argument (as do <code>app</code> and <code>predict</code>). Suggested by Dongdong Kong <a href="https://github.com/rspatial/terra/pull/365"><a href='https://github.com/rspatial/terra/issues/365'>#365</a></a>
 </li>
 <li>
-<code>focal</code> now also works with a function that returns multiple values (see <a href="https://github.com/rspatial/terra/pull/318"><a href='https://github.com/rspatial/terra/issues/318'>#318</a></a> by Alex).</li>
+<code>focal</code> now also works with a function that returns multiple values (see <a href="https://github.com/rspatial/terra/pull/318"><a href='https://github.com/rspatial/terra/issues/318'>#318</a></a> by Alex Ilich).</li>
 <li>
 <code>focal</code> can now process multiple layers in one step.</li>
 <li>expanded support for conversion from <code>stars</code> objects <a href="https://github.com/rspatial/terra/issues/220"><a href='https://github.com/rspatial/terra/issues/220'>#220</a></a> by Jakub Nowosad</li>
@@ -211,7 +215,7 @@
 <a href="#new-1" class="anchor"></a>new</h2>
 <ul>
 <li>
-<code>focalCpp</code> takes a C++ function that iterates over cells to speed up computation by avoiding <code>apply</code> (see <a href="https://github.com/rspatial/terra/pull/318"><a href='https://github.com/rspatial/terra/issues/318'>#318</a></a> by Alex).</li>
+<code>focalCpp</code> takes a C++ function that iterates over cells to speed up computation by avoiding <code>apply</code> (see <a href="https://github.com/rspatial/terra/pull/318"><a href='https://github.com/rspatial/terra/issues/318'>#318</a></a> by Alex Ilich).</li>
 <li>
 <code>focalReg</code> for focal OLS regression models between layers</li>
 </ul>
@@ -227,7 +231,7 @@
 <a href="#bug-fixes-2" class="anchor"></a>bug fixes</h2>
 <ul>
 <li>
-<code>terra</code> did not install with GDAL &lt; 3 <a href="https://github.com/rspatial/terra/issues/402"><a href='https://github.com/rspatial/terra/issues/402'>#402</a></a> by Alex.</li>
+<code>terra</code> did not install with GDAL &lt; 3 <a href="https://github.com/rspatial/terra/issues/402"><a href='https://github.com/rspatial/terra/issues/402'>#402</a></a> by Alex Ilich.</li>
 <li>
 <code>distance</code> between two SpatVectors or matrices with <code>pairwise=FALSE</code> returned a matrix that was filled by column instead of by row <a href="https://github.com/rspatial/terra/issues/403"><a href='https://github.com/rspatial/terra/issues/403'>#403</a></a> by Paul Smith</li>
 </ul>
