@@ -172,9 +172,9 @@ You can also use this method to compute quantiles of the numeric variables of a 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rast.html'>rast</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ex/logo.tif"</span>, package<span class='op'>=</span><span class='st'>"terra"</span><span class='op'>)</span><span class='op'>)</span>   
-<span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>/</span><span class='fl'>2</span>, <span class='va'>r</span>, <span class='va'>r</span><span class='op'>*</span><span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>q</span> <span class='op'>&lt;-</span> <span class='fu'>quantile</span><span class='op'>(</span><span class='va'>r</span><span class='op'>)</span>
-<span class='va'>q</span>
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='c.html'>c</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>/</span><span class='fl'>2</span>, <span class='va'>r</span>, <span class='va'>r</span><span class='op'>*</span><span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>qr</span> <span class='op'>&lt;-</span> <span class='fu'>quantile</span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>
+<span class='va'>qr</span>
 </div><div class='output co'>#&gt; class       : SpatRaster 
 #&gt; dimensions  : 77, 101, 5  (nrow, ncol, nlyr)
 #&gt; resolution  : 1, 1  (x, y)
@@ -186,11 +186,11 @@ You can also use this method to compute quantiles of the numeric variables of a 
 #&gt; max values  : 127.5, 127.5, 255.0, 510.0, 510.0 </div><div class='input'>
 <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># same but slower</span>
-<span class='va'>qa</span> <span class='op'>&lt;-</span> <span class='fu'><a href='app.html'>app</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>quantile</span><span class='op'>)</span>
+<span class='va'>qa</span> <span class='op'>&lt;-</span> <span class='fu'><a href='app.html'>app</a></span><span class='op'>(</span><span class='va'>rr</span>, <span class='va'>quantile</span><span class='op'>)</span>
 <span class='op'>}</span>
 
 <span class='co'>#quantile by layer instead of by cell</span>
-<span class='va'>qr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='global.html'>global</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>quantile</span><span class='op'>)</span>
+<span class='va'>qg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='global.html'>global</a></span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>quantile</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
