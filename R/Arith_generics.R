@@ -275,16 +275,18 @@ setMethod("!", signature(x="SpatRaster"),
 
 setMethod("isTRUE", signature(x="SpatRaster"),
 	function(x) {
-		x <- x == 1
-		classify(x, cbind(NA, 0))
+		opt <- spatOptions()
+		x@ptr <- x@ptr$is_true(opt)
+		messages(x)
 	}
 )
 
 
 setMethod("isFALSE", signature(x="SpatRaster"),
 	function(x) {
-		x <- x != 1
-		classify(x, cbind(NA, 0))
+		opt <- spatOptions()
+		x@ptr <- x@ptr$is_false(opt)
+		messages(x)
 	}
 )
 
@@ -294,6 +296,20 @@ setMethod("as.logical", signature(x="SpatRaster"),
 	}
 )
 
+
+setMethod("is.boolean", signature(x="SpatRaster"), 
+	function(x) {
+		x@ptr$valueType == 3
+	}
+)
+
+setMethod("as.boolean", signature(x="SpatRaster"), 
+	function(x, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$is_true(opt)
+		messages(x)
+	}
+)
 
 setMethod("is.na", signature(x="SpatRaster"),
 	function(x) {

@@ -680,6 +680,8 @@ RCPP_MODULE(spat){
 		.method("stretch", &SpatRaster::stretch, "stretch")
 		.method("warp", &SpatRaster::warper, "warper")
 		.method("zonal", &SpatRaster::zonal, "zonal")
+		.method("is_true", &SpatRaster::is_true, "is_TRUE")
+		.method("is_false", &SpatRaster::is_true, "is_TRUE")
 	;
 
     class_<SpatRasterCollection>("SpatRasterCollection")

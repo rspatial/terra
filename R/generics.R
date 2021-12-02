@@ -5,13 +5,6 @@
 
 
 
-setMethod("is.boolean", signature(x="SpatRaster"), 
-	function(x) {
-		x@ptr$valueType == 3
-	}
-)
-
-
 setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"), 
 	function(x, w, na.rm=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)

@@ -13,7 +13,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `values(x)<-` now accepts (hex coded) colors as values
 - `focal` now wraps around the dateline like raster::focal [#242](https://github.com/rspatial/terra/issues/242) by Alexander Marbler
 - `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
-- `as.data.frame-SpatRaster/SpatVector` is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
+- `as.data.frame-SpatRaster/SpatVector` are now also implemented as S3 methods to assure correct dispatch by other S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
 - `crs` now shows the correct authority if it is not EPSG. [#419](https://github.com/rspatial/terra/issues/419) by Matthew Williamson
 - It now possible to add any SpatRaster with values to a SpatRaster with no values [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
 
@@ -23,8 +23,8 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `mergeTime` to combine multiple rasters, perhaps partly overlapping in time, into a single time series
 - new method `fillTime` that can add empty layers in between existing layers to assure that the time step between layers is constant 
 - new method `approxNA` to fill in missing values by cell across layers
-- new method `is.boolean` for SpatRaster
-- new method `layerCor` (like `raster::layerStats`). [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
+- new methods `is.boolean` and `as.boolean` for SpatRaster and more explicit recoginiation of Boolean raster data in various places (e.g., extract, plot)
+- new method `layerCor` (like `raster::layerStats`) [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
 
 
 # version 1.4-22

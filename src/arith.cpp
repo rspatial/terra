@@ -347,6 +347,13 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 }
 
 
+SpatRaster SpatRaster::is_true(SpatOptions &opt) {
+	return arith(1, "==", false, opt);
+}
+
+SpatRaster SpatRaster::is_false(SpatOptions &opt) {
+	return arith(1, "!=", false, opt);
+}
 
 SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt) {
 
@@ -479,8 +486,6 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 	readStop();
 	return(out);
 }
-
-
 
 
 

@@ -707,8 +707,8 @@ class SpatRaster {
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 		SpatRaster which(SpatOptions &opt);
 		SpatRaster is_true(SpatOptions &opt);
+		SpatRaster is_false(SpatOptions &opt);
 
 		SpatRaster sievefilter(int threshold, int connections, SpatOptions &opt);	
-
 };
 
