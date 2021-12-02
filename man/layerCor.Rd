@@ -1,18 +1,19 @@
 \name{layerCor}
 
 \alias{layerCor}
+\alias{layerCor,SpatRaster-method}
 
 
 \title{Correlation and (weighted) covariance}
 
 
 \description{
-Compute correlation and (weighted) covariance between the layers of a multi-layer SpatRaster. 
+Compute correlation, (weighted) covariance, or similar summary statistics that compare the values of all pairs of the layers of a SpatRaster. 
 }
 
 
 \usage{
-layerCor(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...)
+\S4method{layerCor}{SpatRaster}(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...)
 }
 
 

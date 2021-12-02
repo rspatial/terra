@@ -525,29 +525,30 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
 \code{area} \tab\code{\link{cellSize}}\cr
-\code{disaggregate} \tab\code{\link{disagg}}\cr
-\code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
-\code{overlay}\tab\code{\link{lapp}}\cr
-\code{stackApply}\tab\code{\link{tapp}}\cr
-\code{nlayers}\tab\code{\link{nlyr}}\cr
-\code{NAvalue}\tab\code{\link{NAflag}}\cr
-\code{stackSelect}\tab\code{\link{selectRange}}\cr
-\code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
+\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
-\code{projectRaster}\tab\code{\link{project}}\cr
-\code{dropLayer}\tab\code{\link{subset}}\cr
-\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
-\code{shapefile}\tab\code{\link{vect}}\cr
-\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
-\code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
+\code{clump}\tab\code{\link{patches}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
-\code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
+\code{disaggregate} \tab\code{\link{disagg}}\cr
+\code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
+\code{dropLayer}\tab\code{\link{subset}}\cr
+\code{extent}\tab\code{\link{ext}}\cr
+\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
+\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
+\code{layerize}\tab\code{\link{segregate}}\cr
+\code{layerStats}\tab\code{\link{layerCor}}\cr
+\code{NAvalue}\tab\code{\link{NAflag}}\cr
+\code{nlayers}\tab\code{\link{nlyr}}\cr
+\code{overlay}\tab\code{\link{lapp}}\cr
+\code{projectRaster}\tab\code{\link{project}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
-\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
-\code{layerize}\tab\code{\link{segregate}}\cr
-\code{clump}\tab\code{\link{patches}}\cr
+\code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
+\code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
+\code{shapefile}\tab\code{\link{vect}}\cr
+\code{stackApply}\tab\code{\link{tapp}}\cr
+\code{stackSelect}\tab\code{\link{selectRange}}\cr
 }
 }
 

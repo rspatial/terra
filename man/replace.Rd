@@ -9,8 +9,7 @@
 \alias{[<-,SpatRaster,missing,numeric-method}
 \alias{[<-,SpatRaster,numeric,missing-method}
 \alias{[<-,SpatRaster,numeric,numeric-method}
-\alias{[<-,SpatRaster,SpatRaster,missing-method}
-\alias{[<-,SpatRaster,SpatRaster,data.frame-method}
+\alias{[<-,SpatRaster,SpatRaster,ANY-method}
 \alias{[<-,SpatRaster,SpatVector,missing-method}
 \alias{[[<-,SpatRaster,character,missing-method}
 \alias{[[<-,SpatRaster,numeric,missing-method}
