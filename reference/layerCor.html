@@ -128,7 +128,7 @@
     <p>Compute correlation and (weighted) covariance between the layers of a multi-layer SpatRaster.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>w</span>, asSample<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, maxcell<span class='op'>=</span><span class='cn'>Inf</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>w</span>, asSample<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, maxcell<span class='op'>=</span><span class='cn'>Inf</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,6 +156,10 @@
     <tr>
       <th>maxcell</th>
       <td><p>postive integer. The number of cells to be regularly sampled. Only used when <code>fun</code> is a function</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional arguments for <code>fun</code> (if it is a proper function)</p></td>
     </tr>
     </table>
 
