@@ -32,14 +32,13 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 				levels(v[[f]]) = fct
 			}
 		}
-		vt <- x@ptr$valueType
-		bb <- vt == 3
+		bb <- is.bool(x)
 		if (any(bb)) {
 			for (b in bb) {
 				v[[b]] = as.logical(v[[b]])
 			}
 		}
-		ii <- vt == 1
+		ii <- is.int(x)
 		if (any(ii)) {
 			for (i in ii) {
 				v[[i]] = as.integer(v[[i]])

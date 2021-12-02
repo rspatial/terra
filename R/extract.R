@@ -61,7 +61,7 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 			}
 		}
 	}
-	b <- is.boolean(x)
+	b <- is.bool(x)
 	if (any(b)) {
 		for (i in which(b)) {
 			v[[i]] <- as.logical(v[[i]])
@@ -435,14 +435,14 @@ function(x, i, j, ..., drop=TRUE) {
 		}	
 	}
 	if (drop) {
-		if (is.boolean(i)) {
+		if (is.bool(i)) {
 			i <- as.logical(values(i))
 		} else {
 			i <- !is.na(values(i))		
 		}
 		values(x)[i,]
 	} else {
-		if (is.boolean(i)) {
+		if (is.bool(i)) {
 			mask(x, i, maskvalues=FALSE)
 		} else {	
 			mask(x, i)

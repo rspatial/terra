@@ -39,8 +39,10 @@ if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y) standardGen
 
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("gaps")) {setGeneric("gaps", function(x, ...) standardGeneric("gaps"))}
-if (!isGeneric("is.boolean")) {setGeneric("is.boolean", function(x) standardGeneric("is.boolean"))}
-if (!isGeneric("as.boolean")) {setGeneric("as.boolean", function(x, ...) standardGeneric("as.boolean"))}
+if (!isGeneric("is.int")) {setGeneric("is.int", function(x) standardGeneric("is.int"))}
+if (!isGeneric("as.int")) {setGeneric("as.int", function(x, ...) standardGeneric("as.int"))}
+if (!isGeneric("is.bool")) {setGeneric("is.bool", function(x) standardGeneric("is.bool"))}
+if (!isGeneric("as.bool")) {setGeneric("as.bool", function(x, ...) standardGeneric("as.bool"))}
 if (!isGeneric("nearby")) {setGeneric("nearby", function(x, ...) standardGeneric("nearby"))}
 if (!isGeneric("nearest")) {setGeneric("nearest", function(x, ...) standardGeneric("nearest"))}
 if (!isGeneric("cartogram")) {setGeneric("cartogram", function(x, ...) standardGeneric("cartogram"))}

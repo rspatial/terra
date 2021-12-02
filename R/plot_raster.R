@@ -442,7 +442,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					type <- "factor"
 					act <- activeCat(x)
 					cats <- cats(x)[[1]][, c(1, act+1)]
-				} else if (is.boolean(x)) {
+				} else if (is.bool(x)) {
 					type <- "factor"
 					levels(x) <- c("False", "True")
 					cats <- cats(x)[[1]]		

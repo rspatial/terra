@@ -39,10 +39,6 @@
 \alias{Math2,SpatExtent-method}
 \alias{Compare,SpatExtent,SpatExtent-method}
 
-\alias{isTRUE,SpatRaster-method}
-\alias{isFALSE,SpatRaster-method}
-\alias{as.logical,SpatRaster-method}
-
 \alias{is.na,SpatRaster-method}
 \alias{is.nan,SpatRaster-method}
 \alias{!,SpatRaster-method}

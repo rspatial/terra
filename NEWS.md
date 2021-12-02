@@ -23,7 +23,8 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `mergeTime` to combine multiple rasters, perhaps partly overlapping in time, into a single time series
 - new method `fillTime` that can add empty layers in between existing layers to assure that the time step between layers is constant 
 - new method `approxNA` to fill in missing values by cell across layers
-- new methods `is.boolean` and `as.boolean` for SpatRaster and more explicit recoginiation of Boolean raster data in various places (e.g., extract, plot)
+- new methods `is.bool` and `as.bool` for SpatRaster and more explicit recoginiation of Boolean raster data in various places (e.g., extract, plot)
+- new methods `is.int` and `as.int` for SpatRaster
 - new method `layerCor` (like `raster::layerStats`) [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
 
 

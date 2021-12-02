@@ -277,7 +277,7 @@ setMethod("isTRUE", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
 		x@ptr <- x@ptr$is_true(opt)
-		messages(x)
+		messages(x, "isTRUE")
 	}
 )
 
@@ -286,7 +286,7 @@ setMethod("isFALSE", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()
 		x@ptr <- x@ptr$is_false(opt)
-		messages(x)
+		messages(x, "isFALSE")
 	}
 )
 
@@ -297,19 +297,40 @@ setMethod("as.logical", signature(x="SpatRaster"),
 )
 
 
-setMethod("is.boolean", signature(x="SpatRaster"), 
+setMethod("is.bool", signature(x="SpatRaster"), 
 	function(x) {
 		x@ptr$valueType == 3
 	}
 )
+setMethod("is.int", signature(x="SpatRaster"), 
+	function(x) {
+		x@ptr$valueType == 1
+	}
+)
 
-setMethod("as.boolean", signature(x="SpatRaster"), 
+
+setMethod("as.bool", signature(x="SpatRaster"), 
 	function(x, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$is_true(opt)
-		messages(x)
+		messages(x, "as.boolean")
 	}
 )
+
+setMethod("as.int", signature(x="SpatRaster"), 
+	function(x, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$math("trunc", opt)
+		messages(x, "as.int")
+	}
+)
+
+setMethod("as.integer", signature(x="SpatRaster"), 
+	function(x, filename="", ...) {
+		as.int(x, filename, x)
+	}
+)
+
 
 setMethod("is.na", signature(x="SpatRaster"),
 	function(x) {

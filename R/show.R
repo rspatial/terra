@@ -240,7 +240,7 @@ setMethod ("show" , "SpatRaster",
 
 			#hMM <- .hasMinMax(object)
 			hMM <- object@ptr$hasRange
-			isB <- is.boolean(object)
+			isB <- is.bool(object)
 			if (any(hMM) || any(is.factor(object))) {
 				#r <- minmax(object)
 				r <- rbind(object@ptr$range_min, object@ptr$range_max)

@@ -181,7 +181,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
 	if (logical) {
-		out.source[0].valueType = std::vector<unsigned char>(nl, 3);
+		out.setValueType(3);
 	}
 
 	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
@@ -257,7 +257,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 		return out;
 	}
 	if (logical) {
-		out.source[0].valueType = std::vector<unsigned char>(nlyr(), 3);
+		out.setValueType(3);
 	}
 
 
@@ -386,7 +386,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		return out;
 	}
 	if (logical) {
-		out.source[0].valueType = std::vector<unsigned char>(outnl, 3);
+		out.setValueType(3);
 	}
 	
 
@@ -503,8 +503,12 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	SpatRaster out = geometry();
 	if (!hasValues()) return out;
 
-	std::vector<std::string> f {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
-	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+	std::vector<std::string> f {"abs", "ceiling", "floor", "trunc", "sign"};
+	bool is_int = std::find(f.begin(), f.end(), fun) == f.end();
+	if (is_int) out.setValueType(1);
+	
+	f = {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
+	if (is_int || std::find(f.begin(), f.end(), fun) != f.end()) {
 		out.setError("unknown math function");
 		return out;
 	}
@@ -568,6 +572,8 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		out.setError("unknown math2 function");
 		return out;
 	}
+
+	if (digits == 0) out.setValueType(1);
 
 	if (!readStart()) {
 		out.setError(getError());
