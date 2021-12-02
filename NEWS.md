@@ -1,4 +1,4 @@
-# version 1.5-0
+# version 1.5-1
 
 ## bug fixes
 
@@ -18,6 +18,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `as.data.frame-SpatRaster/SpatVector` are now also implemented as S3 methods to assure correct dispatch by other S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
 - `crs` now shows the correct authority if it is not EPSG. [#419](https://github.com/rspatial/terra/issues/419) by Matthew Williamson
 - It now possible to add any SpatRaster with values to a SpatRaster with no values [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
+
 
 ## new 
 

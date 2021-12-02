@@ -504,7 +504,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	if (!hasValues()) return out;
 
 	std::vector<std::string> f {"abs", "ceiling", "floor", "trunc", "sign"};
-	bool is_int = std::find(f.begin(), f.end(), fun) == f.end();
+	bool is_int = std::find(f.begin(), f.end(), fun) != f.end();
 	if (is_int) out.setValueType(1);
 	
 	f = {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};

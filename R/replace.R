@@ -178,19 +178,15 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "ANY"),
 				error(" [", "cannot use a data.frame with multiple columns")
 			}
 			value <- unlist(value)
-			if (length(value) > 1) {
-				v <- values(x)
-				i <- as.logical(values(i))
-				if (length(value) == sum(i)) {
-					v[i] <- value
-				} else {
-					v[i] <- value[i]
-				}	
-				values(x) <- v
-				x		
+			if (length(value) == 1) {
+				mask(x, i, maskvalues=TRUE, updatevalue=value[1])			
 			} else {
-				mask(x, i, maskvalues=TRUE, updatevalue=value[1])
-			}
+				i <- as.logical(values(i))
+				i[is.na(i)] <- TRUE
+				i <- which(i)
+				x[i] <- value
+				x		
+			} 
 		}
 	}
 )
