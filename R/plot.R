@@ -18,19 +18,20 @@ setMethod("density", signature(x="SpatRaster"),
 		x <- spatSample(x, maxcells, method="regular", as.raster=TRUE)
 		res <- list()
 		nl <- nlyr(x)
+		if (missing(main)) {
+			main=names(x) 
+		} else {
+			main <- rep(main, length.out=nl)
+		}
+
 		if (nl==1) {
-			res[[1]] <- .one.density(x, plot=plot, ...)
+			res[[1]] <- .one.density(x, plot=plot, maxcells=maxcells, main=main, ...)
 		} else {
 
 			if (nl > 16) {
 			warn("density", "only the first 16 layers are plotted")
 				nl <- 16
 				x <- x[[1:16]]
-			}
-			if (missing(main)) {
-				main=names(x) 
-			} else {
-				main <- rep(main, length.out=nl)
 			}
 			nc <- ceiling(sqrt(nl))
 			nr <- ceiling(nl / nc)
