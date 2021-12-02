@@ -86,7 +86,7 @@ setMethod("global", signature(x="SpatRaster"),
 		res <- do.call(rbind,res)
 		res <- data.frame(res)
 
-		if (!all(colnames(res)=="")) {
+		if (all(colnames(res)=="")) {
 			if (ncol(res) > 1) {
 				colnames(res) <- paste0("global_", 1:ncol(res))
 			} else {
