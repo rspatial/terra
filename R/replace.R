@@ -163,7 +163,7 @@ setReplaceMethod("[", c("SpatRaster", "logical", "missing"),
 )
 
 
-setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
+setReplaceMethod("[", c("SpatRaster", "SpatRaster", "ANY"),
 	function(x, i, j, value) {
 		theCall <- sys.call(-1)
 		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
@@ -173,22 +173,21 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 		if (inherits(value, "SpatRaster")) {
 			x <- mask(x, i, maskvalues=TRUE)
 			cover(x, value)
-		} else if (inherits(value, "data.frame")) {
-			if (ncol(value) > 1) {
+		} else {
+			if (NCOL(value) > 1) {
 				error(" [", "cannot use a data.frame with multiple columns")
 			}
 			value <- unlist(value)
-			v <- values(x)
-			v[as.logical(values(i))] <- value
-			values(x) <- v
-			x		
-		} else {
 			if (length(value) > 1) {
 				v <- values(x)
-				v[as.logical(values(i))] <- value
+				i <- as.logical(values(i))
+				if (length(value) == sum(i)) {
+					v[i] <- value
+				} else {
+					v[i] <- value[i]
+				}	
 				values(x) <- v
-				x
-				#warn(" [,SpatRaster,SpatRaster", "the first replacement value is used for all cells")
+				x		
 			} else {
 				mask(x, i, maskvalues=TRUE, updatevalue=value[1])
 			}

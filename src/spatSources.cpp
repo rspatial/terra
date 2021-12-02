@@ -246,6 +246,7 @@ void SpatRasterSource::resize(unsigned n) {
 	time.resize(n);
 	unit.resize(n);
 	depth.resize(n);
+	valueType.resize(n, 0);
     hasRange.resize(n, false);
     range_min.resize(n, NAN);
     range_max.resize(n, NAN);
@@ -307,7 +308,7 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 		out.hasValues = hasValues;
 		//out.filename = filename;
 		//out.driver = driver;
-		//out.datatype = datatype; 
+		//out.valueType = valueType; 
 		//out.hasNAflag = hasNAflag;
 		//out.NAflag = NAflag;
 	} else { 
@@ -323,6 +324,7 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 		out.time.push_back(time[j]);
 		out.depth.push_back(depth[j]);
 		out.unit.push_back(unit[j]);
+		out.valueType.push_back(valueType[j]);
         out.hasRange.push_back(hasRange[j]);
         out.range_min.push_back(range_min[j]);
         out.range_max.push_back(range_max[j]);
@@ -443,6 +445,7 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	unit.insert(unit.end(), x.unit.begin(), x.unit.end());
 
 	depth.insert(depth.end(), x.depth.begin(), x.depth.end());
+	valueType.insert(valueType.end(), x.valueType.begin(), x.valueType.end());
 	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
 	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());
 	range_max.insert(range_max.end(), x.range_max.begin(), x.range_max.end());
@@ -456,7 +459,7 @@ bool SpatRasterSource::combine_sources(const SpatRasterSource &x) {
 	cats.insert(cats.end(), x.cats.begin(), x.cats.end());
 	hasColors.insert(hasColors.end(), x.hasColors.begin(), x.hasColors.end());
 	cols.insert(cols.end(), x.cols.begin(), x.cols.end());
-	datatype.insert(datatype.end(), x.datatype.begin(), x.datatype.end());
+	valueType.insert(valueType.end(), x.valueType.begin(), x.valueType.end());
 	has_scale_offset.insert(has_scale_offset.end(), x.has_scale_offset.begin(), x.has_scale_offset.end());
 	scale.insert(scale.end(), x.scale.begin(), x.scale.end());
 	offset.insert(offset.end(), x.offset.begin(), x.offset.end());
@@ -488,6 +491,7 @@ bool SpatRasterSource::combine(SpatRasterSource &x) {
 	}
 	unit.insert(unit.end(), x.unit.begin(), x.unit.end());
 	depth.insert(depth.end(), x.depth.begin(), x.depth.end());
+	valueType.insert(valueType.end(), x.valueType.begin(), x.valueType.end());
 	hasRange.insert(hasRange.end(), x.hasRange.begin(), x.hasRange.end());
 	range_min.insert(range_min.end(), x.range_min.begin(), x.range_min.end());
 	range_max.insert(range_max.end(), x.range_max.begin(), x.range_max.end());
@@ -500,7 +504,7 @@ bool SpatRasterSource::combine(SpatRasterSource &x) {
 	cats.insert(cats.end(), x.cats.begin(), x.cats.end());
 	hasColors.insert(hasColors.end(), x.hasColors.begin(), x.hasColors.end());
 	cols.insert(cols.end(), x.cols.begin(), x.cols.end());
-	datatype.insert(datatype.end(), x.datatype.begin(), x.datatype.end());
+	valueType.insert(valueType.end(), x.valueType.begin(), x.valueType.end());
 	has_scale_offset.insert(has_scale_offset.end(), x.has_scale_offset.begin(), x.has_scale_offset.end());
 	scale.insert(scale.end(), x.scale.begin(), x.scale.end());
 	offset.insert(offset.end(), x.offset.begin(), x.offset.end());

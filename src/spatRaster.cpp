@@ -107,6 +107,7 @@ SpatRaster::SpatRaster() {
 
 	s.hasRange = { false };
 	s.hasValues = false;
+	s.valueType = { 0 };
 	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.names = {"lyr.1"};
@@ -143,6 +144,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.extent.ymax = ext[3];
 	s.hasValues = false;
 	s.hasRange = {false};
+	s.valueType = { 0 };
 
 	s.memory = true;
 	s.filename = "";
@@ -185,6 +187,8 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	//s.driver = "";
 	s.nlyr = nl;
 	s.hasRange = { false };
+	s.valueType = { 0 };
+	
 	s.layers.resize(1, 0);
 	//s.layers.resize(1, _nlyr);
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
@@ -350,6 +354,14 @@ std::vector<bool> SpatRaster::hasRange() {
 		x.insert(x.end(), source[i].hasRange.begin(), source[i].hasRange.end());
 	}
 	return(x);
+}
+
+std::vector<int> SpatRaster::valueType() {
+	std::vector<int> d;
+	for (size_t i=0; i<source.size(); i++) {
+		d.insert(d.end(), source[i].valueType.begin(), source[i].valueType.end());
+	}
+	return(d);
 }
 
 std::vector<double> SpatRaster::range_min() {

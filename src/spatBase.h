@@ -122,7 +122,8 @@ class SpatOptions {
 		int statistics = 1;
 		bool datatype_set = false;
 		//bool ncdfcopy = false;
-
+		unsigned char value_type = 0;
+		
 		std::string datatype = "";
 		//std::string bandorder = "";
 		std::string filetype = "";

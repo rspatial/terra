@@ -417,13 +417,19 @@ function(x, i, j, ..., drop=TRUE) {
 
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 function(x, i, j, ..., drop=TRUE) {
-	x <- x[ext(i), drop=drop]
-	if (!drop) {
+	if (compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
+		x <- mask(x, i)
+	} else {
+		x <- x[ext(i), drop=drop]
 		if (compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
 			x <- mask(x, i)
 		}
 	}
-	x
+	if (drop) {
+		values(x)
+	} else {
+		x
+	}
 })
 
 setMethod("[", c("SpatRaster", "SpatExtent", "missing"),

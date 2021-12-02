@@ -485,6 +485,7 @@ RCPP_MODULE(spat){
 		.method("setColors", &SpatRaster::setColors, "setColors")
 		.method("removeColors", &SpatRaster::removeColors, "removeColors")
 
+		.property("valueType", &SpatRaster::valueType )
 		.property("hasRange", &SpatRaster::hasRange )
 		.property("hasValues", &SpatRaster::hasValues )
 		.property("inMemory", &SpatRaster::inMemory )

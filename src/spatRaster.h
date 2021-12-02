@@ -127,6 +127,7 @@ class SpatRasterSource {
 //		std::vector<int> attsIndex;
 		std::vector<bool> hasCategories;
 		std::vector<SpatCategories> cats;
+		std::vector<unsigned char> valueType;
 
 
 		std::vector<bool> hasColors;
@@ -284,6 +285,10 @@ class SpatRaster {
 		std::vector<bool> hasRange();
 		std::vector<double> range_min();
 		std::vector<double> range_max();
+
+		std::vector<int> valueType();
+		bool setValueType(unsigned char d);
+
 
 		std::vector<std::string> getNames();
 		bool setNames(std::vector<std::string> names, bool make_valid=false);

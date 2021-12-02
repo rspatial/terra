@@ -319,7 +319,7 @@ setMethod("as.points", signature(x="SpatRaster"),
 		opt <- spatOptions()
 		p@ptr <- x@ptr$as_points(values, na.rm, opt)
 		x <- messages(x, "as.points")
-			
+
 		if (values) {
 			ff <- is.factor(x)
 			if (any(ff)) {
