@@ -462,7 +462,7 @@ SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int
 			out.addWarning(r.msg.warnings[0]);	
 		}
 		if (ok) {
-			out.addSource(r);
+			out.addSource(r, false);
 			if (r.msg.has_error) {
 				out.setError(r.msg.error);
 				return out;
@@ -1363,7 +1363,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
-				addSource(out);
+				addSource(out, false);
 				srcnl.push_back(out.nlyr());
 				used.push_back(varname[i]);			
 			} else {

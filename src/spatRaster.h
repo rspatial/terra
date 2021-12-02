@@ -345,7 +345,7 @@ class SpatRaster {
 		virtual ~SpatRaster(){}
 
 
-		void addSource(SpatRaster x);	
+		void addSource(SpatRaster x, bool warn);	
 		SpatRaster combineSources(SpatRaster x, bool warn);
 		void combine(SpatRaster x);
 		

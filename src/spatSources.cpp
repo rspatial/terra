@@ -79,14 +79,13 @@ SpatRaster SpatRaster::combineSources(SpatRaster x, bool warn) {
 		return(out);
 	}
 	out.source.insert(out.source.end(), x.source.begin(), x.source.end());
-    // to make names unique
-	out.setNames(out.getNames());
+    // to make names unique (not great of called several times
+	//out.setNames(out.getNames());
 	return(out);
 }
 
 
 void SpatRaster::combine(SpatRaster x) {
-
 
 	if (!compare_geom(x, false, false, 0.1)) {
 		return;
@@ -99,18 +98,33 @@ void SpatRaster::combine(SpatRaster x) {
 	}
 
 	source.insert(source.end(), x.source.begin(), x.source.end());
-	setNames(getNames());
+	//setNames(getNames());
 	return;
 }
 
-void SpatRaster::addSource(SpatRaster x) {
+void SpatRaster::addSource(SpatRaster x, bool warn) {
 
-	if (compare_geom(x, false, false, 0.1	)) {
-        if (!hasValues()) {  //or if n src == 0?
-            source = x.source;
-        } else {
-            source.insert(source.end(), x.source.begin(), x.source.end());
-        }
+	if (!hasValues()) {
+		if (!x.hasValues()) {
+			if (compare_geom(x, false, false, 0.1)) {
+				source.insert(source.end(), x.source.begin(), x.source.end());
+			} else {
+				source = x.source;
+				if (warn) {
+					addWarning("both rasters were empty, but had different geometries. The first one was ignored");
+				}
+			}
+		} else {
+			source = x.source;
+			if (warn) {
+				addWarning("the first raster was empty and ignored");
+			}
+		}
+		return;
+	}
+
+	if (compare_geom(x, false, false, 0.1)) {
+        source.insert(source.end(), x.source.begin(), x.source.end());
 	}
 }
 

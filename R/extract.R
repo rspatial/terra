@@ -61,6 +61,13 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 			}
 		}
 	}
+	b <- is.boolean(x)
+	if (any(b)) {
+		for (i in which(b)) {
+			v[[i]] <- as.logical(v[[i]])
+		}
+	}
+
 	v
 }
 
@@ -417,20 +424,32 @@ function(x, i, j, ..., drop=TRUE) {
 
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 function(x, i, j, ..., drop=TRUE) {
-	if (compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
-		x <- mask(x, i)
-	} else {
+	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
 		x <- x[ext(i), drop=drop]
-		if (compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
-			x <- mask(x, i)
-		}
+	}
+	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
+		if (drop) {
+			return(values(x))
+		} else {
+			return(x)
+		}	
 	}
 	if (drop) {
-		values(x)
+		if (is.boolean(i)) {
+			i <- as.logical(values(i))
+		} else {
+			i <- !is.na(values(i))		
+		}
+		values(x)[i,]
 	} else {
-		x
+		if (is.boolean(i)) {
+			mask(x, i, maskvalues=FALSE)
+		} else {	
+			mask(x, i)
+		}
 	}
 })
+
 
 setMethod("[", c("SpatRaster", "SpatExtent", "missing"),
 function(x, i, j, ..., drop=FALSE) {

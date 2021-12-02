@@ -91,7 +91,7 @@ setMethod("rast", signature(x="list"),
 		# start with an empty raster (alternatively use a deep copy)
 		out <- rast(x[[1]])
 		for (i in 1:length(x)) {
-			out@ptr$addSource(x[[i]]@ptr)
+			out@ptr$addSource(x[[i]]@ptr, FALSE)
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)

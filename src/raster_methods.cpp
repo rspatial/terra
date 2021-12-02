@@ -3229,7 +3229,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 			std::vector<unsigned> lyr = {(unsigned)i};
 			SpatRaster x = subset(lyr, ops);
 			x = x.clumps(directions, zeroAsNA, ops);
-			out.addSource(x);
+			out.addSource(x, false);
 		}
 		if (filename != "") {
 			out = out.writeRaster(opt);

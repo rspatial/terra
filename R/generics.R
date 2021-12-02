@@ -5,7 +5,7 @@
 
 
 
-setMethod("isLogical", signature(x="SpatRaster"), 
+setMethod("is.boolean", signature(x="SpatRaster"), 
 	function(x) {
 		x@ptr$valueType == 3
 	}
@@ -172,7 +172,7 @@ setMethod("add<-", signature("SpatRaster", "SpatRaster"),
 		if (x@ptr$same(value@ptr)) {
 			x@ptr <- x@ptr$deepcopy() 
 		}
-		x@ptr$addSource(value@ptr)
+		x@ptr$addSource(value@ptr, FALSE)
 		messages(x, "add")
 	}
 )
@@ -253,9 +253,10 @@ setMethod("c", signature(x="SpatRaster"),
 		skips <- 0
 		hv <- hasValues(x)
 		dots <- list(...)
+		x@ptr <- x@ptr$deepcopy()
 		for (i in dots) {
 			if (inherits(i, "SpatRaster")) {
-				x@ptr <- x@ptr$combineSources(i@ptr, warn)
+				x@ptr$addSource(i@ptr, warn)
 				if (x@ptr$messages$has_error) {
 					messages(x, "c")
 					return()

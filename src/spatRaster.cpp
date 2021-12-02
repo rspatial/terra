@@ -57,7 +57,7 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		}
 
 		if (ok) {
-			addSource(r);
+			addSource(r, false);
 			if (r.msg.has_error) {
 				setError(r.msg.error);
 				return;
@@ -441,7 +441,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 		if (i == 0) {
 			out.setSource(rs.source[0]);
 		} else {
-			out.addSource(rs);
+			out.addSource(rs, false);
 		}
 	}
 	return out;
@@ -963,21 +963,21 @@ SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
 		lyrs.resize(n-1);
 		std::iota(lyrs.begin(), lyrs.end(), 1);
 		SpatRaster r = subset(lyrs, fopt);
-		out.addSource(r);
+		out.addSource(r, false);
 	} else if (layer == n-1) {
 		lyrs.resize(n-1);
 		std::iota(lyrs.begin(), lyrs.end(), 0);
 		out = subset(lyrs, fopt);
-		out.addSource(x);
+		out.addSource(x, false);
 	} else {
 		lyrs.resize(layer);
 		std::iota(lyrs.begin(), lyrs.end(), 0);
 		out = subset(lyrs, fopt);
-		out.addSource(x);
+		out.addSource(x, false);
 		lyrs.resize(n-layer-1);
 		std::iota(lyrs.begin(), lyrs.end(), layer+1);
 		SpatRaster r = subset(lyrs, fopt);
-		out.addSource(r);
+		out.addSource(r, false);
 	}
 	return out;
 }

@@ -240,12 +240,17 @@ setMethod ("show" , "SpatRaster",
 
 			#hMM <- .hasMinMax(object)
 			hMM <- object@ptr$hasRange
+			isB <- is.boolean(object)
 			if (any(hMM) || any(is.factor(object))) {
 				#r <- minmax(object)
 				r <- rbind(object@ptr$range_min, object@ptr$range_max)
 				r[,!hMM] <- c(Inf, -Inf)
 				minv <- format(r[1,])
 				maxv <- format(r[2,])
+				if (any(isB)) {
+					minv[isB] <- ifelse(minv[isB]=="0", "FALSE", "TRUE")
+					maxv[isB] <- ifelse(maxv[isB]=="0", "FALSE", "TRUE")
+				}
 				minv <- gsub("Inf", " ? ", minv)
 				maxv <- gsub("-Inf", "  ? ", maxv)
 				minv[!hMM] <- gsub("NaN", " ? ", minv[!hMM])

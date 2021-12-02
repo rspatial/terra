@@ -15,6 +15,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
 - `as.data.frame-SpatRaster/SpatVector` is now also implemented as a S3 methods to assure correct dispatch by S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
 - `crs` now shows the correct authority if it is not EPSG. [#419](https://github.com/rspatial/terra/issues/419) by Matthew Williamson
+- It now possible to add any SpatRaster with values to a SpatRaster with no values [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
 
 ## new 
 
@@ -22,6 +23,8 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `mergeTime` to combine multiple rasters, perhaps partly overlapping in time, into a single time series
 - new method `fillTime` that can add empty layers in between existing layers to assure that the time step between layers is constant 
 - new method `approxNA` to fill in missing values by cell across layers
+- new method `is.boolean` for SpatRaster
+- new method `layerCor` (like `raster::layerStats`). [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
 
 
 # version 1.4-22
@@ -42,14 +45,14 @@ Released on 2021-11-24
 ## enhancements 
 
 - `lapp` and `tapp` now have a `cores` argument (as do `app` and `predict`). Suggested by Dongdong Kong [#365](https://github.com/rspatial/terra/pull/365)
-- `focal` now also works with a function that returns multiple values (see [#318](https://github.com/rspatial/terra/pull/318) by Alex). 
+- `focal` now also works with a function that returns multiple values (see [#318](https://github.com/rspatial/terra/pull/318) by Alex Ilich). 
 - `focal` can now process multiple layers in one step. 
 - expanded support for conversion from `stars` objects [#220](https://github.com/rspatial/terra/issues/220) by Jakub Nowosad
 
 
 ## new 
 
-- `focalCpp` takes a C++ function that iterates over cells to speed up computation by avoiding `apply` (see [#318](https://github.com/rspatial/terra/pull/318) by Alex). 
+- `focalCpp` takes a C++ function that iterates over cells to speed up computation by avoiding `apply` (see [#318](https://github.com/rspatial/terra/pull/318) by Alex Ilich). 
 - `focalReg` for focal OLS regression models between layers 
 
 
@@ -60,7 +63,7 @@ Released on 2021-11-16
 
 ## bug fixes
 
-- `terra` did not install with GDAL < 3 [#402](https://github.com/rspatial/terra/issues/402) by Alex.
+- `terra` did not install with GDAL < 3 [#402](https://github.com/rspatial/terra/issues/402) by Alex Ilich.
 - `distance` between two SpatVectors or matrices with `pairwise=FALSE` returned a matrix that was filled by column instead of by row [#403](https://github.com/rspatial/terra/issues/403) by Paul Smith
 
 
