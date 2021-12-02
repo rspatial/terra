@@ -508,7 +508,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	if (is_int) out.setValueType(1);
 	
 	f = {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
-	if (is_int || std::find(f.begin(), f.end(), fun) != f.end()) {
+	if ((!is_int) && std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown math function");
 		return out;
 	}

@@ -39,17 +39,17 @@ SpatRaster with layers representing quantiles
 
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
-r <- c(r/2, r, r*2)
-q <- quantile(r)
-q
+rr <- c(r/2, r, r*2)
+qr <- quantile(rr)
+qr
 
 \dontrun{
 # same but slower
-qa <- app(r, quantile)
+qa <- app(rr, quantile)
 }
 
 #quantile by layer instead of by cell
-qr <- global(r, quantile)
+qg <- global(r, quantile)
 }
 
 \keyword{methods}

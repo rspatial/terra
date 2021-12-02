@@ -7,6 +7,8 @@
 - `buffer` on a SpatRaster with no values caused a crash [#416](https://github.com/rspatial/terra/issues/416) by Sebastian Brinkmann
 - `writeVector` now assumes "traditional GIS order" (long/lat) if the CRS specifies lat/long. [#333](
 https://github.com/rspatial/terra/issues/333) by Agustin Lobo
+- argument `main` was ignored in `density` when using a single layer SpatRaster [#424](https://github.com/rspatial/terra/issues/424) by dvictori
+
 
 ## enhancements 
 
