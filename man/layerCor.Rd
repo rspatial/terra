@@ -12,7 +12,7 @@ Compute correlation and (weighted) covariance between the layers of a multi-laye
 
 
 \usage{
-layerCor(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf)
+layerCor(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf, ...)
 }
 
 
@@ -28,6 +28,8 @@ layerCor(x, fun, w, asSample=TRUE, na.rm=FALSE, maxcell=Inf)
   \item{na.rm}{logical. Should missing values be removed?}
   
   \item{maxcell}{postive integer. The number of cells to be regularly sampled. Only used when \code{fun} is a function}
+
+  \item{...}{additional arguments for \code{fun} (if it is a proper function)}
 }
 
 
