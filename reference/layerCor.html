@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Correlation and (weighted) covariance — layerCor" />
-<meta property="og:description" content="Compute correlation and (weighted) covariance between the layers of a multi-layer SpatRaster." />
+<meta property="og:description" content="Compute correlation, (weighted) covariance, or similar summary statistics that compare the values of all pairs of the layers of a SpatRaster." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -125,10 +125,11 @@
     </div>
 
     <div class="ref-description">
-    <p>Compute correlation and (weighted) covariance between the layers of a multi-layer SpatRaster.</p>
+    <p>Compute correlation, (weighted) covariance, or similar summary statistics that compare the values of all pairs of the layers of a SpatRaster.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>w</span>, asSample<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, maxcell<span class='op'>=</span><span class='cn'>Inf</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S4 method for SpatRaster</span>
+<span class='fu'>layerCor</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>fun</span>, <span class='va'>w</span>, asSample<span class='op'>=</span><span class='cn'>TRUE</span>, na.rm<span class='op'>=</span><span class='cn'>FALSE</span>, maxcell<span class='op'>=</span><span class='cn'>Inf</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
