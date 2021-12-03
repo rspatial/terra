@@ -528,6 +528,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{calc}\tab\code{\link{app}}\cr
 \code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
+\code{coordinates}\tab\code{\link{crds}}\cr
 \code{clump}\tab\code{\link{patches}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
 \code{disaggregate} \tab\code{\link{disagg}}\cr
@@ -558,6 +559,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 
 \tabular{ll}{
 \code{\link{as.polygons}}\tab By default, \code{terra} returns dissolved polygons\cr
+\code{\link{quantile}}\tab computes by cell, across layers instead of the other way around\cr
 \code{\link{extract}}\tab By default, \code{terra} returns a matrix, with the first column the sequential ID of the vectors. \cr
 \tab \code{raster} returns a list (for lines or polygons) or a matrix (for points, but without the ID\cr
 \tab column. You can use \code{list=TRUE} to get the results as a list\cr

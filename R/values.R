@@ -164,9 +164,6 @@ setMethod("setValues", signature("SpatRaster"),
 )
 
 
-#.hasValues <- function(x) {
-#	x@ptr$hasValues
-#}
 
 setMethod("inMemory", signature(x="SpatRaster"), 
 	function(x, bylayer=FALSE) {
@@ -180,18 +177,9 @@ setMethod("inMemory", signature(x="SpatRaster"),
 )
 
 
-..inMemory <- function(x) {
-	x@ptr$inMemory
-}
-
-.filenames <- function(x) {
-	x@ptr$filenames
-}
-
-.hasMinMax <- function(x) {
-	x@ptr$hasRange
-}
-
+#..hasValues <- function(x) { x@ptr$hasValues}
+#..inMemory <- function(x) { x@ptr$inMemory }
+#..filenames <- function(x) {	x@ptr$filenames }
 
 
 setMethod("sources", signature(x="SpatRaster"), 
@@ -214,7 +202,7 @@ setMethod("sources", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("hasMinmax", signature(x="SpatRaster"), 
+setMethod("hasMinMax", signature(x="SpatRaster"), 
 	function(x) {
 		x@ptr$hasRange
 	}
@@ -239,7 +227,7 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 		opt <- spatOptions()
 		if (force) {
 			x@ptr$setRange(opt)
-		} else if (any(!.hasMinMax(x))) {
+		} else if (!all(hasMinMax(x))) {
 			x@ptr$setRange(opt)
 		}
 		x <- messages(x, "setMinMax")

@@ -62,7 +62,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 
 	if (missing(scale)) {
 		scale <- 255
-		if ( all(.hasMinMax(x)) ) {
+		if ( all(hasMinMax(x)) ) {
 			rng <- minmax(x)[, 1:3]
 			scale <- max(max(rng[2]), 255)
 		}

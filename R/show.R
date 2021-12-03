@@ -176,7 +176,7 @@ setMethod ("show" , "SpatRaster",
 
 			nsr <- nsrc(object)
 			m <- inMemory(object)
-			f <- .filenames(object)
+			f <- sources(object)
 			hdf5 <- substr(f, 1, 5) == "HDF5:"
 			f[!hdf5] <- basename(f[!hdf5])				
 			if (any(hdf5)) {
@@ -238,8 +238,7 @@ setMethod ("show" , "SpatRaster",
 				uts <- c(uts[1:mnr], "...")
 			}
 
-			#hMM <- .hasMinMax(object)
-			hMM <- object@ptr$hasRange
+			hMM <- hasMinMax(object)
 			isB <- is.bool(object)
 			if (any(hMM) || any(is.factor(object))) {
 				#r <- minmax(object)
@@ -353,7 +352,7 @@ setMethod ("show" , "SpatRaster",
 
 .sources <- function(x) {
 	m <- inMemory(x)
-	f <- .filenames(x)
+	f <- sources(x)
 	f <- gsub("\"", "", basename(f))
 	i <- grep(":", f)
 	if (length(i) > 0) {
