@@ -23,12 +23,12 @@ This function returns the unique values in a SpatRaster or removes duplicates in
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{incomparables}{logical. If \code{FALSE} and \code{x} is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If \code{TRUE}, each layer is evaluated separately, and a list is returned. If \code{x} is a SpatVector this argument is as for a \code{data.frame}.}
-  \item{...}{additional arguments passed on to base::unique}  
+  \item{...}{additional arguments passed on to \code{\link[base]{unique}}}  
 }
 
 
 \value{
-If \code{x} is a SpatRaster: vector or matrix
+If \code{x} is a SpatRaster: data.frame or list (if \code{incomparables=FALSE})
 
 If \code{x} is a SpatVector: SpatVector
 }

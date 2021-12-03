@@ -6,6 +6,6 @@ std::vector<std::string> get_metadata_sds(std::string filename);
 std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string> meta);
 void getGDALdriver(std::string &filename, std::string &driver);
 bool getNAvalue(GDALDataType gdt, double & naval);
-GDALDataset* openGDAL(std::string filename, unsigned OpenFlag);
+GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::string> open_options);
 char ** set_GDAL_options(std::string driver, double diskNeeded, bool writeRGB, std::vector<std::string> gdal_options);
 

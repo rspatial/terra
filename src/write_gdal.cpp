@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021  Robert J. Hijmansf
+// Copyright (c) 2018-2021  Robert J. Hijmans
 //
 // This file is part of the "spat" library.
 //
@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
-
-
 #include "spatRaster.h"
 #include "math_utils.h"
 #include "string_utils.h"
@@ -31,6 +29,57 @@
 #include "gdal_rat.h"
 
 #include "gdalio.h"
+/*
+void add_quotes(std::vector<std::string> &s) {
+	for (size_t i=0; i< s.size(); i++) {
+		s[i] = "\"" + s[i] + "\"";
+	}
+}
+*/
+
+std::string quoted_csv(const std::vector<std::string> &s) {
+	std::string ss;
+	if (s.size() == 0) {
+		ss = "";
+		return ss;
+	}
+	ss = "\"" + s[0] + "\"";
+	for (size_t i=1; i< s.size(); i++) {
+		ss += ",\"" + s[i] + "\"";
+	}
+	return ss;
+}
+
+bool SpatRaster::write_aux_json(std::string filename) {
+	filename += ".aux.json";
+	std::ofstream f;
+	bool wunits = hasUnit();
+	bool wtime = hasTime();
+	if (wunits || wtime) {
+		f.open(filename);
+		if (f.is_open()) {
+			f << "{" << std::endl;
+			if (wtime) {
+				std::vector<std::string> tstr = getTimeStr(false);
+				std::string ss = quoted_csv(tstr);
+				f << "\"time\":[" << ss << "]," << std::endl;
+				f << "\"timestep\":\"" << source[0].timestep << "\"";
+				if (wunits) f << ",";
+				f << std::endl;
+			}	
+			if (wunits) {
+				std::vector<std::string> units = getUnit();
+				std::string ss = quoted_csv(units);
+				f << "\"unit\":[" << ss << "]" << std::endl;
+			}
+			f << "}" << std::endl;
+		} else {
+			return false;
+		}
+		return true;
+	}
+	return true;
+}
 
 
 bool setCats(GDALRasterBand *poBand, std::vector<std::string> &labels) {
@@ -107,7 +156,7 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 	GDALColorTable *poCT = new GDALColorTable(GPI_RGB);
 	GDALColorEntry col;
 	for (size_t j=0; j< d.nrow(); j++) {
-	if (d.iv[3][j] == 0) { // maintain transparaency in gtiff
+	if (d.iv[3][j] == 0) { // maintain transparency in gtiff
 			col.c1 = 255;
 			col.c2 = 255;
 			col.c3 = 255;
@@ -208,19 +257,41 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError(errmsg);
 		return false;
 	}
-	if (file_exists(filename) & (!opt.get_overwrite())) {
+	
+	bool append = std::find(opt.gdal_options.begin(), opt.gdal_options.end(), "APPEND_SUBDATASET=YES") != opt.gdal_options.end();
+	if (append) {
+		if (!file_exists(filename)) {
+			setError("cannot append to a file that does not exist");
+			return(false);
+		} 
+	} else if (file_exists(filename) & (!opt.get_overwrite())) {
 		setError("file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return(false);
 	}
+	
 //	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 //		setError(errmsg);
 //		return(false);
 //	}
 	
+	std::string auxf = filename + ".aux.xml";
+	remove(auxf.c_str());
+	auxf = filename + ".aux.json";
+	remove(auxf.c_str());
+		
 	std::vector<bool> hasCT = hasColors();
+	bool rat = isRat();
 	std::vector<bool> hasCats = hasCategories();
 	std::vector<SpatDataFrame> ct = getColors();
-	if (hasCT[0] || hasCats[0]) { 
+	if (rat) {
+		datatype = "INT4S";
+		hasCats[0] = false;
+		hasCT[0] = false;
+		std::fill(hasCT.begin(), hasCT.end(), false);
+		SpatCategories cats = source[0].cats[0];
+		SpatOptions sopt(opt);
+		cats.d.write_dbf(filename, true, sopt);
+	} else if (hasCT[0] || hasCats[0]) { 
 		datatype = "INT1U";
 	} else if (datatype != "INT1U") {
 		std::fill(hasCT.begin(), hasCT.end(), false);
@@ -284,7 +355,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	//bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
 
 	GDALDataset *poDS;
-    if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+	if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
 		poDS = poDriver->Create(filename.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);
 	} else if (CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE)) {
 		copy_driver = driver;
@@ -307,7 +378,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	CSLDestroy( papszOptions );
 	if (poDS == NULL) {
 		if (!filepath_exists(filename)) {
-			setError("failed writing "+ driver + " file. Path does not exist");
+			setError("failed writing "+ driver + " file. Path does not exist:\n   " + filename);
 		} else {
 			setError("failed writing "+ driver + " file");
 		}
@@ -442,9 +513,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	poDS->SetProjection(pszSRS_WKT);
 	CPLFree(pszSRS_WKT);
 	// destroySRS(oSRS) ?
-
+	
 	source[0].gdalconnection = poDS;
-
 	source[0].resize(nlyr());
 	source[0].nlyrfile = nlyr();
 	source[0].datatype = datatype;
@@ -456,6 +526,20 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	source[0].driver = "gdal" ;
 	source[0].filename = filename;
 	source[0].memory = false;
+
+	write_aux_json(filename);
+/*
+	if (hasTime()) {
+		std::vector<std::string> tstr = getTimeStr(true);
+		std::string fname = filename + ".time";
+		write_text(fname, tstr);
+	}
+	if (hasUnit()) {
+		std::vector<std::string> units = getUnit();
+		std::string fname = filename + ".unit";
+		write_text(fname, units);
+	}
+*/
 
 	return true;
 }
@@ -604,6 +688,7 @@ bool SpatRaster::writeStopGDAL() {
 			source[0].hasRange[i] = false;
 		}
 	}
+	
 	if (copy_driver != "") {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;
@@ -624,7 +709,7 @@ bool SpatRaster::writeStopGDAL() {
 			GDALClose( (GDALDatasetH) source[0].gdalconnection );
 		} else {
 			GDALClose( (GDALDatasetH) source[0].gdalconnection );
-			GDALDataset *oldDS = openGDAL(copy_filename.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY);
+			GDALDataset *oldDS = openGDAL(copy_filename.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_ops);
 
 			if( oldDS == NULL )  {
 				setError("file copy create failed for "+ copy_driver);
@@ -649,6 +734,7 @@ bool SpatRaster::writeStopGDAL() {
 			GDALClose( (GDALDatasetH) oldDS );
 			GDALClose( (GDALDatasetH) newDS );
 		}
+		CSLDestroy(papszOptions);
 	} else {
 		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	}

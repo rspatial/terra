@@ -11,6 +11,7 @@
 \alias{plot,SpatExtent,missing-method}
 
 
+
 \title{Make a map}
 
 \description{
@@ -20,12 +21,12 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), 
      pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
-     colNA=NULL, alpha=NULL, ...)
+     colNA=NULL, alpha=NULL, reset=FALSE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)
 
 \S4method{plot}{SpatVector,character}(x, y, col, type, mar=NULL, legend=TRUE,
-     add=FALSE, axes=!add, main=y,
+     add=FALSE, axes=!add, main=y, buffer=TRUE, background=NULL,
      plg=list(), pax=list(), nr, nc, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
@@ -44,6 +45,8 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be draw. For example "topright" or "bottomleft". Use \code{plg} for more refined placement (SpatVector data only)}
   \item{axes}{logical. Draw axes?}
+  \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
+  \item{background}{background color. Default is no color (white)}
   \item{plg}{list with parameters for drawing the legend. See the arguments for \code{\link{legend}}}
   \item{pax}{list with parameters for drawing axes. See the arguments for \code{\link{axis}}}  
   \item{maxcell}{positive integer. Maximum number of cells to use for the plot}
@@ -52,13 +55,13 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{levels}{character. labels to be used for the classes legend }
   \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the the layer that is plotted (1 to the number of layers) }  
   \item{colNA}{character. color for the NA values}
-  \item{alpha}{numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque)}
+  \item{alpha}{Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
   \item{add}{logical. If \code{TRUE} add the object to the current plot}
-  
+  \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}}}
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
 }
 

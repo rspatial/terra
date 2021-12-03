@@ -148,32 +148,46 @@ void power(std::vector<double>& a, const std::vector<double>& b) {
 }
 
 
-bool smooth_operator(std::string oper) {
-	std::vector<std::string> f {"+", "-", "*", "^", "/", "%", "==", "!=", ">", "<", ">=", "<="};
-	return (std::find(f.begin(), f.end(), oper) != f.end());
+bool smooth_operator(std::string oper, bool &logical) {
+	std::vector<std::string> f {"==", "!=", ">", "<", ">=", "<="};
+	logical = std::find(f.begin(), f.end(), oper) != f.end();
+	f = {"+", "-", "*", "^", "/", "%"};
+	return (logical || (std::find(f.begin(), f.end(), oper) != f.end()));
 }
 
+bool SpatRaster::setValueType(unsigned char d) {
+	if (d > 3) {
+		return false;
+	}
+	for (size_t i=0; i<source.size();i++) {
+		source[i].valueType = std::vector<unsigned char>(source[i].nlyr, d);
+	}
+	return true;
+}
 
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 
 	size_t nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
-
-
-	if (!smooth_operator(oper)) {
-		out.setError("unknown arith function");
-		return out;
-	}
-
-	if (!out.compare_geom(x, false, true)) {
-		return(out);
-	}
-
 	if (!(hasValues() & x.hasValues())) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}
+
+	bool logical = false;
+	if (!smooth_operator(oper, logical)) {
+		out.setError("unknown arith function");
+		return out;
+	}
+	if (logical) {
+		out.setValueType(3);
+	}
+
+	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
+		return(out);
+	}
+
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -231,14 +245,21 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptions &opt) {
 
 	SpatRaster out = geometry(nlyr());
-	if (!smooth_operator(oper)) {
-		out.setError("unknown arith function");
-		return out;
-	}
 	if (!hasValues()) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}
+
+
+	bool logical;
+	if (!smooth_operator(oper, logical)) {
+		out.setError("unknown arith function");
+		return out;
+	}
+	if (logical) {
+		out.setValueType(3);
+	}
+
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -326,6 +347,13 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 }
 
 
+SpatRaster SpatRaster::is_true(SpatOptions &opt) {
+	return arith(1, "==", false, opt);
+}
+
+SpatRaster SpatRaster::is_false(SpatOptions &opt) {
+	return arith(1, "!=", false, opt);
+}
 
 SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool reverse, SpatOptions &opt) {
 
@@ -334,41 +362,55 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		out.setError("cannot compute with nothing");
 		return out;
 	}
+	if (!hasValues()) {
+		SpatRaster out;
+		out.setError("raster has no values"); // or warn and treat as NA?
+		return out;
+	}
 
 	if (x.size() == 1) {
 		return(arith(x[0], oper, reverse, opt));
 	}
 
-	SpatRaster out = geometry();
-	if (!smooth_operator(oper)) {
+	unsigned innl = nlyr();
+	unsigned outnl = innl;
+	
+	if (x.size() > innl) {
+		outnl = x.size();
+	}
+	SpatRaster out = geometry(outnl);
+	
+	bool logical=false;
+	if (!smooth_operator(oper, logical)) {
 		out.setError("unknown arith function");
 		return out;
 	}
-	if (!hasValues()) {
-		out.setError("raster has no values"); // or warn and treat as NA?
-		return out;
+	if (logical) {
+		out.setValueType(3);
 	}
+	
 
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
 	}
 
-	
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
 	}
 
-	unsigned nl = nlyr();
 	unsigned nc = ncol();
-	recycle(x, nlyr());
+	recycle(x, outnl);
 
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v = readBlock(out.bs, i);
+		if (outnl > innl) {
+			recycle(v, outnl * out.bs.nrows[i] * nc);
+		}
 		std::vector<double> vv;
 		unsigned off = out.bs.nrows[i] * nc;
-		for (size_t j=0; j<nl; j++) {
+		for (size_t j=0; j<outnl; j++) {
 			unsigned s = j * off;
 			std::vector<double> a(v.begin()+s, v.begin()+s+off);
 			if (std::isnan(x[j])) {
@@ -436,16 +478,14 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 			} else {
 				// stop
 			}
-			vv.insert(vv.end(), a.begin(), a.end());
+			std::copy(a.begin(), a.end(), v.begin()+s);
 		}
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();
 	return(out);
 }
-
-
 
 
 
@@ -463,8 +503,12 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	SpatRaster out = geometry();
 	if (!hasValues()) return out;
 
-	std::vector<std::string> f {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
-	if (std::find(f.begin(), f.end(), fun) == f.end()) {
+	std::vector<std::string> f {"abs", "ceiling", "floor", "trunc", "sign"};
+	bool is_int = std::find(f.begin(), f.end(), fun) != f.end();
+	if (is_int) out.setValueType(1);
+	
+	f = {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
+	if ((!is_int) && std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown math function");
 		return out;
 	}
@@ -528,6 +572,8 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		out.setError("unknown math2 function");
 		return out;
 	}
+
+	if (digits == 0) out.setValueType(1);
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -735,7 +781,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		return out;
 	}
 
-	if (!out.compare_geom(x, true, false)) {
+	if (!out.compare_geom(x, true, false, opt.get_tolerance())) {
 		return(out);
 	}
 

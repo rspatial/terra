@@ -5,6 +5,37 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+bool write_text(std::string filename, std::vector<std::string> s) {
+	std::ofstream f;
+	f.open(filename);
+	if (f.is_open()) {
+		for (size_t i=0; i<s.size(); i++) {
+			f << s[i] << std::endl;
+		}
+		f.close();
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+std::vector<std::string> read_text(std::string filename) {
+	std::vector<std::string> s;
+	std::string line;
+	std::ifstream f(filename);
+	if (f.is_open())  {
+		while (getline(f, line)) {
+			if (line.empty()) {
+				s.push_back("");				
+			} else {
+				s.push_back(line);
+			}
+		}
+		f.close();
+	} 
+	return s;
+}
 
 
 std::string getFileExt(const std::string& s) {

@@ -16,7 +16,7 @@ Write a SpatRaster object to a file.
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{filename}{character. Output filename}
+  \item{filename}{character. Output filename. Can be a single filename, or as many filenames as \code{nlyr(x)} to write a file for each layer}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{...}{additional arguments for for writing files. See Details }
 }
@@ -74,12 +74,11 @@ f <- file.path(tempdir(), "test.tif")
 
 writeRaster(r, f, overwrite=TRUE)
 
-writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=LZW", "TFW=YES","of=COG"), datatype='INT1U')
+writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=NONE", "TFW=YES","of=COG"), datatype='INT1U')
 
 ## Or with a wopt argument:
 
-writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=LZW", "of=COG"), datatype='INT1U'))
-
+writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=NONE", "of=COG"), datatype='INT1U'))
 
 ## remove the file
 unlink(f)

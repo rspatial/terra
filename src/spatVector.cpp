@@ -17,6 +17,7 @@
 
 #include "spatVector.h"
 #include <numeric>
+#include "math_utils.h"
 
 #ifdef useGDAL
 	#include "crs.h"
@@ -137,7 +138,11 @@ SpatPart SpatGeom::getPart(unsigned i) {
 }
 
 SpatVector::SpatVector() {
-	
+	extent.xmin = 0;
+	extent.xmax = 0;
+	extent.ymin = 0;
+	extent.ymax = 0;
+		
 	srs.proj4 = "+proj=longlat +datum=WGS84";
 	srs.wkt = "GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\",6378137,298.257223563, LENGTHUNIT[\"metre\",1]]], PRIMEM[\"Greenwich\",0, ANGLEUNIT[\"degree\",0.0174532925199433]], CS[ellipsoidal,2], AXIS[\"geodetic latitude (Lat)\",north, ORDER[1], ANGLEUNIT[\"degree\",0.0174532925199433]], AXIS[\"geodetic longitude (Lon)\",east, ORDER[2], ANGLEUNIT[\"degree\",0.0174532925199433]], USAGE[ SCOPE[\"Horizontal component of 3D system.\"], AREA[\"World.\"], BBOX[-90,-180,90,180]], ID[\"EPSG\",4326]]";	
 }
@@ -282,6 +287,7 @@ bool SpatVector::addGeom(SpatGeom p) {
 	}
 	return true;
 }
+
 
 bool SpatVector::setGeom(SpatGeom p) {
 	geoms.resize(1);
@@ -760,15 +766,11 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 		return out;
 	}
 	if (x.df.nrow() == 0) {
-		for (size_t i=0; i<x.size(); i++) {
-			out.df.add_row();
-		}
+		out.df.add_rows(x.size());
 	} else {
 		std::vector<unsigned> i;
 		out.df = x.df.subset_rows(i);
-		for (size_t i=0; i<size(); i++) {
-			out.df.add_row();
-		}
+		out.df.add_rows(size());
 		out.df.rbind(x.df);
 	}
 	return out;
@@ -829,7 +831,6 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 }
 
 
-#include "Rcpp.h"
 SpatVector SpatVector::as_lines() {
 	SpatVector v;
 
@@ -872,3 +873,96 @@ SpatVector SpatVector::as_lines() {
 	return(v);
 }
 
+
+void vecround(std::vector<double> &x, int digits) {
+	for (double& d : x) d = roundn(d, digits);
+}
+
+void remove_duplicates(std::vector<double> &x, std::vector<double> &y, int digits) {
+	if (digits > -1) {
+		vecround(x, digits);
+		vecround(y, digits);
+	}
+	size_t start = x.size() - 1;
+	for (size_t i=start; i>0; i--) {
+		if ((x[i] == x[i-1]) && (y[i] == y[i-1])) {
+			x.erase(x.begin()+i);
+			y.erase(y.begin()+i);
+		}
+	}
+}
+
+
+void SpatGeom::remove_duplicate_nodes(int digits) {
+	size_t start = parts.size()-1;
+	for (size_t i=start; i>0; i--) {
+		remove_duplicates(parts[i].x, parts[i].y, digits);
+		if (parts[i].x.size() < 4) {
+			parts.erase(parts.begin()+i); 
+			continue;
+		}
+		if (parts[i].hasHoles()) {
+			for (size_t j=0; j < parts[i].nHoles(); j++) {
+				remove_duplicates(parts[i].holes[j].x, parts[i].holes[j].y, digits);
+				if (parts[i].holes[j].x.size() < 4) {
+					parts[i].holes.erase(parts[i].holes.begin()+j); 
+				}
+			}
+		}
+	}
+}
+
+
+SpatVector SpatVector::remove_duplicate_nodes(int digits) {
+	SpatVector v = *this;
+	if (geoms[0].gtype == points) {
+		v.addWarning("returning a copy");
+		return v;
+	}
+	for (size_t i=0; i<size(); i++) {
+		v.geoms[i].remove_duplicate_nodes(digits);
+	}
+	return(v);
+}
+
+
+SpatVector SpatVectorCollection::append() {
+	SpatVector out;
+	size_t n = size();
+	if (n < 1) {
+		out.setError("no data in collection");
+		return out;
+	}
+	out = v[0];
+	// if out.nrow == 0? 
+	std::string gtype = out.type();
+	for (size_t i=1; i<n; i++) {
+		if (v[i].type() != gtype) {
+			out.setError("all SpatVectors must have the same geometry type");
+			return out;
+		}
+		//too much copying
+		//out = out.append(v[i], true);
+						
+		if (v[i].size() == 0) continue;
+		out.geoms.insert(out.geoms.end(), v[i].geoms.begin(), v[i].geoms.end());
+		out.extent.unite(v[i].extent);
+
+		if ((out.df.nrow() == 0) && (v[i].df.nrow() == 0)) {
+			continue;
+		} 
+		if ((out.df.nrow() > 0) && (v[i].df.nrow() > 0)) {
+			out.df.rbind(v[i].df);
+			continue;
+		}
+		if (v[i].df.nrow() == 0) {
+			out.df.add_rows(v[i].size());
+		} else {
+			std::vector<unsigned> r0;
+			out.df = v[i].df.subset_rows(r0);
+			out.df.add_rows(out.size());
+			out.df.rbind(v[i].df);
+		}
+	}
+	return out;
+}

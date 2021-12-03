@@ -41,26 +41,26 @@ SpatVector SpatRaster::dense_extent() {
 		rows.resize(nrow());
 		std::iota(rows.begin(), rows.end(), 0);
 	} else {
-		rows = seq_steps((int_64) 0, (int_64) nrow(), 50);
-		rows[rows.size()-1] = nrow()-1;
+		rows = seq_steps((int_64) 0, (int_64) nrow()-1, 50);
 	} 
-	if (ncol() < 20) {
+	if (ncol() < 51) {
 		cols.resize(nrow());
 		std::iota(cols.begin(), cols.end(), 0);
 	} else {
-		cols = seq_steps((int_64) 0, (int_64) ncol(), 50);
-		cols[cols.size()-1] = ncol()-1;
+		cols = seq_steps((int_64) 0, (int_64) ncol()-1, 50);
 	} 
 	
+	SpatExtent e = getExtent();
 
 	std::vector<double> xcol = xFromCol(cols) ;
 	std::vector<double> yrow = yFromRow(rows) ;
+	yrow.insert(yrow.begin(), e.ymax);
+	yrow.push_back(e.ymin);
 
-	SpatExtent e = getExtent();
-	std::vector<double> y0(cols.size(), e.ymin);
-	std::vector<double> y1(cols.size(), e.ymax);
-	std::vector<double> x0(rows.size(), e.xmin);
-	std::vector<double> x1(rows.size(), e.xmax);
+	std::vector<double> y0(xcol.size(), e.ymin);
+	std::vector<double> y1(xcol.size(), e.ymax);
+	std::vector<double> x0(yrow.size(), e.xmin);
+	std::vector<double> x1(yrow.size(), e.xmax);
 
 	std::vector<double> x = x0;
 	std::vector<double> y = yrow;
@@ -75,6 +75,9 @@ SpatVector SpatRaster::dense_extent() {
 	x.insert(x.end(), xcol.begin(), xcol.end());
 	y.insert(y.end(), y1.begin(), y1.end());
 
+	x.push_back(e.xmin);
+	y.push_back(e.ymax);
+	
 	SpatVector v(x, y, polygons, getSRS("wkt"));
 
 	return v;
@@ -82,10 +85,12 @@ SpatVector SpatRaster::dense_extent() {
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR < 2
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, SpatOptions &opt) {
+	SpatRaster out;
 	out.setError("Not supported for this old version of GDAL");
 	return(out);
 }
+
 
 #else
 
@@ -142,8 +147,8 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	}
 
 
-	r.source[0].nrow = nPixels;
-	r.source[0].ncol = nLines;
+	r.source[0].ncol = nPixels;
+	r.source[0].nrow = nLines;
 	
 	r.source[0].extent.xmin = adfDstGeoTransform[0]; /* left x */
 	/* w-e pixel resolution */
@@ -457,7 +462,7 @@ SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string met
 
 
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, SpatOptions &opt) {
 
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
@@ -477,6 +482,12 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	}
 	
 	bool use_crs = crs != "";  
+	if (use_crs) {
+		align = false;
+	}
+	if (align) {
+		crs = out.getSRS("wkt");
+	}
 	if ((!use_crs) & (!hasValues())) {
 		std::string fname = opt.get_filename();
 		if (fname != "") {
@@ -484,6 +495,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		}
 		return out;
 	}
+
 
 	if (!is_valid_warp_method(method)) {
 		out.setError("not a valid warp method");
@@ -498,20 +510,28 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	
 	lrtrim(crs);
 	SpatOptions sopt(opt);
-	if (use_crs) {
+	if (use_crs || align) {
 		GDALDatasetH hSrcDS;
-		if (!open_gdal(hSrcDS, 0, sopt)) {
+		if (!open_gdal(hSrcDS, 0, true, sopt)) {
 			out.setError("cannot create dataset from source");
 			return out;
 		}
 		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
 			GDALClose( hSrcDS );
+			out.setError("cannot get output boundaries");
 			return out;
 		}
 		GDALClose( hSrcDS );
-		if (!hasValues()) {
-			return out;
-		}
+	}
+	if (align) {
+		SpatExtent e = out.getExtent();
+		e = x.align(e, "out");
+		out.setExtent(e, false);
+		std::vector<double> res = x.resolution();
+		out = out.setResolution(res[0], res[1]);
+	}
+	if (!hasValues()) {
+		return out;
 	}
 
 	SpatOptions mopt;
@@ -554,7 +574,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 			GDALDatasetH hSrcDS;
 
-			if (!open_gdal(hSrcDS, i, sopt)) {
+			if (!open_gdal(hSrcDS, i, false, sopt)) {
 				out.setError("cannot create dataset from source");
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 				return out;
@@ -581,7 +601,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			out.setError("cannot do this transformation (warp)");
 			return out;
 		}
-		std::vector<double> v = crop_out.getValues(-1);
+		std::vector<double> v = crop_out.getValues(-1, opt);
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
 	}
 	out.writeStop();
@@ -615,7 +635,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out.setError("this source is not rotated");
 		return(out);
 	} 
-	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
+	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_ops);
 	
 	if( poDataset == NULL )  {
 		setError("cannot read from " + source[0].filename);
@@ -662,7 +682,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	} // else { // if (useaoi == 0) // no aoi
 
 	
-	out = warper(out, "", method, false, opt);
+	out = warper(out, "", method, false, false, opt);
 
 	return(out);
 }
@@ -672,45 +692,43 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt) {
 
 	SpatVector out;
+	out.srs = source[0].srs;
 	SpatOptions topt(opt);
 
+	SpatRaster tmp;
 	if (nlyr() > 1) {
 		out.addWarning("only the first layer is polygonized when 'dissolve=TRUE'");
+		tmp = subset({0}, topt);
+	} else {
+		tmp = *this;
 	}
-	SpatRaster tmp = subset({0}, topt);
 
 	bool usemask = false;
 	SpatRaster mask;
 	if (narm) {
 		usemask = true;
-		mask = tmp.isfinite(topt);	
+		SpatOptions mopt(topt);
+		mopt.set_datatype("INT1U"); 
+		mask = tmp.isfinite(mopt);	
 	} else if (trunc) {
 		tmp = tmp.math("trunc", topt);
-		trunc = false;
+		trunc = false; 
 	} else if (tmp.sources_from_file()) {
 		// for NAN and INT files. Should have a check for that
 		//tmp = tmp.arith(0, "+", false, topt);
 		// riskier  
 		tmp.readAll();
 	}
-	
+	if (tmp.source[0].extset) {
+		tmp = tmp.hardCopy(topt);
+	}
 	
 	GDALDatasetH rstDS;
-	if (! tmp.sources_from_file() ) {
-		if (!tmp.open_gdal(rstDS, 0, topt)) {
-			out.setError("cannot open dataset");
-			return out;
-		}
-	} else {
-		//std::string filename = tmp.source[0].filename;
-		//rstDS = GDALOpen( filename.c_str(), GA_ReadOnly);
-		rstDS = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
-		
-		if (rstDS == NULL) {
-			out.setError("cannot open dataset from file");
-			return out;
-		}
+	if (!tmp.open_gdal(rstDS, 0, false, topt)) {
+		out.setError("cannot open dataset");
+		return out;
 	}
+
     GDALDataset *srcDS=NULL;
 
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
@@ -720,22 +738,11 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 #endif
 
 	GDALDataset *maskDS=NULL;
+	GDALDatasetH rstMask;
 	if (usemask) {
-		GDALDatasetH rstMask;
-		if (! mask.sources_from_file() ) {
-			if (!mask.open_gdal(rstMask, 0, opt)) {
-				out.setError("cannot open dataset");
-				return out;
-			}
-		} else {
-			rstMask = openGDAL(mask.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
-
-			//std::string filename = mask.source[0].filename;
-			//rstMask = GDALOpen( filename.c_str(), GA_ReadOnly);
-			if (rstMask == NULL) {
-				out.setError("cannot open dataset from file");
-				return out;		
-			}
+		if (!mask.open_gdal(rstMask, 0, false, opt)) {
+			out.setError("cannot open dataset");
+			return out;
 		}
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
 		maskDS = (GDALDataset *) rstMask;
@@ -747,28 +754,18 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
     GDALDataset *poDS = NULL;
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "Memory" );
     if( poDriver == NULL )  {
-        out.setError( "cannot create output dataset");
+        out.setError( "cannot create output driver");
         return out;
     }
     poDS = poDriver->Create("", 0, 0, 0, GDT_Unknown, NULL );
     if( poDS == NULL ) {
-        out.setError("Creation of dataset failed" );
+        out.setError("Creation of output dataset failed" );
         return out;
     }
 	std::vector<std::string> nms = getNames();
 	std::string name = nms[0];
 
 	OGRSpatialReference *SRS = NULL;
-	std::string s = source[0].srs.wkt;
-	if (s != "") {
-		SRS = new OGRSpatialReference;
-		OGRErr err = SRS->SetFromUserInput(s.c_str()); 
-		if (err != OGRERR_NONE) {
-			out.setError("crs error");
-			delete SRS;
-			return out;
-		}
-	}
 
     OGRLayer *poLayer;
     poLayer = poDS->CreateLayer(name.c_str(), SRS, wkbPolygon, NULL );
@@ -792,7 +789,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 
 	CPLErr err;
 	if (usemask) {
-		GDALRasterBand  *maskBand;
+		GDALRasterBand *maskBand;
 		maskBand = maskDS->GetRasterBand(1);
 		if (trunc) {
 			err = GDALPolygonize(poBand, maskBand, poLayer, 0, NULL, NULL, NULL);
@@ -813,7 +810,9 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	}
 	GDALClose(srcDS);
 
-	out.read_ogr(poDS);
+	std::vector<double> fext;
+	SpatVector fvct;
+	out.read_ogr(poDS, "", "", fext, fvct);
 	GDALClose(poDS);
 
 	if (aggregate && (out.nrow() > 0)) {
@@ -823,6 +822,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	if (!values) {
 		out.df = SpatDataFrame();
 	} 
+	
 	return out;
 }
 
@@ -870,7 +870,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	*this = subset(lyrs, ops);
 	*this = collapse_sources();	
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, ops)) {
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot create dataset from source");
 		return out;
 	}
@@ -936,7 +936,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	}
 	GDALClose(hDstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	}
 	return out;
 }
@@ -970,7 +970,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 
 	SpatOptions ops(opt);
 	GDALDatasetH hSrcDS, hDstDS;
-	if (!open_gdal(hSrcDS, 0, ops)) {
+	if (!open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot open input dataset");
 		return out;
 	}
@@ -1004,7 +1004,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 			return out;
 		}
 	} else {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	}
 	GDALClose(hDstDS);
 	return out;

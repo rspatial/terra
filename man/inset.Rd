@@ -6,16 +6,21 @@
 \alias{inset,SpatVector-method}
 \alias{inset,SpatRaster-method}
 
+\alias{inext}
+\alias{inext,SpatVector-method}
+
 \title{Make an inset map}
 
 \description{
-Make an inset map
+Make an inset map or scale the extent of a SpatVector
 }
 
 \usage{
 \S4method{inset}{SpatVector}(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...)
 
 \S4method{inset}{SpatRaster}(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...)
+
+\S4method{inext}{SpatVector}(x, e, y=NULL, gap=0)
 }
 
 \arguments{
@@ -28,6 +33,8 @@ Make an inset map
   \item{box}{SpatExtent or missing, to draw a box on the inset}
   \item{pbx}{list with graphical arguments for the box}
   \item{...}{additional arguments passed to plot for the drawing of \code{x}}
+  \item{y}{SpatVector. If not NULL, \code{y} is scaled based with the parameters for \code{x}. This is useful, for example, when \code{x} represent boundaries, and \code{y} points within these boundaries}
+  \item{gap}{numeric to add space between the SpatVector and the SpatExtent}
 }
 
 

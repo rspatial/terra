@@ -1,55 +1,31 @@
 
-width <- function(x) {
-	x@ptr$width()
-}
-
-
-clearance <- function(x) {
-	x@ptr$clearance()
-}
-
-
-simplify <- function(x, tolerance=0, preserveTopology=TRUE) {
-	x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
-	messages(x, "simplify")	
-}
-
-
-make_nodes <- function(x) {
-	x@ptr <- x@ptr$make_nodes()
-	messages(x, "make_nodes")
-}
-
-line_merge <- function(x) {
-	x@ptr <- x@ptr$line_merge()
-	messages(x, "line_merge")
-}
-
-clean_further <- function(x) {
-	out <- as.lines(x)
-	out <- make_nodes(out)
-	out <- line_merge(out)
-	as.polygons(out)
-}
-
-
-clean <- function(x) {
-
-	out = x[1]
-	for (i in 2:nrow(x)) {
-		out <- erase(out, x[i])
-		out <- rbind(out, x[i])
-	}
-	out <- snap(out, 0.001)
-	p <- as.polygons(floor(ext(out)+1), crs=crs(out))
-	e <- disaggregate(erase(p, out))
+..gaps <- function(x) {
+	p <- as.polygons(floor(ext(x)+1), crs=crs(x))
+	e <- disagg(erase(p, x))
 	if (nrow(e) > 1) {
 		xmin = ext(p)[1]
 		i <- sapply(1:nrow(e), function(i) ext(e[i])[1] > xmin)
 		e <- e[i]
-		out <- rbind(out, e)
+		x <- rbind(x, e)
 	}
-	out
+	x
+}
+
+
+clean_further <- function(x, tolerance=0.0001) {
+	out <- as.lines(x)
+	out <- snap(out, tolerance)
+	out <- makeNodes(out)
+	out <- mergeLines(out)
+	as.polygons(out)
+}
+
+clean <- function(x) {
+	g <- gaps(x)
+	out <- erase(x)
+	out <- rbind(out, g)
+	g <- gaps(out)
+	rbind(out, g)
 }
 
 
@@ -67,10 +43,6 @@ mergebyborder <- function(x, field) {
 	}
 } 
 
-snap <- function(x, tolerance) {
-	x@ptr <- x@ptr$snap(tolerance)
-	messages(x, "snap")
-}
 
 
 centerline <- function(p) {
@@ -87,4 +59,12 @@ centerline <- function(p) {
 #x <- clean(h)
 #y <- clean_further(x)
 
+#hh <- rbind(h, h)
+#e <- erase(hh)
+#g <- gaps(e)
+
+#v1 = as.polygons(ext(0,1,0,1))
+#v2 = as.polygons(ext(1.01,2,0,1))
+#v <- rbind(v1, v2)
+#s = snap(v)
 

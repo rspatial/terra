@@ -94,6 +94,12 @@ rowColFromCell: matrix of row and column numbers
 }
 
 
+\seealso{
+\code{\link{crds}} 
+}
+
+
+
 \examples{
 r <- rast()
 

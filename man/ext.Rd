@@ -22,8 +22,6 @@
 \alias{ext,Raster-method}
 \alias{ext,Extent-method}
 \alias{ext,sf-method}
-\alias{bbox,SpatRaster-method}
-\alias{bbox,SpatVector-method}
 
   
 \title{Create, get or set a SpatExtent}

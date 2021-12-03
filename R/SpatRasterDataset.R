@@ -75,6 +75,29 @@ setMethod("sds", signature(x="list"),
 	}
 )
 
+setMethod("sds", signature(x="stars"),
+	function(x) {
+		s <- from_stars(x) 
+		if (inherits(s, "SpatRaster")) {
+			sds(s)
+		} else {
+			s
+		}
+	}
+)
+
+setMethod("sds", signature(x="stars_proxy"),
+	function(x) {
+		s <- from_stars(x) 
+		if (inherits(s, "SpatRaster")) {
+			sds(s)
+		} else {
+			s
+		}
+	}
+)
+
+
 setMethod("c", signature(x="SpatRasterDataset"), 
 	function(x, ...) {
 
@@ -104,6 +127,7 @@ setMethod("c", signature(x="SpatRasterDataset"),
 		messages(x, "c")
 	}
 )
+
 
 setReplaceMethod("[", c("SpatRasterDataset","numeric","missing"),
 	function(x, i, j, value) {

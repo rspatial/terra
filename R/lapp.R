@@ -29,7 +29,7 @@
 
 
 setMethod("lapp", signature(x="SpatRaster"), 
-function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
 	fun <- match.fun(fun)
 	dots <- list(...)
@@ -42,8 +42,21 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 		fnames <- names(formals(fun))
 		x <- x[[names(x) %in% fnames]]
 	}
+
+
+	doclust <- FALSE
+	if (inherits(cores, "cluster")) {
+		doclust <- TRUE
+		ncores <- length(cores)		
+	} else if (cores > 1) {
+		doclust <- TRUE
+		ncores <- cores
+		cores <- parallel::makeCluster(cores)
+		on.exit(parallel::stopCluster(cores), add=TRUE)	
+	}
+
 	readStart(x)
-	on.exit(readStop(x))
+	on.exit(readStop(x), add=TRUE)
 	ncx <- ncol(x)
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, ncx, dataframe=TRUE)
 	test <- .lapp_test(v, fun, usenames, ...)
@@ -54,15 +67,32 @@ function(x, fun, ..., usenames=FALSE, filename="", overwrite=FALSE, wopt=list())
 	}
 	b <- writeStart(out, filename, overwrite, wopt=wopt)
 	expected <- test$nl * ncx
-	for (i in 1:b$n) {
-		v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, dataframe=TRUE)
-		if (!usenames) colnames(v) <- NULL
-		v <- do.call(fun, c(v, list(...)))
-		if (length(v) != (expected * b$nrows[i])) {
-			out <- writeStop(out)
-			error("lapp", "output length of fun is not correct")
+
+	if (doclust) {
+		cfun <- function(i, ...)  do.call(fun, i, ...)
+		parallel::clusterExport(cores, "cfun", environment())
+		for (i in 1:b$n) {
+			v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, dataframe=TRUE)
+			if (!usenames) colnames(v) <- NULL
+			v <- split(v, rep(1:ncores, each=ceiling(nrow(v) / ncores))[1:nrow(v)])
+			v <- unlist(parallel::parLapply(cores, v, cfun))
+			if (length(v) != (expected * b$nrows[i])) {
+				out <- writeStop(out)
+				error("lapp", "output length of fun is not correct")
+			}
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		writeValues(out, v, b$row[i], b$nrows[i])
+	} else {
+		for (i in 1:b$n) {
+			v <- readValues(x, b$row[i], b$nrows[i], 1, ncx, dataframe=TRUE)
+			if (!usenames) colnames(v) <- NULL
+			v <- do.call(fun, c(v, list(...)))
+			if (length(v) != (expected * b$nrows[i])) {
+				out <- writeStop(out)
+				error("lapp", "output length of fun is not correct")
+			}
+			writeValues(out, v, b$row[i], b$nrows[i])
+		}
 	}
 	out <- writeStop(out)
 	return(out)
@@ -121,7 +151,29 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt)
+	nltot <- sum(nlyr(x)) + nlyr(out)
+	fact <- max(4, 4 * nltot / nlyr(out))
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=fact)
+
+	#		nr <- b$nrows[i] * ncol(out)
+	#		splits <- rep(1:ncores, each=ceiling(nr) / ncores)[1:nr]
+	#		v <- vector(mode = "list", length = ncores)
+	#		for (j in 1:length(x)) {
+	#			vv <- readValues(x[j], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)
+	#			for (k in 1:ncores) {
+	#				v[[k]][[j]] <- vv[splits==k,]
+	#			}
+	#		}
+	#		if (recycle) {
+	#			for (k in 1:ncores) {
+	#				v[[k]] <- lapply(v[[k]], as.vector)
+	#			}
+	#		}
+	#		if (length(list(...) > 0)) {
+	#			v[[k]] <- c(v[[k]], list(...))
+	#		}
+
+
 	for (i in 1:b$n) {
 		v <- lapply(1:length(x), function(s) readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE))
 		if (recycle) {
@@ -130,7 +182,6 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 		v <- do.call(fun, c(v, list(...)))
 		writeValues(out, v, b$row[i], b$nrows[i])
 	}
-#	readStop(x)
 	out <- writeStop(out)
 	return(out)
 }

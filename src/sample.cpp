@@ -17,6 +17,7 @@
 
 #include <vector>
 #include "spatRaster.h"
+#include "distance.h"
 #include "recycle.h"
 #include <random>
 #include <unordered_set>
@@ -121,12 +122,52 @@ SpatRaster SpatRaster::sampleRegularRaster(unsigned size) {
 	return out;
 }
 
-std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) {
+
+SpatRaster SpatRaster::sampleRowColRaster(size_t nr, size_t nc) {
+
+	SpatRaster out = geometry(nlyr(), true);
+	if ((nr == 0) || (nc ==0)) {
+		out.setError("number of rows and columns must be > 0");
+	}
+	
+	nr = std::min(nr, nrow());
+	nc = std::min(nc, ncol());
+	if ((nc == ncol()) && (nr == nrow())) {
+		return( *this );
+	}
+	out.source[0].nrow = nr;
+	out.source[0].ncol = nc;
+
+	if (!source[0].hasValues) return (out);
+
+	std::vector<double> v;
+	for (size_t src=0; src<nsrc(); src++) {
+		if (source[src].memory) {
+			v = readSample(src, nr, nc);
+		//} else if (source[src].driver == "raster") {
+		//	v = readSampleBinary(src, nr, nc);
+		} else {
+		    #ifdef useGDAL
+			v = readGDALsample(src, nr, nc);
+			#endif
+		}
+		if (hasError()) return out;
+		out.source[0].values.insert(out.source[0].values.end(), v.begin(), v.end());
+	}
+	out.source[0].memory = true;
+	out.source[0].hasValues = true;
+	out.source[0].setRange();
+
+	return out;
+}
+
+
+std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!source[0].hasValues) return (out);
 
-	unsigned nsize;
+	size_t nsize;
 	size_t nr = nrow();
 	size_t nc = ncol();
 	if (size < ncell()) {
@@ -137,7 +178,7 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 	nsize = nc * nr;
 	std::vector<double> v;
 	if ((size >= ncell()) || ((nc == ncol()) && (nr == nrow()))) {
-		v = getValues() ;
+		v = getValues(-1, opt) ;
 		if (hasError()) return out;
 		for (size_t i=0; i<nlyr(); i++) {
 			size_t offset = i * nsize;
@@ -166,6 +207,51 @@ std::vector<std::vector<double>> SpatRaster::sampleRegularValues(unsigned size) 
 	}
 	return out;
 }
+
+
+std::vector<std::vector<double>> SpatRaster::sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt) {
+
+	std::vector<std::vector<double>> out;
+	if (!source[0].hasValues) return (out);
+
+	if ((nr == 0) || (nc ==0)) {
+		return(out);
+	}
+	
+	nr = std::min(nr, nrow());
+	nc = std::min(nc, ncol());
+
+	size_t nsize = nc * nr;
+	std::vector<double> v;
+	if ((nc == ncol()) && (nr == nrow())) {
+		v = getValues(-1, opt) ;
+		if (hasError()) return out;
+		for (size_t i=0; i<nlyr(); i++) {
+			size_t offset = i * nsize;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
+			out.push_back(vv);
+		}
+		return out;
+	}
+
+	for (size_t src=0; src<nsrc(); src++) {
+		if (source[src].memory) {
+			v = readSample(src, nr, nc);
+		} else {
+		    #ifdef useGDAL
+			v = readGDALsample(src, nr, nc);
+			#endif
+		}
+		if (hasError()) return out;
+		for (size_t i=0; i<source[src].nlyr; i++) {
+			size_t offset = i * nsize;
+			std::vector<double> vv(v.begin()+offset, v.begin()+offset+nsize);
+			out.push_back(vv);
+		}
+	}
+	return out;
+}
+
 
 
 std::vector<size_t> sample_replace(size_t size, size_t N, unsigned seed){
@@ -439,7 +525,7 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 			
 		}
 		
-		std::vector<size_t> x = sample(size, r.size(), true, w, seed);
+		std::vector	<size_t> x = sample(size, r.size(), true, w, seed);
 		std::vector <double> lat, lon;
 		lat.reserve(size);
 		lon.reserve(size);
@@ -479,16 +565,22 @@ std::vector<std::vector<double>> SpatExtent::sampleRandom(size_t size, bool lonl
 std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lonlat) {
 	std::vector<std::vector<double>> out(2);
 	if (size == 0) return out;
+
 	double r1 = xmax - xmin;
 	double r2 = ymax - ymin;
-	double ratio = 0.5 * r1/r2;
-	double n = sqrt( (double) size );
-	double nx = std::max(1.0, std::round(n*ratio));
-	double ny = std::max(1.0, std::round(n/ratio));
-	double x_i = r1 / nx;
-	double y_i = r2 / ny;
 
 	if (lonlat) {
+		double halfy = ymin + (ymax - ymin)/2;	
+		double dx = distance_lonlat(xmin, halfy, xmax, halfy);
+		double dy = distance_lonlat(0, ymin, 0, ymax);
+		double ratio = dx/dy;
+		double ny = std::max(1.0, sqrt(size / ratio));
+		double nx = std::max(1.0, size / ny);
+		ny = std::round(ny);
+		nx = std::round(nx);
+		double x_i = r1 / nx;
+		double y_i = r2 / ny;
+
 		std::vector<double> lat, lon, w, xi;
 		lat.reserve(ny);
 		lat.push_back(ymin+0.5*y_i);
@@ -506,13 +598,36 @@ std::vector<std::vector<double>> SpatExtent::sampleRegular(size_t size, bool lon
 		for (size_t i=0; i<w.size(); i++) {
 			xi.push_back(x_i / (w[i] * nwsumw));
 		}
+		double halfx = xmin + (xmax - xmin)/2;
 		for (size_t i=0; i<lat.size(); i++) {
-			std::vector <double> x = seq(xmin+0.5*xi[i], xmax, xi[i]);
+			double start = halfx - 0.5*xi[i];
+			std::vector <double> x;
+			if (start < xmin) {
+				x = { halfx };
+			} else {
+				while (start > xmin) {
+					start -= xi[i];
+				} 
+				x = seq(start + xi[i], xmax, xi[i]);
+			}
+			if (x.size() <= 1) {
+				x = { halfx };
+			}
 			std::vector <double> y(x.size(), lat[i]);
+        
 			out[0].insert(out[0].end(), x.begin(), x.end());
 			out[1].insert(out[1].end(), y.begin(), y.end());
 		}
+
 	} else {
+		double ratio = r1/r2;
+		double ny = std::max(1.0, sqrt(size / ratio));
+		double nx = std::max(1.0, size / ny);
+		ny = std::round(ny);
+		nx = std::round(nx);
+		double x_i = r1 / nx;
+		double y_i = r2 / ny;
+
 		std::vector<double> x, y;
 		x.reserve(nx);
 		y.reserve(ny);

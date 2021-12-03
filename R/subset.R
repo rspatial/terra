@@ -100,7 +100,7 @@ function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
-		as.data.frame(x, stringsAsFactors=FALSE)
+		as.data.frame(x)
 	} else {
 		x
 	}
@@ -112,7 +112,7 @@ function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
-		as.data.frame(x, stringsAsFactors=FALSE)
+		as.data.frame(x)
 	} else {
 		x
 	}
@@ -126,7 +126,7 @@ function(x, i, j, ... , drop=FALSE) {
 	x@ptr <- p$subset_cols(j-1)
 	x <- messages(x, "'['")
 	if (drop) {
-		as.data.frame(x, stringsAsFactors=FALSE)
+		as.data.frame(x)
 	} else {
 		x
 	}

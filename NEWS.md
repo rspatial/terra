@@ -1,20 +1,216 @@
-# version 1.3-10
+# version 1.5-1
+
+## bug fixes
+
+- `setValues`/`init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
+- conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
+- `buffer` on a SpatRaster with no values caused a crash [#416](https://github.com/rspatial/terra/issues/416) by Sebastian Brinkmann
+- `writeVector` now assumes "traditional GIS order" (long/lat) if the CRS specifies lat/long. [#333](
+https://github.com/rspatial/terra/issues/333) by Agustin Lobo
+- argument `main` was ignored in `density` when using a single layer SpatRaster [#424](https://github.com/rspatial/terra/issues/424) by dvictori
+
+
+## enhancements 
+
+- `values(x)<-` now accepts (hex coded) colors as values
+- `focal` now wraps around the dateline like raster::focal [#242](https://github.com/rspatial/terra/issues/242) by Alexander Marbler
+- `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
+- `as.data.frame-SpatRaster/SpatVector` are now also implemented as S3 methods to assure correct dispatch by other S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
+- `crs` now shows the correct authority if it is not EPSG. [#419](https://github.com/rspatial/terra/issues/419) by Matthew Williamson
+- It now possible to add any SpatRaster with values to a SpatRaster with no values [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
+
+
+## new 
+
+- timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)
+- new method `mergeTime` to combine multiple rasters, perhaps partly overlapping in time, into a single time series
+- new method `fillTime` that can add empty layers in between existing layers to assure that the time step between layers is constant 
+- new method `approxNA` to fill in missing values by cell across layers
+- new methods `is.bool` and `as.bool` for SpatRaster and more explicit recoginiation of Boolean raster data in various places (e.g., extract, plot)
+- new methods `is.int` and `as.int` for SpatRaster
+- new method `layerCor` (like `raster::layerStats`) [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
+
+
+# version 1.4-22
+
+Released on 2021-11-24
+
+## changes 
+- `focal` now has ellipses (`...`) to allow for providing additional arguments to `fun`. For this reason it does not have a `na.rm` argument anymore as that can be supplied via the ellipses. In practice this means that the default will be `na.rm=FALSE` for the standard functions such as `mean` and `sum`.
+
+
+## bug fixes
+
+- `app` grossly overestimated RAM needed, slowing it down. Reported by Jerry Nelson 
+- `terra` now installs, again, with older versions of GEOS [#406](https://github.com/rspatial/terra/pull/406) by fparyani
+- `terra` did not install with Clang on CRAN/OSX due to using C++13 idiom.
+
+
+## enhancements 
+
+- `lapp` and `tapp` now have a `cores` argument (as do `app` and `predict`). Suggested by Dongdong Kong [#365](https://github.com/rspatial/terra/pull/365)
+- `focal` now also works with a function that returns multiple values (see [#318](https://github.com/rspatial/terra/pull/318) by Alex Ilich). 
+- `focal` can now process multiple layers in one step. 
+- expanded support for conversion from `stars` objects [#220](https://github.com/rspatial/terra/issues/220) by Jakub Nowosad
+
+
+## new 
+
+- `focalCpp` takes a C++ function that iterates over cells to speed up computation by avoiding `apply` (see [#318](https://github.com/rspatial/terra/pull/318) by Alex Ilich). 
+- `focalReg` for focal OLS regression models between layers 
+
+
+
+# version 1.4-20
+
+Released on 2021-11-16
+
+## bug fixes
+
+- `terra` did not install with GDAL < 3 [#402](https://github.com/rspatial/terra/issues/402) by Alex Ilich.
+- `distance` between two SpatVectors or matrices with `pairwise=FALSE` returned a matrix that was filled by column instead of by row [#403](https://github.com/rspatial/terra/issues/403) by Paul Smith
+
+
+# version 1.4-19
+
+Released on 2021-11-15
+
+## bug fixes
+
+- `rast` with some NetCDF files failed because of bad parsing of dates. [#361](https://github.com/rspatial/terra/pull/361) by Juan Carlos Zamora-Pereira
+- `distance,SpatRaster` with lon/lat data was not correct. [#368](https://github.com/rspatial/terra/pull/368)
+by Greg Schmidt
+- `as.polygons,SpatRaster` failed with a SpatRaster and a categorical layer that is not the first layer. [#370](https://github.com/rspatial/terra/pull/370) by Patrick Schratz
+- The filename argument in `rasterize` was not ignored, also causing errors when writing to temporary files. ). [#377](https://github.com/rspatial/terra/pull/377) by Robbie Price
+- `rast,character` crashed if the sds was an empty character string. [#381](https://github.com/rspatial/terra/pull/381) by Dan Baston
+- `plot,SpatVector` now responds to the `range` argument [#385](https://github.com/rspatial/terra/issues/385) by Márcia Barbosa
+- `zonal` failed for user-defined functions. [#393](https://github.com/rspatial/terra/issues/393) by mqueinnec
+
+
+## new
+
+- new method `selectHighest` to select n cell values of a `SpatRaster` with the highest or lowest values. 
+- new method `vect,list` to append SpatVectors (faster than `do.call(rbind, x)`)
+- new argument `align=FALSE` to `project` to align to the template SpatRaster but ignore the resolution
+- new method `gdalCache` to set the GDAL cache size, contributed by Dan Baston [#387](https://github.com/rspatial/terra/pull/387)
+- new method `fileBlocksize`
+- new argument `options` to `writeVector` to pass layer creation options to GDAL
+- new SpatVector topology methods `mergeLines`, `snap`, `makeNodes`, `removeDupNodes`, `gaps`, `simplify`
+- new SpatVector characterization methods `width` and `clearance`
+
+
+## enhancements 
+
+- `terra` now installs with older versions of GEOS [#363](https://github.com/rspatial/terra/pull/363)
+- `terra` now installs on CentOS 7 with GDAL 2.1.4 and a C++ compiler that does not support std::regexp. [#384](https://github.com/rspatial/terra/issues/384) by Ariel Paulson
+
+
+# version 1.4-11
+
+Released on 2021-10-11
 
 ## enhancements
 
-- if `time(x) <- d` is set with a `Date` class object, `time(x)` now returns a `Date` object instead of a `POSIXct` object. Issue [#256](https://github.com/rspatial/terra/issues/256) raised by Mauricio Zambrano-Bigiarini.
-- The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue [#258](https://github.com/rspatial/terra/issues/258) by AGeographer. Also implemented for names in both SpatVector and SpatRaster.
-- `rast,data.frame` method to avoid confusion with the `matrix` and `list` methods in response to a [SO question](https://stackoverflow.com/q/68133958/635245) by Stackbeans.
+- the definition of `setValues` now has two arguments (`x` and `values`), just like `raster` had; to avoid reverse dependency problems with `raster`
+
+# version 1.4-9
+
+Released on 2021-10-07
+
+## name changes
+
+To avoid name conflicts with `sp` (via `raster`) `disaggregate` is now called `disagg` and `bbox,SpatRaster` and `bbox,SpatVector` have been removed (but could be resurrected in `raster` or under another name).
+
+## enhancements
+
+- `project` and `resample` now choose the resampling method based on the first layer, using "near" for categorical data. Thanks to Matthew Lewis [#355](https://github.com/rspatial/terra/pull/355)
+
+## bug fixes
+
+- `hist` failed with small samples. Issue [#356](https://github.com/rspatial/terra/issues/356) by Martin Queinnec
+
+
+# version 1.4-7
+
+Released on 2021-10-05
+
+## note
+
+`terra` no longer depends on `raster`. To avoid name clashes between these two packages, and to allow replacing methods from `rgeos` and `rgdal` in `raster`, `raster` now depends on `terra` instead. 
+
+
+## enhancements
+
+- `freq` has a new argument `usenames`. See issue [#309](https://github.com/rspatial/terra/issues/309) by Bappa Das
+- `rast,character-method` has a new argument `opts` that can be used to pass GDAL open options. See issue [#314](https://github.com/rspatial/terra/issues/314)
+- `rast,SpatRaster-method` now takes arguments `names` and `vals`. See issue [#323](https://github.com/rspatial/terra/issues/323) by Dongdong Kong
+- `crs<-` now warns if an unsupported datum is used. See issue [#317](https://github.com/rspatial/terra/issues/317)
+- `spatSample` now returns factor values if a SpatRaster layer is.factor except when using `as.df=FALSE`
+- new method `origin<-` to set the origin of a SpatRaster. See issue [#326](https://github.com/rspatial/terra/issues/326) by Jakub Nowosad
+- `crs` has a new argument `parse`. See [#344](https://github.com/rspatial/terra/issues/344) 
+- `plot-SpatRaster,missing` has a new argument `reset=FALSE` that allows resetting the par()$mar parameters after plotting. See issue [#340](https://github.com/rspatial/terra/issues/340) by Derek Friend
+- `crds` has a new argument `na.rm`. See [#338](https://github.com/rspatial/terra/issues/338) by Kodi Arfer 
+- `show(Spat*)` now prints the name and EPSG code of a crs if available. See [#317](https://github.com/rspatial/terra/issues/317) by Jakub Nowosad
+
 
 ## bug fixes 
+
+- `plotRGB` failed if there were `NA`s. Issue [#308](https://github.com/rspatial/terra/issues/308) by Jakub Nowosad
+- `writeVector` crashed R when used with a SpatVector with no geometries. Reported by Timothy White in issue [#319](https://github.com/rspatial/terra/issues/319)
+- `summary,SpatRaster-method` now returns counts for the classes (instead of a numerical summary of the indices) [#324](https://github.com/rspatial/terra/issues/324) by Jakub Nowosad
+- `tapp` with a character index now returns a SpatRaster with the correct names [#345](https://github.com/rspatial/terra/issues/345) by Stuart Brown 
+- `rasterize` with a character variable now adds the ID column to the categories [#337](https://github.com/rspatial/terra/issues/337) by Tate Brasel
+- `cellSize` now masks values in all cases (when requested with `mask=TRUE`). Issue [#339](https://github.com/rspatial/terra/issues/339) by Jean-Luc Dupouey
+- `buffer,SpatVector` no longer treats lines like polygons [#332](https://github.com/rspatial/terra/issues/332) by Márcia Barbosa
+- `plot` now passes the layer index to `fun` [#310](https://github.com/rspatial/terra/issues/310) by Ben Tupper
+- the `to_id` in `nearest` was sometimes wrong. See [#328](https://github.com/rspatial/terra/issues/328) by Shawn Ligocki
+- better support for ESRI value attribute tables (VAT). See this [SO question]( https://stackoverflow.com/q/69385928/635245)
+- `focal` did not reset initial values for NA cells when processing chunks. [#312](https://github.com/rspatial/terra/issues/312) by Jeffrey Evans
+- `focal` could run out of memory when using a large window and user-defined function, and was inexact at the chunk boundary [#347](https://github.com/rspatial/terra/issues/347)
+- `zonal` with `as.raster=TRUE` failed for categorical SpatRasters [#348](https://github.com/rspatial/terra/issues/348) by Jakub Nowosad
+
+
+
+# version 1.3-22
+
+Released on 2021-08-20
+
+## enhancements
+
+- if `time(x) <- d` is set with a `Date` class object, `time(x)` now returns a `Date` object instead of a `POSIXct` object. Issue [#256](https://github.com/rspatial/terra/issues/256) raised by Mauricio Zambrano-Bigiarini
+- The UTF-8 encoding of character attributes of a SpatVector is now declared such that they display correctly in R. See issue [#258](https://github.com/rspatial/terra/issues/258) by AGeographer. Also implemented for names in both SpatVector and SpatRaster
+- `rast,data.frame` method to avoid confusion with the `matrix` and `list` methods in response to a [SO question](https://stackoverflow.com/q/68133958/635245) by Stackbeans
+- the extreme values used to represent NA where not as intended (one or two lower) for INT2U and INT4U. Reported by Jean-Luc Dupouey on [stackoverflow](https://stackoverflow.com/q/68216362/635245)
+- `writeCDF` now also writes the time dimensions if there is only one time-step. See this [SO question](https://stackoverflow.com/a/68227180/635245)
+- `vect,character` (filename) now has argument `layer` to select a layer from a multi-layer file / database, and arguments `query`, `extent` and `filter` for reading a subset
+- `subst` can now create multiple output layers See [issue 276](https://github.com/rspatial/terra/issues/276) by Agustin Lobo
+- `classify` can now create different multiple output layers See [issue 276](https://github.com/rspatial/terra/issues/276) by Agustin Lobo
+- Argument `alpha` of `plot,SpatRaster` can now be a `SpatRaster`. See this [SO question](https://stackoverflow.com/q/68736432/635245) by James McCarthy
+
+
+## bug fixes 
+
 - The `filename` and `overwrite` arguments were ignored in `rasterize`
 - gdal options are now also honored for create-copy drivers [#260](https://github.com/rspatial/terra/issues/260)
-- buffer for lonlat now works better at the worlds "edges" [#261](https://github.com/rspatial/terra/issues/261)
+- buffer for lonlat now works better at the world's "edges" [#261](https://github.com/rspatial/terra/issues/261)
 - scale/offset were ignored by `project`. Reported by Fabian Fischer
-- `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey.
+- `rasterize(SpatRaster,SpatVector)` with `inverse=TRUE` crashed the R session. Issue [#264](https://github.com/rspatial/terra/issues/264) by Jean-Luc Dupouey
+- The output of `merge` and `mosaic` was not correct for large rasters (only the first rows were used). Reported by Zavud Baghirov in [#271](https://github.com/rspatial/terra/issues/271)
+- `as.points,SpatRaster` did not remove `NA`'s correctly and shifted values. Issues [#269](https://github.com/rspatial/terra/issues/269) and [#273](https://github.com/rspatial/terra/issues/273) by Julian Hagenauer
+- `rast-matrix` rotated values when using an equal-sided matrix [#274](https://github.com/rspatial/terra/issues/274) by Jakub Nowosad
+- the number of rows and columns were reversed when using `project` with a crs argument. [#283](https://github.com/rspatial/terra/issues/283) by Timothée Giraud
+- In `classify`, argument `right` had TRUE and FALSE reversed. 
+- `terrain` had edge effects [#303](https://github.com/rspatial/terra/issues/303) by Andrew Gene Brown.
+- `terrain` can now compute multiple variables at once [#286](https://github.com/rspatial/terra/issues/286) by Žan Kuralt
+- `wrap,SpatRaster` changed factors into numeric [#302](https://github.com/rspatial/terra/issues/302) by Patrick Schratz
+- `writeVector` failed with "FlatGeobuf" (and probably other formats as well) for not using a proper MultiPolygon [#299](https://github.com/rspatial/terra/issues/299) by L Dalby
+- regular sampling of polygons with `spatSample` is now much more regular [#289](https://github.com/rspatial/terra/issues/289) by Jakub Nowosad
+
 
 
 # version 1.3-4
+
+Released on 2021-06-20
 
 ## new
 
@@ -56,6 +252,8 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 
 # version 1.2-10
 
+Released on 2021-05-13
+
 ## new
 
 - `as.lines` method for SpatRaster
@@ -64,7 +262,6 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 - `sharedPaths` method for SpatVector (lines and polygons)
 - `RGB2col` method to reduce a three-layer RGB SpatRaster to a single layer SpatRaster with a color-table (with <= 256 colors)
 - `split` methods for SpatVector and SpatRaster
-
 
 
 ## enhancements
@@ -77,7 +274,7 @@ https://github.com/rspatial/terra/issues/178) raised by by Matthew Coghill).
 ## bug fixes
 
 - `extract` with multiple layers could return a data.frame where the values were not in the correct order (by row instead of by column)
-- `crop` works again with `sf` objects. Reported by Sebastian Brinkmann [#201] (https://github.com/rspatial/terra/issues/201)
+- `crop` works again with `sf` objects. Reported by Sebastian Brinkmann [#201](https://github.com/rspatial/terra/issues/201)
 - `vect,sf-method` now also works for lines, and should be faster
 - `vect,character` crashed R if a file had empty geometries. Reported by consumere [#202](https://github.com/rspatial/terra/issues/202)
 - `extract(points, bilinear=TRUE, cells=TRUE)` now works. Reported by fab4app [#203](https://github.com/rspatial/terra/issues/203)
@@ -97,6 +294,8 @@ To avoid name conflicts with the `spatstat` package
 
 
 # version 1.2-5
+
+Released on 2021-04-30
 
 ## new
 
@@ -137,6 +336,8 @@ without deprecation warning:
 
 
 # version 1.1-17
+
+Released on 2021-04-14
 
 ## major changes 
 

@@ -235,45 +235,6 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 	return false;
 }
 
-/*
-bool SpatSRS::set(std::vector<std::string> txt, std::string &msg) {
-	wkt="";
-	proj4="";
-	input="";
-	if (txt.size() == 3) {
-		proj4 == txt[0];
-		wkt = txt[1];
-		input = txt[2];
-		return true;
-	} else if (txt.size() == 2) {
-		proj4 == txt[0];
-		wkt = txt[1];
-		return true;
-	} else if (txt.size() == 1) { 
-		input=txt[0];
-		if (input != "") {
-			OGRSpatialReference *srs = new OGRSpatialReference;
-			const char* s = input.c_str();
-			if (is_ogr_error(srs->SetFromUserInput(s), msg)) {
-				delete srs;
-				return false;
-			}
-			if (! wkt_from_spatial_reference(srs, wkt, msg)) {
-				delete srs;
-				return false;
-			};
-			if (! prj_from_spatial_reference(srs, proj4, msg)) {
-				delete srs;
-				return false;
-			};
-			delete srs;
-			return true;
-		}
-	}
-	return false;
-}
-*/
-
 
 bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 	lrtrim(input);

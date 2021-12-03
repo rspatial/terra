@@ -28,7 +28,7 @@ Get a matrix indicating the presence or absence of spatial relationships between
 \arguments{
   \item{x}{SpatVector or any object for which vect returns a SpatVector or else for which \code{\link{ext}} returns a SpatExtent}
   \item{y}{missing or as for \code{x}}
-  \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{wikipedia} or \href{http://docs.geotools.org/stable/userguide/library/jts/dim9.html}{geotools doc}}
+  \item{relation}{character. One of "intersects", "touches", "crosses", "overlaps", "within", "contains", "covers", "coveredby", "disjoint". Or a "DE-9IM" string such as "FF*FF****". See \href{https://en.wikipedia.org/wiki/DE-9IM}{wikipedia} or \href{https://docs.geotools.org/stable/userguide/library/jts/dim9.html}{geotools doc}}
   \item{pairs}{logical. If \code{TRUE} a "from", "to" matrix is returned for the cases where the requested relation is \code{TRUE}} 
   \item{symmetrical}{logical. If \code{TRUE} and \code{pairs=TRUE}, the relation between a pair is only included once. For example, the relation between geometry 1 and 3 is included, but the relation between 3 and 1 is not. Note that whole some relationships are symmetrical (e.g. "touches", other are not (e.g. "within")}
 } 

@@ -18,14 +18,15 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more
 }
 
 \usage{
-\S4method{tapp}{SpatRaster}(x, index, fun, ..., filename="", overwrite=FALSE, wopt=list())
+\S4method{tapp}{SpatRaster}(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{index}{factor or numeric (integer). Vector of length \code{nlyr(x)} (shorter vectors are recycled) grouping the input layers}
-  \item{fun}{function to be applied}
+  \item{fun}{function to be applied. The following functions have been re-implemented in C++ for speed: "sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first". To use the base-R function for say, "min", you could use something like \code{fun = \(i) min(i)}}
   \item{...}{additional arguments passed to \code{fun}}
+  \item{cores}{positive integer. If \code{cores > 1}, a 'parallel' package cluster with that many cores is created and used. You can also supply a cluster object. Ignored for functions that are implemented by terra in C++ (see under fun)}  
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}

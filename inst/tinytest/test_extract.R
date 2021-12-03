@@ -56,10 +56,10 @@ colnames(z)[3:4] <- c('x', 'y')
 p <- vect(z, "polygons")
 rr <- c(r, r*2)
 test <- terra::extract(r, p, fun = mean)
-expect_equal(as.vector(as.matrix(test)), c(1,2,NaN,53))
+expect_equal(as.vector(as.matrix(test)), c(1,2,51.5,53))
 
 test <- terra::extract(rr, p, fun = mean)
-expect_equal(as.vector(as.matrix(test)), c(1,2,NaN,53,NaN,106))
+expect_equal(as.vector(as.matrix(test)), c(1,2,51.5,53,103,106))
 
 test <- terra::extract(r, p, fun = mean, exact=TRUE)
 expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312))

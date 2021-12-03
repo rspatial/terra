@@ -23,8 +23,8 @@
 }
 
 
-.getSpatDF <- function(x) {
-	d <- data.frame(x$values(), check.names = FALSE, stringsAsFactors=FALSE)
+.getSpatDF <- function(x, check.names = FALSE, stringsAsFactors=FALSE, ...) {
+	d <- data.frame(x$values(), check.names=check.names, stringsAsFactors=stringsAsFactors, ...)
 	d[d=="NA"] <- NA
 	s <- which(sapply(d, class) == "character")
 	for (i in s) Encoding(d[[i]]) <- "UTF-8"

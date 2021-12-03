@@ -1,4 +1,17 @@
 
+
+# not exported
+if (!isGeneric("blockSize")) {setGeneric("blockSize", function(x, ...) standardGeneric("blockSize"))}
+setMethod("blockSize", signature(x="SpatRaster"), 
+	function(x, n) {
+		opt <- spatOptions("", FALSE, ncopies=n)
+		b <- x@ptr$getBlockSize(n, opt$memfrac)
+		b$row <- b$row + 1
+		b
+	}
+)
+
+
 setMethod("writeStart", signature(x="SpatRaster", filename="character"), 
 	function(x, filename="", overwrite=FALSE, n=4, ...) {
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
@@ -52,17 +65,63 @@ function(x, filename="", overwrite=FALSE, ...) {
 )
 
 
+get_filetype <- function(filename) {
+	ext <- tolower(tools::file_ext(filename))
+	if (ext == "shp" || ext == "") {
+		"ESRI Shapefile"
+	} else if (ext == "gpkg") {
+		"GPKG"
+	} else if (ext == "gml") {
+		"GML"
+	} else if (ext == "json") {
+		"GeoJSON"
+	} else if (ext == "cdf") {
+		"netCDF"
+	} else if (ext == "svg") {
+		"SVG"
+	} else if (ext == "kml") {
+		"KML"
+	} else if (ext == "vct") {
+		"Idrisi"
+	} else {
+		error("writeVector", "cannot guess filetype from filename")
+	}
+}
+
 setMethod("writeVector", signature(x="SpatVector", filename="character"), 
-function(x, filename, filetype="ESRI Shapefile", overwrite=FALSE) {
+function(x, filename, filetype=NULL, layer=NULL, overwrite=FALSE, options="ENCODING=UTF-8") {
 	filename <- trimws(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")
 	}
+	if (is.null(filetype)) {
+		filetype <- get_filetype(filename)	
+	}
+	if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
+	if (is.null(options)) { options <- ""[0] }
 	
-	lyrname <- tools::file_path_sans_ext(basename(filename))
-	success <- x@ptr$write(filename, lyrname, filetype, overwrite[1])
+	if (filetype == "ESRI Shapefile") {
+		nms <- names(x)
+		i <- nchar(nms) > 10
+		if (any(i)) {
+			nms[i] <- substr(nms[i], 1, 10)
+			testnms <- make.unique(nms, sep="")
+			if (!all(testnms == nms)) {
+				i <- which(i)
+				newnms <- substr(nms[i], 1, 9)
+				newnms <- make.unique(newnms, sep="")
+				j <- which(nchar(newnms) == 9)
+				newnms[j] <- paste0(newnms[j], "0")
+				nms[i] <- newnms
+			}
+			x@ptr <- x@ptr$deepcopy()
+			names(x) <- nms
+		}
+	}
+	success <- x@ptr$write(filename, layer, filetype, overwrite[1], options)
 	messages(x, "writeVector")
 	invisible(TRUE)
 }
 )
+
 

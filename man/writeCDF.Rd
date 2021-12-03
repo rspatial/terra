@@ -18,7 +18,7 @@ Always use the \code{".nc"} or \code{".cdf"} file extension to assure that the f
 \S4method{writeCDF}{SpatRaster}(x, filename, varname, longname="", unit="", ...)
 
 \S4method{writeCDF}{SpatRasterDataset}(x, filename, overwrite=FALSE, zname="time",
-    missval=-9999, prec="float", compression=NA, ...)
+    prec="float", compression=NA, missval, ...)
 }
 
 \arguments{
@@ -29,9 +29,9 @@ Always use the \code{".nc"} or \code{".cdf"} file extension to assure that the f
   \item{unit}{character. Unit of the data}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{zname}{character. The name of the "time" dimension}
-  \item{missval}{numeric, the number used to indicate missing values}
   \item{prec}{character. One of "double", "float", "integer", "short", "byte" or "char"}
   \item{compression}{Can be set to an integer between 1 (least compression) and 9 (most compression)}
+  \item{missval}{numeric, the number used to indicate missing values}
   \item{...}{additional arguments passed on to \code{\link[ncdf4]{ncvar_def}}}
 }
 

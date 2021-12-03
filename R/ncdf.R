@@ -55,11 +55,11 @@
 
 
 
-.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", missval=-9999, prec="float", compression=NA, ...) {
+.write_cdf <- function(x, filename, overwrite=FALSE, zname="time", prec="float", compression=NA, missval, ...) {
 
 	dots <- list(...)
-	force_v4 <- if (is.null(dots$force_v4)) { TRUE } else {dots$force_v4}
-	verbose  <- if (is.null(dots$verbose)) { FALSE } else {dots$verbose}
+	force_v4 <- isTRUE(dots$force_v4)
+	verbose  <- isTRUE(dots$verbose)
 
 	n <- length(x)
 	y <- x[1]
@@ -84,15 +84,25 @@
 	units <- units(x)
 	zname <- rep_len(zname, n)
 
+	valid_prec <- c("short", "integer", "float", "double", "byte")
+	if (!all(prec %in% valid_prec)) {
+		error("writeCDF", paste("prec must be one of:", paste(valid_prec, collapse=", ")))
+	}	
 	prec <- rep_len(prec, n)
-	compression <- rep_len(compression, n)
+	if (missing(missval)) {
+		miss_vals <- c(-32768, -2147483647, -1.175494e38, -1.7976931348623157e308, 255) 
+		missval <- miss_vals[match(prec, valid_prec)]
+	} else {
+		missval <- rep_len(missval, n)	
+	}
+	compression <- compression[1]
 	nc <- ncol(x)
 	nr <- nrow(x)
 	nl <- nlyr(x)
 	ncvars <- list()
 	cal <- NA
 	for (i in 1:n) {
-		if (nl[i] > 1) {
+		if ((nl[i] > 1) || (x[i]@ptr$hasTime)) {
 			y <- x[i]
 			if (y@ptr$hasTime) {
 				zv <- y@ptr$time
@@ -112,9 +122,10 @@
 				zunit <- "unknown"
 			} 
 			zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
-			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval, lvar[i], prec = prec[i], compression=compression[i],...)
+			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval[i], lvar[i], prec = prec[i], compression=compression,...)
 		} else {
-			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim), missval, lvar[i], prec = prec[i], compression=compression[i], ...)
+			
+			ncvars[[i]] <- ncdf4::ncvar_def(name=vars[i], units=units[i], dim=list(xdim, ydim), missval=missval[i], longname=lvar[i], prec = prec[i], compression=compression, ...)
 		}
 	}
 
@@ -136,14 +147,12 @@
 	gt <- paste(trimws(formatC(as.vector(c(e$xmin, rs[1], 0, e$ymax, 0, -1 * rs[2])), 22)), collapse=" ")
 	ncdf4::ncatt_put(ncobj, ncvars[[n+1]], "GeoTransform", gt, prec="text")
 
-
 	opt <- spatOptions()
-
 	for (i in 1:n) {
 		y = x[i]
 		readStart(y)
 		b <- y@ptr$getBlockSize(4, opt$memfrac)
-		if (nl[i] > 1) {
+		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
 				d <- array(d, c(nc, b$nrows[j], nl[i]))
@@ -189,7 +198,7 @@ setMethod("writeCDF", signature(x="SpatRaster"),
 
 
 setMethod("writeCDF", signature(x="SpatRasterDataset"), 
-	function(x, filename, overwrite=FALSE, zname="time", missval=-9999, prec="float", compression=NA, ...) {
+	function(x, filename, overwrite=FALSE, zname="time", prec="float", compression=NA, missval, ...) {
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		xt  <- tools::file_ext(filename)
@@ -199,7 +208,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		if (file.exists(filename) & !overwrite) {
 			error("writeCDF", "file exists, use 'overwrite=TRUE' to overwrite it")
 		}
-		ok <- .write_cdf(x, filename, zname=zname, missval=missval, prec=prec, compression=compression, ...)
+		ok <- .write_cdf(x, filename, zname=zname, prec=prec, compression=compression, missval=missval, ...)
 		if (ok) {
 			if (length(x) > 1) {
 				out <- sds(filename)

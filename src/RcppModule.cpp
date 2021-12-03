@@ -163,6 +163,7 @@ RCPP_MODULE(spat){
 		.method("deepcopy", &SpatOptions::deepCopy, "deepCopy")
 		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
 		.property("memfrac", &SpatOptions::get_memfrac, &SpatOptions::set_memfrac )
+		.property("tolerance", &SpatOptions::get_tolerance, &SpatOptions::set_tolerance )
 		.property("filenames", &SpatOptions::get_filenames, &SpatOptions::set_filenames )
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )
 		.property("datatype", &SpatOptions::get_datatype, &SpatOptions::set_datatype )
@@ -171,6 +172,7 @@ RCPP_MODULE(spat){
 		//.property("ncdfcopy", &SpatOptions::get_ncdfcopy, &SpatOptions::set_ncdfcopy )
 		.property("statistics", &SpatOptions::get_statistics, &SpatOptions::set_statistics )
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
+		//.property("append", &SpatOptions::get_append, &SpatOptions::set_append )
 		.field("datatype_set", &SpatOptions::datatype_set)
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 		.property("ncopies", &SpatOptions::get_ncopies, &SpatOptions::set_ncopies, "ncopies")
@@ -216,10 +218,13 @@ RCPP_MODULE(spat){
 		.method("subset_rows", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_rows), "subset_cols")
 		.method("subset_cols", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_cols), "subset_cols")
 
+		.method("remove_rows", &SpatDataFrame::remove_rows)
+
 		.method("cbind", &SpatDataFrame::cbind)
 		.method("rbind", &SpatDataFrame::rbind)
 		.method("values", &getDataFrame, "get data.frame")
 		.method("unique", &SpatDataFrame::unique)
+		.method("write", &SpatDataFrame::write_dbf)
 		.field("messages", &SpatDataFrame::msg, "messages")
 	;
 
@@ -233,6 +238,7 @@ RCPP_MODULE(spat){
 		.method("push_back", &SpatVectorCollection::push_back, "push_back")
 		.method("subset", &SpatVectorCollection::subset, "subset")
 		.method("replace", &SpatVectorCollection::replace, "replace")
+		.method("append", &SpatVectorCollection::append, "append")
 
 		.method("has_error", &SpatVectorCollection::hasError)
 		.method("has_warning", &SpatVectorCollection::hasWarning)
@@ -245,6 +251,7 @@ RCPP_MODULE(spat){
 		.constructor()
 		.field_readonly("df", &SpatCategories::d, "d")
 		.field("index", &SpatCategories::index, "index")
+		.field("vat", &SpatCategories::vat, "vat")
 	;
 
 
@@ -347,10 +354,12 @@ RCPP_MODULE(spat){
 		.method("shift", &SpatVector::shift)
 		.method("rescale", &SpatVector::rescale)
 		.method("rotate", &SpatVector::rotate)
-		.method("erase", &SpatVector::erase)
+		.method("erase", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::erase ))
+		.method("erase_self", ( SpatVector (SpatVector::*)())( &SpatVector::erase ))
+		.method("gaps", &SpatVector::gaps)
+
 		.method("symdif", &SpatVector::symdif)
 		.method("cover", &SpatVector::cover)
-
 		.method("union", ( SpatVector (SpatVector::*)(SpatVector))( &SpatVector::unite ))
 		.method("union_self", ( SpatVector (SpatVector::*)())( &SpatVector::unite ))
 		.method("union_unary", &SpatVector::unaryunion)
@@ -376,6 +385,10 @@ RCPP_MODULE(spat){
 		
 		.method("sample", &SpatVector::sample)
 		.method("sampleGeom", &SpatVector::sample_geom)
+		.method("remove_duplicate_nodes", &SpatVector::remove_duplicate_nodes)
+		
+		.method("cross_dateline", &SpatVector::cross_dateline)
+		.method("fix_lonlat_overflow", &SpatVector::fix_lonlat_overflow)
 	;
 
 
@@ -403,7 +416,7 @@ RCPP_MODULE(spat){
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<size_t>>()
+	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<size_t>>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 
 		.method("fromFiles", &SpatRaster::fromFiles)
@@ -417,7 +430,8 @@ RCPP_MODULE(spat){
 		.method("getMessage", &SpatRaster::getMessage)
 
 		//.field("name", &SpatRaster::name)
-
+		.method("getFileBlocksize", &SpatRaster::getFileBlocksize)
+		
 		.method("sources_to_disk", &SpatRaster::sources_to_disk, "sources_to_disk")
 		.method("mem_needs", &SpatRaster::mem_needs, "mem_needs")
 		.method("spatinit", &SpatRaster::gdalogrproj_init, "init")
@@ -427,6 +441,7 @@ RCPP_MODULE(spat){
 		.method("compare_geom", &SpatRaster::compare_geom, "compare_geom")
 		.method("couldBeLonLat", &SpatRaster::could_be_lonlat, "couldBeLonLat") 
 		.method("deepcopy", &SpatRaster::deepCopy, "deepCopy")
+		.method("hardcopy", &SpatRaster::hardCopy)
 		.method("get_crs", &SpatRaster::getSRS)
 		.method("set_crs", (bool (SpatRaster::*)(std::string crs))( &SpatRaster::setSRS))
 		//.field_readonly("prj", &SpatRaster::prj)
@@ -470,6 +485,7 @@ RCPP_MODULE(spat){
 		.method("setColors", &SpatRaster::setColors, "setColors")
 		.method("removeColors", &SpatRaster::removeColors, "removeColors")
 
+		.property("valueType", &SpatRaster::valueType )
 		.property("hasRange", &SpatRaster::hasRange )
 		.property("hasValues", &SpatRaster::hasValues )
 		.property("inMemory", &SpatRaster::inMemory )
@@ -485,6 +501,7 @@ RCPP_MODULE(spat){
 		.method("setNAflag", &SpatRaster::setNAflag)
 		.method("getNAflag", &SpatRaster::getNAflag)
 
+		.property("hasUnit", &SpatRaster::hasUnit)
 		.property("hasTime", &SpatRaster::hasTime)
 		.property("time", &SpatRaster::getTime)
 		.property("timestep", &SpatRaster::getTimeStep)
@@ -502,6 +519,9 @@ RCPP_MODULE(spat){
 		.method("nsrc", &SpatRaster::nsrc, "nsrc" )
 		.field("messages", &SpatRaster::msg, "messages")
 		.method("nlyrBySource", &SpatRaster::nlyrBySource, "nlyrBySource" )
+		.method("lyrsBySource", &SpatRaster::lyrsBySource, "lyrsBySource" )
+		.method("getBands", &SpatRaster::getBands, "getBands" )
+		
 		.method("nlyr", &SpatRaster::nlyr, "nlyr" )
 		.property("origin", &SpatRaster::origin)
 		.property("range_min", &SpatRaster::range_min )
@@ -581,13 +601,16 @@ RCPP_MODULE(spat){
 		.method("boundaries", &SpatRaster::edges, "edges")
 		.method("buffer", &SpatRaster::buffer, "buffer")
 		.method("gridDistance", &SpatRaster::gridDistance, "gridDistance")
-		.method("rastDistance", ( SpatRaster (SpatRaster::*)(SpatOptions&) )( &SpatRaster::distance), "rastDistance")
-		.method("vectDistance", ( SpatRaster (SpatRaster::*)(SpatVector, SpatOptions&) )( &SpatRaster::distance), "vectDistance")
+		.method("rastDistance", &SpatRaster::distance, "rastDistance")
+
+//		.method("rastDistance", ( SpatRaster (SpatRaster::*)(SpatOptions&) )( &SpatRaster::distance), "rastDistance")
+//		.method("vectDistance", ( SpatRaster (SpatRaster::*)(SpatVector, SpatOptions&) )( &SpatRaster::distance), "vectDistance")
+		.method("vectDistanceRasterize", &SpatRaster::distance_vector_rasterize) 
+		.method("vectDistanceDirect", &SpatRaster::distance_vector) 
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("replaceValues", &SpatRaster::replaceValues, "replace")
-		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")
+		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
-		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")
 		.method("selRange", &SpatRaster::selRange, "selRange")
 		.method("separate", &SpatRaster::separate, "separate")
 
@@ -602,8 +625,8 @@ RCPP_MODULE(spat){
 		.method("extractVector", &SpatRaster::extractVector, "extractVector")
 		.method("extractVectorFlat", &SpatRaster::extractVectorFlat, "extractVectorFlat")
 		.method("flip", &SpatRaster::flip, "flip")
-		.method("focal1", &SpatRaster::focal1, "focal1")
-		.method("focal2", &SpatRaster::focal2, "focal2")
+//		.method("focal1", &SpatRaster::focal1, "focal1")
+//		.method("focal2", &SpatRaster::focal2, "focal2")
 		.method("focal3", &SpatRaster::focal3, "focal3")
 		.method("focalValues", &SpatRaster::focal_values, "focalValues")
 		.method("count", &SpatRaster::count, "count")
@@ -637,7 +660,9 @@ RCPP_MODULE(spat){
 		.method("rotate", &SpatRaster::rotate, "rotate")
 		//.method("sampleCells", &SpatRaster::sampleCells, "sampleCells")
 		.method("sampleRegularRaster", &SpatRaster::sampleRegularRaster, "sampleRegular")
+		.method("sampleRowColRaster", &SpatRaster::sampleRowColRaster, "sampleRowCol")
 		.method("sampleRegularValues", &SpatRaster::sampleRegularValues, "sampleValues")
+		.method("sampleRowColValues", &SpatRaster::sampleRowColValues, "sampleRowCol")
 		.method("sampleRandomRaster", &SpatRaster::sampleRandomRaster, "sampleRandom")
 		.method("sampleRandomValues", &SpatRaster::sampleRandomValues, "sampleValues")
 		.method("scale", &SpatRaster::scale, "scale")
@@ -655,6 +680,8 @@ RCPP_MODULE(spat){
 		.method("stretch", &SpatRaster::stretch, "stretch")
 		.method("warp", &SpatRaster::warper, "warper")
 		.method("zonal", &SpatRaster::zonal, "zonal")
+		.method("is_true", &SpatRaster::is_true, "is_TRUE")
+		.method("is_false", &SpatRaster::is_true, "is_TRUE")
 	;
 
     class_<SpatRasterCollection>("SpatRasterCollection")

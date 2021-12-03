@@ -23,7 +23,7 @@
 #include <vector>
 //#include <math.h>
 #include <cmath>
-#include "ggeodesic.h"
+#include "geodesic.h"
 #include "recycle.h"
 
 
@@ -357,6 +357,30 @@ void distanceToNearest_lonlat(std::vector<double> &d, const std::vector<double> 
 		geod_inverse(&g, lat1[i], lon1[i], lat2[0], lon2[0], &d[i], &azi1, &azi2);
 		for (int j=1; j<m; j++) {
 			geod_inverse(&g, lat1[i], lon1[i], lat2[j], lon2[j], &s12, &azi1, &azi2);
+			if (s12 < d[i]) {
+				d[i] = s12;
+			}
+		}		
+	}
+}
+
+
+double distCosine(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
+	return 6378137 * acos((sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1-lon2)));
+}
+
+// input lon lat in radians
+void distanceCosineToNearest_lonlat(std::vector<double> &d, const std::vector<double> &lon1, const std::vector<double> &lat1, const std::vector<double> &lon2, const std::vector<double> &lat2) {
+	int n = lon1.size();
+	int m = lon2.size();
+	double s12;
+ 	for (int i=0; i < n; i++) {
+		if (std::isnan(lat1[i])) {
+			continue;
+		}
+		d[i] = distCosine(lat1[i], lon1[i], lat2[0], lon2[0]);
+		for (int j=1; j<m; j++) {
+			s12 = distCosine(lat1[i], lon1[i], lat2[j], lon2[j]);
 			if (s12 < d[i]) {
 				d[i] = s12;
 			}
