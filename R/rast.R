@@ -159,7 +159,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, opts=NULL) {
+	function(x, subds=0, lyrs=NULL, opts=NULL) {
 
 		x <- trimws(x)
 		x <- x[x!=""]
@@ -191,7 +191,13 @@ setMethod("rast", signature(x="character"),
 				crs(r) <- "OGC:CRS84"
 			}
 		}
-		r
+		
+		if (!is.null(lyrs)) {
+			r[[lyrs]]
+		} else {
+			r
+		}
+		
 	}
 )
 

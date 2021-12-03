@@ -98,6 +98,7 @@ if (!isGeneric("varnames<-")) {setGeneric("varnames<-", function(x, value) stand
 if (!isGeneric("log")) {setGeneric("log", function(x,...) standardGeneric("log"))}
 if (!isGeneric("longnames")) {setGeneric("longnames", function(x,...) standardGeneric("longnames"))}
 if (!isGeneric("longnames<-")) {setGeneric("longnames<-", function(x, value) standardGeneric("longnames<-"))}
+if (!isGeneric("hasMinmax")) {setGeneric("hasMinmax", function(x) standardGeneric("hasMinmax"))}
 if (!isGeneric("minmax")) {setGeneric("minmax", function(x) standardGeneric("minmax"))}
 if (!isGeneric("nsrc")) { setGeneric("nsrc", function(x) standardGeneric("nsrc")) }
 if (!isGeneric("perim")) {setGeneric("perim", function(x, ...) standardGeneric("perim"))}

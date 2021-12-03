@@ -123,7 +123,7 @@ setMethod("setValues", signature("SpatRaster"),
 			levs <- levels(values)			
 			values <- as.integer(values) - 1
 			make_factor <- TRUE
-		}
+		} 
 
 		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
 			error("setValues", "values must be numeric, integer, logical, factor or character")
@@ -155,6 +155,9 @@ setMethod("setValues", signature("SpatRaster"),
 		}
 		if (set_coltab) {
 			coltab(y) <- fv
+		}
+		if (is.logical(values)) {
+			y <- as.logical(y) # wasteful
 		}
 		y
 	}
@@ -192,20 +195,30 @@ setMethod("inMemory", signature(x="SpatRaster"),
 
 
 setMethod("sources", signature(x="SpatRaster"), 
-	function(x, bands=FALSE) {
+	function(x, nlyr=FALSE, bands=FALSE) {
 		src <- x@ptr$filenames
-		src[src == ""] <= "memory"
 		if (bands) {
 			nls <- x@ptr$nlyrBySource()
-			data.frame(     sid=rep(1:length(src), nls), 
+			d <- data.frame(sid=rep(1:length(src), nls), 
 						 source=rep(src, nls), 
 						 bands=x@ptr$getBands()+1, stringsAsFactors=FALSE)
-		} else {
+			if (nlyr) {
+				d$nlyr <- rep(nls, nls) 
+			}
+			d			 
+		} else if (nlyr) {
 			data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
+		} else {
+			src
 		}
 	}
 )
 
+setMethod("hasMinmax", signature(x="SpatRaster"), 
+	function(x) {
+		x@ptr$hasRange
+	}
+)
 
 setMethod("minmax", signature(x="SpatRaster"), 
 	function(x) {
