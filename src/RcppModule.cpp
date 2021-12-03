@@ -643,6 +643,7 @@ RCPP_MODULE(spat){
 		.method("scale", &SpatRaster::scale, "scale")
 		.method("shift", &SpatRaster::shift, "shift")
 		.method("terrain", &SpatRaster::terrain, "terrain")
+    .method("watershed2", &SpatRaster::watershed2, "watershed2") //EC 20210311 // EC 20210702
 		.method("summary", &SpatRaster::summary, "summary")
 		.method("summary_numb", &SpatRaster::summary_numb, "summary_numb")
 		.method("transpose", &SpatRaster::transpose, "transpose")

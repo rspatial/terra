@@ -226,3 +226,8 @@ if (!isGeneric("xmin<-")) { setGeneric("xmin<-", function(x, ..., value) standar
 if (!isGeneric("xmax<-")) { setGeneric("xmax<-", function(x, ..., value) standardGeneric("xmax<-"))}
 if (!isGeneric("ymin<-")) { setGeneric("ymin<-", function(x, ..., value) standardGeneric("ymin<-"))}
 if (!isGeneric("ymax<-")) { setGeneric("ymax<-", function(x, ..., value) standardGeneric("ymax<-"))}
+
+#### EC 20210702
+if (!isGeneric("watershed2")) {setGeneric("watershed2", function(p,pp_offset, ...) standardGeneric("watershed2"))}
+#### END EC 20210702
+####

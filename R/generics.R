@@ -729,3 +729,26 @@ setMethod("unique", signature(x="SpatVector", incomparables="ANY"),
 #	}
 #)
 
+
+#### EC 20210702
+setMethod("watershed2", signature(p="SpatRaster",pp_offset="integer"), 
+          function(p,pp_offset,filename="", ...) { 
+            ##  v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"))
+            ##  unit <- match.arg(unit, c("degrees", "radians"))
+            ##  opt <- spatOptions(filename, ...)
+            ##  seed <- ifelse("flowdirection" %in% v, .seed(), 0)
+            print("watershed")
+            opt <- spatOptions(filename, ...)
+            p@ptr <- p@ptr$watershed2(as.integer(pp_offset-1),opt)
+            messages(p, "watershed2") ## EC 20210318
+            return(p)
+            ## p@ptr <- uu
+            ##messages(p, "watershed2")
+          }
+          
+)
+
+#### END EC 20210702
+
+
+

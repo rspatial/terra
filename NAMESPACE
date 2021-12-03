@@ -9,3 +9,6 @@ S3method(rbind, SpatVector)
 
 export(focalMat, gdal, sbar, terraOptions, tmpFiles, mem_info, free_RAM, shade)
 
+## EC 20210702
+exportMethods(watershed2)
+## END EC 20210702

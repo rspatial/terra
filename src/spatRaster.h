@@ -636,7 +636,8 @@ class SpatRaster {
 
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);
 		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);
-
+		SpatRaster watershed2(int pp_offset,SpatOptions &opt); // modified ecor 20210317 // EC 20210702 
+		
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);
 
 		SpatRaster shift(double x, double y, SpatOptions &opt);
