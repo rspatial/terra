@@ -7,7 +7,7 @@
 	for (i in seq_along(objects)) {
 		x <- get(objects[i], envir=globalenv())
 		if (inherits(x, "SpatRaster")) {
-			ftmp[[i]] <- sources(x)$source
+			ftmp[[i]] <- sources(x)
 		}
 	}
 	ftmp <- unique(unlist(ftmp))

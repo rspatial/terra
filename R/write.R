@@ -28,7 +28,7 @@ setMethod("writeStop", signature(x="SpatRaster"),
 	function(x) {
 		success <- x@ptr$writeStop()
 		messages(x, "writeStop")
-		f <- sources(x)$source
+		f <- sources(x)
 		if (f != "") {
 			x <- rast(f)
 		}
