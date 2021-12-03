@@ -643,6 +643,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <tr><td><code>calc</code></td><td><code><a href='app.html'>app</a></code></td></tr>
 <tr><td><code>cellFromLine, cellFromPolygon, cellsFromExtent</code></td><td><code><a href='cells.html'>cells</a></code></td></tr>
 <tr><td><code>cellStats</code></td><td><code><a href='global.html'>global</a></code></td></tr>
+<tr><td><code>coordinates</code></td><td><code><a href='crds.html'>crds</a></code></td></tr>
 <tr><td><code>clump</code></td><td><code><a href='patches.html'>patches</a></code></td></tr>
 <tr><td><code>compareRaster</code></td><td><code><a href='compareGeom.html'>compareGeom</a></code></td></tr>
 <tr><td><code>disaggregate</code></td><td><code><a href='disagg.html'>disagg</a></code></td></tr>
@@ -674,6 +675,7 @@ Below is a list of some of the most important methods grouped by theme. Some of 
 <p>Also note that even if function names are the same in <code>terra</code> and <code>raster</code>, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:</p>
 <table class='table'>
 <tr><td><code><a href='as.spatvector.html'>as.polygons</a></code></td><td>By default, <code>terra</code> returns dissolved polygons</td></tr>
+<tr><td><code><a href='quantile.html'>quantile</a></code></td><td>computes by cell, across layers instead of the other way around</td></tr>
 <tr><td><code><a href='extract.html'>extract</a></code></td><td>By default, <code>terra</code> returns a matrix, with the first column the sequential ID of the vectors.</td></tr>
 <tr><td></td><td><code>raster</code> returns a list (for lines or polygons) or a matrix (for points, but without the ID</td></tr>
 <tr><td></td><td>column. You can use <code>list=TRUE</code> to get the results as a list</td></tr>
