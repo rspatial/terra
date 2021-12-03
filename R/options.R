@@ -1,16 +1,18 @@
 
-.terra_environment <- new.env()
+.terra_environment <- new.env(parent=emptyenv())
 
  
 .create_options <- function() {
 	opt <- methods::new("SpatOptions")
 	opt@ptr <- SpatOptions$new()
-	opt@ptr$tempdir <- normalizePath(tempdir(check = TRUE), winslash="/")
+	# check=T does not exist in ancient R
+	tmpdir <- try(tempdir(check = TRUE), silent=TRUE)
+	opt@ptr$tempdir <- normalizePath(tempdir(), winslash="/")
 	.terra_environment$options <- opt
 }
  
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies") 
+	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance") #, "append") 
 }
 
  
@@ -41,7 +43,7 @@
 		wopt <- wopt[s]
 		i <- which(nms == "names")
 		if (length(i) > 0) {
-			namevs <- trimws(unlist(strsplit(wopt[[i]], ",")))
+			namevs <- trimws(unlist(strsplit(as.character(wopt[[i]]), ",")))
 			x[["names"]] <- namevs
 			wopt <- wopt[-i]
 			nms <- nms[-i]
@@ -58,17 +60,20 @@
 	x
 } 
  
+defaultOptions <- function() {
+	## work around onLoad problem
+	if (is.null(.terra_environment$options)) .create_options()
+	.terra_environment$options@ptr$deepcopy()
+}
  
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
-	w <- list(...)
-	wopt <- c(w, wopt)
+	wopt <- c(list(...), wopt)
 	
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 
-	ptr <- .terra_environment$options@ptr
-	opt <- ptr$deepcopy()
+	opt <- .terra_environment$options@ptr$deepcopy()
 
 	filename <- .fullFilename(filename, mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {
@@ -102,7 +107,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 #}
 
 .showOptions <- function(opt) {
-	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose") 
+	nms <- c("memfrac", "tempdir", "datatype", "progress", "todisk", "verbose", "tolerance") 
 	for (n in nms) {
 		v <- eval(parse(text=paste0("opt$", n)))
 		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))

@@ -26,7 +26,7 @@ std::vector<std::string> getCRSname(std::string s) {
 	OGRSpatialReference x;
 	OGRErr erro = x.SetFromUserInput(s.c_str());
 	if (erro != OGRERR_NONE) {
-		return {"unknown", "", "", ""};
+		return {"unknown", "", "", "", ""};
 	}
 	std::string node;
 	if (x.IsGeographic()) {
@@ -41,10 +41,16 @@ std::vector<std::string> getCRSname(std::string s) {
 	if (value != NULL) {
 		name = value;
 	}
-	std::string epsg = "";
+	std::string aname = "";
+	value = x.GetAuthorityName(node.c_str());
+	if (value != NULL) {
+		aname = value;
+	}
+
+	std::string acode = "";
 	value = x.GetAuthorityCode(node.c_str());
 	if (value != NULL) {
-		epsg = value;
+		acode = value;
 	}
 		
 	double west, south, east, north;
@@ -64,7 +70,7 @@ std::vector<std::string> getCRSname(std::string s) {
 		}
 	}
 	#endif
-	return {name, epsg, aoi, box};
+	return {name, aname, acode, aoi, box};
 }
 
 // [[Rcpp::export(name = ".getLinearUnits")]]
@@ -89,7 +95,7 @@ std::vector<double> geotransform(std::string fname) {
 
 	double gt[6];
 	if( poDataset->GetGeoTransform( gt ) != CE_None ) {
-		Rcpp::Rcout << "bad" << std::endl;
+		Rcpp::Rcout << "bad geotransform" << std::endl;
 	}
 	out = std::vector<double>(std::begin(gt), std::end(gt));
 	GDALClose( (GDALDatasetH) poDataset );
@@ -139,7 +145,7 @@ std::vector<std::vector<std::string>> sdsmetatdataparsed(std::string filename) {
 	std::vector<std::vector<std::string>> s = parse_metadata_sds(m);
 	return s;
 }
-
+/*
 // [[Rcpp::export(name = ".gdaldrivers")]]
 std::vector<std::vector<std::string>> gdal_drivers() {
 	size_t n = GetGDALDriverManager()->GetDriverCount();
@@ -163,6 +169,33 @@ std::vector<std::vector<std::string>> gdal_drivers() {
 		bool vsi = CSLFetchBoolean( papszMetadata, GDAL_DCAP_VIRTUALIO, FALSE);
 		s[3].push_back(std::to_string(vsi));
 
+	}
+	return s;
+}
+*/
+
+
+// [[Rcpp::export(name = ".gdaldrivers")]]
+std::vector<std::vector<std::string>> gdal_drivers() {
+	size_t n = GetGDALDriverManager()->GetDriverCount();
+	std::vector<std::vector<std::string>> s(5, std::vector<std::string>(n));
+    GDALDriver *poDriver;
+    char **papszMetadata;
+	for (size_t i=0; i<n; i++) {
+	    poDriver = GetGDALDriverManager()->GetDriver(i);
+		const char* ss = poDriver->GetDescription();
+		if (ss != NULL ) s[0][i] = ss;		
+		ss = poDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
+		if (ss != NULL ) s[4][i] = ss;
+
+		papszMetadata = poDriver->GetMetadata();
+		bool rst = CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE);
+		s[1][i] = std::to_string(rst);
+		bool create = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE);
+		bool copy = CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE);
+		s[2][i] = std::to_string(create + copy);
+		bool vsi = CSLFetchBoolean( papszMetadata, GDAL_DCAP_VIRTUALIO, FALSE);
+		s[3][i] = std::to_string(vsi);
 	}
 	return s;
 }
@@ -318,6 +351,64 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 		} 
 	}
 	return(out);
+}
+
+
+// [[Rcpp::export(name = ".setGDALCacheSizeMB")]]
+void setGDALCacheSizeMB(double x) {
+  GDALSetCacheMax64(static_cast<int64_t>(x) * 1024 * 1024);
+}
+
+// [[Rcpp::export(name = ".getGDALCacheSizeMB")]]
+double getGDALCacheSizeMB() {
+  return static_cast<double>(GDALGetCacheMax64() / 1024 / 1024);
+}
+
+// convert NULL-terminated array of strings to std::vector<std::string>
+std::vector<std::string> charpp2vect(char **cp) {
+	std::vector<std::string> out;
+	if (cp == NULL) return out;
+	size_t i=0;
+	while (cp[i] != NULL) {
+		out.push_back(cp[i]);
+		i++;
+	}
+	return out;
+}
+
+
+// [[Rcpp::export(name = ".get_proj_search_paths")]]
+std::vector<std::string> get_proj_search_paths() {
+	std::vector<std::string> out;
+#if GDAL_VERSION_NUM >= 3000300
+	char **cp = OSRGetPROJSearchPaths();
+	out = charpp2vect(cp);
+	CSLDestroy(cp);
+#else
+	out.push_back("error: GDAL >= 3.0.3 required");
+#endif
+	return out;
+}
+
+
+
+
+// [[Rcpp::export(name = ".set_proj_search_paths")]]
+bool set_proj_search_paths(std::vector<std::string> paths) {
+	if (!paths.size()) {
+		return false;
+	}
+#if GDAL_VERSION_NUM >= 3000000
+	std::vector <char *> cpaths(paths.size()+1);
+	for (size_t i = 0; i < paths.size(); i++) {
+		cpaths[i] = (char *) (paths[i].c_str());
+	}
+	cpaths[cpaths.size()] = NULL;
+	OSRSetPROJSearchPaths(cpaths.data());
+	return true;
+#else
+	return false;
+#endif
 }
 
 

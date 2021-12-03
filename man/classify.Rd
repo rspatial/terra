@@ -36,7 +36,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
   \item{include.lowest}{logical, indicating if a value equal to the lowest value in \code{rcl} (or highest value in the second column, for \code{right=FALSE}) should be included.}
  \item{right}{logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa. The default is \code{TRUE}. A special case is to use right=NA. In this case both the left and right intervals are open}
  \item{othersNA}{logical. If \code{TRUE}, values that are not matched become \code{NA}. If \code{FALSE}, they retain their original value.} 
- 
+
   \item{filename}{character. Output filename}
   \item{...}{Additional arguments for writing files as in \code{\link{writeRaster}}}
 
@@ -46,7 +46,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 SpatRaster
 }
 
-\seealso{\code{\link{subs}} for simpler from-to replacement}
+\seealso{\code{\link{subst}} for simpler from-to replacement}
 
 \note{
 For model-based classification see \code{\link{predict}}

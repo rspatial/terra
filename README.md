@@ -5,17 +5,23 @@
 status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/package=terra)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/terra)](http://www.r-pkg.org/pkg/terra)
 
+<p align="right"; style="font-size:11px">logo by Zane Dax</p>
+
+<img align="right" width="250" src="man/figures/logo.png">
+
 `terra` is an R package for spatial analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
-[stackoverflow](https://stackoverflow.com/) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
+[stackoverflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
 
 `terra` replaces the [raster](https://github.com/rspatial/raster) package. The interfaces of `terra` and `raster` are similar, but `terra` is simpler, faster and can do more. 
 
+
 ## Installation
 
-`terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*
+`terra` is available from CRAN, so you can use `install.packages("terra")` to get the current *released version*.
 
 The easiest way to use the *development version* on Windows or MacOS, is to install it from the [R-universe](https://r-universe.dev/organizations/), like this:
+
 
 ```
 install.packages('terra', repos='https://rspatial.r-universe.dev')
@@ -64,10 +70,10 @@ This should work on **Catalina** and **Big Sur**
 
 #### Linux
 
-The GDAL (>= 2.2.0), GEOS (>= 3.3.0) and PROJ (>= 6.0.0) libraries are required 
+C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3 are required, but more recent versions highly recommended.
 
+To install these system requirements on Ubuntu you can do:
 
-To install these on Ubuntu version 18.04 (Bionic) you can do:
 ```
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
@@ -79,5 +85,4 @@ And now, in R, install the package
 remotes::install_github("rspatial/terra")
 ```
 
-See the `sf` [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions. But note that `terra` depends on on more recent versions of GDAL and PROJ libraries 
-
+See the `sf` [instructions](https://github.com/r-spatial/sf) for installation on other linux systems --- and for possible updates/improvements on the above instructions.

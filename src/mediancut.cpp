@@ -50,7 +50,7 @@ median_cut <- function(v) {
 }
 
 
-SpatRatser SpatRaster::RGB2col(std::string stretch, SpatOptions opt) {
+SpatRatser SpatRaster::RGB2col(std::string stretch, SpatOptions &opt) {
 		std::vector<int> idx = x.RGB();
 		SpatRaster out = geometry(1);
 		if (idx.size() != 3) {

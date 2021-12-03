@@ -11,6 +11,8 @@ std::string basename_noext(std::string filename);
 std::string noext(std::string filename);
 std::string tempFile(std::string tmpdir, std::string ext);
 std::string dirname(std::string filename);
+bool write_text(std::string filename, std::vector<std::string> s);
+std::vector<std::string> read_text(std::string filename);
 
 #endif
 

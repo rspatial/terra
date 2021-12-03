@@ -3,8 +3,11 @@
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**.R'
   pull_request:
     branches: [ master ]
+    
 
 name: rcmdcheck
 

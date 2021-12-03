@@ -3,6 +3,193 @@
 # Version 1.0
 # License GPL v3
 
+## from stars
+#stars:::st_as_raster is used
+#setAs("stars", "SpatRaster") is provided by stars via st_as_raster
+
+
+from_stars <- function(from) {
+
+	isProxy <- inherits(from, "stars_proxy")
+	natts <- length(from)
+	#from[i] recursion does not work with proxy
+	if (!isProxy && (natts > 1)) { # not sure what attributes represent
+		ra <- list()
+		for (i in 1:natts) {
+			ra[[i]] <- from_stars(from[i])
+		}
+		if (all(sapply(ra, function(i) inherits(i, "SpatRaster")))) {
+			nl <- sapply(ra, nlyr)
+			ra <- rast(ra)
+			nms <- names(ra)
+			names(ra) <- paste(rep(names(from), nl), nms, sep="_")
+		} else 	if (all(sapply(ra, function(i) inherits(i, "SpatRasterDataset")))) {
+			ra <- do.call(c, ra)
+		} else {
+			ra <- lapply(ra, function(i) if (!inherits(i, "SpatRasterDataset")) {sds(i)} else {i})
+			ra <- do.call(c, ra)
+		}
+		return(ra)
+	}
+	
+	dims <- attr(from, "dimensions")
+	dd <- dim(from)
+	
+	# x, y
+	hasBands <- "band" %in% names(dd)
+	hasTime <- "time" %in% names(dd)
+	timev <- NULL
+	if (hasTime) {
+		tim <- dims$time$offset
+		tseq <- dims$time$from:dims$time$to
+		if (dims$time$refsys == "Date") {
+			timev <- as.Date(tim) + tseq
+		} else { # for now
+			timev <- tseq
+		}
+	}
+
+	# no time or variables
+	if (length(dd) - hasBands == 2) {
+		return( methods::as(from, "SpatRaster"))
+	}
+
+
+	# time, perhaps bands or variables
+	if (length(dd) - (hasTime + hasBands) == 2) {
+		r <- methods::as(from, "SpatRaster")
+		if (hasBands) {
+			timev <- rep(timev, each=dd["band"])
+		} 
+		time(r) <- timev
+		return(r)
+	}
+
+	if (isProxy) {
+		# currently not setting time dim here
+		if (natts > 1) {
+			ff <- sapply(from, function(i) from[i][[1]])
+			s <- sds(ff)
+			names(s) <- names(from) 
+		} else {
+			f <- from[[1]]
+			s <- sds(f)
+			nms <- names(dd)[3+hasBands]
+			if (!is.na(nms)) {
+				names(s) <- paste(nms, 1:length(s), sep="-")
+			}
+		}
+		return(s)
+	}
+
+	xmin <- dims$x$offset
+	nc <- dims$x$to
+	xmax <- xmin + nc * dims$x$delta
+	ymax <- dims$y$offset
+	nr <- dims$y$to
+	ymin <- ymax + nr * dims$y$delta
+
+	from <- from[[1]]
+	rr <- list()
+	if (hasTime && hasBands) {
+		for (i in 1:dd[5]) {
+			x <- from[,,,,i]
+			r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dd["band"] * dd["time"])
+			time(r) <- rep(timev, each=dd["band"])
+			bandnames <- rep(paste("band", 1:dd["band"], sep="-"), length(timev))
+			names(r) <- paste(bandnames, rep(timev, each=dd["band"]), sep="_")
+			r <- setValues(r, as.vector(x))
+			rr[[i]] <- r
+		}
+	} else { #if (hasTime || hasBands) {
+		for (i in 1:dd[4]) {
+			x <- from[,,,i]
+			r <- rast(ncols=nc, nrows=nr, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, crs=dims$x$refsys$wkt, nlyr=dim(x)[3], time=timev)
+			if (hasBands) {
+				names(r) <- paste("band", 1:dd["band"], sep="-")
+			} else {
+				names(r) <- timev
+			}
+			rr[[i]] <- setValues(r, x)
+		}
+	} 
+	s <- sds(rr)
+	names(s) <- paste(names(dd)[4], 1:length(s), sep="-")
+	s
+}
+	
+	
+
+setAs("stars", "SpatRasterDataset",
+	function(from) {
+		from_stars(from) 
+	}
+)
+
+setAs("ggmap", "SpatRaster", 
+	function(from) {
+		b <- attr(from, "bb")
+		e <- ext(b$ll.lon, b$ur.lon, b$ll.lat, b$ur.lat)
+		r <- rast(nrows=nrow(from), ncols=ncol(from), ext=e, nlyr=3, crs="epsg:4326", names=c("red", "green", "blue"))
+		values(r) <- t(grDevices::col2rgb(from))
+		RGB(r) <- 1:3
+		r
+	}
+)
+
+
+### from terra
+setAs("SpatRaster", "Raster", 
+	function(from) {
+		s <- sources(from)
+		nl <- nlyr(from)
+		e <- as.vector(ext(from))
+		prj <- crs(from)
+		if (nl == 1) {
+			if (s$source == "") {
+				r <- raster::raster(ncols=ncol(from), nrows=nrow(from), crs=crs(from),
+			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
+				if (hasValues(from)) {
+					raster::values(r) <- values(from)
+				}
+			} else {
+				b <- sources(from, TRUE)
+				r <- raster::raster(s$source, band=b$bands)
+			}
+			names(r) <- names(from)
+		} else {
+			b <- sources(from, TRUE)
+			if ((nrow(s) == 1) & (s$source[1] != "")) {
+				r <- raster::brick(s$source)
+				if (!((raster::nlayers(r) == nl) && (b$bands[1] == 1) && (all(diff(b$bands) == 1)))) {
+					r <- raster::stack(s$source, bands=b$bands)
+				}
+			} else if (all(s$source=="")) {
+				r <- raster::brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
+			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4], nl=nlyr(from))
+				if (hasValues(from)) {
+					raster::values(r) <- values(from)
+				}
+			} else {
+				x <- raster::raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
+			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
+				r <- list()
+				for (i in 1:nl) {
+					if (s$source[i] == "") {
+						r[[i]] <- raster::setValues(x, values(from[[i]]))
+					} else {
+						bands <- b$bands[b$sid == i]
+						r[[i]] <- raster::stack(s$source[i], bands=bands)
+					}
+				}
+				r <- raster::stack(r)
+			}
+		}
+		return(r)
+	}
+)
+
+
 
 setMethod("as.list", signature(x="SpatRaster"), 
 	function(x) {
@@ -16,7 +203,7 @@ setMethod("as.list", signature(x="SpatRaster"),
 setMethod("as.raster", signature(x="SpatRaster"), 
 	function(x, maxcell=500000, col) {
 		if (missing(col)) {
-			col=rev(grDevices::terrain.colors(255))
+			col <- rev(grDevices::terrain.colors(255))
 		}
 		x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 		x <- as.matrix(x, wide=TRUE)
@@ -51,14 +238,17 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 			x <- messages(x, "as.polygons")
 			if (values) {
 				ff <- is.factor(x)
+				if (dissolve) {
+					ff <- ff[[1]]
+				}
 				if (any(ff)) {
 					ff <- which(ff)
-					levs <- levels(x)
+					cgs <- cats(x)
 					for (f in ff) {
-						facts <- levs[[f]]
-						v <- factor(unlist(p[[f]], use.names=FALSE), levels=(1:length(facts))-1)
-						levels(v) <- facts
-						p[[f]] <- as.character(v)
+						cg <- cgs[[f]]
+						i <- match(unlist(p[[f]]), cg[,1])
+						act <- activeCat(x, f)
+						p[[f]] <- cg[i, act+1]				
 					}
 				}
 			}				
@@ -70,7 +260,8 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 setMethod("as.lines", signature(x="SpatRaster"), 
 	function(x) {
 		p <- methods::new("SpatVector")
-		p@ptr <- x@ptr$as_lines()
+		opt <- spatOptions()
+		p@ptr <- x@ptr$as_lines(opt)
 		messages(p, "as.lines")
 	}
 )
@@ -128,7 +319,7 @@ setMethod("as.points", signature(x="SpatRaster"),
 		opt <- spatOptions()
 		p@ptr <- x@ptr$as_points(values, na.rm, opt)
 		x <- messages(x, "as.points")
-			
+
 		if (values) {
 			ff <- is.factor(x)
 			if (any(ff)) {
@@ -172,51 +363,56 @@ setMethod("as.vector", signature(x="SpatRaster"),
 	}
 )
 
-
-setMethod("as.matrix", signature(x="SpatRaster"), 
-	function(x, wide=FALSE) {
-		if (!hasValues(x)) {
-			error("as.matrix", "SpatRaster has no cell values")
-		}
-		if (wide) {
-			if (nlyr(x) > 1) {
-				m <- values(x, mat=TRUE)
-				m <- lapply(1:ncol(m), function(i) {
-					matrix(m[,i], nrow=nrow(x), byrow=TRUE)
-					})
-				m <- do.call(cbind, m)
-			} else {
-				m <- matrix(values(x, mat=FALSE),nrow=nrow(x),byrow=TRUE)
-			}
-		} else {
+as.matrix.SpatRaster <- function(x, ...) {
+	if (!hasValues(x)) {
+		error("as.matrix", "SpatRaster has no cell values")
+	}
+	wide <- isTRUE(list(...)$wide)
+	if (wide) {
+		if (nlyr(x) > 1) {
 			m <- values(x, mat=TRUE)
-		}
-		m
-	}
-)
-
-
-setMethod("as.data.frame", signature(x="SpatRaster"), 
-	function(x, xy=FALSE, cells=FALSE, na.rm=TRUE) {
-		d <- NULL
-		if (xy) {
-			d <- xyFromCell(x, 1:ncell(x))
-		} 
-		if (cells) {
-			d <- cbind(cell=1:ncell(x), d)
-		}
-		if (is.null(d)) {
-			d <- values(x, dataframe=TRUE)
+			m <- lapply(1:ncol(m), function(i) {
+				matrix(m[,i], nrow=nrow(x), byrow=TRUE)
+				})
+			m <- do.call(cbind, m)
 		} else {
-			d <- data.frame(d, values(x, dataframe=TRUE))
+			m <- matrix(values(x, mat=FALSE),nrow=nrow(x),byrow=TRUE)
 		}
-		if (na.rm) {
-			d <- stats::na.omit(d) 
-			attr(d, "na.action") <- NULL
-		}
-		d
+	} else {
+		m <- values(x, mat=TRUE)
 	}
-)
+	m
+}
+setMethod("as.matrix", signature(x="SpatRaster"), as.matrix.SpatRaster)
+
+
+as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE, cells=FALSE, na.rm=TRUE, ...) {
+#	dots <- list(...) 
+#	xy <- isTRUE(dots$xy) 
+#	cells <- isTRUE(dots$cells)
+#	na.rm <- isTRUE(dots$na.rm)
+	
+	d <- NULL
+	if (xy) {
+		d <- xyFromCell(x, 1:ncell(x))
+	} 
+	if (cells) {
+		d <- cbind(cell=1:ncell(x), d)
+	}
+	if (is.null(d)) {
+		d <- values(x, dataframe=TRUE, ... )
+	} else {
+		d <- data.frame(d, values(x, dataframe=TRUE), ...)
+	}
+	if (na.rm) {
+		d <- stats::na.omit(d) 
+		attr(d, "na.action") <- NULL
+	}
+	d
+}
+setMethod("as.data.frame", signature(x="SpatRaster"), as.data.frame.SpatRaster)
+
+
 
 setAs("SpatRaster", "data.frame", 
 	function(from) {
@@ -245,8 +441,9 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 
 .fromRasterLayerBrick <- function(from) {
-	f <- filename(from)
-	if (f != "") {
+	 
+	if (raster::fromDisk(from)) {
+		f <- raster::filename(from)
 		if (from@file@driver == "netcdf") {
 			v <- attr(from@data, "zvar")
 			r <- rast(f, v)	
@@ -259,14 +456,14 @@ setMethod("as.array", signature(x="SpatRaster"),
 					levels(r) <- levs
 				}
 			}
-			crs(r) <- wkt(from)
+			crs(r) <- raster::wkt(from)
 		}
 		if (from@file@NAchanged) {
 			NAflag(r) <- from@file@nodatavalue
 		}
 		return(r)
 	} else {
-		crsobj <- crs(from)
+		crsobj <- from@crs
 		if (is.na(crsobj)) {
 			prj <- ""
 		} else {
@@ -279,14 +476,14 @@ setMethod("as.array", signature(x="SpatRaster"),
 		}
 		r <- rast(	nrows=nrow(from), 
 					ncols=ncol(from),
-					nlyrs=nlayers(from),
+					nlyrs=raster::nlayers(from),
 					crs=prj,
-					extent=extent(from))
-		if (hasValues(from)) {
-			values(r) <- values(from)
+					extent=raster::extent(from))
+		if (raster::hasValues(from)) {
+			values(r) <- raster::values(from)
 		}
 		names(r)  <- names(from)
-		levs <- levels(from)[[1]]
+		levs <- raster::levels(from)[[1]]
 		if (!is.null(levs)) {
 			levels(r) <- levs				
 		}
@@ -296,17 +493,18 @@ setMethod("as.array", signature(x="SpatRaster"),
 
 .fromRasterStack <- function(from) {
 	x <- from[[1]]
-	n <- nbands(x)
-	if ((n > 1) & (n == nlayers(from))) {
-		ff <- lapply(1:nlayers(from), function(i) { filename(from[[i]]) })
+	n <- raster::nbands(x)
+	nl <- raster::nlayers(from)
+	if ((n > 1) & (n == nl)) {
+		ff <- lapply(1:nl, function(i) { raster::filename(from[[i]]) })
 		if (length(unique(ff)) == 1) {
-			r <- rast(filename(x))
+			r <- rast(raster::filename(x))
 			return(r)
 		}
 	} 
-	s <- lapply(1:nlayers(from), function(i) {
+	s <- lapply(1:raster::nlayers(from), function(i) {
 		x <- from[[i]]
-		.fromRasterLayerBrick(x)[[bandnr(x)]]
+		.fromRasterLayerBrick(x)[[raster::bandnr(x)]]
 	})
 	do.call(c, s)
 }
@@ -323,59 +521,12 @@ setAs("Raster", "SpatRaster",
 )
 
 
-
-
-setAs("SpatRaster", "Raster", 
-	function(from) {
-		s <- sources(from)
-		nl <- nlyr(from)
-		e <- as.vector(ext(from))
-		prj <- .proj4(from)
-		if (nl == 1) {
-			if (s$source == "") {
-				r <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
-			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
-				if (hasValues(from)) {
-					values(r) <- values(from)
-				}
-			} else {
-				r <- raster(s$source)
-			}
-			names(r) <- names(from)
-		} else {
-			if (nrow(s) == 1 & s$source[1] != "") {
-				r <- brick(s$source)
-			} else if (all(s$source=="")) {
-				r <- brick(ncol=ncol(from), nrow=nrow(from), crs=prj,
-			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4], nl=nlyr(from))
-				if (hasValues(from)) {
-					values(r) <- values(from)
-				}
-			} else {
-				x <- raster(ncol=ncol(from), nrow=nrow(from), crs=prj,
-			          xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4])
-				r <- list()
-				for (i in 1:nl) {
-					if (s$source[i] == "") {
-						r[[i]] <- setValues(x, values(from[[i]]))
-					} else {
-						r[[i]] <- raster(s$source[i])
-					}
-				}
-				r <- stack(r)
-			}
-		}
-		return(r)
-	}
-)
-
-
 # to sf from SpatVector
 # available in sf
-.v2sf <- function(from) {
-	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))'
-	eval(parse(text = txt))
-}
+#.v2sf <- function(from) {
+#	txt <- 'sf::st_as_sf(as.data.frame(from, geom=TRUE), wkt="geometry", crs=from@ptr$get_crs("wkt"))'
+#	eval(parse(text = txt))
+#}
 
 # sf bbox
 .ext_from_sf <- function(from) {
@@ -403,124 +554,6 @@ setAs("SpatRaster", "Raster",
 }
 
 
-...from_sf <- function(from) {
-	sfi <- attr(from, "sf_column")
-	geom <- from[[sfi]]
-	crs <- attr(geom, "crs")$wkt
-	attr(geom, "class") <- NULL
-	types <- t(sapply(geom, function(i) attr(i, "class")))
-	v <- list()
-	for (i in 1:length(geom)) {
-		if (inherits(geom[[i]], "POINT")) {
-			v[[i]] <- cbind(i, 1, geom[[i]][1], geom[[i]][2], hole=0)				
-		} else {
-			vv <- list()
-			for (j in 1:length(geom[[i]])) {
-				if (inherits(geom[[i]][[j]], "list")) {
-					vvv <- list()
-					for (k in 1:length(geom[[i]][[j]])) {
-						vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole=k-1) 
-					}
-					vv[[j]] <- do.call(rbind, vvv)
-				} else {
-					vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole=0)
-				}
-			}
-			v[[i]] <- do.call(rbind, vv)
-		}
-	}
-	v <- do.call(rbind, v)
-	if (ncol(v) > 5) {
-		v <- cbind(v[,1:4], v[,ncol(v),drop=FALSE])
-		warn("as", "Z/M dimension dropped")
-	}
-	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	types <- unique(gsub("MULTI", "", unique(types[,2])))
-	if (length(types) > 1) {
-		error("as,sf", "SpatVector currently only accepts one geometry type")
-	}
-	if (grepl("POINT", types, fixed=TRUE)) {
-		gt = "points"
-	} else if (grepl("LINE", types, fixed=TRUE)) {
-		gt = "lines"
-	} else if (grepl("POLY", types, fixed=TRUE)) {
-		gt = "polygons"
-	}
-	if (ncol(from) > 1) {
-		from[[sfi]] <- NULL
-		d <- as.data.frame(from)
-		vect(v, type=gt, att=d, crs=crs)
-	} else {
-		vect(v, type=gt, crs=crs)
-	}
-}
-
-
-
-
-...from_sfc <- function(from) {
-	geom = from
-	v <- list()
-	for (i in 1:length(geom)) {
-		vv <- list()
-		for (j in 1:length(geom[[i]])) {
-			if (inherits(geom[[i]][[j]], "list")) {
-				vvv <- list()
-				for (k in 1:length(geom[[i]][[j]])) {
-					vvv[[k]] <- cbind(i, j, geom[[i]][[j]][[k]], hole= k-1) 
-				}
-				vv[[j]] <- do.call(rbind, vvv)
-			} else {
-				vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole=0) 
-			}
-		}
-		v[[i]] <- do.call(rbind, vv)
-	}
-	v <- do.call(rbind, v)
-	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	if (ncol(v) > 5) {
-		v <- cbind(v[,1:4], v[,ncol(v),drop=FALSE])
-		warn("as", "Z/M dimension dropped")
-	}
-	types <- class(from)[1]
-	if (grepl("POINT", types, fixed=TRUE)) {
-		gt = "points"
-	} else if (grepl("LINE", types, fixed=TRUE)) {
-		gt = "lines"
-	} else if (grepl("POLY", types, fixed=TRUE)) {
-		gt = "polygons"
-	}
-	vect(v, type=gt, crs="")
-}
-
-
-...from_sfg <- function(from) {
-	geom = from
-	v <- list()
-	for (i in 1:length(geom)) {
-		vv <- list()
-		for (j in 1:length(geom[[i]])) {
-			vv[[j]] <- cbind(i, j, geom[[i]][[j]], hole= j-1) 
-		}
-		v[[i]] <- do.call(rbind, vv)
-	}
-	v <- do.call(rbind, v)
-	colnames(v)[1:4] <- c("id", "part", "x", "y")
-	if (ncol(v) == 6) {
-		v <- v[,-5]
-	}
-	types <- class(geom)[2]
-	if (grepl("POINT", types, fixed=TRUE)) {
-		gt = "points"
-	} else if (grepl("LINE", types, fixed=TRUE)) {
-		gt = "lines"
-	} else if (grepl("POLY", types, fixed=TRUE)) {
-		gt = "polygons"
-	}
-	vect(v, type=gt, crs="")
-}
-
-
 setAs("sf", "SpatVector", 
 	function(from) {
 		v <- try(.from_sf(from), silent=TRUE)
@@ -534,6 +567,7 @@ setAs("sf", "SpatVector",
 .from_sfc <- function(from) {
 	v <- vect()
 	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(from)), "")
+	crs(v) <- attr(from, "crs")$wkt
 	v
 }
 
@@ -588,7 +622,7 @@ setAs("SpatVector", "Spatial",
 
 setAs("Spatial", "SpatVector", 
 	function(from) {
-		g <- geom(from, df=TRUE)
+		g <- raster::geom(from, df=TRUE)
 		colnames(g)[1] <- "id"
 		if (inherits(from, "SpatialPolygons")) {
 			vtype <- "polygons"
@@ -605,9 +639,9 @@ setAs("Spatial", "SpatVector",
 			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3,drop=FALSE])
 		}
 		if (methods::.hasSlot(from, "data")) {
-			v <- vect(g, vtype, from@data, crs(from))
+			v <- vect(g, vtype, from@data, raster::crs(from))
 		} else {
-			v <- vect(g, vtype, crs=crs(from))
+			v <- vect(g, vtype, crs=raster::crs(from))
 		}
 		return(v)
 	}

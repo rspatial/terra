@@ -27,6 +27,8 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	tempdir = opt.tempdir;
 	memfrac = opt.memfrac;
 	todisk = opt.todisk;
+	tolerance = opt.tolerance;
+	
 	def_datatype = opt.def_datatype;
 	def_filetype = opt.def_filetype; 
 	filenames = {""};
@@ -34,11 +36,19 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	progress = opt.progress;
 	ncopies = opt.ncopies;
 	verbose = opt.verbose;
+	def_verbose = opt.def_verbose;
 	statistics = opt.statistics;
 	steps = opt.steps;
 	minrows = opt.minrows;
 	names = opt.names;
 	//ncdfcopy = opt.ncdfcopy;
+	gdal_options = opt.gdal_options;
+	overwrite = opt.overwrite;
+	hasNAflag = false;
+	NAflag = NAN;
+	datatype_set = opt.datatype_set;
+	datatype = opt.datatype;
+	filetype = opt.filetype;
 }
 
 SpatOptions SpatOptions::deepCopy() {
@@ -76,6 +86,9 @@ std::string SpatOptions::get_filetype() { return filetype;}
 
 bool SpatOptions::get_overwrite() { return overwrite; }
 void SpatOptions::set_overwrite(bool b) { overwrite = b; }
+
+//bool SpatOptions::get_append() { return append; }
+//void SpatOptions::set_append(bool b) { append = b; }
 
 int SpatOptions::get_statistics() { return statistics; }
 void SpatOptions::set_statistics(int s) { if ((s> 0) && (s<7)) statistics = s; }
@@ -154,10 +167,17 @@ void SpatOptions::set_memfrac(double d) {
 	// allowing very high values for testing purposes
 	if ((d >= 0.1) && (d <= 100)) { 
 		memfrac = d;
-		return;
 	} 
-	//setError;
 }
+
+double SpatOptions::get_tolerance() { return tolerance; }
+
+void SpatOptions::set_tolerance(double d) {
+	if (d > 0) { 
+		tolerance = d;
+	} 
+}
+
 
 bool SpatOptions::get_todisk() { return todisk; }
 void SpatOptions::set_todisk(bool b) { todisk = b; }
@@ -263,6 +283,7 @@ SpatExtent SpatRaster::getExtent() {
 void SpatRaster::setExtent(SpatExtent e) { 
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = e;
+		source[i].extset = true;
 	}
 }
 
@@ -289,6 +310,7 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	for (size_t i=0; i<nsrc(); i++) {
 		source[i].extent = ext;
+		source[i].extset = true;
 		//source[i].nrow = source[0].nrow;
 		//source[i].ncol = source[0].ncol;
 	}
@@ -385,13 +407,14 @@ std::vector<double> SpatRaster::origin() {
 
 
 
-bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, bool warncrs, bool ext, bool rowcol, bool res) {
+bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, bool warncrs, bool ext, bool rowcol, bool res) {
 
+	tol = tol < 0 ? 0 : tol;
 
 	if (ext) {
 		SpatExtent extent = getExtent();
 		double res = std::max(xres(), yres());
-		if (extent.compare(x.getExtent(), "!=", 0.1 * res)) {
+		if (extent.compare(x.getExtent(), "!=", tol * res)) {
 			setError("extents do not match");
 			return false;
 		}

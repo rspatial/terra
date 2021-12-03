@@ -10,7 +10,7 @@ setMethod("hasValues", signature(x="SpatRaster"),
 )
 
 setMethod("readValues", signature(x="SpatRaster"), 
-function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE) {
+function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...) {
 	stopifnot(row > 0 && nrows > 0)
 	stopifnot(col > 0 && ncols > 0)
 	
@@ -21,7 +21,7 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 		colnames(v) <- names(x)
 	}
 	if (dataframe) {
-		v <- data.frame(v)
+		v <- data.frame(v, ...)
 		ff <- is.factor(x)
 		if (any(ff)) {
 			ff <- which(ff)
@@ -32,6 +32,18 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 				levels(v[[f]]) = fct
 			}
 		}
+		bb <- is.bool(x)
+		if (any(bb)) {
+			for (b in bb) {
+				v[[b]] = as.logical(v[[b]])
+			}
+		}
+		ii <- is.int(x)
+		if (any(ii)) {
+			for (i in ii) {
+				v[[i]] = as.integer(v[[i]])
+			}
+		}
 	}
 	v
 }
@@ -39,12 +51,12 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 
 
 setMethod("values", signature(x="SpatRaster"), 
-function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x)) {
+function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...) {
 	readStart(x)
 	on.exit(readStop(x))
-	v <- readValues(x, row, nrows, col, ncols, mat=mat, dataframe=dataframe)
+	v <- readValues(x, row, nrows, col, ncols, mat=mat, dataframe=dataframe, ...)
 	messages(x, "values")
-	return(v)
+	v
 }
 )
 
@@ -71,8 +83,10 @@ setMethod("focalValues", signature("SpatRaster"),
 )
 
 
-setMethod("setValues", signature("SpatRaster", "ANY"), 
-	function(x, values) {
+setMethod("setValues", signature("SpatRaster"), 
+	function(x, values, keeptime=TRUE, keepunits=TRUE, props=FALSE) {
+
+		y <- rast(x, keeptime=keeptime, keepunits=keepunits, props=props)
 
 		if (is.matrix(values)) { 
 			if (nrow(values) == nrow(x)) {
@@ -85,19 +99,30 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 			values <- as.vector(aperm(values, c(2,1,3)))
 		}
 		make_factor <- FALSE
+		set_coltab <- FALSE
 		if (is.character(values)) {
-			values <- as.factor(values)
-			levs <- levels(values)
-			values <- as.integer(values) - 1
-			if (max(values, na.rm=TRUE) <= 255) {
+			if (all(substr(na.omit(values), 1, 1) == "#")) {
+				fv <- as.factor(values)
+				if (length(levels(fv)) <= 256) {
+					values <- as.integer(fv)-1
+					fv <- levels(fv)
+					set_coltab <- TRUE
+				} else {
+					fv <- NULL
+					values <- t(grDevices::col2rgb(values))
+					y <- rast(y, nlyr=3, names=c("red", "green", "blue"))
+					RGB(y) <- 1:3
+				}
+			} else {
+				values <- as.factor(values)
+				levs <- levels(values)
+				values <- as.integer(values) - 1 # -1 not needed anymore?
 				make_factor <- TRUE
 			}
 		} else if (is.factor(values)) {
 			levs <- levels(values)			
 			values <- as.integer(values) - 1
-			if (max(values, na.rm=TRUE) <= 255) {
-				make_factor <- TRUE
-			}
+			make_factor <- TRUE
 		}
 
 		if (!(is.numeric(values) || is.integer(values) || is.logical(values))) {
@@ -105,7 +130,6 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 		}
 
 		lv <- length(values)
-		y <- rast(x)
 		nc <- ncell(y)
 		nl <- nlyr(y)
 		opt <- spatOptions()
@@ -129,6 +153,9 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 				setCats(y, i, levs, 2)
 			}
 		}
+		if (set_coltab) {
+			coltab(y) <- fv
+		}
 		y
 	}
 )
@@ -138,7 +165,19 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 #	x@ptr$hasValues
 #}
 
-.inMemory <- function(x) {
+setMethod("inMemory", signature(x="SpatRaster"), 
+	function(x, bylayer=FALSE) {
+		r <- x@ptr$inMemory
+		if (bylayer) {
+			nl <- .nlyrBySource(x)
+			r <- rep(r, nl)
+		}
+		r
+	}
+)
+
+
+..inMemory <- function(x) {
 	x@ptr$inMemory
 }
 
@@ -153,10 +192,17 @@ setMethod("setValues", signature("SpatRaster", "ANY"),
 
 
 setMethod("sources", signature(x="SpatRaster"), 
-	function(x) {
+	function(x, bands=FALSE) {
 		src <- x@ptr$filenames
 		src[src == ""] <= "memory"
-		data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
+		if (bands) {
+			nls <- x@ptr$nlyrBySource()
+			data.frame(     sid=rep(1:length(src), nls), 
+						 source=rep(src, nls), 
+						 bands=x@ptr$getBands()+1, stringsAsFactors=FALSE)
+		} else {
+			data.frame(source=src, nlyr=x@ptr$nlyrBySource(), stringsAsFactors=FALSE)
+		}
 	}
 )
 
@@ -177,10 +223,11 @@ setMethod("minmax", signature(x="SpatRaster"),
 
 setMethod("setMinMax", signature(x="SpatRaster"), 
 	function(x, force=FALSE) {
+		opt <- spatOptions()
 		if (force) {
-			x@ptr$setRange()
+			x@ptr$setRange(opt)
 		} else if (any(!.hasMinMax(x))) {
-			x@ptr$setRange()
+			x@ptr$setRange(opt)
 		}
 		x <- messages(x, "setMinMax")
 	}
@@ -188,24 +235,26 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 
 
 setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) {
+	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=TRUE) {
 		dots <- list(...)
-		bool <- x@ptr$compare_geom(y@ptr, lyrs, crs, warncrs, ext, rowcol, res)
-		messages(x, "compareGeom")
+		opt <- spatOptions("")
+		res <- x@ptr$compare_geom(y@ptr, lyrs, crs, opt$tolerance, warncrs, ext, rowcol, res)
+		if (stopOnError) messages(x, "compareGeom")
 		if (length(dots)>1) {
 			for (i in 1:length(dots)) {
 				bool <- x@ptr$compare_geom(dots[[i]]@ptr, lyrs, crs, warncrs, ext, rowcol, res)
-				messages(x, "compareGeom")
+				if (stopOnError) messages(x, "compareGeom")
+				res <- bool & res
 			}
 		}
-		bool
+		res
 	}
 )
 
 
 setMethod("values", signature("SpatVector"), 
-	function(x) {
-		as.data.frame(x)
+	function(x, ...) {
+		as.data.frame(x, ...)
 	}
 )
 
@@ -260,7 +309,7 @@ setMethod("values<-", signature("SpatVector", "NULL"),
 	}
 )
 
-setMethod("setValues", signature("SpatVector", "ANY"), 
+setMethod("setValues", signature("SpatVector"), 
 	function(x, values) {
 		x@ptr <- x@ptr$deepcopy()
 		`values<-`(x, values)

@@ -166,7 +166,7 @@ T vsum(std::vector<T>& v, bool narm) {
 
 template <typename T>
 T vsum2(std::vector<T>& v, bool narm) {
-	T x = v[0];
+	T x = v[0] * v[0];
 	if (narm) {		
 		for (size_t i=1; i<v.size(); i++) {
 			if (is_NA(x)) {
@@ -256,12 +256,12 @@ template <typename T>
 double vsd(std::vector<T>& v, bool narm) {
 	double m = vmean(v, narm);
 	if (std::isnan(m)) return m;
-	double x = v[0];
+	double x = 0;
 	size_t n = 0;
 	for (size_t i=0; i<v.size(); i++) {
 		if (!is_NA(v[i])) {
 			double d = (v[i] - m);
-			x += d * d;
+			x += (d * d);
 			n++;
 		}
 	}

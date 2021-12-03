@@ -18,21 +18,24 @@ In order to assure regularity when requesting a regular sample, the number of ce
 }
 
 \usage{
-\S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE,
-	as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
+\S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE,
+	as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, 
+	cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
+
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
 
-\S4method{spatSample}{SpatExtent}(x, size, method="random", lonlat)
+\S4method{spatSample}{SpatExtent}(x, size, method="random", lonlat, as.points=FALSE)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{size}{numeric. The sample size. If \code{x} is a SpatVector, you can also provide a vector of the same length as \code{x} in wich case sampling is done seperately for each geometry}
-  \item{method}{character. Should be "regular" or "random". It can also be "stratified" if \code{x} is a SpatVector}
+  \item{size}{numeric. The sample size. If \code{x} is a SpatVector, you can also provide a vector of the same length as \code{x} in wich case sampling is done seperately for each geometry. If \code{x} is a SpatRaster, and you are using \code{method="regular"} you can specify the size as two numbers (number of rows and columns)}
+  \item{method}{character. Should be "regular" or "random"}
   \item{replace}{logical. If \code{TRUE}, sampling is with replacement (if \code{method="random"}}
   \item{na.rm}{logical. If \code{TRUE}, code{NAs} are removed. Only used with random sampling of cell values. That is with \code{method="random", as.raster=FALSE, cells=FALSE}}
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned}
+  \item{as.df}{logical. If \code{TRUE}, a data.frame is returned instead of a matrix}
   \item{as.points}{logical. If \code{TRUE}, a SpatVector of points is returned}
   \item{values}{logical. If \code{TRUE} cell values are returned}
   \item{cells}{logical. If \code{TRUE}, cell numbers are returned}

@@ -4,6 +4,7 @@
 # License GPL v3
 
 
+
 setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"), 
 	function(x, w, na.rm=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
@@ -37,6 +38,37 @@ setMethod("origin", signature(x="SpatRaster"),
 		x@ptr$origin
 	}
 )
+
+
+setMethod("origin<-", signature("SpatRaster"), 
+	function(x, value) {
+		value <- rep(value, length.out=2)
+		dif <- value - origin(x)
+		res <- res(x)
+		dif[1] <- dif[1] %% res[1]
+		dif[2] <- dif[2] %% res[2]
+		for (i in 1:2) {
+			if (dif[i] < 0) {
+				if ((dif[i] + res[i]) < abs(dif[i])) {
+					dif[i] <- dif[i] + res[i]
+				}
+			} else {
+				if (abs(dif[i] - res[i]) < dif[i]) {
+					dif[i] <- dif[i] - res[i]
+				}
+			}
+		}
+		e <- as.vector(ext(x))
+		e["xmin"] <- e["xmin"] + dif[1]
+		e["xmax"] <- e["xmax"] + dif[1]		
+		e["ymin"] <- e["ymin"] + dif[2]
+		e["ymax"] <- e["ymax"] + dif[2]		
+		ext(x) <- e
+		return(x)
+	}
+)
+
+
 
 
 setMethod("align", signature(x="SpatExtent", y="SpatRaster"), 
@@ -109,7 +141,7 @@ setMethod("boundaries", signature(x="SpatRaster"),
 	messages(x, "tighten")
 }
 
-setMethod("copy", signature("SpatRaster"), 
+setMethod("deepcopy", signature("SpatRaster"), 
 	function(x) {
 		x@ptr <- x@ptr$deepcopy() 
 		x
@@ -133,7 +165,7 @@ setMethod("add<-", signature("SpatRaster", "SpatRaster"),
 		if (x@ptr$same(value@ptr)) {
 			x@ptr <- x@ptr$deepcopy() 
 		}
-		x@ptr$addSource(value@ptr)
+		x@ptr$addSource(value@ptr, FALSE)
 		messages(x, "add")
 	}
 )
@@ -210,22 +242,25 @@ rbind.SpatVector <- function(x, y, ...) {
 
 
 setMethod("c", signature(x="SpatRaster"), 
-	function(x, ...) {
-		skipped <- FALSE
+	function(x, ..., warn=TRUE) {
+		skips <- 0
+		hv <- hasValues(x)
 		dots <- list(...)
+		x@ptr <- x@ptr$deepcopy()
 		for (i in dots) {
 			if (inherits(i, "SpatRaster")) {
-				x@ptr <- x@ptr$combineSources(i@ptr)
+				x@ptr$addSource(i@ptr, warn)
 				if (x@ptr$messages$has_error) {
 					messages(x, "c")
 					return()
 				}
 			} else {
-				skipped = TRUE
+				skips = skips + 1
 			}
 		}
-		if (skipped) warn("c,SpatRaster", "skipped object that are not SpatRaster")
+		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
 		messages(x, "c")
+		x
 	}
 )
 
@@ -248,9 +283,25 @@ setMethod("clamp", signature(x="SpatRaster"),
 )
 
 
+setMethod("clamp", signature(x="numeric"), 
+function(x, lower=-Inf, upper=Inf, values=TRUE, ...) {
+	stopifnot(lower <= upper)
+	if (values) {
+		x[x < lower] <- lower
+		x[x > upper] <- upper
+	} else {
+		x[x < lower] <- NA
+		x[x > upper] <- NA	
+	}
+	x
+}
+)
+
 setMethod("classify", signature(x="SpatRaster"), 
 function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", ...) {
 
+	bylayer = FALSE
+	
 	if (is.data.frame(rcl)) {
 		rcl <- as.matrix(rcl)
 	}
@@ -259,7 +310,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 	include.lowest <- as.logical(include.lowest[1])
 
 	opt <- spatOptions(filename, ...)
-    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA, opt)
+    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right[1], include.lowest[1], othersNA[1], bylayer[1], opt)
 	messages(x, "classify")
 }
 )
@@ -267,8 +318,16 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 setMethod("subst", signature(x="SpatRaster"), 
 function(x, from, to, filename="", ...) {
 	opt <- spatOptions(filename, ...)
-    x@ptr <- x@ptr$replaceValues(from, to, opt)
-	messages(x, "replace")
+	if (inherits(to, "data.frame")) {
+		to <- as.matrix(to)
+	}
+	if (inherits(to, "matrix")) {
+		opt$names = colnames(to)
+		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), opt)	
+	} else {
+		x@ptr <- x@ptr$replaceValues(from, to, -1, opt)
+	}
+	messages(x, "subst")
 }
 )
 
@@ -331,17 +390,17 @@ setMethod("diff", signature(x="SpatRaster"),
 )
 
 
-setMethod("disaggregate", signature(x="SpatRaster"), 
+setMethod("disagg", signature(x="SpatRaster"), 
 	function(x, fact, method="near", filename="", ...) {
 		stopifnot(method %in% c("near", "bilinear"))
 		if (method == "bilinear") {
-			y <- disaggregate(rast(x), fact)
+			y <- disagg(rast(x), fact)
 			r <- resample(x, y, "bilinear", filename=filename, ...)
 			return(r)
 		}
 		opt <- spatOptions(filename, ...)
 		x@ptr <- x@ptr$disaggregate(fact, opt)
-		messages(x, "disaggregate")
+		messages(x, "disagg")
 	}
 )
 
@@ -357,11 +416,33 @@ setMethod("flip", signature(x="SpatRaster"),
 
 
 setMethod("freq", signature(x="SpatRaster"), 
-	function(x, digits=0, value=NULL, bylayer=TRUE) {
+	function(x, digits=0, value=NULL, bylayer=TRUE, usenames=FALSE) {
 
 		opt <- spatOptions()
-
+		if (!bylayer) usenames <- FALSE
+		
 		if (!is.null(value)) {
+			value <- unique(value)
+			if (length(value) > 1) {
+				error("freq", "value must have a length of one")
+			}
+			if (is.character(value)) {
+				value <- value[value != ""]
+				if (length(value) == 0) {
+					error("freq", "no valid value")
+				}
+				ff <- is.factor(x)
+				if (!any(ff)) {
+					error("freq", "a character value is only meaningful for categorical rasters")				
+				}
+				f <- freq(x[[ff]])
+				if (usenames) {
+					f$layer <- names(x)[f$layer]
+				}
+				f <- f[f$label == value,]
+				return(f)
+			}
+		
 			if (is.na(digits)) {
 				v <- x@ptr$count(value, bylayer[1], FALSE, 0, opt)
 			} else {
@@ -405,6 +486,10 @@ setMethod("freq", signature(x="SpatRaster"),
 				}
 			}
 		}
+		if (usenames) {
+			v <- data.frame(v)
+			v$layer <- names(x)[v$layer]
+		}
 		v
 	}
 )
@@ -429,20 +514,27 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 
 setMethod("project", signature(x="SpatRaster"), 
-	function(x, y, method="bilinear", mask=FALSE, filename="", ...)  {
-
-		method <- ifelse(method == "ngb", "near", method)
+	function(x, y, method, mask=FALSE, align=FALSE, filename="", ...)  {
+	  
+		if (missing(method)) {
+			method <- ifelse(is.factor(x)[1], "near", "bilinear")
+		} else {
+			method <- method[1]
+		}
+		if (method == "ngb") {
+			method <- "near"
+			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
+		}
 		opt <- spatOptions(filename, ...)
 		if (inherits(y, "SpatRaster")) {
-			#x@ptr <- x@ptr$warp(y@ptr, method, opt)
-			x@ptr <- x@ptr$warp(y@ptr, "", method, mask, opt)
+			x@ptr <- x@ptr$warp(y@ptr, "", method, mask[1], align[1], opt)
 		} else {
 			if (!is.character(y)) {
 				warn("project,SpatRaster", "crs should be a character value")
 				y <- as.character(crs(y))
 			}
 			#x@ptr <- x@ptr$warpcrs(y, method, opt)
-			x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, opt)
+			x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
 		}
 		messages(x, "project")
 	}
@@ -505,10 +597,16 @@ setMethod("rectify", signature(x="SpatRaster"),
 )
 
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, method="bilinear", filename="", ...)  {
-		method <- ifelse(method == "ngb", "near", method)
+	function(x, y, method, filename="", ...)  {
+		if (missing(method)) {
+			method <- ifelse(is.factor(x)[1], "near", "bilinear")
+		}
+		if (method == "ngb") {
+			method <- "near"
+			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
+		}
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, opt)
+		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, FALSE, opt)
 		messages(x, "resample")
 	}
 )
@@ -638,10 +736,15 @@ setMethod("stretch", signature(x="SpatRaster"),
 
 setMethod("summary", signature(object="SpatRaster"), 
 	function(object, size=100000, warn=TRUE, ...)  {
+		if (!hasValues(object)) {
+			warn("summary", "SpatRaster has no values")
+			return(invisible())
+		}
 		if (warn && (ncell(object) > size)) {
 			warn("summary", "used a sample")
 		}
-		summary(spatSample(object, size, method="regular"), ...)
+		s <- spatSample(object, size, method="regular")
+		summary(s, ...)
 	}
 )
 
@@ -671,10 +774,10 @@ setMethod("t", signature(x="SpatVector"),
 
 setMethod("terrain", signature(x="SpatRaster"), 
 	function(x, v="slope", neighbors=8, unit="degrees", filename="", ...) { 
-		v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"))
+		#v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"), several.ok=TRUE)
 		unit <- match.arg(unit, c("degrees", "radians"))
 		opt <- spatOptions(filename, ...)
-		seed <- ifelse("flowdirection" %in% v, .seed(), 0)
+		seed <- ifelse("flowdir" %in% v, .seed(), 0)
 		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", seed, opt)
 		messages(x, "terrain")
 	}
@@ -697,14 +800,26 @@ setMethod("trans", signature(x="SpatRaster"),
 	}
 )
 
+
 setMethod("unique", signature(x="SpatRaster", incomparables="ANY"), 
 	function(x, incomparables=FALSE) {
 		opt <- spatOptions()
 		u <- x@ptr$unique(incomparables, opt)
+
+		isfact <- is.factor(x)
+		if (any(isfact)) {
+			ff <- which(isfact)
+			levs <- levels(x)
+			for (f in ff) {
+				lvs <- levs[[f]]
+				u[[f]] = factor(u[[f]], levels=(1:length(lvs))-1)
+				levels(u[[f]]) = levs[[f]]
+			}
+		}
 		if (!incomparables) {
 			if (!length(u)) return(u)
-			u <- do.call(cbind, u)
-			colnames(u) = names(x)
+			u <- do.call(data.frame, u)
+			colnames(u) <- names(x)
 		}
 		u
 	}

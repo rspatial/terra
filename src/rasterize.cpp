@@ -16,8 +16,46 @@ SpatRaster rasterizePoints(SpatVector p, SpatRaster r, std::vector<double> value
 }
 
 
+SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
+	SpatRaster out = geometry(-1, true, true);
+	if (!hasValues()) {
+		out.addWarning("raster has no values");
+		return out;
+	}
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> v = readBlock(out.bs, i);
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+}
 
-bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filename, std::string &driver, double &naval, std::string &msg, bool update, double background, SpatOptions opt) {
+/* gdalcopy
+			GDALDatasetH hSrcDS = GDALOpenEx(out.source[0].filename.c_str(), GDAL_OF_RASTER | GDAL_OF_UPDATE, NULL, NULL, NULL);
+			if(hSrcDS == NULL) {
+				out.setError("cannot open dataset";)
+				return false;
+			}
+			GDALDriverH hDriver = GDALGetDatasetDriver(hSrcDS);
+			GDALDatasetH hDstDS = GDALCreateCopy( hDriver, filename.c_str(), hSrcDS, FALSE, NULL, NULL, NULL );
+			GDALClose(hSrcDS);
+			if(hDstDS == NULL) {
+				out.setError("cannot create dataset";
+				return false;
+			}
+			GDALClose(hDstDS);
+*/
+
+bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filename, std::string &driver, double &naval, bool update, double background, SpatOptions &opt) {
 
 	filename = opt.get_filename();
 	if (filename == "") {
@@ -29,65 +67,33 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filena
 			driver = "GTiff";
 		} 
 	} else {
-		std::string driver = opt.get_filetype();
+		driver = opt.get_filetype();
 		getGDALdriver(filename, driver);
 		if (driver == "") {
-			msg = "cannot guess file type from filename";
+			out.setError("cannot guess file type from filename");
 			return false;
 		}
+		std::string msg;
 		if (!can_write(filename, opt.get_overwrite(), msg)) {
+			out.setError(msg);
 			return false;
 		}	
 	}
 
+	if (opt.names.size() == nlyr()) {
+		out.setNames(opt.names);
+	}
+
+
 	if (update) {
-		size_t ns = source.size();
-		if (driver == "MEM") {
-			if (ns > 1) {
-				// force into single source
-				SpatOptions svopt;
-				SpatRaster tmp = geometry();
-				std::vector<double> v = getValues();
-				tmp.setValues(v, svopt);
-				if (!tmp.open_gdal(rstDS, 0, opt)) {
-					msg = "cannot open dataset";
-					return false;
-				}
-			} else {
-				if (!open_gdal(rstDS, 0, opt)) {
-					msg = "cannot open dataset";
-					return false;
-				}
-			}
-		} else {
-			// make a copy first
-			// including for the odd case that MEM is false but the source in memory
-			if ( (ns > 1) || (!sources_from_file()) ) {
-				SpatRaster out = writeRaster(opt);
-			} else {
-				// writeRaster should do the below? copyRaster?
-				//rstDS = openGDAL(tmp.source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY);
-				GDALDatasetH hSrcDS = GDALOpenEx(source[0].filename.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY, NULL, NULL, NULL);
-				if(hSrcDS == NULL) {
-					msg = "cannot open source dataset";
-					return false;
-				}
-				GDALDriverH hDriver = GDALGetDatasetDriver(hSrcDS);
-				GDALDatasetH hDstDS = GDALCreateCopy( hDriver, filename.c_str(), hSrcDS, FALSE, NULL, NULL, NULL );
-				GDALClose(hSrcDS);
-				if(hDstDS == NULL) {
-					msg  = "cannot create dataset";
-					return false;
-				}
-				GDALClose(hDstDS);
-			}
-			rstDS = GDALOpenEx(filename.c_str(), GDAL_OF_RASTER | GDAL_OF_UPDATE, NULL, NULL, NULL);
-		}
-	} else {
-		if (!out.create_gdalDS(rstDS, filename, driver, true, background, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
-			msg = "cannot create dataset";
+		out = hardCopy(opt);
+		//size_t ns = source.size();
+		if (!out.open_gdal(rstDS, 0, true, opt)) {
 			return false;
 		}
+	} else if (!out.create_gdalDS(rstDS, filename, driver, true, background, source[0].has_scale_offset, source[0].scale, source[0].offset, opt)) {
+		out.setError("cannot create dataset");
+		return false;
 	}
 
 	GDALRasterBandH hBand = GDALGetRasterBand(rstDS, 1);
@@ -99,6 +105,10 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster out, std::string &filena
 	return true;
 }
 
+
+
+
+
 SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double background, bool touches, bool update, SpatOptions &opt) {
 
 	std::string gtype = x.type();
@@ -106,13 +116,13 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	out.setNames({"ID"});
 
 	if ( !hasValues() ) update = false;
-	if (update) { // all lyrs
-		out = geometry(-1, true, true);
+	if (update) { // all lyrs		
+		out = geometry();
 	} else {
 		out = geometry(1);
 	}
 
-	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true);
+	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true, std::vector<std::string>());
 	if (x.hasError()) {
 		out.setError(x.getError());
 		return out;
@@ -127,11 +137,10 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
     std::vector<OGRLayerH> ahLayers;
 	ahLayers.push_back( hLyr );
 
-	std::string errmsg, driver, filename;
+	std::string driver, filename;
 	GDALDatasetH rstDS;
 	double naval;
-	if (!getDSh(rstDS, out, filename, driver, naval, errmsg, update, background, opt)) {
-		out.setError(errmsg);
+	if (!getDSh(rstDS, out, filename, driver, naval, update, background, opt)) {
 		return out;
 	}
 	if (std::isnan(value)) {
@@ -177,7 +186,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 
 	GDALClose(rstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	}
 	return out;
 }
@@ -208,10 +217,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	SpatRaster out;
 	if ( !hasValues() ) update = false;
 	if (update) {
-		out = geometry();
+		out = hardCopy(opt);
 	} else {
 		out = geometry(1);
-		out.setNames({field});
+		if (field == "") {
+			out.setNames({"layer"});
+		} else {
+			out.setNames({field});
+		}
 	}
 
 	if (ispol && touches && add) {
@@ -256,7 +269,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		recycle(values, nGeoms);
 	}
 
-	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true);
+	GDALDataset *vecDS = x.write_ogr("", "lyr", "Memory", true, std::vector<std::string>());
 	if (x.hasError()) {
 		out.setError(x.getError());
 		return out;
@@ -276,6 +289,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 #endif
 		ahGeometries.push_back( hGeom );
 	}
+//	OGRGeometryFactory::destroyGeometry(poGeometry); ?
+
 	OGRFeature::DestroyFeature( poFeature );
 	GDALClose(vecDS);
 
@@ -284,8 +299,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	double naval;
 	if (add) {	background = 0;	}
 
-	if (!getDSh(rstDS, out, filename, driver, naval, errmsg, update, background, opt)) {
-		out.setError(errmsg);
+	if (!out.getDSh(rstDS, out, filename, driver, naval, update, background, opt)) {
 		return out;
 	}
 	for (double &d : values) d = std::isnan(d) ? naval : d;
@@ -363,10 +377,10 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	
 	GDALClose(rstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""});
+		out = SpatRaster(filename, {-1}, {""}, {});
 	} else {
 		std::string fname = opt.get_filename();
-		if (fname != "") {
+		if ((fname != "") && (!update)) {
 			out = out.writeRaster(opt);
 		}
 	}
@@ -374,9 +388,9 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 }
 
 
-std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) { 
+std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt) { 
 // note that this is only for lines and polygons
-    SpatOptions opt;
+    SpatOptions ropt;
 	SpatRaster r = geometry(1);
 	SpatExtent e = getExtent();
 	e.intersect(v.getExtent());
@@ -385,25 +399,33 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches) {
 		return out;
 	}
 	
-	SpatRaster rc = r.crop(e, "out", opt);
+	SpatRaster rc = r.crop(e, "out", ropt);
 	std::vector<double> feats(1, 1) ;		
-    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, opt); 
-	SpatVector pts = rcr.as_points(false, true, opt);
+    SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt); 
+	SpatVector pts = rcr.as_points(false, true, ropt);
+	std::vector<double> cells;
 	if (pts.size() == 0) {
-		std::vector<double> out(1, NAN);
-		return out;
+		pts = v.as_points(false, true);
+		SpatDataFrame vd = pts.getGeometryDF();
+		std::vector<double> x = vd.getD(0);
+		std::vector<double> y = vd.getD(1);
+		cells = r.cellFromXY(x, y);
+		cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
+		if (cells.size() == 0) {
+			cells.resize(1, NAN);
+		}
+	} else {	
+		SpatDataFrame vd = pts.getGeometryDF();
+		std::vector<double> x = vd.getD(0);
+		std::vector<double> y = vd.getD(1);
+		cells = r.cellFromXY(x, y);
 	}
-	
-    SpatDataFrame vd = pts.getGeometryDF();
-    std::vector<double> x = vd.getD(0);
-    std::vector<double> y = vd.getD(1);
-	std::vector<double> cells = r.cellFromXY(x, y);
 	return cells;
 }
 
-void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v) { 
+void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt) { 
 // note that this is only for polygons
-    SpatOptions opt;
+    SpatOptions ropt(opt);
 	opt.progress = nrow()+1;
 	SpatRaster rr = geometry(1);
 	std::vector<unsigned> fact = {10, 10};
@@ -413,13 +435,13 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	if ( !e.valid() ) {
 		return;
 	}
-	SpatRaster r = rr.crop(v.extent, "out", opt);
-	r = r.disaggregate(fact, opt);
+	SpatRaster r = rr.crop(v.extent, "out", ropt);
+	r = r.disaggregate(fact, ropt);
 	std::vector<double> feats(1, 1) ;	
-	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, opt); 
-	r = r.arith(100.0, "/", false, opt);
-	r = r.aggregate(fact, "sum", true, opt);
-	SpatVector pts = r.as_points(true, true, opt);
+	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
+	r = r.arith(100.0, "/", false, ropt);
+	r = r.aggregate(fact, "sum", true, ropt);
+	SpatVector pts = r.as_points(true, true, ropt);
 	if (pts.size() == 0) {
 		weights.resize(1);
 		weights[0] = NAN;
@@ -435,18 +457,18 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	return;
 }
 
-void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v) { 
+void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt) { 
     
-	SpatOptions opt;
+	SpatOptions ropt(opt);
 	opt.progress = nrow()+1;
 	SpatRaster r = geometry(1);
-	r = r.crop(v.extent, "out", opt);
+	r = r.crop(v.extent, "out", ropt);
 
-	if (r.ncell() < 1000) {
+//	if (r.ncell() < 1000) {
 		std::vector<double> feats(1, 1) ;	
-		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, opt); 
+		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
 
-		SpatVector pts = r.as_points(true, true, opt);
+		SpatVector pts = r.as_points(true, true, ropt);
 		if (pts.size() == 0) {
 			weights.resize(1);
 			weights[0] = NAN;			
@@ -458,16 +480,24 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			std::vector<double> y = vd.getD(1);
 			cells = cellFromXY(x, y);
 
-			SpatVector rv = r.as_polygons(false, false, false, true, opt);
+			SpatVector rv = r.as_polygons(false, false, false, true, ropt);
 			std::vector<double> csize = rv.area("m", true, {});
 			rv.df.add_column(csize, "area");
+			rv.df.add_column(cells, "cells");
 			rv = rv.crop(v);
 			weights = rv.area("m", true, {});
 			for (size_t i=0; i<weights.size(); i++) {
 				weights[i] /= rv.df.dv[0][i];
 			}
+			cells = rv.df.dv[1];
 		}
-	} else {
+//	}
+
+/*
+// the below would need to remove all cells already included in the above
+// because touches=false includes partly overlapped cells [#346]
+
+	else {
 		std::vector<double> feats(1, 1) ;	
 		SpatVector vv = v.as_lines();
 		SpatRaster b = r.rasterize(vv, "", feats, NAN, true, false, false, false, false, opt); 
@@ -508,6 +538,8 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			cells[0] = NAN;
 		}
 	}
+*/	
+	
 }
 
 

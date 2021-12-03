@@ -12,5 +12,6 @@ SpatTime_t time_from_day_noleap(int syear, int smonth, int sday, double ndays);
 SpatTime_t time_from_day_360(int syear, int smonth, int sday, double ndays);
 SpatTime_t time_from_hour(int syear, int smonth, int sday, double nhours);
 void hours_to_time(std::vector<SpatTime_t> &time, std::string origin);
+SpatTime_t parse_time(std::string x);
 
 #endif

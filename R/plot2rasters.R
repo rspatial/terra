@@ -6,7 +6,7 @@
 
 .scatterPlotRaster <- function(x, y, maxcell=100000, warn=TRUE, cex, xlab, ylab, nc, nr, maxnl=16, main, add=FALSE, gridded=FALSE, ncol=25, nrow=25, ...) {
 
-	compareGeom(x, y, lyrs=TRUE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
+	compareGeom(x, y, lyrs=FALSE, crs=FALSE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE) 
 	nlx <- nlyr(x)
 	nly <- nlyr(y)
 
@@ -55,8 +55,13 @@
 		}
 	}
 
-	x <- spatSample(x, size=maxcell, method="regular", as.raster=FALSE)
-	y <- spatSample(y, size=maxcell, method="regular", as.raster=FALSE)
+
+	x <- as.matrix(spatSample(c(x,y), size=maxcell, method="regular", as.raster=FALSE))
+	# y <- as.matrix(spatSample(y, size=maxcell, method="regular", as.raster=FALSE))
+
+	y <- x[,c((nlx+1):ncol(x))]
+	x <- x[,1:nlx]
+	
 
 	if (warn & (NROW(x) < cells)) {
 		warn("plot", 'plot used a sample of ', round(100*NROW(x)/cells, 1), '% of the cells. You can use "maxcell" to increase the sample)')

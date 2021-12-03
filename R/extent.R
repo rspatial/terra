@@ -66,20 +66,16 @@ setMethod("ext", signature(x="SpatRasterDataset"),
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"), 
 	function(x, value) {
 		x@ptr$extent <- value@ptr
-		messages(x, "ext")
+		messages(x, "ext<-")
 	}
 )
 
 
 setMethod("ext<-", signature("SpatRaster", "numeric"), 
 	function(x, value) {
-		stopifnot(length(value) == 4)
-		e <- ext(value[1], value[2], value[3], value[4])
-		if (!e@ptr$valid) {
-			error("ext<-", "not a valid extent specification")
-		}
+		e <- ext(value)
 		x@ptr$extent <- e@ptr
-		messages(x, "ext")
+		messages(x, "ext<-")
 	}
 )
 
@@ -92,6 +88,7 @@ setMethod("ext", signature(x="SpatVector"),
 		return(e)
 	}
 )
+
 
 
 setMethod("ext", signature(x="Extent"), 
@@ -248,22 +245,6 @@ setMethod("ymin", signature(x="SpatVector"),
 setMethod("ymax", signature(x="SpatVector"), 
 	function(x){ 
 		ymax(ext(x))
-	}
-)
-
-.ext2bb <- function(e) {
-	matrix(as.vector(e), ncol=2, byrow=TRUE)
-}
-
-setMethod("bbox", signature(obj="SpatRaster"), 
-	function(obj){ 
-		.ext2bb(ext(obj))
-	}
-)
-
-setMethod("bbox", signature(obj="SpatVector"), 
-	function(obj){ 
-		.ext2bb(ext(obj))
 	}
 )
 

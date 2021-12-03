@@ -5,28 +5,28 @@ setMethod("$<-", "SpatRaster",
 		if (inherits(value, "SpatRaster")) {
 			value <- value[[1]]
 			names(value) <- name
-		} else if (is.numeric(value)) {
+		} else if (!is.null(value)) {
 			y <- rast(x, nlyrs=1)
-			values(y) <- value
+			test <- try(values(y) <- value, silent=TRUE)
+			if (inherits(test, "try-error")) {
+				error("$<-,SpatRaster", "the replacement value is not valid")
+			}
 			value <- y
 			names(value) <- name
-		} else if (!is.null(value)) {
-			error("$<-,SpatRaster", "the replacement value should be a SpatRaster or numeric")
 		}
 
 		i <- which(name == names(x))[1]
 		if (is.na(i)) {
-			return(c(x, value))
+			c(x, value)
+		} else if (nlyr(x) == 1) {
+			value
+		} else if (i == 1) {
+			c(value, x[[2:nlyr(x)]])
+		} else if (i == nlyr(x)) {
+			c(x[[1:(nlyr(x)-1)]], value)
 		} else {
-			if (i == 1) {
-				x <- c(value, x[[2:nlyr(x)]])
-			} else if (i == nlyr(x)) {
-				x <- c(x[[1:(nlyr(x)-1)]], value)
-			} else {
-				x <- c(x[[1:(i-1)]], value, x[[(i+1):nlyr(x)]])
-			}
-			return(x)
-		} 
+			c(x[[1:(i-1)]], value, x[[(i+1):nlyr(x)]])
+		}
 	}
 )
 
@@ -81,11 +81,10 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 	function(x, i, j, value) {
 
 		nl <- nlyr(x)
-		x <- rast(x)
 
 		if (is.matrix(value)) {
 			if (all(dim(value) == c(ncell(x), nl))) {
-				e <- try( values(x) <- value)
+				x <- try( setValues(x, value, TRUE, TRUE) )
 			} else {
 				error(" [,SpatRaster","dimensions of the matrix do not match the SpatRaster")
 			}
@@ -93,10 +92,10 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 			v <- try( matrix(nrow=ncell(x), ncol=nl) )
 			if (! inherits(x, "try-error")) {
 				v[] <- value
-				e <- try(values(x) <- v)
+				x <- try( setValues(x, v, TRUE, TRUE) )
 			}
 		}
-		if (inherits(e, "try-error")) {
+		if (inherits(x, "try-error")) {
 			error(" [,SpatRaster", "cannot set values")
 		}
 		return(x)
@@ -128,8 +127,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 			v <- matrix(NA, nrow=ncell(x), ncol=nlyr(x))
 		}
 		v[i,] <- value
-		values(x) <- v
-		x
+		setValues(x, v, TRUE, TRUE)
 	}
 )
 
@@ -165,7 +163,7 @@ setReplaceMethod("[", c("SpatRaster", "logical", "missing"),
 )
 
 
-setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
+setReplaceMethod("[", c("SpatRaster", "SpatRaster", "ANY"),
 	function(x, i, j, value) {
 		theCall <- sys.call(-1)
 		narg <- length(theCall)-length(match.call(call=sys.call(-1)))
@@ -175,25 +173,20 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 		if (inherits(value, "SpatRaster")) {
 			x <- mask(x, i, maskvalues=TRUE)
 			cover(x, value)
-		} else if (inherits(value, "data.frame")) {
-			if (ncol(value) > 1) {
+		} else {
+			if (NCOL(value) > 1) {
 				error(" [", "cannot use a data.frame with multiple columns")
 			}
 			value <- unlist(value)
-			v <- values(x)
-			v[as.logical(values(i))] <- value
-			values(x) <- v
-			x		
-		} else {
-			if (length(value) > 1) {
-				v <- values(x)
-				v[as.logical(values(i))] <- value
-				values(x) <- v
-				x
-				#warn(" [,SpatRaster,SpatRaster", "the first replacement value is used for all cells")
+			if (length(value) == 1) {
+				mask(x, i, maskvalues=TRUE, updatevalue=value[1])			
 			} else {
-				mask(x, i, maskvalues=TRUE, updatevalue=value[1])
-			}
+				i <- as.logical(values(i))
+				i[is.na(i)] <- TRUE
+				i <- which(i)
+				x[i] <- value
+				x		
+			} 
 		}
 	}
 )

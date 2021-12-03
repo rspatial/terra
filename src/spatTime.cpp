@@ -18,6 +18,9 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+//#include <regex>
+#include "string_utils.h"
+
 
 typedef long long SpatTime_t;
 
@@ -66,6 +69,14 @@ SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsign
     return time;
 }
 
+
+SpatTime_t get_time_str(std::vector<std::string> s) {
+	std::vector<long> d(6, 0);
+	for (size_t i=0; i<s.size(); i++) {
+		d[i] = stoi(s[i]);
+	}
+	return get_time(d[0], d[1], d[2], d[3], d[4], d[5]);
+}
 
 
 std::vector<int> get_date(SpatTime_t x) {
@@ -123,7 +134,18 @@ std::vector<std::string> splitstr(std::string s, std::string delimiter){
 	return out;
 }
 
+void replace_one_char(std::string& s, char from, char to) {
+	for (size_t i = 0; i < s.size(); i++) {
+		if (s[i] == from) {
+			s[i] = to;
+		}
+	}
+}
+
+
 std::vector<int> getymd(std::string s) {
+//	s = std::regex_replace(s, std::regex("T"), " ");
+	replace_one_char(s, 'T', ' ');
 
 	size_t ncolon = std::count(s.begin(), s.end(), ':');
 	std::vector<std::string> x;
@@ -131,14 +153,22 @@ std::vector<int> getymd(std::string s) {
 	if (ncolon > 0) {
 		x = splitstr(s, " ");
 		s = x[0];
-		y = splitstr(x[1], ":");
+		if (x.size() > 1) {
+			std::string f = s;
+			f.erase(std::remove(f.begin(), f.end(), 'Z'), f.end());
+			x[1] = f;
+			//x[1] = std::regex_replace(s, std::regex("Z"), "");
+			y = splitstr(x[1], ":");
+		}
 	}
+
 	size_t ndash = std::count(s.begin(), s.end(), '-');
 	if (ndash == 2) {
 		x = splitstr(s, "-");
 	}
 	x.insert( x.end(), y.begin(), y.end() );
 	std::vector<int> out(x.size());
+
 	for (size_t i=0; i<out.size(); i++){
 		out[i] = std::stoi(x[i]);
 	}
@@ -227,6 +257,27 @@ SpatTime_t time_from_day_360(int syear, int smonth, int sday, double ndays) {
 }
 
 
+
+SpatTime_t parse_time(std::string x) {
+	lrtrim(x);
+	std::vector<std::string> s = strsplit(x, " ");
+
+	std::vector<std::string> time = strsplit(s[0], "-");
+	if (time.size() == 1) {
+		return stoi(time[0]);
+	} else if (time.size() != 3) {
+		return 0;
+	}	
+	
+	if (s.size() > 1) {
+		std::vector<std::string> secs = strsplit(s[1], ":");
+		if (secs.size() == 3) {
+			time.insert(time.end(), secs.begin(), secs.end());
+		}
+	}
+
+	return get_time_str(time);
+}	
 
 
 /*

@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names) {
+new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names, time, units) {
 		if (missing(extent)) {
 			e <- c(xmin, xmax, ymin, ymax) 
 		} else {
@@ -35,25 +35,47 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 		if (!missing(names)) {
 			names(r) <- names
 		}
-
 		if (!missing(vals)) {
-			if (length(vals) == ncell(r)) {
-				values(r) <- vals
-			} else {
-				values(r) <- rep_len(vals, ncell(r))
-			}
+			values(r) <- vals
+		}
+		if (!missing(time)) {
+			time(r) <- time
+		}
+		if (!missing(units)) {
+			time(r) <- units
 		}
 		r
 }
 
 
 setMethod("rast", signature(x="missing"),
-	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, names) {
-		new_rast(nrows, ncols, nlyrs, xmin, xmax, ymin, ymax, crs, extent, resolution, vals, names)
+	function(x, nrows=180, ncols=360, nlyrs=1, xmin=-180, xmax=180, ymin=-90, ymax=90, crs, extent, resolution, vals, names, time, units) {
+		new_rast(nrows, ncols, nlyrs, xmin, xmax, ymin, ymax, crs, extent, resolution, vals, names, time, units)
 	}
 )
 
 
+setMethod("rast", signature(x="stars"),
+	function(x) {
+		x <- from_stars(x)
+		if (inherits(x, "SpatRasterDataset")) {
+			rast(x)
+		} else {
+			x
+		}
+	}
+)
+
+setMethod("rast", signature(x="stars_proxy"),
+	function(x) {
+		x <- from_stars(x)
+		if (inherits(x, "SpatRasterDataset")) {
+			rast(x)
+		} else {
+			x
+		}
+	}
+)
 
 setMethod("rast", signature(x="list"),
 	function(x) {
@@ -69,9 +91,17 @@ setMethod("rast", signature(x="list"),
 		# start with an empty raster (alternatively use a deep copy)
 		out <- rast(x[[1]])
 		for (i in 1:length(x)) {
-			out@ptr$addSource(x[[i]]@ptr)
+			out@ptr$addSource(x[[i]]@ptr, FALSE)
 		}
-		messages(out, "rast")
+		out <- messages(out, "rast")
+		lnms <- names(x)
+		i <- lnms != ""
+		if (any(i)) {
+			rnms <- names(out)
+			rnms[lnms != ""] <- lnms[lnms != ""]
+			names(out) <- rnms
+		}
+		out
 	}
 )
 
@@ -129,7 +159,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0) {
+	function(x, subds=0, opts=NULL) {
 
 		x <- trimws(x)
 		x <- x[x!=""]
@@ -139,11 +169,13 @@ setMethod("rast", signature(x="character"),
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
 		#subds <- subds[1]
+		if (is.null(opts)) opts <- ""[0]
+		if (length(subds) == 0) subds = 0
 		if (is.character(subds)) { 
 			#r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
+			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, opts, 0[])
 		} else {
-			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, 0[])
+			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, opts, 0[])
 		}
 		r <- messages(r, "rast")
 		if (r@ptr$getMessage() == "ncdf extent") {
@@ -166,50 +198,68 @@ setMethod("rast", signature(x="character"),
 
 multi <- function(x, subds=0, xyz=c(1,2,3)) {
 
-		x <- trimws(x)
-		x <- x[x!=""]
-		if (length(x) == 0) {
-			error("rast,character", "provide a valid filename")
-		}
-		r <- methods::new("SpatRaster")
-		f <- .fullFilename(x)
-		#subds <- subds[1]
-		if (is.character(subds)) { 
-			r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
-		} else {
-			r@ptr <- SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
-		}
-		if (r@ptr$getMessage() == "ncdf extent") {
-			test <- try(r <- .ncdf_extent(r), silent=TRUE)
-			if (inherits(test, "try-error")) {
-				warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
-			}
-		}
-		r <- messages(r, "rast")
-
-		if (crs(r) == "") {
-			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				crs(r) <- "OGC:CRS84"
-			}
-		}
-		r
+	x <- trimws(x)
+	x <- x[x!=""]
+	if (length(x) == 0) {
+		error("rast,character", "provide a valid filename")
 	}
+	r <- methods::new("SpatRaster")
+	f <- .fullFilename(x)
+	#subds <- subds[1]
+	if (is.character(subds)) { 
+		r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
+	} else {
+		r@ptr <- SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
+	}
+	if (r@ptr$getMessage() == "ncdf extent") {
+		test <- try(r <- .ncdf_extent(r), silent=TRUE)
+		if (inherits(test, "try-error")) {
+			warn("rast", "GDAL did not find an extent. Cells not equally spaced?") 
+		}
+	}
+	r <- messages(r, "rast")
+
+	if (crs(r) == "") {
+		if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
+			crs(r) <- "OGC:CRS84"
+		}
+	}
+	r
+}
 
 
 setMethod("rast", signature(x="SpatRaster"),
-	function(x, nlyrs=nlyr(x), props=FALSE, time=FALSE) {
-		x@ptr <- x@ptr$geometry(nlyrs, props, time)
-		messages(x, "rast")
+	function(x, nlyrs=nlyr(x), names, vals, keeptime=TRUE, keepunits=FALSE, props=FALSE) {
+		x@ptr <- x@ptr$geometry(nlyrs, props, keeptime, keepunits)
+		x <- messages(x, "rast")
+		if (!missing(names)) {
+			if (length(names) == nlyr(x)) names(x) <- names
+		}
+		if (!missing(vals)) {
+			values(x) <- vals
+		}
+		x
 	}
 )
 
 
 setMethod("rast", signature(x="SpatRasterDataset"),
 	function(x) {
-		rast(x[1])
+		if (length(x) == 0) {
+			error("rast", "empty SpatRasterDataset")
+		} else if (length(x) == 1) {
+			x[1]
+		} else {
+			r <- methods::new("SpatRaster")
+			r@ptr <- x@ptr$collapse()
+			nms <- names(x)
+			if (any(nms != "")) {
+				names(r) <- paste(rep(nms, nlyr(x)), names(r), sep="_")
+			}
+			r
+		}
 	}
 )
-
 
 
 setMethod("rast", signature(x="array"),
@@ -285,6 +335,7 @@ setMethod("rast", signature(x="ANY"),
 	d <- dim(xyz)
 	r <- rast(xmin=minx, xmax=maxx, ymin=miny, ymax=maxy, crs=crs, nlyrs=d[2]-2)
 	res(r) <- c(rx, ry)
+	ext(r) <- round(ext(r), digits+2)
 	cells <- cellFromXY(r, xyz[,1:2])
 	if (d[2] > 2) {
 		names(r) <- ln[-c(1:2)]
@@ -299,13 +350,20 @@ setMethod("rast", signature(x="ANY"),
 
 
 setMethod("rast", signature(x="matrix"),
-	function(x, type="", crs="", digits=6) {
+	function(x, type="", crs="", digits=6, extent=NULL) {
 		stopifnot(prod(dim(x)) > 0)
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs=crs, digits=digits)
+			if (!is.null(extent)) {
+				warn("rast", 'argument "extent" is ignored if type="xyz"')
+			}
 		} else {
-			r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
-			values(r) <- t(x)
+			if (is.null(extent)) {
+				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
+			} else {
+				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=extent)			
+			}
+			values(r) <- as.vector(t(x))
 		}
 		messages(r, "rast")
 	}

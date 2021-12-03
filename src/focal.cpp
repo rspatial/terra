@@ -37,38 +37,6 @@ std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& 
 
 // todo: three dimensional focal
 
-std::vector<double> get_focal(std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int offset, double fill) {
-	int wr = wrows / 2;
-	int wc = wcols / 2;
-	wr = std::min(wr, nrow-1);
-	wc = std::min(wc, ncol-1);
-
-	size_t n = nrow * ncol * wrows * wcols;
-	std::vector<double> out(n, fill);
-	int f = 0;
-
-	int nrmax = nrow+offset-1;
-	for (int r=0; r < nrow; r++) {
-		for (int c=0; c < ncol; c++) {
-			for (int i = -wr; i <= wr; i++) {
-				int row = r+offset+i;		
-				if ((row < 0) || (row > nrmax)) {
-					f = f + wcols;
-				} else {
-					unsigned bcell = row * ncol;
-					for (int j = -wc; j <= wc; j++) {
-						int col = c + j;
-						if ((col >= 0) && (col < ncol)) {
-							out[f] = d[bcell+col];
-						}
-						f++;
-					}
-				}
-			}
-		}
-	}
-	return(out);
-}
 
 
 
@@ -77,7 +45,8 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	if (nlyr() > 1) {
 		SpatOptions ops;
 		std::vector<unsigned> lyr = {0};
-		*this = subset(lyr, ops);
+		SpatRaster s = subset(lyr, ops);
+		s.focal_values(w, fillvalue, row, nrows); 
 	}
 
 	if ((w[0] % 2 == 0) || (w[1] % 2 == 0)) {
@@ -93,16 +62,473 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 	int startrow = row-wr;
 	startrow = startrow < 0 ? 0 : startrow;
-	int offset = row-startrow;
+	int startoff = row-startrow;
 
-	int readnrows = nrows+offset+wr;
-	readnrows = (startrow+readnrows) > nr ? (nr-startrow) : readnrows;
-
+	int readnrows = nrows+startoff+wr;
+	int endoff = wr;
+	if ((startrow+readnrows) > nr ) {
+		readnrows = nr-startrow;
+		endoff = readnrows - (nrows+startoff);
+	}	
 	std::vector<double> d = readValues(startrow, readnrows, 0, nc);
 
-	std::vector<double> f = get_focal(d, nrows, nc, w[0], w[1], offset, fillvalue);
-	return(f);
+//	get_focal(f, d, nrows, nc, w[0], w[1], offset, endoff, fillvalue);
+//  get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
+
+	int wc = w[1] / 2;
+	wr = std::min(wr, nrows-1);
+	wc = std::min(wc, nc-1);
+
+	size_t n = nrows * nc * w[0] * w[1];
+	std::vector<double> out(n, fillvalue);
+	int nrmax = nrows + startoff + endoff - 1;
+	//int nrmax = d.size() / ncol - 1;
+	int f = 0;
+	const bool global = is_global_lonlat();
+	
+	for (int r=0; r < nrows; r++) {
+		for (int c=0; c < nc; c++) {
+			for (int i = -wr; i <= wr; i++) {
+				int row = r+startoff+i;		
+				if ((row < 0) || (row > nrmax)) {
+					f += w[1];
+				} else {
+					unsigned bcell = row * nc;
+					for (int j = -wc; j <= wc; j++) {
+						int col = c + j;
+						if ((col >= 0) && (col < nc)) {
+							out[f] = d[bcell+col];
+						} else if (global) {
+							if (col < 0) {
+								col = nc + col;
+							} else if (col >= nc) {
+								col = col - nc;
+							} 
+							out[f] = d[bcell+col]; 
+						}
+						f++;
+					}
+				}
+			}
+		}
+	}
+	return out;
 }
+
+
+
+	
+
+void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global,	std::function<double(std::vector<double>&, bool)> fun) {
+	
+	out.resize(nc * nr);
+	int hwc = wnc / 2;
+	int hwr = wnr / 2;
+	std::vector<bool> winNA(window.size(), false);
+	for (size_t i=0; i<window.size(); i++) {
+		if (std::isnan(window[i])) winNA[i] = true; 
+	}
+	
+	int wr1 = wnr - 1;
+	int wc1 = wnc - 1;
+	int nc1 = nc - 1;
+	
+	for (int r=0; r < nr; r++) {
+		int rread = r+srow;
+		for (int c=0; c < nc; c++) {
+			std::vector<double> v;
+			v.reserve(wnr * wnc);
+			for (int rr=0; rr<wnr; rr++) {
+				int offr = wr1 - rr;
+				for (int cc=0; cc < wnc; cc++)  {
+					int offc = wc1 - cc; 
+					//int wi = wnc * offr + offc;
+					int wi = wnc * rr + cc;
+					if (winNA[wi]) {
+						continue;
+					}
+					int row = rread + hwr - offr;
+					int col = c + hwc - offc;
+					if (global) {
+						col = col < 0 ? nc + col : col;
+						col = col > nc1 ? col - nc : col;
+						v.push_back(d[nc*row + col] * window[wi]);
+					} else if (expand) {
+						col = col < 0 ? 0 : col;
+						col = col > nc1 ? nc1 : col;
+						v.push_back(d[nc*row + col] * window[wi]);
+					} else {
+						if (col >= 0 && col < nc) {
+							v.push_back(d[nc*row + col] * window[wi]);
+						} else {
+							v.push_back(fill * window[wi]);
+						}
+					}
+				}
+			}
+			out[nc * r + c] = fun(v, narm);
+		}	
+	}
+}
+
+
+
+void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global) {
+	
+	out.resize(nc*nr, NAN);
+	int hwc = wnc / 2;
+	int hwr = wnr / 2;
+	bool nafill = std::isnan(fill);
+	bool dofill = !(narm && nafill);
+	std::vector<bool> winNA(window.size(), false);
+	for (size_t i=0; i<window.size(); i++) {
+		if (std::isnan(window[i])) winNA[i] = true; 
+	}
+	
+	int wr1 = wnr - 1;
+	int wc1 = wnc - 1;
+	int nc1 = nc - 1;
+
+	for (int r=0; r < nr; r++) {
+		int rread = r+srow;
+		for (int c=0; c < nc; c++) {
+			double value = 0;
+			bool found = false;
+			for (int rr=0; rr<wnr; rr++) {
+				int offr = wr1 - rr;
+				for (int cc=0; cc < wnc; cc++)  {
+					int offc = wc1 - cc; 
+					//int wi = wnc * offr + offc;
+					int wi = wnc * rr + cc;
+					if (winNA[wi]) {
+						continue;
+					}
+					int row = rread + hwr - offr;
+					int col = c + hwc - offc;
+					if (global) {
+						col = col < 0 ? nc + col : col;
+						col = col > nc1 ? col - nc : col;
+						if (narm) {
+							if (!std::isnan(d[nc * row + col])) {
+								value += d[nc*row + col] * window[wi];
+								found = true;
+							}
+						} else {
+							value += d[nc*row + col] * window[wi];
+						}
+					} else if (expand) {
+						col = col < 0 ? 0 : col;
+						col = col > nc1 ? nc1 : col;
+						if (narm) {
+							if (!std::isnan(d[nc * row + col])) {
+								value += d[nc*row + col] * window[wi];
+								found = true;
+							}
+						} else {
+							value += d[nc*row + col] * window[wi];
+						}
+					} else {
+						if (col >= 0 && col < nc) {
+							if (narm) {
+								if (!std::isnan(d[nc*row + col])) {
+									value += d[nc*row + col] * window[wi];
+									found = true;
+								}
+							} else {
+								value += d[nc*row + col] * window[wi]; 
+							}
+						} else if (dofill) {
+							value += fill * window[wi];
+						}
+					}
+				}
+			}
+			if (narm) {
+				if (found) {
+					out[nc * r + c] = value;
+				}
+			} else {
+				out[nc * r + c] = value;
+			}
+		}
+	}
+}
+
+void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global) {
+	
+	out.resize(nc*nr, NAN);
+	int hwc = wnc / 2;
+	int hwr = wnr / 2;
+	bool nafill = std::isnan(fill);
+	bool dofill = !(narm && nafill);
+	std::vector<bool> winNA(window.size(), false);
+	double winsum = 0;
+	std::vector<double> poswin = window;
+	for (size_t i=0; i<window.size(); i++) {
+		if (std::isnan(window[i])) {
+			winNA[i] = true; 
+		} else {
+			if (window[i] < 0) {
+				poswin[i] = -poswin[i];
+			} 
+			winsum += poswin[i]; 
+		}
+	}
+
+	int wr1 = wnr - 1;
+	int wc1 = wnc - 1;
+	int nc1 = nc - 1;
+	
+	
+	for (int r=0; r<nr; r++) {
+		int rread = r+srow;
+		for (int c=0; c < nc; c++) {
+			double value = 0;
+			if (narm) winsum = 0;
+			for (int rr=0; rr<wnr; rr++) {
+				int offr = wr1 - rr;
+				for(int cc=0; cc < wnc; cc++)  {
+					int offc = wc1 - cc; 
+					//int wi = wnc * offr + offc;
+					int wi = wnc * rr + cc;
+					if (winNA[wi]) {
+						continue;
+					}
+					int row = rread + hwr - offr;
+					int col = c + hwc - offc;
+					if (global) {
+						col = col < 0 ? nc + col : col;
+						col = col > nc1 ? col - nc : col;
+						if (narm) {
+							if (!std::isnan(d[nc * row + col])) {
+								value += d[nc * row + col] * window[wi];
+								winsum += poswin[wi];
+							}
+						} else {
+							value += d[nc * row + col] * window[wi]; 
+						}
+					} else if (expand) {
+						col = col < 0 ? 0 : col;
+						col = col > nc1 ? nc1 : col;
+						if (narm) {
+							if (!std::isnan(d[nc * row + col])) {
+								value += d[nc * row + col] * window[wi];
+								winsum += poswin[wi];
+							}
+						} else {
+							value += d[nc * row + col] * window[wi]; 
+						}
+					} else {
+						if (col >= 0 && col < nc) {
+							if (narm) {
+								if (!std::isnan(d[nc * row + col])) {
+									value += d[nc * row + col] * window[wi];
+									winsum += poswin[wi];
+								}
+							} else {
+								value += d[nc * row + col] * window[wi]; 
+							}
+						} else if (dofill) {
+							value += fill;
+							if (narm) {
+								winsum += poswin[wi];
+							}
+						}
+					}
+				}
+			}
+			if (winsum > 0) {
+				out[nc * r + c] = value / winsum;
+			}	
+		}	
+	}
+}
+
+
+
+
+
+SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, bool expand, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	bool global = is_global_lonlat();
+	size_t nl = nlyr();
+/*
+	SpatRaster out = geometry(1);
+	if (nlyr() > 1) {
+		SpatOptions ops(opt);
+		out.addWarning("focal computations are only done for the first layer");
+		std::vector<unsigned> lyr = {0};
+		SpatRaster s = subset(lyr, ops);
+		s.focal3(w, m, fillvalue, narm, naonly, fun, expand, opt);
+	}
+*/
+
+	if (!source[0].hasValues) { return(out); }
+
+	if (w.size() != 2) {
+		out.setError("size of w is not 1 or 2");
+		return out;
+	}
+	if ((w[0] % 2) == 0 || (w[1] % 2) == 0) {
+		out.setError("w must be odd sized");
+		return out;
+	}
+	// perhaps we can do (1,3) or (3,1)
+	//if (w[0] < 3 && w[1] < 3) {
+	//	out.setError("w must be > 1");
+	//	return out;
+	//}
+	unsigned ww = w[0] * w[1];
+	if (ww < 3) {
+		out.setError("not a meanigful window");
+		return out;
+	}
+
+	if (ww != m.size()) {
+		out.setError("weights matrix size does not match prod(w)");
+		return out;
+	}
+
+	size_t nc = ncol();
+	size_t nr = nrow();
+	if (w[0] > (nr*2)) {
+		out.setError("nrow(w) > 2 * nrow(x)");
+		return out;
+	}
+	if (w[1] > (nc*2)) { 
+		out.setError("ncol(w) > 2 * ncol(x)");
+		return out;
+	}
+
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	opt.ncopies += 2;
+	opt.minrows = w[0] > nr ? nr : w[0];
+	
+ 	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	size_t hw0 = w[0]/2;
+	size_t dhw0 = hw0 * 2;
+	//size_t fsz = hw0*nc;
+	size_t fsz2 = dhw0*nc;
+
+	bool dofun = false;
+	std::function<double(std::vector<double>&, bool)> fFun;
+	if ((fun != "mean") && (fun != "sum")) {
+		if (!haveFun(fun)) {
+			out.setError("unknown function argument");
+			return out;
+		}
+		fFun = getFun(fun);
+		dofun = true;
+	}
+	
+	std::vector<double> fill;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		unsigned rstart, roff;
+		unsigned rnrows = out.bs.nrows[i];
+		if (i == 0) {
+			rstart = 0;
+			roff = dhw0;	
+			if (i != (out.bs.n-1)) {
+				rnrows += hw0;
+			}
+		} else {
+			rstart = out.bs.row[i] + hw0;
+			roff = hw0;	
+			if (i == (out.bs.n-1)) {
+				rnrows -= hw0; 
+			}
+		}
+
+		std::vector<double> vout, voutcomb;
+		std::vector<double> vin, vincomb;
+		size_t off=0;
+		if (nl > 1) {
+			vincomb = readValues(rstart, rnrows, 0, nc);
+			off = nc * out.bs.nrows[i];
+		} else {
+			vin = readValues(rstart, rnrows, 0, nc);
+		}
+		for (size_t lyr=0; lyr<nl; lyr++) {
+			vout.clear();
+			if (nl > 1) {
+				size_t lyroff = lyr * off;
+				vin = {vincomb.begin() + lyroff, vincomb.begin() + lyroff + off}; 
+			}
+			if (i==0) {
+				if (expand) {
+					fill = {vin.begin(), vin.begin()+nc};
+					for (size_t i=1; i<dhw0; i++) {
+						fill.insert(fill.end(), fill.begin(), fill.end());
+					}
+				} else {
+					fill.resize(fsz2, fillvalue);
+				}
+			}			
+			vin.insert(vin.begin(), fill.begin(), fill.end());
+			
+			if (i == (out.bs.n-1)) {
+				if (expand) {
+					fill = {vin.end()-nc, vin.end()};
+					for (size_t i=1; i<dhw0; i++) {
+						fill.insert(fill.end(), fill.begin(), fill.end());
+					}
+				} else {
+					std::fill(fill.begin(), fill.end(), fillvalue);
+				}
+				vin.insert(vin.end(), fill.begin(), fill.end());
+			}
+
+			if (dofun) {
+				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global, fFun);			
+			} else if (fun == "mean") {
+				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global);
+			} else {
+				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global);
+			}
+			
+			if (i != (out.bs.n-1)) {
+				fill = {vin.end() - fsz2, vin.end() };  
+			}
+		
+			if (naonly) {
+				for (size_t j=0; j<vout.size(); j++) {
+					size_t k = fsz2 + j;
+					if (!std::isnan(vin[k])) {
+						vout[j] = vin[k];	
+					}
+				}
+			}
+			if (nl > 1) {
+				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
+			}	
+		}
+		if (nl > 1) {
+			if (!out.writeValues(voutcomb, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;			
+		} else {
+			if (!out.writeValues(vout, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+		}
+	}
+
+	out.writeStop();
+	readStop();
+	return(out);
+}
+
+
+
+
+/*
 
 
 
@@ -247,6 +673,7 @@ void focalrow(std::vector<double> &x, std::vector<double> n,
 		}
 	}
 }
+
 
 
 
@@ -406,379 +833,4 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 	readStop();
 	return(out);
 }
-
-
-/*
-				} else {
-					if (fv.size() == 0) {
-						v[j] = NAN;
-					} else if (fun == "mean") { //mean
-						v[j] = std::accumulate(fv.begin(), fv.end(), 0.0) / fv.size();
-					} else if (fun == "min") { //min
-						v[j] = *std::min_element(fv.begin(), fv.end());
-					} else if (fun == "max") { //max
-						v[j] = *std::max_element(fv.begin(), fv.end());
-					} else { // sum
-						v[j] = std::accumulate(fv.begin(), fv.end(), 0.0);
-					}
-
 */
-
-	
-
-void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand,
-					std::function<double(std::vector<double>&, bool)> fun) {
-	
-	out.resize(nc * nr);
-	int hwc = wnc / 2;
-	int hwr = wnr / 2;
-	std::vector<bool> winNA(window.size(), false);
-	for (size_t i=0; i<window.size(); i++) {
-		if (std::isnan(window[i])) winNA[i] = true; 
-	}
-	
-	int wr1 = wnr - 1;
-	int wc1 = wnc - 1;
-	int nc1 = nc - 1;
-	
-	for (int r=0; r < nr; r++) {
-		int rread = r+srow;
-		for (int c=0; c < nc; c++) {
-			std::vector<double> v;
-			v.reserve(wnr * wnc);
-			for (int rr=0; rr<wnr; rr++) {
-				int offr = wr1 - rr;
-				for (int cc=0; cc < wnc; cc++)  {
-					int offc = wc1 - cc; 
-					//int wi = wnc * offr + offc;
-					int wi = wnc * rr + cc;
-					if (winNA[wi]) {
-						continue;
-					}
-					int row = rread + hwr - offr;
-					int col = c + hwc - offc;
-					if (expand) {
-						col = col < 0 ? 0 : col;
-						col = col > nc1 ? nc1 : col;
-						v.push_back(d[nc*row + col] * window[wi]);
-					} else {
-						if (col >= 0 && col < nc) {
-							v.push_back(d[nc*row + col] * window[wi]);
-						} else {
-							v.push_back(fill * window[wi]);
-						}
-					}
-				}
-			}
-			out[nc * r + c] = fun(v, narm);
-		}	
-	}
-}
-
-
-
-void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand) {
-	
-	out.resize(nc*nr, NAN);
-	int hwc = wnc / 2;
-	int hwr = wnr / 2;
-	bool nafill = std::isnan(fill);
-	bool dofill = !(narm && nafill);
-	std::vector<bool> winNA(window.size(), false);
-	for (size_t i=0; i<window.size(); i++) {
-		if (std::isnan(window[i])) winNA[i] = true; 
-	}
-	
-	int wr1 = wnr - 1;
-	int wc1 = wnc - 1;
-	int nc1 = nc - 1;
-
-	for (int r=0; r < nr; r++) {
-		int rread = r+srow;
-		for (int c=0; c < nc; c++) {
-			double value = 0;
-			bool found = false;
-			for (int rr=0; rr<wnr; rr++) {
-				int offr = wr1 - rr;
-				for (int cc=0; cc < wnc; cc++)  {
-					int offc = wc1 - cc; 
-					//int wi = wnc * offr + offc;
-					int wi = wnc * rr + cc;
-					if (winNA[wi]) {
-						continue;
-					}
-					int row = rread + hwr - offr;
-					int col = c + hwc - offc;
-					if (expand) {
-						col = col < 0 ? 0 : col;
-						col = col > nc1 ? nc1 : col;
-						if (narm) {
-							if (!std::isnan(d[nc * row + col])) {
-								value += d[nc*row + col] * window[wi];
-								found = true;
-							}
-						} else {
-							value += d[nc*row + col] * window[wi];
-						}
-					} else {
-						if (col >= 0 && col < nc) {
-							if (narm) {
-								if (!std::isnan(d[nc*row + col])) {
-									value += d[nc*row + col] * window[wi];
-									found = true;
-								}
-							} else {
-								value += d[nc*row + col] * window[wi]; 
-							}
-						} else if (dofill) {
-							value += fill * window[wi];
-						}
-					}
-				}
-			}
-			if (narm) {
-				if (found) {
-					out[nc * r + c] = value;
-				}
-			} else {
-				out[nc * r + c] = value;
-			}
-		}
-	}
-}
-
-void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand) {
-	
-	out.resize(nc*nr, NAN);
-	int hwc = wnc / 2;
-	int hwr = wnr / 2;
-	bool nafill = std::isnan(fill);
-	bool dofill = !(narm && nafill);
-	std::vector<bool> winNA(window.size(), false);
-	double winsum = 0;
-	std::vector<double> poswin = window;
-	for (size_t i=0; i<window.size(); i++) {
-		if (std::isnan(window[i])) {
-			winNA[i] = true; 
-		} else {
-			if (window[i] < 0) {
-				poswin[i] = -poswin[i];
-			} 
-			winsum += poswin[i]; 
-		}
-	}
-
-	int wr1 = wnr - 1;
-	int wc1 = wnc - 1;
-	int nc1 = nc - 1;
-	
-	
-	for (int r=0; r<nr; r++) {
-		int rread = r+srow;
-		for (int c=0; c < nc; c++) {
-			double value = 0;
-			if (narm) winsum = 0;
-			for (int rr=0; rr<wnr; rr++) {
-				int offr = wr1 - rr;
-				for(int cc=0; cc < wnc; cc++)  {
-					int offc = wc1 - cc; 
-					//int wi = wnc * offr + offc;
-					int wi = wnc * rr + cc;
-					if (winNA[wi]) {
-						continue;
-					}
-					int row = rread + hwr - offr;
-					int col = c + hwc - offc;
-					if (expand) {
-						col = col < 0 ? 0 : col;
-						col = col > nc1 ? nc1 : col;
-						if (narm) {
-							if (!std::isnan(d[nc * row + col])) {
-								value += d[nc * row + col] * window[wi];
-								winsum += poswin[wi];
-							}
-						} else {
-							value += d[nc * row + col] * window[wi]; 
-						}
-					} else {
-						if (col >= 0 && col < nc) {
-							if (narm) {
-								if (!std::isnan(d[nc * row + col])) {
-									value += d[nc * row + col] * window[wi];
-									winsum += poswin[wi];
-								}
-							} else {
-								value += d[nc * row + col] * window[wi]; 
-							}
-						} else if (dofill) {
-							value += fill;
-							if (narm) {
-								winsum += poswin[wi];
-							}
-						}
-					}
-				}
-			}
-			if (winsum > 0) {
-				out[nc * r + c] = value / winsum;
-			}	
-		}	
-	}
-}
-
-
-
-
-
-SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, double fillvalue, bool narm, bool naonly, std::string fun, bool expand, SpatOptions &opt) {
-
-	SpatRaster out = geometry(1);
-	if (nlyr() > 1) {
-		SpatOptions ops(opt);
-		out.addWarning("focal computations are only done for the first input layer");
-		std::vector<unsigned> lyr = {0};
-		*this = subset(lyr, ops);
-	}
-
-	if (!source[0].hasValues) { return(out); }
-
-	if (w.size() != 2) {
-		out.setError("size of w is not 1 or 2");
-		return out;
-	}
-	if ((w[0] % 2) == 0 || (w[1] % 2) == 0) {
-		out.setError("w must be odd sized");
-		return out;
-	}
-	// perhaps we can do (1,3) or (3,1)
-	//if (w[0] < 3 && w[1] < 3) {
-	//	out.setError("w must be > 1");
-	//	return out;
-	//}
-	unsigned ww = w[0] * w[1];
-	if (ww < 3) {
-		out.setError("not a meanigful window");
-		return out;
-	}
-
-	if (ww != m.size()) {
-		out.setError("weights matrix size does not match prod(w)");
-		return out;
-	}
-
-	size_t nc = ncol();
-	size_t nr = nrow();
-	if (w[0] > (nr*2)) {
-		out.setError("nrow(w) > 2 * nrow(x)");
-		return out;
-	}
-	if (w[1] > (nc*2)) { 
-		out.setError("ncol(w) > 2 * ncol(x)");
-		return out;
-	}
-
-
-	if (!readStart()) {
-		out.setError(getError());
-		return(out);
-	}
-	opt.ncopies += 2;
-	opt.minrows = w[0] > nr ? nr : w[0];
-	
- 	if (!out.writeStart(opt)) {
-		readStop();
-		return out;
-	}
-	size_t hw0 = w[0]/2;
-	size_t dhw0 = hw0 * 2;
-	//size_t fsz = hw0*nc;
-	size_t fsz2 = dhw0*nc;
-
-	bool dofun = false;
-	std::function<double(std::vector<double>&, bool)> fFun;
-	if ((fun != "mean") && (fun != "sum")) {
-		if (!haveFun(fun)) {
-			out.setError("unknown function argument");
-			return out;
-		}
-		fFun = getFun(fun);
-		dofun = true;
-	}
-	
-	std::vector<double> fill;
-	std::vector<double> vout;
-	for (size_t i = 0; i < out.bs.n; i++) {
-		unsigned rstart, roff;
-		unsigned rnrows = out.bs.nrows[i];
-		if (i == 0) {
-			rstart = 0;
-			roff = dhw0;	
-			if (i != (out.bs.n-1)) {
-				rnrows += hw0;
-			}
-		} else {
-			rstart = out.bs.row[i] + hw0;
-			roff = hw0;	
-			if (i == (out.bs.n-1)) {
-				rnrows -= hw0; 
-			}
-		}
-
-		std::vector<double> vin = readValues(rstart, rnrows, 0, nc);		
-		if (i==0) {
-			if (expand) {
-				fill = {vin.begin(), vin.begin()+nc};
-				for (size_t i=1; i<dhw0; i++) {
-					fill.insert(fill.end(), fill.begin(), fill.end());
-				}
-			} else {
-				fill.resize(fsz2, fillvalue);
-			}
-		}			
-		vin.insert(vin.begin(), fill.begin(), fill.end());
-		
-		if (i == (out.bs.n-1)) {
-			if (expand) {
-				fill = {vin.end()-nc, vin.end()};
-				for (size_t i=1; i<dhw0; i++) {
-					fill.insert(fill.end(), fill.begin(), fill.end());
-				}
-			} else {
-				std::fill(fill.begin(), fill.end(), fillvalue);
-			}
-			vin.insert(vin.end(), fill.begin(), fill.end());
-		}
-
-		if (dofun) {
-			focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, fFun);			
-		} else if (fun == "mean") {
-			focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand);
-		} else {
-			focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand);
-		}
-		
-		if (i != (out.bs.n-1)) {
-			fill = {vin.end() - fsz2, vin.end() };  
-		}
-	
-		if (naonly) {
-			for (size_t j=0; j<vout.size(); j++) {
-				size_t k = fsz2 + j;
-				if (!std::isnan(vin[k])) {
-					vout[j] = vin[k];	
-				}
-			}
-		}
-		
-		if (!out.writeValues(vout, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
-
-	}
-
-	out.writeStop();
-	readStop();
-	return(out);
-}
-

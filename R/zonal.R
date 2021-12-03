@@ -1,18 +1,17 @@
 
 setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"), 
-	function(x, z, fun="mean", ...)  {
-		txtfun <- .makeTextFun(match.fun(fun))
+	function(x, z, fun="mean", ..., as.raster=FALSE, filename="", wopt=list())  {
 		if (nlyr(z) > 1) {
 			z <- z[[1]]
 		}
-		if (inherits(txtfun, "character")) { 
-			if (txtfun %in% c("max", "min", "mean", "sum")) {
-				na.rm <- isTRUE(list(...)$na.rm)
-				opt <- spatOptions()
-				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
-				messages(ptr, "zonal")
-				out <- .getSpatDF(ptr)
-			}
+		zname <- names(z)
+		txtfun <- .makeTextFun(match.fun(fun))
+		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum"))) {
+			na.rm <- isTRUE(list(...)$na.rm)
+			opt <- spatOptions()
+			ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
+			messages(ptr, "zonal")
+			out <- .getSpatDF(ptr)
 		} else {
 			nl <- nlyr(x)
 			res <- list()
@@ -30,12 +29,20 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 				}
 			}
 		}
-		if (is.factor(z)) {
-			levs <- levels(z)[[1]]
-			out$zone <- levs[out$zone+1]
+		if (as.raster) {
+			if (is.null(wopt$names)) {
+				wopt$names <- names(x)
+			}
+			subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
+		} else {
+			if (is.factor(z)) {
+				levs <- active_cats(z)[[1]]
+				m <- match(out$zone, levs[,1])
+				out$zone <- levs[m, 2]
+			}
+			colnames(out)[1] <- zname
+			out
 		}
-		colnames(out)[1] <- names(z)
-		out 
 	}
 )
 
@@ -74,15 +81,15 @@ setMethod("global", signature(x="SpatRaster"),
 		nl <- nlyr(x)
 		res <- list()
 		for (i in 1:nl) {
-			res[[i]] <- fun(values(x[[i]]), ...)
+			res[[i]] <- fun(values(x[[i]]) , ...)
 		}
 		res <- do.call(rbind,res)
 		res <- data.frame(res)
-		if (ncol(res) > 1) {
-			colnames(res) <- paste0("global_", 1:ncol(res))
-		} else {
+
+		if ((ncol(res) == 1) && (colnames(res) == "res")) {
 			colnames(res) <- "global"
 		}
+
 		rownames(res) <- nms
 		res
 	}

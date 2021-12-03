@@ -15,14 +15,14 @@ is.proj <- function(crs) {
 	d <- grep("datum=", x, value=TRUE)
 	if (length(d) > 0) {  
 		d <- gsub("datum=", "", d)
-		if (!(d %in% c("wgs84", "nad83"))) {
-			warn("crs", "a datum other than WGS84 or NAD83 cannot be used in a PROJ4 string")
+		if (!(d %in% c("wgs84", "nad83", "nad27"))) {
+			warn("crs<-", "Only the WGS84, NAD83 and NAD27 datums can be used with a PROJ.4 string. Use WKT2, authority:code, or +towgs84= instead")
 		}		
 	}
-	d <- grep("towgs84=", x, value=TRUE)
-	if (length(d) > 0) {  
-		warn("crs", "+towgs84 parameters in a PROJ4 string are ignored")
-	}
+	#d <- grep("towgs84=", x, value=TRUE)
+	#if (length(d) > 0) {  
+	#	warn("crs<-", "+towgs84 parameters in a PROJ4 string are ignored")
+	#}
 }
 
 
@@ -30,9 +30,27 @@ is.proj <- function(crs) {
 	x@ptr$get_crs("proj4")
 }
 
+.name_or_proj4 <- function(x) {
+	d <- .srs_describe(x@ptr$get_crs("wkt"))
+	r <- x@ptr$get_crs("proj4")
+	if (!(d$name %in% c("unknown", "unnamed"))) {
+		if (substr(r, 1, 13) == "+proj=longlat") {
+			r <- paste("lon/lat", d$name)
+		} else {
+			r <- d$name
+		}
+		if (!is.na(d$code)) {
+			r <- paste0(r, " (", d$authority, ":", d$code, ")")
+		} 
+	} 
+	r
+}
+
+
+
 .srs_describe <- function(srs) {
 	info <- .SRSinfo(srs)
-	names(info) <- c("name", "EPSG", "area", "extent")
+	names(info) <- c("name", "authority", "code", "area", "extent")
 	d <- data.frame(t(info), stringsAsFactors=FALSE)
 	d$area <- gsub("\\.$", "", d$area)
 	d[d == ""] <- NA
@@ -44,18 +62,40 @@ is.proj <- function(crs) {
 	d
 }
 
+
+
+.get_CRS <- function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+	if (describe) {
+		d <- .srs_describe(x@ptr$get_crs("wkt"))
+		if (proj) {
+			d$proj <- x@ptr$get_crs("proj4")		
+		}
+		d
+	} else if (proj) {
+		x@ptr$get_crs("proj4")		
+	} else {
+		r <- x@ptr$get_crs("wkt")
+		if (parse) {
+			unlist(strsplit(r, "\n"))
+		} else {
+			r
+		}
+	}
+}
+
+
 setMethod("crs", signature("SpatRaster"), 
-	function(x, proj=FALSE, describe=FALSE) {
-		if (describe) {
-			d <- .srs_describe(x@ptr$get_crs("wkt"))
-			if (proj) {
-				d$proj <- x@ptr$get_crs("proj4")		
-			}
-			d
-		} else if (proj) {
-			x@ptr$get_crs("proj4")		
-		}  else {
-			x@ptr$get_crs("wkt")
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		.get_CRS(x, proj=proj, describe=describe, parse=parse)
+	}
+)
+
+setMethod("crs", signature("SpatRasterDataset"), 
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		if (length(x) > 0) {
+			.get_CRS(x[[1]], proj=proj, describe=describe, parse=parse)
+		} else {
+			NULL
 		}
 	}
 )
@@ -65,7 +105,7 @@ setMethod("crs", signature("SpatRaster"),
 	if (inherits(x, "SpatVector") | inherits(x, "SpatRaster")) {
 		x <- crs(x)
 	}
-	if (is.na(x)) {
+	if (is.null(x) || is.na(x)) {
 		x <- ""
 	} else if (inherits(x, "CRS")) {
 		if (warn) warn("crs", "expected a character string, not a CRS object")
@@ -80,7 +120,7 @@ setMethod("crs", signature("SpatRaster"),
 	} else {
 		error("crs", "I do not know what to do with this argument (expected a character string)")
 	}
-	#check_proj4_datum(x)
+	.check_proj4_datum(x)
 	x
 }
 
@@ -93,6 +133,8 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 	}
 )
 
+
+
 #setMethod("crs<-", signature("SpatRaster", "character"), 
 #	function(x, ..., value) {
 #		x@ptr$set_crs(value[1])
@@ -102,18 +144,8 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 
 
 setMethod("crs", signature("SpatVector"), 
-	function(x, proj=FALSE, describe=FALSE) {
-		if (describe) {
-			d <- .srs_describe(x@ptr$get_crs("wkt"))
-			if (proj) {
-				d$proj <- x@ptr$get_crs("proj4")		
-			}
-			d
-		} else if (proj) {
-			x@ptr$get_crs("proj4")		
-		} else {
-			x@ptr$get_crs("wkt")
-		}
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		.get_CRS(x, proj=proj, describe=describe, parse=parse)
 	}
 )
 

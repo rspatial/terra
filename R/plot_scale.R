@@ -35,7 +35,7 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 		lat <- mean(pr$yaxp[1:2])
 		if (missing(d)) {
 			dx <- (pr$usr[2] - pr$usr[1]) / 6
-			d <- pointDistance(cbind(0, lat), cbind(dx, lat), TRUE)
+			d <- as.vector(distance(cbind(0, lat), cbind(dx, lat), TRUE))
 			d <- signif(d / 1000, 2) 
 			label <- NULL
 		}

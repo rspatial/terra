@@ -19,8 +19,11 @@ setClass("PackedSpatRaster",
 	representation (
 		definition = "character",
 		values = "matrix",
-		attributes = "data.frame"
+		attributes = "list"
 	),
+	prototype (
+		attributes = list()
+	)
 )
 
 
@@ -120,9 +123,23 @@ setMethod("as.character", signature(x="SpatRaster"),
 setMethod("wrap", signature(x="SpatRaster"), 
 	function(x) {
 		r <- methods::new("PackedSpatRaster")
-		r@definition = as.character(x)
-		r@values = values(x)
-		#r@attributes = "data.frame"
+		r@definition <- as.character(x)
+		r@values <- values(x)
+		if (any(is.factor(x))) {
+			r@attributes$levels <- levels(x)
+		} 
+		v <- time(x)
+		if (any(!is.na(v))) {
+			r@attributes$time <- v
+		} 
+		v <- units(x)
+		if (any(!is.na(v))) {
+			r@attributes$units <- v
+		} 
+		v <- depth(x)
+		if (any(!is.na(v))) {
+			r@attributes$depth <- v
+		} 
 		r
 	}
 )
@@ -132,6 +149,17 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 	function(x) {
 		r <- eval(parse(text=x@definition))
 		values(r) <- x@values
+		if (length(x@attributes) > 0) {
+			nms <- names(x@attributes)
+			if (all(nms %in% c("levels", "time", "units", "depth"))) {
+				time(r) <- x@attributes$time
+				units(r) <- x@attributes$units
+				levels(r) <- x@attributes$levels
+				depth(r) <- x@attributes$depth
+			} else {
+				levels(r) <- x@attributes
+			}
+		}
 		r
 	}
 )
@@ -141,3 +169,4 @@ setMethod("show", signature(object="PackedSpatRaster"),
 		print(paste("This is a", class(object), "object. Use 'terra::rast()' to unpack it"))
 	}
 )
+

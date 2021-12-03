@@ -44,6 +44,7 @@ class SpatDataFrame {
 		
 		unsigned nrow();
 		unsigned ncol();
+		SpatDataFrame subset_rows(std::vector<long> range);
 		SpatDataFrame subset_rows(std::vector<unsigned> range);
 		SpatDataFrame subset_cols(std::vector<unsigned> range);
 		SpatDataFrame subset_rows(unsigned i);
@@ -57,6 +58,7 @@ class SpatDataFrame {
 		std::string getSvalue(unsigned i, unsigned j);
 	
 		void add_row();
+		void add_rows(size_t n);
 		
 		void set_values(std::vector<double> x, std::string name);
 		void set_values(std::vector<long> x, std::string name);
@@ -76,6 +78,8 @@ class SpatDataFrame {
 		bool remove_column(int i);		
 
 		void resize_rows(unsigned n);
+		void remove_rows(std::vector<unsigned> r);
+
 		void resize_cols(unsigned n);
 		void reserve(unsigned n);
 		
@@ -94,7 +98,6 @@ class SpatDataFrame {
 		int get_fieldindex(std::string field);
 
 		bool field_exists(std::string field);
-		
-		
+		bool write_dbf(std::string filename, bool overwrite, SpatOptions &opt);
 };
 

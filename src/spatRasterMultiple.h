@@ -69,7 +69,7 @@ class SpatRasterStack {
 
 		std::vector<std::vector<std::vector<double>>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method);
 		std::vector<std::vector<std::vector<double>>> extractCell(std::vector<double> &cell);
-		std::vector<std::vector<std::vector<std::vector<double>>>> extractVector(SpatVector v, bool touches, std::string method);
+		std::vector<std::vector<std::vector<std::vector<double>>>> extractVector(SpatVector v, bool touches, std::string method, SpatOptions &opt);
 
 		std::vector<std::string> get_names() {
 			return names;

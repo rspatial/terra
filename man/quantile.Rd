@@ -9,9 +9,11 @@
 \title{Quantiles of spatial data}
 
 \description{
-Compute quantiles for each cell across the layers of a SpatRaster.
+Compute quantiles for each cell across the layers of a SpatRaster. 
 
-You can also use this method to compute the quantiles of the numeric variables of a SpatVector.
+You can use use \code{\link{global}(x, fun=quantile)} to instead compute quantiles across cells for each layer.
+
+You can also use this method to compute quantiles of the numeric variables of a SpatVector.
 }
 
 \usage{
@@ -37,12 +39,17 @@ SpatRaster with layers representing quantiles
 
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
-r <- c(r/2, r, r*2)
-q <- quantile(r)
-q
+rr <- c(r/2, r, r*2)
+qr <- quantile(rr)
+qr
 
+\dontrun{
 # same but slower
-# qa <- app(r, quantile)
+qa <- app(rr, quantile)
+}
+
+#quantile by layer instead of by cell
+qg <- global(r, quantile)
 }
 
 \keyword{methods}

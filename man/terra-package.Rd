@@ -52,7 +52,7 @@ Also see the methods in section VIII
     \code{\link{extend}} \tab Enlarge a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
-    \code{\link{disaggregate}} \tab Subdivide cells \cr
+    \code{\link{disagg}} \tab Subdivide cells \cr
     \code{\link{resample}} \tab Resample (warp) values to a SpatRaster with a different origin and/or resolution \cr 
 	\code{\link{project}} \tab Project (warp) values to a SpatRaster with a different coordinate reference system \cr
     \code{\link{shift}} \tab Adjust the location of SpatRaster \cr
@@ -195,6 +195,7 @@ Get or set basic parameters of SpatRasters. If there are values associated with 
     \code{\link{crs}} \tab The coordinate reference system (map projection) \cr	
     \code{\link{is.lonlat}} \tab Test if an object has (or may have) a longitude/latitude coordinate reference system\cr
     \code{\link{sources}} \tab Get the filename(s) to which a SpatRaster is linked \cr	
+    \code{\link{inMemory}} \tab Are the data sources in memory (or on disk)? \cr	
     \code{\link{compareGeom}} \tab Compare the geometry of SpatRasters \cr		
     \code{\link{NAflag}} \tab Set the \code{NA} value (for reading from a file with insufficient metadata) \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
@@ -235,7 +236,6 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \subsection{Advanced}{
   \tabular{ll}{
-   \code{\link{blockSize}} \tab Get suggested block size for reading and writing \cr
    \code{\link{writeStart}} \tab Open a file for writing \cr
    \code{\link{writeValues}} \tab Write some values  \cr
    \code{\link{writeStop}} \tab Close the file after writing \cr
@@ -250,11 +250,10 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{terraOptions}} \tab Show, set, or get session options, mostly to control memory use and to set write options\cr
     \code{\link{sources}} \tab Show the data sources of a SpatRaster \cr
     \code{\link{tmpFiles}} \tab Show or remove temporary files \cr
-    \code{\link{canProcessInMemory}} \tab Test whether a file can be created in memory \cr
-    \code{\link{readStart}} \tab Open file connections for efficient multi-chunck reading \cr
+    \code{\link{mem_info}} \tab memory needs and availability \cr
+    \code{\link{readStart}} \tab Open file connections for efficient multi-chunk reading \cr
     \code{\link{readStop}} \tab Close file connections \cr
     \code{\link{inMemory}} \tab Are the cell values in memory? \cr
-    \code{\link{fromDisk}} \tab Are the cell values read from a file? \cr	
 }
 }
 
@@ -341,7 +340,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{symdif}} \tab symmetrical difference of two polygons \cr 
   \code{\link{aggregate}} \tab dissolve smaller polygons into larger ones \cr
   \code{\link{buffer}} \tab buffer geometries \cr
-  \code{\link{disaggregate}} \tab split multi-geometries into separate geometries \cr
+  \code{\link{disagg}} \tab split multi-geometries into separate geometries \cr
   \code{\link{crop}} \tab clip geometries using a rectangle (SpatExtent) or SpatVector \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
@@ -369,11 +368,28 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{shift}} \tab change the position geometries by shifting their coordinates in horizontal and/or vertical direction\cr
   \code{\link{spin}}\tab rotate geometries around an origin\cr
   \code{\link{rescale}} \tab shrink (or expand) geometries, for example to make an inset map \cr
-  \code{\link{flip}} \tab flip geometries vertially or horizontally\cr
+  \code{\link{flip}} \tab flip geometries vertically or horizontally\cr
   \code{\link{t}} \tab transpose geometries (switch x and y)\cr
 
 }}
 
+
+\section{XIX. Geometry properties and topology}{
+
+\tabular{ll}{
+  \code{\link{width}} \tab the minimum diameter of the geometries \cr
+  \code{\link{clearance}} \tab the minimum clearance of the geometries \cr
+  \code{\link{sharedPaths}} \tab shared paths (arcs) between line or polygon geometries\cr
+  \code{\link{simplify}} \tab simplify geometries\cr
+  \code{\link{gaps}} \tab find gaps between polygon geometries \cr
+  \code{\link{fillHoles}} \tab get or remove the polygon holes\cr
+  \code{\link{makeNodes}} \tab create nodes on lines \cr
+  \code{\link{mergeLines}} \tab connect lines to form polygons  \cr
+  \code{\link{removeDupNodes}} \tab remove duplicate nodes in geometries and optionally rounds the coordinates  \cr
+  \code{\link{snap}} \tab make boundaries of geometries identical if they are very close to each other  \cr
+  \code{\link{erase} (single argument)} \tab remove parts of geometries that overlap \cr
+  \code{\link{union} (single argument)} \tab create new polygons such that there are no overlapping polygons \cr
+}}
 
 
 \section{}{
@@ -384,7 +400,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XIX. Collections}{
+\section{XX. Collections}{
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects. 
 
 \tabular{ll}{
@@ -404,7 +420,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 
 
-\section{XX. SpatExtent}{
+\section{XXI. SpatExtent}{
 
   \tabular{ll}{
     \code{\link{ext}} \tab Create a SpatExtent object. For example to \code{\link{crop}} a Spatial dataset\cr
@@ -427,7 +443,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XXI. Data type conversion}{
+\section{XXII. Data type conversion}{
 
 You can coerce SpatRasters to Raster* objects after loading the \code{raster} package with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
   
@@ -444,7 +460,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
   }
 }
 
-\section{XXII. Plotting}{
+\section{XXIII. Plotting}{
 
 \subsection{Maps}{
   \tabular{ll}{
@@ -478,7 +494,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
   \tabular{ll}{
     \code{\link{plot}} \tab x-y scatter plot of the values of (a sample of) the layers of two SpatRaster objects\cr
     \code{\link{hist}} \tab Histogram of SpatRaster values \cr
-    \code{\link{barplot}} \tab Barplot of a SpatRaster \cr
+    \code{\link{barplot}} \tab Bar plot of a SpatRaster \cr
     \code{\link{density}} \tab Density plot of SpatRaster values \cr
     \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
     \code{\link{boxplot}} \tab Box plot of the values of a SpatRaster\cr
@@ -496,7 +512,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 ---------------------------------------------------------------------------------------------------------------------}
 
 
-\section{XXIII. New method names}{
+\section{XXIV. New method names}{
 
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
@@ -509,32 +525,34 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
 \code{area} \tab\code{\link{cellSize}}\cr
-\code{extent}\tab\code{\link{ext}}\cr
 \code{calc}\tab\code{\link{app}}\cr
-\code{overlay}\tab\code{\link{lapp}}\cr
-\code{stackApply}\tab\code{\link{tapp}}\cr
-\code{nlayers}\tab\code{\link{nlyr}}\cr
-\code{NAvalue}\tab\code{\link{NAflag}}\cr
-\code{stackSelect}\tab\code{\link{selectRange}}\cr
-\code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
+\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
-\code{projectRaster}\tab\code{\link{project}}\cr
-\code{dropLayer}\tab\code{\link{subset}}\cr
-\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
-\code{shapefile}\tab\code{\link{vect}}\cr
-\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
-\code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
+\code{clump}\tab\code{\link{patches}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr
-\code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
+\code{disaggregate} \tab\code{\link{disagg}}\cr
+\code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
+\code{dropLayer}\tab\code{\link{subset}}\cr
+\code{extent}\tab\code{\link{ext}}\cr
+\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
+\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
+\code{layerize}\tab\code{\link{segregate}}\cr
+\code{layerStats}\tab\code{\link{layerCor}}\cr
+\code{NAvalue}\tab\code{\link{NAflag}}\cr
+\code{nlayers}\tab\code{\link{nlyr}}\cr
+\code{overlay}\tab\code{\link{lapp}}\cr
+\code{projectRaster}\tab\code{\link{project}}\cr
 \code{rasterToPoints}\tab\code{\link{as.points}}\cr
 \code{rasterToPolygons}\tab\code{\link{as.polygons}}\cr
-\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
-\code{layerize}\tab\code{\link{segregate}}\cr
-\code{clump}\tab\code{\link{patches}}\cr
+\code{reclassify, subs, cut}\tab\code{\link{classify}}\cr
+\code{sampleRandom, sampleRegular}\tab\code{\link{spatSample}}\cr
+\code{shapefile}\tab\code{\link{vect}}\cr
+\code{stackApply}\tab\code{\link{tapp}}\cr
+\code{stackSelect}\tab\code{\link{selectRange}}\cr
 }
 }
 
-\section{XXIV. Changed behavior}{
+\section{XXV. Changed behavior}{
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
 
@@ -563,7 +581,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
 
 \section{Acknowledgments}{
-This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{filing bug reports}. The feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Krzysztof Dyba, Jakub Nowosad, Gerald Nelson, and Michael Sumner have been especially helpful.
+This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. The feedback and suggestions by Kendon Bell, Jean-Luc Dupouey, Krzysztof Dyba, Alex Ilich, Jakub Nowosad, Gerald Nelson, and Michael Sumner have been especially helpful.
 }
 
 \keyword{ package }

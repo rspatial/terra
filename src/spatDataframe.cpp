@@ -115,6 +115,12 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 }
 
 
+SpatDataFrame SpatDataFrame::subset_rows(std::vector<long> range) { 
+	std::vector<unsigned> r(range.begin(), range.end());
+	return subset_rows(r);
+}
+
+
 SpatDataFrame SpatDataFrame::subset_cols(unsigned i) {
 	std::vector<unsigned> c = { i }; 
 	return subset_cols(c);
@@ -192,6 +198,21 @@ void SpatDataFrame::add_row() {
 }
 
 
+void SpatDataFrame::add_rows(size_t n) {
+	size_t s = nrow() + n;
+	for (size_t i=0; i < dv.size(); i++) {
+		dv[i].resize(s, NAN);
+	}
+	long longNA = NA<long>::value;
+	for (size_t i=0; i < iv.size(); i++) {
+		iv[i].resize(s, longNA);
+	}
+	for (size_t i=0; i < sv.size(); i++) {
+		sv[i].resize(s, NAS);
+	}
+}
+
+
 void SpatDataFrame::reserve(unsigned n) {
 	for (size_t i=0; i<dv.size(); i++) {
 		dv[i].reserve(n);
@@ -216,6 +237,28 @@ void SpatDataFrame::resize_rows(unsigned n) {
 		sv[i].resize(n, NAS);
 	}
 }
+
+void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
+	if (r.size() == 0) return;
+	//sort(r.begin(), r.end(), std::greater<unsigned>());
+	sort(r.begin(), r.end());
+	r.erase(std::unique(r.begin(), r.end()), r.end());
+	std::reverse(r.begin(), r.end());
+		
+	for (size_t j=0; j<r.size(); j++) {
+		for (size_t i=0; i<dv.size(); i++) {
+			dv[i].erase(dv[i].begin() + r[j]);
+		}
+		for (size_t i=0; i<iv.size(); i++) {
+			iv[i].erase(iv[i].begin() +r[j]);
+		}
+		for (size_t i=0; i<sv.size(); i++) {
+			sv[i].erase(sv[i].begin() +r[j]);
+		}
+	}
+}
+
+
 
 void SpatDataFrame::resize_cols(unsigned n) {
 	if (n < ncol()) {
@@ -246,12 +289,15 @@ bool SpatDataFrame::remove_column(int i) {
 	size_t dtype = itype[i];
 	size_t place = iplace[i];
 
-	for (size_t i=(place+1); i<iplace.size(); i++) {
-		if (itype[i] == dtype) {
-			iplace[i]--;
+	size_t ii = i;
+	if (ii < (iplace.size()-1)) {
+		for (size_t j=i+1; j<iplace.size(); j++) {
+			if (itype[j] == dtype) {
+				iplace[j]--;
+			}
 		}
 	}
-
+	
 	names.erase(names.begin()+i);
 	itype.erase(itype.begin()+i);
 	iplace.erase(iplace.begin()+i);

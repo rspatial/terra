@@ -5,8 +5,19 @@
 #	}
 #)
 
+
+setMethod("as.vector", signature(x="SpatVector"), 
+	function(x, mode="any") {
+		if (nrow(x) > 0) {
+			lapply(1:nrow(x), function(i) x[i,])
+		} else {
+			x
+		}
+	}
+)
+
 setMethod("vect", signature(x="missing"), 
-	function(...) {
+	function(x) {
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
 		messages(p, "vect")
@@ -15,21 +26,31 @@ setMethod("vect", signature(x="missing"),
 )
 
 setMethod("vect", signature(x="character"), 
-	function(x, ...) {
+	function(x, layer="", query="", extent=NULL, filter=NULL, crs="") {
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
 #		if (all(grepl("\\(", x) & grepl("\\)", x))) {
 			x <- gsub("\n", "", x)
 			p@ptr <- SpatVector$new(x)
-			dots <- list(...)
-			if (!is.null(dots$crs)) {
-				crs(p) <- dots$crs
-			}
+			crs(p) <- crs
 		} else {
 			p@ptr <- SpatVector$new()
 			x <- normalizePath(x)
-			p@ptr$read(x)
+			if (is.null(filter)) {
+				filter <- vect()@ptr
+			} else {
+				filter <- filter@ptr
+			}
+			if (is.null(extent)) {
+				extent <- double()
+			} else {
+				extent <- as.vector(ext(extent))
+			}
+			p@ptr$read(x, layer, query, extent, filter)
+			if (isTRUE(crs != "")) {
+				crs(p) <- crs
+			}
 		}
 		messages(p, "vect")
 	}
@@ -70,8 +91,8 @@ setMethod("vect", signature(x="XY"), #sfg
 	z <- tolower(x[1:2])
 	x <- substr(z, 1, 3)
 	y <- substr(x, 1, 1)
-	if ((y[1] == "x") & (y[2] == "y")) return(TRUE)
-	if ((x[1] == "eas") & (x[2] == "nor")) return(TRUE)
+	if ((y[1] == "x") & (y[2] == "y")) return(FALSE)
+	if ((x[1] == "eas") & (x[2] == "nor")) return(FALSE)
 	if ((x[1] == "lon") & (x[2] == "lat")) return(TRUE)
 	if (grepl("lon", z[1]) & grepl("lat", z[2])) return(TRUE)
 
@@ -84,10 +105,11 @@ setMethod("vect", signature(x="XY"), #sfg
 	} else if (warn) {
 		warn("coordinate names not recognized. Expecting lon/lat, x/y, or easting/northing")
 	}
+	return(FALSE)
 }
 
 setMethod("vect", signature(x="matrix"), 
-	function(x, type="points", atts=NULL, crs="", ...) {
+	function(x, type="points", atts=NULL, crs="") {
 		type <- tolower(type)
 		type <- match.arg(tolower(type), c("points", "lines", "polygons"))
 		stopifnot(NCOL(x) > 1)
@@ -100,12 +122,13 @@ setMethod("vect", signature(x="matrix"),
 		}
 
 		if (ncol(x) == 2) { 
-			.checkXYnames(colnames(x))
+			lonlat <- .checkXYnames(colnames(x))
 			if (type == "points") {	# treat as unique points
 				p@ptr$setGeometry(type, 1:nr, rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
 			} else {
 				p@ptr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
 			}
+			if (lonlat && isTRUE(crs=="")) crs <- "+proj=longlat" 
 		} else if (ncol(x) == 4) {
 			#.checkXYnames(colnames(x)[3:4])
 			p@ptr$setGeometry(type, x[,1], x[,2], x[,3], x[,4], rep(FALSE, nr))
@@ -145,6 +168,49 @@ function(x, i, j, ... ,drop=FALSE) {
 	s[,,drop=drop]
 })
 
+
+
+setReplaceMethod("[", c("SpatVector", "ANY", "ANY"),
+	function(x, i, j, value) {
+		v <- values(x)
+		v[i,j] <- value
+		if (nrow(v) != nrow(x)) {
+			error("[<-", "this would create an invalid SpatVector")
+		}
+		values(x) <- v
+		x
+	}
+)
+
+setReplaceMethod("[", c("SpatVector", "ANY", "missing"),
+	function(x, i, j, value) {
+		v <- values(x)
+		if (inherits(value, "SpatVector")) {
+			value <- values(value)
+		}
+		v[i,] <- value
+		if (nrow(v) != nrow(x)) {
+			error("[<-", "this would create an invalid SpatVector")
+		}
+		values(x) <- v
+		x
+	}
+)
+
+setReplaceMethod("[", c("SpatVector", "missing", "ANY"),
+	function(x, i, j, value) {
+		v <- values(x)
+		if (inherits(value, "SpatVector")) {
+			value <- values(value)
+		}
+		v[,j] <- value
+		if (nrow(v) != nrow(x)) {
+			error("[<-", "this would create an invalid SpatVector")
+		}
+		values(x) <- v
+		x
+	}
+)
 
 
 setReplaceMethod("[[", c("SpatVector", "character", "missing"),
@@ -206,13 +272,30 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"), 
-	function(x, geom=c("lon", "lat"), crs=NA, ...) {
+	function(x, geom=c("lon", "lat"), crs=NA) {
+		if (!all(geom %in% names(x))) {
+			error("vect", "the variable name(s) in argument `geom` are not in `x`")
+		}
 		if (length(geom) == 2) {
 			v <- vect(as.matrix(x[,geom]), crs=crs)
 		} else if (length(geom) == 1) {
 			v <- vect(unlist(x[,geom]), crs=crs)
+		} else {
+			error("vect", "the length of 'geom' must be 1 or 2")
 		}
 		values(v) <- x
 		v
 	}
 )
+
+
+setMethod("vect", signature(x="list"), 
+	function(x) {
+		x <- svc(x)
+		x <- x@ptr$append()
+		v <- methods::new("SpatVector")
+		v@ptr <- x 
+		messages(v)
+	}
+)
+

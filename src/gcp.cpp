@@ -5,7 +5,7 @@
 #include "spatRaster.h"
 
 
-SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty) {
+SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt) {
 
 	SpatRaster out;
 	std::vector<double> cls = cellFromXY(fx, fy);
@@ -22,10 +22,9 @@ SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, 
       gcps[i].dfGCPZ = (float) 0.0;
     }
 
-	SpatOptions opt;
     GDALDatasetH hSrcDS; //hDstDS, 
 
-	if (!open_gdal(hSrcDS, 0, opt)) {
+	if (!open_gdal(hSrcDS, 0, false, opt)) {
 		out.setError("bad");
 		return out;
 	}

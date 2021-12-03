@@ -5,19 +5,12 @@
 
 
 setMethod("focal", signature(x="SpatRaster"), 
-function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
+function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
-	if (nlyr(x) > 1) {
-		warn("focal", "only the first layer of x is used")
-		x <- x[[1]]
-	}
-	if (na.only && (!is.matrix(w))) {
-		if (!na.rm) {
-			warn("focal", "na.rm set to TRUE because na.only is TRUE")
-			na.rm <- TRUE
-		}
-	}
 
+	if (!is.numeric(w)) {
+		error("focal", "w should be numeric vector or matrix")	
+	}
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
 		w <- dim(w)
@@ -29,45 +22,145 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 	cpp <- FALSE
 	txtfun <- .makeTextFun(fun)
 	if (is.character(txtfun)) { 
-		cpp <- TRUE
-	}
-
-	if (cpp) {
-		opt <- spatOptions(filename, ...)
-		#if (method==1) {
-		#	x@ptr <- x@ptr$focal1(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)		
-		#} else if (method == 2) {
-		#	x@ptr <- x@ptr$focal2(w, m, fillvalue, na.rm[1], na.only[1], txtfun, opt)
-		#} else {
-		x@ptr <- x@ptr$focal3(w, m, fillvalue, na.rm[1], na.only[1], txtfun, expand, opt)
-		#}
+		if (is.null(wopt$names)) {
+			wopt$names <- paste0("focal_", txtfun)
+		}
+		opt <- spatOptions(filename, overwrite, wopt=wopt)
+		narm <- isTRUE(list(...)$na.rm)
+		x@ptr <- x@ptr$focal3(w, m, fillvalue, narm, na.only[1], txtfun, expand, opt)
 		messages(x, "focal")
 		return(x)
 
 	} else {
-		out <- rast(x)
+		msz <- prod(w)
 		readStart(x)
 		on.exit(readStop(x))
-		b <- writeStart(out, filename, ...)
 		dow <- !isTRUE(all(m == 1))
-		msz <- prod(w)
 		if (any(is.na(m))) {
 			k <- !is.na(m)
 			mm <- m[k]
 			msz <- sum(k)
 		}
 		
-		usenarm = TRUE
-		test <- try( apply(rbind(1:9), 1, fun, na.rm=FALSE), silent=TRUE )
-		if (inherits(test, "try-error")) {
-			test <- try( apply(rbind(1:9), 1, fun), silent=TRUE )
-			if (!inherits(test, "try-error")) {
-				usenarm = FALSE
-			}
+		usenarm <- TRUE
+		test <- apply(rbind(1:prod(w)), 1, fun, ...)
+
+		nl <- nlyr(x)
+		outnl <- nl * length(test)
+		transp <- FALSE
+		nms <- NULL
+		if (isTRUE(nrow(test) > 1)) {
+			transp <- TRUE
+			nms <- rownames(test)
+		} else if (isTRUE(ncol(test) > 1)) {
+			nms <- colnames(test)
 		}
 		
+		out <- rast(x, nlyr=outnl)
+		if (!is.null(nms)) {
+			names(out) <- nms
+		}
+		b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
+		
 		for (i in 1:b$n) {
-			v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+			vv <- NULL
+			for (j in 1:nl) {
+				if (nl > 1) {
+					v <- x[[j]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+				} else {
+					v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+				}
+				if (dow) {
+					if (any(is.na(m))) {
+						v <- v[k] * mm
+					} else {
+						v <- v * m
+					}
+				}
+				v <- matrix(v, ncol=msz, byrow=TRUE)
+				v <- apply(v, 1, fun, ...)
+				if (transp) {
+					v <- t(v)
+				}
+
+				if (na.only) {
+					vv <- readValues(x, b$row[i], b$nrows[i])
+					j <- !is.na(vv)
+					v[j] <- vv[j]
+				}
+				if (nl > 1) {
+					if (outnl > 1) {
+						vv <- rbind(vv, v)
+					} else {
+						vv <- c(vv, v)
+					}
+				}
+			}
+			#if (bip) {
+			#	v <- matrix(as.vector(v), ncol=ncol(v), byrow=TRUE)
+			#}
+			if (nl > 1) {
+				writeValues(out, vv, b$row[i], b$nrows[i])
+			} else {
+				writeValues(out, v, b$row[i], b$nrows[i])			
+			}
+		}
+		out <- writeStop(out)
+		return(out)
+	}
+}
+)
+
+
+setMethod("focalCpp", signature(x="SpatRaster"), 
+function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+
+	if (!(all(c("ni", "nw") %in% names(formals(fun))))) {
+		error("focalRaw", 'fun must have an argument "ni"')
+	}
+
+	if (!is.numeric(w)) {
+		error("focal", "w should be numeric vector or matrix")	
+	}
+	if (is.matrix(w)) {
+		m <- as.vector(t(w))
+		w <- dim(w)
+	} else {
+		w <- rep_len(w, 2)
+		stopifnot(all(w > 0))
+		m <- rep(1, prod(w))
+	}
+
+	msz <- prod(w)
+	readStart(x)
+	on.exit(readStop(x))
+	dow <- !isTRUE(all(m == 1))
+	if (any(is.na(m))) {
+		k <- !is.na(m)
+		mm <- m[k]
+		msz <- sum(k)
+	}
+
+	test <- fun(1:msz, ..., ni=1, nw=msz)
+	nl <- nlyr(x)
+	outnl <- nl * length(test)
+
+	if (is.null(wopt$names )) {
+		wopt$names <- colnames(test)
+	}
+
+	out <- rast(x, nlyr=outnl)
+	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
+
+	nc <- ncol(out)
+	for (i in 1:b$n) {
+		vv <- NULL
+		for (j in 1:nl) {
+			if (nl > 1) {
+				v <- x[[j]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+			} else {
+				v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+			}
 			if (dow) {
 				if (any(is.na(m))) {
 					v <- v[k] * mm
@@ -75,21 +168,150 @@ function(x, w=3, fun="sum", na.rm=TRUE, na.only=FALSE, fillvalue=NA, expand=FALS
 					v <- v * m
 				}
 			}
-			v <- matrix(v, ncol=msz, byrow=TRUE)
-			if (usenarm) {
-				v <- apply(v, 1, fun, na.rm=na.rm)
-			} else {
-				v <- apply(v, 1, fun)			
+			v <- fun(v, ..., ni=b$nrows[i]*nc, nw=msz)	
+			if (nl > 1) {
+				if (outnl > 1) {
+					vv <- rbind(vv, v)
+				} else {
+					vv <- c(vv, v)
+				}
 			}
-			if (na.only) {
-				vv <- readValues(x, b$row[i], b$nrows[i])
-				j <- !is.na(vv)
-				v[j] <- vv[j]
-			}
-			writeValues(out, v, b$row[i], b$nrows[i])
 		}
-		out <- writeStop(out)
-		return(out)
+		if (nl > 1) {
+			writeValues(out, vv, b$row[i], b$nrows[i])
+		} else {
+			writeValues(out, v, b$row[i], b$nrows[i])			
+		}
 	}
+	out <- writeStop(out)
+	return(out)
 }
 )
+
+
+
+
+setMethod("focalReg", signature(x="SpatRaster"), 
+function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
+
+	ols <- function(x, y) {
+		v <- cbind(y, x)
+		X <- cbind(1, v[,-1])
+		XtX <- t(X) %*% X
+		if (det(XtX) == 0) {
+			return(NA)
+		}
+		invXtX <- solve(XtX) %*% t(X)
+		invXtX %*% v[,1]
+	}
+
+	ols_narm <- function(x, y) {
+		v <- na.omit(cbind(y, x))
+		if (nrow(v) < (NCOL(x) + 1)) {
+			return(NA)
+		}
+		X <- cbind(1, v[,-1])
+		XtX <- t(X) %*% X
+		if (det(XtX) == 0) {
+			return(NA)
+		}
+		invXtX <- solve(XtX) %*% t(X)
+		invXtX %*% v[,1]
+	}
+
+	nl <- nlyr(x)
+	if (nl < 2) error("focalReg", "x must have at least 2 layers")
+
+	if (!is.numeric(w)) {
+		error("focal", "w should be numeric vector or matrix")	
+	}
+	if (is.matrix(w)) {
+		m <- as.vector(t(w))
+		w <- dim(w)
+	} else {
+		w <- rep_len(w, 2)
+		stopifnot(all(w > 0))
+		m <- rep(1, prod(w))
+	}
+	msz <- prod(w)
+	dow <- !isTRUE(all(m == 1))
+	isnam <- FALSE
+	if (any(is.na(m))) {
+		k <- !is.na(m)
+		mm <- m[k]
+		msz <- sum(k)
+		isnam <- TRUE
+	}
+	out <- rast(x)
+
+	if (na.rm) {
+		fun = function(x, y) {
+			x <- try(ols_narm(x, y), silent=TRUE)
+		}
+		#fun = ols_narm
+	} else {
+		fun = function(x, y) try(ols(x, y), silent=TRUE)		
+		#fun = ols
+	}
+	names(out) <- paste0("B", 0:(nl-1))
+	b <- writeStart(out, filename, n=msz*4, ...)
+	ry <- x[[1]]
+	rx <- x[[-1]]
+
+	if (nl == 2) {
+		for (i in 1:b$n) {
+			Y <- focalValues(ry, w, b$row[i]-1, b$nrows[i], fillvalue)
+			X <- focalValues(rx, w, b$row[i]-1, b$nrows[i], fillvalue)
+			if (dow) {
+				if (isnam) {
+					Y <- Y[k] * mm
+					X <- X[k] * mm
+				} else {
+					Y <- Y * m
+					X <- X * m
+				}
+			}
+			v <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,])))
+			writeValues(out, v, b$row[i], b$nrows[i])		
+		}
+	} else {
+
+		for (i in 1:b$n) {
+			Y <- focalValues(ry, w, b$row[i]-1, b$nrows[i], fillvalue)
+			if (dow) {
+				if (isnam) {
+					Y <- Y[k] * mm
+				} else {
+					Y <- Y * m
+				}
+			}
+			X <- list()
+			for (j in 1:(nl-1)) {
+				X[[j]] <- focalValues(rx[[j]], w, b$row[i]-1, b$nrows[i], fillvalue)
+				if (dow) {
+					if (any(is.na(m))) {
+						X[[j]] <- X[[j]][k] * mm
+					} else {
+						X[[j]] <- X[[j]] * m
+					}
+				}
+			}
+			v <- list()
+			for (p in 1:nrow(Y)) {
+				xlst <- list()
+				for (j in 1:(nl-1)) {
+					xlst[[j]] <- X[[j]][p,]
+				}
+				pX <- do.call(cbind, xlst)
+				v[[p]] <- fun(pX, Y[p,])
+			}
+			v <- t(do.call(cbind, v))
+			writeValues(out, v, b$row[i], b$nrows[i])		
+		}
+	}
+	
+	out <- writeStop(out)
+	return(out)
+}
+)
+

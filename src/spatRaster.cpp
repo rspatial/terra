@@ -20,6 +20,7 @@
 #include "file_utils.h"
 #include "spatTime.h"
 #include "recycle.h"
+#include "vecmath.h"
 
 #include <set>
 
@@ -28,35 +29,35 @@
 #endif
 
 
-SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname) {
+SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options) {
 #ifdef useGDAL
-	constructFromFile(fname, subds, subdsname);
+	constructFromFile(fname, subds, subdsname, options);
 #endif
 }
 
 
-SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<size_t> xyz) {
-// argument "x" is ignored. It is only there to have four arguments such that the 	 module
+SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> options, std::vector<size_t> x) {
+// argument "x" is ignored. It is only there to have four arguments such that the  module
 // can distinguish this constructor from another with three arguments. 
 #ifdef useGDAL
 	if (multi) {
-		constructFromFileMulti(fname[0], subdsname[0], xyz);
+		constructFromFileMulti(fname[0], subdsname[0], x);
 		return;
 	}
 
-	if (!constructFromFile(fname[0], subds, subdsname)) {
+	if (!constructFromFile(fname[0], subds, subdsname, options)) {
 		setError("cannot open file: " + fname[0]);
 		return;
 	}
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
-		bool ok = r.constructFromFile(fname[i], subds, subdsname);
+		bool ok = r.constructFromFile(fname[i], subds, subdsname, options);
 		if (r.msg.has_warning) {
 			addWarning(r.msg.warnings[0]);	
 		}
 
 		if (ok) {
-			addSource(r);
+			addSource(r, false);
 			if (r.msg.has_error) {
 				setError(r.msg.error);
 				return;
@@ -106,6 +107,7 @@ SpatRaster::SpatRaster() {
 
 	s.hasRange = { false };
 	s.hasValues = false;
+	s.valueType = { 0 };
 	s.layers.resize(1, 0);
 	s.datatype = "";
 	s.names = {"lyr.1"};
@@ -114,6 +116,21 @@ SpatRaster::SpatRaster() {
 	setSource(s);
 }
 
+/*
+SpatRaster SpatRaster::dropSource() {
+	SpatRaster out = geometry();
+	out.source.resize(0);
+	return out;
+}
+*/
+
+bool SpatRaster::hasValues() { 
+//	if (source.size() == 0) {
+//		return false;
+//	} else {
+	return source[0].hasValues ; 
+//	}
+}
 
 
 SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::string crs) {
@@ -127,6 +144,7 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	s.extent.ymax = ext[3];
 	s.hasValues = false;
 	s.hasRange = {false};
+	s.valueType = { 0 };
 
 	s.memory = true;
 	s.filename = "";
@@ -169,6 +187,8 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	//s.driver = "";
 	s.nlyr = nl;
 	s.hasRange = { false };
+	s.valueType = { 0 };
+	
 	s.layers.resize(1, 0);
 	//s.layers.resize(1, _nlyr);
 	//std::iota(s.layers.begin(), s.layers.end(), 0);
@@ -209,7 +229,7 @@ SpatRaster::SpatRaster(const SpatRaster &r) {
 
 
 
-SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time) {
+SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool units) {
 	SpatRasterSource s;
 	//s.values.resize(0);
 	s.nrow = nrow();
@@ -236,6 +256,10 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time) {
 			s.hasTime = true;
 			s.timestep = getTimeStep();
 			s.time = getTime();
+		}
+		if (units && hasUnit()) {
+			s.hasUnit = true;
+			s.unit = getUnit();
 		}
 	} else {
 		for (size_t i=0; i < s.nlyr; i++) {
@@ -273,8 +297,8 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 		return(out);
 	}
 	SpatExtent e = getExtent();
-	unsigned nc = ceil((e.xmax-e.xmin) / xres);
-	unsigned nr = ceil((e.ymax-e.ymin) / yres);
+	unsigned nc = round((e.xmax-e.xmin) / xres);
+	unsigned nr = round((e.ymax-e.ymin) / yres);
 	double xmax = e.xmin + nc * xres;
 	double ymax = e.ymin + nr * yres;
 	unsigned nl = nlyr();
@@ -330,6 +354,14 @@ std::vector<bool> SpatRaster::hasRange() {
 		x.insert(x.end(), source[i].hasRange.begin(), source[i].hasRange.end());
 	}
 	return(x);
+}
+
+std::vector<int> SpatRaster::valueType() {
+	std::vector<int> d;
+	for (size_t i=0; i<source.size(); i++) {
+		d.insert(d.end(), source[i].valueType.begin(), source[i].valueType.end());
+	}
+	return(d);
 }
 
 std::vector<double> SpatRaster::range_min() {
@@ -409,7 +441,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 		if (i == 0) {
 			out.setSource(rs.source[0]);
 		} else {
-			out.addSource(rs);
+			out.addSource(rs, false);
 		}
 	}
 	return out;
@@ -578,11 +610,11 @@ std::vector<double> SpatRaster::getNAflag() {
 
 
 bool SpatRaster::hasTime() {
-	bool test = true;
-	for (size_t i=0; i<source.size(); i++) {
-		test = test & source[i].hasTime; 
+	bool test = source[0].hasTime; 
+	for (size_t i=1; i<source.size(); i++) {
+		test = test && source[i].hasTime; 
 	}
-	return(test);
+	return test;
 }
 
 /*
@@ -596,12 +628,28 @@ std::vector<double> SpatRaster::getTimeDbl() {
 }
 */
 
-std::vector<std::string> SpatRaster::getTimeStr() {
+std::vector<std::string> SpatRaster::getTimeStr(bool addstep) {
 	std::vector<std::string> out;
+	std::vector<int_64> time = getTime();
+	out.reserve(time.size()+addstep);
+	if (addstep) out.push_back(source[0].timestep);
 	if (source[0].timestep == "seconds") {
-		std::vector<int_64> time = getTime();
-		out.reserve(time.size());
-		for (size_t i=0; i < out.size(); i++) {
+		for (size_t i=0; i < time.size(); i++) {
+			std::vector<int> x = get_date(time[i]);
+			if (x.size() > 2) {
+				out.push_back( std::to_string(x[0]) + "-" 
+						  + std::to_string(x[1]) + "-"
+						  + std::to_string(x[2]) + " "
+						  + std::to_string(x[3]) + ":"
+						  + std::to_string(x[4]) + ":"
+						  + std::to_string(x[5]) );
+						  
+			} else {
+				out.push_back("");
+			}
+		}
+	} else if (source[0].timestep == "days") {
+		for (size_t i=0; i < time.size(); i++) {
 			std::vector<int> x = get_date(time[i]);
 			if (x.size() > 2) {
 				out.push_back( std::to_string(x[0]) + "-" 
@@ -612,7 +660,11 @@ std::vector<std::string> SpatRaster::getTimeStr() {
 				out.push_back("");
 			}
 		}
-	} 
+	} else {
+		for (size_t i=0; i < time.size(); i++) {
+			out.push_back( std::to_string(time[i]));
+		}
+	}
 	return out;
 }
 
@@ -635,6 +687,16 @@ std::string SpatRaster::getTimeStep() {
 }
 
 bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
+
+	if (time.size() == 0 || step == "remove") { 
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].time = std::vector<int_64> (source[i].nlyr);
+			source[i].timestep = "";
+			source[i].hasTime = false;
+		}
+		return true;
+	}
+
 	if (time.size() != nlyr()) {
 		return false;
 	} 
@@ -670,6 +732,14 @@ std::vector<double> SpatRaster::getDepth() {
 
 
 bool SpatRaster::setDepth(std::vector<double> depths) {
+
+	if (depths.size() == 0) {
+		for (size_t i=0; i<source.size(); i++)	{
+			source[i].depth = std::vector<double>(source[i].nlyr);
+		}
+		return true;
+	}
+
 	if (depths.size() == 1) {
         for (size_t i=0; i<source.size(); i++)	{
             source[i].depth = std::vector<double> (source[i].nlyr, depths[0]);
@@ -694,6 +764,7 @@ bool SpatRaster::setUnit(std::vector<std::string> units) {
 	if (units.size() == 1) {
         for (size_t i=0; i<source.size(); i++)	{
             source[i].unit = std::vector<std::string> (source[i].nlyr, units[0]);
+			source[i].hasUnit = true;
         }
         return true;
 	} else if (units.size() != nlyr()) {
@@ -703,10 +774,19 @@ bool SpatRaster::setUnit(std::vector<std::string> units) {
         for (size_t i=0; i<source.size(); i++)	{
             size_t end = begin + source[i].nlyr;
             source[i].unit = std::vector<std::string> (units.begin() + begin, units.begin() + end);
-            begin = end;
+            source[i].hasUnit = true;
+			begin = end;
         }
         return true;
 	}
+}
+
+bool SpatRaster::hasUnit() {
+	bool test = source[0].hasUnit; 
+	for (size_t i=1; i<source.size(); i++) {
+		test = test && source[i].hasUnit; 
+	}
+	return test;
 }
 
 
@@ -868,7 +948,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
-	if (!out.compare_geom(x, false, true)) {
+	if (!out.compare_geom(x, false, true, opt.get_tolerance())) {
 		return(out);
 	}
 	SpatOptions fopt(opt);
@@ -883,27 +963,27 @@ SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
 		lyrs.resize(n-1);
 		std::iota(lyrs.begin(), lyrs.end(), 1);
 		SpatRaster r = subset(lyrs, fopt);
-		out.addSource(r);
+		out.addSource(r, false);
 	} else if (layer == n-1) {
 		lyrs.resize(n-1);
 		std::iota(lyrs.begin(), lyrs.end(), 0);
 		out = subset(lyrs, fopt);
-		out.addSource(x);
+		out.addSource(x, false);
 	} else {
 		lyrs.resize(layer);
 		std::iota(lyrs.begin(), lyrs.end(), 0);
 		out = subset(lyrs, fopt);
-		out.addSource(x);
+		out.addSource(x, false);
 		lyrs.resize(n-layer-1);
 		std::iota(lyrs.begin(), lyrs.end(), layer+1);
 		SpatRaster r = subset(lyrs, fopt);
-		out.addSource(r);
+		out.addSource(r, false);
 	}
 	return out;
 }
 
 
-SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions opt) {
+SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions &opt) {
 
 	if (!hasValues()) {
 		SpatRaster out;
@@ -924,7 +1004,7 @@ SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions opt) {
 	std::vector<std::vector<double>> rcl(2);
 	rcl[0] = u[0];
 	rcl[1] = id;
-	r = r.reclassify(rcl, true, true, true, fopt);
+	r = r.reclassify(rcl, true, true, true, false, fopt);
 
 	std::vector<std::string> s(id.size());
 	for (size_t i=0; i<s.size(); i++) {
@@ -941,12 +1021,11 @@ SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions opt) {
 
 
 
-bool SpatRaster::createCategories(unsigned layer) {
+bool SpatRaster::createCategories(unsigned layer, SpatOptions &opt) {
 	if (layer > (nlyr()-1)) { 
 		setError("invalid layer number");
 		return(false);
 	}
-	SpatOptions opt;
 	std::vector<unsigned> lyrs(1, layer);
 	SpatRaster r = subset(lyrs, opt);
 	std::vector<std::vector<double>> u = r.unique(false, opt);
@@ -981,6 +1060,13 @@ std::vector<bool> SpatRaster::hasCategories() {
 	return b;
 }
 
+bool SpatRaster::isRat() {
+	if ((nlyr() == 1) && source[0].hasCategories[0]) {
+		return source[0].cats[0].vat;
+	}
+	return false;
+}
+
 
 
 bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
@@ -997,8 +1083,11 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 	} 
 
 	SpatCategories cats;
+	std::vector<long> ids(labels.size());
+	std::iota(ids.begin(), ids.end(), 0);
+	cats.d.add_column(ids, "ID");
 	cats.d.add_column(labels, "category");
-	cats.index = 0;
+	cats.index = 1;
 
 	if (source[sl[0]].cats.size() <= sl[1]) {
 		source[sl[0]].cats.resize(sl[1]+1);
@@ -1011,7 +1100,7 @@ bool SpatRaster::setLabels(unsigned layer, std::vector<std::string> labels) {
 
 
 
-bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) {
+bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index, bool is_vat) {
 
 	if (layer > (nlyr()-1)) { 
 		setError("invalid layer number");
@@ -1021,13 +1110,15 @@ bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index) 
     std::vector<unsigned> sl = findLyr(layer);
 
 	if (d.nrow() > 256) {
-		d.resize_rows(256);
+		is_vat = true;
+		//	d.resize_rows(256);
 	} 
 
 	SpatCategories cats;
 	cats.d = d;
 	cats.index = index;
-
+	cats.vat = is_vat;
+	
 	if (source[sl[0]].cats.size() < sl[1]) {
 		source[sl[0]].cats.resize(sl[1]);
 	}
@@ -1126,91 +1217,6 @@ int SpatRaster::getCatIndex(unsigned layer) {
 }
 
 
-
-/*
-void SpatRaster::createAttributes(unsigned layer) {
-	// subset to layer
-	SpatOptions opt;
-	std::vector<unsigned> lyrs(1, layer);
-	SpatRaster r = subset(lyrs, opt);
-	std::vector<std::vector<double>> u = r.unique(false, opt);
-    std::vector<unsigned> sl = findLyr(layer);
-	SpatDataFrame df;
-	std::string name = "ID";
-	df.add_column(u[0], name);			
-
-	source[sl[0]].atts[sl[1]] = df;
-	source[sl[0]].hasAttributes[sl[1]] = true;
-}
-
-
-std::vector<bool> SpatRaster::hasAttributes() {
-	std::vector<bool> b(nlyr());
-	std::vector<unsigned> ns = nlyrBySource();
-	unsigned k = 0;
-	for (size_t i=0; i<source.size(); i++) {
-		for (size_t j=0; j<ns[i]; j++) {
-			b[k] = source[i].hasAttributes[j];
-			k++;
-		}
-	}
-	return b;
-}
-
-
-
-void SpatRaster::setAttributes(unsigned layer, SpatDataFrame df) {
-    std::vector<unsigned> sl = findLyr(layer);
-	if (source[sl[0]].atts.size() < (sl[1]+1)) {
-		source[sl[0]].atts.resize(sl[1]+1);
-	}
-	if (source[sl[0]].hasAttributes.size() < (sl[1]+1)) {
-		source[sl[0]].hasAttributes.resize(sl[1]+1);
-	}
-	source[sl[0]].atts[sl[1]] = df;
-	source[sl[0]].hasAttributes[sl[1]] = true;
-}
-
-
-SpatDataFrame SpatRaster::getLayerAttributes(unsigned layer) {
-    std::vector<unsigned> sl = findLyr(layer);
-	SpatDataFrame att = source[sl[0]].atts[sl[1]];
-	return att;
-}
-
-std::vector<SpatDataFrame> SpatRaster::getAttributes() {
-	std::vector<SpatDataFrame> atts;
-	for (size_t i=0; i<source.size(); i++) {
-		atts.insert(atts.end(), source[i].atts.begin(), source[i].atts.end());
-	}
-	return atts;
-}
-
-
-std::vector<int> SpatRaster::getAttrIndex() {
-	std::vector<int> idx;
-	for (size_t i=0; i<source.size(); i++) {
-		idx.insert(idx.end(), source[i].attsIndex.begin(), source[i].attsIndex.end());
-	}
-	return idx;
-}
-
-bool SpatRaster::setAttrIndex(size_t layer, int i) {
-    std::vector<unsigned> sl = findLyr(layer);
-	if (source[sl[0]].hasAttributes.size() < (sl[1]+1)) {
-		return false;
-	} else if (!source[sl[0]].hasAttributes[sl[1]]) {
-		return false;
-	}
-	if (source[sl[0]].attsIndex.size() < (sl[1]+1)) {
-		source[sl[0]].attsIndex.resize(sl[1]+1);
-	}
-	int nc = source[sl[0]].atts[sl[1]].ncol();
-	i = i < nc ? i : -1;
-	source[sl[0]].attsIndex[sl[1]] = i < -1 ? -1 : i;
-	return true;
-}
-*/
 
 std::vector<SpatDataFrame> SpatRaster::getColors() {
 	std::vector<SpatDataFrame> cols;
@@ -1332,7 +1338,7 @@ std::vector<double> SpatRaster::cellFromRowCol(std::vector<int_64> row, std::vec
 	int_64 nr = nrow();
 	int_64 nc = ncol();
 	for (size_t i=0; i<n; i++) {
-		result[i] = (row[i]<0 || row[i] >= nr || col[i]<0 || col[i] >= nc) ? NAN : row[i] * nc + col[i];
+		result[i] = (row[i]<0 || row[i] >= nr || col[i]<0 || col[i] >= nc) ? NAN : (double)row[i] * nc + col[i];
 	}
 	return result;
 }
@@ -1719,13 +1725,13 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 	unsigned nl = nlyr();
 	for (size_t i = 0; i < bs.n; i++) {
 		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-        size_t off1 = (bs.row[i] * nc);
+         size_t off1 = (bs.row[i] * nc);
  		size_t vnc = bs.nrows[i] * nc;
 		if (narm) {
 			for (size_t j=0; j<vnc; j++) {
 				bool foundna = false;
 				for (size_t lyr=0; lyr<nl; lyr++) {
-                    size_t off2 = lyr*nc;
+                    size_t off2 = lyr*vnc;
                     if (std::isnan(v[off2+j])) {
                         foundna = true;
                         continue;
@@ -1739,7 +1745,7 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
                 g.parts.resize(0);
                 if (values) {
                     for (size_t lyr=0; lyr<nl; lyr++) {
-                        unsigned off2 = lyr*nc;
+                        unsigned off2 = lyr*vnc;
                         pv.df.dv[lyr].push_back(v[off2+j]);
                     }
                 }
@@ -1751,10 +1757,10 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
                 g.addPart(p);
                 pv.addGeom(g);
                 g.parts.resize(0);
-                for (size_t lyr=0; lyr<nl; lyr++) {
-                    unsigned off2 = lyr*nc;
-                    pv.df.dv[lyr].push_back(v[off2+j]);
-                }
+			}
+            for (size_t lyr=0; lyr<nl; lyr++) {
+				size_t off2 = lyr*vnc;
+				pv.df.dv[lyr] = std::vector<double>(v.begin()+off2, v.begin()+off2+vnc);
 			}
 		}
 	}
@@ -1868,7 +1874,7 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	unsigned nl = nlyr();
 	unsigned nc = ncell();
 	if (values) {
-		std::vector<double> v = getValues();
+		std::vector<double> v = getValues(-1, opt);
 		std::vector<std::string> nms = getNames();
 		make_unique_names(nms);
 		for (size_t i=0; i<nl; i++) {
@@ -1925,10 +1931,9 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 }
 
 
-SpatVector SpatRaster::as_lines() {
+SpatVector SpatRaster::as_lines(SpatOptions &opt) {
 
 	SpatVector vect;
-	SpatOptions opt;
 	opt.ncopies = 12;
 	if (!canProcessInMemory(opt)) {
 		if (ncell() > 1000000) { // for testing with canPIM=false
@@ -1979,15 +1984,21 @@ SpatVector SpatRaster::as_lines() {
 
 
 
-bool SpatRaster::setRGB(int r, int g, int b) {
-	size_t mxlyr = std::max(std::max(r, g), b);
+bool SpatRaster::setRGB(int r, int g, int b, int alpha) {
+	std::vector<int> channels;
+	if (alpha >= 0) {
+		channels = {r, g, b, alpha};
+	} else {
+		channels = {r, g, b};
+	}
+	size_t mxlyr = vmax( channels, false );
 	if (nlyr() <= mxlyr) {
 		//addWarning("layer number for R, G, B, cannot exceed the number of layers");		
 		return false;
 	} else {
-		size_t mnlyr = std::min(std::min(r, g), b);
+		size_t mnlyr =  vmin( channels, false );;
 		if (mnlyr >= 0) {
-			rgblyrs = {r, g, b};
+			rgblyrs = channels;
 			rgb = true;
 		} else {
 			rgb = false;
@@ -2008,7 +2019,7 @@ void SpatRaster::removeRGB(){
 
 
 
-bool SpatRaster::to_memory() {
+bool SpatRaster::to_memory(SpatOptions &opt) {
 	if ((nsrc() == 1) & (source[0].memory)) {
 		return true;
 	}
@@ -2018,17 +2029,29 @@ bool SpatRaster::to_memory() {
 	s.memory = true;
 	s.names = getNames();
 	s.driver = "memory";
-	source[0].values = getValues();
+	source[0].values = getValues(-1, opt);
 	return true;
 }
 
 
-SpatRaster SpatRaster::to_memory_copy() {
+SpatRaster SpatRaster::to_memory_copy(SpatOptions &opt) {
 	SpatRaster m = geometry();
-	SpatOptions opt;
-	std::vector<double> v = getValues();
+	std::vector<double> v = getValues(-1, opt);
 	m.setValues(v, opt);
 	return m;
+}
+
+
+std::vector<int> SpatRaster::getFileBlocksize() {
+	std::vector<int> b;
+	for (size_t i=0; i<source.size(); i++) {
+		b.insert(b.end(), source[i].blockrows.begin(), source[i].blockrows.end());
+	}
+	for (size_t i=0; i<source.size(); i++) {
+		b.insert(b.end(), source[i].blockcols.begin(), source[i].blockcols.end());
+	}
+	return b;
+
 }
 
 

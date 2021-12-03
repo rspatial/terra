@@ -47,7 +47,7 @@ lines(v)
 contour(r, filled=TRUE, nlevels=5)
 
 ## if you want a SpatVector with contour lines
-#template <- disaggregate(rast(r), 10)
+#template <- disagg(rast(r), 10)
 #rr <- resample(r, template)
 #rr <- floor(rr/100) * 100
 #v <- as.polygons(rr)

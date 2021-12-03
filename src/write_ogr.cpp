@@ -16,11 +16,13 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 #include "spatVector.h"
+#include "string_utils.h"
 
 #ifdef useGDAL
 
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
+
 
 /*
 bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	message) {
@@ -175,9 +177,9 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 }
 */
 
+//#include "Rcpp.h"
 
-
-GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
+GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
 
 
     GDALDataset *poDS = NULL;
@@ -187,8 +189,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
 			return(poDS);
 		}
+		if (nrow() == 0) {
+			setError("no geometries to write");
+			return(poDS);		
+		}
 	}
-
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
     if( poDriver == NULL )  {
         setError( driver + " driver not available");
@@ -229,6 +234,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	if (s != "") {
 		SRS = new OGRSpatialReference;
 		OGRErr err = SRS->SetFromUserInput(s.c_str()); 
+#if GDAL_VERSION_NUM >= 2050000
+		SRS->SetAxisMappingStrategy(OAMS_TRADITIONAL_GIS_ORDER);
+#endif
 		if (err != OGRERR_NONE) {
 			setError("crs error");
 			delete SRS;
@@ -237,7 +245,18 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	}
 
     OGRLayer *poLayer;
-    poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, NULL );
+	char** papszOptions = NULL;
+	if (options.size() > 0) {
+		for (size_t i=0; i<options.size(); i++) {
+			std::vector<std::string> gopt = strsplit(options[i], "=");
+			if (gopt.size() == 2) {
+				papszOptions = CSLSetNameValue(papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+			}
+		}
+		// papszOptions = CSLSetNameValue( papszOptions, "ENCODING", "UTF-8" );
+    }
+	poLayer = poDS->CreateLayer(lyrname.c_str(), SRS, wkb, papszOptions);
+	CSLDestroy(papszOptions);
     if( poLayer == NULL ) {
         setError( "Layer creation failed" );
         return poDS;
@@ -324,7 +343,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 // polygons		
 		} else if (wkb == wkbMultiPolygon) {
 			SpatGeom g = getGeom(i);
-			OGRPolygon poGeom;
+			OGRMultiPolygon poGeom;
 			for (size_t j=0; j<g.size(); j++) {
 				OGRLinearRing poRing;
 				SpatPart p = g.getPart(j);
@@ -335,7 +354,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 						poRing.setPoint(k, &pt);
 					}
 				}
-				if (poGeom.addRing(&poRing) != OGRERR_NONE ) {
+				OGRPolygon polyGeom;
+				if (polyGeom.addRing(&poRing) != OGRERR_NONE ) {
 					setError("cannot add ring");
 					return poDS;
 				}
@@ -349,14 +369,17 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 							pt.setY(hole.y[k]);
 							poHole.setPoint(k, &pt);
 						}					
-						if (poGeom.addRing(&poHole) != OGRERR_NONE ) {
+						if (polyGeom.addRing(&poHole) != OGRERR_NONE ) {
 							setError("cannot add hole");
 							return poDS;
 						}
 					}
 				}
+				poGeom.addGeometry( &polyGeom);
 				//closeRings
 			}
+			
+			//OGRMultiPolygon* mGeom = poGeom.toMultiPolygon();	
 			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
 				setError("cannot set geometry");
 				return poDS;
@@ -380,9 +403,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 
-bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite) {
+bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
 
-	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite);
+	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite, options);
     if (poDS != NULL) GDALClose( poDS );
 	if (hasError()) {
 		return false;
@@ -392,7 +415,111 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 }
 
 GDALDataset* SpatVector::GDAL_ds() {
-	return write_ogr("", "layer", "Memory", true);
+	return write_ogr("", "layer", "Memory", true, std::vector<std::string>());
+}
+
+
+#include <fstream>
+
+bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions &opt) {
+// filename is here "raster.tif"
+// to write "raster.tif.vat.dbf"
+
+	if (filename != "") {
+		if (file_exists(filename) & (!overwrite)) {
+			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
+			return(false);
+		}
+		if (nrow() == 0) {
+			setError("nothing to write");
+			return(false);		
+		}
+	}
+
+	std::string fbase = tempFile(opt.get_tempdir(), "");
+	std::string f = fbase + ".shp";
+    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( "ESRI Shapefile" );
+    GDALDataset *poDS = NULL;
+    poDS = poDriver->Create(f.c_str(), 0, 0, 0, GDT_Unknown, NULL );
+    if( poDS == NULL ) {
+        setError("Creation of output dataset failed" );
+        return false;
+    }
+
+	OGRwkbGeometryType wkb = wkbPoint;
+	OGRSpatialReference *SRS = NULL;
+    OGRLayer *poLayer;
+    poLayer = poDS->CreateLayer("dbf", SRS, wkb, NULL );
+    if( poLayer == NULL ) {
+        setError( "Layer creation failed" );
+        return false;
+    }
+	std::vector<std::string> nms = get_names();
+	std::vector<std::string> tps = get_datatypes();
+	OGRFieldType otype;
+	int nfields = nms.size();
+
+	for (int i=0; i<nfields; i++) {
+		if (tps[i] == "double") {
+			otype = OFTReal;
+		} else if (tps[i] == "long") {
+			otype = OFTInteger64;
+		} else {
+			otype = OFTString;
+		}
+
+		OGRFieldDefn oField(nms[i].c_str(), otype);
+		if (otype == OFTString) {
+			oField.SetWidth(32); // needs to be computed
+		}
+		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
+			setError( "Field creation failed for: " + nms[i]);
+			return false;
+		}
+	}
+
+	for (size_t i=0; i<nrow(); i++) {
+	
+		OGRFeature *poFeature;
+        poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
+		for (int j=0; j<nfields; j++) {
+			if (tps[j] == "double") {
+				poFeature->SetField(j, getDvalue(i, j));
+			} else if (tps[j] == "long") {
+				poFeature->SetField(j, (GIntBig) getIvalue(i, j));
+			} else {
+				poFeature->SetField(j, getSvalue(i, j).c_str());
+			}
+		}
+
+		OGRPoint pt;
+		pt.setX( 0.0 );
+		pt.setY( 0.0 );
+		poFeature->SetGeometry( &pt );	
+	
+		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
+			setError("Failed to create feature");
+			return false;
+        }
+
+        OGRFeature::DestroyFeature( poFeature );
+    }
+    GDALClose( poDS );
+	f = fbase + ".dbf";
+	filename += ".vat.dbf";
+	// c++17 has file_copy
+    std::ifstream  src(f.c_str(), std::ios::binary);
+    std::ofstream  dst(filename.c_str(),  std::ios::binary);
+    dst << src.rdbuf();
+	
+	filename.erase(filename.length()-3);
+	filename += "cpg";
+	std::ofstream cpg;
+	cpg.open (filename.c_str());
+	cpg << "UTF-8";
+	cpg.close();
+	
+	return true;
 }
 
 

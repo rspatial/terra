@@ -34,6 +34,10 @@ std::string double_to_string(double x) {
 }
 
 
+void unquote(std::string &s) {
+	s.erase(std::remove(s.begin(), s.end(), '\"'), s.end());
+}
+
 
 std::vector<char *> string_to_charpnt(std::vector<std::string> s) {
 	size_t n = s.size();
@@ -151,6 +155,16 @@ std::vector<std::string> strsplit(std::string s, std::string delimiter){
 	return out;
 }
 
+std::vector<std::string> strsplit_first(std::string s, std::string delimiter){
+	std::vector<std::string> out;
+	size_t pos = 0;
+	if ((pos = s.find(delimiter)) != std::string::npos) {
+		out.push_back(s.substr(0, pos));
+		s.erase(0, pos + delimiter.length());
+	}
+	out.push_back(s);
+	return out;
+}
 
 std::vector<double> str2dbl(std::vector<std::string> s) {
 	std::vector<double> d (s.size());

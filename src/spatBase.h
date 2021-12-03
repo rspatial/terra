@@ -103,7 +103,8 @@ class SpatOptions {
 		std::string tempdir = "";
 		bool todisk = false;
 		double memfrac = 0.6;
-
+		double tolerance = 0.1;
+		
 	public:
 		unsigned ncopies = 4;
 		unsigned minrows = 1;
@@ -117,10 +118,12 @@ class SpatOptions {
 		double NAflag = NAN;
 		bool def_verbose = false;
 		bool verbose = false;
+		//bool append = false;
 		int statistics = 1;
 		bool datatype_set = false;
 		//bool ncdfcopy = false;
-
+		unsigned char value_type = 0;
+		
 		std::string datatype = "";
 		//std::string bandorder = "";
 		std::string filetype = "";
@@ -140,6 +143,8 @@ class SpatOptions {
 		void set_memfrac(double d);
 		std::string get_tempdir();
 		void set_tempdir(std::string d);
+		double get_tolerance();
+		void set_tolerance(double d);
 
 		std::string get_def_datatype();
 		std::string get_def_bandorder();
@@ -162,6 +167,7 @@ class SpatOptions {
 		void set_datatype(std::string d);
 		//void set_bandorder(std::string d);
 		void set_overwrite(bool b);
+		//void set_append(bool b);
 		void set_progress(unsigned p);
 		std::string get_filename();
 		std::vector<std::string> get_filenames();
@@ -174,6 +180,7 @@ class SpatOptions {
 		double get_NAflag();
 		bool has_NAflag(double &flag);
 		bool get_overwrite();
+		//bool get_append();
 		unsigned get_progress();
 		bool show_progress(unsigned n);
 		bool progressbar=true;

@@ -8,7 +8,7 @@ setMethod("ifel", signature(test="SpatRaster"),
 		no_num <- FALSE
 		yes_num <- FALSE
 		if (!inherits(no, "SpatRaster")) {
-							# logical includes default NA 
+			# logical includes default NA 
 			if (!(is.numeric(no) || is.logical(no))) { 
 				error("ifel", "argument 'no' must be a SpatRaster, numeric or logical")
 			}
@@ -28,7 +28,7 @@ setMethod("ifel", signature(test="SpatRaster"),
 		test <- as.logical(test)
 
 		if (no_num & yes_num) {
-			return (classify(test, rbind(c(1, yes), c(0, no))))
+			return (classify(test, rbind(c(1, yes), c(0, no)), filename=filename, ...))
 		}
 		
 		if (no_num) {

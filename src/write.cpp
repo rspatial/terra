@@ -101,8 +101,17 @@ bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
 }
 */
 
-bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
+bool SpatRaster::differentFilenames(std::vector<std::string> outf, bool &duplicates, bool &empty) {
 	std::vector<std::string> inf = filenames();
+	duplicates = false;
+	empty = false;
+	for (size_t j=0; j<outf.size(); j++) {
+		if (outf[j] == "") {
+			empty = true;
+			return false;
+		}
+	}
+
 	for (size_t i=0; i<inf.size(); i++) {
 		if (inf[i] == "") continue;
 		#ifdef _WIN32
@@ -115,6 +124,13 @@ bool SpatRaster::differentFilenames(std::vector<std::string> outf) {
 			if (inf[i] == outf[j]) return false;
 		}
 	}
+
+	size_t n = outf.size();
+	outf.erase(std::unique(outf.begin(), outf.end()), outf.end());
+	if (n > outf.size()) {
+		duplicates = true;
+		return false;
+	}
 	return true;
 }
 
@@ -126,7 +142,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 // a) the SpatRaster is backed by a file
 // b) there are no write options 
 
-	SpatRaster out = geometry(nlyr(), true);
+	SpatRaster out = geometry(nlyr(), true, true, true);
 	if (!hasValues()) {
 		out.setError("there are no cell values");
 		return out;
@@ -134,25 +150,27 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 
 	// recursive writing of layers
 	std::vector<std::string> fnames = opt.get_filenames();
-	if (!differentFilenames(fnames)) {
-		out.setError("source and target filename cannot be the same");
+	bool dups, empty;
+	if (!differentFilenames(fnames, dups, empty)) {
+		if (dups) {
+			out.setError("duplicate filenames");			
+		} else if (empty) {
+			out.setError("empty filename");			
+		} else {
+			out.setError("source and target filename cannot be the same");
+		}
 		return(out);
 	}
-
 
 	size_t nl = nlyr();
 	if (fnames.size() > 1) {
 		if (fnames.size() != nl) {
-			out.setError("the number of filenames should be 1 or equal to the number of layers");
+			out.setError("the number of filenames should either be one, or equal to the number of layers");
 			return out;
 		} else {
 			bool overwrite = opt.get_overwrite();
 			std::string errmsg;
 			for (size_t i=0; i<nl; i++) {
-				if (fnames[i] == "") {
-					out.setError("empty filename detected");
-					return(out);				
-				}
 				if (!can_write(fnames[i], overwrite, errmsg)) {
 					out.setError(errmsg + " (" + fnames[i] +")");
 					return(out);
@@ -164,8 +182,9 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 				if (out.hasError()) {
 					return out;
 				}
+				fnames[i] = out.source[0].filename;
 			}
-			SpatRaster out(fnames, {-1}, {""}, false, {});
+			SpatRaster out(fnames, {-1}, {""}, false, {}, {});
 			return out;
 		}	
 	} 
@@ -175,6 +194,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		return(out);
 	}
 
+	opt.ncopies = 2;
 	if (!out.writeStart(opt)) { 
 		readStop();
 		return out; 
@@ -281,6 +301,7 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 
 	if (source[0].driver == "gdal") {
 		#ifdef useGDAL
+
 		success = writeValuesGDAL(vals, startrow, nrows, startcol, ncols);
 		#else
 		setError("GDAL is not available");
@@ -368,7 +389,7 @@ bool SpatRaster::writeStop(){
 //}
 
 bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
-	SpatRaster g = geometry();
+	SpatRaster g = geometry(nlyr(), true, true, true);
 	SpatRasterSource s = g.source[0];
 	s.hasValues = true;
 	s.memory = true;
@@ -378,18 +399,26 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 
 	if (v.size() < g.size()) {
 		*this = init(v, opt);
-		return hasError();
+		return (!hasError());
 	} else if (v.size() == g.size()) {
+/*
 		if (!canProcessInMemory(opt)) { 
 		// this should be chunked to avoid the copy
 		// but this may still help in some cases
 			source[0].values = v;
+			std::string f = opt.get_filename();
+			if (f == "") {
+				std::string filename = tempFile(opt.get_tempdir(), ".tif");
+				opt.set_filenames({filename});
+			}	
 			*this = writeRaster(opt);
 			return true;
 		} else {
+*/
 			source[0].values = v;				
-		}
+//		}
 	} else {
+
 		setError("incorrect number of values");
 		return false;
 	}
@@ -397,9 +426,8 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 	return true;
 }
 
-void SpatRaster::setRange() {
+void SpatRaster::setRange(SpatOptions &opt) {
 
-	SpatOptions opts;
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].hasRange[0]) continue;
 
@@ -407,7 +435,7 @@ void SpatRaster::setRange() {
 			source[i].setRange();
 		} else {
 			SpatRaster r(source[i]);
-			SpatDataFrame x = r.global("range", true, opts);
+			SpatDataFrame x = r.global("range", true, opt);
 			source[i].range_min = x.getD(0);
 			source[i].range_max = x.getD(1);
 			source[i].hasRange = std::vector<bool>(source[i].hasRange.size(), true);

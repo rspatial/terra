@@ -1,10 +1,10 @@
-\name{copy}
+\name{deepcopy}
 
 \docType{methods}
 
-\alias{copy}
-\alias{copy,SpatRaster-method}
-\alias{copy,SpatVector-method}
+\alias{deepcopy}
+\alias{deepcopy,SpatRaster-method}
+\alias{deepcopy,SpatVector-method}
 
 
 \title{Deep copy}
@@ -14,9 +14,9 @@ Make a deep copy of a SpatRaster or SpatVector. This is occasionally useful when
 }
 
 \usage{
-\S4method{copy}{SpatRaster}(x)
+\S4method{deepcopy}{SpatRaster}(x)
 
-\S4method{copy}{SpatVector}(x)
+\S4method{deepcopy}{SpatVector}(x)
 }
 
 \arguments{
@@ -38,7 +38,7 @@ time(x) <- tm + 365
 time(x)
 time(r)
 
-y <- copy(r)
+y <- deepcopy(r)
 time(y) <- tm - 365
 time(y)
 time(r)

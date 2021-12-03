@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl GDAL stuff largely copied from rgdal, (c) Roger Bivand
-AC_INIT(src/write_ogr.cpp)
+AC_INIT
+AC_CONFIG_SRCDIR([src/write_ogr.cpp])
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -25,7 +26,7 @@ else
     if test [$RVER_MAJOR -lt 3] -o [$RVER_MAJOR -eq 3 -a $RVER_MINOR -lt 3]; then
         AC_MSG_ERROR([terra is not compatible with R versions before 3.3.0])
     else
-        if test [$RVER_MINOR -eq 3]; then
+        if test [$RVER_MAJOR -eq 3 -a $RVER_MINOR -eq 3]; then
             CXX11=`"${RBIN}" CMD config CXX1X`
             CXX11STD=`"${RBIN}" CMD config CXX1XSTD`
         else
@@ -55,8 +56,7 @@ GDAL_CONFIG="gdal-config"
 GDAL_CONFIG_SET="no"
 
 AC_ARG_WITH([gdal-config],
-    AC_HELP_STRING([--with-gdal-config=GDAL_CONFIG],
-           [the location of gdal-config]),
+    AS_HELP_STRING([--with-gdal-config=GDAL_CONFIG],[the location of gdal-config]),
            [gdal_config=$withval])
 if test [ -n "$gdal_config" ] ; then
     GDAL_CONFIG_SET="yes"
@@ -223,16 +223,14 @@ if test "${PROJ_GDAL_DATA_COPY}" ; then
     AC_MSG_NOTICE([PROJ_GDAL_DATA_COPY used.])
 else
     AC_ARG_WITH([data-copy],
-        AC_HELP_STRING([--with-data-copy=yes/no],
-               [local copy of data directories in package, default no]),
+        AS_HELP_STRING([--with-data-copy=yes/no],[local copy of data directories in package, default no]),
                [data_copy=$withval])
 fi
 if test "${data_copy}" = "yes" ; then
 AC_MSG_NOTICE([Copy data for:])
   proj_lib0="${PROJ_LIB}"
   AC_ARG_WITH([proj-data],
-    AC_HELP_STRING([--with-proj-data=DIR],
-                   [location of PROJ data directory]),
+    AS_HELP_STRING([--with-proj-data=DIR],[location of PROJ data directory]),
     [proj_lib1=$withval])
   if test -n "${proj_lib0}" ; then
     proj_lib="${proj_lib0}"
@@ -309,6 +307,15 @@ rm -fr errors.txt gdal_proj.cpp gdal_proj
 AC_MSG_NOTICE([GDAL: ${GDAL_VERSION}])
 
 
+# sqlite3
+AC_ARG_WITH([sqlite3-lib],
+    AS_HELP_STRING([--with-sqlite3-lib=LIB_PATH],[the location of sqlite3 libraries]),
+               [sqlite3_lib_path=$withval])
+if test [ -n "$sqlite3_lib_path" ] ; then
+    AC_SUBST([SQLITE3_LIBS], ["-L${sqlite3_lib_path}"])
+fi
+
+
 #
 # PROJ
 #
@@ -323,8 +330,7 @@ else
 fi
 
 AC_ARG_WITH([proj-include],
-    AC_HELP_STRING([--with-proj-include=DIR],
-                   [location of proj header files]),
+    AS_HELP_STRING([--with-proj-include=DIR],[location of proj header files]),
     [proj_include_path=$withval])
 if test [ -n "$proj_include_path" ] ; then
    AC_SUBST([PROJ_CPPFLAGS],["-I${proj_include_path}"])
@@ -340,8 +346,7 @@ fi
 # since we'll set PKG_CPPFLAGS with this, but that shouldn't hurt
 
 AC_ARG_WITH([proj-api],
-    AC_HELP_STRING([--with-proj-api=yes/no],
-               [use the deprecated proj_api.h even when PROJ 6 is available; default no]),
+    AS_HELP_STRING([--with-proj-api=yes/no],[use the deprecated proj_api.h even when PROJ 6 is available; default no]),
                [proj_api=$withval])
 PROJ6="no"
 PROJH="no"
@@ -383,18 +388,17 @@ fi
 
 # dnl ditto for a library path
 AC_ARG_WITH([proj-lib],
-    AC_HELP_STRING([--with-proj-lib=LIB_PATH],
-               [the location of proj libraries]),
+    AS_HELP_STRING([--with-proj-lib=LIB_PATH],[the location of proj libraries]),
                [proj_lib_path=$withval])
 if test [ -n "$proj_lib_path" ] ; then
     AC_SUBST([PROJ_LIBS], ["-L${proj_lib_path} ${INPKG_LIBS} -lproj"])
 else
   if test "${proj_config_ok}" = yes; then
-    if [ `uname` = "Darwin" ]; then
+    if test `uname` = "Darwin"; then
       PROJ_LIB_PATH=`${PROJ_CONFIG} --libs --static`
     else
       PROJ_LIB_PATH=`${PROJ_CONFIG} --libs`
-    fi  
+    fi
     AC_SUBST([PROJ_LIBS], ["${PROJ_LIB_PATH} ${INPKG_LIBS}"])
 	proj_version=`${PROJ_CONFIG} --modversion`
 	AC_MSG_NOTICE([PROJ: ${proj_version}])
@@ -434,7 +438,7 @@ int main() {
 _EOCONF]
   #AC_CHECK_LIB(proj,proj_context_create,,proj6ok=no)
   AC_MSG_CHECKING(PROJ: checking whether PROJ and sqlite3 are available for linking:)
-  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} -lsqlite3 2> errors.txt
+  ${CXX} ${CPPFLAGS} -o proj_conf_test proj_conf_test.cpp ${LIBS} $SQLITE3_LIBS -lsqlite3 2> errors.txt
   if test `echo $?` -ne 0 ; then
     proj6ok=no
     AC_MSG_RESULT(no)
@@ -465,8 +469,7 @@ ${CC} ${CFLAGS} ${CPPFLAGS} -o proj_conf_test proj_conf_test.c ${PROJ_LIBS}
 proj_version=`./proj_conf_test`
 
 AC_ARG_WITH([proj-share],
-    AC_HELP_STRING([--with-proj-share=SHARE_PATH],
-               [the location of proj metadata files]),
+    AS_HELP_STRING([--with-proj-share=SHARE_PATH],[the location of proj metadata files]),
                [proj_share_path=$withval])
 if test [ -n "$proj_share_path" ] ; then
     AC_MSG_NOTICE([PROJ_LIB: ${proj_share_path}])
@@ -642,8 +645,7 @@ GEOS_CONFIG="geos-config"
 GEOS_CONFIG_SET="no"
 
 AC_ARG_WITH([geos-config],
-    AC_HELP_STRING([--with-geos-config=GEOS_CONFIG],
-           [the location of geos-config]),
+    AS_HELP_STRING([--with-geos-config=GEOS_CONFIG],[the location of geos-config]),
            [geos_config=$withval])
 if test [ -n "$geos_config" ] ; then
     GEOS_CONFIG_SET="yes"

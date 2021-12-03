@@ -3,6 +3,29 @@
 # Version 1.0
 # License GPL v3
 
+
+setMethod("inext", signature(x="SpatVector"), 
+	function(x, e, y=NULL, gap=0) {
+	# the area used for scaling
+		gap <- rep_len(gap, 2)
+		e <- as.vector(e) + c(gap[1], -gap[1], gap[2], -gap[2])
+		stopifnot((e[2] > e[1]) && (e[4] > e[3]))
+		ex <- ext(x)
+		x <- shift(x, e[1] - ex[1], e[3] - ex[3])
+		ve <- ext(x)
+		fx <- (e[2] - e[1]) / (ve[2] - ve[1])
+		fy <- (e[4] - e[3]) / (ve[4] - ve[3])
+
+		if (!is.null(y)) {
+			y <- shift(y, e[1] - ex[1], e[3] - ex[3])
+			rescale(y, fx=fx, fy=fy, e[1], e[3])
+		} else {
+			rescale(x, fx=fx, fy=fy, e[1], e[3])
+		}
+	} 
+)
+
+
 .inset <- function(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...) {
 
 	usr <- graphics::par("usr")

@@ -14,7 +14,8 @@ setMethod("time", signature(x="SpatRaster"),
 		if (tstep == "seconds") {
 			strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 		} else if (tstep == "days") {
-			as.Date("1970-01-01") + d
+			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
+			as.Date(d)
 		#} else if (tstep == "months") {
 		#} else if (tstep == "years") {
 		} else { # raw 
@@ -27,10 +28,13 @@ setMethod("time", signature(x="SpatRaster"),
 setMethod("time<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		if (inherits(value, "Date")) {
-			#value <- as.POSIXlt(value)
+			value <- as.POSIXlt(value)
 			tstep <- "days"
 		} else if (inherits(value, "POSIXt")) {
 			tstep <- "seconds"
+		} else if (is.null(value)) {
+			x@ptr$setTime(0[0], "remove")
+			return(x)
 		} else {
 			tstep <- "raw"
 		}
@@ -52,6 +56,10 @@ setMethod("depth", signature(x="SpatRaster"),
 
 setMethod("depth<-", signature(x="SpatRaster"), 
 	function(x, value)  {
+		if (is.null(value)) {
+			x@ptr$setTime(0[0])
+			return(x)
+		}
 		value <- as.numeric(value)
 		if (! x@ptr$setDepth(value)) {
 			error("depth<-", "cannot set these  values")

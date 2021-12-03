@@ -16,10 +16,11 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 )
 
 
+
 setMethod("app", signature(x="SpatRaster"), 
 function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 
-	txtfun <- .makeTextFun(match.fun(fun))
+	txtfun <- .makeTextFun(fun)
 	if (inherits(txtfun, "character")) { 
 		if (txtfun %in% .cpp_funs) {
 			opt <- spatOptions(filename, overwrite, wopt=wopt)
@@ -28,14 +29,21 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			return(messages(x, "app"))
 		}
 	}
-
+	fun <- match.fun(fun)
 	out <- rast(x)
 	nlyr(out) <- 1
 	nc <- ncol(x)
 	readStart(x)
 	on.exit(readStop(x))
 	nl <- nlyr(x)
-	
+
+	dots <- list(...)
+	if (length(dots) > 0) {
+		test <- any(sapply(dots, function(i) inherits(i, "SpatRaster")))
+		if (test) {
+			error("app", "additional arguments cannot be a SpatRaster")
+		}
+	}	
 # figure out the shape of the output by testing with one row
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
 	usefun <- FALSE
@@ -56,7 +64,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	}
 	if (is.list(r)) {
 		if (length(unique(sapply(r, length))) >  1) {
-			error("app", "'fun' returns a list (should be numeric or matrix).\nPerhaps because returned values have different lenghts due to NAs in input?")
+			error("app", "'fun' returns a list (should be numeric or matrix).\nPerhaps because returned values have different lengths due to NAs in input?")
 		} else {
 			error("app", "'fun' returns a list (should be numeric or matrix)")
 		}
@@ -72,7 +80,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			nlyr(out) <- ncol(r)
 			nms <- colnames(r)
 		} else {
-			error("app", "the number of values returned by 'fun' is not appropriate")
+			error("app", "the number of values returned by 'fun' is not appropriate\n(it should be the product of the number of cells and and a positive integer)")
 		}
 		if (is.null(wopt$names)) {
 			wopt$names <- nms
@@ -84,16 +92,27 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			nlyr(out) <- length(r) / nc
 		}
 	}
-	
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=max(nlyr(x), nlyr(out))*2)
 
-	if (cores > 1) {
-		cls <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cls))
+	doclust <- FALSE
+	if (inherits(cores, "cluster")) {
+		doclust <- TRUE
+		ncores <- length(cores)				
+	} else if (cores > 1) {
+		doclust <- TRUE
+		ncores <- cores	
+		cores <- parallel::makeCluster(cores)
+		on.exit(parallel::stopCluster(cores), add=TRUE)	
+	}
+	
+	ncops <- nlyr(x) / nlyr(out)
+	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4 
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops)
+
+	if (doclust) {
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
-			icsz <- max(min(100, ceiling(b$nrows[i] / cores)), b$nrows[i])
-			r <- parallel::parRapply(cls, v, fun, ..., chunk.size=icsz)
+			icsz <- max(min(100, ceiling(b$nrows[i] / ncores)), b$nrows[i])
+			r <- parallel::parRapply(cores, v, fun, ..., chunk.size=icsz)
 			if (nlyr(out) > 1) {
 				r <- matrix(r, ncol=nlyr(out), byrow=TRUE)
 			}
@@ -234,11 +253,14 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nlyr(x[1])*2)
+	
+	nc <- (nlyr(x[1]) * length(x)) / nlyr(out)
+	nc <- ifelse(nc > 1, ceil(nc), 1) * 3 
+	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc)
 
 	if (cores > 1) {
 		cls <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cls))
+		on.exit(parallel::stopCluster(cls), add=TRUE)
 		for (i in 1:b$n) {
 			v <- lapply(1:length(x), function(s) as.vector(readValues(x[s], b$row[i], b$nrows[i], 1, ncx, mat=TRUE)))
 			v <- do.call(cbind, v)
@@ -260,9 +282,8 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			writeValues(out, r, b$row[i], b$nrows[i])
 		}
 	}
-#	readStop(x)
-	out <- writeStop(out)
-	return(out)
+	#readStop(x)
+	writeStop(out)
 }
 )
 

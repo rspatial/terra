@@ -18,19 +18,20 @@ setMethod("density", signature(x="SpatRaster"),
 		x <- spatSample(x, maxcells, method="regular", as.raster=TRUE)
 		res <- list()
 		nl <- nlyr(x)
+		if (missing(main)) {
+			main=names(x) 
+		} else {
+			main <- rep(main, length.out=nl)
+		}
+
 		if (nl==1) {
-			res[[1]] <- .one.density(x, plot=plot, ...)
+			res[[1]] <- .one.density(x, plot=plot, maxcells=maxcells, main=main, ...)
 		} else {
 
 			if (nl > 16) {
 			warn("density", "only the first 16 layers are plotted")
 				nl <- 16
 				x <- x[[1:16]]
-			}
-			if (missing(main)) {
-				main=names(x) 
-			} else {
-				main <- rep(main, length.out=nl)
 			}
 			nc <- ceiling(sqrt(nl))
 			nr <- ceiling(nl / nc)
@@ -113,6 +114,13 @@ setMethod("as.contour", signature(x="SpatRaster"),
 
 setMethod("pairs", signature(x="SpatRaster"), 
 	function(x, hist=TRUE, cor=TRUE, use="pairwise.complete.obs",  maxcells=100000, ...) {
+
+		if (nlyr(x) < 2) {
+			error("x must have at least two layers")
+		}
+		if (nlyr(x) < 2) {
+			error("x must have at least two layers")
+		}
 
 		panelhist <- function(x,...)	{
 			usr <- graphics::par("usr"); on.exit(graphics::par(usr))
@@ -265,20 +273,22 @@ setMethod("barplot", "SpatRaster",
 		if (missing(col)) {
 			col=grDevices::rainbow
 		}
-		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE)
-		adj <- length(x) / ncell(height)
+		height <- height[[1]]
+		f <- is.factor(height)
+		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=f)
+		x <- spatSample(height[[1]], maxcell, method="regular", as.raster=FALSE, as.df=FALSE)
+		adj <- nrow(x) / ncell(height)
 		if (adj < 1) {
 			warn("barplot", "a sample of ", round(100*adj, 1), "% of the raster cells were used to estimate frequencies")
 		}
-
-		if (!is.null(digits)) {
-			x <- round(x, digits)
+		if (!f) {
+			if (!is.null(digits)) {
+				x <- round(x, digits)
+			}
+			if (!is.null(breaks)) {
+				x <- cut(x, breaks)
+			}
 		}
-
-		if (!is.null(breaks)) {
-			x <- cut(x, breaks)
-		}
-
 		x <- table(x) / adj
 		if (is.function(col)) {
 			col <- col(length(x))
