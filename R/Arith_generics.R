@@ -374,12 +374,12 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 	if (length(dots) > 0) {
 		cls <- sapply(dots, function(i) inherits(i, "SpatRaster"))
 		if (!all(cls)) {
-			dots <- dots[!cls]
-			if (!is.null(names(dots))) {
+			add <- dots[!cls]
+			if (!is.null(names(add))) {
 				error(fun, "additional arguments cannot be names (except for `filename`, `overwrite` and `wopt`)")
 			}
-			i <- sapply(dots, function(x) class(x) %in% c("logical", "integer", "numeric"))
-			add <- unlist(dots[i], use.names = FALSE)
+			i <- sapply(add, function(x) class(x) %in% c("logical", "integer", "numeric"))
+			add <- unlist(add[i], use.names = FALSE)
 			if (any(!i)) {
 				error(fun, "invalid argument(s)")
 			}
