@@ -1,7 +1,7 @@
-\name{focalLyr}
+\name{focalCor}
 
-\alias{focalLyr}
-\alias{focalLyr,SpatRaster-method}
+\alias{focalCor}
+\alias{focalCor,SpatRaster-method}
 
 
 \title{Focal function across two layers}
@@ -11,7 +11,7 @@ Calculate values for focal regions in two neighboring layers. A function is appl
 }
 
 \usage{
-\S4method{focalLyr}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
+\S4method{focalCor}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
 		expand=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 }
 
@@ -38,7 +38,7 @@ Calculate values for focal regions in two neighboring layers. A function is appl
 \value{SpatRaster}
 
 
-\seealso{ \code{\link{layerCor}}, \code{\link{focal}}, \code{\link{focalValues}} }
+\seealso{ \code{\link{layerCor}}, \code{\link{focalReg}}, \code{\link{focal}}}
 
 
 \examples{
@@ -47,9 +47,9 @@ set.seed(0)
 r[[1]] <- flip(r[[1]], "horizontal")
 r[[2]] <- flip(r[[2]], "vertical") + init(rast(r,1), runif)
 r[[3]] <- init(rast(r,1), runif)
-x <- focalLyr(r, w=5, cor)
+x <- focalCor(r, w=5, cor)
 
-x <- focalLyr(r, w=3, function(x, y) suppressWarnings(cor(x, y)))
+x <- focalCor(r, w=9, function(x, y) suppressWarnings(cor(x, y)))
 plot(x)
 }
 

@@ -316,14 +316,14 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
 
 
-setMethod("focalLyr", signature(x="SpatRaster"), 
+setMethod("focalCor", signature(x="SpatRaster"), 
 function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 	nl <- nlyr(x)
-	if (nl < 2) error("focalLyr", "x must have at least 2 layers")
+	if (nl < 2) error("focalCor", "x must have at least 2 layers")
 
 	if (!is.numeric(w)) {
-		error("focalLyr", "w should be numeric vector or matrix")	
+		error("focalCor", "w should be numeric vector or matrix")	
 	}
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
