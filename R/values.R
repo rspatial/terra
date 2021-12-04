@@ -76,7 +76,7 @@ setMethod("focalValues", signature("SpatRaster"),
 		}
 		readStart(x)
 		on.exit(readStop(x))
-		m <- matrix(x@ptr$focalValues(w, fill, row-1, nrows), ncol=prod(w), byrow=TRUE)
+		m <- matrix(x@ptr$focalValues(w, fill, max(0, row-1), nrows), ncol=prod(w), byrow=TRUE)
 		messages(x, "focalValues")
 		m
 	}

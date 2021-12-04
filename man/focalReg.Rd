@@ -7,7 +7,7 @@
 \title{Focal regression}
 
 \description{
-Calculate the coeffients for a focal ("moving window") OLS regression model. 
+Calculate the coefficients for a focal ("moving window") OLS regression model. 
 }
 
 \usage{
@@ -16,7 +16,7 @@ Calculate the coeffients for a focal ("moving window") OLS regression model.
 }
 
 \arguments{
-\item{x}{SpatRaster with at leat two layers. The first is the "Y" (dependent) variable and the remainder are the "X" (independent) variables}
+\item{x}{SpatRaster with at least two layers. The first is the "Y" (dependent) variable and the remainder are the "X" (independent) variables}
 
 \item{w}{window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in \code{\link{focal}}}
 
