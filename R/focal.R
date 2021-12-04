@@ -7,7 +7,6 @@
 setMethod("focal", signature(x="SpatRaster"), 
 function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
-
 	if (!is.numeric(w)) {
 		error("focal", "w should be numeric vector or matrix")	
 	}
@@ -223,7 +222,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 	if (nl < 2) error("focalReg", "x must have at least 2 layers")
 
 	if (!is.numeric(w)) {
-		error("focal", "w should be numeric vector or matrix")	
+		error("focalReg", "w should be numeric vector or matrix")	
 	}
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
@@ -260,8 +259,8 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
 	if (nl == 2) {
 		for (i in 1:b$n) {
-			Y <- focalValues(ry, w, b$row[i]-1, b$nrows[i], fillvalue)
-			X <- focalValues(rx, w, b$row[i]-1, b$nrows[i], fillvalue)
+			Y <- focalValues(ry, w, b$row[i], b$nrows[i], fillvalue)
+			X <- focalValues(rx, w, b$row[i], b$nrows[i], fillvalue)
 			if (dow) {
 				if (isnam) {
 					Y <- Y[k] * mm
@@ -277,7 +276,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 	} else {
 
 		for (i in 1:b$n) {
-			Y <- focalValues(ry, w, b$row[i]-1, b$nrows[i], fillvalue)
+			Y <- focalValues(ry, w, b$row[i], b$nrows[i], fillvalue)
 			if (dow) {
 				if (isnam) {
 					Y <- Y[k] * mm
@@ -287,7 +286,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 			}
 			X <- list()
 			for (j in 1:(nl-1)) {
-				X[[j]] <- focalValues(rx[[j]], w, b$row[i]-1, b$nrows[i], fillvalue)
+				X[[j]] <- focalValues(rx[[j]], w, b$row[i], b$nrows[i], fillvalue)
 				if (dow) {
 					if (any(is.na(m))) {
 						X[[j]] <- X[[j]][k] * mm
@@ -310,6 +309,75 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 		}
 	}
 	
+	out <- writeStop(out)
+	return(out)
+}
+)
+
+
+
+setMethod("focalLyr", signature(x="SpatRaster"), 
+function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+
+	nl <- nlyr(x)
+	if (nl < 2) error("focalLyr", "x must have at least 2 layers")
+
+	if (!is.numeric(w)) {
+		error("focalLyr", "w should be numeric vector or matrix")	
+	}
+	if (is.matrix(w)) {
+		m <- as.vector(t(w))
+		w <- dim(w)
+	} else {
+		w <- rep_len(w, 2)
+		stopifnot(all(w > 0))
+		m <- rep(1, prod(w))
+	}
+	msz <- prod(w)
+	dow <- !isTRUE(all(m == 1))
+	isnam <- FALSE
+	if (any(is.na(m))) {
+		k <- !is.na(m)
+		mm <- m[k]
+		msz <- sum(k)
+		isnam <- TRUE
+	}
+	
+	test <- do.call(fun, list(1:prod(w), prod(w):1), ...)
+	if (is.null(wopt$names )) {
+		wopt$names <- colnames(test)
+	}
+
+	outnl <- (nlyr(x) - 1) * length(test)
+	out <- rast(x, nlyr=outnl)	
+
+	b <- writeStart(out, filename, n=msz*4, ...)
+
+	v <- list()
+	for (i in 1:b$n) {
+		Y <- focalValues(x[[1]], w, b$row[i], b$nrows[i], fillvalue)
+		if (dow) {
+			if (isnam) {
+				Y <- Y[k] * mm
+			} else {
+				Y <- Y * m
+			}
+		}
+		for (j in 2:nlyr(x)) {
+			X <- Y
+			Y <- focalValues(x[[j]], w, b$row[i], b$nrows[i], fillvalue)
+			if (dow) {
+				if (isnam) {
+					Y <- Y[k] * mm
+				} else {
+					Y <- Y * m
+				}
+			}
+			v[[j-1]] <- t(sapply(1:nrow(Y), function(i, ...) fun(X[i,], Y[i,], ...)))
+		}
+		v <- do.call(cbind, v)
+		writeValues(out, v, b$row[i], b$nrows[i])		
+	}
 	out <- writeStop(out)
 	return(out)
 }
