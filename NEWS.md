@@ -30,7 +30,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new methods `is.int` and `as.int` for SpatRaster
 - new method `layerCor` (like `raster::layerStats`). [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
 - new method `focalCor` (like `raster::corLocal`). [#427](https://github.com/rspatial/terra/issues/427) by Zhuonan Wang
-- new method `all.equal` for `SpatRaster` to avoid confusion caused by `all.equal.default` [#428](https://github.com/rspatial/terra/issues/428) by Dongdong Kong
+- new method `all.equal` for `SpatRaster` [#428](https://github.com/rspatial/terra/issues/428) by Dongdong Kong
 
 # version 1.4-22
 

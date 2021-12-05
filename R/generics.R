@@ -5,7 +5,7 @@
 
 
 setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"), 
-	function(target, current, maxcell=10000) {
+	function(target, current, maxcell=10000, ...) {
 		first <- all.equal.default(target, current)
 		if (isTRUE(first)) {
 			if (hasValues(target)) {
@@ -15,9 +15,9 @@ setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"),
 				}
 				vt <- spatSample(target, maxcell, "regular")
 				ct <- spatSample(current, maxcell, "regular")
-				all.equal(vt, ct)
+				all.equal(vt, ct, ...)
 			} else {
-				TRUE
+				first
 			}
 		} else {
 			first
