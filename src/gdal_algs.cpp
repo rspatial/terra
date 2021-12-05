@@ -847,7 +847,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
-			filename = tempFile(opt.get_tempdir(), ".tif");
+			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		} 
@@ -950,7 +950,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
-			filename = tempFile(opt.get_tempdir(), ".tif");
+			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		} 

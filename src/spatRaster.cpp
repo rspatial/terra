@@ -416,7 +416,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 	std::set<std::string> ufs;
 	size_t ufsize = ufs.size();
 
-	std::string tmpbasename = tempFile(opt.get_tempdir(), "_temp_");
+	std::string tmpbasename = tempFile(opt.get_tempdir(), opt.pid, "_temp_");
 
 
 	for (size_t i=0; i<nsrc; i++) {

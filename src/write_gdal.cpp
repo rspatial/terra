@@ -364,7 +364,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			poDriver = GetGDALDriverManager()->GetDriverByName("MEM");
 			poDS = poDriver->Create("", ncol(), nrow(), nlyr(), gdt, papszOptions);
 		} else {
-			std::string f = tempFile(opt.get_tempdir(), ".tif");
+			std::string f = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 			copy_filename = f;
 			poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
 			poDS = poDriver->Create(f.c_str(), ncol(), nrow(), nlyr(), gdt, papszOptions);

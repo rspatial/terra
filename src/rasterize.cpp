@@ -62,7 +62,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 		if (canProcessInMemory(opt)) {
 			driver = "MEM";
 		} else {
-			filename = tempFile(opt.get_tempdir(), ".tif");
+			filename = tempFile(opt.get_tempdir(), opt.pid, ".tif");
 			opt.set_filenames({filename});
 			driver = "GTiff";
 		} 

@@ -232,7 +232,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	if (filename == "") {
 		if (!canProcessInMemory(opt)) {
 			std::string extension = ".tif";
-			filename = tempFile(opt.get_tempdir(), extension);
+			filename = tempFile(opt.get_tempdir(), opt.pid, extension);
 			opt.set_filenames({filename});
 			opt.gdal_options = {"COMPRESS=NONE"};
 		}
@@ -408,7 +408,7 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 			source[0].values = v;
 			std::string f = opt.get_filename();
 			if (f == "") {
-				std::string filename = tempFile(opt.get_tempdir(), ".tif");
+				std::string filename = tempFile(opt.get_tempdir(), opt.pid ".tif");
 				opt.set_filenames({filename});
 			}	
 			*this = writeRaster(opt);

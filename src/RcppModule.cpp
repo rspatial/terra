@@ -175,7 +175,7 @@ RCPP_MODULE(spat){
 		//.property("append", &SpatOptions::get_append, &SpatOptions::set_append )
 		.field("datatype_set", &SpatOptions::datatype_set)
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
-		.property("ncopies", &SpatOptions::get_ncopies, &SpatOptions::set_ncopies, "ncopies")
+		.property("ncopies", &SpatOptions::get_ncopies, &SpatOptions::set_ncopies)
 
 		.property("def_filetype", &SpatOptions::get_def_filetype, &SpatOptions::set_def_filetype )
 		.property("def_datatype", &SpatOptions::get_def_datatype, &SpatOptions::set_def_datatype )
@@ -185,9 +185,10 @@ RCPP_MODULE(spat){
 
 		.property("todisk", &SpatOptions::get_todisk, &SpatOptions::set_todisk)
 		.field("messages", &SpatOptions::msg, "messages")
-		.field("gdal_options", &SpatOptions::gdal_options, "gdal_options")
-		.field("names", &SpatOptions::names, "names")
-		.property("steps", &SpatOptions::get_steps, &SpatOptions::set_steps, "steps")
+		.field("gdal_options", &SpatOptions::gdal_options)
+		.field("pid", &SpatOptions::pid )
+		.field("names", &SpatOptions::names)
+		.property("steps", &SpatOptions::get_steps, &SpatOptions::set_steps)
 	//	.property("overwrite", &SpatOptions::set_overwrite, &SpatOptions::get_overwrite )
 		//.field("gdaloptions", &SpatOptions::gdaloptions)
 	;

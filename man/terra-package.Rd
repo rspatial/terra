@@ -528,6 +528,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{calc}\tab\code{\link{app}}\cr
 \code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
+\code{corLocal}\tab\code{\link{focalCor}}\cr
 \code{coordinates}\tab\code{\link{crds}}\cr
 \code{clump}\tab\code{\link{patches}}\cr
 \code{compareRaster}\tab\code{\link{compareGeom}}\cr

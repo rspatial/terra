@@ -7,7 +7,7 @@
 \title{Focal function across two layers}
 
 \description{
-Calculate values for focal regions in two neighboring layers. A function is applied to the first and second layer, then to the second and third layer, etc.
+Calculate values such as a correlation coefficient for focal regions in two neighboring layers. A function is applied to the first and second layer, then to the second and third layer, etc.
 }
 
 \usage{

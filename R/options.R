@@ -12,7 +12,7 @@
 }
  
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance") #, "append") 
+	c("progress", "tempdir", "memfrac", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append") 
 }
 
  
@@ -74,7 +74,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 	if (is.null(.terra_environment$options)) .create_options()
 
 	opt <- .terra_environment$options@ptr$deepcopy()
-
+	opt$pid <- Sys.getpid()
 	filename <- .fullFilename(filename, mustExist=FALSE)
 	if (!is.null(unlist(wopt))) {
 		wopt$filenames <- filename
