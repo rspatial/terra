@@ -4,6 +4,28 @@
 # License GPL v3
 
 
+setMethod("all.equal", signature(target="SpatRaster", current="SpatRaster"), 
+	function(target, current, maxcell=10000) {
+		first <- all.equal.default(target, current)
+		if (isTRUE(first)) {
+			if (hasValues(target)) {
+				if (ncell(x) > maxcell) {
+					s <- round(100 * maxcell / ncell(x))
+					warn("all.equal", paste0("using a sample of ", s, "% of the cells"))
+				}
+				vt <- spatSample(target, maxcell, "regular")
+				ct <- spatSample(current, maxcell, "regular")
+				all.equal(vt, ct)
+			} else {
+				TRUE
+			}
+		} else {
+			first
+		}
+	}
+)
+
+
 
 setMethod("weighted.mean", signature(x="SpatRaster", w="numeric"), 
 	function(x, w, na.rm=FALSE, filename="", ...) {

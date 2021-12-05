@@ -1,4 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
+
+if (!isGeneric("all.equal")) { setGeneric("all.equal", function(target, current, ...) standardGeneric("all.equal")) }
+
 if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) standardGeneric("selectHighest"))}
 if (!isGeneric("focalReg")) { setGeneric("focalReg", function(x, ...) standardGeneric("focalReg")) }
 if (!isGeneric("focalCpp")) { setGeneric("focalCpp", function(x, ...) standardGeneric("focalCpp")) }
