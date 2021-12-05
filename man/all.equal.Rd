@@ -12,7 +12,7 @@ Compare two SpatRasters for (near) equality
 }
 
 \usage{
-\S4method{all.equal}{SpatRaster,SpatRaster}(current, target, maxcell=10000)
+\S4method{all.equal}{SpatRaster,SpatRaster}(target, current, maxcell=10000)
 }
 
 \arguments{

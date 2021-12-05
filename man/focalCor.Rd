@@ -32,7 +32,7 @@ Calculate values such as a correlation coefficient for focal regions in two neig
 
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
 
-\item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+\item{wopt}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{SpatRaster}
