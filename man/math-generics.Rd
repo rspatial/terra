@@ -29,11 +29,9 @@ Standard mathematical methods for computations with SpatRaster objects. Computat
  
 \code{abs, sign, sqrt, ceiling, floor, trunc,  cummax, cummin, cumprod, cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh, exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}
 
-The following methods have been implemented for \bold{SpatExtent}: 
-
-\code{round, floor, ceiling}
-
 Instead of directly calling these methods, you can also provide their name to the \code{math} method. This is useful if you want to provide an output filename.
+
+The following methods have been implemented for \code{SpatExtent} objects: \code{round, floor, ceiling}
 }
 
 \usage{

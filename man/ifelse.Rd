@@ -6,7 +6,7 @@
 \title{ifelse for SpatRasters}
 
 \description{
-Implementation of \code{\link[base]{ifelse}} for SpatRasters. This method allows for a concise approach to what can otherwise be achieved with a combination of \code{\link{classify}}, \code{\link{mask}}, and \code{\link{cover}}. 
+Implementation of \code{\link[base]{ifelse}} for SpatRasters. This method allows for a concise expression of what can otherwise be achieved with a combination of \code{\link{classify}}, \code{\link{mask}}, and \code{\link{cover}}. 
 
 \code{ifel} is an \code{R} equivalent to the \code{Con} method in ArcGIS (arcpy). 
 }
