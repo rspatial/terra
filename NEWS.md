@@ -8,6 +8,8 @@
 - `writeVector` now assumes "traditional GIS order" (long/lat) if the CRS specifies lat/long. [#333](
 https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - argument `main` was ignored in `density` when using a single layer SpatRaster [#424](https://github.com/rspatial/terra/issues/424) by dvictori
+- Summary type math functions such as `min` and `mean`, when used with multiple SpatRasters and numbers, ignored additional SpatRasters [#426](https://github.com/rspatial/terra/issues/426) by Zhuonan Wang
+- names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) [#430](https://github.com/rspatial/terra/issues/430) by Dan Baston
 
 
 ## enhancements 
@@ -31,6 +33,8 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `layerCor` (like `raster::layerStats`). [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
 - new method `focalCor` (like `raster::corLocal`). [#427](https://github.com/rspatial/terra/issues/427) by Zhuonan Wang
 - new method `all.equal` for `SpatRaster` [#428](https://github.com/rspatial/terra/issues/428) by Dongdong Kong
+- new method `math` for `SpatRaster` that implements the Math-generic methods *and* accepts a filename
+
 
 # version 1.4-22
 

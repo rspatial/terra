@@ -1,4 +1,6 @@
-#if (!isGeneric("#")) { setGeneric("#", function(object) standardGeneric("#")) }
+#if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
+
+if (!isGeneric("math")) { setGeneric("math", function(x, ...) standardGeneric("math")) }
 
 if (!isGeneric("all.equal")) { setGeneric("all.equal", function(target, current, ...) standardGeneric("all.equal")) }
 

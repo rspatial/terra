@@ -2,89 +2,70 @@
 
 \docType{methods}
 
-\alias{Arith-methods}
-\alias{Compare-methods}
-\alias{Logic-methods}
 \alias{Math-methods}
 \alias{Math2-methods}
 
-\alias{Arith,SpatExtent,numeric-method}
-\alias{Arith,numeric,SpatExtent-method}
-\alias{Arith,SpatExtent,SpatExtent-method}
-
-\alias{Arith,SpatRaster,SpatRaster-method}
-\alias{Arith,SpatVector,SpatVector-method}
-\alias{Arith,SpatRaster,missing-method}
-\alias{Arith,numeric,SpatRaster-method}
-\alias{Arith,SpatRaster,numeric-method}
-\alias{Arith,missing,SpatRaster-method}
-\alias{Compare,SpatRaster,SpatRaster-method}
-\alias{Compare,numeric,SpatRaster-method}
-\alias{Compare,SpatRaster,numeric-method}
-\alias{Compare,SpatRaster,character-method}
-\alias{Compare,SpatRaster,math-method}
-
-\alias{Logic,SpatRaster,SpatRaster-method}
-\alias{Logic,SpatRaster,numeric-method}
-\alias{Logic,numeric,SpatRaster-method}
-\alias{Logic,SpatRaster,logical-method}
-\alias{Logic,logical,SpatRaster-method}
 \alias{Math,SpatRaster-method}
 \alias{Math2,SpatRaster-method}
 
-\alias{log}
-\alias{log,SpatRaster-method}
-
 \alias{Math,SpatExtent-method}
 \alias{Math2,SpatExtent-method}
-\alias{Compare,SpatExtent,SpatExtent-method}
 
-\alias{is.na,SpatRaster-method}
-\alias{is.nan,SpatRaster-method}
-\alias{!,SpatRaster-method}
-\alias{is.finite,SpatRaster-method}
-\alias{is.infinite,SpatRaster-method}
+\alias{log}
+\alias{log,SpatRaster-method}
+\alias{round}
+\alias{round,SpatRaster-method}
+\alias{sqrt}
+\alias{sqrt,SpatRaster-method}
 
+\alias{math}
+\alias{math,SpatRaster-method}
 
-\title{Arithmetic, logical and general mathematical methods}
+\title{General mathematical methods}
 
 \description{
 
-Standard operators and mathematical methods for computations with SpatRaster objects. Computations are local (applied on a cell by cell basis). If multiple SpatRaster objects are used, these must have the same extent and resolution. These have been implemented:
-
-\bold{Arith}: \code{ +, -, *, /, ^, \%\%, \%/\% }
-
-\bold{Compare}: \code{ ==, !=, >, <,  <=, >=, is.na, is.nan, is.finite, is.infinite}
-
-The terra package does not distinguish between \code{NA} (not available) and \code{NaN} (not a number). In most cases this state is represented by \code{NaN}.  
-
-\bold{Logical}: \code{!, &, |, isTRUE, isFALSE}
-
-\bold{Summary}: \code{max, min, range, prod, sum, any, all}
+Standard mathematical methods for computations with SpatRaster objects. Computations are local (applied on a cell by cell basis). If multiple SpatRaster objects are used, these must have the same extent and resolution. These have been implemented:
  
-\bold{Math}: \code{abs, sign, sqrt, ceiling, floor, trunc,  cummax, cummin, cumprod, cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh, exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}
+\code{abs, sign, sqrt, ceiling, floor, trunc,  cummax, cummin, cumprod, cumsum, log, log10, log2, log1p, acos, acosh, asin, asinh, atan, atanh, exp, expm1, cos, cosh, sin, sinh, tan, tanh, round, signif}
 
-The following methods have been implemented for \bold{SpatExtent}: \code{round, floor, ceil, ==},
-for \bold{(SpatExtent, SpatExtent)}: \code{==, +, -}, and 
-for \bold{(SpatExtent, numeric)} : \code{+, -, *, /, \%\%}
+The following methods have been implemented for \bold{SpatExtent}: 
+
+\code{round, floor, ceiling}
+
+Instead of directly calling these methods, you can also provide their name to the \code{math} method. This is useful if you want to provide an output filename.
 }
 
 \usage{
+\S4method{sqrt}{SpatRaster}(x)
+
 \S4method{log}{SpatRaster}(x, base=exp(1))
+
+\S4method{round}{SpatRaster}(x, digits=0)
+
+\S4method{math}{SpatRaster}(x, fun, digits=0, filename="", overwrite=FALSE, ...)
 }
 
-\section{seealso}{
-\code{\link{ifel}} to convieniently combine operations and \code{\link{app}} to use mathematical functions not implemented by the package.
+\seealso{
+See \code{\link{app}} to use mathematical functions not implemented by the package, and \code{\link{Arith-methods}} for arithmetical operations
 }
+
 
 \arguments{
 \item{x}{SpatRaster}
 \item{base}{a positive or complex number: the base with respect to which logarithms are computed}
+\item{digits}{Number of digits for rounding}
+\item{fun}{character. Math function name}
+\item{filename}{character. Output filename}
+\item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
+\item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
 \value{
 SpatRaster or SpatExtent
 }
+
+
 
 \examples{
 r1 <- rast(ncols=10, nrows=10)
@@ -93,37 +74,13 @@ v[10:20] <- NA
 values(r1) <- v
 r2 <- rast(r1)
 values(r2) <- 1:ncell(r2) / ncell(r2)
-r3 <- r1 + r2
-r2 <- r1 / 10
-r3 <- r1 * (r2 - 1 / r2)
+r <- c(r1, r2)
 
+s <- sqrt(r)
+# same as 
+math(r, "sqrt")
 
-b <- c(r1, r2, r3)
-b2 <- b * 10
-s <- sqrt(b2)
 round(s, 1)
-
-max(s)
-max(s, na.rm=TRUE)
-
-x <- is.na(s)
-
-y <- which.max(s)
-
-### SpatExtent methods
-x <- ext(0.1, 2.2, 0, 3)
-y <- ext(-2, 1, -2,2)
-# union
-x + y
-# intersection
-x * y
-
-e <- x %% 2
-e
-e * 2
-e / 2
-e + 1
-e - 1
 }
 
 \keyword{methods}

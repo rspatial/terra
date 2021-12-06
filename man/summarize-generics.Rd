@@ -54,7 +54,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \S4method{mean}{SpatRaster}(x, ..., trim=NA, na.rm=FALSE)
 
-\S4method{median}{SpatRaster}(x, na.rm=FALSE)
+\S4method{median}{SpatRaster}(x, na.rm=FALSE, ...)
 
 \S4method{stdev}{SpatRaster}(x, ..., pop=TRUE, na.rm=FALSE)
 
@@ -66,7 +66,7 @@ This is different than the sample standard deviation returned by \code{sd} (whic
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{...}{additional SpatRaster objects or numeric values; and arguments \code{filename}, \code{overwrite} and \code{wopt} as for \code{writeRaster}}
+  \item{...}{additional SpatRaster objects or numeric values; and arguments \code{filename}, \code{overwrite} and \code{wopt} as for \code{\link{writeRaster}}}
   \item{na.rm}{logical. If \code{TRUE}, \code{NA} values are ignored. If \code{FALSE}, \code{NA} is returned if \code{x} has any \code{NA} values}
   \item{trim}{ignored}
   \item{pop}{logical. If \code{TRUE}, the population standard deviation is computed. Otherwise the sample standard deviation is computed}
@@ -98,6 +98,8 @@ y <- stdev(r)
 yy <- app(r, sd)
 
 z <- stdev(r, r*2)
+
+x <- mean(r, filename=tempfile())
 }
 
 \keyword{methods}

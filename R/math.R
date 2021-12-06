@@ -23,6 +23,7 @@ setMethod("log", signature(x="SpatRaster"),
 )	
 
 
+#? "gamma", "lgamma", "digamma", "trigamma"		
 setMethod("Math", signature(x="SpatRaster"),
     function(x){ 
 		oper <- as.vector(.Generic)[1]
@@ -37,6 +38,30 @@ setMethod("Math", signature(x="SpatRaster"),
 		messages(x, oper)
 	}
 )
+
+
+
+setMethod("math", signature(x="SpatRaster"),
+    function(x, fun, digits=0, filename="", overwrite=FALSE, ...){ 
+		if (!is.character(fun)) {
+			error("math", "fun must be a character value")
+		}
+		fun = fun[1]
+		opt <- spatOptions(filename, overwrite, ...)
+		if (substr(fun, 1, 3) == "cum") {
+			x@ptr <- x@ptr$cum(substr(fun, 4, 10), FALSE, "", FALSE)
+		} else if (fun %in% c("acos", "acosh", "asin", "asinh", "atan", "atanh", "cos", "cosh", "cospi", "sin", "sinh", "sinpi", "tan", "tanh", "tanpi")) {
+			x@ptr <- x@ptr$trig(fun, opt)
+		} else if (fun %in% c("abs", "sign", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2")) {		x@ptr <- x@ptr$math(fun, opt)
+		} else if (fun %in% c("round", "signif")) {
+			x@ptr <- x@ptr$math2(fun, digits, opt)
+		} else {
+			error("math", "unknown function")
+		}
+		messages(x, fun)
+	}
+)
+
 
 
 setMethod("Math2", signature(x="SpatRaster"),

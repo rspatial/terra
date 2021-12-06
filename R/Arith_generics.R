@@ -368,6 +368,7 @@ setMethod("is.infinite", signature(x="SpatRaster"),
 
 
 .summarize <- function(x, ..., fun, na.rm=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+
 	dots <- list(...)
 	add <- NULL
 	cls <- FALSE
@@ -478,13 +479,17 @@ setMethod("mean", signature(x="SpatRaster"),
 setMethod("mean", signature(x="SpatVector"),
 	function(x, ..., trim=NA, na.rm=FALSE){
 		if (!is.na(trim)) {	warn("mean", "argument 'trim' is ignored") }
+		if (!is.null(list(...))) {	warn("mean", "additional arguments are ignored") }
 		colMeans(values(x))
 	}
 )
 
 setMethod("median", signature(x="SpatRaster"),
-	function(x, na.rm=FALSE){
-		.summarize(x, fun="median", na.rm=na.rm)
+	function(x, na.rm=FALSE, ...){
+		if (!is.logical(na.rm)) {
+			error("median", "na.rm (the second argument) must be a logical value")
+		}
+		.summarize(x, ..., fun="median", na.rm=na.rm)
 	}
 )
 
