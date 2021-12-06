@@ -58,6 +58,9 @@
     <loc>/reference/approxNA.html</loc>
   </url>
   <url>
+    <loc>/reference/arith-generic.html</loc>
+  </url>
+  <url>
     <loc>/reference/as.character.html</loc>
   </url>
   <url>
@@ -122,6 +125,9 @@
   </url>
   <url>
     <loc>/reference/colors.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compare-generics.html</loc>
   </url>
   <url>
     <loc>/reference/compareGeom.html</loc>
@@ -296,6 +302,9 @@
   </url>
   <url>
     <loc>/reference/match.html</loc>
+  </url>
+  <url>
+    <loc>/reference/math-generics.html</loc>
   </url>
   <url>
     <loc>/reference/mem.html</loc>
