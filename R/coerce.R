@@ -461,7 +461,6 @@ setMethod("as.array", signature(x="SpatRaster"),
 		if (from@file@NAchanged) {
 			NAflag(r) <- from@file@nodatavalue
 		}
-		return(r)
 	} else {
 		crsobj <- from@crs
 		if (is.na(crsobj)) {
@@ -482,12 +481,12 @@ setMethod("as.array", signature(x="SpatRaster"),
 		if (raster::hasValues(from)) {
 			values(r) <- raster::values(from)
 		}
-		names(r)  <- names(from)
 		levs <- raster::levels(from)[[1]]
 		if (!is.null(levs)) {
 			levels(r) <- levs				
 		}
 	}
+	names(r)  <- names(from)
 	r
 }
 
@@ -506,7 +505,9 @@ setMethod("as.array", signature(x="SpatRaster"),
 		x <- from[[i]]
 		.fromRasterLayerBrick(x)[[raster::bandnr(x)]]
 	})
-	do.call(c, s)
+	s <- do.call(c, s)
+	names(s) <- names(from)
+	s
 }
 
 
