@@ -25,7 +25,7 @@ Standard arithmetic operators for computations with SpatRasters. Computations ar
 \code{ +, -, *, /, ^, \%\%, \%/\% }
 
 
-The following methods have been implemented for \cod3{SpatExtent}: 
+The following methods have been implemented for \code{SpatExtent}: 
 
 for \code{(SpatExtent, SpatExtent)}: \code{+, -}, and for \code{(SpatExtent, numeric)}: \code{+, -, *, /, \%\%}
 }
