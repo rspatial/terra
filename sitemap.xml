@@ -58,9 +58,6 @@
     <loc>/reference/approxNA.html</loc>
   </url>
   <url>
-    <loc>/reference/arith.html</loc>
-  </url>
-  <url>
     <loc>/reference/as.character.html</loc>
   </url>
   <url>
@@ -299,9 +296,6 @@
   </url>
   <url>
     <loc>/reference/match.html</loc>
-  </url>
-  <url>
-    <loc>/reference/math.html</loc>
   </url>
   <url>
     <loc>/reference/mem.html</loc>
