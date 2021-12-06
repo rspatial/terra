@@ -99,7 +99,7 @@ yy <- app(r, sd)
 
 z <- stdev(r, r*2)
 
-x <- mean(r, filename=tempfile())
+x <- mean(r, filename=paste0(tempfile(), ".tif"))
 }
 
 \keyword{methods}
