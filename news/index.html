@@ -60,6 +60,8 @@
 <li>
 <code>writeVector</code> now assumes “traditional GIS order” (long/lat) if the CRS specifies lat/long. <a href="https://github.com/rspatial/terra/issues/333" class="external-link">#333</a> by Agustin Lobo</li>
 <li>argument <code>main</code> was ignored in <code>density</code> when using a single layer SpatRaster <a href="https://github.com/rspatial/terra/issues/424" class="external-link">#424</a> by dvictori</li>
+<li>Summary type math functions such as <code>min</code> and <code>mean</code>, when used with multiple SpatRasters and numbers, ignored additional SpatRasters <a href="https://github.com/rspatial/terra/issues/426" class="external-link">#426</a> by Zhuonan Wang</li>
+<li>names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) <a href="https://github.com/rspatial/terra/issues/430" class="external-link">#430</a> by Dan Baston</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-5-1">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-1"></a></h3>
@@ -88,6 +90,7 @@
 <li>new method <code>layerCor</code> (like <code><a href="https://rdrr.io/pkg/raster/man/layerStats.html" class="external-link">raster::layerStats</a></code>). <a href="https://github.com/rspatial/terra/issues/420" class="external-link">#420</a> by Alex Ilich</li>
 <li>new method <code>focalCor</code> (like <code><a href="https://rdrr.io/pkg/raster/man/corLocal.html" class="external-link">raster::corLocal</a></code>). <a href="https://github.com/rspatial/terra/issues/427" class="external-link">#427</a> by Zhuonan Wang</li>
 <li>new method <code>all.equal</code> for <code>SpatRaster</code> <a href="https://github.com/rspatial/terra/issues/428" class="external-link">#428</a> by Dongdong Kong</li>
+<li>new method <code>math</code> for <code>SpatRaster</code> that implements the Math-generic methods <em>and</em> accepts a filename</li>
 </ul></div>
 </div>
     <div class="section level2">

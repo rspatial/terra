@@ -82,7 +82,7 @@ This is different than the sample standard deviation returned by sd (which uses 
 <span class="fu">mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, trim<span class="op">=</span><span class="cn">NA</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">median</span><span class="op">(</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">median</span><span class="op">(</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">stdev</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, pop<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
@@ -99,7 +99,7 @@ This is different than the sample standard deviation returned by sd (which uses 
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
 <dt>...</dt>
-<dd><p>additional SpatRaster objects or numeric values; and arguments <code>filename</code>, <code>overwrite</code> and <code>wopt</code> as for <code>writeRaster</code></p></dd>
+<dd><p>additional SpatRaster objects or numeric values; and arguments <code>filename</code>, <code>overwrite</code> and <code>wopt</code> as for <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>NA</code> values are ignored. If <code>FALSE</code>, <code>NA</code> is returned if <code>x</code> has any <code>NA</code> values</p></dd>
 <dt>trim</dt>
@@ -155,6 +155,9 @@ This is different than the sample standard deviation returned by sd (which uses 
 <span class="r-in"><span class="va">yy</span> <span class="op">&lt;-</span> <span class="fu"><a href="app.html">app</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">sd</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">stdev</span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">mean</span><span class="op">(</span><span class="va">r</span>, filename<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [mean] cannot guess file type from filename</span>
 </code></pre></div>
     </div>
   </div>
