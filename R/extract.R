@@ -424,15 +424,9 @@ function(x, i, j, ..., drop=TRUE) {
 
 setMethod("[", c("SpatRaster", "SpatRaster", "missing"),
 function(x, i, j, ..., drop=TRUE) {
+
 	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
-		x <- x[ext(i), drop=drop]
-	}
-	if (!compareGeom(x, i, crs=FALSE, stopOnError=FALSE)) {
-		if (drop) {
-			return(values(x))
-		} else {
-			return(x)
-		}	
+		return (x[ext(i), drop=drop])
 	}
 	if (drop) {
 		if (is.bool(i)) {
@@ -460,7 +454,6 @@ function(x, i, j, ..., drop=FALSE) {
 		x
 	}
 })
-
 
 
 setMethod("extract", c("SpatVector", "SpatVector"),
