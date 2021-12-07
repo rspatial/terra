@@ -120,7 +120,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	
 
 void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global,	std::function<double(std::vector<double>&, bool)> fun) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool expand, bool global,	std::function<double(std::vector<double>&, bool)> fun) {
 	
 	out.resize(nc * nr);
 	int hwc = wnc / 2;
@@ -175,7 +175,7 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 
 
 void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool expand, bool global) {
 	
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
@@ -215,6 +215,14 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 								value += d[nc*row + col] * window[wi];
 								found = true;
 							}
+						} else if (naonly) {
+							if ((rr == hwc) && (cc == hwr)) {
+								if (!std::isnan(d[nc * row + col])) {
+									value += d[nc * row + col] * window[wi]; 
+								}
+							} else {
+								value += d[nc * row + col] * window[wi]; 
+							}
 						} else {
 							value += d[nc*row + col] * window[wi];
 						}
@@ -226,6 +234,14 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 								value += d[nc*row + col] * window[wi];
 								found = true;
 							}
+						} else if (naonly) {
+							if ((rr == hwc) && (cc == hwr)) {
+								if (!std::isnan(d[nc * row + col])) {
+									value += d[nc * row + col] * window[wi]; 
+								}
+							} else {
+								value += d[nc * row + col] * window[wi]; 
+							}
 						} else {
 							value += d[nc*row + col] * window[wi];
 						}
@@ -235,6 +251,14 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 								if (!std::isnan(d[nc*row + col])) {
 									value += d[nc*row + col] * window[wi];
 									found = true;
+								}
+							} else if (naonly) {
+								if ((rr == hwc) && (cc == hwr)) {
+									if (!std::isnan(d[nc * row + col])) {
+										value += d[nc * row + col] * window[wi]; 
+									}
+								} else {
+									value += d[nc * row + col] * window[wi]; 
 								}
 							} else {
 								value += d[nc*row + col] * window[wi]; 
@@ -257,7 +281,7 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 }
 
 void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
-                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool expand, bool global) {
+                    std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool expand, bool global) {
 	
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
@@ -307,6 +331,16 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 								value += d[nc * row + col] * window[wi];
 								winsum += poswin[wi];
 							}
+						} else if (naonly) {
+							if ((rr == hwc) && (cc == hwr)) {
+								if (!std::isnan(d[nc * row + col])) {
+									value += d[nc * row + col] * window[wi]; 
+									winsum += poswin[wi];
+								}
+							} else {
+								value += d[nc * row + col] * window[wi]; 
+								winsum += poswin[wi];
+							}
 						} else {
 							value += d[nc * row + col] * window[wi]; 
 						}
@@ -318,6 +352,16 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 								value += d[nc * row + col] * window[wi];
 								winsum += poswin[wi];
 							}
+						} else if (naonly) {
+							if ((rr == hwc) && (cc == hwr)) {
+								if (!std::isnan(d[nc * row + col])) {
+									value += d[nc * row + col] * window[wi]; 
+									winsum += poswin[wi];
+								}
+							} else {
+								value += d[nc * row + col] * window[wi]; 
+								winsum += poswin[wi];
+							}
 						} else {
 							value += d[nc * row + col] * window[wi]; 
 						}
@@ -326,6 +370,16 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 							if (narm) {
 								if (!std::isnan(d[nc * row + col])) {
 									value += d[nc * row + col] * window[wi];
+									winsum += poswin[wi];
+								}
+							} else if (naonly) {
+								if ((rr == hwc) && (cc == hwr)) {
+									if (!std::isnan(d[nc * row + col])) {
+										value += d[nc * row + col] * window[wi]; 
+										winsum += poswin[wi];
+									}
+								} else {
+									value += d[nc * row + col] * window[wi]; 
 									winsum += poswin[wi];
 								}
 							} else {
@@ -490,11 +544,11 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 			}
 
 			if (dofun) {
-				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global, fFun);			
+				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, expand, global, fFun);			
 			} else if (fun == "mean") {
-				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global);
+				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, expand, global);
 			} else {
-				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, expand, global);
+				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, expand, global);
 			}
 			
 			if (i != (out.bs.n-1)) {
