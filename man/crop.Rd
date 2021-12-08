@@ -4,6 +4,7 @@
 
 \alias{crop}
 \alias{crop,SpatRaster-method}
+\alias{crop,SpatRasterDataset-method}
 \alias{crop,SpatVector-method}
 
 \title{Cut out a geographic subset}
@@ -16,6 +17,8 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 
 \usage{
 \S4method{crop}{SpatRaster}(x, y, snap="near", filename="", ...)
+
+\S4method{crop}{SpatRasterDataset}(x, y, snap="near", filename="", ...)
 
 \S4method{crop}{SpatVector}(x, y)
 }

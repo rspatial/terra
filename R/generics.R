@@ -354,29 +354,43 @@ function(x, from, to, filename="", ...) {
 )
 
 
-.getExt <- function(x) {
-	return(x)
+.getExt <- function(y, method="crop") {
+	if (!inherits(y, "SpatExtent")) {
+		e <- try(ext(y), silent=TRUE)
+		if (class(e) == "try-error") { 
+			e <- try(ext(vect(y)), silent=TRUE)
+			if (class(e) == "try-error") { 
+				error(method, "cannot get a SpatExtent from y")
+			}
+		}
+		y <- e
+	}
+	y
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
 	function(x, y, snap="near", filename="", ...) {
 		opt <- spatOptions(filename, ...)
-
-		if (!inherits(y, "SpatExtent")) {
-			e <- try(ext(y), silent=TRUE)
-			if (class(e) == "try-error") { 
-				e <- try(ext(vect(y)), silent=TRUE)
-				if (class(e) == "try-error") { 
-					error("crop", "cannot get a SpatExtent from y")
-				}
-			}
-			y <- e
-		}
-		
+		y <- .getExt(y, method="crop")
 		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
 		messages(x, "crop")
 	}
 )
+
+setMethod("crop", signature(x="SpatRasterDataset", y="ANY"), 
+	function(x, y, snap="near", filename="", ...) {
+		if (all(filename != "")) {
+			ext <- tools::file_ext(filename)
+			filename <- tools::file_path_sans_ext(filename)
+			filename <- paste0(make.unique(filename, sep="_"), ext)
+		}
+		opt <- spatOptions(filename, ...)
+		y <- .getExt(y, method="crop")
+		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
+		messages(x, "crop")
+	}
+)
+
 
 
 setMethod("selectRange", signature(x="SpatRaster"), 

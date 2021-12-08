@@ -41,7 +41,9 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero.
 
-Window values are typically 0 or 1, or a value between 0 and 1 if you are using a rectangular area and/or the "sum" function. They can also be \code{NA}; these are ignored in the computation. That can be useful to compute the mean, min, or max value for a non-rectangular area.  
+Window values are typically 0 or 1, or a value between 0 and 1 if you are using a rectangular area and/or the "sum" function. They can also be \code{NA}; these are ignored in the computation. That can be useful to compute, for example, the minimum or maximum value for a non-rectangular area.  
+
+The "mean" function is a special case, as zero weights are ignored automatically. 
 
 Example weight matrices
 

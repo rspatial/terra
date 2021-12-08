@@ -2301,6 +2301,46 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 }
 
 
+SpatRaster SpatRasterCollection::morph(SpatRaster &x, SpatOptions &opt) {
+
+	SpatRaster out;
+	unsigned n = size();
+	if (n == 0) {
+		out.setError("empty collection");
+		return(out);
+	}
+	std::string filename = opt.get_filename();
+	opt.set_filenames({""});
+	SpatExtent e = x.getExtent();
+
+	out.source.resize(0);
+	SpatRaster g = x.geometry();
+	for (size_t i=1; i<n; i++) {
+		if (g.compare_geom(ds[i], false, false, 0.01, false, true, true, false)) {
+			out.source.insert(out.source.end(), ds[i].source.begin(), ds[i].source.end());		
+		} else {
+			SpatRaster temp = ds[i].warper(g, "", "bilinear", false, false, opt);			
+			out.addSource(temp, false);
+		}
+	}
+	
+	if (out.source.size() == 0) {
+		out.setError("no data sources that overlap with x");
+		return out;
+	}
+	
+	out.setSRS(x.getSRS("wkt"));
+	out.setExtent(e, false, "near");
+	
+	lrtrim(filename);
+	if (filename != "") {
+		opt.set_filenames({filename});
+		out.writeRaster(opt);
+	}
+	return(out);
+}
+
+
 void notisnan(const std::vector<double> &x, double &n) {
 	for (size_t i=0; i<x.size(); i++) {
 		n += !std::isnan(x[i]);

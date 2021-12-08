@@ -730,6 +730,7 @@ RCPP_MODULE(spat){
 		.method("collapse", &SpatRasterStack::collapse , "")
 		.method("extractCell", &SpatRasterStack::extractCell, "extractCell")
 		.method("extractVector", &SpatRasterStack::extractVector, "extractVector")
+		.method("crop", &SpatRasterStack::crop, "")
 	;
 }
 

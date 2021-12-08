@@ -231,13 +231,11 @@ class SpatRaster {
 		std::string getSRS(std::string x);
 		bool setSRS(std::string crs);
 
-
 		bool rgb=false;
 		std::vector<int> rgblyrs;
 		bool setRGB(int r, int g, int b, int alpha);
 		std::vector<int> getRGB();
 		void removeRGB();
-		
 
 /*
 #ifdef useGDAL	
@@ -267,8 +265,6 @@ class SpatRaster {
 		bool setValues(std::vector<double> &v, SpatOptions &opt);
 		bool replaceCellValues(std::vector<double> cells, std::vector<double> _values, int ncols);
 		void setRange(SpatOptions &opt);
-
-
 		
 ////////////////////////////////////////////////////
 // property like methods for RasterSources
@@ -693,11 +689,11 @@ class SpatRaster {
 		SpatRaster weighted_mean(SpatRaster w, bool narm, SpatOptions &opt);
 		SpatRaster weighted_mean(std::vector<double> w, bool narm, SpatOptions &opt);
 
-		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
-		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
+//		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
+//		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
 
 		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, SpatOptions &opt);
-		SpatRaster old_warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt);
+//		SpatRaster old_warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt);
 		//SpatRaster tester(bool geom);
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt);
 

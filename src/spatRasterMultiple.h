@@ -41,6 +41,7 @@ class SpatRasterCollection {
 			}
 		}
 		SpatRaster merge(SpatOptions &opt);
+		SpatRaster morph(SpatRaster &x, SpatOptions &opt);
 		SpatRaster mosaic(std::string fun, SpatOptions &opt);
 		SpatRaster summary(std::string fun, SpatOptions &opt);
 		
@@ -160,6 +161,16 @@ class SpatRasterStack {
 			names.push_back(name);
 			long_names.push_back(longname);
 			units.push_back(unit);
+			if (r.hasWarning()) {
+				for (size_t i=0; i<r.msg.warnings.size(); i++) {
+					addWarning(r.msg.warnings[i]);
+				}
+			}
+			if (r.hasError()) {
+				setError(r.msg.getError());
+				return false;
+			}
+			
 			return true;
 		};
 		
@@ -198,6 +209,22 @@ class SpatRasterStack {
 					out.push_back(ds[x[i]], names[i], long_names[i], units[i], true);
 				} 				
 			} 
+			return out;
+		}
+
+		SpatRasterStack crop(SpatExtent e, std::string snap, SpatOptions &opt) {
+			SpatRasterStack out;
+			std::vector<std::string> ff = opt.get_filenames();
+			if (ff.size() != ds.size()) {
+				opt.set_filenames({""});
+				opt.ncopies *= ds.size();
+			}
+			for (size_t i=0; i<ds.size(); i++) {
+				out.push_back(ds[i].crop(e, snap, opt), names[i], long_names[i], units[i], true);
+				if (has_error()) {
+					return(out);
+				}
+			}
 			return out;
 		}
 		
