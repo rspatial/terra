@@ -39,7 +39,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 \S4method{rast}{matrix}(x, type="", crs="", digits=6, extent=NULL)
 
-\S4method{rast}{data.frame}(x, type="", crs="", digits=6)
+\S4method{rast}{data.frame}(x, type="xyz", crs="", digits=6, extent=NULL)
 
 \S4method{rast}{list}(x)
 
@@ -98,6 +98,16 @@ s <- rast(system.file("ex/logo.tif", package="terra"))
 
 # Create a skeleton with no associated cell values
 rast(s)
+
+# from a matrix 
+m <- matrix(1:25, nrow=5, ncol=5)
+rm <- rast(m)
+
+# from a "xyz" data.frame
+d <- as.data.frame(rm, xy=TRUE)
+head(d)
+rast(d, type="xyz")
+
 }
 
 \keyword{methods}

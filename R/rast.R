@@ -290,7 +290,11 @@ setMethod("rast", signature(x="ANY"),
 )
 
 
-.rastFromXYZ <- function(xyz, digits=6, crs="") {
+.rastFromXYZ <- function(xyz, digits=6, crs="", extent=NULL) {
+
+	if (!is.null(e)) {
+		warn("rast", 'argument "extent" is ignored if type="xyz"')
+	}
 
 	ln <- colnames(xyz)
 	## xyz might not have colnames, or might have "" names
@@ -359,10 +363,7 @@ setMethod("rast", signature(x="matrix"),
 	function(x, type="", crs="", digits=6, extent=NULL) {
 		stopifnot(prod(dim(x)) > 0)
 		if (type == "xyz") {
-			r <- .rastFromXYZ(x, crs=crs, digits=digits)
-			if (!is.null(extent)) {
-				warn("rast", 'argument "extent" is ignored if type="xyz"')
-			}
+			r <- .rastFromXYZ(x, crs=crs, digits=digits, extent=extent)
 		} else {
 			if (is.null(extent)) {
 				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
@@ -377,8 +378,12 @@ setMethod("rast", signature(x="matrix"),
 
 
 setMethod("rast", signature(x="data.frame"),
-	function(x, type="", crs="", digits=6) {
-		rast(as.matrix(x), type=type, crs=crs, digits=digits)
+	function(x, type="", crs="", digits=6, extent=NULL) {
+		if (type == "xyz") {
+			r <- .rastFromXYZ(x, crs=crs, digits=digits, extent=extent)
+		} else {
+			rast(as.matrix(x), type=type, crs=crs, digits=digits, extent=extent)
+		}
 	}
 )
 
