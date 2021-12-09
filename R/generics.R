@@ -649,6 +649,16 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 
 
 
+setMethod("warp", signature(x="SpatRasterCollection"), 
+	function(x, y, filename, ...)  {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$morph(y@ptr, opt)
+		messages(x, "warp")
+	}
+)
+
+
+
 setMethod("rev", signature(x="SpatRaster"), 
 	function(x) { 
 		opt <- spatOptions("", FALSE, list())

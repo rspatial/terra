@@ -2319,7 +2319,16 @@ SpatRaster SpatRasterCollection::morph(SpatRaster &x, SpatOptions &opt) {
 		if (g.compare_geom(ds[i], false, false, 0.01, false, true, true, false)) {
 			out.source.insert(out.source.end(), ds[i].source.begin(), ds[i].source.end());		
 		} else {
-			SpatRaster temp = ds[i].warper(g, "", "bilinear", false, false, opt);			
+			// should first consider whether going up or down in resolution
+			// and perhaps use (dis) aggregate (first)
+			std::vector<bool> hasCats = ds[i].hasCategories();
+			// this should be done by layer
+			bool call = true;
+			for (size_t j=0; j<hasCats.size(); j++) {
+				call = call && hasCats[j];
+			}
+			std::string method = call ? "near" : "bilinear";
+			SpatRaster temp = ds[i].warper(g, "", method, false, false, opt);			
 			out.addSource(temp, false);
 		}
 	}
