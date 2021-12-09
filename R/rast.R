@@ -292,7 +292,7 @@ setMethod("rast", signature(x="ANY"),
 
 .rastFromXYZ <- function(xyz, digits=6, crs="", extent=NULL) {
 
-	if (!is.null(e)) {
+	if (!is.null(extent)) {
 		warn("rast", 'argument "extent" is ignored if type="xyz"')
 	}
 
