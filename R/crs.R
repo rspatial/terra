@@ -180,26 +180,31 @@ setMethod("is.lonlat", signature("SpatRaster"),
 			if (ok && warn) {
 				warn("is.lonlat", "assuming lon/lat crs")
 			}
-			return(ok)
 		} else {
 			ok <- x@ptr$isLonLat()
 			if (ok && global) {
 				ok <- x@ptr$isGlobalLonLat()
 			}
-			return(ok)
+			if ((!ok) && (crs(x) == "")) {
+				ok <- NA
+			}
 		}
+		ok
 	}
 )
 
 
 setMethod("is.lonlat", signature("SpatVector"), 
 	function(x, perhaps=FALSE, warn=TRUE) {
-		ok <- x@ptr$isLonLat()
-		if (ok) return(ok)
 		if (perhaps) {
 			ok <- x@ptr$couldBeLonLat()
 			if (ok && warn) {
 				if (crs(x) == "") warn("is.lonlat", "assuming lon/lat crs")
+			}
+		} else {
+			ok <- x@ptr$isLonLat()
+			if ((!ok) && (crs(x) == "")) {
+				ok <- NA
 			}
 		}
 		ok
