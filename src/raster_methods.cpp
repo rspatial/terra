@@ -2697,7 +2697,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else if ((v[i] < rc[0]) | (v[i] > rc[nr-1])) {
 						v[i] = NAval;
 					} else if (v[i] == rc[nr-1]) {
-						v[i] = nr-1;
+						v[i] = nr-2; // safe because there must be at least 2 classes
 					} else {
 						for (size_t j=1; j<nr; j++) {
 							if (v[i] < rc[j]) {
