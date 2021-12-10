@@ -114,7 +114,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 <dt>ymax</dt>
 <dd><p>maximum y coordinate (top border)</p></dd>
 <dt>crs</dt>
-<dd><p>character. PROJ.4 type description of a Coordinate Reference System (map projection). If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, "+proj=longlat +datum=WGS84" is used</p></dd>
+<dd><p>character. Description of the Coordinate Reference System (map projection) in <code>PROJ.4</code>, <code>WKT</code> or <code>authority:code</code> notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned</p></dd>
 <dt>keeptime</dt>
 <dd><p>logical. If <code>FALSE</code> the time stamps are discarded</p></dd>
 <dt>keepunits</dt>

@@ -65,7 +65,10 @@ See describe for getting information about the sub-datasets present in a file.'>
 <span class="fu">sds</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> 
 
 <span class="co"># S4 method for list</span>
-<span class="fu">sds</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<span class="fu">sds</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> 
+
+<span class="co"># S4 method for array</span>
+<span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span>, extent<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -74,8 +77,12 @@ See describe for getting information about the sub-datasets present in a file.'>
 <dd><p>character (filename), or SpatRaster, or list of SpatRaster objects, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatRasterDataset</p></dd>
 <dt>ids</dt>
 <dd><p>optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer</p></dd>
+<dt>crs</dt>
+<dd><p>character. Description of the Coordinate Reference System (map projection) in <code>PROJ.4</code>, <code>WKT</code> or <code>authority:code</code> notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned</p></dd>
+<dt>extent</dt>
+<dd><p><code><a href="SpatExtent-class.html">SpatExtent</a></code></p></dd>
 <dt>...</dt>
-<dd><p>additional arguments. Can be other <code>SpatRaster</code> objects if <code>x</code> is a <code>SpatRaster</code></p></dd>
+<dd><p>additional <code>SpatRaster</code> objects</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -115,6 +122,17 @@ See describe for getting information about the sub-datasets present in a file.'>
 <span class="r-out co"><span class="r-pr">#&gt;</span> names       :   red, green,  blue </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min values  :     0,     0,     0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max values  : 127.5, 127.5, 127.5 </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">sds</span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRasterDataset </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> subdatasets : 3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 3, 3 (nrow, ncol)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> nlyr        : 3, 3, 3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 3, 0, 3  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. :  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source(s)   : memory </span>
 </code></pre></div>
     </div>
   </div>
