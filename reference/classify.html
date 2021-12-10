@@ -70,13 +70,13 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 <dd><p>SpatRaster</p></dd>
 <dt>rcl</dt>
 <dd><p>matrix for classification. This matrix must have 1, 2 or 3 columns. If there are three columns, the first two columns are "from" "to" of the input values, and the third column "becomes" has the new value for that range.</p>  
-<p>The two column matrix ("is", "becomes") can be useful for re-classifying integer values. In that case, the <code>right</code> argument is automatically set to <code>NA</code>.</p>  
+<p>The two column matrix ("is", "becomes") can be useful for classifying integer values. In that case, the <code>right</code> argument is automatically set to <code>NA</code>.</p>  
 <p>A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location inbetween the cut-values.</p>  
 <p>If a single number is provided, that is used to make that number of cuts, at equal intervals between the lowest and highest values of the SpatRaster.</p></dd>
 <dt>include.lowest</dt>
 <dd><p>logical, indicating if a value equal to the lowest value in <code>rcl</code> (or highest value in the second column, for <code>right=FALSE</code>) should be included.</p></dd>
 <dt>right</dt>
-<dd><p>logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa. The default is <code>TRUE</code>. A special case is to use right=NA. In this case both the left and right intervals are open</p></dd>
+<dd><p>logical. If <code>TRUE</code>, the intervals are closed on the right (and open on the left). If <code>FALSE</code> they are open at the right and closed at the left. A special case is to use <code>right=NA</code>. In this case both the left and right intervals are open. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is <code>(0,1] = {x | 0 &lt; x ≤ 1}</code></p></dd>
 <dt>othersNA</dt>
 <dd><p>logical. If <code>TRUE</code>, values that are not matched become <code>NA</code>. If <code>FALSE</code>, they retain their original value.</p></dd>
 <dt>filename</dt>
