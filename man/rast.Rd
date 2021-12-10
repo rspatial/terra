@@ -41,6 +41,8 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 \S4method{rast}{data.frame}(x, type="xyz", crs="", digits=6, extent=NULL)
 
+\S4method{rast}{array}(x, crs="", extent=NULL)
+
 \S4method{rast}{list}(x)
 
 \S4method{rast}{SpatRasterDataset}(x)
