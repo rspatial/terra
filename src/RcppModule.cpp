@@ -610,7 +610,7 @@ RCPP_MODULE(spat){
 		.method("vectDistanceDirect", &SpatRaster::distance_vector) 
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("replaceValues", &SpatRaster::replaceValues, "replace")
-		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")
+		.method("classify", ( SpatRaster (SpatRaster::*)(std::vector<double>, unsigned, unsigned, bool, bool, bool, bool, SpatOptions&) )( &SpatRaster::reclassify), "reclassify")
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange, "selRange")
 		.method("separate", &SpatRaster::separate, "separate")

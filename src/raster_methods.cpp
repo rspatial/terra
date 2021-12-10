@@ -2634,21 +2634,10 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 }
 
 
-void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, unsigned doright, bool lowest, bool othNA) {
+void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, unsigned right_closed, bool lowest, bool othNA) {
 
 	size_t nc = rcl.size(); // should be 2 or 3
-	if (nc == 2) {
-		doright = 3; // should be 2?
-	}
-	bool right = false;
-	bool leftright = false;
-	if (doright > 1) {
-		leftright = true;
-	} else if (doright) {
-		right = true;
-	}
 
-//	bool hasNA = false;
 	double NAval = NAN;
 
 	size_t n = v.size();
@@ -2657,7 +2646,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 	if (nc == 1) {
 		std::vector<double> rc = rcl[0];
 		std::sort(rc.begin(), rc.end());
-		if (right) {   // interval closed at left and right
+		if (right_closed) { 
 			if (lowest)	{
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
@@ -2673,7 +2662,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 						}
 					}
 				}
-			} else {
+			} else { // !lowest
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
@@ -2689,8 +2678,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					}
 				}
 			}
-		} else {
-			if (lowest)	{
+		} else { // left_closed
+			if (lowest)	{ // which means highest in this context
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
@@ -2707,7 +2696,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 						}
 					}
 				}
-			} else {
+			} else { // not highest
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
@@ -2770,7 +2759,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 			}
 		} 
 	
-		if (leftright) {   // interval closed at left and right
+/*
+		if (leftright) {   // interval open at left and right
 
 			for (size_t i=0; i<n; i++) {
 				if (std::isnan(v[i])) {
@@ -2793,7 +2783,9 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					}			
 				}
 			}
-		} else if (right) {  // interval closed at right
+		} else 
+*/			
+		if (right_closed) { 
 				if (lowest) {  // include lowest value (left) of interval
 
 				double lowval = rcl[0][0];
@@ -2829,7 +2821,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					}
 				}
 
-			} else { // !dolowest
+			} else { // !lowest
 					for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						if (hasNAN) {
@@ -2853,7 +2845,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				}
 			}
 
-		} else { // !doright
+		} else { // left closed 
 
 			if (lowest) { // which here means highest because right=FALSE
 
@@ -2987,7 +2979,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 
 
 
-SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, bool bylayer, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	size_t nc = rcl.size();
@@ -3034,10 +3026,23 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 			rcl[0] = seq_steps(mnv, mxv, breaks);
 		}
 		
-		if (rcl[0].size() < 256) {
+		size_t rn = rcl[0].size();
+		if ((rn > 1) && (rn < 256)) {
 			std::vector<std::string> s;
-			for (size_t i=1; i<rcl[0].size(); i++) {
-				s.push_back(double_to_string(rcl[0][i-1]) + " - " + double_to_string(rcl[0][i]));
+			if (brackets) {
+				std::string bleft = ((!right) || lowest) ? "[" : "(";
+				std::string bright = right ? "]" : ")";
+				s.push_back(bleft+ double_to_string(rcl[0][0]) + "–" + double_to_string(rcl[0][1]) + bright);
+				bleft = right ? "(" : "[";
+				for (size_t i=2; i<(rn-1); i++) {
+					s.push_back(bleft + double_to_string(rcl[0][i-1]) + "–" + double_to_string(rcl[0][i]) + bright);
+				}
+				bright = (right || lowest) ? "]" : ")";
+				s.push_back(bleft + double_to_string(rcl[0][rn-2]) + "–" + double_to_string(rcl[0][rn-1]) + bright);
+			} else {
+				for (size_t i=1; i<rn; i++) {
+					s.push_back(double_to_string(rcl[0][i-1]) + " – " + double_to_string(rcl[0][i]));
+				}
 			}
 			for (size_t i=0; i<out.nlyr(); i++) {
 				out.setLabels(i, s);
@@ -3102,7 +3107,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 }
 
 
-SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, bool bylayer, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt) {
 
 	SpatRaster out;
 	if ((rcl.size() % nc) != 0) {
@@ -3121,7 +3126,7 @@ SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned
 		rc[i] = std::vector<double>(rcl.begin()+(i*nr), rcl.begin()+(i+1)*nr);
 	}
 
-	out = reclassify(rc, right, lowest, othersNA, bylayer, opt);
+	out = reclassify(rc, right, lowest, othersNA, bylayer, brackets, opt);
 	return out;
 }
 
@@ -3339,7 +3344,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {
 		std::vector<std::vector<double>> rc = clump_getRCL(rcl, ncps);
-		out = out.reclassify(rc, 3, true, false, false, opt);
+		out = out.reclassify(rc, 3, true, false, false, false, opt);
 	} else if (filename != "") {
 		out = out.writeRaster(opt);
 	}

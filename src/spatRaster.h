@@ -634,8 +634,8 @@ class SpatRaster {
 		void rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, long nl, SpatOptions &opt);
-		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, bool bylayer, SpatOptions &opt);
-		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, bool bylayer, SpatOptions &opt);
+		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt);
+		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt);
 

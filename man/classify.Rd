@@ -19,25 +19,28 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 
 \usage{
 \S4method{classify}{SpatRaster}(x, rcl, include.lowest=FALSE, right=TRUE, 
-     othersNA=FALSE, filename="", ...)
+     othersNA=FALSE, brackets=FALSE, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{rcl}{matrix for classification. This matrix must have 1, 2 or 3 columns. If there are three columns, the first two columns are "from" "to" of the input values, and the third column "becomes" has the new value for that range. 
   
-  The two column matrix ("is", "becomes") can be useful for classifying integer values. In that case, the \code{right} argument is automatically set to \code{NA}.
+  The two column matrix ("is", "becomes") can be useful for classifying integer values. In that case, the arguments \code{right} and \code{include.lowest} are ignored.
   
-  A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location inbetween the cut-values.  
+  A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location in-between the cut-values.  
   
   If a single number is provided, that is used to make that number of cuts, at equal intervals between the lowest and highest values of the SpatRaster.
-  }  
- 
+  } 
+  
   \item{include.lowest}{logical, indicating if a value equal to the lowest value in \code{rcl} (or highest value in the second column, for \code{right=FALSE}) should be included.}
   
- \item{right}{logical. If \code{TRUE}, the intervals are closed on the right (and open on the left). If \code{FALSE} they are open at the right and closed at the left. A special case is to use \code{right=NA}. In this case both the left and right intervals are open. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is \code{(0,1] = {x | 0 < x ≤ 1}}}
+ \item{right}{logical. If \code{TRUE}, the intervals are closed on the right (and open on the left). If \code{FALSE} they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is \code{(0,1] = {x | 0 < x <= 1}}}
  
  \item{othersNA}{logical. If \code{TRUE}, values that are not matched become \code{NA}. If \code{FALSE}, they retain their original value.} 
+
+ \item{brackets}{logical. If \code{TRUE}, the output category descriptions include parenthesis () and brackets [] to indicate whether intervals are closed on the left and/or right } 
+
 
   \item{filename}{character. Output filename}
   \item{...}{Additional arguments for writing files as in \code{\link{writeRaster}}}
