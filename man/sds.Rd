@@ -30,7 +30,7 @@ See \code{\link{describe}} for getting information about the sub-datasets presen
 
 \S4method{sds}{list}(x) 
 
-\S4method{rast}{array}(x, crs="", extent=NULL)
+\S4method{sds}{array}(x, crs="", extent=NULL)
 }
 
 \arguments{

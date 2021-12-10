@@ -391,7 +391,7 @@ setMethod("rast", signature(x="matrix"),
 
 
 setMethod("rast", signature(x="data.frame"),
-	function(x, type="", crs="", digits=6, extent=NULL) {
+	function(x, type="xyz", crs="", digits=6, extent=NULL) {
 		if (type == "xyz") {
 			r <- .rastFromXYZ(x, crs=crs, digits=digits, extent=extent)
 		} else {
