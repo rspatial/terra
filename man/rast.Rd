@@ -21,13 +21,12 @@
 \title{Create a SpatRaster}
 
 \description{
-Methods to create a SpatRaster. These objects can be created from scratch or from a file.
+Methods to create a SpatRaster. These objects can be created from scratch, from a filename, or from another object.
 
-A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers).
+A SpatRaster represents a spatially referenced surface divided into three dimensional cells (rows, columns, and layers). See the \code{\link{SpatRasterDataset}} for higher dimensions.
 
-When a SpatRaster is created from a file, it does not load the cell (pixel) values into memory (RAM). It only reads the basic parameters that describe the SpatRaster such as the number of rows and columns and the coordinate reference system. The actual values will be read, perhaps in chunks -- to avoid memory overflows -- as needed.
+When a SpatRaster is created from a file, it does not load the cell (pixel) values into memory (RAM). It only reads the parameters that describe the geometry of the SpatRaster, such as the number of rows and columns and the coordinate reference system. The actual values will be read when needed.
 }
-
 
 \usage{
 \S4method{rast}{character}(x, subds=0, lyrs=NULL, opts=NULL)

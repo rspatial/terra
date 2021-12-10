@@ -328,7 +328,7 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, filename="", 
 		rcl <- as.matrix(rcl)
 	}
 
-	right <- ifelse(is.na(right), 2, ifelse(right, 1, 0))
+	right <- ifelse(is.na(right), 2, ifelse(isTRUE(right), 1, 0))
 	include.lowest <- as.logical(include.lowest[1])
 
 	opt <- spatOptions(filename, ...)
