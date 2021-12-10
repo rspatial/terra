@@ -503,27 +503,27 @@ setMethod("freq", signature(x="SpatRaster"),
 			} else {
 				v <- matrix(v[[1]], ncol=2, dimnames=list(NULL, c("value", "count")))
 			}
-			ff <- is.factor(x)
-			if (any(ff)) {
-				if (bylayer) {
+			if (bylayer | (nlyr(x) == 1)) {
+				ff <- is.factor(x) 
+				if (any(ff)) {	
+					cgs <- cats(x)
 					v <- data.frame(v)
-					v$label <- ""
-					f <- which(ff)
-					levs <- levels(x)
-					for (i in f) {
-						g <- levs[[i]]
-						k <- v$layer==i
-						v$label[k] <- g[v$value[k] + 1]
+					for (f in which(ff)) {
+						cg <- cgs[[f]]
+						j <- which(v[,1] == f)
+						i <- match(v[j,2], cg[,1])
+						act <- activeCat(x, f) + 1
+						if (!inherits(cg[[act]], "numeric")) {
+							v[j, 2] <- as.character(factor(cg[i, act], levels=unique(cg[[act]])))
+						} else {
+							v[j, 2] <- cg[i, act]				
+						}
 					}
-				} else if (nlyr(x) == 1) {				
-					v <- data.frame(v)
-					g <- levels(x)[[1]]
-					v$label <- g[v$value + 1]
 				}
 			}
 		}
 		if (usenames) {
-			v <- data.frame(v)
+			v <- as.data.frame(v)
 			v$layer <- names(x)[v$layer]
 		}
 		v
