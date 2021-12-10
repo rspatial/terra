@@ -320,7 +320,7 @@ function(x, lower=-Inf, upper=Inf, values=TRUE, ...) {
 )
 
 setMethod("classify", signature(x="SpatRaster"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, brackets=FALSE, filename="", ...) {
+function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, brackets=TRUE, filename="", ...) {
 
 	bylayer = FALSE
 	
