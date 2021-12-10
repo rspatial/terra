@@ -29,8 +29,11 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 		return true;
 	} 
 
-	// this seems rather inefficient for most cases 
-	// where values could simply be appended 
+	if (nlyr() == 1) {
+		source[0].values.insert(source[0].values.end(), vals.begin(), vals.end());
+		return true;
+	}
+
 	if (source[0].values.size() == 0) { // && startrow != 0 && startcol != 0) {
 		source[0].values = std::vector<double>(size(), NAN);
 	}
@@ -238,6 +241,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		}
 	}
 
+	bs = getBlockSize(opt);
 	if (filename != "") {
 		// open GDAL filestream
 		#ifdef useGDAL
@@ -248,13 +252,16 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 		setError("GDAL is not available");
 		return false;
 		#endif
+	} else if ((nlyr() == 1) && (bs.n > 1)) {
+		source[0].values.reserve(ncell());
 	}
+	
 	if (source[0].open_write) {
 		addWarning("file was already open");
 	}
 	source[0].open_write = true;
 	source[0].filename = filename;
-	bs = getBlockSize(opt);
+	//bs = getBlockSize(opt);
     #ifdef useRcpp
 	if (opt.verbose) {
 		std::vector<double> mems = mem_needs(opt); 

@@ -9,40 +9,60 @@ setMethod("hasValues", signature(x="SpatRaster"),
 	}
 )
 
+
+
+
+
+.makeDataFrame <- function(x, v, factors=TRUE, ...) {
+
+	v <- data.frame(v, check.names=FALSE, ...)
+
+	if (factors) {
+		ff <- is.factor(x)
+		if (any(ff)) {
+			ff <- which(ff)
+			cgs <- cats(x)
+			for (f in ff) {
+				cg <- cgs[[f]]
+				i <- match(v[,f], cg[,1])
+				act <- activeCat(x, f) + 1
+				if (!inherits(cg[[act]], "numeric")) {
+					v[[f]] <- factor(cg[i, act], levels=unique(cg[[act]]))
+				} else {
+					v[[f]] <- cg[i, act]				
+				}
+			}
+		}
+	}
+	bb <- is.bool(x)
+	if (any(bb)) {
+		for (b in which(bb)) {
+			v[[b]] = as.logical(v[[b]])
+		}
+	}
+
+	ii <- is.int(x)
+	if (any(ii)) {
+		for (i in which(ii)) {
+			v[[i]] = as.integer(v[[i]])
+		}
+	}
+
+	v
+}
+
+
 setMethod("readValues", signature(x="SpatRaster"), 
 function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...) {
 	stopifnot(row > 0 && nrows > 0)
-	stopifnot(col > 0 && ncols > 0)
-	
+	stopifnot(col > 0 && ncols > 0)	
 	v <- x@ptr$readValues(row-1, nrows, col-1, ncols)
 	messages(x, "readValues")
 	if (dataframe || mat) {
 		v <- matrix(v, ncol = nlyr(x))
 		colnames(v) <- names(x)
-	}
-	if (dataframe) {
-		v <- data.frame(v, ...)
-		ff <- is.factor(x)
-		if (any(ff)) {
-			ff <- which(ff)
-			levs <- levels(x)
-			for (f in ff) {
-				fct <- levs[[f]]
-				v[[f]] = factor(v[[f]], levels=(1:length(fct))-1)
-				levels(v[[f]]) = fct
-			}
-		}
-		bb <- is.bool(x)
-		if (any(bb)) {
-			for (b in bb) {
-				v[[b]] = as.logical(v[[b]])
-			}
-		}
-		ii <- is.int(x)
-		if (any(ii)) {
-			for (i in ii) {
-				v[[i]] = as.integer(v[[i]])
-			}
+		if (dataframe) {
+			return(.makeDataFrame(x, v, factors=TRUE, ...) )
 		}
 	}
 	v

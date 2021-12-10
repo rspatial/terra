@@ -37,39 +37,6 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 
 
 
-.makeDataFrame <- function(x, v, factors=TRUE) {
-	v <- data.frame(v, check.names = FALSE)
-	if (factors) {
-		ff <- is.factor(x)
-		if (any(ff)) {
-			ff <- which(ff)
-			#levs <- levels(x)
-			cgs <- cats(x)
-			for (f in ff) {
-				#lvs <- levs[[f]]
-				cg <- cgs[[f]]
-				i <- match(v[,f], cg[,1])
-				act <- activeCat(x, f) + 1
-				#v[[f]] = factor(v[[f]], levels=(1:length(lvs))-1)
-				#levels(v[[f]]) = levs[[f]]
-				
-				if (!inherits(cg[[act]], "numeric")) {
-					v[[f]] <- factor(cg[i, act], levels=unique(cg[[act]]))
-				} else {
-					v[[f]] <- cg[i, act]				
-				}
-			}
-		}
-	}
-	b <- is.bool(x)
-	if (any(b)) {
-		for (i in which(b)) {
-			v[[i]] <- as.logical(v[[i]])
-		}
-	}
-
-	v
-}
 
 setlabs <- function(x, labs) {
 	x[ (x<1) | (x>length(labs))] <- NA

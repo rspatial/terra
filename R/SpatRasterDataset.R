@@ -75,6 +75,31 @@ setMethod("sds", signature(x="list"),
 	}
 )
 
+
+setMethod("sds", signature(x="array"),
+	function(x, crs="", extent=NULL) {
+		dims <- dim(x)
+		if (length(dims) <= 3) {
+			return(sds(rast(x, crs=crs, extent=extent)))
+		}
+		if (length(dims) > 4) {
+			if (length(dims) == 5) {
+				if (dims[5] == 1) {
+					x <- x[,,,,1]
+				} else {
+					error("sds,array", "cannot handle an array with 5 dimensions")
+				}
+			} else {
+				error("sds,array", "cannot handle an array with more than 4 dimensions")
+			}
+		}
+		r <- lapply(1:dims[4], function(i) rast(x[,,,i], crs=crs, extent=extent))
+		sds(r)
+	}
+)
+
+
+
 setMethod("sds", signature(x="stars"),
 	function(x) {
 		s <- from_stars(x) 

@@ -272,7 +272,15 @@ setMethod("rast", signature(x="array"),
 	function(x, crs="", extent=NULL) {
 		dims <- dim(x)
 		if (length(dims) > 3) {
-			error("rast,array", "cannot handle an array with more than 3 dimensions")
+			if (length(dims) == 4) {
+				if (dims[4] == 1) {
+					x <- x[,,,1]
+				} else {
+					error("rast,array", "rast cannot handle an array with 4 dimensions (try 'sds')")
+				}
+			} else {
+				error("rast,array", "cannot handle an array with more than 3 dimensions")
+			}
 		}
 		r <- methods::new("SpatRaster")
 		if (!is.null(extent)) {
