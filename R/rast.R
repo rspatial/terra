@@ -269,13 +269,18 @@ setMethod("rast", signature(x="SpatRasterDataset"),
 
 
 setMethod("rast", signature(x="array"),
-	function(x, ...) {
+	function(x, crs="", extent=NULL) {
 		dims <- dim(x)
 		if (length(dims) > 3) {
 			error("rast,array", "cannot handle an array with more than 3 dimensions")
 		}
 		r <- methods::new("SpatRaster")
-		r@ptr <- SpatRaster$new(dims, c(0, dims[2], 0, dims[1]), "")
+		if (!is.null(extent)) {
+			e <- as.vector(extent)
+		} else {
+			e <- c(0, dims[2], 0, dims[1])
+		}
+		r@ptr <- SpatRaster$new(dims, e, crs)
 		values(r) <- x
 		messages(r, "rast")
 	}
