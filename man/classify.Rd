@@ -39,7 +39,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
  
  \item{othersNA}{logical. If \code{TRUE}, values that are not matched become \code{NA}. If \code{FALSE}, they retain their original value.} 
 
- \item{brackets}{logical. If \code{TRUE}, the output category descriptions include parenthesis () and brackets [] to indicate whether intervals are closed on the left and/or right } 
+ \item{brackets}{logical. If \code{TRUE}, intervals are have parenthesis or brackets around them to indicate whether they are open or closed. Only applies if \code{rcl} is a vector (or single column matrix)} 
 
 
   \item{filename}{character. Output filename}
@@ -71,8 +71,9 @@ rclmat <- matrix(m, ncol=3, byrow=TRUE)
 rc1 <- classify(r, rclmat, include.lowest=TRUE)
 
 ## cuts
-# equivalent to the above
-rc2 <- classify(r, c(0, 0.25, 0.5, 1), include.lowest=TRUE)
+# equivalent to the, but now a categorical SpatRaster is returned 
+rc2 <- classify(r, c(0, 0.25, 0.5, 1), include.lowest=TRUE, brackets=TRUE)
+freq(rc2)
 
 ## is-becomes 
 x <- round(r*3)

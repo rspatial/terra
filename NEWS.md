@@ -10,6 +10,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - argument `main` was ignored in `density` when using a single layer SpatRaster [#424](https://github.com/rspatial/terra/issues/424) by dvictori
 - Summary type math functions such as `min` and `mean`, when used with multiple SpatRasters and numbers, ignored additional SpatRasters [#426](https://github.com/rspatial/terra/issues/426) by Zhuonan Wang
 - names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) [#430](https://github.com/rspatial/terra/issues/430) by Dan Baston
+- `classify` with `right=FALSE` ignored `include.lowest=TRUE` [#442](https://github.com/rspatial/terra/issues/442) by Alex Ilich
 
 
 ## enhancements 
@@ -22,7 +23,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - It now possible to a SpatRaster with values to a SpatRaster with no values, even if it has a different geometry [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
 - `rast<filename>` has a new argument `lyrs` to subset the layers and open the file in one step.
 - `rast<array>` now has a crs and extent argument. [439](https://github.com/rspatial/terra/issues/439) by RS-eco
-
+- `classify` has a new argument `brackets` to show if a side of an interval is open or closed.
 
 ## new 
 
