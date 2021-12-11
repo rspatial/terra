@@ -20,7 +20,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-2</span>
       </span>
     </div>
 
@@ -76,7 +76,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 <dt>include.lowest</dt>
 <dd><p>logical, indicating if a value equal to the lowest value in <code>rcl</code> (or highest value in the second column, for <code>right=FALSE</code>) should be included.</p></dd>
 <dt>right</dt>
-<dd><p>logical. If <code>TRUE</code>, the intervals are closed on the right (and open on the left). If <code>FALSE</code> they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is <code>(0,1] = {x | 0 &lt; x &lt;= 1}</code></p></dd>
+<dd><p>logical. If <code>TRUE</code>, the intervals are closed on the right (and open on the left). If <code>FALSE</code> they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is <code>(0,1] = {x | 0 &lt; x &lt;= 1}</code>. You can also close both sides with <code>right=NA</code>, that is only meaningful if you "from-to-becomes" classification with integers. For example to classify 1-5 -&gt; 1, 6-10 -&gt; 2, 11-15 -&gt; 3. That may be easier to read and write than the equivalent 1-5 -&gt; 1, 5-10 -&gt; 2, 10-15 -&gt; 3 with <code>right=TRUE</code> and <code>include.lowest=TRUE</code></p></dd>
 <dt>othersNA</dt>
 <dd><p>logical. If <code>TRUE</code>, values that are not matched become <code>NA</code>. If <code>FALSE</code>, they retain their original value.</p></dd>
 <dt>brackets</dt>
