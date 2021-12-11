@@ -77,11 +77,13 @@
 <code>as.data.frame&lt;SpatRaster&gt; or &lt;SpatVector&gt;</code> are now also implemented as S3 methods to assure correct dispatch by other S3 methods such as <code>data.table::as.data.table</code>. See <a href="https://github.com/rspatial/terra/issues/284" class="external-link">#284</a> by Patrick Schratz</li>
 <li>
 <code>crs</code> now shows the correct authority if it is not EPSG. <a href="https://github.com/rspatial/terra/issues/419" class="external-link">#419</a> by Matthew Williamson</li>
-<li>It now possible to a SpatRaster with values to a SpatRaster with no values, even if it has a different geometry <a href="https://github.com/rspatial/terra/issues/421" class="external-link">#421</a> by Alex Ilich.</li>
+<li>It now possible to add a SpatRaster to an empty SpatRaster (with no values), even if it has a different geometry, ignoring the empty SpatRaster <a href="https://github.com/rspatial/terra/issues/421" class="external-link">#421</a> by Alex Ilich.</li>
 <li>
 <code>rast&lt;filename&gt;</code> has a new argument <code>lyrs</code> to subset the layers and open the file in one step.</li>
 <li>
 <code>rast&lt;array&gt;</code> now has a crs and extent argument. <a href="https://github.com/rspatial/terra/issues/439" class="external-link">439</a> by RS-eco</li>
+<li>
+<code>type="xyz"</code> is now default in <code>rast&lt;data.frame&gt;</code> <a href="https://github.com/rspatial/terra/issues/438" class="external-link">438</a> by RS-eco</li>
 <li>
 <code>classify</code> has a new argument <code>brackets</code> to show if a side of an interval is open or closed.</li>
 </ul></div>
