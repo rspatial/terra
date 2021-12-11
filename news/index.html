@@ -62,6 +62,8 @@
 <li>argument <code>main</code> was ignored in <code>density</code> when using a single layer SpatRaster <a href="https://github.com/rspatial/terra/issues/424" class="external-link">#424</a> by dvictori</li>
 <li>Summary type math functions such as <code>min</code> and <code>mean</code>, when used with multiple SpatRasters and numbers, ignored additional SpatRasters <a href="https://github.com/rspatial/terra/issues/426" class="external-link">#426</a> by Zhuonan Wang</li>
 <li>names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) <a href="https://github.com/rspatial/terra/issues/430" class="external-link">#430</a> by Dan Baston</li>
+<li>
+<code>classify</code> with <code>right=FALSE</code> ignored <code>include.lowest=TRUE</code> <a href="https://github.com/rspatial/terra/issues/442" class="external-link">#442</a> by Alex Ilich</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-5-1">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-1"></a></h3>
@@ -80,6 +82,8 @@
 <code>rast&lt;filename&gt;</code> has a new argument <code>lyrs</code> to subset the layers and open the file in one step.</li>
 <li>
 <code>rast&lt;array&gt;</code> now has a crs and extent argument. <a href="https://github.com/rspatial/terra/issues/439" class="external-link">439</a> by RS-eco</li>
+<li>
+<code>classify</code> has a new argument <code>brackets</code> to show if a side of an interval is open or closed.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-5-1">new<a class="anchor" aria-label="anchor" href="#new-1-5-1"></a></h3>
