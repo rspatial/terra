@@ -131,15 +131,16 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 			*/
 	
 	} else { //	no window
-		if (row==0 && nrows==nrow() && col==0 && ncols==ncol()) {
+		size_t nc = ncol();
+		if (row==0 && nrows==nrow() && col==0 && ncols==nc) {
 			out.insert(out.end(), source[src].values.begin(), source[src].values.end());
 		} else {
 			double ncells = ncell();
-			if (col==0 && ncols==ncol()) {
+			if (col==0 && ncols==nc) {
 				for (size_t lyr=0; lyr < nl; lyr++) {
 					size_t add = ncells * lyr;
-					size_t a = add + row * ncol();
-					size_t b = a + nrows * ncol();
+					size_t a = add + row * nc;
+					size_t b = a + nrows * nc;
 					out.insert(out.end(), source[src].values.begin()+a, source[src].values.begin()+b);
 				}
 			} else {
@@ -148,7 +149,7 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 				for (size_t lyr=0; lyr < nl; lyr++) {
 					size_t add = ncells * lyr;
 					for (size_t r = row; r < endrow; r++) {
-						size_t a = add + r * ncol();
+						size_t a = add + r * nc;
 						out.insert(out.end(), source[src].values.begin()+a+col, source[src].values.begin()+a+endcol);
 					}
 				}
@@ -186,6 +187,7 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 
 	unsigned n = nsrc();
 
+	out.reserve(nrows * ncols * nlyr());
 	for (size_t src=0; src<n; src++) {
 		if (source[src].memory) {
 			readChunkMEM(out, src, row, nrows, col, ncols);
@@ -227,6 +229,40 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 		}
 	}
 	return out;
+}
+
+void SpatRaster::readValues2(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols){
+
+	if (((row + nrows) > nrow()) || ((col + ncols) > ncol())) {
+		setError("invalid rows/columns");
+		return;
+	}
+
+	if ((nrows==0) | (ncols==0)) {
+		return;
+	}
+
+	if (!hasValues()) {
+		out.resize(nrows * ncols * nlyr(), NAN);
+		addWarning("raster has no values");
+		return; // or NAs?
+	}
+
+
+	unsigned n = nsrc();
+	out.reserve(nrows * ncols * nlyr());
+
+	for (size_t src=0; src<n; src++) {
+		if (source[src].memory) {
+			readChunkMEM(out, src, row, nrows, col, ncols);
+		} else {
+			// read from file
+			#ifdef useGDAL
+			readChunkGDAL(out, src, row, nrows, col, ncols);
+			#endif // useGDAL
+		}
+	}
+	return;
 }
 
 

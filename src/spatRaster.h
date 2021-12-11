@@ -428,6 +428,7 @@ class SpatRaster {
 		bool valid_sources(bool files=true, bool rotated=true);
 		bool readStart();
 		std::vector<double> readValues(size_t row, size_t nrows, size_t col, size_t ncols);
+		void readValues2(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols);
 		void readChunkMEM(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 
 		std::vector<double> readBlock(BlockSize bs, unsigned i);
