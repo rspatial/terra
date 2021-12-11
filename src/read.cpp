@@ -60,25 +60,30 @@ bool SpatRaster::readStop() {
 
 
 // BSQ
-std::vector<double> SpatRaster::readBlock(BlockSize bs, unsigned i){
-	return readValues(bs.row[i], bs.nrows[i], 0, ncol());
+
+std::vector<double> SpatRaster::readBlock_old(BlockSize bs, unsigned i){
+	std::vector<double> v;
+	readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
+	return v;
 }
 
 
+
 // 2D BSQ
-std::vector<std::vector<double>> SpatRaster::readBlock2(BlockSize bs, unsigned i) {
-	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
-	std::vector<std::vector<double>> v(nlyr());
+void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, unsigned i) {
+	std::vector<double> x;
+	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
+	v.resize(nlyr());
 	size_t off = bs.nrows[i] * ncol();
 	for (size_t i=0; i<nlyr(); i++) {
 		v[i] = std::vector<double>(x.begin()+(i*off), x.begin()+((i+1)*off));
 	}
-	return(v);
 }
 
 // BIP
 std::vector<double> SpatRaster::readBlockIP(BlockSize bs, unsigned i) {
-	std::vector<double> x = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+	std::vector<double> x; 
+	readValues(x, bs.row[i], bs.nrows[i], 0, ncol());
 	std::vector<double> v(x.size());
 	size_t off = bs.nrows[i] * ncol();
 	size_t nl = nlyr();
@@ -158,9 +163,9 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 	}
 }
 
+	
 
-
-std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col, size_t ncols){
+std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col, size_t ncols){
 
 	std::vector<double> out;
 
@@ -231,7 +236,7 @@ std::vector<double> SpatRaster::readValues(size_t row, size_t nrows, size_t col,
 	return out;
 }
 
-void SpatRaster::readValues2(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols){
+void SpatRaster::readValues(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols){
 
 	if (((row + nrows) > nrow()) || ((col + ncols) > ncol())) {
 		setError("invalid rows/columns");
@@ -250,6 +255,7 @@ void SpatRaster::readValues2(std::vector<double> &out, size_t row, size_t nrows,
 
 
 	unsigned n = nsrc();
+	out.resize(0);
 	out.reserve(nrows * ncols * nlyr());
 
 	for (size_t src=0; src<n; src++) {
@@ -309,11 +315,11 @@ std::vector<double> SpatRaster::getValues(long lyr, SpatOptions &opt) {
 	if (hw) {
 		if (!readStart()) return out;
 		if (lyr < 0) { // default; read all
-			out = readValues(0, nrow(), 0, ncol());
+			readValues(out, 0, nrow(), 0, ncol());
 		} else {
 			unsigned lyrnr = lyr;
 			SpatRaster sub = subset({lyrnr}, opt);
-			out = sub.readValues(0, nrow(), 0, ncol());
+			sub.readValues(out, 0, nrow(), 0, ncol());
 		}
 		readStop();
 		return out;
@@ -364,7 +370,7 @@ bool SpatRaster::getValuesSource(size_t src, std::vector<double> &out) {
 	if (hw) {
 		SpatRaster sub = SpatRaster(source[src]);
 		if (!readStart()) return false;
-		out = sub.readValues(0, nrow(), 0, ncol());
+		sub.readValues(out, 0, nrow(), 0, ncol());
 		readStop();
 		return true;
 	}

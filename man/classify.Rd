@@ -35,7 +35,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
   
   \item{include.lowest}{logical, indicating if a value equal to the lowest value in \code{rcl} (or highest value in the second column, for \code{right=FALSE}) should be included.}
   
- \item{right}{logical. If \code{TRUE}, the intervals are closed on the right (and open on the left). If \code{FALSE} they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is \code{(0,1] = {x | 0 < x <= 1}}}
+ \item{right}{logical. If \code{TRUE}, the intervals are closed on the right (and open on the left). If \code{FALSE} they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is \code{(0,1] = {x | 0 < x <= 1}}. You can also close both sides with \code{right=NA}, that is only meaningful if you "from-to-becomes" classification with integers. For example to classify 1-5 -> 1, 6-10 -> 2, 11-15 -> 3. That may be easier to read and write than the equivalent 1-5 -> 1, 5-10 -> 2, 10-15 -> 3 with \code{right=TRUE} and \code{include.lowest=TRUE}}
  
  \item{othersNA}{logical. If \code{TRUE}, values that are not matched become \code{NA}. If \code{FALSE}, they retain their original value.} 
 

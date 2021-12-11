@@ -70,7 +70,8 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 		readnrows = nr-startrow;
 		endoff = readnrows - (nrows+startoff);
 	}	
-	std::vector<double> d = readValues(startrow, readnrows, 0, nc);
+	std::vector<double> d;
+	readValues(d, startrow, readnrows, 0, nc);
 
 //	get_focal(f, d, nrows, nc, w[0], w[1], offset, endoff, fillvalue);
 //  get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
@@ -508,10 +509,10 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 		std::vector<double> vin, vincomb;
 		size_t off=0;
 		if (nl > 1) {
-			vincomb = readValues(rstart, rnrows, 0, nc);
+			readValues(vincomb, rstart, rnrows, 0, nc);
 			off = nc * out.bs.nrows[i];
 		} else {
-			vin = readValues(rstart, rnrows, 0, nc);
+			readValues(vin, rstart, rnrows, 0, nc);
 		}
 		for (size_t lyr=0; lyr<nl; lyr++) {
 			vout.clear();

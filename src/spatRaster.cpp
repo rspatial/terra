@@ -1724,8 +1724,8 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
 	size_t nc = ncol();
 	unsigned nl = nlyr();
 	for (size_t i = 0; i < bs.n; i++) {
-		v = readValues(bs.row[i], bs.nrows[i], 0, nc);
-         size_t off1 = (bs.row[i] * nc);
+		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
+        size_t off1 = (bs.row[i] * nc);
  		size_t vnc = bs.nrows[i] * nc;
 		if (narm) {
 			for (size_t j=0; j<vnc; j++) {

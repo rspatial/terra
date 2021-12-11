@@ -323,17 +323,16 @@ setMethod("classify", signature(x="SpatRaster"),
 function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, brackets=TRUE, filename="", ...) {
 
 	bylayer = FALSE
-	
+
 	if (is.data.frame(rcl)) {
 		rcl <- as.matrix(rcl)
 	}
 
-#	right <- ifelse(is.na(right), 2, ifelse(isTRUE(right), 1, 0))
-	right <- isTRUE(right)
+	right <- ifelse(is.na(right), 2, ifelse(isTRUE(right), 1, 0))
 	include.lowest <- as.logical(include.lowest[1])
 
 	opt <- spatOptions(filename, ...)
-    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right[1], include.lowest[1], othersNA[1], bylayer[1], brackets[1], opt)
+    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA[1], bylayer[1], brackets[1], opt)
 	messages(x, "classify")
 }
 )

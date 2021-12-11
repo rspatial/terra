@@ -427,12 +427,16 @@ class SpatRaster {
 
 		bool valid_sources(bool files=true, bool rotated=true);
 		bool readStart();
-		std::vector<double> readValues(size_t row, size_t nrows, size_t col, size_t ncols);
-		void readValues2(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols);
+		std::vector<double> readValuesR(size_t row, size_t nrows, size_t col, size_t ncols);
+		void readValues(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols);
 		void readChunkMEM(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 
-		std::vector<double> readBlock(BlockSize bs, unsigned i);
-		std::vector<std::vector<double>> readBlock2(BlockSize bs, unsigned i);
+		std::vector<double> readBlock_old(BlockSize bs, unsigned i);
+		void readBlock(std::vector<double> &v, BlockSize bs, unsigned i){ // inline
+			readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
+		}
+
+		void readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, unsigned i);
 		std::vector<double> readBlockIP(BlockSize bs, unsigned i);		
 		std::vector<double> readExtent(SpatExtent e);
 		bool readStop();
@@ -635,8 +639,8 @@ class SpatRaster {
 		void rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, long nl, SpatOptions &opt);
-		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned right, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt);
-		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned right, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt);
+		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt);
+		SpatRaster reclassify(std::vector<double> rcl, unsigned nc, unsigned openclosed, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<std::vector<double>> groups, std::vector<double> id, SpatOptions &opt);
 		//SpatRaster classify_layers(std::vector<double> groups, unsigned nc, std::vector<double> id, SpatOptions &opt);
 

@@ -9,7 +9,6 @@
 \alias{Compare,numeric,SpatRaster-method}
 \alias{Compare,SpatRaster,numeric-method}
 \alias{Compare,SpatRaster,character-method}
-\alias{Compare,SpatRaster,math-method}
 
 \alias{Logic,SpatRaster,SpatRaster-method}
 \alias{Logic,SpatRaster,numeric-method}

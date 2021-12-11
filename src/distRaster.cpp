@@ -99,7 +99,7 @@ SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points
 		std::iota(cells.begin(), cells.end(), s);
 		
 		if (gtype != "points") {
-			v = x.readBlock(out.bs, i);
+			x.readBlock(v, out.bs, i);
 			for (size_t j=0; j<v.size(); j++) {
 				if (!std::isnan(v[j])) {
 					cells[j] = -1;
@@ -561,7 +561,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 //	bool lonlat = is_lonlat(); 
 	size_t nc = ncol();
 	for (size_t i = 0; i < first.bs.n; i++) {
-        v = readBlock(first.bs, i);
+        readBlock(v, first.bs, i);
 //		if (lonlat) {			
 //			double lat = yFromRow(first.bs.row[i]);
 //			d = broom_dist_geo(v, above, res, first.bs.nrows[i], nc, lat, -1);
@@ -585,7 +585,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		return out;
 	}
 	for (int i = out.bs.n; i>0; i--) {
-        v = readBlock(out.bs, i-1);
+        readBlock(v, out.bs, i-1);
 		std::reverse(v.begin(), v.end());
 //		if (lonlat) {			
 //			double lat = yFromRow(out.bs.row[i-1] + out.bs.nrows[i-1] - 1);
@@ -593,7 +593,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 //		} else {
 			d = broom_dist_planar(v, above, res, out.bs.nrows[i-1], nc, m);
 //		}
-		vv = first.readBlock(out.bs, i-1);
+		first.readBlock(vv, out.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		if (!out.writeValues(vv, out.bs.row[i-1], out.bs.nrows[i-1], 0, nc)) return out;
 	}
@@ -760,20 +760,20 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		//bool after = false;
 		if (i == 0) {
 			if (out.bs.n == 1) {
-				v = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
+				readValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc);
 				addrowcol(v, nr, nc, true, true, true);			
 			} else {
-				v = readValues(out.bs.row[i], out.bs.nrows[i]+1, 0, nc);
+				readValues(v, out.bs.row[i], out.bs.nrows[i]+1, 0, nc);
 				addrowcol(v, nr, nc, true, false, true);			
 				//after = true;
 			}	
 		} else {
 			//before = true;
 			if (i == out.bs.n) {
-				v = readValues(out.bs.row[i]-1, out.bs.nrows[i]+1, 0, nc);
+				readValues(v, out.bs.row[i]-1, out.bs.nrows[i]+1, 0, nc);
 				addrowcol(v, nr, nc, false, true, true);			
 			} else {
-				v = readValues(out.bs.row[i]-1, out.bs.nrows[i]+2, 0, nc);
+				readValues(v, out.bs.row[i]-1, out.bs.nrows[i]+2, 0, nc);
 				addrowcol(v, nr, nc, false, false, true);			
 				//after = true;
 			}
@@ -1467,7 +1467,8 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 			}
 		} else {
 			for (size_t i=0; i<bs.n; i++) {
-				std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+				std::vector<double> v;
+				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 				size_t blockoff = bs.nrows[i] * nc;
 				for (size_t lyr=0; lyr<nlyr(); lyr++) {
 					size_t lyroff = lyr * blockoff;
@@ -1509,7 +1510,8 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 				p = p.project("EPSG:4326");
 				std::vector<double> par = p.area(unit, true, {});
 			
-				std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+				std::vector<double> v;
+				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 				unsigned off = bs.nrows[i] * ncol() ;
 				for (size_t lyr=0; lyr<nlyr(); lyr++) {
 					unsigned offset = lyr * off;
@@ -1533,7 +1535,8 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 			out[0] = ncell() * ar;
 		} else {
 			for (size_t i=0; i<bs.n; i++) {
-				std::vector<double> v = readValues(bs.row[i], bs.nrows[i], 0, ncol());
+				std::vector<double> v;
+				readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 				unsigned off = bs.nrows[i] * ncol() ;
 				for (size_t lyr=0; lyr<nlyr(); lyr++) {
 					unsigned offset = lyr * off;
@@ -1998,7 +2001,8 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 	
 	std::vector<double> y;
 	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> d = readValues(out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		std::vector<double> d;
+		readValues(d, out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		if (lonlat && aspslope) {
 			std::vector<int_64> rows(out.bs.nrows[i]);
 			std::iota(rows.begin(), rows.end(), out.bs.row[i]);
