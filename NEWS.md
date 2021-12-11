@@ -20,7 +20,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `aggregate` now does not show a progress bar in all cases [#249](https://github.com/rspatial/terra/issues/249) by Lachlan
 - `as.data.frame<SpatRaster> or <SpatVector>` are now also implemented as S3 methods to assure correct dispatch by other S3 methods such as `data.table::as.data.table`. See [#284](https://github.com/rspatial/terra/issues/284) by Patrick Schratz
 - `crs` now shows the correct authority if it is not EPSG. [#419](https://github.com/rspatial/terra/issues/419) by Matthew Williamson
-- It now possible to a SpatRaster with values to a SpatRaster with no values, even if it has a different geometry [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
+- It now possible to add a SpatRaster to an empty SpatRaster (with no values), even if it has a different geometry, ignoring the empty SpatRaster [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
 - `rast<filename>` has a new argument `lyrs` to subset the layers and open the file in one step.
 - `rast<array>` now has a crs and extent argument. [439](https://github.com/rspatial/terra/issues/439) by RS-eco
 - `type="xyz"` is now default in `rast<data.frame>` [438](https://github.com/rspatial/terra/issues/438) by RS-eco

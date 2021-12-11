@@ -11,7 +11,9 @@ mosaic SpatRasters
 }
 
 \description{
-mosaic SpatRasters to form a new SpatRaster object with a larger spatial extent. Unlike with \code{\link{merge}}, values on overlapping areas are averaged. 
+Combine adjacent and (partly) overlapping SpatRasters to form a single new SpatRaster. Values in overlapping cells are averaged. 
+
+This method is similar to the simpler, but faster \code{\link{merge}} method. 
 }
 
 \usage{
