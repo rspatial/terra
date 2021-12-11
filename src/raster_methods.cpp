@@ -1432,7 +1432,6 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 	opt.ncopies = 2*fact[0]*fact[1]*fact[2];
 	BlockSize bs = getBlockSize(opt);
 	//opt.set_blocksizemp();
-	std::vector<double> v, vout;
 	unsigned nc = ncol();
 	unsigned nl = nlyr();
 	std::vector<double> newrow(nc*fact[1]);
@@ -1446,8 +1445,8 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 		return out;
 	}
 	for (size_t i = 0; i < bs.n; i++) {
+		std::vector<double> v, vout;
 		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
-		vout.resize(0);
 		vout.reserve(v.size() * fact[0] * fact[1] * fact[2]);
 
 		for (size_t lyr=0; lyr<nl; lyr++) {
@@ -1470,7 +1469,6 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 		}
 		if (!out.writeValues(vout, bs.row[i]*fact[0], bs.nrows[i]*fact[0], 0, out.ncol())) return out;
 	}
-	vout.resize(0);
 	out.writeStop();
 	readStop();
 	return(out);
@@ -2056,7 +2054,6 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 				b.insert(b.end(), v.begin(), v.end());
 			}
 			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-			b.resize(0);
 		}
 	}
 	out.writeStop();
@@ -2085,7 +2082,7 @@ SpatRaster SpatRaster::reverse(SpatOptions &opt) {
 		size_t ii = out.bs.n - 1 - i;
 		std::vector<double> a, b;
 		readBlock(a, out.bs, ii);
-		b.resize(a.size());
+		b.reserve(a.size());
 		unsigned lyrrows = nl * out.bs.nrows[ii];
 		for (size_t j=0; j < lyrrows; j++) {
 			unsigned start = (lyrrows - 1 - j) * nc;
@@ -2956,7 +2953,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		size_t nlyr = out.nlyr();
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v; 
-		readBlock(v, out.bs, i);
+			readBlock(v, out.bs, i);
 			size_t vs = v.size();
 			v.reserve(vs * nlyr);
 			for (size_t lyr = 1; lyr < nlyr; lyr++) {

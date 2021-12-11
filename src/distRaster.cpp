@@ -1366,9 +1366,11 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 		size_t nc = out.ncol();
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
+			v.reserve(out.bs.nrows[i] * nc);
+			size_t r = out.bs.row[i];
 			for (size_t j=0; j<out.bs.nrows[i]; j++) {
-				size_t r = out.bs.row[i] + j;
 				v.insert(v.end(), nc, a[r]);
+				r++;
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 		}

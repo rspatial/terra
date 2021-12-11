@@ -511,6 +511,7 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 		if (nl > 1) {
 			readValues(vincomb, rstart, rnrows, 0, nc);
 			off = nc * out.bs.nrows[i];
+			voutcomb.reserve(vincomb.size());
 		} else {
 			readValues(vin, rstart, rnrows, 0, nc);
 		}
