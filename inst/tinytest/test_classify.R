@@ -21,6 +21,4 @@ expect_equal(as.vector(values(rc)), c(0, 1, 1, 2, 3, 3, 3, 3, 3))
 rc <- classify(r, rclmat, right=TRUE, include.lowest=TRUE)
 expect_equal(as.vector(values(rc)), c(1, 1, 1, 2, 3, 3, 3, 3, 3))
 
-rc <- classify(r, rclmat, right=NA)
-expect_equal(as.vector(values(rc)), c(1, 1, 1, 2, 3, 3, 3, 3, 3))
  

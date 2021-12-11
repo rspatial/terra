@@ -23,6 +23,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - It now possible to a SpatRaster with values to a SpatRaster with no values, even if it has a different geometry [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
 - `rast<filename>` has a new argument `lyrs` to subset the layers and open the file in one step.
 - `rast<array>` now has a crs and extent argument. [439](https://github.com/rspatial/terra/issues/439) by RS-eco
+- `type="xyz"` is now default in `rast<data.frame>` [438](https://github.com/rspatial/terra/issues/438) by RS-eco
 - `classify` has a new argument `brackets` to show if a side of an interval is open or closed.
 
 ## new 
