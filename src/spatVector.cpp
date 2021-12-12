@@ -680,6 +680,18 @@ void SpatVector::setPointsGeometry(std::vector<double> &x, std::vector<double> &
 }
 
 
+
+void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::string crs) {
+	if (x.nrow() == 0) return;
+	if ((x.itype[geo[0]] != 0) || (x.itype[geo[1]] != 0)) {
+		setError("coordinates must be numeric");		
+	}	
+	setPointsGeometry(x.dv[x.iplace[geo[0]]], x.dv[x.iplace[geo[1]]]);
+	setSRS( {crs});
+	df = x;
+}
+
+
 SpatVector SpatVector::subset_rows(std::vector<int> range) {
 
 	SpatVector out;
