@@ -25,6 +25,9 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `rast<array>` now has a crs and extent argument. [439](https://github.com/rspatial/terra/issues/439) by RS-eco
 - `type="xyz"` is now default in `rast<data.frame>` [438](https://github.com/rspatial/terra/issues/438) by RS-eco
 - `classify` has a new argument `brackets` to show if a side of an interval is open or closed.
+- further support for categorical data in `freq` and `as.data.frame`  [#441](https://github.com/rspatial/terra/issues/441) ngould7
+- speed up in processing in multi-layer in memory data [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
+
 
 ## new 
 
