@@ -123,8 +123,8 @@ setMethod("vect", signature(x="matrix"),
 
 		if (ncol(x) == 2) { 
 			lonlat <- .checkXYnames(colnames(x))
-			if (type == "points") {	# treat as unique points
-				p@ptr$setGeometry(type, 1:nr, rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
+			if (type == "points") {	
+				p@ptr$setPointsGeometry(x[,1], x[,2])
 			} else {
 				p@ptr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
 			}

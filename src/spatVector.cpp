@@ -18,6 +18,7 @@
 #include "spatVector.h"
 #include <numeric>
 #include "math_utils.h"
+#include "vecmath.h"
 
 #ifdef useGDAL
 	#include "crs.h"
@@ -630,18 +631,53 @@ void SpatVector::setGeometry(std::string type, std::vector<unsigned> gid, std::v
 	addGeom(g);
 }
 
-
-void SpatVector::setPointsGeometry(std::vector<double> x, std::vector<double> y) {
+/*
+void SpatVector::setPointsGeometry(std::vector<double> &x, std::vector<double> &y) {
+	size_t n = x.size();
+	if (n == 0) return;
+	reserve(n);
 	SpatGeom g;
 	g.gtype = points;
-	for (size_t i=0; i<x.size(); i++) {
-		SpatGeom gg = g;
-		SpatPart p(x[i], y[i]);
-		gg.addPart(p);
-		addGeom(gg);
+	SpatPart p(x[0],y[0]);
+	g.addPart(p);;
+	for (size_t i=0; i<n; i++) {
+		g.parts[0].x[0] = x[i];
+		g.parts[0].y[0] = y[i];
+		g.extent.xmin = x[i];
+		g.extent.xmax = x[i];
+		g.extent.ymin = y[i];
+		g.extent.ymax = y[i];
+		geoms.push_back(g);
 	}
+	extent.xmin = vmin(x, true);
+	extent.xmax = vmax(x, true);
+	extent.ymin = vmin(y, true);
+	extent.ymax = vmax(y, true);
 }
+*/
 
+void SpatVector::setPointsGeometry(std::vector<double> &x, std::vector<double> &y) {
+	size_t n = x.size();
+	//reserve(n)
+	if (n == 0) return;
+	SpatGeom g;
+	g.gtype = points;
+	SpatPart p(x[0],y[0]);
+	g.addPart(p);
+	geoms.resize(n, g);
+	for (size_t i=1; i<n; i++) {
+		geoms[i].parts[0].x[0] = x[i];
+		geoms[i].parts[0].y[0] = y[i];
+		geoms[i].extent.xmin = x[i];
+		geoms[i].extent.xmax = x[i];
+		geoms[i].extent.ymin = y[i];
+		geoms[i].extent.ymax = y[i];
+	}
+	extent.xmin = vmin(x, true);
+	extent.xmax = vmax(x, true);
+	extent.ymin = vmin(y, true);
+	extent.ymax = vmax(y, true);
+}
 
 
 SpatVector SpatVector::subset_rows(std::vector<int> range) {

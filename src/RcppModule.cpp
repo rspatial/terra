@@ -329,6 +329,7 @@ RCPP_MODULE(spat){
 		.method("project", &SpatVector::project, "project")
 		.method("read", &SpatVector::read, "read")
 		.method("setGeometry", &SpatVector::setGeometry, "setGeometry")
+		.method("setPointsGeometry", &SpatVector::setPointsGeometry, "setPointsGeometry")
 		.method("size", &SpatVector::size, "size")
 		.method("subset_cols", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_cols ))
 		.method("subset_rows", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_rows ))	
