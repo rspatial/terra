@@ -114,11 +114,11 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 
 
 setMethod("rasterize", signature(x="matrix", y="SpatRaster"), 
-	function(x, y, value=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+	function(x, y, values=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		lonlat <- .checkXYnames(colnames(x))
 		
-		rasterize_points(x=x, y=y, field="", values=rep_len(value, nrow(x)), fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
+		rasterize_points(x=x, y=y, field="", values=rep_len(values, nrow(x)), fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
 
 	}
 )
@@ -144,7 +144,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 			if (field[1] != "") {
 				values <- x[[field]]
 			}
-			x <- geom(x)[,3:4]
+			x <- crds(x)
 			if (nrow(x) != nrx) { # multi-points
 				values <- sapply(1:ncol(values), function(i) values[g[,1], i])
 			}
