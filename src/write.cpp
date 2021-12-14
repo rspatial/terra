@@ -19,14 +19,13 @@
 #include "file_utils.h"
 #include "string_utils.h"
 #include "math_utils.h"
-#include "recycle.h"
 
 
 
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols) {
 
 	if (vals.size() == size()) {
-		source[0].values = vals;
+		source[0].values = std::move(vals);
 		return true;
 	} 
 
@@ -392,56 +391,6 @@ bool SpatRaster::writeStop(){
 #endif
 
 	return success;
-}
-
-bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
-	size_t cs = cells.size();
-	size_t vs = v.size();
-	if (vs == 1) {
-		bylyr = false;
-		recycle(v, cs); 
-	} else if (bylyr && (vs != (cs*nlyr()))) {
-		setError("lengths of of cells and values do not match");
-		return false;
-	} else if (cs != vs) {
-		setError("lengths of of cells and values do not match");
-		return false;
-	}
-	size_t nc = ncell();
-	size_t ns = nsrc();
-	for (size_t i=0; i<ns; i++) {
-		if (!source[i].memory) {
-			if (!canProcessInMemory(opt)) {
-				setError("cannot process this raster in memory");
-				return false;
-			}
-			readAll();
-			break;
-		}
-	}	
-	if (bylyr) {
-		for (size_t i=0; i<ns; i++) {
-			size_t nl = source[i].nlyr;
-			for (size_t j=0; j<nl; j++) {
-				size_t off = nc * j;
-				size_t koff = cs * j;
-				for (size_t k=0; k<cs; k++) {
-					source[i].values[off + cells[k]] = v[koff + k];
-				}			
-			}
-		}
-	} else {
-		for (size_t i=0; i<ns; i++) {
-			size_t nl = source[i].nlyr;
-			for (size_t j=0; j<nl; j++) {
-				size_t off = nc * j;
-				for (size_t k=0; k<cs; k++) {
-					source[i].values[off + cells[k]] = v[k];
-				}			
-			}
-		}
-	}
-	return true;
 }
 
 

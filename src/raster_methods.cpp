@@ -1487,7 +1487,6 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 		return out;
 	}
 
-	opt.ncopies = std::max(opt.ncopies, (unsigned) 6);
 	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -3402,4 +3401,70 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 }
 
 
+
+bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
+	size_t cs = cells.size();
+	size_t vs = v.size();
+	if (vs == 1) {
+		bylyr = false;
+		recycle(v, cs); 
+	} else if (bylyr && (vs != (cs*nlyr()))) {
+		setError("lengths of of cells and values do not match");
+		return false;
+	} else if (cs != vs) {
+		setError("lengths of of cells and values do not match");
+		return false;
+	}
+	size_t nc = ncell();
+	size_t ns = nsrc();
+
+	if (!hasValues()) {
+		*this = init({NAN}, opt);
+	}
+	
+	for (size_t i=0; i<ns; i++) {
+		if (!source[i].memory) {
+			if (!canProcessInMemory(opt)) {
+				setError("cannot process this raster in memory");
+				return false;
+			}
+			readAll();
+			break;
+		}
+	}	
+	if (bylyr) {
+		for (size_t i=0; i<ns; i++) {
+			size_t nl = source[i].nlyr;
+			for (size_t j=0; j<nl; j++) {
+				size_t off = nc * j;
+				size_t koff = cs * j;
+				for (size_t k=0; k<cs; k++) {
+					source[i].values[off + cells[k]] = v[koff + k];
+				}
+				std::vector<double> vv(v.begin()+koff, v.begin()+koff+cs); 
+				std::vector<double> xv = {vmin(vv, true), source[i].range_min[j]};
+				source[i].range_min[j] = vmin(xv, true);
+				xv = {vmax(vv, true), source[i].range_max[j]};
+				source[i].range_max[j] = vmax(xv, true);
+			}
+		}
+	} else {
+		double minv = vmin(v, true);
+		double maxv = vmin(v, true);
+		for (size_t i=0; i<ns; i++) {
+			size_t nl = source[i].nlyr;
+			for (size_t j=0; j<nl; j++) {
+				size_t off = nc * j;
+				for (size_t k=0; k<cs; k++) {
+					source[i].values[off + cells[k]] = v[k];
+				}
+				std::vector<double> xv = {minv, source[i].range_min[j]};
+				source[i].range_min[j] = vmin(xv, true);
+				xv = {maxv, source[i].range_max[j]};
+				source[i].range_max[j] = vmax(xv, true);
+			}
+		}
+	}
+	return true;
+}
 
