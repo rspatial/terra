@@ -27,7 +27,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `classify` has a new argument `brackets` to show if a side of an interval is open or closed.
 - further support for categorical data in `freq` and `as.data.frame`  [#441](https://github.com/rspatial/terra/issues/441) ngould7
 - speed up in processing in multi-layer in memory data [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
-- `vect` from a matrix or data.frame is now much faster [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
+- `vect<matrix>` and `vect<data.frame>` are now much faster [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
 
 
 ## new 
@@ -43,7 +43,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `all.equal` for `SpatRaster` [#428](https://github.com/rspatial/terra/issues/428) by Dongdong Kong
 - new method `math` for `SpatRaster` that implements the Math-generic methods *and* accepts a filename
 - new method `sds<array>` 
-- `rasterize<matrix>` method [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
+- new method `rasterize<matrix>`, see [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
 
 
 # version 1.4-22

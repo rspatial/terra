@@ -19,6 +19,7 @@
 #include "file_utils.h"
 #include "string_utils.h"
 #include "math_utils.h"
+#include "recycle.h"
 
 
 
@@ -393,44 +394,102 @@ bool SpatRaster::writeStop(){
 	return success;
 }
 
-//bool SpatRaster::replaceValues(std::vector<double> cells, std::vector<double> _values, int ncols) {
-//}
+bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt) {
+	size_t cs = cells.size();
+	size_t vs = v.size();
+	if (vs == 1) {
+		bylyr = false;
+		recycle(v, cs); 
+	} else if (bylyr && (vs != (cs*nlyr()))) {
+		setError("lengths of of cells and values do not match");
+		return false;
+	} else if (cs != vs) {
+		setError("lengths of of cells and values do not match");
+		return false;
+	}
+	size_t nc = ncell();
+	size_t ns = nsrc();
+	for (size_t i=0; i<ns; i++) {
+		if (!source[i].memory) {
+			if (!canProcessInMemory(opt)) {
+				setError("cannot process this raster in memory");
+				return false;
+			}
+			readAll();
+			break;
+		}
+	}	
+	if (bylyr) {
+		for (size_t i=0; i<ns; i++) {
+			size_t nl = source[i].nlyr;
+			for (size_t j=0; j<nl; j++) {
+				size_t off = nc * j;
+				size_t koff = cs * j;
+				for (size_t k=0; k<cs; k++) {
+					source[i].values[off + cells[k]] = v[koff + k];
+				}			
+			}
+		}
+	} else {
+		for (size_t i=0; i<ns; i++) {
+			size_t nl = source[i].nlyr;
+			for (size_t j=0; j<nl; j++) {
+				size_t off = nc * j;
+				for (size_t k=0; k<cs; k++) {
+					source[i].values[off + cells[k]] = v[k];
+				}			
+			}
+		}
+	}
+	return true;
+}
 
-bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
+
+#ifdef useRcpp
+bool SpatRaster::setValuesRcpp(Rcpp::NumericVector &v, SpatOptions &opt) {
 	SpatRaster g = geometry(nlyr(), true, true, true);
-	SpatRasterSource s = g.source[0];
-	s.hasValues = true;
-	s.memory = true;
-	s.names = getNames();
-	s.driver = "memory";
-	setSource(s);
+	source = g.source;
+	source[0].hasValues = true;
+	source[0].memory = true;
+	//source[0].names = getNames();
+	source[0].driver = "memory";
 
 	if (v.size() < g.size()) {
-		*this = init(v, opt);
+		std::vector<double> vv = Rcpp::as<std::vector<double> >(v);
+		*this = g.init(vv, opt);
 		return (!hasError());
 	} else if (v.size() == g.size()) {
-/*
-		if (!canProcessInMemory(opt)) { 
-		// this should be chunked to avoid the copy
-		// but this may still help in some cases
-			source[0].values = v;
-			std::string f = opt.get_filename();
-			if (f == "") {
-				std::string filename = tempFile(opt.get_tempdir(), opt.pid ".tif");
-				opt.set_filenames({filename});
-			}	
-			*this = writeRaster(opt);
-			return true;
-		} else {
-*/
-			source[0].values = v;				
-//		}
+		source[0].values = Rcpp::as<std::vector<double> >(v);				
+		source[0].setRange();
 	} else {
-
 		setError("incorrect number of values");
 		return false;
 	}
-	source[0].setRange();
+	return true;
+
+}
+#endif
+
+
+bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
+
+	SpatRaster g = geometry(nlyr(), true, true, true);
+	source = g.source;
+	source[0].hasValues = true;
+	source[0].memory = true;
+	//source[0].names = getNames();
+	source[0].driver = "memory";
+
+	if (v.size() < g.size()) {
+		*this = g.init(v, opt);
+		return (!hasError());
+	} else if (v.size() == g.size()) {
+		source[0].values = v;				
+		source[0].setRange();
+	} else {
+		setError("incorrect number of values");
+		return false;
+	}
 	return true;
 }
 
@@ -438,7 +497,6 @@ void SpatRaster::setRange(SpatOptions &opt) {
 
 	for (size_t i=0; i<nsrc(); i++) {
 		if (source[i].hasRange[0]) continue;
-
 		if (source[i].memory) {
 			source[i].setRange();
 		} else {
@@ -452,25 +510,23 @@ void SpatRaster::setRange(SpatOptions &opt) {
 }
 
 void SpatRasterSource::setRange() {
-	double vmin, vmax;
-	size_t nc = ncol * nrow;
-	size_t start;
 	range_min.resize(nlyr);
 	range_max.resize(nlyr);
 	hasRange.resize(nlyr);
-	if (values.size() == nc * nlyr) {
+	if (nlyr==1) {
+		minmax(values.begin(), values.end(), range_min[0], range_max[0]);
+		hasRange[0] = true;
+		return;
+	}
+	size_t nc = ncol * nrow;
+	if (values.size() == (nc * nlyr)) {
 		for (size_t i=0; i<nlyr; i++) {
-			start = nc * i;
-			minmax(values.begin()+start, values.begin()+start+nc, vmin, vmax);
-			range_min[i] = vmin;
-			range_max[i] = vmax;
+			size_t start = nc * i;
+			minmax(values.begin()+start, values.begin()+start+nc, range_min[i], range_max[i]);
 			hasRange[i] = true;
 		}
 	}
 }
-
-
-
 
 
 

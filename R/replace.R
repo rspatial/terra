@@ -111,26 +111,25 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (narg > 0) { # row
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
-
+		
+		bylyr = FALSE
 		if (!is.null(dim(value))) {
 			#x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
 			stopifnot(ncol(value) == nlyr(x))
-		} else if (length(i) != length(value)) {
-			# recycling with warning
-			v <- value
-			value <- i
-			value[] <- v
-		}
-		if (hasValues(x)) {
-			v <- values(x)
+			bylyr = TRUE
+			if (inherits(value, "data.frame")) {
+				value <- as.matrix(value)
+			}
+			value <- as.vector(value)
+		} 
+		
+		if (!x@ptr$replaceCellValues(i-1, value, bylyr, spatOptions())) {
+			messages(x)
 		} else {
-			v <- matrix(NA, nrow=ncell(x), ncol=nlyr(x))
+			x
 		}
-		v[i,] <- value
-		setValues(x, v, TRUE, TRUE)
 	}
 )
-
 
 
 

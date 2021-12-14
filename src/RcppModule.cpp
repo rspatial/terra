@@ -567,8 +567,11 @@ RCPP_MODULE(spat){
 		.method("getValues", &SpatRaster::getValues, "getValues")
 		.method("getBlockSize", &getBlockSizeR)
 		.method("same", &sameObject)
+#ifdef useRcpp
+		.method("setValuesRcpp", &SpatRaster::setValuesRcpp)
+#endif
 		.method("setValues", &SpatRaster::setValues)
-		//.method("replaceValues", &SpatRaster::replace)
+		.method("replaceCellValues", &SpatRaster::replaceCellValues)
 		.method("setRange", &SpatRaster::setRange, "setRange")
 		.method("writeStart", &SpatRaster::writeStart, "writeStart") 
 		.method("writeStop", &SpatRaster::writeStop, "writeStop") 

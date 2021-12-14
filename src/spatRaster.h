@@ -263,7 +263,12 @@ class SpatRaster {
 		
 		bool getValuesSource(size_t src, std::vector<double> &out);				
 		bool setValues(std::vector<double> &v, SpatOptions &opt);
-		bool replaceCellValues(std::vector<double> cells, std::vector<double> _values, int ncols);
+
+#ifdef useRcpp
+		bool setValuesRcpp(Rcpp::NumericVector &v, SpatOptions &opt);
+#endif
+
+		bool replaceCellValues(std::vector<double> &cells, std::vector<double> &v, bool bylyr, SpatOptions &opt);
 		void setRange(SpatOptions &opt);
 		
 ////////////////////////////////////////////////////
@@ -272,7 +277,6 @@ class SpatRaster {
 		std::vector<std::string> filenames();
 		bool isSource(std::string filename);
 		std::vector<bool> inMemory();
-
 
 ////////////////////////////////////////////////////
 // property like methods for layers
@@ -637,6 +641,7 @@ class SpatRaster {
 
 		void rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
 		void rasterizeCellsExact(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 
+
 
 		SpatRaster replaceValues(std::vector<double> from, std::vector<double> to, long nl, SpatOptions &opt);
 		SpatRaster reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt);

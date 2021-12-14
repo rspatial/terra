@@ -10,9 +10,6 @@ setMethod("hasValues", signature(x="SpatRaster"),
 )
 
 
-
-
-
 .makeDataFrame <- function(x, v, factors=TRUE, ...) {
 
 	v <- data.frame(v, check.names=FALSE, ...)
@@ -107,7 +104,7 @@ setMethod("setValues", signature("SpatRaster"),
 	function(x, values, keeptime=TRUE, keepunits=TRUE, props=FALSE) {
 
 		y <- rast(x, keeptime=keeptime, keepunits=keepunits, props=props)
-
+	
 		if (is.matrix(values)) { 
 			if (nrow(values) == nrow(x)) {
 				values <- as.vector(t(values))
@@ -161,8 +158,10 @@ setMethod("setValues", signature("SpatRaster"),
 				warn("setValues", "length of values does not match the number of cells")
 			}
 			if (lv > (nc * nl)) {
+				warn("setValues", "values is larger than the size of cells")
 				values <- values[1:(nc*nl)]
 			} else if (lv < (nc * nl)) {
+				warn("setValues", "values were recycled")
 				values <- rep(values, length.out=nc*nl)
 			}
 			y@ptr$setValues(values, opt)
