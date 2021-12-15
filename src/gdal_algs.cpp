@@ -34,7 +34,16 @@
 //#include "vecmath.h"
 
 
-SpatVector SpatRaster::dense_extent() {
+SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
+
+	SpatExtent e = getExtent();
+	if (geobounds && is_lonlat() && ((e.ymin < -90.0) || (e.ymax > 90.0))) {
+		SpatRaster g = geometry();
+		e.ymin= std::max(e.ymin, -90.0); 
+		e.ymax= std::min(e.ymax, 90.0); 
+		g.source[0].extent = e;
+		return g.dense_extent(inside, false);
+	}
 
 	std::vector<int_64> rows, cols;
 	if (nrow() < 51) {
@@ -49,19 +58,28 @@ SpatVector SpatRaster::dense_extent() {
 	} else {
 		cols = seq_steps((int_64) 0, (int_64) ncol()-1, 50);
 	} 
-	
-	SpatExtent e = getExtent();
+
 
 	std::vector<double> xcol = xFromCol(cols) ;
 	std::vector<double> yrow = yFromRow(rows) ;
-	yrow.insert(yrow.begin(), e.ymax);
-	yrow.push_back(e.ymin);
+
+	double yr = yres() / 4;
+	if (inside) {
+		yrow.insert(yrow.begin(), e.ymax - yr);
+		yrow.push_back(e.ymin + yr);			
+		std::vector<double> y0(xcol.size(), e.ymin+yr);
+		std::vector<double> y1(xcol.size(), e.ymax-yr);
+	} else {
+		yrow.insert(yrow.begin(), e.ymax);
+		yrow.push_back(e.ymin);
+		std::vector<double> y0(xcol.size(), e.ymin);
+		std::vector<double> y1(xcol.size(), e.ymax);
+	}
 
 	std::vector<double> y0(xcol.size(), e.ymin);
 	std::vector<double> y1(xcol.size(), e.ymax);
 	std::vector<double> x0(yrow.size(), e.xmin);
 	std::vector<double> x1(yrow.size(), e.xmax);
-
 	std::vector<double> x = x0;
 	std::vector<double> y = yrow;
 	x.insert(x.end(), xcol.begin(), xcol.end());
@@ -75,9 +93,9 @@ SpatVector SpatRaster::dense_extent() {
 	x.insert(x.end(), xcol.begin(), xcol.end());
 	y.insert(y.end(), y1.begin(), y1.end());
 
-	x.push_back(e.xmin);
-	y.push_back(e.ymax);
-	
+	x.push_back(x[0]);
+	y.push_back(y[0]);
+
 	SpatVector v(x, y, polygons, getSRS("wkt"));
 
 	return v;
@@ -143,13 +161,13 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	GDALDestroyGenImgProjTransformer( hTransformArg );
 	if ( eErr != CE_None ) {
 		r.setError("cannot create warp output");
-		return false;	
+		return false;
 	}
 
 
 	r.source[0].ncol = nPixels;
 	r.source[0].nrow = nLines;
-	
+
 	r.source[0].extent.xmin = adfDstGeoTransform[0]; /* left x */
 	/* w-e pixel resolution */
 	r.source[0].extent.xmax = r.source[0].extent.xmin + adfDstGeoTransform[1] * nPixels;
@@ -181,7 +199,7 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 	}
 	if ( hDstDS == NULL ) {
 		msg = "cannot create output dataset";
-		return false;	
+		return false;
 	}
 
 	// Write out the projection definition.
@@ -207,7 +225,7 @@ GDALResampleAlg getAlgo(std::string m) {
 		alg = GRA_NearestNeighbour;
 	} else if (m=="bilinear") {
 		alg = GRA_Bilinear;
-	} else if (m=="cubic") {	
+	} else if (m=="cubic") {
 		alg = GRA_Cubic;
 	} else if (m=="cubicspline") {
 		alg = GRA_CubicSpline; 
@@ -329,15 +347,15 @@ SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string met
 		out.source[0].hasCategories = hasCategories();
 		out.source[0].cats = getCategories();
 		out.rgb = rgb;
-		out.rgblyrs = rgblyrs;		
+		out.rgblyrs = rgblyrs;
 	}
 	if (hasTime()) {
 		out.source[0].hasTime = true;
 		out.source[0].timestep = getTimeStep();
 		out.source[0].time = getTime();
 	}
-	
-	
+
+
 	bool use_crs = crs != "";  
 	std::string filename = opt.get_filename();
 	if ((!use_crs) & (!hasValues())) {
@@ -363,7 +381,7 @@ SpatRaster SpatRaster::old_warper(SpatRaster x, std::string crs, std::string met
 	std::string srccrs = getSRS("wkt");
 	if (srccrs == "") {
 		out.setError("input raster CRS not set");
-		return out;	
+		return out;
 	}
 
 
@@ -473,14 +491,14 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out.source[0].hasCategories = hasCategories();
 		out.source[0].cats = getCategories();
 		out.rgb = rgb;
-		out.rgblyrs = rgblyrs;		
+		out.rgblyrs = rgblyrs;
 	}
 	if (hasTime()) {
 		out.source[0].hasTime = true;
 		out.source[0].timestep = getTimeStep();
 		out.source[0].time = getTime();
 	}
-	
+
 	bool use_crs = crs != "";  
 	if (use_crs) {
 		align = false;
@@ -505,9 +523,9 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	std::string srccrs = getSRS("wkt");
 	if (srccrs == "") {
 		out.setError("input raster CRS not set");
-		return out;	
+		return out;
 	}
-	
+
 	lrtrim(crs);
 	SpatOptions sopt(opt);
 	if (use_crs || align) {
@@ -542,7 +560,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 
 	opt.ncopies += 4;
 	if (!out.writeStart(opt)) {
-		return out;		
+		return out;
 	}
 
 	std::string errmsg;
@@ -569,7 +587,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		if (!crop_out.create_gdalDS(hDstDS, "", "MEM", false, NAN, has_so, scale, offset, sopt)) {
 			return crop_out;
 		}
-	
+
 		for (size_t i=0; i<ns; i++) {
 
 			GDALDatasetH hSrcDS;
@@ -595,7 +613,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		}
 
 		bool ok = crop_out.from_gdalMEM(hDstDS, false, true); 
-	
+
 		if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 		if (!ok) {
 			out.setError("cannot do this transformation (warp)");
@@ -607,11 +625,14 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	out.writeStop();
 
 	if (mask) {
-		SpatVector v = dense_extent();
+		SpatVector v = dense_extent(true, true);
 		v = v.project(out.getSRS("wkt"));
-		out = out.mask(v, false, NAN, true, mopt);
+		if (v.nrow() > 0) {
+			out = out.mask(v, false, NAN, true, mopt);
+		} else {
+			out.addWarning("masking failed");
+		}
 	}
-
 	return out;
 }
 
@@ -636,7 +657,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		return(out);
 	} 
 	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_ops);
-	
+
 	if( poDataset == NULL )  {
 		setError("cannot read from " + source[0].filename);
 		return out;
@@ -681,7 +702,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out = aoi.geometry(0);
 	} // else { // if (useaoi == 0) // no aoi
 
-	
+
 	out = warper(out, "", method, false, false, opt);
 
 	return(out);
@@ -709,7 +730,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 		usemask = true;
 		SpatOptions mopt(topt);
 		mopt.set_datatype("INT1U"); 
-		mask = tmp.isfinite(mopt);	
+		mask = tmp.isfinite(mopt);
 	} else if (trunc) {
 		tmp = tmp.math("trunc", topt);
 		trunc = false; 
@@ -722,7 +743,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	if (tmp.source[0].extset) {
 		tmp = tmp.hardCopy(topt);
 	}
-	
+
 	GDALDatasetH rstDS;
 	if (!tmp.open_gdal(rstDS, 0, false, topt)) {
 		out.setError("cannot open dataset");
@@ -822,13 +843,13 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	if (!values) {
 		out.df = SpatDataFrame();
 	} 
-	
+
 	return out;
 }
 
-	
-	
-SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) {	
+
+
+SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) {
 	SpatRaster out = geometry(1);
 	if (nlyr() < 3) {
 		out.setError("need at least three layers");
@@ -836,10 +857,10 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	}
 	size_t mxlyr = std::max(std::max(r, g), b);
 	if (nlyr() < mxlyr) {
-		out.setError("layer number for R, G, B, cannot exceed nlyr()");		
+		out.setError("layer number for R, G, B, cannot exceed nlyr()");
 		return out;
 	}
-	
+
 	std::string filename = opt.get_filename();
 	opt.set_datatype("INT1U");
 	std::string driver;
@@ -862,13 +883,13 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 			out.setError(errmsg);
 			return out;
-		}	
+		}
 	}
-	
+
 	std::vector<unsigned> lyrs = {(unsigned)r, (unsigned)g, (unsigned)b};
 	SpatOptions ops(opt);
 	*this = subset(lyrs, ops);
-	*this = collapse_sources();	
+	*this = collapse_sources();
 	GDALDatasetH hSrcDS, hDstDS;
 	if (!open_gdal(hSrcDS, 0, false, ops)) {
 		out.setError("cannot create dataset from source");
@@ -884,21 +905,21 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		out.setError("cannot create color table");
 		GDALClose(hSrcDS);
 		return out;
-	}	
-	
+	}
+
 	if (!out.create_gdalDS(hDstDS, filename, driver, true, 0, {false}, {0.0}, {1.0}, opt)) {
 		out.setError("cannot create new dataset");
 		GDALClose(hSrcDS);
 		return out;
 	}
-	
+
 	GDALRasterBandH hTarget = GDALGetRasterBand(hDstDS, 1);
 	GDALSetRasterColorInterpretation(hTarget, GCI_PaletteIndex);
 	if (GDALDitherRGB2PCT(R, G, B, hTarget, hColorTable, NULL, NULL) != CE_None) {
 		out.setError("cannot set color table");
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);
-		return out;		
+		return out;
 	}
 	GDALClose(hSrcDS);
 
@@ -916,7 +937,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		size_t nc = GDALGetColorEntryCount(hColorTable);
 		cdf.reserve(nc);
 
-		for (size_t i=0; i<nc; i++) {	
+		for (size_t i=0; i<nc; i++) {
 			const GDALColorEntry* col = GDALGetColorEntry(hColorTable, i);
 			cdf.iv[0].push_back(col->c1);
 			cdf.iv[1].push_back(col->c2);
@@ -926,7 +947,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 		out.source[0].hasColors.resize(1);
 		out.source[0].hasColors[0] = true;
 		out.source[0].cols.resize(1);
-		out.source[0].cols[0] = cdf;		
+		out.source[0].cols[0] = cdf;
 	} else {
 		if (GDALSetRasterColorTable(hTarget, hColorTable) != CE_None) {
 			out.setError("cannot set color table");
@@ -941,8 +962,8 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	return out;
 }
 
-	
-SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &opt) {	
+
+SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
 	SpatRaster out;
 	std::string filename = opt.get_filename();
 	std::string driver;
@@ -965,7 +986,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 		if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 			out.setError(errmsg);
 			return out;
-		}	
+		}
 	}
 
 	SpatOptions ops(opt);
@@ -974,7 +995,7 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 		out.setError("cannot open input dataset");
 		return out;
 	}
-	
+
 	GDALDriverH hDriver = GDALGetDriverByName( driver.c_str() );
 	if ( hDriver == NULL ) {
 		out.setError("empty driver");
@@ -994,8 +1015,8 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 		GDALClose(hSrcDS);
 		GDALClose(hDstDS);
 		return out;
-	}	
-	
+	}
+
 	GDALClose(hSrcDS);
 	if (driver == "MEM") {
 		if (!out.from_gdalMEM(hDstDS, false, true)) {
@@ -1011,9 +1032,16 @@ SpatRaster SpatRaster::sievefilter(int threshold, int connections, SpatOptions &
 }
 
 
-/*	
-SpatRaster SpatRaster::fillna(int threshold, int connections, SpatOptions &opt) {	
+/*
+SpatRaster SpatRaster::fillna(int threshold, int connections, SpatOptions &opt) {
 CPLErr GDALFillNodata(GDALRasterBandH hTargetBand, GDALRasterBandH hMaskBand, doubledfMaxSearchDist, intbDeprecatedOption, intnSmoothingIterations, char**papszOptions, GDALProgressFuncpfnProgress, void*pProgressArg)
 */
 
+/*
+#include <gdalpansharpen.h>
+SpatRaster SpatRaster::panSharpen(SpatRaster pan, SpatOptions &opt) {
+	SpatRaster out = geometry();
+	return out;
+}
+*/
 
