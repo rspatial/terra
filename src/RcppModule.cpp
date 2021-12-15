@@ -661,9 +661,9 @@ RCPP_MODULE(spat){
 		.method("quantile", &SpatRaster::quantile, "quantile")
 		.method("rasterize", &SpatRaster::rasterize, "rasterize")
 		.method("rasterizeLyr", &SpatRaster::rasterizeLyr, "rasterizeLyr")
-		.method("rgb2col", &SpatRaster::rgb2col, "rgb2col")
-		.method("rgb2ihs", &SpatRaster::rgb2ihs, "rgb2col")
-		.method("ihs2rgb", &SpatRaster::ihs2rgb, "ihs2rgb")
+		.method("rgb2col", &SpatRaster::rgb2col)
+		.method("rgb2hsx", &SpatRaster::rgb2hsx)
+		.method("hsx2rgb", &SpatRaster::hsx2rgb)
 
 		.method("reverse", &SpatRaster::reverse, "reverse")
 		.method("rotate", &SpatRaster::rotate, "rotate")

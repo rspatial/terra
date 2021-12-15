@@ -37,7 +37,7 @@
 SpatVector SpatRaster::dense_extent(bool inside, bool geobounds) {
 
 	SpatExtent e = getExtent();
-	if (geobounds && is_lonlat() && ((e.ymin < -90.0) || (e.ymax > 90.0))) {
+	if (geobounds && is_lonlat() && ((e.ymin < -90) || (e.ymax > 90))) {
 		SpatRaster g = geometry();
 		e.ymin= std::max(e.ymin, -90.0); 
 		e.ymax= std::min(e.ymax, 90.0); 

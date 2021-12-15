@@ -223,7 +223,7 @@ class SpatRaster {
 		SpatExtent getExtent();
 		void setExtent(SpatExtent e);
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
-		SpatVector dense_extent(bool inside, bool setbounds);
+		SpatVector dense_extent(bool inside, bool geobounds);
 
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);
@@ -710,8 +710,8 @@ class SpatRaster {
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
-		SpatRaster rgb2ihs(SpatOptions &opt);	
-		SpatRaster ihs2rgb(SpatOptions &opt);	
+		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	
+		SpatRaster hsx2rgb(std::string type, SpatOptions &opt);	
 
 		SpatRaster which(SpatOptions &opt);
 		SpatRaster is_true(SpatOptions &opt);
