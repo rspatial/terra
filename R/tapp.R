@@ -35,7 +35,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	} else if (cores > 1) {
 		doclust <- TRUE
 		cores <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cores))	
+		on.exit(parallel::stopCluster(cores))
 	}
 
 	readStart(x)
@@ -44,7 +44,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
 	if (doclust) {
 		pfun <- function(x, ...) apply(x, 1, FUN=fun, ...)
-		parallel::clusterExport(cores, "pfun", environment())	
+		parallel::clusterExport(cores, "pfun", environment())
 		for (i in 1:b$n) {
 			v <- readValues(x, b$row[i], b$nrows[i], 1, ncol(out), TRUE)
 			v <- lapply(uin, function(i) v[, ind==i, drop=FALSE])

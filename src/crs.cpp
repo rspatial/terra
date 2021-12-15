@@ -289,8 +289,8 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 			failcount++;
 		}
 	}
-	
-	OCTDestroyCoordinateTransformation(poCT); 	
+
+	OCTDestroyCoordinateTransformation(poCT); 
 	if (failcount > 0) {
 		m.addWarning(std::to_string(failcount) + " failed transformations");
 	}
@@ -347,8 +347,9 @@ SpatVector SpatVector::project(std::string crs) {
 				if (p.hasHoles()) {
 					for (size_t k=0; k < p.nHoles(); k++) {
 						SpatHole h = p.getHole(k);
-						poCT->Transform(h.x.size(), &h.x[0], &h.y[0]);
-						pp.addHole(h.x, h.y);
+						if (poCT->Transform(h.x.size(), &h.x[0], &h.y[0])) {
+							pp.addHole(h.x, h.y);
+						}
 					}
 				}
 				gg.addPart(pp);

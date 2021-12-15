@@ -140,7 +140,7 @@
 	out$leg$fill <- out$cols
 
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
-	out$r <- as.raster(z)	
+	out$r <- as.raster(z)
 
 	out$legend_type <- "classes"
 	if (is.null(out$leg$x)) {
@@ -226,7 +226,7 @@
 	out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
 	z <- out$cols[z+1]
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
-	out$r <- as.raster(z)	
+	out$r <- as.raster(z)
 	out
 }
 
@@ -241,7 +241,7 @@
 .plotit <- function(x, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=x$asp, axes=TRUE, new=NA, 
 	main="", line=0.5, cex.main=0.8, font.main=graphics::par()$font.main, 
 	col.main = graphics::par()$col.main, reset=FALSE, ...) {
-	
+
 #	if (x$add) axes = FALSE
 	if ((!x$add) & (!x$legend_only)) {
 
@@ -252,7 +252,7 @@
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
 		main <- as.character(main)
 		if (main != "") {
-			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)		
+			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
 		}
 	}
 	if (!x$values) {
@@ -369,13 +369,13 @@
 			}
 		}
 	}
-	
+
 	if (draw) {
 		if (inherits(alpha, "SpatRaster")) {
-			alpha <- clamp(as.vector(alpha[[1]])*255, 0, 255)		
+			alpha <- clamp(as.vector(alpha[[1]])*255, 0, 255)
 			out$r <- matrix(grDevices::rgb(t(grDevices::col2rgb(out$r)), alpha=alpha, maxColorValue=255),
 			nrow=nrow(out$r), byrow=TRUE)
-		}	
+		}
 		out <- .plotit(out, new=new, reset=reset, ...)
 	}
 	invisible(out)
@@ -404,7 +404,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				error("plot", "geometry of alpha does not match x")
 			}
 		}
-		
+
 		x <- x[[y]]
 		if (ncell(x) > 1.1 * maxcell) {
 			if (inherits(alpha, "SpatRaster")) {
@@ -445,7 +445,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				} else if (is.bool(x)) {
 					type <- "factor"
 					levels(x) <- c("False", "True")
-					cats <- cats(x)[[1]]		
+					cats <- cats(x)[[1]]
 				} else {
 					type <- "depends"
 				}

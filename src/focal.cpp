@@ -69,7 +69,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	if ((startrow+readnrows) > nr ) {
 		readnrows = nr-startrow;
 		endoff = readnrows - (nrows+startoff);
-	}	
+	}
 	std::vector<double> d;
 	readValues(d, startrow, readnrows, 0, nc);
 
@@ -86,11 +86,11 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	//int nrmax = d.size() / ncol - 1;
 	int f = 0;
 	const bool global = is_global_lonlat();
-	
+
 	for (int r=0; r < nrows; r++) {
 		for (int c=0; c < nc; c++) {
 			for (int i = -wr; i <= wr; i++) {
-				int row = r+startoff+i;		
+				int row = r+startoff+i;
 				if ((row < 0) || (row > nrmax)) {
 					f += w[1];
 				} else {
@@ -118,11 +118,11 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 
 
 
-	
+
 
 void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
                     std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool expand, bool global,	std::function<double(std::vector<double>&, bool)> fun) {
-	
+
 	out.resize(nc * nr);
 	int hwc = wnc / 2;
 	int hwr = wnr / 2;
@@ -130,11 +130,11 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 	for (size_t i=0; i<window.size(); i++) {
 		if (std::isnan(window[i])) winNA[i] = true; 
 	}
-	
+
 	int wr1 = wnr - 1;
 	int wc1 = wnc - 1;
 	int nc1 = nc - 1;
-	
+
 	for (int r=0; r < nr; r++) {
 		int rread = r+srow;
 		for (int c=0; c < nc; c++) {
@@ -169,7 +169,7 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 				}
 			}
 			out[nc * r + c] = fun(v, narm);
-		}	
+		}
 	}
 }
 
@@ -177,7 +177,7 @@ void focal_win_fun(const std::vector<double> &d, std::vector<double> &out, int n
 
 void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
                     std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool expand, bool global) {
-	
+
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
 	int hwr = wnr / 2;
@@ -187,7 +187,7 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 	for (size_t i=0; i<window.size(); i++) {
 		if (std::isnan(window[i])) winNA[i] = true; 
 	}
-	
+
 	int wr1 = wnr - 1;
 	int wc1 = wnc - 1;
 	int nc1 = nc - 1;
@@ -283,7 +283,7 @@ void focal_win_sum(const std::vector<double> &d, std::vector<double> &out, int n
 
 void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int nc, int srow, int nr,
                     std::vector<double> window, int wnr, int wnc, double fill, bool narm, bool naonly, bool expand, bool global) {
-	
+
 	out.resize(nc*nr, NAN);
 	int hwc = wnc / 2;
 	int hwr = wnr / 2;
@@ -306,8 +306,8 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 	int wr1 = wnr - 1;
 	int wc1 = wnc - 1;
 	int nc1 = nc - 1;
-	
-	
+
+
 	for (int r=0; r<nr; r++) {
 		int rread = r+srow;
 		for (int c=0; c < nc; c++) {
@@ -397,8 +397,8 @@ void focal_win_mean(const std::vector<double> &d, std::vector<double> &out, int 
 			}
 			if (winsum > 0) {
 				out[nc * r + c] = value / winsum;
-			}	
-		}	
+			}
+		}
 	}
 }
 
@@ -466,7 +466,7 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 	}
 	opt.ncopies += 2;
 	opt.minrows = w[0] > nr ? nr : w[0];
-	
+
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -486,20 +486,20 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 		fFun = getFun(fun);
 		dofun = true;
 	}
-	
+
 	std::vector<double> fill;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		unsigned rstart, roff;
 		unsigned rnrows = out.bs.nrows[i];
 		if (i == 0) {
 			rstart = 0;
-			roff = dhw0;	
+			roff = dhw0;
 			if (i != (out.bs.n-1)) {
 				rnrows += hw0;
 			}
 		} else {
 			rstart = out.bs.row[i] + hw0;
-			roff = hw0;	
+			roff = hw0;
 			if (i == (out.bs.n-1)) {
 				rnrows -= hw0; 
 			}
@@ -530,9 +530,9 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 				} else {
 					fill.resize(fsz2, fillvalue);
 				}
-			}			
+			}
 			vin.insert(vin.begin(), fill.begin(), fill.end());
-			
+
 			if (i == (out.bs.n-1)) {
 				if (expand) {
 					fill = {vin.end()-nc, vin.end()};
@@ -546,31 +546,31 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 			}
 
 			if (dofun) {
-				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, expand, global, fFun);			
+				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, expand, global, fFun);
 			} else if (fun == "mean") {
 				focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, expand, global);
 			} else {
 				focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, expand, global);
 			}
-			
+
 			if (i != (out.bs.n-1)) {
 				fill = {vin.end() - fsz2, vin.end() };  
 			}
-		
+
 			if (naonly) {
 				for (size_t j=0; j<vout.size(); j++) {
 					size_t k = fsz2 + j;
 					if (!std::isnan(vin[k])) {
-						vout[j] = vin[k];	
+						vout[j] = vin[k];
 					}
 				}
 			}
 			if (nl > 1) {
 				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
-			}	
+			}
 		}
 		if (nl > 1) {
-			if (!out.writeValues(voutcomb, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;			
+			if (!out.writeValues(voutcomb, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		} else {
 			if (!out.writeValues(vout, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 		}
@@ -618,7 +618,7 @@ SpatRaster SpatRaster::focal1(std::vector<unsigned> w, std::vector<double> m, do
 		out.setError("w must be > 1");
 		return out;
 	}
-	
+
 	unsigned ww = w[0] * w[1];
 	if (ww < 9) {
 		out.setError("not a meaningful window");
@@ -673,8 +673,8 @@ SpatRaster SpatRaster::focal1(std::vector<unsigned> w, std::vector<double> m, do
 		}
 	} else {
 		for (size_t i = 0; i < out.bs.n; i++) {
-	
-	
+
+
 			std::vector<double> fv = focal_values(w, fillvalue, out.bs.row[i], out.bs.nrows[i]);
 			v.resize(out.bs.nrows[i] * ncol());
 			if (wmat) {
@@ -792,7 +792,7 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 	}
 	opt.ncopies += std::max(1, (int)(nc * ww / ncell()));
 	opt.minrows = w[0] > nr ? nr : w[0];
-	
+
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -804,21 +804,21 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 	std::vector<double> fill(hw0, fillvalue);
 
 	std::vector<double> fvals(nc * ww, fillvalue);
-	
+
 	std::vector<double> vout;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		if (i==0) {
 			if (i == (out.bs.n-1)) {
-				vout.resize(out.bs.nrows[i]* nc);				
+				vout.resize(out.bs.nrows[i]* nc);
 			} else {
 				vout.resize((out.bs.nrows[i]-hw0) * nc);
 			}
 		} else if (i == (out.bs.n-1)) {
 			vout.resize((out.bs.nrows[i] + 2 * hw0)* nc);
 		} else if (i == 1) {
-			vout.resize(out.bs.nrows[i]* nc);							
+			vout.resize(out.bs.nrows[i]* nc);
 		}
-		
+
 		std::vector<double> vin = readValues(out.bs.row[i], out.bs.nrows[i], 0, nc);
 		size_t start= 0;
 		if (i == 0) {
@@ -848,7 +848,7 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 				}
 			}
 		}
-		
+
 		if (i == (out.bs.n - 1)) {
 			size_t m = i == 0 ? 1 : 2;
 			std::vector<double> row(nc, fillvalue);
@@ -868,7 +868,7 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 						vout[off+j] = fFun(x, narm);
 					}
 				}
-			}	
+			}
 		}
 
 		int startrow = out.bs.row[i]; 
@@ -881,9 +881,9 @@ SpatRaster SpatRaster::focal2(std::vector<unsigned> w, std::vector<double> m, do
 			startrow -= hw0;
 			nrows += hw0;
 		} else {
-			startrow -= hw0;			
+			startrow -= hw0;
 		}
-		if (!out.writeValues(vout, startrow, nrows, 0, nc)) return out;		
+		if (!out.writeValues(vout, startrow, nrows, 0, nc)) return out;
 	}
 	out.writeStop();
 	readStop();

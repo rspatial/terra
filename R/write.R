@@ -95,11 +95,11 @@ function(x, filename, filetype=NULL, layer=NULL, overwrite=FALSE, options="ENCOD
 		error("writeVector", "provide a filename")
 	}
 	if (is.null(filetype)) {
-		filetype <- get_filetype(filename)	
+		filetype <- get_filetype(filename)
 	}
 	if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
 	if (is.null(options)) { options <- ""[0] }
-	
+
 	if (filetype == "ESRI Shapefile") {
 		nms <- names(x)
 		i <- nchar(nms) > 10

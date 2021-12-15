@@ -5,15 +5,15 @@ setMethod("fillTime", signature(x="SpatRaster"),
 	function(x, filename="", ...)  {
 		tm <- time(x)
 		if (any(is.na(tm))) {
-			terra:::error("fillTime", "NA in time values")		
+			terra:::error("fillTime", "NA in time values")
 		}
 		if (any(table(tm)>1)) {
-			terra:::error("fillTime", "duplicate time values")		
+			terra:::error("fillTime", "duplicate time values")
 		}
 		if (is.unsorted(tm)) {
 			warn("mergeTimelines", "sorting layers")
 			ord <- order(tm)
-			x <- x[[ ord ]]	
+			x <- x[[ ord ]]
 			tm <- tm[ord]
 		}
 		d <- data.frame(time=seq(min(tm), max(tm), min(diff(tm))))
@@ -33,7 +33,7 @@ setMethod("fillTime", signature(x="SpatRaster"),
 		} else {
 			x
 		}
-	}	
+	}
 )
 
  
@@ -46,7 +46,7 @@ setMethod("mergeTime", signature(x="SpatRasterDataset"),
 			terra:::error("mergeTime", "NA in time values")
 		}
 		if (any(sapply(tim, function(i) any(table(i)>1)))) {
-			terra:::error("mergeTime", "duplicate time values")		
+			terra:::error("mergeTime", "duplicate time values")
 		}
 		us <- sapply(tim, is.unsorted)
 		if (any(us)) {
@@ -54,7 +54,7 @@ setMethod("mergeTime", signature(x="SpatRasterDataset"),
 			us <- which(us)
 			for (i in us) {
 				ord <- order(tim[[i]])
-				x[i] <- x[i][[ ord ]]	
+				x[i] <- x[i][[ ord ]]
 				tim[[i]] <- tim[[i]][ord]
 			}
 		}
@@ -71,7 +71,7 @@ setMethod("mergeTime", signature(x="SpatRasterDataset"),
 			if (y[i] == y[i-1]) {
 				r[i] <- r[i-1] 
 			} else {
-				r[i] <- r[i-1] + 1 			
+				r[i] <- r[i-1] + 1 
 			}
 		}
 		u <- unique(r)
@@ -95,7 +95,7 @@ setMethod("mergeTime", signature(x="SpatRasterDataset"),
 		}
 		out <- rast(out)
 		if (filename != "") {
-			out <- writeRaster(out, ...)	
+			out <- writeRaster(out, ...)
 		} 
 		out
 	}

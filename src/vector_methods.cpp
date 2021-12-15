@@ -100,7 +100,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	int i = where_in_vector(field, get_names(), false);
 	if (i < 0) {
 		out.setError("cannot find field: " + field);
-		return out;	
+		return out;
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
@@ -143,11 +143,11 @@ SpatVector SpatVector::aggregate(bool dissolve) {
 SpatVectorCollection SpatVector::split(std::string field) {
 
 	SpatVectorCollection out;
-	
+
 	int i = where_in_vector(field, get_names(), false);
 	if (i < 0) {
 		out.setError("cannot find field: " + field);
-		return out;	
+		return out;
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
@@ -200,7 +200,7 @@ SpatVectorCollection SpatVector::split(std::string field) {
 			//OGRMultiPolygon *poGeom = ( OGRMultiPolygon * )poGeometry;
 			if (!poGeometry->IsValid()) {
 				out.setError("invalid geom");
-				return out;			
+				return out;
 			}
 			OGRGeometry *poGeom = poGeometry->UnionCascaded();
 			if (poGeom == NULL) {
@@ -269,7 +269,7 @@ SpatVector SpatVector::get_holes() {
 
 	for (size_t i=0; i<n; i++) {
 		SpatGeom g;
-		g.gtype = polygons;	
+		g.gtype = polygons;
 		bool found = false;
 		for (size_t j=0; j < geoms[i].size(); j++) {
 			SpatPart p = geoms[i].parts[j];
@@ -450,7 +450,7 @@ SpatVector SpatVector::transpose() {
 			if (geoms[i].parts[j].hasHoles()) {
 				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
 					out.geoms[i].parts[j].holes[k].x.swap(out.geoms[i].parts[j].holes[k].y);
-				
+
 					dswap(out.geoms[i].parts[j].holes[k].extent.xmin, 
 						 out.geoms[i].parts[j].holes[k].extent.ymin);
 					dswap(out.geoms[i].parts[j].holes[k].extent.xmax, 
@@ -578,13 +578,13 @@ SpatVector SpatVector::rotate(double angle, double x0, double y0) {
 			out.geoms[i].parts[j].extent.ymin = vmin(out.geoms[i].parts[j].y, true);
 			out.geoms[i].parts[j].extent.ymax = vmax(out.geoms[i].parts[j].y, true);
 			if (j==0) {
-				out.geoms[i].extent = out.geoms[i].parts[j].extent;			
+				out.geoms[i].extent = out.geoms[i].parts[j].extent;
 			} else {
 				out.geoms[i].extent.unite(out.geoms[i].parts[j].extent);
 			}
 		}
 		if (i==0) {
-			out.extent = out.geoms[i].extent;			
+			out.extent = out.geoms[i].extent;
 		} else {
 			out.extent.unite(out.geoms[i].extent);
 		}

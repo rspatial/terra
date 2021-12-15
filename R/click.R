@@ -59,7 +59,7 @@ setMethod("click", signature(x="missing"),
 				on.exit(return(invisible(X)))
 			} else {
 				on.exit(return(X))
-			}			
+			}
 		}
 		if (show) invisible(X) else X
 	}

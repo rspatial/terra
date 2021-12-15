@@ -22,7 +22,7 @@ setMethod ("coltab<-" , "SpatRaster",
 			layer <- 1
 		}
 		layer <- layer[1]-1
-		
+
 		if (is.null(value)) {
 			x@ptr$removeColors(layer)
 			return(x)

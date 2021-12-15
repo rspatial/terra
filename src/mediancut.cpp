@@ -16,7 +16,7 @@ make_cut <- function(x) {
 		if (max(rng) == 0) {
 			out[[i]] <- rgb
 			j <- j - 1
-			next		
+			next
 		}
 		p <- which.max(rng) + 1
 		m <- median(rgb[,p])
@@ -58,10 +58,10 @@ SpatRatser SpatRaster::RGB2col(std::string stretch, SpatOptions &opt) {
 			return out;
 		}
 		if (vmax(idx) >= x.nlyr()) {
-			out.setError("invalid RGB indices")	
+			out.setError("invalid RGB indices")
 		}
 		*this = subset(idx);
-		
+
 		if (stretch != "") {
 			if (stretch == "lin") {
 
@@ -71,10 +71,10 @@ SpatRatser SpatRaster::RGB2col(std::string stretch, SpatOptions &opt) {
 				out.addWarning("invalid stretch option");
 			}
 		}
-		
+
 		v <- cbind(id=1:ncell(x), values(x))
 		v <- median_cut(stats::na.omit(v))
-		
+
 		a <- aggregate(v[,3:5], list(v[,1]), median)
 		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
 		m <- merge(v[,1:2], a[, c(1,5)], by=1)

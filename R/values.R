@@ -26,7 +26,7 @@ setMethod("hasValues", signature(x="SpatRaster"),
 				if (!inherits(cg[[act]], "numeric")) {
 					v[[f]] <- factor(cg[i, act], levels=unique(cg[[act]]))
 				} else {
-					v[[f]] <- cg[i, act]				
+					v[[f]] <- cg[i, act]
 				}
 			}
 		}
@@ -52,7 +52,7 @@ setMethod("hasValues", signature(x="SpatRaster"),
 setMethod("readValues", signature(x="SpatRaster"), 
 function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FALSE, ...) {
 	stopifnot(row > 0 && nrows > 0)
-	stopifnot(col > 0 && ncols > 0)	
+	stopifnot(col > 0 && ncols > 0)
 	v <- x@ptr$readValues(row-1, nrows, col-1, ncols)
 	messages(x, "readValues")
 	if (dataframe || mat) {
@@ -104,7 +104,7 @@ setMethod("setValues", signature("SpatRaster"),
 	function(x, values, keeptime=TRUE, keepunits=TRUE, props=FALSE) {
 
 		y <- rast(x, keeptime=keeptime, keepunits=keepunits, props=props)
-	
+
 		if (is.matrix(values)) { 
 			if (nrow(values) == nrow(x)) {
 				values <- as.vector(t(values))
@@ -137,7 +137,7 @@ setMethod("setValues", signature("SpatRaster"),
 				make_factor <- TRUE
 			}
 		} else if (is.factor(values)) {
-			levs <- levels(values)			
+			levs <- levels(values)
 			values <- as.integer(values) - 1
 			make_factor <- TRUE
 		} 
@@ -150,7 +150,7 @@ setMethod("setValues", signature("SpatRaster"),
 		nc <- ncell(y)
 		nl <- nlyr(y)
 		opt <- spatOptions()
-		
+
 		if (lv == 1) {
 			y@ptr$setValues(values, opt)
 		} else {

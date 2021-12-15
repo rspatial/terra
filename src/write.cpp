@@ -37,7 +37,7 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 	if (source[0].values.size() == 0) { // && startrow != 0 && startcol != 0) {
 		source[0].values = std::vector<double>(size(), NAN);
 	}
-	
+
 	size_t nc = ncell();
 	size_t chunk = nrows * ncols;
 
@@ -48,7 +48,7 @@ bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size
 			size_t off2 = startrow * ncols + i * nc; 
 			std::copy( vals.begin()+off1, vals.begin()+off1+chunk, source[0].values.begin()+off2 );
 		}
-	
+
 	 // block writing
 	} else {
 		for (size_t i=0; i<nlyr(); i++) {
@@ -73,7 +73,7 @@ void SpatRaster::fill(double x) {
 	} else {
 		source[0].values.resize(size(), x);
 	}
-	
+
 }
 
 
@@ -156,9 +156,9 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	bool dups, empty;
 	if (!differentFilenames(fnames, dups, empty)) {
 		if (dups) {
-			out.setError("duplicate filenames");			
+			out.setError("duplicate filenames");
 		} else if (empty) {
-			out.setError("empty filename");			
+			out.setError("empty filename");
 		} else {
 			out.setError("source and target filename cannot be the same");
 		}
@@ -189,7 +189,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 			}
 			SpatRaster out(fnames, {-1}, {""}, false, {}, {});
 			return out;
-		}	
+		}
 	} 
 
 	if (!readStart()) {
@@ -256,7 +256,7 @@ bool SpatRaster::writeStart(SpatOptions &opt) {
 	} else if ((nlyr() == 1) && (bs.n > 1)) {
 		source[0].values.reserve(ncell());
 	}
-	
+
 	if (source[0].open_write) {
 		addWarning("file was already open");
 	}
@@ -408,7 +408,7 @@ bool SpatRaster::setValuesRcpp(Rcpp::NumericVector &v, SpatOptions &opt) {
 		*this = g.init(vv, opt);
 		return (!hasError());
 	} else if (v.size() == g.size()) {
-		source[0].values = Rcpp::as<std::vector<double> >(v);				
+		source[0].values = Rcpp::as<std::vector<double> >(v);
 		source[0].setRange();
 	} else {
 		setError("incorrect number of values");
@@ -433,7 +433,7 @@ bool SpatRaster::setValues(std::vector<double> &v, SpatOptions &opt) {
 		*this = g.init(v, opt);
 		return (!hasError());
 	} else if (v.size() == g.size()) {
-		source[0].values = v;				
+		source[0].values = v;
 		source[0].setRange();
 	} else {
 		setError("incorrect number of values");

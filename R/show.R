@@ -54,7 +54,7 @@ printDF <- function(x, n=6, first=FALSE) {
 		if (d[1] > 0) {
 			x[2,1] <- "values      :"
 		}
-	}	
+	}
 	if (old[2] > d[2]) {
 		name <- paste0("(and ", old[2] - d[2], " more)")
 		x[[name]] <- ""
@@ -153,8 +153,8 @@ setMethod ("show" , "SpatRaster",
 			e <- as.vector(ext(object))
 			cat("extent      : " , e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		}
-		
-		
+
+
 		cat("coord. ref. :" , .name_or_proj4(object), "\n")
 
 
@@ -178,7 +178,7 @@ setMethod ("show" , "SpatRaster",
 			m <- inMemory(object)
 			f <- sources(object)
 			hdf5 <- substr(f, 1, 5) == "HDF5:"
-			f[!hdf5] <- basename(f[!hdf5])				
+			f[!hdf5] <- basename(f[!hdf5])
 			if (any(hdf5)) {
 				ff <- strsplit(f[hdf5], "://")
 				ff <- sapply(ff, function(i) paste(basename(i), collapse="://"))
@@ -186,7 +186,7 @@ setMethod ("show" , "SpatRaster",
 				f[hdf5] <- ff
 			}
 			#f <- gsub("\\", "/", f, fixed=TRUE)
-			
+
 			f <- gsub("\"", "", f)
 			sources <- rep("memory", length(m))
 			sources[!m] <- f[!m] 
@@ -209,9 +209,9 @@ setMethod ("show" , "SpatRaster",
 			}
 			rgb <- RGB(object)
 			if (!is.null(rgb)) {
-				cat("red-grn-blue:", paste(rgb, collapse=", "), "\n")			
+				cat("red-grn-blue:", paste(rgb, collapse=", "), "\n")
 			}
-			
+
 			varnms <- varnames(object)
 			i <- varnms != ""
 			if (any(i)) {
@@ -284,7 +284,7 @@ setMethod ("show" , "SpatRaster",
 					m <- rbind(paste0(rep(" ", max(wln)), collapse=""), minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format
-					for (i in 1:ncol(m)) {					
+					for (i in 1:ncol(m)) {
 						m[,i] <- format(m[,i], width=w[i], justify="right")
 						addsp <- w[i] - nchar(ln[i])
 						m[1,i] <- paste0(paste0(rep(" ", addsp), collapse=""), ln[i])
@@ -294,7 +294,7 @@ setMethod ("show" , "SpatRaster",
 					m <- rbind(ln, minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format
-					for (i in 1:ncol(m)) {					
+					for (i in 1:ncol(m)) {
 						m[,i] <- format(m[,i], width=w[i], justify="right")
 					}
 				}
@@ -340,7 +340,7 @@ setMethod ("show" , "SpatRaster",
 				cat("time        :", as.character(utim), "\n")
 			}
 		}
-		
+
 		# else {
 		#	cat("data sources:", "no data\n")
 		#	cat("names       :", paste(ln, collapse=", "), "\n")

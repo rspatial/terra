@@ -59,16 +59,6 @@ bool SpatRaster::readStop() {
 }
 
 
-// BSQ
-
-std::vector<double> SpatRaster::readBlock_old(BlockSize bs, unsigned i){
-	std::vector<double> v;
-	readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
-	return v;
-}
-
-
-
 // 2D BSQ
 void SpatRaster::readBlock2(std::vector<std::vector<double>> &v, BlockSize bs, unsigned i) {
 	std::vector<double> x;
@@ -134,7 +124,7 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 				out.insert(out.end(), v1.begin(), v1.end());
 			}
 			*/
-	
+
 	} else { //	no window
 		size_t nc = ncol();
 		if (row==0 && nrows==nrow() && col==0 && ncols==nc) {
@@ -163,7 +153,7 @@ void SpatRaster::readChunkMEM(std::vector<double> &out, size_t src, size_t row, 
 	}
 }
 
-	
+
 
 std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col, size_t ncols){
 
@@ -204,7 +194,7 @@ std::vector<double> SpatRaster::readValuesR(size_t row, size_t nrows, size_t col
 				if (source[0].window.expanded) {
 					std::vector<double> gout;
 					readChunkGDAL(gout, src, source[0].window.off_row, nrows, source[0].window.off_col, ncols);
-								
+
 					size_t rrow = row + source[0].window.off_row;
 					size_t rcol = col + source[0].window.off_col;
 					unsigned endrow = rrow + nrows;
@@ -293,7 +283,7 @@ bool SpatRaster::readAll() {
 				return false;
 			}
 			source[src].values.resize(0);
-		}	
+		}
 	}
 	readStop();
 	if (n>1) source.resize(1);
@@ -324,7 +314,7 @@ std::vector<double> SpatRaster::getValues(long lyr, SpatOptions &opt) {
 		readStop();
 		return out;
 	}
-	
+
 	if (lyr < 0) { // default; read all
 		unsigned n = nsrc();
 		for (size_t src=0; src<n; src++) {

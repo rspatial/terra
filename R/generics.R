@@ -82,9 +82,9 @@ setMethod("origin<-", signature("SpatRaster"),
 		}
 		e <- as.vector(ext(x))
 		e["xmin"] <- e["xmin"] + dif[1]
-		e["xmax"] <- e["xmax"] + dif[1]		
+		e["xmax"] <- e["xmax"] + dif[1]
 		e["ymin"] <- e["ymin"] + dif[2]
-		e["ymax"] <- e["ymax"] + dif[2]		
+		e["ymax"] <- e["ymax"] + dif[2]
 		ext(x) <- e
 		return(x)
 	}
@@ -313,7 +313,7 @@ function(x, lower=-Inf, upper=Inf, values=TRUE, ...) {
 		x[x > upper] <- upper
 	} else {
 		x[x < lower] <- NA
-		x[x > upper] <- NA	
+		x[x > upper] <- NA
 	}
 	x
 }
@@ -345,7 +345,7 @@ function(x, from, to, filename="", ...) {
 	}
 	if (inherits(to, "matrix")) {
 		opt$names = colnames(to)
-		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), opt)	
+		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), opt)
 	} else {
 		x@ptr <- x@ptr$replaceValues(from, to, -1, opt)
 	}
@@ -456,7 +456,7 @@ setMethod("freq", signature(x="SpatRaster"),
 
 		opt <- spatOptions()
 		if (!bylayer) usenames <- FALSE
-		
+
 		if (!is.null(value)) {
 			value <- unique(value)
 			if (length(value) > 1) {
@@ -469,7 +469,7 @@ setMethod("freq", signature(x="SpatRaster"),
 				}
 				ff <- is.factor(x)
 				if (!any(ff)) {
-					error("freq", "a character value is only meaningful for categorical rasters")				
+					error("freq", "a character value is only meaningful for categorical rasters")
 				}
 				f <- freq(x[[ff]])
 				if (usenames) {
@@ -478,7 +478,7 @@ setMethod("freq", signature(x="SpatRaster"),
 				f <- f[f$label == value,]
 				return(f)
 			}
-		
+
 			if (is.na(digits)) {
 				v <- x@ptr$count(value, bylayer[1], FALSE, 0, opt)
 			} else {
@@ -505,7 +505,7 @@ setMethod("freq", signature(x="SpatRaster"),
 			}
 			if (bylayer | (nlyr(x) == 1)) {
 				ff <- is.factor(x) 
-				if (any(ff)) {	
+				if (any(ff)) {
 					cgs <- cats(x)
 					v <- data.frame(v)
 					for (f in which(ff)) {
@@ -516,7 +516,7 @@ setMethod("freq", signature(x="SpatRaster"),
 						if (!inherits(cg[[act]], "numeric")) {
 							v[j, 2] <- as.character(factor(cg[i, act], levels=unique(cg[[act]])))
 						} else {
-							v[j, 2] <- cg[i, act]				
+							v[j, 2] <- cg[i, act]
 						}
 					}
 				}
@@ -749,7 +749,7 @@ setMethod("rescale", signature(x="SpatVector"),
 
 setMethod("scale", signature(x="SpatRaster"), 
 	function(x, center=TRUE, scale=TRUE) { 
-	
+
 		opt <- spatOptions()
 
 		if (is.logical(center)) {

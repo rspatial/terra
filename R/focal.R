@@ -8,7 +8,7 @@ setMethod("focal", signature(x="SpatRaster"),
 function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list())  {
 
 	if (!is.numeric(w)) {
-		error("focal", "w should be numeric vector or matrix")	
+		error("focal", "w should be numeric vector or matrix")
 	}
 	txtfun <- .makeTextFun(fun)
 
@@ -49,7 +49,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 			mm <- m[k]
 			msz <- sum(k)
 		}
-		
+
 		usenarm <- TRUE
 		test <- apply(rbind(1:prod(w)), 1, fun, ...)
 
@@ -63,13 +63,13 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 		} else if (isTRUE(ncol(test) > 1)) {
 			nms <- colnames(test)
 		}
-		
+
 		out <- rast(x, nlyr=outnl)
 		if (!is.null(nms)) {
 			names(out) <- nms
 		}
 		b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
-		
+
 		for (i in 1:b$n) {
 			vv <- NULL
 			for (j in 1:nl) {
@@ -110,7 +110,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 			if (nl > 1) {
 				writeValues(out, vv, b$row[i], b$nrows[i])
 			} else {
-				writeValues(out, v, b$row[i], b$nrows[i])			
+				writeValues(out, v, b$row[i], b$nrows[i])
 			}
 		}
 		out <- writeStop(out)
@@ -128,7 +128,7 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 	}
 
 	if (!is.numeric(w)) {
-		error("focal", "w should be numeric vector or matrix")	
+		error("focal", "w should be numeric vector or matrix")
 	}
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
@@ -176,7 +176,7 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 					v <- v * m
 				}
 			}
-			v <- fun(v, ..., ni=b$nrows[i]*nc, nw=msz)	
+			v <- fun(v, ..., ni=b$nrows[i]*nc, nw=msz)
 			if (nl > 1) {
 				if (outnl > 1) {
 					vv <- rbind(vv, v)
@@ -188,7 +188,7 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 		if (nl > 1) {
 			writeValues(out, vv, b$row[i], b$nrows[i])
 		} else {
-			writeValues(out, v, b$row[i], b$nrows[i])			
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 	}
 	out <- writeStop(out)
@@ -231,7 +231,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 	if (nl < 2) error("focalReg", "x must have at least 2 layers")
 
 	if (!is.numeric(w)) {
-		error("focalReg", "w should be numeric vector or matrix")	
+		error("focalReg", "w should be numeric vector or matrix")
 	}
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
@@ -258,7 +258,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 		}
 		#fun = ols_narm
 	} else {
-		fun = function(x, y) try(ols(x, y), silent=TRUE)		
+		fun = function(x, y) try(ols(x, y), silent=TRUE)
 		#fun = ols
 	}
 	names(out) <- paste0("B", 0:(nl-1))
@@ -280,7 +280,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 				}
 			}
 			v <- t(sapply(1:nrow(Y), function(i) fun(X[i,], Y[i,])))
-			writeValues(out, v, b$row[i], b$nrows[i])		
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 	} else {
 
@@ -314,10 +314,10 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 				v[[p]] <- fun(pX, Y[p,])
 			}
 			v <- t(do.call(cbind, v))
-			writeValues(out, v, b$row[i], b$nrows[i])		
+			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 	}
-	
+
 	out <- writeStop(out)
 	return(out)
 }
@@ -332,7 +332,7 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 	if (nl < 2) error("focalCor", "x must have at least 2 layers")
 
 	if (!is.numeric(w)) {
-		error("focalCor", "w should be numeric vector or matrix")	
+		error("focalCor", "w should be numeric vector or matrix")
 	}
 	if (is.matrix(w)) {
 		m <- as.vector(t(w))
@@ -351,14 +351,14 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 		msz <- sum(k)
 		isnam <- TRUE
 	}
-	
+
 	test <- do.call(fun, list(1:prod(w), prod(w):1), ...)
 	if (is.null(wopt$names )) {
 		wopt$names <- colnames(test)
 	}
 
 	outnl <- (nlyr(x) - 1) * length(test)
-	out <- rast(x, nlyr=outnl)	
+	out <- rast(x, nlyr=outnl)
 
 	b <- writeStart(out, filename, n=msz*4, ...)
 
@@ -385,7 +385,7 @@ function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FA
 			v[[j-1]] <- t(sapply(1:nrow(Y), function(i, ...) fun(X[i,], Y[i,], ...)))
 		}
 		v <- do.call(cbind, v)
-		writeValues(out, v, b$row[i], b$nrows[i])		
+		writeValues(out, v, b$row[i], b$nrows[i])
 	}
 	out <- writeStop(out)
 	return(out)

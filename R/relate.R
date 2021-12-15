@@ -45,7 +45,7 @@ setMethod("relate", signature(x="SpatVector", y="missing"),
 			attr(out, "Upper") <- FALSE
 		} else {
 			out <- matrix(as.logical(out), nrow=nrow(x), byrow=TRUE)
-		}	
+		}
 		if (pairs) {
 			out <- mat2wide(out, symmetrical)
 		}
@@ -115,12 +115,12 @@ setMethod("nearby", signature(x="SpatVector"),
 			} else {
 				d <- distance(x, pairs=TRUE, symmetrical=symmetrical)
 			}
-			d[d[,3] <= distance, 1:2, drop=FALSE]		
+			d[d[,3] <= distance, 1:2, drop=FALSE]
 		} else {
 			if (hasy) {
 				k <- max(1, min(round(k), (nrow(y)-1)))
 			} else {
-				k <- max(1, min(round(k), (nrow(x)-1)))			
+				k <- max(1, min(round(k), (nrow(x)-1)))
 			}
 			if (k > 1) {
 				if (hasy) {
@@ -137,7 +137,7 @@ setMethod("nearby", signature(x="SpatVector"),
 				d <- values(d)[, c("from_id", "to_id")]
 			}
 			colnames(d) <- c("id", paste0("k", 1:k))
-			d				
+			d
 		}
 	}
 )

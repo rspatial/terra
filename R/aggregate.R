@@ -49,7 +49,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 			fun <- match.fun(fun) 
 		}
 	} else {
-		fun <- match.fun(fun) 	
+		fun <- match.fun(fun) 
 	}
 	if (!hasValues(x)) { toc = TRUE }
 	if (toc) {

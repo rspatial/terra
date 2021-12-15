@@ -32,7 +32,7 @@
 				warning('central cell of weights matrix (filter) was set to zero')
 			}
 			w[ceiling(dim(w)[1]/2), ceiling(dim(w)[2]/2)] <- 0
-		}		
+		}
 		stopifnot(all(w >= 0))
 	}
 	if (min(dim(w) %% 2)==0) {
@@ -40,7 +40,7 @@
 	}
 	w
 }
-	
+
 
 
 setMethod("autocor", signature(x="numeric"), 
@@ -69,7 +69,7 @@ setMethod("autocor", signature(x="numeric"),
 				warn("autocor", paste("it is unexpected that a weight matrix for", method, "has diagonal values that are zero"))
 			}
 		}
-		
+
 
 		if (method == "moran") {
 			dx <- x - mean(x, na.rm=TRUE)
@@ -97,7 +97,7 @@ setMethod("autocor", signature(x="numeric"),
 			(Gi-Ei)/sqrt(VG)
 
 		} else if (method == "gi*") {
-			
+
 			if (any(as.numeric(diag(w)) == 0)) {
 				warn("autocor", "it is unexpected that a weight matrix for Gi* has diagonal values that are zero")
 			}
@@ -113,7 +113,7 @@ setMethod("autocor", signature(x="numeric"),
 			if (any(as.numeric(diag(w)) != 0)) {
 				warn("autocor", "it is unexpected that a weight matrix for local Moran has diagonal values that are not zero")
 			}
-			z <- x - mean(x, na.rm=TRUE)	
+			z <- x - mean(x, na.rm=TRUE)
 			mp <- z / ( (sum(z^2, na.rm=TRUE) / length(x)) )
 			mp * apply(w, 1, function(i) {
 					sum(z * i, na.rm=TRUE)
@@ -143,7 +143,7 @@ setMethod("autocor", signature(x="SpatRaster"),
 			warn("autocor", "only the first layer of x is used")
 			x <- x[[1]]
 		}
-		
+
 		if (global) {
 			if (method == "moran") {
 				z <- x - unlist(global(x, "mean", na.rm=TRUE))
@@ -177,24 +177,24 @@ setMethod("autocor", signature(x="SpatRaster"),
 			if (method == "moran") {
 				z <- x - unlist(global(x, "mean", na.rm=TRUE))
 				zz <- ifel(is.na(x), NA, 1)
-				W  <- focal(zz, w=w, na.rm=TRUE)		
+				W  <- focal(zz, w=w, na.rm=TRUE)
 				lz <- focal(z, w=w, na.rm=TRUE) / W
-					
+
 				n <- ncell(x) - unlist(global(is.na(x), "sum"))
 				s2 <- unlist(global(x, "sd", na.rm=TRUE)^2)
-				m <- (z / s2) * lz	
+				m <- (z / s2) * lz
 				names(m) <- names(x)
-				m				
+				m
 			} else {
 				w <- .getFilter(w)
 				i <- trunc(length(w)/2)+1 
 				fun <- function(x,...) sum((x-x[i])^2, ...)
 				Eij <- focal(x, w=dim(w), fun=fun, na.rm=TRUE)
 				s2 <- unlist(global(x, "sd", na.rm=TRUE))^2 
-				n <- ncell(x) - unlist(global(is.na(x), "sum"))	
+				n <- ncell(x) - unlist(global(is.na(x), "sum"))
 				g <- Eij / s2
 				names(g) <- names(x)
-				g		
+				g
 			}
 		}
 	}

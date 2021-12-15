@@ -92,7 +92,7 @@ setMethod("varnames", signature(x="SpatRaster"),
 	function(x) { 
 		nms <- x@ptr$get_sourcenames()
 		Encoding(nms) <- "UTF-8"
-		nms		
+		nms
 	}
 )
 
@@ -110,7 +110,7 @@ setMethod("longnames", signature(x="SpatRasterDataset"),
 	function(x) { 
 		nms <- x@ptr$long_names
 		Encoding(nms) <- "UTF-8"
-		nms		
+		nms
 	}
 )
 
@@ -119,7 +119,7 @@ setMethod("longnames", signature(x="SpatRaster"),
 	function(x) { 
 		nms <- x@ptr$get_sourcenames_long()
 		Encoding(nms) <- "UTF-8"
-		nms		
+		nms
 	}
 )
 

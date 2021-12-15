@@ -10,20 +10,20 @@ setMethod("log", signature(x="SpatRaster"),
     function(x, base=exp(1)){ 
 		opt <- spatOptions()
 		if (base == exp(1)) {
-			x@ptr <- x@ptr$math("log", opt)			
+			x@ptr <- x@ptr$math("log", opt)
 		} else if (base == 2) {
-			x@ptr <- x@ptr$math("log2", opt)			
+			x@ptr <- x@ptr$math("log2", opt)
 		} else if (base == 10) {
-			x@ptr <- x@ptr$math("log10", opt)			
+			x@ptr <- x@ptr$math("log10", opt)
 		} else {
 			x <- app(x, function(i) log(i, base))
 		}
 		x
 	}
-)	
+)
 
 
-#? "gamma", "lgamma", "digamma", "trigamma"		
+#? "gamma", "lgamma", "digamma", "trigamma"
 setMethod("Math", signature(x="SpatRaster"),
     function(x){ 
 		oper <- as.vector(.Generic)[1]

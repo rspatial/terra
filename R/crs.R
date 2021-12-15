@@ -17,7 +17,7 @@ is.proj <- function(crs) {
 		d <- gsub("datum=", "", d)
 		if (!(d %in% c("wgs84", "nad83", "nad27"))) {
 			warn("crs<-", "Only the WGS84, NAD83 and NAD27 datums can be used with a PROJ.4 string. Use WKT2, authority:code, or +towgs84= instead")
-		}		
+		}
 	}
 	#d <- grep("towgs84=", x, value=TRUE)
 	#if (length(d) > 0) {  
@@ -68,11 +68,11 @@ is.proj <- function(crs) {
 	if (describe) {
 		d <- .srs_describe(x@ptr$get_crs("wkt"))
 		if (proj) {
-			d$proj <- x@ptr$get_crs("proj4")		
+			d$proj <- x@ptr$get_crs("proj4")
 		}
 		d
 	} else if (proj) {
-		x@ptr$get_crs("proj4")		
+		x@ptr$get_crs("proj4")
 	} else {
 		r <- x@ptr$get_crs("wkt")
 		if (parse) {

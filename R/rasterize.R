@@ -10,7 +10,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 	} 
 
 	nrx <- nrow(x)
-	
+
 	if (!is.data.frame(values)) {
 		values <- as.data.frame(values)
 	}
@@ -38,7 +38,7 @@ rasterize_points <- function(x, y, field, values, fun="last", background=NA, upd
 			has_levels <- TRUE
 		} 
 	}
-	
+
 	g <- cellFromXY(y, x)
 	i <- which(!is.na(g))
 	g <- g[i]
@@ -117,7 +117,7 @@ setMethod("rasterize", signature(x="matrix", y="SpatRaster"),
 	function(x, y, values=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		lonlat <- .checkXYnames(colnames(x))
-		
+
 		rasterize_points(x=x, y=y, field="", values=rep_len(values, nrow(x)), fun=fun, background=background, update=update, filename=filename, overwrite=overwrite, wopt=wopt, ...) 
 
 	}
@@ -237,7 +237,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 					# v <- as.integer(f) - 1
 					# y@ptr <- y@ptr$rasterize1(x@ptr, field, v, levs, background, update[1], touches[1], inverse[1], FALSE, opt)
 				# } else {
-					
+
 					# #y@ptr <- y@ptr$rasterize1(x@ptr, field, 0[0], levs, background, update[1], touches[1], inverse[1], opt)
 					# ## for old gdal
 					# y@ptr <- y@ptr$rasterize1(x@ptr, field, x[[field,drop=T]], levs, background, update[1], touches[1], inverse[1], FALSE, opt)

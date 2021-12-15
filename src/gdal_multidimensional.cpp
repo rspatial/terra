@@ -20,7 +20,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		setError("you must supply three dimension indices");
         return false;
 	}
-	
+
     auto poDataset = std::unique_ptr<GDALDataset>(
         GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER ));
     if( !poDataset ) {
@@ -94,7 +94,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		Rcpp::Rcout << vals[0] << " - " << vals[vals.size()-1] << std::endl;
 
     }
-    GDALExtendedDataTypeRelease(hDT); 	
+    GDALExtendedDataTypeRelease(hDT); 
 
 	s.m_ndims = dimcount.size();
 
@@ -125,7 +125,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		e.ymin = dim_end[xyz[0]] - 0.5 * res;
 	} else {
 		setError("the second dimension is not valid");
-		return false;		
+		return false;
 	}
 	if (xyz[1] < s.m_ndims) {
 		s.ncol = dimcount[xyz[1]];
@@ -135,7 +135,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		e.xmax = dim_end[xyz[1]] + 0.5 * res;
 	} else {
 		setError("the first dimension is not valid");
-		return false;		
+		return false;
 	}
 	if (s.m_ndims > 2) {
 		if (xyz[2] < s.m_ndims) {
@@ -143,11 +143,11 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 			s.m_dimnames.push_back(dimnames[xyz[2]]);
 		} else {
 			setError("the third dimension is not valid");
-			return false;		
+			return false;
 		}
 	}
 	s.m_dims = xyz;
-	s.extent = e;	
+	s.extent = e;
 	if (s.m_ndims > 3) {
 		for (size_t i=0; i<s.m_ndims; i++) {
 			bool found = false;
@@ -156,11 +156,11 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 			}
 			if (!found) {
 				s.m_dims.push_back(i);
-				s.m_dimnames.push_back(dimnames[i]);				
+				s.m_dimnames.push_back(dimnames[i]);
 			}
 		}
 	}
-	
+
 	s.nlyrfile = s.nlyr;
 	s.layers.resize(s.nlyr);
     std::iota(s.layers.begin(), s.layers.end(), 0);
@@ -219,7 +219,7 @@ bool SpatRaster::readStopMulti(unsigned src) {
 
 
 bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
-	
+
 
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
 	std::vector<size_t> dims = source[src].m_dims;
@@ -238,11 +238,11 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	for (size_t i=0; i<count.size(); i++) {
 		n *= count[i];
 	}
-	
+
 	//count = {3600, 1, 1, 7200, 1};
 
 	GDALExtendedDataTypeH hDT = GDALExtendedDataTypeCreate(GDT_Float64);
-	
+
 	std::vector<double> temp;
 	temp.resize(n);
 	GDALMDArrayRead(source[src].gdalmdarray,
@@ -255,8 +255,8 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 						NULL, // array start. Omitted 
 						0 // array size in bytes. Omitted 
 						);
-    GDALExtendedDataTypeRelease(hDT); 	
-	
+    GDALExtendedDataTypeRelease(hDT); 
+
 	size_t nc = ncell();
 	size_t nl = nlyr();
 	out.resize(0);

@@ -8,7 +8,7 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 		v <- as.polygons(y)
 		#} else if (inherits(y, "SpatVector")) {
 		#	if (ncol(y) > 0) {
-		#		v <- aggregate(y, colnames(y)[1])	
+		#		v <- aggregate(y, colnames(y)[1])
 		#	} else {
 		#		v <- y
 		#		values(v) <- data.frame(tile=1:nrow(v))

@@ -47,12 +47,12 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	doclust <- FALSE
 	if (inherits(cores, "cluster")) {
 		doclust <- TRUE
-		ncores <- length(cores)		
+		ncores <- length(cores)
 	} else if (cores > 1) {
 		doclust <- TRUE
 		ncores <- cores
 		cores <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cores), add=TRUE)	
+		on.exit(parallel::stopCluster(cores), add=TRUE)
 	}
 
 	readStart(x)

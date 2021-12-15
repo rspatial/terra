@@ -40,9 +40,11 @@ With \code{RGB2col} you can convert a three-layer RGB SpatRaster into a single-l
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
-RGB(s) <- c(1,2,3)
 plot(s)
 RGB(s) <- NULL
+plot(s)
+RGB(s) <- c(3,1,2)
+plot(s)
 }
 
 \keyword{methods}

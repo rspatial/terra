@@ -18,7 +18,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 		mat <- matrix(NA, nrow=nl, ncol=nl)
 		colnames(mat) <- rownames(mat) <- names(x)
 
-		
+
 		if (inherits(fun, "character")) {
 			fun <- tolower(fun)
 			stopifnot(fun %in% c("cov", "weighted.cov", "pearson"))
@@ -26,7 +26,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			FUN <- fun
 			fun <- ""
 		}
-		
+
 		if (fun == "weighted.cov") {
 			if (missing(w))	{
 				stop("to compute weighted covariance a weights layer should be provided")
@@ -43,9 +43,9 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			sumw <- unlist(global(w, fun="sum", na.rm=na.rm) )
 			means <- unlist(global(x * w, fun="sum", na.rm=na.rm)) / sumw
 			sumw <- sumw - asSample
-			
+
 			x <- (x - means) * sqrt(w)
-			
+
 
 			for(i in 1:nl) {
 				for(j in i:nl) {
@@ -57,13 +57,13 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			names(means) <- names(x)
 			cov.w <- list(mat, means)
 			names(cov.w) <- c("weighted_covariance", "weighted_mean")
-			return(cov.w)		
-			
+			return(cov.w)
+
 		} else if (fun == "cov") {
 
 			means <- unlist(global(x, fun="mean", na.rm=na.rm) )
 			x <- (x - means)
-			
+
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					r <- x[[i]] * x[[j]]
@@ -75,18 +75,18 @@ setMethod("layerCor", signature(x="SpatRaster"),
 					mat[j,i] <- mat[i,j] <- v
 				}
 			}
-			
+
 			names(means) <- names(x)
 			covar <- list(mat, means)
 			names(covar) <- c("covariance", "mean")
-			return(covar)		
-			
+			return(covar)
+
 		} else if (fun == "pearson") {
 
 			means <- unlist(global(x, fun="mean", na.rm=na.rm) )
 			sds <- unlist(global(x, fun="sd", na.rm=na.rm) )
 			x <- (x - means)
-			
+
 			for(i in 1:nl) {
 				for(j in i:nl) {
 					r <- x[[i]] * x[[j]]
@@ -104,7 +104,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 			covar <- list(mat, means)
 			names(covar) <- c("pearson", "mean")
 			return(covar)
-			
+
 		} else {
 
 			v <- spatSample(x, size=maxcell, "regular", na.rm=na.rm)
@@ -114,7 +114,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				}
 			}
 			mat
-			
+
 		}
 	}
 )

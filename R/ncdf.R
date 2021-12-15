@@ -87,13 +87,13 @@
 	valid_prec <- c("short", "integer", "float", "double", "byte")
 	if (!all(prec %in% valid_prec)) {
 		error("writeCDF", paste("prec must be one of:", paste(valid_prec, collapse=", ")))
-	}	
+	}
 	prec <- rep_len(prec, n)
 	if (missing(missval)) {
 		miss_vals <- c(-32768, -2147483647, -1.175494e38, -1.7976931348623157e308, 255) 
 		missval <- miss_vals[match(prec, valid_prec)]
 	} else {
-		missval <- rep_len(missval, n)	
+		missval <- rep_len(missval, n)
 	}
 	compression <- compression[1]
 	nc <- ncol(x)
@@ -124,7 +124,7 @@
 			zdim <- ncdf4::ncdim_def(zname[i], zunit, zv, unlim=FALSE, create_dimvar=TRUE, calendar=cal)
 			ncvars[[i]] <- ncdf4::ncvar_def(vars[i], units[i], list(xdim, ydim, zdim), missval[i], lvar[i], prec = prec[i], compression=compression,...)
 		} else {
-			
+
 			ncvars[[i]] <- ncdf4::ncvar_def(name=vars[i], units=units[i], dim=list(xdim, ydim), missval=missval[i], longname=lvar[i], prec = prec[i], compression=compression, ...)
 		}
 	}

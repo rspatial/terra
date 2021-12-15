@@ -78,7 +78,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 		if (!can_write(filename, opt.get_overwrite(), msg)) {
 			out.setError(msg);
 			return false;
-		}	
+		}
 	}
 
 	if (opt.names.size() == nlyr()) {
@@ -117,7 +117,7 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	out.setNames({"ID"});
 
 	if ( !hasValues() ) update = false;
-	if (update) { // all lyrs		
+	if (update) { // all lyrs
 		out = geometry();
 	} else {
 		out = geometry(1);
@@ -148,11 +148,11 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 		// passing NULL instead may also work.
 		value = naval;
 	}
-	
+
 	std::vector<int> bands(out.nlyr());
 	std::iota(bands.begin(), bands.end(), 1);
 	std::vector<double> values(out.nlyr(), value);
-	
+
 	char** papszOptions = NULL;
 	CPLErr err;
 	if (touches) {
@@ -160,26 +160,26 @@ SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double backgroun
 	}
 	err = GDALRasterizeLayers(rstDS, static_cast<int>(bands.size()), &(bands[0]),
 			1, &(ahLayers[0]), NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
-			
-	CSLDestroy(papszOptions);	
-			
+
+	CSLDestroy(papszOptions);
+
 //	for (size_t i=0; i<ahGeometries.size(); i++) {
-//		OGR_G_DestroyGeometry(ahGeometries[i]);			
+//		OGR_G_DestroyGeometry(ahGeometries[i]);
 //	}
 	GDALClose(vecDS);
-	
+
 	if ( err != CE_None ) {
 		out.setError("rasterization failed");
 		GDALClose(rstDS);
 		return out;
 	}
-	
+
 	if (driver == "MEM") {
 		if (!out.from_gdalMEM(rstDS, false, true)) {
 			out.setError("rasterization failed (mem)");
 		}
 	}
-	
+
 	GDALRasterBandH band = GDALGetRasterBand(rstDS, 1);
 	double adfMinMax[2];
 	GDALComputeRasterMinMax(band, false, adfMinMax);
@@ -199,7 +199,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	std::string gtype = x.type();
 	bool ispol = gtype == "polygons";
 	if (weights) update = false;
-	
+
 	if (weights && ispol) {
 		SpatOptions sopts(opt);
 		SpatRaster wout = geometry(1);
@@ -238,7 +238,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		if (i < 0) {
 			out.setError("field " + field + " not found");
 			return out;
-		}		
+		}
 		std::string dt = x.df.get_datatype(field);
 		if (dt == "string") {
 			//std::vector<std::string> ss = ;
@@ -262,7 +262,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			values.resize(v.size());
 			for (size_t i=0; i<values.size(); i++) {
 				values[i] = v[i];
-			}			
+			}
 		}
 	}
 	size_t nGeoms = x.size();
@@ -279,7 +279,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	OGRLayer *poLayer = vecDS->GetLayer(0);
 	poLayer->ResetReading();
 	OGRFeature *poFeature;
-	
+
 
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->StealGeometry();
@@ -320,14 +320,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(bands.size()), &(bands[0]),
 				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
-				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);		
-		CSLDestroy(papszOptions);	
+				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
+		CSLDestroy(papszOptions);
 
 		if ( err != CE_None ) {
 			out.setError("rasterization failed");
 			GDALClose(rstDS);
 			for (size_t i=0; i<ahGeometries.size(); i++) {
-				OGR_G_DestroyGeometry(ahGeometries[i]);			
+				OGR_G_DestroyGeometry(ahGeometries[i]);
 			}
 			return out;
 		}
@@ -348,34 +348,34 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 				static_cast<int>(bands.size()), &(bands[0]),
 				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
 				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
-				
-		CSLDestroy(papszOptions);	
+
+		CSLDestroy(papszOptions);
 	}
-			
+
 	for (size_t i=0; i<ahGeometries.size(); i++) {
-		OGR_G_DestroyGeometry(ahGeometries[i]);			
+		OGR_G_DestroyGeometry(ahGeometries[i]);
 	}
-	
+
 	if ( err != CE_None ) {
 		out.setError("rasterization failed");
 		GDALClose(rstDS);
 		return out;
 	}
-	
+
 	if (driver == "MEM") {
 		if (!out.from_gdalMEM(rstDS, false, true)) {
 			out.setError("rasterization failed (mem)");
 		}
 	}
-	
+
 	GDALRasterBandH band = GDALGetRasterBand(rstDS, 1);
-	
+
 	if (minmax) {
 		double adfMinMax[2];
 		GDALComputeRasterMinMax(band, false, adfMinMax);
 		GDALSetRasterStatistics(band, adfMinMax[0], adfMinMax[1], -9999, -9999);
 	}
-	
+
 	GDALClose(rstDS);
 	if (driver != "MEM") {
 		out = SpatRaster(filename, {-1}, {""}, {});
@@ -399,9 +399,9 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 		std::vector<double> out(1, NAN);
 		return out;
 	}
-	
+
 	SpatRaster rc = r.crop(e, "out", ropt);
-	std::vector<double> feats(1, 1) ;		
+	std::vector<double> feats(1, 1) ;
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt); 
 	SpatVector pts = rcr.as_points(false, true, ropt);
 	std::vector<double> cells;
@@ -415,7 +415,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 		if (cells.size() == 0) {
 			cells.resize(1, NAN);
 		}
-	} else {	
+	} else {
 		SpatDataFrame vd = pts.getGeometryDF();
 		std::vector<double> x = vd.getD(0);
 		std::vector<double> y = vd.getD(1);
@@ -438,7 +438,7 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	}
 	SpatRaster r = rr.crop(v.extent, "out", ropt);
 	r = r.disaggregate(fact, ropt);
-	std::vector<double> feats(1, 1) ;	
+	std::vector<double> feats(1, 1) ;
 	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
 	r = r.arith(100.0, "/", false, ropt);
 	r = r.aggregate(fact, "sum", true, ropt);
@@ -466,13 +466,13 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 	r = r.crop(v.extent, "out", ropt);
 
 //	if (r.ncell() < 1000) {
-		std::vector<double> feats(1, 1) ;	
+		std::vector<double> feats(1, 1) ;
 		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
 
 		SpatVector pts = r.as_points(true, true, ropt);
 		if (pts.size() == 0) {
 			weights.resize(1);
-			weights[0] = NAN;			
+			weights[0] = NAN;
 			cells.resize(1);
 			cells[0] = NAN;
 		} else {
@@ -499,7 +499,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 // because touches=false includes partly overlapped cells [#346]
 
 	else {
-		std::vector<double> feats(1, 1) ;	
+		std::vector<double> feats(1, 1) ;
 		SpatVector vv = v.as_lines();
 		SpatRaster b = r.rasterize(vv, "", feats, NAN, true, false, false, false, false, opt); 
 		SpatVector pts = b.as_points(true, true, opt);
@@ -508,7 +508,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
 			cells = cellFromXY(x, y);
-			
+
 			SpatVector bv = b.as_polygons(false, false, false, true, opt);
 			std::vector<double> csize = bv.area("m", true, {});
 			bv.df.add_column(csize, "cellsize");
@@ -529,18 +529,18 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			std::vector<double> y = vd.getD(1);
 			std::vector<double> cells2 = cellFromXY(x, y);
 			cells.insert(cells.end(), cells2.begin(), cells2.end());
-			weights.resize(weights.size() + cells2.size(), 1);	
+			weights.resize(weights.size() + cells2.size(), 1);
 		}
-		
+
 		if (cells.size() == 0) {
 			weights.resize(1);
-			weights[0] = NAN;			
+			weights[0] = NAN;
 			cells.resize(1);
 			cells[0] = NAN;
 		}
 	}
-*/	
-	
+*/
+
 }
 
 

@@ -10,7 +10,7 @@ SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, 
 	SpatRaster out;
 	std::vector<double> cls = cellFromXY(fx, fy);
 	std::vector<std::vector<int_64>> rc = rowColFromCell(cls);
-	
+
     GDAL_GCP *gcps = NULL;
     gcps = (GDAL_GCP *) CPLRealloc (gcps, (fx.size()) * sizeof(GDAL_GCP));
 	GDALInitGCPs(fx.size(), gcps);
@@ -36,7 +36,7 @@ SpatRaster SpatRaster::applyGCP(std::vector<double> fx, std::vector<double> fy, 
 	//	GDALClose( hSrcDS );
 	//	return out;
 	//}
-	
+
 	return out;
 
 }

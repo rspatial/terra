@@ -42,7 +42,7 @@ if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGener
 if (!isGeneric("convHull")) {setGeneric("convHull", function(x, ...) standardGeneric("convHull"))}
 if (!isGeneric("minRect")) {setGeneric("minRect", function(x, ...) standardGeneric("minRect"))}
 if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}
-if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y) standardGeneric("intersect"))}	
+if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y) standardGeneric("intersect"))}
 
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("gaps")) {setGeneric("gaps", function(x, ...) standardGeneric("gaps"))}
@@ -143,9 +143,9 @@ if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, 
 if (!isGeneric("%in%")) { setGeneric("%in%", function(x, table)	standardGeneric("%in%")) }
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}
 if (!isGeneric("animate")) { setGeneric("animate", function(x, ...) standardGeneric("animate")) }
-if (!isGeneric("approxNA")) {setGeneric("approxNA", function(x, ...) standardGeneric("approxNA"))}	
+if (!isGeneric("approxNA")) {setGeneric("approxNA", function(x, ...) standardGeneric("approxNA"))}
 
-if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names = NULL, optional = FALSE, ...) standardGeneric("as.data.frame")) }	
+if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names = NULL, optional = FALSE, ...) standardGeneric("as.data.frame")) }
 
 if (!isGeneric("as.list")) { setGeneric("as.list", function(x, ...) standardGeneric("as.list"))}
 if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneric("as.factor"))}
@@ -245,7 +245,7 @@ if (!isGeneric("readValues")) { setGeneric("readValues", function(x, ...) standa
 if (!isGeneric("readStop")) { setGeneric("readStop", function(x, ...) standardGeneric("readStop")) }
 if (!isGeneric("setMinMax")) {setGeneric("setMinMax", function(x, ...) standardGeneric("setMinMax")) }
 if (!isGeneric("stretch")) {setGeneric("stretch", function(x, ...) standardGeneric("stretch")) }
-if (!isGeneric("union")) {setGeneric("union", function(x, y)standardGeneric("union"))}	
+if (!isGeneric("union")) {setGeneric("union", function(x, y)standardGeneric("union"))}
 if (!isGeneric("unique")) { setGeneric("unique", function(x, incomparables=FALSE, ...) standardGeneric("unique")) }
 if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneric("values")) }
 if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standardGeneric("values<-"))}
@@ -264,4 +264,4 @@ if (!isGeneric("xmin<-")) { setGeneric("xmin<-", function(x, ..., value) standar
 if (!isGeneric("xmax<-")) { setGeneric("xmax<-", function(x, ..., value) standardGeneric("xmax<-"))}
 if (!isGeneric("ymin<-")) { setGeneric("ymin<-", function(x, ..., value) standardGeneric("ymin<-"))}
 if (!isGeneric("ymax<-")) { setGeneric("ymax<-", function(x, ..., value) standardGeneric("ymax<-"))}
-if (!isGeneric("zoom")) {setGeneric("zoom", function(x, ...)standardGeneric("zoom"))}	
+if (!isGeneric("zoom")) {setGeneric("zoom", function(x, ...)standardGeneric("zoom"))}

@@ -28,7 +28,7 @@ SpatOptions::SpatOptions(const SpatOptions &opt) {
 	memfrac = opt.memfrac;
 	todisk = opt.todisk;
 	tolerance = opt.tolerance;
-	
+
 	def_datatype = opt.def_datatype;
 	def_filetype = opt.def_filetype; 
 	filenames = {""};
@@ -372,7 +372,7 @@ SpatExtent SpatRaster::align(SpatExtent e, std::string snap) {
 		if (ymn > ymx) std::swap(ymn, ymx);
 	}
 
-		
+
 	if (xmn == xmx) {
 		if (xmn < e.xmin) {
 			xmx = xmx + res[0];

@@ -111,7 +111,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (narg > 0) { # row
 			i <- cellFromRowColCombine(x, i, 1:ncol(x))
 		}
-		
+
 		bylyr = FALSE
 		if (!is.null(dim(value))) {
 			#x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
@@ -122,7 +122,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 			}
 			value <- as.vector(value)
 		} 
-		
+
 		if (!x@ptr$replaceCellValues(i-1, value, bylyr, spatOptions())) {
 			messages(x)
 		} else {
@@ -178,13 +178,13 @@ setReplaceMethod("[", c("SpatRaster", "SpatRaster", "ANY"),
 			}
 			value <- unlist(value)
 			if (length(value) == 1) {
-				mask(x, i, maskvalues=TRUE, updatevalue=value[1])			
+				mask(x, i, maskvalues=TRUE, updatevalue=value[1])
 			} else {
 				i <- as.logical(values(i))
 				i[is.na(i)] <- TRUE
 				i <- which(i)
 				x[i] <- value
-				x		
+				x
 			} 
 		}
 	}

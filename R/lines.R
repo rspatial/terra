@@ -19,7 +19,7 @@ setMethod("lines", signature(x="SpatVector"),
 			if ((ytype != "points") || (gtype != "points")) {
 				error("lines", "when supplying two SpatVectors, both must have point geometry")
 			}
-			stopifnot(nrow(x) == nrow(y))	
+			stopifnot(nrow(x) == nrow(y))
 			p1 <- geom(x)[, c("x", "y"), drop=FALSE]
 			p2 <- geom(y)[, c("x", "y"), drop=FALSE]
 			if (arrows) {

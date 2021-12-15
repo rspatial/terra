@@ -9,7 +9,7 @@ setMethod("area", signature(x="SpatRaster"),
 			error("area", 'area(x, sum=FALSE) will be removed. Use "cellSize(x)"')
 		} else {
 			error("area", 'area(x, sum=TRUE) will be removed. Use "expanse(x)" or "global(cellSize(x), "sum")"')
-		}		
+		}
 	}
 )
 

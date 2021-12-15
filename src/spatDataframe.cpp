@@ -148,12 +148,12 @@ SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) {
 			out.iv.push_back(iv[p]);
 			out.iplace.push_back(icnt);
 			out.itype.push_back(1);
-			icnt++;			
+			icnt++;
 		} else {
 			out.sv.push_back(sv[p]);
 			out.iplace.push_back(scnt);
 			out.itype.push_back(2);
-			scnt++;			
+			scnt++;
 		}
 	}
 	return out;
@@ -175,7 +175,7 @@ unsigned SpatDataFrame::nrow() {
 		} else if (itype[0] == 1) {
 			n = iv[0].size();
 		} else {
-			n = sv[0].size();		
+			n = sv[0].size();
 		}
 	}
 	return n;
@@ -244,7 +244,7 @@ void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
 	sort(r.begin(), r.end());
 	r.erase(std::unique(r.begin(), r.end()), r.end());
 	std::reverse(r.begin(), r.end());
-		
+
 	for (size_t j=0; j<r.size(); j++) {
 		for (size_t i=0; i<dv.size(); i++) {
 			dv[i].erase(dv[i].begin() + r[j]);
@@ -297,7 +297,7 @@ bool SpatDataFrame::remove_column(int i) {
 			}
 		}
 	}
-	
+
 	names.erase(names.begin()+i);
 	itype.erase(itype.begin()+i);
 	iplace.erase(iplace.begin()+i);
@@ -435,7 +435,7 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 					} else {
 						for (size_t k=0; k<nr2; k++) {
 							sv[a].push_back(std::to_string(x.iv[b][k]));
-						}					
+						}
 					}
 				} else if (itype[j] == 0) { 
 					if (x.itype[i] == 1) {
@@ -456,7 +456,7 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 			}
 		}
 	}
-	
+
 	resize_rows(nr1 + nr2);
 	return true;
 }
@@ -515,7 +515,7 @@ int SpatDataFrame::get_fieldindex(std::string field) {
 // only doing this for one column for now
 SpatDataFrame SpatDataFrame::unique(int col) {
 	SpatDataFrame out = subset_cols(col);
-	
+
 	if (out.hasError()) return out;
 	if (out.itype[0] == 0) {
 		size_t sz = nrow();
@@ -525,7 +525,7 @@ SpatDataFrame SpatDataFrame::unique(int col) {
 		std::sort(out.dv[0].begin(), out.dv[0].end());
 		out.dv[0].erase(std::unique(out.dv[0].begin(), out.dv[0].end()), out.dv[0].end());
 		if (hasNAN) out.dv[0].push_back(NAN);
-		
+
 	} else if (out.itype[0] == 1) {
 		std::sort(out.iv[0].begin(), out.iv[0].end());
 		out.iv[0].erase(std::unique(out.iv[0].begin(), out.iv[0].end()), out.iv[0].end());
@@ -548,7 +548,7 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 			for (size_t j=0; j<nu; j++) {
 				if (std::isnan(dv[ccol][i]) && (std::isnan(x.dv[0][j]))) {
 					idx[i] = j;
-					continue;					
+					continue;
 				} else if (dv[ccol][i] == x.dv[0][j]) {
 					idx[i] = j;
 					continue;

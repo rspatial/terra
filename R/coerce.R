@@ -31,10 +31,10 @@ from_stars <- function(from) {
 		}
 		return(ra)
 	}
-	
+
 	dims <- attr(from, "dimensions")
 	dd <- dim(from)
-	
+
 	# x, y
 	hasBands <- "band" %in% names(dd)
 	hasTime <- "time" %in% names(dd)
@@ -117,8 +117,8 @@ from_stars <- function(from) {
 	names(s) <- paste(names(dd)[4], 1:length(s), sep="-")
 	s
 }
-	
-	
+
+
 
 setAs("stars", "SpatRasterDataset",
 	function(from) {
@@ -180,7 +180,7 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, extent=FALSE) {
 		p <- methods::new("SpatVector")
 		if (extent) {
-			p@ptr <- x@ptr$dense_extent()
+			p@ptr <- x@ptr$dense_extent(FALSE, FALSE)
 			x <- messages(x, "as.polygons")
 		} else {
 			opt <- spatOptions()
@@ -198,10 +198,10 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 						cg <- cgs[[f]]
 						i <- match(unlist(p[[f]]), cg[,1])
 						act <- activeCat(x, f)
-						p[[f]] <- cg[i, act+1]				
+						p[[f]] <- cg[i, act+1]
 					}
 				}
-			}				
+			}
 		}
 		messages(p, "as.polygons")
 	}
@@ -282,7 +282,7 @@ setMethod("as.points", signature(x="SpatRaster"),
 					p[[f]] <- as.character(v)
 				}
 			}
-		}	
+		}
 		messages(p, "as.points")
 	}
 )
@@ -341,7 +341,7 @@ as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE
 #	xy <- isTRUE(dots$xy) 
 #	cells <- isTRUE(dots$cells)
 #	na.rm <- isTRUE(dots$na.rm)
-	
+
 	d <- NULL
 	if (xy) {
 		d <- xyFromCell(x, 1:ncell(x))

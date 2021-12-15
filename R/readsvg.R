@@ -54,7 +54,7 @@ readSVG <- function(f) {
 	}
 	ss <- do.call(rbind, s)
 	v <- vect(ss, type="polygons")
-	
+
 	a <- XML::xpathSApply(doc, "//path", XML::xmlAttrs)
 	a <- unique(unlist(sapply(a, names)))
 	a <- a[-grep(":", a)]

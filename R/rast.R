@@ -191,13 +191,13 @@ setMethod("rast", signature(x="character"),
 				crs(r) <- "OGC:CRS84"
 			}
 		}
-		
+
 		if (!is.null(lyrs)) {
 			r[[lyrs]]
 		} else {
 			r
 		}
-		
+
 	}
 )
 
@@ -381,7 +381,7 @@ setMethod("rast", signature(x="matrix"),
 			if (is.null(extent)) {
 				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
 			} else {
-				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=extent)			
+				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=extent)
 			}
 			values(r) <- as.vector(t(x))
 		}

@@ -46,7 +46,7 @@ parfun <- function(cls, data, fun, model, ...) {
 			if (!is.null(index)) {
 				r <- matrix(NA, nrow=nl*n, ncol=max(index))
 			} else {
-				r <- matrix(NA, nrow=nl*n, ncol=1)			
+				r <- matrix(NA, nrow=nl*n, ncol=1)
 			}
 		}
 	} else {
@@ -65,7 +65,7 @@ parfun <- function(cls, data, fun, model, ...) {
 	if (inherits(model, "gstat")) {
 		nr <- max(nrow(d), 5)
 		xy <- as.matrix(d[1:nr,1:2])
-		if (all(xy == r[1:nr, 1:2])) {	
+		if (all(xy == r[1:nr, 1:2])) {
 			r <- r[,-c(1:2)]   # x, y
 		}
 	}

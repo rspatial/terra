@@ -69,7 +69,7 @@ defaultOptions <- function() {
 spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 
 	wopt <- c(list(...), wopt)
-	
+
 	## work around onLoad problem
 	if (is.null(.terra_environment$options)) .create_options()
 

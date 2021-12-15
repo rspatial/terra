@@ -52,20 +52,20 @@ std::vector<std::string> getCRSname(std::string s) {
 	if (value != NULL) {
 		acode = value;
 	}
-		
+
 	double west, south, east, north;
 	west = -10000;
 	east = -10000;
 	south = -10000;
 	north = -10000;
-	
+
 	std::string aoi="", box="";
 	#if GDAL_VERSION_MAJOR >= 3
 	if (x.GetAreaOfUse(&west, &south, &east, &north, &value)) {
 		if (value != NULL) {
 			if (west > -1000) {
 				aoi	= value;
-				box = std::to_string(west) + ", " + std::to_string(east) + ", " + std::to_string(north) + ", " + std::to_string(south);	
+				box = std::to_string(west) + ", " + std::to_string(east) + ", " + std::to_string(north) + ", " + std::to_string(south);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ double getLinearUnits(std::string s) {
 std::vector<double> geotransform(std::string fname) {
 	std::vector<double> out;
     GDALDataset *poDataset = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_RASTER | GDAL_OF_READONLY, NULL, NULL, NULL ));
-	
+
     if( poDataset == NULL )  {
 		Rcpp::Rcout << "cannot read from: " + fname << std::endl;
 		return out;
@@ -184,7 +184,7 @@ std::vector<std::vector<std::string>> gdal_drivers() {
 	for (size_t i=0; i<n; i++) {
 	    poDriver = GetGDALDriverManager()->GetDriver(i);
 		const char* ss = poDriver->GetDescription();
-		if (ss != NULL ) s[0][i] = ss;		
+		if (ss != NULL ) s[0][i] = ss;
 		ss = poDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
 		if (ss != NULL ) s[4][i] = ss;
 
@@ -237,7 +237,7 @@ static void __err_error(CPLErr eErrClass, int err_no, const char *msg) {
         case 0:
         case 1:
         case 2:
-            break; 	
+            break; 
         case 3:
             warningNoCall("%s (GDAL error %d)", msg, err_no); 
             break;
@@ -279,12 +279,12 @@ void set_gdal_warnings(int level) {
 	if (level==4) {
 		CPLSetErrorHandler((CPLErrorHandler)__err_none);
 	} else if (level==1) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_warning);		
+		CPLSetErrorHandler((CPLErrorHandler)__err_warning);
 	} else if (level==2) {
-		CPLSetErrorHandler((CPLErrorHandler)__err_error);		
+		CPLSetErrorHandler((CPLErrorHandler)__err_error);
 	} else {
 		CPLSetErrorHandler((CPLErrorHandler)__err_fatal);
-	} 	
+	} 
 }
 
 
@@ -305,7 +305,7 @@ void gdal_init(std::string path) {
 
 // [[Rcpp::export(name = ".precRank")]]
 std::vector<double> percRank(std::vector<double> x, std::vector<double> y, double minc, double maxc, int tail) {
-					
+
 	std::vector<double> out;
 	out.reserve(y.size());
 	size_t nx = x.size();

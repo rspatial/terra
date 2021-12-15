@@ -326,12 +326,12 @@ voronoi_deldir <- function(x, bnd=NULL, eps=1e-09, ...){
 		xy <- stats::na.omit(xy[, 1:2])
 		xy <- unique(xy)
 	}
-	
+
 	e <- bnd
 	if (!is.null(e)) {
 		e <- as.vector(ext(bnd))
 	}
-	
+
 	dd <- deldir::deldir(xy[,1], xy[,2], rw=e, eps=eps, suppressMsge=TRUE)
 	g <- lapply(deldir::tile.list(dd), function(i) cbind(i$ptNum, 1, i$x, i$y))
 	g <- do.call(rbind, g)
@@ -409,7 +409,7 @@ setMethod("makeNodes", signature(x="SpatVector"),
 setMethod("removeDupNodes", signature(x="SpatVector"),
 	function(x, digits=-1) {
 		x@ptr <- x@ptr$remove_duplicate_nodes(digits)
-		messages(x, "removeDupNodes")	
+		messages(x, "removeDupNodes")
 	}
 )
 
@@ -418,7 +418,7 @@ setMethod("simplify", signature(x="SpatVector"),
 	function(x, tolerance=0.1) {
 		preserveTopology <- TRUE
 		x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
-		messages(x, "simplify")	
+		messages(x, "simplify")
 	}
 )
 
@@ -436,7 +436,7 @@ setMethod("snap", signature(x="SpatVector"),
 		if (is.null(y)) {
 			x@ptr <- x@ptr$snap(tolerance)
 		} else {
-			x@ptr <- x@ptr$snapto(y@ptr, tolerance)		
+			x@ptr <- x@ptr$snapto(y@ptr, tolerance)
 		}
 		messages(x, "snap")
 	}

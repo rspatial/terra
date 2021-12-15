@@ -27,7 +27,7 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 		r1 <- r2
 		r2 <- tmp
 	}
-		
+
 	xn <- xFromCol(x, c1) - 0.5 * r[1]
 	xx <- xFromCol(x, c2) + 0.5 * r[1]
 	yx <- yFromRow(x, r1) + 0.5 * r[2]
@@ -190,7 +190,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	geo <- geomtype(y)
 	if (geo == "points") {
 		## this was? should be fixed upstream
-		if (nc == nl) {		
+		if (nc == nl) {
 			e <- matrix(e, ncol=nc)
 		} else {
 			e <- matrix(e, ncol=nc, byrow=TRUE)
@@ -230,7 +230,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 		cncell <- cn =="cell"
 		e[, cncell] <- e[, cncell] + 1
 	}
-	
+
 	if (factors) {
 		id <- data.frame(e[,1,drop=FALSE])
 		e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE], TRUE))
@@ -399,13 +399,13 @@ function(x, i, j, ..., drop=TRUE) {
 		if (is.bool(i)) {
 			i <- as.logical(values(i))
 		} else {
-			i <- !is.na(values(i))		
+			i <- !is.na(values(i))
 		}
 		values(x)[i,]
 	} else {
 		if (is.bool(i)) {
 			mask(x, i, maskvalues=FALSE)
-		} else {	
+		} else {
 			mask(x, i)
 		}
 	}
@@ -433,7 +433,7 @@ function(x, y, ...) {
 	if (is.list(e)) {
 		e <- lapply(1:length(e), function(i) {
 			if (length(e[[i]]) == 0) {
-				cbind(i, NA)	
+				cbind(i, NA)
 			} else {
 				cbind(i, e[[i]])
 			}
@@ -443,7 +443,7 @@ function(x, y, ...) {
 		e <- cbind(1:nrow(y), e)
 	}
 	if (ncol(x) > 0) {
-		d <- as.data.frame(x)	
+		d <- as.data.frame(x)
 		e <- data.frame(id.x=e[,1], d[e[,2], ,drop=FALSE])
 		rownames(e) <- NULL
 	} else {

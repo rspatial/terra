@@ -47,7 +47,7 @@ SpatRasterSource::SpatRasterSource() {
 
 
 SpatRaster SpatRaster::combineSources(SpatRaster x, bool warn) {
-	
+
 	SpatRaster out = geometry();
 	if (!hasValues()) {
 		if (!x.hasValues()) {
@@ -235,7 +235,7 @@ void SpatRasterSource::appendValues(std::vector<double> &v, unsigned lyr) {
 	size_t nc ;
 	if (hasWindow) {
 		nc = window.full_ncol * window.full_nrow;
-	} else {	
+	} else {
 		nc = nrow * ncol;
 	}
 	size_t start = lyr * nc;
@@ -266,7 +266,7 @@ void SpatRasterSource::resize(unsigned n) {
     range_max.resize(n, NAN);
     blockcols.resize(n);
     blockrows.resize(n);
-	
+
 	has_scale_offset.resize(n, false);
 	scale.resize(n, 1);
 	offset.resize(n, 0);
@@ -285,7 +285,7 @@ void SpatRasterSource::resize(unsigned n) {
 
 //std::vector<SpatRasterSource> SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
-	
+
     unsigned nl = lyrs.size();
     bool all = true;
     if (lyrs.size() == nlyr) {
@@ -329,9 +329,9 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 		//no values, deep copy is cheap
 		out = *this;
 		out.resize(0);
-	}		
-		
-	
+	}
+
+
     for (size_t i=0; i<nl; i++) {
         unsigned j = lyrs[i];
 		out.names.push_back(names[j]);
@@ -351,7 +351,7 @@ SpatRasterSource SpatRasterSource::subset(std::vector<unsigned> lyrs) {
 		out.has_scale_offset.push_back(has_scale_offset[j]);
 		out.scale.push_back(scale[j]);
 		out.offset.push_back(offset[j]);
-		
+
 		if (memory) {
 			out.layers.push_back(i);
 			if (hasValues) {
@@ -429,7 +429,7 @@ SpatRaster SpatRaster::subset(std::vector<unsigned> lyrs, SpatOptions &opt) {
     } //else {
 	//	out.collapse();
 	//}
-	
+
     return out;
 }
 

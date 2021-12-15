@@ -63,7 +63,7 @@ SpatTime_t get_time(long year, unsigned month, unsigned day, unsigned hr, unsign
 			time += yeartime(y);
 		}
 	}
-	
+
 	time += (mdays[isleap(year)][month-1] + day) * 86400;
 	time += (hr * 3600) + (min * 60) + sec;
     return time;
@@ -93,7 +93,7 @@ std::vector<int> get_date(SpatTime_t x) {
 		while (x < 0) {
 			year--;
 			x += yeartime(year);
-		}	
+		}
 	} else if (x > 0) {
 		while (x > 0) {
 			x -= yeartime(year);
@@ -195,7 +195,7 @@ SpatTime_t get_time_string(std::string s) {
 	time = get_time(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]), 0, 0, 0);
 
 //	} else {
-//		time = get_time_noleap(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));	
+//		time = get_time_noleap(std::stoi(ss[0]), std::stoi(ss[1]), std::stoi(ss[2]));
 //	}
 	return time;
 }
@@ -267,8 +267,8 @@ SpatTime_t parse_time(std::string x) {
 		return stoi(time[0]);
 	} else if (time.size() != 3) {
 		return 0;
-	}	
-	
+	}
+
 	if (s.size() > 1) {
 		std::vector<std::string> secs = strsplit(s[1], ":");
 		if (secs.size() == 3) {
@@ -277,7 +277,7 @@ SpatTime_t parse_time(std::string x) {
 	}
 
 	return get_time_str(time);
-}	
+}
 
 
 /*
@@ -344,7 +344,7 @@ SpatTime_t get_time360(long year, unsigned month, unsigned day=15, unsigned hr=0
 			time += 31104000;
 		}
 	}
-	
+
 	time += (mdays[month-1] + day) * 86400;
 
 	time += (hr * 3600) + (min * 60) + sec;

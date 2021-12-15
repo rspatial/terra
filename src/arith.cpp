@@ -297,7 +297,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			}
 		} else if (oper == "^") {
 			if (reverse) {
-				for(double& d : a)  d = std::pow(x, d);			
+				for(double& d : a)  d = std::pow(x, d);
 			} else {
 				for(double& d : a)  d = std::pow(d, x);
 			}
@@ -323,19 +323,19 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 			}
 		} else if (oper == "<=") {
 			if (reverse) {
-				for(double& d : a) if (!std::isnan(d)) d = x <= d;			
+				for(double& d : a) if (!std::isnan(d)) d = x <= d;
 			} else {
 				for(double& d : a) if (!std::isnan(d)) d = d <= x;
 			}
 		} else if (oper == ">") {
 			if (reverse) {
-				for(double& d : a) if (!std::isnan(d)) d = x > d;			
+				for(double& d : a) if (!std::isnan(d)) d = x > d;
 			} else {
 				for(double& d : a) if (!std::isnan(d)) d = d > x;
 			}
 		} else if (oper == "<") {
 			if (reverse) {
-				for(double& d : a) if (!std::isnan(d)) d = x < d;			
+				for(double& d : a) if (!std::isnan(d)) d = x < d;
 			} else {
 				for(double& d : a) if (!std::isnan(d)) d = d < x;
 			}
@@ -377,12 +377,12 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 
 	unsigned innl = nlyr();
 	unsigned outnl = innl;
-	
+
 	if (x.size() > innl) {
 		outnl = x.size();
 	}
 	SpatRaster out = geometry(outnl);
-	
+
 	bool logical=false;
 	if (!smooth_operator(oper, logical)) {
 		out.setError("unknown arith function");
@@ -391,7 +391,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 	if (logical) {
 		out.setValueType(3);
 	}
-	
+
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -437,7 +437,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 				}
 			} else if (oper == "^") {
 				if (reverse) {
-					for(double& d : a)  d = std::pow(x[j], d);			
+					for(double& d : a)  d = std::pow(x[j], d);
 				} else {
 					for(double& d : a)  d = std::pow(d, x[j]);
 				}
@@ -457,25 +457,25 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 				for(double& d : a) if (!std::isnan(d)) d = d != x[j];
 			} else if (oper == ">=") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] >= d;			
+					for(double& d : a) if (!std::isnan(d)) d = x[j] >= d;
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d >= x[j];
 				}
 			} else if (oper == "<=") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] <= d;			
+					for(double& d : a) if (!std::isnan(d)) d = x[j] <= d;
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d <= x[j];
 				}
 			} else if (oper == ">") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] > d;			
+					for(double& d : a) if (!std::isnan(d)) d = x[j] > d;
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d > x[j];
 				}
 			} else if (oper == "<") {
 				if (reverse) {
-					for(double& d : a) if (!std::isnan(d)) d = x[j] < d;			
+					for(double& d : a) if (!std::isnan(d)) d = x[j] < d;
 				} else {
 					for(double& d : a) if (!std::isnan(d)) d = d < x[j];
 				}
@@ -510,7 +510,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 	std::vector<std::string> f {"abs", "ceiling", "floor", "trunc", "sign"};
 	bool is_int = std::find(f.begin(), f.end(), fun) != f.end();
 	if (is_int) out.setValueType(1);
-	
+
 	f = {"abs", "sqrt", "ceiling", "floor", "trunc", "log", "log10", "log2", "log1p", "exp", "expm1", "sign"};
 	if ((!is_int) && std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("unknown math function");
@@ -549,7 +549,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		return(out);
 	}
 
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -558,7 +558,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		for(double& d : a) if (!std::isnan(d)) d = mathFun(d);
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;	
+		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -585,7 +585,7 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		return(out);
 	}
 
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -670,7 +670,7 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		return(out);
 	}
 
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -771,7 +771,7 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 			a[i] = !a[i];
 		}
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-	
+
 	}
 	out.writeStop();
 	readStop();
@@ -802,7 +802,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		out.setError(x.getError());
 		return(out);
 	}
-	
+
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -820,7 +820,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 			// stop
 		}
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
-	
+
 	}
 	out.writeStop();
 	readStop();
@@ -838,7 +838,7 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
-	
+
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -864,7 +864,7 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
 	}
 	out.writeStop();
-	readStop();	
+	readStop();
 	return(out);
 }
 
@@ -955,7 +955,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 		}
 		sumFun = getFun(fun);
 	}
-	
+
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -1039,7 +1039,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 		for (size_t j=0; j<nc; j++) {
 			for (size_t k=0; k<nl; k++) {
 				v[k] = a[j+k*nc];
-			}	
+			}
 			b[j] = modal_value(v, ities, narm, rgen, dist);
 		}
 		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;

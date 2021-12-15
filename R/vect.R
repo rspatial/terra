@@ -125,7 +125,7 @@ setMethod("vect", signature(x="matrix"),
 
 		if (ncol(x) == 2) { 
 			lonlat <- .checkXYnames(colnames(x))
-			if (type == "points") {	
+			if (type == "points") {
 				p@ptr$setPointsXY(x[,1], x[,2])
 			} else {
 				p@ptr$setGeometry(type, rep(1, nr), rep(1, nr), x[,1], x[,2], rep(FALSE, nr))
@@ -216,7 +216,7 @@ setReplaceMethod("[", c("SpatVector", "missing", "ANY"),
 
 setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 	function(x, i, j, value) {
-		
+
 		if (is.null(value)) {
 			for (name in i) {
 				if (name %in% names(x)) {
@@ -228,7 +228,7 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 		if (length(i) > 1) {
 			error("[[<-", "you can only set one variable at a time")
 		}
-	
+
 		name <- i[1]
 		value <- rep(value, length.out=nrow(x))
 

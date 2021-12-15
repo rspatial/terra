@@ -39,7 +39,7 @@ std::vector<double> mean2d(const std::vector<std::vector<double>> &x) {
 			}
 		}
 		if (d > 0) {
-			out[i] = v / d;	
+			out[i] = v / d;
 		}
 	}
 	return out;
@@ -174,7 +174,7 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 	}
 	size_t n = values.size();
 	if (n == 0) return (NAN);
-	if (n == 1) return (values[0]);	
+	if (n == 1) return (values[0]);
     std::vector<unsigned> counts(n, 0);
 
 	if (ties < 3) {
@@ -227,9 +227,9 @@ double modal_value(std::vector<double> values, unsigned ties, bool narm, std::de
 				double rand = dist(rgen);
 				if (rand < (1 / tieCount)) {
 					maxCount = i;
-				}		
+				}
 			}
-		}	
+		}
 	} else {
 		size_t tieCount = 1;
 		for (size_t i = 1; i < n; ++i) {

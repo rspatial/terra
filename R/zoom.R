@@ -25,7 +25,7 @@ setMethod("zoom", signature(x="SpatRaster"),
 		if (!is.null(RGB(x))) {
 			x <- crop(x, e)
 		} else {
-			x <- crop(x[[layer]], e)		
+			x <- crop(x[[layer]], e)
 		}
 		plot(x, maxcell=maxcell, ...) 
 		return(invisible(e))

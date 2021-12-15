@@ -66,7 +66,7 @@ bool SpatRaster::write_aux_json(std::string filename) {
 				f << "\"timestep\":\"" << source[0].timestep << "\"";
 				if (wunits) f << ",";
 				f << std::endl;
-			}	
+			}
 			if (wunits) {
 				std::vector<std::string> units = getUnit();
 				std::string ss = quoted_csv(units);
@@ -100,7 +100,7 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 		return false;
 	}
 	size_t nr = d.nrow();
-	
+
 	for (size_t i=0; i<d.ncol(); i++) {
 		const char *fn = d.names[i].c_str();
 		if (d.itype[i] == 0) {
@@ -126,7 +126,7 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 		if (d.itype[i] == 0) {
 			std::vector<double> v = d.dv[d.iplace[i]];
 			if( pRat->ValuesIO(GF_Write, i, 0, nr, &v[0]) != CE_None ) {
-				return false;				
+				return false;
 			}
 		} else if (d.itype[i] == 1) {
 			std::vector<long> v = d.iv[d.iplace[i]];
@@ -247,7 +247,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return(false);
 	}
 	std::string datatype = opt.get_datatype();
-	
+
 	bool writeRGB = (rgb && nlyr() == 3 && rgblyrs.size() == 3);
 	if (writeRGB) {
 		datatype = "INT1U";
@@ -257,7 +257,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError(errmsg);
 		return false;
 	}
-	
+
 	bool append = std::find(opt.gdal_options.begin(), opt.gdal_options.end(), "APPEND_SUBDATASET=YES") != opt.gdal_options.end();
 	if (append) {
 		if (!file_exists(filename)) {
@@ -268,17 +268,17 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return(false);
 	}
-	
+
 //	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
 //		setError(errmsg);
 //		return(false);
 //	}
-	
+
 	std::string auxf = filename + ".aux.xml";
 	remove(auxf.c_str());
 	auxf = filename + ".aux.json";
 	remove(auxf.c_str());
-		
+
 	std::vector<bool> hasCT = hasColors();
 	bool rat = isRat();
 	std::vector<bool> hasCats = hasCategories();
@@ -316,7 +316,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
 	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
 		setError("insufficient disk space (perhaps from temporary files?)");
-		return(false);		
+		return(false);
 	}
 
 
@@ -334,7 +334,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 /*	if (driver == "GTiff") {
 		GDAL_tiff_options(diskNeeded > 4194304000, writeRGB, opt);
 	}
-	
+
 	for (size_t i=0; i<opt.gdal_options.size(); i++) {
 		std::vector<std::string> gopt = strsplit(opt.gdal_options[i], "=");
 		if (gopt.size() == 2) {
@@ -383,7 +383,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			setError("failed writing "+ driver + " file");
 		}
 		GDALClose( (GDALDatasetH) poDS );
-		return false;	
+		return false;
 	}
 
     #ifdef useRcpp
@@ -513,7 +513,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	poDS->SetProjection(pszSRS_WKT);
 	CPLFree(pszSRS_WKT);
 	// destroySRS(oSRS) ?
-	
+
 	source[0].gdalconnection = poDS;
 	source[0].resize(nlyr());
 	source[0].nlyrfile = nlyr();
@@ -590,7 +590,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			if (!std::isnan(vmin)) {
 				if (std::isnan(source[0].range_min[i])) {
 					source[0].range_min[i] = vmin;
-					source[0].range_max[i] = vmax;		
+					source[0].range_max[i] = vmax;
 				} else {
 					source[0].range_min[i] = std::min(source[0].range_min[i], vmin);
 					source[0].range_max[i] = std::max(source[0].range_max[i], vmax);
@@ -613,7 +613,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			std::vector<int32_t> vv;
 			tmp_min_max_na(vv, vals, na, (double)INT32_MIN, (double)INT32_MAX);
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Int32, nl, NULL, 0, 0, 0, NULL );
-		} else if (datatype == "INT2S") {				
+		} else if (datatype == "INT2S") {
 			//min_max_na(vals, na, (double)INT16_MIN, (double)INT16_MAX); 
 			//std::vector<int16_t> vv(vals.begin(), vals.end());
 			std::vector<int16_t> vv;
@@ -673,13 +673,13 @@ bool SpatRaster::writeStopGDAL() {
 					mn = adfMinMax[0];
 					mx = adfMinMax[1];
 				} else {
-					poBand->ComputeStatistics(gdal_approx, &mn, &mx, &av, &sd, NULL, NULL);				
+					poBand->ComputeStatistics(gdal_approx, &mn, &mx, &av, &sd, NULL, NULL);
 				}
 				poBand->SetStatistics(mn, mx, av, sd);
 			} else {
 				if (datatype.substr(0,3) == "INT") {
 					source[0].range_min[i] = trunc(source[0].range_min[i]); 
-					source[0].range_max[i] = trunc(source[0].range_max[i]); 		
+					source[0].range_max[i] = trunc(source[0].range_max[i]); 
 				}
 				poBand->SetStatistics(source[0].range_min[i], source[0].range_max[i], -9999., -9999.);
 			}
@@ -688,7 +688,7 @@ bool SpatRaster::writeStopGDAL() {
 			source[0].hasRange[i] = false;
 		}
 	}
-	
+
 	if (copy_driver != "") {
 		GDALDataset *newDS;
 		GDALDriver *poDriver;
@@ -702,7 +702,7 @@ bool SpatRaster::writeStopGDAL() {
 				copy_driver = "";
 				GDALClose( (GDALDatasetH) newDS );
 				GDALClose( (GDALDatasetH) source[0].gdalconnection );
-				return false;	
+				return false;
 			}
 			copy_driver = "";
 			GDALClose( (GDALDatasetH) newDS );
@@ -727,7 +727,7 @@ bool SpatRaster::writeStopGDAL() {
 				copy_filename = "";
 				GDALClose( (GDALDatasetH) oldDS );
 				GDALClose( (GDALDatasetH) newDS );
-				return false;	
+				return false;
 			}
 			copy_driver = "";
 			copy_filename = "";

@@ -143,9 +143,9 @@ SpatVector::SpatVector() {
 	extent.xmax = 0;
 	extent.ymin = 0;
 	extent.ymax = 0;
-		
+
 	srs.proj4 = "+proj=longlat +datum=WGS84";
-	srs.wkt = "GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\",6378137,298.257223563, LENGTHUNIT[\"metre\",1]]], PRIMEM[\"Greenwich\",0, ANGLEUNIT[\"degree\",0.0174532925199433]], CS[ellipsoidal,2], AXIS[\"geodetic latitude (Lat)\",north, ORDER[1], ANGLEUNIT[\"degree\",0.0174532925199433]], AXIS[\"geodetic longitude (Lon)\",east, ORDER[2], ANGLEUNIT[\"degree\",0.0174532925199433]], USAGE[ SCOPE[\"Horizontal component of 3D system.\"], AREA[\"World.\"], BBOX[-90,-180,90,180]], ID[\"EPSG\",4326]]";	
+	srs.wkt = "GEOGCRS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\",6378137,298.257223563, LENGTHUNIT[\"metre\",1]]], PRIMEM[\"Greenwich\",0, ANGLEUNIT[\"degree\",0.0174532925199433]], CS[ellipsoidal,2], AXIS[\"geodetic latitude (Lat)\",north, ORDER[1], ANGLEUNIT[\"degree\",0.0174532925199433]], AXIS[\"geodetic longitude (Lon)\",east, ORDER[2], ANGLEUNIT[\"degree\",0.0174532925199433]], USAGE[ SCOPE[\"Horizontal component of 3D system.\"], AREA[\"World.\"], BBOX[-90,-180,90,180]], ID[\"EPSG\",4326]]";
 }
 
 SpatVector::SpatVector(SpatGeom g) {
@@ -171,7 +171,7 @@ SpatVector::SpatVector(SpatExtent e, std::string crs) {
 
 SpatVector::SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomType g, std::string crs) {
 	if (x.size() == 0) return;
-	
+
 	if (g == points) {
 		SpatPart p(x[0], y[0]);
 		SpatGeom geom(p);
@@ -180,7 +180,7 @@ SpatVector::SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomTyp
 		for (size_t i=1; i<x.size(); i++) {
 			SpatPart p(x[i], y[i]);
 			geom.setPart(p, 0);
-			addGeom(geom);			
+			addGeom(geom);
 		}
 	} else {
 		SpatPart p(x, y);
@@ -485,13 +485,13 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			if (n > 1) {
 				wkt = "MULTIPOINT ";
 			} else {
-				wkt = "POINT ";			
+				wkt = "POINT ";
 			}
 		} else if (g.gtype == lines) {
 			if (n > 1) {
 				wkt = "MULTILINESTRING ";
 			} else {
-				wkt = "LINESTRING ";	
+				wkt = "LINESTRING ";
 			}
 		} else if (g.gtype == polygons) {
 			if (n > 1) {
@@ -500,7 +500,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 				wkt = "POLYGON ";
 			}
 		}
-	
+
 		if (n == 0) {
 			wkt += "EMPTY";
 			out[i] = wkt;
@@ -509,16 +509,16 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 
 		if ((g.gtype == polygons) | (n > 1)) { 
 			wkt += "(";
-		}		
-	
+		}
+
 		for (size_t j=0; j < n; j++) {
 			SpatPart p = g.getPart(j);
 			if (j>0) wkt += ",";
 
 			if ((g.gtype == polygons) & (n > 1)) { 
 				wkt += "(";
-			}		
-	
+			}
+
 			wkt += "(" + nice_string(p.x[0]) + " " + nice_string(p.y[0]);
 			for (size_t q=1; q < p.x.size(); q++) {
 				wkt += ", " + nice_string(p.x[q]) + " " + nice_string(p.y[q]);
@@ -536,7 +536,7 @@ std::vector<std::string> SpatVector::getGeometryWKT() {
 			}
 			if ((g.gtype == polygons) & (n > 1)) { 
 				wkt += ")";
-			}		
+			}
 		}
 		if ((g.gtype == polygons) | (n > 1)) {
 			wkt += ")";
@@ -684,9 +684,9 @@ void SpatVector::setPointsGeometry(std::vector<double> &x, std::vector<double> &
 void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::string crs) {
 	if (x.nrow() == 0) return;
 	if ((x.itype[geo[0]] != 0) || (x.itype[geo[1]] != 0)) {
-		setError("coordinates must be numeric");		
+		setError("coordinates must be numeric");
 		return;
-	}	
+	}
 	setPointsGeometry(x.dv[x.iplace[geo[0]]], x.dv[x.iplace[geo[1]]]);
 	setSRS( {crs});
 	df = x;
@@ -887,12 +887,12 @@ SpatVector SpatVector::as_lines() {
 	if (geoms[0].gtype == lines) {
 		return v;
 	} else if (geoms[0].gtype == points) {
-		
+
 		for (int i=geoms.size()-1; i >=0; i--) {
 			if (v.geoms[i].parts.size() > 1) {
 				for (size_t j=1; j<v.geoms[i].parts.size(); j++) {
 					v.geoms[i].parts[0].x.push_back(v.geoms[i].parts[j].x[0]);
-					v.geoms[i].parts[0].y.push_back(v.geoms[i].parts[j].y[0]);			
+					v.geoms[i].parts[0].y.push_back(v.geoms[i].parts[j].y[0]);
 					v.geoms[i].gtype = lines;
 				}
 				v.geoms[i].parts.resize(1);
@@ -902,7 +902,7 @@ SpatVector SpatVector::as_lines() {
 		}
 		return v;
 	} 
-	
+
 	for (size_t i=0; i<size(); i++) {
 		for (size_t j=0; j < v.geoms[i].size(); j++) {
 			SpatPart p = v.geoms[i].parts[j];
@@ -992,7 +992,7 @@ SpatVector SpatVectorCollection::append() {
 		}
 		//too much copying
 		//out = out.append(v[i], true);
-						
+
 		if (v[i].size() == 0) continue;
 		out.geoms.insert(out.geoms.end(), v[i].geoms.begin(), v[i].geoms.end());
 		out.extent.unite(v[i].extent);

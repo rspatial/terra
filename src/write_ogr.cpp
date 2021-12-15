@@ -48,7 +48,7 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 		wkb = wkbMultiPolygon;
 	} else {
         setError("this geometry type is not supported");
-        return false;		
+        return false;
 	}
 
 	std::string s = srs.wkt;
@@ -86,20 +86,20 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 	if (SRS != NULL) SRS->Release();
 
 	for (size_t i=0; i<ngeoms; i++) {
-	
+
 	    OGRFeatureH hFeature;
         OGRGeometryH hPt;
 
         hFeature = OGR_F_Create( OGR_L_GetLayerDefn( hLayer ) );
-		
-	
+
+
 // points -- also need to do multipoints
 		OGRGeometryH hPt;
 		if (wkb == wkbPoint) {
 			SpatGeom g = getGeom(i);
 			OGR_G_SetPoint_2D(hPt, 0, g.parts[0].x[0], g.parts[0].y[0]);
 			ogrgeoms.push_back(hPt);
-// lines		
+// lines
 		} else if (wkb == wkbMultiLineString) {
 			SpatGeom g = getGeom(i);
 			OGRMultiLineString poGeom;
@@ -120,8 +120,8 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 				message = "cannot set geometry";
 				return false;
 			}
-		
-// polygons		
+
+// polygons
 		} else if (wkb == wkbMultiPolygon) {
 			SpatGeom g = getGeom(i);
 			OGRPolygon poGeom;
@@ -137,7 +137,7 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 					message = "cannot add ring";
 					return false;
 				}
-			
+
 				if (p.hasHoles()) {
 					for (size_t h=0; h < p.nHoles(); h++) {
 						SpatHole hole = p.getHole(h);
@@ -146,7 +146,7 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 							pt.setX(hole.x[k]);
 							pt.setY(hole.y[k]);
 							poHole.setPoint(k, &pt);
-						}					
+						}
 						if (poGeom.addRing(&poHole) != OGRERR_NONE ) {
 							message = "cannot add hole";
 							return false;
@@ -163,7 +163,7 @@ bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	me
 			message = "Only points, lines and polygons are currently supported";
 			return false;
 		}
-	
+
 		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
 			message = "Failed to create feature";
 			return false;
@@ -191,7 +191,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 		if (nrow() == 0) {
 			setError("no geometries to write");
-			return(poDS);		
+			return(poDS);
 		}
 	}
     GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
@@ -225,7 +225,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		wkb = wkbMultiPolygon;
 	} else {
         setError("this geometry type is not supported: " + type());
-        return poDS;		
+        return poDS;
 	}
 
 	std::string s = srs.wkt;
@@ -263,7 +263,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
     }
 //	if (SRS != NULL) SRS->Release();
 	if (SRS != NULL) OSRDestroySpatialReference(SRS);
-	
+
 	std::vector<std::string> nms = get_names();
 	std::vector<std::string> tps = df.get_datatypes();
 	OGRFieldType otype;
@@ -292,7 +292,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	//unsigned r = 0;
 
 	for (size_t i=0; i<ngeoms; i++) {
-	
+
 		OGRFeature *poFeature;
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
@@ -315,8 +315,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				pt.setY( g.parts[0].y[0] );
 			}
 			poFeature->SetGeometry( &pt );
-		
-// lines		
+
+// lines
 		} else if (wkb == wkbMultiLineString) {
 			SpatGeom g = getGeom(i);
 			OGRMultiLineString poGeom;
@@ -339,8 +339,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				setError("cannot set geometry");
 				return poDS;
 			}
-		
-// polygons		
+
+// polygons
 		} else if (wkb == wkbMultiPolygon) {
 			SpatGeom g = getGeom(i);
 			OGRMultiPolygon poGeom;
@@ -359,7 +359,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 					setError("cannot add ring");
 					return poDS;
 				}
-			
+
 				if (p.hasHoles()) {
 					for (size_t h=0; h < p.nHoles(); h++) {
 						SpatHole hole = p.getHole(h);
@@ -368,7 +368,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 							pt.setX(hole.x[k]);
 							pt.setY(hole.y[k]);
 							poHole.setPoint(k, &pt);
-						}					
+						}
 						if (polyGeom.addRing(&poHole) != OGRERR_NONE ) {
 							setError("cannot add hole");
 							return poDS;
@@ -378,8 +378,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				poGeom.addGeometry( &polyGeom);
 				//closeRings
 			}
-			
-			//OGRMultiPolygon* mGeom = poGeom.toMultiPolygon();	
+
+			//OGRMultiPolygon* mGeom = poGeom.toMultiPolygon();
 			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
 				setError("cannot set geometry");
 				return poDS;
@@ -388,7 +388,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			setError("Only points, lines and polygons are currently supported");
 			return poDS;
 		}
-	
+
 		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
 			setError("Failed to create feature");
 			return poDS;
@@ -432,7 +432,7 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 		}
 		if (nrow() == 0) {
 			setError("nothing to write");
-			return(false);		
+			return(false);
 		}
 	}
 
@@ -479,7 +479,7 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 	}
 
 	for (size_t i=0; i<nrow(); i++) {
-	
+
 		OGRFeature *poFeature;
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
@@ -495,8 +495,8 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 		OGRPoint pt;
 		pt.setX( 0.0 );
 		pt.setY( 0.0 );
-		poFeature->SetGeometry( &pt );	
-	
+		poFeature->SetGeometry( &pt );
+
 		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
 			setError("Failed to create feature");
 			return false;
@@ -511,14 +511,14 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
     std::ifstream  src(f.c_str(), std::ios::binary);
     std::ofstream  dst(filename.c_str(),  std::ios::binary);
     dst << src.rdbuf();
-	
+
 	filename.erase(filename.length()-3);
 	filename += "cpg";
 	std::ofstream cpg;
 	cpg.open (filename.c_str());
 	cpg << "UTF-8";
 	cpg.close();
-	
+
 	return true;
 }
 

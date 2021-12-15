@@ -27,7 +27,7 @@ std::vector<std::string> read_text(std::string filename) {
 	if (f.is_open())  {
 		while (getline(f, line)) {
 			if (line.empty()) {
-				s.push_back("");				
+				s.push_back("");
 			} else {
 				s.push_back(line);
 			}

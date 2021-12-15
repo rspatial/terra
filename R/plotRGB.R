@@ -12,7 +12,7 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 			if (length(value) == 3) {
 				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, -99)
 			} else if (length(value) == 4) {
-				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1)	
+				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1)
 			} else {
 				error("RGB<-", "value must have length 3 or 4")
 			}
@@ -52,10 +52,10 @@ setMethod("plotRGB", signature(x="SpatRaster"),
 function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) { 
 
 	x <- x[[c(r, g, b, a)]]
-	
+
 	if (!is.null(mar)) {
 		mar <- rep_len(mar, 4)
-		if (!any(is.na(mar))) {	
+		if (!any(is.na(mar))) {
 			graphics::par(mar=mar)
 		}
 	}
@@ -134,7 +134,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 	} else {
 		z <- grDevices::rgb(RGB[,1], RGB[,2], RGB[,3], alpha=alpha, maxColorValue=scale)
 	}
-	
+
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 
 	requireNamespace("grDevices")
@@ -217,7 +217,7 @@ make_cut <- function(x) {
 		if (max(rng) == 0) {
 			out[[i]] <- rgb
 			j <- j - 1
-			next		
+			next
 		}
 		p <- which.max(rng) + 1
 		m <- median(rgb[,p])
@@ -264,10 +264,10 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 		n <- length(idx)
 		stopifnot((n == 3) | (n == 4))
 		if ((min(idx) < 1) | (max(idx) > nlyr(x))) {
-			error("rgb2coltab", "invalid value (RGB indices)")	
+			error("rgb2coltab", "invalid value (RGB indices)")
 		}
 		x <- x[[idx]]
-		
+
 		if (!is.null(stretch)) {
 			stretch = tolower(stretch)
 			if (stretch == "lin") {
@@ -286,21 +286,21 @@ setMethod("RGB2col", signature(x="SpatRaster"),
 		}
 
 		if (n == 4) x[[4]] <- x[[4]] * 255
-	
+
 		if (grays) {
 			opt <- spatOptions(filename, overwrite, ...)
 			x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
 			return(messages(x, "RGB2col"))
 		}
-		
+
 		v <- cbind(id=1:ncell(x), values(x))
 		v <- median_cut(stats::na.omit(v))
-		
+
 		a <- aggregate(v[,-c(1:2)], list(v[,1]), median)
 		if (n==3) {
 			a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
 		} else {
-			a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], a[,5], maxColorValue=255)		
+			a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], a[,5], maxColorValue=255)
 		}
 		m <- merge(v[,1:2], a[, c(1,n+2)], by=1)
 		r <- rast(x, 1)

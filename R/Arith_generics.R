@@ -195,7 +195,7 @@ setMethod("Compare", signature(e1="SpatRaster", e2="character"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
 		if (!is.factor(e1)) {
-			error(oper, "SpatRaster is not categorical")		
+			error(oper, "SpatRaster is not categorical")
 		}
 		if (oper != "==") {
 			error(oper, "only '==' is supported with categorical comparisons")
@@ -206,7 +206,7 @@ setMethod("Compare", signature(e1="SpatRaster", e2="character"),
 		if (length(e2) != 1) {
 			error(oper, "comparisons only supported for single values (see %in% and match)")
 		}
-		
+
 		e2 <- match(e2, levels(e1)[[1]])
 		if (is.na(e2)) return (e1 * 0)
 		opt <- spatOptions()
@@ -513,7 +513,7 @@ setMethod("Compare", signature(e1="SpatExtent", e2="SpatExtent"),
 setMethod("stdev", signature(x="SpatRaster"),
 	function(x, ..., pop=TRUE, na.rm=FALSE){
 		if (pop) {
-			.summarize(x, ..., fun="std", na.rm=na.rm)			
+			.summarize(x, ..., fun="std", na.rm=na.rm)
 		} else {
 			.summarize(x, ..., fun="sd", na.rm=na.rm)
 		}

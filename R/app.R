@@ -43,7 +43,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		if (test) {
 			error("app", "additional arguments cannot be a SpatRaster")
 		}
-	}	
+	}
 # figure out the shape of the output by testing with one row
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
 	usefun <- FALSE
@@ -96,14 +96,14 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	doclust <- FALSE
 	if (inherits(cores, "cluster")) {
 		doclust <- TRUE
-		ncores <- length(cores)				
+		ncores <- length(cores)
 	} else if (cores > 1) {
 		doclust <- TRUE
-		ncores <- cores	
+		ncores <- cores
 		cores <- parallel::makeCluster(cores)
-		on.exit(parallel::stopCluster(cores), add=TRUE)	
+		on.exit(parallel::stopCluster(cores), add=TRUE)
 	}
-	
+
 	ncops <- nlyr(x) / nlyr(out)
 	ncops <- ifelse(ncops > 1, ceiling(ncops), 1) * 4 
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=ncops)
@@ -253,7 +253,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
 	}
-	
+
 	nc <- (nlyr(x[1]) * length(x)) / nlyr(out)
 	nc <- ifelse(nc > 1, ceil(nc), 1) * 3 
 	b <- writeStart(out, filename, overwrite, wopt=wopt, n=nc)

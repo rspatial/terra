@@ -223,7 +223,7 @@ class SpatRaster {
 		SpatExtent getExtent();
 		void setExtent(SpatExtent e);
 		void setExtent(SpatExtent ext, bool keepRes=false, std::string snap="");  // also set it for sources?
-		SpatVector dense_extent();
+		SpatVector dense_extent(bool inside, bool setbounds);
 
 		//std::vector<std::string> getCRS();
 		//void setCRS(std::vector<std::string> _crs);
@@ -435,7 +435,6 @@ class SpatRaster {
 		void readValues(std::vector<double> &out, size_t row, size_t nrows, size_t col, size_t ncols);
 		void readChunkMEM(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols);
 
-		std::vector<double> readBlock_old(BlockSize bs, unsigned i);
 		void readBlock(std::vector<double> &v, BlockSize bs, unsigned i){ // inline
 			readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 		}
@@ -711,10 +710,15 @@ class SpatRaster {
 		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
+		SpatRaster rgb2ihs(SpatOptions &opt);	
+		SpatRaster ihs2rgb(SpatOptions &opt);	
+
 		SpatRaster which(SpatOptions &opt);
 		SpatRaster is_true(SpatOptions &opt);
 		SpatRaster is_false(SpatOptions &opt);
 
-		SpatRaster sievefilter(int threshold, int connections, SpatOptions &opt);	
+		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
+		
+//		SpatRaster panSharpen(SpatRaster pan, SpatOptions &opt);	
 };
 
