@@ -156,15 +156,7 @@ bool smooth_operator(std::string oper, bool &logical) {
 	return (logical || (std::find(f.begin(), f.end(), oper) != f.end()));
 }
 
-bool SpatRaster::setValueType(unsigned char d) {
-	if (d > 3) {
-		return false;
-	}
-	for (size_t i=0; i<source.size();i++) {
-		source[i].valueType = std::vector<unsigned char>(source[i].nlyr, d);
-	}
-	return true;
-}
+
 
 
 SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {

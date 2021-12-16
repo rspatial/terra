@@ -246,8 +246,9 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("cannot guess file type from filename");
 		return(false);
 	}
-	std::string datatype = opt.get_datatype();
 
+	std::string datatype = opt.get_datatype();
+	
 	bool writeRGB = (rgb && nlyr() == 3 && rgblyrs.size() == 3);
 	if (writeRGB) {
 		datatype = "INT1U";

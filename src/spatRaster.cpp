@@ -356,13 +356,25 @@ std::vector<bool> SpatRaster::hasRange() {
 	return(x);
 }
 
-std::vector<int> SpatRaster::valueType() {
+std::vector<int> SpatRaster::getValueType() {
 	std::vector<int> d;
 	for (size_t i=0; i<source.size(); i++) {
 		d.insert(d.end(), source[i].valueType.begin(), source[i].valueType.end());
 	}
 	return(d);
 }
+
+
+bool SpatRaster::setValueType(unsigned char d) {
+	if (d > 3) {
+		return false;
+	}
+	for (size_t i=0; i<source.size();i++) {
+		source[i].valueType = std::vector<unsigned char>(source[i].nlyr, d);
+	}
+	return true;
+}
+
 
 std::vector<double> SpatRaster::range_min() {
 	std::vector<double> x;
