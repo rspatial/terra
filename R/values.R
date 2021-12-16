@@ -154,16 +154,13 @@ setMethod("setValues", signature("SpatRaster"),
 		if (lv == 1) {
 			y@ptr$setValues(values, opt)
 		} else {
-			if (!((lv %% nc) == 0)) {
-				warn("setValues", "length of values does not match the number of cells")
-			}
 			if (lv > (nc * nl)) {
 				warn("setValues", "values is larger than the size of cells")
 				values <- values[1:(nc*nl)]
 			} else if (lv < (nc * nl)) {
 				warn("setValues", "values were recycled")
 				values <- rep(values, length.out=nc*nl)
-			}
+			} 
 			y@ptr$setValues(values, opt)
 		}
 		y <- messages(y, "setValues")

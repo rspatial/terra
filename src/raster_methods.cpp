@@ -3482,12 +3482,21 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 		return out;
 	}
 
-
+	bool hsv=false;
+	bool hsi=false; 
+	//, hsl;
 	std::vector<std::string> nms;
 	if (type == "hsv") {
 		nms = {"hue", "saturation", "value"};
+		hsv = true;
+	} else if (type == "hsi") {
+		nms = {"hue", "saturation", "intensity"};
+		hsi = true;
+	} else if (type == "hsl") {
+		nms = {"hue", "saturation", "lightness"};
+		//hsl = true;
 	} else {
-		out.setError("unknown type");
+		out.setError("unknown type. Should be one of 'hsv', 'hsi' or 'hsl'");
 		return out;
 	}
 	
@@ -3512,27 +3521,53 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 			double R = v[j + iR] / 255.;
 			double G = v[j + iG] / 255.;
 			double B = v[j + iB] / 255.;
+			double m = std::min(std::min(R, G), B);
+			double M = std::max(std::max(R, G), B);
+			double C = (M - m);
 
-			double minrgb = std::min(std::min(R, G), B);
-			double maxrgb = std::max(std::max(R, G), B);
-
-			v[j+n2] = maxrgb; // value
-			if ((maxrgb == 0.0) || (maxrgb == minrgb)) {
-				v[j] = 0; // hue
-				v[j+n] = 0;  // saturation
-			} else {
-				//s 
-				v[j+n] = (maxrgb - minrgb) / maxrgb;	
-				
-				//h
-				if (maxrgb == R) {
-					v[j] = 60 * ((G - B) / (maxrgb - minrgb));
-				} else if (maxrgb == G) {
-					v[j] = 60 * ((B - R) / (maxrgb - minrgb)) + 120;
+			if ((M == 0) || (C == 0)) {
+				v[j] = 0; // H (hue)
+				v[j+n] = 0;  // S (saturation)
+				if (hsv) {
+					v[j+n2] = M; // V
+				} else if (hsi) {
+					v[j+n2] = (R + G + B) / 3; // I
 				} else {
-					v[j] = 60 * ((R - G) / (maxrgb - minrgb)) + 240;
+					v[j+n2] = (M + m) / 2; // L
 				}
-				v[j] = v[j] < 0 ? (v[j] + 360) / 360 : v[j] / 360;
+			} else {
+				// S
+				if (hsv) {
+					v[j+n] = C / M;	
+					v[j+n2] = M; // value
+				} else if (hsi) {
+					v[j+n2] = (R + G + B) / 3; // I
+					v[j+n] = 1 - m / v[j+n2];	
+				} else {
+					double L = (M + m) / 2;
+					v[j+n] = C / (1 - std::fabs(2 * L - 1));
+					v[j+n2] = L;
+				}
+				// H
+				if (hsi) {
+					double H = ((R-G)+(R-B))/2.0;
+					H = H/sqrt((R-G)*(R-G) + (R-B)*(G-B));
+					H = acos(H);
+					if (B > G) {
+						H = 2*PI - H;
+					}
+					v[j] = H/(2*PI);					
+					//v[j] = acos( sqrt((((R-G) + (R-B)) / 2) /  pow((R - G),2) + (R-B)*(G-B)) );
+				} else {
+					if (M == R) {
+						v[j] = 60 * (G - B) / C;
+					} else if (M == G) {
+						v[j] = 60 * ((B - R) / C) + 120;
+					} else {
+						v[j] = 60 * ((R - G) / C) + 240;
+					}
+					v[j] = v[j] < 0 ? (v[j] + 360) / 360 : v[j] / 360;
+				}
 			}
 		}
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
@@ -3541,6 +3576,8 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 	readStop();
 	return out;
 }
+
+
 
 SpatRaster SpatRaster::hsx2rgb(std::string type, SpatOptions &opt) {
 	SpatRaster out = geometry();
@@ -3552,11 +3589,17 @@ SpatRaster SpatRaster::hsx2rgb(std::string type, SpatOptions &opt) {
 		out.setError("no cell values");
 		return out;
 	}
-	if (type != "hsv") {
-		out.setError("unknown type");
+	bool hsv=false;
+	bool hsl=false; 
+	
+	if (type == "hsv") {
+		hsv = true;
+	} else if (type == "hsl") {		
+		hsl = true;
+	} else if (type != "hsi") {
+		out.setError("unknown type. Should be one of 'hsv', 'hsi' or 'hsl'");
 		return out;
 	}
-
 
 	std::vector<std::string> nms={"red", "green", "blue"};
 	out.setNames(nms);
@@ -3580,25 +3623,35 @@ SpatRaster SpatRaster::hsx2rgb(std::string type, SpatOptions &opt) {
 
 			double H = v[j] * 360;
 			double S = v[j+n];
-			double X = v[j + n2];
+			double X, C, m;
+			if (hsv) {
+				double V = v[j + n2];
+				C = V * S;
+				m = V - C;
+				X = C * (1 - std::fabs(std::fmod((H / 60.), 2) - 1));
+			} else if (hsl) {
+				double L = v[j + n2];
+				C = (1 - std::fabs(2*L-1)) * S;
+				m = L - C/2;
+				X = C * (1 - std::fabs(std::fmod((H / 60.), 2) - 1));
+			} else { // hsi
+				double I = v[j + n2];
+				double Z = 1 - std::fabs((std::fmod(H/60., 2.)) -1);
+				C = (3 * I * S) / (1 + Z);
+				X = C * Z;
+				m = I * (1-S);
+			}	
+			if (H < 60) { v[j]=C; v[j+n]=X; v[j+n2]=0; }
+			else if (H < 120) { v[j]=X; v[j+n]=C; v[j+n2]=0; }
+			else if (H < 180) { v[j]=0; v[j+n]=C; v[j+n2]=X; }
+			else if (H < 240) { v[j]=0; v[j+n]=X; v[j+n2]=C; }
+			else if (H < 300) { v[j]=X; v[j+n]=0; v[j+n2]=C; }
+			else { v[j]=C; v[j+n]=0; v[j+n2]=X; }
+			
+			v[j] = (v[j] + m) * 255; 
+			v[j+n] = (v[j+n] + m) * 255; 
+			v[j+n2] = (v[j+n2] + m) * 255;
 
-			int high = (int)(H / 60.0) % 6;
-			double F  = (H / 60.0) - high;
-			double P  = X * (1.0 - S);
-			double Q  = X * (1.0 - S * F);
-			double T  = X * (1.0 - S * (1.0 - F));
-
-			switch(high) {
-				case 0: v[j] = X, v[j+n] = T, v[j+n2] = P; break;
-				case 1: v[j] = Q, v[j+n] = X, v[j+n2] = P; break;
-				case 2: v[j] = P, v[j+n] = X, v[j+n2] = T; break;
-				case 3: v[j] = P, v[j+n] = Q, v[j+n2] = X; break;
-				case 4: v[j] = T, v[j+n] = P, v[j+n2] = X; break;
-				case 5: v[j] = X, v[j+n] = P, v[j+n2] = Q; break;
-			}
-			v[j] *= 255;
-			v[j+n]*= 255; 
-			v[j+n2]*= 255;
 		}
 		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
 	}
@@ -3608,134 +3661,3 @@ SpatRaster SpatRaster::hsx2rgb(std::string type, SpatOptions &opt) {
 }
 
 
-
-/*
-SpatRaster SpatRaster::rgb2ihs(SpatOptions &opt) {
-
-	SpatRaster out = geometry();
-	std::vector<std::string> nms={"intensity", "hue", "saturation"};
-	out.setNames(nms);
-
-	if ((!rgb)  || (rgblyrs.size() < 3)) {
-		out.setError("no RGB channels");
-		return out;
-	}
-	if (!hasValues()) {
-		out.setError("no cell values");
-		return out;
-	}
-
-	if (!readStart()) {
-		out.setError(getError());
-		return(out);
-	}
- 	if (!out.writeStart(opt)) { return out; }
-
-	size_t nc=ncol();
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v;
-		readBlock(v, out.bs, i);
-		size_t n = out.bs.nrows[i] * nc;
-		size_t n2 = n * 2;
-		size_t iR = rgblyrs[0] * n;
-		size_t iG = rgblyrs[1] * n;
-		size_t iB = rgblyrs[2] * n;
-		for (size_t j = 0; j < n; j++) {
-			double R = v[j + iR] / 255.;
-			double G = v[j + iG] / 255.;
-			double B = v[j + iB] / 255.;
-			// I
-			v[j] = R + G + B;
-			// H
-			size_t jn = j+n;
-			if ((B < R) && (B < G)) {
-				v[jn] = (G - B) / (v[j] - 3*B);
-			} else if ((R < B) && (R < G)) {
-				v[jn] = (B - R) / (v[j] - 3*R) + 1;
-			} else if ((G < B) && (G < R)){
-				v[jn] = (R - G) / (v[j] - 3*G) + 2;
-			} else {
-				v[jn] = 0;
-				v[j+n2] = 0;
-				continue;
-			}
-			// S
-			if (v[jn] <= 1) {
-				v[j+n2] = (v[j] - 3*B) /v[j];
-			} else if (v[jn] <= 2) {
-				v[j+n2] = (v[j] - 3*R) /v[j];
-			} else {
-				v[j+n2] = (v[j] - 3*G) /v[j];
-			}
-		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
-	}
-	out.writeStop();
-	readStop();
-	return out;
-}
-
-SpatRaster SpatRaster::hsx2rgb(std::string type, SpatOptions &opt) {
-	SpatRaster out = geometry();
-	if (nlyr() != 3) {
-		out.setError("x must have three layers");
-		return out;
-	}
-	if (!hasValues()) {
-		out.setError("no cell values");
-		return out;
-	}
-	if (type != "hsv") {
-		out.setError("unknown type");
-		return out;
-	}
-
-
-	std::vector<std::string> nms={"red", "green", "blue"};
-	out.setNames(nms);
-	out.rgb = true;
-	out.rgblyrs = {0,1,2};
-
-	if (!readStart()) {
-		out.setError(getError());
-		return(out);
-	}
- 	if (!out.writeStart(opt)) { return out; }
-	size_t nc=ncol();
-
-	for (size_t i = 0; i < out.bs.n; i++) {
-		std::vector<double> v;
-		readBlock(v, out.bs, i);
-		size_t n = out.bs.nrows[i] * nc;
-		size_t n2 = n * 2;
-		for (size_t j = 0; j < n; j++) {
-			if (std::isnan(v[j])) continue;
-			double I = v[j];
-			double H = v[j + n];
-			double S = v[j + n2];
-			if (I <= 1) {
-				v[j] = I * (1 + 2*S - 3*S*H) /3;
-				v[j+n] =  I * (1 - S + 3*S*H) /3;
-				v[j+n2] = I * (1 - S) /3;
-			} else if (I <= 2) {
-				v[j] = I * (1 - S) /3;
-				v[j+n] = I * (1 + 2*S - 3*S *(H - 1)) /3;
-				v[j+n2] =  I *(1 - S + 3*S * (H - 1)) /3;
-			} else {
-				v[j] = I * (1 - S + 3*S *(H - 2)) /3;
-				v[j+n] = I * (1 - S) /3;
-				v[j+n2] = I *(1 + 2*S - 3*S * (H - 2)) /3;
-			}
-			v[j] *= 255;
-			v[j+n] *= 255;
-			v[j+n2] *= 255;
-		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
-	}
-	out.writeStop();
-	readStop();
-	return out;
-}
-
-
-*/
