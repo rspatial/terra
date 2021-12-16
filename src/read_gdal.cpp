@@ -738,6 +738,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 				nm = basename_noext(fname) ;
 			}
 		}
+
+		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
+		if (in_string(dtype, "Int") || (dtype == "Byte")) {
+			s.valueType[i] = 1;
+		}
 		s.names[i] = nm;
 	}
 
