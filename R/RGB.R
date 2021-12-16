@@ -179,12 +179,16 @@ setMethod("col2RGB", signature(x="SpatRaster"),
 
 
 setMethod("RGB2HS", signature(x="SpatRaster"), 
-	function(x, filename="", overwrite=FALSE, ...) {
+	function(x, type="hsv", filename="", overwrite=FALSE, ...) {
+		x@ptr = x@ptr$rgb2hsx(type, opt)
+		messages(x)
 	}
 )
 
 setMethod("HS2RGB", signature(x="SpatRaster"), 
-	function(x, filename="", overwrite=FALSE, ...) {
+	function(x, type="hsv", filename="", overwrite=FALSE, ...) {
+		x@ptr = x@ptr$hsx2rgb(type, opt)
+		messages(x)
 	}
 )
 

@@ -14,7 +14,7 @@ See \code{\link{focal}} for an easier to use method.
 
 \usage{
 \S4method{focalCpp}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
-		expand=FALSE, filename="", overwrite=FALSE, wopt=list())
+		filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

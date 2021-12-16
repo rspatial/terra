@@ -232,8 +232,12 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	}
 
 	if (factors) {
-		id <- data.frame(e[,1,drop=FALSE])
-		e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE], TRUE))
+		if (method == "simple") {
+			id <- data.frame(e[,1,drop=FALSE])
+			e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE], TRUE))
+		} else {
+			e <- as.data.frame(e)
+		}
 	}
 
 	if (useLyr) {

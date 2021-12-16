@@ -40,6 +40,10 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 		return(x)
 
 	} else {
+		if (expand) {
+			warn(focal, "expand is ignored for non-standard functions")
+		}
+	
 		msz <- prod(w)
 		readStart(x)
 		on.exit(readStop(x))
