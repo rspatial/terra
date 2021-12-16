@@ -10,6 +10,8 @@
 
 \description{
 Get the cell values of a SpatRaster or the attributes of a SpatVector
+
+By default all values returned are numeric. This is because a vector or matrix can only store one data type, and a SpatRaster may consist of multiple data types. However, \code{values(x, dataframe=TRUE)} and {as.data.frame(x)} the values returned match the type of each layer, and can be numeric, logical, integer, or factor.
 }
 
 \usage{
@@ -35,6 +37,7 @@ Get the cell values of a SpatRaster or the attributes of a SpatVector
 
 \details{
 If \code{x} is a \code{SpatRaster}, and \code{mat=FALSE}, the values are returned as a vector. In cell-order by layer. If \code{mat=TRUE}, a matrix is returned in which the values of each layer are represented by a column (with \code{ncell(x)} rows). The values per layer are in cell-order, that is, from top-left, to top-right and then down by row. Use \code{\link{as.matrix}(x, wide=TRUE)} for an alternative matrix representation where the number of rows and columns matches that of \code{x}.  
+
 }
 
 
