@@ -12,7 +12,7 @@ Calculate values such as a correlation coefficient for focal regions in two neig
 
 \usage{
 \S4method{focalCor}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
-		expand=FALSE, filename="", overwrite=FALSE, wopt=list()) 
+		filename="", overwrite=FALSE, wopt=list()) 
 }
 
 \arguments{

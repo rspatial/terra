@@ -45,8 +45,6 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 		}
 	
 		msz <- prod(w)
-		readStart(x)
-		on.exit(readStop(x))
 		dow <- !isTRUE(all(m == 1))
 		if (any(is.na(m))) {
 			k <- !is.na(m)
@@ -56,7 +54,16 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 
 		usenarm <- TRUE
 		test <- apply(rbind(1:prod(w)), 1, fun, ...)
+		if (inherits(test, "try-error")) {
+			testvals <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE]
+			test <- apply(testvals, 1, fun, ...)
+			if (inherits(test, "try-error")) {
+				error("focal", "test failed")
+			}
+		}
 
+		readStart(x)
+		on.exit(readStop(x))
 		nl <- nlyr(x)
 		outnl <- nl * length(test)
 		transp <- FALSE
@@ -156,7 +163,7 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	nl <- nlyr(x)
 	test <- try(fun(1:msz, ..., ni=1, nw=msz), silent=TRUE)
 	if (inherits(test, "try-error")) {
-		testvals <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ]
+		testvals <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1)[1:prod(w)]
 		test <- try(fun(testvals, ..., ni=1, nw=msz), silent=TRUE)
 		if (inherits(test, "try-error")) {
 			error("focalCpp", "test failed")
@@ -209,7 +216,7 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 
 
 setMethod("focalReg", signature(x="SpatRaster"), 
-function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
+function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 
 	ols <- function(x, y) {
 		v <- cbind(y, x)
@@ -335,7 +342,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, expand=FALSE, filename="",  ...)  {
 
 
 setMethod("focalCor", signature(x="SpatRaster"), 
-function(x, w=3, fun, ..., fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list()) {
+function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list()) {
 
 	nl <- nlyr(x)
 	if (nl < 2) error("focalCor", "x must have at least 2 layers")

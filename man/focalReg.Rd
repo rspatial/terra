@@ -12,7 +12,7 @@ Calculate the coefficients for a focal ("moving window") OLS regression model.
 
 \usage{
 \S4method{focalReg}{SpatRaster}(x, w=3, na.rm=TRUE,  
-		fillvalue=NA, expand=FALSE, filename="", ...) 
+		fillvalue=NA, filename="", ...) 
 }
 
 \arguments{
