@@ -232,11 +232,11 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	}
 
 	if (factors) {
-		if (method == "simple") {
+		if (hasfun || method != "simple") {
+			e <- as.data.frame(e)
+		} else {
 			id <- data.frame(e[,1,drop=FALSE])
 			e <- cbind(id, .makeDataFrame(x, e[,-1,drop=FALSE], TRUE))
-		} else {
-			e <- as.data.frame(e)
 		}
 	}
 
