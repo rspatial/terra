@@ -32,6 +32,7 @@ rgbstretch <- function(RGB, stretch, caller="") {
 	} else if (stretch != '') {
 		warn(caller, "invalid stretch value")
 	}
+	RGB
 }
 
 
