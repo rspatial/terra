@@ -1,12 +1,12 @@
-\name{fillTime}
+\name{impose}
 
 \docType{methods}
 
-\alias{fillTime}
-\alias{fillTime,SpatRaster-method}
+\alias{impose}
+\alias{impose,SpatRasterCollection-method}
 
 \title{ 
-Fill time gaps in a SpatRaster
+Impose the geometry of a SpatRaster to those in a SpatRasterCollection.
 }
 
 \description{
@@ -15,11 +15,12 @@ See \code{\link{approximate}} to estimate values for these layer (and other miss
 }
 
 \usage{
-\S4method{fillTime}{SpatRaster}(x, filename="", ...)
+\S4method{impose}{SpatRasterCollection}(x, y, filename="", ...)
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRasterCollection}
+  \item{y}{SpatRaster}
   \item{filename}{character. Output filename}
   \item{...}{list with named options for writing files as in \code{\link{writeRaster}}}
 } 
@@ -29,19 +30,9 @@ SpatRaster
 }
 
 \seealso{
-\code{\link{approximate}}
+\code{\link{resample}}
 }
 
-\examples{
-r <- rast(system.file("ex/logo.tif", package="terra"))   
-s <- c(r, r)
-time(s) <- as.Date("2001-01-01") + c(0:2, 5:7)
-time(s)
-ss <- fillTime(s)
-time(ss)
-
-a <- approximate(ss)
-}
 
 \keyword{methods}
 \keyword{spatial}

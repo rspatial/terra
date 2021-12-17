@@ -26,7 +26,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `type="xyz"` is now default in `rast<data.frame>` [438](https://github.com/rspatial/terra/issues/438) by RS-eco
 - `classify` has a new argument `brackets` to show if a side of an interval is open or closed.
 - further support for categorical data in `freq` and `as.data.frame`  [#441](https://github.com/rspatial/terra/issues/441) ngould7
-- speed up in processing in multi-layer in memory data [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
+- speed up in processing of multi-layer in memory data [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
 - `vect<matrix>` and `vect<data.frame>` are now much faster [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
 
 

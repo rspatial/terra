@@ -525,6 +525,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
 \code{area} \tab\code{\link{cellSize}}\cr
+\code{approxNA} \tab\code{\link{approximate}}\cr
 \code{calc}\tab\code{\link{app}}\cr
 \code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr

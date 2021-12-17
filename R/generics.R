@@ -649,12 +649,13 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 
 
 
-setMethod("warp", signature(x="SpatRasterCollection"), 
+setMethod("impose", signature(x="SpatRasterCollection"), 
 	function(x, y, filename="", ...)  {
+		stopifnot(inherits(y, "SpatRaster"))
 		opt <- spatOptions(filename, ...)
 		r <- rast()
 		r@ptr <- x@ptr$morph(y@ptr, opt)
-		messages(r, "warp")
+		messages(r, "impose")
 	}
 )
 

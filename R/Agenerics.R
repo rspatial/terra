@@ -3,7 +3,7 @@
 if (!isGeneric("math")) { setGeneric("math", function(x, ...) standardGeneric("math")) }
 
 if (!isGeneric("all.equal")) { setGeneric("all.equal", function(target, current, ...) standardGeneric("all.equal")) }
-if (!isGeneric("warp")) { setGeneric("warp", function(x, ...) standardGeneric("warp")) }
+if (!isGeneric("impose")) { setGeneric("impose", function(x, ...) standardGeneric("impose")) }
 
 if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) standardGeneric("selectHighest"))}
 if (!isGeneric("focalReg")) { setGeneric("focalReg", function(x, ...) standardGeneric("focalReg")) }
