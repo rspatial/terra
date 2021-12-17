@@ -98,7 +98,8 @@
 <li>new method <code>fillTime</code> that can add empty layers in between existing layers to assure that the time step between layers is constant</li>
 <li>new method <code>approxNA</code> to fill in missing values by cell across layers</li>
 <li>new methods <code>is.bool</code> and <code>as.bool</code> for SpatRaster and explicit recognition of Boolean raster data in various places (e.g., extract, plot)</li>
-<li>new methods <code>is.int</code> and <code>as.int</code> for SpatRaster</li>
+<li>new methods <code>is.int</code> and <code>as.int</code> for SpatRaster.</li>
+<li>when assigning integer values to a SpatRaster, or when reading an integer file, the corresponding layers are now classified as being of integer type <a href="https://github.com/rspatial/terra/issues/446" class="external-link">#446</a> by L. Dalby</li>
 <li>new method <code>layerCor</code> (like <code><a href="https://rdrr.io/pkg/raster/man/layerStats.html" class="external-link">raster::layerStats</a></code>). <a href="https://github.com/rspatial/terra/issues/420" class="external-link">#420</a> by Alex Ilich</li>
 <li>new method <code>focalCor</code> (like <code><a href="https://rdrr.io/pkg/raster/man/corLocal.html" class="external-link">raster::corLocal</a></code>). <a href="https://github.com/rspatial/terra/issues/427" class="external-link">#427</a> by Zhuonan Wang</li>
 <li>new method <code>all.equal</code> for <code>SpatRaster</code> <a href="https://github.com/rspatial/terra/issues/428" class="external-link">#428</a> by Dongdong Kong</li>
