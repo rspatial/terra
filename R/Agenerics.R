@@ -146,7 +146,7 @@ if (!isGeneric("writeVector")) {setGeneric("writeVector", function(x, filename, 
 if (!isGeneric("%in%")) { setGeneric("%in%", function(x, table)	standardGeneric("%in%")) }
 if (!isGeneric("adjacent")) {setGeneric("adjacent", function(x, ...) standardGeneric("adjacent"))}
 if (!isGeneric("animate")) { setGeneric("animate", function(x, ...) standardGeneric("animate")) }
-if (!isGeneric("approxNA")) {setGeneric("approxNA", function(x, ...) standardGeneric("approxNA"))}
+if (!isGeneric("approximate")) {setGeneric("approximate", function(x, ...) standardGeneric("approximate"))}
 
 if (!isGeneric("as.data.frame")) { setGeneric("as.data.frame", function(x, row.names = NULL, optional = FALSE, ...) standardGeneric("as.data.frame")) }
 

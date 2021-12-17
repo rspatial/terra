@@ -33,15 +33,6 @@ setMethod("RGB", signature(x="SpatRaster"),
 	}
 )
 
-
-rgb2col <- function(x, r=1, g=2, b=3, filename="", ...) { 
-	opt <- spatOptions(filename, ...)
-	x@ptr <- x@ptr$rgb2col(r-1, g-1, b-1, opt)
-	messages(x, "rgb2col")
-}
-
-
-
 #### RGB2col
 
 make_cut <- function(x) {
@@ -96,7 +87,7 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=
 	idx <- RGB(x)
 	if (is.null(idx)) {
 		if (missing(value)) {
-			error("RGB2col", "x does not have an RGB attribute and the value argument is missing")
+			error("colorize", "x does not have an RGB attribute and the value argument is missing")
 		} else {
 			idx <- value
 		}
@@ -104,12 +95,12 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=
 	n <- length(idx)
 	stopifnot((n == 3) | (n == 4))
 	if ((min(idx) < 1) | (max(idx) > nlyr(x))) {
-		error("rgb2coltab", "invalid value (RGB indices)")
+		error("colorize", "invalid value (RGB indices)")
 	}
 	x <- x[[idx]]
 
 	if (!is.null(stretch)) {
-		values(x) <- rgbstretch(values(x), stretch, "rgb2col")
+		values(x) <- rgbstretch(values(x), stretch, "colorize")
 		scale <- 255
 	}
 
@@ -118,7 +109,7 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=
 	if (grays) {
 		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
-		return(messages(x, "RGB2col"))
+		return(messages(x, "colorize"))
 	}
 
 	v <- cbind(id=1:ncell(x), values(x))
@@ -144,7 +135,7 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=
 col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 	if (nlyr(x) > 1) {
 		x <- x[[1]]
-		warn("col2RGB", "only the first layer of 'x' is considered")
+		warn("colorize", "only the first layer of 'x' is considered")
 	}
 	ct <- coltab(r)[[1]]
 	if (is.null(ct)) {
