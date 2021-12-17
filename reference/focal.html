@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-3</span>
       </span>
     </div>
 
@@ -55,7 +55,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
 <span class="fu">focal</span><span class="op">(</span><span class="va">x</span>, w<span class="op">=</span><span class="fl">3</span>, fun<span class="op">=</span><span class="st">"sum"</span>, <span class="va">...</span>, na.only<span class="op">=</span><span class="cn">FALSE</span>, 
-    fillvalue<span class="op">=</span><span class="cn">NA</span>, expand<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    fillvalue<span class="op">=</span><span class="cn">NA</span>, expand<span class="op">=</span><span class="cn">FALSE</span>, silent<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,7 +73,9 @@
 <dt>fillvalue</dt>
 <dd><p>numeric. The value of the cells in the virtual rows and columns outside of the raster</p></dd>
 <dt>expand</dt>
-<dd><p>logical. If <code>TRUE</code> The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border</p></dd>
+<dd><p>logical. If <code>TRUE</code> The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "build-in" <code>fun</code>s such as mean, sum, min and max</p></dd>
+<dt>silent</dt>
+<dd><p>logical. If <code>TRUE</code> error messages are printed that may occur when trying <code>fun</code> to determine the length of the returned value. This can be useful in debugging a <code>fun</code> that does not work</p></dd>
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 <dt>overwrite</dt>
