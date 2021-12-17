@@ -62,7 +62,7 @@ With colorize you can convert a three-layer RGB SpatRaster into other color spac
 <span class="fu">RGB</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">colorize</span><span class="op">(</span><span class="va">x</span>, <span class="va">to</span>, stretch<span class="op">=</span><span class="cn">NULL</span>, grays<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">colorize</span><span class="op">(</span><span class="va">x</span>, to<span class="op">=</span><span class="st">"hsv"</span>, alpha<span class="op">=</span><span class="cn">FALSE</span>, stretch<span class="op">=</span><span class="cn">NULL</span>, grays<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,6 +73,8 @@ With colorize you can convert a three-layer RGB SpatRaster into other color spac
 <dd><p>vector of three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparancy layer). Or <code>NULL</code> to remove the RGB settings</p></dd>
 <dt>to</dt>
 <dd><p>character. The color space to transform the values to. If <code>x</code> has RGB set, you can transform these to "hsv", "hsi" and "hsl", or use "col" to create a single layer with a color table. You can also use "rgb" to backtransform to RGB</p></dd>
+<dt>alpha</dt>
+<dd><p>logical. Should an alpha (transparancy) channel be included? Only used if <code>x</code> has a color-table and <code>to="rgb"</code></p></dd>
 <dt>stretch</dt>
 <dd><p>character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram). Only used for transforming RGB to col</p></dd>
 <dt>grays</dt>
@@ -87,23 +89,20 @@ With colorize you can convert a three-layer RGB SpatRaster into other color spac
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span>   </span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span>   </span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="RGB-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">RGB</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">RGB</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="RGB-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu">RGB</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">RGB</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="RGB-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">RGB</span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">colorize</span><span class="op">(</span><span class="va">x</span>, <span class="st">"col"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'colorize': object 'x' not found</span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">colorize</span><span class="op">(</span><span class="va">x</span>, <span class="st">"hsv"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'colorize': object 'x' not found</span>
+<span class="r-in"><span class="fu">RGB</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">colorize</span><span class="op">(</span><span class="va">r</span>, <span class="st">"col"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">colorize</span><span class="op">(</span><span class="va">r</span>, <span class="st">"hsv"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">colorize</span><span class="op">(</span><span class="va">y</span>, <span class="st">"rgb"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'colorize': object 'y' not found</span>
 </code></pre></div>
     </div>
   </div>
