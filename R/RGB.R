@@ -162,14 +162,14 @@ col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 
 
 setMethod("colorize", signature(x="SpatRaster"), 
-	function(x, to="hsv", filename="", overwrite=FALSE, ...) {
+	function(x, to="hsv", alpha=FALSE, stretch=NULL, grays=FALSE, filename="", overwrite=FALSE, ...) {
 		to <- tolower(to)
 		if (to %in% c("hsi", "hsl", "hsv")) {
 			opt <- spatOptions(filename, overwrite, ...)
 			x@ptr <- x@ptr$rgb2hsx(to, opt)
 		} else if (to == "rgb") {
 			if (nlyr(x) == 1) {
-				return(col2rgb(x, alpha=FALSE, filename="", overwrite=FALSE, ...))
+				return(col2rgb(x, alpha=alpha, filename=filename, overwrite=overwrite, ...))
 			} else {
 				opt <- spatOptions(filename, overwrite, ...)
 				x@ptr <- x@ptr$hsx2rgb(opt)		
@@ -178,7 +178,7 @@ setMethod("colorize", signature(x="SpatRaster"),
 			opt <- spatOptions(filename, overwrite, ...)		
 			x@ptr <- x@ptr$hsx2rgb(to, opt)
 		} else if (to == "col") {
-			return(rgb2col(x, alpha=FALSE, filename="", overwrite=FALSE, ...))
+			return(rgb2col(x, stretch=NULL, grays=FALSE, filename=filename, overwrite=overwrite, ...))
 		}
 		messages(x)
 	}

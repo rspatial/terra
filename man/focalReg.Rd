@@ -24,8 +24,6 @@ Calculate the coefficients for a focal ("moving window") OLS regression model.
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 
-\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
-
 \item{filename}{character. Output filename}
 \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

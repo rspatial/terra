@@ -1,14 +1,6 @@
 
 if (!isGeneric("RGB2col")) {setGeneric("RGB2col", function(x, ...) standardGeneric("RGB2col"))}
-if (!isGeneric("col2RGB")) {setGeneric("col2RGB", function(x, ...) standardGeneric("col2RGB"))}
 
-
-setMethod("col2RGB", signature(x="SpatRaster"), 
-	function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
-		warn("col2RGB", "this function will be removed. You can use 'colorize' instead")
-		col2rgb(x, alpha=FALSE, filename="", overwrite=FALSE, ...)
-	}
-)
 
 setMethod("RGB2col", signature(x="SpatRaster"), 
 	function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {

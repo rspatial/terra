@@ -25,7 +25,7 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 
 \S4method{RGB}{SpatRaster}(x)<-value
 
-\S4method{colorize}{SpatRaster}(x, to, stretch=NULL, grays=FALSE, filename="", overwrite=FALSE, ...)
+\S4method{colorize}{SpatRaster}(x, to="hsv", alpha=FALSE, stretch=NULL, grays=FALSE, filename="", overwrite=FALSE, ...)
 }
 
 
@@ -35,6 +35,8 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
   \item{value}{vector of three (or four) positive integers indicating the layers that are red, green and blue (and optionally a fourth transparancy layer). Or \code{NULL} to remove the RGB settings}
   
   \item{to}{character. The color space to transform the values to. If \code{x} has RGB set, you can transform these to "hsv", "hsi" and "hsl", or use "col" to create a single layer with a color table. You can also use "rgb" to backtransform to RGB}
+
+  \item{alpha}{logical. Should an alpha (transparancy) channel be included? Only used if \code{x} has a color-table and \code{to="rgb"}}
 
   \item{stretch}{character. Option to stretch the values to increase contrast: "lin" (linear) or "hist" (histogram). Only used for transforming RGB to col}
   
@@ -47,16 +49,16 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 
 
 \examples{
-s <- rast(system.file("ex/logo.tif", package="terra"))   
-plot(s)
-RGB(s) <- NULL
-plot(s)
-RGB(s) <- c(3,1,2)
-plot(s)
+r <- rast(system.file("ex/logo.tif", package="terra"))   
+plot(r)
+RGB(r) <- NULL
+plot(r)
+RGB(r) <- c(3,1,2)
+plot(r)
 
-RGB(s) <- 1:3
-x <- colorize(x, "col")
-y <- colorize(x, "hsv")
+RGB(r) <- 1:3
+x <- colorize(r, "col")
+y <- colorize(r, "hsv")
 z <- colorize(y, "rgb")
 }
 

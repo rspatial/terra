@@ -45,6 +45,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `math` for `SpatRaster` that implements the Math-generic methods *and* accepts a filename
 - new method `sds<array>` 
 - new method `rasterize<matrix>`, see [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
+- new method `colorize` to transform color representations 	
 
 
 # version 1.4-22
