@@ -208,8 +208,12 @@ setMethod ("show" , "SpatRaster",
 				cat("source      :", sources[1], "\n")
 			}
 			rgb <- RGB(object)
-			if (!is.null(rgb)) {
-				cat("red-grn-blue:", paste(rgb, collapse=", "), "\n")
+			if (!is.null(rgb)) {				 
+				cat(paste("colors", toupper(object@ptr$rgbtype), "   :"), paste(rgb, collapse=", "), "\n")
+			}
+			hasct <- !sapply(coltab(object), is.null)
+			if (any(hasct)) {
+				cat("color tables:", which(hasct), "\n")			
 			}
 
 			varnms <- varnames(object)

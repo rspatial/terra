@@ -4,8 +4,6 @@
 # License GPL v3
 
 
-
-
 setMethod("RGB<-", signature(x="SpatRaster"), 
 	function(x, value) {
 		if (is.null(value[1]) || is.na(value[1])) {
@@ -13,9 +11,9 @@ setMethod("RGB<-", signature(x="SpatRaster"),
 		} else {
 			stopifnot(all(value %in% 1:nlyr(x)))
 			if (length(value) == 3) {
-				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, -99)
+				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, -99, "rgb")
 			} else if (length(value) == 4) {
-				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1)
+				x@ptr$setRGB(value[1]-1, value[2]-1, value[3]-1, value[4]-1, "rgb")
 			} else {
 				error("RGB<-", "value must have length 3 or 4")
 			}
@@ -94,100 +92,94 @@ median_cut <- function(v) {
 }
 
 
-setMethod("RGB2col", signature(x="SpatRaster"), 
-	function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=FALSE, ...) {
-		idx <- RGB(x)
-		if (is.null(idx)) {
-			if (missing(value)) {
-				error("rgb2coltab", "x does not have an RGB attribute and the value argument is missing")
-			} else {
-				idx <- value
-			}
-		}
-		n <- length(idx)
-		stopifnot((n == 3) | (n == 4))
-		if ((min(idx) < 1) | (max(idx) > nlyr(x))) {
-			error("rgb2coltab", "invalid value (RGB indices)")
-		}
-		x <- x[[idx]]
-
-		if (!is.null(stretch)) {
-			stretch = tolower(stretch)
-			if (stretch == "lin") {
-				values(x[[1]]) <- .linStretch(values(x[[1]]))
-				values(x[[2]]) <- .linStretch(values(x[[2]]))
-				values(x[[3]]) <- .linStretch(values(x[[3]]))
-				scale <- 255
-			} else if (stretch == "hist") {
-				values(x[[1]]) <- .eqStretch(values(x[[1]]))
-				values(x[[2]]) <- .eqStretch(values(x[[2]]))
-				values(x[[3]]) <- .eqStretch(values(x[[3]]))
-				scale <- 255
-			} else if (stretch != "") {
-				warn("plotRGB", 'invalid stretch value')
-			}
-		}
-
-		if (n == 4) x[[4]] <- x[[4]] * 255
-
-		if (grays) {
-			opt <- spatOptions(filename, overwrite, ...)
-			x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
-			return(messages(x, "RGB2col"))
-		}
-
-		v <- cbind(id=1:ncell(x), values(x))
-		v <- median_cut(stats::na.omit(v))
-
-		a <- aggregate(v[,-c(1:2)], list(v[,1]), median)
-		if (n==3) {
-			a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
+rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=FALSE, ...) {
+	idx <- RGB(x)
+	if (is.null(idx)) {
+		if (missing(value)) {
+			error("RGB2col", "x does not have an RGB attribute and the value argument is missing")
 		} else {
-			a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], a[,5], maxColorValue=255)
+			idx <- value
 		}
-		m <- merge(v[,1:2], a[, c(1,n+2)], by=1)
-		r <- rast(x, 1)
-		r[m$id] <- m$group - 1
-		coltab(r) <- a$cols
-		if (filename != "") {
+	}
+	n <- length(idx)
+	stopifnot((n == 3) | (n == 4))
+	if ((min(idx) < 1) | (max(idx) > nlyr(x))) {
+		error("rgb2coltab", "invalid value (RGB indices)")
+	}
+	x <- x[[idx]]
+
+	if (!is.null(stretch)) {
+		values(x) <- rgbstretch(values(x), stretch, "rgb2col")
+		scale <- 255
+	}
+
+	if (n == 4) x[[4]] <- x[[4]] * 255
+
+	if (grays) {
+		opt <- spatOptions(filename, overwrite, ...)
+		x@ptr <- x@ptr$rgb2col(0, 1, 2, opt)
+		return(messages(x, "RGB2col"))
+	}
+
+	v <- cbind(id=1:ncell(x), values(x))
+	v <- median_cut(stats::na.omit(v))
+
+	a <- aggregate(v[,-c(1:2)], list(v[,1]), median)
+	if (n==3) {
+		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], maxColorValue=255)
+	} else {
+		a$cols <- grDevices::rgb(a[,2], a[,3], a[,4], a[,5], maxColorValue=255)
+	}
+	m <- merge(v[,1:2], a[, c(1,n+2)], by=1)
+	r <- rast(x, 1)
+	r[m$id] <- m$group - 1
+	coltab(r) <- a$cols
+	if (filename != "") {
 			r <- writeRaster(r, filename, overwrite, ...)
 		}
 		r
+}
+
+
+col2rgb <- function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
+	if (nlyr(x) > 1) {
+		x <- x[[1]]
+		warn("col2RGB", "only the first layer of 'x' is considered")
 	}
-)
-
-
-setMethod("col2RGB", signature(x="SpatRaster"), 
-	function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
-		if (nlyr(x) > 1) {
-			x <- x[[1]]
-			warn("col2RGB", "only the first layer of 'x' is considered")
-		}
-		ct <- coltab(r)[[1]]
-		if (is.null(ct)) {
-			error("error", "x has no color table")
-		}
-		ct <- as.matrix(ct)
-		if (!alpha) {
-			ct <- ct[,1:3]
-		}
-		r <- app(x, function(i) { ct[i+1, ,drop=FALSE] }, filename="", overwrite=FALSE, wopt=list(...))
-		RGB(r) <- 1:3
-		r
+	ct <- coltab(r)[[1]]
+	if (is.null(ct)) {
+		error("error", "x has no color table")
 	}
-)
-
-
-setMethod("RGB2HS", signature(x="SpatRaster"), 
-	function(x, type="hsv", filename="", overwrite=FALSE, ...) {
-		x@ptr = x@ptr$rgb2hsx(tolower(type), opt)
-		messages(x)
+	ct <- as.matrix(ct)
+	if (!alpha) {
+		ct <- ct[,1:3]
 	}
-)
+	r <- app(x, function(i) { ct[i+1, ,drop=FALSE] }, filename="", overwrite=FALSE, wopt=list(...))
+	RGB(r) <- 1:3
+	r
+}
 
-setMethod("HS2RGB", signature(x="SpatRaster"), 
-	function(x, type="hsv", filename="", overwrite=FALSE, ...) {
-		x@ptr = x@ptr$hsx2rgb(tolower(type), opt)
+
+
+setMethod("colorize", signature(x="SpatRaster"), 
+	function(x, to="hsv", filename="", overwrite=FALSE, ...) {
+		to <- tolower(to)
+		if (to %in% c("hsi", "hsl", "hsv")) {
+			opt <- spatOptions(filename, overwrite, ...)
+			x@ptr <- x@ptr$rgb2hsx(to, opt)
+		} else if (to == "rgb") {
+			if (nlyr(x) == 1) {
+				return(col2rgb(x, alpha=FALSE, filename="", overwrite=FALSE, ...))
+			} else {
+				opt <- spatOptions(filename, overwrite, ...)
+				x@ptr <- x@ptr$hsx2rgb(opt)		
+			}
+		} else if (to == "hsl") {
+			opt <- spatOptions(filename, overwrite, ...)		
+			x@ptr <- x@ptr$hsx2rgb(to, opt)
+		} else if (to == "col") {
+			return(rgb2col(x, alpha=FALSE, filename="", overwrite=FALSE, ...))
+		}
 		messages(x)
 	}
 )

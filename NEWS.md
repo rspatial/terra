@@ -37,7 +37,8 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `fillTime` that can add empty layers in between existing layers to assure that the time step between layers is constant 
 - new method `approxNA` to fill in missing values by cell across layers
 - new methods `is.bool` and `as.bool` for SpatRaster and explicit recognition of Boolean raster data in various places (e.g., extract, plot)
-- new methods `is.int` and `as.int` for SpatRaster
+- new methods `is.int` and `as.int` for SpatRaster. 
+- when assigning integer values to a SpatRaster, or when reading an integer file, the corresponding layers are now classified as being of integer type [#446](https://github.com/rspatial/terra/issues/446) by L. Dalby
 - new method `layerCor` (like `raster::layerStats`). [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
 - new method `focalCor` (like `raster::corLocal`). [#427](https://github.com/rspatial/terra/issues/427) by Zhuonan Wang
 - new method `all.equal` for `SpatRaster` [#428](https://github.com/rspatial/terra/issues/428) by Dongdong Kong

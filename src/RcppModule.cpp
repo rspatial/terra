@@ -459,10 +459,10 @@ RCPP_MODULE(spat){
 		.property("filenames", &SpatRaster::filenames )
 
 		.field_readonly("rgb", &SpatRaster::rgb)
+		.field_readonly("rgbtype", &SpatRaster::rgbtype)
 		.method("setRGB", &SpatRaster::setRGB)
 		.method("removeRGB", &SpatRaster::removeRGB)
 		.method("getRGB", &SpatRaster::getRGB)
-
 
 		//.method("setAttIndex", &SpatRaster::setAttrIndex, "setAttrIndex")
 		//.method("getAttIndex", &SpatRaster::getAttrIndex, "getAttrIndex")

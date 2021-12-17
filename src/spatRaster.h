@@ -232,10 +232,12 @@ class SpatRaster {
 		bool setSRS(std::string crs);
 
 		bool rgb=false;
+		std::string rgbtype;
 		std::vector<int> rgblyrs;
-		bool setRGB(int r, int g, int b, int alpha);
+		bool setRGB(int r, int g, int b, int alpha, std::string type);
 		std::vector<int> getRGB();
 		void removeRGB();
+
 
 /*
 #ifdef useGDAL	
@@ -711,7 +713,7 @@ class SpatRaster {
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	
-		SpatRaster hsx2rgb(std::string type, SpatOptions &opt);	
+		SpatRaster hsx2rgb(SpatOptions &opt);	
 
 		SpatRaster which(SpatOptions &opt);
 		SpatRaster is_true(SpatOptions &opt);

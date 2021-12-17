@@ -765,7 +765,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	setSource(s);
 
 	if (getCols) {
-		setRGB(rgb_lyrs[0], rgb_lyrs[1], rgb_lyrs[2], -99);
+		setRGB(rgb_lyrs[0], rgb_lyrs[1], rgb_lyrs[2], -99, "rgb");
 	}
 
 	return true;

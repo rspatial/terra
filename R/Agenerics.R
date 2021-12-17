@@ -34,10 +34,7 @@ if (!isGeneric("sharedPaths")) {setGeneric("sharedPaths", function(x, ...) stand
 if (!isGeneric("isTRUE")) {setGeneric("isTRUE", function(x) standardGeneric("isTRUE"))}
 if (!isGeneric("subst")) {setGeneric("subst", function(x, ...) standardGeneric("subst"))}
 
-if (!isGeneric("RGB2HS")) {setGeneric("RGB2HS", function(x, ...) standardGeneric("RGB2HS"))}
-if (!isGeneric("HS2RGB")) {setGeneric("HS2RGB", function(x, ...) standardGeneric("HS2RGB"))}
-if (!isGeneric("RGB2col")) {setGeneric("RGB2col", function(x, ...) standardGeneric("RGB2col"))}
-if (!isGeneric("col2RGB")) {setGeneric("col2RGB", function(x, ...) standardGeneric("col2RGB"))}
+if (!isGeneric("colorize")) {setGeneric("colorize", function(x, ...) standardGeneric("colorize"))}
 
 if (!isGeneric("RGB")) {setGeneric("RGB", function(x, ...) standardGeneric("RGB"))}
 if (!isGeneric("RGB<-")) {setGeneric("RGB<-", function(x, ..., value) standardGeneric("RGB<-"))}

@@ -3442,15 +3442,20 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 					source[i].values[off + cells[k]] = v[koff + k];
 				}
 				std::vector<double> vv(v.begin()+koff, v.begin()+koff+cs); 
-				std::vector<double> xv = {vmin(vv, true), source[i].range_min[j]};
-				source[i].range_min[j] = vmin(xv, true);
-				xv = {vmax(vv, true), source[i].range_max[j]};
-				source[i].range_max[j] = vmax(xv, true);
+				if (source[i].hasRange[j]) {
+					std::vector<double> xv = {vmin(vv, true), source[i].range_min[j]};
+					source[i].range_min[j] = vmin(xv, true);
+					xv = {vmax(vv, true), source[i].range_max[j]};
+					source[i].range_max[j] = vmax(xv, true);
+				} else {
+					source[i].range_min[j] = vmin(vv, true);
+					source[i].range_max[j] = vmax(vv, true);
+				}
 			}
 		}
 	} else {
 		double minv = vmin(v, true);
-		double maxv = vmin(v, true);
+		double maxv = vmax(v, true);
 		for (size_t i=0; i<ns; i++) {
 			size_t nl = source[i].nlyr;
 			for (size_t j=0; j<nl; j++) {
@@ -3458,10 +3463,15 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 				for (size_t k=0; k<cs; k++) {
 					source[i].values[off + cells[k]] = v[k];
 				}
-				std::vector<double> xv = {minv, source[i].range_min[j]};
-				source[i].range_min[j] = vmin(xv, true);
-				xv = {maxv, source[i].range_max[j]};
-				source[i].range_max[j] = vmax(xv, true);
+				if (source[i].hasRange[j]) {
+					std::vector<double> xv = {minv, source[i].range_min[j]};
+					source[i].range_min[j] = vmin(xv, true);
+					xv = {maxv, source[i].range_max[j]};
+					source[i].range_max[j] = vmax(xv, true);
+				} else {
+					source[i].range_min[j] = minv;
+					source[i].range_max[j] = maxv;
+				}
 			}
 		}
 	}
@@ -3501,6 +3511,7 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 	}
 	
 	out.setNames(nms);
+	out.rgbtype = type;
 
 	if (!readStart()) {
 		out.setError(getError());
@@ -3579,7 +3590,7 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 
 
 
-SpatRaster SpatRaster::hsx2rgb(std::string type, SpatOptions &opt) {
+SpatRaster SpatRaster::hsx2rgb(SpatOptions &opt) {
 	SpatRaster out = geometry();
 	if (nlyr() != 3) {
 		out.setError("x must have three layers");
@@ -3592,12 +3603,12 @@ SpatRaster SpatRaster::hsx2rgb(std::string type, SpatOptions &opt) {
 	bool hsv=false;
 	bool hsl=false; 
 	
-	if (type == "hsv") {
+	if (rgbtype == "hsv") {
 		hsv = true;
-	} else if (type == "hsl") {		
+	} else if (rgbtype == "hsl") {		
 		hsl = true;
-	} else if (type != "hsi") {
-		out.setError("unknown type. Should be one of 'hsv', 'hsi' or 'hsl'");
+	} else if (rgbtype != "hsi") {
+		out.setError("input color scheme should be one of 'hsv', 'hsi' or 'hsl'");
 		return out;
 	}
 

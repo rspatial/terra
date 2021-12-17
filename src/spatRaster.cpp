@@ -1996,7 +1996,7 @@ SpatVector SpatRaster::as_lines(SpatOptions &opt) {
 
 
 
-bool SpatRaster::setRGB(int r, int g, int b, int alpha) {
+bool SpatRaster::setRGB(int r, int g, int b, int alpha, std::string type) {
 	std::vector<int> channels;
 	if (alpha >= 0) {
 		channels = {r, g, b, alpha};
@@ -2011,6 +2011,7 @@ bool SpatRaster::setRGB(int r, int g, int b, int alpha) {
 		size_t mnlyr =  vmin( channels, false );;
 		if (mnlyr >= 0) {
 			rgblyrs = channels;
+			rgbtype = type; // check validity
 			rgb = true;
 		} else {
 			rgb = false;
@@ -2028,7 +2029,6 @@ void SpatRaster::removeRGB(){
 	rgblyrs = std::vector<int>(0);
 	rgb = false;
 }
-
 
 
 bool SpatRaster::to_memory(SpatOptions &opt) {

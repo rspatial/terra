@@ -17,6 +17,24 @@
 	ecdfun(x)*255
 }
 
+rgbstretch <- function(RGB, stretch, caller="") {
+	stretch = tolower(stretch)
+	if (stretch == 'lin') {
+		RGB[,1] <- .linStretch(RGB[,1])
+		RGB[,2] <- .linStretch(RGB[,2])
+		RGB[,3] <- .linStretch(RGB[,3])
+		scale <- 255
+	} else if (stretch == 'hist') {
+		RGB[,1] <- .eqStretch(RGB[,1])
+		RGB[,2] <- .eqStretch(RGB[,2])
+		RGB[,3] <- .eqStretch(RGB[,3])
+		scale <- 255
+	} else if (stretch != '') {
+		warn(caller, "invalid stretch value")
+	}
+}
+
+
 
 setMethod("plotRGB", signature(x="SpatRaster"), 
 function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, ext=NULL, smooth=FALSE, colNA="white", alpha, bgalpha, addfun=NULL, zlim=NULL, zlimcol=NULL, axes=FALSE, xlab="", ylab="", asp=NULL, add=FALSE, interpolate, ...) { 
@@ -80,21 +98,9 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 
 
 	if (!is.null(stretch)) {
-		stretch = tolower(stretch)
-		if (stretch == 'lin') {
-			RGB[,1] <- .linStretch(RGB[,1])
-			RGB[,2] <- .linStretch(RGB[,2])
-			RGB[,3] <- .linStretch(RGB[,3])
-			scale <- 255
-		} else if (stretch == 'hist') {
-			RGB[,1] <- .eqStretch(RGB[,1])
-			RGB[,2] <- .eqStretch(RGB[,2])
-			RGB[,3] <- .eqStretch(RGB[,3])
-			scale <- 255
-		} else if (stretch != '') {
-			warn("plotRGB", 'invalid stretch value')
-		}
+		RGB <- rgbstretch(RGB, stretch, "plotRGB")
 	}
+
 
 	if (!is.null(naind)) {
 		bg <- grDevices::col2rgb(colNA)
