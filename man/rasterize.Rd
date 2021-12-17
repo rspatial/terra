@@ -16,7 +16,8 @@ Transfer vector data to a raster
 \S4method{rasterize}{SpatVector,SpatRaster}(x, y, field="", fun, ..., background=NA, touches=FALSE,
 	update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{rasterize}{matrix,SpatRaster}(x, y, values=1, fun, ..., background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list())
+\S4method{rasterize}{matrix,SpatRaster}(x, y, values=1, fun, ..., background=NA, 
+		update=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{

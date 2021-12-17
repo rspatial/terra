@@ -216,9 +216,10 @@ setMethod ("show" , "SpatRaster",
 				cat("color tables:", which(hasct), "\n")			
 			}
 
+		
 			varnms <- varnames(object)
-			i <- varnms != ""
-			if (any(i)) {
+			fnms <- tools::file_path_sans_ext(f)
+			if (any(fnms != varnms) && all(varnms != "")) {
 				longnms <- longnames(object)
 				i <- longnms != ""
 				if (any(i)) {

@@ -25,7 +25,8 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 
 \S4method{RGB}{SpatRaster}(x)<-value
 
-\S4method{colorize}{SpatRaster}(x, to="hsv", alpha=FALSE, stretch=NULL, grays=FALSE, filename="", overwrite=FALSE, ...)
+\S4method{colorize}{SpatRaster}(x, to="hsv", alpha=FALSE, stretch=NULL, 
+	grays=FALSE, filename="", overwrite=FALSE, ...)
 }
 
 
