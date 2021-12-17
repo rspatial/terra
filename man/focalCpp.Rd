@@ -14,7 +14,7 @@ See \code{\link{focal}} for an easier to use method.
 
 \usage{
 \S4method{focalCpp}{SpatRaster}(x, w=3, fun, ..., fillvalue=NA, 
-		filename="", overwrite=FALSE, wopt=list())
+		silent=TRUE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
@@ -26,6 +26,8 @@ See \code{\link{focal}} for an easier to use method.
 \item{...}{additional arguments to \code{fun}}
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
+
+\item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
 
 \item{filename}{character. Output filename}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

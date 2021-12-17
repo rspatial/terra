@@ -5,7 +5,7 @@
 
 
 setMethod("focal", signature(x="SpatRaster"), 
-function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list())  {
+function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
 
 	if (!is.numeric(w)) {
 		error("focal", "w should be numeric vector or matrix")
@@ -53,10 +53,10 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 		}
 
 		usenarm <- TRUE
-		test <- apply(rbind(1:prod(w)), 1, fun, ...)
+		test <- try(apply(rbind(1:prod(w)), 1, fun, ...), silent=silent)
 		if (inherits(test, "try-error")) {
 			testvals <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE]
-			test <- apply(testvals, 1, fun, ...)
+			test <- try(apply(testvals, 1, fun, ...), silent=silent)
 			if (inherits(test, "try-error")) {
 				error("focal", "test failed")
 			}
@@ -132,7 +132,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, file
 
 
 setMethod("focalCpp", signature(x="SpatRaster"), 
-function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list())  {
+function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
 
 	if (!(all(c("ni", "nw") %in% names(formals(fun))))) {
 		error("focalRaw", 'fun must have an argument "ni"')
@@ -161,10 +161,10 @@ function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list
 	}
 
 	nl <- nlyr(x)
-	test <- try(fun(1:msz, ..., ni=1, nw=msz), silent=TRUE)
+	test <- try(fun(1:msz, ..., ni=1, nw=msz), silent=silent)
 	if (inherits(test, "try-error")) {
 		testvals <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1)[1:prod(w)]
-		test <- try(fun(testvals, ..., ni=1, nw=msz), silent=TRUE)
+		test <- try(fun(testvals, ..., ni=1, nw=msz), silent=silent)
 		if (inherits(test, "try-error")) {
 			error("focalCpp", "test failed")
 		}

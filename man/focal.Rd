@@ -12,7 +12,7 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \usage{
 \S4method{focal}{SpatRaster}(x, w=3, fun="sum", ..., na.only=FALSE, 
-		fillvalue=NA, expand=FALSE, filename="", overwrite=FALSE, wopt=list()) 
+		fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list()) 
 }
 
 \arguments{
@@ -28,7 +28,9 @@ Calculate focal ("moving window") values for the neighborhood of focal cells usi
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 
-\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border}
+\item{expand}{logical. If \code{TRUE} The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "build-in" \code{fun}s such as mean, sum, min and max}
+
+\item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
 
 \item{filename}{character. Output filename}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}

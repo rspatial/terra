@@ -616,9 +616,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 //	s.layers.resize(1);
 //	std::string unit = "";
 
-	std::string varname = basename_noext(fname).substr(0,3);
+	s.source_name = basename_noext(fname).substr(0,3);
 	std::vector<std::vector<std::string>> bandmeta(s.nlyr);
-
 	bool getCols = s.nlyr == 3;
 	std::vector<unsigned> rgb_lyrs(3, -99);
 
@@ -733,7 +732,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			if (bandname != "") {
 				nm = bandname;
 			} else if (s.nlyr > 1) {
-				nm = varname + "_" + std::to_string(i+1);
+				nm = s.source_name + "_" + std::to_string(i+1);
 			} else {
 				nm = basename_noext(fname) ;
 			}
