@@ -43,7 +43,7 @@ setMethod("writeValues", signature(x="SpatRaster", v="vector"),
 		#if (is.na(nrows)) {
 		#	nrows <- length(v) / (ncol(x) * nlyr(x))
 		#}
-		success <- x@ptr$writeValues(v, start-1, nrows, 0, ncol(x))
+		success <- x@ptr$writeValues(v, start-1, nrows)
 		messages(x, "writeValues")
 		invisible(success)
 	}

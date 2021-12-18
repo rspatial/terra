@@ -225,7 +225,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 		} else if (oper == "<") {
 			a < b;
 		}
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 
 	}
 	out.writeStop();
@@ -334,7 +334,7 @@ SpatRaster SpatRaster::arith(double x, std::string oper, bool reverse, SpatOptio
 		} else {
 			// stop
 		}
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -476,7 +476,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 			}
 			std::copy(a.begin(), a.end(), v.begin()+s);
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(v, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -550,7 +550,7 @@ SpatRaster SpatRaster::math(std::string fun, SpatOptions &opt) {
 		std::vector<double> a;
 		readBlock(a, out.bs, i);
 		for(double& d : a) if (!std::isnan(d)) d = mathFun(d);
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -590,7 +590,7 @@ SpatRaster SpatRaster::math2(std::string fun, unsigned digits, SpatOptions &opt)
 		} else if (fun == "signif") {
 			for(double& d : a) if (!std::isnan(d)) d = signif(d, digits);
 		} 
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -671,7 +671,7 @@ SpatRaster SpatRaster::trig(std::string fun, SpatOptions &opt) {
 		std::vector<double> a;
 		readValues(a, out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		for (double& d : a) if (!std::isnan(d)) d = trigFun(d);
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -708,7 +708,7 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 				d[i] = atan2(a[i], b[i]);
 			}
 		}
-		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(d, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -762,7 +762,7 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 		for (size_t j=0; j<a.size(); j++) {
 			a[i] = !a[i];
 		}
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 
 	}
 	out.writeStop();
@@ -811,7 +811,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 		} else {
 			// stop
 		}
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 
 	}
 	out.writeStop();
@@ -853,7 +853,7 @@ SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 			out.setError("unknown operator: " + oper);
 			return out;
 		}
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -909,7 +909,7 @@ SpatRaster SpatRaster::cum(std::string fun, bool narm, SpatOptions &opt) {
 				a[j+k*nc] = v[k];
 			}
 		}
-		if (!out.writeValues(a, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(a, i)) return out;
 
 	}
 	out.writeStop();
@@ -973,7 +973,7 @@ SpatRaster SpatRaster::summary_numb(std::string fun, std::vector<double> add, bo
 			}
 			b[j] = sumFun(v, narm);
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(b, i)) return out;
 
 	}
 	out.writeStop();
@@ -1034,7 +1034,7 @@ SpatRaster SpatRaster::modal(std::vector<double> add, std::string ties, bool nar
 			}
 			b[j] = modal_value(v, ities, narm, rgen, dist);
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(b, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -1077,7 +1077,7 @@ SpatRaster SpatRaster::range(std::vector<double> add, bool narm, SpatOptions &op
 			b[j] = rng[0];
 			b[j+nc] = rng[1];
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(b, i)) return out;
 
 	}
 	out.writeStop();
@@ -1140,7 +1140,7 @@ SpatRaster SpatRasterStack::summary_numb(std::string fun, std::vector<double> ad
 			}
 			b[j] = sumFun(v, narm);
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(b, i)) return out;
 
 	}
 	for (size_t i=0; i < ns; i++) {

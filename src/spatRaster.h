@@ -449,7 +449,11 @@ class SpatRaster {
 		bool readAll();
 
 		bool writeStart(SpatOptions &opt);
-		bool writeBlock(std::vector<double> &v, BlockSize bs, unsigned i){ // inline
+		bool writeBlock(std::vector<double> &v, unsigned i){ // inline
+			// for debugging?
+			// if (bs.row.size() <= i) {
+			//    setError("invalid block number"); return false;	
+			// }
 			return writeValues(v, bs.row[i], bs.nrows[i]);
 		}
 
