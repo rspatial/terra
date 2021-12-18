@@ -96,6 +96,77 @@ wmax <- function(p, na.rm=FALSE) {
 
 
 
+extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, layer=NULL) {
+
+	nl <- nlyr(x)
+	useLyr <- FALSE
+	method <- match.arg(tolower(method), c("simple", "bilinear"))
+	if (!is.null(layer) && nl > 1) {
+		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
+		stopifnot(length(layer) == length(y))
+		if (is.numeric(layer)) {
+			layer <- round(layer)
+			stopifnot(min(layer) > 0 & max(layer) <= nlyr(x))
+		} else {
+			layer <- match(layer, names(x))
+			if (any(is.na(layer))) error("extract", "names in argument 'layer' do not match names(x)")
+		}
+		useLyr <- TRUE
+	}
+	cn <- names(x)
+	opt <- spatOptions()
+	e <- x@ptr$extractCell(y-1)
+	if (list) {
+		messages(x, "extract")
+		return(e)
+	}
+	e <- do.call(cbind, e)
+	cn <- names(x)
+	nc <- nl
+	if (cells) {
+		cn <- c(cn, "cell")
+		nc <- nc + 1
+		e <- cbind(e, y)
+	}
+	if (xy) {
+		cn <- c(cn, "x", "y")
+		nc <- nc + 2
+		e <- cbind(e, xyFromCell(x, y))
+	}
+	colnames(e) <- cn
+
+	if (factors) {
+		if (method != "simple") {
+			e <- as.data.frame(e)
+		} else {
+			e <- .makeDataFrame(x, e, TRUE)
+		}
+	}
+
+	if (useLyr) {
+		idx <- cbind(e[,1], layer[e[,1]]+1)
+		ee <- cbind(e[,1,drop=FALSE], names(x)[idx[,2]-1], value=e[idx])
+		colnames(ee)[2] <- lyr_name
+		if (ncol(e) > (nl+1)) {
+			cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
+		} else {
+			ee
+		}
+	} else {
+		e
+	}
+}
+
+setMethod("extract", signature(x="SpatRaster", y="matrix"), 
+function(x, y, ...) { 
+	.checkXYnames(colnames(y))
+	y <- cellFromXY(x, y) 
+	extractCells(x, y, ...)
+})
+
+
+
+
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
 function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) { 
 
@@ -275,25 +346,6 @@ function(x, i, j, ... , drop=FALSE) {
 setMethod("[", c("SpatVector", "SpatExtent", "missing"),
 function(x, i, j, ... , drop=FALSE) {
 	x[as.polygons(i)]
-})
-
-
-setMethod("extract", signature(x="SpatRaster", y="matrix"), 
-function(x, y, ...) { 
-	.checkXYnames(colnames(y))
-	#if (length(list(...)) == 0) {
-	#	i <- cellFromXY(x, y)
-	#	r <- cbind(1:length(i), x[i])
-	#	colnames(r) <- c("ID", names(x))
-	#} else {
-	y <- vect(y)
-	e <- extract(x, y, ...)
-	if (NCOL(e) > 1) {
-		e[, -1, drop=FALSE]
-	} else {
-		e
-	}
-	#}
 })
 
 
