@@ -4,7 +4,7 @@
 # License GPL v3
 
 
-setMethod("focal", signature(x="SpatRaster"), 
+setMethod("focal", signature(x="SpatRaster"),
 function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
 
 	if (!is.numeric(w)) {
@@ -29,7 +29,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, sile
 	}
 	cpp <- FALSE
 	txtfun <- .makeTextFun(fun)
-	if (is.character(txtfun)) { 
+	if (is.character(txtfun)) {
 		if (is.null(wopt$names)) {
 			wopt$names <- paste0("focal_", txtfun)
 		}
@@ -43,7 +43,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, sile
 		if (expand) {
 			warn(focal, "expand is ignored for non-standard functions")
 		}
-	
+
 		msz <- prod(w)
 		dow <- !isTRUE(all(m == 1))
 		if (any(is.na(m))) {
@@ -53,13 +53,10 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, sile
 		}
 
 		usenarm <- TRUE
-		test <- try(apply(rbind(1:prod(w)), 1, fun, ...), silent=silent)
+		testvals <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE]
+		test <- try(apply(testvals, 1, fun, ...), silent=silent)
 		if (inherits(test, "try-error")) {
-			testvals <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE]
-			test <- try(apply(testvals, 1, fun, ...), silent=silent)
-			if (inherits(test, "try-error")) {
-				error("focal", "test failed")
-			}
+			error("focal", "test failed")
 		}
 
 		readStart(x)
@@ -131,7 +128,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, sile
 )
 
 
-setMethod("focalCpp", signature(x="SpatRaster"), 
+setMethod("focalCpp", signature(x="SpatRaster"),
 function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
 
 	if (!(all(c("ni", "nw") %in% names(formals(fun))))) {
@@ -161,14 +158,11 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	}
 
 	nl <- nlyr(x)
-	test <- try(fun(1:msz, ..., ni=1, nw=msz), silent=silent)
+	testvals <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1)[1:prod(w)]
+	test <- try(fun(testvals, ..., ni=1, nw=msz), silent=silent)
 	if (inherits(test, "try-error")) {
-		testvals <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1)[1:prod(w)]
-		test <- try(fun(testvals, ..., ni=1, nw=msz), silent=silent)
-		if (inherits(test, "try-error")) {
-			error("focalCpp", "test failed")
-		}
-	}
+		error("focalCpp", "test failed")
+	  }
 	outnl <- nl * length(test)
 	if (is.null(wopt$names )) {
 		wopt$names <- colnames(test)
@@ -215,7 +209,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 
 
 
-setMethod("focalReg", signature(x="SpatRaster"), 
+setMethod("focalReg", signature(x="SpatRaster"),
 function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 
 	ols <- function(x, y) {
@@ -341,7 +335,7 @@ function(x, w=3, na.rm=TRUE, fillvalue=NA, filename="",  ...)  {
 
 
 
-setMethod("focalCor", signature(x="SpatRaster"), 
+setMethod("focalCor", signature(x="SpatRaster"),
 function(x, w=3, fun, ..., fillvalue=NA, filename="", overwrite=FALSE, wopt=list()) {
 
 	nl <- nlyr(x)
