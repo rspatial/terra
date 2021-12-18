@@ -296,8 +296,6 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 
 	std::function<double(std::vector<double>&, bool)> agFun = getFun(fun);
 
-	unsigned outnc = out.ncol();
-
 	//BlockSize bs = getBlockSize(4, opt.get_memfrac());
 	opt.progress *= 300;
 	BlockSize bs = getBlockSize(opt);
@@ -342,7 +340,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
         std::vector<double> vin, v;
 		readValues(vin, bs.row[i], bs.nrows[i], 0, nc);
 		compute_aggregates(vin, v, bs.nrows[i], nc, nlyr(), fact, agFun, narm);
-		if (!out.writeValues(v, i, 1, 0, outnc)) return out;
+		if (!out.writeValues(v, i, 1)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -440,7 +438,7 @@ SpatRaster SpatRaster::separate(std::vector<double> classes, double keepvalue, d
 
 			}
 		} 
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) {
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i])) {
 			readStop();
 			return out;
 		}
@@ -504,7 +502,7 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 			}
 		} 
 
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -644,7 +642,7 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 			if (v[j] < minv[lyr]) v[j] = minv[lyr];
 			if (v[j] > maxv[lyr]) v[j] = maxv[lyr];
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -712,7 +710,7 @@ SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool na
 				b[off] = theFun(v[k], narm);
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -776,7 +774,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 				}
 			}
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 
 	}
 	out.writeStop();
@@ -854,7 +852,7 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 				}
 			}
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 
 	}
 	out.writeStop();
@@ -927,7 +925,7 @@ SpatRaster SpatRaster::transpose(SpatOptions &opt) {
 				}
 			}
 		}
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -1110,7 +1108,7 @@ SpatRaster SpatRaster::clamp(double low, double high, bool usevalue, SpatOptions
 		std::vector<double> v; 
 		readBlock(v, out.bs, i);
 		clamp_vector(v, low, high, usevalue);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -1186,7 +1184,7 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 		//		vv[j] = v[j + index * ncell];
 		//	}
 		//}
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	x.readStop();
@@ -1277,7 +1275,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 				vv[j] = theFun(se, narm);
 			} 
 		}
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	x.readStop();
@@ -1467,7 +1465,7 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 				}
 			}
 		}
-		if (!out.writeValues(vout, bs.row[i]*fact[0], bs.nrows[i]*fact[0], 0, out.ncol())) return out;
+		if (!out.writeValues(vout, bs.row[i]*fact[0], bs.nrows[i]*fact[0])) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -1503,7 +1501,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 					v[j*nc+k] = r;
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 		source[0].range_min.resize(1, 0 + plusone);
 		source[0].range_max.resize(1, nrow() - 1 + plusone);
@@ -1518,7 +1516,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 				v = cnn;
 				recycle(v, out.bs.nrows[i] * nc);
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 		source[0].range_min.resize(1, 0 + plusone);
 		source[0].range_max.resize(1, nc - 1 + plusone);
@@ -1529,7 +1527,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			size_t firstcell = cellFromRowCol(out.bs.row[i], 0);
 			firstcell = plusone ? firstcell + 1 : firstcell;
 			std::iota(v.begin(), v.end(), firstcell);
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 		source[0].range_min.resize(1, 0 + plusone);
 		source[0].range_max.resize(1, ncell() - 1 + plusone);
@@ -1545,7 +1543,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 				v = xcoords;
 				recycle(v, out.bs.nrows[i] * nc);
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 		source[0].range_min.resize(1, xcoords[0]);
 		source[0].range_max.resize(1, xcoords[nc-1]);
@@ -1561,7 +1559,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 					v[j*nc+k] = y;
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 		source[0].range_min.resize(1, yFromRow(0));
 		source[0].range_max.resize(1, yFromRow(nrow()-1));
@@ -1585,7 +1583,7 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 				v.insert(v.end(), b.begin(), b.end());
 			}
 			recycle(v, out.bs.nrows[i] * nc);
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 		source[0].range_min.resize(1, 0);
 		source[0].range_max.resize(1, 1);
@@ -1607,7 +1605,7 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 		std::vector<double> v;
 		for (size_t i = 0; i < out.bs.n; i++) {
 			v.resize(out.bs.nrows[i]*nc*nl, val);
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 		source[0].range_min.resize(1, val);
 		source[0].range_max.resize(1, val);
@@ -1625,7 +1623,7 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 			recycle(v, out.bs.nrows[i]*nc);
 			recycle(v, out.bs.nrows[i]*nc*nl);
 			over = v.size() % values.size();
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	}
 	out.writeStop();
@@ -1649,7 +1647,7 @@ SpatRaster SpatRaster::isnan(SpatOptions &opt) {
 		std::vector<double> v; 
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = std::isnan(d);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -1673,7 +1671,7 @@ SpatRaster SpatRaster::isnotnan(SpatOptions &opt) {
 		std::vector<double> v; 
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = ! std::isnan(d);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -1697,7 +1695,7 @@ SpatRaster SpatRaster::isfinite(SpatOptions &opt) {
 		std::vector<double> v; 
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = std::isfinite(d);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -1721,7 +1719,7 @@ SpatRaster SpatRaster::isinfinite(SpatOptions &opt) {
 		std::vector<double> v; 
 		readBlock(v, out.bs, i);
 		for (double &d : v) d = std::isinf(d);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -1768,7 +1766,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i], nrow(), 0, ncol())) return out;
+		if (!out.writeValues(b, out.bs.row[i], nrow())) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -1865,7 +1863,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 					}
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	} else {
 
@@ -1897,7 +1895,7 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 					}
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	}
 
@@ -1955,7 +1953,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
         unsigned row2 = out.rowFromY(yFromRow(bs.row[i]+bs.nrows[i]-1));
         unsigned col1 = out.colFromX(xFromCol(0));
         unsigned col2 = out.colFromX(xFromCol(ncol()-1));
-        if (!out.writeValues(v, row1, row2-row1+1, col1, col2-col1+1)) return out;
+        if (!out.writeValuesRect(v, row1, row2-row1+1, col1, col2-col1+1)) return out;
 	}
 	readStop();
 	out.writeStop();
@@ -2024,7 +2022,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	std::vector<double> v;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		readValues(v, row1+out.bs.row[i], out.bs.nrows[i], col1, ncols);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -2061,7 +2059,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 					b.insert(b.end(), a.begin()+start, a.begin()+start+nc);
 				}
 			}
-			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	} else {
 		for (size_t i=0; i < out.bs.n; i++) {
@@ -2076,7 +2074,7 @@ SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 				std::reverse(v.begin(), v.end());
 				b.insert(b.end(), v.begin(), v.end());
 			}
-			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	}
 	out.writeStop();
@@ -2114,7 +2112,7 @@ SpatRaster SpatRaster::reverse(SpatOptions &opt) {
 			std::reverse(v.begin(), v.end());
 			b.insert(b.end(), v.begin(), v.end());
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 
 	out.writeStop();
@@ -2333,7 +2331,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		} else {
 			v = std::vector<double>(ncls, NAN); 
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, out.ncol())) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
 	return(out);
@@ -2996,7 +2994,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 					}
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	} else {
 		recycle(to, from);
@@ -3010,7 +3008,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 					std::replace(v.begin(), v.end(), from[j], to[j]);
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	}
 	readStop();
@@ -3138,14 +3136,14 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 				reclass_vector(vx, lyrrcl, right, leftright, lowest, othersNA);
 				std::copy(vx.begin(), vx.end(), v.begin()+offset);
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	} else {
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v; 
 			readBlock(v, out.bs, i);
 			reclass_vector(v, rcl, right, leftright, lowest, othersNA);
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 		}
 	}
 
@@ -3381,7 +3379,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 			std::replace(v.begin(), v.end(), 0.0, (double)NAN);
 		}
 		broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -3581,7 +3579,7 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 				}
 			}
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -3664,7 +3662,7 @@ SpatRaster SpatRaster::hsx2rgb(SpatOptions &opt) {
 			v[j+n2] = (v[j+n2] + m) * 255;
 
 		}
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i], 0, nc)) return out;
+		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
 	readStop();

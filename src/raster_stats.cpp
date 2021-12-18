@@ -208,7 +208,7 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 				b[j+(k*nc)] = p[k];
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol())) return out;
+		if (!out.writeValues(b, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
 	readStop();

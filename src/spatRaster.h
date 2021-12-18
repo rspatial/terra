@@ -449,8 +449,13 @@ class SpatRaster {
 		bool readAll();
 
 		bool writeStart(SpatOptions &opt);
-		bool writeValues(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
-		bool writeValues2(std::vector<std::vector<double>> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
+		bool writeBlock(std::vector<double> &v, BlockSize bs, unsigned i){ // inline
+			return writeValues(v, bs.row[i], bs.nrows[i]);
+		}
+
+		bool writeValues(std::vector<double> &vals, size_t startrow, size_t nrows);
+		bool writeValuesRect(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
+		//bool writeValues2(std::vector<std::vector<double>> &vals, size_t startrow, size_t nrows);
 		bool writeStop();
 		bool writeHDR(std::string filename);
 		SpatRaster make_vrt(std::vector<std::string> filenames, SpatOptions &opt);
@@ -472,7 +477,8 @@ class SpatRaster {
 		//bool writeStartBinary(std::string filename, std::string datatype, std::string bandorder, bool overwrite);
 		//bool writeValuesBinary(std::vector<double> &vals, unsigned startrow, unsigned nrows, unsigned startcol, unsigned ncols);
 
-		bool writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
+		bool writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows);
+		bool writeValuesMemRect(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols);
 
 		// binary (flat) source
 		//std::vector<double> readValuesBinary(unsigned src, unsigned row, unsigned nrows, unsigned col, unsigned ncols);
