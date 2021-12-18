@@ -97,10 +97,11 @@ wmax <- function(p, na.rm=FALSE) {
 
 
 extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, layer=NULL) {
-
+	
+	method <- match.arg(tolower(method), c("simple", "bilinear"))
+	
 	nl <- nlyr(x)
 	useLyr <- FALSE
-	method <- match.arg(tolower(method), c("simple", "bilinear"))
 	if (!is.null(layer) && nl > 1) {
 		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
 		stopifnot(length(layer) == length(y))
@@ -146,7 +147,7 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	if (useLyr) {
 		idx <- cbind(e[,1], layer[e[,1]]+1)
 		ee <- cbind(e[,1,drop=FALSE], names(x)[idx[,2]-1], value=e[idx])
-		colnames(ee)[2] <- lyr_name
+		colnames(ee)[2] <- "layer"
 		if (ncol(e) > (nl+1)) {
 			cbind(ee, e[,(nl+1):ncol(e), drop=FALSE])
 		} else {
@@ -160,8 +161,14 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, ...) { 
 	.checkXYnames(colnames(y))
-	y <- cellFromXY(x, y) 
-	extractCells(x, y, ...)
+	method <- list(...)$method
+	if (isTRUE(method == "bilinear")) {
+		e <- extract(x, vect(y), ...)
+		e[,-1,drop=FALSE]
+	} else {
+		y <- cellFromXY(x, y) 
+		extractCells(x, y, ...)
+	}
 })
 
 
