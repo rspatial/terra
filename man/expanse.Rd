@@ -14,7 +14,7 @@
 \description{
 Compute the area covered by polygons or for all raster cells that are not \code{NA}. 
 
-This method computes areas for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in meters. But it can also be important if the coordinate reference system is planar, but not equal-area. 
+This method computes areas for longitude/latitude rasters, as the size of the cells is constant in degrees, but not in square meters. But it can also be important if the coordinate reference system is planar, but not equal-area. 
 
 For vector data, the best way to compute area is to use the longitude/latitude CRS. This is contrary to (erroneous) popular belief that suggest that you should use a planar coordinate reference system. This is done automatically, if \code{transform=TRUE}.
 }
@@ -33,8 +33,9 @@ For vector data, the best way to compute area is to use the longitude/latitude C
 }
 
 \value{
-numeric. The sum of the size of the cells that are not \code{NA} 
+numeric. The total area size of all cells that are not \code{NA}, expressed in square meters, square kilometers, or hectares.
 }
+
 
 \seealso{
 \code{\link{cellSize}} for a the size of individual cells of a raster, that can be summed with \code{\link{global}} or with \code{\link{zonal}} to get the area for different categories.
