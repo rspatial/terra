@@ -570,9 +570,9 @@ SpatRaster SpatRaster::focal3(std::vector<unsigned> w, std::vector<double> m, do
 			}
 		}
 		if (nl > 1) {
-			if (!out.writeValues(voutcomb, out.bs.row[i], out.bs.nrows[i])) return out;
+			if (!out.writeBlock(voutcomb, i)) return out;
 		} else {
-			if (!out.writeValues(vout, out.bs.row[i], out.bs.nrows[i])) return out;
+			if (!out.writeBlock(vout, i)) return out;
 		}
 	}
 
@@ -669,7 +669,7 @@ SpatRaster SpatRaster::focal1(std::vector<unsigned> w, std::vector<double> m, do
 					}
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+			if (!out.writeBlock(v, i)) return out;
 		}
 	} else {
 		for (size_t i = 0; i < out.bs.n; i++) {
@@ -706,7 +706,7 @@ SpatRaster SpatRaster::focal1(std::vector<unsigned> w, std::vector<double> m, do
 					v[j] = fFun(x, narm);
 				}
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+			if (!out.writeBlock(v, i)) return out;
 		}
 	}
 	out.writeStop();

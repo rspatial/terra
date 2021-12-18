@@ -620,7 +620,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return out;
 		}
 		std::vector<double> v = crop_out.getValues(-1, opt);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(v, i)) return out;
 	}
 	out.writeStop();
 

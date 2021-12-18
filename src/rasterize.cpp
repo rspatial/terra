@@ -33,7 +33,7 @@ SpatRaster SpatRaster::hardCopy(SpatOptions &opt) {
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> v; 
 		readBlock(v, out.bs, i);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(v, i)) return out;
 	}
 	out.writeStop();
 	readStop();

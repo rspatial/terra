@@ -1157,3 +1157,105 @@ SpatRaster SpatRasterStack::summary(std::string fun, bool narm, SpatOptions &opt
 	return summary_numb(fun, add, narm, opt);
 }
 
+
+
+SpatRaster SpatRaster::isnan(SpatOptions &opt) {
+	SpatRaster out = geometry();
+	out.setValueType(3);
+	
+    if (!hasValues()) return out;
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+
+	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v; 
+		readBlock(v, out.bs, i);
+		for (double &d : v) d = std::isnan(d);
+		if (!out.writeBlock(v, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+SpatRaster SpatRaster::isnotnan(SpatOptions &opt) {
+	SpatRaster out = geometry();
+	out.setValueType(3);
+    if (!hasValues()) return out;
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v; 
+		readBlock(v, out.bs, i);
+		for (double &d : v) d = ! std::isnan(d);
+		if (!out.writeBlock(v, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+SpatRaster SpatRaster::isfinite(SpatOptions &opt) {
+	SpatRaster out = geometry();
+	out.setValueType(3);
+    if (!hasValues()) return out;
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v; 
+		readBlock(v, out.bs, i);
+		for (double &d : v) d = std::isfinite(d);
+		if (!out.writeBlock(v, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
+SpatRaster SpatRaster::isinfinite(SpatOptions &opt) {
+	SpatRaster out = geometry();
+	out.setValueType(3);
+	
+    if (!hasValues()) return out;
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	for (size_t i=0; i<out.bs.n; i++) {
+		std::vector<double> v; 
+		readBlock(v, out.bs, i);
+		for (double &d : v) d = std::isinf(d);
+		if (!out.writeBlock(v, i)) return out;
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}

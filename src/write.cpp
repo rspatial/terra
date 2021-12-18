@@ -211,7 +211,7 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 	for (size_t i=0; i<out.bs.n; i++) {
 		std::vector<double> v; 
 		readBlock(v, out.bs, i);
-		if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) {
+		if (!out.writeBlock(v, i)) {
 			readStop();
 			out.writeStop();
 			return out;

@@ -115,7 +115,7 @@ SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points
 		//	}
 		//}
 		shortDistPoints(d, xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
-		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(d, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -163,7 +163,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
 			out.writeStop();
 			return(out);
 		}
-		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(d, i)) return out;
 	}
 	out.writeStop();
 	return(out);
@@ -781,7 +781,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		//before, after, 
 		std::vector<double> vv = do_edge(v, out.bs.nrows[i]+2, nc+2, classes, inner, directions, falseval);
 		striprowcol(vv, out.bs.nrows[i]+2, nc+2, true, true);
-		if (!out.writeValues(vv, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(vv, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -1372,7 +1372,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 				v.insert(v.end(), nc, a[r]);
 				r++;
 			}
-			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+			if (!out.writeBlock(v, i)) return out;
 		}
 		if (disagg) {
 			out.writeStop();
@@ -1403,7 +1403,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 				//SpatVector p = onechunk.as_polygons(false, true, false, false, popt);
 				std::vector<double> v;
 				v = p.area(unit, true, {});
-				if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+				if (!out.writeBlock(v, i)) return out;
 			}
 		} else {
 			double u = unit == "m" ? 1 : unit == "km" ? 1000000 : 10000;
@@ -1412,7 +1412,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 			a *= xres() * yres() / u;
 			for (size_t i = 0; i < out.bs.n; i++) {
 				std::vector<double> v(out.bs.nrows[i]*ncol(), a);
-				if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i])) return out;
+				if (!out.writeBlock(v, i)) return out;
 			}
 		}
 		out.writeStop();
@@ -1995,7 +1995,7 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 	if (nrow() < 3 || ncol() < 3) {
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> val(out.bs.nrows[i] * ncol(), NAN);
-			if (!out.writeValues(val, out.bs.row[i], out.bs.nrows[i])) return out;
+			if (!out.writeBlock(val, i)) return out;
 		}
 		return out;
 	}
@@ -2036,7 +2036,7 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 				out.setError("?"); return out;
 			}
 		}
-		if (!out.writeValues(val, out.bs.row[i], out.bs.nrows[i])) return out;
+		if (!out.writeBlock(val, i)) return out;
 	}
 	out.writeStop();
 	readStop();
