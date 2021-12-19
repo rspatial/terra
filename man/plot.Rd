@@ -3,11 +3,12 @@
 \docType{methods}
 
 \alias{plot}
-\alias{plot,SpatRaster,numeric-method}
 \alias{plot,SpatRaster,missing-method}
+\alias{plot,SpatRaster,numeric-method}
+\alias{plot,SpatRaster,character-method}
 \alias{plot,SpatVector,missing-method}
-\alias{plot,SpatVector,character-method}
 \alias{plot,SpatVector,numeric-method}
+\alias{plot,SpatVector,character-method}
 \alias{plot,SpatExtent,missing-method}
 
 
@@ -24,6 +25,9 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
      colNA=NULL, alpha=NULL, reset=FALSE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)
+
+\S4method{plot}{SpatRaster,character}(x, y, ...)
+
 
 \S4method{plot}{SpatVector,character}(x, y, col, type, mar=NULL, legend=TRUE,
      add=FALSE, axes=!add, main=y, buffer=TRUE, background=NULL,
