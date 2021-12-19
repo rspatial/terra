@@ -26,9 +26,10 @@
 #include <math.h>
 
 
-
 bool haveFun(std::string fun);
 std::function<double(std::vector<double>&, bool)> getFun(std::string fun);
+bool bany(const std::vector<bool>& v);
+bool ball(const std::vector<bool>& v);
 
 
 template <typename T>
@@ -360,7 +361,7 @@ T vmax(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-double vwhich(std::vector<T>& v, bool narm) {
+double vwhich(const std::vector<T>& v, bool narm) {
 	double out;
 	for (size_t i=0; i<v.size(); i++) {
 		if ((!is_NA(v[i])) && v[i] != 0) {
@@ -375,7 +376,7 @@ double vwhich(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vwhichmin(std::vector<T>& v, bool narm) {
+T vwhichmin(const std::vector<T>& v, bool narm) {
 	T x = v[0];
 	T out;
 	if (is_NA(x)) {
@@ -417,7 +418,7 @@ T vwhichmin(std::vector<T>& v, bool narm) {
 
 
 template <typename T>
-T vwhichmax(std::vector<T>& v, bool narm) {
+T vwhichmax(const std::vector<T>& v, bool narm) {
 
 	T x = v[0];
 	T out;
@@ -462,7 +463,7 @@ T vwhichmax(std::vector<T>& v, bool narm) {
 // problematic; should be ok for int and float but
 // won't work with bool values (nodata == 0)
 template <typename T>
-T vall(std::vector<T>& v, bool narm) {
+T vall(const std::vector<T>& v, bool narm) {
 	T x;
 	if (narm) {
 		x = 1;
@@ -490,8 +491,9 @@ T vall(std::vector<T>& v, bool narm) {
 }
 
 
+
 template <typename T>
-T vany(std::vector<T>& v, bool narm) {
+T vany(const std::vector<T>& v, bool narm) {
 	T x = 0;
 	bool hasnd = false;
 	for (size_t i=0; i<v.size(); i++) {
@@ -689,6 +691,18 @@ void cummin(std::vector<T>& v, bool narm) {
     }
 }
 
+/*
+#include <numeric>
+
+template <typename T>
+std::vector<size_t> order(const std::vector<T> &v) {
+	std::vector<size_t> idx(v.size());
+	std::iota(idx.begin(), idx.end(), 0);
+	stable_sort(idx.begin(), idx.end(),
+		[&v](size_t i, size_t j) {return v[i] < v[j];});
+	return idx;
+}
+*/
 
 #endif
 

@@ -71,3 +71,18 @@ std::function<double(std::vector<double>&, bool)> getFun(std::string fun) {
 	return theFun;
 }
 
+
+bool ball(const std::vector<bool>& v) {
+    for (size_t i=0; i<v.size(); i++) {
+		if (!v[i]) return false;
+	}
+	return true;
+}
+
+bool bany(const std::vector<bool>& v) {
+    for (size_t i=0; i<v.size(); i++) {
+		if (v[i]) return true;
+	}
+	return false;
+}
+

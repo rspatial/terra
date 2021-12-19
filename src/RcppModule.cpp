@@ -686,10 +686,10 @@ RCPP_MODULE(spat){
 		.method("unique", &SpatRaster::unique, "unique")
 		.method("sieve", &SpatRaster::sieveFilter, "sievefilter")
 
-		.method("rectify", &SpatRaster::rectify, "rectify")
-		.method("stretch", &SpatRaster::stretch, "stretch")
-		.method("warp", &SpatRaster::warper, "warper")
-		.method("zonal", &SpatRaster::zonal, "zonal")
+		.method("rectify", &SpatRaster::rectify)
+		.method("stretch", &SpatRaster::stretch)
+		.method("warp", &SpatRaster::warper)
+		.method("zonal", &SpatRaster::zonal)
 		.method("is_true", &SpatRaster::is_true, "is_TRUE")
 		.method("is_false", &SpatRaster::is_true, "is_TRUE")
 	;

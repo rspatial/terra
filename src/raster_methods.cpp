@@ -651,6 +651,7 @@ SpatRaster SpatRaster::stretch(std::vector<double> minv, std::vector<double> max
 }
 
 
+
 SpatRaster SpatRaster::apply(std::vector<unsigned> ind, std::string fun, bool narm, std::vector<std::string> nms, SpatOptions &opt) {
 
 	recycle(ind, nlyr());
@@ -2303,20 +2304,26 @@ void notisnan(const std::vector<double> &x, double &n) {
 void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, double &stat2,double &n, size_t step) {
 	if (v.size() == 0) return;
 	if (fun == "sum") {
-		if (narm && (step > 0)) {
-			v.push_back(stat);
-		} 
-		stat = vsum(v, narm);
+		double s = vsum(v, narm);
+		if (step > 0) {
+			std::vector<double> ss = {stat, s};
+			stat = vsum(ss, narm);
+		} else {
+			stat = s;
+		}
 	} else if (fun == "mean") {
+		double s = vsum(v, narm);
+		if (step > 0) {
+			std::vector<double> ss = {stat, s};
+			stat = vsum(ss, narm);
+		} else {
+			stat = s;
+		}
 		if (narm) {
 			notisnan(v, n);
-			if (step > 0) {
-				v.push_back(stat);
-			}
 		} else {
 			n += v.size();
 		}
-		stat = vsum(v, narm);
 	} else if (fun == "rms") {
 		if (narm) {
 			notisnan(v, n);
@@ -2324,7 +2331,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 			n += v.size();
 		}
 		double s = vsum2(v, narm);
-		if (step > 1) {
+		if (step > 0) {
 			std::vector<double> ss = {stat, s};
 			stat = vsum(ss, narm);
 		} else {
@@ -2366,7 +2373,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 		}
 		double s1 = vsum(v, narm);
 		double s2 = vsum2(v, narm);
-		if (step > 1) {
+		if (step > 0) {
 			std::vector<double> ss1 = {stat, s1};
 			stat = vsum(ss1, narm);
 			std::vector<double> ss2 = {stat2, s2};
@@ -2375,6 +2382,8 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 			stat = s1;
 			stat2 = s2;
 		}
+	} else if (fun == "notNA" || fun == "isNA") {
+		notisnan(v, n);
 	}
 }
 
@@ -2382,7 +2391,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
-	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "rms", "sd", "std", "stdpop"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "rms", "sd", "std", "stdpop", "isNA", "notNA"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return(out);
@@ -2409,7 +2418,7 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 	BlockSize bs = getBlockSize(opt);
 	for (size_t i=0; i<bs.n; i++) {
 		std::vector<double> v;
-		readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
+		readBlock(v, bs, i);
 		unsigned off = bs.nrows[i] * ncol() ;
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			unsigned offset = lyr * off;
@@ -2451,6 +2460,15 @@ SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 			} else {
 				stats[lyr] = NAN;
 			}
+		}
+	} else if (fun == "notNA") {
+		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+			stats[lyr] = n[lyr];
+		}
+	} else if (fun == "isNA") {
+		size_t nc = ncell();
+		for (size_t lyr=0; lyr<nlyr(); lyr++) {
+			stats[lyr] = nc - n[lyr];
 		}
 	}
 	out.add_column(stats, fun);
@@ -3328,10 +3346,15 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 	for (size_t i=0; i<ns; i++) {
 		if (!source[i].memory) {
 			if (!canProcessInMemory(opt)) {
-				setError("cannot process this raster in memory");
-				return false;
+				try {
+					readAll();
+				} catch(...) {
+					setError("cannot process this raster in memory");
+					return false;
+				}
+			} else {
+				readAll();
 			}
-			readAll();
 			break;
 		}
 	}

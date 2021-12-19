@@ -209,7 +209,7 @@ setMethod ("show" , "SpatRaster",
 			}
 			rgb <- RGB(object)
 			if (!is.null(rgb)) {				 
-				cat(paste("colors", toupper(object@ptr$rgbtype), "   :"), paste(rgb, collapse=", "), "\n")
+				cat(paste("colors", toupper(object@ptr$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
 			}
 			hasct <- !sapply(coltab(object), is.null)
 			if (any(hasct)) {

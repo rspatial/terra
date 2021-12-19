@@ -270,6 +270,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 	SpatRaster out(s);
 	if (properties) {
 		out.rgb = rgb;
+		out.rgbtype = rgbtype;
 		out.rgblyrs = rgblyrs;
 	}
 	return out;

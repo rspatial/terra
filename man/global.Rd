@@ -9,7 +9,7 @@
 \description{
 Compute global statistics, that is summarized values of an entire SpatRaster. 
 
-If \code{x} is very large \code{global} will fail, except when \code{fun} is one of "mean", "min", "max", or "sum". 
+If \code{x} is very large \code{global} will fail, except when \code{fun} is one of "mean", "min", "max", "sum", "range" (min and max), "rms" (root mean square), "sd" (sample standard deviation), "sdpop" (population standard deviation), "isNA" (number of cells that are NA), "notNA" (number of cells that are not NA).
 
 You can compute a weighted mean or sum by providing a SpatRaster with weights.
 }

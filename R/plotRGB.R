@@ -23,12 +23,10 @@ rgbstretch <- function(RGB, stretch, caller="") {
 		RGB[,1] <- .linStretch(RGB[,1])
 		RGB[,2] <- .linStretch(RGB[,2])
 		RGB[,3] <- .linStretch(RGB[,3])
-		scale <- 255
 	} else if (stretch == 'hist') {
 		RGB[,1] <- .eqStretch(RGB[,1])
 		RGB[,2] <- .eqStretch(RGB[,2])
 		RGB[,3] <- .eqStretch(RGB[,3])
-		scale <- 255
 	} else if (stretch != '') {
 		warn(caller, "invalid stretch value")
 	}
@@ -62,6 +60,36 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 		x <- crop(x, ext)
 	}
 	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+	if (!is.null(zlim)) {
+		if (length(zlim) == 2) {
+			zlim <- sort(zlim)
+			if (is.null(zlimcol)) {
+				x <- clamp(x, zlim[1], zlim[2], values=TRUE)
+			} else { #if (is.na(zlimcol)) {
+				x <- clamp(x, zlim[1], zlim[2], values=FALSE)
+			} 
+		} else if (NROW(zlim) == 3 & NCOL(zlim) == 2) {
+			for (i in 1:3) {
+				zmin <- min(zlim[i,])
+				zmax <- max(zlim[i,])
+				if (is.null(zlimcol)) {
+					x[[i]] <- clamp(x[[i]], zmin, zmax, values=TRUE)
+				} else { #if (is.na(zlimcol)) {
+					x[[i]] <- clamp(x[[i]], zmin, zmax, values=FALSE)
+				} 
+			}
+		} else {
+			error('zlim should be a vector of two numbers or a 3x2 matrix (one row for each color)')
+		}
+	}
+
+	if (!is.null(stretch)) {
+		if (stretch == "lin") {
+			x <- stretch(x, minq=0.02, maxq=0.98)
+		} else {
+			x <- stretch(x, histeq=TRUE, scale=255)
+		}
+	}
 
 	RGB <- values(x)
 	RGB <- stats::na.omit(RGB)
@@ -70,36 +98,6 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 	if (!is.null(a)) {
 		alpha <- RGB[,4] * 255
 		RGB <- RGB[,-4]
-	}
-
-	if (!is.null(zlim)) {
-		if (length(zlim) == 2) {
-			zlim <- sort(zlim)
-			if (is.null(zlimcol)) {
-				RGB[ RGB<zlim[1] ] <- zlim[1]
-				RGB[ RGB>zlim[2] ] <- zlim[2]
-			} else { #if (is.na(zlimcol)) {
-				RGB[RGB<zlim[1] | RGB>zlim[2]] <- NA
-			} 
-		} else if (NROW(zlim) == 3 & NCOL(zlim) == 2) {
-			for (i in 1:3) {
-				zmin <- min(zlim[i,])
-				zmax <- max(zlim[i,])
-				if (is.null(zlimcol)) {
-					RGB[RGB[,i] < zmin, i] <- zmin
-					RGB[RGB[,i] > zmax, i] <- zmax
-				} else { #if (is.na(zlimcol)) {
-					RGB[RGB < zmin | RGB > zmax, i] <- NA
-				}
-			}
-		} else {
-			error('zlim should be a vector of two numbers or a 3x2 matrix (one row for each color)')
-		}
-	}
-
-
-	if (!is.null(stretch)) {
-		RGB <- rgbstretch(RGB, stretch, "plotRGB")
 	}
 
 

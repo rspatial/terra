@@ -100,8 +100,11 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=
 	x <- x[[idx]]
 
 	if (!is.null(stretch)) {
-		values(x) <- rgbstretch(values(x), stretch, "colorize")
-		scale <- 255
+		if (stretch == "lin") {
+			x <- stretch(x, qmin=0.02, qmax=0.98)
+		} else {
+			x <- stretch(x, histeq=TRUE, scale=255)
+		}
 	}
 
 	if (n == 4) x[[4]] <- x[[4]] * 255
@@ -126,9 +129,9 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=
 	r[m$id] <- m$group - 1
 	coltab(r) <- a$cols
 	if (filename != "") {
-			r <- writeRaster(r, filename, overwrite, ...)
-		}
-		r
+		r <- writeRaster(r, filename, overwrite, ...)
+	}
+	r
 }
 
 

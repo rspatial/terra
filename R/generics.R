@@ -773,10 +773,18 @@ setMethod("scale", signature(x="SpatRaster"),
 
 
 setMethod("stretch", signature(x="SpatRaster"), 
-	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, filename="", ...) {
+	function(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$stretch(minv, maxv, minq, maxq, smin, smax, opt)
-		messages(x, "stretch")
+		if (histeq) {
+			eqStretch <- function(x){
+				ecdfun <- stats::ecdf(x)(x)
+				ecdfun(x)
+			}
+			setValues(x, apply(values(x), 2, function(i) stats::ecdf(i)(i))) * scale
+		} else {
+			x@ptr <- x@ptr$stretch(minv, maxv, minq, maxq, smin, smax, opt)
+			messages(x, "stretch")
+		}
 	}
 )
 
