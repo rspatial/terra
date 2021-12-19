@@ -14,7 +14,8 @@ For histogram equalization, these arguments are ignored, but you can provide the
 }
 
 \usage{
-\S4method{stretch}{SpatRaster}(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA, histeq=FALSE, scale=1, filename="", ...)
+\S4method{stretch}{SpatRaster}(x, minv=0, maxv=255, minq=0, maxq=1, smin=NA, smax=NA,
+		histeq=FALSE, scale=1, filename="", ...)
 }
 
 \arguments{

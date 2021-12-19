@@ -514,3 +514,12 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 )
 
 
+setMethod("plot", signature(x="SpatRaster", y="character"), 
+	function(x, y, ...) {
+		y <- match(y, names(x))
+		if (any(is.na(y))) {
+			error("plot", "y does not match the names in x")
+		}
+		plot(x, y, ...)
+	}
+)
