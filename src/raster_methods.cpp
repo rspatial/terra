@@ -3143,9 +3143,10 @@ std::vector<std::vector<double>> clump_getRCL(std::vector<std::vector<size_t>> r
 }
 
 
-void clump_replace(std::vector<double> &v, size_t n, const std::vector<double>& d, size_t cstart, std::vector<std::vector<size_t>>& rcl) {
+void clump_replace(std::vector<double> &v, size_t n, const std::vector<double>& d, size_t cstart, std::vector<std::vector<size_t>>& rcl, size_t &ncps) {
+	size_t nd = d.size();
 	for (size_t i=0; i<n; i++) {
-		for (size_t j=1; j<d.size(); j++) {
+		for (size_t j=1; j<nd; j++) {
 			if (v[i] == d[j]) {
 				v[i] = d[0];
 			}
@@ -3156,6 +3157,8 @@ void clump_replace(std::vector<double> &v, size_t n, const std::vector<double>& 
 			rcl[0].push_back(d[0]);
 			rcl[1].push_back(d[j]);
 		}
+	} else if (d[nd-1] == (ncps-1)) {  // or just "if" ?
+		ncps--;
 	}
 }
 
@@ -3167,7 +3170,8 @@ void clump_test(std::vector<double> &d) {
 	d.erase(std::unique(d.begin(), d.end()), d.end());
 }
 
-void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size_t &dirs, size_t &ncps, const size_t &nr, const size_t &nc, std::vector<std::vector<size_t>> &rcl) {
+
+void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size_t &dirs, size_t &ncps, const size_t &nr, const size_t &nc, std::vector<std::vector<size_t>> &rcl, bool is_global) {
 
 	size_t nstart = ncps;
 
@@ -3175,14 +3179,16 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 
 	if ( !std::isnan(v[0]) ) { //first cell, no cell left of it
 		if (std::isnan(above[0])) {
-			v[0] = ncps;
+			v[0] = ncps; // new patch
 			ncps++;
 		} else {
-			v[0] = above[0];
+			v[0] = above[0]; // as the one above
 		}
 	}
 
-	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
+	size_t stopat = is_global ? nc-1 : nc;
+	
+	for (size_t i=1; i<stopat; i++) { //first row, no row above it, use "above"
 		if (!std::isnan(v[i])) {
 			std::vector<double> d;
 			if (d4) {
@@ -3194,7 +3200,28 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 			if (d.size() > 0) {
 				v[i] = d[0];
 				if (d.size() > 1) {
-					clump_replace(v, i, d, nstart, rcl);
+					clump_replace(v, i, d, nstart, rcl, ncps);
+				}
+			} else {
+				v[i] = ncps;
+				ncps++;
+			}
+		}
+	}
+	if (is_global) {
+		size_t i = stopat;
+		if (!std::isnan(v[i])) {
+			std::vector<double> d;
+			if (d4) {
+				d = {above[i], v[i-1], v[0]} ;
+			} else {
+				d = {above[i], above[i-1], v[i-1], v[0], above[0]} ;
+			}
+			clump_test(d); // any values?
+			if (d.size() > 0) {
+				v[i] = d[0];
+				if (d.size() > 1) {
+					clump_replace(v, i, d, nstart, rcl, ncps);
 				}
 			} else {
 				v[i] = ncps;
@@ -3205,7 +3232,9 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 
 
 	for (size_t r=1; r<nr; r++) { //other rows
-		size_t i=r*nc;
+		size_t startat = r*nc;
+		size_t i=startat;
+		
 		if (!std::isnan(v[i])) { // first cell
 			if (std::isnan(v[i-nc])) {
 				v[i] = ncps;
@@ -3214,7 +3243,12 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 				v[i] = v[i-nc];
 			}
 		}
-		for (size_t i=r*nc+1; i<((r+1)*nc); i++) { // other cells
+
+
+		size_t stopat = is_global ? startat + nc - 1 : startat + nc;
+		startat++;
+
+		for (size_t i=startat; i<stopat; i++) { // other cells
 			if (!std::isnan(v[i])) {
 				std::vector<double> d;
 				if (d4) {
@@ -3226,12 +3260,32 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 				if (d.size() > 0) {
 					v[i] = d[0];
 					if (d.size() > 1) {
-						clump_replace(v, i, d, nstart, rcl);
+						clump_replace(v, i, d, nstart, rcl, ncps);
 					}
 				} else {
 					v[i] = ncps;
 					ncps++;
 				}
+			}
+		}
+		
+		i = stopat;
+		if (!std::isnan(v[i])) {
+			std::vector<double> d;
+			if (d4) {
+				d = {v[i-nc], v[i-1], v[startat]} ;
+			} else {
+				d = {v[i-nc], v[i-nc-1], v[i-1], v[startat], v[startat-nc]} ;
+			}
+			clump_test(d);
+			if (d.size() > 0) {
+				v[i] = d[0];
+				if (d.size() > 1) {
+					clump_replace(v, i, d, nstart, rcl, ncps);
+				}
+			} else {
+				v[i] = ncps;
+				ncps++;
 			}
 		}
 	}
@@ -3241,16 +3295,18 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 
 
 
-
 SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
+	
 	if (nlyr() > 1) {
 		SpatOptions ops(opt);
 		std::string filename = opt.get_filename();
 		ops.set_filenames({""});
+		std::vector<std::string> nms = getNames();
 		for (size_t i=0; i<nlyr(); i++) {
 			std::vector<unsigned> lyr = {(unsigned)i};
+			ops.names = {nms[i]};
 			SpatRaster x = subset(lyr, ops);
 			x = x.clumps(directions, zeroAsNA, ops);
 			out.addSource(x, false);
@@ -3287,8 +3343,10 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 			return(out);
 		}
 	}
-
-
+	if (opt.names.size() == 0) {
+		opt.names = {"patches"};
+	}
+		
 	opt.set_filenames({""});
  	if (!out.writeStart(opt)) { return out; }
 	size_t nc = ncol();
@@ -3296,12 +3354,13 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	std::vector<double> above(nc, NAN);
 	std::vector<std::vector<size_t>> rcl(2);
 
+	bool is_global = is_global_lonlat();
 	for (size_t i = 0; i < out.bs.n; i++) {
 		readBlock(v, out.bs, i);
 		if (zeroAsNA) {
 			std::replace(v.begin(), v.end(), 0.0, (double)NAN);
 		}
-		broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl);
+		broom_clumps(v, above, directions, ncps, out.bs.nrows[i], nc, rcl, is_global);
 		if (!out.writeBlock(v, i)) return out;
 	}
 	out.writeStop();
