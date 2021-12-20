@@ -82,14 +82,14 @@ If y is a SpatVector the geographic distance between all objects is computed (an
 <span class="co"># S4 method for matrix,matrix</span>
 <span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">lonlat</span>, pairwise<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="co"># S4 method for matrix,ANY</span>
+<span class="co"># S4 method for matrix,missing</span>
 <span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">lonlat</span>, sequential<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>SpatRaster, SpatVector, or two-column matrix (x,y) or (lon,lat)</p></dd>
+<dd><p>SpatRaster, SpatVector, or two-column matrix with coordinates (x,y) or (lon,lat)</p></dd>
 <dt>y</dt>
 <dd><p>missing or SpatVector, or two-column matrix</p></dd>
 <dt>grid</dt>
