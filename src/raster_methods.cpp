@@ -3390,10 +3390,6 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	out.writeStop();
 	readStop();
 
-//	if (is_global_lonlat()) {
-//  read the first and last column and reclass
-//	} 
-
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {
 		std::vector<std::vector<double>> rc = clump_getRCL(rcl, ncps);

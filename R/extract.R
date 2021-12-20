@@ -116,12 +116,7 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	}
 	cn <- names(x)
 	opt <- spatOptions()
-	if (method == "bilinear") {
-		cells <- FALSE
-		xy <- FALSE
-		if (NCOL(y) == 1) {
-			y <- xyFromCell(x, y)
-		}
+	if ((method == "bilinear") && (NCOL(y) > 1)) {
 		e <- x@ptr$bilinearValues(y[,1], y[,2])		
 	} else {
 		if (NCOL(y) == 2) {
@@ -140,12 +135,19 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	if (cells) {
 		cn <- c(cn, "cell")
 		nc <- nc + 1
-		e <- cbind(e, y)
+		if (NCOL(y) == 2) {
+			e <- cbind(e, cellFromXY(x, y))
+		} else {
+			e <- cbind(e, y)
+		}
 	}
 	if (xy) {
 		cn <- c(cn, "x", "y")
 		nc <- nc + 2
-		e <- cbind(e, xyFromCell(x, y))
+		if (NCOL(y) == 1) {
+			y <- xyFromCell(x, y)
+		}
+		e <- cbind(e, y)
 	}
 	colnames(e) <- cn
 

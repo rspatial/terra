@@ -11,8 +11,9 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - Summary type math functions such as `min` and `mean`, when used with multiple SpatRasters and numbers, ignored additional SpatRasters [#426](https://github.com/rspatial/terra/issues/426) by Zhuonan Wang
 - names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) [#430](https://github.com/rspatial/terra/issues/430) by Dan Baston
 - `classify` with `right=FALSE` ignored `include.lowest=TRUE` [#442](https://github.com/rspatial/terra/issues/442) by Alex Ilich
-- `patches` now combines patches that connect across the data line [#366](https://github.com/rspatial/terra/issues/366) by Hirscht 
-- `centroids` now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridan [#366](https://github.com/rspatial/terra/issues/366) by Hirscht 
+- `patches` now combines patches that connect across the data line [#366](https://github.com/rspatial/terra/issues/366) by Hirscht
+- `patches(directions=8)` now connects in NE/SW direction [#451] (https://github.com/rspatial/terra/issues/451) by Jean-François Bourdon.
+- `centroids` now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian [#366](https://github.com/rspatial/terra/issues/366) by Hirscht 
 
 
 ## enhancements 
