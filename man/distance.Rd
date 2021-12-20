@@ -6,7 +6,7 @@
 \alias{distance,SpatVector,ANY-method}
 \alias{distance,SpatVector,SpatVector-method}
 \alias{distance,matrix,matrix-method}
-\alias{distance,matrix,ANY-method}
+\alias{distance,matrix,missing-method}
 
 \title{Geographic distance}
 
@@ -36,11 +36,11 @@ If \code{y} is a SpatVector the geographic distance between all objects is compu
 
 \S4method{distance}{matrix,matrix}(x, y, lonlat, pairwise=FALSE)
 
-\S4method{distance}{matrix,ANY}(x, y, lonlat, sequential=FALSE)
+\S4method{distance}{matrix,missing}(x, y, lonlat, sequential=FALSE)
 }
 
 \arguments{
-  \item{x}{SpatRaster, SpatVector, or two-column matrix (x,y) or (lon,lat)}
+  \item{x}{SpatRaster, SpatVector, or two-column matrix with coordinates (x,y) or (lon,lat)}
   \item{y}{missing or SpatVector, or two-column matrix}
   \item{grid}{logical. If \code{TRUE}, distance is computed using a path that goes through the centers of the 8 neighboring cells}
   \item{filename}{character. Output filename}
