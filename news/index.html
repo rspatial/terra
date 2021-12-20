@@ -49,11 +49,8 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5-4" id="version-15-4">version 1.5-4<a class="anchor" aria-label="anchor" href="#version-15-4"></a></h2>
-</div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="1.5-3" id="version-15-3">version 1.5-3<a class="anchor" aria-label="anchor" href="#version-15-3"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-5-3">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-3"></a></h3>
+<h3 id="bug-fixes-1-5-4">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-4"></a></h3>
 <ul><li>
 <code>setValues</code> and <code>init</code> failed (or even crashed R) when using a single value on a largish raster. <a href="https://github.com/rspatial/terra/issues/414" class="external-link">#414</a>
 </li>
@@ -67,9 +64,13 @@
 <li>names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) <a href="https://github.com/rspatial/terra/issues/430" class="external-link">#430</a> by Dan Baston</li>
 <li>
 <code>classify</code> with <code>right=FALSE</code> ignored <code>include.lowest=TRUE</code> <a href="https://github.com/rspatial/terra/issues/442" class="external-link">#442</a> by Alex Ilich</li>
+<li>
+<code>patches</code> now combines patches that connect across the data line <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
+<li>
+<code>centroids</code> now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridan <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-5-3">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-3"></a></h3>
+<h3 id="enhancements-1-5-4">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-4"></a></h3>
 <ul><li>
 <code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
 <li>
@@ -92,14 +93,17 @@
 <li>further support for categorical data in <code>freq</code> and <code>as.data.frame</code> <a href="https://github.com/rspatial/terra/issues/441" class="external-link">#441</a> ngould7</li>
 <li>speed up in processing of multi-layer in memory data <a href="https://github.com/rspatial/terra/issues/437" class="external-link">#437</a> by Krzysztof Dyba</li>
 <li>
-<code>vect&lt;matrix&gt;</code> and <code>vect&lt;data.frame&gt;</code> are now much faster <a href="https://github.com/rspatial/terra/issues/413" class="external-link">#413</a> by BastienFR</li>
+<code>vect&lt;matrix&gt;</code> and <code>vect&lt;data.frame&gt;</code> are now much faster <a href="https://github.com/rspatial/terra/issues/413" class="external-link">#413</a> by BastienFR<br></li>
+<li>
+<code>extract</code> with points provided as a matrix or cell numbers is not much faster <a href="https://github.com/rspatial/terra/issues/341" class="external-link">#341</a>
+</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-5-3">new<a class="anchor" aria-label="anchor" href="#new-1-5-3"></a></h3>
+<h3 id="new-1-5-4">new<a class="anchor" aria-label="anchor" href="#new-1-5-4"></a></h3>
 <ul><li>timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)</li>
 <li>new method <code>mergeTime</code> to combine multiple rasters, perhaps partly overlapping in time, into a single time series</li>
 <li>new method <code>fillTime</code> that can add empty layers in between existing layers to assure that the time step between layers is constant</li>
-<li>new method <code>approxNA</code> to fill in missing values by cell across layers</li>
+<li>new method <code>approximate</code> to fill in missing values by cell across layers</li>
 <li>new methods <code>is.bool</code> and <code>as.bool</code> for SpatRaster and explicit recognition of Boolean raster data in various places (e.g., extract, plot)</li>
 <li>new methods <code>is.int</code> and <code>as.int</code> for SpatRaster.</li>
 <li>when assigning integer values to a SpatRaster, or when reading an integer file, the corresponding layers are now classified as being of integer type <a href="https://github.com/rspatial/terra/issues/446" class="external-link">#446</a> by L. Dalby</li>
@@ -181,7 +185,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-4-19">new<a class="anchor" aria-label="anchor" href="#new-1-4-19"></a></h3>
-<ul><li>new method <code>selectHighest</code> to select n cell values of a <code>SpatRaster</code> with the highest or lowest values.</li>
+<ul><li>new method <code>selectHighest</code> to select n cell values with the highest or lowest values.</li>
 <li>new method <code>vect&lt;list&gt;</code> to append SpatVectors (faster than <code>do.call(rbind, x)</code>)</li>
 <li>new argument <code>align=FALSE</code> to <code>project</code> to align to the template SpatRaster but ignore the resolution</li>
 <li>new method <code>gdalCache</code> to set the GDAL cache size, contributed by Dan Baston <a href="https://github.com/rspatial/terra/pull/387" class="external-link">#387</a>

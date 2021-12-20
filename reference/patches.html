@@ -88,22 +88,23 @@
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">15</span><span class="op">:</span><span class="fl">16</span>, <span class="fl">18</span><span class="op">:</span><span class="fl">29</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">10</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span class="r-in"><span class="co"># zero as background instead of NA</span></span>
+<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">10</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span>, vals<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">4</span>, <span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">12</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">6</span>, <span class="fl">6</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">12</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># remove zeros if need be with zeroAsNA</span></span>
+<span class="r-in"><span class="co"># treat zeros as NA</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">r</span>, zeroAsNA<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">p8</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">r</span>, <span class="fl">8</span>, zeroAsNA<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># patches for different values</span></span>
-<span class="r-in"><span class="co"># remove zeros</span></span>
+<span class="r-in"><span class="co">### patches for different values</span></span>
+<span class="r-in"><span class="co"># remove zeros manually</span></span>
 <span class="r-in"><span class="va">rr</span> <span class="op">&lt;-</span> <span class="fu"><a href="classify.html">classify</a></span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># first make layers for each value</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># make layers for each value</span></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="segregate.html">segregate</a></span><span class="op">(</span><span class="va">rr</span>, keep<span class="op">=</span><span class="cn">TRUE</span>, other<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
 <span class="r-in"></span>
