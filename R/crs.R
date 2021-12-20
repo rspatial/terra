@@ -33,7 +33,7 @@ is.proj <- function(crs) {
 .name_or_proj4 <- function(x) {
 	d <- .srs_describe(x@ptr$get_crs("wkt"))
 	r <- x@ptr$get_crs("proj4")
-	if (!(d$name %in% c("unknown", "unnamed"))) {
+	if (!(d$name %in% c(NA, "unknown", "unnamed"))) {
 		if (substr(r, 1, 13) == "+proj=longlat") {
 			r <- paste("lon/lat", d$name)
 		} else {

@@ -3186,9 +3186,10 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 		}
 	}
 
-	size_t stopat = is_global ? nc-1 : nc;
+	size_t stopnc = is_global ? nc-1 : nc;
 	
-	for (size_t i=1; i<stopat; i++) { //first row, no row above it, use "above"
+	//first row, no row above it, use "above"
+	for (size_t i=1; i<stopnc; i++) { 
 		if (!std::isnan(v[i])) {
 			std::vector<double> d;
 			if (d4) {
@@ -3209,7 +3210,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 		}
 	}
 	if (is_global) {
-		size_t i = stopat;
+		size_t i = stopnc;
 		if (!std::isnan(v[i])) {
 			std::vector<double> d;
 			if (d4) {
@@ -3230,25 +3231,39 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 		}
 	}
 
-
-	for (size_t r=1; r<nr; r++) { //other rows
-		size_t startat = r*nc;
-		size_t i=startat;
-		
-		if (!std::isnan(v[i])) { // first cell
-			if (std::isnan(v[i-nc])) {
-				v[i] = ncps;
-				ncps++;
+	//other rows
+	for (size_t r=1; r<nr; r++) {
+		size_t start = r*nc;
+		size_t i=start;	
+		// first cell
+		if (!std::isnan(v[i])) { 
+			if (is_global && (!d4)) {
+				std::vector<double> d;
+				d = {v[i-nc], v[i-1]}; //above and left-above
+				clump_test(d);
+				if (d.size() > 0) {
+					v[i] = d[0];
+					if (d.size() > 1) {
+						clump_replace(v, i, d, nstart, rcl, ncps);
+					}
+				} else {
+					v[i] = ncps;
+					ncps++;
+				}
 			} else {
-				v[i] = v[i-nc];
+				if (std::isnan(v[i-nc])) {
+					v[i] = ncps;
+					ncps++;
+				} else {
+					v[i] = v[i-nc];
+				}
 			}
 		}
 
+		size_t stop = start + stopnc;
+		start++;
 
-		size_t stopat = is_global ? startat + nc - 1 : startat + nc;
-		startat++;
-
-		for (size_t i=startat; i<stopat; i++) { // other cells
+		for (size_t i=start; i<stop; i++) { // other cells
 			if (!std::isnan(v[i])) {
 				std::vector<double> d;
 				if (d4) {
@@ -3269,23 +3284,25 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 			}
 		}
 		
-		i = stopat;
-		if (!std::isnan(v[i])) {
-			std::vector<double> d;
-			if (d4) {
-				d = {v[i-nc], v[i-1], v[startat]} ;
-			} else {
-				d = {v[i-nc], v[i-nc-1], v[i-1], v[startat], v[startat-nc]} ;
-			}
-			clump_test(d);
-			if (d.size() > 0) {
-				v[i] = d[0];
-				if (d.size() > 1) {
-					clump_replace(v, i, d, nstart, rcl, ncps);
+		if (is_global) {
+			i = stop;
+			if (!std::isnan(v[i])) {
+				std::vector<double> d;
+				if (d4) {
+					d = {v[i-nc], v[i-1], v[start]} ;
+				} else {
+					d = {v[i-nc], v[i-nc-1], v[i-1], v[start], v[start-nc]} ;
 				}
-			} else {
-				v[i] = ncps;
-				ncps++;
+				clump_test(d);
+				if (d.size() > 0) {
+					v[i] = d[0];
+					if (d.size() > 1) {
+						clump_replace(v, i, d, nstart, rcl, ncps);
+					}
+				} else {
+					v[i] = ncps;
+					ncps++;
+				}
 			}
 		}
 	}

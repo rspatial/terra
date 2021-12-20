@@ -16,7 +16,7 @@ loadModule("spat", TRUE)
 
 
 .onAttach <- function(libname, pkgname) {
-	packageStartupMessage("terra version", utils::packageVersion("terra"))
+	packageStartupMessage("terra version ", utils::packageVersion("terra"))
 	.create_options()
 #	terraOptions(todisk=TRUE)
 }

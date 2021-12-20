@@ -35,22 +35,23 @@ r[7:12, 22:36] <- 1
 r[15:16, 18:29] <- 1
 p <- patches(r)
 
-r <- rast(nrows=10, ncols=10, xmin=0)
-r[] <- 0
+# zero as background instead of NA
+r <- rast(nrows=10, ncols=10, xmin=0, vals=0)
 r[3, 3] <- 10
 r[4, 4] <- 10
 r[5, 5:8] <- 12
 r[6, 6:9] <- 12
 
-# remove zeros if need be with zeroAsNA
+# treat zeros as NA
 
 p4 <- patches(r, zeroAsNA=TRUE)
 p8 <- patches(r, 8, zeroAsNA=TRUE)
 
-# patches for different values
-# remove zeros
+### patches for different values
+# remove zeros manually
 rr <- classify(r, cbind(0, NA))
-# first make layers for each value
+
+# make layers for each value
 s <- segregate(rr, keep=TRUE, other=NA)
 p <- patches(s)
 

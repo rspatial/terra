@@ -1,9 +1,5 @@
 # version 1.5-4
 
-
-
-# version 1.5-3
-
 ## bug fixes
 
 - `setValues` and `init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
@@ -15,6 +11,8 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - Summary type math functions such as `min` and `mean`, when used with multiple SpatRasters and numbers, ignored additional SpatRasters [#426](https://github.com/rspatial/terra/issues/426) by Zhuonan Wang
 - names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) [#430](https://github.com/rspatial/terra/issues/430) by Dan Baston
 - `classify` with `right=FALSE` ignored `include.lowest=TRUE` [#442](https://github.com/rspatial/terra/issues/442) by Alex Ilich
+- `patches` now combines patches that connect across the data line [#366](https://github.com/rspatial/terra/issues/366) by Hirscht 
+- `centroids` now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridan [#366](https://github.com/rspatial/terra/issues/366) by Hirscht 
 
 
 ## enhancements 
@@ -32,6 +30,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - further support for categorical data in `freq` and `as.data.frame`  [#441](https://github.com/rspatial/terra/issues/441) ngould7
 - speed up in processing of multi-layer in memory data [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
 - `vect<matrix>` and `vect<data.frame>` are now much faster [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
+- `extract` with points provided as a matrix or cell numbers is not much faster [#341](https://github.com/rspatial/terra/issues/341)
 
 
 ## new 
@@ -39,7 +38,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)
 - new method `mergeTime` to combine multiple rasters, perhaps partly overlapping in time, into a single time series
 - new method `fillTime` that can add empty layers in between existing layers to assure that the time step between layers is constant 
-- new method `approxNA` to fill in missing values by cell across layers
+- new method `approximate` to fill in missing values by cell across layers
 - new methods `is.bool` and `as.bool` for SpatRaster and explicit recognition of Boolean raster data in various places (e.g., extract, plot)
 - new methods `is.int` and `as.int` for SpatRaster. 
 - when assigning integer values to a SpatRaster, or when reading an integer file, the corresponding layers are now classified as being of integer type [#446](https://github.com/rspatial/terra/issues/446) by L. Dalby
@@ -110,7 +109,7 @@ by Greg Schmidt
 
 ## new
 
-- new method `selectHighest` to select n cell values of a `SpatRaster` with the highest or lowest values. 
+- new method `selectHighest` to select n cell values with the highest or lowest values. 
 - new method `vect<list>` to append SpatVectors (faster than `do.call(rbind, x)`)
 - new argument `align=FALSE` to `project` to align to the template SpatRaster but ignore the resolution
 - new method `gdalCache` to set the GDAL cache size, contributed by Dan Baston [#387](https://github.com/rspatial/terra/pull/387)

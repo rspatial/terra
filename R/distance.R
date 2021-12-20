@@ -117,12 +117,16 @@ setMethod("distance", signature(x="matrix", y="matrix"),
 )
 
 
-setMethod("distance", signature(x="matrix", y="ANY"), 
-	function(x, y, lonlat, sequential=FALSE) {
-		crs <- ifelse(lonlat, "+proj=longlat +datum=WGS84", 
+setMethod("distance", signature(x="matrix", y="missing"), 
+	function(x, y, lonlat=NULL, sequential=FALSE) {
+		if (is.null(lonlat)) {
+			error("distance", "lonlat should be TRUE or FALSE")
+		}
+		crs <- ifelse(isTRUE(lonlat), "+proj=longlat +datum=WGS84", 
 							  "+proj=utm +zone=1 +datum=WGS84")
 		x <- vect(x, crs=crs)
-		distance(x, sequential)
+		distance(x, sequential=sequential)
 	}
 )
+
 

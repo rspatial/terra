@@ -47,7 +47,11 @@ r[[2]] <- flip(r[[2]], "vertical") + init(rast(r,1), runif)
 r[[3]] <- init(rast(r,1), runif)
 x <- focalCor(r, w=5, cor)
 
-x <- focalCor(r, w=9, function(x, y) suppressWarnings(cor(x, y)))
+# suppress warning "the standard deviation is zero"
+x <- focalCor(r, w=5, function(x, y) suppressWarnings(cor(x, y)))
+
+# this does not happen when using a larger window
+x <- focalCor(r, w=9, function(x, y) cor(x, y))
 plot(x)
 }
 

@@ -116,7 +116,20 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	}
 	cn <- names(x)
 	opt <- spatOptions()
-	e <- x@ptr$extractCell(y-1)
+	if (method == "bilinear") {
+		cells <- FALSE
+		xy <- FALSE
+		if (NCOL(y) == 1) {
+			y <- xyFromCell(x, y)
+		}
+		e <- x@ptr$bilinearValues(y[,1], y[,2])		
+	} else {
+		if (NCOL(y) == 2) {
+			y <- cellFromXY(x, y) 
+		}
+		e <- x@ptr$extractCell(y-1)
+	}
+	
 	if (list) {
 		messages(x, "extract")
 		return(e)
@@ -161,17 +174,8 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 setMethod("extract", signature(x="SpatRaster", y="matrix"), 
 function(x, y, ...) { 
 	.checkXYnames(colnames(y))
-	method <- list(...)$method
-	if (isTRUE(method == "bilinear")) {
-		e <- extract(x, vect(y), ...)
-		e[,-1,drop=FALSE]
-	} else {
-		y <- cellFromXY(x, y) 
-		extractCells(x, y, ...)
-	}
+	extractCells(x, y, ...)
 })
-
-
 
 
 setMethod("extract", signature(x="SpatRaster", y="SpatVector"), 
