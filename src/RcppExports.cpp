@@ -208,6 +208,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// PROJ_network
+std::string PROJ_network(bool enable, std::string url);
+RcppExport SEXP _terra_PROJ_network(SEXP enableSEXP, SEXP urlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< bool >::type enable(enableSEXP);
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    rcpp_result_gen = Rcpp::wrap(PROJ_network(enable, url));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -230,6 +242,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_getGDALCacheSizeMB", (DL_FUNC) &_terra_getGDALCacheSizeMB, 0},
     {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
+    {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

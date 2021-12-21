@@ -607,7 +607,7 @@ class SpatRaster {
 		SpatDataFrame global_weighted_mean(SpatRaster &weights, std::string fun, bool narm, SpatOptions &opt);
 
 		SpatRaster gridDistance(SpatOptions &opt);
-		SpatRaster gridCostDistance(SpatRaster cost, SpatOptions &opt);
+		SpatRaster costDistance(double source, SpatOptions &opt);
 
 		SpatRaster init(std::string value, bool plusone, SpatOptions &opt);
 		SpatRaster init(std::vector<double> values, SpatOptions &opt);

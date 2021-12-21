@@ -12,6 +12,17 @@
 #include "proj.h"
 #endif
 
+#if PROJ_VERSION_MAJOR > 7
+# define PROJ_71
+#else
+# if PROJ_VERSION_MAJOR == 7
+#  if PROJ_VERSION_MINOR >= 1
+#   define PROJ_71
+#  endif
+# endif
+#endif
+
+
 // [[Rcpp::export(name = ".sameSRS")]]
 bool sameSRS(std::string x, std::string y) {
 	std::string msg;
@@ -301,6 +312,9 @@ void gdal_init(std::string path) {
 		proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &cp);
 	}
 #endif
+#ifdef PROJ71
+	proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+#endif
 }
 
 // [[Rcpp::export(name = ".precRank")]]
@@ -411,6 +425,22 @@ bool set_proj_search_paths(std::vector<std::string> paths) {
 #endif
 }
 
+// [[Rcpp::export(name = ".PROJ_network")]]
+std::string PROJ_network(bool enable, std::string url) {
+	std::string s = "";
+#ifdef PROJ_71
+	if (enable) {
+		proj_context_set_enable_network(PJ_DEFAULT_CTX, 1);
+		if (url.size() > 5) {
+			proj_context_set_url_endpoint(PJ_DEFAULT_CTX, url.c_str());
+		}
+		s = proj_context_get_url_endpoint(PJ_DEFAULT_CTX);
+	} else { // disable:
+		proj_context_set_enable_network(PJ_DEFAULT_CTX, 0);
+	}
+#endif
+	return s;
+}
 
 
 	

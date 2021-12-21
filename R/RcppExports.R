@@ -73,3 +73,7 @@
     .Call(`_terra_set_proj_search_paths`, paths)
 }
 
+.PROJ_network <- function(enable, url) {
+    .Call(`_terra_PROJ_network`, enable, url)
+}
+
