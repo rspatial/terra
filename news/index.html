@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-6</span>
       </span>
     </div>
 
@@ -48,9 +48,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.5-4" id="version-15-4">version 1.5-4<a class="anchor" aria-label="anchor" href="#version-15-4"></a></h2>
+<h2 class="page-header" data-toc-text="1.5-6" id="version-15-6">version 1.5-6<a class="anchor" aria-label="anchor" href="#version-15-6"></a></h2>
+<ul><li>
+<code>focal</code> has a new argument <code>na.policy</code> that can be set to one of “all” (default), “only” or “omit”. argument <code>na.only</code> has been removed, as you can now use <code>na.policy="only"</code>
+</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5-5" id="version-15-5">version 1.5-5<a class="anchor" aria-label="anchor" href="#version-15-5"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-5-4">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-4"></a></h3>
+<h3 id="bug-fixes-1-5-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-5"></a></h3>
 <ul><li>
 <code>setValues</code> and <code>init</code> failed (or even crashed R) when using a single value on a largish raster. <a href="https://github.com/rspatial/terra/issues/414" class="external-link">#414</a>
 </li>
@@ -67,10 +73,12 @@
 <li>
 <code>patches</code> now combines patches that connect across the data line <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
 <li>
-<code>centroids</code> now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridan <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
+<code>patches(directions=8)</code> now connects in NE/SW direction [#451] (<a href="https://github.com/rspatial/terra/issues/451" class="external-link uri">https://github.com/rspatial/terra/issues/451</a>) by Jean-François Bourdon.</li>
+<li>
+<code>centroids</code> now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-5-4">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-4"></a></h3>
+<h3 id="enhancements-1-5-5">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-5"></a></h3>
 <ul><li>
 <code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
 <li>
@@ -99,7 +107,7 @@
 </li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-5-4">new<a class="anchor" aria-label="anchor" href="#new-1-5-4"></a></h3>
+<h3 id="new-1-5-5">new<a class="anchor" aria-label="anchor" href="#new-1-5-5"></a></h3>
 <ul><li>timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)</li>
 <li>new method <code>mergeTime</code> to combine multiple rasters, perhaps partly overlapping in time, into a single time series</li>
 <li>new method <code>fillTime</code> that can add empty layers in between existing layers to assure that the time step between layers is constant</li>

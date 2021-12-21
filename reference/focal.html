@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-6</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">focal</span><span class="op">(</span><span class="va">x</span>, w<span class="op">=</span><span class="fl">3</span>, fun<span class="op">=</span><span class="st">"sum"</span>, <span class="va">...</span>, na.only<span class="op">=</span><span class="cn">FALSE</span>, fillvalue<span class="op">=</span><span class="cn">NA</span>, 
+<span class="fu">focal</span><span class="op">(</span><span class="va">x</span>, w<span class="op">=</span><span class="fl">3</span>, fun<span class="op">=</span><span class="st">"sum"</span>, <span class="va">...</span>, na.policy<span class="op">=</span><span class="st">"all"</span>, fillvalue<span class="op">=</span><span class="cn">NA</span>, 
     expand<span class="op">=</span><span class="cn">FALSE</span>, silent<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
@@ -68,8 +68,8 @@
 <dd><p>function that takes multiple numbers, and returns a numeric vector (one or multiple numbers). For example mean, modal, min or max</p></dd>
 <dt>...</dt>
 <dd><p>additional arguments passed to <code>fun</code> such as <code>na.rm</code></p></dd>
-<dt>na.only</dt>
-<dd><p>logical. Should only missing values in <code>x</code> be changed?</p></dd>
+<dt>na.policy</dt>
+<dd><p>character. Can be used to determine the cells of <code>x</code> for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are <code>NA</code>) or "omit" (skip cells that are <code>NA</code>). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use <code>na.rm=TRUE</code> to ignore cells that are <code></code> for that)</p></dd>
 <dt>fillvalue</dt>
 <dd><p>numeric. The value of the cells in the virtual rows and columns outside of the raster</p></dd>
 <dt>expand</dt>
@@ -85,10 +85,12 @@
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p><code>focal</code></p>
-<p>The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero.</p>
+    <p><code>focal</code> 
+The window used must have odd dimensions. If you need even sides, you can use a matrix and add a column or row with weights of zero.</p>
 <p>Window values are typically 0 or 1, or a value between 0 and 1 if you are using a rectangular area and/or the "sum" function. They can also be <code>NA</code>; these are ignored in the computation. That can be useful to compute, for example, the minimum or maximum value for a non-rectangular area.</p>
 <p>The "mean" function is a special case, as zero weights are ignored automatically.</p>
+<p>The "sum" function returns <code>NA</code> if all focal cells are <code>NA</code> and <code>na.rm=TRUE</code>. R would normally return a zero in thise cases. See the difference between <code>focal(x, fun=sum, na.rm=TRUE</code> and <code>focal(x, fun=\(i) sum(i, na.rm=TRUE))</code></p>
+
 <p>Example weight matrices</p>
 <p>Laplacian filter: <code>filter=matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3)</code></p>
 <p>Sobel filters (for edge detection):
@@ -119,6 +121,33 @@
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># but this is different</span></span>
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">focal</span><span class="op">(</span><span class="va">r</span>, w<span class="op">=</span><span class="fl">3</span>, fun<span class="op">=</span><span class="va">mean</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">## illustrating the effect of different </span></span>
+<span class="r-in"><span class="co">## combinations of na.rm and na.policy</span></span>
+<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">45</span><span class="op">:</span><span class="fl">50</span>, <span class="fl">45</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># also try "mean" or "min"</span></span>
+<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="st">"sum"</span> </span>
+<span class="r-in"><span class="co"># na.rm=FALSE</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="fu">focal</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, <span class="va">f</span><span class="op">)</span> , fun<span class="op">=</span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="focal-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># na.rm=TRUE</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="fu">focal</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, <span class="va">f</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, fun<span class="op">=</span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="focal-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># only change cells that are NA</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="fu">focal</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, <span class="va">f</span>, na.policy<span class="op">=</span><span class="st">"only"</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, fun<span class="op">=</span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="focal-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># do not change cells that are NA</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="fu">focal</span><span class="op">(</span><span class="va">r</span>, <span class="fl">5</span>, <span class="va">f</span>, na.policy<span class="op">=</span><span class="st">"omit"</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, fun<span class="op">=</span><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="focal-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># does not do anything</span></span>
+<span class="r-in"><span class="co"># focal(r, 5, f, na.policy="only", na.rm=FALSE)</span></span>
 </code></pre></div>
     </div>
   </div>
