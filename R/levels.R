@@ -81,7 +81,7 @@ setMethod ("setCats" , "SpatRaster",
 		vat <- FALSE
 		if (!is.data.frame(value)) {
 			if (is.vector(value) || is.factor(value)) {
-				if (length(value == 1) && value[1] == "") {
+				if ((length(value) == 1) && value[1] == "") {
 					return(invisible(""))
 				}
 				value <- data.frame(ID=0:(length(value)-1), category=value)
