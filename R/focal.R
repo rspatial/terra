@@ -5,7 +5,16 @@
 
 
 setMethod("focal", signature(x="SpatRaster"),
-function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
+function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
+
+	na.only <- list(...)$na.only
+	if (!is.null(na.only)) {
+		warn("focal", "use 'na.policy' instead of 'na.only'")
+		na.policy <- "only"
+	}
+	na.policy <- match.arg(tolower(na.policy), c("all", "only", "omit"))
+	na.only <- na.policy == "only"
+	na.omit <- na.policy == "omit"
 
 	if (!is.numeric(w)) {
 		error("focal", "w should be numeric vector or matrix")
@@ -35,7 +44,10 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, sile
 		}
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		narm <- isTRUE(list(...)$na.rm)
-		x@ptr <- x@ptr$focal3(w, m, fillvalue, narm, na.only[1], txtfun, expand, opt)
+		if (na.only && (!narm)) {
+			error("focal", "combining 'na.only=TRUE' with 'na.rm=FALSE' has no effect")
+		}
+		x@ptr <- x@ptr$focal(w, m, fillvalue, narm, na.only, na.omit, txtfun, expand, opt)
 		messages(x, "focal")
 		return(x)
 
@@ -43,6 +55,7 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, sile
 		if (expand) {
 			warn(focal, "expand is ignored for non-standard functions")
 		}
+		checkNA <- na.only || na.omit
 
 		msz <- prod(w)
 		dow <- !isTRUE(all(m == 1))
@@ -99,9 +112,13 @@ function(x, w=3, fun="sum", ..., na.only=FALSE, fillvalue=NA, expand=FALSE, sile
 					v <- t(v)
 				}
 
-				if (na.only) {
+				if (checkNA) {
 					vv <- readValues(x, b$row[i], b$nrows[i])
-					j <- !is.na(vv)
+					if (na.only) {
+						j <- !is.na(vv)
+					} else {
+						j <- is.na(vv)
+					}
 					v[j] <- vv[j]
 				}
 				if (nl > 1) {

@@ -1,5 +1,6 @@
 # version 1.5-6
 
+- `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
 
 # version 1.5-5
 
