@@ -208,11 +208,11 @@ setMethod("Compare", signature(e1="SpatRaster", e2="character"),
 		}
 		d <- cats(e1)[[1]]
 		m <- match(e2, levels(e1)[[1]])
-		opt <- spatOptions()
 		if (is.na(e2)) {
-			return (is.na(e1))
+			return(as.logical(e1*0))
 		}
 		e2 <- d[m,1]
+		opt <- spatOptions()
 		e1@ptr <- e1@ptr$arith_numb(e2, oper, TRUE, opt)
 		messages(e1, oper)
 	}

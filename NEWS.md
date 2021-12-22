@@ -4,7 +4,6 @@
 
 - `terrain` created empty (`NA`) rows between chunks used for processing large rasters. [#453](https://github.com/rspatial/terra/issues/452) by Robert Ritson.
 
-
 ## enhancements 
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
 
