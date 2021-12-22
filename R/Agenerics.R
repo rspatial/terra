@@ -6,6 +6,7 @@ if (!isGeneric("all.equal")) { setGeneric("all.equal", function(target, current,
 if (!isGeneric("impose")) { setGeneric("impose", function(x, ...) standardGeneric("impose")) }
 
 if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) standardGeneric("selectHighest"))}
+if (!isGeneric("focal3D")) { setGeneric("focal3D", function(x, ...) standardGeneric("focal3D")) }
 if (!isGeneric("focalReg")) { setGeneric("focalReg", function(x, ...) standardGeneric("focalReg")) }
 if (!isGeneric("focalCpp")) { setGeneric("focalCpp", function(x, ...) standardGeneric("focalCpp")) }
 if (!isGeneric("focalCor")) { setGeneric("focalCor", function(x, ...) standardGeneric("focalCor")) }

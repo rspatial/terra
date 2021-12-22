@@ -1,6 +1,11 @@
 # version 1.5-6
 
+## enhancements 
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
+
+## new 
+- new method `focal3D` to compute focal values for a three-dimensional window
+
 
 # version 1.5-5
 

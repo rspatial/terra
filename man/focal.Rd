@@ -7,7 +7,7 @@
 \title{Focal values}
 
 \description{
-Calculate focal ("moving window") values for the neighborhood of focal cells using a matrix of weights, perhaps in combination with a function.
+Calculate focal ("moving window") values for each cell.
 }
 
 \usage{

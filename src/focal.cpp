@@ -77,7 +77,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 //  get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
 
 	int wc = w[1] / 2;
-	wr = std::min(wr, nrows-1);
+	wr = std::min(wr, std::max(1, nrows-1));
 	wc = std::min(wc, nc-1);
 
 	size_t n = nrows * nc * w[0] * w[1];

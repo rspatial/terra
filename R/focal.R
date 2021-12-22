@@ -65,9 +65,15 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 			msz <- sum(k)
 		}
 
-		usenarm <- TRUE
-		testvals <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE]
-		test <- try(apply(testvals, 1, fun, ...), silent=silent)
+		v <- focalValues(x, w, trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE]
+		if (dow) {
+			if (any(is.na(m))) {
+				v <- v[k] * mm
+			} else {
+				v <- v * m
+			}
+		}
+		test <- try(apply(v, 1, fun, ...), silent=silent)
 		if (inherits(test, "try-error")) {
 			error("focal", "test failed")
 		}
@@ -144,6 +150,126 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 }
 )
 
+setMethod("focal3D", signature(x="SpatRaster"),
+function(x, w=3, fun="mean", ..., na.policy="all", fillvalue=NA, silent=TRUE, filename="", overwrite=FALSE, wopt=list()) {
+
+	na.policy <- match.arg(tolower(na.policy), c("all", "only", "omit"))
+	na.only <- na.policy == "only"
+	na.omit <- na.policy == "omit"
+	checkNA <- na.only || na.omit
+
+	if (!(inherits(w, "numeric") || inherits(w, "array"))) {
+		error("focal3D", "w should be numeric vector or array")
+	}
+
+	if (is.array(w)) {
+		if (length(dim(w)) != 3) {
+			error("focal3D", "a weights array must have three dimensions")
+		}
+		m <- as.vector(w)
+		w <- dim(w)
+	} else {
+		w <- rep_len(w, 3)
+		stopifnot(all(w > 0))
+		m <- rep(1, prod(w))
+	}
+	if (w[3] > nlyr(x)) {
+		error("focal", "the third weights dimension is larger than nlyr(x)")
+	}
+	
+	msz <- prod(w)
+	dow <- !isTRUE(all(m == 1))
+	rna <- FALSE
+	if (any(is.na(m))) {
+		rna <- TRUE
+		kna <- !is.na(m)
+		m <- m[kna]
+		msz <- sum(kna)
+	} 
+
+	halfway <- floor(w[3]/2)
+	v <- lapply(1:w[3], function(i) focalValues(x[[i]], w[1:2], trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE])
+	v <- t(do.call(cbind, v))
+	if (dow) {
+		if (rna) {
+			v <- v[kna,,drop=FALSE] * m
+		} else {
+			v <- v * m
+		}
+	}
+	vout <- try(apply(v, 2, fun, ...), silent=silent)
+	if (inherits(vout, "try-error")) {
+		error("focal", "test failed")
+	}
+
+	readStart(x)
+	on.exit(readStop(x))
+	nl <- nlyr(x)
+	outnl <- nl * length(vout)
+	transp <- FALSE
+	nms <- NULL
+	if (isTRUE(nrow(vout) > 1)) {
+		transp <- TRUE
+		nms <- rownames(vout)
+	} else if (isTRUE(ncol(vout) > 1)) {
+		nms <- colnames(vout)
+	}
+
+	out <- rast(x, nlyr=outnl)
+	if (!is.null(nms)) {
+		names(out) <- nms
+	}
+	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
+
+	nread <- prod(w[1:2])
+	for (i in 1:b$n) {
+		vv <- NULL
+		v <- matrix(NA, ncol=b$nrows[i]*ncol(x), nrow=nread*halfway)
+		for (k in 1:(1+halfway)) {
+			v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=ncol(v)))
+		}
+		for (j in 1:nl) {
+			if (j > 1) {
+				v <- v[-c(1:nread), ]
+				k <- j + halfway
+				if (k > nl) {
+					v <- rbind(v, matrix(NA, nrow=nread, ncol=ncol(v)))
+				} else {
+					v <- rbind(v, matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=ncol(v)))					
+				}
+			}
+			if (dow) {
+				if (rna) {
+					vout <- apply(v[kna,] * m, 2, fun, ...)
+				} else {
+					vout <- apply(v * m, 2, fun, ...)
+				}
+			} else {
+				vout <- apply(v, 2, fun,...)
+			}
+			
+			if (transp) {
+				vout <- t(vout)
+			}
+			if (checkNA) {
+				vv <- readValues(x, b$row[i], b$nrows[i])
+				if (na.only) {
+					j <- !is.na(vv)
+				} else {
+					j <- is.na(vv)
+				}
+				vout[j] <- vv[j]
+			}
+			vv <- c(vv, as.vector(vout))
+		}
+		writeValues(out, vv, b$row[i], b$nrows[i])
+	}
+	out <- writeStop(out)
+	return(out)
+}
+)
+
+
 
 setMethod("focalCpp", signature(x="SpatRaster"),
 function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FALSE, wopt=list())  {
@@ -175,8 +301,15 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	}
 
 	nl <- nlyr(x)
-	testvals <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1)[1:prod(w)]
-	test <- try(fun(testvals, ..., ni=1, nw=msz), silent=silent)
+	v <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1)[1:prod(w)]
+	if (dow) {
+		if (any(is.na(m))) {
+			v <- v[k] * mm
+		} else {
+			v <- v * m
+		}
+	}
+	test <- try(fun(v, ..., ni=1, nw=msz), silent=silent)
 	if (inherits(test, "try-error")) {
 		error("focalCpp", "test failed")
 	  }
