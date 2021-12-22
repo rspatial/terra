@@ -50,6 +50,11 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5-6" id="version-15-6">version 1.5-6<a class="anchor" aria-label="anchor" href="#version-15-6"></a></h2>
 <div class="section level3">
+<h3 id="bug-fixes-1-5-6">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-6"></a></h3>
+<ul><li>
+<code>terrain</code> created empty (<code>NA</code>) rows between chunks used for processing large rasters. <a href="https://github.com/rspatial/terra/issues/452" class="external-link">#453</a> by Robert Ritson.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="enhancements-1-5-6">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-6"></a></h3>
 <ul><li>
 <code>focal</code> has a new argument <code>na.policy</code> that can be set to one of “all” (default), “only” or “omit”. argument <code>na.only</code> has been removed, as you can now use <code>na.policy="only"</code>
@@ -80,7 +85,7 @@
 <li>
 <code>patches</code> now combines patches that connect across the data line <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
 <li>
-<code>patches(directions=8)</code> now connects in NE/SW direction [#451] (<a href="https://github.com/rspatial/terra/issues/451" class="external-link uri">https://github.com/rspatial/terra/issues/451</a>) by Jean-François Bourdon.</li>
+<code>patches(directions=8)</code> now connects in NE/SW direction <a href="https://github.com/rspatial/terra/issues/451" class="external-link">#451</a> by Jean-François Bourdon.</li>
 <li>
 <code>centroids</code> now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
 </ul></div>
