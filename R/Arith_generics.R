@@ -206,10 +206,13 @@ setMethod("Compare", signature(e1="SpatRaster", e2="character"),
 		if (length(e2) != 1) {
 			error(oper, "comparisons only supported for single values (see %in% and match)")
 		}
-
-		e2 <- match(e2, levels(e1)[[1]])
-		if (is.na(e2)) return (e1 * 0)
+		d <- cats(e1)[[1]]
+		m <- match(e2, levels(e1)[[1]])
 		opt <- spatOptions()
+		if (is.na(e2)) {
+			return (is.na(e1))
+		}
+		e2 <- d[m,1]
 		e1@ptr <- e1@ptr$arith_numb(e2, oper, TRUE, opt)
 		messages(e1, oper)
 	}
