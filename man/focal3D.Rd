@@ -10,7 +10,7 @@ Calculate focal ("moving window") values for the three-dimensional neighborhood 
 }
 
 \usage{
-\S4method{focal3D}{SpatRaster}(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, 
+\S4method{focal3D}{SpatRaster}(x, w=3, fun="mean", ..., na.policy="all", fillvalue=NA, 
 		silent=TRUE, filename="", overwrite=FALSE, wopt=list()) 
 }
 
