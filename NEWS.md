@@ -1,5 +1,10 @@
 # version 1.5-6
 
+## bug fixes
+
+- `terrain` created empty (`NA`) rows between chunks used for processing large rasters. [#453](https://github.com/rspatial/terra/issues/452) by Robert Ritson.
+
+
 ## enhancements 
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
 
@@ -21,7 +26,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - names are now conserved when creating a SpatRaster from a RasterStack that points to file(s) [#430](https://github.com/rspatial/terra/issues/430) by Dan Baston
 - `classify` with `right=FALSE` ignored `include.lowest=TRUE` [#442](https://github.com/rspatial/terra/issues/442) by Alex Ilich
 - `patches` now combines patches that connect across the data line [#366](https://github.com/rspatial/terra/issues/366) by Hirscht
-- `patches(directions=8)` now connects in NE/SW direction [#451] (https://github.com/rspatial/terra/issues/451) by Jean-François Bourdon.
+- `patches(directions=8)` now connects in NE/SW direction [#451](https://github.com/rspatial/terra/issues/451) by Jean-François Bourdon.
 - `centroids` now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian [#366](https://github.com/rspatial/terra/issues/366) by Hirscht 
 
 

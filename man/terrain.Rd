@@ -62,5 +62,10 @@ Jones, K.H., 1998. A comparison of algorithms used to compute hill terrain as a 
 Ritter, P., 1987. A vector-based terrain and aspect generation algorithm. Photogrammetric Engineering and Remote Sensing 53: 1109-1111
 }
 
+\examples{
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
+x <- terrain(r, "slope")
+}
 
 \keyword{spatial}

@@ -1775,11 +1775,11 @@ std::vector<std::vector<double>> SpatRaster::area_by_value(SpatOptions &opt) {
 
 
 
-void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t nrow, size_t ncol, double dx, double dy, unsigned seed) {
+void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t nrow, size_t ncol, double dx, double dy, unsigned seed, bool before, bool after) {
 
-	size_t n = nrow * ncol;
-	size_t add = val.size();
-	val.resize(add+n, NAN);
+	if (!before) {
+		val.resize(val.size() + ncol, NAN);
+	}
 
 	std::vector<double> r = {0, 0, 0, 0, 0, 0, 0, 0};
 	std::vector<double> p = {1, 2, 4, 8, 16, 32, 64, 128}; // pow(2, j)
@@ -1789,6 +1789,7 @@ void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t n
 	std::uniform_int_distribution<> U(0, 1);
 
 	for (size_t row=1; row< (nrow-1); row++) {
+		val.push_back(NAN);
 		for (size_t col=1; col< (ncol-1); col++) {
 			size_t i = row * ncol + col;
 			if (!std::isnan(d[i])) {
@@ -1814,35 +1815,52 @@ void do_flowdir(std::vector<double> &val, std::vector<double> const &d, size_t n
 						}
 					}
 				}
-				val[i+add] = p[k];
+				val.push_back( p[k] );
+			} else {
+				val.push_back( NAN );
 			}
 		}
+		val.push_back(NAN);
 	}
+
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
+	}
+
 }
 
 
-void do_TRI(std::vector<double> &val, std::vector<double> const &d, size_t nrow, size_t ncol) {
-	size_t n = nrow * ncol;
-	size_t add = val.size();
-	val.resize(add+n, NAN);
+void do_TRI(std::vector<double> &val, std::vector<double> const &d, size_t nrow, size_t ncol, bool before, bool after) {
+	if (!before) {
+		val.resize(val.size() + ncol, NAN);
+	}
 	for (size_t row=1; row< (nrow-1); row++) {
+		val.push_back(NAN);
 		for (size_t col=1; col< (ncol-1); col++) {
 			size_t i = row * ncol + col;
-			val[i+add] = (fabs(d[i-1-ncol]-d[i]) + fabs(d[i-1]-d[i]) + fabs(d[i-1+ncol]-d[i]) +  fabs(d[i-ncol]-d[i]) + fabs(d[i+ncol]-d[i]) +  fabs(d[i+1-ncol]-d[i]) + fabs(d[i+1]-d[i]) +  fabs(d[i+1+ncol]-d[i])) / 8;
+			val.push_back( 
+				(fabs(d[i-1-ncol]-d[i]) + fabs(d[i-1]-d[i]) + fabs(d[i-1+ncol]-d[i]) +  fabs(d[i-ncol]-d[i]) + fabs(d[i+ncol]-d[i]) +  fabs(d[i+1-ncol]-d[i]) + fabs(d[i+1]-d[i]) +  fabs(d[i+1+ncol]-d[i])) / 8 
+			);
 		}
+		val.push_back(NAN);
+	}
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
 	}
 }
 
-void do_TPI(std::vector<double> &val, const std::vector<double> &d, const size_t nrow, const size_t ncol) {
-	size_t n = nrow * ncol;
-	size_t add = val.size();
-	val.resize(add+n, NAN);
+void do_TPI(std::vector<double> &val, const std::vector<double> &d, const size_t nrow, const size_t ncol, bool before, bool after) {
+	if (!before) {
+		val.resize(val.size() + ncol, NAN);
+	}
 	for (size_t row=1; row< (nrow-1); row++) {
+		val.push_back(NAN);
 		for (size_t col=1; col< (ncol-1); col++) {
 			size_t i = row * ncol + col;
-			val[i+add] = d[i] - (d[i-1-ncol] + d[i-1] + d[i-1+ncol] + d[i-ncol]
-			+ d[i+ncol] + d[i+1-ncol] + d[i+1] + d[i+1+ncol]) / 8;
+			val.push_back( d[i] - (d[i-1-ncol] + d[i-1] + d[i-1+ncol] + d[i-ncol]
+			+ d[i+ncol] + d[i+1-ncol] + d[i+1] + d[i+1+ncol]) / 8 );
 		}
+		val.push_back(NAN);
 	}
 /*
 	if (expand) {
@@ -1867,18 +1885,26 @@ void do_TPI(std::vector<double> &val, const std::vector<double> &d, const size_t
 		val[i+add] = d[i] - (d[i-ncol] + d[i-1] + d[i-1-ncol]) / 3;
 	}
 */
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
+	}
+
+
 }
 
 
 
-void do_roughness(std::vector<double> &val, const std::vector<double> &d, size_t nrow, size_t ncol) {
-	size_t n = nrow * ncol;
-	size_t add = val.size();
-	val.resize(add+n, NAN);
+void do_roughness(std::vector<double> &val, const std::vector<double> &d, size_t nrow, size_t ncol, bool before, bool after) {
+
+	if (!before) {
+		val.resize(val.size() + ncol, NAN);
+	}
+
 	int incol = ncol;
 	int a[9] = { -1-incol, -1, -1+incol, -incol, 0, incol, 1-incol, 1, 1+incol };
 	double min, max, v;
 	for (size_t row=1; row< (nrow-1); row++) {
+		val.push_back(NAN);
 		for (size_t col=1; col< (ncol-1); col++) {
 			size_t i = row * ncol + col;
 			min = d[i + a[0]];
@@ -1891,8 +1917,12 @@ void do_roughness(std::vector<double> &val, const std::vector<double> &d, size_t
 					min = v;
 				}
 			}
-			val[i+add] = max - min;
+			val.push_back(max - min);
 		}
+		val.push_back(NAN);
+	}
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
 	}
 }
 
@@ -1912,12 +1942,13 @@ void to_degrees(std::vector<double>& x, size_t start) {
 }
 
 
-void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees) {
+void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees, bool before, bool after) {
 
-	size_t n = nrow * ncol;
-	size_t add = val.size();
-	val.resize(add+n, NAN);
-
+	size_t start = val.size();
+	if (!before) {
+		val.resize(start + ncol, NAN);
+	}
+	
 	std::vector<double> ddx;
 	if (geo) {
 		ddx.resize(nrow);
@@ -1940,13 +1971,15 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				for (size_t k=0; k<2; k++) {
 					xw[k] = xwi[k] / (-2 * ddx[row]);
 				}
+				val.push_back(NAN); // first col
 				for (size_t col=1; col< (ncol-1); col++) {
 					size_t i = row * ncol + col;
 
 					double zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 					double zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
-					val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2) ));
+					val.push_back( atan(sqrt( pow(zy, 2) + pow(zx, 2) )));
 				}
+				val.push_back(NAN); // last col
 			}
 		} else { // ngb == 8
 
@@ -1957,12 +1990,14 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				yw[i] /=  2 * dy;
 			}
 			for (size_t row=1; row< (nrow-1); row++) {
+				val.push_back(NAN); 
 				for (size_t col=1; col< (ncol-1); col++) {
 					size_t i = row * ncol + col;
 					double zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 					double zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
-					val[i+add] =  atan( sqrt( pow(zy, 2) + pow(zx, 2)  ));
+					val.push_back(  atan( sqrt( pow(zy, 2) + pow(zx, 2)  )));
 				}
+				val.push_back(NAN); 
 			}
 		}
 	} else {
@@ -1981,7 +2016,7 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				for (size_t k=0; k<6; k++) {
 					xw[k] = xwi[k] / (8 * ddx[row]);
 				}
-
+				val.push_back(NAN); 
 				for (size_t col=1; col< (ncol-1); col++) {
 					size_t i = row * ncol + col;
 					double zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
@@ -1989,8 +2024,9 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 					   
 					double zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 							+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
-					val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2)));
+					val.push_back( atan(sqrt( pow(zy, 2) + pow(zx, 2))));
 				}
+				val.push_back(NAN); 
 			}
 		} else {
 
@@ -2001,19 +2037,25 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 				yw[i] /= 8 * dy;
 			}
 			for (size_t row=1; row< (nrow-1); row++) {
+				val.push_back(NAN); 
 				for (size_t col=1; col< (ncol-1); col++) {
 					size_t i = row * ncol + col;
 					double zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
 							+ d[i+1-ncol] * xw[3] + d[i+1] * xw[4] + d[i+1+ncol] * xw[5];
 					double zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 							+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
-					val[i+add] = atan(sqrt( pow(zy, 2) + pow(zx, 2) ));
+					val.push_back( atan(sqrt( pow(zy, 2) + pow(zx, 2) )));
 				}
+				val.push_back(NAN); 
 			}
 		} 
 	}
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
+	}
+	
 	if (degrees) {
-		to_degrees(val, add);
+		to_degrees(val, start);
 	} 
 }
 
@@ -2024,9 +2066,12 @@ double dmod(double x, double n) {
 
 
 
-void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees) {
+void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees, bool before, bool after) {
 
-	size_t n = nrow * ncol;
+	size_t start = val.size();
+	if (!before) {
+		val.resize(start + ncol, NAN);
+	}
 	std::vector<double> ddx;
 	if (geo) {
 		ddx.resize(nrow);
@@ -2035,8 +2080,6 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 		}
 	} 
 	double zy, zx; 
-	size_t add = val.size();
-	val.resize(add+n, NAN);
 
 	//double const pi2 = M_PI / 2;
 	double const twoPI = 2 * M_PI;
@@ -2052,7 +2095,8 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 				yw[i] = yw[i] / (2 * dy);
 			}
 
-			for (size_t row=1; row< (nrow-1); row++) {
+			for (size_t row=1; row < (nrow-1); row++) {
+				val.push_back(NAN); 
 				for (size_t k=0; k<2; k++) {
 					xw[k] = xwi[k] / (-2 * ddx[row]);
 				}
@@ -2061,8 +2105,9 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 					zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 					zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
 					zx = atan2(zy, zx);
-					val[i+add] = dmod( halfPI - zx, twoPI);
+					val.push_back( std::fmod( halfPI - zx, twoPI) );
 				}
+				val.push_back(NAN); 
 			}
 		} else {
 
@@ -2073,13 +2118,15 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 				yw[i] = yw[i] / (2 * dy);
 			}
 			for (size_t row=1; row< (nrow-1); row++) {
+				val.push_back(NAN); 
 				for (size_t col=1; col< (ncol-1); col++) {
 					size_t i = row * ncol + col;
 					zx = d[i-1] * xw[0] + d[i+1] * xw[1];
 					zy = d[i-ncol] * yw[0] + d[i+ncol] * yw[1];
 					zx = atan2(zy, zx);
-					val[i+add] = dmod( halfPI - zx, twoPI);
+					val.push_back( dmod( halfPI - zx, twoPI));
 				}
+				val.push_back(NAN); 
 			}
 		}
 	} else { //	(ngb == 8) {
@@ -2095,6 +2142,7 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 			}
 
 			for (size_t row=1; row < (nrow-1); row++) {
+				val.push_back(NAN); 
 				for (size_t k=0; k<6; k++) {
 					xw[k] = xwi[k] / (-8 * ddx[row]);
 				}
@@ -2107,8 +2155,9 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 							+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
 
 					zx = atan2(zy, zx);
-					val[i+add] = dmod( halfPI - zx, twoPI);
+					val.push_back( dmod( halfPI - zx, twoPI) );
 				}
+				val.push_back(NAN); 
 			}
 
 		} else {
@@ -2120,6 +2169,7 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 				yw[i] /= 8 * dy;
 			}
 			for (size_t row=1; row< (nrow-1); row++) {
+				val.push_back(NAN); 
 				for (size_t col=1; col< (ncol-1); col++) {
 					size_t i = row * ncol + col;
 					zx = d[i-1-ncol] * xw[0] + d[i-1] * xw[1] + d[i-1+ncol] * xw[2]
@@ -2127,14 +2177,18 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 					zy = d[i-1-ncol] * yw[0] + d[i-1+ncol] * yw[1] + d[i-ncol] * yw[2] 
 							+ d[i+ncol] * yw[3] + d[i+1-ncol] * yw[4] + d[i+1+ncol] * yw[5];
 					zx = atan2(zy, zx);
-					val[i+add] = dmod( halfPI - zx, twoPI);
+					val.push_back( dmod( halfPI - zx, twoPI) );
 				}
+				val.push_back(NAN); 
 			}
 		}
 	}
+	if (!after) {
+		val.resize(val.size() + ncol, NAN);
+	}
 
 	if (degrees) {
-		to_degrees(val, add);
+		to_degrees(val, start);
 	}
 }
 
@@ -2180,10 +2234,11 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 		readStop();
 		return out;
 	}
+	size_t nc = ncol();
 
-	if (nrow() < 3 || ncol() < 3) {
+	if (nrow() < 3 || nc < 3) {
 		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> val(out.bs.nrows[i] * ncol(), NAN);
+			std::vector<double> val(out.bs.nrows[i] * nc, NAN);
 			if (!out.writeBlock(val, i)) return out;
 		}
 		return out;
@@ -2193,19 +2248,33 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 	std::vector<double> y;
 	for (size_t i = 0; i < out.bs.n; i++) {
 		std::vector<double> d;
-		readValues(d, out.bs.row[i], out.bs.nrows[i], 0, ncol());
+		bool before= false;
+		bool after = false;
+		size_t rrow = out.bs.row[i];
+		size_t rnrw = out.bs.nrows[i];
+		if (i > 0) {
+			rrow--;
+			rnrw++;
+			before=true;
+		}	
+		if ((out.bs.row[i] + out.bs.nrows[i]) < nrow()) {
+			rnrw++;
+			after = true;
+		}
+		readValues(d, rrow, rnrw, 0, nc);
 		if (lonlat && aspslope) {
-			std::vector<int_64> rows(out.bs.nrows[i]);
-			std::iota(rows.begin(), rows.end(), out.bs.row[i]);
+			std::vector<int_64> rows(rnrw);
+			std::iota(rows.begin(), rows.end(), rrow);
 			y = yFromRow(rows);
-			yr = distHaversine(0, 0, 0, yr);
+			yr = distHaversine(0, 0, 0, yres());
 		}
 		std::vector<double> val;
+		val.reserve(out.bs.nrows[i] * ncol() * v.size());
 		for (size_t j =0; j<v.size(); j++) {
 			if (v[j] == "slope") {
-				do_slope(val, d, neighbors, out.bs.nrows[i], ncol(), xres(), yr, lonlat, y, degrees);
+				do_slope(val, d, neighbors, rnrw, nc, xres(), yr, lonlat, y, degrees, before, after);
 			} else if (v[j] == "aspect") {
-				do_aspect(val, d, neighbors, out.bs.nrows[i], ncol(), xres(), yr, lonlat, y, degrees);
+				do_aspect(val, d, neighbors, rnrw, nc, xres(), yr, lonlat, y, degrees, before, after);
 			} else if (v[j] == "flowdir") {
 				double dx = xres();
 				double dy = yres();
@@ -2214,13 +2283,13 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 					dx = distHaversine(0, yhalf, dx, yhalf);
 					dy = distHaversine(0, 0, 0, dy);
 				}
-				do_flowdir(val, d, out.bs.nrows[i], ncol(), dx, dy, seed);
+				do_flowdir(val, d, rnrw, nc, dx, dy, seed, before, after);
 			} else if (v[j] == "roughness") {
-				do_roughness(val, d, out.bs.nrows[i], ncol());
+				do_roughness(val, d, rnrw, nc, before, after);
 			} else if (v[j] == "TPI") {
-				do_TPI(val, d, out.bs.nrows[i], ncol());
+				do_TPI(val, d, rnrw, nc, before, after);
 			} else if (v[j] == "TRI") {
-				do_TRI(val, d, out.bs.nrows[i], ncol());
+				do_TRI(val, d, rnrw, nc, before, after);
 			} else {
 				out.setError("?"); return out;
 			}
