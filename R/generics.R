@@ -830,7 +830,6 @@ setMethod("t", signature(x="SpatVector"),
 
 setMethod("terrain", signature(x="SpatRaster"), 
 	function(x, v="slope", neighbors=8, unit="degrees", filename="", ...) { 
-		#v <- match.arg(unique(v), c("aspect", "flowdir", "roughness", "slope", "TPI", "TRI"), several.ok=TRUE)
 		unit <- match.arg(unit, c("degrees", "radians"))
 		opt <- spatOptions(filename, ...)
 		seed <- ifelse("flowdir" %in% v, .seed(), 0)

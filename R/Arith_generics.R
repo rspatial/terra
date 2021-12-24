@@ -191,27 +191,35 @@ setMethod("Compare", signature(e1="numeric", e2="SpatRaster"),
 )
 
 
+getFactTable <- function(x, table, sender="%in%") {
+	if (!is.factor(x)) {
+		error(sender, "Can only match character values if x is categorical")
+	}
+	if (nlyr(x) != 1) {
+		error(sender, "matching with character values is only supported for single layer SpatRaster")
+	}
+	d <- cats(x)[[1]]
+	levs <- levels(x)[[1]]
+	m <- na.omit(match(table, levs))
+	if (length(m) == 0) {
+		return(as.logical(x*0))
+	}
+	d[m,1]
+}
+
 setMethod("Compare", signature(e1="SpatRaster", e2="character"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
-		if (!is.factor(e1)) {
-			error(oper, "SpatRaster is not categorical")
-		}
+		e2 <- getCatIDs(e1, e2, "==")
 		if (oper != "==") {
 			error(oper, "only '==' is supported with categorical comparisons")
 		}
-		if (nlyr(e1) != 1) {
-			error(oper, "categorical comparisons only supported for single layer SpatRaster")
+		if (length(e2) == 0) {
+			return(as.logical(e1*0))
 		}
 		if (length(e2) != 1) {
 			error(oper, "comparisons only supported for single values (see %in% and match)")
 		}
-		d <- cats(e1)[[1]]
-		m <- match(e2, levels(e1)[[1]])
-		if (is.na(e2)) {
-			return(as.logical(e1*0))
-		}
-		e2 <- d[m,1]
 		opt <- spatOptions()
 		e1@ptr <- e1@ptr$arith_numb(e2, oper, TRUE, opt)
 		messages(e1, oper)

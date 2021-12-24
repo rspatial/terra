@@ -327,9 +327,12 @@ class SpatRaster {
 		SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> options, std::vector<size_t> x);
 		SpatRaster(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options);
 		SpatRaster(SpatRasterSource s);
+		//virtual ~SpatRaster(){}
+
 		void setSource(SpatRasterSource s);
 		void setSources(std::vector<SpatRasterSource> s);
 		//SpatRaster(const SpatRaster& x);
+
 
         SpatRaster deepCopy();
 		SpatRaster hardCopy(SpatOptions &opt);
@@ -342,10 +345,6 @@ class SpatRaster {
 		SpatRaster fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options);
 		
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);
-
-
-		virtual ~SpatRaster(){}
-
 
 		void addSource(SpatRaster x, bool warn);	
 		SpatRaster combineSources(SpatRaster x, bool warn);

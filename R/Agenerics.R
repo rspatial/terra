@@ -4,6 +4,9 @@ if (!isGeneric("math")) { setGeneric("math", function(x, ...) standardGeneric("m
 
 if (!isGeneric("all.equal")) { setGeneric("all.equal", function(target, current, ...) standardGeneric("all.equal")) }
 if (!isGeneric("impose")) { setGeneric("impose", function(x, ...) standardGeneric("impose")) }
+if (!isGeneric("density")) { setGeneric("density", function(x, ...) standardGeneric("density"))}
+if (!isGeneric("densify")) { setGeneric("densify", function(x, ...) standardGeneric("densify"))}
+
 
 if (!isGeneric("selectHighest")) {setGeneric("selectHighest", function(x, ...) standardGeneric("selectHighest"))}
 if (!isGeneric("focal3D")) { setGeneric("focal3D", function(x, ...) standardGeneric("focal3D")) }

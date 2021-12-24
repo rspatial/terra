@@ -10,8 +10,7 @@ Impose the geometry of a SpatRaster to those in a SpatRasterCollection.
 }
 
 \description{
-Add empty layers in bewteen existing layers such that the time step between each layer is the same. 
-See \code{\link{approximate}} to estimate values for these layer (and other missing values)
+Warp the members of a SpatRasterCollection to match the geometry of a SpatRaster.
 }
 
 \usage{

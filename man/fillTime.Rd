@@ -10,7 +10,7 @@ Fill time gaps in a SpatRaster
 }
 
 \description{
-Add empty layers in bewteen existing layers such that the time step between each layer is the same. 
+Add empty layers in between existing layers such that the time step between each layer is the same. 
 See \code{\link{approximate}} to estimate values for these layer (and other missing values)
 }
 

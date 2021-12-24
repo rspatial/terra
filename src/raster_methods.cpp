@@ -481,6 +481,7 @@ SpatRaster SpatRaster::is_in(std::vector<double> m, SpatOptions &opt) {
 		return(out);
 	}
 
+	out.setValueType(3);
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;

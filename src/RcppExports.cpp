@@ -220,6 +220,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// intermediate
+std::vector<std::vector<double>> intermediate(double lon1, double lat1, double lon2, double lat2, int n, double distance);
+RcppExport SEXP _terra_intermediate(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP, SEXP nSEXP, SEXP distanceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
+    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
+    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
+    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type distance(distanceSEXP);
+    rcpp_result_gen = Rcpp::wrap(intermediate(lon1, lat1, lon2, lat2, n, distance));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_spat();
 
@@ -243,6 +259,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_get_proj_search_paths", (DL_FUNC) &_terra_get_proj_search_paths, 0},
     {"_terra_set_proj_search_paths", (DL_FUNC) &_terra_set_proj_search_paths, 1},
     {"_terra_PROJ_network", (DL_FUNC) &_terra_PROJ_network, 2},
+    {"_terra_intermediate", (DL_FUNC) &_terra_intermediate, 6},
     {"_rcpp_module_boot_spat", (DL_FUNC) &_rcpp_module_boot_spat, 0},
     {NULL, NULL, 0}
 };

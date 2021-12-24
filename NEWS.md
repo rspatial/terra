@@ -9,6 +9,7 @@
 
 ## new 
 - new method `focal3D` to compute focal values for a three-dimensional window
+- new method `densify` to insert nodes between existing nodes of a line or polygon SpatVector
 
 
 # version 1.5-5

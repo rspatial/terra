@@ -3,8 +3,7 @@
 #include "spatRasterMultiple.h"
 #include <memory> //std::addressof
 
-
-//void SpatRaster_finalizer( SpatRaster* ptr ){
+//static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
 
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
@@ -392,6 +391,9 @@ RCPP_MODULE(spat){
 
 		.method("cross_dateline", &SpatVector::cross_dateline)
 		.method("fix_lonlat_overflow", &SpatVector::fix_lonlat_overflow)
+		
+		.method("densify", &SpatVector::densify)
+		
 	;
 
 
@@ -421,11 +423,9 @@ RCPP_MODULE(spat){
 	 // .constructor<std::string, int>()
 	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<size_t>>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
+		//.finalizer(&SpatRaster_finalizer)    
 
 		.method("fromFiles", &SpatRaster::fromFiles)
-
-        //.finalizer( &SpatRaster_finalizer)    
-
 		.method("has_error", &SpatRaster::hasError)
 		.method("has_warning", &SpatRaster::hasWarning)
 		.method("getError", &SpatRaster::getError)

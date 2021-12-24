@@ -77,3 +77,7 @@
     .Call(`_terra_PROJ_network`, enable, url)
 }
 
+intermediate <- function(lon1, lat1, lon2, lat2, n, distance) {
+    .Call(`_terra_intermediate`, lon1, lat1, lon2, lat2, n, distance)
+}
+

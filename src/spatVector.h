@@ -300,7 +300,7 @@ class SpatVector {
 		SpatVector cbind(SpatDataFrame d);
 		void fix_lonlat_overflow();
 		SpatVector cross_dateline(bool &fixed);
-
+		SpatVector densify(double interval, bool adjust);
 };
 
 

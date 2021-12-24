@@ -197,7 +197,7 @@ double direction_plane(double x1, double y1, double x2, double y2, bool degrees)
 	double a;
 	double pi2 = M_PI * 2;
 	a = fmod(atan2( x2 - x1, y2 - y1), pi2);
-	a = (a < 0 ? a + pi2 : a );
+	a = a < 0 ? a + pi2 : a;
 	return (degrees ? toDeg(a) : a);
 }
 
@@ -264,7 +264,7 @@ std::vector<double> destpoint_lonlat(double longitude, double latitude, double  
 	geod_init(&g, a, f);
 	double lat2, lon2, azi2;
 	geod_direct(&g, latitude, longitude, bearing, distance, &lat2, &lon2, &azi2);
-	std::vector<double> out = {lon2, lat2, azi2 };
+	std::vector<double> out = { lon2, lat2, azi2 };
 	return out;
 }
 
@@ -319,8 +319,8 @@ std::vector<std::vector<double> > destpoint_lonlat(const double &longitude, cons
 
 std::vector<double> destpoint_plane(double x, double y, double bearing, double distance) {
 	bearing = bearing * M_PI / 180;
-	x += distance * cos(bearing);
-	y += distance * sin(bearing);
+	x += distance * sin(bearing);
+	y += distance * cos(bearing);
 	std::vector<double> out = {x, y};
 	return(out);
 }
@@ -333,8 +333,8 @@ std::vector<std::vector<double> > destpoint_plane(std::vector<double>  x, std::v
 	double xd, yd, b;
 	for (size_t i=0; i < n; i++) {
 		b = bearing[i] * M_PI / 180;
-		xd = x[i] + distance[i] * cos(b);
-		yd = y[i] + distance[i] * sin(b);
+		xd = x[i] + distance[i] * sin(b);
+		yd = y[i] + distance[i] * cos(b);
 		out.push_back( {xd, yd });
 	}
 	return(out);

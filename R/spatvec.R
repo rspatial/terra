@@ -160,3 +160,12 @@ setMethod("centroids", signature(x="SpatVector"),
 	}
 )
 
+
+
+setMethod("densify", signature(x="SpatVector"), 
+	function(x, interval, equalize=TRUE) {
+		x@ptr <- x@ptr$densify(interval, equalize)
+		messages(x)
+	}
+)
+
