@@ -17,6 +17,149 @@
 
 #include "spatVector.h"
 #include "geodesic.h"
+#include "recycle.h"
+
+ 
+inline void normLon(double &lon) {
+	lon = fmod(lon + 180, 360.) - 180;
+}
+ 
+
+inline double get_sign(double x) {
+	if (x > 0.0) return 1.0;
+	if (x < 0.0) return -1.0;
+	return x;
+}
+
+
+// [[Rcpp::export]]
+double dist_lonlat(const double &lon1, const double &lat1, const double &lon2, const double &lat2) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	double s12, azi1, azi2;
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+	geod_inverse(&g, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+  	return s12;
+}
+
+
+void dest_lonlat(double slon, double slat, double sazi, double dist, double &dlon, double &dlat, double &dazi) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+	geod_direct(&g, slat, slon, sazi, dist, &dlat, &dlon, &dazi);
+}
+
+
+// [[Rcpp::export]]
+double dir_lonlat(double lon1, double lat1, double lon2, double lat2) {
+	double a = 6378137.0;
+	double f = 1/298.257223563;
+
+	double s12, azi1, azi2;
+	struct geod_geodesic g;
+	geod_init(&g, a, f);
+	geod_inverse(&g, lat1, lon1, lat2, lon2, &s12, &azi1, &azi2);
+	return( azi1) ;
+}
+
+
+// [[Rcpp::export]]
+double dist2track(double lon1, double lat1, double lon2, double lat2, double plon, double plat, bool sign) {
+	double a = 1;
+	double f = 0;
+	struct geod_geodesic geod;
+	geod_init(&geod, a, f);
+	double r = 6378137.0;
+	
+	double d, b2, b3, azi;
+	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
+	geod_inverse(&geod, lat1, lon1, plat, plon, &d, &b3, &azi);
+	double toRad = M_PI / 180.;
+	b2 *= toRad;
+	b3 *= toRad;
+	double xtr = asin(sin(b3-b2) * sin(d)) * r;
+	if (!sign) xtr = fabs(xtr);
+	return xtr;
+}
+
+
+// [[Rcpp::export]]
+double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, double plon, double plat) {
+	double a = 1;
+	double f = 0;
+	struct geod_geodesic geod;
+	geod_init(&geod, a, f);
+	double r = 6378137.0;
+	
+	double d, b2, b3, azi;
+	geod_inverse(&geod, lat1, lon1, lat2, lon2, &d, &b2, &azi);
+	geod_inverse(&geod, lat1, lon1, plat, plon, &d, &b3, &azi);
+	double toRad = M_PI / 180.;
+	b2 *= toRad;
+	b3 *= toRad;
+	double xtr = asin(sin(b3-b2) * sin(d));
+
+	double bsign = get_sign(cos(b2-b3));  
+	return fabs(bsign * acos(cos(d) / cos(xtr)) * r);
+}
+
+
+
+
+// [[Rcpp::export]]
+double dist2segment(double plon, double plat, double lon1, double lat1, double lon2, double lat2) {
+			
+// the alongTrackDistance is the length of the path along the great circle to the point of intersection
+// there are two, depending on which node you start
+// we want to use the min, but the max needs to be < segment length
+	double seglength = dist_lonlat(lon1, lat1, lon2, lat2);
+	double trackdist1 = alongTrackDistance(lon1, lat1, lon2, lat2, plon, plat);
+	double trackdist2 = alongTrackDistance(lon2, lat2, lon1, lat1, plon, plat);
+	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+		double d1 = dist_lonlat(lon1, lat1, plon, plat);
+		double d2 = dist_lonlat(lat2, lat2, plon, plat);
+		return d1 < d2 ? d1 : d2;
+	}
+	return dist2track(lon1, lat1, lon2, lat2, plon, plat, false);
+}
+
+
+// [[Rcpp::export]]
+double dist2segmentPoint(double plon, double plat, double lon1, double lat1, double lon2, double lat2, double &ilon, double &ilat) {
+			
+	double seglength = dist_lonlat(lon1, lat1, lon2, lat2);
+	double trackdist1 = alongTrackDistance(lon1, lat1, lon2, lat2, plon, plat);
+	double trackdist2 = alongTrackDistance(lon2, lat2, lon1, lat1, plon, plat);
+	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
+		double d1 = dist_lonlat(lon1, lat1, plon, plat);
+		double d2 = dist_lonlat(lat2, lat2, plon, plat);
+		if (d1 < d2) {
+			ilon = lon1;
+			ilat = lat1;			
+			return d1;	
+		} else {
+			ilon = lon2;
+			ilat = lat2;			
+			return d2;	
+		}
+	}
+	double azi;
+	double crossd = dist2track(lon1, lat1, lon2, lat2, plon, plat, false);
+	if (trackdist1 < trackdist2) {
+		double bear = dir_lonlat(lon1, lat1, lon2, lat2);
+		dest_lonlat(lon1, lat1, bear, trackdist1, ilon, ilat, azi);
+	} else {
+		double bear = dir_lonlat(lon2, lat2, lon1, lat1);
+		dest_lonlat(lon2, lat2, bear, trackdist2, ilon, ilat, azi);
+	}
+	return(crossd);
+}
+
+
+
 
 // [[Rcpp::export(name = "intermediate")]]
 std::vector<std::vector<double>> intermediate(double lon1, double lat1, double lon2, double lat2, int n, double distance) {
@@ -196,3 +339,31 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 }
  
  
+std::vector<bool> antipodal(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, double tol=1e-9) {
+	recycle(lon1, lon2);
+	recycle(lat1, lat2);
+	std::vector<bool> out;
+	out.reserve(lon1.size());
+	double Pi180 = M_PI / 180.;
+	for (size_t i=0; i<lon1.size(); i++){ 
+		normLon(lon1[i]);
+		normLon(lon2[i]);		
+		double diflon = fabs(lon1[i] - lon2[i]);
+		double diflat = fabs(lat1[i] + lat2[i]);
+		out.push_back(
+			(diflat < tol) && ((cos(lat2[i] * Pi180) * fabs(fmod(diflon, 360.) - 180)) < tol)
+		);
+	}
+	return out;
+}
+
+
+void antipodes(std::vector<double> &lon, std::vector<double> &lat) {
+	size_t n=lon.size();
+	for (size_t i=0; i<n; i++) { 
+		lon[i] = lon[i] + 180;
+		normLon(lon[i]);
+		lat[i] = -lat[i];
+	}
+}
+

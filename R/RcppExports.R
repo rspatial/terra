@@ -81,3 +81,31 @@ intermediate <- function(lon1, lat1, lon2, lat2, n, distance) {
     .Call(`_terra_intermediate`, lon1, lat1, lon2, lat2, n, distance)
 }
 
+dist2track <- function(lon1, lat1, lon2, lat2, plon, plat, sign) {
+    .Call(`_terra_dist2track`, lon1, lat1, lon2, lat2, plon, plat, sign)
+}
+
+alongTrackDistance <- function(lon1, lat1, lon2, lat2, plon, plat) {
+    .Call(`_terra_alongTrackDistance`, lon1, lat1, lon2, lat2, plon, plat)
+}
+
+dist_lonlat <- function(lon1, lat1, lon2, lat2) {
+    .Call(`_terra_dist_lonlat`, lon1, lat1, lon2, lat2)
+}
+
+dest_lonlat <- function(slon, slat, sazi, dist, dlon, dlat, dazi) {
+    invisible(.Call(`_terra_dest_lonlat`, slon, slat, sazi, dist, dlon, dlat, dazi))
+}
+
+dir_lonlat <- function(lon1, lat1, lon2, lat2) {
+    .Call(`_terra_dir_lonlat`, lon1, lat1, lon2, lat2)
+}
+
+dist2segment <- function(plon, plat, lon1, lat1, lon2, lat2) {
+    .Call(`_terra_dist2segment`, plon, plat, lon1, lat1, lon2, lat2)
+}
+
+dist2segmentPoint <- function(plon, plat, lon1, lat1, lon2, lat2, ilon, ilat) {
+    .Call(`_terra_dist2segmentPoint`, plon, plat, lon1, lat1, lon2, lat2, ilon, ilat)
+}
+
