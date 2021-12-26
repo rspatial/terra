@@ -60,7 +60,6 @@ SpatRaster
 }
 
 \examples{
-library(terra)
 r <- rast(xmin=0, ncols=18, nrows=18)
 
 # generate points

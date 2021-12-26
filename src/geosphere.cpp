@@ -19,11 +19,34 @@
 #include "geodesic.h"
 #include "recycle.h"
 
+#ifndef M_PI
+#define M_PI  (3.1415926535897932384626433)
+#endif
+
+#ifndef M_2PI
+#define M_2PI (3.1415926535897932384626433 * 2.0)
+#endif
+
+#ifndef M_PI_2 
+#define M_PI_2 (3.1415926535897932384626433 / 2)
+#endif
+ 
+#ifndef WGS84_a 
+#define WGS84_a 6378137.0;
+#endif
+
+#ifndef WGS84_f 
+#define WGS84_f 1/298.257223563;;
+#endif
+
  
 inline void normLon(double &lon) {
 	lon = fmod(lon + 180, 360.) - 180;
 }
  
+inline void normLonRad(double &lon) {
+	lon = fmod(lon + M_PI, M_2PI) - M_PI;
+}
 
 inline double get_sign(double x) {
 	if (x > 0.0) return 1.0;

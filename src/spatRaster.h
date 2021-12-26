@@ -581,9 +581,7 @@ class SpatRaster {
 
 		std::vector<std::vector<double>> extractCell(std::vector<double> &cell);
 		std::vector<double> extractCellFlat(std::vector<double> &cell);
-
-        //std::vector<std::vector<double>> extractXY(std::vector<double> &x, std::vector<double> &y, std::string method, bool cells=false);
-		
+	
 		std::vector<std::vector<double>> extractXY(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);
 		std::vector<double> extractXYFlat(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells);
 		
@@ -687,8 +685,6 @@ class SpatRaster {
 		SpatRaster project2(SpatRaster &x, std::string method, SpatOptions &opt);
 		void project3(SpatRaster &out, std::string method, SpatOptions &opt);
 
-//		SpatRaster resample1(SpatRaster &x, const std::string &method, SpatOptions &opt);
-//		void resample2(SpatRaster &out, const std::string &method, SpatOptions &opt);
 
 #ifdef useGDAL
 		bool getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filename, std::string &driver, double &naval, bool update, double background, SpatOptions &opt);
@@ -707,16 +703,11 @@ class SpatRaster {
 		SpatRaster weighted_mean(SpatRaster w, bool narm, SpatOptions &opt);
 		SpatRaster weighted_mean(std::vector<double> w, bool narm, SpatOptions &opt);
 
-//		SpatRaster warp(SpatRaster x, const std::string &method, SpatOptions &opt);
-//		SpatRaster warpcrs(std::string x, const std::string &method, SpatOptions &opt);
-
 		SpatRaster warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, SpatOptions &opt);
-//		SpatRaster old_warper(SpatRaster x, std::string crs, std::string method, bool mask, SpatOptions &opt);
-		//SpatRaster tester(bool geom);
+		SpatRaster resample(SpatRaster x, std::string method, bool agg, SpatOptions &opt);
+		
 		SpatRaster applyGCP(std::vector<double> fx, std::vector<double> fy, std::vector<double> tx, std::vector<double> ty, SpatOptions &opt);
 
-		//SpatRaster warp_gdal(SpatRaster x, const std::string &method, SpatOptions &opt);
-		//SpatRaster warp_gdal_crs(std::string x, const std::string &method, SpatOptions &opt);
 		SpatDataFrame zonal(SpatRaster x, std::string fun, bool narm, SpatOptions &opt);
 		SpatRaster rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt);
 		SpatRaster rgb2hsx(std::string type, SpatOptions &opt);	

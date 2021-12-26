@@ -282,6 +282,9 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 
 
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
+		
+//			OGRGeometry *poGeometry = poFeature->GetGeometryRef()->clone();
+	
 		OGRGeometry *poGeometry = poFeature->StealGeometry();
 #if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
         OGRGeometryH hGeom = poGeometry;

@@ -8,7 +8,7 @@
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
 
 ## new 
-- new method `focal3D` to compute focal values for a three-dimensional window
+- new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
 - new method `densify` to insert nodes between existing nodes of a line or polygon SpatVector
 
 

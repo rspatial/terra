@@ -173,6 +173,7 @@ RCPP_MODULE(spat){
 		.property("overwrite", &SpatOptions::get_overwrite, &SpatOptions::set_overwrite )
 		//.property("append", &SpatOptions::get_append, &SpatOptions::set_append )
 		.field("datatype_set", &SpatOptions::datatype_set)
+		.field("threads", &SpatOptions::threads)
 		.property("progress", &SpatOptions::get_progress, &SpatOptions::set_progress)
 		.property("ncopies", &SpatOptions::get_ncopies, &SpatOptions::set_ncopies)
 
@@ -686,6 +687,7 @@ RCPP_MODULE(spat){
 		.method("rectify", &SpatRaster::rectify)
 		.method("stretch", &SpatRaster::stretch)
 		.method("warp", &SpatRaster::warper)
+		.method("resample", &SpatRaster::resample)
 		.method("zonal", &SpatRaster::zonal)
 		.method("is_true", &SpatRaster::is_true, "is_TRUE")
 		.method("is_false", &SpatRaster::is_true, "is_TRUE")
