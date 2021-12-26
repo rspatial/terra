@@ -1064,7 +1064,7 @@ std::vector<bool> SpatRaster::hasCategories() {
 	std::vector<bool> b(nlyr());
 	std::vector<unsigned> ns = nlyrBySource();
 	unsigned k = 0;
-	for (size_t i=0; i<source.size(); i++) {
+	for (size_t i=0; i<ns.size(); i++) {
 		for (size_t j=0; j<ns[i]; j++) {
 			b[k] = source[i].hasCategories[j];
 			k++;

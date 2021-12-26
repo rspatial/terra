@@ -1,3 +1,4 @@
+
 #include "ogr_spatialref.h"
 
 #include "spatRaster.h"
@@ -275,25 +276,25 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out.setError(x.getError());
 		return out;
 	}
-    std::vector<OGRGeometryH> ahGeometries;
+    	std::vector<OGRGeometry *> ahGeometries;
 	OGRLayer *poLayer = vecDS->GetLayer(0);
 	poLayer->ResetReading();
 	OGRFeature *poFeature;
 
 
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
-		OGRGeometry *poGeometry = poFeature->StealGeometry();
-#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
-        OGRGeometryH hGeom = poGeometry;
-#else
-		OGRGeometryH hGeom = poGeometry->ToHandle(poGeometry);
-#endif
-		ahGeometries.push_back( hGeom );
-	}
-//	OGRGeometryFactory::destroyGeometry(poGeometry); ?
 
-	OGRFeature::DestroyFeature( poFeature );
+		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+
+		if (poGeometry != NULL) {
+			OGRGeometry *copyGeom = poGeometry->clone();
+			ahGeometries.push_back( copyGeom );
+		}
+		OGRFeature::DestroyFeature( poFeature );
+
+	}
 	GDALClose(vecDS);
+
 
 	std::string errmsg, driver, filename;
 	GDALDatasetH rstDS;
@@ -319,7 +320,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(bands.size()), &(bands[0]),
-				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
+				static_cast<int>(ahGeometries.size()), 
+				(OGRGeometryH *) &(ahGeometries[0]),
 				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
 		CSLDestroy(papszOptions);
 
@@ -335,7 +337,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		// second time to fix the internal area
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(bands.size()), &(bands[0]),
-				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
+				static_cast<int>(ahGeometries.size()), 
+				(OGRGeometryH *) &(ahGeometries[0]),
 				NULL, NULL, &(values[0]), NULL, NULL, NULL);
 
 	} else {
@@ -346,7 +349,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(bands.size()), &(bands[0]),
-				static_cast<int>(ahGeometries.size()), &(ahGeometries[0]),
+				static_cast<int>(ahGeometries.size()), 
+				(OGRGeometryH *) &(ahGeometries[0]),
 				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
 
 		CSLDestroy(papszOptions);
@@ -542,5 +546,6 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 */
 
 }
+
 
 
