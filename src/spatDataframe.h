@@ -24,6 +24,8 @@
 class SpatDataFrame {
 	public:
 		SpatDataFrame();
+		virtual ~SpatDataFrame(){}
+
 		SpatDataFrame skeleton();
 	
 		SpatMessages msg;

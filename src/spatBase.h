@@ -19,7 +19,6 @@
 #include <algorithm>
 #include <string>
 #include <cmath>
-//#include "spatMessages.h"
 
 #ifndef standalone
 	#define useRcpp
@@ -46,6 +45,9 @@
 
 class SpatMessages {
 	public:
+	
+		virtual ~SpatMessages(){}
+
 		bool has_error = false;
 		bool has_warning = false;
 		std::string error;

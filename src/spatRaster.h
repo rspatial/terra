@@ -35,6 +35,8 @@ typedef long long int_64;
 
 class SpatCategories {
 	public:
+		virtual ~SpatCategories(){}
+		
 		SpatDataFrame d;
 		unsigned index = 0;
 		bool vat = false;
@@ -43,6 +45,8 @@ class SpatCategories {
 
 class SpatWindow {
 	public:
+		virtual ~SpatWindow(){}
+
 		SpatExtent full_extent;
 		size_t full_ncol, full_nrow, off_row, off_col;
 		bool expanded = false;
@@ -66,6 +70,7 @@ class SpatRasterSource {
 		bool open_write=false;
 
 		SpatRasterSource();
+		virtual ~SpatRasterSource(){}
 
 //		void fsopen(std::string filename);
 //		bool fswrite(std::vector<double> &v);
@@ -169,6 +174,7 @@ class SpatRasterSource {
 
 class BlockSize {
 	public:
+		virtual ~BlockSize(){}
 		std::vector<size_t> row;
 		std::vector<size_t> nrows;
 		unsigned n;
