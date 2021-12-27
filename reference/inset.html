@@ -80,11 +80,11 @@
 <dt>perimeter</dt>
 <dd><p>color for the border around the inset. Use <code>NA</code> for no border</p></dd>
 <dt>pper</dt>
-<dd><p>list with graphical parameters (arguments) for the perimeter line</p></dd>
+<dd><p>list with graphical parameters (arguments) such as <code>col</code> and <code>lwd</code> for the perimeter line</p></dd>
 <dt>box</dt>
 <dd><p>SpatExtent or missing, to draw a box on the inset, e.g. to show where the map is located in a larger area</p></dd>
 <dt>pbox</dt>
-<dd><p>list with graphical parameters (arguments) for the box line</p></dd>
+<dd><p>list with graphical parameters (arguments) such as <code>col</code> and <code>lwd</code> for the box (line)</p></dd>
 <dt>...</dt>
 <dd><p>additional arguments passed to plot for the drawing of <code>x</code></p></dd>
 <dt>y</dt>
@@ -98,7 +98,7 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>scaled and shifted SpatVector or SpatRaster (invisibly)</p>
+    <p>scaled and shifted SpatVector or SpatRaster (returned invisibly)</p>
     </div>
 
     <div id="ref-examples">
@@ -122,7 +122,6 @@
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">6.2</span>, <span class="fl">6.3</span>, <span class="fl">49.9</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">+</span><span class="fl">0.02</span></span>
 <span class="r-in"><span class="fu">inset</span><span class="op">(</span><span class="va">v</span>, e<span class="op">=</span><span class="va">e</span>, col<span class="op">=</span><span class="va">cols</span>, box<span class="op">=</span><span class="va">b</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .inset(x, e, loc = loc, scale = scale, background = background,     perimeter = perimeter, pper = pper, box = box, pbox = pbox,     ...):</span> argument "pbox" is missing, with no default</span>
 <span class="r-plt img"><img src="inset-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># with a SpatRaster</span></span>
