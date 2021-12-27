@@ -17,10 +17,10 @@ Make an inset map or scale the extent of a SpatVector
 
 \usage{
 \S4method{inset}{SpatVector}(x, e, loc="", scale=0.2, background="white", 
-	perimeter="black", pper, box=NULL, pbox, ...)
+	perimeter=TRUE, pper, box=NULL, pbox, ...)
 
 \S4method{inset}{SpatRaster}(x, e, loc="", scale=0.2, background="white", 
-	perimeter="black", pper, box=NULL, pbox, ...)
+	perimeter=TRUE, pper, box=NULL, pbox, ...)
 
 \S4method{inext}{SpatVector}(x, e, y=NULL, gap=0)
 }
@@ -31,7 +31,7 @@ Make an inset map or scale the extent of a SpatVector
   \item{loc}{character. One of "bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"}
   \item{scale}{numeric. The relative size of the inset, used when x is missing}
   \item{background}{color for the background of the inset. Use \code{NA} for no background color}
-  \item{perimeter}{color for the border around the inset. Use \code{NA} for no border}
+  \item{perimeter}{logical. If \code{TRUE} a perimeter (border) is drawn around the inset}
   \item{pper}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the perimeter line}
   \item{box}{SpatExtent or missing, to draw a box on the inset, e.g. to show where the map is located in a larger area}
   \item{pbox}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the box (line)}
@@ -55,9 +55,9 @@ inset(v)
 
 # more elaborate
 plot(x, density=10, col="blue")
-inset(v, col = "brown", border = "lightgrey", perimeter=TRUE, pper=list(col="orange", lwd=3, lty=2), 
-              box=ext(x), pbox=list(col="blue", lwd=2))
-
+inset(v, col = "brown", border="lightgrey", perimeter=TRUE, 
+		pper=list(col="orange", lwd=3, lty=2), 
+		box=ext(x), pbox=list(col="blue", lwd=2))
 
 cols <- rep("light grey", 12)
 cols[2] <- "red"

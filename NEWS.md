@@ -3,9 +3,13 @@
 ## bug fixes
 
 - `terrain` created empty (`NA`) rows between chunks used for processing large rasters. [#453](https://github.com/rspatial/terra/issues/452) by Robert Ritson.
+- `inset` did not draw the "box" correctly [#457](https://github.com/rspatial/terra/issues/457) by Márcia Barbosa
+
 
 ## enhancements 
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
+- `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>` [#456](https://github.com/rspatial/terra/issues/456) by Márcia Barbosa
+
 
 ## new 
 - new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
