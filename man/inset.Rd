@@ -32,9 +32,9 @@ Make an inset map or scale the extent of a SpatVector
   \item{scale}{numeric. The relative size of the inset, used when x is missing}
   \item{background}{color for the background of the inset. Use \code{NA} for no background color}
   \item{perimeter}{color for the border around the inset. Use \code{NA} for no border}
-  \item{pper}{list with graphical parameters (arguments) for the perimeter line}
+  \item{pper}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the perimeter line}
   \item{box}{SpatExtent or missing, to draw a box on the inset, e.g. to show where the map is located in a larger area}
-  \item{pbox}{list with graphical parameters (arguments) for the box line}
+  \item{pbox}{list with graphical parameters (arguments) such as \code{col} and \code{lwd} for the box (line)}
   \item{...}{additional arguments passed to plot for the drawing of \code{x}}
   \item{y}{SpatVector. If not NULL, \code{y} is scaled based with the parameters for \code{x}. This is useful, for example, when \code{x} represent boundaries, and \code{y} points within these boundaries}
   \item{gap}{numeric to add space between the SpatVector and the SpatExtent}
@@ -43,7 +43,7 @@ Make an inset map or scale the extent of a SpatVector
 
 \seealso{\code{\link{sbar}}, \code{\link{rescale}}, \code{\link{shift}}}
 
-\value{scaled and shifted SpatVector or SpatRaster (invisibly)}
+\value{scaled and shifted SpatVector or SpatRaster (returned invisibly)}
 
 \examples{ 
 f <- system.file("ex/lux.shp", package="terra")
