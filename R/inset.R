@@ -26,7 +26,7 @@ setMethod("inext", signature(x="SpatVector"),
 )
 
 
-.inset <- function(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...) {
+.inset <- function(x, e, loc="", scale=0.2, background="white", perimeter="black", pper, box=NULL, pbox, ...) {
 
 	usr <- graphics::par("usr")
 	if (missing(e)) {
@@ -47,11 +47,6 @@ setMethod("inext", signature(x="SpatVector"),
 	dx <- xybox[1] - xy[1]
 	dy <- xybox[2] - xy[2]
 	y  <- shift(y, dx, dy)
-	if (!is.null(box)) {
-		ex <- ext(x)
-		box  <- rescale(as.polygons(box), scale, ex[1]+diff(ex[1:2])/2, ex[3]+diff(ex[3:4])/2)
-		box <- shift(box, dx, dy)
-	}
 
 	if (loc != "") {
 		stopifnot(loc %in% c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"))
@@ -72,37 +67,44 @@ setMethod("inext", signature(x="SpatVector"),
 		}
 		y <- shift(y, dx, dy)
 		e <- shift(e, dx, dy)
-		if (!is.null(box)) {
-			box <- shift(box, dx, dy)
-		}
 	}
 	if (!is.na(background)) {
 		polys(as.polygons(e), col=background, lty=0)
 	}
 
 	plot(y, ..., axes=FALSE, legend=FALSE, add=TRUE)
-	if (!is.na(border)) {
-		lines(e, col=border)
+
+	if (isTRUE(perimeter)) {
+		if (missing(pper) || !is.list(pper)) {
+			pper <- list()
+		}
+		pper$x <- e
+		do.call(lines, pper)
+		#lines(e, col=perimeter)
 	}
+
 	if (!is.null(box)) {
-		if (missing(pbx) || !is.list(pbx)) {
+		ex <- ext(x)
+		box  <- rescale(as.polygons(box), scale, x0=ex[1]+diff(ex[1:2])/2, y0=ex[3]+diff(ex[3:4])/2)
+		box <- shift(box, dx, dy)
+		if (missing(pbox) || !is.list(pbox)) {
 			pbx <- list()
 		}
-		pbx$x <- box
-		do.call(lines, pbx)
+		pbox$x <- box
+		do.call(lines, pbox)
 	}
 	invisible(y)
 }
 
 setMethod("inset", signature(x="SpatVector"), 
-	function(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...) {
-		.inset(x, e, loc=loc, scale=scale, background=background, border=border, box=box, pbx=pbx, ...)
+	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, ...) {
+		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, ...)
 	}
 )
 
 
 setMethod("inset", signature(x="SpatRaster"), 
-	function(x, e, loc="", scale=0.2, background="white", border="black", box=NULL, pbx, ...) {
-		.inset(x, e, loc=loc, scale=scale, background=background, border=border, box=box, pbx=pbx, ...)
+	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, ...) {
+		.inset(x, e, loc=loc, scale=scale, background=background, perimeter=perimeter, pper=pper, box=box, pbox=pbox, ...)
 	}
 )
