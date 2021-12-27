@@ -53,9 +53,9 @@ par(op)
 ## boxplot with 2 layers
 v <- vect(system.file("ex/lux.shp", package="terra"))
 r <- rast(system.file("ex/elev.tif", package="terra"))
-#y <- rasterize(v, r, "NAME_2")
-#b <- boxplot(r, y)
-#bxp(b)
+y <- rasterize(v, r, "NAME_2")
+b <- boxplot(r, y)
+bxp(b)
 }
 
 

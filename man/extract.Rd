@@ -109,25 +109,24 @@ values(z) <- 1:ncell(z)
 
 rf <- system.file("ex/elev.tif", package="terra")
 x <- rast(rf)
-#extract(x, v, mean, na.rm=TRUE)
+extract(x, v, mean, na.rm=TRUE)
 
-#e <- extract(z, v)
-#e
-#tapply(e[,2], e[,1], mean, na.rm=TRUE)
+e <- extract(z, v)
+e
+tapply(e[,2], e[,1], mean, na.rm=TRUE)
 
-#ee <- extract(z, v, list=TRUE)
-#rapply(ee, mean)
+ee <- extract(z, v, list=TRUE)
+rapply(ee, mean)
 
-#x <- c(z, z*2, z/3)
-#names(x) <- letters[1:3]
+x <- c(z, z*2, z/3)
+names(x) <- letters[1:3]
 
+e <- extract(x, v)
+de <- data.frame(e)
+aggregate(de[,2:4], de[,1,drop=FALSE], mean)
 
-#e <- extract(x, v)
-#de <- data.frame(e)
-#aggregate(de[,2:4], de[,1,drop=FALSE], mean)
-
-#ee <- extract(x, v, list=TRUE)
-#matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
+ee <- extract(x, v, list=TRUE)
+matrix(rapply(ee, mean), ncol=nlyr(x), byrow=TRUE)
 }
 
 \keyword{methods}

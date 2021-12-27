@@ -36,9 +36,10 @@ SpatVector (invisibly)
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 v$population <- 1000*(1:12)^2
-plot(v)
-#d <- dots(v, "population", 10000)
-#d
+plot(v, lwd=3, col="light gray", border="white")
+d <- dots(v, "population", 1000, col="red", cex=.75)
+lines(v)
+d
 }
 
 \keyword{methods}

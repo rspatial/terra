@@ -49,7 +49,7 @@ f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 e <- ext(6.15, 6.3, 49.7, 49.8)
 x <- crop(v, e)
-#plot(x, "NAME_1")
+plot(x, "NAME_1")
 }
 
 \keyword{spatial}

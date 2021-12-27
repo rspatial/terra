@@ -57,6 +57,8 @@ std::vector<std::string> string_values(std::vector<T>& v) {
 
 class SpatFactor {
 public:
+	virtual ~SpatFactor(){}
+
 	std::vector<unsigned> v;
 	std::vector<unsigned> levels;
 	std::vector<std::string> labels;

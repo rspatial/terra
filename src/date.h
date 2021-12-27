@@ -30,6 +30,8 @@ class SpatDate {
     SpatDate(int doy, int year);
     SpatDate(const long& d) { v = d; };
 //    SpatDate(const std::string& s);
+	virtual ~SpatDate(){}
+
 
     std::vector<int> ymd();
     int doy();

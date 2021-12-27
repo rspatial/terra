@@ -62,13 +62,14 @@ v <- v[,3:4]
 p <- vect(c("POLYGON ((5.8 49.8, 6 49.9, 6.15 49.8, 6 49.65, 5.8 49.8))", 
 "POLYGON ((6.3 49.9, 6.2 49.7, 6.3 49.6, 6.5 49.8, 6.3 49.9))"), crs=crs(v))
 values(p) <- data.frame(pid=1:2, value=expanse(p))
-#u <- union(v, p)
-#plot(u, "pid")
+u <- union(v, p)
+plot(u, "pid")
 
-#b <- buffer(v, .015)
-#u <- union(b)
-#u$sum <- rowSums(as.data.frame(u))
-#plot(u, "sum")
+b <- buffer(v, 1000)
+
+u <- union(b)
+u$sum <- rowSums(as.data.frame(u))
+plot(u, "sum")
 }
 
 \keyword{methods}

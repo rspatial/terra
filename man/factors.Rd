@@ -95,9 +95,9 @@ text(x, digits=3, cex=.75, halo=TRUE)
 r <- as.numeric(x)
 r
 
-#activeCat(x) <- 2
-#p <- as.polygons(x)
-#plot(p, "letters", col=c("green", "blue", "light gray"))
+activeCat(x) <- 2
+p <- as.polygons(x)
+plot(p, "letters", col=c("green", "blue", "light gray"))
 }
 
 \keyword{methods}

@@ -108,6 +108,11 @@ class SpatOptions {
 		double tolerance = 0.1;
 		
 	public:
+		SpatOptions();
+		SpatOptions(const SpatOptions &opt);
+		SpatOptions deepCopy();
+		virtual ~SpatOptions(){}
+
 		unsigned ncopies = 4;
 		unsigned minrows = 1;
 		bool threads=false;
@@ -134,11 +139,6 @@ class SpatOptions {
 		std::vector<std::string> filenames = {""};
 		std::vector<std::string> gdal_options;
 		std::vector<std::string> names;
-
-		SpatOptions();
-		SpatOptions(const SpatOptions &opt);
-		SpatOptions deepCopy();
-		virtual ~SpatOptions(){}
 
 		// permanent
 		bool get_todisk();
