@@ -88,7 +88,7 @@ setMethod("inext", signature(x="SpatVector"),
 		box  <- rescale(as.polygons(box), scale, x0=ex[1]+diff(ex[1:2])/2, y0=ex[3]+diff(ex[3:4])/2)
 		box <- shift(box, dx, dy)
 		if (missing(pbox) || !is.list(pbox)) {
-			pbx <- list()
+			pbox <- list()
 		}
 		pbox$x <- box
 		do.call(lines, pbox)
