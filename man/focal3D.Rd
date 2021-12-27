@@ -28,7 +28,7 @@ Calculate focal ("moving window") values for the three-dimensional neighborhood 
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 
-\item{padlyrs}{logical. Add virtual layers before the first and after the last layer}
+\item{pad}{logical. Add virtual layers before the first and after the last layer}
 
 \item{padvalue}{numeric. The value of the cells in the virtual layers}
 

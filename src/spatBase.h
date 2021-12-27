@@ -270,6 +270,8 @@ class SpatExtent {
 
 class SpatSRS {
 	public:
+		virtual ~SpatSRS(){}
+
 //		SpatSRS(std::string s);
 		std::string proj4, wkt;
 		bool set(std::string txt, std::string &msg);

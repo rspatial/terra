@@ -21,6 +21,8 @@
 // A collection of (perhaps non matching) SpatRasters 
 class SpatRasterCollection {
 	public:
+		virtual ~SpatRasterCollection(){}
+	
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
@@ -50,6 +52,8 @@ class SpatRasterCollection {
 // A class for "sub-datasets" 
 class SpatRasterStack {
 	public:
+		virtual ~SpatRasterStack(){}
+	
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }

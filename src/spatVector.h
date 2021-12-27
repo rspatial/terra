@@ -29,6 +29,8 @@ enum SpatGeomType { points, lines, polygons, unknown };
 
 class SpatHole {
 	public:
+		virtual ~SpatHole(){}
+
 		std::vector<double> x, y;
 		SpatExtent extent;
 		//constructors
@@ -40,6 +42,7 @@ class SpatHole {
 
 class SpatPart {
 	public:
+		virtual ~SpatPart(){}
 		std::vector<double> x, y; //, z;
 		std::vector< SpatHole > holes; // polygons only
 		SpatExtent extent;
@@ -62,13 +65,16 @@ class SpatPart {
 
 class SpatGeom {
 	public:
-		SpatGeomType gtype = unknown;
-		std::vector<SpatPart> parts;
-		SpatExtent extent;
 		//constructors
 		SpatGeom();
 		SpatGeom(SpatGeomType g);
 		SpatGeom(SpatPart p);
+		virtual ~SpatGeom(){}
+
+		SpatGeomType gtype = unknown;
+		std::vector<SpatPart> parts;
+		SpatExtent extent;
+
 		//methods
 		bool unite(SpatGeom g);
 		bool addPart(SpatPart p);
@@ -312,6 +318,8 @@ class SpatVectorCollection {
 		std::vector<SpatVector> v;
 
 	public:
+		virtual ~SpatVectorCollection(){}
+	
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
