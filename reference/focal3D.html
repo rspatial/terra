@@ -54,8 +54,8 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">focal3D</span><span class="op">(</span><span class="va">x</span>, w<span class="op">=</span><span class="fl">3</span>, fun<span class="op">=</span><span class="st">"mean"</span>, <span class="va">...</span>, na.policy<span class="op">=</span><span class="st">"all"</span>, fillvalue<span class="op">=</span><span class="cn">NA</span>, 
-    silent<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu">focal3D</span><span class="op">(</span><span class="va">x</span>, w<span class="op">=</span><span class="fl">3</span>, fun<span class="op">=</span><span class="va">mean</span>, <span class="va">...</span>, na.policy<span class="op">=</span><span class="st">"all"</span>, fillvalue<span class="op">=</span><span class="cn">NA</span>, pad<span class="op">=</span><span class="cn">FALSE</span>, 
+    padvalue<span class="op">=</span><span class="va">fillvalue</span>, expand<span class="op">=</span><span class="cn">FALSE</span>, silent<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, wopt<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -63,7 +63,7 @@
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
 <dt>w</dt>
-<dd><p>window. A rectangular prism (cuboid) defined by three numbers or by a three-dimensional array. The window used must have odd dimensions. If you need even sides, you can use an array and add a column or row with weights of zero.</p></dd>
+<dd><p>window. A rectangular prism (cuboid) defined by three numbers or by a three-dimensional array. The values are used as weights, and are usually zero, one, NA, or fractions. The window used must have odd dimensions. If you desire to use even sides, you can use an array, and pad the values with rows and/or columns that contain only <code>NA</code>s.</p></dd>
 <dt>fun</dt>
 <dd><p>function that takes multiple numbers, and returns one or multiple numbers for each focal area. For example mean, modal, min or max</p></dd>
 <dt>...</dt>
@@ -72,6 +72,12 @@
 <dd><p>character. Can be used to determine the cells of <code>x</code> for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are <code>NA</code>) or "omit" (skip cells that are <code>NA</code>). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use <code>na.rm=TRUE</code> to ignore cells that are <code></code> for that)</p></dd>
 <dt>fillvalue</dt>
 <dd><p>numeric. The value of the cells in the virtual rows and columns outside of the raster</p></dd>
+<dt>padlyrs</dt>
+<dd><p>logical. Add virtual layers before the first and after the last layer</p></dd>
+<dt>padvalue</dt>
+<dd><p>numeric. The value of the cells in the virtual layers</p></dd>
+<dt>expand</dt>
+<dd><p>logical. Add virtual layers before the first or after the last layer that are the same as the first or last layers. If <code>TRUE</code>, arguments <code>padlyrs</code> and <code>padvalue</code> are ignored</p></dd>
 <dt>silent</dt>
 <dd><p>logical. If <code>TRUE</code> error messages are printed that may occur when trying <code>fun</code> to determine the length of the returned value. This can be useful in debugging a <code>fun</code> that does not work</p></dd>
 <dt>filename</dt>
