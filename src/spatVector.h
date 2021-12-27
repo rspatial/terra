@@ -102,6 +102,7 @@ class SpatVector {
 		SpatVector(SpatExtent e, std::string crs);
 		SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomType g, std::string crs);
 		SpatVector(std::vector<std::string> wkt);
+		virtual ~SpatVector(){}
 
 		SpatGeom window; // for point patterns, must be polygon
 

@@ -78,9 +78,9 @@ xv <- rasterize(pv, r, fun=sum)
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 r <- rast(v, ncols=75, nrows=100)
-#z <- rasterize(v, r, "NAME_2")
-#plot(z)
-#lines(v)
+z <- rasterize(v, r, "NAME_2")
+plot(z)
+lines(v)
 }
 
 \keyword{spatial}

@@ -151,7 +151,8 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 )
 
 setMethod("focal3D", signature(x="SpatRaster"),
-function(x, w=3, fun="mean", ..., na.policy="all", fillvalue=NA, silent=TRUE, filename="", overwrite=FALSE, wopt=list()) {
+function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padvalue=fillvalue, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list()) {
+
 
 	na.policy <- match.arg(tolower(na.policy), c("all", "only", "omit"))
 	na.only <- na.policy == "only"
@@ -164,7 +165,7 @@ function(x, w=3, fun="mean", ..., na.policy="all", fillvalue=NA, silent=TRUE, fi
 
 	if (is.array(w)) {
 		if (length(dim(w)) != 3) {
-			error("focal3D", "a weights array must have three dimensions")
+			error("focal3D", "the weights array must have three dimensions")
 		}
 		m <- as.vector(w)
 		w <- dim(w)
@@ -205,7 +206,6 @@ function(x, w=3, fun="mean", ..., na.policy="all", fillvalue=NA, silent=TRUE, fi
 	readStart(x)
 	on.exit(readStop(x))
 	nl <- nlyr(x)
-	outnl <- nl * length(vout)
 	transp <- FALSE
 	nms <- NULL
 	if (isTRUE(nrow(vout) > 1)) {
@@ -215,6 +215,16 @@ function(x, w=3, fun="mean", ..., na.policy="all", fillvalue=NA, silent=TRUE, fi
 		nms <- colnames(vout)
 	}
 
+	if (pad || expand) {
+		startlyr = 1;
+		endlyr = nl;
+		outnl <- nl * length(vout)
+	} else {
+		startlyr = halfway+1;
+		endlyr = nl-halfway;	
+		outnl <- (1+endlyr-startlyr) * length(vout)
+	}
+
 	out <- rast(x, nlyr=outnl)
 	if (!is.null(nms)) {
 		names(out) <- nms
@@ -222,18 +232,37 @@ function(x, w=3, fun="mean", ..., na.policy="all", fillvalue=NA, silent=TRUE, fi
 	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
 
 	nread <- prod(w[1:2])
+
+
 	for (i in 1:b$n) {
+		nc <- b$nrows[i]*ncol(x)
 		vv <- NULL
-		v <- matrix(NA, ncol=b$nrows[i]*ncol(x), nrow=nread*halfway)
-		for (k in 1:(1+halfway)) {
-			v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=ncol(v)))
+		if (expand) {
+			v <- list(matrix(x[[1]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+			v <- do.call(rbind, rep(v, halfway+1))
+			for (k in 2:(1+halfway)) {
+				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+			}
+		} else if (pad) {
+			v <- matrix(padvalue, ncol=b$nrows[i]*ncol(x), nrow=nread*halfway)
+			for (k in 1:(1+halfway)) {
+				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+			}
+		} else {
+			v <- lapply(1:w[3], 
+				function(k) matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+			v <- do.call(rbind, v)
 		}
-		for (j in 1:nl) {
-			if (j > 1) {
+		for (j in startlyr:endlyr) {
+			if (j > startlyr) {
 				v <- v[-c(1:nread), ]
 				k <- j + halfway
 				if (k > nl) {
-					v <- rbind(v, matrix(NA, nrow=nread, ncol=ncol(v)))
+					if (pad) {
+						v <- rbind(v, matrix(padvalue, nrow=nread, ncol=ncol(v)))
+					} else {
+						v <- rbind(v, v[(nrow(v)-nread):nrow(v), ])
+					}
 				} else {
 					v <- rbind(v, matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=ncol(v)))					
 				}
