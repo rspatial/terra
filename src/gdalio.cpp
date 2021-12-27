@@ -72,7 +72,6 @@ std::string sectostr(int x) {
 
 GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::string> open_options) {
 
-	GDALDataset *poDataset;
 
 	//std::vector <char *> oo_char = string_to_charpnt(openopts); // open options
     //poDataset = static_cast<GDALDataset*>(GDALOpenEx( filename.c_str(), OpenFlag, NULL, oo_char.data(), NULL ));
@@ -89,7 +88,8 @@ GDALDataset* openGDAL(std::string filename, unsigned OpenFlag, std::vector<std::
 		}
 	}
 
-    poDataset = static_cast<GDALDataset*>(GDALOpenEx( filename.c_str(), OpenFlag, NULL, openops, NULL));
+	GDALDataset *poDataset = static_cast<GDALDataset*>(GDALOpenEx( filename.c_str(), OpenFlag, NULL, openops, NULL));
+	CSLDestroy(openops);
 	return poDataset;
 }
 
@@ -361,16 +361,24 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 // adapted from the 'sf' package by Edzer Pebesma et al
 
 	std::string out = "";
-	std::vector <char *> options_char = string_to_charpnt(options);
-	std::vector <char *> oo_char = string_to_charpnt(openopts); // open options
-	GDALInfoOptions* opt = GDALInfoOptionsNew(options_char.data(), NULL);
-	GDALDatasetH ds = GDALOpenEx((const char *) filename.c_str(), GA_ReadOnly, NULL, oo_char.data(), NULL);
+	char ** opops = NULL;
+	for (size_t i=0; i<openopts.size(); i++) {
+		std::vector<std::string> opt = strsplit(openopts[i], "=");
+		if (opt.size() == 2) {
+			opops = CSLSetNameValue(opops, opt[0].c_str(), opt[1].c_str());
+		}
+	}
+	GDALDatasetH ds = GDALOpenEx(filename.c_str(), GA_ReadOnly, NULL, opops, NULL);
+	//if (opops != NULL) CSLDestroy(opops);
 	if (ds == NULL) return out;
+
+	std::vector <char *> options_char = string_to_charpnt(options);
+	GDALInfoOptions* opt = GDALInfoOptionsNew(options_char.data(), NULL);
 	char *val = GDALInfo(ds, opt);
 	out = val;
 	CPLFree(val);
-	GDALInfoOptionsFree(opt);
 	GDALClose(ds);
+	GDALInfoOptionsFree(opt);
 	return out;
 }
 

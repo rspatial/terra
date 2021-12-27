@@ -135,7 +135,6 @@ setMethod("dots", signature(x="SpatVector"),
 	cols
 }
 
-
 .vect.legend.none <- function(out) {
 	#if (out$leg$geomtype == "points") {
 		out$main_cols <- .getCols(out$ngeom, out$cols)
@@ -146,14 +145,18 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 .vect.legend.classes <- function(out) {
-	ucols <- .getCols(length(out$uv), out$cols)
 
 	out$uv <- sort(out$uv)
+	ucols <- .getCols(length(out$uv), out$cols)
 
 	i <- match(out$v, out$uv)
 	out$cols <- ucols
 	out$main_cols <- ucols[i]
 
+	if (!is.null(out$colNA)) {
+		out$main_cols[is.na(out$main_cols)] <- out$colNA
+	}
+	
 	out$levels <- out$uv
 	out$leg$legend <- out$uv
 	nlevs <- length(out$uv)
@@ -265,6 +268,10 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 
 	out$main_cols <- out$cols[out$vcut]
+	
+	if (!is.null(out$colNA)) {
+		out$main_cols[is.na(out$main_cols)] <- out$colNA
+	}
 	out
 }
 
@@ -434,10 +441,14 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	out$mar <- rep_len(mar, 4)
 
+	out$skipNA <- TRUE
 	if (!is.null(colNA)) {
 		if (!is.na(colNA)) {
 			out$colNA <- grDevices::rgb(t(grDevices::col2rgb(colNA)), alpha=alpha, maxColorValue=255)
 			out$r[is.na(out$r)] <- out$colNA
+			out$skipNA <- FALSE
+ 		} else {
+			out$colNA <- NULL
 		}
 	}
 
@@ -458,13 +469,13 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			i <- is.na(match(y, names(x)))
 			error("plot", paste(paste(y[i], collapse=",")), " is not a name in x")
 		}
-		nrnc <- c(1,1)
-		if (length(y) > 1) {
-			nrnc <- .get_nrnc(nr, nc, length(y))
-			old.par <- graphics::par(no.readonly =TRUE)
-			on.exit(graphics::par(old.par))   
-			graphics::par(mfrow=nrnc)
-		}
+			nrnc <- c(1,1)
+			if (length(y) > 1) {
+				nrnc <- .get_nrnc(nr, nc, length(y))
+				old.par <- graphics::par(no.readonly =TRUE)
+				on.exit(graphics::par(old.par))   
+				graphics::par(mfrow=nrnc)
+			}
 		if (is.character(legend)) {
 			plg$x <- legend
 			legend <- TRUE
@@ -493,8 +504,8 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			} else {
 				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, ...)
 			}
-			invisible(out)
 		}
+		invisible(out)		
 	}
 )
 
