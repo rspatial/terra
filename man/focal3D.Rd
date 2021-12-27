@@ -11,7 +11,8 @@ Calculate focal ("moving window") values for the three-dimensional neighborhood 
 
 \usage{
 \S4method{focal3D}{SpatRaster}(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, 
-	padvalue=fillvalue, expand=FALSE, silent=TRUE, filename="", overwrite=FALSE, wopt=list()) 
+	padvalue=fillvalue, expand=FALSE, silent=TRUE, 
+	filename="", overwrite=FALSE, wopt=list()) 
 }
 
 \arguments{
@@ -32,9 +33,9 @@ Calculate focal ("moving window") values for the three-dimensional neighborhood 
 
 \item{padvalue}{numeric. The value of the cells in the virtual layers}
 
-\item{expand}{logical. Add virtual layers before the first or after the last layer that are the same as the first or last layers. If \code{TRUE}, arguments \code{padlyrs} and \code{padvalue} are ignored}
+\item{expand}{logical. Add virtual layers before the first or after the last layer that are the same as the first or last layers. If \code{TRUE}, arguments \code{pad} and \code{padvalue} are ignored}
 
-\item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a \code{fun} that does not work}
+\item{silent}{logical. If \code{TRUE} error messages are printed that may occur when trying \code{fun} to determine the length of the returned value. This can be useful in debugging a function passed to \code{fun} that does not work}
 
 \item{filename}{character. Output filename}
 \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
