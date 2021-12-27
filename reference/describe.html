@@ -127,15 +127,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [42] "    STATISTICS_STDDEV=-9999"                                              </span>
 <span class="r-in"><span class="fu">describe</span><span class="op">(</span><span class="va">f</span>, meta<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "AREA_OR_POINT=Area"</span>
-<span class="r-in"><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">describe</span><span class="op">(</span><span class="va">f</span>, options<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"json"</span>, <span class="st">"nomd"</span>, <span class="st">"proj4"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Too many command options '' (GDAL error 6)</span>
-<span class="r-in"><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Driver: GTiff/GeoTIFF"                                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "Files: /Users/runner/work/_temp/Library/terra/ex/elev.tif"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "Size is 95, 90"                                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "Coordinate System is:"                                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "GEOGCRS[\"WGS 84\","                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "    DATUM[\"World Geodetic System 1984\","                </span>
+<span class="r-in"><span class="co">#g &lt;- describe(f, options=c("json", "nomd", "proj4"))</span></span>
+<span class="r-in"><span class="co">#head(g)</span></span>
 </code></pre></div>
     </div>
   </div>
