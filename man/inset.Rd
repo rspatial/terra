@@ -17,7 +17,7 @@ Make an inset map or scale the extent of a SpatVector
 
 \usage{
 \S4method{inset}{SpatVector}(x, e, loc="", scale=0.2, background="white", 
-	perimeter=TRUE, pper, box=NULL, pbox, ...)
+	perimeter=TRUE, box=NULL, pper, pbox, ...)
 
 \S4method{inset}{SpatRaster}(x, e, loc="", scale=0.2, background="white", 
 	perimeter=TRUE, box=NULL, pper, pbox, ...)

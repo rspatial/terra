@@ -276,24 +276,22 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		out.setError(x.getError());
 		return out;
 	}
-    	std::vector<OGRGeometry *> ahGeometries;
+    std::vector<OGRGeometry *> ogrGeoms;
+	ogrGeoms.reserve(nGeoms);
+	
 	OGRLayer *poLayer = vecDS->GetLayer(0);
 	poLayer->ResetReading();
+	
 	OGRFeature *poFeature;
-
-
 	while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-
 		if (poGeometry != NULL) {
 			OGRGeometry *copyGeom = poGeometry->clone();
-			ahGeometries.push_back( copyGeom );
+			ogrGeoms.push_back( copyGeom );
 		}
 		OGRFeature::DestroyFeature( poFeature );
-
 	}
 	GDALClose(vecDS);
-
 
 	std::string errmsg, driver, filename;
 	GDALDatasetH rstDS;
@@ -306,11 +304,9 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	for (double &d : values) d = std::isnan(d) ? naval : d;
 		// passing NULL instead may also work.
 
-
 	std::vector<int> bands(out.nlyr());
 	std::iota(bands.begin(), bands.end(), 1);
 	rep_each(values, out.nlyr());
-
 
 	char** papszOptions = NULL;
 	CPLErr err;
@@ -319,16 +315,16 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		papszOptions = CSLSetNameValue(papszOptions, "ALL_TOUCHED", "TRUE"); 
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(bands.size()), &(bands[0]),
-				static_cast<int>(ahGeometries.size()), 
-				(OGRGeometryH *) &(ahGeometries[0]),
+				static_cast<int>(ogrGeoms.size()), 
+				(OGRGeometryH *) &(ogrGeoms[0]),
 				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
 		CSLDestroy(papszOptions);
 
 		if ( err != CE_None ) {
 			out.setError("rasterization failed");
 			GDALClose(rstDS);
-			for (size_t i=0; i<ahGeometries.size(); i++) {
-				OGR_G_DestroyGeometry(ahGeometries[i]);
+			for (size_t i=0; i<ogrGeoms.size(); i++) {
+				OGR_G_DestroyGeometry(ogrGeoms[i]);
 			}
 			return out;
 		}
@@ -336,8 +332,8 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		// second time to fix the internal area
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(bands.size()), &(bands[0]),
-				static_cast<int>(ahGeometries.size()), 
-				(OGRGeometryH *) &(ahGeometries[0]),
+				static_cast<int>(ogrGeoms.size()), 
+				(OGRGeometryH *) &(ogrGeoms[0]),
 				NULL, NULL, &(values[0]), NULL, NULL, NULL);
 
 	} else {
@@ -348,15 +344,15 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 		err = GDALRasterizeGeometries(rstDS, 
 				static_cast<int>(bands.size()), &(bands[0]),
-				static_cast<int>(ahGeometries.size()), 
-				(OGRGeometryH *) &(ahGeometries[0]),
+				static_cast<int>(ogrGeoms.size()), 
+				(OGRGeometryH *) &(ogrGeoms[0]),
 				NULL, NULL, &(values[0]), papszOptions, NULL, NULL);
 
 		CSLDestroy(papszOptions);
 	}
 
-	for (size_t i=0; i<ahGeometries.size(); i++) {
-		OGR_G_DestroyGeometry(ahGeometries[i]);
+	for (size_t i=0; i<ogrGeoms.size(); i++) {
+		OGR_G_DestroyGeometry(ogrGeoms[i]);
 	}
 
 	if ( err != CE_None ) {
