@@ -585,6 +585,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 		std::vector<double> cells(1+lastcell-firstcell);
 		std::iota (std::begin(cells), std::end(cells), firstcell);
         std::vector<std::vector<double>> xy = out.xyFromCell(cells);
+
 		if (do_prj) {
 			#ifdef useGDAL
 			out.msg = transform_coordinates(xy[0], xy[1], crsout, crsin);

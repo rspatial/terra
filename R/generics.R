@@ -570,7 +570,7 @@ setMethod("project", signature(x="SpatRaster"),
 				if (align) {
 					y <- project(rast(x), y, align=TRUE)
 				}
-				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], align[1], opt)			
+				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], TRUE, opt)			
 			}
 		} else {
 			if (!is.character(y)) {
@@ -582,7 +582,7 @@ setMethod("project", signature(x="SpatRaster"),
 				x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
 			} else {
 				y <- project(rast(x), y)
-				x@ptr <- x@ptr$resample(y@ptr, method, mask, FALSE, opt)				
+				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], TRUE, opt)				
 			}
 		}
 		messages(x, "project")

@@ -305,6 +305,8 @@ void gdal_init(std::string path) {
     GDALAllRegister();
     OGRRegisterAll(); 
 	CPLSetConfigOption("GDAL_MAX_BAND_COUNT", "9999999");
+	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
+	
 	//GDALregistred = true;
 #if GDAL_VERSION_MAJOR >= 3
 	if (path != "") {

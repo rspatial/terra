@@ -258,6 +258,8 @@ bool wkt_from_string(std::string input, std::string& wkt, std::string& msg) {
 
 SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &y, std::string fromCRS, std::string toCRS) {
 
+	CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
+
 	SpatMessages m;
 	OGRSpatialReference source, target;
 	const char *pszDefFrom = fromCRS.c_str();
