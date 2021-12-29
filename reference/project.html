@@ -57,7 +57,7 @@
 <span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align<span class="op">=</span><span class="cn">FALSE</span>, gdal<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,6 +78,8 @@
 <dd><p>logical. If <code>TRUE</code>, mask out areas outside the input extent (see example with Robinson projection)</p></dd>
 <dt>align</dt>
 <dd><p>logical. If <code>TRUE</code>, and <code>y</code> is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of <code>x</code> is included</p></dd>
+<dt>gdal</dt>
+<dd><p>logical. If <code>TRUE</code> the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the <code>near</code> and <code>bilinear</code> algorithms are available for the internal algorithm</p></dd>
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 <dt>...</dt>
