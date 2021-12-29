@@ -550,7 +550,7 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 
 setMethod("project", signature(x="SpatRaster"), 
-	function(x, y, method, mask=FALSE, align=FALSE, filename="", ...)  {
+	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, filename="", ...)  {
 	  
 		if (missing(method)) {
 			method <- ifelse(is.factor(x)[1], "near", "bilinear")
@@ -562,15 +562,28 @@ setMethod("project", signature(x="SpatRaster"),
 			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
 		}
 		opt <- spatOptions(filename, ...)
+		
 		if (inherits(y, "SpatRaster")) {
-			x@ptr <- x@ptr$warp(y@ptr, "", method, mask[1], align[1], opt)
+			if (gdal) {
+				x@ptr <- x@ptr$warp(y@ptr, "", method, mask[1], align[1], opt)
+			} else {
+				if (align) {
+					y <- project(rast(x), y, align=TRUE)
+				}
+				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], align[1], opt)			
+			}
 		} else {
 			if (!is.character(y)) {
 				warn("project,SpatRaster", "crs should be a character value")
 				y <- as.character(crs(y))
 			}
 			#x@ptr <- x@ptr$warpcrs(y, method, opt)
-			x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
+			if (gdal) {
+				x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
+			} else {
+				y <- project(rast(x), y)
+				x@ptr <- x@ptr$resample(y@ptr, method, mask, FALSE, opt)				
+			}
 		}
 		messages(x, "project")
 	}
@@ -634,15 +647,20 @@ setMethod("rectify", signature(x="SpatRaster"),
 
 setMethod("resample", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, method, filename="", ...)  {
+	
 		if (missing(method)) {
 			method <- ifelse(is.factor(x)[1], "near", "bilinear")
 		}
 		if (method == "ngb") {
 			method <- "near"
-			warn("project", "argument 'method=ngb' is deprecated, it should be 'method=near'")
+			warn("resample", "argument 'method=ngb' is deprecated, it should be 'method=near'")
 		}
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, FALSE, opt)
+#		if (gdal) {
+			x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, FALSE, opt)
+#		} else {
+#			x@ptr <- x@ptr$resample(y@ptr, method, FALSE, TRUE, opt)		
+#		}
 		messages(x, "resample")
 	}
 )
