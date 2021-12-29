@@ -329,6 +329,7 @@ bool SpatRaster::writeValues(std::vector<double> &vals, size_t startrow, size_t 
 	if (progressbar) {
 		if (Progress::check_abort()) {
 			pbar->cleanup();
+			delete pbar;
 			setError("aborted");
 			return(false);
 		}
@@ -368,6 +369,7 @@ bool SpatRaster::writeValuesRect(std::vector<double> &vals, size_t startrow, siz
 	if (progressbar) {
 		if (Progress::check_abort()) {
 			pbar->cleanup();
+			delete pbar;
 			setError("aborted");
 			return(false);
 		}
@@ -400,7 +402,6 @@ bool SpatRaster::writeStop(){
 		success = writeStopGDAL();
 		//source[0].hasValues = true;
 		#else
-		setError("GDAL is not available");
 		return false;
 		#endif
 	} else {
@@ -414,12 +415,8 @@ bool SpatRaster::writeStop(){
 
 #ifdef useRcpp
 	if (progressbar) {
-		if (Progress::check_abort()) {
-			pbar->cleanup();
-			setError("aborted");
-			return(false);
-		}
 		pbar->increment();
+		pbar->cleanup();
 		delete pbar;
 	}
 #endif

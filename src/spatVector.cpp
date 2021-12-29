@@ -763,27 +763,29 @@ SpatVector SpatVector::remove_rows(std::vector<unsigned> range) {
 
 
 SpatVector SpatVector::subset_cols(std::vector<int> range) {
-	SpatVector out = *this;
-	//out.geoms = geoms;
-	//out.crs = crs;
-	//out.extent = extent;
 	int nc = ncol();
-
-	std::vector<unsigned> r;
+	std::vector<unsigned> valid;
+	valid.reserve(range.size());
 	for (size_t i=0; i<range.size(); i++) {
-	if ((range[i] >= 0) & (range[i] < nc)) {
-			r.push_back(range[i]);
+		if ((range[i] >= 0) & (range[i] < nc)) {
+			valid.push_back(range[i]);
 		}
 	}
-	out.df = df.subset_cols(r);
+	SpatVector out = *this;
+	out.df = df.subset_cols(valid);
 	return out;
 }
 
 
 SpatVector SpatVector::subset_cols(int i) {
-	std::vector<int> range(1, i);
-	SpatVector out = subset_cols(range);
-	return out;
+	if (i < 0) {
+		SpatVector out;
+		out.geoms = geoms;
+		out.srs = srs;
+		return out;
+	}
+	std::vector<int> range = {i};
+	return subset_cols(range);
 }
 
 
