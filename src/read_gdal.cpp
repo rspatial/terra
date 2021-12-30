@@ -495,19 +495,17 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	int nl = poDataset->GetRasterCount();
 	std::string gdrv = poDataset->GetDriver()->GetDescription();
 
-	if (nl == 0) {
+	char **metasds = poDataset->GetMetadata("SUBDATASETS");
+	if (metasds != NULL) {
 		std::vector<std::string> meta;
-		char **metadata = poDataset->GetMetadata("SUBDATASETS");
-		if (metadata != NULL) {
-			for (size_t i=0; metadata[i] != NULL; i++) {
-				meta.push_back(metadata[i]);
-			}
-			GDALClose( (GDALDatasetH) poDataset );
-			return constructFromSDS(fname, meta, subds, subdsname, options, gdrv=="netCDF"); 
-		} else {
-			setError("no data detected in " + fname);
-			return false;
+		for (size_t i=0; metasds[i] != NULL; i++) {
+			meta.push_back(metasds[i]);
 		}
+		GDALClose( (GDALDatasetH) poDataset );
+		return constructFromSDS(fname, meta, subds, subdsname, options, gdrv=="netCDF"); 
+	} else if (nl==0) {
+		setError("no raster data in " + fname);
+		return false;
 	}
 
 
@@ -526,7 +524,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	if( poDataset->GetGeoTransform( adfGeoTransform ) == CE_None ) {
 
 		double xmin = adfGeoTransform[0]; /* left x */
-		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e pixel resolution */
+		double xmax = xmin + adfGeoTransform[1] * s.ncol; /* w-e resolution */
 		//xmax = roundn(xmax, 9);
 		double ymax = adfGeoTransform[3]; // top y 
 		double ymin = ymax + s.nrow * adfGeoTransform[5]; 
@@ -1352,6 +1350,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 
 	std::vector<size_t> srcnl;
 	size_t cnt;
+	
     for (cnt=0; cnt < sd.size(); cnt++) {
 		if (constructFromFile(sd[cnt], {-1}, {""}, options)) break;
 	}
@@ -1422,19 +1421,17 @@ bool get_long(std::string input, long &output) {
     try  {
 		output = std::stoi(input);
 		return true;
-    }
-    catch (std::invalid_argument &e)  {
+    } catch (std::invalid_argument &e)  {
 		return false;
     }
 }
 
 
 bool get_double(std::string input, double &output) {
-    try  {
+    try {
 		output = std::stod(input);
 		return true;
-    }
-    catch (std::invalid_argument &e)  {
+    } catch (std::invalid_argument &e)  {
 		return false;
     }
 }
