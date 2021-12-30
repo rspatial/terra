@@ -218,9 +218,6 @@ SpatRaster SpatRaster::writeRaster(SpatOptions &opt) {
 		}
 	}
 	out.writeStop();
-	//if (!out.writeStopGDAL()) {
-	//	out.setError("cannot close file");
-	//}
 	readStop();
 	return out;
 }

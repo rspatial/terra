@@ -21,6 +21,7 @@
 #include "file_utils.h"
 
 #include <unordered_map>
+#include <vector>
 
 #include "gdal_priv.h"
 #include "cpl_conv.h" // for CPLMalloc()
@@ -230,7 +231,6 @@ void stat_options(int sstat, bool &compute_stats, bool &gdal_stats, bool &gdal_m
 
 bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
-
 	std::string filename = opt.get_filename();
 	if (filename == "") {
 		setError("empty filename");
@@ -246,6 +246,18 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		setError("cannot guess file type from filename");
 		return(false);
 	}
+    GDALDriver *poDriver;
+    poDriver = GetGDALDriverManager()->GetDriverByName(driver.c_str());
+    if(poDriver == NULL) {
+		setError("invalid driver");
+		return (false);
+	}
+    char **papszMetadata;
+    papszMetadata = poDriver->GetMetadata();
+    if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE)) {
+		setError(driver + " is not a raster format");
+		return false;
+	}
 
 	std::string datatype = opt.get_datatype();
 	
@@ -259,15 +271,27 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return false;
 	}
 
-	bool append = std::find(opt.gdal_options.begin(), opt.gdal_options.end(), "APPEND_SUBDATASET=YES") != opt.gdal_options.end();
-	if (append) {
-		if (!file_exists(filename)) {
-			setError("cannot append to a file that does not exist");
-			return(false);
-		} 
-	} else if (file_exists(filename) & (!opt.get_overwrite())) {
+	std::string appstr = "APPEND_SUBDATASET=YES";
+	bool append = std::find(opt.gdal_options.begin(), opt.gdal_options.end(), appstr) != opt.gdal_options.end();
+	if (append & (!CSLFetchBoolean( papszMetadata, GDAL_DMD_SUBDATASETS, FALSE))) {
+		setError("cannot append datasets with this file format");
+		return false;
+	}
+	if (append & opt.get_overwrite()) {
+		auto it = std::find(opt.gdal_options.begin(), opt.gdal_options.end(), appstr);
+		if (it != opt.gdal_options.end()) {
+			size_t i = std::distance(opt.gdal_options.begin(), it);
+			opt.gdal_options.erase(opt.gdal_options.begin()+i);
+		} else {
+			setError("cannot erase option");
+			return false;
+		}
+		append = false;
+	}
+	
+	if (file_exists(filename) & (!opt.get_overwrite()) & (!append)) {
 		setError("file exists. You can use 'overwrite=TRUE' to overwrite it");
-		return(false);
+		return false;
 	}
 
 //	if (!can_write(filename, opt.get_overwrite(), errmsg)) {
@@ -320,16 +344,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 		return(false);
 	}
 
-
 	stat_options(opt.get_statistics(), compute_stats, gdal_stats, gdal_minmax, gdal_approx);
-
-    GDALDriver *poDriver;
-    poDriver = GetGDALDriverManager()->GetDriverByName(driver.c_str());
-    if(poDriver == NULL) {
-		setError("invalid driver");
-		return (false);
-	}
-
 	char **papszOptions = set_GDAL_options(driver, diskNeeded, writeRGB, opt.gdal_options);
 
 /*	if (driver == "GTiff") {
@@ -347,12 +362,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	}
 */
 
-    char **papszMetadata;
-    papszMetadata = poDriver->GetMetadata();
-    if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_RASTER, FALSE)) {
-		setError(driver + " is not a raster format");
-		return false;
-	}
 	//bool isncdf = ((driver == "netCDF" && opt.get_ncdfcopy()));
 
 	GDALDataset *poDS;
@@ -501,6 +510,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	SpatExtent extent = getExtent();
 	double adfGeoTransform[6] = { extent.xmin, rs[0], 0, extent.ymax, 0, -1 * rs[1] };
 	poDS->SetGeoTransform(adfGeoTransform);
+	
 	std::string crs = source[0].srs.wkt;
 	OGRSpatialReference oSRS;
 	OGRErr erro = oSRS.SetFromUserInput(&crs[0]);
@@ -515,7 +525,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	CPLFree(pszSRS_WKT);
 	// destroySRS(oSRS) ?
 
-	source[0].gdalconnection = poDS;
 	source[0].resize(nlyr());
 	source[0].nlyrfile = nlyr();
 	source[0].datatype = datatype;
@@ -529,19 +538,23 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	source[0].memory = false;
 
 	write_aux_json(filename);
-/*
-	if (hasTime()) {
-		std::vector<std::string> tstr = getTimeStr(true);
-		std::string fname = filename + ".time";
-		write_text(fname, tstr);
+	if (append) {
+		GDALClose( (GDALDatasetH) poDS );
+		std::vector<std::string> ops;
+		poDS = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_UPDATE | GDAL_OF_SHARED, ops);
+		std::vector<std::string> subds;
+		char **metadata = poDS->GetMetadata("SUBDATASETS");
+		if (metadata != NULL) {
+			for (size_t i=0; metadata[i] != NULL; i++) {
+				subds.push_back(metadata[i]);
+			}
+			std::vector<std::vector<std::string>> s = parse_metadata_sds(subds);
+			GDALClose( (GDALDatasetH) poDS );
+			filename = s[0].back();
+			poDS = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_UPDATE, ops);			
+		}
 	}
-	if (hasUnit()) {
-		std::vector<std::string> units = getUnit();
-		std::string fname = filename + ".unit";
-		write_text(fname, units);
-	}
-*/
-
+	source[0].gdalconnection = poDS;
 	return true;
 }
 
@@ -565,6 +578,7 @@ void tmp_min_max_na(std::vector<T> &out, const std::vector<double> &v, const dou
 
 
 bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
+
 
 	CPLErr err = CE_None;
 	double vmin, vmax;
@@ -740,6 +754,7 @@ bool SpatRaster::writeStopGDAL() {
 		GDALClose( (GDALDatasetH) source[0].gdalconnection );
 	}
 	source[0].hasValues = true;
+
 	return true;
 }
 

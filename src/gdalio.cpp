@@ -143,12 +143,14 @@ std::vector<std::vector<std::string>> parse_metadata_sds(std::vector<std::string
 		if (pos != std::string::npos) {
 			s.erase(0, pos + ndelim.length());
 			name.push_back(s);
-			std::string vdelim = "\":";
-			size_t pos = s.find(vdelim);
-
+			std::string vdelim = ":";
+			size_t pos = s.find_last_of(vdelim);
 			if (pos != std::string::npos) {
 				s.erase(0, pos + vdelim.length());
 				var.push_back(s);
+			} else {
+				std::string v = "v" + std::to_string(i);
+				var.push_back(v);		
 			}
 		} else {
 			size_t pos = s.find(ddelim);
@@ -233,6 +235,7 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 		out[0] = std::vector<std::string> {"no subdatasets"};
 		return out;
 	}
+
 	SpatRaster sub;
 	std::vector<std::string> name, var, desc, nr, nc, nl;
 	std::string ndelim = "NAME=";
@@ -245,8 +248,8 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 		if (pos != std::string::npos) {
 			s.erase(0, pos + ndelim.length());
 			name.push_back(s);
-			std::string vdelim = "\":";
-			size_t pos = s.find(vdelim);
+			std::string vdelim = ":";
+			size_t pos = s.find_last_of(vdelim);
 			if (sub.constructFromFile(s, {-1}, {""}, {})) {
 				nr.push_back( std::to_string(sub.nrow()));
 				nc.push_back(std::to_string(sub.ncol()));
@@ -255,6 +258,8 @@ std::vector<std::vector<std::string>> sdinfo(std::string fname) {
 			if (pos != std::string::npos) {
 				s.erase(0, pos + vdelim.length());
 				var.push_back(s);
+			} else {
+				var.push_back("v" + std::to_string(i));				
 			}
 		} else {
 			size_t pos = s.find(ddelim);

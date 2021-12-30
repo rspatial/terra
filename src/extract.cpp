@@ -471,7 +471,7 @@ idw
 
 
 // <layer<values>>
-std::vector<std::vector<double>> SpatRaster::extractXY(const std::vector<double> &x, const std::vector<double> &y, const std::string & method, const bool &cells) {
+std::vector<std::vector<double>> SpatRaster::extractXY(const std::vector<double> &x, const std::vector<double> &y, const std::string &method, const bool &cells) {
 
     unsigned nl = nlyr();
     unsigned np = x.size();

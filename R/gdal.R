@@ -45,12 +45,13 @@ gdal <- function(warn=NA, drivers=FALSE) {
 .describe_sds <- function(x, print=FALSE) {
 	x <- .sdinfo(x)
 	if (length(x[[1]]) == 1 & length(x[[2]]) == 0) {
-		error("gdal (sds)", "not working for: ", x[[1]])
+		error("gdal (sds)", x[[1]])
 	}
+	names(x) <- c("name", "var", "desc", "nrow", "ncol", "nlyr")
 	m <- do.call(cbind, x)
-	m <- data.frame(1:nrow(m), m, stringsAsFactors=FALSE)
-	colnames(m) <- c("id", "name", "var", "desc", "nrow", "ncol", "nlyr")
-	for (i in 5:7) m[,i] <- as.integer(m[,i])
+	m <- data.frame(id=1:nrow(m), m, stringsAsFactors=FALSE)
+	ii <- which(colnames(m) %in% c("nrow", "ncol", "nlyr"))
+	for (i in ii) m[,i] <- as.integer(m[,i])
 	if (print) {
 		print(m)
 		invisible(m)
