@@ -25,12 +25,16 @@
     .Call(`_terra_sd_info`, filename)
 }
 
-.gdalversion <- function() {
+.gdal_version <- function() {
     .Call(`_terra_gdal_version`)
 }
 
 .geos_version <- function(runtime = FALSE, capi = FALSE) {
     .Call(`_terra_geos_version`, runtime, capi)
+}
+
+.proj_version <- function() {
+    .Call(`_terra_proj_version`)
 }
 
 .metadata <- function(filename) {

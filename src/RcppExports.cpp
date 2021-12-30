@@ -101,6 +101,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// proj_version
+std::string proj_version();
+RcppExport SEXP _terra_proj_version() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(proj_version());
+    return rcpp_result_gen;
+END_RCPP
+}
 // metatdata
 std::vector<std::string> metatdata(std::string filename);
 RcppExport SEXP _terra_metatdata(SEXP filenameSEXP) {
@@ -355,6 +365,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
     {"_terra_geos_version", (DL_FUNC) &_terra_geos_version, 2},
+    {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
     {"_terra_metatdata", (DL_FUNC) &_terra_metatdata, 1},
     {"_terra_sdsmetatdata", (DL_FUNC) &_terra_sdsmetatdata, 1},
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},

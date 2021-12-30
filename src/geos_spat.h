@@ -1,25 +1,24 @@
 #define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
-
 #if GEOS_VERSION_MAJOR == 3
 # if GEOS_VERSION_MINOR >= 5
-#  define HAVE350
+#  define GEOS350
 # endif
 # if GEOS_VERSION_MINOR == 6
 #  if GEOS_VERSION_PATCH >= 1
-#   define HAVE361
+#   define GEOS361
 #  endif
 # endif
 # if GEOS_VERSION_MINOR >= 7
-#  define HAVE361
-#  define HAVE370
+#  define GEOS361
+#  define GEOS370
 # endif
 #else
 # if GEOS_VERSION_MAJOR > 3
-#  define HAVE350
-#  define HAVE370
-#  define HAVE361
+#  define GEOS350
+#  define GEOS370
+#  define GEOS361
 # endif
 #endif
 
@@ -112,7 +111,7 @@ static void __warningHandler(const char *fmt, ...) {
 
 
 void geos_finish(GEOSContextHandle_t ctxt) {
-#ifdef HAVE350
+#ifdef GEOS350
 	GEOS_finish_r(ctxt);
 #else
 	finishGEOS_r(ctxt);
@@ -121,7 +120,7 @@ void geos_finish(GEOSContextHandle_t ctxt) {
 
 
 GEOSContextHandle_t geos_init(void) {
-#ifdef HAVE350
+#ifdef GEOS350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
 	GEOSContext_setNoticeHandler_r(ctxt, __warningHandler);
 	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);
@@ -138,7 +137,7 @@ static void __warningIgnore(const char *fmt, ...) {
 
 GEOSContextHandle_t geos_init2(void) {
 
-#ifdef HAVE350
+#ifdef GEOS350
 	GEOSContextHandle_t ctxt = GEOS_init_r();
 	GEOSContext_setNoticeHandler_r(ctxt, __warningIgnore);
 	GEOSContext_setErrorHandler_r(ctxt, __errorHandler);

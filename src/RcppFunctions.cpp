@@ -128,7 +128,7 @@ std::vector<std::vector<std::string>> sd_info(std::string filename) {
 	return sd;
 }
 
-// [[Rcpp::export(name = ".gdalversion")]]
+// [[Rcpp::export(name = ".gdal_version")]]
 std::string gdal_version() {
 	const char* what = "RELEASE_NAME";
 	const char* x = GDALVersionInfo(what);
@@ -146,6 +146,13 @@ std::string geos_version(bool runtime = false, bool capi = false) {
 		else
 			return GEOS_VERSION;
 	}
+}
+
+// [[Rcpp::export(name = ".proj_version")]]
+std::string proj_version() {
+	std::stringstream buffer;
+	buffer << PROJ_VERSION_MAJOR << "." << PROJ_VERSION_MINOR << "." << PROJ_VERSION_PATCH;
+	return buffer.str();
 }
 
 

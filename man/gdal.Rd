@@ -6,9 +6,9 @@
 \title{GDAL version, supported file formats, and cache size}
 
 \description{
-Set the \code{GDAL} warning level or get a \code{data.frame} with the available GDAL drivers (file formats), or get the GDAL version (if \code{warn=NA} and \code{drivers=FALSE}, the default. 
+Set the \code{GDAL} warning level or get a \code{data.frame} with the available GDAL drivers (file formats), or, if \code{warn=NA} and \code{drivers=FALSE}, get the version numbers of the GDAL, PROJ and GEOS libraries. 
 
-\code{GDAL} is the software library that terra builds on to read and write spatial data and for some raster data processing.
+\code{GDAL} is the software library that terra builds on to read and write spatial data and for some raster data processing. \code{PROJ} is used for transformation of coordinates ("projection") and \code{GEOS} is used for geometric operations with vector data.
 }
 
 \usage{
