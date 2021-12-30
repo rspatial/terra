@@ -21,12 +21,11 @@ loadModule("spat", TRUE)
 	.create_options()
 
 	if (length(grep(.geos_version(FALSE, TRUE), .geos_version(TRUE))) != 1) {
-		packageStartupMessage("WARNING: different compile-time and run-time versions of GEOS:")
-		packageStartupMessage(paste(
-			"Running with:", .geos_version(TRUE, TRUE),
-			"Compiled with:", .geos_version(FALSE, TRUE)))
-		packageStartupMessage("You should reinstall terra")
+		packageStartupMessage("WARNING: different compile-time and run-time versions of GEOS")
+		packageStartupMessage("Compiled with:", .geos_version(FALSE, TRUE))
+		packageStartupMessage(" Running with:", .geos_version(TRUE, TRUE))
+		packageStartupMessage("\nYou should reinstall terra\n")
 	}
-#	terraOptions(todisk=TRUE)
+#	terraOptions(todisk=TRUE, steps=2)
 }
 
