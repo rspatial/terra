@@ -15,9 +15,18 @@ loadModule("spat", TRUE)
 }
 
 
+
 .onAttach <- function(libname, pkgname) {
 	packageStartupMessage("terra ", utils::packageVersion("terra"))
 	.create_options()
+
+	if (length(grep(.geos_version(FALSE, TRUE), .geos_version(TRUE))) != 1) {
+		packageStartupMessage("WARNING: different compile-time and run-time versions of GEOS:")
+		packageStartupMessage(paste(
+			"Running with:", .geos_version(TRUE, TRUE),
+			"Compiled with:", .geos_version(FALSE, TRUE)))
+		packageStartupMessage("You should reinstall terra")
+	}
 #	terraOptions(todisk=TRUE)
 }
 

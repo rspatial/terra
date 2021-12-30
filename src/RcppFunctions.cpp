@@ -7,7 +7,6 @@
 #include "gdalio.h"
 #include "ogr_spatialref.h"
 
-
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
 #endif
@@ -22,6 +21,8 @@
 # endif
 #endif
 
+#define GEOS_USE_ONLY_R_API
+#include <geos_c.h>
 
 // [[Rcpp::export(name = ".sameSRS")]]
 bool sameSRS(std::string x, std::string y) {
@@ -134,6 +135,19 @@ std::string gdal_version() {
 	std::string s = (std::string) x;
 	return s;
 }
+
+// [[Rcpp::export(name = ".geos_version")]]
+std::string geos_version(bool runtime = false, bool capi = false) {
+	if (runtime)
+		return GEOSversion();
+	else {
+		if (capi)
+			return GEOS_CAPI_VERSION;
+		else
+			return GEOS_VERSION;
+	}
+}
+
 
 // [[Rcpp::export(name = ".metadata")]]
 std::vector<std::string> metatdata(std::string filename) {
