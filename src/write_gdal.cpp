@@ -533,10 +533,11 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
 	write_aux_json(filename);
 
+/*
 	if (append) {
 		GDALClose( (GDALDatasetH) poDS );
 		std::vector<std::string> ops;
-		poDS = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_UPDATE | GDAL_OF_SHARED, ops);
+		poDS = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_UPDATE, ops);
 		std::vector<std::string> subds;
 		char **metadata = poDS->GetMetadata("SUBDATASETS");
 		if (metadata != NULL) {
@@ -549,6 +550,8 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			poDS = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_UPDATE, ops);			
 		}
 	}
+*/
+	
 	source[0].gdalconnection = poDS;
 	return true;
 }
@@ -609,6 +612,7 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 		}
 	}
 
+
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
 		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL );
 	} else {
@@ -646,7 +650,10 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 			//std::vector<int8_t> vv(vals.begin(), vals.end());
 			std::vector<int8_t> vv;
 			tmp_min_max_na(vv, vals, na, 0, 255);
+			
 			err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vv[0], ncols, nrows, GDT_Byte, nl, NULL, 0, 0, 0, NULL );
+
+
 		} else {
 			setError("bad datatype");
 			GDALClose( source[0].gdalconnection );
