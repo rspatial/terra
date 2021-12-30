@@ -133,7 +133,7 @@ SpatVector SpatVector::crop(SpatExtent e) {
 
 	SpatVector out;
 
-#ifndef HAVE350
+#ifndef GEOS350
 	out.setError("GEOS 3.5 required for crop");
 	return out;
 #else 
@@ -611,7 +611,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 	if (htype == "convex") {
 		h = GEOSConvexHull_r(hGEOSCtxt, g[0].get());
 	} else {
-	#ifndef HAVE361
+	#ifndef GEOS361
 		out.setError("GEOS 3.6.1 required for rotated rectangle");
 		return out;
 	#else 
@@ -633,7 +633,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) {
 	SpatVector out;
 
-#ifndef HAVE350
+#ifndef GEOS350
 	out.setError("GEOS 3.5 required for voronoi");
 	return out;
 #else 
@@ -693,7 +693,7 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
 	SpatVector out;
 
-#ifndef HAVE350
+#ifndef GEOS350
 	out.setError("GEOS 3.5 required for delauny");
 	return out;
 #else 
@@ -1814,7 +1814,7 @@ SpatVector SpatVector::width() {
 
 	SpatVector tmp;
 
-#ifndef HAVE361
+#ifndef GEOS361
 	tmp.setError("GEOS 3.6.1 required for width");
 	return tmp;
 #else 
@@ -1841,11 +1841,9 @@ SpatVector SpatVector::width() {
 }
 
 SpatVector SpatVector::clearance() {
-
 	SpatVector tmp;
-
-#ifndef HAVE361
-	tmp.setError("GEOS 3.5 required for clearance");
+#ifndef GEOS361
+	tmp.setError("GEOS 3.6 required for clearance");
 	return tmp;
 #else 
 
