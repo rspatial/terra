@@ -534,7 +534,6 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	write_aux_json(filename);
 
 	if (append) {
-Rcpp::Rcout << "start-append" << std::endl;
 		GDALClose( (GDALDatasetH) poDS );
 		std::vector<std::string> ops;
 		poDS = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_UPDATE | GDAL_OF_SHARED, ops);
@@ -544,9 +543,7 @@ Rcpp::Rcout << "start-append" << std::endl;
 			for (size_t i=0; metadata[i] != NULL; i++) {
 				subds.push_back(metadata[i]);
 			}
-Rcpp::Rcout << "start-parse" << std::endl;
 			std::vector<std::vector<std::string>> s = parse_metadata_sds(subds);
-Rcpp::Rcout << "end-parse" << std::endl;
 			GDALClose( (GDALDatasetH) poDS );
 			filename = s[0].back();
 			poDS = openGDAL(filename, GDAL_OF_RASTER | GDAL_OF_UPDATE, ops);			
@@ -577,7 +574,6 @@ void tmp_min_max_na(std::vector<T> &out, const std::vector<double> &v, const dou
 
 bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, size_t nrows, size_t startcol, size_t ncols){
 
-Rcpp::Rcout << "values-begin" << std::endl;
 
 	CPLErr err = CE_None;
 	double vmin, vmax;
@@ -670,7 +666,6 @@ Rcpp::Rcout << "values-begin" << std::endl;
 
 bool SpatRaster::writeStopGDAL() {
 
-Rcpp::Rcout << "stop-begin" << std::endl;
 
 	GDALRasterBand *poBand;
 	source[0].hasRange.resize(nlyr());
