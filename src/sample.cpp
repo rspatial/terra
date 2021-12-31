@@ -785,7 +785,9 @@ SpatVector SpatVector::sample(unsigned n, std::string method, unsigned seed) {
 	double vea = ve.area("m", true, {})[0];
 	if (random) {
 		double m = vea / suma;
-		m = std::max(10.0, std::min(m*m, 100.0));
+	// the larger the sample size, the fewer extra samples needed
+		double smx = sqrt(std::max(9.0, 100.0 - n));
+		m = std::max(smx, std::min(m*m, 100.0));
 		size_t ssize = n * m;
 		pxy = extent.sampleRandom(ssize, lonlat, seed);
 	} else {
