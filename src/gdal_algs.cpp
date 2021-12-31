@@ -937,7 +937,16 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 
 
 SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &opt) {
-	SpatRaster out;
+	SpatRaster out = geometry(1, true, true, true);
+	if ((connections != 4) && (connections != 8)) {
+		out.setError("connections should be 4 or 8");
+		return out;
+	}
+	if (threshold < 1) {
+		out.setError("threshold should be > 0");
+		return out;
+	}
+	
 	std::string filename = opt.get_filename();
 	std::string driver;
 	if (filename == "") {

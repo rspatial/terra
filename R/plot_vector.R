@@ -345,7 +345,7 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ...) {
+	pax=list(), plg=list(), grid=FALSE, ...) {
 
 	out <- list()
 	out$ngeom <- nrow(x)
@@ -370,7 +370,8 @@ setMethod("dots", signature(x="SpatVector"),
 
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
-	out$axs <- pax 
+	out$axs <- pax
+	out$draw_grid <- isTRUE(grid)	
 	out$leg <- plg
 	out$leg$geomtype <- geomtype(x)
 	out$asp <- 1
@@ -462,7 +463,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
 	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
-	main=y, buffer=TRUE, background=NULL, plg=list(), pax=list(), nr, nc, ...) {
+	main=y, buffer=TRUE, background=NULL, grid=FALSE, plg=list(), pax=list(), nr, nc, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
@@ -504,9 +505,9 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			if (missing(col)) col <- NULL
 
 			if (y[i] == "") {
-				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, ...)
+				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ...)
 			} else {
-				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, ...)
+				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ...)
 			}
 		}
 		invisible(out)		

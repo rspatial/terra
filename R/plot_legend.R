@@ -46,12 +46,20 @@
 
 
 .plot.axes <- function(x) {
-	if (is.null(x$axs$cex)) {
-		x$axs$cex.axis = 0.75
+	if (is.null(x$axs$cex.axis)) {
+		x$axs$cex.axis = 0.7
 	}
 	if (is.null(x$axs$mgp)) {
-		x$axs$mgp = c(2, .5, 0)
+		x$axs$mgp = c(2, .25, 0)
 	}
+	if (is.null(x$axs$tcl)) {
+		x$axs$tcl <- -0.25
+	}
+	if (x$draw_grid) {
+		x$axs$tck <- 1
+		x$axs$mgp = c(2, .15, 0)
+	}
+	
 	if (!is.null(x$axs$sides)) {
 		if (x$axs$sides[1] > 0) {
 			usr <- graphics::par("usr")

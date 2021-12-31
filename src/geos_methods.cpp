@@ -577,7 +577,6 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	SpatVector out;
 
-
 	if (by != "") {
 		SpatVector tmp = aggregate(by, false);
 		if (tmp.hasError()) {
@@ -602,6 +601,20 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		return out;
 	}
 
+	if (htype != "convex") {
+		#ifndef GEOS361
+		out.setError("GEOS 3.6.1 required for rotated rectangle");
+		return out;
+		#endif
+		if (is_lonlat()) {
+			if ((extent.ymin > -85) && (extent.ymax < 85)) {
+				SpatVector tmp = project("+proj=merc");
+				tmp = tmp.hull(htype, "");
+				tmp = tmp.project(srs.wkt);
+				return tmp;
+			}
+		}
+	}
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector a = aggregate(false);
@@ -741,12 +754,15 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 
 
 	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && ((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
+		SpatSRS insrs = x.srs; 
 		x.setSRS("+proj=merc");
 		double f = 0.5 - (dist / 220000);
 		double halfy = x.extent.ymin + f * (x.extent.ymax - x.extent.ymin);
 		std::vector<double> dd = destpoint_lonlat(0, halfy, 0, dist);
 		dist = dd[1] - halfy;
-		return x.buffer({dist}, quadsegs);
+		x = x.buffer({dist}, quadsegs);
+		x.srs = insrs;
+		return x;
 	} 
 
 	SpatVector tmp;
@@ -1333,7 +1349,7 @@ SpatVector SpatVector::unite(SpatVector v) {
 	}
 	SpatVector sdif = symdif(v);
 	if (sdif.hasError()) {
-		return intsec;
+		return sdif;
 	}
 	return intsec.append(sdif, true);
 }
@@ -1354,6 +1370,9 @@ SpatVector SpatVector::unite() {
 		SpatVector r = subset_rows(i);
 		r.df = d;
 		out = out.unite(r);
+		if (out.hasError()) {
+			return out;
+		}
 	}
 
 	for (size_t i=0; i<out.df.iv.size(); i++) {
@@ -1456,9 +1475,10 @@ SpatVector SpatVector::erase(SpatVector v) {
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
-	std::vector<unsigned> rids;
 	size_t nx = size();
 	size_t ny = v.size();
+	std::vector<long> rids;
+	rids.reserve(std::max(nx, ny));
 
 	for (size_t i = 0; i < nx; i++) {
 		//GEOSGeometry* geom = x[i].get();
@@ -1471,19 +1491,18 @@ SpatVector SpatVector::erase(SpatVector v) {
 			} 
 			if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
 				GEOSGeom_destroy_r(hGEOSCtxt, geom);
-				rids.push_back(i);
 				break;
 			}
 			x[i] = geos_ptr(geom, hGEOSCtxt);
+			rids.push_back(i);
 		}
 	}
 
-	if (rids.size() < nx) {
-		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
+	if (rids.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt, rids);
 		out = coll.get(0);
-		out.df = df;
-		out.df.remove_rows(rids);
-	} 
+		out.df = df.subset_rows(out.df.iv[0]);
+	}
 	geos_finish(hGEOSCtxt);
 
 	if (!srs.is_same(v.srs, true)) {

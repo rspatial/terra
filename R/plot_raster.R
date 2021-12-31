@@ -286,7 +286,8 @@
 .prep.plot.data <- function(x, type, maxcell, cols, mar=NULL, draw=FALSE, 
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), 
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
-  coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, sort=TRUE, ...) {
+  coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, 
+  sort=TRUE, grid=FALSE, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
  
@@ -311,7 +312,9 @@
 	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
 	out$add <- isTRUE(add)
-	out$axs <- pax 
+	out$axs <- pax
+	out$draw_grid <- isTRUE(grid)
+	
 	out$leg <- plg
 	out$asp <- 1
 	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
@@ -389,7 +392,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, reset=FALSE, ...) {
+	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, grid=FALSE, reset=FALSE, ...) {
 
 		y <- round(y)
 		stopifnot((min(y) > 0) & (max(y) <= nlyr(x)))
@@ -401,7 +404,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					alpha <- alpha[[y]]
 				}
 			}
-			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell/(length(x)/2), smooth=smooth, range=range, levels=levels, fun=fun, colNA=colNA, alpha=alpha, ...)
+			plot(x, col=col, type=type, mar=mar, legend=legend, axes=axes, plg=plg, pax=pax, maxcell=maxcell/(length(x)/2), smooth=smooth, range=range, levels=levels, fun=fun, colNA=colNA, alpha=alpha, grid=grid, ...)
 			return(invisible())
 		}
 
@@ -461,7 +464,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
-		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, ...)
+		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
