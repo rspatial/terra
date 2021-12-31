@@ -1,4 +1,53 @@
 
+.assume_lonlat <- function(pr) {
+	(pr$usr[1] > -181) && (pr$usr[2] < 181) && (pr$yaxp[1] > -200) && (pr$yaxp[2] < 200)
+}
+
+.get_dd <- function(pr, lonlat, d=NULL) {
+	if (lonlat) {
+		lat <- mean(pr$yaxp[1:2])
+		if (is.null(d)) {
+			dx <- (pr$usr[2] - pr$usr[1]) / 6
+			d <- as.vector(distance(cbind(0, lat), cbind(dx, lat), TRUE))
+			d <- signif(d / 1000, 2) 
+		}
+		p <- cbind(0, lat)
+		dd <- .destPoint(p, d * 1000)
+		dd <- dd[1,1]
+	} else {
+		if (is.null(d)) {
+			d <- (pr$usr[2] - pr$usr[1]) / 6
+			digits <- floor(log10(d)) + 1
+			d <- round(d, -(digits-1))	
+		}
+		dd <- d
+	}
+	dd
+}
+
+.get_xy <- function(xy, dx=0, dy=0, pr, defpos="bottomleft", caller="") {
+    if(is.null(xy)) {
+		xy <- defpos
+	}
+	if (!is.character(xy)) {
+		return( cbind(xy[1], xy[2]) )
+	}	
+	xy <- tolower(xy)
+	parrange <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
+	padding=c(5,5) / 100
+	if (xy == "bottomleft") {
+		xy <- c(pr$usr[1]+(padding[1]*parrange[1]), pr$usr[3]+(padding[2]*parrange[2])) + c(0,dy)
+	} else if (xy == "bottomright") {
+		xy <- c(pr$usr[2]-(padding[1]*parrange[1]), pr$usr[3]+(padding[2]*parrange[2])) - c(dx,dy)
+	} else if (xy == "topright") {
+		xy <- c(pr$usr[2]-(padding[1]*parrange[1]), pr$usr[4]-(padding[2]*parrange[2])) - c(dx,dy)
+	} else if (xy == "topleft") {
+		xy <- c(pr$usr[1]+(padding[1]*parrange[1]), pr$usr[4]-(padding[2]*parrange[2])) - c(0,dy)
+	} else {
+		error(caller, 'xy must be a coordinate pair (two numbers) or one of "bottomleft", "bottomright", topleft", "topright"')
+	}
+	xy
+}
 
 .destPoint <- function (p, d, b=90, r=6378137) {
     toRad <- pi/180
@@ -12,11 +61,39 @@
 }
 
 
-.arrow <- function(d, xy=click(), head=0.1, ...) {
-	graphics::arrows(xy[1], xy[2], xy[1], xy[2]+d, length=head, ...)
-	lines(rbind(xy, rbind(cbind(xy[1], xy[2]-d))), ...)
-	text(xy[1,1], xy[1,2]-(0.25*d), "N")
+arrow <- function(d, xy=NULL, head=0.1, angle=0, label="N", lonlat=NULL, xpd=TRUE, ...) {
+	pr <- graphics::par()
+	if (is.null(lonlat)) {
+		lonlat <- .assume_lonlat(pr)
+	}
+
+	if (missing(d))	{
+		d <- .get_dd(pr, lonlat, NULL) / 3
+	}
+
+	xy <- .get_xy(xy, 0, d, pr, "topright", caller="arrow")	
+	if (angle != 0) {
+		b <- angle * pi / 180;
+		p2 <- xy + c(d * sin(b), d * cos(b))
+		b <- b + pi
+		p1 <- xy + c(d * sin(b), d * cos(b))
+	} else {
+		p1 <- xy - c(0,d)
+		p2 <- xy + c(0,d)
+	}
+	lwd <- list(...)$lwd + 2
+	if (is.null(lwd)) lwd <- 3
+	graphics::arrows(p1[1], p1[2], p2[1], p2[2], length=head, lwd=lwd, col="white", xpd=xpd)
+	graphics::arrows(p1[1], p1[2], p2[1], p2[2], length=head, xpd=xpd, ...)
+	if (label != "") {
+		if (is.null(list(...)$hw)) {
+			.halo(xy[1], xy[2], label, hw=.2, xpd=xpd, ... )
+		} else {
+			.halo(xy[1], xy[2], label, xpd=xpd, ... )		
+		}
+	}
 }
+
 
 
 sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...){
@@ -24,39 +101,16 @@ sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, 
 	stopifnot(type %in% c("line", "bar"))
 	pr <- graphics::par()
 	if (is.null(lonlat)) {
-		if ( pr$usr[1] > -181 & pr$usr[2] < 181 &  pr$yaxp[1] > -200 &  pr$yaxp[2] < 200  ) {
-			lonlat <- TRUE
-		} else {
-			lonlat <- FALSE
-		}
+		lonlat <- .assume_lonlat(pr)
 	}
 
-	if (lonlat) {
-		lat <- mean(pr$yaxp[1:2])
-		if (missing(d)) {
-			dx <- (pr$usr[2] - pr$usr[1]) / 6
-			d <- as.vector(distance(cbind(0, lat), cbind(dx, lat), TRUE))
-			d <- signif(d / 1000, 2) 
-			label <- NULL
-		}
-		p <- cbind(0, lat)
-		dd <- .destPoint(p, d * 1000)
-		dd <- dd[1,1]
-	} else {
-		if (missing(d)) {
-			d <- round(10*(pr$usr[2] - pr$usr[1])/10) / 10
-			label <- NULL
-		}
-		dd <- d
+	if (missing(d)) {
+		label <- NULL
+		d <- NULL
 	}
-
-
-    if(is.null(xy)) {
-		padding=c(5,5) / 100
-		#defaults to a lower left hand position
-		parrange <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
-		xy <- c(pr$usr[1]+(padding[1]*parrange[1]), pr$usr[3]+(padding[2]*parrange[2]))
-	}
+	dd <- .get_dd(pr, lonlat, d)
+	if (is.null(d)) d <- dd
+	xy <- .get_xy(xy, dd, 0, pr, "bottomleft", caller="sbar")
 
 	if (type == "line") {
 		lines(matrix(c(xy[1], xy[2], xy[1]+dd, xy[2]), byrow=T, nrow=2), lwd=lwd, xpd=xpd, ...)
