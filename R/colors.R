@@ -6,6 +6,7 @@ setMethod ("coltab" , "SpatRaster",
 		if (any(hascols)) {
 			d <- x@ptr$getColors()
 			d <- lapply(d, .getSpatDF)
+			d[!hascols] <- list(NULL)
 		} else {
 			d <- vector("list", length(hascols))
 		}

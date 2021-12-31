@@ -157,6 +157,11 @@
 			}
 		}
 	}
+	if (isTRUE(out$legend_sort)) {
+		ord <- order(out$leg$legend)
+		out$leg$legend <- out$leg$legend[ord]
+		out$leg$fill <- out$leg$fill[ord]
+	}
 	out
 }
 
@@ -281,7 +286,7 @@
 .prep.plot.data <- function(x, type, maxcell, cols, mar=NULL, draw=FALSE, 
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), 
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
-  coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, ...) {
+  coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, sort=TRUE, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
  
@@ -330,6 +335,7 @@
 	out$interpolate <- FALSE
 	out$legend_draw <- isTRUE(legend)
 	out$legend_only <- isTRUE(legend.only)
+	out$legend_sort <- isTRUE(sort)
 
 	if (is.null(mar)) {
 		if (out$legend_draw) {

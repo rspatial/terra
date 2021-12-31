@@ -10,6 +10,28 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// hex2rgb
+std::vector<unsigned char> hex2rgb(std::string s);
+RcppExport SEXP _terra_hex2rgb(SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(hex2rgb(s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rgb2hex
+std::string rgb2hex(std::vector<unsigned char> x);
+RcppExport SEXP _terra_rgb2hex(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<unsigned char> >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rgb2hex(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // sameSRS
 bool sameSRS(std::string x, std::string y);
 RcppExport SEXP _terra_sameSRS(SEXP xSEXP, SEXP ySEXP) {
@@ -357,6 +379,8 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_terra_hex2rgb", (DL_FUNC) &_terra_hex2rgb, 1},
+    {"_terra_rgb2hex", (DL_FUNC) &_terra_rgb2hex, 1},
     {"_terra_sameSRS", (DL_FUNC) &_terra_sameSRS, 2},
     {"_terra_getCRSname", (DL_FUNC) &_terra_getCRSname, 1},
     {"_terra_getLinearUnits", (DL_FUNC) &_terra_getLinearUnits, 1},

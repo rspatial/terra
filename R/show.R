@@ -211,9 +211,9 @@ setMethod ("show" , "SpatRaster",
 			if (!is.null(rgb)) {				 
 				cat(paste("colors", toupper(object@ptr$rgbtype), " :"), paste(rgb, collapse=", "), "\n")
 			}
-			hasct <- !sapply(coltab(object), is.null)
+			hasct <- object@ptr$hasColors()
 			if (any(hasct)) {
-				cat("color tables:", which(hasct), "\n")			
+				cat("color table :", paste(which(hasct), collapse=", "), "\n")			
 			}
 
 		

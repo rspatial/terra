@@ -1,8 +1,7 @@
 #include <Rcpp.h>
-//#include "spatRaster.h"
 #include "spatRasterMultiple.h"
+#include "string_utils.h"
 
-//#include <memory> //std::addressof
 #include "gdal_priv.h"
 #include "gdalio.h"
 #include "ogr_spatialref.h"
@@ -23,6 +22,27 @@
 
 #define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
+
+
+// [[Rcpp::export]]
+std::vector<unsigned char> hex2rgb(std::string s) { 
+	unsigned char r, g, b;
+	s = s.erase(0,1); // remove the "#"
+	sscanf(s.c_str(), "%02hhx%02hhx%02hhx", &r, &g, &b);
+	std::vector<unsigned char> x = {r, g, b};
+	return x;
+}
+
+// [[Rcpp::export]]
+std::string rgb2hex(std::vector<unsigned char> x) { 
+	std::stringstream ss; 
+	ss << "#" << std::hex << std::setw(6) << (x[0] << 16 | x[1] << 8 | x[2] ); 
+	std::string s = ss.str();
+	//std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+	str_replace_all(s, " ", "0");
+	return s;
+}
+
 
 // [[Rcpp::export(name = ".sameSRS")]]
 bool sameSRS(std::string x, std::string y) {

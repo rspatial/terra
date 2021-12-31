@@ -146,7 +146,9 @@ setMethod("dots", signature(x="SpatVector"),
 
 .vect.legend.classes <- function(out) {
 
-	out$uv <- sort(out$uv)
+	if (isTRUE(out$legend_sort)) {
+		out$uv <- sort(out$uv)
+	}
 	ucols <- .getCols(length(out$uv), out$cols)
 
 	i <- match(out$v, out$uv)
@@ -175,6 +177,7 @@ setMethod("dots", signature(x="SpatVector"),
 	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
 		out$leg$x <- "top"
 	}
+
 
 	out
 }
@@ -277,7 +280,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", sort=TRUE, ...) {
 
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
@@ -291,6 +294,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$leg$density <- density
 	out$leg$angle <- angle
 	out$leg$border <- border
+	out$legend_sort <- isTRUE(sort)
 
 	nuq <- length(out$uv)
 	if (out$legend_type == "none") {
