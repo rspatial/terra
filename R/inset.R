@@ -47,6 +47,11 @@ setMethod("inext", signature(x="SpatVector"),
 	dx <- xybox[1] - xy[1]
 	dy <- xybox[2] - xy[2]
 	y  <- shift(y, dx, dy)
+	if (!is.null(box)) {
+		ex <- ext(x)
+		box  <- rescale(as.polygons(box), scale, x0=ex[1]+diff(ex[1:2])/2, y0=ex[3]+diff(ex[3:4])/2)
+		box <- shift(box, dx, dy)
+	}
 
 	if (loc != "") {
 		stopifnot(loc %in% c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"))
@@ -67,6 +72,9 @@ setMethod("inext", signature(x="SpatVector"),
 		}
 		y <- shift(y, dx, dy)
 		e <- shift(e, dx, dy)
+		if (!is.null(box)) {
+			box <- shift(box, dx, dy)
+		}
 	}
 	if (!is.na(background)) {
 		polys(as.polygons(e), col=background, lty=0)
@@ -84,9 +92,6 @@ setMethod("inext", signature(x="SpatVector"),
 	}
 
 	if (!is.null(box)) {
-		ex <- ext(x)
-		box  <- rescale(as.polygons(box), scale, x0=ex[1]+diff(ex[1:2])/2, y0=ex[3]+diff(ex[3:4])/2)
-		box <- shift(box, dx, dy)
 		if (missing(pbox) || !is.list(pbox)) {
 			pbox <- list()
 		}
@@ -95,6 +100,7 @@ setMethod("inext", signature(x="SpatVector"),
 	}
 	invisible(y)
 }
+
 
 setMethod("inset", signature(x="SpatVector"), 
 	function(x, e, loc="", scale=0.2, background="white", perimeter=TRUE, box=NULL, pper, pbox, ...) {
