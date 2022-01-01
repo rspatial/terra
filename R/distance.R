@@ -32,7 +32,7 @@ setMethod("distance", signature(x="SpatRaster", y="SpatVector"),
 	function(x, y, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (is.lonlat(x, perhaps=TRUE)) {
-			x@ptr <- x@ptr$vectDistanceRasterize(y@ptr, TRUE, opt)
+			x@ptr <- x@ptr$vectDisdirRasterize(y@ptr, TRUE, TRUE, FALSE, FALSE, opt)
 		} else {
 			x@ptr <- x@ptr$vectDistanceDirect(y@ptr, opt)
 		} 
@@ -129,4 +129,12 @@ setMethod("distance", signature(x="matrix", y="missing"),
 	}
 )
 
+
+setMethod("direction", signature(x="SpatRaster"), 
+	function(x, from=FALSE, degrees=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$rastDirection(from[1], degrees[1], opt)
+		messages(x, "direction")
+	}
+)
 

@@ -611,8 +611,9 @@ RCPP_MODULE(spat){
 		.method("gridDistance", &SpatRaster::gridDistance)
 		.method("costDistance", &SpatRaster::costDistance)
 		.method("rastDistance", &SpatRaster::distance)
+		.method("rastDirection", &SpatRaster::direction)
 
-		.method("vectDistanceRasterize", &SpatRaster::distance_vector_rasterize) 
+		.method("vectDisdirRasterize", &SpatRaster::disdir_vector_rasterize) 
 		.method("vectDistanceDirect", &SpatRaster::distance_vector) 
 		.method("clamp", &SpatRaster::clamp, "clamp")
 		.method("replaceValues", &SpatRaster::replaceValues, "replace")

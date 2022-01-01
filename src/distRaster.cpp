@@ -32,9 +32,17 @@ void shortDistPoints(std::vector<double> &d, const std::vector<double> &x, const
 	}
 }
 
+void shortDirectPoints(std::vector<double> &d, const std::vector<double> &x, const std::vector<double> &y, const std::vector<double> &px, const std::vector<double> &py, const bool& lonlat, bool &from, bool &degrees) {
+	if (lonlat) {
+		directionToNearest_lonlat(d, x, y, px, py, degrees, from);
+	} else {
+		directionToNearest_plane(d, x, y, px, py, degrees, from);
+	}
+}
 
 
-SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points, SpatOptions &opt) {
+
+SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, bool distance, bool from, bool degrees, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	if (source[0].srs.wkt == "") {
@@ -68,13 +76,13 @@ SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points
 	}
 
 	if (pxy.size() == 0) {
-		out.setError("no locations to compute distance from");
+		out.setError("no locations to compute from");
 		return(out);
 	}
 
 	bool lonlat = is_lonlat(); // m == 0
 	//double torad = 0.0174532925199433;
-	//if (lonlat) {
+	//if (!lonlat) {
 	//	for (size_t i=0; i<pxy[0].size(); i++) {
 	//		pxy[0][i] *= torad;
 	//		pxy[1][i] *= torad;
@@ -91,36 +99,43 @@ SpatRaster SpatRaster::distance_vector_rasterize(SpatVector p, bool align_points
 		readStop();
 		return out;
 	}
-	std::vector<double> v, cells;
 
 	for (size_t i = 0; i < out.bs.n; i++) {
-		double s = out.bs.row[i] * nc;
+		std::vector<double> v, cells;
 		cells.resize(out.bs.nrows[i] * nc) ;
-		std::iota(cells.begin(), cells.end(), s);
+		std::iota(cells.begin(), cells.end(), out.bs.row[i] * nc);
 
-		if (gtype != "points") {
+		if (gtype == "points") {
+			readBlock(v, out.bs, i);
+			for (size_t j=0; j<v.size(); j++) {
+				if (!std::isnan(v[j])) {
+					cells[j] = NAN;
+				}
+			}			
+		} else {
 			x.readBlock(v, out.bs, i);
 			for (size_t j=0; j<v.size(); j++) {
 				if (!std::isnan(v[j])) {
-					cells[j] = -1;
+					cells[j] = NAN;
 				}
 			}
 		} 
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
-		std::vector<double> d(cells.size(), 0); 
-		//if (lonlat) {
-		//	for (size_t i=0; i<xy[0].size(); i++) {
-		//		xy[0][i] *= torad;
-		//		xy[1][i] *= torad;
-		//	}
-		//}
-		shortDistPoints(d, xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
-		if (!out.writeBlock(d, i)) return out;
+		if (distance) {
+			for (double& d : cells) d = 0;
+			shortDistPoints(cells, xy[0], xy[1], pxy[0], pxy[1], lonlat, m);
+		} else {
+			for (double& d : cells) d = NAN;
+			shortDirectPoints(cells, xy[0], xy[1], pxy[0], pxy[1], lonlat, from, degrees);
+		}
+		if (!out.writeBlock(cells, i)) return out;
 	}
+
 	out.writeStop();
 	readStop();
 	return(out);
 }
+
 
 
 SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
@@ -170,6 +185,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
 }
 
 
+
 SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
@@ -186,11 +202,34 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 		return out;
 	}
 
-	out = edges(false, "inner", 8, 0, ops);
+	out = edges(false, "inner", 8, NAN, ops);
 	SpatVector p = out.as_points(false, true, opt);
-	out = out.distance_vector_rasterize(p, false, opt);
+	out = disdir_vector_rasterize(p, false, true, false, false, opt);
 	return out;
 }
+
+SpatRaster SpatRaster::direction(bool from, bool degrees, SpatOptions &opt) {
+	SpatRaster out = geometry(1);
+	if (!hasValues()) {
+		out.setError("SpatRaster has no values");
+		return out;
+	}
+
+	SpatOptions ops(opt);
+	if (nlyr() > 1) {
+		std::vector<unsigned> lyr = {0};
+		out = subset(lyr, ops);
+		out = out.distance(opt);
+		out.addWarning("distance computations are only done for the first input layer");
+		return out;
+	}
+
+	out = edges(false, "inner", 8, NAN, ops);
+	SpatVector p = out.as_points(false, true, opt);
+	out = disdir_vector_rasterize(p, false, false, from, degrees, opt);
+	return out;
+}
+
 
 
 
@@ -1005,7 +1044,7 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, 0, ops);
 	SpatVector p = e.as_points(false, true, opt);
-	out = out.distance_vector_rasterize(p, false, ops);
+	out = out.disdir_vector_rasterize(p, false, true, false, false, ops);
 	out = out.arith(d, "<=", false, opt);
 	return out;
 }

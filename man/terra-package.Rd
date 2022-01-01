@@ -136,7 +136,7 @@ Also see the methods in section VIII
     \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
     \code{\link{boundaries}} \tab Detection of boundaries (edges)\cr
     \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA} or to or from a vector object\cr
-    \code{direction} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
+    \code{\link{direction}} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{\link{focalCpp}} \tab Faster focal by using custom C++ functions \cr
     \code{\link{focalReg}} \tab Regression beween layers for focal areas \cr
@@ -495,7 +495,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
     \code{\link{inset}} \tab Add a small inset (overview) map\cr
-    \code{\link{sbar}} \tab Add a scalebar\cr
+    \code{\link{sbar}} \tab Add a scalebar or North arrow\cr
 	}
 }
 
