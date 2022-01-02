@@ -20,18 +20,17 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 }
 
 \usage{
-\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), 
-     pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
-     colNA=NULL, alpha=NULL, grid=FALSE, reset=FALSE, ...)
+\S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, 
+	plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, 
+    colNA=NULL, alpha=NULL, grid=FALSE, ext=NULL, reset=FALSE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 
-
 \S4method{plot}{SpatVector,character}(x, y, col, type, mar=NULL, legend=TRUE,
-     add=FALSE, axes=!add, main=y, buffer=TRUE, background=NULL, grid=FALSE,
-     plg=list(), pax=list(), nr, nc, ...)
+    add=FALSE, axes=!add, main=y, buffer=TRUE, background=NULL, grid=FALSE,
+    ext=NULL, plg=list(), pax=list(), nr, nc, ...)
 
 \S4method{plot}{SpatVector,numeric}(x, y, ...)
 
@@ -66,6 +65,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{main}{character. Main plot titles (one for each layer to be plotted)}
   \item{maxnl}{positive integer. Maximum number of layers to plot (for a multi-layer object)}
   \item{add}{logical. If \code{TRUE} add the object to the current plot}
+  \item{ext}{SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot}
   \item{reset}{logical. If \code{TRUE} add the margins (see argument \code{mar}) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  \code{\link{lines}}}
   \item{...}{arguments passed to \code{plot("SpatRaster", "numeric")} and additional graphical arguments}  
 }

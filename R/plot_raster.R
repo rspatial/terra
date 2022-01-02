@@ -392,7 +392,7 @@
 
 
 setMethod("plot", signature(x="SpatRaster", y="numeric"), 
-	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, grid=FALSE, reset=FALSE, ...) {
+	function(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL, alpha=NULL, grid=FALSE, ext=NULL, reset=FALSE, ...) {
 
 		y <- round(y)
 		stopifnot((min(y) > 0) & (max(y) <= nlyr(x)))

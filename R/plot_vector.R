@@ -345,29 +345,36 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), grid=FALSE, ...) {
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, ...) {
 
 	out <- list()
 	out$ngeom <- nrow(x)
+
 	e <- as.vector(ext(x))
 	out$ext <- e
-
-	if (!is.null(xlim)) {
-		stopifnot(length(xlim) == 2)
-		e[1:2] <- sort(xlim)
-	} else if (buffer) {
-		dx <- diff(e[1:2]) / 50
-		e[1:2] <- e[1:2] + c(-dx, dx)
+	if (!is.null(ext)) {
+		stopifnot(inherits(ext, "SpatExtent"))
+		x <- crop(x, ext)
+		out$ext <- as.vector(ext(x))
+		out$lim <- ext
+	} else {
+		if (!is.null(xlim)) {
+			stopifnot(length(xlim) == 2)
+			e[1:2] <- sort(xlim)
+		} else if (buffer) {
+			dx <- diff(e[1:2]) / 50
+			e[1:2] <- e[1:2] + c(-dx, dx)
+		}
+		if (!is.null(ylim)) {
+			stopifnot(length(ylim) == 2)
+			e[3:4] <- sort(ylim)
+		} else if (buffer) {
+			dy <- diff(e[3:4]) / 50
+			e[3:4] <- e[3:4] + c(-dy, dy)
+		}
+		out$lim <- e
 	}
-	if (!is.null(ylim)) {
-		stopifnot(length(ylim) == 2)
-		e[3:4] <- sort(ylim)
-	} else if (buffer) {
-		dy <- diff(e[3:4]) / 50
-		e[3:4] <- e[3:4] + c(-dy, dy)
-	}
-	out$lim <- e
-
+	
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
 	out$axs <- pax
@@ -463,7 +470,8 @@ setMethod("dots", signature(x="SpatVector"),
 
 setMethod("plot", signature(x="SpatVector", y="character"), 
 	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
-	main=y, buffer=TRUE, background=NULL, grid=FALSE, plg=list(), pax=list(), nr, nc, ...) {
+	main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL,
+	plg=list(), pax=list(), nr, nc, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
@@ -505,9 +513,9 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			if (missing(col)) col <- NULL
 
 			if (y[i] == "") {
-				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ...)
+				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, ...)
 			} else {
-				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ...)
+				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, ...)
 			}
 		}
 		invisible(out)		

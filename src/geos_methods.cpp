@@ -577,6 +577,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	SpatVector out;
 
+
 	if (by != "") {
 		SpatVector tmp = aggregate(by, false);
 		if (tmp.hasError()) {
@@ -615,6 +616,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 			}
 		}
 	}
+
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	SpatVector a = aggregate(false);
@@ -754,7 +756,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 
 
 	if ((x.extent.ymin > -60) && (x.extent.ymax < 60) && ((x.extent.ymax - x.extent.ymin) < 1) && dist < 110000) {
-		SpatSRS insrs = x.srs; 
+		SpatSRS insrs = x.srs;		
 		x.setSRS("+proj=merc");
 		double f = 0.5 - (dist / 220000);
 		double halfy = x.extent.ymin + f * (x.extent.ymax - x.extent.ymin);
@@ -762,7 +764,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		dist = dd[1] - halfy;
 		x = x.buffer({dist}, quadsegs);
 		x.srs = insrs;
-		return x;
+		return x;		
 	} 
 
 	SpatVector tmp;
@@ -1372,7 +1374,7 @@ SpatVector SpatVector::unite() {
 		out = out.unite(r);
 		if (out.hasError()) {
 			return out;
-		}
+		}		
 	}
 
 	for (size_t i=0; i<out.df.iv.size(); i++) {
@@ -1470,16 +1472,12 @@ SpatVector SpatVector::cover(SpatVector v, bool identity) {
 
 SpatVector SpatVector::erase(SpatVector v) {
 
-	SpatVector out;
-
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+	std::vector<unsigned> rids;
 	size_t nx = size();
 	size_t ny = v.size();
-	std::vector<long> rids;
-	size_t nr = std::max(nx, ny);
-	//rids.reserve(nr);
 
 	for (size_t i = 0; i < nx; i++) {
 		//GEOSGeometry* geom = x[i].get();
@@ -1492,18 +1490,19 @@ SpatVector SpatVector::erase(SpatVector v) {
 			} 
 			if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
 				GEOSGeom_destroy_r(hGEOSCtxt, geom);
+				rids.push_back(i);
 				break;
 			}
 			x[i] = geos_ptr(geom, hGEOSCtxt);
-			rids.push_back(i);
 		}
 	}
 
-	if (rids.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt, rids);
+	if (rids.size() < nx) {
+		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
 		out = coll.get(0);
-		out.df = df.subset_rows(out.df.iv[0]);
-	}
+		out.df = df;
+		out.df.remove_rows(rids);
+	} 
 	geos_finish(hGEOSCtxt);
 
 	if (!srs.is_same(v.srs, true)) {
@@ -1887,5 +1886,4 @@ SpatVector SpatVector::clearance() {
 
 #endif
 }
-
 
