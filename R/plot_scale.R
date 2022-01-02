@@ -92,7 +92,7 @@ add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=
 		rangle <- 90 - angle	
 		mcex <- 3
 	}
-	text(x, y, symbol, cex=cex*mcex, srt=rangle, ...)
+	text(x, y, symbol, cex=cex*mcex, srt=rangle, xpd=xpd, ...)
 	xs <- graphics::strwidth(symbol,cex=cex*3)
 	ys <- graphics::strheight(symbol,cex=cex*3)
 	b <- pi * angle / 180

@@ -1479,7 +1479,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 	size_t ny = v.size();
 	std::vector<long> rids;
 	size_t nr = std::max(nx, ny);
-	rids.reserve(nr);
+	//rids.reserve(nr);
 
 	for (size_t i = 0; i < nx; i++) {
 		//GEOSGeometry* geom = x[i].get();
