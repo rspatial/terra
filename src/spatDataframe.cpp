@@ -81,7 +81,7 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 
 	SpatDataFrame out;
 	unsigned nr = nrow();
-	if (nr > 0) {
+	if (range.size() > 0) {
 		for (int i = range.size(); i>0; i--) {
 			if (range[i-1] > nr) {
 				range.erase(range.begin() + i-1);
