@@ -489,13 +489,14 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{text}} \tab Add text (such as the values of a SpatRaster or SpatVector) to a map \cr
     \code{\link{image}} \tab Alternative to plot to make a map with a SpatRaster \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" plot \cr
-    \code{\link{RGB2col}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr
+    \code{\link{sbar}} \tab Add a scalebar to a map\cr
+    \code{\link{arrow}} \tab Add a north arrow to a map\cr
+    \code{\link{inset}} \tab Add a small inset (overview) map\cr	
     \code{\link{dots}} \tab Make a dot-density map \cr
     \code{\link{cartogram}} \tab Make a cartogram \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
-    \code{\link{inset}} \tab Add a small inset (overview) map\cr
-    \code{\link{sbar}} \tab Add a scalebar or North arrow\cr
+    \code{\link{RGB2col}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr	
 	}
 }
 
