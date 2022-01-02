@@ -71,16 +71,28 @@
 
 
 
-add_N <- function(x, y, asp, label, type=0, angle=0, cex=1, srt=0, xpd=TRUE, ...) {
-	if (type == 2) { symbol = "➢" 
-	} else if (type == 3) { symbol = "➙"
-	} else if (type == 4) { symbol = "➲"
-	} else if (type == 5) { symbol = "➾"
-	} else if (type == 6) { symbol = "➸"
-	} else { symbol = "➻" }
-	
-	rangle <- 90 - angle
-	text(x, y, symbol, cex=cex*3, srt=rangle, ...)
+add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=TRUE, ...) {
+
+	if (type == 0) { symbol = user  
+	} else if (type == 2) { symbol = "\u27A2" 
+	} else if (type == 3) { symbol = "\u2799"
+	} else if (type == 4) { symbol = "\u27B2"
+	} else if (type == 5) { symbol = "\u27BE"
+	} else if (type == 6) { symbol = "\u27B8"
+	} else if (type == 7) { symbol = "\u27BB"
+	} else if (type == 8) { symbol = "\u27B5"	
+	} else if (type == 9) { symbol = "\u279F"
+	} else if (type == 10) { symbol = "\u261B"
+	} else if (type == 11) { symbol = "\u2708"
+	} else { symbol = "\u2629"}
+	if (type == 11) {
+		rangle <- 45 - angle
+		mcex <- 1.5
+	} else {
+		rangle <- 90 - angle	
+		mcex <- 3
+	}
+	text(x, y, symbol, cex=cex*mcex, srt=rangle, ...)
 	xs <- graphics::strwidth(symbol,cex=cex*3)
 	ys <- graphics::strheight(symbol,cex=cex*3)
 	b <- pi * angle / 180
@@ -88,13 +100,15 @@ add_N <- function(x, y, asp, label, type=0, angle=0, cex=1, srt=0, xpd=TRUE, ...
 	rys <- (abs(xs * sin(b)) + abs(ys * cos(b)))# * asp
 #	xoff <- (rxs - xs) / 2
 #	yoff <- rys + 0.05 * graphics::strheight(label,cex=cex)
-	xoff = 0.08 * rxs
-	yoff = rys * 1.06 * max(0.6, abs(cos(angle)))
+	xoff = 0.1 * rxs
+	yoff = 0.8 * rys *  max(0.5, abs(cos(angle)))
 	
     if (type == 4) {
         .halo(x+xoff, y-0.2*yoff, label, cex = cex, srt = srt, xpd = xpd, ...)
+	} else if (type == 10) {
+        .halo(x+xoff, y-yoff, label, cex = cex, srt = srt, xpd = xpd, ...)
     } else {
-        text(x+xoff, y + yoff, label, cex = cex, srt = srt, xpd = xpd, ...)
+        text(x+xoff, y+yoff, label, cex = cex, srt = srt, xpd = xpd, ...)
     }
 }
 
@@ -109,8 +123,14 @@ arrow <- function(d, xy=NULL, type=1, label="N", angle=0, head=0.1, xpd=TRUE, ..
 	}
 	xy <- .get_xy(xy, 0, d, pr, "topright", caller="arrow")	
 
-	type <- round(type)
-	if ((type <= 1) || (type > 8)) {
+	if (inherits(type, "character")) {
+		usertype <- type
+		type = 0
+	} else {
+		type <- round(type)
+		usertype <- ""
+	}
+	if (type == 1) {
 		if (angle != 0) {
 			b <- angle * pi / 180;
 			p2 <- xy + c(d * sin(b), d * cos(b))
@@ -143,7 +163,7 @@ arrow <- function(d, xy=NULL, type=1, label="N", angle=0, head=0.1, xpd=TRUE, ..
 			}
 		}
 	} else {
-		add_N(xy[1], xy[2], asp=asp, label=label, angle=angle, type=type, xpd=xpd, ...)
+		add_N(xy[1], xy[2], asp=asp, label=label, angle=angle, type=type, user=usertype, xpd=xpd, ...)
 	}
 }
 

@@ -80,14 +80,14 @@ SpatDataFrame SpatDataFrame::subset_rows(unsigned i) {
 SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) { 
 
 	SpatDataFrame out;
-
 	unsigned nr = nrow();
-	for (int i = range.size(); i>0; i--) {
-		if (range[i-1] > nr) {
-			range.erase(range.begin() + i-1);
+	if (nr > 0) {
+		for (int i = range.size(); i>0; i--) {
+			if (range[i-1] > nr) {
+				range.erase(range.begin() + i-1);
+			}
 		}
 	}
-
 	out.names = names;
 	out.itype = itype;
 	out.iplace = iplace;
