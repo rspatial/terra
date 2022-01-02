@@ -53,8 +53,9 @@ setMethod("inext", signature(x="SpatVector"),
 		box <- shift(box, dx, dy)
 	}
 
-	if (loc != "") {
+	if ((loc != "") && (loc != "topleft")) {
 		stopifnot(loc %in% c("bottomright", "bottom", "bottomleft", "left", "topleft", "top", "topright", "right", "center"))
+		
 		ex <- ext(x)
 		if (grepl("top", loc)) {
 			dy <- usr[4] - e[4]

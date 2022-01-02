@@ -14,13 +14,12 @@ Add a scale bar or a North arrow to a map
 sbar(d, xy=NULL, type="line", divs=2, below="", 
     lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...)
 
-arrow(d, xy=NULL, head=0.1, angle=0, label="N", lonlat=NULL, xpd=TRUE, ...)
+arrow(d, xy=NULL, type=1, label="N", angle=0, head=0.1, xpd=TRUE, ...)
 }
-
 
 \arguments{
 \item{d}{numeric. Distance covered by the scale bar or arrow. For the scale bar, it should be in the units of the coordinates of the plot (map), and in km for angular (longitude/latitude) data; see argument \code{lonlat}. For the arrow it should be in plot coordinates}
-\item{xy}{x and y coordinate to place the scale bar or arrow. Can be NULL}
+\item{xy}{numeric. x and y coordinate to place the scale bar or arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
 \item{type}{"line" or "bar"}
 \item{divs}{number of divisions for a bar: 2 or 4}
 \item{below}{character. Text to go below the scale bar (e.g., "kilometers")}
@@ -29,8 +28,10 @@ arrow(d, xy=NULL, head=0.1, angle=0, label="N", lonlat=NULL, xpd=TRUE, ...)
 \item{label}{vector of three numbers to label the scale bar (beginning, midpoint, end); or a character printed over the arrow}
 \item{lwd}{line width for the "line" type of the scale bar}
 \item{xpd}{logical. If \code{TRUE}, the scale bar or arrow can be outside the plot area}
-\item{head}{numeric. The size of the arrow "head"}
+
+\item{type}{integer between 1 and 7 to choose an arrow type}
 \item{angle}{numeric. The angle of the arrow in degrees}
+\item{head}{numeric. The size of the arrow "head", for \code{type=1}}
 \item{...}{graphical arguments to be passed to other methods }
 }
 

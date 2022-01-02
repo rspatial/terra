@@ -4,7 +4,7 @@
 
 - `terrain` created empty (`NA`) rows between chunks used for processing large rasters. [#453](https://github.com/rspatial/terra/issues/452) by Robert Ritson.
 - `inset` did not draw the "box" correctly. [#457](https://github.com/rspatial/terra/issues/457) by Márcia Barbosa
-- it is not possible to add subdatasets to GPKG and GTiff files. [#300](https://github.com/rspatial/terra/issues/300) by gtitov
+- it is not possible to add sub-datasets to GPKG and GTiff files. [#300](https://github.com/rspatial/terra/issues/300) by gtitov
 
 ## enhancements 
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
@@ -12,8 +12,10 @@
 - The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459](https://github.com/rspatial/terra/issues/459) by Edzer Pebesma
 
 ## new 
-- new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
+- new method `arrow` to draw a (North) arrow on a map. [#461](https://github.com/rspatial/terra/issues/461) by Márcia Barbosa
 - new method `densify` to insert nodes between existing nodes of a line or polygon SpatVector
+- new method `direction` for SpatRaster. [#462](https://github.com/rspatial/terra/issues/462) by Márcia Barbosa
+- new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
 
 
 # version 1.5-5

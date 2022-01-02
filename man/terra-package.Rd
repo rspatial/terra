@@ -13,13 +13,13 @@
 
 The package implements two main classes (R data types): \code{SpatRaster} and \code{SpatVector}. \code{SpatRaster} supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. \code{SpatVector} supports all types of geometric operations such as intersections.
 
-Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are vectors of SpatRaster or SpatVector. 
+Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of SpatRaster or SpatVector objects. 
 
 These classes hold a C++ pointer to the data and they cannot be directly saved to a ".Rds" file or used in cluster computing. They cannot be recovered from a saved R session either. See \code{\link{wrap}} or \code{\link{writeRaster}} to work around that limitation. 
 
 The \code{terra} package is conceived as a replacement of the \code{raster} package. \code{terra} has a very similar, but simpler, interface, and it is faster than \code{raster}. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
-Below is a list of some of the most important methods grouped by theme. Some of these may not have been implemented yet (they are not hyperlinked). 
+Below is a list of some of the most important methods grouped by theme. 
 }
 
 \section{}{

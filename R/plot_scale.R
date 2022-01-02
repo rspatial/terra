@@ -34,17 +34,25 @@
 	}	
 	xy <- tolower(xy)
 	parrange <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
-	padding=c(5,5) / 100
-	if (xy == "bottomleft") {
-		xy <- c(pr$usr[1]+(padding[1]*parrange[1]), pr$usr[3]+(padding[2]*parrange[2])) + c(0,dy)
+	pad=c(5,5) / 100
+	if (xy == "bottom") {
+		xy <- c(pr$usr[1]+0.5*parrange[1]-0.5*dx, pr$usr[3]+(pad[2]*parrange[2])) + c(0,dy)
+	} else if (xy == "bottomleft") {
+		xy <- c(pr$usr[1]+(pad[1]*parrange[1]), pr$usr[3]+(pad[2]*parrange[2])) + c(0,dy)
 	} else if (xy == "bottomright") {
-		xy <- c(pr$usr[2]-(padding[1]*parrange[1]), pr$usr[3]+(padding[2]*parrange[2])) - c(dx,dy)
+		xy <- c(pr$usr[2]-(pad[1]*parrange[1]), pr$usr[3]+(pad[2]*parrange[2])) - c(dx,-dy)
 	} else if (xy == "topright") {
-		xy <- c(pr$usr[2]-(padding[1]*parrange[1]), pr$usr[4]-(padding[2]*parrange[2])) - c(dx,dy)
+		xy <- c(pr$usr[2]-(pad[1]*parrange[1]), pr$usr[4]-(pad[2]*parrange[2])) - c(dx,dy)
+	} else if (xy == "top") {
+		xy <- c(pr$usr[1]+0.5*parrange[1]-0.5*dx, pr$usr[4]-(pad[2]*parrange[2])) - c(0,dy)
 	} else if (xy == "topleft") {
-		xy <- c(pr$usr[1]+(padding[1]*parrange[1]), pr$usr[4]-(padding[2]*parrange[2])) - c(0,dy)
+		xy <- c(pr$usr[1]+(pad[1]*parrange[1]), pr$usr[4]-(pad[2]*parrange[2])) - c(0,dy)
+	} else if (xy == "left") {
+		xy <- c(pr$usr[1]+(pad[1]*parrange[1]), pr$usr[3]+0.5*parrange[2]-0.5*dy)
+	} else if (xy == "right") {
+		xy <- c(pr$usr[2]-(pad[1]*parrange[1])-dx, pr$usr[3]+0.5*parrange[2]-0.5*dy)
 	} else {
-		error(caller, 'xy must be a coordinate pair (two numbers) or one of "bottomleft", "bottomright", topleft", "topright"')
+		error(caller, 'xy must be a coordinate pair (two numbers) or one of "bottomleft", "bottom", "bottomright", topleft", "top", "topright"')
 	}
 	xy
 }
@@ -61,39 +69,83 @@
 }
 
 
-arrow <- function(d, xy=NULL, head=0.1, angle=0, label="N", lonlat=NULL, xpd=TRUE, ...) {
-	pr <- graphics::par()
-	if (is.null(lonlat)) {
-		lonlat <- .assume_lonlat(pr)
-	}
 
-	if (missing(d))	{
-		d <- .get_dd(pr, lonlat, NULL) / 3
-	}
 
-	xy <- .get_xy(xy, 0, d, pr, "topright", caller="arrow")	
-	if (angle != 0) {
-		b <- angle * pi / 180;
-		p2 <- xy + c(d * sin(b), d * cos(b))
-		b <- b + pi
-		p1 <- xy + c(d * sin(b), d * cos(b))
-	} else {
-		p1 <- xy - c(0,d)
-		p2 <- xy + c(0,d)
-	}
-	lwd <- list(...)$lwd + 2
-	if (is.null(lwd)) lwd <- 3
-	graphics::arrows(p1[1], p1[2], p2[1], p2[2], length=head, lwd=lwd, col="white", xpd=xpd)
-	graphics::arrows(p1[1], p1[2], p2[1], p2[2], length=head, xpd=xpd, ...)
-	if (label != "") {
-		if (is.null(list(...)$hw)) {
-			.halo(xy[1], xy[2], label, hw=.2, xpd=xpd, ... )
-		} else {
-			.halo(xy[1], xy[2], label, xpd=xpd, ... )		
-		}
-	}
+add_N <- function(x, y, asp, label, type=0, angle=0, cex=1, srt=0, xpd=TRUE, ...) {
+	if (type == 2) { symbol = "➢" 
+	} else if (type == 3) { symbol = "➙"
+	} else if (type == 4) { symbol = "➲"
+	} else if (type == 5) { symbol = "➾"
+	} else if (type == 6) { symbol = "➸"
+	} else { symbol = "➻" }
+	
+	rangle <- 90 - angle
+	text(x, y, symbol, cex=cex*3, srt=rangle, ...)
+	xs <- graphics::strwidth(symbol,cex=cex*3)
+	ys <- graphics::strheight(symbol,cex=cex*3)
+	b <- pi * angle / 180
+	rxs <- (abs(xs * cos(b)) + abs(ys * sin(b)))# / asp
+	rys <- (abs(xs * sin(b)) + abs(ys * cos(b)))# * asp
+#	xoff <- (rxs - xs) / 2
+#	yoff <- rys + 0.05 * graphics::strheight(label,cex=cex)
+	xoff = 0.08 * rxs
+	yoff = rys * 1.06 * max(0.6, abs(cos(angle)))
+	
+    if (type == 4) {
+        .halo(x+xoff, y-0.2*yoff, label, cex = cex, srt = srt, xpd = xpd, ...)
+    } else {
+        text(x+xoff, y + yoff, label, cex = cex, srt = srt, xpd = xpd, ...)
+    }
 }
 
+
+
+arrow <- function(d, xy=NULL, type=1, label="N", angle=0, head=0.1, xpd=TRUE, ...) {
+	pr <- graphics::par()
+	pa <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
+	asp <- pa[2]/pa[1]  
+	if (missing(d))	{
+		d <- 0.07 * pa[2]
+	}
+	xy <- .get_xy(xy, 0, d, pr, "topright", caller="arrow")	
+
+	type <- round(type)
+	if ((type <= 1) || (type > 8)) {
+		if (angle != 0) {
+			b <- angle * pi / 180;
+			p2 <- xy + c(d * sin(b), d * cos(b))
+			b <- b + pi
+			p1 <- xy + c(d * sin(b), d * cos(b))
+			if ((p2[1] - p1[1]) > (d/asp)) {
+				m <- xy[1] #p1[1] + (p2[1] - p1[1]) / 2 
+				slope = (p2[2] - p1[2])/(p2[1] - p1[1])
+				newx <- m - 0.5 * d / asp
+				p1[2] <- p1[2] + (newx-p1[1]) * slope  
+				p1[1] <- newx
+				newx <- m + 0.5 * d / asp
+				p2[2] <- p2[2] - (p2[1]-newx) * slope  
+				p2[1] <- newx
+			}
+		} else {
+			p1 <- xy - c(0,d)
+			p2 <- xy + c(0,d)
+		}
+
+		lwd <- list(...)$lwd + 2
+		if (is.null(lwd)) lwd <- 3
+		graphics::arrows(p1[1], p1[2], p2[1], p2[2], length=head, lwd=lwd, col="white", xpd=xpd)
+		graphics::arrows(p1[1], p1[2], p2[1], p2[2], length=head, xpd=xpd, ...)
+		if (label != "") {
+			if (is.null(list(...)$hw)) {
+				.halo(xy[1], xy[2], label, hw=.2, xpd=xpd, ... )
+			} else {
+				.halo(xy[1], xy[2], label, xpd=xpd, ... )		
+			}
+		}
+	} else {
+		add_N(xy[1], xy[2], asp=asp, label=label, angle=angle, type=type, xpd=xpd, ...)
+	}
+}
 
 
 sbar <- function(d, xy=NULL, type="line", divs=2, below="", lonlat=NULL, label, adj=c(0.5, -1), lwd=2, xpd=TRUE, ...){

@@ -6,11 +6,11 @@
 \title{Direction}
 
 \description{
-The direction (azimuth) to or from the nearest cell that is not \code{NA}. The direction unit is in radians, unless you use argument \code{degrees=TRUE}. 
+The direction (azimuth) to or from the nearest cell that is not \code{NA}. The direction is expressed in radians, unless you use argument \code{degrees=TRUE}. 
 }
 
 \usage{
-\S4method{direction}{SpatRaster}(x, filename='', degrees=FALSE, from=FALSE, ...) 
+\S4method{direction}{SpatRaster}(x, from=FALSE, degrees=FALSE, filename="", ...) 
 }
 
 \arguments{
@@ -32,11 +32,16 @@ The direction (azimuth) to or from the nearest cell that is not \code{NA}. The d
 
 
 \examples{
-r <- rast(ncol=36,nrow=18)
+r <- rast(ncol=36,nrow=18, crs="+proj=merc")
 values(r) <- NA
 r[306] <- 1
+b <- direction(r, degrees=TRUE) 
+plot(b)
+
+crs(r) <- "+proj=longlat"
 b <- direction(r) 
 plot(b)
+
 }
 
 \keyword{spatial}
