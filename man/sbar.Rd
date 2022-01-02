@@ -20,7 +20,7 @@ arrow(d, xy=NULL, type=1, label="N", angle=0, head=0.1, xpd=TRUE, ...)
 \arguments{
 \item{d}{numeric. Distance covered by the scale bar or arrow. For the scale bar, it should be in the units of the coordinates of the plot (map), and in km for angular (longitude/latitude) data; see argument \code{lonlat}. For the arrow it should be in plot coordinates}
 \item{xy}{numeric. x and y coordinate to place the scale bar or arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
-\item{type}{for \code{sbar} character: "line" or "bar". For \code{arrow}: integer between 1 and 11, or a character (unicode) representation of a right pointing arrow such as \code{"\u27A9"}}
+\item{type}{for \code{sbar} character: "line" or "bar". For \code{arrow}: integer between 1 and 12, or a character (unicode) representation of a right pointing arrow such as \code{"\u27A9"}}
 \item{divs}{number of divisions for a bar: 2 or 4}
 \item{below}{character. Text to go below the scale bar (e.g., "kilometers")}
 \item{lonlat}{logical or NULL. If logical, \code{TRUE} indicates if the plot is using longitude/latitude coordinates. If \code{NULL} this is guessed from the plot's coordinates}
