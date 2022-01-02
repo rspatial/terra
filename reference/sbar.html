@@ -65,8 +65,18 @@
 <dd><p>numeric. x and y coordinate to place the scale bar or arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL</p></dd>
 <dt>type</dt>
 <dd><p>for <code>sbar</code>: "line" or "bar"</p></dd>
+<dt>divs</dt>
+<dd><p>number of divisions for a bar: 2 or 4</p></dd>
+<dt>below</dt>
+<dd><p>character. Text to go below the scale bar (e.g., "kilometers")</p></dd>
+<dt>lonlat</dt>
+<dd><p>logical or NULL. If logical, <code>TRUE</code> indicates if the plot is using longitude/latitude coordinates. If <code>NULL</code> this is guessed from the plot's coordinates</p></dd>
 <dt>label</dt>
 <dd><p>vector of three numbers to label the scale bar (beginning, midpoint, end)</p></dd>
+<dt>adj</dt>
+<dd><p>adjustment for text placement</p></dd>
+<dt>lwd</dt>
+<dd><p>line width for the "line" type of the scale bar</p></dd>
 <dt>xpd</dt>
 <dd><p>logical. If <code>TRUE</code>, the scale bar or arrow can be outside the plot area</p></dd>
 <dt>...</dt>
