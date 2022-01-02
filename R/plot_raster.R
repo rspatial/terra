@@ -287,7 +287,7 @@
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), 
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, 
-  sort=TRUE, grid=FALSE, ...) {
+  sort=TRUE, grid=FALSE, las=0, ...) {
 
 #mar=c(5.1, 4.1, 4.1, 7.1); legend=TRUE; axes=TRUE; pal=list(); pax=list(); maxcell=50000; draw=FALSE; interpolate=FALSE; legend=TRUE; legend.only=FALSE; pax=list(); pal=list(); levels=NULL; add=FALSE; range=NULL; new=NA; breaks=NULL; coltab=NULL; facts=NULL; xlim=NULL; ylim=NULL;
  
@@ -312,6 +312,7 @@
 	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
 	out$add <- isTRUE(add)
+	if (is.null(pax$las)) pax$las <- las
 	out$axs <- pax
 	out$draw_grid <- isTRUE(grid)
 	

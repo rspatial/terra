@@ -121,7 +121,7 @@ setMethod("dots", signature(x="SpatVector"),
 }
 
 
-.getCols <- function(n, cols) {
+.getCols <- function(n, cols, alpha=1) {
 	if (!is.null(cols)) {
 		ncols <- length(cols)
 		if (ncols > n) {
@@ -132,12 +132,15 @@ setMethod("dots", signature(x="SpatVector"),
 			cols <- rep_len(cols, n)
 		}
 	} 
+	if (alpha < 1 && alpha >= 0) {
+		cols <- grDevices::rgb(t(grDevices::col2rgb(cols)), alpha=alpha[1]*255, maxColorValue=255)
+	}
 	cols
 }
 
 .vect.legend.none <- function(out) {
 	#if (out$leg$geomtype == "points") {
-		out$main_cols <- .getCols(out$ngeom, out$cols)
+		out$main_cols <- .getCols(out$ngeom, out$cols, 1)
 	#} else {
 	#	out$cols <- .getCols(out$ngeom, out$cols)
 	#}
@@ -149,7 +152,7 @@ setMethod("dots", signature(x="SpatVector"),
 	if (isTRUE(out$legend_sort)) {
 		out$uv <- sort(out$uv)
 	}
-	ucols <- .getCols(length(out$uv), out$cols)
+	ucols <- .getCols(length(out$uv), out$cols, 1)
 
 	i <- match(out$v, out$uv)
 	out$cols <- ucols
@@ -345,7 +348,7 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ext=NULL, grid=FALSE, ...) {
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, ...) {
 
 	out <- list()
 	out$ngeom <- nrow(x)
@@ -377,6 +380,7 @@ setMethod("dots", signature(x="SpatVector"),
 	
 	out$add <- isTRUE(add)
 	out$axes <- isTRUE(axes)
+	if (is.null(pax$las)) pax$las <- las
 	out$axs <- pax
 	out$draw_grid <- isTRUE(grid)	
 	out$leg <- plg

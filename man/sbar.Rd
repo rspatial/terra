@@ -17,7 +17,12 @@ sbar(d, xy=NULL, type="line", divs=2, below="",
 \item{d}{numeric. Distance covered by the scale bar or arrow. For the scale bar, it should be in the units of the coordinates of the plot (map), and in km for angular (longitude/latitude) data; see argument \code{lonlat}. It can also be missing}
 \item{xy}{numeric. x and y coordinate to place the scale bar or arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
 \item{type}{for \code{sbar}: "line" or "bar"}
+\item{divs}{number of divisions for a bar: 2 or 4}
+\item{below}{character. Text to go below the scale bar (e.g., "kilometers")}
+\item{lonlat}{logical or NULL. If logical, \code{TRUE} indicates if the plot is using longitude/latitude coordinates. If \code{NULL} this is guessed from the plot's coordinates}
 \item{label}{vector of three numbers to label the scale bar (beginning, midpoint, end)}
+\item{adj}{adjustment for text placement}
+\item{lwd}{line width for the "line" type of the scale bar}
 \item{xpd}{logical. If \code{TRUE}, the scale bar or arrow can be outside the plot area}
 \item{...}{graphical arguments to be passed to other methods }
 }

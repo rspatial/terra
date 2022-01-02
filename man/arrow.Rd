@@ -1,7 +1,6 @@
 \name{arrow}
 
 \alias{arrow}
-
   
 \title{North arrow}
 
@@ -47,6 +46,14 @@ arrow(xy=c(6.7, 49.75), type=5, cex=1.5)
 arrow(xy=c(6.7, 49.6), type=9)
 arrow(d=.05, xy=c(6.7, 49.5), angle=180, label="S", lwd=2, col="blue")
 
+
+## all arrows
+r <- rast(res=10)
+values(r) <- 1
+plot(r, col="white", axes=F, legend=F, mar=c(0,0,0,0), reset=TRUE)
+for (i in 1:12) {
+	arrow(xy=cbind(-200+i*30,2), type=i)
+}
 }
 
 
