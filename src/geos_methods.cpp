@@ -1472,6 +1472,18 @@ SpatVector SpatVector::cover(SpatVector v, bool identity) {
 
 SpatVector SpatVector::erase(SpatVector v) {
 
+	if ((type() == "points") || (v.type() == "points")) {
+		std::vector<int> b = relate(v, "disjoint");
+		std::vector<unsigned> r;
+		r.reserve(b.size());
+		for (size_t i=0; i<b.size(); i++) {
+			if (b[i]) r.push_back(i);	
+		}
+		return subset_rows(r);
+	}
+		
+	SpatVector out;
+
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
