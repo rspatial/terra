@@ -888,8 +888,23 @@ SpatVector SpatVector::as_lines() {
 	v = *this;
 	if (geoms[0].gtype == lines) {
 		return v;
-	} else if (geoms[0].gtype == points) {
-
+	} 
+	
+	if (geoms[0].gtype == points) {
+		v.geoms.resize(1);
+		std::vector<double> x, y;
+		x.reserve(size());
+		y.reserve(size());
+		for (size_t i=0; i<size(); i++) {
+			x.push_back(geoms[i].parts[0].x[0]);
+			y.push_back(geoms[i].parts[0].y[0]);
+		}
+		SpatPart p(x, y);
+		v.geoms[0].addPart(p);
+		v.geoms[0].gtype = lines;
+		return v;
+	}
+/*
 		for (int i=geoms.size()-1; i >=0; i--) {
 			if (v.geoms[i].parts.size() > 1) {
 				for (size_t j=1; j<v.geoms[i].parts.size(); j++) {
@@ -904,7 +919,8 @@ SpatVector SpatVector::as_lines() {
 		}
 		return v;
 	} 
-
+*/
+	// polygons, multipoints
 	for (size_t i=0; i<size(); i++) {
 		for (size_t j=0; j < v.geoms[i].size(); j++) {
 			SpatPart p = v.geoms[i].parts[j];
