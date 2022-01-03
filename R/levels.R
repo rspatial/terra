@@ -178,16 +178,15 @@ setMethod("activeCat<-" , "SpatRaster",
 
 setMethod("cats" , "SpatRaster", 
 	function(x, layer) {
+		if (!missing(layer)) {
+			x <- x[[layer]]
+		}
 		x <- x@ptr$getCategories()
 		x <- lapply(x, function(i) {
-			if (is.null(i)) return( NULL)
+			if (i$df$nrow == 0) return( NULL)
 			.getSpatDF(i$df)
 		})
-		if (!missing(layer)) {
-			x[[layer]]
-		} else {
-			x
-		}
+		x
 	}
 )
 
