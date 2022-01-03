@@ -34,26 +34,29 @@ f <- system.file("ex/meuse.tif", package="terra")
 r <- rast(f)
 plot(r)
 arrow()
-arrow(250, c(178550, 332500))
+arrow(c(178550, 332500), d=250)
 
+\dontrun{
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 plot(r, type="interval")
 sbar(15, c(6.3, 50), type="bar", below="km", label=c(0,7.5,15), cex=.8)
-arrow(type=3)
+arrow(type=3, cex=.8)
 arrow(xy=c(6.7, 49.9), type=2, angle=45, label="NE")
-arrow(xy=c(6.7, 49.75), type=5, cex=1.5)
-arrow(xy=c(6.7, 49.6), type=9)
-arrow(d=.05, xy=c(6.7, 49.5), angle=180, label="S", lwd=2, col="blue")
+arrow(xy=c(6.6, 49.7), type=5, cex=1.25)
+arrow(xy=c(5.5, 49.6), type=9)
+arrow(d=.05, xy=c(5.5, 50), angle=180, label="S", lwd=2, col="blue")
 
 
 ## all arrows
 r <- rast(res=10)
 values(r) <- 1
-plot(r, col="white", axes=F, legend=F, mar=c(0,0,0,0), reset=TRUE)
+plot(r, col="white", axes=FALSE, legend=FALSE, mar=c(0,0,0,0), reset=TRUE)
 for (i in 1:12) {
 	arrow(xy=cbind(-200+i*30,2), type=i)
 }
+}
+
 }
 
 

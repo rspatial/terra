@@ -73,7 +73,8 @@
 
 add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=TRUE, ...) {
 
-	if (type == 0) { symbol = user  
+	type <- type[1]
+	if (type == 0) { symbol = user[1]  
 	} else if (type == 2) { symbol = "\u27A2" 
 	} else if (type == 3) { symbol = "\u2799"
 	} else if (type == 4) { symbol = "\u27B2"
