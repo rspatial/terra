@@ -1545,9 +1545,9 @@ SpatVector SpatVector::erase(SpatVector v) {
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	size_t nx = size();
 	size_t ny = v.size();
-	std::vector<long> rids;
+	std::vector<int> rids;
 	rids.reserve(nx);
-
+	
 	for (size_t i = 0; i < nx; i++) {
 		bool good=true;
 		for (size_t j = 0; j < ny; j++) {
@@ -1561,29 +1561,27 @@ SpatVector SpatVector::erase(SpatVector v) {
 				GEOSGeom_destroy_r(hGEOSCtxt, geom);
 				good = false;
 				break;
-			}
+			}	
 			x[i] = geos_ptr(geom, hGEOSCtxt);
 		}
 		if (good) rids.push_back(i);
 	}
 
 	if (rids.size() > 0) {
-		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt, rids);
+		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt);
 		out = coll.get(0);
 		out.srs = srs;
+		out.df = df;
 		if (rids.size() != nx) {
-			out.df = df.subset_rows(out.df.iv[0]);
-		} else {
-			out.df = df;
+			out = out.subset_rows(rids);
 		}
-	} 
+	} else {
+		out = subset_rows({-1});		
+	}
 	geos_finish(hGEOSCtxt);
-
 	if (!srs.is_same(v.srs, true)) {
 		out.addWarning("different crs"); 
 	}
-	out.srs = srs;
-
 	return out;
 }
 
