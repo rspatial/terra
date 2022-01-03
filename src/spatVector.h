@@ -281,6 +281,7 @@ class SpatVector {
 		SpatVector intersect(SpatVector v);
 		SpatVector unite(SpatVector v);
 		SpatVector unite();
+		SpatVector erase_agg(SpatVector v);
 		SpatVector erase(SpatVector v);
 		SpatVector erase();
 		SpatVector gaps();		

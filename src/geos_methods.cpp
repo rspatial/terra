@@ -1470,7 +1470,7 @@ SpatVector SpatVector::cover(SpatVector v, bool identity) {
 }
 
 
-SpatVector SpatVector::erase(SpatVector v) {
+SpatVector SpatVector::erase_agg(SpatVector v) {
 
 	if ((type() == "points") || (v.type() == "points")) {
 		std::vector<int> b = relateFirst(v, "intersects");
@@ -1486,6 +1486,9 @@ SpatVector SpatVector::erase(SpatVector v) {
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();
 	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+
+// this approach is nicer than the below in ::erase 
+// but it fails if polys overlap
 	v = v.aggregate(false);
 	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
 	std::vector<unsigned> rids;
@@ -1520,6 +1523,70 @@ SpatVector SpatVector::erase(SpatVector v) {
 	}
 	return out;
 }
+
+
+
+SpatVector SpatVector::erase(SpatVector v) {
+
+	if ((type() == "points") || (v.type() == "points")) {
+		std::vector<int> b = relateFirst(v, "intersects");
+		std::vector<unsigned> r;
+		r.reserve(b.size());
+		for (size_t i=0; i<b.size(); i++) {
+			if (b[i] == -1) r.push_back(i);	
+		}
+		return subset_rows(r);
+	}
+		
+	SpatVector out;
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+	size_t nx = size();
+	size_t ny = v.size();
+	std::vector<long> rids;
+	rids.reserve(nx);
+
+	for (size_t i = 0; i < nx; i++) {
+		bool good=true;
+		for (size_t j = 0; j < ny; j++) {
+			GEOSGeometry* geom = GEOSDifference_r(hGEOSCtxt, x[i].get(), y[j].get());
+			if (geom == NULL) {
+				out.setError("GEOS exception");
+				geos_finish(hGEOSCtxt);
+				return(out);
+			} 
+			if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+				GEOSGeom_destroy_r(hGEOSCtxt, geom);
+				good = false;
+				break;
+			}
+			x[i] = geos_ptr(geom, hGEOSCtxt);
+		}
+		if (good) rids.push_back(i);
+	}
+
+	if (rids.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt, rids);
+		out = coll.get(0);
+		out.srs = srs;
+		if (rids.size() != nx) {
+			out.df = df.subset_rows(out.df.iv[0]);
+		} else {
+			out.df = df;
+		}
+	} 
+	geos_finish(hGEOSCtxt);
+
+	if (!srs.is_same(v.srs, true)) {
+		out.addWarning("different crs"); 
+	}
+	out.srs = srs;
+
+	return out;
+}
+
 
 
 /*
@@ -1634,12 +1701,15 @@ SpatVector SpatVector::gaps() {
 		out.setError("not polygons");
 		return out;
 	}
+	
 	size_t n = size();
 	if (n < 2) {
 		out.srs = srs;
 		return out;
 	}
-
+	out = aggregate(true);
+	return out.get_holes();
+/*
 	SpatExtent e = extent;
 	e.xmin -= 11;
 	e.xmax += 10;
@@ -1660,6 +1730,7 @@ SpatVector SpatVector::gaps() {
 	std::vector<unsigned> r(1, j);
 	p.srs = srs;
 	return p.remove_rows(r);
+*/
 }
 
 
