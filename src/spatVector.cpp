@@ -885,13 +885,11 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 SpatVector SpatVector::as_lines() {
 	SpatVector v;
 
-	v = *this;
 	if (geoms[0].gtype == lines) {
-		return v;
+		return *this;
 	} 
 	
 	if (geoms[0].gtype == points) {
-		v.geoms.resize(1);
 		std::vector<double> x, y;
 		x.reserve(size());
 		y.reserve(size());
@@ -899,9 +897,12 @@ SpatVector SpatVector::as_lines() {
 			x.push_back(geoms[i].parts[0].x[0]);
 			y.push_back(geoms[i].parts[0].y[0]);
 		}
+		SpatVector v;
 		SpatPart p(x, y);
-		v.geoms[0].addPart(p);
-		v.geoms[0].gtype = lines;
+		SpatGeom g(p);
+		g.gtype = lines;
+		v.setGeom(g);
+		v.srs = srs;
 		return v;
 	}
 /*
@@ -921,6 +922,7 @@ SpatVector SpatVector::as_lines() {
 	} 
 */
 	// polygons, multipoints
+	v = *this;
 	for (size_t i=0; i<size(); i++) {
 		for (size_t j=0; j < v.geoms[i].size(); j++) {
 			SpatPart p = v.geoms[i].parts[j];
