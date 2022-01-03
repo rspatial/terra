@@ -1476,6 +1476,59 @@ SpatVector SpatVector::erase(SpatVector v) {
 		std::vector<int> b = relateFirst(v, "intersects");
 		std::vector<unsigned> r;
 		r.reserve(b.size());
+		for (size_t i=0; i < b.size(); i++) {
+			if (b[i] == -1) r.push_back(i);	
+		}
+		return subset_rows(r);
+	}
+		
+	SpatVector out;
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	v = v.aggregate(false);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+	std::vector<unsigned> rids;
+	size_t nx = size();
+	std::vector<GeomPtr> result;
+
+	for (size_t i = 0; i < nx; i++) {
+		GEOSGeometry* geom = GEOSDifference_r(hGEOSCtxt, x[i].get(), y[0].get());
+		if (geom == NULL) {
+			out.setError("GEOS exception");
+			geos_finish(hGEOSCtxt);
+			return(out);
+		} 
+		if (GEOSisEmpty_r(hGEOSCtxt, geom)) {
+			GEOSGeom_destroy_r(hGEOSCtxt, geom);
+		} else {
+			result.push_back(geos_ptr(geom, hGEOSCtxt));
+			rids.push_back(i);
+		}
+	}
+	if (result.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
+		out = coll.get(0);
+		out.srs = srs;
+		out.df = df.subset_rows(rids);
+	} else {
+		out = subset_rows({-1});
+	}
+	geos_finish(hGEOSCtxt);
+	if (!srs.is_same(v.srs, true)) {
+		out.addWarning("different crs"); 
+	}
+	return out;
+}
+
+
+/*
+SpatVector SpatVector::erase(SpatVector v) {
+
+	if ((type() == "points") || (v.type() == "points")) {
+		std::vector<int> b = relateFirst(v, "intersects");
+		std::vector<unsigned> r;
+		r.reserve(b.size());
 		for (size_t i=0; i<b.size(); i++) {
 			if (b[i] == -1) r.push_back(i);	
 		}
@@ -1525,7 +1578,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 	return out;
 }
 
-
+*/
 
 SpatVector SpatVector::erase() {
 	SpatVector out;

@@ -53,8 +53,11 @@ r <- rast(res=10)
 values(r) <- 1
 plot(r, col="white", axes=FALSE, legend=FALSE, mar=c(0,0,0,0), reset=TRUE)
 for (i in 1:12) {
-	arrow(xy=cbind(-200+i*30,2), type=i)
+	x=-200+i*30
+	arrow(xy=cbind(x,30), type=i)
+	text(x, -20, i, xpd=TRUE)
 }
+
 }
 
 }
