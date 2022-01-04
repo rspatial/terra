@@ -53,7 +53,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">makeVRT</span><span class="op">(</span><span class="va">filename</span>, <span class="va">nrow</span>, <span class="va">ncol</span>, nlyr<span class="op">=</span><span class="fl">1</span>, <span class="va">extent</span>, <span class="va">xmin</span>, <span class="va">ymin</span>, <span class="va">xres</span>, yres<span class="op">=</span><span class="va">xres</span>, xycenter<span class="op">=</span><span class="cn">TRUE</span>, crs<span class="op">=</span><span class="st">"+proj=longlat"</span>, lyrnms<span class="op">=</span><span class="st">""</span>, <span class="va">datatype</span>, NAflag<span class="op">=</span><span class="cn">NA</span>, bandorder<span class="op">=</span><span class="st">"BIL"</span>, byteorder<span class="op">=</span><span class="st">"LSB"</span>, toptobottom<span class="op">=</span><span class="cn">TRUE</span>, offset<span class="op">=</span><span class="fl">0</span>, scale<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">makeVRT</span><span class="op">(</span><span class="va">filename</span>, <span class="va">nrow</span>, <span class="va">ncol</span>, nlyr<span class="op">=</span><span class="fl">1</span>, <span class="va">extent</span>, <span class="va">xmin</span>, <span class="va">ymin</span>, <span class="va">xres</span>, yres<span class="op">=</span><span class="va">xres</span>, xycenter<span class="op">=</span><span class="cn">TRUE</span>,
+   crs<span class="op">=</span><span class="st">"+proj=longlat"</span>, lyrnms<span class="op">=</span><span class="st">""</span>, <span class="va">datatype</span>, NAflag<span class="op">=</span><span class="cn">NA</span>, bandorder<span class="op">=</span><span class="st">"BIL"</span>, byteorder<span class="op">=</span><span class="st">"LSB"</span>,
+   toptobottom<span class="op">=</span><span class="cn">TRUE</span>, offset<span class="op">=</span><span class="fl">0</span>, scale<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -69,11 +71,11 @@
 <dt>extent</dt>
 <dd><p>SpatExtent or missing</p></dd>
 <dt>xmin</dt>
-<dd><p>minimum x coordinate (ignored if <code>extent</code> is not missing</p></dd>
+<dd><p>minimum x coordinate (only used if <code>extent</code> is missing)</p></dd>
 <dt>ymin</dt>
-<dd><p>minimum y coordinate (ignored if <code>extent</code> is not missing</p></dd>
+<dd><p>minimum y coordinate (only used if <code>extent</code> is missing)</p></dd>
 <dt>xycenter</dt>
-<dd><p>logical. If <code>TRUE</code>, <code>xmin</code> and <code>xmax</code> represent the coordinates of the center of the extreme cell, in stead of the coordinates of the outside corner</p></dd>
+<dd><p>logical. If <code>TRUE</code>, <code>xmin</code> and <code>xmax</code> represent the coordinates of the center of the extreme cell, in stead of the coordinates of the outside corner. Only used of <code>extent</code> is missing</p></dd>
 <dt>crs</dt>
 <dd><p>character. Coordinate reference system description</p></dd>
 <dt>lyrnms</dt>
@@ -81,11 +83,11 @@
 <dt>datatype</dt>
 <dd><p>character. One of "INT2S", "INT4S", "INT1U", "INT2U", "INT4U", "FLT4S", "FLT8S". If missing, this is guessed from the file size (INT1U for 1 byte per value, INT2S for 2 bytes and FLT4S for 4 bytes per value). This may be wrong because, for example, 2 bytes per value may in fact be INT2U (with the U for unsigned) values</p></dd>
 <dt>NAflag</dt>
-<dd><p>numeric. The NA flag</p></dd>
+<dd><p>numeric. The value used as the "NA flag"</p></dd>
 <dt>bandorder</dt>
-<dd><p>character. One of "BIL", "BSQ", "BIP"</p></dd>
+<dd><p>character. One of "BIL", "BIP", or "BSQ". That is Band Interleaved by Line, or by Pixel, or Band SeQuential</p></dd>
 <dt>byteorder</dt>
-<dd><p>character. One of "LSB", "MSB"</p></dd>
+<dd><p>character. One of "LSB", "MSB". "MSB" is common for files generated on Linux systems, whereas "LSB" is common for files generated on windows</p></dd>
 <dt>toptobottom</dt>
 <dd><p>logical. If <code>FALSE</code>, the values are read bottom to top</p></dd>
 <dt>offset</dt>
