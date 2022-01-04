@@ -9,7 +9,7 @@
 \title{Virtual Raster Tiles}
 
 \description{ 
-Create a Virtual Raster Tiles (VRT) dataset from file-based raster datasets. 
+Create a Virtual Raster Tiles (VRT) dataset from a collection of file-based raster datasets. 
 }
 
 \usage{
@@ -26,6 +26,7 @@ Create a Virtual Raster Tiles (VRT) dataset from file-based raster datasets.
 SpatRaster
 }
 
+\seealso{\code{\link{makeVRT}} to create a .vrt file for a file without a header}
 
 \examples{
 r <- rast(ncols=100, nrows=100)
