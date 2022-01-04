@@ -77,21 +77,21 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 
 	stopifnot(byteorder[1] %in% c("LSB", "MSB")) 
 	if (toptobottom[1]) { rotation <- 0 } else { rotation <- 180 }
+	res <- abs(c(xres, yres))
 	if (missing(extent)) {
 		if (xycenter) {
-			xmin <- xmin - xres/2 
-			ymin <- ymin - yres/2 
+			xmin <- xmin - res[1]/2 
+			ymin <- ymin - res[2]/2 
 		}
-		ymax <- ymin + nrow * yres
+		ymax <- ymin + nrow * res[2]
 	} else {
 		xmin <- xmin(extent)
 		ymax <- ymax(extent)
 	}
-	r <- c(xres, yres)
 	
 	f <- file(fvrt, "w") 
 	cat('<VRTDataset rasterXSize="', ncol, '" rasterYSize="', nrow, '">\n' , sep = "", file = f)
-	cat('<GeoTransform>', xmin, ', ', r[1], ', ', 0, ', ', ymax, ', ', 0.0, ', ', -1*r[2], '</GeoTransform>\n', sep = "", file = f)
+	cat('<GeoTransform>', xmin, ', ', res[1], ', ', rotation, ', ', ymax, ', ', 0.0, ', ', -1*res[2], '</GeoTransform>\n', sep = "", file = f)
 	
 	if (! is.na(crs) ) {
 		cat('<SRS>', crs ,'</SRS>\n', sep = "", file = f)
