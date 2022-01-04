@@ -20,7 +20,7 @@ gdalDType <- function(dtype) {
 		}
 		if (substr(dtype, 5, 5) == "U") { 
 			if (size == 8) {
-				return("Byte")
+				return(c("Byte", 1))
 			} else {
 				type <- paste("U", type, sep="")
 			}
