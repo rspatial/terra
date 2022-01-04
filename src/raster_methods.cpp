@@ -3260,7 +3260,7 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 						v[i] = v[i-nc];
 					}
 				} else {
-					d = {v[i-nc-1], v[i-nc], v[i-nc+1]}; //above and left-above
+					d = {v[i-1], v[i-nc], v[i-nc+1]}; //above and left-above
 					clump_replace(v, i, d, nstart, rcl, ncps);
 				}
 			} else {
