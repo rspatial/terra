@@ -20,8 +20,10 @@ makeVRT(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres=xres, xycen
   \item{ncol}{positive integer, the number of columns}
   \item{nlyr}{positive integer, the number of layers}
   \item{extent}{SpatExtent or missing}
-  \item{xmin}{minimum x coordinate (only used if \code{extent} is missing)}
-  \item{ymin}{minimum y coordinate (only used if \code{extent} is missing)}
+  \item{xmin}{numeric. minimum x coordinate (only used if \code{extent} is missing)}
+  \item{ymin}{numeric. minimum y coordinate (only used if \code{extent} is missing)}
+  \item{xrs}{postive number. x resolution}
+  \item{ymin}{pistive number. y resolution)}
   \item{xycenter}{logical. If \code{TRUE}, \code{xmin} and \code{xmax} represent the coordinates of the center of the extreme cell, in stead of the coordinates of the outside corner. Only used of \code{extent} is missing}
   \item{crs}{character. Coordinate reference system description}
   \item{lyrnms}{character. Layer names}

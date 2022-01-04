@@ -34,6 +34,7 @@ gdalDType <- function(dtype) {
  
 makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres=xres, xycenter=TRUE, crs="+proj=longlat", lyrnms="", datatype, NAflag=NA, bandorder="BIL", byteorder="LSB", toptobottom=TRUE, offset=0, scale=1) {
 	
+	stopifnot(length(filename)==1)
 	stopifnot(file.exists(filename))
 	if (tolower(tools::file_ext(filename)) == "vrt") {
 		stop("cannot (over)write a vrt header for a vrt file")
@@ -54,19 +55,19 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 		}		
 	} 
 
-	gd <- gdalDType(datatype)	
+	gd <- gdalDType(datatype[1])
 	datatype <- gd[1]
 	pixsize <- as.integer(gd[2])
 	
-	if (bandorder == "BIL") {
+	if (bandorder[1] == "BIL") {
 		pixoff <- pixsize
 		lineoff <- pixsize * ncol * nlyr
 		imgoff <- ((1:nlyr)-1) * ncol * pixsize
-	} else if (bandorder == "BSQ") {
+	} else if (bandorder[1] == "BSQ") {
 		pixoff <- pixsize
 		lineoff <- pixsize * ncol
 		imgoff <- ((1:nlyr)-1) *  nrow*ncol * pixsize
-	} else if (bandorder == "BIP") {
+	} else if (bandorder[1] == "BIP") {
 		pixoff <- pixsize * nlyr
 		lineoff <- pixsize * ncol * nlyr
 		imgoff <- (1:nlyr)-1 
@@ -74,13 +75,8 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 		stop("unknown bandorder")
 	}
 
-	if (byteorder == "little") { 
-		byteorder <- "LSB" 
-	} else { 
-		byteorder <- "MSB" 
-	}
-
-	if (toptobottom) { rotation <- 0 } else { rotation <- 180 }
+	stopifnot(byteorder[1] %in% c("LSB", "MSB")) 
+	if (toptobottom[1]) { rotation <- 0 } else { rotation <- 180 }
 	if (missing(extent)) {
 		if (xycenter) {
 			xmin <- xmin - xres/2 
@@ -88,8 +84,8 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 		}
 		ymax <- ymin + nrow * yres
 	} else {
-		xmin <- xmin(e)
-		ymax <- ymax(e)
+		xmin <- xmin(extent)
+		ymax <- ymax(extent)
 	}
 	r <- c(xres, yres)
 	
@@ -112,8 +108,10 @@ makeVRT <- function(filename, nrow, ncol, nlyr=1, extent, xmin, ymin, xres, yres
 		if (!is.na(NAflag)) {
 			cat('\t\t<NoDataValue>', NAflag, '</NoDataValue>\n', sep = "", file = f)
 		}
-		cat('\t\t<Offset>', offset, '</Offset>\n', sep = "", file = f)
-		cat('\t\t<Scale>', scale, '</Scale>\n', sep = "", file = f)
+		if (isTRUE(offset != 0) || isTRUE(scale != 1)) {
+			cat('\t\t<Offset>', offset, '</Offset>\n', sep = "", file = f)
+			cat('\t\t<Scale>', scale, '</Scale>\n', sep = "", file = f)
+		}
 		cat('\t</VRTRasterBand>\n', sep = "", file = f)
 	}
 	cat('</VRTDataset>\n', sep = "", file = f)

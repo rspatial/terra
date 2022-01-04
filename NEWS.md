@@ -1,5 +1,6 @@
 # version 1.5-9
 
+
 ## bug fixes
 
 - `setValues` and `init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
@@ -53,7 +54,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - when assigning integer values to a SpatRaster, or when reading an integer file, the corresponding layers are now classified as being of integer type [#446](https://github.com/rspatial/terra/issues/446) by L. Dalby
 - new method `layerCor` (like `raster::layerStats`). [#420](https://github.com/rspatial/terra/issues/420) by Alex Ilich
 - new method `focalCor` (like `raster::corLocal`). [#427](https://github.com/rspatial/terra/issues/427) by Zhuonan Wang
-- new method `all.equal` for `SpatRaster` [#428](https://github.com/rspatial/terra/issues/428) by Dongdong Kong
+- new method `all.equal` for `SpatRaster`. See [#428](https://github.com/rspatial/terra/issues/428) by Dongdong Kong
 - new method `math` for `SpatRaster` that implements the Math-generic methods *and* accepts a filename
 - new method `sds<array>` 
 - new method `rasterize<matrix>`, see [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
