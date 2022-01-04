@@ -9,7 +9,7 @@ status](https://www.r-pkg.org/badges/version/terra)](https://cran.r-project.org/
 
 <img align="right" width="250" src="man/figures/logo.png">
 
-`terra` is an R package for spatial analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
+`terra` is an *R* package for spatial data analysis. There are tutorials at [rspatial.org/terra](https://rspatial.org/terra/index.html). 
 
 [stackoverflow](https://stackoverflow.com/questions/tagged/terra) is the best place to ask questions if you get stuck. Make sure to include a [simple reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). But if you think you have found a bug, please file an [issue](https://github.com/rspatial/terra/issues).
 
@@ -27,7 +27,6 @@ The easiest way to use the *development version* on Windows or MacOS, is to inst
 install.packages('terra', repos='https://rspatial.r-universe.dev')
 ```
 
-Please note that, on MacOS, the development version does not support the HDF4 file format, which is used for some NASA satellite data products.
 
 ### From source-code
 
