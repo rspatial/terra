@@ -52,33 +52,6 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-5-9">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-9"></a></h3>
 <ul><li>
-<code>terrain</code> created empty (<code>NA</code>) rows between chunks used for processing large rasters. <a href="https://github.com/rspatial/terra/issues/452" class="external-link">#453</a> by Robert Ritson.</li>
-<li>
-<code>inset</code> did not draw the “box” correctly. <a href="https://github.com/rspatial/terra/issues/457" class="external-link">#457</a> by Márcia Barbosa</li>
-<li>it is not possible to add sub-datasets to GPKG and GTiff files. <a href="https://github.com/rspatial/terra/issues/300" class="external-link">#300</a> by gtitov</li>
-</ul></div>
-<div class="section level3">
-<h3 id="enhancements-1-5-9">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-9"></a></h3>
-<ul><li>
-<code>focal</code> has a new argument <code>na.policy</code> that can be set to one of “all” (default), “only” or “omit”. argument <code>na.only</code> has been removed, as you can now use <code>na.policy="only"</code>
-</li>
-<li>
-<code>inset</code> argument <code>border</code> changed to <code>perimeter</code> to allow passing <code>border</code> on to <code>plot&lt;Spat*&gt;</code>. <a href="https://github.com/rspatial/terra/issues/456" class="external-link">#456</a> by Márcia Barbosa</li>
-<li>The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. <a href="https://github.com/rspatial/terra/issues/459" class="external-link">#459</a> by Edzer Pebesma</li>
-</ul></div>
-<div class="section level3">
-<h3 id="new-1-5-9">new<a class="anchor" aria-label="anchor" href="#new-1-5-9"></a></h3>
-<ul><li>new method <code>arrow</code> to draw a (North) arrow on a map. <a href="https://github.com/rspatial/terra/issues/461" class="external-link">#461</a> by Márcia Barbosa</li>
-<li>new method <code>densify</code> to insert nodes between existing nodes of a line or polygon SpatVector</li>
-<li>new method <code>direction</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/462" class="external-link">#462</a> by Márcia Barbosa</li>
-<li>new method <code>focal3D</code> to compute focal values for a three-dimensional (row, column, layer) window</li>
-</ul></div>
-</div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="1.5-5" id="version-15-5">version 1.5-5<a class="anchor" aria-label="anchor" href="#version-15-5"></a></h2>
-<div class="section level3">
-<h3 id="bug-fixes-1-5-5">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-5"></a></h3>
-<ul><li>
 <code>setValues</code> and <code>init</code> failed (or even crashed R) when using a single value on a largish raster. <a href="https://github.com/rspatial/terra/issues/414" class="external-link">#414</a>
 </li>
 <li>conversion from <code>sfc</code> to <code>SpatVector</code> lost the crs. <a href="https://github.com/rspatial/terra/issues/415" class="external-link">#415</a> by Jean-Luc Dupouey</li>
@@ -97,9 +70,15 @@
 <code>patches(directions=8)</code> now connects in NE/SW direction <a href="https://github.com/rspatial/terra/issues/451" class="external-link">#451</a> by Jean-François Bourdon.</li>
 <li>
 <code>centroids</code> now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian <a href="https://github.com/rspatial/terra/issues/366" class="external-link">#366</a> by Hirscht</li>
+<li>
+<code>terrain</code> created empty (<code>NA</code>) rows between chunks used for processing large rasters. <a href="https://github.com/rspatial/terra/issues/452" class="external-link">#453</a> by Robert Ritson.</li>
+<li>
+<code>inset</code> did not draw the “box” correctly. <a href="https://github.com/rspatial/terra/issues/457" class="external-link">#457</a> by Márcia Barbosa</li>
+<li>
+<code>as.lines</code> now works with a points SpatVector <a href="https://github.com/rspatial/terra/issues/464" class="external-link">#464</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-5-5">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-5"></a></h3>
+<h3 id="enhancements-1-5-9">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-9"></a></h3>
 <ul><li>
 <code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
 <li>
@@ -126,9 +105,16 @@
 <li>
 <code>extract</code> with points provided as a matrix or cell numbers is not much faster <a href="https://github.com/rspatial/terra/issues/341" class="external-link">#341</a>
 </li>
+<li>
+<code>focal</code> has a new argument <code>na.policy</code> that can be set to one of “all” (default), “only” or “omit”. argument <code>na.only</code> has been removed, as you can now use <code>na.policy="only"</code>
+</li>
+<li>
+<code>inset</code> argument <code>border</code> changed to <code>perimeter</code> to allow passing <code>border</code> on to <code>plot&lt;Spat*&gt;</code>. <a href="https://github.com/rspatial/terra/issues/456" class="external-link">#456</a> by Márcia Barbosa</li>
+<li>The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. <a href="https://github.com/rspatial/terra/issues/459" class="external-link">#459</a> by Edzer Pebesma</li>
+<li>it is now possible to add sub-datasets to GPKG and GTiff files. <a href="https://github.com/rspatial/terra/issues/300" class="external-link">#300</a> by gtitov</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-5-5">new<a class="anchor" aria-label="anchor" href="#new-1-5-5"></a></h3>
+<h3 id="new-1-5-9">new<a class="anchor" aria-label="anchor" href="#new-1-5-9"></a></h3>
 <ul><li>timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)</li>
 <li>new method <code>mergeTime</code> to combine multiple rasters, perhaps partly overlapping in time, into a single time series</li>
 <li>new method <code>fillTime</code> that can add empty layers in between existing layers to assure that the time step between layers is constant</li>
@@ -138,12 +124,17 @@
 <li>when assigning integer values to a SpatRaster, or when reading an integer file, the corresponding layers are now classified as being of integer type <a href="https://github.com/rspatial/terra/issues/446" class="external-link">#446</a> by L. Dalby</li>
 <li>new method <code>layerCor</code> (like <code><a href="https://rdrr.io/pkg/raster/man/layerStats.html" class="external-link">raster::layerStats</a></code>). <a href="https://github.com/rspatial/terra/issues/420" class="external-link">#420</a> by Alex Ilich</li>
 <li>new method <code>focalCor</code> (like <code><a href="https://rdrr.io/pkg/raster/man/corLocal.html" class="external-link">raster::corLocal</a></code>). <a href="https://github.com/rspatial/terra/issues/427" class="external-link">#427</a> by Zhuonan Wang</li>
-<li>new method <code>all.equal</code> for <code>SpatRaster</code> <a href="https://github.com/rspatial/terra/issues/428" class="external-link">#428</a> by Dongdong Kong</li>
+<li>new method <code>all.equal</code> for <code>SpatRaster</code>. See <a href="https://github.com/rspatial/terra/issues/428" class="external-link">#428</a> by Dongdong Kong</li>
 <li>new method <code>math</code> for <code>SpatRaster</code> that implements the Math-generic methods <em>and</em> accepts a filename</li>
 <li>new method <code>sds&lt;array&gt;</code>
 </li>
 <li>new method <code>rasterize&lt;matrix&gt;</code>, see <a href="https://github.com/rspatial/terra/issues/413" class="external-link">#413</a> by BastienFR<br></li>
-<li>new method <code>colorize</code> to transform color representations</li>
+<li>new method <code>colorize</code> to transform color representations<br></li>
+<li>new method <code>arrow</code> to draw a (North) arrow on a map. <a href="https://github.com/rspatial/terra/issues/461" class="external-link">#461</a> by Márcia Barbosa</li>
+<li>new method <code>densify</code> to insert nodes between existing nodes of a line or polygon SpatVector</li>
+<li>new method <code>direction</code> for SpatRaster. <a href="https://github.com/rspatial/terra/issues/462" class="external-link">#462</a> by Márcia Barbosa</li>
+<li>new method <code>focal3D</code> to compute focal values for a three-dimensional (row, column, layer) window</li>
+<li>new function <code>makeVRT</code> to create a vrt file for a file that needs a header to be read.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -188,7 +179,7 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-4-20">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-20"></a></h3>
 <ul><li>
-<code>terra</code> did not install with GDAL &lt; 3 <a href="https://github.com/rspatial/terra/issues/402" class="external-link">#402</a> by Alex Ilich.</li>
+<code>terra</code> did not install with versions of GDAL below 3 <a href="https://github.com/rspatial/terra/issues/402" class="external-link">#402</a> by Alex Ilich.</li>
 <li>
 <code>distance</code> between two SpatVectors or matrices with <code>pairwise=FALSE</code> returned a matrix that was filled by column instead of by row <a href="https://github.com/rspatial/terra/issues/403" class="external-link">#403</a> by Paul Smith</li>
 </ul></div>
