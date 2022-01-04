@@ -2,26 +2,6 @@
 
 ## bug fixes
 
-- `terrain` created empty (`NA`) rows between chunks used for processing large rasters. [#453](https://github.com/rspatial/terra/issues/452) by Robert Ritson.
-- `inset` did not draw the "box" correctly. [#457](https://github.com/rspatial/terra/issues/457) by Márcia Barbosa
-- it is not possible to add sub-datasets to GPKG and GTiff files. [#300](https://github.com/rspatial/terra/issues/300) by gtitov
-
-## enhancements 
-- `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
-- `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>`. [#456](https://github.com/rspatial/terra/issues/456) by Márcia Barbosa
-- The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459](https://github.com/rspatial/terra/issues/459) by Edzer Pebesma
-
-## new 
-- new method `arrow` to draw a (North) arrow on a map. [#461](https://github.com/rspatial/terra/issues/461) by Márcia Barbosa
-- new method `densify` to insert nodes between existing nodes of a line or polygon SpatVector
-- new method `direction` for SpatRaster. [#462](https://github.com/rspatial/terra/issues/462) by Márcia Barbosa
-- new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
-
-
-# version 1.5-5
-
-## bug fixes
-
 - `setValues` and `init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
 - conversion from `sfc` to `SpatVector` lost the crs. [#415](https://github.com/rspatial/terra/issues/415) by Jean-Luc Dupouey
 - `buffer` on a SpatRaster with no values caused a crash [#416](https://github.com/rspatial/terra/issues/416) by Sebastian Brinkmann
@@ -34,6 +14,9 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `patches` now combines patches that connect across the data line [#366](https://github.com/rspatial/terra/issues/366) by Hirscht
 - `patches(directions=8)` now connects in NE/SW direction [#451](https://github.com/rspatial/terra/issues/451) by Jean-François Bourdon.
 - `centroids` now considers cases where SpatVector parts are nearest to each other when crossing the date line in stead of the zero-meridian [#366](https://github.com/rspatial/terra/issues/366) by Hirscht 
+- `terrain` created empty (`NA`) rows between chunks used for processing large rasters. [#453](https://github.com/rspatial/terra/issues/452) by Robert Ritson.
+- `inset` did not draw the "box" correctly. [#457](https://github.com/rspatial/terra/issues/457) by Márcia Barbosa
+- `as.lines` now works with a points SpatVector [#464](https://github.com/rspatial/terra/issues/464) by Márcia Barbosa 
 
 
 ## enhancements 
@@ -52,6 +35,11 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - speed up in processing of multi-layer in memory data [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
 - `vect<matrix>` and `vect<data.frame>` are now much faster [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
 - `extract` with points provided as a matrix or cell numbers is not much faster [#341](https://github.com/rspatial/terra/issues/341)
+- `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
+- `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>`. [#456](https://github.com/rspatial/terra/issues/456) by Márcia Barbosa
+- The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459](https://github.com/rspatial/terra/issues/459) by Edzer Pebesma
+- it is now possible to add sub-datasets to GPKG and GTiff files. [#300](https://github.com/rspatial/terra/issues/300) by gtitov
+
 
 
 ## new 
@@ -70,6 +58,11 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `sds<array>` 
 - new method `rasterize<matrix>`, see [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
 - new method `colorize` to transform color representations 	
+- new method `arrow` to draw a (North) arrow on a map. [#461](https://github.com/rspatial/terra/issues/461) by Márcia Barbosa
+- new method `densify` to insert nodes between existing nodes of a line or polygon SpatVector
+- new method `direction` for SpatRaster. [#462](https://github.com/rspatial/terra/issues/462) by Márcia Barbosa
+- new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
+- new function `makeVRT` to create a vrt file for a file that needs a header to be read.
 
 
 # version 1.4-22
@@ -108,7 +101,7 @@ Released on 2021-11-16
 
 ## bug fixes
 
-- `terra` did not install with GDAL < 3 [#402](https://github.com/rspatial/terra/issues/402) by Alex Ilich.
+- `terra` did not install with versions of GDAL below 3 [#402](https://github.com/rspatial/terra/issues/402) by Alex Ilich.
 - `distance` between two SpatVectors or matrices with `pairwise=FALSE` returned a matrix that was filled by column instead of by row [#403](https://github.com/rspatial/terra/issues/403) by Paul Smith
 
 
