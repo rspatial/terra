@@ -1242,16 +1242,16 @@ std::vector<SpatDataFrame> SpatRaster::getColors() {
 
 
 bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
-	if (cols.ncol() < 3 || cols.ncol() > 4) {
+	if (cols.ncol() < 4 || cols.ncol() > 5) {
 		return false;
 	}
-	if (cols.nrow() != 256) {
-		return false;
-	}
+//	if (cols.nrow() != 256) {
+//		return false;
+//	}
 	if (layer >= nlyr()) {
 		return false;
 	}
-	if (cols.ncol() == 3) {
+	if (cols.ncol() == 4) {
 		std::vector<long> a(cols.nrow(), 255);
 		cols.add_column(a, "alpha");
 	}

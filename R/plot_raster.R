@@ -118,13 +118,18 @@
 	ilevels <- match(out$levels, out$cats[[1]])
 	out$leg$legend <- unique(na.omit(out$cats[[2]][ilevels]))
 	if (!is.null(out$coltab)) {
-		out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
-		z <- out$cols[z+1]
-		out$cols <- out$cols[out$levels+1]
+		out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
+		i <- match(z, out$coltab[,1])
+		z <- out$cols[i]
+		i <- match(out$levels, out$coltab[,1])
+		out$cols <- out$cols[i]
 	} else {
 		#levlab <- data.frame(id=out$levels, lab=out$cats[[2]][ilevels], stringsAsFactors=FALSE)
 		levlab <- data.frame(id=out$levels, lab=out$cats[ilevels, 2], stringsAsFactors=FALSE)
 		leglevs <- na.omit(unique(levlab[,2]))
+		if (length(leglevs) == 0) {
+			error("plot", "something is wrong with the categories")
+		}
 		nlevs <- length(leglevs)
 		ncols <- length(out$cols)
 		if (nlevs < ncols) {
@@ -222,14 +227,15 @@
 
 .as.raster.colortable <- function(out, x, ...) {
 	z <- round(values(x))
-	z[z<0 | z>255] <- NA
+	#z[z<0 | z>255] <- NA
 	z[is.nan(z) | is.infinite(z)] <- NA
 	if (all(is.na(z))) {
 		out$values = FALSE
 		return(out)
 	}
-	out$cols <- grDevices::rgb(out$coltab[,1], out$coltab[,2], out$coltab[,3], out$coltab[,4], maxColorValue=255)
-	z <- out$cols[z+1]
+	out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
+	i <- match(z, out$coltab[,1])
+	z <- out$cols[i]
 	z <- matrix(z, nrow=nrow(x), ncol=ncol(x), byrow=TRUE)
 	out$r <- as.raster(z)
 	out
@@ -283,7 +289,7 @@
 
 
 
-.prep.plot.data <- function(x, type, maxcell, cols, mar=NULL, draw=FALSE, 
+.prep.plot.data <- function(x, type, cols, mar=NULL, draw=FALSE, 
   interpolate=FALSE, legend=TRUE, legend.only=FALSE, pax=list(), plg=list(), 
   levels=NULL, add=FALSE, range=NULL, new=NA, breaks=NULL, breakby="eqint",
   coltab=NULL, cats=NULL, xlim=NULL, ylim=NULL, ext=NULL, colNA=NA, alpha=NULL, reset=FALSE, 
@@ -308,8 +314,6 @@
 	} else {
 		out$lim <- out$ext <- as.vector(ext(x))
 	}
-
-	x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
 
 	out$add <- isTRUE(add)
 	if (is.null(pax$las)) pax$las <- las
@@ -465,7 +469,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 		}
 
 		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
-		x <- .prep.plot.data(x, type=type, maxcell=maxcell, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, ...)
+		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, ...)
 
 		if (!is.null(fun)) {
 			if (!is.null(formals(fun))) {
@@ -533,3 +537,4 @@ setMethod("plot", signature(x="SpatRaster", y="character"),
 		plot(x, y, ...)
 	}
 )
+

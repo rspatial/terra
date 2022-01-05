@@ -37,7 +37,7 @@ class SpatDataFrame {
 		std::string getError() { return msg.getError(); }
 	
 		std::vector<std::string> names;
-		std::vector<unsigned> itype;
+		std::vector<unsigned> itype; //0 double, 1 long, 2 string
 		std::vector<unsigned> iplace;
 		std::vector< std::vector<double>> dv;
 		std::vector< std::vector<long>> iv;
@@ -62,9 +62,9 @@ class SpatDataFrame {
 		void add_row();
 		void add_rows(size_t n);
 		
-		void set_values(std::vector<double> x, std::string name);
-		void set_values(std::vector<long> x, std::string name);
-		void set_values(std::vector<std::string> x, std::string name);
+		//void set_values(std::vector<double> x, std::string name);
+		//void set_values(std::vector<long> x, std::string name);
+		//void set_values(std::vector<std::string> x, std::string name);
 
 		void add_column(unsigned dtype, std::string name);
 		bool add_column(std::vector<double> x, std::string name);
