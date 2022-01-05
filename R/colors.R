@@ -44,7 +44,7 @@ setMethod ("coltab<-" , "SpatRaster",
 		stopifnot(inherits(value, "data.frame"))
 		nms <- tolower(names(value))
 		if (!("value" %in% nms)) {
-			value <- cbind(value=(1:nrow(value))-1, value)
+			value <- cbind(values=(1:nrow(value))-1, value)
 		}
 		#value <- value[1:256,]
 		for (i in 2:ncol(value)) {
