@@ -390,7 +390,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 
 std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt) { 
 // note that this is only for lines and polygons
-    SpatOptions ropt;
+    SpatOptions ropt(opt);
 	SpatRaster r = geometry(1);
 	SpatExtent e = getExtent();
 	e.intersect(v.getExtent());
