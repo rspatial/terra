@@ -330,8 +330,9 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 		msz <- sum(k)
 	}
 
+	opt <- spatOptions()
 	nl <- nlyr(x)
-	v <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1)[1:prod(w)]
+	v <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1, opt)[1:prod(w)]
 	if (dow) {
 		if (any(is.na(m))) {
 			v <- v[k] * mm
@@ -350,7 +351,6 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	out <- rast(x, nlyr=outnl)
 	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
 
-	opt <- spatOptions()
 	nc <- ncol(out)
 	for (i in 1:b$n) {
 		vv <- NULL
