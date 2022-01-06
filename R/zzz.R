@@ -24,7 +24,7 @@ loadModule("spat", TRUE)
 		packageStartupMessage("WARNING: different compile-time and run-time versions of GEOS")
 		packageStartupMessage("Compiled with:", .geos_version(FALSE, TRUE))
 		packageStartupMessage(" Running with:", .geos_version(TRUE, TRUE))
-		packageStartupMessage("\nYou should reinstall terra\n")
+		packageStartupMessage("\nYou should reinstall package 'terra'\n")
 	}
 #	terraOptions(todisk=TRUE, steps=2)
 }

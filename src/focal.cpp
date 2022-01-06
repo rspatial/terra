@@ -45,7 +45,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	if (nlyr() > 1) {
 		std::vector<unsigned> lyr = {0};
 		SpatRaster s = subset(lyr, ops);
-		s.focal_values(w, fillvalue, row, nrows); 
+		s.focal_values(w, fillvalue, row, nrows, ops); 
 	}
 
 	if ((w[0] % 2 == 0) || (w[1] % 2 == 0)) {

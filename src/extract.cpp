@@ -629,7 +629,6 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
 		}
 	} else {
 	    SpatRaster r = geometry(1);
-	    //SpatOptions opt;
 		//std::vector<double> feats(1, 1) ;
         for (size_t i=0; i<ng; i++) {
             SpatGeom g = v.getGeom(i);
