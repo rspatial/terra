@@ -19,6 +19,7 @@
 #include "math_utils.h"
 #include "string_utils.h"
 #include "file_utils.h"
+#include "vecmath.h"
 
 #include <unordered_map>
 #include <vector>
@@ -106,21 +107,20 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 		const char *fn = d.names[i].c_str();
 		if (d.itype[i] == 0) {
 			if (pRat->CreateColumn(fn, GFT_Real, GFU_Generic) != CE_None) {
-				delete pRat;
 				return false;
 			};
 		} else if (d.itype[i] == 1) {
 			if (pRat->CreateColumn(fn, GFT_Integer, GFU_Generic) != CE_None) {
-				delete pRat;
 				return false;
 			}
 		} else {
 			if (pRat->CreateColumn(fn, GFT_String, GFU_Generic) != CE_None) {
-				delete pRat;
 				return false;
 			}
 		}
 	}
+	
+	return false;
 
 	pRat->SetRowCount(nr);
 	for (size_t i=0; i<d.ncol(); i++) {
@@ -142,31 +142,86 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 		}
 	}
 
-	CPLErr err = poBand->SetDefaultRAT(pRat);
-	delete pRat;
-	return (err == CE_None);
+	//CPLErr err = poBand->SetDefaultRAT(pRat);
+	//return (err == CE_None);
+	return true;
+}
+
+
+
+bool setBandCategories(GDALRasterBand *poBand, SpatDataFrame &d, std::vector<std::string> labs) {
+
+	if (d.ncol() == 2) {
+		if (d.itype[0] == 1) {
+			long dmin = vmin(d.iv[0], true);
+			long dmax = vmax(d.iv[0], true);
+			if (dmin >= 0 || dmax <= 255) { 
+				std::vector<std::string> s(255, "");
+				for (size_t i=0; i<d.nrow(); i++) {
+					s[d.iv[0][i]] = labs[i];
+				}
+				if (setCats(poBand, s)) {
+					return true;
+				}
+			}
+		} else if (d.itype[0] == 0) {
+			double dmin = vmin(d.dv[0], true);
+			double dmax = vmax(d.dv[0], true);
+			if (dmin >= 0 || dmax <= 255) { 
+				std::vector<std::string> s(255, "");
+				for (size_t i=0; i<d.nrow(); i++) {
+					s[d.dv[0][i]] = labs[i];
+				}
+				if (setCats(poBand, s)) {
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;	
 }
 
 
 
 bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
+
+	long dmin = vmin(d.iv[0], true);
+	long dmax = vmax(d.iv[0], true);
+	if (dmin < 0 || dmax > 255) {
+		return false;
+	}
+	
+	SpatDataFrame s;
+	s.add_column(1, "red");
+	s.add_column(1, "green");
+	s.add_column(1, "blue");
+	s.add_column(1, "alpha");
+	s.reserve(255);
+	for (size_t i=0; i<d.nrow(); i++) {
+		s.iv[0][d.iv[0][i]] = d.iv[1][i]; 
+		s.iv[1][d.iv[0][i]] = d.iv[2][i];
+		s.iv[2][d.iv[0][i]] = d.iv[3][i];
+		s.iv[3][d.iv[0][i]] = d.iv[4][i];
+	}
+	
 	CPLErr err = poBand->SetColorInterpretation(GCI_PaletteIndex);
 	if (err != CE_None) {
 		return false;
 	}
 	GDALColorTable *poCT = new GDALColorTable(GPI_RGB);
 	GDALColorEntry col;
-	for (size_t j=0; j< d.nrow(); j++) {
-	if (d.iv[3][j] == 0) { // maintain transparency in gtiff
+	for (size_t j=0; j< s.nrow(); j++) {
+		if (s.iv[4][j] == 0) { // maintain transparency in gtiff
 			col.c1 = 255;
 			col.c2 = 255;
 			col.c3 = 255;
 			col.c4 = 0;
 		} else {
-			col.c1 = (short)d.iv[0][j];
-			col.c2 = (short)d.iv[1][j];
-			col.c3 = (short)d.iv[2][j];
-			col.c4 = (short)d.iv[3][j];
+			col.c1 = (short)s.iv[1][j];
+			col.c2 = (short)s.iv[2][j];
+			col.c3 = (short)s.iv[3][j];
+			col.c4 = (short)s.iv[4][j];
 		}
 		poCT->SetColorEntry(j, &col);
 	}
@@ -441,19 +496,12 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 			}
 		}
 		if (hasCats[i]) {
-			//bool catsdone = false;
-			//SpatCategories cats = getLayerCategories(i);
-			//if (cats.d.ncol() > 2) {
-			//	if (!setRat(poBand, cats.d)) {
-			//		catsdone = true;
-			//	}
-			//}
-			//if (!catsdone) {
-				std::vector<std::string> labs = getLabels(i);
-				if (!setCats(poBand, labs)) {
-					addWarning("could not write categories");
-				}
-			//}
+			SpatCategories cats = getLayerCategories(i);
+			std::vector<std::string> labs;
+			if (cats.d.ncol() == 2) {
+				labs = getLabels(i);
+				setBandCategories(poBand, cats.d, labs);
+			}
 		}
 
 		/*

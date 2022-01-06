@@ -131,12 +131,10 @@ T vmedian(std::vector<T>& v, bool narm) {
 	}
 	size_t n2 = n / 2;
 	std::nth_element(vv.begin(), vv.begin()+n2, vv.end());
-	T med = vv[n2];
-	if (n % 2 == 1) {
-		return med;
+	if (n % 2) {
+		return vv[n2];
 	} else {
-		std::nth_element(vv.begin(), vv.begin()+n2-1, vv.end());
-		return 0.5 * (med + vv[n2-1] );
+		return (vv[n2] + vv[n2-1]) / 2;
 	}
 }
 

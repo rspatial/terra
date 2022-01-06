@@ -1119,12 +1119,9 @@ bool SpatRaster::setCategories(unsigned layer, SpatDataFrame d, unsigned index, 
 		setError("invalid layer number");
 		return(false);
 	}
-
     std::vector<unsigned> sl = findLyr(layer);
-
-	if (d.nrow() > 256) {
+	if ((d.ncol() > 2) || (d.nrow() > 256)) {
 		is_vat = true;
-		//	d.resize_rows(256);
 	} 
 
 	SpatCategories cats;
