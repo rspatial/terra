@@ -191,7 +191,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 
 	opt <- spatOptions()
 	halfway <- floor(w[3]/2)
-	v <- lapply(1:w[3], function(i) focalValues(x[[i]], w[1:2], trunc(nrow(x)/2), 1, opt)[ncol(x)/2, ,drop=FALSE])
+	v <- lapply(1:w[3], function(i) focalValues(x[[i]], w[1:2], trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE])
 	v <- t(do.call(cbind, v))
 	if (dow) {
 		if (rna) {
@@ -239,19 +239,19 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 		nc <- b$nrows[i]*ncol(x)
 		vv <- NULL
 		if (expand) {
-			v <- list(matrix(x[[1]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
+			v <- list(matrix(x[[1]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			v <- do.call(rbind, rep(v, halfway+1))
 			for (k in 2:(1+halfway)) {
-				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
+				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			}
 		} else if (pad) {
 			v <- matrix(padvalue, ncol=b$nrows[i]*ncol(x), nrow=nread*halfway)
 			for (k in 1:(1+halfway)) {
-				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
+				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			}
 		} else {
 			v <- lapply(1:w[3], 
-				function(k) matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
+				function(k) matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=nc))
 			v <- do.call(rbind, v)
 		}
 		for (j in startlyr:endlyr) {
@@ -265,7 +265,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 						v <- rbind(v, v[(nrow(v)-nread):nrow(v), ])
 					}
 				} else {
-					v <- rbind(v, matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=ncol(v)), opt)					
+					v <- rbind(v, matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt), ncol=ncol(v)))
 				}
 			}
 			if (dow) {
