@@ -154,17 +154,40 @@ SpatCategories GetRAT(GDALRasterAttributeTable *pRAT) {
 	size_t nc = (int) pRAT->GetColumnCount();
 	size_t nr = (int) pRAT->GetRowCount();
 
-	//std::vector<long> id(nr);
-	//std::iota(id.begin(), id.end(), 0);
-	//out.d.add_column(id, "ID");
 
-	std::vector<std::string> ss = {"histogram", "count"};
-//	std::vector<std::string> scols = {"red", "green", "blue", "opacity", "r", "g", "b", "alpha"};
+	std::vector<std::string> ss = {"histogram", "count", "red", "green", "blue", "opacity", "r", "g", "b", "alpha"};
 
+	std::vector<std::string> ratnms;
+	std::vector<int> id, id2;
+	
+	bool hasvalue=false;
 	for (size_t i=0; i<nc; i++) {
 		std::string name = pRAT->GetNameOfCol(i);
-		int k = where_in_vector(name, ss, true);
-		if (k >= 0) continue;
+		lowercase(name);
+		ratnms.push_back(name);
+		if (name == "value") {
+			id.insert(id.begin(), i);
+			hasvalue = true;
+		} else {
+			int k = where_in_vector(name, ss, true);
+			if (k >= 0) {
+				id2.push_back(i);
+			} else {
+				id.push_back(i);	
+			}			
+		}
+	}
+	id.insert(id.end(), id2.begin(), id2.end());
+
+	if (!hasvalue) {
+		std::vector<long> vid(nr);
+		std::iota(vid.begin(), vid.end(), 0);
+		out.d.add_column(vid, "value");
+	}
+	
+	for (size_t k=0; k<id.size(); k++) {
+		size_t i = id[k];
+		std::string name = pRAT->GetNameOfCol(i);
 			
 		GDALRATFieldType nc_type = pRAT->GetTypeOfCol(i);
 //		GFT_type.push_back(GFU_type_string[nc_types[i]]);
@@ -400,7 +423,7 @@ SpatCategories GetCategories(char **pCat, std::string name) {
 
 	std::vector<long> id(n);
 	std::iota(id.begin(), id.end(), 0);
-	scat.d.add_column(id, "ID");
+	scat.d.add_column(id, "value");
 
 	std::vector<std::string> nms(n);
 	for (size_t i = 0; i<n; i++) {
