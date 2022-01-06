@@ -559,7 +559,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 				xq = xq == 0 ? 1 : xq;
 				yq = yq == 0 ? 1 : yq;
 				std::vector<unsigned> agf = {yq, xq, 1};
-				SpatOptions agopt;
+				SpatOptions agopt(opt);
 				SpatRaster xx;
 				if (method == "bilinear") {
 					xx = aggregate(agf, "mean", true, agopt);

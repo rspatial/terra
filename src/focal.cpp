@@ -40,10 +40,9 @@ std::vector<double> rcValue(std::vector<double> &d, const int& nrow, const int& 
 
 
 
-std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows) {
+std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fillvalue, int row, int nrows, SpatOptions &ops) {
 
 	if (nlyr() > 1) {
-		SpatOptions ops;
 		std::vector<unsigned> lyr = {0};
 		SpatRaster s = subset(lyr, ops);
 		s.focal_values(w, fillvalue, row, nrows); 

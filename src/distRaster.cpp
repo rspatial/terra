@@ -64,7 +64,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 			pxy = xyFromCell(cells);
 		}
 	} else {
-		SpatOptions ops;
+		SpatOptions ops(opt);
 		std::vector<double> feats(p.size(), 1) ;
 		x = out.rasterize(p, "", feats, NAN, false, false, false, false, false, ops);
 		if (gtype == "polygons") {
@@ -1680,7 +1680,6 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 	if (is_lonlat()) {
 		SpatRaster x = geometry(1);
 		SpatExtent extent = x.getExtent();
-		//SpatOptions opt;
 		if ((x.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
 			std::vector<unsigned> fact= {1,2};
 			x = x.disaggregate(fact, opt);

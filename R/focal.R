@@ -96,14 +96,15 @@ function(x, w=3, fun="sum", ..., na.policy="all", fillvalue=NA, expand=FALSE, si
 			names(out) <- nms
 		}
 		b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
+		opt <- spatOptions()
 
 		for (i in 1:b$n) {
 			vv <- NULL
 			for (j in 1:nl) {
 				if (nl > 1) {
-					v <- x[[j]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+					v <- x[[j]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 				} else {
-					v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+					v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 				}
 				if (dow) {
 					if (any(is.na(m))) {
@@ -233,24 +234,24 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 
 	nread <- prod(w[1:2])
 
-
+	opt <- spatOptions()
 	for (i in 1:b$n) {
 		nc <- b$nrows[i]*ncol(x)
 		vv <- NULL
 		if (expand) {
-			v <- list(matrix(x[[1]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+			v <- list(matrix(x[[1]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
 			v <- do.call(rbind, rep(v, halfway+1))
 			for (k in 2:(1+halfway)) {
-				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
 			}
 		} else if (pad) {
 			v <- matrix(padvalue, ncol=b$nrows[i]*ncol(x), nrow=nread*halfway)
 			for (k in 1:(1+halfway)) {
-				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+				v <- rbind(v,  matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
 			}
 		} else {
 			v <- lapply(1:w[3], 
-				function(k) matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc))
+				function(k) matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=nc, opt))
 			v <- do.call(rbind, v)
 		}
 		for (j in startlyr:endlyr) {
@@ -264,7 +265,7 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 						v <- rbind(v, v[(nrow(v)-nread):nrow(v), ])
 					}
 				} else {
-					v <- rbind(v, matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=ncol(v)))					
+					v <- rbind(v, matrix(x[[k]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i]), ncol=ncol(v)), opt)					
 				}
 			}
 			if (dow) {
@@ -349,14 +350,15 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	out <- rast(x, nlyr=outnl)
 	b <- writeStart(out, filename, overwrite, n=msz*4, wopt=wopt)
 
+	opt <- spatOptions()
 	nc <- ncol(out)
 	for (i in 1:b$n) {
 		vv <- NULL
 		for (j in 1:nl) {
 			if (nl > 1) {
-				v <- x[[j]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+				v <- x[[j]]@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 			} else {
-				v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i])
+				v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 			}
 			if (dow) {
 				if (any(is.na(m))) {
