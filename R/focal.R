@@ -189,8 +189,9 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 		msz <- sum(kna)
 	} 
 
+	opt <- spatOptions()
 	halfway <- floor(w[3]/2)
-	v <- lapply(1:w[3], function(i) focalValues(x[[i]], w[1:2], trunc(nrow(x)/2), 1)[ncol(x)/2, ,drop=FALSE])
+	v <- lapply(1:w[3], function(i) focalValues(x[[i]], w[1:2], trunc(nrow(x)/2), 1, opt)[ncol(x)/2, ,drop=FALSE])
 	v <- t(do.call(cbind, v))
 	if (dow) {
 		if (rna) {
@@ -234,7 +235,6 @@ function(x, w=3, fun=mean, ..., na.policy="all", fillvalue=NA, pad=FALSE, padval
 
 	nread <- prod(w[1:2])
 
-	opt <- spatOptions()
 	for (i in 1:b$n) {
 		nc <- b$nrows[i]*ncol(x)
 		vv <- NULL
