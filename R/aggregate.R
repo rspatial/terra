@@ -167,7 +167,7 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 
 setMethod("aggregate", signature(x="SpatVector"),
 	function(x, by=NULL, dissolve=TRUE, fun="mean", ...) {
-		 if (length(by) > 1) {
+		if (length(by) > 1) {
 			# to be fixed
 			error("aggregate", "this method can only aggregate by one variable")
 		}
@@ -188,7 +188,15 @@ setMethod("aggregate", signature(x="SpatVector"),
 			d <- as.data.frame(x)
 			x@ptr <- x@ptr$aggregate(by, dissolve)
 			a <- aggregate_attributes(d, by, fun)
-			i <- match(a[[by]], x[[by,drop=TRUE]])
+			if (any(is.na(d[[by]]))) {
+				# because NaN and NA are dropped
+				i <- nrow(a)+(1:2)
+				a[i,] <- c(NA, NaN)
+				i <- match(a[[by]], x[[by,drop=TRUE]])
+				i <- i[!is.na(i)]
+			} else {
+				i <- match(a[[by]], x[[by,drop=TRUE]])			
+			}
 			values(x) <- a[i,]
 		}
 		x
