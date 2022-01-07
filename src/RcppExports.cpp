@@ -10,6 +10,26 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// proj_version
+std::string proj_version();
+RcppExport SEXP _terra_proj_version() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(proj_version());
+    return rcpp_result_gen;
+END_RCPP
+}
+// proj_version
+std::string proj_version();
+RcppExport SEXP _terra_proj_version() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(proj_version());
+    return rcpp_result_gen;
+END_RCPP
+}
 // hex2rgb
 std::vector<unsigned char> hex2rgb(std::string s);
 RcppExport SEXP _terra_hex2rgb(SEXP sSEXP) {
@@ -120,16 +140,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type runtime(runtimeSEXP);
     Rcpp::traits::input_parameter< bool >::type capi(capiSEXP);
     rcpp_result_gen = Rcpp::wrap(geos_version(runtime, capi));
-    return rcpp_result_gen;
-END_RCPP
-}
-// proj_version
-std::string proj_version();
-RcppExport SEXP _terra_proj_version() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(proj_version());
     return rcpp_result_gen;
 END_RCPP
 }
@@ -379,6 +389,8 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
+    {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
     {"_terra_hex2rgb", (DL_FUNC) &_terra_hex2rgb, 1},
     {"_terra_rgb2hex", (DL_FUNC) &_terra_rgb2hex, 1},
     {"_terra_sameSRS", (DL_FUNC) &_terra_sameSRS, 2},
@@ -389,7 +401,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},
     {"_terra_geos_version", (DL_FUNC) &_terra_geos_version, 2},
-    {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
     {"_terra_metatdata", (DL_FUNC) &_terra_metatdata, 1},
     {"_terra_sdsmetatdata", (DL_FUNC) &_terra_sdsmetatdata, 1},
     {"_terra_sdsmetatdataparsed", (DL_FUNC) &_terra_sdsmetatdataparsed, 1},
