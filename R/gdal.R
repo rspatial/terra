@@ -36,7 +36,7 @@ gdal <- function(warn=NA, drivers=FALSE) {
 		rownames(x) <- NULL
 		x
 	} else {
-		c(gdal=.gdal_version(), proj=.proj_version(), geos=.geos_version())
+		c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
 	}
 }
 
