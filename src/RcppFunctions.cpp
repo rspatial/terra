@@ -8,8 +8,7 @@
 
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
-#endif
-
+# define projh
 #if PROJ_VERSION_MAJOR > 7
 # define PROJ_71
 #else
@@ -18,6 +17,8 @@
 #   define PROJ_71
 #  endif
 # endif
+#endif
+
 #endif
 
 #define GEOS_USE_ONLY_R_API
@@ -168,6 +169,7 @@ std::string geos_version(bool runtime = false, bool capi = false) {
 	}
 }
 
+#ifdef projh
 // [[Rcpp::export(name = ".proj_version")]]
 std::string proj_version() {
 	std::stringstream buffer;
@@ -175,6 +177,15 @@ std::string proj_version() {
 	return buffer.str();
 }
 
+#else
+// [[Rcpp::export(name = ".proj_version")]]
+std::string proj_version(bool b = false) {
+	int v = PJ_VERSION;
+	std::stringstream buffer;
+	buffer << v / 100 << "." << (v / 10) % 10 << "." << v % 10;
+	return buffer.str();
+}
+#endif
 
 // [[Rcpp::export(name = ".metadata")]]
 std::vector<std::string> metatdata(std::string filename) {
