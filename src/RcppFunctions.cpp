@@ -6,9 +6,13 @@
 #include "gdalio.h"
 #include "ogr_spatialref.h"
 
+#define GEOS_USE_ONLY_R_API
+#include <geos_c.h>
+
+
 #if GDAL_VERSION_MAJOR >= 3
 #include "proj.h"
-# define projh
+#define projh
 #if PROJ_VERSION_MAJOR > 7
 # define PROJ_71
 #else
@@ -18,11 +22,28 @@
 #  endif
 # endif
 #endif
-
+#else
+#include <proj_api.h>
 #endif
 
-#define GEOS_USE_ONLY_R_API
-#include <geos_c.h>
+
+#ifdef projh
+// [[Rcpp::export(name = ".proj_version")]]
+std::string proj_version() {
+	std::stringstream buffer;
+	buffer << PROJ_VERSION_MAJOR << "." << PROJ_VERSION_MINOR << "." << PROJ_VERSION_PATCH;
+	return buffer.str();
+}
+
+#else
+// [[Rcpp::export(name = ".proj_version")]]
+std::string proj_version() {
+	int v = PJ_VERSION;
+	std::stringstream buffer;
+	buffer << v / 100 << "." << (v / 10) % 10 << "." << v % 10;
+	return buffer.str();
+}
+#endif
 
 
 // [[Rcpp::export]]
@@ -168,24 +189,6 @@ std::string geos_version(bool runtime = false, bool capi = false) {
 			return GEOS_VERSION;
 	}
 }
-
-#ifdef projh
-// [[Rcpp::export(name = ".proj_version")]]
-std::string proj_version() {
-	std::stringstream buffer;
-	buffer << PROJ_VERSION_MAJOR << "." << PROJ_VERSION_MINOR << "." << PROJ_VERSION_PATCH;
-	return buffer.str();
-}
-
-#else
-// [[Rcpp::export(name = ".proj_version")]]
-std::string proj_version(bool b = false) {
-	int v = PJ_VERSION;
-	std::stringstream buffer;
-	buffer << v / 100 << "." << (v / 10) % 10 << "." << v % 10;
-	return buffer.str();
-}
-#endif
 
 // [[Rcpp::export(name = ".metadata")]]
 std::vector<std::string> metatdata(std::string filename) {
