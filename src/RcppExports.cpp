@@ -11,17 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // proj_version
-std::string proj_version();
-RcppExport SEXP _terra_proj_version() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(proj_version());
-    return rcpp_result_gen;
-END_RCPP
-}
-// proj_version
-std::string proj_version();
+#ifdef projh std::string proj_version();
 RcppExport SEXP _terra_proj_version() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -389,7 +379,6 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_spat();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
     {"_terra_proj_version", (DL_FUNC) &_terra_proj_version, 0},
     {"_terra_hex2rgb", (DL_FUNC) &_terra_hex2rgb, 1},
     {"_terra_rgb2hex", (DL_FUNC) &_terra_rgb2hex, 1},

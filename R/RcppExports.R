@@ -5,10 +5,6 @@
     .Call(`_terra_proj_version`)
 }
 
-.proj_version <- function() {
-    .Call(`_terra_proj_version`)
-}
-
 hex2rgb <- function(s) {
     .Call(`_terra_hex2rgb`, s)
 }

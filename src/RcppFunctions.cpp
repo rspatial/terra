@@ -27,16 +27,15 @@
 #endif
 
 //from sf
-#ifdef projh
+
 // [[Rcpp::export(name = ".proj_version")]]
+#ifdef projh
 std::string proj_version() {
 	std::stringstream buffer;
 	buffer << PROJ_VERSION_MAJOR << "." << PROJ_VERSION_MINOR << "." << PROJ_VERSION_PATCH;
 	return buffer.str();
 }
-
 #else
-// [[Rcpp::export(name = ".proj_version")]]
 std::string proj_version() {
 	int v = PJ_VERSION;
 	std::stringstream buffer;
