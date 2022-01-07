@@ -11,7 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // proj_version
-#ifdef projh std::string proj_version();
+std::string proj_version();
 RcppExport SEXP _terra_proj_version() {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
