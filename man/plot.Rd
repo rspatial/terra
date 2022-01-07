@@ -21,8 +21,8 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 
 \usage{
 \S4method{plot}{SpatRaster,numeric}(x, y=1, col, type, mar=NULL, legend=TRUE, axes=TRUE, plg=list(), 
-	pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, 
-    fun=NULL, colNA=NULL, alpha=NULL, grid=FALSE, ext=NULL, reset=FALSE, ...)
+    pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, 
+    fun=NULL, colNA=NULL, alpha=NULL, sort=FALSE, grid=FALSE, ext=NULL, reset=FALSE, ...)
 
 \S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)
 
@@ -59,6 +59,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
   \item{fun}{function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector \code{v}, you could do \code{fun=function() lines(v)}. The function may have one argument, representing the the layer that is plotted (1 to the number of layers) }  
   \item{colNA}{character. color for the NA values}
   \item{alpha}{Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly}
+  \item{sort}{logical. If \code{TRUE} legends with categorical values are sorted}
   \item{grid}{logical. If \code{TRUE} grid lines are drawn. Their properties such as type and color can be set with the \code{pax} argument}
   \item{nc}{positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)}
   \item{nr}{positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)}
