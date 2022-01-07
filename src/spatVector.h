@@ -247,7 +247,10 @@ class SpatVector {
 //ogr 
 		std::vector<bool> is_valid();
 		SpatVector make_valid();
+
 //geos
+		SpatVector make_valid2();
+
 		std::vector<bool> geos_isvalid();
 		std::vector<std::string> geos_isvalid_msg();
 		std::vector<std::string> wkt();

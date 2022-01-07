@@ -53,6 +53,12 @@ setMethod("is.valid", signature(x="SpatVector"),
 	}
 )
 
+setMethod("makeValid", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr <- x@ptr$make_valid2()
+		messages(x)
+	}
+)
 
 
 setMethod("na.omit", signature("SpatVector"), 

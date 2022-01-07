@@ -14,6 +14,11 @@
 #  define GEOS361
 #  define GEOS370
 # endif
+# if GEOS_VERSION_MINOR >= 8
+#  define GEOS361
+#  define GEOS370
+#  define GEOS380
+# endif
 #else
 # if GEOS_VERSION_MAJOR > 3
 #  define GEOS350
@@ -21,6 +26,7 @@
 #  define GEOS361
 # endif
 #endif
+
 
 #include "spatVector.h"
 #include <cstdarg> 

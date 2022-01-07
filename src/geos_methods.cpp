@@ -129,6 +129,46 @@ std::vector<std::string> SpatVector::geos_isvalid_msg() {
 }
 
 
+SpatVector SpatVector::make_valid2() {
+
+	SpatVector out;
+#ifndef GEOS380
+	out.setError("make_valid is not available for GEOS < 3.8");
+#else 
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+
+	size_t n = size();
+	std::vector<long> ids;
+	ids.reserve(n);
+
+	for (size_t i=0; i<n; i++) {
+		GEOSGeometry* r = GEOSMakeValid_r(hGEOSCtxt, x[i].get());
+		if (r != NULL) {
+			if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+				x[i] = geos_ptr(r, hGEOSCtxt);
+				ids.push_back(i);
+			} else {
+				GEOSGeom_destroy_r(hGEOSCtxt, r);
+			}
+		}
+	}
+	SpatVectorCollection coll = coll_from_geos(x, hGEOSCtxt, ids, false, false);
+	out = coll.get(0);
+	geos_finish(hGEOSCtxt);
+	out.srs = srs;
+	if (ids.size() != n) {
+		out.df = df.subset_rows(out.df.iv[0]);
+	} else {
+		out.df = df;
+	}
+#endif	
+	return out;
+}
+
+
+
+
 SpatVector SpatVector::crop(SpatExtent e) {
 
 	SpatVector out;
@@ -170,6 +210,8 @@ SpatVector SpatVector::crop(SpatExtent e) {
 	return out;
 #endif
 }
+
+
 
 
 SpatVector SpatVector::make_nodes() {

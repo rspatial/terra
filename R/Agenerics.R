@@ -99,6 +99,7 @@ if (!isGeneric("fillHoles") ) { setGeneric("fillHoles", function(x, ...) standar
 if (!isGeneric("geomtype")) {setGeneric("geomtype", function(x, ...) standardGeneric("geomtype"))}
 if (!isGeneric("datatype")) {setGeneric("datatype", function(x, ...) standardGeneric("datatype"))}
 if (!isGeneric("global")) {setGeneric("global", function(x, ...) standardGeneric("global"))}
+if (!isGeneric("makeValid")) {setGeneric("makeValid", function(x,...) standardGeneric("makeValid"))}
 if (!isGeneric("is.valid")) {setGeneric("is.valid", function(x,...) standardGeneric("is.valid"))}
 if (!isGeneric("is.points")) {setGeneric("is.points", function(x,...) standardGeneric("is.points"))}
 if (!isGeneric("is.lines")) {setGeneric("is.lines", function(x,...) standardGeneric("is.lines"))}
