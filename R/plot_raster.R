@@ -316,11 +316,11 @@
 	}
 
 	out$add <- isTRUE(add)
-	if (is.null(pax$las)) pax$las <- las
-	out$axs <- pax
+	out$axs <- as.list(pax)
+	if (is.null(out$axs$las)) out$axs$las <- las
 	out$draw_grid <- isTRUE(grid)
 	
-	out$leg <- plg
+	out$leg <- as.list(plg)
 	out$asp <- 1
 	out$lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
 	if (out$lonlat) {

@@ -2,12 +2,18 @@
 
 sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2) {
 	
-	if (!xy) cells <- TRUE
+	if ((!xy && !as.points)) cells <- TRUE
 	
 	f <- freq(x)	
 	exp <- max(1, exp)
 	ss <- exp * size * nrow(f)
-	sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=warn)
+	lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
+	if ((!lonlat) && (ss > (0.8 * ncell(x)))) { 
+		sr <- cbind(1:ncell(x), values(x))
+		colnames(sr) <- c("cell", names(x))
+	} else {
+		sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=warn)
+	}
 	
 	ys <- list()
 	notfound <- NULL

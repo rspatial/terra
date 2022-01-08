@@ -30,7 +30,7 @@ SpatVector
 
 \examples{
 v <- vect(rbind(c(-120,-20), c(-80,5), c(-40,-60), c(-120,-20)), 
-  type="polygons", crs="+proj=lonlat")
+  type="polygons", crs="+proj=longlat")
 vd <- densify(v, 200000)
 
 p <- project(v, "+proj=robin")

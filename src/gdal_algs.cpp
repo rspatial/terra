@@ -697,10 +697,10 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 		tmp = *this;
 	}
 
-	bool usemask = false;
+//	bool usemask = false;
 	SpatRaster mask;
 	if (narm) {
-		usemask = true;
+//		usemask = true;
 		SpatOptions mopt(topt);
 		mopt.set_datatype("INT1U"); 
 		mask = tmp.isfinite(mopt);
@@ -733,7 +733,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 
 	GDALDataset *maskDS=NULL;
 	GDALDatasetH rstMask;
-	if (usemask) {
+	if (narm) {
 		if (!mask.open_gdal(rstMask, 0, false, opt)) {
 			out.setError("cannot open dataset");
 			return out;
@@ -782,7 +782,7 @@ SpatVector SpatRaster::polygonize(bool trunc, bool values, bool narm, bool aggre
 	//double naflag = poBand->GetNoDataValue(&hasNA);
 
 	CPLErr err;
-	if (usemask) {
+	if (narm) {
 		GDALRasterBand *maskBand;
 		maskBand = maskDS->GetRasterBand(1);
 		if (trunc) {

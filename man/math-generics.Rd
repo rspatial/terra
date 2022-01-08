@@ -17,6 +17,9 @@
 \alias{log,SpatRaster-method}
 \alias{round}
 \alias{round,SpatRaster-method}
+\alias{round}
+\alias{round,SpatVector-method}
+
 \alias{sqrt}
 \alias{sqrt,SpatRaster-method}
 
