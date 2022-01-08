@@ -11,6 +11,8 @@
 \alias{Math,SpatExtent-method}
 \alias{Math2,SpatExtent-method}
 
+\alias{Math2,SpatVector-method}
+
 \alias{log}
 \alias{log,SpatRaster-method}
 \alias{round}
@@ -31,7 +33,10 @@ Standard mathematical methods for computations with SpatRaster objects. Computat
 
 Instead of directly calling these methods, you can also provide their name to the \code{math} method. This is useful if you want to provide an output filename.
 
-The following methods have been implemented for \code{SpatExtent} objects: \code{round, floor, ceiling}
+The following methods have been implemented for \code{SpatExtent}: \code{round, floor, ceiling}
+
+\code{round} has also been implemented for \code{SpatVector}, to round the coordinates of the geometries. 
+
 }
 
 \usage{
@@ -42,6 +47,8 @@ The following methods have been implemented for \code{SpatExtent} objects: \code
 \S4method{round}{SpatRaster}(x, digits=0)
 
 \S4method{math}{SpatRaster}(x, fun, digits=0, filename="", overwrite=FALSE, ...)
+
+\S4method{round}{SpatVector}(x, digits=4)
 }
 
 \seealso{

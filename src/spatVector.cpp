@@ -1035,3 +1035,26 @@ SpatVector SpatVectorCollection::append() {
 	}
 	return out;
 }
+
+
+SpatVector SpatVector::round(int digits) {
+	SpatVector out = *this;
+	size_t ng = out.size();
+	for (size_t i=0; i<ng; i++) {
+		size_t np = out.geoms[i].size();
+		for (size_t j=0; j<np; j++) {
+			vecround(out.geoms[i].parts[j].x, digits);
+			vecround(out.geoms[i].parts[j].y, digits);
+			if (out.geoms[i].parts[j].hasHoles()) {
+				size_t nh = out.geoms[i].parts[j].holes.size();
+				for (size_t k=0; k<nh; k++) {
+					vecround(out.geoms[i].parts[j].holes[k].x, digits);
+					vecround(out.geoms[i].parts[j].holes[k].y, digits);
+				}
+			}
+		}
+	}
+	return(out);
+}
+
+

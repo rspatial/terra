@@ -106,4 +106,15 @@ setMethod("Math2", signature(x="SpatExtent"),
 	}
 )
 
+setMethod("Math2", signature(x="SpatVector"),
+    function(x, digits=4){ 
+		oper <- as.vector(.Generic)[1]
+		if (oper == "round") {
+			x@ptr <- x@ptr$round(digits)
+			return(x)
+		} else {
+			error(oper, "not implemented for SpatVector")
+		}
+	}
+)
 

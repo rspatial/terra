@@ -396,7 +396,7 @@ RCPP_MODULE(spat){
 		.method("fix_lonlat_overflow", &SpatVector::fix_lonlat_overflow)
 		
 		.method("densify", &SpatVector::densify)
-		
+		.method("round", &SpatVector::round)
 	;
 
 

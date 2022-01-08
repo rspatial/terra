@@ -312,6 +312,7 @@ class SpatVector {
 		void fix_lonlat_overflow();
 		SpatVector cross_dateline(bool &fixed);
 		SpatVector densify(double interval, bool adjust);
+		SpatVector round(int digits);
 };
 
 

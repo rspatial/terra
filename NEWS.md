@@ -64,7 +64,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `direction` for SpatRaster. [#462](https://github.com/rspatial/terra/issues/462) by Márcia Barbosa
 - new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
 - new function `makeVRT` to create a vrt file for a file that needs a header to be read.
-
+- new option `method="stratified"` for `spatSample<SpatRaster>`. [#470](https://github.com/rspatial/terra/issues/470) by Michael Mahoney
 
 # version 1.4-22
 
