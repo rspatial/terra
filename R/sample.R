@@ -1,4 +1,75 @@
 
+
+sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2) {
+	
+	if (!xy) cells <- TRUE
+	
+	f <- freq(x)	
+	exp <- max(1, exp)
+	ss <- exp * size * nrow(f)
+	sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=warn)
+	
+	ys <- list()
+	notfound <- NULL
+
+	for (i in seq_len(nrow(f))) {
+		y <- sr[sr[, 2] == f[i,2], ,drop=FALSE]
+		if (nrow(y) == 0) {
+			notfound <- c(notfound, i)
+		} else {
+			if (nrow(y) > size) {
+				y <- y[sample(nrow(y), size),  ,drop=FALSE]
+			} 
+			ys[[i]] <- y
+		}
+	}
+	res <- do.call(rbind, ys)
+	colnames(res) <- c('cell', names(x))
+	
+	ures <- unique(res[,2])
+	miss <- !(ures %in% f[,"value"])
+	if (any(miss) && warn) {
+		miss <- which(miss)
+		if (length(miss)== 1) {
+			warn("sample", 'no samples for stratum: ', tanm)
+		} else if (length(miss) > 1) {
+			warn("sample", 'no samples for strata: ', paste(tanm, collapse=', '))
+		}
+	}
+	
+	ta <- tapply(res[,1], res[,2], length) 
+	tanm <- names(ta)[which(ta < size)]
+	if ((length(tanm) > 0) && warn) {
+		if (length(tanm)== 1) {
+			warn("sample", 'fewer samples than requested for stratum: ', tanm)
+		} else if (length(tanm) > 1) {
+			warn("sample", 'fewer samples than requested for strata: ', paste(tanm, collapse=', '))
+		}
+	}
+
+	if (xy) {
+		pts <- xyFromCell(x, res[,1])
+		res <- cbind(res[,1,drop=FALSE], pts, res[,2,drop=FALSE])
+	}
+	if (as.points) {
+		if (!xy) {
+			pts <- xyFromCell(x, res[,1])
+		}
+		res <- vect(pts, crs=crs(x), atts=data.frame(res))
+	} else if (as.df) {
+		res <- data.frame(res)
+	}
+	if (!cells) {
+		res <- res[,-1,drop=FALSE]
+	}	
+	res
+}
+
+
+
+
+
+
 .seed <- function() {
   sample.int(.Machine$integer.max, 1)
 }
@@ -115,6 +186,21 @@ setMethod("spatSample", signature(x="SpatRaster"),
 		}
 		if ((size > ncell(x)) & (!replace)) {
 			size <- ncell(x)
+		}
+
+		method <- match.arg(tolower(method), c("random", "regular", "stratified"))
+		if (method == "stratified") {
+			if (as.raster) {
+				error("as.raster is not valid for method='stratified'")
+			}
+			if (nlyr(x) > 1) {
+				x <- x[[1]]
+				warn("only the first layer of x is used")			
+			}
+			if (!hasValues(x)) {
+				error("x has no values")			
+			}
+			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=5) )
 		}
 
 		if (!as.raster) {
