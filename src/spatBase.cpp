@@ -165,7 +165,7 @@ double SpatOptions::get_memfrac() { return memfrac; }
 
 void SpatOptions::set_memfrac(double d) {
 	// allowing very high values for testing purposes
-	if ((d >= 0.1) && (d <= 100)) { 
+	if ((d >= 0) && (d <= 100)) { 
 		memfrac = d;
 	} 
 }
