@@ -97,7 +97,6 @@
 <span class="r-in"><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="st">"POLYGON ((0 -5, 10 0, 10 -10, 4 -2))"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">is.valid</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> IllegalArgumentException: Points of LinearRing do not form a closed linestring</span>
-<span class="r-in"><span class="co"># }</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrow<span class="op">=</span><span class="fl">10</span>, ncol<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span>, xmax<span class="op">=</span><span class="fl">1</span>, ymin<span class="op">=</span><span class="fl">0</span>, ymax<span class="op">=</span><span class="fl">1</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">44</span>,<span class="fl">55</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
@@ -112,12 +111,14 @@
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="isvalid-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
 <span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">makeValid</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">is.valid</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span class="co"># the hole has two parts now</span></span>
 <span class="r-in"><span class="fu"><a href="geometry.html">geom</a></span><span class="op">(</span><span class="va">v</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "POLYGON ((0 1, 0 0, 1 0, 1 1, 0 1),(0.3 0.6, 0.3 0.5, 0.4 0.5, 0.4 0.6, 0.3 0.6),(0.4 0.5, 0.4 0.4, 0.5 0.4, 0.5 0.5, 0.4 0.5))"</span>
+<span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>
   </div>
