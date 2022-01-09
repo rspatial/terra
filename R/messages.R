@@ -44,7 +44,7 @@ mem_info <- function(x, n=1) {
 		cat("\nMemory (GB) ")
 		cat("\n------------------------")
 		if (memmax > 0) {
-			cat(paste("\navailable       :",  round(v[2] / gb, 2), "(maxmem)"))
+			cat(paste("\navailable       :",  round(v[2] / gb, 2), "(memmax)"))
 		} else {
 			cat(paste("\navailable       :",  round(v[2] / gb, 2)))
 		}
