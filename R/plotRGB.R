@@ -89,6 +89,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 		} else {
 			x <- stretch(x, histeq=TRUE, scale=255)
 		}
+		scale <- 255
 	}
 
 	RGB <- values(x)
