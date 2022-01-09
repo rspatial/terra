@@ -112,6 +112,7 @@
 <code>inset</code> argument <code>border</code> changed to <code>perimeter</code> to allow passing <code>border</code> on to <code>plot&lt;Spat*&gt;</code>. <a href="https://github.com/rspatial/terra/issues/456" class="external-link">#456</a> by Márcia Barbosa</li>
 <li>The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. <a href="https://github.com/rspatial/terra/issues/459" class="external-link">#459</a> by Edzer Pebesma</li>
 <li>it is now possible to add sub-datasets to GPKG and GTiff files. <a href="https://github.com/rspatial/terra/issues/300" class="external-link">#300</a> by gtitov</li>
+<li>general option <code>memfrac</code> can now be set to zero (in stead of not lower than 0.1). <a href="https://github.com/rspatial/terra/issues/476" class="external-link">#476</a> by Matt Strimas-Mackey</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-5-9">new<a class="anchor" aria-label="anchor" href="#new-1-5-9"></a></h3>
@@ -136,6 +137,7 @@
 <li>new method <code>focal3D</code> to compute focal values for a three-dimensional (row, column, layer) window</li>
 <li>new function <code>makeVRT</code> to create a vrt file for a file that needs a header to be read.</li>
 <li>new option <code>method="stratified"</code> for <code>spatSample&lt;SpatRaster&gt;</code>. <a href="https://github.com/rspatial/terra/issues/470" class="external-link">#470</a> by Michael Mahoney</li>
+<li>new general option <code>memmax</code> to cap the amount of RAM that terra can use. <a href="https://github.com/rspatial/terra/issues/476" class="external-link">#476</a> by Matt Strimas-Mackey</li>
 </ul></div>
 </div>
     <div class="section level2">

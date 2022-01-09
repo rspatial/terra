@@ -64,7 +64,8 @@
     <div id="details">
     <h2>Details</h2>
     <p>The following options are available.</p>
-<p>memfrac - value between 0.1 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.</p>
+<p>memfrac - value between 0 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.</p>
+<p>memmax - the maximum amount of RAM (in GB) that terra can use when processing a raster dataset. Should be less than what is detected (see <code>link{mem_info}</code>, and higher values are ignored. Set it to a negative number or NA to ignore this value).</p>
 <p>tempdir - directory where temporary files are written. The default what is returned by tempdir().</p>
 <p>datatype - default data type. See <code><a href="writeRaster.html">writeRaster</a></code></p>
 <p>todisk - logical. If <code>TRUE</code> write all raster data to disk (temp file if no file name is specified). For debugging.</p>
@@ -76,7 +77,7 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">terraOptions</span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memfrac   : 0.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpWYXTkY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp52fgNX</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
