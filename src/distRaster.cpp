@@ -995,6 +995,7 @@ SpatRaster SpatRaster::edges(bool classes, std::string type, unsigned directions
 		return(out);
 	}
 
+	opt.minrows = 2;
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -2286,6 +2287,8 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 		out.setError(getError());
 		return(out);
 	}
+	
+	opt.minrows = 3;
   	if (!out.writeStart(opt)) {
 		readStop();
 		return out;

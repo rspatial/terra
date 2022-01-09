@@ -931,33 +931,53 @@ SpatVector SpatVector::cbind(SpatDataFrame d) {
 
 
 SpatVector SpatVector::as_points(bool multi, bool skiplast) {
-	SpatVector v = *this;
 	if (geoms[0].gtype == points) {
+		SpatVector v = *this;
 		v.addWarning("returning a copy");
 		return v;
 	}
-	size_t skip = 0;
-	if (geoms[0].gtype == polygons) {
-		v = v.as_lines();
-		if (skiplast) {
-			skip = 1;
-		}
-	}
-
-
-	for (size_t i=0; i < v.geoms.size(); i++) {
-		SpatGeom g;
-		g.gtype = points;
-		for (size_t j=0; j<geoms[i].parts.size(); j++) {
-			SpatPart p = geoms[i].parts[j];
-			if (p.size() > 0) {
-				size_t n = p.size() - skip;
-				for (size_t k=0; k<n; k++) {
-					g.addPart(SpatPart(p.x[k], p.y[k]));
+	
+	SpatVector v = *this;
+	
+	if (geoms[0].gtype == lines) {
+		for (size_t i=0; i < v.geoms.size(); i++) {
+			SpatGeom g;
+			g.gtype = points;
+			for (size_t j=0; j<geoms[i].parts.size(); j++) {
+				SpatPart p = geoms[i].parts[j];
+				if (p.size() > 0) {
+					size_t n = p.size();
+					for (size_t k=0; k<n; k++) {
+						g.addPart(SpatPart(p.x[k], p.y[k]));
+					}
 				}
 			}
+			v.geoms[i] = g;
 		}
-		v.geoms[i] = g;
+	} else {
+		for (size_t i=0; i < v.geoms.size(); i++) {
+			SpatGeom g;
+			g.gtype = points;
+			for (size_t j=0; j<geoms[i].parts.size(); j++) {
+				SpatPart p = geoms[i].parts[j];
+				if (p.size() > 0) {
+					size_t n = p.size();
+					for (size_t k=0; k<n; k++) {
+						g.addPart(SpatPart(p.x[k], p.y[k]));
+					}
+					if (p.hasHoles()) {
+						size_t nh = p.nHoles();
+						for (size_t h=0; h<nh; h++) {
+							size_t n = p.holes[h].size();
+							for (size_t k=0; k<n; k++) {
+								g.addPart(SpatPart(p.holes[h].x[k], p.holes[h].y[k]));
+							}
+						}
+					}
+				}
+			}
+			v.geoms[i] = g;
+		}
 	}
 	if (multi) {
 		v.df = df;

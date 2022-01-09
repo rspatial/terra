@@ -27,5 +27,6 @@ loadModule("spat", TRUE)
 		packageStartupMessage("\nYou should reinstall package 'terra'\n")
 	}
 #	terraOptions(todisk=TRUE, steps=2)
+#	terraOptions(memfrac=0)
 }
 
