@@ -8,7 +8,7 @@
 \description{
 Linear or histogram equalization stretch of values in a SpatRaster. 
 
-For linear stretch, provide the desired output range (minv and maxv) and the lower and upper bounds in the original data, either as quantiles (\code{minq} and \code{maxq}, or as cell values (\code{smin} and \code{smax}). If \code{smin} and \code{smax} are both not \code{NA}, \code{minq} and \code{maxq} are ignored.
+For linear stretch, provide the desired output range (\code{minv} and \code{maxv}) and the lower and upper bounds in the original data, either as quantiles (\code{minq} and \code{maxq}, or as cell values (\code{smin} and \code{smax}). If \code{smin} and \code{smax} are both not \code{NA}, \code{minq} and \code{maxq} are ignored.
 
 For histogram equalization, these arguments are ignored, but you can provide the desired scale of the output. 
 }
@@ -27,7 +27,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 \item{smin}{numeric < smax. user supplied lower value for the layers, to be used instead of a quantile computed by the function itself}
 \item{smax}{numeric > smin. user supplied upper value for the layers, to be used instead of a quantile computed by the function itself}
 
-\item{histeq}{logical. Output filename}
+\item{histeq}{logical. If \code{TRUE} histogram equalization is used instead of linear stretch}
 \item{scale}{numeric. The scale (maximum value) of the output if \code{histeq=TRUE}}
 
 \item{filename}{character. Output filename}
