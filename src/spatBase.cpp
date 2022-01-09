@@ -26,6 +26,7 @@ SpatOptions::SpatOptions() {}
 SpatOptions::SpatOptions(const SpatOptions &opt) {
 	tempdir = opt.tempdir;
 	memfrac = opt.memfrac;
+	memmax = opt.memmax;
 	todisk = opt.todisk;
 	tolerance = opt.tolerance;
 
@@ -167,6 +168,16 @@ void SpatOptions::set_memfrac(double d) {
 	// allowing very high values for testing purposes
 	if ((d >= 0) && (d <= 100)) { 
 		memfrac = d;
+	} 
+}
+
+double SpatOptions::get_memmax() { return memmax; }
+
+void SpatOptions::set_memmax(double d) {
+	if (std::isnan(d) || (d <= 0)) {
+		memmax = -1;
+	} else {
+		memmax = d * pow(1024, 3) / 8;
 	} 
 }
 

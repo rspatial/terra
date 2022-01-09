@@ -45,13 +45,17 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{progress}\tab positive integer. If the number of chunks is larger, a progress bar is shown.\cr
 
-\code{memfrac}\tab numeric between 0.1 and 0.9. The fraction of available RAM that terra is allowed to use.\cr
+\code{memfrac}\tab numeric between 0 and 0.9 (higher values give a warning). The fraction of available RAM that terra is allowed to use.\cr
+
+\code{memmax}\tab memmax - the maximum amount of RAM (in GB) that terra can use when processing a raster dataset. Should be less than what is detected (see \code{link{mem_info}}, and higher values are ignored. Set it to a negative number or NA to ignore this value). \cr
 
 \code{names}\tab output layer names.\cr
 
 \code{NAflag}\tab numeric. value to represent missing (\code{NA} or \code{NaN}) values. See note\cr
 
 \code{verbose}\tab logical. If \code{TRUE} debugging information is printed.\cr
+
+\code{steps}\tab postive integers. In how many steps (chunks) do you want to process the data (for debugging)\cr
 
 \code{todisk}\tab logical. If \code{TRUE} processing operates as if the dataset is very large and needs to be written to a temporary file (for debugging).\cr
 }

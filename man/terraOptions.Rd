@@ -19,7 +19,9 @@ terraOptions(...)
 \details{
 The following options are available. 
 
-memfrac - value between 0.1 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.
+memfrac - value between 0 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.
+
+memmax - the maximum amount of RAM (in GB) that terra can use when processing a raster dataset. Should be less than what is detected (see \code{link{mem_info}}, and higher values are ignored. Set it to a negative number or NA to ignore this value).
 
 tempdir - directory where temporary files are written. The default what is returned by tempdir().
 
