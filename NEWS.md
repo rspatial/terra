@@ -40,6 +40,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>`. [#456](https://github.com/rspatial/terra/issues/456) by Márcia Barbosa
 - The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459](https://github.com/rspatial/terra/issues/459) by Edzer Pebesma
 - it is now possible to add sub-datasets to GPKG and GTiff files. [#300](https://github.com/rspatial/terra/issues/300) by gtitov
+- general option `memfrac` can now be set to zero (in stead of not lower than 0.1). [#476](https://github.com/rspatial/terra/issues/476) by Matt Strimas-Mackey
 
 
 
@@ -65,6 +66,8 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new method `focal3D` to compute focal values for a three-dimensional (row, column, layer) window
 - new function `makeVRT` to create a vrt file for a file that needs a header to be read.
 - new option `method="stratified"` for `spatSample<SpatRaster>`. [#470](https://github.com/rspatial/terra/issues/470) by Michael Mahoney
+- new general option `memmax` to cap the amount of RAM that terra can use. [#476](https://github.com/rspatial/terra/issues/476) by Matt Strimas-Mackey
+
 
 # version 1.4-22
 
