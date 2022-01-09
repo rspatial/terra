@@ -317,6 +317,11 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise) {
 
 	size_t s = size();
 	size_t sx = x.size();
+	if ((s == 0) || (sx == 0)) {
+		setError("empty SpatVector");
+		return(d);
+	}
+	
 	if (pairwise && (s != sx ) && (s > 1) && (sx > 1))  {
 		setError("Can only do pairwise distance if geometries match, or if one is a single geometry");
 		return(d);
@@ -328,6 +333,19 @@ std::vector<double>  SpatVector::distance(SpatVector x, bool pairwise) {
 
 	std::string gtype = type();
 	std::string xtype = x.type();
+
+/*
+	int ispts = (gtype == "points") + (xtype == "points");
+	if ((lonlat) && (ispts == 1)) {
+		if (xtype == "points") {
+			return linedistLonLat(x);
+		} else {
+			return x.linedistLonLat(*this);			
+		}
+	}
+*/		
+	
+	
 	if ((!lonlat) || (gtype != "points") || (xtype != "points")) {
 		d = geos_distance(x, pairwise);
 		if ((!lonlat) && (m != 1)) {

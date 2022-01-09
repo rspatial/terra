@@ -88,6 +88,9 @@ class SpatGeom {
 		//double length_lonlat(double a, double f);
 		unsigned size() { return parts.size(); };
 		void remove_duplicate_nodes(int digits);
+		size_t ncoords();
+		std::vector<std::vector<double>> coordinates();
+
 };
 
 
@@ -155,6 +158,7 @@ class SpatVector {
 		std::vector<std::string> getGeometryWKT();
 		void computeExtent();
 
+		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
 
 		SpatVector project(std::string crs);
@@ -175,6 +179,7 @@ class SpatVector {
 		std::vector<double> length();
 		std::vector<double> distance(SpatVector x, bool pairwise);
 		std::vector<double> distance(bool sequential);
+		std::vector<double> linedistLonLat(SpatVector pts);
 
 		std::vector<std::vector<size_t>> knearest(size_t k);
 

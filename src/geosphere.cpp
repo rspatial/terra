@@ -131,6 +131,7 @@ double alongTrackDistance(double lon1, double lat1, double lon2, double lat2, do
 
 
 
+#include "Rcpp.h"
 
 // [[Rcpp::export]]
 double dist2segment(double plon, double plat, double lon1, double lat1, double lon2, double lat2) {
@@ -143,7 +144,7 @@ double dist2segment(double plon, double plat, double lon1, double lat1, double l
 	double trackdist2 = alongTrackDistance(lon2, lat2, lon1, lat1, plon, plat);
 	if ((trackdist1 >= seglength) || (trackdist2 >= seglength)) {
 		double d1 = dist_lonlat(lon1, lat1, plon, plat);
-		double d2 = dist_lonlat(lat2, lat2, plon, plat);
+		double d2 = dist_lonlat(lon2, lat2, plon, plat);
 		return d1 < d2 ? d1 : d2;
 	}
 	return dist2track(lon1, lat1, lon2, lat2, plon, plat, false);
@@ -182,6 +183,56 @@ double dist2segmentPoint(double plon, double plat, double lon1, double lat1, dou
 }
 
 
+std::vector<double> SpatVector::linedistLonLat(SpatVector x) {
+	
+	std::vector<std::vector<double>> pxy = x.coordinates();
+	size_t np = pxy[0].size();
+	size_t ng = size();
+
+	std::vector<double> d, dd;
+	dd.reserve(np*ng);
+	d.resize(np);
+	
+	bool poly = type() == "polygons";
+	if (poly) {
+		SpatVector pg;
+		pg.srs = srs;
+		std::vector<int> insect;
+		for (size_t g=0; g<ng; g++) {
+			pg.geoms = { geoms[g] };
+			insect = pg.relate(x, "intersects");
+			std::vector<std::vector<double>> xy = geoms[g].coordinates();
+			size_t nseg = xy[0].size() - 1;
+			for (size_t i=0; i<np; i++) {
+				if (insect[i]) {
+					d[i] = 0;
+				} else {
+					d[i] = dist2segment(pxy[0][i], pxy[1][i], xy[0][0], xy[1][0], xy[0][1], xy[1][1]);
+					for (size_t j=1; j<nseg; j++) {
+						d[i] = std::min(d[i], 
+						dist2segment(pxy[0][i], pxy[1][i], xy[0][j], xy[1][j], xy[0][j+1], xy[1][j+1]));
+					}
+				}
+			}
+		}
+		dd.insert(dd.end(), d.begin(), d.end());
+	} else {
+		for (size_t g=0; g<ng; g++) {
+			std::vector<std::vector<double>> xy = geoms[g].coordinates();
+			size_t nseg = xy[0].size() - 1;
+			for (size_t i=0; i<np; i++) {
+				d[i] = dist2segment(pxy[0][i], pxy[1][i], xy[0][0], xy[1][0], xy[0][1], xy[1][1]);
+				for (size_t j=1; j<nseg; j++) {
+					d[i] = std::min(d[i], 
+					dist2segment(pxy[0][i], pxy[1][i], xy[0][j], xy[1][j], xy[0][j+1], xy[1][j+1]));
+				}
+			}
+		}
+		dd.insert(dd.end(), d.begin(), d.end());
+	}
+	return dd;
+}
+ 
 
 
 // [[Rcpp::export(name = "intermediate")]]
@@ -361,6 +412,8 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 	return out;
 }
  
+ 
+
  
 std::vector<bool> antipodal(std::vector<double> lon1, std::vector<double> lat1, std::vector<double> lon2, std::vector<double> lat2, double tol=1e-9) {
 	recycle(lon1, lon2);

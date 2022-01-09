@@ -404,6 +404,8 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{makeNodes}} \tab create nodes on lines \cr
   \code{\link{mergeLines}} \tab connect lines to form polygons  \cr
   \code{\link{removeDupNodes}} \tab remove duplicate nodes in geometries and optionally rounds the coordinates  \cr
+  \code{\link{is.valid}} \tab check if geometries are valid \cr
+  \code{\link{makeValid}} \tab attempt to repair invalid geometries \cr  
   \code{\link{snap}} \tab make boundaries of geometries identical if they are very close to each other  \cr
   \code{\link{erase} (single argument)} \tab remove parts of geometries that overlap \cr
   \code{\link{union} (single argument)} \tab create new polygons such that there are no overlapping polygons \cr

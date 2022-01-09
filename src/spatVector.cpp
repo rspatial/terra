@@ -138,6 +138,48 @@ SpatPart SpatGeom::getPart(unsigned i) {
 	return parts[i];
 }
 
+
+size_t SpatGeom::ncoords() {
+	size_t ncrds = 0;
+	size_t np = parts.size();
+	for (size_t j=0; j<np; j++) {
+		ncrds += parts[j].x.size();
+		if (parts[j].hasHoles()) {
+			size_t nh = parts[j].holes.size();
+			for (size_t k=0; k < nh; k++) {
+				ncrds += parts[j].holes[k].x.size();
+			}
+		}
+	}
+	return ncrds;
+}
+
+
+std::vector<std::vector<double>> SpatGeom::coordinates() {
+	std::vector<std::vector<double>> out(2);
+	size_t np = size();
+	size_t ncrds = ncoords();
+	out[0].reserve(ncrds);
+	out[1].reserve(ncrds);
+	for (size_t j=0; j<np; j++) {
+		size_t nx = parts[j].x.size();
+		for (size_t q=0; q < nx; q++) {
+			out[0].insert(out[0].end(), parts[j].x.begin(), parts[j].x.end());
+			out[1].insert(out[1].end(), parts[j].y.begin(), parts[j].y.end());
+		}
+		if (parts[j].hasHoles()) {
+			size_t nh =  parts[j].nHoles();
+			for (size_t k=0; k < nh; k++) {
+				out[0].insert(out[0].end(), parts[j].holes[k].x.begin(), parts[j].holes[k].x.end());
+				out[1].insert(out[1].end(), parts[j].holes[k].y.begin(), parts[j].holes[k].y.end());
+			}
+		}
+	}
+	return out;
+}
+
+
+
 SpatVector::SpatVector() {
 	extent.xmin = 0;
 	extent.xmax = 0;
@@ -344,7 +386,7 @@ unsigned SpatVector::nxy() {
 	return n;
 }
 
-
+/*
 std::vector<std::vector<double>> SpatVector::coordinates() {
 	std::vector<std::vector<double>> out(2);
 	for (size_t i=0; i < size(); i++) {
@@ -362,6 +404,50 @@ std::vector<std::vector<double>> SpatVector::coordinates() {
 						out[0].push_back( h.x[q] );
 						out[1].push_back( h.y[q] );
 					}
+				}
+			}
+		}
+	}
+	return out;
+}
+*/
+
+size_t SpatVector::ncoords() {
+	size_t ncrds = 0;
+	size_t ng = geoms.size();
+	for (size_t i=0; i<ng; i++) {
+		size_t np = geoms[i].parts.size();
+		for (size_t j=0; j<np; j++) {
+			ncrds += geoms[i].parts[j].x.size();
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					ncrds += geoms[i].parts[j].holes[k].x.size();
+				}
+			}
+		}
+	}
+	return ng;
+}
+
+std::vector<std::vector<double>> SpatVector::coordinates() {
+	std::vector<std::vector<double>> out(2);
+	size_t ncrds = ncoords();
+	out[0].reserve(ncrds);
+	out[1].reserve(ncrds);
+	size_t ng = size();
+	for (size_t i=0; i<ng; i++) {
+		size_t np = geoms[i].size();
+		for (size_t j=0; j<np; j++) {
+			size_t nx = geoms[i].parts[j].x.size();
+			for (size_t q=0; q < nx; q++) {
+				out[0].insert(out[0].end(), geoms[i].parts[j].x.begin(), geoms[i].parts[j].x.end());
+				out[1].insert(out[1].end(), geoms[i].parts[j].y.begin(), geoms[i].parts[j].y.end());
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				size_t nh = geoms[i].parts[j].nHoles();
+				for (size_t k=0; k < nh; k++) {
+					out[0].insert(out[0].end(), geoms[i].parts[j].holes[k].x.begin(), geoms[i].parts[j].holes[k].x.end());
+					out[1].insert(out[1].end(), geoms[i].parts[j].holes[k].y.begin(), geoms[i].parts[j].holes[k].y.end());
 				}
 			}
 		}
