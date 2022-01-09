@@ -52,7 +52,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 
     <div class="ref-description">
     <p>Linear or histogram equalization stretch of values in a SpatRaster.</p>
-<p>For linear stretch, provide the desired output range (minv and maxv) and the lower and upper bounds in the original data, either as quantiles (<code>minq</code> and <code>maxq</code>, or as cell values (<code>smin</code> and <code>smax</code>). If <code>smin</code> and <code>smax</code> are both not <code>NA</code>, <code>minq</code> and <code>maxq</code> are ignored.</p>
+<p>For linear stretch, provide the desired output range (<code>minv</code> and <code>maxv</code>) and the lower and upper bounds in the original data, either as quantiles (<code>minq</code> and <code>maxq</code>, or as cell values (<code>smin</code> and <code>smax</code>). If <code>smin</code> and <code>smax</code> are both not <code>NA</code>, <code>minq</code> and <code>maxq</code> are ignored.</p>
 <p>For histogram equalization, these arguments are ignored, but you can provide the desired scale of the output.</p>
     </div>
 
@@ -79,7 +79,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 <dt>smax</dt>
 <dd><p>numeric &gt; smin. user supplied upper value for the layers, to be used instead of a quantile computed by the function itself</p></dd>
 <dt>histeq</dt>
-<dd><p>logical. Output filename</p></dd>
+<dd><p>logical. If <code>TRUE</code> histogram equalization is used instead of linear stretch</p></dd>
 <dt>scale</dt>
 <dd><p>numeric. The scale (maximum value) of the output if <code>histeq=TRUE</code></p></dd>
 <dt>filename</dt>
