@@ -20,13 +20,15 @@ If \code{y} is a SpatVector, the distance to that SpatVector is computed for all
 
 The distance is always expressed in meter if the coordinate reference system is longitude/latitude, and in map units otherwise. Map units are typically meter, but inspect \code{crs(x)} if in doubt.
 
+Results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance. 
+
 \bold{If \code{x} is a SpatVector:}
 
 If \code{y} is \code{missing}, a distance matrix between all object in \code{x} is computed. An distance matrix object of class "dist" is returned. 
 
 If \code{y} is a SpatVector the geographic distance between all objects is computed (and a matrix is returned). If both sets have the same number of points, and \code{pairwise=TRUE}, the distance between each pair of objects is computed, and a vector is returned.
 
-The distance is always expressed in meter, except when the coordinate reference system is longitude/latitude AND one of the SpatVector(s) consists of lines or polygons. In that case the distance is in degrees, and thus not very useful (this will be fixed soon).  
+The distance is always expressed in meter, except when the coordinate reference system is longitude/latitude AND one of the SpatVector(s) consists of lines or polygons. In that case the distance is in degrees, and thus not very useful (this will be fixed soon). Otherwise, results are more precise, sometimes much more precise, when using longitude/latitude rather than a planar coordinate reference system, as these distort distance. 
 }
 
 \usage{
