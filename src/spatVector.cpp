@@ -955,20 +955,21 @@ SpatVector SpatVector::as_points(bool multi, bool skiplast) {
 			v.geoms[i] = g;
 		}
 	} else {
+		size_t skip=skiplast;
 		for (size_t i=0; i < v.geoms.size(); i++) {
 			SpatGeom g;
 			g.gtype = points;
 			for (size_t j=0; j<geoms[i].parts.size(); j++) {
 				SpatPart p = geoms[i].parts[j];
 				if (p.size() > 0) {
-					size_t n = p.size();
+					size_t n = p.size() - skip;
 					for (size_t k=0; k<n; k++) {
 						g.addPart(SpatPart(p.x[k], p.y[k]));
 					}
 					if (p.hasHoles()) {
 						size_t nh = p.nHoles();
 						for (size_t h=0; h<nh; h++) {
-							size_t n = p.holes[h].size();
+							size_t n = p.holes[h].size()-skip;
 							for (size_t k=0; k<n; k++) {
 								g.addPart(SpatPart(p.holes[h].x[k], p.holes[h].y[k]));
 							}
