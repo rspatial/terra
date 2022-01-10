@@ -1,5 +1,4 @@
-# version 1.5-10
-
+# version 1.5-11
 
 ## bug fixes
 
@@ -41,7 +40,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459](https://github.com/rspatial/terra/issues/459) by Edzer Pebesma
 - it is now possible to add sub-datasets to GPKG and GTiff files. [#300](https://github.com/rspatial/terra/issues/300) by gtitov
 - general option `memfrac` can now be set to zero (in stead of not lower than 0.1). [#476](https://github.com/rspatial/terra/issues/476) by Matt Strimas-Mackey
-
+- new argument `allowGaps` in `patches` to disallow gaps between patch IDs. See [#478](https://github.com/rspatial/terra/issues/478) by Dunbar Carpenter.
 
 
 ## new 

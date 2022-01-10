@@ -18,7 +18,7 @@ gdalCache <- function(size=NA) {
 	}
 }
 
-gdal <- function(warn=NA, drivers=FALSE) {
+gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 	if (!is.na(warn)) {
 		warn <- as.integer(warn)
 		stopifnot(warn %in% c(1:4))
@@ -36,8 +36,17 @@ gdal <- function(warn=NA, drivers=FALSE) {
 		rownames(x) <- NULL
 		x
 	} else {
-		c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
-	}
+		lib <- tolower(lib)
+		if (lib=="gdal") {
+			.gdal_version()
+		} else if (lib=="proj") {
+			proj_version()
+		} else if (lib=="geos") {
+			.geos_version()
+		} else {	
+			c(gdal=.gdal_version(), proj=proj_version(), geos=.geos_version())
+		}	
+	}	
 }
 
 
