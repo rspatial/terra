@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">patches</span><span class="op">(</span><span class="va">x</span>, directions<span class="op">=</span><span class="fl">4</span>, zeroAsNA<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">patches</span><span class="op">(</span><span class="va">x</span>, directions<span class="op">=</span><span class="fl">4</span>, zeroAsNA<span class="op">=</span><span class="cn">FALSE</span>, allowGaps<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -65,6 +65,8 @@
 <dd><p>integer indicating which cells are considered adjacent. Should be 8 (Queen's case) or 4 (Rook's case)</p></dd>
 <dt>zeroAsNA</dt>
 <dd><p>logical. If <code>TRUE</code> treat cells that are zero as if they were <code>NA</code></p></dd>
+<dt>allowGaps</dt>
+<dd><p>logical. If <code>TRUE</code> there may be gaps in the patch IDs (e.g. you may have patch IDs 1, 2, 3 and 5, but not 4). If it is FALSE, these numbers will be recoded from 1 to the number of patches (4 in this example)</p></dd>
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 <dt>...</dt>
@@ -108,6 +110,20 @@
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="segregate.html">segregate</a></span><span class="op">(</span><span class="va">rr</span>, keep<span class="op">=</span><span class="cn">TRUE</span>, other<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
 <span class="r-in"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">### patch ID values are not guaranteed to be consecutive</span></span>
+<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>nrows<span class="op">=</span><span class="fl">5</span>, ncols<span class="op">=</span><span class="fl">10</span>, xmin<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span><span class="op">*</span><span class="fl">0.7</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">rp</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">r</span>, directions<span class="op">=</span><span class="fl">8</span>, zeroAsNA<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">rp</span>, type<span class="op">=</span><span class="st">"classes"</span><span class="op">)</span>; <span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">rp</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="patches-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">### unless you set allowGaps=FALSE</span></span>
+<span class="r-in"><span class="va">rp</span> <span class="op">&lt;-</span> <span class="fu">patches</span><span class="op">(</span><span class="va">r</span>, directions<span class="op">=</span><span class="fl">8</span>, zeroAsNA<span class="op">=</span><span class="cn">TRUE</span>, allowGaps<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'classify': object 'rp' not found</span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">rp</span>, type<span class="op">=</span><span class="st">"classes"</span><span class="op">)</span>; <span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">rp</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="patches-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
