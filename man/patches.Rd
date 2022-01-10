@@ -10,13 +10,14 @@ Detect patches (clumps). Patches are groups of cells that are surrounded by cell
 }
 
 \usage{
-\S4method{patches}{SpatRaster}(x, directions=4, zeroAsNA=FALSE, filename="", ...)
+\S4method{patches}{SpatRaster}(x, directions=4, zeroAsNA=FALSE, allowGaps=TRUE, filename="", ...)
 }
 
 \arguments{
 \item{x}{SpatRaster}
 \item{directions}{integer indicating which cells are considered adjacent. Should be 8 (Queen's case) or 4 (Rook's case)}
   \item{zeroAsNA}{logical. If \code{TRUE} treat cells that are zero as if they were \code{NA}}
+  \item{allowGaps}{logical. If \code{TRUE} there may be gaps in the patch IDs (e.g. you may have patch IDs 1, 2, 3 and 5, but not 4). If it is FALSE, these numbers will be recoded from 1 to the number of patches (4 in this example)}
   \item{filename}{character. Output filename}
   \item{...}{options for writing files as in \code{\link{writeRaster}}}
 }
@@ -55,6 +56,17 @@ rr <- classify(r, cbind(0, NA))
 s <- segregate(rr, keep=TRUE, other=NA)
 p <- patches(s)
 
+
+### patch ID values are not guaranteed to be consecutive
+r <- rast(nrows=5, ncols=10, xmin=0)
+set.seed(0)
+values(r)<- round(runif(ncell(r))*0.7)
+rp <- patches(r, directions=8, zeroAsNA=TRUE) 
+plot(rp, type="classes"); text(rp)
+
+### unless you set allowGaps=FALSE
+rp <- patches(r, directions=8, zeroAsNA=TRUE, allowGaps=FALSE) 
+plot(rp, type="classes"); text(rp)
 }
 
 \keyword{methods}

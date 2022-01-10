@@ -47,10 +47,25 @@ setMethod("weighted.mean", signature(x="SpatRaster", w="SpatRaster"),
 
 
 setMethod("patches", signature(x="SpatRaster"), 
-	function(x, directions=4, zeroAsNA=FALSE, filename="", ...) {
-		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$patches(directions[1], zeroAsNA[1], opt)
-		messages(x, "patches")
+	function(x, directions=4, zeroAsNA=FALSE, allowGaps=TRUE, filename="", ...) {
+		if (allowGaps) {
+			opt <- spatOptions(filename, ...)
+			x@ptr <- x@ptr$patches(directions[1], zeroAsNA[1], opt)
+			messages(x, "patches")
+		} else {
+			opt <- spatOptions()
+			x@ptr <- x@ptr$patches(directions[1], zeroAsNA[1], opt)
+			x <- messages(x, "patches")
+			f <- freq(x)
+			fr <- cbind(f[,2], 1:nrow(f))
+			fr <- fr[fr[,1] != fr[,2], ,drop=FALSE]
+			if (nrow(fr) > 0) {
+				x <- classify(rp, fr, filename=filename, ...)
+			} else if (filename != "") {
+				x <- writeRaster(x, filename=filename, ...)
+			}
+			x
+		}
 	}
 )
 
