@@ -299,20 +299,20 @@
  
 	out <- list()
 
+	out$lim <- out$ext <- as.vector(ext(x))
 	if (!is.null(ext)) {
 		ext <- ext(ext)
 		x <- crop(x, ext)
 		out$ext <- as.vector(ext(x))
 		out$lim <- ext
-	} else if (!(is.null(xlim) & is.null(ylim))) {
+	} 
+	if (!(is.null(xlim) & is.null(ylim))) {
 		e <- as.vector(ext(x))
 		if (!is.null(xlim)) e[1:2] <- sort(xlim)
 		if (!is.null(ylim)) e[3:4] <- sort(ylim)
 		x <- crop(x, ext(e))
 		out$ext <- as.vector(ext(x))
 		out$lim <- e
-	} else {
-		out$lim <- out$ext <- as.vector(ext(x))
 	}
 
 	out$add <- isTRUE(add)
@@ -425,9 +425,9 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 				if (nlyr(alpha) > 1) {
 					alpha <- alpha[[y]]
 				}
-				alpha <- spatSample(alpha, maxcell, method="regular", as.raster=TRUE)
+				alpha <- spatSample(alpha, maxcell, ext=ext, method="regular", as.raster=TRUE)
 			}
-			x <- spatSample(x, maxcell, method="regular", as.raster=TRUE)
+			x <- spatSample(x, maxcell, ext=ext, method="regular", as.raster=TRUE)
 		}
 
 		if (is.character(legend)) {
