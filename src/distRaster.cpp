@@ -647,7 +647,7 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 		}
 
 		size_t end = start+nc;
-		for (size_t i=(star	t+1); i<end; i++) {
+		for (size_t i=(start+1); i<end; i++) {
 			if (std::isnan(v[i])) {
 				dist[i] = std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), dist[i-nc-1] + dxy);
 			}
