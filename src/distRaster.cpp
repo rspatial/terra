@@ -625,30 +625,29 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 	double dy = res[1] * lindist;
 	double dxy = sqrt(dx * dx + dy *dy);
 
-
 	std::vector<double> dist(v.size(), 0);
 
-	//top to bottom
     //left to right
-
-	if ( std::isnan(v[0]) ) { //first cell, no cell left of it
+	//first cell, no cell left of it
+	if ( std::isnan(v[0]) ) { 
 		dist[0] = above[0] + dy;
 	}
-	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
+	//first row, no row above it, use "above"
+	for (size_t i=1; i<nc; i++) { 
 		if (std::isnan(v[i])) {
 			dist[i] = std::min(std::min(above[i] + dy, above[i-1] + dxy), dist[i-1] + dx);
 		}
 	}
 
-	for (size_t r=1; r<nr; r++) { //other rows
+	//other rows
+	for (size_t r=1; r<nr; r++) { 
 		size_t start=r*nc;
-
 		if (std::isnan(v[start])) {
 			dist[start] = dist[start-nc] + dy;
 		}
 
 		size_t end = start+nc;
-		for (size_t i=(start+1); i<end; i++) {
+		for (size_t i=(star	t+1); i<end; i++) {
 			if (std::isnan(v[i])) {
 				dist[i] = std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), dist[i-nc-1] + dxy);
 			}
@@ -656,17 +655,20 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 	}
 
 	//right to left
-	if ( std::isnan(v[nc-1])) { //first cell
+	//first cell
+	if ( std::isnan(v[nc-1])) { 
 		dist[nc-1] = std::min(dist[nc-1], above[nc-1] + dy);
 	}
 
-	for (int i=(nc-2); i > -1; i--) { // other cells on first row
+	// other cells on first row
+	for (int i=(nc-2); i > -1; i--) { 
 		if (std::isnan(v[i])) {
 			dist[i] = std::min(std::min(std::min(dist[i+1] + dx, above[i+1] + dxy), above[i] + dy), dist[i]);
 		}
 	}
 
-	for (size_t r=1; r<nr; r++) { // other rows
+	// other rows
+	for (size_t r=1; r<nr; r++) { 
 		size_t start=(r+1)*nc-1;
 		if (std::isnan(v[start])) {
 			dist[start] = std::min(dist[start], dist[start-nc] + dy);
@@ -677,10 +679,8 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 			}
 		}
 	}
-
 	size_t off = (nr-1) * nc;
 	above = std::vector<double>(dist.begin()+off, dist.end());
-
 	return dist;
 }
 

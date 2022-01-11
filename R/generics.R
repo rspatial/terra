@@ -60,7 +60,7 @@ setMethod("patches", signature(x="SpatRaster"),
 			fr <- cbind(f[,2], 1:nrow(f))
 			fr <- fr[fr[,1] != fr[,2], ,drop=FALSE]
 			if (nrow(fr) > 0) {
-				x <- classify(rp, fr, filename=filename, ...)
+				x <- classify(x, fr, filename=filename, ...)
 			} else if (filename != "") {
 				x <- writeRaster(x, filename=filename, ...)
 			}
