@@ -685,25 +685,25 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 }
 
 
-void DxDxy(const double &lat, const int &row, double xres, double yres, const int &dir, double &dx, double &dxy) {
+void DxDxy(const double &lat, const int &row, double xres, double yres, const int &dir, double &dx,  double &dy, double &dxy) {
 	double thislat = lat + row * yres * dir;
-	xres /= 2;
 	yres /= 2;
-	dx  = distance_lonlat(-xres, thislat     , xres, thislat);
-	dxy = distance_lonlat(-xres, thislat-yres, xres, thislat+yres);
+	dx  = distance_lonlat(0, thislat     , xres, thislat);
+	dy  = distance_lonlat(0, thislat-yres, 0, thislat+yres);
+	dxy = distance_lonlat(0, thislat-yres, xres, thislat+yres);
 	//double dy = distance_lonlat(0, 0, -yres, yres, a, f);
 }
 
 
 std::vector<double> broom_dist_geo(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir) {
 
-	double dy = distance_lonlat(0, 0, 0, res[0]);
-	double dx, dxy;
+//	double dy = distance_lonlat(0, 0, 0, res[1]);
+	double dx, dy, dxy;
 	std::vector<double> dist(v.size(), 0);
 
 	//top to bottom
     //left to right
-	DxDxy(lat, 0, res[0], res[1], latdir, dx, dxy);
+	DxDxy(lat, 0, res[0], res[1], latdir, dx, dy, dxy);
 	//first cell, no cell left of it
 	if ( std::isnan(v[0]) ) { 
 		dist[0] = above[0] + dy;
@@ -717,7 +717,7 @@ std::vector<double> broom_dist_geo(std::vector<double> &v, std::vector<double> &
 
 	//other rows
 	for (size_t r=1; r<nr; r++) { 
-		DxDxy(lat, r, res[0], res[1], latdir, dx, dxy);
+		DxDxy(lat, r, res[0], res[1], latdir, dx, dy, dxy);
 		size_t start=r*nc;
 		if (std::isnan(v[start])) {
 			dist[start] = dist[start-nc] + dy;
@@ -731,7 +731,7 @@ std::vector<double> broom_dist_geo(std::vector<double> &v, std::vector<double> &
 	}
 
 	//right to left
-	DxDxy(lat, 0, res[0], res[1], latdir, dx, dxy);
+	DxDxy(lat, 0, res[0], res[1], latdir, dx, dy, dxy);
 	 //first cell
 	if ( std::isnan(v[nc-1])) {
 		dist[nc-1] = std::min(dist[nc-1], above[nc-1] + dy);
@@ -745,7 +745,7 @@ std::vector<double> broom_dist_geo(std::vector<double> &v, std::vector<double> &
 	}
 	// other rows
 	for (size_t r=1; r<nr; r++) { 
-		DxDxy(lat, r, res[0], res[1], latdir, dx, dxy);
+		DxDxy(lat, r, res[0], res[1], latdir, dx, dy, dxy);
 
 		size_t start=(r+1)*nc-1;
 		if (std::isnan(v[start])) {
@@ -767,13 +767,13 @@ std::vector<double> broom_dist_geo(std::vector<double> &v, std::vector<double> &
 
 std::vector<double> broom_dist_geo_global(std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir) {
 
-	double dy = distance_lonlat(0, 0, 0, res[0]);
-	double dx, dxy;
+//	double dy = distance_lonlat(0, 0, 0, res[1]);
+	double dx, dy, dxy;
 	std::vector<double> dist(v.size(), 0);
 	size_t stopnc = nc - 1;
 	//top to bottom
     //left to right
-	DxDxy(lat, 0, res[0], res[1], latdir, dx, dxy);
+	DxDxy(lat, 0, res[0], res[1], latdir, dx, dy, dxy);
 	//first cell, no cell left of it
 	if ( std::isnan(v[0]) ) { 
 		dist[0] = std::min(above[0] + dy, above[stopnc] + dxy);
@@ -788,7 +788,7 @@ std::vector<double> broom_dist_geo_global(std::vector<double> &v, std::vector<do
 
 	//other rows
 	for (size_t r=1; r<nr; r++) { 
-		DxDxy(lat, r, res[0], res[1], latdir, dx, dxy);
+		DxDxy(lat, r, res[0], res[1], latdir, dx, dy, dxy);
 		size_t start=r*nc;
 		if (std::isnan(v[start])) {
 			dist[start] = std::min(dist[start-nc] + dy, dist[start-1] + dxy);
@@ -804,7 +804,7 @@ std::vector<double> broom_dist_geo_global(std::vector<double> &v, std::vector<do
 	}
 
 	//right to left
-	DxDxy(lat, 0, res[0], res[1], latdir, dx, dxy);
+	DxDxy(lat, 0, res[0], res[1], latdir, dx, dy, dxy);
 	 //first cell
 	if ( std::isnan(v[nc-1])) {
 		dist[stopnc] = std::min(std::min(dist[stopnc], above[stopnc] + dy), above[0] + dxy);
@@ -819,7 +819,7 @@ std::vector<double> broom_dist_geo_global(std::vector<double> &v, std::vector<do
 	}
 	// other rows
 	for (size_t r=1; r<nr; r++) { 
-		DxDxy(lat, r, res[0], res[1], latdir, dx, dxy);
+		DxDxy(lat, r, res[0], res[1], latdir, dx, dy, dxy);
 
 		size_t start=(r+1)*nc-1;
 		if (std::isnan(v[start])) {
