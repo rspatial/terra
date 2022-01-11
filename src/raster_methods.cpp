@@ -3189,12 +3189,10 @@ void broom_clumps(std::vector<double> &v, std::vector<double>& above, const size
 	bool d4 = dirs == 4;
 	size_t stopnc = nc-1;
 	std::vector<double> d;
-
 	
 	//first row, no row above it, use "above"
 	//first cell
 	//Rcpp::Rcout << "r  x i v[i] nc v[i] nc" << std::endl; 
-
 	if ( !std::isnan(v[0]) ) { 
 		//Rcpp::Rcout << 0 << " ff " << 0 << " " << v[0] << " " << ncps << " " ; 
 		if (d4) {
