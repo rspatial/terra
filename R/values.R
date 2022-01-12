@@ -29,22 +29,36 @@ setMethod("hasValues", signature(x="SpatRaster"),
 					v[[f]] <- cg[i, act]
 				}
 			}
-		}
-	}
-	bb <- is.bool(x)
-	if (any(bb)) {
-		for (b in which(bb)) {
-			v[[b]] = as.logical(v[[b]])
-		}
-	}
+		} else {
+			bb <- is.bool(x)
+			if (any(bb)) {
+				for (b in which(bb)) {
+					v[[b]] = as.logical(v[[b]])
+				}
+			}
 
-	ii <- is.int(x)
-	if (any(ii)) {
-		for (i in which(ii)) {
-			v[[i]] = as.integer(v[[i]])
+			ii <- is.int(x)
+			if (any(ii)) {
+				for (i in which(ii)) {
+					v[[i]] = as.integer(v[[i]])
+				}
+			}
+		}		
+	} else {
+		bb <- is.bool(x)
+		if (any(bb)) {
+			for (b in which(bb)) {
+				v[[b]] = as.logical(v[[b]])
+			}
+		}
+
+		ii <- is.int(x)
+		if (any(ii)) {
+			for (i in which(ii)) {
+				v[[i]] = as.integer(v[[i]])
+			}
 		}
 	}
-
 	v
 }
 
