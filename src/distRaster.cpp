@@ -685,13 +685,21 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 }
 
 
-void DxDxy(const double &lat, const int &row, double xres, double yres, const int &dir, double &dx,  double &dy, double &dxy) {
-	double thislat = lat + row * yres * dir;
-	yres /= 2;
-	dx  = distance_lonlat(0, thislat     , xres, thislat);
-	dy  = distance_lonlat(0, thislat-yres, 0, thislat+yres);
-	dxy = distance_lonlat(0, thislat-yres, xres, thislat+yres);
-	//double dy = distance_lonlat(0, 0, -yres, yres, a, f);
+
+inline double minNArm(const double &a, const double &b) {
+	if (std::isnan(a)) return b;
+	if (std::isnan(b)) return a;
+	return std::min(a, b);
+}
+
+inline void DxDxy(const double &lat, const int &row, double xres, double yres, const int &dir, double &dx,  double &dy, double &dxy) {
+	double rlat = lat + row * yres * dir;
+	dx  = distance_lonlat(0, rlat     , xres, rlat);
+	yres *= -dir;
+	dy  = distance_lonlat(0, rlat, 0, rlat+yres);
+	dxy = distance_lonlat(0, rlat, xres, rlat+yres);
+	dy = std::isnan(dy) ? std::numeric_limits<double>::infinity() : dy;
+	dxy = std::isnan(dxy) ? std::numeric_limits<double>::infinity() : dxy;
 }
 
 
@@ -932,12 +940,14 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		first.readBlock(vv, out.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		if (!out.writeValues(vv, out.bs.row[i-1], out.bs.nrows[i-1])) return out;
-		//std::reverse(d.begin(), d.end());
-		//if (!out.writeValues(d, out.bs.row[i-1], out.bs.nrows[i-1])) return out;
+		/*
+		std::reverse(d.begin(), d.end());
+		if (!out.writeValues(d, out.bs.row[i-1], out.bs.nrows[i-1])) return out;
+		*/
 	}	
 	out.writeStop();
 	readStop();
-	first.readStop();
+	//first.readStop();
 	//first.source.push_back(out.source[0]);
 	//return first;
 	return(out);

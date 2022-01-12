@@ -18,6 +18,9 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 	function(x, y, grid=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (grid) {
+			if (is.lonlat(x)) {
+				error("distance(grid=TRUE)", "not available for lonlat data")
+			}
 			x@ptr <- x@ptr$gridDistance(opt)
 		} else {
 			x@ptr <- x@ptr$rastDistance(opt)
@@ -25,7 +28,6 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 		messages(x, "distance")
 	}
 )
-
 
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
