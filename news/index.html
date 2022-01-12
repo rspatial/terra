@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-12</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.5-11" id="version-15-11">version 1.5-11<a class="anchor" aria-label="anchor" href="#version-15-11"></a></h2>
+<h2 class="page-header" data-toc-text="1.5-12" id="version-15-12">version 1.5-12<a class="anchor" aria-label="anchor" href="#version-15-12"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-5-11">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-11"></a></h3>
+<h3 id="bug-fixes-1-5-12">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-12"></a></h3>
 <ul><li>
 <code>setValues</code> and <code>init</code> failed (or even crashed R) when using a single value on a largish raster. <a href="https://github.com/rspatial/terra/issues/414" class="external-link">#414</a>
 </li>
@@ -78,7 +78,7 @@
 <code>as.lines</code> now works with a points SpatVector <a href="https://github.com/rspatial/terra/issues/464" class="external-link">#464</a> by Márcia Barbosa</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-5-11">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-11"></a></h3>
+<h3 id="enhancements-1-5-12">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-12"></a></h3>
 <ul><li>
 <code>values(x)&lt;-</code> now accepts (hex coded) colors as values</li>
 <li>
@@ -116,7 +116,7 @@
 <li>new argument <code>allowGaps</code> in <code>patches</code> to disallow gaps between patch IDs. See <a href="https://github.com/rspatial/terra/issues/478" class="external-link">#478</a> by Dunbar Carpenter.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-5-11">new<a class="anchor" aria-label="anchor" href="#new-1-5-11"></a></h3>
+<h3 id="new-1-5-12">new<a class="anchor" aria-label="anchor" href="#new-1-5-12"></a></h3>
 <ul><li>timestamps and units are now saved to an auxiliary file (filename.aux.json) for all raster formats except NetCDF when using writeCDF (because in that case they are stored in the netcdf file)</li>
 <li>new method <code>mergeTime</code> to combine multiple rasters, perhaps partly overlapping in time, into a single time series</li>
 <li>new method <code>fillTime</code> that can add empty layers in between existing layers to assure that the time step between layers is constant</li>
@@ -139,6 +139,7 @@
 <li>new function <code>makeVRT</code> to create a vrt file for a file that needs a header to be read.</li>
 <li>new option <code>method="stratified"</code> for <code>spatSample&lt;SpatRaster&gt;</code>. <a href="https://github.com/rspatial/terra/issues/470" class="external-link">#470</a> by Michael Mahoney</li>
 <li>new general option <code>memmax</code> to cap the amount of RAM that terra can use. <a href="https://github.com/rspatial/terra/issues/476" class="external-link">#476</a> by Matt Strimas-Mackey</li>
+<li>new method <code>gridDistance</code> to compute distances traversing a raster, perhaps with obstacles. <a href="https://github.com/rspatial/terra/issues/477" class="external-link">#477</a> by Márcia Barbosa</li>
 </ul></div>
 </div>
     <div class="section level2">
