@@ -3578,9 +3578,9 @@ SpatRaster SpatRaster::rgb2hsx(std::string type, SpatOptions &opt) {
 					H = H/sqrt((R-G)*(R-G) + (R-B)*(G-B));
 					H = acos(H);
 					if (B > G) {
-						H = 2*PI - H;
+						H = 2 * M_PI - H;
 					}
-					v[j] = H/(2*PI);					
+					v[j] = H/(2 * M_PI);					
 					//v[j] = acos( sqrt((((R-G) + (R-B)) / 2) /  pow((R - G),2) + (R-B)*(G-B)) );
 				} else {
 					if (M == R) {
