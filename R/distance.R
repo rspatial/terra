@@ -19,9 +19,10 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 		opt <- spatOptions(filename, ...)
 		if (grid) {
 			if (is.lonlat(x)) {
-				error("distance(grid=TRUE)", "not available for lonlat data")
+				return(gridDistance(x, filename=filename, ...))
+			} else {
+				x@ptr <- x@ptr$gridDistance(opt)
 			}
-			x@ptr <- x@ptr$gridDistance(opt)
 		} else {
 			x@ptr <- x@ptr$rastDistance(opt)
 		}

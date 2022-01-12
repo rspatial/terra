@@ -66,6 +66,7 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - new function `makeVRT` to create a vrt file for a file that needs a header to be read.
 - new option `method="stratified"` for `spatSample<SpatRaster>`. [#470](https://github.com/rspatial/terra/issues/470) by Michael Mahoney
 - new general option `memmax` to cap the amount of RAM that terra can use. [#476](https://github.com/rspatial/terra/issues/476) by Matt Strimas-Mackey
+- new method `gridDistance` to compute distances traversing a raster, perhaps with obstacles. [#477](https://github.com/rspatial/terra/issues/477) by Márcia Barbosa
 
 
 # version 1.4-22

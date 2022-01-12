@@ -58,6 +58,11 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 	std::vector<std::vector<double>> pxy;
 	if (gtype == "points") {
 		pxy = p.coordinates();
+		if (pxy.size() == 0) {
+			out.setError("no locations to compute from");
+			return(out);
+		}
+
 		if (align_points) {
 			std::vector<double> cells = cellFromXY(pxy[0], pxy[1]);
 			cells.erase(std::unique(cells.begin(), cells.end()), cells.end());
@@ -203,7 +208,10 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	}
 
 	out = edges(false, "inner", 8, NAN, ops);
-	SpatVector p = out.as_points(false, true, opt);
+	SpatVector p = out.as_points(false, true, ops);
+	if (p.size() == 0) {
+		return out.init({0}, opt);
+	}
 	out = disdir_vector_rasterize(p, false, true, false, false, opt);
 	return out;
 }
@@ -226,6 +234,10 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, SpatOptions &opt) {
 
 	out = edges(false, "inner", 8, NAN, ops);
 	SpatVector p = out.as_points(false, true, opt);
+	if (p.size() == 0) {
+		out.setError("no cells to compute direction from or to");
+		return(out);
+	}
 	out = disdir_vector_rasterize(p, false, false, from, degrees, opt);
 	return out;
 }
