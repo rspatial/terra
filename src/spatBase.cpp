@@ -177,7 +177,7 @@ void SpatOptions::set_memmax(double d) {
 	if (std::isnan(d) || (d <= 0)) {
 		memmax = -1;
 	} else {
-		memmax = d * pow(1024, 3) / 8;
+		memmax = d * 1024 * 1024 * 1024 / 8;
 	} 
 }
 
