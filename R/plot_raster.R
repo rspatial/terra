@@ -261,8 +261,9 @@
 		if (reset) on.exit(graphics::par(mar=old.mar))
 
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
-		main <- as.character(main)
-		if (main != "") {
+			
+		# https://stackoverflow.com/a/70351194
+		if (!isTRUE(main == "")) {
 			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
 		}
 	}

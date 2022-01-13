@@ -1,8 +1,28 @@
 
+sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=FALSE, xy=FALSE, ext=NULL) {
+	if (!is.null(ext)) {
+		x <- crop(x, ext)
+	}
+	x <- classify(x, cbind(-Inf, 0, NA))
+	res <- as.data.frame(x, cells=cells, xy=(xy | as.points))
+	i <- sample(nrow(res), size, prob=res[,ncol(res)], replace=replace)
+	res <- res[i,]
+	if (as.points) {
+		res <- vect(res, c("x", "y"), crs=crs(x))
+		if (!xy) {
+			res$x <- NULL
+			res$y <- NULL
+		}
+	} else if (as.df) {
+		res <- data.frame(res)
+	}
+	res
+}
+
 
 sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2) {
 	
-	if ((!xy && !as.points)) cells <- TRUE
+	if ((!xy) && (!as.points)) cells <- TRUE
 	
 	f <- freq(x)	
 	exp <- max(1, exp)
@@ -194,7 +214,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			size <- ncell(x)
 		}
 
-		method <- match.arg(tolower(method), c("random", "regular", "stratified"))
+		method <- match.arg(tolower(method), c("random", "regular", "stratified", "weights"))
 		if (method == "stratified") {
 			if (as.raster) {
 				error("as.raster is not valid for method='stratified'")
@@ -208,6 +228,24 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=5) )
 		}
+		if (method == "weights") {
+			if (as.raster) {
+				error("as.raster is not valid for method='weights'")
+			}
+			if (nlyr(x) > 1) {
+				x <- x[[1]]
+				warn("only the first layer of x is used")			
+			}
+			if (!hasValues(x)) {
+				error("x has no values")			
+			}
+			out <- try(sampleWeights(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext) )
+			if (inherits(out, "try-error")) {
+				error("spatSample", "weighted sample failed. Perhaps the data set is too big")
+			}
+			return (out)
+		}
+
 
 		if (!as.raster) {
 			ff <- is.factor(x)

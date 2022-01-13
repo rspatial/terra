@@ -1,3 +1,14 @@
+# version 1.5-13
+
+## bug fixes
+
+
+## new
+
+- new option `method="weights"` for `spatSample<SpatRaster>`
+
+
+
 # version 1.5-12
 
 ## bug fixes
