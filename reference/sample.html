@@ -19,7 +19,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-13</span>
       </span>
     </div>
 
@@ -77,7 +77,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <dt>size</dt>
 <dd><p>numeric. The sample size. If <code>x</code> is a SpatVector, you can also provide a vector of the same length as <code>x</code> in wich case sampling is done seperately for each geometry. If <code>x</code> is a SpatRaster, and you are using <code>method="regular"</code> you can specify the size as two numbers (number of rows and columns)</p></dd>
 <dt>method</dt>
-<dd><p>character. Should be "regular" or "random", If <code>x</code> is a <code>SpatRaster</code>, it can also be "stratified"</p></dd>
+<dd><p>character. Should be "regular" or "random", If <code>x</code> is a <code>SpatRaster</code>, it can also be "stratified" (each value in <code>x</code> is a stratum) or "weights" (each value in <code>x</code> is a probability weight)</p></dd>
 <dt>replace</dt>
 <dd><p>logical. If <code>TRUE</code>, sampling is with replacement (if <code>method="random"</code></p></dd>
 <dt>na.rm</dt>
