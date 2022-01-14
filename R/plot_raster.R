@@ -262,10 +262,7 @@
 
 		plot(x$lim[1:2], x$lim[3:4], type=type, xlab=xlab, ylab=ylab, asp=asp, xaxs=xaxs, yaxs=yaxs, axes=!x$values, ...)
 			
-		# https://stackoverflow.com/a/70351194
-		if (!isTRUE(main == "")) {
-			graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
-		}
+		graphics::title(main, line=line, cex.main=cex.main, font.main=font.main, col.main=col.main)
 	}
 	if (!x$values) {
 		return(x)
