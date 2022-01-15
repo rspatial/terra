@@ -373,6 +373,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{click}} \tab identify attributes by clicking on a map\cr
   \code{\link{merge}} \tab Join a table with a SpatVector \cr
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
+  \code{\link{as.list}} \tab get attributes as a list\cr
   \code{\link{values}} \tab Get the attributes of a SpatVector \cr
   \code{\link{values<-}} \tab Set new attributes to the geometries of a SpatRaster \cr
   

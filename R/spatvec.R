@@ -120,8 +120,8 @@ setMethod("as.data.frame", signature(x="SpatVector"), as.data.frame.SpatVector)
 
 
 
-as.list.SpatVector <- function(x, ...) {
-	as.list(as.data.frame(x))
+as.list.SpatVector <- function(x, geom=NULL, ...) {
+	as.list(as.data.frame(x, geom=geom))
 }
 setMethod("as.list", signature(x="SpatVector"), as.list.SpatVector)
 
