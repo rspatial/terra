@@ -6,5 +6,5 @@ g++ -o terra -std=c++11 -I/usr/include/gdal  -I../src/   ../src/crs.cpp  ../src/
     ../src/read.cpp ../src/read_gdal.cpp  ../src/read_ogr.cpp ../src/file_utils.cpp  ../src/distRaster.cpp  ../src/geos_methods.cpp  ../src/gdal_algs.cpp \
    ../src/raster_methods.cpp ../src/raster_stats.cpp ../src/rasterize.cpp ../src/spatSources.cpp  ../src/spatTime.cpp \
    ../src/spatDataframe.cpp ../src/vecmath.cpp ../src/vector_methods.cpp ../src/write.cpp ../src/write_gdal.cpp  ../src/write_ogr.cpp main.cpp show.cpp  \
-    -lgeos_c  -lgdal -lproj -ltiff -lgeotiff  -I/usr/include/gdal  -Dstandalone
+   ../src/extract.cpp  -lgeos_c  -lgdal -lproj -ltiff -lgeotiff  -I/usr/include/gdal  -Dstandalone
 
