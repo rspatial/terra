@@ -139,14 +139,12 @@ setAs("ggmap", "SpatRaster",
 
 
 
+as.list.SpatRaster <- function(x) {
+	lapply(1:nlyr(x), function(i) x[[i]])
+}
+setMethod("as.list", signature(x="SpatRaster"), as.list.SpatRaster)
 
 
-setMethod("as.list", signature(x="SpatRaster"), 
-	function(x) {
-		lapply(1:nlyr(x), function(i) x[[i]])
-	}
-)
- 
  
 # create a "grDevices::raster" (small r) object for use with the rasterImage function
 # NOT a raster::Raster* object

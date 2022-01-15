@@ -72,7 +72,8 @@ void show(SpatVector &v) {
 
 
 void showValues(SpatRaster d) {
-    std::vector<double> v = d.getValues();
+	SpatOptions opt;
+    std::vector<double> v = d.getValues(0, opt);
     for (size_t k=0; k<d.nlyr(); k++) {
         for (size_t i=0; i<d.nrow(); i++) {
             for (size_t j=0; j<d.ncol(); j++) {

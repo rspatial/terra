@@ -95,7 +95,17 @@ as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NUL
 	# fix empty names 
 	colnames(d) <- x@ptr$names
 	if (!is.null(geom)) {
-		geom <- match.arg(toupper(geom), c("WKT", "HEX"))
+		geom <- match.arg(toupper(geom), c("WKT", "HEX", "XY"))
+		if (g == "XY") {
+			if (!grepl("points", geomtype(x))) {
+				error("as.data.frame", 'geom="XY" is only valid for point geometries')
+			}
+			if (nrow(d) > 0) {
+				d$geometry <- crds(d)
+			} else {
+				d <- data.frame(crds(d), ...)
+			}
+		}
 		g <- geom(x, wkt=geom=="WKT", hex=geom=="HEX")
 		if (nrow(d) > 0) {
 			d$geometry <- g
@@ -109,11 +119,11 @@ as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NUL
 setMethod("as.data.frame", signature(x="SpatVector"), as.data.frame.SpatVector)
 
 
-setMethod("as.list", signature(x="SpatVector"), 
-	function(x, geom=NULL) {
-		as.list(as.data.frame(x, geom=geom))
-	}
-)
+
+as.list.SpatVector <- function(x, geom=NULL) {
+	as.list(as.data.frame(x, geom=geom))
+}
+setMethod("as.list", signature(x="SpatVector"), as.list.SpatVector)
 
 
 
