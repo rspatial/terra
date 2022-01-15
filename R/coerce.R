@@ -139,7 +139,7 @@ setAs("ggmap", "SpatRaster",
 
 
 
-as.list.SpatRaster <- function(x) {
+as.list.SpatRaster <- function(x, ...) {
 	lapply(1:nlyr(x), function(i) x[[i]])
 }
 setMethod("as.list", signature(x="SpatRaster"), as.list.SpatRaster)
