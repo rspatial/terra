@@ -1387,15 +1387,31 @@ std::vector<double> SpatVector::geos_distance(bool sequential) {
 
 
 SpatVector SpatVector::unite(SpatVector v) {
+	if (type() != v.type()) {
+		SpatVector out;
+		out.setError("cannot unite different geom types");
+		return out;
+	}
+	
 	SpatVector intsec = intersect(v);
 	if (intsec.hasError()) {
 		return intsec;
 	}
+	if (intsec.nrow() == 0) {
+		return append(v, true);
+	}
+
 	SpatVector sdif = symdif(v);
 	if (sdif.hasError()) {
 		return sdif;
 	}
-	return intsec.append(sdif, true);
+	
+	if (sdif.type() == type()) {
+		return intsec.append(sdif, true);
+	} else {
+		SpatVector out;
+		return out;		
+	}
 }
 
 
@@ -1435,11 +1451,18 @@ SpatVector SpatVector::unite() {
 SpatVector SpatVector::symdif(SpatVector v) {
 	if ((type() != "polygons") || (v.type() != "polygons")) {
 		SpatVector out;
-		out.setError("expect two polygon geometries");
+		out.setError("expected two polygon geometries");
 		return out;
 	}
 	SpatVector out = erase(v);
-	out = out.append(v.erase(*this), true);
+	if (out.hasError()) {
+		return out;
+	}
+	SpatVector ve = v.erase(*this);
+	if (ve.hasError()) {
+		return ve;
+	}
+	out = out.append(ve, true);
 	return out;
 
 /*
@@ -1614,7 +1637,7 @@ SpatVector SpatVector::erase(SpatVector v) {
 		out = coll.get(0);
 		out.srs = srs;
 		out.df = df;
-		if (rids.size() != nx) {
+		if (rids.size() != out.nrow()) {
 			out = out.subset_rows(rids);
 		}
 	} else {
