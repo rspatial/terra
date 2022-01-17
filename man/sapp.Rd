@@ -6,11 +6,12 @@
 \alias{sapp,SpatRaster-method}
 \alias{sapp,SpatRasterDataset-method}
 
-\title{Apply a terra function that takes only a single layer to all layers}
+\title{Apply a terra function that takes only a single layer and returns a SpatRaster to all layers of a SpatRastert}
 
 \description{
-Apply to all layers of a SpatRaster a function that only takes a single layer SpatRaster (these are rare). 
-in most cases you can also use \code{lapply} or \code{sapply} for this.
+Apply to all layers of a SpatRaster a function that only takes a single layer SpatRaster and returns a SpatRaster (these are rare). 
+
+In most cases you can also use \code{lapply} or \code{sapply} for this. 
 }
 
 \usage{
@@ -30,7 +31,7 @@ in most cases you can also use \code{lapply} or \code{sapply} for this.
 SpatRaster
 }
 
-\seealso{\code{ \link{lapp}, \link{app}, \link[terra]{tapp},  \link{lapply}} }
+\seealso{\code{ \link{lapp}, \link{app}, \link[terra]{tapp}, \link{lapply}} }
 
 
 \examples{
@@ -40,3 +41,4 @@ x <- sapp(s, terrain)
  
 \keyword{methods}
 \keyword{spatial}
+

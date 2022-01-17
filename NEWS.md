@@ -11,6 +11,8 @@
 
 # version 1.5-12
 
+Released on 2022-01-13
+
 ## bug fixes
 
 - `setValues` and `init` failed (or even crashed R) when using a single value on a largish raster. [#414](https://github.com/rspatial/terra/issues/414)
@@ -107,7 +109,6 @@ Released on 2021-11-24
 
 - `focalCpp` takes a C++ function that iterates over cells to speed up computation by avoiding `apply` (see [#318](https://github.com/rspatial/terra/pull/318) by Alex Ilich). 
 - `focalReg` for focal OLS regression models between layers 
-
 
 
 # version 1.4-20

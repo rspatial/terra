@@ -101,16 +101,17 @@ as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NUL
 				error("as.data.frame", 'geom="XY" is only valid for point geometries')
 			}
 			if (nrow(d) > 0) {
-				d$geometry <- crds(d)
+				d <- cbind(d, crds(x))
 			} else {
-				d <- data.frame(crds(d), ...)
+				d <- data.frame(crds(x), ...)
 			}
-		}
-		g <- geom(x, wkt=geom=="WKT", hex=geom=="HEX")
-		if (nrow(d) > 0) {
-			d$geometry <- g
 		} else {
-			d <- data.frame(geometry=g, stringsAsFactors=FALSE, ...)
+			g <- geom(x, wkt=geom=="WKT", hex=geom=="HEX")
+			if (nrow(d) > 0) {
+				d$geometry <- g
+			} else {
+				d <- data.frame(geometry=g, stringsAsFactors=FALSE, ...)
+			}
 		}
 	}
 	d

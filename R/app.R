@@ -1,4 +1,5 @@
 
+
 .cpp_funs <- c("sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first")
 
 setMethod("sapp", signature(x="SpatRaster"), 
