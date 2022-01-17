@@ -9,9 +9,9 @@
 \title{Cell values and geometry attributes}
 
 \description{
-Get the cell values of a SpatRaster or the attributes of a SpatVector
+Get the cell values of a SpatRaster or the attributes of a SpatVector.
 
-By default all values returned are numeric. This is because a vector or matrix can only store one data type, and a SpatRaster may consist of multiple data types. However, \code{values(x, dataframe=TRUE)} and {as.data.frame(x)} the values returned match the type of each layer, and can be numeric, logical, integer, or factor.
+By default all values returned are numeric. This is because a vector or matrix can only store one data type, and a SpatRaster may consist of multiple data types. However, with \code{values(x, dataframe=TRUE)} and \code{\ink[terra]{as.data.frame}(x)} the values returned match the type of each layer, and can be numeric, logical, integer, or factor.
 }
 
 \usage{
