@@ -6,7 +6,7 @@
 \alias{sapp,SpatRaster-method}
 \alias{sapp,SpatRasterDataset-method}
 
-\title{Apply a terra function that takes only a single layer and returns a SpatRaster to all layers of a SpatRastert}
+\title{Apply a terra function that takes only a single layer and returns a SpatRaster to all layers of a SpatRaster}
 
 \description{
 Apply to all layers of a SpatRaster a function that only takes a single layer SpatRaster and returns a SpatRaster (these are rare). 
