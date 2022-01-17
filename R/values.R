@@ -82,12 +82,20 @@ function(x, row=1, nrows=nrow(x), col=1, ncols=ncol(x), mat=FALSE, dataframe=FAL
 
 
 setMethod("values", signature(x="SpatRaster"), 
-function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...) {
+function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), na.rm=FALSE, ...) {
 	readStart(x)
 	on.exit(readStop(x))
 	v <- readValues(x, row, nrows, col, ncols, mat=mat, dataframe=dataframe, ...)
 	messages(x, "values")
-	v
+	if (na.rm) {
+		if (!is.null(dim(v))) {
+			v[complete.cases(v), , drop=FALSE]
+		} else {
+			v[!is.na(v)]
+		}
+	} else {
+		v
+	}
 }
 )
 

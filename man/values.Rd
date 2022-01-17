@@ -15,7 +15,7 @@ By default all values returned are numeric. This is because a vector or matrix c
 }
 
 \usage{
-\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), ...)
+\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), na.rm=FALSE, ...)
 
 \S4method{values}{SpatVector}(x, ...)
 }
@@ -30,6 +30,7 @@ By default all values returned are numeric. This is because a vector or matrix c
  \item{nrows}{positive integer. How many rows?}
  \item{col}{positive integer. Column number to start from, should be between 1 and ncol(x)}
  \item{ncols}{positive integer. How many columns? Default is the number of columns left after the start column}
+ \item{na.rm}{logical. Remove \code{NA}s?}
 
  \item{...}{additional arguments passed to \code{\link{data.frame}}}
 }
