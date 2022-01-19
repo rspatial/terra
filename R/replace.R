@@ -128,7 +128,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		} 
 
 		# avoid in-place replacement inside of a function
-		if (length(sys.calls()) > 1) {
+		if (length(sys.calls()) > 3) {
 			x@ptr <- x@ptr$deepcopy()
 		}
 

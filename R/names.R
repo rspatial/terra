@@ -21,7 +21,7 @@ setMethod("names<-", signature(x="SpatRaster"),
 		}
 		
 		# avoid in-place replacement inside of a function
-		if (length(sys.calls()) > 1) {
+		if (length(sys.calls()) > 2) {
 			x@ptr <- x@ptr$deepcopy()
 		}
 		
