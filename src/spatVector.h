@@ -292,10 +292,12 @@ class SpatVector {
 		SpatVector erase_agg(SpatVector v);
 		SpatVector erase(SpatVector v);
 		SpatVector erase();
+		SpatVector mask(SpatVector x, bool inverse);
 		SpatVector gaps();		
 		SpatVector cover(SpatVector v, bool identity);
 		SpatVectorCollection split(std::string field);
 		SpatVector symdif(SpatVector v);
+		std::vector<bool> is_related(SpatVector v, std::string relation);
 		std::vector<int> relate(SpatVector v, std::string relation);
 		std::vector<int> relate(std::string relation, bool symmetrical);
 		std::vector<int> relateFirst(SpatVector v, std::string relation);

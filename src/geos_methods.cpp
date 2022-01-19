@@ -1259,6 +1259,68 @@ std::vector<int> SpatVector::relate(std::string relation, bool symmetrical) {
 
 
 
+std::vector<bool> SpatVector::is_related(SpatVector v, std::string relation) {
+
+	std::vector<bool> out;
+	int pattern = getRel(relation);
+	if (pattern == 2) {
+		setError("'" + relation + "'" + " is not a valid relate name or pattern");
+		return out;
+	}
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> x = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> y = geos_geoms(&v, hGEOSCtxt);
+	size_t nx = size();
+	size_t ny = v.size();
+	out.resize(nx, false);
+	if (pattern == 1) {
+		for (size_t i = 0; i < nx; i++) {
+			for (size_t j = 0; j < ny; j++) {
+				bool isrel = GEOSRelatePattern_r(hGEOSCtxt, x[i].get(), y[j].get(), relation.c_str());
+				if (isrel) {
+					out[i] = true;
+					continue;
+				}
+			}
+		}
+	} else {
+		std::function<char(GEOSContextHandle_t, const GEOSPreparedGeometry *, const GEOSGeometry *)> relFun = getPrepRelateFun(relation);
+		for (size_t i = 0; i < nx; i++) {
+			PrepGeomPtr pr = geos_ptr(GEOSPrepare_r(hGEOSCtxt, x[i].get()), hGEOSCtxt);
+			for (size_t j = 0; j < ny; j++) {
+				bool isrel = relFun(hGEOSCtxt, pr.get(), y[j].get());
+				if (isrel) {
+					out[i] = true;
+					continue;
+				}				
+			}
+		} 
+	}
+	geos_finish(hGEOSCtxt);
+
+	return out;
+}
+
+
+
+SpatVector SpatVector::mask(SpatVector x, bool inverse) {
+	std::vector<bool> b = is_related(x, "intersects");
+	if (inverse) {
+		for (size_t i=0; i<b.size(); i++) {
+			b[i] = !b[i];
+		}
+	} 
+	std::vector<int> r;
+	r.reserve(b.size());
+	for (size_t i=0; i<b.size(); i++) {
+		if (b[i]) r.push_back(i);
+	}
+	return subset_rows(r);	
+}
+
+
+
 std::vector<double> SpatVector::geos_distance(SpatVector v, bool parallel) {
 
 	std::vector<double> out;

@@ -1,4 +1,23 @@
 
+setMethod("is.related", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, relation) {
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+setMethod("is.related", signature(x="SpatVector", y="SpatExtent"), 
+	function(x, y, relation) {
+		y <- as.polygons(y)
+		out <- x@ptr$is_related(y@ptr, relation)
+		x <- messages(x, "is.related")
+		out
+	}
+)
+
+
+
 setMethod("relate", signature(x="SpatVector", y="SpatVector"), 
 	function(x, y, relation) {
 		out <- x@ptr$relate_between(y@ptr, relation)

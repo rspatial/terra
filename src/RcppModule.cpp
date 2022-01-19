@@ -376,7 +376,9 @@ RCPP_MODULE(spat){
 
 		.method("width", &SpatVector::width)
 		.method("clearance", &SpatVector::clearance)
+		.method("mask", &SpatVector::mask)
 
+		.method("is_related", &SpatVector::is_related)
 		.method("relate_first", &SpatVector::relateFirst)
 		.method("relate_between", ( std::vector<int> (SpatVector::*)(SpatVector, std::string))( &SpatVector::relate ))
 		.method("relate_within", ( std::vector<int> (SpatVector::*)(std::string, bool))( &SpatVector::relate ))

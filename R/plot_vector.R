@@ -35,6 +35,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 .plotLines <- function(x, out, lty=1, lwd=1, ...) {
+	if (nrow(x) == 0) return(out)
 	cols <- out$cols
 	if (is.null(cols)) cols = rep("black", length(x))
 
@@ -58,6 +59,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 .plotPolygons <- function(x, out, lty=1, lwd=1, density=NULL, angle=45, ...) {
 
+	if (nrow(x) == 0) return(out)
 	g <- geom(x, df=TRUE)
 	g <- split(g, g[,1])
 	g <- lapply(g, function(y) split(y, y[,2]))

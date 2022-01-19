@@ -513,10 +513,10 @@ function(x, y, ...) {
 	}
 	if (ncol(x) > 0) {
 		d <- as.data.frame(x)
-		e <- data.frame(id.x=e[,1], d[e[,2], ,drop=FALSE])
+		e <- data.frame(id.y=e[,1], d[e[,2], ,drop=FALSE])
 		rownames(e) <- NULL
 	} else {
-		colnames(e) <- c("id.x", "id.y")
+		colnames(e) <- c("id.y", "id.x")
 	}
 	e
 })

@@ -6,7 +6,8 @@
 ## new
 
 - new option `method="weights"` for `spatSample<SpatRaster>`
-
+- new `mask<SpatVector,SpatVector>` method to select intersecting geometries
+- new method `is.related`
 
 
 # version 1.5-12
