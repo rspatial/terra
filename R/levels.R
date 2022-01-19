@@ -116,7 +116,11 @@ setMethod ("setCats" , "SpatRaster",
 		index <- max(1, min(ncol(value), index))
 #		if (is.data.frame(value)) {
 		if (setname) {
-			names(x)[layer] <- colnames(value)[index]
+			nms <- names(x)
+			nms[layer] <-  colnames(value)[index]
+			if (! x@ptr$setNames(nms, FALSE)) {
+				error("names<-", "cannot set name")
+			}
 		}
 
 		if (ncol(value) > 2) vat <- TRUE
