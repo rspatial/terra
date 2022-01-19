@@ -145,27 +145,27 @@ With setCats you can set it for any layer and you can also set the 'active&quot;
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source      : memory </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> categories  : cover, letters, value </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        :  cover </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        :  lyr.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min value   : forest </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max value   :  water </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## switch categories</span></span>
 <span class="r-in"><span class="fu">cats</span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ID  cover letters value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0   &lt;NA&gt;    &lt;NA&gt;    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1   &lt;NA&gt;    &lt;NA&gt;    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  2   &lt;NA&gt;    &lt;NA&gt;    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  3 forest       a    10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  4  water       b    11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  5  urban       c    12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ID category</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  2         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  3   forest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  4    water</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  5    urban</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="co"># get current index</span></span>
 <span class="r-in"><span class="fu"><a href="activeCat.html">activeCat</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span class="co"># set index </span></span>
 <span class="r-in"><span class="fu"><a href="activeCat.html">activeCat</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [activeCat] invalid category index</span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">x</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"green"</span>, <span class="st">"blue"</span>, <span class="st">"light gray"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="text.html">text</a></span><span class="op">(</span><span class="va">x</span>, digits<span class="op">=</span><span class="fl">3</span>, cex<span class="op">=</span><span class="fl">.75</span>, halo<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="factors-2.png" alt="" width="700" height="433"></span>
@@ -178,14 +178,15 @@ With setCats you can set it for any layer and you can also set the 'active&quot;
 <span class="r-out co"><span class="r-pr">#&gt;</span> extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. : lon/lat WGS 84 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> source      : memory </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> name        : value </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :    10 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :    12 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : category </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :        2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :        4 </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="activeCat.html">activeCat</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [activeCat] invalid category index</span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"letters"</span>, col<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"green"</span>, <span class="st">"blue"</span>, <span class="st">"light gray"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-plt img"><img src="factors-3.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [plot] letters is not a name in x</span>
 </code></pre></div>
     </div>
   </div>
