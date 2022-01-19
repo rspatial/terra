@@ -19,6 +19,12 @@ setMethod("names<-", signature(x="SpatRaster"),
 		if (length(value) != nlyr(x)) {
 			error("names<-", "incorrect number of names")
 		}
+		
+		# avoid in-place replacement inside of a function
+		if (length(sys.calls()) > 1) {
+			x@ptr <- x@ptr$deepcopy()
+		}
+		
 		if (! x@ptr$setNames(value, FALSE)) {
 			error("names<-", "cannot set these names")
 		}

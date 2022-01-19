@@ -1,3 +1,7 @@
+# Author: Robert J. Hijmans
+# Date:  October 2018
+# Version 1.0
+# License GPL v3
 
 
 setMethod("$<-", "SpatRaster",  
@@ -122,6 +126,11 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 			}
 			value <- as.vector(value)
 		} 
+
+		# avoid in-place replacement inside of a function
+		if (length(sys.calls()) > 1) {
+			x@ptr <- x@ptr$deepcopy()
+		}
 
 		if (!x@ptr$replaceCellValues(i-1, value, bylyr, spatOptions())) {
 			messages(x)
