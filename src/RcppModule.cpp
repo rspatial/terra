@@ -35,13 +35,16 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 		if (itype[i] == 0) {
 			out[i] = v->getD(i);
 		} else if (itype[i] == 1) {
+
 			Rcpp::NumericVector iv = Rcpp::wrap(v->getI(i));
 			for (R_xlen_t j=0; j<iv.size(); j++) {
-				if (iv[j] == INT32_MIN) {
+				if (iv[j] <= INT32_MIN) {
 					iv[j] = NA_REAL;
 				}
 			}
 			out[i] = iv;
+
+
 		} else {
 			Rcpp::CharacterVector s = Rcpp::wrap(v->getS(i));
 			for (R_xlen_t j=0; j<s.size(); j++) {
