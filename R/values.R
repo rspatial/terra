@@ -89,7 +89,7 @@ function(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x
 	messages(x, "values")
 	if (na.rm) {
 		if (!is.null(dim(v))) {
-			v[complete.cases(v), , drop=FALSE]
+			v[stats::complete.cases(v), , drop=FALSE]
 		} else {
 			v[!is.na(v)]
 		}

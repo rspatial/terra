@@ -278,8 +278,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 
 
 SpatRaster SpatRaster::deepCopy() {
-	SpatRaster out = *this;
-	return out;
+	return *this;
 }
 
 
