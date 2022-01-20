@@ -279,10 +279,19 @@ setMethod("vect", signature(x="data.frame"),
 		}
 		if (length(geom) == 2) {
 			geom <- match(geom[1:2], names(x))
+			cls <- sapply(x[, geom], class)
+			if (cls[1] == "integer") {
+				x[,geom[1]] = as.numeric(x[,geom[1]])
+			}
+			if (cls[2] == "integer") {
+				x[,geom[2]] = as.numeric(x[,geom[2]])
+			}	
 			p <- methods::new("SpatVector")
 			p@ptr <- SpatVector$new()
 			x <- .makeSpatDF(x)
+			
 			p@ptr$setPointsDF(x, geom-1, ifelse(is.na(crs), "", crs))
+			messages(p, "vect")
 			return(p)
 		} else if (length(geom) == 1) {
 			v <- vect(unlist(x[,geom]), crs=crs)
@@ -301,7 +310,7 @@ setMethod("vect", signature(x="list"),
 		x <- x@ptr$append()
 		v <- methods::new("SpatVector")
 		v@ptr <- x 
-		messages(v)
+		messages(v, "vect")
 	}
 )
 
