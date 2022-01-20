@@ -5,13 +5,12 @@
 		warn("rast", "GDAL did not find an extent. installing the ncdf4 package may help")
 		return(x)
 	}
-	s <- sources(x)[1,1]
+	fname <- sources(x)[1]
+	zvar <- varnames(x)
 
-	ss <- unlist(strsplit(s, "\""))
-	zvar <- gsub(":", "", ss[3])
 	dims <- 1:3
 
-	nc <- ncdf4::nc_open(ss[2], readunlim=FALSE, suppress_dimvals = TRUE)
+	nc <- ncdf4::nc_open(fname, readunlim=FALSE, suppress_dimvals = TRUE)
 	on.exit( ncdf4::nc_close(nc) )
 
 	ncols <- nc$var[[zvar]]$dim[[dims[1]]]$len
