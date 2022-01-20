@@ -192,7 +192,9 @@ void compute_aggregates(const std::vector<double> &in, std::vector<double> &out,
 	size_t dy = dim[0], dx = dim[1], dz = dim[2];
 //	size_t bpC = dim[3];
 // adjust for chunk
-	size_t bpC = std::ceil(double(nr) / dim[0]);
+//	size_t bpC = std::ceil(double(nr) / dim[0]);
+	size_t bpC = std::ceil((double)nr / (double)dim[0]);
+
 	size_t bpR = dim[4];
 	size_t bpL = bpR * bpC;
 
@@ -307,8 +309,9 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	for (size_t i =0; i<bs.n; i++) {
 		bs.row[i] = i * fact[0];
 	}
-	size_t lastrow = bs.row[bs.n - 1] + bs.nrows[bs.n - 1] + 1;
+	size_t lastrow = bs.row[bs.n - 1] + bs.nrows[bs.n - 1]; // + 1;
 	if (lastrow < nrow()) {
+		
 		bs.row.push_back(lastrow);
 		bs.nrows.push_back(std::min(bs.nrows[bs.n-1], nrow()-lastrow));
 		bs.n += 1;
@@ -336,11 +339,13 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	}
 
 	size_t nc = ncol();
+	size_t outnc = out.ncol();
 	for (size_t i = 0; i < bs.n; i++) {
         std::vector<double> vin, v;
 		readValues(vin, bs.row[i], bs.nrows[i], 0, nc);
 		compute_aggregates(vin, v, bs.nrows[i], nc, nlyr(), fact, agFun, narm);
 		if (!out.writeValues(v, i, 1)) return out;
+		//if (!out.writeValuesRect(v, i, 1, 0, outnc)) return out;		
 	}
 	out.writeStop();
 	readStop();
