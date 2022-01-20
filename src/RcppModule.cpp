@@ -37,7 +37,7 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 		} else if (itype[i] == 1) {
 			Rcpp::NumericVector iv = Rcpp::wrap(v->getI(i));
 			for (R_xlen_t j=0; j<iv.size(); j++) {
-				if (iv[j] == -2147483648) {
+				if (iv[j] == INT32_MIN) {
 					iv[j] = NA_REAL;
 				}
 			}
