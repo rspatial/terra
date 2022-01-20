@@ -61,7 +61,7 @@ ra <- aggregate(r, fact=10, fun=max)
 
 # multiple layers
 s <- c(r, r*2)
-x <- aggregate(s, 2)
+x <- aggregate(s, 20)
 
 
 ## SpatVector 
