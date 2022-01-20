@@ -1642,7 +1642,8 @@ SpatVector SpatVector::erase_agg(SpatVector v) {
 		out.srs = srs;
 		out.df = df.subset_rows(rids);
 	} else {
-		out = subset_rows({-1});
+		std::vector<int> none(1, -1);
+		out = subset_rows(none);
 	}
 	geos_finish(hGEOSCtxt);
 	if (!srs.is_same(v.srs, true)) {

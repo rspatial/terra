@@ -339,7 +339,7 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 	}
 
 	size_t nc = ncol();
-	size_t outnc = out.ncol();
+	//size_t outnc = out.ncol();
 	for (size_t i = 0; i < bs.n; i++) {
         std::vector<double> vin, v;
 		readValues(vin, bs.row[i], bs.nrows[i], 0, nc);
