@@ -2,12 +2,18 @@
 
 ## bug fixes
 
+`app<SpatRasterDataset>` ignored the filename. [#498](https://github.com/rspatial/terra/issues/498) by jszhao
+`vect<data.frame>` failed silently if xy coordinates were integers [#496](https://github.com/rspatial/terra/issues/496) by Márcia Barbosa
+The output of `aggregate` was misformed when nrow(SpatRaster) %% fact != 0. [#492](https://github.com/rspatial/terra/issues/492) by Jean-François Bourdon
+Integer `NAs` in SpatVector attributes where only recognized on Windows [#491](https://github.com/rspatial/terra/issues/491) by Márcia Barbosa
+`plot<SpatVector>` failed when using a charater variable with mamy unique values. [#489](https://github.com/rspatial/terra/issues/489) by Márcia Barbosa
 
 ## new
 
 - new option `method="weights"` for `spatSample<SpatRaster>`
 - new `mask<SpatVector,SpatVector>` method to select intersecting geometries
 - new method `is.related`
+- `values<SpatRaster>` has new option `na.rm=TRUE`. [#490](https://github.com/rspatial/terra/issues/490) by Henk Harmsen
 
 
 # version 1.5-12
