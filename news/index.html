@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-14</span>
       </span>
     </div>
 
@@ -51,7 +51,15 @@
 <h2 class="page-header" data-toc-text="1.5-13" id="version-15-13">version 1.5-13<a class="anchor" aria-label="anchor" href="#version-15-13"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-1-5-13">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-13"></a></h3>
-</div>
+<ul><li>
+<code>app&lt;SpatRasterDataset&gt;</code> ignored the filename. <a href="https://github.com/rspatial/terra/issues/498" class="external-link">#498</a> by jszhao <code>vect&lt;data.frame&gt;</code> failed silently if xy coordinates were integers <a href="https://github.com/rspatial/terra/issues/496" class="external-link">#496</a> by Márcia Barbosa</li>
+<li>The output of <code>aggregate</code> was malformed when nrow(SpatRaster) %% fact != 0. <a href="https://github.com/rspatial/terra/issues/492" class="external-link">#492</a> by Jean-François Bourdon</li>
+<li>Integer <code>NAs</code> in SpatVector attributes where only recognized on Windows <a href="https://github.com/rspatial/terra/issues/491" class="external-link">#491</a> by Márcia Barbosa</li>
+<li>
+<code>plot&lt;SpatVector&gt;</code> failed when using a character variable with many unique values. <a href="https://github.com/rspatial/terra/issues/489" class="external-link">#489</a> by Márcia Barbosa</li>
+<li>
+<code>rotate</code> failed on large files. Reported by Ujjawal Singh</li>
+</ul></div>
 <div class="section level3">
 <h3 id="new-1-5-13">new<a class="anchor" aria-label="anchor" href="#new-1-5-13"></a></h3>
 <ul><li>new option <code>method="weights"</code> for <code>spatSample&lt;SpatRaster&gt;</code>
@@ -59,6 +67,8 @@
 <li>new <code>mask&lt;SpatVector,SpatVector&gt;</code> method to select intersecting geometries</li>
 <li>new method <code>is.related</code>
 </li>
+<li>
+<code>values&lt;SpatRaster&gt;</code> has new option <code>na.rm=TRUE</code>. <a href="https://github.com/rspatial/terra/issues/490" class="external-link">#490</a> by Henk Harmsen</li>
 </ul></div>
 </div>
     <div class="section level2">

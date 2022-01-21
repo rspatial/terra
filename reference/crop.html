@@ -18,7 +18,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-14</span>
       </span>
     </div>
 
@@ -56,7 +56,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">crop</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, snap<span class="op">=</span><span class="st">"near"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">crop</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, snap<span class="op">=</span><span class="st">"near"</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRasterDataset</span>
 <span class="fu">crop</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, snap<span class="op">=</span><span class="st">"near"</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
@@ -73,6 +73,8 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 <dd><p>SpatRaster, SpatVector, SpatExtent or other object that has a SpatExtent (<code><a href="ext.html">ext</a></code> returns a <code>SpatExtent</code>)</p></dd>
 <dt>snap</dt>
 <dd><p>character. One of "near", "in", or "out"</p></dd>
+<dt>mask</dt>
+<dd><p>logical. Should <code>y</code> be used to mask? Only used if <code>y</code> is a SpatVector</p></dd>
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 <dt>...</dt>
@@ -94,13 +96,23 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">rc</span> <span class="op">&lt;-</span> <span class="fu">crop</span><span class="op">(</span><span class="va">r</span>, <span class="va">e</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># vector</span></span>
+<span class="r-in"><span class="co"># crop and mask</span></span>
+<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/elev.tif"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu">crop</span><span class="op">(</span><span class="va">r</span>, <span class="va">v</span><span class="op">[</span><span class="fl">9</span><span class="op">:</span><span class="fl">12</span>,<span class="op">]</span>, mask<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="crop-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># crop vector</span></span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">6.15</span>, <span class="fl">6.3</span>, <span class="fl">49.7</span>, <span class="fl">49.8</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">crop</span><span class="op">(</span><span class="va">v</span>, <span class="va">e</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"NAME_1"</span><span class="op">)</span></span>
-<span class="r-plt img"><img src="crop-1.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="crop-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
