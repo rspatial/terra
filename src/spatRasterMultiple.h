@@ -21,9 +21,9 @@
 // A collection of (perhaps non matching) SpatRasters 
 class SpatRasterCollection {
 	public:
-		virtual ~SpatRasterCollection(){}
-	
+		virtual ~SpatRasterCollection(){}	
 		SpatMessages msg;
+		SpatRasterCollection deepCopy() { return *this; }
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }
 		bool has_error() { return msg.has_error; }
@@ -53,7 +53,7 @@ class SpatRasterCollection {
 class SpatRasterStack {
 	public:
 		virtual ~SpatRasterStack(){}
-	
+		SpatRasterStack deepCopy() { return *this; }
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
 		void addWarning(std::string s) { msg.addWarning(s); }

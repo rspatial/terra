@@ -30,6 +30,7 @@ setMethod("levels", signature(x="SpatRaster"),
 
 setMethod("levels<-", signature(x="SpatRaster"), 
 	function(x, value) {
+		x@ptr <- x@ptr$deepcopy()
 		if (is.null(value)) {
 			x@ptr$removeCategories(0)
 			return(messages(x, "levels<-"))

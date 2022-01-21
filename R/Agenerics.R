@@ -1,5 +1,10 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("set_ext")) {setGeneric("set_ext", function(x, ...) standardGeneric("set_ext"))}
+if (!isGeneric("set_names")) {setGeneric("set_names", function(x, ...) standardGeneric("set_names"))}
+if (!isGeneric("set_varnames")) {setGeneric("set_varnames", function(x, ...) standardGeneric("set_varnames"))}
+if (!isGeneric("set_longnames")) {setGeneric("set_longnames", function(x, ...) standardGeneric("set_longnames"))}
+
 if (!isGeneric("math")) { setGeneric("math", function(x, ...) standardGeneric("math")) }
 
 if (!isGeneric("all.equal")) { setGeneric("all.equal", function(target, current, ...) standardGeneric("all.equal")) }

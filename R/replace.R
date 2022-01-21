@@ -23,7 +23,7 @@ setMethod("$<-", "SpatRaster",
 		if (is.na(i)) {
 			c(x, value)
 		} else if (nlyr(x) == 1) {
-			value
+			value$deepcopy()
 		} else if (i == 1) {
 			c(value, x[[2:nlyr(x)]])
 		} else if (i == nlyr(x)) {

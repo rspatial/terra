@@ -17,7 +17,9 @@ setMethod ("coltab" , "SpatRaster",
 
 setMethod ("coltab<-" , "SpatRaster", 
 	function(x, layer=1, value) {
-		#stopifnot(hasValues(x))
+
+		x@ptr <- x@ptr$deepcopy()
+
 		if (missing(value)) {
 			value <- layer
 			layer <- 1

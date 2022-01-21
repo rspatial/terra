@@ -32,7 +32,9 @@
 \description{
 Get or set the names of the layers of a SpatRaster or the attributes of a SpatVector. With \code{longnames} you can get or set the "long names" of a SpatRaster or SpatRasterDataset. 
 
-For a SpatRaster, you can also get/set a variable name or long name (one per data source)
+For a SpatRaster, you can also get/set a variable name or long name (one per data source).
+
+See \code{\link{set_names}} for in-place setting of names.
 }
 
 \usage{

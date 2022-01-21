@@ -74,11 +74,19 @@ setMethod("ext<-", signature("SpatRaster", "SpatExtent"),
 setMethod("ext<-", signature("SpatRaster", "numeric"), 
 	function(x, value) {
 		e <- ext(value)
+		x@ptr <- x@ptr$deepcopy()
 		x@ptr$extent <- e@ptr
 		messages(x, "ext<-")
 	}
 )
 
+setMethod("set_ext", signature("SpatRaster"), 
+	function(x, value) {
+		e <- ext(value)
+		x@ptr$extent <- e@ptr
+		messages(x, "set_ext")
+	}
+)
 
 
 setMethod("ext", signature(x="SpatVector"), 
