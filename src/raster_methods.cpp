@@ -1678,7 +1678,7 @@ SpatRaster SpatRaster::rotate(bool left, SpatOptions &opt) {
 				b.insert(b.end(), a.begin()+s1, a.begin()+e1);
 			}
 		}
-		if (!out.writeValues(b, out.bs.row[i], nrow())) return out;
+		if (!out.writeBlock(b, i)) return out;
 	}
 	out.writeStop();
 	readStop();
@@ -1941,6 +1941,13 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 	return(out);
 }
+
+SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, SpatOptions &opt) {
+	SpatOptions copt(opt);
+	SpatRaster out = crop(v.extent, snap, copt);
+	return out.mask(v, false, NAN, false, opt);
+}
+
 
 SpatRaster SpatRaster::flip(bool vertical, SpatOptions &opt) {
 

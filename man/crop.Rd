@@ -16,7 +16,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 }
 
 \usage{
-\S4method{crop}{SpatRaster}(x, y, snap="near", filename="", ...)
+\S4method{crop}{SpatRaster}(x, y, snap="near", mask=FALSE, filename="", ...)
 
 \S4method{crop}{SpatRasterDataset}(x, y, snap="near", filename="", ...)
 
@@ -27,6 +27,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
   \item{x}{SpatRaster or SpatVector}
   \item{y}{SpatRaster, SpatVector, SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a \code{SpatExtent})}
   \item{snap}{character. One of "near", "in", or "out"}  
+  \item{mask}{logical. Should \code{y} be used to mask? Only used if \code{y} is a SpatVector}  
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
@@ -44,7 +45,16 @@ values(r) <- 1:ncell(r)
 e <- ext(-5, 5, -5, 5)
 rc <- crop(r, e)
 
-# vector
+# crop and mask
+f <- system.file("ex/elev.tif", package="terra")
+r <- rast(f)
+f <- system.file("ex/lux.shp", package="terra")
+v <- vect(f)
+cm <- crop(r, v[9:12,], mask=TRUE)
+plot(cm)
+lines(v)
+
+# crop vector
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 e <- ext(6.15, 6.3, 49.7, 49.8)

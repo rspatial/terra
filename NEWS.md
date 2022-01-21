@@ -2,11 +2,12 @@
 
 ## bug fixes
 
-`app<SpatRasterDataset>` ignored the filename. [#498](https://github.com/rspatial/terra/issues/498) by jszhao
+- `app<SpatRasterDataset>` ignored the filename. [#498](https://github.com/rspatial/terra/issues/498) by jszhao
 `vect<data.frame>` failed silently if xy coordinates were integers [#496](https://github.com/rspatial/terra/issues/496) by Márcia Barbosa
-The output of `aggregate` was misformed when nrow(SpatRaster) %% fact != 0. [#492](https://github.com/rspatial/terra/issues/492) by Jean-François Bourdon
-Integer `NAs` in SpatVector attributes where only recognized on Windows [#491](https://github.com/rspatial/terra/issues/491) by Márcia Barbosa
-`plot<SpatVector>` failed when using a charater variable with mamy unique values. [#489](https://github.com/rspatial/terra/issues/489) by Márcia Barbosa
+- The output of `aggregate` was malformed when nrow(SpatRaster) %% fact != 0. [#492](https://github.com/rspatial/terra/issues/492) by Jean-François Bourdon
+- Integer `NAs` in SpatVector attributes where only recognized on Windows [#491](https://github.com/rspatial/terra/issues/491) by Márcia Barbosa
+- `plot<SpatVector>` failed when using a character variable with many unique values. [#489](https://github.com/rspatial/terra/issues/489) by Márcia Barbosa
+- `rotate` failed on large files. Reported by Ujjawal Singh
 
 ## new
 

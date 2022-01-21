@@ -634,6 +634,7 @@ RCPP_MODULE(spat){
 
 		.method("cover", &SpatRaster::cover, "cover")
 		.method("crop", &SpatRaster::crop, "crop")
+		.method("crop_mask", &SpatRaster::cropmask)
 		.method("cum", &SpatRaster::cum, "cum")
 		.method("disaggregate", &SpatRaster::disaggregate, "disaggregate")
 		.method("expand", &SpatRaster::extend, "extend")

@@ -384,10 +384,14 @@ function(x, from, to, filename="", ...) {
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
-	function(x, y, snap="near", filename="", ...) {
+	function(x, y, snap="near", mask=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		y <- .getExt(y, method="crop")
-		x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
+		if (mask && inherits(y, "SpatVector")) {
+			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], opt)
+		} else {
+			y <- .getExt(y, method="crop")
+			x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
+		}
 		messages(x, "crop")
 	}
 )

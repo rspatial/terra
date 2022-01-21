@@ -567,6 +567,7 @@ class SpatRaster {
 		SpatRaster cover(SpatRaster x, std::vector<double> value, SpatOptions &opt);
 
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions &opt);
+		SpatRaster cropmask(SpatVector v, std::string snap, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
 		SpatRaster distance(SpatOptions &opt);
