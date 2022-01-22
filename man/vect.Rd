@@ -30,7 +30,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 } 
 
 \usage{
-\S4method{vect}{character}(x, layer="", query="", extent=NULL, filter=NULL, crs="")
+\S4method{vect}{character}(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE)
 
 \S4method{vect}{matrix}(x, type="points", atts=NULL, crs="")
 
@@ -49,7 +49,8 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points)}
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
-\item{crs}{the coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}})}
+\item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}})}
+\item{proxy}{logical. If \code{TRUE} a SpatRasterProxy is returned}
 \item{geom}{the field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)}
 }
 

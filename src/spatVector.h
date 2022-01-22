@@ -104,7 +104,11 @@ class SpatVector {
 		SpatDataFrame df;
 		//std::vector<std::string> crs;
 		SpatSRS srs;
-
+		bool is_proxy = false;
+		std::string source = "";
+		std::string source_layer = "";
+		size_t geom_count = 0;
+		
 		SpatVector();
 		//SpatVector(const SpatVector &x);
 		SpatVector(SpatGeom g);
@@ -191,14 +195,14 @@ class SpatVector {
 		SpatVector set_holes(SpatVector x, size_t i);
 		SpatVector remove_duplicate_nodes(int digits);
 
-		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
+		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy);
 		
 		bool write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string>);
 		
 #ifdef useGDAL
 		GDALDataset* write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options);
 		GDALDataset* GDAL_ds();
-		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter);
+		bool read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy);
 		SpatVector fromDS(GDALDataset *poDS);
 		bool ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &message);		
 #endif
@@ -374,5 +378,16 @@ class SpatVectorCollection {
 		
 		SpatVector append();
 		
+};
+
+
+
+class SpatVectorProxy {
+	public:
+		SpatVector v;
+		SpatVectorProxy(){}
+		virtual ~SpatVectorProxy(){}
+		SpatVectorProxy deepCopy() {return *this;}
+		SpatVector query_filter(std::string query, std::vector<double> extent, SpatVector filter);
 };
 

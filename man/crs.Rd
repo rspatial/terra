@@ -11,6 +11,7 @@
 \alias{crs<-,SpatRaster,ANY-method}
 
 \alias{crs,SpatVector-method}
+\alias{crs,SpatVectorProxy-method}
 \alias{crs<-,SpatVector-method}
 \alias{crs<-,SpatVector,ANY-method}
 

@@ -6,6 +6,12 @@ setMethod("geomtype", signature(x="SpatVector"),
 		x@ptr$type()
 	}
 )
+setMethod("geomtype", signature(x="SpatVectorProxy"), 
+	function(x){ 
+		x@ptr$v$type()
+	}
+)
+
 
 setMethod("datatype", signature(x="SpatVector"), 
 	function(x){ 
@@ -89,6 +95,12 @@ setMethod("dim", signature(x="SpatVector"),
 	}
 )
 
+setMethod("dim", signature(x="SpatVectorProxy"), 
+	function(x){ 
+		c(x@ptr$v$geom_count, x@ptr$v$ncol())
+	}
+)
+
 
 as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NULL, ...) {
 	d <- .getSpatDF(x@ptr$df, ...)
@@ -116,9 +128,15 @@ as.data.frame.SpatVector <- function(x, row.names=NULL, optional=FALSE, geom=NUL
 	}
 	d
 }
-
 setMethod("as.data.frame", signature(x="SpatVector"), as.data.frame.SpatVector)
 
+
+get.data.frame <- function(x) {
+	v <- vect()
+	v@ptr <- x@ptr$v
+	d <- as.data.frame(v)
+	d[0,,drop=FALSE]
+}
 
 
 as.list.SpatVector <- function(x, geom=NULL, ...) {

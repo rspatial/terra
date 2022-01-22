@@ -93,10 +93,17 @@ setMethod("ext", signature(x="SpatVector"),
 	function(x, ...) { 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x@ptr$extent()
-		return(e)
+		e
 	}
 )
 
+setMethod("ext", signature(x="SpatVectorProxy"), 
+	function(x, ...) { 
+		e <- methods::new("SpatExtent")
+		e@ptr <- x@ptr$v$extent()
+		e
+	}
+)
 
 
 setMethod("ext", signature(x="Extent"), 

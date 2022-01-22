@@ -14,8 +14,8 @@ sbar(d, xy=NULL, type="line", divs=2, below="",
 }
 
 \arguments{
-\item{d}{numeric. Distance covered by the scale bar or arrow. For the scale bar, it should be in the units of the coordinates of the plot (map), and in km for angular (longitude/latitude) data; see argument \code{lonlat}. It can also be missing}
-\item{xy}{numeric. x and y coordinate to place the scale bar or arrow. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
+\item{d}{numeric. Distance covered by the scale bar. For the scale bar, it should be in the units of the coordinates of the plot (map), and in km for angular (longitude/latitude) data; see argument \code{lonlat}. It can also be missing}
+\item{xy}{numeric. x and y coordinate to place the scale bar. It can also be one of following character values: "bottomleft", "bottom", "bottomright", topleft", "top", "topright", "left", "right", or NULL}
 \item{type}{for \code{sbar}: "line" or "bar"}
 \item{divs}{number of divisions for a bar: 2 or 4}
 \item{below}{character. Text to go below the scale bar (e.g., "kilometers")}
@@ -23,7 +23,7 @@ sbar(d, xy=NULL, type="line", divs=2, below="",
 \item{label}{vector of three numbers to label the scale bar (beginning, midpoint, end)}
 \item{adj}{adjustment for text placement}
 \item{lwd}{line width for the "line" type of the scale bar}
-\item{xpd}{logical. If \code{TRUE}, the scale bar or arrow can be outside the plot area}
+\item{xpd}{logical. If \code{TRUE}, the scale bar can be outside the plotting area}
 \item{...}{graphical arguments to be passed to other methods }
 }
 
@@ -31,7 +31,7 @@ sbar(d, xy=NULL, type="line", divs=2, below="",
 none
 }
 
-\seealso{ \code{\link[terra]{arrow}}, \code{\link[terra]{plot}}, \code{\link[terra]{inset}} }
+\seealso{ \code{\link[terra]{north}}, \code{\link[terra]{plot}}, \code{\link[terra]{inset}} }
 
 \examples{
 f <- system.file("ex/meuse.tif", package="terra")
@@ -40,7 +40,7 @@ plot(r)
 sbar()
 sbar(1000, xy=c(178500, 333500), type="bar", divs=4, cex=.8)
 sbar(1000, xy="bottomright", divs=4, cex=.8)
-arrow(d=250, c(178550, 332500))
+north(d=250, c(178550, 332500))
 
 
 f <- system.file("ex/elev.tif", package="terra")
@@ -49,7 +49,7 @@ plot(r, type="interval")
 sbar(20, c(6.2, 50.1), type="bar", cex=.8, divs=4)
 sbar(15, c(6.3, 50), type="bar", below="km", label=c(0,7.5,15), cex=.8)
 sbar(15, c(6.65, 49.8), cex=.8, label=c(0,"km",15))
-arrow(type=2)
+north(type=2)
 sbar(15, c(6.65, 49.7), cex=.8, label="15 kilometer", lwd=5)
 sbar(15, c(6.65, 49.6), divs=4, cex=.8, below="km")
 }

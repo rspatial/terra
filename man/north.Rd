@@ -1,6 +1,7 @@
-\name{arrow}
+\name{north}
 
 \alias{arrow}
+\alias{north}
   
 \title{North arrow}
 
@@ -9,7 +10,9 @@ Add a (North) arrow to a map
 }
 
 \usage{
-arrow(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...)
+north(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...)
+
+arrow(...)
 }
 
 \arguments{
@@ -33,19 +36,19 @@ none
 f <- system.file("ex/meuse.tif", package="terra")
 r <- rast(f)
 plot(r)
-arrow()
-arrow(c(178550, 332500), d=250)
+north()
+north(c(178550, 332500), d=250)
 
 \dontrun{
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
 plot(r, type="interval")
 sbar(15, c(6.3, 50), type="bar", below="km", label=c(0,7.5,15), cex=.8)
-arrow(type=3, cex=.8)
-arrow(xy=c(6.7, 49.9), type=2, angle=45, label="NE")
-arrow(xy=c(6.6, 49.7), type=5, cex=1.25)
-arrow(xy=c(5.5, 49.6), type=9)
-arrow(d=.05, xy=c(5.5, 50), angle=180, label="S", lwd=2, col="blue")
+north(type=3, cex=.8)
+north(xy=c(6.7, 49.9), type=2, angle=45, label="NE")
+north(xy=c(6.6, 49.7), type=5, cex=1.25)
+north(xy=c(5.5, 49.6), type=9)
+north(d=.05, xy=c(5.5, 50), angle=180, label="S", lwd=2, col="blue")
 
 
 ## all arrows
@@ -53,8 +56,8 @@ r <- rast(res=10)
 values(r) <- 1
 plot(r, col="white", axes=FALSE, legend=FALSE, mar=c(0,0,0,0), reset=TRUE)
 for (i in 1:12) {
-	x=-200+i*30
-	arrow(xy=cbind(x,30), type=i)
+	x = -200+i*30
+	north(xy=cbind(x,30), type=i)
 	text(x, -20, i, xpd=TRUE)
 }
 

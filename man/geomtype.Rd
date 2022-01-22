@@ -4,6 +4,7 @@
 
 \alias{geomtype}
 \alias{geomtype,SpatVector-method}
+\alias{geomtype,SpatVectorProxy-method}
 \alias{geomtype,Spatial-method}
 \alias{datatype}
 \alias{datatype,SpatVector-method}

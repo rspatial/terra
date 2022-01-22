@@ -26,7 +26,7 @@ setMethod("vect", signature(x="missing"),
 )
 
 setMethod("vect", signature(x="character"), 
-	function(x, layer="", query="", extent=NULL, filter=NULL, crs="") {
+	function(x, layer="", query="", extent=NULL, filter=NULL, crs="", proxy=FALSE) {
 		p <- methods::new("SpatVector")
 		s <- substr(x[1], 1, 5)
 		if (s %in% c("POINT", "MULTI", "LINES", "POLYG")) {
@@ -37,19 +37,28 @@ setMethod("vect", signature(x="character"),
 		} else {
 			p@ptr <- SpatVector$new()
 			x <- normalizePath(x)
-			if (is.null(filter)) {
+			proxy <- isTRUE(proxy)
+			if (proxy) query <- ""
+			if (proxy || is.null(filter)) {
 				filter <- vect()@ptr
 			} else {
 				filter <- filter@ptr
 			}
-			if (is.null(extent)) {
+			if (proxy || is.null(extent)) {
 				extent <- double()
 			} else {
 				extent <- as.vector(ext(extent))
 			}
-			p@ptr$read(x, layer, query, extent, filter)
+			p@ptr$read(x, layer, query, extent, filter, proxy)
 			if (isTRUE(crs != "")) {
 				crs(p) <- crs
+			}
+			if (proxy) {
+				messages(p, "vect")
+				pp <- methods::new("SpatVectorProxy")
+				pp@ptr <- SpatVectorProxy$new()
+				pp@ptr$v <- p@ptr
+				return(pp)
 			}
 		}
 		messages(p, "vect")
@@ -311,6 +320,52 @@ setMethod("vect", signature(x="list"),
 		v <- methods::new("SpatVector")
 		v@ptr <- x 
 		messages(v, "vect")
+	}
+)
+
+
+setMethod("query", signature(x="SpatVectorProxy"), 
+	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL) {
+		f <- x@ptr$v$source
+		layer <- x@ptr$v$layer
+		qy <- ""
+		if (is.null(vars)) {
+			vars <- "*"
+		} else {
+			vars <- na.omit(unique(vars))
+			nms <- names(x)
+			if (!all(vars %in% nms)) {
+				error("query", "not all vars are variable names")
+			} else if (length(vars) < length(nms))  {
+				vars <- paste(vars, collapse=", ")
+			}
+		}
+
+		if (!is.null(where)) {
+			qy <- paste("SELECT", vars, "FROM", layer, "WHERE", where[1]) 
+		}
+
+		nr <- nrow(x)
+		start <- start-1
+		if (start > 0) {
+			if (qy == "") {
+				qy <- paste("SELECT", vars, "FROM", layer)
+			} 
+			if (n >= (nr-start)) {
+				qy <- paste(qy, "OFFSET", start)
+			} else {
+				n <- min(n, nr-start)
+				qy <- paste(qy, layer, "LIMIT", n, "OFFSET", start)
+			}
+		} else if (n < nr) {
+			if (qy == "") {
+				qy <- paste("SELECT", vars, "FROM", layer)
+			} 
+			n <- min(n, nr)
+			qy <- paste(qy, "LIMIT", n)		
+		}
+		
+		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
 	}
 )
 

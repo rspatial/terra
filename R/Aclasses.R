@@ -69,6 +69,21 @@ setClass("SpatVector",
 	}
 )
 
+setClass("SpatVectorProxy",
+	representation (
+		ptr = "C++Object"
+	),
+	prototype (
+		ptr = NULL
+	),
+	validity = function(object)	{
+		if (is.null(object@ptr) || is(object@ptr, "Rcpp_SpatVectorProxy")){
+			return(TRUE)
+		} else {
+			return(FALSE)
+		}
+	}
+)
 
 
 setClass("SpatVectorCollection",

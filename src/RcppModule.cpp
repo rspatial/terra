@@ -111,6 +111,7 @@ RCPP_EXPOSED_CLASS(SpatRaster)
 RCPP_EXPOSED_CLASS(SpatRasterCollection)
 RCPP_EXPOSED_CLASS(SpatRasterStack)
 RCPP_EXPOSED_CLASS(SpatVector)
+RCPP_EXPOSED_CLASS(SpatVectorProxy)
 RCPP_EXPOSED_CLASS(SpatVectorCollection)
 
 RCPP_MODULE(spat){
@@ -280,6 +281,10 @@ RCPP_MODULE(spat){
 		.method("shared_paths", &SpatVector::shared_paths, "")
 		.method("snap", &SpatVector::snap, "")
 
+		.field_readonly("is_proxy", &SpatVector::is_proxy )
+		.field_readonly("geom_count", &SpatVector::geom_count)
+		.field_readonly("source", &SpatVector::source)
+		.field_readonly("layer", &SpatVector::source_layer)
 		.field_readonly("df", &SpatVector::df )
 
 		.method("has_error", &SpatVector::hasError)
@@ -427,6 +432,14 @@ RCPP_MODULE(spat){
 		//.field_readonly("rotated", &SpatRasterSource::rotated)
 //		.field_readonly("parameters_changed", &SpatRasterSource::parameters_changed)
 //	;
+
+
+    class_<SpatVectorProxy>("SpatVectorProxy")
+		.constructor()
+		.field("v", &SpatVectorProxy::v )
+		.method("deepcopy", &SpatVectorProxy::deepCopy, "deepCopy")
+	;
+
 
 
     class_<SpatRaster>("SpatRaster")

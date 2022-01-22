@@ -41,7 +41,7 @@ std::string geomType(OGRLayer *poLayer) {
 }
 
 
-SpatDataFrame readAttributes(OGRLayer *poLayer) {
+SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	SpatDataFrame df;
 
     OGRFeatureDefn *poFDefn = poLayer->GetLayerDefn();
@@ -93,6 +93,7 @@ SpatDataFrame readAttributes(OGRLayer *poLayer) {
 			}
 		}
 		OGRFeature::DestroyFeature( poFeature );
+		if (as_proxy) break;
 	}
 	return df;
 }
@@ -305,7 +306,7 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 }
 
 
-bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query, std::vector<double> extent, SpatVector filter) {
+bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy) {
 
 	std::string crs = "";
 
@@ -383,11 +384,12 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 	}
 
 	//const char* lname = poLayer->GetName();
-
-	df = readAttributes(poLayer);
 	OGRwkbGeometryType wkbgeom = wkbFlatten(poLayer->GetGeomType());
-	OGRFeature *poFeature;
 
+	df = readAttributes(poLayer, as_proxy);
+
+	OGRFeature *poFeature;
+	
 	poLayer->ResetReading();
 	poFeature = poLayer->GetNextFeature();
 	if (poFeature != NULL) {
@@ -401,6 +403,67 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 			}
 		}
 	}
+	source_layer = poLayer->GetName();
+	
+	if (as_proxy) {
+		SpatGeom g;
+		if ((wkbgeom == wkbPoint) | (wkbgeom == wkbMultiPoint)) {
+			//SpatPart p(0,0);
+			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+			if (poGeometry != NULL) {
+				if ( wkbFlatten(poGeometry->getGeometryType()) == wkbPoint ) {
+					g = getPointGeom(poGeometry);
+				} else {
+					g = getMultiPointGeom(poGeometry);
+				}
+			} else {
+				SpatPart p;
+				g = SpatGeom();
+				g.addPart(p);
+			}
+			addGeom(g);
+			OGRFeature::DestroyFeature( poFeature );
+		} else if (wkbgeom == wkbLineString || wkbgeom == wkbMultiLineString) {
+			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+			if (poGeometry != NULL) {
+				if (wkbFlatten ( poGeometry ->getGeometryType() ) == wkbLineString) {
+					g = getLinesGeom(poGeometry);
+				} else {
+					g = getMultiLinesGeom(poGeometry);
+				}
+			} else {
+				SpatPart p;
+				g = SpatGeom();
+				g.addPart(p);
+			}
+			addGeom(g);
+			OGRFeature::DestroyFeature( poFeature );
+		} else if ( wkbgeom == wkbPolygon || wkbgeom == wkbMultiPolygon) {
+			OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+			if (poGeometry != NULL) {
+				wkbgeom = wkbFlatten(poGeometry->getGeometryType());
+				if (wkbgeom == wkbPolygon) {
+					g = getPolygonsGeom(poGeometry);
+				} else if (wkbgeom == wkbMultiPolygon ) {
+					g = getMultiPolygonsGeom(poGeometry);
+				} 
+			} else {
+				g = SpatGeom();
+			}
+			addGeom(g);
+			OGRFeature::DestroyFeature( poFeature );
+		} else if (wkbgeom != wkbNone) {
+			const char *geomtypechar = OGRGeometryTypeToName(wkbgeom);
+			std::string strgeomtype = geomtypechar;
+			std::string s = "cannot read this geometry type: "+ strgeomtype;
+			setError(s);
+			return false;
+		}
+		geom_count = poLayer->GetFeatureCount();
+		is_proxy = true;
+		return true;
+	}
+
 	OGRFeature::DestroyFeature( poFeature );
 	poLayer->ResetReading();
 	SpatGeom g;
@@ -464,6 +527,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 		return false;
 	}
 
+
 	if (query != "") {
 		poDS->ReleaseResultSet(poLayer);
 	}
@@ -472,22 +536,23 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 }
 
 
-bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter) {
+bool SpatVector::read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy) {
     //OGRRegisterAll();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx( fname.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
     if( poDS == NULL ) {
         setError("Cannot open this file as a SpatVector");
 		return false;
     }
-	bool success = read_ogr(poDS, layer, query, extent, filter);
+	bool success = read_ogr(poDS, layer, query, extent, filter, as_proxy);
 	if (poDS != NULL) GDALClose( poDS );
+	source = fname;
 	return success;
 }
 
 SpatVector SpatVector::fromDS(GDALDataset *poDS) {
 	SpatVector out, fvct;
 	std::vector<double> fext;
-	out.read_ogr(poDS, "", "", fext, fvct);
+	out.read_ogr(poDS, "", "", fext, fvct, false);
 	return out;
 }
 

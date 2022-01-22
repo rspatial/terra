@@ -242,8 +242,7 @@ setMethod("$", "SpatRasterDataset",
 )
 
 
-
-setMethod("src", signature(x="missing"),
+setMethod("sprc", signature(x="missing"),
 	function(x) {
 		r <- methods::new("SpatRasterCollection")
 		r@ptr <- SpatRasterCollection$new()
@@ -252,14 +251,14 @@ setMethod("src", signature(x="missing"),
 )
 
 
-setMethod("src", signature(x="SpatRaster"), 
+setMethod("sprc", signature(x="SpatRaster"), 
 	function(x, ...) {
 		src(list(x, ...))
 	}
 )
 
 
-setMethod("src", signature(x="list"), 
+setMethod("sprc", signature(x="list"), 
 	function(x) {
 		n <- length(x)
 		ptr <- SpatRasterCollection$new()
@@ -270,7 +269,7 @@ setMethod("src", signature(x="list"),
 				} else {
 					name <- names(x[[i]])
 					cls <- class(x[[i]])
-					error("src", "list elements should be 'SpatRaster'\n", name, "is of class: ", cls)
+					error("sprc", "list elements should be 'SpatRaster'\n", name, "is of class: ", cls)
 				}
 			}
 		}

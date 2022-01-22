@@ -59,6 +59,7 @@ printDF <- function(x, n=6, first=FALSE) {
 		name <- paste0("(and ", old[2] - d[2], " more)")
 		x[[name]] <- ""
 	}
+
 	print(x, row.names = FALSE)
 }
 
@@ -112,9 +113,9 @@ setMethod ("show" , "SpatVectorCollection",
 setMethod ("show" , "SpatVector", 
 	function(object) {
 		e <- as.vector(ext(object))
+		d <- dim(object)
 		cat(" class       :", class(object), "\n")
 		cat(" geometry    :", geomtype(object), "\n")
-		d <- dim(object)
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" ) 
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
@@ -126,6 +127,20 @@ setMethod ("show" , "SpatVector",
 	}
 )
 
+
+setMethod ("show" , "SpatVectorProxy", 
+	function(object) {
+		e <- as.vector(ext(object))
+		d <- dim(object)
+		cat(" class       : SpatVectorProxy\n")
+		cat(" geometry    :", geomtype(object), "\n")
+		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" ) 
+		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+		cat(" coord. ref. :", .name_or_proj4(object), "\n")
+		dd <- get.data.frame(object)
+		printDF(dd, 0, TRUE)
+	}
+)
 
 setMethod ("show" , "SpatRaster", 
 	function(object) {

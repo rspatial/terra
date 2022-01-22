@@ -1,7 +1,6 @@
 
+
 if (!isGeneric("RGB2col")) {setGeneric("RGB2col", function(x, ...) standardGeneric("RGB2col"))}
-
-
 setMethod("RGB2col", signature(x="SpatRaster"), 
 	function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
 		warn("col2RGB", "this function will be removed. You can use 'colorize' instead")
@@ -32,4 +31,19 @@ setMethod("area", signature(x="SpatVector"),
 )
 
 
+# dplyr conflict
+if (!isGeneric("src")) { setGeneric("src", function(x, ...) standardGeneric("src")) }
+setMethod("src", signature(x="ANY"),
+	function(x, ...) {
+		warn("src", '"src" will be removed. It has been renamed to "sprc"')
+		sprc(x, ...)
+	}
+)
+
+
+##ggplot2 conflict
+arrow <- function(...) {
+	warn("arrow", '"arrow" will be removed. It has been renamed to "north"')
+	north(...)	
+}
 

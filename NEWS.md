@@ -1,4 +1,4 @@
-# version 1.5-13
+# version 1.5-14
 
 ## bug fixes
 
@@ -15,6 +15,15 @@
 - new `mask<SpatVector,SpatVector>` method to select intersecting geometries
 - new method `is.related`
 - `values<SpatRaster>` has new option `na.rm=TRUE`. [#490](https://github.com/rspatial/terra/issues/490) by Henk Harmsen
+- new argument `proxy=FALSE` to `vect` to create a SpatVectorProxy object
+- new method `query<SpatVectorProxy>` to extract parts of a SpatVectorProxy
+
+## name changes
+
+To avoid name clashes with tidyverse 
+
+- arrow -> north
+- src -> sprc
 
 
 # version 1.5-12

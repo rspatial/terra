@@ -25,6 +25,7 @@
 \alias{longnames<-,SpatRasterDataset-method}
 
 \alias{names,SpatVector-method}
+\alias{names,SpatVectorProxy-method}
 \alias{names<-,SpatVector-method}
   
 \title{Names of Spat* objects}

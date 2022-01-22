@@ -493,7 +493,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{image}} \tab Alternative to plot to make a map with a SpatRaster \cr
     \code{\link{plotRGB}} \tab Combine three layers (red, green, blue channels) into a single "real color" plot \cr
     \code{\link{sbar}} \tab Add a scalebar to a map\cr
-    \code{\link{arrow}} \tab Add a north arrow to a map\cr
+    \code{\link{north}} \tab Add a north arrow to a map\cr
     \code{\link{inset}} \tab Add a small inset (overview) map\cr	
     \code{\link{dots}} \tab Make a dot-density map \cr
     \code{\link{cartogram}} \tab Make a cartogram \cr

@@ -1,5 +1,7 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("query")) {setGeneric("query", function(x, ...) standardGeneric("query"))}
+
 if (!isGeneric("set_ext")) {setGeneric("set_ext", function(x, ...) standardGeneric("set_ext"))}
 if (!isGeneric("set_names")) {setGeneric("set_names", function(x, ...) standardGeneric("set_names"))}
 if (!isGeneric("set_varnames")) {setGeneric("set_varnames", function(x, ...) standardGeneric("set_varnames"))}
@@ -131,7 +133,7 @@ if (!isGeneric("as.raster")) { setGeneric("as.raster", function(x, ...) standard
 if (!isGeneric("rast") ) { setGeneric("rast", function(x, ...) standardGeneric("rast")) }
 if (!isGeneric("rev") ) { setGeneric("rev", function(x) standardGeneric("rev")) }
 if (!isGeneric("sds") ) { setGeneric("sds", function(x, ...) standardGeneric("sds")) }
-if (!isGeneric("src") ) { setGeneric("src", function(x, ...) standardGeneric("src")) }
+if (!isGeneric("sprc") ) { setGeneric("sprc", function(x, ...) standardGeneric("sprc")) }
 if (!isGeneric("svc") ) { setGeneric("svc", function(x, ...) standardGeneric("svc")) }
 if (!isGeneric("sel")) {setGeneric("sel", function(x, ...) standardGeneric("sel"))}
 if (!isGeneric("segregate")) {setGeneric("segregate", function(x, ...) standardGeneric("segregate"))}

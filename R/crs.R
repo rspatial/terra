@@ -31,6 +31,11 @@ is.proj <- function(crs) {
 }
 
 .name_or_proj4 <- function(x) {
+	if (inherits(x, "SpatVectorProxy")) {
+		v <- vect()
+		v@ptr <- x@ptr$v
+		x <- v
+	}
 	d <- .srs_describe(x@ptr$get_crs("wkt"))
 	r <- x@ptr$get_crs("proj4")
 	if (!(d$name %in% c(NA, "unknown", "unnamed"))) {
@@ -146,6 +151,14 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 setMethod("crs", signature("SpatVector"), 
 	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
 		.get_CRS(x, proj=proj, describe=describe, parse=parse)
+	}
+)
+
+setMethod("crs", signature("SpatVectorProxy"), 
+	function(x, proj=FALSE, describe=FALSE, parse=FALSE) {
+		v <- vect()
+		v@ptr <- x@ptr$v
+		.get_CRS(v, proj=proj, describe=describe, parse=parse)
 	}
 )
 

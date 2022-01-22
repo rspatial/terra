@@ -117,6 +117,14 @@ setMethod("names", signature(x="SpatVector"),
 	}
 )
 
+setMethod("names", signature(x="SpatVectorProxy"), 
+	function(x) { 
+		nms <- x@ptr$v$names
+		Encoding(nms) <- "UTF-8"
+		nms
+	}
+)
+
 setMethod("names<-", signature(x="SpatVector"), 
 	function(x, value)  {
 		if (length(value) != ncol(x)) {

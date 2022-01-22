@@ -114,8 +114,7 @@ add_N <- function(x, y, asp, label, type=0, user="", angle=0, cex=1, srt=0, xpd=
 }
 
 
-
-arrow <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...) {
+north <- function(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...) {
 	pr <- graphics::par()
 	pa <- c(pr$usr[2] - pr$usr[1], pr$usr[4] - pr$usr[3])
 	asp <- pa[2]/pa[1]  
