@@ -199,11 +199,23 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	}
 
 	SpatOptions ops(opt);
-	if (nlyr() > 1) {
-		std::vector<unsigned> lyr = {0};
-		out = subset(lyr, ops);
-		out = out.distance(opt);
-		out.addWarning("distance computations are only done for the first input layer");
+	size_t nl = nlyr();
+	if (nl > 1) {
+		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}		
+		out.source.resize(nl);
+		for (unsigned i=0; i<nl; i++) {
+			std::vector<unsigned> lyr = {i};
+			SpatRaster r = subset(lyr, ops);
+			ops.names = {nms[i]};
+			r = r.distance(ops);
+			out.source[i] = r.source[0];
+		}
+		if (opt.get_filename() != "") {
+			out = out.writeRaster(opt);
+		}
 		return out;
 	}
 
@@ -224,11 +236,23 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, SpatOptions &opt) {
 	}
 
 	SpatOptions ops(opt);
-	if (nlyr() > 1) {
-		std::vector<unsigned> lyr = {0};
-		out = subset(lyr, ops);
-		out = out.distance(opt);
-		out.addWarning("distance computations are only done for the first input layer");
+	size_t nl = nlyr();
+	if (nl > 1) {
+		out.source.resize(nl);
+		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}		
+		for (unsigned i=0; i<nl; i++) {
+			std::vector<unsigned> lyr = {i};
+			SpatRaster r = subset(lyr, ops);
+			ops.names = {nms[i]};
+			r = r.direction(from, degrees, ops);
+			out.source[i] = r.source[0];
+		}
+		if (opt.get_filename() != "") {
+			out = out.writeRaster(opt);
+		}
 		return out;
 	}
 
@@ -871,15 +895,22 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		return out;
 	}
 
+
 	SpatOptions ops(opt);
-	if (nlyr() > 1) {
-		std::vector<unsigned> lyr = {0};
-		out = subset(lyr, ops);
-		out = out.gridDistance(opt);
-		out.addWarning("distance computations are only done for the first input layer");
+	size_t nl = nlyr();
+	if (nl > 1) {
+		out.source.resize(nl);
+		for (unsigned i=0; i<nl; i++) {
+			std::vector<unsigned> lyr = {i};
+			SpatRaster r = subset(lyr, ops);
+			r = r.gridDistance(ops);
+			out.source[i] = r.source[0];
+		}
+		if (opt.get_filename() != "") {
+			out = out.writeRaster(opt);
+		}
 		return out;
 	}
-
 
 	bool lonlat = is_lonlat(); 
 	bool global = is_global_lonlat();

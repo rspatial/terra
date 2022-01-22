@@ -3344,9 +3344,10 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	
 	if (nlyr() > 1) {
 		SpatOptions ops(opt);
-		std::string filename = opt.get_filename();
-		ops.set_filenames({""});
 		std::vector<std::string> nms = getNames();
+		if (ops.names.size() == nms.size()) {
+			nms = opt.names;
+		}
 		for (size_t i=0; i<nlyr(); i++) {
 			std::vector<unsigned> lyr = {(unsigned)i};
 			ops.names = {nms[i]};
@@ -3354,7 +3355,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 			x = x.clumps(directions, zeroAsNA, ops);
 			out.addSource(x, false);
 		}
-		if (filename != "") {
+		if (opt.get_filename() != "") {
 			out = out.writeRaster(opt);
 		}
 		return out;

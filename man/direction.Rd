@@ -22,7 +22,6 @@ The direction (azimuth) to or from the nearest cell that is not \code{NA}. The d
 }
 
 
-
 \value{SpatRaster}
 
 

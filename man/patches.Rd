@@ -26,6 +26,7 @@ Detect patches (clumps). Patches are groups of cells that are surrounded by cell
 SpatRaster. Cell values are patch numbers
 }
 
+
 \seealso{ \code{\link{focal}}, \code{\link{boundaries}} }
 
 \examples{

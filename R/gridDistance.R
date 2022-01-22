@@ -121,11 +121,19 @@ function(x, origin=NULL, omit=NULL, chunk=FALSE, filename="", overwrite=FALSE, .
 		error("gridDistance", "file exists. Use 'overwrite=TRUE' if you want to overwrite it")
 	}
 	if( !requireNamespace("igraph")) {
-		stop("you need to install the igraph package to be able to use this function")
+		stop("the igraph package needs to be installed to use this function")
 	}
 
 	if (nlyr(x) > 1) {
-		x <- x[[1]]
+		r <- list()
+		for (i in 1:nlyr(x)) {
+			r[[i]] <- gridDistance(x[[i]], origin=origin, omit=omit, chunk=chunk, filename="", ...) 
+		}
+		r <- rast(r)
+		if (filename != "") {
+			r <- writeRaster(r, filename, overwrite, ...)
+		}
+		return(r)
 	}
 
 	if (!chunk) {
