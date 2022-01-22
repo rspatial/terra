@@ -405,6 +405,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
 
+	if (nrow() == 0) {
+		addWarning("nothing to write");
+		return false;
+	}
+
 	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite, options);
     if (poDS != NULL) GDALClose( poDS );
 	if (hasError()) {

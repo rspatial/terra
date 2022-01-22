@@ -45,7 +45,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			error("app", "additional arguments cannot be a SpatRaster")
 		}
 	}
-# figure out the shape of the output by testing with one row
+# figure out the shape of the output by testing with one rowz
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
 	usefun <- FALSE
 	if (nl==1) {
