@@ -40,7 +40,7 @@ v
 x <- query(v, vars=c("ID_2", "NAME_2"), start=5, n=2)
 x
 
-x <- query(v, vars=c("ID_2", "NAME_2"), where="NAME_1='Grevenmacher'")
+query(v, vars=c("ID_2", "NAME_1", "NAME_2"), where="NAME_1='Grevenmacher' AND ID_2 > 6")
 
 ## with an extent
 e <- ext(5.9, 6.3, 49.9, 50) 
