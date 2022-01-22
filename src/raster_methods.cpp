@@ -1877,6 +1877,7 @@ SpatRaster SpatRaster::extend(SpatExtent e, SpatOptions &opt) {
 SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 
 	SpatRaster out = geometry(nlyr(), true, true, true);
+
 	if ( !e.valid() ) {
 		out.setError("invalid extent");
 		return out;
@@ -1924,6 +1925,8 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
+
+//	opt.ncopies = 2;
  	if (!out.writeStart(opt)) {
 		readStop();
 		return out;
@@ -1935,6 +1938,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	}
 	out.writeStop();
 	readStop();
+
 	return(out);
 }
 

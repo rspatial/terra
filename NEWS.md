@@ -8,6 +8,8 @@
 - Integer `NAs` in SpatVector attributes where only recognized on Windows [#491](https://github.com/rspatial/terra/issues/491) by Márcia Barbosa
 - `plot<SpatVector>` failed when using a character variable with many unique values. [#489](https://github.com/rspatial/terra/issues/489) by Márcia Barbosa
 - `rotate` failed on large files. Reported by Ujjawal Singh
+- writing raster files with a color table could lead to a crash [#501](https://github.com/rspatial/terra/issues/501) by Kodi Arfer
+
 
 ## enhancements 
 
