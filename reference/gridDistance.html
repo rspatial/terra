@@ -84,7 +84,9 @@ Distances are computed by summing local distances between cells, which are conne
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>If the SpatRaster to be processed is big, it will be processed in chunks. This may lead to errors in the case of complex objects spread over different chunks (meandering rivers, for instance).</p>
+    <p>If the SpatRaster to be processed is big, it will be processed in chunks. This may lead to errors in the case of complex objects that cannot be traversed are spread over different chunks (meandering rivers, for instance).</p>
+
+<p>Only the first layer of SpatRaster <code>x</code> is processed. See <code><a href="sapp.html">sapp</a></code> or <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></code> to iterate over all layers</p>
     </div>
     <div id="value">
     <h2>Value</h2>
