@@ -9,6 +9,10 @@
 - `plot<SpatVector>` failed when using a character variable with many unique values. [#489](https://github.com/rspatial/terra/issues/489) by Márcia Barbosa
 - `rotate` failed on large files. Reported by Ujjawal Singh
 
+## enhancements 
+
+- `distance`, `gridDistance`, `direction` and `patches` now process all layers of the input SpatRaster. [#503](https://github.com/rspatial/terra/issues/503) by Chris Haak
+
 ## new
 
 - new option `method="weights"` for `spatSample<SpatRaster>`

@@ -197,7 +197,7 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 	s.add_column(1, "green");
 	s.add_column(1, "blue");
 	s.add_column(1, "alpha");
-	s.reserve(255);
+	s.resize_rows(255);
 	for (size_t i=0; i<d.nrow(); i++) {
 		s.iv[0][d.iv[0][i]] = d.iv[1][i]; 
 		s.iv[1][d.iv[0][i]] = d.iv[2][i];
