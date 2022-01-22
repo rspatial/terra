@@ -61,9 +61,6 @@
     <loc>/reference/arith-generic.html</loc>
   </url>
   <url>
-    <loc>/reference/arrow.html</loc>
-  </url>
-  <url>
     <loc>/reference/as.character.html</loc>
   </url>
   <url>
@@ -358,6 +355,9 @@
     <loc>/reference/nearby.html</loc>
   </url>
   <url>
+    <loc>/reference/north.html</loc>
+  </url>
+  <url>
     <loc>/reference/origin.html</loc>
   </url>
   <url>
@@ -386,6 +386,9 @@
   </url>
   <url>
     <loc>/reference/quantile.html</loc>
+  </url>
+  <url>
+    <loc>/reference/query.html</loc>
   </url>
   <url>
     <loc>/reference/rapp.html</loc>

@@ -62,7 +62,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for character</span>
-<span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="st">""</span>, query<span class="op">=</span><span class="st">""</span>, extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span>
+<span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="st">""</span>, query<span class="op">=</span><span class="st">""</span>, extent<span class="op">=</span><span class="cn">NULL</span>, filter<span class="op">=</span><span class="cn">NULL</span>, crs<span class="op">=</span><span class="st">""</span>, proxy<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for matrix</span>
 <span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">"points"</span>, atts<span class="op">=</span><span class="cn">NULL</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span>
@@ -94,7 +94,9 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dt>atts</dt>
 <dd><p>data.frame with the attributes. The number of rows must match the number of geometrical elements</p></dd>
 <dt>crs</dt>
-<dd><p>the coordinate reference system in one of the following formats: WKT/WKT2, &lt;authority&gt;:&lt;code&gt;, or PROJ-string notation (see <code><a href="crs.html">crs</a></code>)</p></dd>
+<dd><p>character. The coordinate reference system in one of the following formats: WKT/WKT2, &lt;authority&gt;:&lt;code&gt;, or PROJ-string notation (see <code><a href="crs.html">crs</a></code>)</p></dd>
+<dt>proxy</dt>
+<dd><p>logical. If <code>TRUE</code> a SpatRasterProxy is returned</p></dd>
 <dt>geom</dt>
 <dd><p>the field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)</p></dd>
 </dl></div>
