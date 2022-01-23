@@ -412,6 +412,8 @@ std::vector<std::vector<double>> SpatVector::coordinates() {
 }
 */
 
+
+
 size_t SpatVector::ncoords() {
 	size_t ncrds = 0;
 	size_t ng = geoms.size();
@@ -429,6 +431,7 @@ size_t SpatVector::ncoords() {
 	return ng;
 }
 
+
 std::vector<std::vector<double>> SpatVector::coordinates() {
 	std::vector<std::vector<double>> out(2);
 	size_t ncrds = ncoords();
@@ -436,13 +439,10 @@ std::vector<std::vector<double>> SpatVector::coordinates() {
 	out[1].reserve(ncrds);
 	size_t ng = size();
 	for (size_t i=0; i<ng; i++) {
-		size_t np = geoms[i].size();
+		size_t np = geoms[i].size();		
 		for (size_t j=0; j<np; j++) {
-			size_t nx = geoms[i].parts[j].x.size();
-			for (size_t q=0; q < nx; q++) {
-				out[0].insert(out[0].end(), geoms[i].parts[j].x.begin(), geoms[i].parts[j].x.end());
-				out[1].insert(out[1].end(), geoms[i].parts[j].y.begin(), geoms[i].parts[j].y.end());
-			}
+			out[0].insert(out[0].end(), geoms[i].parts[j].x.begin(), geoms[i].parts[j].x.end());
+			out[1].insert(out[1].end(), geoms[i].parts[j].y.begin(), geoms[i].parts[j].y.end());
 			if (geoms[i].parts[j].hasHoles()) {
 				size_t nh = geoms[i].parts[j].nHoles();
 				for (size_t k=0; k < nh; k++) {
