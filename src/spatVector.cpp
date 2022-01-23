@@ -413,7 +413,6 @@ std::vector<std::vector<double>> SpatVector::coordinates() {
 */
 
 
-
 size_t SpatVector::ncoords() {
 	size_t ncrds = 0;
 	size_t ng = geoms.size();
@@ -428,7 +427,7 @@ size_t SpatVector::ncoords() {
 			}
 		}
 	}
-	return ng;
+	return ncrds;
 }
 
 
