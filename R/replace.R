@@ -127,11 +127,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 			value <- as.vector(value)
 		} 
 
-		# avoid in-place replacement inside of a function
-		if (length(sys.calls()) > 3) {
-			x@ptr <- x@ptr$deepcopy()
-		}
-
+		x@ptr <- x@ptr$deepcopy()
 		if (!x@ptr$replaceCellValues(i-1, value, bylyr, spatOptions())) {
 			messages(x)
 		} else {
@@ -140,6 +136,25 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 	}
 )
 
+
+setMethod("set.values", signature(x="SpatRaster"), 
+	function(x, cells, values)  {
+		bylyr = FALSE
+		if (!is.null(dim(values))) {
+			stopifnot(ncol(values) == nlyr(x))
+			bylyr = TRUE
+			if (inherits(values, "data.frame")) {
+				values <- as.matrix(values)
+			}
+			values <- as.vector(values)
+		} 
+		if (!x@ptr$replaceCellValues(cells-1, values, bylyr, spatOptions())) {
+			messages(x)
+		} else {
+			invisible(TRUE)
+		}
+	}
+)
 
 
 setReplaceMethod("[", c("SpatRaster", "numeric", "numeric"),

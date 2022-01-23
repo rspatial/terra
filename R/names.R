@@ -44,7 +44,7 @@ setMethod("names<-", signature(x="SpatRaster"),
 	value
 }
 
-setMethod("set_names", signature(x="SpatRaster"), 
+setMethod("set.names", signature(x="SpatRaster"), 
 	function(x, value, index=1:nlyr(x), validate=FALSE)  {
 		value <- .names_check(x, value, index, validate)
 		if (! x@ptr$setNames(value, FALSE)) {
@@ -72,7 +72,7 @@ setMethod("names<-", signature(x="SpatRasterDataset"),
 	}
 )
 
-setMethod("set_names", signature(x="SpatRasterDataset"), 
+setMethod("set.names", signature(x="SpatRasterDataset"), 
 	function(x, value, index=1:length(x), validate=FALSE)  {
 		value <- .names_check(x, value, index, validate)
 		x@ptr$names <- value
@@ -99,14 +99,6 @@ setMethod("varnames<-", signature(x="SpatRasterDataset"),
 	}
 )
 
-
-setMethod("set_varnames", signature(x="SpatRasterDataset"), 
-	function(x, value, index=1:length(x), validate=FALSE)  {
-		value <- .names_check(x, value, index, validate)
-		x@ptr$names <- value
-		invisible(TRUE)
-	}
-)
 
 
 setMethod("names", signature(x="SpatVector"), 
@@ -140,7 +132,7 @@ setMethod("names<-", signature(x="SpatVector"),
 	}
 )
 
-setMethod("set_names", signature(x="SpatVector"), 
+setMethod("set.names", signature(x="SpatVector"), 
 	function(x, value, index=1:ncol(x), validate=FALSE)  {
 		value <- .names_check(x, value, index, validate)
 		x@ptr$names <- value
@@ -167,15 +159,6 @@ setMethod("varnames<-", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("set_varnames", signature(x="SpatRaster"), 
-	function(x, value, index=1:nlyr(x))  {
-		value <- .names_check(x, value, index, FALSE)
-		if (!x@ptr$set_sourcenames(value)) {
-			error("set_varnames,SpatRaster", "cannot set these names")
-		}
-		invisible(TRUE)
-	}
-)
 
 setMethod("longnames", signature(x="SpatRasterDataset"), 
 	function(x) { 
@@ -203,17 +186,6 @@ setMethod("longnames<-", signature(x="SpatRasterDataset"),
 )
 
 
-setMethod("set_longnames", signature(x="SpatRasterDataset"), 
-	function(x, value, index=1:nlyr(x))  {
-		value <- .names_check(x, value, index, FALSE)
-		if (!x@ptr$long_names_long(value)) {
-			error("set_longnames,SpatRasterDataset", "cannot set these names")
-		}
-		invisible(TRUE)
-	}
-)
-
-
 setMethod("longnames<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		x@ptr <- x@ptr$deepcopy()
@@ -225,12 +197,3 @@ setMethod("longnames<-", signature(x="SpatRaster"),
 	}
 )
 
-setMethod("set_longnames", signature(x="SpatRaster"), 
-	function(x, value, index=1:nlyr(x))  {
-		value <- .names_check(x, value, index, FALSE)
-		if (!x@ptr$set_sourcenames_long(value)) {
-			error("set_longnames,SpatRaster", "cannot set these names")
-		}
-		invisible(TRUE)
-	}
-)

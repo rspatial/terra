@@ -1,13 +1,13 @@
-\name{simplify}
+\name{simplifyGeom}
 
 \docType{methods}
 
-\alias{simplify}
+\alias{simplifyGeom}
 
-\alias{simplify,SpatVector-method}
+\alias{simplifyGeom,SpatVector-method}
 
 \title{ 
-Simplify geometries
+simplifyGeom geometries
 }
 
 \description{
@@ -15,7 +15,7 @@ Reduce the number of nodes used to represent geometries.
 }
 
 \usage{
-\S4method{simplify}{SpatVector}(x, tolerance=0.1)
+\S4method{simplifyGeom}{SpatVector}(x, tolerance=0.1)
 }
 
 \arguments{
@@ -34,11 +34,11 @@ SpatVector
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
-#w <- simplify(v, .02)
-#e <- erase(w)
-#g <- gaps(e)
-#plot(e, lwd=5, border="light gray")
-#polys(g, col="red", border="red")
+w <- simplifyGeom(v, .02)
+e <- erase(w)
+g <- gaps(e)
+plot(e, lwd=5, border="light gray")
+polys(g, col="red", border="red")
 }
 
 

@@ -24,15 +24,19 @@
 \alias{ext,Extent-method}
 \alias{ext,sf-method}
 
-  
+
 \title{Create, get or set a SpatExtent}
 
 \description{
 Get a SpatExtent of a SpatRaster, or coordinates from such an object. Or create a SpatExtent from a vector (length=4; order= xmin, xmax, ymin, ymax)
+
+See \code{\link{set.ext}} to set the extent in place.
 }
 
 \usage{
 \S4method{ext}{SpatRaster}(x)
+
+\S4method{ext}{SpatVector}(x)
 
 \S4method{ext}{numeric}(x, ...)
 

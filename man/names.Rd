@@ -35,7 +35,7 @@ Get or set the names of the layers of a SpatRaster or the attributes of a SpatVe
 
 For a SpatRaster, you can also get/set a variable name or long name (one per data source).
 
-See \code{\link{set_names}} for in-place setting of names.
+See \code{\link{set.names}} for in-place setting of names.
 }
 
 \usage{

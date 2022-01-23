@@ -80,7 +80,7 @@ setMethod("ext<-", signature("SpatRaster", "numeric"),
 	}
 )
 
-setMethod("set_ext", signature("SpatRaster"), 
+setMethod("set.ext", signature("SpatRaster"), 
 	function(x, value) {
 		e <- ext(value)
 		x@ptr$extent <- e@ptr
@@ -90,7 +90,7 @@ setMethod("set_ext", signature("SpatRaster"),
 
 
 setMethod("ext", signature(x="SpatVector"), 
-	function(x, ...) { 
+	function(x) { 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x@ptr$extent()
 		e
@@ -98,7 +98,7 @@ setMethod("ext", signature(x="SpatVector"),
 )
 
 setMethod("ext", signature(x="SpatVectorProxy"), 
-	function(x, ...) { 
+	function(x) { 
 		e <- methods::new("SpatExtent")
 		e@ptr <- x@ptr$v$extent()
 		e
@@ -107,7 +107,7 @@ setMethod("ext", signature(x="SpatVectorProxy"),
 
 
 setMethod("ext", signature(x="Extent"), 
-	function(x, ...) {
+	function(x) {
 		ext(as.vector(x))
 	}
 )

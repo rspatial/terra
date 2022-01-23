@@ -15,7 +15,8 @@ By default all values returned are numeric. This is because a vector or matrix c
 }
 
 \usage{
-\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, nrows=nrow(x), col=1, ncols=ncol(x), na.rm=FALSE, ...)
+\S4method{values}{SpatRaster}(x, mat=TRUE, dataframe=FALSE, row=1, 
+    nrows=nrow(x), col=1, ncols=ncol(x), na.rm=FALSE, ...)
 
 \S4method{values}{SpatVector}(x, ...)
 }

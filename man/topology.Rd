@@ -39,7 +39,7 @@ Vector topology methods
 \arguments{
   \item{x}{SpatVector of lines or polygons}
   \item{y}{SpatVector of lines or polygons to snap to. If \code{NULL} snapping is to the other geometries in \code{x}}
-  \item{tolerance}{numeric. Snapping tolerance (distance between geometries) or simplifying tolerance (distance between nodes)}
+  \item{tolerance}{numeric. Snapping tolerance (distance between geometries)}
   \item{digits}{numeric. Number of digits used in rounding. Ignored if < 0}
 } 
 
@@ -48,7 +48,7 @@ SpatVector
 }
 
 
-\seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{simplify}}}
+\seealso{\code{\link{sharedPaths}}, \code{\link{gaps}}, \code{\link{simplifyGeom}}}
 
 
 

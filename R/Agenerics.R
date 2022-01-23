@@ -2,10 +2,10 @@
 
 if (!isGeneric("query")) {setGeneric("query", function(x, ...) standardGeneric("query"))}
 
-if (!isGeneric("set_ext")) {setGeneric("set_ext", function(x, ...) standardGeneric("set_ext"))}
-if (!isGeneric("set_names")) {setGeneric("set_names", function(x, ...) standardGeneric("set_names"))}
-if (!isGeneric("set_varnames")) {setGeneric("set_varnames", function(x, ...) standardGeneric("set_varnames"))}
-if (!isGeneric("set_longnames")) {setGeneric("set_longnames", function(x, ...) standardGeneric("set_longnames"))}
+if (!isGeneric("set.values")) {setGeneric("set.values", function(x, ...) standardGeneric("set.values"))}
+if (!isGeneric("set.ext")) {setGeneric("set.ext", function(x, ...) standardGeneric("set.ext"))}
+if (!isGeneric("set.names")) {setGeneric("set.names", function(x, ...) standardGeneric("set.names"))}
+
 
 if (!isGeneric("math")) { setGeneric("math", function(x, ...) standardGeneric("math")) }
 
@@ -23,7 +23,7 @@ if (!isGeneric("focalCor")) { setGeneric("focalCor", function(x, ...) standardGe
 
 if (!isGeneric("clearance")) {setGeneric("clearance", function(x, ...) standardGeneric("clearance"))}
 if (!isGeneric("width")) {setGeneric("width", function(x, ...) standardGeneric("width"))}
-if (!isGeneric("simplify")) {setGeneric("simplify", function(x, ...) standardGeneric("simplify"))}
+if (!isGeneric("simplifyGeom")) {setGeneric("simplifyGeom", function(x, ...) standardGeneric("simplifyGeom"))}
 if (!isGeneric("mergeLines")) {setGeneric("mergeLines", function(x, ...) standardGeneric("mergeLines"))}
 if (!isGeneric("mergeTime")) {setGeneric("mergeTime", function(x, ...) standardGeneric("mergeTime"))}
 if (!isGeneric("fillTime")) {setGeneric("fillTime", function(x, ...) standardGeneric("fillTime"))}

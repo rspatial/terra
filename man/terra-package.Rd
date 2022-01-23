@@ -399,7 +399,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{width}} \tab the minimum diameter of the geometries \cr
   \code{\link{clearance}} \tab the minimum clearance of the geometries \cr
   \code{\link{sharedPaths}} \tab shared paths (arcs) between line or polygon geometries\cr
-  \code{\link{simplify}} \tab simplify geometries\cr
+  \code{\link{simplifyGeom}} \tab simplify geometries\cr
   \code{\link{gaps}} \tab find gaps between polygon geometries \cr
   \code{\link{fillHoles}} \tab get or remove the polygon holes\cr
   \code{\link{makeNodes}} \tab create nodes on lines \cr

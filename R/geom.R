@@ -428,11 +428,11 @@ setMethod("removeDupNodes", signature(x="SpatVector"),
 )
 
 
-setMethod("simplify", signature(x="SpatVector"), 
+setMethod("simplifyGeom", signature(x="SpatVector"), 
 	function(x, tolerance=0.1) {
 		preserveTopology <- TRUE
 		x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
-		messages(x, "simplify")
+		messages(x, "simplifyGeom")
 	}
 )
 
