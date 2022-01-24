@@ -325,7 +325,7 @@ setMethod("vect", signature(x="list"),
 
 
 setMethod("query", signature(x="SpatVectorProxy"), 
-	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL) {
+	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, proxy=FALSE) {
 		f <- x@ptr$v$source
 		layer <- x@ptr$v$layer
 		qy <- ""
@@ -365,7 +365,7 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			qy <- paste(qy, "LIMIT", n)		
 		}
 		
-		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
+		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", proxy[1])
 	}
 )
 

@@ -293,7 +293,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 	// use a single transaction as in sf
 	// makes a big difference for gpkg by avoiding many INSERTs	
-	bool can_do_transaction = (poDS->TestCapability(ODsCTransactions) == TRUE);
+	bool can_do_transaction = poDS->TestCapability(ODsCTransactions); // == TRUE);
 	bool transaction = false;
 	if (can_do_transaction) { 
 		transaction = (poDS->StartTransaction() == OGRERR_NONE); 
@@ -302,6 +302,9 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			return poDS; 
 		} 
 	}
+
+	// chunks?
+	// size_t nGroupTransactions = 64000;
 
 	for (size_t i=0; i<ngeoms; i++) {
 
