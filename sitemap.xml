@@ -283,6 +283,9 @@
     <loc>/reference/init.html</loc>
   </url>
   <url>
+    <loc>/reference/inplace.html</loc>
+  </url>
+  <url>
     <loc>/reference/inset.html</loc>
   </url>
   <url>
@@ -458,9 +461,6 @@
   </url>
   <url>
     <loc>/reference/setValues.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_names.html</loc>
   </url>
   <url>
     <loc>/reference/shade.html</loc>

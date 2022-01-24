@@ -295,7 +295,7 @@
         </td>
         <td><p>Get the expanse (area) of individual polygons or for all (summed) raster cells</p></td>
       </tr><tr><td>
-          <p><code><a href="ext.html">ext(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="ext.html">ext(<i>&lt;numeric&gt;</i>)</a></code> <code><a href="ext.html">`ext&lt;-`(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="ext.html">`ext&lt;-`(<i>&lt;SpatRaster&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="ext.html">`$`(<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="ext.html">`$&lt;-`(<i>&lt;SpatExtent&gt;</i>)</a></code> </p>
+          <p><code><a href="ext.html">ext(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="ext.html">ext(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="ext.html">ext(<i>&lt;numeric&gt;</i>)</a></code> <code><a href="ext.html">`ext&lt;-`(<i>&lt;SpatRaster&gt;</i>,<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="ext.html">`ext&lt;-`(<i>&lt;SpatRaster&gt;</i>,<i>&lt;numeric&gt;</i>)</a></code> <code><a href="ext.html">`$`(<i>&lt;SpatExtent&gt;</i>)</a></code> <code><a href="ext.html">`$&lt;-`(<i>&lt;SpatExtent&gt;</i>)</a></code> </p>
         </td>
         <td><p>Create, get or set a SpatExtent</p></td>
       </tr><tr><td>
@@ -307,7 +307,7 @@
         </td>
         <td><p>Extract values from a SpatRaster</p></td>
       </tr><tr><td>
-          <p><code><a href="factors.html">is.factor(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">levels(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">`levels&lt;-`(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">cats(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">setCats(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
+          <p><code><a href="factors.html">is.factor(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">levels(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">`levels&lt;-`(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">cats(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="factors.html">categories(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Categorical rasters</p></td>
       </tr><tr><td>
@@ -402,6 +402,10 @@
           <p><code><a href="init.html">init(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
         <td><p>Initialize a SpatRaster with values</p></td>
+      </tr><tr><td>
+          <p><code><a href="inplace.html">set.names(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.names(<i>&lt;SpatRasterDataset&gt;</i>)</a></code> <code><a href="inplace.html">set.names(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.ext(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.ext(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inplace.html">set.values(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inplace.html">set.cats(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Change values in-place</p></td>
       </tr><tr><td>
           <p><code><a href="inset.html">inset(<i>&lt;SpatVector&gt;</i>)</a></code> <code><a href="inset.html">inset(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="inset.html">inext(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
@@ -639,10 +643,6 @@
         </td>
         <td><p>Set the values of raster cells or of geometry attributes</p></td>
       </tr><tr><td>
-          <p><code><a href="set_names.html">set_names(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="set_names.html">set_varnames(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="set_names.html">set_longnames(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="set_names.html">set_names(<i>&lt;SpatRasterDataset&gt;</i>)</a></code> <code><a href="set_names.html">set_names(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Change names in-place</p></td>
-      </tr><tr><td>
           <p><code><a href="shade.html">shade()</a></code> </p>
         </td>
         <td><p>Hill shading</p></td>
@@ -655,9 +655,9 @@
         </td>
         <td><p>Shift</p></td>
       </tr><tr><td>
-          <p><code><a href="simplify.html">simplify(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
+          <p><code><a href="simplify.html">simplifyGeom(<i>&lt;SpatVector&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Simplify geometries</p></td>
+        <td><p>simplifyGeom geometries</p></td>
       </tr><tr><td>
           <p><code><a href="sources.html">sources(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="sources.html">hasValues(<i>&lt;SpatRaster&gt;</i>)</a></code> <code><a href="sources.html">inMemory(<i>&lt;SpatRaster&gt;</i>)</a></code> </p>
         </td>
