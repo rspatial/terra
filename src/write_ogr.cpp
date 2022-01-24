@@ -291,6 +291,8 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 	//unsigned r = 0;
 
+	// use a single transaction as in sf
+	// makes a big difference for gpkg by avoiding many INSERTs	
 	bool can_do_transaction = (poDS->TestCapability(ODsCTransactions) == TRUE);
 	bool transaction = false;
 	if (can_do_transaction) { 
