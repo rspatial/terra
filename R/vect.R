@@ -5,6 +5,17 @@
 #	}
 #)
 
+character_crs <- function(crs, caller="") {
+	if (is.na(crs)) {
+		""
+	} else if (!inherits(crs, "character")) {
+		warn(caller, "argument 'crs' should be a character value")
+		as.character(crs)
+	} else {
+		crs
+	}
+}
+
 
 setMethod("as.vector", signature(x="SpatVector"), 
 	function(x, mode="any") {
@@ -122,10 +133,11 @@ setMethod("vect", signature(x="matrix"),
 		type <- tolower(type)
 		type <- match.arg(tolower(type), c("points", "lines", "polygons"))
 		stopifnot(NCOL(x) > 1)
-
+		
+		crs <- character_crs(crs, "vect")
 		p <- methods::new("SpatVector")
 		p@ptr <- SpatVector$new()
-		crs(p) <- ifelse(is.na(crs), "", as.character(crs))
+		crs(p) <- crs 
 
 		nr <- nrow(x)
 		if (nr == 0) {
@@ -281,11 +293,13 @@ setMethod("$<-", "SpatVector",
 
 
 
+
 setMethod("vect", signature(x="data.frame"), 
 	function(x, geom=c("lon", "lat"), crs=NA) {
 		if (!all(geom %in% names(x))) {
 			error("vect", "the variable name(s) in argument `geom` are not in `x`")
 		}
+		crs <- character_crs(crs, "vect")
 		if (length(geom) == 2) {
 			geom <- match(geom[1:2], names(x))
 			cls <- sapply(x[, geom], class)
@@ -299,7 +313,7 @@ setMethod("vect", signature(x="data.frame"),
 			p@ptr <- SpatVector$new()
 			x <- .makeSpatDF(x)
 			
-			p@ptr$setPointsDF(x, geom-1, ifelse(is.na(crs), "", crs))
+			p@ptr$setPointsDF(x, geom-1, crs)
 			messages(p, "vect")
 			return(p)
 		} else if (length(geom) == 1) {
