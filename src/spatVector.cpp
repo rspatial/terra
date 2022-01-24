@@ -772,8 +772,19 @@ void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::s
 		setError("coordinates must be numeric");
 		return;
 	}
+	if (geo[0] == geo[1]) {
+		setError("x and y coordinates are the same variable");
+		return;			
+	}
 	setPointsGeometry(x.dv[x.iplace[geo[0]]], x.dv[x.iplace[geo[1]]]);
 	setSRS( {crs});
+	if (geo[0] > geo[1]) {
+		x.remove_column(geo[0]);
+		x.remove_column(geo[1]);
+	} else {
+		x.remove_column(geo[1]);
+		x.remove_column(geo[0]);
+	}
 	df = x;
 }
 
