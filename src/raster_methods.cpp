@@ -3025,8 +3025,11 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 					s.push_back(double_to_string(rcl[0][i-1]) + " – " + double_to_string(rcl[0][i]));
 				}
 			}
+			std::vector<long> u(s.size());
+			std::iota(u.begin(), u.end(), 0);
+			std::vector<std::string> nms = getNames();
 			for (size_t i=0; i<out.nlyr(); i++) {
-				out.setLabels(i, s);
+				out.setLabels(i, u, s, nms[i]);
 			}
 		}
 		nr = rcl[0].size();

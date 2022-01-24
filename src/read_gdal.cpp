@@ -229,7 +229,7 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 	SpatVector v, fvct;
 	std::vector<double> fext;
 
-	v.read(filename, "", "", fext, fvct, true);
+	v.read(filename, "", "", fext, fvct, false);
 	if (v.df.nrow() == 0) return false;
 
 
@@ -257,7 +257,6 @@ bool GetVAT(std::string filename, SpatCategories &vat) {
 				vat.index = 2;
 			}
 		}
-		vat.vat = true;
 		return true;
 	}
 	return false;
@@ -418,18 +417,25 @@ SpatDataFrame GetColFromRAT(SpatDataFrame &rat) {
 */
 
 SpatCategories GetCategories(char **pCat, std::string name) {
-	size_t n = CSLCount(pCat);
+	long n = CSLCount(pCat);
+	
 	SpatCategories scat;
 
-	std::vector<long> id(n);
-	std::iota(id.begin(), id.end(), 0);
-	scat.d.add_column(id, "value");
+	std::vector<long> id;
+	std::vector<std::string> nms;
+	id.reserve(n);
+	nms.reserve(n);
 
-	std::vector<std::string> nms(n);
-	for (size_t i = 0; i<n; i++) {
+	for (long i = 0; i<n; i++) {
 		const char *field = CSLGetField(pCat, i);
-		nms[i] = field;
+		std::string s = field;
+		if (s != "") {
+			id.push_back(i);
+			nms.push_back(field);
+		}
 	}
+
+	scat.d.add_column(id, "value");
 	name = name == "" ? "category" : name; 
 	scat.d.add_column(nms, name);
 	scat.index = 1;
@@ -834,7 +840,6 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			GDALRasterAttributeTable *rat = poBand->GetDefaultRAT();
 			if( rat != NULL ) {
 				crat = GetRAT(rat);
-				crat.vat = true;
 				if (crat.d.nrow() > 0) {
 					if (gdrv == "AIG") {
 						std::vector<std::string> catnms = crat.d.get_names();

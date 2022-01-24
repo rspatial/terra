@@ -28,6 +28,8 @@
 	d[d=="NA"] <- NA
 	s <- which(sapply(d, class) == "character")
 	for (i in s) Encoding(d[[i]]) <- "UTF-8"
+	ints <- which(x$itype == 1)
+	for (i in ints) d[[i]] <- as.integer(d[[i]])
 	d
 }
 

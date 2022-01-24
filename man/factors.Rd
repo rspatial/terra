@@ -14,6 +14,8 @@
 \alias{cats,SpatRaster-method}
 \alias{setCats}
 \alias{setCats,SpatRaster-method}
+\alias{categories}
+\alias{categories,SpatRaster-method}
   
   
 \title{Categorical rasters}
@@ -24,7 +26,7 @@ A SpatRaster layer can be a categorical variable (factor). Like \code{\link{fact
 
 The categories can be inspected with \code{levels} and \code{cats}. With \code{levels<-} you can set the categories of the first layer by providing a vector of labels (the first value will be for cells with value 0, the second for 1, etc). You can also provide a \code{data.frame} that must have two or more columns, the first one identifying the cell values and the other column(s) providing the category labels. To set categories for multiple layers you can provide \code{levels<-} with a list with one element for each layer. 
 
-With \code{setCats} you can set it for any layer and you can also set the 'active" category if there are multiple categories. 
+With \code{categories} you can set it for any layer and you can also set the "active" category if there are multiple categories. 
 }
 
 \usage{
@@ -36,7 +38,7 @@ With \code{setCats} you can set it for any layer and you can also set the 'activ
 
 \S4method{cats}{SpatRaster}(x, layer)
 
-\S4method{setCats}{SpatRaster}(x, layer=1, value, index)
+\S4method{categories}{SpatRaster}(x, layer=1, value, index)
 }
 
 
@@ -44,7 +46,7 @@ With \code{setCats} you can set it for any layer and you can also set the 'activ
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
   \item{value}{a data.frame (ID, category) or vector with category names}
-  \item{index}{positive integer, indicating the column in \code{data.frame} \code{value} to be used as the category, skipping the first column with the ID.}
+  \item{index}{positive integer, indicating the column in \code{data.frame} \code{value} to be used as the (active) category, (not counting the first column with the cell values)}
 }  
 
 

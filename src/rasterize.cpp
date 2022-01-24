@@ -250,7 +250,10 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 				values[i] = f.v[i];
 			}
 			if (!add && !update) {
-				out.setLabels(0, f.labels);
+				std::vector<long> u(f.labels.size());
+				std::iota(u.begin(), u.end(), 0);
+				std::vector<std::string> nms = getNames();
+				out.setLabels(0, u, f.labels, field);
 			}
 			if (add) {
 				add = false;

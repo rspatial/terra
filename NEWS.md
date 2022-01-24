@@ -15,6 +15,8 @@
 ## enhancements 
 
 - `distance`, `gridDistance`, `direction` and `patches` now process all layers of the input SpatRaster. [#503](https://github.com/rspatial/terra/issues/503) by Chris Haak
+- consistant copy-on-modify behavior in `()<-` methods. in-place updating available with `set.` methods such as `set.names` and `set.values`. [#493](https://github.com/rspatial/terra/issues/493) by Jean Romain
+
 
 ## new
 
@@ -31,7 +33,7 @@ To avoid name clashes with tidyverse
 
 - arrow -> north
 - src -> sprc
-
+- simplify -> simplifyGeom
 
 # version 1.5-12
 

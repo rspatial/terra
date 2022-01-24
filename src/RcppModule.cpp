@@ -259,7 +259,6 @@ RCPP_MODULE(spat){
 		.constructor()
 		.field_readonly("df", &SpatCategories::d, "d")
 		.field("index", &SpatCategories::index, "index")
-		.field("vat", &SpatCategories::vat, "vat")
 	;
 
 

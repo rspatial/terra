@@ -189,7 +189,7 @@ setMethod("setValues", signature("SpatRaster"),
 		y <- messages(y, "setValues")
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
-				setCats(y, i, levs, 2)
+				set.cats(y, i, levs, 2)
 			}
 		}
 		if (set_coltab) {

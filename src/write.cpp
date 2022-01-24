@@ -21,7 +21,6 @@
 #include "math_utils.h"
 
 
-
 bool SpatRaster::writeValuesMem(std::vector<double> &vals, size_t startrow, size_t nrows) {
 
 	if (vals.size() == size()) {

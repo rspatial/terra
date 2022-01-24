@@ -135,8 +135,15 @@ bool can_write(std::string filename, bool overwrite, std::string &msg) {
 				msg = ("cannot overwrite existing file");
 				return false;
 			}
-			std::string aux = filename + ".aux.xml";
-			remove(aux.c_str());
+			//std::string aux = filename + ".aux.xml";
+			//remove(aux.c_str());
+			std::vector<std::string> exts = {".vat.dbf", ".vat.cpg", ".json"};
+			for (size_t i=0; i<exts.size(); i++) {
+				std::string f = filename + exts[i];
+				if (file_exists(f)) {
+					remove(f.c_str());
+				}
+			}		
 		} else {
 			msg = "file exists";
 			return false;

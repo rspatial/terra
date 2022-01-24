@@ -55,6 +55,10 @@ class SpatDataFrame {
 		std::vector<long> getI(unsigned i);
 		std::vector<std::string> getS(unsigned i);
 
+		std::vector<std::string> as_string(size_t v);
+		std::vector<long> as_long(size_t v);
+		std::vector<double> as_double(size_t v);
+
 		double getDvalue(unsigned i, unsigned j);
 		long getIvalue(unsigned i, unsigned j);
 		std::string getSvalue(unsigned i, unsigned j);

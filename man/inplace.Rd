@@ -7,6 +7,9 @@
 \alias{set.values}
 \alias{set.values,SpatRaster-method}
 
+\alias{set.cats}
+\alias{set.cats,SpatRaster-method}
+
 \alias{set.names}
 \alias{set.names,SpatRaster-method}
 \alias{set.names,SpatRasterDataset-method}
@@ -21,6 +24,7 @@ These "in-place" replacement methods assign new value to an object without makin
 \code{set.names} is the in-place replacement version of \code{\link{names<-}}. 
 \code{set.ext} is the in-place replacement version of \code{\link{ext<-}}
 \code{set.values} is the in-place replacement version of \code{\link{[<-}}
+\code{set.cats} is the in-place replacement version of \code{\link{categories}}
 }
 
 \usage{
@@ -32,16 +36,20 @@ These "in-place" replacement methods assign new value to an object without makin
 \S4method{set.ext}{SpatVector}(x, value)
 
 \S4method{set.values}{SpatRaster}(x, cells, values)
+
+\S4method{set.cats}{SpatRaster}(x, layer=1, value, index)
 }
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{value}{character}
-  \item{index}{numeric, to select the layer to assign a name to}
+  \item{value}{character (\code{set.names}). For \code{set.cats}: a data.frame with columns (value, category) or vector with category names}
+  \item{index}{positive integer indicating layer(s) to assign a name to, or the index to select the active category}
   \item{validate}{logical. Make names valid and/or unique?}
 
   \item{cells}{cell numbers}
   \item{values}{replacement values}
+
+  \item{layer}{positive integer indicating to which layer to you want to assign these categories}
 }
 
 

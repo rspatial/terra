@@ -577,3 +577,69 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 	return idx;
 }
 
+
+std::vector<double> SpatDataFrame::as_double(size_t v) {
+	std::vector<double> out;
+	if (v >= ncol()) {
+		setError("attempting to read a column that does not exist");
+		return out;
+	}
+	if (itype[v] > 1) {
+		setError("as_double only available for long and double");
+		return out;
+	}
+	size_t j = iplace[v];
+	if (itype[v] == 0) return dv[j];
+//	if (itype[v] == 1) {
+	out.reserve(nrow());
+	for (size_t i=0; i<nrow(); i++){
+		out[i] = (double)iv[j][i];			
+	}	
+	return out;
+}	
+	
+
+std::vector<long> SpatDataFrame::as_long(size_t v) {
+	std::vector<long> out;
+	if (v >= ncol()) {
+		setError("attempting to read a column that does not exist");
+		return out;
+	}
+	if (itype[v] > 1) {
+		setError("as_long only available for long and double");
+		return out;
+	}
+	size_t j = iplace[v];
+	if (itype[v] == 1) return iv[j];
+//	if (itype[v] == 0) {
+	out.reserve(nrow());
+	for (size_t i=0; i<nrow(); i++){
+		out.push_back( (long)dv[j][i] );
+	}	
+	return out;
+}	
+	
+
+std::vector<std::string> SpatDataFrame::as_string(size_t v) {
+	std::vector<std::string> out;
+	if (v >= ncol()) {
+		setError("attempting to read a column that does not exist");
+		return out;
+	}
+	std::string dt = get_datatype(v);
+	size_t j = iplace[v];
+
+	if (dt == "string") return sv[j];
+	out.reserve(nrow());
+	if (dt == "double") {
+		for (size_t i=0; i<nrow(); i++) {
+			out.push_back(double_to_string(dv[j][i]));
+		}
+	} else if (dt == "long") {
+		for (size_t i=0; i<nrow(); i++) {
+			out.push_back(std::to_string(iv[j][i]));
+		}
+	}
+	return out;
+}
+
