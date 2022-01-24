@@ -45,8 +45,12 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			error("app", "additional arguments cannot be a SpatRaster")
 		}
 	}
-# figure out the shape of the output by testing with one rowz
-	v <- readValues(x, round(0.51*nrow(x)), 1, 1, nc, mat=TRUE)
+# figure out the shape of the output by testing with 5 cells
+	teststart <- max(1, 0.5 * nc - 6)
+	testend <- min(teststart + 12, nc)
+	ntest <- 1 + testend - teststart 
+	
+	v <- readValues(x, round(0.51*nrow(x)), 1, teststart, testend, mat=TRUE)
 	usefun <- FALSE
 	if (nl==1) {
 		r <- fun(v, ...)
@@ -72,12 +76,12 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	}
 	trans <- FALSE
 	if (NCOL(r) > 1) {
-		#? if ((ncol(r) %% nc) == 0) {
-		if (ncol(r) == nc) {
+		#? if ((ncol(r) %% ntest) == 0) {
+		if (ncol(r) == ntest) {
 			nlyr(out) <- nrow(r)
 			trans <- TRUE
 			nms <- rownames(r)
-		} else if (nrow(r) == nc) {
+		} else if (nrow(r) == ntest) {
 			nlyr(out) <- ncol(r)
 			nms <- colnames(r)
 		} else {
@@ -87,10 +91,10 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			wopt$names <- nms
 		}
 	} else {
-		if ((length(r) %% nc) != 0) {
+		if ((length(r) %% ntest) != 0) {
 			error("app", "the number of values returned by 'fun' is not appropriate")
 		} else {
-			nlyr(out) <- length(r) / nc
+			nlyr(out) <- length(r) / ntest
 		}
 	}
 
