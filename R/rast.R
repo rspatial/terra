@@ -21,7 +21,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 				crs <- ""
 			}
 		} else {
-			crs <- as.character(crs)
+			crs <- character_crs(crs, "rast")
 		}
 		#check_proj4_datum(crs)
 
@@ -288,6 +288,7 @@ setMethod("rast", signature(x="array"),
 		} else {
 			e <- c(0, dims[2], 0, dims[1])
 		}
+		crs <- character_crs(crs, "rast")
 		r@ptr <- SpatRaster$new(dims, e, crs)
 		values(r) <- x
 		messages(r, "rast")

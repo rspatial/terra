@@ -1,4 +1,4 @@
-# version 1.5-14
+# version 1.5-15
 
 ## bug fixes
 
@@ -35,6 +35,10 @@ To avoid name clashes with tidyverse
 - arrow -> north
 - src -> sprc
 - simplify -> simplifyGeom
+
+For consistency 
+
+- setCats -> set.cats
 
 
 # version 1.5-12

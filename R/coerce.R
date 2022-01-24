@@ -218,6 +218,7 @@ setMethod("as.lines", signature(x="SpatRaster"),
 setMethod("as.polygons", signature(x="SpatExtent"), 
 	function(x, crs="") {
 		p <- methods::new("SpatVector")
+		crs <- character_crs(crs, "as.polygons")
 		p@ptr <- SpatVector$new(x@ptr, crs)
 		messages(p, "as.polygons")
 	}
@@ -225,6 +226,7 @@ setMethod("as.polygons", signature(x="SpatExtent"),
 
 setMethod("as.lines", signature(x="SpatExtent"), 
 	function(x, crs="") {
+		crs <- character_crs(crs, "lines")
 		as.lines(as.polygons(x, crs))
 	}
 )
