@@ -49,14 +49,15 @@ setMethod ("coltab<-" , "SpatRaster",
 			value <- cbind(values=(1:nrow(value))-1, value)
 		}
 		#value <- value[1:256,]
-		for (i in 2:ncol(value)) {
-			value[is.na(value), i] <- 255
-			value[, i] <- as.integer(clamp(value[, i], 0, 255))
-		} 
 		if (ncol(value) == 4) {
 			value <- cbind(value, alpha=255)
 		}
-
+		value[, 1] <- as.integer(value[, 1])
+		for (i in 2:ncol(value)) {
+			value[, i] <- as.integer(clamp(value[, i], 0, 255))
+		} 
+		value[is.na(value)] <- 255
+		
 		d <- .makeSpatDF(value)
 		if (x@ptr$setColors(layer, d)) {
 			return(x)

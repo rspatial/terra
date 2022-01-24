@@ -88,10 +88,8 @@ bool SpatRaster::write_aux_json(std::string filename) {
 
 bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 
-	GDALRasterAttributeTable *pRat = poBand->GetDefaultRAT();
-	if (pRat == NULL) {
-		return false;
-	}
+//	GDALRasterAttributeTable *pRat = poBand->GetDefaultRAT();
+	GDALRasterAttributeTable *pRat = new GDALDefaultRasterAttributeTable();
 	size_t nr = d.nrow();
 
 	for (size_t i=0; i<d.ncol(); i++) {
@@ -110,8 +108,6 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 			}
 		}
 	}
-	
-	return false;
 
 	pRat->SetRowCount(nr);
 	for (size_t i=0; i<d.ncol(); i++) {
@@ -133,9 +129,9 @@ bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 		}
 	}
 
-	//CPLErr err = poBand->SetDefaultRAT(pRat);
-	//return (err == CE_None);
-	return true;
+	CPLErr err = poBand->SetDefaultRAT(pRat);
+	delete pRat;
+	return (err == CE_None);
 }
 
 bool is_rat(SpatDataFrame &d) {
@@ -227,7 +223,7 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 			col.c1 = 255;
 			col.c2 = 255;
 			col.c3 = 255;
-			col.c4 = 0;
+			col.c4 = 255;
 		} else {
 			col.c1 = (short)s.iv[0][j];
 			col.c2 = (short)s.iv[1][j];
@@ -378,15 +374,22 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	std::vector<bool> hasCats = hasCategories();
 	std::vector<SpatDataFrame> ct = getColors();
 	bool cat = hasCats[0];
+
 	bool rat = cat ? is_rat(source[0].cats[0].d) : false;
 	if (rat) {
-		datatype = "INT4S";
+		if (hasCT[0]) { 
+			datatype = "INT1U";
+		} else {
+			datatype = "INT4S";
+		}
+/*
 		hasCats[0] = false;
 		hasCT[0] = false;
 		std::fill(hasCT.begin(), hasCT.end(), false);
 		SpatCategories cats = source[0].cats[0];
 		SpatOptions sopt(opt);
 		cats.d.write_dbf(filename, true, sopt);
+*/		
 	} else if (hasCT[0] || cat) { 
 		datatype = "INT1U";
 	} else if (datatype != "INT1U") {
@@ -512,22 +515,27 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 
 		poBand = poDS->GetRasterBand(i+1);
 
-		if (hasCT[i]) {
+		if ((i==0) && hasCT[i]) {
 			if (!setCT(poBand, ct[i])) {
 				addWarning("could not write the color table");
 			}
 		}
 		if (hasCats[i]) {
-			SpatCategories lyrcats = getLayerCategories(i);
-			if (lyrcats.d.ncol() == 2) {
-				std::vector<std::string> labs = getLabels(i);
-				std::vector<long> ind = lyrcats.d.as_long(i);
-				if (!setBandCategories(poBand, ind, labs)) {
-					addWarning("could not write categories");
+			if (is_rat(source[0].cats[i].d)) {
+				if (!setRat(poBand, source[0].cats[i].d)) {
+					addWarning("could not write attribute table");
+				}
+			} else {	
+				SpatCategories lyrcats = getLayerCategories(i);
+				if (lyrcats.d.ncol() == 2) {
+					std::vector<std::string> labs = getLabels(i);
+					std::vector<long> ind = lyrcats.d.as_long(i);
+					if (!setBandCategories(poBand, ind, labs)) {
+						addWarning("could not write categories");
+					}
 				}
 			}
 		}
-
 		/*
 		if (isncdf) {
 			std::string opt = "NETCDF_VARNAME";
