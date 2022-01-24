@@ -223,7 +223,7 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 			col.c1 = 255;
 			col.c2 = 255;
 			col.c3 = 255;
-			col.c4 = 255;
+			col.c4 = 0;
 		} else {
 			col.c1 = (short)s.iv[0][j];
 			col.c2 = (short)s.iv[1][j];
@@ -529,7 +529,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 				SpatCategories lyrcats = getLayerCategories(i);
 				if (lyrcats.d.ncol() == 2) {
 					std::vector<std::string> labs = getLabels(i);
-					std::vector<long> ind = lyrcats.d.as_long(i);
+					std::vector<long> ind = lyrcats.d.as_long(0);
 					if (!setBandCategories(poBand, ind, labs)) {
 						addWarning("could not write categories");
 					}
