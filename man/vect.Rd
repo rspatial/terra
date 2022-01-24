@@ -50,7 +50,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 \item{type}{character. Geometry type. Must be "points", "lines", or "polygons"}
 \item{atts}{data.frame with the attributes. The number of rows must match the number of geometrical elements}
 \item{crs}{character. The coordinate reference system in one of the following formats: WKT/WKT2, <authority>:<code>, or PROJ-string notation (see \code{\link{crs}})}
-\item{proxy}{logical. If \code{TRUE} a SpatRasterProxy is returned}
+\item{proxy}{logical. If \code{TRUE} a SpatVectorProxy is returned}
 \item{geom}{the field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)}
 }
 
