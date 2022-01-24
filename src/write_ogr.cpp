@@ -291,6 +291,16 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 	//unsigned r = 0;
 
+	bool can_do_transaction = (poDS->TestCapability(ODsCTransactions) == TRUE);
+	bool transaction = false;
+	if (can_do_transaction) { 
+		transaction = (poDS->StartTransaction() == OGRERR_NONE); 
+		if (! transaction) { 
+			setError("transaction failed");
+			return poDS; 
+		} 
+	}
+
 	for (size_t i=0; i<ngeoms; i++) {
 
 		OGRFeature *poFeature;
@@ -309,24 +319,21 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 // points -- also need to do multi-points
 		OGRPoint pt;
 		if (wkb == wkbPoint) {
-			SpatGeom g = getGeom(i);
-			if (!std::isnan(g.parts[0].x[0])) {
-				pt.setX( g.parts[0].x[0] );
-				pt.setY( g.parts[0].y[0] );
+			if (!std::isnan(geoms[i].parts[0].x[0])) {
+				pt.setX( geoms[i].parts[0].x[0] );
+				pt.setY( geoms[i].parts[0].y[0] );
 			}
 			poFeature->SetGeometry( &pt );
 
 // lines
 		} else if (wkb == wkbMultiLineString) {
-			SpatGeom g = getGeom(i);
 			OGRMultiLineString poGeom;
-			for (size_t j=0; j<g.size(); j++) {
+			for (size_t j=0; j<geoms[i].size(); j++) {
 				OGRLineString poLine = OGRLineString();
-				SpatPart p = g.getPart(j);
-				for (size_t k=0; k<p.size(); k++) {
-					if (!std::isnan(p.x[k])) {
-						pt.setX(p.x[k]);
-						pt.setY(p.y[k]);
+				for (size_t k=0; k<geoms[i].parts[j].size(); k++) {
+					if (!std::isnan(geoms[i].parts[j].x[k])) {
+						pt.setX(geoms[i].parts[j].x[k]);
+						pt.setY(geoms[i].parts[j].y[k]);
 						poLine.setPoint(k, &pt);
 					}
 				}
@@ -396,8 +403,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
         OGRFeature::DestroyFeature( poFeature );
     }
-    //GDALClose( poDS );
-	//return true;
+	if (transaction && poDS->CommitTransaction() != OGRERR_NONE) {
+		poDS->RollbackTransaction();
+		setError("transaction commit failed");
+	} 
+
 	return poDS;
 }
 
