@@ -139,6 +139,10 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 
 setMethod("set.values", signature(x="SpatRaster"), 
 	function(x, cells, values)  {
+		if (missing(cells) && missing(values)) {
+			x@ptr$readAll()
+			return(invisible(TRUE));
+		}
 		bylyr = FALSE
 		if (!is.null(dim(values))) {
 			stopifnot(ncol(values) == nlyr(x))
