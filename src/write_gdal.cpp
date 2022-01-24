@@ -190,18 +190,19 @@ bool setBandCategories(GDALRasterBand *poBand, std::vector<long> value, std::vec
 
 bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 
-	if (d.ncol() < 4) return false;
+	if (d.ncol() < 5) return false;
 	if (d.itype[0] != 1) return false;
 	if (d.itype[1] != 1) return false;
 	if (d.itype[2] != 1) return false;
 	if (d.itype[3] != 1) return false;
+	if (d.itype[4] != 1) return false;
 	
 	long dmin = vmin(d.iv[0], true);
 	long dmax = vmax(d.iv[0], true);
 	if (dmin < 0 || dmax > 255) {
 		return false;
 	}
-	
+
 	SpatDataFrame s;
 	s.add_column(1, "red");
 	s.add_column(1, "green");
@@ -222,16 +223,16 @@ bool setCT(GDALRasterBand *poBand, SpatDataFrame &d) {
 	GDALColorTable *poCT = new GDALColorTable(GPI_RGB);
 	GDALColorEntry col;
 	for (size_t j=0; j< s.nrow(); j++) {
-		if (s.iv[4][j] == 0) { // maintain transparency in gtiff
+		if (s.iv[3][j] == 0) { // maintain transparency in gtiff
 			col.c1 = 255;
 			col.c2 = 255;
 			col.c3 = 255;
 			col.c4 = 0;
 		} else {
-			col.c1 = (short)s.iv[1][j];
-			col.c2 = (short)s.iv[2][j];
-			col.c3 = (short)s.iv[3][j];
-			col.c4 = (short)s.iv[4][j];
+			col.c1 = (short)s.iv[0][j];
+			col.c2 = (short)s.iv[1][j];
+			col.c3 = (short)s.iv[2][j];
+			col.c4 = (short)s.iv[3][j];
 		}
 		poCT->SetColorEntry(j, &col);
 	}
