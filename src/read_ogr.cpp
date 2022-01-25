@@ -332,6 +332,21 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 		read_query = query;
 	} else {
 		if (layer == "") {
+			#if GDAL_VERSION_MAJOR <= 2 && GDAL_VERSION_MINOR <= 2
+				// do nothing
+			#else
+			std::vector<std::string> lyrnms;
+			for ( auto&& poLayer: poDS->GetLayers() ) {
+				lyrnms.push_back((std::string)poLayer->GetName());
+			}
+			if (lyrnms.size() > 1) {
+				std::string lyrsel = lyrnms[0];
+				lyrnms.erase(lyrnms.begin());
+				std::string ccat = concatenate(lyrnms, ", ");
+				std::string msg = "Reading layer: " + lyrsel + "\nOther layers are:\n" + ccat;
+				addWarning(msg);
+			}
+			#endif
 			poLayer = poDS->GetLayer(0);
 			if (poLayer == NULL) {
 				setError("dataset has no layers");

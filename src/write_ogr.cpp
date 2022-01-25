@@ -156,8 +156,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	// chunks
 	
 	if (nGroupTransactions == 0) {
-		nGroupTransactions = 5000;
-		if (geomtype == points) nGroupTransactions = 10000;
+		nGroupTransactions = 50000;
 	}
 	size_t gcntr = 0;
 
