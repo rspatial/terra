@@ -14,7 +14,7 @@ Query a SpatVectorProxy to extract a subset
 
 \usage{
 \S4method{query}{SpatVectorProxy}(x, start=1, n=nrow(x), vars=NULL, where=NULL, 
-    extent=NULL)
+    extent=NULL, filter=NULL)
 }
 
 \arguments{
@@ -25,7 +25,6 @@ Query a SpatVectorProxy to extract a subset
 \item{where}{character. expression like "NAME_1='California' AND ID > 3" , to subset records. Note that start and n are applied after executing the where statement}
 \item{extent}{Spat* object. The extent of the object is used as a spatial filter to select the geometries to read. Ignored if \code{filter} is not \code{NULL}}
 \item{filter}{SpatVector. Used as a spatial filter to select geometries to read (the convex hull is used for lines or points)}
-\item{proxy}{logical. If \code{TRUE} a new SpatVectorProxy is returned. }
 }
 
 \seealso{\code{\link{vect}}}
