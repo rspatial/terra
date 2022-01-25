@@ -303,7 +303,7 @@ void SpatRaster::setExtent(SpatExtent ext, bool keepRes, std::string snap) {
 
 	if (snap != "") {
 		ext = align(ext, snap);
-		ext.intersect(getExtent());
+		ext = ext.intersect(getExtent());
 	}
 
 	if (keepRes) {

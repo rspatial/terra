@@ -306,7 +306,7 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 }
 
 
-bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy) {
+bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy) {
 
 	std::string crs = "";
 
@@ -329,6 +329,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 			setError("Query failed");
 			return false;
 		}
+		read_query = query;
 	} else {
 		if (layer == "") {
 			poLayer = poDS->GetLayer(0);
@@ -381,6 +382,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer,  std::string que
 		GDALClose(filterDS);
 	} else if (extent.size() > 0) {
 		poLayer->SetSpatialFilterRect(extent[0], extent[2], extent[1], extent[3]);
+		read_extent = extent;
 	}
 
 	//const char* lname = poLayer->GetName();

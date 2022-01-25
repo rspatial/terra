@@ -895,7 +895,7 @@ bool SpatRaster::setWindow(SpatExtent x) {
 		return true;
 	}
 
-	e.intersect(x);
+	e = e.intersect(x);
 	if ( !e.valid() ) {
 		setError("extents do not overlap");
 		return false;

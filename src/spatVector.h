@@ -105,6 +105,8 @@ class SpatVector {
 		//std::vector<std::string> crs;
 		SpatSRS srs;
 		bool is_proxy = false;
+		std::string read_query = "";
+		std::vector<double> read_extent;
 		std::string source = "";
 		std::string source_layer = "";
 		size_t geom_count = 0;

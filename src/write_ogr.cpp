@@ -24,166 +24,9 @@
 #include "ogrsf_frmts.h"
 
 
-/*
-bool SpatVector::ogr_geoms(std::vector<OGRGeometryH> &ogrgeoms, std::string &	message) {
-
-	const char *pszDriverName = "memory";
-	GDALDriverH hDriver;
-	hDriver = GDALGetDriverByName( pszDriverName );
-	GDALDatasetH hDS;
-	hDS = GDALCreate( hDriver, "point_out.shp", 0, 0, 0, GDT_Unknown, NULL );
-	if (hDS == NULL) {
-		return false;
-	}
-
-//    char **papszMetadata;
-
-	OGRwkbGeometryType wkb;
-	SpatGeomType geomtype = geoms[0].gtype;
-	if (geomtype == points) {
-		wkb = wkbPoint;
-	} else if (geomtype == lines) {
-		wkb = wkbMultiLineString;
-	} else if (geomtype == polygons) {
-		wkb = wkbMultiPolygon;
-	} else {
-        setError("this geometry type is not supported");
-        return false;
-	}
-
-	std::string s = srs.wkt;
-
-//	OGRSpatialReferenceH hSRS = OSRNewSpatialReference( NULL );
-//	OGRErr erro = OSRSetFromUserInput(hSRS, s.c_str());
-//	if (erro != 4) {
-//		return false ;
-//		char *pszSRS_WKT = NULL;
-//		OSRExportToWkt( hSRS, &pszSRS_WKT );
-//		OSRDestroySpatialReference( hSRS );
-//		GDALSetProjection( hDS, pszSRS_WKT );
-//		CPLFree( pszSRS_WKT );
-//	}
-
-
-	OGRSpatialReference *SRS = NULL;
-	if (s != "") {
-		SRS = new OGRSpatialReference;
-		OGRErr err = SRS->SetFromUserInput(s.c_str()); 
-		if (err != OGRERR_NONE) {
-			setError("crs error");
-			delete SRS;
-			return false;
-		}
-	}
-
-	OGRLayerH hLayer;
-	hLayer = GDALDatasetCreateLayer( hDS, "", SRS, wkb, NULL );
-    if( hLayer == NULL ) {
-        message = "Layer creation failed" ;
-        return false;
-    }
-
-	if (SRS != NULL) SRS->Release();
-
-	for (size_t i=0; i<ngeoms; i++) {
-
-	    OGRFeatureH hFeature;
-        OGRGeometryH hPt;
-
-        hFeature = OGR_F_Create( OGR_L_GetLayerDefn( hLayer ) );
-
-
-// points -- also need to do multipoints
-		OGRGeometryH hPt;
-		if (wkb == wkbPoint) {
-			SpatGeom g = getGeom(i);
-			OGR_G_SetPoint_2D(hPt, 0, g.parts[0].x[0], g.parts[0].y[0]);
-			ogrgeoms.push_back(hPt);
-// lines
-		} else if (wkb == wkbMultiLineString) {
-			SpatGeom g = getGeom(i);
-			OGRMultiLineString poGeom;
-			for (size_t j=0; j<g.size(); j++) {
-				OGRLineString poLine = OGRLineString();
-				SpatPart p = g.getPart(j);
-				for (size_t k=0; k<p.size(); k++) {
-					pt.setX(p.x[k]);
-					pt.setY(p.y[k]);
-					poLine.setPoint(k, &pt);
-				}
-				if (poGeom.addGeometry(&poLine) != OGRERR_NONE ) {
-					message = "cannot add line";
-					return false;
-				}
-			}
-			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
-				message = "cannot set geometry";
-				return false;
-			}
-
-// polygons
-		} else if (wkb == wkbMultiPolygon) {
-			SpatGeom g = getGeom(i);
-			OGRPolygon poGeom;
-			for (size_t j=0; j<g.size(); j++) {
-				OGRLinearRing poRing;
-				SpatPart p = g.getPart(j);
-				for (size_t k=0; k<p.size(); k++) {
-					pt.setX(p.x[k]);
-					pt.setY(p.y[k]);
-					poRing.setPoint(k, &pt);
-				}
-				if (poGeom.addRing(&poRing) != OGRERR_NONE ) {
-					message = "cannot add ring";
-					return false;
-				}
-
-				if (p.hasHoles()) {
-					for (size_t h=0; h < p.nHoles(); h++) {
-						SpatHole hole = p.getHole(h);
-						OGRLinearRing poHole;
-						for (size_t k=0; k<hole.size(); k++) {
-							pt.setX(hole.x[k]);
-							pt.setY(hole.y[k]);
-							poHole.setPoint(k, &pt);
-						}
-						if (poGeom.addRing(&poHole) != OGRERR_NONE ) {
-							message = "cannot add hole";
-							return false;
-						}
-					}
-				}
-				//closeRings
-			}
-			if (poFeature->SetGeometry( &poGeom ) != OGRERR_NONE) {
-				message = "cannot set geometry";
-				return false;
-			}
-		} else {
-			message = "Only points, lines and polygons are currently supported";
-			return false;
-		}
-
-		if( poLayer->CreateFeature( poFeature ) != OGRERR_NONE ) {
-			message = "Failed to create feature";
-			return false;
-        }
-
-        OGRFeature::DestroyFeature( poFeature );
-    }
-    //GDALClose( poDS );
-	//return true;
-	return poDS;
-}
-*/
-
-//#include "Rcpp.h"
-
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
 
-
     GDALDataset *poDS = NULL;
-
 	if (filename != "") {
 		if (file_exists(filename) & (!overwrite)) {
 			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
@@ -244,13 +87,23 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 	}
 
+	size_t nGroupTransactions = 0;
+
     OGRLayer *poLayer;
 	char** papszOptions = NULL;
 	if (options.size() > 0) {
 		for (size_t i=0; i<options.size(); i++) {
 			std::vector<std::string> gopt = strsplit(options[i], "=");
 			if (gopt.size() == 2) {
-				papszOptions = CSLSetNameValue(papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+				if (gopt[0] == "nGroupTransactions") {
+					try  {
+						nGroupTransactions = std::stoi(gopt[1]);
+					} catch (std::invalid_argument &e)  {
+						nGroupTransactions = 0;
+					}
+				} else {
+					papszOptions = CSLSetNameValue(papszOptions, gopt[0].c_str(), gopt[1].c_str() );
+				}
 			}
 		}
 		// papszOptions = CSLSetNameValue( papszOptions, "ENCODING", "UTF-8" );
@@ -289,8 +142,6 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		}
 	}
 
-	//unsigned r = 0;
-
 	// use a single transaction as in sf
 	// makes a big difference for gpkg by avoiding many INSERTs	
 	bool can_do_transaction = poDS->TestCapability(ODsCTransactions); // == TRUE);
@@ -302,9 +153,13 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			return poDS; 
 		} 
 	}
-
-	// chunks?
-	// size_t nGroupTransactions = 64000;
+	// chunks
+	
+	if (nGroupTransactions == 0) {
+		nGroupTransactions = 5000;
+		if (geomtype == points) nGroupTransactions = 10000;
+	}
+	size_t gcntr = 0;
 
 	for (size_t i=0; i<ngeoms; i++) {
 
@@ -405,14 +260,25 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			setError("Failed to create feature");
 			return poDS;
         }
-
         OGRFeature::DestroyFeature( poFeature );
+		gcntr++;
+		if (transaction && (gcntr == nGroupTransactions)) {
+			if (poDS->CommitTransaction() != OGRERR_NONE) {
+				poDS->RollbackTransaction();
+				setError("transaction commit failed");
+			}
+			gcntr = 0;
+			transaction = (poDS->StartTransaction() == OGRERR_NONE); 
+			if (! transaction) { 
+				setError("transaction failed");
+				return poDS; 
+			} 
+		}
     }
-	if (transaction && poDS->CommitTransaction() != OGRERR_NONE) {
+	if (transaction && (gcntr>0) && (poDS->CommitTransaction() != OGRERR_NONE)) {
 		poDS->RollbackTransaction();
 		setError("transaction commit failed");
 	} 
-
 	return poDS;
 }
 

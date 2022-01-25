@@ -396,7 +396,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
     SpatOptions ropt(opt);
 	SpatRaster r = geometry(1);
 	SpatExtent e = getExtent();
-	e.intersect(v.getExtent());
+	e = e.intersect(v.getExtent());
 	if ( !e.valid() ) {
 		std::vector<double> out(1, NAN);
 		return out;
@@ -434,7 +434,7 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	std::vector<unsigned> fact = {10, 10};
 	SpatExtent e = getExtent();
 	SpatExtent ve = v.getExtent();
-	e.intersect(ve);
+	e = e.intersect(ve);
 	if ( !e.valid() ) {
 		return;
 	}

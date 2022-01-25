@@ -208,14 +208,16 @@ class SpatExtent {
 		SpatExtent(double _xmin, double _xmax, double _ymin, double _ymax) {xmin = _xmin; xmax = _xmax; ymin = _ymin; ymax = _ymax;}
 		virtual ~SpatExtent(){}
 
-
+		SpatExtent deepCopy() {return *this;}
 		SpatExtent align(double d, std::string snap);
 
-		void intersect(SpatExtent e) { // check first if intersects?
-			xmin = std::max(xmin, e.xmin);
-			xmax = std::min(xmax, e.xmax);
-			ymin = std::max(ymin, e.ymin);
-			ymax = std::min(ymax, e.ymax);
+		SpatExtent intersect(SpatExtent e) { // check first if intersects?
+			SpatExtent out;
+			out.xmin = std::max(xmin, e.xmin);
+			out.xmax = std::min(xmax, e.xmax);
+			out.ymin = std::max(ymin, e.ymin);
+			out.ymax = std::min(ymax, e.ymax);
+			return out;
 		}
 
 		void unite(SpatExtent e) {

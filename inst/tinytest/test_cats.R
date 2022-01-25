@@ -6,8 +6,7 @@ lv <- c("forest", "water", "urban")
 levels(r) <- lv
 names(r) <- "land cover"
 v <- cats(r)[[1]]
-coltab(r) <- rainbow(4)
-
+#coltab(r) <- rainbow(4)
 
 expect_equal(v$value, 0:2)
 expect_equal(v$category, lv)

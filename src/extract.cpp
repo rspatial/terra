@@ -1015,7 +1015,7 @@ std::vector<double> SpatRaster::extCells(SpatExtent ext) {
 
 	std::vector<double> out;
 	ext = align(ext, "near");
-	ext.intersect(getExtent());
+	ext = ext.intersect(getExtent());
 	if (!ext.valid()) {
 		return(out);
 	}

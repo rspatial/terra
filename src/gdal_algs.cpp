@@ -539,7 +539,7 @@ SpatRaster SpatRaster::resample(SpatRaster x, std::string method, bool mask, boo
 
 	if (!do_prj) {
 		SpatExtent e = out.getExtent();
-		e.intersect(getExtent());
+		e = e.intersect(getExtent());
 		if (!e.valid()) {
 			out.addWarning("No spatial overlap");
 			return out;

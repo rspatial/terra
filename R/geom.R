@@ -201,7 +201,10 @@ setMethod("intersect", signature(x="SpatVector", y="SpatVector"),
 
 setMethod("intersect", signature(x="SpatExtent", y="SpatExtent"), 
 	function(x, y) {
-		x@ptr$intersect(y@ptr)
+		x@ptr = x@ptr$intersect(y@ptr)
+		if (!x@ptr$valid) {
+			return(NULL)
+		}
 		x
 	}
 )

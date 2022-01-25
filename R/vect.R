@@ -49,13 +49,16 @@ setMethod("vect", signature(x="character"),
 			p@ptr <- SpatVector$new()
 			x <- normalizePath(x)
 			proxy <- isTRUE(proxy)
-			if (proxy) query <- ""
-			if (proxy || is.null(filter)) {
+			#if (proxy) query <- ""
+			if (is.null(filter)) {
 				filter <- vect()@ptr
 			} else {
+				if (proxy) {
+					error("vect", "you cannot use 'filter' when proxy=TRUE")
+				}
 				filter <- filter@ptr
 			}
-			if (proxy || is.null(extent)) {
+			if (is.null(extent)) {
 				extent <- double()
 			} else {
 				extent <- as.vector(ext(extent))
@@ -339,10 +342,22 @@ setMethod("vect", signature(x="list"),
 
 
 setMethod("query", signature(x="SpatVectorProxy"), 
-	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL, proxy=FALSE) {
+	function(x, start=1, n=nrow(x), vars=NULL, where=NULL, extent=NULL, filter=NULL) {
 		f <- x@ptr$v$source
 		layer <- x@ptr$v$layer
-		qy <- ""
+		e <- x@ptr$v$read_extent
+		if (is.null(extent)) {
+			if (length(e) == 4) {
+				extent = ext(e);
+			}
+		} else {
+			if (length(e) == 4) {
+				extent = intersect(ext(e), extent);
+				if (is.null(extent)) {
+					error("query", "extent does not intersect with x")
+				}
+			}
+		}
 		if (is.null(vars)) {
 			vars <- "*"
 		} else {
@@ -355,6 +370,7 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			}
 		}
 
+		qy <- ""
 		if (!is.null(where)) {
 			qy <- paste("SELECT", vars, "FROM", layer, "WHERE", where[1]) 
 		}
@@ -379,7 +395,11 @@ setMethod("query", signature(x="SpatVectorProxy"),
 			qy <- paste(qy, "LIMIT", n)		
 		}
 		
-		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", proxy[1])
+		if ((qy != "") && (x@ptr$v$read_query != "")) {
+			error("query", "A query was used to create 'x'; you can only subset it with extent or filter")
+		}
+		
+		vect(f, layer, query=qy, extent=extent, filter=filter, crs="", FALSE)
 	}
 )
 

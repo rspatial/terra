@@ -126,6 +126,7 @@ RCPP_MODULE(spat){
     class_<SpatExtent>("SpatExtent")
 		.constructor()
 		.constructor<double, double, double, double>()
+		.method("deepcopy", &SpatExtent::deepCopy, "deepCopy")
 		.property("vector", &SpatExtent::asVector)
 		.property("valid", &SpatExtent::valid)
 		.method("align", &SpatExtent::align, "align")
@@ -281,6 +282,8 @@ RCPP_MODULE(spat){
 		.method("snap", &SpatVector::snap, "")
 
 		.field_readonly("is_proxy", &SpatVector::is_proxy )
+		.field_readonly("read_query", &SpatVector::read_query )
+		.field_readonly("read_extent", &SpatVector::read_extent )
 		.field_readonly("geom_count", &SpatVector::geom_count)
 		.field_readonly("source", &SpatVector::source)
 		.field_readonly("layer", &SpatVector::source_layer)

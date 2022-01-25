@@ -1693,7 +1693,7 @@ bool SpatRaster::shared_basegeom(SpatRaster &x, double tol, bool test_overlap) {
 	if (!about_equal(yres(), x.yres(), yres() * tol)) return false; 
 	if (test_overlap) {
 		SpatExtent e = x.getExtent();
-		e.intersect(getExtent());
+		e = e.intersect(getExtent());
 		if (!e.valid()) return false;
 	}
 	return true;
@@ -1882,7 +1882,7 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 		out.setError("invalid extent");
 		return out;
 	} 
-	e.intersect(out.getExtent());
+	e = e.intersect(out.getExtent());
 	if ( !e.valid() ) {
 		out.setError("extents do not overlap");
 		return out;
@@ -2220,7 +2220,7 @@ SpatRaster SpatRasterCollection::mosaic(std::string fun, SpatOptions &opt) {
 		SpatRasterStack s;
 		for (size_t j=0; j<n; j++) {
 			e = ds[j].getExtent();
-			e.intersect(eout);
+			e = e.intersect(eout);
 			if ( e.valid_notequal() ) {
 				SpatRaster r = ds[j].crop(eout, "near", sopt);
 				//SpatExtent ec = r.getExtent();

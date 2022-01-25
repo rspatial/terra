@@ -5,6 +5,7 @@
 
 setMethod("ext", signature(x="SpatExtent"), 
 	function(x){ 
+		x@ptr <- x@ptr$deepcopy()
 		x
 	}
 )
@@ -23,7 +24,7 @@ setMethod("ext", signature(x="missing"),
 	function(x){ 
 		e <- methods::new("SpatExtent")
 		e@ptr <- SpatExtent$new()
-		return(e)
+		e
 	}
 )
 
