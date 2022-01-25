@@ -895,8 +895,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		}
 
 		std::string dtype = GDALGetDataTypeName(poBand->GetRasterDataType());
-		if (in_string(dtype, "Int") || (dtype == "Byte")) {
-			if (!s.has_scale_offset[i]) s.valueType[i] = 1;
+		if ((!s.has_scale_offset[i]) && (in_string(dtype, "Int") || (dtype == "Byte"))) {
+			s.valueType[i] = 1;
 		}
 		s.names[i] = nm;
 	}
