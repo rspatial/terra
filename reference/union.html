@@ -22,7 +22,7 @@ SpatExtent: Objects are combined into their union; this is equivalent to +."><me
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-15</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@ SpatExtent: Objects are combined into their union; this is equivalent to +."><me
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">e1</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">10</span>, <span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">e2</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, <span class="op">-</span><span class="fl">40</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">union</span><span class="op">(</span><span class="va">e1</span>, <span class="va">e2</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -10, 20, -40, 20 (xmin, xmax, ymin, ymax)</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x + y:</span> no slot of name "ptr" for this object of class "Rcpp_SpatExtent"</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">#SpatVector</span></span>
 <span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span>

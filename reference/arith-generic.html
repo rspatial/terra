@@ -23,7 +23,7 @@ for (SpatExtent, SpatExtent): +, -, and for (SpatExtent, numeric): +, -, *, /, %
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-15</span>
       </span>
     </div>
 
@@ -94,10 +94,10 @@ for (SpatExtent, SpatExtent): +, -, and for (SpatExtent, numeric): +, -, *, /, %
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># union</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">+</span> <span class="va">y</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : -2, 2.2, -2, 3 (xmin, xmax, ymin, ymax)</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x + y:</span> no slot of name "ptr" for this object of class "Rcpp_SpatExtent"</span>
 <span class="r-in"><span class="co"># intersection</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">*</span> <span class="va">y</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SpatExtent : 0.1, 1, 0, 2 (xmin, xmax, ymin, ymax)</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x * y:</span> no slot of name "ptr" for this object of class "Rcpp_SpatExtent"</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="va">x</span> </span>
 <span class="r-in"><span class="va">e</span></span>
