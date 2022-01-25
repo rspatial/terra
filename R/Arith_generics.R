@@ -80,10 +80,10 @@ setMethod("Arith", signature(e1="SpatExtent", e2="SpatExtent"),
     function(e1, e2){ 
 		oper <- as.vector(.Generic)[1]
 		if (oper == "+") { 
-			e1 <- e1@ptr$deepcopy()
+			e1@ptr <- e1@ptr$deepcopy()
 			e1@ptr$union(e2@ptr)
 		} else if (oper == "*") {
-			e1 <- e1@ptr$intersect(e2@ptr)
+			e1@ptr <- e1@ptr$intersect(e2@ptr)
 		} else if (oper == "/") {
 			d <- c(diff(e1[1:2]) / diff(e2[1:2]), diff(e1[3:4]) / diff(e2[3:4])) 
 			names(d) <- c("x", "y")
