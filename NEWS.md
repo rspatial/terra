@@ -10,8 +10,7 @@
 - `rotate` failed on large files. Reported by Ujjawal Singh
 - writing raster files with a color table could lead to a crash [#501](https://github.com/rspatial/terra/issues/501) by Kodi Arfer
 - `crds` replicated the coordinates [#504](https://github.com/rspatial/terra/issues/504) by Murray Efford
-- `as.data.frame<SpatRaster>` returned integer values if the file stored integers, even if there was a scale/offset that creates decimal numbes [#509](https://github.com/rspatial/terra/issues/509) by Kodi Arfer
-
+- `as.data.frame<SpatRaster>` returned integers if the file stored values as integers, even if there was a scale/offset that creates decimal numbers [#509](https://github.com/rspatial/terra/issues/509) by Kodi Arfer
 
 
 ## enhancements 
@@ -27,8 +26,10 @@
 - new `mask<SpatVector,SpatVector>` method to select intersecting geometries
 - new method `is.related`
 - `values<SpatRaster>` has new option `na.rm=TRUE`. [#490](https://github.com/rspatial/terra/issues/490) by Henk Harmsen
+- new class `SpatVectorProxy` to provide access to large vector databases that cannot or should not be read into memory in its entirety.
 - new argument `proxy=FALSE` to `vect` to create a SpatVectorProxy object
 - new method `query<SpatVectorProxy>` to extract parts of a SpatVectorProxy
+
 
 ## name changes
 
