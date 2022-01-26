@@ -1,4 +1,4 @@
-\name{expand}
+\name{extend}
 
 \alias{extend}
 \alias{extend,SpatRaster-method}
@@ -41,7 +41,7 @@ values(r) <- 1:ncell(r)
 e <- ext(-180, -100, 40, 70)
 re <- extend(r, e)
 
-# expand with a number of rows and columns (at each side)
+# extend with a number of rows and columns (at each side)
 re2 <- extend(r, c(2,10))
 
 # SpatExtent
