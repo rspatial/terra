@@ -62,6 +62,8 @@
 <li>writing raster files with a color table could lead to a crash <a href="https://github.com/rspatial/terra/issues/501" class="external-link">#501</a> by Kodi Arfer</li>
 <li>
 <code>crds</code> replicated the coordinates <a href="https://github.com/rspatial/terra/issues/504" class="external-link">#504</a> by Murray Efford</li>
+<li>
+<code>as.data.frame&lt;SpatRaster&gt;</code> returned integer values if the file stored integers, even if there was a scale/offset that creates decimal numbes <a href="https://github.com/rspatial/terra/issues/509" class="external-link">#509</a> by Kodi Arfer</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-5-15">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-15"></a></h3>
@@ -69,6 +71,8 @@
 <code>distance</code>, <code>gridDistance</code>, <code>direction</code> and <code>patches</code> now process all layers of the input SpatRaster. <a href="https://github.com/rspatial/terra/issues/503" class="external-link">#503</a> by Chris Haak</li>
 <li>consistent copy-on-modify behavior in <code>()&lt;-</code> methods. in-place updating available with <code>set.</code> methods such as <code>set.names</code> and <code>set.values</code>. <a href="https://github.com/rspatial/terra/issues/493" class="external-link">#493</a> by Jean Romain</li>
 <li>much faster writing of GPGK vector data by using a single transaction (following sf) <a href="https://github.com/rspatial/terra/issues/489" class="external-link">#460</a> by Krzysztof Dyba.</li>
+<li>
+<code>aggregate&lt;SpatRaster&gt;</code> now accepts functions that return more than one value per aggregated cell</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-5-15">new<a class="anchor" aria-label="anchor" href="#new-1-5-15"></a></h3>
