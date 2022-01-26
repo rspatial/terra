@@ -10,6 +10,8 @@
 - `rotate` failed on large files. Reported by Ujjawal Singh
 - writing raster files with a color table could lead to a crash [#501](https://github.com/rspatial/terra/issues/501) by Kodi Arfer
 - `crds` replicated the coordinates [#504](https://github.com/rspatial/terra/issues/504) by Murray Efford
+- `as.data.frame<SpatRaster>` returned integer values if the file stored integers, even if there was a scale/offset that creates decimal numbes [#509](https://github.com/rspatial/terra/issues/509) by Kodi Arfer
+
 
 
 ## enhancements 
@@ -17,7 +19,7 @@
 - `distance`, `gridDistance`, `direction` and `patches` now process all layers of the input SpatRaster. [#503](https://github.com/rspatial/terra/issues/503) by Chris Haak
 - consistent copy-on-modify behavior in `()<-` methods. in-place updating available with `set.` methods such as `set.names` and `set.values`. [#493](https://github.com/rspatial/terra/issues/493) by Jean Romain
 - much faster writing of GPGK vector data by using a single transaction (following sf) [#460](https://github.com/rspatial/terra/issues/489) by Krzysztof Dyba.
-
+- `aggregate<SpatRaster>` now accepts functions that return more than one value per aggregated cell
 
 ## new
 

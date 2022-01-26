@@ -49,7 +49,7 @@ Also see the methods in section VIII
     \code{\link{merge}} \tab Combine SpatRasters with different extents (but same origin and resolution) \cr
     \code{\link{mosaic}} \tab Combine SpatRasters with different extents using a function for overlapping cells \cr
     \code{\link{crop}} \tab Select a geographic subset of a SpatRaster \cr
-    \code{\link{extend}} \tab Enlarge a SpatRaster \cr
+    \code{\link{extend}} \tab Add rows and/or columns to a SpatRaster \cr
     \code{\link{trim}} \tab Trim a SpatRaster by removing exterior rows and/or columns that only have NAs\cr
     \code{\link{aggregate}} \tab Combine cells of a SpatRaster to create larger cells \cr
     \code{\link{disagg}} \tab Subdivide cells \cr
