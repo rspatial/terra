@@ -3470,17 +3470,8 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 				for (size_t k=0; k<cs; k++) {
 					source[i].values[off + cells[k]] = v[koff + k];
 				}
-				std::vector<double> vv(v.begin()+koff, v.begin()+koff+cs); 
-				if (source[i].hasRange[j]) {
-					std::vector<double> xv = {vmin(vv, true), source[i].range_min[j]};
-					source[i].range_min[j] = vmin(xv, true);
-					xv = {vmax(vv, true), source[i].range_max[j]};
-					source[i].range_max[j] = vmax(xv, true);
-				} else {
-					source[i].range_min[j] = vmin(vv, true);
-					source[i].range_max[j] = vmax(vv, true);
-				}
 			}
+			source[i].setRange();
 		}
 	} else {
 		double minv = vmin(v, true);
@@ -3492,16 +3483,8 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 				for (size_t k=0; k<cs; k++) {
 					source[i].values[off + cells[k]] = v[k];
 				}
-				if (source[i].hasRange[j]) {
-					std::vector<double> xv = {minv, source[i].range_min[j]};
-					source[i].range_min[j] = vmin(xv, true);
-					xv = {maxv, source[i].range_max[j]};
-					source[i].range_max[j] = vmax(xv, true);
-				} else {
-					source[i].range_min[j] = minv;
-					source[i].range_max[j] = maxv;
-				}
 			}
+			source[i].setRange();
 		}
 	}
 	return true;
