@@ -50,7 +50,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 	testend <- min(teststart + 12, nc)
 	ntest <- 1 + testend - teststart 
 	
-	v <- readValues(x, round(0.51*nrow(x)), 1, teststart, testend, mat=TRUE)
+	v <- readValues(x, round(0.51*nrow(x)), 1, teststart, ntest, mat=TRUE)
 	usefun <- FALSE
 	if (nl==1) {
 		r <- fun(v, ...)

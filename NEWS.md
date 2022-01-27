@@ -3,7 +3,7 @@
 ## bug fixes
 
 - `app<SpatRasterDataset>` ignored the filename. [#498](https://github.com/rspatial/terra/issues/498) by jszhao
-`vect<data.frame>` failed silently if xy coordinates were integers [#496](https://github.com/rspatial/terra/issues/496) by Márcia Barbosa
+- `vect<data.frame>` failed silently if xy coordinates were integers [#496](https://github.com/rspatial/terra/issues/496) by Márcia Barbosa
 - The output of `aggregate` was malformed when nrow(SpatRaster) %% fact != 0. [#492](https://github.com/rspatial/terra/issues/492) by Jean-François Bourdon
 - Integer `NAs` in SpatVector attributes where only recognized on Windows [#491](https://github.com/rspatial/terra/issues/491) by Márcia Barbosa
 - `plot<SpatVector>` failed when using a character variable with many unique values. [#489](https://github.com/rspatial/terra/issues/489) by Márcia Barbosa
@@ -16,8 +16,8 @@
 ## enhancements 
 
 - `distance`, `gridDistance`, `direction` and `patches` now process all layers of the input SpatRaster. [#503](https://github.com/rspatial/terra/issues/503) by Chris Haak
-- consistent copy-on-modify behavior in `()<-` methods. in-place updating available with `set.` methods such as `set.names` and `set.values`. [#493](https://github.com/rspatial/terra/issues/493) by Jean Romain
-- much faster writing of GPGK vector data by using a single transaction (following sf) [#460](https://github.com/rspatial/terra/issues/489) by Krzysztof Dyba.
+- consistent copy-on-modify behavior in `()<-` methods. in-place updating available with `set.` methods such as `set.names` and `set.values`. [#493](https://github.com/rspatial/terra/issues/493) by Jean Romain and [511](https://github.com/rspatial/terra/issues/511) by Bryan Fuentes
+- much faster writing of GPGK vector data by using a single transaction (following sf) [#460](https://github.com/rspatial/terra/issues/489) by Krzysztof Dyba
 - `aggregate<SpatRaster>` now accepts functions that return more than one value per aggregated cell
 
 ## new
