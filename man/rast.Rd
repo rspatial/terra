@@ -75,7 +75,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 \item{units}{character. units for each layer}
 \item{type}{character. If the value is not \code{"xyz"}, the raster has the same number of rows and colums as the matrix. If the value is \code{"xyz"}, the matrix must have at least two columns, the first with \code{x} (or longitude) and the second with \code{y} (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.}
 \item{digits}{integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when \code{type="xyz"}}
-\item{...}{additional arguments, in some cases passed on to the \code{rast,missing-method}}  
+\item{...}{additional arguments passed on to the \code{rast,missing-method}}  
 }
 
 
