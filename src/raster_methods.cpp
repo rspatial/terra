@@ -3474,8 +3474,8 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 			source[i].setRange();
 		}
 	} else {
-		double minv = vmin(v, true);
-		double maxv = vmax(v, true);
+		//double minv = vmin(v, true);
+		//double maxv = vmax(v, true);
 		for (size_t i=0; i<ns; i++) {
 			size_t nl = source[i].nlyr;
 			for (size_t j=0; j<nl; j++) {

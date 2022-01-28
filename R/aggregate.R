@@ -9,28 +9,34 @@
 		fun <- match.fun(fun)
 		if (is.primitive(fun)) {
 			test <- try(deparse(fun)[[1]], silent=TRUE)
-			if (test == '.Primitive(\"sum\")') { fun <- 'sum' 
-			} else if (test == '.Primitive(\"min\")') { fun <- 'min' 
-			} else if (test == '.Primitive(\"max\")') { fun <- 'max' 
-			}
+			test <- gsub('.Primitive\\(\"', "", test)
+			test <- gsub('\")', "", test)
+			if (test %in% c("sum", "min", "max", "prod", "any", "all")) return(test); 
 		} else {
 			depf <- deparse(fun)
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"mean\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "mean", silent=TRUE))
 			if (test1 | test2) { 
-				fun <- "mean" 
+				return("mean")
 			}
 			test1 <- isTRUE(try( depf[2] == 'UseMethod(\"median\")', silent=TRUE))
 			test2 <- isTRUE(try( fun@generic == "median", silent=TRUE))
 			if (test1 | test2) { 
-				fun <- "median" 
+				return("median")
 			}
 			test1 <- isTRUE(try( depf[1] == "function (x, na.rm = FALSE) ", silent=TRUE))
 			test2 <- isTRUE(try( depf[2] == "sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), ", silent=TRUE))
 			test3 <- isTRUE(try( depf[3] == "    na.rm = na.rm))", silent=TRUE))
 			if (test1 && test2 && test3) { 
-				fun <- "sd"
+				return("sd")
 			}
+			if (isTRUE(try( fun@generic == "which.min", silent=TRUE))) {
+				return("which.min")
+			}
+			if (isTRUE(try( fun@generic == "which.max", silent=TRUE))) {
+				return("which.max")
+			}
+			if (isTRUE(depf[3] == "    wh <- .Internal(which(x))")) return("which")			
 		} 
 	}
 	return(fun)
