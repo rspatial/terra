@@ -45,7 +45,7 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 			error("app", "additional arguments cannot be a SpatRaster")
 		}
 	}
-# figure out the shape of the output by testing with 5 cells
+# figure out the shape of the output by testing with up to 13 cells
 	teststart <- max(1, 0.5 * nc - 6)
 	testend <- min(teststart + 12, nc)
 	ntest <- 1 + testend - teststart 
