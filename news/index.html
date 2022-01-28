@@ -52,9 +52,11 @@
 <div class="section level3">
 <h3 id="bug-fixes-1-5-15">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-15"></a></h3>
 <ul><li>
-<code>app&lt;SpatRasterDataset&gt;</code> ignored the filename. <a href="https://github.com/rspatial/terra/issues/498" class="external-link">#498</a> by jszhao <code>vect&lt;data.frame&gt;</code> failed silently if xy coordinates were integers <a href="https://github.com/rspatial/terra/issues/496" class="external-link">#496</a> by Márcia Barbosa</li>
-<li>The output of <code>aggregate</code> was malformed when nrow(SpatRaster) %% fact != 0. <a href="https://github.com/rspatial/terra/issues/492" class="external-link">#492</a> by Jean-François Bourdon</li>
-<li>Integer <code>NAs</code> in SpatVector attributes where only recognized on Windows <a href="https://github.com/rspatial/terra/issues/491" class="external-link">#491</a> by Márcia Barbosa</li>
+<code>app&lt;SpatRasterDataset&gt;</code> ignored the filename. <a href="https://github.com/rspatial/terra/issues/498" class="external-link">#498</a> by jszhao</li>
+<li>
+<code>vect&lt;data.frame&gt;</code> failed silently if xy coordinates were integers <a href="https://github.com/rspatial/terra/issues/496" class="external-link">#496</a> by Márcia Barbosa</li>
+<li>The output of <code>aggregate&lt;SpatRaster&gt;</code> was malformed when <code>nrow(x) %% fact != 0</code>. <a href="https://github.com/rspatial/terra/issues/492" class="external-link">#492</a> by Jean-François Bourdon</li>
+<li>Integer <code>NA</code>s in SpatVector attributes where only recognized on Windows <a href="https://github.com/rspatial/terra/issues/491" class="external-link">#491</a> by Márcia Barbosa</li>
 <li>
 <code>plot&lt;SpatVector&gt;</code> failed when using a character variable with many unique values. <a href="https://github.com/rspatial/terra/issues/489" class="external-link">#489</a> by Márcia Barbosa</li>
 <li>
@@ -63,14 +65,14 @@
 <li>
 <code>crds</code> replicated the coordinates <a href="https://github.com/rspatial/terra/issues/504" class="external-link">#504</a> by Murray Efford</li>
 <li>
-<code>as.data.frame&lt;SpatRaster&gt;</code> returned integer values if the file stored integers, even if there was a scale/offset that creates decimal numbes <a href="https://github.com/rspatial/terra/issues/509" class="external-link">#509</a> by Kodi Arfer</li>
+<code>as.data.frame&lt;SpatRaster&gt;</code> returned integers if the file stored values as integers, even if there was a scale/offset that creates decimal numbers <a href="https://github.com/rspatial/terra/issues/509" class="external-link">#509</a> by Kodi Arfer</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-5-15">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-15"></a></h3>
 <ul><li>
 <code>distance</code>, <code>gridDistance</code>, <code>direction</code> and <code>patches</code> now process all layers of the input SpatRaster. <a href="https://github.com/rspatial/terra/issues/503" class="external-link">#503</a> by Chris Haak</li>
-<li>consistent copy-on-modify behavior in <code>()&lt;-</code> methods. in-place updating available with <code>set.</code> methods such as <code>set.names</code> and <code>set.values</code>. <a href="https://github.com/rspatial/terra/issues/493" class="external-link">#493</a> by Jean Romain</li>
-<li>much faster writing of GPGK vector data by using a single transaction (following sf) <a href="https://github.com/rspatial/terra/issues/489" class="external-link">#460</a> by Krzysztof Dyba.</li>
+<li>consistent copy-on-modify behavior in <code>()&lt;-</code> methods. in-place updating available with <code>set.</code> methods such as <code>set.names</code> and <code>set.values</code>. <a href="https://github.com/rspatial/terra/issues/493" class="external-link">#493</a> by Jean Romain and <a href="https://github.com/rspatial/terra/issues/511" class="external-link">511</a> by Bryan Fuentes</li>
+<li>much faster writing of GPGK vector data by using a single transaction (following sf) <a href="https://github.com/rspatial/terra/issues/489" class="external-link">#460</a> by Krzysztof Dyba</li>
 <li>
 <code>aggregate&lt;SpatRaster&gt;</code> now accepts functions that return more than one value per aggregated cell</li>
 </ul></div>
@@ -83,6 +85,7 @@
 </li>
 <li>
 <code>values&lt;SpatRaster&gt;</code> has new option <code>na.rm=TRUE</code>. <a href="https://github.com/rspatial/terra/issues/490" class="external-link">#490</a> by Henk Harmsen</li>
+<li>new class <code>SpatVectorProxy</code> to provide access to large vector databases that cannot or should not be read into memory in its entirety.</li>
 <li>new argument <code>proxy=FALSE</code> to <code>vect</code> to create a SpatVectorProxy object</li>
 <li>new method <code>query&lt;SpatVectorProxy&gt;</code> to extract parts of a SpatVectorProxy</li>
 </ul></div>
