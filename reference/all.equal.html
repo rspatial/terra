@@ -102,7 +102,7 @@ The sample size used can be increased with the maxcell argument. You can set it 
 <span class="r-in"><span class="co"># Compare all cell values for near equality</span></span>
 <span class="r-in"><span class="co"># as floating point number imprecision can be a problem</span></span>
 <span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="minmax.html">minmax</a></span><span class="op">(</span><span class="va">r1</span> <span class="op">-</span> <span class="va">r2</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-7</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="summarize-generics.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-7</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># comparison of cell values to create new SpatRaster</span></span>

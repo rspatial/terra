@@ -76,22 +76,37 @@ This is different than the sample standard deviation returned by sd (which uses 
 <span class="fu">max</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">range</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, trim<span class="op">=</span><span class="cn">NA</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">prod</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">median</span><span class="op">(</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">sum</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">stdev</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, pop<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">any</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">all</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">range</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">which.min</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">which.max</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<span class="fu">which.max</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">stdev</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, pop<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">mean</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, trim<span class="op">=</span><span class="cn">NA</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">median</span><span class="op">(</span><span class="va">x</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -124,10 +139,10 @@ This is different than the sample standard deviation returned by sd (which uses 
 <span class="r-in"></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">mean</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># note how this returns one layer</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">sum</span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># and this returns three layers</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">sum</span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">max</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
