@@ -162,11 +162,11 @@ setMethod("atan2", signature(y="SpatRaster", x="SpatRaster"),
 	}
 )
 
-setMethod("atan.2", signature(y="SpatRaster", x="SpatRaster"),
+setMethod("atan_2", signature(y="SpatRaster", x="SpatRaster"),
 	function(y, x, filename="", ...) { 
 		opt <- spatOptions(filename=filename, ...)
 		y@ptr <- y@ptr$atan2(x@ptr, opt)
-		messages(y, "atan.2")
+		messages(y, "atan_2")
 	}
 )
 

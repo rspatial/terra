@@ -2,8 +2,8 @@
 
 \alias{atan2,SpatRaster,SpatRaster-method}
 \alias{atan2}
-\alias{atan.2,SpatRaster,SpatRaster-method}
-\alias{atan.2}
+\alias{atan_2,SpatRaster,SpatRaster-method}
+\alias{atan_2}
 
 \title{Two argument arc-tangent}
 
@@ -16,7 +16,7 @@ See \code{\link{Math-methods}} for other trigonometric and mathematical function
 \usage{
 \S4method{atan2}{SpatRaster,SpatRaster}(y, x)
 
-\S4method{atan.2}{SpatRaster,SpatRaster}(y, x, filename, ...)
+\S4method{atan_2}{SpatRaster,SpatRaster}(y, x, filename, ...)
 }
 
 \arguments{

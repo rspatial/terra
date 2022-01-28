@@ -169,7 +169,7 @@ if (!isGeneric("as.list")) { setGeneric("as.list", function(x, ...) standardGene
 if (!isGeneric("as.factor")) {setGeneric("as.factor", function(x) standardGeneric("as.factor"))}
 
 if (!isGeneric("atan2")) { setGeneric("atan2", function(y, x) standardGeneric("atan2"))}
-if (!isGeneric("atan.2")) { setGeneric("atan.2", function(y, x, ...) standardGeneric("atan.2"))}
+if (!isGeneric("atan_2")) { setGeneric("atan_2", function(y, x, ...) standardGeneric("atan_2"))}
 if (!isGeneric("barplot")) {setGeneric("barplot", function(height,...) standardGeneric("barplot"))}
 #if (!isGeneric("bndbox")) {setGeneric("bndbox", function(obj) standardGeneric("bndbox"))}
 if (!isGeneric("boundaries")) {	setGeneric("boundaries", function(x, ...) standardGeneric("boundaries"))}
