@@ -26,7 +26,9 @@ Create a Virtual Raster Tiles (VRT) dataset from a collection of file-based rast
 SpatRaster
 }
 
-\seealso{\code{\link{makeVRT}} to create a .vrt file for a file without a header}
+\seealso{
+\code{\link{makeTiles}} to create tiles; \code{\link{makeVRT}} to create a .vrt file for a file without a header
+}
 
 \examples{
 r <- rast(ncols=100, nrows=100)
