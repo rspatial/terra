@@ -20,6 +20,7 @@
 \alias{rowFromY,SpatRaster,numeric-method}
 \alias{cellFromXY}
 \alias{cellFromXY,SpatRaster,matrix-method}
+\alias{cellFromXY,SpatRaster,data.frame-method}
 \alias{rowFromCell}
 \alias{rowFromCell,SpatRaster,numeric-method}
 \alias{colFromCell}

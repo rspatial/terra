@@ -18,6 +18,8 @@
 \alias{[,SpatRaster,numeric,missing-method}
 \alias{[,SpatRaster,missing,numeric-method}
 \alias{[,SpatRaster,numeric,numeric-method}
+\alias{[,SpatRaster,data.frame,missing-method}
+\alias{[,SpatRaster,matrix,missing-method}
 \alias{[,SpatRaster,SpatRaster,missing-method}
 \alias{[,SpatRaster,SpatExtent,missing-method}
 

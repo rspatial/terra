@@ -435,6 +435,33 @@ function(x, i, j, ... , drop=TRUE) {
 })
 
 
+setMethod("[", c("SpatRaster", "data.frame", "missing"),
+function(x, i, j, ... , drop=TRUE) {
+	if (ncol(i) == 1) {
+		i <- i[,1]
+	} else if (ncol(i) == 2) {
+		i <- cellFromXY(x, i)
+	} else {
+		error(" [", "cannot extract values with this data.frame")
+	}
+	`[`(x, i, drop=drop)
+})
+
+setMethod("[", c("SpatRaster", "matrix", "missing"),
+function(x, i, j, ... , drop=TRUE) {
+	if (ncol(i) == 1) {
+		i <- i[,1]
+	} else if ((nrow(i) == 1) && (ncol(i) != 2)) {
+		i <- i[1,]
+	} else if (ncol(i) == 2) {
+		i <- cellFromXY(x, i)
+	} else {
+		error(" [", "cannot extract values with a matrix of these dimensions")
+	}
+	`[`(x, i, drop=drop)
+})
+
+
 setMethod("[", c("SpatRaster", "missing", "numeric"),
 function(x, i, j, ... , drop=TRUE) {
 	if (!drop) {
