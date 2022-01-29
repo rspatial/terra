@@ -93,6 +93,8 @@ function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, 
 		filetype <- get_filetype(filename)
 	}
 	if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
+	layer <- trimws(layer)
+	
 	if (is.null(options)) { options <- ""[0] }
 
 	if (filetype == "ESRI Shapefile") {

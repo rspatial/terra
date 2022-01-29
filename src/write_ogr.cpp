@@ -43,8 +43,13 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				NULL, NULL, NULL ));
 
 		std::vector<std::string> lyrnms;
-		for ( auto&& poLayer: poDS->GetLayers() ) {
-			lyrnms.push_back((std::string)poLayer->GetName());
+		
+		size_t n = poDS->GetLayerCount();			
+		for (size_t i=0; i<n; i++) {
+			OGRLayer *poLayer = poDS->GetLayer(i);
+			if (poLayer != NULL) {
+				lyrnms.push_back((std::string)poLayer->GetName());
+			}
 		}
 		if (is_in_vector(lyrname, lyrnms)) {
 			if (!overwrite) {
@@ -480,7 +485,7 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 	}
 	GDALClose(poDS);
 	if (layers.size() > 0) {
-		fails += concatenate(layers, " ,");
+		fails += concatenate(layers, ", ");
 	}
 	if (fails.size() > 0) {
 		if (return_error) {

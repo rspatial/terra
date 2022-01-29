@@ -406,7 +406,8 @@ setMethod("query", signature(x="SpatVectorProxy"),
 
 vector_layers <- function(filename, delete="", return_error=FALSE) {
 	p <- SpatVector$new()
-	if (delete != "") {
+	if (any(delete != "")) {
+		delete <- trimws(delete)
 		ok <- p$delete_layers(filename, delete, return_error[1])
 		messages(p, "vector_layers")
 		invisible(ok)

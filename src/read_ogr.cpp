@@ -328,13 +328,15 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
 			
 	size_t n = poDS->GetLayerCount();			
 	out.reserve(n);
-	for ( auto&& poLayer: poDS->GetLayers() ) {
+	for (size_t i=0; i<n; i++) {
+		OGRLayer *poLayer = poDS->GetLayer(i);
 		if (poLayer == NULL) {
 			out.push_back("");
 		} else {
 			out.push_back((std::string)poLayer->GetName());
 		}
 	}
+
 	GDALClose(poDS);
 	return out;
 }	
