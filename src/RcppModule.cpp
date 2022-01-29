@@ -350,7 +350,9 @@ RCPP_MODULE(spat){
 		.method("remove_rows", &SpatVector::remove_rows, "remove_rows")
 		.method("type", &SpatVector::type, "type")
 
-		.method("write", &SpatVector::write, "write")
+		.method("write", &SpatVector::write)
+		.method("delete_layers", &SpatVector::delete_layers)
+		.method("layer_names", &SpatVector::layer_names)
 
 		.method("bienvenue", &SpatVector::bienvenue, "bienvenue")
 		.method("allerretour", &SpatVector::allerretour, "allerretour")

@@ -12,7 +12,7 @@ Write a SpatVector to a file. You can choose one of many file formats.
 
 \usage{
 \S4method{writeVector}{SpatVector,character}(x, filename, filetype=NULL, layer=NULL, 
-		overwrite=FALSE, options="ENCODING=UTF-8")
+		insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8")
 }
 
 \arguments{
@@ -20,6 +20,7 @@ Write a SpatVector to a file. You can choose one of many file formats.
   \item{filename}{character. Output filename}
   \item{filetype}{character. A file format associated with a GDAL "driver" such as "ESRI Shapefile". See \code{gdal(drivers=TRUE)}. If \code{NULL} it is attempted to guess the filetype from the filename extension}
   \item{layer}{character. Output layer name. If \code{NULL} the filename is used}
+  \item{insert}{logical. If \code{TRUE}, a new layer is inserted into the file, of the format allows it (e.g. GPKG allows that)}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{options}{character. Format specific GDAL options such as "ENCODING=UTF-8". Use NULL or "" to not use any options}
 }

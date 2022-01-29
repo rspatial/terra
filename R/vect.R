@@ -403,3 +403,17 @@ setMethod("query", signature(x="SpatVectorProxy"),
 	}
 )
 
+
+vector_layers <- function(f, delete="", return_error=FALSE) {
+	p <- SpatVector$new()
+	if (delete != "") {
+		ok <- p$delete_layers(f, delete, return_error[1])
+		messages(p, "vector_layers")
+		invisible(ok)
+	} else {
+		out <- p$layer_names(f)
+		messages(p, "vector_layers")
+		out
+	}
+}
+

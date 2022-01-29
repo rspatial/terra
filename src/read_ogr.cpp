@@ -305,6 +305,40 @@ SpatGeom getMultiPolygonsGeom(OGRGeometry *poGeometry) {
 	return g;
 }
 
+std::vector<std::string> SpatVector::layer_names(std::string filename) {
+
+	std::vector<std::string> out;
+
+	if (filename == "") {
+		setError("empty filename");
+		return out;
+	}	
+	if (!file_exists(filename)) {
+		setError("file does not exist");
+		return out;
+	}
+
+    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR,
+				NULL, NULL, NULL ));
+
+    if( poDS == NULL ) {
+        setError("Cannot open this dataset" );
+		return out;
+    }
+			
+	size_t n = poDS->GetLayerCount();			
+	out.reserve(n);
+	for ( auto&& poLayer: poDS->GetLayers() ) {
+		if (poLayer == NULL) {
+			out.push_back("");
+		} else {
+			out.push_back((std::string)poLayer->GetName());
+		}
+	}
+	GDALClose(poDS);
+	return out;
+}	
+
 
 bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy) {
 
@@ -343,7 +377,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				std::string lyrsel = lyrnms[0];
 				lyrnms.erase(lyrnms.begin());
 				std::string ccat = concatenate(lyrnms, ", ");
-				std::string msg = "Reading layer: " + lyrsel + "\nOther layers are:\n" + ccat;
+				std::string msg = "Reading layer: " + lyrsel + "\nOther layers: " + ccat;
 				addWarning(msg);
 			}
 			#endif
@@ -379,7 +413,7 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 				filter = filter.aggregate(true);
 			}
 		}
-		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", true, std::vector<std::string>());
+		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", false, true, std::vector<std::string>());
 		if (filter.hasError()) {
 			setError(filter.getError());
 			GDALClose(filterDS);

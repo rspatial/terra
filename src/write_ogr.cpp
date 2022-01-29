@@ -24,11 +24,11 @@
 #include "ogrsf_frmts.h"
 
 
-GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
+GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
     GDALDataset *poDS = NULL;
 	if (filename != "") {
-		if (file_exists(filename) & (!overwrite)) {
+		if (file_exists(filename) && (!overwrite) && (!append)) {
 			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
 			return(poDS);
 		}
@@ -37,22 +37,42 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			return(poDS);
 		}
 	}
-    GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
-    if( poDriver == NULL )  {
-        setError( driver + " driver not available");
-        return poDS;
-    }
-    char **papszMetadata;
-    papszMetadata = poDriver->GetMetadata();
-    if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_VECTOR, FALSE)) {
-		setError(driver + " is not a vector format");
-        return poDS;
+
+	if (append) {	
+		poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR | GDAL_OF_UPDATE,
+				NULL, NULL, NULL ));
+
+		std::vector<std::string> lyrnms;
+		for ( auto&& poLayer: poDS->GetLayers() ) {
+			lyrnms.push_back((std::string)poLayer->GetName());
+		}
+		if (is_in_vector(lyrname, lyrnms)) {
+			if (!overwrite) {
+				setError("layer exists. Use 'overwrite=TRUE' to overwrite it");
+				return(poDS);
+			} else {
+				options.push_back("OVERWRITE=YES");
+			}
+		}
+	} else {
+		GDALDriver *poDriver = GetGDALDriverManager()->GetDriverByName( driver.c_str() );
+		if( poDriver == NULL )  {
+			setError( driver + " driver not available");
+			return poDS;
+		}
+		char **papszMetadata;
+		papszMetadata = poDriver->GetMetadata();
+		if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_VECTOR, FALSE)) {
+			setError(driver + " is not a vector format");
+			return poDS;
+		}
+		if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
+			setError("cannot create a "+ driver + " dataset");
+			return poDS;
+		}	
+		poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
 	}
-    if (!CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE)) {
-		setError("cannot create a "+ driver + " dataset");
-        return poDS;
-	}
-    poDS = poDriver->Create(filename.c_str(), 0, 0, 0, GDT_Unknown, NULL );
+	
     if( poDS == NULL ) {
         setError("Creation of output dataset failed" );
         return poDS;
@@ -283,14 +303,14 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 
-bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool overwrite, std::vector<std::string> options) {
+bool SpatVector::write(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
 	if (nrow() == 0) {
 		addWarning("nothing to write");
 		return false;
 	}
 
-	GDALDataset *poDS = write_ogr(filename, lyrname, driver, overwrite, options);
+	GDALDataset *poDS = write_ogr(filename, lyrname, driver, append, overwrite, options);
     if (poDS != NULL) GDALClose( poDS );
 	if (hasError()) {
 		return false;
@@ -300,7 +320,7 @@ bool SpatVector::write(std::string filename, std::string lyrname, std::string dr
 }
 
 GDALDataset* SpatVector::GDAL_ds() {
-	return write_ogr("", "layer", "Memory", true, std::vector<std::string>());
+	return write_ogr("", "layer", "Memory", false, true, std::vector<std::string>());
 }
 
 
@@ -407,5 +427,69 @@ bool SpatDataFrame::write_dbf(std::string filename, bool overwrite, SpatOptions 
 	return true;
 }
 
+
+bool SpatVector::delete_layers(std::string filename, std::vector<std::string> layers, bool return_error) {
+
+	if (filename == "") {
+		setError("empty filename");
+		return false;
+	}	
+	if (!file_exists(filename)) {
+		setError("file does not exist");
+		return false;
+	}
+	if (layers.size() == 0) return(true);
+
+    GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(filename.c_str(), GDAL_OF_VECTOR | GDAL_OF_UPDATE,
+				NULL, NULL, NULL ));
+
+    if( poDS == NULL ) {
+        setError("Cannot open or update this dataset" );
+        return false;
+    }
+
+	std::string fails;
+	
+	size_t n = poDS->GetLayerCount();
+	for (int i =(n-1); i > 0; i--) {
+		size_t m = layers.size();
+		if (m == 0) break;
+		
+		OGRLayer *poLayer = poDS->GetLayer(i);
+		if (poLayer == NULL) continue;
+		std::string lname = poLayer->GetName();
+		for (size_t j=0; j<m; j++) {
+			if (lname.compare(layers[j]) == 0) {
+				OGRErr err = poDS->DeleteLayer(i);
+				if (err == OGRERR_UNSUPPORTED_OPERATION) {
+					setError("Deleting layer not supported for this file (format / driver)");
+					GDALClose(poDS);
+					return(false);
+				}
+				if (err != OGRERR_NONE) {
+					if (fails.size() > 0) {
+						fails += ", " + layers[j];
+					} else {
+						fails = layers[j];						
+					}
+				}
+				layers.erase(layers.begin() + j);
+				break;
+			}
+		}
+	}
+	GDALClose(poDS);
+	if (layers.size() > 0) {
+		fails += concatenate(layers, " ,");
+	}
+	if (fails.size() > 0) {
+		if (return_error) {
+			setError("deleting failed for: " + fails);
+		} else {
+			addWarning("deleting failed for: " + fails);
+		}
+	}
+	return true;
+}
 
 #endif
