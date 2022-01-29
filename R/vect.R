@@ -404,14 +404,14 @@ setMethod("query", signature(x="SpatVectorProxy"),
 )
 
 
-vector_layers <- function(f, delete="", return_error=FALSE) {
+vector_layers <- function(filename, delete="", return_error=FALSE) {
 	p <- SpatVector$new()
 	if (delete != "") {
-		ok <- p$delete_layers(f, delete, return_error[1])
+		ok <- p$delete_layers(filename, delete, return_error[1])
 		messages(p, "vector_layers")
 		invisible(ok)
 	} else {
-		out <- p$layer_names(f)
+		out <- p$layer_names(filename)
 		messages(p, "vector_layers")
 		out
 	}
