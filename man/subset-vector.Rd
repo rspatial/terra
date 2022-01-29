@@ -11,6 +11,8 @@
 \alias{[,SpatVector,logical,missing-method}
 \alias{[,SpatVector,logical,character-method}
 \alias{[,SpatVector,logical,numeric-method}
+\alias{[,SpatVector,data.frame,missing-method}
+\alias{[,SpatVector,matrix,missing-method}
 
 \title{Subset of a SpatVector}
 

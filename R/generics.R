@@ -600,11 +600,12 @@ setMethod("project", signature(x="SpatRaster"),
 				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], TRUE, opt)			
 			}
 		} else {
-			if (!is.character(y)) {
+			if (inherits(y, "SpatRaster")) {
+				y <- crs(y)
+			} else if (!is.character(y)) {
 				warn("project,SpatRaster", "crs should be a character value")
 				y <- as.character(crs(y))
 			}
-			#x@ptr <- x@ptr$warpcrs(y, method, opt)
 			if (gdal) {
 				x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
 			} else {

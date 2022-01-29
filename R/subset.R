@@ -29,6 +29,16 @@ function(x, subset, filename="", overwrite=FALSE, ...) {
 	return(x)
 } )
 
+setMethod("[", c("SpatRaster", "SpatVector", "missing"),
+	function(x, i, j, ... ,drop=TRUE) {
+		if (drop) {
+			extract(x, i, data.frame=TRUE)[ , -1, drop=FALSE]
+		} else {
+			crop(x, i, mask=TRUE)
+		}
+	}
+)
+
 
 ## expression matching
 setMethod("[", c("SpatRaster", "character", "missing"),
@@ -62,6 +72,10 @@ function(x, i, j, ... ,drop=TRUE) {
 	i <- positive_indices(i, nlyr(x), " [[ ")
 	subset(x, i, ...)
 })
+
+
+
+
 
 
 setMethod("subset", signature(x="SpatVector"), 
@@ -186,3 +200,13 @@ function(x, i, j, ... , drop=FALSE) {
 	}
 })
 
+
+setMethod("[", c("SpatVector", "matrix", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	x[i[,1]]
+})
+
+setMethod("[", c("SpatVector", "data.frame", "missing"),
+function(x, i, j, ... , drop=FALSE) {
+	x[i[,1]]
+})
