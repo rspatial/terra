@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-16</span>
       </span>
     </div>
 
@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.5-15" id="version-15-15">version 1.5-15<a class="anchor" aria-label="anchor" href="#version-15-15"></a></h2>
+<h2 class="page-header" data-toc-text="1.5-16" id="version-15-16">version 1.5-16<a class="anchor" aria-label="anchor" href="#version-15-16"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-5-15">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-15"></a></h3>
+<h3 id="bug-fixes-1-5-16">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-16"></a></h3>
 <ul><li>
 <code>app&lt;SpatRasterDataset&gt;</code> ignored the filename. <a href="https://github.com/rspatial/terra/issues/498" class="external-link">#498</a> by jszhao</li>
 <li>
@@ -68,16 +68,18 @@
 <code>as.data.frame&lt;SpatRaster&gt;</code> returned integers if the file stored values as integers, even if there was a scale/offset that creates decimal numbers <a href="https://github.com/rspatial/terra/issues/509" class="external-link">#509</a> by Kodi Arfer</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-5-15">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-15"></a></h3>
+<h3 id="enhancements-1-5-16">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-16"></a></h3>
 <ul><li>
 <code>distance</code>, <code>gridDistance</code>, <code>direction</code> and <code>patches</code> now process all layers of the input SpatRaster. <a href="https://github.com/rspatial/terra/issues/503" class="external-link">#503</a> by Chris Haak</li>
 <li>consistent copy-on-modify behavior in <code>()&lt;-</code> methods. in-place updating available with <code>set.</code> methods such as <code>set.names</code> and <code>set.values</code>. <a href="https://github.com/rspatial/terra/issues/493" class="external-link">#493</a> by Jean Romain and <a href="https://github.com/rspatial/terra/issues/511" class="external-link">511</a> by Bryan Fuentes</li>
 <li>much faster writing of GPGK vector data by using a single transaction (following sf) <a href="https://github.com/rspatial/terra/issues/489" class="external-link">#460</a> by Krzysztof Dyba</li>
 <li>
 <code>aggregate&lt;SpatRaster&gt;</code> now accepts functions that return more than one value per aggregated cell</li>
+<li>
+<code>writeVector</code> has new argument <code>insert</code> to add a layer to an existing file (e.g. GPKG).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-5-15">new<a class="anchor" aria-label="anchor" href="#new-1-5-15"></a></h3>
+<h3 id="new-1-5-16">new<a class="anchor" aria-label="anchor" href="#new-1-5-16"></a></h3>
 <ul><li>new option <code>method="weights"</code> for <code>spatSample&lt;SpatRaster&gt;</code>
 </li>
 <li>new <code>mask&lt;SpatVector,SpatVector&gt;</code> method to select intersecting geometries</li>
@@ -90,7 +92,7 @@
 <li>new method <code>query&lt;SpatVectorProxy&gt;</code> to extract parts of a SpatVectorProxy</li>
 </ul></div>
 <div class="section level3">
-<h3 id="name-changes-1-5-15">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-5-15"></a></h3>
+<h3 id="name-changes-1-5-16">name changes<a class="anchor" aria-label="anchor" href="#name-changes-1-5-16"></a></h3>
 <p>To avoid name clashes with tidyverse</p>
 <ul><li>arrow -&gt; north</li>
 <li>src -&gt; sprc</li>
