@@ -46,7 +46,7 @@ SpatRaster or SpatExtent
 }
 
 \seealso{
-\code{\link{mosaic}}
+Combining tiles with \code{\link{vrt}} may be more efficient. See \code{\link{mosaic}} for averaging overlapping regions. 
 }
 
 \note{
@@ -68,7 +68,7 @@ m3 <- merge(y, x, z)
 
 # if you have many SpatRasters make a SpatRasterCollection from a list
 rlist <- list(x, y, z)
-rsrc <- src(rlist)
+rsrc <- sprc(rlist)
 
 m <- merge(rsrc)
 

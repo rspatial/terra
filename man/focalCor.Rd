@@ -45,12 +45,11 @@ set.seed(0)
 r[[1]] <- flip(r[[1]], "horizontal")
 r[[2]] <- flip(r[[2]], "vertical") + init(rast(r,1), runif)
 r[[3]] <- init(rast(r,1), runif)
-x <- focalCor(r, w=5, cor)
 
 # suppress warning "the standard deviation is zero"
-x <- focalCor(r, w=5, function(x, y) suppressWarnings(cor(x, y)))
+suppressWarnings(x <- focalCor(r, w=5, cor))
 
-# this does not happen when using a larger window
+# this warning does not occur when using a larger window
 x <- focalCor(r, w=9, function(x, y) cor(x, y))
 plot(x)
 }

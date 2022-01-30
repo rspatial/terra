@@ -58,7 +58,7 @@ m2 <- mosaic(z, y, x)
 
 # if you have many SpatRasters make a SpatRasterCollection from a list
 rlist <- list(x, y, z)
-rsrc <- src(rlist)
+rsrc <- sprc(rlist)
 
 m <- mosaic(rsrc)
 }

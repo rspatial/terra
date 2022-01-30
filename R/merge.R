@@ -22,7 +22,7 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 
-		rc <- src(x, y, ...)
+		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		x@ptr <- rc@ptr$merge(opt)
 		messages(x, "merge")
@@ -42,7 +42,7 @@ setMethod("merge", signature(x="SpatRasterCollection", "missing"),
 
 setMethod("mosaic", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, ..., fun="mean", filename="", overwrite=FALSE, wopt=list()) { 
-		rc <- src(x, y, ...)
+		rc <- sprc(x, y, ...)
 		opt <- spatOptions(filename, overwrite, wopt=wopt)
 		x@ptr <- rc@ptr$mosaic(fun, opt)
 		messages(x, "mosaic")

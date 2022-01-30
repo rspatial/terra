@@ -253,7 +253,7 @@ setMethod("sprc", signature(x="missing"),
 
 setMethod("sprc", signature(x="SpatRaster"), 
 	function(x, ...) {
-		src(list(x, ...))
+		sprc(list(x, ...))
 	}
 )
 
