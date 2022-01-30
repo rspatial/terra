@@ -551,3 +551,9 @@ setMethod("plot", signature(x="SpatVector", y="missing"),
 	}
 )
 
+
+setMethod("plot", signature(x="SpatVectorProxy", y="missing"), 
+	function(x, y, ...)  {
+		plot(ext(x), ...)
+	}
+)

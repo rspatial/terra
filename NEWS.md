@@ -1,4 +1,4 @@
-# version 1.5-15
+# version 1.5-16
 
 ## bug fixes
 
@@ -19,6 +19,8 @@
 - consistent copy-on-modify behavior in `()<-` methods. in-place updating available with `set.` methods such as `set.names` and `set.values`. [#493](https://github.com/rspatial/terra/issues/493) by Jean Romain and [511](https://github.com/rspatial/terra/issues/511) by Bryan Fuentes
 - much faster writing of GPGK vector data by using a single transaction (following sf) [#460](https://github.com/rspatial/terra/issues/489) by Krzysztof Dyba
 - `aggregate<SpatRaster>` now accepts functions that return more than one value per aggregated cell
+- `writeVector` has new argument `insert` to add a layer to an existing file (e.g. GPKG).
+
 
 ## new
 
