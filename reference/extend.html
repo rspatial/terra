@@ -18,7 +18,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-18</span>
       </span>
     </div>
 
@@ -56,7 +56,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">extend</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span> 
+<span class="fu">extend</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, snap<span class="op">=</span><span class="st">"near"</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span> 
 
 <span class="co"># S4 method for SpatExtent</span>
 <span class="fu">extend</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></code></pre></div>
@@ -69,6 +69,8 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 <dt>y</dt>
 <dd><p>If <code>x</code> is a SpatRaster, <code>y</code> should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide two positive integers indicating the number of rows and columns that need to be added at each side (or a single positive integer when the number of rows and columns is equal)</p>  
 <p>If <code>x</code> is a SpatExtent, <code>y</code> should be a numeric vector of 1, 2, or 4 elements</p></dd>
+<dt>snap</dt>
+<dd><p>character. One of "near", "in", or "out". Used to align <code>y</code> to the geometry of <code>x</code></p></dd>
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 <dt>overwrite</dt>
