@@ -1,9 +1,17 @@
 
 setMethod("makeTiles", signature(x="SpatRaster"), 
-	function(x, y, filename="tile_.tif", ...) {
+	function(x, y, expand=FALSE, filename="tile_.tif", ...) {
+
+		if (!inherits(y, "SpatRaster")) error("makeTiles", "y must be a SpatRaster")
+		opt = spatOptions()
+		ff <- x@ptr$make_tiles(y@ptr, expand[1], na.rm[1], opt)
+		return (ff)
+
+
 		if (!hasValues(x)) error("makeTiles", "x has no values")
-		stopifnot(inherits(y, "SpatRaster")) 
-		y <- crop(y[[1]], x, snap="out")
+		y <- rast(y)[[1]]
+		if (expand) y <- expand(y, ext(x), snap="out")
+		y <- crop(rast(y)[[1]], x, snap="out")
 		d <- 1:ncell(y)
 		filename <- filename[1]
 		filename <- filename[!is.na(filename)]

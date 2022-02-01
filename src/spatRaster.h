@@ -578,7 +578,7 @@ class SpatRaster {
 		SpatRaster clumps(int directions, bool zeroAsNA, SpatOptions &opt);
 
 		SpatRaster edges(bool classes, std::string type, unsigned directions, double falseval, SpatOptions &opt);
-		SpatRaster extend(SpatExtent e, SpatOptions &opt);
+		SpatRaster extend(SpatExtent e, std::string snap, SpatOptions &opt);
 		std::vector<std::vector<std::vector<double>>> extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		std::vector<double> extractVectorFlat(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt);
 		
@@ -626,6 +626,12 @@ class SpatRaster {
 		std::vector<double> line_cells(SpatGeom& g);
 		SpatRaster logic(SpatRaster x, std::string oper, SpatOptions &opt);
 		SpatRaster logic(bool x, std::string oper, SpatOptions &opt);
+
+		SpatExtent ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2);
+		SpatExtent ext_from_cell(double cell);
+
+		std::vector<std::string> make_tiles(SpatRaster x, bool expand, bool narm, std::string filename, SpatOptions &opt);
+
 		SpatRaster mask(SpatRaster x, bool inverse, double maskvalue, double updatevalue, SpatOptions &opt);
 		SpatRaster mask(SpatRaster x, bool inverse, std::vector<double> maskvalues, double updatevalue, SpatOptions &opt);
 

@@ -639,6 +639,8 @@ RCPP_MODULE(spat){
 		.method("costDistance", &SpatRaster::costDistance)
 		.method("rastDistance", &SpatRaster::distance)
 		.method("rastDirection", &SpatRaster::direction)
+		.method("make_tiles", &SpatRaster::make_tiles)
+		.method("ext_from_rc", &SpatRaster::ext_from_rc)
 
 		.method("vectDisdirRasterize", &SpatRaster::disdir_vector_rasterize) 
 		.method("vectDistanceDirect", &SpatRaster::distance_vector) 

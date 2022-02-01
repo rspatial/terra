@@ -14,7 +14,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
 }
 
 \usage{
-\S4method{extend}{SpatRaster}(x, y, filename="", overwrite=FALSE, ...) 
+\S4method{extend}{SpatRaster}(x, y, snap="near", filename="", overwrite=FALSE, ...) 
 
 \S4method{extend}{SpatExtent}(x, y) 
 }
@@ -24,6 +24,7 @@ You can also enlarge a SpatExtent with this method, or with algebraic notation (
   \item{y}{If \code{x} is a SpatRaster, \code{y} should be a SpatExtent, or an object from which it can be extracted (such as SpatRaster and SpatVector objects). Alternatively, you can provide two positive integers indicating the number of rows and columns that need to be added at each side (or a single positive integer when the number of rows and columns is equal)
   
   If \code{x} is a SpatExtent, \code{y} should be a numeric vector of 1, 2, or 4 elements}
+  \item{snap}{character. One of "near", "in", or "out". Used to align \code{y} to the geometry of \code{x}} 
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

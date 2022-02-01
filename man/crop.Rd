@@ -26,7 +26,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{y}{SpatRaster, SpatVector, SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a \code{SpatExtent})}
-  \item{snap}{character. One of "near", "in", or "out"}  
+  \item{snap}{character. One of "near", "in", or "out". Used to align \code{y} to the geometry of \code{x}} 
   \item{mask}{logical. Should \code{y} be used to mask? Only used if \code{y} is a SpatVector}  
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}

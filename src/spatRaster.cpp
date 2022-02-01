@@ -1342,14 +1342,14 @@ double SpatRaster::cellFromRowCol (int_64 row, int_64 col) {
 }
 
 std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<int_64> row, std::vector<int_64> col) {
-	recycle(row, col);
 	size_t n = row.size();
+	size_t m = col.size();
 	double nc = ncol();
 	double nr = nrow();
 	std::vector<double> x;
-	x.reserve(n * n);
+	x.reserve(n * m);
 	for (size_t i=0; i<n; i++) {
-		for (size_t j=0; j<n; j++) {
+		for (size_t j=0; j<m; j++) {
 			if (row[i] < 0 || row[i] >= nr || col[j]<0 || col[j] >= nc) {
 				x.push_back(NAN);				
 			} else {
@@ -1357,21 +1357,6 @@ std::vector<double> SpatRaster::cellFromRowColCombine(std::vector<int_64> row, s
 			}
 		}
 	}
-
-/*
-	for (size_t i=0; i<n; i++) {
-		for (size_t j=0; j<n; j++) {
-			x[i*n+j] = (row[i]<0 || row[i] >= nr || col[j]<0 || col[j] >= nc) ? NAN : row[i] * nc + col[j];
-		}
-	}
-	// duplicates occur if recycling occurs
-	// could be avoided by smarter combination
-	//x.erase(std::remove_if(x.begin(), x.end(),
-    //        [](const double& value) { return std::isnan(value); }), x.end());
-
-	//std::sort(x.begin(), x.end());
-	//	x.erase(std::unique(x.begin(), x.end()), x.end());
-*/
 	return x;
 }
 
