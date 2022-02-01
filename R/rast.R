@@ -168,6 +168,7 @@ setMethod("rast", signature(x="character"),
 		}
 		r <- methods::new("SpatRaster")
 		f <- .fullFilename(x)
+		f <- enc2utf8(f)
 		#subds <- subds[1]
 		if (is.null(opts)) opts <- ""[0]
 		if (length(subds) == 0) subds = 0

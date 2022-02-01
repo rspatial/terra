@@ -456,7 +456,7 @@ function(x, i, j, ... , drop=TRUE) {
 	} else if (ncol(i) == 2) {
 		i <- cellFromXY(x, i)
 	} else {
-		error(" [", "cannot extract values with a matrix of these dimensions")
+		error(" [", "cannot extract values with a ` of these dimensions")
 	}
 	`[`(x, i, drop=drop)
 })
@@ -521,8 +521,11 @@ function(x, i, j, ..., drop=FALSE) {
 
 setMethod("extract", c("SpatVector", "SpatVector"),
 function(x, y, ...) {
-	r <- relate(y, x, "within")
-	e <- apply(r, 1, which)
+
+	#r <- relate(y, x, "within")
+	#e <- apply(r, 1, which)
+	r <- relate(x, y, "covers")
+	e <- apply(r, 2, which)
 	if (length(e) == 0) {
 		e <- list(e)
 	}
