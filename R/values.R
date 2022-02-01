@@ -225,6 +225,7 @@ setMethod("inMemory", signature(x="SpatRaster"),
 setMethod("sources", signature(x="SpatRaster"), 
 	function(x, nlyr=FALSE, bands=FALSE) {
 		src <- x@ptr$filenames
+		Encoding(src) <- "UTF-8"
 		if (bands) {
 			nls <- x@ptr$nlyrBySource()
 			d <- data.frame(sid=rep(1:length(src), nls), 

@@ -118,6 +118,13 @@ setMethod ("show" , "SpatVector",
 		cat(" geometry    :", geomtype(object), "\n")
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" ) 
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+		if (object@ptr$source != "") {
+			if (object@ptr$layer != tools::file_path_sans_ext(basename(object@ptr$source))) {
+				cat(" source      : ", basename(object@ptr$source), " (", object@ptr$layer, ")\n", sep="")
+			} else {
+				cat(" source      : ", basename(object@ptr$source), "\n", sep="")
+			}
+		}
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		if (d[2] > 0) {
 			nr <- min(d[1], 3)
@@ -136,6 +143,11 @@ setMethod ("show" , "SpatVectorProxy",
 		cat(" geometry    :", geomtype(object), "\n")
 		cat(" dimensions  : ", d[1], ", ", d[2], "  (geometries, attributes)\n", sep="" ) 
 		cat(" extent      : ", e[1], ", ", e[2], ", ", e[3], ", ", e[4], "  (xmin, xmax, ymin, ymax)\n", sep="")
+		if (object@ptr$v$layer != tools::file_path_sans_ext(basename(object@ptr$v$source))) {
+			cat(" source      : ", basename(object@ptr$v$source), " (", object@ptr$v$layer, ")\n", sep="")
+		} else {
+			cat(" source      : ", basename(object@ptr$v$source), "\n", sep="")
+		}
 		cat(" coord. ref. :", .name_or_proj4(object), "\n")
 		dd <- get.data.frame(object)
 		printDF(dd, 0, TRUE)
