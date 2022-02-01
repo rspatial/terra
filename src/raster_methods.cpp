@@ -134,9 +134,13 @@ std::vector<std::string> SpatRaster::make_tiles(SpatRaster x, bool expand, bool 
 	size_t nl = nlyr();
 	for (size_t i=0; i<d.size(); i++) {
 		std::string fout = f + std::to_string(d[i]) + fext;
-		opt.set_filenames({fout});
 		SpatExtent exi = x.ext_from_cell(i); 
+		opt.set_filenames({fout});
 		SpatRaster out = crop(exi, "near", opt);
+		if (out.hasError()) {
+			setError(out.getError());
+			return ff;
+		}
 		if ( out.hasValues() ) {
 			if (narm) {
 				std::vector<double> rmin = out.range_min();

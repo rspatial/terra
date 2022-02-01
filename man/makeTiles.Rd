@@ -15,14 +15,15 @@ Divide a SpatRaster into "tiles". The cell of another SpatRaster (normally with 
 }
 
 \usage{
-\S4method{makeTiles}{SpatRaster}(x, y, expand=FALSE, filename="tile_.tif", ...)
+\S4method{makeTiles}{SpatRaster}(x, y, filename="tile_.tif", expand=FALSE, na.rm=FALSE, ...)
 }
 
 \arguments{
   \item{x}{SpatRaster}
   \item{y}{SpatRaster or SpatVector}
-  \item{expand}{logical. If \code{TRUE}, the extent of \code{y} is expanded to assure that it covers all of \code{x}}
   \item{filename}{character. Output filename template. Filenames will be altered by adding the tile number for each tile}
+  \item{expand}{logical. If \code{TRUE}, the extent of \code{y} is expanded to assure that it covers all of \code{x}}
+  \item{na.rm}{logical. If \code{TRUE}, tiles with only missing values are ignored}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 
