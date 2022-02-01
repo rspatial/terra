@@ -14,6 +14,7 @@ setMethod("blockSize", signature(x="SpatRaster"),
 
 setMethod("writeStart", signature(x="SpatRaster", filename="character"), 
 	function(x, filename="", overwrite=FALSE, n=4, ...) {
+		filename <- enc2utf8(filename)
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
 		ok <- x@ptr$writeStart(opt)
 		messages(x, "writeStart")
@@ -52,6 +53,7 @@ function(x, filename="", overwrite=FALSE, ...) {
 	if (tools::file_ext(filename) %in% c("nc", "cdf") || isTRUE(list(...)$filetype=="netCDF")) {
 		warn("consider writeCDF to write ncdf files")
 	}
+	filename <- enc2utf8(filename)
 	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$writeRaster(opt)
 	x <- messages(x, "writeRaster")
@@ -86,6 +88,7 @@ get_filetype <- function(filename) {
 setMethod("writeVector", signature(x="SpatVector", filename="character"), 
 function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8") {
 	filename <- trimws(filename)
+	filename <- enc2utf8(filename)
 	if (filename == "") {
 		error("writeVector", "provide a filename")
 	}

@@ -48,6 +48,7 @@ setMethod("vect", signature(x="character"),
 		} else {
 			p@ptr <- SpatVector$new()
 			x <- normalizePath(x)
+			x <- enc2utf8(x)
 			proxy <- isTRUE(proxy)
 			#if (proxy) query <- ""
 			if (is.null(filter)) {
