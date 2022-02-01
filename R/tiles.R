@@ -1,20 +1,10 @@
 
 setMethod("makeTiles", signature(x="SpatRaster"), 
 	function(x, y, filename="tile_.tif", ...) {
+		if (!hasValues(x)) error("makeTiles", "x has no values")
 		stopifnot(inherits(y, "SpatRaster")) 
-		y <- y[[1]]
-		if (!hasValues(y)) values(y) <- 1:ncell(y)
-		y <- crop(y, x, snap="out")
-		v <- as.polygons(y)
-		#} else if (inherits(y, "SpatVector")) {
-		#	if (ncol(y) > 0) {
-		#		v <- aggregate(y, colnames(y)[1])
-		#	} else {
-		#		v <- y
-		#		values(v) <- data.frame(tile=1:nrow(v))
-		#	}
-		#}
-		d <- unlist(as.data.frame(v))
+		y <- crop(y[[1]], x, snap="out")
+		d <- 1:ncell(y)
 		filename <- filename[1]
 		filename <- filename[!is.na(filename)]
 		filename <- filename[filename != ""]
@@ -22,11 +12,10 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 		e <- paste0(".", tools::file_ext(filename))
 		f <- tools::file_path_sans_ext(filename)
 		ff <- paste0(f, d, e)
-
-		for (i in 1:length(v)) {
-			crop(x, v[i,], filename=ff[i], ...)
+		for (i in d) {
+			crop(x, y[i,drop=FALSE], filename=ff[i], ...)
 		}
-		return (ff)
+		ff[file.exists(ff)]
 	}
 )
 
