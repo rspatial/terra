@@ -60,7 +60,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
 <span class="fu">spatSample</span><span class="op">(</span><span class="va">x</span>, <span class="va">size</span>, method<span class="op">=</span><span class="st">"random"</span>, replace<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span>,
   as.raster<span class="op">=</span><span class="cn">FALSE</span>, as.df<span class="op">=</span><span class="cn">TRUE</span>, as.points<span class="op">=</span><span class="cn">FALSE</span>, values<span class="op">=</span><span class="cn">TRUE</span>, 
-  cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, warn<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+  cells<span class="op">=</span><span class="cn">FALSE</span>, xy<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, warn<span class="op">=</span><span class="cn">TRUE</span>, weights<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
 
 
 <span class="co"># S4 method for SpatVector</span>
@@ -98,6 +98,8 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <dd><p>SpatExtent or NULL to restrict sampling to a a subset of the area of <code>x</code></p></dd>
 <dt>warn</dt>
 <dd><p>logical. Give a warning if the sample size returned is smaller than requested</p></dd>
+<dt>weights</dt>
+<dd><p>SpatRaster. Used to provide weights when <code>method="stratified"</code></p></dd>
 <dt>strata</dt>
 <dd><p>if not NULL, stratified random sampling is done, taking <code>size</code> samples from each stratum. If <code>x</code> has polygon geometry, <code>strata</code> must be a field name (or index) in <code>x</code>. If <code>x</code> has point geometry, <code>strata</code> can be a SpatVector of polygons or a SpatRaster</p></dd>
 <dt>chess</dt>
