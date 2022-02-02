@@ -3,11 +3,16 @@
 # Version 0.9
 # License GPL v3
 
-parfun <- function(cls, data, fun, model, ...) {
-	nr <- nrow(data)
+parfun <- function(cls, d, fun, model, ...) {
+	nr <- nrow(d)
 	nc <- length(cls)
-	s <- split(data, rep(1:nc, each=ceiling(nr/nc), length.out=nr))
-	unlist(parallel::clusterApply(cls, s, function(i, ...) fun(model, i, ...), ...))
+	s <- split(d, rep(1:nc, each=ceiling(nr/nc), length.out=nr))
+	p <- parallel::clusterApply(cls, s, function(i, ...) fun(model, i, ...), ...)
+	if (!is.null(dim(p[[1]]))) {
+		do.call(rbind, p)
+	} else {
+		unlist(p)
+	}
 }
 
 
