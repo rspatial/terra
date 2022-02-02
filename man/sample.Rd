@@ -20,7 +20,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 \usage{
 \S4method{spatSample}{SpatRaster}(x, size, method="random", replace=FALSE, na.rm=FALSE,
 	as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, 
-	cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE)
+	cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL)
 
 
 \S4method{spatSample}{SpatVector}(x, size, method="random", strata=NULL, chess="")
@@ -42,6 +42,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
   \item{xy}{logical. If \code{TRUE}, cell coordinates are returned}
   \item{ext}{SpatExtent or NULL to restrict sampling to a a subset of the area of \code{x}}
   \item{warn}{logical. Give a warning if the sample size returned is smaller than requested}
+  \item{weights}{SpatRaster. Used to provide weights when \code{method="stratified"}}
 
   \item{strata}{if not NULL, stratified random sampling is done, taking \code{size} samples from each stratum. If \code{x} has polygon geometry, \code{strata} must be a field name (or index) in \code{x}. If \code{x} has point geometry, \code{strata} can be a SpatVector of polygons or a SpatRaster}
   \item{chess}{character. One of "", "white", or "black". For stratified sampling if \code{strata} is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard}

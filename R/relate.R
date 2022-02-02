@@ -195,7 +195,8 @@ setMethod("nearest", signature(x="SpatVector"),
 				zz$from_id = zz$from_id + 1
 				return(zz)
 			} else {
-				values(z) <- data.frame(from_id = 1:nrow(z), to_id = z$id + 1, distance=z$distance)
+				z$to_id = z$to_id + 1
+				z$from_id = z$from_id + 1
 				return(z)
 			}
 		} else {

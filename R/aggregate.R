@@ -190,8 +190,8 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 		}
 	}
 
-	dn <- aggregate(d[, by,drop=FALSE], d[, by, drop=FALSE], length)
-	colnames(dn)[2] = "agg_n"
+	dn <- aggregate(d[, by[1],drop=FALSE], d[, by, drop=FALSE], length)
+	colnames(dn)[ncol(dn)] = "agg_n"
 	if (NCOL(da)>1) {
 		dn <- merge(da, dn, by=by)
 	}
@@ -224,21 +224,28 @@ setMethod("aggregate", signature(x="SpatVector"),
 				error("aggregate", "by should be character or numeric")
 			}
 			
-			removeBY <- FALSE
 			d <- as.data.frame(x)
+			mvars <- FALSE
 			if (length(iby) > 1) {
-				cvar <- paste0("cnct_",  basename(tempfile()))
-				d[[cvar]] <- apply(d[, iby], 1, function(i) paste(i, collapse="_"))
-				by <- cvar
-				values(x) <- d[,cvar,drop=FALSE]
-				removeBY <- TRUE
+				cvar <- apply(d[, iby], 1, function(i) paste(i, collapse="_"))
+				by <- basename(tempfile())
+				values(x) <- NULL
+				x[[by]] <- cvar 
+				mvars <- TRUE
 			} else {
-				by <- names(x)[by]			
+				by <- names(x)[iby]	
 			}
 
 			x@ptr <- x@ptr$aggregate(by, dissolve)
 			messages(x)
-			a <- aggregate_attributes(d, by, fun)
+			
+			if (mvars) {
+				d[[by]] <- cvar
+				a <- aggregate_attributes(d, c(by, names(d)[iby]), fun)			
+			} else {
+				a <- aggregate_attributes(d, names(d)[iby], fun)
+			}
+			
 			if (any(is.na(d[[by]]))) {
 				# because NaN and NA are dropped
 				i <- nrow(a)+(1:2)
@@ -248,10 +255,10 @@ setMethod("aggregate", signature(x="SpatVector"),
 			} else {
 				i <- match(a[[by]], x[[by,drop=TRUE]])			
 			}
+			if (mvars) {
+				a[[by]] <- NULL
+			}
 			values(x) <- a[i,]
-		}
-		if (removeBY) {
-			x[[by]] <- NULL
 		}
 		x
 	}
