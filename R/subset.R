@@ -161,12 +161,19 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "missing", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	j <- match(j, names(x))
-	j <- stats::na.omit(j)
-	if (length(j) == 0) { 
-		j <- 0
+	if (j[1] == "") {
+		jj <- 0
+	} else {
+		jj <- match(j, names(x))
+		if (any(is.na(jj))) {
+			mis <- paste(j[is.na(jj)], collapse=", ")
+			error(" x[,j] ", paste("name(s) not in x:", mis))
+		}
+		if (length(jj) == 0) { 
+			jj <- 0
+		}
 	}
-	x[,j,drop=drop]
+	x[,jj,drop=drop]
 })
 
 setMethod("[", c("SpatVector", "numeric", "character"),

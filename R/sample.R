@@ -5,7 +5,15 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 	}
 	x <- classify(x, cbind(-Inf, 0, NA))
 	res <- as.data.frame(x, cells=cells, xy=(xy | as.points))
-	i <- sample(nrow(res), size, prob=res[,ncol(res)], replace=replace)
+	if (!replace) {
+		if (size >= nrow(res)) {
+			i <- 1:nrow(res)
+		} else {
+			i <- sample(nrow(res), size, prob=res[,ncol(res)], replace=replace)		
+		}
+	} else {
+		i <- sample(nrow(res), size, prob=res[,ncol(res)], replace=replace)
+	}
 	res <- res[i,]
 	if (as.points) {
 		res <- vect(res, c("x", "y"), crs=crs(x))
@@ -20,7 +28,7 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 }
 
 
-sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2) {
+sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2, weights=NULL) {
 	
 	if ((!xy) && (!as.points)) cells <- TRUE
 	
@@ -28,13 +36,30 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	exp <- max(1, exp)
 	ss <- exp * size * nrow(f)
 	lonlat <- is.lonlat(x, perhaps=TRUE, warn=FALSE)
-	if ((!lonlat) && (ss > (0.8 * ncell(x)))) { 
-		sr <- cbind(1:ncell(x), values(x))
-		colnames(sr) <- c("cell", names(x))
-	} else {
-		sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=warn)
-	}
 	
+	if (is.null(weights)) {
+		if ((!lonlat) && (ss > (0.8 * ncell(x)))) { 
+			sr <- cbind(1:ncell(x), values(x))
+			colnames(sr) <- c("cell", names(x))
+		} else {
+			sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=warn)
+		}
+	} else {
+		if (!inherits(weights, "SpatRaster")) {
+			error("spatSample", "weights must be a SpatRaster")			
+		}
+		if (!compareGeom(x, weights)) {
+			error("spatSample", "geometry of weights does not match the geometry of x")
+		}	
+		sr <- vector("list", length = nrow(f))
+		for (i in 1:nrow(f)) {
+			r <- x == f[i,2]
+			r <- mask(weights, r, maskvalue=TRUE, inverse=TRUE)
+			sr[[i]] <- terra:::sampleWeights(r, size, replace=replace, cells=TRUE, ext=ext)[,1]
+		}
+		sr <- unlist(sr)
+		sr <- cbind(cell=sr, extract(x, sr)) 
+	}
 	ys <- list()
 	notfound <- NULL
 
@@ -53,13 +78,13 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	colnames(res) <- c('cell', names(x))
 	
 	ures <- unique(res[,2])
-	miss <- !(ures %in% f[,"value"])
+	miss <- !(f[,"value"] %in% ures)
 	if (any(miss) && warn) {
 		miss <- which(miss)
 		if (length(miss)== 1) {
-			warn("sample", 'no samples for stratum: ', tanm)
+			warn("sample", 'no samples for stratum: ', miss)
 		} else if (length(miss) > 1) {
-			warn("sample", 'no samples for strata: ', paste(tanm, collapse=', '))
+			warn("sample", 'no samples for strata: ', paste(miss, collapse=', '))
 		}
 	}
 	
@@ -90,6 +115,8 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	}	
 	res
 }
+
+
 
 
 
@@ -204,7 +231,7 @@ set_factors <- function(x, ff, cts, asdf) {
 
 
 setMethod("spatSample", signature(x="SpatRaster"), 
-	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE) {
+	function(x, size, method="random", replace=FALSE, na.rm=FALSE, as.raster=FALSE, as.df=TRUE, as.points=FALSE, values=TRUE, cells=FALSE, xy=FALSE, ext=NULL, warn=TRUE, weights=NULL) {
 
 		size <- round(size)
 		if (any(size < 1)) {
@@ -226,8 +253,11 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			if (!hasValues(x)) {
 				error("x has no values")			
 			}
-			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=5) )
+			return( sampleStratified(x, size, replace=replace, as.df=as.df, as.points=as.points, cells=cells, xy=xy, ext=ext, warn=warn, exp=5, weights=weights) )
+		} else if (!is.null(weights)) {
+			error("spatSample", "argument weights is only used when method='stratified'")
 		}
+		
 		if (method == "weights") {
 			if (as.raster) {
 				error("as.raster is not valid for method='weights'")

@@ -201,26 +201,43 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 
 setMethod("aggregate", signature(x="SpatVector"),
 	function(x, by=NULL, dissolve=TRUE, fun="mean", ...) {
-		if (length(by) > 1) {
-			# to be fixed
-			error("aggregate", "this method can only aggregate by one variable")
-		}
-		if (is.numeric(by[1])) {
-			 i <- round(by)
-			 if ((i > 0) & (i <= ncol(x))) {
-				 by <- names(x)[i]
-			 } else {
-				 error("aggregate", "invalid column number supplied: ", by)
-			 }
-		}
-
 		if (is.null(by)) {
 			x$aggregate_by_variable = 1;
 			x@ptr <- x@ptr$aggregate("aggregate_by_variable", dissolve)
 			x$aggregate_by_variable = NULL;
 		} else {
+			if (is.character(by)) {
+				by <- unique(by)
+				iby <- match(by, names(x))
+				if (any(is.na(iby))) {
+					bad <- paste(by[is.na(iby)], collapse=", ")
+					error("aggregate", "invalid name(s) in by: ", bad)					
+				}
+			} else if (is.numeric(by)) {
+				by <- unique(by)
+				iby <- round(by)
+				if (any((iby < 1) | (iby > ncol(x)))) {
+					bad <- iby[(iby < 1) | (iby > ncol(x))]
+					error("aggregate", "invalid column number in by: ", bad)
+				}
+			} else {
+				error("aggregate", "by should be character or numeric")
+			}
+			
+			removeBY <- FALSE
 			d <- as.data.frame(x)
+			if (length(iby) > 1) {
+				cvar <- paste0("cnct_",  basename(tempfile()))
+				d[[cvar]] <- apply(d[, iby], 1, function(i) paste(i, collapse="_"))
+				by <- cvar
+				values(x) <- d[,cvar,drop=FALSE]
+				removeBY <- TRUE
+			} else {
+				by <- names(x)[by]			
+			}
+
 			x@ptr <- x@ptr$aggregate(by, dissolve)
+			messages(x)
 			a <- aggregate_attributes(d, by, fun)
 			if (any(is.na(d[[by]]))) {
 				# because NaN and NA are dropped
@@ -232,6 +249,9 @@ setMethod("aggregate", signature(x="SpatVector"),
 				i <- match(a[[by]], x[[by,drop=TRUE]])			
 			}
 			values(x) <- a[i,]
+		}
+		if (removeBY) {
+			x[[by]] <- NULL
 		}
 		x
 	}
