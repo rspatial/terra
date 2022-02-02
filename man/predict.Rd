@@ -136,6 +136,12 @@ rp3 <- predict(logo, rfm, fun=rfun)
 parallel::stopCluster(cls)
 
 plot(c(rp0, rp1, rp2, rp3))
+
+
+### with two output variables (probabilities for each class)
+v$pa <- as.factor(v$pa)
+rfm2 <- randomForest(formula=pa~., data=v)
+rfp <- predict(logo, rfm2, cores=2, type="prob", cpkgs="randomForest")
 }
 
 }

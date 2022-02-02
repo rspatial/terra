@@ -2,16 +2,19 @@
 
 ## bug fixes
 
+- `writeVector` and `vect` now work with GPGK if the path has non-ascii characters [#518](https://github.com/rspatial/terra/issues/518)
+- The results of `predict` with `cores > 1` and more than one output variable were garbled
+
+
 ## enhancements 
 
-## new
+- `makeTiles` has new arguments `extend` and `na.rm` [#520](https://github.com/rspatial/terra/issues/520) by by L. Dalby
 
 
 
 # version 1.5-17
 
 Released on 2022-01-30
-
 
 ## bug fixes
 
