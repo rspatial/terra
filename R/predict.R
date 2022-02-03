@@ -138,22 +138,29 @@ setMethod("predict", signature(object="SpatRaster"),
 		tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
+		
 		testrow <- round(0.51*nrow(object))
-		d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
+		rnr <- 1
+		if (nc==1) rnr <- min(nrow(object), 20) - testrow + 1
+		d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
 		if (na.rm && all(is.na(d))) {
 			testrow <- ceiling(testrow - 0.25*nrow(object))
-			d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
+			d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
 		}
 		if (na.rm && all(is.na(d))) {
 			testrow <- floor(testrow + 0.5*nrow(object))
-			d <- readValues(object, testrow, 1, 1, nc, TRUE, TRUE)
+			d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
 		}
 		if (na.rm && all(is.na(d))) {
 			d <- spatSample(object, min(1000, ncell(object)), "regular")
 		}
 		if (!na.rm || !all(is.na(d)) || !is.null(index)) {
 			r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
-			nl <- ncol(r)
+			if (ncell(object) > 1) { 
+				nl <- ncol(r)
+			} else {
+				nl <- length(r) 
+			}
 		} else {
 			warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
 		}
