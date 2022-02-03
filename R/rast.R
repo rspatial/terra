@@ -381,7 +381,7 @@ setMethod("rast", signature(x="matrix"),
 			r <- .rastFromXYZ(x, crs=crs, digits=digits, extent=extent)
 		} else {
 			if (is.null(extent)) {
-				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=ext(c(0, 1, 0, 1)))
+				r <- rast(nrows=nrow(x), ncols=ncol(x), extent=ext(c(0, ncol(x), 0, nrow(x))), crs=crs)
 			} else {
 				r <- rast(nrows=nrow(x), ncols=ncol(x), crs=crs, extent=extent)
 			}
