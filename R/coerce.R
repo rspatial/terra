@@ -520,7 +520,10 @@ setAs("Spatial", "SpatVector",
 
 setAs("SpatialGrid", "SpatRaster", 
 	function(from){
-		b <- rast(ext=as.vector(t(from@bbox)), crs=projection(from))
+		p4 <- from@proj4string
+		prj <- attr(p4, "comment")
+		if (is.null(prj)) prj <- p4@projargs
+		b <- rast(ext=as.vector(t(from@bbox)), crs=prj)
 		if (inherits(from, "SpatialGridDataFrame")) {
 			dim(b) <- c(from@grid@cells.dim[2], from@grid@cells.dim[1], ncol(from@data))		
 			b <- setValues(b, as.matrix(from@data))
