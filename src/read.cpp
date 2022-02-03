@@ -276,6 +276,7 @@ bool SpatRaster::readAll() {
 			readChunkGDAL(source[src].values, src, row, nrows, col, ncols);
 			source[src].memory = true;
 			source[src].filename = "";
+			std::iota(source[src].layers.begin(), source[src].layers.end(), 0);			
 		}
 		if (src > 0) {
 			if (!source[0].combine_sources(source[src])) {
