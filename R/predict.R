@@ -37,9 +37,15 @@ parfun <- function(cls, d, fun, model, ...) {
 			}
 			if (is.factor(r)) {
 				r <- as.integer(r)
-			} else if (is.data.frame(r)) {
-				r <- sapply(r, as.numeric)
-			}
+			} 
+			#how could it not be numeric?
+			#else if (is.data.frame(r)) {
+			#	if (nrow(r) > 1) {
+			#		r <- apply(r, as.numeric)
+			#	} else {
+			#		r[] <- as.numeric(r)
+			#	}
+			#}
 			r <- as.matrix(r)
 			if (!all(i)) {
 				m <- matrix(NA, nrow=nl*n, ncol=ncol(r))
@@ -135,37 +141,55 @@ setMethod("predict", signature(object="SpatRaster"),
 
 		nl <- 1
 		nc <- ncol(object)
+		nr <- nrow(object)
 		tomat <- FALSE
 		readStart(object)
 		on.exit(readStop(object))
 		
-		testrow <- round(0.51*nrow(object))
+		testrow <- round(0.51*nr)
 		rnr <- 1
-		if (nc==1) rnr <- min(nrow(object), 20) - testrow + 1
+		if (nc==1) rnr <- min(nr, 20) - testrow + 1
 		d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-		if (na.rm && all(is.na(d))) {
-			testrow <- ceiling(testrow - 0.25*nrow(object))
-			d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-		}
-		if (na.rm && all(is.na(d))) {
-			testrow <- floor(testrow + 0.5*nrow(object))
-			d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
-		}
-		if (na.rm && all(is.na(d))) {
-			d <- spatSample(object, min(1000, ncell(object)), "regular")
-		}
-		if (!na.rm || !all(is.na(d)) || !is.null(index)) {
-			r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
-			if (ncell(object) > 1) { 
-				nl <- ncol(r)
-			} else {
-				nl <- length(r) 
-			}
+		cn <- NULL
+		if (!is.null(index)) {
+			nl <- length(index)
 		} else {
-			warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
+			allna <- FALSE
+			if (na.rm) {
+				allna <- all(is.na(d))
+				if (allna) {
+					testrow <- ceiling(testrow - 0.25*nr)
+					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+					allna <- all(is.na(d))
+				}
+				if (allna) {
+					testrow <- floor(testrow + 0.5*nr)
+					if ((testrow + rnr) > nr) rnr = nr - testrow + 1
+					d <- readValues(object, testrow, rnr, 1, nc, TRUE, TRUE)
+					allna <- all(is.na(d))
+				}
+				if (allna && (ncell(object) < 1000)) {
+					d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
+					allna <- all(is.na(d))
+				}
+				if (allna) {
+					d <- spatSample(object, min(1000, ncell(object)), "regular")
+					allna <- all(is.na(d))
+				}
+			}
+			if (!allna) {
+				r <- .runModel(model, fun, d, nl, const, na.rm, index, ...)
+				if (ncell(object) > 1) { 
+					nl <- ncol(r)
+					cn <- colnames(r)
+				} else {
+					nl <- length(r) 
+				}
+			} else {
+				warn("predict", "Cannot determine the number of output variables. Assuming 1. Use argument 'index' to set it manually")
+			}
 		}
 		out <- rast(object, nlyrs=nl)
-		cn <- colnames(r)
 		if (length(cn) == nl) names(out) <- make.names(cn, TRUE)
 
 		if (cores > 1) {
