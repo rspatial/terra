@@ -171,6 +171,9 @@ setMethod("predict", signature(object="SpatRaster"),
 				if (allna && (ncell(object) < 1000)) {
 					d <- readValues(object, 1, nr, 1, nc, TRUE, TRUE)
 					allna <- all(is.na(d))
+					#if (allna) {
+					#	error("predict", "all predictor values are NA")
+					#}
 				}
 				if (allna) {
 					d <- spatSample(object, min(1000, ncell(object)), "regular")
