@@ -180,13 +180,22 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 <span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">rm</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="headtail.html">head</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x   y lyr.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.1 0.9     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.3 0.9     6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.5 0.9    11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.7 0.9    16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.9 0.9    21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.1 0.7     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5 4.5     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.5 4.5     6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 2.5 4.5    11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 3.5 4.5    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 4.5 4.5    21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.5 3.5     2</span>
 <span class="r-in"><span class="fu">rast</span><span class="op">(</span><span class="va">d</span>, type<span class="op">=</span><span class="st">"xyz"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> class       : SpatRaster </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions  : 5, 5, 1  (nrow, ncol, nlyr)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> resolution  : 1, 1  (x, y)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> extent      : 0, 5, 0, 5  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coord. ref. :  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> source      : memory </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> name        : lyr.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min value   :     1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max value   :    25 </span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
