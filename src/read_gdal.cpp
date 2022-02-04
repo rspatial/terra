@@ -782,9 +782,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	//	} else {
 	//		s.NAflag = NAN;
 	//	}
+		s.has_scale_offset[i] = false;
 		double offset = poBand->GetOffset(&success);
 		if (success) {
 			if (offset != 0) {
+				Rcpp::Rcout << offset << std::endl;
 				s.offset[i] = offset;
 				s.has_scale_offset[i] = true;
 			}
@@ -792,6 +794,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 		double scale = poBand->GetScale(&success);
 		if (success) {
 			if (scale != 1) {
+				Rcpp::Rcout << scale << std::endl;
 				s.scale[i] = scale;
 				s.has_scale_offset[i] = true;
 			} 
