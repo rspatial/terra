@@ -782,13 +782,11 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	//	} else {
 	//		s.NAflag = NAN;
 	//	}
-Rcpp::Rcout << s.has_scale_offset[i] << std::endl;
 
 		s.has_scale_offset[i] = false;
 		double offset = poBand->GetOffset(&success);
 		if (success) {
 			if (offset != 0) {
-				//Rcpp::Rcout << offset << std::endl;
 				s.offset[i] = offset;
 				s.has_scale_offset[i] = true;
 			}
@@ -796,15 +794,11 @@ Rcpp::Rcout << s.has_scale_offset[i] << std::endl;
 		double scale = poBand->GetScale(&success);
 		if (success) {
 			if (scale != 1) {
-				//Rcpp::Rcout << scale << std::endl;
 				s.scale[i] = scale;
 				s.has_scale_offset[i] = true;
 			} 
 		}
 		
-Rcpp::Rcout << s.has_scale_offset[i] << std::endl;
-
-
 		poBand->GetBlockSize(&bs1, &bs2);
 		s.blockcols[i] = bs1;
 		s.blockrows[i] = bs2;
@@ -912,7 +906,6 @@ Rcpp::Rcout << s.has_scale_offset[i] << std::endl;
 		s.names[i] = nm;
 	}
 
-Rcpp::Rcout << s.has_scale_offset[0] << std::endl;
 
 	if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
 		std::vector<std::string> metadata;
