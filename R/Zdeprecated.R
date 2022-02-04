@@ -9,7 +9,7 @@ setMethod ("setCats", "SpatRaster",
 if (!isGeneric("RGB2col")) {setGeneric("RGB2col", function(x, ...) standardGeneric("RGB2col"))}
 setMethod("RGB2col", signature(x="SpatRaster"), 
 	function(x, alpha=FALSE, filename="", overwrite=FALSE, ...) {
-		warn("col2RGB", "this function will be removed. You can use 'colorize' instead")
+		warn("RGB2col", "this function will be removed. You can use 'colorize' instead")
 		rgb2col(x, alpha=FALSE, filename="", overwrite=FALSE, ...)
 	}
 )

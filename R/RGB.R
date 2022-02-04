@@ -101,7 +101,7 @@ rgb2col <- function(x, value, stretch=NULL, grays=FALSE, filename="", overwrite=
 
 	if (!is.null(stretch)) {
 		if (stretch == "lin") {
-			x <- stretch(x, qmin=0.02, qmax=0.98)
+			x <- stretch(x, minq=0.02, maxq=0.98)
 		} else {
 			x <- stretch(x, histeq=TRUE, scale=255)
 		}
