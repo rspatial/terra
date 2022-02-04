@@ -784,15 +784,18 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	//	}
 		double offset = poBand->GetOffset(&success);
 		if (success) {
-			s.offset[i] = offset;
-			s.has_scale_offset[i] = true;
-		} 
+			if (offset != 0) {
+				s.offset[i] = offset;
+				s.has_scale_offset[i] = true;
+			}
+		}
 		double scale = poBand->GetScale(&success);
 		if (success) {
-			s.scale[i] = scale;
-			s.has_scale_offset[i] = true;
-		} 
-
+			if (scale != 1) {
+				s.scale[i] = scale;
+				s.has_scale_offset[i] = true;
+			} 
+		}
 
 		poBand->GetBlockSize(&bs1, &bs2);
 		s.blockcols[i] = bs1;
