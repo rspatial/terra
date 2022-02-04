@@ -43,7 +43,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
-  \item{col}{character. Colors}
+  \item{col}{character. Colors. The default is \code{rev(grDevices::terrain.colors(50))}}
  
   \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval"}
   \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}

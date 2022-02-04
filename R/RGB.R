@@ -172,7 +172,7 @@ setMethod("colorize", signature(x="SpatRaster"),
 			opt <- spatOptions(filename, overwrite, ...)		
 			x@ptr <- x@ptr$hsx2rgb(to, opt)
 		} else if (to == "col") {
-			return(rgb2col(x, stretch=NULL, grays=FALSE, filename=filename, overwrite=overwrite, ...))
+			return(rgb2col(x, stretch=stretch, grays=grays, filename=filename, overwrite=overwrite, ...))
 		}
 		messages(x)
 	}
