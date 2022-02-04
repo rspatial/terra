@@ -15,10 +15,10 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		} else {
 			nl <- nlyr(x)
 			res <- list()
-			z <- values(z)
+			vz <- values(z)
 			nms <- names(x)
 			for (i in 1:nl) {
-				d <- stats::aggregate(values(x[[i]]), list(zone=z), fun, ...)
+				d <- stats::aggregate(values(x[[i]]), list(zone=vz), fun, ...)
 				colnames(d)[2] <- nms[i]
 				res[[i]] <- d
 			}
