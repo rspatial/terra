@@ -417,10 +417,10 @@ RCPP_MODULE(spat){
 	;
 
 
-    class_<SpatRasterSource>("SpatRasterSource")
-		.field_readonly("has_scale_offset", &SpatRasterSource::has_scale_offset)
-		.field_readonly("scale", &SpatRasterSource::scale)
-		.field_readonly("offset", &SpatRasterSource::offset)
+//    class_<SpatRasterSource>("SpatRasterSource")
+///		.field_readonly("has_scale_offset", &SpatRasterSource::has_scale_offset)
+//		.field_readonly("scale", &SpatRasterSource::scale)
+//		.field_readonly("offset", &SpatRasterSource::offset)
 
 //		.field_readonly("time", &SpatRasterSource::time)
 //		.field("srs", &SpatRasterSource::srs, "srs")
@@ -439,7 +439,7 @@ RCPP_MODULE(spat){
 		//.field_readonly("flipped", &SpatRasterSource::flipped)
 		//.field_readonly("rotated", &SpatRasterSource::rotated)
 //		.field_readonly("parameters_changed", &SpatRasterSource::parameters_changed)
-	;
+//	;
 
 
     class_<SpatVectorProxy>("SpatVectorProxy")
@@ -565,7 +565,7 @@ RCPP_MODULE(spat){
 		.property("res", &SpatRaster::resolution)
 
 // only if SpatRasterSource is exposed
-		.field_readonly("source", &SpatRaster::source )
+//		.field_readonly("source", &SpatRaster::source )
 
 		.method("collapse_sources", &SpatRaster::collapse_sources, "collapse_sources" )
 		.method("make_vrt", &SpatRaster::make_vrt, "make_vrt" )
