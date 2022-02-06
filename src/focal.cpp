@@ -76,14 +76,14 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 //  get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
 
 	int_64 wc = w[1] / 2;
-	wr = std::min(wr, std::max((int_64)1, nrows-1));
+	wr = std::min(wr, std::max((int_64)	1, nrows-1));
 	wc = std::min(wc, nc-1);
 
 	size_t n = nrows * nc * w[0] * w[1];
 	std::vector<double> out(n, fillvalue);
 	int_64 nrmax = nrows + startoff + endoff - 1;
 	//int nrmax = d.size() / ncol - 1;
-	int_64 f = 0;
+	size_t f = 0;
 	const bool global = is_global_lonlat();
 
 	for (int_64 r=0; r < nrows; r++) {
@@ -93,7 +93,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 				if ((row < 0) || (row > nrmax)) {
 					f += w[1];
 				} else {
-					unsigned bcell = row * nc;
+					size_t bcell = row * nc;
 					for (int_64 j = -wc; j <= wc; j++) {
 						int_64 col = c + j;
 						if ((col >= 0) && (col < nc)) {
