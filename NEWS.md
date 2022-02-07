@@ -4,7 +4,7 @@
 
 - `writeVector` and `vect` now work with GPGK if the path has non-ascii characters [#518](https://github.com/rspatial/terra/issues/518)
 - The results of `predict` with `cores > 1` and more than one output variable were garbled
-- `zonal` dropped category names when using an externam (R) function [#527](https://github.com/rspatial/terra/issues/527) by Jakub Nowosad
+- `zonal` dropped category names when using an external (R) function [#527](https://github.com/rspatial/terra/issues/527) by Jakub Nowosad
 
 
 ## enhancements 
