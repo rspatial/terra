@@ -250,11 +250,9 @@ setMethod("aggregate", signature(x="SpatVector"),
 				# because NaN and NA are dropped
 				i <- nrow(a)+(1:2)
 				a[i,] <- c(NA, NaN)
-				i <- match(a[[by]], x[[by,drop=TRUE]])
-				i <- i[!is.na(i)]
-			} else {
-				i <- match(a[[by]], x[[by,drop=TRUE]])			
 			}
+			i <- match(x[[by,drop=TRUE]], a[[by]])			
+			i <- i[!is.na(i)]
 			if (mvars) {
 				a[[by]] <- NULL
 			}

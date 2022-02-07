@@ -122,10 +122,22 @@
 		leg.shrink[2] <- max(x$leg$shrink[2], (.05*n)) 
 	}
 
-	yd <- ymax - ymin
-	ymin <- ymin + yd * leg.shrink[1]
-	ymax <- ymax - yd * leg.shrink[2]
-    dx <- xmax - xmin
+	if (isTRUE(x$leg$loc=="bottom")) {
+		xd <- xmax - xmin
+		xmin <- xmin + xd * leg.shrink[1]
+		xmax <- xmax - xd * leg.shrink[2]	
+		yd <- ymax - ymin
+		ymin <- ymin + yd * leg.shrink[1]/1.5
+		ymax <- ymax - yd * leg.shrink[2]/1.5
+	} else {
+		yd <- ymax - ymin
+		ymin <- ymin + yd * leg.shrink[1]
+		ymax <- ymax - yd * leg.shrink[2]
+		xd <- xmax - xmin
+		xmin <- xmin + xd * leg.shrink[1]/1.5
+		xmax <- xmax - xd * leg.shrink[2]/1.5
+    }
+	dx <- xmax - xmin
 	dy <- ymax - ymin
 
 	x$leg$ext <- data.frame(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dx=dx, dy=dy)
@@ -195,7 +207,7 @@
 				text(x=e$xmin, y=ymax+(n-i)*0.05* e$dy,
 					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			} else {
-				ymax <- e$ymax + 2*e$dy
+				ymax <- e$ymax + e$dy
 				text(x=(e$xmin+e$xmax)/2, y=ymax+(n-i)*0.05* e$dy,
 					labels = leg$title[i], cex = leg$title.cex, xpd=TRUE)
 			}
@@ -215,7 +227,9 @@
 
 	cex <- x$leg$cex
 	if (is.null(cex)) cex <- 0.8
-
+	rotate <- isTRUE(x$leg$rotate)
+	srt <- ifelse(rotate, 90, 0) 
+	
 	cols <- rev(x$cols)
 	nc <- length(cols)
 
