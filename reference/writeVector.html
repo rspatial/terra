@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-18</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-19</span>
       </span>
     </div>
 
@@ -84,13 +84,17 @@
 <span class="r-in"><span class="va">v</span><span class="op">$</span><span class="va">name</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="dimensions.html">length</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">]</span></span>
 <span class="r-in"><span class="va">tmpf1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">writeVector</span><span class="op">(</span><span class="va">v</span>, <span class="va">tmpf1</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x@ptr$write(filename, layer, filetype, insert[1], FALSE, overwrite[1],     options):</span> could not find valid method</span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">tmpf1</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [vect] Cannot open this file as a SpatVector</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">tmpf2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">writeVector</span><span class="op">(</span><span class="va">v</span>, <span class="va">tmpf2</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x@ptr$write(filename, layer, filetype, insert[1], FALSE, overwrite[1],     options):</span> could not find valid method</span>
 <span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">tmpf2</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> [vect] Cannot open this file as a SpatVector</span>
 </code></pre></div>
     </div>
   </div>
