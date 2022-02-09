@@ -36,6 +36,11 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 			names(r) <- names
 		}
 		if (!missing(vals)) {
+			if (length(vals) == 1) {
+				if (is.na(vals[1])) {
+					vals <- as.numeric(NA)
+				}
+			}
 			values(r) <- vals
 		}
 		if (!missing(time)) {
@@ -90,8 +95,9 @@ setMethod("rast", signature(x="list"),
 		}
 		# start with an empty raster (alternatively use a deep copy)
 		out <- rast(x[[1]])
+		opt <- spatOptions()
 		for (i in 1:length(x)) {
-			out@ptr$addSource(x[[i]]@ptr, FALSE)
+			out@ptr$addSource(x[[i]]@ptr, FALSE, opt)
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)

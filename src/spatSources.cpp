@@ -102,7 +102,7 @@ void SpatRaster::combine(SpatRaster x) {
 	return;
 }
 
-void SpatRaster::addSource(SpatRaster x, bool warn) {
+void SpatRaster::addSource(SpatRaster x, bool warn, SpatOptions &opt) {
 
 	if (!hasValues()) {
 		if (!x.hasValues()) {
@@ -122,7 +122,9 @@ void SpatRaster::addSource(SpatRaster x, bool warn) {
 		}
 		return;
 	}
-
+	if (!x.hasValues()) {
+		x = x.init({NAN}, opt);
+	}
 	if (compare_geom(x, false, false, 0.1)) {
         source.insert(source.end(), x.source.begin(), x.source.end());
 	}

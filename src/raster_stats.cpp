@@ -306,129 +306,70 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &o
 
 
 
-/*
-void jointstats_old(const std::vector<double> &u, const std::vector<double> &v, const std::vector<double> &z, std::string fun, bool narm, std::vector<double>& out, std::vector<double> &cnt) {
-
-	std::vector<double> cmp;
-	//recycle(v, z);
-
-	for (size_t j=0; j<u.size(); j++) {
-		cmp.resize(0);
-		cmp.reserve(v.size() / u.size());
-
-		for (size_t k=0; k<v.size(); k++) {
-			if (z[k] == u[j]) {
-				if (!(narm & std::isnan(v[k]))) {
-					cmp.push_back(v[k]);
-				}
-			}
-		}
-		if (cmp.size() == 0) continue;
-		if (fun=="sum") {
-			double s = vsum(cmp, narm);
-			out[j] = s + out[j];
-		} else if (fun=="mean") {
-			double s = vsum(cmp, narm);
-			if (narm) {
-				for (size_t k=0; k<cmp.size(); k++) {
-					cnt[j] += !std::isnan(cmp[k]);
-				}
-			} else {
-				cnt[j] += cmp.size();
-			}
-			out[j] = s + out[j];
-		} else if (fun == "min") {
-			double m = vmin(cmp, narm);
-			if (narm) {
-				if (!std::isnan(m)) {
-					if (cnt[j] == 0) {
-						out[j] = m;
-						cnt[j] = 1;
-					} else {
-						out[j] = std::min(m, out[j]);
-					}
-				}
-			} else {
-				if (cnt[j] == 0) {
-					out[j] = m;
-					cnt[j] = 1;
-				} else {
-					out[j] = std::min(m, out[j]);
-				}
-			}
-		} else if (fun == "max") {
-			double m = vmax(cmp, narm);
-			if (narm) {
-				if (!std::isnan(m)) {
-					if (cnt[j] == 0) {
-						out[j] = m;
-						cnt[j] = 1;
-					} else {
-						out[j] = std::max(m, out[j]);
-					}
-				}
-			} else {
-				if (cnt[j] == 0) {
-					out[j] = m;
-					cnt[j] = 1;
-				} else {
-					out[j] = std::max(m, out[j]);
-				}
-			}
-		}
-	}
-}
-*/
-
-
 void jointstats(const std::vector<double> &u, const std::vector<double> &v, const std::vector<double> &z, std::string fun, bool narm, std::vector<double>& out, std::vector<double> &cnt) {
 
-	std::vector<std::vector<double>> dat(u.size());
-	if (narm) {
-		for (size_t i=0; i<z.size(); i++) {
-			if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
-				dat[z[i]].push_back(v[i]);
-			}
-		}
-	} else {
-		for (size_t i=0; i<z.size(); i++) {
-			if (!std::isnan(z[i])) {
-				dat[z[i]].push_back(v[i]);
-			}
-		}
-	}
 	if (fun=="sum") {
-		for (size_t i=0; i<u.size(); i++) {
-			if (dat[i].size() > 0) {
-				out[i] += vsum(dat[i], false);
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] += v[i];
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] += v[i];
+				}
 			}
 		}
-	}
-	if (fun=="mean") {
-		for (size_t i=0; i<u.size(); i++) {
-			if (dat[i].size() > 0) {
-				out[i] += vsum(dat[i], false);
-				cnt[i] += dat[i].size();
+	} else if (fun=="mean") {
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] += v[i];
+					cnt[z[i]]++;
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] += v[i];
+					cnt[z[i]]++;
+				}
 			}
 		}
-	}
-	if (fun=="min") {
-		for (size_t i=0; i<u.size(); i++) {
-			if (dat[i].size() > 0) {
-				double mn = vmin(dat[i], false);
-				out[i] = std::min(out[i], mn);
+	} else if (fun=="min") {
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] = std::min(out[z[i]], v[i]);
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] = std::min(out[z[i]], v[i]);
+				}
 			}
 		}
-	}
-	if (fun=="max") {
-		for (size_t i=0; i<u.size(); i++) {
-			if (dat[i].size() > 0) {
-				double mx = vmax(dat[i], false);
-				out[i] = std::max(out[i], mx);
+	} else if (fun=="max") {
+		if (narm) {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i])) && (!std::isnan(v[i]))) {
+					out[z[i]] = std::max(out[z[i]], v[i]);
+				}
+			}
+		} else {
+			for (size_t i=0; i<z.size(); i++) {
+				if ((!std::isnan(z[i]))) {
+					out[z[i]] = std::max(out[z[i]], v[i]);
+				}
 			}
 		}
 	}
 }
+
+
 
 
 SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
@@ -468,7 +409,10 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	if (fun == "max") initv = neginf;
 	if (fun == "min") initv = posinf;
 	std::vector<std::vector<double>> stats(nl, std::vector<double>(u.size(), initv));
-	std::vector<std::vector<double>> cnt(nl, std::vector<double>(u.size(), 0));
+	std::vector<std::vector<double>> cnt;
+	if (fun == "mean") {
+		cnt = std::vector<std::vector<double>>(nl, std::vector<double>(u.size(), 0));
+	}
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -483,29 +427,21 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		std::vector<double> v, zv;
 		readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 		z.readValues(zv, bs.row[i], bs.nrows[i], 0, ncol());
-		std::vector<double> zvr(zv.size());
-		for (size_t j=0; j<zvr.size(); j++)	 {
-			if (std::isnan(zv[j])) {
-				zvr[j] = NAN;
-			} else {
-				for (size_t k=0; k<u.size(); k++) {
-					if (zv[j] == u[k]) {
-						zvr[j] = k;
-						continue;
-					}
-				}
+		for (size_t j=0; j<zv.size(); j++)	 {
+			if (!std::isnan(zv[j])) {
+				auto it = find(u.begin(), u.end(), zv[j]);
+				zv[j] = it - u.begin();
 			}
 		}
-		zv.resize(0);
 		unsigned off = bs.nrows[i] * ncol() ;
 		if (nl > 1) {
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned offset = lyr * off;
 				std::vector<double> vx( v.begin()+offset,  v.begin()+offset+off);
-				jointstats(u, vx, zvr, fun, narm, stats[lyr], cnt[lyr]);
+				jointstats(u, vx, zv, fun, narm, stats[lyr], cnt[lyr]);
 			}
 		} else {
-			jointstats(u, v, zvr, fun, narm, stats[0], cnt[0]);
+			jointstats(u, v, zv, fun, narm, stats[0], cnt[0]);
 		}
 	}
 	readStop();
@@ -522,9 +458,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 				}
 			}
 		}
-	} 
-
-	else if (fun == "min") {
+	} else if (fun == "min") {
 		for (size_t lyr=0; lyr<nlyr(); lyr++) {
 			for (size_t j=0; j<u.size(); j++) {
 				if (stats[lyr][j] == posinf) {

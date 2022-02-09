@@ -600,6 +600,7 @@ SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int
 	SpatRaster out;
 	out.constructFromFile(fname[0], subds, subdsname, options);
 	if (out.hasError()) return out;
+	SpatOptions opt;
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
 		bool ok = r.constructFromFile(fname[i], subds, subdsname, options);
@@ -607,7 +608,7 @@ SpatRaster SpatRaster::fromFiles(std::vector<std::string> fname, std::vector<int
 			out.addWarning(r.msg.warnings[0]);
 		}
 		if (ok) {
-			out.addSource(r, false);
+			out.addSource(r, false, opt);
 			if (r.msg.has_error) {
 				out.setError(r.msg.error);
 				return out;
@@ -1523,13 +1524,14 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	srcnl.push_back(nlyr());
 	used.push_back(varname[0]);
 	SpatRaster out;
+	SpatOptions opt;
     for (size_t i=(cnt+1); i < sd.size(); i++) {
 //		printf( "%s\n", sd[i].c_str() );
 		bool success = out.constructFromFile(sd[i], {-1}, {""}, {});
 		if (success) {
 			if (out.compare_geom(*this, false, false, 0.1)) {
 //				out.source	[0].source_name = srcname[i];
-				addSource(out, false);
+				addSource(out, false, opt);
 				srcnl.push_back(out.nlyr());
 				used.push_back(varname[i]);
 			} else {

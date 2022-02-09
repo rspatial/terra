@@ -2353,6 +2353,7 @@ SpatRaster SpatRasterCollection::morph(SpatRaster &x, SpatOptions &opt) {
 
 	out.source.resize(0);
 	SpatRaster g = x.geometry();
+	SpatOptions topt(opt);
 	for (size_t i=0; i<n; i++) {
 		if (g.compare_geom(ds[i], false, false, 0.01, false, true, true, false)) {
 			out.source.insert(out.source.end(), ds[i].source.begin(), ds[i].source.end());
@@ -2366,8 +2367,8 @@ SpatRaster SpatRasterCollection::morph(SpatRaster &x, SpatOptions &opt) {
 				call = call && hasCats[j];
 			}
 			std::string method = call ? "near" : "bilinear";
-			SpatRaster temp = ds[i].warper(g, "", method, false, false, opt);
-			out.addSource(temp, false);
+			SpatRaster temp = ds[i].warper(g, "", method, false, false, topt);
+			out.addSource(temp, false, topt);
 		}
 	}
 
@@ -3438,7 +3439,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 			ops.names = {nms[i]};
 			SpatRaster x = subset(lyr, ops);
 			x = x.clumps(directions, zeroAsNA, ops);
-			out.addSource(x, false);
+			out.addSource(x, false, ops);
 		}
 		if (opt.get_filename() != "") {
 			out = out.writeRaster(opt);

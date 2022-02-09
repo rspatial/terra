@@ -49,6 +49,7 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		setError("cannot open file: " + fname[0]);
 		return;
 	}
+	SpatOptions opt;
 	for (size_t i=1; i<fname.size(); i++) {
 		SpatRaster r;
 		bool ok = r.constructFromFile(fname[i], subds, subdsname, options);
@@ -57,7 +58,7 @@ SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, s
 		}
 
 		if (ok) {
-			addSource(r, false);
+			addSource(r, false, opt);
 			if (r.msg.has_error) {
 				setError(r.msg.error);
 				return;
@@ -430,7 +431,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 
 	std::string tmpbasename = tempFile(opt.get_tempdir(), opt.pid, "_temp_");
 
-
+	SpatOptions ops(opt);
 	for (size_t i=0; i<nsrc; i++) {
 		bool write = false;
 		if (!source[i].in_order() || source[i].memory) {
@@ -453,7 +454,7 @@ SpatRaster SpatRaster::sources_to_disk(std::vector<std::string> &tmpfs, bool uni
 		if (i == 0) {
 			out.setSource(rs.source[0]);
 		} else {
-			out.addSource(rs, false);
+			out.addSource(rs, false, ops);
 		}
 	}
 	return out;
@@ -975,21 +976,21 @@ SpatRaster SpatRaster::replace(SpatRaster x, unsigned layer, SpatOptions &opt) {
 		lyrs.resize(n-1);
 		std::iota(lyrs.begin(), lyrs.end(), 1);
 		SpatRaster r = subset(lyrs, fopt);
-		out.addSource(r, false);
+		out.addSource(r, false, fopt);
 	} else if (layer == n-1) {
 		lyrs.resize(n-1);
 		std::iota(lyrs.begin(), lyrs.end(), 0);
 		out = subset(lyrs, fopt);
-		out.addSource(x, false);
+		out.addSource(x, false, fopt);
 	} else {
 		lyrs.resize(layer);
 		std::iota(lyrs.begin(), lyrs.end(), 0);
 		out = subset(lyrs, fopt);
-		out.addSource(x, false);
+		out.addSource(x, false, fopt);
 		lyrs.resize(n-layer-1);
 		std::iota(lyrs.begin(), lyrs.end(), layer+1);
 		SpatRaster r = subset(lyrs, fopt);
-		out.addSource(r, false);
+		out.addSource(r, false, fopt);
 	}
 	return out;
 }

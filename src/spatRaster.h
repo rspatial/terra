@@ -350,7 +350,7 @@ class SpatRaster {
 		
 //		bool constructFromNCDFsds(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname);
 
-		void addSource(SpatRaster x, bool warn);	
+		void addSource(SpatRaster x, bool warn, SpatOptions &opt);	
 		SpatRaster combineSources(SpatRaster x, bool warn);
 		void combine(SpatRaster x);
 		

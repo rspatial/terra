@@ -47,8 +47,11 @@ setMethod("vect", signature(x="character"),
 			crs(p) <- crs
 		} else {
 			p@ptr <- SpatVector$new()
-			x <- normalizePath(x)
-			x <- enc2utf8(x)
+			nx <- try(normalizePath(x, mustWork=TRUE), silent=TRUE)
+			if (!inherits(nx, "try-error")) { # skip html
+				x <- nx
+				x <- enc2utf8(x)
+			}
 			proxy <- isTRUE(proxy)
 			#if (proxy) query <- ""
 			if (is.null(filter)) {
