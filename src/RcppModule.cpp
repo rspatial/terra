@@ -365,8 +365,6 @@ RCPP_MODULE(spat){
 		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")
 		.method("buffer", &SpatVector::buffer, "buffer")
 		.method("centroid", &SpatVector::centroid, "centroid")
-		.method("is_valid", &SpatVector::is_valid, "is_valid")
-		.method("make_valid", &SpatVector::make_valid, "make_valid")
 		.method("make_valid2", &SpatVector::make_valid2)
 		.method("flip", &SpatVector::flip)
 		.method("transpose", &SpatVector::transpose)

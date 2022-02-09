@@ -138,6 +138,14 @@ setMethod("crs<-", signature("SpatRaster", "ANY"),
 	}
 )
 
+setMethod("set.crs", signature("SpatRaster"), 
+	function(x, value) {
+		value <- .txtCRS(value)
+		x@ptr$set_crs(value)
+		messages(x, "set_crs")
+	}
+)
+
 
 
 #setMethod("crs<-", signature("SpatRaster", "character"), 
@@ -171,6 +179,13 @@ setMethod("crs<-", signature("SpatVector", "ANY"),
 	}
 )
 
+setMethod("set.crs", signature("SpatVector"), 
+	function(x, value) {
+		value <- .txtCRS(value)
+		x@ptr$set_crs(value)
+		messages(x, "set_crs")
+	}
+)
 
 
 setMethod("is.lonlat", signature("SpatRaster"), 

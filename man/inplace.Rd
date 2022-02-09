@@ -15,6 +15,11 @@
 \alias{set.names,SpatRasterDataset-method}
 \alias{set.names,SpatVector-method}
 \alias{set.names,SpatVectorCollection-method}
+
+\alias{set.crs}
+\alias{set.crs,SpatRaster-method}
+\alias{set.crs,SpatVector-method}
+
   
 \title{Change values in-place}
 
@@ -25,6 +30,7 @@ These "in-place" replacement methods assign new value to an object without makin
 \code{set.ext} is the in-place replacement version of \code{\link{ext<-}}
 \code{set.values} is the in-place replacement version of \code{\link{[<-}}
 \code{set.cats} is the in-place replacement version of \code{\link{categories}}
+\code{set.crs} is the in-place replacement version of \code{\link{crs<-}}
 }
 
 \usage{
@@ -34,6 +40,9 @@ These "in-place" replacement methods assign new value to an object without makin
 
 \S4method{set.ext}{SpatRaster}(x, value)
 \S4method{set.ext}{SpatVector}(x, value)
+
+\S4method{set.crs}{SpatRaster}(x, value)
+\S4method{set.crs}{SpatVector}(x, value)
 
 \S4method{set.values}{SpatRaster}(x, cells, values)
 
