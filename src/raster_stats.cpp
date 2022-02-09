@@ -427,10 +427,20 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		std::vector<double> v, zv;
 		readValues(v, bs.row[i], bs.nrows[i], 0, ncol());
 		z.readValues(zv, bs.row[i], bs.nrows[i], 0, ncol());
-		for (size_t j=0; j<zv.size(); j++)	 {
+		double zvold = zv[0];
+		if (!std::isnan(zv[0])) {
+			auto it = find(u.begin(), u.end(), zv[0]);
+			zv[0] = it - u.begin();
+		}
+		for (size_t j=1; j<zv.size(); j++)	 {
 			if (!std::isnan(zv[j])) {
-				auto it = find(u.begin(), u.end(), zv[j]);
-				zv[j] = it - u.begin();
+				if (zvold == zv[j]) {
+					zv[j] = zv[j-1];
+				} else {
+					zvold = zv[j];
+					auto it = find(u.begin(), u.end(), zv[j]);
+					zv[j] = it - u.begin();
+				}
 			}
 		}
 		unsigned off = bs.nrows[i] * ncol() ;
