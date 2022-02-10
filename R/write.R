@@ -118,7 +118,7 @@ function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, 
 			names(x) <- nms
 		}
 	}
-	success <- x@ptr$write(filename, layer, filetype, insert[1], FALSE, overwrite[1], options)
+	success <- x@ptr$write(filename, layer, filetype, insert[1], overwrite[1], options)
 	messages(x, "writeVector")
 	invisible(TRUE)
 }

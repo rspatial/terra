@@ -219,13 +219,15 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 }
 */
 
-GDALResampleAlg getAlgo(std::string m) {
-	GDALResampleAlg alg;
+bool getAlgo(GDALResampleAlg &alg, std::string m) {
 
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR > 1
 	if (m=="sum") {
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR > 1
 		alg = GRA_Sum;
-		return alg;
+		return true;
+	}
+#elseif 
+		return false;
 	}
 #endif
 
@@ -255,8 +257,9 @@ GDALResampleAlg getAlgo(std::string m) {
 		alg = GRA_Q3;
 	} else { 
 		alg = GRA_NearestNeighbour;
+		return false;
 	}
-	return alg;
+	return true;
 }
 
 
@@ -274,7 +277,15 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 	}
 	int nbands = srcbands.size();
 
-	GDALResampleAlg a = getAlgo(method);
+	GDALResampleAlg a;
+	if (!getAlgo(a, method) {
+		if (method=="sum") {
+			msg = "sum not available in your version of GDAL";			
+		} else {
+			msg = "unknown resampling algorithm";
+		}
+		return false;
+	}
 
     // Setup warp options.
     psWarpOptions->hSrcDS = hSrcDS;
