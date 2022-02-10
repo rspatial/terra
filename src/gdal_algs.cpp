@@ -226,7 +226,7 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 		alg = GRA_Sum;
 		return true;
 	}
-#elseif 
+#else
 		return false;
 	}
 #endif
