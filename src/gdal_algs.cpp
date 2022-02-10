@@ -221,6 +221,14 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 
 GDALResampleAlg getAlgo(std::string m) {
 	GDALResampleAlg alg;
+
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR > 1
+	if (m=="sum") {
+		alg = GRA_Sum;
+		return alg;
+	}
+#endif
+
 	if ( m == "near" ) { 
 		alg = GRA_NearestNeighbour;
 	} else if (m=="bilinear") {
@@ -233,8 +241,6 @@ GDALResampleAlg getAlgo(std::string m) {
 		alg = GRA_Lanczos;
 	} else if (m=="mean") {
 		alg = GRA_Average;
-//	} else if (m=="sum") {
-//		alg = GRA_Sum;
 	} else if (m=="mode") {
 		alg = GRA_Mode; 
 	} else if (m=="max") {

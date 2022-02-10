@@ -55,7 +55,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 		for (i in 1:nrow(f)) {
 			r <- x == f[i,2]
 			r <- mask(weights, r, maskvalue=TRUE, inverse=TRUE)
-			sr[[i]] <- terra:::sampleWeights(r, size, replace=replace, cells=TRUE, ext=ext)[,1]
+			sr[[i]] <- sampleWeights(r, size, replace=replace, cells=TRUE, ext=ext)[,1]
 		}
 		sr <- unlist(sr)
 		sr <- cbind(cell=sr, extract(x, sr)) 
