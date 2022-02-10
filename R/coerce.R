@@ -352,7 +352,8 @@ as.data.frame.SpatRaster <- function(x, row.names=NULL, optional=FALSE, xy=FALSE
 	if (is.null(d)) {
 		d <- values(x, dataframe=TRUE, ... )
 	} else {
-		d <- data.frame(d, values(x, dataframe=TRUE), ...)
+		d <- data.frame(d)
+		d <- cbind(d, values(x, dataframe=TRUE), ...)
 	}
 	if (na.rm) {
 		d <- stats::na.omit(d) 
