@@ -43,7 +43,7 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
   
   \item{grays}{logical. If \code{TRUE}, a gray-scale color-table is created. Only used for transforming RGB to col}
 
-  \item{grays}{logical. If \code{TRUE}, NAs are treated as zeros such that a color can be returned if at least one of the three channels has a value. Only used for transforming RGB to (\code{"col"})}
+  \item{NAzero}{logical. If \code{TRUE}, NAs are treated as zeros such that a color can be returned if at least one of the three channels has a value. Only used for transforming RGB to (\code{"col"})}
   
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}  
