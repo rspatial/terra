@@ -278,7 +278,7 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 	int nbands = srcbands.size();
 
 	GDALResampleAlg a;
-	if (!getAlgo(a, method) {
+	if (!getAlgo(a, method)) {
 		if (method=="sum") {
 			msg = "sum not available in your version of GDAL";			
 		} else {
