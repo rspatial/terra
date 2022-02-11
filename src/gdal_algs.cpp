@@ -241,7 +241,7 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 		alg = GRA_CubicSpline; 
 	} else if (m=="lanczos") {
 		alg = GRA_Lanczos;
-	} else if (m=="mean") {
+	} else if (m=="average") {
 		alg = GRA_Average;
 	} else if (m=="mode") {
 		alg = GRA_Mode; 
@@ -264,7 +264,7 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 
 
 bool is_valid_warp_method(const std::string &method) {
-	std::vector<std::string> m { "near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "max", "min", "med", "q1", "q3", "sum" };
+	std::vector<std::string> m { "near", "bilinear", "cubic", "cubicspline", "lanczos", "average", "mode", "max", "min", "med", "q1", "q3", "sum"};
 	return (std::find(m.begin(), m.end(), method) != m.end());
 }
 
