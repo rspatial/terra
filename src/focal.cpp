@@ -88,7 +88,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	size_t f = 0;
 	const bool global = is_global_lonlat();
 
-Rcpp::Rcout << "sr" << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl; 
+//Rcpp::Rcout << "sr" << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl; 
 
 	for (int_64 r=0; r < nrows; r++) {
 		for (int_64 c=0; c < nc; c++) {
