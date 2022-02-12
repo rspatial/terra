@@ -231,6 +231,17 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 	}
 #endif
 
+	if (m=="rms") {
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR > 1
+		alg = GRA_RMS;
+		return true;
+	}
+#else
+		return false;
+	}
+#endif
+
+
 	if ( m == "near" ) { 
 		alg = GRA_NearestNeighbour;
 	} else if (m=="bilinear") {
@@ -255,8 +266,6 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 		alg = GRA_Q1;
 	} else if (m=="q3") {
 		alg = GRA_Q3;
-	} else if (m=="rms") {
-		alg = GRA_RMS;
 	} else { 
 		alg = GRA_NearestNeighbour;
 		return false;
