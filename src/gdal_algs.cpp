@@ -374,6 +374,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 		out.source[0].cats = getCategories();
 		out.rgb = rgb;
 		out.rgblyrs = rgblyrs;
+		out.rgbtype = rgbtype;
 	}
 	if (hasTime()) {
 		out.source[0].hasTime = true;
