@@ -6,7 +6,7 @@
 //static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
 
-/*
+
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
 	SpatOptions opt;
 	opt.ncopies = n;
@@ -15,9 +15,9 @@ Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) {
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }
-*/
 
-Rcpp::List getBlockSizeR(SpatRaster* r) { 
+
+Rcpp::List getBlockSizeWrite(SpatRaster* r) { 
     BlockSize bs = r->bs;
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
@@ -604,7 +604,8 @@ RCPP_MODULE(spat){
 		.method("readAll", &SpatRaster::readAll, "readAll")
 		.method("readValues", &SpatRaster::readValuesR, "readValues")
 		.method("getValues", &SpatRaster::getValues, "getValues")
-		.method("getBlockSize", &getBlockSizeR)
+		.method("getBlockSizeR", &getBlockSizeR)
+		.method("getBlockSizeWrite", &getBlockSizeWrite)
 		.method("same", &sameObject)
 #ifdef useRcpp
 		.method("setValuesRcpp", &SpatRaster::setValuesRcpp)

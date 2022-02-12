@@ -5,7 +5,7 @@ if (!isGeneric("blockSize")) {setGeneric("blockSize", function(x, ...) standardG
 setMethod("blockSize", signature(x="SpatRaster"), 
 	function(x, n) {
 		opt <- spatOptions("", FALSE, ncopies=n)
-		b <- x@ptr$getBlockSize(n, opt$memfrac)
+		b <- x@ptr$getBlockSizeR(n, opt$memfrac)
 		b$row <- b$row + 1
 		b
 	}
@@ -18,7 +18,7 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
 		ok <- x@ptr$writeStart(opt)
 		messages(x, "writeStart")
-		b <- x@ptr$getBlockSize()
+		b <- x@ptr$getBlockSizeWrite()
 		b$row <- b$row + 1
 		b
 	}

@@ -150,7 +150,7 @@
 	for (i in 1:n) {
 		y = x[i]
 		readStart(y)
-		b <- y@ptr$getBlockSize(4, opt$memfrac)
+		b <- blockSize(y, 4)
 		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
@@ -332,7 +332,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 	j <- match(tab[1,3], prj[,1])
 	tab[1,3] <- prj[j,2]
 	cr <- paste(apply(tab[,2:3], 1, function(x) paste(x, collapse='=')), collapse=' ')
-	crtst <- try(sp::CRS(cr), silent=TRUE)
+	crtst <- try(rast(crs=cr), silent=TRUE)
 	if ( inherits(crtst, "try-error")) {
 		mtxt <- paste(m, collapse='; ')
 		warning("cannot create a valid crs\n", mtxt)

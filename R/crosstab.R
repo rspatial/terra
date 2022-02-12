@@ -14,17 +14,16 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			error("crosstab", "needs at least 2 layers")
 		}
 		nms <- names(x)
+		opt <- terra:::spatOptions()
 
-		opt <- spatOptions()
-
-		b <- x@ptr$getBlockSize(4, opt$memfrac)
+		b <- blockSize(x, 4)
 		readStart(x)
 		on.exit(readStop(x))
 
 		res <- NULL
 		nc <- ncol(x)
 		for (i in 1:b$n) {
-			d <- readValues(x, b$row[i]+1, b$nrows[i], 1, nc, TRUE)
+			d <- readValues(x, b$row[i], b$nrows[i], 1, nc, TRUE)
 			d <- lapply(1:nl, function(i) round(d[, i], digits=digits))
 			d <- do.call(table, c(d, useNA="ifany"))
 			d <- as.data.frame(d)
