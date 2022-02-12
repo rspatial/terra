@@ -222,7 +222,7 @@ bool get_output_bounds(const GDALDatasetH &hSrcDS, std::string srccrs, const std
 bool getAlgo(GDALResampleAlg &alg, std::string m) {
 
 	if (m=="sum") {
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR > 1
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
 		alg = GRA_Sum;
 		return true;
 	}
@@ -232,7 +232,7 @@ bool getAlgo(GDALResampleAlg &alg, std::string m) {
 #endif
 
 	if (m=="rms") {
-#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR > 3
+#if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 3
 		alg = GRA_RMS;
 		return true;
 	}
@@ -290,7 +290,7 @@ bool set_warp_options(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDAL
 
 	GDALResampleAlg a;
 	if (!getAlgo(a, method)) {
-		if (method=="sum" || method="rms") {
+		if (method=="sum" || method=="rms") {
 			msg = method + " not available in your version of GDAL";			
 		} else {
 			msg = "unknown resampling algorithm";
