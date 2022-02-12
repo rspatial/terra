@@ -473,7 +473,7 @@ pointsCDF <- function(filename, varname, polygons=FALSE) {
 
 	d <- ncdf4::ncvar_get( nc, varid=zvar)	
 	nl <- dim(d)[3]
-	v <- sapply(1:nl, \(i) d[,,i])
+	v <- sapply(1:nl, function(i) d[,,i])
 	
 	natest1 <- ncdf4::ncatt_get(nc, zvar, "_FillValue")
 	natest2 <- ncdf4::ncatt_get(nc, zvar, "missing_value")		
