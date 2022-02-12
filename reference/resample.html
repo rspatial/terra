@@ -18,7 +18,7 @@ If the origin and crs are the same, you should consider using these other functi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-20</span>
       </span>
     </div>
 
@@ -71,7 +71,10 @@ If the origin and crs are the same, you should consider using these other functi
 <p><code>bilinear</code>: bilinear interpolation. This is the default if the first layer of <code>x</code> is numeric (not categorical).</p>	
 <p><code>cubic</code>: cubic interpolation.</p>	
 <p><code>cubicspline</code>: cubic spline interpolation.</p>	
-<p><code>lanczos</code>: Lanczos windowed sinc resampling.</p></dd>
+<p><code>lanczos</code>: Lanczos windowed sinc resampling.</p>
+<p><code>sum</code>: the weighted sum of all non-NA contributing grid cells.</p>
+<p><code>min, q1, med, q3, max, average, mode, rms</code>: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.</p>
+<p></p></dd>
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 <dt>...</dt>
