@@ -582,7 +582,7 @@ setMethod("project", signature(x="SpatRaster"),
 	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, filename="", ...)  {
 	  
 		if (missing(method)) {
-			if (is.factor(x)[1] || isTRUE(r@ptr$rgb)) {
+			if (is.factor(x)[1] || isTRUE(x@ptr$rgb)) {
 				method <- "near"
 			} else {
 				method <- "bilinear"
