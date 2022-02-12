@@ -332,7 +332,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 
 	opt <- spatOptions()
 	nl <- nlyr(x)
-	v <- x@ptr$focalValues(w, fillvalue, trunc(nrow(x)/2), 1, opt)[1:prod(w)]
+	v <- x@ptr$focalValues(w, fillvalue, max(0, trunc(nrow(x)/2)), 1, opt)[1:prod(w)]
 	if (dow) {
 		if (any(is.na(m))) {
 			v <- v[k] * mm
@@ -343,7 +343,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 	test <- try(fun(v, ..., ni=1, nw=msz), silent=silent)
 	if (inherits(test, "try-error")) {
 		error("focalCpp", "test failed")
-	  }
+	}
 	outnl <- nl * length(test)
 	if (is.null(wopt$names )) {
 		wopt$names <- colnames(test)

@@ -11,8 +11,7 @@ Write a SpatVector to a file. You can choose one of many file formats.
 }
 
 \usage{
-\S4method{writeVector}{SpatVector,character}(x, filename, filetype=NULL, layer=NULL, 
-		insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8")
+\S4method{writeVector}{SpatVector,character}(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8")
 }
 
 \arguments{

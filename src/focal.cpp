@@ -63,6 +63,7 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	startrow = startrow < 0 ? 0 : startrow;
 	int_64 startoff = row-startrow;
 
+	nrows = std::max((int_64)1, nrows);
 	int_64 readnrows = nrows+startoff+wr;
 	int_64 endoff = wr;
 	if ((startrow+readnrows) > nr ) {
@@ -75,8 +76,9 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 //	get_focal(f, d, nrows, nc, w[0], w[1], offset, endoff, fillvalue);
 //  get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
 
+// ??
+	//wr = std::min(wr, std::max((int_64)1, nrows-1));
 	int_64 wc = w[1] / 2;
-	wr = std::min(wr, std::max((int_64)	1, nrows-1));
 	wc = std::min(wc, nc-1);
 
 	size_t n = nrows * nc * w[0] * w[1];
@@ -85,6 +87,8 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 	//int nrmax = d.size() / ncol - 1;
 	size_t f = 0;
 	const bool global = is_global_lonlat();
+
+Rcpp::Rcout << "sr" << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl; 
 
 	for (int_64 r=0; r < nrows; r++) {
 		for (int_64 c=0; c < nc; c++) {

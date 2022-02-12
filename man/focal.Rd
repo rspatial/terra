@@ -24,7 +24,7 @@ Calculate focal ("moving window") values for each cell.
 
 \item{...}{additional arguments passed to \code{fun} such as \code{na.rm}}
 
-\item{na.policy}{character. Can be used to determine the cells of \code{x} for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are \code{NA}) or "omit" (skip cells that are \code{NA}). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use \code{na.rm=TRUE} to ignore cells that are \code{} for that)}
+\item{na.policy}{character. Can be used to determine the cells of \code{x} for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are \code{NA}) or "omit" (skip cells that are \code{NA}). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use \code{na.rm=TRUE} to ignore cells that are \code{NA} for that)}
 
 \item{fillvalue}{numeric. The value of the cells in the virtual rows and columns outside of the raster}
 

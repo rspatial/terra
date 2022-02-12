@@ -18,7 +18,7 @@ setMethod("writeStart", signature(x="SpatRaster", filename="character"),
 		opt <- spatOptions(filename, overwrite, ncopies=n, ...)
 		ok <- x@ptr$writeStart(opt)
 		messages(x, "writeStart")
-		b <- x@ptr$getBlockSize(n, opt$memfrac)
+		b <- x@ptr$getBlockSize()
 		b$row <- b$row + 1
 		b
 	}

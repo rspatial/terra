@@ -6,11 +6,19 @@
 //static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
 
+/*
 Rcpp::List getBlockSizeR(SpatRaster* r, unsigned n, double frac) { 
 	SpatOptions opt;
 	opt.ncopies = n;
 	opt.set_memfrac(frac);
     BlockSize bs = r->getBlockSize(opt);
+	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
+	return(L);
+}
+*/
+
+Rcpp::List getBlockSizeR(SpatRaster* r) { 
+    BlockSize bs = r->bs;
 	Rcpp::List L = Rcpp::List::create(Rcpp::Named("row") = bs.row, Rcpp::Named("nrows") = bs.nrows, Rcpp::Named("n") = bs.n);
 	return(L);
 }
