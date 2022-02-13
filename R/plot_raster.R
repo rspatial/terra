@@ -491,7 +491,9 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 
 		if (x@ptr$rgb) {
 			i <- x@ptr$getRGB() + 1
-			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, ...)
+			if (missing(main)) main = ""			
+			if (is.null(mar)) mar = 0			
+			plotRGB(x, i[1], i[2], i[3], maxcell=maxcell, mar=mar, main=main, ...)
 			return(invisible())
 		}
 

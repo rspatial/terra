@@ -360,6 +360,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 			} else {
 				v <- x@ptr$focalValues(w, fillvalue, b$row[i]-1, b$nrows[i], opt)
 			}
+			sst <- messages(x)
 			if (dow) {
 				if (any(is.na(m))) {
 					v <- v[k] * mm
@@ -382,8 +383,7 @@ function(x, w=3, fun, ..., fillvalue=NA, silent=TRUE, filename="", overwrite=FAL
 			writeValues(out, v, b$row[i], b$nrows[i])
 		}
 	}
-	out <- writeStop(out)
-	return(out)
+	writeStop(out)
 }
 )
 

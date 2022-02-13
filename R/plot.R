@@ -123,7 +123,8 @@ setMethod("pairs", signature(x="SpatRaster"),
 		}
 
 		panelhist <- function(x,...)	{
-			usr <- graphics::par("usr"); on.exit(graphics::par(usr))
+			usr <- graphics::par("usr")
+			on.exit(graphics::par(usr=usr))
 			graphics::par(usr = c(usr[1:2], 0, 1.5) )
 			h <- hist(x, plot = FALSE)
 			breaks <- h$breaks
@@ -135,7 +136,7 @@ setMethod("pairs", signature(x="SpatRaster"),
 
 		panelcor <- function(x, y,...) {
 			usr <- graphics::par("usr")
-			on.exit(graphics::par(usr))
+			on.exit(graphics::par(usr=usr))
 			graphics::par(usr = c(0, 1, 0, 1))
 			r <- abs(stats::cor(x, y, use=use))
 			txt <- format(c(r, 0.123456789), digits=2)[1]

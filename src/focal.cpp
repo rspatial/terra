@@ -53,42 +53,47 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 		std::vector<double> d;
 		return(d);
 	}
+	const bool global = is_global_lonlat();
 
-	int_64 wr = w[0] / 2;
 	int_64 nr = nrow();
+	nrows = std::min(nrows, nr - row + 1);
+	
 	int_64 nc = ncol();
-	wr = std::min(wr, nr-1);
+	int_64 wr = w[0] / 2;
+	int_64 wc = w[1] / 2;
+	//may be unexptected
+	//wr = std::min(wr, nr-1);
+	//wc = std::min(wc, nc-1);
 
 	int_64 startrow = row-wr;
 	startrow = startrow < 0 ? 0 : startrow;
 	int_64 startoff = row-startrow;
 
-	nrows = std::max((int_64)1, nrows);
+	nrows = nrows < 1 ? 1 : nrows;
 	int_64 readnrows = nrows+startoff+wr;
 	int_64 endoff = wr;
 	if ((startrow+readnrows) > nr ) {
 		readnrows = nr-startrow;
 		endoff = readnrows - (nrows+startoff);
 	}
-	std::vector<double> d;
-	readValues(d, startrow, readnrows, 0, nc);
 
 //	get_focal(f, d, nrows, nc, w[0], w[1], offset, endoff, fillvalue);
 //  get_focal(std::vector<double> &out, const std::vector<double> &d, int nrow, int ncol, int wrows, int wcols, int startoff, int endoff,  double fill) {
 
 // ??
 	//wr = std::min(wr, std::max((int_64)1, nrows-1));
-	int_64 wc = w[1] / 2;
-	wc = std::min(wc, nc-1);
 
 	size_t n = nrows * nc * w[0] * w[1];
-	std::vector<double> out(n, fillvalue);
 	int_64 nrmax = nrows + startoff + endoff - 1;
 	//int nrmax = d.size() / ncol - 1;
 	size_t f = 0;
-	const bool global = is_global_lonlat();
 
-//Rcpp::Rcout << "sr" << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl; 
+	std::vector<double> d;
+	readValues(d, startrow, readnrows, 0, nc);
+	std::vector<double> out(n, fillvalue);
+
+//Rcpp::Rcout << "sr " << startrow << " so " << startoff << " rnr " << readnrows << " wr " << wr << " wc " << wc << " nrows " << nrows << std::endl; 
+
 
 	for (int_64 r=0; r < nrows; r++) {
 		for (int_64 c=0; c < nc; c++) {
@@ -101,14 +106,16 @@ std::vector<double> SpatRaster::focal_values(std::vector<unsigned> w, double fil
 					for (int_64 j = -wc; j <= wc; j++) {
 						int_64 col = c + j;
 						if ((col >= 0) && (col < nc)) {
-							out[f] = d[bcell+col];
+							size_t idx = bcell+col;
+							out[f] = d[idx];
 						} else if (global) {
 							if (col < 0) {
 								col = nc + col;
 							} else if (col >= nc) {
 								col = col - nc;
 							} 
-							out[f] = d[bcell+col]; 
+							size_t idx = bcell+col;
+							out[f] = d[idx]; 
 						}
 						f++;
 					}

@@ -447,7 +447,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 		if (nl > 1) {
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned offset = lyr * off;
-				std::vector<double> vx( v.begin()+offset,  v.begin()+offset+off);
+				std::vector<double> vx( v.begin()+offset, v.begin()+offset+off);
 				jointstats(u, vx, zv, fun, narm, stats[lyr], cnt[lyr]);
 			}
 		} else {
