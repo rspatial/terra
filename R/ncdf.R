@@ -161,7 +161,7 @@
 			for (j in 1:b$n) {
 				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d <- matrix(d, ncol=b$nrows[j])
-				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1), count=c(nc, b$nrows[j]))
+				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]), count=c(nc, b$nrows[j]))
 			}
 		}
 		readStop(y)
@@ -428,7 +428,7 @@ pointsCDF <- function(filename, varname, polygons=FALSE) {
 
 	nc <- ncdf4::nc_open(filename, readunlim=FALSE, suppress_dimvals = TRUE)
 	on.exit( ncdf4::nc_close(nc) )
-
+	dims <- 1:3
 	ncols <- nc$var[[zvar]]$dim[[dims[1]]]$len
 	nrows <- nc$var[[zvar]]$dim[[dims[2]]]$len
 
@@ -447,21 +447,8 @@ pointsCDF <- function(filename, varname, polygons=FALSE) {
 		try(atts <- ncdf4::ncatt_get(nc, a$value), silent=TRUE)
 		try(prj <- .getCRSfromGridMap4(atts), silent=TRUE)
 	}		
-	if (is.na(prj)) {
-		if ((tolower(substr(nc$var[[zvar]]$dim[[dims[1]]]$name, 1, 3)) == 'lon')  &
-		   ( tolower(substr(nc$var[[zvar]]$dim[[dims[2]]]$name, 1, 3)) == 'lat' ) ) {
-				if ( yrange[1] > -91 | yrange[2] < 91 ) {
-					if ( xrange[1] > -181 | xrange[2] < 181 ) {
-						prj <- '+proj=longlat +datum=WGS84'
-					} else if ( xrange[1] > -1 | xrange[2] < 361 ) {
-						prj <- '+proj=longlat +lon_wrap=180 +datum=WGS84'
-					}
-				}
-			
-		}
-	} 
 
-	dim3 <- 3
+	dim3 <- dims[3]
 	dim3_vals <- try(ncdf4::ncvar_get(nc, nc$var[[zvar]]$dim[[dim3]]$name), silent = TRUE)
 	if (inherits(dim3_vals, "try-error")) {
 		dim3_vals <- seq_len(nc$var[[zvar]]$dim[[dim3]]$len)
