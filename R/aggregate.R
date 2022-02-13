@@ -93,7 +93,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 			}
 		}
 
-		b <- blockSize(r, 4)
+		b <- blockSize(x, 4)
 
 		nr <- max(1, floor(b$nrows[1] / fact[1])) * fact[1]
 		nrs <- rep(nr, floor(nrow(x)/nr))

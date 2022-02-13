@@ -153,13 +153,13 @@
 		b <- blockSize(y, 4)
 		if (length(ncvars[[1]]$dim) == 3) {
 			for (j in 1:b$n) {
-				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
+				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d <- array(d, c(nc, b$nrows[j], nl[i]))
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1, 1), count=c(nc, b$nrows[j], nl[i]))
 			}
 		} else {
 			for (j in 1:b$n) {
-				d <- readValues(y, b$row[j]+1, b$nrows[j], 1, nc, FALSE, FALSE)
+				d <- readValues(y, b$row[j], b$nrows[j], 1, nc, FALSE, FALSE)
 				d <- matrix(d, ncol=b$nrows[j])
 				ncdf4::ncvar_put(ncobj, ncvars[[i]], d, start=c(1, b$row[j]+1), count=c(nc, b$nrows[j]))
 			}
