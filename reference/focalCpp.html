@@ -98,15 +98,17 @@ See focal for an easier to use method."><meta property="og:image" content="/logo
 <span class="r-in">  <span class="st">'NumericVector sum_and_multiply(NumericVector x, double m, size_t ni, size_t nw) {</span>
 <span class="r-in">    NumericVector out(ni);</span>
 <span class="r-in">    // loop over cells</span>
+<span class="r-in">    size_t start = 0;</span>
 <span class="r-in">    for (size_t i=0; i&lt;ni; i++) {</span>
+<span class="r-in">      size_t end = start + nw;</span>
 <span class="r-in">      // compute something for a window</span>
-<span class="r-in">      size_t start = i * nw;</span>
 <span class="r-in">      double v = 0;</span>
 <span class="r-in">      // loop over the values of a window</span>
-<span class="r-in">      for (size_t j=start; j&lt;(start+nw); j++) {</span>
+<span class="r-in">      for (size_t j=start; j&lt;end; j++) {</span>
 <span class="r-in">        v += x[j];</span>
 <span class="r-in">      }</span>
 <span class="r-in">      out[i] = v * m;</span>
+<span class="r-in">      start = end;</span>
 <span class="r-in">    }    </span>
 <span class="r-in">    return out;</span>
 <span class="r-in">  }'</span></span>
