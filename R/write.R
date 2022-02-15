@@ -126,43 +126,43 @@ function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, 
 
 
 
-setMethod("writeVector", signature(x="SpatVectorProxy", filename="character"), 
-function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8") {
-	filename <- trimws(filename)
-	filename <- enc2utf8(filename)
-	if (filename == "") {
-		error("writeVector", "provide a filename")
-	}
-	if (is.null(filetype)) {
-		filetype <- get_filetype(filename)
-	}
-	if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
-	layer <- trimws(layer)
+# setMethod("writeVector", signature(x="SpatVectorProxy", filename="character"), 
+# function(x, filename, filetype=NULL, layer=NULL, insert=FALSE, overwrite=FALSE, options="ENCODING=UTF-8") {
+	# filename <- trimws(filename)
+	# filename <- enc2utf8(filename)
+	# if (filename == "") {
+		# error("writeVector", "provide a filename")
+	# }
+	# if (is.null(filetype)) {
+		# filetype <- get_filetype(filename)
+	# }
+	# if (is.null(layer)) layer <- tools::file_path_sans_ext(basename(filename))
+	# layer <- trimws(layer)
 	
-	if (is.null(options)) { options <- ""[0] }
+	# if (is.null(options)) { options <- ""[0] }
 
-	if (filetype == "ESRI Shapefile") {
-		nms <- names(x)
-		i <- nchar(nms) > 10
-		if (any(i)) {
-			nms[i] <- substr(nms[i], 1, 10)
-			testnms <- make.unique(nms, sep="")
-			if (!all(testnms == nms)) {
-				i <- which(i)
-				newnms <- substr(nms[i], 1, 9)
-				newnms <- make.unique(newnms, sep="")
-				j <- which(nchar(newnms) == 9)
-				newnms[j] <- paste0(newnms[j], "0")
-				nms[i] <- newnms
-			}
-			x@ptr <- x@ptr$deepcopy()
-			names(x) <- nms
-		}
-	}
-	success <- x@ptr$write_proxy(filename, layer, filetype, insert[1], FALSE, overwrite[1], options)
-	messages(x, "writeVector")
-	invisible(TRUE)
-}
-)
+	# if (filetype == "ESRI Shapefile") {
+		# nms <- names(x)
+		# i <- nchar(nms) > 10
+		# if (any(i)) {
+			# nms[i] <- substr(nms[i], 1, 10)
+			# testnms <- make.unique(nms, sep="")
+			# if (!all(testnms == nms)) {
+				# i <- which(i)
+				# newnms <- substr(nms[i], 1, 9)
+				# newnms <- make.unique(newnms, sep="")
+				# j <- which(nchar(newnms) == 9)
+				# newnms[j] <- paste0(newnms[j], "0")
+				# nms[i] <- newnms
+			# }
+			# x@ptr <- x@ptr$deepcopy()
+			# names(x) <- nms
+		# }
+	# }
+	# success <- x@ptr$write_proxy(filename, layer, filetype, insert[1], FALSE, overwrite[1], options)
+	# messages(x, "writeVector")
+	# invisible(TRUE)
+# }
+# )
 
 

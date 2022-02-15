@@ -149,7 +149,7 @@ function(x, r=1, g=2, b=3, a=NULL, scale, maxcell=500000, mar=0, stretch=NULL, e
 			graphics::axis(2, at=yticks, las = 1)
 			#graphics::axis(3, at=xticks, labels=FALSE, lwd.ticks=0)
 			#graphics::axis(4, at=yticks, labels=FALSE, lwd.ticks=0)
-			box()
+			graphics::box()
 		}
 	}
 	if (!missing(interpolate)) { # for backwards compatibility
