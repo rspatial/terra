@@ -150,7 +150,7 @@ setMethod ("expanse", "SpatVector",
 	function(x, unit="m", transform=TRUE) {
 		a <- x@ptr$area(unit, transform, double());
 		x <- messages(x, "expanse");
-		return(a)
+		return(abs(a))
 	}
 )
 

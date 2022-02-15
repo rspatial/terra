@@ -5,13 +5,13 @@
 - `writeVector` and `vect` now work with GPGK if the path has non-ascii characters [#518](https://github.com/rspatial/terra/issues/518)
 - The results of `predict` with `cores > 1` and more than one output variable were garbled
 - `zonal` dropped category names when using an external (R) function [#527](https://github.com/rspatial/terra/issues/527) by Jakub Nowosad
+- focal/focalCpp showed strange patterns when the window size was larger than the block size [#519](https://github.com/rspatial/terra/issues/519) by Alex Ilich
+- using `xy=TRUE` in `as.data.frame` normalized the names [#538](https://github.com/rspatial/terra/issues/538) by Kodi Arfer
 
 
 ## enhancements 
 
 - `makeTiles` has new arguments `extend` and `na.rm` [#520](https://github.com/rspatial/terra/issues/520) by by L. Dalby
-
-
 
 # version 1.5-17
 

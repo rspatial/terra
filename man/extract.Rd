@@ -47,7 +47,7 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \arguments{
 \item{x}{SpatRaster}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
-\item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only code{mean}, \code{sum}, \code{min} and \code{max} are accepted)}
+\item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted)}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}
 \item{method}{character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells}
 \item{list}{logical. If \code{FALSE} the output is simplified to a \code{matrix} (if \code{fun=NULL})}

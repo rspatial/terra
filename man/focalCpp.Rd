@@ -48,15 +48,17 @@ cppFunction(
 	'NumericVector sum_and_multiply(NumericVector x, double m, size_t ni, size_t nw) {
 		NumericVector out(ni);
 		// loop over cells
+		size_t start = 0;
 		for (size_t i=0; i<ni; i++) {
+			size_t end = start + nw;
 			// compute something for a window
-			size_t start = i * nw;
 			double v = 0;
 			// loop over the values of a window
-			for (size_t j=start; j<(start+nw); j++) {
+			for (size_t j=start; j<end; j++) {
 				v += x[j];
 			}
 			out[i] = v * m;
+			start = end;
 		}		
 		return out;
 	}'

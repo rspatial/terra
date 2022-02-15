@@ -212,7 +212,7 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 			} else {
 				bad <- TRUE
 			}
-			if (bad) error("extract", 'if weights or exact=TRUE, "fun" must be "sum", "mean" or NULL')
+			if (bad) error("extract", 'if weights or exact=TRUE, "fun" must be "sum", "mean", "min", or "max"')
 		}
 	} 
 	if (!is.null(layer) && nl > 1) {
