@@ -5,7 +5,7 @@
 
 \docType{package}
 
-\title{The terra package}
+\title{Description of the methods in the terra package}
 
 \description{
 
@@ -307,6 +307,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 \section{XIV. Create SpatVector objects}{
 \tabular{ll}{
   \code{\link{vect}} \tab Create a SpatVector from a file (for example a "shapefile") or from another object\cr
+  \code{\link{vector_layers}} \tab list or delete layers in a vector database such as GPGK\cr
   \code{rbind} \tab append SpatVectors of the same geometry type\cr
   \code{\link{unique}} \tab remove duplicates \cr
   \code{\link{na.omit}} \tab remove empty geometries and/or fields that are \code{NA} \cr

@@ -13,9 +13,9 @@ Merge SpatRaster or SpatExtent objects, or a SpatVector with a data.frame
 }
 
 \description{
-Merge SpatRasters to form a new SpatRaster object with a larger spatial extent. If objects overlap, the values get priority in the same order as the arguments. See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame}. You can also merge SpatExtent objects.
+Merge SpatRasters to form a new SpatRaster object with a larger spatial extent. If objects overlap, the values get priority in the same order as the arguments. The SpatRasters must have the same origin and spatial resolution. In areas where the SpatRaster objects overlap, the values of the SpatRaster that is last in the sequence of arguments will be retained. See \code{\link{classify}} to merge a \code{SpatRaster} and a \code{data.frame}. You can also merge SpatExtent objects. 
 
-There is a also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector..
+There is a also a method for merging SpatVector with a data.frame; that is, to join the data.frame to the attribute table of the SpatVector.
 }
 
 \usage{
@@ -37,9 +37,6 @@ There is a also a method for merging SpatVector with a data.frame; that is, to j
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}
 } 
 
-\details{
-The SpatRaster objects must have the same origin and spatial resolution. In areas where the SpatRaster objects overlap, the values of the SpatRaster that is last in the sequence of arguments will be retained. 
-}
 
 \value{
 SpatRaster or SpatExtent

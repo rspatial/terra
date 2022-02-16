@@ -1,4 +1,4 @@
-# version 1.5-19
+# version 1.5-21
 
 ## bug fixes
 
@@ -12,6 +12,8 @@
 ## enhancements 
 
 - `makeTiles` has new arguments `extend` and `na.rm` [#520](https://github.com/rspatial/terra/issues/520) by by L. Dalby
+- `project<SpatRaster>` now uses nearest neighbor as default method for RGB rasters
+
 
 # version 1.5-17
 
