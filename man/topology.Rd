@@ -52,6 +52,18 @@ SpatVector
 
 
 
+
+\examples{
+p1 <- ext(0,1,0,1) |> as.polygons()
+p2 <- ext(1.1,2,0,1) |> as.polygons()
+
+p <- rbind(p1, p2)
+
+y <- snap(p, tol=.15)
+plot(p, lwd=3, col="light gray")
+lines(y, col="red", lwd=2)
+}
+
 \keyword{methods}
 \keyword{spatial}
 

@@ -288,6 +288,7 @@ RCPP_MODULE(spat){
 		.method("simplify", &SpatVector::simplify, "")
 		.method("shared_paths", &SpatVector::shared_paths, "")
 		.method("snap", &SpatVector::snap, "")
+		.method("snapto", &SpatVector::snapto, "")
 
 		.field_readonly("is_proxy", &SpatVector::is_proxy )
 		.field_readonly("read_query", &SpatVector::read_query )
