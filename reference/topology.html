@@ -22,7 +22,7 @@ snap makes boundaries of geometries identical if they are very close to each oth
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-20</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-22</span>
       </span>
     </div>
 
@@ -93,6 +93,19 @@ snap makes boundaries of geometries identical if they are very close to each oth
     <div class="dont-index"><p><code><a href="sharedPaths.html">sharedPaths</a></code>, <code><a href="gaps.html">gaps</a></code>, <code><a href="simplify.html">simplifyGeom</a></code></p></div>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span> |&gt; <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="fl">1.1</span>,<span class="fl">2</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span> |&gt; <span class="fu"><a href="as.spatvector.html">as.polygons</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">snap</span><span class="op">(</span><span class="va">p</span>, tol<span class="op">=</span><span class="fl">.15</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">p</span>, lwd<span class="op">=</span><span class="fl">3</span>, col<span class="op">=</span><span class="st">"light gray"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">y</span>, col<span class="op">=</span><span class="st">"red"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="topology-1.png" alt="" width="700" height="433"></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
