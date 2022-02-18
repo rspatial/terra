@@ -298,8 +298,9 @@ SpatRaster SpatRaster::setResolution(double xres, double yres) {
 		return(out);
 	}
 	SpatExtent e = getExtent();
-	unsigned nc = round((e.xmax-e.xmin) / xres);
-	unsigned nr = round((e.ymax-e.ymin) / yres);
+	unsigned nc = std::max(1., round((e.xmax-e.xmin) / xres));
+	unsigned nr = std::max(1., round((e.ymax-e.ymin) / yres));
+
 	double xmax = e.xmin + nc * xres;
 	double ymax = e.ymin + nr * yres;
 	unsigned nl = nlyr();

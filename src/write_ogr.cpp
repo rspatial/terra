@@ -28,9 +28,13 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
     GDALDataset *poDS = NULL;
 	if (filename != "") {
-		if (file_exists(filename) && (!overwrite) && (!append)) {
-			setError("file exists. Use 'overwrite=TRUE' to overwrite it");
-			return(poDS);
+		if (file_exists(filename)) {
+			if ((!overwrite) && (!append)) {
+				setError("file exists. Use 'overwrite=TRUE' to overwrite it");
+				return(poDS);
+			}
+		} else {
+			append = false;
 		}
 		if (nrow() == 0) {
 			setError("no geometries to write");

@@ -5,51 +5,50 @@
 
 
 new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1, crs, extent, resolution, vals, names, time, units) {
-		if (missing(extent)) {
-			e <- c(xmin, xmax, ymin, ymax) 
+	if (missing(extent)) {
+		e <- c(xmin, xmax, ymin, ymax) 
+	} else {
+		e <- as.vector(extent)
+	}
+	if ((e[1] >= e[2]) || e[3] >= e[4]) {
+		error("rast,missing", "invalid extent")
+	}
+	if (missing(crs)) {
+		if (e[1] > -360.01 & e[2] < 360.01 & e[3] > -90.01 & e[4] < 90.01) {
+			crs <- "OGC:CRS84"
 		} else {
-			e <- as.vector(extent)
+			crs <- ""
 		}
-		if ((e[1] >= e[2]) || e[3] >= e[4]) {
-			error("rast,missing", "invalid extent")
-		}
+	} else {
+		crs <- character_crs(crs, "rast")
+	}
+	#check_proj4_datum(crs)
 
-		if (missing(crs)) {
-			if (e[1] > -360.01 & e[2] < 360.01 & e[3] > -90.01 & e[4] < 90.01) {
-				crs <- "OGC:CRS84"
-			} else {
-				crs <- ""
+	r <- methods::new("SpatRaster")
+	r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
+	r <- messages(r, "rast")
+
+	if (!missing(resolution)) {
+		res(r) <- resolution
+	}
+	if (!missing(names)) {
+		names(r) <- names
+	}
+	if (!missing(vals)) {
+		if (length(vals) == 1) {
+			if (is.na(vals[1])) {
+				vals <- as.numeric(NA)
 			}
-		} else {
-			crs <- character_crs(crs, "rast")
 		}
-		#check_proj4_datum(crs)
-
-		r <- methods::new("SpatRaster")
-		r@ptr <- SpatRaster$new(c(nrows, ncols, nlyrs), e, crs)
-		r <- messages(r, "rast")
-
-		if (!missing(resolution)) {
-			res(r) <- resolution
-		}
-		if (!missing(names)) {
-			names(r) <- names
-		}
-		if (!missing(vals)) {
-			if (length(vals) == 1) {
-				if (is.na(vals[1])) {
-					vals <- as.numeric(NA)
-				}
-			}
-			values(r) <- vals
-		}
-		if (!missing(time)) {
-			time(r) <- time
-		}
-		if (!missing(units)) {
-			time(r) <- units
-		}
-		r
+		values(r) <- vals
+	}
+	if (!missing(time)) {
+		time(r) <- time
+	}
+	if (!missing(units)) {
+		time(r) <- units
+	}
+	r
 }
 
 
