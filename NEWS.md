@@ -1,12 +1,13 @@
-# version 1.5-22
+# version 1.5-23
 
 
 ## bug fixes
 
+"flipped" rasters were not always handled well. [#546](https://github.com/rspatial/terra/issues/546) by Dan Baston 
+
 ## enhancements 
 
 ## new
-
 
 
 
