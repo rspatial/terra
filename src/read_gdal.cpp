@@ -1003,6 +1003,12 @@ void vflip(std::vector<double> &v, const size_t &ncell, const size_t &nrows, con
 
 void SpatRaster::readChunkGDAL(std::vector<double> &data, unsigned src, size_t row, unsigned nrows, size_t col, unsigned ncols) {
 
+
+	if (source[src].flipped) {
+		row = nrow() - row - nrows;
+	}
+
+
 	if (source[src].multidim) {
 		readValuesMulti(data, src, row, nrows, col, ncols);
 		return;
@@ -1089,6 +1095,9 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t 
 	if (source[src].rotated) {
 		setError("cannot read from rotated files. First use 'rectify'");
 		return errout;
+	}
+	if (source[src].flipped) {
+		row = nrow() - row - nrows;
 	}
 
 	if (source[src].hasWindow) { // ignoring the expanded case.
