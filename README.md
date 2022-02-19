@@ -30,10 +30,10 @@ install.packages('terra', repos='https://rspatial.r-universe.dev')
 
 ### From source-code
 
-To install from source-code, first install the packages that terra depends on: 
+To install from source-code, first install the [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html) package that terra depends on: 
 
 ```
-install.packages(c("raster", "Rcpp"))
+install.packages("Rcpp")
 ```
 
 And then continue based on the OS you are using. 
