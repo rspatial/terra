@@ -56,6 +56,7 @@ On OSX, first install gdal and proj with homebrew
 ```
 brew install pkg-config
 brew install gdal
+brew install proj
 ```
 Followed by
 
