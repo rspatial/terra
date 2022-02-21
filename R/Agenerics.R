@@ -1,5 +1,12 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
+if (!isGeneric("serialize")) {setGeneric("serialize", function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, 
+    refhook = NULL) standardGeneric("serialize"))}
+
+if (!isGeneric("saveRDS")) {setGeneric("saveRDS", function (object, file="", ascii=FALSE, version=NULL, compress=TRUE, refhook=NULL)
+ standardGeneric("saveRDS"))}
+
+
 if (!isGeneric("query")) {setGeneric("query", function(x, ...) standardGeneric("query"))}
 
 if (!isGeneric("set.values")) {setGeneric("set.values", function(x, ...) standardGeneric("set.values"))}

@@ -2692,7 +2692,7 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 }
 
 
-void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, bool right_closed, bool left_right_closed, bool lowest, bool othNA) {
+void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, bool right_closed, bool left_right_closed, bool lowest, bool others, double othersValue) {
 
 	size_t nc = rcl.size(); // should be 2 or 3
 
@@ -2799,8 +2799,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 						break;
 					}
 				}
-				if ((othNA) & (!found)) {
-					v[i] = NAval;
+				if ((!found) && others) {
+					v[i] = othersValue;
 				}
 			}
 		}
@@ -2836,8 +2836,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 							break;
 						}
 					}
-					if ((othNA) & (!found))  {
-						v[i] = NAval;
+					if ((!found) && others) {
+						v[i] = othersValue;
 					}
 				}
 			}
@@ -2871,8 +2871,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 								break;
 							}
 						}
-						if  ((othNA) & (!found))  {
-							v[i] = NAval;
+						if ((!found) && others) {
+							v[i] = othersValue;
 						}
 					}
 				}
@@ -2894,8 +2894,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 								break;
 							}
 						}
-						if  ((othNA) & (!found))  {
-							v[i] = NAval;
+						if ((!found) && others) {
+							v[i] = othersValue;
 						}
 					}
 				}
@@ -2932,8 +2932,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 								break;
 							}
 						}
-						if  ((othNA) & (!found))  {
-							v[i] = NAval;
+						if ((!found) && others) {
+							v[i] = othersValue;
 						}
 					}
 				}
@@ -2956,8 +2956,8 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 								break;
 							}
 						}
-						if  ((othNA) & (!found))  {
-							v[i] = NAval;
+						if ((!found) && others) {
+							v[i] = othersValue;
 						}
 					}
 				}
@@ -3019,7 +3019,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		recycle(to, from);
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v; 
-		readBlock(v, out.bs, i);
+			readBlock(v, out.bs, i);
 			for (size_t j=0; j< from.size(); j++) {
 				if (std::isnan(from[j])) {
 					for (double &d : v) d = std::isnan(d) ? to[j] : d;
@@ -3037,7 +3037,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 
 
 
-SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
 	size_t nc = rcl.size();
@@ -3155,7 +3155,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 				unsigned offset = lyr * off;
 				lyrrcl[rcldim] = rcl[rcldim+lyr];
 				std::vector<double> vx(v.begin()+offset, v.begin()+offset+off);
-				reclass_vector(vx, lyrrcl, right, leftright, lowest, othersNA);
+				reclass_vector(vx, lyrrcl, right, leftright, lowest, others, othersValue);
 				std::copy(vx.begin(), vx.end(), v.begin()+offset);
 			}
 			if (!out.writeBlock(v, i)) return out;
@@ -3164,7 +3164,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v; 
 			readBlock(v, out.bs, i);
-			reclass_vector(v, rcl, right, leftright, lowest, othersNA);
+			reclass_vector(v, rcl, right, leftright, lowest, false, 0.0);
 			if (!out.writeBlock(v, i)) return out;
 		}
 	}
@@ -3176,7 +3176,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 }
 
 
-SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned openclosed, bool lowest, bool othersNA, bool bylayer, bool brackets, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, SpatOptions &opt) {
 
 	SpatRaster out;
 	if ((rcl.size() % nc) != 0) {
@@ -3195,7 +3195,7 @@ SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned
 		rc[i] = std::vector<double>(rcl.begin()+(i*nr), rcl.begin()+(i+1)*nr);
 	}
 
-	out = reclassify(rc, openclosed, lowest, othersNA, bylayer, brackets, opt);
+	out = reclassify(rc, openclosed, lowest, others, othersValue, bylayer, brackets, opt);
 	return out;
 }
 
@@ -3500,7 +3500,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {
 		std::vector<std::vector<double>> rc = clump_getRCL(rcl, ncps);
-		out = out.reclassify(rc, 3, true, false, false, false, opt);
+		out = out.reclassify(rc, 3, true, false, 0.0, false, false, opt);
 	} else if (filename != "") {
 		out = out.writeRaster(opt);
 	}

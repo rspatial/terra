@@ -95,8 +95,6 @@ setMethod("show", signature(object="PackedSpatVector"),
 
 
 
-
-
 setMethod("as.character", signature(x="SpatRaster"), 
 	function(x) {
 		e <- as.vector(ext(x))
@@ -170,3 +168,41 @@ setMethod("show", signature(object="PackedSpatRaster"),
 	}
 )
 
+
+
+setMethod("serialize", signature(object="SpatVector"), 
+	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
+		object = wrap(object)
+		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
+	}
+)
+
+
+setMethod("saveRDS", signature(object="SpatVector"), 
+	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
+		object = wrap(object)
+		saveRDS(object, file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
+	}
+)
+
+
+setMethod("serialize", signature(object="SpatRaster"), 
+	function(object, connection, ascii = FALSE, xdr = TRUE, version = NULL, refhook = NULL) {
+		if (!all(inMemory(object))) {
+			error("only in-memory SpatRasters can be serialized")
+		}
+		object = wrap(object)
+		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
+	}
+)
+
+
+setMethod("saveRDS", signature(object="SpatRaster"), 
+	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
+		if (!all(inMemory(object))) {
+			error("only in-memory SpatRasters can be save to RDS")
+		}
+		object = wrap(object)
+		saveRDS(object, file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
+	}
+)

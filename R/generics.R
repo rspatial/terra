@@ -345,7 +345,7 @@ function(x, lower=-Inf, upper=Inf, values=TRUE, ...) {
 )
 
 setMethod("classify", signature(x="SpatRaster"), 
-function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, brackets=TRUE, filename="", ...) {
+function(x, rcl, include.lowest=FALSE, right=TRUE, others=NULL, brackets=TRUE, filename="", ...) {
 
 	bylayer = FALSE
 
@@ -357,7 +357,14 @@ function(x, rcl, include.lowest=FALSE, right=TRUE, othersNA=FALSE, brackets=TRUE
 	include.lowest <- as.logical(include.lowest[1])
 
 	opt <- spatOptions(filename, ...)
-    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, othersNA[1], bylayer[1], brackets[1], opt)
+	if (is.null(others)) {
+		others <- FALSE
+		othersValue <- 0
+	} else {
+		othersValue <- others[1]	
+		others <- TRUE
+	}
+    x@ptr <- x@ptr$classify(as.vector(rcl), NCOL(rcl), right, include.lowest, others, othersValue, bylayer[1], brackets[1], opt)
 	messages(x, "classify")
 }
 )
