@@ -20,7 +20,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-22</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-23</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
 <span class="fu">classify</span><span class="op">(</span><span class="va">x</span>, <span class="va">rcl</span>, include.lowest<span class="op">=</span><span class="cn">FALSE</span>, right<span class="op">=</span><span class="cn">TRUE</span>, 
-     othersNA<span class="op">=</span><span class="cn">FALSE</span>, brackets<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+     others<span class="op">=</span><span class="cn">NULL</span>, brackets<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -77,8 +77,8 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 <dd><p>logical, indicating if a value equal to the lowest value in <code>rcl</code> (or highest value in the second column, for <code>right=FALSE</code>) should be included.</p></dd>
 <dt>right</dt>
 <dd><p>logical. If <code>TRUE</code>, the intervals are closed on the right (and open on the left). If <code>FALSE</code> they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is <code>(0,1] = {x | 0 &lt; x &lt;= 1}</code>. You can also close both sides with <code>right=NA</code>, that is only meaningful if you "from-to-becomes" classification with integers. For example to classify 1-5 -&gt; 1, 6-10 -&gt; 2, 11-15 -&gt; 3. That may be easier to read and write than the equivalent 1-5 -&gt; 1, 5-10 -&gt; 2, 10-15 -&gt; 3 with <code>right=TRUE</code> and <code>include.lowest=TRUE</code></p></dd>
-<dt>othersNA</dt>
-<dd><p>logical. If <code>TRUE</code>, values that are not matched become <code>NA</code>. If <code>FALSE</code>, they retain their original value.</p></dd>
+<dt>others</dt>
+<dd><p>numeric. If not <code>NULL</code> all values that are not matched are set to this value. Otherwise they retain their original value.</p></dd>
 <dt>brackets</dt>
 <dd><p>logical. If <code>TRUE</code>, intervals are have parenthesis or brackets around them to indicate whether they are open or closed. Only applies if <code>rcl</code> is a vector (or single column matrix)</p></dd>
 <dt>filename</dt>
@@ -153,11 +153,13 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3   200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4   300</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">rcx2</span> <span class="op">&lt;-</span> <span class="fu">classify</span><span class="op">(</span><span class="va">x</span>, <span class="va">m</span>, othersNA<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">rcx2</span> <span class="op">&lt;-</span> <span class="fu">classify</span><span class="op">(</span><span class="va">x</span>, <span class="va">m</span>, others<span class="op">=</span><span class="cn">NA</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="unique.html">unique</a></span><span class="op">(</span><span class="va">rcx2</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   lyr.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   300</span>
 </code></pre></div>
     </div>
   </div>
