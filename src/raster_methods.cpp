@@ -2692,7 +2692,78 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 }
 
 
+
+SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, SpatOptions &opt) {
+
+	SpatRaster out = geometry(nl);
+	bool multi = false;
+	if (nl > 1) {
+		if (nlyr() > 1) {
+			out.setError("cannot create layer-varying replacement with multi-layer input");
+			return out;
+		}
+		multi = true;
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+  	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+
+	if (multi) {
+		size_t tosz = to.size() / nl;
+		size_t nlyr = out.nlyr();
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v; 
+			readBlock(v, out.bs, i);
+			size_t vs = v.size();
+			v.reserve(vs * nlyr);
+			for (size_t lyr = 1; lyr < nlyr; lyr++) {
+				v.insert(v.end(), v.begin(), v.begin()+vs);
+			}
+			for (size_t lyr = 0; lyr < nlyr; lyr++) {
+				std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
+				recycle(tolyr, from);
+				size_t offset = lyr*vs;
+				for (size_t j=0; j< from.size(); j++) {
+					if (std::isnan(from[j])) {
+						for (size_t k=offset; k<(offset+vs); k++) {
+							v[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
+						}
+					} else {
+						std::replace(v.begin()+offset, v.begin()+(offset+vs), from[j], tolyr[j]);
+					}
+				}
+			}
+			if (!out.writeBlock(v, i)) return out;
+		}
+	} else {
+		recycle(to, from);
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v; 
+			readBlock(v, out.bs, i);
+			for (size_t j=0; j< from.size(); j++) {
+				if (std::isnan(from[j])) {
+					for (double &d : v) d = std::isnan(d) ? to[j] : d;
+				} else {
+					std::replace(v.begin(), v.end(), from[j], to[j]);
+				}
+			}
+			if (!out.writeBlock(v, i)) return out;
+		}
+	}
+	readStop();
+	out.writeStop();
+	return(out);
+}
+
+
 void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl, bool right_closed, bool left_right_closed, bool lowest, bool others, double othersValue) {
+
 
 	size_t nc = rcl.size(); // should be 2 or 3
 
@@ -2784,6 +2855,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 			}
 		} 
 		for (size_t i=0; i<n; i++) {
+			
 			if (std::isnan(v[i])) {
 				if (hasNAN) {
 					v[i] = replaceNAN;
@@ -2967,75 +3039,6 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 }
 
 
-SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, SpatOptions &opt) {
-
-	SpatRaster out = geometry(nl);
-	bool multi = false;
-	if (nl > 1) {
-		if (nlyr() > 1) {
-			out.setError("cannot create layer-varying replacement with multi-layer input");
-			return out;
-		}
-		multi = true;
-	}
-
-	if (!readStart()) {
-		out.setError(getError());
-		return(out);
-	}
-  	if (!out.writeStart(opt)) {
-		readStop();
-		return out;
-	}
-
-	if (multi) {
-		size_t tosz = to.size() / nl;
-		size_t nlyr = out.nlyr();
-		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> v; 
-			readBlock(v, out.bs, i);
-			size_t vs = v.size();
-			v.reserve(vs * nlyr);
-			for (size_t lyr = 1; lyr < nlyr; lyr++) {
-				v.insert(v.end(), v.begin(), v.begin()+vs);
-			}
-			for (size_t lyr = 0; lyr < nlyr; lyr++) {
-				std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
-				recycle(tolyr, from);
-				size_t offset = lyr*vs;
-				for (size_t j=0; j< from.size(); j++) {
-					if (std::isnan(from[j])) {
-						for (size_t k=offset; k<(offset+vs); k++) {
-							v[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
-						}
-					} else {
-						std::replace(v.begin()+offset, v.begin()+(offset+vs), from[j], tolyr[j]);
-					}
-				}
-			}
-			if (!out.writeBlock(v, i)) return out;
-		}
-	} else {
-		recycle(to, from);
-		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> v; 
-			readBlock(v, out.bs, i);
-			for (size_t j=0; j< from.size(); j++) {
-				if (std::isnan(from[j])) {
-					for (double &d : v) d = std::isnan(d) ? to[j] : d;
-				} else {
-					std::replace(v.begin(), v.end(), from[j], to[j]);
-				}
-			}
-			if (!out.writeBlock(v, i)) return out;
-		}
-	}
-	readStop();
-	out.writeStop();
-	return(out);
-}
-
-
 
 SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, SpatOptions &opt) {
 
@@ -3164,7 +3167,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v; 
 			readBlock(v, out.bs, i);
-			reclass_vector(v, rcl, right, leftright, lowest, false, 0.0);
+			reclass_vector(v, rcl, right, leftright, lowest, others, othersValue);
 			if (!out.writeBlock(v, i)) return out;
 		}
 	}

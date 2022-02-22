@@ -37,12 +37,15 @@ mem_info <- function(x, n=1) {
 	opt <- spatOptions()
 	opt$ncopies = n;
 	v <- x@ptr$mem_needs(opt)
+	memmin <- opt$memmin
 	memmax <- opt$memmax
 	#if (print) {
 		gb <- 1024^3 / 8  # 
 		cat("\n------------------------")
 		cat("\nMemory (GB) ")
 		cat("\n------------------------")
+
+		cat(paste("\ncheck threshold :", opt$memmin, " (memmin)"))
 		if (memmax > 0) {
 			cat(paste("\navailable       :",  round(v[2] / gb, 2), "(memmax)"))
 		} else {

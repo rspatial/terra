@@ -181,6 +181,16 @@ void SpatOptions::set_memmax(double d) {
 	} 
 }
 
+double SpatOptions::get_memmin() { return memmin; }
+
+void SpatOptions::set_memmin(double d) {
+	if (std::isnan(d) || (d <= 0)) {
+		memmin = 1024 * 1024 * 1024 / 8;
+	} else {
+		memmax = d * 1024 * 1024 * 1024 / 8;
+	} 
+}
+
 double SpatOptions::get_tolerance() { return tolerance; }
 
 void SpatOptions::set_tolerance(double d) {

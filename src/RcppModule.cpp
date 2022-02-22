@@ -176,6 +176,7 @@ RCPP_MODULE(spat){
 		.property("tempdir", &SpatOptions::get_tempdir, &SpatOptions::set_tempdir )
 		.property("memfrac", &SpatOptions::get_memfrac, &SpatOptions::set_memfrac )
 		.property("memmax", &SpatOptions::get_memmax, &SpatOptions::set_memmax )
+		.property("memmin", &SpatOptions::get_memmin, &SpatOptions::set_memmin )
 		.property("tolerance", &SpatOptions::get_tolerance, &SpatOptions::set_tolerance )
 		.property("filenames", &SpatOptions::get_filenames, &SpatOptions::set_filenames )
 		.property("filetype", &SpatOptions::get_filetype, &SpatOptions::set_filetype )

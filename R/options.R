@@ -12,7 +12,7 @@
 }
  
 .options_names <- function() {
-	c("progress", "tempdir", "memfrac", "memmax", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append") 
+	c("progress", "tempdir", "memfrac", "memmax", "memmin", "datatype", "filetype", "filenames", "overwrite", "todisk", "names", "verbose", "NAflag", "statistics", "steps", "ncopies", "tolerance", "pid") #, "append") 
 }
 
  
@@ -112,6 +112,7 @@ spatOptions <- function(filename="", overwrite=FALSE, ..., wopt=NULL) {
 		v <- eval(parse(text=paste0("opt$", n)))
 		cat(paste0(substr(paste(n, "         "), 1, 10), ": ", v, "\n"))
 	}
+	cat(paste0("memmin    : ", 8 * opt$memmin / (1024^3), "\n"))	
 	if (opt$memmax > 0) {
 		cat(paste0("memmax    : ", 8 * opt$memmax / (1024^3), "\n"))	
 	}
