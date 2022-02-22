@@ -30,6 +30,7 @@ Only SpatRaster objects that have all values in memory can be serialized. That i
 \arguments{
   \item{object}{SpatVector or SpatRaster}
   \item{file}{file name to save object to}
+  \item{connection}{see \code{\link{serialize}} or \code{\link{saveRDS}}}
   \item{ascii}{see \code{\link{serialize}} or \code{\link{saveRDS}}}
   \item{version}{see \code{\link{serialize}} or \code{\link{saveRDS}}}
   \item{compress}{see \code{\link{serialize}} or \code{\link{saveRDS}}}

@@ -191,7 +191,7 @@ setMethod("serialize", signature(object="SpatRaster"),
 		if (!all(inMemory(object))) {
 			error("only in-memory SpatRasters can be serialized")
 		}
-		object = wrap(object)
+		object <- wrap(object)
 		serialize(object, connection=connection, ascii = ascii, xdr = xdr, version = version, refhook = refhook)
 	}
 )
@@ -200,7 +200,12 @@ setMethod("serialize", signature(object="SpatRaster"),
 setMethod("saveRDS", signature(object="SpatRaster"), 
 	function(object, file="", ascii = FALSE, version = NULL, compress=TRUE, refhook = NULL) {
 		if (!all(inMemory(object))) {
-			error("only in-memory SpatRasters can be save to RDS")
+			opt <- spatOptions()
+			if (object@ptr$canProcessInMemory(opt)) {
+				readAll(object)
+			} else {
+				error("Cannot be loaded into memory which is required for saveRDS")
+			}
 		}
 		object = wrap(object)
 		saveRDS(object, file=file, ascii = ascii, version = version, compress=compress, refhook = refhook)
