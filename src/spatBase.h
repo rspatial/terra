@@ -105,7 +105,7 @@ class SpatOptions {
 		std::string tempdir = "";
 		bool todisk = false;
 		double memmax = -1;
-		double memmin = 1073741824;
+		double memmin = 134217728; // 1024^3 / 8
 		double memfrac = 0.6;
 		double tolerance = 0.1;
 		

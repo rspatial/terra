@@ -187,7 +187,7 @@ void SpatOptions::set_memmin(double d) {
 	if (std::isnan(d) || (d <= 0)) {
 		memmin = 1024 * 1024 * 1024 / 8;
 	} else {
-		memmax = d * 1024 * 1024 * 1024 / 8;
+		memmin = d * 1024 * 1024 * 1024 / 8;
 	} 
 }
 
