@@ -65,7 +65,8 @@
     <h2>Details</h2>
     <p>The following options are available.</p>
 <p><b>memfrac</b> - value between 0 and 0.9 (larger values give a warning). The fraction of RAM that may be used by the program.</p>
-<p><b>memmax</b> - the maximum amount of RAM (in GB) that terra can use when processing a raster dataset. Should be less than what is detected (see <code><a href="mem.html">mem_info</a></code>, and higher values are ignored. Set it to a negative number or NA to not set this option). <code>terraOptions</code> only shows the value of <code>memmax</code> it it set.</p>
+<p><b>memmin</b> - if memory required is below this threshold (in GB), the memory is assumed to be available. Otherwise, terra checks if it is available.</p>
+<p><b>memmax</b> - the maximum amount of RAM (in GB) that terra is allowed to use when processing a raster dataset. Should be less than what is detected (see <code><a href="mem.html">mem_info</a></code>, and higher values are ignored. Set it to a negative number or NA to not set this option). <code>terraOptions</code> only shows the value of <code>memmax</code> it it set.</p>
 <p><b>tempdir</b> - directory where temporary files are written. The default what is returned by <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code>.</p>
 <p><b>datatype</b> - default data type. See <code><a href="writeRaster.html">writeRaster</a></code></p>
 <p><b>todisk</b> - logical. If <code>TRUE</code> write all raster data to disk (temp file if no file name is specified). For debugging.</p>
@@ -77,12 +78,13 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">terraOptions</span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> memfrac   : 0.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp1syKH6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tempdir   : /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpbt8HBU</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> datatype  : FLT4S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> progress  : 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> verbose   : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tolerance : 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 8</span>
 <span class="r-in"><span class="fu">terraOptions</span><span class="op">(</span>memfrac<span class="op">=</span><span class="fl">0.5</span>, tempdir <span class="op">=</span> <span class="st">"c:/temp"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">terraOptions</span><span class="op">(</span>progress<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">terraOptions</span><span class="op">(</span><span class="op">)</span></span>
@@ -93,6 +95,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> todisk    : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> verbose   : FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tolerance : 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> memmin    : 8</span>
 </code></pre></div>
     </div>
   </div>
