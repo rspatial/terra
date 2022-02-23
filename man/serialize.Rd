@@ -12,9 +12,11 @@
 \title{serialize and saveRDS for SpatRaster and SpatVector}
 
 \description{
-serialize or saveRDS for SpatRaster and SpatVector. Note that these objects will first be "packed" with \code{\link{wrap}}, and after unserialize/readRDS they need to be unpacked with \code{rast} or \code{vect}.
+serialize and saveRDS for SpatRaster and SpatVector. Note that these objects will first be "packed" with \code{\link{wrap}}, and after unserialize/readRDS they need to be unpacked with \code{rast} or \code{vect}.
 
-Only SpatRaster objects that have all values in memory can be serialized. That is, SpatRaster that have (some of) their values in a file cannot be serialized. 
+Use of these functions is not recommended. Especially for SpatRaster it is generally much more efficient to use \code{\link{writeRaster}} and write, e.g., a GTiff file. 
+
+SpatRaster objects must have all values in memory (that is, the cell values are not in files) to be serialized. These functions use \code{\link{set.values}} to load values into memory if needed and if deemed possible given the amount of RAM available. 
 }
 
 \usage{
@@ -30,7 +32,7 @@ Only SpatRaster objects that have all values in memory can be serialized. That i
 \arguments{
   \item{object}{SpatVector or SpatRaster}
   \item{file}{file name to save object to}
-  \item{connection}{see \code{\link{serialize}} or \code{\link{saveRDS}}}
+  \item{connection}{see \code{\link{serialize}}}
   \item{ascii}{see \code{\link{serialize}} or \code{\link{saveRDS}}}
   \item{version}{see \code{\link{serialize}} or \code{\link{saveRDS}}}
   \item{compress}{see \code{\link{serialize}} or \code{\link{saveRDS}}}
