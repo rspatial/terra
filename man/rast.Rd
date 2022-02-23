@@ -85,6 +85,8 @@ SpatRaster
 
 \details{
 Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see \code{\link{gdal}}) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by prepending the driver name to the filename like this: \code{rast('NETCDF:"filename.ncdf"')}
+
+These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see \code{\link{wrap}}. 
 }
 
 \seealso{\code{\link{sds}} to create a SpatRasterDataset (4 dimensions) and \code{\link{vect}} for vector (points, lines, polygons) data}

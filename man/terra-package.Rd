@@ -15,7 +15,7 @@ The package implements two main classes (R data types): \code{SpatRaster} and \c
 
 Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of SpatRaster or SpatVector objects. 
 
-These classes hold a C++ pointer to the data and they cannot be directly saved to a ".Rds" file or used in cluster computing. They cannot be recovered from a saved R session either. See \code{\link{wrap}} or \code{\link{writeRaster}} to work around that limitation. 
+These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see \code{\link{wrap}}. 
 
 The \code{terra} package is conceived as a replacement of the \code{raster} package. \code{terra} has a very similar, but simpler, interface, and it is faster than \code{raster}. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
