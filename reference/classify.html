@@ -114,7 +114,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 <span class="r-in"><span class="va">rc1</span> <span class="op">&lt;-</span> <span class="fu">classify</span><span class="op">(</span><span class="va">r</span>, <span class="va">rclmat</span>, include.lowest<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## cuts</span></span>
-<span class="r-in"><span class="co"># equivalent to the, but now a categorical SpatRaster is returned </span></span>
+<span class="r-in"><span class="co"># equivalent to the above, but now a categorical SpatRaster is returned </span></span>
 <span class="r-in"><span class="va">rc2</span> <span class="op">&lt;-</span> <span class="fu">classify</span><span class="op">(</span><span class="va">r</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, include.lowest<span class="op">=</span><span class="cn">TRUE</span>, brackets<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="freq.html">freq</a></span><span class="op">(</span><span class="va">rc2</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   layer      value count</span>
