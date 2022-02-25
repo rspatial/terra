@@ -68,7 +68,7 @@ setMethod("layerCor", signature(x="SpatRaster"),
 				for(j in i:nl) {
 					r <- x[[i]] * x[[j]]
 					if (na.rm) {
-						v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n - unlist(global(is.na(r), fun="sum")) - asSample)
+						v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n - unlist(global(r, fun="isNA")) - asSample)
 					} else {
 						v <- unlist(global(r, fun="sum", na.rm=na.rm)) / (n - asSample)
 					}
