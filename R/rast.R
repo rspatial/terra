@@ -375,7 +375,10 @@ setMethod("rast", signature(x="ANY"),
 	cells <- cellFromXY(r, xyz[,1:2])
 	if (d[2] > 2) {
 		names(r) <- ln[-c(1:2)]
-		v <- matrix(NA, nrow=ncell(r), ncol= nlyr(r))
+		v <- try( matrix(NA, nrow=ncell(r), ncol= nlyr(r)) )
+		if (inherits(v, "try-error")) {
+			error(paste("cannot make matrix with ", ncell(r), " rows"))
+		}
 		v[cells, ] <- xyz[, -c(1:2)]
 		values(r) <- v
 	}

@@ -2693,9 +2693,13 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 
 
 
-SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, SpatOptions &opt) {
+SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool keepcats, SpatOptions &opt) {
 
 	SpatRaster out = geometry(nl);
+	if (keepcats) {
+		out.source[0].hasCategories = hasCategories();
+		out.source[0].cats = getCategories();	
+	}	
 	bool multi = false;
 	if (nl > 1) {
 		if (nlyr() > 1) {
@@ -3040,9 +3044,13 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 
 
 
-SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	if (keepcats) {
+		out.source[0].hasCategories = hasCategories();
+		out.source[0].cats = getCategories();	
+	}
 	size_t nc = rcl.size();
 	size_t nr = rcl[0].size();
 	size_t nl = nlyr();
@@ -3179,7 +3187,7 @@ SpatRaster SpatRaster::reclassify(std::vector<std::vector<double>> rcl, unsigned
 }
 
 
-SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, SpatOptions &opt) {
+SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned openclosed, bool lowest, bool others, double othersValue, bool bylayer, bool brackets, bool keepcats, SpatOptions &opt) {
 
 	SpatRaster out;
 	if ((rcl.size() % nc) != 0) {
@@ -3198,7 +3206,7 @@ SpatRaster SpatRaster::reclassify(std::vector<double> rcl, unsigned nc, unsigned
 		rc[i] = std::vector<double>(rcl.begin()+(i*nr), rcl.begin()+(i+1)*nr);
 	}
 
-	out = reclassify(rc, openclosed, lowest, others, othersValue, bylayer, brackets, opt);
+	out = reclassify(rc, openclosed, lowest, others, othersValue, bylayer, brackets, keepcats, opt);
 	return out;
 }
 
@@ -3503,7 +3511,7 @@ SpatRaster SpatRaster::clumps(int directions, bool zeroAsNA, SpatOptions &opt) {
 	opt.set_filenames({filename});
 	if (rcl[0].size() > 0) {
 		std::vector<std::vector<double>> rc = clump_getRCL(rcl, ncps);
-		out = out.reclassify(rc, 3, true, false, 0.0, false, false, opt);
+		out = out.reclassify(rc, 3, true, false, 0.0, false, false, false, opt);
 	} else if (filename != "") {
 		out = out.writeRaster(opt);
 	}
