@@ -959,10 +959,10 @@ SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double updatevalue, bool
 		return out;
 	}
 	if (inverse) {
-		out = rasterizeLyr(x, updatevalue, NAN, touches, true, opt);
+		out = rasterize(x, "", {updatevalue}, NAN, touches, false, false, false, false, opt);
 	} else {
 		SpatOptions topt(opt);
-		out = rasterizeLyr(x, 1, 0, touches, false, topt);
+		out = rasterize(x, "", {1.0}, 0, touches, false, false, false, false, opt);
 		if (out.hasError()) {
 			return out;
 		}
