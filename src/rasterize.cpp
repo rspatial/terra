@@ -113,6 +113,7 @@ bool SpatRaster::getDSh(GDALDatasetH &rstDS, SpatRaster &out, std::string &filen
 
 SpatRaster SpatRaster::rasterizeLyr(SpatVector x, double value, double background, bool touches, bool update, SpatOptions &opt) {
 
+// not working well in some cases. See #552
 	std::string gtype = x.type();
 	SpatRaster out;
 	out.setNames({"ID"});
