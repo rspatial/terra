@@ -280,7 +280,7 @@ active_cats <- function(x, layer) {
 	}
 	cats <- x@ptr$getCategories()
 	x <- lapply(1:length(cats), function(i) {
-		if (cats[[1]]$df$nrow == 0) return(NULL)
+		if (cats[[i]]$df$nrow == 0) return(NULL)
 		r <- .getSpatDF(cats[[i]]$df)
 		a <- activeCat(x, i)
 		r[, c(1, a+1)]
