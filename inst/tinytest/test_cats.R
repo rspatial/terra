@@ -56,3 +56,5 @@ set.seed(1)
 expect_equal(spatSample(r2, 2), data.frame(a = factor(c("forest", "water"), levels = lv),
                                            b = factor(c("forest", "water"), levels = lv)))
 
+# make sure no errors when show()ing factors
+expect_silent(show(r2))
