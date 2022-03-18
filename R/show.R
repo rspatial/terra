@@ -302,7 +302,7 @@ setMethod ("show" , "SpatRaster",
 							cats <- cats[j, 2]
 							if (length(cats) > 0) {
 								minv[i] <- cats[1]
-								maxv[i] <- cats[1]
+								maxv[i] <- cats[2]
 							}
 						} 
 					}
