@@ -1125,7 +1125,7 @@ std::vector<double> SpatRaster::readValuesGDAL(unsigned src, size_t row, size_t 
 		}
 	} else {
 		nl = 1;
-		panBandMap.push_back(lyr+1);
+		panBandMap.push_back(source[src].layers[lyr]+1);
 	}
 
 	std::vector<double> out(ncell*nl);
