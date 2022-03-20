@@ -454,12 +454,72 @@ SpatRaster SpatRaster::weighted_mean(SpatRaster w, bool narm, SpatOptions &opt) 
 
 
 SpatRaster SpatRaster::weighted_mean(std::vector<double> w, bool narm, SpatOptions &opt) {
-	SpatOptions topt(opt);
-	recycle(w, nlyr());
-	SpatRaster out = arith(w, "*", false, topt);
-	out = out.summary("sum", narm, topt);
-	double wsum = vsum(w, narm);
-	return out.arith(wsum, "/", false, opt);
+
+	SpatRaster out;
+	for (size_t i=0; i<w.size(); i++) {
+		if (std::isnan(w[i]) || w[i] <= 0) {
+			out.setError("all weights must be positive values"); 
+			return out;
+		}		
+	}
+	
+	unsigned nl = nlyr();
+	if (nl == 1) return *this;
+	recycle(w, nl);
+	
+	if (narm) {	
+		if (!hasValues()) {
+			out.setError("raster has no values"); 
+			return out;
+		}
+		out = geometry(1);
+		if (!readStart()) {
+			out.setError(getError());
+			return(out);
+		}
+		if (!out.writeStart(opt)) {
+			readStop();
+			return out;
+		}
+		unsigned nc = ncol();
+
+		for (size_t i = 0; i<out.bs.n; i++) {
+			std::vector<double> v;
+			readBlock(v, out.bs, i);
+			size_t off = out.bs.nrows[i] * nc;
+			std::vector<double> wm(0, off);
+			std::vector<double> wv(0, off);
+			for (size_t j=0; j<nl; j++) {
+				size_t start = j * off;
+				size_t end = start + off;
+				for (size_t k=start; k<end; k++) {
+					if (!std::isnan(v[k])) {
+						size_t kj = k - start; 
+						wm[kj] += v[k] * w[j];
+						wv[kj] += w[j];
+					}
+				}				
+			}
+			for (size_t k=0; k<wm.size(); k++) {
+				if (wv[k] == 0) {
+					wm[k] = NAN;
+				} else {
+					wm[k] /= wv[k];
+				}
+			}
+			if (!out.writeBlock(wm, i)) return out;
+		}
+		out.writeStop();
+		readStop();
+		return(out);
+		
+	} else {
+		SpatOptions topt(opt);
+		out = arith(w, "*", false, topt);
+		out = out.summary("sum", narm, topt);
+		double wsum = vsum(w, narm);
+		return out.arith(wsum, "/", false, opt);
+	}
 }
 
 
