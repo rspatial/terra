@@ -1,0 +1,26 @@
+[general]
+creator=R package 'raster'
+created=2020-05-02 16:05:26
+[georeference]
+nrows=115
+ncols=80
+xmin=178400
+ymin=329400
+xmax=181600
+ymax=334000
+projection=+proj=sterea +lat_0=52.1561605555556 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +datum=WGS84 +units=m +no_defs
+[data]
+datatype=FLT4S
+byteorder=little
+nbands=1
+bandorder=BIL
+categorical=FALSE
+minvalue=138.707073391626
+maxvalue=1736.05793034568
+nodatavalue=-3.4e+38
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=test
