@@ -159,6 +159,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 				cells <- unique(cells)
 			}
 		} else {
+			size <- min(ncell(r), size)
 			cells <- sample(ncell(r), size, replace=replace)
 		}
 	} else { # regular 
