@@ -277,11 +277,24 @@ setMethod("setMinMax", signature(x="SpatRaster"),
 
 
 setMethod("compareGeom", signature(x="SpatRaster", y="SpatRaster"), 
-	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=TRUE) {
+	function(x, y, ..., lyrs=FALSE, crs=TRUE, warncrs=FALSE, ext=TRUE, rowcol=TRUE, res=FALSE, stopOnError=TRUE, messages=TRUE) {
 		dots <- list(...)
 		opt <- spatOptions("")
 		res <- x@ptr$compare_geom(y@ptr, lyrs, crs, opt$tolerance, warncrs, ext, rowcol, res)
-		if (stopOnError) messages(x, "compareGeom")
+		if (stopOnError) {
+			messages(x, "compareGeom")
+		} else {
+			m <- NULL
+			if (x@ptr$has_warning()) { 
+				m <- x@ptr$getWarnings()
+			}
+			if (x@ptr$has_error()) {
+				m <- c(m, x@ptr$getError())
+			}
+			if (!is.null(m) && messages) {
+				message(paste(m, collapse="\n"))
+			}
+		}
 		if (length(dots)>1) {
 			for (i in 1:length(dots)) {
 				bool <- x@ptr$compare_geom(dots[[i]]@ptr, lyrs, crs, warncrs, ext, rowcol, res)
