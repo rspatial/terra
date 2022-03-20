@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-23</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-24</span>
       </span>
     </div>
 
@@ -98,12 +98,10 @@
 <span class="r-in"><span class="fu">writeRaster</span><span class="op">(</span><span class="va">r</span>, <span class="va">f</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">writeRaster</span><span class="op">(</span><span class="va">r</span>, <span class="va">f</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span>, gdal<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"COMPRESS=NONE"</span>, <span class="st">"TFW=YES"</span>,<span class="st">"of=COG"</span><span class="op">)</span>, datatype<span class="op">=</span><span class="st">'INT1U'</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GDAL Message 6: driver GTiff does not support creation option of</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## Or with a wopt argument:</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">writeRaster</span><span class="op">(</span><span class="va">r</span>, <span class="va">f</span>, overwrite<span class="op">=</span><span class="cn">TRUE</span>, wopt<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>gdal<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"COMPRESS=NONE"</span>, <span class="st">"of=COG"</span><span class="op">)</span>, datatype<span class="op">=</span><span class="st">'INT1U'</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GDAL Message 6: driver GTiff does not support creation option of</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## remove the file</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>

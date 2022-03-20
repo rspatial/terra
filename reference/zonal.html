@@ -18,7 +18,7 @@ If fun is a true function, zonal may fail for very large SpatRaster objects, exc
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-23</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-24</span>
       </span>
     </div>
 
@@ -98,6 +98,7 @@ If fun is a true function, zonal may fail for very large SpatRaster objects, exc
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    2   610</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    3  1410</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    4  1810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  NaN     0</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># multiple layers</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/logo.tif"</span>, package <span class="op">=</span> <span class="st">"terra"</span><span class="op">)</span><span class="op">)</span> </span>
@@ -112,6 +113,7 @@ If fun is a true function, zonal may fail for very large SpatRaster objects, exc
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 173.2219 176.7717 185.2585</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 168.2952 172.6232 184.6939</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4    4 193.5859 197.0019 206.5717</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  NaN      NaN      NaN      NaN</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># raster of zonal values</span></span>
 <span class="r-in"><span class="va">zr</span> <span class="op">&lt;-</span> <span class="fu">zonal</span><span class="op">(</span><span class="va">r</span>, <span class="va">z</span>, <span class="st">"mean"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span>, as.raster<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-23</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-24</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> 
+<span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, na.rm<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> 
 
 <span class="co"># S4 method for SpatVector</span>
 <span class="fu">unique</span><span class="op">(</span><span class="va">x</span>, incomparables<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
@@ -65,7 +65,9 @@
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
 <dt>incomparables</dt>
-<dd><p>logical. If <code>FALSE</code> and <code>x</code> is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If <code>TRUE</code>, each layer is evaluated separately, and a list is returned. If <code>x</code> is a SpatVector this argument is as for a <code>data.frame</code>.</p></dd>
+<dd><p>logical. If <code>FALSE</code> and <code>x</code> is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If <code>TRUE</code>, each layer is evaluated separately, and a list is returned. If <code>x</code> is a SpatVector this argument is as for a <code>data.frame</code></p></dd>
+<dt>na.rm</dt>
+<dd><p>logical. If <code>TRUE</code>, <code>NaN</code> is included if there are any missing values</p></dd>
 <dt>...</dt>
 <dd><p>additional arguments passed on to <code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></code></p></dd>
 </dl></div>
