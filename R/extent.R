@@ -47,12 +47,25 @@ setMethod("ext", signature(x="numeric"),
 
 
 setMethod("ext", signature(x="SpatRaster"), 
-	function(x){ 
-		e <- methods::new("SpatExtent")
-		e@ptr <- x@ptr$extent
-		return(e)
+	function(x, cells=NULL){ 
+		if (!is.null(cells)) {
+			cells <- stats::na.omit(unique(round(cells)))
+			cells <- cells[cells > 0 & cells <= ncell(x)]
+			if (length(cells) < 1) {
+				stop("no valid cells")
+			}
+			r <- res(x)
+			dx <- r[1] * c(-0.5, 0.5)
+			dy <- r[2] * c(-0.5, 0.5)
+			ext(range(xFromCell(x, cells)) + dx, range(yFromCell(x, cells)) + dy)
+		} else {
+			e <- methods::new("SpatExtent")
+			e@ptr <- x@ptr$extent
+			return(e)
+		}
 	}
 )
+
 
 
 setMethod("ext", signature(x="SpatRasterDataset"), 
