@@ -404,7 +404,7 @@ SpatRaster SpatRaster::arith(std::vector<double> x, std::string oper, bool rever
 		if (outnl > innl) {
 			recycle(v, outnl * out.bs.nrows[i] * nc);
 		}
-		std::vector<double> vv;
+		//std::vector<double> vv;
 		unsigned off = out.bs.nrows[i] * nc;
 		for (size_t j=0; j<outnl; j++) {
 			unsigned s = j * off;
@@ -701,11 +701,11 @@ SpatRaster SpatRaster::atan_2(SpatRaster x, SpatOptions &opt) {
 		x.readValues(b, out.bs.row[i], out.bs.nrows[i], 0, ncol());
 		recycle(a, b);
 		std::vector<double> d(a.size());
-		for (size_t i=0; i<a.size(); i++) {
-			if (std::isnan(a[i]) || std::isnan(b[i])) {
-				d[i] = NAN;
+		for (size_t j=0; j<a.size(); j++) {
+			if (std::isnan(a[j]) || std::isnan(b[j])) {
+				d[j] = NAN;
 			} else {
-				d[i] = atan2(a[i], b[i]);
+				d[j] = atan2(a[j], b[j]);
 			}
 		}
 		if (!out.writeBlock(d, i)) return out;

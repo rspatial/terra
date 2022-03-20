@@ -896,29 +896,29 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, double maskvalue, double
 		recycle(v, m);
 		if (inverse) {
 			if (std::isnan(maskvalue)) {
-				for (size_t i=0; i < v.size(); i++) {
-					if (!std::isnan(m[i])) {
-						v[i] = updatevalue;
+				for (size_t j=0; j < v.size(); j++) {
+					if (!std::isnan(m[j])) {
+						v[j] = updatevalue;
 					}
 				}
 			} else {
-				for (size_t i=0; i < v.size(); i++) {
-					if (m[i] != maskvalue) {
-						v[i] = updatevalue;
+				for (size_t j=0; j < v.size(); j++) {
+					if (m[j] != maskvalue) {
+						v[j] = updatevalue;
 					}
 				}
 			}
 		} else {
 			if (std::isnan(maskvalue)) {
-				for (size_t i=0; i < v.size(); i++) {
-					if (std::isnan(m[i])) {
-						v[i] = updatevalue;
+				for (size_t j=0; j < v.size(); j++) {
+					if (std::isnan(m[j])) {
+						v[j] = updatevalue;
 					}
 				}
 			} else {
-				for (size_t i=0; i < v.size(); i++) {
-					if (m[i] == maskvalue) {
-						v[i] = updatevalue;
+				for (size_t j=0; j < v.size(); j++) {
+					if (m[j] == maskvalue) {
+						v[j] = updatevalue;
 					}
 				}
 			}

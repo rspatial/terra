@@ -480,16 +480,16 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return crop_out;
 		}
 
-		for (size_t i=0; i<ns; i++) {
+		for (size_t j=0; j<ns; j++) {
 
 			GDALDatasetH hSrcDS;
 
-			if (!open_gdal(hSrcDS, i, false, sopt)) {
+			if (!open_gdal(hSrcDS, j, false, sopt)) {
 				out.setError("cannot create dataset from source");
 				if( hDstDS != NULL ) GDALClose( (GDALDatasetH) hDstDS );
 				return out;
 			}
-			std::vector<unsigned> srcbands = source[i].layers;
+			std::vector<unsigned> srcbands = source[j].layers;
 			std::vector<unsigned> dstbands(srcbands.size()); 
 			std::iota (dstbands.begin(), dstbands.end(), bandstart); 
 			bandstart += dstbands.size();
