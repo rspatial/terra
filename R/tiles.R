@@ -7,7 +7,7 @@ setMethod("makeTiles", signature(x="SpatRaster"),
 		if (!inherits(y, "SpatRaster")) error("makeTiles", "y must be a SpatRaster")
 		opt <- spatOptions(filename="", ...)
 		ff <- x@ptr$make_tiles(y@ptr, extend[1], na.rm[1], filename, opt)
-		messages(x)
+		messages(x, "makeTiles")
 		return (ff)
 	}
 )
@@ -35,7 +35,7 @@ setMethod("vrt", signature(x="character"),
 		opt <- spatOptions(filename, overwrite=overwrite)
 		r <- rast()
 		r@ptr <- r@ptr$make_vrt(x, opt)
-		messages(r)
+		messages(r, "vrt")
 	}
 )
 

@@ -45,7 +45,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 	if (append) {	
 	
 		#if GDAL_VERSION_MAJOR < 3
-			setError("GDAL version 3 required for inserting layers into an existing file");
+			setError("GDAL >= 3 required for inserting layers into an existing file");
 			return(poDS);
 		#endif
 		
