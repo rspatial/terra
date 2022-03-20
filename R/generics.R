@@ -967,9 +967,9 @@ setMethod("trans", signature(x="SpatRaster"),
 
 
 setMethod("unique", signature(x="SpatRaster", incomparables="ANY"), 
-	function(x, incomparables=FALSE) {
+	function(x, incomparables=FALSE, na.rm=FALSE) {
 		opt <- spatOptions()
-		u <- x@ptr$unique(incomparables, opt)
+		u <- x@ptr$unique(incomparables, na.rm[1], opt)
 
 		isfact <- is.factor(x)
 		if (any(isfact)) {
@@ -985,6 +985,10 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			if (!length(u)) return(u)
 			u <- do.call(data.frame, u)
 			colnames(u) <- names(x)
+		}
+		if (na.rm & (NCOL(u) > 1)) {
+			i <- apply(is.na(u), 1, all)
+			u <- u[-i, drop=FALSE]
 		}
 		u
 	}

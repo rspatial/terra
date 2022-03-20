@@ -15,14 +15,15 @@ This function returns the unique values in a SpatRaster or removes duplicates in
 }
 
 \usage{
-\S4method{unique}{SpatRaster}(x, incomparables=FALSE) 
+\S4method{unique}{SpatRaster}(x, incomparables=FALSE, na.rm=FALSE) 
 
 \S4method{unique}{SpatVector}(x, incomparables=FALSE, ...) 
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{incomparables}{logical. If \code{FALSE} and \code{x} is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If \code{TRUE}, each layer is evaluated separately, and a list is returned. If \code{x} is a SpatVector this argument is as for a \code{data.frame}.}
+  \item{incomparables}{logical. If \code{FALSE} and \code{x} is a SpatRaster: the unique values are determined for all layers together, and the result is a matrix. If \code{TRUE}, each layer is evaluated separately, and a list is returned. If \code{x} is a SpatVector this argument is as for a \code{data.frame}}
+  \item{na.rm}{logical. If \code{TRUE}, \code{NaN} is included if there are any missing values}  
   \item{...}{additional arguments passed on to \code{\link[base]{unique}}}  
 }
 

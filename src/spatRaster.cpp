@@ -1011,7 +1011,7 @@ SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions &opt) {
 
 	r.math2("round", 0, fopt);
 
-	std::vector<std::vector<double>> u = r.unique(false, fopt);
+	std::vector<std::vector<double>> u = r.unique(false, false, fopt);
 /*
 	std::vector<double> id(u[0].size());
 	std::iota(id.begin(), id.end(), 0);
@@ -1051,7 +1051,7 @@ bool SpatRaster::createCategories(unsigned layer, SpatOptions &opt) {
 	}
 	std::vector<unsigned> lyrs(1, layer);
 	SpatRaster r = subset(lyrs, opt);
-	std::vector<std::vector<double>> u = r.unique(false, opt);
+	std::vector<std::vector<double>> u = r.unique(false, false, opt);
     std::vector<unsigned> sl = findLyr(layer);
 
 	std::vector<std::string> s(u[0].size());

@@ -227,16 +227,27 @@ void unique_values_alt(std::vector<double> &d) {
 }
 
 
-void unique_values(std::vector<double> &d) {
-	d.erase(std::remove_if(d.begin(), d.end(),
-            [](const double& value) { return std::isnan(value); }), d.end());
-	std::set<double> u { d.begin(), d.end()};
-	std::copy(u.begin(), u.end(), d.begin());
-	d.erase(d.begin()+u.size(), d.end());
+void unique_values(std::vector<double> &d, bool narm) {
+	if (narm) {
+		d.erase(std::remove_if(d.begin(), d.end(),
+				[](const double& value) { return std::isnan(value); }), d.end());
+		std::set<double> u { d.begin(), d.end()};
+		std::copy(u.begin(), u.end(), d.begin());
+		d.erase(d.begin()+u.size(), d.end());
+	} else {
+		size_t s = d.size();
+		d.erase(std::remove_if(d.begin(), d.end(),
+				[](const double& value) { return std::isnan(value); }), d.end());
+		bool addNAN = s > d.size();
+		std::set<double> u { d.begin(), d.end()};
+		std::copy(u.begin(), u.end(), d.begin());
+		d.erase(d.begin()+u.size(), d.end());
+		if (addNAN) d.push_back(NAN);
+	}
 }
 
 
-std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &opt) {
+std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, bool narm, SpatOptions &opt) {
 
 	std::vector<std::vector<double>> out;
 	if (!hasValues()) return out;
@@ -260,7 +271,7 @@ std::vector<std::vector<double>> SpatRaster::unique(bool bylayer, SpatOptions &o
 			for (size_t lyr=0; lyr<nl; lyr++) {
 				unsigned off = lyr*n;
 				out[lyr].insert(out[lyr].end(), v.begin()+off, v.begin()+off+n);
-				unique_values(out[lyr]);
+				unique_values(out[lyr], narm);
 			}
 		}
 	} else {
@@ -400,7 +411,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	}
 
 	size_t nl = nlyr();
-	std::vector<std::vector<double>> uq = z.unique(true, opt);
+	std::vector<std::vector<double>> uq = z.unique(true, false, opt);
 	std::vector<double> u = uq[0];
 	double initv = 0;
 	double posinf = std::numeric_limits<double>::infinity();
