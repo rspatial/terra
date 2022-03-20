@@ -56,7 +56,7 @@ See set.ext to set the extent in place."><meta property="og:image" content="/log
 
     <div id="ref-usage">
     <div class="sourceCode"><pre><code># S4 method for SpatRaster
-ext(x)
+ext(x, cells=NULL)
 
 # S4 method for SpatVector
 ext(x)
@@ -81,6 +81,8 @@ $(x, name)&lt;-value</code></pre></div>
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+<dt>cells</dt>
+<dd><p>postive integer (cell) numbers to subset the extent to area covered by these cells</p></dd>
 <dt>value</dt>
 <dd><p>SpatExtent, or numeric vector of lenght four (xmin, xmax, ymin, ymax), or a single number with the <code>$</code> method</p></dd>
 <dt>name</dt>
