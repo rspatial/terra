@@ -49,6 +49,12 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 		out.setError("CRS not defined");
 		return(out);
 	}
+	if (!source[0].srs.is_same(p.srs, false)) {
+		out.setError("CRS does not match");
+		return(out);
+	}
+	
+
 
 	double m = source[0].srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
@@ -150,6 +156,10 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
 		out.setError("CRS not defined");
 		return(out);
 	}
+	if (!source[0].srs.is_same(p.srs, false) ) {
+		out.setError("CRS does not match");
+		return(out);
+	}
 
 	double m = source[0].srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
@@ -176,7 +186,7 @@ SpatRaster SpatRaster::distance_vector(SpatVector p, SpatOptions &opt) {
 		std::iota(cells.begin(), cells.end(), s);
 		std::vector<std::vector<double>> xy = xyFromCell(cells);
 		SpatVector pv(xy[0], xy[1], points, "");
-		pv.srs = p.srs;
+		pv.srs = source[0].srs;
 		std::vector<double> d = p.distance(pv, false);
 		if (p.hasError()) {
 			out.setError(p.getError());
