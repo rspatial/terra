@@ -77,9 +77,9 @@ d <- distance(r)
 plot(d / 100000)
 
 #planar
-r <- rast(ncols=36, nrows=18, crs="+proj=utm +zone=1 +datum=WGS84")
-r[500] <- 1
-d <- distance(r) 
+rr <- rast(ncols=36, nrows=18, crs="+proj=utm +zone=1 +datum=WGS84")
+rr[500] <- 1
+d <- distance(rr) 
 
 p1 <- vect(rbind(c(0,0), c(90,30), c(-90,-30)), crs="+proj=longlat +datum=WGS84")
 dp <- distance(r, p1) 
