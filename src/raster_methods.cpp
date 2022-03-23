@@ -979,12 +979,14 @@ SpatRaster SpatRaster::mask(SpatRaster x, bool inverse, std::vector<double> mask
 				if (maskNA && std::isnan(m[i])) {
 					v[i] = updatevalue;
 				} else {
+					bool found = false;
 					for (size_t j=0; j < maskvalues.size(); j++) {
-						if (m[i] != maskvalues[j]) {
-							v[i] = updatevalue;
+						if (m[i] == maskvalues[j]) {
+							found = true;
 							break;
 						}
 					}
+					if (!found) v[i] = updatevalue;
 				}
 			}
 		} else {
