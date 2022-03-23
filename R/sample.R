@@ -303,7 +303,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			}
 			if (values && hasValues(x)) {
 				e <- extract(x, cnrs)
-				e <- set_factors(e, ff, lv, as.df)
+				#e <- set_factors(e, ff, lv, as.df)
 				if (is.null(out)) {
 					out <- e
 				} else {
