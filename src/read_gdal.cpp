@@ -16,6 +16,7 @@
 // along with spat. If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <stdexcept>
 #include <algorithm>
 #include <stdint.h>
 #include <vector>
