@@ -17,6 +17,7 @@
 
 #include "spatVector.h"
 #include "string_utils.h"
+#include <stdexcept>
 
 #ifdef useGDAL
 
