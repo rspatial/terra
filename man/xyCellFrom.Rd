@@ -2,8 +2,10 @@
 
 \alias{xFromCol}
 \alias{xFromCol,SpatRaster,numeric-method}
+\alias{xFromCol,SpatRaster,missing-method}
 \alias{yFromRow}
 \alias{yFromRow,SpatRaster,numeric-method}
+\alias{yFromRow,SpatRaster,missing-method}
 \alias{xyFromCell}
 \alias{xyFromCell,SpatRaster,numeric-method}
 \alias{xFromCell}
@@ -28,7 +30,7 @@
 \alias{rowColFromCell}
 \alias{rowColFromCell,SpatRaster,numeric-method}
 
-  
+
 \title{Coordinates from a row, column or cell number and vice versa}
 
 \description{
@@ -43,7 +45,11 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 \usage{
 \S4method{xFromCol}{SpatRaster,numeric}(object, col)
 
+\S4method{xFromCol}{SpatRaster,missing}(object)
+
 \S4method{yFromRow}{SpatRaster,numeric}(object, row)
+
+\S4method{yFromRow}{SpatRaster,missing}(object)
 
 \S4method{xyFromCell}{SpatRaster,numeric}(object, cell)
 
@@ -78,16 +84,16 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
   \item{y}{y coordinate(s)}
   \item{xy}{matrix of x and y coordinates}
 }
-  
+
 \details{
 Cell numbers start at 1 in the upper left corner, and increase from left to right, and then from top to bottom.
 The last cell number equals the number of cells of the SpatRaster (see \code{\link{ncell}}).
 }
 
 \value{
-xFromCol, yFromCol, xFromCell, yFromCell: vector of x or y coordinates 
+xFromCol, yFromCol, xFromCell, yFromCell: vector of x or y coordinates
 
-xyFromCell: matrix(x,y) with coordinate pairs 
+xyFromCell: matrix(x,y) with coordinate pairs
 
 colFromX, rowFromY, cellFromXY, cellFromRowCol, rowFromCell, colFromCell: vector of row, column, or cell numbers
 
@@ -96,7 +102,7 @@ rowColFromCell: matrix of row and column numbers
 
 
 \seealso{
-\code{\link{crds}} 
+\code{\link{crds}}
 }
 
 
@@ -113,13 +119,17 @@ cellFromRowCol(r, 5, 5)
 cellFromRowCol(r, 1:2, 1:2)
 cellFromRowCol(r, 1, 1:3)
 
-# all combinations 
+# all combinations
 cellFromRowColCombine(r, 1:2, 1:2)
 
 colFromX(r, 10)
 rowFromY(r, 10)
 xy <- cbind(lon=c(10,5), lat=c(15, 88))
 cellFromXY(r, xy)
+
+# if no row/col specified all are returned
+range(xFromCol(r))
+length(yFromRow(r))
 }
 
 \keyword{spatial}
