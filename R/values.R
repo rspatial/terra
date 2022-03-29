@@ -328,6 +328,10 @@ setMethod("values<-", signature("SpatVector", "data.frame"),
 				x@ptr$add_column_long(value[[i]], nms[i])
 			} else if (types[i] == "character") {
 				x@ptr$add_column_string(value[[i]], nms[i])
+			} else if (types[i] == "logical") {
+				v <- as.integer(value[[i]])
+				v[is.na(v)] <- 2
+				x@ptr$add_column_bool(v, nms[i])
 			} else {
 				att <- as.character(value[[i]])
 				x@ptr$add_column_string(att, nms[i])

@@ -225,6 +225,9 @@ class SpatVector {
 		bool add_column(std::vector<T> x, std::string name) {
 			return df.add_column(x, name);
 		}
+		bool add_column_bool(std::vector<int> x, std::string name) {
+			return df.add_column_bool(x, name);
+		}
 
 		void remove_df() {
 			SpatDataFrame empty;

@@ -2,6 +2,8 @@
 //#include "spatRaster.h"
 #include "spatRasterMultiple.h"
 #include <memory> //std::addressof
+#include "NA.h"
+#include "SpatTime.h"
 
 //static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
@@ -43,17 +45,16 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 		if (itype[i] == 0) {
 			out[i] = v->getD(i);
 		} else if (itype[i] == 1) {
-
 			Rcpp::NumericVector iv = Rcpp::wrap(v->getI(i));
+			long longNA = NA<long>::value;
 			for (R_xlen_t j=0; j<iv.size(); j++) {
-				if (iv[j] <= INT32_MIN) {
+				if (iv[j] == longNA) {
 					iv[j] = NA_REAL;
 				}
 			}
 			out[i] = iv;
 
-
-		} else {
+		} else if (itype[i] == 2){
 			Rcpp::CharacterVector s = Rcpp::wrap(v->getS(i));
 			for (R_xlen_t j=0; j<s.size(); j++) {
 				if (s[j] == "____NA_+") {
@@ -61,7 +62,26 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 				}
 			}
 			out[i] = s;
-
+		} else if (itype[i] == 3){
+			std::vector<int8_t> b = v->getB(i);
+			Rcpp::NumericVector d(b.size());
+			for (size_t j=0; j<b.size(); j++) {
+				if (b[j] > 1) {
+					d[j] = NA_REAL;
+				} else {
+					d[j] = b[j];
+				}
+			}
+			out[i] = d;
+		} else if (itype[i] == 4){
+			//Rcpp::NumericVector tv = Rcpp::wrap(v->getT(i));
+			//SpatTime_t timeNA = NA<SpatTime_t>::value;
+			//for (R_xlen_t j=0; j<tv.size(); j++) {
+			//	if (tv[j] == timeNA) {
+			//		tv[j] = NA_REAL;
+			//	}
+			//}
+			//out[i] = tv;
 		}
 	}
 	out.names() = nms;
@@ -226,6 +246,7 @@ RCPP_MODULE(spat){
 		.method("add_column_double", (bool (SpatDataFrame::*)(std::vector<double>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
+		.method("add_column_bool", &SpatDataFrame::add_column_bool)
 
 		.method("remove_column", (bool (SpatDataFrame::*)(std::string field))( &SpatDataFrame::remove_column))
 		.method("remove_column", (bool (SpatDataFrame::*)(int i))( &SpatDataFrame::remove_column))
@@ -312,6 +333,7 @@ RCPP_MODULE(spat){
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
+		.method("add_column_bool", &SpatVector::add_column_bool)
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
 		.method("remove_df", &SpatVector::remove_df)

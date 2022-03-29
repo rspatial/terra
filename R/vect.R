@@ -270,6 +270,10 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 				ok <- x@ptr$add_column_long(value, name)
 			} else if (is.numeric(value)) {
 				ok <- x@ptr$add_column_double(value, name)
+			} else if (is.logical(value)) {
+				value <- as.integer(value)
+				value[is.na(value)] <- 2
+				ok <- x@ptr$add_column_bool(value, name)
 			} else {
 				ok <- x@ptr$add_column_string(as.character(value), name)
 			}
