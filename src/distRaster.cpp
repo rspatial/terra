@@ -1698,6 +1698,10 @@ std::vector<double> SpatVector::length() {
 	double m = srs.to_meter();
 	m = std::isnan(m) ? 1 : m;
 
+	if (srs.wkt == "") {
+		addWarning("unknown CRS. Results can be wrong");
+	}
+	
 	if (m == 0) {
 		struct geod_geodesic g;
 		double a = 6378137;
