@@ -64,8 +64,14 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">xFromCol</span><span class="op">(</span><span class="va">object</span>, <span class="va">col</span><span class="op">)</span>
 
+<span class="co"># S4 method for SpatRaster,missing</span>
+<span class="fu">xFromCol</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>
+
 <span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">yFromRow</span><span class="op">(</span><span class="va">object</span>, <span class="va">row</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatRaster,missing</span>
+<span class="fu">yFromRow</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">xyFromCell</span><span class="op">(</span><span class="va">object</span>, <span class="va">cell</span><span class="op">)</span>
@@ -125,8 +131,8 @@ The last cell number equals the number of cells of the SpatRaster (see <code><a 
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>xFromCol, yFromCol, xFromCell, yFromCell: vector of x or y coordinates 
-xyFromCell: matrix(x,y) with coordinate pairs 
+    <p>xFromCol, yFromCol, xFromCell, yFromCell: vector of x or y coordinates
+xyFromCell: matrix(x,y) with coordinate pairs
 colFromX, rowFromY, cellFromXY, cellFromRowCol, rowFromCell, colFromCell: vector of row, column, or cell numbers
 rowColFromCell: matrix of row and column numbers</p>
     </div>
@@ -161,7 +167,7 @@ rowColFromCell: matrix of row and column numbers</p>
 <span class="r-in"><span class="fu">cellFromRowCol</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2 3</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># all combinations </span></span>
+<span class="r-in"><span class="co"># all combinations</span></span>
 <span class="r-in"><span class="fu">cellFromRowColCombine</span><span class="op">(</span><span class="va">r</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]   1   2 361 362</span>
 <span class="r-in"></span>
@@ -172,6 +178,12 @@ rowColFromCell: matrix of row and column numbers</p>
 <span class="r-in"><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>lon<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">5</span><span class="op">)</span>, lat<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">88</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">cellFromXY</span><span class="op">(</span><span class="va">r</span>, <span class="va">xy</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 27191   906</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># if no row/col specified all are returned</span></span>
+<span class="r-in"><span class="fu"><a href="summarize-generics.html">range</a></span><span class="op">(</span><span class="fu">xFromCol</span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -179.5  179.5</span>
+<span class="r-in"><span class="fu"><a href="dimensions.html">length</a></span><span class="op">(</span><span class="fu">yFromRow</span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 180</span>
 </code></pre></div>
     </div>
   </div>
