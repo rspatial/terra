@@ -230,6 +230,14 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		}
 	}
 
+	size_t nGeoms = x.size();
+	if (nGeoms == 0) {
+		if (!update) {
+			out = out.init({background}, opt);
+		}
+		return out;
+	}
+
 	if (ispol && touches && add) {
 		add = false;
 		out.addWarning("you cannot use add and touches at the same time");
@@ -270,7 +278,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 			}
 		}
 	}
-	size_t nGeoms = x.size();
+	
 	if (values.size() != nGeoms) {
 		recycle(values, nGeoms);
 	}
