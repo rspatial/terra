@@ -382,7 +382,7 @@ bool SpatDataFrame::remove_column(int i) {
 		iv.erase(iv.begin()+place);
 	} else if (dtype == 2) {
 		sv.erase(sv.begin()+place);
-	} else if (dtype == 2) {
+	} else if (dtype == 3) {
 		bv.erase(bv.begin()+place);
 	} else {
 		tv.erase(tv.begin()+place);
@@ -686,7 +686,7 @@ void SpatDataFrame::set_names(std::vector<std::string> nms){
 
 
 std::vector<std::string> SpatDataFrame::get_datatypes() {
-	std::vector<std::string> types = {"double", "long", "string"};
+	std::vector<std::string> types = {"double", "long", "string", "bool", "time"};
 	std::vector<std::string> stype(itype.size());
 	for (size_t i=0; i<itype.size(); i++) {
 		stype[i] = types[itype[i]]; 

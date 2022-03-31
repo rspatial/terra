@@ -64,7 +64,11 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 				if (ft == OFTReal) {
 					dtype = 0;
 				} else if ((ft == OFTInteger) | (ft == OFTInteger64)) {
-					dtype = 1;
+					if (poFieldDefn->GetSubType() == OFSTBoolean) {
+						dtype = 3;
+					} else {
+						dtype = 1;
+					}
 				} else {
 					dtype = 2;
 				}
@@ -81,7 +85,11 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 					df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
 					break;
 				case OFTInteger:
-					df.iv[j].push_back(poFeature->GetFieldAsInteger( i ));
+					if (poFieldDefn->GetSubType() == OFSTBoolean) {
+						df.bv[j].push_back(poFeature->GetFieldAsInteger( i ));						
+					} else {
+						df.iv[j].push_back(poFeature->GetFieldAsInteger( i ));
+					}
 					break;
 				case OFTInteger64:
 					df.iv[j].push_back(poFeature->GetFieldAsInteger64( i ));

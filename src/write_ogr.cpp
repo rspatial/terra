@@ -24,6 +24,7 @@
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
 
+#include "Rcpp.h"
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
@@ -109,6 +110,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 	std::string s = srs.wkt;
 
+
 	OGRSpatialReference *SRS = NULL;
 	if (s != "") {
 		SRS = new OGRSpatialReference;
@@ -153,30 +155,40 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 //	if (SRS != NULL) SRS->Release();
 	if (SRS != NULL) OSRDestroySpatialReference(SRS);
 
+
 	std::vector<std::string> nms = get_names();
 	std::vector<std::string> tps = df.get_datatypes();
 	OGRFieldType otype;
 	int nfields = nms.size();
 	size_t ngeoms = size();
 
+
 	for (int i=0; i<nfields; i++) {
+		Rcpp::Rcout << tps[i] << "-";
+
+		OGRFieldSubType eSubType = OFSTNone;
 		if (tps[i] == "double") {
 			otype = OFTReal;
 		} else if (tps[i] == "long") {
 			otype = OFTInteger64;
+		} else if (tps[i] == "bool") {
+			otype = OFTInteger;
+			eSubType = OFSTBoolean;
 		} else {
 			otype = OFTString;
 		}
 
 		OGRFieldDefn oField(nms[i].c_str(), otype);
+		oField.SetSubType(eSubType);
 		if (otype == OFTString) {
 			oField.SetWidth(32); // needs to be computed
 		}
 		if( poLayer->CreateField( &oField ) != OGRERR_NONE ) {
 			setError( "Field creation failed for: " + nms[i]);
 			return poDS;
-		}
+		}		
 	}
+	Rcpp::Rcout << std::endl;
 
 	// use a single transaction as in sf
 	// makes a big difference for gpkg by avoiding many INSERTs	
@@ -201,14 +213,18 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		OGRFeature *poFeature;
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
+			Rcpp::Rcout << tps[j] << "-";
 			if (tps[j] == "double") {
 				poFeature->SetField(j, df.getDvalue(i, j));
 			} else if (tps[j] == "long") {
 				poFeature->SetField(j, (GIntBig)df.getIvalue(i, j));
+			} else if (tps[j] == "bool") {
+				poFeature->SetField(j, df.getBvalue(i, j));
 			} else {
 				poFeature->SetField(j, df.getSvalue(i, j).c_str());
 			}
 		}
+		Rcpp::Rcout << std::endl;
 		//r++;
 
 // points -- also need to do multi-points
