@@ -748,6 +748,7 @@ std::vector<T> operator|(const std::vector<T>& a, const std::vector<T>& b) {
 
 SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 	SpatRaster out = geometry();
+	out.setValueType(3);
 	if (!readStart()) {
 		out.setError(getError());
 		return(out);
@@ -775,6 +776,7 @@ SpatRaster SpatRaster::isnot(SpatOptions &opt) {
 SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	out.setValueType(3);
 
 	std::vector<std::string> f {"&", "|"}; 
 	if (std::find(f.begin(), f.end(), oper) == f.end()) {
@@ -825,6 +827,7 @@ SpatRaster SpatRaster::logic(SpatRaster x, std::string oper, SpatOptions &opt) {
 SpatRaster SpatRaster::logic(bool x, std::string oper, SpatOptions &opt) {
 
 	SpatRaster out = geometry();
+	out.setValueType(3);
 
 	if (!readStart()) {
 		out.setError(getError());
