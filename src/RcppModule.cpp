@@ -394,9 +394,10 @@ RCPP_MODULE(spat){
 		.method("aggregate", ( SpatVector (SpatVector::*)(std::string, bool))( &SpatVector::aggregate ))
 		.method("aggregate_nofield", ( SpatVector (SpatVector::*)(bool))( &SpatVector::aggregate ))
 
-		.method("disaggregate", &SpatVector::disaggregate, "disaggregate")
-		.method("buffer", &SpatVector::buffer, "buffer")
-		.method("centroid", &SpatVector::centroid, "centroid")
+		.method("disaggregate", &SpatVector::disaggregate)
+		.method("buffer", &SpatVector::buffer)
+		.method("centroid", &SpatVector::centroid)
+		.method("point_on_surface", &SpatVector::point_on_surface)
 		.method("make_valid2", &SpatVector::make_valid2)
 		.method("flip", &SpatVector::flip)
 		.method("transpose", &SpatVector::transpose)

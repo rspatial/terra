@@ -292,6 +292,8 @@ class SpatVector {
 		SpatVector point_buffer(std::vector<double>	 d, unsigned quadsegs, bool no_multipolygons);
 
 		SpatVector centroid(bool check_lonlat);
+		SpatVector point_on_surface(bool check_lonlat);
+
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		

@@ -2053,6 +2053,46 @@ SpatVector SpatVector::centroid(bool check_lonlat) {
 }
 
 
+SpatVector SpatVector::point_on_surface(bool check_lonlat) {
+
+	SpatVector out;
+	if (type() != "polygons") {
+		out.setError("input must be polygons");
+		return out;
+	}
+
+
+	if (check_lonlat && could_be_lonlat()) {
+		bool changed = false;
+		SpatVector v = cross_dateline(changed);
+		if (changed) {
+			out = v.point_on_surface(false);
+			out.fix_lonlat_overflow();
+			return out;
+		}
+	}
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> g = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> b(size());
+	for (size_t i = 0; i < g.size(); i++) {
+		GEOSGeometry* pt = GEOSPointOnSurface_r(hGEOSCtxt, g[i].get());
+		if (pt == NULL) {
+			out.setError("NULL geom");
+			geos_finish(hGEOSCtxt);
+			return out;
+		}
+		b[i] = geos_ptr(pt, hGEOSCtxt);
+	}
+	out = vect_from_geos(b, hGEOSCtxt, "points");
+	geos_finish(hGEOSCtxt);
+
+	out.srs = srs;
+	out.df = df;
+	return out;
+}
+
+
 SpatVector SpatVector::unaryunion() {
 	SpatVector out;
 

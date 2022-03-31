@@ -183,11 +183,16 @@ setMethod("fillHoles", signature(x="SpatVector"),
 
 
 setMethod("centroids", signature(x="SpatVector"), 
-	function(x) {
-		x@ptr <- x@ptr$centroid(TRUE)
+	function(x, inside=FALSE) {
+		if (inside) {
+			x@ptr <- x@ptr$point_on_surface(TRUE)
+		} else {
+			x@ptr <- x@ptr$centroid(TRUE)
+		}
 		messages(x)
 	}
 )
+
 
 
 
