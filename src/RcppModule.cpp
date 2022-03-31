@@ -3,7 +3,7 @@
 #include "spatRasterMultiple.h"
 #include <memory> //std::addressof
 #include "NA.h"
-#include "SpatTime.h"
+#include "spatTime.h"
 
 //static void SpatRaster_finalizer( SpatRaster* ptr ){
 //}
