@@ -386,7 +386,7 @@ std::vector<double> percRank(std::vector<double> x, std::vector<double> y, doubl
 	for (size_t i=0; i<y.size(); i++) {
 		if (std::isnan(y[i]) ) {
 			out.push_back( NAN );
-		} else if ((y[i] < minc) | (y[i] > maxc )) {
+		} else if ((y[i] < minc) || (y[i] > maxc )) {
 			out.push_back( 0 ); 
 		} else {
 			size_t b = 0;

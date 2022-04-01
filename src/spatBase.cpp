@@ -447,7 +447,7 @@ bool SpatRaster::compare_geom(SpatRaster x, bool lyrs, bool crs, double tol, boo
 		}
 	}
 	if (res) {
-		if (! ((is_equal_relative(x.xres(), xres(), 0.0001)) & (is_equal_relative(x.yres(), yres(), 0.0001)))) {
+		if (! ((is_equal_relative(x.xres(), xres(), 0.0001)) && (is_equal_relative(x.yres(), yres(), 0.0001)))) {
 			setError("resolution does not match");
 			return false;
 		}

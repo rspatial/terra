@@ -174,7 +174,7 @@ SpatRaster SpatRaster::quantile(std::vector<double> probs, bool narm, SpatOption
 
 	double pmin = vmin(probs, false);
 	double pmax = vmin(probs, false);
-	if ((std::isnan(pmin)) | (std::isnan(pmax)) | (pmin < 0) | (pmax > 1)) {
+	if ((std::isnan(pmin)) || (std::isnan(pmax)) || (pmin < 0) || (pmax > 1)) {
 		SpatRaster out = geometry(1);
 		out.setError("intvalid probs");
 		return out;

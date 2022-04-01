@@ -1656,7 +1656,7 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
             rows = {r[i]-2, r[i]-2, r[i]-1, r[i]-1, r[i]-1, r[i]-1, r[i]-1, r[i]  , r[i]  , r[i]+1, r[i]+1, r[i]+1, r[i]+1, r[i]+1, r[i]+2, r[i]+2};
             cols = {c[i]-1, c[i]+1, c[i]-2, c[i]-1, c[i],   c[i]+1, c[i]+2, c[i]-1, c[i]+1, c[i]-2, c[i]-1, c[i]  , c[i]+1, c[i]+2, c[i]-1, c[i]+1};
             if (globlatlon) {
-                if ((c[i]==0) | (c[i]==1)) {
+                if ((c[i]==0) || (c[i]==1)) {
                     for (size_t j=0; j<16; j++) {
                         cols[j] = (cols[j] < 0) ? nc-cols[j] : cols[j];
                     }
@@ -2009,7 +2009,7 @@ void SpatRaster::removeRGB(){
 
 
 bool SpatRaster::to_memory(SpatOptions &opt) {
-	if ((nsrc() == 1) & (source[0].memory)) {
+	if ((nsrc() == 1) && (source[0].memory)) {
 		return true;
 	}
 	SpatRaster g = geometry();

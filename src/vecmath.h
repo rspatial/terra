@@ -482,7 +482,7 @@ T vall(const std::vector<T>& v, bool narm) {
     } else {
 		x = 1;
         for (size_t i=0; i<v.size(); i++) {
-            if (is_NA(v[i]) | (v[i] == 0)) {
+            if (is_NA(v[i]) || (v[i] == 0)) {
                 x = v[i];
                 break;
 			}
@@ -618,7 +618,7 @@ void cumsum(std::vector<T>& v, bool narm) {
         }
     } else {
         for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
+            if (is_NA(v[i]) || is_NA(v[i-1])) {
                 v[i] = NA<T>::value;
             } else {
                 v[i] += v[i-1];
@@ -639,7 +639,7 @@ void cumprod(std::vector<T>& v, bool narm) {
         }
     } else {
         for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
+            if (is_NA(v[i]) || is_NA(v[i-1])) {
                 v[i] = NA<T>::value;
             } else {
                 v[i] *= v[i-1];
@@ -661,7 +661,7 @@ void cummax(std::vector<T>& v, bool narm) {
         }
     } else {
         for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
+            if (is_NA(v[i]) || is_NA(v[i-1])) {
                 v[i] = NA<T>::value;
             } else {
                 v[i] = std::max(v[i], v[i-1]);
@@ -683,7 +683,7 @@ void cummin(std::vector<T>& v, bool narm) {
         }
     } else {
         for (size_t i=1; i<v.size(); i++) {
-            if (is_NA(v[i]) | is_NA(v[i-1])) {
+            if (is_NA(v[i]) || is_NA(v[i-1])) {
                 v[i] = NA<T>::value;
             } else {
                 v[i] = std::min(v[i], v[i-1]);

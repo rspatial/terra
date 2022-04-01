@@ -329,7 +329,7 @@ SpatVector vect_from_geos(std::vector<GeomPtr> &geoms , GEOSContextHandle_t hGEO
 	std::vector<double> x, y;
 	bool xok, yok;
 
-	if ((vt == "points") | (vt == "lines")) {	
+	if ((vt == "points") || (vt == "lines")) {	
 		for(size_t i = 0; i < ng; i++) {
 			GEOSGeometry* g = geoms[i].get();
 			size_t np = GEOSGetNumGeometries_r(hGEOSCtxt, g);

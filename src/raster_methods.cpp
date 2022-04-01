@@ -1225,7 +1225,7 @@ void clamp_vector(std::vector<double> &v, double low, double high, bool usevalue
 		}
 	} else {
 		for (size_t i=0; i<n; i++) {
-			if ( (v[i] < low )| (v[i] > high)) {
+			if ( (v[i] < low ) || (v[i] > high)) {
 				v[i] = NAN;
 			}
 		}
@@ -2846,7 +2846,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
-					} else if ((v[i] < rc[0]) | (v[i] > rc[nr-1])) {
+					} else if ((v[i] < rc[0]) || (v[i] > rc[nr-1])) {
 						v[i] = NAval;
 					} else {
 						for (size_t j=1; j<nr; j++) {
@@ -2861,7 +2861,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
-					} else if ((v[i] <= rc[0]) | (v[i] > rc[nr-1])) {
+					} else if ((v[i] <= rc[0]) || (v[i] > rc[nr-1])) {
 						v[i] = NAval;
 					} else {
 						for (size_t j=1; j<nr; j++) {
@@ -2878,7 +2878,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
-					} else if ((v[i] < rc[0]) | (v[i] > rc[nr-1])) {
+					} else if ((v[i] < rc[0]) || (v[i] > rc[nr-1])) {
 						v[i] = NAval;
 					} else if (v[i] == rc[nr-1]) {
 						v[i] = nr-2; // safe because there must be at least 2 classes
@@ -2895,7 +2895,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				for (size_t i=0; i<n; i++) {
 					if (std::isnan(v[i])) {
 						v[i] = NAval;
-					} else if ((v[i] < rc[0]) | (v[i] >= rc[nr-1])) {
+					} else if ((v[i] < rc[0]) || (v[i] >= rc[nr-1])) {
 						v[i] = NAval;
 					} else {
 						for (size_t j=1; j<nr; j++) {
@@ -2968,7 +2968,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 				} else {
 					bool found = false;
 					for (size_t j=0; j<nr; j++) {
-						if ((v[i] >= rcl[0][j]) & (v[i] <= rcl[1][j])) {
+						if ((v[i] >= rcl[0][j]) && (v[i] <= rcl[1][j])) {
 							v[i] = rcl[2][j];
 							found = true;
 							break;
@@ -3003,7 +3003,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						bool found = false;
 						for (size_t j=0; j<nr; j++) {
-							if ((v[i] > rcl[0][j]) & (v[i] <= rcl[1][j])) {
+							if ((v[i] > rcl[0][j]) && (v[i] <= rcl[1][j])) {
 								v[i] = rcl[2][j];
 								found = true;
 								break;
@@ -3026,7 +3026,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						bool found = false;
 						for (size_t j=0; j<nr; j++) {
-							if ((v[i] > rcl[0][j]) & (v[i] <= rcl[1][j])) {
+							if ((v[i] > rcl[0][j]) && (v[i] <= rcl[1][j])) {
 								v[i] = rcl[2][j];
 								found = true;
 								break;
@@ -3064,7 +3064,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						bool found = false;
 						for (size_t j=0; j<nr; j++) {
-							if ((v[i] >= rcl[0][j]) & (v[i] < rcl[1][j])) {
+							if ((v[i] >= rcl[0][j]) && (v[i] < rcl[1][j])) {
 								v[i] = rcl[2][j];
 								found = true;
 								break;
@@ -3088,7 +3088,7 @@ void reclass_vector(std::vector<double> &v, std::vector<std::vector<double>> rcl
 					} else {
 						bool found = false;
 						for (size_t j=0; j<nr; j++) {
-							if ((v[i] >= rcl[0][j]) & (v[i] < rcl[1][j])) {
+							if ((v[i] >= rcl[0][j]) && (v[i] < rcl[1][j])) {
 								v[i] = rcl[2][j];
 								found = true;
 								break;

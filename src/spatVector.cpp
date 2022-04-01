@@ -795,7 +795,7 @@ SpatVector SpatVector::subset_rows(std::vector<int> range) {
 	int n = nrow();
 	std::vector<unsigned> r;
 	for (size_t i=0; i<range.size(); i++) {
-		if ((range[i] >= 0) & (range[i] < n)) {
+		if ((range[i] >= 0) && (range[i] < n)) {
 			r.push_back(range[i]);
 		}
 	}
@@ -863,7 +863,7 @@ SpatVector SpatVector::subset_cols(std::vector<int> range) {
 	std::vector<unsigned> valid;
 	valid.reserve(range.size());
 	for (size_t i=0; i<range.size(); i++) {
-		if ((range[i] >= 0) & (range[i] < nc)) {
+		if ((range[i] >= 0) && (range[i] < nc)) {
 			valid.push_back(range[i]);
 		}
 	}

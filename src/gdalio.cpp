@@ -313,7 +313,7 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions 
 	std::string outfile = opt.get_filename();
 	if (outfile == "") {
 		outfile = tempFile(opt.get_tempdir(), opt.pid, ".vrt");
-	} else if (file_exists(outfile) & (!opt.get_overwrite())) {
+	} else if (file_exists(outfile) && (!opt.get_overwrite())) {
 		out.setError("output file exists. You can use 'overwrite=TRUE' to overwrite it");
 		return(out);
 	}

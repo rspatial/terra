@@ -24,8 +24,6 @@
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
 
-#include "Rcpp.h"
-
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
     GDALDataset *poDS = NULL;
@@ -164,7 +162,6 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 
 
 	for (int i=0; i<nfields; i++) {
-		Rcpp::Rcout << tps[i] << "-";
 
 		OGRFieldSubType eSubType = OFSTNone;
 		if (tps[i] == "double") {
@@ -188,7 +185,6 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 			return poDS;
 		}		
 	}
-	Rcpp::Rcout << std::endl;
 
 	// use a single transaction as in sf
 	// makes a big difference for gpkg by avoiding many INSERTs	
@@ -213,7 +209,6 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		OGRFeature *poFeature;
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
-			Rcpp::Rcout << tps[j] << "-";
 			if (tps[j] == "double") {
 				poFeature->SetField(j, df.getDvalue(i, j));
 			} else if (tps[j] == "long") {
@@ -224,7 +219,6 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				poFeature->SetField(j, df.getSvalue(i, j).c_str());
 			}
 		}
-		Rcpp::Rcout << std::endl;
 		//r++;
 
 // points -- also need to do multi-points
