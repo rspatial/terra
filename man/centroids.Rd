@@ -7,7 +7,7 @@
 \title{Centroids}
 
 \description{
-Get the centroids of polygons, or centroid-like points that are guaranteed to be inside the polygons
+Get the centroids of polygons or lines, or centroid-like points that are guaranteed to be inside the polygons or on the lines.
 }
 
 \usage{
@@ -16,7 +16,7 @@ Get the centroids of polygons, or centroid-like points that are guaranteed to be
 
 \arguments{
 \item{x}{SpatVector}
-\item{inside}{logical. If \code{TRUE} the points returned are not the true centroids, but they are guaranteed to be inside the polygons. True centroids that may be outside a polygon (e.g. when a polygon is "bean shaped"}
+\item{inside}{logical. If \code{TRUE} the points returned are not the true centroids, but they are guaranteed to be inside the polygons or on the lines. True centroids may be outside a polygon (e.g. when a polygon is "bean shaped", and are unlikely to be on their line}
 }
 
 

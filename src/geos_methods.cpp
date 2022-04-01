@@ -2056,11 +2056,6 @@ SpatVector SpatVector::centroid(bool check_lonlat) {
 SpatVector SpatVector::point_on_surface(bool check_lonlat) {
 
 	SpatVector out;
-	if (type() != "polygons") {
-		out.setError("input must be polygons");
-		return out;
-	}
-
 
 	if (check_lonlat && could_be_lonlat()) {
 		bool changed = false;

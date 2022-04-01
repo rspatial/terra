@@ -45,11 +45,7 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 \usage{
 \S4method{xFromCol}{SpatRaster,numeric}(object, col)
 
-\S4method{xFromCol}{SpatRaster,missing}(object)
-
 \S4method{yFromRow}{SpatRaster,numeric}(object, row)
-
-\S4method{yFromRow}{SpatRaster,missing}(object)
 
 \S4method{xyFromCell}{SpatRaster,numeric}(object, cell)
 
@@ -78,8 +74,8 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.
 \arguments{
   \item{object}{SpatRaster}
   \item{cell}{integer. cell number(s)}
-  \item{col}{integer. column number(s)}
-  \item{row}{integer row number(s)}
+  \item{col}{integer. column number(s) or missing (equivalent to all columns)}
+  \item{row}{integer. row number(s) or missing (equivalent to all rows)}
   \item{x}{x coordinate(s)}
   \item{y}{y coordinate(s)}
   \item{xy}{matrix of x and y coordinates}
