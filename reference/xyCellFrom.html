@@ -21,7 +21,7 @@ row numbers start at 1 at the top, column numbers start at 1 at the left."><meta
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-24</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-25</span>
       </span>
     </div>
 
@@ -64,14 +64,8 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">xFromCol</span><span class="op">(</span><span class="va">object</span>, <span class="va">col</span><span class="op">)</span>
 
-<span class="co"># S4 method for SpatRaster,missing</span>
-<span class="fu">xFromCol</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>
-
 <span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">yFromRow</span><span class="op">(</span><span class="va">object</span>, <span class="va">row</span><span class="op">)</span>
-
-<span class="co"># S4 method for SpatRaster,missing</span>
-<span class="fu">yFromRow</span><span class="op">(</span><span class="va">object</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">xyFromCell</span><span class="op">(</span><span class="va">object</span>, <span class="va">cell</span><span class="op">)</span>
@@ -114,9 +108,9 @@ row numbers start at 1 at the top, column numbers start at 1 at the left.</p>
 <dt>cell</dt>
 <dd><p>integer. cell number(s)</p></dd>
 <dt>col</dt>
-<dd><p>integer. column number(s)</p></dd>
+<dd><p>integer. column number(s) or missing (equivalent to all columns)</p></dd>
 <dt>row</dt>
-<dd><p>integer row number(s)</p></dd>
+<dd><p>integer. row number(s) or missing (equivalent to all rows)</p></dd>
 <dt>x</dt>
 <dd><p>x coordinate(s)</p></dd>
 <dt>y</dt>
