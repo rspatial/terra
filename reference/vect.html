@@ -68,7 +68,7 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, type<span class="op">=</span><span class="st">"points"</span>, atts<span class="op">=</span><span class="cn">NULL</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span>
 
 <span class="co"># S4 method for data.frame</span>
-<span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, geom<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">""</span><span class="op">)</span>
+<span class="fu">vect</span><span class="op">(</span><span class="va">x</span>, geom<span class="op">=</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs<span class="op">=</span><span class="st">""</span>, keepgeom<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for list</span>
 <span class="fu">vect</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
@@ -98,7 +98,9 @@ SpatVectors can also be created from "Well Known Text", and from spatial vector 
 <dt>proxy</dt>
 <dd><p>logical. If <code>TRUE</code> a SpatVectorProxy is returned</p></dd>
 <dt>geom</dt>
-<dd><p>the field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)</p></dd>
+<dd><p>character. The field name(s) with the geometry data. Either two names for x and y coordinates of points, or a single name for a single column with WKT geometries)</p></dd>
+<dt>keepgeom</dt>
+<dd><p>logical. If <code>TRUE</code> the geom variable(s) is (are) also included in the attributes</p></dd>
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
