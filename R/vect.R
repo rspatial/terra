@@ -307,7 +307,7 @@ setMethod("$<-", "SpatVector",
 
 
 setMethod("vect", signature(x="data.frame"), 
-	function(x, geom=c("lon", "lat"), crs=NA) {
+	function(x, geom=c("lon", "lat"), crs=NA, keepgeom=FALSE) {
 		if (!all(geom %in% names(x))) {
 			error("vect", "the variable name(s) in argument `geom` are not in `x`")
 		}
@@ -325,7 +325,7 @@ setMethod("vect", signature(x="data.frame"),
 			p@ptr <- SpatVector$new()
 			x <- .makeSpatDF(x)
 			
-			p@ptr$setPointsDF(x, geom-1, crs)
+			p@ptr$setPointsDF(x, geom-1, crs, keepgeom)	
 			messages(p, "vect")
 			return(p)
 		} else if (length(geom) == 1) {

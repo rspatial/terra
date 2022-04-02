@@ -766,7 +766,7 @@ void SpatVector::setPointsGeometry(std::vector<double> &x, std::vector<double> &
 
 
 
-void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::string crs) {
+void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::string crs, bool keepgeom) {
 	if (x.nrow() == 0) return;
 	if ((x.itype[geo[0]] != 0) || (x.itype[geo[1]] != 0)) {
 		setError("coordinates must be numeric");
@@ -777,13 +777,15 @@ void SpatVector::setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::s
 		return;			
 	}
 	setPointsGeometry(x.dv[x.iplace[geo[0]]], x.dv[x.iplace[geo[1]]]);
-	setSRS( {crs});
-	if (geo[0] > geo[1]) {
-		x.remove_column(geo[0]);
-		x.remove_column(geo[1]);
-	} else {
-		x.remove_column(geo[1]);
-		x.remove_column(geo[0]);
+	setSRS( {crs} );
+	if (!keepgeom) {
+		if (geo[0] > geo[1]) {
+			x.remove_column(geo[0]);
+			x.remove_column(geo[1]);
+		} else {
+			x.remove_column(geo[1]);
+			x.remove_column(geo[0]);
+		}
 	}
 	df = x;
 }

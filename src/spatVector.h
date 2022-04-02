@@ -178,7 +178,7 @@ class SpatVector {
 
 		void setGeometry(std::string type, std::vector<unsigned> gid, std::vector<unsigned> part, std::vector<double> x, std::vector<double> y, std::vector<unsigned> hole);
 		void setPointsGeometry(std::vector<double> &x, std::vector<double> &y);
-		void setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::string crs);
+		void setPointsDF(SpatDataFrame &x, std::vector<unsigned> geo, std::string crs, bool keepgeom);
 
 		std::vector<double> area(std::string unit, bool transform, std::vector<double> mask);
 
