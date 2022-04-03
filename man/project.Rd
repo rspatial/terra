@@ -13,12 +13,12 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 \usage{
 \S4method{project}{SpatVector}(x, y)
 
-\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, filename="", ...)
+\S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatRaster or SpatVector}
-  \item{y}{if (\code{x} is a SpatRaster, the prefered approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (crs) description. 
+  \item{y}{if (\code{x} is a SpatRaster, the preferred approach is for \code{y} to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description. 
     
   You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., \code{+proj=longlat +datum=WGS84}), or an EPSG code (e.g., \code{"epsg:4326"}). But note that the PROJ.4 notation has been deprecated, and you can only use if with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored. 
   
@@ -40,7 +40,12 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
 
   \item{gdal}{logical. If \code{TRUE} the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the \code{near} and \code{bilinear} algorithms are available for the internal algorithm}
 
+  \item{res}{numeric. Can be used to set the resolution of the output raster if \code{y} is a CRS}
+
+  \item{origin}{numeric. Can be used to set the origon of the output raster if \code{y} is a CRS}
+  
   \item{filename}{character. Output filename}
+  
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
 

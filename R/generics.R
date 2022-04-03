@@ -637,7 +637,7 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 
 setMethod("project", signature(x="SpatRaster"), 
-	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, filename="", ...)  {
+	function(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, filename="", ...)  {
 	  
 		if (missing(method)) {
 			if (is.factor(x)[1] || isTRUE(x@ptr$rgb)) {
@@ -664,11 +664,15 @@ setMethod("project", signature(x="SpatRaster"),
 				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], TRUE, opt)			
 			}
 		} else {
-			if (inherits(y, "SpatRaster")) {
-				y <- crs(y)
-			} else if (!is.character(y)) {
-				warn("project,SpatRaster", "crs should be a character value")
+			if (!is.character(y)) {
+				warn("project,SpatRaster", "argument y (the crs) should be a character value")
 				y <- as.character(crs(y))
+			}
+			if (!is.null(res) || !is.null(origin)) {
+				tmp <- project(rast(x), y)
+				if (!is.null(res)) res(tmp) <- res
+				if (!is.null(origin)) origin(tmp) <- origin
+				return(project(x, tmp, method=method, mask=mask, align=align, gdal=gdal, filename=filename, ...))
 			}
 			if (gdal) {
 				x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
