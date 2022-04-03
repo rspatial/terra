@@ -57,7 +57,7 @@
 <span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align<span class="op">=</span><span class="cn">FALSE</span>, gdal<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">project</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">method</span>, mask<span class="op">=</span><span class="cn">FALSE</span>, align<span class="op">=</span><span class="cn">FALSE</span>, gdal<span class="op">=</span><span class="cn">TRUE</span>, res<span class="op">=</span><span class="cn">NULL</span>, origin<span class="op">=</span><span class="cn">NULL</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -65,7 +65,7 @@
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
 <dt>y</dt>
-<dd><p>if (<code>x</code> is a SpatRaster, the prefered approach is for <code>y</code> to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (crs) description.</p>    
+<dd><p>if (<code>x</code> is a SpatRaster, the preferred approach is for <code>y</code> to be a SpatRaster as well, serving as a template for the geometry (extent and resolution) of the output SpatRaster. Alternatively, you can provide a coordinate reference system (CRS) description.</p>    
 <p>You can use the following formats to define coordinate reference systems: WKT,  PROJ.4 (e.g., <code>+proj=longlat +datum=WGS84</code>), or an EPSG code (e.g., <code>"epsg:4326"</code>). But note that the PROJ.4 notation has been deprecated, and you can only use if with the WGS84/NAD83 and NAD27 datums. Other datums are silently ignored.</p>  
 <p>If <code>x</code> is a SpatVector, you can provide a crs definition as discussed above, or any other object from which such a crs can be extracted with <code><a href="crs.html">crs</a></code></p></dd>
 <dt>method</dt>
@@ -80,6 +80,10 @@
 <dd><p>logical. If <code>TRUE</code>, and <code>y</code> is a SpatRaster, the template is used for the spatial resolution and origin, but the extent is set such that all of the extent of <code>x</code> is included</p></dd>
 <dt>gdal</dt>
 <dd><p>logical. If <code>TRUE</code> the GDAL-warp algorithm is used. Otherwise a slower internal algorithm is used that may be more accurate if there is much variation in the cell sizes of the output raster. Only the <code>near</code> and <code>bilinear</code> algorithms are available for the internal algorithm</p></dd>
+<dt>res</dt>
+<dd><p>numeric. Can be used to set the resolution of the output raster if <code>y</code> is a CRS</p></dd>
+<dt>origin</dt>
+<dd><p>numeric. Can be used to set the origon of the output raster if <code>y</code> is a CRS</p></dd>
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
 <dt>...</dt>
