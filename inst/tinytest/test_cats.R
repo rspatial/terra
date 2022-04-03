@@ -2,7 +2,7 @@
 set.seed(0)
 r <- rast(nrows=10, ncols=10)
 values(r) <- sample(3, ncell(r), replace=TRUE) - 1
-r0 <- r
+r0 <- r * 1
 
 # categories in a single layer
 lv <- c("forest", "water", "urban")
