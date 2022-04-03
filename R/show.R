@@ -298,7 +298,7 @@ setMethod ("show" , "SpatRaster",
 						if (i > mnr) break
 						if (isf[i]) {
 							cats <- cats(object, i, TRUE)[[1]]
-							j <- match(c(minv, maxv), cats[,1])
+							j <- match(c(minv[i], maxv[i]), cats[,1])
 							cats <- cats[j, 2]
 							if (length(cats) > 0) {
 								minv[i] <- cats[1]
@@ -311,7 +311,7 @@ setMethod ("show" , "SpatRaster",
 				wln <- nchar(ln)
 				if (any(u8)) {
 					# for Chinese: wln <- wln + u8 * wln
-					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts))
+					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts), na.rm = TRUE)
 					m <- rbind(paste0(rep(" ", max(wln)), collapse=""), minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format
@@ -321,7 +321,7 @@ setMethod ("show" , "SpatRaster",
 						m[1,i] <- paste0(paste0(rep(" ", addsp), collapse=""), ln[i])
 					}
 				} else {
-					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts))
+					w <- pmax(wln, nchar(minv), nchar(maxv), nchar(uts), na.rm = TRUE)
 					m <- rbind(ln, minv, maxv)
 					if (hasunits) m <- rbind(m, uts)
 					# a loop because "width" is not recycled by format
