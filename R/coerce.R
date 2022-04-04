@@ -415,6 +415,7 @@ setMethod("as.array", signature(x="SpatRaster"),
 	#v <- vect(geom, crs=crs)
 	v <- vect()
 	v@ptr <- v@ptr$from_hex(sf::rawToHex(sf::st_as_binary(geom)), crs)
+	v <- messages(v, "SpatVector from sf")
 	if (ncol(from) > 1) {
 		from[[sfi]] <- NULL
 		values(v) <- as.data.frame(from)

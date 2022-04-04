@@ -87,6 +87,9 @@ SpatVector SpatVector::from_hex(std::vector<std::string> x, std::string srs) {
 	SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt);
 	geos_finish(hGEOSCtxt);
 	SpatVector out = coll.get(0);
+	if (coll.size() > 1) {
+		out.addWarning("not all geometries were transferred, use svc for a geometry collection");
+	}
 	out.setSRS(srs);
 	return out;
 }
