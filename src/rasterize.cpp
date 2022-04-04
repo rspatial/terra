@@ -239,7 +239,7 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 	}
 
 	if (ispol && touches && add) {
-		//add = false;
+		add = false;
 		out.addWarning("you cannot use 'sum' and 'touches' at the same time");
 	}
 
