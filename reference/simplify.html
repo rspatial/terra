@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu">simplifyGeom</span><span class="op">(</span><span class="va">x</span>, tolerance<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span></code></pre></div>
+<span class="fu">simplifyGeom</span><span class="op">(</span><span class="va">x</span>, tolerance<span class="op">=</span><span class="fl">0.1</span>, preserveTopology<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -63,6 +63,8 @@
 <dd><p>SpatVector of lines or polygons</p></dd>
 <dt>tolerance</dt>
 <dd><p>numeric. The minimum distance between nodes in units of the crs (i.e. degrees for long/lat</p></dd>
+<dt>preserveTopology</dt>
+<dd><p>logical. If <code>TRUE</code> the topology of output geometries is preserved (polygons remain valid)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
