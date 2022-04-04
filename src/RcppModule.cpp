@@ -283,6 +283,8 @@ RCPP_MODULE(spat){
 		.method("has_warning", &SpatVectorCollection::hasWarning)
 		.method("getWarnings", &SpatVectorCollection::getWarnings)
 		.method("getError", &SpatVectorCollection::getError)
+		.method("from_hex_col", &SpatVectorCollection::from_hex_col)
+		
 	;
 
 
@@ -301,7 +303,7 @@ RCPP_MODULE(spat){
 		.method("wkt", &SpatVector::wkt, "")
 		.method("wkb", &SpatVector::wkb, "")
 		.method("hex", &SpatVector::hex, "")
-		.method("from_hex", &SpatVector::from_hex, "")
+		.method("from_hex", &SpatVector::from_hex)
 		.method("make_nodes", &SpatVector::make_nodes, "")
 		.method("boundary", &SpatVector::boundary, "")
 		.method("polygonize", &SpatVector::polygonize, "")

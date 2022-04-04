@@ -33,6 +33,14 @@ setMethod("svc", signature(x="SpatVector"),
 	}
 )
 
+
+setMethod("svc", signature(x="sf"),
+	function(x) {
+		.svc_from_sf(x)
+	}
+)
+
+
 setMethod("svc", signature(x="list"),
 	function(x) {
 		r <- methods::new("SpatVectorCollection")

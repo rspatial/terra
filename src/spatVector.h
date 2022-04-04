@@ -339,12 +339,12 @@ class SpatVector {
 
 class SpatVectorCollection {
 
-	private:
-		std::vector<SpatVector> v;
 
 	public:
 		virtual ~SpatVectorCollection(){}
 		SpatVectorCollection deepCopy() { return *this; }
+
+		std::vector<SpatVector> v;
 
 		SpatMessages msg;
 		void setError(std::string s) { msg.setError(s); }
@@ -386,6 +386,7 @@ class SpatVectorCollection {
 		}
 		
 		SpatVector append();
+		SpatVectorCollection from_hex_col(std::vector<std::string> x, std::string srs);
 		
 };
 

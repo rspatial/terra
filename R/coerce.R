@@ -422,6 +422,23 @@ setMethod("as.array", signature(x="SpatRaster"),
 	v
 }
 
+.svc_from_sf <- function(from) {
+	sfi <- attr(from, "sf_column")
+	geom <- from[[sfi]]
+	crs <- attr(geom, "crs")$wkt
+	if (is.na(crs)) crs <- ""
+	#geom <- st_as_text(geom)
+	#v <- vect(geom, crs=crs)
+	v <- svc()
+	v@ptr <- v@ptr$from_hex_col(sf::rawToHex(sf::st_as_binary(geom)), crs)
+	#if (ncol(from) > 1) {
+	#	from[[sfi]] <- NULL
+	#	values(v) <- as.data.frame(from)
+	#}
+	v
+}
+
+
 
 setAs("sf", "SpatVector", 
 	function(from) {

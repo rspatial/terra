@@ -92,6 +92,27 @@ SpatVector SpatVector::from_hex(std::vector<std::string> x, std::string srs) {
 }
 
 
+SpatVectorCollection SpatVectorCollection::from_hex_col(std::vector<std::string> x, std::string srs) {
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	size_t n = x.size();
+	std::vector<GeomPtr> p;
+	p.resize(n);
+	for (size_t i = 0; i < n; i++) {
+		const char* cstr = x[i].c_str();
+		size_t len = strlen(cstr);
+		const unsigned char *hex = (const unsigned char *) cstr;
+		GEOSGeometry* r = GEOSGeomFromHEX_buf_r(hGEOSCtxt, hex, len);
+		p[i] = geos_ptr(r, hGEOSCtxt);
+	}
+	SpatVectorCollection out = coll_from_geos(p, hGEOSCtxt);
+	geos_finish(hGEOSCtxt);
+	for (size_t i = 0; i < out.size(); i++) {
+		out.v[i].setSRS(srs);
+	}
+	return out;
+}
+
+
 
 std::vector<bool> SpatVector::geos_isvalid() {
 	GEOSContextHandle_t hGEOSCtxt = geos_init2();
