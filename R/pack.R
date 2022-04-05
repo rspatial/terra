@@ -98,9 +98,13 @@ setMethod("show", signature(object="PackedSpatVector"),
 setMethod("as.character", signature(x="SpatRaster"), 
 	function(x) {
 		e <- as.vector(ext(x))
-		crs <- crs(x)
-		crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
-		crs <- gsub("\n[ ]+", "", crs)
+		d <- crs(x, describe=TRUE)
+		if (!is.na(d$authority)) {
+			crs <- paste0(", crs='", d$authority, ":", d$code, "'")
+		} else {
+			crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
+			crs <- gsub("\n[ ]+", "", crs)
+		}
 		nms <- paste0(", names=c('", paste(names(x), collapse="', '"), "')")
 		paste0("rast(", 
 				"ncols=", ncol(x),
