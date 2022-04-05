@@ -188,7 +188,6 @@ class SpatRaster {
 		bool gdal_stats = false;
 		bool gdal_approx = true;
 		bool gdal_minmax = true;
-
 	protected:
 		SpatExtent window;
 
@@ -344,7 +343,7 @@ class SpatRaster {
 
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options);
 		bool constructFromFileMulti(std::string fname, std::string subdsname, std::vector<size_t> xyz);
-		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, bool ncdf);
+		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver);
 		
 		SpatRaster fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options);
 		

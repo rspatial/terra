@@ -2484,6 +2484,14 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 		} else {
 			n += v.size();
 		}
+	} else if (fun == "prod") {
+		double p = vprod(v, narm);
+		if (step > 0) {
+			std::vector<double> pp = {stat, p};
+			stat = vprod(pp, narm);
+		} else {
+			stat = p;
+		}
 	} else if (fun == "rms") {
 		if (narm) {
 			notisnan(v, n);
@@ -2551,7 +2559,7 @@ void do_stats(std::vector<double> &v, std::string fun, bool narm, double &stat, 
 SpatDataFrame SpatRaster::global(std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
-	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "rms", "sd", "std", "stdpop", "isNA", "notNA"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "range", "prod", "rms", "sd", "std", "stdpop", "isNA", "notNA"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return(out);

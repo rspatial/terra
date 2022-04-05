@@ -649,7 +649,8 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 			meta.push_back(metasds[i]);
 		}
 		GDALClose( (GDALDatasetH) poDataset );
-		return constructFromSDS(fname, meta, subds, subdsname, options, gdrv=="netCDF"); 
+		return constructFromSDS(fname, meta, subds, subdsname, options, gdrv); 
+		
 	} else if (nl==0) {
 		setError("no raster data in " + fname);
 		return false;
@@ -1449,10 +1450,18 @@ void ncdf_pick_most(std::vector<std::string> &sd, std::vector<std::string> &varn
 
 
 //todo: add open optionso
-bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, bool ncdf) {
+bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver) {
+
+	bool ncdf = driver =="netCDF";
+	bool gtiff = driver == "GTiff";
 
 	std::vector<std::vector<std::string>> info = parse_metadata_sds(meta);
 	int n = info[0].size();
+
+	if (gtiff && (subds[0] < 0) && (subdsname[0] == "")) {
+		subds.resize(n);
+		std::iota(subds.begin(), subds.end(), 0);
+	}
 	std::vector<std::string> sd, varname, srcname;
 
 // std::vector<unsigned> varnl;
@@ -1462,7 +1471,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		return false;
 	}
 	// select sds by index
-	if ((subds.size() > 0) && (subds[0] >= 0)) {
+	if (((subds.size() > 0) && (subds[0] >= 0))) {
 		for (size_t i=0; i<subds.size(); i++) {
 			if (subds[i] >=0 && subds[i] < n) {
 				sd.push_back(info[0][subds[i]]);
@@ -1487,6 +1496,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 				return false;
 			}
 		}
+		
 	// select all
 	} else {
 		// eliminate sources based on names like "*_bnds" and "lat"
@@ -1561,7 +1571,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 		addWarning(s);
 	}
 
-	if (!ncdf) {
+	if (!(ncdf || gtiff)) {
 		std::vector<std::string> lyrnames;
 		for (size_t i=0; i<used.size(); i++) {
 			std::vector<std::string> nms = { basename(used[i]) };
