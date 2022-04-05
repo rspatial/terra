@@ -1,14 +1,28 @@
-# version 1.5-23
-
+# version 1.5-26
 
 ## bug fixes
 
-"flipped" rasters were not always handled well. [#546](https://github.com/rspatial/terra/issues/546) by Dan Baston 
+- "flipped" rasters were not always handled well. [#546](https://github.com/rspatial/terra/issues/546) by Dan Baston 
+- better reading of GTiff with subdatsets. [#601](https://github.com/rspatial/terra/issues/601) by Kyle Doherty
+- better handling of multi-layer categorical rasters and `extract` [#580](https://github.com/rspatial/terra/issues/580) by André M. Bellvé
+- `weighted.mean` did not adjust the weights if there were `NA`s in the values. [#574](https://github.com/rspatial/terra/issues/574) by Lars Dalby
+- bug in masking [#552](https://github.com/rspatial/terra/issues/552) reported by Márcia Barbosa and [565](https://github.com/rspatial/terra/issues/565) by Jakub Nowosad.
+- fixed `stretch` option in `plotRGB` [#550](https://github.com/rspatial/terra/issues/550) by Agustin Lobo
+- unwrap of a SpatRaster failed with a crs including a '. [#602](https://github.com/rspatial/terra/issues/602) by Jean Romain.
 
 ## enhancements 
 
+- Using & or | with SpatRasters now returns a boolean SpatRaster . [#594]
+(https://github.com/rspatial/terra/issues/594) by Dan Baston 
+- SpatVector now supports logical values. [#593](https://github.com/rspatial/terra/issues/593) by Derek Friend
+- Attempt to create SpatRaster with an invalid number of rows now gives an error [#544](https://github.com/rspatial/terra/issues/544) by Dan Baston
+
 ## new
 
+- new arguments `res` and `origin` to `project<SpatRaster>` method. [#596](https://github.com/rspatial/terra/issues/596) by Alex Ilich
+- new argument `inside=TRUE` to `centroids` to get a centroid-like point that is guaranteed to be on the geometry. [#588](https://github.com/rspatial/terra/issues/588) by Márcia Barbosa
+- new argument `keepgeom=FALSE` to `vect<data.frame>` that allows setting (keeping) the geometry as an attribute. [#586](https://github.com/rspatial/terra/issues/586) by Márcia Barbosa
+- `saveRDS` and `serialize` methods for SpatRaster and SpatVector [#549](https://github.com/rspatial/terra/issues/549) by Andrei Mîrț
 
 
 # version 1.5-21
@@ -28,7 +42,7 @@ Released on 2022-02-17
 
 - `makeTiles` has new arguments `extend` and `na.rm` [#520](https://github.com/rspatial/terra/issues/520) by by L. Dalby
 - `project<SpatRaster>` now uses nearest neighbor as default method for RGB rasters
-
+- new argument `na.rm=TRUE` to `unique`. [#561](https://github.com/rspatial/terra/issues/561) by Matthieu Stigler
 
 # version 1.5-17
 

@@ -3,7 +3,7 @@
 # Version 0.9
 # License GPL v3
 
-.linStretch <- function (x) {
+..linStretch <- function (x) {
     v <- stats::quantile(x, c(0.02, 0.98), na.rm = TRUE)
     temp <- (255 * (x - v[1]))/(v[2] - v[1])
     temp[temp < 0] <- 0
@@ -12,12 +12,12 @@
 }
 
 # Histogram equalization stretch
-.eqStretch <- function(x){
+..eqStretch <- function(x){
 	ecdfun <- stats::ecdf(x)
 	ecdfun(x)*255
 }
 
-rgbstretch <- function(RGB, stretch, caller="") {
+..rgbstretch <- function(RGB, stretch, caller="") {
 	stretch = tolower(stretch)
 	if (stretch == 'lin') {
 		RGB[,1] <- .linStretch(RGB[,1])
