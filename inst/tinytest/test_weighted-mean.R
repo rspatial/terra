@@ -6,10 +6,11 @@ wt <- c(x,y,z)
 z[1,1] <- NA
 xt <- c(x,y,z)
 
-terra_wm <- terra::weighted.mean(xt, wt, na.rm = TRUE) |>
-  global(fun = "min") |>
-  as.numeric()
-
+wm <- terra::weighted.mean(xt, wt, na.rm = TRUE) 
+terra_wm <- as.numeric(global(wm, fun = "min"))
+# |> not available on older R
+#  global(fun = "min") |>
+#  as.numeric()
 stats_wm <- stats::weighted.mean(x = c(1,2,NA), w = 1:3, na.rm = TRUE)
-
 expect_equal(terra_wm, stats_wm)
+

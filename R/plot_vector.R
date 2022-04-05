@@ -153,9 +153,11 @@ setMethod("dots", signature(x="SpatVector"),
 
 	if (isTRUE(out$legend_sort)) {
 		out$uv <- sort(out$uv)
+	} else {
+		out$uv <- out$uv[!is.na(out$uv)]
 	}
 	ucols <- .getCols(length(out$uv), out$cols, 1)
-
+	
 	i <- match(out$v, out$uv)
 	out$cols <- ucols
 	out$main_cols <- ucols[i]

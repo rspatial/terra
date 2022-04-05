@@ -99,7 +99,7 @@ setMethod("as.character", signature(x="SpatRaster"),
 	function(x) {
 		e <- as.vector(ext(x))
 		d <- crs(x, describe=TRUE)
-		if (!is.na(d$authority)) {
+		if (!(is.na(d$authority) || is.na(d$code))) {
 			crs <- paste0(", crs='", d$authority, ":", d$code, "'")
 		} else {
 			crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
