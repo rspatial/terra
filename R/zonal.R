@@ -67,7 +67,7 @@ setMethod("global", signature(x="SpatRaster"),
 		}
 
 		if (inherits(txtfun, "character")) { 
-			if (txtfun %in% c("max", "min", "mean", "sum", "range", "rms", "sd", "sdpop", "notNA", "isNA")) {
+			if (txtfun %in% c("prod", "max", "min", "mean", "sum", "range", "rms", "sd", "sdpop", "notNA", "isNA")) {
 				na.rm <- isTRUE(list(...)$na.rm)
 				ptr <- x@ptr$global(txtfun, na.rm, opt)
 				messages(ptr, "global")

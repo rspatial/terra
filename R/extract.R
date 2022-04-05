@@ -104,7 +104,7 @@ extractCells <- function(x, y, method="simple", list=FALSE, factors=TRUE, cells=
 	useLyr <- FALSE
 	if (!is.null(layer) && nl > 1) {
 		if (any(is.na(layer))) {error("extract", "argument 'layer' cannot have NAs")}
-		stopifnot(length(layer) == length(y))
+		stopifnot(length(layer) == nrow(y))
 		if (is.numeric(layer)) {
 			layer <- round(layer)
 			stopifnot(min(layer) > 0 & max(layer) <= nlyr(x))
