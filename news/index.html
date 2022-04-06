@@ -53,26 +53,37 @@
 <h3 id="bug-fixes-1-5-26">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-26"></a></h3>
 <ul><li>“flipped” rasters were not always handled well. <a href="https://github.com/rspatial/terra/issues/546" class="external-link">#546</a> by Dan Baston</li>
 <li>better reading of GTiff with subdatsets. <a href="https://github.com/rspatial/terra/issues/601" class="external-link">#601</a> by Kyle Doherty</li>
-<li>better handling of multi-layer categorical rasters and <code>extract</code> <a href="https://github.com/rspatial/terra/issues/580" class="external-link">#580</a> by André M. Bellvé</li>
+<li>better handling of multi-layer categorical rasters and <code>extract</code>. <a href="https://github.com/rspatial/terra/issues/580" class="external-link">#580</a> by André M. Bellvé</li>
 <li>
 <code>weighted.mean</code> did not adjust the weights if there were <code>NA</code>s in the values. <a href="https://github.com/rspatial/terra/issues/574" class="external-link">#574</a> by Lars Dalby</li>
-<li>bug in masking <a href="https://github.com/rspatial/terra/issues/552" class="external-link">#552</a> reported by Márcia Barbosa and <a href="https://github.com/rspatial/terra/issues/565" class="external-link">565</a> by Jakub Nowosad.</li>
+<li>bug in masking. <a href="https://github.com/rspatial/terra/issues/552" class="external-link">#552</a> reported by Márcia Barbosa and <a href="https://github.com/rspatial/terra/issues/565" class="external-link">565</a> by Jakub Nowosad.</li>
 <li>fixed <code>stretch</code> option in <code>plotRGB</code> <a href="https://github.com/rspatial/terra/issues/550" class="external-link">#550</a> by Agustin Lobo</li>
-<li>unwrap of a SpatRaster failed with a crs including a ’. <a href="https://github.com/rspatial/terra/issues/602" class="external-link">#602</a> by Jean Romain.</li>
+<li>unwrap of a SpatRaster failed with a crs including a “’”. <a href="https://github.com/rspatial/terra/issues/602" class="external-link">#602</a> by Jean Romain.</li>
+<li>
+<code>spatSample</code> with <code>cells=TRUE</code> failed for planar data <a href="https://github.com/rspatial/terra/issues/554" class="external-link">#544</a> by Benjamin Misiuk</li>
+<li>
+<code>compareGeom(x, y, stopOnError=FALSE)</code> did not remove the error messages stored in <code>x</code> leading to unexpected warnings later on. <a href="https://github.com/rspatial/terra/issues/568" class="external-link">#568</a> by David Hofmann.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="enhancements-1-5-26">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-26"></a></h3>
-<ul><li>Using &amp; or | with SpatRasters now returns a boolean SpatRaster . [#594] (<a href="https://github.com/rspatial/terra/issues/594" class="external-link uri">https://github.com/rspatial/terra/issues/594</a>) by Dan Baston</li>
+<ul><li>Using &amp; or | with SpatRasters now returns a boolean SpatRaster. <a href="https://github.com/rspatial/terra/issues/594" class="external-link">#594</a> by Dan Baston</li>
 <li>SpatVector now supports logical values. <a href="https://github.com/rspatial/terra/issues/593" class="external-link">#593</a> by Derek Friend</li>
-<li>Attempt to create SpatRaster with an invalid number of rows now gives an error <a href="https://github.com/rspatial/terra/issues/544" class="external-link">#544</a> by Dan Baston</li>
+<li>Attempt to create SpatRaster with an invalid number of rows now gives an error. <a href="https://github.com/rspatial/terra/issues/544" class="external-link">#544</a> by Dan Baston</li>
+<li>
+<code>layerCor</code> does not create temp files anymore. <a href="https://github.com/rspatial/terra/issues/551" class="external-link">#551</a> by Christine Anderson</li>
+<li>not using the same iterator symbols in nested loops to avoid warnings on the Intel compiler. <a href="https://github.com/rspatial/terra/issues/573" class="external-link">#573</a> by Gareth Davies.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-1-5-26">new<a class="anchor" aria-label="anchor" href="#new-1-5-26"></a></h3>
 <ul><li>new arguments <code>res</code> and <code>origin</code> to <code>project&lt;SpatRaster&gt;</code> method. <a href="https://github.com/rspatial/terra/issues/596" class="external-link">#596</a> by Alex Ilich</li>
-<li>new argument <code>inside=TRUE</code> to <code>centroids</code> to get a centroid-like point that is guaranteed to be on the geometry. <a href="https://github.com/rspatial/terra/issues/588" class="external-link">#588</a> by Márcia Barbosa</li>
+<li>new argument <code>inside=TRUE</code> to <code>centroids</code> to get a centroid-like point that is guaranteed to be on the geometry (“point on surface”). <a href="https://github.com/rspatial/terra/issues/588" class="external-link">#588</a> by Márcia Barbosa</li>
 <li>new argument <code>keepgeom=FALSE</code> to <code>vect&lt;data.frame&gt;</code> that allows setting (keeping) the geometry as an attribute. <a href="https://github.com/rspatial/terra/issues/586" class="external-link">#586</a> by Márcia Barbosa</li>
 <li>
-<code>saveRDS</code> and <code>serialize</code> methods for SpatRaster and SpatVector <a href="https://github.com/rspatial/terra/issues/549" class="external-link">#549</a> by Andrei Mîrț</li>
+<code>saveRDS</code> and <code>serialize</code> methods for SpatRaster and SpatVector. <a href="https://github.com/rspatial/terra/issues/549" class="external-link">#549</a> by Andrei Mîrț</li>
+<li>
+<code>xFromCol</code> and <code>yFromCol</code> now have a <code>&lt;SpatRaster,missing&gt;</code> method. <a href="https://github.com/rspatial/terra/issues/583" class="external-link">#583</a> by Michael Sumner.</li>
+<li>
+<code>svc&lt;sf&gt;</code> method to deal with GeometryCollection types. <a href="https://github.com/rspatial/terra/issues/585" class="external-link">#585</a> by Sarah Endicott</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -203,17 +214,17 @@
 <li>
 <code>rast&lt;filename&gt;</code> has a new argument <code>lyrs</code> to subset the layers and open the file in one step.</li>
 <li>
-<code>rast&lt;array&gt;</code> now has a crs and extent argument. <a href="https://github.com/rspatial/terra/issues/439" class="external-link">439</a> by RS-eco</li>
+<code>rast&lt;array&gt;</code> now has a crs and extent argument. <a href="https://github.com/rspatial/terra/issues/439" class="external-link">#439</a> by RS-eco</li>
 <li>
-<code>type="xyz"</code> is now default in <code>rast&lt;data.frame&gt;</code> <a href="https://github.com/rspatial/terra/issues/438" class="external-link">438</a> by RS-eco</li>
+<code>type="xyz"</code> is now default in <code>rast&lt;data.frame&gt;</code>. <a href="https://github.com/rspatial/terra/issues/438" class="external-link">#438</a> by RS-eco</li>
 <li>
 <code>classify</code> has a new argument <code>brackets</code> to show if a side of an interval is open or closed.</li>
-<li>further support for categorical data in <code>freq</code> and <code>as.data.frame</code> <a href="https://github.com/rspatial/terra/issues/441" class="external-link">#441</a> ngould7</li>
-<li>speed up in processing of multi-layer in memory data <a href="https://github.com/rspatial/terra/issues/437" class="external-link">#437</a> by Krzysztof Dyba</li>
+<li>further support for categorical data in <code>freq</code> and <code>as.data.frame</code>. <a href="https://github.com/rspatial/terra/issues/441" class="external-link">#441</a> ngould7</li>
+<li>speed up in processing of multi-layer in memory data. <a href="https://github.com/rspatial/terra/issues/437" class="external-link">#437</a> by Krzysztof Dyba</li>
 <li>
-<code>vect&lt;matrix&gt;</code> and <code>vect&lt;data.frame&gt;</code> are now much faster <a href="https://github.com/rspatial/terra/issues/413" class="external-link">#413</a> by BastienFR<br></li>
+<code>vect&lt;matrix&gt;</code> and <code>vect&lt;data.frame&gt;</code> are now much faster. <a href="https://github.com/rspatial/terra/issues/413" class="external-link">#413</a> by BastienFR<br></li>
 <li>
-<code>extract</code> with points provided as a matrix or cell numbers is not much faster <a href="https://github.com/rspatial/terra/issues/341" class="external-link">#341</a>
+<code>extract</code> with points provided as a matrix or cell numbers is not much faster. <a href="https://github.com/rspatial/terra/issues/341" class="external-link">#341</a>
 </li>
 <li>
 <code>focal</code> has a new argument <code>na.policy</code> that can be set to one of “all” (default), “only” or “omit”. argument <code>na.only</code> has been removed, as you can now use <code>na.policy="only"</code>
