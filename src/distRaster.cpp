@@ -82,7 +82,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 			std::string etype = "inner";
 			x = x.edges(false, etype, 8, 0, ops);
 		}
-		p = x.as_points(false, true, opt);
+		p = x.as_points(false, true, false, opt);
 		pxy = p.coordinates();
 	}
 
@@ -230,7 +230,7 @@ SpatRaster SpatRaster::distance(SpatOptions &opt) {
 	}
 
 	out = edges(false, "inner", 8, NAN, ops);
-	SpatVector p = out.as_points(false, true, ops);
+	SpatVector p = out.as_points(false, true, false, ops);
 	if (p.size() == 0) {
 		return out.init({0}, opt);
 	}
@@ -267,7 +267,7 @@ SpatRaster SpatRaster::direction(bool from, bool degrees, SpatOptions &opt) {
 	}
 
 	out = edges(false, "inner", 8, NAN, ops);
-	SpatVector p = out.as_points(false, true, opt);
+	SpatVector p = out.as_points(false, true, false, opt);
 	if (p.size() == 0) {
 		out.setError("no cells to compute direction from or to");
 		return(out);
@@ -1217,7 +1217,7 @@ SpatRaster SpatRaster::buffer(double d, SpatOptions &opt) {
 
 	std::string etype = "inner";
 	SpatRaster e = edges(false, etype, 8, 0, ops);
-	SpatVector p = e.as_points(false, true, opt);
+	SpatVector p = e.as_points(false, true, false, opt);
 	out = out.disdir_vector_rasterize(p, false, true, false, false, ops);
 	out = out.arith(d, "<=", false, opt);
 	return out;
@@ -1763,7 +1763,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 
 		SpatExtent e = {extent.xmin, extent.xmin+out.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = out.crop(e, "near", xopt);
-		SpatVector p = onecol.as_polygons(false, false, false, false, xopt);
+		SpatVector p = onecol.as_polygons(false, false, false, false, false, xopt);
 		if (p.hasError()) {
 			out.setError(p.getError());
 			return out;
@@ -1802,7 +1802,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 				double ymin = yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - dy;
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = out.crop(e, "near", popt);
-				SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
+				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
 				//std::vector<double> cells(onechunk.ncell());
 				//std::iota (cells.begin(), cells.end(), 0);
 				//onechunk.setValues(cells);
@@ -1865,7 +1865,7 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 		size_t nc = x.ncol();
 		SpatExtent e = {extent.xmin, extent.xmin+x.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = x.crop(e, "near", opt);
-		SpatVector p = onecol.as_polygons(false, false, false, false, opt);
+		SpatVector p = onecol.as_polygons(false, false, false, false, false, opt);
 		std::vector<double> ar = p.area(unit, true, {});
 		if (!hasValues()) {
 			out.resize(1);
@@ -1902,7 +1902,7 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 				double ymin = x.yFromRow(bs.row[i] + bs.nrows[i]-1) - dy;
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", popt);
-				SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
+				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
 				p = p.project("EPSG:4326");
 				std::vector<double> v = p.area(unit, true, 	{});
 				out[0] += accumulate(v.begin(), v.end(), 0.0);
@@ -1913,7 +1913,7 @@ std::vector<double> SpatRaster::sum_area(std::string unit, bool transform, SpatO
 				double ymin = x.yFromRow(bs.row[i] + bs.nrows[i]-1) - dy;
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
 				SpatRaster onechunk = x.crop(e, "near", popt);
-				SpatVector p = onechunk.as_polygons(false, false, false, false, popt);
+				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
 				p = p.project("EPSG:4326");
 				std::vector<double> par = p.area(unit, true, {});
 

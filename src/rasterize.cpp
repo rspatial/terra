@@ -414,7 +414,7 @@ std::vector<double> SpatRaster::rasterizeCells(SpatVector &v, bool touches, Spat
 	SpatRaster rc = r.crop(e, "out", ropt);
 	std::vector<double> feats(1, 1) ;
     SpatRaster rcr = rc.rasterize(v, "", feats, NAN, touches, false, false, false, false, ropt); 
-	SpatVector pts = rcr.as_points(false, true, ropt);
+	SpatVector pts = rcr.as_points(false, true, false, ropt);
 	std::vector<double> cells;
 	if (pts.size() == 0) {
 		pts = v.as_points(false, true);
@@ -453,7 +453,7 @@ void SpatRaster::rasterizeCellsWeights(std::vector<double> &cells, std::vector<d
 	r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
 	r = r.arith(100.0, "/", false, ropt);
 	r = r.aggregate(fact, "sum", true, ropt);
-	SpatVector pts = r.as_points(true, true, ropt);
+	SpatVector pts = r.as_points(true, true, false, ropt);
 	if (pts.size() == 0) {
 		weights.resize(1);
 		weights[0] = NAN;
@@ -480,7 +480,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 		std::vector<double> feats(1, 1) ;
 		r = r.rasterize(v, "", feats, NAN, true, false, false, false, false, ropt); 
 
-		SpatVector pts = r.as_points(true, true, ropt);
+		SpatVector pts = r.as_points(true, true, false, ropt);
 		if (pts.size() == 0) {
 			weights.resize(1);
 			weights[0] = NAN;
@@ -492,7 +492,7 @@ void SpatRaster::rasterizeCellsExact(std::vector<double> &cells, std::vector<dou
 			std::vector<double> y = vd.getD(1);
 			cells = cellFromXY(x, y);
 
-			SpatVector rv = r.as_polygons(false, false, false, true, ropt);
+			SpatVector rv = r.as_polygons(false, false, false, true, false, ropt);
 			std::vector<double> csize = rv.area("m", true, {});
 			rv.df.add_column(csize, "area");
 			rv.df.add_column(cells, "cells");

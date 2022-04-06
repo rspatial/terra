@@ -77,6 +77,13 @@ setMethod("ext", signature(x="SpatRasterDataset"),
 )
 
 
+setMethod("ext", signature(x="SpatRasterCollection"), 
+	function(x){ 
+		e <- sapply(1:length(x), \(i) ext(x[i]) |> as.vector())
+		ext(min(b[1,]), max(b[2,]), min(b[3,]), max(b[4,]))
+	}
+)
+
 setMethod("ext<-", signature("SpatRaster", "SpatExtent"), 
 	function(x, value) {
 		x@ptr$extent <- value@ptr

@@ -547,10 +547,10 @@ class SpatRaster {
 		SpatRaster rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, SpatOptions &opt);
 		std::vector<std::vector<double>> rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows);
 
-		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt);
+		SpatVector as_polygons(bool trunc, bool dissolve, bool values, bool narm, bool nall, SpatOptions &opt);
 		SpatVector polygonize(bool trunc, bool values, bool narm, bool aggregate, SpatOptions &opt);
 		SpatVector as_lines(SpatOptions &opt);
-		SpatVector as_points(bool values, bool narm, SpatOptions &opt);
+		SpatVector as_points(bool values, bool narm, bool nall, SpatOptions &opt);
 		SpatRaster atan_2(SpatRaster x, SpatOptions &opt);
 
 		std::vector<std::vector<double>> bilinearValues(const std::vector<double> &x, const std::vector<double> &y);

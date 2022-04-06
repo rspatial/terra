@@ -1677,7 +1677,7 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
 }
 
 
-SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
+SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions &opt) {
 
 	BlockSize bs = getBlockSize(opt);
 	std::vector<double> v, vout;
@@ -1718,15 +1718,29 @@ SpatVector SpatRaster::as_points(bool values, bool narm, SpatOptions &opt) {
  		size_t vnc = bs.nrows[i] * nc;
 		if (narm) {
 			for (size_t j=0; j<vnc; j++) {
-				bool foundna = false;
-				for (size_t lyr=0; lyr<nl; lyr++) {
-                    size_t off2 = lyr*vnc;
-                    if (std::isnan(v[off2+j])) {
-                        foundna = true;
-                        continue;
-                    }
-                }
-                if (foundna) continue;
+				if (nall) {
+					bool allna = true;
+					for (size_t lyr=0; lyr<nl; lyr++) {
+						size_t off2 = lyr*vnc;
+						if (!std::isnan(v[off2+j])) {
+							allna = false;
+							continue;
+						}
+					}
+					if (allna) continue;				
+				} else {
+					bool foundna = false;
+					for (size_t lyr=0; lyr<nl; lyr++) {
+						size_t off2 = lyr*vnc;
+						if (std::isnan(v[off2+j])) {
+							foundna = true;
+							continue;
+						}
+					}
+					if (foundna) continue;
+				}
+ 			
+				
                 xy = xyFromCell( off1+j );
                 SpatPart p(xy[0], xy[1]);
                 g.addPart(p);
@@ -1833,7 +1847,7 @@ SpatVector SpatRaster::as_polygons(bool values, bool narm) {
 
 */
 
-SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool narm, SpatOptions &opt) {
+SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool narm, bool nall, SpatOptions &opt) {
 
 	if (!hasValues()) {
 		values = false;
@@ -1885,11 +1899,22 @@ SpatVector SpatRaster::as_polygons(bool trunc, bool dissolve, bool values, bool 
 	std::vector< std::vector<double> > xy = xyFromCell(cells);
 	for (int i=nc-1; i>=0; i--) {
 		if (narm) {
-			bool erase = false;
-			for (size_t j=0; j<nl; j++) {
-				if (std::isnan(vect.df.dv[j][i])) {
-					erase=true;
-					break;
+			bool erase;
+			if (nall) {
+				erase = true;
+				for (size_t j=0; j<nl; j++) {
+					if (!std::isnan(vect.df.dv[j][i])) {
+						erase=false;
+						break;
+					}
+				}
+			} else {
+				erase = false;
+				for (size_t j=0; j<nl; j++) {
+					if (std::isnan(vect.df.dv[j][i])) {
+						erase=true;
+						break;
+					}
 				}
 			}
 			if (erase) {

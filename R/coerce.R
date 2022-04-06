@@ -175,14 +175,14 @@ setMethod("as.raster", signature(x="SpatRaster"),
  
  
 setMethod("as.polygons", signature(x="SpatRaster"), 
-	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, extent=FALSE) {
+	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, na.all=FALSE, extent=FALSE) {
 		p <- methods::new("SpatVector")
 		if (extent) {
 			p@ptr <- x@ptr$dense_extent(FALSE, FALSE)
 			x <- messages(x, "as.polygons")
 		} else {
 			opt <- spatOptions()
-			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], na.rm[1], opt)
+			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], na.rm[1], na.all[1], opt)
 			x <- messages(x, "as.polygons")
 			if (values) {
 				ff <- is.factor(x)
@@ -264,10 +264,10 @@ setMethod("as.points", signature(x="SpatVector"),
 
 
 setMethod("as.points", signature(x="SpatRaster"), 
-	function(x, values=TRUE, na.rm=TRUE) {
+	function(x, values=TRUE, na.rm=TRUE, na.all=FALSE) {
 		p <- methods::new("SpatVector")
 		opt <- spatOptions()
-		p@ptr <- x@ptr$as_points(values, na.rm, opt)
+		p@ptr <- x@ptr$as_points(values, na.rm, na.all, opt)
 		x <- messages(x, "as.points")
 
 		if (values) {

@@ -20,14 +20,14 @@
 - `layerCor` does not create temp files anymore. [#551](https://github.com/rspatial/terra/issues/551) by Christine Anderson
 - not using the same iterator symbols in nested loops to avoid warnings on the Intel compiler. [#573](https://github.com/rspatial/terra/issues/573) by Gareth Davies.
 
-
 ## new
 
 - new arguments `res` and `origin` to `project<SpatRaster>` method. [#596](https://github.com/rspatial/terra/issues/596) by Alex Ilich
 - new argument `inside=TRUE` to `centroids` to get a centroid-like point that is guaranteed to be on the geometry ("point on surface"). [#588](https://github.com/rspatial/terra/issues/588) by Márcia Barbosa
 - new argument `keepgeom=FALSE` to `vect<data.frame>` that allows setting (keeping) the geometry as an attribute. [#586](https://github.com/rspatial/terra/issues/586) by Márcia Barbosa
 - `saveRDS` and `serialize` methods for SpatRaster and SpatVector. [#549](https://github.com/rspatial/terra/issues/549) by Andrei Mîrț
-
+- `xFromCol` and `yFromCol` now have a `<SpatRaster,missing>` method. [#583](https://github.com/rspatial/terra/issues/583) by Michael Sumner.
+- `svc<sf>` method to deal with GeometryCollection types. [#585](https://github.com/rspatial/terra/issues/585) by Sarah Endicott
 
 # version 1.5-21
 
@@ -131,13 +131,13 @@ https://github.com/rspatial/terra/issues/333) by Agustin Lobo
 - `crs` now shows the correct authority if it is not EPSG. [#419](https://github.com/rspatial/terra/issues/419) by Matthew Williamson
 - It now possible to add a SpatRaster to an empty SpatRaster (with no values), even if it has a different geometry, ignoring the empty SpatRaster [#421](https://github.com/rspatial/terra/issues/421) by Alex Ilich.
 - `rast<filename>` has a new argument `lyrs` to subset the layers and open the file in one step.
-- `rast<array>` now has a crs and extent argument. [439](https://github.com/rspatial/terra/issues/439) by RS-eco
-- `type="xyz"` is now default in `rast<data.frame>` [438](https://github.com/rspatial/terra/issues/438) by RS-eco
+- `rast<array>` now has a crs and extent argument. [#439](https://github.com/rspatial/terra/issues/439) by RS-eco
+- `type="xyz"` is now default in `rast<data.frame>`. [#438](https://github.com/rspatial/terra/issues/438) by RS-eco
 - `classify` has a new argument `brackets` to show if a side of an interval is open or closed.
-- further support for categorical data in `freq` and `as.data.frame`  [#441](https://github.com/rspatial/terra/issues/441) ngould7
-- speed up in processing of multi-layer in memory data [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
-- `vect<matrix>` and `vect<data.frame>` are now much faster [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
-- `extract` with points provided as a matrix or cell numbers is not much faster [#341](https://github.com/rspatial/terra/issues/341)
+- further support for categorical data in `freq` and `as.data.frame`. [#441](https://github.com/rspatial/terra/issues/441) ngould7
+- speed up in processing of multi-layer in memory data. [#437](https://github.com/rspatial/terra/issues/437) by Krzysztof Dyba
+- `vect<matrix>` and `vect<data.frame>` are now much faster. [#413](https://github.com/rspatial/terra/issues/413) by BastienFR 	
+- `extract` with points provided as a matrix or cell numbers is not much faster. [#341](https://github.com/rspatial/terra/issues/341)
 - `focal` has a new argument `na.policy` that can be set to one of "all" (default), "only" or "omit". argument `na.only` has been removed, as you can now use `na.policy="only"`
 - `inset` argument `border` changed to `perimeter` to allow passing `border` on to `plot<Spat*>`. [#456](https://github.com/rspatial/terra/issues/456) by Márcia Barbosa
 - The compile-time and run-time versions of GEOS are now compared and a warning is given if they are not the same. [#459](https://github.com/rspatial/terra/issues/459) by Edzer Pebesma

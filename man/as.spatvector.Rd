@@ -25,11 +25,11 @@ And conversion of a SpatVector to a another SpatVector type.
 }
 
 \usage{
-\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, extent=FALSE)
+\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, na.all=FALSE, extent=FALSE)
 
 \S4method{as.lines}{SpatRaster}(x)
 
-\S4method{as.points}{SpatRaster}(x, values=TRUE, na.rm=TRUE)
+\S4method{as.points}{SpatRaster}(x, values=TRUE, na.rm=TRUE, na.all=FALSE)
 
 \S4method{as.polygons}{SpatVector}(x)
 
@@ -54,6 +54,7 @@ And conversion of a SpatVector to a another SpatVector type.
 \item{skiplast}{logical. If \code{TRUE} the last point of a polygon (which is the same as the first point) is not included}
 \item{extent}{logical. if \code{TRUE}, a polygon for the extent of the SpatRaster is returned. It has vertices for each grid cell, not just the four corners of the raster. This can be useful for more precise projection. In other cases it is better to do \code{as.polygons(ext(x))} to get a much smaller object returned that covers the same extent}
 \item{na.rm}{logical. If \code{TRUE} cells that are \code{NA} are ignored}
+\item{na.all}{logical. If \code{TRUE} cells are only ignored if \code{na.rm=TRUE} and their value is \code{NA} for \bold{all} layers instead of for \code{any} layer}
 \item{crs}{character. The coordinate reference system (see \code{\link{crs}}}
 }
 
