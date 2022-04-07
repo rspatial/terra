@@ -171,7 +171,11 @@ void gdal_setconfig(std::string option, std::string value) {
 
 // [[Rcpp::export(name = ".gdal_getconfig")]]
 std::string gdal_getconfig(std::string option) {
-	std::string out = CPLGetConfigOption(option.c_str(), NULL);
+	const char * value = CPLGetConfigOption(option.c_str(), NULL);
+	std::string out = "";
+	if (value != NULL) {
+		out = value;
+	}	
 	return out;
 }
 

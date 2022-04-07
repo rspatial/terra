@@ -25,7 +25,12 @@ getGDALconfig <- function(option) {
 setGDALconfig <- function(option, value="") {
 	value <- rep_len(value, length(option))
 	for (i in 1:length(option)) {
-		.gdal_setconfig(option[i], value[i])		
+		if (grepl("=", option[i])) {
+			opt <- trimws(unlist(strsplit(option[i], "="))[1:2])
+			.gdal_setconfig(opt[1], opt[2])
+		} else {
+			.gdal_setconfig(trimws(option[i]), trimws(value[i]))
+		}
 	}
 }
 
