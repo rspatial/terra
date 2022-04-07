@@ -14,6 +14,8 @@ Set the \code{GDAL} warning level or get a \code{data.frame} with the available 
 \usage{
 gdal(warn=NA, drivers=FALSE, lib="gdal")
 gdalCache(size=NA)
+setGDALconfig(option, value="")
+getGDALconfig(option)
 }
 
 \arguments{
@@ -21,6 +23,8 @@ gdalCache(size=NA)
   \item{drivers}{logical. If \code{TRUE} a data.frame with the raster and vector data formats that are available.} 
   \item{lib}{character. "gdal", "proj", or "geos", or any other value to get the versions numbers of all three}
   \item{size}{numeric. The new cache size in MB}  
+  \item{option}{character. GDAL configuration option name}
+  \item{value}{character. value for GDAL configuratoin option. Use "" to reset it to its default value}
 }
 
 

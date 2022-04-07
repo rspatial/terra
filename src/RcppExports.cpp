@@ -87,6 +87,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gdal_setconfig
+void gdal_setconfig(std::string option, std::string value);
+RcppExport SEXP _terra_gdal_setconfig(SEXP optionSEXP, SEXP valueSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type option(optionSEXP);
+    Rcpp::traits::input_parameter< std::string >::type value(valueSEXP);
+    gdal_setconfig(option, value);
+    return R_NilValue;
+END_RCPP
+}
+// gdal_getconfig
+std::string gdal_getconfig(std::string option);
+RcppExport SEXP _terra_gdal_getconfig(SEXP optionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type option(optionSEXP);
+    rcpp_result_gen = Rcpp::wrap(gdal_getconfig(option));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ginfo
 std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo);
 RcppExport SEXP _terra_ginfo(SEXP filenameSEXP, SEXP optionsSEXP, SEXP ooSEXP) {
@@ -386,6 +408,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_terra_getCRSname", (DL_FUNC) &_terra_getCRSname, 1},
     {"_terra_getLinearUnits", (DL_FUNC) &_terra_getLinearUnits, 1},
     {"_terra_geotransform", (DL_FUNC) &_terra_geotransform, 1},
+    {"_terra_gdal_setconfig", (DL_FUNC) &_terra_gdal_setconfig, 2},
+    {"_terra_gdal_getconfig", (DL_FUNC) &_terra_gdal_getconfig, 1},
     {"_terra_ginfo", (DL_FUNC) &_terra_ginfo, 3},
     {"_terra_sd_info", (DL_FUNC) &_terra_sd_info, 1},
     {"_terra_gdal_version", (DL_FUNC) &_terra_gdal_version, 0},

@@ -160,6 +160,21 @@ std::vector<double> geotransform(std::string fname) {
 	return out;
 }
 
+// [[Rcpp::export(name = ".gdal_setconfig")]]
+void gdal_setconfig(std::string option, std::string value) {
+	if (value == "") {
+		CPLSetConfigOption(option.c_str(), NULL);
+	} else { 
+		CPLSetConfigOption(option.c_str(), value.c_str());
+	}
+}
+
+// [[Rcpp::export(name = ".gdal_getconfig")]]
+std::string gdal_getconfig(std::string option) {
+	std::string out = CPLGetConfigOption(option.c_str(), NULL);
+	return out;
+}
+
 
 // [[Rcpp::export(name = ".gdalinfo")]]
 std::string ginfo(std::string filename, std::vector<std::string> options, std::vector<std::string> oo) {

@@ -249,7 +249,7 @@ multi <- function(x, subds=0, xyz=c(1,2,3)) {
 setMethod("rast", signature(x="SpatRaster"),
 	function(x, nlyrs=nlyr(x), names, vals, keeptime=TRUE, keepunits=FALSE, props=FALSE) {
 		if (inherits(nlyrs, "SpatRaster")) {
-			error("rast", "use 'c' to combine SpatRasters")
+			error("rast", "use 'c()' to combine SpatRasters")
 		}
 		x@ptr <- x@ptr$geometry(nlyrs, props, keeptime, keepunits)
 		x <- messages(x, "rast")

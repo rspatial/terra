@@ -29,6 +29,14 @@ rgb2hex <- function(x) {
     .Call(`_terra_geotransform`, fname)
 }
 
+.gdal_setconfig <- function(option, value) {
+    invisible(.Call(`_terra_gdal_setconfig`, option, value))
+}
+
+.gdal_getconfig <- function(option) {
+    .Call(`_terra_gdal_getconfig`, option)
+}
+
 .gdalinfo <- function(filename, options, oo) {
     .Call(`_terra_ginfo`, filename, options, oo)
 }

@@ -18,6 +18,20 @@ gdalCache <- function(size=NA) {
 	}
 }
 
+getGDALconfig <- function(option) {
+	sapply(option, .gdal_getconfig)
+}
+
+setGDALconfig <- function(option, value="") {
+	value <- rep_len(value, length(option))
+	for (i in 1:length(option)) {
+		.gdal_setconfig(option[i], value[i])		
+	}
+}
+
+
+
+
 gdal <- function(warn=NA, drivers=FALSE, lib="gdal") {
 	if (!is.na(warn)) {
 		warn <- as.integer(warn)
