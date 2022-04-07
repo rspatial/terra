@@ -54,8 +54,8 @@ SpatVector
 
 
 \examples{
-p1 <- ext(0,1,0,1) |> as.polygons()
-p2 <- ext(1.1,2,0,1) |> as.polygons()
+p1 <- as.polygons(ext(0,1,0,1))
+p2 <- as.polygons(ext(1.1,2,0,1))
 
 p <- rbind(p1, p2)
 
