@@ -102,7 +102,8 @@ setMethod("as.character", signature(x="SpatRaster"),
 		if (!(is.na(d$authority) || is.na(d$code))) {
 			crs <- paste0(", crs='", d$authority, ":", d$code, "'")
 		} else {
-			crs <- ifelse(is.na(crs), ", crs=''", paste0(", crs='", crs, "'"))
+			d <- crs(x)
+			crs <- ifelse(d=="", ", crs=''", paste0(", crs='", d, "'"))
 			crs <- gsub("\n[ ]+", "", crs)
 		}
 		nms <- paste0(", names=c('", paste(names(x), collapse="', '"), "')")
