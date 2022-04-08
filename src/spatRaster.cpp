@@ -776,9 +776,13 @@ bool SpatRaster::setDepth(std::vector<double> depths) {
 
 bool SpatRaster::setUnit(std::vector<std::string> units) {
 	if (units.size() == 1) {
+		bool hu = true;
+		if (units[0] == "") {
+			hu = false;
+		}	
         for (size_t i=0; i<source.size(); i++)	{
             source[i].unit = std::vector<std::string> (source[i].nlyr, units[0]);
-			source[i].hasUnit = true;
+			source[i].hasUnit = hu;
         }
         return true;
 	} else if (units.size() != nlyr()) {

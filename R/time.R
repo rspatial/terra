@@ -88,7 +88,11 @@ setMethod("units", signature(x="SpatRaster"),
 
 setMethod("units<-", signature(x="SpatRaster"), 
 	function(x, value)  {
-		value <- as.character(value)
+		if (is.null(value) || all(is.na(value))) {
+			value <- ""
+		} else {
+			value <- as.character(value)
+		}
 		if (! x@ptr$set_units(value)) {
 			error("units<-", "cannot set these  values")
 		}

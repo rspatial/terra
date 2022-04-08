@@ -136,7 +136,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 			r@attributes$time <- v
 		} 
 		v <- units(x)
-		if (any(!is.na(v))) {
+		if (all(v != "")) {
 			r@attributes$units <- v
 		} 
 		v <- depth(x)
