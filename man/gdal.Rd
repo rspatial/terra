@@ -2,6 +2,8 @@
 
 \alias{gdal}
 \alias{gdalCache}
+\alias{getGDALconfig}
+\alias{setGDALconfig}
 
 \title{GDAL version, supported file formats, and cache size}
 
