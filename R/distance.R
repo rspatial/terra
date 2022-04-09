@@ -30,6 +30,20 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 	}
 )
 
+setMethod("distance", signature(x="SpatRaster", y="numeric"), 
+	function(x, y, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		if (length(y) > 1) {
+			error("y ('source') can only have a single value")
+		}
+		if (is.na(y)) {
+			error("y ('source') cannot be NA")		
+		}
+		x@ptr <- x@ptr$costDistance(y, opt)
+		messages(x, "(cost) distance")
+	}
+)
+
 
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
 	function(x, y, filename="", ...) {

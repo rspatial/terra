@@ -577,22 +577,6 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 				} else {
 					focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global);
 				}
-/*
-				if (i != (out.bs.n-1)) {
-					fill = {vin.end() - fsz2, vin.end() };  
-				}
-*/
-/*
-				if (naonly) {
-					size_t off = roff * nc;
-					for (size_t j=0; j<vout.size(); j++) {
-						size_t k = off + j;
-						if (!std::isnan(vin[k])) {
-							vout[j] = vin[k];
-						}
-					}
-				}
-*/				
 				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
 			}
 			if (!out.writeBlock(voutcomb, i)) return out;
