@@ -535,8 +535,9 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 			}
 
 			if (naonly) {
+				size_t off = roff * nc;
 				for (size_t j=0; j<vout.size(); j++) {
-					size_t k = fsz2 + j;
+					size_t k = off + j;
 					if (!std::isnan(vin[k])) {
 						vout[j] = vin[k];
 					}
