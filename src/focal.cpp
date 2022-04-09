@@ -465,39 +465,26 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 	}
 
 	std::vector<double> fill;
-	for (size_t i = 0; i < out.bs.n; i++) {
-		unsigned rstart, roff;
-		unsigned rnrows = out.bs.nrows[i];
-		if (i == 0) {
-			rstart = 0;
-			roff = dhw0;
-			if (i != (out.bs.n-1)) {
-				rnrows += hw0;
+	if (nl == 1) {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			unsigned rstart, roff;
+			unsigned rnrows = out.bs.nrows[i];
+			if (i == 0) {
+				rstart = 0;
+				roff = dhw0;
+				if (i != (out.bs.n-1)) {
+					rnrows += hw0;
+				}
+			} else {
+				rstart = out.bs.row[i] + hw0;
+				roff = hw0;
+				if (i == (out.bs.n-1)) {
+					rnrows -= hw0; 
+				}
 			}
-		} else {
-			rstart = out.bs.row[i] + hw0;
-			roff = hw0;
-			if (i == (out.bs.n-1)) {
-				rnrows -= hw0; 
-			}
-		}
-
-		std::vector<double> vout, voutcomb;
-		std::vector<double> vin, vincomb;
-		size_t off=0;
-		if (nl > 1) {
-			readValues(vincomb, rstart, rnrows, 0, nc);
-			off = nc * out.bs.nrows[i];
-			voutcomb.reserve(vincomb.size());
-		} else {
+			std::vector<double> vout, vin;
 			readValues(vin, rstart, rnrows, 0, nc);
-		}
-		for (size_t lyr=0; lyr<nl; lyr++) {
 			vout.clear();
-			if (nl > 1) {
-				size_t lyroff = lyr * off;
-				vin = {vincomb.begin() + lyroff, vincomb.begin() + lyroff + off}; 
-			}
 			if (i==0) {
 				if (expand) {
 					fill = {vin.begin(), vin.begin()+nc};
@@ -521,7 +508,6 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 				}
 				vin.insert(vin.end(), fill.begin(), fill.end());
 			}
-
 			if (dofun) {
 				focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun);
 			} else if (fun == "mean") {
@@ -533,27 +519,85 @@ SpatRaster SpatRaster::focal(std::vector<unsigned> w, std::vector<double> m, dou
 			if (i != (out.bs.n-1)) {
 				fill = {vin.end() - fsz2, vin.end() };  
 			}
-
-			if (naonly) {
-				size_t off = roff * nc;
-				for (size_t j=0; j<vout.size(); j++) {
-					size_t k = off + j;
-					if (!std::isnan(vin[k])) {
-						vout[j] = vin[k];
-					}
-				}
-			}
-			if (nl > 1) {
-				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
-			}
-		}
-		if (nl > 1) {
-			if (!out.writeBlock(voutcomb, i)) return out;
-		} else {
 			if (!out.writeBlock(vout, i)) return out;
 		}
-	}
+	} else {
+		for (size_t i = 0; i < out.bs.n; i++) {
+			unsigned rstart, roff;
+			unsigned rnrows = out.bs.nrows[i];
+			if (i != (out.bs.n-1)) {
+				rnrows += hw0;
+			}
+			if (i == 0) {
+				rstart = 0;
+				roff = dhw0;
+			} else {
+				rstart = out.bs.row[i] - hw0;
+				roff = hw0;
+				rnrows += hw0; 
+			}
 
+			std::vector<double> vout, voutcomb, vin, vincomb;
+			size_t off=0;
+			readValues(vincomb, rstart, rnrows, 0, nc);
+			off = nc * rnrows; //out.bs.nrows[i];
+			voutcomb.reserve(vincomb.size());
+			for (size_t lyr=0; lyr<nl; lyr++) {
+				vout.clear();
+				size_t lyroff = lyr * off;
+				vin = {vincomb.begin() + lyroff, vincomb.begin() + lyroff + off}; 
+				if (i==0) {
+					if (expand) {
+						fill = {vin.begin(), vin.begin()+nc};
+						for (size_t i=1; i<dhw0; i++) {
+							fill.insert(fill.end(), fill.begin(), fill.end());
+						}
+					} else {
+						fill.resize(fsz2, fillvalue);
+					}
+					vin.insert(vin.begin(), fill.begin(), fill.end());
+				}
+
+				if (i == (out.bs.n-1)) {
+					if (expand) {
+						fill = {vin.end()-nc, vin.end()};
+						for (size_t i=1; i<dhw0; i++) {
+							fill.insert(fill.end(), fill.begin(), fill.end());
+						}
+					} else {
+						std::fill(fill.begin(), fill.end(), fillvalue);
+					}
+					vin.insert(vin.end(), fill.begin(), fill.end());
+				}
+
+				if (dofun) {
+					focal_win_fun(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global, fFun);
+				} else if (fun == "mean") {
+					focal_win_mean(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global);
+				} else {
+					focal_win_sum(vin, vout, nc, roff, out.bs.nrows[i], m, w[0], w[1], fillvalue, narm, naonly, naomit, expand, global);
+				}
+/*
+				if (i != (out.bs.n-1)) {
+					fill = {vin.end() - fsz2, vin.end() };  
+				}
+*/
+/*
+				if (naonly) {
+					size_t off = roff * nc;
+					for (size_t j=0; j<vout.size(); j++) {
+						size_t k = off + j;
+						if (!std::isnan(vin[k])) {
+							vout[j] = vin[k];
+						}
+					}
+				}
+*/				
+				voutcomb.insert(voutcomb.end(), vout.begin(), vout.end());
+			}
+			if (!out.writeBlock(voutcomb, i)) return out;
+		}
+	}
 	out.writeStop();
 	readStop();
 	return(out);
