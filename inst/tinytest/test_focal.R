@@ -71,3 +71,12 @@ expect_equal(e, f)
 f <- as.vector(values(focal(r, 3, mean, na.rm=FALSE)))
 e <- c(NA, NA, NA, 5, 5, 5, NA, NA, NA)
 expect_equal(e, f)
+
+
+r <- rast(ncols=100, nrows=100, ext(0, 10, 0, 10))
+values(r) = 1:ncell(r)
+r[5,]=NA
+f= focal(r, w=5, fun=mean, na.policy="only", na.rm=TRUE, wopt=list(steps=4))
+x  = (f - r)
+expect_equal(sum(values(x), na.rm=TRUE), 0)
+
