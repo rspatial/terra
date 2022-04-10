@@ -481,16 +481,32 @@ inline double minCostDist(std::vector<double> &d) {
 }
 	
 
-std::vector<double> cost_dist_planar(std::vector<double> &dist, double source, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lindist) {
+inline void DxDxyCost(const double &lat, const int &row, double xres, double yres, const int &dir, double &dx,  double &dy, double &dxy, double distscale) {
+	double rlat = lat + row * yres * dir;
+	dx  = distance_lonlat(0, rlat     , xres, rlat) / distscale;
+	yres *= -dir;
+	dy  = distance_lonlat(0, rlat, 0, rlat+yres);
+	dxy = distance_lonlat(0, rlat, xres, rlat+yres);
+	dy = std::isnan(dy) ? NAN : dy / distscale;
+	dxy = std::isnan(dxy) ? NAN : dxy / distscale;
+}
 
-	double dx = res[0] * lindist;
-	double dy = res[1] * lindist;
-	double dxy = sqrt(dx*dx + dy*dy);
+
+std::vector<double> cost_dist(std::vector<double> &dist, double source, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
 
 	dist.clear();
 	dist.resize(v.size(), NAN);
 	std::vector<double> cd;
 
+	double dx, dy, dxy;	
+	if (geo) {
+		DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
+	} else {
+		dx = res[0] * lindist / 2;
+		dy = res[1] * lindist / 2;
+		dxy = sqrt(dx*dx + dy*dy);
+	}
+	
 	//top to bottom
     //left to right
 	//first cell, no cell left of it
@@ -498,7 +514,7 @@ std::vector<double> cost_dist_planar(std::vector<double> &dist, double source, s
 		if (v[0] == source) {
 			dist[0] = 0;			
 		} else {
-			dist[0] = v[0] + above[0] * dy;
+			dist[0] = (v[0] + above[0]) * dy;
 		}
 	}
 	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
@@ -506,19 +522,20 @@ std::vector<double> cost_dist_planar(std::vector<double> &dist, double source, s
 			if (v[i] == source) {
 				dist[i] = 0;
 			} else {
-				cd = {above[i] * dy, above[i-1] * dxy, dist[i-1] * dx};
-				dist[i] = v[i] + minCostDist(cd);
+				cd = {(above[i]+v[i])*dy, (above[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
+				dist[i] = minCostDist(cd);
 			}
 		}
 	}
 
 	for (size_t r=1; r<nr; r++) { //other rows
+		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=r*nc;
 		if (!std::isnan(v[start])) {
 			if (v[start] == source) {
 				dist[start] = 0;
 			} else {
-				dist[start] = v[start] + dist[start-nc] * dy;
+				dist[start] = dist[start-nc] + (v[start] + v[start-nc]) * dy;
 			}
 		}
 		size_t end = start+nc;
@@ -527,7 +544,7 @@ std::vector<double> cost_dist_planar(std::vector<double> &dist, double source, s
 				if (v[i] == source) {
 					dist[i] = 0;
 				} else {
-					cd = {dist[i-1] + v[i] * dx, dist[i-nc] + v[i] * dy, dist[i-nc-1] + v[i] * dxy };
+					cd = {dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
 					dist[i] = minCostDist(cd);
 //				Rcpp::Rcout << cd[0] << " "  << cd[1] << " "  << cd[2] << " " << v[i] << " " << mcd  << std::endl;
 				}
@@ -536,22 +553,25 @@ std::vector<double> cost_dist_planar(std::vector<double> &dist, double source, s
 	}
 
 	//right to left
-	
 	// first row, no need for first (last) cell
+	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
 	for (int i=(nc-2); i > -1; i--) { // other cells on first row
 		if (!std::isnan(v[i])) {
 			if (v[i] != source) {
-				cd = {dist[i+1]+v[i]*dx, above[i+1]+v[i]*dxy, above[i]+v[i]*dy, dist[i]};
+				//cd = { (v[i+1]+v[i])*dx, (above[i+1]+v[i])*dxy, (above[i]+v[i])*dy, dist[i]};
+				cd = {(above[i]+v[i])*dy, (above[i+1]+v[i])*dxy, dist[i+1]+(v[i+1]+v[i])*dx, dist[i]};
+
 				dist[i] = minCostDist(cd);
 			}
 		}
 	}
 
 	for (size_t r=1; r<nr; r++) { // other rows
+		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=(r+1)*nc-1;
 		if (!std::isnan(v[start])) {
 			if (v[start] != source) {
-				cd = { dist[start], dist[start-nc] + v[start]* dy };
+				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
 				dist[start] = minCostDist(cd);
 			}
 		}
@@ -560,11 +580,12 @@ std::vector<double> cost_dist_planar(std::vector<double> &dist, double source, s
 		start -= 1;
 		for (size_t i=start; i>=end; i--) {
 			if (!std::isnan(v[i])) {
-				cd = { dist[i+1]+v[i]*dx, dist[i-nc+1]+ v[i]*dxy, dist[i-nc]+v[i]*dy, dist[i] };
+				cd = { dist[i+1]+(v[i+1]+v[i])*dx, dist[i-nc+1]+(v[i]+v[i-nc+1])*dxy, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i]};
 				dist[i] = minCostDist(cd);
 			}
 		}
 	}
+	
 	size_t off = (nr-1) * nc;
 	above = std::vector<double>(dist.begin()+off, dist.end());
 
@@ -572,7 +593,7 @@ std::vector<double> cost_dist_planar(std::vector<double> &dist, double source, s
 }
 
 
-SpatRaster SpatRaster::costDistance(double from, SpatOptions &opt) {
+SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
@@ -585,23 +606,21 @@ SpatRaster SpatRaster::costDistance(double from, SpatOptions &opt) {
 	if (nlyr() > 1) {
 		std::vector<unsigned> lyr = {0};
 		out = subset(lyr, ops);
-		out = out.costDistance(from, opt);
+		out = out.costDistance(from, m, opt);
 		out.addWarning("cost distance computations are only done for the first input layer");
 		return out;
 	}
 
 	bool lonlat = is_lonlat(); 
 	if (lonlat) {
-		out.addWarning("cost distance computations on lonlat raster are approximate");
+		out.addWarning("cost distance on lon/lat rasters are approximate");
+	} else {
+		m = source[0].srs.to_meter();
+		m = std::isnan(m) ? 1 : m;
 	}
-
-	double m = source[0].srs.to_meter();
-	m = std::isnan(m) ? 1 : m;
-
+	
 	std::vector<double> res = resolution();
-
 	SpatRaster first = out.geometry();
-
 	std::string tempfile = "";
 	std::vector<double> above(ncol(), NAN);
     std::vector<double> d, v, vv;
@@ -615,19 +634,17 @@ SpatRaster SpatRaster::costDistance(double from, SpatOptions &opt) {
  	if (!first.writeStart(opt)) { return first; }
 
 	size_t nc = ncol();
+	double lat = 0;
 	for (size_t i = 0; i < first.bs.n; i++) {
         readBlock(v, first.bs, i);
 		if (lonlat) {
-//			double lat = yFromRow(first.bs.row[i]);
-//			d = broom_dist_geo(v, above, res, first.bs.nrows[i], nc, lat, -1);
-			out.setError("not yet implemented for lonlat");
-			return out;
-		} else {
-			cost_dist_planar(d, from, v, above, res, first.bs.nrows[i], nc, m);
-		}
+			lat = yFromRow(first.bs.row[i]);
+		} 
+		cost_dist(d, from, v, above, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
 		if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 	}
 	first.writeStop();
+
 
 	if (!first.readStart()) {
 		out.setError(first.getError());
@@ -645,11 +662,9 @@ SpatRaster SpatRaster::costDistance(double from, SpatOptions &opt) {
         readBlock(v, out.bs, i-1);
 		std::reverse(v.begin(), v.end());
 		if (lonlat) {
-//			double lat = yFromRow(out.bs.row[i-1] + out.bs.nrows[i-1] - 1);
-//			d = broom_dist_geo(v, above, res, out.bs.nrows[i-1], nc, lat, 1);
-		} else {
-			d = cost_dist_planar(d, from, v, above, res, out.bs.nrows[i-1], nc, m);
-		}
+			lat = yFromRow(out.bs.row[i-1] + out.bs.nrows[i-1] - 1);
+		} 
+		d = cost_dist(d, from, v, above, res, out.bs.nrows[i-1], nc, m, lonlat, lat, 1);
 		first.readBlock(vv, out.bs, i-1);
 	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		if (!out.writeValues(vv, out.bs.row[i-1], out.bs.nrows[i-1])) return out;
@@ -729,13 +744,13 @@ std::vector<double> broom_dist_planar(std::vector<double> &v, std::vector<double
 	return dist;
 }
 
-
-
+/*
 inline double minNArm(const double &a, const double &b) {
 	if (std::isnan(a)) return b;
 	if (std::isnan(b)) return a;
 	return std::min(a, b);
 }
+*/
 
 inline void DxDxy(const double &lat, const int &row, double xres, double yres, const int &dir, double &dx,  double &dy, double &dxy) {
 	double rlat = lat + row * yres * dir;
