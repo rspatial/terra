@@ -17,7 +17,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a fu
 
 \usage{
 \S4method{rapp}{SpatRaster}(x, first, last, fun, ..., allyrs=FALSE, fill=NA, 
-        clamp=FALSE, filename="", overwrite=FALSE, wopt=list())
+        clamp=FALSE, filename="", overwrite=FALSE, circular=FALSE, wopt=list())
 }
 
 \arguments{
@@ -29,6 +29,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a fu
   \item{allyrs}{logical. Should the values of all layers be passed to \code{fun}. The values outside of the range are set to \code{fill}}
   \item{fill}{numeric. The fill value for the the values outside of the range, for when \code{allyrs=TRUE}} 
   \item{clamp}{logical. If \code{FALSE} and the specified range is outside \code{1:nlyr(x)} all cells are considered \code{NA}. Otherwise, the invalid part of the range is ignored} 
+  \item{circular}{logical. If \code{TRUE} the values are considered circular, such as the days of the year. In that case, if first > last the layers used are c(first:nlyr(x), 1:last). Otherwise, the range would be considered invalid and \code{NA} would be returned} 
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
   \item{wopt}{list with named options for writing files as in \code{\link{writeRaster}}}

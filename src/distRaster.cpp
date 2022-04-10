@@ -492,7 +492,7 @@ inline void DxDxyCost(const double &lat, const int &row, double xres, double yre
 }
 
 
-void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
+void cost_dist(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
 
 	std::vector<double> cd;
 
@@ -509,8 +509,8 @@ void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v,
     //left to right
 	//first cell, no cell left of it
 	if (!std::isnan(v[0])) { 
-		if (v[0] == source) {
-			dist[0] = 0;			
+		if (v[0] == 0) {
+			dist[0] = 0;
 		} else {
 			cd = {dist[0], (v[0] + above[0]) * dy}; 
 			dist[0] = minCostDist(cd);
@@ -518,7 +518,7 @@ void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v,
 	}
 	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
 		if (!std::isnan(v[i])) {
-			if (v[i] == source) {
+			if (v[i] == 0) {
 				dist[i] = 0;
 			} else {
 				cd = {dist[i], (above[i]+v[i])*dy, (above[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
@@ -531,7 +531,7 @@ void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v,
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=r*nc;
 		if (!std::isnan(v[start])) {
-			if (v[start] == source) {
+			if (v[start] == 0) {
 				dist[start] = 0;
 			} else {
 				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};
@@ -541,7 +541,7 @@ void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v,
 		size_t end = start+nc;
 		for (size_t i=(start+1); i<end; i++) {
 			if (!std::isnan(v[i])) {
-				if (v[i] == source) {
+				if (v[i] == 0) {
 					dist[i] = 0;
 				} else {
 					cd = {dist[i], dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
@@ -557,7 +557,7 @@ void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v,
 	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
 	for (int i=(nc-2); i > -1; i--) { // other cells on first row
 		if (!std::isnan(v[i])) {
-			if (v[i] != source) {
+			if (v[i] != 0) {
 				//cd = { (v[i+1]+v[i])*dx, (above[i+1]+v[i])*dxy, (above[i]+v[i])*dy, dist[i]};
 				cd = {(above[i]+v[i])*dy, (above[i+1]+v[i])*dxy, dist[i+1]+(v[i+1]+v[i])*dx, dist[i]};
 
@@ -570,7 +570,7 @@ void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v,
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=(r+1)*nc-1;
 		if (!std::isnan(v[start])) {
-			if (v[start] != source) {
+			if (v[start] != 0) {
 				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
 				dist[start] = minCostDist(cd);
 			}
@@ -592,7 +592,7 @@ void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v,
 }
 
 
-SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
+SpatRaster SpatRaster::costDistance(double m, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (!hasValues()) {
@@ -605,7 +605,7 @@ SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 	if (nlyr() > 1) {
 		std::vector<unsigned> lyr = {0};
 		out = subset(lyr, ops);
-		out = out.costDistance(from, m, opt);
+		out = out.costDistance(m, opt);
 		out.addWarning("cost distance computations are only done for the first input layer");
 		return out;
 	}
@@ -641,7 +641,7 @@ SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 		if (lonlat) {
 			lat = yFromRow(first.bs.row[i]);
 		} 
-		cost_dist(d, from, v, above, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
+		cost_dist(d, v, above, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
 		if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 	}
 	first.writeStop();
@@ -664,7 +664,7 @@ SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 		} 
 		first.readBlock(d, second.bs, i-1);
 		std::reverse(d.begin(), d.end());
-		cost_dist(d, from, v, above, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
+		cost_dist(d, v, above, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
 		std::reverse(d.begin(), d.end());
 	    //std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		if (!second.writeValues(d, second.bs.row[i-1], second.bs.nrows[i-1])) return second;
@@ -688,7 +688,7 @@ SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 			lat = yFromRow(out.bs.row[i]);
 		} 
 		second.readBlock(d, out.bs, i);
-		cost_dist(d, from, v, above, res, out.bs.nrows[i], nc, m, lonlat, lat, -1);
+		cost_dist(d, v, above, res, out.bs.nrows[i], nc, m, lonlat, lat, -1);
 		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();

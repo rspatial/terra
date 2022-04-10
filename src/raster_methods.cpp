@@ -1346,7 +1346,7 @@ SpatRaster SpatRaster::selRange(SpatRaster x, int z, int recycleby, SpatOptions 
 }
 
 
-SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, SpatOptions &opt) {
+SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::string fun, bool clamp, bool narm, bool circular, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (!haveFun(fun)) {
@@ -1414,19 +1414,48 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 				if (std::isnan(dend)) continue;
 				end   = dend;
 			}
+
 			if (clamp) {
 				start = start < 0 ? 0 : start; 
 				end = end >= nl ? (nl-1) : end; 
-			}
-			if ((start <= end) && (end < nl) && (start >= 0)) {
-				std::vector<double> se;
-				se.reserve(end-start+1);
-				for (int k = start; k<=end; k++){
-					size_t off = k * ncell + j;
-					se.push_back(v[off]);   
+				if (circular) {
+					end = end < 0 ? 0 : end; 
+					start = start >= nl ? (nl-1) : start; 
 				}
-				vv[j] = theFun(se, narm);
-			} 
+			}
+
+			bool inrange = (start < nl) && (end < nl) && (start >= 0) && (end >= 0);
+			bool circ = false;
+			if (start > end) {
+				if (circular) {
+					circ = true;
+				} else {
+					inrange = false;
+				}
+			}
+			
+			if (inrange) {
+				std::vector<double> se;
+				if (circ) {
+					se.reserve(end + nl - start + 1);
+					for (int k = start; k<nl; k++){
+						size_t off = k * ncell + j;
+						se.push_back(v[off]);   
+					}
+					for (int k = 0; k<=end; k++){
+						size_t off = k * ncell + j;
+						se.push_back(v[off]);   
+					}
+					vv[j] = theFun(se, narm);
+				} else {
+					se.reserve(end-start+1);
+					for (int k = start; k<=end; k++){
+						size_t off = k * ncell + j;
+						se.push_back(v[off]);   
+					}
+					vv[j] = theFun(se, narm);
+				} 
+			}
 		}
 		if (!out.writeBlock(vv, i)) return out;
 	}
@@ -1437,7 +1466,7 @@ SpatRaster SpatRaster::rapply(SpatRaster x, double first, double last, std::stri
 }
 
 
-std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows) {
+std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first, double last, bool clamp, bool all, double fill, size_t startrow, size_t nrows, bool circular) {
 
 	std::vector<std::vector<double>> r;
 
@@ -1504,24 +1533,60 @@ std::vector<std::vector<double>> SpatRaster::rappvals(SpatRaster x, double first
 		if (clamp) {
 			start = start < 0 ? 0 : start; 
 			end = end >= nl ? (nl-1) : end; 
+			if (circular) {
+				end = end < 0 ? 0 : end; 
+				start = start >= nl ? (nl-1) : start; 
+			}
 		}
 
-		bool inrange = (start <= end) && (end < nl) && (start >= 0);
+		bool inrange = (start < nl) && (end < nl) && (start >= 0) && (end >= 0);
+		bool circ = false;
+		if (start > end) {
+			if (circular) {
+				circ = true;
+			} else {
+				inrange = false;
+			}
+		}
+		
 		if (all) {
 			if (inrange) {
 				r[j].resize(nl, fill);
-				for (int k = start; k<=end; k++){
-					size_t off = k * ncell + j;
-					r[j][k] = v[off];   
+				if (circ) {
+					for (int k=start; k<nl; k++){
+						size_t off = k * ncell + j;
+						r[j][k] = v[off];   
+					}
+					for (int k=0; k<=end; k++){
+						size_t off = k * ncell + j;
+						r[j][k] = v[off];   
+					}
+				} else {
+					for (int k = start; k<=end; k++){
+						size_t off = k * ncell + j;
+						r[j][k] = v[off];   
+					}
 				}
 			} else {
 				r[j].resize(nl, NAN);
 			}
 		} else if (inrange) {
-			r[j].reserve(end-start+1);
-			for (int k=start; k<=end; k++){
-				size_t off = k * ncell + j;
-				r[j].push_back(v[off]);   
+			if (circ) {
+				r[j].reserve(end + (nl-start) + 1);
+				for (int k=start; k<nl; k++){
+					size_t off = k * ncell + j;
+					r[j].push_back(v[off]);   
+				}
+				for (int k=0; k<=start; k++){
+					size_t off = k * ncell + j;
+					r[j].push_back(v[off]);   
+				}
+			} else {
+				r[j].reserve(end-start+1);
+				for (int k=start; k<=end; k++){
+					size_t off = k * ncell + j;
+					r[j].push_back(v[off]);   
+				}
 			}
 		} else {
 			r[j].push_back(NAN);
