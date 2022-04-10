@@ -492,10 +492,8 @@ inline void DxDxyCost(const double &lat, const int &row, double xres, double yre
 }
 
 
-std::vector<double> cost_dist(std::vector<double> &dist, double source, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
+void cost_dist(std::vector<double> &dist, double source, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
 
-	dist.clear();
-	dist.resize(v.size(), NAN);
 	std::vector<double> cd;
 
 	double dx, dy, dxy;	
@@ -514,7 +512,8 @@ std::vector<double> cost_dist(std::vector<double> &dist, double source, std::vec
 		if (v[0] == source) {
 			dist[0] = 0;			
 		} else {
-			dist[0] = (v[0] + above[0]) * dy;
+			cd = {dist[0], (v[0] + above[0]) * dy}; 
+			dist[0] = minCostDist(cd);
 		}
 	}
 	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
@@ -522,7 +521,7 @@ std::vector<double> cost_dist(std::vector<double> &dist, double source, std::vec
 			if (v[i] == source) {
 				dist[i] = 0;
 			} else {
-				cd = {(above[i]+v[i])*dy, (above[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
+				cd = {dist[i], (above[i]+v[i])*dy, (above[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
 				dist[i] = minCostDist(cd);
 			}
 		}
@@ -535,7 +534,8 @@ std::vector<double> cost_dist(std::vector<double> &dist, double source, std::vec
 			if (v[start] == source) {
 				dist[start] = 0;
 			} else {
-				dist[start] = dist[start-nc] + (v[start] + v[start-nc]) * dy;
+				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};
+				dist[start] = minCostDist(cd);
 			}
 		}
 		size_t end = start+nc;
@@ -544,7 +544,7 @@ std::vector<double> cost_dist(std::vector<double> &dist, double source, std::vec
 				if (v[i] == source) {
 					dist[i] = 0;
 				} else {
-					cd = {dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
+					cd = {dist[i], dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
 					dist[i] = minCostDist(cd);
 //				Rcpp::Rcout << cd[0] << " "  << cd[1] << " "  << cd[2] << " " << v[i] << " " << mcd  << std::endl;
 				}
@@ -589,7 +589,6 @@ std::vector<double> cost_dist(std::vector<double> &dist, double source, std::vec
 	size_t off = (nr-1) * nc;
 	above = std::vector<double>(dist.begin()+off, dist.end());
 
-	return dist;
 }
 
 
@@ -621,7 +620,8 @@ SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 	
 	std::vector<double> res = resolution();
 	SpatRaster first = out.geometry();
-	std::string tempfile = "";
+	SpatRaster second = first;
+
 	std::vector<double> above(ncol(), NAN);
     std::vector<double> d, v, vv;
 
@@ -629,14 +629,15 @@ SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 		out.setError(getError());
 		return(out);
 	}
-	std::string filename = opt.get_filename();
-	opt.set_filenames({""});
- 	if (!first.writeStart(opt)) { return first; }
+	SpatOptions topt(opt);
+ 	if (!first.writeStart(topt)) { return first; }
 
 	size_t nc = ncol();
 	double lat = 0;
 	for (size_t i = 0; i < first.bs.n; i++) {
         readBlock(v, first.bs, i);
+		d.clear();
+		d.resize(v.size(), NAN);
 		if (lonlat) {
 			lat = yFromRow(first.bs.row[i]);
 		} 
@@ -645,33 +646,54 @@ SpatRaster SpatRaster::costDistance(double from, double m, SpatOptions &opt) {
 	}
 	first.writeStop();
 
-
 	if (!first.readStart()) {
-		out.setError(first.getError());
-		return(out);
+		second.setError(first.getError());
+		return(second);
 	}
 
-	opt.set_filenames({filename});
-	above = std::vector<double>(ncol(), std::numeric_limits<double>::infinity());
-
-  	if (!out.writeStart(opt)) {
-		readStop();
-		return out;
+	above = std::vector<double>(ncol(), NAN);
+  	if (!second.writeStart(topt)) {
+		first.readStop();
+		return second;
 	}
-	for (int i = out.bs.n; i>0; i--) {
-        readBlock(v, out.bs, i-1);
+	for (int i = second.bs.n; i>0; i--) {
+        readBlock(v, second.bs, i-1);
 		std::reverse(v.begin(), v.end());
 		if (lonlat) {
-			lat = yFromRow(out.bs.row[i-1] + out.bs.nrows[i-1] - 1);
+			lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
 		} 
-		d = cost_dist(d, from, v, above, res, out.bs.nrows[i-1], nc, m, lonlat, lat, 1);
-		first.readBlock(vv, out.bs, i-1);
-	    std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
-		if (!out.writeValues(vv, out.bs.row[i-1], out.bs.nrows[i-1])) return out;
+		first.readBlock(d, second.bs, i-1);
+		std::reverse(d.begin(), d.end());
+		cost_dist(d, from, v, above, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
+		std::reverse(d.begin(), d.end());
+	    //std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
+		if (!second.writeValues(d, second.bs.row[i-1], second.bs.nrows[i-1])) return second;
+	}
+	second.writeStop();
+	first.readStop();
+
+	if (!second.readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+	above = std::vector<double>(ncol(), NAN);
+  	if (!out.writeStart(opt)) {
+		second.readStop();
+		return second;
+	}
+
+	for (size_t i = 0; i < out.bs.n; i++) {
+        readBlock(v, out.bs, i);
+		if (lonlat) {
+			lat = yFromRow(out.bs.row[i]);
+		} 
+		second.readBlock(d, out.bs, i);
+		cost_dist(d, from, v, above, res, out.bs.nrows[i], nc, m, lonlat, lat, -1);
+		if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i])) return out;
 	}
 	out.writeStop();
-	first.readStop();
 	readStop();
+	second.readStop();
 	return(out);
 
 }

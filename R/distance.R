@@ -30,17 +30,20 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 	}
 )
 
-setMethod("distance", signature(x="SpatRaster", y="numeric"), 
-	function(x, y, filename="", ...) {
+setMethod("costDistance", signature(x="SpatRaster"), 
+	function(x, target, scale=1000, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		if (length(y) > 1) {
-			error("y ('source') can only have a single value")
+		if (is.na(target)) {
+			error("costDistance", "target cannot be NA")		
 		}
-		if (is.na(y)) {
-			error("y ('source') cannot be NA")		
+		if (!is.numeric(target)) {
+			error("costDistance", "target must be numeric")		
+		}		
+		if (length(target) > 1) {
+			error("costDistance", "target must be a single value")
 		}
-		x@ptr <- x@ptr$costDistance(y, opt)
-		messages(x, "(cost) distance")
+		x@ptr <- x@ptr$costDistance(target, scale[1], opt)
+		messages(x, "cost distance")
 	}
 )
 
