@@ -48,9 +48,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.5-26" id="version-15-26">version 1.5-26<a class="anchor" aria-label="anchor" href="#version-15-26"></a></h2>
+<h2 class="page-header" data-toc-text="1.5-27" id="version-15-27">version 1.5-27<a class="anchor" aria-label="anchor" href="#version-15-27"></a></h2>
 <div class="section level3">
-<h3 id="bug-fixes-1-5-26">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-26"></a></h3>
+<h3 id="bug-fixes-1-5-27">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-27"></a></h3>
 <ul><li>“flipped” rasters were not always handled well. <a href="https://github.com/rspatial/terra/issues/546" class="external-link">#546</a> by Dan Baston</li>
 <li>better reading of GTiff with subdatsets. <a href="https://github.com/rspatial/terra/issues/601" class="external-link">#601</a> by Kyle Doherty</li>
 <li>better handling of multi-layer categorical rasters and <code>extract</code>. <a href="https://github.com/rspatial/terra/issues/580" class="external-link">#580</a> by André M. Bellvé</li>
@@ -65,7 +65,7 @@
 <code>compareGeom(x, y, stopOnError=FALSE)</code> did not remove the error messages stored in <code>x</code> leading to unexpected warnings later on. <a href="https://github.com/rspatial/terra/issues/568" class="external-link">#568</a> by David Hofmann.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="enhancements-1-5-26">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-26"></a></h3>
+<h3 id="enhancements-1-5-27">enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-27"></a></h3>
 <ul><li>Using &amp; or | with SpatRasters now returns a boolean SpatRaster. <a href="https://github.com/rspatial/terra/issues/594" class="external-link">#594</a> by Dan Baston</li>
 <li>SpatVector now supports logical values. <a href="https://github.com/rspatial/terra/issues/593" class="external-link">#593</a> by Derek Friend</li>
 <li>Attempt to create SpatRaster with an invalid number of rows now gives an error. <a href="https://github.com/rspatial/terra/issues/544" class="external-link">#544</a> by Dan Baston</li>
@@ -74,7 +74,7 @@
 <li>not using the same iterator symbols in nested loops to avoid warnings on the Intel compiler. <a href="https://github.com/rspatial/terra/issues/573" class="external-link">#573</a> by Gareth Davies.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-1-5-26">new<a class="anchor" aria-label="anchor" href="#new-1-5-26"></a></h3>
+<h3 id="new-1-5-27">new<a class="anchor" aria-label="anchor" href="#new-1-5-27"></a></h3>
 <ul><li>new arguments <code>res</code> and <code>origin</code> to <code>project&lt;SpatRaster&gt;</code> method. <a href="https://github.com/rspatial/terra/issues/596" class="external-link">#596</a> by Alex Ilich</li>
 <li>new argument <code>inside=TRUE</code> to <code>centroids</code> to get a centroid-like point that is guaranteed to be on the geometry (“point on surface”). <a href="https://github.com/rspatial/terra/issues/588" class="external-link">#588</a> by Márcia Barbosa</li>
 <li>new argument <code>keepgeom=FALSE</code> to <code>vect&lt;data.frame&gt;</code> that allows setting (keeping) the geometry as an attribute. <a href="https://github.com/rspatial/terra/issues/586" class="external-link">#586</a> by Márcia Barbosa</li>
@@ -88,6 +88,7 @@
 <code>as.points&lt;SpatRaster&gt;</code> and <code>as.polygons&lt;SpatRaster&gt;</code> have a new argument <code>na.all=FALSE</code> that affects the interpretation of <code>na.rm</code>. <a href="https://github.com/rspatial/terra/issues/548" class="external-link">#548</a> by Jean-Luc Dupouey.</li>
 <li>
 <code>setGDALconfig</code> and <code>getGDALconfig</code> to set GDAL configuration options. <a href="https://github.com/rspatial/terra/issues/608" class="external-link">#608</a> by Erik Bolch.</li>
+<li>new argument <code>circular</code> to <code>rapp</code> to allow the start to be after the end (for if layers represent days of the year)</li>
 </ul></div>
 </div>
     <div class="section level2">
