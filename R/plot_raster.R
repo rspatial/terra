@@ -118,9 +118,9 @@
 	ilevels <- match(out$levels, out$cats[[1]])
 	out$leg$legend <- unique(na.omit(out$cats[ilevels, 2]))
 	if (!is.null(out$coltab)) {
-	# perhaps merge(z, cats, colors) intead for clarity
+	# perhaps merge(z, cats, colors) instead for clarity
 		out$levels <- out$levels[!is.na(ilevels)]
-		m <- na.omit(match(out$levels[ilevels], out$coltab[,1]))
+		m <- na.omit(match(out$cats[[1]][ilevels], out$coltab[,1]))
 		out$coltab <- out$coltab[m, ,drop=FALSE]
 		out$cols <- grDevices::rgb(out$coltab[,2], out$coltab[,3], out$coltab[,4], out$coltab[,5], maxColorValue=255)
 		i <- match(z, out$coltab[,1])

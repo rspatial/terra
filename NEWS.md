@@ -1,4 +1,4 @@
-# version 1.5-26
+# version 1.5-27
 
 ## bug fixes
 
@@ -30,6 +30,7 @@
 - `svc<sf>` method to deal with GeometryCollection types. [#585](https://github.com/rspatial/terra/issues/585) by Sarah Endicott
 - `as.points<SpatRaster>` and `as.polygons<SpatRaster>` have a new argument `na.all=FALSE` that affects the interpretation of `na.rm`. [#548](https://github.com/rspatial/terra/issues/548) by Jean-Luc Dupouey.
 - `setGDALconfig` and `getGDALconfig` to set GDAL configuration options. [#608](https://github.com/rspatial/terra/issues/608) by Erik Bolch.
+- new argument `circular` to `rapp` to allow the start to be after the end (for if layers represent days of the year)
 
 
 # version 1.5-21
