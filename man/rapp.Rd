@@ -17,7 +17,7 @@ See \code{\link{app}} or \code{\link{Summary-methods}} if you want to apply a fu
 
 \usage{
 \S4method{rapp}{SpatRaster}(x, first, last, fun, ..., allyrs=FALSE, fill=NA, 
-        clamp=FALSE, filename="", overwrite=FALSE, circular=FALSE, wopt=list())
+        clamp=FALSE, circular=FALSE, filename="", overwrite=FALSE, wopt=list())
 }
 
 \arguments{
