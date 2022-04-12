@@ -853,6 +853,13 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 			dist[i] = std::min(std::min(std::min(above[i] + dy, above[i-1] + dxy), dist[i-1] + dx), dist[i]);
 		} 
 	}
+	if (npole) {
+		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
+		minp += dy;
+		for (size_t i=0; i<nc; i++) { 
+			dist[i] = std::min(dist[i], minp);
+		}
+	}
 
 	//other rows
 	for (size_t r=1; r<nr; r++) { 
@@ -866,6 +873,14 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 			if (std::isnan(v[i])) {
 				dist[i] = std::min(dist[i], std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), dist[i-nc-1] + dxy));
 			}
+		}
+	}
+	if (spole) {
+		double minp = *std::min_element(dist.end()-nc, dist.end());
+		minp += dy;
+		size_t ds = dist.size();
+		for (size_t i=ds-nc; i<ds; i++) { 
+			dist[i] = std::min(dist[i], minp);
 		}
 	}
 
@@ -882,6 +897,13 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 			dist[i] = std::min(std::min(std::min(dist[i+1] + dx, above[i+1] + dxy), above[i] + dy), dist[i]);
 		}
 	}
+	if (npole) {
+		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
+		minp += dy;
+		for (size_t i=0; i<nc; i++) { 
+			dist[i] = std::min(dist[i], minp);
+		}
+	}
 	// other rows
 	for (size_t r=1; r<nr; r++) { 
 		DxDxy(lat, r, res[0], res[1], latdir, dx, dy, dxy);
@@ -894,6 +916,14 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 			if (std::isnan(v[i])) {
 				dist[i] = std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i-nc] + dy), dist[i-nc+1] + dxy);
 			}
+		}
+	}
+	if (spole) {
+		double minp = *std::min_element(dist.end()-nc, dist.end());
+		minp += dy;
+		size_t ds = dist.size();
+		for (size_t i=ds-nc; i<ds; i++) { 
+			dist[i] = std::min(dist[i], minp);
 		}
 	}
 
@@ -947,7 +977,6 @@ void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, st
 			}
 		}
 	}
-
 
 	if (spole) {
 		double minp = *std::min_element(dist.end()-nc, dist.end());
