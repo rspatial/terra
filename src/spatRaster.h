@@ -251,6 +251,7 @@ class SpatRaster {
 		bool is_lonlat();
 		bool could_be_lonlat();
 		bool is_global_lonlat();
+		int ns_polar();
 
 		std::vector<double> resolution();
 		SpatRaster setResolution(double xres, double yres);

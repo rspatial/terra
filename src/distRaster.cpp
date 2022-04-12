@@ -837,7 +837,7 @@ inline void DxDxy(const double &lat, const int &row, double xres, double yres, c
 }
 
 
-void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir) {
+void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir, bool npole, bool spole) {
 
 	double dx, dy, dxy;
 	//top to bottom
@@ -903,7 +903,7 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 }
 
 
-void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir) {
+void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir, bool npole, bool spole) {
 
 //	double dy = distance_lonlat(0, 0, 0, res[1]);
 	double dx, dy, dxy;
@@ -913,13 +913,20 @@ void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, st
 	DxDxy(lat, 0, res[0], res[1], latdir, dx, dy, dxy);
 	//first cell, no cell left of it
 	if ( std::isnan(v[0]) ) { 
-		dist[0] = std::min(std::min(above[0] + dy, above[stopnc] + dxy), dist[0]);
+		dist[0] = std::min(std::min(std::min(above[0] + dy, above[stopnc] + dxy), dist[stopnc] + dx), dist[0]);
 	} 
 	//first row, no row above it, use "above"
 	for (size_t i=1; i<nc; i++) { 
 		if (std::isnan(v[i])) {
-			dist[i] = std::min(std::min(std::min(std::min(above[i] + dy, above[i-1] + dxy), 
-								dist[i-1] + dx), dist[0] + dx * (nc-i)), dist[i]);
+			dist[i] = std::min(std::min(std::min(above[i] + dy, above[i-1] + dxy), 
+								dist[i-1] + dx), dist[i]);
+		}
+	}
+	if (npole) {
+		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
+		minp += dy;
+		for (size_t i=0; i<nc; i++) { 
+			dist[i] = std::min(dist[i], minp);
 		}
 	}
 
@@ -928,32 +935,51 @@ void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, st
 		DxDxy(lat, r, res[0], res[1], latdir, dx, dy, dxy);
 		size_t start=r*nc;
 		if (std::isnan(v[start])) {
-			dist[start] = std::min(std::min(dist[start-nc] + dy, dist[start-1] + dxy), dist[start]);
+			dist[start] = std::min(std::min(std::min(dist[start-nc] + dy, dist[start-1] + dxy), 
+									dist[start+stopnc] + dx), dist[start]);
 		}
 
 		size_t end = start+nc;
 		for (size_t i=(start+1); i<end; i++) {
 			if (std::isnan(v[i])) {
-				dist[i] = std::min(std::min(std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), 
-						dist[i-nc-1] + dxy), dist[start] + dx * (end-i)), dist[i]);			
+				dist[i] = std::min(std::min(std::min(dist[i-1] + dx, dist[i-nc] + dy), 
+						dist[i-nc-1] + dxy), dist[i]);			
 			}
+		}
+	}
+
+
+	if (spole) {
+		double minp = *std::min_element(dist.end()-nc, dist.end());
+		minp += dy;
+		size_t ds = dist.size();
+		for (size_t i=ds-nc; i<ds; i++) { 
+			dist[i] = std::min(dist[i], minp);
 		}
 	}
 
 	//right to left
 	DxDxy(lat, 0, res[0], res[1], latdir, dx, dy, dxy);
 	 //first cell
-	if ( std::isnan(v[nc-1])) {
-		dist[stopnc] = std::min(std::min(dist[stopnc], above[stopnc] + dy), above[0] + dxy);
+	if ( std::isnan(v[stopnc])) {
+		dist[stopnc] = std::min(std::min(std::min(dist[stopnc], above[stopnc] + dy), above[0] + dxy), dist[0] + dx);
 	}
 
 	// other cells on first row
 	for (int i=(nc-2); i > -1; i--) { 
 		if (std::isnan(v[i])) {
-			dist[i] = std::min(std::min(std::min(std::min(dist[i+1] + dx, above[i+1] + dxy), 
-						above[i] + dy), dist[i]), dist[stopnc] + dx * (i+1));
+			dist[i] = std::min(std::min(std::min(dist[i+1] + dx, above[i+1] + dxy), 
+						above[i] + dy), dist[i]);
 		}
 	}
+	if (npole) {
+		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
+		minp += dy;
+		for (size_t i=0; i<nc; i++) { 
+			dist[i] = std::min(dist[i], minp);
+		}
+	}
+
 	// other rows
 	for (size_t r=1; r<nr; r++) { 
 		DxDxy(lat, r, res[0], res[1], latdir, dx, dy, dxy);
@@ -961,15 +987,24 @@ void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, st
 		size_t start=(r+1)*nc-1;
 		if (std::isnan(v[start])) {
 			//dist[start] = std::min(dist[start], dist[start-nc] + dy);
-			dist[start] = std::min(std::min(dist[start], dist[start-nc] + dy), dist[start-nc-stopnc] + dxy);
+			dist[start] = std::min(std::min(std::min(dist[start], dist[start-nc] + dy), dist[start-nc-stopnc] + dxy)
+							, dist[start-stopnc] + dx);
 		}
 		size_t end = r*nc;
 		for (size_t i=start-1; i>=end; i--) {
 			if (std::isnan(v[i])) {
 			//	dist[i] = std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i-nc] + dy), dist[i-nc+1] + dxy);
-				dist[i] = std::min(std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i-nc] + dy), 
-						dist[i-nc+1] + dxy), dist[start] + dx * (i-end));
+				dist[i] = std::min(std::min(std::min(dist[i], dist[i+1] + dx), dist[i-nc] + dy), 
+						dist[i-nc+1] + dxy);
 			}
+		}
+	}
+	if (spole) {
+		double minp = *std::min_element(dist.end()-nc, dist.end());
+		minp += dy;
+		size_t ds = dist.size();
+		for (size_t i=ds-nc; i<ds; i++) { 
+			dist[i] = std::min(dist[i], minp);
 		}
 	}
 
@@ -1018,6 +1053,9 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 	
 	if (lonlat) {
 		bool global = is_global_lonlat();
+		int polar = ns_polar();
+		bool npole = (polar == 1) || (polar == 2);
+		bool spole = (polar == -1) || (polar == 2);
 		SpatRaster second = first;
 		if (!first.writeStart(ops)) { return first; }
 		for (size_t i = 0; i < first.bs.n; i++) {
@@ -1027,10 +1065,12 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 				if (!std::isnan(v[j])) d[j] = 0;
 			}
 			double lat = yFromRow(first.bs.row[i]);
+			bool np = (i==0) && npole;
+			bool sp = (i==first.bs.n) && spole;
 			if (global) {
-				broom_dist_geo_global(d, v, above, res, first.bs.nrows[i], nc, lat, -1);				
+				broom_dist_geo_global(d, v, above, res, first.bs.nrows[i], nc, lat, -1, np, sp);				
 			} else {
-				broom_dist_geo(d, v, above, res, first.bs.nrows[i], nc, lat, -1);
+				broom_dist_geo(d, v, above, res, first.bs.nrows[i], nc, lat, -1, np, sp);
 			}
 			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 		}
@@ -1051,10 +1091,12 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			std::reverse(v.begin(), v.end());
 			std::reverse(d.begin(), d.end());
 			double lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
+			bool np = (i==0) && npole;
+			bool sp = (i==(int)second.bs.n) && spole;
 			if (global) {
-				broom_dist_geo_global(d, v, above, res, second.bs.nrows[i-1], nc, lat, 1);
+				broom_dist_geo_global(d, v, above, res, second.bs.nrows[i-1], nc, lat, 1, np, sp);
 			} else {
-				broom_dist_geo(d, v, above, res, second.bs.nrows[i-1], nc, lat, 1);				
+				broom_dist_geo(d, v, above, res, second.bs.nrows[i-1], nc, lat, 1, np, sp);				
 			}			
 			std::reverse(d.begin(), d.end());
 			if (!second.writeValues(d, second.bs.row[i-1], second.bs.nrows[i-1])) return second;
@@ -1074,10 +1116,12 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			readBlock(v, out.bs, i);
 			second.readBlock(d, out.bs, i);
 			double lat = yFromRow(first.bs.row[i]);			
+			bool np = (i==0) && npole;
+			bool sp = (i==out.bs.n) && spole;
 			if (global) {
-				broom_dist_geo_global(d, v, above, res, out.bs.nrows[i], nc, lat, -1);
+				broom_dist_geo_global(d, v, above, res, out.bs.nrows[i], nc, lat, -1, np, sp);
 			} else {
-				broom_dist_geo(d, v, above, res, out.bs.nrows[i], nc, lat, -1);				
+				broom_dist_geo(d, v, above, res, out.bs.nrows[i], nc, lat, -1, np, sp);				
 			}
 			if (!out.writeValues(d, out.bs.row[i], out.bs.nrows[i])) return out;
 		}	

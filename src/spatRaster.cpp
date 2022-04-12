@@ -411,6 +411,22 @@ bool SpatRaster::is_global_lonlat() {
 	return source[0].srs.is_global_lonlat(e);
 }
 
+int SpatRaster::ns_polar() {
+	int polar = 0;
+	if (!is_lonlat()) {
+		return polar;
+	} 
+	SpatExtent e = getExtent();
+	if ((e.ymax - 90) > 0.00001) {
+		polar = 1;
+	}
+	if ((e.ymin + 90) < 0.00001) {
+		polar = polar == 1 ? 2 : -1;
+	}
+	return polar;
+}
+
+
 
 bool SpatRaster::sources_from_file() {
 	for (size_t i=0; i<source.size(); i++) {
