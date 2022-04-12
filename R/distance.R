@@ -18,11 +18,11 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 	function(x, y, grid=FALSE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (grid) {
-			if (is.lonlat(x)) {
-				return(gridDistance(x, filename=filename, ...))
-			} else {
-				x@ptr <- x@ptr$gridDistance(opt)
-			}
+			#if (is.lonlat(x)) {
+			#	return(gridDistance(x, filename=filename, ...))
+			#} else {
+			x@ptr <- x@ptr$gridDistance(opt)
+			#}
 		} else {
 			x@ptr <- x@ptr$rastDistance(opt)
 		}
@@ -33,7 +33,7 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 setMethod("costDistance", signature(x="SpatRaster"), 
 	function(x, scale=1000, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$costDistance(scale[1], opt)
+		x@ptr <- x@ptr$costDistance(scale[1], 10, opt)
 		messages(x, "cost distance")
 	}
 )
