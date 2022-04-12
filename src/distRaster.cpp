@@ -485,16 +485,18 @@ inline double minCostDist(std::vector<double> &d) {
 
 inline void DxDxyCost(const double &lat, const int &row, double xres, double yres, const int &dir, double &dx,  double &dy, double &dxy, double distscale) {
 	double rlat = lat + row * yres * dir;
-	dx  = distance_lonlat(0, rlat     , xres, rlat) / distscale;
+	dx  = distance_lonlat(0, rlat     , xres, rlat) / (2 * distscale);
 	yres *= -dir;
-	dy  = distance_lonlat(0, rlat, 0, rlat+yres);
+	dy  = distance_lonlat(0, 0, 0, yres);
 	dxy = distance_lonlat(0, rlat, xres, rlat+yres);
-	dy = std::isnan(dy) ? NAN : dy / distscale;
-	dxy = std::isnan(dxy) ? NAN : dxy / distscale;
+	dy = std::isnan(dy) ? NAN : dy / (2 * distscale);
+	dxy = std::isnan(dxy) ? NAN : dxy / (2 * distscale);
 }
 
 
 void cost_dist(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
+
+// todo: dateline and pole wrapping
 
 	std::vector<double> cd;
 
