@@ -30,7 +30,8 @@
 .getSpatDF <- function(x, check.names = FALSE, stringsAsFactors=FALSE, ...) {
 	d <- data.frame(x$values(), check.names=check.names, stringsAsFactors=stringsAsFactors, ...)
 	d[d=="NA"] <- NA
-	s <- which(sapply(d, function(x) inherits(x, "character")))
+	clss <- sapply(d, class)
+	s <- which(clss == "character")
 	for (i in s) Encoding(d[[i]]) <- "UTF-8"
 	ints <- which(x$itype == 1)
 	for (i in ints) d[[i]] <- as.integer(d[[i]])
