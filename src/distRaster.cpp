@@ -592,7 +592,6 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &v, std::vector<do
 	
 	size_t off = (nr-1) * nc;
 	above = std::vector<double>(dist.begin()+off, dist.end());
-
 }
 
 void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) {
@@ -612,7 +611,6 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, b
 	
 	SpatRaster first = geometry();
 	SpatRaster second = first;
-	std::vector<double> above(ncol(), NAN);
     std::vector<double> d, v, vv;
 	if (!readStart()) {
 		first.setError(getError());
@@ -621,13 +619,13 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, b
  	if (!first.writeStart(opt)) { return first; }
 
 	size_t nc = ncol();
+	std::vector<double> above(nc, NAN);
 	double lat = 0;
 	if (old.hasValues()) {
 		if (!old.readStart()) {
 			first.setError(getError());
 			return(first);
 		}
-		above = std::vector<double>(ncol(), NAN);
 		if (!first.writeStart(opt)) {
 			readStop();
 			old.readStop();
@@ -653,7 +651,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, b
 				lat = yFromRow(first.bs.row[i]);
 			} 
 			cost_dist(d, v, above, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
-			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
+			if (!first.writeValuesRect(d, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
 		}
 	}
 	first.writeStop();
@@ -662,28 +660,27 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, b
 		return(first);
 	}
 
-	above = std::vector<double>(ncol(), NAN);
+	above = std::vector<double>(nc, NAN);
   	if (!second.writeStart(opt)) {
 		readStop();
 		first.readStop();
 		return second;
 	}
 	for (int i = second.bs.n; i>0; i--) {
-        readBlock(v, second.bs, i-1);
-		std::reverse(v.begin(), v.end());
 		if (lonlat) {
 			lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
 		} 
+        readBlock(v, second.bs, i-1);
 		first.readBlock(d, second.bs, i-1);
+		std::reverse(v.begin(), v.end());
 		std::reverse(d.begin(), d.end());
 		cost_dist(d, v, above, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
 		std::reverse(d.begin(), d.end());
-	    //std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
 		if (converged) {
 			old.readBlock(v, second.bs, i-1);
 			block_is_same(converged, d, v);
 		}
-		if (!second.writeValues(d, second.bs.row[i-1], second.bs.nrows[i-1])) return second;
+		if (!second.writeValuesRect(d, second.bs.row[i-1], second.bs.nrows[i-1], 0, nc)) return second;
 	}
 	second.writeStop();
 	first.readStop();
@@ -1122,7 +1119,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 				broom_dist_geo(d, v, above, res, second.bs.nrows[i-1], nc, lat, 1, np, sp);				
 			}			
 			std::reverse(d.begin(), d.end());
-			if (!second.writeValues(d, second.bs.row[i-1], second.bs.nrows[i-1])) return second;
+			if (!second.writeValuesRect(d, second.bs.row[i-1], second.bs.nrows[i-1], 0, nc)) return second;
 		}	
 		second.writeStop();
 
@@ -1164,6 +1161,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 		}
 		first.writeStop();
+		
 		if (!first.readStart()) {
 			out.setError(first.getError());
 			return(out);
@@ -1176,10 +1174,10 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 		for (int i = out.bs.n; i>0; i--) {
 			readBlock(v, out.bs, i-1);
 			std::reverse(v.begin(), v.end());
-			d = broom_dist_planar(v, above, res, out.bs.nrows[i-1], nc, m);			
+			d = broom_dist_planar(v, above, res, out.bs.nrows[i-1], nc, m);	
 			first.readBlock(vv, out.bs, i-1);
-			std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
-			if (!out.writeValues(vv, out.bs.row[i-1], out.bs.nrows[i-1])) return out;
+			std::transform(d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
+			if (!out.writeValuesRect(vv, out.bs.row[i-1], out.bs.nrows[i-1], 0, nc)) return out;
 		}	
 		out.writeStop();
 		readStop();
