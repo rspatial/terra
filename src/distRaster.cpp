@@ -595,8 +595,18 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &v, std::vector<do
 
 }
 
+void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) {
+	if (!same) return;
+	for (size_t i=0; i<x.size(); i++) {
+		if (!std::isnan(x[i]) && (x[i] != y[i])) {
+			same = false;
+			break;
+		}
+	}
+}
 
-SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, SpatOptions &opt) {
+
+SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, bool &converged, SpatOptions &opt) {
 
 	std::vector<double> res = resolution();
 	
@@ -612,8 +622,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, S
 
 	size_t nc = ncol();
 	double lat = 0;
-
-	if (old.hasValues()) {		
+	if (old.hasValues()) {
 		if (!old.readStart()) {
 			first.setError(getError());
 			return(first);
@@ -634,9 +643,8 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, S
 			cost_dist(d, v, above, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
 			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 		}
-		old.readStop();
 	} else {
-		
+		converged = false;
 		for (size_t i = 0; i < first.bs.n; i++) {
 			readBlock(v, first.bs, i);
 			d.clear();
@@ -671,10 +679,17 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double m, bool lonlat, S
 		cost_dist(d, v, above, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
 		std::reverse(d.begin(), d.end());
 	    //std::transform (d.rbegin(), d.rend(), vv.begin(), vv.begin(), [](double a, double b) {return std::min(a,b);});
+		if (converged) {
+			old.readBlock(v, second.bs, i-1);
+			block_is_same(converged, d, v);
+		}
 		if (!second.writeValues(d, second.bs.row[i-1], second.bs.nrows[i-1])) return second;
 	}
 	second.writeStop();
 	first.readStop();
+	if (old.hasValues()) {
+		old.readStop();
+	}
 	readStop();
 	return(second);
 }
@@ -696,7 +711,6 @@ SpatRaster SpatRaster::costDistance(double m, size_t maxiter, SpatOptions &opt) 
 	}
 
 	SpatOptions ops(opt);
-
 	if (nlyr() > 1) {
 		std::vector<unsigned> lyr = {0};
 		out = subset(lyr, ops);
@@ -704,50 +718,28 @@ SpatRaster SpatRaster::costDistance(double m, size_t maxiter, SpatOptions &opt) 
 		out.addWarning("cost distance computations are only done for the first input layer");
 		return out;
 	}
-	BlockSize bs = getBlockSize(opt);
 
 	bool lonlat = is_lonlat(); 
 	if (!lonlat) {
 		m = source[0].srs.to_meter();
 		m = std::isnan(m) ? 1 : m;
 	}
-	
 	std::vector<double> res = resolution();
 
-	out = costDistanceRun(out, m, lonlat, ops);
-	if (out.hasError()) return out;
-	out = costDistanceRun(out, m, lonlat, ops);
-	if (out.hasError()) return out;
-	size_t iter = 0;
-	
-	while (iter < maxiter) {
-		//Rcpp::Rcout << iter << std::endl;
-		SpatRaster out2 = costDistanceRun(out, m, lonlat, ops);
-		if (out2.hasError()) return out2;
-		out.readStart();
-		out2.readStart();
-		std::vector<double> v1, v2;
-		bool same = true;
-		for (size_t i=0; i<bs.n; i++) {
-			out.readBlock(v1, bs, i);
-			out2.readBlock(v2, bs, i);
-			for (size_t j=0; j<v1.size(); j++) {
-				if (!std::isnan(v1[j]) && (v1[j] != v2[j])) {
-					same = false;
-					break;
-				}
-			}
-			if (!same) break;
-		}
-		out.readStop();
-		out2.readStop();
-		if (same) break;
-		out = out2;
-		iter++;
+	size_t i = 0;
+	bool converged=false;	
+	while (i < maxiter) {
+		out = costDistanceRun(out, m, lonlat, converged, ops);		
+		if (out.hasError()) return out;
+		if (converged) break;
+		converged = true;
+		i++;
 	}
-
 	if (filename != "") {
 		out = out.writeRaster(opt);
+	}
+	if (!converged) {
+		out.addWarning("costDistance did not converge");
 	}
 	return(out);
 }
