@@ -738,7 +738,7 @@ SpatRaster SpatRaster::costDistance(double m, size_t maxiter, SpatOptions &opt) 
 	if (filename != "") {
 		out = out.writeRaster(opt);
 	}
-	if (!converged) {
+	if (i == maxiter) {
 		out.addWarning("costDistance did not converge");
 	}
 	return(out);
