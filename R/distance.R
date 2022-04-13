@@ -31,9 +31,9 @@ setMethod("distance", signature(x="SpatRaster", y="missing"),
 )
 
 setMethod("costDistance", signature(x="SpatRaster"), 
-	function(x, scale=1000, filename="", ...) {
+	function(x, target=0, scale=1000, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$costDistance(scale[1], 10, opt)
+		x@ptr <- x@ptr$costDistance(target[1], scale[1], 10, opt)
 		messages(x, "cost distance")
 	}
 )
