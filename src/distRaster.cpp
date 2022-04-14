@@ -508,13 +508,9 @@ void printit(std::vector<double>&x, size_t nc, std::string s) {
 }
 */
 
-void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
+void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global) {
 
-// todo: dateline and pole wrapping
-
-//	printit(above, nc, "1 above");
-//	printit(dist, nc, "1 dist");
-//	printit(v, nc, "1 v");
+// todo: pole wrapping
 
 	std::vector<double> cd;
 
@@ -531,7 +527,13 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
     //left to right
 	//first cell, no cell left of it
 	if (!std::isnan(v[0])) { 
-		cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy}; 
+		if (global) {
+			cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy, 
+				dist[nc-1] + (v[0] + v[nc-1]) * dx, 
+				dabove[nc-1] + dxy * (vabove[nc-1]+v[0])}; 
+		} else {
+			cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy}; 
+		}
 		dist[0] = minCostDist(cd);
 	}
 	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
@@ -545,7 +547,13 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=r*nc;
 		if (!std::isnan(v[start])) {
-			cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};
+			if (global) {
+				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start], 
+					dist[start+nc-1] + (v[start] + v[start+nc-1]) * dx,
+					dist[start-1] + (v[start] + v[start-1]) * dxy};
+			} else {
+				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};				
+			}
 			dist[start] = minCostDist(cd);
 		}
 		size_t end = start+nc;
@@ -553,34 +561,45 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 			if (!std::isnan(v[i])) {
 				cd = {dist[i], dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
 				dist[i] = minCostDist(cd);
-//				Rcpp::Rcout << cd[0] << " "  << cd[1] << " "  << cd[2] << " " << v[i] << " " << mcd  << std::endl;
 			}
 		}
 	}
 
 	//right to left
-	// first row, no need for first (last) cell
+	// first row, no need for first (last) cell (unless is global)
 	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
+	if (global) {
+		size_t i=(nc-1);
+		cd = {dist[i],  
+			dist[0] + (v[0] + v[i]) * dx, 
+			dabove[0] + dxy * (vabove[0]+v[i])}; 
+		dist[i] = minCostDist(cd);
+	}
+	
 	for (int i=(nc-2); i > -1; i--) { // other cells on first row
 		if (!std::isnan(v[i])) {
-	//	if (vv[i] != target) {
-			//cd = { (v[i+1]+v[i])*dx, (above[i+1]+v[i])*dxy, (above[i]+v[i])*dy, dist[i]};
 			cd = {dabove[i]+(vabove[i]+v[i])*dy, dabove[i+1]+(vabove[i+1]+v[i])*dxy, dist[i+1]+(v[i+1]+v[i])*dx, dist[i]};
 			dist[i] = minCostDist(cd);
 		}
-	//	}
 	}
 
 	for (size_t r=1; r<nr; r++) { // other rows
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=(r+1)*nc-1;
+	
 		if (!std::isnan(v[start])) {
-//			if (vv[start] != target) {
-			cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
+			if (global) {
+				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy, 
+					dist[start-nc+1] + (v[start-nc+1] + v[start]) * dx,
+					dist[start-(2*nc)+1] + (v[start-(2*nc)+1] + v[start]) * dxy						
+				};
+				
+			} else {
+				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
+			}
 			dist[start] = minCostDist(cd);
-//			}
 		}
-
+		
 		size_t end=r*nc;
 		start -= 1;
 		for (size_t i=start; i>=end; i--) {
@@ -608,7 +627,7 @@ void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) 
 }
 
 
-SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m, bool lonlat, bool &converged, SpatOptions &opt) {
+SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m, bool lonlat, bool global, bool &converged, SpatOptions &opt) {
 
 	std::vector<double> res = resolution();
 	
@@ -650,7 +669,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 				}					
 			}
 			old.readBlock(d, first.bs, i);
-			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
+			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global);
 			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 		}
 	} else {
@@ -673,7 +692,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 					return first;
 				}
 			}
-			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
+			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global);
 			if (!first.writeValuesRect(d, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
 		}
 	}
@@ -705,7 +724,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 		first.readBlock(d, second.bs, i-1);
 		std::reverse(v.begin(), v.end());
 		std::reverse(d.begin(), d.end());
-		cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
+		cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global);
 		std::reverse(d.begin(), d.end());
 		if (converged) {
 			old.readBlock(v, second.bs, i-1);
@@ -748,16 +767,17 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, Spa
 	}
 
 	bool lonlat = is_lonlat(); 
+	bool global = is_global_lonlat();
 	if (!lonlat) {
 		m = source[0].srs.to_meter();
 		m = std::isnan(m) ? 1 : m;
-	}
+	} 
 	std::vector<double> res = resolution();
 
 	size_t i = 0;
 	bool converged=false;	
 	while (i < maxiter) {
-		out = costDistanceRun(out, target, m, lonlat, converged, ops);		
+		out = costDistanceRun(out, target, m, lonlat, global, converged, ops);		
 		if (out.hasError()) return out;
 		if (converged) break;
 		converged = true;
