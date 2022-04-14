@@ -417,7 +417,7 @@ int SpatRaster::ns_polar() {
 		return polar;
 	} 
 	SpatExtent e = getExtent();
-	if ((e.ymax - 90) > 0.00001) {
+	if ((e.ymax - 90) > -0.00001) {
 		polar = 1;
 	}
 	if ((e.ymin + 90) < 0.00001) {

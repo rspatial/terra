@@ -129,6 +129,7 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 			x.readBlock(v, out.bs, i);
 			for (size_t j=0; j<v.size(); j++) {
 				if (!std::isnan(v[j])) {
+				if (!std::isnan(v[j])) {
 					cells[j] = NAN;
 				}
 			}
@@ -508,9 +509,7 @@ void printit(std::vector<double>&x, size_t nc, std::string s) {
 }
 */
 
-void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global) {
-
-// todo: pole wrapping
+void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir, bool global, bool npole, bool spole) {
 
 	std::vector<double> cd;
 
@@ -542,6 +541,14 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 			dist[i] = minCostDist(cd);
 		}
 	}
+	if (npole) {
+		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
+		minp += dy;
+		for (size_t i=0; i<nc; i++) { 
+			dist[i] = std::min(dist[i], minp);
+		}
+	}
+
 
 	for (size_t r=1; r<nr; r++) { //other rows
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
@@ -564,6 +571,14 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 			}
 		}
 	}
+	if (spole) {
+		double minp = *std::min_element(dist.end()-nc, dist.end());
+		minp += dy;
+		size_t ds = dist.size();
+		for (size_t i=ds-nc; i<ds; i++) { 
+			dist[i] = std::min(dist[i], minp);
+		}
+	}
 
 	//right to left
 	// first row, no need for first (last) cell (unless is global)
@@ -574,6 +589,13 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 			dist[0] + (v[0] + v[i]) * dx, 
 			dabove[0] + dxy * (vabove[0]+v[i])}; 
 		dist[i] = minCostDist(cd);
+	}
+	if (npole) {
+		double minp = *std::min_element(dist.begin(), dist.begin()+nc);
+		minp += dy;
+		for (size_t i=0; i<nc; i++) { 
+			dist[i] = std::min(dist[i], minp);
+		}
 	}
 	
 	for (int i=(nc-2); i > -1; i--) { // other cells on first row
@@ -609,6 +631,14 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 			}
 		}
 	}
+	if (spole) {
+		double minp = *std::min_element(dist.end()-nc, dist.end());
+		minp += dy;
+		size_t ds = dist.size();
+		for (size_t i=ds-nc; i<ds; i++) { 
+			dist[i] = std::min(dist[i], minp);
+		}
+	}
 	
 	size_t off = (nr-1) * nc;
 	dabove = std::vector<double>(dist.begin()+off, dist.end());
@@ -627,10 +657,10 @@ void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) 
 }
 
 
-SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m, bool lonlat, bool global, bool &converged, SpatOptions &opt) {
+SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double target, double m, bool lonlat, bool global, bool npole, bool spole, SpatOptions &opt) {
 
 	std::vector<double> res = resolution();
-	
+		
 	SpatRaster first = geometry();
 	SpatRaster second = first;
     std::vector<double> d, v, vv;
@@ -661,6 +691,8 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 			if (lonlat) {
 				lat = yFromRow(first.bs.row[i]);
 			} 
+			bool np = (i==0) && npole;		
+			bool sp = (i==first.bs.n) && spole;
 			if (target != 0) {
 				for (size_t j=0; j<v.size(); j++) {
 					if (v[j] == target) {
@@ -669,7 +701,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 				}					
 			}
 			old.readBlock(d, first.bs, i);
-			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global);
+			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
 			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 		}
 	} else {
@@ -678,6 +710,8 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 			if (lonlat) {
 				lat = yFromRow(first.bs.row[i]);
 			} 
+			bool np = (i==0) && npole;		
+			bool sp = (i==first.bs.n) && spole;			
 			readBlock(v, first.bs, i);
 			d.clear();
 			d.resize(v.size(), NAN);
@@ -692,7 +726,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 					return first;
 				}
 			}
-			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global);
+			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1, global, np, sp);
 			if (!first.writeValuesRect(d, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
 		}
 	}
@@ -713,6 +747,8 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 		if (lonlat) {
 			lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
 		} 
+		bool np = (i==0) && spole; //! reverse order		
+		bool sp = (i==(int)second.bs.n) && npole;			
         readBlock(v, second.bs, i-1);
 		if (target != 0) {
 			for (size_t j=0; j<v.size(); j++) {
@@ -724,7 +760,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 		first.readBlock(d, second.bs, i-1);
 		std::reverse(v.begin(), v.end());
 		std::reverse(d.begin(), d.end());
-		cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global);
+		cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1, global, np, sp);
 		std::reverse(d.begin(), d.end());
 		if (converged) {
 			old.readBlock(v, second.bs, i-1);
@@ -768,16 +804,21 @@ SpatRaster SpatRaster::costDistance(double target, double m, size_t maxiter, Spa
 
 	bool lonlat = is_lonlat(); 
 	bool global = is_global_lonlat();
+	int polar = ns_polar();
+	bool npole = (polar == 1) || (polar == 2);
+	bool spole = (polar == -1) || (polar == 2);
+
 	if (!lonlat) {
 		m = source[0].srs.to_meter();
 		m = std::isnan(m) ? 1 : m;
 	} 
+	
 	std::vector<double> res = resolution();
 
 	size_t i = 0;
 	bool converged=false;	
 	while (i < maxiter) {
-		out = costDistanceRun(out, target, m, lonlat, global, converged, ops);		
+		out = costDistanceRun(out, converged, target, m, lonlat, global, npole, spole, ops);		
 		if (out.hasError()) return out;
 		if (converged) break;
 		converged = true;
@@ -971,11 +1012,11 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 
 	size_t off = (nr-1) * nc;
 	above = std::vector<double>(dist.begin()+off, dist.end());
-
 }
 
 
 void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir, bool npole, bool spole) {
+
 
 //	double dy = distance_lonlat(0, 0, 0, res[1]);
 	double dx, dy, dxy;
@@ -1137,7 +1178,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			}
 			double lat = yFromRow(first.bs.row[i]);
 			bool np = (i==0) && npole;
-			bool sp = (i==first.bs.n) && spole;
+			bool sp = (i==first.bs.n-1) && spole;
 			if (global) {
 				broom_dist_geo_global(d, v, above, res, first.bs.nrows[i], nc, lat, -1, np, sp);				
 			} else {
@@ -1162,8 +1203,8 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			std::reverse(v.begin(), v.end());
 			std::reverse(d.begin(), d.end());
 			double lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
-			bool np = (i==0) && npole;
-			bool sp = (i==(int)second.bs.n) && spole;
+			bool np = (i==0) && spole; //! reverse order
+			bool sp = (i==(int)second.bs.n) && npole;
 			if (global) {
 				broom_dist_geo_global(d, v, above, res, second.bs.nrows[i-1], nc, lat, 1, np, sp);
 			} else {

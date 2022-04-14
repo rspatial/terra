@@ -19,13 +19,14 @@ If the coordinate reference system (CRS) of the SpatRaster is longitude/latitude
 }
 
 \usage{
-\S4method{costDistance}{SpatRaster}(x, target=0, scale=1000, filename="", ...) 
+\S4method{costDistance}{SpatRaster}(x, target=0, scale=1000, maxiter=50, filename="", ...) 
 }
 
 \arguments{
 \item{x}{SpatRaster}
 \item{target}{numeric. value of the target cells (where to compute cost-distance to)}
-\item{scale}{numeric. Scale factor for longlat data (1 = m, 1000 = km)}
+\item{scale}{numeric. Scale factor for longitude/latitude data (1 = m, 1000 = km)}
+\item{maxiter}{numeric. The maximum number of iterations. Increase this number if you get the warning that \code{costDistance did not converge}}
 \item{filename}{character. output filename (optional)}
 \item{...}{additional arguments as for \code{\link{writeRaster}}}  
 }
