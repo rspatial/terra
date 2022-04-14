@@ -508,7 +508,7 @@ void printit(std::vector<double>&x, size_t nc, std::string s) {
 }
 */
 
-void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, double target, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
+void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vector<double> &v, std::vector<double> &vabove, std::vector<double> res, size_t nr, size_t nc, double lindist, bool geo, double lat, double latdir) {
 
 // todo: dateline and pole wrapping
 
@@ -531,21 +531,13 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
     //left to right
 	//first cell, no cell left of it
 	if (!std::isnan(v[0])) { 
-		if (v[0] == target) {
-			dist[0] = 0;
-		} else {
-			cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy}; 
-			dist[0] = minCostDist(cd);
-		}
+		cd = {dist[0], dabove[0] + (v[0]+vabove[0]) * dy}; 
+		dist[0] = minCostDist(cd);
 	}
 	for (size_t i=1; i<nc; i++) { //first row, no row above it, use "above"
 		if (!std::isnan(v[i])) {
-			if (v[i] == target) {
-				dist[i] = 0;
-			} else {
-				cd = {dist[i], dabove[i]+(vabove[i]+v[i])*dy, dabove[i-1]+(vabove[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
-				dist[i] = minCostDist(cd);
-			}
+			cd = {dist[i], dabove[i]+(vabove[i]+v[i])*dy, dabove[i-1]+(vabove[i-1]+v[i])*dxy, dist[i-1]+(v[i-1]+v[i])*dx};
+			dist[i] = minCostDist(cd);
 		}
 	}
 
@@ -553,23 +545,15 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=r*nc;
 		if (!std::isnan(v[start])) {
-			if (v[start] == target) {
-				dist[start] = 0;
-			} else {
-				cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};
-				dist[start] = minCostDist(cd);
-			}
+			cd = {dist[start-nc] + (v[start] + v[start-nc]) * dy, dist[start]};
+			dist[start] = minCostDist(cd);
 		}
 		size_t end = start+nc;
 		for (size_t i=(start+1); i<end; i++) {
 			if (!std::isnan(v[i])) {
-				if (v[i] == target) {
-					dist[i] = 0;
-				} else {
-					cd = {dist[i], dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
-					dist[i] = minCostDist(cd);
+				cd = {dist[i], dist[i-1]+(v[i]+v[i-1])*dx, dist[i-nc]+(v[i]+v[i-nc])*dy, dist[i-nc-1]+(v[i]+v[i-nc-1])*dxy};
+				dist[i] = minCostDist(cd);
 //				Rcpp::Rcout << cd[0] << " "  << cd[1] << " "  << cd[2] << " " << v[i] << " " << mcd  << std::endl;
-				}
 			}
 		}
 	}
@@ -579,23 +563,22 @@ void cost_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 	if (geo) DxDxyCost(lat, 0, res[0], res[1], latdir, dx, dy, dxy, lindist);
 	for (int i=(nc-2); i > -1; i--) { // other cells on first row
 		if (!std::isnan(v[i])) {
-			if (v[i] != target) {
-				//cd = { (v[i+1]+v[i])*dx, (above[i+1]+v[i])*dxy, (above[i]+v[i])*dy, dist[i]};
-				cd = {dabove[i]+(vabove[i]+v[i])*dy, dabove[i+1]+(vabove[i+1]+v[i])*dxy, dist[i+1]+(v[i+1]+v[i])*dx, dist[i]};
-
-				dist[i] = minCostDist(cd);
-			}
+	//	if (vv[i] != target) {
+			//cd = { (v[i+1]+v[i])*dx, (above[i+1]+v[i])*dxy, (above[i]+v[i])*dy, dist[i]};
+			cd = {dabove[i]+(vabove[i]+v[i])*dy, dabove[i+1]+(vabove[i+1]+v[i])*dxy, dist[i+1]+(v[i+1]+v[i])*dx, dist[i]};
+			dist[i] = minCostDist(cd);
 		}
+	//	}
 	}
 
 	for (size_t r=1; r<nr; r++) { // other rows
 		if (geo) DxDxyCost(lat, r, res[0], res[1], latdir, dx, dy, dxy, lindist);
 		size_t start=(r+1)*nc-1;
 		if (!std::isnan(v[start])) {
-			if (v[start] != target) {
-				cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
-				dist[start] = minCostDist(cd);
-			}
+//			if (vv[start] != target) {
+			cd = { dist[start], dist[start-nc] + (v[start-nc]+v[start])* dy };
+			dist[start] = minCostDist(cd);
+//			}
 		}
 
 		size_t end=r*nc;
@@ -659,20 +642,38 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 			if (lonlat) {
 				lat = yFromRow(first.bs.row[i]);
 			} 
+			if (target != 0) {
+				for (size_t j=0; j<v.size(); j++) {
+					if (v[j] == target) {
+						v[j] = 0;
+					} 
+				}					
+			}
 			old.readBlock(d, first.bs, i);
-			cost_dist(d, dabove, v, vabove, target, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
+			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
 			if (!first.writeValues(d, first.bs.row[i], first.bs.nrows[i])) return first;
 		}
 	} else {
 		converged = false;
 		for (size_t i = 0; i < first.bs.n; i++) {
-			readBlock(v, first.bs, i);
-			d.clear();
-			d.resize(v.size(), NAN);
 			if (lonlat) {
 				lat = yFromRow(first.bs.row[i]);
 			} 
-			cost_dist(d, dabove, v, vabove, target, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
+			readBlock(v, first.bs, i);
+			d.clear();
+			d.resize(v.size(), NAN);
+			for (size_t j = 0; j < v.size(); j++) {
+				if (v[j] == target) {
+					v[j] = 0;
+					d[j] = 0;
+				} else if (v[j] < 0) {
+					readStop();
+					first.writeStop();
+					first.setError("negative friction values not allowed");
+					return first;
+				}
+			}
+			cost_dist(d, dabove, v, vabove, res, first.bs.nrows[i], nc, m, lonlat, lat, -1);
 			if (!first.writeValuesRect(d, first.bs.row[i], first.bs.nrows[i], 0, nc)) return first;
 		}
 	}
@@ -694,10 +695,17 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, double target, double m,
 			lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
 		} 
         readBlock(v, second.bs, i-1);
+		if (target != 0) {
+			for (size_t j=0; j<v.size(); j++) {
+				if (v[j] == target) {
+					v[j] = 0;
+				} 
+			}					
+		}
 		first.readBlock(d, second.bs, i-1);
 		std::reverse(v.begin(), v.end());
 		std::reverse(d.begin(), d.end());
-		cost_dist(d, dabove, v, vabove, target, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
+		cost_dist(d, dabove, v, vabove, res, second.bs.nrows[i-1], nc, m, lonlat, lat, 1);
 		std::reverse(d.begin(), d.end());
 		if (converged) {
 			old.readBlock(v, second.bs, i-1);

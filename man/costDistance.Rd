@@ -45,11 +45,13 @@ plot(d)
 text(d, digits=1)
 
 r <- rast(ncols=10, nrows=10,  xmin=0, xmax=10, ymin=0, ymax=10, vals=10, crs="+proj=utm +zone=1 +datum=WGS84")
-r[4, 1] <- 0
-r[2:3, 1] <- r[1, 2:4] <- r[2, 5] <- .1
-r[3, 6] <- r[2, 7] <- r[1, 8:9] <- .1
+r[5, 1] <- -10
+r[2:3, 1] <- r[1, 2:4] <- r[2, 5] <- 0
+r[3, 6] <- r[2, 7] <- r[1, 8:9] <- 0
 r[6, 6:10] <- NA
-d <- costDistance(r)
+r[6:9, 6] <- NA
+
+d <- costDistance(r, -10)
 plot(d)
 text(d, digits=1, cex=.8)
 }
