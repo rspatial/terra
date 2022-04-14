@@ -129,7 +129,6 @@ SpatRaster SpatRaster::disdir_vector_rasterize(SpatVector p, bool align_points, 
 			x.readBlock(v, out.bs, i);
 			for (size_t j=0; j<v.size(); j++) {
 				if (!std::isnan(v[j])) {
-				if (!std::isnan(v[j])) {
 					cells[j] = NAN;
 				}
 			}
