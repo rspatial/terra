@@ -771,7 +771,7 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	for (size_t i = 0; i < s.nlyr; i++) {
 		poBand = poDataset->GetRasterBand(i+1);
 
-		if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
+		if ((gdrv=="netCDF") || (gdrv == "HDF5") || (gdrv == "GRIB")) {
 			char **m = poBand->GetMetadata();
 			while (*m != nullptr) {
 				bandmeta[i].push_back(*m++);
@@ -910,17 +910,19 @@ bool SpatRaster::constructFromFile(std::string fname, std::vector<int> subds, st
 	}
 
 
-	if ((gdrv=="netCDF") || (gdrv == "HDF5")) {
+	msg = "";
+	if ((gdrv=="netCDF") || (gdrv == "HDF5"))  {
 		std::vector<std::string> metadata;
 		char **m = poDataset->GetMetadata();
 		while (*m != nullptr) {
 			metadata.push_back(*m++);
 		}
-		std::string msg;
 		s.set_names_time_ncdf(metadata, bandmeta, msg);
-		if (msg.size() > 1) {
-			addWarning(msg);
-		}
+	} else if (gdrv == "GRIB") {
+		s.set_names_time_grib(bandmeta, msg);
+	}
+	if (msg.size() > 1) {
+		addWarning(msg);
 	}
 
 	GDALClose( (GDALDatasetH) poDataset );
@@ -1624,7 +1626,6 @@ bool get_double(std::string input, double &output) {
 
 std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vector<std::string> vals, std::string &step, std::string &msg) {
 
-
 	std::vector<int_64> out, bad;
 	if (vals.size() < 1) {
 		step = "";
@@ -1787,9 +1788,7 @@ std::vector<std::vector<std::string>> ncdf_names(const std::vector<std::vector<s
 void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
 
 	if (bandmeta.size() == 0) return;
-
 	std::vector<std::vector<std::string>> nms = ncdf_names(bandmeta);
-
 
 	if (nms[1].size() > 0) {
 		names = nms[1];
@@ -1805,18 +1804,99 @@ void SpatRasterSource::set_names_time_ncdf(std::vector<std::string> metadata, st
 	}
 
 	recycle(unit, nlyr);
-
-
 	if (nms[0].size() > 0) {
 		std::string step;
 		std::vector<int_64> x = ncdf_time(metadata, nms[0], step, msg);
-
 		if (x.size() == nlyr) {
 			time = x;
 			timestep = step;
 			hasTime = true;
 		}
+	}
+}
 
+
+
+
+std::vector<std::vector<std::string>> grib_names(const std::vector<std::vector<std::string>> &m) {
+
+	std::vector<std::vector<std::string>> out(3);
+	if (m.size() < 1) return out;
+
+	for (size_t i=0; i<m.size(); i++) {
+		std::string comm, time, units = "";
+		for (size_t j=0; j<m[i].size(); j++) {
+			size_t pos = m[i][j].find("GRIB_COMMENT=");
+			if (pos != std::string::npos) {
+				comm = m[i][j];
+				comm.erase(0, pos+13);
+				lrtrim(comm);
+				continue;
+			} 
+			pos = m[i][j].find("GRIB_UNIT=");
+			if (pos != std::string::npos) {
+				units = m[i][j];
+				units.erase(0, pos+10);
+				str_replace(units, "[", "");
+				str_replace(units, "]", "");
+				lrtrim(units);
+				continue;
+			} 
+			pos = m[i][j].find("TIME=");
+			if (pos != std::string::npos) {
+				std::string tmp = m[i][j];
+				tmp.erase(0, pos+5);
+				pos = tmp.find("sec");
+				if (pos != std::string::npos) {
+					tmp.erase(tmp.begin()+pos, tmp.end()); 					
+					time = tmp;
+				}
+				continue;
+			} 
+		}	
+		out[0].push_back(comm);
+		out[1].push_back(units);
+		out[2].push_back(time);
+	}	
+	return out;
+}
+
+
+
+void SpatRasterSource::set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg) {
+
+	if (bandmeta.size() == 0) return;
+	std::vector<std::vector<std::string>> nms = grib_names(bandmeta);
+
+	if (nms[0].size() != names.size()) return;
+	
+	for (size_t i=0; i<names.size(); i++) {
+		names[i] += "; " + nms[0][i];
+		str_replace(names[i], "0[-] ", "");
+		str_replace_all(names[i], "\"", "");
+	}
+	unit = {nms[1]};
+
+	std::vector<int_64> tm;
+	bool hastime = true;
+	for (size_t i=0; i<nms[2].size(); i++) {
+		if (nms[2][i] == "") {
+			hastime = false;
+			break;
+		}
+		int_64 tim;
+		try {
+			tim = stol(nms[2][i]);
+		} catch(...) {
+			hastime = false;
+			break;
+		}
+		tm.push_back(tim);
+	}
+	if (hastime) {
+		time = tm;
+		timestep = "seconds";
+		hasTime = true;
 	}
 }
 

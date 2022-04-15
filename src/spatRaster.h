@@ -166,6 +166,7 @@ class SpatRasterSource {
 		bool parameters_changed = false;		
 		
 		void set_names_time_ncdf(std::vector<std::string> metadata, std::vector<std::vector<std::string>> bandmeta, std::string &msg);
+		void set_names_time_grib(std::vector<std::vector<std::string>> bandmeta, std::string &msg);
 		
 };
 
