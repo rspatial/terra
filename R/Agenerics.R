@@ -277,6 +277,8 @@ if (!isGeneric("union")) {setGeneric("union", function(x, y)standardGeneric("uni
 if (!isGeneric("unique")) { setGeneric("unique", function(x, incomparables=FALSE, ...) standardGeneric("unique")) }
 if (!isGeneric("values")) { setGeneric("values", function(x, ...) standardGeneric("values")) }
 if (!isGeneric("values<-")) { setGeneric("values<-", function(x, value) standardGeneric("values<-"))}
+if (!isGeneric("where.max")) {setGeneric("where.max", function(x) standardGeneric("where.max"))}
+if (!isGeneric("where.min")) {setGeneric("where.min", function(x) standardGeneric("where.min"))}
 if (!isGeneric("which.max")) {setGeneric("which.max", function(x) standardGeneric("which.max"))}
 if (!isGeneric("which.min")) {setGeneric("which.min", function(x) standardGeneric("which.min"))}
 if (!isGeneric("which.lyr")) {setGeneric("which.lyr", function(x) standardGeneric("which.lyr"))}

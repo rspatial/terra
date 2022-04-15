@@ -32,6 +32,7 @@
 - `setGDALconfig` and `getGDALconfig` to set GDAL configuration options. [#608](https://github.com/rspatial/terra/issues/608) by Erik Bolch.
 - new argument `circular` to `rapp` to allow the start to be after the end (for if layers represent days of the year)
 - new method `costDistance` 
+- new methods `where.min` and `where.max` to get the cell numbers for the extreme values in a SpatRaster. 
 
 
 # version 1.5-21
