@@ -691,7 +691,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 				lat = yFromRow(first.bs.row[i]);
 			} 
 			bool np = (i==0) && npole;		
-			bool sp = (i==first.bs.n) && spole;
+			bool sp = (i==first.bs.n-1) && spole;
 			if (target != 0) {
 				for (size_t j=0; j<v.size(); j++) {
 					if (v[j] == target) {
@@ -710,7 +710,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 				lat = yFromRow(first.bs.row[i]);
 			} 
 			bool np = (i==0) && npole;		
-			bool sp = (i==first.bs.n) && spole;			
+			bool sp = (i==first.bs.n-1) && spole;			
 			readBlock(v, first.bs, i);
 			d.clear();
 			d.resize(v.size(), NAN);
@@ -746,8 +746,8 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 		if (lonlat) {
 			lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
 		} 
-		bool np = (i==0) && spole; //! reverse order		
-		bool sp = (i==(int)second.bs.n) && npole;			
+		bool sp = (i==1) && spole; //! reverse order		
+		bool np = (i==(int)second.bs.n) && npole;			
         readBlock(v, second.bs, i-1);
 		if (target != 0) {
 			for (size_t j=0; j<v.size(); j++) {
@@ -1016,6 +1016,7 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 
 void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir, bool npole, bool spole) {
 
+Rcpp::Rcout << npole << " " << spole << std::endl;
 
 //	double dy = distance_lonlat(0, 0, 0, res[1]);
 	double dx, dy, dxy;
@@ -1202,8 +1203,8 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			std::reverse(v.begin(), v.end());
 			std::reverse(d.begin(), d.end());
 			double lat = yFromRow(second.bs.row[i-1] + second.bs.nrows[i-1] - 1);
-			bool np = (i==0) && spole; //! reverse order
-			bool sp = (i==(int)second.bs.n) && npole;
+			bool sp = (i==1) && spole; //! reverse order
+			bool np = (i==(int)second.bs.n) && npole;
 			if (global) {
 				broom_dist_geo_global(d, v, above, res, second.bs.nrows[i-1], nc, lat, 1, np, sp);
 			} else {
@@ -1228,7 +1229,7 @@ SpatRaster SpatRaster::gridDistance(SpatOptions &opt) {
 			second.readBlock(d, out.bs, i);
 			double lat = yFromRow(first.bs.row[i]);			
 			bool np = (i==0) && npole;
-			bool sp = (i==out.bs.n) && spole;
+			bool sp = (i==out.bs.n-1) && spole;
 			if (global) {
 				broom_dist_geo_global(d, v, above, res, out.bs.nrows[i], nc, lat, -1, np, sp);
 			} else {
