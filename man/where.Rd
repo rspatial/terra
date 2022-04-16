@@ -15,17 +15,18 @@ This method returns the cell numbers for the cells with the min or max values of
 
 
 \usage{
-\S4method{where.min}{SpatRaster}(x)
-\S4method{where.max}{SpatRaster}(x)
+\S4method{where.min}{SpatRaster}(x, list)
+\S4method{where.max}{SpatRaster}(x, list)
 }
 
 \arguments{
   \item{x}{SpatRaster}
+  \item{list}{logical. If \code{TRUE} a list is returned instead of a matrix}
 }
 
 
 \value{
-list
+matrix or list
 }
 
 \seealso{\code{\link{which}} and \code{\link{Summary-methods}} for \code{which.min} and \code{which.max}}
@@ -34,7 +35,7 @@ list
 \examples{
 f <- system.file("ex/elev.tif", package="terra")
 r <- rast(f)
-x <- where.min(r)
+where.min(r)
 }
 
 \keyword{spatial}

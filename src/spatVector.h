@@ -24,7 +24,7 @@
 #endif
 
 
-enum SpatGeomType { points, lines, polygons, unknown };
+enum SpatGeomType { points, lines, polygons, unknown, null };
 
 
 class SpatHole {
@@ -333,6 +333,7 @@ class SpatVector {
 		SpatVector cross_dateline(bool &fixed);
 		SpatVector densify(double interval, bool adjust);
 		SpatVector round(int digits);
+		std::vector<unsigned> nullGeoms();
 };
 
 

@@ -383,6 +383,7 @@ RCPP_MODULE(spat){
 		.method("subset_rows", ( SpatVector (SpatVector::*)(std::vector<int>))( &SpatVector::subset_rows ))
 		.method("remove_rows", &SpatVector::remove_rows, "remove_rows")
 		.method("type", &SpatVector::type, "type")
+		.method("nullGeoms", &SpatVector::nullGeoms)
 
 		.method("write", &SpatVector::write)
 		.method("delete_layers", &SpatVector::delete_layers)

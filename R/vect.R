@@ -17,6 +17,13 @@ character_crs <- function(crs, caller="") {
 }
 
 
+setMethod("emptyGeoms", signature(x="SpatVector"), 
+	function(x) {
+		x@ptr$nullGeoms() + 1
+	}
+)
+
+
 setMethod("as.vector", signature(x="SpatVector"), 
 	function(x, mode="any") {
 		if (nrow(x) > 0) {

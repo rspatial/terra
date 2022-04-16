@@ -439,10 +439,11 @@ setMethod("which.lyr", "SpatRaster",
 )
 
 setMethod("where.max", "SpatRaster",  
-	function(x) { 
+	function(x, list=FALSE) { 
 		opt <- spatOptions()
 		out <- x@ptr$where("max", opt)
 		x <- messages(x, "where.max")
+		if (list) return(x)
 		out <- lapply(1:length(out), function(i) cbind(i, out[[i]]) )
 		out <- do.call(rbind, out)
 		mnmx <- minmax(x)
@@ -454,10 +455,11 @@ setMethod("where.max", "SpatRaster",
 )
 
 setMethod("where.min", "SpatRaster",  
-	function(x) { 
+	function(x, list=FALSE) { 
 		opt <- spatOptions()
 		out <- x@ptr$where("min", opt)
 		x <- messages(x, "where.min")
+		if (list) return(x)
 		out <- lapply(1:length(out), function(i) cbind(i, out[[i]]) )
 		out <- do.call(rbind, out)
 		mnmx <- minmax(x)

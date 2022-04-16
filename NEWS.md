@@ -31,8 +31,9 @@
 - `as.points<SpatRaster>` and `as.polygons<SpatRaster>` have a new argument `na.all=FALSE` that affects the interpretation of `na.rm`. [#548](https://github.com/rspatial/terra/issues/548) by Jean-Luc Dupouey.
 - `setGDALconfig` and `getGDALconfig` to set GDAL configuration options. [#608](https://github.com/rspatial/terra/issues/608) by Erik Bolch.
 - new argument `circular` to `rapp` to allow the start to be after the end (for if layers represent days of the year)
-- new method `costDistance` 
-- new methods `where.min` and `where.max` to get the cell numbers for the extreme values in a SpatRaster. 
+- new method `costDistance<SpatRaster>` 
+- new methods `where.min` and `where.max` for `SpatRaster` to get the cell numbers for the extreme values in a SpatRaster. 
+- new method `emptyGeoms<SpatVector>` to get the indices of empty (null) geometries
 
 
 # version 1.5-21

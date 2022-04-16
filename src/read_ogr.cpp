@@ -349,6 +349,15 @@ std::vector<std::string> SpatVector::layer_names(std::string filename) {
 	return out;
 }	
 
+SpatGeom emptyGeom() {
+	SpatGeom g;
+	g.gtype = null;
+	g.extent.xmin=NAN;
+	g.extent.xmax=NAN;
+	g.extent.ymin=NAN;
+	g.extent.ymax=NAN;
+	return g;
+}
 
 bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy) {
 
@@ -478,9 +487,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiPointGeom(poGeometry);
 				}
 			} else {
-				SpatPart p;
-				g = SpatGeom();
-				g.addPart(p);
+				//SpatPart p;
+				//g = SpatGeom();
+				//g.addPart(p);
+				g = emptyGeom();				
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -493,9 +503,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiLinesGeom(poGeometry);
 				}
 			} else {
-				SpatPart p;
-				g = SpatGeom();
-				g.addPart(p);
+				//SpatPart p;
+				//g = SpatGeom();
+				//g.addPart(p);
+				g = emptyGeom();		
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -509,7 +520,8 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiPolygonsGeom(poGeometry);
 				} 
 			} else {
-				g = SpatGeom();
+				//g = SpatGeom();
+				g = emptyGeom();
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -540,9 +552,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiPointGeom(poGeometry);
 				}
 			} else {
-				SpatPart p;
-				g = SpatGeom();
-				g.addPart(p);
+				//SpatPart p;
+				//g = SpatGeom();
+				//g.addPart(p);
+				g = emptyGeom();			
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -557,9 +570,10 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiLinesGeom(poGeometry);
 				}
 			} else {
-				SpatPart p;
-				g = SpatGeom();
-				g.addPart(p);
+				//SpatPart p;
+				//g = SpatGeom();
+				//g.addPart(p);
+				g = emptyGeom();		
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );
@@ -575,7 +589,8 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 					g = getMultiPolygonsGeom(poGeometry);
 				} 
 			} else {
-				g = SpatGeom();
+				//g = SpatGeom();
+				g = emptyGeom();		
 			}
 			addGeom(g);
 			OGRFeature::DestroyFeature( poFeature );

@@ -310,6 +310,8 @@ std::string SpatVector::type(){
 		return "lines";
 	} else if (geoms[0].gtype == polygons) {
 		return "polygons";
+	} else if (geoms[0].gtype == null) {
+		return("null");		
 	} else {
 		return("unknown");
 	}
@@ -346,6 +348,17 @@ void SpatVector::computeExtent() {
 		extent.unite(geoms[i].extent);
 	}
 }
+
+std::vector<unsigned> SpatVector::nullGeoms(){
+	std::vector<unsigned> ids;
+	for (size_t i=0; i<geoms.size(); i++) {
+		if ((geoms[i].gtype == null) || (geoms[i].gtype == unknown)) {
+			ids.push_back(i);
+		}
+	}
+	return ids;
+}
+
 
 
 bool SpatVector::replaceGeom(SpatGeom p, unsigned i) {
