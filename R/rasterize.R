@@ -1,15 +1,17 @@
 
 
 setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, unit="m", filename="", ...) {
+	function(x, y, unit="m", fun="", filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		y@ptr <- y@ptr$rasterizeGeom(x@ptr, unit, opt)
+		y@ptr <- y@ptr$rasterizeGeom(x@ptr, unit, fun, opt)
 		messages(y, "rasterizeGeom")
 	}
 )
 
 
 
+# now can use
+# r@ptr = r@ptr$rasterizePoints(v@ptr, "mean", 1:nrow(v), NA, opt)
 
 rasterize_points <- function(x, y, field, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 

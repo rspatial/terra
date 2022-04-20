@@ -659,7 +659,7 @@ class SpatRaster {
 		SpatRaster rasterize(SpatVector x, std::string field, std::vector<double> values, double background, bool touches, bool add, bool weights, bool update, bool minmax, SpatOptions &opt);
 		std::vector<double> rasterizeCells(SpatVector &v, bool touches, SpatOptions &opt);
 		//std::vector<std::vector<double>> rasterizeCellsWeights(SpatVector &v, bool touches);
-		SpatRaster rasterizeGeom(SpatVector x, std::string unit, SpatOptions &opt);
+		SpatRaster rasterizeGeom(SpatVector x, std::string unit, std::string count, SpatOptions &opt);
 		SpatRaster rasterizePoints(SpatVector x, std::string fun, std::vector<double> values, double background, SpatOptions &opt);
 
 		void rasterizeCellsWeights(std::vector<double> &cells, std::vector<double> &weights, SpatVector &v, SpatOptions &opt); 

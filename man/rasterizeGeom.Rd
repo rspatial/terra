@@ -8,19 +8,20 @@
 \title{Rasterize geometric properties of vector data}
 
 \description{
-Transfer geometric properties of vector data are computed for raster cells (area covered by polygons; length of the lines; or count of points). See \code{\link{rasterize}} for standard rasterization (of attribute values associated with geometries)
+Rasterization of geometric properties of vector data. Either the count of the number of geometries or the area covered by polygons or the length of the lines. See \code{\link{rasterize}} for standard rasterization (of attribute values associated with geometries).
 
-The area of polygons is intended for summing the area of polygons that are relatively small relative to the raster cells, and for when there may be multiple polygons per cell. See \code{rasterize(cover=TRUE)} to get the fraction that is covered by larger polygons.
+The area of polygons is intended for summing the area of polygons that are relatively small relative to the raster cells, and for when there may be multiple polygons per cell. See \code{rasterize(sum=TRUE)} for counting large polygons and \code{rasterize(cover=TRUE)} to get the fraction that is covered by larger polygons.
 }
 
 \usage{
-\S4method{rasterizeGeom}{SpatVector,SpatRaster}(x, y, unit="m", filename="", ...)
+\S4method{rasterizeGeom}{SpatVector,SpatRaster}(x, y, unit="m", fun="", filename="", ...)
 }
 
 \arguments{
   \item{x}{SpatVector}
   \item{y}{SpatRaster}
   \item{unit}{character. "m" or "km"}
+  \item{fun}{character. "" or "count"}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }
