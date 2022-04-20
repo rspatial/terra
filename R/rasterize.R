@@ -1,4 +1,16 @@
 
+
+setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"), 
+	function(x, y, unit="m", filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		y@ptr <- y@ptr$rasterizeGeom(x@ptr, unit, opt)
+		messages(y, "rasterizeGeom")
+	}
+)
+
+
+
+
 rasterize_points <- function(x, y, field, values, fun="last", background=NA, update=FALSE, filename="", overwrite=FALSE, wopt=list(), ...) {
 
 	if (update) {

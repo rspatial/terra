@@ -14,7 +14,7 @@
 \alias{mergeLines,SpatVector-method}
 \alias{snap,SpatVector-method}
 \alias{removeDupNodes,SpatVector-method}
-\alias{removeNullGeoms,SpatVector-method}
+\alias{emptyGeoms,SpatVector-method}
 
 \title{ 
 Vector topology methods
@@ -28,7 +28,7 @@ Vector topology methods
 
 \code{removeDupNodes} removes duplicate nodes in geometries and optionally rounds the coordinates
 
-\code{emptyGeoms} returns the indices of empty (NULL) geometries
+\code{emptyGeoms} returns the indices of empty (null) geometries
 
 \code{snap} makes boundaries of geometries identical if they are very close to each other.
 }

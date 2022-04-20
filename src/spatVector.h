@@ -196,7 +196,7 @@ class SpatVector {
 		SpatVector get_holes();
 		SpatVector set_holes(SpatVector x, size_t i);
 		SpatVector remove_duplicate_nodes(int digits);
-
+		
 		bool read(std::string fname, std::string layer, std::string query, std::vector<double> extent, SpatVector filter, bool as_proxy);
 		
 		bool write(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string>);

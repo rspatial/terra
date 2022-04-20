@@ -1885,6 +1885,7 @@ SpatVector SpatVector::gaps() {
 }
 
 
+
 SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 	SpatVector out;
 

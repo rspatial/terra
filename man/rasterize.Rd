@@ -9,7 +9,7 @@
 \title{Rasterize vector data}
 
 \description{
-Transfer vector data to a raster
+Transfer values associated with the geometries of vector data to a raster
 }
 
 \usage{
@@ -51,9 +51,6 @@ Transfer vector data to a raster
 \code{\link{mask}}
 }
 
-\note{
-To update existing raster data use the output of \code{rasterize} as second argument in \code{\link{cover}} 
-}
 
 \value{
 SpatRaster

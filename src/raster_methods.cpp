@@ -1721,9 +1721,9 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			}
 			if (!out.writeBlock(v, i)) return out;
 		}
-		source[0].range_min.resize(1, 0 + plusone);
-		source[0].range_max.resize(1, nrow() - 1 + plusone);
-		source[0].hasRange.resize(1, true);
+		//source[0].range_min.resize(1, 0 + plusone);
+		//source[0].range_max.resize(1, nrow() - 1 + plusone);
+		//source[0].hasRange.resize(1, true);
 	} else if (value == "col") {
 		std::vector<double> cnn(nc);
 		double start = plusone ? 1 : 0;
@@ -1736,9 +1736,9 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			}
 			if (!out.writeBlock(v, i)) return out;
 		}
-		source[0].range_min.resize(1, 0 + plusone);
-		source[0].range_max.resize(1, nc - 1 + plusone);
-		source[0].hasRange.resize(1, true);
+		//source[0].range_min.resize(1, 0 + plusone);
+		//source[0].range_max.resize(1, nc - 1 + plusone);
+		//source[0].hasRange.resize(1, true);
 	} else if (value == "cell") {
 		for (size_t i = 0; i < out.bs.n; i++) {
 			v.resize(nc * out.bs.nrows[i]);
@@ -1747,9 +1747,9 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			std::iota(v.begin(), v.end(), firstcell);
 			if (!out.writeBlock(v, i)) return out;
 		}
-		source[0].range_min.resize(1, 0 + plusone);
-		source[0].range_max.resize(1, ncell() - 1 + plusone);
-		source[0].hasRange.resize(1, true);
+		//source[0].range_min.resize(1, 0 + plusone);
+		//source[0].range_max.resize(1, ncell() - 1 + plusone);
+		//source[0].hasRange.resize(1, true);
 
 	} else if (value == "x") {
 		std::vector<int_64> col(nc);
@@ -1763,9 +1763,9 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			}
 			if (!out.writeBlock(v, i)) return out;
 		}
-		source[0].range_min.resize(1, xcoords[0]);
-		source[0].range_max.resize(1, xcoords[nc-1]);
-		source[0].hasRange.resize(1, true);
+		//source[0].range_min.resize(1, xcoords[0]);
+		//source[0].range_max.resize(1, xcoords[nc-1]);
+		//source[0].hasRange.resize(1, true);
 
 	} else if (value == "y") {
 
@@ -1779,9 +1779,9 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			}
 			if (!out.writeBlock(v, i)) return out;
 		}
-		source[0].range_min.resize(1, yFromRow(0));
-		source[0].range_max.resize(1, yFromRow(nrow()-1));
-		source[0].hasRange.resize(1, true);
+		//source[0].range_min.resize(1, yFromRow(0));
+		//source[0].range_max.resize(1, yFromRow(nrow()-1));
+		//source[0].hasRange.resize(1, true);
 
 	} else if (value == "chess") {
 		std::vector<double> a(nc);
@@ -1803,9 +1803,9 @@ SpatRaster SpatRaster::init(std::string value, bool plusone, SpatOptions &opt) {
 			recycle(v, out.bs.nrows[i] * nc);
 			if (!out.writeBlock(v, i)) return out;
 		}
-		source[0].range_min.resize(1, 0);
-		source[0].range_max.resize(1, 1);
-		source[0].hasRange.resize(1, true);
+		//source[0].range_min.resize(1, 0);
+		//source[0].range_max.resize(1, 1);
+		//source[0].hasRange.resize(1, true);
 	}
 
 	out.writeStop();
@@ -1825,9 +1825,9 @@ SpatRaster SpatRaster::init(std::vector<double> values, SpatOptions &opt) {
 			v.resize(out.bs.nrows[i]*nc*nl, val);
 			if (!out.writeBlock(v, i)) return out;
 		}
-		source[0].range_min.resize(1, val);
-		source[0].range_max.resize(1, val);
-		source[0].hasRange.resize(1, true);
+		//source[0].range_min.resize(1, val);
+		//source[0].range_max.resize(1, val);
+		//source[0].hasRange.resize(1, true);
 
 	} else {
 		int over = 0;

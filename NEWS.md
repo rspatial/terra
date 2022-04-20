@@ -34,7 +34,7 @@
 - new method `costDistance<SpatRaster>` 
 - new methods `where.min` and `where.max` for `SpatRaster` to get the cell numbers for the extreme values in a SpatRaster. 
 - new method `emptyGeoms<SpatVector>` to get the indices of empty (null) geometries
-
+- new method `rasterizeGeom` to rasterize the area of (small) polygons, the lenght of lines, of the point count.
 
 # version 1.5-21
 

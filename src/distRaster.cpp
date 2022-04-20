@@ -1840,7 +1840,6 @@ std::vector<double> SpatVector::area(std::string unit, bool transform, std::vect
 	}
 	double adj = unit == "m" ? 1 : unit == "km" ? 1000000 : 10000;
 
-
 	if (srs.wkt == "") {
 		addWarning("unknown CRS. Results can be wrong");
 		if (domask) {

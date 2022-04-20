@@ -234,6 +234,7 @@ if (!isGeneric("plotRGB")) { setGeneric("plotRGB", function(x, ...)standardGener
 if (!isGeneric("predict")) {setGeneric("predict", function(object, ...) standardGeneric("predict"))}
 if (!isGeneric("quantile")) {setGeneric("quantile", function(x, ...)standardGeneric("quantile"))}
 if (!isGeneric("rasterize")) {setGeneric("rasterize", function(x, y, ...) standardGeneric("rasterize"))}
+if (!isGeneric("rasterizeGeom")) {setGeneric("rasterizeGeom", function(x, y, ...) standardGeneric("rasterizeGeom"))}
 if (!isGeneric("readStart")) {setGeneric("readStart", function(x, ...) standardGeneric("readStart"))}
 if (!isGeneric("readStop")) {setGeneric("readStop", function(x)	standardGeneric("readStop"))}
 if (!isGeneric("res")) { setGeneric("res", function(x) standardGeneric("res")) }

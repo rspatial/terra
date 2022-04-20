@@ -182,6 +182,16 @@ setMethod("fillHoles", signature(x="SpatVector"),
 )
 
 
+
+#setMethod("eliminate", signature(x="SpatVector"), 
+#	function(x, y) {
+#		x@ptr <- x@ptr$eliminate(y@ptr)
+#		messages(x)
+#	}
+#)
+
+
+
 setMethod("centroids", signature(x="SpatVector"), 
 	function(x, inside=FALSE) {
 		if (inside) {
