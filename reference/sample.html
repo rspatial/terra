@@ -119,28 +119,28 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span>, as.raster<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        261</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        352</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        470</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        273</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        365</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        282</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        145</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        297</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       473</span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">10</span>, <span class="st">"random"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    elevation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        305</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        467</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6         NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        299</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       342</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10        NA</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## if you require cell numbers and/or coordinates</span></span>
 <span class="r-in"><span class="va">size</span> <span class="op">&lt;-</span> <span class="fl">6</span></span>
@@ -152,12 +152,12 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">xy</span> <span class="op">&lt;-</span> <span class="fu"><a href="xyCellFrom.html">xyFromCell</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">cells</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">xy</span>, <span class="va">v</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          x        y elevation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 6.095833 49.99583       500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 6.429167 49.86250        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 6.279167 49.49583        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 6.429167 49.75417       324</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 6.387500 50.13750        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 5.795833 49.72917        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 5.795833 49.84583       443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 5.787500 49.81250       429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 6.029167 49.77083       290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 6.087500 49.55417       301</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 5.904167 49.75417       273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 6.362500 50.17917        NA</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># regular </span></span>
 <span class="r-in"><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">r</span>, <span class="fl">6</span>, <span class="st">"regular"</span>, cells<span class="op">=</span><span class="cn">TRUE</span>, values<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
