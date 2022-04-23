@@ -35,6 +35,7 @@
 - new methods `where.min` and `where.max` for `SpatRaster` to get the cell numbers for the extreme values in a SpatRaster. 
 - new method `emptyGeoms<SpatVector>` to get the indices of empty (null) geometries
 - new method `rasterizeGeom` to rasterize the geometry count or the area of (small) polygons or the length of lines.
+- new method `not.na` for `SpatRaster` which is a shortcut for `!is.na(x)`.
 
 
 # version 1.5-21

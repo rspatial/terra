@@ -68,6 +68,8 @@ if (!isGeneric("is.related")) {setGeneric("is.related", function(x, y, ...) stan
 if (!isGeneric("relate")) {setGeneric("relate", function(x, y, ...) standardGeneric("relate"))}
 if (!isGeneric("intersect")) {setGeneric("intersect", function(x, y) standardGeneric("intersect"))}
 
+if (!isGeneric("not.na")) {setGeneric("not.na", function(x, ...) standardGeneric("not.na"))}
+
 if (!isGeneric("erase")) {setGeneric("erase", function(x, y, ...) standardGeneric("erase"))}
 if (!isGeneric("gaps")) {setGeneric("gaps", function(x, ...) standardGeneric("gaps"))}
 if (!isGeneric("is.int")) {setGeneric("is.int", function(x) standardGeneric("is.int"))}

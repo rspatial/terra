@@ -4,7 +4,7 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
 	stopifnot(!any(is.na(index)))
 	if (!is.factor(index)) {
-		index <- as.factor(index)
+		index <- factor(index, levels=unique(index))
 	}
 	nms <- as.character(index)
 	ind <- as.integer(index)

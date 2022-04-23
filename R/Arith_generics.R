@@ -284,6 +284,15 @@ setMethod("!", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("not.na", signature(x="SpatRaster"),
+	function(x, filename="", ...) {
+		opt <- spatOptions(filename=filename, ...)
+		x@ptr <- x@ptr$not_na(opt)
+		messages(x, "not.na")
+	}
+)
+
+
 setMethod("isTRUE", signature(x="SpatRaster"),
 	function(x) {
 		opt <- spatOptions()

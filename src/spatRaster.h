@@ -734,6 +734,7 @@ class SpatRaster {
 		SpatRaster which(SpatOptions &opt);
 		SpatRaster is_true(SpatOptions &opt);
 		SpatRaster is_false(SpatOptions &opt);
+		SpatRaster not_na(SpatOptions &opt);
 
 		SpatRaster sieveFilter(int threshold, int connections, SpatOptions &opt);	
 		

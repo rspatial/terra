@@ -124,10 +124,18 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 			out.setError("invalid unit (not 'm' or 'km')");
 			return out;
 		}
-		ss = {"", "count"};
-		if (std::find(ss.begin(), ss.end(), fun) == ss.end()) {
-			out.setError("invalid value for 'fun' (not 'count' or '')");
-			return out;
+		if ((x.type() == "lines")) {
+			ss = {"count", "length", "crosses"};
+			if (std::find(ss.begin(), ss.end(), fun) == ss.end()) {
+				out.setError("invalid value for 'fun' (not 'count', 'crosses', or 'length')");
+				return out;
+			}
+		} else {
+			ss = {"area", "count"};
+			if (std::find(ss.begin(), ss.end(), fun) == ss.end()) {
+				out.setError("invalid value for 'fun' (not 'area' or 'count')");
+				return out;
+			}
 		}
 
 		SpatRaster empty = out.geometry();
@@ -156,28 +164,37 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string
 			SpatRaster tmp = empty.crop(e, "near", ops);
 
 			SpatVector p = tmp.as_polygons(true, false, false, false, false, ops);
-			std::vector<long> cell(p.size());
-			std::iota(cell.begin(), cell.end(), 0);
-			p.df.add_column(cell, "cell");
-
-			p = p.intersect(x);
-			std::vector<double> stat;
-			if (x.type() == "lines") {
-				stat = p.length();
-			} else {
-				stat = p.area("m", false, {});
-			}
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
-			if (fun == "count") {
-				for (size_t j=0; j<stat.size(); j++) {
-					size_t k = p.df.iv[0][j]; 
-					v[k]++; 
+
+			if (fun == "crosses") {
+				std::vector<int> r = p.relate(x, "crosses");
+				size_t nx = x.size();
+				for (size_t j=0; j< r.size(); j++) {
+					size_t k= j / nx;
+					v[k] += r[j];
 				}
 			} else {
-				for (size_t j=0; j<stat.size(); j++) {
-					size_t k = p.df.iv[0][j]; 
-					v[k] += (stat[j] / m); 
-				}				
+				std::vector<long> cell(p.size());
+				std::iota(cell.begin(), cell.end(), 0);
+				p.df.add_column(cell, "cell");
+				p = p.intersect(x);
+				std::vector<double> stat;
+				if (x.type() == "lines") {
+					stat = p.length();
+				} else {
+					stat = p.area("m", false, {});
+				}
+				if (fun == "count") {
+					for (size_t j=0; j<stat.size(); j++) {
+						size_t k = p.df.iv[0][j]; 
+						v[k]++; 
+					}
+				} else {
+					for (size_t j=0; j<stat.size(); j++) {
+						size_t k = p.df.iv[0][j]; 
+						v[k] += (stat[j] / m); 
+					}				
+				}
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
 		}
