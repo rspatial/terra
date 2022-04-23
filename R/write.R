@@ -50,7 +50,7 @@ setMethod("writeRaster", signature(x="SpatRaster", filename="character"),
 function(x, filename="", overwrite=FALSE, ...) {
 	filename <- trimws(filename)
 	stopifnot(filename != "")
-	if (tools::file_ext(filename) %in% c("nc", "cdf") || isTRUE(list(...)$filetype=="netCDF")) {
+	if (any(tools::file_ext(filename) %in% c("nc", "cdf")) || isTRUE(list(...)$filetype=="netCDF")) {
 		warn("consider writeCDF to write ncdf files")
 	}
 	filename <- enc2utf8(filename)
