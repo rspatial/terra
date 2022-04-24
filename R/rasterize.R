@@ -1,7 +1,7 @@
 
 
 setMethod("rasterizeGeom", signature(x="SpatVector", y="SpatRaster"), 
-	function(x, y, unit="m", fun="", filename="", ...) {
+	function(x, y, fun="count", unit="m", filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		y@ptr <- y@ptr$rasterizeGeom(x@ptr, unit, fun, opt)
 		messages(y, "rasterizeGeom")

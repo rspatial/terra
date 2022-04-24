@@ -594,6 +594,7 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 			//Rcpp::Rcout << np << std::endl;
 
 
+			size_t kk = 0; // introduced for intersect
 			for(size_t j = 0; j<np; j++) {
 
 				const GEOSGeometry* gg = GEOSGetGeometryN_r(hGEOSCtxt, g, j);
@@ -619,13 +620,12 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					if (increment) f++;
 				}
 
-	
 				for(size_t k = 0; k<npp; k++) {
 
 					const GEOSGeometry* part = GEOSGetGeometryN_r(hGEOSCtxt, gg, k);
 
 					if (ggt == "Polygon" || ggt == "MultiPolygon") {
-						if (!polysFromGeom(hGEOSCtxt, part, f, k, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
+						if (!polysFromGeom(hGEOSCtxt, part, f, kk, pl_x, pl_y, pl_gid, pl_gp, pl_hole, msg)) {
 							out.setError(msg);
 							return out;
 						}
@@ -648,10 +648,11 @@ SpatVectorCollection coll_from_geos(std::vector<GeomPtr> &geoms, GEOSContextHand
 					} else {
 						out.addWarning("unhandeled Collection geom: " + ggt);
 					}
-					if (increment) f++;
+					kk++;
 				}
-				if (!increment) f++;
+				if (increment) f++;
 			}
+			if (!increment) f++;
 		} else {
 			out.setError("what is this: " + gt + "?");
 		}
