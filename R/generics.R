@@ -696,6 +696,30 @@ setMethod("project", signature(x="SpatVector"),
 	}
 )
 
+setMethod("project", signature(x="matrix"),
+    function(x, from, to)  {
+        if (ncol(x) != 2) {
+			error("project", "x must have two columns")
+		}
+        if (missing(from)) {
+			error("project", "'from' cannot be missing")
+		}
+        if (missing(to)) {
+			error("project", "'to' cannot be missing")
+		}
+        if (!is.character(from)) {
+           from <- crs(from)
+        }
+        if (!is.character(to)) {
+           to <- crs(to)
+        }
+		v <- vect(x, type="line", crs=from)
+        v@ptr <- v@ptr$project(to)
+        messages(v, "project")
+        crds(v)
+    }
+)
+
 
 setMethod("quantile", signature(x="SpatRaster"), 
 	function(x, probs=seq(0, 1, 0.25), na.rm=FALSE, filename="", ...) { 

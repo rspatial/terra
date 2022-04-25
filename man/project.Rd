@@ -3,17 +3,20 @@
 \alias{project}
 \alias{project,SpatVector-method}
 \alias{project,SpatRaster-method}
+\alias{project,matrix-method}
 
 \title{Change the coordinate reference system}
 
 \description{
-Change the coordinate reference system ("project") of a SpatVector or SpatRaster. 
+Change the coordinate reference system ("project") of a SpatVector, SpatRaster or a matrix with coordinates. 
 }
 
 \usage{
 \S4method{project}{SpatVector}(x, y)
 
 \S4method{project}{SpatRaster}(x, y, method, mask=FALSE, align=FALSE, gdal=TRUE, res=NULL, origin=NULL, filename="", ...)
+
+\S4method{project}{matrix}(x, from, to)
 }
 
 \arguments{
@@ -47,6 +50,10 @@ Change the coordinate reference system ("project") of a SpatVector or SpatRaster
   \item{filename}{character. Output filename}
   
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
+
+  \item{from}{character. Coordinate reference system for \code{x}}
+
+  \item{to}{character. Output coordinate reference system}
 }
 
 
