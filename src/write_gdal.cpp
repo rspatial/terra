@@ -846,9 +846,19 @@ bool SpatRaster::writeStopGDAL() {
 bool SpatRaster::fillValuesGDAL(double fillvalue) {
 	CPLErr err = CE_None;
 	GDALRasterBand *poBand;
+	int hasNA;
 	for (size_t i=0; i < nlyr(); i++) {
 		poBand = source[0].gdalconnection->GetRasterBand(i+1);
-		err = poBand->Fill(fillvalue);
+		if (std::isnan(fillvalue)) {
+			double naflag = poBand->GetNoDataValue(&hasNA);
+			if (hasNA) {
+				err = poBand->Fill(naflag);
+			} else {
+				err = poBand->Fill(fillvalue);				
+			}
+		} else {
+			err = poBand->Fill(fillvalue);
+		}
 	}
 	if (err != CE_None ) {
 		setError("cannot fill values");
