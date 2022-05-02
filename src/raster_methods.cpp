@@ -3663,12 +3663,19 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 	if (vs == 1) {
 		bylyr = false;
 		recycle(v, cs); 
-	} else if (bylyr && (vs != (cs*nlyr()))) {
-		setError("lengths of of cells and values do not match");
-		return false;
+	} 
+	if (bylyr) {
+		if (vs != (cs*nlyr())) {
+			setError("length of cells and values do not match");
+			return false;
+		}
 	} else if (cs != vs) {
-		setError("lengths of of cells and values do not match");
-		return false;
+		if ((vs / nlyr()) == cs) {
+			bylyr = true;
+		} else {
+			setError("lengths of cells and values do not match");
+			return false;
+		}
 	}
 	size_t nc = ncell();
 	size_t ns = nsrc();
@@ -3693,16 +3700,18 @@ bool SpatRaster::replaceCellValues(std::vector<double> &cells, std::vector<doubl
 		}
 	}
 	if (bylyr) {
+		size_t addlyr = 0;
 		for (size_t i=0; i<ns; i++) {
 			size_t nl = source[i].nlyr;
 			for (size_t j=0; j<nl; j++) {
 				size_t off = nc * j;
-				size_t koff = cs * j;
+				size_t koff = cs * (j+addlyr);
 				for (size_t k=0; k<cs; k++) {
 					source[i].values[off + cells[k]] = v[koff + k];
 				}
 			}
 			source[i].setRange();
+			addlyr += nl;
 		}
 	} else {
 		//double minv = vmin(v, true);

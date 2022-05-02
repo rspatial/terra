@@ -120,7 +120,7 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		if (!is.null(dim(value))) {
 			#x@ptr <- x@ptr$replaceValues(i, value, ncol(value))
 			stopifnot(ncol(value) == nlyr(x))
-			bylyr = TRUE
+			bylyr <- TRUE
 			if (inherits(value, "data.frame")) {
 				value <- as.matrix(value)
 			}
@@ -128,8 +128,9 @@ setReplaceMethod("[", c("SpatRaster","numeric", "missing"),
 		} 
 
 		x@ptr <- x@ptr$deepcopy()
-		if (!x@ptr$replaceCellValues(i-1, value, bylyr, spatOptions())) {
-			messages(x)
+		opt <- spatOptions()
+		if (!x@ptr$replaceCellValues(i-1, value, bylyr, opt)) {
+			messages(x, "'[<-'")
 		} else {
 			x
 		}
