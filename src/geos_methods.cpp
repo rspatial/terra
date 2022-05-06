@@ -1018,9 +1018,11 @@ SpatVector SpatVector::intersect(SpatVector v) {
 				}
 			}
 		}
+
+		
 	//SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt);
 		if (result.size() > 0) {
-			SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids);
+			SpatVectorCollection coll = coll_from_geos(result, hGEOSCtxt, ids, true, false);
 			out = coll.get(0);
 			out.srs = srs;
 		}

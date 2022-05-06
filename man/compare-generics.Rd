@@ -45,7 +45,7 @@ The following method has been implemented for
 }
 
 \section{seealso}{
-\code{\link{all.equal}}, \link{Arith-methods}. See \code{\link{ifel}} to conveniently combine operations and \code{\link{Math-methods}} or \code{\link{app}} to use mathematical functions not implemented by the package. 
+\code{\link{all.equal}}, \link{Arith-methods}. See \code{\link{ifel}} to conveniently combine operations and \code{\link{Math-methods}} or \code{\link{app}} to apply any R function to a SpatRaster. 
 }
 
 
@@ -56,9 +56,8 @@ SpatRaster or SpatExtent
 
 \examples{
 r1 <- rast(ncols=10, nrows=10)
-v <- runif(ncell(r1))
-v[10:20] <- NA
-values(r1) <- v
+values(r1) <- runif(ncell(r1))
+r1[10:20] <- NA
 r2 <- rast(r1)
 values(r2) <- 1:ncell(r2) / ncell(r2)
 

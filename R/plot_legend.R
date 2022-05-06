@@ -132,10 +132,10 @@
 	} else {
 		yd <- ymax - ymin
 		ymin <- ymin + yd * leg.shrink[1]
-		ymax <- ymax - yd * leg.shrink[2]
+		ymax <- ymax - yd * leg.shrink[1]
 		xd <- xmax - xmin
-		xmin <- xmin + xd * leg.shrink[1]/1.5
-		xmax <- xmax - xd * leg.shrink[2]/1.5
+		xmin <- xmin + xd * leg.shrink[2]/5
+		xmax <- xmax - xd * leg.shrink[2]/5
     }
 	dx <- xmax - xmin
 	dy <- ymax - ymin

@@ -717,7 +717,8 @@ RCPP_MODULE(spat){
 		.method("initv", ( SpatRaster (SpatRaster::*)(std::vector<double>, SpatOptions&) )( &SpatRaster::init ), "init value")
 		.method("is_in", &SpatRaster::is_in, "isin")
 		.method("is_in_cells", &SpatRaster::is_in_cells, "isincells")
-		.method("isnan", &SpatRaster::isnan, "isnan")
+		.method("isnan", &SpatRaster::isnan)
+		.method("not_na", &SpatRaster::isnotnan)
 		.method("isfinite", &SpatRaster::isfinite, "isfinite")
 		.method("isinfinite", &SpatRaster::isinfinite, "isinfinite")
 		.method("logic_rast", ( SpatRaster (SpatRaster::*)(SpatRaster, std::string, SpatOptions&) )( &SpatRaster::logic ))
@@ -762,8 +763,8 @@ RCPP_MODULE(spat){
 		.method("warp", &SpatRaster::warper)
 		.method("resample", &SpatRaster::resample)
 		.method("zonal", &SpatRaster::zonal)
-		.method("is_true", &SpatRaster::is_true, "is_TRUE")
-		.method("is_false", &SpatRaster::is_true, "is_TRUE")
+		.method("is_true", &SpatRaster::is_true)
+		.method("is_false", &SpatRaster::is_false)
 	;
 
     class_<SpatRasterCollection>("SpatRasterCollection")

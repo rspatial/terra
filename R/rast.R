@@ -314,7 +314,15 @@ setMethod("rast", signature(x="array"),
 
 setMethod("rast", signature(x="ANY"),
 	function(x, ...) {
-		methods::as(x, "SpatRaster")
+		if (inherits(x, "sf")) {
+			out <- rast(ext(x), ...)
+			if (is.null(list(...)$crs)) {
+				crs(out) <- crs(x)
+			}
+			out
+		} else {
+			methods::as(x, "SpatRaster")
+		}
 	}
 )
 

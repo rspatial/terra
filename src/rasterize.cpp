@@ -112,7 +112,7 @@ SpatRaster SpatRaster::rasterizePoints(SpatVector x, std::string fun, std::vecto
 }
 
 
-SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, SpatOptions &opt) {
+SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, std::string fun, SpatOptions &opt) {
 
 	if (x.type() != "points") {
 
@@ -121,10 +121,23 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, SpatOptions
 
 		std::vector<std::string> ss {"m", "km"};
 		if (std::find(ss.begin(), ss.end(), unit) == ss.end()) {
-			out.setError("invalid unit");
+			out.setError("invalid unit (not 'm' or 'km')");
 			return out;
 		}
-		
+		if ((x.type() == "lines")) {
+			ss = {"count", "length", "crosses"};
+			if (std::find(ss.begin(), ss.end(), fun) == ss.end()) {
+				out.setError("invalid value for 'fun' (not 'count', 'crosses', or 'length')");
+				return out;
+			}
+		} else {
+			ss = {"area", "count"};
+			if (std::find(ss.begin(), ss.end(), fun) == ss.end()) {
+				out.setError("invalid value for 'fun' (not 'area' or 'count')");
+				return out;
+			}
+		}
+
 		SpatRaster empty = out.geometry();
 		SpatExtent e = out.getExtent();
 		double rsy = out.yres() / 2;
@@ -151,21 +164,37 @@ SpatRaster SpatRaster::rasterizeGeom(SpatVector x, std::string unit, SpatOptions
 			SpatRaster tmp = empty.crop(e, "near", ops);
 
 			SpatVector p = tmp.as_polygons(true, false, false, false, false, ops);
-			std::vector<long> cell(p.size());
-			std::iota(cell.begin(), cell.end(), 0);
-			p.df.add_column(cell, "cell");
-
-			p = p.intersect(x);
-			std::vector<double> stat;
-			if (x.type() == "lines") {
-				stat = p.length();
-			} else {
-				stat = p.area("m", false, {});
-			}
 			std::vector<double> v(out.bs.nrows[i] * out.ncol(), 0);
-			for (size_t j=0; j<stat.size(); j++) {
-				size_t k = p.df.iv[0][j]; 
-				v[k] += (stat[j] / m); 
+
+			if (fun == "crosses") {
+				std::vector<int> r = p.relate(x, "crosses");
+				size_t nx = x.size();
+				for (size_t j=0; j< r.size(); j++) {
+					size_t k= j / nx;
+					v[k] += r[j];
+				}
+			} else {
+				std::vector<long> cell(p.size());
+				std::iota(cell.begin(), cell.end(), 0);
+				p.df.add_column(cell, "cell");
+				p = p.intersect(x);
+				std::vector<double> stat;
+				if (x.type() == "lines") {
+					stat = p.length();
+				} else {
+					stat = p.area("m", false, {});
+				}
+				if (fun == "count") {
+					for (size_t j=0; j<stat.size(); j++) {
+						size_t k = p.df.iv[0][j]; 
+						v[k]++; 
+					}
+				} else {
+					for (size_t j=0; j<stat.size(); j++) {
+						size_t k = p.df.iv[0][j]; 
+						v[k] += (stat[j] / m); 
+					}				
+				}
 			}
 			if (!out.writeValues(v, out.bs.row[i], out.bs.nrows[i]))  return out;
 		}

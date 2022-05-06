@@ -439,6 +439,12 @@ setMethod("as.array", signature(x="SpatRaster"),
 	v
 }
 
+setAs("sf", "SpatRaster", 
+	function(from) {
+		e <- ext(from)
+		rast(e)
+	}
+)
 
 
 setAs("sf", "SpatVector", 
@@ -526,9 +532,9 @@ setAs("Spatial", "SpatVector",
 			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3,drop=FALSE])
 		}
 		if (methods::.hasSlot(from, "data")) {
-			v <- vect(g, vtype, from@data, crs(from))
+			v <- vect(g, vtype, from@data, crs(from, TRUE))
 		} else {
-			v <- vect(g, vtype, crs=crs(from))
+			v <- vect(g, vtype, crs=crs(from, TRUE))
 		}
 		return(v)
 	}

@@ -201,7 +201,7 @@ setMethod("writeCDF", signature(x="SpatRasterDataset"),
 		filename <- trimws(filename)
 		stopifnot(filename != "")
 		xt  <- tools::file_ext(filename)
-		if (!(xt %in% c("nc", "cdf"))) {
+		if (any(!(xt %in% c("nc", "cdf")))) {
 			warn("writeCDF", "for better results use file extension '.nc' or '.cdf'\nsee: https://stackoverflow.com/a/65398262/635245")
 		}
 		if (file.exists(filename) & !overwrite) {
