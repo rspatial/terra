@@ -87,11 +87,25 @@ w <- project(a, b)
 
 
 ## SpatVector
-f <- system.file("ex/lux.shp", package="terra")
+f <- system.file("ex/lux.gpkg", package="terra")
 v <- vect(f)
-crs <- "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84"
+cat(crs(v), "\n")
+crs <- "EPSG:2169"
 p <- project(v, crs)
 p
+run <- FALSE
+if (require("sf", quietly=TRUE)) run <- TRUE
+if (run) {
+lux <- st_read(f, quiet=TRUE)
+st_crs(lux)
+}
+if (run) {
+st_bbox(st_transform(lux, "EPSG:2169"))
+}
+if (run) {
+o <- sf_proj_pipelines("OGC:CRS84", "EPSG:2169")
+st_bbox(st_transform(lux, "EPSG:2169", pipeline=o$definition[1]))
+}
 }
 
 \keyword{spatial}
