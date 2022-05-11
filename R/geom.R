@@ -320,10 +320,10 @@ setMethod("spin", signature(x="SpatVector"),
 )
 
 
-setMethod("delauny", signature(x="SpatVector"), 
+setMethod("delaunay", signature(x="SpatVector"), 
 	function(x, tolerance=0, as.lines=FALSE) {
-		x@ptr <- x@ptr$delauny(tolerance, as.lines)
-		messages(x, "delauny")
+		x@ptr <- x@ptr$delaunay(tolerance, as.lines)
+		messages(x, "delaunay")
 	}
 )
 

@@ -60,7 +60,7 @@ if (!isGeneric("RGB")) {setGeneric("RGB", function(x, ...) standardGeneric("RGB"
 if (!isGeneric("RGB<-")) {setGeneric("RGB<-", function(x, ..., value) standardGeneric("RGB<-"))}
 
 if (!isGeneric("autocor")) {setGeneric("autocor", function(x, ...) standardGeneric("autocor"))}
-if (!isGeneric("delauny")) {setGeneric("delauny", function(x, ...) standardGeneric("delauny"))}
+if (!isGeneric("delaunay")) {setGeneric("delaunay", function(x, ...) standardGeneric("delaunay"))}
 if (!isGeneric("voronoi")) {setGeneric("voronoi", function(x, ...) standardGeneric("voronoi"))}
 if (!isGeneric("convHull")) {setGeneric("convHull", function(x, ...) standardGeneric("convHull"))}
 if (!isGeneric("minRect")) {setGeneric("minRect", function(x, ...) standardGeneric("minRect"))}

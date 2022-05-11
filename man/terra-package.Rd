@@ -315,7 +315,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{writeVector}} \tab Write SpatVector data to disk \cr
   \code{\link{centroids}} \tab Get the centroids of a SpatVector\cr
   \code{\link{voronoi}} \tab Voronoi diagram \cr
-  \code{\link{delauny}} \tab Delauny triangles\cr
+  \code{\link{delaunay}} \tab Delaunay triangles\cr
   \code{\link{convHull}} \tab Compute the convex hull of a SpatVector \cr  
   \code{\link{fillHoles}}\tab Remove or extract holes from polygons\cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
