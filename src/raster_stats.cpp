@@ -411,7 +411,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 	}
 
 	size_t nl = nlyr();
-	std::vector<std::vector<double>> uq = z.unique(true, false, opt);
+	std::vector<std::vector<double>> uq = z.unique(true, true, opt);
 	std::vector<double> u = uq[0];
 	double initv = 0;
 	double posinf = std::numeric_limits<double>::infinity();
