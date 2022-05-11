@@ -22,8 +22,9 @@
 		if (is.null(r)) {
 			r <- c(min(x, na.rm=TRUE), max(x, na.rm=TRUE))
 		}
-		if ((r[1] %% 1) != 0) { r[1] <- r[1] - 0.00001 }
-		if ((r[2] %% 1) != 0) { r[2] <- r[2] + 0.00001 }
+		small <- 1e-16
+		if ((r[1] %% 1) != 0) { r[1] <- r[1] - small }
+		if ((r[2] %% 1) != 0) { r[2] <- r[2] + small }
 		breaks <- seq(r[1] , r[2], length.out=n+1)
 	}
 	breaks

@@ -4,7 +4,8 @@
 	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 
-	z <- stats::na.omit(round(as.vector(Z), 12))
+#	z <- stats::na.omit(round(as.vector(Z), 12))
+	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
 	if (n == 0) {
 		out$values = FALSE
