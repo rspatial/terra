@@ -1,10 +1,10 @@
 
-
 .as.raster.continuous <- function(out, x, type) {
 
 	Z <- as.matrix(x, wide=TRUE)
 	Z[is.nan(Z) | is.infinite(Z)] <- NA
 
+# loss of precision
 #	z <- stats::na.omit(round(as.vector(Z), 12))
 	z <- stats::na.omit(as.vector(Z))
 	n <- length(z)
