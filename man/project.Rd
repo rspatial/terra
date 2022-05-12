@@ -73,6 +73,8 @@ Transforming (projecting) raster data is fundamentally different from transformi
 When using this method with a \code{SpatRaster}, the preferable approach is to provide a template \code{SpatRaster} as argument \code{y}. The template is then another raster dataset that you want your data to align with. If you do not have a template to begin with, you can do \code{project(x, crs)} and then manipulate the output to get the template you want. For example, where possible use whole numbers for the extent and resolution so that you do not have to worry about small differences in the future. You can use commands like \code{dim(z) = c(180, 360)} or \code{res(z) <- 100000}. 
 
 The output resolution should be similar to the input resolution, but there is not "correct" resolution in raster transformation; but it is not obvious what this resolution is if you are using lon/lat data that spans a large North-South extent.
+
+See \code{sf_proj_pipelines} to use specific "projection pipe lines"
 }
 
 
@@ -87,25 +89,16 @@ w <- project(a, b)
 
 
 ## SpatVector
-f <- system.file("ex/lux.gpkg", package="terra")
+f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
+crs(v, proj=TRUE)
 cat(crs(v), "\n")
-crs <- "EPSG:2169"
+
+crs <- "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84"
 p <- project(v, crs)
 p
-run <- FALSE
-if (require("sf", quietly=TRUE)) run <- TRUE
-if (run) {
-lux <- st_read(f, quiet=TRUE)
-st_crs(lux)
-}
-if (run) {
-st_bbox(st_transform(lux, "EPSG:2169"))
-}
-if (run) {
-o <- sf_proj_pipelines("OGC:CRS84", "EPSG:2169")
-st_bbox(st_transform(lux, "EPSG:2169", pipeline=o$definition[1]))
-}
+
+project(v, "EPSG:2169")
 }
 
 \keyword{spatial}
