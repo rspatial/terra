@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-29</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-30</span>
       </span>
     </div>
 
@@ -111,6 +111,7 @@
 <p>Transforming (projecting) raster data is fundamentally different from transforming vector data. Vector data can be transformed and back-transformed without loss in precision and without changes in the values. This is not the case with raster data. In each transformation the values for the new cells are estimated in some fashion. Therefore, if you need to match raster and vector data for analysis, you should generally transform the vector data.</p>
 <p>When using this method with a <code>SpatRaster</code>, the preferable approach is to provide a template <code>SpatRaster</code> as argument <code>y</code>. The template is then another raster dataset that you want your data to align with. If you do not have a template to begin with, you can do <code>project(x, crs)</code> and then manipulate the output to get the template you want. For example, where possible use whole numbers for the extent and resolution so that you do not have to worry about small differences in the future. You can use commands like <code>dim(z) = c(180, 360)</code> or <code>res(z) &lt;- 100000</code>.</p>
 <p>The output resolution should be similar to the input resolution, but there is not "correct" resolution in raster transformation; but it is not obvious what this resolution is if you are using lon/lat data that spans a large North-South extent.</p>
+<p>See <code>sf_proj_pipelines</code> to use specific "projection pipe lines"</p>
     </div>
 
     <div id="ref-examples">
@@ -125,29 +126,41 @@
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## SpatVector</span></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.gpkg"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">v</span>, proj<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "+proj=longlat +datum=WGS84 +no_defs"</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> GEOGCRS["WGS 84",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     DATUM["World Geodetic System 1984",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",6326]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",8901]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ANGLEUNIT["degree",0.0174532925199433]],</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     CS[ellipsoidal,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["longitude",east,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["geodetic latitude (Lat)",north,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9122]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["latitude",north,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["geodetic longitude (Lon)",east,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9122]]]] </span>
-<span class="r-in"><span class="va">crs</span> <span class="op">&lt;-</span> <span class="st">"EPSG:2169"</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433]],</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ID["EPSG",4326]] </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">crs</span> <span class="op">&lt;-</span> <span class="st">"+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84"</span></span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">v</span>, <span class="va">crs</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">p</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 6  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 437476.4, 497805.3, 5815524, 5892478  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : +proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt; &lt;int&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     1 Clervaux   312 18081</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     2 Diekirch   218 32543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     3  Redange   259 18664</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">project</span><span class="op">(</span><span class="va">v</span>, <span class="st">"EPSG:2169"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 6  (geometries, attributes)</span>
@@ -158,44 +171,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     1 Clervaux   312 18081</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     2 Diekirch   218 32543</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     3  Redange   259 18664</span>
-<span class="r-in"><span class="va">run</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://r-spatial.github.io/sf/" class="external-link">"sf"</a></span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="va">run</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to GEOS 3.10.2, GDAL 3.4.2, PROJ 8.2.1; sf_use_s2() is TRUE</span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">run</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">lux</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="va">f</span>, quiet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">lux</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   User input: WGS 84 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   wkt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GEOGCRS["WGS 84",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     DATUM["World Geodetic System 1984",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ELLIPSOID["WGS 84",6378137,298.257223563,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             LENGTHUNIT["metre",1]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",6326]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     PRIMEM["Greenwich",0,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ANGLEUNIT["degree",0.0174532925199433],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ID["EPSG",8901]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CS[ellipsoidal,2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["longitude",east,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[1],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9122]]],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         AXIS["latitude",north,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ORDER[2],</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             ANGLEUNIT["degree",0.0174532925199433,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 ID["EPSG",9122]]]]</span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">run</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">lux</span>, <span class="st">"EPSG:2169"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      xmin      ymin      xmax      ymax </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  49540.31  57009.53 105922.01 138631.13 </span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">run</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">o</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/proj_tools.html" class="external-link">sf_proj_pipelines</a></span><span class="op">(</span><span class="st">"OGC:CRS84"</span>, <span class="st">"EPSG:2169"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">lux</span>, <span class="st">"EPSG:2169"</span>, pipeline<span class="op">=</span><span class="va">o</span><span class="op">$</span><span class="va">definition</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      xmin      ymin      xmax      ymax </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  49540.31  57009.53 105922.01 138631.13 </span>
 </code></pre></div>
     </div>
   </div>
