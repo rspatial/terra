@@ -1,4 +1,5 @@
 
+
 .as.raster.continuous <- function(out, x, type) {
 
 	Z <- as.matrix(x, wide=TRUE)
