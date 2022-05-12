@@ -1,4 +1,4 @@
-# version 1.5-29
+# version 1.5-30
 
 ## bug fixes
 
@@ -37,12 +37,17 @@
 - new method `rasterizeGeom` to rasterize the geometry count or the area of (small) polygons or the length of lines.
 - new method `not.na` for `SpatRaster` which is a shortcut for `!is.na(x)`.
 
+# name changes
+
+delauny -> delaunay [#627](https://github.com/rspatial/terra/issues/627) by Derek Friend
+
+
 
 # version 1.5-21
 
 Released on 2022-02-17
 
-## bug fixes
+# version 1.5-21
 
 - `writeVector` and `vect` now work with GPGK if the path has non-ascii characters [#518](https://github.com/rspatial/terra/issues/518)
 - The results of `predict` with `cores > 1` and more than one output variable were garbled

@@ -521,5 +521,3 @@ std::string PROJ_network(bool enable, std::string url) {
 	return s;
 }
 
-
-	
