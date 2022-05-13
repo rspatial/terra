@@ -54,6 +54,7 @@ Released on 2022-02-17
 - `zonal` dropped category names when using an external (R) function [#527](https://github.com/rspatial/terra/issues/527) by Jakub Nowosad
 - focal/focalCpp showed strange patterns when the window size was larger than the block size [#519](https://github.com/rspatial/terra/issues/519) by Alex Ilich
 - using `xy=TRUE` in `as.data.frame` normalized the names [#538](https://github.com/rspatial/terra/issues/538) by Kodi Arfer
+- new argument `options` to `vrt` [#629](https://github.com/rspatial/terra/issues/629) by Monika Tomaszewska.
 
 
 ## enhancements 

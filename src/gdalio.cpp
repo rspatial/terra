@@ -307,7 +307,7 @@ std::string gdalinfo(std::string filename, std::vector<std::string> options, std
 
 # include "gdal_utils.h" // requires >= 2.1
 
-SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions &opt) {
+SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, std::vector<std::string> options, SpatOptions &opt) {
 
 	SpatRaster out;
 	std::string outfile = opt.get_filename();
@@ -346,13 +346,19 @@ SpatRaster SpatRaster::make_vrt(std::vector<std::string> filenames, SpatOptions 
             [-oo NAME=VALUE]*
 */
 
+	std::vector <char *> vops = string_to_charpnt(options);
+	GDALBuildVRTOptions* vrtops = GDALBuildVRTOptionsNew(vops.data(), NULL);
+	if (vrtops == NULL) {
+		out.setError("options error");
+		return(out);
+	}
 	int pbUsageError;
-	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, nullptr, &pbUsageError);
-//	GDALBuildVRTOptionsFree(vrtops);
+	GDALDataset *ds = (GDALDataset *) GDALBuildVRT(outfile.c_str(), tiles.size(), (GDALDatasetH *) tiles.data(), nullptr, vrtops, &pbUsageError);
+	GDALBuildVRTOptionsFree(vrtops);
 
 	for (size_t i= 0; i<tiles.size(); i++) GDALClose(tiles[i]);
 	if(ds == NULL )  {
-		out.setError("cannot create vrt. UsageError #"+ std::to_string(pbUsageError));
+		out.setError("cannot create vrt. Error #"+ std::to_string(pbUsageError));
 		return out;
 	}
 	GDALClose(ds);
