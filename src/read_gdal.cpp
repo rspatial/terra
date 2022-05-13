@@ -1698,6 +1698,7 @@ std::vector<int_64> ncdf_time(const std::vector<std::string> &metadata, std::vec
 		step = "seconds";
 		out.reserve(raw.size());
 		if (days) {
+			step = "days";
 			std::vector<int> ymd = getymd(origin);
 			if (calendar == "noleap" || calendar == "365_day" || calendar == "365 day") { 
 				for (size_t i=0; i<raw.size(); i++) out.push_back(time_from_day_noleap(ymd[0], ymd[1], ymd[2], raw[i]));

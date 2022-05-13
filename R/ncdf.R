@@ -112,6 +112,7 @@
 					cal <- "standard"
 				} else if (tstep == "days") {
 					zunit <- "days since 1970-1-1"
+					zv <- zv / (24 * 3600)
 					cal <- "standard"
 				} else {
 					zunit <- "unknown"
