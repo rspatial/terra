@@ -25,7 +25,8 @@ And conversion of a SpatVector to a another SpatVector type.
 }
 
 \usage{
-\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, na.all=FALSE, extent=FALSE)
+\S4method{as.polygons}{SpatRaster}(x, trunc=TRUE, dissolve=TRUE, values=TRUE,
+		na.rm=TRUE, na.all=FALSE, extent=FALSE)
 
 \S4method{as.lines}{SpatRaster}(x)
 
