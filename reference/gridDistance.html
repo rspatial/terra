@@ -58,23 +58,21 @@ Distances are computed by summing local distances between cells, which are conne
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">gridDistance</span><span class="op">(</span><span class="va">x</span>, <span class="va">origin</span>, omit<span class="op">=</span><span class="cn">NULL</span>, chunk<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="costDistance.html">costDistance</a></span><span class="op">(</span><span class="va">x</span>, target<span class="op">=</span><span class="fl">0</span>, scale<span class="op">=</span><span class="fl">1000</span>, maxiter<span class="op">=</span><span class="fl">50</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>origin</dt>
-<dd><p>value(s) of the cells from which the distance is calculated. If <code>origin=NULL</code> all cells that are not <code>NA</code> are origins</p></dd>
-<dt>omit</dt>
-<dd><p>value(s) of the cells that cannot be traversed (optional)</p></dd>
-<dt>chunk</dt>
-<dd><p>logical. If <code>TRUE</code> the data are processed in chunks. This may be necessary for large datasets, but could lead to errors in the case of complex areas that need to be omitted if they are spread over different chunks (meandering rivers, for instance).</p></dd>
+<dt>target</dt>
+<dd><p>numeric. value of the target cells (where to compute distance to)</p></dd>
+<dt>scale</dt>
+<dd><p>numeric. Scale factor for longitude/latitude data (1 = m, 1000 = km)</p></dd>
+<dt>maxiter</dt>
+<dd><p>numeric. The maximum number of iterations. Increase this number if you get the warning that <code>costDistance did not converge</code></p></dd>
 <dt>filename</dt>
 <dd><p>character. output filename (optional)</p></dd>
-<dt>overwrite</dt>
-<dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
 <dt>...</dt>
 <dd><p>additional arguments as for <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
 </dl></div>
@@ -84,35 +82,28 @@ Distances are computed by summing local distances between cells, which are conne
     </div>
     <div id="note">
     <h2>Note</h2>
-    <p>If the SpatRaster to be processed is big, it will be processed in chunks. This may lead to errors in the case of complex objects that cannot be traversed are spread over different chunks (meandering rivers, for instance).</p>
+    <p>see terra:::.oldGridDistance for the previous version of this method (will be removed in a future version)</p>
     </div>
     <div id="value">
     <h2>Value</h2>
     <p>SpatRaster</p>
     </div>
-    <div id="author">
-    <h2>Author</h2>
-    <p>Jacob van Etten and Robert J. Hijmans</p>
-    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co">#world lon/lat raster</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># global lon/lat raster</span></span>
 <span class="r-in"><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="rast.html">rast</a></span><span class="op">(</span>ncol<span class="op">=</span><span class="fl">10</span>,nrow<span class="op">=</span><span class="fl">10</span>, vals<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">48</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">66</span><span class="op">:</span><span class="fl">68</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">gridDistance</span><span class="op">(</span><span class="va">r</span>,origin<span class="op">=</span><span class="fl">2</span>,omit<span class="op">=</span><span class="fl">3</span><span class="op">)</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required namespace: igraph</span>
+<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">48</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span class="r-in"><span class="va">r</span><span class="op">[</span><span class="fl">66</span><span class="op">:</span><span class="fl">68</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
+<span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">gridDistance</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> </span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="gridDistance-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co">#UTM small area</span></span>
+<span class="r-in"><span class="co"># planar</span></span>
 <span class="r-in"><span class="fu"><a href="crs.html">crs</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"+proj=utm +zone=15 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"</span></span>
-<span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">gridDistance</span><span class="op">(</span><span class="va">r</span>,origin<span class="op">=</span><span class="fl">2</span>,omit<span class="op">=</span><span class="fl">3</span><span class="op">)</span> </span>
+<span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">gridDistance</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> </span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="gridDistance-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
