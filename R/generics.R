@@ -689,7 +689,7 @@ setMethod("project", signature(x="SpatRaster"),
 setMethod("project", signature(x="SpatVector"), 
 	function(x, y)  {
 		if (!is.character(y)) {
-			y <- crs(y)
+			y <- as.character(crs(y))
 		}
 		x@ptr <- x@ptr$project(y)
 		messages(x, "project")
@@ -708,10 +708,10 @@ setMethod("project", signature(x="matrix"),
 			error("project", "'to' cannot be missing")
 		}
         if (!is.character(from)) {
-           from <- crs(from)
+           from <- as.character(crs(from))
         }
         if (!is.character(to)) {
-           to <- crs(to)
+           to <- as.character(crs(to))
         }
 		v <- vect(x, type="line", crs=from)
         v@ptr <- v@ptr$project(to)

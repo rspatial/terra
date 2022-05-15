@@ -226,7 +226,7 @@ setMethod("as.polygons", signature(x="SpatExtent"),
 
 setMethod("as.lines", signature(x="SpatExtent"), 
 	function(x, crs="") {
-		crs <- character_crs(crs, "lines")
+		crs <- character_crs(crs, "as.lines")
 		as.lines(as.polygons(x, crs))
 	}
 )
@@ -508,7 +508,7 @@ setAs("im", "SpatRaster",
 setAs("SpatVector", "Spatial", 
 	function(from) {
 		g <- geom(from, df=TRUE)
-		geom(g, values(from), geomtype(from), crs(from))
+		geom(g, values(from), geomtype(from), as.character(crs(from)))
 	}
 )
 
