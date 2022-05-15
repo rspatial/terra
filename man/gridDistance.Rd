@@ -15,7 +15,7 @@ Distances are computed by summing local distances between cells, which are conne
 }
 
 \usage{
-\S4method{costDistance}{SpatRaster}(x, target=0, scale=1000, maxiter=50, filename="", ...) 
+\S4method{gridDistance}{SpatRaster}(x, target=0, scale=1000, maxiter=50, filename="", ...) 
 }
 
 \arguments{
