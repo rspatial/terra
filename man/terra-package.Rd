@@ -24,9 +24,7 @@ Below is a list of some of the most important methods grouped by theme.
 
 \section{}{
 ---------------------------------------------------------------------------------------------------------------------
-
 \bold{SpatRaster}
-
 ---------------------------------------------------------------------------------------------------------------------}
 
 \section{I. Creating, combining and sub-setting}{
@@ -37,7 +35,7 @@ Below is a list of some of the most important methods grouped by theme.
     \code{\link{add<-}} \tab Add a SpatRaster to another one\cr
     \code{\link{subset}} or \code{[[}, or \code{$} \tab Select layers of a SpatRaster\cr
     \code{\link{selectRange}} \tab Select cell values from different layers using an index layer\cr
---------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
@@ -59,7 +57,7 @@ Also see the methods in section VIII
     \code{\link{flip}} \tab  Flip values horizontally or vertically \cr
     \code{\link{rotate}} \tab Rotate values around the date-line (for lon/lat data) \cr
     \code{\link{t}} \tab Transpose a SpatRaster\cr
---------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
@@ -75,6 +73,7 @@ Also see the methods in section VIII
     \code{\link{lapp}} \tab Apply a function to using the layers of a SpatRaster as variables\cr
     \code{\link{sapp}} \tab Apply a function to each layer\cr
     \code{\link{rapp}} \tab Apply a function to a spatially variable range of layers\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
 
@@ -91,6 +90,7 @@ Also see the methods in section VIII
     \tab \code{any, all, stdev, which.min, which.max}\cr
     \code{\link{as.bool}}\tab create a Boolean (logical) SpatRaster \cr
     \code{\link{as.int}}\tab create an integer (whole numbers) SpatRaster \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
 
@@ -105,7 +105,6 @@ Also see the methods in section VIII
     \code{\link{mask}} \tab Replace values in a SpatRaster based on values in another SpatRaster\cr
     \code{\link{subst}} \tab Substitute (replace) cell values \cr
     \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
-	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
   }
@@ -123,8 +122,7 @@ Also see the methods in section VIII
     \code{\link{scale}} \tab Scale values \cr
     \code{\link[terra]{summary}} \tab Summary of the values of a SpatRaster (quartiles and mean) \cr
     \code{\link{unique}} \tab Get the unique values in a SpatRaster \cr
-    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr
-	
+    \code{\link{zonal}} \tab Summarize a SpatRaster by zones in another SpatRaster \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
@@ -238,6 +236,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
   \tabular{ll}{
     \code{\link{writeRaster}} \tab Write all values of SpatRaster to disk. You can set the filetype, datatype, compression. \cr
     \code{\link{writeCDF}} \tab Write SpatRaster data to a netCDF file\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
  	}
 }
 
@@ -246,7 +245,8 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
    \code{\link{writeStart}} \tab Open a file for writing \cr
    \code{\link{writeValues}} \tab Write some values  \cr
    \code{\link{writeStop}} \tab Close the file after writing \cr
-    --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+\cr
 }
 }
 }	
@@ -257,7 +257,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{time}} \tab Get or set time\cr
     \code{\link{fillTime}} \tab can add empty layers in between existing layers to assure that the time step between layers is constant \cr
     \code{\link{mergeTime}} \tab combine multiple rasters, perhaps partly overlapping in time, into a single time series\cr
-    --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
@@ -272,17 +272,14 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
     \code{\link{readStart}} \tab Open file connections for efficient multi-chunk reading \cr
     \code{\link{readStop}} \tab Close file connections \cr
     \code{\link{inMemory}} \tab Are the cell values in memory? \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
-
 
 \section{}{
 ---------------------------------------------------------------------------------------------------------------------
-
 \bold{SpatRasterDataSet}
-
 ---------------------------------------------------------------------------------------------------------------------}
-
 
 \section{XIII. SpatRasterDataset}{
 
@@ -292,6 +289,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
   \code{\link{sds}} \tab Create a SpatRasterDataset from a file with subdatasets (ncdf or hdf) or from SpatRaster objects \cr
   \code{[} or \code{$} \tab Extract a SpatRaster \cr
   \code{\link{names}} \tab Get the names of the sub-datasets \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
@@ -376,8 +374,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{as.data.frame}} \tab get attributes as a data.frame\cr
   \code{\link{as.list}} \tab get attributes as a list\cr
   \code{\link{values}} \tab Get the attributes of a SpatVector \cr
-  \code{\link{values<-}} \tab Set new attributes to the geometries of a SpatRaster \cr
-  
+  \code{\link{values<-}} \tab Set new attributes to the geometries of a SpatRaster \cr  
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
@@ -411,6 +408,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{snap}} \tab make boundaries of geometries identical if they are very close to each other  \cr
   \code{\link{erase} (single argument)} \tab remove parts of geometries that overlap \cr
   \code{\link{union} (single argument)} \tab create new polygons such that there are no overlapping polygons \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 
 
@@ -429,6 +427,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 \code{\link{svc}} \tab create a SpatRasterCollection from a set of SpatRaster objects\cr
 \code{\link{length}} \tab how many SpatRasters does the SpatRasterCollection have?\cr
 \code{\link{[}} \tab extract a SpatRastert\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 
 
@@ -451,6 +450,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
     \code{\link{Math-methods}} \tab round/floor/ceiling of a SpatExtent \cr			
     \code{\link{align}} \tab Align a SpatExtent with a SpatRaster \cr
     \code{\link{draw}} \tab Create a SpatExtent by drawing it on top of a map (plot) \cr		
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
 }
 
@@ -501,6 +501,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
     \code{\link{RGB2col}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr	
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
 
@@ -510,6 +511,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{click}} \tab Query values of SpatRaster or SpatVector by clicking on a map \cr
     \code{\link{sel}} \tab Select a spatial subset of a SpatRaster or SpatVector by drawing on a map\cr
     \code{\link{draw}} \tab Create a SpatExtent or SpatVector by drawing on a map \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
 	
@@ -521,6 +523,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{density}} \tab Density plot of SpatRaster values \cr
     \code{\link{pairs}} \tab Pairs plot for layers in a SpatRaster \cr
     \code{\link{boxplot}} \tab Box plot of the values of a SpatRaster\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
 }
@@ -575,6 +578,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{shapefile}\tab\code{\link{vect}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
@@ -597,6 +601,7 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 \tab all summary functions (\code{sum}, \code{mean}, \code{median}, \code{which.min}, \code{which.max}, \code{min}, \code{max},\cr
 \tab \code{prod}, \code{any}, \code{all}, \code{stdev}), except \code{range}, which is not implemented for this case \cr
 \tab (you can use \code{min} and \code{max} instead) \cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 

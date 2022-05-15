@@ -47,10 +47,17 @@ r[66:68] <- NA
 d <- gridDistance(r) 
 plot(d)
 
+
 # planar
 crs(r) <- "+proj=utm +zone=15 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 d <- gridDistance(r) 
 plot(d)
+
+# distance to cells that are not NA 
+rr <- classify(r, cbind(1, NA))
+dd <- gridDistance(rr, NA) 
+
+
 }
 
 \keyword{spatial}

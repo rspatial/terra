@@ -1172,7 +1172,7 @@ void broom_dist_geo(std::vector<double> &dist, std::vector<double> &v, std::vect
 
 void broom_dist_geo_global(std::vector<double> &dist, std::vector<double> &v, std::vector<double> &above, std::vector<double> res, size_t nr, size_t nc, double lat, double latdir, bool npole, bool spole) {
 
-Rcpp::Rcout << npole << " " << spole << std::endl;
+//Rcpp::Rcout << npole << " " << spole << std::endl;
 
 //	double dy = distance_lonlat(0, 0, 0, res[1]);
 	double dx, dy, dxy;
