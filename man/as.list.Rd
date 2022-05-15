@@ -2,17 +2,20 @@
 
 \alias{as.list}
 \alias{as.list,SpatRaster-method}
+\alias{as.list,SpatRasterCollection-method}
 \alias{as.list,SpatVector-method}
   
 
 \title{SpatRaster or SpatVector to list}
 
 \description{
-Coerce a SpatRaster or SpatVector to a list. With a SpatRaster, each layer becomes a list element. With a SpatVector, each variable becomes a list element.
+Coerce a SpatRaster, SpatRasterCollection, or SpatVector to a list. With a SpatRaster, each layer becomes a list element. With a SpatRasterCollection, each SpatRaster becomes a list element. With a SpatVector, each variable (attribute) becomes a list element.
 }
 
 \usage{
 \S4method{as.list}{SpatRaster}(x, ...)
+
+\S4method{as.list}{SpatRasterCollection}(x, ...)
 
 \S4method{as.list}{SpatVector}(x, geom=NULL, ...)
 }

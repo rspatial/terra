@@ -4,6 +4,10 @@
 
 \alias{sources}
 \alias{sources,SpatRaster-method}
+\alias{sources,SpatRasterCollection-method}
+\alias{sources,SpatVector-method}
+\alias{sources,SpatVectorProxy-method}
+
 \alias{hasValues}
 \alias{hasValues,SpatRaster-method}
 \alias{inMemory}
@@ -13,11 +17,13 @@
 \title{Data sources of a SpatRaster}
 
 \description{
-Get the data sources of a SpatRaster and the number of layers by source. Sources are either files (or similar resources) or "", meaning that they are in memory. You can use \code{hasValues} to check if in-memory layers actually have cell values. 
+Get the data sources of a SpatRaster or SpatVector or related object. Sources are either files (or similar resources) or "", meaning that they are in memory. You can use \code{hasValues} to check if in-memory layers actually have cell values. 
 }
 
 \usage{
 \S4method{sources}{SpatRaster}(x, nlyr=FALSE, bands=FALSE)
+
+\S4method{sources}{SpatVector}(x)
 
 \S4method{hasValues}{SpatRaster}(x)
 
@@ -25,7 +31,7 @@ Get the data sources of a SpatRaster and the number of layers by source. Sources
 }
 
 \arguments{
-\item{x}{SpatRaster}
+\item{x}{SpatRaster, SpatRasterCollection, SpatVector or SpatVectorProxy}
 \item{nlyr}{logical. If \code{TRUE} for each source, the number of layers is returned}
 \item{bands}{logical. If \code{TRUE} for each source, the "bands" used, that is, the layer number in the source file, are returned}
 \item{bylayer}{logical. If \code{TRUE} a value is retured for each layer instead of for each source}

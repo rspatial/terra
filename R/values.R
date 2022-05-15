@@ -243,6 +243,42 @@ setMethod("sources", signature(x="SpatRaster"),
 	}
 )
 
+setMethod("sources", signature(x="SpatRasterCollection"), 
+	function(x, nlyr=FALSE, bands=FALSE) {
+		if (nlyr | bands) {
+			x <- lapply(x, function(i) sources(i, nlyr, bands))
+			x <- lapply(1:length(x), function(i) cbind(cid=i, x[[i]]))
+			do.call(rbind, x)
+		} else {
+			sapply(x, sources)
+		}
+	}
+)
+
+setMethod("sources", signature(x="SpatVector"), 
+	function(x) {
+		if (x@ptr$source != "") {
+			if (x@ptr$layer != tools::file_path_sans_ext(basename(x@ptr$source))) {
+				paste0(x@ptr$source, "::", x@ptr$layer)
+			} else {
+				x@ptr$source
+			}
+		} else {
+			""
+		}
+	}
+)
+
+setMethod("sources", signature(x="SpatVectorProxy"), 
+	function(x) {
+		if (x@ptr$v$layer != tools::file_path_sans_ext(basename(x@ptr$v$source))) {
+			paste0(x@ptr$v$source, "::", x@ptr$v$layer)
+		} else {
+			x@ptr$v$source
+		}
+	}
+)
+
 setMethod("hasMinMax", signature(x="SpatRaster"), 
 	function(x) {
 		x@ptr$hasRange
