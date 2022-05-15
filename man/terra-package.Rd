@@ -605,7 +605,9 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 ---------------------------------------------------------------------------------------------------------------------}
 
 \section{Author}{
-Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}. Michael Sumner contributed various bits and pieces.
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows. Michael Sumner contributed various bits and pieces.
+}
+
 
 \section{Acknowledgments}{
 This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Márcia Barbosa, Kendon Bell, Jean-Luc Dupouey, Krzysztof Dyba, Alex Ilich, Jakub Nowosad, and Gerald Nelson have been especially helpful.
