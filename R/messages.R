@@ -33,6 +33,7 @@ messages <- function(x, f="") {
 
 
 mem_info <- function(x, n=1) {
+	#print=TRUE
 	n <- max(0,n)
 	opt <- spatOptions()
 	opt$ncopies = n;
@@ -60,6 +61,7 @@ mem_info <- function(x, n=1) {
 		cat("\n------------------------\n")
 	#} 
 	names(v) <- c("needed", "available", "memfrac", "chunksize")
+	invisible(v)
 }
 
 
