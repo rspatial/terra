@@ -1,6 +1,5 @@
 \name{north}
 
-\alias{arrow}
 \alias{north}
   
 \title{North arrow}
@@ -12,7 +11,6 @@ Add a (North) arrow to a map
 \usage{
 north(xy=NULL, type=1, label="N", angle=0, d, head=0.1, xpd=TRUE, ...)
 
-arrow(...)
 }
 
 \arguments{

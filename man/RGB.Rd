@@ -9,8 +9,6 @@
 \alias{colorize}
 \alias{colorize,SpatRaster-method}
 
-\alias{RGB2col}
-\alias{RGB2col,SpatRaster-method}
   
 \title{Layers representing colors}
 

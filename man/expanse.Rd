@@ -4,10 +4,6 @@
 \alias{expanse,SpatRaster-method}
 \alias{expanse,SpatVector-method}
 
-\alias{area}
-\alias{area,SpatRaster-method}
-\alias{area,SpatVector-method}
-
   
 \title{Get the expanse (area) of individual polygons or for all (summed) raster cells}
 

@@ -24,7 +24,9 @@ Below is a list of some of the most important methods grouped by theme.
 
 \section{}{
 ---------------------------------------------------------------------------------------------------------------------
+
 \bold{SpatRaster}
+
 ---------------------------------------------------------------------------------------------------------------------}
 
 \section{I. Creating, combining and sub-setting}{
@@ -134,6 +136,8 @@ Also see the methods in section VIII
     \code{\link{adjacent}} \tab Identify cells that are adjacent to a set of cells of a SpatRaster \cr
     \code{\link{boundaries}} \tab Detection of boundaries (edges)\cr
     \code{\link{distance}} \tab Shortest distance to a cell that is not \code{NA} or to or from a vector object\cr
+    \code{\link{gridDistance}} \tab Shortest distance through adjacent grid cells\cr
+    \code{\link{costDistance}} \tab Shortest distance considering cell-varying friction \cr
     \code{\link{direction}} \tab Direction (azimuth) to or from cells that are not \code{NA}\cr
     \code{\link{focal}} \tab Focal (neighborhood; moving window) functions \cr
     \code{\link{focalCpp}} \tab Faster focal by using custom C++ functions \cr
@@ -277,8 +281,9 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 
 \section{}{
----------------------------------------------------------------------------------------------------------------------
+
 \bold{SpatRasterDataSet}
+
 ---------------------------------------------------------------------------------------------------------------------}
 
 \section{XIII. SpatRasterDataset}{
@@ -293,14 +298,11 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }
 }
 
-
 \section{}{
----------------------------------------------------------------------------------------------------------------------
 
 \bold{SpatVector}
 
 ---------------------------------------------------------------------------------------------------------------------}
-
 
 \section{XIV. Create SpatVector objects}{
 \tabular{ll}{
@@ -411,14 +413,11 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 
-
 \section{}{
----------------------------------------------------------------------------------------------------------------------
 
 \bold{Spat* Collections}
 
 ---------------------------------------------------------------------------------------------------------------------}
-
 
 \section{XXI. Collections}{
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects. 
@@ -430,16 +429,11 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 
-
-
 \section{}{
----------------------------------------------------------------------------------------------------------------------
 
 \bold{SpatExtent}
 
 ---------------------------------------------------------------------------------------------------------------------}
-
-
 
 \section{XXII. SpatExtent}{
 
@@ -455,20 +449,16 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 }
 
 
-
-
 \section{}{
----------------------------------------------------------------------------------------------------------------------
 
 \bold{General methods}
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-
 \section{XXIII. Conversion between spatial data objects from different packages}{
 
-You can coerce SpatRasters to Raster* objects after loading the \code{raster} package with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
-  
+You can coerce SpatRasters to Raster* objects, after loading the \code{raster} package, with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
+ 
   \tabular{ll}{
     \code{\link{rast}} \tab SpatRaster from matrix and other objects\cr
     \code{\link{vect}} \tab SpatVector from \code{sf} or \code{Spatial*} vector data\cr
@@ -500,7 +490,7 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
     \code{\link{cartogram}} \tab Make a cartogram \cr
     \code{\link{persp}} \tab Perspective plot of a SpatRaster \cr
     \code{\link{contour}} \tab Contour plot or filled-contour plot of a SpatRaster \cr
-    \code{\link{RGB2col}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr	
+    \code{\link{colorize}} \tab Combine three layers (red, green, blue channels) into a single layer with a color-table \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 	}
 }
@@ -528,32 +518,27 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 }
 }
 
-
-
 \section{}{
----------------------------------------------------------------------------------------------------------------------
 
 \bold{Comparison with the raster package}
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-
 \section{XXV. New method names}{
 
-
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
-
 
 \tabular{ll}{
 \bold{raster package} \tab \bold{terra package}\cr
 \code{raster, brick, stack}\tab\code{\link{rast}}\cr
 \code{rasterFromXYZ}\tab\code{\link{rast}( , type="xyz")}\cr
-\code{stack, addLayer} (combining Raster* objects or files)\tab\code{\link{c}}\cr
+\code{stack, addLayer}\tab\code{\link{c}}\cr
 \code{addLayer} \tab\code{\link{add<-}}\cr
-\code{area} \tab\code{\link{cellSize}}\cr
+\code{area} \tab\code{\link{cellSize}} or \code{\link{expanse}}\cr
 \code{approxNA} \tab\code{\link{approximate}}\cr
 \code{calc}\tab\code{\link{app}}\cr
-\code{cellFromLine, cellFromPolygon, cellsFromExtent}\tab\code{\link{cells}}\cr
+\code{cellFromLine, cellFromPolygon,}\tab \code{\link{cells}}\cr
+\code{cellsFromExtent}\tab\code{\link{cells}}\cr
 \code{cellStats}\tab\code{\link{global}}\cr
 \code{corLocal}\tab\code{\link{focalCor}}\cr
 \code{coordinates}\tab\code{\link{crds}}\cr
@@ -563,8 +548,9 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{drawExtent, drawPoly, drawLine} \tab \code{\link{draw}}\cr
 \code{dropLayer}\tab\code{\link{subset}}\cr
 \code{extent}\tab\code{\link{ext}}\cr
-\code{gridDistance, distanceFromPoints} \tab \code{\link{distance}}\cr
-\code{isLonLat, isGlobalLonLat, couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
+\code{distanceFromPoints} \tab \code{\link{distance}}\cr
+\code{isLonLat, isGlobalLonLat}\tab\code{\link{is.lonlat}}\cr
+\code{couldBeLonLat}\tab\code{\link{is.lonlat}}\cr
 \code{layerize}\tab\code{\link{segregate}}\cr
 \code{layerStats}\tab\code{\link{layerCor}}\cr
 \code{NAvalue}\tab\code{\link{NAflag}}\cr
@@ -578,7 +564,6 @@ You can coerce SpatRasters to Raster* objects after loading the \code{raster} pa
 \code{shapefile}\tab\code{\link{vect}}\cr
 \code{stackApply}\tab\code{\link{tapp}}\cr
 \code{stackSelect}\tab\code{\link{selectRange}}\cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
 }
 
@@ -605,18 +590,14 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 }
 }
 
-
-\section{}{
----------------------------------------------------------------------------------------------------------------------}
-
-\section{Author}{
+\section{Authors}{
 Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows. Michael Sumner contributed various bits and pieces.
 }
-
 
 \section{Acknowledgments}{
 This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Márcia Barbosa, Kendon Bell, Jean-Luc Dupouey, Krzysztof Dyba, Alex Ilich, Jakub Nowosad, and Gerald Nelson have been especially helpful.
 }
+
 
 \keyword{ package }
 \keyword{ spatial }

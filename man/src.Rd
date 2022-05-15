@@ -2,8 +2,6 @@
 
 \docType{methods}
 
-\alias{src}
-\alias{src,ANY-method}
 \alias{sprc}
 \alias{sprc,missing-method}
 \alias{sprc,list-method}
