@@ -10,19 +10,8 @@
 # RH: adapted from raster to terra 
 # Jan 11, 2022
 
-# RH: new cpp method
+# RH: new cpp method (moved to distance.R)
 # May 14, 2022
-
-
-setMethod("gridDistance", signature(x="SpatRaster"), 
-	function(x, target=0, scale=1000, maxiter=50, filename="", ...) {
-		opt <- spatOptions(filename, ...)
-		maxiter <- max(maxiter[1], 2)
-		x@ptr <- x@ptr$costDistance(target[1], scale[1], maxiter, TRUE, opt)
-		messages(x, "gridDistance")
-	}
-)
-
 
 
 .calcDist <- function(r, origin=NULL, omit=NULL, filename, ...) {

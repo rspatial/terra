@@ -40,6 +40,16 @@ setMethod("costDistance", signature(x="SpatRaster"),
 )
 
 
+setMethod("gridDistance", signature(x="SpatRaster"), 
+	function(x, target=0, scale=1000, maxiter=50, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		maxiter <- max(maxiter[1], 2)
+		x@ptr <- x@ptr$costDistance(target[1], scale[1], maxiter, TRUE, opt)
+		messages(x, "gridDistance")
+	}
+)
+
+
 setMethod("distance", signature(x="SpatRaster", y="SpatVector"), 
 	function(x, y, filename="", ...) {
 		opt <- spatOptions(filename, ...)
