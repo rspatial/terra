@@ -440,9 +440,9 @@ function(x, from, to, filename="", ...) {
 .getExt <- function(y, method="crop") {
 	if (!inherits(y, "SpatExtent")) {
 		e <- try(ext(y), silent=TRUE)
-		if (class(e) == "try-error") { 
+		if (inherits(e, "try-error")) { 
 			e <- try(ext(vect(y)), silent=TRUE)
-			if (class(e) == "try-error") { 
+			if (inherits(e, "try-error")) { 
 				error(method, "cannot get a SpatExtent from y")
 			}
 		}

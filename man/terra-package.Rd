@@ -390,7 +390,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   \code{\link{rescale}} \tab shrink (or expand) geometries, for example to make an inset map \cr
   \code{\link{flip}} \tab flip geometries vertically or horizontally\cr
   \code{\link{t}} \tab transpose geometries (switch x and y)\cr
-
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr  
 }}
 
 
@@ -605,10 +605,10 @@ Also note that even if function names are the same in \code{terra} and \code{ras
 ---------------------------------------------------------------------------------------------------------------------}
 
 \section{Author}{
-Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The gridDistance method was based on code by Jacob van Etten. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}
+Except where indicated otherwise, the methods and functions in this package were written by Robert Hijmans. The configuration scripts were written by Roger Bivand for \code{rgdal} and \code{sf}. Some of the C++ code for GDAL/GEOS was adapted from code by Edzer Pebesma for \code{sf}. The progress bar code is by Karl Forner (RcppProgress). Jeroen Ooms provided the compiled GDAL and GEOS libraries for installation on windows}. Michael Sumner contributed various bits and pieces.
 
 \section{Acknowledgments}{
-This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Márcia Barbosa, Kendon Bell, Jean-Luc Dupouey, Krzysztof Dyba, Alex Ilich, Jakub Nowosad, Gerald Nelson, and Michael Sumner have been especially helpful.
+This package is an attempt to climb on the shoulders of giants (GDAL, PROJ, GEOS, NCDF, GeographicLib, Rcpp, R). Many people have contributed by asking questions or \href{https://github.com/rspatial/terra}{raising issues}. Feedback and suggestions by Márcia Barbosa, Kendon Bell, Jean-Luc Dupouey, Krzysztof Dyba, Alex Ilich, Jakub Nowosad, and Gerald Nelson have been especially helpful.
 }
 
 \keyword{ package }

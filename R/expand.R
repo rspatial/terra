@@ -39,7 +39,7 @@ function(x, y, snap="near", filename="", overwrite=FALSE, ...) {
 			}
 		} else {
 			test <- try ( y <- ext(y), silent=TRUE )
-			if (class(test) == "try-error") {
+			if (inherits(test, "try-error")) {
 				error("extend", "cannot get a SpatExtent object from argument y")
 			}
 		}

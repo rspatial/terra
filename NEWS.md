@@ -47,8 +47,6 @@ delauny -> delaunay [#627](https://github.com/rspatial/terra/issues/627) by Dere
 
 Released on 2022-02-17
 
-# version 1.5-21
-
 - `writeVector` and `vect` now work with GPGK if the path has non-ascii characters [#518](https://github.com/rspatial/terra/issues/518)
 - The results of `predict` with `cores > 1` and more than one output variable were garbled
 - `zonal` dropped category names when using an external (R) function [#527](https://github.com/rspatial/terra/issues/527) by Jakub Nowosad
