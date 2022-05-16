@@ -6,3 +6,12 @@ setMethod ("setCats", "SpatRaster",
 	}
 )
 
+## spatstat conflicts
+
+if (!isGeneric("area")) {setGeneric("area", function(x, ...) standardGeneric("area"))}
+setMethod("area", signature(x="SpatRaster"), 
+	function(x, ...) {
+		error("area was removed. Use cellSize or expanse")
+	}
+)
+
