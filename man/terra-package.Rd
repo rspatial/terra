@@ -20,12 +20,12 @@ These classes hold a C++ pointer to the data "reference class" and that creates 
 The \code{terra} package is conceived as a replacement of the \code{raster} package. \code{terra} has a very similar, but simpler, interface, and it is faster than \code{raster}. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
 Below is a list of some of the most important methods grouped by theme. 
+
+---------------------------------------------------------------------------------------------------------------------
 }
 
-\section{}{
----------------------------------------------------------------------------------------------------------------------
 
-\bold{SpatRaster}
+\section{\bold{SpatRaster}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
@@ -280,9 +280,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 }
 
-\section{}{
-
-\bold{SpatRasterDataSet}
+\section{\bold{SpatRasterDataSet}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
@@ -298,9 +296,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }
 }
 
-\section{}{
-
-\bold{SpatVector}
+\section{\bold{SpatVector}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
@@ -413,9 +409,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 
-\section{}{
-
-\bold{Spat* Collections}
+\section{\bold{Spat* Collections}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
@@ -429,9 +423,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }}
 
-\section{}{
-
-\bold{SpatExtent}
+\section{\bold{SpatExtent}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
@@ -449,9 +441,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 }
 
 
-\section{}{
-
-\bold{General methods}
+\section{\bold{General methods}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 
@@ -518,9 +508,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 }
 }
 
-\section{}{
-
-\bold{Comparison with the raster package}
+\section{\bold{Comparison with the raster package}}{
 
 ---------------------------------------------------------------------------------------------------------------------}
 

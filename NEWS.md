@@ -1,4 +1,4 @@
-# version 1.5-32
+# version 1.5-34
 
 ## bug fixes
 
@@ -36,6 +36,8 @@
 - new method `emptyGeoms<SpatVector>` to get the indices of empty (null) geometries
 - new method `rasterizeGeom` to rasterize the geometry count or the area of (small) polygons or the length of lines.
 - new method `not.na` for `SpatRaster` which is a shortcut for `!is.na(x)`.
+- `as.list` implemented for `<SpatRasterDataset>`.
+- `sources` implemented for `<SpatRasterDataset>`, `<SpatVector>` and `<SpatVectorProxy>` [#638](https://github.com/rspatial/terra/issues/638) by Andrew Gene Brown
 
 # name changes
 
