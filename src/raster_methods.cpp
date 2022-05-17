@@ -2829,6 +2829,19 @@ SpatRaster SpatRaster::scale(std::vector<double> center, bool docenter, std::vec
 }
 
 
+bool can_use_replace(const std::vector<double> &from, const std::vector<double> &to) {
+	// test if any "to" later occurs in "from"
+	size_t n = from.size();
+	for (size_t i = 0; i < (n-1); i++) {
+		for (size_t j = (i+1); j < n; j++) {
+			if (to[i] == from[j]) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 
 SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool keepcats, SpatOptions &opt) {
 
@@ -2858,44 +2871,100 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 	if (multi) {
 		size_t tosz = to.size() / nl;
 		size_t nlyr = out.nlyr();
-		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> v; 
-			readBlock(v, out.bs, i);
-			size_t vs = v.size();
-			v.reserve(vs * nlyr);
-			for (size_t lyr = 1; lyr < nlyr; lyr++) {
-				v.insert(v.end(), v.begin(), v.begin()+vs);
-			}
-			for (size_t lyr = 0; lyr < nlyr; lyr++) {
-				std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
-				recycle(tolyr, from);
-				size_t offset = lyr*vs;
-				for (size_t j=0; j< from.size(); j++) {
-					if (std::isnan(from[j])) {
-						for (size_t k=offset; k<(offset+vs); k++) {
-							v[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
+		if (can_use_replace(from, to)) {
+			for (size_t i = 0; i < out.bs.n; i++) {
+				std::vector<double> v; 
+				readBlock(v, out.bs, i);
+				size_t vs = v.size();
+				v.reserve(vs * nlyr);
+				for (size_t lyr = 1; lyr < nlyr; lyr++) {
+					v.insert(v.end(), v.begin(), v.begin()+vs);
+				}
+				for (size_t lyr = 0; lyr < nlyr; lyr++) {
+					std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
+					recycle(tolyr, from);
+					size_t offset = lyr*vs;
+					for (size_t j=0; j< from.size(); j++) {
+						if (std::isnan(from[j])) {
+							for (size_t k=offset; k<(offset+vs); k++) {
+								v[k] = std::isnan(v[k]) ? tolyr[j] : v[k];
+							}
+						} else {
+							std::replace(v.begin()+offset, v.begin()+(offset+vs), from[j], tolyr[j]);
 						}
-					} else {
-						std::replace(v.begin()+offset, v.begin()+(offset+vs), from[j], tolyr[j]);
 					}
 				}
+				if (!out.writeBlock(v, i)) return out;
 			}
-			if (!out.writeBlock(v, i)) return out;
+		} else {
+			for (size_t i = 0; i < out.bs.n; i++) {
+				std::vector<double> v; 
+				readBlock(v, out.bs, i);
+				size_t vs = v.size();
+				v.reserve(vs * nlyr);
+				for (size_t lyr = 1; lyr < nlyr; lyr++) {
+					v.insert(v.end(), v.begin(), v.begin()+vs);
+				}
+				std::vector<double> vv = v;
+				for (size_t lyr = 0; lyr < nlyr; lyr++) {
+					std::vector<double> tolyr(to.begin()+lyr*tosz, to.begin()+(lyr+1)*tosz);
+					recycle(tolyr, from);
+					size_t offset = lyr*vs;
+					for (size_t j=0; j< from.size(); j++) {
+						if (std::isnan(from[j])) {
+							for (size_t k=offset; k<(offset+vs); k++) {
+								v[k] = std::isnan(vv[k]) ? tolyr[j] : vv[k];
+							}
+						} else {
+							for (size_t k=offset; k<(offset+vs); k++) {
+								if (vv[k] == from[j]) {
+									v[k] = tolyr[j];
+								}
+							}
+						}
+					}
+				}
+				if (!out.writeBlock(v, i)) return out;
+			}
 		}
 	} else {
-		recycle(to, from);
-		for (size_t i = 0; i < out.bs.n; i++) {
-			std::vector<double> v; 
-			readBlock(v, out.bs, i);
-			for (size_t j=0; j< from.size(); j++) {
-				if (std::isnan(from[j])) {
-					for (double &d : v) d = std::isnan(d) ? to[j] : d;
-				} else {
-					std::replace(v.begin(), v.end(), from[j], to[j]);
+		recycle(to, from);		
+		if (can_use_replace(from, to)) {
+			for (size_t i = 0; i < out.bs.n; i++) {
+				std::vector<double> v; 
+				readBlock(v, out.bs, i);
+				for (size_t j=0; j< from.size(); j++) {
+					if (std::isnan(from[j])) {
+						for (double &d : v) d = std::isnan(d) ? to[j] : d;
+					} else {
+						std::replace(v.begin(), v.end(), from[j], to[j]);
+					}
 				}
+				if (!out.writeBlock(v, i)) return out;
 			}
-			if (!out.writeBlock(v, i)) return out;
-		}
+		} else {
+			for (size_t i = 0; i < out.bs.n; i++) {
+				std::vector<double> v; 
+				readBlock(v, out.bs, i);
+				std::vector<double> vv = v; 
+				for (size_t j=0; j< from.size(); j++) {
+					if (std::isnan(from[j])) {
+						for (size_t k=0; k<v.size(); k++) {
+							if (std::isnan(vv[k])) {
+								v[k] = to[j];
+							}
+						}
+					} else {
+						for (size_t k=0; k<v.size(); k++) {
+							if (vv[k] == from[j]) {
+								v[k] = to[j];
+							}
+						}
+					}
+				}
+				if (!out.writeBlock(v, i)) return out;
+			}
+		} 
 	}
 	readStop();
 	out.writeStop();
