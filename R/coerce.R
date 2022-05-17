@@ -178,6 +178,25 @@ setMethod("as.raster", signature(x="SpatRaster"),
 	list(x=X, y=Y, z=Z)
 }
  
+
+get_labels <- function(x, p, dissolve=FALSE) {
+	ff <- is.factor(x)
+	if (dissolve) {
+		ff <- ff[[1]]
+	}
+	if (any(ff)) {
+		ff <- which(ff)
+		cgs <- cats(x)
+		for (f in ff) {
+			cg <- cgs[[f]]
+			i <- match(unlist(p[[f]]), cg[,1])
+			act <- activeCat(x, f)
+			p[[f]] <- cg[i, act+1]
+		}
+	}
+	p
+}
+
  
 setMethod("as.polygons", signature(x="SpatRaster"), 
 	function(x, trunc=TRUE, dissolve=TRUE, values=TRUE, na.rm=TRUE, na.all=FALSE, extent=FALSE) {
@@ -190,20 +209,7 @@ setMethod("as.polygons", signature(x="SpatRaster"),
 			p@ptr <- x@ptr$as_polygons(trunc[1], dissolve[1], values[1], na.rm[1], na.all[1], opt)
 			x <- messages(x, "as.polygons")
 			if (values) {
-				ff <- is.factor(x)
-				if (dissolve) {
-					ff <- ff[[1]]
-				}
-				if (any(ff)) {
-					ff <- which(ff)
-					cgs <- cats(x)
-					for (f in ff) {
-						cg <- cgs[[f]]
-						i <- match(unlist(p[[f]]), cg[,1])
-						act <- activeCat(x, f)
-						p[[f]] <- cg[i, act+1]
-					}
-				}
+				p <- get_labels(x, p, dissolve)
 			}
 		}
 		messages(p, "as.polygons")
@@ -276,17 +282,7 @@ setMethod("as.points", signature(x="SpatRaster"),
 		x <- messages(x, "as.points")
 
 		if (values) {
-			ff <- is.factor(x)
-			if (any(ff)) {
-				ff <- which(ff)
-				levs <- levels(x)
-				for (f in ff) {
-					facts <- levs[[f]]
-					v <- factor(unlist(p[[f]], use.names=FALSE), levels=(1:length(facts))-1)
-					levels(v) <- facts
-					p[[f]] <- as.character(v)
-				}
-			}
+			p <- get_labels(x, p, FALSE)
 		}
 		messages(p, "as.points")
 	}
