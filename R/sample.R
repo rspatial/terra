@@ -74,6 +74,16 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			ys[[i]] <- y
 		}
 	}
+	if(!is.null(notfound)){
+	  for (i in seq_along(notfound)) {
+	    # use sampleWeights with prob 1
+	    r <- x == f[notfound[i],2]
+	    y_fix <- data.frame(cell = sampleWeights(r, size, replace = replace, 
+	                                             cells = TRUE, ext = ext)[, 1], 
+	                        stratum = notfound[i])
+	    ys[[notfound[i]]] <- y_fix
+	  }
+	}
 	res <- do.call(rbind, ys)
 	colnames(res) <- c('cell', names(x))
 	
