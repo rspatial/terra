@@ -62,7 +62,7 @@
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
 <dt>from</dt>
-<dd><p>numeric value(s)</p></dd>
+<dd><p>numeric value(s). Normally a vector of the same length as `to`. If <code>x</code> has multiple layers, it can also be a matrix of numeric value(s) where <code>nrow(x) == length(from)</code>. In that case the output has a single layer, with values based on the combination of the values of the input layers</p></dd>
 <dt>to</dt>
 <dd><p>numeric value(s). Normally a vector of the same length as `from`. If <code>x</code> has a single layer, it can also be a matrix of numeric value(s) where <code>nrow(x) == length(from)</code>. In that case the output has multiple layers, one for each column in <code>to</code></p></dd>
 <dt>filename</dt>
@@ -86,6 +86,14 @@
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">subst</span><span class="op">(</span><span class="va">r</span>, <span class="fl">3</span>, <span class="fl">7</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">subst</span><span class="op">(</span><span class="va">r</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">3</span>, <span class="cn">NA</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">subst</span><span class="op">(</span><span class="va">x</span>, <span class="cn">NA</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># multiple output layers</span></span>
+<span class="r-in"><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">subst</span><span class="op">(</span><span class="va">r</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">20</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># multiple input layers</span></span>
+<span class="r-in"><span class="va">rr</span> <span class="op">&lt;-</span> <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">r</span><span class="op">+</span><span class="fl">1</span>, <span class="va">r</span><span class="op">+</span><span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">zz</span> <span class="op">&lt;-</span> <span class="fu">subst</span><span class="op">(</span><span class="va">rr</span>, <span class="va">m</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </div>
