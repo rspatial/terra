@@ -2960,6 +2960,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 				fro[i].push_back(from[i*nlr+j]);
 			}
 		}
+
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v; 
 			readBlock(v, out.bs, i);
