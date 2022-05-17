@@ -394,10 +394,11 @@ function(x, from, to, filename="", ...) {
 	if (inherits(from, "data.frame")) {
 		from <- as.matrix(from)
 	}
-	from <- as.vector(from)
 	if (inherits(to, "data.frame")) {
 		to <- as.matrix(to)
 	}
+	tom <- inherits(to, "matrix")
+	frm <- inherits(from, "matrix")
 	
 	keepcats <- FALSE
 	fromc <- inherits(from[1], "character")
@@ -425,12 +426,19 @@ function(x, from, to, filename="", ...) {
 		to <- levs[,1][match(to, levs[,2])]
 		keepcats <- TRUE		
 	}
+
+	if (tom && frm) {
+		error("subst", "either 'to' or 'from' can be a matrix, not both")
+	}
 	
-	if (inherits(to, "matrix")) {
-		opt$names = colnames(to)
+	if (tom) {
+		nms <- colnames(to)
+		if (!is.null(nms)) 	opt$names = nms
 		x@ptr <- x@ptr$replaceValues(from, to, ncol(to), keepcats, opt)
+	} else if (frm) {
+		x@ptr <- x@ptr$replaceValues(as.vector(t(from)), to, -ncol(from), FALSE, opt)
 	} else {
-		x@ptr <- x@ptr$replaceValues(from, to, -1, keepcats, opt)
+		x@ptr <- x@ptr$replaceValues(from, to, 0, keepcats, opt)
 	}
 	messages(x, "subst")
 }

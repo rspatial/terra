@@ -3,7 +3,11 @@
 ## bug fixes
 
 - `subst` no longer uses values that it changed earlier on. [#639](https://github.com/rspatial/terra/issues/639) by Paul Smith
+- `as.points<SpatRaster>` could return wrong factor labels. [#640](https://github.com/rspatial/terra/issues/640) by Attilio Benini
 
+## enhancements 
+
+- `subst` can now substitute the values from multiple input layers with a single output value (layer)
 
 # version 1.5-34
 

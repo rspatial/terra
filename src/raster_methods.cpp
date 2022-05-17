@@ -2845,18 +2845,40 @@ bool can_use_replace(const std::vector<double> &from, const std::vector<double> 
 
 SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<double> to, long nl, bool keepcats, SpatOptions &opt) {
 
-	SpatRaster out = geometry(nl);
-	if (keepcats) {
-		out.source[0].hasCategories = hasCategories();
-		out.source[0].cats = getCategories();	
-	}	
-	bool multi = false;
+	SpatRaster out;
+	bool mout = false;
+	bool min = false;
 	if (nl > 1) {
 		if (nlyr() > 1) {
 			out.setError("cannot create layer-varying replacement with multi-layer input");
 			return out;
 		}
-		multi = true;
+		mout = true;
+	} else if (nl < -1) {
+		nl = abs(nl);
+		if (nlyr() != (size_t) nl) {
+			out.setError("nlyr() does not match ncol(from)");
+			return out;
+		}
+		min = true;
+	}
+
+	if (min) {
+		out = geometry(1);
+	} else {
+		if (nl == 0) {
+			out = geometry(nlyr());			
+			out.source[0].hasCategories = hasCategories();
+			out.source[0].cats = getCategories();	
+		} else {
+			out = geometry(nl);
+			if (keepcats) {
+				for (long i=0; i<nl; i++) {
+					out.source[0].hasCategories[i] = source[0].hasCategories[0];
+					out.source[0].cats[i] = source[0].cats[0];
+				}
+			}
+		}
 	}
 
 	if (!readStart()) {
@@ -2868,7 +2890,7 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 		return out;
 	}
 
-	if (multi) {
+	if (mout) {
 		size_t tosz = to.size() / nl;
 		size_t nlyr = out.nlyr();
 		if (can_use_replace(from, to)) {
@@ -2926,6 +2948,44 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 				}
 				if (!out.writeBlock(v, i)) return out;
 			}
+		}
+	} else if (min) {
+		size_t n = from.size()/nl;
+		size_t nlr = nl;
+		recycle(to, n);	
+		std::vector<std::vector<double>> fro(n);
+		for (size_t i=0; i<n; i++) {
+			fro[i].reserve(nlr);
+			for (size_t j=0; j<nlr; j++) {
+				fro[i].push_back(from[i*nlr+j]);
+			}
+		}
+		for (size_t i = 0; i < out.bs.n; i++) {
+			std::vector<double> v; 
+			readBlock(v, out.bs, i);
+			size_t nc = v.size() / nlr;
+			std::vector<double> vv(nc, NAN);
+			for (size_t j=0; j<nc; j++) {
+				for (size_t m=0; m<n; m++) {
+					bool match = true;
+					for (size_t k=0; k<nlr; k++) {
+						if (std::isnan(fro[m][k])) {
+							if (!std::isnan(v[nc*k+j])) {
+								match = false;
+								break;
+							}
+						} else if (v[nc*k+j] != fro[m][k]) {
+							match = false;
+							break;
+						}
+					}
+					if (match) {
+						vv[j] = to[m];
+						break;
+					}
+				}
+			}
+			if (!out.writeBlock(vv, i)) return out;
 		}
 	} else {
 		recycle(to, from);		
