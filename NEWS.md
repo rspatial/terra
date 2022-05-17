@@ -1,3 +1,10 @@
+# development version
+
+## bug fixes
+
+- `subst` no longer uses values that it changed earlier on. [#639](https://github.com/rspatial/terra/issues/639) by Paul Smith
+
+
 # version 1.5-34
 
 ## bug fixes
