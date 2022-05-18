@@ -9,6 +9,11 @@
 
 - `subst` can now substitute the values from multiple input layers with a single output value (layer)
 
+## new
+
+- argument `as.raster` to `unique<SpatRaster>` to create a categorical raster with the unique combinations in the layers of the input raster
+
+
 # version 1.5-34
 
 ## bug fixes

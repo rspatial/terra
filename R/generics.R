@@ -1003,8 +1003,11 @@ setMethod("trans", signature(x="SpatRaster"),
 
 
 setMethod("unique", signature(x="SpatRaster", incomparables="ANY"), 
-	function(x, incomparables=FALSE, na.rm=FALSE) {
+	function(x, incomparables=FALSE, na.rm=TRUE, as.raster=FALSE) {
+
 		opt <- spatOptions()
+		
+		if (as.raster) incomparables = FALSE
 		u <- x@ptr$unique(incomparables, na.rm[1], opt)
 
 		isfact <- is.factor(x)
@@ -1018,17 +1021,33 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			}
 		}
 		if (!incomparables) {
-			if (!length(u)) return(u)
+			#if (!length(u)) return(u)
 			u <- do.call(data.frame, u)
 			colnames(u) <- names(x)
+			if (nrow(u) == 0) {
+				if (as.raster) {
+					return(deepcopy(x))
+				} else {
+					return(NULL)
+				}
+			}
 		}
+		
 		if (na.rm & (NCOL(u) > 1)) {
 			i <- apply(is.na(u), 1, all)
-			u <- u[-i, drop=FALSE]
+			u <- u[!i, , drop=FALSE]
+		}
+		if (as.raster) {
+			uid <- 1:nrow(u)
+			x <- subst(x, u, uid-1)
+			lab <- apply(u, 1, function(i) paste(i, collapse="_"))
+			set.cats(x, 1, data.frame(ID=uid-1, label=lab, u), 2)
+			return(x)
 		}
 		u
 	}
 )
+
 
 setMethod("unique", signature(x="SpatVector", incomparables="ANY"), 
 	function(x, incomparables=FALSE, ...) {

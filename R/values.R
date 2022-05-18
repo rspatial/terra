@@ -195,7 +195,7 @@ setMethod("setValues", signature("SpatRaster"),
 		if (set_coltab) {
 			coltab(y) <- fv
 		} else if (is.logical(values)) {
-			y@ptr$setValueType(3)
+			if (!all(is.na(values))) y@ptr$setValueType(3)
 		} else if (is.integer(values)) {
 			y@ptr$setValueType(1)
 		}
