@@ -336,6 +336,9 @@ setMethod("vect", signature(x="data.frame"),
 			return(p)
 		} else if (length(geom) == 1) {
 			v <- vect(unlist(x[,geom]), crs=crs)
+			if (!keepgeom) {
+				x[[geom]] <- NULL
+			}
 		} else {
 			error("vect", "the length of 'geom' must be 1 or 2")
 		}
