@@ -33,12 +33,7 @@ The shortest distance to the cells with the \code{target} value is computed for 
 \seealso{See \code{\link[terra]{distance}} for "as the crow flies" distance} 
 
 
-\note{
-see terra:::.oldGridDistance for the previous version of this method (will be removed in a future version)
-}
-
 \value{SpatRaster}
-
 
 
 \examples{
