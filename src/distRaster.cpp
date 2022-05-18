@@ -864,7 +864,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 				if (v[j] == target) {
 					v[j] = 0;
 					d[j] = 0;
-				} else if (v[j] < 0) {
+				} else if ((!grid) && (v[j] < 0)) {
 					readStop();
 					first.writeStop();
 					first.setError("negative friction values not allowed");

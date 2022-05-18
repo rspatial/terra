@@ -472,7 +472,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 
-		if (missing(col)) col <- rev(grDevices::terrain.colors(50))
+		if (missing(col)) col <- rev(grDevices::terrain.colors(255))
 		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, ext=ext, ...)
 
 		if (!is.null(fun)) {
