@@ -42,7 +42,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			sr <- cbind(1:ncell(x), values(x))
 			colnames(sr) <- c("cell", names(x))
 		} else {
-			sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=warn)
+			sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=FALSE)
 		}
 	} else {
 		if (!inherits(weights, "SpatRaster")) {
@@ -297,7 +297,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			size <- size[1]
 			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
 			if (method == "random") {
-				if (length(cnrs) < size) {
+				if (length(cnrs) < size && warn) {
 					warn("spatSample", "fewer cells returned than requested")
 				} else if (length(cnrs) > size) {
 					cnrs <- cnrs[1:size]
