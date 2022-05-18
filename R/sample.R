@@ -29,7 +29,7 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 
 
 sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2, weights=NULL) {
-	
+
 	if ((!xy) && (!as.points)) cells <- TRUE
 	
 	f <- freq(x)	
@@ -65,7 +65,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 
 	for (i in seq_len(nrow(f))) {
 		y <- sr[sr[, 2] == f[i,2], ,drop=FALSE]
-		if (nrow(y) == 0) {
+		if (nrow(y) < size) {
 			notfound <- c(notfound, i)
 		} else {
 			if (nrow(y) > size) {
