@@ -724,7 +724,7 @@ void grid_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 		size_t i=(nc-1);
 		cd = {dist[i],  
 			dist[0] + dx, 
-			dabove[0] + dxy * (vabove[0]+v[i])}; 
+			dabove[0] + dxy}; 
 		dist[i] = minCostDist(cd);
 	}
 	if (npole) {
@@ -780,7 +780,6 @@ void grid_dist(std::vector<double> &dist, std::vector<double> &dabove, std::vect
 	size_t off = (nr-1) * nc;
 	dabove = std::vector<double>(dist.begin()+off, dist.end());
 	vabove = std::vector<double>(v.begin()+off, v.end());
-	
 }
 
 void block_is_same(bool& same, std::vector<double>& x,  std::vector<double>& y) {
@@ -864,7 +863,7 @@ SpatRaster SpatRaster::costDistanceRun(SpatRaster &old, bool &converged, double 
 				if (v[j] == target) {
 					v[j] = 0;
 					d[j] = 0;
-				} else if (v[j] < 0) {
+				} else if ((!grid) && (v[j] < 0)) {
 					readStop();
 					first.writeStop();
 					first.setError("negative friction values not allowed");

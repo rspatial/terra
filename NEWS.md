@@ -3,6 +3,15 @@
 ## bug fixes
 
 - `subst` no longer uses values that it changed earlier on. [#639](https://github.com/rspatial/terra/issues/639) by Paul Smith
+- `as.points<SpatRaster>` could return wrong factor labels. [#640](https://github.com/rspatial/terra/issues/640) by Attilio Benini
+
+## enhancements 
+
+- `subst` can now substitute the values from multiple input layers with a single output value (layer)
+
+## new
+
+- argument `as.raster` to `unique<SpatRaster>` to create a categorical raster with the unique combinations in the layers of the input raster. The default for argument `na.rm` was changed to `FALSE`
 
 
 # version 1.5-34
@@ -69,6 +78,7 @@ Released on 2022-02-17
 - `makeTiles` has new arguments `extend` and `na.rm` [#520](https://github.com/rspatial/terra/issues/520) by by L. Dalby
 - `project<SpatRaster>` now uses nearest neighbor as default method for RGB rasters
 - new argument `na.rm=TRUE` to `unique`. [#561](https://github.com/rspatial/terra/issues/561) by Matthieu Stigler
+
 
 # version 1.5-17
 

@@ -195,7 +195,7 @@ setMethod("setValues", signature("SpatRaster"),
 		if (set_coltab) {
 			coltab(y) <- fv
 		} else if (is.logical(values)) {
-			y@ptr$setValueType(3)
+			if (!all(is.na(values))) y@ptr$setValueType(3)
 		} else if (is.integer(values)) {
 			y@ptr$setValueType(1)
 		}
@@ -353,6 +353,10 @@ setMethod("values", signature("SpatVector"),
 
 setMethod("values<-", signature("SpatVector", "data.frame"), 
 	function(x, value) {
+		if (ncol(value) == 0) {
+			x@ptr$remove_df()
+			return(x)		
+		}
 		stopifnot(nrow(x) == nrow(value))
 		x <- x[,0]
 		# use cbind instead

@@ -12,6 +12,8 @@ The function calculates the distance to cells of a SpatRaster when the path has 
 The distance is in meters if the coordinate reference system (CRS) of the SpatRaster is longitude/latitude (\code{+proj=longlat}) and in the units of the CRS (typically meters) in other cases. 
  
 Distances are computed by summing local distances between cells, which are connected with their neighbors in 8 directions.
+
+The shortest distance to the cells with the \code{target} value is computed for all cells that are not \code{NA}. Cells that are \code{NA} cannot be traversed and are ignored, unless the target itself is \code{NA}, in which case the distance to the nearest cell that is not \code{NA} is computed for all cells that are \code{NA}. 
 }
 
 \usage{
@@ -31,12 +33,7 @@ Distances are computed by summing local distances between cells, which are conne
 \seealso{See \code{\link[terra]{distance}} for "as the crow flies" distance} 
 
 
-\note{
-see terra:::.oldGridDistance for the previous version of this method (will be removed in a future version)
-}
-
 \value{SpatRaster}
-
 
 
 \examples{
