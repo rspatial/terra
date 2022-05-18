@@ -44,6 +44,9 @@ s <- c(r, round(r/3))
 unique(s)
 unique(s,TRUE)
 
+unique(s, as.raster=TRUE)
+
+
 v <- vect(cbind(x=c(1:5,1:5), y=c(5:1,5:1)), 
 		crs="+proj=utm +zone=1 +datum=WGS84")
 nrow(v)
