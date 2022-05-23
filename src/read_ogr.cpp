@@ -82,7 +82,11 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 			unsigned j = df.iplace[i];
 			switch( poFieldDefn->GetType() ) {
 				case OFTReal:
-					df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
+					if (poFeature->IsFieldNull(i)) {
+						df.dv[j].push_back(NAN);						
+					} else {
+						df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
+					}
 					break;
 				case OFTInteger:
 					if (poFieldDefn->GetSubType() == OFSTBoolean) {

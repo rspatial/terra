@@ -210,7 +210,10 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
         poFeature = OGRFeature::CreateFeature( poLayer->GetLayerDefn() );
 		for (int j=0; j<nfields; j++) {
 			if (tps[j] == "double") {
-				poFeature->SetField(j, df.getDvalue(i, j));
+				double dval = df.getDvalue(i, j);
+				if (!std::isnan(dval)) {
+					poFeature->SetField(j, df.getDvalue(i, j));
+				}
 			} else if (tps[j] == "long") {
 				poFeature->SetField(j, (GIntBig)df.getIvalue(i, j));
 			} else if (tps[j] == "bool") {
