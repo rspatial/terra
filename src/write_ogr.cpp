@@ -18,11 +18,16 @@
 #include "spatVector.h"
 #include "string_utils.h"
 #include <stdexcept>
+#include "NA.h"
+
 
 #ifdef useGDAL
 
 #include "file_utils.h"
 #include "ogrsf_frmts.h"
+
+
+#include "Rcpp.h"
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
@@ -203,6 +208,7 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 		nGroupTransactions = 50000;
 	}
 	size_t gcntr = 0;
+	long longNA = NA<long>::value;
 
 	for (size_t i=0; i<ngeoms; i++) {
 
@@ -215,11 +221,18 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 					poFeature->SetField(j, df.getDvalue(i, j));
 				}
 			} else if (tps[j] == "long") {
-				poFeature->SetField(j, (GIntBig)df.getIvalue(i, j));
+				long ival = df.getIvalue(i, j);
+				if (ival != longNA) {
+					poFeature->SetField(j, (GIntBig)ival);
+				}
 			} else if (tps[j] == "bool") {
 				poFeature->SetField(j, df.getBvalue(i, j));
 			} else {
-				poFeature->SetField(j, df.getSvalue(i, j).c_str());
+				std::string s = df.getSvalue(i, j);
+				Rcpp::Rcout << s << std::endl;
+				if (s != df.NAS) {
+					poFeature->SetField(j, df.getSvalue(i, j).c_str());
+				}
 			}
 		}
 		//r++;
@@ -522,3 +535,4 @@ bool SpatVector::delete_layers(std::string filename, std::vector<std::string> la
 }
 
 #endif
+
