@@ -18,7 +18,7 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-35</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-36</span>
       </span>
     </div>
 
@@ -89,13 +89,13 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
 <dt>trunc</dt>
-<dd><p>logical; truncate values to integers. Cels with the same value are merged. Therefore, if <code>trunc=FALSE</code> the object returned can be very large</p></dd>
+<dd><p>logical; truncate values to integers. Cells with the same value are merged. Therefore, if <code>trunc=FALSE</code> the object returned can have many cells and can be very large</p></dd>
 <dt>dissolve</dt>
 <dd><p>logical; combine cells with the same values? If <code>TRUE</code> only the first layer in <code>x</code> is processed</p></dd>
 <dt>values</dt>
-<dd><p>logical; include cell values as attributes? If <code>FALSE</code> the cells are not dissolved and the object returned can be very large</p></dd>
+<dd><p>logical; include cell values as attributes?</p></dd>
 <dt>multi</dt>
-<dd><p>logical. If <code>TRUE</code> a multipoint geometry is returned</p></dd>
+<dd><p>logical. If <code>TRUE</code> a multi-point geometry is returned</p></dd>
 <dt>skiplast</dt>
 <dd><p>logical. If <code>TRUE</code> the last point of a polygon (which is the same as the first point) is not included</p></dd>
 <dt>extent</dt>
