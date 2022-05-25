@@ -12,6 +12,7 @@
 #include "gdalio.h"
 
 
+
 SpatRaster SpatRaster::rasterizePoints(SpatVector x, std::string fun, std::vector<double> values, double background, SpatOptions &opt) {
 	
 	SpatRaster out = geometry(1, false, false, false);

@@ -88,9 +88,11 @@ bool SpatRaster::write_aux_json(std::string filename) {
 
 bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 
+	size_t nr = d.nrow();
+	if (nr == 0) return true;
+
 //	GDALRasterAttributeTable *pRat = poBand->GetDefaultRAT();
 	GDALRasterAttributeTable *pRat = new GDALDefaultRasterAttributeTable();
-	size_t nr = d.nrow();
 
 	for (size_t i=0; i<d.ncol(); i++) {
 		const char *fn = d.names[i].c_str();

@@ -149,6 +149,11 @@ as.list.SpatRasterCollection <- function(x, ...) {
 }
 setMethod("as.list", signature(x="SpatRasterCollection"), as.list.SpatRasterCollection)
 
+as.list.SpatRasterDataset <- function(x, ...) {
+	lapply(1:length(x), function(i) x[i])
+}
+setMethod("as.list", signature(x="SpatRasterDataset"), as.list.SpatRasterDataset)
+
 
  
 # create a "grDevices::raster" (small r) object for use with the rasterImage function

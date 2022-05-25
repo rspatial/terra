@@ -16,6 +16,16 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 }
 )
 
+setMethod("sapp", signature(x="SpatRasterDataset"), 
+function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
+	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
+	if (filename != "") {
+		writeRaster(x, filename, overwrite, wopt=wopt)
+	} else {
+		tighten(x)
+	}
+}
+)
 
 
 setMethod("app", signature(x="SpatRaster"), 

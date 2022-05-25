@@ -27,7 +27,6 @@
 #include "ogrsf_frmts.h"
 
 
-#include "Rcpp.h"
 
 GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, std::string driver, bool append, bool overwrite, std::vector<std::string> options) {
 
@@ -229,7 +228,6 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				poFeature->SetField(j, df.getBvalue(i, j));
 			} else {
 				std::string s = df.getSvalue(i, j);
-				Rcpp::Rcout << s << std::endl;
 				if (s != df.NAS) {
 					poFeature->SetField(j, df.getSvalue(i, j).c_str());
 				}
