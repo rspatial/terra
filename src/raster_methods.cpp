@@ -1026,7 +1026,7 @@ SpatRaster SpatRaster::mask(SpatVector x, bool inverse, double updatevalue, bool
 		out = rasterize(x, "", {updatevalue}, NAN, touches, false, false, true, true, opt);
 	} else {
 		SpatOptions topt(opt);
-		out = rasterize(x, "", {1.0}, 0, touches, false, false, false, false, opt);
+		out = rasterize(x, "", {1.0}, 0, touches, false, false, false, false, topt);
 		if (out.hasError()) {
 			return out;
 		}
