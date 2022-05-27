@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-36</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-37</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, <span class="va">select</span>, drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -62,7 +62,9 @@
     <dl><dt>x</dt>
 <dd><p>SpatVector</p></dd>
 <dt>subset</dt>
-<dd><p>logical expression indicating elements or rows to keep: missing values are taken as false</p></dd>
+<dd><p>logical expression indicating the rows to keep: missing values are taken as FALSE</p></dd>
+<dt>select</dt>
+<dd><p>expression, indicating columns to select</p></dd>
 <dt>drop</dt>
 <dd><p>logical. If <code>TRUE</code>, the geometries will be dropped, and a data.frame is returned</p></dd>
 </dl></div>
@@ -98,16 +100,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Diekirch     2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Diekirch     3</span>
 <span class="r-in"><span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">v</span><span class="op">$</span><span class="va">NAME_1</span> <span class="op">==</span> <span class="st">"Diekirch"</span><span class="op">)</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 5, 6  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.74414, 6.315773, 49.69933, 50.18162  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  names       :  ID_1   NAME_1  ID_2   NAME_2  AREA   POP</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt; &lt;int&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     1 Clervaux   312 18081</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     2 Diekirch   218 32543</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     3  Redange   259 18664</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(substitute(subset), d, parent.frame()):</span> object 'v' not found</span>
 </code></pre></div>
     </div>
   </div>
