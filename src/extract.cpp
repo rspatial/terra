@@ -698,8 +698,8 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 			std::vector<double> y = vd.getD(1);
 			std::vector<std::vector<double>> xycells;
 			if (xy) {
-				std::vector<double> xycell = cellFromXY(x, y);
-				xycells = xyFromCell(xycell);
+				std::vector<double> cellxy = cellFromXY(x, y);
+				xycells = xyFromCell(cellxy);
 			}
 			if (!cells & !xy & !weights) {
 				return( extractXYFlat(x, y, method, cells));
