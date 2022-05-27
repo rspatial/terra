@@ -16,7 +16,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
 }
 
 \usage{
-\S4method{crop}{SpatRaster}(x, y, snap="near", mask=FALSE, filename="", ...)
+\S4method{crop}{SpatRaster}(x, y, snap="near", mask=FALSE, touches=TRUE, filename="", ...)
 
 \S4method{crop}{SpatRasterDataset}(x, y, snap="near", filename="", ...)
 
@@ -28,6 +28,7 @@ You can crop a SpatVector with a rectangle, or with another vector (if these are
   \item{y}{SpatRaster, SpatVector, SpatExtent or other object that has a SpatExtent (\code{\link{ext}} returns a \code{SpatExtent})}
   \item{snap}{character. One of "near", "in", or "out". Used to align \code{y} to the geometry of \code{x}} 
   \item{mask}{logical. Should \code{y} be used to mask? Only used if \code{y} is a SpatVector}  
+  \item{touches}{logical. If \code{TRUE} and \code{mask=TRUE}, all cells touched by lines or polygons will be masked, not just those on the line render path, or whose center point is within the polygon}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

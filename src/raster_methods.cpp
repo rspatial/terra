@@ -2153,10 +2153,10 @@ SpatRaster SpatRaster::crop(SpatExtent e, std::string snap, SpatOptions &opt) {
 	return(out);
 }
 
-SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, SpatOptions &opt) {
+SpatRaster SpatRaster::cropmask(SpatVector v, std::string snap, bool touches, SpatOptions &opt) {
 	SpatOptions copt(opt);
 	SpatRaster out = crop(v.extent, snap, copt);
-	return out.mask(v, false, NAN, false, opt);
+	return out.mask(v, false, NAN, touches, opt);
 }
 
 

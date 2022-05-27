@@ -460,10 +460,10 @@ function(x, from, to, filename="", ...) {
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
-	function(x, y, snap="near", mask=FALSE, filename="", ...) {
+	function(x, y, snap="near", mask=FALSE, touches=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (mask && inherits(y, "SpatVector")) {
-			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], opt)
+			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], opt)
 		} else {
 			y <- .getExt(y, method="crop")
 			x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
