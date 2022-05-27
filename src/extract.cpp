@@ -692,10 +692,15 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 	std::vector<std::vector<double>> srcout;
 	if (gtype == "points") {
 		if (method != "bilinear") method = "simple";
-		SpatDataFrame vd = v.getGeometryDF();
-		//if (vd.nrow() == ng) {  // single point geometry
+			SpatDataFrame vd = v.getGeometryDF();
+			std::vector<std::vector<double>> xycells;
+			//if (vd.nrow() == ng) {  // single point geometry
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
+			if (xy) {
+				std::vector<double> cell = cellFromXY(x, y);
+				xycells = xyFromCell(cells);
+			}
 			if (!cells & !xy & !weights) {
 				return( extractXYFlat(x, y, method, cells));
 			} else {
@@ -708,8 +713,8 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 						flat.push_back( srcout[j][i] );
 					}
 					if (xy) {
-						flat.push_back(x[i]);
-						flat.push_back(y[i]);
+						flat.push_back(xycells[0][i]);
+						flat.push_back(xycells[1][i]);
 					}
 				}
 			}
