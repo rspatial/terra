@@ -78,20 +78,20 @@ function(x, i, j, ... ,drop=TRUE) {
 setMethod("subset", signature(x="SpatVector"), 
 	function(x, subset, select, drop=FALSE) {
  		d <- values(x)
-		if (missing(subset)) {
-			r <- TRUE
-		} else {
-			r <- eval(substitute(subset), d, parent.frame())
-			if (!is.logical(r)) error("subset", "argument 'subset' must be logical")
-			r <- r & !is.na(r)
-		}
-		if (missing(select)) { 
-			v <- TRUE
-		} else {
-			nl <- as.list(seq_along(d))
-			names(nl) <- names(d)
-			v <- eval(substitute(select), nl, parent.frame())
-		}
+		r <- if (missing(subset)) {
+				TRUE
+			} else {
+				r <- eval(substitute(subset), d, parent.frame())
+				if (!is.logical(r)) error("subset", "argument 'subset' must be logical")
+				r & !is.na(r)
+			}
+		v <- if (missing(select)) { 
+				TRUE
+			} else {
+				nl <- as.list(seq_along(d))
+				names(nl) <- names(d)
+				eval(substitute(select), nl, parent.frame())
+			}
 		x[r, v, drop=drop]
 	}
 )
