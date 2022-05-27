@@ -75,13 +75,24 @@ function(x, i, j, ... ,drop=TRUE) {
 
 
 
-
-
-
 setMethod("subset", signature(x="SpatVector"), 
-	function(x, subset, drop=FALSE) {
-		x <- x[which(as.vector(subset)), , drop=drop]
-		messages(x, "subset")
+	function(x, subset, select, drop=FALSE) {
+ 		d <- values(x)
+		if (missing(subset)) {
+			r <- rep_len(TRUE, nrow(v))
+		} else {
+			r <- eval(substitute(subset), d, parent.frame())
+			if (!is.logical(r)) stop("'subset' must be logical")
+			r <- r & !is.na(r)
+		}
+		if (missing(select)) 
+			vars <- rep_len(TRUE, ncol(x))
+		else {
+			nl <- as.list(seq_along(d))
+			names(nl) <- names(d)
+			vars <- eval(substitute(select), nl, parent.frame())
+		}
+		x[r, vars, drop=drop]
 	}
 )
 
@@ -120,9 +131,16 @@ function(x, i, j, ... , drop=FALSE) {
 	}
 })
 
+setMethod("[", c("SpatVector", "numeric", "logical"),
+function(x, i, j, ... , drop=FALSE) {
+	j <- which(rep_len(j, ncol(x)))
+	x[i, j, drop=drop]
+})
+
+
 setMethod("[", c("SpatVector", "logical", "missing"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- which(i)
+	i <- which(rep_len(i, nrow(x)))
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
@@ -176,6 +194,13 @@ function(x, i, j, ... , drop=FALSE) {
 	x[,jj,drop=drop]
 })
 
+setMethod("[", c("SpatVector", "missing", "logical"),
+function(x, i, j, ... , drop=FALSE) {
+	j <- which(rep_len(j, ncol(x)))
+	x[,j,drop=drop]
+})
+
+
 setMethod("[", c("SpatVector", "numeric", "character"),
 function(x, i, j, ... , drop=FALSE) {
 	j <- stats::na.omit(match(j, names(x)))
@@ -185,17 +210,23 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "logical", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- which(i)
+	i <- which(rep_len(i, nrow(x)))
 	x[i,j,drop=drop]
 })
 
 
 setMethod("[", c("SpatVector", "logical", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- which(i)
+	i <- which(rep_len(i, nrow(x)))
 	x[i,j,drop=drop]
 })
 
+setMethod("[", c("SpatVector", "logical", "logical"),
+function(x, i, j, ... , drop=FALSE) {
+	i <- which(rep_len(i, nrow(x)))
+	j <- which(rep_len(j, ncol(x)))
+	x[i,j,drop=drop]
+})
 
 
 setMethod("[", c("SpatVector", "missing", "missing"),

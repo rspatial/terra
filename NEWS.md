@@ -9,6 +9,7 @@
 ## enhancements 
 
 - `subst` can now substitute the values from multiple input layers with a single output value (layer)
+- `subset<SpatVector>` now behaves like `subset<data.frame>` [#648](https://github.com/rspatial/terra/issues/648) by Andrew Gene Brown
 
 ## new
 

@@ -28,7 +28,7 @@ Select a subset of layers from a SpatRaster.
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{SpatRaster. See \code{\link{subset-vector}} for SpatVector}
   \item{subset}{integer or character. Should indicate the layers (represented as integer or by their names)}
   \item{filename}{character. Output filename}
   \item{overwrite}{logical. If \code{TRUE}, \code{filename} is overwritten}
@@ -38,6 +38,9 @@ Select a subset of layers from a SpatRaster.
 \value{
 SpatRaster
 }
+
+\seealso{See \code{\link{subset-vector}} to subset a \code{SpatVector}}
+
 
 \examples{
 s <- rast(system.file("ex/logo.tif", package="terra"))   
