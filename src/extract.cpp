@@ -693,13 +693,13 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 	if (gtype == "points") {
 		if (method != "bilinear") method = "simple";
 			SpatDataFrame vd = v.getGeometryDF();
-			std::vector<std::vector<double>> xycells;
 			//if (vd.nrow() == ng) {  // single point geometry
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
+			std::vector<std::vector<double>> xycells;
 			if (xy) {
-				std::vector<double> cell = cellFromXY(x, y);
-				xycells = xyFromCell(cells);
+				std::vector<double> xycell = cellFromXY(x, y);
+				xycells = xyFromCell(xycell);
 			}
 			if (!cells & !xy & !weights) {
 				return( extractXYFlat(x, y, method, cells));
