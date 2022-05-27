@@ -85,9 +85,9 @@ setMethod("subset", signature(x="SpatVector"),
 			if (!is.logical(r)) stop("'subset' must be logical")
 			r <- r & !is.na(r)
 		}
-		if (missing(select)) 
+		if (missing(select)) { 
 			vars <- rep_len(TRUE, ncol(d))
-		else {
+		} else {
 			nl <- as.list(seq_along(d))
 			names(nl) <- names(d)
 			vars <- eval(substitute(select), nl, parent.frame())
