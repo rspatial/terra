@@ -251,7 +251,7 @@ setMethod ("as.numeric", "SpatRaster",
 				error("as.numeric", "invalid index")
 			}
 		} else {
-			index <- set.cats(x, 1)
+			index <- activeCat(x, 1)
 		}
 		from <- g[,1]
 		to <- g[,index]

@@ -12,8 +12,6 @@
 \alias{levels<-,SpatRaster-method}
 \alias{cats}
 \alias{cats,SpatRaster-method}
-\alias{setCats}
-\alias{setCats,SpatRaster-method}
 \alias{categories}
 \alias{categories,SpatRaster-method}
   
@@ -24,11 +22,13 @@
 
 A SpatRaster layer can be a categorical variable (factor). Like \code{\link{factor}}s, categories are stored as indices (integer values) that have an associated label. 
 
-The categories can be inspected with \code{levels} and \code{cats}. They are represented by a \code{data.frame} that must have two or more columns, the first one identifying the cell values and the other column(s) providing the category labels. To set categories for multiple layers you can provide \code{levels<-} with a list with one element for each layer. 
+The categories can be inspected with \code{levels} and \code{cats}. They are represented by a \code{data.frame} that must have two or more columns, the first one identifying the cell values and the other column(s) providing the category labels. 
 
 If there are multiple columns with categories, you can set the "active" category. 
 
 \code{cats} returns the entire data.frame, whereas \code{levels} only return two columns: the index and the active category.
+
+To set categories for the first layers you can provide \code{levels<-} with a data.frame or a list with a data.frame. To set categories for multiple layers you can provide \code{levels<-} with a list with one element for each layer. Use \code{categories} to set the categories for a specific layer or specific layers.
 }
 
 \usage{
