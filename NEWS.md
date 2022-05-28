@@ -6,12 +6,14 @@
 - `as.points<SpatRaster>` could return wrong factor labels. [#640](https://github.com/rspatial/terra/issues/640) by Attilio Benini
 - `mask<SpatRaster,SpatVector>` crashed when the results were written to disk. [#646](https://github.com/rspatial/terra/issues/646) by Monika Anna Tomaszewska
 - `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations the points, not the xy-coordinates of the cells.  [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
+- `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652](https://github.com/rspatial/terra/issues/652) by Jakub Nowosad
 
 
 ## enhancements 
 
 - `subst` can now substitute the values from multiple input layers with a single output value (layer)
 - `subset<SpatVector>` now behaves like `subset<data.frame>` [#648](https://github.com/rspatial/terra/issues/648) by Andrew Gene Brown
+- setting category labels with a vector of names is now deprecated. A data.frame with at least two columns should be used. The first column should have the cell values (IDs).
 
 ## new
 

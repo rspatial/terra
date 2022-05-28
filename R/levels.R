@@ -47,29 +47,53 @@ setMethod("levels<-", signature(x="SpatRaster"),
 
 
 
-
 setMethod ("set.cats" , "SpatRaster", 
-	function(x, layer=1, value, index) {
+	function(x, layer=1, value, index=2) {
+
+		if (missing(value)) {
+			error("set.cats", "value cannot be missing")
+			#return(invisible(x@ptr$setCatIndex(layer-1, index)))
+		} 
+		if (layer < 1) {
+			if (!is.list(value)) {
+				error("set.cats", "value should be a list")
+			}
+			if (length(value) != nlyr(x)) {
+				error("set.cats", "length(value) != nlyr(x)")
+			}
+			index <- rep(index, nlyr(x))
+			for (i in 1:length(value)) {
+				set.cats(x, i, value[i], index[i]) 
+			}
+			return(x)
+		}
+		if (length(layer) > 1) {
+			if (!is.list(value)) {
+				error("set.cats", "value should be a list")
+			}
+			if (length(layer) != length(value)) {
+				error("set.cats", "length(value) != length(value)")
+			}
+			index <- rep(index, length(layer))
+			for (i in 1:length(layer)) {
+				set.cats(x, layer[i], value[i], index[i]) 
+			}
+			return(x)
+		}
+
 		layer <- layer[1]
 		if (is.character(layer)) {
 			i <- match(layer, names(x))[1]
 			if (length(i) == 0) {
-				error("setLevels", layer, " is not in names(x)")
+				error("set.cats", layer, " is not in names(x)")
 			}
 			layer <- i
 		} else {
 			stopifnot(layer > 0 && layer <= nlyr(x))
 		}
 
-		if (missing(value)) {
-			if (missing(index)) {
-				return(x@ptr$getCatIndex(layer-1) + 1)
-			} else {
-				return(invisible(x@ptr$setCatIndex(layer-1, index)))
-			}
-		} 
-		if (missing(index)) {
-			index <- 2
+		if (inherits(value, "list")) {
+			value <- value[[1]]
 		}
 		if (is.null(value)) {
 			x@ptr$removeCategories(layer-1)
@@ -77,24 +101,21 @@ setMethod ("set.cats" , "SpatRaster",
 			return(invisible(TRUE))
 		}
 
-		if (inherits(value, "list")) {
-			value <- value[[1]]
-		}
 		setname <- FALSE
 		if (!is.data.frame(value)) {
 			if (is.vector(value) || is.factor(value)) {
 				if ((length(value) == 1) && value[1] == "") {
 					return(invisible(""))
 				}
-				warning("set.cats", "setting categories like this is deprecated; use a two-column data.frame instead")
+				warn("set.cats", "setting categories like this is deprecated; use a two-column data.frame instead")
 				value <- data.frame(value=0:(length(value)-1), category=value)
 			} else {
-				error("set.cats", "value should be a data.frame or a vector")
+				error("set.cats", "value should be a data.frame")
 			}
 		} else {
 			setname <- TRUE
 			if (ncol(value) == 1) {
-				value <- data.frame(value=1:nrow(value), value)
+				error("set.cats", "value should have at least two columns")
 			} else {
 				value[,1] <- round(value[,1])
 				if (length(unique(value[,1])) != nrow(value)) {
@@ -104,7 +125,6 @@ setMethod ("set.cats" , "SpatRaster",
 		}
 
 		index <- max(1, min(ncol(value), index))
-#		if (is.data.frame(value)) {
 		if (setname) {
 			nms <- names(x)
 			nms[layer] <-  colnames(value)[index]
@@ -118,10 +138,6 @@ setMethod ("set.cats" , "SpatRaster",
 
 		value <- .makeSpatDF(value)
 		ok <- x@ptr$setCategories(layer-1, value, index-1)
-#		} else {
-#			value <- as.character(value)
-#			x@ptr$setLabels(layer-1, value)
-#		}
 		x <- messages(x, "set.cats")
 		invisible(ok)
 	}
@@ -130,82 +146,9 @@ setMethod ("set.cats" , "SpatRaster",
 
 setMethod ("categories" , "SpatRaster", 
 	function(x, layer=1, value, index) {
-		layer = layer[1]
-		if (is.character(layer)) {
-			i <- match(layer, names(x))[1]
-			if (length(i) == 0) {
-				error("setLevels", layer, " is not in names(x)")
-			}
-			layer <- i
-		} else {
-			stopifnot(layer > 0 && layer <= nlyr(x))
-		}
-
 		x@ptr <- x@ptr$deepcopy()
-		if (missing(value)) {
-			if (missing(index)) {
-				return(x@ptr$getCatIndex(layer-1) + 1)
-			} else {
-				return(invisible(x@ptr$setCatIndex(layer-1, index)))
-			}
-		} 
-		if (missing(index)) {
-			index <- 2
-		}
-		if (is.null(value)) {
-			x@ptr$removeCategories(layer-1)
-			return(messages(x, "set.cats"))
-		}
-
-
-		if (inherits(value, "list")) {
-			value <- value[[1]]
-		}
-		setname <- FALSE
-		if (!is.data.frame(value)) {
-			if (is.vector(value) || is.factor(value)) {
-				if ((length(value) == 1) && value[1] == "") {
-					return(invisible(""))
-				}
-				value <- data.frame(value=0:(length(value)-1), category=value)
-			} else {
-				error("set.cats", "value should be a data.frame or a vector")
-			}
-		} else {
-			setname <- TRUE
-			if (ncol(value) == 1) {
-				value <- data.frame(value=1:nrow(value), value)
-			} else {
-				value[,1] <- round(value[,1])
-				if (length(unique(value[,1])) != nrow(value)) {
-					error("setCats", "duplicate ID values supplied")
-				}
-			}
-		}
-		#	v <- data.frame(value=0:maxv)
-		#	value <- merge(v, value, by=1, all.x=TRUE)
-		#}
-
-		index <- max(1, min(ncol(value), index))
-#		if (is.data.frame(value)) {
-		if (setname) {
-			nms <- names(x)
-			nms[layer] <-  colnames(value)[index]
-			if (! x@ptr$setNames(nms, FALSE)) {
-				error("names<-", "cannot set name")
-			}
-		}
-
-		if (any(is.na(value[,1]))) {
-			error("categories", "you cannot associate a category with NA")
-		}
-		value <- .makeSpatDF(value)
-		ok <- x@ptr$setCategories(layer-1, value, index-1)
-#		} else {
-#			value <- as.character(value)
-#			x@ptr$setLabels(layer-1, value)
-#		}
-		messages(x, "categories")
+		set.cats(x, layer, value, index)
+		x
 	}
 )
 
@@ -265,7 +208,7 @@ setMethod("cats" , "SpatRaster",
 			}
 			y <- .getSpatDF(cats[[i]]$df)
 			if (active) {
-				y <- y[, c(1, activeCat(x[[i]], i) + 1)]
+				y <- y[, c(1, activeCat(x, i) + 1)]
 			}
 			y
 		})
