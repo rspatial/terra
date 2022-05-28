@@ -158,15 +158,7 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 				time(r) <- x@attributes$time
 				units(r) <- x@attributes$units
 				depth(r) <- x@attributes$depth
-				levs <- x@attributes$levels
-				isdf <- sapply(levs, function(i) inherits(i, "data.frame")) 
-				if (any(isdf)) {
-					for (i in 1:nlyr(r)) {
-						set.cats(r, i, levs[[i]])
-					}
-				} else {
-					levels(r) <- levs
-				}
+				levels(r) <- x@attributes$levels
 			} else {
 				levels(r) <- x@attributes
 			}

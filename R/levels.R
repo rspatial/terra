@@ -22,7 +22,7 @@ setMethod("levels", signature(x="SpatRaster"),
 		lapply(x, function(i) {
 			d <- .getSpatDF(i$df)
 			if (ncol(d) == 0) return("")
-			d[,max(1, i$index+1)]
+			d[, c(1, max(1, i$index+1))]
 		})
 	}
 )
@@ -86,6 +86,7 @@ setMethod ("set.cats" , "SpatRaster",
 				if ((length(value) == 1) && value[1] == "") {
 					return(invisible(""))
 				}
+				warning("set.cats", "setting categories like this is deprecated; use a two-column data.frame instead")
 				value <- data.frame(value=0:(length(value)-1), category=value)
 			} else {
 				error("set.cats", "value should be a data.frame or a vector")
