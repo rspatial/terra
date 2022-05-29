@@ -287,29 +287,40 @@ rbind.SpatVector <- function(x, y, ...) {
 }
 
 
+# this way names of named arguments are used
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ..., warn=TRUE) {
-		skips <- 0
-		hv <- hasValues(x)
-		dots <- list(...)
-		x@ptr <- x@ptr$deepcopy()
-		opt <- spatOptions()
-		for (i in dots) {
-			if (inherits(i, "SpatRaster")) {
-				x@ptr$addSource(i@ptr, warn, opt)
-				if (x@ptr$messages$has_error) {
-					messages(x, "c")
-					return()
-				}
-			} else {
-				skips = skips + 1
-			}
+		if (missing(x)) {
+			rast(list(...))
+		} else {
+			rast(list(x, ...))		
 		}
-		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
-		messages(x, "c")
-		x
 	}
 )
+	
+#setMethod("c", signature(x="SpatRaster"), 
+#	function(x, ..., warn=TRUE) {
+#		skips <- 0
+#		hv <- hasValues(x)
+#		dots <- list(...)
+#		x@ptr <- x@ptr$deepcopy()
+#		opt <- spatOptions()
+#		for (i in dots) {
+#			if (inherits(i, "SpatRaster")) {
+#				x@ptr$addSource(i@ptr, warn, opt)
+#				if (x@ptr$messages$has_error) {
+#					messages(x, "c")
+#					return()
+#				}
+#			} else {
+#				skips = skips + 1
+#			}
+#		}
+#		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
+#		messages(x, "c")
+#		x
+#	}
+#)
 
 
 

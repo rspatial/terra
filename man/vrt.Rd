@@ -19,7 +19,7 @@ Create a Virtual Raster Tiles (VRT) dataset from a collection of file-based rast
 \arguments{
   \item{x}{character. Filenames of raster "tiles". See \code{\link{tiles}}}
   \item{filename}{character. Output VRT filename}  
-  \item{options}{character. Options as for \url{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt}}
+  \item{options}{character. Options as for \href{https://gdal.org/programs/gdalbuildvrt.html}{gdalbuildvrt}}
   \item{overwrite}{logical. Should \code{filename} be overwritten if it exists?}
 }
 
