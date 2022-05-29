@@ -168,8 +168,8 @@ if <code>x</code> is a <code>SpatVector</code>: SpatVector or, if <code>drop=TRU
 <span class="r-in"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">### SpatVector</span></span>
-<span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="vect.html">vect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">v</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span>,<span class="op">]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
@@ -180,18 +180,17 @@ if <code>x</code> is a <code>SpatVector</code>: SpatVector or, if <code>drop=TRU
 <span class="r-out co"><span class="r-pr">#&gt;</span>  type        : &lt;num&gt;    &lt;chr&gt; &lt;num&gt;    &lt;chr&gt; &lt;num&gt; &lt;int&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      :     1 Diekirch     2 Diekirch   218 32543</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    1 Diekirch     3  Redange   259 18664</span>
-<span class="r-in"><span class="va">v</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 12, 2  (geometries, attributes)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.74414, 6.528252, 49.44781, 50.18162  (xmin, xmax, ymin, ymax)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  source      : lux.shp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 2, 2  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 5.826232, 6.315773, 49.78479, 50.18162  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. : lon/lat WGS 84 (EPSG:4326) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  names       :   NAME_1  ID_2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  type        :    &lt;chr&gt; &lt;num&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      : Diekirch     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Diekirch     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                Diekirch     3</span>
+<span class="r-in"></span>
 <span class="r-in"><span class="fu">subset</span><span class="op">(</span><span class="va">v</span>, <span class="va">NAME_1</span> <span class="op">==</span> <span class="st">"Diekirch"</span>, <span class="fu"><a href="c.html">c</a></span><span class="op">(</span><span class="va">NAME_1</span>, <span class="va">NAME_2</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
@@ -203,7 +202,6 @@ if <code>x</code> is a <code>SpatVector</code>: SpatVector or, if <code>drop=TRU
 <span class="r-out co"><span class="r-pr">#&gt;</span>  values      : Diekirch Clervaux</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Diekirch Diekirch</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Diekirch  Redange</span>
-<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
