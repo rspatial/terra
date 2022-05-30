@@ -10,7 +10,7 @@
 \title{Cut out a geographic subset}
 
 \description{
-Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. With a SpatRaster you can only extract rectangular areas, but see \code{\link{mask}} for setting cell values within SpatRaster to \code{NA}.
+Cut out a part of a SpatRaster with a SpatExtent, or another object from which an extent can be obtained. You can only crop rectangular areas, but see \code{\link{mask}} for setting cell values within SpatRaster to \code{NA}. Also note that the SpatRaster returned may not have the exactly the same extent as the SpatExtent supplied because you can only select entire cells (rows and columns), and you cannot add now areas. See methods like `\code{\link{resample}} and \code{\link{disaggregate}} to force SpatRasters to align and \code{\link{extend}} to add rows and/or columns.
 
 You can crop a SpatVector with a rectangle, or with another vector (if these are not polygons, the minimum convex hull is used). Unlike with \code{\link{intersect}} the geometries and attributes of \code{y} are not transferred to the output.
 }
