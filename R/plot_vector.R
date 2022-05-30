@@ -152,7 +152,7 @@ setMethod("dots", signature(x="SpatVector"),
 .vect.legend.classes <- function(out) {
 
 	if (isTRUE(out$legend_sort)) {
-		out$uv <- sort(out$uv)
+		out$uv <- sort(out$uv, decreasing=out$legend_sort_decreasing)
 	} else {
 		out$uv <- out$uv[!is.na(out$uv)]
 	}
@@ -287,7 +287,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", sort=TRUE, ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", ...) {
 
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
@@ -301,7 +301,6 @@ setMethod("dots", signature(x="SpatVector"),
 	out$leg$density <- density
 	out$leg$angle <- angle
 	out$leg$border <- border
-	out$legend_sort <- isTRUE(sort)
 
 	nuq <- length(out$uv)
 	if (out$legend_type == "none") {
@@ -353,7 +352,7 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, ...) {
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, ...) {
 
 	out <- list()
 	out$ngeom <- nrow(x)
@@ -419,8 +418,15 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	out$v <- v
 
-	out$uv <- unique(out$v)
-
+	if (!is.logical(sort)) {
+		out$uv <- sort
+		out$legend_sort <- FALSE
+	} else {
+		out$uv <- unique(out$v)
+		out$legend_sort <- isTRUE(sort)
+		out$legend_sort_decreasing <- isTRUE(decreasing)
+	}
+	
 	if (missing(type)) {
 		type <- "depends"
 	} else {

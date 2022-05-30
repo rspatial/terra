@@ -88,7 +88,7 @@ setMethod("rast", signature(x="stars_proxy"),
 )
 
 setMethod("rast", signature(x="list"),
-	function(x) {
+	function(x, warn=TRUE) {
 		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
 		if (!all(i)) {
 			if (!any(i)) {
@@ -99,10 +99,13 @@ setMethod("rast", signature(x="list"),
 			}
 		}
 		# start with an empty raster (alternatively use a deep copy)
-		out <- rast(x[[1]])
+		out <- deepcopy(x[[1]])
+		if (length(x) == 1) {
+			return(out)
+		}
 		opt <- spatOptions()
-		for (i in 1:length(x)) {
-			out@ptr$addSource(x[[i]]@ptr, FALSE, opt)
+		for (i in 2:length(x)) {
+			out@ptr$addSource(x[[i]]@ptr, warn, opt)
 		}
 		out <- messages(out, "rast")
 		lnms <- names(x)

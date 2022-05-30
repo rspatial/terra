@@ -291,9 +291,9 @@ rbind.SpatVector <- function(x, y, ...) {
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ..., warn=TRUE) {
 		if (missing(x)) {
-			rast(list(...))
+			rast(list(...), warn=warn)
 		} else {
-			rast(list(x, ...))		
+			rast(list(x, ...), warn=warn)		
 		}
 	}
 )
