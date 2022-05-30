@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-37</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-38</span>
       </span>
     </div>
 
@@ -56,7 +56,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster,numeric</span>
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, y<span class="op">=</span><span class="fl">1</span>, <span class="va">col</span>, <span class="va">type</span>, mar<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, axes<span class="op">=</span><span class="cn">TRUE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, 
     pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, smooth<span class="op">=</span><span class="cn">FALSE</span>, range<span class="op">=</span><span class="cn">NULL</span>, levels<span class="op">=</span><span class="cn">NULL</span>, 
-    fun<span class="op">=</span><span class="cn">NULL</span>, colNA<span class="op">=</span><span class="cn">NULL</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, reset<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
+    fun<span class="op">=</span><span class="cn">NULL</span>, colNA<span class="op">=</span><span class="cn">NULL</span>, alpha<span class="op">=</span><span class="cn">NULL</span>, sort<span class="op">=</span><span class="cn">FALSE</span>, decreasing<span class="op">=</span><span class="cn">FALSE</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, reset<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,missing</span>
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, maxcell<span class="op">=</span><span class="fl">500000</span>, <span class="va">main</span>, mar<span class="op">=</span><span class="cn">NULL</span>, <span class="va">nc</span>, <span class="va">nr</span>, maxnl<span class="op">=</span><span class="fl">16</span>, <span class="va">...</span><span class="op">)</span>
@@ -67,7 +67,7 @@
 <span class="co"># S4 method for SpatVector,character</span>
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">col</span>, <span class="va">type</span>, mar<span class="op">=</span><span class="cn">NULL</span>, legend<span class="op">=</span><span class="cn">TRUE</span>, add<span class="op">=</span><span class="cn">FALSE</span>, axes<span class="op">=</span><span class="op">!</span><span class="va">add</span>, 
     main<span class="op">=</span><span class="va">y</span>, buffer<span class="op">=</span><span class="cn">TRUE</span>, background<span class="op">=</span><span class="cn">NULL</span>, grid<span class="op">=</span><span class="cn">FALSE</span>, ext<span class="op">=</span><span class="cn">NULL</span>, 
-    plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nr</span>, <span class="va">nc</span>, <span class="va">...</span><span class="op">)</span>
+    sort<span class="op">=</span><span class="cn">TRUE</span>, decreasing<span class="op">=</span><span class="cn">FALSE</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, pax<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">nr</span>, <span class="va">nc</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector,numeric</span>
 <span class="fu">plot</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span>
@@ -118,7 +118,9 @@
 <dt>alpha</dt>
 <dd><p>Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly</p></dd>
 <dt>sort</dt>
-<dd><p>logical. If <code>TRUE</code> legends with categorical values are sorted</p></dd>
+<dd><p>logical. If <code>TRUE</code> legends with categorical values are sorted. If <code>x</code> is a <code>SpatVector</code> you can also supply a vector of the unique values, in the order in which you want them to appear in the legend</p></dd>
+<dt>decreasing</dt>
+<dd><p>logical. If <code>TRUE</code>, legends are sorted in decreasing order</p></dd>
 <dt>grid</dt>
 <dd><p>logical. If <code>TRUE</code> grid lines are drawn. Their properties such as type and color can be set with the <code>pax</code> argument</p></dd>
 <dt>nc</dt>
