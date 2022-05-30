@@ -77,7 +77,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 <span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, crs<span class="op">=</span><span class="st">""</span>, extent<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
 
 <span class="co"># S4 method for list</span>
-<span class="fu">rast</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, warn<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRasterDataset</span>
 <span class="fu">rast</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
@@ -137,6 +137,8 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 <dd><p>character. If the value is not <code>"xyz"</code>, the raster has the same number of rows and colums as the matrix. If the value is <code>"xyz"</code>, the matrix must have at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.</p></dd>
 <dt>digits</dt>
 <dd><p>integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when <code>type="xyz"</code></p></dd>
+<dt>warn</dt>
+<dd><p>logical. If <code>TRUE</code>, a warnings about empty rasters may be emitted</p></dd>
 <dt>...</dt>
 <dd><p>additional arguments passed on to the <code>rast,missing-method</code></p></dd>
 </dl></div>
