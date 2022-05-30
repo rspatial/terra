@@ -168,7 +168,11 @@
 			}
 		}
 	}
-	if (isTRUE(out$legend_sort)) {
+	if (!is.null(out$legend_order)) {
+		ord <- match(out$leg$legend, out$legend_order)
+		out$leg$legend <- out$leg$legend[ord]
+		out$leg$fill <- out$leg$fill[ord]
+	} else if (isTRUE(out$legend_sort)) {
 		ord <- order(out$leg$legend, decreasing=out$legend_sort_decreasing)
 		out$leg$legend <- out$leg$legend[ord]
 		out$leg$fill <- out$leg$fill[ord]
@@ -347,7 +351,12 @@
 	out$interpolate <- FALSE
 	out$legend_draw <- isTRUE(legend)
 	out$legend_only <- isTRUE(legend.only)
-	out$legend_sort <- isTRUE(sort)
+	if (!is.logical(sort)) {
+		out$legend_order <- sort
+		out$legend_sort <- FALSE
+	} else {
+		out$legend_sort <- isTRUE(sort)
+	}
 	out$legend_sort_decreasing <- isTRUE(decreasing)
 
 	if (is.null(mar)) {
