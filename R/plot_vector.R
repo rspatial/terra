@@ -419,7 +419,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$v <- v
 
 	if (!is.logical(sort)) {
-		out$uv <- sort
+		out$uv <- unique(sort)
 		out$legend_sort <- FALSE
 	} else {
 		out$uv <- unique(out$v)
