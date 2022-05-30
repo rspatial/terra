@@ -169,7 +169,7 @@
 		}
 	}
 	if (!is.null(out$legend_order)) {
-		ord <- match(out$leg$legend, out$legend_order)
+		ord <- match(out$legend_order, out$leg$legend)
 		out$leg$legend <- out$leg$legend[ord]
 		out$leg$fill <- out$leg$fill[ord]
 	} else if (isTRUE(out$legend_sort)) {
