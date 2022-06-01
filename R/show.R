@@ -298,7 +298,7 @@ setMethod ("show" , "SpatRaster",
 						if (i > mnr) break
 						if (isf[i]) {
 							cats <- cats(object, i, TRUE)[[1]]
-							j <- match(c(minv[i], maxv[i]), cats[,1])
+							j <- match(r[,i], cats[,1])
 							cats <- cats[j, 2]
 							if (length(cats) > 0) {
 								minv[i] <- cats[1]

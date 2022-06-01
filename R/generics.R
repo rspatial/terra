@@ -1024,11 +1024,12 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		isfact <- is.factor(x)
 		if (any(isfact)) {
 			ff <- which(isfact)
-			levs <- levels(x)
+			levs <- cats(x)
 			for (f in ff) {
 				lvs <- levs[[f]]
-				u[[f]] = factor(u[[f]], levels=(1:length(lvs))-1)
-				levels(u[[f]]) = levs[[f]]
+				fv <- factor(lvs[,2])
+				i <- match(u[[f]], lvs[,1])
+				u[[f]] = fv[i]
 			}
 		}
 		if (!incomparables) {
@@ -1049,6 +1050,10 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			u <- u[!i, , drop=FALSE]
 		}
 		if (as.raster) {
+			if (any(isfact)) {
+				warn("unique", "cannot do 'as.raster=TRUE' with categorical rasters")
+				return(u)
+			}
 			uid <- 1:nrow(u)
 			x <- subst(x, u, uid-1)
 			lab <- apply(u, 1, function(i) paste(i, collapse="_"))
@@ -1075,4 +1080,10 @@ setMethod("unique", signature(x="SpatVector", incomparables="ANY"),
 #		messages(x, "warp")
 #	}
 #)
+
+setMethod("labels", signature(object="SpatRaster"), 
+	function(object, ...)  {
+		names(object)
+	}
+)
 

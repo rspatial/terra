@@ -36,14 +36,12 @@ ext_from_rc <- function(x, r1, r2, c1, c2){
 }
 
 
-
-
-setlabs <- function(x, labs) {
-	x[ (x<1) | (x>length(labs))] <- NA
-	x <- factor(x, levels=1:length(labs))
-	levels(x) <- labs
-	x
-}
+#setlabs <- function(x, labs) {
+#	x[ (x<1) | (x>length(labs))] <- NA
+#	x <- factor(x, levels=1:length(labs))
+#	levels(x) <- labs
+#	x
+#}
 
 
 wmean <- function(p, na.rm=FALSE) {
