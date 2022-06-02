@@ -8,7 +8,7 @@
 		if (cls[i] == "factor") {
 			x$add_column_string(as.character(d[[i]]), nms[i])
 		} else if (cls[i] == "character") {
-			x$add_column_string(d[[i]], nms[i])
+			x$add_column_string(enc2utf8(d[[i]]), nms[i])
 		} else if (cls[i] == "integer") {
 			v <- d[[i]]
 			# min long
