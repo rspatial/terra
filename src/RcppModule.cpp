@@ -74,14 +74,15 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 			}
 			out[i] = d;
 		} else if (itype[i] == 4){
-			//Rcpp::NumericVector tv = Rcpp::wrap(v->getT(i));
-			//SpatTime_t timeNA = NA<SpatTime_t>::value;
-			//for (R_xlen_t j=0; j<tv.size(); j++) {
-			//	if (tv[j] == timeNA) {
-			//		tv[j] = NA_REAL;
-			//	}
-			//}
-			//out[i] = tv;
+			SpatTimeVector tx = v->getT(i);
+			Rcpp::NumericVector tv = Rcpp::wrap(tx.x);
+			SpatTime_t timeNA = NA<SpatTime_t>::value;
+			for (R_xlen_t j=0; j<tv.size(); j++) {
+				if (tv[j] == timeNA) {
+					tv[j] = NA_REAL;
+				}
+			}
+			out[i] = tv;
 		}
 	}
 	out.names() = nms;
@@ -127,6 +128,7 @@ Rcpp::DataFrame get_geometryDF(SpatVector* v) {
 }
 
 
+RCPP_EXPOSED_CLASS(SpatTimeVector)
 RCPP_EXPOSED_CLASS(SpatSRS)
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatMessages)
@@ -145,6 +147,13 @@ RCPP_EXPOSED_CLASS(SpatVectorCollection)
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
+
+    class_<SpatTimeVector>("SpatTimeVector")
+		.constructor()
+		.field("step", &SpatTimeVector::step)
+		.field("zone", &SpatTimeVector::zone)
+		.field("x", &SpatTimeVector::x)
+	;
 
     class_<SpatSRS>("SpatSRS")
 		.method("is_lonlat", &SpatSRS::is_lonlat, "")
@@ -247,10 +256,13 @@ RCPP_MODULE(spat){
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_bool", &SpatDataFrame::add_column_bool)
+		.method("add_column_time", &SpatDataFrame::add_column_time)
 
 		.method("remove_column", (bool (SpatDataFrame::*)(std::string field))( &SpatDataFrame::remove_column))
 		.method("remove_column", (bool (SpatDataFrame::*)(int i))( &SpatDataFrame::remove_column))
 		.method("get_datatypes", &SpatDataFrame::get_datatypes, "")
+		.method("get_timezones", &SpatDataFrame::get_timezones, "")
+		.method("get_timesteps", &SpatDataFrame::get_timesteps, "")
 
 		.method("subset_rows", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_rows), "subset_cols")
 		.method("subset_cols", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_cols), "subset_cols")

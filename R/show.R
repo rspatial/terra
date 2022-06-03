@@ -16,7 +16,7 @@ printDF <- function(x, n=6, first=FALSE) {
 	}
 	d <- dim(x)
 
-	cls <- sapply(x, class)
+	cls <- sapply(x, function(i){ a = class(i); a[length(a)]})
 	cls <- gsub("integer", "int", cls)
 	cls <- gsub("numeric", "num", cls)
 	cls <- gsub("character", "chr", cls)
@@ -42,6 +42,7 @@ printDF <- function(x, n=6, first=FALSE) {
 		}
 	}
 
+	x <- data.frame(sapply(x, as.character))
 	x <- rbind(x[1,,drop=FALSE], x)
 	x[1,] <- cls
 	if (nrow(x) < d[1]) {

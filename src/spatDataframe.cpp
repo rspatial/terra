@@ -34,7 +34,7 @@ SpatDataFrame SpatDataFrame::skeleton() {
 	out.iv = std::vector<std::vector<long>>(iv.size());
 	out.sv = std::vector<std::vector<std::string>>(sv.size());
 	out.bv = std::vector<std::vector<int8_t>>(bv.size());
-	out.tv = std::vector<std::vector<SpatTime_t>>(tv.size());
+	out.tv = std::vector<SpatTimeVector>(tv.size());
 	return out;
 }
 
@@ -81,14 +81,14 @@ int8_t SpatDataFrame::getBvalue(unsigned i, unsigned j) {
 	return bv[j][i];
 }
 
-std::vector<SpatTime_t> SpatDataFrame::getT(unsigned i) {
+SpatTimeVector SpatDataFrame::getT(unsigned i) {
 	unsigned j = iplace[i];
 	return tv[j];
 }
 
 SpatTime_t SpatDataFrame::getTvalue(unsigned i, unsigned j) {
 	j = iplace[j];
-	return tv[j][i];
+	return tv[j].x[i];
 }
 
 
@@ -134,7 +134,7 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 			out.bv[j].push_back(bv[j][range[i]]);
 		}
 		for (size_t j=0; j < tv.size(); j++) {
-			out.tv[j].push_back(tv[j][range[i]]);
+			out.tv[j].push_back(tv[j].x[range[i]]);
 		}
 	}
 	return out;
@@ -328,7 +328,7 @@ void SpatDataFrame::remove_rows(std::vector<unsigned> r) {
 			bv[i].erase(bv[i].begin() +r[j]);
 		}
 		for (size_t i=0; i<tv.size(); i++) {
-			tv[i].erase(tv[i].begin() +r[j]);
+			tv[i].x.erase(tv[i].x.begin() +r[j]);
 		}
 	}
 }
@@ -453,7 +453,23 @@ bool SpatDataFrame::add_column_bool(std::vector<int> x, std::string name) {
 }
 
 
-bool SpatDataFrame::add_column(std::vector<SpatTime_t> x, std::string name) {
+bool SpatDataFrame::add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step="seconds", std::string zone="") {
+	unsigned nr = nrow();
+	if ((nr != 0) & (nr != x.size())) return false; 
+	iplace.push_back(tv.size());
+	itype.push_back(4);
+	names.push_back(name);
+	SpatTimeVector v;
+	v.x = x;
+	v.zone=zone;
+	v.step=step;
+	tv.push_back(v);
+	return true;
+}	
+	
+
+
+bool SpatDataFrame::add_column(SpatTimeVector x, std::string name) {
 	unsigned nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false; 
 	iplace.push_back(tv.size());
@@ -485,9 +501,10 @@ void SpatDataFrame::add_column(unsigned dtype, std::string name) {
 		bv.push_back(bins);
 	} else {
 		SpatTime_t timeNA = NA<SpatTime_t>::value;
-		std::vector<SpatTime_t> sins(nr, timeNA);
+		SpatTimeVector tins;
+		tins.resize(nr, timeNA);
 		iplace.push_back(tv.size());
-		tv.push_back(sins);
+		tv.push_back(tins);
 	}
 	itype.push_back(dtype);
 	names.push_back(name);
@@ -510,7 +527,7 @@ bool SpatDataFrame::cbind(SpatDataFrame &x) {
 			std::vector<int8_t> d = x.getB(i);
 			if (!add_column(d, nms[i])) return false;
 		} else {
-			std::vector<SpatTime_t> d = x.getT(i);
+			SpatTimeVector d = x.getT(i);
 			if (!add_column(d, nms[i])) return false;
 		}
 	}
@@ -550,8 +567,8 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 					x.bv[b].begin(), x.bv[b].end());
 			} else { 
 				size_t a = tv.size()-1;
-				tv[a].insert(tv[a].begin()+nr1, 
-					x.tv[b].begin(), x.tv[b].end());
+				tv[a].x.insert(tv[a].x.begin()+nr1, 
+					x.tv[b].x.begin(), x.tv[b].x.end());
 			} 
 		} else {
 			size_t a = iplace[j];
@@ -570,8 +587,8 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 					bv[a].insert(bv[a].begin()+nr1, 
 					x.bv[b].begin(), x.bv[b].end());
 				} else { 
-					tv[a].insert(tv[a].begin()+nr1, 
-					x.tv[b].begin(), x.tv[b].end());
+					tv[a].x.insert(tv[a].x.begin()+nr1, 
+					x.tv[b].x.begin(), x.tv[b].x.end());
 				} 
 			} else {
 				if (itype[j] == 2) {
@@ -596,7 +613,7 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 						}
 					} else {
 						for (size_t k=0; k<nr2; k++) {
-							sv[a].push_back(std::to_string(x.tv[b][k]));
+							sv[a].push_back(std::to_string(x.tv[b].x[k]));
 						}
 					}
 				} else if (itype[j] == 0) { 
@@ -618,7 +635,7 @@ bool SpatDataFrame::rbind(SpatDataFrame &x) {
 						}
 					} else {
 						for (size_t k=0; k<nr2; k++) {
-							dv[a].push_back(x.tv[b][k]);
+							dv[a].push_back(x.tv[b].x[k]);
 						}
 					}
 
@@ -743,8 +760,8 @@ SpatDataFrame SpatDataFrame::unique(int col) {
 		std::sort(out.bv[0].begin(), out.bv[0].end());
 		out.bv[0].erase(std::unique(out.bv[0].begin(), out.bv[0].end()), out.bv[0].end());
 	} else if (out.itype[0] == 4) {
-		std::sort(out.tv[0].begin(), out.tv[0].end());
-		out.tv[0].erase(std::unique(out.tv[0].begin(), out.tv[0].end()), out.tv[0].end());
+		std::sort(out.tv[0].x.begin(), out.tv[0].x.end());
+		out.tv[0].x.erase(std::unique(out.tv[0].x.begin(), out.tv[0].x.end()), out.tv[0].x.end());
 	}
 	return out;
 }
@@ -798,7 +815,7 @@ std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 	} else if (x.itype[0] == 4) {
 		for (size_t i=0; i<nd; i++) {
 			for (size_t j=0; j<nu; j++) {
-				if (tv[ccol][i] == x.tv[0][j]) {
+				if (tv[ccol].x[i] == x.tv[0].x[j]) {
 					idx[i] = j;
 					continue;
 				}
@@ -826,7 +843,7 @@ std::vector<double> SpatDataFrame::as_double(size_t v) {
 	if (itype[v]==1) {
 		long longNA = NA<long>::value;		
 		for (size_t i=0; i<nrow(); i++){
-			if (tv[j][i] == longNA) {
+			if (tv[j].x[i] == longNA) {
 				out[i] = NAN;	
 			} else {
 				out[i] = (double)iv[j][i];			
@@ -843,10 +860,10 @@ std::vector<double> SpatDataFrame::as_double(size_t v) {
 	} else if (itype[v]==4) {
 		SpatTime_t timeNA = NA<SpatTime_t>::value;
 		for (size_t i=0; i<nrow(); i++){
-			if (tv[j][i] == timeNA) {
+			if (tv[j].x[i] == timeNA) {
 				out[i] = NAN;				
 			} else {
-				out[i] = (double)tv[j][i];
+				out[i] = (double)tv[j].x[i];
 			}
 		}
 	} 
@@ -888,10 +905,10 @@ std::vector<long> SpatDataFrame::as_long(size_t v) {
 	} else if (itype[v]==4) {
 		SpatTime_t timeNA = NA<SpatTime_t>::value;
 		for (size_t i=0; i<nrow(); i++){
-			if (tv[j][i] == timeNA) {
+			if (tv[j].x[i] == timeNA) {
 				out[i] = longNA;				
 			} else {
-				out[i] = (long) tv[j][i];
+				out[i] = (long) tv[j].x[i];
 			}
 		}
 	} 
@@ -921,4 +938,30 @@ std::vector<std::string> SpatDataFrame::as_string(size_t v) {
 	}
 	return out;
 }
+
+
+std::vector<std::string> SpatDataFrame::get_timesteps() {
+	std::vector<std::string> s(ncol(), "");
+	size_t cnt = 0;
+	for (size_t i=0; i<ncol(); i++) {
+		if (itype[i] == 4) {
+			s[i] = tv[cnt].step;
+			cnt++;
+		}
+	}
+	return s;
+}
+
+std::vector<std::string> SpatDataFrame::get_timezones() {
+	std::vector<std::string> s(ncol(), "");
+	size_t cnt = 0;
+	for (size_t i=0; i<ncol(); i++) {
+		if (itype[i] == 4) {
+			s[i] = tv[cnt].zone;
+			cnt++;
+		}
+	}
+	return s;	
+}
+
 

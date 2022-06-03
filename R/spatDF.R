@@ -18,8 +18,12 @@
 			v[is.na(v)] <- 2
 			x$add_column_bool(v, nms[i])
 		} else if (inherits(d[[i]], "numeric")) {
-			v <- as.numeric(d[[i]])
-			x$add_column_double(v, nms[i])
+			x$add_column_double(d[[i]], nms[i])
+		} else if (inherits(d[[i]], "Date")) {
+			x$add_column_time(as.numeric(as.POSIXlt(d[[i]])), nms[i], "days", "")
+		} else if (inherits(d[[i]], "POSIXt")) {
+			tz <- if (nrow(d) > 0) { attr(d[[i]][1], "tzone") } else { "" }
+			x$add_column_time(as.numeric(d[[i]]), nms[i], "seconds", tz)
 		} else {
 			v <- try(as.character(d[[i]]))
 			if (!inherits(v, "try-error")) {
@@ -44,6 +48,16 @@
 	for (i in ints) d[[i]] <- as.integer(d[[i]])
 	bools <- which(x$itype == 3)
 	for (i in bools) d[[i]] <- as.logical(d[[i]])
+	times <- x$itype == 4
+	if (any(times)) {
+		steps <- x$get_timesteps()
+		for (i in which(times)) {
+			d[[i]] <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d[[i]]
+			if (steps[i] == "days") {
+				d[[i]] <- as.Date(d[[i]])
+			}
+		}
+	}
 	d
 }
 
