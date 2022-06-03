@@ -7,7 +7,11 @@
 setMethod("cells", signature(x="SpatRaster", y="missing"), 
 	function(x, y) {
 		# is this useful?
-		which(!is.na(values(x)))
+		if (hasValues(x)) {
+			which(!is.na(values(x)))
+		} else {
+			1:ncell(x)
+		}
 	}
 )
 
