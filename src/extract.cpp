@@ -572,7 +572,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
     std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + 2*xy + (weights || exact)));
 
 	if (!hasValues()) {
-		setError("raster has no value");
+		setError("raster has no values");
 		return out;
 	}
 /*
@@ -673,7 +673,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
     unsigned ng = v.size();
 
 	if (!hasValues()) {
-		setError("raster has no value");
+		setError("raster has no values");
 		return flat;
 	}
 /*

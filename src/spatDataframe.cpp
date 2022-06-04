@@ -34,7 +34,7 @@ SpatDataFrame SpatDataFrame::skeleton() {
 	out.iv = std::vector<std::vector<long>>(iv.size());
 	out.sv = std::vector<std::vector<std::string>>(sv.size());
 	out.bv = std::vector<std::vector<int8_t>>(bv.size());
-	out.tv = std::vector<SpatTimeVector>(tv.size());
+	out.tv = std::vector<SpatTime_v>(tv.size());
 	return out;
 }
 
@@ -81,7 +81,7 @@ int8_t SpatDataFrame::getBvalue(unsigned i, unsigned j) {
 	return bv[j][i];
 }
 
-SpatTimeVector SpatDataFrame::getT(unsigned i) {
+SpatTime_v SpatDataFrame::getT(unsigned i) {
 	unsigned j = iplace[i];
 	return tv[j];
 }
@@ -459,7 +459,7 @@ bool SpatDataFrame::add_column_time(std::vector<SpatTime_t> x, std::string name,
 	iplace.push_back(tv.size());
 	itype.push_back(4);
 	names.push_back(name);
-	SpatTimeVector v;
+	SpatTime_v v;
 	v.x = x;
 	v.zone=zone;
 	v.step=step;
@@ -469,7 +469,7 @@ bool SpatDataFrame::add_column_time(std::vector<SpatTime_t> x, std::string name,
 	
 
 
-bool SpatDataFrame::add_column(SpatTimeVector x, std::string name) {
+bool SpatDataFrame::add_column(SpatTime_v x, std::string name) {
 	unsigned nr = nrow();
 	if ((nr != 0) & (nr != x.size())) return false; 
 	iplace.push_back(tv.size());
@@ -501,7 +501,7 @@ void SpatDataFrame::add_column(unsigned dtype, std::string name) {
 		bv.push_back(bins);
 	} else {
 		SpatTime_t timeNA = NA<SpatTime_t>::value;
-		SpatTimeVector tins;
+		SpatTime_v tins;
 		tins.resize(nr, timeNA);
 		iplace.push_back(tv.size());
 		tv.push_back(tins);
@@ -527,7 +527,7 @@ bool SpatDataFrame::cbind(SpatDataFrame &x) {
 			std::vector<int8_t> d = x.getB(i);
 			if (!add_column(d, nms[i])) return false;
 		} else {
-			SpatTimeVector d = x.getT(i);
+			SpatTime_v d = x.getT(i);
 			if (!add_column(d, nms[i])) return false;
 		}
 	}

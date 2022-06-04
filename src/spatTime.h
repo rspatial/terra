@@ -5,7 +5,7 @@
 //#include <string>
 typedef long long SpatTime_t;
 
-class SpatTimeVector {
+class SpatTime_v {
 	public:
 		std::vector<SpatTime_t> x;
 		std::string zone;

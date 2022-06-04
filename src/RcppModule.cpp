@@ -74,7 +74,7 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 			}
 			out[i] = d;
 		} else if (itype[i] == 4){
-			SpatTimeVector tx = v->getT(i);
+			SpatTime_v tx = v->getT(i);
 			Rcpp::NumericVector tv = Rcpp::wrap(tx.x);
 			SpatTime_t timeNA = NA<SpatTime_t>::value;
 			for (R_xlen_t j=0; j<tv.size(); j++) {
@@ -128,7 +128,7 @@ Rcpp::DataFrame get_geometryDF(SpatVector* v) {
 }
 
 
-RCPP_EXPOSED_CLASS(SpatTimeVector)
+RCPP_EXPOSED_CLASS(SpatTime_v)
 RCPP_EXPOSED_CLASS(SpatSRS)
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatMessages)
@@ -148,11 +148,11 @@ RCPP_MODULE(spat){
 
     using namespace Rcpp;
 
-    class_<SpatTimeVector>("SpatTimeVector")
+    class_<SpatTime_v>("SpatTime_v")
 		.constructor()
-		.field("step", &SpatTimeVector::step)
-		.field("zone", &SpatTimeVector::zone)
-		.field("x", &SpatTimeVector::x)
+		.field("step", &SpatTime_v::step)
+		.field("zone", &SpatTime_v::zone)
+		.field("x", &SpatTime_v::x)
 	;
 
     class_<SpatSRS>("SpatSRS")
