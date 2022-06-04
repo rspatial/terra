@@ -228,6 +228,10 @@ class SpatVector {
 		bool add_column_bool(std::vector<int> x, std::string name) {
 			return df.add_column_bool(x, name);
 		}
+			
+		bool add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step, std::string zone) {
+			return df.add_column_time(x, name, step, zone);
+		}
 
 		void remove_df() {
 			SpatDataFrame empty;

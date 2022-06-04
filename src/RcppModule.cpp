@@ -348,6 +348,7 @@ RCPP_MODULE(spat){
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
 		.method("add_column_bool", &SpatVector::add_column_bool)
+		.method("add_column_time", &SpatVector::add_column_time)
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
 		.method("remove_df", &SpatVector::remove_df)

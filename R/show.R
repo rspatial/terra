@@ -42,7 +42,7 @@ printDF <- function(x, n=6, first=FALSE) {
 		}
 	}
 
-	x <- data.frame(sapply(x, as.character))
+	x <- data.frame(lapply(x, as.character))
 	x <- rbind(x[1,,drop=FALSE], x)
 	x[1,] <- cls
 	if (nrow(x) < d[1]) {

@@ -261,8 +261,10 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			}
 			return(x);
 		}
-		if (length(i) > 1) {
-			error("[[<-", "you can only set one variable at a time")
+		
+		if (NCOL(value)	> 1) {
+			warn("[[<-,SpatVector", "only using the first column")
+			value <- value[,1]
 		}
 
 		name <- i[1]
@@ -272,25 +274,42 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			d <- values(x)
 			d[[name]] <- value
 			values(x) <- d
-		} else {
-			if (is.integer(value)) {
-				ok <- x@ptr$add_column_long(value, name)
-			} else if (is.numeric(value)) {
-				ok <- x@ptr$add_column_double(value, name)
-			} else if (is.logical(value)) {
-				value <- as.integer(value)
-				value[is.na(value)] <- 2
-				ok <- x@ptr$add_column_bool(value, name)
-			} else {
+		} else {		
+			if (inherits(value, "factor")) {
 				ok <- x@ptr$add_column_string(as.character(value), name)
+			} else if (inherits(value, "character")) {
+				ok <- x@ptr$add_column_string(enc2utf8(value), name)
+			} else if (inherits(value, "integer")) {
+				# min long (should query what it is on the system?)
+				value[is.na(value)] <- -2147483648
+				ok <- x@ptr$add_column_long(value, name)
+			} else if (inherits(value, "logical")) {
+				v <- as.integer(value)
+				v[is.na(v)] <- 2
+				ok <- x@ptr$add_column_bool(v, name)
+			} else if (inherits(value, "numeric")) {
+				ok <- x@ptr$add_column_double(value, name)
+			} else if (inherits(value, "Date")) {
+				ok <- x@ptr$add_column_time(as.numeric(as.POSIXlt(value)), name, "days", "")
+			} else if (inherits(value, "POSIXt")) {
+				tz <- if (length(value) > 0) { attr(value[1], "tzone") } else { "" }
+				ok <- x@ptr$add_column_time(as.numeric(value), name, "seconds", tz)
+			} else {
+				v <- try(as.character(value))
+				if (!inherits(v, "try-error")) {
+					ok <- x@ptr$add_column_string(enc2utf8(v), name)
+				} else {
+					ok <- FALSE
+				}
 			}
 			if (!ok) {
-				error("[[<-,SpatVector", "cannot set these values")
-			}
+				error("[[<-,SpatVector", "cannot add these values")
+			}			
 		} 
 		x
 	}
 )
+
 
 setReplaceMethod("[[", c("SpatVector", "numeric", "missing"),
 	function(x, i, j, value) {

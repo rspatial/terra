@@ -135,6 +135,8 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 		}
 		for (size_t j=0; j < tv.size(); j++) {
 			out.tv[j].push_back(tv[j].x[range[i]]);
+			out.tv[j].step = tv[j].step;
+			out.tv[j].zone = tv[j].zone;
 		}
 	}
 	return out;
