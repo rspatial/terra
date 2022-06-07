@@ -60,11 +60,18 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 
 setReplaceMethod("[[", c("SpatRaster", "numeric", "missing"),
 	function(x, i, j, value) {
+		if (!inherits(value, "SpatRaster")) {
+			error(" [[<- ", "Expected a SpatRaster as replacement value")
+		}
 		if (nlyr(value) != length(i)) {
 			error(" [[,SpatRaster,numeric", "length of indices must be equal to the number of layers")
 		}
 		if (any(i<1) | any(i > nlyr(x))) {
 			error(" [[,SpatRaster,numeric", "indices must be between 1 and the number of layers")
+		}
+		if (nlyr(x) == 1) {
+			compareGeom(x, value, crs=FALSE, warncrs=TRUE)
+			return(value)
 		}
 		for (k in 1:length(i)) {
 			if (i[k] == 1) {
