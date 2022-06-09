@@ -226,6 +226,11 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				}
 			} else if (tps[j] == "bool") {
 				poFeature->SetField(j, df.getBvalue(i, j));
+			} else if (tps[j] == "time") {
+				SpatTime_t tval = df.getTvalue(i, j);
+				if (tval != longNA) {
+					poFeature->SetField(j, (GIntBig)tval);
+				}
 			} else {
 				std::string s = df.getSvalue(i, j);
 				if (s != df.NAS) {

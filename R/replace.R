@@ -20,6 +20,14 @@ setMethod("$<-", "SpatRaster",
 		}
 
 		i <- which(name == names(x))[1]
+		if (is.null(value)) {
+			if (is.na(i)) {
+				return(x)
+			} else {
+				return(.subset(x, -i))
+			}
+		}
+
 		if (is.na(i)) {
 			c(x, value)
 		} else if (nlyr(x) == 1) {
