@@ -42,7 +42,7 @@ Select a subset of layers from a SpatRaster or select a subset of records (row) 
 }
 
 \usage{
-\S4method{subset}{SpatRaster}(x, subset, NRE=FALSE, filename="", overwrite=FALSE, ...)
+\S4method{subset}{SpatRaster}(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...)
 
 \S4method{subset}{SpatVector}(x, subset, select, drop=FALSE)
 }
