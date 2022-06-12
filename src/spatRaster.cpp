@@ -1021,7 +1021,7 @@ SpatRaster SpatRaster::makeCategorical(unsigned layer, SpatOptions &opt) {
 
 	if (!hasValues()) {
 		SpatRaster out;
-		out.setError("cannot make categries if the raster has no values");
+		out.setError("cannot make categories if the raster has no values");
 		return out;
 	}
 

@@ -38,6 +38,8 @@ class SpatCategories {
 		virtual ~SpatCategories(){}
 		SpatDataFrame d;
 		unsigned index = 0;
+		
+		bool combine(SpatCategories &x);
 };
 
 
