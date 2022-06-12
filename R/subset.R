@@ -15,7 +15,7 @@ positive_indices <- function(i, n, caller=" [ ") {
 setMethod("subset", signature(x="SpatRaster"), 
 function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
 	if (NSE) {
-		subs <- if (missing(subset)) { 
+		i <- if (missing(subset)) { 
 			names(x)
 		} else {
 			nl <- as.list(seq_along(names(x)))
@@ -23,14 +23,19 @@ function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
 			eval(substitute(subset), nl, parent.frame())
 		}
 	} else { # for calling from other methods
-		subs = subset
-	} 
-	if (is.character(subs)) {
-		i <- match(subs, names(x))
-		if (any(is.na(i))) {
-			error("subset", paste("undefined layer(s) selected:", paste(subs[is.na(i)], collapse=", ")))
+		if (is.character(subset)) {
+			nms <- names(x)
+			i <- match(subset, nms)
+			if (sum(nms[i]==nms) > length(i)) {
+				error("subset", "you cannot select a layer with a name that is not unique")
+			}
+		} else {
+			i = subset
 		}
-	}
+		if (any(is.na(i))) {
+			error("subset", paste("undefined layer(s) selected:", paste(subset[is.na(i)], collapse=", ")))
+		}
+	} 
 	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$subset(i-1, opt)
 	messages(x, "subset")
@@ -39,10 +44,15 @@ function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
 
 
 .subset = function(x, subset, ...) {
-	if (!is.character(subset)) {
-		subset = names(x)[subset]
+	if (is.character(subset)) {
+		nms <- names(x)
+		i <- match(subset, nms)
+		if (sum(nms[i]==nms) > length(i)) {
+			error("subset", "you cannot select a layer with a name that is not unique")
+		}
+	} else {
+		i <- subset
 	}
-	i <- match(subset, names(x))
 	if (any(is.na(i))) {
 		error("subset", paste("undefined layer(s) selected:", paste(subset[is.na(i)], collapse=", ")))
 	}
