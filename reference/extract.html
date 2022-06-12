@@ -67,13 +67,16 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster,numeric</span>
+<span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span>
+
+<span class="co"># S4 method for SpatVector,SpatVector</span>
 <span class="fu">extract</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>SpatRaster</p></dd>
+<dd><p>SpatRaster or SpatVector of polygons</p></dd>
 <dt>y</dt>
 <dd><p>SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers</p></dd>
 <dt>fun</dt>
