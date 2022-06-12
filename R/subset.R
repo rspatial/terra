@@ -25,12 +25,11 @@ function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
 	} else { # for calling from other methods
 		subs = subset
 	} 
-	if (!is.character(subs)) {
-		subs <- names(x)[subs]
-	}
-	i <- match(subs, names(x))
-	if (any(is.na(i))) {
-		error("subset", paste("undefined layer(s) selected:", paste(subs[is.na(i)], collapse=", ")))
+	if (is.character(subs)) {
+		i <- match(subs, names(x))
+		if (any(is.na(i))) {
+			error("subset", paste("undefined layer(s) selected:", paste(subs[is.na(i)], collapse=", ")))
+		}
 	}
 	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$subset(i-1, opt)
