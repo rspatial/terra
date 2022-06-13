@@ -643,7 +643,6 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	SpatVector out;
 
-
 	if (by != "") {
 		SpatVector tmp = aggregate(by, false);
 		if (tmp.hasError()) {
@@ -664,7 +663,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 			}
 		}
 		out.df = tmp.df;
-		out.srs = out.srs;
+		out.srs = srs;
 		return out;
 	}
 
