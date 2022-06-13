@@ -201,7 +201,7 @@ setMethod("activeCat<-" , "SpatRaster",
 setMethod("cats" , "SpatRaster", 
 	function(x, layer, active=FALSE) {
 		if (!missing(layer)) {
-			x <- .subset(x, layer)
+			x <- subset(x, layer, NSE=FALSE)
 		}
 		cats <- x@ptr$getCategories()
 		lapply(1:nlyr(x), function(i) {

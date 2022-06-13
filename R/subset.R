@@ -13,7 +13,7 @@ positive_indices <- function(i, n, caller=" [ ") {
 
 
 setMethod("subset", signature(x="SpatRaster"), 
-function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
+function(x, subset, NSE=TRUE, filename="", overwrite=FALSE, ...) {
 	if (NSE) {
 		i <- if (missing(subset)) { 
 			names(x)
@@ -30,37 +30,19 @@ function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
 				error("subset", "you cannot select a layer with a name that is not unique")
 			}
 		} else {
-			i = subset
+			i <- subset
 		}
 		if (any(is.na(i))) {
 			error("subset", paste("undefined layer(s) selected:", paste(subset[is.na(i)], collapse=", ")))
 		}
 	} 
+	i <- positive_indices(i, nlyr(x), "subset")
 	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$subset(i-1, opt)
 	messages(x, "subset")
 	return(x)
 } )
 
-
-.subset = function(x, subset, ...) {
-	if (is.character(subset)) {
-		nms <- names(x)
-		i <- match(subset, nms)
-		if (sum(nms[i]==nms) > length(i)) {
-			error("subset", "you cannot select a layer with a name that is not unique")
-		}
-	} else {
-		i <- subset
-	}
-	if (any(is.na(i))) {
-		error("subset", paste("undefined layer(s) selected:", paste(subset[is.na(i)], collapse=", ")))
-	}
-	opt <- spatOptions(...)
-	x@ptr <- x@ptr$subset(i-1, opt)
-	messages(x, "subset")
-	return(x)
-}
 
 
 setMethod("[", c("SpatRaster", "SpatVector", "missing"),
@@ -78,7 +60,7 @@ setMethod("[", c("SpatRaster", "SpatVector", "missing"),
 setMethod("[", c("SpatRaster", "character", "missing"),
 	function(x, i, j, ... ,drop=TRUE) {
 		i <- grep(i, names(x))
-		.subset(x, i, ...)
+		subset(x, i, NSE=FALSE, ...)
 	}
 )
 
@@ -86,25 +68,24 @@ setMethod("[", c("SpatRaster", "character", "missing"),
 
 setMethod("[[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	.subset(x, i, ...)
+	subset(x, i, NSE=FALSE, ...)
 })
 
 setMethod("$", "SpatRaster",  
 	function(x, name) { 
-		.subset(x, name) 
+		subset(x, name, NSE=FALSE) 
 	} 
 )
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	.subset(x, which(i), ...)
+	subset(x, which(i), NSE=FALSE, ...)
 })
 
 
 setMethod("[[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	i <- positive_indices(i, nlyr(x), " [[ ")
-	.subset(x, i, ...)
+	subset(x, i, NSE=FALSE, ...)
 })
 
 
