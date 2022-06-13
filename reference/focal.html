@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -62,26 +62,46 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+
+  
 <dt>w</dt>
 <dd><p>window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See Details.</p></dd>
+
+
 <dt>fun</dt>
 <dd><p>function that takes multiple numbers, and returns a numeric vector (one or multiple numbers). For example mean, modal, min or max</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments passed to <code>fun</code> such as <code>na.rm</code></p></dd>
+
+
 <dt>na.policy</dt>
 <dd><p>character. Can be used to determine the cells of <code>x</code> for which focal values should be computed. Must be one of "all" (compute for all cells), "only" (only for cells that are <code>NA</code>) or "omit" (skip cells that are <code>NA</code>). Note that the value of this argument does not affect which cells around each focal cell are included in the computations (use <code>na.rm=TRUE</code> to ignore cells that are <code>NA</code> for that)</p></dd>
+
+
 <dt>fillvalue</dt>
 <dd><p>numeric. The value of the cells in the virtual rows and columns outside of the raster</p></dd>
+
+
 <dt>expand</dt>
 <dd><p>logical. If <code>TRUE</code> The value of the cells in the virtual rows and columns outside of the raster are set to be the same as the value on the border. Only available for "build-in" <code>fun</code>s such as mean, sum, min and max</p></dd>
+
+
 <dt>silent</dt>
 <dd><p>logical. If <code>TRUE</code> error messages are printed that may occur when trying <code>fun</code> to determine the length of the returned value. This can be useful in debugging a <code>fun</code> that does not work</p></dd>
+
+
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
+
 <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
+
+
 <dt>wopt</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -162,7 +182,7 @@ The window used must have odd dimensions. If you need even sides, you can use a 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

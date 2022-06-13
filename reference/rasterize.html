@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -66,32 +66,56 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatVector or a two-column matrix (point coordinates)</p></dd>
-<dt>y</dt>
+
+  
+  <dt>y</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>field</dt>
+
+  
+  <dt>field</dt>
 <dd><p>character or numeric. If <code>field</code> is a character, it should a variable name in <code>x</code>. If <code>field</code> is numeric it typically is a single number or a vector of length <code>nrow(x)</code>. The values are recycled to <code>nrow(x)</code></p></dd>
-<dt>values</dt>
+
+
+  <dt>values</dt>
 <dd><p>numeric. For when <code>x</code> is a matrix. Normally of length 1 or nrow(x). The values will be recycled to <code>nrow(x)</code></p></dd>
-<dt>fun</dt>
+
+  
+  <dt>fun</dt>
 <dd><p>function, summarizing function that returns a single number; for when there are multiple points in one cell. For example <code>mean</code>, <code>length</code> (to get a count), <code>min</code> or <code>max</code>. Only used if <code>x</code> consists of points</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>additional arguments passed to <code>fun</code> if <code>x</code> has point geometries</p></dd>
-<dt>background</dt>
+
+  
+  <dt>background</dt>
 <dd><p>numeric. Value to put in the cells that are not covered by any of the features of <code>x</code>. Default is <code>NA</code></p></dd>
-<dt>touches</dt>
+
+  
+  <dt>touches</dt>
 <dd><p>logical. If <code>TRUE</code>, all cells touched by lines or polygons are affected, not just those on the line render path, or whose center point is within the polygon. If <code>touches=TRUE</code>, <code>add</code> cannot be <code>TRUE</code></p></dd>
-<dt>update</dt>
+
+
+  <dt>update</dt>
 <dd><p>logical. If <code>TRUE</code>, the values of the input SpatRaster are updated</p></dd>
-<dt>sum</dt>
+
+  
+  <dt>sum</dt>
 <dd><p>logical. If <code>TRUE</code>, the values of overlapping geometries are summed instead of replaced; and <code>background</code> is set to zero. Only used if <code>x</code> does not consists of points</p></dd>
-<dt>cover</dt>
+ 
+
+  <dt>cover</dt>
 <dd><p>logical. If <code>TRUE</code> and the geometry of <code>x</code> is polygons, the fraction of a cell that is covered by the polygons is returned. This is estimated by determining presence/absence of the polygon in at least 100 sub-cells (more of there are very few cells)</p></dd>
-<dt>filename</dt>
+ 
+
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>overwrite</dt>
+
+  <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
-<dt>wopt</dt>
+  
+  <dt>wopt</dt>
 <dd><p>list with additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -99,7 +123,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
 
     <div id="ref-examples">
@@ -140,7 +166,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

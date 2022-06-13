@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -64,20 +64,28 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatVector</p></dd>
-<dt>y</dt>
+
+  <dt>y</dt>
 <dd><p>SpatVector or NULL</p></dd>
-<dt>distance</dt>
+
+  <dt>distance</dt>
 <dd><p>numeric. maximum distance</p></dd>
-<dt>k</dt>
+
+  <dt>k</dt>
 <dd><p>positive integer. number of neighbors. Ignored if <code>distance &gt; 0</code></p></dd>
-<dt>centroids</dt>
+
+  <dt>centroids</dt>
 <dd><p>logical. Should the centroids of polygons be used?</p></dd>
-<dt>symmetrical</dt>
+
+  <dt>symmetrical</dt>
 <dd><p>logical. If <code>TRUE</code>, a near pair is only included once. That is, if geometry 1 is near to geometry 3, the implied nearness between 3 and 1 is not reported. Ignored if <code>k</code> neighbors are returned</p></dd>
-<dt>pairs</dt>
+
+  <dt>pairs</dt>
 <dd><p>logical. If <code>TRUE</code> pairwise nearest points are returned (only relevant when using at least one SpatVector of lines or polygons</p></dd>
-<dt>lines</dt>
+
+  <dt>lines</dt>
 <dd><p>logical. If <code>TRUE</code> lines between the nearest points instead of (the nearest) points</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -85,7 +93,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>matrix</p>
+    
+
+<p>matrix</p>
     </div>
 
     <div id="ref-examples">
@@ -110,7 +120,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

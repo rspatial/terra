@@ -18,7 +18,7 @@ See focal for an easier to use method."><meta property="og:image" content="/logo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -64,22 +64,37 @@ See focal for an easier to use method."><meta property="og:image" content="/logo
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+
 <dt>w</dt>
 <dd><p>window. The window can be defined as one (for a square) or two numbers (row, col); or with an odd-sized weights matrix. See the Details section in <code><a href="focal.html">focal</a></code></p></dd>
+
+
 <dt>fun</dt>
 <dd><p><code><a href="https://rdrr.io/pkg/Rcpp/man/cppFunction.html" class="external-link">cppFunction</a></code> that iterates over cells. For C++ functions that operate on a single focal window, or for R functions use <code><a href="focal.html">focal</a></code> instead. The function must have at least three arguments. The first argument can have any name, but it must be a <code>Rcpp::NumericVector</code>, <code>Rcpp::IntegerVector</code> or a <code>std::vector&lt;double&gt;</code>. This is the container that receives the focal values. The other two arguments <code>ni</code> and <code>wi</code> must be of type <code>size_t</code>. <code>ni</code> represents the number of cells and <code>nw</code> represents the size of (number of elements in) the window</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments to <code>fun</code></p></dd>
+
+
 <dt>fillvalue</dt>
 <dd><p>numeric. The value of the cells in the virtual rows and columns outside of the raster</p></dd>
+
+
 <dt>silent</dt>
 <dd><p>logical. If <code>TRUE</code> error messages are printed that may occur when trying <code>fun</code> to determine the length of the returned value. This can be useful in debugging a <code>fun</code> that does not work</p></dd>
+
+
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
+
 <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
+
+
 <dt>wopt</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -158,7 +173,7 @@ See focal for an easier to use method."><meta property="og:image" content="/logo
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

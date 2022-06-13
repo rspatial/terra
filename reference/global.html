@@ -19,7 +19,7 @@ You can compute a weighted mean or sum by providing a SpatRaster with weights.'>
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -65,16 +65,22 @@ You can compute a weighted mean or sum by providing a SpatRaster with weights.'>
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>fun</dt>
+
+  <dt>fun</dt>
 <dd><p>function to be applied to summarize the values by zone. Either as one of these character values: "max", "min", "mean", "sum", "range", "rms" (root mean square), "sd", "std" (population sd, using <code>n</code> rather than <code>n-1</code>), "isNA", "notNA"; or, for relatively small SpatRasters, a proper function</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>additional arguments passed on to <code>fun</code></p></dd>
-<dt>weights</dt>
+  
+  <dt>weights</dt>
 <dd><p>NULL or SpatRaster</p></dd>
+  
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>data.frame</code> with a row for each layer</p>
+    
+
+<p>A <code>data.frame</code> with a row for each layer</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -105,7 +111,7 @@ You can compute a weighted mean or sum by providing a SpatRaster with weights.'>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

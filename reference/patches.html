@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -61,20 +61,28 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+
 <dt>directions</dt>
 <dd><p>integer indicating which cells are considered adjacent. Should be 8 (Queen's case) or 4 (Rook's case)</p></dd>
-<dt>zeroAsNA</dt>
+
+  <dt>zeroAsNA</dt>
 <dd><p>logical. If <code>TRUE</code> treat cells that are zero as if they were <code>NA</code></p></dd>
-<dt>allowGaps</dt>
+
+  <dt>allowGaps</dt>
 <dd><p>logical. If <code>TRUE</code> there may be gaps in the patch IDs (e.g. you may have patch IDs 1, 2, 3 and 5, but not 4). If it is FALSE, these numbers will be recoded from 1 to the number of patches (4 in this example)</p></dd>
-<dt>filename</dt>
+
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>options for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster. Cell values are patch numbers</p>
+    
+
+<p>SpatRaster. Cell values are patch numbers</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -146,7 +154,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

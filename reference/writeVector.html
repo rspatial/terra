@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -62,18 +62,25 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatVector</p></dd>
-<dt>filename</dt>
+
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>filetype</dt>
+
+  <dt>filetype</dt>
 <dd><p>character. A file format associated with a GDAL "driver" such as "ESRI Shapefile". See <code>gdal(drivers=TRUE)</code> or the <a href="https://gdal.org/drivers/vector/index.html" class="external-link">GDAL docs</a>. If <code>NULL</code> it is attempted to guess the filetype from the filename extension</p></dd>
-<dt>layer</dt>
+
+  <dt>layer</dt>
 <dd><p>character. Output layer name. If <code>NULL</code> the filename is used</p></dd>
-<dt>insert</dt>
+
+  <dt>insert</dt>
 <dd><p>logical. If <code>TRUE</code>, a new layer is inserted into the file, if the format allows it (e.g. GPKG allows that). See <code><a href="vector_layers.html">vector_layers</a></code> to remove a layer</p></dd>
-<dt>overwrite</dt>
+
+  <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
-<dt>options</dt>
+
+  <dt>options</dt>
 <dd><p>character. Format specific GDAL options such as "ENCODING=UTF-8". Use NULL or "" to not use any options</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
@@ -105,7 +112,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

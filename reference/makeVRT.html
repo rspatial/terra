@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -62,46 +62,67 @@
     <h2>Arguments</h2>
     <dl><dt>filename</dt>
 <dd><p>character. raster filename (without ".vrt" exension)</p></dd>
-<dt>nrow</dt>
+
+  <dt>nrow</dt>
 <dd><p>positive integer, the number of rows</p></dd>
-<dt>ncol</dt>
+
+  <dt>ncol</dt>
 <dd><p>positive integer, the number of columns</p></dd>
-<dt>nlyr</dt>
+
+  <dt>nlyr</dt>
 <dd><p>positive integer, the number of layers</p></dd>
-<dt>extent</dt>
+
+  <dt>extent</dt>
 <dd><p>SpatExtent or missing</p></dd>
-<dt>xmin</dt>
+
+  <dt>xmin</dt>
 <dd><p>numeric. minimum x coordinate (only used if <code>extent</code> is missing)</p></dd>
-<dt>ymin</dt>
+
+  <dt>ymin</dt>
 <dd><p>numeric. minimum y coordinate (only used if <code>extent</code> is missing)</p></dd>
-<dt>xres</dt>
+
+  <dt>xres</dt>
 <dd><p>postive number. x resolution</p></dd>
-<dt>yres</dt>
+
+  <dt>yres</dt>
 <dd><p>postive number. y resolution)</p></dd>
-<dt>xycenter</dt>
+
+  <dt>xycenter</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>xmin</code> and <code>xmax</code> represent the coordinates of the center of the ext	reme cell, in stead of the coordinates of the outside corner. Only used of <code>extent</code> is missing</p></dd>
-<dt>crs</dt>
+
+  <dt>crs</dt>
 <dd><p>character. Coordinate reference system description</p></dd>
-<dt>lyrnms</dt>
+
+  <dt>lyrnms</dt>
 <dd><p>character. Layer names</p></dd>
-<dt>datatype</dt>
+
+  <dt>datatype</dt>
 <dd><p>character. One of "INT2S", "INT4S", "INT1U", "INT2U", "INT4U", "FLT4S", "FLT8S". If missing, this is guessed from the file size (INT1U for 1 byte per value, INT2S for 2 bytes and FLT4S for 4 bytes per value). This may be wrong because, for example, 2 bytes per value may in fact be INT2U (with the U for unsigned) values</p></dd>
-<dt>NAflag</dt>
+
+  <dt>NAflag</dt>
 <dd><p>numeric. The value used as the "NA flag"</p></dd>
-<dt>bandorder</dt>
+
+  <dt>bandorder</dt>
 <dd><p>character. One of "BIL", "BIP", or "BSQ". That is Band Interleaved by Line, or by Pixel, or Band SeQuential</p></dd>
-<dt>byteorder</dt>
+
+  <dt>byteorder</dt>
 <dd><p>character. One of "LSB", "MSB". "MSB" is common for files generated on Linux systems, whereas "LSB" is common for files generated on windows</p></dd>
-<dt>toptobottom</dt>
+
+  <dt>toptobottom</dt>
 <dd><p>logical. If <code>FALSE</code>, the values are read bottom to top</p></dd>
-<dt>offset</dt>
+
+  <dt>offset</dt>
 <dd><p>numeric. offset to be applied</p></dd>
-<dt>scale</dt>
+
+  <dt>scale</dt>
 <dd><p>numeric. scale to be applied</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>character (.VRT filename)</p>
+    
+
+<p>character (.VRT filename)</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -120,7 +141,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ If the origin and crs are the same, you should consider using these other functi
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -63,9 +63,11 @@ If the origin and crs are the same, you should consider using these other functi
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster to be resampled</p></dd>
-<dt>y</dt>
+
+  <dt>y</dt>
 <dd><p>SpatRaster with the geometry that <code>x</code> should be resampled to</p></dd>
-<dt>method</dt>
+
+  <dt>method</dt>
 <dd><p>character. Method used for estimating the new cell values. One of:</p>  
 <p><code>near</code>: nearest neighbor. This method is fast, and it can be the preferred method if the cell values represent classes. It is not a good choice for continuous values. This is used by default if the first layer of <code>x</code> is categorical.</p>
 <p><code>bilinear</code>: bilinear interpolation. This is the default if the first layer of <code>x</code> is numeric (not categorical).</p>	
@@ -75,14 +77,20 @@ If the origin and crs are the same, you should consider using these other functi
 <p><code>sum</code>: the weighted sum of all non-NA contributing grid cells.</p>
 <p><code>min, q1, med, q3, max, average, mode, rms</code>: the minimum, first quartile, median, third quartile, maximum, mean, mode, or root-mean-square value of all non-NA contributing grid cells.</p>
 <p></p></dd>
-<dt>filename</dt>
+
+  
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -117,7 +125,7 @@ If the origin and crs are the same, you should consider using these other functi
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

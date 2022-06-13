@@ -18,7 +18,7 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -88,28 +88,40 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
+
 <dt>trunc</dt>
 <dd><p>logical; truncate values to integers. Cells with the same value are merged. Therefore, if <code>trunc=FALSE</code> the object returned can have many cells and can be very large</p></dd>
+
 <dt>dissolve</dt>
 <dd><p>logical; combine cells with the same values? If <code>TRUE</code> only the first layer in <code>x</code> is processed</p></dd>
+
 <dt>values</dt>
 <dd><p>logical; include cell values as attributes?</p></dd>
+
 <dt>multi</dt>
 <dd><p>logical. If <code>TRUE</code> a multi-point geometry is returned</p></dd>
+
 <dt>skiplast</dt>
 <dd><p>logical. If <code>TRUE</code> the last point of a polygon (which is the same as the first point) is not included</p></dd>
+
 <dt>extent</dt>
 <dd><p>logical. if <code>TRUE</code>, a polygon for the extent of the SpatRaster is returned. It has vertices for each grid cell, not just the four corners of the raster. This can be useful for more precise projection. In other cases it is better to do <code>as.polygons(ext(x))</code> to get a much smaller object returned that covers the same extent</p></dd>
+
 <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code> cells that are <code>NA</code> are ignored</p></dd>
+
 <dt>na.all</dt>
 <dd><p>logical. If <code>TRUE</code> cells are only ignored if <code>na.rm=TRUE</code> and their value is <code>NA</code> for <b>all</b> layers instead of for <code>any</code> layer</p></dd>
+
 <dt>crs</dt>
 <dd><p>character. The coordinate reference system (see <code><a href="crs.html">crs</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatVector</p>
+    
+
+<p>SpatVector</p>
     </div>
 
     <div id="ref-examples">
@@ -165,7 +177,7 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

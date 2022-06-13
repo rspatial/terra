@@ -19,7 +19,7 @@ See extract for extraction of values by cell, point, or otherwise."><meta proper
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -65,20 +65,28 @@ See extract for extraction of values by cell, point, or otherwise."><meta proper
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>y</dt>
+
+  <dt>y</dt>
 <dd><p>SpatRaster. Cell values must be positive integers. They indicate the first layer to select for each cell</p></dd>
-<dt>z</dt>
+
+  <dt>z</dt>
 <dd><p>positive integer. The number of layers to select</p></dd>
-<dt>repint</dt>
+
+  <dt>repint</dt>
 <dd><p>integer &gt; 1 and &lt; nlyr(x) allowing for repeated selection at a fixed interval. For example, if <code>x</code> has 36 layers, and the value of a cell in <code>y</code>=2 and <code>repint</code> = 12, the values for layers 2, 14 and 26 are returned</p></dd>
-<dt>filename</dt>
+
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -110,7 +118,7 @@ See extract for extraction of values by cell, point, or otherwise."><meta proper
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -64,14 +64,19 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatVector</p></dd>
+
 <dt>bnd</dt>
 <dd><p>SpatVector to set the outer boundary of the voronoi diagram</p></dd>
+
 <dt>tolerance</dt>
 <dd><p>numeric &gt;= 0, snapping tolerance (0 is no snapping)</p></dd>
+
 <dt>as.lines</dt>
 <dd><p>logical. If <code>TRUE</code>, lines are returned without the outer boundary</p></dd>
+
 <dt>deldir</dt>
 <dd><p>logical. If <code>TRUE</code>, the <code><a href="https://rdrr.io/pkg/deldir/man/deldir.html" class="external-link">deldir</a></code> is used instead of the GEOS C++ library method. It has been reported that <code>deldir</code> does not choke on very large data sets</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -92,6 +97,14 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : -55, 100, -65, 100  (xmin, xmax, ymin, ymax)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. :  </span>
 <span class="r-in"></span>
+<span class="r-in"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">delaunay</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">d</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  class       : SpatVector </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  geometry    : polygons </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions  : 18, 0  (geometries, attributes)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  extent      : 0, 45, -10, 45  (xmin, xmax, ymin, ymax)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  coord. ref. :  </span>
+<span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">v</span>, lwd<span class="op">=</span><span class="fl">2</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="lines.html">lines</a></span><span class="op">(</span><span class="va">x</span>, col<span class="op">=</span><span class="st">"gray"</span>, lwd<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="lines.html">points</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -110,7 +123,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

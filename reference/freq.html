@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -61,18 +61,25 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>digits</dt>
+
+  <dt>digits</dt>
 <dd><p>integer. Used for rounding the values before tabulation. Ignored if <code>NA</code></p></dd>
-<dt>value</dt>
+
+  <dt>value</dt>
 <dd><p>numeric. An optional single value to only count the number of cells with that value. This value can be <code>NA</code></p></dd>
-<dt>bylayer</dt>
+
+  <dt>bylayer</dt>
 <dd><p>logical. If <code>TRUE</code> tabulation is done by layer</p></dd>
-<dt>usenames</dt>
+  
+  <dt>usenames</dt>
 <dd><p>logical. If <code>TRUE</code> layers are identified by their names instead of their numbers. Only relevant if <code>bylayer</code> is <code>TRUE</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>matrix</code> or <code>data.frame</code> with 3 columns (layer, value, count) or, if <code>bylayer=FALSE</code> two columns (value, count). If any of the layers of <code>x</code> is categorical, there is an additional column (label). 
+    
+
+<p><code>matrix</code> or <code>data.frame</code> with 3 columns (layer, value, count) or, if <code>bylayer=FALSE</code> two columns (value, count). If any of the layers of <code>x</code> is categorical, there is an additional column (label). 
 A <code>data.frame</code> is returned if <code>usenames=TRUE</code> or if any of the layers of <code>x</code> is categorical.</p>
     </div>
 
@@ -147,7 +154,7 @@ A <code>data.frame</code> is returned if <code>usenames=TRUE</code> or if any of
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

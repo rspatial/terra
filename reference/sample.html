@@ -19,7 +19,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -74,42 +74,63 @@ In order to assure regularity when requesting a regular sample, the number of ce
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster, SpatVector or SpatExtent</p></dd>
-<dt>size</dt>
+
+  <dt>size</dt>
 <dd><p>numeric. The sample size. If <code>x</code> is a SpatVector, you can also provide a vector of the same length as <code>x</code> in wich case sampling is done seperately for each geometry. If <code>x</code> is a SpatRaster, and you are using <code>method="regular"</code> you can specify the size as two numbers (number of rows and columns)</p></dd>
-<dt>method</dt>
+
+  <dt>method</dt>
 <dd><p>character. Should be "regular" or "random", If <code>x</code> is a <code>SpatRaster</code>, it can also be "stratified" (each value in <code>x</code> is a stratum) or "weights" (each value in <code>x</code> is a probability weight)</p></dd>
-<dt>replace</dt>
+
+  <dt>replace</dt>
 <dd><p>logical. If <code>TRUE</code>, sampling is with replacement (if <code>method="random"</code></p></dd>
-<dt>na.rm</dt>
+
+  <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code>, codeNAs are removed. Only used with random sampling of cell values. That is with <code>method="random", as.raster=FALSE, cells=FALSE</code></p></dd>
-<dt>as.raster</dt>
+
+  <dt>as.raster</dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatRaster is returned</p></dd>
-<dt>as.df</dt>
+
+  <dt>as.df</dt>
 <dd><p>logical. If <code>TRUE</code>, a data.frame is returned instead of a matrix</p></dd>
-<dt>as.points</dt>
+
+  <dt>as.points</dt>
 <dd><p>logical. If <code>TRUE</code>, a SpatVector of points is returned</p></dd>
-<dt>values</dt>
+
+  <dt>values</dt>
 <dd><p>logical. If <code>TRUE</code> cell values are returned</p></dd>
-<dt>cells</dt>
+
+  <dt>cells</dt>
 <dd><p>logical. If <code>TRUE</code>, cell numbers are returned. If <code>method="stratified"</code> this is always set to <code>TRUE</code> if <code>xy=FALSE</code></p></dd>
-<dt>xy</dt>
+
+  <dt>xy</dt>
 <dd><p>logical. If <code>TRUE</code>, cell coordinates are returned</p></dd>
-<dt>ext</dt>
+
+  <dt>ext</dt>
 <dd><p>SpatExtent or NULL to restrict sampling to a a subset of the area of <code>x</code></p></dd>
-<dt>warn</dt>
+
+  <dt>warn</dt>
 <dd><p>logical. Give a warning if the sample size returned is smaller than requested</p></dd>
-<dt>weights</dt>
+
+  <dt>weights</dt>
 <dd><p>SpatRaster. Used to provide weights when <code>method="stratified"</code></p></dd>
-<dt>strata</dt>
+
+
+  <dt>strata</dt>
 <dd><p>if not NULL, stratified random sampling is done, taking <code>size</code> samples from each stratum. If <code>x</code> has polygon geometry, <code>strata</code> must be a field name (or index) in <code>x</code>. If <code>x</code> has point geometry, <code>strata</code> can be a SpatVector of polygons or a SpatRaster</p></dd>
-<dt>chess</dt>
+
+  <dt>chess</dt>
 <dd><p>character. One of "", "white", or "black". For stratified sampling if <code>strata</code> is a SpatRaster. If not "", samples are only taken from alternate cells, organized like the "white" or "black" fields on a chessboard</p></dd>
-<dt>lonlat</dt>
+
+  
+  <dt>lonlat</dt>
 <dd><p>logical. If <code>TRUE</code>, sampling of a SpatExtent is weighted by <code>cos(latitude)</code>. For SpatRaster and SpatVector this done based on the <code><a href="crs.html">crs</a></code>, but it is ignored if <code>as.raster=TRUE</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>numeric matrix, data.frame, SpatRaster or SpatVector</p>
+    
+
+<p>numeric matrix, data.frame, SpatRaster or SpatVector</p>
     </div>
 
     <div id="ref-examples">
@@ -227,7 +248,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

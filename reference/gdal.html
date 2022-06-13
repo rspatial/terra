@@ -18,7 +18,7 @@ GDAL is the software library that terra builds on to read and write spatial data
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -65,16 +65,22 @@ GDAL is the software library that terra builds on to read and write spatial data
     <h2>Arguments</h2>
     <dl><dt>warn</dt>
 <dd><p>If <code>NA</code> and <code>drivers=FALSE</code>, the version of the library specified by <code>lib</code> is returned. Otherwise, the value should be an integer between 1 and 4 representing the level of GDAL warnings and errors that are passed to R. 1 = warnings and errors; 2 = errors only (recoverable errors as a warning); 3 = irrecoverable errors only; 4 = ignore all errors and warnings. The default setting is 3</p></dd>
-<dt>drivers</dt>
+
+  <dt>drivers</dt>
 <dd><p>logical. If <code>TRUE</code> a data.frame with the raster and vector data formats that are available.</p></dd>
-<dt>lib</dt>
+ 
+  <dt>lib</dt>
 <dd><p>character. "gdal", "proj", or "geos", or any other value to get the versions numbers of all three</p></dd>
-<dt>size</dt>
+
+  <dt>size</dt>
 <dd><p>numeric. The new cache size in MB</p></dd>
-<dt>option</dt>
+  
+  <dt>option</dt>
 <dd><p>character. GDAL configuration option name, or a "name=value" string (in which case the value argument is ignored</p></dd>
-<dt>value</dt>
+
+  <dt>value</dt>
 <dd><p>character. value for GDAL configuratoin option. Use "" to reset it to its default value</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -82,7 +88,9 @@ GDAL is the software library that terra builds on to read and write spatial data
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>character</p>
+    
+
+<p>character</p>
     </div>
 
     <div id="ref-examples">
@@ -112,7 +120,7 @@ GDAL is the software library that terra builds on to read and write spatial data
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

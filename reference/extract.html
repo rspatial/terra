@@ -18,7 +18,7 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -77,30 +77,43 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector of polygons</p></dd>
+
 <dt>y</dt>
 <dd><p>SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers</p></dd>
+
 <dt>fun</dt>
 <dd><p>function to summarize the data by geometry. If <code>weights=TRUE</code> or <code>exact=TRUE</code> only <code>mean</code>, <code>sum</code>, <code>min</code> and <code>max</code> are accepted)</p></dd>
+
 <dt>...</dt>
 <dd><p>additional arguments to <code>fun</code> if <code>y</code> is a SpatVector. For example <code>na.rm=TRUE</code>. Or arguments passed to the <code>SpatRaster,SpatVector</code> method if <code>y</code> is a matrix (such as the <code>method</code> and <code>cells</code> arguments)</p></dd>
+
 <dt>method</dt>
 <dd><p>character. method for extracting values with points ("simple" or "bilinear"). With "simple" values for the cell a point falls in are returned. With "bilinear" the returned values are interpolated from the values of the four nearest raster cells</p></dd>
+
 <dt>list</dt>
 <dd><p>logical. If <code>FALSE</code> the output is simplified to a <code>matrix</code> (if <code>fun=NULL</code>)</p></dd>
+
 <dt>factors</dt>
 <dd><p>logical. If <code>TRUE</code> the categories are returned as factors instead of their numerical representation. The value returned becomes a data.frame if it otherwise would have been a matrix, even if there are no factors</p></dd>
+
 <dt>cells</dt>
 <dd><p>logical. If <code>TRUE</code> the cell numbers are also returned, unless <code>fun</code> is not <code>NULL</code>. Also see <code><a href="cells.html">cells</a></code></p></dd>
+
 <dt>xy</dt>
 <dd><p>logical. If <code>TRUE</code> the coordinates of the cells are also returned, unless <code>fun</code> is not <code>NULL</code>. Also see <code><a href="xyCellFrom.html">xyFromCell</a></code></p></dd>
+
 <dt>weights</dt>
 <dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the approximate fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
+
 <dt>exact</dt>
 <dd><p>logical. If <code>TRUE</code> and <code>y</code> has polygons, the exact fraction of each cell that is covered is returned as well, for example to compute a weighted mean</p></dd>
+
 <dt>touches</dt>
 <dd><p>logical. If <code>TRUE</code>, values for all cells touched by lines or polygons are extracted, not just those on the line render path, or whose center point is within the polygon. Not relevant for points; and always considered <code>TRUE</code> when <code>weights=TRUE</code> or <code>exact=TRUE</code></p></dd>
+
 <dt>layer</dt>
 <dd><p>character or numeric to select the layer to extract from for each geometry. If <code>layer</code> is a character it can be a name in <code>y</code> or a vector of layer names. If it is numeric, it must be integer values between <code>1</code> and <code>nlyr(x)</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -268,7 +281,7 @@ When argument y is a SpatVector, and list=FALSE, the first column has the ID (re
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

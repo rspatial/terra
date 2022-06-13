@@ -18,7 +18,7 @@ See describe for getting information about the sub-datasets present in a file.'>
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -75,18 +75,25 @@ See describe for getting information about the sub-datasets present in a file.'>
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>character (filename), or SpatRaster, or list of SpatRaster objects, or missing. If multiple filenames are provided, it is attempted to make SpatRasters from these, and combine them into a SpatRasterDataset</p></dd>
+
 <dt>ids</dt>
 <dd><p>optional. vector of integer subdataset ids. Ignored if the first value is not a positive integer</p></dd>
+
 <dt>crs</dt>
 <dd><p>character. Description of the Coordinate Reference System (map projection) in <code>PROJ.4</code>, <code>WKT</code> or <code>authority:code</code> notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned</p></dd>
+
 <dt>extent</dt>
 <dd><p><code><a href="SpatExtent-class.html">SpatExtent</a></code></p></dd>
+
 <dt>...</dt>
 <dd><p>additional <code>SpatRaster</code> objects</p></dd>
+ 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRasterDataset</p>
+    
+
+<p>SpatRasterDataset</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -147,7 +154,7 @@ See describe for getting information about the sub-datasets present in a file.'>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

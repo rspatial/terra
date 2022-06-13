@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -83,62 +83,92 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
-<dt>y</dt>
+
+  <dt>y</dt>
 <dd><p>missing or positive integer or name indicating the layer(s) to be plotted</p></dd>
-<dt>col</dt>
+
+  <dt>col</dt>
 <dd><p>character. Colors. The default is <code>rev(grDevices::terrain.colors(50))</code></p></dd>
-<dt>type</dt>
+
+ 
+  <dt>type</dt>
 <dd><p>character. Type of map/legend. One of "continuous", "classes", or "interval"</p></dd>
-<dt>mar</dt>
+
+  <dt>mar</dt>
 <dd><p>numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use <code>mar=NA</code> to not set the margins</p></dd>
-<dt>legend</dt>
+
+  <dt>legend</dt>
 <dd><p>logical or character. If not <code>FALSE</code> a legend is drawn. The character value can be used to indicate where the legend is to be draw. For example "topright" or "bottomleft". Use <code>plg</code> for more refined placement (SpatVector data only)</p></dd>
-<dt>axes</dt>
+
+  <dt>axes</dt>
 <dd><p>logical. Draw axes?</p></dd>
-<dt>buffer</dt>
+
+  <dt>buffer</dt>
 <dd><p>logical. If <code>TRUE</code> the plotting area is slightly larger than the extent of <code>x</code></p></dd>
-<dt>background</dt>
+
+  <dt>background</dt>
 <dd><p>background color. Default is no color (white)</p></dd>
-<dt>plg</dt>
+
+  <dt>plg</dt>
 <dd><p>list with parameters for drawing the legend. See the arguments for <code><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></code></p></dd>
-<dt>pax</dt>
+
+  <dt>pax</dt>
 <dd><p>list with parameters for drawing axes. See the arguments for <code><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></code></p></dd>
-<dt>maxcell</dt>
+  
+  <dt>maxcell</dt>
 <dd><p>positive integer. Maximum number of cells to use for the plot</p></dd>
-<dt>smooth</dt>
+
+  <dt>smooth</dt>
 <dd><p>logical. If <code>TRUE</code> the cell values are smoothed (for continuous legend)</p></dd>
-<dt>range</dt>
+
+  <dt>range</dt>
 <dd><p>numeric. minimum and maximum values to be used for the continuous legend</p></dd>
-<dt>levels</dt>
+
+  <dt>levels</dt>
 <dd><p>character. labels to be used for the classes legend</p></dd>
-<dt>fun</dt>
+
+  <dt>fun</dt>
 <dd><p>function to be called after plotting each SpatRaster layer to add something to each map (such as text, legend, lines). For example, with SpatVector <code>v</code>, you could do <code>fun=function() lines(v)</code>. The function may have one argument, representing the the layer that is plotted (1 to the number of layers)</p></dd>
-<dt>colNA</dt>
+  
+  <dt>colNA</dt>
 <dd><p>character. color for the NA values</p></dd>
-<dt>alpha</dt>
+
+  <dt>alpha</dt>
 <dd><p>Either a single numeric between 0 and 1 to set the transparency for all colors (0 is transparent, 1 is opaque) or a SpatRaster with values between 0 and 1 to set the transparency by cell. To set the transparency for a given color, set it to the colors directly</p></dd>
-<dt>sort</dt>
+
+  <dt>sort</dt>
 <dd><p>logical. If <code>TRUE</code> legends with categorical values are sorted. If <code>x</code> is a <code>SpatVector</code> you can also supply a vector of the unique values, in the order in which you want them to appear in the legend</p></dd>
-<dt>decreasing</dt>
+
+  <dt>decreasing</dt>
 <dd><p>logical. If <code>TRUE</code>, legends are sorted in decreasing order</p></dd>
-<dt>grid</dt>
+
+  <dt>grid</dt>
 <dd><p>logical. If <code>TRUE</code> grid lines are drawn. Their properties such as type and color can be set with the <code>pax</code> argument</p></dd>
-<dt>nc</dt>
+
+  <dt>nc</dt>
 <dd><p>positive integer. Optional. The number of columns to divide the plotting device in (when plotting multiple layers)</p></dd>
-<dt>nr</dt>
+
+  <dt>nr</dt>
 <dd><p>positive integer. Optional. The number of rows to divide the plotting device in (when plotting multiple layers)</p></dd>
-<dt>main</dt>
+
+  <dt>main</dt>
 <dd><p>character. Main plot titles (one for each layer to be plotted)</p></dd>
-<dt>maxnl</dt>
+
+  <dt>maxnl</dt>
 <dd><p>positive integer. Maximum number of layers to plot (for a multi-layer object)</p></dd>
-<dt>add</dt>
+
+  <dt>add</dt>
 <dd><p>logical. If <code>TRUE</code> add the object to the current plot</p></dd>
-<dt>ext</dt>
+
+  <dt>ext</dt>
 <dd><p>SpatExtent. Can be use instead of xlim and ylim to set the extent of the plot</p></dd>
-<dt>reset</dt>
+
+  <dt>reset</dt>
 <dd><p>logical. If <code>TRUE</code> add the margins (see argument <code>mar</code>) are reset to what they were before calling plot; doing so may affect the display of additional objects that are added to the map (e.g. with  <code><a href="lines.html">lines</a></code></p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>arguments passed to <code>plot("SpatRaster", "numeric")</code> and additional graphical arguments</p></dd>
+  
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -250,7 +280,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

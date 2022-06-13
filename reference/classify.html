@@ -20,7 +20,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -68,27 +68,44 @@ With "cuts" the values are sorted, so that the order in which they are provided 
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>rcl</dt>
+
+  <dt>rcl</dt>
 <dd><p>matrix for classification. This matrix must have 1, 2 or 3 columns. If there are three columns, the first two columns are "from" "to" of the input values, and the third column "becomes" has the new value for that range.</p>  
 <p>The two column matrix ("is", "becomes") can be useful for classifying integer values. In that case, the arguments <code>right</code> and <code>include.lowest</code> are ignored.</p>  
 <p>A single column matrix (or a vector) is interpreted as a set of cuts if there is more than one value. In that case the values are classified based on their location in-between the cut-values.</p>  
 <p>If a single number is provided, that is used to make that number of cuts, at equal intervals between the lowest and highest values of the SpatRaster.</p></dd>
-<dt>include.lowest</dt>
+ 
+  
+  <dt>include.lowest</dt>
 <dd><p>logical, indicating if a value equal to the lowest value in <code>rcl</code> (or highest value in the second column, for <code>right=FALSE</code>) should be included.</p></dd>
-<dt>right</dt>
+
+  
+ <dt>right</dt>
 <dd><p>logical. If <code>TRUE</code>, the intervals are closed on the right (and open on the left). If <code>FALSE</code> they are open at the right and closed at the left. "open" means that the extreme value is *not* included in the interval. Thus, right-closed and left open is <code>(0,1] = {x | 0 &lt; x &lt;= 1}</code>. You can also close both sides with <code>right=NA</code>, that is only meaningful if you "from-to-becomes" classification with integers. For example to classify 1-5 -&gt; 1, 6-10 -&gt; 2, 11-15 -&gt; 3. That may be easier to read and write than the equivalent 1-5 -&gt; 1, 5-10 -&gt; 2, 10-15 -&gt; 3 with <code>right=TRUE</code> and <code>include.lowest=TRUE</code></p></dd>
-<dt>others</dt>
+
+ 
+ <dt>others</dt>
 <dd><p>numeric. If not <code>NULL</code> all values that are not matched are set to this value. Otherwise they retain their original value.</p></dd>
-<dt>brackets</dt>
+ 
+
+ <dt>brackets</dt>
 <dd><p>logical. If <code>TRUE</code>, intervals are have parenthesis or brackets around them to indicate whether they are open or closed. Only applies if <code>rcl</code> is a vector (or single column matrix)</p></dd>
-<dt>filename</dt>
+ 
+
+
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>Additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -172,7 +189,7 @@ With "cuts" the values are sorted, so that the order in which they are provided 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

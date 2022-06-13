@@ -19,7 +19,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -93,58 +93,85 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>filename (character), missing, SpatRaster, SpatRasterDataset, SpatExtent, SpatVector, matrix, array, list of SpatRaster objects. For other types it will be attempted to create a SpatRaster via (`as(x, "SpatRaster")`</p></dd>
+
 <dt>subds</dt>
 <dd><p>positive integer or character to select a sub-dataset. If zero or "", all sub-datasets are returned (if possible)</p></dd>
+
 <dt>lyrs</dt>
 <dd><p>positive integer or character to select a subset of layers (a.k.a. "bands")</p></dd>
+
 <dt>opts</dt>
 <dd><p>character. GDAL dataset open options</p></dd>
+
 <dt>nrows</dt>
 <dd><p>positive integer. Number of rows</p></dd>
+
 <dt>ncols</dt>
 <dd><p>positive integer. Number of columns</p></dd>
+
 <dt>nlyrs</dt>
 <dd><p>positive integer. Number of layers</p></dd>
+
 <dt>xmin</dt>
 <dd><p>minimum x coordinate (left border)</p></dd>
+
 <dt>xmax</dt>
 <dd><p>maximum x coordinate (right border)</p></dd>
+
 <dt>ymin</dt>
 <dd><p>minimum y coordinate (bottom border)</p></dd>
+
 <dt>ymax</dt>
 <dd><p>maximum y coordinate (top border)</p></dd>
+
 <dt>crs</dt>
 <dd><p>character. Description of the Coordinate Reference System (map projection) in <code>PROJ.4</code>, <code>WKT</code> or <code>authority:code</code> notation. If this argument is missing, and the x coordinates are within -360 .. 360 and the y coordinates are within -90 .. 90, longitude/latitude is assigned</p></dd>
+
 <dt>keeptime</dt>
 <dd><p>logical. If <code>FALSE</code> the time stamps are discarded</p></dd>
+
 <dt>keepunits</dt>
 <dd><p>logical. If <code>FALSE</code> the layer units are discarded</p></dd>
+
 <dt>props</dt>
 <dd><p>logical. If <code>TRUE</code> the properties (categories and color-table) are kept</p></dd>
+
 <dt>extent</dt>
 <dd><p>object of class SpatExtent. If present, the arguments xmin, xmax, ymin and ymax are ignored</p></dd>
+
 <dt>resolution</dt>
 <dd><p>numeric vector of length 1 or 2 to set the resolution (see <code><a href="dimensions.html">res</a></code>). If this argument is used, arguments <code>ncol</code> and <code>nrow</code> are ignored</p></dd>
+
 <dt>vals</dt>
 <dd><p>numeric. An optional vector with cell values (if fewer values are provided, these are recycled to reach the number of cells)</p></dd>
+
 <dt>names</dt>
 <dd><p>character. An optional vector with layer names (must match the number of layers)</p></dd>
+
 <dt>time</dt>
 <dd><p>time or date stamps for each layer</p></dd>
+
 <dt>units</dt>
 <dd><p>character. units for each layer</p></dd>
+
 <dt>type</dt>
 <dd><p>character. If the value is not <code>"xyz"</code>, the raster has the same number of rows and colums as the matrix. If the value is <code>"xyz"</code>, the matrix must have at least two columns, the first with <code>x</code> (or longitude) and the second with <code>y</code> (or latitude) coordinates that represent the centers of raster cells. The additional columns are the values associated with the raster cells.</p></dd>
+
 <dt>digits</dt>
 <dd><p>integer to set the precision for detecting whether points are on a regular grid (a low number of digits is a low precision). Only used when <code>type="xyz"</code></p></dd>
+
 <dt>warn</dt>
 <dd><p>logical. If <code>TRUE</code>, a warnings about empty rasters may be emitted</p></dd>
+
 <dt>...</dt>
 <dd><p>additional arguments passed on to the <code>rast,missing-method</code></p></dd>
+  
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -214,7 +241,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

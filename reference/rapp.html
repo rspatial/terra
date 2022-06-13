@@ -19,7 +19,7 @@ See app or Summary-methods if you want to apply a function to all cells (not a r
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -66,32 +66,46 @@ See app or Summary-methods if you want to apply a function to all cells (not a r
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>first</dt>
+
+  <dt>first</dt>
 <dd><p>SpatRaster or positive integer between 1 and nlyr(x), indicating the first layer in the range of layers to be considered</p></dd>
-<dt>last</dt>
+
+  <dt>last</dt>
 <dd><p>SpatRaster or positive integer between 1 and nlyr(x), indicating the last layer in the range to be considered</p></dd>
-<dt>fun</dt>
+  
+  <dt>fun</dt>
 <dd><p>function to be applied</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>additional arguments passed to <code>fun</code></p></dd>
-<dt>allyrs</dt>
+ 
+  <dt>allyrs</dt>
 <dd><p>logical. If <code>TRUE</code>, values for all layers are passed to <code>fun</code> but the values outside of the range are set to <code>fill</code></p></dd>
-<dt>fill</dt>
+
+  <dt>fill</dt>
 <dd><p>numeric. The fill value for the the values outside of the range, for when <code>allyrs=TRUE</code></p></dd>
-<dt>clamp</dt>
+ 
+  <dt>clamp</dt>
 <dd><p>logical. If <code>FALSE</code> and the specified range is outside <code>1:nlyr(x)</code> all cells are considered <code>NA</code>. Otherwise, the invalid part of the range is ignored</p></dd>
-<dt>circular</dt>
+ 
+  <dt>circular</dt>
 <dd><p>logical. If <code>TRUE</code> the values are considered circular, such as the days of the year. In that case, if first &gt; last the layers used are c(first:nlyr(x), 1:last). Otherwise, the range would be considered invalid and <code>NA</code> would be returned</p></dd>
-<dt>filename</dt>
+ 
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>overwrite</dt>
+
+  <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
-<dt>wopt</dt>
+
+  <dt>wopt</dt>
 <dd><p>list with named options for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -129,7 +143,7 @@ See app or Summary-methods if you want to apply a function to all cells (not a r
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

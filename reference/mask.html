@@ -20,7 +20,7 @@ Select geometries of x that intersect, or not intersect, with the geometries of 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -75,20 +75,28 @@ Select geometries of <code>x</code> that intersect, or not intersect, with the g
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
+
 <dt>mask</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
+
 <dt>inverse</dt>
 <dd><p>logical. If <code>TRUE</code>, areas on mask that are _not_ the <code>maskvalue</code> are masked</p></dd>
+
 <dt>maskvalues</dt>
 <dd><p>numeric. The value(s) in <code>mask</code> that indicates the cells of <code>x</code> that should become <code>updatevalue</code> (default = <code>NA</code>)</p></dd>
+
 <dt>updatevalue</dt>
 <dd><p>numeric. The value that cells of <code>x</code> should become if they are not covered by <code>mask</code> (and not <code>NA</code>)</p></dd>
-<dt>touches</dt>
+
+ <dt>touches</dt>
 <dd><p>logical. If <code>TRUE</code>, all cells touched by lines or polygons will be masked, not just those on the line render path, or whose center point is within the polygon</p></dd>
+
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
+
 <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -123,7 +131,7 @@ Select geometries of <code>x</code> that intersect, or not intersect, with the g
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

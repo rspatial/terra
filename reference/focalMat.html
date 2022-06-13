@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -60,16 +60,24 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+
 <dt>d</dt>
 <dd><p>numeric. If <code>type=circle</code>, the radius of the circle (in units of the crs). If <code>type=rectangle</code> the dimension of the rectangle (one or two numbers). If <code>type=Gauss</code> the size of sigma, and optionally another number to determine the size of the matrix returned (default is 3*sigma)</p></dd>
+ 
 <dt>type</dt>
 <dd><p>character indicating the type of filter to be returned</p></dd>
+
 <dt>fillNA</dt>
 <dd><p>logical. If <code>TRUE</code>, zeros are set to <code>NA</code> such that they are ignored in the computations. Only applies to <code>type="circle"</code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>matrix that can be used with <code><a href="focal.html">focal</a></code></p>
+    
+
+<p>matrix that can be used with <code><a href="focal.html">focal</a></code></p>
+
+
     </div>
 
     <div id="ref-examples">
@@ -109,7 +117,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

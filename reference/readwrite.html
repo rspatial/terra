@@ -18,7 +18,7 @@ To write chunks, begin by opening a file with writeStart, then write values to i
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -80,37 +80,60 @@ To write chunks, begin by opening a file with writeStart, then write values to i
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>filename</dt>
+
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>v</dt>
+
+
+  <dt>v</dt>
 <dd><p>vector with cell values to be written</p></dd>
-<dt>start</dt>
+
+  <dt>start</dt>
 <dd><p>integer. Row number (counting starts at 1) from where to start writing <code>v</code></p></dd>
-<dt>row</dt>
+
+
+ <dt>row</dt>
 <dd><p>positive integer. Row number to start from, should be between 1 and nrow(x)</p></dd>
-<dt>nrows</dt>
+
+ <dt>nrows</dt>
 <dd><p>positive integer. How many rows?</p></dd>
-<dt>col</dt>
+
+ <dt>col</dt>
 <dd><p>positive integer. Column number to start from, should be between 1 and ncol(x)</p></dd>
-<dt>ncols</dt>
+
+ <dt>ncols</dt>
 <dd><p>positive integer. How many columns? Default is the number of columns left after the start column</p></dd>
-<dt>mat</dt>
+
+
+ <dt>mat</dt>
 <dd><p>logical. If <code>TRUE</code>, values are returned as a numeric matrix instead of as a vector, except when dataframe is <code>TRUE</code>. If any of the layers of <code>x</code> is a factor, the level index is returned, not the label. Use <code>dataframe=TRUE</code> to get the labels</p></dd>
-<dt>dataframe</dt>
+
+ <dt>dataframe</dt>
 <dd><p>logical. If <code>TRUE</code>, values are returned as a <code>data.frame</code> instead of as a vector (also if matrix is <code>TRUE</code>)</p></dd>
-<dt>overwrite</dt>
+
+  
+  <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
-<dt>n</dt>
+
+  <dt>n</dt>
 <dd><p>poistive integer indicating how many copies the data may be in memory at any point in time. This is used to determine how many blocks (large) datasets need to be read</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>For <code>writeStart</code>: additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p>
 <p>For <code>readValues</code>: additional arguments for <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code> (and thus only relevant when <code>dataframe=TRUE</code>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>readValues</code> returns a vector, matrix, or data.frame 
-<code>writeStart</code> returns a list that can be used for processing the file in chunks.
-The other methods invisibly return a logical value indicating whether they were succesful or not. Their purpose is the side-effect of opening or closing files.</p>
+    
+
+<p><code>readValues</code> returns a vector, matrix, or data.frame</p>
+
+
+<p><code>writeStart</code> returns a list that can be used for processing the file in chunks.</p>
+
+
+<p>The other methods invisibly return a logical value indicating whether they were succesful or not. Their purpose is the side-effect of opening or closing files.</p>
     </div>
 
   </div>
@@ -125,7 +148,7 @@ The other methods invisibly return a logical value indicating whether they were 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

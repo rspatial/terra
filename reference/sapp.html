@@ -18,7 +18,7 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -66,21 +66,29 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatRasterDataset</p></dd>
-<dt>fun</dt>
+
+  <dt>fun</dt>
 <dd><p>if <code>x</code> is a <code>SpatRaster</code>: a function that takes a SpatRaster argument and can be applied to each layer of <code>x</code> (e.g. <code><a href="terrain.html">terrain</a></code>. 
   if <code>x</code> is a <code>SpatRasterDataset</code>: a function that is applied to all layers of the SpatRasters in <code>x</code> (e.g. <code>mean</code></p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>additional arguments to be passed to <code>fun</code></p></dd>
-<dt>filename</dt>
+ 
+  <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
-<dt>overwrite</dt>
+
+  <dt>overwrite</dt>
 <dd><p>logical. If <code>TRUE</code>, <code>filename</code> is overwritten</p></dd>
-<dt>wopt</dt>
+
+  <dt>wopt</dt>
 <dd><p>list with named options for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -108,7 +116,7 @@ Or apply the same method to each sub-dataset (SpatRaster) in a SpatRasterDataset
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

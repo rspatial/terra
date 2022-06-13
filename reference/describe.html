@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -61,22 +61,31 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>character. The name of a file with spatial data. Or a fully specified subdataset within a file such as <code>"NETCDF:\"AVHRR.nc\":NDVI"</code></p></dd>
-<dt>sds</dt>
+
+  <dt>sds</dt>
 <dd><p>logical. If <code>TRUE</code> the description or metadata of the subdatasets is returned (if available)</p></dd>
-<dt>meta</dt>
+
+  <dt>meta</dt>
 <dd><p>logical. Get the file level metadata instead</p></dd>
-<dt>parse</dt>
+
+  <dt>parse</dt>
 <dd><p>logical. If <code>TRUE</code>, metadata for subdatasets is parsed into components (if <code>meta=TRUE</code>)</p></dd>
-<dt>options</dt>
+
+  <dt>options</dt>
 <dd><p>character. A vector of valid options (if <code>meta=FALSE</code>) including "json", "mm", "stats", "hist", "nogcp", "nomd", "norat", "noct", "nofl", "checksum", "proj4", "listmdd", "mdd &lt;value&gt;" where &lt;value&gt; specifies a domain or 'all', "wkt_format &lt;value&gt;" where value is one of 'WKT1', 'WKT2', 'WKT2_2015', or 'WKT2_2018', "sd &lt;subdataset&gt;" where &lt;subdataset&gt; is the name or identifier of a sub-dataset. See <a href="https://gdal.org/programs/gdalinfo.html" class="external-link">https://gdal.org/programs/gdalinfo.html</a>. Ignored if <code>sds=TRUE</code></p></dd>
-<dt>print</dt>
+  
+  <dt>print</dt>
 <dd><p>logical. If <code>TRUE</code>, print the results</p></dd>
-<dt>open_opt</dt>
+
+  <dt>open_opt</dt>
 <dd><p>character. Driver specific open options</p></dd>
+   
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>character (invisibly, if <code>print=FALSE</code>)</p>
+    
+
+<p>character (invisibly, if <code>print=FALSE</code>)</p>
     </div>
 
     <div id="ref-examples">
@@ -143,7 +152,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

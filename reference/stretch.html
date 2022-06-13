@@ -19,7 +19,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -66,30 +66,45 @@ For histogram equalization, these arguments are ignored, but you can provide the
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+ 
 <dt>minv</dt>
 <dd><p>numeric &gt;= 0 and smaller than maxv. lower bound of stretched value</p></dd>
+
 <dt>maxv</dt>
 <dd><p>numeric &lt;= 255 and larger than maxv. upper bound of stretched value</p></dd>
+
 <dt>minq</dt>
 <dd><p>numeric &gt;= 0 and smaller than maxq. lower quantile bound of original value. Ignored if smin is supplied</p></dd>
+
 <dt>maxq</dt>
 <dd><p>numeric &lt;= 1 and larger than minq. upper quantile bound of original value. Ignored if smax is supplied</p></dd>
+
 <dt>smin</dt>
 <dd><p>numeric &lt; smax. user supplied lower value for the layers, to be used instead of a quantile computed by the function itself</p></dd>
+
 <dt>smax</dt>
 <dd><p>numeric &gt; smin. user supplied upper value for the layers, to be used instead of a quantile computed by the function itself</p></dd>
+
+
 <dt>histeq</dt>
 <dd><p>logical. If <code>TRUE</code> histogram equalization is used instead of linear stretch</p></dd>
+
 <dt>scale</dt>
 <dd><p>numeric. The scale (maximum value) of the output if <code>histeq=TRUE</code></p></dd>
+
+
 <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
+
 <dt>...</dt>
 <dd><p>additional arguments for writing files as in <code><a href="writeRaster.html">writeRaster</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>SpatRaster</p>
+    
+
+<p>SpatRaster</p>
     </div>
 
     <div id="ref-examples">
@@ -113,7 +128,7 @@ For histogram equalization, these arguments are ignored, but you can provide the
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

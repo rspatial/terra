@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -61,23 +61,40 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
-<dt>fun</dt>
+
+
+  <dt>fun</dt>
 <dd><p>character. The statistic to compute: either "cov" (covariance), "weighted.cov" (weighted covariance), or "pearson" (correlation coefficient) or your own function that takes two vectors as argument to comptue a single number</p></dd>
-<dt>w</dt>
+
+
+  <dt>w</dt>
 <dd><p>SpatRaster with the weights  to compute the weighted covariance. It should have a single layer and the same geometry as <code>x</code></p></dd>
-<dt>asSample</dt>
+
+
+  <dt>asSample</dt>
 <dd><p>logical. If <code>TRUE</code>, the statistic for a sample (denominator is <code>n-1</code>) is computed, rather than for the population (denominator is <code>n</code>). Only for the standard functions</p></dd>
-<dt>na.rm</dt>
+
+    
+  <dt>na.rm</dt>
 <dd><p>logical. Should missing values be removed?</p></dd>
-<dt>maxcell</dt>
+
+  
+  <dt>maxcell</dt>
 <dd><p>postive integer. The number of cells to be regularly sampled. Only used when <code>fun</code> is a function</p></dd>
-<dt>...</dt>
+
+
+  <dt>...</dt>
 <dd><p>additional arguments for <code>fun</code> (if it is a proper function)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>fun</code> is one of the three standard statistics, you get a list with two items: the correlation or (weighted) covariance matrix, and the (weighted) means.
-If <code>fun</code> is a function, you get a matrix.</p>
+    
+
+<p>If <code>fun</code> is one of the three standard statistics, you get a list with two items: the correlation or (weighted) covariance matrix, and the (weighted) means.</p>
+
+
+<p>If <code>fun</code> is a function, you get a matrix.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -143,7 +160,7 @@ If <code>fun</code> is a function, you get a matrix.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

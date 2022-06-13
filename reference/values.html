@@ -18,7 +18,7 @@ By default all values returned are numeric. This is because a vector or matrix c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-42</span>
       </span>
     </div>
 
@@ -67,22 +67,33 @@ By default all values returned are numeric. This is because a vector or matrix c
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
-<dt>mat</dt>
+
+ <dt>mat</dt>
 <dd><p>logical. If <code>TRUE</code>, values are returned as a matrix instead of as a vector, except when dataframe is <code>TRUE</code></p></dd>
-<dt>dataframe</dt>
+
+ <dt>dataframe</dt>
 <dd><p>logical. If <code>TRUE</code>, values are returned as a <code>data.frame</code> instead of as a vector (also if matrix is <code>TRUE</code>)</p></dd>
-<dt>row</dt>
+
+
+ <dt>row</dt>
 <dd><p>positive integer. Row number to start from, should be between 1 and nrow(x)</p></dd>
-<dt>nrows</dt>
+
+ <dt>nrows</dt>
 <dd><p>positive integer. How many rows?</p></dd>
-<dt>col</dt>
+
+ <dt>col</dt>
 <dd><p>positive integer. Column number to start from, should be between 1 and ncol(x)</p></dd>
-<dt>ncols</dt>
+
+ <dt>ncols</dt>
 <dd><p>positive integer. How many columns? Default is the number of columns left after the start column</p></dd>
-<dt>na.rm</dt>
+
+ <dt>na.rm</dt>
 <dd><p>logical. Remove <code>NA</code>s?</p></dd>
-<dt>...</dt>
+
+
+ <dt>...</dt>
 <dd><p>additional arguments passed to <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code></p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -90,7 +101,9 @@ By default all values returned are numeric. This is because a vector or matrix c
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>matrix or data.frame</p>
+    
+
+<p>matrix or data.frame</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -149,7 +162,7 @@ By default all values returned are numeric. This is because a vector or matrix c
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
