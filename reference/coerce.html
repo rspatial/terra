@@ -57,7 +57,7 @@
 <span class="fu">as.vector</span><span class="op">(</span><span class="va">x</span>, mode<span class="op">=</span><span class="st">'any'</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">as.matrix</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">as.matrix</span><span class="op">(</span><span class="va">x</span>, wide<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">as.array</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
@@ -68,11 +68,14 @@
     <dl><dt>x</dt>
 <dd><p>SpatRaster or SpatVector</p></dd>
 
-<dt>...</dt>
-<dd><p>additional argument <code>as.matrix</code>: <code>wide (logical)</code>. If <code>FALSE</code> each layer in the SpatRaster becomes a column in the matrix and each cell in the SpatRaster becomes a row. If <code>TRUE</code> each row in the SpatRaster becomes a row in the matrix and each column in the SpatRaster becomes a column in the matrix</p></dd>
+<dt>wide</dt>
+<dd><p>logical. If <code>FALSE</code> each layer in the SpatRaster becomes a column in the matrix and each cell in the SpatRaster becomes a row. If <code>TRUE</code> each row in the SpatRaster becomes a row in the matrix and each column in the SpatRaster becomes a column in the matrix</p></dd>
 
 <dt>mode</dt>
 <dd><p>this argument is ignored</p></dd>
+
+<dt>...</dt>
+<dd><p>additional arguments (none implemented)</p></dd>
 
 </dl></div>
     <div id="value">
