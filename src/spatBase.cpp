@@ -485,6 +485,7 @@ bool SpatCategories::combine(SpatCategories &x) {
 	if (ids.size() < n) {
 		return false;
 	}
+	return true;
 }
 	
 	

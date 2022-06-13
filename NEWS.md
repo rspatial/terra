@@ -65,9 +65,9 @@ Released on 2022-06-09
 - `as.list` implemented for `<SpatRasterDataset>`.
 - `sources` implemented for `<SpatRasterDataset>`, `<SpatVector>` and `<SpatVectorProxy>` [#638](https://github.com/rspatial/terra/issues/638) by Andrew Gene Brown
 
-# name changes
+## name changes
 
-delauny -> delaunay [#627](https://github.com/rspatial/terra/issues/627) by Derek Friend
+- delauny -> delaunay [#627](https://github.com/rspatial/terra/issues/627) by Derek Friend
 
 
 
