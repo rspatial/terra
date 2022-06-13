@@ -319,11 +319,11 @@ setMethod("as.vector", signature(x="SpatRaster"),
 	}
 )
 
-as.matrix.SpatRaster <- function(x, ...) {
+as.matrix.SpatRaster <- function(x, wide=FALSE, ...) {
 	if (!hasValues(x)) {
 		error("as.matrix", "SpatRaster has no cell values")
 	}
-	wide <- isTRUE(list(...)$wide)
+#	wide <- isTRUE(list(...)$wide)
 	if (wide) {
 		if (nlyr(x) > 1) {
 			m <- values(x, mat=TRUE)
