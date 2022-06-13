@@ -771,11 +771,11 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 
 
 
-SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
+SpatVector SpatVector::delaunay(double tolerance, int onlyEdges) {
 	SpatVector out;
 
 #ifndef GEOS350
-	out.setError("GEOS 3.5 required for delauny");
+	out.setError("GEOS 3.5 required for delaunay");
 	return out;
 #else 
 

@@ -431,7 +431,7 @@ RCPP_MODULE(spat){
 		.method("union_self", ( SpatVector (SpatVector::*)())( &SpatVector::unite ))
 		.method("union_unary", &SpatVector::unaryunion)
 		.method("intersect", &SpatVector::intersect)
-		.method("delauny", &SpatVector::delauny)
+		.method("delaunay", &SpatVector::delaunay)
 		.method("voronoi", &SpatVector::voronoi)
 		.method("hull", &SpatVector::hull)
 

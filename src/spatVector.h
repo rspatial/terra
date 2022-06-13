@@ -301,7 +301,7 @@ class SpatVector {
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
-		SpatVector delauny(double tolerance, int onlyEdges);		
+		SpatVector delaunay(double tolerance, int onlyEdges);		
 		SpatVector hull(std::string htype, std::string by="");
 		SpatVector intersect(SpatVector v);
 		SpatVector unite(SpatVector v);

@@ -39,6 +39,9 @@ x <- vect(wkt)
 v <- voronoi(x)
 v
 
+d <- delaunay(x)
+d
+
 plot(v, lwd=2, col=rainbow(15))
 lines(x, col="gray", lwd=2)
 points(x)
