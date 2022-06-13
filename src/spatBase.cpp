@@ -487,5 +487,5 @@ bool SpatCategories::combine(SpatCategories &x) {
 	}
 	return true;
 }
-	
+
 	
