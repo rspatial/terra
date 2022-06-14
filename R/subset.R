@@ -4,6 +4,7 @@
 # License GPL v3
 
 positive_indices <- function(i, n, caller=" [ ") {
+	stopifnot(is.numeric(i))
 	if (!(all(i <= 0) || all(i >= 0))) {
 		error(caller, "you cannot mix positive and negative indices")
 	}
@@ -16,11 +17,25 @@ setMethod("subset", signature(x="SpatRaster"),
 function(x, subset, NSE=TRUE, filename="", overwrite=FALSE, ...) {
 	if (NSE) {
 		i <- if (missing(subset)) { 
-			names(x)
+			1:nlyr(x)
 		} else {
 			nl <- as.list(seq_along(names(x)))
-			names(nl) <- names(x)
-			eval(substitute(subset), nl, parent.frame())
+			names(nl) <- nms <- names(x)
+			v <- eval(substitute(subset), nl, parent.frame())
+			if (inherits(substitute(subset), "character")) {
+				if (!all(v %in% nms)) {
+					error("subset", "invalid name(s)")				
+				}
+				if (sum(v==nms) > length(v)) {
+					error("subset", "you cannot select a layer with a name that is not unique")
+				}
+				v <- match(v, nms)
+			} else if (inherits(substitute(subset), "name")) {
+				if (sum(nms[v]==nms) > length(v)) {
+					error("subset", "you cannot select a layer with a name that is not unique")
+				}
+			}
+			v
 		}
 	} else { # for calling from other methods
 		if (is.character(subset)) {
@@ -32,10 +47,10 @@ function(x, subset, NSE=TRUE, filename="", overwrite=FALSE, ...) {
 		} else {
 			i <- subset
 		}
-		if (any(is.na(i))) {
-			error("subset", paste("undefined layer(s) selected:", paste(subset[is.na(i)], collapse=", ")))
-		}
 	} 
+	if (any(is.na(i))) {
+		error("subset", "undefined layer(s) selected")
+	}
 	i <- positive_indices(i, nlyr(x), "subset")
 	opt <- spatOptions(filename, overwrite, ...)
 	x@ptr <- x@ptr$subset(i-1, opt)
