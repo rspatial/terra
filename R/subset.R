@@ -26,14 +26,12 @@ function(x, subset, NSE=TRUE, filename="", overwrite=FALSE, ...) {
 				if (!all(v %in% nms)) {
 					error("subset", "invalid name(s)")				
 				}
-				if (sum(v==nms) > length(v)) {
+				if (sum(nms %in% v) > length(v)) {
 					error("subset", "you cannot select a layer with a name that is not unique")
 				}
 				v <- match(v, nms)
-			} else if (inherits(substitute(subset), "name")) {
-				if (sum(nms[v]==nms) > length(v)) {
-					error("subset", "you cannot select a layer with a name that is not unique")
-				}
+			} else if (sum(nms %in% nms[v]) > length(v)) {
+				error("subset", "you cannot select a layer with a name that is not unique")
 			}
 			v
 		}
