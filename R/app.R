@@ -117,6 +117,8 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		ncores <- cores
 		cores <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cores), add=TRUE)
+		expnms <- names(list(...))
+		lapply(expnms, function(n) parallel::clusterExport(cores, n))
 	}
 
 	ncops <- nlyr(x) / nlyr(out)
