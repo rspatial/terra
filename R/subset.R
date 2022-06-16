@@ -13,7 +13,7 @@ positive_indices <- function(i, n, caller=" [ ") {
 }
 
 
-	setMethod("subset", signature(x="SpatRaster"), 
+setMethod("subset", signature(x="SpatRaster"), 
 	function(x, subset, NSE=TRUE, filename="", overwrite=FALSE, ...) {
 		if (NSE) {
 			subset <- if (missing(subset)) { 
@@ -21,7 +21,7 @@ positive_indices <- function(i, n, caller=" [ ") {
 			} else {
 				nl <- as.list(seq_along(names(x)))
 				names(nl) <- nms <- names(x)
-				eval(substitute(subset), nl, parent.frame())
+				v <- eval(substitute(subset), nl, parent.frame())
 				if (!inherits(substitute(subset), "character")) {
 					if (sum(nms %in% nms[v]) > length(v)) {
 						error("subset", "you cannot select a layer with a name that is not unique")
