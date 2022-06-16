@@ -9,9 +9,9 @@ setMethod("is.factor", signature(x="SpatRaster"),
 setMethod("as.factor", signature(x="SpatRaster"), 
 	function(x) {
 		x <- round(x)
-		u <- unique(x)
+		u <- unique(x, TRUE)
 		for (i in 1:nlyr(x)) {
-			set.cats(x, i, data.frame(ID=u[,i], label=u[,i]))
+			set.cats(x, i, data.frame(ID=u[[i]], label=u[[i]]))
 		}
 		x
 	}
