@@ -62,7 +62,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">cellSize</span><span class="op">(</span><span class="va">x</span>, mask<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">cellSize</span><span class="op">(</span><span class="va">x</span>, mask<span class="op">=</span><span class="cn">TRUE</span>, unit<span class="op">=</span><span class="st">"m"</span>, transform<span class="op">=</span><span class="cn">TRUE</span>, rcx<span class="op">=</span><span class="fl">100</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,6 +78,9 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 
   <dt>transform</dt>
 <dd><p>logical. If <code>TRUE</code>, planar CRS data are transformed to lon/lat for accuracy</p></dd>
+
+  <dt>rcx</dt>
+<dd><p>positive integer. The maximum number of rows and columns to be used to compute area of planar data if <code>transform=TRUE</code>. If <code>x</code> has more rows and/or columns, the raster is aggregated to match this limit, and values for the original cells are estimated by bilinear interpolation (see <code>resample</code>). This can save a lot of time</p></dd>
 
   <dt>filename</dt>
 <dd><p>character. Output filename</p></dd>
