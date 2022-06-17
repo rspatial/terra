@@ -59,7 +59,7 @@ See \code{\link{set.ext}} to set the extent in place.
 }
  
 \value{
-SpatExtent
+A \code{\link{SpatExtent}} object. 
 }
 
 \examples{
