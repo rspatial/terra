@@ -345,6 +345,9 @@ setMethod("rast", signature(x="ANY"),
 		xyz <- matrix(as.numeric(xyz), ncol=ncol(xyz), nrow=nrow(xyz))
 	}
 	x <- sort(unique(xyz[,1]))
+	if (lenght(x) == 1) {
+		error("rast", "cannot create a raster geometry from a single x coordinate")
+	}
 	dx <- x[-1] - x[-length(x)]
 
 	rx <- min(dx)
@@ -360,6 +363,9 @@ setMethod("rast", signature(x="ANY"),
 	}
 
 	y <- sort(unique(xyz[,2]))
+	if (lenght(y) == 1) {
+		error("rast", "cannot create a raster geometry from a single y coordinate")
+	}
 	dy <- y[-1] - y[-length(y)]
 	# probably a mistake to use the line below
 	# Gareth Davies suggested that it be removed

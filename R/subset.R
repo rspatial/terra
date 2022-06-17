@@ -35,7 +35,7 @@ setMethod("subset", signature(x="SpatRaster"),
 			if (!all(subset %in% nms)) {
 				error("subset", "invalid name(s)")				
 			}
-			if (sum(nms %in% v) > length(v)) {
+			if (sum(nms %in% subset) > length(subset)) {
 				error("subset", "you cannot select a layer with a name that is not unique")
 			}
 			i <- match(subset, nms)
