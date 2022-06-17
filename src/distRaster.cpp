@@ -2143,7 +2143,7 @@ std::vector<double> SpatVector::length() {
 	return r;
 }
 
-SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, SpatOptions &opt) {
+SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int rcmax, SpatOptions &opt) {
 
 	SpatRaster out = geometry(1);
 	if (out.source[0].srs.wkt == "") {
@@ -2173,19 +2173,15 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 	}
 
 
-
+	SpatOptions xopt(opt);
 	if (lonlat) { 
 		bool disagg = false;
-		SpatOptions xopt(opt);
 		SpatExtent extent = getExtent();
 		if ((out.ncol() == 1) && ((extent.xmax - extent.xmin) > 180)) {
 			disagg = true;
 			std::vector<unsigned> fact = {1,2};
 			out = out.disaggregate(fact, xopt);
 		}
-
-		if (!out.writeStart(opt)) { return out; }
-
 		SpatExtent e = {extent.xmin, extent.xmin+out.xres(), extent.ymin, extent.ymax};
 		SpatRaster onecol = out.crop(e, "near", xopt);
 		SpatVector p = onecol.as_polygons(false, false, false, false, false, xopt);
@@ -2195,6 +2191,11 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 		}
 		std::vector<double> a = p.area(unit, true, {});
 		size_t nc = out.ncol();
+		if (disagg) {
+			if (!out.writeStart(xopt)) { return out; }
+		} else {
+			if (!out.writeStart(opt)) { return out; }
+		}
 		for (size_t i = 0; i < out.bs.n; i++) {
 			std::vector<double> v;
 			v.reserve(out.bs.nrows[i] * nc);
@@ -2205,38 +2206,52 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 			}
 			if (!out.writeBlock(v, i)) return out;
 		}
+		out.writeStop();
 		if (disagg) {
-			out.writeStop();
-			SpatOptions dopt(opt);
-			SpatRaster tmp = out.to_memory_copy(dopt);
+			SpatRaster tmp = out.to_memory_copy(xopt);
 			std::vector<unsigned> fact = {1,2};
 			opt.overwrite=true;
 			out = tmp.aggregate(fact, "sum", true, opt); 
-		} else {
-			out.writeStop();
 		}
 
 	} else {
-		if (!out.writeStart(opt)) { return out; }
 		if (transform) {
-			SpatExtent extent = getExtent();
-			double dy = yres() / 2;
-			SpatOptions popt(opt);
+			bool resample = false;
+//			SpatRaster empty = out.geometry(1);
+			size_t rcx = std::max(rcmax, 10);
+			unsigned frow = 1, fcol = 1;
+			SpatRaster target = out.geometry(1);
+			if ((nrow() > rcx) || (ncol() > rcx)) {
+				resample = true;
+				frow = (nrow() / rcx) + 1;	
+				fcol = (ncol() / rcx) + 1;	
+				out = out.aggregate({frow, fcol}, "mean", false, xopt);
+				xopt.ncopies *= 5;
+				if (!out.writeStart(xopt)) { return out; }
+			} else {
+				opt.ncopies *= 5;
+				if (!out.writeStart(opt)) { return out; }
+			}
+			SpatRaster empty = out.geometry(1);
+			SpatExtent extent = out.getExtent();
+			double dy = out.yres() / 2;
 			for (size_t i = 0; i < out.bs.n; i++) {
-				double ymax = yFromRow(out.bs.row[i]) + dy;
-				double ymin = yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - dy;
+				double ymax = out.yFromRow(out.bs.row[i]) + dy;
+				double ymin = out.yFromRow(out.bs.row[i] + out.bs.nrows[i]-1) - dy;
 				SpatExtent e = {extent.xmin, extent.xmax, ymin, ymax};
-				SpatRaster onechunk = out.crop(e, "near", popt);
-				SpatVector p = onechunk.as_polygons(false, false, false, false, false, popt);
-				//std::vector<double> cells(onechunk.ncell());
-				//std::iota (cells.begin(), cells.end(), 0);
-				//onechunk.setValues(cells);
-				//SpatVector p = onechunk.as_polygons(false, true, false, false, popt);
-				std::vector<double> v;
-				v = p.area(unit, true, {});
+				SpatRaster chunk = empty.crop(e, "near", xopt);
+				SpatVector p = chunk.as_polygons(false, false, false, false, false, xopt);		
+				std::vector<double> v = p.area(unit, true, {});
 				if (!out.writeBlock(v, i)) return out;
+				out.writeStop();
+			}
+			if (resample) {
+				double divr = frow*fcol;
+				out = out.arith(divr, "/", false, xopt);
+				out = out.warper(target, "", "bilinear", false, false, opt);
 			}
 		} else {
+			if (!out.writeStart(opt)) { return out; }
 			double u = unit == "m" ? 1 : unit == "km" ? 1000000 : 10000;
 			double m = out.source[0].srs.to_meter();
 			double a = std::isnan(m) ? 1 : m;
@@ -2245,8 +2260,8 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, Spa
 				std::vector<double> v(out.bs.nrows[i]*ncol(), a);
 				if (!out.writeBlock(v, i)) return out;
 			}
+			out.writeStop();
 		}
-		out.writeStop();
 	} 
 
 	if (mask) {
