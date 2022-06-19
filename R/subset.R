@@ -116,7 +116,6 @@ setMethod("subset", signature(x="SpatVector"),
 					names(nl) <- names(d)
 					eval(substitute(select), nl, parent.frame())
 				}
-			}
 			x[r, v, drop=drop]
 		} else {
 			x[which(as.vector(subset)), select, drop=drop]
