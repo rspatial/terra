@@ -19,6 +19,7 @@
 #define VECMATH_GUARD
 
 #include <functional>
+#include <iterator>
 #include <string>
 #include <type_traits>
 #include <vector>
