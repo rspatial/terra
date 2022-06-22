@@ -1,13 +1,22 @@
-# development version
+
+# development version	
 
 ## bug fixes
 
 - `subst` no longer uses values that it changed earlier on. [#639](https://github.com/rspatial/terra/issues/639) by Paul Smith
 - `as.points<SpatRaster>` could return wrong factor labels. [#640](https://github.com/rspatial/terra/issues/640) by Attilio Benini
+- `mask<SpatRaster,SpatVector>` crashed when the results were written to disk. [#646](https://github.com/rspatial/terra/issues/646) by Monika Anna Tomaszewska
+- `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations the points, not the xy-coordinates of the cells.  [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
+- `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652](https://github.com/rspatial/terra/issues/652) by Jakub Nowosad
+- better support for non-latin characters in the legend [#658](https://github.com/rspatial/terra/issues/658) by Krzysztof Dyba
 
 ## enhancements 
 
 - `subst` can now substitute the values from multiple input layers with a single output value (layer)
+- `subset<SpatVector>` now behaves like `subset<data.frame>` [#648](https://github.com/rspatial/terra/issues/648) by Andrew Gene Brown
+- setting category labels with a vector of names is now deprecated. A data.frame with at least two columns should be used. The first column should have the cell values (IDs).
+- It is now possible to "drop" a layer from a SpatRaster by setting it to NULL [#664](
+https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 
 ## new
 
@@ -15,6 +24,8 @@
 
 
 # version 1.5-34
+
+Released on 2022-06-09
 
 ## bug fixes
 
@@ -55,9 +66,9 @@
 - `as.list` implemented for `<SpatRasterDataset>`.
 - `sources` implemented for `<SpatRasterDataset>`, `<SpatVector>` and `<SpatVectorProxy>` [#638](https://github.com/rspatial/terra/issues/638) by Andrew Gene Brown
 
-# name changes
+## name changes
 
-delauny -> delaunay [#627](https://github.com/rspatial/terra/issues/627) by Derek Friend
+- delauny -> delaunay [#627](https://github.com/rspatial/terra/issues/627) by Derek Friend
 
 
 

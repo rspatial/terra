@@ -172,10 +172,8 @@ setMethod("nearest", signature(x="SpatVector"),
 		if (is.null(y)) {
 			within <- TRUE
 			y <- x
-		} else {
-			if ((geomtype(y) == "polygons") && centroids) {
-				y <- centroids(y)
-			}
+		} else if ((geomtype(y) == "polygons") && centroids) {
+			y <- centroids(y)
 		}
 		z <- x
 		if (within) {

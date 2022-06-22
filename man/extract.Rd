@@ -42,10 +42,12 @@ When argument \code{y} is a \code{SpatVector}, and \code{list=FALSE}, the first 
 \S4method{extract}{SpatRaster,matrix}(x, y, ...)
 
 \S4method{extract}{SpatRaster,numeric}(x, y, ...)
+
+\S4method{extract}{SpatVector,SpatVector}(x, y, ...)
 }
 
 \arguments{
-\item{x}{SpatRaster}
+\item{x}{SpatRaster or SpatVector of polygons}
 \item{y}{SpatVector (for points, lines, polygons), or for points, 2-column matrix or data.frame (x, y) or (lon, lat), or a vector with cell numbers}
 \item{fun}{function to summarize the data by geometry. If \code{weights=TRUE} or \code{exact=TRUE} only \code{mean}, \code{sum}, \code{min} and \code{max} are accepted)}
 \item{...}{additional arguments to \code{fun} if \code{y} is a SpatVector. For example \code{na.rm=TRUE}. Or arguments passed to the \code{SpatRaster,SpatVector} method if \code{y} is a matrix (such as the \code{method} and \code{cells} arguments)}

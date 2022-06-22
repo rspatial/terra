@@ -55,7 +55,7 @@ In writeRaster, and in other methods that generate SpatRaster objects, options f
 
 \code{verbose}\tab logical. If \code{TRUE} debugging information is printed.\cr
 
-\code{steps}\tab postive integers. In how many steps (chunks) do you want to process the data (for debugging)\cr
+\code{steps}\tab positive integers. In how many steps (chunks) do you want to process the data (for debugging)\cr
 
 \code{todisk}\tab logical. If \code{TRUE} processing operates as if the dataset is very large and needs to be written to a temporary file (for debugging).\cr
 }
@@ -78,11 +78,11 @@ f <- file.path(tempdir(), "test.tif")
 
 writeRaster(r, f, overwrite=TRUE)
 
-writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=NONE", "TFW=YES","of=COG"), datatype='INT1U')
+writeRaster(r, f, overwrite=TRUE, gdal=c("COMPRESS=NONE", "TFW=YES"), datatype='INT1U')
 
 ## Or with a wopt argument:
 
-writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=NONE", "of=COG"), datatype='INT1U'))
+writeRaster(r, f, overwrite=TRUE, wopt= list(gdal=c("COMPRESS=NONE"), datatype='INT1U'))
 
 ## remove the file
 unlink(f)

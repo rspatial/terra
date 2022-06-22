@@ -453,6 +453,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
     \code{\link{vect}} \tab SpatVector from \code{sf} or \code{Spatial*} vector data\cr
     \code{sf::st_as_sf} \tab sf object from SpatVector\cr
     \code{\link{rasterize}} \tab Rasterizing points, lines or polygons\cr
+    \code{\link{rasterizeGeom}} \tab Rasterize attributes of geometries such as "count", "area", or "length"\cr
     \code{\link{as.points}} \tab Create points from a SpatRaster or SpatVector \cr
     \code{\link{as.lines}} \tab Create points from a SpatRaster or SpatVector\cr
     \code{\link{as.polygons}} \tab Create polygons from a SpatRaster \cr

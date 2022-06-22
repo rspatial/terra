@@ -189,6 +189,7 @@ setMethod("setValues", signature("SpatRaster"),
 		y <- messages(y, "setValues")
 		if (make_factor) {
 			for (i in 1:nlyr(y)) {
+				levs <- data.frame(id=0:(length(levs)-1), labels=levs)
 				set.cats(y, i, levs, 2)
 			}
 		}
@@ -368,7 +369,9 @@ setMethod("values<-", signature("SpatVector", "data.frame"),
 			} else if (types[i] == "integer") {
 				x@ptr$add_column_long(value[[i]], nms[i])
 			} else if (types[i] == "character") {
-				x@ptr$add_column_string(value[[i]], nms[i])
+				v <- value[[i]]
+				v[is.na(v)] <- "____NA_+"
+				x@ptr$add_column_string(v, nms[i])
 			} else if (types[i] == "logical") {
 				v <- as.integer(value[[i]])
 				v[is.na(v)] <- 2

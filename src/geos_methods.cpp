@@ -643,7 +643,6 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 
 	SpatVector out;
 
-
 	if (by != "") {
 		SpatVector tmp = aggregate(by, false);
 		if (tmp.hasError()) {
@@ -664,7 +663,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 			}
 		}
 		out.df = tmp.df;
-		out.srs = out.srs;
+		out.srs = srs;
 		return out;
 	}
 
@@ -771,11 +770,11 @@ SpatVector SpatVector::voronoi(SpatVector bnd, double tolerance, int onlyEdges) 
 
 
 
-SpatVector SpatVector::delauny(double tolerance, int onlyEdges) {
+SpatVector SpatVector::delaunay(double tolerance, int onlyEdges) {
 	SpatVector out;
 
 #ifndef GEOS350
-	out.setError("GEOS 3.5 required for delauny");
+	out.setError("GEOS 3.5 required for delaunay");
 	return out;
 #else 
 
@@ -1901,28 +1900,23 @@ SpatVector SpatVector::nearest_point(SpatVector v, bool parallel) {
 	}
 	out.srs = srs;
 
-	if (is_lonlat()) {
-		if (type() == "points") {
-			std::vector<double> nlon, nlat, dist;
-			std::vector<long> id;
-			std::vector<std::vector<double>> p = coordinates();
-			std::vector<std::vector<double>> pv = v.coordinates();
-			nearest_lonlat(id, dist, nlon, nlat, p[0], p[1], pv[0], pv[1]);
-			out.setPointsGeometry(nlon, nlat);
-			std::vector<long> fromid(id.size());
-			std::iota(fromid.begin(), fromid.end(), 0);
-			out.df.add_column(fromid, "from_id");
-			out.df.add_column(p[0], "from_x");
-			out.df.add_column(p[1], "from_y");
-			out.df.add_column(id, "to_id");
-			out.df.add_column(nlon, "to_x");
-			out.df.add_column(nlat, "to_y");
-			out.df.add_column(dist, "distance");
-			return out;
-		} else {
-			out.setError("not yet implement for non-point lonlat vector data");
-			return out;
-		}
+	if ((is_lonlat()) && (type() == "points") && (v.type() == "points")) {
+		std::vector<double> nlon, nlat, dist;
+		std::vector<long> id;
+		std::vector<std::vector<double>> p = coordinates();
+		std::vector<std::vector<double>> pv = v.coordinates();
+		nearest_lonlat(id, dist, nlon, nlat, p[0], p[1], pv[0], pv[1]);
+		out.setPointsGeometry(nlon, nlat);
+		std::vector<long> fromid(id.size());
+		std::iota(fromid.begin(), fromid.end(), 0);
+		out.df.add_column(fromid, "from_id");
+		out.df.add_column(p[0], "from_x");
+		out.df.add_column(p[1], "from_y");
+		out.df.add_column(id, "to_id");
+		out.df.add_column(nlon, "to_x");
+		out.df.add_column(nlat, "to_y");
+		out.df.add_column(dist, "distance");
+		return out;
 	}
 
 	GEOSContextHandle_t hGEOSCtxt = geos_init();

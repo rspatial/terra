@@ -228,6 +228,10 @@ class SpatVector {
 		bool add_column_bool(std::vector<int> x, std::string name) {
 			return df.add_column_bool(x, name);
 		}
+			
+		bool add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step, std::string zone) {
+			return df.add_column_time(x, name, step, zone);
+		}
 
 		void remove_df() {
 			SpatDataFrame empty;
@@ -297,7 +301,7 @@ class SpatVector {
 		SpatVector crop(SpatExtent e);
 		SpatVector crop(SpatVector e);
 		SpatVector voronoi(SpatVector e, double tolerance, int onlyEdges);		
-		SpatVector delauny(double tolerance, int onlyEdges);		
+		SpatVector delaunay(double tolerance, int onlyEdges);		
 		SpatVector hull(std::string htype, std::string by="");
 		SpatVector intersect(SpatVector v);
 		SpatVector unite(SpatVector v);

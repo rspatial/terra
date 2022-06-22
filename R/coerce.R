@@ -149,6 +149,11 @@ as.list.SpatRasterCollection <- function(x, ...) {
 }
 setMethod("as.list", signature(x="SpatRasterCollection"), as.list.SpatRasterCollection)
 
+as.list.SpatRasterDataset <- function(x, ...) {
+	lapply(1:length(x), function(i) x[i])
+}
+setMethod("as.list", signature(x="SpatRasterDataset"), as.list.SpatRasterDataset)
+
 
  
 # create a "grDevices::raster" (small r) object for use with the rasterImage function
@@ -314,11 +319,11 @@ setMethod("as.vector", signature(x="SpatRaster"),
 	}
 )
 
-as.matrix.SpatRaster <- function(x, ...) {
+as.matrix.SpatRaster <- function(x, wide=FALSE, ...) {
 	if (!hasValues(x)) {
 		error("as.matrix", "SpatRaster has no cell values")
 	}
-	wide <- isTRUE(list(...)$wide)
+#	wide <- isTRUE(list(...)$wide)
 	if (wide) {
 		if (nlyr(x) > 1) {
 			m <- values(x, mat=TRUE)

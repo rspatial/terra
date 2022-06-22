@@ -572,7 +572,7 @@ std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVect
     std::vector<std::vector<std::vector<double>>> out(ng, std::vector<std::vector<double>>(nl + cells + 2*xy + (weights || exact)));
 
 	if (!hasValues()) {
-		setError("raster has no value");
+		setError("raster has no values");
 		return out;
 	}
 /*
@@ -673,7 +673,7 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
     unsigned ng = v.size();
 
 	if (!hasValues()) {
-		setError("raster has no value");
+		setError("raster has no values");
 		return flat;
 	}
 /*
@@ -692,10 +692,15 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 	std::vector<std::vector<double>> srcout;
 	if (gtype == "points") {
 		if (method != "bilinear") method = "simple";
-		SpatDataFrame vd = v.getGeometryDF();
-		//if (vd.nrow() == ng) {  // single point geometry
+			SpatDataFrame vd = v.getGeometryDF();
+			//if (vd.nrow() == ng) {  // single point geometry
 			std::vector<double> x = vd.getD(0);
 			std::vector<double> y = vd.getD(1);
+			std::vector<std::vector<double>> xycells;
+			if (xy) {
+				std::vector<double> cellxy = cellFromXY(x, y);
+				xycells = xyFromCell(cellxy);
+			}
 			if (!cells & !xy & !weights) {
 				return( extractXYFlat(x, y, method, cells));
 			} else {
@@ -708,8 +713,8 @@ std::vector<double> SpatRaster::extractVectorFlat(SpatVector v, bool touches, st
 						flat.push_back( srcout[j][i] );
 					}
 					if (xy) {
-						flat.push_back(x[i]);
-						flat.push_back(y[i]);
+						flat.push_back(xycells[0][i]);
+						flat.push_back(xycells[1][i]);
 					}
 				}
 			}

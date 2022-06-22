@@ -124,9 +124,9 @@ setMethod("align", signature(x="SpatExtent", y="numeric"),
 )
 
 setMethod("cellSize", signature(x="SpatRaster"), 
-	function(x, mask=TRUE, unit="m", transform=TRUE, filename="", ...) {
+	function(x, mask=TRUE, unit="m", transform=TRUE, rcx=100, filename="", ...) {
 		opt <- spatOptions(filename, ...)
-		x@ptr <- x@ptr$rst_area(mask, unit, transform, opt)
+		x@ptr <- x@ptr$rst_area(mask, unit, transform, rcx, opt)
 		messages(x, "cellSize")
 	}
 )
@@ -287,29 +287,40 @@ rbind.SpatVector <- function(x, y, ...) {
 }
 
 
+# this way names of named arguments are used
 setMethod("c", signature(x="SpatRaster"), 
 	function(x, ..., warn=TRUE) {
-		skips <- 0
-		hv <- hasValues(x)
-		dots <- list(...)
-		x@ptr <- x@ptr$deepcopy()
-		opt <- spatOptions()
-		for (i in dots) {
-			if (inherits(i, "SpatRaster")) {
-				x@ptr$addSource(i@ptr, warn, opt)
-				if (x@ptr$messages$has_error) {
-					messages(x, "c")
-					return()
-				}
-			} else {
-				skips = skips + 1
-			}
+		if (missing(x)) {
+			rast(list(...), warn=warn)
+		} else {
+			rast(list(x, ...), warn=warn)		
 		}
-		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
-		messages(x, "c")
-		x
 	}
 )
+	
+#setMethod("c", signature(x="SpatRaster"), 
+#	function(x, ..., warn=TRUE) {
+#		skips <- 0
+#		hv <- hasValues(x)
+#		dots <- list(...)
+#		x@ptr <- x@ptr$deepcopy()
+#		opt <- spatOptions()
+#		for (i in dots) {
+#			if (inherits(i, "SpatRaster")) {
+#				x@ptr$addSource(i@ptr, warn, opt)
+#				if (x@ptr$messages$has_error) {
+#					messages(x, "c")
+#					return()
+#				}
+#			} else {
+#				skips = skips + 1
+#			}
+#		}
+#		if (skips > 0) warn("c,SpatRaster", paste("skipped", skips, "object(s) that are not SpatRaster"))
+#		messages(x, "c")
+#		x
+#	}
+#)
 
 
 
@@ -460,10 +471,10 @@ function(x, from, to, filename="", ...) {
 }
 
 setMethod("crop", signature(x="SpatRaster", y="ANY"), 
-	function(x, y, snap="near", mask=FALSE, filename="", ...) {
+	function(x, y, snap="near", mask=FALSE, touches=TRUE, filename="", ...) {
 		opt <- spatOptions(filename, ...)
 		if (mask && inherits(y, "SpatVector")) {
-			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], opt)
+			x@ptr <- x@ptr$crop_mask(y@ptr, snap[1], touches[1], opt)
 		} else {
 			y <- .getExt(y, method="crop")
 			x@ptr <- x@ptr$crop(y@ptr, snap[1], opt)
@@ -1013,11 +1024,12 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		isfact <- is.factor(x)
 		if (any(isfact)) {
 			ff <- which(isfact)
-			levs <- levels(x)
+			levs <- cats(x)
 			for (f in ff) {
 				lvs <- levs[[f]]
-				u[[f]] = factor(u[[f]], levels=(1:length(lvs))-1)
-				levels(u[[f]]) = levs[[f]]
+				fv <- factor(lvs[,2])
+				i <- match(u[[f]], lvs[,1])
+				u[[f]] = fv[i]
 			}
 		}
 		if (!incomparables) {
@@ -1038,6 +1050,10 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 			u <- u[!i, , drop=FALSE]
 		}
 		if (as.raster) {
+			if (any(isfact)) {
+				warn("unique", "cannot do 'as.raster=TRUE' with categorical rasters")
+				return(u)
+			}
 			uid <- 1:nrow(u)
 			x <- subst(x, u, uid-1)
 			lab <- apply(u, 1, function(i) paste(i, collapse="_"))
@@ -1064,4 +1080,10 @@ setMethod("unique", signature(x="SpatVector", incomparables="ANY"),
 #		messages(x, "warp")
 #	}
 #)
+
+setMethod("labels", signature(object="SpatRaster"), 
+	function(object, ...)  {
+		names(object)
+	}
+)
 

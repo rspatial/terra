@@ -88,9 +88,11 @@ bool SpatRaster::write_aux_json(std::string filename) {
 
 bool setRat(GDALRasterBand *poBand, SpatDataFrame &d) {
 
+	size_t nr = d.nrow();
+	if (nr == 0) return true;
+
 //	GDALRasterAttributeTable *pRat = poBand->GetDefaultRAT();
 	GDALRasterAttributeTable *pRat = new GDALDefaultRasterAttributeTable();
-	size_t nr = d.nrow();
 
 	for (size_t i=0; i<d.ncol(); i++) {
 		const char *fn = d.names[i].c_str();
@@ -693,14 +695,17 @@ bool SpatRaster::writeValuesGDAL(std::vector<double> &vals, size_t startrow, siz
 	}
 
 
+	int hasNA=0;
+	double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
 	if ((datatype == "FLT8S") || (datatype == "FLT4S")) {
+		if (hasNA) {
+			size_t n = vals.size();
+			for (size_t i=0; i<n; i++) {
+				if (std::isnan(vals[i])) vals[i] = na;
+			}
+		}
 		err = source[0].gdalconnection->RasterIO(GF_Write, startcol, startrow, ncols, nrows, &vals[0], ncols, nrows, GDT_Float64, nl, NULL, 0, 0, 0, NULL );
 	} else {
-		int hasNA=0;
-		double na = source[0].gdalconnection->GetRasterBand(1)->GetNoDataValue(&hasNA);
-		if (!hasNA) {
-			na = NAN;
-		}
 		if (datatype == "INT4S") {
 			//min_max_na(vals, na, (double)INT32_MIN, (double)INT32_MAX);
 			//std::vector<int32_t> vv(vals.begin(), vals.end());

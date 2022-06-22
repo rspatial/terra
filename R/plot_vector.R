@@ -152,7 +152,7 @@ setMethod("dots", signature(x="SpatVector"),
 .vect.legend.classes <- function(out) {
 
 	if (isTRUE(out$legend_sort)) {
-		out$uv <- sort(out$uv)
+		out$uv <- sort(out$uv, decreasing=out$legend_sort_decreasing)
 	} else {
 		out$uv <- out$uv[!is.na(out$uv)]
 	}
@@ -287,7 +287,7 @@ setMethod("dots", signature(x="SpatVector"),
 
 
 
-.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", sort=TRUE, ...) {
+.plot.vect.map <- function(x, out, xlab="", ylab="", type = "n", yaxs="i", xaxs="i", asp=out$asp, density=NULL, angle=45, border="black", dig.lab=3, main="", ...) {
 
 	if ((!out$add) & (!out$legend_only)) {
 		if (!any(is.na(out$mar))) { graphics::par(mar=out$mar) }
@@ -301,7 +301,6 @@ setMethod("dots", signature(x="SpatVector"),
 	out$leg$density <- density
 	out$leg$angle <- angle
 	out$leg$border <- border
-	out$legend_sort <- isTRUE(sort)
 
 	nuq <- length(out$uv)
 	if (out$legend_type == "none") {
@@ -353,7 +352,7 @@ setMethod("dots", signature(x="SpatVector"),
 .prep.vect.data <- function(x, y, type, cols=NULL, mar=NULL, legend=TRUE, 
 	legend.only=FALSE, levels=NULL, add=FALSE, range=NULL, breaks=NULL, breakby="eqint",
 	xlim=NULL, ylim=NULL, colNA=NA, alpha=NULL, axes=TRUE, main=NULL, buffer=TRUE, background=NULL,
-	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, ...) {
+	pax=list(), plg=list(), ext=NULL, grid=FALSE, las=0, sort=TRUE, decreasing=FALSE, ...) {
 
 	out <- list()
 	out$ngeom <- nrow(x)
@@ -419,8 +418,15 @@ setMethod("dots", signature(x="SpatVector"),
 	}
 	out$v <- v
 
-	out$uv <- unique(out$v)
-
+	if (!is.logical(sort)) {
+		out$uv <- unique(sort)
+		out$legend_sort <- FALSE
+	} else {
+		out$uv <- unique(out$v)
+		out$legend_sort <- isTRUE(sort)
+		out$legend_sort_decreasing <- isTRUE(decreasing)
+	}
+	
 	if (missing(type)) {
 		type <- "depends"
 	} else {
@@ -480,7 +486,7 @@ setMethod("dots", signature(x="SpatVector"),
 setMethod("plot", signature(x="SpatVector", y="character"), 
 	function(x, y, col=NULL, type, mar=NULL, legend=TRUE, add=FALSE, axes=!add, 
 	main=y, buffer=TRUE, background=NULL, grid=FALSE, ext=NULL,
-	plg=list(), pax=list(), nr, nc, ...) {
+	sort=TRUE, decreasing=FALSE, plg=list(), pax=list(), nr, nc, ...) {
 
 		if (nrow(x) == 0) {
 			error("plot", "SpatVector has zero geometries")
@@ -522,9 +528,9 @@ setMethod("plot", signature(x="SpatVector", y="character"),
 			if (missing(col)) col <- NULL
 
 			if (y[i] == "") {
-				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, ...)
+				out <- .prep.vect.data(x, y="", type="none", cols=col, mar=mar, plg=list(), pax=pax, legend=FALSE, add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, ...)
 			} else {
-				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, ...)
+				out <- .prep.vect.data(x, y[i], type=type, cols=col, mar=mar, plg=plg, pax=pax, legend=isTRUE(legend), add=add, axes=axes, main=main[i], buffer=buffer, background=background, grid=grid, ext=ext, sort=sort, decreasing=decreasing, ...)
 			}
 		}
 		invisible(out)		

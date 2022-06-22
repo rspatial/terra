@@ -117,7 +117,7 @@ void SpatRaster::addSource(SpatRaster x, bool warn, SpatOptions &opt) {
 		} else {
 			source = x.source;
 			if (warn) {
-				addWarning("the first raster was empty and ignored");
+				addWarning("the first raster was empty and was ignored");
 			}
 		}
 		return;

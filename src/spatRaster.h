@@ -38,6 +38,8 @@ class SpatCategories {
 		virtual ~SpatCategories(){}
 		SpatDataFrame d;
 		unsigned index = 0;
+		
+		bool combine(SpatCategories &x);
 };
 
 
@@ -538,7 +540,8 @@ class SpatRaster {
         std::vector<double> adjacentMat(std::vector<double> cells, std::vector<bool> mat, std::vector<unsigned> dim, bool include);
  		SpatRaster aggregate(std::vector<unsigned> fact, std::string fun, bool narm, SpatOptions &opt);
 		SpatExtent align(SpatExtent e, std::string snap);
-		SpatRaster rst_area(bool mask, std::string unit, bool transform, SpatOptions &opt);
+		SpatRaster rst_area(bool mask, std::string unit, bool transform, int rcmax, SpatOptions &opt);
+
 		std::vector<double> sum_area(std::string unit, bool transform, SpatOptions &opt);
 		std::vector<std::vector<double>> area_by_value(SpatOptions &opt);
 
@@ -565,7 +568,7 @@ class SpatRaster {
 		SpatRaster cover(SpatRaster x, std::vector<double> value, SpatOptions &opt);
 
 		SpatRaster crop(SpatExtent e, std::string snap, SpatOptions &opt);
-		SpatRaster cropmask(SpatVector v, std::string snap, SpatOptions &opt);
+		SpatRaster cropmask(SpatVector v, std::string snap, bool touches, SpatOptions &opt);
 		SpatRaster cum(std::string fun, bool narm, SpatOptions &opt);
         SpatRaster disaggregate(std::vector<unsigned> fact, SpatOptions &opt);
 		SpatRaster distance(SpatOptions &opt);

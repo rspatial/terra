@@ -81,10 +81,13 @@ setMethod("global", signature(x="SpatRaster"),
 		nl <- nlyr(x)
 		res <- list()
 		for (i in 1:nl) {
-			res[[i]] <- fun(values(x[[i]]) , ...)
+			res[[i]] <- fun(values(x[[i]]), ...)
 		}
-		res <- do.call(rbind,res)
+		res <- do.call(rbind, res)
 		res <- data.frame(res)
+
+		# more efficient but more risky:
+		#apply(data.frame(x), 2, fun, ...)
 
 		if ((ncol(res) == 1) && (colnames(res) == "res")) {
 			colnames(res) <- "global"

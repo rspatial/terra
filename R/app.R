@@ -16,6 +16,16 @@ function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
 }
 )
 
+setMethod("sapp", signature(x="SpatRasterDataset"), 
+function(x, fun, ..., filename="", overwrite=FALSE, wopt=list())  {
+	x <- rast(lapply(as.list(x), function(i, ...) messages(fun(i, ..., wopt=wopt))))
+	if (filename != "") {
+		writeRaster(x, filename, overwrite, wopt=wopt)
+	} else {
+		tighten(x)
+	}
+}
+)
 
 
 setMethod("app", signature(x="SpatRaster"), 
@@ -107,6 +117,8 @@ function(x, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())  {
 		ncores <- cores
 		cores <- parallel::makeCluster(cores)
 		on.exit(parallel::stopCluster(cores), add=TRUE)
+		expnms <- names(list(...))
+		lapply(expnms, function(n) parallel::clusterExport(cores, n))
 	}
 
 	ncops <- nlyr(x) / nlyr(out)

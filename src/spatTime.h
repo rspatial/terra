@@ -4,6 +4,20 @@
 //#include <vector>
 //#include <string>
 typedef long long SpatTime_t;
+
+class SpatTime_v {
+	public:
+		std::vector<SpatTime_t> x;
+		std::string zone;
+		std::string step;
+		size_t size() { return(x.size());}
+		void resize(size_t n) {x.resize(n);}
+		void resize(size_t n, SpatTime_t v) {x.resize(n, v);}
+		void reserve(size_t n) {x.reserve(n);}
+		void push_back(SpatTime_t v) {x.push_back(v);}
+};
+
+
 std::vector<int> get_date(SpatTime_t x);
 std::vector<int> getymd(std::string s);
 SpatTime_t get_time_string(std::string s);

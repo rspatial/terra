@@ -4,6 +4,7 @@
 # License GPL v3
 
 positive_indices <- function(i, n, caller=" [ ") {
+	stopifnot(is.numeric(i))
 	if (!(all(i <= 0) || all(i >= 0))) {
 		error(caller, "you cannot mix positive and negative indices")
 	}
@@ -13,21 +14,43 @@ positive_indices <- function(i, n, caller=" [ ") {
 
 
 setMethod("subset", signature(x="SpatRaster"), 
-function(x, subset, filename="", overwrite=FALSE, ...) {
-	if (is.character(subset)) {
-		i <- match(subset, names(x))
-	} else {
-		i <- as.integer(subset)
-		i[(i<1) | (i>nlyr(x))] <- NA
-	}
-	if (any(is.na(i))) {
-		error("subset", paste("undefined layer(s) selected:", paste(subset[is.na(i)], collapse=", ")))
-	}
-	opt <- spatOptions(filename, overwrite, ...)
-	x@ptr <- x@ptr$subset(i-1, opt)
-	messages(x, "subset")
-	return(x)
-} )
+	function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
+		if (NSE) {
+			subset <- if (missing(subset)) { 
+				1:nlyr(x)
+			} else {
+				nl <- as.list(seq_along(names(x)))
+				names(nl) <- nms <- names(x)
+				v <- eval(substitute(subset), nl, parent.frame())
+				if (!inherits(substitute(subset), "character")) {
+					if (sum(nms %in% nms[v]) > length(v)) {
+						error("subset", "you cannot select a layer with a name that is not unique")
+					}
+				}
+				v
+			}
+		} 
+		if (is.character(subset)) {
+			nms <- names(x)
+			if (!all(subset %in% nms)) {
+				error("subset", "invalid name(s)")				
+			}
+			if (sum(nms %in% subset) > length(subset)) {
+				error("subset", "you cannot select a layer with a name that is not unique")
+			}
+			subset <- match(subset, nms)
+		} 
+		if (any(is.na(subset))) {
+			error("subset", "undefined layer(s) selected")
+		}
+		subset <- positive_indices(subset, nlyr(x), "subset")
+		opt <- spatOptions(filename, overwrite, ...)
+		x@ptr <- x@ptr$subset(subset-1, opt)
+		messages(x, "subset")
+	} 
+)
+
+
 
 setMethod("[", c("SpatRaster", "SpatVector", "missing"),
 	function(x, i, j, ... ,drop=TRUE) {
@@ -44,7 +67,7 @@ setMethod("[", c("SpatRaster", "SpatVector", "missing"),
 setMethod("[", c("SpatRaster", "character", "missing"),
 	function(x, i, j, ... ,drop=TRUE) {
 		i <- grep(i, names(x))
-		subset(x, i, ...)
+		subset(x, i, NSE=FALSE, ...)
 	}
 )
 
@@ -52,36 +75,51 @@ setMethod("[", c("SpatRaster", "character", "missing"),
 
 setMethod("[[", c("SpatRaster", "character", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	subset(x, i, ...)
+	subset(x, i, NSE=FALSE, ...)
 })
 
 setMethod("$", "SpatRaster",  
 	function(x, name) { 
-		subset(x, name) 
+		subset(x, name, NSE=FALSE) 
 	} 
 )
 
 setMethod("[[", c("SpatRaster", "logical", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	subset(x, which(i), ...)
+	subset(x, which(i), NSE=FALSE, ...)
 })
 
 
 setMethod("[[", c("SpatRaster", "numeric", "missing"),
 function(x, i, j, ... ,drop=TRUE) {
-	i <- positive_indices(i, nlyr(x), " [[ ")
-	subset(x, i, ...)
+	subset(x, i, NSE=FALSE, ...)
 })
 
 
 
-
-
-
 setMethod("subset", signature(x="SpatVector"), 
-	function(x, subset, drop=FALSE) {
-		x <- x[which(as.vector(subset)), , drop=drop]
-		messages(x, "subset")
+	function(x, subset, select, drop=FALSE, NSE=TRUE) {
+ 		if (NSE) {
+			d <- as.list(x)
+			# from the subset<data.frame> method
+			r <- if (missing(subset)) {
+					TRUE
+				} else {
+					r <- eval(substitute(subset), d, parent.frame())
+					if (!is.logical(r)) error("subset", "argument 'subset' must be logical")
+					r & !is.na(r)
+				}
+			v <- if (missing(select)) { 
+					TRUE
+				} else {
+					nl <- as.list(seq_along(d))
+					names(nl) <- names(d)
+					eval(substitute(select), nl, parent.frame())
+				}
+			x[r, v, drop=drop]
+		} else {
+			x[which(as.vector(subset)), select, drop=drop]
+		}
 	}
 )
 
@@ -120,9 +158,16 @@ function(x, i, j, ... , drop=FALSE) {
 	}
 })
 
+setMethod("[", c("SpatVector", "numeric", "logical"),
+function(x, i, j, ... , drop=FALSE) {
+	j <- which(rep_len(j, ncol(x)))
+	x[i, j, drop=drop]
+})
+
+
 setMethod("[", c("SpatVector", "logical", "missing"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- which(i)
+	i <- which(rep_len(i, nrow(x)))
 	x@ptr <- x@ptr$subset_rows(i-1)
 	x <- messages(x, "[")
 	if (drop) {
@@ -176,6 +221,13 @@ function(x, i, j, ... , drop=FALSE) {
 	x[,jj,drop=drop]
 })
 
+setMethod("[", c("SpatVector", "missing", "logical"),
+function(x, i, j, ... , drop=FALSE) {
+	j <- which(rep_len(j, ncol(x)))
+	x[,j,drop=drop]
+})
+
+
 setMethod("[", c("SpatVector", "numeric", "character"),
 function(x, i, j, ... , drop=FALSE) {
 	j <- stats::na.omit(match(j, names(x)))
@@ -185,17 +237,23 @@ function(x, i, j, ... , drop=FALSE) {
 
 setMethod("[", c("SpatVector", "logical", "character"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- which(i)
+	i <- which(rep_len(i, nrow(x)))
 	x[i,j,drop=drop]
 })
 
 
 setMethod("[", c("SpatVector", "logical", "numeric"),
 function(x, i, j, ... , drop=FALSE) {
-	i <- which(i)
+	i <- which(rep_len(i, nrow(x)))
 	x[i,j,drop=drop]
 })
 
+setMethod("[", c("SpatVector", "logical", "logical"),
+function(x, i, j, ... , drop=FALSE) {
+	i <- which(rep_len(i, nrow(x)))
+	j <- which(rep_len(j, ncol(x)))
+	x[i,j,drop=drop]
+})
 
 
 setMethod("[", c("SpatVector", "missing", "missing"),

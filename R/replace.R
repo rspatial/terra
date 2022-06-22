@@ -4,33 +4,44 @@
 # License GPL v3
 
 
+.rast_replace <- function(x, name, value, caller="$<-") { 
+	if (inherits(value, "SpatRaster")) {
+		value <- value[[1]]
+		names(value) <- name
+	} else if (!is.null(value)) {
+		y <- rast(x, nlyrs=1)
+		test <- try(values(y) <- value, silent=TRUE)
+		if (inherits(test, "try-error")) {
+			error(caller, "the replacement value is not valid")
+		}
+		value <- y
+		names(value) <- name
+	}
+	i <- which(name == names(x))[1]
+	if (is.null(value)) {
+		if (is.na(i)) {
+				return(x)
+		} else {
+			return(subset(x, -i, NSE=FALSE))
+		}
+	}
+
+	if (is.na(i)) {
+		c(x, value)
+	} else if (nlyr(x) == 1) {
+		value$deepcopy()
+	} else if (i == 1) {
+		c(value, x[[2:nlyr(x)]])
+	} else if (i == nlyr(x)) {
+		c(x[[1:(nlyr(x)-1)]], value)
+	} else {
+		c(x[[1:(i-1)]], value, x[[(i+1):nlyr(x)]])
+	}
+}
+
 setMethod("$<-", "SpatRaster",  
 	function(x, name, value) { 
-		if (inherits(value, "SpatRaster")) {
-			value <- value[[1]]
-			names(value) <- name
-		} else if (!is.null(value)) {
-			y <- rast(x, nlyrs=1)
-			test <- try(values(y) <- value, silent=TRUE)
-			if (inherits(test, "try-error")) {
-				error("$<-,SpatRaster", "the replacement value is not valid")
-			}
-			value <- y
-			names(value) <- name
-		}
-
-		i <- which(name == names(x))[1]
-		if (is.na(i)) {
-			c(x, value)
-		} else if (nlyr(x) == 1) {
-			value$deepcopy()
-		} else if (i == 1) {
-			c(value, x[[2:nlyr(x)]])
-		} else if (i == nlyr(x)) {
-			c(x[[1:(nlyr(x)-1)]], value)
-		} else {
-			c(x[[1:(i-1)]], value, x[[(i+1):nlyr(x)]])
-		}
+		.rast_replace(x, name, value, "$<-")
 	}
 )
 
@@ -52,7 +63,8 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 			value <- list(value)
 		}
 		for (k in 1:length(i)) {
-			eval(parse(text = paste0("x$", i[k], " <- value[[k]]")))
+			.rast_replace(x, i[k], value[[k]], " [[<- ")
+#			eval(parse(text = paste0("x$", i[k], " <- value[[k]]")))
 		}
 		x
 	}
@@ -60,11 +72,18 @@ setReplaceMethod("[[", c("SpatRaster", "character", "missing"),
 
 setReplaceMethod("[[", c("SpatRaster", "numeric", "missing"),
 	function(x, i, j, value) {
+		if (!inherits(value, "SpatRaster")) {
+			error(" [[<- ", "Expected a SpatRaster as replacement value")
+		}
 		if (nlyr(value) != length(i)) {
 			error(" [[,SpatRaster,numeric", "length of indices must be equal to the number of layers")
 		}
 		if (any(i<1) | any(i > nlyr(x))) {
 			error(" [[,SpatRaster,numeric", "indices must be between 1 and the number of layers")
+		}
+		if (nlyr(x) == 1) {
+			compareGeom(x, value, crs=FALSE, warncrs=TRUE)
+			return(value)
 		}
 		for (k in 1:length(i)) {
 			if (i[k] == 1) {
@@ -100,7 +119,7 @@ setReplaceMethod("[", c("SpatRaster", "missing", "missing"),
 			}
 		}
 		if (inherits(x, "try-error")) {
-			error(" [,SpatRaster", "cannot set values")
+			error(" [ ", "cannot set values")
 		}
 		return(x)
 	}

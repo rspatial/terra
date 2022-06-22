@@ -9,8 +9,7 @@ getCatIDs <- function(x, table, sender="%in%") {
 		error(sender, "matching with character values is only supported for single layer SpatRaster")
 	}
 	d <- cats(x)[[1]]
-	levs <- levels(x)[[1]]
-	m <- na.omit(match(table, levs))
+	m <- na.omit(match(table, d[,2]))
 	d[m,1]
 }
 

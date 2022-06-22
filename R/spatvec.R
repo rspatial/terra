@@ -140,7 +140,11 @@ get.data.frame <- function(x) {
 
 
 as.list.SpatVector <- function(x, geom=NULL, ...) {
-	as.list(as.data.frame(x, geom=geom))
+	if (is.null(geom)) {
+		x@ptr$df$values()
+	} else {
+		as.list(as.data.frame(x, geom=geom))
+	}
 }
 setMethod("as.list", signature(x="SpatVector"), as.list.SpatVector)
 

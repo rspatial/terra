@@ -163,7 +163,7 @@ SpatRaster SpatRaster::arith(SpatRaster x, std::string oper, SpatOptions &opt) {
 
 	size_t nl = std::max(nlyr(), x.nlyr());
 	SpatRaster out = geometry(nl);
-	if (!(hasValues() & x.hasValues())) {
+	if (!(hasValues() && x.hasValues())) {
 		out.setError("raster has no values"); // or warn and treat as NA?
 		return out;
 	}

@@ -2,14 +2,15 @@
 
 \alias{as.list}
 \alias{as.list,SpatRaster-method}
+\alias{as.list,SpatRasterDataset-method}
 \alias{as.list,SpatRasterCollection-method}
 \alias{as.list,SpatVector-method}
   
 
-\title{SpatRaster or SpatVector to list}
+\title{SpatRaster* or SpatVector to list}
 
 \description{
-Coerce a SpatRaster, SpatRasterCollection, or SpatVector to a list. With a SpatRaster, each layer becomes a list element. With a SpatRasterCollection, each SpatRaster becomes a list element. With a SpatVector, each variable (attribute) becomes a list element.
+Coerce a SpatRaster, SpatRasterCollection, SpatRasterDataset, or SpatVector to a list. With a SpatRaster, each layer becomes a list element. With a SpatRasterCollection or SpatRasterDataset, each SpatRaster becomes a list element. With a SpatVector, each variable (attribute) becomes a list element.
 }
 
 \usage{
@@ -21,7 +22,7 @@ Coerce a SpatRaster, SpatRasterCollection, or SpatVector to a list. With a SpatR
 }
 
 \arguments{
- \item{x}{SpatRaster or SpatVector}
+ \item{x}{SpatRaster, SpatRasterDataset, SpatRasterCollection, or SpatVector}
  \item{geom}{character or NULL. If not NULL, either "WKT" or "HEX", to get the geometry included in Well-Known-Text or hexadecimal notation. If \code{x} has point geometry, it can also bey "XY" to add the coordinates of each point}
  \item{...}{Additional arguments. These are ignored}
 }
@@ -36,6 +37,10 @@ list
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
 as.list(v)
+
+
+s <- rast(system.file("ex/logo.tif", package="terra")) + 1  
+as.list(s)
 }
 
 \keyword{spatial}

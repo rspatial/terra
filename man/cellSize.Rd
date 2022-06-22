@@ -15,7 +15,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
 }
 
 \usage{
-\S4method{cellSize}{SpatRaster}(x, mask=TRUE, unit="m", transform=TRUE, filename="", ...)
+\S4method{cellSize}{SpatRaster}(x, mask=TRUE, unit="m", transform=TRUE, rcx=100, filename="", ...)
 }
 
 
@@ -24,6 +24,7 @@ For planar CRSs, the area is therefore not computed based on the linear units of
   \item{mask}{logical. If \code{TRUE}, cells that are \code{NA} in \code{x} are also \code{NA} in the output}
   \item{unit}{character. One of "m", "km", or "ha"}
   \item{transform}{logical. If \code{TRUE}, planar CRS data are transformed to lon/lat for accuracy}
+  \item{rcx}{positive integer. The maximum number of rows and columns to be used to compute area of planar data if \code{transform=TRUE}. If \code{x} has more rows and/or columns, the raster is aggregated to match this limit, and values for the original cells are estimated by bilinear interpolation (see \code{resample}). This can save a lot of time}
   \item{filename}{character. Output filename}
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}
 }

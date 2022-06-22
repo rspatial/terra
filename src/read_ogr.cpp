@@ -23,6 +23,7 @@
 #include "ogr_spatialref.h"
 
 #include "crs.h"
+#include "NA.h"
 
 #include "string_utils.h"
 
@@ -55,6 +56,8 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 	df.resize_cols(nfields);
 	bool first = true;
 	unsigned dtype;
+	long longNA = NA<long>::value;
+
     while( (poFeature = poLayer->GetNextFeature()) != NULL ) {
 		if (first) {
 			for (size_t i = 0; i < nfields; i++ ) {
@@ -82,7 +85,11 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 			unsigned j = df.iplace[i];
 			switch( poFieldDefn->GetType() ) {
 				case OFTReal:
-					df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
+					if (poFeature->IsFieldNull(i)) {
+						df.dv[j].push_back(NAN);						
+					} else {
+						df.dv[j].push_back(poFeature->GetFieldAsDouble(i));
+					}
 					break;
 				case OFTInteger:
 					if (poFieldDefn->GetSubType() == OFSTBoolean) {
@@ -92,11 +99,19 @@ SpatDataFrame readAttributes(OGRLayer *poLayer, bool as_proxy) {
 					}
 					break;
 				case OFTInteger64:
-					df.iv[j].push_back(poFeature->GetFieldAsInteger64( i ));
+					if (poFeature->IsFieldNull(i)) {
+						df.iv[j].push_back(longNA);						
+					} else {
+						df.iv[j].push_back(poFeature->GetFieldAsInteger64( i ));
+					}
 					break;
 	//          case OFTString:
 				default:
-					df.sv[j].push_back(poFeature->GetFieldAsString( i ));
+					if (poFeature->IsFieldNull(i)) {
+						df.sv[j].push_back(df.NAS);						
+					} else {
+						df.sv[j].push_back(poFeature->GetFieldAsString( i ));
+					}
 					break;
 			}
 		}

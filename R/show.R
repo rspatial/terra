@@ -16,7 +16,7 @@ printDF <- function(x, n=6, first=FALSE) {
 	}
 	d <- dim(x)
 
-	cls <- sapply(x, class)
+	cls <- sapply(x, function(i){ a = class(i); a[length(a)]})
 	cls <- gsub("integer", "int", cls)
 	cls <- gsub("numeric", "num", cls)
 	cls <- gsub("character", "chr", cls)
@@ -42,6 +42,7 @@ printDF <- function(x, n=6, first=FALSE) {
 		}
 	}
 
+	x <- data.frame(lapply(x, as.character))
 	x <- rbind(x[1,,drop=FALSE], x)
 	x[1,] <- cls
 	if (nrow(x) < d[1]) {
@@ -298,7 +299,7 @@ setMethod ("show" , "SpatRaster",
 						if (i > mnr) break
 						if (isf[i]) {
 							cats <- cats(object, i, TRUE)[[1]]
-							j <- match(c(minv[i], maxv[i]), cats[,1])
+							j <- match(r[,i], cats[,1])
 							cats <- cats[j, 2]
 							if (length(cats) > 0) {
 								minv[i] <- cats[1]

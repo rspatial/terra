@@ -129,7 +129,7 @@ setMethod("wrap", signature(x="SpatRaster"),
 		r@definition <- as.character(x)
 		r@values <- values(x)
 		if (any(is.factor(x))) {
-			r@attributes$levels <- levels(x)
+			r@attributes$levels <- cats(x)
 		} 
 		v <- time(x)
 		if (any(!is.na(v))) {
@@ -157,8 +157,8 @@ setMethod("rast", signature(x="PackedSpatRaster"),
 			if (all(nms %in% c("levels", "time", "units", "depth"))) {
 				time(r) <- x@attributes$time
 				units(r) <- x@attributes$units
-				levels(r) <- x@attributes$levels
 				depth(r) <- x@attributes$depth
+				levels(r) <- x@attributes$levels
 			} else {
 				levels(r) <- x@attributes
 			}

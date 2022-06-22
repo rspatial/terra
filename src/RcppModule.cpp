@@ -74,14 +74,15 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 			}
 			out[i] = d;
 		} else if (itype[i] == 4){
-			//Rcpp::NumericVector tv = Rcpp::wrap(v->getT(i));
-			//SpatTime_t timeNA = NA<SpatTime_t>::value;
-			//for (R_xlen_t j=0; j<tv.size(); j++) {
-			//	if (tv[j] == timeNA) {
-			//		tv[j] = NA_REAL;
-			//	}
-			//}
-			//out[i] = tv;
+			SpatTime_v tx = v->getT(i);
+			Rcpp::NumericVector tv = Rcpp::wrap(tx.x);
+			SpatTime_t timeNA = NA<SpatTime_t>::value;
+			for (R_xlen_t j=0; j<tv.size(); j++) {
+				if (tv[j] == timeNA) {
+					tv[j] = NA_REAL;
+				}
+			}
+			out[i] = tv;
 		}
 	}
 	out.names() = nms;
@@ -127,6 +128,7 @@ Rcpp::DataFrame get_geometryDF(SpatVector* v) {
 }
 
 
+RCPP_EXPOSED_CLASS(SpatTime_v)
 RCPP_EXPOSED_CLASS(SpatSRS)
 RCPP_EXPOSED_CLASS(SpatExtent)
 RCPP_EXPOSED_CLASS(SpatMessages)
@@ -145,6 +147,13 @@ RCPP_EXPOSED_CLASS(SpatVectorCollection)
 RCPP_MODULE(spat){
 
     using namespace Rcpp;
+
+    class_<SpatTime_v>("SpatTime_v")
+		.constructor()
+		.field("step", &SpatTime_v::step)
+		.field("zone", &SpatTime_v::zone)
+		.field("x", &SpatTime_v::x)
+	;
 
     class_<SpatSRS>("SpatSRS")
 		.method("is_lonlat", &SpatSRS::is_lonlat, "")
@@ -247,10 +256,13 @@ RCPP_MODULE(spat){
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_bool", &SpatDataFrame::add_column_bool)
+		.method("add_column_time", &SpatDataFrame::add_column_time)
 
 		.method("remove_column", (bool (SpatDataFrame::*)(std::string field))( &SpatDataFrame::remove_column))
 		.method("remove_column", (bool (SpatDataFrame::*)(int i))( &SpatDataFrame::remove_column))
 		.method("get_datatypes", &SpatDataFrame::get_datatypes, "")
+		.method("get_timezones", &SpatDataFrame::get_timezones, "")
+		.method("get_timesteps", &SpatDataFrame::get_timesteps, "")
 
 		.method("subset_rows", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_rows), "subset_cols")
 		.method("subset_cols", (SpatDataFrame (SpatDataFrame::*)(std::vector<unsigned>))( &SpatDataFrame::subset_cols), "subset_cols")
@@ -336,6 +348,7 @@ RCPP_MODULE(spat){
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
 		.method("add_column_bool", &SpatVector::add_column_bool)
+		.method("add_column_time", &SpatVector::add_column_time)
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
 		.method("remove_df", &SpatVector::remove_df)
@@ -418,7 +431,7 @@ RCPP_MODULE(spat){
 		.method("union_self", ( SpatVector (SpatVector::*)())( &SpatVector::unite ))
 		.method("union_unary", &SpatVector::unaryunion)
 		.method("intersect", &SpatVector::intersect)
-		.method("delauny", &SpatVector::delauny)
+		.method("delaunay", &SpatVector::delaunay)
 		.method("voronoi", &SpatVector::voronoi)
 		.method("hull", &SpatVector::hull)
 
