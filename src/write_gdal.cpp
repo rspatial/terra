@@ -416,7 +416,7 @@ bool SpatRaster::writeStartGDAL(SpatOptions &opt) {
 	std::string dname = dirname(filename);
 	GIntBig diskAvailable = VSIGetDiskFreeSpace(dname.c_str());
 	if ((diskAvailable > -1) && (diskAvailable < diskNeeded)) {
-		setError("insufficient disk space (perhaps from temporary files?)");
+		setError("insufficient disk space. Need: " + std::to_string(diskNeeded/1073741824) + " GB. Available: " + std::to_string(diskAvailable/1073741824) + " GB.");
 		return(false);
 	}
 
