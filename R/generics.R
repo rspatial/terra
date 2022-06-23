@@ -592,46 +592,44 @@ setMethod("freq", signature(x="SpatRaster"),
 				value <- round(value, digits)
 			}
 			if (bylayer) {
-				v <- cbind(layer=1:nlyr(x), value=value, count=v)
+				v <- data.frame(layer=1:nlyr(x), value=value, count=v)
 			} else {
-				v <- cbind(value=value, count=v)
+				v <- data.frame(value=value, count=v)
 			}
+			
 		} else {
 			if (is.na(digits)) {
 				v <- x@ptr$freq(bylayer[1], FALSE, 0, opt)
 			} else {
 				v <- x@ptr$freq(bylayer[1], TRUE, digits, opt)
 			}
-			if (bylayer) {
-				v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
-				v <- do.call(rbind, v)
-				colnames(v) <- c("layer", "value", "count")
-			} else {
-				v <- matrix(v[[1]], ncol=2, dimnames=list(NULL, c("value", "count")))
-			}
-			if (bylayer | (nlyr(x) == 1)) {
-				ff <- is.factor(x) 
-				if (any(ff)) {
-					cgs <- cats(x)
-					v <- data.frame(v)
-					for (f in which(ff)) {
-						cg <- cgs[[f]]
-						j <- which(v[,1] == f)
-						i <- match(v[j,2], cg[,1])
-						act <- activeCat(x, f) + 1
-						if (!inherits(cg[[act]], "numeric")) {
-							v[j, 2] <- as.character(factor(cg[i, act], levels=unique(cg[[act]])))
-						} else {
-							v[j, 2] <- cg[i, act]
-						}
+			v <- lapply(1:length(v), function(i) cbind(i, matrix(v[[i]], ncol=2)))
+			v <- do.call(rbind, v)
+			v <- as.data.frame(v)
+			colnames(v) <- c("layer", "value", "count")
+			ff <- is.factor(x) 
+			if (any(ff)) {
+				cgs <- cats(x)
+				v <- data.frame(v)
+				for (f in which(ff)) {
+					cg <- cgs[[f]]
+					j <- which(v[,1] == f)
+					i <- match(v[j,2], cg[,1])
+					act <- activeCat(x, f) + 1
+					if (!inherits(cg[[act]], "numeric")) {
+						v[j, 2] <- as.character(factor(cg[i, act], levels=unique(cg[[act]])))
+					} else {
+						v[j, 2] <- cg[i, act]
 					}
 				}
 			}
+			if (nlyr(x) > 1 && !bylayer) {
+				v <- aggregate(v[,"count",drop=FALSE], v[,"value", drop=FALSE], sum)			
+			}
 		}
 		if (usenames) {
-			v <- as.data.frame(v)
 			v$layer <- names(x)[v$layer]
-		}
+		} 
 		v
 	}
 )
