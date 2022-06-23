@@ -330,12 +330,15 @@ SpatRaster SpatRaster::aggregate(std::vector<unsigned> fact, std::string fun, bo
 
 	SpatRaster out;
 	std::string message = "";
-	bool success = get_aggregate_dims(fact, message);
-
 // fact 0, 1, 2, are the aggregation factors dy, dx, dz
 // and  3, 4, 5 are the new nrow, ncol, nlyr
-	if (!success) {
-		out.setError(message);
+	if (!get_aggregate_dims(fact, message)) {
+		if (message.substr(0,3) == "all") {
+			out = *this;
+			out.addWarning(message);
+		} else {
+			out.setError(message);
+		}
 		return out;
 	}
 
@@ -1631,9 +1634,13 @@ SpatRaster SpatRaster::disaggregate(std::vector<unsigned> fact, SpatOptions &opt
 
     SpatRaster out = geometry(nlyr(), true);
 	std::string message = "";
-	bool success = disaggregate_dims(fact, message);
-	if (!success) {
-		out.setError(message);
+	if (!disaggregate_dims(fact, message)) {
+		if (message.substr(0,3) == "all") {
+			out = *this;
+			out.addWarning(message);
+		} else {
+			out.setError(message);
+		}
 		return out;
 	}
 
