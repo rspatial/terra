@@ -29,7 +29,7 @@ sampleWeights <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, c
 
 
 sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE, cells=TRUE, xy=FALSE, ext=NULL, warn=TRUE, exp=2, weights=NULL) {
-	
+
 	if ((!xy) && (!as.points)) cells <- TRUE
 	
 	f <- freq(x)	
@@ -42,7 +42,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			sr <- cbind(1:ncell(x), values(x))
 			colnames(sr) <- c("cell", names(x))
 		} else {
-			sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=warn)
+			sr <- spatSample(x, ss, "random", replace=replace, na.rm=TRUE, ext=ext, cells=TRUE, values=TRUE, warn=FALSE)
 		}
 	} else {
 		if (!inherits(weights, "SpatRaster")) {
@@ -65,7 +65,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 
 	for (i in seq_len(nrow(f))) {
 		y <- sr[sr[, 2] == f[i,2], ,drop=FALSE]
-		if (nrow(y) == 0) {
+		if (nrow(y) < size) {
 			notfound <- c(notfound, i)
 		} else {
 			if (nrow(y) > size) {
@@ -73,6 +73,16 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 			} 
 			ys[[i]] <- y
 		}
+	}
+	if(!is.null(notfound)){
+	  for (i in seq_along(notfound)) {
+	    # use sampleWeights with prob 1
+	    r <- x == f[notfound[i],2]
+	    y_fix <- data.frame(cell = sampleWeights(r, size, replace = replace, 
+	                                             cells = TRUE, ext = ext)[, 1], 
+	                        stratum = notfound[i])
+	    ys[[notfound[i]]] <- y_fix
+	  }
 	}
 	res <- do.call(rbind, ys)
 	colnames(res) <- c('cell', names(x))
@@ -141,10 +151,12 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	if (method == "random") {
 		nsize <- size
 		if (na.rm) {
+		  propNA <- freq(x, value = NA)[,"count"]/ncell(r)
+		  pNotNA <- 1-propNA
+		  ind <- min(which( 1-pbinom(size, size:ncell(r), pNotNA) > 0.9))
+		  size <- (size:ncell(r))[ind]
 			if (replace) {
-				size <- size*5
-			} else {
-				size <- min(ncell(r)*2, size*5)
+				size <- max(size, nsize)
 			}
 		}
 		if (lonlat) {
@@ -287,7 +299,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 			size <- size[1]
 			cnrs <- .sampleCells(x, size, method, replace, na.rm, ext)
 			if (method == "random") {
-				if (length(cnrs) < size) {
+				if (length(cnrs) < size && warn) {
 					warn("spatSample", "fewer cells returned than requested")
 				} else if (length(cnrs) > size) {
 					cnrs <- cnrs[1:size]
@@ -386,7 +398,7 @@ setMethod("spatSample", signature(x="SpatRaster"),
 					scells <- NULL
 					ssize <- size*2
 					for (i in 1:10) {
-						scells <- c(scells, .sampleCells(x, ssize, method, replace))
+						scells <- c(scells, .sampleCells(x, ssize, method, replace, na.rm))
 						if ((i>1) && (!replace)) {
 							scells <- unique(scells)
 						}
