@@ -19,7 +19,7 @@ In order to assure regularity when requesting a regular sample, the number of ce
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-43</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-44</span>
       </span>
     </div>
 
@@ -199,12 +199,12 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="fu"><a href="values.html">values</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="dimensions.html">ncell</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">2</span>, <span class="st">"stratified"</span>, xy<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       x   y stratum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   -18  81       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12  126 -27       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  -162  81       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   -54 -63       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   162 -27       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   54 -45       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   18  -9       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   162 -63       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   -18  45       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 -162 -45       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28  126  45       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -162   9       3</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">spatSample</span><span class="op">(</span><span class="va">rr</span>, <span class="fl">5</span>, <span class="st">"stratified"</span>, as.points<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">rr</span>, plg<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"raster"</span><span class="op">)</span><span class="op">)</span></span>
@@ -215,16 +215,16 @@ In order to assure regularity when requesting a regular sample, the number of ce
 <span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="ext.html">ext</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">spatSample</span><span class="op">(</span><span class="va">e</span>, <span class="fl">10</span>, <span class="st">"random"</span>, lonlat<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              x        y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.020936 49.81884</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 5.829666 49.66598</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 6.278460 49.64119</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 6.229651 49.82328</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 5.929836 49.97809</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 6.061270 49.56783</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 6.093894 49.45575</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 6.123672 49.49052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 6.001417 49.66579</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 5.864317 49.56398</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 6.448224 49.98480</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 6.349987 49.61879</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 5.758591 50.02369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 6.274442 49.59251</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 5.881436 49.63131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 6.445429 49.52869</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 5.866125 49.59102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 6.207254 49.54048</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 6.218472 49.53696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 6.517617 49.95975</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## SpatVector</span></span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"ex/lux.shp"</span>, package<span class="op">=</span><span class="st">"terra"</span><span class="op">)</span></span>

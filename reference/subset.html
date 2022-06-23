@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-43</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-44</span>
       </span>
     </div>
 
@@ -54,10 +54,10 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, NSE<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, negate<span class="op">=</span><span class="cn">FALSE</span>, NSE<span class="op">=</span><span class="cn">FALSE</span>, filename<span class="op">=</span><span class="st">""</span>, overwrite<span class="op">=</span><span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
-<span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, <span class="va">select</span>, drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, <span class="va">select</span>, drop<span class="op">=</span><span class="cn">FALSE</span>, NSE<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,8 +72,11 @@
   <dt>select</dt>
 <dd><p>expression, indicating columns to select</p></dd>
  
+  <dt>negate</dt>
+<dd><p>logical. If <code>TRUE</code> all layers that are <b>not</b> in the subset are selected</p></dd>
+
   <dt>NSE</dt>
-<dd><p>logical. If <code>TRUE</code>, non-standard evaluation is allowed</p></dd>
+<dd><p>logical. If <code>TRUE</code>, non-standard evaluation (the use of unquoted variable names) is allowed. Set this to <code>FALSE</code> when calling <code>subset</code> from a function</p></dd>
  
   <dt>drop</dt>
 <dd><p>logical. If <code>TRUE</code>, the geometries will be dropped, and a data.frame is returned</p></dd>
@@ -95,7 +98,7 @@
 <p>if <code>x</code> is a <code>SpatRaster</code>: SpatRaster</p>
 
 
-<p>if <code>x</code> is a <code>SpatVector</code>: SpatVector or, if <code>drop=TRUE</code>, a data.frame.</p>
+<p>if <code>x</code> is a <code>SpatVector</code>: SpatVector or, if <code>drop=TRUE</code>, a <code>data.frame</code>.</p>
     </div>
 
     <div id="ref-examples">
