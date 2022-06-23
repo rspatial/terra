@@ -209,6 +209,7 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 	wkt="";
 	proj4="";
 	lrtrim(txt);
+
 	if (txt == "") {
 		return true;
 	} else {
@@ -221,12 +222,12 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 		}
 		if (! wkt_from_spatial_reference(srs, wkt, msg)) {
 			delete srs;
-			msg = "can't  get wkt from srs";
+			msg = "can't get wkt from srs";
 			return false;
 		};
 		if (! prj_from_spatial_reference(srs, proj4, msg)) {
 			delete srs;
-			msg = "can't  get proj4 from srs";
+			msg = "can't get proj4 from srs";
 			return false;
 		};
 		delete srs;

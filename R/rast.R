@@ -200,10 +200,11 @@ setMethod("rast", signature(x="character"),
 			}
 		}
 		r <- messages(r, "rast")
-
 		if (crs(r) == "") {
 			if (is.lonlat(r, perhaps=TRUE, warn=FALSE)) {
-				crs(r) <- "OGC:CRS84"
+				if (!isTRUE(all(as.vector(ext(r)) == c(0,1,0,1)))) {
+					crs(r) <- "OGC:CRS84"
+				}
 			}
 		}
 

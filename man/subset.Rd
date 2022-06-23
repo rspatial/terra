@@ -42,7 +42,7 @@ Select a subset of layers from a SpatRaster or select a subset of records (row) 
 }
 
 \usage{
-\S4method{subset}{SpatRaster}(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...)
+\S4method{subset}{SpatRaster}(x, subset, negate=FALSE, NSE=FALSE, filename="", overwrite=FALSE, ...)
 
 \S4method{subset}{SpatVector}(x, subset, select, drop=FALSE, NSE=TRUE)
 }
@@ -55,6 +55,7 @@ Select a subset of layers from a SpatRaster or select a subset of records (row) 
   if \code{x} is a \code{SpatVector}: logical expression indicating the rows to keep (missing values are taken as FALSE)
   }
   \item{select}{expression, indicating columns to select} 
+  \item{negate}{logical. If \code{TRUE} all layers that are \bold{not} in the subset are selected}
   \item{NSE}{logical. If \code{TRUE}, non-standard evaluation (the use of unquoted variable names) is allowed. Set this to \code{FALSE} when calling \code{subset} from a function} 
   \item{drop}{logical. If \code{TRUE}, the geometries will be dropped, and a data.frame is returned}  
   \item{filename}{character. Output filename}

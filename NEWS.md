@@ -17,6 +17,9 @@
 - setting category labels with a vector of names is now deprecated. A data.frame with at least two columns should be used. The first column should have the cell values (IDs).
 - It is now possible to "drop" a layer from a SpatRaster by setting it to NULL [#664](
 https://github.com/rspatial/terra/issues/664) by Daniel Valentins
+- `freq` now provides the labels of factors, even if `bylayer=FALSE`. It now always returns a `data.frame` (it used to return a `matrix` in some cases. [#687](https://github.com/rspatial/terra/issues/687) by Rodolfo Jaffé
+- `disagg` and `aggregate` now return a warning instead of an error when using a (dis)aggregation factor of 1.[#684](https://github.com/rspatial/terra/issues/684) by Justin Fain.
+
 
 ## new
 

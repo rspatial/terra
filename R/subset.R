@@ -14,7 +14,7 @@ positive_indices <- function(i, n, caller=" [ ") {
 
 
 setMethod("subset", signature(x="SpatRaster"), 
-	function(x, subset, NSE=FALSE, filename="", overwrite=FALSE, ...) {
+	function(x, subset, negate=FALSE, NSE=FALSE, filename="", overwrite=FALSE, ...) {
 		if (NSE) {
 			subset <- if (missing(subset)) { 
 				1:nlyr(x)
@@ -43,6 +43,7 @@ setMethod("subset", signature(x="SpatRaster"),
 		if (any(is.na(subset))) {
 			error("subset", "undefined layer(s) selected")
 		}
+		if (negate) subset = -subset
 		subset <- positive_indices(subset, nlyr(x), "subset")
 		opt <- spatOptions(filename, overwrite, ...)
 		x@ptr <- x@ptr$subset(subset-1, opt)
