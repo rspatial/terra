@@ -450,14 +450,13 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			out.setError("output crs is not valid");
 			return out;
 		}
-		//CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
 		OGRCoordinateTransformation *poCT;
 		poCT = OGRCreateCoordinateTransformation(&source, &target);
-
 		if( poCT == NULL )	{
 			out.setError( "Cannot do this transformation" );
 			return(out);
 		}
+		OCTDestroyCoordinateTransformation(poCT);
 	}
 
 	if (align) {
