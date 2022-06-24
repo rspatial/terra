@@ -79,6 +79,7 @@ SpatRaster SpatRaster::selectHighest(size_t n, bool low, SpatOptions &opt) {
 */
 
 
+
 SpatExtent SpatRaster::ext_from_rc(int_64 r1, int_64 r2, int_64 c1, int_64 c2) { 
 	SpatExtent e = getExtent();
 	double xrs = xres();
@@ -4062,3 +4063,45 @@ SpatRaster SpatRaster::hsx2rgb(SpatOptions &opt) {
 
 
 
+SpatRaster SpatRaster::sort(bool decreasing, SpatOptions &opt) {
+
+	SpatRaster out = geometry();
+	if (!hasValues()) {
+		return out;
+	}
+
+	if (!readStart()) {
+		out.setError(getError());
+		return(out);
+	}
+  	if (!out.writeStart(opt)) {
+		readStop();
+		return out;
+	}
+	unsigned nl = out.nlyr();
+	std::vector<double> v(nl);
+	unsigned nc;
+	for (size_t i = 0; i < out.bs.n; i++) {
+		std::vector<double> a; 
+		readBlock(a, out.bs, i);
+		nc = out.bs.nrows[i] * out.ncol();
+		for (size_t j=0; j<nc; j++) {
+			for (size_t k=0; k<nl; k++) {
+				v[k] = a[j+k*nc];
+			}
+			if (decreasing) {
+				std::sort(v.rbegin(), v.rend());
+			} else {
+				std::sort(v.begin(), v.end());
+			}
+			for (size_t k=0; k<v.size(); k++) {
+				a[j+k*nc] = v[k];
+			}
+		}
+		if (!out.writeBlock(a, i)) return out;
+
+	}
+	out.writeStop();
+	readStop();
+	return(out);
+}

@@ -1085,3 +1085,13 @@ setMethod("labels", signature(object="SpatRaster"),
 	}
 )
 
+
+setMethod("sort", signature(x="SpatRaster"), 
+	function (x, decreasing=FALSE, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr <- x@ptr$sort(decreasing[1], opt)
+		messages(x)
+	}
+)
+
+

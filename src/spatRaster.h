@@ -686,6 +686,7 @@ class SpatRaster {
 		std::vector<std::vector<double>> sampleRowColValues(size_t nr, size_t nc, SpatOptions &opt);
 		
 		std::vector<std::vector<double>> sampleRandomValues(unsigned size, bool replace, unsigned seed);
+		SpatRaster sort(bool decreasing, SpatOptions &opt);
 
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);
 		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);

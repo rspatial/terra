@@ -702,6 +702,7 @@ RCPP_MODULE(spat){
 		//.method("source_collapse", &SpatRaster::collapse, "collapse")
 		.method("selRange", &SpatRaster::selRange, "selRange")
 		.method("separate", &SpatRaster::separate, "separate")
+		.method("sort", &SpatRaster::sort)
 
 		.method("cover", &SpatRaster::cover, "cover")
 		.method("crop", &SpatRaster::crop, "crop")
