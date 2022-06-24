@@ -3,9 +3,11 @@ setMethod("tapp", signature(x="SpatRaster"),
 function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(!any(is.na(index)))
-	if (length(index) > nlyr(x)) {
+	nl <- nlyr(x)
+	if (length(index) > nl) {
 		error("tapp", "length(index) > nlyr(x)")
 	}
+	index <- rep_len(index, nl)
 	if (!is.factor(index)) {
 		index <- factor(index, levels=unique(index))
 	}
@@ -26,8 +28,6 @@ function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 	}
 	fun <- match.fun(fun)
 
-	nl <- nlyr(x)
-	ind <- rep_len(index, nl)
 	out <- rast(x)
 	nlyr(out) <- length(uin)
 	names(out) <- nms
