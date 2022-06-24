@@ -829,6 +829,7 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		double halfy = x.extent.ymin + f * (x.extent.ymax - x.extent.ymin);
 		std::vector<double> dd = destpoint_lonlat(0, halfy, 0, dist);
 		dist = dd[1] - halfy;
+		if (ishole) dist = -dist;
 		x = x.buffer({dist}, quadsegs);
 		x.srs = insrs;
 		return x;		
