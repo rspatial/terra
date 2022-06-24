@@ -871,7 +871,11 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 	tmp = tmp.aggregate(true);
 
 	if (ispol) {
-		tmp = ishole ? tmp.get_holes() : tmp.remove_holes();
+		if (dist < 0) {
+			tmp = !ishole ? tmp.get_holes() : tmp.remove_holes();			
+		} else {
+			tmp = ishole ? tmp.get_holes() : tmp.remove_holes();
+		}
 	}
 
 	return tmp;
@@ -893,7 +897,7 @@ SpatVector SpatVector::buffer(std::vector<double> dist, unsigned quadsegs) {
 		islonlat = false; //faster
 	}
 	std::string vt = type();
-	if (vt == "points" || vt == "lines" || islonlat) {
+	if (vt == "points" || vt == "lines") {
 		for (size_t i=0; i<dist.size(); i++) {
 			if (dist[i] <= 0) {
 				dist[i] = -dist[i];
