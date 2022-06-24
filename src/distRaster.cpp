@@ -1777,6 +1777,7 @@ bool fix_date_line(SpatGeom &g, std::vector<double> &x, const std::vector<double
 SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bool no_multipolygons) { 
 
 	SpatVector out;
+	out.reserve(size());
 	std::string vt = type();
 	if (vt != "points") {
 		out.setError("geometry must be points");
@@ -1871,7 +1872,7 @@ SpatVector SpatVector::point_buffer(std::vector<double> d, unsigned quadsegs, bo
 					bool split = fix_date_line(g, ptx, pty);
 					if (split & no_multipolygons) {
 						for (size_t j=0; j<g.parts.size(); j++) {
-							SpatGeom gg(g.parts[j]);
+							SpatGeom gg(g.parts[j], polygons);
 							out.addGeom(gg);
 						}
 					} else {

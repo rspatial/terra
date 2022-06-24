@@ -376,13 +376,15 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 		out.setError("crs not defined");
 		return(out);
 	}
+	size_t n = size();
+	out.reserve(n);
 	if (is_lonlat()) {
 		double a = 6378137.0;
 		double f = 1/298.257223563;
 		struct geod_geodesic geod;
 		geod_init(&geod, a, f);
 
-		for (size_t i=0; i<size(); i++) {
+		for (size_t i=0; i<n; i++) {
 			SpatGeom g = geoms[i];
 			for (size_t j=0; j < geoms[i].size(); j++) {
 				make_dense_lonlat(g.parts[j].x, g.parts[j].y, interval, adjust, geod);	
@@ -396,7 +398,7 @@ SpatVector SpatVector::densify(double interval, bool adjust) {
 		}
 	} else {
 		
-		for (size_t i=0; i<size(); i++) {
+		for (size_t i=0; i<n; i++) {
 			SpatGeom g = geoms[i];
 			for (size_t j=0; j < geoms[i].size(); j++) {
 				make_dense_planar(g.parts[j].x, g.parts[j].y, interval, adjust);	

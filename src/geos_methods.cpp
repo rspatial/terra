@@ -657,8 +657,7 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 			if ((x.geoms.size() > 0) && (x.geoms[0].gtype == polygons)) {
 				out.addGeom(x.geoms[0]);
 			} else {
-				SpatGeom g;
-				g.gtype = polygons;
+				SpatGeom g(polygons);
 				out.addGeom(g);
 			}
 		}
@@ -666,6 +665,8 @@ SpatVector SpatVector::hull(std::string htype, std::string by) {
 		out.srs = srs;
 		return out;
 	}
+
+	out.reserve(size());
 
 	if (htype != "convex") {
 		#ifndef GEOS361
@@ -806,6 +807,7 @@ SpatGeom hullify(SpatVector b, bool ispoly) {
 	if (b.nrow() == 1) return b.geoms[0];
 	if (ispoly) b.addGeom(b.geoms[0]);
 	SpatVector part;
+	part.reserve(b.size());
 	for (size_t j =0; j<(b.size()-1); j++) {
 		std::vector<unsigned> range = {(unsigned)j, (unsigned)j+1};
 		SpatVector g = b.subset_rows(range);
@@ -832,8 +834,9 @@ SpatVector lonlat_buf(SpatVector x, double dist, unsigned quadsegs, bool ispol, 
 		return x;		
 	} 
 
-	SpatVector tmp;
 	x = x.disaggregate();
+	SpatVector tmp;
+	tmp.reserve(x.size());
 	for (size_t i =0; i<x.geoms.size(); i++) {
 		SpatVector p(x.geoms[i]);
 		p.srs = x.srs;
@@ -2005,6 +2008,7 @@ SpatVector SpatVector::cross_dateline(bool &fixed) {
 	if (type() == "points") {
 		return out;
 	}
+	out.reserve(size());
 
 	for (size_t i=0; i<geoms.size(); i++) {
 		if ((geoms[i].size() > 1) && 

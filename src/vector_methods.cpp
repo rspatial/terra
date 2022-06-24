@@ -81,12 +81,17 @@ SpatVector SpatVector::disaggregate() {
 		return out;
 	}
 
+	size_t n=0;
+	for (size_t i=0; i<nrow(); i++) {
+		n += geoms[i].parts.size();
+	}
+	out.reserve(n);
+
 	for (size_t i=0; i<nrow(); i++) {
 		SpatGeom g = getGeom(i);
 		SpatDataFrame row = df.subset_rows(i);
 		for (size_t j=0; j<g.parts.size(); j++) {
-			SpatGeom gg = SpatGeom(g.parts[j]);
-			gg.gtype = g.gtype;
+			SpatGeom gg = SpatGeom(g.parts[j], g.gtype);
 			out.addGeom(gg);
 			if (!out.df.rbind(row)) { 
 				out.setError("cannot add row");
@@ -110,6 +115,7 @@ SpatVector SpatVector::aggregate(std::string field, bool dissolve) {
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
+	out.reserve(uv.nrow());
 	for (size_t i=0; i<uv.nrow(); i++) {
 		SpatGeom g;
 		g.gtype = geoms[0].gtype;
@@ -157,6 +163,7 @@ SpatVectorCollection SpatVector::split(std::string field) {
 	}
 	SpatDataFrame uv;
 	std::vector<int> idx = df.getIndex(i, uv);
+	
 	for (size_t i=0; i<uv.nrow(); i++) {
 		SpatVector v;
 		std::vector<unsigned> r;

@@ -68,7 +68,7 @@ class SpatGeom {
 		//constructors
 		SpatGeom();
 		SpatGeom(SpatGeomType g);
-		SpatGeom(SpatPart p);
+		SpatGeom(SpatPart p, SpatGeomType type);
 		virtual ~SpatGeom(){}
 
 		SpatGeomType gtype = unknown;
@@ -91,6 +91,9 @@ class SpatGeom {
 		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
 
+		void reserve(size_t n) {
+			parts.reserve(n);
+		}
 };
 
 

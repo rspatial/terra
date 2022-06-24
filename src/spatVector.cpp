@@ -72,8 +72,9 @@ SpatPart::SpatPart(std::vector<double> X, std::vector<double> Y) {
 
 SpatGeom::SpatGeom() {}
 
-SpatGeom::SpatGeom(SpatPart p) {
-	parts.push_back(p);
+SpatGeom::SpatGeom(SpatPart p, SpatGeomType type) {
+	parts = {p};
+	gtype = type;
 	extent = p.extent;
 }
 
@@ -205,8 +206,7 @@ SpatVector::SpatVector(SpatExtent e, std::string crs) {
 	std::vector<double> x = { e.xmin, e.xmin, e.xmax, e.xmax, e.xmin };
 	std::vector<double> y = { e.ymin, e.ymax, e.ymax, e.ymin, e.ymin };
 	SpatPart p(x, y);
-	SpatGeom g(p);
-	g.gtype = polygons;
+	SpatGeom g(p, polygons);
 	setGeom(g);
 	setSRS( {crs});
 }
@@ -216,8 +216,7 @@ SpatVector::SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomTyp
 
 	if (g == points) {
 		SpatPart p(x[0], y[0]);
-		SpatGeom geom(p);
-		geom.gtype = g;
+		SpatGeom geom(p, g);
 		setGeom(geom);
 		for (size_t i=1; i<x.size(); i++) {
 			SpatPart p(x[i], y[i]);
@@ -226,8 +225,7 @@ SpatVector::SpatVector(std::vector<double> x, std::vector<double> y, SpatGeomTyp
 		}
 	} else {
 		SpatPart p(x, y);
-		SpatGeom geom(p);
-		geom.gtype = g;
+		SpatGeom geom(p, g);
 		setGeom(geom);
 	}
 	setSRS( {crs} );
@@ -815,6 +813,7 @@ SpatVector SpatVector::subset_rows(std::vector<int> range) {
 		}
 	}
 
+	out.reserve(r.size());
 	for (size_t i=0; i < r.size(); i++) {
 		out.addGeom( geoms[r[i]] );
 	}
@@ -829,6 +828,7 @@ SpatVector SpatVector::subset_rows(std::vector<unsigned> range) {
 	SpatVector out;
 	unsigned n = nrow();
 	std::vector<unsigned> r;
+	out.reserve(r.size());
 	for (size_t i=0; i<range.size(); i++) {
 		if (range[i] < n) {
 			r.push_back(range[i]);
@@ -917,6 +917,8 @@ SpatVector SpatVector::append(SpatVector x, bool ingnorecrs) {
 		}
 	}
 	out = *this;
+	out.reserve(out.size() + x.size());
+
 	for (size_t i=0; i<x.size(); i++) {
 		out.addGeom(x.getGeom(i));
 	}
@@ -1031,8 +1033,7 @@ SpatVector SpatVector::as_lines() {
 		}
 		SpatVector v;
 		SpatPart p(x, y);
-		SpatGeom g(p);
-		g.gtype = lines;
+		SpatGeom g(p, lines)	;
 		v.setGeom(g);
 		v.srs = srs;
 		return v;

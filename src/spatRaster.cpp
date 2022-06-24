@@ -1700,19 +1700,16 @@ std::vector<double> SpatRaster::adjacent(std::vector<double> cells, std::string 
 SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions &opt) {
 
 	BlockSize bs = getBlockSize(opt);
-	std::vector<double> v, vout;
-	vout.reserve(v.size());
+    size_t ncl = ncell();
 	SpatVector pv;
-	SpatGeom g;
-	g.gtype = points;
+	pv.reserve(ncl);
 
     std::vector<std::vector<double>> xy;
 	if ((!values) && (!narm)) {
-        double nc = ncell();
-        for (size_t i=0; i<nc; i++) {
+        for (size_t i=0; i<ncl; i++) {
             xy = xyFromCell(i);
 			SpatPart p(xy[0], xy[1]);
-			g.addPart(p);
+			SpatGeom g(p, points);
 			pv.addGeom(g);
 			g.parts.resize(0);
         }
@@ -1732,11 +1729,15 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 
 	size_t nc = ncol();
 	unsigned nl = nlyr();
+	std::vector<double> v;
 	for (size_t i = 0; i < bs.n; i++) {
 		readValues(v, bs.row[i], bs.nrows[i], 0, nc);
         size_t off1 = (bs.row[i] * nc);
  		size_t vnc = bs.nrows[i] * nc;
 		if (narm) {
+			if (values) {
+				pv.df.reserve(ncl);
+			}
 			for (size_t j=0; j<vnc; j++) {
 				if (nall) {
 					bool allna = true;
@@ -1763,9 +1764,8 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 				
                 xy = xyFromCell( off1+j );
                 SpatPart p(xy[0], xy[1]);
-                g.addPart(p);
+                SpatGeom g(p, points);
                 pv.addGeom(g);
-                g.parts.resize(0);
                 if (values) {
                     for (size_t lyr=0; lyr<nl; lyr++) {
                         unsigned off2 = lyr*vnc;
@@ -1777,9 +1777,8 @@ SpatVector SpatRaster::as_points(bool values, bool narm, bool nall, SpatOptions 
 			for (size_t j=0; j<vnc; j++) {
                 xy = xyFromCell(off1+j);
                 SpatPart p(xy[0], xy[1]);
-                g.addPart(p);
+                SpatGeom g(p, points);
                 pv.addGeom(g);
-                g.parts.resize(0);
 			}
             for (size_t lyr=0; lyr<nl; lyr++) {
 				size_t off2 = lyr*vnc;

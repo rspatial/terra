@@ -302,7 +302,8 @@ SpatMessages transform_coordinates(std::vector<double> &x, std::vector<double> &
 SpatVector SpatVector::project(std::string crs) {
 
 	SpatVector s;
-
+	s.reserve(size());
+	
     #ifndef useGDAL
 		s.setError("GDAL is not available");
 		return(s);
