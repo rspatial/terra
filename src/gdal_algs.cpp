@@ -365,7 +365,9 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
     if (oOperation.Initialize( psWarpOptions ) != CE_None) {
 		return false;
 	}
-    oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) );
+    if (oOperation.ChunkAndWarpImage(0, 0, GDALGetRasterXSize(hDstDS), GDALGetRasterYSize(hDstDS)) != CE_None) {
+		return false;
+	}
     GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
     GDALDestroyWarpOptions( psWarpOptions );
 	return true;
@@ -426,13 +428,38 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			out.setError("cannot create dataset from source");
 			return out;
 		}
+		crs = out.getSRS("wkt");
 		if (!get_output_bounds(hSrcDS, srccrs, crs, out)) {
 			GDALClose( hSrcDS );
 			out.setError("cannot get output boundaries");
 			return out;
 		}
 		GDALClose( hSrcDS );
+	} else {
+		OGRSpatialReference source, target;
+		const char *pszDefFrom = srccrs.c_str();
+		OGRErr erro = source.SetFromUserInput(pszDefFrom);
+		if (erro != OGRERR_NONE) {
+			out.setError("input crs is not valid");
+			return out;
+		}
+		std::string targetcrs = out.getSRS("wkt");
+		const char *pszDefTo = targetcrs.c_str();
+		erro = target.SetFromUserInput(pszDefTo);
+		if (erro != OGRERR_NONE) {
+			out.setError("output crs is not valid");
+			return out;
+		}
+		//CPLSetConfigOption("OGR_CT_FORCE_TRADITIONAL_GIS_ORDER", "YES");
+		OGRCoordinateTransformation *poCT;
+		poCT = OGRCreateCoordinateTransformation(&source, &target);
+
+		if( poCT == NULL )	{
+			out.setError( "Cannot do this transformation" );
+			return(out);
+		}
 	}
+
 	if (align) {
 		SpatExtent e = out.getExtent();
 		e = x.align(e, "out");
