@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-45</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-47</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
 <span class="fu">time</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">time</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></code></pre></div>
+<span class="fu">time</span><span class="op">(</span><span class="va">x</span>, tstep<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></code></pre></div>
     </div>
 
     <div id="see-also">
@@ -70,7 +70,10 @@
 <dd><p>SpatRaster</p></dd>
 
   <dt>value</dt>
-<dd><p>"Date", "POSIXt", or numeric</p></dd>
+<dd><p>"Date", "POSIXt", "yearmonth" or numeric</p></dd>
+
+  <dt>tstep</dt>
+<dd><p>One of "yearmonths", "years", or "months", ignored when a known time class is used as value</p></dd>
 
 </dl></div>
     <div id="value">
@@ -113,7 +116,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
