@@ -54,7 +54,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatRaster</span>
-<span class="fu">time</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu">time</span><span class="op">(</span><span class="va">x</span>, format<span class="op">=</span><span class="st">""</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
 <span class="fu">time</span><span class="op">(</span><span class="va">x</span>, tstep<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></code></pre></div>
@@ -68,6 +68,9 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>SpatRaster</p></dd>
+
+  <dt>format</dt>
+<dd><p>One of "", "seconds" (POSIXlt), "days" (Date), "yearmonths" (expressed as decimal years), or "raw" (either seconds since 1970-01-01-00:00, or year or month number). If "", the returned format is (based on) the format that was used to set the time</p></dd>
 
   <dt>value</dt>
 <dd><p>"Date", "POSIXt", "yearmonth" or numeric</p></dd>
