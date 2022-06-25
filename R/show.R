@@ -365,6 +365,12 @@ setMethod ("show" , "SpatRaster",
 
 		if (object@ptr$hasTime) {
 			rtim <- range(time(object))
+			if (x@ptr$timestep == "yearmonths") {
+				y <- floor(rtim)
+				m <- round((rtim-y) * 12 + 1)
+				m <- month.abb[m]
+				rtim <- paste(m, y, sep="-")
+			}
 			utim <- unique(rtim)
 			if (length(utim) > 1) {
 				cat("time        :", paste(rtim, collapse=" to "), "\n")

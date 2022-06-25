@@ -9,6 +9,8 @@
 - `extract<SpatRaster,SpatVector(points)>(xy=TRUE)` returned the locations the points, not the xy-coordinates of the cells.  [#650](https://github.com/rspatial/terra/issues/650) by Ward Fonteyn
 - `wrap<SpatRaster>` did not return the correct labels for some categorical rasters. [#652](https://github.com/rspatial/terra/issues/652) by Jakub Nowosad
 - better support for non-latin characters in the legend [#658](https://github.com/rspatial/terra/issues/658) by Krzysztof Dyba
+- holes in small lon/lat polygons are now properly buffered [#689](https://github.com/rspatial/terra/issues/689) by David Hofmann
+
 
 ## enhancements 
 
@@ -19,11 +21,12 @@
 https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 - `freq` now provides the labels of factors, even if `bylayer=FALSE`. It now always returns a `data.frame` (it used to return a `matrix` in some cases. [#687](https://github.com/rspatial/terra/issues/687) by Rodolfo Jaffé
 - `disagg` and `aggregate` now return a warning instead of an error when using a (dis)aggregation factor of 1.[#684](https://github.com/rspatial/terra/issues/684) by Justin Fain.
-
+- `project` crashed when erroneously projecting raster data from one celestial body to another [#688](https://github.com/rspatial/terra/issues/688) by Mike Sumner
 
 ## new
 
 - argument `as.raster` to `unique<SpatRaster>` to create a categorical raster with the unique combinations in the layers of the input raster. The default for argument `na.rm` was changed to `FALSE`
+- `sort<SpatRaster>` to sort cell values across layers.
 
 
 # version 1.5-34

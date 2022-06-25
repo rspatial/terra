@@ -673,7 +673,7 @@ setMethod("project", signature(x="SpatRaster"),
 		
 		if (inherits(y, "SpatRaster")) {
 			if (gdal) {
-				x@ptr <- x@ptr$warp(y@ptr, "", method, mask[1], align[1], opt)
+				x@ptr <- x@ptr$warp(y@ptr, "", method, mask[1], align[1], FALSE, opt)
 			} else {
 				if (align) {
 					y <- project(rast(x), y, align=TRUE)
@@ -692,7 +692,7 @@ setMethod("project", signature(x="SpatRaster"),
 				return(project(x, tmp, method=method, mask=mask, align=align, gdal=gdal, filename=filename, ...))
 			}
 			if (gdal) {
-				x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, opt)
+				x@ptr <- x@ptr$warp(SpatRaster$new(), y, method, mask, FALSE, FALSE, opt)
 			} else {
 				y <- project(rast(x), y)
 				x@ptr <- x@ptr$resample(y@ptr, method, mask[1], TRUE, opt)				
@@ -792,9 +792,17 @@ setMethod("resample", signature(x="SpatRaster", y="SpatRaster"),
 			method <- "near"
 			warn("resample", "argument 'method=ngb' is deprecated, it should be 'method=near'")
 		}
+		xcrs = crs(x)
+		ycrs = crs(y)
+		if ((xcrs == "") && (ycrs != "")) {
+			crs(x) <- ycrs
+		}
+		if ((ycrs == "") && (xcrs != "")) {
+			crs(y) <- xcrs
+		}
 		opt <- spatOptions(filename, ...)
 #		if (gdal) {
-			x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, FALSE, opt)
+			x@ptr <- x@ptr$warp(y@ptr, "", method, FALSE, FALSE, TRUE, opt)
 #		} else {
 #			x@ptr <- x@ptr$resample(y@ptr, method, FALSE, TRUE, opt)		
 #		}
@@ -1070,14 +1078,6 @@ setMethod("unique", signature(x="SpatVector", incomparables="ANY"),
 	}
 )
 
-
-#setMethod("warp", signature(x="SpatRaster", y="SpatRaster"), 
-#	function(x, y, method="bilinear", filename="", overwrite=FALSE, ...)  {
-#		opt <- spatOptions(filename, overwrite, ...)
-#		x@ptr <- x@ptr$warp(y@ptr, "", method, opt)
-#		messages(x, "warp")
-#	}
-#)
 
 setMethod("labels", signature(object="SpatRaster"), 
 	function(object, ...)  {

@@ -373,10 +373,19 @@ bool gdal_warper(GDALWarpOptions *psWarpOptions, GDALDatasetH &hSrcDS, GDALDatas
 	return true;
 }
 
-SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, SpatOptions &opt) {
+SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method, bool mask, bool align, bool resample, SpatOptions &opt) {
 
 
 	SpatRaster out = x.geometry(nlyr(), false, false);
+	if (!is_valid_warp_method(method)) {
+		out.setError("not a valid warp method");
+		return out;
+	}
+	std::string srccrs = getSRS("wkt");
+	if (resample) {
+		out.setSRS(srccrs);
+	}
+
 	out.setNames(getNames());
 	if (method == "near") {
 		out.source[0].hasColors = hasColors();
@@ -396,28 +405,23 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	bool use_crs = crs != "";  
 	if (use_crs) {
 		align = false;
-	}
-	if (align) {
-		crs = out.getSRS("wkt");
-	}
-	if ((!use_crs) & (!hasValues())) {
+		resample = false;
+	} else if (!hasValues()) {
 		std::string fname = opt.get_filename();
 		if (fname != "") {
 			out.addWarning("raster has no values, not writing to file");
 		}
 		return out;
 	}
-
-
-	if (!is_valid_warp_method(method)) {
-		out.setError("not a valid warp method");
-		return out;
+	if (align) {
+		crs = out.getSRS("wkt");
 	}
 
-	std::string srccrs = getSRS("wkt");
-	if (srccrs == "") {
-		out.setError("input raster CRS not set");
-		return out;
+	if (!resample) {
+		if (srccrs == "") {
+			out.setError("input raster CRS not set");
+			return out;
+		}
 	}
 
 	lrtrim(crs);
@@ -435,7 +439,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 			return out;
 		}
 		GDALClose( hSrcDS );
-	} else {
+	} else if (!resample) {
 		OGRSpatialReference source, target;
 		const char *pszDefFrom = srccrs.c_str();
 		OGRErr erro = source.SetFromUserInput(pszDefFrom);
@@ -731,7 +735,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 	} // else { // if (useaoi == 0) // no aoi
 
 
-	out = warper(out, "", method, false, false, opt);
+	out = warper(out, "", method, false, false, true, opt);
 
 	return(out);
 }

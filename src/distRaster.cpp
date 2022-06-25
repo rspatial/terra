@@ -2249,7 +2249,7 @@ SpatRaster SpatRaster::rst_area(bool mask, std::string unit, bool transform, int
 			if (resample) {
 				double divr = frow*fcol;
 				out = out.arith(divr, "/", false, xopt);
-				out = out.warper(target, "", "bilinear", false, false, opt);
+				out = out.warper(target, "", "bilinear", false, false, true, opt);
 			}
 		} else {
 			if (!out.writeStart(opt)) { return out; }
