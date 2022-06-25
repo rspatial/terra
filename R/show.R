@@ -380,13 +380,18 @@ setMethod ("show" , "SpatRaster",
 				label <- "time (years)"
 			} else if (tims == "days") {
 				label <- "time (days) "
-			} 			
+			}
 			utim <- unique(rtim)
 			if (length(utim) > 1) {
-				cat(label, ": ", paste(rtim, collapse=" to "), "\n", sep="")
+				ptim <- paste0(label, ": ", paste(rtim, collapse=" to "))
 			} else {
-				cat(label, ": ", as.character(utim), "\n", sep="")
+				ptim <- paste0(label, ": ", as.character(utim))
 			}
+			if (tims == "seconds") {
+				tz <- format(utim[1], format="%Z")
+				ptim <- paste(ptim, tz)
+			}
+			cat(ptim, "\n")
 		}
 
 		# else {

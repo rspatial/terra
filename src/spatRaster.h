@@ -311,8 +311,9 @@ class SpatRaster {
 		bool hasTime();
 		std::vector<int_64> getTime();
 		std::string getTimeStep();
+		std::string getTimeZone();
 		std::vector<std::string> getTimeStr(bool addstep);
-		bool setTime(std::vector<int_64> time, std::string step);
+		bool setTime(std::vector<int_64> time, std::string step, std::string zone);
 		
 		std::vector<double> getDepth();
 		bool setDepth(std::vector<double> depths);

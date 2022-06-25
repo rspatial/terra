@@ -256,6 +256,7 @@ SpatRaster SpatRaster::geometry(long nlyrs, bool properties, bool time, bool uni
 		if (time && hasTime()) {
 			s.hasTime = true;
 			s.timestep = getTimeStep();
+			s.timezone = getTimeZone();
 			s.time = getTime();
 		}
 		if (units && hasUnit()) {
@@ -716,12 +717,17 @@ std::string SpatRaster::getTimeStep() {
 	return source[0].timestep;
 }
 
-bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
+std::string SpatRaster::getTimeZone() {
+	return source[0].timezone;
+}
+
+bool SpatRaster::setTime(std::vector<int_64> time, std::string step, std::string zone) {
 
 	if (time.size() == 0 || step == "remove") { 
 		for (size_t i=0; i<source.size(); i++)	{
 			source[i].time = std::vector<int_64> (source[i].nlyr);
 			source[i].timestep = "";
+			source[i].timezone = "";
 			source[i].hasTime = false;
 		}
 		return true;
@@ -738,6 +744,7 @@ bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
 		size_t end = begin + source[i].nlyr;
         source[i].time = std::vector<int_64> (time.begin() + begin, time.begin() + end);
 		source[i].timestep = step;
+		source[i].timezone = zone;
 		source[i].hasTime = true;
         begin = end;
     }

@@ -399,6 +399,7 @@ SpatRaster SpatRaster::warper(SpatRaster x, std::string crs, std::string method,
 	if (hasTime()) {
 		out.source[0].hasTime = true;
 		out.source[0].timestep = getTimeStep();
+		out.source[0].timezone = getTimeZone();
 		out.source[0].time = getTime();
 	}
 
