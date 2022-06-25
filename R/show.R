@@ -364,18 +364,28 @@ setMethod ("show" , "SpatRaster",
 		}
 
 		if (object@ptr$hasTime) {
+			label <- "time        "
 			rtim <- range(time(object))
-			if (x@ptr$timestep == "yearmonths") {
+			tims <- x@ptr$timestep
+			if (tims == "yearmonths") {
 				y <- floor(rtim)
 				m <- round((rtim-y) * 12 + 1)
 				m <- month.abb[m]
 				rtim <- paste(m, y, sep="-")
-			}
+				label <- "time (ymnts)"
+			} else if (tims == "months") {
+				rtim <- month.abb[rtim]
+				label <- "time (mnts) "
+			} else if (tims == "years") {
+				label <- "time (years)"
+			} else if (tims == "days") {
+				label <- "time (days) "
+			} 			
 			utim <- unique(rtim)
 			if (length(utim) > 1) {
-				cat("time        :", paste(rtim, collapse=" to "), "\n")
+				cat(label, ": ", paste(rtim, collapse=" to "), "\n", sep="")
 			} else {
-				cat("time        :", as.character(utim), "\n")
+				cat(label, ": ", as.character(utim), "\n", sep="")
 			}
 		}
 

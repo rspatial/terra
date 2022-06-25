@@ -730,7 +730,7 @@ bool SpatRaster::setTime(std::vector<int_64> time, std::string step) {
 	if (time.size() != nlyr()) {
 		return false;
 	} 
-	if (!((step == "seconds") || (step == "raw") || (step == "days") || (step == "yearmonths"))) {  // "months", "years"
+	if (!((step == "seconds") || (step == "raw") || (step == "days") || (step == "yearmonths") || (step == "years") || (step == "months"))) {
 		return false;
 	} 
 	size_t begin=0;

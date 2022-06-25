@@ -20,9 +20,7 @@ setMethod("time", signature(x="SpatRaster"),
 			d <- strptime("1970-01-01", "%Y-%m-%d", tz = "UTC") + d
 			y <- as.integer(format(d, "%Y"))
 			y + (as.integer(format(d, "%m"))-1)/12
-		#} else if (tstep == "months") {
-		#} else if (tstep == "years") {
-		} else { # raw 
+		} else { # raw / months / years
 			d
 		}
 	}
@@ -30,7 +28,15 @@ setMethod("time", signature(x="SpatRaster"),
 
 
 setMethod("time<-", signature(x="SpatRaster"), 
-	function(x, value)  {
+	function(x, value, tstep="")  {
+		if (is.null(value)) {
+			x@ptr$setTime(0[0], "remove")
+			return(x)
+		} 
+		if (inherits(value, "character")) {
+			error("time<-", "value cannot be a character type")
+		}
+		
 		if (inherits(value, "Date")) {
 			value <- as.POSIXlt(value)
 			tstep <- "days"
@@ -43,10 +49,7 @@ setMethod("time<-", signature(x="SpatRaster"),
 			d <- as.Date(paste(year, month, "15", sep="-")) 
 			value <- as.POSIXlt(d)
 			tstep <- "yearmonths"
-		} else if (is.null(value)) {
-			x@ptr$setTime(0[0], "remove")
-			return(x)
-		} else {
+		} else if (tstep == "") {
 			tstep <- "raw"
 		}
 		if (!x@ptr$setTime(as.numeric(value), tstep)) {

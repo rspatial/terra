@@ -110,6 +110,7 @@ class SpatRasterSource {
 		
 		std::vector<int_64> time;
 		std::string timestep = "seconds";
+		std::string timezone = "";
 		bool hasTime = false;
 		std::vector<double> depth;
 		std::vector<std::string> unit;

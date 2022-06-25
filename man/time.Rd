@@ -15,7 +15,7 @@ Get or set the time of the layers of a SpatRaster.
 \usage{
 \S4method{time}{SpatRaster}(x)
 
-\S4method{time}{SpatRaster}(x)<-value
+\S4method{time}{SpatRaster}(x, tstep="")<-value
 }
 
 \seealso{\code{\link{depth}}}
@@ -23,7 +23,8 @@ Get or set the time of the layers of a SpatRaster.
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{value}{"Date", "POSIXt", or numeric}
+  \item{value}{"Date", "POSIXt", "yearmonth" or numeric}
+  \item{tstep}{One of "yearmonths", "years", or "months", ignored when a known time class is used as value}
 }
 
 \value{
