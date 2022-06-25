@@ -371,7 +371,7 @@ setMethod ("show" , "SpatRaster",
 				y <- floor(rtim)
 				m <- round((rtim-y) * 12 + 1)
 				m <- month.abb[m]
-				rtim <- paste(m, y, sep="-")
+				rtim <- paste(y, m, sep="-")
 				label <- "time (ymnts)"
 			} else if (tims == "months") {
 				rtim <- month.abb[rtim]
