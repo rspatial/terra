@@ -368,10 +368,7 @@ setMethod ("show" , "SpatRaster",
 			rtim <- range(time(object))
 			tims <- object@ptr$timestep
 			if (tims == "yearmonths") {
-				y <- floor(rtim)
-				m <- round((rtim-y) * 12 + 1)
-				m <- month.abb[m]
-				rtim <- paste(y, m, sep="-")
+				rtim <- format_ym(rtim)
 				label <- "time (ymnts)"
 			} else if (tims == "months") {
 				rtim <- month.abb[rtim]

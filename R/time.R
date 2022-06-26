@@ -4,13 +4,33 @@
 # License GPL v3
 
 
+format_ym <- function(x) {
+	y <- floor(x)
+	m <- round((x-y) * 12 + 1)
+	m <- month.abb[m]
+	paste(y, m, sep="-")
+}
+
+
 setMethod("time", signature(x="SpatRaster"), 
 	function(x, format="") { 
 		if (!x@ptr$hasTime) {
 			return(rep(NA, nlyr(x)))
 		}
 		d <- x@ptr$time
+		tstep <- x@ptr$timestep 
 		if (format != "") {
+			if ((format == "months") && (tstep == "years")) {
+				error("time", "cannot extract months from years-time")
+			} else if ((format == "years") && (tstep %in% c("months"))) {
+				error("time", "cannot extract years from months-time")
+			} else if ((format == "yearmonthis") && (tstep %in% c("months", "years"))) {
+				error("time", "cannot extract yearmon from this type of time data")
+			} else if ((format == "seconds") && (tstep != "seconds")) {
+				error("time", "cannot extract seconds from this type of time data")
+			} else if ((format == "days") && (!(tstep %in% c("seconds", "days")))) {
+				error("time", "cannot extract days from this type of time data")
+			}
 			tstep <- format
 		} else {
 			tstep <- x@ptr$timestep 
@@ -50,6 +70,9 @@ setMethod("time<-", signature(x="SpatRaster"),
 		} 
 		if (inherits(value, "character")) {
 			error("time<-", "value cannot be a character type")
+		}
+		if (length(value) != nlyr(x)) {
+			error("time<-", "length(value) != nlyr(x)")
 		}
 		tzone <- "UTC"
 		if (inherits(value, "Date")) {
