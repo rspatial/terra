@@ -11,7 +11,7 @@
 \title{time of SpatRaster layers}
 
 \description{
-Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\link{POSIXlt}} (date and time, with  a resolution of seconds, and a time zone), \code{\link{Date}}, "months", "years", "yearmonths", or "raw". 
+Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\link{POSIXlt}} (date and time, with  a resolution of seconds, and a time zone), \code{\link{Date}}, "months", "years", or "yearmonths". 
 }
 
 \usage{
@@ -27,9 +27,9 @@ Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\
 
 \arguments{
   \item{x}{SpatRaster}
-  \item{format}{One of "", "seconds" (POSIXlt), "days" (Date), "yearmonths" (decimal years), "years", "months", or "raw". If "", the returned format is (based on) the format that was used to set the time}
+  \item{format}{One of "", "seconds" (POSIXlt), "days" (Date), "yearmonths" (decimal years), "years", "months". If "", the returned format is (based on) the format that was used to set the time}
   \item{value}{\code{Date}, \code{POSIXt}, \code{yearmon} (defined in package zoo), or numeric}
-  \item{tstep}{One of "years", "months", "yearmonths", or "raw". Used when \code{value} is numeric. Ignored when \code{value} is of type \code{Date}, \code{POSIXt}, or \code{yearmon}}
+  \item{tstep}{One of "years", "months", "yearmonths". Used when \code{value} is numeric. Ignored when \code{value} is of type \code{Date}, \code{POSIXt}, or \code{yearmon}}
 }
 
 \value{
@@ -61,10 +61,6 @@ s
 
 time(s, tstep="months") <- 1:3
 s 
-
-# "raw" time
-time(s) <- as.numeric(d)
-time(s)
 }
 
 \keyword{spatial}
