@@ -60,7 +60,7 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	ncx <- ncol(x)
 	v <- readValues(x, round(0.51*nrow(x)), 1, 1, ncx, dataframe=TRUE)
 	test <- .lapp_test(v, fun, usenames, ...)
-	if (test$nl < 1) error("lapp", "I do not like 'fun' :(")
+	if (test$nl < 1) error("lapp", "cannot use 'fun'. The number of values returned does is not divisible by the number of input cells")
 	out <- rast(x, nlyrs=test$nl)
 	if (length(test$names == test$nl)) {
 		if (is.null(wopt$names)) wopt$names <- test$names
@@ -145,7 +145,7 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.51*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .lapp_test_stack(v, fun, recycle, ...)
-	if (test$nl < 1) error("lapp", "cannot use 'fun'")
+	if (test$nl < 1) error("lapp", "cannot use 'fun'. The number of values returned does is not divisible by the number of input cells")
 	out <- rast(x[1])
 	nlyr(out) <- test$nl
 	if (length(test$names == test$nl)) {
