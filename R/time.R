@@ -12,6 +12,23 @@ format_ym <- function(x) {
 }
 
 
+setMethod("timeInfo", signature(x="SpatRaster"), 
+	function(x) {
+		time <- x@ptr$hasTime
+		if (time) {
+			step <- x@ptr$timestep
+			if (step == "seconds") {
+				data.frame(time=time, step=step, zone=x@ptr$timezone)
+			} else {
+				data.frame(time=time, step=step, zone="")			
+			}
+		} else {
+			data.frame(time=time, step="", zone="")		
+		}
+	}
+)
+
+
 setMethod("time", signature(x="SpatRaster"), 
 	function(x, format="") { 
 		if (!x@ptr$hasTime) {

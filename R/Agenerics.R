@@ -160,6 +160,7 @@ if (!isGeneric("spatSample")) { setGeneric("spatSample", function(x, ...) standa
 if (!isGeneric("terrain")) {setGeneric("terrain", function(x, ...) standardGeneric("terrain"))}
 if (!isGeneric("time")) {setGeneric("time", function(x,...) standardGeneric("time"))}
 if (!isGeneric("time<-")) {setGeneric("time<-", function(x, ..., value) standardGeneric("time<-"))}
+if (!isGeneric("timeInfo")) {setGeneric("timeInfo", function(x,...) standardGeneric("timeInfo"))}
 if (!isGeneric("nlyr")) { setGeneric("nlyr", function(x) standardGeneric("nlyr")) }
 if (!isGeneric("nlyr<-")) { setGeneric("nlyr<-", function(x, ..., value) standardGeneric("nlyr<-")) }
 if (!isGeneric("linearUnits")) {setGeneric("linearUnits", function(x, ...) standardGeneric("linearUnits"))}

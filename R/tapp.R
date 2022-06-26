@@ -3,11 +3,14 @@ setMethod("tapp", signature(x="SpatRaster"),
 function(x, index, fun, ..., cores=1, filename="", overwrite=FALSE, wopt=list()) {
 
 	stopifnot(!any(is.na(index)))
-	if ((length(index) == 1) && is.character(index) && x@ptr$hasTime) {
+	if ((length(index) == 1) && is.character(index)) {
 		choices <- c("years", "months", "week", "days", "doy", "yearmonths")
 		i <- pmatch(tolower(index), choices)
 		if (is.na(i)) {
 			error("tapp", paste("invalid time step. Use one of:", paste(choices, collapse=", ")))
+		}
+		if (!x@ptr$hasTime) {
+			error("tapp", "x has no time data")		
 		}
 		choice <- choices[i]
 		if (choice == "doy") {

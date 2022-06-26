@@ -4,6 +4,8 @@
 \alias{time<-}
 \alias{time,SpatRaster-method}
 \alias{time<-,SpatRaster-method}
+\alias{timeInfo}
+\alias{timeInfo,SpatRaster-method}
 
   
 \title{time of SpatRaster layers}
@@ -16,6 +18,8 @@ Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\
 \S4method{time}{SpatRaster}(x, format="")
 
 \S4method{time}{SpatRaster}(x, tstep="")<-value
+
+\S4method{timeInfo}{SpatRaster}(x)
 }
 
 \seealso{\code{\link{depth}}}
@@ -29,7 +33,8 @@ Get or set the time of the layers of a SpatRaster. Time can be stored as \code{\
 }
 
 \value{
-POSIXlt, Date, or numeric  
+\code{time}: POSIXlt, Date, or numeric
+\code{timeInfo}: data.frame
 }
 
 
@@ -48,6 +53,7 @@ time(s)
 # with time zone
 time(s) <- as.POSIXlt(Sys.time(), "America/New_York") + 0:2
 time(s)
+timeInfo(s)
 
 # years
 time(s, tstep="years") <- 2000 + 0:2
