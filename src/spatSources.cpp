@@ -78,8 +78,9 @@ SpatRaster SpatRaster::combineSources(SpatRaster x, bool warn) {
 		out.addWarning("you cannot add SpatRaster with no values to one that has values");
 		return(out);
 	}
+	out.checkTime(x);
 	out.source.insert(out.source.end(), x.source.begin(), x.source.end());
-    // to make names unique (not great of called several times
+    // to make names unique (not great if called several times
 	//out.setNames(out.getNames());
 	return(out);
 }
@@ -97,9 +98,38 @@ void SpatRaster::combine(SpatRaster x) {
 		return;
 	}
 
+	checkTime(x);
 	source.insert(source.end(), x.source.begin(), x.source.end());
 	//setNames(getNames());
 	return;
+}
+
+
+void SpatRaster::checkTime(SpatRaster &x) {
+	if (!hasTime()) {
+		std::vector<int_64> time;
+		x.setTime(time, "remove", "");
+		return;
+	}
+	if (!x.hasTime()) {
+		std::vector<int_64> time;
+		setTime(time, "remove", "");
+		return;
+	}
+	std::string s = source[0].timestep;
+	std::string xs = x.source[0].timestep;
+	if (s == xs) return;
+	if ((s == "days") && (xs == "seconds")) {
+		x.source[0].timestep = "days";
+	} else if ((s == "seconds") && (xs == "days")) {
+		for (size_t i=0; i<source.size(); i++) {
+			source[i].timestep = "days";
+		}
+	} else {
+		std::vector<int_64> time;
+		setTime(time, "remove", "");
+		x.setTime(time, "remove", "");	
+	}
 }
 
 void SpatRaster::addSource(SpatRaster x, bool warn, SpatOptions &opt) {
@@ -122,10 +152,11 @@ void SpatRaster::addSource(SpatRaster x, bool warn, SpatOptions &opt) {
 		}
 		return;
 	}
-	if (!x.hasValues()) {
-		x = x.init({NAN}, opt);
-	}
 	if (compare_geom(x, false, false, 0.1)) {
+		if (!x.hasValues()) {
+			x = x.init({NAN}, opt);
+		}
+		checkTime(x);
         source.insert(source.end(), x.source.begin(), x.source.end());
 	}
 }
