@@ -366,7 +366,7 @@ setMethod ("show" , "SpatRaster",
 		if (object@ptr$hasTime) {
 			label <- "time        "
 			rtim <- range(time(object))
-			tims <- x@ptr$timestep
+			tims <- object@ptr$timestep
 			if (tims == "yearmonths") {
 				y <- floor(rtim)
 				m <- round((rtim-y) * 12 + 1)
@@ -380,6 +380,8 @@ setMethod ("show" , "SpatRaster",
 				label <- "time (years)"
 			} else if (tims == "days") {
 				label <- "time (days) "
+			} else if (tims == "raw") {
+				label <- "time (raw)  "
 			}
 			utim <- unique(rtim)
 			if (length(utim) > 1) {
