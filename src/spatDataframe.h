@@ -104,7 +104,7 @@ class SpatDataFrame {
 		bool rbind(SpatDataFrame &x);
 		bool cbind(SpatDataFrame &x);
 
-		SpatDataFrame unique(int col);
+		SpatDataFrame unique_col(int col);
 		std::vector<int> getIndex(int col, SpatDataFrame &x);
 
 		std::vector<std::string> get_names();
@@ -120,5 +120,9 @@ class SpatDataFrame {
 
 		bool field_exists(std::string field);
 		bool write_dbf(std::string filename, bool overwrite, SpatOptions &opt);
+
+		std::vector<std::vector<std::string>> to_strings();
+		std::vector<std::string> one_string();
+		SpatDataFrame unique();
 };
 

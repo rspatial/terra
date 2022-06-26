@@ -125,6 +125,7 @@ setMethod ("set.cats" , "SpatRaster",
 				}
 			}
 		}
+		value[[1]] <- as.integer(value[[1]])
 
 		index <- max(1, min(ncol(value), index))
 		if (setname) {
@@ -136,6 +137,9 @@ setMethod ("set.cats" , "SpatRaster",
 		}
 		if (any(is.na(value[,1]))) {
 			error("set.cats", "you cannot associate a category with NA")
+		}
+		if (any(table(value[,1]) > 1)) {
+			error("set.cats", "you cannot have duplicate IDs")
 		}
 
 		value <- .makeSpatDF(value)

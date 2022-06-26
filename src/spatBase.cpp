@@ -479,8 +479,10 @@ bool SpatCategories::combine(SpatCategories &x) {
 	if (!ok) {
 		return(false);
 	}
+	d = d.unique();
 	std::vector<long> ids = d.getI(0);
 	size_t n = ids.size();
+	std::sort(ids.begin(), ids.end());
 	ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
 	if (ids.size() < n) {
 		return false;

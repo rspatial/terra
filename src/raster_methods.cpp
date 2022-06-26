@@ -1925,7 +1925,7 @@ bool SpatRaster::shared_basegeom(SpatRaster &x, double tol, bool test_overlap) {
 SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptions &opt) {
 
 	unsigned nl = std::max(nlyr(), x.nlyr());
-	SpatRaster out = geometry(nl, true);
+	SpatRaster out = geometry(nl, true, true, true);
 
 	bool rmatch = false;
 	if (out.compare_geom(x, false, false, opt.get_tolerance(), true)) {
@@ -1959,6 +1959,28 @@ SpatRaster SpatRaster::cover(SpatRaster x, std::vector<double> values, SpatOptio
 			return x.extend(e, "near", opt);
 		}
 	}
+
+	std::vector<bool> cats = hasCategories();
+	std::vector<bool> xcats = x.hasCategories();
+	recycle(cats, xcats);
+	for (size_t i =0; i<nl; i++) {
+		if (cats[i]) {
+			if (xcats[i]) {
+				SpatCategories sc = getLayerCategories(i);
+				SpatCategories xsc = x.getLayerCategories(i);
+				if (sc.combine(xsc)) {
+					out.source[0].cats[i] = sc;
+				} else {
+					std::string warn = "cannot merge categories of layer " + std::to_string(i+1);
+					out.addWarning(warn);
+					out.removeCategories(i);
+				}
+			} 
+		} else if (xcats[i]) {
+			out.removeCategories(i);
+		}
+	}
+
 
 	if (!readStart()) {
 		out.setError(getError());

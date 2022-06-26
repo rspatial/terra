@@ -1187,6 +1187,7 @@ SpatCategories SpatRaster::getLayerCategories(unsigned layer) {
 
 std::vector<SpatCategories> SpatRaster::getCategories() {
 	std::vector<SpatCategories> cats;
+	cats.reserve(nlyr());
 	for (size_t i=0; i<source.size(); i++) {
 		cats.insert(cats.end(), source[i].cats.begin(), source[i].cats.end());
 	}

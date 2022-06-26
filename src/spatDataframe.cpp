@@ -738,8 +738,7 @@ int SpatDataFrame::get_fieldindex(std::string field) {
 }
 
 
-// only doing this for one column for now
-SpatDataFrame SpatDataFrame::unique(int col) {
+SpatDataFrame SpatDataFrame::unique_col(int col) {
 	SpatDataFrame out = subset_cols(col);
 
 	if (out.hasError()) return out;
@@ -771,7 +770,7 @@ SpatDataFrame SpatDataFrame::unique(int col) {
 
 std::vector<int> SpatDataFrame::getIndex(int col, SpatDataFrame &x) {
 	size_t nd = nrow();
-	x = unique(col);
+	x = unique_col(col);
 	size_t nu = x.nrow();
 	std::vector<int> idx(nd, -1);
 	size_t ccol = iplace[col];
@@ -966,4 +965,54 @@ std::vector<std::string> SpatDataFrame::get_timezones() {
 	return s;	
 }
 
+
+
+std::vector<std::vector<std::string>> SpatDataFrame::to_strings() {
+	std::vector<std::vector<std::string>> out(ncol());
+	if (nrow() == 0) return out;
+	for (size_t i= 0; i<ncol(); i++) {
+		out[i] = as_string(i);
+	}
+	return out;
+}
+
+std::vector<std::string> SpatDataFrame::one_string() {
+	std::vector<std::string> out;
+	size_t n = nrow();
+	if (n == 0) return out;
+	std::vector<std::vector<std::string>> ss = to_strings();
+	size_t m = ncol();
+	out.reserve(n);
+	for (size_t i= 0; i<n; i++) {
+		std::string s = ss[0][i];
+		for (size_t j= 0; j<m; j++) {
+			s += ss[j][i];
+		}
+		out.push_back(s);
+	}
+	return out;
+}
+
+SpatDataFrame SpatDataFrame::unique() {
+	std::vector<std::string> s = one_string();
+	std::vector<std::string> u = s;
+    std::sort(u.begin(), u.end());
+    u.erase(std::unique(u.begin(), u.end()), u.end());
+	size_t nu = u.size();
+	size_t ns = s.size();
+	if (nu == ns) {
+		return *this;
+	}
+	std::vector<unsigned> keep;
+	keep.reserve(nu);
+	for (size_t i=0; i<nu; i++) {
+		for (size_t j=0; j<ns; j++) {
+			if (s[j] == u[i]) {
+				keep.push_back(j);
+				break;
+			}
+		}
+	}	
+	return subset_rows(keep);
+}
 
