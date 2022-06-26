@@ -69,7 +69,7 @@ See app or Summary-methods if you want to use a more efficient function that ret
 <dd><p>SpatRaster</p></dd>
 
   <dt>index</dt>
-<dd><p>factor or numeric (integer). Vector of length <code>nlyr(x)</code> (shorter vectors are recycled) grouping the input layers</p></dd>
+<dd><p>factor or numeric (integer). Vector of length <code>nlyr(x)</code> (shorter vectors are recycled) grouping the input layers. It can also be one of the following values to group by time period (if <code>x</code> has the appropriate time data): "years", "months", "yearmonths", "days", "week" (ISO 8601 week number), or "doy" (day of the year)</p></dd>
 
   <dt>fun</dt>
 <dd><p>function to be applied. The following functions have been re-implemented in C++ for speed: "sum", "mean", "median", "modal", "which", "which.min", "which.max", "min", "max", "prod", "any", "all", "sd", "std", "first". To use the base-R function for say, "min", you could use something like <code>fun = \(i) min(i)</code></p></dd>
