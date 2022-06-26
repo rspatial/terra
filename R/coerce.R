@@ -513,6 +513,9 @@ setAs("im", "SpatRaster",
 
 setAs("SpatVector", "Spatial", 
 	function(from) {
+		if (!("geom,data.frame-method" %in% methods(generic.function = "geom"))) {
+			error("coerce", "to coerce a SpatVector to a Spatial object you need to first load the raster package with 'library(raster)' ")
+		}
 		g <- geom(from, df=TRUE)
 		geom(g, values(from), geomtype(from), as.character(crs(from)))
 	}
