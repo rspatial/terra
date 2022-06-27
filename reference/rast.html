@@ -58,7 +58,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for character</span>
-<span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, subds<span class="op">=</span><span class="fl">0</span>, lyrs<span class="op">=</span><span class="cn">NULL</span>, opts<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
+<span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, subds<span class="op">=</span><span class="fl">0</span>, lyrs<span class="op">=</span><span class="cn">NULL</span>, drivers<span class="op">=</span><span class="cn">NULL</span>, opts<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span>
 
 <span class="co"># S4 method for missing</span>
 <span class="fu">rast</span><span class="op">(</span><span class="va">x</span>, nrows<span class="op">=</span><span class="fl">180</span>, ncols<span class="op">=</span><span class="fl">360</span>, nlyrs<span class="op">=</span><span class="fl">1</span>, xmin<span class="op">=</span><span class="op">-</span><span class="fl">180</span>, xmax<span class="op">=</span><span class="fl">180</span>, 
@@ -99,6 +99,9 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
 
 <dt>lyrs</dt>
 <dd><p>positive integer or character to select a subset of layers (a.k.a. "bands")</p></dd>
+
+<dt>drivers</dt>
+<dd><p>character. GDAL drivers to consider</p></dd>
 
 <dt>opts</dt>
 <dd><p>character. GDAL dataset open options</p></dd>
@@ -175,7 +178,7 @@ When a SpatRaster is created from a file, it does not load the cell (pixel) valu
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see <code><a href="gdal.html">gdal</a></code>) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by prepending the driver name to the filename like this: <code>rast('NETCDF:"filename.ncdf"')</code></p>
+    <p>Files are read with the GDAL library. GDAL guesses the file format from the name, and/or tries reading it with different "drivers" (see <code><a href="gdal.html">gdal</a></code>) until it succeeds. In very few cases this may cause a file to be opened with the wrong driver, and some information may be lost. For example, when a netCDF file is opened with the HDF5 driver. You can avoid that by using argument <code>rast("filename.ncdf", drivers="NETCDF")</code></p>
 <p>These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use <code><a href="writeRaster.html">writeRaster</a></code> to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see <code><a href="wrap.html">wrap</a></code>.</p>
     </div>
     <div id="see-also">
