@@ -332,3 +332,14 @@ setMethod("catalyze", "SpatRaster",
 )
 
 
+
+setMethod("concats", "SpatRaster", 
+	function(x, y, filename="", ...) {
+		opt <- spatOptions(filename, ...)
+		x@ptr = x@ptr$combineCats(y@ptr, opt)
+		messages(x, "concats")
+	}
+)
+
+
+
