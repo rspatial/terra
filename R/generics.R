@@ -1057,7 +1057,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		}
 		if (as.raster) {
 			if (any(isfact)) {
-				warn("unique", "cannot do 'as.raster=TRUE' with categorical rasters")
+				warn("unique", "cannot do 'as.raster=TRUE' with categorical rasters (but you can use 'concats')")
 				return(u)
 			}
 			uid <- 1:nrow(u)

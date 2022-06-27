@@ -9,7 +9,7 @@
 \title{Concatenate categorical rasters}
 
 \description{
-Concatenate categorical rasters by combinding their levels.
+Combine two categorical rasters by concatenating their levels.
 }
 
 \usage{
@@ -18,8 +18,8 @@ Concatenate categorical rasters by combinding their levels.
 
 
 \arguments{
-  \item{x}{SpatRaster}
-  \item{y}{SpatRaster}
+  \item{x}{SpatRaster (with a single, categorical, layer)}
+  \item{y}{SpatRaster (with a single, categorical, layer)}
   \item{filename}{character. Output filename}  
   \item{...}{additional arguments for writing files as in \code{\link{writeRaster}}}  
 }  
@@ -44,6 +44,7 @@ levels(rr) <- data.frame(id=c(1:3), color=c("red", "green", "blue"))
 
 x <- concats(r, rr)
 x
+levels(x)[[1]]
 }
 
 \keyword{methods}
