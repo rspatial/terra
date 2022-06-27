@@ -838,33 +838,34 @@ std::vector<double> SpatDataFrame::as_double(size_t v) {
 		return out;
 	}
 	size_t j = iplace[v];
+	size_t n = nrow();
 	if (itype[v] == 0) return dv[j];
-//	if (itype[v] == 1) {
-	out.reserve(nrow());
+
+	out.reserve(n);
 	if (itype[v]==1) {
 		long longNA = NA<long>::value;		
-		for (size_t i=0; i<nrow(); i++){
-			if (tv[j].x[i] == longNA) {
-				out[i] = NAN;	
+		for (size_t i=0; i<n; i++){
+			if (iv[j][i] == longNA) {
+				out.push_back(NAN);	
 			} else {
-				out[i] = (double)iv[j][i];			
+				out.push_back((double)iv[j][i]);
 			}
 		}	
 	} else if (itype[v]==3) {
-		for (size_t i=0; i<nrow(); i++){
+		for (size_t i=0; i<n; i++){
 			if (bv[j][i] > 1) {
-				out[i] = NAN;
+				out.push_back(NAN);
 			} else {
-				out[i] = (double)bv[j][i];			
+				out.push_back((double)bv[j][i]);
 			}
 		}
 	} else if (itype[v]==4) {
 		SpatTime_t timeNA = NA<SpatTime_t>::value;
-		for (size_t i=0; i<nrow(); i++){
+		for (size_t i=0; i<n; i++){
 			if (tv[j].x[i] == timeNA) {
-				out[i] = NAN;				
+				out.push_back(NAN);
 			} else {
-				out[i] = (double)tv[j].x[i];
+				out.push_back((double)tv[j].x[i]);
 			}
 		}
 	} 
@@ -898,18 +899,18 @@ std::vector<long> SpatDataFrame::as_long(size_t v) {
 	} else if (itype[v]==3) {
 		for (size_t i=0; i<nrow(); i++){
 			if (bv[j][i] > 1) {
-				out[i] = longNA;
+				out.push_back(longNA);
 			} else {
-				out[i] = (long) bv[j][i];			
+				out.push_back((long) bv[j][i]);			
 			}
 		}
 	} else if (itype[v]==4) {
 		SpatTime_t timeNA = NA<SpatTime_t>::value;
 		for (size_t i=0; i<nrow(); i++){
 			if (tv[j].x[i] == timeNA) {
-				out[i] = longNA;				
+				out.push_back(longNA);
 			} else {
-				out[i] = (long) tv[j].x[i];
+				out.push_back((long) tv[j].x[i]);
 			}
 		}
 	} 

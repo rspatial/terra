@@ -173,7 +173,7 @@ setMethod("rast", signature(x="SpatVector"),
 }
 
 setMethod("rast", signature(x="character"),
-	function(x, subds=0, lyrs=NULL, opts=NULL) {
+	function(x, subds=0, lyrs=NULL, drivers=NULL, opts=NULL) {
 
 		x <- trimws(x)
 		x <- x[x!=""]
@@ -185,12 +185,13 @@ setMethod("rast", signature(x="character"),
 		f <- enc2utf8(f)
 		#subds <- subds[1]
 		if (is.null(opts)) opts <- ""[0]
+		if (is.null(drivers)) drivers <- ""[0]
 		if (length(subds) == 0) subds = 0
 		if (is.character(subds)) { 
 			#r@ptr <- SpatRaster$new(f, -1, subds, FALSE, 0[])
-			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, opts, 0[])
+			r@ptr <- SpatRaster$new(f, -1, subds, FALSE, drivers, opts, 0[])
 		} else {
-			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, opts, 0[])
+			r@ptr <- SpatRaster$new(f, subds-1, "", FALSE, drivers, opts, 0[])
 		}
 		r <- messages(r, "rast")
 		if (r@ptr$getMessage() == "ncdf extent") {

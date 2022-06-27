@@ -491,3 +491,35 @@ bool SpatCategories::combine(SpatCategories &x) {
 }
 
 	
+bool SpatCategories::concatenate(SpatCategories &x) {
+	
+	std::vector<long> ids = d.getI(0);
+	std::vector<long> xids = x.d.getI(0);
+	std::vector<std::string> labs = d.as_string(index);
+	std::vector<std::string> xlabs = x.d.as_string(x.index);
+	size_t n = ids.size() * xids.size();
+	std::vector<long> id1, id2;
+	std::vector<std::string> news;
+	id1.reserve(n);
+	id2.reserve(n);
+	news.reserve(n);
+	std::string nm = d.names[index] + "_" + x.d.names[index];
+	
+	for (size_t i=0; i<ids.size(); i++) {
+		for (size_t j=0; j<xids.size(); j++) {
+			id1.push_back(ids[i]);	
+			id2.push_back(xids[j]);
+			news.push_back(labs[i] + "_" + xlabs[j]);
+		}
+	}
+	std::vector<long> id(n);
+	std::iota(id.begin(), id.end(), 0);
+	SpatDataFrame dd;
+	dd.add_column(id, "ID");
+	dd.add_column(news, nm);
+	dd.add_column(id1, "idx");
+	dd.add_column(id2, "idy");
+	d = dd;	
+	return true;
+}
+

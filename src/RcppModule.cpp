@@ -504,11 +504,11 @@ RCPP_MODULE(spat){
     class_<SpatRaster>("SpatRaster")
 		.constructor()
 	 // .constructor<std::string, int>()
-	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<size_t>>()
+	    .constructor<std::vector<std::string>, std::vector<int>, std::vector<std::string>, bool, std::vector<std::string>, std::vector<std::string>, std::vector<size_t>>()
 		.constructor<std::vector<unsigned>, std::vector<double>, std::string>()
 		//.finalizer(&SpatRaster_finalizer)    
 
-		.method("fromFiles", &SpatRaster::fromFiles)
+		//.method("fromFiles", &SpatRaster::fromFiles)
 		.method("has_error", &SpatRaster::hasError)
 		.method("has_warning", &SpatRaster::hasWarning)
 		.method("getError", &SpatRaster::getError)
@@ -698,6 +698,8 @@ RCPP_MODULE(spat){
 		.method("rastDirection", &SpatRaster::direction)
 		.method("make_tiles", &SpatRaster::make_tiles)
 		.method("ext_from_rc", &SpatRaster::ext_from_rc)
+
+		.method("combineCats", &SpatRaster::combineCats)
 
 		.method("vectDisdirRasterize", &SpatRaster::disdir_vector_rasterize) 
 		.method("vectDistanceDirect", &SpatRaster::distance_vector) 

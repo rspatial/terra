@@ -688,7 +688,7 @@ SpatRaster SpatRaster::rectify(std::string method, SpatRaster aoi, unsigned usea
 		out.setError("this source is not rotated");
 		return(out);
 	} 
-	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_ops);
+	GDALDataset *poDataset = openGDAL(source[0].filename, GDAL_OF_RASTER | GDAL_OF_READONLY, source[0].open_drivers, source[0].open_ops);
 
 	if( poDataset == NULL )  {
 		setError("cannot read from " + source[0].filename);
@@ -989,7 +989,7 @@ SpatRaster SpatRaster::rgb2col(size_t r,  size_t g, size_t b, SpatOptions &opt) 
 	}
 	GDALClose(hDstDS);
 	if (driver != "MEM") {
-		out = SpatRaster(filename, {-1}, {""}, {});
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
 	}
 	return out;
 }
@@ -1066,7 +1066,7 @@ SpatRaster SpatRaster::sieveFilter(int threshold, int connections, SpatOptions &
 			return out;
 		}
 	} else {
-		out = SpatRaster(filename, {-1}, {""}, {});
+		out = SpatRaster(filename, {-1}, {""}, {}, {});
 	}
 	GDALClose(hDstDS);
 	return out;

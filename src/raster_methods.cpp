@@ -2895,6 +2895,10 @@ SpatRaster SpatRaster::replaceValues(std::vector<double> from, std::vector<doubl
 
 	if (min) {
 		out = geometry(1);
+		if (keepcats) {
+			out.source[0].hasCategories[0] = source[0].hasCategories[0];
+			out.source[0].cats[0] = source[0].cats[0];
+		}
 	} else {
 		if (nl == 0) {
 			out = geometry(nlyr());			
@@ -4127,3 +4131,52 @@ SpatRaster SpatRaster::sort(bool decreasing, SpatOptions &opt) {
 	readStop();
 	return(out);
 }
+
+
+
+SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
+
+	SpatRaster out = geometry(1);
+	unsigned nl = std::max(nlyr(), x.nlyr());
+	if (nl > 1) {
+		out.setError("can only do this for a single layer SpatRasters");
+	}
+
+	if (!out.compare_geom(x, false, false, opt.get_tolerance(), true)) {
+		out.setError("raster dimensions do not match");
+		return(out);
+	}
+	if (!x.hasValues() || !hasValues()) {
+		out.setError("both SpatRasters must have cell values");
+	}
+	std::vector<bool> cats = hasCategories();
+	std::vector<bool> xcats = x.hasCategories();
+	if ((cats[0]) && (xcats[0])) {
+		SpatCategories sc = getLayerCategories(0);
+		SpatCategories xsc = x.getLayerCategories(0);
+		if (sc.concatenate(xsc)) {
+			SpatOptions topt(opt);
+			x.addSource(*this, false, topt);
+			x.source[0].cats[0] = sc;
+			x.source[0].hasCategories[0] = true;
+
+			std::vector<double> from, to;
+			to = sc.d.as_double(0);
+			for (size_t i=0; i<to.size(); i++) {
+				from.push_back(sc.d.iv[2][i]);
+				from.push_back(sc.d.iv[1][i]);
+			}
+			opt.names = {sc.d.names[sc.index]};
+			x = x.replaceValues(from, to, -2, true, opt);
+			return x;
+		} else {
+			out.setError("cannot concatenate categories");
+			return out;
+		} 
+	} else {
+		out.setError("both SpatRasters must be categorical");
+		return out;
+	}
+	//return(out);
+}
+
