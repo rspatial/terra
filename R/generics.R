@@ -996,7 +996,7 @@ setMethod("terrain", signature(x="SpatRaster"),
 		unit <- match.arg(unit, c("degrees", "radians"))
 		opt <- spatOptions(filename, ...)
 		seed <- ifelse("flowdir" %in% v, .seed(), 0)
-		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", FALSE, seed, opt)
+		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", seed, opt)
 		messages(x, "terrain")
 	}
 )

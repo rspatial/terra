@@ -2599,7 +2599,7 @@ void to_degrees(std::vector<double>& x, size_t start) {
 }
 
 
-void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees, bool before, bool after, bool haversine) {
+void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees, bool before, bool after) {
 
 	size_t start = val.size();
 	if (!before) {
@@ -2609,14 +2609,8 @@ void do_slope(std::vector<double> &val, const std::vector<double> &d, unsigned n
 	std::vector<double> ddx;
 	if (geo) {
 		ddx.resize(nrow);
-		if (haversine) {
-			for (size_t i=0; i<nrow; i++) {
-				ddx[i] = distHaversine(-dx, gy[i], dx, gy[i]) / 2 ;
-			}
-		} else {
-			for (size_t i=0; i<nrow; i++) {
-				ddx[i] = distance_lonlat(-dx, gy[i], dx, gy[i]) / 2 ;
-			}			
+		for (size_t i=0; i<nrow; i++) {
+			ddx[i] = distance_lonlat(-dx, gy[i], dx, gy[i]) / 2 ;
 		}
 	} 
 
@@ -2729,7 +2723,7 @@ double dmod(double x, double n) {
 
 
 
-void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees, bool before, bool after, bool haversine) {
+void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned ngb, unsigned nrow, unsigned ncol, double dx, double dy, bool geo, std::vector<double> &gy, bool degrees, bool before, bool after) {
 
 	size_t start = val.size();
 	if (!before) {
@@ -2738,14 +2732,8 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 	std::vector<double> ddx;
 	if (geo) {
 		ddx.resize(nrow);
-		if (haversine) {
-			for (size_t i=0; i<nrow; i++) {
-				ddx[i] = distHaversine(-dx, gy[i], dx, gy[i]) / 2 ;
-			}
-		} else {
-			for (size_t i=0; i<nrow; i++) {
-				ddx[i] = distance_lonlat(-dx, gy[i], dx, gy[i]) / 2 ;
-			}
+		for (size_t i=0; i<nrow; i++) {
+			ddx[i] = distance_lonlat(-dx, gy[i], dx, gy[i]) / 2 ;
 		}
 	} 
 	double zy, zx; 
@@ -2862,7 +2850,7 @@ void do_aspect(std::vector<double> &val, const std::vector<double> &d, unsigned 
 }
 
 
-SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, bool haversine, unsigned seed, SpatOptions &opt) {
+SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt) {
 
 //TPI, TRI, aspect, flowdir, slope, roughness
 	//std::sort(v.begin(), v.end());
@@ -2937,31 +2925,22 @@ SpatRaster SpatRaster::terrain(std::vector<std::string> v, unsigned neighbors, b
 			std::vector<int_64> rows(rnrw);
 			std::iota(rows.begin(), rows.end(), rrow);
 			y = yFromRow(rows);
-			if (haversine) {
-				yr = distHaversine(0, 0, 0, yres());
-			} else {
-				yr = distance_lonlat(0, 0, 0, yres());
-			}
+			yr = distance_lonlat(0, 0, 0, yres());
 		}
 		std::vector<double> val;
 		val.reserve(out.bs.nrows[i] * ncol() * v.size());
 		for (size_t j =0; j<v.size(); j++) {
 			if (v[j] == "slope") {
-				do_slope(val, d, neighbors, rnrw, nc, xres(), yr, lonlat, y, degrees, before, after, haversine);
+				do_slope(val, d, neighbors, rnrw, nc, xres(), yr, lonlat, y, degrees, before, after);
 			} else if (v[j] == "aspect") {
-				do_aspect(val, d, neighbors, rnrw, nc, xres(), yr, lonlat, y, degrees, before, after, haversine);
+				do_aspect(val, d, neighbors, rnrw, nc, xres(), yr, lonlat, y, degrees, before, after);
 			} else if (v[j] == "flowdir") {
 				double dx = xres();
 				double dy = yres();
 				if (lonlat) {
 					double yhalf = yFromRow((size_t) nrow()/2);
-					if (haversine) {
-						dx = distHaversine(0, yhalf, dx, yhalf);
-						dy = distHaversine(0, 0, 0, dy);
-					} else {
-						dx = distance_lonlat(0, yhalf, dx, yhalf);
-						dy = distance_lonlat(0, 0, 0, dy);
-					}
+					dx = distance_lonlat(0, yhalf, dx, yhalf);
+					dy = distance_lonlat(0, 0, 0, dy);
 				}
 				do_flowdir(val, d, rnrw, nc, dx, dy, seed, before, after);
 			} else if (v[j] == "roughness") {

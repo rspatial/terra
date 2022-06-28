@@ -696,7 +696,7 @@ class SpatRaster {
 		SpatRaster sort(bool decreasing, SpatOptions &opt);
 
 		SpatRaster scale(std::vector<double> center, bool docenter, std::vector<double> scale, bool doscale, SpatOptions &opt);
-		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, bool haversine, unsigned seed, SpatOptions &opt);
+		SpatRaster terrain(std::vector<std::string> v, unsigned neighbors, bool degrees, unsigned seed, SpatOptions &opt);
 
 		SpatRaster selRange(SpatRaster x, int z, int recycleby, SpatOptions &opt);
 		SpatRaster selectHighest(size_t n, bool low, SpatOptions &opt);
