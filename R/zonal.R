@@ -33,6 +33,7 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			if (is.null(wopt$names)) {
 				wopt$names <- names(x)
 			}
+			levels(z) <- NULL
 			subst(z, out[,1], out[,-1], filename=filename, wopt=wopt)
 		} else {
 			if (is.factor(z)) {

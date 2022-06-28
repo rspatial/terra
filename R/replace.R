@@ -163,10 +163,26 @@ setMethod("set.values", signature(x="SpatRaster"),
 			x@ptr$readAll()
 			return(invisible(TRUE));
 		}
-		bylyr = FALSE
+#		if (!missing(layers)) {
+#			layers <- 0
+#		} else {
+#			if (any(is.na(layers))) { error("set.values", "layers cannot be NA")}
+#			if (inherits(layers, "character")) { 
+#				layers <- match(layers, names(x)) 
+#				if (any(is.na(layers))) { error("set.values", "invalid layer names")}
+#			}
+#			if (any((layers < 1) || (layers > nlyr(x))))  { error("set.values", "invalid layer numbers") }
+#			n <- length(layers)
+#			if (n > length(unique(layers)))  { error("set.values", "duplicated layers") }
+#		}
+		bylyr <- FALSE
 		if (!is.null(dim(values))) {
-			stopifnot(ncol(values) == nlyr(x))
-			bylyr = TRUE
+			if ((layers[1] > 0) && (ncol(values) != n)) {
+				error("set.values", "ncol(values) does not match the number of layers")
+			} else if (ncol(values) != nlyr(x)) {
+				error("set.values", "ncol(values) does not match the nlyr(x)")			
+			}
+			bylyr <- TRUE
 			if (inherits(values, "data.frame")) {
 				values <- as.matrix(values)
 			}

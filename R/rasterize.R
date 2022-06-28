@@ -142,7 +142,7 @@ setMethod("rasterize", signature(x="SpatVector", y="SpatRaster"),
 	function(x, y, field="", fun, ..., background=NA, touches=FALSE, update=FALSE, sum=FALSE, cover=FALSE, filename="", overwrite=FALSE, wopt=list()) {
 
 		values <- 1
-		if (is.null(field) || is.na(field) || (field == "")) {
+		if (is.null(field) || all(is.na(field)) || all(field == "")) {
 			field <- ""
 		} else if (!is.character(field)) {
 			values <- as.numeric(field)
