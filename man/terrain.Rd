@@ -7,10 +7,12 @@
 
 \description{
 Compute terrain characteristics from elevation data. The elevation values should be in the same units as the map units (typically meter) for projected (planar) raster data. They should be in meter when the coordinate reference system is longitude/latitude. 
+
+For accuracy, always compute these values on the original data (do not first change the projection). Distances (needed for slope and aspect) for longitude/latitude data are computed on the WGS84 ellipsoid with Karney's algorithm. 
 }
 
 \usage{
-\S4method{terrain}{SpatRaster}(x, v="slope", neighbors=8, unit="degrees", haversine=TRUE, filename="", ...)  
+\S4method{terrain}{SpatRaster}(x, v="slope", neighbors=8, unit="degrees", filename="", ...)  
 }
 
 \arguments{
@@ -18,7 +20,6 @@ Compute terrain characteristics from elevation data. The elevation values should
   \item{v}{character. One or more of these options: slope, aspect, TPI, TRI, roughness, flowdir (see Details)}
   \item{unit}{character. "degrees" or "radians" for the output of "slope" and "aspect"}
   \item{neighbors}{integer. Indicating how many neighboring cells to use to compute slope or aspect with. Either 8 (queen case) or 4 (rook case)}
-  \item{haversine}{logical. If \{TRUE} distances for longitude/latitude data are computed with the haversine formula for a great circle. Otherwise the more precise geodetic distance on the WGS84 elliposoid is computed with Karney's algorithm}
   \item{filename}{character. Output filename}
   \item{...}{list. Options for writing files as in \code{\link{writeRaster}}}
 }

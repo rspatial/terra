@@ -992,11 +992,11 @@ setMethod("t", signature(x="SpatVector"),
 
 
 setMethod("terrain", signature(x="SpatRaster"), 
-	function(x, v="slope", neighbors=8, unit="degrees", haversine=TRUE, filename="", ...) { 
+	function(x, v="slope", neighbors=8, unit="degrees", filename="", ...) { 
 		unit <- match.arg(unit, c("degrees", "radians"))
 		opt <- spatOptions(filename, ...)
 		seed <- ifelse("flowdir" %in% v, .seed(), 0)
-		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", haversine[1], seed, opt)
+		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", FALSE, seed, opt)
 		messages(x, "terrain")
 	}
 )
