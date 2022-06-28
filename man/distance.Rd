@@ -68,6 +68,9 @@ The distance unit is in meters.
 A distance matrix can be coerced into a matrix with \code{as.matrix}
 }
 
+\references{
+Karney, C.F.F., 2013. Algorithms for geodesics, J. Geodesy 87: 43-55. doi:10.1007/s00190-012-0578-z.
+}
 
 \examples{
 #lonlat

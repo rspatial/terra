@@ -10,7 +10,7 @@ Compute terrain characteristics from elevation data. The elevation values should
 }
 
 \usage{
-\S4method{terrain}{SpatRaster}(x, v="slope", neighbors=8, unit="degrees", filename="", ...)  
+\S4method{terrain}{SpatRaster}(x, v="slope", neighbors=8, unit="degrees", haversine=TRUE, filename="", ...)  
 }
 
 \arguments{
@@ -18,6 +18,7 @@ Compute terrain characteristics from elevation data. The elevation values should
   \item{v}{character. One or more of these options: slope, aspect, TPI, TRI, roughness, flowdir (see Details)}
   \item{unit}{character. "degrees" or "radians" for the output of "slope" and "aspect"}
   \item{neighbors}{integer. Indicating how many neighboring cells to use to compute slope or aspect with. Either 8 (queen case) or 4 (rook case)}
+  \item{haversine}{logical. If \{TRUE} distances for longitude/latitude data are computed with the haversine formula for a great circle. Otherwise the more precise geodetic distance on the WGS84 elliposoid is computed with Karney's algorithm}
   \item{filename}{character. Output filename}
   \item{...}{list. Options for writing files as in \code{\link{writeRaster}}}
 }
@@ -58,6 +59,8 @@ Fleming, M.D. and Hoffer, R.M., 1979. Machine processing of Landsat MSS data and
 Horn, B.K.P., 1981. Hill shading and the reflectance map. Proceedings of the IEEE 69:14-47
 
 Jones, K.H., 1998. A comparison of algorithms used to compute hill terrain as a property of the DEM. Computers & Geosciences 24: 315-323 
+
+Karney, C.F.F., 2013. Algorithms for geodesics, J. Geodesy 87: 43-55. doi:10.1007/s00190-012-0578-z.
 
 Ritter, P., 1987. A vector-based terrain and aspect generation algorithm. Photogrammetric Engineering and Remote Sensing 53: 1109-1111
 }

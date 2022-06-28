@@ -4157,9 +4157,6 @@ SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 		if (sc.concatenate(xsc)) {
 			SpatOptions topt(opt);
 			x.addSource(*this, false, topt);
-			x.source[0].cats[0] = sc;
-			x.source[0].hasCategories[0] = true;
-
 			std::vector<double> from, to;
 			to = sc.d.as_double(0);
 			for (size_t i=0; i<to.size(); i++) {
@@ -4167,6 +4164,11 @@ SpatRaster SpatRaster::combineCats(SpatRaster x, SpatOptions &opt) {
 				from.push_back(sc.d.iv[1][i]);
 			}
 			opt.names = {sc.d.names[sc.index]};
+			std::vector<unsigned> cr = {0,1};
+			sc.d = sc.d.subset_cols(cr);
+			x.source[0].cats[0] = sc;
+			x.source[0].hasCategories[0] = true;
+
 			x = x.replaceValues(from, to, -2, true, opt);
 			return x;
 		} else {

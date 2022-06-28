@@ -163,6 +163,7 @@ setMethod("set.values", signature(x="SpatRaster"),
 			x@ptr$readAll()
 			return(invisible(TRUE));
 		}
+## future: allow setting values in specific layers.		
 #		if (!missing(layers)) {
 #			layers <- 0
 #		} else {

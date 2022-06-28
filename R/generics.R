@@ -992,11 +992,11 @@ setMethod("t", signature(x="SpatVector"),
 
 
 setMethod("terrain", signature(x="SpatRaster"), 
-	function(x, v="slope", neighbors=8, unit="degrees", filename="", ...) { 
+	function(x, v="slope", neighbors=8, unit="degrees", haversine=TRUE, filename="", ...) { 
 		unit <- match.arg(unit, c("degrees", "radians"))
 		opt <- spatOptions(filename, ...)
 		seed <- ifelse("flowdir" %in% v, .seed(), 0)
-		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", seed, opt)
+		x@ptr <- x@ptr$terrain(v, neighbors[1], unit=="degrees", haversine[1], seed, opt)
 		messages(x, "terrain")
 	}
 )
@@ -1057,7 +1057,7 @@ setMethod("unique", signature(x="SpatRaster", incomparables="ANY"),
 		}
 		if (as.raster) {
 			if (any(isfact)) {
-				warn("unique", "cannot do 'as.raster=TRUE' with categorical rasters (but you can use 'concats')")
+				warn("unique", "cannot do 'as.raster=TRUE' with categorical rasters (but you can use 'concats' for that)")
 				return(u)
 			}
 			uid <- 1:nrow(u)
