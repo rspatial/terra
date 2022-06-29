@@ -66,7 +66,7 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
 <span class="fu">as.points</span><span class="op">(</span><span class="va">x</span>, values<span class="op">=</span><span class="cn">TRUE</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span>, na.all<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
-<span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu">as.polygons</span><span class="op">(</span><span class="va">x</span>, extent<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatVector</span>
 <span class="fu">as.lines</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
@@ -105,7 +105,7 @@ And conversion of a SpatVector to a another SpatVector type."><meta property="og
 <dd><p>logical. If <code>TRUE</code> the last point of a polygon (which is the same as the first point) is not included</p></dd>
 
 <dt>extent</dt>
-<dd><p>logical. if <code>TRUE</code>, a polygon for the extent of the SpatRaster is returned. It has vertices for each grid cell, not just the four corners of the raster. This can be useful for more precise projection. In other cases it is better to do <code>as.polygons(ext(x))</code> to get a much smaller object returned that covers the same extent</p></dd>
+<dd><p>logical. if <code>TRUE</code>, a polygon for the extent of the SpatRaster or SpatVector is returned. If <code>x</code> is a SpatRaster, the polygon has vertices for each row and column, not just the four corners of the raster. This can be useful for more precise projection. If that is not required, it is more efficient to get the extent represented by only the four corners with <code>as.polygons(ext(x), crs=crs(x))</code></p></dd>
 
 <dt>na.rm</dt>
 <dd><p>logical. If <code>TRUE</code> cells that are <code>NA</code> are ignored</p></dd>
