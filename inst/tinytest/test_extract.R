@@ -67,3 +67,105 @@ expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312))
 test <- terra::extract(rr, p, fun = mean, exact=TRUE)
 expect_equal(round(as.vector(as.matrix(test)),5), c(1,2, 51.80006, 52.21312, 103.60012, 104.42623))
 
+
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(100, 100, NaN, 100)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(100, NaN, 100, 100)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(100, 100, 100, NaN)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(NaN, 100, 100, 100)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(NaN, NaN, 100, 100)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(NaN, 100, NaN, 100)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(NaN, 100, 100, NaN)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(100, NaN, NaN, 100)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(100, NaN, 100, NaN)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+
+
+r <- terra::rast(nrow = 2, ncol = 2, nlyrs = 1, xmin = -100, xmax = 100, ymin = -100, ymax = 100)
+terra::values(r) <- c(100, 100, NaN, NaN)
+
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 0.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = 45.0, Y = -45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
+expect_equal(terra::extract(r, data.frame(X = -45.0, Y = 45.0), method = "bilinear")$lyr.1 |> round(), c(100.0))
