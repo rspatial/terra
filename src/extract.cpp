@@ -145,19 +145,17 @@ std::vector<double> bilinearInt(const double& x, const double& y,
 	bool n2 = std::isnan(v12);
 	bool n3 = std::isnan(v21);
 	bool n4 = std::isnan(v22);
-	if (std::isnan(x) || std::isnan(y) || (n1 && n2 && n3 && n4)) {
-		if (weights) {
-			std::vector<double> out(4, NAN);
-			return out;
-		} 
-		std::vector<double> out(1, NAN);
-		return out;
-	}
+
 	double dx = (x2 - x1);
 	bool intx = dx > 0;
 	double dy = (y1 - y2);
 	bool inty = dy > 0;
 	double w11, w12, w21, w22;
+	
+	if (std::isnan(x) || std::isnan(y) || (n1 && n2 && n3 && n4)) {
+		goto NAN_return;
+	}
+
 	if (weights) {
 		v11 = 1;
 		v12 = 1;
@@ -165,55 +163,138 @@ std::vector<double> bilinearInt(const double& x, const double& y,
 		v22 = 1;
 	}
 
-	if (intx & inty) {
+	if (intx && inty) {
 		double d = dx * dy;
-		if (!(n1 || n2)) {
+		if (!(n1 || n2 || n3 || n4)){
 			w11 = v11 * ((x2 - x) * (y - y2)) / d;
 			w12 = v12 * ((x - x1) * (y - y2)) / d;
-		} else {
-			w11 = n1 ? 0.0 : 0.5 * v11;
-			w12 = n2 ? 0.0 : 0.5 * v12;
-		}
-		if (!(n3 || n4)) {
 			w21 = v21 * ((x2 - x) * (y1 - y)) / d;
 			w22 = v22 * ((x - x1) * (y1 - y)) / d;
+		} else if (!(n1 || n2 || n3)){
+			w11 = v11 * ((x2 - x) * (y - y2)) / d;
+			w12 = v12 * ((x - x1) * (y - y2)) / d;
+			w21 = v21 * ((y1 - y)) / dy;
+			w22 = 0;
+		} else if (!(n1 || n2 || n4)){
+			w11 = v11 * ((x2 - x) * (y - y2)) / d;
+			w12 = v12 * ((x - x1) * (y - y2)) / d;
+			w21 = 0;
+			w22 = v22 * ((y1 - y)) / dy;
+		} else if (!(n1 || n2 || n3)){
+			w11 = v11 * ((x2 - x) * (y - y2)) / d;
+			w12 = v12 * ((x - x1) * (y - y2)) / d;
+			w21 = v21 * ((y1 - y)) / dy;
+			w22 = 0;
+		} else 	if (!(n1 || n3 || n4)){
+			w11 = v11 * ((y - y2)) / dy;
+			w12 = 0;
+			w21 = v21 * ((x2 - x) * (y1 - y)) / d;
+			w22 = v22 * ((x - x1) * (y1 - y)) / d;
+		} else if (!(n2 || n3 || n4)){
+			w11 = 0;
+			w12 = v12 * ((y - y2)) / dy;
+			w21 = v21 * ((x2 - x) * (y1 - y)) / d;
+			w22 = v22 * ((x - x1) * (y1 - y)) / d;
+		} else if (!(n1 || n2 )){
+			w11 = v11 * ((x2 - x)) / dx;
+			w12 = v12 * ((x - x1)) / dx;
+			w21 = 0;
+			w22 = 0;
+		} else if (!(n1 || n3)){
+			w11 = v11 * ((y - y2)) / dy;
+			w12 = 0;
+			w21 = v21 * ((y1 - y)) / dy;
+			w22 = 0;
+		} else if (!(n1 || n4)){
+			w11 = v11 * ((y - y2)) / dy;
+			w12 = 0;
+			w21 = 0;
+			w22 = v22 * ((y1 - y)) / dy;
+		} else if (!(n2 || n3)){
+			w11 = 0;
+			w12 = v12 * ((y - y2)) / dy;
+			w21 = v21 * ((y1 - y)) / dy;
+			w22 = 0;
+		} else if (!(n2 || n4)){
+			w11 = 0;
+			w12 = v12 * ((y - y2)) / dy;
+			w21 = 0;
+			w22 = v22 * ((y1 - y)) / dy;
+		} else if (!(n3 || n4)){
+			w11 = 0;
+			w12 = 0;
+			w21 = v21 * ((x2 - x)) / dx;
+			w22 = v22 * ((x - x1)) / dx;
+		} else if (!n1){
+			w11 = v11;
+			w12 = 0;
+			w21 = 0;
+			w22 = 0;
+		} else if (!n2){
+			w11 = 0;
+			w12 = v12;
+			w21 = 0;
+			w22 = 0;
+		} else if (!n3){
+			w11 = 0;
+			w12 = 0;
+			w21 = v21;
+			w22 = 0;
+		} else if (!n4){
+			w11 = 0;
+			w12 = 0;
+			w21 = 0;
+			w22 = v22;
 		} else {
-			w21 = n3 ? 0.0 : 0.5 * v21;
-			w22 = n4 ? 0.0 : 0.5 * v22;
+			goto NAN_return;
 		}
 	} else if (intx) {
+		w21 = 0.0;
+		w22 = 0.0;
 		if (!(n1 || n2)) {
 			w11 = v11 * (x2 - x) / dx;
 			w12 = v12 * (x - x1) / dx;
+		} else if (!n1) {
+			w11 = v11;
+			w12 = 0.0;
+		} else if (!n2){
+			w11 = 0.0;
+			w12 = v12;
 		} else {
-			w11 = n1 ? 0.0 : v11;
-			w12 = n2 ? 0.0 : v12;
+			goto NAN_return;
 		}
-		w21 = 0;
-		w22 = 0;
 	} else if (inty) {
+		w12 = 0.0;
+		w22 = 0.0;
 		if (!(n1 || n3)) {
 			w11 = v11 * (y - y2) / dy;
 			w21 = v21 * (y1 - y) / dy;
-		} else {
-			w11 = n1 ? 0.0 : v11;
-			w21 = n3 ? 0.0 : v21;
+		} else if (!n1) {
+			w11 = v11;
+			w21 = 0;
+		} else if (!n3) {
+			w11 = 0;
+			w21 = v21;
+		} else{
+			goto NAN_return;
 		}
-		w12 = 0;
-		w22 = 0;
 	} else { 
 		w11 = v11;
-		w21 = 0;
-		w12 = 0;
-		w22 = 0;
+		w21 = 0.0;
+		w12 = 0.0;
+		w22 = 0.0;
 	}
 
 	if (weights) {
-		std::vector<double> out = { w11, w12, w21, w22 };
-		return out;
+		return std::vector<double>{ w11, w12, w21, w22 };
 	}
-	std::vector<double> out = { w11 + w12 + w21 + w22 };
-	return out;
+	return std::vector<double>{ w11 + w12 + w21 + w22 };
+NAN_return:
+	if (weights) {
+		return std::vector<double>(4, NAN);
+	} 
+	return std::vector<double>(1, NAN);;
+
 }
 
 
