@@ -264,9 +264,13 @@ setMethod("as.lines", signature(x="SpatVector"),
 )
 
 setMethod("as.polygons", signature(x="SpatVector"), 
-	function(x) {
-		x@ptr <- x@ptr$polygonize()
-		messages(x, "as.polygons")
+	function(x, extent=FALSE) {
+		if (extent) {
+			as.polygons(ext(x), crs=crs(x))
+		} else {
+			x@ptr <- x@ptr$polygonize()
+			messages(x, "as.polygons")
+		}
 	}
 )
 
