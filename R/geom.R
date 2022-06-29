@@ -432,9 +432,13 @@ setMethod("removeDupNodes", signature(x="SpatVector"),
 
 
 setMethod("simplifyGeom", signature(x="SpatVector"), 
-	function(x, tolerance=0.1, preserveTopology=TRUE) {
+	function(x, tolerance=0.1, preserveTopology=TRUE, makeValid=TRUE) {
 		x@ptr <- x@ptr$simplify(tolerance, preserveTopology)
-		messages(x, "simplifyGeom")
+		x <- messages(x, "simplifyGeom")
+		if (makeValid) {
+			x <- makeValid(x)
+		}
+		x
 	}
 )
 
