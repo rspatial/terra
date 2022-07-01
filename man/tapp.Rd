@@ -14,7 +14,7 @@ The function used should return a single value, and the number of layers in the 
 
 For example, if you have a SpatRaster with 6 layers, you can use \code{index=c(1,1,1,2,2,2)} and \code{fun=sum}. This will return a SpatRaster with two layers. The first layer is the sum of the first three layers in the input SpatRaster, and the second layer is the sum of the last three layers in the input SpatRaster. Indices are recycled such that \code{index=c(1,2)} would also return a SpatRaster with two layers (one based on the odd layers (1,3,5), the other based on the even layers (2,4,6)). 
 
-The index can also be one of the following values to group by time period (if \code{x} has the appropriate \code{\link{time data}}): "years", "months", "yearmonths", "days", "week" (ISO 8601 week number), or "doy" (day of the year).
+The index can also be one of the following values to group by time period (if \code{x} has the appropriate \code{\link{time}} values): "years", "months", "yearmonths", "days", "week" (ISO 8601 week number), or "doy" (day of the year).
 
 See \code{\link{app}} or \code{\link{Summary-methods}} if you want to use a more efficient function that returns multiple layers based on \bold{all} layers in the SpatRaster.
 }
