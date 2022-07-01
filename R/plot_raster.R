@@ -138,12 +138,14 @@
 		}
 		nlevs <- length(leglevs)
 		ncols <- length(out$cols)
-		if (nlevs < ncols) {
-			i <- trunc((ncols / nlevs) * 1:nlevs)
+		ncats <- nrow(out$cats)
+		if (ncats < ncols) {
+			i <- trunc((ncols / nlevs) * 1:ncats)
 			out$cols <- out$cols[i]
-		} else if (nlevs > ncols) {
-			out$cols <- rep_len(out$cols, nlevs)
+		} else if (ncats > ncols) {
+			out$cols <- rep_len(out$cols, ncats)
 		}
+		out$cols <- out$cols[ilevels]
 		dd <- data.frame(lab=leglevs, out$cols)
 		m <- merge(levlab, dd)
 		z <- m$out.cols[match(z, m$id)]
@@ -460,7 +462,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 					coltab <- coltab(x)[[1]]
 					if (is.factor(x)) {
 						act <- activeCat(x)
-						cats <- cats(x)[[1]][, c(1, act+1)]
+						cats <- levels(x)[[1]] # cats(x)[[1]][, c(1, act+1)]
 						type <- "factor"
 					} else {
 						type <- "colortable"

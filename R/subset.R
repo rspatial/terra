@@ -99,7 +99,7 @@ function(x, i, j, ... ,drop=TRUE) {
 
 
 setMethod("subset", signature(x="SpatVector"), 
-	function(x, subset, select, drop=FALSE, NSE=TRUE) {
+	function(x, subset, select, drop=FALSE, NSE=FALSE) {
  		if (NSE) {
 			d <- as.list(x)
 			# from the subset<data.frame> method
