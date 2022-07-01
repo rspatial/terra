@@ -48,13 +48,15 @@ setMethod("geomtype", signature(x="Spatial"),
 )
 
 setMethod("geom", signature(x="SpatVector"), 
-	function(x, wkt=FALSE, hex=FALSE, df=FALSE){
+	function(x, wkt=FALSE, hex=FALSE, df=FALSE, list=FALSE, xnm="x", ynm="y"){
 		if (hex) {
 			x@ptr$hex()
 		} else if (wkt) {
 			x@ptr$getGeometryWKT()
 			# or via geos with 
 			# x@ptr$wkt()
+		} else if (list) {
+			x@ptr$get_geometryList(xnm, ynm)
 		} else {
 			g <- x@ptr$get_geometry()
 			g <- do.call(cbind, g)

@@ -102,6 +102,7 @@ Rcpp::List getVectorAttributes(SpatVector* v) {
 	return lst;
 }
 
+
 /*
 Rcpp::List getRasterAttributes(SpatRaster* x) {
 	Rcpp::List lst;
@@ -126,6 +127,39 @@ Rcpp::DataFrame get_geometryDF(SpatVector* v) {
 	);
 	return out;
 }
+
+std::vector<std::vector<std::vector<Rcpp::DataFrame>>> get_geometryList(SpatVector* v, const std::string xnm, const std::string ynm) {
+	size_t ni = v->nrow();
+	std::vector<std::vector<std::vector<Rcpp::DataFrame>>> out(ni);
+	for (size_t i=0; i < ni; i++) {
+		SpatGeom g = v->getGeom(i);
+		size_t nj = g.size();
+		if (nj == 0) { // empty
+			continue;
+		}
+		out[i].resize(nj);
+		for (size_t j=0; j < nj; j++) {
+			SpatPart p = g.getPart(j);
+			size_t nk = p.nHoles();
+			out[i][j].reserve(nk);
+			Rcpp::DataFrame m = Rcpp::DataFrame::create(
+				Rcpp::Named(xnm) = p.x,
+				Rcpp::Named(ynm) = p.y
+			);
+			out[i][j].push_back(m);
+			for (size_t k=0; k<nk ; k++) {
+				SpatHole h = p.getHole(k);
+				Rcpp::DataFrame m = Rcpp::DataFrame::create(
+					Rcpp::Named(xnm) = h.x,
+					Rcpp::Named(ynm) = h.y
+				);
+				out[i][j].push_back(m);
+			}
+		}
+	}
+	return out;
+}
+
 
 
 RCPP_EXPOSED_CLASS(SpatTime_v)
@@ -345,6 +379,7 @@ RCPP_MODULE(spat){
 		.method("coordinates", &SpatVector::coordinates)
 		.method("get_geometry", &SpatVector::getGeometry)
 		.method("get_geometryDF", &get_geometryDF)
+		.method("get_geometryList", &get_geometryList)
 
 		.method("add_column_empty", (void (SpatVector::*)(unsigned dtype, std::string name))( &SpatVector::add_column))
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
