@@ -18,7 +18,7 @@ If wkt=TRUE, the "well-known text" representation is returned as a character vec
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">terra</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-49</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5-50</span>
       </span>
     </div>
 
@@ -56,7 +56,7 @@ If wkt=TRUE, the "well-known text" representation is returned as a character vec
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for SpatVector</span>
-<span class="fu">geom</span><span class="op">(</span><span class="va">x</span>, wkt<span class="op">=</span><span class="cn">FALSE</span>, hex<span class="op">=</span><span class="cn">FALSE</span>, df<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu">geom</span><span class="op">(</span><span class="va">x</span>, wkt<span class="op">=</span><span class="cn">FALSE</span>, hex<span class="op">=</span><span class="cn">FALSE</span>, df<span class="op">=</span><span class="cn">FALSE</span>, list<span class="op">=</span><span class="cn">FALSE</span>, xnm<span class="op">=</span><span class="st">"x"</span>, ynm<span class="op">=</span><span class="st">"y"</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -71,18 +71,27 @@ If wkt=TRUE, the "well-known text" representation is returned as a character vec
 <dd><p>logical. If <code>TRUE</code> the hexadecimal geometry is returned</p></dd>
   
   <dt>df</dt>
-<dd><p>logical. If <code>TRUE</code> a <code>data.frame</code> is returned instead of a matrix (only for <code>wkt=FALSE</code> and <code>hex=FALSE</code>)</p></dd>
+<dd><p>logical. If <code>TRUE</code> a <code>data.frame</code> is returned instead of a matrix (only if <code>wkt=FALSE</code>, <code>hex=FALSE</code>, and <code>list=FALSE</code>)</p></dd>
+ 
+  <dt>list</dt>
+<dd><p>logical. If <code>TRUE</code> a nested <code>list</code> is returned with data.frames of coordinates</p></dd>
+
+  <dt>xnm</dt>
+<dd><p>character. If <code>list=TRUE</code> the "x" column name for the coordinates data.frame</p></dd>
+  
+  <dt>ynm</dt>
+<dd><p>character. If <code>list=TRUE</code> the "y" column name for the coordinates data.frame</p></dd>
   
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>matrix</p>
+<p>matrix, vector, data.frame, or list</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p>See <code><a href="xyCellFrom.html">xyFromCell</a></code> to get the coordinates of the cells of a SpatRaster</p></div>
+    <div class="dont-index"><p><code><a href="coords.html">crds</a></code>, <code><a href="xyCellFrom.html">xyFromCell</a></code></p></div>
     </div>
 
     <div id="ref-examples">
