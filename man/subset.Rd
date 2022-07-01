@@ -95,7 +95,9 @@ v <- vect(system.file("ex/lux.shp", package="terra"))
 v[2:3,]
 v[1:2, 2:3]
 
-subset(v, NAME_1 == "Diekirch", c(NAME_1, NAME_2))
+subset(v, v$NAME_1 == "Diekirch", c(NAME_1, NAME_2))
+
+subset(v, NAME_1 == "Diekirch", c(NAME_1, NAME_2), NSE=TRUE)
 }
 
 \keyword{ spatial }
