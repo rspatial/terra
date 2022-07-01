@@ -22,6 +22,7 @@ https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 - `freq` now provides the labels of factors, even if `bylayer=FALSE`. It now always returns a `data.frame` (it used to return a `matrix` in some cases. [#687](https://github.com/rspatial/terra/issues/687) by Rodolfo Jaffé
 - `disagg` and `aggregate` now return a warning instead of an error when using a (dis)aggregation factor of 1.[#684](https://github.com/rspatial/terra/issues/684) by Justin Fain.
 - `project` crashed when erroneously projecting raster data from one celestial body to another [#688](https://github.com/rspatial/terra/issues/688) by Mike Sumner
+- you can now set a color table with a two column (value, ID) data.frame
 
 ## new
 

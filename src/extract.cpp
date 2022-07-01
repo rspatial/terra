@@ -563,6 +563,10 @@ std::vector<double> SpatRaster::extractXYFlat(const std::vector<double> &x, cons
 // <geom<layer<values>>>
 std::vector<std::vector<std::vector<double>>> SpatRaster::extractVector(SpatVector v, bool touches, std::string method, bool cells, bool xy, bool weights, bool exact, SpatOptions &opt) {
 
+	if (!source[0].srs.is_same(v.srs, false)) {
+		addWarning("CRS of raster and vector data do not match");
+	}
+	
 	std::string gtype = v.type();
 	if (gtype != "polygons") weights = false;
 
