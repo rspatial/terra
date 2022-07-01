@@ -1253,9 +1253,6 @@ bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
 	if (cols.ncol() < 4 || cols.ncol() > 5) {
 		return false;
 	}
-//	if (cols.nrow() != 256) {
-//		return false;
-//	}
 	if (layer >= nlyr()) {
 		return false;
 	}
@@ -1273,7 +1270,7 @@ bool SpatRaster::setColors(size_t layer, SpatDataFrame cols) {
 	}
 
 	source[sl[0]].cols[sl[1]] = cols;
-	source[sl[0]].hasColors[sl[1]] = (cols.nrow() > 1);
+	source[sl[0]].hasColors[sl[1]] = (cols.nrow() > 0);
 	return true;
 }
 

@@ -16,14 +16,10 @@ setMethod ("coltab" , "SpatRaster",
 
 
 setMethod ("coltab<-" , "SpatRaster", 
-	function(x, layer=1, value) {
+	function(x, value, layer=1) {
 
 		x@ptr <- x@ptr$deepcopy()
 
-		if (missing(value)) {
-			value <- layer
-			layer <- 1
-		}
 		layer <- layer[1]-1
 
 		if (is.null(value)) {
@@ -35,22 +31,25 @@ setMethod ("coltab<-" , "SpatRaster",
 			value <- value[[1]]
 		}
 		if (inherits(value, "character")) {
-			value <- t(grDevices::col2rgb(value, alpha=TRUE))
-		}
-		if (inherits(value, "character")) {
 			value <- data.frame(t(grDevices::col2rgb(value, alpha=TRUE)))
 		} else if (inherits(value, "matrix")) {
 			value <- data.frame(value)
 		}
 
-		stopifnot(inherits(value, "data.frame"))
-		nms <- tolower(names(value))
-		if (!("value" %in% nms)) {
-			value <- cbind(values=(1:nrow(value))-1, value)
+		if (!inherits(value, "data.frame")) {
+			error("coltab<-", "cannot process these color values")
 		}
-		#value <- value[1:256,]
-		if (ncol(value) == 4) {
-			value <- cbind(value, alpha=255)
+		if (ncol(value) == 2) {
+			value <- data.frame(values=value[,1], t(grDevices::col2rgb(value[,2], alpha=TRUE)))
+		} else {
+			nms <- tolower(names(value))
+			if (!("value" %in% nms)) {
+				value <- cbind(values=(1:nrow(value))-1, value)
+			}
+			#value <- value[1:256,]
+			if (ncol(value) == 4) {
+				value <- cbind(value, alpha=255)
+			}
 		}
 		value[, 1] <- as.integer(value[, 1])
 		for (i in 2:ncol(value)) {

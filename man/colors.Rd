@@ -23,7 +23,8 @@ Get or set color table(s) associated with a SpatRaster. Color tables are used fo
 \arguments{
   \item{x}{SpatRaster}
   \item{layer}{positive integer, the layer number or name}
-  \item{value}{a vector of colors; or a three (red,green,blue) or four (alpha) column data.frame with no more than 256 rows; or NULL to remove the color table}
+  \item{value}{a two-column data.frame (first column the cell value, second the color); 
+  a vector of colors (the first one is the color for value 0 and so on); or a three (red,green,blue) or four (alpha) column data.frame also from 0 to n; or NULL to remove the color table}
 }  
 
 
