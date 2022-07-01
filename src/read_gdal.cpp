@@ -1453,7 +1453,6 @@ void ncdf_pick_most(std::vector<std::string> &sd, std::vector<std::string> &varn
 
 
 
-//todo: add open optionso
 bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver) {
 
 	bool ncdf = driver =="netCDF";
@@ -1540,7 +1539,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	size_t cnt;
 	
     for (cnt=0; cnt < sd.size(); cnt++) {
-		if (constructFromFile(sd[cnt], {-1}, {""}, {driver}, options)) break;
+		if (constructFromFile(sd[cnt], {-1}, {""}, {}, options)) break;
 	}
 //	source[0].source_name = srcname[cnt];
 
