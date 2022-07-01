@@ -11,15 +11,29 @@
 	vtst <- try(do.call(fun, c(v, list(...))), silent=FALSE)
 	if (inherits(vtst, "try-error")) {
 		nl <- -1
+		msg <- "cannot use 'fun'"
 	}
 	if (length(vtst) >= nr) {
 		if ((length(vtst) %% nr) == 0) {
 			nl <- length(vtst) / nr
 		} else {
+			if (is.null(dim(vtst))) {
+				msg <- paste0("cannot use 'fun'. The number of values returned is not divisible by the number of input cells (returning: ", length(vtst), ", expecting :", nr, ")")
+			} else {
+				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")	
+			}
 			nl <- -1
 		}
 	} else {
+		if (is.null(dim(vtst))) {
+			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")")
+		} else {
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")")	
+		}
 		nl <- -1
+	}
+	if (nl < 0) {
+		error("lapp", msg)
 	}
 	if (is.matrix(vtst)) {
 		nms <- colnames(vtst)
@@ -110,16 +124,31 @@ function(x, fun, ..., usenames=FALSE, cores=1, filename="", overwrite=FALSE, wop
 	vtst <- try(do.call(fun, c(v, list(...))), silent=FALSE)
 	if (inherits(vtst, "try-error")) {
 		nl <- -1
+		msg <- "cannot use 'fun'"
 	}
 	if (length(vtst) >= nr) {
 		if ((length(vtst) %% nr) == 0) {
 			nl <- length(vtst) / nr
 		} else {
+			if (is.null(dim(vtst))) {
+				msg <- paste0("cannot use 'fun'. The number of values returned is not divisible by the number of input cells (returning: ", length(vtst), ", expecting :", nr, ")")
+			} else {
+				msg <- paste0("cannot use 'fun'. The number of rows returned is not divisible by the number of input cells (returning: ", nrow(vtst), ", expecting: ", nr, ")")	
+			}
 			nl <- -1
 		}
 	} else {
+		if (is.null(dim(vtst))) {
+			msg <- paste0("cannot use 'fun'. The number of values returned is less than the number of input cells. (returning: ", length(vtst), ", expecting: ", nr, ")")
+		} else {
+			msg <- paste("cannot use 'fun'. The number of rows returned is less than the number of input cells (returning:", nrow(vtst), ", expecting:", nr, ")")	
+		}
 		nl <- -1
 	}
+	if (nl < 0) {
+		error("lapp", msg)
+	}
+	
 	if (is.matrix(vtst)) {
 		nms <- colnames(vtst)
 	}
@@ -145,7 +174,6 @@ function(x, fun, ..., recycle=FALSE, filename="", overwrite=FALSE, wopt=list()) 
 
 	v <- lapply(1:length(x), function(i) readValues(x[i], round(0.51*nrx), 1, 1, ncx, mat=TRUE))
 	test <- .lapp_test_stack(v, fun, recycle, ...)
-	if (test$nl < 1) error("lapp", "cannot use 'fun'. The number of values returned is not divisible by the number of input cells")
 	out <- rast(x[1])
 	nlyr(out) <- test$nl
 	if (length(test$names == test$nl)) {
