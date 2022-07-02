@@ -140,7 +140,7 @@
 		ncols <- length(out$cols)
 		ncats <- nrow(out$cats)
 		if (ncats < ncols) {
-			i <- trunc((ncols / nlevs) * 1:ncats)
+			i <- round(seq(1, ncols, length.out = ncats))
 			out$cols <- out$cols[i]
 		} else if (ncats > ncols) {
 			out$cols <- rep_len(out$cols, ncats)

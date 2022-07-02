@@ -36,7 +36,7 @@ SpatVector
 \examples{
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)
-w <- simplifyGeom(v, .02)
+w <- simplifyGeom(v, .02, makeValid=FALSE)
 e <- erase(w)
 g <- gaps(e)
 plot(e, lwd=5, border="light gray")

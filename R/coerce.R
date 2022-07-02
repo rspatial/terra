@@ -526,11 +526,7 @@ setAs("SpatVector", "Spatial",
 )
 
 
-
-
-
-geom_SpatialPolygons <- function(x) {
-		
+geom_SpatialPolygons <- function(x) {		
 	nobs <- length(x@polygons)
 	objlist <- vector(mode = "list", length = nobs)
 	for (i in 1:nobs) {
@@ -580,15 +576,12 @@ setAs("Spatial", "SpatVector",
 		crs <- attr(from@proj4string, "comment")
 		if (is.null(crs)) crs <- from@proj4string@projargs
 		if (methods::.hasSlot(from, "data")) {
-			v <- vect(g, vtype, from@data, crs=crs)
+			vect(g, vtype, from@data, crs=crs)
 		} else {
-			v <- vect(g, vtype, crs=crs)
+			vect(g, vtype, crs=crs)
 		}
-		return(v)
 	}
 )
-
-
 
 
 setAs("SpatialGrid", "SpatRaster", 
