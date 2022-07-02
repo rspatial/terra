@@ -57,7 +57,10 @@
 <span class="fu">coltab</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 
 <span class="co"># S4 method for SpatRaster</span>
-<span class="fu">coltab</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span></code></pre></div>
+<span class="fu">coltab</span><span class="op">(</span><span class="va">x</span>, layer<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">value</span>
+
+<span class="co"># S4 method for SpatRaster</span>
+<span class="fu">has.colors</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -95,9 +98,14 @@
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="colors-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">has.colors</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span class="fu">coltab</span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">coltb</span></span>
 <span class="r-in"><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="colors-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span class="fu">has.colors</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">tb</span> <span class="op">&lt;-</span> <span class="fu">coltab</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span></span>
