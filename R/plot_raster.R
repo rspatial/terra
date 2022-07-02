@@ -530,7 +530,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 
 
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
-	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)  {
+	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend=TRUE, ...)  {
 
 		if (x@ptr$rgb) {
 			i <- x@ptr$getRGB() + 1
@@ -568,8 +568,9 @@ setMethod("plot", signature(x="SpatRaster", y="missing"),
 			main <- rep_len(main, nl)
 		}
 		#if (onelegend) { legend <- FALSE }
+		legend <- rep_len(legend, length.out=nl)
 		for (i in 1:nl) {
-			plot(x, i, main=main[i], mar=mar, ...)
+			plot(x, i, main=main[i], mar=mar, legend=legend[i], ...)
 		}
 	}
 )
