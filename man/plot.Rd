@@ -43,10 +43,9 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
 \arguments{
   \item{x}{SpatRaster or SpatVector}
   \item{y}{missing or positive integer or name indicating the layer(s) to be plotted}
-  \item{col}{character. Colors. The default is \code{rev(grDevices::terrain.colors(50))}}
- 
-  \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval"}
-  \item{mar}{numeric vector of lenght 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}
+  \item{col}{character. Colors. The default is \code{rev(grDevices::terrain.colors(50))}. If \code{x} is a \code{SpatRaster}, it can also be a \code{data.frame} with two columns (value, color) to get a "classes" type legend or with three columns (from, to, color) to get an "interval" type legend}
+  \item{type}{character. Type of map/legend. One of "continuous", "classes", or "interval". If not specified, the type is chosen based on the data}
+  \item{mar}{numeric vector of length 4 to set the margins of the plot (to make space for the legend). The default is (3.1, 3.1, 2.1, 7.1) for a single plot with a legend and (3.1, 3.1, 2.1, 2.1) otherwise. Use \code{mar=NA} to not set the margins}
   \item{legend}{logical or character. If not \code{FALSE} a legend is drawn. The character value can be used to indicate where the legend is to be draw. For example "topright" or "bottomleft". Use \code{plg} for more refined placement (SpatVector data only)}
   \item{axes}{logical. Draw axes?}
   \item{buffer}{logical. If \code{TRUE} the plotting area is slightly larger than the extent of \code{x}}
@@ -114,7 +113,7 @@ plot(r, range=c(50,600), mar=c(4, 3, 4, 3), plg=list(shrink=0.9, cex=.8),
 plot(r/2, range=c(50,600), mar=c(4, 2, 4, 4), legend=FALSE, 
 	pax=list(sides=c(1,4), cex.axis=.6))
 
-## multi-layer with RGB
+# multi-layer with RGB
 s <- rast(system.file("ex/logo.tif", package="terra"))   
 s
 plot(s)
@@ -124,8 +123,18 @@ plot(s*1)
 plot(s, 1)
 plot(s, 1:3)
 
+# fix legend by linking values and colors
 
-## vector 
+x = rast(nrows = 2, ncols = 2, vals=1)
+y = rast(nrows = 2, ncols = 2, vals=c(1,2,2,1))
+cols = data.frame(id=1:2, col=c("red", "blue"))
+plot(c(x,y), col=cols)
+
+r  = rast(nrows=10, ncols=10, vals=1:100)
+dr = data.frame(from=c(5,33,66,150), to=c(33, 66, 95,200), col=rainbow(4))
+plot(r, col=dr)
+
+### SpatVector 
 
 f <- system.file("ex/lux.shp", package="terra")
 v <- vect(f)

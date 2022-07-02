@@ -75,15 +75,23 @@
 	}
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
-	ncols <- length(out$cols)
-	if (nlevs < ncols) {
-		i <- round(seq(1, ncols, length.out = nlevs))
-		cols <- out$cols[i]
+	
+	if (NCOL(out$cols) == 2) {
+		i <- match(Z, as.numeric(levs))
+		Z[] <- out$cols[,2][i]
+		i <- match(as.numeric(levs), out$cols[,1])
+		out$leg$fill <- out$cols[i,2]
 	} else {
-		cols <- rep_len(out$cols, nlevs)
+		ncols <- length(out$cols)
+		if (nlevs < ncols) {
+			i <- round(seq(1, ncols, length.out = nlevs))
+			cols <- out$cols[i]
+		} else {
+			cols <- rep_len(out$cols, nlevs)
+		}
+		out$leg$fill <- cols
+		Z[] <- cols[as.numeric(fz)]
 	}
-	out$leg$fill <- cols
-	Z[] <- cols[as.numeric(fz)]
 	out$r <- as.raster(Z)
 	out$legend_type <- "classes"
 
@@ -190,7 +198,7 @@
 		out$breaks <- .get_breaks(Z, out$breaks, out$breakby, out$range)
 	}
 	fz <- cut(Z, out$breaks, include.lowest=TRUE, right=FALSE)
-	out$vcut = as.integer(fz)
+	out$vcut <- as.integer(fz)
 	levs <- levels(fz)
 	nlevs <- length(levs)
 
@@ -205,7 +213,6 @@
 	#out$cols <- cols
 	out$leg$fill <- cols
 	#out$leg$levels <- levels(fz)
-	out$legend_type <- "classes"
 
 	if (!is.null(out$leg$legend)) {
 		stopifnot(length(out$leg$legend) == nlevs)
@@ -216,18 +223,31 @@
 		m <- apply(m, 1, function(i) paste(i, collapse=" - "))
 		out$leg$legend <- m
 	}
-
-	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
-		out$leg$x <- "top"
-	}
 	out
 }
 
 .as.raster.interval <- function(out, x, ...) {
-	Z <- as.matrix(x, wide=TRUE)
-	Z[is.nan(Z) | is.infinite(Z)] <- NA
-	out <- .generic.interval(out, Z)
-	Z[] <- out$leg$fill[out$vcut]
+
+	out$legend_type <- "classes"
+
+	if (NCOL(out$cols) == 3) {
+		rcl <- cbind(as.matrix(out$cols[,1:2]), 1:nrow(out$cols))
+		x <- classify(x, rcl, include.lowest=TRUE, others=NA)
+		m <- apply(out$cols[,1:2], 1, function(i) paste(i, collapse=" - "))
+		out$leg$legend <- m
+		out$leg$fill <- out$cols[,3]
+		Z <- as.matrix(x, wide=TRUE)
+		Z[is.nan(Z) | is.infinite(Z)] <- NA
+		Z[] <- out$leg$fill[Z]		
+	} else {
+		Z <- as.matrix(x, wide=TRUE)
+		Z[is.nan(Z) | is.infinite(Z)] <- NA
+		out <- .generic.interval(out, Z)
+		Z[] <- out$leg$fill[out$vcut]
+	}
+	if (is.null(out$leg$x)) { # && is.null(out$leg$ext)) {
+		out$leg$x <- "top"
+	}
 	out$r <- as.raster(Z)
 	out
 }
@@ -449,6 +469,18 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			legend <- TRUE
 		}
 
+		if (missing(col)) {
+			col <- rev(grDevices::terrain.colors(255))
+		} else if (inherits(col, "data.frame")) {
+			if (ncol(col) == 2) {
+				type <- "classes"			
+			} else if (ncol(col) == 3) {
+				type <- "interval"
+			} else {
+				error("plot", "number of columns of a col data.frame should be 2 or 3")
+			}
+			breaks <- NULL
+		}
 		breaks <- list(...)$breaks
 		coltab <- NULL
 		cats  <- NULL
@@ -482,7 +514,6 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			}
 		}
 
-		if (missing(col)) col <- rev(grDevices::terrain.colors(255))
 		x <- .prep.plot.data(x, type=type, cols=col, mar=mar, draw=TRUE, plg=plg, pax=pax, legend=isTRUE(legend), axes=isTRUE(axes), coltab=coltab, cats=cats, interpolate=smooth, levels=levels, range=range, colNA=colNA, alpha=alpha, reset=reset, grid=grid, sort=sort, decreasing=decreasing, ext=ext, ...)
 
 		if (!is.null(fun)) {
