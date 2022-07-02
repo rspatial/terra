@@ -14,6 +14,7 @@ new_rast <- function(nrows=10, ncols=10, nlyrs=1, xmin=0, xmax=1, ymin=0, ymax=1
 	if (missing(extent)) {
 		e <- c(xmin, xmax, ymin, ymax) 
 	} else {
+		extent <- ext(extent)
 		e <- as.vector(extent)
 	}
 	if ((e[1] >= e[2]) || e[3] >= e[4]) {
@@ -322,7 +323,8 @@ setMethod("rast", signature(x="ANY"),
 		if (inherits(x, "sf")) {
 			out <- rast(ext(x), ...)
 			if (is.null(list(...)$crs)) {
-				crs(out) <- crs(x)
+				sfi <- attr(x, "sf_column")
+				crs(out) <- attr(x[[sfi]], "crs")$wkt
 			}
 			out
 		} else {

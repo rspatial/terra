@@ -4,6 +4,7 @@
 
 \alias{extract}
 \alias{extract,SpatRaster,SpatVector-method}
+\alias{extract,SpatRaster,sf-method}
 \alias{extract,SpatRaster,SpatExtent-method}
 \alias{extract,SpatRaster,matrix-method}
 \alias{extract,SpatRaster,data.frame-method}

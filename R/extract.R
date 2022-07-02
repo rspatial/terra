@@ -335,6 +335,14 @@ function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE,
 	e
 })
 
+setMethod("extract", signature(x="SpatRaster", y="sf"), 
+	function(x, y, fun=NULL, method="simple", list=FALSE, factors=TRUE, cells=FALSE, xy=FALSE, weights=FALSE, exact=FALSE, touches=is.lines(y), layer=NULL, ...) { 
+		y <- vect(y)
+		extract(x, y, fun=fun, method=method, list=list, factors=factors, cells=cells, xy=xy, weights=weights, exact=exact, touches=touches, layer=layer, ...)
+	}
+)
+
+
 
 setMethod("[", c("SpatRaster", "SpatVector", "missing"),
 function(x, i, j, ... , drop=FALSE) {

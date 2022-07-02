@@ -75,14 +75,12 @@
 	}
 	stopifnot(length(out$leg$legend) == length(out$levels))
 	nlevs <- length(levs)
-
-	cols <- out$cols
-	ncols <- length(cols)
+	ncols <- length(out$cols)
 	if (nlevs < ncols) {
-		i <- trunc((ncols / nlevs) * 1:nlevs)
-		cols <- cols[i]
+		i <- round(seq(1, ncols, length.out = nlevs))
+		cols <- out$cols[i]
 	} else {
-		cols <- rep_len(cols, nlevs)
+		cols <- rep_len(out$cols, nlevs)
 	}
 	out$leg$fill <- cols
 	Z[] <- cols[as.numeric(fz)]

@@ -7,6 +7,9 @@
 \alias{set.values}
 \alias{set.values,SpatRaster-method}
 
+\alias{setCats}
+\alias{setCats,SpatRaster-method}
+
 \alias{set.cats}
 \alias{set.cats,SpatRaster-method}
 

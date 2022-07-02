@@ -56,6 +56,13 @@ setMethod ("set.cats" , "SpatRaster",
 			error("set.cats", "value cannot be missing")
 			#return(invisible(x@ptr$setCatIndex(layer-1, index)))
 		} 
+		
+		if (is.character(layer)) {
+			layer <- match(layer, names(x))
+			if (is.na(layer)) {
+				error("set.cats", "invalid layer")
+			}
+		}
 		if (layer < 1) {
 			if (!is.list(value)) {
 				error("set.cats", "value should be a list")
@@ -148,6 +155,7 @@ setMethod ("set.cats" , "SpatRaster",
 		invisible(ok)
 	}
 )
+
 
 
 setMethod ("categories" , "SpatRaster", 

@@ -4,6 +4,7 @@
 
 \alias{rasterize}
 \alias{rasterize,SpatVector,SpatRaster-method}
+\alias{rasterize,sf,SpatRaster-method}
 \alias{rasterize,matrix,SpatRaster-method}
 
 \title{Rasterize vector data}

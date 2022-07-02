@@ -333,9 +333,7 @@ setMethod ("show" , "SpatRaster",
 				if (ncol(m) == 1) {
 					if (is.factor(object)) {
 						g <- cats(object)[[1]]
-						if (ncol(g) > 2) {
-							cat("categories  :", paste(colnames(g)[-1], collapse=", "), "\n")
-						}
+						cat("categories  :", paste(colnames(g)[-1], collapse=", "), "\n")
 					}
 					cat("name        :", paste(m[1,], collapse=", "), "\n")
 					cat("min value   :", paste(m[2,], collapse=", "), "\n")
