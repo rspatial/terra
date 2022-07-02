@@ -1,4 +1,11 @@
 
+setMethod ("has.colors" , "SpatRaster", 
+	function(x) {
+		x@ptr$hasColors()
+	}
+)
+
+
 
 setMethod ("coltab" , "SpatRaster", 
 	function(x) {

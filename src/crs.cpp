@@ -228,7 +228,7 @@ bool SpatSRS::set(std::string txt, std::string &msg) {
 		if (! prj_from_spatial_reference(srs, proj4, msg)) {
 			delete srs;
 			msg = "can't get proj4 from srs";
-			return false;
+			//return false;
 		};
 		delete srs;
 		return true;

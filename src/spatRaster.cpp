@@ -162,7 +162,10 @@ SpatRaster::SpatRaster(std::vector<unsigned> rcl, std::vector<double> ext, std::
 	if (!s.srs.set( crs, msg )) {
 		setError(msg);
 		return;
+	} else if (msg != "") {
+		addWarning(msg);			
 	}
+	
 #else
 	s.srs.proj4 = lrtrim_copy(crs);
 #endif
@@ -199,7 +202,9 @@ SpatRaster::SpatRaster(unsigned nr, unsigned nc, unsigned nl, SpatExtent ext, st
 	if (!s.srs.set(crs, msg )) {
 		setError(msg);
 		return;
-	}
+	} else if (msg != "") {
+		addWarning(msg);			
+	}	
 #else
 	s.srs.proj4 = lrtrim_copy(crs);
 #endif
@@ -484,7 +489,10 @@ bool SpatRaster::setSRS(std::string crs) {
 	if (!srs.set(crs, msg )) {
 		addWarning("Cannot set raster SRS: "+ msg);
 		return false;
+	} else if (msg != "") {
+		addWarning(msg);			
 	}
+	
 	for (size_t i = 0; i < nsrc(); i++) { 
 		source[i].srs = srs; 
 		if (!source[i].memory) {

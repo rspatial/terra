@@ -488,7 +488,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 			type <- "interval"
 		} else {
 			if (missing(type)) {
-				if (x@ptr$hasColors()) {
+				if (has.colors(x)) {
 					coltab <- coltab(x)[[1]]
 					if (is.factor(x)) {
 						act <- activeCat(x)
@@ -532,7 +532,7 @@ setMethod("plot", signature(x="SpatRaster", y="numeric"),
 setMethod("plot", signature(x="SpatRaster", y="missing"), 
 	function(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend=TRUE, ...)  {
 
-		if (x@ptr$rgb) {
+		if (has.RGB(x)) {
 			i <- x@ptr$getRGB() + 1
 			if (missing(main)) main = ""			
 			if (is.null(mar)) mar = 0			

@@ -8,6 +8,8 @@
 \alias{RGB<-,SpatRaster-method}
 \alias{colorize}
 \alias{colorize,SpatRaster-method}
+\alias{has.RGB}
+\alias{has.RGB,SpatRaster-method}
 
   
 \title{Layers representing colors}
@@ -25,6 +27,8 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 
 \S4method{colorize}{SpatRaster}(x, to="hsv", alpha=FALSE, stretch=NULL, 
 	grays=FALSE, NAzero=FALSE, filename="", overwrite=FALSE, ...)
+
+\S4method{has.RGB}{SpatRaster}(x)
 }
 
 
@@ -52,7 +56,9 @@ With \code{colorize} you can convert a three-layer RGB SpatRaster into other col
 \examples{
 r <- rast(system.file("ex/logo.tif", package="terra"))   
 plot(r)
+has.RGB(r)
 RGB(r) <- NULL
+has.RGB(r)
 plot(r)
 RGB(r) <- c(3,1,2)
 plot(r)

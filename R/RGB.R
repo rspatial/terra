@@ -4,6 +4,12 @@
 # License GPL v3
 
 
+setMethod ("has.RGB" , "SpatRaster", 
+	function(x) {
+		x@ptr$rgb
+	}
+)
+
 setMethod("RGB<-", signature(x="SpatRaster"), 
 	function(x, value) {
 		if (is.null(value[1]) || is.na(value[1])) {

@@ -690,6 +690,8 @@ bool SpatRaster::from_gdalMEM(GDALDatasetH hDS, bool set_geometry, bool get_valu
 		if (!s.srs.set({wkt}, msg)) {
 			setError(msg);
 			return false;
+		} else if (msg != "") {
+			addWarning(msg);			
 		}
 
 		setSource(s);

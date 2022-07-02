@@ -2,6 +2,8 @@
 
 \docType{methods}
 
+\alias{has.colors}
+\alias{has.colors,SpatRaster-method}
 \alias{coltab}
 \alias{coltab,SpatRaster-method}
 \alias{coltab<-}
@@ -17,6 +19,8 @@ Get or set color table(s) associated with a SpatRaster. Color tables are used fo
 \S4method{coltab}{SpatRaster}(x)
 
 \S4method{coltab}{SpatRaster}(x, layer=1)<-value
+
+\S4method{has.colors}{SpatRaster}(x)
 }
 
 
@@ -38,8 +42,11 @@ coltb <- data.frame(t(col2rgb(rainbow(6, end=.9), alpha=TRUE)))
 coltb
 
 plot(r)
+
+has.colors(r)
 coltab(r) <- coltb
 plot(r)
+has.colors(r)
 
 tb <- coltab(r)
 class(tb)

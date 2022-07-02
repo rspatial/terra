@@ -1,6 +1,8 @@
 #if (!isGeneric("#")) { setGeneric("#", function(x, ...) standardGeneric("#")) }
 
 if (!isGeneric("concats")) {setGeneric("concats", function(x, ...) standardGeneric("concats"))}
+if (!isGeneric("has.colors")) {setGeneric("has.colors", function(x, ...) standardGeneric("has.colors"))}
+if (!isGeneric("has.RGB")) {setGeneric("has.RGB", function(x, ...) standardGeneric("has.RGB"))}
 
 if (!isGeneric("emptyGeoms")) {setGeneric("emptyGeoms", function(x, ...) standardGeneric("emptyGeoms"))}
 
