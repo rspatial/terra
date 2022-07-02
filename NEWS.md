@@ -24,6 +24,7 @@ https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 - `project` crashed when erroneously projecting raster data from one celestial body to another [#688](https://github.com/rspatial/terra/issues/688) by Mike Sumner
 - you can now set a color table with a two column (value, ID) data.frame
 
+
 ## new
 
 - argument `as.raster` to `unique<SpatRaster>` to create a categorical raster with the unique combinations in the layers of the input raster. The default for argument `na.rm` was changed to `FALSE`

@@ -79,8 +79,7 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	    # use sampleWeights with prob 1
 	    r <- x == f[notfound[i],2]
 	    y_fix <- data.frame(cell = sampleWeights(r, size, replace = replace, 
-	                                             cells = TRUE, ext = ext)[, 1], 
-	                        stratum = notfound[i])
+	                  cells = TRUE, ext = ext)[, 1], stratum = notfound[i])
 	    ys[[notfound[i]]] <- y_fix
 	  }
 	}
@@ -151,13 +150,11 @@ sampleStratified <- function(x, size, replace=FALSE, as.df=TRUE, as.points=FALSE
 	if (method == "random") {
 		nsize <- size
 		if (na.rm) {
-		  propNA <- freq(x, value = NA)[,"count"]/ncell(r)
-		  pNotNA <- 1-propNA
-		  ind <- min(which( 1-pbinom(size, size:ncell(r), pNotNA) > 0.9))
-		  size <- (size:ncell(r))[ind]
-			if (replace) {
-				size <- max(size, nsize)
-			}
+			# too expensive for large files and small samples: 
+			# propNA <- freq(x, value = NA)[,"count"]/ncell(r)
+			# size <- size / (propNA * .8)
+			# one can always take a larger sample. 
+			size <- size * 4
 		}
 		if (lonlat) {
 			m <- ifelse(replace, 1.5, 1.25)

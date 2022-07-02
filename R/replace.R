@@ -178,9 +178,10 @@ setMethod("set.values", signature(x="SpatRaster"),
 #		}
 		bylyr <- FALSE
 		if (!is.null(dim(values))) {
-			if ((layers[1] > 0) && (ncol(values) != n)) {
-				error("set.values", "ncol(values) does not match the number of layers")
-			} else if (ncol(values) != nlyr(x)) {
+			#if ((layers[1] > 0) && (ncol(values) != n)) {
+			#	error("set.values", "ncol(values) does not match the number of layers")
+			#} else 
+			if (ncol(values) != nlyr(x)) {
 				error("set.values", "ncol(values) does not match the nlyr(x)")			
 			}
 			bylyr <- TRUE

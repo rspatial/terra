@@ -517,7 +517,7 @@ setAs("im", "SpatRaster",
 
 setAs("SpatVector", "Spatial", 
 	function(from) {
-		if (!("geom,data.frame-method" %in% methods("geom"))) {
+		if (!("geom,data.frame-method" %in% utils::methods("geom"))) {
 			error("coerce", "first run 'library(raster)' to coerce a SpatVector to a Spatial object" )
 		}
 		g <- geom(from, df=TRUE)
@@ -526,28 +526,63 @@ setAs("SpatVector", "Spatial",
 )
 
 
+
+
+
+geom_SpatialPolygons <- function(x) {
+		
+	nobs <- length(x@polygons)
+	objlist <- vector(mode = "list", length = nobs)
+	for (i in 1:nobs) {
+		nsubobs <- length(x@polygons[[i]]@Polygons)
+		ps <- list()
+		last <- 0
+		for (j in 1:nsubobs) { 
+			if (!x@polygons[[i]]@Polygons[[j]]@hole) {
+				last <- last + 1
+				hole <- 0
+			} else {
+				hole <- max(1, last)
+			}	
+			ps[[j]] <- cbind(j, x@polygons[[i]]@Polygons[[j]]@coords, hole)
+		}
+		objlist[[i]] <- cbind(i, do.call(rbind, ps))
+	}
+	do.call(rbind, objlist)
+}
+
+geom_SpatialLines <- function(x) {			
+	nobs <- length(x@lines)
+	objlist <- vector(mode = "list", length = nobs)
+	for (i in 1:nobs) {
+		nsubobj <- length(x@lines[[i]]@Lines)
+		ps <- lapply(1:nsubobj, function(j) cbind(j, x@lines[[i]]@Lines[[j]]@coords))
+		objlist[[i]] <- cbind(i, do.call(rbind, ps))
+	}
+	do.call(rbind, objlist)
+}
+
+
 setAs("Spatial", "SpatVector", 
 	function(from) {
-		g <- geom(from, df=TRUE)
-		colnames(g)[1] <- "id"
 		if (inherits(from, "SpatialPolygons")) {
+			g <- geom_SpatialPolygons(from)
 			vtype <- "polygons"
-			if ("cump" %in% colnames(g)) {
-				g <- g[,c(1,2,5,6,4)]
-			}
 		} else if (inherits(from, "SpatialLines")) {
+			g <- geom_SpatialLines(from)
 			vtype <- "lines"
-			if ("cump" %in% colnames(g)) {
-				g <- g[,colnames(g) != "cump"]
-			}
-		} else {
+		} else if (inherits(from, "SpatialPoints")) {
+			g <- from@coords[,1:2,drop=FALSE]
 			vtype <- "points"
-			g <- cbind(g[,1,drop=FALSE], part=1:nrow(g), g[,2:3,drop=FALSE])
-		}
-		if (methods::.hasSlot(from, "data")) {
-			v <- vect(g, vtype, from@data, crs(from, TRUE))
 		} else {
-			v <- vect(g, vtype, crs=crs(from, TRUE))
+			error("coerce", "cannot coerce this object to a SpatVector")
+		}
+		crs <- attr(from@proj4string, "comment")
+		if (is.null(crs)) crs <- from@proj4string@projargs
+		if (methods::.hasSlot(from, "data")) {
+			v <- vect(g, vtype, from@data, crs=crs)
+		} else {
+			v <- vect(g, vtype, crs=crs)
 		}
 		return(v)
 	}
