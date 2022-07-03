@@ -23,12 +23,16 @@ https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 - `disagg` and `aggregate` now return a warning instead of an error when using a (dis)aggregation factor of 1.[#684](https://github.com/rspatial/terra/issues/684) by Justin Fain.
 - `project` crashed when erroneously projecting raster data from one celestial body to another [#688](https://github.com/rspatial/terra/issues/688) by Mike Sumner
 - you can now set a color table with a two column (value, ID) data.frame
-
+- categorical rasters can now be updated more easily [#667](https://github.com/rspatial/terra/issues/667) by Alex Ilich
+- more control over matching values with colors when using `plot`. [673](https://github.com/rspatial/terra/issues/673) by Jakub Nowosad.
 
 ## new
 
 - argument `as.raster` to `unique<SpatRaster>` to create a categorical raster with the unique combinations in the layers of the input raster. The default for argument `na.rm` was changed to `FALSE`
 - `sort<SpatRaster>` to sort cell values across layers.
+- `has.colors` and `has.RGB` for SpatRaster
+- `cover` can now combine categorical rasters 
+- `concats` to combine the levels of two SpatRaster into new categories [663](https://github.com/rspatial/terra/issues/663) by Alex Ilich
 
 
 # version 1.5-34

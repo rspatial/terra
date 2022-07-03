@@ -1504,8 +1504,7 @@ SpatVector SpatVector::unite(SpatVector v) {
 	if (sdif.type() == type()) {
 		return intsec.append(sdif, true);
 	} else {
-		SpatVector out;
-		return out;		
+		return intsec;
 	}
 }
 

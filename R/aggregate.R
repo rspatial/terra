@@ -175,6 +175,8 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], fun)
 				names(da)[-j] <- paste0("agg_", names(da)[-j])
 			}
+		} else {
+			da <- unique(d[, by, drop=FALSE])
 		}
 	} else {
 		i[] <- FALSE
@@ -192,8 +194,13 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 
 	dn <- aggregate(d[, by[1],drop=FALSE], d[, by, drop=FALSE], length)
 	colnames(dn)[ncol(dn)] = "agg_n"
-	if (NCOL(da)>1) {
-		dn <- merge(da, dn, by=by)
+	if (NCOL(da ) > 1) {
+		if (nrow(dn) > 0) {
+			dn <- merge(da, dn, by=by)
+		} else {
+			dn <- da
+			dn$agg_n <- 1
+		}
 	}
 	dn
 }
