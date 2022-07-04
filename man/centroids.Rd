@@ -16,7 +16,7 @@ Get the centroids of polygons or lines, or centroid-like points that are guarant
 
 \arguments{
 \item{x}{SpatVector}
-\item{inside}{logical. If \code{TRUE} the points returned are not the true centroids, but they are guaranteed to be inside the polygons or on the lines. True centroids may be outside a polygon (e.g. when a polygon is "bean shaped", and are unlikely to be on their line}
+\item{inside}{logical. If \code{TRUE} the points returned are guaranteed to be inside the polygons or on the lines, but they are not the true centroids. True centroids may be outside a polygon, for example when a polygon is "bean shaped", and they are unlikely to be on their line}
 }
 
 
