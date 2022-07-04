@@ -683,96 +683,92 @@ SpatDataFrame SpatRaster::zonal2(SpatRaster z, std::string fun, bool narm, SpatO
 		std::vector<double> vv, zv;
 		readValues(vv, bs.row[i], bs.nrows[i], 0, ncol());
 		z.readValues(zv, bs.row[i], bs.nrows[i], 0, ncol());
-		for (size_t j=0; j<nl; j++) {
-			unsigned off = j*nrc;
-			std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-			if (fun == "sum") {
-				for (size_t j=0; j<nl; j++) {
-					size_t off = j*nrc;
-					std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-					for (size_t k=0; k<nrc; k++) { 
-						if (std::isnan(zv[k])) {
-							continue;
-						} 
-						if (narm && std::isnan(v[k])) {
-							if (m[j].find(zv[k]) == m[j].end()) {
-								m[j][zv[k]] = v[k];
-								cnt[j][zv[k]] = 0;
-							}
-						} else if (m[j].find(zv[k]) == m[j].end()) {
+		if (fun == "sum") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) { 
+					if (std::isnan(zv[k])) {
+						continue;
+					} 
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
 							m[j][zv[k]] = v[k];
-							cnt[j][zv[k]] = 1;
-						} else {
-							m[j][zv[k]] += v[k];
+							cnt[j][zv[k]] = 0;
 						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] += v[k];
 					}
 				}
-			} else if (fun == "mean") {
-				for (size_t j=0; j<nl; j++) {
-					size_t off = j*nrc;
-					std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-					for (size_t k=0; k<nrc; k++) { 
-						if (std::isnan(zv[k])) {
-							continue;
-						} 
-						if (narm && std::isnan(v[k])) {
-							if (m[j].find(zv[k]) == m[j].end()) {
-								m[j][zv[k]] = v[k];
-								cnt[j][zv[k]] = 0;
-							}
-						} else if (m[j].find(zv[k]) == m[j].end()) {
+			}
+		} else if (fun == "mean") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) { 
+					if (std::isnan(zv[k])) {
+						continue;
+					} 
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
 							m[j][zv[k]] = v[k];
-							cnt[j][zv[k]] = 1;
-						} else {
-							m[j][zv[k]] += v[k];
-							cnt[j][zv[k]]++;
+							cnt[j][zv[k]] = 0;
 						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] += v[k];
+						cnt[j][zv[k]]++;
 					}
 				}
-			} else if (fun == "min") {
-				for (size_t j=0; j<nl; j++) {
-					size_t off = j*nrc;
-					std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-					for (size_t k=0; k<nrc; k++) { 
-						if (std::isnan(zv[k])) {
-							continue;
-						} 
-						if (narm && std::isnan(v[k])) {
-							if (m[j].find(zv[k]) == m[j].end()) {
-								m[j][zv[k]] = posinf;
-								cnt[j][zv[k]] = 0;
-							}
-						} else if (m[j].find(zv[k]) == m[j].end()) {
-							m[j][zv[k]] = v[k];
-							cnt[j][zv[k]] = 1;
-						} else {
-							m[j][zv[k]] = std::min(v[k], m[j][zv[k]]);
+			}
+		} else if (fun == "min") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) { 
+					if (std::isnan(zv[k])) {
+						continue;
+					} 
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = posinf;
+							cnt[j][zv[k]] = 0;
 						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] = std::min(v[k], m[j][zv[k]]);
 					}
 				}
-			} else if (fun == "max") {
-				for (size_t j=0; j<nl; j++) {
-					size_t off = j*nrc;
-					std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
-					for (size_t k=0; k<nrc; k++) { 
-						if (std::isnan(zv[k])) {
-							continue;
-						} 
-						if (narm && std::isnan(v[k])) {
-							if (m[j].find(zv[k]) == m[j].end()) {
-								m[j][zv[k]] = neginf;
-								cnt[j][zv[k]] = 0;
-							}
-						} else if (m[j].find(zv[k]) == m[j].end()) {
-							m[j][zv[k]] = v[k];
-							cnt[j][zv[k]] = 1;
-						} else {
-							m[j][zv[k]] = std::max(v[k], m[j][zv[k]]);
+			}
+		} else if (fun == "max") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) { 
+					if (std::isnan(zv[k])) {
+						continue;
+					} 
+					if (narm && std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							m[j][zv[k]] = neginf;
+							cnt[j][zv[k]] = 0;
 						}
+					} else if (m[j].find(zv[k]) == m[j].end()) {
+						m[j][zv[k]] = v[k];
+						cnt[j][zv[k]] = 1;
+					} else {
+						m[j][zv[k]] = std::max(v[k], m[j][zv[k]]);
 					}
 				}
-			} 
-		}
+			}
+		} 
 	}
 	readStop();
 	z.readStop();
