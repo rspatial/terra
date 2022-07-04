@@ -10,13 +10,13 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 			na.rm <- isTRUE(list(...)$na.rm)
 			old <- isTRUE(list(...)$old) 
 			opt <- spatOptions()
-			if (old) {
-				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
+			if (old) { # for testing, to be removed
+				sdf <- x@ptr$zonal_old(z@ptr, txtfun, na.rm, opt)
 			} else {
-				ptr <- x@ptr$zonal2(z@ptr, txtfun, na.rm, opt)
+				sdf <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
 			}
-			messages(ptr, "zonal")
-			out <- .getSpatDF(ptr)
+			messages(sdf, "zonal")
+			out <- .getSpatDF(sdf)
 		} else {
 			nl <- nlyr(x)
 			res <- list()
