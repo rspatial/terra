@@ -8,8 +8,13 @@ setMethod("zonal", signature(x="SpatRaster", z="SpatRaster"),
 		txtfun <- .makeTextFun(match.fun(fun))
 		if (inherits(txtfun, "character") && (txtfun %in% c("max", "min", "mean", "sum"))) {
 			na.rm <- isTRUE(list(...)$na.rm)
+			old <- isTRUE(list(...)$old) 
 			opt <- spatOptions()
-			ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
+			if (old) {
+				ptr <- x@ptr$zonal(z@ptr, txtfun, na.rm, opt)
+			} else {
+				ptr <- x@ptr$zonal2(z@ptr, txtfun, na.rm, opt)
+			}
 			messages(ptr, "zonal")
 			out <- .getSpatDF(ptr)
 		} else {
