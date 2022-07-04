@@ -8,6 +8,9 @@ setMethod("is.factor", signature(x="SpatRaster"),
 
 setMethod("as.factor", signature(x="SpatRaster"), 
 	function(x) {
+		if (!hasValues(x)) {
+			error("as.factor", "x has no values")
+		}
 		x <- round(x)
 		u <- unique(x, TRUE)
 		for (i in 1:nlyr(x)) {

@@ -517,7 +517,8 @@ setAs("im", "SpatRaster",
 
 setAs("SpatVector", "Spatial", 
 	function(from) {
-		if (!("geom,data.frame-method" %in% utils::methods("geom"))) {
+		hasmethod <- suppressWarnings("geom,data.frame-method" %in% utils::methods("geom"))
+		if (!hasmethod) {
 			error("coerce", "first run 'library(raster)' to coerce a SpatVector to a Spatial object" )
 		}
 		g <- geom(from, df=TRUE)

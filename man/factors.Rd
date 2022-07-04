@@ -32,8 +32,6 @@ To set categories for the first layers you can provide \code{levels<-} with a da
 }
 
 \usage{
-\S4method{is.factor}{SpatRaster}(x)
-
 \S4method{levels}{SpatRaster}(x)
 
 \S4method{levels}{SpatRaster}(x)<-value
@@ -41,6 +39,10 @@ To set categories for the first layers you can provide \code{levels<-} with a da
 \S4method{cats}{SpatRaster}(x, layer, active=FALSE)
 
 \S4method{categories}{SpatRaster}(x, layer=1, value, index)
+
+\S4method{is.factor}{SpatRaster}(x)
+
+\S4method{as.factor}{SpatRaster}(x)
 }
 
 

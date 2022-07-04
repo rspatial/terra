@@ -6,6 +6,7 @@
 \alias{merge,SpatRaster,SpatRaster-method}
 \alias{merge,SpatRasterCollection,missing-method}
 \alias{merge,SpatExtent,SpatExtent-method}
+\alias{merge,SpatVector,SpatVector-method}
 \alias{merge,SpatVector,data.frame-method}
 
 \title{ 

@@ -15,7 +15,7 @@ The package implements two main classes (data types): \code{SpatRaster} and \cod
 
 Additional classes include \code{SpatExtent}, which is used to define a spatial extent (bounding box); \code{SpatRasterDataset}, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and \code{SpatRasterCollection} and \code{SpatVectorCollection} that are equivalent to lists of SpatRaster or SpatVector objects. 
 
-These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see \code{\link{wrap}}. 
+These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use \code{\link{writeRaster}} to save SpatRaster objects to disk (and pass a filename or cell values to cluster nodes). Also see \code{\link{wrap}}. 
 
 The \code{terra} package is conceived as a replacement of the \code{raster} package. \code{terra} has a very similar, but simpler, interface, and it is faster than \code{raster}. At the bottom of this page there is a table that shows differences in the methods between the two packages. 
 
@@ -106,6 +106,7 @@ Also see the methods in section VIII
     \code{\link{init}} \tab Initialize cells with new values \cr	
     \code{\link{mask}} \tab Replace values in a SpatRaster based on values in another SpatRaster\cr
     \code{\link{which.lyr}} \tab which is the first layer that is \code{TRUE}?\cr	
+    \code{\link{segregate}} \tab Make a 0/1 layer for each unique value \cr	
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
   }
   }
@@ -233,7 +234,37 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 
 
-\section{X. Writing SpatRaster files}{
+\section{X. Time related methods}{
+
+\tabular{ll}{
+    \code{\link{time}} \tab Get or set time\cr
+    \code{\link{fillTime}} \tab can add empty layers in between existing layers to assure that the time step between layers is constant \cr
+    \code{\link{mergeTime}} \tab combine multiple rasters, perhaps partly overlapping in time, into a single time series\cr
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}
+}
+
+
+\section{XI. Methods for categorical rasters}{
+
+\tabular{ll}{
+    \code{\link{is.factor}} \tab Are there categorical layers?\cr
+    \code{\link{levels}} \tab Get active categories, or set categories\cr
+    \code{\link{activeCat}} \tab Get or set the active category\cr
+    \code{\link{cats}} \tab Get categories (active and inactive)\cr
+    \code{\link{set.cats}} \tab Set categories in place \cr
+    \code{\link{concats}} \tab Combine SpatRasters with different categories\cr
+    \code{\link{catalyze}} \tab Create a layer for each category \cr
+    \code{\link{as.numeric}} \tab use the active category to create a non-categorical SpatRaster\cr
+    \code{\link{as.factor}} \tab Make the layers of a SpatRaster categorical\cr
+
+
+  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
+}
+}
+
+
+\section{XII. Writing SpatRaster files}{
 
 \subsection{Basic}{
   \tabular{ll}{
@@ -245,6 +276,8 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 \subsection{Advanced}{
   \tabular{ll}{
+   \code{\link{readStart}} \tab Open file connections for efficient multi-chunk reading \cr
+   \code{\link{readStop}} \tab Close file connections \cr
    \code{\link{writeStart}} \tab Open a file for writing \cr
    \code{\link{writeValues}} \tab Write some values  \cr
    \code{\link{writeStop}} \tab Close the file after writing \cr
@@ -254,26 +287,13 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 }
 }	
 
-\section{XI. Time related methods}{
-
-\tabular{ll}{
-    \code{\link{time}} \tab Get or set time\cr
-    \code{\link{fillTime}} \tab can add empty layers in between existing layers to assure that the time step between layers is constant \cr
-    \code{\link{mergeTime}} \tab combine multiple rasters, perhaps partly overlapping in time, into a single time series\cr
-  --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
-}
-}
-
-
-\section{XII. Miscellaneous SpatRaster methods}{
+\section{XIII. Miscellaneous SpatRaster methods}{
 
 \tabular{ll}{
     \code{\link{terraOptions}} \tab Show, set, or get session options, mostly to control memory use and to set write options\cr
     \code{\link{sources}} \tab Show the data sources of a SpatRaster \cr
     \code{\link{tmpFiles}} \tab Show or remove temporary files \cr
     \code{\link{mem_info}} \tab memory needs and availability \cr
-    \code{\link{readStart}} \tab Open file connections for efficient multi-chunk reading \cr
-    \code{\link{readStop}} \tab Close file connections \cr
     \code{\link{inMemory}} \tab Are the cell values in memory? \cr
   --------------------------- \tab ------------------------------------------------------------------------------------------ \cr
 }
@@ -283,7 +303,7 @@ Cell numbers start at 1 in the upper-left corner. They increase within rows, fro
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XIII. SpatRasterDataset}{
+\section{XIV. SpatRasterDataset}{
 
 A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.
 
@@ -299,7 +319,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XIV. Create SpatVector objects}{
+\section{XV. Create SpatVector objects}{
 \tabular{ll}{
   \code{\link{vect}} \tab Create a SpatVector from a file (for example a "shapefile") or from another object\cr
   \code{\link{vector_layers}} \tab list or delete layers in a vector database such as GPGK\cr
@@ -317,7 +337,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }}
 
 
-\section{XV. Properties of SpatVector objects}{
+\section{XVI. Properties of SpatVector objects}{
 \tabular{ll}{
   \code{\link{geom}} \tab returns the geometries as matrix or WKT\cr
   \code{\link{crds}} \tab returns the coordinates as a matrix\cr
@@ -332,7 +352,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }}
 
 
-\section{XVI. Geometric queries}{
+\section{XVII. Geometric queries}{
 \tabular{ll}{
   \code{\link{adjacent}} \tab find adjacent polygons\cr
   \code{\link{expanse}} \tab computes the area covered by polygons\cr
@@ -344,7 +364,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }}
 
 
-\section{XVII. Geometric operations}{
+\section{XVIII. Geometric operations}{
 
 \tabular{ll}{
   \code{\link{erase}} or "-" \tab erase (parts of) geometries\cr
@@ -360,7 +380,7 @@ A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the sa
 }}
 
 
-\section{XVIII. SpatVector attributes}{
+\section{XIX. SpatVector attributes}{
 We use the term "attributes" for the tabular data (data.frame) associated with vector geometries.
 
 \tabular{ll}{
@@ -376,7 +396,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 }}
 
 
-\section{XIX. Change geometries (for display, experimentation)}{
+\section{XX. Change geometries (for display, experimentation)}{
 
 \tabular{ll}{
   \code{\link{shift}} \tab change the position geometries by shifting their coordinates in horizontal and/or vertical direction\cr
@@ -388,7 +408,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 }}
 
 
-\section{XX. Geometry properties and topology}{
+\section{XXI. Geometry properties and topology}{
 
 \tabular{ll}{
   \code{\link{width}} \tab the minimum diameter of the geometries \cr
@@ -412,7 +432,7 @@ We use the term "attributes" for the tabular data (data.frame) associated with v
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XXI. Collections}{
+\section{XXII. Collections}{
 A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects. 
 
 \tabular{ll}{
@@ -426,7 +446,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XXII. SpatExtent}{
+\section{XXIII. SpatExtent}{
 
   \tabular{ll}{
     \code{\link{ext}} \tab Create a SpatExtent object. For example to \code{\link{crop}} a Spatial dataset\cr
@@ -444,7 +464,7 @@ A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRaste
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XXIII. Conversion between spatial data objects from different packages}{
+\section{XXIV. Conversion between spatial data objects from different packages}{
 
 You can coerce SpatRasters to Raster* objects, after loading the \code{raster} package, with \code{as(object, "Raster")}, or \code{raster(object)} or \code{brick(object)} or \code{stack(object)}
  
@@ -462,7 +482,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
   }
 }
 
-\section{XXIV. Plotting}{
+\section{XXV. Plotting}{
 
 \subsection{Maps}{
   \tabular{ll}{
@@ -512,7 +532,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 
 ---------------------------------------------------------------------------------------------------------------------}
 
-\section{XXV. New method names}{
+\section{XXVI. New method names}{
 
 \code{terra} has a single class \code{SpatRaster} for which \code{raster} has three (\code{RasterLayer, RasterStack, RasterBrick}). Likewise there is a single class for vector data \code{SpatVector} that replaces six \code{Spatial*} classes. Most method names are the same, but note the following important differences in methods names with the \code{raster} package
 
@@ -555,7 +575,7 @@ You can coerce SpatRasters to Raster* objects, after loading the \code{raster} p
 }
 }
 
-\section{XXVI. Changed behavior}{
+\section{XXVII. Changed behavior}{
 
 Also note that even if function names are the same in \code{terra} and \code{raster}, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:
 

@@ -19,6 +19,11 @@ setMethod("merge", signature(x="SpatVector", y="data.frame"),
 	}
 )
 
+setMethod("merge", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, ...) {
+		merge(x, data.frame(y), ...)
+	}
+)
 
 setMethod("merge", signature(x="SpatRaster", y="SpatRaster"), 
 	function(x, y, ..., filename="", overwrite=FALSE, wopt=list()) { 

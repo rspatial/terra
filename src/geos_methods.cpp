@@ -1482,17 +1482,18 @@ std::vector<double> SpatVector::geos_distance(bool sequential) {
 
 
 SpatVector SpatVector::unite(SpatVector v) {
+
+	SpatVector out;
 	if (type() != v.type()) {
-		SpatVector out;
 		out.setError("cannot unite different geom types");
 		return out;
 	}
 	
-	SpatVector intsec = intersect(v);
-	if (intsec.hasError()) {
-		return intsec;
+	out = intersect(v);
+	if (out.hasError()) {
+		return out;
 	}
-	if (intsec.nrow() == 0) {
+	if (out.nrow() == 0) {
 		return append(v, true);
 	}
 
@@ -1502,10 +1503,9 @@ SpatVector SpatVector::unite(SpatVector v) {
 	}
 	
 	if (sdif.type() == type()) {
-		return intsec.append(sdif, true);
-	} else {
-		return intsec;
+		return out.append(sdif, true);
 	}
+	return out;
 }
 
 
