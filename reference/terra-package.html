@@ -4,7 +4,7 @@
 terra provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divide space into rectangular cells (pixels) and they are commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) are typically used to represent discrete spatial entities, such as a road, country, or bus stop.
 The package implements two main classes (data types): SpatRaster and SpatVector. SpatRaster supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. SpatVector supports all types of geometric operations such as intersections.
 Additional classes include SpatExtent, which is used to define a spatial extent (bounding box); SpatRasterDataset, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and SpatRasterCollection and SpatVectorCollection that are equivalent to lists of SpatRaster or SpatVector objects.
-These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use writeRaster to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see wrap.
+These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use writeRaster to save SpatRaster objects to disk (and pass a filename or cell values to cluster nodes). Also see wrap.
 The terra package is conceived as a replacement of the raster package. terra has a very similar, but simpler, interface, and it is faster than raster. At the bottom of this page there is a table that shows differences in the methods between the two packages.
 Below is a list of some of the most important methods grouped by theme.
 ---------------------------------------------------------------------------------------------------------------------'><meta property="og:image" content="/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -62,7 +62,7 @@ Below is a list of some of the most important methods grouped by theme.
 <p><code>terra</code> provides methods to manipulate geographic (spatial) data in "raster" and "vector" form. Raster data divide space into rectangular cells (pixels) and they are commonly used to represent spatially continuous phenomena, such as elevation or the weather. Satellite images also have this data structure. In contrast, "vector" spatial data (points, lines, polygons) are typically used to represent discrete spatial entities, such as a road, country, or bus stop.</p>
 <p>The package implements two main classes (data types): <code>SpatRaster</code> and <code>SpatVector</code>. <code>SpatRaster</code> supports handling large raster files that cannot be loaded into memory; local, focal, zonal, and global raster operations; polygon, line and point to raster conversion; integration with modeling methods to make spatial predictions; and more. <code>SpatVector</code> supports all types of geometric operations such as intersections.</p>
 <p>Additional classes include <code>SpatExtent</code>, which is used to define a spatial extent (bounding box); <code>SpatRasterDataset</code>, which represents a collection of sub-datasets for the same area. Each sub-dataset is a SpatRaster with possibly many layers, and may, for example, represent different weather variables; and <code>SpatRasterCollection</code> and <code>SpatVectorCollection</code> that are equivalent to lists of SpatRaster or SpatVector objects.</p>
-<p>These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use <code><a href="writeRaster.html">writeRaster</a></code> to save SpatRaster objects to disk (and pass a filename or cell values ot cluster nodes). Also see <code><a href="wrap.html">wrap</a></code>.</p>
+<p>These classes hold a C++ pointer to the data "reference class" and that creates some limitations. They cannot be recovered from a saved R session either or directly passed to nodes on a computer cluster. Generally, you should use <code><a href="writeRaster.html">writeRaster</a></code> to save SpatRaster objects to disk (and pass a filename or cell values to cluster nodes). Also see <code><a href="wrap.html">wrap</a></code>.</p>
 <p>The <code>terra</code> package is conceived as a replacement of the <code>raster</code> package. <code>terra</code> has a very similar, but simpler, interface, and it is faster than <code>raster</code>. At the bottom of this page there is a table that shows differences in the methods between the two packages.</p>
 <p>Below is a list of some of the most important methods grouped by theme.</p>
 <p>---------------------------------------------------------------------------------------------------------------------</p>
@@ -104,7 +104,7 @@ Below is a list of some of the most important methods grouped by theme.
 <h3 id="other-methods">Other methods<a class="anchor" aria-label="anchor" href="#other-methods"></a></h3>
 
 
-<p></p><table class="table table"><tr><td><code><a href="approximate.html">approximate</a></code></td><td>Compute missing values for cells by interpolation across layers</td></tr><tr><td><code><a href="cellSize.html">cellSize</a></code></td><td>Compute the area of cells</td></tr><tr><td><code><a href="classify.html">classify</a></code></td><td>(Re-)classify values</td></tr><tr><td><code><a href="subst.html">subst</a></code></td><td>Substitute (replace) cell values</td></tr><tr><td><code><a href="cover.html">cover</a></code></td><td>First layer covers second layer except where the first layer is <code>NA</code></td></tr><tr><td><code><a href="init.html">init</a></code></td><td>Initialize cells with new values</td></tr><tr><td><code><a href="mask.html">mask</a></code></td><td>Replace values in a SpatRaster based on values in another SpatRaster</td></tr><tr><td><code><a href="which.html">which.lyr</a></code></td><td>which is the first layer that is <code>TRUE</code>?</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table><p></p>
+<p></p><table class="table table"><tr><td><code><a href="approximate.html">approximate</a></code></td><td>Compute missing values for cells by interpolation across layers</td></tr><tr><td><code><a href="cellSize.html">cellSize</a></code></td><td>Compute the area of cells</td></tr><tr><td><code><a href="classify.html">classify</a></code></td><td>(Re-)classify values</td></tr><tr><td><code><a href="subst.html">subst</a></code></td><td>Substitute (replace) cell values</td></tr><tr><td><code><a href="cover.html">cover</a></code></td><td>First layer covers second layer except where the first layer is <code>NA</code></td></tr><tr><td><code><a href="init.html">init</a></code></td><td>Initialize cells with new values</td></tr><tr><td><code><a href="mask.html">mask</a></code></td><td>Replace values in a SpatRaster based on values in another SpatRaster</td></tr><tr><td><code><a href="which.html">which.lyr</a></code></td><td>which is the first layer that is <code>TRUE</code>?</td></tr><tr><td><code><a href="segregate.html">segregate</a></code></td><td>Make a 0/1 layer for each unique value</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table><p></p>
 </div>
 
     </div>
@@ -139,8 +139,18 @@ Below is a list of some of the most important methods grouped by theme.
 
 <p>Cell numbers start at 1 in the upper-left corner. They increase within rows, from left to right, and then row by row from top to bottom. Likewise, row numbers start at 1 at the top of the raster, and column numbers start at 1 at the left side of the raster.</p>
 <p></p><table class="table table"><tr><td><code><a href="xyCellFrom.html">xFromCol</a></code></td><td>x-coordinates from column numbers</td></tr><tr><td><code><a href="xyCellFrom.html">yFromRow</a></code></td><td>y-coordinates from row numbers</td></tr><tr><td><code><a href="xyCellFrom.html">xFromCell</a></code></td><td>x-coordinates from row numbers</td></tr><tr><td><code><a href="xyCellFrom.html">yFromCell</a></code></td><td>y-coordinates from cell numbers</td></tr><tr><td><code><a href="xyCellFrom.html">xyFromCell</a></code></td><td>x and y coordinates from cell numbers</td></tr><tr><td><code><a href="xyCellFrom.html">colFromX</a></code></td><td>Column numbers from x-coordinates (or longitude)</td></tr><tr><td><code><a href="xyCellFrom.html">rowFromY</a></code></td><td>Row numbers from y-coordinates (or latitude)</td></tr><tr><td><code><a href="xyCellFrom.html">rowColFromCell</a></code></td><td>Row and column numbers from cell numbers</td></tr><tr><td><code><a href="xyCellFrom.html">cellFromXY</a></code></td><td>Cell numbers from x and y coordinates</td></tr><tr><td><code><a href="xyCellFrom.html">cellFromRowCol</a></code></td><td>Cell numbers from row and column numbers</td></tr><tr><td><code><a href="xyCellFrom.html">cellFromRowColCombine</a></code></td><td>Cell numbers from all combinations of row and column numbers</td></tr><tr><td><code><a href="cells.html">cells</a></code></td><td>Cell numbers from an SpatVector or SpatExtent</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="x-writing-spatraster-files">
-    <h2>X. Writing SpatRaster files</h2>
+    <div id="x-time-related-methods">
+    <h2>X. Time related methods</h2>
+    
+
+<table class="table table"><tr><td><code><a href="time.html">time</a></code></td><td>Get or set time</td></tr><tr><td><code><a href="fillTime.html">fillTime</a></code></td><td>can add empty layers in between existing layers to assure that the time step between layers is constant</td></tr><tr><td><code><a href="mergeTime.html">mergeTime</a></code></td><td>combine multiple rasters, perhaps partly overlapping in time, into a single time series</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
+    <div id="xi-methods-for-categorical-rasters">
+    <h2>XI. Methods for categorical rasters</h2>
+    
+
+<table class="table table"><tr><td><code><a href="factors.html">is.factor</a></code></td><td>Are there categorical layers?</td></tr><tr><td><code><a href="factors.html">levels</a></code></td><td>Get active categories, or set categories</td></tr><tr><td><code><a href="activeCat.html">activeCat</a></code></td><td>Get or set the active category</td></tr><tr><td><code><a href="factors.html">cats</a></code></td><td>Get categories (active and inactive)</td></tr><tr><td><code><a href="inplace.html">set.cats</a></code></td><td>Set categories in place</td></tr><tr><td><code><a href="concats.html">concats</a></code></td><td>Combine SpatRasters with different categories</td></tr><tr><td><code><a href="catalyze.html">catalyze</a></code></td><td>Create a layer for each category</td></tr><tr><td><code><a href="catalyze.html">as.numeric</a></code></td><td>use the active category to create a non-categorical SpatRaster</td></tr><tr><td><code><a href="factors.html">as.factor</a></code></td><td>Make the layers of a SpatRaster categorical</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
+    <div id="xii-writing-spatraster-files">
+    <h2>XII. Writing SpatRaster files</h2>
     
 
 <div class="section">
@@ -149,27 +159,22 @@ Below is a list of some of the most important methods grouped by theme.
 
 <div class="section">
 <h3 id="advanced">Advanced<a class="anchor" aria-label="anchor" href="#advanced"></a></h3>
-<p></p><table class="table table"><tr><td><code><a href="readwrite.html">writeStart</a></code></td><td>Open a file for writing</td></tr><tr><td><code><a href="readwrite.html">writeValues</a></code></td><td>Write some values</td></tr><tr><td><code><a href="readwrite.html">writeStop</a></code></td><td>Close the file after writing</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr><tr><td></td><td></td></tr></table></div>
+<p></p><table class="table table"><tr><td><code><a href="readwrite.html">readStart</a></code></td><td>Open file connections for efficient multi-chunk reading</td></tr><tr><td><code><a href="readwrite.html">readStop</a></code></td><td>Close file connections</td></tr><tr><td><code><a href="readwrite.html">writeStart</a></code></td><td>Open a file for writing</td></tr><tr><td><code><a href="readwrite.html">writeValues</a></code></td><td>Write some values</td></tr><tr><td><code><a href="readwrite.html">writeStop</a></code></td><td>Close the file after writing</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr><tr><td></td><td></td></tr></table></div>
 
     </div>
-    <div id="xi-time-related-methods">
-    <h2>XI. Time related methods</h2>
+    <div id="xiii-miscellaneous-spatraster-methods">
+    <h2>XIII. Miscellaneous SpatRaster methods</h2>
     
 
-<table class="table table"><tr><td><code><a href="time.html">time</a></code></td><td>Get or set time</td></tr><tr><td><code><a href="fillTime.html">fillTime</a></code></td><td>can add empty layers in between existing layers to assure that the time step between layers is constant</td></tr><tr><td><code><a href="mergeTime.html">mergeTime</a></code></td><td>combine multiple rasters, perhaps partly overlapping in time, into a single time series</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xii-miscellaneous-spatraster-methods">
-    <h2>XII. Miscellaneous SpatRaster methods</h2>
-    
-
-<table class="table table"><tr><td><code><a href="terraOptions.html">terraOptions</a></code></td><td>Show, set, or get session options, mostly to control memory use and to set write options</td></tr><tr><td><code><a href="sources.html">sources</a></code></td><td>Show the data sources of a SpatRaster</td></tr><tr><td><code><a href="tmpFile.html">tmpFiles</a></code></td><td>Show or remove temporary files</td></tr><tr><td><code><a href="mem.html">mem_info</a></code></td><td>memory needs and availability</td></tr><tr><td><code><a href="readwrite.html">readStart</a></code></td><td>Open file connections for efficient multi-chunk reading</td></tr><tr><td><code><a href="readwrite.html">readStop</a></code></td><td>Close file connections</td></tr><tr><td><code><a href="sources.html">inMemory</a></code></td><td>Are the cell values in memory?</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
+<table class="table table"><tr><td><code><a href="terraOptions.html">terraOptions</a></code></td><td>Show, set, or get session options, mostly to control memory use and to set write options</td></tr><tr><td><code><a href="sources.html">sources</a></code></td><td>Show the data sources of a SpatRaster</td></tr><tr><td><code><a href="tmpFile.html">tmpFiles</a></code></td><td>Show or remove temporary files</td></tr><tr><td><code><a href="mem.html">mem_info</a></code></td><td>memory needs and availability</td></tr><tr><td><code><a href="sources.html">inMemory</a></code></td><td>Are the cell values in memory?</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
     <div id="spatrasterdataset">
     <h2><b>SpatRasterDataSet</b></h2>
     
 
 <p>---------------------------------------------------------------------------------------------------------------------</p>
     </div>
-    <div id="xiii-spatrasterdataset">
-    <h2>XIII. SpatRasterDataset</h2>
+    <div id="xiv-spatrasterdataset">
+    <h2>XIV. SpatRasterDataset</h2>
     
 
 <p>A SpatRasterDataset contains SpatRaster objects that are sub-datasets for the same area. They all have the same extent and resolution.</p>
@@ -180,34 +185,34 @@ Below is a list of some of the most important methods grouped by theme.
 
 <p>---------------------------------------------------------------------------------------------------------------------</p>
     </div>
-    <div id="xiv-create-spatvector-objects">
-    <h2>XIV. Create SpatVector objects</h2>
+    <div id="xv-create-spatvector-objects">
+    <h2>XV. Create SpatVector objects</h2>
     
 <table class="table table"><tr><td><code><a href="vect.html">vect</a></code></td><td>Create a SpatVector from a file (for example a "shapefile") or from another object</td></tr><tr><td><code><a href="vector_layers.html">vector_layers</a></code></td><td>list or delete layers in a vector database such as GPGK</td></tr><tr><td><code>rbind</code></td><td>append SpatVectors of the same geometry type</td></tr><tr><td><code><a href="unique.html">unique</a></code></td><td>remove duplicates</td></tr><tr><td><code><a href="na.omit.html">na.omit</a></code></td><td>remove empty geometries and/or fields that are <code>NA</code></td></tr><tr><td><code><a href="project.html">project</a></code></td><td>Project a SpatVector to a different coordinate reference system</td></tr><tr><td><code><a href="writeVector.html">writeVector</a></code></td><td>Write SpatVector data to disk</td></tr><tr><td><code><a href="centroids.html">centroids</a></code></td><td>Get the centroids of a SpatVector</td></tr><tr><td><code><a href="voronoi.html">voronoi</a></code></td><td>Voronoi diagram</td></tr><tr><td><code><a href="voronoi.html">delaunay</a></code></td><td>Delaunay triangles</td></tr><tr><td><code><a href="convhull.html">convHull</a></code></td><td>Compute the convex hull of a SpatVector</td></tr><tr><td><code><a href="fill.html">fillHoles</a></code></td><td>Remove or extract holes from polygons</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xv-properties-of-spatvector-objects">
-    <h2>XV. Properties of SpatVector objects</h2>
+    <div id="xvi-properties-of-spatvector-objects">
+    <h2>XVI. Properties of SpatVector objects</h2>
     
 <table class="table table"><tr><td><code><a href="geometry.html">geom</a></code></td><td>returns the geometries as matrix or WKT</td></tr><tr><td><code><a href="coords.html">crds</a></code></td><td>returns the coordinates as a matrix</td></tr><tr><td><code><a href="linearUnits.html">linearUnits</a></code></td><td>returns the linear units of the crs (in meter)</td></tr><tr><td><code><a href="dimensions.html">ncol</a></code></td><td>The number of columns (of the attributes)</td></tr><tr><td><code><a href="dimensions.html">nrow</a></code></td><td>The number of rows (of the geometries and attributes)</td></tr><tr><td><code><a href="names.html">names</a></code></td><td>Get or set the layer names</td></tr><tr><td><code><a href="ext.html">ext</a></code></td><td>Get the extent (minimum and maximum x and y coordinates ("bounding box")</td></tr><tr><td><code><a href="crs.html">crs</a></code></td><td>The coordinate reference system (map projection)</td></tr><tr><td><code><a href="is.lonlat.html">is.lonlat</a></code></td><td>Test if an object has (or may have) a longitude/latitude coordinate reference system</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xvi-geometric-queries">
-    <h2>XVI. Geometric queries</h2>
+    <div id="xvii-geometric-queries">
+    <h2>XVII. Geometric queries</h2>
     
 <table class="table table"><tr><td><code><a href="adjacent.html">adjacent</a></code></td><td>find adjacent polygons</td></tr><tr><td><code><a href="expanse.html">expanse</a></code></td><td>computes the area covered by polygons</td></tr><tr><td><code><a href="nearby.html">nearby</a></code></td><td>find nearby geometries</td></tr><tr><td><code><a href="nearby.html">nearest</a></code></td><td>find the nearest geometries</td></tr><tr><td><code><a href="relate.html">relate</a></code></td><td>geometric relationships such as "intersects", "overlaps", and "touches"</td></tr><tr><td><code><a href="perim.html">perim</a></code></td><td>computes the length of the perimeter of polygons, and the length of lines</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xvii-geometric-operations">
-    <h2>XVII. Geometric operations</h2>
+    <div id="xviii-geometric-operations">
+    <h2>XVIII. Geometric operations</h2>
     
 
 <table class="table table"><tr><td><code><a href="erase.html">erase</a></code> or "-"</td><td>erase (parts of) geometries</td></tr><tr><td><code><a href="intersect.html">intersect</a></code> or "*"</td><td>intersect geometries</td></tr><tr><td><code><a href="union.html">union</a></code> or "+"</td><td>Merge geometries</td></tr><tr><td><code><a href="cover.html">cover</a></code></td><td>update polygons</td></tr><tr><td><code><a href="symdif.html">symdif</a></code></td><td>symmetrical difference of two polygons</td></tr><tr><td><code><a href="aggregate.html">aggregate</a></code></td><td>dissolve smaller polygons into larger ones</td></tr><tr><td><code><a href="buffer.html">buffer</a></code></td><td>buffer geometries</td></tr><tr><td><code><a href="disaggregate.html">disagg</a></code></td><td>split multi-geometries into separate geometries</td></tr><tr><td><code><a href="crop.html">crop</a></code></td><td>clip geometries using a rectangle (SpatExtent) or SpatVector</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xviii-spatvector-attributes">
-    <h2>XVIII. SpatVector attributes</h2>
+    <div id="xix-spatvector-attributes">
+    <h2>XIX. SpatVector attributes</h2>
     <p>We use the term "attributes" for the tabular data (data.frame) associated with vector geometries.</p>
 <table class="table table"><tr><td><code><a href="extract.html">extract</a></code></td><td>spatial queries between SpatVector and SpatVector (e.g. point in polygons)</td></tr><tr><td><code><a href="select.html">sel</a></code></td><td>select - interactively select geometries</td></tr><tr><td><code><a href="click.html">click</a></code></td><td>identify attributes by clicking on a map</td></tr><tr><td><code><a href="merge.html">merge</a></code></td><td>Join a table with a SpatVector</td></tr><tr><td><code><a href="as.data.frame.html">as.data.frame</a></code></td><td>get attributes as a data.frame</td></tr><tr><td><code><a href="as.list.html">as.list</a></code></td><td>get attributes as a list</td></tr><tr><td><code><a href="values.html">values</a></code></td><td>Get the attributes of a SpatVector</td></tr><tr><td><code>values&lt;-</code></td><td>Set new attributes to the geometries of a SpatRaster</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xix-change-geometries-for-display-experimentation-">
-    <h2>XIX. Change geometries (for display, experimentation)</h2>
+    <div id="xx-change-geometries-for-display-experimentation-">
+    <h2>XX. Change geometries (for display, experimentation)</h2>
     
 
 <table class="table table"><tr><td><code><a href="shift.html">shift</a></code></td><td>change the position geometries by shifting their coordinates in horizontal and/or vertical direction</td></tr><tr><td><code><a href="spin.html">spin</a></code></td><td>rotate geometries around an origin</td></tr><tr><td><code><a href="rescale.html">rescale</a></code></td><td>shrink (or expand) geometries, for example to make an inset map</td></tr><tr><td><code><a href="flip.html">flip</a></code></td><td>flip geometries vertically or horizontally</td></tr><tr><td><code><a href="transpose.html">t</a></code></td><td>transpose geometries (switch x and y)</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xx-geometry-properties-and-topology">
-    <h2>XX. Geometry properties and topology</h2>
+    <div id="xxi-geometry-properties-and-topology">
+    <h2>XXI. Geometry properties and topology</h2>
     
 
 <table class="table table"><tr><td><code><a href="width.html">width</a></code></td><td>the minimum diameter of the geometries</td></tr><tr><td><code><a href="width.html">clearance</a></code></td><td>the minimum clearance of the geometries</td></tr><tr><td><code><a href="sharedPaths.html">sharedPaths</a></code></td><td>shared paths (arcs) between line or polygon geometries</td></tr><tr><td><code><a href="simplify.html">simplifyGeom</a></code></td><td>simplify geometries</td></tr><tr><td><code><a href="gaps.html">gaps</a></code></td><td>find gaps between polygon geometries</td></tr><tr><td><code><a href="fill.html">fillHoles</a></code></td><td>get or remove the polygon holes</td></tr><tr><td><code><a href="topology.html">makeNodes</a></code></td><td>create nodes on lines</td></tr><tr><td><code><a href="topology.html">mergeLines</a></code></td><td>connect lines to form polygons</td></tr><tr><td><code><a href="topology.html">removeDupNodes</a></code></td><td>remove duplicate nodes in geometries and optionally rounds the coordinates</td></tr><tr><td><code><a href="isvalid.html">is.valid</a></code></td><td>check if geometries are valid</td></tr><tr><td><code><a href="isvalid.html">makeValid</a></code></td><td>attempt to repair invalid geometries</td></tr><tr><td><code><a href="topology.html">snap</a></code></td><td>make boundaries of geometries identical if they are very close to each other</td></tr><tr><td><code><a href="erase.html">erase</a> (single argument)</code></td><td>remove parts of geometries that overlap</td></tr><tr><td><code><a href="union.html">union</a> (single argument)</code></td><td>create new polygons such that there are no overlapping polygons</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
@@ -217,8 +222,8 @@ Below is a list of some of the most important methods grouped by theme.
 
 <p>---------------------------------------------------------------------------------------------------------------------</p>
     </div>
-    <div id="xxi-collections">
-    <h2>XXI. Collections</h2>
+    <div id="xxii-collections">
+    <h2>XXII. Collections</h2>
     <p>A SpatRasterCollection is a vector of SpatRaster objects. Unlike for a SpatRasterDataset, there the extent and resolution of the SpatRasters do not need to match each other. A SpatVectorCollection is a vector of SpatVector objects.</p>
 <table class="table table"><tr><td><code><a href="svc.html">svc</a></code></td><td>create a SpatRasterCollection from a set of SpatRaster objects</td></tr><tr><td><code><a href="dimensions.html">length</a></code></td><td>how many SpatRasters does the SpatRasterCollection have?</td></tr><tr><td><code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">[</a></code></td><td>extract a SpatRastert</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
     <div id="spatextent">
@@ -227,8 +232,8 @@ Below is a list of some of the most important methods grouped by theme.
 
 <p>---------------------------------------------------------------------------------------------------------------------</p>
     </div>
-    <div id="xxii-spatextent">
-    <h2>XXII. SpatExtent</h2>
+    <div id="xxiii-spatextent">
+    <h2>XXIII. SpatExtent</h2>
     
 
 <p></p><table class="table table"><tr><td><code><a href="ext.html">ext</a></code></td><td>Create a SpatExtent object. For example to <code><a href="crop.html">crop</a></code> a Spatial dataset</td></tr><tr><td><code><a href="intersect.html">intersect</a></code></td><td>Intersect two SpatExtent objects, same as <code>-</code></td></tr><tr><td><code><a href="union.html">union</a></code></td><td>Combine two SpatExtent objects, same as <code>+</code></td></tr><tr><td><code><a href="math-generics.html">Math-methods</a></code></td><td>round/floor/ceiling of a SpatExtent</td></tr><tr><td><code><a href="align.html">align</a></code></td><td>Align a SpatExtent with a SpatRaster</td></tr><tr><td><code><a href="draw.html">draw</a></code></td><td>Create a SpatExtent by drawing it on top of a map (plot)</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
@@ -238,14 +243,14 @@ Below is a list of some of the most important methods grouped by theme.
 
 <p>---------------------------------------------------------------------------------------------------------------------</p>
     </div>
-    <div id="xxiii-conversion-between-spatial-data-objects-from-different-packages">
-    <h2>XXIII. Conversion between spatial data objects from different packages</h2>
+    <div id="xxiv-conversion-between-spatial-data-objects-from-different-packages">
+    <h2>XXIV. Conversion between spatial data objects from different packages</h2>
     
 
 <p>You can coerce SpatRasters to Raster* objects, after loading the <code>raster</code> package, with <code>as(object, "Raster")</code>, or <code>raster(object)</code> or <code>brick(object)</code> or <code>stack(object)</code></p> 
 <p></p><table class="table table"><tr><td><code><a href="rast.html">rast</a></code></td><td>SpatRaster from matrix and other objects</td></tr><tr><td><code><a href="vect.html">vect</a></code></td><td>SpatVector from <code>sf</code> or <code>Spatial*</code> vector data</td></tr><tr><td><code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">sf::st_as_sf</a></code></td><td>sf object from SpatVector</td></tr><tr><td><code><a href="rasterize.html">rasterize</a></code></td><td>Rasterizing points, lines or polygons</td></tr><tr><td><code><a href="rasterizeGeom.html">rasterizeGeom</a></code></td><td>Rasterize attributes of geometries such as "count", "area", or "length"</td></tr><tr><td><code><a href="as.spatvector.html">as.points</a></code></td><td>Create points from a SpatRaster or SpatVector</td></tr><tr><td><code><a href="as.spatvector.html">as.lines</a></code></td><td>Create points from a SpatRaster or SpatVector</td></tr><tr><td><code><a href="as.spatvector.html">as.polygons</a></code></td><td>Create polygons from a SpatRaster</td></tr><tr><td><code><a href="contour.html">as.contour</a></code></td><td>Contour lines from a SpatRaster</td></tr><tr><td>---------------------------</td><td>------------------------------------------------------------------------------------------</td></tr></table></div>
-    <div id="xxiv-plotting">
-    <h2>XXIV. Plotting</h2>
+    <div id="xxv-plotting">
+    <h2>XXV. Plotting</h2>
     
 
 <div class="section">
@@ -267,14 +272,14 @@ Below is a list of some of the most important methods grouped by theme.
 
 <p>---------------------------------------------------------------------------------------------------------------------</p>
     </div>
-    <div id="xxv-new-method-names">
-    <h2>XXV. New method names</h2>
+    <div id="xxvi-new-method-names">
+    <h2>XXVI. New method names</h2>
     
 
 <p><code>terra</code> has a single class <code>SpatRaster</code> for which <code>raster</code> has three (<code>RasterLayer, RasterStack, RasterBrick</code>). Likewise there is a single class for vector data <code>SpatVector</code> that replaces six <code>Spatial*</code> classes. Most method names are the same, but note the following important differences in methods names with the <code>raster</code> package</p>
 <table class="table table"><tr><td><b>raster package</b></td><td><b>terra package</b></td></tr><tr><td><code>raster, brick, stack</code></td><td><code><a href="rast.html">rast</a></code></td></tr><tr><td><code>rasterFromXYZ</code></td><td><code><a href="rast.html">rast</a>( , type="xyz")</code></td></tr><tr><td><code>stack, addLayer</code></td><td><code><a href="c.html">c</a></code></td></tr><tr><td><code>addLayer</code></td><td><code>add&lt;-</code></td></tr><tr><td><code>area</code></td><td><code><a href="cellSize.html">cellSize</a></code> or <code><a href="expanse.html">expanse</a></code></td></tr><tr><td><code>approxNA</code></td><td><code><a href="approximate.html">approximate</a></code></td></tr><tr><td><code>calc</code></td><td><code><a href="app.html">app</a></code></td></tr><tr><td><code>cellFromLine, cellFromPolygon,</code></td><td><code><a href="cells.html">cells</a></code></td></tr><tr><td><code>cellsFromExtent</code></td><td><code><a href="cells.html">cells</a></code></td></tr><tr><td><code>cellStats</code></td><td><code><a href="global.html">global</a></code></td></tr><tr><td><code>corLocal</code></td><td><code><a href="focalCor.html">focalCor</a></code></td></tr><tr><td><code>coordinates</code></td><td><code><a href="coords.html">crds</a></code></td></tr><tr><td><code>clump</code></td><td><code><a href="patches.html">patches</a></code></td></tr><tr><td><code>compareRaster</code></td><td><code><a href="compareGeom.html">compareGeom</a></code></td></tr><tr><td><code>disaggregate</code></td><td><code><a href="disaggregate.html">disagg</a></code></td></tr><tr><td><code>drawExtent, drawPoly, drawLine</code></td><td><code><a href="draw.html">draw</a></code></td></tr><tr><td><code>dropLayer</code></td><td><code><a href="subset.html">subset</a></code></td></tr><tr><td><code>extent</code></td><td><code><a href="ext.html">ext</a></code></td></tr><tr><td><code>distanceFromPoints</code></td><td><code><a href="distance.html">distance</a></code></td></tr><tr><td><code>isLonLat, isGlobalLonLat</code></td><td><code><a href="is.lonlat.html">is.lonlat</a></code></td></tr><tr><td><code>couldBeLonLat</code></td><td><code><a href="is.lonlat.html">is.lonlat</a></code></td></tr><tr><td><code>layerize</code></td><td><code><a href="segregate.html">segregate</a></code></td></tr><tr><td><code>layerStats</code></td><td><code><a href="layerCor.html">layerCor</a></code></td></tr><tr><td><code>NAvalue</code></td><td><code><a href="NAflag.html">NAflag</a></code></td></tr><tr><td><code>nlayers</code></td><td><code><a href="dimensions.html">nlyr</a></code></td></tr><tr><td><code>overlay</code></td><td><code><a href="lapp.html">lapp</a></code></td></tr><tr><td><code>projectRaster</code></td><td><code><a href="project.html">project</a></code></td></tr><tr><td><code>rasterToPoints</code></td><td><code><a href="as.spatvector.html">as.points</a></code></td></tr><tr><td><code>rasterToPolygons</code></td><td><code><a href="as.spatvector.html">as.polygons</a></code></td></tr><tr><td><code>reclassify, subs, cut</code></td><td><code><a href="classify.html">classify</a></code></td></tr><tr><td><code>sampleRandom, sampleRegular</code></td><td><code><a href="sample.html">spatSample</a></code></td></tr><tr><td><code>shapefile</code></td><td><code><a href="vect.html">vect</a></code></td></tr><tr><td><code>stackApply</code></td><td><code><a href="tapp.html">tapp</a></code></td></tr><tr><td><code>stackSelect</code></td><td><code><a href="selectRange.html">selectRange</a></code></td></tr></table></div>
-    <div id="xxvi-changed-behavior">
-    <h2>XXVI. Changed behavior</h2>
+    <div id="xxvii-changed-behavior">
+    <h2>XXVII. Changed behavior</h2>
     
 
 <p>Also note that even if function names are the same in <code>terra</code> and <code>raster</code>, their output can be different. In most cases this was done to get more consistency in the returned values (and thus fewer errors in the downstream code that uses them). It other cases it simply seemed better. Here are some examples:</p>
