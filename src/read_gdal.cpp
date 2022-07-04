@@ -1566,7 +1566,7 @@ bool SpatRaster::constructFromSDS(std::string filename, std::vector<std::string>
 	}
 
 	if (skipped.size() > 0) {
-		std::string s="skipped sub-datasets (see 'desc(sds=TRUE)'):\n" + skipped[0];
+		std::string s="skipped sub-datasets (see 'describe(sds=TRUE)'):\n" + skipped[0];
 		for (size_t i=1; i<skipped.size(); i++) {
 			s += ", " + skipped[i];
 			if ((i%3) == 0) s += "\n";
