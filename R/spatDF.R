@@ -82,6 +82,6 @@
 .getSpatFactor <- function(x) {
 	i <- x$values
 	i[i==0] <- NA
-	factor(x$labels[i])
+	factor(x$labels[i], x$labels)
 }
 
