@@ -14,7 +14,8 @@ These methods are deprecated and will be removed in future versions
 }
 
 \arguments{
-  \item{x}{SpatRaster}
+  \item{x}{object}
+  \item{...}{additional arguments}
 }
 
 

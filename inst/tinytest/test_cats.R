@@ -5,7 +5,7 @@ values(r) <- sample(3, ncell(r), replace=TRUE) - 1
 r0 <- r * 1
 
 # categories in a single layer
-lv <- data.frame(id=0:2, cover=c("forest", "water", "urban"), stringsToFactors=FALSE)
+lv <- data.frame(id=0:2, cover=c("forest", "water", "urban"), stringsAsFactors=FALSE)
 levels(r) <- lv
 names(r) <- "land cover"
 v <- cats(r)[[1]]
@@ -44,7 +44,7 @@ expect_equal(levels(r2), list(lv, ""))
 
 # verify samples for layer a have categories
 expect_equal( r2[c(15,3)], data.frame(cover = factor(c("forest", "urban"), levels = lv[,2]), 
-                                           b = c(0, 2)), stringsToFactors=FALSE)
+                                           b = c(0, 2)), stringsAsFactors=FALSE)
 
 # set all layer categories
 levels(r2) <- rep(list(lv), 2)
@@ -52,7 +52,7 @@ expect_equal(levels(r2), list(lv, lv))
 
 # verify samples for layer a and layer b have categories
 expect_equal(r2[c(15,3)], data.frame(cover = factor(c("forest", "urban"), levels = lv[,2]),
-                                           cover.1 = factor(c("forest", "urban"), levels = lv[,2])), stringsToFactors=FALSE)
+                                           cover.1 = factor(c("forest", "urban"), levels = lv[,2])), stringsAsFactors=FALSE)
 
 # make sure no errors when show()ing factors
 expect_silent(show(r2))

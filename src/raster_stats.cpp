@@ -507,7 +507,7 @@ SpatDataFrame SpatRaster::zonal_old(SpatRaster z, std::string fun, bool narm, Sp
 SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOptions &opt) {
 
 	SpatDataFrame out;
-	std::vector<std::string> f {"sum", "mean", "min", "max"};
+	std::vector<std::string> f {"sum", "mean", "min", "max", "isNA", "notNA"};
 	if (std::find(f.begin(), f.end(), fun) == f.end()) {
 		out.setError("not a valid function");
 		return(out);
@@ -643,11 +643,52 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 					}
 				}
 			}
-		} 
+		} else if (fun == "isNA") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) { 
+					if (std::isnan(zv[k])) {
+						continue;
+					} 
+					if (!std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							cnt[j][zv[k]] = 0;
+						}
+					} else {						
+						if (m[j].find(zv[k]) == m[j].end()) {
+							cnt[j][zv[k]] = 1;
+						} else {
+							cnt[j][zv[k]]++;
+						}
+					}
+				}
+			}
+		} else if (fun == "notNA") {
+			for (size_t j=0; j<nl; j++) {
+				size_t off = j*nrc;
+				std::vector<double> v(vv.begin()+off, vv.begin() + off + nrc);
+				for (size_t k=0; k<nrc; k++) { 
+					if (std::isnan(zv[k])) {
+						continue;
+					} 
+					if (std::isnan(v[k])) {
+						if (m[j].find(zv[k]) == m[j].end()) {
+							cnt[j][zv[k]] = 0;
+						}
+					} else {						
+						if (m[j].find(zv[k]) == m[j].end()) {
+							cnt[j][zv[k]] = 1;
+						} else {
+							cnt[j][zv[k]]++;
+						}
+					}
+				}
+			}
+		}
 	}
 	readStop();
 	z.readStop();
-
 
 	std::vector<double> zone;
 	size_t n = m[0].size();
