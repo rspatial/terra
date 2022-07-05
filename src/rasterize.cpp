@@ -7,10 +7,9 @@
 #include "gdal_alg.h"
 #include "ogrsf_frmts.h"
 
-#include "spatFactor.h"
+//#include "spatFactor.h"
 #include "recycle.h"
 #include "gdalio.h"
-
 
 
 SpatRaster SpatRaster::rasterizePoints(SpatVector x, std::string fun, std::vector<double> values, double background, SpatOptions &opt) {
@@ -443,11 +442,9 @@ SpatRaster SpatRaster::rasterize(SpatVector x, std::string field, std::vector<do
 		std::string dt = x.df.get_datatype(field);
 		if (dt == "string") {
 			//std::vector<std::string> ss = ;
-			SpatFactor f;
-			f.set_values(x.df.getS(i));
-			values.resize(f.v.size());
+			SpatFactor f(x.df.getS(i));
 			for (size_t i=0; i<values.size(); i++) {
-				values[i] = f.v[i];
+				values[i] = f.v[i] - 1;
 			}
 			if (!add && !update) {
 				std::vector<long> u(f.labels.size());

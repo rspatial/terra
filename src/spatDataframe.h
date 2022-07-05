@@ -21,6 +21,7 @@
 //#include "spatMessages.h"
 #include "spatBase.h"
 #include "spatTime.h"
+#include "spatFactor.h"
 
 class SpatDataFrame {
 	public:
@@ -44,7 +45,8 @@ class SpatDataFrame {
 		std::vector< std::vector<long>> iv;
 		std::vector< std::vector<std::string>> sv;
 		std::vector< std::vector<int8_t>> bv;
-		std::vector< SpatTime_v > tv;
+		std::vector< SpatTime_v> tv;
+		std::vector< SpatFactor> fv;		
 		std::string NAS = "____NA_+";
 		
 		unsigned nrow();
@@ -59,6 +61,7 @@ class SpatDataFrame {
 		std::vector<std::string> getS(unsigned i);
 		std::vector<int8_t> getB(unsigned i);
 		SpatTime_v getT(unsigned i);
+		SpatFactor getF(unsigned i);
 
 		std::vector<std::string> as_string(size_t v);
 		std::vector<long> as_long(size_t v);
@@ -69,6 +72,7 @@ class SpatDataFrame {
 		std::string getSvalue(unsigned i, unsigned j);
 		int8_t getBvalue(unsigned i, unsigned j);
 		SpatTime_t getTvalue(unsigned i, unsigned j);
+		SpatFactor getFvalue(unsigned i, unsigned j);
 	
 		void add_row();
 		void add_rows(size_t n);
@@ -84,6 +88,7 @@ class SpatDataFrame {
 		bool add_column(std::vector<std::string> x, std::string name);
 		bool add_column(std::vector<int8_t> x, std::string name);
 		bool add_column(SpatTime_v x, std::string name);
+		bool add_column(SpatFactor x, std::string name);
 		bool add_column_bool(std::vector<int> x, std::string name);
 		bool add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step, std::string zone);
 		void insert_column(std::vector<double>, size_t i);
@@ -91,6 +96,7 @@ class SpatDataFrame {
 		void insert_column(std::vector<std::string>, size_t i);
 		void insert_column(std::vector<int8_t>, size_t i);
 		void insert_column(SpatTime_v, size_t i);
+		void insert_column(SpatFactor, size_t i);
 
 		bool remove_column(std::string field);
 		bool remove_column(int i);		

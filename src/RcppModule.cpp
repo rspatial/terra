@@ -160,8 +160,7 @@ std::vector<std::vector<std::vector<Rcpp::DataFrame>>> get_geometryList(SpatVect
 	return out;
 }
 
-
-
+RCPP_EXPOSED_CLASS(SpatFactor)
 RCPP_EXPOSED_CLASS(SpatTime_v)
 RCPP_EXPOSED_CLASS(SpatSRS)
 RCPP_EXPOSED_CLASS(SpatExtent)
@@ -187,6 +186,13 @@ RCPP_MODULE(spat){
 		.field("step", &SpatTime_v::step)
 		.field("zone", &SpatTime_v::zone)
 		.field("x", &SpatTime_v::x)
+	;
+
+    class_<SpatFactor>("SpatFactor")
+		.constructor()
+		.constructor<std::vector<unsigned>, std::vector<std::string>>()			
+		.field("values", &SpatFactor::v)
+		.field("labels", &SpatFactor::labels)
 	;
 
     class_<SpatSRS>("SpatSRS")
@@ -289,6 +295,7 @@ RCPP_MODULE(spat){
 		.method("add_column_double", (bool (SpatDataFrame::*)(std::vector<double>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_long", (bool (SpatDataFrame::*)(std::vector<long>, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_string", (bool (SpatDataFrame::*)(std::vector<std::string>, std::string name))( &SpatDataFrame::add_column))
+		.method("add_column_factor", (bool (SpatDataFrame::*)(SpatFactor, std::string name))( &SpatDataFrame::add_column))
 		.method("add_column_bool", &SpatDataFrame::add_column_bool)
 		.method("add_column_time", &SpatDataFrame::add_column_time)
 
