@@ -294,6 +294,7 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 				ok <- x@ptr$add_column_time(as.numeric(as.POSIXlt(value)), name, "days", "")
 			} else if (inherits(value, "POSIXt")) {
 				tz <- if (length(value) > 0) { attr(value[1], "tzone") } else { "" }
+				if (is.null(tz)) tz <- ""
 				ok <- x@ptr$add_column_time(as.numeric(value), name, "seconds", tz)
 			} else {
 				v <- try(as.character(value))
