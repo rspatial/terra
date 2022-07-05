@@ -38,7 +38,7 @@ setMethod ("coltab<-" , "SpatRaster",
 			value <- value[[1]]
 		}
 		if (inherits(value, "character")) {
-			value <- data.frame(t(grDevices::col2rgb(value, alpha=TRUE)))
+			value <- data.frame(t(grDevices::col2rgb(value, alpha=TRUE)), stringsAsFactors=FALSE)
 		} else if (inherits(value, "matrix")) {
 			value <- data.frame(value)
 		}
@@ -47,7 +47,7 @@ setMethod ("coltab<-" , "SpatRaster",
 			error("coltab<-", "cannot process these color values")
 		}
 		if (ncol(value) == 2) {
-			value <- data.frame(values=value[,1], t(grDevices::col2rgb(value[,2], alpha=TRUE)))
+			value <- data.frame(values=value[,1], t(grDevices::col2rgb(value[,2], alpha=TRUE)), stringsAsFactors=FALSE)
 		} else {
 			nms <- tolower(names(value))
 			if (!("value" %in% nms)) {

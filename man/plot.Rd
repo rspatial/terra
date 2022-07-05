@@ -96,7 +96,7 @@ plot(d, type="interval", breaks=c(1,4,5), plg=list(legend=c("1-4", "4-5")))
 plot(d, type="classes", plg=list(legend=c("Mr", "Xx", "As", "Zx", "Bb"), x="bottomright"))
 
 x <- trunc(r/200)
-levels(x) <- c("earth", "wind", "fire")
+levels(x) <- data.frame(id=0:2, element=c("earth", "wind", "fire"))
 plot(x, plg=list(x="topright"),mar=c(2,2,2,2))
 
 # two plots with the same legend

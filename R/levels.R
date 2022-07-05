@@ -14,7 +14,7 @@ setMethod("as.factor", signature(x="SpatRaster"),
 		x <- round(x)
 		u <- unique(x, TRUE)
 		for (i in 1:nlyr(x)) {
-			set.cats(x, i, data.frame(ID=u[[i]], label=u[[i]]))
+			set.cats(x, i, data.frame(ID=u[[i]], label=u[[i]], stringsAsFactors=FALSE))
 		}
 		x
 	}
@@ -120,7 +120,7 @@ setMethod ("set.cats" , "SpatRaster",
 					return(invisible(""))
 				}
 				warn("set.cats", "setting categories like this is deprecated; use a two-column data.frame instead")
-				value <- data.frame(value=0:(length(value)-1), category=value)
+				value <- data.frame(value=0:(length(value)-1), category=value, stringsAsFactors=FALSE)
 			} else {
 				error("set.cats", "value should be a data.frame")
 			}
