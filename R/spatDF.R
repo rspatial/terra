@@ -24,6 +24,7 @@
 			x$add_column_factor(f, nms[i])
 		} else if (inherits(d[[i]], "POSIXt")) {
 			tz <- if (nrow(d) > 0) { attr(d[[i]][1], "tzone") } else { "" }
+			if (is.null(tz)) tz <- ""
 			x$add_column_time(as.numeric(d[[i]]), nms[i], "seconds", tz)
 		} else {
 			v <- try(as.character(d[[i]]))

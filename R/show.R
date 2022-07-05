@@ -20,6 +20,7 @@ printDF <- function(x, n=6, first=FALSE) {
 	cls <- gsub("integer", "int", cls)
 	cls <- gsub("numeric", "num", cls)
 	cls <- gsub("character", "chr", cls)
+	cls <- gsub("factor", "fact", cls)
 	cls <- paste0("<", cls, ">")
 	cls <- data.frame(rbind(class=cls))
 	names(cls) <- NULL
