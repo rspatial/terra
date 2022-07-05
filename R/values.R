@@ -358,30 +358,9 @@ setMethod("values<-", signature("SpatVector", "data.frame"),
 			x@ptr$remove_df()
 			return(x)		
 		}
-		stopifnot(nrow(x) == nrow(value))
-		x <- x[,0]
-		# use cbind instead
-		types <- sapply(value, class)
-		nms <- colnames(value)
-		for (i in 1:ncol(value)) {
-			if (types[i] == "numeric") {
-				x@ptr$add_column_double(value[[i]], nms[i])
-			} else if (types[i] == "integer") {
-				x@ptr$add_column_long(value[[i]], nms[i])
-			} else if (types[i] == "character") {
-				v <- value[[i]]
-				v[is.na(v)] <- "____NA_+"
-				x@ptr$add_column_string(v, nms[i])
-			} else if (types[i] == "logical") {
-				v <- as.integer(value[[i]])
-				v[is.na(v)] <- 2
-				x@ptr$add_column_bool(v, nms[i])
-			} else {
-				att <- as.character(value[[i]])
-				x@ptr$add_column_string(att, nms[i])
-			}
-		}
-		x
+		value <- .makeSpatDF(value)
+		x@ptr$set_df(value)
+		messages(x)
 	}
 )
 
