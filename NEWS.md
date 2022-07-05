@@ -25,6 +25,8 @@ https://github.com/rspatial/terra/issues/664) by Daniel Valentins
 - you can now set a color table with a two column (value, ID) data.frame
 - categorical rasters can now be updated more easily [#667](https://github.com/rspatial/terra/issues/667) by Alex Ilich
 - more control over matching values with colors when using `plot`. [673](https://github.com/rspatial/terra/issues/673) by Jakub Nowosad.
+- SpatVector attributes can now also be a factor, date, or POSIXct. [697](https://github.com/rspatial/terra/issues/697) by Grant Williamson
+
 
 ## new
 
