@@ -9,7 +9,7 @@
 \description{
 Compute zonal statistics, that is summarized values of a SpatRaster for each "zone" defined by another SpatRaster. 
 
-If \code{fun} is a true R \code{function}, \code{zonal} may fail for very large SpatRaster objects, except for the functions ("mean", "min", "max", or "sum"). 
+If \code{fun} is a true R \code{function}, \code{zonal} may fail for very large SpatRaster objects, except for the functions ("mean", "min", "max", "sum", "isNA", and "notNA"). 
 }
 
 \usage{
@@ -19,7 +19,7 @@ If \code{fun} is a true R \code{function}, \code{zonal} may fail for very large 
 \arguments{
   \item{x}{SpatRaster}
   \item{z}{SpatRaster with values representing zones}
-  \item{fun}{function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", or, for relatively small SpatRasters, a proper function}
+  \item{fun}{function to be applied to summarize the values by zone. Either as character: "mean", "min", "max", "sum", "isNA", and "notNA" and, for relatively small SpatRasters, a proper function}
   \item{...}{additional arguments passed to fun}  
   \item{as.raster}{logical. If \code{TRUE}, a SpatRaster is returned with the zonal statistic for each zone}  
   \item{filename}{character. Output filename (ignored if \code{as.raster=FALSE}}
