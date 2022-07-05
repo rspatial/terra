@@ -25,7 +25,7 @@ Plot the values of a SpatRaster or SpatVector to make a map. See \code{\link{lin
     pax=list(), maxcell=500000, smooth=FALSE, range=NULL, levels=NULL, fun=NULL, colNA=NULL,
 	alpha=NULL, sort=FALSE, decreasing=FALSE, grid=FALSE, ext=NULL, reset=FALSE, ...)
 
-\S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, ...)
+\S4method{plot}{SpatRaster,missing}(x, y, maxcell=500000, main, mar=NULL, nc, nr, maxnl=16, legend=TRUE, ...)
 
 \S4method{plot}{SpatRaster,character}(x, y, ...)
 

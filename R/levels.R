@@ -136,6 +136,11 @@ setMethod ("set.cats" , "SpatRaster",
 			}
 		}
 		value[[1]] <- as.integer(value[[1]])
+		for (i in seq_along(value)) {
+			if (is.factor(value[[i]])) {
+				value[[i]] <- as.character(value[[i]])
+			}
+		}
 
 		index <- max(1, min(ncol(value), index))
 		if (setname) {

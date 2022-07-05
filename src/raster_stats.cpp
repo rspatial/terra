@@ -573,7 +573,7 @@ SpatDataFrame SpatRaster::zonal(SpatRaster z, std::string fun, bool narm, SpatOp
 						cnt[j][zv[k]] = 1;
 					} else {
 						m[j][zv[k]] += v[k];
-						cnt[j][zv[k]] = 1; // may be necessary if a prior case was NAN
+						cnt[j][zv[k]] = 1; // may be necessary if the first case was NAN
 					}
 				}
 			}

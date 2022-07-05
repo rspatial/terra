@@ -9,7 +9,7 @@
 \description{
 Compute zonal statistics, that is summarized values of a SpatRaster for each "zone" defined by another SpatRaster. 
 
-If \code{fun} is a true \code{function}, \code{zonal} may fail for very large SpatRaster objects, except for the functions ("mean", "min", "max", or "sum"). 
+If \code{fun} is a true R \code{function}, \code{zonal} may fail for very large SpatRaster objects, except for the functions ("mean", "min", "max", or "sum"). 
 }
 
 \usage{
