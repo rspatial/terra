@@ -276,7 +276,8 @@ setReplaceMethod("[[", c("SpatVector", "character", "missing"),
 			values(x) <- d
 		} else {		
 			if (inherits(value, "factor")) {
-				ok <- x@ptr$add_column_string(as.character(value), name)
+				v <- .makeSpatFactor(value)
+				ok <- x@ptr$add_column_factor(v, name)
 			} else if (inherits(value, "character")) {
 				ok <- x@ptr$add_column_string(enc2utf8(value), name)
 			} else if (inherits(value, "integer")) {

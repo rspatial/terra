@@ -398,6 +398,7 @@ setMethod("dots", signature(x="SpatVector"),
 	out$breakby <- breakby
 	out$background <- background
 	v <- unlist(x[, y, drop=TRUE], use.names=FALSE)
+	if (is.factor(v)) v <- as.character(v)
 	if (!is.null(range)) {
 		range <- sort(range)
 		v[v < range[1]] <- NA
