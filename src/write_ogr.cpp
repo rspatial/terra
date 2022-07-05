@@ -231,6 +231,12 @@ GDALDataset* SpatVector::write_ogr(std::string filename, std::string lyrname, st
 				if (tval != longNA) {
 					poFeature->SetField(j, (GIntBig)tval);
 				}
+			} else if (tps[j] == "factor") {
+				SpatFactor f = df.getFvalue(i, j);
+				if (f.v[0] != 0) {
+					std::string s = f.getLabel(0);
+					poFeature->SetField(j, f.getLabel(0).c_str());
+				}
 			} else {
 				std::string s = df.getSvalue(i, j);
 				if (s != df.NAS) {

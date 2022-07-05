@@ -128,6 +128,7 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 	out.sv.resize(sv.size());
 	out.bv.resize(bv.size());
 	out.tv.resize(tv.size());
+	out.fv.resize(fv.size());
 	out.reserve(range.size());
 	
 	for (size_t i=0; i < range.size(); i++) {
@@ -143,12 +144,21 @@ SpatDataFrame SpatDataFrame::subset_rows(std::vector<unsigned> range) {
 		for (size_t j=0; j < bv.size(); j++) {
 			out.bv[j].push_back(bv[j][range[i]]);
 		}
+		for (size_t j=0; j < fv.size(); j++) {
+			out.fv[j].v.push_back(fv[j].v[range[i]]);
+		}
 		for (size_t j=0; j < tv.size(); j++) {
-			out.tv[j].push_back(tv[j].x[range[i]]);
-			out.tv[j].step = tv[j].step;
-			out.tv[j].zone = tv[j].zone;
+			out.tv[j].x.push_back(tv[j].x[range[i]]);
 		}
 	}
+	for (size_t j=0; j < fv.size(); j++) {
+		out.fv[j].labels = fv[j].labels;
+	}
+	for (size_t j=0; j < tv.size(); j++) {
+		out.tv[j].step = tv[j].step;
+		out.tv[j].zone = tv[j].zone;
+	}
+	
 	return out;
 }
 
@@ -171,6 +181,7 @@ SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) {
 	unsigned scnt=0;
 	unsigned bcnt=0;
 	unsigned tcnt=0;
+	unsigned fcnt=0;
 	for (size_t i=0; i < range.size(); i++) {
 		if (range[i] < 0 || range[i] >= ncol()) {
 			out.setError("invalid column");
@@ -199,11 +210,16 @@ SpatDataFrame SpatDataFrame::subset_cols(std::vector<unsigned> range) {
 			out.iplace.push_back(bcnt);
 			out.itype.push_back(3);
 			bcnt++;
-		} else {
+		} else if (itype[j] == 4) {
 			out.tv.push_back(tv[p]);
 			out.iplace.push_back(tcnt);
 			out.itype.push_back(4);
 			tcnt++;
+		} else { //if (itype[j] == 5) {
+			out.fv.push_back(fv[p]);
+			out.iplace.push_back(fcnt);
+			out.itype.push_back(5);
+			fcnt++;
 		}
 	}
 	return out;
@@ -228,8 +244,10 @@ unsigned SpatDataFrame::nrow() {
 			n = sv[0].size();
 		} else if (itype[0] == 3) {
 			n = bv[0].size();
-		} else {
+		} else if (itype[0] == 4) {
 			n = tv[0].size();
+		} else { //if (itype[0] == 5) {
+			n = fv[0].size();
 		}
 	}
 	return n;
@@ -770,7 +788,7 @@ void SpatDataFrame::set_names(std::vector<std::string> nms){
 
 
 std::vector<std::string> SpatDataFrame::get_datatypes() {
-	std::vector<std::string> types = {"double", "long", "string", "bool", "time"};
+	std::vector<std::string> types = {"double", "long", "string", "bool", "time", "factor"};
 	std::vector<std::string> stype(itype.size());
 	for (size_t i=0; i<itype.size(); i++) {
 		stype[i] = types[itype[i]]; 
@@ -783,7 +801,7 @@ std::string SpatDataFrame::get_datatype(std::string field) {
 	int i = where_in_vector(field, get_names(), false);
 	if (i < 0) return "";
 	i = itype[i]; 
-	std::vector<std::string> types = {"double", "long", "string", "bool", "time"};
+	std::vector<std::string> types = {"double", "long", "string", "bool", "time", "factor"};
 	return types[i]; 
 }
 

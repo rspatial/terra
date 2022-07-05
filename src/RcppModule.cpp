@@ -83,6 +83,8 @@ Rcpp::List getDataFrame(SpatDataFrame* v) {
 				}
 			}
 			out[i] = tv;
+		} else if (itype[i] == 5){
+			out[i] = v->getF(i);
 		}
 	}
 	out.names() = nms;
@@ -392,11 +394,13 @@ RCPP_MODULE(spat){
 		.method("add_column_double", (bool (SpatVector::*)(std::vector<double>, std::string name))( &SpatVector::add_column))
 		.method("add_column_long", (bool (SpatVector::*)(std::vector<long>, std::string name))( &SpatVector::add_column))
 		.method("add_column_string", (bool (SpatVector::*)(std::vector<std::string>, std::string name))( &SpatVector::add_column))
+		.method("add_column_factor", &SpatVector::add_column_factor)
 		.method("add_column_bool", &SpatVector::add_column_bool)
 		.method("add_column_time", &SpatVector::add_column_time)
 		.method("remove_column", (bool (SpatVector::*)(std::string field))( &SpatVector::remove_column))
 		.method("remove_column", (bool (SpatVector::*)(int i))( &SpatVector::remove_column))
 		.method("remove_df", &SpatVector::remove_df)
+		.method("set_df", &SpatVector::set_df)
 		.method("get_datatypes", &SpatVector::get_datatypes, "")
 
 		.method("set_holes", &SpatVector::set_holes, "set_holes")

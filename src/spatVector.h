@@ -231,15 +231,27 @@ class SpatVector {
 		bool add_column_bool(std::vector<int> x, std::string name) {
 			return df.add_column_bool(x, name);
 		}
-			
 		bool add_column_time(std::vector<SpatTime_t> x, std::string name, std::string step, std::string zone) {
 			return df.add_column_time(x, name, step, zone);
+		}
+		bool add_column_factor(SpatFactor x, std::string name) {
+			return df.add_column(x, name);
 		}
 
 		void remove_df() {
 			SpatDataFrame empty;
 			df = empty;
 		};
+		
+		bool set_df(SpatDataFrame x) {
+			if (x.nrow() != nrow()) {
+				setError("nrow dataframe does not match nrow geometry");
+				return false;
+			}
+			df = x;
+			return true;
+		};
+
 
 		bool remove_column(std::string field) {
 			return df.remove_column(field);
