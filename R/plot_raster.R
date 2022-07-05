@@ -61,7 +61,7 @@
 	}
 
 	fz <- as.factor(Z)
-	levs <- levels(fz)
+	levs <- as.integer(levels(fz))
 	if (!is.null(out$levels)) {
 		if (is.null(out$leg$legend)) {
 			out$leg$legend <- as.character(out$levels)
@@ -77,6 +77,7 @@
 	nlevs <- length(levs)
 	
 	if (NCOL(out$cols) == 2) {
+		out$cols[,2] <- as.character(out$cols[,2])
 		i <- match(Z, as.numeric(levs))
 		Z[] <- out$cols[,2][i]
 		i <- match(as.numeric(levs), out$cols[,1])
@@ -231,6 +232,7 @@
 	out$legend_type <- "classes"
 
 	if (NCOL(out$cols) == 3) {
+		out$cols[,3] <- as.character(out$cols[,3])
 		rcl <- cbind(as.matrix(out$cols[,1:2]), 1:nrow(out$cols))
 		x <- classify(x, rcl, include.lowest=TRUE, others=NA)
 		m <- apply(out$cols[,1:2], 1, function(i) paste(i, collapse=" - "))
