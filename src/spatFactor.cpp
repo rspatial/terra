@@ -3,7 +3,7 @@
 #include <numeric>
 #include <algorithm>
 
-#include "SpatFactor.h"
+#include "spatFactor.h"
 
 
 template <typename T>
