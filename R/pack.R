@@ -41,15 +41,15 @@ setClass("PackedSpatRaster",
 	vd
 }
 
-setMethod("wrap", signature(x="Spatial"), 
-	function(x) {
-		pv <- .packVector(x)
-		if (methods::.hasSlot(x, "data")) {
-			pv@attributes <- x@data
-		}
-		pv
-	}
-)
+#setMethod("wrap", signature(x="Spatial"), 
+#	function(x) {
+#		pv <- .packVector(x)
+#		if (methods::.hasSlot(x, "data")) {
+#			pv@attributes <- x@data
+#		}
+#		pv
+#	}
+#)
 
 
 setMethod("wrap", signature(x="SpatVector"), 
