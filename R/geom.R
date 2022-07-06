@@ -223,13 +223,17 @@ setMethod("intersect", signature(x="SpatExtent", y="SpatVector"),
 	}
 )
 
-setMethod("mask", signature(x="SpatVector", mask="SpatVector"), 
-	function(x, mask, inverse=FALSE) { 
-		x@ptr <- x@ptr$mask(mask@ptr, inverse)
-		messages(x, "intersect")
-	}
+setMethod("mask", signature(x="SpatVector", mask="ANY"), 
+  function(x, mask, inverse=FALSE) { 
+    if (inherits(mask, "SpatVector")) {
+      x@ptr <- x@ptr$mask(mask@ptr, inverse)
+    } else if (inherits(mask, "sf")) {
+      x <- vect(x)
+      x@ptr <- x@ptr$mask(mask@ptr, inverse)
+    }
+    messages(x, "intersect")
+  }
 )
-
 
 #setMethod("intersect", signature(x="SpatRaster", y="SpatRaster"),
 #	function(x, y) {

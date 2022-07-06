@@ -5,7 +5,9 @@
 \alias{mask}
 \alias{mask,SpatRaster,SpatRaster-method}
 \alias{mask,SpatRaster,SpatVector-method}
+\alias{mask,SpatRaster,sf-method}
 \alias{mask,SpatVector,SpatVector-method}
+\alias{mask,SpatVector,sf-method}
 
 \title{Mask values in a SpatRaster or SpatVector}
 
@@ -24,13 +26,16 @@ Select geometries of \code{x} that intersect, or not intersect, with the geometr
 \S4method{mask}{SpatRaster,SpatVector}(x, mask, inverse=FALSE, updatevalue=NA,
 	touches=TRUE, filename="", ...)
 
+\S4method{mask}{SpatRaster,sf}(x, mask, inverse=FALSE, updatevalue=NA,
+	touches=TRUE, filename="", ...)
+
 \S4method{mask}{SpatVector,SpatVector}(x, mask, inverse=FALSE)
 }
 
 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
-\item{mask}{SpatRaster or SpatVector}
+\item{mask}{SpatRaster or SpatVector or sf}
 \item{inverse}{logical. If \code{TRUE}, areas on mask that are _not_ the \code{maskvalue} are masked}
 \item{maskvalues}{numeric. The value(s) in \code{mask} that indicates the cells of \code{x} that should become \code{updatevalue} (default = \code{NA})}
 \item{updatevalue}{numeric. The value that cells of \code{x} should become if they are not covered by \code{mask} (and not \code{NA})}
