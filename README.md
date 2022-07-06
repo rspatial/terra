@@ -57,15 +57,18 @@ On OSX, first install gdal and proj with homebrew
 brew install pkg-config
 brew install gdal
 ```
-Followed by
+
+Followed by (note the additional configuration argument needed for the current homebrew version of proj (7.0.0)
 
 ```
-Sys.setenv("R_REMOTES_NO_ERRORS_FROM_WARNINGS" = "true")
-remotes::install_github("rspatial/terra")
+remotes::install_github("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
 ```
 
-This should work on **Catalina** and **Big Sur**
+To install the CRAN version from source you would do
 
+```
+install.packages("rspatial/terra", configure.args = "--with-proj-lib=/usr/local/lib/")
+```
 
 #### Linux
 
