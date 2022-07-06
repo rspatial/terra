@@ -67,6 +67,10 @@ Select geometries of <code>x</code> that intersect, or not intersect, with the g
 <span class="fu">mask</span><span class="op">(</span><span class="va">x</span>, <span class="va">mask</span>, inverse<span class="op">=</span><span class="cn">FALSE</span>, updatevalue<span class="op">=</span><span class="cn">NA</span>,
   touches<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
 
+<span class="co"># S4 method for SpatRaster,sf</span>
+<span class="fu">mask</span><span class="op">(</span><span class="va">x</span>, <span class="va">mask</span>, inverse<span class="op">=</span><span class="cn">FALSE</span>, updatevalue<span class="op">=</span><span class="cn">NA</span>,
+  touches<span class="op">=</span><span class="cn">TRUE</span>, filename<span class="op">=</span><span class="st">""</span>, <span class="va">...</span><span class="op">)</span>
+
 <span class="co"># S4 method for SpatVector,SpatVector</span>
 <span class="fu">mask</span><span class="op">(</span><span class="va">x</span>, <span class="va">mask</span>, inverse<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
@@ -77,7 +81,7 @@ Select geometries of <code>x</code> that intersect, or not intersect, with the g
 <dd><p>SpatRaster or SpatVector</p></dd>
 
 <dt>mask</dt>
-<dd><p>SpatRaster or SpatVector</p></dd>
+<dd><p>SpatRaster or SpatVector or sf</p></dd>
 
 <dt>inverse</dt>
 <dd><p>logical. If <code>TRUE</code>, areas on mask that are _not_ the <code>maskvalue</code> are masked</p></dd>
