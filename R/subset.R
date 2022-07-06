@@ -119,7 +119,11 @@ setMethod("subset", signature(x="SpatVector"),
 				}
 			x[r, v, drop=drop]
 		} else {
-			x[which(as.vector(subset)), select, drop=drop]
+			if (missing(select)) {
+				x[which(as.vector(subset)), drop=drop]
+			} else {
+				x[which(as.vector(subset)), select, drop=drop]			
+			}
 		}
 	}
 )
