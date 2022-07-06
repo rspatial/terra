@@ -13,7 +13,7 @@
 
 \description{
 If \code{x} is a \code{SpatRaster}: 
-Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} (or another \code{maskvalue}) in another SpatRaster (the 'mask'), or not covered by a SpatVector. These cells become \code{NA} (or another \code{updatevalue}).
+Create a new SpatRaster that has the same values as SpatRaster \code{x}, except for the cells that are \code{NA} (or another \code{maskvalue}) in another SpatRaster (the 'mask'), or are not covered by a SpatVector. These cells become \code{NA} (or another \code{updatevalue}).
 
 If \code{x} is a \code{SpatVector}: 
 Select geometries of \code{x} that intersect, or not intersect, with the geometries of \code{y}.
@@ -26,16 +26,13 @@ Select geometries of \code{x} that intersect, or not intersect, with the geometr
 \S4method{mask}{SpatRaster,SpatVector}(x, mask, inverse=FALSE, updatevalue=NA,
 	touches=TRUE, filename="", ...)
 
-\S4method{mask}{SpatRaster,sf}(x, mask, inverse=FALSE, updatevalue=NA,
-	touches=TRUE, filename="", ...)
-
 \S4method{mask}{SpatVector,SpatVector}(x, mask, inverse=FALSE)
 }
 
 
 \arguments{
 \item{x}{SpatRaster or SpatVector}
-\item{mask}{SpatRaster or SpatVector or sf}
+\item{mask}{SpatRaster or SpatVector}
 \item{inverse}{logical. If \code{TRUE}, areas on mask that are _not_ the \code{maskvalue} are masked}
 \item{maskvalues}{numeric. The value(s) in \code{mask} that indicates the cells of \code{x} that should become \code{updatevalue} (default = \code{NA})}
 \item{updatevalue}{numeric. The value that cells of \code{x} should become if they are not covered by \code{mask} (and not \code{NA})}

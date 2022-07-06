@@ -654,11 +654,9 @@ setMethod("mask", signature(x="SpatRaster", mask="SpatVector"),
 
 setMethod("mask", signature(x="SpatRaster", mask="sf"), 
    function(x, mask, inverse=FALSE, updatevalue=NA, touches=TRUE, filename="", ...) { 
-    opt <- spatOptions(filename, ...)
-    mask <- vect(mask)
-    x@ptr <- x@ptr$mask_vector(mask@ptr, inverse[1], updatevalue[1], touches[1], opt)
-    messages(x, "mask")
-  }
+		mask <- vect(mask)
+		mask(x, mask, inverse=inverse, updatevalue=updatevalue, touches=touches, filename=filename, ...)
+	}
 )
 
 setMethod("project", signature(x="SpatRaster"), 

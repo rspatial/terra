@@ -10,6 +10,7 @@
 \alias{crs<-,SpatRaster-method}
 \alias{crs<-,SpatRaster,ANY-method}
 
+\alias{crs,sf-method}
 \alias{crs,SpatVector-method}
 \alias{crs,SpatVectorProxy-method}
 \alias{crs<-,SpatVector-method}
@@ -18,7 +19,7 @@
 \title{ Get or set a coordinate reference system }
 
 \description{
-Get or set the coordinate reference system (CRS), also referred to as a "projection", of a SpatRaster or SpatVector object. 
+Get or set the coordinate reference system (CRS), also referred to as a "projection", of a SpatRaster or SpatVector. 
 
 Setting a new CRS does not change the data itself, it just changes the label. So you should only set the CRS of a dataset (if it does not come with one) to what it *is*, not to what you would *like it to be*. See \code{\link{project}} to *transform* an object from one CRS to another.
 }
