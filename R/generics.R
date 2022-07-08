@@ -272,6 +272,7 @@ cbind.SpatVector <- function(x, y, ...) {
 
 rbind.SpatVector <- function(x, y, ...) {
 	skipped <- FALSE
+	if (missing(y) || is.null(y)) return(x)
 	stopifnot(inherits(y, "SpatVector"))
 	x@ptr <- x@ptr$rbind(y@ptr, FALSE)
 	x <- messages(x, "rbind")
