@@ -107,10 +107,10 @@
 <p>On OSX, first install gdal and proj with homebrew</p>
 <pre><code>brew install pkg-config
 brew install gdal</code></pre>
-<p>Followed by</p>
-<pre><code><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span><span class="st">"R_REMOTES_NO_ERRORS_FROM_WARNINGS"</span> <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span><span class="op">)</span></code></pre>
-<p>This should work on <strong>Catalina</strong> and <strong>Big Sur</strong></p>
+<p>Followed by (note the additional configuration argument needed for the current homebrew version of proj (7.0.0)</p>
+<pre><code><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span>, configure.args <span class="op">=</span> <span class="st">"--with-proj-lib=/usr/local/lib/"</span><span class="op">)</span></code></pre>
+<p>To install the CRAN version from source you would do</p>
+<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span>, configure.args <span class="op">=</span> <span class="st">"--with-proj-lib=/usr/local/lib/"</span><span class="op">)</span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="linux">Linux<a class="anchor" aria-label="anchor" href="#linux"></a>
