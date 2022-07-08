@@ -14,7 +14,7 @@ setMethod("crosstab", signature(x="SpatRaster", y="missing"),
 			error("crosstab", "needs at least 2 layers")
 		}
 		nms <- names(x)
-		opt <- terra:::spatOptions()
+		opt <- spatOptions()
 
 		b <- blockSize(x, 4)
 		readStart(x)

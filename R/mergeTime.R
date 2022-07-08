@@ -5,10 +5,10 @@ setMethod("fillTime", signature(x="SpatRaster"),
 	function(x, filename="", ...)  {
 		tm <- time(x)
 		if (any(is.na(tm))) {
-			terra:::error("fillTime", "NA in time values")
+			error("fillTime", "NA in time values")
 		}
 		if (any(table(tm)>1)) {
-			terra:::error("fillTime", "duplicate time values")
+			error("fillTime", "duplicate time values")
 		}
 		if (is.unsorted(tm)) {
 			warn("mergeTimelines", "sorting layers")
@@ -43,10 +43,10 @@ setMethod("mergeTime", signature(x="SpatRasterDataset"),
 	function(x, fun="mean", filename="", ...)  {
 		tim <- lapply(1:length(x), function(i) time(x[i]))
 		if (any(sapply(tim, function(i) any(is.na(i))))) {
-			terra:::error("mergeTime", "NA in time values")
+			error("mergeTime", "NA in time values")
 		}
 		if (any(sapply(tim, function(i) any(table(i)>1)))) {
-			terra:::error("mergeTime", "duplicate time values")
+			error("mergeTime", "duplicate time values")
 		}
 		us <- sapply(tim, is.unsorted)
 		if (any(us)) {
