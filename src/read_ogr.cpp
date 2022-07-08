@@ -443,10 +443,8 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 	if (filter.nrow() > 0) {
 		if (filter.type() != "polygons") {
 			filter = filter.hull("convex");
-		} else {
-			if (filter.nrow() > 1) {
-				filter = filter.aggregate(true);
-			}
+		} else if (filter.nrow() > 1) {
+			filter = filter.aggregate(true); 
 		}
 		GDALDataset *filterDS = filter.write_ogr("", "lyr", "Memory", false, true, std::vector<std::string>());
 		if (filter.hasError()) {
