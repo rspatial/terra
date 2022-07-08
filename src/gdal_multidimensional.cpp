@@ -315,7 +315,7 @@ tbd: row order should be reversed
 #else  
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::string subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
 	setError("multidim is not supported by GDAL < 3.1");
 	return false;
 }
