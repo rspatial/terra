@@ -368,6 +368,7 @@ RCPP_MODULE(spat){
 		.method("normalize", &SpatVector::normalize)
 		.method("line_merge", &SpatVector::line_merge)
 		.method("simplify", &SpatVector::simplify)
+		.method("thin", &SpatVector::thin)
 		.method("shared_paths", &SpatVector::shared_paths)
 		.method("snap", &SpatVector::snap)
 		.method("snapto", &SpatVector::snapto)

@@ -39,9 +39,14 @@ SpatRaster::SpatRaster(std::string fname, std::vector<int> subds, std::vector<st
 SpatRaster::SpatRaster(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, bool multi, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> x) {
 // argument "x" is ignored. It is only there to have four arguments such that the  module
 // can distinguish this constructor from another with three arguments. 
+	if (fname.size() == 0) {
+		setError("no filename");
+		return;		
+	}
+
 #ifdef useGDAL
 	if (multi) {
-		constructFromFileMulti(fname[0], subdsname[0], x);
+		constructFromFileMulti(fname[0], subds, subdsname, drivers, options, x);
 		return;
 	}
 

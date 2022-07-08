@@ -544,3 +544,134 @@ SpatVector SpatVector::rotate(double angle, double x0, double y0) {
 	}
 	return out;
 }
+
+
+inline double cartdist(const double& x1, const double& y1, const double &x2, const double &y2) {
+	return sqrt(pow(x2-x1, 2) + pow(y2-y1, 2));
+}
+
+
+
+bool thinnodes(std::vector<double> &x, std::vector<double> &y, const double &threshold, const size_t &mnsize) {
+	std::vector<double> xout, yout;
+	size_t n = x.size();
+	xout.reserve(n);
+	yout.reserve(n);
+	n--;
+	for (size_t i=0; i<n; i++) {
+		if (cartdist(x[i], y[i], x[i+1], y[i+1]) <= threshold) {
+			xout.push_back((x[i] + x[i+1])/2);
+			yout.push_back((y[i] + y[i+1])/2);
+		} else {
+			xout.push_back(x[i]);
+			yout.push_back(y[i]);
+		}
+	}
+	if (cartdist(x[n], y[n], xout[0], yout[0]) <= threshold) {
+		xout.push_back((x[n] + xout[0])/2);
+		yout.push_back((y[n] + yout[0])/2);
+		xout[0] = xout[n];
+		yout[0] = xout[n];
+	} else {
+		xout.push_back(xout[0]);
+		yout.push_back(yout[0]);
+	}
+	if (xout.size() == (n+1)) {
+		return false;
+	} 
+	if (xout.size() >= mnsize) {
+		x = std::move(xout);
+		y = std::move(yout);
+		return true;
+	}
+	return false;
+}
+
+
+
+SpatVector SpatVector::thin(double threshold) {
+
+	SpatVector out;
+	if (threshold < 0) {
+		out.setError("threshold must be a positive number");
+		return out;
+	}
+	size_t mnode = 4;
+	if (geoms[0].gtype == lines) {
+		mnode = 3;
+	} else if (geoms[0].gtype != polygons) {
+		out.setError("can only thin lines or polygons");
+		return out;
+	}
+	
+	out = *this;
+	bool objext = false;
+	for (size_t i=0; i < size(); i++) {
+		bool geomext = false;
+		for (size_t j=0; j < out.geoms[i].size(); j++) {
+			if (thinnodes(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {	
+				geomext = true;
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					thinnodes(geoms[i].parts[j].holes[k].x, geoms[i].parts[j].holes[k].y, threshold, mnode);
+				}
+			}
+		}
+		if (geomext) {
+			objext = true;
+			geoms[i].computeExtent();
+		}
+	}
+	if (objext) {
+		computeExtent();
+	}
+
+	return out;
+}
+
+
+
+/*
+SpatVector SpatVector::removeSlivers(double dthres, double athres, size_t n) {
+
+	SpatVector out;
+	if (geoms[0].gtype != polygons) {
+		out.setError("can only remove slivers from polygons");
+		return out;
+	}
+	if ((dthres < 0) || (athres < 0)) {
+		out.setError("thresholds must be a positive number");
+		return out;
+	}
+	if (n < 2)) {
+		out.setError("n must be at least 2");
+		return out;
+	}
+	
+	out = *this;
+	bool objext = false;
+	for (size_t i=0; i < size(); i++) {
+		bool geomext = false;
+		for (size_t j=0; j < out.geoms[i].size(); j++) {
+			if (remove_slivers(out.geoms[i].parts[j].x, out.geoms[i].parts[j].y, threshold, mnode)) {	
+				geomext = true;
+			}
+			if (geoms[i].parts[j].hasHoles()) {
+				for (size_t k=0; k < geoms[i].parts[j].nHoles(); k++) {
+					remove_slivers(geoms[i].parts[j].holes[k].x, geoms[i].parts[j].holes[k].y, threshold, mnode);
+				}
+			}
+		}
+		if (geomext) {
+			objext = true;
+			geoms[i].computeExtent();
+		}
+	}
+	if (objext) {
+		computeExtent();
+	}
+	return out;
+}
+*/
+

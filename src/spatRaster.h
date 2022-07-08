@@ -350,7 +350,7 @@ class SpatRaster {
         SpatRaster geometry(long nlyrs=-1, bool properties=false, bool time=true, bool units=false);
 
 		bool constructFromFile(std::string fname, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> drivers, std::vector<std::string> options);
-		bool constructFromFileMulti(std::string fname, std::string subdsname, std::vector<size_t> xyz);
+		bool constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz);
 		bool constructFromSDS(std::string filename, std::vector<std::string> meta, std::vector<int> subds, std::vector<std::string> subdsname, std::vector<std::string> options, std::string driver);
 		
 		//SpatRaster fromFiles(std::vector<std::string> fname, std::vector<int> subds, std::vector<std::string> subdsname, std::string drivers, std::vector<std::string> options);

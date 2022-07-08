@@ -179,6 +179,20 @@ std::vector<std::vector<double>> SpatGeom::coordinates() {
 	return out;
 }
 
+void SpatGeom::computeExtent() {
+	if (parts.size() == 0) return;
+	extent.xmin = *std::min_element(parts[0].x.begin(), parts[0].x.end());
+	extent.xmax = *std::max_element(parts[0].x.begin(), parts[0].x.end());
+	extent.ymin = *std::min_element(parts[0].y.begin(), parts[0].y.end());
+	extent.ymax = *std::max_element(parts[0].y.begin(), parts[0].y.end());
+	for (size_t i=1; i<parts.size(); i++) {
+		extent.xmin = std::min(extent.xmin, *std::min_element(parts[0].x.begin(), parts[0].x.end()));
+		extent.xmax = std::max(extent.xmin, *std::max_element(parts[0].x.begin(), parts[0].x.end()));
+		extent.ymin = std::min(extent.xmin, *std::min_element(parts[0].y.begin(), parts[0].y.end()));
+		extent.ymax = std::max(extent.xmin, *std::max_element(parts[0].y.begin(), parts[0].y.end()));
+	}
+}
+
 
 
 SpatVector::SpatVector() {

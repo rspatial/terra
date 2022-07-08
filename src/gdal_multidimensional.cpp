@@ -1,7 +1,7 @@
 
 #include "spatRaster.h"
 
-/*
+
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
 
 #include "proj.h"
@@ -14,12 +14,15 @@
 #include "string_utils.h"
 
 
-bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
+
+Rcpp::Rcout << "in" << std::endl;
 
 	if (xyz.size() != 3) {
 		setError("you must supply three dimension indices");
         return false;
 	}
+
 
     auto poDataset = std::unique_ptr<GDALDataset>(
         GDALDataset::Open(fname.c_str(), GDAL_OF_MULTIDIM_RASTER ));
@@ -34,23 +37,56 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		return false;
     }
 
-	bool warngroup = false;
-	std::vector<std::string> gnames;
-	if (sub == "") {
-		char** papszOptions = NULL;
-		gnames = poRootGroup->GetMDArrayNames(papszOptions);
-		CSLDestroy(papszOptions);
-		sub = gnames[0];
-		if (gnames.size() > 1) warngroup = true;
-	}
 
-    auto poVar = poRootGroup->OpenMDArray(sub.c_str());
+	std::vector<std::string> gnames;
+	std::string subdsname = "";
+	char** papszOptions = NULL;
+	gnames = poRootGroup->GetMDArrayNames(papszOptions);
+	CSLDestroy(papszOptions);
+	
+	if (gnames.size() == 0) {
+		setError("no subdatsets detected");
+		return false;			
+	}
+	Rcpp::Rcout << "available: ";
+	for (size_t i=0; i<gnames.size(); i++) {
+		Rcpp::Rcout << gnames[i] << " ";
+	}
+	Rcpp::Rcout << std::endl;
+
+	
+	if (subname.size() > 0) {
+		subdsname = subname[0];
+		if (std::find(gnames.begin(), gnames.end(), subdsname) == gnames.end()) {
+			setError("subdatset name not found");
+			return false;
+		}
+	} else if (sub[0] >= 0) {
+		if (sub[0] >= (int)gnames.size()) {
+			setError("subdatset is out or range");
+			return false;			
+		} else {
+			subdsname = gnames[sub[0]];
+		}
+	} else {
+		subdsname = gnames[0];
+		if (gnames.size() > 1)  {
+			std::string gn = "";
+			for (size_t i=1; i<gnames.size(); i++) {
+				gn += gnames[i] + ", ";
+			}
+			addWarning("using: " + subdsname + ". Other groups are: \n" + gn);
+		}
+	}
+		
+	Rcpp::Rcout << "subdsname: " << subdsname << std::endl;
+
+    auto poVar = poRootGroup->OpenMDArray(subdsname.c_str());
     if( !poVar )   {
-		setError("cannot find: " + sub);
+		setError("cannot find: " + subdsname);
 		return false;
     }
 
-	SpatRasterSource s;
 
 	std::string wkt = "";
 	std::shared_ptr<OGRSpatialReference> srs = poVar->GetSpatialRef();
@@ -63,11 +99,13 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 		} 
 		CPLFree(cp);
 	}
+	
+	SpatRasterSource s;
+	
 	std::string msg;
 	if (!s.srs.set({wkt}, msg)) {
 		addWarning(msg);
 	}
-
 
 	std::vector<size_t> dimcount;
 	std::vector<std::string> dimnames;
@@ -97,17 +135,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
     GDALExtendedDataTypeRelease(hDT); 
 
 	s.m_ndims = dimcount.size();
-
-	if (warngroup) {
-		std::string gn = "";
-		for (size_t i=0; i<gnames.size(); i++) {
-			if (!is_in_vector(gnames[i], dimnames) &&  (gnames[i] != sub)) { 
-				gn += gnames[i] + ", ";
-			}
-		}
-		addWarning("using: " + sub + ". Other groups are: \n" + gn);
-	}
-	s.source_name = sub;
+	s.source_name = subdsname;
 	s.source_name_long = poVar->GetAttribute("long_name")->ReadAsString();
 
 	s.m_hasNA = false;
@@ -162,6 +190,7 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	}
 
 	s.nlyrfile = s.nlyr;
+	s.resize(s.nlyr);
 	s.layers.resize(s.nlyr);
     std::iota(s.layers.begin(), s.layers.end(), 0);
 	s.flipped = false;
@@ -173,6 +202,8 @@ bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std:
 	s.multidim = true;
 
 // layer names
+	//std::vector<std::string> nms(s.nlyr, "");
+	//s.names = nms;
 // time 
 // extent
 	s.m_counts = dimcount;
@@ -220,18 +251,19 @@ bool SpatRaster::readStopMulti(unsigned src) {
 
 bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t row, size_t nrows, size_t col, size_t ncols) {
 
-
+	Rcpp::Rcout << "reading" << std::endl;
+	
 	std::vector<GUInt64> offset(source[src].m_ndims, 0);
 	std::vector<size_t> dims = source[src].m_dims;
 
-	offset[source[src].m_dims[0]] = row;
-	offset[source[src].m_dims[1]] = col;
+	offset[source[src].m_dims[0]] = col;
+	offset[source[src].m_dims[1]] = row;
 	offset[source[src].m_dims[2]] = 0;
 
 //	std::vector<size_t> count = source[src].m_counts;
 	std::vector<size_t> count(source[src].m_ndims, 1);
-	count[source[src].m_dims[0]] = nrows;
-	count[source[src].m_dims[1]] = ncols;
+	count[source[src].m_dims[0]] = ncols;
+	count[source[src].m_dims[1]] = nrows;
 	count[source[src].m_dims[2]] = nlyr();
 
 	size_t n=1;
@@ -257,7 +289,10 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 						);
     GDALExtendedDataTypeRelease(hDT); 
 
-	size_t nc = ncell();
+/*
+tbd: row order should be reversed 
+
+	size_t nc = nrows * ncols;
 	size_t nl = nlyr();
 	out.resize(0);
 	out.reserve(n);
@@ -266,18 +301,21 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 			out.push_back( temp[nl*j + i] );
 		}
 	}
+*/
 
+    out = std::move(temp);
 	if (source[src].m_hasNA) {
 		std::replace (out.begin(), out.end(), source[src].m_missing_value, (double)NAN);
 	}
+
 	return true;
 }
 
   
 #else  
 
-*/
-bool SpatRaster::constructFromFileMulti(std::string fname, std::string sub, std::vector<size_t> xyz) {
+
+bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::string subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
 	setError("multidim is not supported by GDAL < 3.1");
 	return false;
 }
@@ -297,7 +335,6 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 	return false;
 }
 
-/*
+
 #endif
 
-*/

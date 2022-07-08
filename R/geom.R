@@ -447,7 +447,17 @@ setMethod("simplifyGeom", signature(x="SpatVector"),
 		x
 	}
 )
-
+	
+setMethod("thinGeom", signature(x="SpatVector"), 
+	function(x, threshold=1e-6, makeValid=TRUE) {
+		x@ptr <- x@ptr$thin(threshold)
+		x <- messages(x, "simplifyGeom")
+		if (makeValid) {
+			x <- makeValid(x)
+		}
+		x
+	}
+)
 
 setMethod("sharedPaths", signature(x="SpatVector"), 
 	function(x) {

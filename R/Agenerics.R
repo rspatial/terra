@@ -36,6 +36,7 @@ if (!isGeneric("focalCor")) { setGeneric("focalCor", function(x, ...) standardGe
 if (!isGeneric("clearance")) {setGeneric("clearance", function(x, ...) standardGeneric("clearance"))}
 if (!isGeneric("width")) {setGeneric("width", function(x, ...) standardGeneric("width"))}
 if (!isGeneric("simplifyGeom")) {setGeneric("simplifyGeom", function(x, ...) standardGeneric("simplifyGeom"))}
+if (!isGeneric("thinGeom")) {setGeneric("thinGeom", function(x, ...) standardGeneric("thinGeom"))}
 if (!isGeneric("mergeLines")) {setGeneric("mergeLines", function(x, ...) standardGeneric("mergeLines"))}
 if (!isGeneric("mergeTime")) {setGeneric("mergeTime", function(x, ...) standardGeneric("mergeTime"))}
 if (!isGeneric("fillTime")) {setGeneric("fillTime", function(x, ...) standardGeneric("fillTime"))}

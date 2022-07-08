@@ -197,7 +197,7 @@ setMethod ("show" , "SpatRaster",
 			}
 			lnmx <- 60 / min(mnr, length(ln))
 			b <- nchar(ln) > (lnmx+2)
-			if (any(b)) {
+			if (isTRUE(any(b))) {
 				mid <- floor(lnmx/2)
 				ln[b] <- paste(substr(ln[b], 1, mid), "~", substr(ln[b], nchar(ln[b])-mid+1, nchar(ln[b])), sep="")
 			}

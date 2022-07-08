@@ -66,28 +66,6 @@ setMethod("rast", signature(x="missing"),
 )
 
 
-setMethod("rast", signature(x="stars"),
-	function(x) {
-		x <- from_stars(x)
-		if (inherits(x, "SpatRasterDataset")) {
-			rast(x)
-		} else {
-			x
-		}
-	}
-)
-
-setMethod("rast", signature(x="stars_proxy"),
-	function(x) {
-		x <- from_stars(x)
-		if (inherits(x, "SpatRasterDataset")) {
-			rast(x)
-		} else {
-			x
-		}
-	}
-)
-
 setMethod("rast", signature(x="list"),
 	function(x, warn=TRUE) {
 		i <- sapply(x, function(i) inherits(i, "SpatRaster"))
@@ -119,7 +97,6 @@ setMethod("rast", signature(x="list"),
 		out
 	}
 )
-
 
 
 setMethod("rast", signature(x="SpatExtent"),
@@ -220,7 +197,7 @@ setMethod("rast", signature(x="character"),
 )
 
 
-multi <- function(x, subds=0, xyz=c(1,2,3)) {
+multi <- function(x, subds=0, xyz=c(1,2,3), drivers=NULL, opts=NULL) {
 
 	x <- trimws(x)
 	x <- x[x!=""]
@@ -231,9 +208,12 @@ multi <- function(x, subds=0, xyz=c(1,2,3)) {
 	f <- .fullFilename(x)
 	#subds <- subds[1]
 	if (is.character(subds)) { 
-		r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
+		#r@ptr <- SpatRaster$new(f, -1, subds, TRUE, xyz-1)
+		r@ptr <- terra:::SpatRaster$new(f, -1, subds, "", TRUE, drivers, opts, xyz-1)
 	} else {
-		r@ptr <- SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
+	#	r@ptr <- SpatRaster$new(f, subds-1, "", TRUE, xyz-1)
+		r@ptr <- terra:::SpatRaster$new(f, subds-1, "", TRUE, drivers, opts, xyz-1)
+
 	}
 	if (r@ptr$getMessage() == "ncdf extent") {
 		test <- try(r <- .ncdf_extent(r), silent=TRUE)
@@ -441,6 +421,28 @@ setMethod("rast", signature(x="data.frame"),
 )
 
 
+setMethod("rast", signature(x="stars"),
+	function(x) {
+		x <- from_stars(x)
+		if (inherits(x, "SpatRasterDataset")) {
+			rast(x)
+		} else {
+			x
+		}
+	}
+)
+
+setMethod("rast", signature(x="stars_proxy"),
+	function(x) {
+		x <- from_stars(x)
+		if (inherits(x, "SpatRasterDataset")) {
+			rast(x)
+		} else {
+			x
+		}
+	}
+)
+
 setMethod("NAflag<-", signature(x="SpatRaster"), 
 	function(x, value)  {
 		value <- as.numeric(value)
@@ -456,4 +458,5 @@ setMethod("NAflag", signature(x="SpatRaster"),
 		x@ptr$getNAflag()
 	}
 )
+
 

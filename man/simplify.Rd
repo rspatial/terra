@@ -20,7 +20,7 @@ Reduce the number of nodes used to represent geometries.
 
 \arguments{
   \item{x}{SpatVector of lines or polygons}
-  \item{tolerance}{numeric. The minimum distance between nodes in units of the crs (i.e. degrees for long/lat}
+  \item{tolerance}{numeric. The minimum distance between nodes in units of the crs (i.e. degrees for long/lat)}
   \item{preserveTopology}{logical. If \code{TRUE} the topology of output geometries is preserved}
   \item{makeValid}{logical. If \code{TRUE}, \code{link{makeValid}} is run after simplification to assure that the output polygons are valid}
 } 

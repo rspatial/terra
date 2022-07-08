@@ -90,7 +90,7 @@ class SpatGeom {
 		void remove_duplicate_nodes(int digits);
 		size_t ncoords();
 		std::vector<std::vector<double>> coordinates();
-
+		void computeExtent();
 		void reserve(size_t n) {
 			parts.reserve(n);
 		}
@@ -301,6 +301,7 @@ class SpatVector {
 		SpatVector shared_paths();
 		SpatVector snap(double tolerance);
 		SpatVector snapto(SpatVector y, double tolerance);
+		SpatVector thin(double threshold);
 
 		SpatVector allerretour();
 		SpatVectorCollection bienvenue();
