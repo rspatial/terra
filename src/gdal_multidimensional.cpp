@@ -1,7 +1,7 @@
 
 #include "spatRaster.h"
 
-
+/*
 #if GDAL_VERSION_MAJOR >= 3 && GDAL_VERSION_MINOR >= 1
 
 #include "proj.h"
@@ -289,19 +289,19 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 						);
     GDALExtendedDataTypeRelease(hDT); 
 
-/*
-tbd: row order should be reversed 
 
-	size_t nc = nrows * ncols;
-	size_t nl = nlyr();
-	out.resize(0);
-	out.reserve(n);
-	for (size_t i=0; i<nl; i++) {
-		for (size_t j=0; j<nc; j++) {
-			out.push_back( temp[nl*j + i] );
-		}
-	}
-*/
+//tbd: row order should be reversed 
+
+//	size_t nc = nrows * ncols;
+//	size_t nl = nlyr();
+//	out.resize(0);
+//	out.reserve(n);
+//	for (size_t i=0; i<nl; i++) {
+//		for (size_t j=0; j<nc; j++) {
+//			out.push_back( temp[nl*j + i] );
+//		}
+//	}
+
 
     out = std::move(temp);
 	if (source[src].m_hasNA) {
@@ -314,6 +314,7 @@ tbd: row order should be reversed
   
 #else  
 
+*/
 
 bool SpatRaster::constructFromFileMulti(std::string fname, std::vector<int> sub, std::vector<std::string> subname, std::vector<std::string> drivers, std::vector<std::string> options, std::vector<size_t> xyz) {
 	setError("multidim is not supported by GDAL < 3.1");
@@ -336,5 +337,5 @@ bool SpatRaster::readValuesMulti(std::vector<double> &out, size_t src, size_t ro
 }
 
 
-#endif
+//#endif
 
