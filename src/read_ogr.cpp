@@ -378,17 +378,6 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 
 	std::string crs = "";
 
-	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
-	if (poSRS) {
-		char *psz = NULL;
-		OGRErr err = poSRS->exportToWkt(&psz);
-		if (err == OGRERR_NONE) {
-			crs = psz;
-		}
-		setSRS(crs);
-		CPLFree(psz);
-	}
-
 	OGRLayer *poLayer;
 
 	if (query != "") {
@@ -438,6 +427,18 @@ bool SpatVector::read_ogr(GDALDataset *poDS, std::string layer, std::string quer
 			}
 		}
 	}
+
+	OGRSpatialReference *poSRS = poDS->GetLayer(0)->GetSpatialRef();
+	if (poSRS) {
+		char *psz = NULL;
+		OGRErr err = poSRS->exportToWkt(&psz);
+		if (err == OGRERR_NONE) {
+			crs = psz;
+		}
+		setSRS(crs);
+		CPLFree(psz);
+	}
+
 
 	if (filter.nrow() > 0) {
 		if (filter.type() != "polygons") {
