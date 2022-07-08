@@ -274,17 +274,23 @@ rbind.SpatVector <- function(x, y, ...) {
 	skipped <- FALSE
 	if (missing(y) || is.null(y)) return(x)
 	stopifnot(inherits(y, "SpatVector"))
-	x@ptr <- x@ptr$rbind(y@ptr, FALSE)
-	x <- messages(x, "rbind")
-	dots <- list(...)
-	if (!is.null(dots)) {
-		for (y in dots) {
-			stopifnot(inherits(y, "SpatVector"))
-			x@ptr <- x@ptr$rbind(y@ptr, FALSE)
-			x <- messages(x, "rbind")
-		}
-	}
-	x
+	s <- svc(x, y, ...)
+	x@ptr <- s@ptr$append()
+	messages(x, "rbind")
+
+#	dots <- list(...)
+#	if (is.null(dots)) {
+#		x@ptr <- x@ptr$rbind(y@ptr, FALSE)
+#	} else {
+		
+	#if (!is.null(dots)) {
+	#	for (y in dots) {
+	#		stopifnot(inherits(y, "SpatVector"))
+	#		x@ptr <- x@ptr$rbind(y@ptr, FALSE)
+	#		x <- messages(x, "rbind")
+	#	}
+	#}
+	#x
 }
 
 
