@@ -460,8 +460,12 @@ setMethod("thinGeom", signature(x="SpatVector"),
 )
 
 setMethod("sharedPaths", signature(x="SpatVector"), 
-	function(x) {
-		x@ptr <- x@ptr$shared_paths()
+	function(x, y=NULL) {
+		if (is.null(y)) {
+			x@ptr <- x@ptr$shared_paths()
+		} else {
+			x@ptr <- x@ptr$shared_paths2(y@ptr)		
+		}
 		messages(x, "sharedPaths")
 	}
 )
@@ -477,3 +481,115 @@ setMethod("snap", signature(x="SpatVector"),
 		messages(x, "snap")
 	}
 )
+
+
+setMethod("combineGeoms", signature(x="SpatVector", y="SpatVector"), 
+	function(x, y, overlap=TRUE, boundary=TRUE, distance=TRUE, append=TRUE, minover=0.1, maxdist=Inf, dissolve=TRUE, erase=TRUE) {
+
+		if ((geomtype(x) != "polygons") || (geomtype(y) != "polygons")) {
+			error("combineGeoms", "x and y must be polygons")
+		}
+		if (nrow(x) == 0) {
+			if (append) {
+				return(rbind(x, y))
+			} else {
+				return(x)
+			}
+		}
+		if (nrow(y) == 0) {
+			return(x)
+		}
+		
+		xcrs <- crs(x)
+		ycrs <- crs(y)
+		if ((xcrs == "") || (ycrs == "")) {
+			error("combineGeoms", "x and y must have a crs")
+		} else if (xcrs != ycrs) {
+			error("combineGeoms", "x and y do not have the same crs")
+		}
+		
+		dx <- values(x)
+		dy <- values(y)
+		values(x) = data.frame(idx=1:nrow(x))
+		values(y) = data.frame(idy=1:nrow(y))
+		y <- erase(y) # no self-overlaps
+		if (overlap) {
+			xy <- intersect(y, x)
+			if (nrow(xy) > 0) {
+				xy$aint <- expanse(xy)
+				a <- values(xy)
+				a <- a[order(a$idy, -a$aint),]
+				a <- a[!duplicated(a$idy),]
+				yi <- y[a$idy,]
+				atot <- expanse(yi)
+				a <- a[(a$aint / atot) >= minover, ]
+				if (nrow(a) > 0) {
+					if (erase) {
+						ye <- erase(y, x)
+						i <- na.omit(match(a$idy, ye$idy))						
+						if (length(i) > 0) {
+							yi <- ye[i,]
+							values(yi) <- data.frame(idx=a$idx[i])
+						} else {
+							yi <- vect()
+						}
+					} else {
+						yi <- y[a$idy,]
+						values(yi) <- data.frame(idx=a$idx)
+					} 
+					if (nrow(yi) > 0) {
+						x <- aggregate(rbind(x, yi), "idx", dissolve=dissolve, counts=FALSE)
+					}
+					y <- y[-a$idy,]
+				}			
+			}
+		}
+
+		if (boundary && (nrow(y) > 0)) {
+			ye <- erase(y, x)
+			p <- sharedPaths(ye, x)
+			if (nrow(p) > 0) {
+				p$s <- perim(p)
+				p <- values(p)
+				p <- p[order(p$id1, -p$s),]
+				p <- p[!duplicated(p$id1),]
+				if (erase) {
+					i <- p$id1
+					yi <- ye[p$id1,]
+				} else {
+					i <- ye$idy[p$id1]
+					i <- match(i, y$idy)
+					yi <- y[i,]
+				}
+				yi$idx <- 0
+				yi$idx[i] <- p$id2 
+				yi$idy <- NULL
+				x <- aggregate(rbind(x, yi), "idx", dissolve=dissolve, counts=FALSE)
+				y <- y[-i,]
+			}
+		} 
+		
+		if (distance && (nrow(y) > 0) && (maxdist > 0)) {
+			n <- nearest(y, x)
+			n <- n[n$distance <= maxdist, ]
+			if (nrow(n) > 0) {
+				yi <- y[n$from_id, ]
+				yi$idx <- n$to_id
+				yi$idy <- NULL
+				x <- aggregate(rbind(x, yi), "idx", dissolve=FALSE, counts=FALSE)
+				y <- y[-n$from_id, ]
+			}		
+		}
+		
+		values(x) <- dx[x$idx, ,drop=FALSE]
+		if (append && (nrow(y) > 0)) {
+			values(y) <- dy[y$idy, ,drop=FALSE]
+			if (erase) {
+				y <- erase(y, x)
+			}
+			x <- rbind(x, y)
+		}
+		x
+	}
+)
+

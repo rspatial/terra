@@ -17,7 +17,7 @@ Or aggregate ("dissolve") a SpatVector.
 \usage{
 \S4method{aggregate}{SpatRaster}(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt=list())
 
-\S4method{aggregate}{SpatVector}(x, by=NULL, dissolve=TRUE, fun="mean", ...)
+\S4method{aggregate}{SpatVector}(x, by=NULL, dissolve=TRUE, fun="mean", count=TRUE, ...)
 }
 
 \arguments{
@@ -32,6 +32,7 @@ Or aggregate ("dissolve") a SpatVector.
   
   \item{by}{character. The variable used to aggregate the geometries}
   \item{dissolve}{logical. Should borders between aggregated geometries be dissolved?} 
+  \item{count}{logical. If \code{TRUE} and \code{by} is not \code{NULL}, a variable "agg_n" is included that shows the number of input geometries for each output geometry}
 }
 
 

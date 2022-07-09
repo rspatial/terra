@@ -160,7 +160,7 @@ setMethod ("expanse", "SpatVector",
 setMethod("perim", signature(x="SpatVector"), 
 	function(x) {
 		p <- x@ptr$length();
-		x <- messages(x, "length");
+		x <- messages(x, "perim");
 		return(p)
 	}
 )

@@ -160,7 +160,7 @@ function(x, fact=2, fun="mean", ..., cores=1, filename="", overwrite=FALSE, wopt
 }
 
 
-aggregate_attributes <- function(d, by, fun=NULL, ...) {
+aggregate_attributes <- function(d, by, fun=NULL, count=TRUE, ...) {
 	i <- sapply(d, is.numeric)
 	i[colnames(d) %in% by] <- FALSE
 	j <- 1:length(by)
@@ -169,10 +169,10 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 		if (any(i)) {
 			if (is.character(fun)) {
 				f <- match.fun(fun)
-				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], f)
+				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], f, ...)
 				names(da)[-j] <- paste0(fun, "_", names(da)[-j])
 			} else {
-				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], fun)
+				da <- aggregate(d[, i,drop=FALSE], d[, by, drop=FALSE], fun, ...)
 				names(da)[-j] <- paste0("agg_", names(da)[-j])
 			}
 		} else {
@@ -192,22 +192,26 @@ aggregate_attributes <- function(d, by, fun=NULL, ...) {
 		}
 	}
 
-	dn <- aggregate(d[, by[1],drop=FALSE], d[, by, drop=FALSE], length)
-	colnames(dn)[ncol(dn)] = "agg_n"
-	if (NCOL(da ) > 1) {
-		if (nrow(dn) > 0) {
-			dn <- merge(da, dn, by=by)
-		} else {
-			dn <- da
-			dn$agg_n <- 1
+	if (count) {
+		dn <- aggregate(d[, by[1],drop=FALSE], d[, by, drop=FALSE], length)
+		colnames(dn)[ncol(dn)] = "agg_n"
+		if (NCOL(da ) > 1) {
+			if (nrow(dn) > 0) {
+				dn <- merge(da, dn, by=by)
+			} else {
+				dn <- da
+				dn$agg_n <- 1
+			}
 		}
+		dn
+	} else {
+		da
 	}
-	dn
 }
 
 
 setMethod("aggregate", signature(x="SpatVector"),
-	function(x, by=NULL, dissolve=TRUE, fun="mean", ...) {
+	function(x, by=NULL, dissolve=TRUE, fun="mean", count=TRUE, ...) {
 		if (is.null(by)) {
 			x$aggregate_by_variable = 1;
 			x@ptr <- x@ptr$aggregate("aggregate_by_variable", dissolve)
@@ -248,9 +252,9 @@ setMethod("aggregate", signature(x="SpatVector"),
 			
 			if (mvars) {
 				d[[by]] <- cvar
-				a <- aggregate_attributes(d, c(by, names(d)[iby]), fun)			
+				a <- aggregate_attributes(d, c(by, names(d)[iby]), fun=fun, count=count, ...)			
 			} else {
-				a <- aggregate_attributes(d, names(d)[iby], fun)
+				a <- aggregate_attributes(d, names(d)[iby], fun=fun, count=count, ...)
 			}
 			
 			if (any(is.na(d[[by]]))) {

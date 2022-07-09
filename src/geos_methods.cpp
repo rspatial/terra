@@ -446,6 +446,54 @@ SpatVector SpatVector::shared_paths() {
 }
 
 
+SpatVector SpatVector::shared_paths(SpatVector x) {
+
+	if (x.type() == "polygons") {
+		x = x.as_lines();
+	}
+	if (type() == "polygons") {
+		SpatVector v = as_lines();
+		return v.shared_paths(x);
+	}
+
+	GEOSContextHandle_t hGEOSCtxt = geos_init();
+	std::vector<GeomPtr> a = geos_geoms(this, hGEOSCtxt);
+	std::vector<GeomPtr> b = geos_geoms(&x, hGEOSCtxt);
+
+	size_t sa = size();
+	size_t sb = b.size();
+	std::vector<long> id1, id2;
+	std::vector<GeomPtr> p;
+	for (size_t i=0; i<sa; i++) {
+		for (size_t j=0; j<sb; j++) {
+			GEOSGeometry* r = GEOSSharedPaths_r(hGEOSCtxt, a[i].get(), b[j].get());
+			if (r != NULL) {
+				if (!GEOSisEmpty_r(hGEOSCtxt, r)) {
+					p.push_back(geos_ptr(r, hGEOSCtxt));
+					id1.push_back(i+1);
+					id2.push_back(j+1);
+				} else {
+					GEOSGeom_destroy_r(hGEOSCtxt, r);
+				}
+			}
+		}
+	}
+
+	SpatVector out;
+	if (p.size() > 0) {
+		SpatVectorCollection coll = coll_from_geos(p, hGEOSCtxt, std::vector<long>(), false, false);
+		out = coll.get(0);
+		out = out.line_merge();
+	}
+	geos_finish(hGEOSCtxt);
+	out.srs = srs;
+	out.df.add_column(id1, "id1");
+	out.df.add_column(id2, "id2");
+	return out;
+}
+
+
+
 /*
 SpatVector SpatVector::split_polygons(SpatVector lns) {
 		SpatGeom glns;
